@@ -4,6 +4,8 @@
 /dist
 /tmp
 /out-tsc
+/angular-electron-linux-x64
+/angular-electron-win32-x64
 
 # dependencies
 /node_modules
