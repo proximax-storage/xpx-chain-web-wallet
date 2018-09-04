@@ -4,18 +4,19 @@ let win;
 
 function createWindow() {
    // Create the browser window.
+   //example https://angularfirebase.com/lessons/desktop-apps-with-electron-and-angular/
    win = new BrowserWindow({
-      width: 600,
+      width: 1024,
       height: 600,
       backgroundColor: '#ffffff',
       icon: `file://${__dirname}/dist/proxiWallet/assets/favicon.ico`
    })
 
 
-   win.loadURL(`file://${__dirname}/dist/proxiWallet/index.html`)
-
+   // win.loadURL(`file://${__dirname}/dist/proxiWallet/index.html`)
+win.loadURL('http://localhost:4200/')
    //// uncomment below to open the DevTools.
-   // win.webContents.openDevTools()
+    win.webContents.openDevTools()
 
    // Event when the window is closed.
    win.on('closed', function () {
