@@ -1,0 +1,62 @@
+<div style="height: 100vh;">
+    <mat-toolbar color="primary">
+      <mat-toolbar-row >
+        <button mat-icon-button (click)="sidenav.toggle()" fxShow="true" fxHide.gt-sm>
+          <mat-icon>menu</mat-icon>
+        </button>
+        <span>Responsive Navigation</span>
+        <span class="example-spacer"></span>
+        <div  fxLayout="row" fxLayoutAlign="end center"  fxFlex fxShow="true" fxHide.lt-md="true">
+          
+      
+          <!-- The following menu items will be hidden on both SM and XS screen sizes -->
+          <!-- <a href="#" mat-button>
+            <mat-icon>notifications</mat-icon>
+            Notifications
+          </a>
+          <a href="#" mat-button>
+            <mat-icon>message</mat-icon>
+            Messages
+          </a> -->
+          <a href="#" [routerLink]="'/login'" mat-button>
+            <mat-icon>lock_open</mat-icon>
+            INGRESAR
+          </a>
+        </div>
+      </mat-toolbar-row>
+    </mat-toolbar>
+  
+    <mat-sidenav-container fxFlexFill>
+      <mat-sidenav #sidenav>
+        <mat-nav-list>
+          <!-- <a href="#" mat-list-item>
+            <mat-icon>notifications</mat-icon>
+            Notifications
+          </a>
+          <a href="#" mat-list-item>
+            <mat-icon>message</mat-icon>
+            Messages</a>
+          <a href="#" mat-list-item>
+            <mat-icon>account_box</mat-icon>
+            My Account
+          </a> -->
+          <a href="#" [routerLink]="'/login'" mat-list-item>
+            <mat-icon>lock_open</mat-icon>
+            INGRESAR
+          </a>
+          <a (click)="sidenav.toggle()" mat-list-item>
+            <mat-icon>close</mat-icon> Close
+          </a>
+        </mat-nav-list>
+      </mat-sidenav>
+      <mat-sidenav-content fxFlexFill>
+        
+          <div class="container-fluid">
+              <router-outlet></router-outlet>
+            </div>
+        
+        
+        
+       </mat-sidenav-content>
+    </mat-sidenav-container>
+  </div>

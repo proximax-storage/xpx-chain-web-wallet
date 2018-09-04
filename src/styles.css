@@ -1,4 +1,62 @@
 /* You can add global styles to this file, and also import other style files */
+
 @import url('assets/fonts-google/fonts.css');
 html, body { height: 100%; }
 body { margin: 0; font-family: 'Roboto', sans-serif; }
+main { height: auto; padding-top: 6rem;padding-left: 2rem;padding-right: 2rem;padding-bottom: 3rem;}
+
+.container-fluid {
+   /* width: 100%;
+   padding-right: 15px;
+   padding-left: 15px;
+   margin-right: auto;
+   margin-left: auto; */
+ 
+   width: 100%;
+     padding-right: 15px;
+     padding-left: 15px;
+     margin-right: auto;
+     margin-left: auto;
+     margin-bottom: auto;
+ }
+
+ .border-bottom{
+   margin-bottom:.1rem !important;
+   border-bottom: 2px solid #3858b7;
+ }
+ .mb-1, .my-1 {
+   margin-bottom: .1rem !important;
+ }
+ .mb-2, .my-2 {
+   margin-bottom: .5rem !important;
+ }
+ .mb-3, .my-3 {
+   margin-bottom: .1rem !important;
+ }
+ .padding-0 {
+   padding: 0;
+ }
+ .gris-suave {
+   color: #afafaf;
+ }
+ 
+ .drop {
+   border: 1px dashed #00a65a;
+   min-height: 35px;
+   border-radius: 4px;
+   text-align: center;
+ }
+ .full-width {
+   width: 70%;
+ }
+
+ 
+
+
+.nav-bar{
+   display: flex;
+   flex-wrap: wrap;
+   align-items: center;
+   padding: 8px 16px;
+} 
+ 
