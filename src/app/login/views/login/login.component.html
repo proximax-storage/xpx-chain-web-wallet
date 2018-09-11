@@ -1,5 +1,54 @@
 <particles [params]="myParams" [style]="myStyle" [width]="width" [height]="height"></particles>
-<!-- <div fxLayout="row" style="border-bottom-color: red">
-  <div fxFlex="50" >sdf</div>
-  <div fxFlex="50">ss</div>
-</div> -->
+
+<div fxLayout="row " fxLayout.xs="column">
+
+  <div fxFlex> </div>
+  <div fxFlex="40" fxLayout="row" fxLayoutAlign="center center" class="my-2">
+
+
+    <mat-card >
+
+
+
+
+      <mat-card-title  >
+        Iniciar sesión
+      </mat-card-title>
+      <div class="border-bottom"> </div>
+      <mat-card-content class="mb-2 padding-0">
+
+
+        <div fxLayout="row">
+
+          <mat-form-field>
+            <mat-select placeholder="Select" class="full-width">
+              <mat-option value="option">Option</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div fxLayout="row">
+          <!-- <mat-form-field class="full-width">
+            <input matInput placeholder="Input">
+          </mat-form-field> -->
+          <mat-form-field class="full-width">
+              <input matInput placeholder="Apellido">
+            </mat-form-field>
+
+        </div>
+
+
+
+
+
+      </mat-card-content>
+    </mat-card>
+
+
+  </div>
+
+
+
+
+
+
+</div>
