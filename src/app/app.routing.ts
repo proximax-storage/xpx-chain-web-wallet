@@ -6,6 +6,10 @@ const appRoutes: Routes = [
         path: '',
         loadChildren: './home/home.module#HomeModule'
     },
+    {
+        path: '',
+        loadChildren: './login/login.module#LoginModule'
+    }
 ];
 export const appRoutingProviders: any[] = [];
 export const routing: ModuleWithProviders = RouterModule.forRoot(appRoutes, {

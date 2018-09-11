@@ -1,4 +1,4 @@
-<div style="height: 100vh;">
+
     <mat-toolbar color="primary">
       <mat-toolbar-row >
         <button mat-icon-button (click)="sidenav.toggle()" fxShow="true" fxHide.gt-sm>
@@ -26,8 +26,8 @@
       </mat-toolbar-row>
     </mat-toolbar>
   
-    <mat-sidenav-container fxFlexFill>
-      <mat-sidenav #sidenav>
+    <mat-sidenav-container fxFlexFill >
+      <mat-sidenav #sidenav >
         <mat-nav-list>
           <!-- <a href="#" mat-list-item>
             <mat-icon>notifications</mat-icon>
@@ -58,5 +58,7 @@
         
         
        </mat-sidenav-content>
+       
     </mat-sidenav-container>
-  </div>
+    <mat-toolbar class="example-footer">Footer</mat-toolbar>
+  
