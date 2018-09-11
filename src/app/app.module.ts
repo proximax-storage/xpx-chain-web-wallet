@@ -1,9 +1,8 @@
 // Modules
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { MaterialAngularModule } from './material-angular/material-angular.module';
-import { FlexLayoutModule } from '@angular/flex-layout';
 
+import { CoreModule } from './core/core.module';
 // Routing
 import { routing, appRoutingProviders } from './app.routing';
 
@@ -19,9 +18,8 @@ import { HeaderComponent } from './header/header.component';
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    MaterialAngularModule,
     routing,
-    FlexLayoutModule
+    CoreModule
   ],
   providers: [appRoutingProviders],
   bootstrap: [AppComponent]
