@@ -1,53 +1,40 @@
 <particles [params]="myParams" [style]="myStyle" [width]="width" [height]="height"></particles>
 
-<div fxLayout="row " fxLayout.xs="column">
+<div fxLayout="row" fxLayout.xs="column" fxFlexFill>
 
-  <div fxFlex> </div>
+
   <div fxFlex="40" fxLayout="row" fxLayoutAlign="center center" class="my-2">
 
 
-    <mat-card >
-
-
-
-
-      <mat-card-title  >
+    <mat-card>
+      <mat-card-title>
         Iniciar sesión
       </mat-card-title>
-      <div class="border-bottom"> </div>
+      <div class="border-bottom mb-2 "> </div>
       <mat-card-content class="mb-2 padding-0">
-
-
-        <div fxLayout="row">
-
-          <mat-form-field>
-            <mat-select placeholder="Select" class="full-width">
+        <div fxLayout="row wrap" fxLayoutAlign="start center" fxLayoutGap="10px" fxFlexFill>
+          <mat-form-field class="full-width">
+            <mat-select placeholder="Select">
+              <mat-option value="option">Option</mat-option>
+              <mat-option value="option">Option</mat-option>
               <mat-option value="option">Option</mat-option>
             </mat-select>
           </mat-form-field>
-        </div>
-        <div fxLayout="row">
-          <!-- <mat-form-field class="full-width">
-            <input matInput placeholder="Input">
-          </mat-form-field> -->
           <mat-form-field class="full-width">
-              <input matInput placeholder="Apellido">
-            </mat-form-field>
-
+            <input matInput placeholder="Input">
+          </mat-form-field>
         </div>
-
-
-
-
-
       </mat-card-content>
+      <mat-card-actions>
+        <mat-divider class="mb-2"></mat-divider>
+        <br>
+        <!-- <button mat-button>LIKE</button> -->
+        <button mat-raised-button color="primary">ENTRAR</button>
+      </mat-card-actions>
     </mat-card>
-
-
   </div>
 
-
-
+  <div fxFlex> </div>
 
 
 

@@ -73,7 +73,8 @@ import 'core-js/es7/reflect';
  */
 import 'zone.js/dist/zone';  // Included with Angular CLI.
 
-
+// import * as nem2 from 'nem2-sdk';
+// window['nem2'] = nem2;
 
 /***************************************************************************************************
  * APPLICATION IMPORTS

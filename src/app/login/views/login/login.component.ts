@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-
+import { SimpleWallet, Password, NetworkType } from 'nem2-sdk';
 // export interface Food {
 //   value: string;
 //   viewValue: string;
@@ -24,6 +24,8 @@ export class LoginComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+
+    console.log('creando  wallet:', this.createSimpleWallet('jeffersson', '11192875'));
     // this.foods = [
     //   { value: 'steak-0', viewValue: 'Steak' },
     //   { value: 'pizza-1', viewValue: 'Pizza' },
@@ -41,8 +43,6 @@ export class LoginComponent implements OnInit {
       'bottom': 0,
       'background-color': '#221a1a'
     };
-
-
     this.myParams = {
       particles: {
         number: {
@@ -73,5 +73,18 @@ export class LoginComponent implements OnInit {
         },
       }
     };
+
+
+  }
+
+  /**
+    * Create Simple Wallet    Crear billetera simple
+    * @param walletName wallet idenitifier for app
+    * @param password wallet's password
+    * @param selected network
+    * @return Promise with wallet created
+    */
+  createSimpleWallet(walletName: string, password: string): SimpleWallet {
+    return SimpleWallet.create(walletName, new Password(password), NetworkType.TEST_NET);
   }
 }
