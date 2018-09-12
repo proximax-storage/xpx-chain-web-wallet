@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { SimpleWallet, Password, NetworkType } from 'nem2-sdk';
+import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 // export interface Food {
 //   value: string;
 //   viewValue: string;
@@ -17,64 +18,24 @@ export class LoginComponent implements OnInit {
   width = 100;
   height = 100;
   selectedValue: string;
-  // foods: Food[];
+  loginForm: FormGroup;
 
-
-
-  constructor() { }
+  constructor(
+    private fb: FormBuilder
+  ) { }
 
   ngOnInit() {
-
+    this.createForm();
+    this.initParticle();
     console.log('creando  wallet:', this.createSimpleWallet('jeffersson', '11192875'));
-    // this.foods = [
-    //   { value: 'steak-0', viewValue: 'Steak' },
-    //   { value: 'pizza-1', viewValue: 'Pizza' },
-    //   { value: 'tacos-2', viewValue: 'Tacos' }
-    // ];
-    this.myStyle = {
-      'overflow': 'hidden',
-      'position': 'absolute',
-      'width': '100%',
-      'height': '100%',
-      'z-index': -1,
-      'top': 0,
-      'left': 0,
-      'right': 0,
-      'bottom': 0,
-      'background-color': '#221a1a'
-    };
-    this.myParams = {
-      particles: {
-        number: {
-          value: 100,
-        },
-        color: {
-          value: '#ffffff'
-        },
-
-        shape: {
-          type: 'circle',
-          stroke: {
-            width: 0,
-            color: '#ffffff'
-          },
-          image: {
-            src: 'img/github.svg',
-            width: 100,
-            height: 100
-          }
-        },
-        line_linked: {
-          enable: true,
-          distance: 150,
-          color: '#ffffff',
-          opacity: 0.4,
-          width: 1
-        },
-      }
-    };
+  }
 
 
+  createForm() {
+    this.loginForm = this.fb.group({
+      userName: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(30)]],
+      password: ['', [Validators.required]]
+    });
   }
 
   /**
@@ -86,5 +47,42 @@ export class LoginComponent implements OnInit {
     */
   createSimpleWallet(walletName: string, password: string): SimpleWallet {
     return SimpleWallet.create(walletName, new Password(password), NetworkType.TEST_NET);
+  }
+
+  getError(param, name) {
+    if (this.loginForm.get(param).getError('required')) {
+      return `Este campo es requerido`;
+    } else if (this.loginForm.get('userName').getError('minlength')) {
+      return `Este campo debe contener minímo ${this.loginForm.get('userName').getError('minlength').requiredLength} carácteres`;
+    } else if (this.loginForm.get('userName').getError('maxlength')) {
+      return `Este campo debe contener máximo ${this.loginForm.get('userName').getError('maxlength').requiredLength} carácteres`;
+    }
+  }
+
+  initParticle() {
+    this.myStyle = {
+      'overflow': 'hidden',
+      'position': 'absolute',
+      'width': '100%',
+      'height': '100%',
+      'z-index': -1,
+      'top': 0,
+      'left': 0,
+      'right': 0,
+      'bottom': 0,
+    };
+    this.myParams = {
+      particles: {
+         number: {
+          value: 180
+        },
+        color: {
+          value: '#209084'
+        },
+        shape: {
+          type: 'circle'
+        }
+      }
+    };
   }
 }

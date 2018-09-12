@@ -4,4 +4,12 @@
    left: 0;
    right: 0;
  }
- 
+
+ .example-container {
+  width: 500px;
+  height: 300px;
+}
+
+.example-sidenav {
+  padding: 20px;
+}
