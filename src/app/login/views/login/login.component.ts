@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { SimpleWallet, Password, NetworkType } from 'nem2-sdk';
+import * as nem from 'nem2-sdk';
 // export interface Food {
 //   value: string;
 //   viewValue: string;
@@ -24,8 +24,9 @@ export class LoginComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+    console.log("NWM", nem);
 
-    console.log('creando  wallet:', this.createSimpleWallet('jeffersson', '11192875'));
+    // console.log('creando  wallet:', this.createSimpleWallet('jeffersson', '11192875'));
     // this.foods = [
     //   { value: 'steak-0', viewValue: 'Steak' },
     //   { value: 'pizza-1', viewValue: 'Pizza' },
@@ -84,7 +85,7 @@ export class LoginComponent implements OnInit {
     * @param selected network
     * @return Promise with wallet created
     */
-  createSimpleWallet(walletName: string, password: string): SimpleWallet {
-    return SimpleWallet.create(walletName, new Password(password), NetworkType.TEST_NET);
-  }
+  // createSimpleWallet(walletName: string, password: string): SimpleWallet {
+  //   return SimpleWallet.create(walletName, new Password(password), NetworkType.TEST_NET);
+  // }
 }
