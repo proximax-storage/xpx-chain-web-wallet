@@ -1,18 +1,12 @@
 /* You can add global styles to this file, and also import other style files */
-
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+@import "flexboxgrid/css/flexboxgrid.css";
 @import url('assets/fonts-google/fonts.css');
-html, body { height: 100%; }
+/* html, body { height: 100%; } */
 body { margin: 0; font-family: 'Roboto', sans-serif; }
 main { height: auto; padding-top: 6rem;padding-left: 2rem;padding-right: 2rem;padding-bottom: 3rem;}
 
 .container-fluid {
-   /* width: 100%;
-   padding-right: 15px;
-   padding-left: 15px;
-   margin-right: auto;
-   margin-left: auto; */
- 
-   /* width: 100%; */
      padding-right: 15px;
      padding-left: 15px;
      margin-right: auto;
@@ -39,7 +33,7 @@ main { height: auto; padding-top: 6rem;padding-left: 2rem;padding-right: 2rem;pa
  .gris-suave {
    color: #afafaf;
  }
- 
+
  .drop {
    border: 1px dashed #00a65a;
    min-height: 35px;
@@ -50,13 +44,81 @@ main { height: auto; padding-top: 6rem;padding-left: 2rem;padding-right: 2rem;pa
    width: 70%;
  }
 
- 
-
-
 .nav-bar{
    display: flex;
    flex-wrap: wrap;
    align-items: center;
    padding: 8px 16px;
-} 
- 
+}
+
+.top-170 {
+  top: 170px;
+}
+
+.pb-20 {
+  padding-bottom: 20px !important;
+}
+
+.act-button {
+  background-color: #209084;
+  color: white;
+}
+
+.not-act-button {
+  background: #424a5a;
+  color: white;
+}
+
+.container-form {
+  display: flex;
+  flex-direction: column;
+  padding: 30px;
+}
+
+.container-form > * {
+  width: 100%;
+}
+
+.container-form > mat-form-field {
+  padding-bottom: 15px;
+}
+
+.top-50porcent{
+  top: 12%;
+}
+
+.mat-card {
+  padding: 0px !important;
+}
+
+.row {
+  margin-right: 0 !important;
+  margin-left: 0 !important;
+}
+
+.header {
+  overflow: hidden;
+  background-image: -webkit-linear-gradient(140deg,rgb(32, 128, 115) 0%,rgb(32, 181, 172) 33%,rgb(120, 182, 228) 100%);
+  padding: 20px 10px;
+}
+
+.imagen {
+  max-height: 60px
+}
+
+@media screen and (max-width: 1024px) {
+  .imagen {
+    max-height: 50px
+  }
+}
+
+@media screen and (max-width: 992px) {
+  .imagen {
+    max-height: 30px
+  }
+}
+
+.background-banner{
+  background-image: -webkit-linear-gradient(140deg,rgb(32, 128, 115) 0%,rgb(32, 181, 172) 33%,rgb(120, 182, 228) 100%);
+  color: white;
+}

@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import * as nem from 'nem2-sdk';
-// export interface Food {
-//   value: string;
-//   viewValue: string;
-// }
+import { SimpleWallet, Password, NetworkType, Account } from 'nem2-sdk';
+import { FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { LoginService } from './service/login.service';
 
 
 @Component({
@@ -17,21 +15,85 @@ export class LoginComponent implements OnInit {
   width = 100;
   height = 100;
   selectedValue: string;
-  // foods: Food[];
+  loginForm: FormGroup;
+  wallets: object;
+  walletSelect: object;
 
+  constructor(
+    private fb: FormBuilder,
+    private _loginService: LoginService
+  ) {
 
-
-  constructor() { }
+    // this.wallets = JSON.parse(localStorage.getItem('ngStorage-wallets'));
+    this.wallets = [{
+      'name': 'manalo',
+      'accounts': {
+        '0': {
+          'brain': true,
+          'algo': 'pass:bip32',
+          'encrypted': 'ad0113fb86b81b010b4ccaeecd49cec8eafad4f553f5922739afb2d09e7929f5735c56d6a4677338be4d297d026b3c5e',
+          'iv': 'b0e5c7385cb4bda1e9910f4072da5815',
+          'address': 'TAYEUPMGP726SLD3MW4YUKWV45XSRIJIABLVGEJL',
+          'label': 'Primary',
+          'network': 152,
+          'child': '5cc76cd720f4aa28082a9ef1b1386d00e7a3551b38541c15367ece7d553b3a93'
+        }
+      }
+    }];
+  }
+  //https://nemtech.github.io/nem2-sdk-typescript-javascript/
+  // [{"name":"manalo","accounts":{"0":{"brain":false,"algo":"pass:enc","encrypted":"ad0113fb86b81b010b4ccaeecd49cec8eafad4f553f5922739afb2d09e7929f5735c56d6a4677338be4d297d026b3c5e","iv":"b0e5c7385cb4bda1e9910f4072da5815","address":"TBYVNCG7J5LBEBBB3HI7NGQ2RQRDCOJ7I673BYIG","label":"Primary","network":-104,"child":"5cc76cd720f4aa28082a9ef1b1386d00e7a3551b38541c15367ece7d553b3a93"}}}]
 
   ngOnInit() {
-    console.log("NWM", nem);
 
-    // console.log('creando  wallet:', this.createSimpleWallet('jeffersson', '11192875'));
-    // this.foods = [
-    //   { value: 'steak-0', viewValue: 'Steak' },
-    //   { value: 'pizza-1', viewValue: 'Pizza' },
-    //   { value: 'tacos-2', viewValue: 'Tacos' }
-    // ];
+    // TAYEUPMGP726SLD3MW4YUKWV45XSRIJIABLVGEJL
+    // FA7A7049F45A943BFC8AFF8F6C9C89E20F39F8EF31B8227607698EDB659C2DDC
+
+    // fa7a7049f45a943bfc8aff8f6c9c89e20f39f8ef31b8227607698edb659c2ddc
+
+    const h = 'fa7a7049f45a943bfc8aff8f6c9c89e20f39f8ef31b8227607698edb659c2ddc';
+    console.log(NetworkType.TEST_NET);
+    console.log('generando wallet :::::::::::::::::::::::');
+    console.log('creanndo cuenta nueva :  TAYEUPMGP726SLD3MW4YUKWV45XSRIJIABLVGEJL');
+
+    console.log('generando nueva cuenta  private key:', Account.createFromPrivateKey(h, NetworkType.TEST_NET));
+
+    // console.log('ho:', crypto);
+    this.createForm();
+    this.initParticle();
+  }
+  createForm() {
+    // this.loginForm = this.fb.group({
+    //   wallet: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(30)]],
+    //   password: ['', [Validators.required, Validators.minLength(3)]]
+    // });
+
+    this.loginForm = this.fb.group({
+      wallet: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(30)]],
+      common: this.fb.group({ // <-- the child FormGroup
+        password: ['', [Validators.required, Validators.minLength(3)]]
+      })
+    });
+  }
+  getError(param, name) {
+    if (this.loginForm.get(param).getError('required')) {
+      return `This field is required`;
+    } else if (this.loginForm.get(param).getError('minlength')) {
+      return `This field must contain minimum ${this.loginForm.get(param).getError('minlength').requiredLength} characters`;
+    } else if (this.loginForm.get(param).getError('maxlength')) {
+      return `This field must contain maximum ${this.loginForm.get(param).getError('maxlength').requiredLength} characters`;
+    }
+  }
+  getErrorGroup(param, name) {
+    if (this.loginForm.get(param).get(name).getError('required')) {
+      return `This field is required`;
+    } else if (this.loginForm.get(param).get(name).getError('minlength')) {
+      return `This field must contain minimum ${this.loginForm.get(param).get(name).getError('minlength').requiredLength} characters`;
+    } else if (this.loginForm.get(param).get(name).getError('maxlength')) {
+      return `This field must contain maximum ${this.loginForm.get(param).get(name).getError('maxlength').requiredLength} characters`;
+    }
+  }
+  initParticle() {
     this.myStyle = {
       'overflow': 'hidden',
       'position': 'absolute',
@@ -42,49 +104,48 @@ export class LoginComponent implements OnInit {
       'left': 0,
       'right': 0,
       'bottom': 0,
-      'background-color': '#221a1a'
     };
     this.myParams = {
       particles: {
         number: {
-          value: 100,
+          value: 180
         },
         color: {
-          value: '#ffffff'
+          value: '#209084'
         },
-
         shape: {
-          type: 'circle',
-          stroke: {
-            width: 0,
-            color: '#ffffff'
-          },
-          image: {
-            src: 'img/github.svg',
-            width: 100,
-            height: 100
-          }
-        },
-        line_linked: {
-          enable: true,
-          distance: 150,
-          color: '#ffffff',
-          opacity: 0.4,
-          width: 1
-        },
+          type: 'circle'
+        }
       }
     };
-
-
   }
 
   /**
-    * Create Simple Wallet    Crear billetera simple
-    * @param walletName wallet idenitifier for app
-    * @param password wallet's password
-    * @param selected network
-    * @return Promise with wallet created
-    */
+   *
+   *
+   * @param {*} walletSelect
+   * @memberof LoginComponent
+   */
+  onChange(walletSelect) {
+    this.walletSelect = this._loginService.getwalletSelect(this.wallets, walletSelect);
+  }
+
+  onSubmit() {
+    if (this.loginForm.valid) {
+      this._loginService.login(this.loginForm.get('common').value, this.walletSelect[0]);
+      this.loginForm.reset();
+    }
+  }
+
+
+
+  // /**
+  //   * Create Simple Wallet    Crear billetera simple
+  //   * @param walletName wallet idenitifier for app
+  //   * @param password wallet's password
+  //   * @param selected network
+  //   * @return Promise with wallet created
+  //   */
   // createSimpleWallet(walletName: string, password: string): SimpleWallet {
   //   return SimpleWallet.create(walletName, new Password(password), NetworkType.TEST_NET);
   // }
