@@ -41,9 +41,6 @@ export class LoginComponent implements OnInit {
       }
     }];
   }
-  //https://nemtech.github.io/nem2-sdk-typescript-javascript/
-  // [{"name":"manalo","accounts":{"0":{"brain":false,"algo":"pass:enc","encrypted":"ad0113fb86b81b010b4ccaeecd49cec8eafad4f553f5922739afb2d09e7929f5735c56d6a4677338be4d297d026b3c5e","iv":"b0e5c7385cb4bda1e9910f4072da5815","address":"TBYVNCG7J5LBEBBB3HI7NGQ2RQRDCOJ7I673BYIG","label":"Primary","network":-104,"child":"5cc76cd720f4aa28082a9ef1b1386d00e7a3551b38541c15367ece7d553b3a93"}}}]
-
   ngOnInit() {
 
     // TAYEUPMGP726SLD3MW4YUKWV45XSRIJIABLVGEJL
