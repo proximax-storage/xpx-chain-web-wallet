@@ -13,6 +13,10 @@ const appRoutes: Routes = [
     {
         path: '',
         loadChildren: './wallet/wallet.module#WalletModule'
+    },
+    {
+        path: '',
+        loadChildren: './dashboard/dashboard.module#DashboardModule'
     }
 ];
 export const appRoutingProviders: any[] = [];
