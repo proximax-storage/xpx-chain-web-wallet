@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { AppConfig, Config } from "../config/app.config";
+
 
 @Component({
   selector: 'app-header',
@@ -7,9 +9,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HeaderComponent implements OnInit {
   showFiller = false;
-  constructor() { }
+  routes = {
+    login: `/${AppConfig.routes.login}`,
+    createWallet: `/${AppConfig.routes.createWallet}` 
+  }
+
+  constructor() {
+  }
 
   ngOnInit() {
+    
   }
 
 }

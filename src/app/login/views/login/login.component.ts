@@ -20,22 +20,7 @@ export class LoginComponent implements OnInit {
     private _loginService: LoginService
   ) {
 
-    // this.wallets = JSON.parse(localStorage.getItem('ngStorage-wallets'));
-    this.wallets = [{
-      'name': 'manalo',
-      'accounts': {
-        '0': {
-          'brain': true,
-          'algo': 'pass:bip32',
-          'encrypted': 'ad0113fb86b81b010b4ccaeecd49cec8eafad4f553f5922739afb2d09e7929f5735c56d6a4677338be4d297d026b3c5e',
-          'iv': 'b0e5c7385cb4bda1e9910f4072da5815',
-          'address': 'TAYEUPMGP726SLD3MW4YUKWV45XSRIJIABLVGEJL',
-          'label': 'Primary',
-          'network': 152,
-          'child': '5cc76cd720f4aa28082a9ef1b1386d00e7a3551b38541c15367ece7d553b3a93'
-        }
-      }
-    }];
+    this.wallets = JSON.parse(localStorage.getItem('proxi-wallets'));
   }
   ngOnInit() {
 
@@ -91,7 +76,6 @@ export class LoginComponent implements OnInit {
 
   /**
    *
-   *
    * @param {*} walletSelect
    * @memberof LoginComponent
    */
@@ -105,17 +89,4 @@ export class LoginComponent implements OnInit {
       this.loginForm.reset();
     }
   }
-
-
-
-  // /**
-  //   * Create Simple Wallet    Crear billetera simple
-  //   * @param walletName wallet idenitifier for app
-  //   * @param password wallet's password
-  //   * @param selected network
-  //   * @return Promise with wallet created
-  //   */
-  // createSimpleWallet(walletName: string, password: string): SimpleWallet {
-  //   return SimpleWallet.create(walletName, new Password(password), NetworkType.TEST_NET);
-  // }
 }

@@ -8,7 +8,7 @@
       <form [formGroup]="createWalletForm" (ngSubmit)="createSimpleWallet()">
         <mat-card-content class="container-form">
           <mat-form-field>
-            <input matInput autocomplete="off" placeholder="Username" required formControlName="userName">
+            <input matInput autocomplete="off" placeholder="Name wallet" required formControlName="userName">
             <mat-error>{{getError('userName')}}</mat-error>
           </mat-form-field>
           <mat-form-field>

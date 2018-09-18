@@ -1,13 +1,13 @@
 // Modules
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
-
 import { CoreModule } from './core/core.module';
+import { ToastrModule } from 'ngx-toastr';
+
 // Routing
 import { routing, appRoutingProviders } from './app.routing';
 
 import { AppComponent } from './app.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HeaderComponent } from './header/header.component';
 
 @NgModule({
@@ -16,10 +16,10 @@ import { HeaderComponent } from './header/header.component';
     HeaderComponent
   ],
   imports: [
-    BrowserModule,
     BrowserAnimationsModule,
     routing,
-    CoreModule
+    CoreModule,
+    ToastrModule.forRoot()
   ],
   providers: [appRoutingProviders],
   bootstrap: [AppComponent]

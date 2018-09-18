@@ -3,12 +3,16 @@
     <button mat-icon-button [matMenuTriggerFor]="menu" fxShow="true" fxHide.gt-sm>
       <mat-icon>more_vert</mat-icon>
     </button>
-    <span>Responsive Navigation</span>
+    <span>Wallet</span>
     <span class="example-spacer"></span>
-    <div fxLayout="row" fxLayoutAlign="end center" fxFlex fxShow="true" fxHide.lt-md="true">
-      <a href="#" [routerLink]="'/login'" mat-button>
+    <div fxLayout="row" fxLayoutAlign="end end" fxFlex fxShow="true" fxHide.lt-md="true">
+      <a href="#" [routerLink]="routes.createWallet" mat-button>
+        <mat-icon>account_balance_wallet</mat-icon>
+        Create wallet
+      </a>
+      <a href="#" [routerLink]="routes.login" mat-button>
         <mat-icon>lock_open</mat-icon>
-        INGRESAR
+        Sign In
       </a>
     </div>
   </mat-toolbar-row>
@@ -28,4 +32,3 @@
     <span>Disable alerts</span>
   </button>
 </mat-menu>
-
