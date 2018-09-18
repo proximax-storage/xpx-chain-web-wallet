@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SimpleWallet, Password, NetworkType, Account } from 'nem2-sdk';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
-import { LoginService } from './service/login.service';
+import { LoginService } from '../../services/login.service';
 
 
 @Component({
@@ -10,10 +10,6 @@ import { LoginService } from './service/login.service';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-  myStyle: object = {};
-  myParams: object = {};
-  width = 100;
-  height = 100;
   selectedValue: string;
   loginForm: FormGroup;
   wallets: object;
@@ -60,8 +56,8 @@ export class LoginComponent implements OnInit {
 
     // console.log('ho:', crypto);
     this.createForm();
-    this.initParticle();
   }
+
   createForm() {
     // this.loginForm = this.fb.group({
     //   wallet: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(30)]],
@@ -75,6 +71,7 @@ export class LoginComponent implements OnInit {
       })
     });
   }
+
   getError(param, name) {
     if (this.loginForm.get(param).getError('required')) {
       return `This field is required`;
@@ -84,6 +81,7 @@ export class LoginComponent implements OnInit {
       return `This field must contain maximum ${this.loginForm.get(param).getError('maxlength').requiredLength} characters`;
     }
   }
+  
   getErrorGroup(param, name) {
     if (this.loginForm.get(param).get(name).getError('required')) {
       return `This field is required`;
@@ -92,32 +90,6 @@ export class LoginComponent implements OnInit {
     } else if (this.loginForm.get(param).get(name).getError('maxlength')) {
       return `This field must contain maximum ${this.loginForm.get(param).get(name).getError('maxlength').requiredLength} characters`;
     }
-  }
-  initParticle() {
-    this.myStyle = {
-      'overflow': 'hidden',
-      'position': 'absolute',
-      'width': '100%',
-      'height': '100%',
-      'z-index': -1,
-      'top': 0,
-      'left': 0,
-      'right': 0,
-      'bottom': 0,
-    };
-    this.myParams = {
-      particles: {
-        number: {
-          value: 180
-        },
-        color: {
-          value: '#209084'
-        },
-        shape: {
-          type: 'circle'
-        }
-      }
-    };
   }
 
   /**

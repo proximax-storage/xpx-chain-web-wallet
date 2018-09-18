@@ -8,6 +8,8 @@ import { CoreModule } from '../core/core.module';
     CoreModule,
     LoginRoutingModule
   ],
-  declarations: [LoginComponent]
+  declarations: [
+    LoginComponent
+  ]
 })
 export class LoginModule { }

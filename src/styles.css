@@ -83,8 +83,8 @@ main { height: auto; padding-top: 6rem;padding-left: 2rem;padding-right: 2rem;pa
   padding-bottom: 15px;
 }
 
-.top-50porcent{
-  top: 12%;
+.top-170 {
+  padding-top: 170px;
 }
 
 .mat-card {
@@ -121,4 +121,11 @@ main { height: auto; padding-top: 6rem;padding-left: 2rem;padding-right: 2rem;pa
 .background-banner{
   background-image: -webkit-linear-gradient(140deg,rgb(32, 128, 115) 0%,rgb(32, 181, 172) 33%,rgb(120, 182, 228) 100%);
   color: white;
+}
+
+
+.title-header{
+  color: white;
+  font-weight: 500;
+  font-size: 1rem;
 }

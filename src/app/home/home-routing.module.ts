@@ -7,12 +7,7 @@ const routes: Routes = [
   {
     path: `${AppConfig.routes.home}`,
     component: HomeComponent
-  },
-  {
-    path: '',
-    redirectTo: `/${AppConfig.routes.home}`,
-    pathMatch: 'full'
-  },
+  }
 ];
 
 @NgModule({

@@ -9,6 +9,10 @@ const appRoutes: Routes = [
     {
         path: '',
         loadChildren: './login/login.module#LoginModule'
+    },
+    {
+        path: '',
+        loadChildren: './wallet/wallet.module#WalletModule'
     }
 ];
 export const appRoutingProviders: any[] = [];

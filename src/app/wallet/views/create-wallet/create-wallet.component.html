@@ -1,0 +1,26 @@
+<div class="row center-xs top-170">
+  <div class="col-xs-12 col-sm-4 col-md-6">
+    <mat-card class="example-card">
+      <mat-card-header class="header">
+        <p class="title-header">Create Wallet</p>
+        <!-- <img class="imagen" src="assets/images/logo/ProximaX-White.png2"> -->
+      </mat-card-header>
+      <form [formGroup]="createWalletForm" (ngSubmit)="createSimpleWallet()">
+        <mat-card-content class="container-form">
+          <mat-form-field>
+            <input matInput autocomplete="off" placeholder="Username" required formControlName="userName">
+            <mat-error>{{getError('userName')}}</mat-error>
+          </mat-form-field>
+          <mat-form-field>
+            <input type="password" matInput required placeholder="password" formControlName="password">
+            <mat-error>{{getError('password')}}</mat-error>
+          </mat-form-field>
+        </mat-card-content>
+        <mat-card-actions class="pb-20">
+          <button mat-button class="not-act-button" type="button" (click)="cleanForm()">Clean</button>
+          <button type="submit" mat-button class="act-button">Create</button>
+        </mat-card-actions>
+      </form>
+    </mat-card>
+  </div>
+</div>

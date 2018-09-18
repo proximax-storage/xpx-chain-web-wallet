@@ -5,6 +5,7 @@ export const AppConfig: Config = {
   routes: {
     home: 'home',
     login: 'login',
+    createWallet: 'create-wallet',
     notFound: 'not-found'
   },
 };
@@ -13,6 +14,7 @@ export interface Config {
   routes: {
     home: string;
     login: string;
+    createWallet: string;
     notFound: string;
   };
 }

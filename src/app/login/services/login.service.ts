@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { WalletService } from '../../../../shared/service/wallet.service';
+import { WalletService } from '../../shared/services/wallet.service';
 
 @Injectable({
   providedIn: 'root'
