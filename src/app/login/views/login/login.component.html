@@ -1,0 +1,30 @@
+<div class="row center-xs top-170">
+    <div class="col-xs-12 col-sm-4 col-md-6">
+      <mat-card class="example-card">
+        <mat-card-header class="header">
+            <p class="title-header">Sign In</p>
+        </mat-card-header>
+
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+          <mat-card-content class="container-form">
+            <mat-form-field>
+              <mat-select matInput placeholder="Name wallet" required formControlName="wallet" (ngModelChange)="onChange($event)">
+                <mat-option value="">select </mat-option>
+                <mat-option *ngFor="let wallet of wallets" [value]="wallet.name"> {{wallet.name}}</mat-option>
+              </mat-select>
+              <mat-error>{{getError('wallet')}}</mat-error>
+            </mat-form-field>
+
+            <mat-form-field formGroupName="common">
+              <input type="password" matInput required placeholder="password" formControlName="password">
+              <mat-error>{{getErrorGroup('common','password')}}</mat-error> 
+            </mat-form-field>
+          </mat-card-content>
+          <mat-card-actions class="pb-20">
+            <button mat-button class="not-act-button">Clean</button>
+            <button type="submit" mat-button class="act-button">Enter</button>
+          </mat-card-actions>
+        </form>
+      </mat-card>
+    </div>
+  </div>
