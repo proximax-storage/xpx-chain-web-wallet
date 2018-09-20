@@ -52,6 +52,7 @@ export class CreateWalletComponent implements OnInit {
       const user = this.createWalletForm.get('userName').value;
       const password = new Password(this.createWalletForm.get('password').value);
       const simpleWallet = SimpleWallet.create(user, password, NetworkType.TEST_NET);
+      console.log("sssssss",simpleWallet)
       const walletsStorage = JSON.parse(localStorage.getItem('proxi-wallets'));
       const myWallet = walletsStorage.find(function(element){
         return element.name === user;

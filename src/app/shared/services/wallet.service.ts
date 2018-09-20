@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { SimpleWallet, Password, NetworkType, Account, Address } from 'nem2-sdk';
 import { crypto } from 'nem2-library';
+import { SharedService } from './shared.service';
 @Injectable({
   providedIn: 'root'
 })
@@ -9,19 +10,18 @@ export class WalletService {
   network: any;
   algo: string;
 
-  constructor() { }
+  constructor(private sharedService: SharedService) { }
 
   public login(common, wallet) {
     if (!wallet) {
-      // this._mdboostrap.showToastr('4', this.genericMessage.error, this.genericMessage.alertWallt2);
-      console.error('¡Estimado usuario, le falta la wallet.!');
+      this.sharedService.showToastr('3', 'Error', '¡Dear user, the wallet is missing!');
       return false;
     }
     // Decrypt / generate and check primary
     if (!this.decrypt(common, wallet.accounts[0], wallet.accounts[0].algo, wallet.accounts[0].network)) { return false; }
 
     if (wallet.accounts[0].network === NetworkType.MAIN_NET && wallet.accounts[0].algo === 'pass:6k' && common.password.length < 40) {
-      console.log('Tu cartera parece débil');
+      this.sharedService.showToastr('4', 'Error', '¡Dear user, the wallet is missing!');
     }
     return true;
   }
@@ -43,10 +43,9 @@ export class WalletService {
     const alg = algo || this.algo;
     // Try to generate or decrypt key
     if (!crypto.passwordToPrivatekey(common, acct, alg)) {
-      // this._mdboostrap.closeToastr();
       setTimeout(() => {
-        console.log('contraseña invalida');
-        // this._mdboostrap.showToastr('4', this.genericMessage.error, this.genericMessage.invalidpassword);
+        this.sharedService.showToastr('3', 'Error', '¡Invalid password!');
+
       }, 500);
       return false;
     }
@@ -57,8 +56,7 @@ export class WalletService {
     if (!this.isPrivateKeyValid(common.privateKey) || !this.checkAddress(common.privateKey, net, acct.address)) {
       //   this._mdboostrap.closeToastr();
       setTimeout(() => {
-        // this._mdboostrap.showToastr('4', this.genericMessage.error, this.genericMessage.invalidpassword);
-        console.log('contraseña invalida');
+        this.sharedService.showToastr('3', 'Error', '¡Invalid password!');
       }, 500);
       return false;
     }
