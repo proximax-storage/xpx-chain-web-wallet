@@ -1,6 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import {MatPaginator, MatTableDataSource} from '@angular/material';
 export interface PeriodicElement {
   name: string;
   position: number;
@@ -106,14 +105,13 @@ const ELEMENT_DATA: PeriodicElement[] = [
 
 
 export class TransactionsComponent implements OnInit {
-  columnsToDisplay = ['name', 'weight', 'symbol', 'position'];
-  dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  constructor() { }
+  // columnsToDisplay = ['name', 'weight', 'symbol', 'position'];
+  // dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
+  // @ViewChild(MatPaginator) paginator: MatPaginator;
+  // constructor() { }
 
   ngOnInit() {
-    this.dataSource.paginator = this.paginator;
-
+    // this.dataSource.paginator = this.paginator;
   }
 
 
