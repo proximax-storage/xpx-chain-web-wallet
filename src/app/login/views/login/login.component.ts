@@ -29,23 +29,18 @@ export class LoginComponent implements OnInit {
 
     // fa7a7049f45a943bfc8aff8f6c9c89e20f39f8ef31b8227607698edb659c2ddc
 
-    const h = 'fa7a7049f45a943bfc8aff8f6c9c89e20f39f8ef31b8227607698edb659c2ddc';
-    console.log(NetworkType.TEST_NET);
-    console.log('generando wallet :::::::::::::::::::::::');
-    console.log('creanndo cuenta nueva :  TAYEUPMGP726SLD3MW4YUKWV45XSRIJIABLVGEJL');
+    // const h = 'fa7a7049f45a943bfc8aff8f6c9c89e20f39f8ef31b8227607698edb659c2ddc';
+    // console.log(NetworkType.TEST_NET);
+    // console.log('generando wallet :::::::::::::::::::::::');
+    // console.log('creanndo cuenta nueva :  TAYEUPMGP726SLD3MW4YUKWV45XSRIJIABLVGEJL');
 
-    console.log('generando nueva cuenta  private key:', Account.createFromPrivateKey(h, NetworkType.TEST_NET));
+    // console.log('generando nueva cuenta  private key:', Account.createFromPrivateKey(h, NetworkType.TEST_NET));
 
     // console.log('ho:', crypto);
     this.createForm();
   }
 
   createForm() {
-    // this.loginForm = this.fb.group({
-    //   wallet: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(30)]],
-    //   password: ['', [Validators.required, Validators.minLength(3)]]
-    // });
-
     this.loginForm = this.fb.group({
       wallet: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(30)]],
       common: this.fb.group({ // <-- the child FormGroup
@@ -63,7 +58,6 @@ export class LoginComponent implements OnInit {
       return `This field must contain maximum ${this.loginForm.get(param).getError('maxlength').requiredLength} characters`;
     }
   }
-  
   getErrorGroup(param, name) {
     if (this.loginForm.get(param).get(name).getError('required')) {
       return `This field is required`;

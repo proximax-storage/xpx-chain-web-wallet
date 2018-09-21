@@ -3,11 +3,12 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { DashboardComponent } from './views/dashboard/dashboard.component';
 import { AppConfig } from '../config/app.config';
+import { LoggedGuard } from '../shared/guard/logged.guard';
 const routes: Routes = [
   {
     path: `${AppConfig.routes.dashboard}`,
-    component: DashboardComponent
-    // canActivate: [LoggedGuard]
+    component: DashboardComponent,
+    canActivate: [LoggedGuard]
   },
 ];
 
