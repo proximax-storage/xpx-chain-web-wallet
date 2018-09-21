@@ -1,4 +1,4 @@
-<mat-toolbar class="background-banner">
+<!-- <mat-toolbar class="background-banner">
   <mat-toolbar-row>
     <button mat-icon-button [matMenuTriggerFor]="menu" fxShow="true" fxHide.gt-sm>
       <mat-icon>more_vert</mat-icon>
@@ -31,4 +31,35 @@
     <mat-icon>notifications_off</mat-icon>
     <span>Disable alerts</span>
   </button>
-</mat-menu>
+</mat-menu> -->
+
+
+<mdb-navbar SideClass="navbar navbar-expand-lg navbar-dark default-color" [containerInside]="false">
+  <mdb-navbar-brand>
+    <a class="navbar-brand" href="">Navbar</a>
+  </mdb-navbar-brand>
+  <links>
+    <ul class="navbar-nav">
+      <li class="nav-item active">
+        <a class="nav-link waves-light" mdbWavesEffect>Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link waves-light" mdbWavesEffect>Features</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link waves-light" mdbWavesEffect>Pricing</a>
+      </li>
+      <li class="nav-item dropdown btn-group" dropdown>
+        <a dropdownToggle type="button" class="nav-link dropdown-toggle waves-light" mdbWavesEffect>
+                    Basic dropdown<span class="caret"></span></a>
+        <div *dropdownMenu class="dropdown-menu dropdown dropdown-primary" role="menu">
+          <a class="dropdown-item waves-light" href="#" mdbWavesEffect>Action</a>
+          <a class="dropdown-item waves-light" href="#" mdbWavesEffect>Another action</a>
+          <a class="dropdown-item waves-light" href="#" mdbWavesEffect>Something else here</a>
+          <div class="divider dropdown-divider"></div>
+          <a class="dropdown-item waves-light" href="#" mdbWavesEffect>Separated link</a>
+        </div>
+      </li>
+    </ul>
+  </links>
+</mdb-navbar>
