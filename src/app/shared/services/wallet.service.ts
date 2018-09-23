@@ -14,14 +14,14 @@ export class WalletService {
 
   public login(common, wallet) {
     if (!wallet) {
-      this.sharedService.showToastr('3', 'Error', '¡Dear user, the wallet is missing!');
+      this.sharedService.showError('Error', '¡Dear user, the wallet is missing!');
       return false;
     }
     // Decrypt / generate and check primary
     if (!this.decrypt(common, wallet.accounts[0], wallet.accounts[0].algo, wallet.accounts[0].network)) { return false; }
 
     if (wallet.accounts[0].network === NetworkType.MAIN_NET && wallet.accounts[0].algo === 'pass:6k' && common.password.length < 40) {
-      this.sharedService.showToastr('4', 'Error', '¡Dear user, the wallet is missing!');
+      this.sharedService.showError('Error', '¡Dear user, the wallet is missing!');
     }
     return true;
   }
@@ -44,7 +44,7 @@ export class WalletService {
     // Try to generate or decrypt key
     if (!crypto.passwordToPrivatekey(common, acct, alg)) {
       setTimeout(() => {
-        this.sharedService.showToastr('3', 'Error', '¡Invalid password!');
+        this.sharedService.showError('Error', '¡Invalid password!');
 
       }, 500);
       return false;
@@ -56,7 +56,7 @@ export class WalletService {
     if (!this.isPrivateKeyValid(common.privateKey) || !this.checkAddress(common.privateKey, net, acct.address)) {
       //   this._mdboostrap.closeToastr();
       setTimeout(() => {
-        this.sharedService.showToastr('3', 'Error', '¡Invalid password!');
+        this.sharedService.showError('Error', '¡Invalid password!');
       }, 500);
       return false;
     }

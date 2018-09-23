@@ -1,0 +1,7 @@
+mdb-navbar nav .navbar{
+    box-shadow: none !important;
+}
+
+mdb-navbar {
+    color: white;
+}

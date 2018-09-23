@@ -1,14 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef, Renderer2 } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import { Account, NetworkType, SimpleWallet, Password } from 'nem2-sdk';
 import { AppConfig } from "../../../config/app.config";
 import { SharedService } from "../../../shared/services/shared.service";
 
+
 @Component({
   selector: 'app-create-wallet',
   templateUrl: './create-wallet.component.html',
   styleUrls: ['./create-wallet.component.css']
+
 })
 export class CreateWalletComponent implements OnInit {
 
@@ -17,9 +19,10 @@ export class CreateWalletComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private route: Router,
+    private _el: ElementRef,
+    private _r: Renderer2,
     private sharedService: SharedService
   ) {
-    
   }
 
   ngOnInit() {
@@ -34,7 +37,10 @@ export class CreateWalletComponent implements OnInit {
   createForm() {
     this.createWalletForm = this.fb.group({
       userName: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(30)]],
-      password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]]
+      passwords: this.fb.group({
+        password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]],
+        confirm_password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]],
+      }, { validator: this.sharedService.passwordConfirming }),
     });
   }
 
@@ -52,9 +58,8 @@ export class CreateWalletComponent implements OnInit {
       const user = this.createWalletForm.get('userName').value;
       const password = new Password(this.createWalletForm.get('password').value);
       const simpleWallet = SimpleWallet.create(user, password, NetworkType.TEST_NET);
-      console.log("sssssss",simpleWallet)
       const walletsStorage = JSON.parse(localStorage.getItem('proxi-wallets'));
-      const myWallet = walletsStorage.find(function(element){
+      const myWallet = walletsStorage.find(function (element) {
         return element.name === user;
       });
 
@@ -76,16 +81,14 @@ export class CreateWalletComponent implements OnInit {
             '0': accounts
           }
         }
-
-
         walletsStorage.push(wallet);
         localStorage.setItem('proxi-wallets', JSON.stringify(walletsStorage));
-        this.sharedService.showToastr('1', 'Congratulations!', 'Your wallet has been created successfully');
+        this.sharedService.showSuccess('Congratulations!', 'Your wallet has been created successfully');
         this.route.navigate([`/${AppConfig.routes.login}`]);
-      }else{
+      } else {
         //Repeated Wallet
-        this.createWalletForm.patchValue({userName: ''});
-        this.sharedService.showToastr('3', 'Attention!', 'This name is already in use, try another name');
+        this.createWalletForm.patchValue({ userName: '' });
+        this.sharedService.showError('Attention!', 'This name is already in use, try another name');
       }
     }
   }
@@ -98,13 +101,25 @@ export class CreateWalletComponent implements OnInit {
    * @returns
    * @memberof CreateWalletComponent
    */
-  getError(param, name) {
-    if (this.createWalletForm.get(param).getError('required')) {
-      return `This field is required`;
-    } else if (this.createWalletForm.get(param).getError('minlength')) {
-      return `This field must contain minimum ${this.createWalletForm.get(param).getError('minlength').requiredLength} characters`;
-    } else if (this.createWalletForm.get(param).getError('maxlength')) {
-      return `This field must contain maximum ${this.createWalletForm.get(param).getError('maxlength').requiredLength} characters`;
+  getError(control, formControl?) {
+    if (formControl === undefined) {
+      if (this.createWalletForm.get(control).getError('required')) {
+        return `This field is required`;
+      }else if (this.createWalletForm.get(control).getError('minlength')) {
+        return `This field must contain minimum ${this.createWalletForm.get(control).getError('minlength').requiredLength} characters`;
+      } else if (this.createWalletForm.get(control).getError('maxlength')) {
+        return `This field must contain maximum ${this.createWalletForm.get(control).getError('maxlength').requiredLength} characters`;
+      }
+    }else {
+      if (this.createWalletForm.controls[formControl].get(control).getError('required')) {
+        return `This field is required`;
+      }else if (this.createWalletForm.controls[formControl].get(control).getError('minlength')) {
+        return `This field must contain minimum ${this.createWalletForm.controls[formControl].get(control).getError('minlength').requiredLength} characters`;
+      } else if (this.createWalletForm.controls[formControl].get(control).getError('maxlength')) {
+        return `This field must contain maximum ${this.createWalletForm.controls[formControl].get(control).getError('maxlength').requiredLength} characters`;
+      } else if (this.createWalletForm.controls[formControl].getError('noMatch')) {
+        return `Password doesn't match`;
+      } 
     }
   }
 
@@ -113,8 +128,24 @@ export class CreateWalletComponent implements OnInit {
    * 
    * @memberof CreateWalletComponent
    */
-  cleanForm () {
-    this.createWalletForm.patchValue({userName: '', password: ''});
+  cleanForm() {
+    const success = this._el.nativeElement.querySelectorAll('.counter-success');
+    const danger = this._el.nativeElement.querySelectorAll('.counter-danger');
+    const textSuccess = this._el.nativeElement.querySelectorAll('.text-success');
+    const textDanger = this._el.nativeElement.querySelectorAll('.text-danger');
+    success.forEach((element: any) => {
+        this._r.removeClass(element, 'counter-success');
+    });
+    danger.forEach((element: any) => {
+        this._r.removeClass(element, 'counter-danger');
+    });
+    textSuccess.forEach((element: any) => {
+        this._r.setStyle(element, 'visibility', 'hidden');
+    });
+    textDanger.forEach((element: any) => {
+        this._r.setStyle(element, 'visibility', 'hidden');
+    });
+    this.createWalletForm.reset();
   }
 
 }
@@ -125,11 +156,11 @@ export interface WalletInterface {
 }
 
 export interface AccountsInterface {
-    brain: boolean;
-    algo: string;
-    encrypted: string;
-    iv: string;
-    address: string;
-    label: string;
-    network: number;
+  brain: boolean;
+  algo: string;
+  encrypted: string;
+  iv: string;
+  address: string;
+  label: string;
+  network: number;
 }

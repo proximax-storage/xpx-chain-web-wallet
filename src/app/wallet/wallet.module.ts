@@ -12,7 +12,6 @@ const imports = [
   WalletRoutingModule
 ]
 
-
 @NgModule({
   imports: [
     imports

@@ -1,1 +1,79 @@
 /* You can add global styles to this file, and also import other style files */
+
+
+
+body{
+    background-image: -webkit-linear-gradient(140deg,rgb(32, 128, 115) 0%,rgb(32, 181, 172) 33%,rgb(120, 182, 228) 100%);
+    background-repeat: no-repeat;
+    border: 1px solid rgba(255, 0, 0, 0);
+}
+
+html, body{
+    height: 100%;
+    height: 100%;
+}
+
+.mt-100px{
+    margin-top: 100px;
+}
+
+.mt-5rem{
+    margin-top: 5rem;
+}
+
+.mt-8rem{
+    margin-top: 8rem;
+}
+
+
+.mt-4rm{
+    margin-top: 4rem !important;
+}
+
+.background-proxiwallet{
+    background-image: -webkit-linear-gradient(140deg,rgb(32, 128, 115) 0%,rgb(32, 181, 172) 33%,rgb(120, 182, 228) 100%);
+    color: white;
+  }
+  
+.border-proxiWallet {
+    border: 1px solid -webkit-linear-gradient(140deg,rgb(32, 128, 115) 0%,rgb(32, 181, 172) 33%,rgb(120, 182, 228) 100%);
+}
+
+.t-a-r{
+    text-align: right;
+}
+
+
+.text-gris{
+    color: #757575 !important;
+}
+
+.btn-reverse{
+    background-color: white !important;
+    color: #757575 !important;
+}
+
+
+.title-form{
+    text-align: center;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    font-weight: 500;
+    color: #757575;
+}
+
+
+//class to toast
+.toastSuccess{
+    opacity: 1.0 !important;
+    background-color: #35af8d;
+}
+
+.toastError {
+    opacity: 1.0 !important;
+    background-color: #DD1518;
+}
+
+.toastWarning{
+    opacity: 1.0 !important;
+}

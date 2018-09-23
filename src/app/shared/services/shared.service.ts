@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { ToastrService } from 'ngx-toastr';
+import { ToastService } from 'ng-uikit-pro-standard';
+import { FormGroup, AbstractControl } from "@angular/forms";
 
 declare var $: any;
 @Injectable({
@@ -8,79 +9,35 @@ declare var $: any;
 export class SharedService {
 
   constructor(
-    private toastrService: ToastrService
+    private toastrService: ToastService
   ) { }
 
-  showToastr(type, title: string = '', msg: string, timeOutParam: number = 5000, position: string = 'toast-top-right', progressParam: boolean = true) {
-    console.log(typeof(type));
-    switch (type) {
-      case "1": {
-        setTimeout(() => this.toastrService.success(msg, title, {
-          timeOut: timeOutParam,
-          closeButton: true,
-          enableHtml: true,
-          progressBar: progressParam,
-          progressAnimation: 'decreasing',
-          positionClass: position
-        }));
-        break;
-      }
-      case "2": {
-        setTimeout(() => this.toastrService.info(msg, title, {
-          timeOut: timeOutParam,
-          closeButton: true,
-          enableHtml: true,
-          progressBar: progressParam,
-          progressAnimation: 'decreasing',
-          positionClass: position
-        }));
-        break;
-      }
-      case "3": {
-        setTimeout(() => this.toastrService.error(msg, title, {
-          timeOut: timeOutParam,
-          closeButton: true,
-          enableHtml: true,
-          progressBar: progressParam,
-          progressAnimation: 'decreasing',
-          positionClass: position
-        }));
-        break;
-      }
-      case "4": {
-        setTimeout(() => this.toastrService.warning(msg, title, {
-          timeOut: timeOutParam,
-          closeButton: true,
-          enableHtml: true,
-          progressBar: progressParam,
-          progressAnimation: 'decreasing',
-          positionClass: position
-        }));
-        break;
-      }
-    }
+
+  showSuccess(title: string, bodyMessage: string) {
+    const options = { closeButton: true, tapToDismiss: false, toastClass: 'toastSuccess' };
+    this.toastrService.success(bodyMessage, title, options);
+  }
+
+  showError(title: string, bodyMessage: string) {
+    const options = { closeButton: true, tapToDismiss: false, toastClass: 'toastError' };
+    this.toastrService.error(bodyMessage, title, options);
+  }
+
+  showWarning(title: string, bodyMessage: string) {
+    const options = { closeButton: true, tapToDismiss: false, toastClass: 'toastWarning' };
+    this.toastrService.warning(bodyMessage, title, options);
   }
 
   closeAlertMsg(type: string = "") {
-    switch (type) {
-      case "error": {
-        $(".toast-error").trigger("click");
-        break;
-      }
-      case "success": {
-        $(".toast-success").trigger("click");
-        break;
-      }
-      case "info": {
-        $(".toast-info").trigger("click");
-        break;
-      }
-      default: {
-        $(".toast-info").trigger("click");
-        $(".toast-success").trigger("click");
-        $(".toast-error").trigger("click");
-        break;
-      }
+
+  }
+
+  passwordConfirming(c: AbstractControl): { noMatch: boolean } {
+    if (c.get('password').value !== c.get('confirm_password').value) {
+      return { 
+        noMatch: true 
+      };
     }
   }
+
 }
