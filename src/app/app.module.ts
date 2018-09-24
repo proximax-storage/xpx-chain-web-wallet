@@ -9,7 +9,7 @@ import { AgmCoreModule } from '@agm/core';
 import { MDBSpinningPreloader, MDBBootstrapModulesPro, ToastModule } from 'ng-uikit-pro-standard';
 // Routing
 import { routing, appRoutingProviders } from './app.routing';
-//components
+// components
 
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
@@ -37,6 +37,5 @@ import { HeaderComponent } from './header/header.component';
   providers: [MDBSpinningPreloader, appRoutingProviders],
   bootstrap: [AppComponent],
   schemas: [ NO_ERRORS_SCHEMA ]
-  
 })
 export class AppModule { }

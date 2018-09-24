@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from "@angular/forms";
-import { Router } from "@angular/router";
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Account, NetworkType, SimpleWallet, Password } from 'nem2-sdk';
-import { AppConfig } from "../../../config/app.config";
-import { SharedService } from "../../../shared/services/shared.service";
+import { AppConfig } from '../../../config/app.config';
+import { SharedService } from '../../../shared/services/shared.service';
 
 @Component({
   selector: 'app-create-wallet',
@@ -19,7 +19,7 @@ export class CreateWalletComponent implements OnInit {
     private route: Router,
     private sharedService: SharedService
   ) {
-    
+
   }
 
   ngOnInit() {
@@ -40,7 +40,7 @@ export class CreateWalletComponent implements OnInit {
 
   /**
    * Create a simple wallet
-   * 
+   *
    * @memberof CreateWalletComponent
    */
   createSimpleWallet() {
@@ -52,13 +52,13 @@ export class CreateWalletComponent implements OnInit {
       const user = this.createWalletForm.get('userName').value;
       const password = new Password(this.createWalletForm.get('password').value);
       const simpleWallet = SimpleWallet.create(user, password, NetworkType.TEST_NET);
-      console.log("sssssss",simpleWallet)
+      console.log('sssssss', simpleWallet);
       const walletsStorage = JSON.parse(localStorage.getItem('proxi-wallets'));
-      const myWallet = walletsStorage.find(function(element){
+      const myWallet = walletsStorage.find(function (element) {
         return element.name === user;
       });
 
-      //Wallet does not exist
+      // Wallet does not exist
       if (myWallet === undefined) {
         const accounts: AccountsInterface = {
           'brain': true,
@@ -68,23 +68,23 @@ export class CreateWalletComponent implements OnInit {
           'address': simpleWallet.address['address'],
           'label': 'Primary',
           'network': simpleWallet.network
-        }
+        };
 
         const wallet: WalletInterface = {
           name: user,
           accounts: {
             '0': accounts
           }
-        }
+        };
 
 
         walletsStorage.push(wallet);
         localStorage.setItem('proxi-wallets', JSON.stringify(walletsStorage));
         this.sharedService.showToastr('1', 'Congratulations!', 'Your wallet has been created successfully');
         this.route.navigate([`/${AppConfig.routes.login}`]);
-      }else{
-        //Repeated Wallet
-        this.createWalletForm.patchValue({userName: ''});
+      } else {
+        // Repeated Wallet
+        this.createWalletForm.patchValue({ userName: '' });
         this.sharedService.showToastr('3', 'Attention!', 'This name is already in use, try another name');
       }
     }
@@ -110,26 +110,26 @@ export class CreateWalletComponent implements OnInit {
 
   /**
    * Clean form
-   * 
+   *
    * @memberof CreateWalletComponent
    */
-  cleanForm () {
-    this.createWalletForm.patchValue({userName: '', password: ''});
+  cleanForm() {
+    this.createWalletForm.patchValue({ userName: '', password: '' });
   }
 
 }
 
 export interface WalletInterface {
-  name: string,
+  name: string;
   accounts: object;
 }
 
 export interface AccountsInterface {
-    brain: boolean;
-    algo: string;
-    encrypted: string;
-    iv: string;
-    address: string;
-    label: string;
-    network: number;
+  brain: boolean;
+  algo: string;
+  encrypted: string;
+  iv: string;
+  address: string;
+  label: string;
+  network: number;
 }

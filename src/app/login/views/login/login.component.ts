@@ -23,21 +23,7 @@ export class LoginComponent implements OnInit {
     this.wallets = JSON.parse(localStorage.getItem('proxi-wallets'));
   }
   ngOnInit() {
-
-    // TAYEUPMGP726SLD3MW4YUKWV45XSRIJIABLVGEJL
-    // FA7A7049F45A943BFC8AFF8F6C9C89E20F39F8EF31B8227607698EDB659C2DDC
-
-    // fa7a7049f45a943bfc8aff8f6c9c89e20f39f8ef31b8227607698edb659c2ddc
-
-    // const h = 'fa7a7049f45a943bfc8aff8f6c9c89e20f39f8ef31b8227607698edb659c2ddc';
-    // console.log(NetworkType.TEST_NET);
-    // console.log('generando wallet :::::::::::::::::::::::');
-    // console.log('creanndo cuenta nueva :  TAYEUPMGP726SLD3MW4YUKWV45XSRIJIABLVGEJL');
-
-    // console.log('generando nueva cuenta  private key:', Account.createFromPrivateKey(h, NetworkType.TEST_NET));
-
-    // console.log('ho:', crypto);
-    this.createForm();
+   // this.createForm();
   }
 
   createForm() {
