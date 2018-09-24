@@ -25,9 +25,12 @@ html, body{
     margin-top: 8rem;
 }
 
-
 .mt-4rm{
     margin-top: 4rem !important;
+}
+
+.mt-1-5rem{
+    margin-top: 1.5rem;
 }
 
 .background-proxiwallet{
@@ -71,9 +74,25 @@ html, body{
 
 .toastError {
     opacity: 1.0 !important;
-    background-color: #DD1518;
+    background-color: #e42c2c;
 }
 
 .toastWarning{
     opacity: 1.0 !important;
+}
+
+//fin class to toast
+
+
+
+.show-pvk {
+    text-align: center;
+    margin-top: 3rem;
+    font-weight: 600 !important;
+    color: #208f83;
+    cursor: pointer;
+}
+
+.detail-pvk{
+    text-align: center;
 }

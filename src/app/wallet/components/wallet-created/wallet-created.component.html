@@ -1,0 +1,16 @@
+<h4 class="title-form">Your wallet has been created</h4>
+<hr>
+<mdb-card-text>
+  Your wallet has been created, then we show you your address and your private key, for your security, we recommend that you
+  keep your private key in a safe place outside the internet
+</mdb-card-text>
+
+<h5 (click)="pvk.toggle(); saluda();" class="show-pvk">
+  {{messageShowPvk}}
+</h5>
+
+<div aria-expanded="false" [mdbCollapse]="isCollapsed" #pvk="bs-collapse" class="mt-1-5rem">
+  <mdb-card-text class="detail-pvk">
+      {{privateKey}}
+  </mdb-card-text>
+</div>
