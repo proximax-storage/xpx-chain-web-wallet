@@ -14,8 +14,6 @@ export class LoginComponent implements OnInit {
   selectedValue: string;
   loginForm: FormGroup;
   wallets: Array<any>;
-
-
   constructor(
     private fb: FormBuilder,
     private _loginService: LoginService
@@ -32,7 +30,7 @@ export class LoginComponent implements OnInit {
   }
 
   /**
-   *
+   *Create login form
    *
    * @memberof LoginComponent
    */
@@ -46,7 +44,7 @@ export class LoginComponent implements OnInit {
   }
 
   /**
-   *
+   *Get form error
    *
    * @param {*} param
    * @param {*} name
@@ -64,7 +62,7 @@ export class LoginComponent implements OnInit {
   }
 
   /**
-   *
+   *Get form errors
    *
    * @param {*} param
    * @param {*} name
@@ -82,6 +80,7 @@ export class LoginComponent implements OnInit {
   }
 
   /**
+   *Change of selection option
    *
    * @param {*} walletSelect
    * @memberof LoginComponent
@@ -91,7 +90,7 @@ export class LoginComponent implements OnInit {
   }
 
   /**
-   *
+   *I send data of the form to the logueo service
    *
    * @memberof LoginComponent
    */

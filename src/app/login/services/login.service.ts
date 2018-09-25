@@ -11,13 +11,13 @@ export class LoginService {
   logged: boolean;
   isLoggedSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(this.logged);
   isLogged$: Observable<boolean> = this.isLoggedSubject.asObservable();
-
   constructor(
     private _walletService: WalletService,
     private route: Router
   ) { }
+
   /**
-   *
+   * Structuring the information of the wallet for selection
    *
    * @param {*} wallets
    * @returns
@@ -31,15 +31,15 @@ export class LoginService {
     });
     return retorno;
   }
+
   /**
-   * Método para loguear usuario
+   * Method to login
    *
    * @param {*} common
    * @param {*} wallet
    * @returns
    * @memberof LoginService
    */
-
   public login(common, wallet) {
     if (!this._walletService.login(common, wallet)) { return false; }
     // this._DataBridgeService.connect();
@@ -50,7 +50,7 @@ export class LoginService {
 
 
   /**
-   *permitir cargar el componente en el enrutamiento
+   * Allow to load the component in the routing
    *
    * @param {*} params
    * @memberof LoginService
@@ -61,7 +61,7 @@ export class LoginService {
   }
 
   /**
-   *establecer valor para logueo y deslogueo
+   *Set value to log in and log out
    *
    * @returns
    * @memberof LoginService
