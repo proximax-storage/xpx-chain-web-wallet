@@ -16,19 +16,17 @@ export class LoginService {
     private _walletService: WalletService,
     private route: Router
   ) { }
-
   /**
-   *mapeo de wallet para mostrar en select simple
+   *
    *
    * @param {*} wallets
-   * @param {string} [compare='']
    * @returns
    * @memberof LoginService
    */
-  public getwalletSelect(wallets: any, compare: string = '') {
+  public walletsOption(wallets: any) {
     const retorno = [];
     wallets.forEach((item, index) => {
-      if (item.name === compare) { retorno.push(item); }
+      retorno.push({ value: item, label: item.name });
 
     });
     return retorno;
