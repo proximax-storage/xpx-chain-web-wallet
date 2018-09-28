@@ -5,15 +5,22 @@ import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { CoreModule } from './core/core.module';
 // Routing
 import { routing, appRoutingProviders } from './app.routing';
-//components
+// components
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
 import { ToastModule } from 'ng-uikit-pro-standard';
+import {HeaderHorizontalComponent} from './header/component/header-horizontal/header-horizontal.component';
+
+import { HeaderRebSocialComponent } from './header/component/header-reb-social/header-reb-social.component';
+import { HeaderVerticalComponent } from './header/component/header-vertical/header-vertical.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    HeaderComponent
+    HeaderComponent,
+    HeaderHorizontalComponent,
+     HeaderRebSocialComponent,
+     HeaderVerticalComponent
   ],
   imports: [
     BrowserModule,
@@ -25,6 +32,5 @@ import { ToastModule } from 'ng-uikit-pro-standard';
   providers: [appRoutingProviders],
   bootstrap: [AppComponent],
   schemas: [ NO_ERRORS_SCHEMA ]
-  
 })
 export class AppModule { }

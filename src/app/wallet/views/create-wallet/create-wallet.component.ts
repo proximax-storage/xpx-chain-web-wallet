@@ -15,7 +15,7 @@ import { SharedService } from "../../../shared/services/shared.service";
 export class CreateWalletComponent implements OnInit {
 
   createWalletForm: FormGroup;
-  viewCreatedWallet = 2;
+  viewCreatedWallet = 1;
 
   constructor(
     private fb: FormBuilder,

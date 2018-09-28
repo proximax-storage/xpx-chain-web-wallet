@@ -25,7 +25,9 @@ export class LoginComponent implements OnInit {
    * @memberof LoginComponent
    */
   ngOnInit() {
-    this.wallets = this._loginService.walletsOption(JSON.parse(localStorage.getItem('proxi-wallets')));
+    let walletLocal = [];
+    walletLocal = JSON.parse(localStorage.getItem('proxi-wallets'));
+    this.wallets = this._loginService.walletsOption(walletLocal);
     this.createForm();
   }
 

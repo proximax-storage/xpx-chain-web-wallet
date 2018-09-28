@@ -14,7 +14,7 @@ export class LoginService {
   constructor(
     private _walletService: WalletService,
     private route: Router
-  ) { }
+  ) { this.setLogged(false); }
 
   /**
    * Structuring the information of the wallet for selection
@@ -23,8 +23,8 @@ export class LoginService {
    * @returns
    * @memberof LoginService
    */
-  public walletsOption(wallets: any) {
-    const retorno = [];
+  public walletsOption(wallets: Array<any> = []) {
+    const retorno = [{ 'value': '', 'label': 'Select wallet' }];
     wallets.forEach((item, index) => {
       retorno.push({ value: item, label: item.name });
 
