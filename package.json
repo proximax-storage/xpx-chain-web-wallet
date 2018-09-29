@@ -73,5 +73,10 @@
     "ts-node": "~5.0.1",
     "tslint": "~5.9.1",
     "typescript": "^2.9.2"
+  },
+  "peerDependencies": {
+    "js-joda": "^1.6.2",
+    "utf8": "^2.1.2",
+    "rxjs": "^6.2.1"
   }
 }

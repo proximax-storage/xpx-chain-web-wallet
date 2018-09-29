@@ -20,7 +20,11 @@ import { ToastModule } from 'ng-uikit-pro-standard';
     BrowserAnimationsModule,
     routing,
     CoreModule.forRoot(),
-    ToastModule.forRoot()
+    ToastModule.forRoot({
+      preventDuplicates: true,
+      autoDismiss: true,
+      progressBar: true
+    })
   ],
   providers: [appRoutingProviders],
   bootstrap: [AppComponent],

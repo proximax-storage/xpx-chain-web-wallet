@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { AppConfig } from "src/app/config/app.config";
 
 @Component({
   selector: 'app-wallet-created',
@@ -9,15 +10,18 @@ export class WalletCreatedComponent implements OnInit {
   messageShowPvk = 'Hide private key';
   showMessage = true;
   @Input() privateKey: string;
+  @Input() address: string;
+  routes = {
+    login: `/${AppConfig.routes.login}`
+  };
 
   constructor() {
-    console.log(this.privateKey);
   }
 
   ngOnInit() {
   }
 
-  saluda() {
+  showHidePvkAddress() {
     if (this.showMessage) {
       this.messageShowPvk = 'Show private key';
       this.showMessage = false;
@@ -26,5 +30,4 @@ export class WalletCreatedComponent implements OnInit {
       this.showMessage = true;
     }
   }
-
 }

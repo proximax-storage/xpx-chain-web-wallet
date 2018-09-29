@@ -1,4 +1,4 @@
-<div class="mt-8rem">
+<div class="mt-5rem">
   <div class="container-fluid">
     <div class="row">
       <div class="col-xl-5 col-lg-6 col-md-10 col-sm-12 mx-auto mt-lg-5">
@@ -7,11 +7,9 @@
             <img src="assets/images/logo/ProximaX-White.png" style="width: 150px;">
           </mdb-card-header>
 
-          <ng-container *ngIf="viewCreatedWallet === 1">
+          <ng-container *ngIf="viewCreatedWallet !== 2">
             <mdb-card-body class="px-lg-5">
-
               <h4 class="title-form">Create Wallet</h4>
-
               <form [formGroup]="createWalletForm" (ngSubmit)="createSimpleWallet()" class="" style="color: #757575;">
                 <div class="md-form" id="container-walletname">
                   <i class="fa fa-user prefix text-gris"></i>
@@ -35,7 +33,6 @@
                   </div>
                 </div>
 
-
                 <div class="mt-4rm">
                   <div class="row ">
                     <div class="mx-auto">
@@ -56,7 +53,7 @@
 
           <ng-container *ngIf="viewCreatedWallet === 2">
             <mdb-card-body class="px-lg-5">
-              <app-wallet-created [privateKey]="saluda"></app-wallet-created>
+              <app-wallet-created [privateKey]="pvk" [address]="address"></app-wallet-created>
             </mdb-card-body>
           </ng-container>
         </mdb-card>

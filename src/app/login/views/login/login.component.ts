@@ -38,7 +38,7 @@ export class LoginComponent implements OnInit {
     this.loginForm = this.fb.group({
       wallet: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(30)]],
       common: this.fb.group({ // <-- the child FormGroup
-        password: ['', [Validators.required, Validators.minLength(3)]]
+        password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]]
       })
     });
   }

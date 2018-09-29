@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
-import { SimpleWallet, Password, NetworkType, Account, Address } from 'nem2-sdk';
+import { SimpleWallet, Password, NetworkType, Account, Address, EncryptedPrivateKey } from 'nem2-sdk';
 import { crypto } from 'nem2-library';
 import { SharedService } from './shared.service';
+import { commonInterface, walletInterface } from '../interfaces/shared.interfaces';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -37,7 +39,7 @@ export class WalletService {
    * @memberof WalletService
    */
 
-  public decrypt(common: any, account: any = '', algo: any = '', network: any = '') {
+  decrypt(common: any, account: any = '', algo: any = '', network: any = '') {
     const acct = account || this.currentAccount;
     const net = network || this.network;
     const alg = algo || this.algo;
@@ -63,6 +65,14 @@ export class WalletService {
     // this._mdboostrap.closeToastr();
     return true;
   }
+
+  /**
+   * 
+   * 
+   * @param {any} privateKey 
+   * @returns 
+   * @memberof WalletService
+   */
   isPrivateKeyValid(privateKey) {
     if (privateKey.length !== 64 && privateKey.length !== 66) {
       console.error('Private key length must be 64 or 66 characters !');
@@ -74,9 +84,18 @@ export class WalletService {
       return true;
     }
   }
+
+  /**
+   * 
+   * 
+   * @param {any} str 
+   * @returns 
+   * @memberof WalletService
+   */
   isHexadecimal(str) {
     return str.match('^(0x|0X)?[a-fA-F0-9]+$') !== null;
   }
+
   /**
     * Check if Address it is correct
     * @param privateKey privateKey
@@ -86,5 +105,30 @@ export class WalletService {
   checkAddress(privateKey: string, net: any, address: any): boolean {
     return (Account.createFromPrivateKey(privateKey, net).address.plain() === address) ? true : false;
   }
+
+
+  /**
+   * Decrypt and return private key
+   * @param password 
+   * @param encryptedKey 
+   * @param iv 
+   */
+  decryptPrivateKey(password: Password, encryptedKey: string, iv): string {
+    const common: commonInterface = {
+      password: password.value,
+      privateKey: ''
+    };
+
+    const wallet: walletInterface = {
+      encrypted: encryptedKey,
+      iv: iv,
+    };
+    
+    crypto.passwordToPrivatekey(common, wallet, 'pass:bip32');
+    return common.privateKey;
+  }
+
+
+
 }
 

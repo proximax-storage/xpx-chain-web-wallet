@@ -1,9 +1,10 @@
 import { Component, OnInit, ElementRef, Renderer2 } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl } from "@angular/forms";
-import { Router } from "@angular/router";
+import { Router, ActivatedRoute } from "@angular/router";
+import { map } from "rxjs/operators";
 import { Account, NetworkType, SimpleWallet, Password, EncryptedPrivateKey } from 'nem2-sdk';
 import { AppConfig } from "../../../config/app.config";
-import { SharedService } from "../../../shared/services/shared.service";
+import { AccountsInterface, WalletAccountInterface, SharedService, WalletService } from "../../../shared";
 
 
 @Component({
@@ -15,14 +16,18 @@ import { SharedService } from "../../../shared/services/shared.service";
 export class CreateWalletComponent implements OnInit {
 
   createWalletForm: FormGroup;
-  viewCreatedWallet = 2;
+  pvk: string;
+  address: string;
+  viewCreatedWallet = 1;
 
   constructor(
+    private activatedRoute: ActivatedRoute,
     private fb: FormBuilder,
     private route: Router,
     private _el: ElementRef,
     private _r: Renderer2,
-    private sharedService: SharedService
+    private sharedService: SharedService,
+    private walletService: WalletService
   ) {
   }
 
@@ -37,7 +42,7 @@ export class CreateWalletComponent implements OnInit {
    */
   createForm() {
     this.createWalletForm = this.fb.group({
-      walletname: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(30)]],
+      walletname: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(30)]],
       passwords: this.fb.group({
         password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]],
         confirm_password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]],
@@ -76,7 +81,7 @@ export class CreateWalletComponent implements OnInit {
           'network': simpleWallet.network
         }
 
-        const wallet: WalletInterface = {
+        const wallet: WalletAccountInterface = {
           name: user,
           accounts: {
             '0': accounts
@@ -84,10 +89,12 @@ export class CreateWalletComponent implements OnInit {
         }
         walletsStorage.push(wallet);
         localStorage.setItem('proxi-wallets', JSON.stringify(walletsStorage));
+        this.address = simpleWallet.address['address'];
         this.sharedService.showSuccess('Congratulations!', 'Your wallet has been created successfully');
-        // this.route.navigate([`/${AppConfig.routes.login}`]);
+        this.pvk = this.walletService.decryptPrivateKey(password, simpleWallet.encryptedPrivateKey.encryptedKey, simpleWallet.encryptedPrivateKey.iv);
+        this.viewCreatedWallet = 2;
       } else {
-        //Repeated Wallet
+        //Error of repeated Wallet
         this.cleanForm('walletname');
         this.sharedService.showError('Attention!', 'This name is already in use, try another name');
       }
@@ -144,62 +151,8 @@ export class CreateWalletComponent implements OnInit {
       this.createWalletForm.get(custom).reset();
       return;
     }
-    this.cleanMsgError();
     this.createWalletForm.reset();
     return;
   }
-
-
-  /**
-   * Clean message error in form
-   * 
-   * @memberof CreateWalletComponent
-   */
-  cleanMsgError(param?) {
-    // if (param === undefined) {
-    // const success = this._el.nativeElement.querySelectorAll('.counter-success');
-    // const danger = this._el.nativeElement.querySelectorAll('.counter-danger');
-    // const textSuccess = this._el.nativeElement.querySelectorAll('.text-success');
-    // const textDanger = this._el.nativeElement.querySelectorAll('.text-danger');
-    // success.forEach((element: any) => {
-    //   this._r.removeClass(element, 'counter-success');
-    // });
-    // danger.forEach((element: any) => {
-    //   this._r.removeClass(element, 'counter-danger');
-    // });
-    // textSuccess.forEach((element: any) => {
-    //   this._r.setStyle(element, 'visibility', 'hidden');
-    // });
-    // textDanger.forEach((element: any) => {
-    //   this._r.setStyle(element, 'visibility', 'hidden');
-    // });
-
-    // }else {
-    // const container = this._el.nativeElement.querySelector(`#container-${param}`);
-    // const element = this._el.nativeElement.querySelector(`#${param}`);
-    // this._r.removeClass(element, 'counter-success');
-    // this._r.removeClass(element, 'counter-danger');
-    // console.log(container.querySelectorAll('.text-success'));
-    //this._r.setStyle(container.querySelectorAll('.text-success'), 'visibility', 'hidden');
-    //this._r.setStyle(container.querySelectorAll('.text-danger'), 'visibility', 'hidden');
-    // }
-  }
-
-
-
 }
 
-export interface WalletInterface {
-  name: string,
-  accounts: object;
-}
-
-export interface AccountsInterface {
-  brain: boolean;
-  algo: string;
-  encrypted: string;
-  iv: string;
-  address: string;
-  label: string;
-  network: number;
-}
