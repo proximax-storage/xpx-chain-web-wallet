@@ -3,39 +3,57 @@ import { SimpleWallet, Password, NetworkType, Account } from 'nem2-sdk';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { LoginService } from '../../services/login.service';
 
-
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
+
 export class LoginComponent implements OnInit {
+  walletSelect: any;
   selectedValue: string;
   loginForm: FormGroup;
-  wallets: object;
-  walletSelect: object;
-
+  wallets: Array<any>;
   constructor(
     private fb: FormBuilder,
     private _loginService: LoginService
-  ) {
+  ) { }
 
-    this.wallets = JSON.parse(localStorage.getItem('proxi-wallets'));
-  }
+  /**
+   *
+   *
+   * @memberof LoginComponent
+   */
   ngOnInit() {
-   // this.createForm();
+    let walletLocal = [];
+    walletLocal = JSON.parse(localStorage.getItem('proxi-wallets'));
+    this.wallets = this._loginService.walletsOption(walletLocal);
+    this.createForm();
   }
 
-  createForm() {
+  /**
+   *Create login form
+   *
+   * @memberof LoginComponent
+   */
+  private createForm() {
     this.loginForm = this.fb.group({
       wallet: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(30)]],
       common: this.fb.group({ // <-- the child FormGroup
-        password: ['', [Validators.required, Validators.minLength(3)]]
+        password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]]
       })
     });
   }
 
-  getError(param, name) {
+  /**
+   *Get form error
+   *
+   * @param {*} param
+   * @param {*} name
+   * @returns
+   * @memberof LoginComponent
+   */
+  public getError(param, name = '') {
     if (this.loginForm.get(param).getError('required')) {
       return `This field is required`;
     } else if (this.loginForm.get(param).getError('minlength')) {
@@ -44,7 +62,16 @@ export class LoginComponent implements OnInit {
       return `This field must contain maximum ${this.loginForm.get(param).getError('maxlength').requiredLength} characters`;
     }
   }
-  getErrorGroup(param, name) {
+
+  /**
+   *Get form errors
+   *
+   * @param {*} param
+   * @param {*} name
+   * @returns
+   * @memberof LoginComponent
+   */
+  public getErrorGroup(param, name) {
     if (this.loginForm.get(param).get(name).getError('required')) {
       return `This field is required`;
     } else if (this.loginForm.get(param).get(name).getError('minlength')) {
@@ -55,17 +82,24 @@ export class LoginComponent implements OnInit {
   }
 
   /**
+   *Change of selection option
    *
    * @param {*} walletSelect
    * @memberof LoginComponent
    */
-  onChange(walletSelect) {
-    this.walletSelect = this._loginService.getwalletSelect(this.wallets, walletSelect);
+  private optionSelected(walletSelect: any) {
+    this.walletSelect = walletSelect.value;
   }
 
-  onSubmit() {
+  /**
+   *I send data of the form to the logueo service
+   *
+   * @memberof LoginComponent
+   */
+  private onSubmit() {
+    this.loginForm.markAsDirty();
     if (this.loginForm.valid) {
-      this._loginService.login(this.loginForm.get('common').value, this.walletSelect[0]);
+      this._loginService.login(this.loginForm.get('common').value, this.walletSelect);
       this.loginForm.reset();
     }
   }

@@ -44,7 +44,6 @@
     "nem2-sdk": "^0.10.1",
     "ng-html-util": "1.0.x",
     "ng-uikit-pro-standard": "git+https://oauth2:xds7fpVXkw8SnNJdDtUE@git.mdbootstrap.com/mdb/angular/ng-uikit-pro-standard.git",
-    "ngx-toastr": "^9.0.2",
     "rxjs": "^6.3.2",
     "screenfull": "^3.3.0",
     "smoothscroll-polyfill": "0.3.x",
@@ -74,5 +73,10 @@
     "ts-node": "~5.0.1",
     "tslint": "~5.9.1",
     "typescript": "^2.9.2"
+  },
+  "peerDependencies": {
+    "js-joda": "^1.6.2",
+    "utf8": "^2.1.2",
+    "rxjs": "^6.2.1"
   }
 }

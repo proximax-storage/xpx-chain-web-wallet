@@ -1,26 +1,63 @@
-<div class="row center-xs top-170">
-  <div class="col-xs-12 col-sm-4 col-md-6">
-    <mat-card class="example-card">
-      <mat-card-header class="header">
-        <p class="title-header">Create Wallet</p>
-        <!-- <img class="imagen" src="assets/images/logo/ProximaX-White.png2"> -->
-      </mat-card-header>
-      <form [formGroup]="createWalletForm" (ngSubmit)="createSimpleWallet()">
-        <mat-card-content class="container-form">
-          <mat-form-field>
-            <input matInput autocomplete="off" placeholder="Name wallet" required formControlName="userName">
-            <mat-error>{{getError('userName')}}</mat-error>
-          </mat-form-field>
-          <mat-form-field>
-            <input type="password" matInput required placeholder="password" formControlName="password">
-            <mat-error>{{getError('password')}}</mat-error>
-          </mat-form-field>
-        </mat-card-content>
-        <mat-card-actions class="pb-20">
-          <button mat-button class="not-act-button" type="button" (click)="cleanForm()">Clean</button>
-          <button type="submit" mat-button class="act-button">Create</button>
-        </mat-card-actions>
-      </form>
-    </mat-card>
+<div class="mt-5rem">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-xl-5 col-lg-6 col-md-10 col-sm-12 mx-auto mt-lg-5">
+        <mdb-card>
+          <mdb-card-header class="background-proxiwallet white-text py-4">
+            <img src="assets/images/logo/ProximaX-White.png" style="width: 150px;">
+          </mdb-card-header>
+
+          <ng-container *ngIf="viewCreatedWallet !== 2">
+            <mdb-card-body class="px-lg-5">
+              <h4 class="title-form">Create Wallet</h4>
+              <form [formGroup]="createWalletForm" (ngSubmit)="createSimpleWallet()" class="" style="color: #757575;">
+                <div class="md-form" id="container-walletname">
+                  <i class="fa fa-user prefix text-gris"></i>
+                  <input type="text" autocomplete="off" required formControlName="walletname" id="walletname" class="form-control" mdbInputDirective
+                    data-success="Valid walletname" [errorMessage]="getError('walletname')">
+                  <label for="walletname">Wallet name</label>
+                </div>
+                <div formGroupName="passwords">
+                  <div class="md-form mt-5" id="container-password">
+                    <i class="fa fa-lock prefix text-gris"></i>
+                    <input type="password" autocomplete="off" required formControlName="password" id="password" class="form-control" mdbInputDirective
+                      data-success="Valid password" [errorMessage]="getError('password', 'passwords')">
+                    <label for="password">Password</label>
+                  </div>
+
+                  <div class="md-form mt-5" id="container-confirm_password">
+                    <i class="fa fa-lock prefix text-gris"></i>
+                    <input type="password" autocomplete="off" required formControlName="confirm_password" id="confirm_password" class="form-control"
+                      mdbInputDirective data-success="Valid password" [errorMessage]="getError('confirm_password', 'passwords')">
+                    <label for="confirm_password">Confirm Password</label>
+                  </div>
+                </div>
+
+                <div class="mt-4rm">
+                  <div class="row ">
+                    <div class="mx-auto">
+                      <div class="row">
+                        <div class="col-xs-6">
+                          <button mdbBtn type="button" rounded="true" class="waves-light btn-reverse" mdbWavesEffect type="submit" (click)="cleanForm()">Clean</button>
+                        </div>
+                        <div class="col-xs-6">
+                          <button mdbBtn type="button" color="default" rounded="true" class="waves-light" mdbWavesEffect type="submit">Create</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </mdb-card-body>
+          </ng-container>
+
+          <ng-container *ngIf="viewCreatedWallet === 2">
+            <mdb-card-body class="px-lg-5">
+              <app-wallet-created [privateKey]="pvk" [address]="address"></app-wallet-created>
+            </mdb-card-body>
+          </ng-container>
+        </mdb-card>
+      </div>
+    </div>
   </div>
 </div>

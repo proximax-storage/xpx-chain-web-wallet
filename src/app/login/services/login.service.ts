@@ -11,37 +11,35 @@ export class LoginService {
   logged: boolean;
   isLoggedSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(this.logged);
   isLogged$: Observable<boolean> = this.isLoggedSubject.asObservable();
-
   constructor(
     private _walletService: WalletService,
     private route: Router
-  ) { }
+  ) { this.setLogged(false); }
 
   /**
-   *mapeo de wallet para mostrar en select simple
+   * Structuring the information of the wallet for selection
    *
    * @param {*} wallets
-   * @param {string} [compare='']
    * @returns
    * @memberof LoginService
    */
-  public getwalletSelect(wallets: any, compare: string = '') {
-    const retorno = [];
+  public walletsOption(wallets: Array<any> = []) {
+    const retorno = [{ 'value': '', 'label': 'Select wallet' }];
     wallets.forEach((item, index) => {
-      if (item.name === compare) { retorno.push(item); }
+      retorno.push({ value: item, label: item.name });
 
     });
     return retorno;
   }
+
   /**
-   * Método para loguear usuario
+   * Method to login
    *
    * @param {*} common
    * @param {*} wallet
    * @returns
    * @memberof LoginService
    */
-
   public login(common, wallet) {
     if (!this._walletService.login(common, wallet)) { return false; }
     // this._DataBridgeService.connect();
@@ -52,7 +50,7 @@ export class LoginService {
 
 
   /**
-   *permitir cargar el componente en el enrutamiento
+   * Allow to load the component in the routing
    *
    * @param {*} params
    * @memberof LoginService
@@ -63,7 +61,7 @@ export class LoginService {
   }
 
   /**
-   *establecer valor para logueo y deslogueo
+   *Set value to log in and log out
    *
    * @returns
    * @memberof LoginService

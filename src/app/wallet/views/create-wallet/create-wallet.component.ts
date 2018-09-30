@@ -1,25 +1,34 @@
-import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { Account, NetworkType, SimpleWallet, Password } from 'nem2-sdk';
-import { AppConfig } from '../../../config/app.config';
-import { SharedService } from '../../../shared/services/shared.service';
+import { Component, OnInit, ElementRef, Renderer2 } from '@angular/core';
+import { FormGroup, FormBuilder, Validators, AbstractControl } from "@angular/forms";
+import { Router, ActivatedRoute } from "@angular/router";
+import { map } from "rxjs/operators";
+import { Account, NetworkType, SimpleWallet, Password, EncryptedPrivateKey } from 'nem2-sdk';
+import { AppConfig } from "../../../config/app.config";
+import { AccountsInterface, WalletAccountInterface, SharedService, WalletService } from "../../../shared";
+
 
 @Component({
   selector: 'app-create-wallet',
   templateUrl: './create-wallet.component.html',
   styleUrls: ['./create-wallet.component.css']
+
 })
 export class CreateWalletComponent implements OnInit {
 
   createWalletForm: FormGroup;
+  pvk: string;
+  address: string;
+  viewCreatedWallet = 1;
 
   constructor(
+    private activatedRoute: ActivatedRoute,
     private fb: FormBuilder,
     private route: Router,
-    private sharedService: SharedService
+    private _el: ElementRef,
+    private _r: Renderer2,
+    private sharedService: SharedService,
+    private walletService: WalletService
   ) {
-
   }
 
   ngOnInit() {
@@ -33,14 +42,17 @@ export class CreateWalletComponent implements OnInit {
    */
   createForm() {
     this.createWalletForm = this.fb.group({
-      userName: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(30)]],
-      password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]]
+      walletname: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(30)]],
+      passwords: this.fb.group({
+        password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]],
+        confirm_password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]],
+      }, { validator: this.sharedService.passwordConfirming }),
     });
   }
 
   /**
    * Create a simple wallet
-   *
+   * 
    * @memberof CreateWalletComponent
    */
   createSimpleWallet() {
@@ -49,16 +61,15 @@ export class CreateWalletComponent implements OnInit {
         localStorage.setItem('proxi-wallets', JSON.stringify([]));
       }
 
-      const user = this.createWalletForm.get('userName').value;
-      const password = new Password(this.createWalletForm.get('password').value);
+      const user = this.createWalletForm.get('walletname').value;
+      const password = new Password(this.createWalletForm.controls.passwords.get('password').value);
       const simpleWallet = SimpleWallet.create(user, password, NetworkType.TEST_NET);
-      console.log('sssssss', simpleWallet);
       const walletsStorage = JSON.parse(localStorage.getItem('proxi-wallets'));
       const myWallet = walletsStorage.find(function (element) {
         return element.name === user;
       });
 
-      // Wallet does not exist
+      //Wallet does not exist
       if (myWallet === undefined) {
         const accounts: AccountsInterface = {
           'brain': true,
@@ -68,28 +79,34 @@ export class CreateWalletComponent implements OnInit {
           'address': simpleWallet.address['address'],
           'label': 'Primary',
           'network': simpleWallet.network
-        };
+        }
 
-        const wallet: WalletInterface = {
+        const wallet: WalletAccountInterface = {
           name: user,
           accounts: {
             '0': accounts
           }
-        };
-
-
+        }
         walletsStorage.push(wallet);
         localStorage.setItem('proxi-wallets', JSON.stringify(walletsStorage));
-        this.sharedService.showToastr('1', 'Congratulations!', 'Your wallet has been created successfully');
-        this.route.navigate([`/${AppConfig.routes.login}`]);
+        this.address = simpleWallet.address['address'];
+        this.sharedService.showSuccess('Congratulations!', 'Your wallet has been created successfully');
+        this.pvk = this.walletService.decryptPrivateKey(password, simpleWallet.encryptedPrivateKey.encryptedKey, simpleWallet.encryptedPrivateKey.iv);
+        this.viewCreatedWallet = 2;
       } else {
-        // Repeated Wallet
-        this.createWalletForm.patchValue({ userName: '' });
-        this.sharedService.showToastr('3', 'Attention!', 'This name is already in use, try another name');
+        //Error of repeated Wallet
+        this.cleanForm('walletname');
+        this.sharedService.showError('Attention!', 'This name is already in use, try another name');
       }
+    } else if (this.createWalletForm.controls.passwords.get('password').valid &&
+      this.createWalletForm.controls.passwords.get('confirm_password').valid &&
+      this.createWalletForm.controls.passwords.getError('noMatch')) {
+        this.sharedService.showError('Attention!', `Password doesn't match`);
+        this.cleanForm('password', 'passwords');
+        this.cleanForm('confirm_password', 'passwords');
     }
   }
-
+ 
   /**
    * Function that gets errors from a form
    *
@@ -98,38 +115,44 @@ export class CreateWalletComponent implements OnInit {
    * @returns
    * @memberof CreateWalletComponent
    */
-  getError(param, name) {
-    if (this.createWalletForm.get(param).getError('required')) {
-      return `This field is required`;
-    } else if (this.createWalletForm.get(param).getError('minlength')) {
-      return `This field must contain minimum ${this.createWalletForm.get(param).getError('minlength').requiredLength} characters`;
-    } else if (this.createWalletForm.get(param).getError('maxlength')) {
-      return `This field must contain maximum ${this.createWalletForm.get(param).getError('maxlength').requiredLength} characters`;
+  getError(control, formControl?) {
+    if (formControl === undefined) {
+      if (this.createWalletForm.get(control).getError('required')) {
+        return `This field is required`;
+      } else if (this.createWalletForm.get(control).getError('minlength')) {
+        return `This field must contain minimum ${this.createWalletForm.get(control).getError('minlength').requiredLength} characters`;
+      } else if (this.createWalletForm.get(control).getError('maxlength')) {
+        return `This field must contain maximum ${this.createWalletForm.get(control).getError('maxlength').requiredLength} characters`;
+      }
+    } else {
+      if (this.createWalletForm.controls[formControl].get(control).getError('required')) {
+        return `This field is required`;
+      } else if (this.createWalletForm.controls[formControl].get(control).getError('minlength')) {
+        return `This field must contain minimum ${this.createWalletForm.controls[formControl].get(control).getError('minlength').requiredLength} characters`;
+      } else if (this.createWalletForm.controls[formControl].get(control).getError('maxlength')) {
+        return `This field must contain maximum ${this.createWalletForm.controls[formControl].get(control).getError('maxlength').requiredLength} characters`;
+      } else if (this.createWalletForm.controls[formControl].getError('noMatch')) {
+        return `Password doesn't match`;
+      }
     }
   }
 
   /**
    * Clean form
-   *
+   * 
    * @memberof CreateWalletComponent
    */
-  cleanForm() {
-    this.createWalletForm.patchValue({ userName: '', password: '' });
+  cleanForm(custom?, formControl?) {
+    if (custom !== undefined) {
+      if (formControl !== undefined) {
+        this.createWalletForm.controls[formControl].get(custom).reset();
+        return;
+      }
+      this.createWalletForm.get(custom).reset();
+      return;
+    }
+    this.createWalletForm.reset();
+    return;
   }
-
 }
 
-export interface WalletInterface {
-  name: string;
-  accounts: object;
-}
-
-export interface AccountsInterface {
-  brain: boolean;
-  algo: string;
-  encrypted: string;
-  iv: string;
-  address: string;
-  label: string;
-  network: number;
-}

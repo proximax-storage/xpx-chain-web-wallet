@@ -6,7 +6,7 @@ import { CreateWalletComponent } from "../wallet/views/create-wallet/create-wall
 const routes: Routes = [
   {
     path: `${AppConfig.routes.createWallet}`,
-    component: CreateWalletComponent
+    component: CreateWalletComponent,
     //canActivate: [NotLoggedGuard]
   }
 ];
