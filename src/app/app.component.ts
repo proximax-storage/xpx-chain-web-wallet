@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-root',
-  template: `<particles [params]="myParams" [style]="myStyle" [width]="width" [height]="height"></particles>
+  template: `<!-- <particles [params]="myParams" [style]="myStyle" [width]="width" [height]="height"></particles> -->
               <app-header></app-header>
               <router-outlet></router-outlet>
             `
