@@ -1,14 +1,25 @@
 /* You can add global styles to this file, and also import other style files */
 body{
-    background-image: -webkit-linear-gradient(140deg,rgb(32, 128, 115) 0%,rgb(32, 181, 172) 33%,rgb(120, 182, 228) 100%);
-    background-repeat: no-repeat;
-    border: 1px solid rgba(255, 0, 0, 0);
+    // background-image: -webkit-linear-gradient(140deg,rgb(32, 128, 115) 0%,rgb(32, 181, 172) 33%,rgb(120, 182, 228) 100%);
+    // background-repeat: no-repeat;
+    // border: 1px solid rgba(255, 0, 0, 0);
+    background: #20a99f;
 }
 
-html, body{
-    height: 100%;
+// html, body{
+//     height: 100%;
+//     height: 100%;
+// }
+
+
+
+html:after{
+    width: 100%;
+    display: block;
+    content: "";
     height: 100%;
 }
+
 
 .mt-100px{
     margin-top: 100px;
@@ -24,6 +35,10 @@ html, body{
 
 .mt-4rm{
     margin-top: 4rem !important;
+}
+
+.mb-3rem{
+    margin-bottom: 3rem;
 }
 
 .mt-1-5rem{
@@ -90,4 +105,17 @@ html, body{
 
 .detail-pvk{
     text-align: center;
+}
+
+.font-header{
+    font-weight: 500;
+    font-size: 0.8rem;
+}
+
+.backg-beige{
+    background: #f7f7f7;
+}
+
+.check-sucess{
+    width: 260px;
 }

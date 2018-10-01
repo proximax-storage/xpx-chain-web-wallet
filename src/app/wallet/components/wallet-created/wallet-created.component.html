@@ -1,4 +1,4 @@
-<h4 class="title-form">Your wallet has been created</h4>
+<h4 class="title-form">Congratulations, your wallet has been created!</h4>
 <hr>
 <mdb-card-text>
   Your wallet has been created, then we show you your address and your private key, for your security, we recommend that you
@@ -8,10 +8,9 @@
 <h5 (click)="pvk.toggle(); showHidePvkAddress();" class="show-pvk">
   {{messageShowPvk}}
 </h5>
-
 <div aria-expanded="false" [mdbCollapse]="isCollapsed" #pvk="bs-collapse" class="mt-1-5rem">
   <mdb-card-text class="detail-pvk">
-      <span class="pvk-address">Private key</span> <br> {{privateKey}} <br><br>
+    <span class="pvk-address">Private key</span> <br> {{privateKey}} <br><br>
   </mdb-card-text>
 </div>
 <mdb-card-text class="detail-pvk">
