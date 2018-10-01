@@ -8,7 +8,7 @@
 <h5 (click)="pvk.toggle(); showHidePvkAddress();" class="show-pvk">
   {{messageShowPvk}}
 </h5>
-<div aria-expanded="false" [mdbCollapse]="isCollapsed" #pvk="bs-collapse" class="mt-1-5rem">
+<div [mdbCollapse]="isCollapsed" #pvk="bs-collapse" class="mt-1-5rem">
   <mdb-card-text class="detail-pvk">
     <span class="pvk-address">Private key</span> <br> {{privateKey}} <br><br>
   </mdb-card-text>
