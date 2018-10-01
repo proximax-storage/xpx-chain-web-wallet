@@ -15,10 +15,6 @@ export class HeaderComponent implements OnInit {
   isLogged$: Observable<boolean>;
   showMenu = false;
   keyObject = Object.keys;
-  routes = {
-    login: `/${AppConfig.routes.login}`,
-    createWallet: `/${AppConfig.routes.createWallet}`
-  };
 
   constructor(
     private _loginService: LoginService,
@@ -34,13 +30,23 @@ export class HeaderComponent implements OnInit {
    * @memberof HeaderComponent
    */
     this.header = {
-      'home': {
+      'createWallet': {
         'type': 'default',
         'name': 'Create wallet',
         'class': 'active',
         'icon': 'fa fa-envelope',
         'rol': false,
-        'link': this.routes.createWallet,
+        'link': AppConfig.routes.createWallet,
+        'show': true,
+        'submenu': {}
+      },
+      'importWallet': {
+        'type': 'default',
+        'name': 'Import wallet',
+        'class': 'active',
+        'icon': 'fa fa-key',
+        'rol': false,
+        'link': AppConfig.routes.importWallet,
         'show': true,
         'submenu': {}
       },
@@ -50,7 +56,7 @@ export class HeaderComponent implements OnInit {
         'class': 'active',
         'icon': 'fa fa-home',
         'rol': false,
-        'link': '/dashboard',
+        'link': AppConfig.routes.dashboard,
         'show': false,
         'submenu': {
           'dashboard': {
@@ -59,7 +65,7 @@ export class HeaderComponent implements OnInit {
             'class': 'active',
             'icon': 'fa fa-home',
             'rol': true,
-            'link': '/dashboard',
+            'link': AppConfig.routes.dashboard,
             'show': true,
             'submenu': {}
           }
@@ -71,7 +77,7 @@ export class HeaderComponent implements OnInit {
         'class': 'active',
         'icon': 'fa fa-home',
         'rol': false,
-        'link': this.routes.login,
+        'link': AppConfig.routes.login,
         'show': true,
         'submenu': {}
       },
@@ -81,7 +87,7 @@ export class HeaderComponent implements OnInit {
         'class': '',
         'icon': 'fa fa-tachometer',
         'rol': true,
-        'link': '/login',
+        'link': AppConfig.routes.login,
         'show': true,
         'submenu': {}
       }

@@ -5,8 +5,9 @@ export const AppConfig: Config = {
   routes: {
     home: 'home',
     login: 'login',
-    createWallet: 'create-wallet',
     dashboard: 'dashboard',
+    createWallet: 'create-wallet',
+    importWallet: 'import-wallet',
     notFound: 'not-found'
   }
 };
@@ -15,8 +16,9 @@ export interface Config {
   routes: {
     home: string;
     login: string;
-    createWallet: string;
     dashboard: string;
+    createWallet: string;
+    importWallet: string;
     notFound: string;
   };
 }

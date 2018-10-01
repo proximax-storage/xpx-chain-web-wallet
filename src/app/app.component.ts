@@ -21,20 +21,21 @@ export class AppComponent {
 
   initParticle() {
     this.myStyle = {
-      'overflow': 'hidden',
+      // 'overflow': 'hidden',
       'position': 'absolute',
+      'top': '0',
       'width': '100%',
-      'height': '100%',
-      'z-index': -1,
-      'top': 0,
-      'left': 0,
-      'right': 0,
-      'bottom': 0,
+      'height': '100%'
+      // 'z-index': -1,
+      // 'margin-top': 0,
+      // 'left': 0,
+      // 'right': 0,
+      // 'bottom': 0,
     };
     this.myParams = {
       particles: {
         number: {
-          value: 70
+          value: 50
         },
         color: {
           value: '#ffffff'
