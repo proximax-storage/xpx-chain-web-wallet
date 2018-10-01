@@ -24,6 +24,7 @@ export class LoginService {
    * @memberof LoginService
    */
   public walletsOption(wallets: Array<any> = []) {
+    wallets = (wallets == null) ? [] : wallets
     const retorno = [{ 'value': '', 'label': 'Select wallet' }];
     wallets.forEach((item, index) => {
       retorno.push({ value: item, label: item.name });
