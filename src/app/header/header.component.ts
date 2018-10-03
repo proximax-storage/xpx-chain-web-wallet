@@ -44,7 +44,7 @@ export class HeaderComponent implements OnInit {
             'type': 'default',
             'name': 'MAIN NET',
             'class': '',
-            'icon': 'fa fa-envelope',
+            'icon': '',
             'rol': false,
             'show': true,
             'submenu': {}
@@ -52,7 +52,7 @@ export class HeaderComponent implements OnInit {
             'type': 'default',
             'name': 'TEST NET',
             'class': '',
-            'icon': 'fa fa-envelope',
+            'icon': '',
             'rol': false,
             'show': true,
             'submenu': {}
@@ -60,7 +60,7 @@ export class HeaderComponent implements OnInit {
             'type': 'default',
             'name': 'MIJIN',
             'class': '',
-            'icon': 'fa fa-envelope',
+            'icon': '',
             'rol': false,
             'show': true,
             'submenu': {}
@@ -68,7 +68,7 @@ export class HeaderComponent implements OnInit {
             'type': 'default',
             'name': 'MIJIN TEST',
             'class': '',
-            'icon': 'fa fa-envelope',
+            'icon': '',
             'rol': false,
             'show': true,
             'submenu': {}
