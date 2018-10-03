@@ -3,6 +3,7 @@ import { SimpleWallet, Password, NetworkType, Account, Address, EncryptedPrivate
 import { crypto } from 'nem2-library';
 import { SharedService } from './shared.service';
 import { commonInterface, walletInterface } from '../interfaces/shared.interfaces';
+import { BehaviorSubject, Observable } from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +12,8 @@ export class WalletService {
   currentAccount: string;
   network: any;
   algo: string;
+  typeNetwork: BehaviorSubject<string> = new BehaviorSubject<string>('TEST_NET');
+  typeNetwork$: Observable<string> = this.typeNetwork.asObservable();
 
   constructor(private sharedService: SharedService) { }
 
@@ -129,6 +132,26 @@ export class WalletService {
   }
 
 
+  /**
+   * 
+   * 
+   * @param {any} network 
+   * @memberof WalletService
+   */
+  setNetwork(network) {
+    this.typeNetwork.next(network.toUpperCase());
+  }
+
+
+  /**
+   * 
+   * 
+   * @returns {Observable<string>} 
+   * @memberof WalletService
+   */
+  getNetworkObservable(): Observable<string> {
+    return this.typeNetwork.asObservable();
+  }
 
 }
 

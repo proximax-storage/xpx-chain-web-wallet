@@ -2,22 +2,35 @@
   <ul class="nav navbar-nav nav-flex-icons ml-auto ie-double-nav ie-hidden-double-nav">
     <ng-container *ngFor="let key of keyObject(header)">
       <ng-container *ngIf="header[key]['rol'] === showMenu && header[key]['show']">
-        <li class="nav-item dropdown btn-group" dropdown *ngIf="header[key]['type'] == 'dropdown'">
-          <a dropdownToggle type="button" class="nav-link dropdown-toggle waves-light font-header" mdbWavesEffect>
-            <i [ngClass]="header[key]['icon']"></i> {{header[key]['name'] | uppercase}}
-          </a>
-          <div class="dropdown-menu dropdown-primary dropdown-menu-right" role="menu">
-            <ng-container *ngFor="let k of  keyObject(header[key]['submenu'])">
-              <ng-container *ngIf="header[key]['submenu'][k]['show']">
-                <a class="dropdown-item" [routerLink]="[header[key]['submenu'][k]['link']]">{{header[key]['submenu'][k]['name'] }}
-                  <i [ngClass]="header[key]['submenu'][k]['icon']"></i>
-                </a>
+        <ng-container *ngIf="header[key]['type'] === 'dropdown'">
+          <li class="nav-item dropdown btn-group" dropdown>
+            <a dropdownToggle type="button" class="nav-link dropdown-toggle waves-light" mdbWavesEffect>
+              <i [ngClass]="header[key]['icon']"></i>
+              <span class="clearfix d-none d-sm-inline-block font-header">
+                {{header[key]['name'] | uppercase}} <span class="caret"></span>
+              </span>
+            </a>
+            <div *dropdownMenu class="dropdown-menu dropdown dropdown-primary not-margin" role="menu">
+              <ng-container *ngFor="let k of keyObject(header[key]['submenu'])">
+                <ng-container *ngIf="header[key]['submenu'][k]['show']">
+                  <ng-container *ngIf="key === 'network'">
+                    <a class="dropdown-item waves-light font-header" (click)="selectNetwork.emit(k)">
+                        <i [ngClass]="header[key]['submenu'][k]['icon']"></i> {{ header[key]['submenu'][k]['name'] }} 
+                    </a>
+                  </ng-container>
+
+                  <ng-container *ngIf="key !== 'network'">
+                    <a class="dropdown-item waves-light font-header" [routerLink]="[header[key]['submenu'][k]['link']]">
+                        <i [ngClass]="header[key]['submenu'][k]['icon']"></i> {{header[key]['submenu'][k]['name'] }} 
+                      </a>
+                  </ng-container>
+                </ng-container>
               </ng-container>
-            </ng-container>
-          </div>
-        </li>
+            </div>
+          </li>
+        </ng-container>
         <li class="nav-item">
-          <ng-container *ngIf="key != 'signout'">
+          <ng-container *ngIf="key !== 'signout'">
             <a *ngIf="header[key]['type'] != 'dropdown'" class="nav-link waves-light" mdbWavesEffect [routerLink]="[header[key]['link']]">
               <i [ngClass]="header[key]['icon']"></i>
               <span class="clearfix d-none d-sm-inline-block font-header"> {{header[key]['name'] | uppercase}}</span>
@@ -25,12 +38,11 @@
           </ng-container>
           <ng-container *ngIf="key === 'signout'">
             <a *ngIf="header[key]['type'] != 'dropdown'" class="nav-link waves-light" mdbWavesEffect (click)="logout(header[key]['link'])">
-                <i [ngClass]="header[key]['icon']"></i>
-                <span class="clearfix d-none d-sm-inline-block font-header">{{header[key]['name'] | uppercase}}</span>
-              </a>
+              <i [ngClass]="header[key]['icon']"></i>
+              <span class="clearfix d-none d-sm-inline-block font-header">{{header[key]['name'] | uppercase}}</span>
+            </a>
           </ng-container>
         </li>
-
       </ng-container>
     </ng-container>
   </ul>

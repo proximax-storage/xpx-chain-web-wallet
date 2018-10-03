@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 
 @Component({
   selector: 'app-header-vertical',
@@ -9,9 +9,10 @@ export class HeaderVerticalComponent implements OnInit {
   keyObject = Object.keys;
   @Input() header: object;
   @Input() showMenu: boolean;
+  @Output() selectNetwork = new EventEmitter();
+
   constructor() { }
 
   ngOnInit() {
   }
-
 }

@@ -2,6 +2,7 @@ import { Component, OnInit, ElementRef, Renderer2 } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl } from "@angular/forms";
 import { Router, ActivatedRoute } from "@angular/router";
 import { map } from "rxjs/operators";
+import { Observable } from "rxjs";
 import { Account, NetworkType, SimpleWallet, Password, EncryptedPrivateKey } from 'nem2-sdk';
 import { AppConfig } from "../../../config/app.config";
 import { AccountsInterface, WalletAccountInterface, SharedService, WalletService } from "../../../shared";
@@ -16,6 +17,10 @@ import { AccountsInterface, WalletAccountInterface, SharedService, WalletService
 export class CreateWalletComponent implements OnInit {
 
   createWalletForm: FormGroup;
+  network$: Observable<string>;
+  network: number;
+  observables: Array<string> = [];
+  red: number;
   pvk: string;
   address: string;
   viewCreatedWallet = 1;
@@ -33,6 +38,12 @@ export class CreateWalletComponent implements OnInit {
 
   ngOnInit() {
     this.createForm();
+    this.network$ = this.walletService.getNetworkObservable();
+    this.observables['network'] = this.network$.subscribe(
+      next => {
+        this.network = NetworkType[next];
+      }
+    );
   }
 
   /**
@@ -63,7 +74,7 @@ export class CreateWalletComponent implements OnInit {
 
       const user = this.createWalletForm.get('walletname').value;
       const password = new Password(this.createWalletForm.controls.passwords.get('password').value);
-      const simpleWallet = SimpleWallet.create(user, password, NetworkType.TEST_NET);
+      const simpleWallet = SimpleWallet.create(user, password,this.network);
       const walletsStorage = JSON.parse(localStorage.getItem('proxi-wallets'));
       const myWallet = walletsStorage.find(function (element) {
         return element.name === user;
@@ -153,6 +164,12 @@ export class CreateWalletComponent implements OnInit {
     }
     this.createWalletForm.reset();
     return;
+  }
+
+  ngOnDestroy(): void {
+    //Called once, before the instance is destroyed.
+    //Add 'implements OnDestroy' to the class.
+    this.observables['network'].unsubscribe();
   }
 }
 

@@ -2,6 +2,7 @@ import { Component, OnInit, ElementRef, Renderer2 } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl } from "@angular/forms";
 import { Router, ActivatedRoute } from "@angular/router";
 import { map } from "rxjs/operators";
+import { Observable } from "rxjs";
 import { Account, NetworkType, SimpleWallet, Password, EncryptedPrivateKey } from 'nem2-sdk';
 import { AppConfig } from "../../../config/app.config";
 import { AccountsInterface, WalletAccountInterface, SharedService, WalletService } from "../../../shared";
@@ -13,11 +14,15 @@ import { AccountsInterface, WalletAccountInterface, SharedService, WalletService
   styleUrls: ['./import-wallet.component.scss']
 })
 export class ImportWalletComponent implements OnInit {
-
+ 
   importWalletForm: FormGroup;
+  network$: Observable<string>;
+  network: number;
+  observables: Array<string> = [];
+  viewCreatedWallet = 1;
   pvk: string;
   address: string;
-  viewCreatedWallet = 1;
+  red: number;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -32,6 +37,12 @@ export class ImportWalletComponent implements OnInit {
 
   ngOnInit() {
     this.importForm();
+    this.network$ = this.walletService.getNetworkObservable();
+    this.observables['network'] = this.network$.subscribe(
+      next => {
+        this.network = NetworkType[next];
+      }
+    );
   }
 
   /**
@@ -65,7 +76,7 @@ export class ImportWalletComponent implements OnInit {
       const nameWallet = this.importWalletForm.get('walletname').value;
       const password = new Password(this.importWalletForm.controls.passwords.get('password').value);
       const privateKey = this.importWalletForm.get('privateKey').value;
-      const importSimpleWallet = SimpleWallet.createFromPrivateKey(nameWallet, password, privateKey, NetworkType.TEST_NET);
+      const importSimpleWallet = SimpleWallet.createFromPrivateKey(nameWallet, password, privateKey, this.network);
       const walletsStorage = JSON.parse(localStorage.getItem('proxi-wallets'));
       const myWallet = walletsStorage.find(function (element) {
         return element.name === nameWallet;
@@ -161,5 +172,13 @@ export class ImportWalletComponent implements OnInit {
     this.importWalletForm.reset();
     return;
   }
+
+
+  ngOnDestroy(): void {
+    //Called once, before the instance is destroyed.
+    //Add 'implements OnDestroy' to the class.
+    this.observables['network'].unsubscribe();
+  }
+
 }
 

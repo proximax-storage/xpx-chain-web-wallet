@@ -2,7 +2,7 @@
   <mdb-accordion [multiple]="false" aria-multiselectable="false">
     <ng-container *ngFor="let key of keyObject(header)">
       <ng-container *ngIf="header[key]['rol'] === showMenu && header[key]['show']">
-        <mdb-accordion-item class="no-collase" *ngIf="header[key]['type'] != 'dropdown'">
+        <mdb-accordion-item class="no-collase" *ngIf="header[key]['type'] !== 'dropdown'">
           <mdb-accordion-item-head mdbWavesEffect>
             <a class="waves-effect font-header" mdbWavesEffect [routerLink]="[header[key]['link']]">
               <i [ngClass]="header[key]['icon']"></i> {{header[key]['name'] | uppercase}}
@@ -10,7 +10,7 @@
           </mdb-accordion-item-head>
           <mdb-accordion-item-body></mdb-accordion-item-body>
         </mdb-accordion-item>
-        <mdb-accordion-item *ngIf="header[key]['type'] == 'dropdown'">
+        <mdb-accordion-item *ngIf="header[key]['type'] === 'dropdown'">
           <mdb-accordion-item-head mdbWavesEffect>
             <i [ngClass]="header[key]['icon']"></i> {{header[key]['name'] | uppercase}}</mdb-accordion-item-head>
           <mdb-accordion-item-body>
