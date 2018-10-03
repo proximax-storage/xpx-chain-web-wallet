@@ -34,7 +34,7 @@ export class HeaderComponent implements OnInit {
       'network': {
         'type': 'dropdown',
         'name': 'Network',
-        'class': 'active',
+        'class': '',
         'icon': 'fa fa-list-ul',
         'rol': false,
         'link': AppConfig.routes.createWallet,
@@ -43,7 +43,7 @@ export class HeaderComponent implements OnInit {
           'main_net': {
             'type': 'default',
             'name': 'MAIN NET',
-            'class': 'active',
+            'class': '',
             'icon': 'fa fa-envelope',
             'rol': false,
             'show': true,
@@ -51,7 +51,7 @@ export class HeaderComponent implements OnInit {
           },'test_net': {
             'type': 'default',
             'name': 'TEST NET',
-            'class': 'active',
+            'class': '',
             'icon': 'fa fa-envelope',
             'rol': false,
             'show': true,
@@ -59,7 +59,7 @@ export class HeaderComponent implements OnInit {
           },'mijin': {
             'type': 'default',
             'name': 'MIJIN',
-            'class': 'active',
+            'class': '',
             'icon': 'fa fa-envelope',
             'rol': false,
             'show': true,
@@ -67,7 +67,7 @@ export class HeaderComponent implements OnInit {
           },'mijin_test': {
             'type': 'default',
             'name': 'MIJIN TEST',
-            'class': 'active',
+            'class': '',
             'icon': 'fa fa-envelope',
             'rol': false,
             'show': true,
@@ -78,7 +78,7 @@ export class HeaderComponent implements OnInit {
       'createWallet': {
         'type': 'default',
         'name': 'Create wallet',
-        'class': 'active',
+        'class': '',
         'icon': 'fa fa-envelope',
         'rol': false,
         'link': AppConfig.routes.createWallet,
@@ -88,7 +88,7 @@ export class HeaderComponent implements OnInit {
       'importWallet': {
         'type': 'default',
         'name': 'Import wallet',
-        'class': 'active',
+        'class': '',
         'icon': 'fa fa-key',
         'rol': false,
         'link': AppConfig.routes.importWallet,
@@ -98,7 +98,7 @@ export class HeaderComponent implements OnInit {
       'dashboard': {
         'type': 'dropdown',
         'name': 'dashboard',
-        'class': 'active',
+        'class': '',
         'icon': 'fa fa-home',
         'rol': false,
         'link': AppConfig.routes.dashboard,
@@ -107,7 +107,7 @@ export class HeaderComponent implements OnInit {
           'dashboard': {
             'type': 'default',
             'name': 'dashboard',
-            'class': 'active',
+            'class': '',
             'icon': 'fa fa-home',
             'rol': true,
             'link': AppConfig.routes.dashboard,
@@ -119,7 +119,7 @@ export class HeaderComponent implements OnInit {
       'login': {
         'type': 'default',
         'name': 'login',
-        'class': 'active',
+        'class': '',
         'icon': 'fa fa-home',
         'rol': false,
         'link': AppConfig.routes.login,
