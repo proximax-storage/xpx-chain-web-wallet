@@ -3,7 +3,7 @@ import { FormGroup, FormBuilder, Validators, AbstractControl } from "@angular/fo
 import { Router, ActivatedRoute } from "@angular/router";
 import { map } from "rxjs/operators";
 import { Observable } from "rxjs";
-import { Account, SimpleWallet, Password, EncryptedPrivateKey } from 'nem2-sdk';
+import { Account, NetworkType, SimpleWallet, Password, EncryptedPrivateKey } from 'nem2-sdk';
 import { AppConfig } from "../../../config/app.config";
 import { AccountsInterface, WalletAccountInterface, SharedService, WalletService } from "../../../shared";
 
@@ -16,9 +16,13 @@ import { AccountsInterface, WalletAccountInterface, SharedService, WalletService
 export class ImportWalletComponent implements OnInit {
  
   importWalletForm: FormGroup;
+  network$: Observable<string>;
+  network: number;
+  observables: Array<string> = [];
   viewCreatedWallet = 1;
   pvk: string;
   address: string;
+  red: number;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -33,6 +37,12 @@ export class ImportWalletComponent implements OnInit {
 
   ngOnInit() {
     this.importForm();
+    this.network$ = this.walletService.getNetworkObservable();
+    this.observables['network'] = this.network$.subscribe(
+      next => {
+        this.network = NetworkType[next];
+      }
+    );
   }
 
   /**
@@ -162,5 +172,13 @@ export class ImportWalletComponent implements OnInit {
     this.importWalletForm.reset();
     return;
   }
+
+
+  ngOnDestroy(): void {
+    //Called once, before the instance is destroyed.
+    //Add 'implements OnDestroy' to the class.
+    this.observables['network'].unsubscribe();
+  }
+
 }
 
