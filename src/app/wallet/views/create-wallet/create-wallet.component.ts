@@ -68,14 +68,15 @@ export class CreateWalletComponent implements OnInit {
    */
   createSimpleWallet() {
     if (this.createWalletForm.valid) {
-      if (localStorage.getItem('proxi-wallets') === undefined || localStorage.getItem('proxi-wallets') === null) {
+      let walletsStorage = JSON.parse(localStorage.getItem('proxi-wallets'));
+      if (walletsStorage === undefined || walletsStorage === null) {
         localStorage.setItem('proxi-wallets', JSON.stringify([]));
+        walletsStorage = JSON.parse(localStorage.getItem('proxi-wallets'));
       }
 
       const user = this.createWalletForm.get('walletname').value;
       const password = new Password(this.createWalletForm.controls.passwords.get('password').value);
-      const simpleWallet = SimpleWallet.create(user, password,this.network);
-      const walletsStorage = JSON.parse(localStorage.getItem('proxi-wallets'));
+      const wallet = SimpleWallet.create(user, password,this.network);
       const myWallet = walletsStorage.find(function (element) {
         return element.name === user;
       });
@@ -85,24 +86,18 @@ export class CreateWalletComponent implements OnInit {
         const accounts: AccountsInterface = {
           'brain': true,
           'algo': 'pass:bip32',
-          'encrypted': simpleWallet.encryptedPrivateKey.encryptedKey,
-          'iv': simpleWallet.encryptedPrivateKey.iv,
-          'address': simpleWallet.address['address'],
+          'encrypted': wallet.encryptedPrivateKey.encryptedKey,
+          'iv': wallet.encryptedPrivateKey.iv,
+          'address': wallet.address['address'],
           'label': 'Primary',
-          'network': simpleWallet.network
+          'network': wallet.network
         }
 
-        const wallet: WalletAccountInterface = {
-          name: user,
-          accounts: {
-            '0': accounts
-          }
-        }
-        walletsStorage.push(wallet);
+        walletsStorage.push({ name: user, accounts: { '0': accounts } });
         localStorage.setItem('proxi-wallets', JSON.stringify(walletsStorage));
-        this.address = simpleWallet.address['address'];
+        this.address = wallet.address.pretty();
         this.sharedService.showSuccess('Congratulations!', 'Your wallet has been created successfully');
-        this.pvk = this.walletService.decryptPrivateKey(password, simpleWallet.encryptedPrivateKey.encryptedKey, simpleWallet.encryptedPrivateKey.iv);
+        this.pvk = this.walletService.decryptPrivateKey(password, wallet.encryptedPrivateKey.encryptedKey, wallet.encryptedPrivateKey.iv).toUpperCase();
         this.viewCreatedWallet = 2;
       } else {
         //Error of repeated Wallet
