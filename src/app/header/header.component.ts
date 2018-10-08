@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { AppConfig, Config } from '../config/app.config';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, BehaviorSubject } from 'rxjs';
 import { LoginService } from '../login/services/login.service';
 import { Router } from '@angular/router';
+import { WalletService } from "../shared";
 
 
 @Component({
@@ -19,21 +20,65 @@ export class HeaderComponent implements OnInit {
   constructor(
     private _loginService: LoginService,
     private route: Router,
+    private walletService: WalletService
   ) {
   }
 
   ngOnInit() {
-
-    /**
+  /**
    * array data header
    *
    * @memberof HeaderComponent
    */
     this.header = {
+      'network': {
+        'type': 'dropdown',
+        'name': 'Network',
+        'class': '',
+        'icon': 'fa fa-list-ul',
+        'rol': false,
+        'link': AppConfig.routes.createWallet,
+        'show': true,
+        'submenu': {
+          'main_net': {
+            'type': 'default',
+            'name': 'MAIN NET',
+            'class': '',
+            'icon': '',
+            'rol': false,
+            'show': true,
+            'submenu': {}
+          },'test_net': {
+            'type': 'default',
+            'name': 'TEST NET',
+            'class': '',
+            'icon': '',
+            'rol': false,
+            'show': true,
+            'submenu': {}
+          },'mijin': {
+            'type': 'default',
+            'name': 'MIJIN',
+            'class': '',
+            'icon': '',
+            'rol': false,
+            'show': true,
+            'submenu': {}
+          },'mijin_test': {
+            'type': 'default',
+            'name': 'MIJIN TEST',
+            'class': '',
+            'icon': '',
+            'rol': false,
+            'show': true,
+            'submenu': {}
+          }
+        }
+      },
       'createWallet': {
         'type': 'default',
         'name': 'Create wallet',
-        'class': 'active',
+        'class': '',
         'icon': 'fa fa-envelope',
         'rol': false,
         'link': AppConfig.routes.createWallet,
@@ -43,7 +88,7 @@ export class HeaderComponent implements OnInit {
       'importWallet': {
         'type': 'default',
         'name': 'Import wallet',
-        'class': 'active',
+        'class': '',
         'icon': 'fa fa-key',
         'rol': false,
         'link': AppConfig.routes.importWallet,
@@ -53,7 +98,7 @@ export class HeaderComponent implements OnInit {
       'dashboard': {
         'type': 'dropdown',
         'name': 'dashboard',
-        'class': 'active',
+        'class': '',
         'icon': 'fa fa-home',
         'rol': false,
         'link': AppConfig.routes.dashboard,
@@ -62,7 +107,7 @@ export class HeaderComponent implements OnInit {
           'dashboard': {
             'type': 'default',
             'name': 'dashboard',
-            'class': 'active',
+            'class': '',
             'icon': 'fa fa-home',
             'rol': true,
             'link': AppConfig.routes.dashboard,
@@ -74,7 +119,7 @@ export class HeaderComponent implements OnInit {
       'login': {
         'type': 'default',
         'name': 'login',
-        'class': 'active',
+        'class': '',
         'icon': 'fa fa-home',
         'rol': false,
         'link': AppConfig.routes.login,
@@ -113,10 +158,17 @@ export class HeaderComponent implements OnInit {
    * @memberof HeaderComponent
    */
   logout(param?: String) {
-    // this._dataBridgeService.clearTrans();/
     this._loginService.setLogged(false);
     this.route.navigate([`/${param}`]);
   }
 
 
+  /**
+   * 
+   * @param network 
+   * @memberof HeaderComponent
+   */
+  selectNetwork(network: string){
+    this.walletService.setNetwork(network);
+  }
 }

@@ -2,6 +2,7 @@ import { Component, OnInit, ElementRef, Renderer2 } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl } from "@angular/forms";
 import { Router, ActivatedRoute } from "@angular/router";
 import { map } from "rxjs/operators";
+import { Observable } from "rxjs";
 import { Account, NetworkType, SimpleWallet, Password, EncryptedPrivateKey } from 'nem2-sdk';
 import { AppConfig } from "../../../config/app.config";
 import { AccountsInterface, WalletAccountInterface, SharedService, WalletService } from "../../../shared";
@@ -16,6 +17,10 @@ import { AccountsInterface, WalletAccountInterface, SharedService, WalletService
 export class CreateWalletComponent implements OnInit {
 
   createWalletForm: FormGroup;
+  network$: Observable<string>;
+  network: number;
+  observables: Array<string> = [];
+  red: number;
   pvk: string;
   address: string;
   viewCreatedWallet = 1;
@@ -33,6 +38,12 @@ export class CreateWalletComponent implements OnInit {
 
   ngOnInit() {
     this.createForm();
+    this.network$ = this.walletService.getNetworkObservable();
+    this.observables['network'] = this.network$.subscribe(
+      next => {
+        this.network = NetworkType[next];
+      }
+    );
   }
 
   /**
@@ -57,14 +68,15 @@ export class CreateWalletComponent implements OnInit {
    */
   createSimpleWallet() {
     if (this.createWalletForm.valid) {
-      if (localStorage.getItem('proxi-wallets') === undefined || localStorage.getItem('proxi-wallets') === null) {
+      let walletsStorage = JSON.parse(localStorage.getItem('proxi-wallets'));
+      if (walletsStorage === undefined || walletsStorage === null) {
         localStorage.setItem('proxi-wallets', JSON.stringify([]));
+        walletsStorage = JSON.parse(localStorage.getItem('proxi-wallets'));
       }
 
       const user = this.createWalletForm.get('walletname').value;
       const password = new Password(this.createWalletForm.controls.passwords.get('password').value);
-      const simpleWallet = SimpleWallet.create(user, password, NetworkType.TEST_NET);
-      const walletsStorage = JSON.parse(localStorage.getItem('proxi-wallets'));
+      const wallet = SimpleWallet.create(user, password,this.network);
       const myWallet = walletsStorage.find(function (element) {
         return element.name === user;
       });
@@ -74,24 +86,18 @@ export class CreateWalletComponent implements OnInit {
         const accounts: AccountsInterface = {
           'brain': true,
           'algo': 'pass:bip32',
-          'encrypted': simpleWallet.encryptedPrivateKey.encryptedKey,
-          'iv': simpleWallet.encryptedPrivateKey.iv,
-          'address': simpleWallet.address['address'],
+          'encrypted': wallet.encryptedPrivateKey.encryptedKey,
+          'iv': wallet.encryptedPrivateKey.iv,
+          'address': wallet.address['address'],
           'label': 'Primary',
-          'network': simpleWallet.network
+          'network': wallet.network
         }
 
-        const wallet: WalletAccountInterface = {
-          name: user,
-          accounts: {
-            '0': accounts
-          }
-        }
-        walletsStorage.push(wallet);
+        walletsStorage.push({ name: user, accounts: { '0': accounts } });
         localStorage.setItem('proxi-wallets', JSON.stringify(walletsStorage));
-        this.address = simpleWallet.address['address'];
+        this.address = wallet.address.pretty();
         this.sharedService.showSuccess('Congratulations!', 'Your wallet has been created successfully');
-        this.pvk = this.walletService.decryptPrivateKey(password, simpleWallet.encryptedPrivateKey.encryptedKey, simpleWallet.encryptedPrivateKey.iv);
+        this.pvk = this.walletService.decryptPrivateKey(password, wallet.encryptedPrivateKey.encryptedKey, wallet.encryptedPrivateKey.iv).toUpperCase();
         this.viewCreatedWallet = 2;
       } else {
         //Error of repeated Wallet
@@ -153,6 +159,12 @@ export class CreateWalletComponent implements OnInit {
     }
     this.createWalletForm.reset();
     return;
+  }
+
+  ngOnDestroy(): void {
+    //Called once, before the instance is destroyed.
+    //Add 'implements OnDestroy' to the class.
+    this.observables['network'].unsubscribe();
   }
 }
 

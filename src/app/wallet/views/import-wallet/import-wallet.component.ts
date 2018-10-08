@@ -2,6 +2,7 @@ import { Component, OnInit, ElementRef, Renderer2 } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl } from "@angular/forms";
 import { Router, ActivatedRoute } from "@angular/router";
 import { map } from "rxjs/operators";
+import { Observable } from "rxjs";
 import { Account, NetworkType, SimpleWallet, Password, EncryptedPrivateKey } from 'nem2-sdk';
 import { AppConfig } from "../../../config/app.config";
 import { AccountsInterface, WalletAccountInterface, SharedService, WalletService } from "../../../shared";
@@ -13,11 +14,15 @@ import { AccountsInterface, WalletAccountInterface, SharedService, WalletService
   styleUrls: ['./import-wallet.component.scss']
 })
 export class ImportWalletComponent implements OnInit {
-
+ 
   importWalletForm: FormGroup;
+  network$: Observable<string>;
+  network: number;
+  observables: Array<string> = [];
+  viewCreatedWallet = 1;
   pvk: string;
   address: string;
-  viewCreatedWallet = 1;
+  red: number;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -32,12 +37,19 @@ export class ImportWalletComponent implements OnInit {
 
   ngOnInit() {
     this.importForm();
+    this.network$ = this.walletService.getNetworkObservable();
+    this.observables['network'] = this.network$.subscribe(
+      next => {
+        this.network = NetworkType[next];
+      }
+    );
   }
 
   /**
    * Create a reactive form
-   * 58079783e6de85d7d229e0327f4124b943deb4ac1b0d62f0ba217647d74d6ce7
-   * TAZK43B6I3RLJDYSTT3IGXZLLBFBP2FBVEKTUTVG
+   * 
+   * 0F3CC33190A49ABB32E7172E348EA927F975F8829107AAA3D6349BB10797D4F6
+   * TCFWMP-2M2HP4-3KJYGO-BDVQ3S-KX3Q6H-FH6GDV-3AG4
    * @memberof ImportWalletComponent
    */
   importForm() {
@@ -58,15 +70,16 @@ export class ImportWalletComponent implements OnInit {
    */
   importSimpleWallet() {
     if (this.importWalletForm.valid) {
+      let walletsStorage = JSON.parse(localStorage.getItem('proxi-wallets'));
       if (localStorage.getItem('proxi-wallets') === undefined || localStorage.getItem('proxi-wallets') === null) {
         localStorage.setItem('proxi-wallets', JSON.stringify([]));
+        walletsStorage = JSON.parse(localStorage.getItem('proxi-wallets'));
       }
 
       const nameWallet = this.importWalletForm.get('walletname').value;
       const password = new Password(this.importWalletForm.controls.passwords.get('password').value);
       const privateKey = this.importWalletForm.get('privateKey').value;
-      const importSimpleWallet = SimpleWallet.createFromPrivateKey(nameWallet, password, privateKey, NetworkType.TEST_NET);
-      const walletsStorage = JSON.parse(localStorage.getItem('proxi-wallets'));
+      const importSimpleWallet = SimpleWallet.createFromPrivateKey(nameWallet, password, privateKey, this.network);
       const myWallet = walletsStorage.find(function (element) {
         return element.name === nameWallet;
       });
@@ -91,9 +104,9 @@ export class ImportWalletComponent implements OnInit {
         }
         walletsStorage.push(wallet);
         localStorage.setItem('proxi-wallets', JSON.stringify(walletsStorage));
-        this.address = importSimpleWallet.address['address'];
+        this.address = importSimpleWallet.address.pretty();
         this.sharedService.showSuccess('Congratulations!', 'Your wallet has been created successfully');
-        this.pvk = this.walletService.decryptPrivateKey(password, importSimpleWallet.encryptedPrivateKey.encryptedKey, importSimpleWallet.encryptedPrivateKey.iv);
+        this.pvk = this.walletService.decryptPrivateKey(password, importSimpleWallet.encryptedPrivateKey.encryptedKey, importSimpleWallet.encryptedPrivateKey.iv).toUpperCase();
         this.viewCreatedWallet = 2;
       } else {
         //Error of repeated Wallet
@@ -161,5 +174,13 @@ export class ImportWalletComponent implements OnInit {
     this.importWalletForm.reset();
     return;
   }
+
+
+  ngOnDestroy(): void {
+    //Called once, before the instance is destroyed.
+    //Add 'implements OnDestroy' to the class.
+    this.observables['network'].unsubscribe();
+  }
+
 }
 
