@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 
 @Component({
   selector: 'app-header-horizontal',
@@ -9,9 +9,15 @@ export class HeaderHorizontalComponent implements OnInit {
   keyObject = Object.keys;
   @Input() header: object;
   @Input() showMenu: boolean;
+  @Output() logout: EventEmitter<any> = new EventEmitter();
   constructor() { }
 
   ngOnInit() {
   }
+  logoutEvent(param){
+    this.logout.emit(param);
+
+  }
+
 
 }

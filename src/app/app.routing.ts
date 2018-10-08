@@ -11,18 +11,18 @@ const appRoutes: Routes = [
     {
         path: '',
         loadChildren: './home/home.module#HomeModule',
-        data: { preload: false }
+   
     },
     
     {
         path: '',
         loadChildren: './wallet/wallet.module#WalletModule',
-        data: { preload: false }
+  
     },
     {
         path: '',
         loadChildren: './dashboard/dashboard.module#DashboardModule',
-        data: { preload: false }
+    
     }
 ];
 export const appRoutingProviders: any[] = [];

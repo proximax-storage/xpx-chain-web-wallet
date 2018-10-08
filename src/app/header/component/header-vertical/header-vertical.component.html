@@ -24,7 +24,7 @@
             </a>
           </ng-container>
           <ng-container *ngIf="key === 'signout'">
-            <a *ngIf="header[key]['type'] != 'dropdown'" class="nav-link waves-light" mdbWavesEffect (click)="logout(header[key]['link'])">
+            <a *ngIf="header[key]['type'] != 'dropdown'" class="nav-link waves-light" mdbWavesEffect (click)="logoutEvent(header[key]['link'])">
                 <i [ngClass]="header[key]['icon']"></i>
                 <span class="clearfix d-none d-sm-inline-block font-header">{{header[key]['name'] | uppercase}}</span>
               </a>

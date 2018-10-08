@@ -3,3 +3,12 @@
    width: 100%;
 
 }
+
+.classic-tabs .nav li a {
+   color: rgba(0, 0, 0, 0.7) !important;
+}
+
+.classic-tabs .nav li a.active {
+   color: #3f3f3f;
+   font-weight: 550;
+}

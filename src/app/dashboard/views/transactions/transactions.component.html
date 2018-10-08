@@ -1,1 +1,83 @@
-<p>transfer</p>
+<div class="row mt-1rm">
+
+   <div class="col-12">
+      <div class="table-responsive ">
+         <table class="table table-hover table-borderless">
+            <thead>
+               <tr>
+                  <th>#</th>
+                  <th>First</th>
+                  <th>Last</th>
+                  <th scope="col">Handle</th>
+               </tr>
+            </thead>
+
+         </table>
+      </div>
+      <ng-container *ngFor="let item of items; let i=index">
+
+         <table class="table table-hover table-borderless">
+
+            <tbody>
+               <tr (click)="index.toggle() " aria-controls="true">
+                  <th scope="row">{{item.valor}}</th>
+                  <td>Mark</td>
+                  <td>Otto</td>
+                  <td>@mdo</td>
+               </tr>
+            </tbody>
+
+
+         </table>
+
+         <div class="" mdbCollapse [isCollapsed]="true" #index="bs-collapse">
+            <p>Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh
+               helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.</p>
+         </div>
+      </ng-container>
+
+      <!-- <tr (click)="test.toggle() " aria-controls="true">
+                     <th scope="row">2</th>
+                     <td>Mark</td>
+                     <td>Otto</td>
+                     <td>@mdo</td>
+                  </tr>
+                  <tr>
+                     <td colspan="4">
+                 
+                        <div class="" mdbCollapse [isCollapsed]="true" #test="bs-collapse">
+                           <p>222222222n cred nesciunt sapiente ea proident.</p>
+                        </div>
+                     </td>
+                  </tr> -->
+
+
+
+
+
+   </div>
+
+   <!-- <div class="col-6">
+      <table class="table table-hover table-borderless">
+         <thead>
+            <tr>
+               <th scope="col">#</th>
+               <th scope="col">First</th>
+               <th scope="col">Last</th>
+               <th scope="col">Handle</th>
+            </tr>
+         </thead>
+      </table>
+      <table class="table table-hover table-borderless">
+         <tbody>
+            <tr>
+               <td>1</td>
+               <td>2</td>
+               <td>3</td>
+               <td>4</td>
+            </tr>
+         </tbody>
+
+      </table>
+   </div> -->
+</div>

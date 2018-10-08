@@ -13,8 +13,8 @@ function createWindow() {
    })
 
 
-   // win.loadURL(`file://${__dirname}/dist/proxiWallet/index.html`)
-win.loadURL('http://localhost:4200/')
+    win.loadURL(`file://${__dirname}/dist/proxiWallet/index.html`)
+// win.loadURL('http://localhost:4200/')
    //// uncomment below to open the DevTools.
     win.webContents.openDevTools()
 
