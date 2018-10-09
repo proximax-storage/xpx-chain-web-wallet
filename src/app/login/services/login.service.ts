@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { WalletService } from '../../shared/services/wallet.service';
 import { AppConfig } from '../../config/app.config';
+import { ApiService } from "../../shared/services/api.services";
+import { Address } from "nem2-sdk/dist";
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +15,7 @@ export class LoginService {
   isLogged$: Observable<boolean> = this.isLoggedSubject.asObservable();
   constructor(
     private _walletService: WalletService,
+    private _apiService: ApiService,
     private route: Router
   ) { this.setLogged(false); }
 
@@ -23,7 +26,7 @@ export class LoginService {
    * @returns
    * @memberof LoginService
    */
-  public walletsOption(wallets: Array<any> = []) {
+  walletsOption(wallets: Array<any> = []) {
     wallets = (wallets == null) ? [] : wallets
     const retorno = [{ 'value': '', 'label': 'Select wallet' }];
     wallets.forEach((item, index) => {
@@ -41,11 +44,14 @@ export class LoginService {
    * @returns
    * @memberof LoginService
    */
-  public login(common, wallet) {
+  login(common, wallet) {
     if (!this._walletService.login(common, wallet)) { return false; }
-    // this._DataBridgeService.connect();
     this.route.navigate([`/${AppConfig.routes.dashboard}`]);
     this.setLogged(true);
+
+    //Get transactions confirmed
+    const ws = this._apiService.getConnectionWs();
+    this.getTransactionConfirmed(ws, 'SBILTA-367K2L-X2FEXG-5TFWAS-7GEFYA-GY7QLF-BYKC');
     return true;
   }
 
@@ -56,7 +62,7 @@ export class LoginService {
    * @param {*} params
    * @memberof LoginService
    */
-  public setLogged(params) {
+  setLogged(params) {
     this.logged = params;
     this.isLoggedSubject.next(this.logged);
   }
@@ -67,8 +73,27 @@ export class LoginService {
    * @returns
    * @memberof LoginService
    */
-  public getIsLogged() {
+  getIsLogged() {
     return this.isLogged$;
   }
 
+  getAllTransaction() {
+    
+  }
+
+  getTransactionConfirmed(ws, address) {
+    ws.open().then(() => {
+      ws
+        .confirmed(Address.createFromRawAddress(address))
+        .subscribe(transaction => console.log('transaction confirmed ', transaction), err => console.error(err));
+    });
+  }
+
+  getTransactionUnConfirmed(ws, address) {
+    ws.open().then(() => {
+      ws
+        .unconfirmedAdded(Address.createFromRawAddress(address))
+        .subscribe(transaction => console.log('transaction getTransactionUnConfirmed ', transaction), err => console.error(err));
+    });
+  }
 }

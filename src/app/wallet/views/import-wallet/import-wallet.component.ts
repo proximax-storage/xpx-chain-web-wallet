@@ -47,7 +47,7 @@ export class ImportWalletComponent implements OnInit {
 
   /**
    * Create a reactive form
-   * 
+   * //SBILTA-367K2L-X2FEXG-5TFWAS-7GEFYA-GY7QLF-BYKC (direction with money)
    * 0F3CC33190A49ABB32E7172E348EA927F975F8829107AAA3D6349BB10797D4F6
    * TCFWMP-2M2HP4-3KJYGO-BDVQ3S-KX3Q6H-FH6GDV-3AG4
    * @memberof ImportWalletComponent

@@ -53,7 +53,7 @@ export class LoginComponent implements OnInit {
    * @returns
    * @memberof LoginComponent
    */
-  public getError(param, name = '') {
+  getError(param, name = '') {
     if (this.loginForm.get(param).getError('required')) {
       return `This field is required`;
     } else if (this.loginForm.get(param).getError('minlength')) {
@@ -71,7 +71,7 @@ export class LoginComponent implements OnInit {
    * @returns
    * @memberof LoginComponent
    */
-  public getErrorGroup(param, name) {
+  getErrorGroup(param, name) {
     if (this.loginForm.get(param).get(name).getError('required')) {
       return `This field is required`;
     } else if (this.loginForm.get(param).get(name).getError('minlength')) {

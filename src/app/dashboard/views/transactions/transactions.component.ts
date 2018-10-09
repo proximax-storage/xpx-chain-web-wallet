@@ -2,8 +2,6 @@ import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { CollapseComponent } from 'ng-uikit-pro-standard';
 import { Address, Transaction, AccountHttp } from 'nem2-sdk';
 import { Observable, Subject } from 'rxjs';
-// import { address } from 'nem2-library';
-// import { crypto } from 'nem2-library';
 
 @Component({
   selector: 'app-transactions',
@@ -17,21 +15,14 @@ export class TransactionsComponent implements OnInit {
   items: any
   accountHttp: AccountHttp;
   @ViewChild('test') test: any;
-// direccion :Address;
+  // direccion :Address;
   constructor() {
     this.accountHttp = new AccountHttp('http://192.168.10.38:3000');
-
     this.items = [{ 'valor': '2' }, { 'valor': '3' }, { 'valor': '4' }, { 'valor': '5' }, { 'valor': '6' }, { 'valor': '7' }]
   }
 
   ngOnInit() {
- console.log( this.accountHttp)
-
-    // this.getaddresss().subscribe(addres => {
-    //   console.log(addres)
-    // })
-
-
+    console.log(this.accountHttp);
   }
 
   /**
@@ -42,9 +33,4 @@ export class TransactionsComponent implements OnInit {
   public getaddresss(address: Address): Observable<any> {
     return this.accountHttp.getAccountInfo(address);
   }
-
-
-
-
-
 }

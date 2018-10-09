@@ -4,12 +4,14 @@ import { ParticlesModule } from 'angular-particle';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MdbModule } from "../shared/moduls/mdb/mdb.module";
 import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
 const modules = [
   CommonModule,
   ParticlesModule,
   ReactiveFormsModule,
-  FormsModule
+  FormsModule,
+  HttpClientModule
 ];
 
 @NgModule({
