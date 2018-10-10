@@ -23,7 +23,8 @@ export class ApiService {
 
   getConnectionWs() {
     if (!this.websocketIsOpen) {
-      return this.openConnectionWs();
+      this.connectionWs = this.openConnectionWs();
+      return this.connectionWs;
     }
     return this.connectionWs;
   }
