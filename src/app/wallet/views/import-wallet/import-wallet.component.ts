@@ -16,13 +16,25 @@ import { AccountsInterface, WalletAccountInterface, SharedService, WalletService
 export class ImportWalletComponent implements OnInit {
  
   importWalletForm: FormGroup;
-  network$: Observable<string>;
   network: number;
-  observables: Array<string> = [];
   viewCreatedWallet = 1;
   pvk: string;
   address: string;
-  red: number;
+  typeNetwork = [
+    {
+      'value': NetworkType.TEST_NET,
+      'label': 'TEST NET'
+    }, {
+      'value': NetworkType.MAIN_NET,
+      'label': 'MAIN NET'
+    }, {
+      'value': NetworkType.MIJIN_TEST,
+      'label': 'MIJIN TEST'
+    }, {
+      'value': NetworkType.MIJIN,
+      'label': 'MIJIN'
+    }
+  ];
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -37,12 +49,6 @@ export class ImportWalletComponent implements OnInit {
 
   ngOnInit() {
     this.importForm();
-    this.network$ = this.walletService.getNetworkObservable();
-    this.observables['network'] = this.network$.subscribe(
-      next => {
-        this.network = NetworkType[next];
-      }
-    );
   }
 
   /**
@@ -55,6 +61,7 @@ export class ImportWalletComponent implements OnInit {
   importForm() {
     this.importWalletForm = this.fb.group({
       walletname: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(30)]],
+      network: [NetworkType.TEST_NET, [Validators.required]],
       passwords: this.fb.group({
         password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]],
         confirm_password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]],
@@ -79,6 +86,7 @@ export class ImportWalletComponent implements OnInit {
       const nameWallet = this.importWalletForm.get('walletname').value;
       const password = new Password(this.importWalletForm.controls.passwords.get('password').value);
       const privateKey = this.importWalletForm.get('privateKey').value;
+
       const importSimpleWallet = SimpleWallet.createFromPrivateKey(nameWallet, password, privateKey, this.network);
       const myWallet = walletsStorage.find(function (element) {
         return element.name === nameWallet;
@@ -172,15 +180,18 @@ export class ImportWalletComponent implements OnInit {
       return;
     }
     this.importWalletForm.reset();
+    this.importWalletForm.get('network').setValue(NetworkType.TEST_NET);
     return;
   }
 
-
-  ngOnDestroy(): void {
-    //Called once, before the instance is destroyed.
-    //Add 'implements OnDestroy' to the class.
-    this.observables['network'].unsubscribe();
+  /**
+   *Change of selection option
+   *
+   * @param {*} redSelected
+   * @memberof ImportWalletComponent
+   */
+  private optionSelected(redSelected: any) {
+    this.network = redSelected.value;
   }
-
 }
 

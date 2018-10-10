@@ -31,50 +31,6 @@ export class HeaderComponent implements OnInit {
    * @memberof HeaderComponent
    */
     this.header = {
-      'network': {
-        'type': 'dropdown',
-        'name': 'Network',
-        'class': '',
-        'icon': 'fa fa-list-ul',
-        'rol': false,
-        'link': AppConfig.routes.createWallet,
-        'show': true,
-        'submenu': {
-          'main_net': {
-            'type': 'default',
-            'name': 'MAIN NET',
-            'class': '',
-            'icon': '',
-            'rol': false,
-            'show': true,
-            'submenu': {}
-          },'test_net': {
-            'type': 'default',
-            'name': 'TEST NET',
-            'class': '',
-            'icon': '',
-            'rol': false,
-            'show': true,
-            'submenu': {}
-          },'mijin': {
-            'type': 'default',
-            'name': 'MIJIN',
-            'class': '',
-            'icon': '',
-            'rol': false,
-            'show': true,
-            'submenu': {}
-          },'mijin_test': {
-            'type': 'default',
-            'name': 'MIJIN TEST',
-            'class': '',
-            'icon': '',
-            'rol': false,
-            'show': true,
-            'submenu': {}
-          }
-        }
-      },
       'createWallet': {
         'type': 'default',
         'name': 'Create wallet',
@@ -160,15 +116,5 @@ export class HeaderComponent implements OnInit {
   logout(param?: String) {
     this._loginService.setLogged(false);
     this.route.navigate([`/${param}`]);
-  }
-
-
-  /**
-   * 
-   * @param network 
-   * @memberof HeaderComponent
-   */
-  selectNetwork(network: string){
-    this.walletService.setNetwork(network);
   }
 }

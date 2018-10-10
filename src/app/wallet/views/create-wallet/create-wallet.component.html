@@ -11,12 +11,19 @@
             <mdb-card-body class="px-lg-5 backg-beige">
               <h4 class="title-form">Create Wallet</h4>
               <form [formGroup]="createWalletForm" (ngSubmit)="createSimpleWallet()" class="" style="color: #757575;">
-                <div class="md-form" id="container-walletname">
+                <div class="md-form  mt-5">
+                  <i class="fa fa-bars prefix text-gris"></i>
+                  <mdb-select [options]="typeNetwork"  placeholder="Select type network" required formControlName="network" class="colorful-select dropdown-default" 
+                    (selected)="optionSelected($event)" mdbInputDirective [errorMessage]="getError('network')"></mdb-select>
+                </div>
+
+                <div class="md-form mt-5" id="container-walletname">
                   <i class="fa fa-user prefix text-gris"></i>
                   <input type="text" autocomplete="off" required formControlName="walletname" id="walletname" class="form-control" mdbInputDirective
-                    data-success="Valid walletname" [errorMessage]="getError('walletname')">
+                    data-success="Valid Wallet name" [errorMessage]="getError('walletname')">
                   <label for="walletname">Wallet name</label>
                 </div>
+
                 <div formGroupName="passwords">
                   <div class="md-form mt-5" id="container-password">
                     <i class="fa fa-lock prefix text-gris"></i>

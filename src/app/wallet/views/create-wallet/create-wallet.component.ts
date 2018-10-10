@@ -17,13 +17,26 @@ import { AccountsInterface, WalletAccountInterface, SharedService, WalletService
 export class CreateWalletComponent implements OnInit {
 
   createWalletForm: FormGroup;
-  network$: Observable<string>;
   network: number;
-  observables: Array<string> = [];
   red: number;
   pvk: string;
   address: string;
   viewCreatedWallet = 1;
+  typeNetwork = [
+    {
+      'value': NetworkType.TEST_NET,
+      'label': 'TEST NET'
+    }, {
+      'value': NetworkType.MAIN_NET,
+      'label': 'MAIN NET'
+    }, {
+      'value': NetworkType.MIJIN_TEST,
+      'label': 'MIJIN TEST'
+    }, {
+      'value': NetworkType.MIJIN,
+      'label': 'MIJIN'
+    }
+  ];
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -38,12 +51,6 @@ export class CreateWalletComponent implements OnInit {
 
   ngOnInit() {
     this.createForm();
-    this.network$ = this.walletService.getNetworkObservable();
-    this.observables['network'] = this.network$.subscribe(
-      next => {
-        this.network = NetworkType[next];
-      }
-    );
   }
 
   /**
@@ -54,6 +61,7 @@ export class CreateWalletComponent implements OnInit {
   createForm() {
     this.createWalletForm = this.fb.group({
       walletname: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(30)]],
+      network: [NetworkType.TEST_NET, [Validators.required]],
       passwords: this.fb.group({
         password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]],
         confirm_password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]],
@@ -76,7 +84,7 @@ export class CreateWalletComponent implements OnInit {
 
       const user = this.createWalletForm.get('walletname').value;
       const password = new Password(this.createWalletForm.controls.passwords.get('password').value);
-      const wallet = SimpleWallet.create(user, password,this.network);
+      const wallet = SimpleWallet.create(user, password, this.network);
       const myWallet = walletsStorage.find(function (element) {
         return element.name === user;
       });
@@ -107,12 +115,12 @@ export class CreateWalletComponent implements OnInit {
     } else if (this.createWalletForm.controls.passwords.get('password').valid &&
       this.createWalletForm.controls.passwords.get('confirm_password').valid &&
       this.createWalletForm.controls.passwords.getError('noMatch')) {
-        this.sharedService.showError('Attention!', `Password doesn't match`);
-        this.cleanForm('password', 'passwords');
-        this.cleanForm('confirm_password', 'passwords');
+      this.sharedService.showError('Attention!', `Password doesn't match`);
+      this.cleanForm('password', 'passwords');
+      this.cleanForm('confirm_password', 'passwords');
     }
   }
- 
+
   /**
    * Function that gets errors from a form
    *
@@ -158,13 +166,17 @@ export class CreateWalletComponent implements OnInit {
       return;
     }
     this.createWalletForm.reset();
+    this.createWalletForm.get('network').setValue(NetworkType.TEST_NET);
     return;
   }
 
-  ngOnDestroy(): void {
-    //Called once, before the instance is destroyed.
-    //Add 'implements OnDestroy' to the class.
-    this.observables['network'].unsubscribe();
+  /**
+   *Change of selection option
+   *
+   * @param {*} redSelected
+   * @memberof CreateWalletComponent
+   */
+  private optionSelected(redSelected: any) {
+    this.network = redSelected.value;
   }
 }
-

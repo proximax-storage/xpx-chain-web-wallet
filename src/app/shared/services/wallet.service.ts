@@ -12,8 +12,6 @@ export class WalletService {
   currentAccount: string;
   network: any;
   algo: string;
-  typeNetwork: BehaviorSubject<string> = new BehaviorSubject<string>('TEST_NET');
-  typeNetwork$: Observable<string> = this.typeNetwork.asObservable();
 
   constructor(private sharedService: SharedService) { }
 
@@ -130,28 +128,5 @@ export class WalletService {
     crypto.passwordToPrivatekey(common, wallet, 'pass:bip32');
     return common.privateKey;
   }
-
-
-  /**
-   * 
-   * 
-   * @param {any} network 
-   * @memberof WalletService
-   */
-  setNetwork(network) {
-    this.typeNetwork.next(network.toUpperCase());
-  }
-
-
-  /**
-   * 
-   * 
-   * @returns {Observable<string>} 
-   * @memberof WalletService
-   */
-  getNetworkObservable(): Observable<string> {
-    return this.typeNetwork.asObservable();
-  }
-
 }
 

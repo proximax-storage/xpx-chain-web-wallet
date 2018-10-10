@@ -11,7 +11,15 @@
             <mdb-card-body class="px-lg-5 backg-beige">
               <h4 class="title-form">Import Wallet</h4>
               <form [formGroup]="importWalletForm" (ngSubmit)="importSimpleWallet()" style="color: #757575;">
-                <div class="md-form">
+
+                <div class="md-form  mt-5">
+                  <i class="fa fa-bars prefix text-gris"></i>
+                  <mdb-select [options]="typeNetwork" required formControlName="network" class="colorful-select dropdown-default" (selected)="optionSelected($event)"
+                    mdbInputDirective [errorMessage]="getError('network')"></mdb-select>
+                </div>
+
+
+                <div class="md-form mt-5">
                   <i class="fa fa-user prefix text-gris"></i>
                   <input type="text" autocomplete="off" required formControlName="walletname" id="walletname" class="form-control" mdbInputDirective
                     data-success="Valid walletname" [errorMessage]="getError('walletname')">
