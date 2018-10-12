@@ -9,7 +9,7 @@ const routes: Routes = [
   {
     path: `${AppConfig.routes.dashboard}`,
     component: DashboardComponent,
-    canActivate: [LoggedGuard] 
+    canActivate: [LoggedGuard]
   },
 ];
 

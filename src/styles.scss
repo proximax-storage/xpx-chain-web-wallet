@@ -1,125 +1,141 @@
 /* You can add global styles to this file, and also import other style files */
-body{
-    // background-image: -webkit-linear-gradient(140deg,rgb(32, 128, 115) 0%,rgb(32, 181, 172) 33%,rgb(120, 182, 228) 100%);
-    // background-repeat: no-repeat;
-    // border: 1px solid rgba(255, 0, 0, 0);
-    background: #20a99f;
-    // background-image: -webkit-linear-gradient(180deg, #33b6b8 0%, #22b5ad 33%, #37b6ba 100%);
+
+body {
+  // background-image: -webkit-linear-gradient(140deg,rgb(32, 128, 115) 0%,rgb(32, 181, 172) 33%,rgb(120, 182, 228) 100%);
+  // background-repeat: no-repeat;
+  // border: 1px solid rgba(255, 0, 0, 0);
+  background: #20a99f;
+  // background-image: -webkit-linear-gradient(180deg, #33b6b8 0%, #22b5ad 33%, #37b6ba 100%);
 }
 
 // html, body{
 //     height: 100%;
 //     height: 100%;
 // }
-
-
-
-html:after{
-    width: 100%;
-    display: block;
-    content: "";
-    height: 100%;
+html:after {
+  width: 100%;
+  display: block;
+  content: "";
+  height: 100%;
 }
 
-
-.mt-100px{
-    margin-top: 100px;
+.mt-100px {
+  margin-top: 100px;
 }
 
-.mt-5rem{
-    margin-top: 5rem;
+.mt-5rem {
+  margin-top: 5rem;
 }
 
-.mt-8rem{
-    margin-top: 8rem;
+.mt-8rem {
+  margin-top: 8rem;
 }
 
-.mt-4rm{
-    margin-top: 4rem !important;
+.mt-4rm {
+  margin-top: 4rem !important;
 }
 
-.mb-3rem{
-    margin-bottom: 3rem;
-}
-.mt-1rm{
-    margin-top: 1rem !important;
+.mb-3rem {
+  margin-bottom: 3rem;
 }
 
-.mt-1-5rem{
-    margin-top: 1.5rem;
+.mt-1rm {
+  margin-top: 1rem !important;
 }
 
-.background-proxiwallet{
-    background-image: -webkit-linear-gradient(140deg,rgb(32, 128, 115) 0%,rgb(32, 181, 172) 33%,rgb(120, 182, 228) 100%);
-    color: white;
-  }
-  
+.mt-1-5rem {
+  margin-top: 1.5rem;
+}
+
+.background-proxiwallet {
+  background-image: -webkit-linear-gradient(140deg, rgb(32, 128, 115) 0%, rgb(32, 181, 172) 33%, rgb(120, 182, 228) 100%);
+  color: white;
+}
+
 .border-proxiWallet {
-    border: 1px solid -webkit-linear-gradient(140deg,rgb(32, 128, 115) 0%,rgb(32, 181, 172) 33%,rgb(120, 182, 228) 100%);
+  border: 1px solid -webkit-linear-gradient(140deg, rgb(32, 128, 115) 0%, rgb(32, 181, 172) 33%, rgb(120, 182, 228) 100%);
 }
 
-.t-a-r{
-    text-align: right;
+.t-a-r {
+  text-align: right;
 }
 
-
-.text-gris{
-    color: #757575 !important;
+.text-gris {
+  color: #757575 !important;
 }
 
-.btn-reverse{
-    background-color: white !important;
-    color: #757575 !important;
+.btn-reverse {
+  background-color: white !important;
+  color: #757575 !important;
 }
 
-
-.title-form{
-    text-align: center;
-    margin-top: 2rem;
-    margin-bottom: 2rem;
-    font-weight: 500;
-    color: #757575;
+.title-form {
+  text-align: center;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  font-weight: 500;
+  color: #757575;
 }
-
 
 //class to toast
-.toastSuccess{
-    opacity: 1.0 !important;
-    background-color: #35af8d;
+.toastSuccess {
+  opacity: 1.0 !important;
+  background-color: #35af8d;
 }
 
 .toastError {
-    opacity: 1.0 !important;
-    background-color: #e42c2c;
+  opacity: 1.0 !important;
+  background-color: #e42c2c;
 }
 
-.toastWarning{
-    opacity: 1.0 !important;
+.toastWarning {
+  opacity: 1.0 !important;
 }
 
 //fin class to toast
-
 .show-pvk {
-    text-align: center;
-    margin-top: 3rem;
-    font-weight: 600 !important;
-    color: #208f83;
-    cursor: pointer;
+  text-align: center;
+  margin-top: 3rem;
+  font-weight: 600 !important;
+  color: #208f83;
+  cursor: pointer;
 }
 
-.detail-pvk{
-    text-align: center;
+.detail-pvk {
+  text-align: center;
 }
 
-.font-header{
-    font-weight: 400;
-    font-size: 0.8rem;
+.font-header {
+  font-weight: 400;
+  font-size: 0.8rem;
 }
 
-.backg-beige{
-    background: #f7f7f7;
+.backg-beige {
+  background: #f7f7f7;
 }
 
-.check-sucess{
-    width: 260px;
+.check-sucess {
+  width: 260px;
 }
+
+.text-mild {
+  color: #636363;
+  font-weight: 600;
+}
+
+.text-mild-child {
+  color: #636363;
+}
+
+// .background-header-pxw {
+//   background-image: -webkit-linear-gradient(140deg, #208073 0%, #20b5ac 53%, #208073 100%);
+// }
+
+/* font size**/
+
+.fs-08rem {
+  font-size: 0.8rem;
+}
+
+
+/***/
