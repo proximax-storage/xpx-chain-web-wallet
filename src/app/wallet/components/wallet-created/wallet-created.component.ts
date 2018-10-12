@@ -7,7 +7,8 @@ import { AppConfig } from "src/app/config/app.config";
   styleUrls: ['./wallet-created.component.scss']
 })
 export class WalletCreatedComponent implements OnInit {
-  messageShowPvk = 'Hide private key';
+  messageShowPvk = 'Show private key';
+  isCollapsed = true;
   showMessage = true;
   @Input() privateKey: string;
   @Input() address: string;
@@ -23,10 +24,10 @@ export class WalletCreatedComponent implements OnInit {
 
   showHidePvkAddress() {
     if (this.showMessage) {
-      this.messageShowPvk = 'Show private key';
+      this.messageShowPvk = 'Hide private key';
       this.showMessage = false;
     }else {
-      this.messageShowPvk = 'Hide private key';
+      this.messageShowPvk = 'Show private key';
       this.showMessage = true;
     }
   }

@@ -1,29 +1,32 @@
 <h4 class="title-form">Congratulations, your wallet has been created!</h4>
 <hr>
 <mdb-card-text>
-  Your wallet has been created, then we show you your address and your private key, for your security, we recommend that you
-  keep your private key in a safe place outside the internet
+    Your wallet has been created, then we show you your address and your private key, for your security, we recommend that you keep your private key in a safe place outside the internet
 </mdb-card-text>
 
 <h5 (click)="pvk.toggle(); showHidePvkAddress();" class="show-pvk">
-  {{messageShowPvk}}
+    {{messageShowPvk}}
 </h5>
-<div  [collapse]="false" [mdbCollapse]="isCollapsed" #pvk="bs-collapse" class="mt-1-5rem">
-  <mdb-card-text class="detail-pvk">
-    <span class="pvk-address">Private key</span> <br> {{privateKey}} <br><br>
-  </mdb-card-text>
+
+<div mdbCollapse #pvk="bs-collapse" class="mt-1-5rem">
+    <mdb-card-text class="detail-pvk">
+        <span class="pvk-address">Private key</span> <br> {{privateKey}} <br><br>
+    </mdb-card-text>
 </div>
+
+
 <mdb-card-text class="detail-pvk">
-  <span class="pvk-address">Address</span> <br> {{address}}
+    <span class="pvk-address">Address</span> <br> {{address}}
 </mdb-card-text>
+
 <div class="mt-4rm">
-  <div class="row ">
-    <div class="mx-auto">
-      <div class="row">
-        <div class="col-xs-6">
-          <button mdbBtn type="button" color="default" rounded="true" class="waves-light" mdbWavesEffect type="submit" [routerLink]="routes.login">Sign In</button>
+    <div class="row ">
+        <div class="mx-auto">
+            <div class="row">
+                <div class="col-xs-6">
+                    <button mdbBtn type="button" color="default" rounded="true" class="waves-light" mdbWavesEffect type="submit" [routerLink]="routes.login">Sign In</button>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
 </div>
