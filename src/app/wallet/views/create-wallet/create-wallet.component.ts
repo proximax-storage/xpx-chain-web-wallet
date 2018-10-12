@@ -17,7 +17,6 @@ import { AccountsInterface, WalletAccountInterface, SharedService, WalletService
 export class CreateWalletComponent implements OnInit {
 
   createWalletForm: FormGroup;
-  network: number;
   red: number;
   pvk: string;
   address: string;
@@ -71,7 +70,7 @@ export class CreateWalletComponent implements OnInit {
 
   /**
    * Create a simple wallet
-   * 
+   *
    * @memberof CreateWalletComponent
    */
   createSimpleWallet() {
@@ -84,7 +83,8 @@ export class CreateWalletComponent implements OnInit {
 
       const user = this.createWalletForm.get('walletname').value;
       const password = new Password(this.createWalletForm.controls.passwords.get('password').value);
-      const wallet = SimpleWallet.create(user, password, this.network);
+      const network = this.createWalletForm.get('network').value;
+      const wallet = SimpleWallet.create(user, password, network);
       const myWallet = walletsStorage.find(function (element) {
         return element.name === user;
       });
@@ -153,7 +153,7 @@ export class CreateWalletComponent implements OnInit {
 
   /**
    * Clean form
-   * 
+   *
    * @memberof CreateWalletComponent
    */
   cleanForm(custom?, formControl?) {
@@ -168,15 +168,5 @@ export class CreateWalletComponent implements OnInit {
     this.createWalletForm.reset();
     this.createWalletForm.get('network').setValue(NetworkType.TEST_NET);
     return;
-  }
-
-  /**
-   *Change of selection option
-   *
-   * @param {*} redSelected
-   * @memberof CreateWalletComponent
-   */
-  private optionSelected(redSelected: any) {
-    this.network = redSelected.value;
   }
 }

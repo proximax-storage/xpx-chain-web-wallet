@@ -14,9 +14,8 @@ import { AccountsInterface, WalletAccountInterface, SharedService, WalletService
   styleUrls: ['./import-wallet.component.scss']
 })
 export class ImportWalletComponent implements OnInit {
- 
+
   importWalletForm: FormGroup;
-  network: number;
   viewCreatedWallet = 1;
   pvk: string;
   address: string;
@@ -72,7 +71,7 @@ export class ImportWalletComponent implements OnInit {
 
   /**
    * Import a simple wallet
-   * 
+   *
    * @memberof ImportWalletComponent
    */
   importSimpleWallet() {
@@ -86,8 +85,9 @@ export class ImportWalletComponent implements OnInit {
       const nameWallet = this.importWalletForm.get('walletname').value;
       const password = new Password(this.importWalletForm.controls.passwords.get('password').value);
       const privateKey = this.importWalletForm.get('privateKey').value;
+      const network = this.importWalletForm.get('network').value;
 
-      const importSimpleWallet = SimpleWallet.createFromPrivateKey(nameWallet, password, privateKey, this.network);
+      const importSimpleWallet = SimpleWallet.createFromPrivateKey(nameWallet, password, privateKey, network);
       const myWallet = walletsStorage.find(function (element) {
         return element.name === nameWallet;
       });
@@ -167,7 +167,7 @@ export class ImportWalletComponent implements OnInit {
 
   /**
    * Clean form
-   * 
+   *
    * @memberof ImportWalletComponent
    */
   cleanForm(custom?, formControl?) {
@@ -182,16 +182,6 @@ export class ImportWalletComponent implements OnInit {
     this.importWalletForm.reset();
     this.importWalletForm.get('network').setValue(NetworkType.TEST_NET);
     return;
-  }
-
-  /**
-   *Change of selection option
-   *
-   * @param {*} redSelected
-   * @memberof ImportWalletComponent
-   */
-  private optionSelected(redSelected: any) {
-    this.network = redSelected.value;
   }
 }
 

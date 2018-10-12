@@ -8,7 +8,6 @@ import { AppConfig } from "src/app/config/app.config";
 })
 export class WalletCreatedComponent implements OnInit {
   messageShowPvk = 'Show private key';
-  isCollapsed = true;
   showMessage = true;
   @Input() privateKey: string;
   @Input() address: string;

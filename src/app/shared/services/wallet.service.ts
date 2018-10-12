@@ -68,10 +68,10 @@ export class WalletService {
   }
 
   /**
-   * 
-   * 
-   * @param {any} privateKey 
-   * @returns 
+   *
+   *
+   * @param {any} privateKey
+   * @returns
    * @memberof WalletService
    */
   isPrivateKeyValid(privateKey) {
@@ -87,10 +87,10 @@ export class WalletService {
   }
 
   /**
-   * 
-   * 
-   * @param {any} str 
-   * @returns 
+   *
+   *
+   * @param {any} str
+   * @returns
    * @memberof WalletService
    */
   isHexadecimal(str) {
@@ -110,9 +110,9 @@ export class WalletService {
 
   /**
    * Decrypt and return private key
-   * @param password 
-   * @param encryptedKey 
-   * @param iv 
+   * @param password
+   * @param encryptedKey
+   * @param iv
    */
   decryptPrivateKey(password: Password, encryptedKey: string, iv): string {
     const common: commonInterface = {
@@ -124,7 +124,7 @@ export class WalletService {
       encrypted: encryptedKey,
       iv: iv,
     };
-    
+
     crypto.passwordToPrivatekey(common, wallet, 'pass:bip32');
     return common.privateKey;
   }
