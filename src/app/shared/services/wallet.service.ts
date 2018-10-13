@@ -4,6 +4,7 @@ import { crypto } from 'nem2-library';
 import { SharedService } from './shared.service';
 import { commonInterface, walletInterface } from '../interfaces/shared.interfaces';
 import { BehaviorSubject, Observable } from "rxjs";
+import { AccountsInterface } from '..';
 
 @Injectable({
   providedIn: 'root'
@@ -27,6 +28,30 @@ export class WalletService {
       this.sharedService.showError('Error', '¡Dear user, the wallet is missing!');
     }
     return true;
+  }
+
+
+  /**
+   * Build and return a json with account structure
+   *
+   * @param {any} encrypted
+   * @param {any} iv
+   * @param {any} address
+   * @param {any} network
+   * @returns {AccountsInterface}
+   * @memberof WalletService
+   */
+  buildAccount(encrypted, iv, address, network): AccountsInterface{
+    const accounts: AccountsInterface = {
+      'brain': true,
+      'algo': 'pass:bip32',
+      'encrypted':encrypted,
+      'iv': iv,
+      'address': address,
+      'label': 'Primary',
+      'network': network
+    }
+    return accounts
   }
 
   /**
@@ -87,7 +112,8 @@ export class WalletService {
   }
 
   /**
-   *
+   * Verify if a string is hexadecimal
+   * by: roimerj_vzla
    *
    * @param {any} str
    * @returns
@@ -107,26 +133,35 @@ export class WalletService {
     return (Account.createFromPrivateKey(privateKey, net).address.plain() === address) ? true : false;
   }
 
+  /**
+   * Create a wallet array or return existing ones
+   * by: roimerj_vzla
+   *
+   * @returns
+   * @memberof WalletService
+   */
+  getWalletStorage() {
+    let walletsStorage = JSON.parse(localStorage.getItem('proxi-wallets'));
+    if (walletsStorage === undefined || walletsStorage === null) {
+      localStorage.setItem('proxi-wallets', JSON.stringify([]));
+      walletsStorage = JSON.parse(localStorage.getItem('proxi-wallets'));
+    }
+    return walletsStorage;
+  }
 
   /**
-   * Decrypt and return private key
-   * @param password
-   * @param encryptedKey
-   * @param iv
+   * Create a wallet array
+   * by: roimerj_vzla
+   *
+   * @param {string} user
+   * @param {any} accounts
+   * @memberof WalletService
    */
-  decryptPrivateKey(password: Password, encryptedKey: string, iv): string {
-    const common: commonInterface = {
-      password: password.value,
-      privateKey: ''
-    };
-
-    const wallet: walletInterface = {
-      encrypted: encryptedKey,
-      iv: iv,
-    };
-
-    crypto.passwordToPrivatekey(common, wallet, 'pass:bip32');
-    return common.privateKey;
+  setAccountWalletStorage(user: string, accounts){
+    let walletsStorage = JSON.parse(localStorage.getItem('proxi-wallets'));
+    walletsStorage.push({ name: user, accounts: { '0': accounts } });
+    localStorage.setItem('proxi-wallets', JSON.stringify(walletsStorage));
   }
+
 }
 

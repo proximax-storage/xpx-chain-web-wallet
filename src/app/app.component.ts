@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { BlockInfo, Listener, Address } from "nem2-sdk/dist";
+import { BlockInfo, Listener, Address, AccountHttp } from "nem2-sdk/dist";
 import { environment } from "../environments/environment";
 import { ApiService } from "./shared/services/api.services";
 
@@ -18,7 +18,9 @@ export class AppComponent {
 
   constructor(
     private apiService: ApiService,
-  ) {}
+  ) {
+ 
+  }
 
   /**
    * Start the particles in the background.

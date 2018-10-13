@@ -6,6 +6,7 @@ import { Observable } from "rxjs";
 import { Account, NetworkType, SimpleWallet, Password, EncryptedPrivateKey } from 'nem2-sdk';
 import { AppConfig } from "../../../config/app.config";
 import { AccountsInterface, WalletAccountInterface, SharedService, WalletService } from "../../../shared";
+import { NemProvider } from '../../../shared/services/nem.provider';
 
 
 @Component({
@@ -16,7 +17,7 @@ import { AccountsInterface, WalletAccountInterface, SharedService, WalletService
 export class ImportWalletComponent implements OnInit {
 
   importWalletForm: FormGroup;
-  viewCreatedWallet = 1;
+  walletIsCreated = false;
   pvk: string;
   address: string;
   typeNetwork = [
@@ -42,7 +43,8 @@ export class ImportWalletComponent implements OnInit {
     private _el: ElementRef,
     private _r: Renderer2,
     private sharedService: SharedService,
-    private walletService: WalletService
+    private _walletService: WalletService,
+    private _nemProvider: NemProvider
   ) {
   }
 
@@ -52,8 +54,8 @@ export class ImportWalletComponent implements OnInit {
 
   /**
    * Create a reactive form
-   * //SBILTA-367K2L-X2FEXG-5TFWAS-7GEFYA-GY7QLF-BYKC (direction with money)
-   * 0F3CC33190A49ABB32E7172E348EA927F975F8829107AAA3D6349BB10797D4F6
+   * 0F3CC33190A49ABB32E7172E348EA927F975F8829107AAA3D6349BB10797D4F6 (pvk with money)
+   * SBILTA-367K2L-X2FEXG-5TFWAS-7GEFYA-GY7QLF-BYKC (direction with money)
    * TCFWMP-2M2HP4-3KJYGO-BDVQ3S-KX3Q6H-FH6GDV-3AG4
    * @memberof ImportWalletComponent
    */
@@ -76,46 +78,25 @@ export class ImportWalletComponent implements OnInit {
    */
   importSimpleWallet() {
     if (this.importWalletForm.valid) {
-      let walletsStorage = JSON.parse(localStorage.getItem('proxi-wallets'));
-      if (localStorage.getItem('proxi-wallets') === undefined || localStorage.getItem('proxi-wallets') === null) {
-        localStorage.setItem('proxi-wallets', JSON.stringify([]));
-        walletsStorage = JSON.parse(localStorage.getItem('proxi-wallets'));
-      }
-
       const nameWallet = this.importWalletForm.get('walletname').value;
-      const password = new Password(this.importWalletForm.controls.passwords.get('password').value);
+      const password = this._nemProvider.createPassword(this.importWalletForm.controls.passwords.get('password').value);
       const privateKey = this.importWalletForm.get('privateKey').value;
       const network = this.importWalletForm.get('network').value;
-
-      const importSimpleWallet = SimpleWallet.createFromPrivateKey(nameWallet, password, privateKey, network);
+      const wallet = this._nemProvider.createAccountFromPrivateKey(nameWallet, password, privateKey, network);
+      const walletsStorage = this._walletService.getWalletStorage();
+      //verify if name wallet isset
       const myWallet = walletsStorage.find(function (element) {
         return element.name === nameWallet;
       });
 
       //Wallet does not exist
       if (myWallet === undefined) {
-        const accounts: AccountsInterface = {
-          'brain': true,
-          'algo': 'pass:bip32',
-          'encrypted': importSimpleWallet.encryptedPrivateKey.encryptedKey,
-          'iv': importSimpleWallet.encryptedPrivateKey.iv,
-          'address': importSimpleWallet.address['address'],
-          'label': 'Primary',
-          'network': importSimpleWallet.network
-        }
-
-        const wallet: WalletAccountInterface = {
-          name: nameWallet,
-          accounts: {
-            '0': accounts
-          }
-        }
-        walletsStorage.push(wallet);
-        localStorage.setItem('proxi-wallets', JSON.stringify(walletsStorage));
-        this.address = importSimpleWallet.address.pretty();
+        const accounts = this._walletService.buildAccount(wallet.encryptedPrivateKey.encryptedKey, wallet.encryptedPrivateKey.iv, wallet.address['address'], wallet.network);
+        this._walletService.setAccountWalletStorage(nameWallet, accounts);
+        this.address = wallet.address.pretty();
         this.sharedService.showSuccess('Congratulations!', 'Your wallet has been created successfully');
-        this.pvk = this.walletService.decryptPrivateKey(password, importSimpleWallet.encryptedPrivateKey.encryptedKey, importSimpleWallet.encryptedPrivateKey.iv).toUpperCase();
-        this.viewCreatedWallet = 2;
+        this.pvk = this._nemProvider.decryptPrivateKey(password, accounts.encrypted, accounts.iv).toUpperCase();
+        this.walletIsCreated = true;
       } else {
         //Error of repeated Wallet
         this.cleanForm('walletname');
