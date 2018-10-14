@@ -4,7 +4,8 @@ body {
   // background-image: -webkit-linear-gradient(140deg,rgb(32, 128, 115) 0%,rgb(32, 181, 172) 33%,rgb(120, 182, 228) 100%);
   // background-repeat: no-repeat;
   // border: 1px solid rgba(255, 0, 0, 0);
-  background: #20a99f;
+  //background: #20a99f;
+  background: #f5f7fa;
   // background-image: -webkit-linear-gradient(180deg, #33b6b8 0%, #22b5ad 33%, #37b6ba 100%);
 }
 
@@ -139,3 +140,20 @@ html:after {
 
 
 /***/
+
+.background-header{
+  background-image: -webkit-linear-gradient(140deg, rgb(32, 128, 115) 0%, rgb(32, 181, 172) 33%, rgb(120, 182, 228) 100%);
+  //background: red;
+}
+
+.route-name{
+  border-bottom: 1px solid #cfdbe2;
+  padding-top: 85px;
+  background: #fafbfc;
+  padding-bottom: 20px;
+  padding-left: 20px;
+  font-size: 1.3rem;
+  line-height: 1.1;
+  color: #929292;
+  font-weight: 400;
+}
