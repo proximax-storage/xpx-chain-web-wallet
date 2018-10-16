@@ -1,8 +1,26 @@
 import { Injectable } from '@angular/core';
-import { Listener, Password, SimpleWallet } from "nem2-sdk/dist";
+import {
+  Listener,
+  Password,
+  SimpleWallet,
+  Account,
+  Address,
+  AccountHttp,
+  MosaicHttp,
+  NamespaceHttp,
+  MosaicService,
+  MosaicAmountView,
+  Transaction,
+  PublicAccount,
+  QueryParams,
+  AccountInfo,
+  NetworkType
+} from 'nem2-sdk';
 import { crypto } from 'nem2-library';
 import { environment } from '../../../environments/environment';
 import { commonInterface, walletInterface } from '..';
+import { Observable } from 'rxjs';
+import { mergeMap } from 'rxjs/operators'
 
 @Injectable({
   providedIn: 'root'
@@ -10,8 +28,16 @@ import { commonInterface, walletInterface } from '..';
 export class NemProvider {
   websocketIsOpen = false;
   connectionWs: Listener;
-
-  constructor() { }
+  accountHttp: AccountHttp;
+  mosaicHttp: MosaicHttp;
+  namespaceHttp: NamespaceHttp;
+  mosaicService: MosaicService
+  constructor() {
+    this.accountHttp = new AccountHttp(environment.apiUrl);
+    this.mosaicHttp = new MosaicHttp(environment.apiUrl);
+    this.namespaceHttp = new NamespaceHttp(environment.apiUrl);
+    this.mosaicService = new MosaicService(this.accountHttp, this.mosaicHttp, this.namespaceHttp);
+  }
 
   openConnectionWs() {
     this.websocketIsOpen = true;
@@ -27,16 +53,16 @@ export class NemProvider {
     return this.connectionWs;
   }
 
- /**
-  * Create account simple
-  *
-  * @param {string} user
-  * @param {Password} password
-  * @param {number} network
-  * @returns {SimpleWallet}
-  * @memberof NemProvider
-  */
- createAccountSimple(user: string, password: Password, network: number): SimpleWallet{
+  /**
+   * Create account simple
+   *
+   * @param {string} user
+   * @param {Password} password
+   * @param {number} network
+   * @returns {SimpleWallet}
+   * @memberof NemProvider
+   */
+  createAccountSimple(user: string, password: Password, network: number): SimpleWallet {
     return SimpleWallet.create(user, password, network);
   }
 
@@ -50,9 +76,20 @@ export class NemProvider {
    * @returns {SimpleWallet}
    * @memberof NemProvider
    */
-  createAccountFromPrivateKey(nameWallet: string, password: Password, privateKey: string, network:number): SimpleWallet{
+  createAccountFromPrivateKey(nameWallet: string, password: Password, privateKey: string, network: number): SimpleWallet {
     return SimpleWallet.createFromPrivateKey(nameWallet, password, privateKey, network);
   }
+
+  /**
+   * Check if Address it is correct
+   * @param privateKey privateKey
+   * @param address address
+   * @return checkAddress
+   */
+  checkAddress(privateKey: string, net: any, address: any): boolean {
+    return (Account.createFromPrivateKey(privateKey, net).address.plain() === address) ? true : false;
+  }
+
 
   /**
    * Create a password with at least 8 characters
@@ -61,7 +98,7 @@ export class NemProvider {
    * @returns {Password}
    * @memberof NemProvider
    */
-  createPassword(value: string): Password{
+  createPassword(value: string): Password {
     const password = new Password(value);
     return password;
   }
@@ -86,5 +123,73 @@ export class NemProvider {
     crypto.passwordToPrivatekey(common, wallet, 'pass:bip32');
     return common.privateKey;
   }
+
+  /**
+   * Create an Address from a given raw address.
+   *
+   * @param {*} address
+   * @returns {Address}
+   * @memberof NemProvider
+   */
+  createFromRawAddress(address: string): Address {
+
+    return Address.createFromRawAddress(address);
+  }
+
+  /**
+   *Gets an AccountInfo for an account.
+   *
+   * @param {Address} address
+   * @returns {Observable<AccountInfo>}
+   * @memberof NemProvider
+   */
+  getAccountInfo(address: Address): Observable<AccountInfo> {
+
+    return this.accountHttp.getAccountInfo(address)
+  }
+
+  /**
+   *Get balance mosaics in form of MosaicAmountViews for a given account address
+   *
+   * @param {Address} address
+   * @returns {Observable<MosaicAmountView[]>}
+   * @memberof NemProvider
+   */
+  getBalance(address: Address): Observable<MosaicAmountView[]> {
+    return this.mosaicService.mosaicsAmountViewFromAddress(address);
+  }
+
+  /**
+   *Gets an array of confirmed transactions for which an account is signer or receiver.
+   *
+   * @param {*} publicKey
+   * @param {NetworkType} network
+   * @param {QueryParams} [queryParams]
+   * @returns {Observable<Transaction[]>}
+   * @memberof NemProvider
+   */
+  getAllTransactionsFromAnAccount(publicKey, network: NetworkType, queryParams?: QueryParams): Observable<Transaction[]> {
+    const pageSize = 10;
+    const publicAccount = PublicAccount.createFromPublicKey(publicKey, network);
+    return this.accountHttp.transactions(publicAccount,  new QueryParams(pageSize));
+
+  }
+
+ /**
+  *Gets the array of transactions for which an account is the sender or receiver and which have not yet been included in a block.
+  *
+  * @param {*} publicKey
+  * @param {NetworkType} network
+  * @param {QueryParams} [queryParams]
+  * @returns {Observable<Transaction[]>}
+  * @memberof NemProvider
+  */
+ getUnconfirmedTransactionsFromAnAccount(publicKey, network: NetworkType, queryParams?: QueryParams): Observable<Transaction[]> {
+    const publicAccount = PublicAccount.createFromPublicKey(publicKey, network);
+    return this.accountHttp.unconfirmedTransactions(publicAccount, queryParams);
+  }
+
+
+
 
 }
