@@ -3,7 +3,7 @@ import { FormGroup, FormBuilder, Validators, AbstractControl } from "@angular/fo
 import { Router, ActivatedRoute } from "@angular/router";
 import { map } from "rxjs/operators";
 import { Observable } from "rxjs";
-import { Account, NetworkType, SimpleWallet, Password, EncryptedPrivateKey } from 'nem2-sdk';
+import { Account, NetworkType, SimpleWallet, Password, EncryptedPrivateKey, AccountHttp, PublicAccount } from 'nem2-sdk';
 import { AppConfig } from "../../../config/app.config";
 import { AccountsInterface, WalletAccountInterface, SharedService, WalletService } from "../../../shared";
 import { NemProvider } from '../../../shared/services/nem.provider';
@@ -77,13 +77,16 @@ export class CreateWalletComponent implements OnInit {
    */
   createSimpleWallet() {
     if (this.createWalletForm.valid) {
+      const network = this.createWalletForm.get('network').value;
       const user = this.createWalletForm.get('walletname').value;
       const password = this._nemProvider.createPassword(this.createWalletForm.controls.passwords.get('password').value);
-      const network = this.createWalletForm.get('network').value;
       const wallet = this._nemProvider.createAccountSimple(user, password, network);
+      const account = wallet.open(password);
+      const publicKey = account.publicKey.toString();
+      const publicAccount = this._nemProvider.createPublicAccount(publicKey, network);
       const walletsStorage = this._walletService.getWalletStorage();
-      //verify if name wallet isset
       const myWallet = walletsStorage.find(function (element) {
+        //verify if name wallet isset
         return element.name === user;
       });
 

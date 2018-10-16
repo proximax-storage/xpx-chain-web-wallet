@@ -3,7 +3,7 @@ import { FormGroup, FormBuilder, Validators, AbstractControl } from "@angular/fo
 import { Router, ActivatedRoute } from "@angular/router";
 import { map } from "rxjs/operators";
 import { Observable } from "rxjs";
-import { Account, NetworkType, SimpleWallet, Password, EncryptedPrivateKey } from 'nem2-sdk';
+import { Account, NetworkType, SimpleWallet, Password, EncryptedPrivateKey, PublicAccount, AccountHttp } from 'nem2-sdk';
 import { AppConfig } from "../../../config/app.config";
 import { AccountsInterface, WalletAccountInterface, SharedService, WalletService } from "../../../shared";
 import { NemProvider } from '../../../shared/services/nem.provider';
@@ -83,6 +83,23 @@ export class ImportWalletComponent implements OnInit {
       const privateKey = this.importWalletForm.get('privateKey').value;
       const network = this.importWalletForm.get('network').value;
       const wallet = this._nemProvider.createAccountFromPrivateKey(nameWallet, password, privateKey, network);
+
+      //open wallet
+      const account = wallet.open(password);
+      //get public key from account
+      const publicKey = account.publicKey.toString();
+      console.log('my public key is... ', publicKey);
+      //create publicAccount 
+      const publicAccount = PublicAccount.createFromPublicKey(publicKey, network);
+      //instance account http
+      const petitionHttp = new AccountHttp('http://190.216.224.11:3000');
+      petitionHttp.transactions(publicAccount).subscribe(
+        resp => {
+          console.log(resp);
+        }
+      );
+
+
       const walletsStorage = this._walletService.getWalletStorage();
       //verify if name wallet isset
       const myWallet = walletsStorage.find(function (element) {

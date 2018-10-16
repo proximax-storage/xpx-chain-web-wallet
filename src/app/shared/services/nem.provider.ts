@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Listener, Password, SimpleWallet } from "nem2-sdk/dist";
+import { Listener, Password, SimpleWallet, PublicAccount } from "nem2-sdk/dist";
 import { crypto } from 'nem2-library';
 import { environment } from '../../../environments/environment';
 import { commonInterface, walletInterface } from '..';
@@ -85,6 +85,17 @@ export class NemProvider {
 
     crypto.passwordToPrivatekey(common, wallet, 'pass:bip32');
     return common.privateKey;
+  }
+
+
+  /**
+   * createPublicAccount
+   * @param publicKey 
+   * @param network 
+   * @returns {PublicAccount}
+   */
+  createPublicAccount(publicKey, network): PublicAccount{
+    return PublicAccount.createFromPublicKey(publicKey, network);
   }
 
 }
