@@ -15,6 +15,9 @@ const appRoutes: Routes = [
     },{
         path: '',
         loadChildren: './dashboard/dashboard.module#DashboardModule'
+    },{
+        path: '',
+        loadChildren: './transactions/transactions.module#TransactionsModule'
     }
 ];
 export const appRoutingProviders: any[] = [];

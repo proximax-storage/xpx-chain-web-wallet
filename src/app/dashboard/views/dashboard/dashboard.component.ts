@@ -21,7 +21,6 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit() {
-
     // this.enviarTrasferencia();
     //obtener balance de la cuenta d
     this.nemProvider.getBalance(this.walletService.address).pipe(
@@ -32,7 +31,8 @@ export class DashboardComponent implements OnInit {
     //obtener las transacciones confirmadas 
     this.nemProvider.getAllTransactionsFromAnAccount(this.walletService.publicAccount, this.walletService.network).subscribe(
       trans => {
-        console.log('trans:', trans);
+        console.log('trans:', 
+      );
       },
       error => {
         console.error(error);
