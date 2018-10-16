@@ -11,7 +11,7 @@
         </mdb-navbar-brand>
         <links>
             <li>
-                <app-header-vertical [header]=header [showMenu]=showMenu (logout)="logout($event)"></app-header-vertical>
+                <app-header-vertical [header]=verticalHeader [showMenu]=showOnlyLogged (logout)="logout($event)"></app-header-vertical>
             </li>
         </links>
         <div class="sidenav-bg mask-strong"></div>
@@ -31,7 +31,7 @@
         </mdb-navbar-brand>
         <navlinks>
             <ul class="nav navbar-nav nav-flex-icons ml-auto ie-double-nav ie-hidden-double-nav">
-                <app-header-horizontal [header]=header [showMenu]=showMenu (logout)="logout($event)"></app-header-horizontal>
+                <app-header-horizontal [header]=horizontalHeader [showMenu]=showOnlyLogged (logout)="logout($event)"></app-header-horizontal>
             </ul>
         </navlinks>
     </mdb-navbar>

@@ -12,6 +12,10 @@ export const AppConfig: Config = {
   }
 };
 
+export const NameRoute = {
+  [AppConfig.routes.home]: 'Home'
+}
+
 export interface Config {
   routes: {
     home: string;

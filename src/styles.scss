@@ -24,6 +24,10 @@ html:after {
   margin-top: 100px;
 }
 
+.mt-3rem {
+  margin-top: 3rem;
+}
+
 .mt-5rem {
   margin-top: 5rem;
 }
@@ -49,7 +53,12 @@ html:after {
 }
 
 .background-proxiwallet {
-  background-image: -webkit-linear-gradient(140deg, rgb(32, 128, 115) 0%, rgb(32, 181, 172) 33%, rgb(120, 182, 228) 100%);
+  background: #009688;
+  background: -moz-linear-gradient(-45deg, #009688 0%, #23b3a5 55%, #129a8e 100%);
+  background: -webkit-linear-gradient(-45deg, #009688 0%, #23b3a5 55%, #129a8e 100%);
+  background: linear-gradient(135deg, #009688 0%, #23b3a5 55%, #129a8e 100%);
+  // background-image: -webkit-linear-gradient(140deg, #009688 0%, #23b3a5 33%, #129a8e 100%);
+  // background-image: -webkit-linear-gradient(140deg, #208073 0%, #48b1a7 33%, #20b5ac 100%);
   color: white;
 }
 
@@ -128,6 +137,10 @@ html:after {
   color: #636363;
 }
 
+.text-align-center {
+  text-align: center;
+}
+
 // .background-header-pxw {
 //   background-image: -webkit-linear-gradient(140deg, #208073 0%, #20b5ac 53%, #208073 100%);
 // }
@@ -141,19 +154,25 @@ html:after {
 
 /***/
 
-.background-header{
-  background-image: -webkit-linear-gradient(140deg, rgb(32, 128, 115) 0%, rgb(32, 181, 172) 33%, rgb(120, 182, 228) 100%);
+.background-header {
+  background: #009688;
+  background: -moz-linear-gradient(-45deg, #009688 0%, #23b3a5 55%, #129a8e 100%);
+  background: -webkit-linear-gradient(-45deg, #009688 0%, #23b3a5 55%, #129a8e 100%);
+  background: linear-gradient(135deg, #009688 0%, #23b3a5 55%, #129a8e 100%);
+  // background-image: -webkit-linear-gradient(140deg, rgb(32, 128, 115) 0%, rgb(32, 181, 172) 33%, rgb(120, 182, 228) 100%);
   //background: red;
+  // background-image: -webkit-linear-gradient(140deg, #009688 0%, #23b3a5 33%, #129a8e 100%);
 }
 
-.route-name{
+.route-name {
   border-bottom: 1px solid #cfdbe2;
   padding-top: 85px;
   background: #fafbfc;
   padding-bottom: 20px;
   padding-left: 20px;
-  font-size: 1.3rem;
+  font-size: 18px;
+  opacity: .9;
   line-height: 1.1;
-  color: #929292;
-  font-weight: 400;
+  color: #666;
+  font-weight: 700;
 }
