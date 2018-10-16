@@ -1,17 +1,10 @@
 /* You can add global styles to this file, and also import other style files */
 
 body {
-  // background-image: -webkit-linear-gradient(140deg,rgb(32, 128, 115) 0%,rgb(32, 181, 172) 33%,rgb(120, 182, 228) 100%);
-  // background-repeat: no-repeat;
-  // border: 1px solid rgba(255, 0, 0, 0);
-  background: #20a99f;
-  // background-image: -webkit-linear-gradient(180deg, #33b6b8 0%, #22b5ad 33%, #37b6ba 100%);
+  background: #f5f7fa;
 }
 
-// html, body{
-//     height: 100%;
-//     height: 100%;
-// }
+
 html:after {
   width: 100%;
   display: block;
@@ -21,6 +14,10 @@ html:after {
 
 .mt-100px {
   margin-top: 100px;
+}
+
+.mt-3rem {
+  margin-top: 3rem;
 }
 
 .mt-5rem {
@@ -48,7 +45,10 @@ html:after {
 }
 
 .background-proxiwallet {
-  background-image: -webkit-linear-gradient(140deg, rgb(32, 128, 115) 0%, rgb(32, 181, 172) 33%, rgb(120, 182, 228) 100%);
+  background: #009688;
+  background: -moz-linear-gradient(-45deg, #009688 0%, #23b3a5 55%, #129a8e 100%);
+  background: -webkit-linear-gradient(-45deg, #009688 0%, #23b3a5 55%, #129a8e 100%);
+  background: linear-gradient(135deg, #009688 0%, #23b3a5 55%, #129a8e 100%);
   color: white;
 }
 
@@ -111,7 +111,7 @@ html:after {
 }
 
 .backg-beige {
-  background: #f7f7f7;
+  background: #f5f7fa;
 }
 
 .check-sucess {
@@ -127,9 +127,9 @@ html:after {
   color: #636363;
 }
 
-// .background-header-pxw {
-//   background-image: -webkit-linear-gradient(140deg, #208073 0%, #20b5ac 53%, #208073 100%);
-// }
+.text-align-center {
+  text-align: center;
+}
 
 /* font size**/
 
@@ -139,3 +139,24 @@ html:after {
 
 
 /***/
+
+.background-header {
+  background: #009688;
+  background: -moz-linear-gradient(-45deg, #009688 0%, #23b3a5 55%, #129a8e 100%);
+  background: -webkit-linear-gradient(-45deg, #009688 0%, #23b3a5 55%, #129a8e 100%);
+  background: linear-gradient(135deg, #009688 0%, #23b3a5 55%, #129a8e 100%);
+}
+
+.route-name {
+  text-transform: uppercase;
+  border-bottom: 1px solid #cfdbe2;
+  padding-top: 85px;
+  background: #f5f7fa;
+  padding-bottom: 20px;
+  padding-left: 20px;
+  font-size: 18px;
+  opacity: .9;
+  line-height: 1.1;
+  color: #666;
+  font-weight: 700;
+}

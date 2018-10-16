@@ -1,42 +1,38 @@
-<div class="mt-5rem mb-3rem animated fadeIn">
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col-xl-5 col-lg-6 col-md-10 col-sm-12 mx-auto mt-lg-5">
-        <mdb-card>
-          <mdb-card-header class="background-proxiwallet white-text py-4">
-            <img src="assets/images/logo/ProximaX-White.png" style="width: 150px;">
-          </mdb-card-header>
+<div class="mt-3rem mb-3rem animated fadeIn">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xl-5 col-lg-6 col-md-10 col-sm-12 mx-auto">
+                <mdb-card>
+                    <mdb-card-header class="background-proxiwallet white-text text-align-center py-4">
+                        <img src="assets/images/logo/ProximaX-logotype.png" style="width: 150px;">
+                    </mdb-card-header>
 
-          <mdb-card-body class="px-lg-5">
-            <h4 class="title-form">Login</h4>
-            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="" style="color: #757575;">
-              <div class="md-form  mt-5">
-                  <i class="fa fa-user prefix text-gris"></i>
-                <mdb-select [options]="wallets" placeholder="Name wallet" required formControlName="wallet" class="colorful-select dropdown-default"
-                  (selected)="optionSelected($event)"  mdbInputDirective
-                  [errorMessage]="getError('wallet')"></mdb-select>
-              </div>
-              <div class="md-form mt-5" formGroupName="common">
-                <i class="fa fa-user prefix text-gris"></i>
-                <input type="password" autocomplete="off" required formControlName="password"  id="password" class="form-control" mdbInputDirective
-                  [errorMessage]="getErrorGroup('common','password')">
-                <label for="password">password</label>
-              </div>
-              <div class="mt-4rm">
-                <div class="row ">
-                  <div class="mx-auto">
-                    <div class="row">
-                      <div class="col-xs-6">
-                        <button mdbBtn type="button" color="default" rounded="true" class="waves-light" mdbWavesEffect type="submit" >Login</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </form>
-          </mdb-card-body>
-        </mdb-card>
-      </div>
+                    <mdb-card-body class="px-lg-5 backg-beige">
+                        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="" style="color: #757575;">
+                            <div class="md-form  mt-5">
+                                <i class="fa fa-user prefix text-gris"></i>
+                                <mdb-select [options]="wallets" placeholder="Name wallet" required formControlName="wallet" class="colorful-select dropdown-default" (selected)="optionSelected($event)" mdbInputDirective [errorMessage]="getError('wallet')"></mdb-select>
+                            </div>
+                            <div class="md-form mt-5" formGroupName="common">
+                                <i class="fa fa-user prefix text-gris"></i>
+                                <input type="password" autocomplete="off" required formControlName="password" id="password" class="form-control" mdbInputDirective [errorMessage]="getErrorGroup('common','password')">
+                                <label for="password">password</label>
+                            </div>
+                            <div class="mt-4rm">
+                                <div class="row ">
+                                    <div class="mx-auto">
+                                        <div class="row">
+                                            <div class="col-xs-6">
+                                                <button mdbBtn type="button" color="default" rounded="true" class="waves-light" mdbWavesEffect type="submit">Login</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </mdb-card-body>
+                </mdb-card>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
