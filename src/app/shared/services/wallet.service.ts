@@ -1,20 +1,26 @@
 import { Injectable } from '@angular/core';
-import { SimpleWallet, Password, NetworkType, Account, Address, EncryptedPrivateKey } from 'nem2-sdk';
+import { NetworkType, PublicAccount } from "nem2-sdk";
 import { crypto } from 'nem2-library';
 import { SharedService } from './shared.service';
 import { commonInterface, walletInterface } from '../interfaces/shared.interfaces';
 import { BehaviorSubject, Observable } from "rxjs";
 import { AccountsInterface } from '..';
+import { NemProvider } from './nem.provider';
 
 @Injectable({
   providedIn: 'root'
 })
 export class WalletService {
-  currentAccount: string;
+  currentAccount: any;
+  address: any;
+  current: any;
   network: any;
   algo: string;
+  publicAccount: PublicAccount;
 
-  constructor(private sharedService: SharedService) { }
+  constructor(private sharedService: SharedService, private nemProvider: NemProvider) {
+
+  }
 
   public login(common, wallet) {
     if (!wallet) {
@@ -27,6 +33,7 @@ export class WalletService {
     if (wallet.accounts[0].network === NetworkType.MAIN_NET && wallet.accounts[0].algo === 'pass:6k' && common.password.length < 40) {
       this.sharedService.showError('Error', '¡Dear user, the wallet is missing!');
     }
+    this.use(wallet);
     return true;
   }
 
@@ -41,17 +48,43 @@ export class WalletService {
    * @returns {AccountsInterface}
    * @memberof WalletService
    */
-  buildAccount(encrypted, iv, address, network): AccountsInterface{
+  buildAccount(encrypted, iv, address, network): AccountsInterface {
     const accounts: AccountsInterface = {
       'brain': true,
       'algo': 'pass:bip32',
-      'encrypted':encrypted,
+      'encrypted': encrypted,
       'iv': iv,
       'address': address,
       'label': 'Primary',
       'network': network
     }
     return accounts
+  }
+
+  /**
+   *Set a wallet as current
+   *
+   * @param {*} wallet
+   * @returns
+   * @memberof WalletService
+   */
+  public use(wallet) {
+    if (!wallet) {
+      this.sharedService.showError('Error', '¡you can not set anything like the current wallet!');
+      return false;
+    }
+    this.network = wallet.accounts[0].network;
+    // Account used
+    this.currentAccount = wallet.accounts[0];
+    // Algo of the wallet
+
+    this.algo = wallet.accounts[0].algo;
+    // Adress and newwork
+    this.address = this.nemProvider.createFromRawAddress(wallet.accounts[0].address);
+
+    this.current = wallet;
+    // this.contacts = this._AddressBook.getContacts(wallet);
+    return true;
   }
 
   /**
@@ -70,6 +103,7 @@ export class WalletService {
     const net = network || this.network;
     const alg = algo || this.algo;
     // Try to generate or decrypt key
+
     if (!crypto.passwordToPrivatekey(common, acct, alg)) {
       setTimeout(() => {
         this.sharedService.showError('Error', '¡Invalid password!');
@@ -81,14 +115,17 @@ export class WalletService {
       // this._mdboostrap.closeToastr();
       return true;
     }
-    if (!this.isPrivateKeyValid(common.privateKey) || !this.checkAddress(common.privateKey, net, acct.address)) {
+    if (!this.isPrivateKeyValid(common.privateKey) || !this.nemProvider.checkAddress(common.privateKey, net, acct.address)) {
       //   this._mdboostrap.closeToastr();
       setTimeout(() => {
         this.sharedService.showError('Error', '¡Invalid password!');
       }, 500);
       return false;
     }
-    // this._mdboostrap.closeToastr();
+
+    //Get public account from private key 
+    this.publicAccount = this.nemProvider.getPublicAccountFromPrivateKey(common.privateKey, net)
+  
     return true;
   }
 
@@ -123,15 +160,7 @@ export class WalletService {
     return str.match('^(0x|0X)?[a-fA-F0-9]+$') !== null;
   }
 
-  /**
-    * Check if Address it is correct
-    * @param privateKey privateKey
-    * @param address address
-    * @return checkAddress
-    */
-  checkAddress(privateKey: string, net: any, address: any): boolean {
-    return (Account.createFromPrivateKey(privateKey, net).address.plain() === address) ? true : false;
-  }
+
 
   /**
    * Create a wallet array or return existing ones
@@ -157,7 +186,7 @@ export class WalletService {
    * @param {any} accounts
    * @memberof WalletService
    */
-  setAccountWalletStorage(user: string, accounts){
+  setAccountWalletStorage(user: string, accounts) {
     let walletsStorage = JSON.parse(localStorage.getItem('proxi-wallets'));
     walletsStorage.push({ name: user, accounts: { '0': accounts } });
     localStorage.setItem('proxi-wallets', JSON.stringify(walletsStorage));

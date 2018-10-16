@@ -16,6 +16,7 @@ import {
   AccountInfo,
   NetworkType
 } from 'nem2-sdk';
+
 import { crypto } from 'nem2-library';
 import { environment } from '../../../environments/environment';
 import { commonInterface, walletInterface } from '..';
@@ -86,10 +87,21 @@ export class NemProvider {
    * @param address address
    * @return checkAddress
    */
-  checkAddress(privateKey: string, net: any, address: any): boolean {
+  checkAddress(privateKey: string, net: NetworkType, address: string): boolean {
     return (Account.createFromPrivateKey(privateKey, net).address.plain() === address) ? true : false;
   }
 
+  /**
+   * get 
+   *
+   * @param {string} privateKey
+   * @param {*} net
+   * @returns {PublicAccount}
+   * @memberof NemProvider
+   */
+  getPublicAccountFromPrivateKey(privateKey: string, net: NetworkType): PublicAccount {
+    return Account.createFromPrivateKey(privateKey, net).publicAccount
+  }
 
   /**
    * Create a password with at least 8 characters
@@ -168,26 +180,34 @@ export class NemProvider {
    * @returns {Observable<Transaction[]>}
    * @memberof NemProvider
    */
-  getAllTransactionsFromAnAccount(publicKey, network: NetworkType, queryParams?: QueryParams): Observable<Transaction[]> {
-    const pageSize = 10;
-    const publicAccount = PublicAccount.createFromPublicKey(publicKey, network);
-    return this.accountHttp.transactions(publicAccount,  new QueryParams(pageSize));
+  getAllTransactionsFromAnAccount(publicAccount, queryParams?): Observable<Transaction[]> {
+    return this.accountHttp.transactions(publicAccount, new QueryParams(queryParams));
 
   }
 
- /**
-  *Gets the array of transactions for which an account is the sender or receiver and which have not yet been included in a block.
-  *
-  * @param {*} publicKey
-  * @param {NetworkType} network
-  * @param {QueryParams} [queryParams]
-  * @returns {Observable<Transaction[]>}
-  * @memberof NemProvider
-  */
- getUnconfirmedTransactionsFromAnAccount(publicKey, network: NetworkType, queryParams?: QueryParams): Observable<Transaction[]> {
-    const publicAccount = PublicAccount.createFromPublicKey(publicKey, network);
+  /**
+   *Gets the array of transactions for which an account is the sender or receiver and which have not yet been included in a block.
+   *
+   * @param {*} publicKey
+   * @param {NetworkType} network
+   * @param {QueryParams} [queryParams]
+   * @returns {Observable<Transaction[]>}
+   * @memberof NemProvider
+   */
+  getUnconfirmedTransactionsFromAnAccount(publicAccount, queryParams?): Observable<Transaction[]> {
     return this.accountHttp.unconfirmedTransactions(publicAccount, queryParams);
   }
+
+  /**
+ * createPublicAccount
+ * @param publicKey 
+ * @param network 
+ * @returns {PublicAccount}
+ */
+  createPublicAccount(publicKey, network): PublicAccount {
+    return PublicAccount.createFromPublicKey(publicKey, network);
+  }
+
 
 
 

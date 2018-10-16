@@ -4,27 +4,20 @@
             <li>
                 <div class="logo-wrapper waves-light">
                     <a href="#">
-                        <img src="assets/images/logo/ProximaX-White.png" class="img-fluid flex-center">
+                        <img src="assets/images/logo/ProximaX-White.png" style="width: 250px;">
                     </a>
                 </div>
             </li>
         </mdb-navbar-brand>
         <links>
-            <!-- <app-header-reb-social></app-header-reb-social>
-       <li>
-        <form class="search-form" role="search">
-          <div class="form-group md-form mt-0 pt-1 waves-light" mdbWavesEffect>
-            <input type="text" class="form-control" placeholder="Search">
-          </div>
-        </form>
-      </li> -->
             <li>
-                <app-header-vertical [header]=header [showMenu]=showMenu (logout)="logout($event)"></app-header-vertical>
+                <app-header-vertical [header]=verticalHeader [showMenu]=showOnlyLogged (logout)="logout($event)"></app-header-vertical>
             </li>
         </links>
         <div class="sidenav-bg mask-strong"></div>
     </mdb-side-nav>
-    <mdb-navbar SideClass="navbar fixed-top navbar-toggleable-md navbar-expand-lg scrolling-navbar double-nav z-depth-0 background-header-pxw" [containerInside]="false">
+    <mdb-navbar SideClass="navbar fixed-top navbar-toggleable-md navbar-expand-lg scrolling-navbar double-nav z-depth-0 background-header"
+        [containerInside]="false">
         <navlinks class="navbar-container">
             <div class="float-left">
                 <a (click)="sidenav.show()" class="button-collapse hidden-nav-button-collapse">
@@ -39,8 +32,12 @@
         </mdb-navbar-brand>
         <navlinks>
             <ul class="nav navbar-nav nav-flex-icons ml-auto ie-double-nav ie-hidden-double-nav">
-                <app-header-horizontal [header]=header [showMenu]=showMenu (logout)="logout($event)"></app-header-horizontal>
+                <app-header-horizontal [header]=horizontalHeader [showMenu]=showOnlyLogged (logout)="logout($event)"></app-header-horizontal>
             </ul>
         </navlinks>
     </mdb-navbar>
 </header>
+
+<div class="row-fluid">
+    <div class="route-name"> {{nameRoute}} </div>
+</div>
