@@ -3,13 +3,12 @@
         <div class="row">
             <div class="col-xl-5 col-lg-6 col-md-10 col-sm-12 mx-auto">
                 <mdb-card>
-                    <mdb-card-header class="background-proxiwallet white-text py-4">
-                        <img src="assets/images/logo/ProximaX-White.png" style="width: 150px;">
+                    <mdb-card-header class="background-proxiwallet white-text text-align-center py-4">
+                        <img src="assets/images/logo/ProximaX-logotype.png" style="width: 150px;">
                     </mdb-card-header>
 
                     <ng-container *ngIf="!walletIsCreated">
                         <mdb-card-body class="px-lg-5 backg-beige">
-                            <h4 class="title-form">Import Wallet</h4>
                             <form [formGroup]="importWalletForm" (ngSubmit)="importSimpleWallet()" style="color: #757575;">
 
                                 <div class="md-form  mt-5">

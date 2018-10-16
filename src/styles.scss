@@ -1,18 +1,10 @@
 /* You can add global styles to this file, and also import other style files */
 
 body {
-  // background-image: -webkit-linear-gradient(140deg,rgb(32, 128, 115) 0%,rgb(32, 181, 172) 33%,rgb(120, 182, 228) 100%);
-  // background-repeat: no-repeat;
-  // border: 1px solid rgba(255, 0, 0, 0);
-  //background: #20a99f;
   background: #f5f7fa;
-  // background-image: -webkit-linear-gradient(180deg, #33b6b8 0%, #22b5ad 33%, #37b6ba 100%);
 }
 
-// html, body{
-//     height: 100%;
-//     height: 100%;
-// }
+
 html:after {
   width: 100%;
   display: block;
@@ -57,8 +49,6 @@ html:after {
   background: -moz-linear-gradient(-45deg, #009688 0%, #23b3a5 55%, #129a8e 100%);
   background: -webkit-linear-gradient(-45deg, #009688 0%, #23b3a5 55%, #129a8e 100%);
   background: linear-gradient(135deg, #009688 0%, #23b3a5 55%, #129a8e 100%);
-  // background-image: -webkit-linear-gradient(140deg, #009688 0%, #23b3a5 33%, #129a8e 100%);
-  // background-image: -webkit-linear-gradient(140deg, #208073 0%, #48b1a7 33%, #20b5ac 100%);
   color: white;
 }
 
@@ -121,7 +111,7 @@ html:after {
 }
 
 .backg-beige {
-  background: #f7f7f7;
+  background: #f5f7fa;
 }
 
 .check-sucess {
@@ -141,10 +131,6 @@ html:after {
   text-align: center;
 }
 
-// .background-header-pxw {
-//   background-image: -webkit-linear-gradient(140deg, #208073 0%, #20b5ac 53%, #208073 100%);
-// }
-
 /* font size**/
 
 .fs-08rem {
@@ -159,15 +145,13 @@ html:after {
   background: -moz-linear-gradient(-45deg, #009688 0%, #23b3a5 55%, #129a8e 100%);
   background: -webkit-linear-gradient(-45deg, #009688 0%, #23b3a5 55%, #129a8e 100%);
   background: linear-gradient(135deg, #009688 0%, #23b3a5 55%, #129a8e 100%);
-  // background-image: -webkit-linear-gradient(140deg, rgb(32, 128, 115) 0%, rgb(32, 181, 172) 33%, rgb(120, 182, 228) 100%);
-  //background: red;
-  // background-image: -webkit-linear-gradient(140deg, #009688 0%, #23b3a5 33%, #129a8e 100%);
 }
 
 .route-name {
+  text-transform: uppercase;
   border-bottom: 1px solid #cfdbe2;
   padding-top: 85px;
-  background: #fafbfc;
+  background: #f5f7fa;
   padding-bottom: 20px;
   padding-left: 20px;
   font-size: 18px;

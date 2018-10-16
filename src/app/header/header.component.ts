@@ -33,6 +33,7 @@ export interface Header{
 })
 export class HeaderComponent implements OnInit {
 
+  nameRoute = '';
   showOnlyLogged = false;
   keyObject = Object.keys;
   isLogged$: Observable<boolean>;
@@ -49,8 +50,11 @@ export class HeaderComponent implements OnInit {
       .subscribe((event) => {
         if (event instanceof NavigationEnd) {
           var objRoute = event.url.split('/')[1];
-          console.log(NameRoute);
-          console.log(NameRoute[objRoute]);
+          if (NameRoute[objRoute] !== undefined) {
+            this.nameRoute = NameRoute[objRoute];
+          }else {
+            this.nameRoute = '';
+          }
         }
       });
   }

@@ -13,7 +13,12 @@ export const AppConfig: Config = {
 };
 
 export const NameRoute = {
-  [AppConfig.routes.home]: 'Home'
+  [AppConfig.routes.home]: 'Home',
+  [AppConfig.routes.login]: 'Login',
+  [AppConfig.routes.dashboard]: 'Dashboard',
+  [AppConfig.routes.createWallet]: 'Create wallet',
+  [AppConfig.routes.importWallet]: 'Import wallet',
+  [AppConfig.routes.notFound]: '404 not found'
 }
 
 export interface Config {
