@@ -130,9 +130,9 @@ export class HeaderComponent implements OnInit {
         'name': 'dashboard',
         'class': '',
         'icon': 'fa fa-home',
-        'rol': false,
+        'rol': true,
         'link': AppConfig.routes.dashboard,
-        'show': false,
+        'show': true,
         'submenu': {
           'dashboard': {
             'type': 'default',

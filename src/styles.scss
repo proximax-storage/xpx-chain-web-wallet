@@ -160,3 +160,52 @@ html:after {
   color: #666;
   font-weight: 700;
 }
+
+/*CARD ADMIN*/
+.cascading-admin-card .admin-up .data{
+  float: right;
+  margin-top: 2rem;
+  text-align: right;
+}
+
+.cascading-admin-card .admin-up .fa{
+  padding: 1.7rem;
+  font-size: 2rem;
+  color: #fff;
+  text-align: left;
+  margin-right: 1rem;
+  border-radius: 3px;
+  box-shadow: 0 2px 9px 0 rgba(0,0,0,.2),0 2px 13px 0 rgba(0,0,0,.19);
+}
+
+.cascading-admin-card .admin-up{
+  margin-left: 4%;
+  margin-right: 4%;
+  margin-top: -20px;
+}
+
+
+.classic-admin-card .card-body h4{
+  margin-top: 10px;
+}
+
+.classic-admin-card .card-body {
+  color: #fff;
+  margin-bottom: 0;
+  padding: .9rem;
+}
+
+.classic-admin-card .card-body p {
+  font-size: 15px;
+  opacity: .7;
+  margin-bottom: 0;
+}
+
+.logo-item-classic-card{
+  font-size: 50px;
+  color: rgba(255, 255, 255, 0.32);
+}
+
+.height-body-card{
+  height: 95px;
+}
