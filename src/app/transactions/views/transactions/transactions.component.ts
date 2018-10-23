@@ -21,9 +21,7 @@ export class TransactionsComponent implements OnInit {
 
     this.transactionsService.getTransConfirm$().subscribe(
       tran => {
-
-
-        console.log('transacciones --', tran)
+        console.log('transacciones --', tran.length)
       },
       error => {
         console.error(error)

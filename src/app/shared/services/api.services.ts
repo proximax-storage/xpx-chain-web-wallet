@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders, HttpResponse, HttpErrorResponse } from '@angul
 import { Injectable } from '@angular/core';
 import { throwError, Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { Listener } from "nem2-sdk/dist";
+// import { Listener } from "nem2-sdk/dist";
 
 @Injectable({
   providedIn: 'root'
@@ -11,23 +11,23 @@ import { Listener } from "nem2-sdk/dist";
 export class ApiService {
   private headers: HttpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
   websocketIsOpen = false;
-  connectionWs: Listener;
+  // connectionWs: Listener;
 
   constructor(private http: HttpClient) { }
 
-  openConnectionWs() {
-    this.websocketIsOpen = true;
-    const listener = new Listener(environment.socket, WebSocket);
-    return listener;
-  }
+  // openConnectionWs() {
+  //   this.websocketIsOpen = true;
+  //   const listener = new Listener(environment.socket, WebSocket);
+  //   return listener;
+  // }
 
-  getConnectionWs() {
-    if (!this.websocketIsOpen) {
-      this.connectionWs = this.openConnectionWs();
-      return this.connectionWs;
-    }
-    return this.connectionWs;
-  }
+  // getConnectionWs() {
+  //   if (!this.websocketIsOpen) {
+  //     this.connectionWs = this.openConnectionWs();
+  //     return this.connectionWs;
+  //   }
+  //   return this.connectionWs;
+  // }
 
   get(path?: string, headers = {}): Observable<HttpResponse<any>> {
     this.appendHeader(headers);

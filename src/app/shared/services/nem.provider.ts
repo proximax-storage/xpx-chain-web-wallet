@@ -181,6 +181,7 @@ export class NemProvider {
    * @memberof NemProvider
    */
   getAllTransactionsFromAnAccount(publicAccount, queryParams?): Observable<Transaction[]> {
+    // console.log("cuenta publica nem", publicAccount)
     return this.accountHttp.transactions(publicAccount, new QueryParams(queryParams));
 
   }

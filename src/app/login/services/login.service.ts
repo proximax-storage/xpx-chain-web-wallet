@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { WalletService } from '../../shared/services/wallet.service';
 import { AppConfig } from '../../config/app.config';
-import { ApiService } from "../../shared/services/api.services";
+import { DataBridgeService } from "../../shared/services/data-bridge.service";
 import { Address } from "nem2-sdk/dist";
 
 @Injectable({
@@ -15,8 +15,8 @@ export class LoginService {
   isLogged$: Observable<boolean> = this.isLoggedSubject.asObservable();
   constructor(
     private _walletService: WalletService,
-    private _apiService: ApiService,
-    private route: Router
+    private route: Router,
+    private _dataBridgeService:DataBridgeService
   ) { this.setLogged(false); }
 
   /**
@@ -46,12 +46,12 @@ export class LoginService {
    */
   login(common, wallet) {
     if (!this._walletService.login(common, wallet)) { return false; }
+    this._dataBridgeService.connectnWs();
     this.route.navigate([`/${AppConfig.routes.dashboard}`]);
     this.setLogged(true);
 
-    //Get transactions confirmed
-    const ws = this._apiService.getConnectionWs();
-    this.getTransactionConfirmed(ws, 'SBILTA-367K2L-X2FEXG-5TFWAS-7GEFYA-GY7QLF-BYKC');
+  
+
     return true;
   }
 
@@ -77,23 +77,7 @@ export class LoginService {
     return this.isLogged$;
   }
 
-  getAllTransaction() {
-    
-  }
 
-  getTransactionConfirmed(ws, address) {
-    ws.open().then(() => {
-      ws
-        .confirmed(Address.createFromRawAddress(address))
-        .subscribe(transaction => console.log('transaction confirmed ', transaction), err => console.error(err));
-    });
-  }
 
-  getTransactionUnConfirmed(ws, address) {
-    ws.open().then(() => {
-      ws
-        .unconfirmedAdded(Address.createFromRawAddress(address))
-        .subscribe(transaction => console.log('transaction getTransactionUnConfirmed ', transaction), err => console.error(err));
-    });
-  }
+  
 }

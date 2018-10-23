@@ -125,13 +125,12 @@ export class WalletService {
 
     //Get public account from private key 
     this.publicAccount = this.nemProvider.getPublicAccountFromPrivateKey(common.privateKey, net)
-  
     return true;
   }
 
   /**
    *
-   *
+   * 
    * @param {any} privateKey
    * @returns
    * @memberof WalletService
