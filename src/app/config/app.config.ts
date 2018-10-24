@@ -8,7 +8,9 @@ export const AppConfig: Config = {
     dashboard: 'dashboard',
     createWallet: 'create-wallet',
     importWallet: 'import-wallet',
+    apostille:'apostille',
     transactions:'transactions-get',
+    service:'dashboard-service',
     notFound: 'not-found'
   }
 };
@@ -19,7 +21,9 @@ export const NameRoute = {
   [AppConfig.routes.dashboard]: 'Dashboard',
   [AppConfig.routes.createWallet]: 'Create wallet',
   [AppConfig.routes.importWallet]: 'Import wallet',
+  [AppConfig.routes.apostille]: 'Apostille',
   [AppConfig.routes.transactions]: 'Transactions get',
+  [AppConfig.routes.service]: ' Dashboard service',
   [AppConfig.routes.notFound]: '404 not found'
 }
 
@@ -30,7 +34,9 @@ export interface Config {
     dashboard: string;
     createWallet: string;
     importWallet: string;
+    apostille: string;
     transactions:string;
+    service:string;
     notFound: string;
   };
 }

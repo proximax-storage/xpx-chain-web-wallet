@@ -1,7 +1,6 @@
 import { ModuleWithProviders } from '@angular/core';
 import { Routes, RouterModule, PreloadAllModules } from '@angular/router';
 import { SelectivePreloadingService } from './selective-preloading.service';
-import { AppConfig } from "./config/app.config";
 
 const appRoutes: Routes = [
     {
@@ -18,6 +17,10 @@ const appRoutes: Routes = [
     },{
         path: '',
         loadChildren: './transactions/transactions.module#TransactionsModule'
+    }
+    ,{
+        path: 'service',
+        loadChildren: './shared/moduls/service/service.module#ServiceModule'
     }
 ];
 export const appRoutingProviders: any[] = [];
