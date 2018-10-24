@@ -211,6 +211,20 @@ export class NemProvider {
 
 
 
+  /**
+   * Gnenerate account simple
+   *
+   * @param {*} network
+   * @returns {Account}
+   * @memberof NemProvider
+   */
+  generateNewAccount(network): Account {
+    return Account.generateNewAccount(network);
+    // account.address.pretty()
+    // account.privateKey
+  }
+
+
 
 
 }
