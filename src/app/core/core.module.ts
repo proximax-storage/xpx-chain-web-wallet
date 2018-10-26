@@ -5,6 +5,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MdbModule } from "../shared/moduls/mdb/mdb.module";
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { TransactionsComponent } from "../transactions/views/transactions/transactions.component";
 
 const modules = [
   CommonModule,
@@ -19,7 +20,11 @@ const modules = [
     modules,
     MdbModule.forRoot()
   ],
+  declarations: [
+    TransactionsComponent
+  ],
   exports: [
+    TransactionsComponent,
     modules,
     MdbModule
   ]

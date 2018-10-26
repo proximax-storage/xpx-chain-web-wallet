@@ -1,0 +1,37 @@
+<div class="mt-3rem mb-3rem animated fadeIn">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-xl-5 col-lg-6 col-md-10 col-sm-12 mx-auto">
+        <mdb-card>
+          <mdb-card-header class="background-proxiwallet white-text text-align-center py-4">
+            <img src="assets/images/logo/proximax-black.png" style="width: 150px;">
+          </mdb-card-header>
+
+          <mdb-card-body class="px-lg-5 backg-beige">
+
+            <div class="md-form mt-5" id="container-walletname">
+              <i class="fa fa-codepen prefix text-gris"></i>
+              <input type="text" autocomplete="off" id="walletname" class="form-control" mdbInputDirective [(ngModel)]="node">
+              <label for="walletname">Add node</label>
+            </div>
+
+            <div class="mt-4rm">
+              <div class="row ">
+                <div class="mx-auto">
+                  <div class="row">
+                    <div class="col-xs-6">
+                      <button mdbBtn type="button" rounded="true" class="waves-light btn-reverse" mdbWavesEffect type="submit" [routerLink]="[route.goToExplorer]">Explorer</button>
+                    </div>
+                    <div class="col-xs-6">
+                      <button mdbBtn type="button" color="default" rounded="true" class="waves-light" mdbWavesEffect type="submit" (click)="saveNode()">Add</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </mdb-card-body>
+        </mdb-card>
+      </div>
+    </div>
+  </div>
+</div>

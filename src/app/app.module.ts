@@ -14,6 +14,7 @@ import {HeaderHorizontalComponent} from './header/component/header-horizontal/he
 import { HeaderRebSocialComponent } from './header/component/header-reb-social/header-reb-social.component';
 import { HeaderVerticalComponent } from './header/component/header-vertical/header-vertical.component';
 
+
 @NgModule({
   declarations: [
     AppComponent,

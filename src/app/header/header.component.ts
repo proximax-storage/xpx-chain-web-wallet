@@ -165,6 +165,16 @@ export class HeaderComponent implements OnInit {
             'link': AppConfig.routes.explorer,
             'show': true,
             'submenu': {}
+          },
+          'addNode': {
+            'type': 'default',
+            'name': 'Add node',
+            'class': '',
+            'icon': 'fa fa-codepen',
+            'rol': true,
+            'link': AppConfig.routes.addNode,
+            'show': true,
+            'submenu': {}
           }
         }
       }
