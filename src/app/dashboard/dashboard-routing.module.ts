@@ -8,8 +8,8 @@ import { NotLoggedGuard } from '../shared/guard/not-logged.guard';
 const routes: Routes = [
   {
     path: `${AppConfig.routes.dashboard}`,
-    component: DashboardComponent
-    //canActivate: [LoggedGuard]
+    component: DashboardComponent,
+    canActivate: [LoggedGuard]
   }
 ];
 

@@ -117,7 +117,7 @@ export class HeaderComponent implements OnInit {
         'type': 'default',
         'name': 'signout',
         'class': '',
-        'icon': 'fa fa-tachometer',
+        'icon': 'fa fa-lock',
         'rol': true,
         'link': AppConfig.routes.login,
         'show': true,
@@ -166,13 +166,23 @@ export class HeaderComponent implements OnInit {
             'show': true,
             'submenu': {}
           },
-          'addNode': {
+          'apostille': {
             'type': 'default',
-            'name': 'Add node',
+            'name': 'Apostille',
             'class': '',
             'icon': 'fa fa-codepen',
             'rol': true,
-            'link': AppConfig.routes.addNode,
+            'link':`service/${AppConfig.routes.apostille}`,
+            'show': true,
+            'submenu': {}
+          },
+          'auditApostille': {
+            'type': 'default',
+            'name': 'Audit Apostille',
+            'class': '',
+            'icon': 'fa fa-codepen',
+            'rol': true,
+            'link': `service/${AppConfig.routes.audiApostille}`,
             'show': true,
             'submenu': {}
           }

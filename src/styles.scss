@@ -36,6 +36,13 @@ html:after {
   background: linear-gradient(135deg, #c1a26b 0%, #e2bf81 55%, #c1a26b 100%) !important;
 }
 
+.background-gold{
+  background: #c1a26b !important;
+  background: -moz-linear-gradient(-45deg, #c1a26b 0%, #e2bf81 55%, #c1a26b 100%) !important;
+  background: -webkit-linear-gradient(-45deg, #c1a26b 0%, #e2bf81 55%, #c1a26b 100%) !important;
+  background: linear-gradient(135deg, #c1a26b 0%, #e2bf81 55%, #c1a26b 100%) !important;
+}
+
 .background-header-box{
   background: #c1a26b !important;
   background: -moz-linear-gradient(-45deg, #c1a26b 0%, #e2bf81 55%, #c1a26b 100%) !important;
@@ -52,6 +59,10 @@ html:after {
 
 .dropdown-default.colorful-select .dropdown-content li.active span, .dropdown-default.colorful-select .dropdown-content li.selected span{
   background-color: #c4aa7d !important;
+}
+
+.dropdown-default.colorful-select.white-forever .dropdown-content li.active span, .dropdown-default.colorful-select .dropdown-content li.selected span{
+  color: white !important;
 }
 
 .color-text-gris{
