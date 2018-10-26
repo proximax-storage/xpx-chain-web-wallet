@@ -2,14 +2,17 @@ import { Component, OnInit } from '@angular/core';
 import * as crypto from 'crypto-js'
 import { Account, Transaction, TransferTransaction, Message } from 'nem2-sdk';
 import { NemProvider } from '../../../../services/nem.provider';
+import { BlockUI, NgBlockUI } from 'ng-block-ui';
 // import {ReversePipePipe} from '../../../shared/pipe/reverse-pipe.pipe';
 import { decode } from 'utf8';
+import { SharedService } from '../../../..';
 @Component({
   selector: 'app-audi-apostille',
   templateUrl: './audi-apostille.component.html',
   styleUrls: ['./audi-apostille.component.scss']
 })
 export class AudiApostilleComponent implements OnInit {
+  @BlockUI() blockUI: NgBlockUI;
   headElements = ['file name', 'Owner', 'Hash file', 'Result'];
   validatefileInput = false;
   ourFile: any;
@@ -22,6 +25,7 @@ export class AudiApostilleComponent implements OnInit {
   initialFileName: any;
   constructor(
     private nemProvider: NemProvider,
+    private sharedService: SharedService
   ) { }
 
   ngOnInit() {
@@ -97,11 +101,12 @@ export class AudiApostilleComponent implements OnInit {
     // Hash of the apostille transaction
     let apostilleTxHash = nameArray[nameArray.length - 4].replace(/^\s+|\s+$/, '');
     // console.log("signedTransaction.hash:", apostilleTxHash);
-
+    this.blockUI.start('Loading...'); // Start blocking
     this.nemProvider.getTransaction(apostilleTxHash).subscribe((infTrans: TransferTransaction) => {
       const apostilleHashPrefix = 'fe4e545903';
       const hash = crypto.SHA256(this.file);
       const apostilleHash = apostilleHashPrefix + crypto.SHA256(this.file).toString(crypto.enc.Hex);
+      this.blockUI.stop(); // Stop blocking
       if (!this.verify(apostilleHash, infTrans.message.payload)) {
         this.auditResults.push({
           'filename': this.nameFile,
@@ -129,7 +134,8 @@ export class AudiApostilleComponent implements OnInit {
       // console.log("hast:",this.decodeHex(infTrans.message.payload))
     },
       error => {
-
+        this.sharedService.showError('Error', '¡unexpected error!');
+        this.blockUI.stop(); // Stop blocking
         console.error(error);
       }
     )

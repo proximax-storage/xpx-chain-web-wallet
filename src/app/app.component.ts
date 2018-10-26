@@ -6,8 +6,10 @@ import { ApiService } from "./shared/services/api.services";
 
 @Component({
   selector: 'app-root',
-  template: `<app-header></app-header>
-              <router-outlet></router-outlet>`
+  template: `<block-ui>
+                <app-header></app-header>
+                <router-outlet></router-outlet>
+              </block-ui>`
 })
 export class AppComponent {
 

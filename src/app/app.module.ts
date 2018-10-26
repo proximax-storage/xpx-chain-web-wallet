@@ -14,7 +14,7 @@ import {HeaderHorizontalComponent} from './header/component/header-horizontal/he
 import { HeaderRebSocialComponent } from './header/component/header-reb-social/header-reb-social.component';
 import { HeaderVerticalComponent } from './header/component/header-vertical/header-vertical.component';
 
-
+import { BlockUIModule } from 'ng-block-ui';
 
 @NgModule({
   declarations: [
@@ -30,6 +30,7 @@ import { HeaderVerticalComponent } from './header/component/header-vertical/head
     BrowserAnimationsModule,
     routing,
     CoreModule.forRoot(),
+    BlockUIModule.forRoot(),
     ToastModule.forRoot({
       preventDuplicates: true,
       autoDismiss: true,
