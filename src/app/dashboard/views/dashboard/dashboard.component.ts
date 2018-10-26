@@ -20,12 +20,12 @@ export class DashboardComponent implements OnInit {
   ) {
   }
 
-  ngOnInit() { 
+  ngOnInit() {
       //  this.enviarTrasferencia();
     //obtener balance de la cuenta d
     this.nemProvider.getBalance(this.walletService.address).pipe(
       mergeMap((_) => _)
-    ).subscribe(mosaic => console.log('You have', mosaic.relativeAmount(), mosaic.fullName()),
+    ).subscribe(mosaic => console.log('You have', mosaic, mosaic.fullName()),
       err => console.error(err));
   }
    enviarTrasferencia() {

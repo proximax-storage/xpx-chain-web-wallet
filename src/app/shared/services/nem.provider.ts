@@ -14,7 +14,8 @@ import {
   PublicAccount,
   QueryParams,
   AccountInfo,
-  NetworkType
+  NetworkType,
+  TransactionHttp
 } from 'nem2-sdk';
 
 import { crypto } from 'nem2-library';
@@ -27,6 +28,7 @@ import { mergeMap } from 'rxjs/operators'
   providedIn: 'root'
 })
 export class NemProvider {
+  transactionHttp: TransactionHttp;
   websocketIsOpen = false;
   connectionWs: Listener;
   accountHttp: AccountHttp;
@@ -34,6 +36,7 @@ export class NemProvider {
   namespaceHttp: NamespaceHttp;
   mosaicService: MosaicService
   constructor() {
+    this.transactionHttp = new TransactionHttp(environment.apiUrl);
     this.accountHttp = new AccountHttp(environment.apiUrl);
     this.mosaicHttp = new MosaicHttp(environment.apiUrl);
     this.namespaceHttp = new NamespaceHttp(environment.apiUrl);
@@ -92,7 +95,7 @@ export class NemProvider {
   }
 
   /**
-   * get 
+   * get
    *
    * @param {string} privateKey
    * @param {*} net
@@ -116,6 +119,28 @@ export class NemProvider {
   }
 
   /**
+ * createPublicAccount
+ * @param publicKey
+ * @param network
+ * @returns {PublicAccount}
+ */
+  createPublicAccount(publicKey, network): PublicAccount {
+    return PublicAccount.createFromPublicKey(publicKey, network);
+  }
+
+  /**
+   * Create an Address from a given raw address.
+   *
+   * @param {*} address
+   * @returns {Address}
+   * @memberof NemProvider
+   */
+  createFromRawAddress(address: string): Address {
+
+    return Address.createFromRawAddress(address);
+  }
+
+  /**
    * Decrypt and return private key
    * @param password
    * @param encryptedKey
@@ -134,18 +159,6 @@ export class NemProvider {
 
     crypto.passwordToPrivatekey(common, wallet, 'pass:bip32');
     return common.privateKey;
-  }
-
-  /**
-   * Create an Address from a given raw address.
-   *
-   * @param {*} address
-   * @returns {Address}
-   * @memberof NemProvider
-   */
-  createFromRawAddress(address: string): Address {
-
-    return Address.createFromRawAddress(address);
   }
 
   /**
@@ -199,14 +212,15 @@ export class NemProvider {
     return this.accountHttp.unconfirmedTransactions(publicAccount, queryParams);
   }
 
+
+
   /**
- * createPublicAccount
- * @param publicKey 
- * @param network 
- * @returns {PublicAccount}
- */
-  createPublicAccount(publicKey, network): PublicAccount {
-    return PublicAccount.createFromPublicKey(publicKey, network);
+   * Return getTransaction from id or hash
+   * @param param
+   */
+  getTransactionInformation(hash, node = ''): Observable<Transaction> {
+    const transaction: TransactionHttp = (node === '') ? this.transactionHttp : new TransactionHttp(`http://${node}:3000`);
+    return transaction.getTransaction(hash);
   }
 
 

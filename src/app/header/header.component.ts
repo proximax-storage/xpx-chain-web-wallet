@@ -13,6 +13,7 @@ export interface HorizontalHeaderInterface{
 
 export interface VerticalHeaderInterface{
   dashboard: Header;
+  services: Header;
 }
 
 export interface Header{
@@ -141,6 +142,27 @@ export class HeaderComponent implements OnInit {
             'icon': 'fa fa-home',
             'rol': true,
             'link': AppConfig.routes.dashboard,
+            'show': true,
+            'submenu': {}
+          }
+        }
+      },
+      services: {
+        'type': 'dropdown',
+        'name': 'services',
+        'class': '',
+        'icon': 'fa fa-tachometer',
+        'rol': true,
+        'link': AppConfig.routes.login,
+        'show': true,
+        'submenu': {
+          'explorer': {
+            'type': 'default',
+            'name': 'Explorer',
+            'class': '',
+            'icon': 'fa fa-home',
+            'rol': true,
+            'link': AppConfig.routes.explorer,
             'show': true,
             'submenu': {}
           }

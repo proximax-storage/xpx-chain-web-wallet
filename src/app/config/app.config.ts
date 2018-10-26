@@ -9,6 +9,8 @@ export const AppConfig: Config = {
     createWallet: 'create-wallet',
     importWallet: 'import-wallet',
     transactions:'transactions-get',
+    addNode: 'add-node',
+    explorer: 'explorer',
     notFound: 'not-found'
   }
 };
@@ -20,6 +22,8 @@ export const NameRoute = {
   [AppConfig.routes.createWallet]: 'Create wallet',
   [AppConfig.routes.importWallet]: 'Import wallet',
   [AppConfig.routes.transactions]: 'Transactions get',
+  [AppConfig.routes.addNode]: 'Add node',
+  [AppConfig.routes.explorer]: 'Explorer',
   [AppConfig.routes.notFound]: '404 not found'
 }
 
@@ -31,6 +35,8 @@ export interface Config {
     createWallet: string;
     importWallet: string;
     transactions:string;
+    addNode: string;
+    explorer: string;
     notFound: string;
   };
 }
