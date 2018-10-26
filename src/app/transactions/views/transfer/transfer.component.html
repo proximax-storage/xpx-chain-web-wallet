@@ -10,12 +10,6 @@
           <mdb-card-body class="px-lg-5 backg-beige">
             <!-- <h4 class="title-form">Create Wallet</h4> -->
             <form [formGroup]="transferForm" (ngSubmit)="sendTransfer()" class="" style="color: #757575;">
-              <div class="md-form  mt-5">
-                <i class="fa fa-bars prefix text-gris"></i>
-                <mdb-select [options]="typeAccount" placeholder="Select account" required formControlName="acountOrigen" class="colorful-select dropdown-default"
-                  mdbInputDirective [errorMessage]="getError('acountOrigen')"></mdb-select>
-              </div>
-
               <div class="md-form mt-5" id="container-walletname">
                 <i class="fa fa-user prefix text-gris"></i>
                 <input type="text" autocomplete="off" required formControlName="acountRecipient" id="acountRecipient" class="form-control"

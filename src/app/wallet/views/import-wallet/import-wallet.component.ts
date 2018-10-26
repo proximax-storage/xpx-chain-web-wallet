@@ -55,6 +55,10 @@ export class ImportWalletComponent implements OnInit {
   /**
    * Create a reactive form
    * 0F3CC33190A49ABB32E7172E348EA927F975F8829107AAA3D6349BB10797D4F6 (pvk with money)
+   * SCFWMP-2M2HP4-3KJYGO-BDVQ3S-KX3Q6H-FH6HZZ-6DNR (pvk with money)
+   *
+   *
+   *SDXACZ-UQUYES-A4WQHL-RKGPCH-AAIGGE-RZSZPU-2SBF
    * SBILTA-367K2L-X2FEXG-5TFWAS-7GEFYA-GY7QLF-BYKC (direction with money)
    * TCFWMP-2M2HP4-3KJYGO-BDVQ3S-KX3Q6H-FH6GDV-3AG4
    * @memberof ImportWalletComponent
@@ -89,7 +93,7 @@ export class ImportWalletComponent implements OnInit {
       //get public key from account
       const publicKey = account.publicKey.toString();
       console.log('my public key is... ', publicKey);
-      //create publicAccount 
+      //create publicAccount
       const publicAccount = PublicAccount.createFromPublicKey(publicKey, network);
       //instance account http
       const petitionHttp = new AccountHttp('http://190.216.224.11:3000');

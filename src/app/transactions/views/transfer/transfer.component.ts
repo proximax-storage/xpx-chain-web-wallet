@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { NetworkType } from "nem2-sdk/dist";
+import { WalletService } from "../../../shared";
+import { TransactionsService } from "../../../transactions/service/transactions.service";
 
 @Component({
   selector: 'app-transfer',
@@ -29,7 +31,9 @@ export class TransferComponent implements OnInit {
 
 
   constructor(
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private walletService: WalletService,
+    private transactionService: TransactionsService
   ) { }
 
   ngOnInit() {
@@ -38,10 +42,9 @@ export class TransferComponent implements OnInit {
 
   createForm() {
     this.transferForm = this.fb.group({
-      acountOrigen: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(40)]],
-      acountRecipient: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(40)]],
-      amount: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(20)]],
-      message: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(80)]],
+      acountRecipient: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(46)]],
+      amount: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(20)]],
+      message: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(80)]],
       password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]]
     });
   }
@@ -84,10 +87,15 @@ export class TransferComponent implements OnInit {
   }
 
   sendTransfer() {
-    console.log('transfer transaction');
+    if (this.transferForm.valid) {
+      const acountRecipient = this.transferForm.get('acountRecipient').value;
+      const amount = this.transferForm.get('amount').value;
+      const message = this.transferForm.get('message').value;
+      const password = this.transferForm.get('password').value;
+      const common = { password: password }
+      if (this.walletService.decrypt(common)) {
+        this.transactionService.sendTransfer(common, acountRecipient, message, amount, this.walletService.network);
+      }
+    }
   }
-
-
-
-
 }
