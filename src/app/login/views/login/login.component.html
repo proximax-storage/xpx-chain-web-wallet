@@ -15,7 +15,7 @@
                   (selected)="optionSelected($event)" mdbInputDirective [errorMessage]="getError('wallet')"></mdb-select>
               </div>
               <div class="md-form mt-5" formGroupName="common">
-                <i class="fa fa-user prefix text-gris"></i>
+                <i class="fa fa-lock prefix text-gris"></i>
                 <input type="password" autocomplete="off" required formControlName="password" id="password" class="form-control" data-success="Valid password"
                   mdbInputDirective [errorMessage]="getErrorGroup('common','password')">
                 <label for="password">password</label>

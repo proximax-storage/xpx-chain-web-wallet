@@ -14,6 +14,7 @@ export interface HorizontalHeaderInterface {
 export interface VerticalHeaderInterface {
   dashboard: Header;
   services: Header;
+  transactions: Header;
 }
 
 export interface Header {
@@ -153,7 +154,7 @@ export class HeaderComponent implements OnInit {
         'class': '',
         'icon': 'fa fa-tachometer',
         'rol': true,
-        'link': AppConfig.routes.login,
+        'link': '',
         'show': true,
         'submenu': {
           'explorer': {
@@ -183,6 +184,27 @@ export class HeaderComponent implements OnInit {
             'icon': 'fa fa-codepen',
             'rol': true,
             'link': `service/${AppConfig.routes.audiApostille}`,
+            'show': true,
+            'submenu': {}
+          }
+        }
+      },
+      transactions: {
+        'type': 'dropdown',
+        'name': 'Transactions',
+        'class': '',
+        'icon': 'fa fa-tachometer',
+        'rol': true,
+        'link': '',
+        'show': true,
+        'submenu': {
+          'explorer': {
+            'type': 'default',
+            'name': 'Transfer',
+            'class': '',
+            'icon': 'fa fa-home',
+            'rol': true,
+            'link': AppConfig.routes.transferTransaction,
             'show': true,
             'submenu': {}
           }

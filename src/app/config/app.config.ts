@@ -10,6 +10,7 @@ export const AppConfig: Config = {
     audiApostille:'audit-apostille',
     apostille:'apostille',
     transactions:'transactions-get',
+    transferTransaction:'transfer',
     addNode: 'add-node',
     explorer: 'explorer',
     service:'dashboard-service',
@@ -26,6 +27,7 @@ export const NameRoute = {
   [AppConfig.routes.audiApostille]: 'Apostille Audit',
   [AppConfig.routes.apostille]: 'Apostille create',
   [AppConfig.routes.transactions]: 'Transactions get',
+  [AppConfig.routes.transferTransaction]: 'Transfer',
   [AppConfig.routes.addNode]: 'Add node',
   [AppConfig.routes.explorer]: 'Explorer',
   [AppConfig.routes.service]: ' Dashboard service',
@@ -42,6 +44,7 @@ export interface Config {
     audiApostille:string;
     apostille: string;
     transactions:string;
+    transferTransaction: string;
     addNode: string;
     explorer: string;
     service:string;

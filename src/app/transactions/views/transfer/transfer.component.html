@@ -1,0 +1,67 @@
+<div class="mt-3rem mb-3rem animated fadeIn">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-xl-8 col-lg-8 col-md-10 col-sm-12 mx-auto">
+        <mdb-card>
+          <mdb-card-header class="background-gold white-text text-align-center py-4">
+            <img src="assets/images/logo/logo-white.png" style="width: 300px;">
+          </mdb-card-header>
+
+          <mdb-card-body class="px-lg-5 backg-beige">
+            <!-- <h4 class="title-form">Create Wallet</h4> -->
+            <form [formGroup]="transferForm" (ngSubmit)="sendTransfer()" class="" style="color: #757575;">
+              <div class="md-form  mt-5">
+                <i class="fa fa-bars prefix text-gris"></i>
+                <mdb-select [options]="typeAccount" placeholder="Select account" required formControlName="acountOrigen" class="colorful-select dropdown-default"
+                  mdbInputDirective [errorMessage]="getError('acountOrigen')"></mdb-select>
+              </div>
+
+              <div class="md-form mt-5" id="container-walletname">
+                <i class="fa fa-user prefix text-gris"></i>
+                <input type="text" autocomplete="off" required formControlName="acountRecipient" id="acountRecipient" class="form-control"
+                  mdbInputDirective data-success="Valid recipient" [errorMessage]="getError('acountRecipient')">
+                <label for="recipient">Recipient</label>
+              </div>
+
+              <div class="md-form mt-5" id="container-walletname">
+                <i class="fa fa-user prefix text-gris"></i>
+                <input type="text" autocomplete="off" required formControlName="amount" id="amount" class="form-control" mdbInputDirective
+                  data-success="Valid amount" [errorMessage]="getError('amount')">
+                <label for="recipient">Amount</label>
+              </div>
+
+              <div class="md-form mt-5" id="container-walletname">
+                <i class="fa fa-user prefix text-gris"></i>
+                <input type="text" autocomplete="off" required formControlName="message" id="message" class="form-control" mdbInputDirective
+                  data-success="Valid message" [errorMessage]="getError('message')">
+                <label for="recipient">message</label>
+              </div>
+
+              <div class="md-form mt-5" id="container-password">
+                <i class="fa fa-lock prefix text-gris"></i>
+                <input type="password" autocomplete="off" required formControlName="password" id="password" class="form-control" mdbInputDirective
+                  data-success="Valid password" [errorMessage]="getError('password')">
+                <label for="password">Password</label>
+              </div>
+
+              <div class="mt-4rm">
+                <div class="row ">
+                  <div class="mx-auto">
+                    <div class="row">
+                      <div class="col-xs-6">
+                        <button mdbBtn type="button" rounded="true" class="waves-light btn-reverse" mdbWavesEffect type="submit" (click)="cleanForm()">Clean</button>
+                      </div>
+                      <div class="col-xs-6">
+                        <button mdbBtn type="button" color="default" rounded="true" class="waves-light" mdbWavesEffect type="submit">Create</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </mdb-card-body>
+        </mdb-card>
+      </div>
+    </div>
+  </div>
+</div>
