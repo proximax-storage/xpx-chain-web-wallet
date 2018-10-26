@@ -7,6 +7,8 @@ import { BehaviorSubject, Observable } from "rxjs";
 import { AccountsInterface } from '..';
 import { NemProvider } from './nem.provider';
 import { ServiceModuleService } from '../../services/service-module.service';
+import { Router } from "@angular/router";
+import { AppConfig } from "../../config/app.config";
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +24,8 @@ export class WalletService {
   constructor(
     private sharedService: SharedService,
     private nemProvider: NemProvider,
-    private serviceModuleService: ServiceModuleService
+    private serviceModuleService: ServiceModuleService,
+    private route: Router
   ) {
 
   }
@@ -34,8 +37,8 @@ export class WalletService {
     }
 
     if (!this.serviceModuleService.getnode()) {
-      this.sharedService.showError('Error', '¡Select one node');
-
+      this.sharedService.showError('', 'Please, select a node.');
+      this.route.navigate([`/${AppConfig.routes.selectNode}`]);
       return false;
     }
     // Decrypt / generate and check primary
@@ -134,14 +137,14 @@ export class WalletService {
       return false;
     }
 
-    //Get public account from private key 
+    //Get public account from private key
     this.publicAccount = this.nemProvider.getPublicAccountFromPrivateKey(common.privateKey, net)
     return true;
   }
 
   /**
    *
-   * 
+   *
    * @param {any} privateKey
    * @returns
    * @memberof WalletService

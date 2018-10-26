@@ -30,7 +30,7 @@ export const NameRoute = {
   [AppConfig.routes.transactions]: 'Transactions get',
   [AppConfig.routes.transferTransaction]: 'Transfer',
   [AppConfig.routes.addNode]: 'Add node',
-  [AppConfig.routes.selectNode]: 'select node',
+  [AppConfig.routes.selectNode]: 'Select node',
   [AppConfig.routes.explorer]: 'Explorer',
   [AppConfig.routes.service]: ' Dashboard service',
   [AppConfig.routes.notFound]: '404 not found'
