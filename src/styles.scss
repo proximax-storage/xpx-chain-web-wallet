@@ -3,14 +3,96 @@
 body {
   background: #f5f7fa;
 }
-
-
 html:after {
   width: 100%;
   display: block;
   content: "";
   height: 100%;
 }
+
+
+/*BACKGROUND AND COLORS*/
+.route-name {
+  text-transform: uppercase;
+  border-bottom: 1px solid #cfdbe2;
+  padding-top: 95px;
+  padding-bottom: 20px;
+  padding-left: 20px;
+  font-size: 18px;
+  opacity: .9;
+  line-height: 1.1;
+  color: #FFFFFF;
+  font-weight: 700;
+}
+
+.background-header-inverse {
+  background: #f5f7fa;
+ }
+
+.background-header{
+  background: #c1a26b !important;
+  background: -moz-linear-gradient(-45deg, #c1a26b 0%, #e2bf81 55%, #c1a26b 100%) !important;
+  background: -webkit-linear-gradient(-45deg, #c1a26b 0%, #e2bf81 55%, #c1a26b 100%) !important;
+  background: linear-gradient(135deg, #c1a26b 0%, #e2bf81 55%, #c1a26b 100%) !important;
+}
+
+.background-header-box{
+  background: #c1a26b !important;
+  background: -moz-linear-gradient(-45deg, #c1a26b 0%, #e2bf81 55%, #c1a26b 100%) !important;
+  background: -webkit-linear-gradient(-45deg, #c1a26b 0%, #e2bf81 55%, #c1a26b 100%) !important;
+  background: linear-gradient(135deg, #c1a26b 0%, #e2bf81 55%, #c1a26b 100%) !important;
+}
+
+.btn-default{
+  background: #c1a26b !important;
+  background: -moz-linear-gradient(-45deg, #c1a26b 0%, #e2bf81 55%, #c1a26b 100%) !important;
+  background: -webkit-linear-gradient(-45deg, #c1a26b 0%, #e2bf81 55%, #c1a26b 100%) !important;
+  background: linear-gradient(135deg, #c1a26b 0%, #e2bf81 55%, #c1a26b 100%) !important;
+}
+
+.dropdown-default.colorful-select .dropdown-content li.active span, .dropdown-default.colorful-select .dropdown-content li.selected span{
+  background-color: #c4aa7d !important;
+}
+
+.color-text-gris{
+  color: #969696 !important;
+}
+
+.color-text-gris:hover{
+  color: #c1a26b !important;
+}
+
+.mdb-select mdb-select-dropdown .dropdown-content li > a, mdb-select mdb-select-dropdown .dropdown-content li > span {
+  color: #c1a26b !important;
+}
+
+.side-nav .collapsible .card-body li a:hover{
+  background: #948262;
+}
+
+.side-nav .collapsible .card .card-header a h5 {
+  color: #FFFFFF !important;
+}
+
+.side-nav .logo-wrapper{
+  border-bottom: 1px solid rgba(255, 255, 255, 0.63);
+}
+
+/*FIN BACKGROUND AND COLORS*/
+
+
+/*STYLE SITE*/
+
+
+.side-nav .logo-wrapper img{
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+/*FIN STYLE SITE*/
+
+
+
 
 .mt-100px {
   margin-top: 100px;
@@ -45,10 +127,7 @@ html:after {
 }
 
 .background-proxiwallet {
-  background: #009688;
-  background: -moz-linear-gradient(-45deg, #009688 0%, #23b3a5 55%, #129a8e 100%);
-  background: -webkit-linear-gradient(-45deg, #009688 0%, #23b3a5 55%, #129a8e 100%);
-  background: linear-gradient(135deg, #009688 0%, #23b3a5 55%, #129a8e 100%);
+  background: #f5f7fa;
   color: white;
 }
 
@@ -140,26 +219,10 @@ html:after {
 
 /***/
 
-.background-header {
-  background: #009688;
-  background: -moz-linear-gradient(-45deg, #009688 0%, #23b3a5 55%, #129a8e 100%);
-  background: -webkit-linear-gradient(-45deg, #009688 0%, #23b3a5 55%, #129a8e 100%);
-  background: linear-gradient(135deg, #009688 0%, #23b3a5 55%, #129a8e 100%);
-}
 
-.route-name {
-  text-transform: uppercase;
-  border-bottom: 1px solid #cfdbe2;
-  padding-top: 85px;
-  background: #f5f7fa;
-  padding-bottom: 20px;
-  padding-left: 20px;
-  font-size: 18px;
-  opacity: .9;
-  line-height: 1.1;
-  color: #666;
-  font-weight: 700;
-}
+
+
+
 
 /*CARD ADMIN*/
 .cascading-admin-card .admin-up .data{
