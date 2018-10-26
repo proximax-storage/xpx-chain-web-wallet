@@ -41,6 +41,7 @@ export class NemProvider {
     this.mosaicHttp = new MosaicHttp(environment.apiUrl);
     this.namespaceHttp = new NamespaceHttp(environment.apiUrl);
     this.mosaicService = new MosaicService(this.accountHttp, this.mosaicHttp, this.namespaceHttp);
+    this.transactionHttp =new TransactionHttp(environment.apiUrl);
   }
 
   openConnectionWs() {
@@ -194,10 +195,23 @@ export class NemProvider {
    * @memberof NemProvider
    */
   getAllTransactionsFromAnAccount(publicAccount, queryParams?): Observable<Transaction[]> {
-    console.log("cuenta publica nem", publicAccount)
     return this.accountHttp.transactions(publicAccount, new QueryParams(queryParams));
 
   }
+
+
+/**
+ * Gets a transaction for a transactionId
+ *
+ * @param {string} transactionId
+ * @returns {Observable<Transaction>}
+ * @memberof NemProvider
+ */
+getTransaction(transactionId: string): Observable<Transaction>{
+
+    return this.transactionHttp.getTransaction(transactionId)
+  }
+
 
   /**
    *Gets the array of transactions for which an account is the sender or receiver and which have not yet been included in a block.

@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl } from "@angular/forms";
-import { TabsetComponent } from 'ng-uikit-pro-standard';
+import { saveAs } from 'file-saver';
 import {
   Account,
   Address,
@@ -13,6 +13,7 @@ import {
   TransactionHttp
 } from 'nem2-sdk';
 import * as crypto from 'crypto-js'
+import * as JSZip from 'jszip';
 
 import { NemProvider } from '../../../../services/nem.provider';
 import { WalletService } from '../../../../services/wallet.service';
@@ -23,7 +24,8 @@ import { environment } from '../../../../../../environments/environment'
   styleUrls: ['./apostilla.component.scss']
 })
 export class ApostillaComponent implements OnInit {
-  @ViewChild('staticTabs') staticTabs: TabsetComponent;
+  zip: JSZip;
+  ntyData:any;
   transactionHttp: TransactionHttp;
   apostillaForm: FormGroup;
   optionsCrypto: Array<any>;
@@ -37,47 +39,24 @@ export class ApostillaComponent implements OnInit {
   fileInput: any;
   nameFile: string;
   validatefileInput = false;
-
+  rawFileContent:any
   constructor(
     private fb: FormBuilder,
     private walletService: WalletService,
     private nemProvider: NemProvider
 
   ) {
+    this.zip = new JSZip();
     this.transactionHttp = new TransactionHttp(environment.apiUrl)
-    this.optionsCrypto = [
-      { value: '1', label: 'MD5' },
-      { value: '2', label: 'SHA1' },
-      { value: '3', label: 'SHA256' },
-      { value: '4', label: 'SHA3-256' },
-      { value: '5', label: 'SHA3-512' },
-    ];
-
-    this.optionsStorage = [
-      { value: '1', label: 'Public ' },
-
-    ]
+    this.optionsCrypto = [{ value: '1', label: 'MD5' }, { value: '2', label: 'SHA1' }, { value: '3', label: 'SHA256' }, { value: '4', label: 'SHA3-256' }, { value: '5', label: 'SHA3-512' },];
+    this.optionsStorage = [{ value: '1', label: 'Public ' },]
     this.createForm();
-
   }
-
   ngOnInit() {
-
-
-
     this.apostillaForm.get('password').valueChanges.subscribe(
       password => {
-
-
       });
-
   }
-
-
-
-
-
-
   createForm() {
     this.apostillaForm = this.fb.group({
       password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]],
@@ -88,40 +67,19 @@ export class ApostillaComponent implements OnInit {
       titlle: [''],
       contant: ['']
     });
-
   }
-
-
-
-
-
-
-
-
-
-
   sendApostille() {
-
-    console.log(this.apostillaForm.valid)
-    console.log(this.validatefileInput)
+    // console.log(this.apostillaForm.valid)
+    // console.log(this.validatefileInput)
     if (this.apostillaForm.valid && this.validatefileInput) {
       const common = {
         password: this.apostillaForm.get('password').value
       }
-
       if (this.walletService.decrypt(common)) {
-
-
         this.apostillepreparate(common)
-
       }
     }
-
-
-
   }
-
-
   getError(param, formControl?) {
     if (this.apostillaForm.get(param).getError('required')) {
       return `This field is required`;
@@ -130,20 +88,18 @@ export class ApostillaComponent implements OnInit {
     } else if (this.apostillaForm.get(param).getError('maxlength')) {
       return `This field must contain maximum ${this.apostillaForm.get(param).getError('maxlength').requiredLength} characters`;
     }
-
-
   }
 
-
-
-
   /**
-   * this is used to trigger the input
+   * This is used to trigger the input
+   *
+   * @memberof ApostillaComponent
    */
   openInput() {
     // your can use ElementRef for this later
     document.getElementById('fileInput').click();
   }
+
   fileChange(files: File[], $event) {
     if (files.length > 0) {
       this.validatefileInput = true;
@@ -152,35 +108,22 @@ export class ApostillaComponent implements OnInit {
       const myReader: FileReader = new FileReader();
       myReader.onloadend = (e) => {
         this.file = myReader.result;
+        this.rawFileContent = crypto.enc.Base64.parse(this.file.split(/,(.+)?/)[1]);
       };
       myReader.readAsDataURL(this.ourFile);
     }
   }
 
 
-
   apostillepreparate(common) {
-
-    const privateKey = common.privateKey;
-    const text = this.file;
     const title = this.nameFile;
     const tags = [this.apostillaForm.get('tags').value];
     const apostilleHashPrefix = 'fe4e545903';
-
-
-
-    const hash = crypto.SHA256(text)
-    console.log('data', hash)
-
-    const apostilleHash = apostilleHashPrefix + hash.toString(crypto.enc.Hex);
+    const hash = crypto.SHA256(this.file);
+    // console.log('data', hash)
+    const apostilleHash = apostilleHashPrefix + crypto.SHA256(this.file).toString(crypto.enc.Hex);
     const sinkAddress = this.nemProvider.generateNewAccount(this.walletService.network).address.plain();
-    const account = Account.createFromPrivateKey(privateKey, this.walletService.network);
-    console.log('apostilleHash', apostilleHash);
-
-
-
-
-    console.log("adrees para apostillar", this.nemProvider.generateNewAccount(this.walletService.network).address.plain())
+    const account = Account.createFromPrivateKey(common.privateKey, this.walletService.network);
     let transferTransaction: any
 
     transferTransaction = TransferTransaction.create(
@@ -191,143 +134,120 @@ export class ApostillaComponent implements OnInit {
       this.walletService.network,
     );
     transferTransaction.fee = UInt64.fromUint(150000);
-
     const signedTransaction = account.sign(transferTransaction);
+    const nty = {
+      signedTransaction: signedTransaction,
+      title: title,
+      tags: tags,
+      apostilleHash: apostilleHash,
+      account: account,
+      sinkAddress: sinkAddress,
+    }
 
-    console.log("signedTransaction", signedTransaction)
-
-    this.transactionHttp.announce(signedTransaction).subscribe(x => console.log(x),
-      err => console.error(err));
-
-    console.log('hash:    ' + signedTransaction.hash);
-    console.log('signer:  ' + signedTransaction.signer);
-    console.log('payload: ' + signedTransaction.payload);
-
-    const date = new Date();
-
-    // const nty = { "data": [
-    //     {
-    //       "filename": title,
-    //       "tags": tags.join(' '),
-    //       "fileHash": apostilleHash,
-    //       "owner": account.address.address,
-    //       "fromMultisig": account.address.address,
-    //       "dedicatedAccount": sinkAddress,
-    //       "dedicatedPrivateKey": "None (public sink)",
-    //       "txHash": signedTransaction.hash.toLowerCase(),
-    //       "txMultisigHash": "",
-    //       "timeStamp": date.toUTCString()
-    //     }
-    //   ]};
-
-    // const apostilleFilename = title.slice(0, title.lastIndexOf('.')).concat(
-    //   ' -- Apostille TX ',
-    //   signedTransaction.hash.toLowerCase(),
-    //   ' -- Date ',
-    //   '-',
-    //   ("00" + (date.getMonth() + 1)).slice(-2),
-    //   '-',
-    //   ("00" + (date.getDate())).slice(-2),
-    //   title.slice(title.lastIndexOf('.'))
-    // );
-   const titlle1= title.slice(0, title.lastIndexOf('.'))
-   const titlle2= title.slice(title.lastIndexOf('.'));
-   const apostille=`${titlle1} -- Apostille TX ${signedTransaction.hash.toLowerCase()}-- Date 
-    ${date.getFullYear()}-${("00" + (date.getMonth() + 1)).slice(-2)}-${ ("00" + (date.getDate())).slice(-2)}${titlle2}`
-
-    console.log(apostille);
-    // console.log(JSON.stringify(nty));
-}
-    //  SC4NGR-VHJA3U-TNJ776-YJMMG7-ZXJTJP-4G4HQC-PJLS 
-    //pryvate key : 3DA2A175F375D79FDF8A924CDEA7D94017E99984074578DF472201C18F3BF248 
+    this.transactionHttp.announce(signedTransaction).subscribe(
+      x => {
+        // console.log("exis=", x)
+        this.buildApostille(nty)
+      },
+      err => {
+        console.error(err)
+      });
   }
 
 
 
-
-/*
-const nem2Sdk = require("nem2-sdk");
-const cryptoJS = require("crypto-js");
-
-const Address = nem2Sdk.Address,
-  Deadline = nem2Sdk.Deadline,
-  Account = nem2Sdk.Account,
-  UInt64 = nem2Sdk.UInt64,
-  NetworkType = nem2Sdk.NetworkType,
-  PlainMessage = nem2Sdk.PlainMessage,
-  TransferTransaction = nem2Sdk.TransferTransaction,
-  TransactionHttp = nem2Sdk.TransactionHttp,
-  XEM = nem2Sdk.XEM;
-
-/!*
-sender:
-  private: 7808B5B53ECF24E40BE17B8EC3D0EB5F7C3F3D938E0D95A415F855AD4C27B2A4
-  public: 5D9513282B65A12A1B68DCB67DB64245721F7AE7822BE441FE813173803C512C
-  address: SBWEUWON6IBHCW5IC4EI6V6SMTVJGCJWGLF57UGK
-sink:
-  address: SDICZ5EAOD5W6YCAJL33OS5B4Y6FUOWOUOOLCZAL
-*!/
-
-const text = '999988887777';
-const title = '4433221100.txt';
-const tags = ['eeeeeeee'];
-
-const apostilleHashPrefix = 'fe4e545903';
-
-const hash = cryptoJS.SHA256(text);
-const apostilleHash = apostilleHashPrefix + hash.toString(cryptoJS.enc.Hex);
-
-const sinkAddress = 'SDICZ5EAOD5W6YCAJL33OS5B4Y6FUOWOUOOLCZAL';
-const privateKey = '7808B5B53ECF24E40BE17B8EC3D0EB5F7C3F3D938E0D95A415F855AD4C27B2A4';
-const account = Account.createFromPrivateKey(privateKey,NetworkType.MIJIN_TEST);
-
-const transferTransaction = TransferTransaction.create(
-  Deadline.create(),
-  Address.createFromRawAddress(sinkAddress),
-  [XEM.createRelative(0)],
-  PlainMessage.create(apostilleHash),
-  NetworkType.MIJIN_TEST,
-);
-transferTransaction.fee = UInt64.fromUint(150000);
-const signedTransaction = account.sign(transferTransaction);
-
-const transactionHttp = new TransactionHttp('http://localhost:3000');
-
-transactionHttp.announce(signedTransaction).subscribe(x => console.log(x),
-  err => console.error(err));
-
-console.log('hash:    ' + signedTransaction.hash);
-console.log('signer:  ' + signedTransaction.signer);
-console.log('payload: ' + signedTransaction.payload);
-
-const date = new Date();
-
-const nty = { "data": [
-    {
-      "filename": title,
-      "tags": tags.join(' '),
-      "fileHash": apostilleHash,
-      "owner": account.address.address,
-      "fromMultisig": account.address.address,
-      "dedicatedAccount": sinkAddress,
-      "dedicatedPrivateKey": "None (public sink)",
-      "txHash": signedTransaction.hash.toLowerCase(),
-      "txMultisigHash": "",
-      "timeStamp": date.toUTCString()
+  /**
+  * Create a wallet array
+  * by: roimerj_vzla
+  *
+  * @param {string} user
+  * @param {any} accounts
+  * @memberof WalletService
+  */
+  setAccountWalletStorage(nty) {
+    let proxinty = JSON.parse(localStorage.getItem('proxi-nty'));
+    if (!proxinty) {
+      localStorage.setItem('proxi-nty', JSON.stringify(nty))
+    } else {
+      proxinty.data.push(nty.data)
+      localStorage.setItem('proxi-nty', JSON.stringify(proxinty))
     }
-  ]};
+  }
 
-const apostilleFilename = title.slice(0, title.lastIndexOf('.')).concat(
-  ' -- Apostille TX ',
-  signedTransaction.hash.toLowerCase(),
-  ' -- Date ',
-  date.getFullYear(),
-  '-',
-  ("00" + (date.getMonth() + 1)).slice(-2),
-  '-',
-  ("00" + (date.getDate())).slice(-2),
-  title.slice(title.lastIndexOf('.'))
-);
+  buildApostille(nty: any) {
 
-console.log(apostilleFilename);
-console.log(JSON.stringify(nty));*/
+
+
+    // console.log('hash:    ' + nty.signedTransaction.hash);
+    // console.log('signer:  ' + nty.signedTransaction.signer);
+    // console.log('payload: ' + nty.signedTransaction.payload);
+    const date = new Date();
+    const titlle1 = nty.title.slice(0, nty.title.lastIndexOf('.'))
+    const titlle2 = nty.title.slice(nty.title.lastIndexOf('.'));
+    const fecha = `${date.getFullYear()}-${("00" + (date.getMonth() + 1)).slice(-2)}-${("00" + (date.getDate())).slice(-2)}`
+    const apostilleFilename = `${titlle1} -- Apostille TX ${nty.signedTransaction.hash.toLowerCase()} -- Date ${fecha.toString()}${titlle2}`
+    let timeStamp = new Date();
+    let dedicatedPrivateKey = ''
+    let txMultisigHash = ''
+   this.ntyData= {
+      "data": [
+        {
+          "filename": nty.title,
+          "tags": nty.tags.join(' '),
+          "fileHash": nty.apostilleHash,
+          "owner": nty.account.address,
+          "fromMultisig": nty.account.address,
+          "dedicatedAccount": nty.sinkAddress,
+          "dedicatedPrivateKey": "None (public sink)",
+          "txHash": nty.signedTransaction.hash.toLowerCase(),
+          "txMultisigHash": "",
+          "timeStamp": date.toUTCString()
+        }
+      ]
+    };
+    this.zip.file(apostilleFilename,(crypto.enc.Base64.stringify(this.rawFileContent)), {
+      base64: true
+    });
+    this.setAccountWalletStorage(this.ntyData);
+    this.downloadSignedFiles();
+    console.log(JSON.stringify(this.ntyData))
+  }
+  downloadSignedFiles() {
+    const date = new Date();
+    // Trigger if at least 1 file and 1 certificate in the archive
+    if (Object.keys(this.zip.files).length >0) {
+
+      this.zip.file("Nty-file-" + date + ".nty", JSON.stringify(this.ntyData));
+      this.zip.generateAsync({
+        type: "blob"
+      }).then((content) => {
+        // Trigger download
+        // console.log("contenido:", content)
+        saveAs(content, `PROXIsigned -- Do not Edit --"${date.getFullYear()}-${("00" + (date.getMonth() + 1)).slice(-2)}-${("00" + (date.getDate())).slice(-2)}".zip`);
+        // this._$timeout(() => {
+        //     // Reset all
+        //     return this.init();
+        // })
+      });
+    }
+  }
+
+  createNotaryData = function (filename, tags, fileHash, txHash, txMultisigHash, owner, fromMultisig, dedicatedAccount, dedicatedPrivateKey) {
+    let d = new Date();
+    return {
+      "data": [{
+        "filename": filename,
+        "tags": tags,
+        "fileHash": fileHash,
+        "owner": owner,
+        "fromMultisig": fromMultisig,
+        "dedicatedAccount": dedicatedAccount,
+        "dedicatedPrivateKey": dedicatedPrivateKey,
+        "txHash": txHash,
+        "txMultisigHash": txMultisigHash,
+        "timeStamp": d.toUTCString()
+      }]
+    };
+  }
+
+}
