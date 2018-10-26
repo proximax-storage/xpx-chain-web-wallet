@@ -3,12 +3,13 @@ import { Listener, Address, Transaction } from "nem2-sdk";
 import { environment } from '../../../environments/environment';
 import { WalletService } from "./wallet.service";
 import {  TransactionsService} from "../../transactions/service/transactions.service";
+import { ServiceModuleService } from '../../services/service-module.service';
 @Injectable({
   providedIn: 'root'
 })
 export class DataBridgeService {
-
-  constructor(private walletService:WalletService,private _transactionsService:TransactionsService) { }
+  url:any
+  constructor(private walletService:WalletService,private _transactionsService:TransactionsService,  private servicesModule:ServiceModuleService) { }
 
   /**
    *   Set default socket connect
@@ -17,7 +18,9 @@ export class DataBridgeService {
    * @memberof DataBridgeService
    */
   connectnWs() {
-    const connector = new Listener(environment.socket, WebSocket);
+
+    this.url=`ws://${this.servicesModule.getnode()}`
+    const connector = new Listener(this.url, WebSocket);
     // Try to open the connection
 
     
@@ -34,8 +37,6 @@ export class DataBridgeService {
   openConnection(connector) {
 
     connector.open().then(() => {
-      console.log(this.walletService.address)
-
       connector.confirmed(this.walletService.address).subscribe((
         transaction: Transaction[]) => {
           this._transactionsService.setTransConfirm$(transaction)

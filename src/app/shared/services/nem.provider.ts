@@ -23,6 +23,7 @@ import { environment } from '../../../environments/environment';
 import { commonInterface, walletInterface } from '..';
 import { Observable } from 'rxjs';
 import { mergeMap } from 'rxjs/operators'
+import { ServiceModuleService } from '../../services/service-module.service';
 
 @Injectable({
   providedIn: 'root'
@@ -34,14 +35,19 @@ export class NemProvider {
   accountHttp: AccountHttp;
   mosaicHttp: MosaicHttp;
   namespaceHttp: NamespaceHttp;
-  mosaicService: MosaicService
-  constructor() {
-    this.transactionHttp = new TransactionHttp(environment.apiUrl);
-    this.accountHttp = new AccountHttp(environment.apiUrl);
-    this.mosaicHttp = new MosaicHttp(environment.apiUrl);
-    this.namespaceHttp = new NamespaceHttp(environment.apiUrl);
+  mosaicService: MosaicService;
+  url:any;
+
+  constructor(private serviceModuleService:ServiceModuleService) {
+
+    this.url=`http://${this.serviceModuleService.getnode()}`
+    // this.url =this.serviceModuleService.getnode();
+    this.transactionHttp = new TransactionHttp(this.url);
+    this.accountHttp = new AccountHttp(this.url);
+    this.mosaicHttp = new MosaicHttp(this.url);
+    this.namespaceHttp = new NamespaceHttp(this.url);
     this.mosaicService = new MosaicService(this.accountHttp, this.mosaicHttp, this.namespaceHttp);
-    this.transactionHttp =new TransactionHttp(environment.apiUrl);
+    this.transactionHttp =new TransactionHttp(this.url);
   }
 
   openConnectionWs() {

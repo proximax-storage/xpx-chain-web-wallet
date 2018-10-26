@@ -22,6 +22,7 @@ import * as JSZip from 'jszip';
 import { NemProvider } from '../../../../services/nem.provider';
 import { WalletService } from '../../../../services/wallet.service';
 import { environment } from '../../../../../../environments/environment'
+import { ServiceModuleService } from '../../../../../services/service-module.service';
 @Component({
   selector: 'app-apostilla',
   templateUrl: './apostilla.component.html',
@@ -48,15 +49,18 @@ export class ApostillaComponent implements OnInit {
   cabeceraImg: any;
   imgCert:any;
   imgData:any;
+  url:any
   constructor(
     private fb: FormBuilder,
     private walletService: WalletService,
     private nemProvider: NemProvider,
-    private sharedService: SharedService
+    private sharedService: SharedService,
+   private  serviceModuleService:ServiceModuleService
 
   ) {
+    this.url=`http://${this.serviceModuleService.getnode()}`
     this.zip = new JSZip();
-    this.transactionHttp = new TransactionHttp(environment.apiUrl)
+    this.transactionHttp = new TransactionHttp(this.url)
     this.optionsCrypto = [{ value: '1', label: 'MD5' }, { value: '2', label: 'SHA1' }, { value: '3', label: 'SHA256' }, { value: '4', label: 'SHA3-256' }, { value: '5', label: 'SHA3-512' },];
     this.optionsStorage = [{ value: '1', label: 'Public ' },]
     this.createForm();

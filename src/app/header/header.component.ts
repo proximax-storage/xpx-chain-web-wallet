@@ -15,6 +15,8 @@ export interface VerticalHeaderInterface {
   dashboard: Header;
   services: Header;
   transactions: Header;
+  addNode:Header;
+  selectNode:Header;
 }
 
 export interface Header {
@@ -147,8 +149,7 @@ export class HeaderComponent implements OnInit {
             'submenu': {}
           }
         }
-      },
-      services: {
+      },services: {
         'type': 'dropdown',
         'name': 'services',
         'class': '',
@@ -209,7 +210,26 @@ export class HeaderComponent implements OnInit {
             'submenu': {}
           }
         }
-      }
+      }, addNode: {
+        'type': 'default',
+        'name': 'add node',
+        'class': '',
+        'icon': 'fa fa-circle',
+        'rol': false,
+        'link': AppConfig.routes.addNode,
+        'show': true,
+        'submenu': {}
+      },
+      selectNode: {
+        'type': 'default',
+        'name': 'Select Node',
+        'class': '',
+        'icon': 'fa fa-circle',
+        'rol': false,
+        'link': AppConfig.routes.selectNode,
+        'show': true,
+        'submenu': {}
+      },
     }
   }
 

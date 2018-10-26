@@ -6,6 +6,7 @@ import { BlockUI, NgBlockUI } from 'ng-block-ui';
 // import {ReversePipePipe} from '../../../shared/pipe/reverse-pipe.pipe';
 import { decode } from 'utf8';
 import { SharedService } from '../../../..';
+import { ServiceModuleService } from '../../../../../services/service-module.service';
 @Component({
   selector: 'app-audi-apostille',
   templateUrl: './audi-apostille.component.html',
@@ -23,13 +24,17 @@ export class AudiApostilleComponent implements OnInit {
   auditResults = [];
   messa: Message;
   initialFileName: any;
+  url:any;
   constructor(
     private nemProvider: NemProvider,
-    private sharedService: SharedService
-  ) { }
+    private sharedService: SharedService,
+    private servicesModule:ServiceModuleService
+  ) {
+    this.url=`http://${this.servicesModule.getnode()}`
+
+  }
 
   ngOnInit() {
-
   }
   /**
    * This is used to trigger the input

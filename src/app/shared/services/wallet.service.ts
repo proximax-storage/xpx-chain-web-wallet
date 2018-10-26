@@ -6,6 +6,7 @@ import { commonInterface, walletInterface } from '../interfaces/shared.interface
 import { BehaviorSubject, Observable } from "rxjs";
 import { AccountsInterface } from '..';
 import { NemProvider } from './nem.provider';
+import { ServiceModuleService } from '../../services/service-module.service';
 
 @Injectable({
   providedIn: 'root'
@@ -18,13 +19,23 @@ export class WalletService {
   algo: string;
   publicAccount: PublicAccount;
 
-  constructor(private sharedService: SharedService, private nemProvider: NemProvider) {
+  constructor(
+    private sharedService: SharedService,
+    private nemProvider: NemProvider,
+    private serviceModuleService: ServiceModuleService
+  ) {
 
   }
 
   public login(common, wallet) {
     if (!wallet) {
       this.sharedService.showError('Error', '¡Dear user, the wallet is missing!');
+      return false;
+    }
+
+    if (!this.serviceModuleService.getnode()) {
+      this.sharedService.showError('Error', '¡Select one node');
+
       return false;
     }
     // Decrypt / generate and check primary

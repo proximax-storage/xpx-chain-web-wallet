@@ -4,6 +4,7 @@ import { CoreModule } from '../core/core.module';
 import { ServicesRoutingModule } from './services-routing.module';
 import { ExplorerComponent } from './views/explorer/explorer.component';
 import { AddNodeComponent } from './views/add-node/add-node.component';
+import { SelectNodeComponent } from './views/select-node/select-node.component';
 
 @NgModule({
   imports: [
@@ -11,6 +12,6 @@ import { AddNodeComponent } from './views/add-node/add-node.component';
     CoreModule,
     ServicesRoutingModule
   ],
-  declarations: [ExplorerComponent, AddNodeComponent]
+  declarations: [ExplorerComponent, AddNodeComponent, SelectNodeComponent]
 })
 export class ServicesModule { }

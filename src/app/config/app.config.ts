@@ -11,7 +11,8 @@ export const AppConfig: Config = {
     apostille:'apostille',
     transactions:'transactions-get',
     transferTransaction:'transfer',
-    addNode: 'add-node',
+    addNode: 'select-node',
+    selectNode: 'add-node',
     explorer: 'explorer',
     service:'dashboard-service',
     notFound: 'not-found'
@@ -29,6 +30,7 @@ export const NameRoute = {
   [AppConfig.routes.transactions]: 'Transactions get',
   [AppConfig.routes.transferTransaction]: 'Transfer',
   [AppConfig.routes.addNode]: 'Add node',
+  [AppConfig.routes.selectNode]: 'select node',
   [AppConfig.routes.explorer]: 'Explorer',
   [AppConfig.routes.service]: ' Dashboard service',
   [AppConfig.routes.notFound]: '404 not found'
@@ -46,6 +48,7 @@ export interface Config {
     transactions:string;
     transferTransaction: string;
     addNode: string;
+    selectNode:string;
     explorer: string;
     service:string;
     notFound: string;
