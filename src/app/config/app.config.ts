@@ -8,6 +8,7 @@ export const AppConfig: Config = {
     dashboard: 'dashboard',
     createWallet: 'create-wallet',
     importWallet: 'import-wallet',
+    audiApostille:'audit-apostille',
     apostille:'apostille',
     transactions:'transactions-get',
     service:'dashboard-service',
@@ -21,6 +22,7 @@ export const NameRoute = {
   [AppConfig.routes.dashboard]: 'Dashboard',
   [AppConfig.routes.createWallet]: 'Create wallet',
   [AppConfig.routes.importWallet]: 'Import wallet',
+  [AppConfig.routes.audiApostille]: 'Audit Apostille',
   [AppConfig.routes.apostille]: 'Apostille',
   [AppConfig.routes.transactions]: 'Transactions get',
   [AppConfig.routes.service]: ' Dashboard service',
@@ -34,6 +36,7 @@ export interface Config {
     dashboard: string;
     createWallet: string;
     importWallet: string;
+    audiApostille:string;
     apostille: string;
     transactions:string;
     service:string;

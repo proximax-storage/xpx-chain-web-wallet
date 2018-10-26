@@ -6,6 +6,7 @@ import { MdbModule } from "../shared/moduls/mdb/mdb.module";
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import {TransactionsComponent} from "../transactions/views/transactions/transactions.component";
+import {ReversePipePipe} from '../shared/pipe/reverse-pipe.pipe'
 
 const modules = [
   CommonModule,
@@ -21,12 +22,14 @@ const modules = [
     MdbModule.forRoot()
   ],
   declarations: [
-    TransactionsComponent
+    TransactionsComponent,
+    ReversePipePipe
   ],
   exports: [
     TransactionsComponent,
     modules,
-    MdbModule
+    MdbModule,
+    ReversePipePipe
   ]
 })
 export class CoreModule {

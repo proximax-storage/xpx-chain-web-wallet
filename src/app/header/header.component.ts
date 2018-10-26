@@ -4,18 +4,18 @@ import { Observable, Subject, BehaviorSubject } from 'rxjs';
 import { LoginService } from '../login/services/login.service';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { WalletService } from "../shared";
-export interface HorizontalHeaderInterface{
+export interface HorizontalHeaderInterface {
   createWallet: Header;
   importWallet: Header;
   login: Header;
   signout: Header;
 }
 
-export interface VerticalHeaderInterface{
+export interface VerticalHeaderInterface {
   dashboard: Header;
 }
 
-export interface Header{
+export interface Header {
   type: string;
   name: string;
   class: string;
@@ -49,10 +49,10 @@ export class HeaderComponent implements OnInit {
     this.route.events
       .subscribe((event) => {
         if (event instanceof NavigationEnd) {
-          var objRoute = event.url.split('/')[1];
+          var objRoute = event.url.split('/')[event.url.split('/').length-1];
           if (NameRoute[objRoute] !== undefined) {
             this.nameRoute = NameRoute[objRoute];
-          }else {
+          } else {
             this.nameRoute = '';
           }
         }
@@ -80,7 +80,7 @@ export class HeaderComponent implements OnInit {
    *
    * @memberof HeaderComponent
    */
-  buildHeader(){
+  buildHeader() {
     this.horizontalHeader = {
       createWallet: {
         'type': 'default',

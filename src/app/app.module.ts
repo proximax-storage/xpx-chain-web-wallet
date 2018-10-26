@@ -15,6 +15,7 @@ import { HeaderRebSocialComponent } from './header/component/header-reb-social/h
 import { HeaderVerticalComponent } from './header/component/header-vertical/header-vertical.component';
 
 
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -22,6 +23,7 @@ import { HeaderVerticalComponent } from './header/component/header-vertical/head
     HeaderHorizontalComponent,
      HeaderRebSocialComponent,
      HeaderVerticalComponent
+     
   ],
   imports: [
     BrowserModule,

@@ -6,8 +6,8 @@ export const environment = {
   production: false,
   //socket: 'ws://192.168.10.38:3000', //company
   // socket: 'ws://190.216.224.11:3000', //house
-  socket: 'ws://192.168.10.38:3000', //house
-  apiUrl: 'http://192.168.10.38:3000/'
+  socket: 'ws://catapult.isarq.com:3000', //house
+  apiUrl: 'http://catapult.isarq.com:3000/'
 };
 
 /*
