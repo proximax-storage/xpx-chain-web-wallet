@@ -19,7 +19,7 @@ const appRoutes: Routes = [
     loadChildren: './transactions/transactions.module#TransactionsModule'
   }, {
     path: '',
-    loadChildren: './services/services.module#ServicesModule'
+    loadChildren: './servicesModule/services.module#ServicesModule'
   }, {
     path: 'service',
     loadChildren: './shared/moduls/service/service.module#ServiceModule'

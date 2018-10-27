@@ -6,7 +6,7 @@ import { commonInterface, walletInterface } from '../interfaces/shared.interface
 import { BehaviorSubject, Observable } from "rxjs";
 import { AccountsInterface } from '..';
 import { NemProvider } from './nem.provider';
-import { ServiceModuleService } from '../../services/service-module.service';
+import { ServiceModuleService } from '../../servicesModule/services/service-module.service';
 import { Router } from "@angular/router";
 import { AppConfig } from "../../config/app.config";
 
@@ -36,9 +36,15 @@ export class WalletService {
       return false;
     }
 
-    if (!this.serviceModuleService.getnode()) {
-      this.sharedService.showError('', 'Please, select a node.');
-      this.route.navigate([`/${AppConfig.routes.selectNode}`]);
+    if (!this.serviceModuleService.getNode()) {
+      if (this.serviceModuleService.issetNodesStorage() === null) {
+        this.sharedService.showError('', 'Please, create a node.');
+        this.route.navigate([`/${AppConfig.routes.addNode}`]);
+      }else {
+        this.sharedService.showError('', 'Please, select a node.');
+        this.route.navigate([`/${AppConfig.routes.selectNode}`]);
+      }
+
       return false;
     }
     // Decrypt / generate and check primary

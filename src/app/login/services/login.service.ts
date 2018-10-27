@@ -49,9 +49,6 @@ export class LoginService {
     this._dataBridgeService.connectnWs();
     this.route.navigate([`/${AppConfig.routes.dashboard}`]);
     this.setLogged(true);
-
-  
-
     return true;
   }
 
@@ -79,5 +76,5 @@ export class LoginService {
 
 
 
-  
+
 }

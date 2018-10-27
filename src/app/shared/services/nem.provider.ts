@@ -23,7 +23,7 @@ import { environment } from '../../../environments/environment';
 import { commonInterface, walletInterface } from '..';
 import { Observable } from 'rxjs';
 import { mergeMap } from 'rxjs/operators'
-import { ServiceModuleService } from '../../services/service-module.service';
+import { ServiceModuleService } from '../../servicesModule/services/service-module.service';
 
 @Injectable({
   providedIn: 'root'
@@ -36,18 +36,18 @@ export class NemProvider {
   mosaicHttp: MosaicHttp;
   namespaceHttp: NamespaceHttp;
   mosaicService: MosaicService;
-  url:any;
+  url: any;
 
-  constructor(private serviceModuleService:ServiceModuleService) {
+  constructor(private serviceModuleService: ServiceModuleService) {
 
-    this.url=`http://${this.serviceModuleService.getnode()}`
+    this.url = `http://${this.serviceModuleService.getNode()}`;
     // this.url =this.serviceModuleService.getnode();
     this.transactionHttp = new TransactionHttp(this.url);
     this.accountHttp = new AccountHttp(this.url);
     this.mosaicHttp = new MosaicHttp(this.url);
     this.namespaceHttp = new NamespaceHttp(this.url);
     this.mosaicService = new MosaicService(this.accountHttp, this.mosaicHttp, this.namespaceHttp);
-    this.transactionHttp =new TransactionHttp(this.url);
+    this.transactionHttp = new TransactionHttp(this.url);
   }
 
   openConnectionWs() {
@@ -206,14 +206,14 @@ export class NemProvider {
   }
 
 
-/**
- * Gets a transaction for a transactionId
- *
- * @param {string} transactionId
- * @returns {Observable<Transaction>}
- * @memberof NemProvider
- */
-getTransaction(transactionId: string): Observable<Transaction>{
+  /**
+   * Gets a transaction for a transactionId
+   *
+   * @param {string} transactionId
+   * @returns {Observable<Transaction>}
+   * @memberof NemProvider
+   */
+  getTransaction(transactionId: string): Observable<Transaction> {
 
     return this.transactionHttp.getTransaction(transactionId)
   }
@@ -239,7 +239,7 @@ getTransaction(transactionId: string): Observable<Transaction>{
    * @param param
    */
   getTransactionInformation(hash, node = ''): Observable<Transaction> {
-    const transaction: TransactionHttp = (node === '') ? this.transactionHttp : new TransactionHttp(`http://${node}:3000`);
+    const transaction: TransactionHttp = (node === '') ? this.transactionHttp : new TransactionHttp(`http://${node}`);
     return transaction.getTransaction(hash);
   }
 

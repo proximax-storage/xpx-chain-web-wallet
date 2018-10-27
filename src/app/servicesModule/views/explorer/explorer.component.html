@@ -1,7 +1,7 @@
 <div class="mt-3rem w-w-b-w">
   <div class="container-fluid">
     <div class="row">
-      <div class="col-10 col-offset-1 mx-auto">
+      <div class="col-xl-10 col-lg-10 col-md-10 col-sm-12 mx-auto">
         <div class="mt-3r">
           <mdb-card>
             <mdb-card-header class="background-header-box white-text text-align-center py-4">
@@ -11,12 +11,7 @@
             <mdb-card-body class="backg-beige">
 
               <div class="row">
-                <div class="col-5">
-                  <div class="md-form ml-3">
-                    <mdb-select [(ngModel)]="typeNode" [options]="nodes" placeholder="Select type node" class="colorful-select dropdown-default white-forever"></mdb-select>
-                  </div>
-                </div>
-                <div class="col-4">
+                <div class="col-8">
                   <div class="md-form" id="container-walletname">
                     <input [(ngModel)]="hash" type="text" autocomplete="off" id="walletname" class="form-control" mdbInputDirective [mdbValidate]="false">
                     <label for="walletname">Add id or hash</label>
@@ -26,13 +21,6 @@
                   <div class="mt-3">
                     <a style="background: #565656" mdbBtn floating="true" size="sm" mdbWavesEffect (click)="searchData()">
                       <mdb-icon icon="search"></mdb-icon>
-                    </a>
-                  </div>
-                </div>
-                <div class="col-1">
-                  <div class="mt-3">
-                    <a style="background: #d1b076" mdbBtn floating="true" size="sm" mdbWavesEffect [routerLink]="[route.addNode]">
-                      <mdb-icon icon="plus-circle"></mdb-icon>
                     </a>
                   </div>
                 </div>

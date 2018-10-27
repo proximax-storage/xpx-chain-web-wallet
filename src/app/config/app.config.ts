@@ -11,8 +11,8 @@ export const AppConfig: Config = {
     apostille:'apostille',
     transactions:'transactions-get',
     transferTransaction:'transfer',
-    addNode: 'select-node',
-    selectNode: 'add-node',
+    addNode: 'add-node',
+    selectNode: 'select-node',
     explorer: 'explorer',
     service:'dashboard-service',
     notFound: 'not-found'

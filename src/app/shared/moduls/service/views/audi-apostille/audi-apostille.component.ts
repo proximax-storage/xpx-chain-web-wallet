@@ -6,7 +6,7 @@ import { BlockUI, NgBlockUI } from 'ng-block-ui';
 // import {ReversePipePipe} from '../../../shared/pipe/reverse-pipe.pipe';
 import { decode } from 'utf8';
 import { SharedService } from '../../../..';
-import { ServiceModuleService } from '../../../../../services/service-module.service';
+import { ServiceModuleService } from '../../../../../servicesModule/services/service-module.service';
 @Component({
   selector: 'app-audi-apostille',
   templateUrl: './audi-apostille.component.html',
@@ -30,7 +30,7 @@ export class AudiApostilleComponent implements OnInit {
     private sharedService: SharedService,
     private servicesModule:ServiceModuleService
   ) {
-    this.url=`http://${this.servicesModule.getnode()}`
+    this.url=`http://${this.servicesModule.getNode()}`;
 
   }
 
@@ -100,7 +100,7 @@ export class AudiApostilleComponent implements OnInit {
     for (let h = 0; h < initialNameArray.length; h++) {
       initialFileName += initialNameArray[h];
     }
-    // Initial filename 
+    // Initial filename
     initialFileName = initialFileName.replace(/^\s+|\s+$/, '') + "." + this.nameFile.split('.').pop();
     // console.log(initialFileName);
     // Hash of the apostille transaction

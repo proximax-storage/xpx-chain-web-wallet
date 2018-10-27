@@ -4,7 +4,10 @@ import { Observable, Subject, BehaviorSubject } from 'rxjs';
 import { LoginService } from '../login/services/login.service';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { WalletService } from "../shared";
+import { ServiceModuleService } from "../servicesModule/services/service-module.service";
 export interface HorizontalHeaderInterface {
+  node: Header;
+  nodeSelected: Header;
   createWallet: Header;
   importWallet: Header;
   login: Header;
@@ -15,8 +18,7 @@ export interface VerticalHeaderInterface {
   dashboard: Header;
   services: Header;
   transactions: Header;
-  addNode:Header;
-  selectNode:Header;
+  node:Header;
 }
 
 export interface Header {
@@ -48,7 +50,8 @@ export class HeaderComponent implements OnInit {
     private _loginService: LoginService,
     private route: Router,
     private activatedRoute: ActivatedRoute,
-    private walletService: WalletService
+    private walletService: WalletService,
+    private serviceModuleService: ServiceModuleService
   ) {
     this.route.events
       .subscribe((event) => {
@@ -86,6 +89,47 @@ export class HeaderComponent implements OnInit {
    */
   buildHeader() {
     this.horizontalHeader = {
+      node: {
+        'type': 'dropdown',
+        'name': 'Node',
+        'class': '',
+        'icon': 'fa fa-codepen',
+        'rol': true,
+        'link': AppConfig.routes.addNode,
+        'show': true,
+        'submenu': {
+          'addNode': {
+            'type': 'dropdown',
+            'name': 'Add node',
+            'class': '',
+            'icon': '',
+            'rol': true,
+            'link': AppConfig.routes.addNode,
+            'show': true,
+            'submenu': {}
+          },
+          'selectNode': {
+            'type': 'default',
+            'name': 'Select Node',
+            'class': '',
+            'icon': '',
+            'rol': true,
+            'link': AppConfig.routes.selectNode,
+            'show': true,
+            'submenu': {}
+          }
+        }
+      },
+      nodeSelected: {
+        'type': 'default',
+        'name': `Node selected: ${this.serviceModuleService.getNode()}`,
+        'class': 'green-color',
+        'icon': 'fa-codepen',
+        'rol': false,
+        'link': '',
+        'show': false,
+        'submenu': { }
+      },
       createWallet: {
         'type': 'default',
         'name': 'Create wallet',
@@ -210,26 +254,38 @@ export class HeaderComponent implements OnInit {
             'submenu': {}
           }
         }
-      }, addNode: {
-        'type': 'default',
-        'name': 'add node',
+      },
+      node: {
+        'type': 'dropdown',
+        'name': 'Node',
         'class': '',
-        'icon': 'fa fa-circle',
+        'icon': 'fa fa-codepen',
         'rol': false,
         'link': AppConfig.routes.addNode,
         'show': true,
-        'submenu': {}
-      },
-      selectNode: {
-        'type': 'default',
-        'name': 'Select Node',
-        'class': '',
-        'icon': 'fa fa-circle',
-        'rol': false,
-        'link': AppConfig.routes.selectNode,
-        'show': true,
-        'submenu': {}
-      },
+        'submenu': {
+          'addNode': {
+            'type': 'dropdown',
+            'name': 'Add node',
+            'class': '',
+            'icon': '',
+            'rol': false,
+            'link': AppConfig.routes.addNode,
+            'show': true,
+            'submenu': {}
+          },
+          'selectNode': {
+            'type': 'default',
+            'name': 'Select Node',
+            'class': '',
+            'icon': '',
+            'rol': false,
+            'link': AppConfig.routes.selectNode,
+            'show': true,
+            'submenu': {}
+          }
+        }
+      }
     }
   }
 

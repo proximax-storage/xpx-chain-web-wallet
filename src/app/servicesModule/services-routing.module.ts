@@ -13,12 +13,10 @@ const routes: Routes = [
     canActivate: [LoggedGuard]
   },{
     path: `${AppConfig.routes.addNode}`,
-    component: AddNodeComponent,
-    canActivate: [NotLoggedGuard]
+    component: AddNodeComponent
   },{
     path: `${AppConfig.routes.selectNode}`,
-    component: SelectNodeComponent,
-    canActivate: [NotLoggedGuard]
+    component: SelectNodeComponent
   }
 ];
 
