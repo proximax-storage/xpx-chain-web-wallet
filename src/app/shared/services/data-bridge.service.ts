@@ -9,7 +9,10 @@ import { ServiceModuleService } from '../../services/service-module.service';
 })
 export class DataBridgeService {
   url:any
-  constructor(private walletService:WalletService,private _transactionsService:TransactionsService,  private servicesModule:ServiceModuleService) { }
+  constructor(private walletService:WalletService,private _transactionsService:TransactionsService,  private servicesModule:ServiceModuleService) { 
+
+    this.url=`ws://${this.servicesModule.getnode()}`;
+  }
 
   /**
    *   Set default socket connect
@@ -19,11 +22,10 @@ export class DataBridgeService {
    */
   connectnWs() {
 
-    this.url=`ws://${this.servicesModule.getnode()}`
+    
+    console.log("URL SOCKER =",   this.url)
     const connector = new Listener(this.url, WebSocket);
     // Try to open the connection
-
-    
     this.openConnection(connector);
     return;
   }

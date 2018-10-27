@@ -187,6 +187,16 @@ export class HeaderComponent implements OnInit {
             'link': `service/${AppConfig.routes.audiApostille}`,
             'show': true,
             'submenu': {}
+          },
+          'createPoll': {
+            'type': 'default',
+            'name': 'Create a Poll',
+            'class': '',
+            'icon': 'fa fa-codepen',
+            'rol': true,
+            'link': `${AppConfig.routes.createPoll}`,
+            'show': true,
+            'submenu': {}
           }
         }
       },

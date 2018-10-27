@@ -5,6 +5,8 @@ import { ServicesRoutingModule } from './services-routing.module';
 import { ExplorerComponent } from './views/explorer/explorer.component';
 import { AddNodeComponent } from './views/add-node/add-node.component';
 import { SelectNodeComponent } from './views/select-node/select-node.component';
+import { CreatePollComponent } from './views/voting/create-poll/create-poll.component';
+import { PollsComponent } from './views/voting/polls/polls.component';
 
 @NgModule({
   imports: [
@@ -12,6 +14,6 @@ import { SelectNodeComponent } from './views/select-node/select-node.component';
     CoreModule,
     ServicesRoutingModule
   ],
-  declarations: [ExplorerComponent, AddNodeComponent, SelectNodeComponent]
+  declarations: [ExplorerComponent, AddNodeComponent, SelectNodeComponent, CreatePollComponent, PollsComponent]
 })
 export class ServicesModule { }
