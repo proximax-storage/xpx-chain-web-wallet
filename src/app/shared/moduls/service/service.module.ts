@@ -16,6 +16,6 @@ import { AudiApostilleComponent } from './views/audi-apostille/audi-apostille.co
     CoreModule
   ],
   declarations: [ApostillaComponent, DashboardServiceComponent, AudiApostilleComponent],
-  schemas: [NO_ERRORS_SCHEMA]
+  schemas: [ NO_ERRORS_SCHEMA ]
 })
 export class ServiceModule { }

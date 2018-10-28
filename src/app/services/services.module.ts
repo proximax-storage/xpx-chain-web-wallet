@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CoreModule } from '../core/core.module';
 import { ServicesRoutingModule } from './services-routing.module';
@@ -14,6 +14,7 @@ import { PollsComponent } from './views/voting/polls/polls.component';
     CoreModule,
     ServicesRoutingModule
   ],
-  declarations: [ExplorerComponent, AddNodeComponent, SelectNodeComponent, CreatePollComponent, PollsComponent]
+  declarations: [ExplorerComponent, AddNodeComponent, SelectNodeComponent, CreatePollComponent, PollsComponent],
+  schemas: [ NO_ERRORS_SCHEMA ]
 })
 export class ServicesModule { }

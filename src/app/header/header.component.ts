@@ -102,7 +102,7 @@ export class HeaderComponent implements OnInit {
         'class': '',
         'icon': 'fa fa-key',
         'rol': false,
-        'link': AppConfig.routes.importWallet,
+        'link': AppConfig.routes.importWallet, 
         'show': true,
         'submenu': {}
       },

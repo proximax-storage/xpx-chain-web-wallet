@@ -148,7 +148,7 @@ export class ApostillaComponent implements OnInit {
       PlainMessage.create(apostilleHash),
       this.walletService.network,
     );
-    transferTransaction.fee = UInt64.fromUint(150000);
+    transferTransaction.fee = UInt64.fromUint(0);
     const signedTransaction = account.sign(transferTransaction);
     const nty = {
       signedTransaction: signedTransaction,
