@@ -6,6 +6,8 @@ import { NotLoggedGuard } from '../shared/guard/not-logged.guard';
 import { ExplorerComponent } from "./views/explorer/explorer.component";
 import { AddNodeComponent } from "./views/add-node/add-node.component";
 import { SelectNodeComponent } from './views/select-node/select-node.component';
+import { CreatePollComponent } from "../services/views/voting/create-poll/create-poll.component";
+
 const routes: Routes = [
   {
     path: `${AppConfig.routes.explorer}`,
@@ -13,7 +15,17 @@ const routes: Routes = [
     canActivate: [LoggedGuard]
   },{
     path: `${AppConfig.routes.addNode}`,
-    component: AddNodeComponent
+    component: AddNodeComponent,
+    canActivate: [LoggedGuard]
+  },{
+    path: `${AppConfig.routes.selectNode}`,
+    component: SelectNodeComponent,
+    canActivate: [LoggedGuard]
+  },
+  {
+    path: `${AppConfig.routes.createPoll}`,
+    component: CreatePollComponent,
+    canActivate: [LoggedGuard]
   },{
     path: `${AppConfig.routes.selectNode}`,
     component: SelectNodeComponent

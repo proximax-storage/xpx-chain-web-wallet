@@ -182,7 +182,7 @@ export class HeaderComponent implements OnInit {
         'class': '',
         'icon': 'fa fa-key',
         'rol': false,
-        'link': AppConfig.routes.importWallet,
+        'link': AppConfig.routes.importWallet, 
         'show': true,
         'submenu': {}
       },
@@ -254,6 +254,16 @@ export class HeaderComponent implements OnInit {
             'icon': 'fa fa-codepen',
             'rol': true,
             'link': `service/${AppConfig.routes.audiApostille}`,
+            'show': true,
+            'submenu': {}
+          },
+          'createPoll': {
+            'type': 'default',
+            'name': 'Create a Poll',
+            'class': '',
+            'icon': 'fa fa-codepen',
+            'rol': true,
+            'link': `${AppConfig.routes.createPoll}`,
             'show': true,
             'submenu': {}
           }

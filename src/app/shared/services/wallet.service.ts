@@ -17,7 +17,7 @@ export class WalletService {
   currentAccount: any;
   address: any;
   current: any;
-  network: any;
+  network: any = '';
   algo: string;
   publicAccount: PublicAccount;
 
@@ -119,18 +119,22 @@ export class WalletService {
    */
 
   decrypt(common: any, account: any = '', algo: any = '', network: any = '') {
+
     const acct = account || this.currentAccount;
     const net = network || this.network;
     const alg = algo || this.algo;
     // Try to generate or decrypt key
 
+    console.log("1")
     if (!crypto.passwordToPrivatekey(common, acct, alg)) {
+      console.log("sssss")
       setTimeout(() => {
         this.sharedService.showError('Error', '¡Invalid password!');
 
       }, 500);
       return false;
     }
+    console.log("2")
     if (common.isHW) {
       // this._mdboostrap.closeToastr();
       return true;

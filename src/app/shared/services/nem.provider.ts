@@ -18,13 +18,16 @@ import {
   TransactionHttp,
   TransferTransaction,
   Deadline,
+  PlainMessage,
   XEM,
-  PlainMessage
+  SignedTransaction,
+  TransactionAnnounceResponse,
 } from 'nem2-sdk';
 
 import { crypto } from 'nem2-library';
 import { environment } from '../../../environments/environment';
 import { commonInterface, walletInterface } from '..';
+import { WalletService } from './wallet.service'
 import { Observable } from 'rxjs';
 import { mergeMap } from 'rxjs/operators'
 import { ServiceModuleService } from '../../servicesModule/services/service-module.service';
@@ -270,4 +273,28 @@ export class NemProvider {
     // account.address.pretty()
     // account.privateKey
   }
+
+
+  sendTransaction(network, address: string, message?: string, ammoun:number =0): TransferTransaction {
+    console.log(address, message)
+    return TransferTransaction.create(
+      Deadline.create(10),
+      Address.createFromRawAddress(address),
+      [XEM.createRelative(ammoun)],
+      PlainMessage.create(message),
+      network,
+    );
+
+  }
+
+  announce(signedTransaction: SignedTransaction): Observable<TransactionAnnounceResponse> {
+    return this.transactionHttp.announce(signedTransaction);
+  }
+
+  // signedTransaction(transferTransaction:TransferTransaction):TransferTransaction {
+
+  //   return  Account.sign(transferTransaction);
+  // }
+
+
 }

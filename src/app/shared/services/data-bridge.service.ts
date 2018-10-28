@@ -13,6 +13,7 @@ export class DataBridgeService {
   url: any
   constructor(private walletService: WalletService, private _transactionsService: TransactionsService, private servicesModule: ServiceModuleService) { }
 
+
   /**
    *   Set default socket connect
    *
