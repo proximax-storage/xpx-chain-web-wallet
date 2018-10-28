@@ -17,7 +17,7 @@ export class SelectNodeComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.node = this.serviceModuleService.getNode();
+    this.node = JSON.parse(localStorage.getItem(this.serviceModuleService.getNameNode()));
     console.log(this.node);
   }
 

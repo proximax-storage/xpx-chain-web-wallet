@@ -4,9 +4,12 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class ServiceModuleService {
+
   node: String;
   nameNode = 'proxi-nodes';
   nodeSelect = 'node-selected';
+
+
   constructor() {
     this.node = JSON.parse(localStorage.getItem(this.nodeSelect));
   }
@@ -34,14 +37,18 @@ export class ServiceModuleService {
   }
 
   setNode(nodes) {
-    localStorage.setItem(this.nameNode, JSON.stringify([nodes]));
+    localStorage.setItem(this.nameNode, JSON.stringify(nodes));
   }
 
   getNode() {
-    return  JSON.parse(localStorage.getItem(this.nodeSelect))
+    return  JSON.parse(localStorage.getItem(this.nodeSelect));
   }
 
   issetNodesStorage() {
     return JSON.parse(localStorage.getItem(this.nameNode));
+  }
+
+  getNameNode() {
+    return this.nameNode;
   }
 }
