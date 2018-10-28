@@ -3,7 +3,7 @@ import { Listener, Address, Transaction } from "nem2-sdk";
 import { environment } from '../../../environments/environment';
 import { WalletService } from "./wallet.service";
 import {  TransactionsService} from "../../transactions/service/transactions.service";
-import { ServiceModuleService } from '../../services/service-module.service';
+import { ServiceModuleService } from '../../servicesModule/services/service-module.service';
 @Injectable({
   providedIn: 'root'
 })
@@ -11,7 +11,7 @@ export class DataBridgeService {
   url:any
   constructor(private walletService:WalletService,private _transactionsService:TransactionsService,  private servicesModule:ServiceModuleService) { 
 
-    this.url=`ws://${this.servicesModule.getnode()}`;
+   
   }
 
   /**
@@ -21,9 +21,7 @@ export class DataBridgeService {
    * @memberof DataBridgeService
    */
   connectnWs() {
-
-    
-    console.log("URL SOCKER =",   this.url)
+    this.url=`ws://${this.servicesModule.getNode()}`;
     const connector = new Listener(this.url, WebSocket);
     // Try to open the connection
     this.openConnection(connector);
@@ -73,11 +71,11 @@ export class DataBridgeService {
       this.reconnect(connector);
     });
 
-    
+
   }
 
   /**
-   *  reconnection to the  websocket 
+   *  reconnection to the  websocket
    *
    * @param {*} connector
    * @returns

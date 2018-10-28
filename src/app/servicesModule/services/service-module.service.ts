@@ -5,10 +5,11 @@ import { Injectable } from '@angular/core';
 })
 export class ServiceModuleService {
   node: String;
-  constructor() { 
-    this.node = JSON.parse(localStorage.getItem('node-selected'));
+  nameNode = 'proxi-nodes';
+  nodeSelect = 'node-selected';
+  constructor() {
+    this.node = JSON.parse(localStorage.getItem(this.nodeSelect));
   }
-
 
   /**
  * Structuring the information of the wallet for selection
@@ -28,16 +29,19 @@ export class ServiceModuleService {
   }
 
   nodeSelected(node) {
-    // let nodeselected = JSON.parse(localStorage.getItem('node-selected'));
-    // if (!nodeselected) {
-    //   localStorage.setItem('node-selected', JSON.stringify(node))
-    // } else {
-    localStorage.setItem('node-selected', JSON.stringify(node))
-    // }
-    this.node = JSON.parse(localStorage.getItem('node-selected'));
+    localStorage.setItem(this.nodeSelect, JSON.stringify(node))
+    this.node = JSON.parse(localStorage.getItem(this.nodeSelect));
   }
 
-  getnode() {
-    return  JSON.parse(localStorage.getItem('node-selected'))
+  setNode(nodes) {
+    localStorage.setItem(this.nameNode, JSON.stringify([nodes]));
+  }
+
+  getNode() {
+    return  JSON.parse(localStorage.getItem(this.nodeSelect))
+  }
+
+  issetNodesStorage() {
+    return JSON.parse(localStorage.getItem(this.nameNode));
   }
 }

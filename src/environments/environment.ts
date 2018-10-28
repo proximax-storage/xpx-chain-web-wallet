@@ -7,7 +7,7 @@ export const environment = {
   socket: 'ws://192.168.10.38:3000', //company
   apiUrl: 'http://192.168.10.38:3000' //company
   // socket: 'ws://190.216.224.11:3000', //house
-  // apiUrl: 'http://catapult.isarq.com:3000/'
+  // apiUrl: 'http://catapult.isarq.com:3000/' //house
 };
 
 /*

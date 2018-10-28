@@ -9,7 +9,7 @@ import { routing, appRoutingProviders } from './app.routing';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
 import { ToastModule } from 'ng-uikit-pro-standard';
-import {HeaderHorizontalComponent} from './header/component/header-horizontal/header-horizontal.component';
+import { HeaderHorizontalComponent } from './header/component/header-horizontal/header-horizontal.component';
 
 import { HeaderRebSocialComponent } from './header/component/header-reb-social/header-reb-social.component';
 import { HeaderVerticalComponent } from './header/component/header-vertical/header-vertical.component';
@@ -21,9 +21,9 @@ import { BlockUIModule } from 'ng-block-ui';
     AppComponent,
     HeaderComponent,
     HeaderHorizontalComponent,
-     HeaderRebSocialComponent,
-     HeaderVerticalComponent
-     
+    HeaderRebSocialComponent,
+    HeaderVerticalComponent
+
   ],
   imports: [
     BrowserModule,
@@ -32,6 +32,8 @@ import { BlockUIModule } from 'ng-block-ui';
     CoreModule.forRoot(),
     BlockUIModule.forRoot(),
     ToastModule.forRoot({
+      maxOpened: 1,
+      newestOnTop: false,
       preventDuplicates: true,
       autoDismiss: true,
       progressBar: true
@@ -39,6 +41,6 @@ import { BlockUIModule } from 'ng-block-ui';
   ],
   providers: [appRoutingProviders],
   bootstrap: [AppComponent],
-  schemas: [ NO_ERRORS_SCHEMA ]
+  schemas: [NO_ERRORS_SCHEMA]
 })
 export class AppModule { }

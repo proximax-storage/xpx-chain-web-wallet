@@ -31,7 +31,7 @@ import { commonInterface, walletInterface } from '..';
 import { WalletService } from './wallet.service'
 import { Observable } from 'rxjs';
 import { mergeMap } from 'rxjs/operators'
-import { ServiceModuleService } from '../../services/service-module.service';
+import { ServiceModuleService } from '../../servicesModule/services/service-module.service';
 
 @Injectable({
   providedIn: 'root'
@@ -46,12 +46,9 @@ export class NemProvider {
   mosaicService: MosaicService;
   url: any;
 
-  constructor(
-    private serviceModuleService: ServiceModuleService,
+  constructor(private serviceModuleService: ServiceModuleService) {
 
-  ) {
-
-    this.url = `http://${this.serviceModuleService.getnode()}`
+    this.url = `http://${this.serviceModuleService.getNode()}`;
     // this.url =this.serviceModuleService.getnode();
     this.transactionHttp = new TransactionHttp(this.url);
     this.accountHttp = new AccountHttp(this.url);
@@ -59,7 +56,6 @@ export class NemProvider {
     this.namespaceHttp = new NamespaceHttp(this.url);
     this.mosaicService = new MosaicService(this.accountHttp, this.mosaicHttp, this.namespaceHttp);
     this.transactionHttp = new TransactionHttp(this.url);
-
   }
 
   openConnectionWs() {
@@ -251,7 +247,7 @@ export class NemProvider {
    * @param param
    */
   getTransactionInformation(hash, node = ''): Observable<Transaction> {
-    const transaction: TransactionHttp = (node === '') ? this.transactionHttp : new TransactionHttp(`http://${node}:3000`);
+    const transaction: TransactionHttp = (node === '') ? this.transactionHttp : new TransactionHttp(`http://${node}`);
     return transaction.getTransaction(hash);
   }
 

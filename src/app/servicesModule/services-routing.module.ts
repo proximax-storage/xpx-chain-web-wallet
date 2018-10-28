@@ -14,6 +14,7 @@ const routes: Routes = [
     canActivate: [LoggedGuard]
   },{
     path: `${AppConfig.routes.addNode}`,
+<<<<<<< HEAD:src/app/services/services-routing.module.ts
     component: AddNodeComponent,
     canActivate: [LoggedGuard]
   },{
@@ -25,6 +26,12 @@ const routes: Routes = [
     path: `${AppConfig.routes.createPoll}`,
     component: CreatePollComponent,
     canActivate: [LoggedGuard]
+=======
+    component: AddNodeComponent
+  },{
+    path: `${AppConfig.routes.selectNode}`,
+    component: SelectNodeComponent
+>>>>>>> 78e5580a03f82eba510cb1150ebbcc006862b5db:src/app/servicesModule/services-routing.module.ts
   }
 ];
 

@@ -3,6 +3,7 @@ import { MdbTablePaginationComponent, MdbTableService } from 'ng-uikit-pro-stand
 import { MosaicId, Transaction } from 'nem2-sdk';
 import { AppConfig } from '../../../config/app.config';
 import { NemProvider } from '../../../shared/services/nem.provider';
+import { ServiceModuleService } from "../../../servicesModule/services/service-module.service";
 
 @Component({
   selector: 'app-explorer',
@@ -27,7 +28,8 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
     constructor(
       private tableService: MdbTableService,
       private cdRef: ChangeDetectorRef,
-      private nemProvider: NemProvider
+      private nemProvider: NemProvider,
+      private serviceModule: ServiceModuleService
     ) {
       this.nodes = JSON.parse(localStorage.getItem('proxi-nodes'));
     }
@@ -62,9 +64,9 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
     }
 
     searchData() {
-      if ((this.typeNode !== '') && (this.hash !== '')) {
+      if (this.hash !== '') {
         console.log('xx');
-        this.nemProvider.getTransactionInformation(this.hash, this.typeNode).subscribe(
+        this.nemProvider.getTransactionInformation(this.hash, this.serviceModule.getNode()).subscribe(
           resp => {
             console.log(resp);
             const mosaicId = resp['mosaics'][0].id;
