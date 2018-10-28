@@ -15,20 +15,15 @@ const routes: Routes = [
     canActivate: [LoggedGuard]
   },{
     path: `${AppConfig.routes.addNode}`,
-    component: AddNodeComponent,
-    canActivate: [LoggedGuard]
+    component: AddNodeComponent
   },{
     path: `${AppConfig.routes.selectNode}`,
-    component: SelectNodeComponent,
-    canActivate: [LoggedGuard]
+    component: SelectNodeComponent
   },
   {
     path: `${AppConfig.routes.createPoll}`,
     component: CreatePollComponent,
     canActivate: [LoggedGuard]
-  },{
-    path: `${AppConfig.routes.selectNode}`,
-    component: SelectNodeComponent
   }
 ];
 
