@@ -31,6 +31,7 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
       private nemProvider: NemProvider,
       private serviceModule: ServiceModuleService
     ) {
+      console.log('explorer component is working...');
       this.nodes = JSON.parse(localStorage.getItem('proxi-nodes'));
     }
 
@@ -39,8 +40,7 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
     }
 
     ngOnInit() {
-      this.elements = this.tableService.getDataSource();
-      this.previous = this.tableService.getDataSource();
+
     }
 
     ngAfterViewInit() {
@@ -86,6 +86,8 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
             });
 
             this.tableService.setDataSource(this.elements);
+            this.elements = this.tableService.getDataSource();
+            this.previous = this.tableService.getDataSource();
 
             // for (let i = 1; i <= 15; i++) {
             //   this.elements.push({

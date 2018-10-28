@@ -15,7 +15,11 @@ import {
   QueryParams,
   AccountInfo,
   NetworkType,
-  TransactionHttp
+  TransactionHttp,
+  TransferTransaction,
+  Deadline,
+  XEM,
+  PlainMessage
 } from 'nem2-sdk';
 
 import { crypto } from 'nem2-library';
@@ -41,7 +45,6 @@ export class NemProvider {
   constructor(private serviceModuleService: ServiceModuleService) {
 
     this.url = `http://${this.serviceModuleService.getNode()}`;
-    // this.url =this.serviceModuleService.getnode();
     this.transactionHttp = new TransactionHttp(this.url);
     this.accountHttp = new AccountHttp(this.url);
     this.mosaicHttp = new MosaicHttp(this.url);
@@ -136,6 +139,24 @@ export class NemProvider {
   }
 
   /**
+   * Create transaction
+   *
+   * @param recipientAddress
+   * @param message
+   * @param network
+   */
+  createTransaction(recipient, amount, message, network) {
+    const recipientAddress = this.createFromRawAddress(recipient);
+    return TransferTransaction.create(
+      Deadline.create(5),
+      recipientAddress,
+      [XEM.createRelative(Number(amount))],
+      PlainMessage.create(message),
+      network
+    );
+  }
+
+  /**
    * Create an Address from a given raw address.
    *
    * @param {*} address
@@ -143,7 +164,6 @@ export class NemProvider {
    * @memberof NemProvider
    */
   createFromRawAddress(address: string): Address {
-
     return Address.createFromRawAddress(address);
   }
 
@@ -200,11 +220,9 @@ export class NemProvider {
    * @returns {Observable<Transaction[]>}
    * @memberof NemProvider
    */
-  getAllTransactionsFromAnAccount(publicAccount, queryParams?): Observable<Transaction[]> {
+  getAllTransactionsFromAccount(publicAccount, queryParams?): Observable<Transaction[]> {
     return this.accountHttp.transactions(publicAccount, new QueryParams(queryParams));
-
   }
-
 
   /**
    * Gets a transaction for a transactionId
@@ -217,7 +235,6 @@ export class NemProvider {
 
     return this.transactionHttp.getTransaction(transactionId)
   }
-
 
   /**
    *Gets the array of transactions for which an account is the sender or receiver and which have not yet been included in a block.
@@ -232,8 +249,6 @@ export class NemProvider {
     return this.accountHttp.unconfirmedTransactions(publicAccount, queryParams);
   }
 
-
-
   /**
    * Return getTransaction from id or hash
    * @param param
@@ -242,8 +257,6 @@ export class NemProvider {
     const transaction: TransactionHttp = (node === '') ? this.transactionHttp : new TransactionHttp(`http://${node}`);
     return transaction.getTransaction(hash);
   }
-
-
 
   /**
    * Gnenerate account simple

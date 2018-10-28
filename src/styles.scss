@@ -104,9 +104,36 @@ html:after {
   padding-right: 0px;
 }
 
+.tabs-wallet{
+  cursor: pointer;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.background-tabs-selected{
+  background: #e2bf81;
+}
+
+.background-tabs-unselected{
+  background: #7d7d81;
+}
+
+.count {
+  background-color: #c8a870 !important;
+}
+
+.font-tabs{
+  color: white;
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
 /*FIN STYLE SITE*/
 
-
+.mr-15px{
+  margin-right: 15px !important;
+}
 
 
 .mt-100px {
@@ -131,6 +158,10 @@ html:after {
 
 .mb-3rem {
   margin-bottom: 3rem;
+}
+
+.mb-2rem {
+  margin-bottom: 2rem;
 }
 
 .mt-1rm {
@@ -309,4 +340,6 @@ html:after {
 .mouse-pointer{
   cursor: pointer;
 }
+
+
 

@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
-import { NetworkType } from "nem2-sdk/dist";
+import { NetworkType, Account } from "nem2-sdk";
 import { WalletService } from "../../../shared";
 import { TransactionsService } from "../../../transactions/service/transactions.service";
+import { NemProvider } from "../../../shared/services/nem.provider";
 
 @Component({
   selector: 'app-transfer',
@@ -13,26 +14,11 @@ export class TransferComponent implements OnInit {
 
   transferForm: FormGroup;
   transferIsSend = false;
-  typeAccount = [
-    {
-      'value': NetworkType.TEST_NET,
-      'label': 'TEST NET'
-    }, {
-      'value': NetworkType.MAIN_NET,
-      'label': 'MAIN NET'
-    }, {
-      'value': NetworkType.MIJIN_TEST,
-      'label': 'MIJIN TEST'
-    }, {
-      'value': NetworkType.MIJIN,
-      'label': 'MIJIN'
-    }
-  ];
-
 
   constructor(
     private fb: FormBuilder,
     private walletService: WalletService,
+    private nemProvider: NemProvider,
     private transactionService: TransactionsService
   ) { }
 
@@ -94,7 +80,16 @@ export class TransferComponent implements OnInit {
       const password = this.transferForm.get('password').value;
       const common = { password: password }
       if (this.walletService.decrypt(common)) {
-        this.transactionService.sendTransfer(common, acountRecipient, message, amount, this.walletService.network);
+        const responseTransfer = this.transactionService.sendTransfer(common, acountRecipient, message, amount, this.walletService.network);
+        responseTransfer.transactionHttp
+        .announce(responseTransfer.signedTransaction)
+        .subscribe(
+        x => {
+          //console.error(x);
+        },
+        err => {
+          console.error(err);
+        });
       }
     }
   }
