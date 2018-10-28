@@ -5,11 +5,15 @@ import { LoginService } from '../login/services/login.service';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { WalletService } from "../shared";
 import { ServiceModuleService } from "../servicesModule/services/service-module.service";
+import { TransactionsService } from "../transactions/service/transactions.service";
+
 export interface HorizontalHeaderInterface {
   node: Header;
+  dashboard: Header;
   nodeSelected: Header;
   createWallet: Header;
   importWallet: Header;
+  transactions: Header;
   login: Header;
   signout: Header;
 }
@@ -51,7 +55,8 @@ export class HeaderComponent implements OnInit {
     private route: Router,
     private activatedRoute: ActivatedRoute,
     private walletService: WalletService,
-    private serviceModuleService: ServiceModuleService
+    private serviceModuleService: ServiceModuleService,
+    private transactionsService: TransactionsService
   ) {
     this.route.events
       .subscribe((event) => {
@@ -89,6 +94,37 @@ export class HeaderComponent implements OnInit {
    */
   buildHeader() {
     this.horizontalHeader = {
+      dashboard: {
+        'type': 'default',
+        'name': 'dashboard',
+        'class': '',
+        'icon': 'fa fa-home',
+        'rol': true,
+        'link': AppConfig.routes.dashboard,
+        'show': true,
+        'submenu': {}
+      },
+      transactions: {
+        'type': 'dropdown',
+        'name': 'Transactions',
+        'class': '',
+        'icon': 'fa fa-tachometer',
+        'rol': true,
+        'link': '',
+        'show': true,
+        'submenu': {
+          'explorer': {
+            'type': 'default',
+            'name': 'Transfer',
+            'class': '',
+            'icon': '',
+            'rol': true,
+            'link': AppConfig.routes.transferTransaction,
+            'show': true,
+            'submenu': {}
+          }
+        }
+      },
       node: {
         'type': 'dropdown',
         'name': 'Node',
@@ -174,25 +210,14 @@ export class HeaderComponent implements OnInit {
 
     this.verticalHeader = {
       dashboard: {
-        'type': 'dropdown',
+        'type': 'default',
         'name': 'dashboard',
         'class': '',
         'icon': 'fa fa-home',
         'rol': true,
         'link': AppConfig.routes.dashboard,
         'show': true,
-        'submenu': {
-          'dashboard': {
-            'type': 'default',
-            'name': 'dashboard',
-            'class': '',
-            'icon': 'fa fa-home',
-            'rol': true,
-            'link': AppConfig.routes.dashboard,
-            'show': true,
-            'submenu': {}
-          }
-        }
+        'submenu': {}
       },services: {
         'type': 'dropdown',
         'name': 'services',

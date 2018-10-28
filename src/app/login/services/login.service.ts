@@ -5,6 +5,7 @@ import { WalletService } from '../../shared/services/wallet.service';
 import { AppConfig } from '../../config/app.config';
 import { DataBridgeService } from "../../shared/services/data-bridge.service";
 import { Address } from "nem2-sdk/dist";
+import { TransactionsService } from "../../transactions/service/transactions.service";
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +17,8 @@ export class LoginService {
   constructor(
     private _walletService: WalletService,
     private route: Router,
-    private _dataBridgeService:DataBridgeService
+    private _dataBridgeService:DataBridgeService,
+    private transactionsService: TransactionsService
   ) { this.setLogged(false); }
 
   /**
@@ -46,6 +48,7 @@ export class LoginService {
    */
   login(common, wallet) {
     if (!this._walletService.login(common, wallet)) { return false; }
+    this.transactionsService.destroyAllTransactions();
     this._dataBridgeService.connectnWs();
     this.route.navigate([`/${AppConfig.routes.dashboard}`]);
     this.setLogged(true);
