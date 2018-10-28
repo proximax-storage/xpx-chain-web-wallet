@@ -163,7 +163,7 @@ export class CreatePollComponent implements OnInit {
       x => {
         this.blockUI.stop(); // Stop blocking
         console.log("exis=", x)
-        this.createpollForm.reset();
+        // this.createpollForm.reset();
       },
       err => {
         this.sharedService.showError('Error', '¡unexpected error!');
