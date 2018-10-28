@@ -86,7 +86,7 @@ export class DataBridgeService {
         audio.play();
       }, err => {
         console.error(err)
-      });o
+      });
 
       connector.status(this.walletService.address).subscribe(status => {
         console.log("status", status)

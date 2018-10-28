@@ -17,8 +17,10 @@ export class SelectNodeComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.node = JSON.parse(localStorage.getItem('proxi-nodes'))
+    this.node = this.serviceModuleService.getNode();
+    console.log(this.node);
   }
+
   optionSelected(nodeSelect) {
     this.nodeSelect = nodeSelect.value;
     this.serviceModuleService.nodeSelected(this.nodeSelect);

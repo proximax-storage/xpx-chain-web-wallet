@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject, BehaviorSubject, } from 'rxjs';
 import { NemProvider } from "../../shared/services/nem.provider";
-import { TransferTransaction, Deadline, PlainMessage, NetworkType, TransactionHttp, XEM, Account } from "nem2-sdk";
+import { UInt64, TransferTransaction, Deadline, PlainMessage, NetworkType, TransactionHttp, XEM, Account, Mosaic, MosaicId } from "nem2-sdk";
 import { WalletService } from "../../shared";
 import { environment } from "../../../environments/environment";
 import { ServiceModuleService } from "../../servicesModule/services/service-module.service";
@@ -46,12 +46,11 @@ export class TransactionsService {
 
 
   sendTransfer(common, recipient, message, amount, network) {
-    //9E8A529894129F737C40560DCAE25E99C91C18F55E2417C1188398DB0D3D09BD  private key
     const recipientAddress = this.nemProvider.createFromRawAddress(recipient);
     const transferTransaction = TransferTransaction.create(
       Deadline.create(5),
       recipientAddress,
-      [XEM.createRelative(Number(1))],
+      [new Mosaic( new MosaicId('prx:pxp'), UInt64.fromUint(Number(amount)))],
       PlainMessage.create(message),
       network);
     const account = Account.createFromPrivateKey(common.privateKey, network);
@@ -71,7 +70,7 @@ export class TransactionsService {
       message: data['message'],
       transactionInfo: data.transactionInfo,
       fee: data.fee.compact(),
-      mosaic: 'xem',
+      mosaic: 'pxp',
       date: date,
       recipient: data['recipient'],
       signer: data.signer
