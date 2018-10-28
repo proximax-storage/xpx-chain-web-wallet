@@ -40,21 +40,17 @@ export class CreatePollComponent implements OnInit {
   }
 
 
-
-
-
-
   createForm() {
     this.createpollForm = this.fb.group({
       title: ['', Validators.required],
       description: ['', Validators.required],
       indexAccount: [{ value: this.indexAccount, disabled: true }, [Validators.required, Validators.maxLength(30)]],
       datepoll: ['', Validators.required],
-      choice: ['', Validators.required],
+      choice: [''],
       type: [{ value: '1', disabled: false }, Validators.required],
       options: this.fb.group({
-        optionsPoll1: ['', Validators.required],
-        optionsPoll2: ['', Validators.required],
+        optionsPoll1: ['YES', Validators.required],
+        optionsPoll2: ['NO', Validators.required],
       }),
       password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]],
     });
@@ -115,47 +111,59 @@ export class CreatePollComponent implements OnInit {
       strings.push(optionsForm[element])
       obj[optionsForm[element]] = this.indexAccount = this.nemProvider.generateNewAccount(this.walletService.network).address.plain();
     })
-    const options: Options = {
-      strings: strings,
-      link: obj
-    }
-    const formData: FormData = {
-      title: this.createpollForm.get('title').value,
-      doe: 24234234234,
-      type: this.createpollForm.get('type').value,
-      multiple: this.createpollForm.get('choice').value,
 
+    const OptionsRoot: OptionsRoot = {
+      options: {
+        strings: strings,
+        link: obj
+      }
+    }
+
+    const FormDataRoot: FormDataRoot = {
+      formData: {
+        title: this.createpollForm.get('title').value,
+        doe: 24234234234,
+        type: this.createpollForm.get('type').value,
+        multiple: this.createpollForm.get('choice').value,
+
+      }
     }
     //1540695600000
-    let description = {
-      description: this.createpollForm.get('description').value
+
+    let DescriptionRoot: DescriptionRoot = {
+      description: {
+        description: this.createpollForm.get('description').value
+      }
+
     }
 
+
     let datapoll: Datapoll = {
-      options: options,
-      description: description,
-      formData: formData
+      options: OptionsRoot,
+      description: DescriptionRoot,
+      formData: FormDataRoot
     }
     let accountPoll = this.nemProvider.generateNewAccount(this.walletService.network).address.plain()
     // this..sendaccountPoll(element, datapoll, accountPoll,common);
     Object.keys(datapoll).forEach(element => {
-
-      console.log(datapoll[element])
       this.sendaccountPoll(datapoll[element], accountPoll, common);
     });
     // const orderedAddresses = Object.keys(addressLink).map((option) => addressLink[option]);
-    const poll: Poll = {
-      title: this.createpollForm.get('title').value,
-      doe: 24234234234,
-      type: this.createpollForm.get('type').value,
-      address: accountPoll
+
+    const PollRoot: PollRoot = {
+      poll: {
+        title: this.createpollForm.get('title').value,
+        doe: 24234234234,
+        type: this.createpollForm.get('type').value,
+        address: accountPoll
+      }
     }
-    this.sendaccountPoll(poll, this.indexAccount, common);
+    this.sendaccountPoll(PollRoot, this.indexAccount, common);
   }
   sendaccountPoll(mensaje: any, address, common) {
     this.blockUI.start('Loading...'); // Start blocking
     let transferTransaction: any
-    transferTransaction = this.nemProvider.sendTransaction(this.walletService.network,address, JSON.stringify(mensaje))
+    transferTransaction = this.nemProvider.sendTransaction(this.walletService.network, address, JSON.stringify(mensaje))
     transferTransaction.fee = UInt64.fromUint(0);
     const account = Account.createFromPrivateKey(common.privateKey, this.walletService.network);
     const signedTransaction = account.sign(transferTransaction);
@@ -163,7 +171,8 @@ export class CreatePollComponent implements OnInit {
       x => {
         this.blockUI.stop(); // Stop blocking
         console.log("exis=", x)
-        // this.createpollForm.reset();
+         this.createpollForm.reset();
+        this.sharedService.showSuccess('success', 'poll created')
       },
       err => {
         this.sharedService.showError('Error', '¡unexpected error!');
@@ -174,6 +183,10 @@ export class CreatePollComponent implements OnInit {
 
 
 }
+
+interface PollRoot {
+  poll: Poll;
+}
 interface Poll {
   title: string;
   type: number;
@@ -182,10 +195,32 @@ interface Poll {
 }
 
 
+
+interface OptionsRoot {
+  options: Options
+}
+
+
+interface Options {
+  strings: string[];
+  link: any;
+}
+
+
+interface DescriptionRoot {
+  description: DescriptionRoot;
+}
+
+interface Description {
+  description: string;
+}
+
+
+
 interface Datapoll {
-  options?: Options;
-  description?: Description;
-  formData?: FormData;
+  options?: OptionsRoot;
+  description?: DescriptionRoot;
+  formData?: FormDataRoot;
 }
 
 interface FormData {
@@ -194,11 +229,9 @@ interface FormData {
   type: string;
   multiple: string;
 }
-interface Options {
-  strings: string[];
-  link: any;
+
+interface FormDataRoot {
+  formData: FormData;
+
 }
 
-interface Description {
-  description: string;
-}

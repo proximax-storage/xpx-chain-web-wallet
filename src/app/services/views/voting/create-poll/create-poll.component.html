@@ -30,7 +30,7 @@
                       <input formControlName="indexAccount" mdbInputDirective type="text" required disabled name="indexAccount" placeholder="TAVG-TNCV-GALL-UPZC-4JTL-KR2W-X25R-QM2Q-OK5B-HBKC"
                         id="indexAccount" class="form-control" data-success="Valid index account" [errorMessage]="getError('indexAccount')">
                       <label for="indexAccount" class="">Poll Index Account</label>
-                      <div class="alert alert-primary" role="alert">
+                      <div class="alert background-info white-text" role="alert">
                         The poll account where the poll will be saved. By default a public one is set.
                       </div>
                     </div>
@@ -38,7 +38,7 @@
                       <input formControlName="datepoll" mdbInputDirective type="text" name="datepoll" placeholder="2017-12-28T14" id="datepoll"
                         class="form-control" data-success="Valid date" [errorMessage]="getError('datepoll')">
                       <label for="datepoll" class="">Date of Ending</label>
-                      <div class="alert alert-primary" role="alert">
+                      <div class="alert background-info white-text" role="alert">
                         If you only see a text box input a date in a valid ISO format [yyyy-MM-ddTHH:mm], for example: 2017-12-28T14:57
                       </div>
                     </div>
@@ -46,7 +46,7 @@
                       <!-- Material checked -->
                       <mdb-checkbox formControlName="choice" [checked]="false">Multiple choice</mdb-checkbox>
                       <br>
-                      <div class="alert alert-primary" role="alert">
+                      <div class="alert background-info white-text" role="alert">
                         If selected, voters will be able to divide their vote into more than one option.
                       </div>
                     </div>
@@ -63,11 +63,11 @@
                       </h6>
                       <div class="md-form  mt-1">
                         <div class="md-form  mt-1">
-                          <input type="text" formControlName="optionsPoll1" name="optionsPoll1" id="optionsPoll1" mdbInputDirective placeholder="yes"
-                            class="form-control" data-success="Valid option" [errorMessage]="getErrorGroup('options','optionsPoll1')">
+                          <input type="text" formControlName="optionsPoll1" disabled name="optionsPoll1" id="optionsPoll1" mdbInputDirective placeholder="yes"
+                            class="form-control" data-success="Valid option"   [errorMessage]="getErrorGroup('options','optionsPoll1')">
                         </div>
                         <div class="md-form  mt-1">
-                          <input type="text" formControlName="optionsPoll2" name="optionsPoll2" id="optionsPoll2" mdbInputDirective placeholder="no"
+                          <input type="text" formControlName="optionsPoll2" disabled name="optionsPoll2" id="optionsPoll2" mdbInputDirective placeholder="no"
                             class="form-control" data-success="Valid option" [errorMessage]="getErrorGroup('options','optionsPoll2')">
                         </div>
                       </div>
