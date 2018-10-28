@@ -113,7 +113,7 @@ export class HeaderComponent implements OnInit {
         'link': '',
         'show': true,
         'submenu': {
-          'explorer': {
+          'transfer': {
             'type': 'default',
             'name': 'Transfer',
             'class': '',
@@ -132,7 +132,7 @@ export class HeaderComponent implements OnInit {
         'icon': 'fa fa-codepen',
         'rol': true,
         'link': AppConfig.routes.addNode,
-        'show': true,
+        'show': false,
         'submenu': {
           'addNode': {
             'type': 'dropdown',
@@ -182,7 +182,7 @@ export class HeaderComponent implements OnInit {
         'class': '',
         'icon': 'fa fa-key',
         'rol': false,
-        'link': AppConfig.routes.importWallet, 
+        'link': AppConfig.routes.importWallet,
         'show': true,
         'submenu': {}
       },
@@ -229,7 +229,7 @@ export class HeaderComponent implements OnInit {
         'submenu': {
           'explorer': {
             'type': 'default',
-            'name': 'Explorer',
+            'name': 'Transaction explorer',
             'class': '',
             'icon': 'fa fa-home',
             'rol': true,
@@ -278,7 +278,7 @@ export class HeaderComponent implements OnInit {
         'link': '',
         'show': true,
         'submenu': {
-          'explorer': {
+          'transfer': {
             'type': 'default',
             'name': 'Transfer',
             'class': '',
@@ -297,7 +297,7 @@ export class HeaderComponent implements OnInit {
         'icon': 'fa fa-codepen',
         'rol': false,
         'link': AppConfig.routes.addNode,
-        'show': true,
+        'show': false,
         'submenu': {
           'addNode': {
             'type': 'dropdown',

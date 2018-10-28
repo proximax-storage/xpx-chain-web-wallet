@@ -5,6 +5,7 @@ import { Injectable } from '@angular/core';
 })
 export class ServiceModuleService {
 
+  nodeDefault = '13.229.219.71:3000';
   node: String;
   nameNode = 'proxi-nodes';
   nodeSelect = 'node-selected';
@@ -31,9 +32,10 @@ export class ServiceModuleService {
     return retorno;
   }
 
-  nodeSelected(node) {
+  nodeSelected(node = this.nodeDefault) {
     localStorage.setItem(this.nodeSelect, JSON.stringify(node))
     this.node = JSON.parse(localStorage.getItem(this.nodeSelect));
+    return this.node;
   }
 
   setNode(nodes) {
