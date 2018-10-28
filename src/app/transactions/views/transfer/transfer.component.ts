@@ -46,7 +46,6 @@ export class TransferComponent implements OnInit {
       return;
     }
     this.transferForm.reset();
-    this.transferForm.get('network').setValue(NetworkType.TEST_NET);
     return;
   }
 
@@ -85,9 +84,11 @@ export class TransferComponent implements OnInit {
         .announce(responseTransfer.signedTransaction)
         .subscribe(
         x => {
+          this.cleanForm();
           //console.error(x);
         },
         err => {
+          this.cleanForm();
           console.error(err);
         });
       }

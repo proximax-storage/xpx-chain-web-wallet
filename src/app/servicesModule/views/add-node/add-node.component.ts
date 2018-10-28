@@ -28,7 +28,7 @@ export class AddNodeComponent implements OnInit {
       const dataStorage = this.serviceModuleService.issetNodesStorage();
       const data = { value: this.node, label: this.node };
       if (dataStorage === null) {
-        this.setNode(data);
+        this.setNode([data]);
         return;
       }
 

@@ -8,7 +8,6 @@ import { SelectNodeComponent } from './views/select-node/select-node.component';
 import { CreatePollComponent } from '../services/views/voting/create-poll/create-poll.component';
 import { PollsComponent } from '../services/views/voting/polls/polls.component';
 
-
 @NgModule({
   imports: [
     CommonModule,

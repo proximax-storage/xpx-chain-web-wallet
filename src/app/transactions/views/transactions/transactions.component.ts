@@ -14,6 +14,7 @@ import { WalletService } from "../../../shared";
 
 })
 export class TransactionsComponent implements OnInit {
+  previous: any;
 
   firstItemIndex;
   lastItemIndex;
