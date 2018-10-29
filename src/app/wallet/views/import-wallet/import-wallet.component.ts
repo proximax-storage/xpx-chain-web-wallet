@@ -60,6 +60,11 @@ export class ImportWalletComponent implements OnInit {
    * 0F3CC33190A49ABB32E7172E348EA927F975F8829107AAA3D6349BB10797D4F6 (pvk with money)
    *
    *
+   * catapult ws://staging.mocd.gov.ae/catapult/
+   * 8E3639F5437B83C13C567E3C2C847966AC25D6E12B38632DF38DCD5403C64368
+   * SBHMRE-3QM3GP-BNDG2O-BDQ6AE-WGDPZI-MO2SGJ-O77I
+   *
+   *
    * @memberof ImportWalletComponent
    */
   importForm() {

@@ -66,7 +66,7 @@ export class DashboardComponent implements OnInit {
    * @memberof DashboardComponent
    */
   verifyTransactions() {
-    this.subscriptions['getTransConfirm'] = this.transactionsService.getTransConfirm$().subscribe(
+    this.subscriptions['getTransConfirm'] = this.transactionsService.getTransConfirm$().pipe(first()).subscribe(
       resp => {
         if (resp.length > 0) {
           this.cantConfirmed = resp.length;

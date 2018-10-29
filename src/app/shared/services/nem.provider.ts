@@ -52,7 +52,7 @@ export class NemProvider {
   constructor(private serviceModuleService: ServiceModuleService) {
 
 
-    this.url = `http://${this.serviceModuleService.getNode()}`;
+    this.url = `https://${this.serviceModuleService.getNode()}`;
     this.transactionHttp = new TransactionHttp(this.url);
     this.accountHttp = new AccountHttp(this.url);
     this.mosaicHttp = new MosaicHttp(this.url);
@@ -261,7 +261,7 @@ export class NemProvider {
    * @param param
    */
   getTransactionInformation(hash, node = ''): Observable<Transaction> {
-    const transaction: TransactionHttp = (node === '') ? this.transactionHttp : new TransactionHttp(`http://${node}`);
+    const transaction: TransactionHttp = (node === '') ? this.transactionHttp : new TransactionHttp(`https://${node}`);
     return transaction.getTransaction(hash);
   }
 

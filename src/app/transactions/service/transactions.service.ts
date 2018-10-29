@@ -57,7 +57,7 @@ export class TransactionsService {
       network);
     const account = Account.createFromPrivateKey(common.privateKey, network);
     const signedTransaction = account.sign(transferTransaction);
-    const transactionHttp = new TransactionHttp(`http://${this.serviceModule.getNode()}`);
+    const transactionHttp = new TransactionHttp(`https://${this.serviceModule.getNode()}`);
     return {
       signedTransaction: signedTransaction,
       transactionHttp: transactionHttp

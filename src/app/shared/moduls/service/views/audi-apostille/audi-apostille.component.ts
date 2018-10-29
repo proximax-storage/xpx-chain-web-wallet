@@ -30,7 +30,7 @@ export class AudiApostilleComponent implements OnInit {
     private sharedService: SharedService,
     private servicesModule:ServiceModuleService
   ) {
-    this.url=`http://${this.servicesModule.getNode()}`;
+    this.url=`https://${this.servicesModule.getNode()}`;
 
   }
 

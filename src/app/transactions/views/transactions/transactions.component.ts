@@ -65,7 +65,7 @@ export class TransactionsComponent implements OnInit {
             message: element['message'],
             transactionInfo: element.transactionInfo,
             fee: element.fee.compact(),
-            mosaic: 'xem',
+            mosaic: 'xpx',
             date: date,
             recipient: element['recipient'],
             signer: element.signer
@@ -75,7 +75,6 @@ export class TransactionsComponent implements OnInit {
         this.tableService.setDataSource(this.elements);
         this.elements = this.tableService.getDataSource();
         this.previous = this.tableService.getDataSource();
-       // this.transactionsService.setTransConfirm$(trans);
       },
       error => {
         console.error(error);
