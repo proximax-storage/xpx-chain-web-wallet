@@ -81,11 +81,12 @@ export class TransferComponent implements OnInit {
       const password = this.transferForm.get('password').value;
       const common = { password: password };
       if (this.walletService.decrypt(common)) {
-        const responseTransfer = this.transactionService.sendTransfer(common, acountRecipient, message, amount, this.walletService.network);
-        responseTransfer.transactionHttp
-        .announce(responseTransfer.signedTransaction)
+        const rspBuildSend = this.transactionService.buildToSendTransfer(common, acountRecipient, message, amount, this.walletService.network);
+        rspBuildSend.transactionHttp
+        .announce(rspBuildSend.signedTransaction)
         .subscribe(
         rsp => {
+          console.log(rsp);
           this.inputBLocked = false;
           this.cleanForm();
         },

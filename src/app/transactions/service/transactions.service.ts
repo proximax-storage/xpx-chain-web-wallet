@@ -46,7 +46,7 @@ export class TransactionsService {
   }
 
 
-  sendTransfer(common, recipient, message, amount, network) {
+  buildToSendTransfer(common, recipient, message, amount, network) {
     const recipientAddress = this.nemProvider.createFromRawAddress(recipient);
     const transferTransaction = TransferTransaction.create(
       Deadline.create(5),
