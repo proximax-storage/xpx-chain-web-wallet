@@ -122,7 +122,7 @@ export class CreatePollComponent implements OnInit {
     const FormDataRoot: FormDataRoot = {
       formData: {
         title: this.createpollForm.get('title').value,
-        doe: 24234234234,
+        doe: 1540695600000,
         type: this.createpollForm.get('type').value,
         multiple: this.createpollForm.get('choice').value,
 
@@ -153,7 +153,7 @@ export class CreatePollComponent implements OnInit {
     const PollRoot: PollRoot = {
       poll: {
         title: this.createpollForm.get('title').value,
-        doe: 24234234234,
+        doe: 1540695600000,
         type: this.createpollForm.get('type').value,
         address: accountPoll
       }

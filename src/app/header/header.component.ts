@@ -266,6 +266,15 @@ export class HeaderComponent implements OnInit {
             'link': `${AppConfig.routes.createPoll}`,
             'show': true,
             'submenu': {}
+          },'polls': {
+            'type': 'default',
+            'name': 'See Polls',
+            'class': '',
+            'icon': 'fa fa-codepen',
+            'rol': true,
+            'link': `${AppConfig.routes.polls}`,
+            'show': true,
+            'submenu': {}
           }
         }
       },

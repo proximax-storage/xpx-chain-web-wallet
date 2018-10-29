@@ -7,6 +7,7 @@ import { ExplorerComponent } from "./views/explorer/explorer.component";
 import { AddNodeComponent } from "./views/add-node/add-node.component";
 import { SelectNodeComponent } from './views/select-node/select-node.component';
 import { CreatePollComponent } from "../services/views/voting/create-poll/create-poll.component";
+import { PollsComponent } from '../services/views/voting/polls/polls.component';
 
 const routes: Routes = [
   {
@@ -24,7 +25,13 @@ const routes: Routes = [
     path: `${AppConfig.routes.createPoll}`,
     component: CreatePollComponent,
     canActivate: [LoggedGuard]
+  },
+  {
+    path: `${AppConfig.routes.polls}`,
+    component: PollsComponent,
+    // canActivate: [LoggedGuard]
   }
+  
 ];
 
 @NgModule({
