@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject, BehaviorSubject, } from 'rxjs';
 import { NemProvider } from "../../shared/services/nem.provider";
-import { UInt64, TransferTransaction, Deadline, PlainMessage, NetworkType, TransactionHttp, XEM, Account, Mosaic, MosaicId } from "nem2-sdk";
+import { UInt64, TransferTransaction, Deadline, PlainMessage, NetworkType, TransactionHttp, Account, Mosaic, MosaicId } from "nem2-sdk";
 import { WalletService } from "../../shared";
 import { environment } from "../../../environments/environment";
 import { ServiceModuleService } from "../../servicesModule/services/service-module.service";
@@ -12,7 +12,6 @@ import { ServiceModuleService } from "../../servicesModule/services/service-modu
 })
 export class TransactionsService {
 
-  mosaic = 'prx:xpx';
   private _transConfirm = new BehaviorSubject<any>([]);
   private _transConfirm$: Observable<any> = this._transConfirm.asObservable();
   private _transactionsUnconfirmed = new BehaviorSubject<any>([]);
@@ -53,7 +52,7 @@ export class TransactionsService {
       Deadline.create(5),
       recipientAddress,
       //[new Mosaic(new MosaicId([3530084852,3559101211]),UInt64.fromUint(0))],
-      [new Mosaic( new MosaicId(this.mosaic), UInt64.fromUint(Number(amount)))],
+      [new Mosaic( new MosaicId(this.nemProvider.mosaic), UInt64.fromUint(Number(amount)))],
       PlainMessage.create(message),
       network);
     const account = Account.createFromPrivateKey(common.privateKey, network);

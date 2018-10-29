@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
 })
 export class ServiceModuleService {
 
-  nodeDefault = '13.229.219.71:3000';
+  nodeDefault = 'staging.mocd.gov.ae/catapult/';
   node: String;
   nameNode = 'proxi-nodes';
   nodeSelect = 'node-selected';

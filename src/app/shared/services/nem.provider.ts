@@ -19,9 +19,11 @@ import {
   TransferTransaction,
   Deadline,
   PlainMessage,
-  XEM,
   SignedTransaction,
   TransactionAnnounceResponse,
+  Mosaic,
+  MosaicId,
+  UInt64,
 } from 'nem2-sdk';
 
 import { crypto } from 'nem2-library';
@@ -36,6 +38,8 @@ import { ServiceModuleService } from '../../servicesModule/services/service-modu
   providedIn: 'root'
 })
 export class NemProvider {
+
+  mosaic = 'prx:xpx';
   transactionHttp: TransactionHttp;
   websocketIsOpen = false;
   connectionWs: Listener;
@@ -46,6 +50,7 @@ export class NemProvider {
   url: any;
 
   constructor(private serviceModuleService: ServiceModuleService) {
+
 
     this.url = `http://${this.serviceModuleService.getNode()}`;
     this.transactionHttp = new TransactionHttp(this.url);
@@ -153,7 +158,7 @@ export class NemProvider {
     return TransferTransaction.create(
       Deadline.create(5),
       recipientAddress,
-      [XEM.createRelative(Number(amount))],
+      [new Mosaic( new MosaicId(this.mosaic), UInt64.fromUint(Number(amount)))],
       PlainMessage.create(message),
       network
     );
@@ -274,12 +279,12 @@ export class NemProvider {
   }
 
 
-  sendTransaction(network, address: string, message?: string, ammoun:number =0): TransferTransaction {
+  sendTransaction(network, address: string, message?: string, amount:number =0): TransferTransaction {
     console.log(address, message)
     return TransferTransaction.create(
       Deadline.create(10),
       Address.createFromRawAddress(address),
-      [XEM.createRelative(ammoun)],
+      [new Mosaic( new MosaicId(this.mosaic), UInt64.fromUint(Number(amount)))],
       PlainMessage.create(message),
       network,
     );

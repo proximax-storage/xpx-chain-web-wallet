@@ -86,23 +86,6 @@ export class ImportWalletComponent implements OnInit {
       const privateKey = this.importWalletForm.get('privateKey').value;
       const network = this.importWalletForm.get('network').value;
       const wallet = this._nemProvider.createAccountFromPrivateKey(nameWallet, password, privateKey, network);
-      console.log(wallet)
-      //open wallet
-      const account = wallet.open(password);
-      //get public key from account
-      const publicKey = account.publicKey.toString();
-      console.log('my public key is... ', publicKey);
-      //create publicAccount
-      const publicAccount = PublicAccount.createFromPublicKey(publicKey, network);
-      //instance account http
-      const petitionHttp = new AccountHttp('http://190.216.224.11:3000');
-      petitionHttp.transactions(publicAccount).subscribe(
-        resp => {
-          console.log(resp);
-        }
-      );
-
-
       const walletsStorage = this._walletService.getWalletStorage();
       //verify if name wallet isset
       const myWallet = walletsStorage.find(function (element) {
