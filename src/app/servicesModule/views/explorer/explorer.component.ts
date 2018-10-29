@@ -155,7 +155,7 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
           message: element['message'],
           transactionInfo: element.transactionInfo,
           fee: element.fee.compact(),
-          mosaic: this.transactionsService.mosaic,
+          mosaic: this.nemProvider.mosaic,
           date: date,
           recipient: element['recipient'],
           signer: element.signer
