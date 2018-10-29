@@ -199,7 +199,6 @@ export class NemProvider {
    * @memberof NemProvider
    */
   getAccountInfo(address: Address): Observable<AccountInfo> {
-
     return this.accountHttp.getAccountInfo(address)
   }
 
