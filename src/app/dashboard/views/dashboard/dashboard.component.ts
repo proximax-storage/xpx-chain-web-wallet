@@ -14,6 +14,8 @@ import {
 import { NemProvider } from '../../../shared/services/nem.provider';
 import { WalletService } from '../../../shared';
 import { TransactionsService } from "../../../transactions/service/transactions.service";
+import { Observable } from "rxjs";
+import { LoginService } from "../../../login/services/login.service";
 
 @Component({
   selector: 'app-dashboard',
@@ -29,6 +31,7 @@ export class DashboardComponent implements OnInit {
   cantConfirmed = 0;
   cantUnconfirmed = 0;
   dataSelected: Transaction;
+  isLogged$: Observable<boolean>;
   headElements = ['Account', 'Amount', 'Mosaic', 'Date'];
   subscriptions = [
     'transactionsUnconfirmed',
@@ -36,6 +39,7 @@ export class DashboardComponent implements OnInit {
   ];
 
   constructor(
+    private loginService: LoginService,
     private walletService: WalletService,
     private nemProvider: NemProvider,
     private transactionsService: TransactionsService
@@ -43,6 +47,16 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.isLogged$ = this.loginService.getIsLogged();
+    this.isLogged$.subscribe(
+      response => {
+        if (response === false) {
+          this.subscriptions['transactionsUnconfirmed'].unsubscribe();
+          this.subscriptions['getTransConfirm'].unsubscribe();
+        }
+      }
+    );
+
     this.verifyTransactions();
     this.getTransactionsUnconfirmed();
   }
