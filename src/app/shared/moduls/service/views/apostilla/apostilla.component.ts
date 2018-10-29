@@ -47,18 +47,18 @@ export class ApostillaComponent implements OnInit {
   validatefileInput = false;
   rawFileContent: any;
   cabeceraImg: any;
-  imgCert:any;
-  imgData:any;
-  url:any
+  imgCert: any;
+  imgData: any;
+  url: any
   constructor(
     private fb: FormBuilder,
     private walletService: WalletService,
     private nemProvider: NemProvider,
     private sharedService: SharedService,
-   private  serviceModuleService:ServiceModuleService
+    private serviceModuleService: ServiceModuleService
 
   ) {
-    this.url=`https://${this.serviceModuleService.getNode()}`
+    this.url = `https://${this.serviceModuleService.getNode()}`
     this.zip = new JSZip();
     this.transactionHttp = new TransactionHttp(this.url)
     this.optionsCrypto = [{ value: '1', label: 'MD5' }, { value: '2', label: 'SHA1' }, { value: '3', label: 'SHA256' }, { value: '4', label: 'SHA3-256' }, { value: '5', label: 'SHA3-512' },];
@@ -141,13 +141,17 @@ export class ApostillaComponent implements OnInit {
     const account = Account.createFromPrivateKey(common.privateKey, this.walletService.network);
     let transferTransaction: any
 
-    transferTransaction = TransferTransaction.create(
-      Deadline.create(10),
-      Address.createFromRawAddress(sinkAddress),
-      [XEM.createRelative(0)],
-      PlainMessage.create(apostilleHash),
-      this.walletService.network,
-    );
+    //     transferTransaction = TransferTransaction.create(
+    //       Deadline.create(10),
+    //       Address.createFromRawAddress(sinkAddress),
+    //       [XEM.createRelative(0)],
+    //       PlainMessage.create(apostilleHash),
+    //       this.walletService.network,
+    //     );
+    // this.nemProvider.sendTransaction()
+
+    transferTransaction = this.nemProvider.sendTransaction(this.walletService.network, sinkAddress, JSON.stringify(apostilleHash))
+
     transferTransaction.fee = UInt64.fromUint(0);
     const signedTransaction = account.sign(transferTransaction);
     const nty = {
@@ -157,7 +161,7 @@ export class ApostillaComponent implements OnInit {
       apostilleHash: apostilleHash,
       account: account,
       sinkAddress: sinkAddress,
-      Owner:account.address.plain()
+      Owner: account.address.plain()
 
     }
 
@@ -233,7 +237,7 @@ export class ApostillaComponent implements OnInit {
     // Use https://dataurl.net/#dataurlmaker
 
 
-console.log("1")
+    console.log("1")
 
 
     var doc = new jsPDF()
@@ -254,13 +258,13 @@ console.log("1")
     doc.text(15, 125, 'Tags');
     doc.setFontType('normal');
     doc.setTextColor(0, 0, 0)
-    doc.text(65, 95,  nty.title);
+    doc.text(65, 95, nty.title);
     console.log("3")
     doc.text(65, 105, date.toUTCString());
     console.log("4")
     doc.text(65, 115, nty.Owner);
     console.log("5")
-    doc.text(65, 125,  nty.tags.join(' '));
+    doc.text(65, 125, nty.tags.join(' '));
     console.log("2")
 
     doc.setDrawColor(220, 120, 0);  // draw red lines
@@ -281,8 +285,8 @@ console.log("1")
     console.log("aqui")
     doc.text(15, 168, nty.sinkAddress);
     doc.text(15, 188, nty.account.address.plain());
-    doc.text(15, 208,  nty.signedTransaction.hash.toLowerCase());
-    doc.text(15, 228,  nty.apostilleHash);
+    doc.text(15, 208, nty.signedTransaction.hash.toLowerCase());
+    doc.text(15, 228, nty.apostilleHash);
     doc.addImage(this.imgData, 'JPEG', 15, 10, 170, 30)
     doc.addImage(this.imgCert, 'JPEG', 140, 135, 67, 70)
 

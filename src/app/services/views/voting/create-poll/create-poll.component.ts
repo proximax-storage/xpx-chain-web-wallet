@@ -180,7 +180,7 @@ export class CreatePollComponent implements OnInit {
         address: accountPoll
       }
     }
-   this.sendaccountPoll(PollRoot, this.indexAccount, common);
+     this.sendaccountPoll(PollRoot, this.indexAccount, common);
   }
   sendaccountPoll(mensaje: any, address, common) {
     this.blockUI.start('Loading...'); // Start blocking
