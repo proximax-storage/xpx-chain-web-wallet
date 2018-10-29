@@ -14,13 +14,14 @@ const routes: Routes = [
     path: `${AppConfig.routes.explorer}`,
     component: ExplorerComponent,
     canActivate: [LoggedGuard]
-  },{
+  },
+  /*{
     path: `${AppConfig.routes.addNode}`,
     component: AddNodeComponent
   },{
     path: `${AppConfig.routes.selectNode}`,
     component: SelectNodeComponent
-  },
+  },*/
   {
     path: `${AppConfig.routes.createPoll}`,
     component: CreatePollComponent,

@@ -11,6 +11,8 @@ import { ServiceModuleService } from "../../servicesModule/services/service-modu
   providedIn: 'root'
 })
 export class TransactionsService {
+
+  mosaic = 'prx:xpx';
   private _transConfirm = new BehaviorSubject<any>([]);
   private _transConfirm$: Observable<any> = this._transConfirm.asObservable();
   private _transactionsUnconfirmed = new BehaviorSubject<any>([]);
@@ -50,7 +52,8 @@ export class TransactionsService {
     const transferTransaction = TransferTransaction.create(
       Deadline.create(5),
       recipientAddress,
-      [new Mosaic( new MosaicId('prx:pxp'), UInt64.fromUint(Number(amount)))],
+      //[new Mosaic(new MosaicId([3530084852,3559101211]),UInt64.fromUint(0))],
+      [new Mosaic( new MosaicId(this.mosaic), UInt64.fromUint(Number(amount)))],
       PlainMessage.create(message),
       network);
     const account = Account.createFromPrivateKey(common.privateKey, network);

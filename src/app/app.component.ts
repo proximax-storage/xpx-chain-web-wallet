@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { BlockInfo, Listener, Address, AccountHttp } from "nem2-sdk/dist";
 import { environment } from "../environments/environment";
 import { ApiService } from "./shared/services/api.services";
+import { ServiceModuleService } from "./servicesModule/services/service-module.service";
 
 
 @Component({
@@ -20,15 +21,17 @@ export class AppComponent {
 
   constructor(
     private apiService: ApiService,
+    private serviceModuleService: ServiceModuleService
   ) {
- 
+    this.serviceModuleService.nodeSelected();
+    console.log(this.serviceModuleService.nodeSelected());
   }
 
   /**
    * Start the particles in the background.
    * (you must add the particle selector in the hmtl)
    * <particles [params]="myParams" [style]="myStyle" [width]="width" [height]="height"></particles>
-   * 
+   *
    * @memberof AppComponent
    */
   initParticle() {

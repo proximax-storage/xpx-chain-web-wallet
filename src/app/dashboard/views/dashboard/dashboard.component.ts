@@ -30,7 +30,10 @@ export class DashboardComponent implements OnInit {
   cantUnconfirmed = 0;
   dataSelected: Transaction;
   headElements = ['Account', 'Amount', 'Mosaic', 'Date'];
-
+  subscriptions = [
+    'transactionsUnconfirmed',
+    'getTransConfirm'
+  ];
 
   constructor(
     private walletService: WalletService,
@@ -41,6 +44,7 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     this.verifyTransactions();
+    this.getTransactionsUnconfirmed();
   }
 
   /**
@@ -49,7 +53,7 @@ export class DashboardComponent implements OnInit {
    * @memberof DashboardComponent
    */
   verifyTransactions() {
-    this.transactionsService.getTransConfirm$().subscribe(
+    this.subscriptions['getTransConfirm'] = this.transactionsService.getTransConfirm$().subscribe(
       resp => {
         if (resp.length > 0) {
           this.cantConfirmed = resp.length;
@@ -59,21 +63,15 @@ export class DashboardComponent implements OnInit {
         this.getAllTransactions();
         return;
       });
-
-      this.transactionsService.getTransactionsUnconfirmed$().subscribe(
-        resp => {
-          this.cantUnconfirmed = resp.length;
-          this.elementsUnconfirmed = resp;
-        }
-      );
   }
 
-  getBalance() {
-    //obtener balance de la cuenta d
-    this.nemProvider.getBalance(this.walletService.address).pipe(
-      mergeMap((_) => _)
-    ).subscribe(mosaic => console.log('You have', mosaic, mosaic.fullName()),
-      err => console.error(err));
+  getTransactionsUnconfirmed() {
+    this.subscriptions['transactionsUnconfirmed'] = this.transactionsService.getTransactionsUnconfirmed$().subscribe(
+      resp => {
+        this.cantUnconfirmed = resp.length;
+        this.elementsUnconfirmed = resp;
+      }
+    );
   }
 
   /**
@@ -95,6 +93,14 @@ export class DashboardComponent implements OnInit {
       error => {
         console.error(error);
       });
+  }
+
+  getBalance() {
+    //obtener balance de la cuenta d
+    this.nemProvider.getBalance(this.walletService.address).pipe(
+      mergeMap((_) => _)
+    ).subscribe(mosaic => console.log('You have', mosaic, mosaic.fullName()),
+      err => console.error(err));
   }
 
   /**
