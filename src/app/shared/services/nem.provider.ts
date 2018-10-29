@@ -22,6 +22,9 @@ import {
   XEM,
   SignedTransaction,
   TransactionAnnounceResponse,
+  UInt64,
+  MosaicId,
+  Mosaic,
 } from 'nem2-sdk';
 
 import { crypto } from 'nem2-library';
@@ -286,7 +289,18 @@ export class NemProvider {
     );
 
   }
+  //   sendTransaction(network, address: string, message?: string, ammoun:number =0): TransferTransaction {
+  //   console.log(address, message)
+  //   return TransferTransaction.create(
+  //     Deadline.create(10),
+  //     Address.createFromRawAddress(address),
+  //     [new Mosaic(new MosaicId([3530084852,3559101211]),UInt64.fromUint(0))],
+  //     PlainMessage.create(message),
+  //     network,
+  //   );
 
+  // }
+ 
   announce(signedTransaction: SignedTransaction): Observable<TransactionAnnounceResponse> {
     return this.transactionHttp.announce(signedTransaction);
   }

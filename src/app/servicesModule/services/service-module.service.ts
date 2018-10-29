@@ -4,8 +4,10 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class ServiceModuleService {
+// 192.168.10.38:3000
 
-  nodeDefault = '13.229.219.71:3000';
+// 13.229.219.71:3000
+  nodeDefault = '192.168.10.38:3000';
   node: String;
   nameNode = 'proxi-nodes';
   nodeSelect = 'node-selected';
