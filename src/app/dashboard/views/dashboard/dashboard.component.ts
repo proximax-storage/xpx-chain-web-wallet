@@ -3,7 +3,6 @@ import { mergeMap, first } from 'rxjs/operators'
 import {
   TransferTransaction,
   Deadline,
-  XEM,
   PlainMessage,
   NetworkType,
   Account,
@@ -14,6 +13,8 @@ import {
 import { NemProvider } from '../../../shared/services/nem.provider';
 import { WalletService } from '../../../shared';
 import { TransactionsService } from "../../../transactions/service/transactions.service";
+import { Observable } from "rxjs";
+import { LoginService } from "../../../login/services/login.service";
 
 @Component({
   selector: 'app-dashboard',
@@ -29,6 +30,7 @@ export class DashboardComponent implements OnInit {
   cantConfirmed = 0;
   cantUnconfirmed = 0;
   dataSelected: Transaction;
+  isLogged$: Observable<boolean>;
   headElements = ['Account', 'Amount', 'Mosaic', 'Date'];
   subscriptions = [
     'transactionsUnconfirmed',
@@ -36,6 +38,7 @@ export class DashboardComponent implements OnInit {
   ];
 
   constructor(
+    private loginService: LoginService,
     private walletService: WalletService,
     private nemProvider: NemProvider,
     private transactionsService: TransactionsService
@@ -43,6 +46,16 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.isLogged$ = this.loginService.getIsLogged();
+    this.isLogged$.subscribe(
+      response => {
+        if (response === false) {
+          this.subscriptions['transactionsUnconfirmed'].unsubscribe();
+          this.subscriptions['getTransConfirm'].unsubscribe();
+        }
+      }
+    );
+
     this.verifyTransactions();
     this.getTransactionsUnconfirmed();
   }
@@ -53,7 +66,7 @@ export class DashboardComponent implements OnInit {
    * @memberof DashboardComponent
    */
   verifyTransactions() {
-    this.subscriptions['getTransConfirm'] = this.transactionsService.getTransConfirm$().subscribe(
+    this.subscriptions['getTransConfirm'] = this.transactionsService.getTransConfirm$().pipe(first()).subscribe(
       resp => {
         if (resp.length > 0) {
           this.cantConfirmed = resp.length;
@@ -118,25 +131,4 @@ export class DashboardComponent implements OnInit {
       this.unconfirmedSelected = true;
     }
   }
-
-  // enviarTrasferencia() {
-  //   //9E8A529894129F737C40560DCAE25E99C91C18F55E2417C1188398DB0D3D09BD  private key
-  //   const recipientAddress = this.nemProvider.createFromRawAddress('SB3RWA-5O4EHD-64WZU3-5C3FTC-5QFYSN-P64VCV-NDX3');
-  //   const transferTransaction = TransferTransaction.create(
-  //     Deadline.create(),
-  //     recipientAddress,
-  //     [XEM.createRelative(10000000)],
-  //     PlainMessage.create('Welcome To NEM'),
-  //     NetworkType.MIJIN_TEST);
-  //   const account = Account.createFromPrivateKey('0F3CC33190A49ABB32E7172E348EA927F975F8829107AAA3D6349BB10797D4F6', NetworkType.MIJIN_TEST);
-  //   const signedTransaction = account.sign(transferTransaction);
-
-  //   const transactionHttp = new TransactionHttp('http://192.168.10.38:3000/');
-
-  //   transactionHttp
-  //     .announce(signedTransaction)
-  //     .subscribe(
-  //     x => console.log(x),
-  //     err => console.error(err));
-  // }
 }

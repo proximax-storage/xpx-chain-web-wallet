@@ -11,10 +11,17 @@
             <mdb-card-body class="backg-beige">
 
               <div class="row">
-                <div class="col-8">
+                <div class="col-6">
+                  <div class="md-form">
+                    <mdb-select placeholder="Select type search" [(ngModel)]="typeSearch" [options]="optionTypeSearch" required class="colorful-select dropdown-default" mdbInputDirective
+                      [mdbValidate]="false"></mdb-select>
+                  </div>
+                </div>
+
+                <div class="col-4">
                   <div class="md-form" id="container-walletname">
-                    <input [(ngModel)]="hash" type="text" autocomplete="off" id="walletname" class="form-control" mdbInputDirective [mdbValidate]="false">
-                    <label for="walletname">Add id or hash</label>
+                    <input [(ngModel)]="paramSearch" type="text" autocomplete="off" id="walletname" class="form-control" mdbInputDirective [mdbValidate]="false">
+                    <label for="walletname">Add</label>
                   </div>
                 </div>
                 <div class="col-1">

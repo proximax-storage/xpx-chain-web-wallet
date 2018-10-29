@@ -58,7 +58,7 @@ export class ApostillaComponent implements OnInit {
    private  serviceModuleService:ServiceModuleService
 
   ) {
-    this.url=`http://${this.serviceModuleService.getNode()}`
+    this.url=`https://${this.serviceModuleService.getNode()}`
     this.zip = new JSZip();
     this.transactionHttp = new TransactionHttp(this.url)
     this.optionsCrypto = [{ value: '1', label: 'MD5' }, { value: '2', label: 'SHA1' }, { value: '3', label: 'SHA256' }, { value: '4', label: 'SHA3-256' }, { value: '5', label: 'SHA3-512' },];
@@ -230,7 +230,7 @@ export class ApostillaComponent implements OnInit {
     };
     this.imagenesBase65();
     // You'll need to make your image into a Data URL
-    // Use http://dataurl.net/#dataurlmaker
+    // Use https://dataurl.net/#dataurlmaker
 
 
 console.log("1")

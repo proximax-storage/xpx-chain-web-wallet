@@ -11,6 +11,7 @@ import { NemProvider } from "../../../shared/services/nem.provider";
   styleUrls: ['./transfer.component.scss']
 })
 export class TransferComponent implements OnInit {
+  inputBLocked: boolean;
 
   transferForm: FormGroup;
   transferIsSend = false;
@@ -73,24 +74,28 @@ export class TransferComponent implements OnInit {
 
   sendTransfer() {
     if (this.transferForm.valid) {
+      this.inputBLocked = true;
       const acountRecipient = this.transferForm.get('acountRecipient').value;
       const amount = this.transferForm.get('amount').value;
       const message = this.transferForm.get('message').value;
       const password = this.transferForm.get('password').value;
-      const common = { password: password }
+      const common = { password: password };
       if (this.walletService.decrypt(common)) {
         const responseTransfer = this.transactionService.sendTransfer(common, acountRecipient, message, amount, this.walletService.network);
         responseTransfer.transactionHttp
         .announce(responseTransfer.signedTransaction)
         .subscribe(
-        x => {
+        rsp => {
+          this.inputBLocked = false;
           this.cleanForm();
-          //console.error(x);
         },
         err => {
+          this.inputBLocked = false;
           this.cleanForm();
           console.error(err);
         });
+      }else {
+        this.inputBLocked = false;
       }
     }
   }
