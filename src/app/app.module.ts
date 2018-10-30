@@ -3,18 +3,19 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { CoreModule } from './core/core.module';
+import { ToastModule } from 'ng-uikit-pro-standard';
+import { BlockUIModule } from 'ng-block-ui';
 // Routing
 import { routing, appRoutingProviders } from './app.routing';
 // components
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
-import { ToastModule } from 'ng-uikit-pro-standard';
 import { HeaderHorizontalComponent } from './header/component/header-horizontal/header-horizontal.component';
 
 import { HeaderRebSocialComponent } from './header/component/header-reb-social/header-reb-social.component';
 import { HeaderVerticalComponent } from './header/component/header-vertical/header-vertical.component';
 
-import { BlockUIModule } from 'ng-block-ui';
+
 
 @NgModule({
   declarations: [
@@ -23,7 +24,6 @@ import { BlockUIModule } from 'ng-block-ui';
     HeaderHorizontalComponent,
     HeaderRebSocialComponent,
     HeaderVerticalComponent
-
   ],
   imports: [
     BrowserModule,
