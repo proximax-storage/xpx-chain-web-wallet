@@ -7,13 +7,15 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import {TransactionsComponent} from "../transactions/views/transactions/transactions.component";
 import {ReversePipePipe} from '../shared/pipe/reverse-pipe.pipe'
+import { DynamicFormModule } from '../shared/moduls/dynamic-form/dynamic-form.module';
 
 const modules = [
   CommonModule,
   ParticlesModule,
   ReactiveFormsModule,
   FormsModule,
-  HttpClientModule
+  HttpClientModule,
+  DynamicFormModule
 ];
 
 @NgModule({

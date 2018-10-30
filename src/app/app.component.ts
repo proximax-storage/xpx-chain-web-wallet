@@ -24,7 +24,7 @@ export class AppComponent {
     private serviceModuleService: ServiceModuleService
   ) {
     this.serviceModuleService.nodeSelected();
-    console.log(this.serviceModuleService.nodeSelected());
+    console.log('NODE SELECTED::: ', this.serviceModuleService.nodeSelected());
   }
 
   /**

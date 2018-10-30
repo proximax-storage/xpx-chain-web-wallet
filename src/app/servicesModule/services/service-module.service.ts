@@ -11,7 +11,6 @@ export class ServiceModuleService {
   nameNode = 'proxi-nodes';
   nodeSelect = 'node-selected';
 
-
   constructor() {
     this.node = JSON.parse(localStorage.getItem(this.nodeSelect));
   }
