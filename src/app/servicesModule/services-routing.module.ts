@@ -9,6 +9,7 @@ import { SelectNodeComponent } from './views/select-node/select-node.component';
 import { CreatePollComponent } from "../services/views/voting/create-poll/create-poll.component";
 import { PollsComponent } from '../services/views/voting/polls/polls.component';
 
+
 const routes: Routes = [
   {
     path: `${AppConfig.routes.explorer}`,
@@ -37,6 +38,9 @@ const routes: Routes = [
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
+  declarations: [
+   
+  ]
 })
 export class ServicesRoutingModule { }

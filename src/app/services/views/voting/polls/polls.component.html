@@ -60,12 +60,12 @@
                               Poll Address: {{address}}
                             </h5>
                             <h4>
-                                <mdb-badge color="blue" *ngIf="type =='1'"> POI</mdb-badge>
-                                <mdb-badge color="blue" *ngIf="type =='2'"> whrite</mdb-badge>
+                              <mdb-badge color="blue" *ngIf="type =='1'"> POI</mdb-badge>
+                              <mdb-badge color="blue" *ngIf="type =='2'"> whrite</mdb-badge>
                               <label class="mt-1rm-left" for=""> Date of ending: {{doe | date: 'dd/MM/yyyy h:MM:ss TT'}}</label>
                             </h4>
                             <div class="alert background-info white-text" role="alert">
-                           {{description.description}} 
+                              {{description.description}}
                             </div>
                           </div>
 
@@ -74,7 +74,7 @@
 
 
 
-                            <h1> notengo nada un </h1>
+                            <h1> <<= consult the polls </h1>
                           </div>
 
 
@@ -84,45 +84,86 @@
                               <!--Panel 1-->
                               <mdb-tab heading="Vote">
                                 <div class="row  around-lg around-md   between-xs   between-sm  pb-20">
-                                  <div class="col-12">
-                                    <!-- Material inline 1 -->
-                                    <div class="form-check form-check-inline">
-                                      <input type="radio" class="form-check-input" id="materialInline1" name="inlineMaterialRadiosExample" mdbInputDirective>
-                                      <label class="form-check-label" for="materialInline1">YES</label>
-                                    </div>
+                                  <div class="col-10">
 
-                                    <!-- Material inline 2 -->
+                                    <ng-container *ngFor="let enum of  keyObject(link); let i = index">
+
+                                      <div class="form-check form-check-inline">
+                                        <input type="radio" class="form-check-input" [value]='link[enum]' id="{{enum}}" name="inlineMaterialRadiosExample" mdbInputDirective
+                                          [(ngModel)]="radioSelected" (ngModelChange)="valuechek($event)">
+                                        <label class="form-check-label" for={{enum}}>{{enum}}</label>
+                                      </div>
+
+                                      <!--                                      
+                                    <input id="enum_answer_{{enum.name}}"  type="radio" name="enums"> -->
+                                      <!-- {{link[enum]}} -->
+                                    </ng-container>
+
+
+
+
+
+
+
+
+                                    <!--                                   
                                     <div class="form-check form-check-inline">
                                       <input type="radio" class="form-check-input" id="materialInline2" name="inlineMaterialRadiosExample" mdbInputDirective>
                                       <label class="form-check-label" for="materialInline2">NO</label>
                                     </div>
-
-
+ -->
                                     <!-- Filled-in rounded example -->
                                     <!-- <mdb-checkbox [checked]="false">YES</mdb-checkbox> -->
                                     <!-- Filled-in rounded example -->
                                     <!-- <mdb-checkbox [checked]="false">NO</mdb-checkbox> -->
 
                                   </div>
+
+                                  <div class="col-6">
+                                    <form [formGroup]="createpollsForm" (ngSubmit)="create()">
+                                      <!-- Password -->
+                                      <div class="md-form mt-5">
+                                        <input type="password" autocomplete="off" formControlName="password" required id="password" class="form-control" mdbInputDirective
+                                          data-success="Valid password" [errorMessage]="getError('password')">
+                                        <label for="password">password</label>
+                                      </div>
+
+                                      <div class="mt-4rm">
+                                        <div class="row ">
+                                          <div class="mx-auto">
+                                            <div class="row">
+                                              <div class="col-xs-12">
+                                                <button mdbBtn color="default" size="lg" rounded="true" class="waves-light" mdbWavesEffect type="submit">Create</button>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </form>
+                                  </div>
+
                                 </div>
+
+
+
+
                               </mdb-tab>
                               <!--Panel 2-->
                               <mdb-tab heading="Result">
                                 <div class="row">
-                                  <div class="col-12">
-                                    <!-- <div style="display: block">
-                                        <canvas mdbChart
-                                            [chartType]="chartType"
-                                            [data]="chartData"
-                                            [labels]="chartLabels"
-                                            [colors]="chartColors"
-                                            [options]="chartOptions"
-                                            [legend]="true"
-                                            [size]="10"
-                                            (chartHover)="chartHovered($event)"
-                                            (chartClick)="chartClicked($event)">
-                                        </canvas>
-                                    </div> -->
+                                  <div class="col-6">
+                                      <div style="display: block">
+                                          <canvas mdbChart
+                                              [chartType]="chartType"
+                                              [data]="chartData"
+                                              [labels]="chartLabels"
+                                              [colors]="chartColors"
+                                              [options]="chartOptions"
+                                              [legend]="true"
+                                              (chartHover)="chartHovered($event)"
+                                              (chartClick)="chartClicked($event)">
+                                          </canvas>
+                                      </div>
                                   </div>
                                 </div>
                               </mdb-tab>
@@ -140,12 +181,7 @@
                 <div class="row">
                   <div class="col-12">
                     <br>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil odit magnam minima, soluta doloribus
-                      reiciendis molestiae placeat unde eos molestias. Quisquam aperiam, pariatur. Tempora, placeat ratione
-                      porro voluptate odit minima.</p>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil odit magnam minima, soluta doloribus
-                      reiciendis molestiae placeat unde eos molestias. Quisquam aperiam, pariatur. Tempora, placeat ratione
-                      porro voluptate odit minima.</p>
+                 
                   </div>
                 </div>
               </mdb-tab>
@@ -154,9 +190,7 @@
                 <div class="row">
                   <div class="col-12">
                     <br>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil odit magnam minima, soluta doloribus
-                      reiciendis molestiae placeat unde eos molestias. Quisquam aperiam, pariatur. Tempora, placeat ratione
-                      porro voluptate odit minima.</p>
+                
                   </div>
                 </div>
               </mdb-tab>

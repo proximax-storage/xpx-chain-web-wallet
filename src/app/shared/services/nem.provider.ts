@@ -122,10 +122,6 @@ export class NemProvider {
    * @memberof NemProvider
    */
   getPublicAccountFromPrivateKey(privateKey: string, net: NetworkType): PublicAccount {
-
-    console.log(privateKey)
-    console.log(net)
-    console.log("asdasdassssssssssssss")
     return Account.createFromPrivateKey(privateKey, net).publicAccount
   }
 
