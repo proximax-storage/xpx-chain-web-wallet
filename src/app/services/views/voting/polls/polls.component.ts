@@ -20,7 +20,9 @@ export class PollsComponent implements OnInit {
   publicKey: string;
   title: string;
   type: string;
-  description: string;
+  description: any;
+  formData: any
+  options: any;
   keyObject = Object.keys;
   @BlockUI() blockUI: NgBlockUI;
   constructor(
@@ -44,7 +46,6 @@ export class PollsComponent implements OnInit {
           return JSON.parse(tran.message.payload);
         });
         this.blockUI.stop();
-
       },
       error => {
         this.sharedService.showError('Error', '¡unexpected error!');
@@ -57,8 +58,6 @@ export class PollsComponent implements OnInit {
     this.blockUI.start('Loading...'); // Start blocking
     this.address = data['address']
     this.doe = data['doe']
-
-    console.log(this.doe);
     this.publicKey = data['publicKey']
     this.title = data['title']
     this.type = data['type']
@@ -67,20 +66,22 @@ export class PollsComponent implements OnInit {
 
     this.nemProvider.getAllTransactionsFromAccount(publicAccount).subscribe(
       (infTrans: Transaction[]) => {
-
-        console.log(infTrans)
-        this.listPolloption = infTrans.map((tran: any) => {
-
+        let data: any
+        infTrans.map((tran: any) => {
           return JSON.parse(tran.message.payload);
-        })
+        }).forEach(element => {
+          if (Object.keys(element)[0] === 'formData') {
+            this.formData = element['formData'];
 
+          } else if (Object.keys(element)[0] === 'description') {
+            this.description = element['description'];
 
-        this.listPolloption.forEach(element => {
+          } else if (Object.keys(element)[0] === 'options') {
+            this.options = element['options'];
 
-          console.log(element)
-
+          }
         });
-        //  console.log( this.description['description'] )
+
         this.blockUI.stop();
         this.showDetail = true;
         // 
