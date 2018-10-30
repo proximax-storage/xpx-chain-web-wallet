@@ -125,6 +125,7 @@ export class CreatePollComponent implements OnInit {
   }
   preparepoll(common) {
     const strings = []
+    const stringsPubliKey = []
     let obj: any = {}
     let Link = []
 
@@ -134,13 +135,18 @@ export class CreatePollComponent implements OnInit {
     let optionsForm = this.createpollForm.get('options').value
     this.keyObject(this.createpollForm.get('options').value).forEach(element => {
       strings.push(optionsForm[element])
-      obj[optionsForm[element]] = this.nemProvider.generateNewAccount(this.walletService.network).address.plain();
+
+      let  accountPoll:Account;
+     accountPoll = this.nemProvider.generateNewAccount(this.walletService.network)
+      stringsPubliKey.push(accountPoll.publicKey)
+      obj[optionsForm[element]] = accountPoll.address.plain();
     })
 
     const OptionsRoot: OptionsRoot = {
       options: {
         strings: strings,
-        link: obj
+        link: obj,
+        stringsPubliKey:stringsPubliKey
       }
     }
 
@@ -195,8 +201,10 @@ export class CreatePollComponent implements OnInit {
     let transferTransaction: any
     transferTransaction = this.nemProvider.sendTransaction(this.walletService.network, address, JSON.stringify(mensaje))
     transferTransaction.fee = UInt64.fromUint(0);
-
+ 
     const account = Account.createFromPrivateKey(privateKey, this.walletService.network);
+
+    console.log(JSON.stringify(account))
     const signedTransaction = account.sign(transferTransaction);
     this.nemProvider.announce(signedTransaction).subscribe(
       x => {
@@ -236,6 +244,7 @@ interface OptionsRoot {
 interface Options {
   strings: string[];
   link: any;
+  stringsPubliKey:any
 }
 
 
