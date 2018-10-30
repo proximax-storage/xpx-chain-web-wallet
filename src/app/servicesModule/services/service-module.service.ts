@@ -4,6 +4,7 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class ServiceModuleService {
+// 192.168.10.38:3000
 
   nodeDefault = 'staging.mocd.gov.ae/catapult';
   node: String;

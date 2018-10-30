@@ -13,7 +13,8 @@ import { Address, UInt64, Account } from 'nem2-sdk';
 export class CreatePollComponent implements OnInit {
   @BlockUI() blockUI: NgBlockUI;
   optionsStorage: Array<any>;
-  account: Account
+  account: Account;
+  errorDate: string;
   validateform = false;
   createpollForm: FormGroup;
   keyObject = Object.keys;
@@ -55,6 +56,18 @@ export class CreatePollComponent implements OnInit {
       password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]],
     });
 
+    this.createpollForm.get('datepoll').valueChanges.subscribe(
+      doe => {
+        if (new Date(doe).getTime() <= Date.now()) {
+          this.errorDate = "fecha no valida "
+          this.validateform = true;
+
+        } else {
+          this.errorDate = ""
+          this.validateform = false;
+        }
+      });
+
 
 
   }
@@ -92,12 +105,19 @@ export class CreatePollComponent implements OnInit {
     // //  && this.validateform
     // console.log(this.createpollForm.value)
 
-    if (this.createpollForm.valid) {
+
+
+
+    if (this.createpollForm.valid && !this.validateform) {
 
       const common = {
         password: this.createpollForm.get('password').value
       }
       if (this.walletService.decrypt(common)) {
+
+
+
+
         this.preparepoll(common)
       }
     }
@@ -106,6 +126,10 @@ export class CreatePollComponent implements OnInit {
     const strings = []
     let obj: any = {}
     let Link = []
+
+    const doe = new Date(this.createpollForm.get('datepoll').value).getTime()
+
+    // console.log("dormoati de fecha",doe );
     let optionsForm = this.createpollForm.get('options').value
     this.keyObject(this.createpollForm.get('options').value).forEach(element => {
       strings.push(optionsForm[element])
@@ -122,7 +146,7 @@ export class CreatePollComponent implements OnInit {
     const FormDataRoot: FormDataRoot = {
       formData: {
         title: this.createpollForm.get('title').value,
-        doe: 1540695600000,
+        doe: doe,
         type: this.createpollForm.get('type').value,
         multiple: this.createpollForm.get('choice').value,
 
@@ -136,8 +160,6 @@ export class CreatePollComponent implements OnInit {
       }
 
     }
-
-
     let datapoll: Datapoll = {
       options: OptionsRoot,
       description: DescriptionRoot,
@@ -153,12 +175,12 @@ export class CreatePollComponent implements OnInit {
     const PollRoot: PollRoot = {
       poll: {
         title: this.createpollForm.get('title').value,
-        doe: 1540695600000,
+        doe: doe,
         type: this.createpollForm.get('type').value,
         address: accountPoll
       }
     }
-    this.sendaccountPoll(PollRoot, this.indexAccount, common);
+     this.sendaccountPoll(PollRoot, this.indexAccount, common);
   }
   sendaccountPoll(mensaje: any, address, common) {
     this.blockUI.start('Loading...'); // Start blocking
@@ -171,7 +193,7 @@ export class CreatePollComponent implements OnInit {
       x => {
         this.blockUI.stop(); // Stop blocking
         console.log("exis=", x)
-         this.createpollForm.reset();
+        this.createpollForm.reset();
         this.sharedService.showSuccess('success', 'poll created')
       },
       err => {

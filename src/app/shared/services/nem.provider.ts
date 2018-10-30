@@ -24,6 +24,7 @@ import {
   Mosaic,
   MosaicId,
   UInt64,
+  XEM,
 } from 'nem2-sdk';
 
 import { crypto } from 'nem2-library';
@@ -158,7 +159,7 @@ export class NemProvider {
     return TransferTransaction.create(
       Deadline.create(5),
       recipientAddress,
-      [new Mosaic( new MosaicId(this.mosaic), UInt64.fromUint(Number(amount)))],
+      [new Mosaic(new MosaicId(this.mosaic), UInt64.fromUint(Number(amount)))],
       PlainMessage.create(message),
       network
     );
@@ -278,19 +279,39 @@ export class NemProvider {
     // account.privateKey
   }
 
+//PROXIMA
+  sendTransaction(network, address: string, message?: string, amount: number = 0): TransferTransaction {
+    // console.log(address, message)
 
-  sendTransaction(network, address: string, message?: string, amount:number =0): TransferTransaction {
-    console.log(address, message)
+    console.log("adrres:",address)
+    console.log("<br> message:",message)
+    console.log("<br> amount:",amount)
     return TransferTransaction.create(
-      Deadline.create(10),
+      Deadline.create(23),
       Address.createFromRawAddress(address),
-      [new Mosaic( new MosaicId(this.mosaic), UInt64.fromUint(Number(amount)))],
+      [new Mosaic(new MosaicId(this.mosaic), UInt64.fromUint(Number(amount)))],
       PlainMessage.create(message),
       network,
     );
 
   }
+//COMPANY
+  // sendTransaction(network, address: string, message?: string, amount: number = 0): TransferTransaction {
+  //   // console.log(address, message)
 
+  //   console.log("adrres:",address)
+  //   console.log("<br> message:",message)
+  //   console.log("<br> amount:",amount)
+  //   return TransferTransaction.create(
+  //     Deadline.create(23),
+  //     Address.createFromRawAddress(address),
+  //     [XEM.createRelative(1)],
+  //     PlainMessage.create(message),
+  //     network,
+  //   );
+
+  // }
+  
   announce(signedTransaction: SignedTransaction): Observable<TransactionAnnounceResponse> {
     return this.transactionHttp.announce(signedTransaction);
   }

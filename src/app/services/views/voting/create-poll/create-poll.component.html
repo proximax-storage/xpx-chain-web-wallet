@@ -38,7 +38,8 @@
                       <input formControlName="datepoll" mdbInputDirective type="text" name="datepoll" placeholder="2017-12-28T14" id="datepoll"
                         class="form-control" data-success="Valid date" [errorMessage]="getError('datepoll')">
                       <label for="datepoll" class="">Date of Ending</label>
-                      {{inforfecha}}
+                      <p style="color:red">  {{errorDate }}</p>
+                    
                       <div class="alert background-info white-text" role="alert">
                         If you only see a text box input a date in a valid ISO format [yyyy-MM-ddTHH:mm], for example: 2017-12-28T14:57
                       </div>

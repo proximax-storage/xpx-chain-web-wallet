@@ -112,7 +112,10 @@ export class AudiApostilleComponent implements OnInit {
       const hash = crypto.SHA256(this.file);
       const apostilleHash = apostilleHashPrefix + crypto.SHA256(this.file).toString(crypto.enc.Hex);
       this.blockUI.stop(); // Stop blocking
+
+      console.log("resultaod:",this.verify(apostilleHash, infTrans.message.payload))
       if (!this.verify(apostilleHash, infTrans.message.payload)) {
+        this.auditResults
         this.auditResults.push({
           'filename': this.nameFile,
           'owner': '',
@@ -147,7 +150,7 @@ export class AudiApostilleComponent implements OnInit {
 
   }
   verify(apostilleHash, hasMensaje) {
-    if (apostilleHash === hasMensaje) {
+    if (apostilleHash === hasMensaje.replace(/['"]+/g, '')) {
       return true;
     } else {
       return false;
