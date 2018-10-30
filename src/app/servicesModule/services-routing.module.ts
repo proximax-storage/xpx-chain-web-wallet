@@ -30,7 +30,7 @@ const routes: Routes = [
   {
     path: `${AppConfig.routes.polls}`,
     component: PollsComponent,
-    // canActivate: [LoggedGuard]
+    canActivate: [LoggedGuard]
   }
   
 ];

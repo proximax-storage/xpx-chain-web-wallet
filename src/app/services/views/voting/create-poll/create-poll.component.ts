@@ -18,7 +18,8 @@ export class CreatePollComponent implements OnInit {
   validateform = false;
   createpollForm: FormGroup;
   keyObject = Object.keys;
-  indexAccount: string = 'SBGFBK-22DHGH-JW5MD6-M6BJ43-Y26ABU-IQRKP5-WNXG';
+  accountPrin: string = 'SBGFBK-22DHGH-JW5MD6-M6BJ43-Y26ABU-IQRKP5-WNXG';
+  privateKey:string = '01E4B2794BD5EAC9A2A20C1F8380EF79EBB7F369A5A6040291DB3875867F4727';
   constructor(
     private fb: FormBuilder,
     private walletService: WalletService,
@@ -45,7 +46,7 @@ export class CreatePollComponent implements OnInit {
     this.createpollForm = this.fb.group({
       title: ['', Validators.required],
       description: ['', Validators.required],
-      indexAccount: [{ value: this.indexAccount, disabled: true }, [Validators.required, Validators.maxLength(30)]],
+      indexAccount: [{ value: this.accountPrin, disabled: true }, [Validators.required, Validators.maxLength(30)]],
       datepoll: ['', Validators.required],
       choice: [''],
       type: [{ value: '1', disabled: false }, Validators.required],
@@ -133,7 +134,7 @@ export class CreatePollComponent implements OnInit {
     let optionsForm = this.createpollForm.get('options').value
     this.keyObject(this.createpollForm.get('options').value).forEach(element => {
       strings.push(optionsForm[element])
-      obj[optionsForm[element]] = this.indexAccount = this.nemProvider.generateNewAccount(this.walletService.network).address.plain();
+      obj[optionsForm[element]] = this.nemProvider.generateNewAccount(this.walletService.network).address.plain();
     })
 
     const OptionsRoot: OptionsRoot = {
@@ -165,10 +166,13 @@ export class CreatePollComponent implements OnInit {
       description: DescriptionRoot,
       formData: FormDataRoot
     }
-    let accountPoll = this.nemProvider.generateNewAccount(this.walletService.network).address.plain()
+
+    let  accountPoll:Account;
+     accountPoll = this.nemProvider.generateNewAccount(this.walletService.network)
+    console.log(this.nemProvider.generateNewAccount(this.walletService.network).privateKey )
     // this..sendaccountPoll(element, datapoll, accountPoll,common);
     Object.keys(datapoll).forEach(element => {
-      this.sendaccountPoll(datapoll[element], accountPoll, common);
+      this.sendaccountPoll(datapoll[element], accountPoll.address.plain(), common.privateKey);
     });
     // const orderedAddresses = Object.keys(addressLink).map((option) => addressLink[option]);
 
@@ -177,17 +181,22 @@ export class CreatePollComponent implements OnInit {
         title: this.createpollForm.get('title').value,
         doe: doe,
         type: this.createpollForm.get('type').value,
-        address: accountPoll
+        address: accountPoll.address.plain(),
+        publicKey:accountPoll.publicKey
       }
+    } 
+    const privateKey = {
+      password: this.createpollForm.get('password').value
     }
-     this.sendaccountPoll(PollRoot, this.indexAccount, common);
+     this.sendaccountPoll(PollRoot ,this.accountPrin, this.privateKey);
   }
-  sendaccountPoll(mensaje: any, address, common) {
+  sendaccountPoll(mensaje: any, address, privateKey) {
     this.blockUI.start('Loading...'); // Start blocking
     let transferTransaction: any
     transferTransaction = this.nemProvider.sendTransaction(this.walletService.network, address, JSON.stringify(mensaje))
     transferTransaction.fee = UInt64.fromUint(0);
-    const account = Account.createFromPrivateKey(common.privateKey, this.walletService.network);
+
+    const account = Account.createFromPrivateKey(privateKey, this.walletService.network);
     const signedTransaction = account.sign(transferTransaction);
     this.nemProvider.announce(signedTransaction).subscribe(
       x => {
@@ -214,6 +223,7 @@ interface Poll {
   type: number;
   doe: number;
   address: string;
+  publicKey:string,
 }
 
 

@@ -21,26 +21,21 @@
                       <div class="row">
                         <div class="col-md-3" style="overflow-y: auto;     max-height: 340px;">
                           <div class="list-group">
-                            <a href="javascript:void(0);" class="list-group-item  waves-light" mdbWavesEffect>
-                              <h5>
-                                <mdb-badge color="blue"> POI</mdb-badge>
-                                <label class="mt-1rm-left"> encuenta 1
-
-                                </label>
-                              </h5>
-                            </a>
 
 
+                            <ng-container *ngFor="let item of listPoll; let i=index">
+                              <a href="javascript:void(0);" (click)="getDataPull(item['poll'])" class="list-group-item  waves-light" mdbWavesEffect>
+                                <h5>
+                                  <mdb-badge color="blue" *ngIf="item['poll']['type'] =='1'"> POI</mdb-badge>
+                                  <mdb-badge color="blue" *ngIf="item['poll']['type'] =='2'"> whrite</mdb-badge>
+                                  <label class="mt-1rm-left"> {{item['poll']['title']}}
 
-                            <a href="javascript:void(0);" class="list-group-item  list-group-item-action waves-light" mdbWavesEffect>
-                              <h5>
-                                <mdb-badge color="blue"> POI</mdb-badge>
-                                <label class="mt-1rm-left"> encuenta 2
+                                  </label>
+                                </h5>
+                              </a>
 
-                                </label>
-                              </h5>
-                            </a>
-                            <a href="javascript:void(0);" class="list-group-item list-group-item-action waves-light" mdbWavesEffect>
+                            </ng-container>
+                            <!-- <a href="javascript:void(0);" class="list-group-item list-group-item-action waves-light" mdbWavesEffect>
                               <h5>
                                 <mdb-badge color="blue"> writeList</mdb-badge>
                                 <label class="mt-1rm-left"> encuenta 3
@@ -48,85 +43,75 @@
                                 </label>
                               </h5>
                             </a>
-                            <a href="javascript:void(0);" class="list-group-item list-group-item-action waves-light" mdbWavesEffect>
-                              <h5>
-                                <mdb-badge color="blue"> writeList</mdb-badge>
-                                <label class="mt-1rm-left"> encuenta 4
+                        -->
 
-                                </label>
-                              </h5>
-                            </a>
-                            <a href="javascript:void(0);" class="list-group-item list-group-item-action waves-light" mdbWavesEffect>
-                              <h5>
-                                <mdb-badge color="blue"> writeList</mdb-badge>
-                                <label class="mt-1rm-left"> encuenta 5
-
-                                </label>5
-                              </h5>
-                            </a>
-                            <a href="javascript:void(0);" class="list-group-item list-group-item-action waves-light" mdbWavesEffect>
-                              <h5>
-                                <mdb-badge color="blue"> writeList</mdb-badge>e
-                                <label class="mt-1rm-left"> encuenta 6
-
-                                </label>
-                              </h5>
-                            </a>
 
                           </div>
                         </div>
                         <div class="col-md-9">
 
-
-
-                          <div class="row-fluid  mb-3">
+                          <div class="row-fluid  mb-3" *ngIf="showDetail">
                             <!-- Title -->
                             <h2 class="card-title ">
-                              <strong>PIZZA</strong>
+                              <strong> {{title}}</strong>
                             </h2>
                             <!-- Subtitle -->
                             <h5 class="font-weight-bold grey-text py-2 ">
-                              Poll Address: TB35EZGRGF4FZLNEVUZRRCN6EUXF4UH5MJTLQ2II
+                              Poll Address: {{address}}
                             </h5>
                             <h4>
-                              <mdb-badge color="blue"> POI</mdb-badge>
-                              <label class="mt-1rm-left" for=""> Date of ending: 10/27/2018 at 10:30PM</label>
+                                <mdb-badge color="blue" *ngIf="type =='1'"> POI</mdb-badge>
+                                <mdb-badge color="blue" *ngIf="type =='2'"> whrite</mdb-badge>
+                              <label class="mt-1rm-left" for=""> Date of ending: {{doe | date: 'dd/MM/yyyy h:MM:ss TT'}}</label>
+
+                             
                             </h4>
                             <div class="alert background-info white-text" role="alert">
-                              ¿TE GUSTA LA PIZZA?
+                           <!-- {{description['description']}} -->
                             </div>
                           </div>
-                          <!-- Nav Tabs -->
-                          <mdb-tabset #staticTabs [buttonClass]="'md-tabs tabs-4 pills-secondary white mb-2'" [contentClass]="''">
-                            <!--Panel 1-->
-                            <mdb-tab heading="Vote">
-                              <div class="row  around-lg around-md   between-xs   between-sm  pb-20">
-                                <div class="col-12">
-                                  <!-- Material inline 1 -->
-                                  <div class="form-check form-check-inline">
-                                    <input type="radio" class="form-check-input" id="materialInline1" name="inlineMaterialRadiosExample" mdbInputDirective>
-                                    <label class="form-check-label" for="materialInline1">YES</label>
+
+
+                          <div class="row-fluid  mb-3" *ngIf="!showDetail">
+
+
+
+                            <h1> notengo nada un </h1>
+                          </div>
+
+
+                          <ng-container *ngIf="showDetail">
+                            <!-- Nav Tabs -->
+                            <mdb-tabset #staticTabs [buttonClass]="'md-tabs tabs-4 pills-secondary white mb-2'" [contentClass]="''">
+                              <!--Panel 1-->
+                              <mdb-tab heading="Vote">
+                                <div class="row  around-lg around-md   between-xs   between-sm  pb-20">
+                                  <div class="col-12">
+                                    <!-- Material inline 1 -->
+                                    <div class="form-check form-check-inline">
+                                      <input type="radio" class="form-check-input" id="materialInline1" name="inlineMaterialRadiosExample" mdbInputDirective>
+                                      <label class="form-check-label" for="materialInline1">YES</label>
+                                    </div>
+
+                                    <!-- Material inline 2 -->
+                                    <div class="form-check form-check-inline">
+                                      <input type="radio" class="form-check-input" id="materialInline2" name="inlineMaterialRadiosExample" mdbInputDirective>
+                                      <label class="form-check-label" for="materialInline2">NO</label>
+                                    </div>
+
+
+                                    <!-- Filled-in rounded example -->
+                                    <!-- <mdb-checkbox [checked]="false">YES</mdb-checkbox> -->
+                                    <!-- Filled-in rounded example -->
+                                    <!-- <mdb-checkbox [checked]="false">NO</mdb-checkbox> -->
+
                                   </div>
-
-                                  <!-- Material inline 2 -->
-                                  <div class="form-check form-check-inline">
-                                    <input type="radio" class="form-check-input" id="materialInline2" name="inlineMaterialRadiosExample" mdbInputDirective>
-                                    <label class="form-check-label" for="materialInline2">NO</label>
-                                  </div>
-
-
-                                  <!-- Filled-in rounded example -->
-                                  <!-- <mdb-checkbox [checked]="false">YES</mdb-checkbox> -->
-                                  <!-- Filled-in rounded example -->
-                                  <!-- <mdb-checkbox [checked]="false">NO</mdb-checkbox> -->
-
                                 </div>
-                              </div>
-                            </mdb-tab>
-                            <!--Panel 2-->
-                            <mdb-tab heading="Result">
-                              <div class="row">
-                                <div class="col-12">
+                              </mdb-tab>
+                              <!--Panel 2-->
+                              <mdb-tab heading="Result">
+                                <div class="row">
+                                  <div class="col-12">
                                     <!-- <div style="display: block">
                                         <canvas mdbChart
                                             [chartType]="chartType"
@@ -140,10 +125,12 @@
                                             (chartClick)="chartClicked($event)">
                                         </canvas>
                                     </div> -->
+                                  </div>
                                 </div>
-                              </div>
-                            </mdb-tab> 
-                          </mdb-tabset>
+                              </mdb-tab>
+                            </mdb-tabset>
+
+                          </ng-container>
                         </div>
                       </div>
                     </div>

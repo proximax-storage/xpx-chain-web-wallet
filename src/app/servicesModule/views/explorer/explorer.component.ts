@@ -101,6 +101,7 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
       this.blockInput = true;
       this.nemProvider.getAccountInfo(Address.createFromRawAddress(this.paramSearch)).pipe(first()).subscribe(
         accountInfo => {
+          console.log(accountInfo)
           this.nemProvider.getAllTransactionsFromAccount(accountInfo.publicAccount).subscribe(
             resp => {
               console.log('with address info ', resp);
