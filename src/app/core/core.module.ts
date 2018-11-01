@@ -9,13 +9,14 @@ import {TransactionsComponent} from "../transactions/views/transactions/transact
 import {ReversePipePipe} from '../shared/pipe/reverse-pipe.pipe'
 import { DynamicFormModule } from '../shared/moduls/dynamic-form/dynamic-form.module';
 
+
 const modules = [
   CommonModule,
   ParticlesModule,
   ReactiveFormsModule,
   FormsModule,
   HttpClientModule,
-  DynamicFormModule
+  DynamicFormModule,
 ];
 
 @NgModule({
@@ -32,7 +33,7 @@ const modules = [
     modules,
     MdbModule,
     ReversePipePipe
-  ]
+  ],
 })
 export class CoreModule {
   static forRoot(): ModuleWithProviders {

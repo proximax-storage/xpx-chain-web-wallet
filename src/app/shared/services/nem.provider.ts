@@ -25,6 +25,8 @@ import {
   MosaicId,
   UInt64,
   XEM,
+  TransactionStatusError,
+  TransactionStatus
 } from 'nem2-sdk';
 
 import { crypto } from 'nem2-library';
@@ -48,12 +50,13 @@ export class NemProvider {
   mosaicHttp: MosaicHttp;
   namespaceHttp: NamespaceHttp;
   mosaicService: MosaicService;
+  transactionStatusError: TransactionStatusError
   url: any;
 
   constructor(private serviceModuleService: ServiceModuleService) {
 
 
-    this.url = `https://${this.serviceModuleService.getNode()}`;
+    this.url = `http://${this.serviceModuleService.getNode()}`;
     this.transactionHttp = new TransactionHttp(this.url);
     this.accountHttp = new AccountHttp(this.url);
     this.mosaicHttp = new MosaicHttp(this.url);
@@ -267,6 +270,17 @@ export class NemProvider {
   }
 
   /**
+   *Gets a transaction status for a transaction hash
+   *
+   * @param {string} hash
+   * @returns {Observable<TransactionStatus>}
+   * @memberof NemProvider
+   */
+  getTransactionStatusError(hash: string): Observable<TransactionStatus> {
+    return this.transactionHttp.getTransactionStatus(hash);
+  }
+
+  /**
    * Gnenerate account simple
    *
    * @param {*} network
@@ -279,13 +293,13 @@ export class NemProvider {
     // account.privateKey
   }
 
-//PROXIMA
+  //PROXIMA
   sendTransaction(network, address: string, message?: string, amount: number = 0): TransferTransaction {
     // console.log(address, message)
 
-    console.log("adrres:",address)
-    console.log("<br> message:",message)
-    console.log("<br> amount:",amount)
+    console.log("adrres:", address)
+    console.log("<br> message:", message)
+    console.log("<br> amount:", amount)
     return TransferTransaction.create(
       Deadline.create(23),
       Address.createFromRawAddress(address),
@@ -295,7 +309,7 @@ export class NemProvider {
     );
 
   }
-//COMPANY
+  //COMPANY
   // sendTransaction(network, address: string, message?: string, amount: number = 0): TransferTransaction {
   //   // console.log(address, message)
 
@@ -311,7 +325,7 @@ export class NemProvider {
   //   );
 
   // }
-  
+
   announce(signedTransaction: SignedTransaction): Observable<TransactionAnnounceResponse> {
     return this.transactionHttp.announce(signedTransaction);
   }
