@@ -100,7 +100,7 @@ export class LoginComponent implements OnInit {
     this.loginForm.markAsDirty();
     if (this.loginForm.valid) {
       this._loginService.login(this.loginForm.get('common').value, this.walletSelect);
-      this.loginForm.reset();
+      this.loginForm.get('common').reset();
     }
   }
 }
