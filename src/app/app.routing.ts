@@ -20,10 +20,7 @@ const appRoutes: Routes = [
   }, {
     path: '',
     loadChildren: './servicesModule/services.module#ServicesModule'
-  }, {
-    path: 'service',
-    loadChildren: './shared/moduls/service/service.module#ServiceModule'
-  }
+  } 
 ];
 export const appRoutingProviders: any[] = [];
 export const routing: ModuleWithProviders = RouterModule.forRoot(appRoutes, {

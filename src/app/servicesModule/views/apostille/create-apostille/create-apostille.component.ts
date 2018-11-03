@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Location } from '@angular/common';
 import { FormGroup, FormBuilder, Validators, AbstractControl } from "@angular/forms";
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
-import { SharedService } from '../../../../services/shared.service';
+
 import { saveAs } from 'file-saver';
 import * as jsPDF from 'jspdf';
 import {
@@ -18,17 +18,16 @@ import {
 } from 'nem2-sdk';
 import * as crypto from 'crypto-js'
 import * as JSZip from 'jszip';
+import { WalletService, SharedService } from '../../../../shared';
+import { NemProvider } from '../../../../shared/services/nem.provider';
 
-import { NemProvider } from '../../../../services/nem.provider';
-import { WalletService } from '../../../../services/wallet.service';
-import { environment } from '../../../../../../environments/environment'
-import { ServiceModuleService } from '../../../../../servicesModule/services/service-module.service';
+
 @Component({
-  selector: 'app-apostilla',
-  templateUrl: './apostilla.component.html',
-  styleUrls: ['./apostilla.component.scss']
+  selector: 'app-create-apostille',
+  templateUrl: './create-apostille.component.html',
+  styleUrls: ['./create-apostille.component.scss']
 })
-export class ApostillaComponent implements OnInit {
+export class CreateApostilleComponent implements OnInit {
   @BlockUI() blockUI: NgBlockUI;
   zip: JSZip;
   ntyData: any;
@@ -55,10 +54,9 @@ export class ApostillaComponent implements OnInit {
     private walletService: WalletService,
     private nemProvider: NemProvider,
     private sharedService: SharedService,
-    private serviceModuleService: ServiceModuleService
+ 
 
   ) {
-    this.url = `https://${this.serviceModuleService.getNode()}`
     this.zip = new JSZip();
     this.transactionHttp = new TransactionHttp(this.url)
     this.optionsCrypto = [{ value: '1', label: 'MD5' }, { value: '2', label: 'SHA1' }, { value: '3', label: 'SHA256' }, { value: '4', label: 'SHA3-256' }, { value: '5', label: 'SHA3-512' },];
@@ -82,8 +80,6 @@ export class ApostillaComponent implements OnInit {
     });
   }
   sendApostille() {
-    // console.log(this.apostillaForm.valid)
-    // console.log(this.validatefileInput)
     if (this.apostillaForm.valid && this.validatefileInput) {
       const common = {
         password: this.apostillaForm.get('password').value
@@ -116,7 +112,6 @@ export class ApostillaComponent implements OnInit {
   fileChange(files: File[], $event) {
     if (files.length > 0) {
       this.validatefileInput = true;
-      console.log('this.ourFile', this.ourFile)
       this.ourFile = files[0];
       this.nameFile = this.ourFile.name;
       const myReader: FileReader = new FileReader();
@@ -141,17 +136,7 @@ export class ApostillaComponent implements OnInit {
     const account = Account.createFromPrivateKey(common.privateKey, this.walletService.network);
     let transferTransaction: any
 
-    //     transferTransaction = TransferTransaction.create(
-    //       Deadline.create(10),
-    //       Address.createFromRawAddress(sinkAddress),
-    //       [XEM.createRelative(0)],
-    //       PlainMessage.create(apostilleHash),
-    //       this.walletService.network,
-    //     );
-    // this.nemProvider.sendTransaction()
-
     transferTransaction = this.nemProvider.sendTransaction(this.walletService.network, sinkAddress, JSON.stringify(apostilleHash))
-
     transferTransaction.fee = UInt64.fromUint(0);
     const signedTransaction = account.sign(transferTransaction);
     const nty = {
@@ -165,9 +150,8 @@ export class ApostillaComponent implements OnInit {
 
     }
 
-    this.transactionHttp.announce(signedTransaction).subscribe(
+    this.nemProvider.announce(signedTransaction).subscribe(
       x => {
-
         this.blockUI.stop(); // Stop blocking
         // console.log("exis=", x)
         this.buildApostille(nty)
@@ -180,8 +164,6 @@ export class ApostillaComponent implements OnInit {
         this.downloadSignedFiles();
       });
   }
-
-
 
   /**
   * Create a wallet array
@@ -202,12 +184,6 @@ export class ApostillaComponent implements OnInit {
   }
 
   buildApostille(nty: any) {
-
-
-
-    // console.log('hash:    ' + nty.signedTransaction.hash);
-    // console.log('signer:  ' + nty.signedTransaction.signer);
-    // console.log('payload: ' + nty.signedTransaction.payload);
     const date = new Date();
     const titlle1 = nty.title.slice(0, nty.title.lastIndexOf('.'))
     const titlle2 = nty.title.slice(nty.title.lastIndexOf('.'));
@@ -235,11 +211,6 @@ export class ApostillaComponent implements OnInit {
     this.imagenesBase65();
     // You'll need to make your image into a Data URL
     // Use https://dataurl.net/#dataurlmaker
-
-
-    console.log("1")
-
-
     var doc = new jsPDF()
     doc.setTextColor(190, 120, 0)
     doc.text(80, 55, 'Apostile Notarization');
@@ -290,19 +261,15 @@ export class ApostillaComponent implements OnInit {
     doc.addImage(this.imgData, 'JPEG', 15, 10, 170, 30)
     doc.addImage(this.imgCert, 'JPEG', 140, 135, 67, 70)
 
-    // doc.addImage(imgData, 'JPEG', 15, 10, 170, 30)
     this.zip.file("Certificate of " + apostilleFilename + " -- TX " + nty.signedTransaction.hash.toLowerCase() + " -- Date " + date.toUTCString() + ".pdf", doc.output('blob')), {
 
-
     };
-
 
     this.zip.file(apostilleFilename, (crypto.enc.Base64.stringify(this.rawFileContent)), {
       base64: true
     });
     this.setAccountWalletStorage(this.ntyData);
     this.downloadSignedFiles();
-    console.log(JSON.stringify(this.ntyData))
   }
   downloadSignedFiles() {
 
@@ -314,8 +281,6 @@ export class ApostillaComponent implements OnInit {
       this.zip.generateAsync({
         type: "blob"
       }).then((content) => {
-        // Trigger download
-        // console.log("contenido:", content)
         saveAs(content, `PROXIsigned -- Do not Edit --"${date.getFullYear()}-${("00" + (date.getMonth() + 1)).slice(-2)}-${("00" + (date.getDate())).slice(-2)}".zip`);
         this.reset();
 
