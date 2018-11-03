@@ -22,7 +22,7 @@ import * as JSZip from 'jszip';
 import { NemProvider } from '../../../../services/nem.provider';
 import { WalletService } from '../../../../services/wallet.service';
 import { environment } from '../../../../../../environments/environment'
-import { ServiceModuleService } from '../../../../../servicesModule/services/service-module.service';
+import { NodeService } from '../../../../../servicesModule/services/node.service';
 @Component({
   selector: 'app-apostilla',
   templateUrl: './apostilla.component.html',
@@ -55,10 +55,10 @@ export class ApostillaComponent implements OnInit {
     private walletService: WalletService,
     private nemProvider: NemProvider,
     private sharedService: SharedService,
-    private serviceModuleService: ServiceModuleService
+    private nodeService: NodeService
 
   ) {
-    this.url = `https://${this.serviceModuleService.getNode()}`
+    this.url = `https://${this.nodeService.getNodeSelected()}`
     this.zip = new JSZip();
     this.transactionHttp = new TransactionHttp(this.url)
     this.optionsCrypto = [{ value: '1', label: 'MD5' }, { value: '2', label: 'SHA1' }, { value: '3', label: 'SHA256' }, { value: '4', label: 'SHA3-256' }, { value: '5', label: 'SHA3-512' },];

@@ -3,7 +3,7 @@ import { MdbTablePaginationComponent, MdbTableService } from 'ng-uikit-pro-stand
 import { MosaicId, Transaction, Address, TransactionType } from 'nem2-sdk';
 import { AppConfig } from '../../../config/app.config';
 import { NemProvider } from '../../../shared/services/nem.provider';
-import { ServiceModuleService } from "../../../servicesModule/services/service-module.service";
+import { NodeService } from "../../../servicesModule/services/node.service";
 import { SharedService, WalletService } from "../../../shared";
 import { TransactionsService } from "../../../transactions/service/transactions.service";
 import { first } from "rxjs/operators";
@@ -45,7 +45,7 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
     private cdRef: ChangeDetectorRef,
     private walletService: WalletService,
     private nemProvider: NemProvider,
-    private serviceModule: ServiceModuleService,
+    private nodeService: NodeService,
     private sharedService: SharedService,
     private transactionsService: TransactionsService
   ) { }
@@ -118,7 +118,7 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
       //From publickey
       this.blockInput = true;
       const publicAccount = this.nemProvider.createPublicAccount(this.paramSearch, this.walletService.network);
-      this.nemProvider.getAllTransactionsFromAccount(publicAccount, this.serviceModule.getNode()).subscribe(
+      this.nemProvider.getAllTransactionsFromAccount(publicAccount, this.nodeService.getNodeSelected()).subscribe(
         resp => {
           console.log('with publickey info', resp);
           this.buildTransaction(resp);
@@ -131,7 +131,7 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
     } else {
       //From hash
       this.blockInput = true;
-      this.nemProvider.getTransactionInformation(this.paramSearch, this.serviceModule.getNode()).subscribe(
+      this.nemProvider.getTransactionInformation(this.paramSearch, this.nodeService.getNodeSelected()).subscribe(
         resp => {
           console.log('with hash info', resp);
           this.buildTransaction([resp]);

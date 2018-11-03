@@ -6,7 +6,9 @@ import { BlockUI, NgBlockUI } from 'ng-block-ui';
 // import {ReversePipePipe} from '../../../shared/pipe/reverse-pipe.pipe';
 import { decode } from 'utf8';
 import { SharedService } from '../../../..';
-import { ServiceModuleService } from '../../../../../servicesModule/services/service-module.service';
+import { NodeService } from '../../../../../servicesModule/services/node.service';
+
+
 @Component({
   selector: 'app-audi-apostille',
   templateUrl: './audi-apostille.component.html',
@@ -28,9 +30,9 @@ export class AudiApostilleComponent implements OnInit {
   constructor(
     private nemProvider: NemProvider,
     private sharedService: SharedService,
-    private servicesModule:ServiceModuleService
+    private nodeService:NodeService
   ) {
-    this.url=`https://${this.servicesModule.getNode()}`;
+    this.url=`https://${this.nodeService.getNodeSelected()}`;
 
   }
 

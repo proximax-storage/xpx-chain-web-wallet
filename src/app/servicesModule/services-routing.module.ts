@@ -16,13 +16,13 @@ const routes: Routes = [
     component: ExplorerComponent,
     canActivate: [LoggedGuard]
   },
-  /*{
+  {
     path: `${AppConfig.routes.addNode}`,
     component: AddNodeComponent
   },{
     path: `${AppConfig.routes.selectNode}`,
     component: SelectNodeComponent
-  },*/
+  },
   {
     path: `${AppConfig.routes.createPoll}`,
     component: CreatePollComponent,
@@ -33,14 +33,14 @@ const routes: Routes = [
     component: PollsComponent,
     canActivate: [LoggedGuard]
   }
-  
+
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
   declarations: [
-   
+
   ]
 })
 export class ServicesRoutingModule { }

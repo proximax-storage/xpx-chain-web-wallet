@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { BlockInfo, Listener, Address, AccountHttp } from "nem2-sdk/dist";
 import { environment } from "../environments/environment";
 import { ApiService } from "./shared/services/api.services";
-import { ServiceModuleService } from "./servicesModule/services/service-module.service";
+import { NodeService } from "./servicesModule/services/node.service";
 
 
 @Component({
@@ -21,10 +21,10 @@ export class AppComponent {
 
   constructor(
     private apiService: ApiService,
-    private serviceModuleService: ServiceModuleService
+    private nodeService: NodeService
   ) {
-    this.serviceModuleService.nodeSelected();
-    console.log('NODE SELECTED::: ', this.serviceModuleService.nodeSelected());
+    const nodeSelected = this.nodeService.initNode();
+    console.log('NODE SELECTED::: ', nodeSelected);
   }
 
   /**
