@@ -1,17 +1,21 @@
 import { Injectable } from '@angular/core';
+import { first } from "rxjs/operators";
 import { Listener, Address, Transaction } from "nem2-sdk";
 import { environment } from '../../../environments/environment';
 import { WalletService } from "./wallet.service";
 import { TransactionsService } from "../../transactions/service/transactions.service";
-import { ServiceModuleService } from '../../servicesModule/services/service-module.service';
-import { first } from "rxjs/operators";
+import { NodeService } from '../../servicesModule/services/node.service';
+
 @Injectable({
   providedIn: 'root'
 })
 export class DataBridgeService {
 
   url: any
-  constructor(private walletService: WalletService, private _transactionsService: TransactionsService, private servicesModule: ServiceModuleService) { }
+  constructor(
+    private walletService: WalletService,
+    private _transactionsService: TransactionsService,
+    private nodeService: NodeService) { }
 
 
   /**
@@ -21,7 +25,7 @@ export class DataBridgeService {
    * @memberof DataBridgeService
    */
   connectnWs() {
-    this.url = `wss://${this.servicesModule.getNode()}`;
+    this.url = `wss://${this.nodeService.getNodeSelected()}`;
     const connector = new Listener(this.url, WebSocket);
     // Try to open the connection
     console.log( this.url)

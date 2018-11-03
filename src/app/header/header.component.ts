@@ -4,7 +4,7 @@ import { Observable, Subject, BehaviorSubject } from 'rxjs';
 import { LoginService } from '../login/services/login.service';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { WalletService } from "../shared";
-import { ServiceModuleService } from "../servicesModule/services/service-module.service";
+import { NodeService } from "../servicesModule/services/node.service";
 import { TransactionsService } from "../transactions/service/transactions.service";
 
 export interface HorizontalHeaderInterface {
@@ -55,7 +55,7 @@ export class HeaderComponent implements OnInit {
     private route: Router,
     private activatedRoute: ActivatedRoute,
     private walletService: WalletService,
-    private serviceModuleService: ServiceModuleService,
+    private nodeService: NodeService,
     private transactionsService: TransactionsService
   ) {
     this.route.events
@@ -131,8 +131,8 @@ export class HeaderComponent implements OnInit {
         'class': '',
         'icon': 'fa fa-codepen',
         'rol': true,
-        'link': AppConfig.routes.addNode,
-        'show': false,
+        'link': '',
+        'show': true,
         'submenu': {
           'addNode': {
             'type': 'dropdown',
@@ -158,7 +158,7 @@ export class HeaderComponent implements OnInit {
       },
       nodeSelected: {
         'type': 'default',
-        'name': `Node selected: ${this.serviceModuleService.getNode()}`,
+        'name': `Node selected: ${this.nodeService.getNodeSelected()}`,
         'class': 'green-color',
         'icon': 'fa-codepen',
         'rol': false,
@@ -305,8 +305,8 @@ export class HeaderComponent implements OnInit {
         'class': '',
         'icon': 'fa fa-codepen',
         'rol': false,
-        'link': AppConfig.routes.addNode,
-        'show': false,
+        'link': '',
+        'show': true,
         'submenu': {
           'addNode': {
             'type': 'dropdown',

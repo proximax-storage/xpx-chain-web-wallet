@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ServiceModuleService } from '../../services/service-module.service';
+import { NodeService } from '../../services/node.service';
 import { SharedService } from "../../../shared";
 
 @Component({
@@ -8,21 +8,21 @@ import { SharedService } from "../../../shared";
   styleUrls: ['./select-node.component.scss']
 })
 export class SelectNodeComponent implements OnInit {
-  node: Array<any>;
+  nodes: Array<any>;
   nodeSelect: any;
 
   constructor(
-    private serviceModuleService: ServiceModuleService,
+    private nodeService: NodeService,
     private sharedService: SharedService
   ) { }
 
   ngOnInit() {
-    this.node = JSON.parse(localStorage.getItem(this.serviceModuleService.getNameNode()));
+    this.nodes = this.nodeService.getAllNodes();
   }
 
   optionSelected(nodeSelect) {
     this.nodeSelect = nodeSelect.value;
-    this.serviceModuleService.nodeSelected(this.nodeSelect);
+    this.nodeService.setNode(this.nodeSelect);
     this.sharedService.showInfo('Node selected', this.nodeSelect);
   }
 }

@@ -18,24 +18,12 @@ const routes: Routes = [
     component: ExplorerComponent,
     canActivate: [LoggedGuard]
   },
-  /*{   
+  {
     path: `${AppConfig.routes.addNode}`,
     component: AddNodeComponent
   },{
     path: `${AppConfig.routes.selectNode}`,
     component: SelectNodeComponent
-  },*/
-
-  {
-    path: `${AppConfig.routes.apostille}`,
-    component: CreateApostilleComponent,
-    canActivate: [LoggedGuard]
-  },
-
-  {
-    path: `${AppConfig.routes.audiApostille}`,
-    component: AuditApostilleComsponent,
-    canActivate: [LoggedGuard]
   },
   {
     path: `${AppConfig.routes.createPoll}`,
@@ -47,14 +35,14 @@ const routes: Routes = [
     component: PollsComponent,
     canActivate: [LoggedGuard]
   }
-  
+
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
   declarations: [
-   
+
   ]
 })
 export class ServicesRoutingModule { }

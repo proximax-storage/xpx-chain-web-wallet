@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { NetworkType, PublicAccount } from "nem2-sdk";
 import { crypto } from 'nem2-library';
-import { SharedService } from './shared.service';
-import { commonInterface, walletInterface } from '../interfaces/shared.interfaces';
+import { Router } from "@angular/router";
 import { BehaviorSubject, Observable } from "rxjs";
 import { AccountsInterface } from '..';
+import { commonInterface, walletInterface } from '../interfaces/shared.interfaces';
 import { NemProvider } from './nem.provider';
-import { ServiceModuleService } from '../../servicesModule/services/service-module.service';
-import { Router } from "@angular/router";
+import { SharedService } from './shared.service';
+import { NodeService } from '../../servicesModule/services/node.service';
 import { AppConfig } from "../../config/app.config";
 
 @Injectable({
@@ -24,7 +24,7 @@ export class WalletService {
   constructor(
     private sharedService: SharedService,
     private nemProvider: NemProvider,
-    private serviceModuleService: ServiceModuleService,
+    private nodeService: NodeService,
     private route: Router
   ) {
 
@@ -36,8 +36,9 @@ export class WalletService {
       return false;
     }
 
-    if (!this.serviceModuleService.getNode()) {
-      if (this.serviceModuleService.issetNodesStorage() === null) {
+    if (!this.nodeService.getNodeSelected()) {
+      //Check if exist nodeStorage
+      if (this.nodeService.existArrayNodes() === null) {
         this.sharedService.showError('', 'Please, create a node.');
         this.route.navigate([`/${AppConfig.routes.addNode}`]);
       }else {

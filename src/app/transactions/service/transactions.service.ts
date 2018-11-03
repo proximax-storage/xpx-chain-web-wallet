@@ -4,8 +4,7 @@ import { NemProvider } from "../../shared/services/nem.provider";
 import { UInt64, TransferTransaction, Deadline, PlainMessage, NetworkType, TransactionHttp, Account, Mosaic, MosaicId } from "nem2-sdk";
 import { WalletService } from "../../shared";
 import { environment } from "../../../environments/environment";
-import { ServiceModuleService } from "../../servicesModule/services/service-module.service";
-
+import { NodeService } from '../../servicesModule/services/node.service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +18,7 @@ export class TransactionsService {
 
   constructor(
     private nemProvider: NemProvider,
-    private serviceModule: ServiceModuleService
+    private nodeService: NodeService
   ) {
 
   }
@@ -57,7 +56,7 @@ export class TransactionsService {
       network);
     const account = Account.createFromPrivateKey(common.privateKey, network);
     const signedTransaction = account.sign(transferTransaction);
-    const transactionHttp = new TransactionHttp(`https://${this.serviceModule.getNode()}`);
+    const transactionHttp = new TransactionHttp(`https://${this.nodeService.getNodeSelected()}`);
     return {
       signedTransaction: signedTransaction,
       transactionHttp: transactionHttp

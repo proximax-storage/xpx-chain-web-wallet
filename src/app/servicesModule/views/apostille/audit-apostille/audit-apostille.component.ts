@@ -6,6 +6,7 @@ import { decode } from 'utf8';
 import { NemProvider } from '../../../../shared/services/nem.provider';
 import { SharedService } from '../../../../shared';
 import { ServiceModuleService } from '../../../services/service-module.service';
+import { NodeService } from '../../../../servicesModule/services/node.service';
 
 
 @Component({
@@ -29,9 +30,9 @@ export class AuditApostilleComsponent implements OnInit {
   constructor(
     private nemProvider: NemProvider,
     private sharedService: SharedService,
-    private servicesModule:ServiceModuleService
+    private nodeService:NodeService
   ) {
-    this.url=`https://${this.servicesModule.getNode()}`;
+    this.url=`https://${this.nodeService.getNodeSelected()}`;
 
   }
 
@@ -112,7 +113,7 @@ export class AuditApostilleComsponent implements OnInit {
       const apostilleHash = apostilleHashPrefix + crypto.SHA256(this.file).toString(crypto.enc.Hex);
 
       this.blockUI.stop(); // Stop blocking
-      
+
       if (!this.verify(apostilleHash, infTrans.message.payload)) {
         this.auditResults
         this.auditResults.push({
