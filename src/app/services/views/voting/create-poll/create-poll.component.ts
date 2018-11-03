@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, AbstractControl } from "@angular/forms";
+import { FormGroup, FormBuilder, Validators, AbstractControl, FormControl, FormArray, ValidatorFn } from "@angular/forms";
+
 import { WalletService } from '../../../../shared/services/wallet.service';
 import { NemProvider } from '../../../../shared/services/nem.provider';
 import { SharedService } from '../../../../shared';
@@ -18,8 +19,10 @@ export class CreatePollComponent implements OnInit {
   validateform = false;
   createpollForm: FormGroup;
   keyObject = Object.keys;
+  optionsData:any;
+  options: Array<any>
   accountPrin: string = 'SBGFBK-22DHGH-JW5MD6-M6BJ43-Y26ABU-IQRKP5-WNXG';
-  privateKey:string = '01E4B2794BD5EAC9A2A20C1F8380EF79EBB7F369A5A6040291DB3875867F4727';
+  privateKey: string = '01E4B2794BD5EAC9A2A20C1F8380EF79EBB7F369A5A6040291DB3875867F4727';
   constructor(
     private fb: FormBuilder,
     private walletService: WalletService,
@@ -32,10 +35,6 @@ export class CreatePollComponent implements OnInit {
     this.optionsStorage = [{ value: '', label: 'select ' }, { value: '1', label: 'POI ' }, { value: '2', label: 'white List ' }]
   }
 
-  // ** LIST POLL*** ADDRESS/MIJIN_TEST = SBGFBK-22DHGH-JW5MD6-M6BJ43-Y26ABU-IQRKP5-WNXG - private key = 01E4B2794BD5EAC9A2A20C1F8380EF79EBB7F369A5A6040291DB3875867F4727
-  // **          *** ADDRESS/MIJIN_TEST = SCRRD2-4QDLMH-DZU36T-72S6B5-QVSGYZ-L5SFFC-VIZ3 - private key = 67F5E7625B82AD0BC0E0C9DFB732CB6622F26EBBE802F41E7F072426F1DF0449
-  // **          *** ADDRESS/MIJIN_TEST = SB7YXI-UUSNPQ-EHLMQV-WAH6FD-GSLSJV-MBTCKV-2ZHZ - private key = AFFFB3B792F17E03767131825B39EA9D35015751C5DF70F3CF23B41F8139F08D
-  //**           *** ADDRESS/MIJIN_TEST = SCV3RF-NBBVUV-GMGVR7-TVLAQO-EJIOVV-YMC7E6-2QYC - private key = 7BEEB5FF68414280999D8AE70D9E8373E5CB350EBF304309A8DE1C9A75FA2AAB
   ngOnInit() {
     this.createForm();
 
@@ -43,6 +42,8 @@ export class CreatePollComponent implements OnInit {
 
 
   createForm() {
+    this.options = [{ value: 'YES' }, { value: 'NO' }]
+    this.optionsData = this.options.map((value, index) => new FormControl(value.value, Validators.required))
     this.createpollForm = this.fb.group({
       title: ['', Validators.required],
       description: ['', Validators.required],
@@ -50,29 +51,35 @@ export class CreatePollComponent implements OnInit {
       datepoll: ['', Validators.required],
       choice: [''],
       type: [{ value: '1', disabled: false }, Validators.required],
-      options: this.fb.group({
-        optionsPoll1: ['YES', Validators.required],
-        optionsPoll2: ['NO', Validators.required],
-      }),
+      options: new FormArray(this.optionsData),
       password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]],
     });
-
     this.createpollForm.get('datepoll').valueChanges.subscribe(
       doe => {
         if (new Date(doe).getTime() <= Date.now()) {
           this.errorDate = "fecha no valida "
           this.validateform = true;
-
         } else {
           this.errorDate = ""
           this.validateform = false;
         }
-      });
-
-
-
+      }); 
   }
 
+  addoptions(add?:boolean,remove?:boolean){
+    const control = <FormArray>this.createpollForm.controls['options'];
+    if (add){
+      control.push(new FormControl('', Validators.required) )
+    }else{
+      const b =this.createpollForm.value.options.pop();
+      control.removeAt( this.createpollForm.value.options.indexOf(b))
+    }
+  }
+  removeOptions(index){
+    const control = <FormArray>this.createpollForm.controls['options'];
+    control.removeAt(index)
+
+  }
   getError(param, formControl?) {
     if (this.createpollForm.get(param).getError('required')) {
       return `This field is required`;
@@ -104,7 +111,9 @@ export class CreatePollComponent implements OnInit {
   create() {
     this.createpollForm.valid
     // //  && this.validateform
-    // console.log(this.createpollForm.value)
+    console.log(this.createpollForm.value.options)
+
+    console.log()
 
 
 
@@ -136,8 +145,8 @@ export class CreatePollComponent implements OnInit {
     this.keyObject(this.createpollForm.get('options').value).forEach(element => {
       strings.push(optionsForm[element])
 
-      let  accountPoll:Account;
-     accountPoll = this.nemProvider.generateNewAccount(this.walletService.network)
+      let accountPoll: Account;
+      accountPoll = this.nemProvider.generateNewAccount(this.walletService.network)
       stringsPubliKey.push(accountPoll.publicKey)
       obj[optionsForm[element]] = accountPoll.address.plain();
     })
@@ -146,7 +155,7 @@ export class CreatePollComponent implements OnInit {
       options: {
         strings: strings,
         link: obj,
-        stringsPubliKey:stringsPubliKey
+        stringsPubliKey: stringsPubliKey
       }
     }
 
@@ -173,9 +182,9 @@ export class CreatePollComponent implements OnInit {
       formData: FormDataRoot
     }
 
-    let  accountPoll:Account;
-     accountPoll = this.nemProvider.generateNewAccount(this.walletService.network)
-    console.log(this.nemProvider.generateNewAccount(this.walletService.network).privateKey )
+    let accountPoll: Account;
+    accountPoll = this.nemProvider.generateNewAccount(this.walletService.network)
+    console.log(this.nemProvider.generateNewAccount(this.walletService.network).privateKey)
     // this..sendaccountPoll(element, datapoll, accountPoll,common);
     Object.keys(datapoll).forEach(element => {
       this.sendaccountPoll(datapoll[element], accountPoll.address.plain(), common.privateKey);
@@ -188,20 +197,20 @@ export class CreatePollComponent implements OnInit {
         doe: doe,
         type: this.createpollForm.get('type').value,
         address: accountPoll.address.plain(),
-        publicKey:accountPoll.publicKey
+        publicKey: accountPoll.publicKey
       }
-    } 
+    }
     const privateKey = {
       password: this.createpollForm.get('password').value
     }
-     this.sendaccountPoll(PollRoot ,this.accountPrin, this.privateKey);
+    this.sendaccountPoll(PollRoot, this.accountPrin, this.privateKey);
   }
   sendaccountPoll(mensaje: any, address, privateKey) {
     this.blockUI.start('Loading...'); // Start blocking
     let transferTransaction: any
     transferTransaction = this.nemProvider.sendTransaction(this.walletService.network, address, JSON.stringify(mensaje))
     transferTransaction.fee = UInt64.fromUint(0);
- 
+
     const account = Account.createFromPrivateKey(privateKey, this.walletService.network);
 
     console.log(JSON.stringify(account))
@@ -231,7 +240,7 @@ interface Poll {
   type: number;
   doe: number;
   address: string;
-  publicKey:string,
+  publicKey: string,
 }
 
 
@@ -244,7 +253,7 @@ interface OptionsRoot {
 interface Options {
   strings: string[];
   link: any;
-  stringsPubliKey:any
+  stringsPubliKey: any
 }
 
 
@@ -275,4 +284,6 @@ interface FormDataRoot {
   formData: FormData;
 
 }
-
+// interface Object {
+//   value: string;
+// }

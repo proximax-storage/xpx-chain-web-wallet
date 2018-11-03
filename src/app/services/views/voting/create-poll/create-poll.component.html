@@ -38,8 +38,8 @@
                       <input formControlName="datepoll" mdbInputDirective type="text" name="datepoll" placeholder="2017-12-28T14" id="datepoll"
                         class="form-control" data-success="Valid date" [errorMessage]="getError('datepoll')">
                       <label for="datepoll" class="">Date of Ending</label>
-                      <p style="color:red">  {{errorDate }}</p>
-                    
+                      <p style="color:red"> {{errorDate }}</p>
+
                       <div class="alert background-info white-text" role="alert">
                         If you only see a text box input a date in a valid ISO format [yyyy-MM-ddTHH:mm], for example: 2017-12-28T14:57
                       </div>
@@ -59,18 +59,36 @@
                       <mdb-select formControlName="type" [options]="optionsStorage" placeholder="Hash Function" class="colorful-select dropdown-default"
                         required data-success="Valid type" [errorMessage]="getError('type')"></mdb-select>
                     </div>
-                    <div class="row-fluid  mt-5" formGroupName="options">
+                    <div class="row-fluid  mt-5">
                       <h6 class="card-title" style="color: #757575;">
                         Options
                       </h6>
                       <div class="md-form  mt-1">
-                        <div class="md-form  mt-1">
-                          <input type="text" formControlName="optionsPoll1" disabled name="optionsPoll1" id="optionsPoll1" mdbInputDirective placeholder="yes"
-                            class="form-control" data-success="Valid option"   [errorMessage]="getErrorGroup('options','optionsPoll1')">
+
+                        <!--Right-->
+                      
+
+
+
+                        <ng-container formGroupName="options" *ngFor="let item of createpollForm.controls.options.controls ; let i = index">
+
+                            <div class="md-form input-group">
+                                <input type="search" class="form-control" formControlName="{{i}}"  data-success="Valid option">
+                                <div class="input-group-btn">
+                                  <button mdbBtn color="danger" size="lg" class="waves-light" type="button" (click)="removeOptions(i)" mdbWavesEffect ><mdb-icon icon="remove"></mdb-icon></button>
+                                </div>
+                              </div>
+                          
+                        </ng-container>
+
+                      </div>
+                      <!-- botones de  -->
+                      <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+                        <div class="btn-group" role="group" aria-label="Third group">
+                          <button mdbBtn type="button" color="primary" class="waves-light" (click)="addoptions(true,false)" mdbWavesEffect><mdb-icon icon="plus"></mdb-icon></button>
                         </div>
-                        <div class="md-form  mt-1">
-                          <input type="text" formControlName="optionsPoll2" disabled name="optionsPoll2" id="optionsPoll2" mdbInputDirective placeholder="no"
-                            class="form-control" data-success="Valid option" [errorMessage]="getErrorGroup('options','optionsPoll2')">
+                        <div class="btn-group" role="group" aria-label="Third group">
+                          <button mdbBtn type="button" color="danger" class="waves-light"  (click)="addoptions(false,true)" mdbWavesEffect> <mdb-icon icon="remove"></mdb-icon></button>
                         </div>
                       </div>
                     </div>

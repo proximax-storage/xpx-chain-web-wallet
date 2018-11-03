@@ -3,13 +3,14 @@ import { BlockInfo, Listener, Address, AccountHttp } from "nem2-sdk/dist";
 import { environment } from "../environments/environment";
 import { ApiService } from "./shared/services/api.services";
 import { ServiceModuleService } from "./servicesModule/services/service-module.service";
-
+import * as Highcharts from 'highcharts';
 
 @Component({
   selector: 'app-root',
   template: `<block-ui>
                 <app-header></app-header>
                 <router-outlet></router-outlet>
+            
               </block-ui>`
 })
 export class AppComponent {
@@ -18,7 +19,6 @@ export class AppComponent {
   myParams: object = {};
   width = 100;
   height = 100;
-
   constructor(
     private apiService: ApiService,
     private serviceModuleService: ServiceModuleService
@@ -41,6 +41,8 @@ export class AppComponent {
       'width': '100%',
       'height': '100%'
     };
+
+
 
     this.myParams = {
       particles: {

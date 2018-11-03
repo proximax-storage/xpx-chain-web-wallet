@@ -220,7 +220,13 @@ html:after {
 .text-gris {
   color: #757575 !important;
 }
+.md-form .input-group .prefix {
 
+  top: 0.40rem !important;
+  right: 2.25rem !important;
+  font-size: 1.75rem !important;
+
+}
 .btn-reverse {
   background-color: white !important;
   color: #757575 !important;
