@@ -1,18 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import * as crypto from 'crypto-js'
 import { Account, Transaction, TransferTransaction, Message } from 'nem2-sdk';
-import { NemProvider } from '../../../../services/nem.provider';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
-// import {ReversePipePipe} from '../../../shared/pipe/reverse-pipe.pipe';
 import { decode } from 'utf8';
-import { SharedService } from '../../../..';
-import { ServiceModuleService } from '../../../../../servicesModule/services/service-module.service';
+import { NemProvider } from '../../../../shared/services/nem.provider';
+import { SharedService } from '../../../../shared';
+import { ServiceModuleService } from '../../../services/service-module.service';
+
+
 @Component({
-  selector: 'app-audi-apostille',
-  templateUrl: './audi-apostille.component.html',
-  styleUrls: ['./audi-apostille.component.scss']
+  selector: 'app-audit-apostille',
+  templateUrl: './audit-apostille.component.html',
+  styleUrls: ['./audit-apostille.component.scss']
 })
-export class AudiApostilleComponent implements OnInit {
+export class AuditApostilleComsponent implements OnInit {
   @BlockUI() blockUI: NgBlockUI;
   headElements = ['file name', 'Owner', 'Hash file', 'Result'];
   validatefileInput = false;
@@ -60,7 +61,6 @@ export class AudiApostilleComponent implements OnInit {
       myReader.readAsDataURL(this.ourFile);
     }
   }
-
   checkApostilleName() {
     // Build an array out of the filename
     let nameArray = this.nameFile.match(/\S+\s*/g);
@@ -102,7 +102,6 @@ export class AudiApostilleComponent implements OnInit {
     }
     // Initial filename
     initialFileName = initialFileName.replace(/^\s+|\s+$/, '') + "." + this.nameFile.split('.').pop();
-    // console.log(initialFileName);
     // Hash of the apostille transaction
     let apostilleTxHash = nameArray[nameArray.length - 4].replace(/^\s+|\s+$/, '');
     // console.log("signedTransaction.hash:", apostilleTxHash);
@@ -111,9 +110,9 @@ export class AudiApostilleComponent implements OnInit {
       const apostilleHashPrefix = 'fe4e545903';
       const hash = crypto.SHA256(this.file);
       const apostilleHash = apostilleHashPrefix + crypto.SHA256(this.file).toString(crypto.enc.Hex);
-      this.blockUI.stop(); // Stop blocking
 
-      console.log("resultaod:",this.verify(apostilleHash, infTrans.message.payload))
+      this.blockUI.stop(); // Stop blocking
+      
       if (!this.verify(apostilleHash, infTrans.message.payload)) {
         this.auditResults
         this.auditResults.push({
@@ -139,7 +138,6 @@ export class AudiApostilleComponent implements OnInit {
         return;
 
       }
-      // console.log("hast:",this.decodeHex(infTrans.message.payload))
     },
       error => {
         this.sharedService.showError('Error', '¡unexpected error!');
@@ -156,7 +154,6 @@ export class AudiApostilleComponent implements OnInit {
       return false;
     }
   }
-
   showResult(result) {
   }
   createResultObject(initialFileName, apostilleSigner, checksum, dataHash, isPrivate, apostilleTxHash) {
@@ -171,3 +168,4 @@ export class AudiApostilleComponent implements OnInit {
   }
 
 }
+

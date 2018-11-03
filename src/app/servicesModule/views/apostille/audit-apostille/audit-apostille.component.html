@@ -1,0 +1,77 @@
+<div class="mt-3rem mb-3rem animated fadeIn">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
+          <mdb-card>
+            <mdb-card-header class="background-gold white-text text-align-center py-4">
+              <img src="assets/images/logo/logo-white.png" style="width: 300px;">
+            </mdb-card-header>
+            <ng-container>
+              <mdb-card-body class="px-lg-5 backg-beige">
+                <div class="row">
+                  <div class="col-xs-12 col-sm-7  col-md-7 col-lg-7  align-self-center">
+                    <h3>Audit files</h3>
+                    <hr>
+                    <br>
+                    <br>
+                    <div class="box text-align-center ">
+                      <button (click)="openInput()" mdbBtn type="button" size="lg" color="default" outline="true" mdbWavesEffect>
+                        <mdb-icon icon="cloud-upload" size="5x" class="mr-1"></mdb-icon>
+                      </button>
+                      <input id="fileInput" [hidden]="true" type="file" (change)="fileChange($event.target.files,$event)">
+                    </div>
+                    <br>
+                    <div class="box text-align-center ">
+                      <p class="box" id="nameFile"> {{nameFile}} </p>
+                    </div>
+                    <br>
+                    <br>
+                  </div>
+                  <div class="col-xs-12 col-sm-5  col-md-5 col-lg-5  ">
+                    <h3> Apostille format example</h3>
+                    <hr>
+                    <br>
+                    <br>
+                    <!-- <p><span ng-bind-html="'APOSTILLE_AUDIT_INFORMATION_1' | translate"></span><br> {{ 'APOSTILLE_AUDIT_INFORMATION_2' | translate }}</p> -->
+                    <p>
+                      <b>EXAMPLE</b>
+                      <br>
+                      <small>MyProject2016 --
+                        <b>Apostille</b> TX 0e94da29910ae64bb544e9de0e6a5c6440bd75e6bedafd81b5b4cfa729ca25ef -- Date 2016-09-12.pdf</small>
+                    </p>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-12 col-sm-12  col-md-12 col-lg-12">
+                    <h3> 
+                      Results</h3>
+                    <hr>
+                  </div>
+                  <div class="col-xs-12 col-sm-12  col-md-12 col-lg-12">
+                    <div class="table-responsive">
+                      <table mdbTable>
+                        <thead>
+                          <tr>
+                            <th *ngFor="let head of headElements" scope="col">{{head}} </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr mdbTableCol *ngFor="let result of auditResults.slice().reverse()">
+                            <th style="width:25px; vertical-align: middle; " scope="row">{{result.filename}}</th>
+                            <td style="width:25px; vertical-align: middle;" scope="row">{{result.owner}}</td>
+                            <td style="width:25px;vertical-align: middle;" scope="row">{{result.fileHash}}</td>
+                            <td style="width:25px;vertical-align: middle;" scope="row">{{result.result}}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </mdb-card-body>
+            </ng-container>
+          </mdb-card>
+        </div>
+      </div>
+    </div>
+  </div>
+  
