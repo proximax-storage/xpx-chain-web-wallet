@@ -56,7 +56,7 @@ export class NemProvider {
   constructor(private serviceModuleService: ServiceModuleService) {
 
 
-    this.url = `http://${this.serviceModuleService.getNode()}`;
+    this.url = `https://${this.serviceModuleService.getNode()}`;
     this.transactionHttp = new TransactionHttp(this.url);
     this.accountHttp = new AccountHttp(this.url);
     this.mosaicHttp = new MosaicHttp(this.url);
