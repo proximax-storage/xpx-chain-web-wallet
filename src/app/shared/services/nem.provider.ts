@@ -15,33 +15,54 @@ import {
   QueryParams,
   AccountInfo,
   NetworkType,
-  TransactionHttp
+  TransactionHttp,
+  TransferTransaction,
+  Deadline,
+  PlainMessage,
+  SignedTransaction,
+  TransactionAnnounceResponse,
+  Mosaic,
+  MosaicId,
+  UInt64,
+  XEM,
+  TransactionStatusError,
+  TransactionStatus
 } from 'nem2-sdk';
 
 import { crypto } from 'nem2-library';
 import { environment } from '../../../environments/environment';
 import { commonInterface, walletInterface } from '..';
+import { WalletService } from './wallet.service'
 import { Observable } from 'rxjs';
 import { mergeMap } from 'rxjs/operators'
+import { ServiceModuleService } from '../../servicesModule/services/service-module.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NemProvider {
+
+  mosaic = 'prx:xpx';
   transactionHttp: TransactionHttp;
   websocketIsOpen = false;
   connectionWs: Listener;
   accountHttp: AccountHttp;
   mosaicHttp: MosaicHttp;
   namespaceHttp: NamespaceHttp;
-  mosaicService: MosaicService
-  constructor() {
-    this.transactionHttp = new TransactionHttp(environment.apiUrl);
-    this.accountHttp = new AccountHttp(environment.apiUrl);
-    this.mosaicHttp = new MosaicHttp(environment.apiUrl);
-    this.namespaceHttp = new NamespaceHttp(environment.apiUrl);
+  mosaicService: MosaicService;
+  transactionStatusError: TransactionStatusError
+  url: any;
+
+  constructor(private serviceModuleService: ServiceModuleService) {
+
+
+    this.url = `https://${this.serviceModuleService.getNode()}`;
+    this.transactionHttp = new TransactionHttp(this.url);
+    this.accountHttp = new AccountHttp(this.url);
+    this.mosaicHttp = new MosaicHttp(this.url);
+    this.namespaceHttp = new NamespaceHttp(this.url);
     this.mosaicService = new MosaicService(this.accountHttp, this.mosaicHttp, this.namespaceHttp);
-    this.transactionHttp =new TransactionHttp(environment.apiUrl);
+    this.transactionHttp = new TransactionHttp(this.url);
   }
 
   openConnectionWs() {
@@ -130,6 +151,24 @@ export class NemProvider {
   }
 
   /**
+   * Create transaction
+   *
+   * @param recipientAddress
+   * @param message
+   * @param network
+   */
+  createTransaction(recipient, amount, message, network) {
+    const recipientAddress = this.createFromRawAddress(recipient);
+    return TransferTransaction.create(
+      Deadline.create(5),
+      recipientAddress,
+      [new Mosaic(new MosaicId(this.mosaic), UInt64.fromUint(Number(amount)))],
+      PlainMessage.create(message),
+      network
+    );
+  }
+
+  /**
    * Create an Address from a given raw address.
    *
    * @param {*} address
@@ -137,7 +176,6 @@ export class NemProvider {
    * @memberof NemProvider
    */
   createFromRawAddress(address: string): Address {
-
     return Address.createFromRawAddress(address);
   }
 
@@ -170,7 +208,6 @@ export class NemProvider {
    * @memberof NemProvider
    */
   getAccountInfo(address: Address): Observable<AccountInfo> {
-
     return this.accountHttp.getAccountInfo(address)
   }
 
@@ -194,24 +231,21 @@ export class NemProvider {
    * @returns {Observable<Transaction[]>}
    * @memberof NemProvider
    */
-  getAllTransactionsFromAnAccount(publicAccount, queryParams?): Observable<Transaction[]> {
+  getAllTransactionsFromAccount(publicAccount, queryParams?): Observable<Transaction[]> {
     return this.accountHttp.transactions(publicAccount, new QueryParams(queryParams));
-
   }
 
-
-/**
- * Gets a transaction for a transactionId
- *
- * @param {string} transactionId
- * @returns {Observable<Transaction>}
- * @memberof NemProvider
- */
-getTransaction(transactionId: string): Observable<Transaction>{
+  /**
+   * Gets a transaction for a transactionId
+   *
+   * @param {string} transactionId
+   * @returns {Observable<Transaction>}
+   * @memberof NemProvider
+   */
+  getTransaction(transactionId: string): Observable<Transaction> {
 
     return this.transactionHttp.getTransaction(transactionId)
   }
-
 
   /**
    *Gets the array of transactions for which an account is the sender or receiver and which have not yet been included in a block.
@@ -226,18 +260,25 @@ getTransaction(transactionId: string): Observable<Transaction>{
     return this.accountHttp.unconfirmedTransactions(publicAccount, queryParams);
   }
 
-
-
   /**
    * Return getTransaction from id or hash
    * @param param
    */
   getTransactionInformation(hash, node = ''): Observable<Transaction> {
-    const transaction: TransactionHttp = (node === '') ? this.transactionHttp : new TransactionHttp(`http://${node}:3000`);
+    const transaction: TransactionHttp = (node === '') ? this.transactionHttp : new TransactionHttp(`https://${node}`);
     return transaction.getTransaction(hash);
   }
 
-
+  /**
+   *Gets a transaction status for a transaction hash
+   *
+   * @param {string} hash
+   * @returns {Observable<TransactionStatus>}
+   * @memberof NemProvider
+   */
+  getTransactionStatusError(hash: string): Observable<TransactionStatus> {
+    return this.transactionHttp.getTransactionStatus(hash);
+  }
 
   /**
    * Gnenerate account simple
@@ -251,4 +292,48 @@ getTransaction(transactionId: string): Observable<Transaction>{
     // account.address.pretty()
     // account.privateKey
   }
+
+  //PROXIMA
+  sendTransaction(network, address: string, message?: string, amount: number = 0): TransferTransaction {
+    // console.log(address, message)
+
+    console.log("adrres:", address)
+    console.log("<br> message:", message)
+    console.log("<br> amount:", amount)
+    return TransferTransaction.create(
+      Deadline.create(23),
+      Address.createFromRawAddress(address),
+      [new Mosaic(new MosaicId(this.mosaic), UInt64.fromUint(Number(amount)))],
+      PlainMessage.create(message),
+      network,
+    );
+
+  }
+  //COMPANY
+  // sendTransaction(network, address: string, message?: string, amount: number = 0): TransferTransaction {
+  //   // console.log(address, message)
+
+  //   console.log("adrres:",address)
+  //   console.log("<br> message:",message)
+  //   console.log("<br> amount:",amount)
+  //   return TransferTransaction.create(
+  //     Deadline.create(23),
+  //     Address.createFromRawAddress(address),
+  //     [XEM.createRelative(1)],
+  //     PlainMessage.create(message),
+  //     network,
+  //   );
+
+  // }
+
+  announce(signedTransaction: SignedTransaction): Observable<TransactionAnnounceResponse> {
+    return this.transactionHttp.announce(signedTransaction);
+  }
+
+  // signedTransaction(transferTransaction:TransferTransaction):TransferTransaction {
+
+  //   return  Account.sign(transferTransaction);
+  // }
+
+
 }

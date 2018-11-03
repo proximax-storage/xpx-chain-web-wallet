@@ -53,10 +53,18 @@ export class ImportWalletComponent implements OnInit {
   }
 
   /**
+   * today 26
+   * 9E8A529894129F737C40560DCAE25E99C91C18F55E2417C1188398DB0D3D09BD  private key
+   *
    * Create a reactive form
    * 0F3CC33190A49ABB32E7172E348EA927F975F8829107AAA3D6349BB10797D4F6 (pvk with money)
-   * SBILTA-367K2L-X2FEXG-5TFWAS-7GEFYA-GY7QLF-BYKC (direction with money)
-   * TCFWMP-2M2HP4-3KJYGO-BDVQ3S-KX3Q6H-FH6GDV-3AG4
+   *
+   *
+   * catapult wss://staging.mocd.gov.ae/catapult/
+   * 8E3639F5437B83C13C567E3C2C847966AC25D6E12B38632DF38DCD5403C64368
+   * SBHMRE-3QM3GP-BNDG2O-BDQ6AE-WGDPZI-MO2SGJ-O77I
+   *
+   *
    * @memberof ImportWalletComponent
    */
   importForm() {
@@ -83,23 +91,6 @@ export class ImportWalletComponent implements OnInit {
       const privateKey = this.importWalletForm.get('privateKey').value;
       const network = this.importWalletForm.get('network').value;
       const wallet = this._nemProvider.createAccountFromPrivateKey(nameWallet, password, privateKey, network);
-      console.log(wallet)
-      //open wallet
-      const account = wallet.open(password);
-      //get public key from account
-      const publicKey = account.publicKey.toString();
-      console.log('my public key is... ', publicKey);
-      //create publicAccount 
-      const publicAccount = PublicAccount.createFromPublicKey(publicKey, network);
-      //instance account http
-      const petitionHttp = new AccountHttp('http://190.216.224.11:3000');
-      petitionHttp.transactions(publicAccount).subscribe(
-        resp => {
-          console.log(resp);
-        }
-      );
-
-
       const walletsStorage = this._walletService.getWalletStorage();
       //verify if name wallet isset
       const myWallet = walletsStorage.find(function (element) {

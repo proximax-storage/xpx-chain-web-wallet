@@ -10,8 +10,12 @@ export const AppConfig: Config = {
     audiApostille:'audit-apostille',
     apostille:'apostille',
     transactions:'transactions-get',
+    transferTransaction:'transfer',
     addNode: 'add-node',
+    selectNode: 'select-node',
     explorer: 'explorer',
+    createPoll:'create-poll',    
+    polls:'polls',  
     service:'dashboard-service',
     notFound: 'not-found'
   }
@@ -23,11 +27,15 @@ export const NameRoute = {
   [AppConfig.routes.dashboard]: 'Dashboard',
   [AppConfig.routes.createWallet]: 'Create wallet',
   [AppConfig.routes.importWallet]: 'Import wallet',
-  [AppConfig.routes.audiApostille]: 'Audit Apostille',
-  [AppConfig.routes.apostille]: 'Apostille',
+  [AppConfig.routes.audiApostille]: 'Apostille Audit',
+  [AppConfig.routes.apostille]: 'Apostille create',
   [AppConfig.routes.transactions]: 'Transactions get',
+  [AppConfig.routes.transferTransaction]: 'Transfer',
   [AppConfig.routes.addNode]: 'Add node',
+  [AppConfig.routes.selectNode]: 'Select node',
   [AppConfig.routes.explorer]: 'Explorer',
+  [AppConfig.routes.createPoll]: 'Create a Poll',
+  [AppConfig.routes.polls]: 'Vote and See Polls',
   [AppConfig.routes.service]: ' Dashboard service',
   [AppConfig.routes.notFound]: '404 not found'
 }
@@ -42,8 +50,12 @@ export interface Config {
     audiApostille:string;
     apostille: string;
     transactions:string;
+    transferTransaction: string;
     addNode: string;
+    selectNode:string;
     explorer: string;
+    createPoll:string;
+    polls:string;
     service:string;
     notFound: string;
   };

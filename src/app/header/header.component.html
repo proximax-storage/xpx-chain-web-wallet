@@ -1,10 +1,10 @@
 <header>
-  <mdb-side-nav #sidenav class="background-proxiwallet" [fixed]="false">
+  <mdb-side-nav #sidenav class="background-header" [fixed]="false">
     <mdb-navbar-brand>
       <li>
         <div class="logo-wrapper waves-light">
           <a href="#">
-              <img src="assets/images/logo/proximaX-white.png" style="width: 250px;">
+              <img src="assets/images/logo/logo-white.png" class="img-my-header">
           </a>
         </div>
       </li>
@@ -16,18 +16,18 @@
     </links>
     <div class="sidenav-bg mask-strong"></div>
   </mdb-side-nav>
-  <mdb-navbar SideClass="navbar fixed-top navbar-toggleable-md navbar-expand-lg scrolling-navbar double-nav z-depth-0 background-header"
+  <mdb-navbar SideClass="navbar fixed-top navbar-toggleable-md navbar-expand-lg scrolling-navbar double-nav z-depth-0 background-header-inverse"
     [containerInside]="false">
     <navlinks class="navbar-container">
       <div class="float-left">
-        <a (click)="sidenav.show()" class="button-collapse hidden-nav-button-collapse">
+        <a (click)="sidenav.show()" class="button-collapse hidden-nav-button-collapse color-text-gris">
             <i class="fa fa-bars"></i>
         </a>
       </div>
     </navlinks>
     <mdb-navbar-brand>
       <div class="breadcrumbs breadcrumbs-hidden-nav breadcrumb-dn mr-auto">
-        <img src="assets/images/logo/proximaX-white.png" style="width: 120px;">
+        <img src="assets/images/logo/logo.png" style="width: 220px;">
       </div>
     </mdb-navbar-brand>
     <navlinks>
@@ -39,5 +39,5 @@
 </header>
 
 <div class="row-fluid">
-  <div class="route-name"> {{nameRoute}} </div>
+  <div class="route-name background-header"> {{nameRoute}} </div>
 </div>

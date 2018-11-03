@@ -6,6 +6,9 @@ import { commonInterface, walletInterface } from '../interfaces/shared.interface
 import { BehaviorSubject, Observable } from "rxjs";
 import { AccountsInterface } from '..';
 import { NemProvider } from './nem.provider';
+import { ServiceModuleService } from '../../servicesModule/services/service-module.service';
+import { Router } from "@angular/router";
+import { AppConfig } from "../../config/app.config";
 
 @Injectable({
   providedIn: 'root'
@@ -14,17 +17,34 @@ export class WalletService {
   currentAccount: any;
   address: any;
   current: any;
-  network: any;
+  network: any = '';
   algo: string;
   publicAccount: PublicAccount;
 
-  constructor(private sharedService: SharedService, private nemProvider: NemProvider) {
+  constructor(
+    private sharedService: SharedService,
+    private nemProvider: NemProvider,
+    private serviceModuleService: ServiceModuleService,
+    private route: Router
+  ) {
 
   }
 
   public login(common, wallet) {
     if (!wallet) {
       this.sharedService.showError('Error', '¡Dear user, the wallet is missing!');
+      return false;
+    }
+
+    if (!this.serviceModuleService.getNode()) {
+      if (this.serviceModuleService.issetNodesStorage() === null) {
+        this.sharedService.showError('', 'Please, create a node.');
+        this.route.navigate([`/${AppConfig.routes.addNode}`]);
+      }else {
+        this.sharedService.showError('', 'Please, select a node.');
+        this.route.navigate([`/${AppConfig.routes.selectNode}`]);
+      }
+
       return false;
     }
     // Decrypt / generate and check primary
@@ -99,18 +119,22 @@ export class WalletService {
    */
 
   decrypt(common: any, account: any = '', algo: any = '', network: any = '') {
+
     const acct = account || this.currentAccount;
     const net = network || this.network;
     const alg = algo || this.algo;
     // Try to generate or decrypt key
 
+    console.log("1")
     if (!crypto.passwordToPrivatekey(common, acct, alg)) {
+      console.log("sssss")
       setTimeout(() => {
         this.sharedService.showError('Error', '¡Invalid password!');
 
       }, 500);
       return false;
     }
+    console.log("2")
     if (common.isHW) {
       // this._mdboostrap.closeToastr();
       return true;
@@ -123,14 +147,14 @@ export class WalletService {
       return false;
     }
 
-    //Get public account from private key 
+    //Get public account from private key
     this.publicAccount = this.nemProvider.getPublicAccountFromPrivateKey(common.privateKey, net)
     return true;
   }
 
   /**
    *
-   * 
+   *
    * @param {any} privateKey
    * @returns
    * @memberof WalletService

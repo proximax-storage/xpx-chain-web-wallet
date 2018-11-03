@@ -19,11 +19,8 @@ const appRoutes: Routes = [
     loadChildren: './transactions/transactions.module#TransactionsModule'
   }, {
     path: '',
-    loadChildren: './services/services.module#ServicesModule'
-  }, {
-    path: 'service',
-    loadChildren: './shared/moduls/service/service.module#ServiceModule'
-  }
+    loadChildren: './servicesModule/services.module#ServicesModule'
+  } 
 ];
 export const appRoutingProviders: any[] = [];
 export const routing: ModuleWithProviders = RouterModule.forRoot(appRoutes, {

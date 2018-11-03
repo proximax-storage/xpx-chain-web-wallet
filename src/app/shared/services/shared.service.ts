@@ -28,14 +28,17 @@ export class SharedService {
     this.toastrService.warning(bodyMessage, title, options);
   }
 
-  closeAlertMsg(type: string = "") {
-
+  showInfo(title: string, bodyMessage: string) {
+    const options = { closeButton: true, tapToDismiss: false, toastClass: 'toastWarning' };
+    this.toastrService.info(bodyMessage, title, options);
   }
+
+  closeAlertMsg(type: string = "") {}
 
   passwordConfirming(c: AbstractControl): { noMatch: boolean } {
     if (c.get('password').value !== c.get('confirm_password').value) {
-      return { 
-        noMatch: true 
+      return {
+        noMatch: true
       };
     }
   }

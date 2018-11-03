@@ -4,9 +4,16 @@ import { Observable, Subject, BehaviorSubject } from 'rxjs';
 import { LoginService } from '../login/services/login.service';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { WalletService } from "../shared";
+import { ServiceModuleService } from "../servicesModule/services/service-module.service";
+import { TransactionsService } from "../transactions/service/transactions.service";
+
 export interface HorizontalHeaderInterface {
+  node: Header;
+  dashboard: Header;
+  nodeSelected: Header;
   createWallet: Header;
   importWallet: Header;
+  transactions: Header;
   login: Header;
   signout: Header;
 }
@@ -14,6 +21,8 @@ export interface HorizontalHeaderInterface {
 export interface VerticalHeaderInterface {
   dashboard: Header;
   services: Header;
+  transactions: Header;
+  node:Header;
 }
 
 export interface Header {
@@ -45,7 +54,9 @@ export class HeaderComponent implements OnInit {
     private _loginService: LoginService,
     private route: Router,
     private activatedRoute: ActivatedRoute,
-    private walletService: WalletService
+    private walletService: WalletService,
+    private serviceModuleService: ServiceModuleService,
+    private transactionsService: TransactionsService
   ) {
     this.route.events
       .subscribe((event) => {
@@ -83,6 +94,78 @@ export class HeaderComponent implements OnInit {
    */
   buildHeader() {
     this.horizontalHeader = {
+      dashboard: {
+        'type': 'default',
+        'name': 'dashboard',
+        'class': '',
+        'icon': 'fa fa-home',
+        'rol': true,
+        'link': AppConfig.routes.dashboard,
+        'show': true,
+        'submenu': {}
+      },
+      transactions: {
+        'type': 'dropdown',
+        'name': 'Transactions',
+        'class': '',
+        'icon': 'fa fa-tachometer',
+        'rol': true,
+        'link': '',
+        'show': true,
+        'submenu': {
+          'transfer': {
+            'type': 'default',
+            'name': 'Transfer',
+            'class': '',
+            'icon': '',
+            'rol': true,
+            'link': AppConfig.routes.transferTransaction,
+            'show': true,
+            'submenu': {}
+          }
+        }
+      },
+      node: {
+        'type': 'dropdown',
+        'name': 'Node',
+        'class': '',
+        'icon': 'fa fa-codepen',
+        'rol': true,
+        'link': AppConfig.routes.addNode,
+        'show': false,
+        'submenu': {
+          'addNode': {
+            'type': 'dropdown',
+            'name': 'Add node',
+            'class': '',
+            'icon': '',
+            'rol': true,
+            'link': AppConfig.routes.addNode,
+            'show': true,
+            'submenu': {}
+          },
+          'selectNode': {
+            'type': 'default',
+            'name': 'Select Node',
+            'class': '',
+            'icon': '',
+            'rol': true,
+            'link': AppConfig.routes.selectNode,
+            'show': true,
+            'submenu': {}
+          }
+        }
+      },
+      nodeSelected: {
+        'type': 'default',
+        'name': `Node selected: ${this.serviceModuleService.getNode()}`,
+        'class': 'green-color',
+        'icon': 'fa-codepen',
+        'rol': false,
+        'link': '',
+        'show': false,
+        'submenu': { }
+      },
       createWallet: {
         'type': 'default',
         'name': 'Create wallet',
@@ -117,7 +200,7 @@ export class HeaderComponent implements OnInit {
         'type': 'default',
         'name': 'signout',
         'class': '',
-        'icon': 'fa fa-tachometer',
+        'icon': 'fa fa-lock',
         'rol': true,
         'link': AppConfig.routes.login,
         'show': true,
@@ -127,38 +210,26 @@ export class HeaderComponent implements OnInit {
 
     this.verticalHeader = {
       dashboard: {
-        'type': 'dropdown',
+        'type': 'default',
         'name': 'dashboard',
         'class': '',
         'icon': 'fa fa-home',
         'rol': true,
         'link': AppConfig.routes.dashboard,
         'show': true,
-        'submenu': {
-          'dashboard': {
-            'type': 'default',
-            'name': 'dashboard',
-            'class': '',
-            'icon': 'fa fa-home',
-            'rol': true,
-            'link': AppConfig.routes.dashboard,
-            'show': true,
-            'submenu': {}
-          }
-        }
-      },
-      services: {
+        'submenu': {}
+      },services: {
         'type': 'dropdown',
         'name': 'services',
         'class': '',
         'icon': 'fa fa-tachometer',
         'rol': true,
-        'link': AppConfig.routes.login,
+        'link': '',
         'show': true,
         'submenu': {
           'explorer': {
             'type': 'default',
-            'name': 'Explorer',
+            'name': 'Transaction explorer',
             'class': '',
             'icon': 'fa fa-home',
             'rol': true,
@@ -166,13 +237,94 @@ export class HeaderComponent implements OnInit {
             'show': true,
             'submenu': {}
           },
-          'addNode': {
+          'apostille': {
             'type': 'default',
-            'name': 'Add node',
+            'name': 'Apostille',
             'class': '',
             'icon': 'fa fa-codepen',
             'rol': true,
+            'link':AppConfig.routes.apostille,
+            'show': true,
+            'submenu': {}
+          },
+          'auditApostille': {
+            'type': 'default',
+            'name': 'Audit Apostille',
+            'class': '',
+            'icon': 'fa fa-codepen',
+            'rol': true,
+            'link': AppConfig.routes.audiApostille,
+            'show': true,
+            'submenu': {}
+          },
+          'createPoll': {
+            'type': 'default',
+            'name': 'Create a Poll',
+            'class': '',
+            'icon': 'fa fa-codepen',
+            'rol': true,
+            'link': `${AppConfig.routes.createPoll}`,
+            'show': true,
+            'submenu': {}
+          },'polls': {
+            'type': 'default',
+            'name': 'See Polls',
+            'class': '',
+            'icon': 'fa fa-codepen',
+            'rol': true,
+            'link': `${AppConfig.routes.polls}`,
+            'show': true,
+            'submenu': {}
+          }
+        }
+      },
+      transactions: {
+        'type': 'dropdown',
+        'name': 'Transactions',
+        'class': '',
+        'icon': 'fa fa-tachometer',
+        'rol': true,
+        'link': '',
+        'show': true,
+        'submenu': {
+          'transfer': {
+            'type': 'default',
+            'name': 'Transfer',
+            'class': '',
+            'icon': 'fa fa-home',
+            'rol': true,
+            'link': AppConfig.routes.transferTransaction,
+            'show': true,
+            'submenu': {}
+          }
+        }
+      },
+      node: {
+        'type': 'dropdown',
+        'name': 'Node',
+        'class': '',
+        'icon': 'fa fa-codepen',
+        'rol': false,
+        'link': AppConfig.routes.addNode,
+        'show': false,
+        'submenu': {
+          'addNode': {
+            'type': 'dropdown',
+            'name': 'Add node',
+            'class': '',
+            'icon': '',
+            'rol': false,
             'link': AppConfig.routes.addNode,
+            'show': true,
+            'submenu': {}
+          },
+          'selectNode': {
+            'type': 'default',
+            'name': 'Select Node',
+            'class': '',
+            'icon': '',
+            'rol': false,
+            'link': AppConfig.routes.selectNode,
             'show': true,
             'submenu': {}
           }

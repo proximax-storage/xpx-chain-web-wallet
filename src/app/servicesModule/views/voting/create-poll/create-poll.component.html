@@ -1,0 +1,121 @@
+<div class="mt-3rem mb-3rem animated fadeIn">
+  <div class="container-fluid">
+    <div class="row ">
+      <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
+        <mdb-card>
+          <mdb-card-header class="background-gold white-text text-align-center py-4">
+            <img src="assets/images/logo/logo-white.png" style="width: 300px;">
+          </mdb-card-header>
+          <ng-container>
+            <mdb-card-body class="px-lg-5 backg-beige">
+
+              <form [formGroup]="createpollForm" (ngSubmit)="create()">
+                <div class="row">
+                  <div class="col-xs-12 col-sm-6  col-md-10 col-lg-6 ">
+
+                    <!-- Title  -->
+                    <div class="md-form mt-5">
+
+                      <input formControlName="title" mdbInputDirective type="text" name="title" required id="title" data-success="Valid Title"
+                        [errorMessage]="getError('title')" class="form-control">
+                      <label for="title">Title </label>
+                    </div>
+                    <!-- Description -->
+                    <div class="md-form mt-5">
+                      <textarea formControlName="description" type="text" required id="description" name="description" class="md-textarea form-control "
+                        mdbInputDirective rows="3" data-success="Valid description" [errorMessage]="getError('description')"></textarea>
+                      <label for="description">Description</label>
+                    </div>
+                    <div class="md-form mt-5">
+                      <input formControlName="indexAccount" mdbInputDirective type="text" required disabled name="indexAccount" placeholder="TAVG-TNCV-GALL-UPZC-4JTL-KR2W-X25R-QM2Q-OK5B-HBKC"
+                        id="indexAccount" class="form-control" data-success="Valid index account" [errorMessage]="getError('indexAccount')">
+                      <label for="indexAccount" class="">Poll Index Account</label>
+                      <div class="alert background-info white-text" role="alert">
+                        The poll account where the poll will be saved. By default a public one is set.
+                      </div>
+                    </div>
+                    <div class="md-form mt-5">
+                      <input formControlName="datepoll" mdbInputDirective type="text" name="datepoll" placeholder="2017-12-28T14" id="datepoll"
+                        class="form-control" data-success="Valid date" [errorMessage]="getError('datepoll')">
+                      <label for="datepoll" class="">Date of Ending</label>
+                      <p style="color:red"> {{errorDate }}</p>
+
+                      <div class="alert background-info white-text" role="alert">
+                        If you only see a text box input a date in a valid ISO format [yyyy-MM-ddTHH:mm], for example: 2017-12-28T14:57
+                      </div>
+                    </div>
+                    <div class="md-form mt-5">
+                      <!-- Material checked -->
+                      <mdb-checkbox formControlName="choice" [checked]="false">Multiple choice</mdb-checkbox>
+                      <br>
+                      <div class="alert background-info white-text" role="alert">
+                        If selected, voters will be able to divide their vote into more than one option.
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-xs-12 col-sm-6  col-md-10 col-lg-6 ">
+                    <!--  Hash Function -->
+                    <div class="md-form  mt-5">
+                      <mdb-select formControlName="type" [options]="optionsStorage" placeholder="Hash Function" class="colorful-select dropdown-default"
+                        required data-success="Valid type" [errorMessage]="getError('type')"></mdb-select>
+                    </div>
+                    <div class="row-fluid  mt-5">
+                      <h6 class="card-title" style="color: #757575;">
+                        Options
+                      </h6>
+                      <div class="md-form  mt-1">
+
+                        <!--Right-->
+                      
+
+
+
+                        <ng-container formGroupName="options" *ngFor="let item of createpollForm.controls.options.controls ; let i = index">
+
+                            <div class="md-form input-group">
+                                <input type="search" class="form-control" formControlName="{{i}}"  data-success="Valid option">
+                                <div class="input-group-btn">
+                                  <button mdbBtn color="danger" size="lg" class="waves-light" type="button" (click)="removeOptions(i)" mdbWavesEffect ><mdb-icon icon="remove"></mdb-icon></button>
+                                </div>
+                              </div>
+                          
+                        </ng-container>
+
+                      </div>
+                      <!-- botones de  -->
+                      <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+                        <div class="btn-group" role="group" aria-label="Third group">
+                          <button mdbBtn type="button" color="primary" class="waves-light" (click)="addoptions(true,false)" mdbWavesEffect><mdb-icon icon="plus"></mdb-icon></button>
+                        </div>
+                        <div class="btn-group" role="group" aria-label="Third group">
+                          <button mdbBtn type="button" color="danger" class="waves-light"  (click)="addoptions(false,true)" mdbWavesEffect> <mdb-icon icon="remove"></mdb-icon></button>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- Password -->
+                    <div class="md-form mt-5">
+                      <input type="password" autocomplete="off" formControlName="password" required id="password" class="form-control" mdbInputDirective
+                        data-success="Valid password" [errorMessage]="getError('password')">
+                      <label for="password">password</label>
+                    </div>
+                    <div class="mt-4rm">
+                      <div class="row ">
+                        <div class="mx-auto">
+                          <div class="row">
+                            <div class="col-xs-12">
+                              <button mdbBtn color="default" size="lg" rounded="true" class="waves-light" mdbWavesEffect type="submit">Create</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </mdb-card-body>
+          </ng-container>
+        </mdb-card>
+      </div>
+    </div>
+  </div>
+</div>

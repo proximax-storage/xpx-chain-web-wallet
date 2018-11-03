@@ -1,0 +1,152 @@
+<div class="mt-3rem mb-3rem animated fadeIn">
+
+
+  <div class="container-fluid">
+    <div class="row ">
+      <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
+        <mdb-card>
+          <mdb-card-header class="background-gold white-text text-align-center py-4">
+            <img src="assets/images/logo/logo-white.png" style="width: 300px;">
+          </mdb-card-header>
+          <ng-container>
+
+
+            <!-- Nav Tabs -->
+            <mdb-tabset class="py-4" #staticTabs [buttonClass]="'md-tabs background-gold-md-tabs  tabs-3'" [contentClass]="''">
+              <!--Panel 1-->
+              <mdb-tab heading="All">
+                <div class="row">
+                  <div class="col-12">
+                    <!-- Tabset tabs -->
+                    <div class="container-fluid">
+                      <div class="row">
+                        <div class="col-md-3" style="overflow-y: auto;     max-height: 340px;">
+                          <div class="list-group">
+                            <ng-container *ngFor="let item of listPoll; let i=index">
+                              <a href="javascript:void(0);" (click)="getDataPull(item['poll'])" class="list-group-item  waves-light" mdbWavesEffect>
+                                <h5>
+                                  <mdb-badge color="blue" *ngIf="item['poll']['type'] =='1'"> POI</mdb-badge>
+                                  <mdb-badge color="blue" *ngIf="item['poll']['type'] =='2'"> whrite</mdb-badge>
+                                  <label class="mt-1rm-left"> {{item['poll']['title']}}
+                                  </label>
+                                </h5>
+                              </a>
+                            </ng-container>
+                          </div>
+                        </div>
+                        <div class="col-md-9">
+                          <div class="row-fluid  mb-3" *ngIf="showDetail">
+                            <!-- Title -->
+                            <h2 class="card-title ">
+                              <strong> {{title}}</strong>
+                            </h2>
+                            <!-- Subtitle -->
+                            <h5 class="font-weight-bold grey-text py-2 ">
+                              Poll Address: {{address}}
+                            </h5>
+                            <h4>
+                              <mdb-badge color="blue" *ngIf="type =='1'"> POI</mdb-badge>
+                              <mdb-badge color="blue" *ngIf="type =='2'"> whrite</mdb-badge>
+                              <label class="mt-1rm-left" for=""> Date of ending: {{doe | date: 'dd/MM/yyyy h:MM:ss TT'}}</label>
+                            </h4>
+                            <div class="alert background-info white-text" role="alert">
+                              {{description.description}}
+                            </div>
+                          </div>
+                          <div class="row-fluid  mb-3" *ngIf="!showDetail">
+                            <h1>
+                              <<=consult the polls </h1>
+                          </div>
+
+                          <ng-container *ngIf="showDetail">
+                            <!-- Nav Tabs -->
+                            <mdb-tabset #staticTabs [buttonClass]="'md-tabs tabs-4 pills-secondary white mb-2'" [contentClass]="''">
+                              <!--Panel 1-->
+                              <mdb-tab heading="Vote">
+                                <div class="row  around-lg around-md   between-xs   between-sm  pb-20">
+                                  <div class="col-10">
+                                    <ng-container *ngFor="let enum of  keyObject(link); let i = index">
+                                      <div class="form-check form-check-inline">
+                                        <input type="radio" class="form-check-input" [value]='link[enum]' id="{{enum}}" name="inlineMaterialRadiosExample" mdbInputDirective
+                                          [(ngModel)]="radioSelected" (ngModelChange)="valuechek($event)">
+                                        <label class="form-check-label" for={{enum}}>{{enum}}</label>
+                                      </div>
+                                    </ng-container>
+
+                                  </div>
+
+                                  <div class="col-6">
+                                    <form [formGroup]="createpollsForm" (ngSubmit)="create()">
+                                      <!-- Password -->
+                                      <div class="md-form mt-5">
+                                        <input type="password" autocomplete="off" formControlName="password" required id="password" class="form-control" mdbInputDirective
+                                          data-success="Valid password" [errorMessage]="getError('password')">
+                                        <label for="password">password</label>
+                                      </div>
+
+                                      <div class="mt-4rm">
+                                        <div class="row ">
+                                          <div class="mx-auto">
+                                            <div class="row">
+                                              <div class="col-xs-12">
+                                                <button mdbBtn color="default" size="lg" rounded="true" class="waves-light" mdbWavesEffect type="submit">Create</button>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </form>
+                                  </div>
+
+                                </div>
+
+
+
+
+                              </mdb-tab>
+                              <!--Panel 2-->
+                              <mdb-tab heading="Result">
+                                <div class="row" *ngIf="showResult">
+                                  <div class="col-6">
+
+
+                                    <highcharts-chart [Highcharts]="Highcharts" [options]="chartOptions" style="width: 100%; height: 400px; display: block;"></highcharts-chart>
+                                  </div>
+                                </div>
+                              </mdb-tab>
+                            </mdb-tabset>
+
+                          </ng-container>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </mdb-tab>
+              <!--Panel 2-->
+              <mdb-tab heading="Ongoing">
+                <div class="row">
+                  <div class="col-12">
+                    <br>
+
+                  </div>
+                </div>
+              </mdb-tab>
+              <!--Panel 3-->
+              <mdb-tab heading="Ended">
+                <div class="row">
+                  <div class="col-12">
+                    <br>
+
+                  </div>
+                </div>
+              </mdb-tab>
+            </mdb-tabset>
+            <mdb-card-body class="px-lg-5 backg-beige">
+            </mdb-card-body>
+          </ng-container>
+        </mdb-card>
+      </div>
+    </div>
+  </div>
+</div>
