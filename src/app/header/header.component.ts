@@ -254,7 +254,7 @@ export class HeaderComponent implements OnInit {
             'class': '',
             'icon': 'fa fa-codepen',
             'rol': true,
-            'link':AppConfig.routes.apostille,
+            'link': `${AppConfig.routes.apostille}`,
             'show': true,
             'submenu': {}
           },
@@ -264,7 +264,7 @@ export class HeaderComponent implements OnInit {
             'class': '',
             'icon': 'fa fa-codepen',
             'rol': true,
-            'link': AppConfig.routes.audiApostille,
+            'link': `${AppConfig.routes.audiApostille}`,
             'show': true,
             'submenu': {}
           },

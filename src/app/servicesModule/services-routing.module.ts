@@ -37,6 +37,17 @@ const routes: Routes = [
     canActivate: [LoggedGuard]
   },
   {
+    path: `${AppConfig.routes.apostille}`,
+    component: AuditApostilleComsponent,
+    canActivate: [LoggedGuard]
+  },
+  {
+    path: `${AppConfig.routes.audiApostille}`,
+    component: CreateApostilleComponent,
+    canActivate: [LoggedGuard]
+  },
+  
+  {
     path: `${AppConfig.routes.services}`,
     component: ServicesComponent,
     canActivate: [LoggedGuard]
