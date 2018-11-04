@@ -63,7 +63,7 @@
                             <mdb-tabset #staticTabs [buttonClass]="'md-tabs tabs-4 pills-secondary white mb-2'" [contentClass]="''">
                               <!--Panel 1-->
                               <mdb-tab heading="Vote">
-                                <div class="row  around-lg around-md   between-xs   between-sm  pb-20">
+                                <div class="row  around-lg around-md   between-xs   between-sm  pb-20" *ngIf="showVote">
                                   <div class="col-10">
                                     <ng-container *ngFor="let enum of  keyObject(link); let i = index">
                                       <div class="form-check form-check-inline">
@@ -98,7 +98,45 @@
                                     </form>
                                   </div>
 
+
                                 </div>
+                                <div class="row text-align-center" *ngIf="pollFinished">
+                                  <div class="col-12">
+                                    <div class="alert alert-danger" role="alert">
+                                      <h3>
+                                        <p class="text-danger">This poll has ended</p>
+                                      </h3>
+                                    </div>
+                                  </div>
+
+                                </div>
+                                <div class="row text-align-center" *ngIf="whitelist">
+                                  <div class="col-12">
+                                    <div class="alert alert-danger" role="alert">
+                                      <h3>
+                                        <p class="text-danger">You are not on the Whitelist</p>
+                                      </h3>
+
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="row text-align-center" *ngIf="voteCast">
+                                  <div class="col-12">
+                                    <div class="alert alert-danger" role="alert">
+                                      <h3>
+                                        <p class="text-danger"> vote cast</p>
+                                      </h3>
+                                    </div>
+                                  </div>
+                                </div>
+                                <!-- <div class="row" *ngIf="issueList > 0">
+
+
+                                  <h3>
+                                    <p class="text-danger">  vote cast</p>
+                                  </h3>
+
+                                </div> -->
 
 
 

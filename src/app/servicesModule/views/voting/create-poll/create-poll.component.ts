@@ -94,13 +94,10 @@ export class CreatePollComponent implements OnInit {
       const control = <FormArray>this.createpollForm.controls['whiteList'];
 
       if (control.length > 0 && this.whiteList) {
-
-        console.log("entre aqui")
         this.validateformWhiteLis = false
         this.messageWhiteLis = ''
 
       } else if (this.whiteList) {
-        console.log("entre aqui true")
         this.validateformWhiteLis = true;
         this.messageWhiteLis = 'add at least one address'
       }
@@ -167,10 +164,6 @@ export class CreatePollComponent implements OnInit {
   * @memberof LoginComponent
   */
   getErrorGroup(param, name) {
-    // console.log(String(name))
-
-    // console.log(this.createpollForm.get(param).get(String(name)).getError('required'))
-
     if (this.createpollForm.get(param).get(String(name)).getError('required')) {
       return `This field is required`;
     } else if (this.createpollForm.get(param).get(String(name)).getError('minlength')) {
@@ -185,14 +178,7 @@ export class CreatePollComponent implements OnInit {
   create() {
    
     this.createpollForm.valid
-
-    console.log("validateformOptions", this.validateformOptions)
-    console.log("validateformWhiteLis", this.validateformWhiteLis)
-    console.log("validateformDate", this.validateformDate)
     this.validateform = (!this.validateformOptions && !this.validateformWhiteLis && !this.validateformDate) ? false : true;
-    console.log(this.validateform)
-
-    console.log("this.createpollForm.valid", this.createpollForm.valid)
     if (this.createpollForm.valid && !this.validateform) {
 
       const common = {
@@ -214,8 +200,6 @@ export class CreatePollComponent implements OnInit {
     const WhiteList: WhiteList = {
       whiteList: this.createpollForm.get('whiteList').value
     }
-
-    // console.log("dormoati de fecha",doe );
     let optionsForm = this.createpollForm.get('options').value
     this.keyObject(this.createpollForm.get('options').value).forEach(element => {
       strings.push(optionsForm[element])
@@ -272,13 +256,6 @@ export class CreatePollComponent implements OnInit {
         this.sendaccountPoll(datapoll[element], accountPoll.address.plain(), common.privateKey);
       });
     }
-
-
-    // console.log(this.nemProvider.generateNewAccount(this.walletService.network).privateKey)
-    // this..sendaccountPoll(element, datapoll, accountPoll,common);
-    // console.log("accountPoll",datapoll)
-
-    // const orderedAddresses = Object.keys(addressLink).map((option) => addressLink[option]);
 
     const PollRoot: PollRoot = {
       poll: {

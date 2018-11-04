@@ -7,6 +7,8 @@ import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { Address, UInt64, Account, TransferTransaction, Transaction } from 'nem2-sdk';
 import { first } from "rxjs/operators";
 import * as Highcharts from 'highcharts';
+import { Observer, BehaviorSubject, Subject, ReplaySubject } from 'rxjs';
+import { Observable } from 'rxjs/internal/Observable';
 
 @Component({
   selector: 'app-polls',
@@ -14,29 +16,38 @@ import * as Highcharts from 'highcharts';
   styleUrls: ['./polls.component.scss']
 })
 export class PollsComponent implements OnInit {
-
+  private _transConfirm = new ReplaySubject(1);
+  // private _transConfirm = new Subject<DataStoreService[]>();
+  private _transConfirm$: Observable<any> = this._transConfirm.asObservable();
   Highcharts = Highcharts;
-  chartOptions:object;
+  chartOptions: object;
   privateKey: string = '01E4B2794BD5EAC9A2A20C1F8380EF79EBB7F369A5A6040291DB3875867F4727';
   listPoll: Array<any>;
   account: Account
   listPolloption: Array<any>;
   showDetail = false;
-  showResult=false;
+  showResult = false;
   address: string;
   doe: string;
   publicKey: string;
   title: string;
   type: string;
   description: any;
+  resultinftrans: any
   formData: any
   createpollsForm: FormGroup;
   options: any;
+  whiteList: any;
   link: any;
   radioSelected: any
   radio: any
   keyObject = Object.keys;
   validateform = false;
+  pollFinished = false;
+  voteCast = false;
+  showVote = false;
+  whitelist = false;
+  issueList: any =[]
   stringsPubliKey: any
   strings: any
   @BlockUI() blockUI: NgBlockUI;
@@ -47,7 +58,7 @@ export class PollsComponent implements OnInit {
     private nemProvider: NemProvider,
     private sharedService: SharedService,
   ) {
-  
+
 
   }
 
@@ -66,40 +77,40 @@ export class PollsComponent implements OnInit {
         this.blockUI.stop(); // Stop blocking
         console.error(error);
       })
+
   }
 
-  createcharts(data:any){
-    this.showResult =true;
-console.log(data)
+  createcharts(data: any) {
+    this.showResult = true;
     this.chartOptions = {
       chart: {
-          plotBackgroundColor: null,
-          plotBorderWidth: null,
-          plotShadow: false,
-          type: 'pie'
+        plotBackgroundColor: null,
+        plotBorderWidth: null,
+        plotShadow: false,
+        type: 'pie'
       },
       title: {
-          text: 'results '
+        text: 'results '
       },
       tooltip: {
-          pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
       },
       plotOptions: {
-          pie: {
-              allowPointSelect: true,
-              cursor: 'pointer',
-              dataLabels: {
-                  enabled: true
-              },
-              showInLegend: true
-          }
+        pie: {
+          allowPointSelect: true,
+          cursor: 'pointer',
+          dataLabels: {
+            enabled: true
+          },
+          showInLegend: true
+        }
       },
       series: [{
         name: 'Brands',
         colorByPoint: true,
-        data:data
-    }]
-  }
+        data: data
+      }]
+    }
 
 
 
@@ -109,12 +120,22 @@ console.log(data)
   }
 
   getDataPull(data) {
+
+    while (this.issueList.length > 0) {
+      this.issueList.pop();
+    }
+
+    this.issueList=[]
     this.blockUI.start('Loading...'); // Start blocking
     this.address = data['address']
     this.doe = data['doe']
     this.publicKey = data['publicKey']
-    this.title = data['title']
-    this.type = data['type']
+    this.title = data['title'];
+    this.type = data['type'];
+    this.pollFinished = false;
+    this.whitelist = false;
+    this.voteCast = false;
+    this.showVote = false;
     const publicAccount = this.nemProvider.createPublicAccount(this.publicKey, this.walletService.network);
     this.nemProvider.getAllTransactionsFromAccount(publicAccount).subscribe(
       (infTrans: Transaction[]) => {
@@ -130,14 +151,38 @@ console.log(data)
             this.options = element['options'];
             this.link = this.options.link;
             this.stringsPubliKey = this.options.stringsPubliKey;
-
             this.strings = this.options.strings;
+           
+          } else if (Object.keys(element)[0] === 'whiteList') {
+            this.whiteList = element['whiteList'];
+           
           }
         });
-        this.blockUI.stop();
+
         this.showDetail = true;
         // 
-        this.createForm()
+        let now = (new Date()).getTime();
+        if (this.formData.doe < now) {
+          this.blockUI.stop();
+          this.pollFinished = true;
+          this.showVote = false;
+        } else {
+          this.stringsPubliKey.forEach((element, index) => {
+
+            this.ifvoted(element)
+
+          })
+          // this._transConfirm.next([])
+          this._transConfirm$.subscribe(
+            result => {
+              if (result.indexOf(this.walletService.currentAccount.address) > -1) {
+                this.voteCast = false;
+                this.issueList.push("vote cast");
+              }
+              this.checkValidVote()
+            })
+        }
+
         this.result()
       },
       error => {
@@ -148,11 +193,65 @@ console.log(data)
     );
 
   }
-
+  //returns wether current use;r can vote on the poll(by whitelist, not by doe)
+  isVotable(headerData, whitelist) {
+    let type = ("type" in headerData) ? (headerData.type) : (headerData.formData.type);
+    if (type === '1') {
+      return true;
+    }
+    let address = this.walletService.currentAccount.address;
+    if (type === '2') {
+      return (whitelist.indexOf(address) > -1);
+    }
+  }
   valuechek(value: string) {
     this.radio = value.replace(/['"]+/g, '')
   }
+  checkValidVote() {
+    if (this.formData.type === "2") {
+      if (!this.isVotable(this.formData, this.whiteList)) {
+        // console.log("You are not on the Whitelist")
+        this.issueList.push("You are not on the Whitelist");
+        this.whitelist = true;
+      }
+    }
+    if (this.issueList.length == 0) {
+      this.createForm()
+      this.showVote = true;
+    } else if (this.issueList.length > 0  ) {
+      if(this.whitelist){
+        this.showVote = false;
+      }else{this.voteCast=true;}
+     
+    }
+  }
+  ifvoted(element) {
+    const publicAccount = this.nemProvider.createPublicAccount(element, this.walletService.network);
+    this.nemProvider.getAllTransactionsFromAccount(publicAccount).subscribe(
+      (infTrans: Transaction[]) => {
+        this.resultinftrans = infTrans.map((tran: any) => {
+          return tran.signer.address['address'];
+        })
+        this.blockUI.stop(); // Stop blocking
+        // this.validateVete(this.resultinftrans);
+        this._transConfirm.next(this.resultinftrans)
+
+      },
+      error => {
+        this.sharedService.showError('Error', '¡unexpected error!');
+        this.blockUI.stop(); // Stop blocking
+        console.error(error);
+      })
+
+
+  }
+
+  validateVete(result) {
+    return (result.indexOf(this.walletService.currentAccount.address) > -1)
+
+  }
   create() {
+
     if (this.createpollsForm.valid && !this.validateform) {
       const common = {
         password: this.createpollsForm.get('password').value
@@ -186,9 +285,7 @@ console.log(data)
     const signedTransaction = account.sign(transferTransaction);
     this.blockUI.start('Loading...'); // Start blocking
 
-    console.log("firma:",signedTransaction.hash);
-
-    this.nemProvider.getTransactionStatusError(signedTransaction.hash).subscribe(response=>  console.log(response))
+    this.nemProvider.getTransactionStatusError(signedTransaction.hash).subscribe(response => console.log(response))
     this.nemProvider.announce(signedTransaction).subscribe(
       x => {
         this.blockUI.stop(); // Stop blocking
@@ -203,16 +300,13 @@ console.log(data)
       });
 
   }
-
   result() {
-
-
     const datachar = []
     this.stringsPubliKey.forEach((element, index) => {
       const publicAccount = this.nemProvider.createPublicAccount(element, this.walletService.network);
       this.nemProvider.getAllTransactionsFromAccount(publicAccount).subscribe(
         (infTrans: Transaction[]) => {
-          datachar.push({name: this.strings[index] ,y:infTrans.length})
+          datachar.push({ name: this.strings[index], y: infTrans.length })
           this.createcharts(datachar);
         },
         error => {
