@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { BlockInfo, Listener, Address, AccountHttp } from "nem2-sdk/dist";
 import { environment } from "../environments/environment";
 import { ApiService } from "./shared/services/api.services";
-import { ServiceModuleService } from "./servicesModule/services/service-module.service";
+import { NodeService } from "./servicesModule/services/node.service";
 import * as Highcharts from 'highcharts';
 
 @Component({
@@ -10,7 +10,7 @@ import * as Highcharts from 'highcharts';
   template: `<block-ui>
                 <app-header></app-header>
                 <router-outlet></router-outlet>
-            
+
               </block-ui>`
 })
 export class AppComponent {
@@ -19,12 +19,13 @@ export class AppComponent {
   myParams: object = {};
   width = 100;
   height = 100;
+
   constructor(
     private apiService: ApiService,
-    private serviceModuleService: ServiceModuleService
+    private nodeService: NodeService
   ) {
-    this.serviceModuleService.nodeSelected();
-    console.log('NODE SELECTED::: ', this.serviceModuleService.nodeSelected());
+    const nodeSelected = this.nodeService.initNode();
+    console.log('NODE SELECTED::: ', nodeSelected);
   }
 
   /**

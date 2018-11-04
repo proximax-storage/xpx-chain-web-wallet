@@ -35,7 +35,7 @@ import { commonInterface, walletInterface } from '..';
 import { WalletService } from './wallet.service'
 import { Observable } from 'rxjs';
 import { mergeMap } from 'rxjs/operators'
-import { ServiceModuleService } from '../../servicesModule/services/service-module.service';
+import { NodeService } from '../../servicesModule/services/node.service';
 
 @Injectable({
   providedIn: 'root'
@@ -53,10 +53,8 @@ export class NemProvider {
   transactionStatusError: TransactionStatusError
   url: any;
 
-  constructor(private serviceModuleService: ServiceModuleService) {
-
-
-    this.url = `https://${this.serviceModuleService.getNode()}`;
+  constructor(private nodeService: NodeService) {
+    this.url = `https://${this.nodeService.getNodeSelected()}`;
     this.transactionHttp = new TransactionHttp(this.url);
     this.accountHttp = new AccountHttp(this.url);
     this.mosaicHttp = new MosaicHttp(this.url);

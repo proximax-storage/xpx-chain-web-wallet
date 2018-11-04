@@ -10,6 +10,7 @@ import { CreatePollComponent } from "./views/voting/create-poll/create-poll.comp
 import { PollsComponent } from './views/voting/polls/polls.component';
 import { CreateApostilleComponent } from './views/apostille/create-apostille/create-apostille.component';
 import { AuditApostilleComsponent } from './views/apostille/audit-apostille/audit-apostille.component';
+import { ServicesComponent } from "./views/services/services.component";
 
 
 const routes: Routes = [
@@ -18,24 +19,12 @@ const routes: Routes = [
     component: ExplorerComponent,
     canActivate: [LoggedGuard]
   },
-  /*{   
+  {
     path: `${AppConfig.routes.addNode}`,
     component: AddNodeComponent
   },{
     path: `${AppConfig.routes.selectNode}`,
     component: SelectNodeComponent
-  },*/
-
-  {
-    path: `${AppConfig.routes.apostille}`,
-    component: CreateApostilleComponent,
-    canActivate: [LoggedGuard]
-  },
-
-  {
-    path: `${AppConfig.routes.audiApostille}`,
-    component: AuditApostilleComsponent,
-    canActivate: [LoggedGuard]
   },
   {
     path: `${AppConfig.routes.createPoll}`,
@@ -46,15 +35,20 @@ const routes: Routes = [
     path: `${AppConfig.routes.polls}`,
     component: PollsComponent,
     canActivate: [LoggedGuard]
+  },
+  {
+    path: `${AppConfig.routes.services}`,
+    component: ServicesComponent,
+    canActivate: [LoggedGuard]
   }
-  
+
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
   declarations: [
-   
+
   ]
 })
 export class ServicesRoutingModule { }
