@@ -137,8 +137,11 @@ export class WalletService {
     console.log("2")
     if (common.isHW) {
       // this._mdboostrap.closeToastr();
+     
       return true;
     }
+
+    console.log(common.privateKey)
     if (!this.isPrivateKeyValid(common.privateKey) || !this.nemProvider.checkAddress(common.privateKey, net, acct.address)) {
       //   this._mdboostrap.closeToastr();
       setTimeout(() => {
