@@ -14,9 +14,10 @@ export const AppConfig: Config = {
     addNode: 'add-node',
     selectNode: 'select-node',
     explorer: 'explorer',
-    createPoll:'create-poll',    
-    polls:'polls',  
+    createPoll:'create-poll',
+    polls:'polls',
     service:'dashboard-service',
+    services:'services',
     notFound: 'not-found'
   }
 };
@@ -36,6 +37,7 @@ export const NameRoute = {
   [AppConfig.routes.explorer]: 'Explorer',
   [AppConfig.routes.createPoll]: 'Create a Poll',
   [AppConfig.routes.polls]: 'Vote and See Polls',
+  [AppConfig.routes.services]: 'Services',
   [AppConfig.routes.service]: ' Dashboard service',
   [AppConfig.routes.notFound]: '404 not found'
 }
@@ -57,6 +59,7 @@ export interface Config {
     createPoll:string;
     polls:string;
     service:string;
+    services: string;
     notFound: string;
   };
 }

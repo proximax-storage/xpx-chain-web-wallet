@@ -15,6 +15,7 @@ export interface HorizontalHeaderInterface {
   importWallet: Header;
   transactions: Header;
   login: Header;
+  services: Header;
   signout: Header;
 }
 
@@ -135,7 +136,7 @@ export class HeaderComponent implements OnInit {
         'show': true,
         'submenu': {
           'addNode': {
-            'type': 'dropdown',
+            'type': 'default',
             'name': 'Add node',
             'class': '',
             'icon': '',
@@ -193,6 +194,16 @@ export class HeaderComponent implements OnInit {
         'icon': 'fa fa-home',
         'rol': false,
         'link': AppConfig.routes.login,
+        'show': true,
+        'submenu': {}
+      },
+      services: {
+        'type': 'default',
+        'name': 'Services',
+        'class': '',
+        'icon': 'fa fa-wrench',
+        'rol': true,
+        'link': AppConfig.routes.services,
         'show': true,
         'submenu': {}
       },
