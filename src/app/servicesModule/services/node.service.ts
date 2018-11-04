@@ -23,8 +23,9 @@ export class NodeService {
   initNode() {
     if (this.getNodeSelected() === null) {
       this.setNode(environment.nodeDefault);
-      return environment.nodeDefault;
     }
+
+    return this.getNodeSelected();
   }
 
   /**
