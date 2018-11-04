@@ -18,6 +18,8 @@ export const AppConfig: Config = {
     polls:'polls',
     service:'dashboard-service',
     services:'services',
+    account:'account',
+    explorerFile:'explorer-file',
     notFound: 'not-found'
   }
 };
@@ -34,10 +36,12 @@ export const NameRoute = {
   [AppConfig.routes.transferTransaction]: 'Transfer',
   [AppConfig.routes.addNode]: 'Add node',
   [AppConfig.routes.selectNode]: 'Select node',
-  [AppConfig.routes.explorer]: 'Explorer',
+  [AppConfig.routes.explorer]: 'Explorer Transaction',
+  [AppConfig.routes.explorerFile]: 'Explorer File',
   [AppConfig.routes.createPoll]: 'Create a Poll',
   [AppConfig.routes.polls]: 'Vote and See Polls',
   [AppConfig.routes.services]: 'Services',
+  [AppConfig.routes.account]: 'Account',
   [AppConfig.routes.service]: ' Dashboard service',
   [AppConfig.routes.notFound]: '404 not found'
 }
@@ -60,6 +64,8 @@ export interface Config {
     polls:string;
     service:string;
     services: string;
+    account: string;
+    explorerFile: string;
     notFound: string;
   };
 }

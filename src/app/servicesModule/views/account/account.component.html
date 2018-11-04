@@ -1,0 +1,121 @@
+<div class="container-fluid mt-3rem">
+  <div class="row">
+    <!-- PANEL 1 -->
+    <div class="col-sm-12 col-lg-5 mb-3rem mx-auto">
+      <div class="border-bottom-title">
+        <span class="font-title">{{titleAccountInformation}}</span>
+      </div>
+      <div class="row">
+        <div class="col-10">
+          <div class="md-form mt-5">
+            <i class="fa fa-user prefix text-gris"></i>
+            <input [mdbValidate]="false" [(ngModel)]="address" readonly type="text" autocomplete="off" required id="walletname" class="form-control"
+              mdbInputDirective data-success="Valid address">
+            <label class="active" for="address">Address</label>
+          </div>
+        </div>
+        <div class="col-2 d-flex align-items-center">
+          <i mdbWavesEffect (click)="copyMessage()" ngxClipboard [cbContent]="address" style="font-size: 1.5rem; padding-top: 35px;"
+            class="fa fa-paste prefix text-gris cursor-pointer"></i>
+        </div>
+      </div>
+      <div class="md-form mt-5">
+        <i class="fa fa-key prefix text-gris"></i>
+        <input readonly [mdbValidate]="false" [(ngModel)]="publicKey" type="text" autocomplete="off" required id="publicKey" class="form-control"
+          mdbInputDirective data-success="Valid Public key">
+        <label class="active" for="publicKey">Public key</label>
+      </div>
+      <div class="md-form mt-5">
+        <i class="fa fa-line-chart prefix text-gris"></i>
+        <input readonly [mdbValidate]="false" [(ngModel)]="importanceScore" type="text" autocomplete="off" required id="importanceScore"
+          class="form-control" mdbInputDirective data-success="Valid Wallet name">
+        <label class="active" for="importanceScore">Importance score</label>
+      </div>
+      <div class="md-form mt-5">
+        <i class="fa fa-credit-card prefix text-gris"></i>
+        <input readonly [mdbValidate]="false" [(ngModel)]="vestedBalance" type="text" autocomplete="off" required id="vestedBalnce"
+          class="form-control" mdbInputDirective data-success="Valid Wallet name">
+        <label class="active" for="vestedBalnce">Vested balance</label>
+      </div>
+      <!-- <div class="col-12 background-gold buttons" mdbBtn mdbWavesEffect>
+        <span style="font-size:12px">Add a new account into wallet</span>
+      </div> -->
+    </div>
+
+    <!-- PANEL 2 -->
+    <div class="col-sm-12 col-lg-7">
+      <div class="border-bottom-title">
+        <span class="font-title">{{titlePrivateKey}}</span>
+      </div>
+      <div class="card background-gold text-center z-depth-2 mt-5">
+        <div class="card-body">
+          <p class="white-text mb-0">{{descriptionPrivateKey}}</p>
+        </div>
+      </div>
+
+
+
+      <ng-container *ngIf="privateKey !== ''">
+        <div class="row">
+          <div class="col-10">
+            <div class="md-form mt-5">
+              <i class="fa fa-key prefix text-gris"></i>
+              <input readonly [mdbValidate]="false" [(ngModel)]="privateKey" type="text" autocomplete="off" required id="privateKey" class="form-control"
+                mdbInputDirective>
+              <label class="active" for="privateKey">Private key</label>
+            </div>
+          </div>
+          <div class="col-2 d-flex align-items-center">
+            <i mdbWavesEffect (click)="copyMessage()" ngxClipboard [cbContent]="privateKey" style="font-size: 1.5rem; padding-top: 35px;"
+              class="fa fa-paste prefix text-gris cursor-pointer"></i>
+            <i mdbWavesEffect (click)="privateKey = ''" ngxClipboard style="font-size: 1.5rem; padding-top: 35px; padding-left: 15px;" class="fa fa-trash prefix text-gris cursor-pointer"></i>
+          </div>
+        </div>
+      </ng-container>
+
+
+      <div class="row">
+        <div class="col-10">
+          <div class="md-form mt-5" id="container-password">
+            <i class="fa fa-lock prefix text-gris"></i>
+            <input [mdbValidate]="false" [(ngModel)]="password" type="password" autocomplete="off" required id="password" class="form-control"
+              mdbInputDirective data-success="Valid password">
+            <label for="password">Enter your wallet password</label>
+          </div>
+        </div>
+        <div class="col-2 d-flex align-items-center">
+          <i mdbWavesEffect (click)="decryptWallet()" ngxClipboard [cbContent]="address" style="font-size: 1.5rem; padding-top: 35px;"
+            class="fa fa-external-link prefix text-gris cursor-pointer"></i>
+        </div>
+      </div>
+
+      <ng-container *ngIf="showPanelPrivateKey">
+        <div class="md-form mt-5" id="container-password">
+          <i class="fa fa-external-link prefix text-gris"></i>
+          <input type="text" autocomplete="off" required id="exportMobile" class="form-control" mdbInputDirective data-success="Valid export mobile">
+          <label for="exportMobile">Export to mobile</label>
+        </div>
+        <div class="row-fluid mx-auto">
+          <div style="padding-top: 5px" class="col-xs-12 col-md-5 background-gold buttons" mdbBtn mdbWavesEffect>
+            <span style="font-size:12px">Share account into QR</span>
+          </div>
+          <div style="padding-top: 5px" class="col-xs-12 col-md-6 background-gold buttons" mdbBtn mdbWavesEffect>
+            <span style="font-size:12px">Export wallet QR (Android and IOS)</span>
+          </div>
+        </div>
+        <div class="md-form mt-5" id="container-password">
+          <i class="fa fa-lock prefix text-gris"></i>
+          <input type="text" autocomplete="off" required id="backupWallet" class="form-control" mdbInputDirective data-success="Valid backup wallet">
+          <label for="backupWallet">Backup wallet</label>
+        </div>
+
+        <div class="card background-gold text-center z-depth-2 mt-5">
+          <div class="card-body">
+            <p class="white-text mb-0">{{descriptionBackupWallet}}</p>
+          </div>
+        </div>
+      </ng-container>
+
+    </div>
+  </div>
+</div>

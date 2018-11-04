@@ -1,0 +1,23 @@
+.border-bottom-title{
+  border-bottom: 2px solid #d3b783;
+  padding-bottom: 5px;
+}
+
+.font-title{
+  font-size: 1.2rem;
+  color: #969696;
+  font-weight: 400;
+}
+
+.buttons{
+  cursor: pointer;
+  border-radius: 20px;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+  font-weight: 500;
+  text-transform: uppercase;
+  color: white;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  text-align: center;
+  font-size: 1.1rem;
+}

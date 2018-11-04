@@ -15,6 +15,7 @@ export interface HorizontalHeaderInterface {
   importWallet: Header;
   transactions: Header;
   login: Header;
+  account: Header;
   services: Header;
   signout: Header;
 }
@@ -197,6 +198,16 @@ export class HeaderComponent implements OnInit {
         'show': true,
         'submenu': {}
       },
+      account: {
+        'type': 'default',
+        'name': 'Account',
+        'class': '',
+        'icon': 'fa fa-vcard',
+        'rol': true,
+        'link': AppConfig.routes.account,
+        'show': true,
+        'submenu': {}
+      },
       services: {
         'type': 'default',
         'name': 'Services',
@@ -250,7 +261,7 @@ export class HeaderComponent implements OnInit {
           },
           'apostille': {
             'type': 'default',
-            'name': 'Apostille',
+            'name': 'Apostille Create',
             'class': '',
             'icon': 'fa fa-codepen',
             'rol': true,
@@ -260,7 +271,7 @@ export class HeaderComponent implements OnInit {
           },
           'auditApostille': {
             'type': 'default',
-            'name': 'Audit Apostille',
+            'name': 'Apostille Audit',
             'class': '',
             'icon': 'fa fa-codepen',
             'rol': true,

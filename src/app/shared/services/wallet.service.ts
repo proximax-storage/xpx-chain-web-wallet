@@ -126,19 +126,18 @@ export class WalletService {
     const alg = algo || this.algo;
     // Try to generate or decrypt key
 
-    console.log("1")
+    console.log(common, acct, alg)
     if (!crypto.passwordToPrivatekey(common, acct, alg)) {
       console.log("sssss")
       setTimeout(() => {
         this.sharedService.showError('Error', '¡Invalid password!');
-
       }, 500);
       return false;
     }
     console.log("2", common.isHW)
     if (common.isHW) {
       // this._mdboostrap.closeToastr();
-     
+
       return true;
     }
 
