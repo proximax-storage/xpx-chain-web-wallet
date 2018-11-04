@@ -135,7 +135,7 @@ export class WalletService {
       }, 500);
       return false;
     }
-    console.log("2")
+    console.log("2", common.isHW)
     if (common.isHW) {
       // this._mdboostrap.closeToastr();
       return true;

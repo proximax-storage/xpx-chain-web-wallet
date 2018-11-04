@@ -15,20 +15,20 @@ export class ServicesComponent implements OnInit {
 
   ngOnInit() {
 
-    const addNode = this.structureServices('fa fa-4x fa-pie-chart', 'Nodes', `Add and select node`,
+    const addNode = this.structureServices('img-add-node', 'Nodes', `Add and select node`,
       {
         createPoll: this.structureServiceRoute('Add node', `/${AppConfig.routes.addNode}`),
         selectNode: this.structureServiceRoute('Select node', `/${AppConfig.routes.selectNode}`)
       }, true
     );
 
-    const explorerFile = this.structureServices('fa fa-4x fa-pie-chart', 'File explorer', `File explorer`,
+    const explorerFile = this.structureServices('img-explorer-file', 'File explorer', `File explorer`,
       {
         createPoll: this.structureServiceRoute('File explorer', `/${AppConfig.routes.explorer}`)
       }, true
     );
 
-    const explorerTransaction = this.structureServices('fa fa-4x fa-pie-chart', 'Transaction explorer', `Explorer transaction`,
+    const explorerTransaction = this.structureServices('img-transaction', 'Transaction explorer', `Explorer transaction`,
       {
         createPoll: this.structureServiceRoute('Transaction explorer', `/${AppConfig.routes.explorer}`)
       }, true
@@ -81,10 +81,13 @@ export class ServicesComponent implements OnInit {
       {}, false
     );
 
-    const addressBook = this.structureServices('fa fa-compress', 'Address book',
-      `Use the changelly widget to buy ${this.coin} at the best rates!`,
-      {}, false
+    const addressBook = this.structureServices('fa fa-address-card', 'Address book',
+      `Assign labels to addresses to easily keep track of your contacts`,
+      {
+        manageAddress: this.structureServiceRoute('Manage address book', ''),
+      }, true
     );
+
 
     this.services = {
       explorerFile: explorerFile,
@@ -96,8 +99,8 @@ export class ServicesComponent implements OnInit {
       apostille: apostille,
       mosaics: mosaics,
       changellyInstantExchange: changellyInstantExchange,
-      addressBook: addressBook,
-      voting: voting
+      voting: voting,
+      addressBook: addressBook
     }
   }
 
