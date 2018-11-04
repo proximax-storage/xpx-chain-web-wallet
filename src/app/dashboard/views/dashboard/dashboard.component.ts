@@ -31,7 +31,7 @@ export class DashboardComponent implements OnInit {
   cantUnconfirmed = 0;
   dataSelected: Transaction;
   isLogged$: Observable<boolean>;
-  headElements = ['Account', 'Amount', 'Mosaic', 'Date'];
+  headElements = ['Recipient', 'Amount', 'Mosaic', 'Date'];
   subscriptions = [
     'transactionsUnconfirmed',
     'getTransConfirm'

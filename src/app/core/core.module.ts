@@ -5,6 +5,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MdbModule } from "../shared/moduls/mdb/mdb.module";
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { ClipboardModule } from 'ngx-clipboard';
 import {TransactionsComponent} from "../transactions/views/transactions/transactions.component";
 import {ReversePipePipe} from '../shared/pipe/reverse-pipe.pipe'
 import { DynamicFormModule } from '../shared/moduls/dynamic-form/dynamic-form.module';
@@ -17,6 +18,7 @@ const modules = [
   FormsModule,
   HttpClientModule,
   DynamicFormModule,
+  ClipboardModule
 ];
 
 @NgModule({

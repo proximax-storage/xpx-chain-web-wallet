@@ -15,6 +15,7 @@ export interface HorizontalHeaderInterface {
   importWallet: Header;
   transactions: Header;
   login: Header;
+  account: Header;
   services: Header;
   signout: Header;
 }
@@ -194,6 +195,16 @@ export class HeaderComponent implements OnInit {
         'icon': 'fa fa-home',
         'rol': false,
         'link': AppConfig.routes.login,
+        'show': true,
+        'submenu': {}
+      },
+      account: {
+        'type': 'default',
+        'name': 'Account',
+        'class': '',
+        'icon': 'fa fa-vcard',
+        'rol': true,
+        'link': AppConfig.routes.account,
         'show': true,
         'submenu': {}
       },

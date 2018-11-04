@@ -31,7 +31,6 @@ export class TransferComponent implements OnInit {
 
   ngOnInit() {
     this.contacts = this.ServiceModuleService.getBooksAddress();
-    console.log(this.contacts.length);
     this.createForm();
     this.createFormContact();
   }
@@ -39,8 +38,8 @@ export class TransferComponent implements OnInit {
   createForm() {
     this.transferForm = this.fb.group({
       acountRecipient: ['', [Validators.required, Validators.minLength(46), Validators.maxLength(46)]],
-      amount: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(20)]],
-      message: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(80)]],
+      amount: ['', [Validators.maxLength(20)]],
+      message: ['', [Validators.maxLength(80)]],
       password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]]
     });
   }
