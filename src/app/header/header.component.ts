@@ -250,7 +250,7 @@ export class HeaderComponent implements OnInit {
           },
           'apostille': {
             'type': 'default',
-            'name': 'Apostille',
+            'name': 'Apostille Create',
             'class': '',
             'icon': 'fa fa-codepen',
             'rol': true,
@@ -260,7 +260,7 @@ export class HeaderComponent implements OnInit {
           },
           'auditApostille': {
             'type': 'default',
-            'name': 'Audit Apostille',
+            'name': 'Apostille Audit',
             'class': '',
             'icon': 'fa fa-codepen',
             'rol': true,

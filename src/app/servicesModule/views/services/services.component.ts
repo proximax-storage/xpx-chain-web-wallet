@@ -37,7 +37,7 @@ export class ServicesComponent implements OnInit {
     const voting = this.structureServices('fa fa-4x fa-pie-chart', 'Voting', `Create and vote on polls`,
       {
         createPoll: this.structureServiceRoute('Create a Poll', `/${AppConfig.routes.createPoll}`),
-        audiApostille: this.structureServiceRoute('Vote and See Polls', `/${AppConfig.routes.apostille}`),
+        audiApostille: this.structureServiceRoute('Vote and See Polls', `/${AppConfig.routes.audiApostille}`),
       }, true
     );
 

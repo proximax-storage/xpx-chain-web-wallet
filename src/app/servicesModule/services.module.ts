@@ -29,7 +29,7 @@ import { AccountComponent } from './views/account/account.component';
     AuditApostilleComsponent,
     HighchartsChartComponent,
     ServicesComponent,
-    ServicesComponent
+    AccountComponent
   ],
   schemas: [NO_ERRORS_SCHEMA]
 })
