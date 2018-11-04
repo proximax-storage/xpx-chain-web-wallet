@@ -18,6 +18,7 @@ export const AppConfig: Config = {
     polls:'polls',
     service:'dashboard-service',
     services:'services',
+    account:'services',
     notFound: 'not-found'
   }
 };
@@ -38,6 +39,7 @@ export const NameRoute = {
   [AppConfig.routes.createPoll]: 'Create a Poll',
   [AppConfig.routes.polls]: 'Vote and See Polls',
   [AppConfig.routes.services]: 'Services',
+  [AppConfig.routes.account]: 'Account',
   [AppConfig.routes.service]: ' Dashboard service',
   [AppConfig.routes.notFound]: '404 not found'
 }
@@ -60,6 +62,7 @@ export interface Config {
     polls:string;
     service:string;
     services: string;
+    account: string;
     notFound: string;
   };
 }

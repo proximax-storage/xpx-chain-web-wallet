@@ -11,6 +11,7 @@ import { HighchartsChartComponent } from './highcharts-chart.component';
 import { CreateApostilleComponent } from './views/apostille/create-apostille/create-apostille.component';
 import { AuditApostilleComsponent } from './views/apostille/audit-apostille/audit-apostille.component';
 import { ServicesComponent } from "./views/services/services.component";
+import { AccountComponent } from './views/account/account.component';
 
 @NgModule({
   imports: [
@@ -27,6 +28,7 @@ import { ServicesComponent } from "./views/services/services.component";
     CreateApostilleComponent,
     AuditApostilleComsponent,
     HighchartsChartComponent,
+    ServicesComponent,
     ServicesComponent
   ],
   schemas: [NO_ERRORS_SCHEMA]

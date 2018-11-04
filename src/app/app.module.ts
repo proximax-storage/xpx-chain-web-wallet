@@ -22,7 +22,7 @@ import { HeaderVerticalComponent } from './header/component/header-vertical/head
     HeaderComponent,
     HeaderHorizontalComponent,
     HeaderRebSocialComponent,
-    HeaderVerticalComponent,
+    HeaderVerticalComponent
   ],
   imports: [
 

@@ -11,7 +11,7 @@ import { PollsComponent } from './views/voting/polls/polls.component';
 import { CreateApostilleComponent } from './views/apostille/create-apostille/create-apostille.component';
 import { AuditApostilleComsponent } from './views/apostille/audit-apostille/audit-apostille.component';
 import { ServicesComponent } from "./views/services/services.component";
-
+import { AccountComponent } from './views/account/account.component';
 
 const routes: Routes = [
   {
@@ -46,10 +46,14 @@ const routes: Routes = [
     component: CreateApostilleComponent,
     canActivate: [LoggedGuard]
   },
-  
   {
     path: `${AppConfig.routes.services}`,
     component: ServicesComponent,
+    canActivate: [LoggedGuard]
+  },
+  {
+    path: `${AppConfig.routes.account}`,
+    component: AccountComponent,
     canActivate: [LoggedGuard]
   }
 
