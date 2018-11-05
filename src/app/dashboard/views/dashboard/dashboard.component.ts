@@ -46,6 +46,7 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit() {
+    // DESTROY SUBSCRIPTION WHEN IS NOT LOGIN
     this.isLogged$ = this.loginService.getIsLogged();
     this.isLogged$.subscribe(
       response => {

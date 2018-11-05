@@ -99,7 +99,10 @@
                     </thead>
                     <tbody>
                       <tr class="mouse-pointer" *ngFor="let el of elementsConfirmed; let i = index" (click)="basicModal.show(); dataSelected = elementsConfirmed[i]">
-                        <th class="th-sm">{{el.address}}</th>
+                        <th class="th-sm">
+                          <i [ngStyle]="{'color': el.isRemitent === true ? 'green' : 'red' }" style="padding-right: 10px;" class="fa fa-send" aria-hidden="true"></i>
+                          {{el.address}}
+                        </th>
                         <td class="align-right th-lg">{{el.amount}}</td>
                         <td class="text-center th-lg">{{el.mosaic}}</td>
                         <td class="text-center th-lg">{{el.date}}</td>
@@ -120,7 +123,10 @@
                     </thead>
                     <tbody>
                       <tr class="mouse-pointer" *ngFor="let el of elementsUnconfirmed; let i = index" (click)="basicModal.show(); dataSelected = elementsUnconfirmed[i]">
-                        <th class="th-sm">{{el.address}}</th>
+                        <th class="th-sm">
+                          <i [ngStyle]="{'color': el.isRemitent === true ? 'green' : 'red' }" style="padding-right: 10px;" class="fa fa-send" aria-hidden="true"></i>
+                          {{el.address}}
+                        </th>
                         <td class="align-right th-lg">{{el.amount}}</td>
                         <td class="text-center th-lg">{{el.mosaic}}</td>
                         <td class="text-center th-lg">{{el.date}}</td>
