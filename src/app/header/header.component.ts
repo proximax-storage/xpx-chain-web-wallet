@@ -8,6 +8,7 @@ import { NodeService } from "../servicesModule/services/node.service";
 import { TransactionsService } from "../transactions/service/transactions.service";
 
 export interface HorizontalHeaderInterface {
+  home: Header;
   node: Header;
   dashboard: Header;
   nodeSelected: Header;
@@ -96,6 +97,16 @@ export class HeaderComponent implements OnInit {
    */
   buildHeader() {
     this.horizontalHeader = {
+      home: {
+        'type': 'default',
+        'name': 'Home',
+        'class': '',
+        'icon': 'fa fa-home',
+        'rol': false,
+        'link': AppConfig.routes.home,
+        'show': true,
+        'submenu': {}
+      },
       dashboard: {
         'type': 'default',
         'name': 'dashboard',

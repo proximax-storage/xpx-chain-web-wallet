@@ -1,3 +1,24 @@
-<p>
-  home works!
-</p>
+<div class="container mt-5rem separation">
+  <div class="row">
+    <div class="col-12 mx-auto">
+      <h1 class="text-align-center wallet-name">MOCD Wallet</h1>
+      <hr>
+      <h6 class="text-align-center wallet-name">The secure interface connecting to the MOCD platform</h6>
+    </div>
+
+    <div class="col-8 mt-3rem mx-auto">
+      <div class="row">
+        <ng-container *ngFor="let item of keyObject(arrayServices);">
+          <ng-container *ngIf="arrayServices[item].show">
+            <div class="col-sm-4 col-md-3 mt-3rem cursor-pointer" (mouseenter)="description = arrayServices[item].text" (mouseleave)="description = ''">
+              <div class="{{arrayServices[item].icon}} size-icon-services" aria-hidden="true"></div>
+            </div>
+          </ng-container>
+        </ng-container>
+      </div>
+      <div class="mt-3rem text-center">
+        <h6 class="text-align-center wallet-name">{{description}}</h6>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AppConfig } from "../../../config/app.config";
+import { ServiceModuleService } from "../../../servicesModule/services/service-module.service";
 
 @Component({
   selector: 'app-services',
@@ -11,37 +12,39 @@ export class ServicesComponent implements OnInit {
   keyObject = Object.keys;
   coin = 'XPX';
   services: Service;
-  constructor() { }
+  constructor(
+    private service: ServiceModuleService
+  ) { }
 
   ngOnInit() {
 
-    const addNode = this.structureServices('img-add-node', 'Nodes', `Add and select node`,
+    const addNode = this.service.structureServices('img-add-node', 'Nodes', `Add and select node`,
       {
         createPoll: this.structureServiceRoute('Add node', `/${AppConfig.routes.addNode}`),
         selectNode: this.structureServiceRoute('Select node', `/${AppConfig.routes.selectNode}`)
       }, true
     );
 
-    const explorerFile = this.structureServices('img-explorer-file', 'File explorer', `File explorer`,
+    const explorerFile = this.service.structureServices('img-explorer-file', 'File explorer', `File explorer`,
       {
         createPoll: this.structureServiceRoute('File explorer', `/${AppConfig.routes.explorer}`)
       }, true
     );
 
-    const explorerTransaction = this.structureServices('img-transaction', 'Transaction explorer', `Explorer transaction`,
+    const explorerTransaction = this.service.structureServices('img-transaction', 'Transaction explorer', `Explorer transaction`,
       {
         createPoll: this.structureServiceRoute('Transaction explorer', `/${AppConfig.routes.explorer}`)
       }, true
     );
 
-    const voting = this.structureServices('fa fa-4x fa-pie-chart', 'Voting', `Create and vote on polls`,
+    const voting = this.service.structureServices('fa fa-4x fa-pie-chart', 'Voting', `Create and vote on polls`,
       {
         createPoll: this.structureServiceRoute('Create a Poll', `/${AppConfig.routes.createPoll}`),
         audiApostille: this.structureServiceRoute('Vote and See Polls', `/${AppConfig.routes.audiApostille}`),
       }, true
     );
 
-    const apostille = this.structureServices('img-apostille', 'Apostille',
+    const apostille = this.service.structureServices('img-apostille', 'Apostille',
       'Use Apostille service to create blockchain based notarizations to time stamp, follow and audit file authenticity.',
       {
         addApostille: this.structureServiceRoute('Apostille create', `/${AppConfig.routes.apostille}`),
@@ -49,7 +52,7 @@ export class ServicesComponent implements OnInit {
       }, true
     );
 
-    const multisignature = this.structureServices('fa fa-user-plus', 'Multisignature and Multi-User Accounts',
+    const multisignature = this.service.structureServices('fa fa-user-plus', 'Multisignature and Multi-User Accounts',
       'Mutisig accounts are editable on-chain contracts, the most powerful way to secure funds, enable join accounts, and are the foundation of DAOs.',
       {
         convertAccountToMultisig: this.structureServiceRoute('Convert an account to multisig', ''),
@@ -58,7 +61,7 @@ export class ServicesComponent implements OnInit {
       }, false
     );
 
-    const nameSpace = this.structureServices('img-node', 'Namespaces & Subdomains',
+    const nameSpace = this.service.structureServices('img-node', 'Namespaces & Subdomains',
       'Namespaces are domain names. Each namespaces is unique and authenticates mosaics (assets) issued on it or on its subdomains',
       {
         createNamespace: this.structureServiceRoute('Create namespace', ''),
@@ -66,22 +69,22 @@ export class ServicesComponent implements OnInit {
       }, false
     );
 
-    const delegatedHarvesting = this.structureServices('fa fa-compress', 'Delegated Harvesting',
+    const delegatedHarvesting = this.service.structureServices('fa fa-compress', 'Delegated Harvesting',
       'Delegated haversting is the feature that allows "mining" even while your account is closed',
       {}, false
     );
 
-    const mosaics = this.structureServices('fa fa-compres', 'Mosaics',
+    const mosaics = this.service.structureServices('fa fa-compres', 'Mosaics',
       'The mosaics service, are assets that expose additional properties and other features. To be able to create a mosaic, an account must rent at least one root namespace.',
       {}, false
     );
 
-    const changellyInstantExchange = this.structureServices('fa fa-compress', 'Changelly Instant Exchange',
+    const changellyInstantExchange = this.service.structureServices('fa fa-compress', 'Changelly Instant Exchange',
       `Use the changelly widget to buy ${this.coin} at the best rates!`,
       {}, false
     );
 
-    const addressBook = this.structureServices('fa fa-address-card', 'Address book',
+    const addressBook = this.service.structureServices('fa fa-address-card', 'Address book',
       `Assign labels to addresses to easily keep track of your contacts`,
       {
         manageAddress: this.structureServiceRoute('Manage address book', `/${AppConfig.routes.addressBook}`),
@@ -101,16 +104,6 @@ export class ServicesComponent implements OnInit {
       changellyInstantExchange: changellyInstantExchange,
       voting: voting,
       addressBook: addressBook
-    }
-  }
-
-  structureServices(icon, title, text, route, show) {
-    return {
-      icon: icon,
-      title: title,
-      text: text,
-      route: route,
-      show: show
     }
   }
 

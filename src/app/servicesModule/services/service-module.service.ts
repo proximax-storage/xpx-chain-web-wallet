@@ -10,6 +10,27 @@ export class ServiceModuleService {
 
   }
 
+  /**
+   * Structure of services array
+   *
+   * @param {any} icon
+   * @param {any} title
+   * @param {any} text
+   * @param {any} route
+   * @param {any} show
+   * @returns
+   * @memberof ServiceModuleService
+   */
+  structureServices(icon, title, text, route, show) {
+    return {
+      icon: icon,
+      title: title,
+      text: text,
+      route: route,
+      show: show
+    }
+  }
+
 
   /**
    * Set book address
