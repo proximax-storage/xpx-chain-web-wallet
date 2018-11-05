@@ -42,14 +42,14 @@
 
               <div class="md-form mt-5" id="container-walletname">
                 <i class="fa fa-credit-card prefix text-gris"></i>
-                <input type="text" autocomplete="off" required formControlName="amount" id="amount" class="form-control" mdbInputDirective
+                <input type="text" autocomplete="off" formControlName="amount" id="amount" class="form-control" mdbInputDirective
                   data-success="Valid amount" [errorMessage]="getError('amount')">
                 <label for="recipient">Amount</label>
               </div>
 
               <div class="md-form mt-5" id="container-walletname">
                 <i class="fa fa-envelope prefix text-gris"></i>
-                <input type="text" autocomplete="off" required formControlName="message" id="message" class="form-control" mdbInputDirective
+                <input type="text" autocomplete="off" formControlName="message" id="message" class="form-control" mdbInputDirective
                   data-success="Valid message" [errorMessage]="getError('message')">
                 <label for="recipient">message</label>
               </div>
