@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormGroup, Validators, FormBuilder } from "@angular/forms";
 import { ServiceModuleService } from "../../../servicesModule/services/service-module.service";
 import { SharedService } from "../../../shared";
 
@@ -9,31 +10,77 @@ import { SharedService } from "../../../shared";
 })
 export class AddressBookComponent implements OnInit {
 
-  elementsConfirmed = [];
   headElements = ['Label', 'Account address', 'Actions'];
+  contactForm: FormGroup;
   contacts = [];
 
-  personList: Array<any> = [
-    { id: 1, name: 'Aurelia Vega', age: 30, companyName: 'Deepends', country: 'Spain', city: 'Madrid' },
-    { id: 2, name: 'Guerra Cortez', age: 45, companyName: 'Insectus', country: 'USA', city: 'San Francisco' },
-    { id: 3, name: 'Guadalupe House', age: 26, companyName: 'Isotronic', country: 'Germany', city: 'Frankfurt am Main' },
-    { id: 4, name: 'Aurelia Vega', age: 30, companyName: 'Deepends', country: 'Spain', city: 'Madrid' },
-    { id: 5, name: 'Elisa Gallagher', age: 31, companyName: 'Portica', country: 'United Kingdom', city: 'London' },
-  ];
-
   constructor(
+    private fb: FormBuilder,
     private serviceModuleService: ServiceModuleService,
     private sharedService: SharedService
   ) {
     this.contacts = this.serviceModuleService.getBooksAddress();
-    console.log(this.contacts);
   }
 
   ngOnInit() {
-    this.elementsConfirmed.push({
-      label: 'asdasd',
-      address: 'asdasd'
+    this.createFormContact();
+  }
+
+  createFormContact() {
+    this.contactForm = this.fb.group({
+      user: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(46)]],
+      address: ['', [Validators.required, Validators.minLength(46), Validators.maxLength(46)]]
     });
+  }
+
+
+  getError(control, typeForm? ,formControl?) {
+    const form = this.contactForm;
+    if (formControl === undefined) {
+      if (form.get(control).getError('required')) {
+        return `This field is required`;
+      } else if (form.get(control).getError('minlength')) {
+        return `This field must contain minimum ${form.get(control).getError('minlength').requiredLength} characters`;
+      } else if (form.get(control).getError('maxlength')) {
+        return `This field must contain maximum ${form.get(control).getError('maxlength').requiredLength} characters`;
+      }
+    } else {
+      if (form.controls[formControl].get(control).getError('required')) {
+        return `This field is required`;
+      } else if (form.controls[formControl].get(control).getError('minlength')) {
+        return `This field must contain minimum ${form.controls[formControl].get(control).getError('minlength').requiredLength} characters`;
+      } else if (form.controls[formControl].get(control).getError('maxlength')) {
+        return `This field must contain maximum ${form.controls[formControl].get(control).getError('maxlength').requiredLength} characters`;
+      } else if (form.controls[formControl].getError('noMatch')) {
+        return `Password doesn't match`;
+      }
+    }
+  }
+
+  saveContact() {
+    if (this.contactForm.valid) {
+      const dataStorage = this.serviceModuleService.getBooksAddress();
+      const books = { value: this.contactForm.get('address').value, label: this.contactForm.get('user').value };
+      if (dataStorage === null) {
+        this.serviceModuleService.setBookAddress([books]);
+        this.contactForm.reset();
+        this.sharedService.showSuccess('', `Successfully created user`);
+        this.contacts = this.serviceModuleService.getBooksAddress();
+        return;
+      }
+
+      const issetData = dataStorage.find(element => element.label === this.contactForm.get('user').value);
+      if (issetData === undefined) {
+        dataStorage.push(books);
+        this.serviceModuleService.setBookAddress(dataStorage);
+        this.contactForm.reset();
+        this.sharedService.showSuccess('', `Successfully created contact`);
+        this.contacts = this.serviceModuleService.getBooksAddress();
+        return;
+      }
+
+      this.sharedService.showError('User repeated', `The contact "${this.contactForm.get('user').value}" already exists`);
+    }
   }
 
   remove(label){

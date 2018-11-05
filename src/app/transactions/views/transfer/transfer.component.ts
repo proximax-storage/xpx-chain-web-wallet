@@ -82,7 +82,7 @@ export class TransferComponent implements OnInit {
         return `This field must contain minimum ${form.controls[formControl].get(control).getError('minlength').requiredLength} characters`;
       } else if (form.controls[formControl].get(control).getError('maxlength')) {
         return `This field must contain maximum ${form.controls[formControl].get(control).getError('maxlength').requiredLength} characters`;
-      } else if (this.transferForm.controls[formControl].getError('noMatch')) {
+      } else if (form.controls[formControl].getError('noMatch')) {
         return `Password doesn't match`;
       }
     }
