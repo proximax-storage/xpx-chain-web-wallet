@@ -1,0 +1,46 @@
+<div class="container mt-3rem">
+  <div class="row">
+    <div class="col-12">
+      <mdb-card>
+        <mdb-card-header class="background-gold white-text text-align-center py-4">
+          <img src="assets/images/logo/logo-white.png" style="width: 300px;">
+        </mdb-card-header>
+
+        <mdb-card-body class="backg-beige">
+          <div class="table-responsive table-striped">
+            <div class="card-body">
+              <div id="table" class="table-editable-no">
+                <div class="row">
+                  <div class="col-8">
+                    <span class="addbooks">Contacts</span>
+                  </div>
+                  <div class="col-4">
+                    <span class="table-add float-right mb-3 mr-2">
+                      <a class="text-add" (click)="add()">
+                        <mdb-icon icon="plus-square" size="2x"></mdb-icon>
+                      </a>
+                    </span>
+                  </div>
+                </div>
+                <table class="table table-bordered table-responsive-md table-striped text-center">
+                  <tr>
+                    <th *ngFor="let head of headElements; let i = index" scope="col" class="text-center">{{head}}</th>
+                  </tr>
+                  <tr *ngFor="let contact of contacts; let id = index">
+                    <td contenteditable="false">{{contact.label}}</td>
+                    <td contenteditable="false">{{contact.value}}</td>
+                    <td>
+                      <span class="table-remove">
+                        <button type="button" mdbBtn color="danger" rounded="true" size="sm" class="my-0" (click)="remove(contact.label)">Remove</button>
+                      </span>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+        </mdb-card-body>
+      </mdb-card>
+    </div>
+  </div>
+</div>

@@ -33,7 +33,7 @@ export class SharedService {
     this.toastrService.info(bodyMessage, title, options);
   }
 
-  closeAlertMsg(type: string = "") {}
+  closeAlertMsg(type: string = "") { }
 
   passwordConfirming(c: AbstractControl): { noMatch: boolean } {
     if (c.get('password').value !== c.get('confirm_password').value) {
@@ -41,6 +41,12 @@ export class SharedService {
         noMatch: true
       };
     }
+  }
+
+  removeItemFromArr(arr, item) {
+    var i = arr.indexOf(item);
+    arr.splice(i, 1);
+    return arr;
   }
 
 }

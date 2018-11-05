@@ -84,7 +84,7 @@ export class ServicesComponent implements OnInit {
     const addressBook = this.structureServices('fa fa-address-card', 'Address book',
       `Assign labels to addresses to easily keep track of your contacts`,
       {
-        manageAddress: this.structureServiceRoute('Manage address book', ''),
+        manageAddress: this.structureServiceRoute('Manage address book', `/${AppConfig.routes.addressBook}`),
       }, true
     );
 

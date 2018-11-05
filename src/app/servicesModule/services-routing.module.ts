@@ -12,6 +12,7 @@ import { CreateApostilleComponent } from './views/apostille/create-apostille/cre
 import { AuditApostilleComsponent } from './views/apostille/audit-apostille/audit-apostille.component';
 import { ServicesComponent } from "./views/services/services.component";
 import { AccountComponent } from './views/account/account.component';
+import { AddressBookComponent } from "./views/address-book/address-book.component";
 
 const routes: Routes = [
   {
@@ -54,6 +55,11 @@ const routes: Routes = [
   {
     path: `${AppConfig.routes.account}`,
     component: AccountComponent,
+    canActivate: [LoggedGuard]
+  },
+  {
+    path: `${AppConfig.routes.addressBook}`,
+    component: AddressBookComponent,
     canActivate: [LoggedGuard]
   }
 
