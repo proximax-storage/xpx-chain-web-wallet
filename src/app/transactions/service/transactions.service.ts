@@ -65,10 +65,10 @@ export class TransactionsService {
   }
 
   formatTransaction(data) {
+    let response = {};
     const date = `${data.deadline.value.monthValue()}/${data.deadline.value.dayOfMonth()}/${data.deadline.value.year()}`;
-    const isRemitent = this.walletService.address.pretty() === data.signer.address.pretty();
-    console.log(isRemitent);
-    return  data = {
+    const isRemitent = this.walletService.address.pretty() === data.recipient.pretty();
+    return  response = {
       address: data.signer.address.pretty(),
       amount: data['mosaics'][0].amount.compact(),
       message: data['message'],
