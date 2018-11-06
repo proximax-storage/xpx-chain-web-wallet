@@ -12,6 +12,19 @@ html:after {
 
 
 /*BACKGROUND AND COLORS*/
+
+.border-bottom-title{
+  border-bottom: 2px solid #009688;
+  padding-bottom: 5px;
+}
+
+.font-title{
+  font-size: 1.2rem;
+  color: #969696;
+  font-weight: 400;
+}
+
+
 .route-name {
   text-transform: uppercase;
   border-bottom: 1px solid #cfdbe2;
@@ -34,17 +47,17 @@ html:after {
 }
 
 .background-header{
-  background: #c1a26b !important;
-  background: -moz-linear-gradient(-45deg, #c1a26b 0%, #e2bf81 55%, #c1a26b 100%) !important;
-  background: -webkit-linear-gradient(-45deg, #c1a26b 0%, #e2bf81 55%, #c1a26b 100%) !important;
-  background: linear-gradient(135deg, #c1a26b 0%, #e2bf81 55%, #c1a26b 100%) !important;
+  background: #009688;
+  background: -moz-linear-gradient(-45deg, #009688 0%, #23b3a5 55%, #129a8e 100%);
+  background: -webkit-linear-gradient(-45deg, #009688 0%, #23b3a5 55%, #129a8e 100%);
+  background: linear-gradient(135deg, #009688 0%, #23b3a5 55%, #129a8e 100%);
 }
 
 .background-gold{
-  background: #c1a26b !important;
-  background: -moz-linear-gradient(-45deg, #c1a26b 0%, #e2bf81 55%, #c1a26b 100%) !important;
-  background: -webkit-linear-gradient(-45deg, #c1a26b 0%, #e2bf81 55%, #c1a26b 100%) !important;
-  background: linear-gradient(135deg, #c1a26b 0%, #e2bf81 55%, #c1a26b 100%) !important;
+  background: #009688;
+  background: -moz-linear-gradient(-45deg, #009688 0%, #23b3a5 55%, #129a8e 100%);
+  background: -webkit-linear-gradient(-45deg, #009688 0%, #23b3a5 55%, #129a8e 100%);
+  background: linear-gradient(135deg, #009688 0%, #23b3a5 55%, #129a8e 100%);
 }
 .background-gold-md-tabs {
   box-shadow: 0 5px 11px 0 rgba(0, 0, 0, 0.18), 0 4px 15px 0 rgba(0, 0, 0, 0.15)!important;
@@ -53,39 +66,39 @@ html:after {
   margin-left: 1rem;
   margin-right: 1rem;
   margin-bottom: -20px;
-  background-color: #c1a26b!important;
+  background-color: #009688!important;
   z-index: 1;
   position: relative;
   border-radius: 0.25rem;
 }
 .flex-column .active a {
-  background-color: #c1a26b!important;
-  border-color: #c1a26b!important;
+  background-color: #009688!important;
+  border-color: #009688!important;
   color: #fff !important;
 }
 .list-group-item.active {
   z-index: 2;
   color: #fff;
-  background-color: #c1a26b!important;
-  border-color: #c1a26b!important;
+  background-color: #009688!important;
+  border-color: #009688!important;
 }
 .background-header-box{
-  background: #c1a26b !important;
-  background: -moz-linear-gradient(-45deg, #c1a26b 0%, #e2bf81 55%, #c1a26b 100%) !important;
-  background: -webkit-linear-gradient(-45deg, #c1a26b 0%, #e2bf81 55%, #c1a26b 100%) !important;
-  background: linear-gradient(135deg, #c1a26b 0%, #e2bf81 55%, #c1a26b 100%) !important;
+  background: #009688 !important;
+  background: -moz-linear-gradient(-45deg, #009688 0%, #23b3a5 55%, #129a8e 100%) !important;
+  background: -webkit-linear-gradient(-45deg, #009688 0%, #23b3a5 55%, #129a8e 100%) !important;
+  background: linear-gradient(135deg, #009688 0%, #23b3a5 55%, #129a8e 100%) !important;
 }
 
 
 .btn-default{
-  background: #c1a26b !important;
-  background: -moz-linear-gradient(-45deg, #c1a26b 0%, #e2bf81 55%, #c1a26b 100%) !important;
-  background: -webkit-linear-gradient(-45deg, #c1a26b 0%, #e2bf81 55%, #c1a26b 100%) !important;
-  background: linear-gradient(135deg, #c1a26b 0%, #e2bf81 55%, #c1a26b 100%) !important;
+  background: #009688 !important;
+  background: -moz-linear-gradient(-45deg, #009688 0%, #23b3a5 55%, #129a8e 100%) !important;
+  background: -webkit-linear-gradient(-45deg, #009688 0%, #23b3a5 55%, #129a8e 100%) !important;
+  background: linear-gradient(135deg, #009688 0%, #23b3a5 55%, #129a8e 100%) !important;
 }
 
 .dropdown-default.colorful-select .dropdown-content li.active span, .dropdown-default.colorful-select .dropdown-content li.selected span{
-  background-color: #c4aa7d !important;
+  background-color: #23b3a5 !important;
 }
 
 .dropdown-default.colorful-select.white-forever .dropdown-content li.active span, .dropdown-default.colorful-select .dropdown-content li.selected span{
@@ -101,15 +114,15 @@ html:after {
 }
 
 .color-text-gris:hover{
-  color: #c1a26b !important;
+  color: #009688 !important;
 }
 
 .mdb-select mdb-select-dropdown .dropdown-content li > a, mdb-select mdb-select-dropdown .dropdown-content li > span {
-  color: #c1a26b !important;
+  color: #009688 !important;
 }
 
 .side-nav .collapsible .card-body li a:hover{
-  background: #948262;
+  background: #23b3a5;
 }
 
 .side-nav .collapsible .card .card-header a h5 {
@@ -129,7 +142,7 @@ html:after {
 
 /*STYLE SITE*/
 .pills-secondary .nav-link.active {
-  background-color: #e2bf81 !important;
+  background-color: #23b3a5 !important;
 }
 
 .side-nav .logo-wrapper img{
@@ -144,7 +157,7 @@ html:after {
 }
 
 .background-tabs-selected{
-  background: #e2bf81;
+  background: #23b3a5;
 }
 
 .background-tabs-unselected{
@@ -152,7 +165,7 @@ html:after {
 }
 
 .count {
-  background-color: #c8a870 !important;
+  background-color: #23b3a5 !important;
 }
 
 .font-tabs{
@@ -426,7 +439,7 @@ html:after {
 
 .border-service{
   margin-top: 1rem !important;
-  border-top: 1px solid #ceb27f !important;
+  border-top: 1px solid #009688 !important;
 }
 
 
@@ -438,7 +451,7 @@ html:after {
 
 .item-route:hover{
   cursor: pointer;
-  color: #ceb27f;
+  color: #009688;
   font-weight: 600;
 }
 
