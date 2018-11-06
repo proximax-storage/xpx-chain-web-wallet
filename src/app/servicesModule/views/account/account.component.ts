@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { mergeMap } from "rxjs/operators";
+import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { NemProvider } from "../../../shared/services/nem.provider";
 import { WalletService, SharedService } from "../../../shared";
 import { LoginService } from "../../../login/services/login.service";
@@ -11,6 +12,7 @@ import { LoginService } from "../../../login/services/login.service";
 })
 export class AccountComponent implements OnInit {
 
+  @BlockUI() blockUI: NgBlockUI;
   showPanelPrivateKey = false;
   mosaic = 'XPX';
   titleAccountInformation = 'Account information';
@@ -22,7 +24,7 @@ export class AccountComponent implements OnInit {
   privateKey = '';
   publicKey = '';
   importanceScore = '';
-  vestedBalance = '';
+  vestedBalance = null;
   password = '';
 
   constructor(
@@ -35,13 +37,17 @@ export class AccountComponent implements OnInit {
 
   ngOnInit() {
     //this.getBalance();
+    this.blockUI.start('Loading...'); // Start blocking
     this.nemProvider.getAccountInfo(this.walletService.address).subscribe(
       next => {
         console.log(next);
+        this.vestedBalance = next['mosaics'][0].amount.compact();
         this.publicKey = next.publicKey;
+        this.blockUI.stop();
       }, error => {
         this.vestedBalance = '0';
         this.publicKey = 'You need to make a transaction to get a public key';
+        this.blockUI.stop();
       }
     );
   }

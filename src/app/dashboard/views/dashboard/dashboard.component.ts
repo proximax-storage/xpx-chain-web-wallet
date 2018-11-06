@@ -100,21 +100,12 @@ export class DashboardComponent implements OnInit {
         trans.forEach(element => {
           this.cantConfirmed = trans.length;
           this.elementsConfirmed.push(this.transactionsService.formatTransaction(element));
-          console.log('elementsConfirmed::::', this.elementsConfirmed);
         });
         this.transactionsService.setTransConfirm$(this.elementsConfirmed);
       },
       error => {
         console.error(error);
       });
-  }
-
-  getBalance() {
-    //obtener balance de la cuenta d
-    this.nemProvider.getBalance(this.walletService.address).pipe(
-      mergeMap((_) => _)
-    ).subscribe(mosaic => console.log('You have', mosaic, mosaic.fullName()),
-      err => console.error(err));
   }
 
   /**

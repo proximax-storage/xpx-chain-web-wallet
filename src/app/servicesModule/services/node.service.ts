@@ -5,14 +5,11 @@ import { environment } from "../../../environments/environment";
   providedIn: 'root'
 })
 export class NodeService {
-  // 192.168.10.38:3000
 
-  nodeDefault = 'catapult.mocd.gov.ae:443';
   arrayNode = 'proxi-nodes';
   nodeSelect = 'node-selected';
 
   constructor() { }
-
 
   /**
    * Init node
