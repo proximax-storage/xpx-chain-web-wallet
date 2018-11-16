@@ -1,0 +1,80 @@
+<div class="container mt-3rem">
+  <div class="row">
+    <div class="col-12">
+      <mdb-card>
+        <mdb-card-header class="background-gold white-text text-align-center py-4">
+            <img src="assets/images/logo/logo-white.png" class="size-img-card-header">
+        </mdb-card-header>
+
+        <mdb-card-body class="backg-beige">
+          <div class="table-responsive table-striped">
+            <div class="card-body">
+              <div id="table" class="table-editable-no">
+                <div class="row">
+                  <div class="col-8">
+                    <span class="addbooks">Contacts</span>
+                  </div>
+                  <!-- Add contact -->
+                  <div class="col-4">
+                    <span class="table-add float-right mb-3 mr-2">
+                      <a class="text-add" (click)="basicModal.show()">
+                        <mdb-icon icon="plus-square" size="2x"></mdb-icon>
+                      </a>
+                    </span>
+                  </div>
+                </div>
+                <table class="table table-bordered table-responsive-md table-striped text-center">
+                  <tr>
+                    <th *ngFor="let head of headElements; let i = index" scope="col" class="text-center">{{head}}</th>
+                  </tr>
+                  <tr *ngFor="let contact of contacts; let id = index">
+                    <td contenteditable="false">{{contact.label}}</td>
+                    <td contenteditable="false">{{contact.value}}</td>
+                    <td>
+                      <span class="table-remove">
+                        <button type="button" mdbBtn color="danger" rounded="true" size="sm" class="my-0" (click)="remove(contact.label)">Remove</button>
+                      </span>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+        </mdb-card-body>
+      </mdb-card>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div mdbModal #basicModal="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myBasicModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content form-elegant">
+        <div class="modal-header text-center background-header-box">
+          <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3" id="myModalLabel"><strong class="color-white">Add Address</strong></h3>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form [formGroup]="contactForm" (ngSubmit)="saveContact()">
+          <div class="modal-body mx-4">
+            <div class="md-form mt-5" id="container-walletname">
+              <input formControlName="user" type="text" autocomplete="off" required id="user" class="form-control" mdbInputDirective data-success="Valid user"
+                [errorMessage]="getError('user')">
+              <label for="recipient">User</label>
+            </div>
+
+            <div class="md-form mt-5" id="container-walletname">
+              <input formControlName="address" type="text" autocomplete="off" required id="acountRecipient" class="form-control" mdbInputDirective
+                data-success="Valid recipient" [errorMessage]="getError('address')">
+              <label for="address">Address</label>
+            </div>
+
+            <div class="text-center mt-5 mb-3">
+              <button type="submit" class="btn btn-default btn-block btn-rounded z-depth-1a">Add address</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>

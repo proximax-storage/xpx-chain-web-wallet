@@ -1,0 +1,24 @@
+<div class="mt-3rem mb-3rem animated fadeIn">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-xl-8 col-md-8 col-sm-12 mx-auto">
+          <mdb-card>
+            <mdb-card-header class="background-gold white-text text-align-center py-4">
+                <img src="assets/images/logo/logo-white.png" class="size-img-card-header">
+            </mdb-card-header>
+
+            <mdb-card-body class="px-lg-5 backg-beige">
+
+              <div class="md-form mt-5" id="container-walletname">
+                <div class="md-form  mt-5">
+                  <i class="fa fa-codepen prefix text-gris"></i>
+                  <mdb-select [mdbValidate]="false" [options]="nodes" placeholder="Select node" required class="colorful-select dropdown-default"
+                    (selected)="optionSelected($event)" mdbInputDirective></mdb-select>
+                </div>
+              </div>
+            </mdb-card-body>
+          </mdb-card>
+        </div>
+      </div>
+    </div>
+  </div>

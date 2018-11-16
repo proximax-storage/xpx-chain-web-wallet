@@ -1,0 +1,70 @@
+<div class="mt-3rem mb-3rem animated fadeIn">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-xl-6 col-md-8 col-sm-12 mx-auto">
+        <mdb-card>
+          <mdb-card-header class="background-gold white-text text-align-center py-4">
+              <img src="assets/images/logo/logo-white.png" class="size-img-card-header">
+          </mdb-card-header>
+
+          <ng-container *ngIf="!walletIsCreated">
+            <mdb-card-body class="px-lg-5 backg-beige">
+              <!-- <h4 class="title-form">Create Wallet</h4> -->
+              <form [formGroup]="createWalletForm" (ngSubmit)="createSimpleWallet()" class="" style="color: #757575;">
+                <div class="md-form  mt-5">
+                  <i class="fa fa-bars prefix text-gris"></i>
+                  <mdb-select [options]="typeNetwork" placeholder="Select type network" required formControlName="network" class="colorful-select dropdown-default"
+                    mdbInputDirective [errorMessage]="getError('network')"></mdb-select>
+                </div>
+
+                <div class="md-form mt-5" id="container-walletname">
+                  <i class="fa fa-user prefix text-gris"></i>
+                  <input type="text" autocomplete="off" required formControlName="walletname" id="walletname" class="form-control" mdbInputDirective
+                    data-success="Valid Wallet name" [errorMessage]="getError('walletname')">
+                  <label for="walletname">Wallet name</label>
+                </div>
+
+                <div formGroupName="passwords">
+                  <div class="md-form mt-5" id="container-password">
+                    <i class="fa fa-lock prefix text-gris"></i>
+                    <input type="password" autocomplete="off" required formControlName="password" id="password" class="form-control" mdbInputDirective
+                      data-success="Valid password" [errorMessage]="getError('password', 'passwords')">
+                    <label for="password">Password</label>
+                  </div>
+
+                  <div class="md-form mt-5" id="container-confirm_password">
+                    <i class="fa fa-lock prefix text-gris"></i>
+                    <input type="password" autocomplete="off" required formControlName="confirm_password" id="confirm_password" class="form-control"
+                      mdbInputDirective data-success="Valid password" [errorMessage]="getError('confirm_password', 'passwords')">
+                    <label for="confirm_password">Confirm Password</label>
+                  </div>
+                </div>
+
+                <div class="mt-4rm">
+                  <div class="row ">
+                    <div class="mx-auto">
+                      <div class="row">
+                        <div class="col-xs-6">
+                          <button mdbBtn type="button" rounded="true" class="waves-light btn-reverse" mdbWavesEffect type="submit" (click)="cleanForm()">Clean</button>
+                        </div>
+                        <div class="col-xs-6">
+                          <button mdbBtn type="button" color="default" rounded="true" class="waves-light" mdbWavesEffect type="submit">Create</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </mdb-card-body>
+          </ng-container>
+
+          <ng-container *ngIf="walletIsCreated">
+            <mdb-card-body class="px-lg-5 backg-beige">
+              <app-wallet-created [privateKey]="privateKey" [address]="address"></app-wallet-created>
+            </mdb-card-body>
+          </ng-container>
+        </mdb-card>
+      </div>
+    </div>
+  </div>
+</div>
