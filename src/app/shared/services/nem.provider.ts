@@ -27,7 +27,7 @@ import {
   XEM,
   TransactionStatusError,
   TransactionStatus
-} from 'nem2-sdk';
+} from 'proximax-nem2-sdk';
 
 import { crypto } from 'nem2-library';
 import { environment } from '../../../environments/environment';

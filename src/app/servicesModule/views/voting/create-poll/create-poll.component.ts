@@ -5,7 +5,7 @@ import { WalletService } from '../../../../shared/services/wallet.service';
 import { NemProvider } from '../../../../shared/services/nem.provider';
 import { SharedService } from '../../../../shared';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
-import { Address, UInt64, Account } from 'nem2-sdk';
+import { Address, UInt64, Account } from 'proximax-nem2-sdk';
 @Component({
   selector: 'app-create-poll',
   templateUrl: './create-poll.component.html',
@@ -176,7 +176,7 @@ export class CreatePollComponent implements OnInit {
   }
 
   create() {
-   
+
     this.createpollForm.valid
     this.validateform = (!this.validateformOptions && !this.validateformWhiteLis && !this.validateformDate) ? false : true;
     if (this.createpollForm.valid && !this.validateform) {
@@ -276,7 +276,7 @@ export class CreatePollComponent implements OnInit {
     let transferTransaction: any
     transferTransaction = this.nemProvider.sendTransaction(this.walletService.network, address, JSON.stringify(message))
     transferTransaction.fee = UInt64.fromUint(0);
- 
+
     const account = Account.createFromPrivateKey(privateKey, this.walletService.network);
     const signedTransaction = account.sign(transferTransaction);
 
@@ -292,8 +292,8 @@ export class CreatePollComponent implements OnInit {
           this.createpollForm.reset()
           this.createpollForm.get('type').patchValue('1')
           this.createpollForm.get('indexAccount').patchValue(this.accountPrin)
-          
-        
+
+
           this.sharedService.showSuccess('success', 'poll created')
         },
         err => {

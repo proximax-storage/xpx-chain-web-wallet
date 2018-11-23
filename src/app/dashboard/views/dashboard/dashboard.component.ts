@@ -9,7 +9,7 @@ import {
   TransactionHttp,
   PublicAccount,
   Transaction
-} from 'nem2-sdk';
+} from 'proximax-nem2-sdk';
 import { NemProvider } from '../../../shared/services/nem.provider';
 import { WalletService } from '../../../shared';
 import { TransactionsService } from "../../../transactions/service/transactions.service";

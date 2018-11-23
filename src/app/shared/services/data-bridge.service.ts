@@ -28,7 +28,7 @@ export class DataBridgeService {
     this.url = `wss://${this.nodeService.getNodeSelected()}`;
     const connector = new Listener(this.url, WebSocket);
     // Try to open the connection
-    console.log( this.url)
+    console.log( this.url);
     this.openConnection(connector);
     return;
   }

@@ -41,11 +41,11 @@ export class AccountComponent implements OnInit {
     this.nemProvider.getAccountInfo(this.walletService.address).subscribe(
       next => {
         console.log(next);
-        this.vestedBalance = next['mosaics'][0].amount.compact();
+        //this.vestedBalance = next['mosaics'][0].amount.compact();
         this.publicKey = next.publicKey;
         this.blockUI.stop();
       }, error => {
-        this.vestedBalance = '0';
+        //this.vestedBalance = '0';
         this.publicKey = 'You need to make a transaction to get a public key';
         this.blockUI.stop();
       }

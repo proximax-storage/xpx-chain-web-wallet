@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, HostListener, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { MdbTablePaginationComponent, MdbTableService } from 'ng-uikit-pro-standard';
-import { MosaicId, Transaction, Address, TransactionType } from 'nem2-sdk';
+import { MosaicId, Transaction, Address, TransactionType } from 'proximax-nem2-sdk';
 import { AppConfig } from '../../../config/app.config';
 import { NemProvider } from '../../../shared/services/nem.provider';
 import { NodeService } from "../../../servicesModule/services/node.service";

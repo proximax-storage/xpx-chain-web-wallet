@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject, BehaviorSubject, } from 'rxjs';
 import { NemProvider } from "../../shared/services/nem.provider";
-import { UInt64, TransferTransaction, Deadline, PlainMessage, NetworkType, TransactionHttp, Account, Mosaic, MosaicId } from "nem2-sdk";
+import { UInt64, TransferTransaction, Deadline, PlainMessage, NetworkType, TransactionHttp, Account, Mosaic, MosaicId } from "proximax-nem2-sdk";
 import { WalletService } from "../../shared/services/wallet.service";
 import { environment } from "../../../environments/environment";
 import { NodeService } from '../../servicesModule/services/node.service';

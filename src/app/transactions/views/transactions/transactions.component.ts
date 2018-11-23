@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, AfterViewInit, HostListener, ChangeDetect
 import { CollapseComponent, MdbTableService, MdbTablePaginationComponent } from 'ng-uikit-pro-standard';
 import { Observable, Subject } from 'rxjs';
 import { first } from "rxjs/operators";
-import { Transaction } from "nem2-sdk";
+import { Transaction } from "proximax-nem2-sdk";
 import { TransactionsService } from '../../service/transactions.service';
 import { NemProvider } from "../../../shared/services/nem.provider";
 import { WalletService } from "../../../shared";

@@ -4,7 +4,7 @@ import { WalletService } from '../../../../shared/services/wallet.service';
 import { NemProvider } from '../../../../shared/services/nem.provider';
 import { SharedService } from '../../../../shared';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
-import { Address, UInt64, Account, TransferTransaction, Transaction } from 'nem2-sdk';
+import { Address, UInt64, Account, TransferTransaction, Transaction } from 'proximax-nem2-sdk';
 import { first } from "rxjs/operators";
 import * as Highcharts from 'highcharts';
 import { Observer, BehaviorSubject, Subject, ReplaySubject } from 'rxjs';
@@ -152,15 +152,15 @@ export class PollsComponent implements OnInit {
             this.link = this.options.link;
             this.stringsPubliKey = this.options.stringsPubliKey;
             this.strings = this.options.strings;
-           
+
           } else if (Object.keys(element)[0] === 'whiteList') {
             this.whiteList = element['whiteList'];
-           
+
           }
         });
 
         this.showDetail = true;
-        // 
+        //
         let now = (new Date()).getTime();
         if (this.formData.doe < now) {
           this.blockUI.stop();
@@ -222,7 +222,7 @@ export class PollsComponent implements OnInit {
       if(this.whitelist){
         this.showVote = false;
       }else{this.voteCast=true;}
-     
+
     }
   }
   ifvoted(element) {

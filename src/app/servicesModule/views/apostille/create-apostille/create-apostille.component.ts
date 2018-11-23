@@ -15,7 +15,7 @@ import {
   PlainMessage,
   XEM,
   TransactionHttp
-} from 'nem2-sdk';
+} from 'proximax-nem2-sdk';
 import * as crypto from 'crypto-js'
 import * as JSZip from 'jszip';
 import { WalletService, SharedService } from '../../../../shared';

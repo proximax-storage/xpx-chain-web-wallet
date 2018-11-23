@@ -4,9 +4,9 @@
 
 export const environment = {
   production: false,
-  socket: 'wss://192.168.10.38:3000', //company
-  apiUrl: 'http://192.168.10.38:3000', //company
-  nodeDefault: 'catapult.mocd.gov.ae:443'
+  socket: 'wss://bctestnet1.xpxsirius.io:3000', // company
+  apiUrl: 'bctestnet1.xpxsirius.io:3000', // company
+  nodeDefault: 'bctestnet1.xpxsirius.io:3000'
   // socket: 'ws://190.216.224.11:3000', //house
   // apiUrl: 'http://catapult.isarq.com:3000/' //house
 };

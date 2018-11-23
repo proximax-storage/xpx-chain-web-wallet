@@ -145,7 +145,7 @@ export class HeaderComponent implements OnInit {
         'icon': 'fa fa-codepen',
         'rol': true,
         'link': '',
-        'show': true,
+        'show': false,
         'submenu': {
           'addNode': {
             'type': 'default',
@@ -154,7 +154,7 @@ export class HeaderComponent implements OnInit {
             'icon': '',
             'rol': true,
             'link': AppConfig.routes.addNode,
-            'show': true,
+            'show': false,
             'submenu': {}
           },
           'selectNode': {
@@ -164,7 +164,7 @@ export class HeaderComponent implements OnInit {
             'icon': '',
             'rol': true,
             'link': AppConfig.routes.selectNode,
-            'show': true,
+            'show': false,
             'submenu': {}
           }
         }

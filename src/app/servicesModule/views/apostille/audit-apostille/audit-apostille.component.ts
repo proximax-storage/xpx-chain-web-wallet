@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import * as crypto from 'crypto-js'
-import { Account, Transaction, TransferTransaction, Message } from 'nem2-sdk';
+import { Account, Transaction, TransferTransaction, Message } from 'proximax-nem2-sdk';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { decode } from 'utf8';
 import { NemProvider } from '../../../../shared/services/nem.provider';
