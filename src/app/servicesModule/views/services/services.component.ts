@@ -18,18 +18,23 @@ export class ServicesComponent implements OnInit {
 
   ngOnInit() {
 
-    const addNode = this.service.structureServices('img-add-node', 'Nodes', `Add and select node`,
-      {
-        createPoll: this.structureServiceRoute('Add node', `/${AppConfig.routes.addNode}`),
-        selectNode: this.structureServiceRoute('Select node', `/${AppConfig.routes.selectNode}`)
-      }, true
-    );
-
-    // const explorerFile = this.service.structureServices('img-explorer-file', 'File explorer', `File explorer`,
+    // const addNode = this.service.structureServices('img-add-node', 'Nodes', `Add and select node`,
     //   {
-    //     createPoll: this.structureServiceRoute('File explorer', `/${AppConfig.routes.explorer}`)
+    //     createPo    // const addNode = this.service.structureServices('img-add-node', 'Nodes', `Add and select node`,
+    //     //   {
+    //     //     createPoll: this.structureServiceRoute('Add node', `/${AppConfig.routes.addNode}`),
+    //     //     selectNode: this.structureServiceRoute('Select node', `/${AppConfig.routes.selectNode}`)
+    //     //   }, true
+    //     // );ll: this.structureServiceRoute('Add node', `/${AppConfig.routes.addNode}`),
+    //     selectNode: this.structureServiceRoute('Select node', `/${AppConfig.routes.selectNode}`)
     //   }, true
     // );
+
+    const explorerFile = this.service.structureServices('img-explorer-file', 'File explorer', `File explorer`,
+      {
+        explorerFile: this.structureServiceRoute('File explorer', `/${AppConfig.routes.explorerFile}`)
+      }, true
+    );
 
     const explorerTransaction = this.service.structureServices('img-transaction', 'Transaction explorer', `Explorer transaction`,
       {
@@ -96,7 +101,7 @@ export class ServicesComponent implements OnInit {
       //explorerFile: explorerFile,
       explorerTransaction: explorerTransaction,
       //addNode: addNode,
-      multisignature: multisignature,
+      //multisignature: multisignature,
       nameSpace: nameSpace,
       delegatedHarvesting: delegatedHarvesting,
       apostille: apostille,
@@ -120,7 +125,7 @@ export interface Service {
   //explorerFile: ItemService;
   //addNode: ItemService;
   explorerTransaction: ItemService;
-  multisignature: ItemService;
+  //multisignature: ItemService;
   nameSpace: ItemService;
   delegatedHarvesting: ItemService;
   apostille: ItemService;
