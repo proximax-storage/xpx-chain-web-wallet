@@ -22,10 +22,13 @@ export interface HorizontalHeaderInterface {
 }
 
 export interface VerticalHeaderInterface {
-  dashboard: Header;
-  services: Header;
-  transactions: Header;
-  node:Header;
+  // dashboard: Header;
+  // services: Header;
+  // transactions: Header;dashboard: Header;
+  //   // services: Header;
+  //   // transactions: Header;
+  //   // node:Header;
+  // node:Header;
 }
 
 export interface Header {

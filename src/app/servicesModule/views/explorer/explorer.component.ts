@@ -101,7 +101,7 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
       this.blockInput = true;
       this.nemProvider.getAccountInfo(Address.createFromRawAddress(this.paramSearch)).pipe(first()).subscribe(
         accountInfo => {
-          console.log(accountInfo)
+
           this.nemProvider.getAllTransactionsFromAccount(accountInfo.publicAccount).subscribe(
             resp => {
               console.log('with address info ', resp);
@@ -120,7 +120,7 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
       const publicAccount = this.nemProvider.createPublicAccount(this.paramSearch, this.walletService.network);
       this.nemProvider.getAllTransactionsFromAccount(publicAccount, this.nodeService.getNodeSelected()).subscribe(
         resp => {
-          console.log('with publickey info', resp);
+
           this.buildTransaction(resp);
         },
         error => {

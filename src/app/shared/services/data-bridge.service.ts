@@ -94,7 +94,7 @@ export class DataBridgeService {
       });
 
       connector.status(this.walletService.address).subscribe(status => {
-        console.log("status", status)
+
       }, err => {
         console.error("err::::::", err)
       });

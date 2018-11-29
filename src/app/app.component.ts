@@ -25,7 +25,7 @@ export class AppComponent {
     private nodeService: NodeService
   ) {
     const nodeSelected = this.nodeService.initNode();
-    console.log('NODE SELECTED::: ', nodeSelected);
+
   }
 
   /**

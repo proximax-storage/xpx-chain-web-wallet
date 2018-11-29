@@ -294,10 +294,6 @@ export class NemProvider {
   //PROXIMA
   sendTransaction(network, address: string, message?: string, amount: number = 0): TransferTransaction {
     // console.log(address, message)
-
-    console.log("adrres:", address)
-    console.log("<br> message:", message)
-    console.log("<br> amount:", amount)
     return TransferTransaction.create(
       Deadline.create(23),
       Address.createFromRawAddress(address),

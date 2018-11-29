@@ -102,7 +102,7 @@ export class TransferComponent implements OnInit {
         .announce(rspBuildSend.signedTransaction)
         .subscribe(
         rsp => {
-          console.log(rsp);
+
           this.inputBLocked = false;
           this.cleanForm();
         },

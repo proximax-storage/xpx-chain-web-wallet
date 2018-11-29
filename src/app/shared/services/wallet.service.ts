@@ -126,7 +126,6 @@ export class WalletService {
     const alg = algo || this.algo;
     // Try to generate or decrypt key
 
-    console.log(common, acct, alg)
     if (!crypto.passwordToPrivatekey(common, acct, alg)) {
       console.log("sssss")
       setTimeout(() => {
@@ -134,7 +133,7 @@ export class WalletService {
       }, 500);
       return false;
     }
-    console.log("2", common.isHW)
+
     if (common.isHW) {
       // this._mdboostrap.closeToastr();
 

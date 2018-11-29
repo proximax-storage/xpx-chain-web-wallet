@@ -40,7 +40,7 @@ export class ServicesComponent implements OnInit {
     const voting = this.service.structureServices('fa fa-4x fa-pie-chart', 'Voting', `Create and vote on polls`,
       {
         createPoll: this.structureServiceRoute('Create a Poll', `/${AppConfig.routes.createPoll}`),
-        audiApostille: this.structureServiceRoute('Vote and See Polls', `/${AppConfig.routes.audiApostille}`),
+        polls: this.structureServiceRoute('Vote and See Polls', `/${AppConfig.routes.polls}`),
       }, true
     );
 
@@ -95,7 +95,7 @@ export class ServicesComponent implements OnInit {
     this.services = {
       //explorerFile: explorerFile,
       explorerTransaction: explorerTransaction,
-      addNode: addNode,
+      //addNode: addNode,
       multisignature: multisignature,
       nameSpace: nameSpace,
       delegatedHarvesting: delegatedHarvesting,
@@ -118,7 +118,7 @@ export class ServicesComponent implements OnInit {
 
 export interface Service {
   //explorerFile: ItemService;
-  addNode: ItemService;
+  //addNode: ItemService;
   explorerTransaction: ItemService;
   multisignature: ItemService;
   nameSpace: ItemService;
