@@ -5,6 +5,7 @@ import { UInt64, TransferTransaction, Deadline, PlainMessage, NetworkType, Trans
 import { WalletService } from "../../shared/services/wallet.service";
 import { NodeService } from '../../servicesModule/services/node.service';
 import { environment } from 'src/environments/environment';
+import { MessageService } from '../../shared/services/message.service';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +21,8 @@ export class TransactionsService {
   constructor(
     private nemProvider: NemProvider,
     private nodeService: NodeService,
-    private walletService: WalletService
+    private walletService: WalletService,
+    private messageService: MessageService
   ) {
   }
 
@@ -30,7 +32,9 @@ export class TransactionsService {
   }
 
   getTransConfirm$(): Observable<any> {
+    this.messageService.changeMessage('balanceChanged');
     return this._transConfirm$;
+    
   }
 
   setTransConfirm$(data) {

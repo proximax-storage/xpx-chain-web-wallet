@@ -27,7 +27,7 @@ export class TransferComponent implements OnInit {
     private sharedService: SharedService,
     private transactionService: TransactionsService,
     private ServiceModuleService: ServiceModuleService,
-    private messageService: MessageService
+   
   ) { }
 
   ngOnInit() {
@@ -106,7 +106,7 @@ export class TransferComponent implements OnInit {
           console.log(rsp);
           this.inputBLocked = false;
           this.cleanForm();
-          this.messageService.changeMessage('balanceChanged');
+         
         },
         err => {
           this.inputBLocked = false;
