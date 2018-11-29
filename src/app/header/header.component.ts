@@ -8,6 +8,7 @@ import { NodeService } from "../servicesModule/services/node.service";
 import { TransactionsService } from "../transactions/service/transactions.service";
 import { NemProvider } from '../shared/services/nem.provider';
 import { mergeMap } from 'rxjs/operators';
+import { MessageService } from '../shared/services/message.service';
 
 export interface HorizontalHeaderInterface {
   home: Header;
@@ -56,6 +57,7 @@ export class HeaderComponent implements OnInit {
   horizontalHeader: HorizontalHeaderInterface;
   verticalHeader: VerticalHeaderInterface;
   vestedBalance: string = '0.00';
+  message:string;
 
   constructor(
     private _loginService: LoginService,
@@ -64,7 +66,8 @@ export class HeaderComponent implements OnInit {
     private walletService: WalletService,
     private nemProvider: NemProvider,
     private nodeService: NodeService,
-    private transactionsService: TransactionsService
+    private transactionsService: TransactionsService,
+    private messageService: MessageService
   ) {
     this.route.events
       .subscribe((event) => {
@@ -81,6 +84,7 @@ export class HeaderComponent implements OnInit {
 
    ngOnInit() {
     this.buildHeader();
+  
 
     /**
      * Observable state of the login
@@ -96,6 +100,16 @@ export class HeaderComponent implements OnInit {
         }
       }
     );
+
+    this.messageService.currentMessage.subscribe(async message => {
+      this.message = message;
+
+      if(this.message === 'balanceChanged') {
+        if(this.showOnlyLogged) {
+          await this.getBalance();
+        }
+      }
+    });
   }
 
   /**
@@ -401,14 +415,14 @@ export class HeaderComponent implements OnInit {
       mergeMap((_) => _)
     ).subscribe(
       next => {
-        console.log('You have', next, next.fullName());
+        console.log('You have',  next.relativeAmount());
         
         this.horizontalHeader.amount.name = `Balance ${next.relativeAmount().toFixed(2)} ${next.mosaicName}`;
       
       },
       err => {
         this.vestedBalance = '0';
-        console.error(err);
+        console.log(err);
       }
     );
   }

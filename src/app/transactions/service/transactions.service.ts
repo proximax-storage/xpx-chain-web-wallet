@@ -4,6 +4,7 @@ import { NemProvider } from "../../shared/services/nem.provider";
 import { UInt64, TransferTransaction, Deadline, PlainMessage, NetworkType, TransactionHttp, Account, Mosaic, MosaicId } from "proximax-nem2-sdk";
 import { WalletService } from "../../shared/services/wallet.service";
 import { NodeService } from '../../servicesModule/services/node.service';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -56,7 +57,7 @@ export class TransactionsService {
       network);
     const account = Account.createFromPrivateKey(common.privateKey, network);
     const signedTransaction = account.sign(transferTransaction);
-    const transactionHttp = new TransactionHttp(`${this.nodeService.getNodeSelected()}`);
+    const transactionHttp = new TransactionHttp(environment.protocol + '://' + `${this.nodeService.getNodeSelected()}`);
     return {
       signedTransaction: signedTransaction,
       transactionHttp: transactionHttp

@@ -4,6 +4,7 @@ import { WalletService, SharedService } from "../../../shared";
 import { TransactionsService } from "../../../transactions/service/transactions.service";
 import { NemProvider } from "../../../shared/services/nem.provider";
 import { ServiceModuleService } from "../../../servicesModule/services/service-module.service";
+import { MessageService } from 'src/app/shared/services/message.service';
 
 @Component({
   selector: 'app-transfer',
@@ -25,7 +26,8 @@ export class TransferComponent implements OnInit {
     private nemProvider: NemProvider,
     private sharedService: SharedService,
     private transactionService: TransactionsService,
-    private ServiceModuleService: ServiceModuleService
+    private ServiceModuleService: ServiceModuleService,
+    private messageService: MessageService
   ) { }
 
   ngOnInit() {
@@ -104,6 +106,7 @@ export class TransferComponent implements OnInit {
           console.log(rsp);
           this.inputBLocked = false;
           this.cleanForm();
+          this.messageService.changeMessage('balanceChanged');
         },
         err => {
           this.inputBLocked = false;
