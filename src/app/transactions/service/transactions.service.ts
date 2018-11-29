@@ -74,7 +74,7 @@ export class TransactionsService {
       message: data['message'],
       transactionInfo: data.transactionInfo,
       fee: data.fee.compact(),
-      mosaic: 'pxp',
+      mosaic: 'xpx',
       date: date,
       recipient: data['recipient'],
       signer: data.signer,

@@ -42,11 +42,13 @@ export class AccountComponent implements OnInit {
       next => {
         console.log(next);
         //this.vestedBalance = next['mosaics'][0].amount.compact();
-        this.publicKey = next.publicKey;
+        //this.publicKey = next.publicKey;
+        this.publicKey = this.walletService.publicAccount.publicKey;
         this.blockUI.stop();
       }, error => {
         //this.vestedBalance = '0';
-        this.publicKey = 'You need to make a transaction to get a public key';
+        //this.publicKey = 'You need to make a transaction to get a public key';
+        this.publicKey = this.walletService.publicAccount.publicKey;
         this.blockUI.stop();
       }
     );

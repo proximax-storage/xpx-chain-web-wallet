@@ -25,11 +25,11 @@ export class ServicesComponent implements OnInit {
       }, true
     );
 
-    const explorerFile = this.service.structureServices('img-explorer-file', 'File explorer', `File explorer`,
-      {
-        createPoll: this.structureServiceRoute('File explorer', `/${AppConfig.routes.explorer}`)
-      }, true
-    );
+    // const explorerFile = this.service.structureServices('img-explorer-file', 'File explorer', `File explorer`,
+    //   {
+    //     createPoll: this.structureServiceRoute('File explorer', `/${AppConfig.routes.explorer}`)
+    //   }, true
+    // );
 
     const explorerTransaction = this.service.structureServices('img-transaction', 'Transaction explorer', `Explorer transaction`,
       {
@@ -93,7 +93,7 @@ export class ServicesComponent implements OnInit {
 
 
     this.services = {
-      explorerFile: explorerFile,
+      //explorerFile: explorerFile,
       explorerTransaction: explorerTransaction,
       addNode: addNode,
       multisignature: multisignature,
@@ -117,7 +117,7 @@ export class ServicesComponent implements OnInit {
 }
 
 export interface Service {
-  explorerFile: ItemService;
+  //explorerFile: ItemService;
   addNode: ItemService;
   explorerTransaction: ItemService;
   multisignature: ItemService;

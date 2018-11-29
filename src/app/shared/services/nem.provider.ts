@@ -54,7 +54,7 @@ export class NemProvider {
   url: any;
 
   constructor(private nodeService: NodeService) {
-    this.url = `https://${this.nodeService.getNodeSelected()}`;
+    this.url = `http://${this.nodeService.getNodeSelected()}`;
     this.transactionHttp = new TransactionHttp(this.url);
     this.accountHttp = new AccountHttp(this.url);
     this.mosaicHttp = new MosaicHttp(this.url);
