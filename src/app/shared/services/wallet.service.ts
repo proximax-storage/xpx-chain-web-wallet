@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
 import { NetworkType, PublicAccount } from "proximax-nem2-sdk";
-import { crypto } from 'nem2-library';
+import { crypto } from 'proximax-nem2-library';
 import { Router } from "@angular/router";
-import { BehaviorSubject, Observable } from "rxjs";
 import { AccountsInterface } from '..';
-import { commonInterface, walletInterface } from '../interfaces/shared.interfaces';
 import { NemProvider } from './nem.provider';
 import { SharedService } from './shared.service';
 import { NodeService } from '../../servicesModule/services/node.service';

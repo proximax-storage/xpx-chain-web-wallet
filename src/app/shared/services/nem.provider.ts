@@ -29,7 +29,7 @@ import {
   TransactionStatus
 } from 'proximax-nem2-sdk';
 
-import { crypto } from 'nem2-library';
+import { crypto } from 'proximax-nem2-library';
 import { environment } from '../../../environments/environment';
 import { commonInterface, walletInterface } from '..';
 import { WalletService } from './wallet.service'
@@ -54,7 +54,7 @@ export class NemProvider {
   url: any;
 
   constructor(private nodeService: NodeService) {
-    this.url = `https://${this.nodeService.getNodeSelected()}`;
+    this.url = environment.protocol + '://'+ `${this.nodeService.getNodeSelected()}`;
     this.transactionHttp = new TransactionHttp(this.url);
     this.accountHttp = new AccountHttp(this.url);
     this.mosaicHttp = new MosaicHttp(this.url);
@@ -229,8 +229,8 @@ export class NemProvider {
    * @returns {Observable<Transaction[]>}
    * @memberof NemProvider
    */
-  getAllTransactionsFromAccount(publicAccount, queryParams?): Observable<Transaction[]> {
-    return this.accountHttp.transactions(publicAccount, new QueryParams(queryParams));
+  getAllTransactionsFromAccount(publicAccount, queryParams?: QueryParams): Observable<Transaction[]> {
+    return this.accountHttp.transactions(publicAccount, new QueryParams(queryParams.pageSize,queryParams.id));
   }
 
   /**
@@ -263,7 +263,7 @@ export class NemProvider {
    * @param param
    */
   getTransactionInformation(hash, node = ''): Observable<Transaction> {
-    const transaction: TransactionHttp = (node === '') ? this.transactionHttp : new TransactionHttp(`https://${node}`);
+    const transaction: TransactionHttp = (node === '') ? this.transactionHttp : new TransactionHttp(environment.protocol + '://'+ `${node}`);
     return transaction.getTransaction(hash);
   }
 

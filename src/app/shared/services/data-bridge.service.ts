@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { first } from "rxjs/operators";
-import { Listener, Address, Transaction } from "nem2-sdk";
-import { environment } from '../../../environments/environment';
+import { Listener, Transaction } from "proximax-nem2-sdk";
 import { WalletService } from "./wallet.service";
 import { TransactionsService } from "../../transactions/service/transactions.service";
 import { NodeService } from '../../servicesModule/services/node.service';
+import { environment } from 'src/environments/environment';
+
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +26,7 @@ export class DataBridgeService {
    * @memberof DataBridgeService
    */
   connectnWs() {
-    this.url = `wss://${this.nodeService.getNodeSelected()}`;
+    this.url = environment.socketProtocol + '://' + `${this.nodeService.getNodeSelected()}`;
     const connector = new Listener(this.url, WebSocket);
     // Try to open the connection
     console.log( this.url);

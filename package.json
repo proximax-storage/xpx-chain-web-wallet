@@ -45,8 +45,8 @@
     "jarallax": "^1.10.3",
     "jspdf": "^1.4.1",
     "jszip": "^3.1.5",
-    "proximax-nem2-library": "^0.9.11",
-    "proximax-nem2-sdk": "^0.10.15",
+    "proximax-nem2-library": "^0.9.9",
+    "proximax-nem2-sdk": "^0.10.9",
     "ng-block-ui": "^1.0.6",
     "ng-html-util": "1.0.x",
     "ng-uikit-pro-standard": "git+https://oauth2:xds7fpVXkw8SnNJdDtUE@git.mdbootstrap.com/mdb/angular/ng-uikit-pro-standard.git",
@@ -85,5 +85,16 @@
     "js-joda": "^1.6.2",
     "utf8": "^2.1.2",
     "rxjs": "^6.2.1"
+  },
+  "browser": {
+    "fs": false,
+    "path": false,
+    "os": false,
+    "tls": false,
+    "net": false,
+    "https": false,
+    "fs-contants": false,
+    "stream": false,
+    "util": false
   }
 }

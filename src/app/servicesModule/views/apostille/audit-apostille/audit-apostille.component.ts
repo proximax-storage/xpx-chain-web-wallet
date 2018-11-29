@@ -32,7 +32,7 @@ export class AuditApostilleComsponent implements OnInit {
     private sharedService: SharedService,
     private nodeService:NodeService
   ) {
-    this.url=`https://${this.nodeService.getNodeSelected()}`;
+    this.url=`${this.nodeService.getNodeSelected()}`;
 
   }
 

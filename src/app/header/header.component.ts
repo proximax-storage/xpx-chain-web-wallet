@@ -6,10 +6,13 @@ import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { WalletService } from "../shared";
 import { NodeService } from "../servicesModule/services/node.service";
 import { TransactionsService } from "../transactions/service/transactions.service";
+import { NemProvider } from '../shared/services/nem.provider';
+import { mergeMap } from 'rxjs/operators';
 
 export interface HorizontalHeaderInterface {
   home: Header;
   node: Header;
+  amount:Header;
   dashboard: Header;
   nodeSelected: Header;
   createWallet: Header;
@@ -25,7 +28,7 @@ export interface VerticalHeaderInterface {
   dashboard: Header;
   services: Header;
   transactions: Header;
-  node:Header;
+  node: Header;
 }
 
 export interface Header {
@@ -52,19 +55,21 @@ export class HeaderComponent implements OnInit {
   isLogged$: Observable<boolean>;
   horizontalHeader: HorizontalHeaderInterface;
   verticalHeader: VerticalHeaderInterface;
+  vestedBalance: string = '0.00';
 
   constructor(
     private _loginService: LoginService,
     private route: Router,
     private activatedRoute: ActivatedRoute,
     private walletService: WalletService,
+    private nemProvider: NemProvider,
     private nodeService: NodeService,
     private transactionsService: TransactionsService
   ) {
     this.route.events
       .subscribe((event) => {
         if (event instanceof NavigationEnd) {
-          var objRoute = event.url.split('/')[event.url.split('/').length-1];
+          var objRoute = event.url.split('/')[event.url.split('/').length - 1];
           if (NameRoute[objRoute] !== undefined) {
             this.nameRoute = NameRoute[objRoute];
           } else {
@@ -74,7 +79,7 @@ export class HeaderComponent implements OnInit {
       });
   }
 
-  ngOnInit() {
+   ngOnInit() {
     this.buildHeader();
 
     /**
@@ -84,8 +89,11 @@ export class HeaderComponent implements OnInit {
      */
     this.isLogged$ = this._loginService.getIsLogged();
     this.isLogged$.subscribe(
-      response => {
+      async response => {
         this.showOnlyLogged = response;
+        if(this.showOnlyLogged) {
+          await this.getBalance();
+        }
       }
     );
   }
@@ -104,6 +112,16 @@ export class HeaderComponent implements OnInit {
         'icon': 'fa fa-home',
         'rol': false,
         'link': AppConfig.routes.home,
+        'show': true,
+        'submenu': {}
+      },
+      amount: {
+        'type': 'default',
+        'name': `Balance 0.00 xpx`,
+        'class': '',
+        'icon': '',
+        'rol': true,
+        'link': '',
         'show': true,
         'submenu': {}
       },
@@ -177,7 +195,7 @@ export class HeaderComponent implements OnInit {
         'rol': false,
         'link': '',
         'show': false,
-        'submenu': { }
+        'submenu': {}
       },
       createWallet: {
         'type': 'default',
@@ -251,7 +269,7 @@ export class HeaderComponent implements OnInit {
         'link': AppConfig.routes.dashboard,
         'show': true,
         'submenu': {}
-      },services: {
+      }, services: {
         'type': 'dropdown',
         'name': 'services',
         'class': '',
@@ -299,7 +317,7 @@ export class HeaderComponent implements OnInit {
             'link': `${AppConfig.routes.createPoll}`,
             'show': true,
             'submenu': {}
-          },'polls': {
+          }, 'polls': {
             'type': 'default',
             'name': 'See Polls',
             'class': '',
@@ -376,4 +394,23 @@ export class HeaderComponent implements OnInit {
     this._loginService.setLogged(false);
     this.route.navigate([`/${param}`]);
   }
+
+  getBalance() {
+
+    this.nemProvider.getBalance(this.walletService.address).pipe(
+      mergeMap((_) => _)
+    ).subscribe(
+      next => {
+        console.log('You have', next, next.fullName());
+        
+        this.horizontalHeader.amount.name = `Balance ${next.relativeAmount().toFixed(2)} ${next.mosaicName}`;
+      
+      },
+      err => {
+        this.vestedBalance = '0';
+        console.error(err);
+      }
+    );
+  }
+
 }

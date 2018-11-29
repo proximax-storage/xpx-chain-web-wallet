@@ -41,6 +41,7 @@ export class AccountComponent implements OnInit {
     this.nemProvider.getAccountInfo(this.walletService.address).subscribe(
       next => {
         console.log(next);
+        console.log(this.getBalance());
         //this.vestedBalance = next['mosaics'][0].amount.compact();
         this.publicKey = next.publicKey;
         this.blockUI.stop();

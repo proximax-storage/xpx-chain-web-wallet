@@ -1,11 +1,7 @@
 import { Component, OnInit, ElementRef, Renderer2 } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, AbstractControl } from "@angular/forms";
-import { Router, ActivatedRoute } from "@angular/router";
-import { map } from "rxjs/operators";
-import { Observable } from "rxjs";
-import { Account, NetworkType, SimpleWallet, Password, EncryptedPrivateKey, PublicAccount, AccountHttp } from 'nem2-sdk';
-import { AppConfig } from "../../../config/app.config";
-import { AccountsInterface, WalletAccountInterface, SharedService, WalletService } from "../../../shared";
+import { FormGroup, FormBuilder, Validators } from "@angular/forms";
+import { NetworkType } from 'proximax-nem2-sdk';
+import { SharedService, WalletService } from "../../../shared";
 import { NemProvider } from '../../../shared/services/nem.provider';
 
 
@@ -31,11 +27,7 @@ export class ImportWalletComponent implements OnInit {
   ];
 
   constructor(
-    private activatedRoute: ActivatedRoute,
     private fb: FormBuilder,
-    private route: Router,
-    private _el: ElementRef,
-    private _r: Renderer2,
     private sharedService: SharedService,
     private _walletService: WalletService,
     private _nemProvider: NemProvider

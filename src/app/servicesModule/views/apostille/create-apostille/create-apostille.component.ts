@@ -40,7 +40,7 @@ export class CreateApostilleComponent implements OnInit {
   deadline: Deadline;
   account: Account;
   uint64: UInt64;
-  file: string;
+  file: any;
   ourFile: File; // hold our file
   fileInput: any;
   nameFile: string;
