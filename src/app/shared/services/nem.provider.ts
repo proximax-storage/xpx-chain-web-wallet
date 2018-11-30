@@ -29,7 +29,7 @@ import {
   TransactionStatus
 } from 'proximax-nem2-sdk';
 
-import { crypto } from 'nem2-library';
+import { crypto } from 'proximax-nem2-library';
 import { environment } from '../../../environments/environment';
 import { commonInterface, walletInterface } from '..';
 import { WalletService } from './wallet.service'

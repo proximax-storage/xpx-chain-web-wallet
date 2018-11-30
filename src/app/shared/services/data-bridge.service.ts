@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { first } from "rxjs/operators";
-import { Listener, Address, Transaction } from "nem2-sdk";
+import { Listener, Address, Transaction } from "proximax-nem2-sdk";
 import { environment } from '../../../environments/environment';
 import { WalletService } from "./wallet.service";
 import { TransactionsService } from "../../transactions/service/transactions.service";

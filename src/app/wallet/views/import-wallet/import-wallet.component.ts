@@ -3,7 +3,7 @@ import { FormGroup, FormBuilder, Validators, AbstractControl } from "@angular/fo
 import { Router, ActivatedRoute } from "@angular/router";
 import { map } from "rxjs/operators";
 import { Observable } from "rxjs";
-import { Account, NetworkType, SimpleWallet, Password, EncryptedPrivateKey, PublicAccount, AccountHttp } from 'nem2-sdk';
+import { Account, NetworkType, SimpleWallet, Password, EncryptedPrivateKey, PublicAccount, AccountHttp } from 'proximax-nem2-sdk';
 import { AppConfig } from "../../../config/app.config";
 import { AccountsInterface, WalletAccountInterface, SharedService, WalletService } from "../../../shared";
 import { NemProvider } from '../../../shared/services/nem.provider';

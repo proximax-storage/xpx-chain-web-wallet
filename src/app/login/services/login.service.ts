@@ -4,7 +4,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { WalletService } from '../../shared/services/wallet.service';
 import { AppConfig } from '../../config/app.config';
 import { DataBridgeService } from "../../shared/services/data-bridge.service";
-import { Address } from "nem2-sdk/dist";
+import { Address } from "proximax-nem2-sdk/dist";
 import { TransactionsService } from "../../transactions/service/transactions.service";
 
 @Injectable({
