@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { SimpleWallet, Password, NetworkType, Account } from 'nem2-sdk';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { LoginService } from '../../services/login.service';
 

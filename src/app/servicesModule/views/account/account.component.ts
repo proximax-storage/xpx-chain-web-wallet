@@ -40,7 +40,6 @@ export class AccountComponent implements OnInit {
     this.blockUI.start('Loading...'); // Start blocking
     this.nemProvider.getAccountInfo(this.walletService.address).subscribe(
       next => {
-
         //this.vestedBalance = next['mosaics'][0].amount.compact();
         //this.publicKey = next.publicKey;
         this.publicKey = this.walletService.publicAccount.publicKey;
