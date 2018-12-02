@@ -43,7 +43,7 @@ export class NodeService {
    * @memberof NodeService
    */
   nodeSelected() {
-    return JSON.parse(localStorage.getItem(this.nodeSelect));
+    return  JSON.parse(localStorage.getItem(this.nodeSelect));
   }
 
   /**

@@ -39,7 +39,7 @@ export class AddNodeComponent implements OnInit {
       }
 
       const issetData = dataStorage.find(element => element.value === this.ngMNode);
-      console.log(issetData);
+
       if (issetData === undefined) {
         dataStorage.push(data);
         this.setNode(dataStorage);

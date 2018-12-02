@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
-import { NetworkType, PublicAccount } from "nem2-sdk";
-import { crypto } from 'nem2-library';
+import { NetworkType, PublicAccount } from "proximax-nem2-sdk";
+import { crypto } from 'proximax-nem2-library';
 import { Router } from "@angular/router";
-import { BehaviorSubject, Observable } from "rxjs";
 import { AccountsInterface } from '..';
-import { commonInterface, walletInterface } from '../interfaces/shared.interfaces';
 import { NemProvider } from './nem.provider';
 import { SharedService } from './shared.service';
 import { NodeService } from '../../servicesModule/services/node.service';
@@ -126,7 +124,6 @@ export class WalletService {
     const alg = algo || this.algo;
     // Try to generate or decrypt key
 
-    console.log(common, acct, alg)
     if (!crypto.passwordToPrivatekey(common, acct, alg)) {
       console.log("sssss")
       setTimeout(() => {
@@ -134,7 +131,7 @@ export class WalletService {
       }, 500);
       return false;
     }
-    console.log("2", common.isHW)
+
     if (common.isHW) {
       // this._mdboostrap.closeToastr();
 

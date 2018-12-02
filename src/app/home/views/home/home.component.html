@@ -1,16 +1,18 @@
 <div class="container mt-5rem separation">
   <div class="row">
-    <div class="col-12 mx-auto">
-      <h1 class="text-align-center wallet-name">Wallet</h1>
+    <div class="col-8 mx-auto">
+      <h1 class="text-align-center wallet-name">ProximaX Test-Wallet</h1>
       <hr>
-      <h6 class="text-align-center wallet-name">The secure interface that connects to our platform.</h6>
+      <h5 class="text-align-center wallet-name">The secure interface that connects to our platform.</h5>
+      <h6 class="text-align-center wallet-name">Note: Wallet is still in early phase development. Please report issues <a href="https://trello.com/invite/b/nVu5ZxqN/e5dad0a439548aa226a61b2c14c5eebb/proximaxtestnetwallet">here</a></h6>
+      <h6 class="text-align-center wallet-name">Make sure to clear cache or launch in Incognito/Private browsing mode.</h6>
     </div>
 
-    <div class="col-8 mt-3rem mx-auto">
+    <div class="col-12 mt-3rem mx-auto">
       <div class="row">
         <ng-container *ngFor="let item of keyObject(arrayServices);">
           <ng-container *ngIf="arrayServices[item].show">
-            <div class="col-sm-4 col-md-3 mt-3rem cursor-pointer" (mouseenter)="description = arrayServices[item].text" (mouseleave)="description = ''">
+            <div class="col-md-3 mt-3rem cursor-pointer text-align-center" (mouseenter)="description = arrayServices[item].text" (mouseleave)="description = ''">
               <div class="{{arrayServices[item].icon}} size-icon-services" aria-hidden="true"></div>
             </div>
           </ng-container>

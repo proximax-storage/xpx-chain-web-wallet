@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, HostListener, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { MdbTablePaginationComponent, MdbTableService } from 'ng-uikit-pro-standard';
-import { MosaicId, Transaction, Address, TransactionType } from 'nem2-sdk';
+import { MosaicId, Transaction, Address, TransactionType } from 'proximax-nem2-sdk';
 import { AppConfig } from '../../../config/app.config';
 import { NemProvider } from '../../../shared/services/nem.provider';
 import { NodeService } from "../../../servicesModule/services/node.service";
@@ -101,7 +101,7 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
       this.blockInput = true;
       this.nemProvider.getAccountInfo(Address.createFromRawAddress(this.paramSearch)).pipe(first()).subscribe(
         accountInfo => {
-          console.log(accountInfo)
+
           this.nemProvider.getAllTransactionsFromAccount(accountInfo.publicAccount).subscribe(
             resp => {
               console.log('with address info ', resp);
@@ -120,7 +120,7 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
       const publicAccount = this.nemProvider.createPublicAccount(this.paramSearch, this.walletService.network);
       this.nemProvider.getAllTransactionsFromAccount(publicAccount, this.nodeService.getNodeSelected()).subscribe(
         resp => {
-          console.log('with publickey info', resp);
+
           this.buildTransaction(resp);
         },
         error => {

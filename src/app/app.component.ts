@@ -1,9 +1,6 @@
 import { Component } from '@angular/core';
-import { BlockInfo, Listener, Address, AccountHttp } from "nem2-sdk/dist";
-import { environment } from "../environments/environment";
 import { ApiService } from "./shared/services/api.services";
 import { NodeService } from "./servicesModule/services/node.service";
-import * as Highcharts from 'highcharts';
 
 @Component({
   selector: 'app-root',
@@ -25,7 +22,7 @@ export class AppComponent {
     private nodeService: NodeService
   ) {
     const nodeSelected = this.nodeService.initNode();
-    console.log('NODE SELECTED::: ', nodeSelected);
+
   }
 
   /**

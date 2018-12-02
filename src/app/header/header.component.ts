@@ -6,10 +6,14 @@ import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { WalletService } from "../shared";
 import { NodeService } from "../servicesModule/services/node.service";
 import { TransactionsService } from "../transactions/service/transactions.service";
+import { NemProvider } from '../shared/services/nem.provider';
+import { mergeMap } from 'rxjs/operators';
+import { MessageService } from '../shared/services/message.service';
 
 export interface HorizontalHeaderInterface {
   home: Header;
   node: Header;
+  amount:Header;
   dashboard: Header;
   nodeSelected: Header;
   createWallet: Header;
@@ -22,10 +26,13 @@ export interface HorizontalHeaderInterface {
 }
 
 export interface VerticalHeaderInterface {
-  dashboard: Header;
-  services: Header;
-  transactions: Header;
-  node:Header;
+  // dashboard: Header;
+  // services: Header;
+  // transactions: Header;dashboard: Header;
+  //   // services: Header;
+  //   // transactions: Header;
+  //   // node:Header;
+  // node:Header;
 }
 
 export interface Header {
@@ -52,19 +59,23 @@ export class HeaderComponent implements OnInit {
   isLogged$: Observable<boolean>;
   horizontalHeader: HorizontalHeaderInterface;
   verticalHeader: VerticalHeaderInterface;
+  vestedBalance: string = '0.00';
+  message:string;
 
   constructor(
     private _loginService: LoginService,
     private route: Router,
     private activatedRoute: ActivatedRoute,
     private walletService: WalletService,
+    private nemProvider: NemProvider,
     private nodeService: NodeService,
-    private transactionsService: TransactionsService
+    private transactionsService: TransactionsService,
+    private messageService: MessageService
   ) {
     this.route.events
       .subscribe((event) => {
         if (event instanceof NavigationEnd) {
-          var objRoute = event.url.split('/')[event.url.split('/').length-1];
+          var objRoute = event.url.split('/')[event.url.split('/').length - 1];
           if (NameRoute[objRoute] !== undefined) {
             this.nameRoute = NameRoute[objRoute];
           } else {
@@ -74,8 +85,9 @@ export class HeaderComponent implements OnInit {
       });
   }
 
-  ngOnInit() {
+   ngOnInit() {
     this.buildHeader();
+  
 
     /**
      * Observable state of the login
@@ -84,10 +96,23 @@ export class HeaderComponent implements OnInit {
      */
     this.isLogged$ = this._loginService.getIsLogged();
     this.isLogged$.subscribe(
-      response => {
+      async response => {
         this.showOnlyLogged = response;
+        if(this.showOnlyLogged) {
+          await this.getBalance();
+        }
       }
     );
+
+    this.messageService.currentMessage.subscribe(async message => {
+      this.message = message;
+
+      if(this.message === 'balanceChanged') {
+        if(this.showOnlyLogged) {
+          await this.getBalance();
+        }
+      }
+    });
   }
 
   /**
@@ -104,6 +129,16 @@ export class HeaderComponent implements OnInit {
         'icon': 'fa fa-home',
         'rol': false,
         'link': AppConfig.routes.home,
+        'show': true,
+        'submenu': {}
+      },
+      amount: {
+        'type': 'default',
+        'name': `Balance 0.00 xpx`,
+        'class': '',
+        'icon': '',
+        'rol': true,
+        'link': '',
         'show': true,
         'submenu': {}
       },
@@ -145,7 +180,7 @@ export class HeaderComponent implements OnInit {
         'icon': 'fa fa-codepen',
         'rol': true,
         'link': '',
-        'show': true,
+        'show': false,
         'submenu': {
           'addNode': {
             'type': 'default',
@@ -154,7 +189,7 @@ export class HeaderComponent implements OnInit {
             'icon': '',
             'rol': true,
             'link': AppConfig.routes.addNode,
-            'show': true,
+            'show': false,
             'submenu': {}
           },
           'selectNode': {
@@ -164,7 +199,7 @@ export class HeaderComponent implements OnInit {
             'icon': '',
             'rol': true,
             'link': AppConfig.routes.selectNode,
-            'show': true,
+            'show': false,
             'submenu': {}
           }
         }
@@ -177,7 +212,7 @@ export class HeaderComponent implements OnInit {
         'rol': false,
         'link': '',
         'show': false,
-        'submenu': { }
+        'submenu': {}
       },
       createWallet: {
         'type': 'default',
@@ -251,7 +286,7 @@ export class HeaderComponent implements OnInit {
         'link': AppConfig.routes.dashboard,
         'show': true,
         'submenu': {}
-      },services: {
+      }, services: {
         'type': 'dropdown',
         'name': 'services',
         'class': '',
@@ -299,7 +334,7 @@ export class HeaderComponent implements OnInit {
             'link': `${AppConfig.routes.createPoll}`,
             'show': true,
             'submenu': {}
-          },'polls': {
+          }, 'polls': {
             'type': 'default',
             'name': 'See Polls',
             'class': '',
@@ -376,4 +411,23 @@ export class HeaderComponent implements OnInit {
     this._loginService.setLogged(false);
     this.route.navigate([`/${param}`]);
   }
+
+  getBalance() {
+
+    this.nemProvider.getBalance(this.walletService.address).pipe(
+      mergeMap((_) => _)
+    ).subscribe(
+      next => {
+        console.log('You have',  next.relativeAmount());
+        
+        this.horizontalHeader.amount.name = `Balance ${next.relativeAmount().toFixed(2)} ${next.mosaicName}`;
+      
+      },
+      err => {
+        this.vestedBalance = '0';
+        console.log(err);
+      }
+    );
+  }
+
 }

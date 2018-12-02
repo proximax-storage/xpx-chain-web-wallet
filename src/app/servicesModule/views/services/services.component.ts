@@ -18,16 +18,21 @@ export class ServicesComponent implements OnInit {
 
   ngOnInit() {
 
-    const addNode = this.service.structureServices('img-add-node', 'Nodes', `Add and select node`,
-      {
-        createPoll: this.structureServiceRoute('Add node', `/${AppConfig.routes.addNode}`),
-        selectNode: this.structureServiceRoute('Select node', `/${AppConfig.routes.selectNode}`)
-      }, true
-    );
+    // const addNode = this.service.structureServices('img-add-node', 'Nodes', `Add and select node`,
+    //   {
+    //     createPo    // const addNode = this.service.structureServices('img-add-node', 'Nodes', `Add and select node`,
+    //     //   {
+    //     //     createPoll: this.structureServiceRoute('Add node', `/${AppConfig.routes.addNode}`),
+    //     //     selectNode: this.structureServiceRoute('Select node', `/${AppConfig.routes.selectNode}`)
+    //     //   }, true
+    //     // );ll: this.structureServiceRoute('Add node', `/${AppConfig.routes.addNode}`),
+    //     selectNode: this.structureServiceRoute('Select node', `/${AppConfig.routes.selectNode}`)
+    //   }, true
+    // );
 
     const explorerFile = this.service.structureServices('img-explorer-file', 'File explorer', `File explorer`,
       {
-        createPoll: this.structureServiceRoute('File explorer', `/${AppConfig.routes.explorer}`)
+        explorerFile: this.structureServiceRoute('File explorer', `/${AppConfig.routes.explorerFile}`)
       }, true
     );
 
@@ -40,7 +45,7 @@ export class ServicesComponent implements OnInit {
     const voting = this.service.structureServices('fa fa-4x fa-pie-chart', 'Voting', `Create and vote on polls`,
       {
         createPoll: this.structureServiceRoute('Create a Poll', `/${AppConfig.routes.createPoll}`),
-        audiApostille: this.structureServiceRoute('Vote and See Polls', `/${AppConfig.routes.audiApostille}`),
+        polls: this.structureServiceRoute('Vote and See Polls', `/${AppConfig.routes.polls}`),
       }, true
     );
 
@@ -93,10 +98,10 @@ export class ServicesComponent implements OnInit {
 
 
     this.services = {
-      explorerFile: explorerFile,
+      //explorerFile: explorerFile,
       explorerTransaction: explorerTransaction,
-      addNode: addNode,
-      multisignature: multisignature,
+      //addNode: addNode,
+      //multisignature: multisignature,
       nameSpace: nameSpace,
       delegatedHarvesting: delegatedHarvesting,
       apostille: apostille,
@@ -117,10 +122,10 @@ export class ServicesComponent implements OnInit {
 }
 
 export interface Service {
-  explorerFile: ItemService;
-  addNode: ItemService;
+  //explorerFile: ItemService;
+  //addNode: ItemService;
   explorerTransaction: ItemService;
-  multisignature: ItemService;
+  //multisignature: ItemService;
   nameSpace: ItemService;
   delegatedHarvesting: ItemService;
   apostille: ItemService;

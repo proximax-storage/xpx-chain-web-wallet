@@ -3,7 +3,7 @@ import { FormGroup, FormBuilder, Validators, AbstractControl } from "@angular/fo
 import { Router, ActivatedRoute } from "@angular/router";
 import { map } from "rxjs/operators";
 import { Observable } from "rxjs";
-import { Account, NetworkType, SimpleWallet, Password, EncryptedPrivateKey, AccountHttp, PublicAccount } from 'nem2-sdk';
+import { Account, NetworkType, SimpleWallet, Password, EncryptedPrivateKey, AccountHttp, PublicAccount } from 'proximax-nem2-sdk';
 import { AppConfig } from "../../../config/app.config";
 import { AccountsInterface, WalletAccountInterface, SharedService, WalletService } from "../../../shared";
 import { NemProvider } from '../../../shared/services/nem.provider';
@@ -25,10 +25,7 @@ export class CreateWalletComponent implements OnInit {
     {
       'value': NetworkType.TEST_NET,
       'label': 'TEST NET'
-    },{
-      'value': NetworkType.MIJIN_TEST,
-      'label': 'MIJIN TEST'
-    }
+    },
   ];
 
   constructor(

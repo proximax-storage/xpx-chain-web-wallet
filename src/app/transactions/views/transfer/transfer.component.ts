@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
-import { NetworkType, Account } from "nem2-sdk";
 import { WalletService, SharedService } from "../../../shared";
 import { TransactionsService } from "../../../transactions/service/transactions.service";
 import { NemProvider } from "../../../shared/services/nem.provider";
 import { ServiceModuleService } from "../../../servicesModule/services/service-module.service";
+import { MessageService } from 'src/app/shared/services/message.service';
 
 @Component({
   selector: 'app-transfer',
@@ -26,7 +26,8 @@ export class TransferComponent implements OnInit {
     private nemProvider: NemProvider,
     private sharedService: SharedService,
     private transactionService: TransactionsService,
-    private ServiceModuleService: ServiceModuleService
+    private ServiceModuleService: ServiceModuleService,
+   
   ) { }
 
   ngOnInit() {
@@ -102,9 +103,10 @@ export class TransferComponent implements OnInit {
         .announce(rspBuildSend.signedTransaction)
         .subscribe(
         rsp => {
-          console.log(rsp);
+
           this.inputBLocked = false;
           this.cleanForm();
+         
         },
         err => {
           this.inputBLocked = false;

@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, AfterViewInit, HostListener, ChangeDetect
 import { CollapseComponent, MdbTableService, MdbTablePaginationComponent } from 'ng-uikit-pro-standard';
 import { Observable, Subject } from 'rxjs';
 import { first } from "rxjs/operators";
-import { Transaction } from "nem2-sdk";
+import { Transaction } from "proximax-nem2-sdk";
 import { TransactionsService } from '../../service/transactions.service';
 import { NemProvider } from "../../../shared/services/nem.provider";
 import { WalletService } from "../../../shared";
@@ -56,7 +56,7 @@ export class TransactionsComponent implements OnInit {
   getAllTransactions() {
     this.nemProvider.getAllTransactionsFromAccount(this.walletService.publicAccount, this.walletService.network).pipe(first()).subscribe(
       trans => {
-        console.log("All transactions confirmed:", trans);
+
         trans.forEach(element => {
           const date = `${element.deadline.value.monthValue()}/${element.deadline.value.dayOfMonth()}/${element.deadline.value.year()}`;
           this.elements.push({

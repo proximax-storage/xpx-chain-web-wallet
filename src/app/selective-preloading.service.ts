@@ -16,7 +16,7 @@ export class SelectivePreloadingService {
       // add the route path to the preloaded module array
       this.preloadedModules.push(route.path);
       // log the route path to the console
-      console.log('Preloaded: ' + route.path); 
+
       return load();
     } else {
       return of(null);
