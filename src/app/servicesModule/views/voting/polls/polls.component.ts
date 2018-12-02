@@ -289,7 +289,7 @@ export class PollsComponent implements OnInit {
     this.nemProvider.announce(signedTransaction).subscribe(
       x => {
         this.blockUI.stop(); // Stop blocking
-        console.log("exis=", x)
+
         this.validateform = true;
         this.sharedService.showSuccess('success', 'voting created')
         this.result()
