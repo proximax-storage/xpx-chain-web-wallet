@@ -7,7 +7,8 @@ import { NemProvider } from '../../../../shared/services/nem.provider';
 import { SharedService } from '../../../../shared';
 import { ServiceModuleService } from '../../../services/service-module.service';
 import { NodeService } from '../../../../servicesModule/services/node.service';
-
+import { KeyPair, convert } from 'nem2-library';
+import { Verifier } from './audit-apistille-verifier'
 
 @Component({
   selector: 'app-audit-apostille',
@@ -26,13 +27,13 @@ export class AuditApostilleComsponent implements OnInit {
   auditResults = [];
   messa: Message;
   initialFileName: any;
-  url:any;
+  url: any;
   constructor(
     private nemProvider: NemProvider,
     private sharedService: SharedService,
-    private nodeService:NodeService
+    private nodeService: NodeService
   ) {
-    this.url=`${this.nodeService.getNodeSelected()}`;
+    this.url = `https://${this.nodeService.getNodeSelected()}`;
 
   }
 
@@ -109,12 +110,11 @@ export class AuditApostilleComsponent implements OnInit {
     this.blockUI.start('Loading...'); // Start blocking
     this.nemProvider.getTransaction(apostilleTxHash).subscribe((infTrans: TransferTransaction) => {
       const apostilleHashPrefix = 'fe4e545903';
-      const hash = crypto.SHA256(this.file);
-      const apostilleHash = apostilleHashPrefix + crypto.SHA256(this.file).toString(crypto.enc.Hex);
 
+      const data = this.file
       this.blockUI.stop(); // Stop blocking
 
-      if (!this.verify(apostilleHash, infTrans.message.payload)) {
+      if (!this.verify(data, infTrans)) {
         this.auditResults
         this.auditResults.push({
           'filename': this.nameFile,
@@ -130,7 +130,7 @@ export class AuditApostilleComsponent implements OnInit {
         this.auditResults.push({
           'filename': this.nameFile,
           'owner': infTrans.recipient.plain(),
-          'fileHash': apostilleHash,
+          'fileHash': Verifier.Hash,
           'result': 'Document apostille!',
           'hash': ''
         });
@@ -148,11 +148,14 @@ export class AuditApostilleComsponent implements OnInit {
     )
 
   }
-  verify(apostilleHash, hasMensaje) {
-    if (apostilleHash === hasMensaje.replace(/['"]+/g, '')) {
-      return true;
-    } else {
-      return false;
+  verify(data, infTrans): boolean {
+
+    if (Verifier.isPublicApostille(infTrans.message.payload.replace(/['"]+/g, ''))) {
+      return Verifier.verifyPublicApostille(data, infTrans.message.payload.replace(/['"]+/g, ''))
+    }
+    if (Verifier.isPrivateApostille(infTrans.message.payload.replace(/['"]+/g, ''))) {
+      return Verifier.verifyPrivateApostille(infTrans.signer, data, infTrans.message.payload.replace(/['"]+/g, ''))
+
     }
   }
   showResult(result) {
@@ -169,4 +172,3 @@ export class AuditApostilleComsponent implements OnInit {
   }
 
 }
-

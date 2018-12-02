@@ -125,7 +125,7 @@ export class WalletService {
     // Try to generate or decrypt key
 
     if (!crypto.passwordToPrivatekey(common, acct, alg)) {
-      console.log("sssss")
+
       setTimeout(() => {
         this.sharedService.showError('Error', '¡Invalid password!');
       }, 500);
@@ -138,7 +138,6 @@ export class WalletService {
       return true;
     }
 
-    console.log(common.privateKey)
     if (!this.isPrivateKeyValid(common.privateKey) || !this.nemProvider.checkAddress(common.privateKey, net, acct.address)) {
       //   this._mdboostrap.closeToastr();
       setTimeout(() => {
