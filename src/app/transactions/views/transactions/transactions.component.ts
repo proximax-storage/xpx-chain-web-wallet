@@ -21,7 +21,7 @@ export class TransactionsComponent implements OnInit {
   items: any;
   elements: any = [];
   searchText: string;
-  dataSelected: Transaction;
+  dataSelected: any;
   headElements = ['Account', 'Amount', 'Mosaic', 'Date'];
   @ViewChild(MdbTablePaginationComponent) mdbTablePagination: MdbTablePaginationComponent;
 

@@ -29,7 +29,7 @@ export class DashboardComponent implements OnInit {
   unconfirmedSelected = false;
   cantConfirmed = 0;
   cantUnconfirmed = 0;
-  dataSelected: Transaction;
+  dataSelected: any;
   isLogged$: Observable<boolean>;
   headElements = ['Recipient', 'Amount', 'Mosaic', 'Date'];
   subscriptions = [
