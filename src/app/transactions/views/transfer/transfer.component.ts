@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from "@angular/forms";
+import { FormGroup, FormBuilder, Validators, FormControl } from "@angular/forms";
 import { WalletService, SharedService } from "../../../shared";
 import { TransactionsService } from "../../../transactions/service/transactions.service";
 import { NemProvider } from "../../../shared/services/nem.provider";
@@ -27,7 +27,7 @@ export class TransferComponent implements OnInit {
     private sharedService: SharedService,
     private transactionService: TransactionsService,
     private ServiceModuleService: ServiceModuleService,
-   
+
   ) { }
 
   ngOnInit() {
@@ -38,17 +38,17 @@ export class TransferComponent implements OnInit {
 
   createForm() {
     this.transferForm = this.fb.group({
-      acountRecipient: ['', [Validators.required, Validators.minLength(46), Validators.maxLength(46)]],
-      amount: ['', [Validators.maxLength(20)]],
-      message: ['', [Validators.maxLength(80)]],
-      password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]]
+      acountRecipient: [null, [Validators.required, Validators.minLength(46), Validators.maxLength(46)]],
+      amount: [null, [Validators.maxLength(20)]],
+      message: [null, [Validators.maxLength(80)]],
+      password: [null, [Validators.required, Validators.minLength(8), Validators.maxLength(30)]]
     });
   }
 
   createFormContact() {
     this.contactForm = this.fb.group({
-      user: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(46)]],
-      address: ['', [Validators.required, Validators.minLength(46), Validators.maxLength(46)]]
+      user: [null, [Validators.required, Validators.minLength(6), Validators.maxLength(46)]],
+      address: [null, [Validators.required, Validators.minLength(46), Validators.maxLength(46)]]
     });
   }
 
@@ -66,7 +66,7 @@ export class TransferComponent implements OnInit {
     return;
   }
 
-  getError(control, typeForm? ,formControl?) {
+  getError(control, typeForm?, formControl?) {
     const form = (typeForm === undefined) ? this.transferForm : this.contactForm;
     if (formControl === undefined) {
       if (form.get(control).getError('required')) {
@@ -90,7 +90,12 @@ export class TransferComponent implements OnInit {
   }
 
   sendTransfer() {
-    if (this.transferForm.valid) {
+    console.log(this.transferForm);
+    if (this.transferForm.invalid) {
+      this.validateAllFormFields(this.transferForm);
+      this.inputBLocked = false;
+
+    } else {
       this.inputBLocked = true;
       const acountRecipient = this.transferForm.get('acountRecipient').value;
       const amount = this.transferForm.get('amount').value;
@@ -100,21 +105,19 @@ export class TransferComponent implements OnInit {
       if (this.walletService.decrypt(common)) {
         const rspBuildSend = this.transactionService.buildToSendTransfer(common, acountRecipient, message, amount, this.walletService.network);
         rspBuildSend.transactionHttp
-        .announce(rspBuildSend.signedTransaction)
-        .subscribe(
-        rsp => {
+          .announce(rspBuildSend.signedTransaction)
+          .subscribe(
+            rsp => {
+              this.inputBLocked = false;
+              this.cleanForm();
 
-          this.inputBLocked = false;
-          this.cleanForm();
-         
-        },
-        err => {
-          this.inputBLocked = false;
-          this.cleanForm();
-          console.error(err);
-        });
-      }else {
-        this.inputBLocked = false;
+            },
+            err => {
+              this.inputBLocked = false;
+              this.cleanForm();
+              this.sharedService.showError('Error', err);
+              console.error(err);
+            });
       }
     }
   }
@@ -145,8 +148,21 @@ export class TransferComponent implements OnInit {
     }
   }
 
-  optionSelected(event){
+  optionSelected(event) {
     console.log(event);
     this.transferForm.get('acountRecipient').patchValue(event.value);
   }
+
+  validateAllFormFields(formGroup: FormGroup) {
+    Object.keys(formGroup.controls).forEach(field => {
+      const control = formGroup.get(field);
+      if (control instanceof FormControl) {
+        control.markAsTouched({ onlySelf: true });
+      } else if (control instanceof FormGroup) {
+        this.validateAllFormFields(control);
+      }
+    });
+  }
+
+ 
 }
