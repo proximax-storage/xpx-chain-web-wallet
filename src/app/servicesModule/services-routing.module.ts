@@ -13,6 +13,7 @@ import { AuditApostilleComsponent } from './views/apostille/audit-apostille/audi
 import { ServicesComponent } from "./views/services/services.component";
 import { AccountComponent } from './views/account/account.component';
 import { AddressBookComponent } from "./views/address-book/address-book.component";
+import { StorageComponent } from './views/storage/storage.component';
 
 const routes: Routes = [
   {
@@ -62,7 +63,12 @@ const routes: Routes = [
     component: AddressBookComponent,
     canActivate: [LoggedGuard]
   }
-
+  ,
+  {
+    path: `${AppConfig.routes.storage}`,
+    component: StorageComponent,
+    canActivate: [LoggedGuard]
+  }
 ];
 
 @NgModule({
