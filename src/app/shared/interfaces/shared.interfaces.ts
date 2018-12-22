@@ -11,9 +11,9 @@ export interface walletInterface {
 export interface WalletAccountInterface {
     name: string,
     accounts: object;
-  }
-  
-  export interface AccountsInterface {
+}
+
+export interface AccountsInterface {
     brain: boolean;
     algo: string;
     encrypted: string;
@@ -21,4 +21,11 @@ export interface WalletAccountInterface {
     address: string;
     label: string;
     network: number;
-  }
+}
+
+
+export interface FileInterface {
+    dataHash: string;
+    contentType: string;
+    name: string;
+}

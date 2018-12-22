@@ -30,9 +30,9 @@ export class ServicesComponent implements OnInit {
     //   }, true
     // );
 
-    const explorerFile = this.service.structureServices('img-explorer-file', 'File explorer', `File explorer`,
+    const storage = this.service.structureServices('img-explorer-file', 'Storage', `Storage`,
       {
-        explorerFile: this.structureServiceRoute('File explorer', `/${AppConfig.routes.explorerFile}`)
+        explorerFile: this.structureServiceRoute('Storage', `/${AppConfig.routes.storage}`)
       }, true
     );
 
@@ -108,7 +108,8 @@ export class ServicesComponent implements OnInit {
       mosaics: mosaics,
       changellyInstantExchange: changellyInstantExchange,
       voting: voting,
-      addressBook: addressBook
+      addressBook: addressBook,
+      storage:storage
     }
   }
 
@@ -133,6 +134,7 @@ export interface Service {
   changellyInstantExchange: ItemService;
   addressBook: ItemService;
   voting: ItemService;
+  storage: ItemService;
 }
 
 export interface ItemService {

@@ -21,7 +21,8 @@ export const AppConfig: Config = {
     account:'account',
     explorerFile:'explorer-file',
     addressBook:'address-book',
-    notFound: 'not-found'
+    notFound: 'not-found',
+    storage: 'storage',
   }
 };
 
@@ -45,7 +46,8 @@ export const NameRoute = {
   [AppConfig.routes.account]: 'Account',
   [AppConfig.routes.service]: ' Dashboard service',
   [AppConfig.routes.addressBook]: 'Address Book',
-  [AppConfig.routes.notFound]: '404 not found'
+  [AppConfig.routes.notFound]: '404 not found',
+  [AppConfig.routes.storage]: 'storage'
 }
 
 export interface Config {
@@ -70,5 +72,6 @@ export interface Config {
     explorerFile: string;
     addressBook: string;
     notFound: string;
+    storage:string;
   };
 }
