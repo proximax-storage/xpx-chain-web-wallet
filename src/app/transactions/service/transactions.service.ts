@@ -34,7 +34,7 @@ export class TransactionsService {
   getTransConfirm$(): Observable<any> {
     this.messageService.changeMessage('balanceChanged');
     return this._transConfirm$;
-    
+
   }
 
   setTransConfirm$(data) {
@@ -69,12 +69,11 @@ export class TransactionsService {
   }
 
   formatTransaction(data) {
-    let response = {};
     const date = `${data.deadline.value.monthValue()}/${data.deadline.value.dayOfMonth()}/${data.deadline.value.year()}`;
     const isRemitent = this.walletService.address.pretty() === data.recipient.pretty();
-    return  response = {
+    return {
       address: data.signer.address.pretty(),
-      amount: data['mosaics'][0].amount.compact(),
+      amount: data['amount'],
       message: data['message'],
       transactionInfo: data.transactionInfo,
       fee: data.fee.compact(),

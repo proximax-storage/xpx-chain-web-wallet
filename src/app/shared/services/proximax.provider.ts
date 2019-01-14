@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { NetworkType } from "proximax-nem2-sdk";
+import { NetworkType, MosaicInfo } from "proximax-nem2-sdk";
 import {
   BlockchainNetworkType,
   BlockchainNetworkConnection,
@@ -7,11 +7,20 @@ import {
   IpfsConnection,
 } from "xpx2-ts-js-sdk";
 import { environment } from "../../../environments/environment";
+import { NemProvider } from "./nem.provider";
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProximaxProvider {
+
+  infoMosaic: MosaicInfo;
+
+  constructor(
+    private nemProvider: NemProvider
+  ) {
+
+  }
 
   getBlockchainNetworkType(network: number): BlockchainNetworkType {
     switch (network) {
@@ -43,5 +52,24 @@ export class ProximaxProvider {
     );
   }
 
- 
+  async getInfoMosaic(mosaicId) {
+    const promise = new Promise(async (resolve, reject) => {
+      if (this.infoMosaic === undefined) {
+        console.log("No está en caché");
+        this.infoMosaic = await this.nemProvider.getMosaic(mosaicId).toPromise();
+        this.setInfoMosaic(this.infoMosaic);
+        resolve(this.infoMosaic);
+      }else {
+        console.log("Está en caché");
+        resolve(this.infoMosaic);
+      }
+    });
+    return await promise;
+  }
+
+  setInfoMosaic(mosaicInfo: MosaicInfo) {
+    this.infoMosaic = mosaicInfo;
+  }
+
+
 }

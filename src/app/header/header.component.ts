@@ -1,11 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { AppConfig, Config, NameRoute } from '../config/app.config';
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
+import { AppConfig, NameRoute } from '../config/app.config';
+import { Observable } from 'rxjs';
 import { LoginService } from '../login/services/login.service';
-import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 import { WalletService } from "../shared";
 import { NodeService } from "../servicesModule/services/node.service";
-import { TransactionsService } from "../transactions/service/transactions.service";
 import { NemProvider } from '../shared/services/nem.provider';
 import { mergeMap } from 'rxjs/operators';
 import { MessageService } from '../shared/services/message.service';
@@ -65,13 +64,12 @@ export class HeaderComponent implements OnInit {
   constructor(
     private _loginService: LoginService,
     private route: Router,
-    private activatedRoute: ActivatedRoute,
     private walletService: WalletService,
     private nemProvider: NemProvider,
     private nodeService: NodeService,
-    private transactionsService: TransactionsService,
     private messageService: MessageService
   ) {
+
     this.route.events
       .subscribe((event) => {
         if (event instanceof NavigationEnd) {
@@ -87,7 +85,7 @@ export class HeaderComponent implements OnInit {
 
    ngOnInit() {
     this.buildHeader();
-  
+
 
     /**
      * Observable state of the login
@@ -106,7 +104,6 @@ export class HeaderComponent implements OnInit {
 
     this.messageService.currentMessage.subscribe(async message => {
       this.message = message;
-
       if(this.message === 'balanceChanged') {
         if(this.showOnlyLogged) {
           await this.getBalance();
@@ -413,15 +410,11 @@ export class HeaderComponent implements OnInit {
   }
 
   getBalance() {
-
-    this.nemProvider.getBalance(this.walletService.address).pipe(
-      mergeMap((_) => _)
+    this.nemProvider.getBalance(this.walletService.address).pipe(mergeMap((_) => _)
     ).subscribe(
       next => {
         console.log('You have',  next.relativeAmount());
-        
         this.horizontalHeader.amount.name = `Balance ${next.relativeAmount().toFixed(2)} ${next.mosaicName}`;
-      
       },
       err => {
         this.vestedBalance = '0';

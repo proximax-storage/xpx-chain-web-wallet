@@ -26,7 +26,8 @@ import {
   UInt64,
   XEM,
   TransactionStatusError,
-  TransactionStatus
+  TransactionStatus,
+  MosaicInfo
 } from 'proximax-nem2-sdk';
 
 import { crypto } from 'proximax-nem2-library';
@@ -196,6 +197,30 @@ export class NemProvider {
 
     crypto.passwordToPrivatekey(common, wallet, 'pass:bip32');
     return common.privateKey;
+  }
+
+  /**
+   *
+   *
+   * @param {any} amount
+   * @param {any} divisibility
+   * @returns
+   * @memberof NemProvider
+   */
+  formatterAmount(amount, divisibility) {
+    const amountDivisibility = Number(amount / Math.pow(10, divisibility));
+    return (amountDivisibility).toLocaleString('en-us', { minimumFractionDigits: divisibility });
+  }
+
+  /**
+   * Get mosaic
+   *
+   * @param {any} mosaicId
+   * @returns
+   * @memberof NemProvider
+   */
+  getMosaic(mosaicId: MosaicId): Observable<MosaicInfo> {
+    return this.mosaicHttp.getMosaic(mosaicId);
   }
 
   /**

@@ -94,7 +94,6 @@ export class TransferComponent implements OnInit {
     if (this.transferForm.invalid) {
       this.validateAllFormFields(this.transferForm);
       this.inputBLocked = false;
-
     } else {
       this.inputBLocked = true;
       const acountRecipient = this.transferForm.get('acountRecipient').value;
@@ -108,6 +107,7 @@ export class TransferComponent implements OnInit {
           .announce(rspBuildSend.signedTransaction)
           .subscribe(
             rsp => {
+              console.log("guarda transaccion");
               this.inputBLocked = false;
               this.cleanForm();
 
@@ -164,5 +164,5 @@ export class TransferComponent implements OnInit {
     });
   }
 
- 
+
 }
