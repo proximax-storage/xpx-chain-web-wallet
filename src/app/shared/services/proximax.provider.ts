@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { NetworkType, MosaicInfo } from "proximax-nem2-sdk";
+import { NetworkType, MosaicInfo, MosaicId } from "proximax-nem2-sdk";
 import {
   BlockchainNetworkType,
   BlockchainNetworkConnection,
@@ -22,7 +22,7 @@ export class ProximaxProvider {
 
   }
 
-  getBlockchainNetworkType(network: number): BlockchainNetworkType {
+  getBlockchainNetworkType(network: NetworkType): BlockchainNetworkType {
     switch (network) {
       case NetworkType.MAIN_NET:
         return BlockchainNetworkType.MAIN_NET;
@@ -35,7 +35,7 @@ export class ProximaxProvider {
     }
   }
 
-  BlockchainNetworkConnection(network: number) {
+  BlockchainNetworkConnection(network: NetworkType) {
     const blockChainNetworkType = this.getBlockchainNetworkType(network);
     return new BlockchainNetworkConnection(
       blockChainNetworkType,
@@ -52,15 +52,16 @@ export class ProximaxProvider {
     );
   }
 
-  async getInfoMosaic(mosaicId) {
+  async getInfoMosaic(mosaicId: MosaicId) {
+    console.log("Procede a buscar la información del mosaico");
     const promise = new Promise(async (resolve, reject) => {
       if (this.infoMosaic === undefined) {
-        console.log("No está en caché");
+        console.warn("No la tiene en caché, la busca.");
         this.infoMosaic = await this.nemProvider.getMosaic(mosaicId).toPromise();
         this.setInfoMosaic(this.infoMosaic);
         resolve(this.infoMosaic);
       }else {
-        console.log("Está en caché");
+        console.info("La tiene en caché");
         resolve(this.infoMosaic);
       }
     });
@@ -69,6 +70,10 @@ export class ProximaxProvider {
 
   setInfoMosaic(mosaicInfo: MosaicInfo) {
     this.infoMosaic = mosaicInfo;
+  }
+
+  destroyInfoMosaic() {
+    this.infoMosaic = undefined;
   }
 
 

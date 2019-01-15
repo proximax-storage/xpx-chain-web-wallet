@@ -12,8 +12,8 @@ import { MessageService } from '../../shared/services/message.service';
 })
 export class TransactionsService {
 
-  private _transConfirm = new BehaviorSubject<any>([]);
-  private _transConfirm$: Observable<any> = this._transConfirm.asObservable();
+  private _transConfirmSubject: BehaviorSubject<any> =  new BehaviorSubject<any>([]);
+  private _transConfirm$: Observable<any> = this._transConfirmSubject.asObservable();
   private _transactionsUnconfirmed = new BehaviorSubject<any>([]);
   private _transactionsUnconfirmed$: Observable<any> = this._transactionsUnconfirmed.asObservable();
 
@@ -27,18 +27,20 @@ export class TransactionsService {
   }
 
   destroyAllTransactions() {
-    this.setTransConfirm$([]);
+    this.setConfirmedTransaction$([]);
     this.setTransactionsUnconfirmed$([]);
   }
 
-  getTransConfirm$(): Observable<any> {
+  getConfirmedTransactionsCaché$(): Observable<any> {
+    console.log("Método que devuelve las transacciones en caché");
     this.messageService.changeMessage('balanceChanged');
     return this._transConfirm$;
 
   }
 
-  setTransConfirm$(data) {
-    this._transConfirm.next(data);
+  setConfirmedTransaction$(data) {
+    console.log("Establece las transacciones confirmadas");
+    this._transConfirmSubject.next(data);
   }
 
   getTransactionsUnconfirmed$(): Observable<any> {
@@ -50,7 +52,8 @@ export class TransactionsService {
   }
 
 
-  buildToSendTransfer(common, recipient, message, amount, network) {
+  buildToSendTransfer(common: { password?: any; privateKey?: any; }, recipient: string, message: string, amount: any, network: NetworkType) {
+    console.log("Aqui construye la transaccion");
     const recipientAddress = this.nemProvider.createFromRawAddress(recipient);
     const transferTransaction = TransferTransaction.create(
       Deadline.create(5),
@@ -68,7 +71,8 @@ export class TransactionsService {
     };
   }
 
-  formatTransaction(data) {
+
+  formatTransaction(data: any) {
     const date = `${data.deadline.value.monthValue()}/${data.deadline.value.dayOfMonth()}/${data.deadline.value.year()}`;
     const isRemitent = this.walletService.address.pretty() === data.recipient.pretty();
     return {

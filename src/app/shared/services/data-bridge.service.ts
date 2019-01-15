@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
 import { first } from "rxjs/operators";
-import { Listener, Transaction } from "proximax-nem2-sdk";
+import { Listener, MosaicInfo } from "proximax-nem2-sdk";
 import { WalletService } from "./wallet.service";
 import { TransactionsService } from "../../transactions/service/transactions.service";
 import { NodeService } from '../../servicesModule/services/node.service';
-import { environment } from 'src/environments/environment';
+import { environment } from '../../../environments/environment';
+import { NemProvider } from './nem.provider';
+import { ProximaxProvider } from './proximax.provider';
 
 
 @Injectable({
@@ -12,11 +14,15 @@ import { environment } from 'src/environments/environment';
 })
 export class DataBridgeService {
 
+  infoMosaic: MosaicInfo;
   url: any
   constructor(
     private walletService: WalletService,
     private _transactionsService: TransactionsService,
-    private nodeService: NodeService) { }
+    private nodeService: NodeService,
+    private nemProvider: NemProvider,
+    private proximaxProvider: ProximaxProvider
+  ) { }
 
 
   /**
@@ -29,7 +35,7 @@ export class DataBridgeService {
     this.url = environment.socketProtocol + '://' + `${this.nodeService.getNodeSelected()}`;
     const connector = new Listener(this.url, WebSocket);
     // Try to open the connection
-    console.log( this.url);
+    console.log(this.url);
     this.openConnection(connector);
     return;
   }
@@ -40,44 +46,55 @@ export class DataBridgeService {
    * @param {*} connector
    * @memberof DataBridgeService
    */
-  openConnection(connector) {
+  openConnection(connector: Listener) {
     connector.open().then(() => {
+      console.log("aqui abre una nueva conexión");
       //Get transactions confirmed
-      connector.confirmed(this.walletService.address).subscribe((
-        transaction: Transaction[]) => {
-        this._transactionsService.getTransConfirm$().pipe(first()).subscribe(
-          resp => {
-            var allTransactionConfirmed = resp;
-            if (allTransactionConfirmed.length > 0) {
-              //return with format
-              const format = this._transactionsService.formatTransaction(transaction);
-              //subscribe to transactions unconfirmed to valid if isset and delete
-              this._transactionsService.getTransactionsUnconfirmed$().pipe(first()).subscribe(
-                resp => {
-                  let allTransactionUnConfirmed = resp;
-                  let unconfirmed = [];
-                  allTransactionUnConfirmed.forEach(element => {
-                    if (element.transactionInfo.hash !== format.transactionInfo.hash) {
-                      unconfirmed.push(element);
-                    }
-                  });
-                  this._transactionsService.setTransactionsUnconfirmed$(unconfirmed);
-                });
-              allTransactionConfirmed.push(format);
-              this._transactionsService.setTransConfirm$(allTransactionConfirmed);
-            } else {
-              this._transactionsService.setTransConfirm$([this._transactionsService.formatTransaction(transaction)]);
-            }
-          });
-        const audio = new Audio('assets/audio/ding2.ogg');
+      const audio = new Audio('assets/audio/ding2.ogg');
+      connector.confirmed(this.walletService.address).subscribe(incomingTransaction => {
+        console.log("Transacciones confirmadas entrantes", incomingTransaction);
         audio.play();
+
+        //Search transactions in cache
+        this._transactionsService.getConfirmedTransactionsCaché$().pipe(first()).subscribe(
+          allTransactionConfirmed => {
+            const transactionPushed = allTransactionConfirmed.slice(0);
+            //return with format
+            this.proximaxProvider.getInfoMosaic(incomingTransaction['mosaics'][0].id).then((mosaicInfo: MosaicInfo) => {
+              this.infoMosaic = mosaicInfo;
+              incomingTransaction['amount'] = this.nemProvider.formatterAmount(incomingTransaction['mosaics'][0].amount.compact(), this.infoMosaic.divisibility);
+              const transactionFormated = this._transactionsService.formatTransaction(incomingTransaction);
+              transactionPushed.unshift(transactionFormated);
+              this._transactionsService.setConfirmedTransaction$(transactionPushed);
+
+
+
+              //subscribe to transactions unconfirmed to valid if isset and delete
+              // this._transactionsService.getTransactionsUnconfirmed$().pipe(first()).subscribe(
+              //   response => {
+              //     let allTransactionUnConfirmed = response;
+              //     let unconfirmed = [];
+              //     allTransactionUnConfirmed.forEach((element: { transactionInfo: { hash: any; }; }) => {
+              //       if (element.transactionInfo.hash !== format.transactionInfo.hash) {
+              //         unconfirmed.unshift(element);
+              //       }
+              //     });
+              //     this._transactionsService.setTransactionsUnconfirmed$(unconfirmed);
+              //   });
+            });
+
+            // this._transactionsService.setConfirmedTransaction$(allTransactionConfirmed);
+
+
+            console.log("se fueeeee......");
+          });
       }, err => {
         console.error(err)
       });
 
       //Get transactions unconfirmed
-      connector.unconfirmedAdded(this.walletService.address).subscribe((
-        transaction: Transaction[]) => {
+      connector.unconfirmedAdded(this.walletService.address).subscribe(transaction => {
+        audio.play();
         this._transactionsService.getTransactionsUnconfirmed$().pipe(first()).subscribe(
           resp => {
             let myObject = resp;
@@ -88,8 +105,6 @@ export class DataBridgeService {
               this._transactionsService.setTransactionsUnconfirmed$([this._transactionsService.formatTransaction(transaction)]);
             }
           });
-        const audio = new Audio('assets/audio/ding.ogg');
-        audio.play();
       }, err => {
         console.error(err)
       });

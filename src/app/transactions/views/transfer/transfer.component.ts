@@ -53,7 +53,7 @@ export class TransferComponent implements OnInit {
   }
 
 
-  cleanForm(custom?, formControl?) {
+  cleanForm(custom?: string | (string | number)[], formControl?: string | number) {
     if (custom !== undefined) {
       if (formControl !== undefined) {
         this.transferForm.controls[formControl].get(custom).reset();
@@ -66,7 +66,7 @@ export class TransferComponent implements OnInit {
     return;
   }
 
-  getError(control, typeForm?, formControl?) {
+  getError(control: string | (string | number)[], typeForm?: any, formControl?: string | number) {
     const form = (typeForm === undefined) ? this.transferForm : this.contactForm;
     if (formControl === undefined) {
       if (form.get(control).getError('required')) {
@@ -90,7 +90,6 @@ export class TransferComponent implements OnInit {
   }
 
   sendTransfer() {
-    console.log(this.transferForm);
     if (this.transferForm.invalid) {
       this.validateAllFormFields(this.transferForm);
       this.inputBLocked = false;
@@ -107,10 +106,9 @@ export class TransferComponent implements OnInit {
           .announce(rspBuildSend.signedTransaction)
           .subscribe(
             rsp => {
-              console.log("guarda transaccion");
+              console.log("Guarda la transacción y no hago más nada...");
               this.inputBLocked = false;
               this.cleanForm();
-
             },
             err => {
               this.inputBLocked = false;
@@ -134,7 +132,7 @@ export class TransferComponent implements OnInit {
         return;
       }
 
-      const issetData = dataStorage.find(element => element.label === this.contactForm.get('user').value);
+      const issetData = dataStorage.find((element: { label: any; }) => element.label === this.contactForm.get('user').value);
       if (issetData === undefined) {
         dataStorage.push(books);
         this.ServiceModuleService.setBookAddress(dataStorage);
@@ -148,7 +146,7 @@ export class TransferComponent implements OnInit {
     }
   }
 
-  optionSelected(event) {
+  optionSelected(event: { value: any; }) {
     console.log(event);
     this.transferForm.get('acountRecipient').patchValue(event.value);
   }

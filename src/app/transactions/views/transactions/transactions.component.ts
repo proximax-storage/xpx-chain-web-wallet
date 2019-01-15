@@ -56,7 +56,6 @@ export class TransactionsComponent implements OnInit {
   getAllTransactions() {
     this.nemProvider.getAllTransactionsFromAccount(this.walletService.publicAccount, this.walletService.network).pipe(first()).subscribe(
       trans => {
-
         trans.forEach(element => {
           const date = `${element.deadline.value.monthValue()}/${element.deadline.value.dayOfMonth()}/${element.deadline.value.year()}`;
           this.elements.push({
@@ -82,7 +81,7 @@ export class TransactionsComponent implements OnInit {
   }
 
   getTransactionsConfirmed() {
-    this.transactionsService.getTransConfirm$().subscribe(
+    this.transactionsService.getConfirmedTransactionsCaché$().subscribe(
       tran => {
         console.log('Transacciones', tran)
       },

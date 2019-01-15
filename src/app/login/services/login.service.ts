@@ -10,6 +10,8 @@ import { TransactionsService } from "../../transactions/service/transactions.ser
   providedIn: 'root'
 })
 export class LoginService {
+
+
   logged: boolean;
   isLoggedSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(this.logged);
   isLogged$: Observable<boolean> = this.isLoggedSubject.asObservable();
@@ -32,7 +34,6 @@ export class LoginService {
     const retorno = [{ 'value': '', 'label': 'Select wallet' }];
     wallets.forEach((item, index) => {
       retorno.push({ value: item, label: item.name });
-
     });
     return retorno;
   }
@@ -45,7 +46,7 @@ export class LoginService {
    * @returns
    * @memberof LoginService
    */
-  login(common, wallet) {
+  login(common: any, wallet: any) {
     if (!this._walletService.login(common, wallet)) { return false; }
     this.transactionsService.destroyAllTransactions();
     this._dataBridgeService.connectnWs();
@@ -61,7 +62,7 @@ export class LoginService {
    * @param {*} params
    * @memberof LoginService
    */
-  setLogged(params) {
+  setLogged(params: any) {
     this.logged = params;
     this.isLoggedSubject.next(this.logged);
   }
@@ -75,8 +76,4 @@ export class LoginService {
   getIsLogged() {
     return this.isLogged$;
   }
-
-
-
-
 }

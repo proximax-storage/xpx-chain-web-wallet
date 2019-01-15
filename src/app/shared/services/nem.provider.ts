@@ -145,7 +145,7 @@ export class NemProvider {
  * @param network
  * @returns {PublicAccount}
  */
-  createPublicAccount(publicKey, network): PublicAccount {
+  createPublicAccount(publicKey: string, network: NetworkType): PublicAccount {
     return PublicAccount.createFromPublicKey(publicKey, network);
   }
 
@@ -156,7 +156,7 @@ export class NemProvider {
    * @param message
    * @param network
    */
-  createTransaction(recipient, amount, message, network) {
+  createTransaction(recipient: string, amount: any, message: string, network: NetworkType) {
     const recipientAddress = this.createFromRawAddress(recipient);
     return TransferTransaction.create(
       Deadline.create(5),
@@ -207,7 +207,7 @@ export class NemProvider {
    * @returns
    * @memberof NemProvider
    */
-  formatterAmount(amount, divisibility) {
+  formatterAmount(amount: number, divisibility: number) {
     const amountDivisibility = Number(amount / Math.pow(10, divisibility));
     return (amountDivisibility).toLocaleString('en-us', { minimumFractionDigits: divisibility });
   }
@@ -254,7 +254,7 @@ export class NemProvider {
    * @returns {Observable<Transaction[]>}
    * @memberof NemProvider
    */
-  getAllTransactionsFromAccount(publicAccount, queryParams?: QueryParams): Observable<Transaction[]> {
+  getAllTransactionsFromAccount(publicAccount: PublicAccount, queryParams?: QueryParams): Observable<Transaction[]> {
     return this.accountHttp.transactions(publicAccount, new QueryParams(queryParams.pageSize,queryParams.id));
   }
 
@@ -287,7 +287,7 @@ export class NemProvider {
    * Return getTransaction from id or hash
    * @param param
    */
-  getTransactionInformation(hash, node = ''): Observable<Transaction> {
+  getTransactionInformation(hash: string, node = ''): Observable<Transaction> {
     const transaction: TransactionHttp = (node === '') ? this.transactionHttp : new TransactionHttp(environment.protocol + '://'+ `${node}`);
     return transaction.getTransaction(hash);
   }
@@ -310,14 +310,14 @@ export class NemProvider {
    * @returns {Account}
    * @memberof NemProvider
    */
-  generateNewAccount(network): Account {
+  generateNewAccount(network: NetworkType): Account {
     return Account.generateNewAccount(network);
     // account.address.pretty()
     // account.privateKey
   }
 
   //PROXIMA
-  sendTransaction(network, address: string, message?: string, amount: number = 0): TransferTransaction {
+  sendTransaction(network: NetworkType, address: string, message?: string, amount: number = 0): TransferTransaction {
     // console.log(address, message)
     return TransferTransaction.create(
       Deadline.create(23),
