@@ -112,12 +112,23 @@
             <label for="address">Address</label>
           </div>
 
-          <div class="text-center mt-5 mb-3">
-            <button type="submit" class="btn btn-default btn-block btn-rounded z-depth-1a">Add address</button>
+
+          <div class="mt-4rm">
+            <div class="row ">
+              <div class="mx-auto">
+                <div class="row">
+                  <div class="col-xs-6">
+                    <button mdbBtn type="button" rounded="true" class="waves-light btn-reverse" mdbWavesEffect type="button" (click)="basicModal.hide()">Close</button>
+                  </div>
+                  <div class="col-xs-6">
+                    <button mdbBtn type="submit" color="default" rounded="true" class="waves-light" mdbWavesEffect type="submit">Add address</button>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </form>
       </div>
-
     </div>
   </div>
 </div>
