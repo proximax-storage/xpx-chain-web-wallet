@@ -81,7 +81,7 @@ export class TransactionsComponent implements OnInit {
   }
 
   getTransactionsConfirmed() {
-    this.transactionsService.getConfirmedTransactionsCaché$().subscribe(
+    this.transactionsService.getConfirmedTransactionsCache$().subscribe(
       tran => {
         console.log('Transacciones', tran)
       },
