@@ -47,7 +47,7 @@ export class TransferComponent implements OnInit {
 
   createFormContact() {
     this.contactForm = this.fb.group({
-      user: [null, [Validators.required, Validators.minLength(6), Validators.maxLength(46)]],
+      user: [null, [Validators.required, Validators.minLength(2), Validators.maxLength(30)]],
       address: [null, [Validators.required, Validators.minLength(46), Validators.maxLength(46)]]
     });
   }

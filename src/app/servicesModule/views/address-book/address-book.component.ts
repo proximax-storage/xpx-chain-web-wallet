@@ -28,7 +28,7 @@ export class AddressBookComponent implements OnInit {
 
   createFormContact() {
     this.contactForm = this.fb.group({
-      user: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(46)]],
+      user: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(30)]],
       address: ['', [Validators.required, Validators.minLength(46), Validators.maxLength(46)]]
     });
   }

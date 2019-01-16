@@ -1,11 +1,7 @@
-import { Component, OnInit, ElementRef, Renderer2 } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, AbstractControl } from "@angular/forms";
-import { Router, ActivatedRoute } from "@angular/router";
-import { map } from "rxjs/operators";
-import { Observable } from "rxjs";
-import { Account, NetworkType, SimpleWallet, Password, EncryptedPrivateKey, AccountHttp, PublicAccount } from 'proximax-nem2-sdk';
-import { AppConfig } from "../../../config/app.config";
-import { AccountsInterface, WalletAccountInterface, SharedService, WalletService } from "../../../shared";
+import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormBuilder, Validators } from "@angular/forms";
+import { NetworkType } from 'proximax-nem2-sdk';
+import { SharedService, WalletService } from "../../../shared";
 import { NemProvider } from '../../../shared/services/nem.provider';
 
 
@@ -29,11 +25,7 @@ export class CreateWalletComponent implements OnInit {
   ];
 
   constructor(
-    private activatedRoute: ActivatedRoute,
     private fb: FormBuilder,
-    private route: Router,
-    private _el: ElementRef,
-    private _r: Renderer2,
     private sharedService: SharedService,
     private _walletService: WalletService,
     private _nemProvider: NemProvider
@@ -51,7 +43,7 @@ export class CreateWalletComponent implements OnInit {
    */
   createForm() {
     this.createWalletForm = this.fb.group({
-      walletname: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(30)]],
+      walletname: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(30)]],
       network: [NetworkType.TEST_NET, [Validators.required]],
       passwords: this.fb.group({
         password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]],
@@ -76,7 +68,7 @@ export class CreateWalletComponent implements OnInit {
       const publicKey = account.publicKey.toString();
       const publicAccount = this._nemProvider.createPublicAccount(publicKey, network);
       const walletsStorage = this._walletService.getWalletStorage();
-      const myWallet = walletsStorage.find(function (element) {
+      const myWallet = walletsStorage.find(function (element: { name: any; }) {
         //verify if name wallet isset
         return element.name === user;
       });
