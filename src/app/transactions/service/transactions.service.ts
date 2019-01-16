@@ -31,7 +31,7 @@ export class TransactionsService {
     this.setTransactionsUnconfirmed$([]);
   }
 
-  getConfirmedTransactionsCaché$(): Observable<any> {
+  getConfirmedTransactionsCache$(): Observable<any> {
     console.log("Método que devuelve las transacciones en caché");
     this.messageService.changeMessage('balanceChanged');
     return this._transConfirm$;
@@ -43,7 +43,7 @@ export class TransactionsService {
     this._transConfirmSubject.next(data);
   }
 
-  getTransactionsUnconfirmed$(): Observable<any> {
+  getTransactionsUnconfirmedCache$(): Observable<any> {
     return this._transactionsUnconfirmed$;
   }
 

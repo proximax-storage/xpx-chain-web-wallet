@@ -30,7 +30,10 @@ export class DashboardComponent implements OnInit {
   headElements = ['Recipient', 'Amount', 'Mosaic', 'Date'];
   subscriptions = [
     'isLogged',
-    'getConfirmedTransactionsCaché'
+    'getConfirmedTransactionsCache',
+    'transactionsUnconfirmed',
+    'getAllTransactions',
+    'getTransConfirm'
   ];
   infoMosaic: MosaicInfo;
 
@@ -56,64 +59,60 @@ export class DashboardComponent implements OnInit {
             console.log("destroy subscription");
             this.dashboardService.isLoadedDashboard = 0;
             this.dashboardService.destroySubscription();
-            console.log(this.subscriptions['isLogged']);
             this.subscriptions['isLogged'].unsubscribe();
             return;
           }
         }
       );
-
-      // this.dashboardService.getTransactions().then((transactions: any) => {
-      //   console.log("Estas son las transacciones en caché", transactions);
-      //   this.cantConfirmed = transactions.cantConfirmed;
-      //   this.elementsConfirmed = transactions.elementsConfirmed;
-      //   console.log("Aqui ya termina ese proceso");
-      // });
     }
 
-    this.subscriptions['getTransConfirm'] = this.transactionsService.getConfirmedTransactionsCaché$().subscribe(
+    this.getConfirmedTransactions();
+    this.getUnconfirmedTransactions();
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(element => {
+      if (this.subscriptions[element] !== undefined && this.subscriptions[element] !== 'isLogged') {
+        this.subscriptions[element].unsubscribe();
+      }
+    });
+  }
+
+  /**
+   * Get all confirmed transactions
+   *
+   * @memberof DashboardComponent
+   */
+  getConfirmedTransactions() {
+    this.subscriptions['getTransConfirm'] = this.transactionsService.getConfirmedTransactionsCache$().subscribe(
       async cacheTransactions => {
         console.log("HAY ALGO EN CACHE?", cacheTransactions);
         if (cacheTransactions.length > 0) {
-          console.log("IGUALA LAS VARIABLES Y PINTALAS PUES");
-          this.cantConfirmed = cacheTransactions.length;
-          this.elementsConfirmed = cacheTransactions;
+          if (cacheTransactions.length > 10) {
+            this.elementsConfirmed = cacheTransactions.slice(0,10);
+            this.cantConfirmed = this.elementsConfirmed.length;
+          }else {
+            console.log("IGUALA LAS VARIABLES Y PINTALAS PUES");
+            this.cantConfirmed = cacheTransactions.length;
+            this.elementsConfirmed = cacheTransactions;
+          }
         } else {
           if (this.dashboardService.isLoadedDashboard == 1) {
-            console.warn("Anda y busca todas las transacciones");
             const allTrasactions = await this.getAllTransactions();
-            console.log("Todas las transacciones", allTrasactions);
           }
         }
       }
     );
-
-
-
   }
 
-  ngOnDestroy(): void {
-    //Called once, before the instance is destroyed.
-    //Add 'implements OnDestroy' to the class.
-    this.subscriptions['getTransConfirm'].unsubscribe();
+  getUnconfirmedTransactions() {
+    this.subscriptions['transactionsUnconfirmed'] = this.transactionsService.getTransactionsUnconfirmedCache$().subscribe(
+      resp => {
+        this.cantUnconfirmed = resp.length;
+        this.elementsUnconfirmed = resp;
+      }
+    );
   }
-
-  /**
-   *
-   *
-   * @param {any} param
-   * @memberof DashboardComponent
-   */
-  selectTab(param: any) {
-    if (param === 1) {
-      this.confirmedSelected = true;
-      this.unconfirmedSelected = false;
-    } else {
-      this.confirmedSelected = false;
-      this.unconfirmedSelected = true;
-    }
-  }
-
 
   /**
   * Get all transactions http and
@@ -147,78 +146,19 @@ export class DashboardComponent implements OnInit {
   }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // /**
-  //  * Valid if there are observable transactions
-  //  *
-  //  * @memberof DashboardComponent
-  //  */
-  // verifyTransactions() {
-  //   this.subscriptions['getTransConfirm'] = this.transactionsService.getConfirmedTransactionsCaché$().pipe(first()).subscribe(
-  //     resp => {
-  //       if (resp.length > 0) {
-  //         this.cantConfirmed = resp.length;
-  //         this.elementsConfirmed = resp;
-  //         return;
-  //       }
-  //       this.getAllTransactions();
-  //       return;
-  //     });
-  // }
-
-  // getTransactionsUnconfirmed() {
-  //   this.subscriptions['transactionsUnconfirmed'] = this.transactionsService.getTransactionsUnconfirmed$().subscribe(
-  //     resp => {
-  //       console.log("TRANSACTIONS UNCONFIRMED", resp);
-  //       this.cantUnconfirmed = resp.length;
-  //       this.elementsUnconfirmed = resp;
-  //     }
-  //   );
-  // }
-
-  // /**
-  //  * Get all transactions http and
-  //  * Foreach and assign to elementsConfirmed, to then add it to the observable
-  //  *
-  //  * @memberof DashboardComponent
-  //  */
-  // getAllTransactions() {
-  //   this.subscriptions['getAllTransactions'] = this.nemProvider.getAllTransactionsFromAccount(this.walletService.publicAccount, this.walletService.network)
-  //     .pipe(first()).subscribe(
-  //       async allTrasactions => {
-  //         this.cantConfirmed = 0;
-  //         for (let element of allTrasactions) {
-  //           await this.proximaxProvider.getInfoMosaic(element['mosaics'][0].id).then((mosaicInfo: MosaicInfo) => {
-  //             this.infoMosaic = mosaicInfo;
-  //             element['amount'] = this.nemProvider.formatterAmount(element['mosaics'][0].amount.compact(), this.infoMosaic.divisibility);
-  //             this.elementsConfirmed.push(this.transactionsService.formatTransaction(element));
-  //             this.transactionsService.setConfirmedTransaction$(this.elementsConfirmed);
-  //             this.cantConfirmed++;
-  //           });
-  //         };
-  //       }, error => {
-  //         console.error(error);
-  //       });
-  // }
-
-
+  /**
+   *
+   *
+   * @param {any} param
+   * @memberof DashboardComponent
+   */
+  selectTab(param: any) {
+    if (param === 1) {
+      this.confirmedSelected = true;
+      this.unconfirmedSelected = false;
+    } else {
+      this.confirmedSelected = false;
+      this.unconfirmedSelected = true;
+    }
+  }
 }
