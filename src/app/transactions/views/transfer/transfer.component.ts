@@ -106,8 +106,9 @@ export class TransferComponent implements OnInit {
           .announce(rspBuildSend.signedTransaction)
           .subscribe(
             rsp => {
-              console.log("Guarda la transacción y no hago más nada...");
+              this.showContacts = false;
               this.inputBLocked = false;
+              this.sharedService.showSuccess('Congratulations!', 'Transaction sent');
               this.cleanForm();
             },
             err => {

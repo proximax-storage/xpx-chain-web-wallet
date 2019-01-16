@@ -7,6 +7,7 @@ import { NodeService } from '../../servicesModule/services/node.service';
 import { environment } from '../../../environments/environment';
 import { NemProvider } from './nem.provider';
 import { ProximaxProvider } from './proximax.provider';
+import { SharedService } from './shared.service';
 
 
 @Injectable({
@@ -21,7 +22,8 @@ export class DataBridgeService {
     private _transactionsService: TransactionsService,
     private nodeService: NodeService,
     private nemProvider: NemProvider,
-    private proximaxProvider: ProximaxProvider
+    private proximaxProvider: ProximaxProvider,
+    private sharedService: SharedService
   ) { }
 
 
@@ -86,7 +88,6 @@ export class DataBridgeService {
             const transactionFormated = this._transactionsService.formatTransaction(incomingTransaction);
             transactionPushed.unshift(transactionFormated);
             this._transactionsService.setConfirmedTransaction$(transactionPushed);
-
 
             //subscribe to transactions unconfirmed to valid if isset and delete
             this._transactionsService.getTransactionsUnconfirmedCache$().pipe(first()).subscribe(
