@@ -52,6 +52,7 @@ export class LoginService {
     if (!this.walletService.login(common, wallet)) { return false; }
     // this.subscribeNodeSelected();
     this.transactionsService.destroyAllTransactions();
+    this.dataBridgeService.closeConenection();
     this.dataBridgeService.connectnWs();
     this.route.navigate([`/${AppConfig.routes.dashboard}`]);
     this.setLogged(true);
