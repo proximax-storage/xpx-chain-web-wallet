@@ -7,6 +7,7 @@ import { NemProvider } from './nem.provider';
 import { SharedService } from './shared.service';
 import { NodeService } from '../../servicesModule/services/node.service';
 import { AppConfig } from "../../config/app.config";
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -28,7 +29,9 @@ export class WalletService {
 
   }
 
-  public login(common, wallet) {
+
+
+  login(common: { password: { length: number; }; }, wallet: any) {
     if (!wallet) {
       this.sharedService.showError('Error', '¡Dear user, the wallet is missing!');
       return false;
@@ -36,13 +39,13 @@ export class WalletService {
 
     if (!this.nodeService.getNodeSelected()) {
       //Check if exist nodeStorage
-      if (this.nodeService.existArrayNodes() === null) {
-        this.sharedService.showError('', 'Please, create a node.');
-        this.route.navigate([`/${AppConfig.routes.addNode}`]);
-      }else {
+      // if (this.nodeService.existArrayNodes() === null) {
+      //   this.sharedService.showError('', 'Please, create a node.');
+      //   this.route.navigate([`/${AppConfig.routes.addNode}`]);
+      // }else {
         this.sharedService.showError('', 'Please, select a node.');
         this.route.navigate([`/${AppConfig.routes.selectNode}`]);
-      }
+      // }
 
       return false;
     }
@@ -67,7 +70,7 @@ export class WalletService {
    * @returns {AccountsInterface}
    * @memberof WalletService
    */
-  buildAccount(encrypted, iv, address, network): AccountsInterface {
+  buildAccount(encrypted: string, iv: string, address: string, network: number): AccountsInterface {
     const accounts: AccountsInterface = {
       'brain': true,
       'algo': 'pass:bip32',
@@ -87,7 +90,7 @@ export class WalletService {
    * @returns
    * @memberof WalletService
    */
-  public use(wallet) {
+  public use(wallet: any) {
     if (!wallet) {
       this.sharedService.showError('Error', '¡you can not set anything like the current wallet!');
       return false;
@@ -158,7 +161,7 @@ export class WalletService {
    * @returns
    * @memberof WalletService
    */
-  isPrivateKeyValid(privateKey) {
+  isPrivateKeyValid(privateKey: any) {
     if (privateKey.length !== 64 && privateKey.length !== 66) {
       console.error('Private key length must be 64 or 66 characters !');
       return false;
@@ -178,13 +181,13 @@ export class WalletService {
    * @returns
    * @memberof WalletService
    */
-  isHexadecimal(str) {
+  isHexadecimal(str: { match: (arg0: string) => any; }) {
     return str.match('^(0x|0X)?[a-fA-F0-9]+$') !== null;
   }
 
 
 
-  /**
+/**
    * Create a wallet array or return existing ones
    * by: roimerj_vzla
    *
@@ -192,10 +195,10 @@ export class WalletService {
    * @memberof WalletService
    */
   getWalletStorage() {
-    let walletsStorage = JSON.parse(localStorage.getItem('proxi-wallets'));
+    let walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
     if (walletsStorage === undefined || walletsStorage === null) {
-      localStorage.setItem('proxi-wallets', JSON.stringify([]));
-      walletsStorage = JSON.parse(localStorage.getItem('proxi-wallets'));
+      localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify([]));
+      walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
     }
     return walletsStorage;
   }
@@ -209,9 +212,9 @@ export class WalletService {
    * @memberof WalletService
    */
   setAccountWalletStorage(user: string, accounts) {
-    let walletsStorage = JSON.parse(localStorage.getItem('proxi-wallets'));
+    let walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
     walletsStorage.push({ name: user, accounts: { '0': accounts } });
-    localStorage.setItem('proxi-wallets', JSON.stringify(walletsStorage));
+    localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorage));
   }
 
 }

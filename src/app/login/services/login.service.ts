@@ -5,6 +5,7 @@ import { WalletService } from '../../shared/services/wallet.service';
 import { AppConfig } from '../../config/app.config';
 import { DataBridgeService } from "../../shared/services/data-bridge.service";
 import { TransactionsService } from "../../transactions/service/transactions.service";
+import { NodeService } from '../../servicesModule/services/node.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,31 +13,31 @@ import { TransactionsService } from "../../transactions/service/transactions.ser
 export class LoginService {
 
 
+  subscription: [] = [];
   logged: boolean;
   isLoggedSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(this.logged);
   isLogged$: Observable<boolean> = this.isLoggedSubject.asObservable();
+
+
   constructor(
-    private _walletService: WalletService,
+    private walletService: WalletService,
     private route: Router,
-    private _dataBridgeService:DataBridgeService,
-    private transactionsService: TransactionsService
+    private dataBridgeService: DataBridgeService,
+    private nodeService: NodeService
   ) { this.setLogged(false); }
 
+
   /**
-   * Structuring the information of the wallet for selection
+   * Destroy node selected
    *
-   * @param {*} wallets
-   * @returns
    * @memberof LoginService
    */
-  walletsOption(wallets: Array<any> = []) {
-    wallets = (wallets == null) ? [] : wallets
-    const retorno = [{ 'value': '', 'label': 'Select wallet' }];
-    wallets.forEach((item, index) => {
-      retorno.push({ value: item, label: item.name });
-    });
-    return retorno;
+  destroyNodeSelected() {
+    if (this.subscription['nodeSelected'] !== undefined) {
+      this.subscription['nodeSelected'].unsubscribe();
+    }
   }
+
 
   /**
    * Method to login
@@ -47,12 +48,25 @@ export class LoginService {
    * @memberof LoginService
    */
   login(common: any, wallet: any) {
-    if (!this._walletService.login(common, wallet)) { return false; }
-    this.transactionsService.destroyAllTransactions();
-    this._dataBridgeService.connectnWs();
+    if (!this.walletService.login(common, wallet)) { return false; }
+    this.subscribeNodeSelected();
     this.route.navigate([`/${AppConfig.routes.dashboard}`]);
     this.setLogged(true);
     return true;
+  }
+
+  /**
+   * Subscribe to node
+   *
+   * @memberof LoginService
+   */
+  subscribeNodeSelected() {
+    this.subscription['nodeSelected'] = this.nodeService.getNodeObservable().subscribe(
+      next => {
+        this.dataBridgeService.closeConenection();
+        this.dataBridgeService.connectnWs(next);
+      }
+    );
   }
 
 
@@ -75,5 +89,21 @@ export class LoginService {
    */
   getIsLogged() {
     return this.isLogged$;
+  }
+
+  /**
+   * Structuring the information of the wallet for selection
+   *
+   * @param {*} wallets
+   * @returns
+   * @memberof LoginService
+   */
+  walletsOption(wallets: Array<any> = []) {
+    wallets = (wallets == null) ? [] : wallets
+    const retorno = [{ 'value': '', 'label': 'Select wallet' }];
+    wallets.forEach((item) => {
+      retorno.push({ value: item, label: item.name });
+    });
+    return retorno;
   }
 }

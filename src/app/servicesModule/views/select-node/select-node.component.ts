@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NodeService } from '../../services/node.service';
-import { SharedService } from "../../../shared";
+import { SharedService } from '../../../shared/services/shared.service';
 
 @Component({
   selector: 'app-select-node',
@@ -20,9 +20,9 @@ export class SelectNodeComponent implements OnInit {
     this.nodes = this.nodeService.getAllNodes();
   }
 
-  optionSelected(nodeSelect) {
+  optionSelected(nodeSelect: { value: any; }) {
     this.nodeSelect = nodeSelect.value;
-    this.nodeService.setNode(this.nodeSelect);
+    this.nodeService.addNewNodeSelected(this.nodeSelect);
     this.sharedService.showInfo('Node selected', this.nodeSelect);
   }
 }

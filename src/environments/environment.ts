@@ -6,17 +6,19 @@ import { Protocol } from 'xpx2-ts-js-sdk';
 
 export const environment = {
   production: false,
+  nameKeyWalletStorage: `proximax-web-wallet`,
+  nameKeyNodeStorage: `proximax-web-wallet-nodes`,
   socket: 'ws://bctestnet1.xpxsirius.io:3000', // company
   apiUrl: 'http://bctestnet1.xpxsirius.io:3000', // company
+  protocol: `http`,
+  protocolWs: `ws`,
   nodeDefault: 'bctestnet1.xpxsirius.io:3000',
-  protocol: 'http',
-  socketProtocol: 'ws', 
   blockchainConnection: {
     host:'bctestnet1.xpxsirius.io',
     port: 3000,
     protocol: Protocol.HTTP,
     useSecureMessage: true
-  }, 
+  },
   storageConnection: {
     host: 'ipfs1-dev.xpxsirius.io',
     port: 5001,

@@ -15,7 +15,6 @@ export class AddNodeComponent implements OnInit {
   route = { goToExplorer: `/${AppConfig.routes.explorer}` };
 
   constructor(
-    private sharedService: SharedService,
     private nodeService: NodeService
   ) {
   }
@@ -31,35 +30,8 @@ export class AddNodeComponent implements OnInit {
    */
   saveNode() {
     if (this.ngMNode !== '') {
-      const dataStorage = this.nodeService.existArrayNodes();
-      const data = { value: this.ngMNode, label: this.ngMNode };
-      if (dataStorage === null) {
-        this.setNode([data]);
-        return;
-      }
-
-      const issetData = dataStorage.find(element => element.value === this.ngMNode);
-
-      if (issetData === undefined) {
-        dataStorage.push(data);
-        this.setNode(dataStorage);
-        return;
-      }
-
-      this.sharedService.showError('Node repeated', `The '${this.ngMNode}' node already exists`);
+      this.nodeService.addNode(this.ngMNode, true, this.msgNodeCreated);
+      this.ngMNode = '';
     }
-  }
-
-
-  /**
-   * Set array node
-   *
-   * @param {any} data
-   * @memberof AddNodeComponent
-   */
-  setNode(data) {
-    this.ngMNode = '';
-    this.nodeService.setArrayNode(data);
-    this.sharedService.showSuccess('Congratulations!', this.msgNodeCreated);
   }
 }

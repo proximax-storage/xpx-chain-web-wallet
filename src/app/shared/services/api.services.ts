@@ -11,23 +11,8 @@ import { environment } from '../../../environments/environment';
 export class ApiService {
   private headers: HttpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
   websocketIsOpen = false;
-  // connectionWs: Listener;
 
   constructor(private http: HttpClient) { }
-
-  // openConnectionWs() {
-  //   this.websocketIsOpen = true;
-  //   const listener = new Listener(environment.socket, WebSocket);
-  //   return listener;
-  // }
-
-  // getConnectionWs() {
-  //   if (!this.websocketIsOpen) {
-  //     this.connectionWs = this.openConnectionWs();
-  //     return this.connectionWs;
-  //   }
-  //   return this.connectionWs;
-  // }
 
   get(path?: string, headers = {}): Observable<HttpResponse<any>> {
     this.appendHeader(headers);

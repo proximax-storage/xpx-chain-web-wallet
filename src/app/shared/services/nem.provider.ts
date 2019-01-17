@@ -24,7 +24,6 @@ import {
   Mosaic,
   MosaicId,
   UInt64,
-  XEM,
   TransactionStatusError,
   TransactionStatus,
   MosaicInfo
@@ -33,10 +32,7 @@ import {
 import { crypto } from 'proximax-nem2-library';
 import { environment } from '../../../environments/environment';
 import { commonInterface, walletInterface } from '..';
-import { WalletService } from './wallet.service'
 import { Observable } from 'rxjs';
-import { mergeMap } from 'rxjs/operators'
-import { NodeService } from '../../servicesModule/services/node.service';
 
 @Injectable({
   providedIn: 'root'
@@ -54,15 +50,19 @@ export class NemProvider {
   transactionStatusError: TransactionStatusError
   url: any;
 
-  constructor(private nodeService: NodeService) {
-    this.url = environment.protocol + '://'+ `${this.nodeService.getNodeSelected()}`;
-    this.transactionHttp = new TransactionHttp(this.url);
+  constructor() {
+  }
+
+  initInstances(url: string) {
+    console.log('Execute node instances....');
+    this.url = `${environment.protocol}://${url}`;
     this.accountHttp = new AccountHttp(this.url);
     this.mosaicHttp = new MosaicHttp(this.url);
     this.namespaceHttp = new NamespaceHttp(this.url);
     this.mosaicService = new MosaicService(this.accountHttp, this.mosaicHttp, this.namespaceHttp);
     this.transactionHttp = new TransactionHttp(this.url);
   }
+
 
   openConnectionWs() {
     this.websocketIsOpen = true;
@@ -316,7 +316,6 @@ export class NemProvider {
     // account.privateKey
   }
 
-  //PROXIMA
   sendTransaction(network: NetworkType, address: string, message?: string, amount: number = 0): TransferTransaction {
     // console.log(address, message)
     return TransferTransaction.create(
@@ -328,31 +327,8 @@ export class NemProvider {
     );
 
   }
-  //COMPANY
-  // sendTransaction(network, address: string, message?: string, amount: number = 0): TransferTransaction {
-  //   // console.log(address, message)
-
-  //   console.log("adrres:",address)
-  //   console.log("<br> message:",message)
-  //   console.log("<br> amount:",amount)
-  //   return TransferTransaction.create(
-  //     Deadline.create(23),
-  //     Address.createFromRawAddress(address),
-  //     [XEM.createRelative(1)],
-  //     PlainMessage.create(message),
-  //     network,
-  //   );
-
-  // }
 
   announce(signedTransaction: SignedTransaction): Observable<TransactionAnnounceResponse> {
     return this.transactionHttp.announce(signedTransaction);
   }
-
-  // signedTransaction(transferTransaction:TransferTransaction):TransferTransaction {
-
-  //   return  Account.sign(transferTransaction);
-  // }
-
-
 }

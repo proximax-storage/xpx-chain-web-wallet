@@ -3,11 +3,9 @@ import { first } from "rxjs/operators";
 import { Listener, MosaicInfo } from "proximax-nem2-sdk";
 import { WalletService } from "./wallet.service";
 import { TransactionsService } from "../../transactions/service/transactions.service";
-import { NodeService } from '../../servicesModule/services/node.service';
 import { environment } from '../../../environments/environment';
 import { NemProvider } from './nem.provider';
 import { ProximaxProvider } from './proximax.provider';
-import { SharedService } from './shared.service';
 
 
 @Injectable({
@@ -19,31 +17,38 @@ export class DataBridgeService {
   connector: Listener;
   constructor(
     private walletService: WalletService,
-    private _transactionsService: TransactionsService,
-    private nodeService: NodeService,
+    private transactionsService: TransactionsService,
     private nemProvider: NemProvider,
-    private proximaxProvider: ProximaxProvider,
-    private sharedService: SharedService
+    private proximaxProvider: ProximaxProvider
   ) { }
 
 
   /**
-   *   Set default socket connect
+   * Connect to websocket
    *
+   * @param {undefined} node
    * @returns
    * @memberof DataBridgeService
    */
-  connectnWs() {
-    this.url = environment.socketProtocol + '://' + `${this.nodeService.getNodeSelected()}`;
+  connectnWs(node: undefined) {
+    this.url = `${environment.protocolWs}://${node}`;
     this.connector = new Listener(this.url, WebSocket);
     // Try to open the connection
-    console.log(this.url);
+    console.log("Connect to websocket", this.url);
     this.openConnection(this.connector);
     return;
   }
 
+  /**
+   * Close connection websocket
+   *
+   * @memberof DataBridgeService
+   */
   closeConenection() {
-    this.connector.close();
+    this.transactionsService.destroyAllTransactions();
+    if (this.connector !== undefined) {
+      this.connector.close();
+    }
   }
 
   /**
@@ -79,18 +84,18 @@ export class DataBridgeService {
       audio.play();
 
       //Search transactions in cache
-      this._transactionsService.getConfirmedTransactionsCache$().pipe(first()).subscribe(
+      this.transactionsService.getConfirmedTransactionsCache$().pipe(first()).subscribe(
         allTransactionConfirmed => {
           const transactionPushed = allTransactionConfirmed.slice(0);
           //Obtain mosaic information and format the amount
           this.proximaxProvider.getInfoMosaic(incomingTransaction['mosaics'][0].id).then((mosaicInfo: MosaicInfo) => {
             incomingTransaction['amount'] = this.nemProvider.formatterAmount(incomingTransaction['mosaics'][0].amount.compact(), mosaicInfo.divisibility);
-            const transactionFormated = this._transactionsService.formatTransaction(incomingTransaction);
+            const transactionFormated = this.transactionsService.formatTransaction(incomingTransaction);
             transactionPushed.unshift(transactionFormated);
-            this._transactionsService.setConfirmedTransaction$(transactionPushed);
+            this.transactionsService.setConfirmedTransaction$(transactionPushed);
 
             //subscribe to transactions unconfirmed to valid if isset and delete
-            this._transactionsService.getTransactionsUnconfirmedCache$().pipe(first()).subscribe(
+            this.transactionsService.getTransactionsUnconfirmedCache$().pipe(first()).subscribe(
               response => {
                 let allTransactionUnConfirmed = response;
                 let unconfirmed = [];
@@ -99,7 +104,7 @@ export class DataBridgeService {
                     unconfirmed.unshift(element);
                   }
                 });
-                this._transactionsService.setTransactionsUnconfirmed$(unconfirmed);
+                this.transactionsService.setTransactionsUnconfirmed$(unconfirmed);
               });
           });
         });
@@ -122,15 +127,15 @@ export class DataBridgeService {
       if (Object.keys(transaction).length > 0) {
         this.proximaxProvider.getInfoMosaic(transaction['mosaics'][0].id).then((mosaicInfo: MosaicInfo) => {
           audio.play();
-          this._transactionsService.getTransactionsUnconfirmedCache$().pipe(first()).subscribe(
+          this.transactionsService.getTransactionsUnconfirmedCache$().pipe(first()).subscribe(
             transactionsUnconfirmed => {
               transaction['amount'] = this.nemProvider.formatterAmount(transaction['mosaics'][0].amount.compact(), mosaicInfo.divisibility);
               if (transactionsUnconfirmed.length > 0) {
                 const transactionsUnconfirmedCopy = transactionsUnconfirmed.slice(0);
-                transactionsUnconfirmedCopy.push(this._transactionsService.formatTransaction(transaction));
-                this._transactionsService.setTransactionsUnconfirmed$(transactionsUnconfirmedCopy);
+                transactionsUnconfirmedCopy.push(this.transactionsService.formatTransaction(transaction));
+                this.transactionsService.setTransactionsUnconfirmed$(transactionsUnconfirmedCopy);
               } else {
-                this._transactionsService.setTransactionsUnconfirmed$([this._transactionsService.formatTransaction(transaction)]);
+                this.transactionsService.setTransactionsUnconfirmed$([this.transactionsService.formatTransaction(transaction)]);
               }
             });
         }, err => {

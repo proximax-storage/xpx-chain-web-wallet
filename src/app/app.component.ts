@@ -21,8 +21,7 @@ export class AppComponent {
     private apiService: ApiService,
     private nodeService: NodeService
   ) {
-    const nodeSelected = this.nodeService.initNode();
-
+    this.nodeService.initNode();
   }
 
   /**
