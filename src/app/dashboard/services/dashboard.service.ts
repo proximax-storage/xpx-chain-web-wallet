@@ -1,11 +1,7 @@
 import { Injectable } from '@angular/core';
-import { TransactionsService } from "../../transactions/service/transactions.service";
-import { first } from 'rxjs/operators';
 import { LoginService } from '../../login/services/login.service';
-import { WalletService } from '../../shared';
-import { NemProvider } from '../../shared/services/nem.provider';
 import { ProximaxProvider } from '../../shared/services/proximax.provider';
-import { Transaction, MosaicInfo } from 'proximax-nem2-sdk';
+import { MosaicInfo } from 'proximax-nem2-sdk';
 import { Observable, BehaviorSubject } from 'rxjs';
 
 @Injectable({
@@ -17,6 +13,7 @@ export class DashboardService {
   private transactions$: Observable<any> = this.transactionsSubject.asObservable();
 
 
+  isLogged$: Observable<boolean>;
   isLoadedDashboard = 0;
   allTransactions: any;
   infoMosaic: MosaicInfo;
@@ -27,98 +24,37 @@ export class DashboardService {
     'getAllTransactions'
   ];
   constructor(
-    private walletService: WalletService,
-    private nemProvider: NemProvider,
-    private transactionsService: TransactionsService,
-    private proximaxProvider: ProximaxProvider,
+    private loginService: LoginService,
+    private proximaxProvider: ProximaxProvider
   ) { }
 
 
+  subscribeLogged() {
+    this.isLogged$ = this.loginService.getIsLogged();
+    if (this.isLoadedDashboard == 1) {
+      console.log("subscription");
+      this.isLogged$ = this.loginService.getIsLogged();
+      this.subscriptions['isLogged'] = this.isLogged$.subscribe(
+        response => {
+          if (response === false) {
+            // DESTROY SUBSCRIPTION WHEN IS NOT LOGIN
+            console.log("destroy subscription");
+            this.isLoadedDashboard = 0;
+            this.proximaxProvider.destroyInfoMosaic();
+            this.destroySubscription();
+            this.subscriptions['isLogged'].unsubscribe();
+            return;
+          }
+        }
+      );
+    }
+  }
 
   getTransactionsObs(): Observable<any> {
     return this.allTransactions.transactions$;
   }
 
 
-  /**
-   * Valid if there are observable transactions
-   *
-   * @memberof DashboardComponent
-  //  */
-  // async getTransactions() {
-  //   const promise = new Promise(async (resolve, reject) => {
-  //     // Search all transactions confirmed in cache
-  //     this.subscriptions['getTransConfirm'] = this.transactionsService.getConfirmedTransactionsCaché$().pipe(first()).subscribe(
-  //       async resp => {
-  //         console.log("Esto fue lo que consiguió en getConfirmedTransactionsCaché", resp);
-  //         if (resp.length > 0) {
-  //           console.log("Ya lo tengo en caché, ya una vez lo buscó y es mayor a cero!");
-  //           const cantConfirmed = resp.length;
-  //           const elementsConfirmed = resp;
-  //           resolve({
-  //             'cantConfirmed': cantConfirmed,
-  //             'elementsConfirmed': elementsConfirmed,
-  //             'infoMosaic': this.infoMosaic
-  //           });
-  //         } else {
-  //           console.log("se siguió ejecutando y busca TODAS las transacciones.");
-  //           // Get all transactions
-  //           this.allTransactions = await this.getAllTransactions();
-  //           resolve(this.allTransactions);
-  //         }
-  //       });
-  //   });
-  //   return await promise;
-  // }
-
-  /**
-   * Get all transactions http and
-   * Foreach and assign to elementsConfirmed, to then add it to the observable
-   *
-   * @memberof DashboardComponent
-   */
-  // async getAllTransactions() {
-  //   const promise = new Promise(async (resolve, reject) => {
-  //     this.subscriptions['getAllTransactions'] =
-  //       this.nemProvider.getAllTransactionsFromAccount(this.walletService.publicAccount, this.walletService.network).pipe(first()).subscribe(
-  //         async allTrasactions => {
-  //           console.log("ESTOY EN TODAS LAS TRANSACCIONES -----------", allTrasactions);
-  //           const elementsConfirmed = [];
-  //           const cantConfirmed = allTrasactions.length;
-  //           for (let element of allTrasactions) {
-  //             // Get mosaic information
-  //             await this.proximaxProvider.getInfoMosaic(element['mosaics'][0].id).then((mosaicInfo: MosaicInfo) => {
-  //               console.log("Aqui me respondio getInfoMosaic");
-  //               this.infoMosaic = mosaicInfo;
-  //               element['amount'] = this.nemProvider.formatterAmount(element['mosaics'][0].amount.compact(), this.infoMosaic.divisibility);
-  //               elementsConfirmed.push(this.transactionsService.formatTransaction(element));
-  //             });
-  //           };
-
-  //           console.log("Done!");
-  //           this.transactionsService.setConfirmedTransaction$(elementsConfirmed);
-  //           resolve({
-  //             'cantConfirmed': cantConfirmed,
-  //             'elementsConfirmed': elementsConfirmed,
-  //             'infoMosaic': this.infoMosaic
-  //           });
-  //         }, error => {
-  //           console.error("Has ocurred a error", error);
-  //           reject(error);
-  //         });
-  //   });
-  //   return await promise;
-  // }
-
-  // getTransactionsUnconfirmed() {
-  //   this.subscriptions['transactionsUnconfirmed'] = this.transactionsService.getTransactionsUnconfirmed$().subscribe(
-  //     resp => {
-  //       console.log("TRANSACTIONS UNCONFIRMED", resp);
-  //       this.cantUnconfirmed = resp.length;
-  //       const elementsUnconfirmed = resp;
-  //     }
-  //   );
-  // }
 
   /**
    * Verify if the dashboard was loaded once

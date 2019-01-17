@@ -53,15 +53,14 @@ export class ProximaxProvider {
   }
 
   async getInfoMosaic(mosaicId: MosaicId) {
-    console.log("Procede a buscar la información del mosaico");
     const promise = new Promise(async (resolve, reject) => {
       if (this.infoMosaic === undefined) {
-        console.warn("No la tiene en caché, la busca.");
+        console.warn("Procede a buscar la información del mosaico porque no la tiene en caché");
         this.infoMosaic = await this.nemProvider.getMosaic(mosaicId).toPromise();
         this.setInfoMosaic(this.infoMosaic);
         resolve(this.infoMosaic);
       }else {
-        console.info("La tiene en caché");
+        console.log("Información de mosaico en caché");
         resolve(this.infoMosaic);
       }
     });

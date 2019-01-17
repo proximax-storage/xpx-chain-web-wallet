@@ -405,7 +405,6 @@ export class HeaderComponent implements OnInit {
    * @memberof HeaderComponent
    */
   logout(param?: String) {
-    this._loginService.destroyNodeSelected();
     this._loginService.setLogged(false);
     this.route.navigate([`/${param}`]);
   }

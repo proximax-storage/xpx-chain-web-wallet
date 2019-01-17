@@ -6,6 +6,7 @@ import { TransactionsService } from "../../transactions/service/transactions.ser
 import { environment } from '../../../environments/environment';
 import { NemProvider } from './nem.provider';
 import { ProximaxProvider } from './proximax.provider';
+import { NodeService } from '../../servicesModule/services/node.service';
 
 
 @Injectable({
@@ -19,22 +20,25 @@ export class DataBridgeService {
     private walletService: WalletService,
     private transactionsService: TransactionsService,
     private nemProvider: NemProvider,
-    private proximaxProvider: ProximaxProvider
+    private proximaxProvider: ProximaxProvider,
+    private nodeService: NodeService
   ) { }
 
 
   /**
    * Connect to websocket
    *
-   * @param {undefined} node
+   * @param {string} node
    * @returns
    * @memberof DataBridgeService
    */
-  connectnWs(node: undefined) {
-    this.url = `${environment.protocolWs}://${node}`;
+  connectnWs(node?: string) {
+    console.log("Connect to websocket");
+    const route = (node === undefined) ? this.nodeService.getNodeSelected() : node;
+    this.url = `${environment.protocolWs}://${route}`;
+    console.log(this.url);
     this.connector = new Listener(this.url, WebSocket);
     // Try to open the connection
-    console.log("Connect to websocket", this.url);
     this.openConnection(this.connector);
     return;
   }

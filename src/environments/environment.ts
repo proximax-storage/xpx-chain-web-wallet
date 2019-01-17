@@ -5,8 +5,9 @@ import { Protocol } from 'xpx2-ts-js-sdk';
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: true,
+  production: false,
   nameKeyWalletStorage: `proximax-web-wallet`,
+  nameKeyNodeStorage: `proximax-web-wallet-nodes`,
   protocol: `http`,
   protocolWs: `ws`,
   nodeDefault: 'bctestnet1.xpxsirius.io:3000',

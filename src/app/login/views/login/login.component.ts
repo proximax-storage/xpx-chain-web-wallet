@@ -1,6 +1,8 @@
+import { Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { LoginService } from '../../services/login.service';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -24,8 +26,8 @@ export class LoginComponent implements OnInit {
    * @memberof LoginComponent
    */
   ngOnInit() {
-    let walletLocal = [];
-    walletLocal = JSON.parse(localStorage.getItem('proxi-wallets'));
+    let walletLocal = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
+    console.log(walletLocal);
     this.wallets = this._loginService.walletsOption(walletLocal);
     this.createForm();
   }
@@ -52,7 +54,7 @@ export class LoginComponent implements OnInit {
    * @returns
    * @memberof LoginComponent
    */
-  getError(param, name = '') {
+  getError(param: string | (string | number)[], name: string = '') {
     if (this.loginForm.get(param).getError('required')) {
       return `This field is required`;
     } else if (this.loginForm.get(param).getError('minlength')) {

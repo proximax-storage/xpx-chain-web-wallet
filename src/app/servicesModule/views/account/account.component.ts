@@ -13,6 +13,7 @@ import { LoginService } from "../../../login/services/login.service";
 export class AccountComponent implements OnInit {
 
   @BlockUI() blockUI: NgBlockUI;
+  showPassword: boolean = true;
   showPanelPrivateKey = false;
   mosaic = 'XPX';
   titleAccountInformation = 'Account information';
@@ -30,8 +31,7 @@ export class AccountComponent implements OnInit {
   constructor(
     private nemProvider: NemProvider,
     private walletService: WalletService,
-    private sharedService: SharedService,
-    private loginService: LoginService
+    private sharedService: SharedService
   ) {
   }
 
@@ -58,16 +58,21 @@ export class AccountComponent implements OnInit {
   }
 
   decryptWallet() {
-    const currentAccount = this.walletService.currentAccount;
-    const common = { password: this.password };
-    if (this.walletService.decrypt(common)) {
-      this.privateKey = common['privateKey'].toUpperCase();
+    if (this.password !== '') {
+      const common = { password: this.password };
+      if (this.walletService.decrypt(common)) {
+        console.log(common);
+        this.privateKey = common['privateKey'].toUpperCase();
+        this.password = '';
+        this.showPassword = false;
+        return;
+      }
       this.password = '';
+      this.privateKey = '';
       return;
+    }else {
+      this.sharedService.showError('', 'Please, enter a password');
     }
-    this.password = '';
-    this.privateKey = '';
-    return;
   }
 
   getBalance() {
@@ -82,5 +87,10 @@ export class AccountComponent implements OnInit {
         console.error(err);
       }
     );
+  }
+
+  hidePrivateKey() {
+    this.privateKey = '';
+    this.showPassword = true;
   }
 }

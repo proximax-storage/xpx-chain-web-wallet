@@ -26,10 +26,9 @@ export class DashboardComponent implements OnInit {
   unconfirmedSelected = false;
   cantUnconfirmed = 0;
   dataSelected: any;
-  isLogged$: Observable<boolean>;
+
   headElements = ['Recipient', 'Amount', 'Mosaic', 'Date'];
   subscriptions = [
-    'isLogged',
     'getConfirmedTransactionsCache',
     'transactionsUnconfirmed',
     'getAllTransactions',
@@ -38,7 +37,6 @@ export class DashboardComponent implements OnInit {
   infoMosaic: MosaicInfo;
 
   constructor(
-    private loginService: LoginService,
     private dashboardService: DashboardService,
     private transactionsService: TransactionsService,
     private walletService: WalletService,
@@ -49,23 +47,7 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     this.dashboardService.loadedDashboard();
-    if (this.dashboardService.isLoadedDashboard == 1) {
-      console.log("subscription");
-      this.isLogged$ = this.loginService.getIsLogged();
-      this.subscriptions['isLogged'] = this.isLogged$.subscribe(
-        response => {
-          if (response === false) {
-            // DESTROY SUBSCRIPTION WHEN IS NOT LOGIN
-            console.log("destroy subscription");
-            this.dashboardService.isLoadedDashboard = 0;
-            this.dashboardService.destroySubscription();
-            this.subscriptions['isLogged'].unsubscribe();
-            return;
-          }
-        }
-      );
-    }
-
+    this.dashboardService.subscribeLogged();
     this.getConfirmedTransactions();
     this.getUnconfirmedTransactions();
   }
@@ -73,6 +55,7 @@ export class DashboardComponent implements OnInit {
   ngOnDestroy(): void {
     this.subscriptions.forEach(element => {
       if (this.subscriptions[element] !== undefined && this.subscriptions[element] !== 'isLogged') {
+        console.log("Destruye: ", element);
         this.subscriptions[element].unsubscribe();
       }
     });
@@ -89,9 +72,9 @@ export class DashboardComponent implements OnInit {
         console.log("HAY ALGO EN CACHE?", cacheTransactions);
         if (cacheTransactions.length > 0) {
           if (cacheTransactions.length > 10) {
-            this.elementsConfirmed = cacheTransactions.slice(0,10);
+            this.elementsConfirmed = cacheTransactions.slice(0, 10);
             this.cantConfirmed = this.elementsConfirmed.length;
-          }else {
+          } else {
             console.log("IGUALA LAS VARIABLES Y PINTALAS PUES");
             this.cantConfirmed = cacheTransactions.length;
             this.elementsConfirmed = cacheTransactions;

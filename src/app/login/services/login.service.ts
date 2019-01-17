@@ -23,7 +23,8 @@ export class LoginService {
     private walletService: WalletService,
     private route: Router,
     private dataBridgeService: DataBridgeService,
-    private nodeService: NodeService
+    private nodeService: NodeService,
+    private transactionsService: TransactionsService
   ) { this.setLogged(false); }
 
 
@@ -33,9 +34,9 @@ export class LoginService {
    * @memberof LoginService
    */
   destroyNodeSelected() {
-    if (this.subscription['nodeSelected'] !== undefined) {
-      this.subscription['nodeSelected'].unsubscribe();
-    }
+    // if (this.subscription['nodeSelected'] !== undefined) {
+    //   this.subscription['nodeSelected'].unsubscribe();
+    // }
   }
 
 
@@ -49,7 +50,9 @@ export class LoginService {
    */
   login(common: any, wallet: any) {
     if (!this.walletService.login(common, wallet)) { return false; }
-    this.subscribeNodeSelected();
+    // this.subscribeNodeSelected();
+    this.transactionsService.destroyAllTransactions();
+    this.dataBridgeService.connectnWs();
     this.route.navigate([`/${AppConfig.routes.dashboard}`]);
     this.setLogged(true);
     return true;
