@@ -79,15 +79,4 @@ export class TransactionsComponent implements OnInit {
         console.error(error);
       });
   }
-
-  getTransactionsConfirmed() {
-    this.transactionsService.getConfirmedTransactionsCache$().subscribe(
-      tran => {
-        console.log('Transacciones', tran)
-      },
-      error => {
-        console.error(error)
-      }
-    )
-  }
 }
