@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { ApiService } from "./shared/services/api.services";
 import { NodeService } from "./servicesModule/services/node.service";
 
 @Component({
@@ -12,41 +11,9 @@ import { NodeService } from "./servicesModule/services/node.service";
 })
 export class AppComponent {
 
-  myStyle: object = {};
-  myParams: object = {};
-  width = 100;
-  height = 100;
-
   constructor(
-    private apiService: ApiService,
     private nodeService: NodeService
   ) {
     this.nodeService.initNode();
-  }
-
-  /**
-   * Start the particles in the background.
-   * (you must add the particle selector in the hmtl)
-   * <particles [params]="myParams" [style]="myStyle" [width]="width" [height]="height"></particles>
-   *
-   * @memberof AppComponent
-   */
-  initParticle() {
-    this.myStyle = {
-      'position': 'absolute',
-      'top': '0',
-      'width': '100%',
-      'height': '100%'
-    };
-
-
-
-    this.myParams = {
-      particles: {
-        number: { value: 50 },
-        color: { value: '#ffffff' },
-        shape: { type: 'circle' }
-      }
-    };
   }
 }

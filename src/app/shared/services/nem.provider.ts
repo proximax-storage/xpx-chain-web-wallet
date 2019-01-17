@@ -64,20 +64,6 @@ export class NemProvider {
   }
 
 
-  openConnectionWs() {
-    this.websocketIsOpen = true;
-    const listener = new Listener(environment.socket, WebSocket);
-    return listener;
-  }
-
-  getConnectionWs() {
-    if (!this.websocketIsOpen) {
-      this.connectionWs = this.openConnectionWs();
-      return this.connectionWs;
-    }
-    return this.connectionWs;
-  }
-
   /**
    * Create account simple
    *
