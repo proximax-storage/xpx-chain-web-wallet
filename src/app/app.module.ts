@@ -14,8 +14,6 @@ import { HeaderHorizontalComponent } from './header/component/header-horizontal/
 
 import { HeaderRebSocialComponent } from './header/component/header-reb-social/header-reb-social.component';
 import { HeaderVerticalComponent } from './header/component/header-vertical/header-vertical.component';
-import { CreateMosaicComponent } from './servicesModule/views/create-mosaic/create-mosaic.component';
-import { EditMosaicComponent } from './servicesModule/views/edit-mosaic/edit-mosaic.component';
 
 
 
@@ -25,9 +23,7 @@ import { EditMosaicComponent } from './servicesModule/views/edit-mosaic/edit-mos
     HeaderComponent,
     HeaderHorizontalComponent,
     HeaderRebSocialComponent,
-    HeaderVerticalComponent,
-    CreateMosaicComponent,
-    EditMosaicComponent
+    HeaderVerticalComponent
   ],
   imports: [
 
