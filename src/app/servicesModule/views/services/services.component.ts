@@ -64,7 +64,7 @@ export class ServicesComponent implements OnInit {
       }, true
     );
 
-    const mosaics = this.service.structureServices('fa fa-compres', 'Mosaics',
+    const mosaics = this.service.structureServices('fa fa-th', 'Mosaics',
       'The mosaics service, are assets that expose additional properties and other features. To be able to create a mosaic, an account must rent at least one root namespace.',
       {
         createMosaic: this.structureServiceRoute('Create mosaic', `/${AppConfig.routes.createMosaic}`),
