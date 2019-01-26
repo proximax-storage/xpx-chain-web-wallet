@@ -18,17 +18,16 @@ export class ServicesComponent implements OnInit {
 
   ngOnInit() {
 
-    // const addNode = this.service.structureServices('img-add-node', 'Nodes', `Add and select node`,
-    //   {
-    //     createPo    // const addNode = this.service.structureServices('img-add-node', 'Nodes', `Add and select node`,
-    //     //   {
-    //     //     createPoll: this.structureServiceRoute('Add node', `/${AppConfig.routes.addNode}`),
-    //     //     selectNode: this.structureServiceRoute('Select node', `/${AppConfig.routes.selectNode}`)
-    //     //   }, true
-    //     // );ll: this.structureServiceRoute('Add node', `/${AppConfig.routes.addNode}`),
-    //     selectNode: this.structureServiceRoute('Select node', `/${AppConfig.routes.selectNode}`)
-    //   }, true
-    // );
+    const multisignature = this.service.structureServices(
+      'fa fa-user-plus',
+      'Multisignature and Multi-User Accounts',
+      'Mutisig accounts are editable on-chain contracts, the most powerful way to secure funds, enable join accounts, and are the foundation of DAOs.',
+      {
+        convertAccountToMultisig: this.structureServiceRoute('Convert an account to multisig', ''),
+        editAnExistingContract: this.structureServiceRoute('Edit an existing contract', ''),
+        signMultisigTransactions: this.structureServiceRoute('Sign multisig transactions', ''),
+      }, true
+    );
 
     const storage = this.service.structureServices('img-explorer-file', 'Storage', `Storage`,
       {
@@ -55,15 +54,6 @@ export class ServicesComponent implements OnInit {
         addApostille: this.structureServiceRoute('Apostille create', `/${AppConfig.routes.apostille}`),
         audiApostille: this.structureServiceRoute('Apostille audit', `/${AppConfig.routes.audiApostille}`),
       }, true
-    );
-
-    const multisignature = this.service.structureServices('fa fa-user-plus', 'Multisignature and Multi-User Accounts',
-      'Mutisig accounts are editable on-chain contracts, the most powerful way to secure funds, enable join accounts, and are the foundation of DAOs.',
-      {
-        convertAccountToMultisig: this.structureServiceRoute('Convert an account to multisig', ''),
-        editAnExistingContract: this.structureServiceRoute('Edit an existing contract', ''),
-        signMultisigTransactions: this.structureServiceRoute('Sign multisig transactions', ''),
-      }, false
     );
 
     const nameSpace = this.service.structureServices('img-node', 'Namespaces & Subdomains',
@@ -99,9 +89,9 @@ export class ServicesComponent implements OnInit {
 
     this.services = {
       //explorerFile: explorerFile,
-      explorerTransaction: explorerTransaction,
       //addNode: addNode,
-      //multisignature: multisignature,
+      multisignature: multisignature,
+      explorerTransaction: explorerTransaction,
       nameSpace: nameSpace,
       delegatedHarvesting: delegatedHarvesting,
       apostille: apostille,
@@ -125,8 +115,8 @@ export class ServicesComponent implements OnInit {
 export interface Service {
   //explorerFile: ItemService;
   //addNode: ItemService;
+  multisignature: ItemService;
   explorerTransaction: ItemService;
-  //multisignature: ItemService;
   nameSpace: ItemService;
   delegatedHarvesting: ItemService;
   apostille: ItemService;
