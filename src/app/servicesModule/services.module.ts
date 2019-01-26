@@ -14,6 +14,8 @@ import { ServicesComponent } from "./views/services/services.component";
 import { AccountComponent } from './views/account/account.component';
 import { AddressBookComponent } from './views/address-book/address-book.component';
 import { StorageComponent } from './views/storage/storage.component';
+import { CreateMosaicComponent } from './views/create-mosaic/create-mosaic.component';
+import { EditMosaicComponent } from './views/edit-mosaic/edit-mosaic.component';
 
 @NgModule({
   imports: [
@@ -33,7 +35,9 @@ import { StorageComponent } from './views/storage/storage.component';
     ServicesComponent,
     AccountComponent,
     AddressBookComponent,
-    StorageComponent
+    StorageComponent,
+    CreateMosaicComponent,
+    EditMosaicComponent
   ],
   schemas: [NO_ERRORS_SCHEMA]
 })
