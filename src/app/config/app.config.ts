@@ -23,6 +23,8 @@ export const AppConfig: Config = {
     addressBook:'address-book',
     notFound: 'not-found',
     storage: 'storage',
+    createMosaic: 'create-mosaic',
+    editMosaic: 'edit-mosaic'
   }
 };
 
@@ -47,7 +49,9 @@ export const NameRoute = {
   [AppConfig.routes.service]: ' Dashboard service',
   [AppConfig.routes.addressBook]: 'Address Book',
   [AppConfig.routes.notFound]: '404 not found',
-  [AppConfig.routes.storage]: 'storage'
+  [AppConfig.routes.storage]: 'storage',
+  [AppConfig.routes.createMosaic]: 'Create Mosaic',
+  [AppConfig.routes.editMosaic]: 'Edit Mosaic'
 }
 
 export interface Config {
@@ -71,6 +75,8 @@ export interface Config {
     account: string;
     explorerFile: string;
     addressBook: string;
+    createMosaic: string;
+    editMosaic: string;
     notFound: string;
     storage:string;
   };

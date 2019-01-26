@@ -303,7 +303,7 @@ export class NemProvider {
   }
 
   sendTransaction(network: NetworkType, address: string, message?: string, amount: number = 0): TransferTransaction {
-    // console.log(address, message)
+    console.log(address, message)
     return TransferTransaction.create(
       Deadline.create(23),
       Address.createFromRawAddress(address),

@@ -66,7 +66,10 @@ export class ServicesComponent implements OnInit {
 
     const mosaics = this.service.structureServices('fa fa-compres', 'Mosaics',
       'The mosaics service, are assets that expose additional properties and other features. To be able to create a mosaic, an account must rent at least one root namespace.',
-      {}, true
+      {
+        createMosaic: this.structureServiceRoute('Create mosaic', `/${AppConfig.routes.createMosaic}`),
+        editMosaic: this.structureServiceRoute('Edit mosaic', `/${AppConfig.routes.editMosaic}`),
+      }, true
     );
 
 
