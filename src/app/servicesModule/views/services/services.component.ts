@@ -61,16 +61,17 @@ export class ServicesComponent implements OnInit {
       {
         createNamespace: this.structureServiceRoute('Create namespace', ''),
         renewNamespace: this.structureServiceRoute('Renew namespace', '')
-      }, false
-    );
-
-    const delegatedHarvesting = this.service.structureServices('fa fa-compress', 'Delegated Harvesting',
-      'Delegated haversting is the feature that allows "mining" even while your account is closed',
-      {}, false
+      }, true
     );
 
     const mosaics = this.service.structureServices('fa fa-compres', 'Mosaics',
       'The mosaics service, are assets that expose additional properties and other features. To be able to create a mosaic, an account must rent at least one root namespace.',
+      {}, true
+    );
+
+
+    const delegatedHarvesting = this.service.structureServices('fa fa-compress', 'Delegated Harvesting',
+      'Delegated haversting is the feature that allows "mining" even while your account is closed',
       {}, false
     );
 
@@ -93,9 +94,9 @@ export class ServicesComponent implements OnInit {
       multisignature: multisignature,
       explorerTransaction: explorerTransaction,
       nameSpace: nameSpace,
+      mosaics: mosaics,
       delegatedHarvesting: delegatedHarvesting,
       apostille: apostille,
-      mosaics: mosaics,
       changellyInstantExchange: changellyInstantExchange,
       voting: voting,
       addressBook: addressBook,
@@ -118,9 +119,9 @@ export interface Service {
   multisignature: ItemService;
   explorerTransaction: ItemService;
   nameSpace: ItemService;
+  mosaics: ItemService;
   delegatedHarvesting: ItemService;
   apostille: ItemService;
-  mosaics: ItemService;
   changellyInstantExchange: ItemService;
   addressBook: ItemService;
   voting: ItemService;
