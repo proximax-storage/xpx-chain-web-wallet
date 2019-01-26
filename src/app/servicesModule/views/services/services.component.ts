@@ -56,7 +56,7 @@ export class ServicesComponent implements OnInit {
       }, true
     );
 
-    const nameSpace = this.service.structureServices('img-node', 'Namespaces & Subdomains',
+    const nameSpace = this.service.structureServices('fa fa-linode', 'Namespaces & Subdomains',
       'Namespaces are domain names. Each namespaces is unique and authenticates mosaics (assets) issued on it or on its subdomains',
       {
         createNamespace: this.structureServiceRoute('Create namespace', ''),
