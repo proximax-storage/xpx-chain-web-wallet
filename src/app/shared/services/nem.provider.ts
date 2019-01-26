@@ -24,18 +24,15 @@ import {
   Mosaic,
   MosaicId,
   UInt64,
-  XEM,
   TransactionStatusError,
-  TransactionStatus
+  TransactionStatus,
+  MosaicInfo
 } from 'proximax-nem2-sdk';
 
 import { crypto } from 'proximax-nem2-library';
 import { environment } from '../../../environments/environment';
 import { commonInterface, walletInterface } from '..';
-import { WalletService } from './wallet.service'
 import { Observable } from 'rxjs';
-import { mergeMap } from 'rxjs/operators'
-import { NodeService } from '../../servicesModule/services/node.service';
 
 @Injectable({
   providedIn: 'root'
@@ -53,9 +50,12 @@ export class NemProvider {
   transactionStatusError: TransactionStatusError
   url: any;
 
-  constructor(private nodeService: NodeService) {
-    this.url = environment.protocol + '://'+ `${this.nodeService.getNodeSelected()}`;
-    this.transactionHttp = new TransactionHttp(this.url);
+  constructor() {
+  }
+
+  initInstances(url: string) {
+    console.log('Execute node instances....');
+    this.url = `${environment.protocol}://${url}`;
     this.accountHttp = new AccountHttp(this.url);
     this.mosaicHttp = new MosaicHttp(this.url);
     this.namespaceHttp = new NamespaceHttp(this.url);
@@ -63,19 +63,6 @@ export class NemProvider {
     this.transactionHttp = new TransactionHttp(this.url);
   }
 
-  openConnectionWs() {
-    this.websocketIsOpen = true;
-    const listener = new Listener(environment.socket, WebSocket);
-    return listener;
-  }
-
-  getConnectionWs() {
-    if (!this.websocketIsOpen) {
-      this.connectionWs = this.openConnectionWs();
-      return this.connectionWs;
-    }
-    return this.connectionWs;
-  }
 
   /**
    * Create account simple
@@ -144,7 +131,7 @@ export class NemProvider {
  * @param network
  * @returns {PublicAccount}
  */
-  createPublicAccount(publicKey, network): PublicAccount {
+  createPublicAccount(publicKey: string, network: NetworkType): PublicAccount {
     return PublicAccount.createFromPublicKey(publicKey, network);
   }
 
@@ -155,7 +142,7 @@ export class NemProvider {
    * @param message
    * @param network
    */
-  createTransaction(recipient, amount, message, network) {
+  createTransaction(recipient: string, amount: any, message: string, network: NetworkType) {
     const recipientAddress = this.createFromRawAddress(recipient);
     return TransferTransaction.create(
       Deadline.create(5),
@@ -199,6 +186,30 @@ export class NemProvider {
   }
 
   /**
+   *
+   *
+   * @param {any} amount
+   * @param {any} divisibility
+   * @returns
+   * @memberof NemProvider
+   */
+  formatterAmount(amount: number, divisibility: number) {
+    const amountDivisibility = Number(amount / Math.pow(10, divisibility));
+    return (amountDivisibility).toLocaleString('en-us', { minimumFractionDigits: divisibility });
+  }
+
+  /**
+   * Get mosaic
+   *
+   * @param {any} mosaicId
+   * @returns
+   * @memberof NemProvider
+   */
+  getMosaic(mosaicId: MosaicId): Observable<MosaicInfo> {
+    return this.mosaicHttp.getMosaic(mosaicId);
+  }
+
+  /**
    *Gets an AccountInfo for an account.
    *
    * @param {Address} address
@@ -229,7 +240,7 @@ export class NemProvider {
    * @returns {Observable<Transaction[]>}
    * @memberof NemProvider
    */
-  getAllTransactionsFromAccount(publicAccount, queryParams?: QueryParams): Observable<Transaction[]> {
+  getAllTransactionsFromAccount(publicAccount: PublicAccount, queryParams?: QueryParams): Observable<Transaction[]> {
     return this.accountHttp.transactions(publicAccount, new QueryParams(queryParams.pageSize,queryParams.id));
   }
 
@@ -262,7 +273,7 @@ export class NemProvider {
    * Return getTransaction from id or hash
    * @param param
    */
-  getTransactionInformation(hash, node = ''): Observable<Transaction> {
+  getTransactionInformation(hash: string, node = ''): Observable<Transaction> {
     const transaction: TransactionHttp = (node === '') ? this.transactionHttp : new TransactionHttp(environment.protocol + '://'+ `${node}`);
     return transaction.getTransaction(hash);
   }
@@ -285,14 +296,13 @@ export class NemProvider {
    * @returns {Account}
    * @memberof NemProvider
    */
-  generateNewAccount(network): Account {
+  generateNewAccount(network: NetworkType): Account {
     return Account.generateNewAccount(network);
     // account.address.pretty()
     // account.privateKey
   }
 
-  //PROXIMA
-  sendTransaction(network, address: string, message?: string, amount: number = 0): TransferTransaction {
+  sendTransaction(network: NetworkType, address: string, message?: string, amount: number = 0): TransferTransaction {
     // console.log(address, message)
     return TransferTransaction.create(
       Deadline.create(23),
@@ -303,31 +313,8 @@ export class NemProvider {
     );
 
   }
-  //COMPANY
-  // sendTransaction(network, address: string, message?: string, amount: number = 0): TransferTransaction {
-  //   // console.log(address, message)
-
-  //   console.log("adrres:",address)
-  //   console.log("<br> message:",message)
-  //   console.log("<br> amount:",amount)
-  //   return TransferTransaction.create(
-  //     Deadline.create(23),
-  //     Address.createFromRawAddress(address),
-  //     [XEM.createRelative(1)],
-  //     PlainMessage.create(message),
-  //     network,
-  //   );
-
-  // }
 
   announce(signedTransaction: SignedTransaction): Observable<TransactionAnnounceResponse> {
     return this.transactionHttp.announce(signedTransaction);
   }
-
-  // signedTransaction(transferTransaction:TransferTransaction):TransferTransaction {
-
-  //   return  Account.sign(transferTransaction);
-  // }
-
-
 }

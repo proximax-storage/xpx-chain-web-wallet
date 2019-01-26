@@ -30,8 +30,8 @@ export class CreatePollComponent implements OnInit {
   messageWhiteLis: string;
   messageOptions: string;
   options: Array<any>
-  accountPrin: string = 'SBGFBK-22DHGH-JW5MD6-M6BJ43-Y26ABU-IQRKP5-WNXG';
-  privateKey: string = '01E4B2794BD5EAC9A2A20C1F8380EF79EBB7F369A5A6040291DB3875867F4727';
+  accountPrin: string = 'VA44CI-NZZ4QD-NT5ILM-ET2AQ2-2QFIQI-VXH25W-LQVH';
+  privateKey: string = '6453DE5D725067F04FC013880AE3E8E817B576FA9F0C15FDDE18A883FEACF681';
   constructor(
     private fb: FormBuilder,
     private walletService: WalletService,
@@ -244,7 +244,7 @@ export class CreatePollComponent implements OnInit {
         whiteList: WhiteList
       }
       Object.keys(datapoll).forEach(element => {
-        this.sendaccountPoll(datapoll[element], accountPoll.address.plain(), common.privateKey);
+        this.sendAccountPoll(datapoll[element], accountPoll.address.plain(), common.privateKey);
       });
     } else {
       let datapoll: Datapoll = {
@@ -253,7 +253,7 @@ export class CreatePollComponent implements OnInit {
         formData: FormDataRoot
       }
       Object.keys(datapoll).forEach(element => {
-        this.sendaccountPoll(datapoll[element], accountPoll.address.plain(), common.privateKey);
+        this.sendAccountPoll(datapoll[element], accountPoll.address.plain(), common.privateKey);
       });
     }
 
@@ -269,31 +269,27 @@ export class CreatePollComponent implements OnInit {
     const privateKey = {
       password: this.createpollForm.get('password').value
     }
-    this.sendaccountPoll(PollRoot, this.accountPrin, this.privateKey);
+    this.sendAccountPoll(PollRoot, this.accountPrin, this.privateKey);
   }
-  sendaccountPoll(message: any, address, privateKey) {
+
+
+  sendAccountPoll(message: any, address, privateKey) {
     this.blockUI.start('Loading...'); // Start blocking
     let transferTransaction: any
     transferTransaction = this.nemProvider.sendTransaction(this.walletService.network, address, JSON.stringify(message))
     transferTransaction.fee = UInt64.fromUint(0);
-
     const account = Account.createFromPrivateKey(privateKey, this.walletService.network);
     const signedTransaction = account.sign(transferTransaction);
-
     this.blockUI.stop(); // Stop blocking
     if (this.getMessageLength(signedTransaction, message)) {
-
       this.blockUI.start('Loading...'); // Start blocking
-
       this.nemProvider.announce(signedTransaction).subscribe(
         x => {
           this.blockUI.stop(); // Stop blocking
-          console.log("exis=", x)
+          console.log("Se envió la transacción....", x)
           this.createpollForm.reset()
           this.createpollForm.get('type').patchValue('1')
           this.createpollForm.get('indexAccount').patchValue(this.accountPrin)
-
-
           this.sharedService.showSuccess('success', 'poll created')
         },
         err => {
@@ -301,8 +297,6 @@ export class CreatePollComponent implements OnInit {
           this.sharedService.showError('Error', '¡unexpected error!');
           console.error(err)
         });
-    } else {
-
     }
   }
 

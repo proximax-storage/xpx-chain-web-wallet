@@ -47,13 +47,13 @@ export class TransferComponent implements OnInit {
 
   createFormContact() {
     this.contactForm = this.fb.group({
-      user: [null, [Validators.required, Validators.minLength(6), Validators.maxLength(46)]],
+      user: [null, [Validators.required, Validators.minLength(2), Validators.maxLength(30)]],
       address: [null, [Validators.required, Validators.minLength(46), Validators.maxLength(46)]]
     });
   }
 
 
-  cleanForm(custom?, formControl?) {
+  cleanForm(custom?: string | (string | number)[], formControl?: string | number) {
     if (custom !== undefined) {
       if (formControl !== undefined) {
         this.transferForm.controls[formControl].get(custom).reset();
@@ -66,7 +66,7 @@ export class TransferComponent implements OnInit {
     return;
   }
 
-  getError(control, typeForm?, formControl?) {
+  getError(control: string | (string | number)[], typeForm?: any, formControl?: string | number) {
     const form = (typeForm === undefined) ? this.transferForm : this.contactForm;
     if (formControl === undefined) {
       if (form.get(control).getError('required')) {
@@ -90,11 +90,9 @@ export class TransferComponent implements OnInit {
   }
 
   sendTransfer() {
-    console.log(this.transferForm);
     if (this.transferForm.invalid) {
       this.validateAllFormFields(this.transferForm);
       this.inputBLocked = false;
-
     } else {
       this.inputBLocked = true;
       const acountRecipient = this.transferForm.get('acountRecipient').value;
@@ -108,9 +106,10 @@ export class TransferComponent implements OnInit {
           .announce(rspBuildSend.signedTransaction)
           .subscribe(
             rsp => {
+              this.showContacts = false;
               this.inputBLocked = false;
+              this.sharedService.showSuccess('Congratulations!', 'Transaction sent');
               this.cleanForm();
-
             },
             err => {
               this.inputBLocked = false;
@@ -134,7 +133,7 @@ export class TransferComponent implements OnInit {
         return;
       }
 
-      const issetData = dataStorage.find(element => element.label === this.contactForm.get('user').value);
+      const issetData = dataStorage.find((element: { label: any; }) => element.label === this.contactForm.get('user').value);
       if (issetData === undefined) {
         dataStorage.push(books);
         this.ServiceModuleService.setBookAddress(dataStorage);
@@ -148,7 +147,7 @@ export class TransferComponent implements OnInit {
     }
   }
 
-  optionSelected(event) {
+  optionSelected(event: { value: any; }) {
     console.log(event);
     this.transferForm.get('acountRecipient').patchValue(event.value);
   }
@@ -164,5 +163,5 @@ export class TransferComponent implements OnInit {
     });
   }
 
- 
+
 }

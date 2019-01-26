@@ -25,7 +25,7 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
   previous: any;
   searchText: string;
   elements = [];
-  dataSelected: any;
+  dataSelected: Transaction;
   headElements = ['Account', 'Amount', 'Mosaic', 'Date'];
   optionTypeSearch = [
     {

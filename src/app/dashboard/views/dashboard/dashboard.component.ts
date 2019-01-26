@@ -1,20 +1,15 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { mergeMap, first } from 'rxjs/operators'
+import { Component, OnInit } from '@angular/core';
 import {
-  TransferTransaction,
-  Deadline,
-  PlainMessage,
-  NetworkType,
-  Account,
-  TransactionHttp,
-  PublicAccount,
-  Transaction
+  MosaicInfo
 } from 'proximax-nem2-sdk';
-import { NemProvider } from '../../../shared/services/nem.provider';
-import { WalletService } from '../../../shared';
-import { TransactionsService } from "../../../transactions/service/transactions.service";
 import { Observable } from "rxjs";
 import { LoginService } from "../../../login/services/login.service";
+import { DashboardService } from '../../services/dashboard.service';
+import { TransactionsService } from '../../../transactions/service/transactions.service';
+import { WalletService } from 'src/app/shared';
+import { NemProvider } from 'src/app/shared/services/nem.provider';
+import { first } from 'rxjs/operators';
+import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
 
 @Component({
   selector: 'app-dashboard',
@@ -23,64 +18,78 @@ import { LoginService } from "../../../login/services/login.service";
 })
 export class DashboardComponent implements OnInit {
 
+  cantConfirmed = 0;
   elementsConfirmed: any = [];
-  elementsUnconfirmed: any = [];
+
+  elementsUnconfirmed: any;
   confirmedSelected = true;
   unconfirmedSelected = false;
-  cantConfirmed = 0;
   cantUnconfirmed = 0;
   dataSelected: any;
-  isLogged$: Observable<boolean>;
+
   headElements = ['Recipient', 'Amount', 'Mosaic', 'Date'];
   subscriptions = [
+    'getConfirmedTransactionsCache',
     'transactionsUnconfirmed',
+    'getAllTransactions',
     'getTransConfirm'
   ];
+  infoMosaic: MosaicInfo;
 
   constructor(
-    private loginService: LoginService,
+    private dashboardService: DashboardService,
+    private transactionsService: TransactionsService,
     private walletService: WalletService,
     private nemProvider: NemProvider,
-    private transactionsService: TransactionsService
+    private proximaxProvider: ProximaxProvider
   ) {
   }
 
   ngOnInit() {
-    // DESTROY SUBSCRIPTION WHEN IS NOT LOGIN
-    this.isLogged$ = this.loginService.getIsLogged();
-    this.isLogged$.subscribe(
-      response => {
-        if (response === false) {
-          this.subscriptions['transactionsUnconfirmed'].unsubscribe();
-          this.subscriptions['getTransConfirm'].unsubscribe();
-        }
-      }
-    );
+    this.dashboardService.loadedDashboard();
+    this.dashboardService.subscribeLogged();
+    this.getConfirmedTransactions();
+    this.getUnconfirmedTransactions();
+  }
 
-    this.verifyTransactions();
-    this.getTransactionsUnconfirmed();
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(element => {
+      if (this.subscriptions[element] !== undefined && this.subscriptions[element] !== 'isLogged') {
+        console.log("Destruye: ", element);
+        this.subscriptions[element].unsubscribe();
+      }
+    });
   }
 
   /**
-   * Valid if there are observable transactions
+   * Get all confirmed transactions
    *
    * @memberof DashboardComponent
    */
-  verifyTransactions() {
-    this.subscriptions['getTransConfirm'] = this.transactionsService.getTransConfirm$().pipe(first()).subscribe(
-      resp => {
-        if (resp.length > 0) {
-          this.cantConfirmed = resp.length;
-          this.elementsConfirmed = resp;
-          return;
+  getConfirmedTransactions() {
+    this.subscriptions['getTransConfirm'] = this.transactionsService.getConfirmedTransactionsCache$().subscribe(
+      async cacheTransactions => {
+        console.log("HAY ALGO EN CACHE?", cacheTransactions);
+        if (cacheTransactions.length > 0) {
+          if (cacheTransactions.length > 10) {
+            this.elementsConfirmed = cacheTransactions.slice(0, 10);
+            this.cantConfirmed = this.elementsConfirmed.length;
+          } else {
+            console.log("IGUALA LAS VARIABLES Y PINTALAS PUES");
+            this.cantConfirmed = cacheTransactions.length;
+            this.elementsConfirmed = cacheTransactions;
+          }
+        } else {
+          if (this.dashboardService.isLoadedDashboard == 1) {
+            const allTrasactions = await this.getAllTransactions();
+          }
         }
-        this.getAllTransactions();
-        return;
-      });
+      }
+    );
   }
 
-  getTransactionsUnconfirmed() {
-    this.subscriptions['transactionsUnconfirmed'] = this.transactionsService.getTransactionsUnconfirmed$().subscribe(
+  getUnconfirmedTransactions() {
+    this.subscriptions['transactionsUnconfirmed'] = this.transactionsService.getTransactionsUnconfirmedCache$().subscribe(
       resp => {
         this.cantUnconfirmed = resp.length;
         this.elementsUnconfirmed = resp;
@@ -89,24 +98,36 @@ export class DashboardComponent implements OnInit {
   }
 
   /**
-   * Get all transactions http and
-   * Foreach and assign to elementsConfirmed, to then add it to the observable
-   *
-   * @memberof DashboardComponent
-   */
-  getAllTransactions() {
-    this.nemProvider.getAllTransactionsFromAccount(this.walletService.publicAccount, this.walletService.network).pipe(first()).subscribe(
-      trans => {
-        trans.forEach(element => {
-          this.cantConfirmed = trans.length;
-          this.elementsConfirmed.push(this.transactionsService.formatTransaction(element));
+  * Get all transactions http and
+  * Foreach and assign to elementsConfirmed, to then add it to the observable
+  *
+  * @memberof DashboardComponent
+  */
+  async getAllTransactions() {
+    const promise = new Promise(async (resolve, reject) => {
+      this.subscriptions['getAllTransactions'] = this.nemProvider.getAllTransactionsFromAccount(this.walletService.publicAccount, this.walletService.network).pipe(first()).subscribe(
+        async allTrasactions => {
+          const elementsConfirmed = [];
+          if (allTrasactions.length > 0) {
+            for (let element of allTrasactions) {
+              // Get mosaic information
+              await this.proximaxProvider.getInfoMosaic(element['mosaics'][0].id).then((mosaicInfo: MosaicInfo) => {
+                this.infoMosaic = mosaicInfo;
+                element['amount'] = this.nemProvider.formatterAmount(element['mosaics'][0].amount.compact(), this.infoMosaic.divisibility);
+                elementsConfirmed.push(this.transactionsService.formatTransaction(element));
+              });
+            };
+            this.transactionsService.setConfirmedTransaction$(elementsConfirmed);
+          }
+          resolve(true);
+        }, error => {
+          console.error("Has ocurred a error", error);
+          reject(false);
         });
-        this.transactionsService.setTransConfirm$(this.elementsConfirmed);
-      },
-      error => {
-        console.error(error);
-      });
+    });
+    return await promise;
   }
+
 
   /**
    *
@@ -114,7 +135,7 @@ export class DashboardComponent implements OnInit {
    * @param {any} param
    * @memberof DashboardComponent
    */
-  selectTab(param) {
+  selectTab(param: any) {
     if (param === 1) {
       this.confirmedSelected = true;
       this.unconfirmedSelected = false;

@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, Renderer2 } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { NetworkType } from 'proximax-nem2-sdk';
 import { SharedService, WalletService } from "../../../shared";
@@ -20,9 +20,6 @@ export class ImportWalletComponent implements OnInit {
     {
       'value': NetworkType.TEST_NET,
       'label': 'TEST NET'
-    },{
-      'value': NetworkType.MIJIN_TEST,
-      'label': 'MIJIN TEST'
     }
   ];
 
@@ -39,23 +36,13 @@ export class ImportWalletComponent implements OnInit {
   }
 
   /**
-   * today 26
-   * 9E8A529894129F737C40560DCAE25E99C91C18F55E2417C1188398DB0D3D09BD  private key
-   *
-   * Create a reactive form
-   * 0F3CC33190A49ABB32E7172E348EA927F975F8829107AAA3D6349BB10797D4F6 (pvk with money)
-   *
-   *
-   * catapult wss://staging.mocd.gov.ae/catapult/
-   * 8E3639F5437B83C13C567E3C2C847966AC25D6E12B38632DF38DCD5403C64368
-   * SBHMRE-3QM3GP-BNDG2O-BDQ6AE-WGDPZI-MO2SGJ-O77I
    *
    *
    * @memberof ImportWalletComponent
    */
   importForm() {
     this.importWalletForm = this.fb.group({
-      walletname: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(30)]],
+      walletname: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(30)]],
       network: [NetworkType.TEST_NET, [Validators.required]],
       passwords: this.fb.group({
         password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]],

@@ -5,37 +5,40 @@ import { WalletService } from '../../shared/services/wallet.service';
 import { AppConfig } from '../../config/app.config';
 import { DataBridgeService } from "../../shared/services/data-bridge.service";
 import { TransactionsService } from "../../transactions/service/transactions.service";
+import { NodeService } from '../../servicesModule/services/node.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoginService {
+
+
+  subscription: [] = [];
   logged: boolean;
   isLoggedSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(this.logged);
   isLogged$: Observable<boolean> = this.isLoggedSubject.asObservable();
+
+
   constructor(
-    private _walletService: WalletService,
+    private walletService: WalletService,
     private route: Router,
-    private _dataBridgeService:DataBridgeService,
+    private dataBridgeService: DataBridgeService,
+    private nodeService: NodeService,
     private transactionsService: TransactionsService
   ) { this.setLogged(false); }
 
+
   /**
-   * Structuring the information of the wallet for selection
+   * Destroy node selected
    *
-   * @param {*} wallets
-   * @returns
    * @memberof LoginService
    */
-  walletsOption(wallets: Array<any> = []) {
-    wallets = (wallets == null) ? [] : wallets
-    const retorno = [{ 'value': '', 'label': 'Select wallet' }];
-    wallets.forEach((item, index) => {
-      retorno.push({ value: item, label: item.name });
-
-    });
-    return retorno;
+  destroyNodeSelected() {
+    // if (this.subscription['nodeSelected'] !== undefined) {
+    //   this.subscription['nodeSelected'].unsubscribe();
+    // }
   }
+
 
   /**
    * Method to login
@@ -45,13 +48,29 @@ export class LoginService {
    * @returns
    * @memberof LoginService
    */
-  login(common, wallet) {
-    if (!this._walletService.login(common, wallet)) { return false; }
+  login(common: any, wallet: any) {
+    if (!this.walletService.login(common, wallet)) { return false; }
+    // this.subscribeNodeSelected();
     this.transactionsService.destroyAllTransactions();
-    this._dataBridgeService.connectnWs();
+    this.dataBridgeService.closeConenection();
+    this.dataBridgeService.connectnWs();
     this.route.navigate([`/${AppConfig.routes.dashboard}`]);
     this.setLogged(true);
     return true;
+  }
+
+  /**
+   * Subscribe to node
+   *
+   * @memberof LoginService
+   */
+  subscribeNodeSelected() {
+    this.subscription['nodeSelected'] = this.nodeService.getNodeObservable().subscribe(
+      next => {
+        this.dataBridgeService.closeConenection();
+        this.dataBridgeService.connectnWs(next);
+      }
+    );
   }
 
 
@@ -61,7 +80,7 @@ export class LoginService {
    * @param {*} params
    * @memberof LoginService
    */
-  setLogged(params) {
+  setLogged(params: any) {
     this.logged = params;
     this.isLoggedSubject.next(this.logged);
   }
@@ -76,7 +95,19 @@ export class LoginService {
     return this.isLogged$;
   }
 
-
-
-
+  /**
+   * Structuring the information of the wallet for selection
+   *
+   * @param {*} wallets
+   * @returns
+   * @memberof LoginService
+   */
+  walletsOption(wallets: Array<any> = []) {
+    wallets = (wallets == null) ? [] : wallets
+    const retorno = [{ 'value': '', 'label': 'Select wallet' }];
+    wallets.forEach((item) => {
+      retorno.push({ value: item, label: item.name });
+    });
+    return retorno;
+  }
 }

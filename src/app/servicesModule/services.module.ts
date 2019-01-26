@@ -13,6 +13,7 @@ import { AuditApostilleComsponent } from './views/apostille/audit-apostille/audi
 import { ServicesComponent } from "./views/services/services.component";
 import { AccountComponent } from './views/account/account.component';
 import { AddressBookComponent } from './views/address-book/address-book.component';
+import { StorageComponent } from './views/storage/storage.component';
 
 @NgModule({
   imports: [
@@ -31,7 +32,8 @@ import { AddressBookComponent } from './views/address-book/address-book.componen
     HighchartsChartComponent,
     ServicesComponent,
     AccountComponent,
-    AddressBookComponent
+    AddressBookComponent,
+    StorageComponent
   ],
   schemas: [NO_ERRORS_SCHEMA]
 })

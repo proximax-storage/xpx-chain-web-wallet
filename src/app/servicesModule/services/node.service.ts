@@ -1,69 +1,170 @@
 import { Injectable } from '@angular/core';
-import { environment } from "../../../environments/environment";
+import { BehaviorSubject, Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
+import { SharedService } from '../../shared/services/shared.service';
+import { NemProvider } from '../../shared/services/nem.provider';
+import * as data from '../../../assets/json/nodes.json';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NodeService {
 
-  arrayNode = 'proxi-nodes';
-  nodeSelect = 'node-selected';
+  nodeObsSelected: BehaviorSubject<any>;
+  nameItemsArrayStorage = environment.nameKeyNodeStorage;
+  nameItemSelectedStorage = 'n-s';
+  listNodes = data['nodes'];
 
-  constructor() { }
+  constructor(
+    private sharedService: SharedService,
+    private nemProvider: NemProvider,
+  ) {}
 
-  /**
-   * Init node
-   *
-   * @returns
-   * @memberof NodeService
-   */
-  initNode() {
-    if (this.getNodeSelected() === null) {
-      this.setNode(environment.nodeDefault);
+  addNode(node: string, showMsg = false, msgNodeCreated = '') {
+    const dataStorage = this.getAllNodes();
+    const data = { value: node, label: node };
+    if (dataStorage === null) {
+      this.setArrayNode([data]);
+      if (showMsg) this.sharedService.showSuccess('Congratulations!', msgNodeCreated);
+      return;
     }
 
-    return this.getNodeSelected();
+    const issetData = dataStorage.find(element => element.value === node);
+    if (issetData === undefined) {
+      dataStorage.push(data);
+      this.setArrayNode(dataStorage);
+      if (showMsg) this.sharedService.showSuccess('Congratulations!', msgNodeCreated);
+      return;
+    }
+
+    if (showMsg) this.sharedService.showError('Node repeated', `The '${node}' node already exists`);
   }
 
   /**
-   * Verify if there is an array of nodes.
    *
+   *
+   * @param {any} url
+   * @memberof NodeService
+   */
+  addNewNodeSelected(url: any) {
+    this.nodeObsSelected.next(url);
+  }
+
+  /**
+     * Init node and validations
+     *
+     * @returns
+     * @memberof NodeService
+     */
+  initNode() {
+    if (this.getAllNodes() === null) {
+      this.setArrayNode([]);
+    };
+    // validates if a selected node exists in the storage
+    const constSelectedStorage = this.getNodeSelected();
+    const nodeSelected = (constSelectedStorage === null) ? this.listNodes[0] : constSelectedStorage;
+    // creates a new observable
+    this.nodeObsSelected = new BehaviorSubject<any>(nodeSelected);
+    // Start the subscription function to the selected node.
+    this.subscribeNodeSelected();
+
+    // go through all the nodes that exist by default, and verify that they do not repeat in the storage
+    this.listNodes.forEach(element => {
+      this.validateToAddNode(element);
+    });
+  }
+
+
+  /**
+   * Add new selected node
+   *
+   * @memberof NodeService
+   */
+  subscribeNodeSelected() {
+    this.nodeObsSelected.subscribe(
+      next => {
+        this.setSelectedNodeStorage(next);
+        this.nemProvider.initInstances(next);
+          // this.dataBridge.closeConenection();
+          // this.dataBridge.connectnWs(next);
+      }
+    );
+  }
+
+
+  /**
+   * add list of nodes in the storage
+   *
+   * @param {any} node
+   * @param {boolean} [showMsg=false]
+   * @param {string} [msgNodeCreated='']
    * @returns
    * @memberof NodeService
    */
-  existArrayNodes() {
-    return JSON.parse(localStorage.getItem(this.arrayNode));
+  validateToAddNode(node: any, showMsg: boolean = false, msgNodeCreated: string = '') {
+    // check if there are nodes created in the storagr
+    const dataStorage = this.getAllNodes();
+    const data = { value: node, label: node };
+
+    // const arrayNode = Object.keys(dataStorage).filter(item => dataStorage[item].value === node);
+    // if there is no data in the storage, proceed to create a new node array in the storage
+    if (dataStorage === null) {
+      // Add an array of nodes in the storage
+      this.setArrayNode([data]);
+      if (showMsg) {
+        this.sharedService.showSuccess('Congratulations!', msgNodeCreated);
+      }
+      return;
+    }
+
+    // if there is data in the storage, verify that this data does not repeat in the storage
+    const existData = dataStorage.find((element: { value: any; }) => element.value === node);
+    if (existData === undefined) {
+      dataStorage.push(data);
+      this.setArrayNode(dataStorage);
+      if (showMsg) {
+        this.sharedService.showSuccess('Congratulations!', msgNodeCreated);
+      }
+      return;
+    }
+
+    if (showMsg) {
+      this.sharedService.showError('Node repeated', `The '${node}' node already exists`);
+    }
+
+  }
+
+  /**
+  * Add an array of nodes in the storage
+  *
+  * @param {any} nodes
+  * @memberof NodeService
+  */
+  setArrayNode(nodes: any) {
+    localStorage.setItem(this.nameItemsArrayStorage, JSON.stringify(nodes));
   }
 
 
-  /**
-   * Get a node selected
-   *
-   * @returns
-   * @memberof NodeService
-   */
-  nodeSelected() {
-    return  JSON.parse(localStorage.getItem(this.nodeSelect));
-  }
 
   /**
-   * Set
+   * Add new selected node in the storage
    *
    * @param {any} nodes
    * @memberof NodeService
    */
-  setNode(nodes) {
-    localStorage.setItem(this.nodeSelect, JSON.stringify(nodes));
+  setSelectedNodeStorage(node: any) {
+    localStorage.setItem(this.nameItemSelectedStorage, JSON.stringify(node));
   }
 
+
   /**
-   * Set array nodes
+   * Get all nodes
    *
-   * @param {any} nodes
+   * @returns
    * @memberof NodeService
    */
-  setArrayNode(nodes) {
-    localStorage.setItem(this.arrayNode, JSON.stringify(nodes));
+  getAllNodes() {
+    return JSON.parse(localStorage.getItem(this.nameItemsArrayStorage));
   }
 
 
@@ -74,16 +175,16 @@ export class NodeService {
    * @memberof NodeService
    */
   getNodeSelected() {
-    return JSON.parse(localStorage.getItem(this.nodeSelect));
+    return JSON.parse(localStorage.getItem(this.nameItemSelectedStorage));
   }
 
   /**
-   * Get all nodes
+   * Return node observable
    *
    * @returns
    * @memberof NodeService
    */
-  getAllNodes() {
-    return JSON.parse(localStorage.getItem(this.arrayNode));
+  getNodeObservable() {
+    return this.nodeObsSelected.asObservable();
   }
 }

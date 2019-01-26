@@ -4,11 +4,14 @@
       <div class="col-xl-8 col-md-8 col-sm-12 mx-auto">
         <mdb-card>
           <mdb-card-header class="background-gold white-text text-align-center py-4">
-              <img src="assets/images/logo/logo-white.png" class="size-img-card-header">
+            <img src="assets/images/logo/logo-white.png" style="width: 300px;">
           </mdb-card-header>
 
           <mdb-card-body class="px-lg-5 backg-beige">
-
+            <div class="fs-08rem">
+              <span>To add a new node you must place the ip or the domain, followed by the port of the node<br>
+              <b>Example: </b> <br>127.0.0.1:3000 <br> localhost:3000</span>
+            </div>
             <div class="md-form mt-5" id="container-walletname">
               <i class="fa fa-codepen prefix text-gris"></i>
               <input [mdbValidate]="false" type="text" autocomplete="off" id="walletname" class="form-control" mdbInputDirective [(ngModel)]="ngMNode">
