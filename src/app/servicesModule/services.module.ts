@@ -16,6 +16,8 @@ import { AddressBookComponent } from './views/address-book/address-book.componen
 import { StorageComponent } from './views/storage/storage.component';
 import { CreateMosaicComponent } from './views/create-mosaic/create-mosaic.component';
 import { EditMosaicComponent } from './views/edit-mosaic/edit-mosaic.component';
+import { EditNamespaceComponent } from './views/namespace/edit-namespace/edit-namespace.component';
+import { CreateNamespaceComponent } from './views/namespace/create-namespace/create-namespace.component';
 
 @NgModule({
   imports: [
@@ -37,7 +39,9 @@ import { EditMosaicComponent } from './views/edit-mosaic/edit-mosaic.component';
     AddressBookComponent,
     StorageComponent,
     CreateMosaicComponent,
-    EditMosaicComponent
+    EditMosaicComponent,
+    CreateNamespaceComponent,
+    EditNamespaceComponent
   ],
   schemas: [NO_ERRORS_SCHEMA]
 })

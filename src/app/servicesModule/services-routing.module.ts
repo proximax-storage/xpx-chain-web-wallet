@@ -17,6 +17,10 @@ import { StorageComponent } from './views/storage/storage.component';
 import { CreateMosaicComponent } from './views/create-mosaic/create-mosaic.component';
 import { EditMosaicComponent } from './views/edit-mosaic/edit-mosaic.component';
 
+import { CreateNamespaceComponent } from './views/namespace/create-namespace/create-namespace.component';
+import { EditNamespaceComponent } from './views/namespace/edit-namespace/edit-namespace.component';
+
+
 
 
 const routes: Routes = [
@@ -81,6 +85,16 @@ const routes: Routes = [
   {
     path: `${AppConfig.routes.editMosaic}`,
     component: EditMosaicComponent,
+    canActivate: [LoggedGuard]
+  },
+  {
+    path: `${AppConfig.routes.createNamespace}`,
+    component: CreateNamespaceComponent,
+    canActivate: [LoggedGuard]
+  },
+  {
+    path: `${AppConfig.routes.editNamespace}`,
+    component: EditNamespaceComponent,
     canActivate: [LoggedGuard]
   }
 ];

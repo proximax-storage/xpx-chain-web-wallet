@@ -59,8 +59,8 @@ export class ServicesComponent implements OnInit {
     const nameSpace = this.service.structureServices('fa fa-linode', 'Namespaces & Subdomains',
       'Namespaces are domain names. Each namespaces is unique and authenticates mosaics (assets) issued on it or on its subdomains',
       {
-        createNamespace: this.structureServiceRoute('Create namespace', ''),
-        renewNamespace: this.structureServiceRoute('Renew namespace', '')
+        createNamespace: this.structureServiceRoute('Create namespace', `/${AppConfig.routes.createNamespace}`),
+        renewNamespace: this.structureServiceRoute('Renew namespace',  `/${AppConfig.routes.editNamespace}`)
       }, true
     );
 
