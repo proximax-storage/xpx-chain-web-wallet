@@ -54,7 +54,7 @@ export const NameRoute = {
   [AppConfig.routes.storage]: 'storage',
   [AppConfig.routes.createMosaic]: 'Create Mosaic',
   [AppConfig.routes.editMosaic]: 'Edit Mosaic',
-  [AppConfig.routes.createNamespace]: 'Create Namespace',
+  [AppConfig.routes.createNamespace]: 'Create namespace & sub-namespace',
   [AppConfig.routes.editNamespace]: 'Edit Namespace'
 }
 

@@ -26,7 +26,9 @@ import {
   UInt64,
   TransactionStatusError,
   TransactionStatus,
-  MosaicInfo
+  MosaicInfo,
+  NamespaceId,
+  NamespaceInfo
 } from 'proximax-nem2-sdk';
 
 import { crypto } from 'proximax-nem2-library';
@@ -316,5 +318,9 @@ export class NemProvider {
 
   announce(signedTransaction: SignedTransaction): Observable<TransactionAnnounceResponse> {
     return this.transactionHttp.announce(signedTransaction);
+  }
+
+  getNamespace(namespace:NamespaceId): Observable<NamespaceInfo>{
+    return this.namespaceHttp.getNamespace(namespace)
   }
 }
