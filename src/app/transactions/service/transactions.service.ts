@@ -75,7 +75,7 @@ export class TransactionsService {
   formatTransaction(data: any) {
     const date = `${data.deadline.value.monthValue()}/${data.deadline.value.dayOfMonth()}/${data.deadline.value.year()}`;
     const isRemitent = this.walletService.address.pretty() === data.recipient.pretty();
-    console.log(data);
+    // console.log(data);
     return {
       address: data.recipient.pretty(),
       amount: data['amount'],

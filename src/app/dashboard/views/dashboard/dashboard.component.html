@@ -9,6 +9,12 @@
             </mdb-card-header>
             <mdb-card-body class="backg-beige">
               <div class="row">
+                <div class="col-12">
+                  <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate" *ngIf="searching"></mdb-progress-bar>
+                </div>
+              </div>
+
+              <div class="row">
                 <div class="col-6">
                   <div class="tabs-wallet" [className]="confirmedSelected ? 'background-tabs-selected tabs-wallet' : 'background-tabs-unselected tabs-wallet'"
                     (click)="selectTab(1)">
@@ -41,7 +47,8 @@
                     <tbody>
                       <tr class="mouse-pointer" *ngFor="let el of elementsConfirmed; let i = index" (click)="basicModal.show(); dataSelected = elementsConfirmed[i]">
                         <th class="th-sm">
-                          <i [ngStyle]="{'color': el.isRemitent === true ? 'green' : 'red' }" style="padding-right: 10px;" class="fa fa-send" aria-hidden="true"></i>
+                          <i [ngStyle]="{'color': el.isRemitent === true ? 'green' : 'red' }" style="padding-right: 10px;"
+                            class="fa fa-send" aria-hidden="true"></i>
                           {{el.address}}
                         </th>
                         <td class="align-right th-lg">{{el.amount}}</td>
@@ -65,7 +72,8 @@
                     <tbody>
                       <tr class="mouse-pointer" *ngFor="let el of elementsUnconfirmed; let i = index" (click)="basicModal.show(); dataSelected = elementsUnconfirmed[i]">
                         <th class="th-sm">
-                          <i [ngStyle]="{'color': el.isRemitent === true ? 'green' : 'red' }" style="padding-right: 10px;" class="fa fa-send" aria-hidden="true"></i>
+                          <i [ngStyle]="{'color': el.isRemitent === true ? 'green' : 'red' }" style="padding-right: 10px;"
+                            class="fa fa-send" aria-hidden="true"></i>
                           {{el.address}}
                         </th>
                         <td class="align-right th-lg">{{el.amount}}</td>
@@ -85,7 +93,8 @@
     </div>
   </div>
 
-  <div mdbModal #basicModal="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div mdbModal #basicModal="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myBasicModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog modal-notify modal-info" role="document">
       <!--Content-->
       <div class="modal-content">
@@ -94,7 +103,7 @@
           <p class="heading lead" style="font-weight: 500;">Transaction info</p>
           <button type="button" class="close" data-dismiss="modal" (click)="basicModal.hide()">
             <span aria-hidden="true" class="white-text">&times;</span>
-        </button>
+          </button>
         </div>
 
         <!--Body-->

@@ -12,7 +12,7 @@ import { MessageService } from '../shared/services/message.service';
 export interface HorizontalHeaderInterface {
   home: Header;
   node: Header;
-  amount:Header;
+  amount: Header;
   dashboard: Header;
   nodeSelected: Header;
   createWallet: Header;
@@ -52,7 +52,7 @@ export class HeaderComponent implements OnInit {
   horizontalHeader: HorizontalHeaderInterface;
   verticalHeader: VerticalHeaderInterface;
   vestedBalance: string = '0.00';
-  message:string;
+  message: string;
 
   constructor(
     private _loginService: LoginService,
@@ -63,42 +63,25 @@ export class HeaderComponent implements OnInit {
     private messageService: MessageService
   ) {
 
-    this.route.events
-      .subscribe((event) => {
-        if (event instanceof NavigationEnd) {
-          var objRoute = event.url.split('/')[event.url.split('/').length - 1];
-          if (NameRoute[objRoute] !== undefined) {
-            this.nameRoute = NameRoute[objRoute];
-          } else {
-            this.nameRoute = '';
-          }
-        }
-      });
   }
 
-   ngOnInit() {
+  ngOnInit() {
     this.buildHeader();
+    this.readRoute();
+    this.readLogged();
+    // this.balance();
+  }
 
-
-    /**
-     * Observable state of the login
-     *
-     * @memberof HeaderComponent
-     */
-    this.isLogged$ = this._loginService.getIsLogged();
-    this.isLogged$.subscribe(
-      async response => {
-        this.showOnlyLogged = response;
-        if(this.showOnlyLogged) {
-          await this.getBalance();
-        }
-      }
-    );
-
+  /**
+      * Observable state of the login
+      *
+      * @memberof HeaderComponent
+      */
+  balance() {
     this.messageService.currentMessage.subscribe(async message => {
       this.message = message;
-      if(this.message === 'balanceChanged') {
-        if(this.showOnlyLogged) {
+      if (this.message === 'balanceChanged') {
+        if (this.showOnlyLogged) {
           await this.getBalance();
         }
       }
@@ -124,7 +107,7 @@ export class HeaderComponent implements OnInit {
       },
       amount: {
         'type': 'default',
-        'name': `Balance 0.00 xpx`,
+        'name': `Balance ${this.vestedBalance}`,
         'class': '',
         'icon': '',
         'rol': true,
@@ -403,11 +386,17 @@ export class HeaderComponent implements OnInit {
     this.route.navigate([`/${param}`]);
   }
 
+  /**
+   * Get Balance
+   *
+   * @memberof HeaderComponent
+   */
   getBalance() {
     this.nemProvider.getBalance(this.walletService.address).pipe(mergeMap((_) => _)
     ).subscribe(
       next => {
-        console.log('You have',  next.relativeAmount());
+        console.log("RESPUESTA", next)
+        console.log('You have', next.relativeAmount());
         this.horizontalHeader.amount.name = `Balance ${next.relativeAmount().toFixed(5)} ${next.mosaicName}`;
       },
       err => {
@@ -417,4 +406,39 @@ export class HeaderComponent implements OnInit {
     );
   }
 
+  /**
+   * Read logged
+   *
+   * @memberof HeaderComponent
+   */
+  readLogged() {
+    this.isLogged$ = this._loginService.getIsLogged();
+    this.isLogged$.subscribe(
+      async response => {
+        this.showOnlyLogged = response;
+        if (this.showOnlyLogged) {
+          await this.getBalance();
+        }
+      }
+    );
+  }
+
+  /**
+   * Read route
+   *
+   * @memberof HeaderComponent
+   */
+  readRoute() {
+    this.route.events
+      .subscribe((event) => {
+        if (event instanceof NavigationEnd) {
+          var objRoute = event.url.split('/')[event.url.split('/').length - 1];
+          if (NameRoute[objRoute] !== undefined) {
+            this.nameRoute = NameRoute[objRoute];
+          } else {
+            this.nameRoute = '';
+          }
+        }
+      });
+  }
 }

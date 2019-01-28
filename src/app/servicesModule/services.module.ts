@@ -14,8 +14,8 @@ import { ServicesComponent } from "./views/services/services.component";
 import { AccountComponent } from './views/account/account.component';
 import { AddressBookComponent } from './views/address-book/address-book.component';
 import { StorageComponent } from './views/storage/storage.component';
-import { CreateMosaicComponent } from './views/create-mosaic/create-mosaic.component';
-import { EditMosaicComponent } from './views/edit-mosaic/edit-mosaic.component';
+import { CreateMosaicComponent } from './views/mosaic/create-mosaic/create-mosaic.component';
+import { EditMosaicComponent } from './views/mosaic/edit-mosaic/edit-mosaic.component';
 
 @NgModule({
   imports: [

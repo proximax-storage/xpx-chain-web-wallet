@@ -59,9 +59,16 @@ export class ProximaxProvider {
         this.infoMosaic = await this.nemProvider.getMosaic(mosaicId).toPromise();
         this.setInfoMosaic(this.infoMosaic);
         resolve(this.infoMosaic);
-      }else {
-        console.log("Información de mosaico en caché");
+      } else {
+        // console.log("Información de mosaico en caché", this.infoMosaic);
         resolve(this.infoMosaic);
+        // if (this.infoMosaic.mosaicId === mosaicId) {
+        //   resolve(this.infoMosaic);
+        // } else {
+        //   this.infoMosaic = await this.nemProvider.getMosaic(mosaicId).toPromise();
+        //   this.setInfoMosaic(this.infoMosaic);
+        //   resolve(this.infoMosaic);
+        // }
       }
     });
     return await promise;
