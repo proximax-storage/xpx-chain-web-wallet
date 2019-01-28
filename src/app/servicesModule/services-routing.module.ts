@@ -77,7 +77,7 @@ const routes: Routes = [
     component: StorageComponent,
     canActivate: [LoggedGuard]
   },
-  {
+  { 
     path: `${AppConfig.routes.createMosaic}`,
     component: CreateMosaicComponent,
     canActivate: [LoggedGuard]
@@ -90,7 +90,7 @@ const routes: Routes = [
   {
     path: `${AppConfig.routes.createNamespace}`,
     component: CreateNamespaceComponent,
-    canActivate: [NotLoggedGuard]
+    canActivate: [LoggedGuard]
   },
   {
     path: `${AppConfig.routes.editNamespace}`,

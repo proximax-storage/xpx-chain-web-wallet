@@ -28,7 +28,8 @@ import {
   TransactionStatus,
   MosaicInfo,
   NamespaceId,
-  NamespaceInfo
+  NamespaceInfo,
+  RegisterNamespaceTransaction
 } from 'proximax-nem2-sdk';
 
 import { crypto } from 'proximax-nem2-library';
@@ -113,6 +114,18 @@ export class NemProvider {
    */
   getPublicAccountFromPrivateKey(privateKey: string, net: NetworkType): PublicAccount {
     return Account.createFromPrivateKey(privateKey, net).publicAccount
+  }
+
+  /**
+   * get
+   *
+   * @param {string} privateKey
+   * @param {*} net
+   * @returns {Account}
+   * @memberof NemProvider
+   */
+  getAccountFromPrivateKey(privateKey: string, net: NetworkType): Account {
+    return Account.createFromPrivateKey(privateKey, net)
   }
 
   /**
@@ -243,7 +256,7 @@ export class NemProvider {
    * @memberof NemProvider
    */
   getAllTransactionsFromAccount(publicAccount: PublicAccount, queryParams?: QueryParams): Observable<Transaction[]> {
-    return this.accountHttp.transactions(publicAccount, new QueryParams(queryParams.pageSize,queryParams.id));
+    return this.accountHttp.transactions(publicAccount, new QueryParams(queryParams.pageSize, queryParams.id));
   }
 
   /**
@@ -276,7 +289,7 @@ export class NemProvider {
    * @param param
    */
   getTransactionInformation(hash: string, node = ''): Observable<Transaction> {
-    const transaction: TransactionHttp = (node === '') ? this.transactionHttp : new TransactionHttp(environment.protocol + '://'+ `${node}`);
+    const transaction: TransactionHttp = (node === '') ? this.transactionHttp : new TransactionHttp(environment.protocol + '://' + `${node}`);
     return transaction.getTransaction(hash);
   }
 
@@ -320,7 +333,19 @@ export class NemProvider {
     return this.transactionHttp.announce(signedTransaction);
   }
 
-  getNamespace(namespace:NamespaceId): Observable<NamespaceInfo>{
-    return this.namespaceHttp.getNamespace(namespace)
+  getNamespace(namespace: string): Observable<NamespaceInfo> {
+
+    return this.namespaceHttp.getNamespace(new NamespaceId(namespace))
+  }
+  
+  registerNamespaceTransaction(name:string,duration:number=1000,network:NetworkType) {
+    // Crear namespace transaction
+    console.log('duration;',duration)
+    return RegisterNamespaceTransaction.createRootNamespace(
+      Deadline.create(23),
+      name,
+      UInt64.fromUint(duration),
+      network);
+
   }
 }
