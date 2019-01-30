@@ -60,18 +60,22 @@ export class CreateMosaicComponent implements OnInit {
   }
 
   namespaceNameSelect(value: Array<any> = []): Promise<any> {
-    value = (value == null) ? [] : value
-    const retorno = [{
+    const v = (value == null) ? [] : value;
+    const response = [{
       value: '1',
-      label: 'Select parent namespace2',
+      label: 'Select parent namespace',
       selected: true,
       disabled: true
     }];
-    value.forEach((item, index) => {
-      retorno.push({ value: item.name, label: item.name , selected: false,
-        disabled: false});
+    v.forEach((item) => {
+      response.push({
+        value: item.name,
+        label: item.name,
+        selected: false,
+        disabled: false
+      });
     });
-    return Promise.resolve(retorno);
+    return Promise.resolve(response);
   }
 
   async getNamespaceNamePromise() {
