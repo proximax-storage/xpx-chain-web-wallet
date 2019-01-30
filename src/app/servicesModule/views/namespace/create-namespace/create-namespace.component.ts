@@ -14,7 +14,7 @@ export class CreateNamespaceComponent implements OnInit {
   @BlockUI() blockUI: NgBlockUI;
   private namespaceForm: FormGroup;
   private rootNamespace:object;
-  private fee:string;
+  private fee:string; 
   private feeType:string = 'XPX';
   validateNamespace = true;
   constructor(
@@ -27,8 +27,8 @@ export class CreateNamespaceComponent implements OnInit {
 
   ngOnInit() {
     this.createForm();
-const fee  = 0.150000;
-this.fee= `${0.150000}   ${this.feeType}`
+const fee  = '0.150000';
+this.fee= `${fee}   ${this.feeType}`
    this.rootNamespace = [{ 'value': '', 'label': '.(New root Namespace)' }]
   }
 
