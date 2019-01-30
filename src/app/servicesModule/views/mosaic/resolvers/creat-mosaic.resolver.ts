@@ -31,6 +31,9 @@ export class CreateMosaicResolver implements Resolve<any> {
       next => {
         console.log(next);
         this.blockUI.stop();
+        for (let index = 0; index < 100; index++) {
+          console.log(index);
+        }
         return next;
       }), catchError(error => {
         console.log(error);

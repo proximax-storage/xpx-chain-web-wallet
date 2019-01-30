@@ -37,10 +37,30 @@ export class CreateMosaicComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    // this.accountInfo();
     this.createForm();
     console.log(this.route.snapshot.data['dataNamespace']);
   }
+
+
+  createForm() {
+    this.mosaicForm = this.fb.group({
+      parentNamespace: ['1', Validators.required],
+      mosaicName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(30)]],
+      description: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(30)]],
+      password: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(30)]],
+      initialSupply: [0, [Validators.required, Validators.minLength(2), Validators.maxLength(30)]],
+      divisibility: [0, [Validators.required, Validators.minLength(2), Validators.maxLength(30)]],
+      transferable: [false],
+      supplyMutable: [false],
+      levyMutable: [false]
+    });
+  }
+
+
+
+
+
+  /************************* NOT USE ******************************** */
 
   /**
    *
@@ -88,19 +108,7 @@ export class CreateMosaicComponent implements OnInit {
     }
   }
 
-  createForm() {
-    this.mosaicForm = this.fb.group({
-      parentNamespace: ['1', Validators.required],
-      mosaicName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(30)]],
-      description: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(30)]],
-      password: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(30)]],
-      initialSupply: [0, [Validators.required, Validators.minLength(2), Validators.maxLength(30)]],
-      divisibility: [0, [Validators.required, Validators.minLength(2), Validators.maxLength(30)]],
-      transferable: [false],
-      supplyMutable: [false],
-      levyMutable: [false]
-    });
-  }
+
 
   create() {
 
@@ -155,5 +163,7 @@ export class CreateMosaicComponent implements OnInit {
       console.log("Ya todos se encuentran en cache");
     }
   }
+
+  /************************* FIN NOT USE ******************************** */
 
 }
