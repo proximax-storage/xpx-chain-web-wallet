@@ -91,7 +91,7 @@ const routes: Routes = [
   {
     path: `${AppConfig.routes.createNamespace}`,
     component: CreateNamespaceComponent,
-    canActivate: [NotLoggedGuard]
+    canActivate: [LoggedGuard]
   },
   {
     path: `${AppConfig.routes.editNamespace}`,
