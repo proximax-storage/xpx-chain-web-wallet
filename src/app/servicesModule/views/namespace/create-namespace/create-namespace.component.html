@@ -13,9 +13,10 @@
                 <div class="row">
                   <div class="col-xs-12 col-sm-6  col-md-10 col-lg-6 ">
 
-
+                    <!-- name -->
                     <div class="md-form mt-5">
                       <div class="row">
+
                         <div class="col-xs-9 col-xl-9 col-lg-9 col-md-9 col-sm-9">
                           <i class="fa fa-address-book prefix text-gris"></i>
                           <input type="text" autocomplete="off" formControlName="name" required id="name" class="form-control"
@@ -26,18 +27,43 @@
                           <button mdbBtn size="sm" type="button" color="default" rounded="true" class="waves-light"
                             mdbWavesEffect (click)="getNamespace()">Search</button>
                         </div>
-                        <div style="margin-left: 51px; margin-top: 0.3rem !important;" class="alert background-info white-text" role="alert">
+                        <div style="margin-left: 51px; margin-top: 0.3rem !important;" class="alert background-info white-text"
+                          role="alert">
                           Check your namespace with the search action
                         </div>
                       </div>
                     </div>
-                    <div class="md-form mt-5">
+                    <!-- Parent Namespace -->
+                    <div class="md-form  mt-3">
+                      <i class="fa fa-user prefix text-gris"></i>
+                      <mdb-select [options]="rootNamespace" placeholder=".(New root Namespace)" formControlName="rootNamespace"
+                        class="colorful-select dropdown-default" (selected)="optionSelected($event)" mdbInputDirective
+                        [errorMessage]="getError('rootNamespace')"></mdb-select>
+                    </div>
+                    <!-- <div class="md-form mt-5">
                       <i class="fa fa-address-book prefix text-gris"></i>
                       <input formControlName="duration" mdbInputDirective type="number" required name="duration" id="duration"
                         class="form-control" data-success="Valid duration" [errorMessage]="getError('duration')">
                       <label for="duration" class="">Duration</label>
-                    </div>
+                    </div> -->
 
+                    <div class="md-form mt-5">
+                      <div class="row">
+                        <div class="col-xs-6 col-xl-6 col-lg-6 col-md-6 col-sm-6">
+                            <i class="fa fa-address-book prefix text-gris"></i> 
+                            
+                            <label class="form-label" for="" style="margin-left: 51px; margin-top: 0.3rem !important;" >fee:</label>  
+                            <div class="alert background-info white-text"
+                            role="alert">
+                            {{fee}}
+                          </div>
+                        </div>
+                        <div class="col-xs-6 col-xl-6 col-lg-6 col-md-6 col-sm-6">
+                          <i class="fa fa-user prefix text-gris"></i>rental fee
+                        </div>
+
+                      </div>
+                    </div>
                     <!-- Password -->
                     <div class="md-form mt-5">
                       <i class="fa fa-address-book prefix text-gris"></i>

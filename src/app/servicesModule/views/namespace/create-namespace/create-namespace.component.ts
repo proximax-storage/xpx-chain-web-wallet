@@ -3,6 +3,7 @@ import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { WalletService, SharedService } from '../../../../shared';
 import { NemProvider } from '../../../../shared/services/nem.provider';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
+import { rootRoute } from '@angular/router/src/router_module';
 
 @Component({
   selector: 'app-create-namespace',
@@ -12,21 +13,29 @@ import { BlockUI, NgBlockUI } from 'ng-block-ui';
 export class CreateNamespaceComponent implements OnInit {
   @BlockUI() blockUI: NgBlockUI;
   private namespaceForm: FormGroup;
+  private rootNamespace:object;
+  private fee:string;
+  private feeType:string = 'XPX';
   validateNamespace = true;
   constructor(private fb: FormBuilder,
     private walletService: WalletService,
     private nemProvider: NemProvider,
     private sharedService: SharedService,
+   
   ) { }
 
   ngOnInit() {
     this.createForm();
+const fee  = 0.150000;
+this.fee= `${0.150000}   ${this.feeType}`
+   this.rootNamespace = [{ 'value': '', 'label': '.(New root Namespace)' }]
   }
 
   createForm() {
     this.namespaceForm = this.fb.group({
       name: ['', Validators.required],
-      duration: [{ value: '', disabled: this.validateNamespace }, [Validators.required, Validators.minLength(1)]],
+      rootNamespace: ['', Validators.required],
+      // duration: [{ value: '', disabled: this.validateNamespace }, [Validators.required, Validators.minLength(1)]],
       password: [{ value: '', disabled: this.validateNamespace }, [Validators.required, Validators.minLength(8), Validators.maxLength(30)]],
 
     });
@@ -73,15 +82,15 @@ export class CreateNamespaceComponent implements OnInit {
 
   enableInputs() {
     this.validateNamespace = false;
-    this.namespaceForm.get('duration').enable()
+    // this.namespaceForm.get('duration').enable()
     this.namespaceForm.get('password').enable()
 
   }
   disableInputs() {
     this.validateNamespace = true;
-    this.namespaceForm.get('duration').patchValue('')
+    // this.namespaceForm.get('duration').patchValue('')
     this.namespaceForm.get('password').patchValue('')
-    this.namespaceForm.get('duration').disable()
+    // this.namespaceForm.get('duration').disable()
     this.namespaceForm.get('password').disable()
   }
 
@@ -93,9 +102,11 @@ export class CreateNamespaceComponent implements OnInit {
       }
       if (this.walletService.decrypt(common)) {
         const account = this.nemProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.network);
-        const registerNamespaceTransaction = this.nemProvider.registerNamespaceTransaction(this.namespaceForm.get('name').value, this.namespaceForm.get('duration').value, this.walletService.network)
+        const registerNamespaceTransaction = this.nemProvider.registerNamespaceTransaction(this.namespaceForm.get('name').value,this.walletService.network)
         const signedTransaction = account.sign(registerNamespaceTransaction);
-
+        console.log('hast',signedTransaction.hash)
+        console.log('type',signedTransaction.type)
+        console.log('signer',signedTransaction.signer)
         this.nemProvider.announce(signedTransaction).subscribe(
           x => {
             console.log(x)
