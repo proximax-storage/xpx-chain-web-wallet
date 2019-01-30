@@ -3,6 +3,8 @@ import { LoginService } from '../../login/services/login.service';
 import { ProximaxProvider } from '../../shared/services/proximax.provider';
 import { MosaicInfo } from 'proximax-nem2-sdk';
 import { Observable, BehaviorSubject } from 'rxjs';
+import { WalletService } from '../../shared/services/wallet.service';
+import { MosaicService } from '../..//servicesModule/services/mosaic.service';
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +27,9 @@ export class DashboardService {
   ];
   constructor(
     private loginService: LoginService,
-    private proximaxProvider: ProximaxProvider
+    private proximaxProvider: ProximaxProvider,
+    private walletService: WalletService,
+    private mosaicService: MosaicService
   ) { }
 
 
@@ -43,6 +47,8 @@ export class DashboardService {
             this.proximaxProvider.destroyInfoMosaic();
             this.destroySubscription();
             this.subscriptions['isLogged'].unsubscribe();
+            this.walletService.destroyAccountInfo();
+            this.mosaicService.destroyMosaicCache();
             return;
           }
         }

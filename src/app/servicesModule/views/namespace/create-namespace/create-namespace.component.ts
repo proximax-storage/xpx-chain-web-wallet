@@ -17,7 +17,8 @@ export class CreateNamespaceComponent implements OnInit {
   private fee:string;
   private feeType:string = 'XPX';
   validateNamespace = true;
-  constructor(private fb: FormBuilder,
+  constructor(
+    private fb: FormBuilder,
     private walletService: WalletService,
     private nemProvider: NemProvider,
     private sharedService: SharedService,
@@ -46,9 +47,9 @@ this.fee= `${0.150000}   ${this.feeType}`
   }
 
   /**
-   * 
-   * @param param 
-   * @param formControl 
+   *
+   * @param param
+   * @param formControl
    */
   getError(param, formControl?) {
     if (this.namespaceForm.get(param).getError('required')) {
@@ -86,6 +87,7 @@ this.fee= `${0.150000}   ${this.feeType}`
     this.namespaceForm.get('password').enable()
 
   }
+
   disableInputs() {
     this.validateNamespace = true;
     // this.namespaceForm.get('duration').patchValue('')

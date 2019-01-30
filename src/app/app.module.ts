@@ -26,7 +26,6 @@ import { HeaderVerticalComponent } from './header/component/header-vertical/head
     HeaderVerticalComponent
   ],
   imports: [
-
     BrowserModule,
     BrowserAnimationsModule,
     routing,

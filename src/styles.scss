@@ -11,6 +11,10 @@ html:after {
 }
 
 
+.md-form textarea ~ label.active {
+  color: #757575 !important;
+}
+
 /*BACKGROUND AND COLORS*/
 
 .border-bottom-title{
@@ -193,6 +197,10 @@ html:after {
 
 .mt-1rem{
   margin-top: 1rem;
+}
+
+.mt-2rem {
+  margin-top: 2rem;
 }
 
 .mt-3rem {

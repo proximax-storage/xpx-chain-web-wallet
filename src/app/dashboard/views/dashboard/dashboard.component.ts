@@ -26,6 +26,7 @@ export class DashboardComponent implements OnInit {
   unconfirmedSelected = false;
   cantUnconfirmed = 0;
   dataSelected: any;
+  searching = false;
 
   headElements = ['Recipient', 'Amount', 'Mosaic', 'Date'];
   subscriptions = [
@@ -67,17 +68,20 @@ export class DashboardComponent implements OnInit {
    * @memberof DashboardComponent
    */
   getConfirmedTransactions() {
+    this.searching = true;
     this.subscriptions['getTransConfirm'] = this.transactionsService.getConfirmedTransactionsCache$().subscribe(
       async cacheTransactions => {
-        console.log("HAY ALGO EN CACHE?", cacheTransactions);
+        console.log("HAY ALGO EN CACHE DE LAS TRANSACCIONES CONFIRMADAS?", cacheTransactions);
         if (cacheTransactions.length > 0) {
           if (cacheTransactions.length > 10) {
             this.elementsConfirmed = cacheTransactions.slice(0, 10);
             this.cantConfirmed = this.elementsConfirmed.length;
+            this.searching = false;
           } else {
             console.log("IGUALA LAS VARIABLES Y PINTALAS PUES");
             this.cantConfirmed = cacheTransactions.length;
             this.elementsConfirmed = cacheTransactions;
+            this.searching = false;
           }
         } else {
           if (this.dashboardService.isLoadedDashboard == 1) {
@@ -107,20 +111,25 @@ export class DashboardComponent implements OnInit {
     const promise = new Promise(async (resolve, reject) => {
       this.subscriptions['getAllTransactions'] = this.nemProvider.getAllTransactionsFromAccount(this.walletService.publicAccount, this.walletService.network).pipe(first()).subscribe(
         async allTrasactions => {
+          console.log("All transactions", allTrasactions);
           const elementsConfirmed = [];
           if (allTrasactions.length > 0) {
             for (let element of allTrasactions) {
               // Get mosaic information
-              await this.proximaxProvider.getInfoMosaic(element['mosaics'][0].id).then((mosaicInfo: MosaicInfo) => {
-                this.infoMosaic = mosaicInfo;
-                element['amount'] = this.nemProvider.formatterAmount(element['mosaics'][0].amount.compact(), this.infoMosaic.divisibility);
-                elementsConfirmed.push(this.transactionsService.formatTransaction(element));
-              });
-            };
+              if (element['mosaics'] !== undefined) {
+                await this.proximaxProvider.getInfoMosaic(element['mosaics'][0].id).then((mosaicInfo: MosaicInfo) => {
+                  this.infoMosaic = mosaicInfo;
+                  element['amount'] = this.nemProvider.formatterAmount(element['mosaics'][0].amount.compact(), this.infoMosaic.divisibility);
+                  elementsConfirmed.push(this.transactionsService.formatTransaction(element));
+                });
+              };
+            }
             this.transactionsService.setConfirmedTransaction$(elementsConfirmed);
           }
+          this.searching = false;
           resolve(true);
         }, error => {
+          this.searching = false;
           console.error("Has ocurred a error", error);
           reject(false);
         });

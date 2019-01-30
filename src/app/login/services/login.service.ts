@@ -49,8 +49,10 @@ export class LoginService {
    * @memberof LoginService
    */
   login(common: any, wallet: any) {
-    if (!this.walletService.login(common, wallet)) { return false; }
-    // this.subscribeNodeSelected();
+    if (!this.walletService.login(common, wallet)){
+      return false;
+    }
+
     this.transactionsService.destroyAllTransactions();
     this.dataBridgeService.closeConenection();
     this.dataBridgeService.connectnWs();

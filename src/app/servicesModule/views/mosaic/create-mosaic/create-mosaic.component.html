@@ -1,0 +1,120 @@
+<div class="mt-3rem mb-3rem animated fadeIn">
+  <div class="container-fluid">
+    <div class="row ">
+      <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
+        <mdb-card>
+          <mdb-card-header class="background-gold white-text text-align-center py-4">
+            <img src="assets/images/logo/logo-white.png" class="size-img-card-header">
+          </mdb-card-header>
+          <ng-container>
+            <mdb-card-body class="px-lg-5 backg-beige">
+
+              <form [formGroup]="mosaicForm" (ngSubmit)="create()">
+                <div class="row">
+                  <div class="col-12 col-sm-6  col-md-10 col-lg-6 ">
+                    <div class="md-form mt-5">
+                      <i class="fa fa-linode prefix text-gris"></i>
+                      <mdb-select [options]="parentNamespace" required formControlName="parentNamespace" class="colorful-select dropdown-default"
+                        mdbInputDirective data-success="Valid Parent Namespace" [errorMessage]="getError('parentNamespace')"></mdb-select>
+                    </div>
+
+                    <div class="md-form mt-5">
+                      <i class="fa fa-th prefix text-gris"></i>
+                      <input type="text" autocomplete="off" required formControlName="mosaicName" id="mosaicName" class="form-control"
+                        mdbInputDirective data-success="Valid mosaic name" [errorMessage]="getError('mosaicName')">
+                      <label for="walletname">Mosaic name</label>
+                    </div>
+
+                    <div class="md-form mt-5">
+                      <i class="fa fa-th prefix text-gris"></i>
+                      <textarea type="text" autocomplete="off" required formControlName="description" id="description"
+                        class="md-textarea md-textarea-auto form-control" mdbInputDirective data-success="Valid Description"
+                        [errorMessage]="getError('description')" placeholder="1 unit represents 1 field"></textarea>
+                      <label for="walletname">Description</label>
+                    </div>
+
+                    <div class="row mt-5">
+                      <div class="col-12">
+                        <i class="fa fa-th prefix text-gris size-icon"></i>
+                        <label class="separed-label" for="walletname">Sink address</label>
+                      </div>
+                      <div class="col-12">
+                        <div class="alert background-info white-text" role="alert">
+                          VD3XE3-D2FJX7-XJ23HW-63FGUL-4G5Z4T-GQVZZQ-JRWO
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="row mt-5">
+                      <div class="col-12 col-md-6 col-xl-4">
+                        <i class="fa fa-th prefix text-gris size-icon"></i>
+                        <label class="separed-label" for="walletname">Transaction fee</label>
+                      </div>
+                      <div class="col-12 col-md-6 col-xl-8">
+                        <div class="alert background-info white-text" role="alert">
+                          <span>20</span> <span>XPX</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="md-form mt-5">
+                      <i class="fa fa-th prefix text-gris"></i>
+                      <input type="password" autocomplete="off" required formControlName="password" id="password" class="form-control"
+                        mdbInputDirective data-success="Valid password" [errorMessage]="getError('password')">
+                      <label for="walletname">Password</label>
+                    </div>
+                  </div>
+
+                  <div class="col-12 col-sm-6 col-md-10 col-lg-6 ">
+                    <div class="row">
+                      <div class="col-12 col-md-6">
+                        <div class="md-form mt-5">
+                          <i class="fa fa-th prefix text-gris"></i>
+                          <input type="number" autocomplete="off" required formControlName="initialSupply" id="initialSupply"
+                            class="form-control" mdbInputDirective data-success="Valid mosaic name" [errorMessage]="getError('initialSupply')">
+                          <label for="walletname">Initial supply</label>
+                        </div>
+
+                        <div class="md-form mt-5">
+                          <i class="fa fa-th prefix text-gris"></i>
+                          <input type="number" autocomplete="off" required formControlName="divisibility" id="divisibility"
+                            class="form-control" mdbInputDirective data-success="Valid mosaic name" [errorMessage]="getError('divisibility')">
+                          <label for="walletname">Divisibility</label>
+                        </div>
+                      </div>
+
+                      <div class="col-12 col-md-6">
+                        <div class="mt-5">
+                          <mdb-checkbox formControlName="transferable">Transferable</mdb-checkbox>
+                        </div>
+                        <div class="mt-3">
+                          <mdb-checkbox formControlName="supplyMutable">Supply Mutable</mdb-checkbox>
+                        </div>
+                        <div class="mt-3">
+                          <mdb-checkbox formControlName="levyMutable">Levy Mutable</mdb-checkbox>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mt-4rm align-self-center">
+                  <div class="row ">
+                    <div class="mx-auto">
+                      <div class="row">
+                        <div class="col-12">
+                          <button mdbBtn color="default" size="lg" rounded="true" class="waves-light" mdbWavesEffect
+                            type="submit">Create</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </mdb-card-body>
+          </ng-container>
+        </mdb-card>
+      </div>
+    </div>
+  </div>
+</div>

@@ -27,7 +27,6 @@ export class LoginComponent implements OnInit {
    */
   ngOnInit() {
     let walletLocal = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
-    console.log(walletLocal);
     this.wallets = this._loginService.walletsOption(walletLocal);
     this.createForm();
   }
