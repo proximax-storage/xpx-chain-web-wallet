@@ -1,10 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { AccountInfo, QueryParams } from 'proximax-nem2-sdk';
+import { ActivatedRoute, Router } from '@angular/router';
+import { first } from 'rxjs/operators';
+import { AccountInfo, QueryParams, NamespaceName } from 'proximax-nem2-sdk';
 import { NemProvider } from '../../../../shared/services/nem.provider';
 import { WalletService } from '../../../../shared/services/wallet.service';
 import { MosaicService } from '../../../services/mosaic.service';
+import { SharedService } from '../../../../shared/services/shared.service';
+import { AppConfig } from '../../../../config/app.config';
 
 @Component({
   selector: 'app-create-mosaic',
@@ -14,33 +17,92 @@ import { MosaicService } from '../../../services/mosaic.service';
 export class CreateMosaicComponent implements OnInit {
 
   isOwner = false;
-  parentNamespace = [
-    {
-      value : '1',
-      label: 'Select parent namespace',
-      selected: true,
-      disabled: true
-    },
-    {
-      value : 'NADA',
-      label: 'TEST NET'
-    }
-  ];
+  parentNamespace: any = [];
   mosaicForm: FormGroup;
 
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
+    private router: Router,
     private nemProvider: NemProvider,
     private walletService: WalletService,
-    private mosaicService: MosaicService
-  ) { }
+    private mosaicService: MosaicService,
+    private sharedService: SharedService
+  ) {
+
+
+  }
 
   ngOnInit() {
     this.createForm();
-    console.log(this.route.snapshot.data['dataNamespace']);
+    this.getNamespaceName();
   }
 
+  /**
+   * Get namespace
+   *
+   * @memberof CreateMosaicComponent
+   */
+  getNamespaceName() {
+    const arraySelect: any = [{
+      value: '1',
+      label: 'Select parent namespace2',
+      selected: true,
+      disabled: true
+    }];
+
+    for (let h of this.route.snapshot.data['dataNamespace']) {
+      this.nemProvider.namespaceHttp.getNamespacesName(h.levels).pipe(first()).subscribe(
+        (namespaceName: any) => {
+          for (let n of namespaceName) {
+            arraySelect.push({
+              value: n.name,
+              label: n.name
+            });
+          }
+        }, (error: any) => {
+          console.error("Has ocurred a error", error);
+          this.router.navigate([AppConfig.routes.home]);
+          this.sharedService.showError('', error);
+        });
+    }
+    this.parentNamespace = arraySelect;
+    console.log(this.parentNamespace);
+  }
+
+  async getNamespaceNamePromise() {
+    const arraySelect: any = [{
+      value: '1',
+      label: 'Select parent namespace2',
+      selected: true,
+      disabled: true
+    }];
+
+    const promise = new Promise(async (resolve, reject) => {
+      for (let h of this.route.snapshot.data['dataNamespace']) {
+        this.nemProvider.namespaceHttp.getNamespacesName(h.levels).pipe(first()).subscribe(
+          async (namespaceName: any) => {
+            for (let n of namespaceName) {
+              arraySelect.push({
+                value: n.name,
+                label: n.name
+              });
+            }
+          }, (error: any) => {
+            console.error("Has ocurred a error", error);
+            this.router.navigate([AppConfig.routes.home]);
+            this.sharedService.showError('', error);
+            reject(false);
+          });
+      }
+
+      this.parentNamespace = arraySelect;
+      console.log(arraySelect);
+      resolve(true);
+    });
+
+    return await promise;
+  }
 
   createForm() {
     this.mosaicForm = this.fb.group({
