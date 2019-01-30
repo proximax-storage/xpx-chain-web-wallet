@@ -35,7 +35,8 @@ this.fee= `${fee}   ${this.feeType}`
   createForm() {
     this.namespaceForm = this.fb.group({
       name: ['', Validators.required],
-      rootNamespace: ['', Validators.required],
+      // rootNamespace: ['', Validators.required],
+      rootNamespace: [''],
       // duration: [{ value: '', disabled: this.validateNamespace }, [Validators.required, Validators.minLength(1)]],
       password: [{ value: '', disabled: this.validateNamespace }, [Validators.required, Validators.minLength(8), Validators.maxLength(30)]],
 
