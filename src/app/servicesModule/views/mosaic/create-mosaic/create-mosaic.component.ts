@@ -35,7 +35,8 @@ export class CreateMosaicComponent implements OnInit {
 
   ngOnInit() {
     this.createForm();
-    this.getNamespaceName();
+    this.parentNamespace = this.getNamespaceName();
+    console.log('valor', this.parentNamespace)
   }
 
   /**
@@ -44,30 +45,33 @@ export class CreateMosaicComponent implements OnInit {
    * @memberof CreateMosaicComponent
    */
   getNamespaceName() {
-    const arraySelect: any = [{
-      value: '1',
-      label: 'Select parent namespace2',
-      selected: true,
-      disabled: true
-    }];
-
     for (let h of this.route.snapshot.data['dataNamespace']) {
       this.nemProvider.namespaceHttp.getNamespacesName(h.levels).pipe(first()).subscribe(
         (namespaceName: any) => {
-          for (let n of namespaceName) {
-            arraySelect.push({
-              value: n.name,
-              label: n.name
-            });
-          }
+          this.namespaceNameSelect(namespaceName).then(resp => {
+            this.parentNamespace = resp
+          });
         }, (error: any) => {
           console.error("Has ocurred a error", error);
           this.router.navigate([AppConfig.routes.home]);
           this.sharedService.showError('', error);
         });
     }
-    this.parentNamespace = arraySelect;
-    console.log(this.parentNamespace);
+  }
+
+  namespaceNameSelect(value: Array<any> = []): Promise<any> {
+    value = (value == null) ? [] : value
+    const retorno = [{
+      value: '1',
+      label: 'Select parent namespace2',
+      selected: true,
+      disabled: true
+    }];
+    value.forEach((item, index) => {
+      retorno.push({ value: item.name, label: item.name , selected: false,
+        disabled: false});
+    });
+    return Promise.resolve(retorno);
   }
 
   async getNamespaceNamePromise() {
