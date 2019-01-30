@@ -116,13 +116,15 @@ export class DashboardComponent implements OnInit {
           if (allTrasactions.length > 0) {
             for (let element of allTrasactions) {
               // Get mosaic information
-              await this.proximaxProvider.getInfoMosaic(element['mosaics'][0].id).then((mosaicInfo: MosaicInfo) => {
-                this.infoMosaic = mosaicInfo;
-                element['amount'] = this.nemProvider.formatterAmount(element['mosaics'][0].amount.compact(), this.infoMosaic.divisibility);
-                elementsConfirmed.push(this.transactionsService.formatTransaction(element));
-              });
-            };
-            this.transactionsService.setConfirmedTransaction$(elementsConfirmed);
+              if (element['mosaics'] !== undefined && element['mosaics'].length > 0) {
+                await this.proximaxProvider.getInfoMosaic(element['mosaics'][0].id).then((mosaicInfo: MosaicInfo) => {
+                  this.infoMosaic = mosaicInfo;
+                  element['amount'] = this.nemProvider.formatterAmount(element['mosaics'][0].amount.compact(), this.infoMosaic.divisibility);
+                  elementsConfirmed.push(this.transactionsService.formatTransaction(element));
+                });
+              };
+              this.transactionsService.setConfirmedTransaction$(elementsConfirmed);
+            }
           }
           this.searching = false;
           resolve(true);

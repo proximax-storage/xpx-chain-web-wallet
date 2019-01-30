@@ -1,0 +1,91 @@
+<div class="mt-3rem mb-3rem animated fadeIn">
+  <div class="container-fluid">
+    <div class="row ">
+      <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
+        <mdb-card>
+          <mdb-card-header class="background-gold white-text text-align-center py-4">
+            <img src="assets/images/logo/logo-white.png" class="size-img-card-header">
+          </mdb-card-header>
+          <ng-container>
+            <mdb-card-body class="px-lg-5 backg-beige">
+
+              <form [formGroup]="namespaceForm" (ngSubmit)="create()">
+                <div class="row">
+                  <div class="col-xs-12 col-sm-6  col-md-10 col-lg-6 ">
+
+
+                    <div class="md-form mt-5">
+                      <div class="row">
+                        <div class="col-xs-9 col-xl-9 col-lg-9 col-md-9 col-sm-9">
+                          <i class="fa fa-address-book prefix text-gris"></i>
+                          <input type="text" autocomplete="off" formControlName="name" required id="name" class="form-control"
+                            mdbInputDirective mdbInputDirective data-success="Valid name" [errorMessage]="getError('name')">
+                          <label style="margin-left: 3.5rem;" for="name">name</label>
+                        </div>
+                        <div style="margin-top: 0.4rem !important;" class="col-xs-3 col-xl-3 col-lg-3 col-md-3 col-sm-3 ">
+                          <button mdbBtn size="sm" type="button" color="default" rounded="true" class="waves-light"
+                            mdbWavesEffect (click)="getNamespace()">Search</button>
+                        </div>
+                        <div style="margin-left: 51px; margin-top: 0.3rem !important;" class="alert background-info white-text" role="alert">
+                          Check your namespace with the search action
+                        </div>
+                      </div>
+                    </div>
+                    <div class="md-form mt-5">
+                      <i class="fa fa-address-book prefix text-gris"></i>
+                      <input formControlName="duration" mdbInputDirective type="number" required name="duration" id="duration"
+                        class="form-control" data-success="Valid duration" [errorMessage]="getError('duration')">
+                      <label for="duration" class="">Duration</label>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="md-form mt-5">
+                      <i class="fa fa-address-book prefix text-gris"></i>
+                      <input type="password" autocomplete="off" formControlName="password" required id="password" class="form-control"
+                        mdbInputDirective data-success="Valid password" [errorMessage]="getError('password')">
+                      <label for="password">password</label>
+                    </div>
+                  </div>
+
+                  <div class="col-xs-12 col-sm-6  col-md-10 col-lg-6 ">
+                    <p class="text-justify">Namespaces have certain restrictions with respect to the characters being
+                      allowed in the parts as well as the length of a part. A root namespace may have a length of 16
+                      characters while sub-namespaces may have a length of 64 characters. Valid characters are:</p>
+                    <div class="alert background-info white-text" role="alert">
+                      a, b, c, ..., z, 0, 1, 2, ..., 9, _ , -
+                    </div>
+                    <p class="text-justify">However a part is only allowed to begin with a letter of the alphabet or a
+                      number, thus 'alice' is an allowed part for a root namespace while '_alice' is not. Certain
+                      strings are reserved and thus not allowed as namespace parts. Among the disallowed namespace
+                      parts are:</p>
+                    <div class="alert background-info white-text" role="alert">
+                      nem, user, account, org, com, biz, net, edu, mil, gov and info.
+                    </div>
+                    <p class="text-justify">This list is not final and can be extended in the future. Thus 'user.alice'
+                      or 'alice.user' are not allowed in the NEM namespace system. The namespace may have up to 3
+                      parts, thus 'qm.metals.silver' is valid while 'qm.metals.silver.coin' is not.</p>
+                  </div>
+
+                </div>
+
+                <div class="mt-4rm align-self-center">
+                  <div class="row ">
+                    <div class="mx-auto">
+                      <div class="row">
+                        <div class="col-xs-12">
+                          <button mdbBtn color="default" size="lg" rounded="true" class="waves-light" mdbWavesEffect
+                            type="submit">Create</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </form>
+            </mdb-card-body>
+          </ng-container>
+        </mdb-card>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,4 @@
+{
+  "tslint.configFile": "./path/to/tslint/relative/from/workspaceroot/tslint.json",
+  "tslint.enable": true
+}

@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { MosaicId, AccountInfo } from 'proximax-nem2-sdk';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { AccountInfo, QueryParams } from 'proximax-nem2-sdk';
 import { NemProvider } from '../../../../shared/services/nem.provider';
 import { WalletService } from '../../../../shared/services/wallet.service';
 import { MosaicService } from '../../../services/mosaic.service';
@@ -12,15 +14,32 @@ import { MosaicService } from '../../../services/mosaic.service';
 export class CreateMosaicComponent implements OnInit {
 
   isOwner = false;
+  parentNamespace = [
+    {
+      value : '1',
+      label: 'Select parent namespace',
+      selected: true,
+      disabled: true
+    },
+    {
+      value : 'NADA',
+      label: 'TEST NET'
+    }
+  ];
+  mosaicForm: FormGroup;
 
   constructor(
+    private fb: FormBuilder,
+    private route: ActivatedRoute,
     private nemProvider: NemProvider,
     private walletService: WalletService,
     private mosaicService: MosaicService
   ) { }
 
   ngOnInit() {
-    this.accountInfo();
+    // this.accountInfo();
+    this.createForm();
+    console.log(this.route.snapshot.data['dataNamespace']);
   }
 
   /**
@@ -29,6 +48,29 @@ export class CreateMosaicComponent implements OnInit {
    * @memberof CreateMosaicComponent
    */
   accountInfo() {
+    const accountInfo = this.walletService.getAccountInfo();
+    if (accountInfo === undefined) {
+      this.nemProvider.accountHttp.getAccountInfo(this.walletService.address).subscribe(
+        accountInfo => {
+          console.log("AccountInfo desde cero", accountInfo);
+          this.walletService.setAccountInfo(accountInfo);
+        }, error => {
+          console.log("Error", error);
+        }
+      );
+    } else {
+      console.log("AccountInfo en cache", accountInfo);
+      this.searchMosaics(accountInfo);
+    }
+  }
+
+
+  /**
+   *
+   *
+   * @memberof CreateMosaicComponent
+   */
+  accountInfo2() {
     const accountInfo = this.walletService.getAccountInfo();
     if (accountInfo === undefined) {
       this.nemProvider.accountHttp.getAccountInfo(this.walletService.address).subscribe(
@@ -44,6 +86,28 @@ export class CreateMosaicComponent implements OnInit {
       console.log("AccountInfo en cache", accountInfo);
       this.searchMosaics(accountInfo);
     }
+  }
+
+  createForm() {
+    this.mosaicForm = this.fb.group({
+      parentNamespace: ['1', Validators.required],
+      mosaicName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(30)]],
+      description: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(30)]],
+      password: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(30)]],
+      initialSupply: [0, [Validators.required, Validators.minLength(2), Validators.maxLength(30)]],
+      divisibility: [0, [Validators.required, Validators.minLength(2), Validators.maxLength(30)]],
+      transferable: [false],
+      supplyMutable: [false],
+      levyMutable: [false]
+    });
+  }
+
+  create() {
+
+  }
+
+  getError(field) {
+
   }
 
   /**

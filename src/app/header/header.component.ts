@@ -415,9 +415,12 @@ export class HeaderComponent implements OnInit {
     this.isLogged$ = this._loginService.getIsLogged();
     this.isLogged$.subscribe(
       async response => {
+        console.log(response);
         this.showOnlyLogged = response;
         if (this.showOnlyLogged) {
           await this.getBalance();
+        }else {
+          this.horizontalHeader.amount.name = ''
         }
       }
     );

@@ -24,7 +24,9 @@ export const AppConfig: Config = {
     notFound: 'not-found',
     storage: 'storage',
     createMosaic: 'create-mosaic',
-    editMosaic: 'edit-mosaic'
+    editMosaic: 'edit-mosaic',
+    createNamespace:'create-namespace',
+    editNamespace:'edit-namespace'
   }
 };
 
@@ -51,7 +53,9 @@ export const NameRoute = {
   [AppConfig.routes.notFound]: '404 not found',
   [AppConfig.routes.storage]: 'storage',
   [AppConfig.routes.createMosaic]: 'Create Mosaic',
-  [AppConfig.routes.editMosaic]: 'Edit Mosaic'
+  [AppConfig.routes.editMosaic]: 'Edit Mosaic',
+  [AppConfig.routes.createNamespace]: 'Create namespace & sub-namespace',
+  [AppConfig.routes.editNamespace]: 'Edit Namespace'
 }
 
 export interface Config {
@@ -77,6 +81,8 @@ export interface Config {
     addressBook: string;
     createMosaic: string;
     editMosaic: string;
+    createNamespace: string;
+    editNamespace: string;
     notFound: string;
     storage:string;
   };

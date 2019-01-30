@@ -7,7 +7,7 @@ import { environment } from '../../../environments/environment';
 import { NemProvider } from './nem.provider';
 import { ProximaxProvider } from './proximax.provider';
 import { NodeService } from '../../servicesModule/services/node.service';
-
+import { SharedService } from './shared.service';
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +21,8 @@ export class DataBridgeService {
     private transactionsService: TransactionsService,
     private nemProvider: NemProvider,
     private proximaxProvider: ProximaxProvider,
-    private nodeService: NodeService
+    private nodeService: NodeService,
+    private sharedService: SharedService,
   ) { }
 
 
@@ -158,9 +159,11 @@ export class DataBridgeService {
    */
   getStatusSocket(connector: Listener, audio: HTMLAudioElement) {
     console.log("Estableciendo conexión con status");
-    connector.status(this.walletService.address).subscribe(status => {
-      console.log("Status::::: ", status);
+    connector.status(this.walletService.address).subscribe(res => {
+      console.log("Status::::: ", res);
+      this.sharedService.showWarning('Warning',res.status)
     }, err => {
+      this.sharedService.showError('Error', err);
       console.error("err::::::", err)
     });
   }

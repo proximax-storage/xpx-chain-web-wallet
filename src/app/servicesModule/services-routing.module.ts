@@ -17,6 +17,10 @@ import { StorageComponent } from './views/storage/storage.component';
 import { CreateMosaicComponent } from './views/mosaic/create-mosaic/create-mosaic.component';
 import { EditMosaicComponent } from './views/mosaic/edit-mosaic/edit-mosaic.component';
 
+import { CreateNamespaceComponent } from './views/namespace/create-namespace/create-namespace.component';
+import { EditNamespaceComponent } from './views/namespace/edit-namespace/edit-namespace.component';
+
+import { CreateMosaicResolver } from './views/mosaic/resolvers/creat-mosaic.resolver';
 
 
 const routes: Routes = [
@@ -76,11 +80,22 @@ const routes: Routes = [
   {
     path: `${AppConfig.routes.createMosaic}`,
     component: CreateMosaicComponent,
-    canActivate: [LoggedGuard]
+    canActivate: [LoggedGuard],
+    resolve: { dataNamespace: CreateMosaicResolver }
   },
   {
     path: `${AppConfig.routes.editMosaic}`,
     component: EditMosaicComponent,
+    canActivate: [LoggedGuard]
+  },
+  {
+    path: `${AppConfig.routes.createNamespace}`,
+    component: CreateNamespaceComponent,
+    canActivate: [LoggedGuard]
+  },
+  {
+    path: `${AppConfig.routes.editNamespace}`,
+    component: EditNamespaceComponent,
     canActivate: [LoggedGuard]
   }
 ];
@@ -88,8 +103,8 @@ const routes: Routes = [
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
-  declarations: [
-
+  providers: [
+    CreateMosaicResolver
   ]
 })
 export class ServicesRoutingModule { }
