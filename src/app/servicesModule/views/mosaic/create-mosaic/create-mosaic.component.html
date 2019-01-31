@@ -9,7 +9,7 @@
           <ng-container>
             <mdb-card-body class="px-lg-5 backg-beige">
 
-              <form [formGroup]="mosaicForm" (ngSubmit)="create()">
+              <form [formGroup]="mosaicForm" (ngSubmit)="send()">
                 <div class="row">
                   <div class="col-12 col-sm-6  col-md-10 col-lg-6 ">
                     <div class="md-form mt-5">
@@ -25,15 +25,15 @@
                       <label for="walletname">Mosaic name</label>
                     </div>
 
-                    <div class="md-form mt-5">
+                    <!-- <div class="md-form mt-5">
                       <i class="fa fa-th prefix text-gris"></i>
                       <textarea type="text" autocomplete="off" required formControlName="description" id="description"
                         class="md-textarea md-textarea-auto form-control" mdbInputDirective data-success="Valid Description"
                         [errorMessage]="getError('description')" placeholder="1 unit represents 1 field"></textarea>
                       <label for="walletname">Description</label>
-                    </div>
+                    </div> -->
 
-                    <div class="row mt-5">
+                    <!-- <div class="row mt-5">
                       <div class="col-12">
                         <i class="fa fa-th prefix text-gris size-icon"></i>
                         <label class="separed-label" for="walletname">Sink address</label>
@@ -43,9 +43,9 @@
                           VD3XE3-D2FJX7-XJ23HW-63FGUL-4G5Z4T-GQVZZQ-JRWO
                         </div>
                       </div>
-                    </div>
+                    </div> -->
 
-                    <div class="row mt-5">
+                    <!-- <div class="row mt-5">
                       <div class="col-12 col-md-6 col-xl-4">
                         <i class="fa fa-th prefix text-gris size-icon"></i>
                         <label class="separed-label" for="walletname">Transaction fee</label>
@@ -55,7 +55,7 @@
                           <span>20</span> <span>XPX</span>
                         </div>
                       </div>
-                    </div>
+                    </div> -->
 
                     <div class="md-form mt-5">
                       <i class="fa fa-th prefix text-gris"></i>
@@ -70,9 +70,9 @@
                       <div class="col-12 col-md-6">
                         <div class="md-form mt-5">
                           <i class="fa fa-th prefix text-gris"></i>
-                          <input type="number" autocomplete="off" required formControlName="initialSupply" id="initialSupply"
-                            class="form-control" mdbInputDirective data-success="Valid mosaic name" [errorMessage]="getError('initialSupply')">
-                          <label for="walletname">Initial supply</label>
+                          <input type="number" autocomplete="off" required formControlName="duration" id="duration"
+                            class="form-control" mdbInputDirective data-success="Valid mosaic name" [errorMessage]="getError('duration')">
+                          <label for="walletname">Duration</label>
                         </div>
 
                         <div class="md-form mt-5">
