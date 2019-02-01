@@ -138,12 +138,15 @@ export class CreateMosaicComponent implements OnInit {
             console.log(x)
             this.blockUI.stop(); // Stop blocking
             this.mosaicForm.reset();
+            this.mosaicForm.patchValue({ parentNamespace: '1' });
+            this.mosaicForm.patchValue({ duration: 1000 });
+            this.mosaicForm.patchValue({ divisibility: 0 });
             this.sharedService.showSuccess('Success', 'Create mosaic sent')
           },
           err => {
             console.error(err)
             this.blockUI.stop(); // Stop blocking
-            this.mosaicForm.setValue({parentNamespace: '1'});
+            this.mosaicForm.patchValue({ parentNamespace: '1' });
             this.sharedService.showError('', err);
           });
       }
