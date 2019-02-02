@@ -26,7 +26,11 @@ export const AppConfig: Config = {
     createMosaic: 'create-mosaic',
     editMosaic: 'edit-mosaic',
     createNamespace:'create-namespace',
-    editNamespace:'edit-namespace'
+    editNamespace:'edit-namespace',
+
+    createMultisignature: 'create-multisignature-contract',
+    editMultisignatureContract:'edit-multisignature-contract',
+    signMultiSigTransactions:'sign-multisignature-transactions'
   }
 };
 
@@ -55,7 +59,11 @@ export const NameRoute = {
   [AppConfig.routes.createMosaic]: 'Create Mosaic',
   [AppConfig.routes.editMosaic]: 'Edit Mosaic',
   [AppConfig.routes.createNamespace]: 'Create namespace & sub-namespace',
-  [AppConfig.routes.editNamespace]: 'Edit Namespace'
+  [AppConfig.routes.editNamespace]: 'Edit Namespace',
+  [AppConfig.routes.createMultisignature]: 'Convert an account to multisig',
+  [AppConfig.routes.editMultisignatureContract]: 'Edit multisignature contract',
+  [AppConfig.routes.signMultiSigTransactions]: 'Sign multisignature transactions',
+  
 }
 
 export interface Config {
@@ -83,7 +91,17 @@ export interface Config {
     editMosaic: string;
     createNamespace: string;
     editNamespace: string;
+
+    createMultisignature: string;
+    editMultisignatureContract: string;
+    signMultiSigTransactions:string;
+
+
+
     notFound: string;
     storage:string;
+
+
+    
   };
 }
