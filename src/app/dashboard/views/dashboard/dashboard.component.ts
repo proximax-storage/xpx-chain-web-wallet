@@ -2,8 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import {
   MosaicInfo
 } from 'proximax-nem2-sdk';
-import { Observable } from "rxjs";
-import { LoginService } from "../../../login/services/login.service";
 import { DashboardService } from '../../services/dashboard.service';
 import { TransactionsService } from '../../../transactions/service/transactions.service';
 import { WalletService } from 'src/app/shared';
@@ -18,6 +16,7 @@ import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
 })
 export class DashboardComponent implements OnInit {
 
+  count = 0;
   cantConfirmed = 0;
   elementsConfirmed: any = [];
 
@@ -108,31 +107,39 @@ export class DashboardComponent implements OnInit {
   * @memberof DashboardComponent
   */
   async getAllTransactions() {
+    this.count++;
+
+
     const promise = new Promise(async (resolve, reject) => {
-      this.subscriptions['getAllTransactions'] = this.nemProvider.getAllTransactionsFromAccount(this.walletService.publicAccount, this.walletService.network).pipe(first()).subscribe(
-        async allTrasactions => {
-          console.log("All transactions", allTrasactions);
-          const elementsConfirmed = [];
-          if (allTrasactions.length > 0) {
-            for (let element of allTrasactions) {
-              // Get mosaic information
-              if (element['mosaics'] !== undefined) {
-                await this.proximaxProvider.getInfoMosaic(element['mosaics'][0].id).then((mosaicInfo: MosaicInfo) => {
-                  this.infoMosaic = mosaicInfo;
-                  element['amount'] = this.nemProvider.formatterAmount(element['mosaics'][0].amount.compact(), this.infoMosaic.divisibility);
-                  elementsConfirmed.push(this.transactionsService.formatTransaction(element));
-                });
-              };
+      if (this.count < 5) {
+        this.subscriptions['getAllTransactions'] = this.nemProvider.getAllTransactionsFromAccount(this.walletService.publicAccount, this.walletService.network).pipe(first()).subscribe(
+          async allTrasactions => {
+            console.log("All transactions", allTrasactions);
+            const elementsConfirmed = [];
+            if (allTrasactions.length > 0) {
+              for (let element of allTrasactions) {
+                // Get mosaic information
+                if (element['mosaics'] !== undefined) {
+                  await this.proximaxProvider.getInfoMosaic(element['mosaics'][0].id).then((mosaicInfo: MosaicInfo) => {
+                    this.infoMosaic = mosaicInfo;
+                    element['amount'] = this.nemProvider.formatterAmount(element['mosaics'][0].amount.compact(), this.infoMosaic.divisibility);
+                    elementsConfirmed.push(this.transactionsService.formatTransaction(element));
+                  });
+                };
+              }
+              this.transactionsService.setConfirmedTransaction$(elementsConfirmed);
             }
-            this.transactionsService.setConfirmedTransaction$(elementsConfirmed);
-          }
-          this.searching = false;
-          resolve(true);
-        }, error => {
-          this.searching = false;
-          console.error("Has ocurred a error", error);
-          reject(false);
-        });
+            this.searching = false;
+            resolve(true);
+          }, error => {
+            this.searching = false;
+            console.error("Has ocurred a error", error);
+            reject(false);
+          });
+      }else {
+        resolve(false);
+      }
+
     });
     return await promise;
   }
