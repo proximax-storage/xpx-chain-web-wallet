@@ -16,13 +16,14 @@ import { AddressBookComponent } from "./views/address-book/address-book.componen
 import { StorageComponent } from './views/storage/storage.component';
 import { CreateMosaicComponent } from './views/mosaic/create-mosaic/create-mosaic.component';
 import { EditMosaicComponent } from './views/mosaic/edit-mosaic/edit-mosaic.component';
-
 import { CreateNamespaceComponent } from './views/namespace/create-namespace/create-namespace.component';
 import { EditNamespaceComponent } from './views/namespace/edit-namespace/edit-namespace.component';
-
-
 import { CreateMosaicResolver } from './views/mosaic/resolvers/creat-mosaic.resolver';
 import { CreateNamespaceResolver } from './views/namespace/resolvers/creat-namespace.resolver';
+import { CreateMultisignatureComponent } from './views/multisignature/create-multisignature/create-multisignature.component';
+import { EditMultisignatureContractComponent } from './views/multisignature/edit-multisignature-contract/edit-multisignature-contract.component';
+import { SignMultisigTransactionsComponent } from './views/multisignature/sign-multisig-transactions/sign-multisig-transactions.component';
+
 
 
 const routes: Routes = [
@@ -99,6 +100,23 @@ const routes: Routes = [
   {
     path: `${AppConfig.routes.editNamespace}`,
     component: EditNamespaceComponent,
+    canActivate: [LoggedGuard]
+  },
+
+
+  {
+    path: `${AppConfig.routes.createMultisignature}`,
+    component: CreateMultisignatureComponent,
+    canActivate: [LoggedGuard]
+  },
+  {
+    path: `${AppConfig.routes.editMultisignatureContract}`,
+    component: EditMultisignatureContractComponent,
+    canActivate: [LoggedGuard]
+  },
+  {
+    path: `${AppConfig.routes.signMultiSigTransactions}`,
+    component: SignMultisigTransactionsComponent,
     canActivate: [LoggedGuard]
   }
 ];

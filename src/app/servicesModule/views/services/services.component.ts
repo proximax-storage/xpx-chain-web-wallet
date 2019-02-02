@@ -23,9 +23,9 @@ export class ServicesComponent implements OnInit {
       'Multisignature and Multi-User Accounts',
       'Mutisig accounts are editable on-chain contracts, the most powerful way to secure funds, enable join accounts, and are the foundation of DAOs.',
       {
-        convertAccountToMultisig: this.structureServiceRoute('Convert an account to multisig', ''),
-        editAnExistingContract: this.structureServiceRoute('Edit an existing contract', ''),
-        signMultisigTransactions: this.structureServiceRoute('Sign multisig transactions', ''),
+        convertAccountToMultisig: this.structureServiceRoute('Convert an account to multisig', `/${AppConfig.routes.createMultisignature}`),
+        editAnExistingContract: this.structureServiceRoute('Edit an existing contract', `/${AppConfig.routes.editMultisignatureContract}`),
+        signMultisigTransactions: this.structureServiceRoute('Sign multisig transactions',  `/${AppConfig.routes.signMultiSigTransactions}`),
       }, true
     );
 
