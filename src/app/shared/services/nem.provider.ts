@@ -29,7 +29,9 @@ import {
   MosaicInfo,
   NamespaceId,
   NamespaceInfo,
-  RegisterNamespaceTransaction
+  RegisterNamespaceTransaction,
+  MosaicDefinitionTransaction,
+  MosaicProperties
 } from 'proximax-nem2-sdk';
 
 import { crypto } from 'proximax-nem2-library';
@@ -185,7 +187,7 @@ export class NemProvider {
    * @param encryptedKey
    * @param iv
    */
-  decryptPrivateKey(password: Password, encryptedKey: string, iv): string {
+  decryptPrivateKey(password: Password, encryptedKey: string, iv: string): string {
     const common: commonInterface = {
       password: password.value,
       privateKey: ''
@@ -280,7 +282,7 @@ export class NemProvider {
    * @returns {Observable<Transaction[]>}
    * @memberof NemProvider
    */
-  getUnconfirmedTransactionsFromAnAccount(publicAccount, queryParams?): Observable<Transaction[]> {
+  getUnconfirmedTransactionsFromAnAccount(publicAccount: PublicAccount, queryParams?: QueryParams): Observable<Transaction[]> {
     return this.accountHttp.unconfirmedTransactions(publicAccount, queryParams);
   }
 
@@ -339,7 +341,9 @@ export class NemProvider {
   }
   
   registerRootNamespaceTransaction(name:string,network:NetworkType,duration:number=100):RegisterNamespaceTransaction{
+
     // Crear namespace transaction
+    console.log('duration;', duration)
     return RegisterNamespaceTransaction.createRootNamespace(
       Deadline.create(23),
       name,
@@ -356,5 +360,32 @@ export class NemProvider {
       rootNamespace,
       network);
 
+  }
+  /**
+   *
+   *
+   * @param {string} mosaicName
+   * @param {string} rootnamespaceName
+   * @param {boolean} supplyMutable
+   * @param {boolean} transferable
+   * @param {boolean} levyMutable
+   * @param {number} divisibility
+   * @param {number} duration
+   * @returns
+   * @memberof NemProvider
+   */
+  buildRegisterMosaicTransaction(mosaicName: string, rootnamespaceName: string, supplyMutable: boolean, transferable: boolean, levyMutable: boolean, divisibility: number, duration: number, network: NetworkType) {
+    return MosaicDefinitionTransaction.create(
+      Deadline.create(),
+      mosaicName,
+      rootnamespaceName,
+      MosaicProperties.create({
+        supplyMutable: supplyMutable,
+        transferable: transferable,
+        levyMutable: levyMutable,
+        divisibility: divisibility,
+        duration: UInt64.fromUint(duration)
+      }),
+      network);
   }
 }
