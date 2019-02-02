@@ -338,13 +338,22 @@ export class NemProvider {
     return this.namespaceHttp.getNamespace(new NamespaceId(namespace))
   }
   
-  registerNamespaceTransaction(name:string,network:NetworkType,duration:number=10,) {
+  registerRootNamespaceTransaction(name:string,network:NetworkType,duration:number=100):RegisterNamespaceTransaction{
     // Crear namespace transaction
-    console.log('duration;',duration)
     return RegisterNamespaceTransaction.createRootNamespace(
       Deadline.create(23),
       name,
       UInt64.fromUint(duration),
+      network);
+
+  }
+
+  registersubNamespaceTransaction(rootNamespace:string, subnamespaceName:string,network:NetworkType):RegisterNamespaceTransaction {
+    // Crear namespace transaction
+    return  RegisterNamespaceTransaction.createSubNamespace(
+      Deadline.create(23),
+      subnamespaceName,
+      rootNamespace,
       network);
 
   }

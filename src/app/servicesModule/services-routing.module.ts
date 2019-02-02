@@ -20,7 +20,9 @@ import { EditMosaicComponent } from './views/mosaic/edit-mosaic/edit-mosaic.comp
 import { CreateNamespaceComponent } from './views/namespace/create-namespace/create-namespace.component';
 import { EditNamespaceComponent } from './views/namespace/edit-namespace/edit-namespace.component';
 
+
 import { CreateMosaicResolver } from './views/mosaic/resolvers/creat-mosaic.resolver';
+import { CreateNamespaceResolver } from './views/namespace/resolvers/creat-namespace.resolver';
 
 
 const routes: Routes = [
@@ -91,7 +93,8 @@ const routes: Routes = [
   {
     path: `${AppConfig.routes.createNamespace}`,
     component: CreateNamespaceComponent,
-    canActivate: [LoggedGuard]
+    canActivate: [LoggedGuard],
+    resolve: { dataNamespace: CreateNamespaceResolver }
   },
   {
     path: `${AppConfig.routes.editNamespace}`,
@@ -104,7 +107,8 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
   providers: [
-    CreateMosaicResolver
+    CreateMosaicResolver,
+    CreateNamespaceResolver
   ]
 })
 export class ServicesRoutingModule { }
