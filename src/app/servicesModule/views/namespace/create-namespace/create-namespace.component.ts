@@ -6,7 +6,6 @@ import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs/operators';
 import { AppConfig } from '../../../../config/app.config';
-import { element } from '@angular/core/src/render3';
 
 @Component({
   selector: 'app-create-namespace',
@@ -16,10 +15,20 @@ import { element } from '@angular/core/src/render3';
 export class CreateNamespaceComponent implements OnInit {
   @BlockUI() blockUI: NgBlockUI;
   private namespaceForm: FormGroup;
-  private namespace: object;
+  private namespace: Array<object> = [{
+    value: '1',
+    label: '.(New root Namespace)',
+    selected: true,
+    disabled: false
+  }];
   private fee: string;
   private feeType: string = 'XPX';
-  private arrayselect: Array<object>
+  private arrayselect: Array<object> = [{
+    value: '1',
+    label: '.(New root Namespace)',
+    selected: true,
+    disabled: false
+  }];
   validateNamespace = true;
   constructor(
     private fb: FormBuilder,
@@ -33,102 +42,110 @@ export class CreateNamespaceComponent implements OnInit {
 
   ngOnInit() {
     this.createForm();
-    this.arrayselect = [{
-      value: '1',
-      label: '.(New root Namespace)',
-      selected: true,
-      disabled: false
-    }];
     this.getNamespaceName();
-    const fee = '0.150000';
+    const fee = '0.0';
     this.fee = `${fee} ${this.feeType}`
 
   }
-
   /**
- * Get namespace
- *
- * @memberof CreateMosaicComponent
- */
-  getNamespaceName() {
-    let count = 0
-    // console.log("namespaceName", this.route.snapshot.data['dataNamespace'].length)
+  * Get namespace
+  *
+  * @memberof CreateMosaicComponent
+  */
+  async getNamespaceName() {
     if (this.route.snapshot.data['dataNamespace'].value !== null) {
       this.blockUI.start('Loading...'); // Start blocking
-      for (let h of this.route.snapshot.data['dataNamespace']) {
-        this.nemProvider.namespaceHttp.getNamespacesName(h.levels).pipe(first()).subscribe(
-          (namespaceName: any) => {
-            // console.log('nameN:', namespaceName)
-
-
-            this.namespaceNameSelect(Object.values(namespaceName.reduce((prev, next) => Object.assign(prev, { [next.name]: next }), {}))).then(resp => {
-              // console.log('response namespaceName ', resp)
-              // console.log(`resp${resp.length} == namespace${this.route.snapshot.data['dataNamespace'].length+1}`)
-              if (resp.length === this.route.snapshot.data['dataNamespace'].length + 1) {
-                this.blockUI.stop(); // Stop blocking
-
-                this.namespace = resp
-              }
-
-            });
-          }, (error: any) => {
-            this.blockUI.stop(); // Stop blocking
-            console.error("Has ocurred a error", error);
-            this.router.navigate([AppConfig.routes.home]);
-            this.sharedService.showError('', error);
-          });
-        ++count
-      }
-    } else {
-      this.namespace = [{
-        value: '1',
-        label: '.(New root Namespace)',
-        selected: true,
-        disabled: true
-      }];
-    }
-  }
-
-  namespaceNameSelect(value: any = []): Promise<any> {
-    value = (value == null) ? [] : value
-
-    // console.log('leng', value.length)
-
-    if (value.length > 1) {
-      // console.log('value',value)
-      value.forEach((item, index) => {
-        if (item.parentId == undefined) {
-          const filtro = value.filter((book, pos, arr) => (book.parentId != undefined) && (book.parentId.id.lower === item.namespaceId.id.lower))
-            .forEach((book, index) => {
-              this.arrayselect.push({
-                value: `${item.name}.${book.name}`, label: `${item.name}.${book.name}`, selected: false,
-                disabled: false
-              });
-            });
+      for (let space of this.route.snapshot.data['dataNamespace']) {
+        if (space.depth == 1) {
+          const responseRoot = await this.getNameSpaceRoot(space, space.active);
+        } else if (space.depth == 2) {
+          const responseSub = await this.getNameSpaceSub(space, space.active);
+        } else if (space.depth == 3) {
+          const responseSub = await this.getNameSpaceSubnivel(space, space.active);
         }
-      })
-    } else {
-      this.arrayselect.push({
-        value: value[0].name, label: value[0].name, selected: false,
-        disabled: false
-      });
-
+      }
     }
-    // console.log('arrayselect', this.arrayselect)
-    return Promise.resolve(this.arrayselect);
+    this.blockUI.stop();
+    this.arrayselect = this.namespace.sort(function (a: any, b: any) {
+      return a.label == b.label ? 0 : +(a.label > b.label) || -1;
+    })
   }
 
+  async getNameSpaceRoot(rootNamespace: any, status: boolean) {
+    const promise = new Promise((resolve, reject) => {
+      this.nemProvider.namespaceHttp.getNamespacesName(rootNamespace.levels).pipe(first()).subscribe(
+        (namespaceName: any) => {
+          for (let n of namespaceName) {
+            const sts = status ? false : true;
+            this.namespace.push({
+              value: `${n.name}`,
+              label: `${n.name}`,
+              selected: sts,
+              disabled: false
+            });
+          }
+          resolve(true);
+        }, (error: any) => {
+          this.blockUI.stop();
+          console.error("Has ocurred a error", error);
+          // this.router.navigate([AppConfig.routes.home]);
+          this.sharedService.showError('', error);
+          reject(error);
+        });
+    });
+    return await promise;
+  }
+
+  async getNameSpaceSub(subNamespace: any, status: boolean) {
+    const id = subNamespace.levels.filter((book, pos, arr) => (book.id.lower !== subNamespace.parentId.id.lower))
+    const promise = new Promise((resolve, reject) => {
+      this.nemProvider.namespaceHttp.getNamespacesName(id).pipe(first()).subscribe(
+        (namespaceName: any) => {
+          const namespc = namespaceName.sort()
+          this.namespace.push({
+            value: `${namespc[1].name}.${namespc[0].name}`, label: `${namespc[1].name}.${namespc[0].name}`, selected: false,
+            disabled: false
+          });
+          resolve(true);
+        }, (error: any) => {
+          this.blockUI.stop(); // Stop blocking
+          console.error("Has ocurred a error", error);
+          this.router.navigate([AppConfig.routes.home]);
+          this.sharedService.showError('', error);
+          reject(error);
+        });
+    });
+    return await promise;
+  }
+
+  async getNameSpaceSubnivel(subNamespace: any, status: boolean) {
+    const id = subNamespace.levels.filter((book, pos, arr) => (book.id.lower !== subNamespace.parentId.id.lower))
+    const promise = new Promise((resolve, reject) => {
+      this.nemProvider.namespaceHttp.getNamespacesName(id).pipe(first()).subscribe(
+        (namespaceName: any) => {
+          const namespc = namespaceName.sort()
+          this.namespace.push({
+            value: `${namespc[1].name}.${namespc[2].name}.${namespc[0].name}`, label: `${namespc[1].name}.${namespc[2].name}.${namespc[0].name}`, selected: false,
+            disabled: false
+          });
+          resolve(true);
+        }, (error: any) => {
+          this.blockUI.stop(); // Stop blocking
+          console.error("Has ocurred a error", error);
+          this.router.navigate([AppConfig.routes.home]);
+          this.sharedService.showError('', error);
+          reject(error);
+        });
+    });
+    return await promise;
+  }
+ 
   createForm() {
     this.namespaceForm = this.fb.group({
       name: ['', Validators.required],
       namespace: ['1'],
       password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]],
-
     });
-    // this.namespaceForm.get('name').valueChanges.subscribe(options => {
-    //   this.disableInputs()
-    // })
-
   }
 
   /**
@@ -145,30 +162,6 @@ export class CreateNamespaceComponent implements OnInit {
       return `This field must contain maximum ${this.namespaceForm.get(param).getError('maxlength').requiredLength} characters`;
     }
   }
-
-  getNamespace() {
-    this.blockUI.start('Loading...'); // Start blocking
-    this.nemProvider.getNamespace(this.namespaceForm.get('name').value).subscribe(
-      res => {
-        this.blockUI.stop(); // Stop blocking
-        this.sharedService.showError('Error', 'namespace already exists!');
-      },
-      error => {
-        if (error.status === 404) {
-          this.blockUI.stop(); // Stop blocking
-          this.sharedService.showSuccess('success', 'name available')
-        }
-
-      }
-    )
-  }
-  resectForm() {
-    this.namespaceForm.get('name').patchValue('')
-    this.namespaceForm.get('password').patchValue('')
-    this.namespaceForm.get('namespace').patchValue('1')
-
-  }
-
   create() {
     if (this.namespaceForm.valid) {
       const common = {
@@ -210,4 +203,13 @@ export class CreateNamespaceComponent implements OnInit {
       return Promise.resolve(signedTransaction);
     }
   }
+
+
+  resectForm() {
+    this.namespaceForm.get('name').patchValue('')
+    this.namespaceForm.get('password').patchValue('')
+    this.namespaceForm.get('namespace').patchValue('1')
+
+  }
+
 }

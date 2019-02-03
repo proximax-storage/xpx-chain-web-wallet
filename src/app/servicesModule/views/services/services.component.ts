@@ -8,7 +8,6 @@ import { ServiceModuleService } from "../../../servicesModule/services/service-m
   styleUrls: ['./services.component.scss']
 })
 export class ServicesComponent implements OnInit {
-
   keyObject = Object.keys;
   coin = 'XPX';
   services: Service;
@@ -106,7 +105,6 @@ export class ServicesComponent implements OnInit {
       storage:storage
     }
   }
-
   structureServiceRoute(name, link) {
     return {
       name: name,
