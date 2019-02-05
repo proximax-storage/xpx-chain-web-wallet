@@ -15,6 +15,7 @@ import { AppConfig } from '../../../../config/app.config';
 export class CreateNamespaceComponent implements OnInit {
   @BlockUI() blockUI: NgBlockUI;
   private namespaceForm: FormGroup;
+  private validateForm: boolean = false ;
   private namespace: Array<object> = [{
     value: '1',
     label: '.(New root Namespace)',
@@ -139,13 +140,32 @@ export class CreateNamespaceComponent implements OnInit {
     });
     return await promise;
   }
- 
+
   createForm() {
     this.namespaceForm = this.fb.group({
-      name: ['', Validators.required],
+      name: ['', [Validators.required, Validators.maxLength(64)]],
       namespace: ['1'],
       password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]],
     });
+    this.namespaceForm.get('name').valueChanges.subscribe(name => {
+      if (!this.namespaceIsValid(name)) return this.sharedService.showError('Error', '¡Name of namespace is invalid!!')
+    })
+  }
+
+  namespaceIsValid(ns, isParent?) {
+    // Test if correct length and if name starts with hyphens
+    if (!isParent ? ns.length > 16 : ns.length > 64 || /^([_-])/.test(ns)) {
+      return false;
+    }
+    let pattern = /^[a-z0-9.\-_]*$/;
+    // Test if has special chars or space excluding hyphens
+    if (pattern.test(ns) == false) {
+      this.validateForm = false;
+      return false;
+    } else {
+      this.validateForm = true;
+      return true;
+    }
   }
 
   /**
@@ -160,10 +180,19 @@ export class CreateNamespaceComponent implements OnInit {
       return `This field must contain minimum ${this.namespaceForm.get(param).getError('minlength').requiredLength} characters`;
     } else if (this.namespaceForm.get(param).getError('maxlength')) {
       return `This field must contain maximum ${this.namespaceForm.get(param).getError('maxlength').requiredLength} characters`;
+    } else if (this.namespaceForm.get(param).getError('pattern')) {
+      return `This field content characters not permited`;
     }
   }
+
+  //   processNamespaceName() {
+  //     // Lowercase namespace name
+  //     this.formData.namespaceName = this._$filter('lowercase')(this.formData.namespaceName);
+  //     // Check namespace validity
+  //     if (!this.namespaceIsValid(this.formData.namespaceName)) return this._Alert.invalidNamespaceName();
+  // }
   create() {
-    if (this.namespaceForm.valid) {
+    if (this.namespaceForm.valid && this.validateForm ) {
       const common = {
         password: this.namespaceForm.get('password').value,
         privateKey: ''
@@ -203,7 +232,6 @@ export class CreateNamespaceComponent implements OnInit {
       return Promise.resolve(signedTransaction);
     }
   }
-
 
   resectForm() {
     this.namespaceForm.get('name').patchValue('')
