@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject, BehaviorSubject, } from 'rxjs';
 import { NemProvider } from "../../shared/services/nem.provider";
-import { UInt64, TransferTransaction, Deadline, PlainMessage, NetworkType, TransactionHttp, Account, Mosaic, MosaicId } from "proximax-nem2-sdk";
+import { UInt64, TransferTransaction, Deadline, PlainMessage, NetworkType, TransactionHttp, Account, Mosaic, MosaicId, MosaicInfo } from "proximax-nem2-sdk";
 import { WalletService } from "../../shared/services/wallet.service";
 import { NodeService } from '../../servicesModule/services/node.service';
 import { environment } from 'src/environments/environment';
@@ -12,10 +12,11 @@ import { MessageService } from '../../shared/services/message.service';
 })
 export class TransactionsService {
 
-  private _transConfirmSubject: BehaviorSubject<any> =  new BehaviorSubject<any>([]);
+  private _transConfirmSubject: BehaviorSubject<any> = new BehaviorSubject<any>([]);
   private _transConfirm$: Observable<any> = this._transConfirmSubject.asObservable();
   private _transactionsUnconfirmed = new BehaviorSubject<any>([]);
   private _transactionsUnconfirmed$: Observable<any> = this._transactionsUnconfirmed.asObservable();
+
 
 
   constructor(
@@ -59,7 +60,7 @@ export class TransactionsService {
       Deadline.create(5),
       recipientAddress,
       //[new Mosaic(new MosaicId([3530084852,3559101211]),UInt64.fromUint(0))],
-      [new Mosaic( new MosaicId(this.nemProvider.mosaic), UInt64.fromUint(Number(amount)))],
+      [new Mosaic(new MosaicId(this.nemProvider.mosaic), UInt64.fromUint(Number(amount)))],
       PlainMessage.create(message),
       network);
     const account = Account.createFromPrivateKey(common.privateKey, network);
@@ -69,6 +70,29 @@ export class TransactionsService {
       signedTransaction: signedTransaction,
       transactionHttp: transactionHttp
     };
+  }
+
+  /**
+   * Formatter Amount
+   *
+   * @param {UInt64} amount
+   * @param {MosaicId} mosaicId
+   * @param {MosaicInfo[]} mosaics
+   * @returns
+   * @memberof TransactionsService
+   */
+  amountFormatter(amount: UInt64, mosaicId: MosaicId, mosaics: MosaicInfo[]) {
+    for (let m of mosaics) {
+      if (m.mosaicId.toHex() === mosaicId.toHex()) {
+        const amountDivisibility = Number(amount.compact() / Math.pow(10, m.divisibility));
+        return (amountDivisibility).toLocaleString('en-us', { minimumFractionDigits: m.divisibility });
+      }
+    }
+  }
+
+
+  dateFormat(deadline: Deadline) {
+    return new Date(deadline.value.toString() + (Deadline.timestampNemesisBlock * 1000)).toUTCString();
   }
 
 

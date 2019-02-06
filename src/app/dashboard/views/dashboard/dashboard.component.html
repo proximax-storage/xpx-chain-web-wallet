@@ -1,6 +1,101 @@
 <div class="mt-3rem mb-3rem w-w-b-w">
   <div class="container-fluid">
     <div class="row">
+      <div class="col-md-12 col-lg-11 mx-auto">
+        <div class="mt-3r">
+
+          <div class="row">
+            <div class="col-12">
+              <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate" *ngIf="searching"></mdb-progress-bar>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-6">
+              <div class="tabs-wallet" [className]="confirmedSelected ? 'background-tabs-selected tabs-wallet' : 'background-tabs-unselected tabs-wallet'"
+                (click)="selectTab(1)">
+                <h5 class="text-center">
+                  <span class="mr-15px font-tabs">Confirmed</span>
+                  <mdb-badge color="count">{{cantConfirmed}}</mdb-badge>
+                </h5>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="tabs-wallet" [className]="unconfirmedSelected ? 'background-tabs-selected tabs-wallet' : 'background-tabs-unselected tabs-wallet'"
+                (click)="selectTab(2)">
+                <h5 class="text-center">
+                  <span class="mr-15px font-tabs">Unconfirmed</span>
+                  <mdb-badge color="count">{{cantUnconfirmed}}</mdb-badge>
+                </h5>
+              </div>
+            </div>
+          </div>
+
+          <ng-container *ngIf="confirmedSelected">
+            <div class="table-responsive table-striped">
+              <table mdbTable striped="true" class="table table-hover table-bordered table-striped table-sm z-depth-0">
+                <thead>
+                  <tr>
+                    <th *ngFor="let head of headElements; let i = index" scope="col" class="text-center">{{head}}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="mouse-pointer" *ngFor="let el of elementsConfirmed; let i = index" (click)="basicModal.show(); dataSelected = elementsConfirmed[i]">
+                    <!-- <th class="th-sm">
+                      <i [ngStyle]="{'color': el.isRemitent === true ? 'green' : 'red' }" style="padding-right: 10px;"
+                        class="fa fa-send" aria-hidden="true"></i>
+                      {{el.address}}
+                    </th> -->
+                    <td class="align-left th-lg">{{el.name_type}}</td>
+                    <td class="align-left th-lg">{{el.date}}</td>
+                    <td class="text-right th-lg">{{el.fee.compact()}}</td>
+                    <td class="text-center th-lg">
+                      <i [ngStyle]="{'color': el.isRemitent === true ? 'green' : 'red' }" style="padding-right: 10px;"
+                        class="fa fa-send" aria-hidden="true"></i>
+                      {{el.signer.address.pretty()}}</td>
+                    <td class="text-center th-lg" *ngIf="el?.recipient !== undefined;">{{el.recipient.pretty()}}</td>
+                    <td class="text-center th-lg" *ngIf="el?.recipient === undefined;">XXXXX-XXXXX-XXXXXX</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </ng-container>
+
+          <!-- <ng-container *ngIf="!confirmedSelected">
+            <div class="table-responsive table-striped">
+              <table mdbTable striped="true" class="table table-hover table-bordered table-striped table-sm z-depth-0">
+                <thead>
+                  <tr>
+                    <th *ngFor="let head of headElements; let i = index" scope="col" class="text-center">{{head}}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="mouse-pointer" *ngFor="let el of elementsUnconfirmed; let i = index" (click)="basicModal.show(); dataSelected = elementsUnconfirmed[i]">
+                    <th class="th-sm">
+                      <i [ngStyle]="{'color': el.isRemitent === true ? 'green' : 'red' }" style="padding-right: 10px;"
+                        class="fa fa-send" aria-hidden="true"></i>
+                      {{el.address}}
+                    </th>
+                    <td class="align-right th-lg">{{el.amount}}</td>
+                    <td class="text-center th-lg">{{el.mosaic}}</td>
+                    <td class="text-center th-lg">{{el.date}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </ng-container> -->
+
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- <div class="mt-3rem mb-3rem w-w-b-w">
+  <div class="container-fluid">
+    <div class="row">
       <div class="col-xl-10 col-lg-10 col-md-10 col-sm-12 mx-auto">
         <div class="mt-3r">
           <mdb-card>
@@ -91,7 +186,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
 
   <div mdbModal #basicModal="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myBasicModalLabel"
     aria-hidden="true">
