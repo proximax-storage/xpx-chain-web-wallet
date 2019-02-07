@@ -34,48 +34,7 @@ export class DashboardComponent implements OnInit {
     'transactionsConfirmed'
   ];
   infoMosaic: MosaicInfo;
-  arraTypeTransaction = {
-    transfer: {
-      id: TransactionType.TRANSFER,
-      name: 'Transfer'
-    },
-    registerNameSpace: {
-      id: TransactionType.REGISTER_NAMESPACE,
-      name: 'Register namespace'
-    },
-    mosaicDefinition: {
-      id: TransactionType.MOSAIC_DEFINITION,
-      name: 'Mosaic definition'
-    },
-    mosaicSupplyChange: {
-      id: TransactionType.MOSAIC_SUPPLY_CHANGE,
-      name: 'Mosaic supply change'
-    },
-    modifyMultisigAccount: {
-      id: TransactionType.MODIFY_MULTISIG_ACCOUNT,
-      name: 'Modify multisig account'
-    },
-    aggregateComplete: {
-      id: TransactionType.AGGREGATE_COMPLETE,
-      name: 'Aggregate complete'
-    },
-    aggregateBonded: {
-      id: TransactionType.AGGREGATE_BONDED,
-      name: 'Aggregate bonded'
-    },
-    lock: {
-      id: TransactionType.LOCK,
-      name: 'Lock'
-    },
-    secretLock: {
-      id: TransactionType.SECRET_LOCK,
-      name: 'Secret lock'
-    },
-    secretProof: {
-      id: TransactionType.SECRET_PROOF,
-      name: 'Secret proof'
-    }
-  };
+
 
   constructor(
     private dashboardService: DashboardService,
@@ -85,7 +44,6 @@ export class DashboardComponent implements OnInit {
     private proximaxProvider: ProximaxProvider
   ) {
 
-    console.log(this.arraTypeTransaction);
   }
 
   async ngOnInit() {
@@ -106,49 +64,7 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  async buildTransactions(transactions: Transaction[]) {
-    console.log("*****RESULTADO DE TODAS LAS TRANSACCIONES*****", transactions);
-    const elementsConfirmed = [];
-    if (transactions.length > 0) {
-      for (let element of transactions) {
-        element['date'] = this.transactionsService.dateFormat(element.deadline);
-        if (element['recipient'] !== undefined) {
-          // me quede validando si es remitente o no y pintarlo en el html. Ya le dije fino, todo bien ni ada
-          element['isRemitent'] = this.walletService.address.pretty() === element['recipient'].pretty();
-        }
-        Object.keys(this.arraTypeTransaction).forEach(elm => {
-          if (this.arraTypeTransaction[elm].id === element.type) {
-            element['name_type'] = this.arraTypeTransaction[elm].name;
-          }
-        });
 
-        if (element['mosaics'] !== undefined) {
-          // Crea un nuevo array con los id de mosaicos
-          const mosaicsId = element['mosaics'].map((mosaic: Mosaic) => { return mosaic.id; });
-          // Busca la información de los mosaicos, retorna una promesa
-          await this.proximaxProvider.getInfoMosaics(mosaicsId).then((mosaicsInfo: MosaicInfo[]) => {
-            element['mosaicsInfo'] = mosaicsInfo;
-            element['mosaics'].forEach((mosaic: any) => {
-              // Da formato al monto de la transacción
-              mosaic['amountFormatter'] = this.transactionsService.amountFormatter(mosaic.amount, mosaic.id, element['mosaicsInfo']);
-            });
-          });
-
-          console.log(element);
-          elementsConfirmed.push(element);
-        } else {
-          console.log("***** ESTO NO TIENE MOSAICO *****");
-          elementsConfirmed.push(element);
-        }
-      }
-    }
-
-    // this.elementsConfirmed.push(elementsConfirmed);
-    // this.cantConfirmed = elementsConfirmed.length;
-    console.log("*********************************Aqui todo el mundo contesto*****************************************");
-    this.searching = false;
-    this.transactionsService.setConfirmedTransaction$(elementsConfirmed);
-  }
 
   async getTransactions() {
     this.getUnconfirmedTransactionsCache();
@@ -187,7 +103,10 @@ export class DashboardComponent implements OnInit {
     console.log("======= Consulta todas las transacciones =========");
     this.subscriptions['getAllTransactions'] = this.nemProvider.getAllTransactionsFromAccount(this.walletService.publicAccount, this.walletService.network).pipe(first()).subscribe(
       async allTrasactions => {
-        this.buildTransactions(allTrasactions);
+        const response = await this.transactionsService.buildTransactions(allTrasactions);
+        console.log("buildTransactions", response);
+        this.searching = false;
+        this.transactionsService.setConfirmedTransaction$(response);
       }, error => {
         this.searching = false;
         console.error("Has ocurred a error", error);
