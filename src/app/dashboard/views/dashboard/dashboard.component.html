@@ -40,12 +40,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr class="mouse-pointer" *ngFor="let el of elementsConfirmed; let i = index" (click)="basicModal.show(); dataSelected = elementsConfirmed[i]">
-                    <!-- <th class="th-sm">
-                      <i [ngStyle]="{'color': el.isRemitent === true ? 'green' : 'red' }" style="padding-right: 10px;"
-                        class="fa fa-send" aria-hidden="true"></i>
-                      {{el.address}}
-                    </th> -->
+                    <tr class="mouse-pointer" *ngFor="let el of elementsConfirmed; let i = index" (click)="dataSelected = elementsConfirmed[i]">
                     <td class="align-left th-lg">{{el.name_type}}</td>
                     <td class="align-left th-lg">{{el.date}}</td>
                     <td class="text-right th-lg">{{el.fee.compact()}}</td>
@@ -71,7 +66,8 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr class="mouse-pointer" *ngFor="let el of elementsUnconfirmed; let i = index" (click)="basicModal.show(); dataSelected = elementsConfirmed[i]">
+                      <!-- <tr class="mouse-pointer" *ngFor="let el of elementsUnconfirmed; let i = index" (click)="basicModal.show(); dataSelected = elementsConfirmed[i]"> -->
+                    <tr class="mouse-pointer" *ngFor="let el of elementsUnconfirmed; let i = index" (click)="dataSelected = elementsConfirmed[i]">
                       <td class="align-left th-lg">{{el.name_type}}</td>
                       <td class="align-left th-lg">{{el.date}}</td>
                       <td class="text-right th-lg">{{el.fee.compact()}}</td>
@@ -86,34 +82,6 @@
                 </table>
               </div>
             </ng-container>
-
-          <!-- <ng-container *ngIf="!confirmedSelected">
-            <div class="table-responsive table-striped">
-              <table mdbTable striped="true" class="table table-hover table-bordered table-striped table-sm z-depth-0">
-                <thead>
-                  <tr>
-                    <th *ngFor="let head of headElements; let i = index" scope="col" class="text-center">{{head}}
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr class="mouse-pointer" *ngFor="let el of elementsUnconfirmed; let i = index" (click)="basicModal.show(); dataSelected = elementsUnconfirmed[i]">
-                    <th class="th-sm">
-                      <i [ngStyle]="{'color': el.isRemitent === true ? 'green' : 'red' }" style="padding-right: 10px;"
-                        class="fa fa-send" aria-hidden="true"></i>
-                      {{el.address}}
-                    </th>
-                    <td class="align-right th-lg">{{el.amount}}</td>
-                    <td class="text-center th-lg">{{el.mosaic}}</td>
-                    <td class="text-center th-lg">{{el.date}}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </ng-container> -->
-
-
-
         </div>
       </div>
     </div>
