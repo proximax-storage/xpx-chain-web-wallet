@@ -56,6 +56,30 @@ export class DataBridgeService {
     }
   }
 
+
+  /**
+   * Destroy unconfirmed transaction
+   *
+   * @param {*} element
+   * @memberof DataBridgeService
+   */
+  destroyUnconfirmedTransaction(element) {
+    this.transactionsService.getTransactionsUnconfirmedCache$().pipe(first()).subscribe(
+      response => {
+        if (response.length > 0) {
+          let allTransactionUnConfirmed = response;
+          let unconfirmed = [];
+          for (const elementUnconfirmed of allTransactionUnConfirmed) {
+            if (elementUnconfirmed.transactionInfo.hash !== element.transactionInfo.hash) {
+              unconfirmed.unshift(element);
+            }
+          }
+          this.transactionsService.setTransactionsUnconfirmed$(unconfirmed);
+        }
+      });
+  }
+
+
   /**
    * Open websocket connection
    *
@@ -113,7 +137,6 @@ export class DataBridgeService {
   getTransactionsUnConfirmedSocket(connector: Listener, audio: HTMLAudioElement) {
     //Get transactions unconfirmed
     connector.unconfirmedAdded(this.walletService.address).subscribe(transaction => {
-
       this.transactionsService.getTransactionsUnconfirmedCache$().pipe(first()).subscribe(
         async transactionsUnconfirmed => {
           console.log("transactionsUnconfirmed", transactionsUnconfirmed);
@@ -123,27 +146,10 @@ export class DataBridgeService {
             audio.play();
             transactionsUnconfirmedCopy.unshift(element);
             this.transactionsService.setTransactionsUnconfirmed$(transactionsUnconfirmedCopy);
-            // this.destroyUnconfirmedTransaction(element);
           });
-        });
-      /*if (Object.keys(transaction).length > 0) {
-        this.proximaxProvider.getInfoMosaic(transaction['mosaics'][0].id).then((mosaicInfo: MosaicInfo) => {
-          audio.play();
-          this.transactionsService.getTransactionsUnconfirmedCache$().pipe(first()).subscribe(
-            transactionsUnconfirmed => {
-              transaction['amount'] = this.nemProvider.formatterAmount(transaction['mosaics'][0].amount.compact(), mosaicInfo.divisibility);
-              if (transactionsUnconfirmed.length > 0) {
-                const transactionsUnconfirmedCopy = transactionsUnconfirmed.slice(0);
-                transactionsUnconfirmedCopy.push(this.transactionsService.formatTransaction(transaction));
-                this.transactionsService.setTransactionsUnconfirmed$(transactionsUnconfirmedCopy);
-              } else {
-                this.transactionsService.setTransactionsUnconfirmed$([this.transactionsService.formatTransaction(transaction)]);
-              }
-            });
         }, err => {
           console.error(err);
         });
-      } */
     });
   }
 
@@ -165,10 +171,11 @@ export class DataBridgeService {
     });
   }
 
+
   /**
-   *  reconnection to the  websocket
+   * Reconnect
    *
-   * @param {*} connector
+   * @param {Listener} connector
    * @returns
    * @memberof DataBridgeService
    */
@@ -179,7 +186,8 @@ export class DataBridgeService {
     return;
   }
 
-  destroyUnconfirmedTransaction(element) {
+  /**
+   *  reconnection to the  websodestroyUnconfirmedTransaction(element) {
     this.transactionsService.getTransactionsUnconfirmedCache$().pipe(first()).subscribe(
       response => {
         if (response.length > 0) {
@@ -194,4 +202,26 @@ export class DataBridgeService {
         }
       });
   }
+   *
+   * @param {*} connector
+   * @returns
+   * @memberof DataBridgeServicedestroyUnconfirmedTransaction(element) {
+    this.transactionsService.getTransactionsUnconfirmedCache$().pipe(first()).subscribe(
+      response => {
+        if (response.length > 0) {
+          let allTransactionUnConfirmed = response;
+          let unconfirmed = [];
+          for (const elementUnconfirmed of allTransactionUnConfirmed) {
+            if (elementUnconfirmed.transactionInfo.hash !== element.transactionInfo.hash) {
+              unconfirmed.unshift(element);
+            }
+          }
+          this.transactionsService.setTransactionsUnconfirmed$(unconfirmed);
+        }
+      });
+  }
+   */
+
+
+
 }

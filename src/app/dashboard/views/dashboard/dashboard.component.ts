@@ -49,31 +49,30 @@ export class DashboardComponent implements OnInit {
   async ngOnInit() {
     this.dashboardService.loadedDashboard();
     this.dashboardService.subscribeLogged();
-    // this.getConfirmedTransactions();
-    // this.getUnconfirmedTransactions();
-    // this.transactionsConfirmed();
     this.getTransactions();
+    this.getUnconfirmedTransactionsCache();
   }
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(element => {
       if (this.subscriptions[element] !== undefined && this.subscriptions[element] !== 'isLogged') {
-        console.log("Destruye: ", element);
         this.subscriptions[element].unsubscribe();
       }
     });
   }
 
 
-
+  /**
+   * Get transactions
+   *
+   * @memberof DashboardComponent
+   */
   async getTransactions() {
-    this.getUnconfirmedTransactionsCache();
     //Gets all transactions confirmed in cache
     this.subscriptions['transactionsConfirmed'] = this.transactionsService.getConfirmedTransactionsCache$().subscribe(
       async transactionsConfirmedCache => {
         console.log("getConfirmedTransactionsCache", transactionsConfirmedCache);
         if (transactionsConfirmedCache.length > 0) {
-          console.log("Transacciones en cache..", transactionsConfirmedCache);
           this.elementsConfirmed = transactionsConfirmedCache.slice(0, 10);
           this.cantConfirmed = this.elementsConfirmed.length;
           this.searching = false;
@@ -100,16 +99,13 @@ export class DashboardComponent implements OnInit {
   }
 
   async getAllTransactions() {
-    console.log("======= Consulta todas las transacciones =========");
     this.subscriptions['getAllTransactions'] = this.nemProvider.getAllTransactionsFromAccount(this.walletService.publicAccount, this.walletService.network).pipe(first()).subscribe(
       async allTrasactions => {
         const response = await this.transactionsService.buildTransactions(allTrasactions);
-        console.log("buildTransactions", response);
         this.searching = false;
         this.transactionsService.setConfirmedTransaction$(response);
       }, error => {
         this.searching = false;
-        console.error("Has ocurred a error", error);
       });
   }
 
