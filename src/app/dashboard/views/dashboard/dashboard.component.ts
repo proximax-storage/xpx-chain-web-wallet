@@ -19,7 +19,6 @@ export class DashboardComponent implements OnInit {
   count = 0;
   cantConfirmed = 0;
   elementsConfirmed: any = [];
-
   elementsUnconfirmed: any;
   confirmedSelected = true;
   unconfirmedSelected = false;
@@ -107,20 +106,63 @@ export class DashboardComponent implements OnInit {
     });
   }
 
+  async buildTransactions(transactions: Transaction[]) {
+    console.log("*****RESULTADO DE TODAS LAS TRANSACCIONES*****", transactions);
+    const elementsConfirmed = [];
+    if (transactions.length > 0) {
+      for (let element of transactions) {
+        element['date'] = this.transactionsService.dateFormat(element.deadline);
+        if (element['recipient'] !== undefined) {
+          // me quede validando si es remitente o no y pintarlo en el html. Ya le dije fino, todo bien ni ada
+          element['isRemitent'] = this.walletService.address.pretty() === element['recipient'].pretty();
+        }
+        Object.keys(this.arraTypeTransaction).forEach(elm => {
+          if (this.arraTypeTransaction[elm].id === element.type) {
+            element['name_type'] = this.arraTypeTransaction[elm].name;
+          }
+        });
+
+        if (element['mosaics'] !== undefined) {
+          // Crea un nuevo array con los id de mosaicos
+          const mosaicsId = element['mosaics'].map((mosaic: Mosaic) => { return mosaic.id; });
+          // Busca la información de los mosaicos, retorna una promesa
+          await this.proximaxProvider.getInfoMosaics(mosaicsId).then((mosaicsInfo: MosaicInfo[]) => {
+            element['mosaicsInfo'] = mosaicsInfo;
+            element['mosaics'].forEach((mosaic: any) => {
+              // Da formato al monto de la transacción
+              mosaic['amountFormatter'] = this.transactionsService.amountFormatter(mosaic.amount, mosaic.id, element['mosaicsInfo']);
+            });
+          });
+
+          console.log(element);
+          elementsConfirmed.push(element);
+        } else {
+          console.log("***** ESTO NO TIENE MOSAICO *****");
+          elementsConfirmed.push(element);
+        }
+      }
+    }
+
+    // this.elementsConfirmed.push(elementsConfirmed);
+    // this.cantConfirmed = elementsConfirmed.length;
+    console.log("*********************************Aqui todo el mundo contesto*****************************************");
+    this.searching = false;
+    this.transactionsService.setConfirmedTransaction$(elementsConfirmed);
+  }
+
   async getTransactions() {
+    this.getUnconfirmedTransactionsCache();
     //Gets all transactions confirmed in cache
     this.subscriptions['transactionsConfirmed'] = this.transactionsService.getConfirmedTransactionsCache$().subscribe(
       async transactionsConfirmedCache => {
+        console.log("getConfirmedTransactionsCache", transactionsConfirmedCache);
         if (transactionsConfirmedCache.length > 0) {
           console.log("Transacciones en cache..", transactionsConfirmedCache);
           this.elementsConfirmed = transactionsConfirmedCache.slice(0, 10);
           this.cantConfirmed = this.elementsConfirmed.length;
           this.searching = false;
-          this.getUnconfirmedTransactionsCache();
-        } /* else if (this.dashboardService.isLoadedDashboard == 1) {
-          const allTrasactions = await this.getAllTransactions();
-        }*/ else {
-          const allTrasactions = await this.getAllTransactions();
+        } else if (this.dashboardService.isLoadedDashboard === 1) {
+          this.getAllTransactions();
         }
       }, error => {
         console.log("Has ocurred a error", error);
@@ -145,65 +187,14 @@ export class DashboardComponent implements OnInit {
     console.log("======= Consulta todas las transacciones =========");
     this.subscriptions['getAllTransactions'] = this.nemProvider.getAllTransactionsFromAccount(this.walletService.publicAccount, this.walletService.network).pipe(first()).subscribe(
       async allTrasactions => {
-        console.log("RESULTADO DE TODAS LAS TRANSACCIONES ---> ", allTrasactions);
-        const elementsConfirmed = [];
-        if (allTrasactions.length > 0) {
-          for (let element of allTrasactions) {
-            element['date'] = this.transactionsService.dateFormat(element.deadline);
-            if (element['recipient'] !== undefined) {
-              // me quede validando si es remitente o no y pintarlo en el html. Ya le dije fino, todo bien ni ada
-              element['isRemitent'] = this.walletService.address.pretty() === element['recipient'].pretty();
-            }
-            Object.keys(this.arraTypeTransaction).forEach(elm => {
-              if (this.arraTypeTransaction[elm].id === element.type) {
-                element['name_type'] = this.arraTypeTransaction[elm].name;
-              }
-            });
-
-            if (element['mosaics'] !== undefined) {
-              // Crea un nuevo array con los id de mosaicos
-              const mosaicsId = element['mosaics'].map((mosaic: Mosaic) => { return mosaic.id; });
-              // Busca la información de los mosaicos, retorna una promesa
-              await this.proximaxProvider.getInfoMosaics(mosaicsId).then((mosaicsInfo: MosaicInfo[]) => {
-                element['mosaicsInfo'] = mosaicsInfo;
-                element['mosaics'].forEach(mosaic => {
-                  // Da formato al monto de la transacción
-                  mosaic['amountFormatter'] = this.transactionsService.amountFormatter(mosaic.amount, mosaic.id, element['mosaicsInfo']);
-                });
-              });
-
-
-              console.log(element);
-              elementsConfirmed.push(element);
-            } else {
-              console.log("***** ESTO NO TIENE MOSAICO *****");
-              elementsConfirmed.push(element);
-            }
-
-            // console.log("TRANSACTION --> ", element);
-            //            this.buildTransaction(element);
-            // if (element['mosaics'] !== undefined) {
-            //   await this.proximaxProvider.getInfoMosaic(element['mosaics'][0].id).then((mosaicInfo: MosaicInfo) => {
-            //     this.infoMosaic = mosaicInfo;
-            //     element['amount'] = this.nemProvider.formatterAmount(element['mosaics'][0].amount.compact(), this.infoMosaic.divisibility);
-            //     elementsConfirmed.push(this.transactionsService.formatTransaction(element));
-            //   });
-            // };
-          }
-          // console.log("RESPONDIO TODO", elementsConfirmed);
-          // this.transactionsService.setConfirmedTransaction$(elementsConfirmed);
-        }
-
-        this.elementsConfirmed = elementsConfirmed;
-        this.cantConfirmed = elementsConfirmed.length;
-        this.searching = false;
+        this.buildTransactions(allTrasactions);
       }, error => {
         this.searching = false;
         console.error("Has ocurred a error", error);
       });
   }
 
-  /*******************************/
+  /***********************************************************************************************************************************************************************************************************************************/
 
 
   /**
