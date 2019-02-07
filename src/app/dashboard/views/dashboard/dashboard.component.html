@@ -61,6 +61,32 @@
             </div>
           </ng-container>
 
+
+          <ng-container *ngIf="!confirmedSelected">
+              <div class="table-responsive table-striped">
+                <table mdbTable striped="true" class="table table-hover table-bordered table-striped table-sm z-depth-0">
+                  <thead>
+                    <tr>
+                      <th *ngFor="let head of headElements; let i = index" scope="col" class="text-center">{{head}}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="mouse-pointer" *ngFor="let el of elementsUnconfirmed; let i = index" (click)="basicModal.show(); dataSelected = elementsConfirmed[i]">
+                      <td class="align-left th-lg">{{el.name_type}}</td>
+                      <td class="align-left th-lg">{{el.date}}</td>
+                      <td class="text-right th-lg">{{el.fee.compact()}}</td>
+                      <td class="text-center th-lg">
+                        <i [ngStyle]="{'color': el.isRemitent === true ? 'green' : 'red' }" style="padding-right: 10px;"
+                          class="fa fa-send" aria-hidden="true"></i>
+                        {{el.signer.address.pretty()}}</td>
+                      <td class="text-center th-lg" *ngIf="el?.recipient !== undefined;">{{el.recipient.pretty()}}</td>
+                      <td class="text-center th-lg" *ngIf="el?.recipient === undefined;">XXXXX-XXXXX-XXXXXX</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </ng-container>
+
           <!-- <ng-container *ngIf="!confirmedSelected">
             <div class="table-responsive table-striped">
               <table mdbTable striped="true" class="table table-hover table-bordered table-striped table-sm z-depth-0">

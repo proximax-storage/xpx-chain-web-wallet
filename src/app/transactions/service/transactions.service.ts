@@ -144,6 +144,7 @@ export class TransactionsService {
     const elementsConfirmed = [];
     if (transactions.length > 0) {
       for (let element of transactions) {
+        console.log("ELEMENT...", element)
         element['date'] = this.dateFormat(element.deadline);
         if (element['recipient'] !== undefined) {
           // me quede validando si es remitente o no y pintarlo en el html. Ya le dije fino, todo bien ni ada
@@ -160,6 +161,7 @@ export class TransactionsService {
           const mosaicsId = element['mosaics'].map((mosaic: Mosaic) => { return mosaic.id; });
           // Busca la información de los mosaicos, retorna una promesa
           await this.proximaxProvider.getInfoMosaics(mosaicsId).then((mosaicsInfo: MosaicInfo[]) => {
+            console.log("RESPONSE MOSAIC INFO", mosaicsInfo);
             element['mosaicsInfo'] = mosaicsInfo;
             element['mosaics'].forEach((mosaic: any) => {
               // Da formato al monto de la transacción

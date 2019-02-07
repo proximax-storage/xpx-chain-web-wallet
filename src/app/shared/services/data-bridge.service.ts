@@ -86,31 +86,15 @@ export class DataBridgeService {
   getTransactionsConfirmedSocket(connector: Listener, audio: HTMLAudioElement) {
     connector.confirmed(this.walletService.address).subscribe(incomingTransaction => {
       console.log("Transacciones confirmadas entrantes", incomingTransaction);
-      audio.play();
-
-      //Search transactions in cache
       this.transactionsService.getConfirmedTransactionsCache$().pipe(first()).subscribe(
-        allTransactionConfirmed => {
+        async allTransactionConfirmed => {
           const transactionPushed = allTransactionConfirmed.slice(0);
-          //Obtain mosaic information and format the amount
-          this.proximaxProvider.getInfoMosaic(incomingTransaction['mosaics'][0].id).then((mosaicInfo: MosaicInfo) => {
-            incomingTransaction['amount'] = this.nemProvider.formatterAmount(incomingTransaction['mosaics'][0].amount.compact(), mosaicInfo.divisibility);
-            const transactionFormated = this.transactionsService.formatTransaction(incomingTransaction);
-            transactionPushed.unshift(transactionFormated);
+          const response = await this.transactionsService.buildTransactions([incomingTransaction]);
+          response.forEach(element => {
+            audio.play();
+            transactionPushed.unshift(element);
             this.transactionsService.setConfirmedTransaction$(transactionPushed);
-
-            //subscribe to transactions unconfirmed to valid if isset and delete
-            this.transactionsService.getTransactionsUnconfirmedCache$().pipe(first()).subscribe(
-              response => {
-                let allTransactionUnConfirmed = response;
-                let unconfirmed = [];
-                allTransactionUnConfirmed.forEach((element: { transactionInfo: { hash: any; }; }) => {
-                  if (element.transactionInfo.hash !== transactionFormated.transactionInfo.hash) {
-                    unconfirmed.unshift(element);
-                  }
-                });
-                this.transactionsService.setTransactionsUnconfirmed$(unconfirmed);
-              });
+            this.destroyUnconfirmedTransaction(element);
           });
         });
     }, err => {
@@ -129,7 +113,20 @@ export class DataBridgeService {
   getTransactionsUnConfirmedSocket(connector: Listener, audio: HTMLAudioElement) {
     //Get transactions unconfirmed
     connector.unconfirmedAdded(this.walletService.address).subscribe(transaction => {
-      if (Object.keys(transaction).length > 0) {
+
+      this.transactionsService.getTransactionsUnconfirmedCache$().pipe(first()).subscribe(
+        async transactionsUnconfirmed => {
+          console.log("transactionsUnconfirmed", transactionsUnconfirmed);
+          const transactionsUnconfirmedCopy = transactionsUnconfirmed.slice(0);
+          const response = await this.transactionsService.buildTransactions([transaction]);
+          response.forEach(element => {
+            audio.play();
+            transactionsUnconfirmedCopy.unshift(element);
+            this.transactionsService.setTransactionsUnconfirmed$(transactionsUnconfirmedCopy);
+            // this.destroyUnconfirmedTransaction(element);
+          });
+        });
+      /*if (Object.keys(transaction).length > 0) {
         this.proximaxProvider.getInfoMosaic(transaction['mosaics'][0].id).then((mosaicInfo: MosaicInfo) => {
           audio.play();
           this.transactionsService.getTransactionsUnconfirmedCache$().pipe(first()).subscribe(
@@ -146,7 +143,7 @@ export class DataBridgeService {
         }, err => {
           console.error(err);
         });
-      }
+      } */
     });
   }
 
@@ -161,7 +158,7 @@ export class DataBridgeService {
     console.log("Estableciendo conexión con status");
     connector.status(this.walletService.address).subscribe(res => {
       console.log("Status::::: ", res);
-      this.sharedService.showWarning('Warning',res.status)
+      this.sharedService.showWarning('Warning', res.status)
     }, err => {
       this.sharedService.showError('Error', err);
       console.error("err::::::", err)
@@ -180,5 +177,21 @@ export class DataBridgeService {
     connector.close();
     this.openConnection(connector);
     return;
+  }
+
+  destroyUnconfirmedTransaction(element) {
+    this.transactionsService.getTransactionsUnconfirmedCache$().pipe(first()).subscribe(
+      response => {
+        if (response.length > 0) {
+          let allTransactionUnConfirmed = response;
+          let unconfirmed = [];
+          for (const elementUnconfirmed of allTransactionUnConfirmed) {
+            if (elementUnconfirmed.transactionInfo.hash !== element.transactionInfo.hash) {
+              unconfirmed.unshift(element);
+            }
+          }
+          this.transactionsService.setTransactionsUnconfirmed$(unconfirmed);
+        }
+      });
   }
 }

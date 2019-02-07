@@ -93,8 +93,8 @@ export class DashboardComponent implements OnInit {
   getUnconfirmedTransactionsCache() {
     this.subscriptions['transactionsUnconfirmed'] = this.transactionsService.getTransactionsUnconfirmedCache$().subscribe(
       resp => {
-        this.cantUnconfirmed = resp.length;
         this.elementsUnconfirmed = resp;
+        this.cantUnconfirmed = resp.length;
       }
     );
   }
