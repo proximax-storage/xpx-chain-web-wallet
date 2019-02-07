@@ -344,7 +344,7 @@ export class NemProvider {
     return this.namespaceHttp.getNamespace(new NamespaceId(namespace))
   }
 
-  registerNamespaceTransaction(name: string, network: NetworkType, duration: number = 100, ) {
+  registerRootNamespaceTransaction(name:string,network:NetworkType,duration:number=100):RegisterNamespaceTransaction{
     // Crear namespace transaction
     console.log('duration;', duration)
     return RegisterNamespaceTransaction.createRootNamespace(
@@ -355,7 +355,15 @@ export class NemProvider {
 
   }
 
+  registersubNamespaceTransaction(rootNamespace:string, subnamespaceName:string,network:NetworkType):RegisterNamespaceTransaction {
+    // Crear namespace transaction
+    return  RegisterNamespaceTransaction.createSubNamespace(
+      Deadline.create(23),
+      subnamespaceName,
+      rootNamespace,
+      network);
 
+  }
   /**
    *
    *

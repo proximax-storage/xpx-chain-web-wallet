@@ -15,6 +15,12 @@
 
                     <!-- name -->
                     <div class="md-form mt-5">
+                      <i class="fa fa-address-book prefix text-gris"></i>
+                      <input type="text" autocomplete="off" formControlName="name" required id="name" class="form-control"
+                        mdbInputDirective data-success="Valid name" [errorMessage]="getError('name')">
+                      <label for="name">name</label>
+                    </div>
+                    <!-- <div class="md-form mt-5">
                       <div class="row">
 
                         <div class="col-xs-9 col-xl-9 col-lg-9 col-md-9 col-sm-9">
@@ -32,13 +38,12 @@
                           Check your namespace with the search action
                         </div>
                       </div>
-                    </div>
+                    </div> -->
                     <!-- Parent Namespace -->
                     <div class="md-form  mt-3">
                       <i class="fa fa-user prefix text-gris"></i>
-                      <mdb-select [options]="rootNamespace" placeholder=".(New root Namespace)" formControlName="rootNamespace"
-                        class="colorful-select dropdown-default" (selected)="optionSelected($event)" mdbInputDirective
-                        [errorMessage]="getError('rootNamespace')"></mdb-select>
+                      <mdb-select [options]="arrayselect" formControlName="namespace" class="colorful-select dropdown-default"
+                        mdbInputDirective [errorMessage]="getError('namespace')"></mdb-select>
                     </div>
                     <!-- <div class="md-form mt-5">
                       <i class="fa fa-address-book prefix text-gris"></i>
@@ -58,7 +63,7 @@
                           </div>
                         </div>
                         <div class="col-xs-12 col-xl-6 col-lg-6 col-md-12 col-sm-12">
-                         <i class="fa fa-address-book prefix text-gris"></i>
+                          <i class="fa fa-address-book prefix text-gris"></i>
 
                           <label class="form-label" for="">Rental fee:</label>
                           <div class="alert background-info white-text form-label-alert-m140" role="alert">

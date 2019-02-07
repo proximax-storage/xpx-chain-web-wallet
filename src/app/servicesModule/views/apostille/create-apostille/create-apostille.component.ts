@@ -61,6 +61,7 @@ export class CreateApostilleComponent implements OnInit {
     this.createForm();
   }
   ngOnInit() {
+    
 
     this.apostillaForm.get('password').valueChanges.subscribe(
       password => {
@@ -80,6 +81,7 @@ export class CreateApostilleComponent implements OnInit {
     });
   }
   sendApostille() {
+    
     if (this.apostillaForm.valid && this.validatefileInput) {
       const common = {
         password: this.apostillaForm.get('password').value

@@ -18,6 +18,9 @@ import { CreateMosaicComponent } from './views/mosaic/create-mosaic/create-mosai
 import { EditMosaicComponent } from './views/mosaic/edit-mosaic/edit-mosaic.component';
 import { EditNamespaceComponent } from './views/namespace/edit-namespace/edit-namespace.component';
 import { CreateNamespaceComponent } from './views/namespace/create-namespace/create-namespace.component';
+import { CreateMultisignatureComponent } from './views/multisignature/create-multisignature/create-multisignature.component';
+import { EditMultisignatureContractComponent } from './views/multisignature/edit-multisignature-contract/edit-multisignature-contract.component';
+import { SignMultisigTransactionsComponent } from './views/multisignature/sign-multisig-transactions/sign-multisig-transactions.component';
 
 @NgModule({
   imports: [
@@ -41,7 +44,10 @@ import { CreateNamespaceComponent } from './views/namespace/create-namespace/cre
     CreateMosaicComponent,
     EditMosaicComponent,
     CreateNamespaceComponent,
-    EditNamespaceComponent
+    EditNamespaceComponent,
+    CreateMultisignatureComponent,
+    EditMultisignatureContractComponent,
+    SignMultisigTransactionsComponent,
   ],
   schemas: [NO_ERRORS_SCHEMA]
 })

@@ -25,7 +25,7 @@ export class DashboardComponent implements OnInit {
   unconfirmedSelected = false;
   cantUnconfirmed = 0;
   dataSelected: any;
-  searching = false;
+  searching = true;
 
   headElements = ['Type', 'Timestamp', 'Fee', 'Sender', 'Recipient'];
   subscriptions = [
@@ -117,7 +117,9 @@ export class DashboardComponent implements OnInit {
           this.cantConfirmed = this.elementsConfirmed.length;
           this.searching = false;
           this.getUnconfirmedTransactionsCache();
-        } else if (this.dashboardService.isLoadedDashboard == 1) {
+        } /* else if (this.dashboardService.isLoadedDashboard == 1) {
+          const allTrasactions = await this.getAllTransactions();
+        }*/ else {
           const allTrasactions = await this.getAllTransactions();
         }
       }, error => {
