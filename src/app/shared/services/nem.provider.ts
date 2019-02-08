@@ -226,6 +226,10 @@ export class NemProvider {
     return this.mosaicHttp.getMosaic(mosaicId);
   }
 
+  getMosaics(mosaicIsd: MosaicId[]): Observable<MosaicInfo[]> {
+    return this.mosaicHttp.getMosaics(mosaicIsd);
+  }
+
   /**
    *Gets an AccountInfo for an account.
    *
@@ -340,8 +344,9 @@ export class NemProvider {
     return this.namespaceHttp.getNamespace(new NamespaceId(namespace))
   }
   
-  registerRootNamespaceTransaction(name:string,network:NetworkType,duration:number=10):RegisterNamespaceTransaction{
+ 
 
+  registerRootNamespaceTransaction(name:string,network:NetworkType,duration:number=100):RegisterNamespaceTransaction{
     // Crear namespace transaction
     console.log('duration;', duration)
     return RegisterNamespaceTransaction.createRootNamespace(

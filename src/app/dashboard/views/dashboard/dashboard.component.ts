@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {
-  MosaicInfo
+  MosaicInfo, Deadline, TransactionType, Transaction, Mosaic
 } from 'proximax-nem2-sdk';
 import { DashboardService } from '../../services/dashboard.service';
 import { TransactionsService } from '../../../transactions/service/transactions.service';
@@ -19,22 +19,22 @@ export class DashboardComponent implements OnInit {
   count = 0;
   cantConfirmed = 0;
   elementsConfirmed: any = [];
-
   elementsUnconfirmed: any;
   confirmedSelected = true;
   unconfirmedSelected = false;
   cantUnconfirmed = 0;
   dataSelected: any;
-  searching = false;
+  searching = true;
 
-  headElements = ['Recipient', 'Amount', 'Mosaic', 'Date'];
+  headElements = ['Type', 'Timestamp', 'Fee', 'Sender', 'Recipient'];
   subscriptions = [
     'getConfirmedTransactionsCache',
     'transactionsUnconfirmed',
     'getAllTransactions',
-    'getTransConfirm'
+    'transactionsConfirmed'
   ];
   infoMosaic: MosaicInfo;
+
 
   constructor(
     private dashboardService: DashboardService,
@@ -43,23 +43,74 @@ export class DashboardComponent implements OnInit {
     private nemProvider: NemProvider,
     private proximaxProvider: ProximaxProvider
   ) {
+
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.dashboardService.loadedDashboard();
     this.dashboardService.subscribeLogged();
-    this.getConfirmedTransactions();
-    this.getUnconfirmedTransactions();
+    this.getTransactions();
+    this.getUnconfirmedTransactionsCache();
   }
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(element => {
       if (this.subscriptions[element] !== undefined && this.subscriptions[element] !== 'isLogged') {
-        console.log("Destruye: ", element);
         this.subscriptions[element].unsubscribe();
       }
     });
   }
+
+
+  /**
+   * Get transactions
+   *
+   * @memberof DashboardComponent
+   */
+  async getTransactions() {
+    //Gets all transactions confirmed in cache
+    this.subscriptions['transactionsConfirmed'] = this.transactionsService.getConfirmedTransactionsCache$().subscribe(
+      async transactionsConfirmedCache => {
+        console.log("getConfirmedTransactionsCache", transactionsConfirmedCache);
+        if (transactionsConfirmedCache.length > 0) {
+          this.elementsConfirmed = transactionsConfirmedCache.slice(0, 10);
+          this.cantConfirmed = this.elementsConfirmed.length;
+          this.searching = false;
+        } else if (this.dashboardService.isLoadedDashboard === 1) {
+          this.getAllTransactions();
+        }
+      }, error => {
+        console.log("Has ocurred a error", error);
+      });
+  }
+
+  /**
+   * Get unconfirmed transactions in cache
+   *
+   * @memberof DashboardComponent
+   */
+  getUnconfirmedTransactionsCache() {
+    this.subscriptions['transactionsUnconfirmed'] = this.transactionsService.getTransactionsUnconfirmedCache$().subscribe(
+      resp => {
+        this.elementsUnconfirmed = resp;
+        this.cantUnconfirmed = resp.length;
+      }
+    );
+  }
+
+  async getAllTransactions() {
+    this.subscriptions['getAllTransactions'] = this.nemProvider.getAllTransactionsFromAccount(this.walletService.publicAccount, this.walletService.network).pipe(first()).subscribe(
+      async allTrasactions => {
+        const response = await this.transactionsService.buildTransactions(allTrasactions);
+        this.searching = false;
+        this.transactionsService.setConfirmedTransaction$(response);
+      }, error => {
+        this.searching = false;
+      });
+  }
+
+  /***********************************************************************************************************************************************************************************************************************************/
+
 
   /**
    * Get all confirmed transactions
@@ -84,14 +135,14 @@ export class DashboardComponent implements OnInit {
           }
         } else {
           if (this.dashboardService.isLoadedDashboard == 1) {
-            const allTrasactions = await this.getAllTransactions();
+            // const allTrasactions = await this.getAllTransactions();
           }
         }
       }
     );
   }
 
-  getUnconfirmedTransactions() {
+  getUnconfirmedTransactions2() {
     this.subscriptions['transactionsUnconfirmed'] = this.transactionsService.getTransactionsUnconfirmedCache$().subscribe(
       resp => {
         this.cantUnconfirmed = resp.length;
@@ -106,7 +157,7 @@ export class DashboardComponent implements OnInit {
   *
   * @memberof DashboardComponent
   */
-  async getAllTransactions() {
+  async getAllTransactions2() {
     this.count++;
 
 
@@ -118,7 +169,6 @@ export class DashboardComponent implements OnInit {
             const elementsConfirmed = [];
             if (allTrasactions.length > 0) {
               for (let element of allTrasactions) {
-                // Get mosaic information
                 if (element['mosaics'] !== undefined) {
                   await this.proximaxProvider.getInfoMosaic(element['mosaics'][0].id).then((mosaicInfo: MosaicInfo) => {
                     this.infoMosaic = mosaicInfo;
@@ -136,7 +186,7 @@ export class DashboardComponent implements OnInit {
             console.error("Has ocurred a error", error);
             reject(false);
           });
-      }else {
+      } else {
         resolve(false);
       }
 
