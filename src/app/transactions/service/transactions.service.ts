@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject, BehaviorSubject, } from 'rxjs';
-import { NemProvider } from "../../shared/services/nem.provider";
+import { Observable, BehaviorSubject, } from 'rxjs';
 import { UInt64, TransferTransaction, Deadline, PlainMessage, NetworkType, TransactionHttp, Account, Mosaic, MosaicId, MosaicInfo, TransactionType, Transaction } from "proximax-nem2-sdk";
+import { NemProvider } from "../../shared/services/nem.provider";
 import { WalletService } from "../../shared/services/wallet.service";
 import { NodeService } from '../../servicesModule/services/node.service';
-import { environment } from 'src/environments/environment';
+import { environment } from '../../../environments/environment';
 import { MessageService } from '../../shared/services/message.service';
-import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
+import { ProximaxProvider } from '../../shared/services/proximax.provider';
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +17,8 @@ export class TransactionsService {
   private _transConfirm$: Observable<any> = this._transConfirmSubject.asObservable();
   private _transactionsUnconfirmed = new BehaviorSubject<any>([]);
   private _transactionsUnconfirmed$: Observable<any> = this._transactionsUnconfirmed.asObservable();
+  namespaceRentalFeeSink = environment.namespaceRentalFeeSink;
+  mosaicRentalFeeSink = environment.mosaicRentalFeeSink;
   arraTypeTransaction = {
     transfer: {
       id: TransactionType.TRANSFER,
@@ -83,7 +85,7 @@ export class TransactionsService {
   }
 
   setConfirmedTransaction$(data) {
-    console.log("Establece las transacciones confirmadas");
+    console.log("setConfirmedTransaction: Establece las transacciones confirmadas222");
     this._transConfirmSubject.next(data);
   }
 
@@ -139,15 +141,20 @@ export class TransactionsService {
   }
 
 
+  /**
+   * BUILD TRANSACTIONS CONFIRMED/UNCONFIRMED
+   *
+   * @param {Transaction[]} transactions
+   * @returns
+   * @memberof TransactionsService
+   */
   async buildTransactions(transactions: Transaction[]) {
-    console.log("*****RESULTADO DE TODAS LAS TRANSACCIONES*****", transactions);
+    console.log("*****TODAS LAS TRANSACCIONES*****", transactions);
     const elementsConfirmed = [];
     if (transactions.length > 0) {
       for (let element of transactions) {
-        console.log("ELEMENT...", element)
         element['date'] = this.dateFormat(element.deadline);
         if (element['recipient'] !== undefined) {
-          // me quede validando si es remitente o no y pintarlo en el html. Ya le dije fino, todo bien ni ada
           element['isRemitent'] = this.walletService.address.pretty() === element['recipient'].pretty();
         }
         Object.keys(this.arraTypeTransaction).forEach(elm => {
@@ -172,14 +179,23 @@ export class TransactionsService {
           console.log(element);
           elementsConfirmed.push(element);
         } else {
+          console.log(this.arraTypeTransaction.registerNameSpace.id, element.type);
+          if (element.type === this.arraTypeTransaction.registerNameSpace.id) {
+            element['recipientRentalFeeSink'] = this.namespaceRentalFeeSink.address_public_test;
+          }else if (element.type === this.arraTypeTransaction.mosaicDefinition.id) {
+            element['recipientRentalFeeSink'] = this.mosaicRentalFeeSink.address_public_test;
+          }else if (element.type === this.arraTypeTransaction.mosaicSupplyChange.id) {
+            element['recipientRentalFeeSink'] = this.mosaicRentalFeeSink.address_public_test;
+          }else {
+            element['recipientRentalFeeSink'] = 'XXXXX-XXXXX-XXXXXX';
+          }
+
           console.log("***** ESTO NO TIENE MOSAICO *****");
           elementsConfirmed.push(element);
         }
       }
     }
 
-    // this.elementsConfirmed.push(elementsConfirmed);
-    // this.cantConfirmed = elementsConfirmed.length;
     console.log("*********************************Aqui todo el mundo contestó*****************************************");
     return elementsConfirmed;
   }

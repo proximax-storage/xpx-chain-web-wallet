@@ -14,7 +14,7 @@ import { AppConfig } from '../../../../config/app.config';
 })
 export class CreateNamespaceComponent implements OnInit {
   @BlockUI() blockUI: NgBlockUI;
-  private namespaceForm: FormGroup;
+  namespaceForm: FormGroup;
   private validateForm: boolean = false ;
   private namespace: Array<object> = [{
     value: '1',
