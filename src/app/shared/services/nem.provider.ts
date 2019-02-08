@@ -340,7 +340,7 @@ export class NemProvider {
     return this.namespaceHttp.getNamespace(new NamespaceId(namespace))
   }
   
-  registerRootNamespaceTransaction(name:string,network:NetworkType,duration:number=100):RegisterNamespaceTransaction{
+  registerRootNamespaceTransaction(name:string,network:NetworkType,duration:number=10):RegisterNamespaceTransaction{
 
     // Crear namespace transaction
     console.log('duration;', duration)

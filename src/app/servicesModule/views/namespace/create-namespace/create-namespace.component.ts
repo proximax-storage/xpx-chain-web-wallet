@@ -14,8 +14,14 @@ import { AppConfig } from '../../../../config/app.config';
 })
 export class CreateNamespaceComponent implements OnInit {
   @BlockUI() blockUI: NgBlockUI;
-  private namespaceForm: FormGroup;
-  private validateForm: boolean = false ;
+  public namespaceForm: FormGroup;
+  public namespaceRenewForm: FormGroup;
+  public namespachangeinfo: any
+  private validateForm: boolean = false;
+  private status: boolean = true
+  private statusbuttonNamespace: boolean = true
+  private namespaceInfo: Array<object> = []
+  private typetransfer: number = 1;
   private namespace: Array<object> = [{
     value: '1',
     label: '.(New root Namespace)',
@@ -56,13 +62,13 @@ export class CreateNamespaceComponent implements OnInit {
   async getNamespaceName() {
     if (this.route.snapshot.data['dataNamespace'].value !== null) {
       this.blockUI.start('Loading...'); // Start blocking
-      for (let space of this.route.snapshot.data['dataNamespace']) {
-        if (space.depth == 1) {
-          const responseRoot = await this.getNameSpaceRoot(space, space.active);
-        } else if (space.depth == 2) {
-          const responseSub = await this.getNameSpaceSub(space, space.active);
-        } else if (space.depth == 3) {
-          const responseSub = await this.getNameSpaceSubnivel(space, space.active);
+      for (let dataNamespace of this.route.snapshot.data['dataNamespace']) {
+        if (dataNamespace.depth == 1) {
+          await this.getNameSpaceRoot(dataNamespace, dataNamespace.active);
+        } else if (dataNamespace.depth == 2) {
+          await this.getNameSpaceSub(dataNamespace, dataNamespace.active);
+        } else if (dataNamespace.depth == 3) {
+          await this.getNameSpaceSubnivel(dataNamespace, dataNamespace.active);
         }
       }
     }
@@ -70,9 +76,12 @@ export class CreateNamespaceComponent implements OnInit {
     this.arrayselect = this.namespace.sort(function (a: any, b: any) {
       return a.label == b.label ? 0 : +(a.label > b.label) || -1;
     })
+    console.log('namespaceInfo:', this.namespaceInfo)
   }
 
   async getNameSpaceRoot(rootNamespace: any, status: boolean) {
+
+
     const promise = new Promise((resolve, reject) => {
       this.nemProvider.namespaceHttp.getNamespacesName(rootNamespace.levels).pipe(first()).subscribe(
         (namespaceName: any) => {
@@ -84,6 +93,10 @@ export class CreateNamespaceComponent implements OnInit {
               selected: sts,
               disabled: false
             });
+            this.namespaceInfo.push({
+              name: `${n.name}`,
+              dataNamespace: rootNamespace
+            })
           }
           resolve(true);
         }, (error: any) => {
@@ -147,6 +160,19 @@ export class CreateNamespaceComponent implements OnInit {
       namespace: ['1'],
       password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]],
     });
+    this.namespaceRenewForm = this.fb.group({
+      name: [{ value: '', disabled: true }, [Validators.required, Validators.maxLength(64)]],
+      password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]],
+    });
+
+
+    this.namespaceForm.get('namespace').valueChanges.subscribe(namespace => {
+      console.log('name:', namespace)
+      this.typetransfer = (namespace == 1) ? 1 : 2
+      console.log(this.typetransfer)
+
+    })
+
     this.namespaceForm.get('name').valueChanges.subscribe(name => {
       if (!this.namespaceIsValid(name)) return this.sharedService.showError('Error', '¡Name of namespace is invalid!!')
     })
@@ -173,26 +199,30 @@ export class CreateNamespaceComponent implements OnInit {
    * @param param
    * @param formControl
    */
-  getError(param, formControl?) {
-    if (this.namespaceForm.get(param).getError('required')) {
-      return `This field is required`;
-    } else if (this.namespaceForm.get(param).getError('minlength')) {
-      return `This field must contain minimum ${this.namespaceForm.get(param).getError('minlength').requiredLength} characters`;
-    } else if (this.namespaceForm.get(param).getError('maxlength')) {
-      return `This field must contain maximum ${this.namespaceForm.get(param).getError('maxlength').requiredLength} characters`;
-    } else if (this.namespaceForm.get(param).getError('pattern')) {
-      return `This field content characters not permited`;
+  getError(control: string | (string | number)[], typeForm?: any, formControl?: string | number) {
+    const form = (typeForm === undefined) ? this.namespaceForm : this.namespaceRenewForm;
+    if (formControl === undefined) {
+      if (form.get(control).getError('required')) {
+        return `This field is required`;
+      } else if (form.get(control).getError('minlength')) {
+        return `This field must contain minimum ${form.get(control).getError('minlength').requiredLength} characters`;
+      } else if (form.get(control).getError('maxlength')) {
+        return `This field must contain maximum ${form.get(control).getError('maxlength').requiredLength} characters`;
+      }
+    } else {
+      if (form.controls[formControl].get(control).getError('required')) {
+        return `This field is required`;
+      } else if (form.controls[formControl].get(control).getError('minlength')) {
+        return `This field must contain minimum ${form.controls[formControl].get(control).getError('minlength').requiredLength} characters`;
+      } else if (form.controls[formControl].get(control).getError('maxlength')) {
+        return `This field must contain maximum ${form.controls[formControl].get(control).getError('maxlength').requiredLength} characters`;
+      } else if (form.controls[formControl].getError('noMatch')) {
+        return `Password doesn't match`;
+      }
     }
   }
-
-  //   processNamespaceName() {
-  //     // Lowercase namespace name
-  //     this.formData.namespaceName = this._$filter('lowercase')(this.formData.namespaceName);
-  //     // Check namespace validity
-  //     if (!this.namespaceIsValid(this.formData.namespaceName)) return this._Alert.invalidNamespaceName();
-  // }
-  create() {
-    if (this.namespaceForm.valid && this.validateForm ) {
+  createNamespace() {
+    if (this.namespaceForm.valid && this.validateForm) {
       const common = {
         password: this.namespaceForm.get('password').value,
         privateKey: ''
@@ -218,18 +248,68 @@ export class CreateNamespaceComponent implements OnInit {
     }
   }
 
+  renewNamespace() {
+    this.typetransfer = 1
+    this.namespaceForm.get('name').patchValue('')
+    this.namespaceForm.get('password').patchValue('')
+    if (this.namespaceRenewForm.valid) {
+      const common = {
+        password: this.namespaceRenewForm.get('password').value,
+        privateKey: ''
+      }
+      if (this.walletService.decrypt(common)) {
+        this.signedTransactionPromise(common).then(signedTransaction => {
+
+          this.nemProvider.announce(signedTransaction).subscribe(
+            x => {
+              this.basicModal.hide()
+              console.log(x)
+              this.resectForm()
+              this.blockUI.stop(); // Stop blocking
+              this.sharedService.showSuccess('success', 'renew namespace sent')
+            },
+            err => {
+              this.resectForm()
+              this.blockUI.stop(); // Stop blocking
+              console.error(err)
+              this.sharedService.showError('Error', '¡unexpected error!');
+            });
+        });
+      }
+    }
+  }
+
+
   signedTransactionPromise(common): Promise<any> {
     const account = this.nemProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.network);
-    if (this.namespaceForm.get('namespace').value != 1) {
+    const name = this.namespaceForm.get('name').value || this.namespaceRenewForm.get('name').value
+    console.log('console', name)
+    if (this.typetransfer == 1) {
+      const registerRootNamespaceTransaction = this.nemProvider.registerRootNamespaceTransaction(name, this.walletService.network)
+      const signedTransaction = account.sign(registerRootNamespaceTransaction);
+      return Promise.resolve(signedTransaction);
+    } else if (this.typetransfer == 2) {
       const rootNamespaceName = this.namespaceForm.get('namespace').value;
       const subnamespaceName = this.namespaceForm.get('name').value;
       const registersubamespaceTransaction = this.nemProvider.registersubNamespaceTransaction(rootNamespaceName, subnamespaceName, this.walletService.network)
       const signedTransaction = account.sign(registersubamespaceTransaction);
       return Promise.resolve(signedTransaction);
+    }
+  }
+
+  /**
+  *Change of selection option
+  *
+  * @param {*} namespace
+  * @memberof CreateNamespaceComponent
+  */
+  private optionSelected(namespace: any) {
+    this.namespachangeinfo = this.namespaceInfo.filter((book: any) => (book.name === namespace.value))
+    if (this.namespachangeinfo.length > 0) {
+      this.namespaceRenewForm.get('name').patchValue(this.namespachangeinfo[0].name)
+      this.statusbuttonNamespace = (this.namespachangeinfo[0].dataNamespace.depth == 1) ? false : true
     } else {
-      const registerRootNamespaceTransaction = this.nemProvider.registerRootNamespaceTransaction(this.namespaceForm.get('name').value, this.walletService.network)
-      const signedTransaction = account.sign(registerRootNamespaceTransaction);
-      return Promise.resolve(signedTransaction);
+      this.statusbuttonNamespace = true
     }
   }
 
@@ -237,6 +317,7 @@ export class CreateNamespaceComponent implements OnInit {
     this.namespaceForm.get('name').patchValue('')
     this.namespaceForm.get('password').patchValue('')
     this.namespaceForm.get('namespace').patchValue('1')
+    this.statusbuttonNamespace = true
 
   }
 
