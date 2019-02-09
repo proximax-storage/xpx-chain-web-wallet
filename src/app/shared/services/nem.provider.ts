@@ -44,6 +44,7 @@ import { Observable } from 'rxjs';
 })
 export class NemProvider {
 
+  infoMosaic: MosaicInfo;
   mosaic = 'prx:xpx';
   transactionHttp: TransactionHttp;
   websocketIsOpen = false;
@@ -343,10 +344,71 @@ export class NemProvider {
 
     return this.namespaceHttp.getNamespace(new NamespaceId(namespace))
   }
-  
- 
 
-  registerRootNamespaceTransaction(name:string,network:NetworkType,duration:number=100):RegisterNamespaceTransaction{
+
+  /**
+   * GET INFO MOSAICS, RETURN PROMISE
+   *
+   * @param {MosaicId[]} mosaicsId
+   * @returns
+   * @memberof NemProvider
+   */
+  async getInfoMosaicsPromise(mosaicsId: MosaicId[]) {
+    const promise = await new Promise(async (resolve, reject) => {
+      console.log("INFO MOSAIC IN GETMOSAIC", this.infoMosaic);
+      if (this.infoMosaic === undefined) {
+        console.warn("********** INFO MOSAIC ES UNDEFINED **********");
+        const mosaicsInfo = await this.getMosaics(mosaicsId).toPromise();
+        // this.setInfoMosaic(this.infoMosaic);
+        // console.log("Ya va a responder...", this.infoMosaic);
+        resolve(mosaicsInfo);
+      } else {
+        // console.log("Información de mosaico en caché", this.infoMosaic);
+        reject(null);
+        // if (this.infoMosaic.mosaicId === mosaicId) {
+        //   resolve(this.infoMosaic);
+        // } else {
+        //   this.infoMosaic = await this.nemProvider.getMosaic(mosaicId).toPromise();
+        //   this.setInfoMosaic(this.infoMosaic);
+        //   resolve(this.infoMosaic);
+        // }
+      }
+    });
+
+    console.log("***RESPUESTA CONSULTA DE MOSAICOS****", promise);
+    return await promise;
+  }
+
+
+  async getInfoMosaicFromNamespacePromise(namespaceId: NamespaceId, queryParams?: QueryParams) {
+    const promise = await new Promise(async (resolve, reject) => {
+      if (this.infoMosaic === undefined) {
+        console.warn("********** INFO MOSAIC ES UNDEFINED **********");
+        const mosaicInfo = await this.mosaicHttp.getMosaicsFromNamespace(namespaceId).toPromise();
+        console.log("RESPONDIO MOSAIC INFO");
+        // this.setInfoMosaic(this.infoMosaic);
+        // console.log("Ya va a responder...", this.infoMosaic);
+        resolve(mosaicInfo);
+      } else {
+        // console.log("Información de mosaico en caché", this.infoMosaic);
+        reject(null);
+        // if (this.infoMosaic.mosaicId === mosaicId) {
+        //   resolve(this.infoMosaic);
+        // } else {
+        //   this.infoMosaic = await this.nemProvider.getMosaic(mosaicId).toPromise();
+        //   this.setInfoMosaic(this.infoMosaic);
+        //   resolve(this.infoMosaic);
+        // }
+      }
+    });
+
+    console.log("***RESPUESTA CONSULTA DE MOSAICOS****", promise);
+    return await promise;
+  }
+
+
+
+  registerRootNamespaceTransaction(name: string, network: NetworkType, duration: number = 100): RegisterNamespaceTransaction {
     // Crear namespace transaction
     console.log('duration;', duration)
     return RegisterNamespaceTransaction.createRootNamespace(
@@ -357,9 +419,9 @@ export class NemProvider {
 
   }
 
-  registersubNamespaceTransaction(rootNamespace:string, subnamespaceName:string,network:NetworkType):RegisterNamespaceTransaction {
+  registersubNamespaceTransaction(rootNamespace: string, subnamespaceName: string, network: NetworkType): RegisterNamespaceTransaction {
     // Crear namespace transaction
-    return  RegisterNamespaceTransaction.createSubNamespace(
+    return RegisterNamespaceTransaction.createSubNamespace(
       Deadline.create(23),
       subnamespaceName,
       rootNamespace,

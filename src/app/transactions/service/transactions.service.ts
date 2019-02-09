@@ -167,7 +167,7 @@ export class TransactionsService {
           // Crea un nuevo array con los id de mosaicos
           const mosaicsId = element['mosaics'].map((mosaic: Mosaic) => { return mosaic.id; });
           // Busca la información de los mosaicos, retorna una promesa
-          await this.proximaxProvider.getInfoMosaics(mosaicsId).then((mosaicsInfo: MosaicInfo[]) => {
+          await this.nemProvider.getInfoMosaicsPromise(mosaicsId).then((mosaicsInfo: MosaicInfo[]) => {
             console.log("RESPONSE MOSAIC INFO", mosaicsInfo);
             element['mosaicsInfo'] = mosaicsInfo;
             element['mosaics'].forEach((mosaic: any) => {

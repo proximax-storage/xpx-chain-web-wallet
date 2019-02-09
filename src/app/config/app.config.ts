@@ -24,7 +24,7 @@ export const AppConfig: Config = {
     notFound: 'not-found',
     storage: 'storage',
     createMosaic: 'create-mosaic',
-    editMosaic: 'edit-mosaic',
+    editMosaic: 'mosaic-supply-change',
     createNamespace:'create-namespace',
     editNamespace:'edit-namespace',
 
@@ -57,13 +57,13 @@ export const NameRoute = {
   [AppConfig.routes.notFound]: '404 not found',
   [AppConfig.routes.storage]: 'storage',
   [AppConfig.routes.createMosaic]: 'Create Mosaic',
-  [AppConfig.routes.editMosaic]: 'Edit Mosaic',
+  [AppConfig.routes.editMosaic]: 'Mosaic supply change',
   [AppConfig.routes.createNamespace]: 'Create namespace & sub-namespace',
   [AppConfig.routes.editNamespace]: 'Edit Namespace',
   [AppConfig.routes.createMultisignature]: 'Convert an account to multisig',
   [AppConfig.routes.editMultisignatureContract]: 'Edit multisignature contract',
   [AppConfig.routes.signMultiSigTransactions]: 'Sign multisignature transactions',
-  
+
 }
 
 export interface Config {
@@ -102,6 +102,6 @@ export interface Config {
     storage:string;
 
 
-    
+
   };
 }

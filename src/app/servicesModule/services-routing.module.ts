@@ -19,6 +19,7 @@ import { EditMosaicComponent } from './views/mosaic/edit-mosaic/edit-mosaic.comp
 import { CreateNamespaceComponent } from './views/namespace/create-namespace/create-namespace.component';
 import { EditNamespaceComponent } from './views/namespace/edit-namespace/edit-namespace.component';
 import { CreateMosaicResolver } from './views/mosaic/resolvers/creat-mosaic.resolver';
+import { EditMosaicResolver } from './views/mosaic/resolvers/edit-mosaic.resolver';
 import { CreateNamespaceResolver } from './views/namespace/resolvers/creat-namespace.resolver';
 import { CreateMultisignatureComponent } from './views/multisignature/create-multisignature/create-multisignature.component';
 import { EditMultisignatureContractComponent } from './views/multisignature/edit-multisignature-contract/edit-multisignature-contract.component';
@@ -89,7 +90,8 @@ const routes: Routes = [
   {
     path: `${AppConfig.routes.editMosaic}`,
     component: EditMosaicComponent,
-    canActivate: [LoggedGuard]
+    canActivate: [LoggedGuard],
+    resolve: { dataMosaics: EditMosaicResolver }
   },
   {
     path: `${AppConfig.routes.createNamespace}`,
@@ -126,7 +128,8 @@ const routes: Routes = [
   exports: [RouterModule],
   providers: [
     CreateMosaicResolver,
-    CreateNamespaceResolver
+    CreateNamespaceResolver,
+    EditMosaicResolver
   ]
 })
 export class ServicesRoutingModule { }
