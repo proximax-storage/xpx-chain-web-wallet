@@ -9,10 +9,9 @@
           <ng-container>
             <mdb-card-body class="px-lg-5 backg-beige">
 
-              <form [formGroup]="namespaceForm" (ngSubmit)="create()">
+              <form [formGroup]="namespaceForm" (ngSubmit)="createNamespace()">
                 <div class="row">
-                  <div class="col-xs-12 col-sm-6  col-md-10 col-lg-6 ">
-
+                  <div class="col-xs-12 col-sm-12  col-md-12 col-lg-6 ">
                     <!-- name -->
                     <div class="md-form mt-5">
                       <i class="fa fa-address-book prefix text-gris"></i>
@@ -20,30 +19,23 @@
                         mdbInputDirective data-success="Valid name" [errorMessage]="getError('name')">
                       <label for="name">name</label>
                     </div>
-                    <!-- <div class="md-form mt-5">
-                      <div class="row">
-
-                        <div class="col-xs-9 col-xl-9 col-lg-9 col-md-9 col-sm-9">
-                          <i class="fa fa-address-book prefix text-gris"></i>
-                          <input type="text" autocomplete="off" formControlName="name" required id="name" class="form-control"
-                            mdbInputDirective mdbInputDirective data-success="Valid name" [errorMessage]="getError('name')">
-                          <label style="margin-left: 3.5rem;" for="name">name</label>
-                        </div>
-                        <div style="margin-top: 0.4rem !important;" class="col-xs-3 col-xl-3 col-lg-3 col-md-3 col-sm-3 ">
-                          <button mdbBtn size="sm" type="button" color="default" rounded="true" class="waves-light"
-                            mdbWavesEffect (click)="getNamespace()">Search</button>
-                        </div>
-                        <div style="margin-left: 51px; margin-top: 0.3rem !important;" class="alert background-info white-text"
-                          role="alert">
-                          Check your namespace with the search action
+                    <!-- Parent Namespace -->
+                    <div class="row">
+                      <div class="col-xs-8 col-xl-8 col-lg-8 col-md-8 col-sm-9">
+                        <div class="md-form  mt-3">
+                          <i class="fa fa-user prefix text-gris"></i>
+                          <mdb-select [options]="arrayselect" formControlName="namespace" class="colorful-select dropdown-default"
+                            mdbInputDirective [errorMessage]="getError('namespace')" (selected)="optionSelected($event)"></mdb-select>
                         </div>
                       </div>
-                    </div> -->
-                    <!-- Parent Namespace -->
-                    <div class="md-form  mt-3">
-                      <i class="fa fa-user prefix text-gris"></i>
-                      <mdb-select [options]="arrayselect" formControlName="namespace" class="colorful-select dropdown-default"
-                        mdbInputDirective [errorMessage]="getError('namespace')"></mdb-select>
+                      <div class="col-xs-4 col-xl-4 col-lg-4 col-md-4 col-sm-4">
+                        <button (click)="basicModal.show()" class="pointer" mdbBtn color="default" size="lg" type="button"
+                          mdbWavesEffect mdbTooltip="see state or renew namespace" placement="top" [disabled]="statusbuttonNamespace">
+                          <mdb-badge *ngIf="!status" warning="true">Expire</mdb-badge>
+                          <mdb-badge *ngIf="status" success="true">Active</mdb-badge>
+                          | Renovate
+                        </button>
+                      </div>
                     </div>
                     <!-- <div class="md-form mt-5">
                       <i class="fa fa-address-book prefix text-gris"></i>
@@ -51,7 +43,7 @@
                         class="form-control" data-success="Valid duration" [errorMessage]="getError('duration')">
                       <label for="duration" class="">Duration</label>
                     </div> -->
-
+                    <!-- Fee -->
                     <div class="md-form mt-5">
                       <div class="row">
                         <div class="col-xs-12 col-xl-6 col-lg-6 col-md-12 col-sm-12">
@@ -82,7 +74,7 @@
                     </div>
                   </div>
 
-                  <div class="col-xs-12 col-sm-6  col-md-10 col-lg-6 ">
+                  <div class="col-xs-12 col-sm-12  col-md-12 col-lg-6 ">
                     <p class="text-justify">Namespaces have certain restrictions with respect to the characters being
                       allowed in the parts as well as the length of a part. A root namespace may have a length of 16
                       characters while sub-namespaces may have a length of 64 characters. Valid characters are:</p>
@@ -121,6 +113,108 @@
           </ng-container>
         </mdb-card>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div mdbModal #basicModal="mdbModal" style="overflow-y: auto" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-fluid" role="document">
+    <div class="modal-content form-elegant">
+      <div class="modal-header text-center background-header-box">
+        <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3" id="myModalLabel"><strong class="color-white">Renovar
+            namespace</strong></h3>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="basicModal.hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form [formGroup]="namespaceRenewForm" (ngSubmit)="renewNamespace()">
+        <div class="modal-body mx-4">
+          <div class="row ">
+            <div class="col-xs-12 col-sm-12  col-md-12 col-lg-6">
+              <!-- name -->
+
+              <div class="md-form mt-5">
+                <i class="fa fa-address-book prefix text-gris"></i>
+                <input type="text" autocomplete="off" formControlName="name" required id="name" class="form-control"
+                  mdbInputDirective data-success="Valid name" [errorMessage]="getError('name')">
+                <label for="name">Namespaces: </label>
+              </div>
+
+              <!-- fee -->
+              <div class="md-form mt-5">
+                <div class="row">
+                  <div class="col-xs-12 col-xl-6 col-lg-6 col-md-12 col-sm-12">
+                    <i class="fa fa-address-book prefix text-gris"></i>
+                    <label class="form-label" for="">Fee:</label>
+                    <div class="alert background-info white-text form-label-alert-m80" role="alert">
+                      {{fee}}
+                    </div>
+                  </div>
+                  <div class="col-xs-12 col-xl-6 col-lg-6 col-md-12 col-sm-12">
+                    <i class="fa fa-address-book prefix text-gris"></i>
+                    <label class="form-label" for="">Rental fee:</label>
+                    <div class="alert background-info white-text form-label-alert-m140" role="alert">
+                      {{fee}}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Password -->
+              <div class="md-form mt-5">
+                <i class="fa fa-address-book prefix text-gris"></i>
+                <input type="password" autocomplete="off" formControlName="password" required id="password" class="form-control"
+                  mdbInputDirective data-success="Valid password" [errorMessage]="getError('password')">
+                <label for="password">password</label>
+              </div>
+
+            </div>
+
+            <div class="col-xs-12 col-sm-12  col-md-12 col-lg-6 ">
+
+              <h5> Fees </h5>
+              <p class="text-justify">
+                Renewing a namespace costs the same amount as registering a new namespace, 0 XPX.
+              </p>
+              <h5> Root Namespaces </h5>
+              <p class="text-justify">
+                Only root namespaces need to be renewed. All sub-namepsaces will be renewed automatically upon renewal
+                of
+                the root namespace.
+              </p>
+              <h5> Renewal Period</h5>
+              <p class="text-justify">
+                Namespace contracts are on-chain rental contracts good for one year. The contract may be renewed one
+                month
+                prior to or after their expiration date.
+              </p>
+              <p class="text-justify">
+                If not renewed in time, all sub-namespaces and mosaics created under it will be lost.
+              </p>
+            </div>
+
+          </div>
+          <div class="mt-4rm align-self-center">
+            <div class="row ">
+              <div class="mx-auto">
+                <div class="row">
+                  <div class="col-xs-6">
+                    <button mdbBtn type="button" rounded="true" class="waves-light btn-reverse" mdbWavesEffect type="button"
+                      (click)="basicModal.hide()">Close</button>
+                  </div>
+                  <div class="col-xs-6">
+                    <button mdbBtn type="submit" color="default" rounded="true" class="waves-light" mdbWavesEffect type="submit">renew</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+        </div>
+      </form>
     </div>
   </div>
 </div>

@@ -343,6 +343,8 @@ export class NemProvider {
 
     return this.namespaceHttp.getNamespace(new NamespaceId(namespace))
   }
+  
+ 
 
   registerRootNamespaceTransaction(name:string,network:NetworkType,duration:number=100):RegisterNamespaceTransaction{
     // Crear namespace transaction
