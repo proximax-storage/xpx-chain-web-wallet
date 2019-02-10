@@ -6,6 +6,7 @@ import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs/operators';
 import { AppConfig } from '../../../../config/app.config';
+import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
 
 @Component({
   selector: 'app-create-namespace',
@@ -19,29 +20,30 @@ export class CreateNamespaceComponent implements OnInit {
   public namespachangeinfo: any
   public startHeight: number
   public endHeight: number
-  private validateForm: boolean = false;
-  private status: boolean = true
+  public block:number
   public statusbuttonNamespace: boolean = true
-
+  private validateForm: boolean = false;
+  public status: boolean = true
   private namespaceInfo: Array<object> = []
   private typetransfer: number = 1;
+  public fee: string;
+  private feeType: string = 'XPX';
+  private labelnamespace: string = '';
   private namespace: Array<object> = [{
     value: '1',
     label: '.(New root Namespace)',
     selected: true,
     disabled: false
   }];
-  private fee: string;
-  private feeType: string = 'XPX';
-  private labelnamespace: string = '';
-  private arrayselect: Array<object> = [{
+
+  public arrayselect: Array<object> = [{
     value: '1',
     label: '.(New root Namespace)',
     selected: true,
     disabled: false
   }];
   validateNamespace = true;
-  basicModal: any;
+ 
  
 
 
@@ -52,6 +54,7 @@ export class CreateNamespaceComponent implements OnInit {
     private sharedService: SharedService,
     private route: ActivatedRoute,
     private router: Router,
+    private dataBridgeService:DataBridgeService
 
   ) { }
 
@@ -306,11 +309,11 @@ export class CreateNamespaceComponent implements OnInit {
   * @param {*} namespace
   * @memberof CreateNamespaceComponent
   */
-  private optionSelected(namespace: any) {
+  optionSelected(namespace: any) {
     this.namespachangeinfo = this.namespaceInfo.filter((book: any) => (book.name === namespace.value))
-    
-    
+
     if (this.namespachangeinfo.length > 0) {
+      this.getBlock()
       console.log(this.namespachangeinfo )
       this.startHeight = this.namespachangeinfo[0].dataNamespace.startHeight.lower
       this.endHeight = this.namespachangeinfo[0].dataNamespace.endHeight.lower
@@ -326,6 +329,17 @@ export class CreateNamespaceComponent implements OnInit {
     this.namespaceForm.get('password').patchValue('')
     this.namespaceForm.get('namespace').patchValue('1')
     this.statusbuttonNamespace = true
+
+  }
+
+  getBlock(){
+    this.dataBridgeService.getIblock().subscribe(
+      async response => {
+        this.block =response
+
+      }
+    )
+
 
   }
 

@@ -7,14 +7,17 @@ import { environment } from '../../../environments/environment';
 import { NodeService } from '../../servicesModule/services/node.service';
 import { SharedService } from './shared.service';
 import { MessageService } from './message.service';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataBridgeService {
-
+  block: number;
   url: any
   connector: Listener;
+  blockSubject: BehaviorSubject<number> = new BehaviorSubject<number>(this.block);
+  block$: Observable<number> = this.blockSubject.asObservable();
   constructor(
     private walletService: WalletService,
     private transactionsService: TransactionsService,
@@ -91,6 +94,7 @@ export class DataBridgeService {
       this.getTransactionsConfirmedSocket(connector, audio);
       this.getTransactionsUnConfirmedSocket(connector, audio);
       this.getStatusSocket(connector, audio);
+      this.getBlockSocket(connector)
     }, (error) => {
       console.error("errroooor de soquer", error);
       this.reconnect(connector);
@@ -151,6 +155,23 @@ export class DataBridgeService {
         });
     });
   }
+  /**
+ * Get the status from the block
+ *
+ * @param {Listener} connector
+ * @param {HTMLAudioElement} audio
+ * @memberof DataBridgeService
+ */
+  getBlockSocket(connector: Listener) {
+    console.log("Estableciendo conexión con status");
+    connector.newBlock().subscribe(res => {
+      console.log("block::::: ", res.height.lower);
+      this.setblock(res.height.lower)
+    }, err => {
+      this.sharedService.showError('Error', err);
+      console.error("err::::::", err)
+    });
+  }
 
   /**
    * Get the status from the socket
@@ -183,6 +204,25 @@ export class DataBridgeService {
     connector.close();
     this.openConnection(connector);
     return;
+  }
+  /**
+   * Allow to load the component in the routing
+   *
+   * @param {*} params
+   * @memberof DataBridgeService
+   */
+  setblock(params: any) {
+    this.block = params;
+    this.blockSubject.next(this.block);
+  }
+  /**
+  *Set value to log in and block
+  *
+  * @returns
+  * @memberof DataBridgeService
+  */
+  getIblock() {
+    return this.block$;
   }
 
   /**

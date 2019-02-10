@@ -8,6 +8,7 @@ import { NodeService } from "../servicesModule/services/node.service";
 import { NemProvider } from '../shared/services/nem.provider';
 import { mergeMap, first } from 'rxjs/operators';
 import { MessageService } from '../shared/services/message.service';
+import { DataBridgeService } from '../shared/services/data-bridge.service';
 
 export interface HorizontalHeaderInterface {
   home: Header;
@@ -60,7 +61,8 @@ export class HeaderComponent implements OnInit {
     private walletService: WalletService,
     private nemProvider: NemProvider,
     private nodeService: NodeService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private dataBridgeService: DataBridgeService,
   ) {
 
   }
@@ -383,6 +385,7 @@ export class HeaderComponent implements OnInit {
    * @memberof HeaderComponent
    */
   logout(param?: String) {
+    this.dataBridgeService.closeConenection();
     this._loginService.destroyNodeSelected();
     this._loginService.setLogged(false);
     this.route.navigate([`/${param}`]);
@@ -420,6 +423,7 @@ export class HeaderComponent implements OnInit {
         if (this.showOnlyLogged) {
           this.getBalance();
         } else {
+          this.dataBridgeService.closeConenection();
           this.horizontalHeader.amount.name = ''
         }
       }
