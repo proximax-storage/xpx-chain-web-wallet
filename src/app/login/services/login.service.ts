@@ -53,7 +53,7 @@ export class LoginService {
       return false;
     }
 
-    this.transactionsService.destroyAllTransactions();
+    // this.transactionsService.destroyAllTransactions();
     this.dataBridgeService.closeConenection();
     this.dataBridgeService.connectnWs();
     this.route.navigate([`/${AppConfig.routes.dashboard}`]);

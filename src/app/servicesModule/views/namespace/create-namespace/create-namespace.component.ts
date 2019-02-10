@@ -21,7 +21,7 @@ export class CreateNamespaceComponent implements OnInit {
   public endHeight: number
   private validateForm: boolean = false;
   private status: boolean = true
-  private statusbuttonNamespace: boolean = true
+  public statusbuttonNamespace: boolean = true
 
   private namespaceInfo: Array<object> = []
   private typetransfer: number = 1;
@@ -41,6 +41,10 @@ export class CreateNamespaceComponent implements OnInit {
     disabled: false
   }];
   validateNamespace = true;
+  basicModal: any;
+ 
+
+
   constructor(
     private fb: FormBuilder,
     private walletService: WalletService,

@@ -6,7 +6,7 @@ import { Router, NavigationEnd } from '@angular/router';
 import { WalletService } from "../shared";
 import { NodeService } from "../servicesModule/services/node.service";
 import { NemProvider } from '../shared/services/nem.provider';
-import { mergeMap } from 'rxjs/operators';
+import { mergeMap, first } from 'rxjs/operators';
 import { MessageService } from '../shared/services/message.service';
 
 export interface HorizontalHeaderInterface {
@@ -69,7 +69,7 @@ export class HeaderComponent implements OnInit {
     this.buildHeader();
     this.readRoute();
     this.readLogged();
-    // this.balance();
+    this.balance();
   }
 
   /**
@@ -78,11 +78,13 @@ export class HeaderComponent implements OnInit {
       * @memberof HeaderComponent
       */
   balance() {
-    this.messageService.currentMessage.subscribe(async message => {
+    this.messageService.getCurrentMessage().subscribe(async message => {
       this.message = message;
+      console.log(message);
       if (this.message === 'balanceChanged') {
         if (this.showOnlyLogged) {
-          await this.getBalance();
+          console.log("Change...");
+          this.getBalance();
         }
       }
     });
@@ -392,10 +394,8 @@ export class HeaderComponent implements OnInit {
    * @memberof HeaderComponent
    */
   getBalance() {
-    this.nemProvider.getBalance(this.walletService.address).pipe(mergeMap((_) => _)
-    ).subscribe(
+    this.nemProvider.getBalance(this.walletService.address).pipe(mergeMap((_) => _)).pipe(first()).subscribe(
       next => {
-        console.log("RESPUESTA", next)
         console.log('You have', next.relativeAmount());
         this.horizontalHeader.amount.name = `Balance ${next.relativeAmount().toFixed(5)} ${next.mosaicName}`;
       },
@@ -418,8 +418,8 @@ export class HeaderComponent implements OnInit {
         console.log(response);
         this.showOnlyLogged = response;
         if (this.showOnlyLogged) {
-          await this.getBalance();
-        }else {
+          this.getBalance();
+        } else {
           this.horizontalHeader.amount.name = ''
         }
       }

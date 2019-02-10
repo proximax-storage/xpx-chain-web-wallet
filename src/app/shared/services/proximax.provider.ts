@@ -78,31 +78,7 @@ export class ProximaxProvider {
   } */
 
 
-  async getInfoMosaics(mosaicsId: MosaicId[]) {
-    const promise = await new Promise(async (resolve, reject) => {
-      console.log("INFO MOSAIC IN GETMOSAIC", this.infoMosaic);
-      if (this.infoMosaic === undefined) {
-        console.warn("********** INFO MOSAIC ES UNDEFINED **********");
-        const mosaicsInfo = await this.nemProvider.getMosaics(mosaicsId).toPromise();
-        // this.setInfoMosaic(this.infoMosaic);
-        // console.log("Ya va a responder...", this.infoMosaic);
-        resolve(mosaicsInfo);
-      } else {
-        // console.log("Información de mosaico en caché", this.infoMosaic);
-        reject(null);
-        // if (this.infoMosaic.mosaicId === mosaicId) {
-        //   resolve(this.infoMosaic);
-        // } else {
-        //   this.infoMosaic = await this.nemProvider.getMosaic(mosaicId).toPromise();
-        //   this.setInfoMosaic(this.infoMosaic);
-        //   resolve(this.infoMosaic);
-        // }
-      }
-    });
 
-    console.log("***RESPUESTA CONSULTA DE MOSAICOS****", promise);
-    return await promise;
-  }
 
   setInfoMosaic(mosaicInfo: MosaicInfo) {
     this.infoMosaic = mosaicInfo;

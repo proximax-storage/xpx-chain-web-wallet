@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
 import { first } from "rxjs/operators";
-import { Listener, MosaicInfo } from "proximax-nem2-sdk";
+import { Listener } from "proximax-nem2-sdk";
 import { WalletService } from "./wallet.service";
 import { TransactionsService } from "../../transactions/service/transactions.service";
 import { environment } from '../../../environments/environment';
-import { NemProvider } from './nem.provider';
-import { ProximaxProvider } from './proximax.provider';
 import { NodeService } from '../../servicesModule/services/node.service';
 import { SharedService } from './shared.service';
+import { MessageService } from './message.service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,10 +18,9 @@ export class DataBridgeService {
   constructor(
     private walletService: WalletService,
     private transactionsService: TransactionsService,
-    private nemProvider: NemProvider,
-    private proximaxProvider: ProximaxProvider,
     private nodeService: NodeService,
     private sharedService: SharedService,
+    private messageService: MessageService
   ) { }
 
 
@@ -116,6 +114,7 @@ export class DataBridgeService {
           const response = await this.transactionsService.buildTransactions([incomingTransaction]);
           response.forEach(element => {
             audio.play();
+            this.messageService.changeMessage('balanceChanged');
             transactionPushed.unshift(element);
             this.transactionsService.setConfirmedTransaction$(transactionPushed);
             this.destroyUnconfirmedTransaction(element);
