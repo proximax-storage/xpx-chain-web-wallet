@@ -59,7 +59,7 @@ export class ServicesComponent implements OnInit {
       'Namespaces are domain names. Each namespaces is unique and authenticates mosaics (assets) issued on it or on its subdomains',
       {
         createNamespace: this.structureServiceRoute('Create namespace', `/${AppConfig.routes.createNamespace}`),
-        renewNamespace: this.structureServiceRoute('Renew namespace',  `/${AppConfig.routes.editNamespace}`)
+       // renewNamespace: this.structureServiceRoute('Renew namespace',  `/${AppConfig.routes.editNamespace}`)
       }, true
     );
 
