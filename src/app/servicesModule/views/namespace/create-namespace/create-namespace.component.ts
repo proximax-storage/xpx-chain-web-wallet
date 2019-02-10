@@ -17,9 +17,12 @@ export class CreateNamespaceComponent implements OnInit {
   public namespaceForm: FormGroup;
   public namespaceRenewForm: FormGroup;
   public namespachangeinfo: any
+  public startHeight: number
+  public endHeight: number
   private validateForm: boolean = false;
   private status: boolean = true
   private statusbuttonNamespace: boolean = true
+
   private namespaceInfo: Array<object> = []
   private typetransfer: number = 1;
   private namespace: Array<object> = [{
@@ -30,6 +33,7 @@ export class CreateNamespaceComponent implements OnInit {
   }];
   private fee: string;
   private feeType: string = 'XPX';
+  private labelnamespace: string = '';
   private arrayselect: Array<object> = [{
     value: '1',
     label: '.(New root Namespace)',
@@ -65,10 +69,12 @@ export class CreateNamespaceComponent implements OnInit {
       for (let dataNamespace of this.route.snapshot.data['dataNamespace']) {
         if (dataNamespace.depth == 1) {
           await this.getNameSpaceRoot(dataNamespace, dataNamespace.active);
-        } else if (dataNamespace.depth == 2) {
-          await this.getNameSpaceSub(dataNamespace, dataNamespace.active);
-        } else if (dataNamespace.depth == 3) {
-          await this.getNameSpaceSubnivel(dataNamespace, dataNamespace.active);
+        }
+        // else if (dataNamespace.depth == 2) {
+        //   await this.getNameSpaceSub(dataNamespace, dataNamespace.active);
+        // } 
+        else {
+          await this.getNameSpaceSubnivel(dataNamespace, dataNamespace.active, dataNamespace.depth);
         }
       }
     }
@@ -76,12 +82,9 @@ export class CreateNamespaceComponent implements OnInit {
     this.arrayselect = this.namespace.sort(function (a: any, b: any) {
       return a.label == b.label ? 0 : +(a.label > b.label) || -1;
     })
-    console.log('namespaceInfo:', this.namespaceInfo)
   }
 
   async getNameSpaceRoot(rootNamespace: any, status: boolean) {
-
-
     const promise = new Promise((resolve, reject) => {
       this.nemProvider.namespaceHttp.getNamespacesName(rootNamespace.levels).pipe(first()).subscribe(
         (namespaceName: any) => {
@@ -109,37 +112,15 @@ export class CreateNamespaceComponent implements OnInit {
     });
     return await promise;
   }
+  async getNameSpaceSubnivel(subNamespace: any, status: boolean, depth: number) {
 
-  async getNameSpaceSub(subNamespace: any, status: boolean) {
-    const id = subNamespace.levels.filter((book, pos, arr) => (book.id.lower !== subNamespace.parentId.id.lower))
     const promise = new Promise((resolve, reject) => {
-      this.nemProvider.namespaceHttp.getNamespacesName(id).pipe(first()).subscribe(
+      this.nemProvider.namespaceHttp.getNamespacesName([subNamespace.levels[depth - 1]]).pipe(first()).subscribe(
         (namespaceName: any) => {
-          const namespc = namespaceName.sort()
+          this.labelnamespace = ''
+          const name = this.ordernamespace(namespaceName.sort())
           this.namespace.push({
-            value: `${namespc[1].name}.${namespc[0].name}`, label: `${namespc[1].name}.${namespc[0].name}`, selected: false,
-            disabled: false
-          });
-          resolve(true);
-        }, (error: any) => {
-          this.blockUI.stop(); // Stop blocking
-          console.error("Has ocurred a error", error);
-          this.router.navigate([AppConfig.routes.home]);
-          this.sharedService.showError('', error);
-          reject(error);
-        });
-    });
-    return await promise;
-  }
-
-  async getNameSpaceSubnivel(subNamespace: any, status: boolean) {
-    const id = subNamespace.levels.filter((book, pos, arr) => (book.id.lower !== subNamespace.parentId.id.lower))
-    const promise = new Promise((resolve, reject) => {
-      this.nemProvider.namespaceHttp.getNamespacesName(id).pipe(first()).subscribe(
-        (namespaceName: any) => {
-          const namespc = namespaceName.sort()
-          this.namespace.push({
-            value: `${namespc[1].name}.${namespc[2].name}.${namespc[0].name}`, label: `${namespc[1].name}.${namespc[2].name}.${namespc[0].name}`, selected: false,
+            value: name, label: name, selected: false,
             disabled: false
           });
           resolve(true);
@@ -167,10 +148,7 @@ export class CreateNamespaceComponent implements OnInit {
 
 
     this.namespaceForm.get('namespace').valueChanges.subscribe(namespace => {
-      console.log('name:', namespace)
       this.typetransfer = (namespace == 1) ? 1 : 2
-      console.log(this.typetransfer)
-
     })
 
     this.namespaceForm.get('name').valueChanges.subscribe(name => {
@@ -178,6 +156,28 @@ export class CreateNamespaceComponent implements OnInit {
     })
   }
 
+  ordernamespace(value, old: any = '') {
+    if (value.length) {
+      for (let i of value) {
+        if (i.parentId == undefined && old == '') {
+          this.labelnamespace = this.labelnamespace.concat(`${i.name}`)
+          this.ordernamespace(value.filter(function (value) {
+            return value.namespaceId.id.lower != i.namespaceId.id.lower;
+          }), i)
+          break
+        } else if (i.parentId != undefined && old != '') {
+          if (i.parentId.id.lower == old.namespaceId.id.lower) {
+            this.labelnamespace = this.labelnamespace.concat(`.${i.name}`)
+            this.ordernamespace(value.filter(function (value) {
+              return value.namespaceId.id.lower != i.namespaceId.id.lower;
+            }), i)
+            break
+          }
+        }
+      }
+      return this.labelnamespace
+    }
+  }
   namespaceIsValid(ns, isParent?) {
     // Test if correct length and if name starts with hyphens
     if (!isParent ? ns.length > 16 : ns.length > 64 || /^([_-])/.test(ns)) {
@@ -262,7 +262,7 @@ export class CreateNamespaceComponent implements OnInit {
 
           this.nemProvider.announce(signedTransaction).subscribe(
             x => {
-              this.basicModal.hide()
+              // this.basicModal.hide()
               console.log(x)
               this.resectForm()
               this.blockUI.stop(); // Stop blocking
@@ -283,7 +283,6 @@ export class CreateNamespaceComponent implements OnInit {
   signedTransactionPromise(common): Promise<any> {
     const account = this.nemProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.network);
     const name = this.namespaceForm.get('name').value || this.namespaceRenewForm.get('name').value
-    console.log('console', name)
     if (this.typetransfer == 1) {
       const registerRootNamespaceTransaction = this.nemProvider.registerRootNamespaceTransaction(name, this.walletService.network)
       const signedTransaction = account.sign(registerRootNamespaceTransaction);
@@ -305,7 +304,12 @@ export class CreateNamespaceComponent implements OnInit {
   */
   private optionSelected(namespace: any) {
     this.namespachangeinfo = this.namespaceInfo.filter((book: any) => (book.name === namespace.value))
+    
+    
     if (this.namespachangeinfo.length > 0) {
+      console.log(this.namespachangeinfo )
+      this.startHeight = this.namespachangeinfo[0].dataNamespace.startHeight.lower
+      this.endHeight = this.namespachangeinfo[0].dataNamespace.endHeight.lower
       this.namespaceRenewForm.get('name').patchValue(this.namespachangeinfo[0].name)
       this.statusbuttonNamespace = (this.namespachangeinfo[0].dataNamespace.depth == 1) ? false : true
     } else {

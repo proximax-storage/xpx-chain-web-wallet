@@ -86,11 +86,21 @@
                       strings are reserved and thus not allowed as namespace parts. Among the disallowed namespace
                       parts are:</p>
                     <div class="alert background-info white-text" role="alert">
-                      nem, user, account, org, com, biz, net, edu, mil, gov and info.
+                      xpx, nem, user, account, org, com, biz, net, edu, mil, gov and info.
                     </div>
                     <p class="text-justify">This list is not final and can be extended in the future. Thus 'user.alice'
-                      or 'alice.user' are not allowed in the NEM namespace system. The namespace may have up to 3
+                      or 'alice.user' are not allowed in the XPX namespace system. The namespace may have up to 3
                       parts, thus 'qm.metals.silver' is valid while 'qm.metals.silver.coin' is not.</p>
+
+                    <p>
+
+                      where it shows the status of the
+                      namespace could renew. with just select it
+                      <button class="pointer" mdbBtn color="default" size="sm" type="button" disabled>
+                        <mdb-badge success="true">Active</mdb-badge>
+                        | Renovate
+                      </button>
+                    </p>
                   </div>
 
                 </div>
@@ -123,7 +133,7 @@
   <div class="modal-dialog modal-fluid" role="document">
     <div class="modal-content form-elegant">
       <div class="modal-header text-center background-header-box">
-        <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3" id="myModalLabel"><strong class="color-white">Renovar
+        <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3" id="myModalLabel"><strong class="color-white">Renovate
             namespace</strong></h3>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="basicModal.hide()">
           <span aria-hidden="true">&times;</span>
@@ -133,8 +143,8 @@
         <div class="modal-body mx-4">
           <div class="row ">
             <div class="col-xs-12 col-sm-12  col-md-12 col-lg-6">
-              <!-- name -->
 
+              <!-- name -->
               <div class="md-form mt-5">
                 <i class="fa fa-address-book prefix text-gris"></i>
                 <input type="text" autocomplete="off" formControlName="name" required id="name" class="form-control"
@@ -173,7 +183,25 @@
             </div>
 
             <div class="col-xs-12 col-sm-12  col-md-12 col-lg-6 ">
+              <div class="row text-center mt-5">
+                <h4> Namespace information </h4>
+              </div>
+              <div class="row text-center">
 
+
+                <div class="col-sm">
+                  <i class="fa fa-hourglass-start  text-gris fa-3x"></i>
+                  <p>Start block: <span class="font-weight-bold">{{startHeight}} </span></p>
+                </div>
+                <div class="col-sm">
+                  <i class="fa fa-hourglass-end  text-gris fa-3x"></i>
+                  <p>End block: <span class="font-weight-bold">{{endHeight}}</span></p>
+                </div>
+                <div class="col-sm">
+                  <i class="fa fa-hourglass-half text-gris fa-3x"></i>
+                  <p>cCurrent block: <span class="font-weight-bold">000001 </span></p>
+                </div>
+              </div>
               <h5> Fees </h5>
               <p class="text-justify">
                 Renewing a namespace costs the same amount as registering a new namespace, 0 XPX.
@@ -186,9 +214,8 @@
               </p>
               <h5> Renewal Period</h5>
               <p class="text-justify">
-                Namespace contracts are on-chain rental contracts good for one year. The contract may be renewed one
-                month
-                prior to or after their expiration date.
+                The namespace contracts are leases and last according to the amount of the block you rent. by default
+                they are 100 (one block is generated every 15 seconds)
               </p>
               <p class="text-justify">
                 If not renewed in time, all sub-namespaces and mosaics created under it will be lost.
