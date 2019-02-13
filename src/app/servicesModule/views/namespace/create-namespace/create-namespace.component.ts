@@ -242,7 +242,6 @@ export class CreateNamespaceComponent implements OnInit {
 
           this.nemProvider.announce(signedTransaction).subscribe(
             x => {
-              console.log(x)
               this.resectForm()
               this.blockUI.stop(); // Stop blocking
               this.sharedService.showSuccess('success', 'create namespace sent')
@@ -294,7 +293,6 @@ export class CreateNamespaceComponent implements OnInit {
     const name: string = this.namespaceForm.get('name').value || this.namespaceRenewForm.get('name').value
     const duration: number = this.namespaceForm.get('duration').value || this.namespaceRenewForm.get('duration').value
 
-    console.log('duration', duration)
     if (this.typetransfer == 1) {
       const registerRootNamespaceTransaction = this.nemProvider.registerRootNamespaceTransaction(name, this.walletService.network, duration)
       const signedTransaction = account.sign(registerRootNamespaceTransaction);
