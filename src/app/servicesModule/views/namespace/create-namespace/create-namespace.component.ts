@@ -7,7 +7,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs/operators';
 import { AppConfig } from '../../../../config/app.config';
 import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
-
 @Component({
   selector: 'app-create-namespace',
   templateUrl: './create-namespace.component.html',
@@ -17,36 +16,36 @@ export class CreateNamespaceComponent implements OnInit {
   @BlockUI() blockUI: NgBlockUI;
   public namespaceForm: FormGroup;
   public namespaceRenewForm: FormGroup;
-  public namespachangeinfo: any
-  public startHeight: number
-  public endHeight: number
-  public block:number
-  public statusbuttonNamespace: boolean = true
+  public namespachangeinfo: any;
+  public startHeight: number;
+  public endHeight: number;
+  public block: number;
+  public statusbuttonNamespace: boolean = true;
   private validateForm: boolean = false;
-  public status: boolean = true
-  private namespaceInfo: Array<object> = []
+  public status: boolean = true;
+  public showDuration: boolean = false;
+  private namespaceInfo: Array<object> = [];
   private typetransfer: number = 1;
   public fee: string;
   private feeType: string = 'XPX';
   private labelnamespace: string = '';
-  private namespace: Array<object> = [{
-    value: '1',
-    label: '.(New root Namespace)',
-    selected: true,
-    disabled: false
-  }];
-
-  public arrayselect: Array<object> = [{
-    value: '1',
-    label: '.(New root Namespace)',
-    selected: true,
-    disabled: false
-  }];
+  private namespace: Array<object> = [
+    {
+      value: '1',
+      label: '.(New root Namespace)',
+      selected: true,
+      disabled: false
+    }
+  ];
+  public arrayselect: Array<object> = [
+    {
+      value: '1',
+      label: '.(New root Namespace)',
+      selected: true,
+      disabled: false
+    }
+  ];
   validateNamespace = true;
- 
- 
-
-
   constructor(
     private fb: FormBuilder,
     private walletService: WalletService,
@@ -54,8 +53,7 @@ export class CreateNamespaceComponent implements OnInit {
     private sharedService: SharedService,
     private route: ActivatedRoute,
     private router: Router,
-    private dataBridgeService:DataBridgeService
-
+    private dataBridgeService: DataBridgeService
   ) { }
 
   ngOnInit() {
@@ -63,8 +61,8 @@ export class CreateNamespaceComponent implements OnInit {
     this.getNamespaceName();
     const fee = '0.0';
     this.fee = `${fee} ${this.feeType}`
-
   }
+
   /**
   * Get namespace
   *
@@ -77,9 +75,6 @@ export class CreateNamespaceComponent implements OnInit {
         if (dataNamespace.depth == 1) {
           await this.getNameSpaceRoot(dataNamespace, dataNamespace.active);
         }
-        // else if (dataNamespace.depth == 2) {
-        //   await this.getNameSpaceSub(dataNamespace, dataNamespace.active);
-        // } 
         else {
           await this.getNameSpaceSubnivel(dataNamespace, dataNamespace.active, dataNamespace.depth);
         }
@@ -119,8 +114,8 @@ export class CreateNamespaceComponent implements OnInit {
     });
     return await promise;
   }
-  async getNameSpaceSubnivel(subNamespace: any, status: boolean, depth: number) {
 
+  async getNameSpaceSubnivel(subNamespace: any, status: boolean, depth: number) {
     const promise = new Promise((resolve, reject) => {
       this.nemProvider.namespaceHttp.getNamespacesName([subNamespace.levels[depth - 1]]).pipe(first()).subscribe(
         (namespaceName: any) => {
@@ -146,16 +141,24 @@ export class CreateNamespaceComponent implements OnInit {
     this.namespaceForm = this.fb.group({
       name: ['', [Validators.required, Validators.maxLength(64)]],
       namespace: ['1'],
+      duration: [''],
       password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]],
     });
     this.namespaceRenewForm = this.fb.group({
       name: [{ value: '', disabled: true }, [Validators.required, Validators.maxLength(64)]],
+      duration: [''],
       password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]],
     });
 
-
     this.namespaceForm.get('namespace').valueChanges.subscribe(namespace => {
       this.typetransfer = (namespace == 1) ? 1 : 2
+      this.showDuration =false
+      if(namespace == 1){
+        this.showDuration =false
+      }else{
+        this.showDuration =true
+      }
+
     })
 
     this.namespaceForm.get('name').valueChanges.subscribe(name => {
@@ -286,12 +289,14 @@ export class CreateNamespaceComponent implements OnInit {
     }
   }
 
-
   signedTransactionPromise(common): Promise<any> {
     const account = this.nemProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.network);
-    const name = this.namespaceForm.get('name').value || this.namespaceRenewForm.get('name').value
+    const name: string = this.namespaceForm.get('name').value || this.namespaceRenewForm.get('name').value
+    const duration: number = this.namespaceForm.get('duration').value || this.namespaceRenewForm.get('duration').value
+
+    console.log('duration', duration)
     if (this.typetransfer == 1) {
-      const registerRootNamespaceTransaction = this.nemProvider.registerRootNamespaceTransaction(name, this.walletService.network)
+      const registerRootNamespaceTransaction = this.nemProvider.registerRootNamespaceTransaction(name, this.walletService.network, duration)
       const signedTransaction = account.sign(registerRootNamespaceTransaction);
       return Promise.resolve(signedTransaction);
     } else if (this.typetransfer == 2) {
@@ -314,7 +319,6 @@ export class CreateNamespaceComponent implements OnInit {
 
     if (this.namespachangeinfo.length > 0) {
       this.getBlock()
-      console.log(this.namespachangeinfo )
       this.startHeight = this.namespachangeinfo[0].dataNamespace.startHeight.lower
       this.endHeight = this.namespachangeinfo[0].dataNamespace.endHeight.lower
       this.namespaceRenewForm.get('name').patchValue(this.namespachangeinfo[0].name)
@@ -329,18 +333,13 @@ export class CreateNamespaceComponent implements OnInit {
     this.namespaceForm.get('password').patchValue('')
     this.namespaceForm.get('namespace').patchValue('1')
     this.statusbuttonNamespace = true
-
   }
 
-  getBlock(){
+  getBlock() {
     this.dataBridgeService.getIblock().subscribe(
       async response => {
-        this.block =response
-
-      }
-    )
-
-
+        this.block = response
+      })
   }
 
 }

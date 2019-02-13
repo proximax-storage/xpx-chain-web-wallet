@@ -37,18 +37,19 @@
                         </button>
                       </div>
                     </div>
-                    <!-- <div class="md-form mt-5">
+                    <!-- Duration -->
+                    <div class="md-form mt-5"   [hidden]="showDuration">
                       <i class="fa fa-address-book prefix text-gris"></i>
-                      <input formControlName="duration" mdbInputDirective type="number" required name="duration" id="duration"
-                        class="form-control" data-success="Valid duration" [errorMessage]="getError('duration')">
+                      <input formControlName="duration" mdbInputDirective type="number" min="1" pattern="^[0-9]+"
+                         name="duration" id="duration" class="form-control" data-success="Valid duration"
+                        [errorMessage]="getError('duration')">
                       <label for="duration" class="">Duration</label>
-                    </div> -->
+                    </div>
                     <!-- Fee -->
                     <div class="md-form mt-5">
                       <div class="row">
                         <div class="col-xs-12 col-xl-6 col-lg-6 col-md-12 col-sm-12">
                           <i class="fa fa-address-book prefix text-gris"></i>
-
                           <label class="form-label" for="">Fee:</label>
                           <div class="alert background-info white-text form-label-alert-m80" role="alert">
                             {{fee}}
@@ -91,9 +92,7 @@
                     <p class="text-justify">This list is not final and can be extended in the future. Thus 'user.alice'
                       or 'alice.user' are not allowed in the XPX namespace system. The namespace may have up to 3
                       parts, thus 'qm.metals.silver' is valid while 'qm.metals.silver.coin' is not.</p>
-
                     <p>
-
                       where it shows the status of the
                       namespace could renew. with just select it
                       <button class="pointer" mdbBtn color="default" size="sm" type="button" disabled>
@@ -102,7 +101,6 @@
                       </button>
                     </p>
                   </div>
-
                 </div>
 
                 <div class="mt-4rm align-self-center">
@@ -152,6 +150,14 @@
                 <label for="name">Namespaces: </label>
               </div>
 
+              <!-- Duration -->
+              <div class="md-form mt-5">
+                <i class="fa fa-address-book prefix text-gris"></i>
+                <input formControlName="duration"  mdbInputDirective type="number" min="1" pattern="^[0-9]+" 
+                  name="duration" id="duration" class="form-control" data-success="Valid duration" [errorMessage]="getError('duration')">
+                <label for="duration" class="">Duration</label>
+              </div>
+
               <!-- fee -->
               <div class="md-form mt-5">
                 <div class="row">
@@ -171,7 +177,6 @@
                   </div>
                 </div>
               </div>
-
               <!-- Password -->
               <div class="md-form mt-5">
                 <i class="fa fa-address-book prefix text-gris"></i>
@@ -179,7 +184,6 @@
                   mdbInputDirective data-success="Valid password" [errorMessage]="getError('password')">
                 <label for="password">password</label>
               </div>
-
             </div>
 
             <div class="col-xs-12 col-sm-12  col-md-12 col-lg-6 ">
@@ -187,8 +191,6 @@
                 <h4> Namespace information </h4>
               </div>
               <div class="row text-center">
-
-
                 <div class="col-sm">
                   <i class="fa fa-hourglass-start  text-gris fa-3x"></i>
                   <p>Start block: <span class="font-weight-bold">{{startHeight}} </span></p>
@@ -199,7 +201,7 @@
                 </div>
                 <div class="col-sm">
                   <i class="fa fa-hourglass-half text-gris fa-3x"></i>
-                  <p>Current block: <span class="font-weight-bold animated rotateIn infinite" >{{block}} </span></p>
+                  <p>Current block: <span class="font-weight-bold animated rotateIn infinite">{{block}} </span></p>
                 </div>
               </div>
               <h5> Fees </h5>
@@ -221,7 +223,6 @@
                 If not renewed in time, all sub-namespaces and mosaics created under it will be lost.
               </p>
             </div>
-
           </div>
           <div class="mt-4rm align-self-center">
             <div class="row ">
@@ -238,8 +239,6 @@
               </div>
             </div>
           </div>
-
-
         </div>
       </form>
     </div>
