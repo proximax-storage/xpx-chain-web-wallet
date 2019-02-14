@@ -91,7 +91,7 @@ const routes: Routes = [
     path: `${AppConfig.routes.editMosaic}`,
     component: EditMosaicComponent,
     canActivate: [LoggedGuard],
-    resolve: { dataMosaics: EditMosaicResolver }
+    resolve: { dataNamespace: CreateNamespaceResolver }
   },
   {
     path: `${AppConfig.routes.createNamespace}`,

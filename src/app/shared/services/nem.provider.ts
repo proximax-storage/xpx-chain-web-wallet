@@ -31,7 +31,9 @@ import {
   NamespaceInfo,
   RegisterNamespaceTransaction,
   MosaicDefinitionTransaction,
-  MosaicProperties
+  MosaicProperties,
+  MosaicSupplyChangeTransaction,
+  MosaicSupplyType
 } from 'proximax-nem2-sdk';
 
 import { crypto } from 'proximax-nem2-library';
@@ -383,9 +385,9 @@ export class NemProvider {
   async getInfoMosaicFromNamespacePromise(namespaceId: NamespaceId, queryParams?: QueryParams) {
     const promise = await new Promise(async (resolve, reject) => {
       if (this.infoMosaic === undefined) {
-        console.warn("********** INFO MOSAIC ES UNDEFINED **********");
+        // console.warn("********** INFO MOSAIC ES UNDEFINED **********");
         const mosaicInfo = await this.mosaicHttp.getMosaicsFromNamespace(namespaceId).toPromise();
-        console.log("RESPONDIO MOSAIC INFO");
+        // console.log("RESPONDIO MOSAIC INFO");
         // this.setInfoMosaic(this.infoMosaic);
         // console.log("Ya va a responder...", this.infoMosaic);
         resolve(mosaicInfo);
@@ -401,11 +403,18 @@ export class NemProvider {
         // }
       }
     });
-
-    console.log("***RESPUESTA CONSULTA DE MOSAICOS****", promise);
     return await promise;
   }
 
+  mosaicSupplyChangeTransaction(mosaicId:string,supply:number, network: NetworkType):MosaicSupplyChangeTransaction{
+    return MosaicSupplyChangeTransaction.create(
+      Deadline.create(),
+      new MosaicId(mosaicId),
+      MosaicSupplyType.Increase,
+      UInt64.fromUint(supply),
+      network);
+
+  }
 
 
   registerRootNamespaceTransaction(name: string, network: NetworkType, duration: number = 100): RegisterNamespaceTransaction {
@@ -418,6 +427,8 @@ export class NemProvider {
       network);
 
   }
+
+  
 
   registersubNamespaceTransaction(rootNamespace: string, subnamespaceName: string, network: NetworkType): RegisterNamespaceTransaction {
     // Crear namespace transaction
