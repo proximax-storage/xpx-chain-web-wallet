@@ -13,7 +13,7 @@ import { NodeService } from '../../servicesModule/services/node.service';
 export class LoginService {
 
 
-  subscription: [] = [];
+  subscription = {};
   logged: boolean;
   isLoggedSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(this.logged);
   isLogged$: Observable<boolean> = this.isLoggedSubject.asObservable();
