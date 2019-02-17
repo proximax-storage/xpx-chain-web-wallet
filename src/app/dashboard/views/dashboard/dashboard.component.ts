@@ -8,6 +8,7 @@ import { TransactionsService } from '../../../transactions/service/transactions.
 import { WalletService } from '../../../shared/services/wallet.service';
 import { NemProvider } from '../../../shared/services/nem.provider';
 import { LoginService } from '../../../login/services/login.service';
+import { SharedService } from '../../../shared/services/shared.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -25,7 +26,7 @@ export class DashboardComponent implements OnInit {
   cantUnconfirmed = 0;
   dataSelected: any = {};
   searching = true;
-
+  reload = false;
 
   headElements = ['Type', 'Timestamp', 'Fee', 'Sender', 'Recipient'];
   subscriptions = [
@@ -42,7 +43,8 @@ export class DashboardComponent implements OnInit {
     private transactionsService: TransactionsService,
     private walletService: WalletService,
     private nemProvider: NemProvider,
-    private loginService: LoginService
+    private loginService: LoginService,
+    private sharedService: SharedService
   ) {
 
   }
@@ -71,6 +73,8 @@ export class DashboardComponent implements OnInit {
    */
   async getTransactions() {
     //Gets all transactions confirmed in cache
+    this.searching = true;
+    this.reload = false;
     this.subscriptions['transactionsConfirmed'] = this.transactionsService.getConfirmedTransactionsCache$().subscribe(
       async transactionsConfirmedCache => {
         if (this.loginService.logged) {
@@ -119,7 +123,9 @@ export class DashboardComponent implements OnInit {
           console.log("lo invoca 1");
           this.transactionsService.setConfirmedTransaction$(response);
         }, error => {
+          this.sharedService.showInfo("", "An error occurred while searching for transactions");
           this.searching = false;
+          this.reload = true;
         });
   }
 

@@ -15,3 +15,9 @@
   background: #20807330 !important;
 }
 
+.btn-reload{
+  padding-right: 1.2rem;
+  margin-bottom: 0.5rem;
+  font-size: 1.2rem;
+  color: #30ada1;
+}
