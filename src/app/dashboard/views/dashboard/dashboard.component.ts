@@ -67,6 +67,20 @@ export class DashboardComponent implements OnInit {
 
 
   /**
+   * Destroy all subscriptions
+   *
+   * @memberof DashboardComponent
+   */
+  destroySubscription() {
+    this.subscriptions.forEach(element => {
+      if (this.subscriptions[element] !== undefined) {
+        this.subscriptions[element].unsubscribe();
+      }
+    });
+  }
+
+
+  /**
    * Get transactions
    *
    * @memberof DashboardComponent
@@ -75,6 +89,7 @@ export class DashboardComponent implements OnInit {
     //Gets all transactions confirmed in cache
     this.searching = true;
     this.reload = false;
+    this.destroySubscription();
     this.subscriptions['transactionsConfirmed'] = this.transactionsService.getConfirmedTransactionsCache$().subscribe(
       async transactionsConfirmedCache => {
         if (this.loginService.logged) {
@@ -120,7 +135,6 @@ export class DashboardComponent implements OnInit {
           const response = await this.transactionsService.buildTransactions(allTrasactions);
           this.searching = false;
           this.dashboardService.processComplete = true;
-          console.log("lo invoca 1");
           this.transactionsService.setConfirmedTransaction$(response);
         }, error => {
           this.sharedService.showInfo("", "An error occurred while searching for transactions");
@@ -144,4 +158,6 @@ export class DashboardComponent implements OnInit {
       this.unconfirmedSelected = true;
     }
   }
+
+
 }

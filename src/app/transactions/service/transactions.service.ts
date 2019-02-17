@@ -164,7 +164,8 @@ export class TransactionsService {
         });
 
         if (element['mosaics'] !== undefined) {
-          console.log("si existe mosaico en esta transaccion");
+          console.log("Este tipo de transaccion tiene mosaico");
+         /*
           // Crea un nuevo array con los id de mosaicos
           const mosaicsId = element['mosaics'].map((mosaic: Mosaic) => { return mosaic.id; });
           // Busca la información de los mosaicos, retorna una promesa
@@ -174,9 +175,7 @@ export class TransactionsService {
               // Da formato al monto de la transacción
               mosaic['amountFormatter'] = this.amountFormatter(mosaic.amount, mosaic.id, element['mosaicsInfo']);
             });
-          });
-
-          elementsConfirmed.push(element);
+          }); */
         } else {
           console.log("Esta transaccion no tiene mosaico..");
           if (element.type === this.arraTypeTransaction.registerNameSpace.id) {
@@ -188,13 +187,17 @@ export class TransactionsService {
           }else {
             element['recipientRentalFeeSink'] = 'XXXXX-XXXXX-XXXXXX';
           }
-
-          elementsConfirmed.push(element);
         }
+
+        elementsConfirmed.push(element);
       }
     }
 
-    console.log("*********************************Aqui todo el mundo contestó*****************************************");
+    console.warn("*********************************RETORNANDO RESPUESTA DE BUILD TRANSACTION****************************************");
     return elementsConfirmed;
+  }
+
+  getMosaicInfo() {
+
   }
 }
