@@ -51,6 +51,7 @@ export class DataBridgeService {
    * @memberof DataBridgeService
    */
   closeConenection() {
+    console.log("Destruye conexion con el websocket");
     this.transactionsService.destroyAllTransactions();
     if (this.connector !== undefined) {
       this.connector.close();
@@ -89,7 +90,6 @@ export class DataBridgeService {
    */
   openConnection(connector: Listener) {
     connector.open().then(() => {
-      console.log("aqui abre una nueva conexión");
       const audio = new Audio('assets/audio/ding2.ogg');
       this.getTransactionsConfirmedSocket(connector, audio);
       this.getTransactionsUnConfirmedSocket(connector, audio);
@@ -163,7 +163,6 @@ export class DataBridgeService {
  * @memberof DataBridgeService
  */
   getBlockSocket(connector: Listener) {
-    console.log("Estableciendo conexión con status");
     connector.newBlock().subscribe(res => {
       console.log("block::::: ", res.height.lower);
       this.setblock(res.height.lower)
@@ -181,7 +180,6 @@ export class DataBridgeService {
    * @memberof DataBridgeService
    */
   getStatusSocket(connector: Listener, audio: HTMLAudioElement) {
-    console.log("Estableciendo conexión con status");
     connector.status(this.walletService.address).subscribe(res => {
       console.log("Status::::: ", res);
       this.sharedService.showWarning('Warning', res.status)

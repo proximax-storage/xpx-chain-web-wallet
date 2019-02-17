@@ -36,17 +36,16 @@ export class DashboardService {
   subscribeLogged() {
     this.isLogged$ = this.loginService.getIsLogged();
     if (this.isLoadedDashboard == 1) {
-      console.log("subscription");
       this.isLogged$ = this.loginService.getIsLogged();
       this.subscriptions['isLogged'] = this.isLogged$.subscribe(
         response => {
           if (response === false) {
             // DESTROY SUBSCRIPTION WHEN IS NOT LOGIN
-            console.log("destroy subscription");
+            console.log("Ha cambiado isLogged, destroy subscription");
             this.isLoadedDashboard = 0;
             this.proximaxProvider.destroyInfoMosaic();
             this.destroySubscription();
-            this.subscriptions['isLogged'].unsubscribe();
+           // this.subscriptions['isLogged'].unsubscribe();
             this.walletService.destroyAccountInfo();
             this.mosaicService.destroyMosaicCache();
             return;
@@ -80,7 +79,6 @@ export class DashboardService {
     this.subscriptions.forEach(element => {
       if (this.subscriptions[element] !== undefined) {
         this.subscriptions[element].unsubscribe();
-        this.proximaxProvider.destroyInfoMosaic();
       }
     });
   }

@@ -23,8 +23,7 @@ export class LoginService {
     private walletService: WalletService,
     private route: Router,
     private dataBridgeService: DataBridgeService,
-    private nodeService: NodeService,
-    private transactionsService: TransactionsService
+    private nodeService: NodeService
   ) { this.setLogged(false); }
 
 

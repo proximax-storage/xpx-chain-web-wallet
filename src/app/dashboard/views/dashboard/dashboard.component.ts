@@ -7,7 +7,7 @@ import { DashboardService } from '../../services/dashboard.service';
 import { TransactionsService } from '../../../transactions/service/transactions.service';
 import { WalletService } from '../../../shared/services/wallet.service';
 import { NemProvider } from '../../../shared/services/nem.provider';
-import { ProximaxProvider } from '../../../shared/services/proximax.provider';
+import { LoginService } from '../../../login/services/login.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -42,7 +42,7 @@ export class DashboardComponent implements OnInit {
     private transactionsService: TransactionsService,
     private walletService: WalletService,
     private nemProvider: NemProvider,
-    private proximaxProvider: ProximaxProvider
+    private loginService: LoginService
   ) {
 
   }
@@ -73,13 +73,15 @@ export class DashboardComponent implements OnInit {
     //Gets all transactions confirmed in cache
     this.subscriptions['transactionsConfirmed'] = this.transactionsService.getConfirmedTransactionsCache$().subscribe(
       async transactionsConfirmedCache => {
-        console.log("Obtiene las transacciones confirmadas en cache", transactionsConfirmedCache);
-        if (transactionsConfirmedCache.length > 0) {
-          this.elementsConfirmed = transactionsConfirmedCache.slice(0, 10);
-          this.cantConfirmed = this.elementsConfirmed.length;
-          this.searching = false;
-        } else if (this.dashboardService.isLoadedDashboard === 1) {
-          this.getAllTransactions();
+        if (this.loginService.logged) {
+          console.log("Obtiene las transacciones confirmadas en cache", transactionsConfirmedCache);
+          if (transactionsConfirmedCache.length > 0) {
+            this.elementsConfirmed = transactionsConfirmedCache.slice(0, 10);
+            this.cantConfirmed = this.elementsConfirmed.length;
+            this.searching = false;
+          } else if (this.dashboardService.isLoadedDashboard === 1 && this.loginService.logged) {
+            this.getAllTransactions();
+          }
         }
       }, error => {
         console.log("Has ocurred a error", error);

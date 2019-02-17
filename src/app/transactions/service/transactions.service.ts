@@ -67,8 +67,7 @@ export class TransactionsService {
     private nemProvider: NemProvider,
     private nodeService: NodeService,
     private walletService: WalletService,
-    private messageService: MessageService,
-    private proximaxProvider: ProximaxProvider
+    private messageService: MessageService
   ) {
   }
 
@@ -85,7 +84,7 @@ export class TransactionsService {
   }
 
   setConfirmedTransaction$(data) {
-    console.log("setConfirmedTransaction: Establece las transacciones confirmadas222");
+    console.log("setConfirmedTransaction: Establece las transacciones confirmadas");
     this._transConfirmSubject.next(data);
   }
 
@@ -157,6 +156,7 @@ export class TransactionsService {
         if (element['recipient'] !== undefined) {
           element['isRemitent'] = this.walletService.address.pretty() === element['recipient'].pretty();
         }
+
         Object.keys(this.arraTypeTransaction).forEach(elm => {
           if (this.arraTypeTransaction[elm].id === element.type) {
             element['name_type'] = this.arraTypeTransaction[elm].name;
@@ -164,11 +164,11 @@ export class TransactionsService {
         });
 
         if (element['mosaics'] !== undefined) {
+          console.log("si existe mosaico en esta transaccion");
           // Crea un nuevo array con los id de mosaicos
           const mosaicsId = element['mosaics'].map((mosaic: Mosaic) => { return mosaic.id; });
           // Busca la información de los mosaicos, retorna una promesa
           await this.nemProvider.getInfoMosaicsPromise(mosaicsId).then((mosaicsInfo: MosaicInfo[]) => {
-            console.log("RESPONSE MOSAIC INFO", mosaicsInfo);
             element['mosaicsInfo'] = mosaicsInfo;
             element['mosaics'].forEach((mosaic: any) => {
               // Da formato al monto de la transacción
@@ -176,10 +176,9 @@ export class TransactionsService {
             });
           });
 
-          console.log(element);
           elementsConfirmed.push(element);
         } else {
-          console.log(this.arraTypeTransaction.registerNameSpace.id, element.type);
+          console.log("Esta transaccion no tiene mosaico..");
           if (element.type === this.arraTypeTransaction.registerNameSpace.id) {
             element['recipientRentalFeeSink'] = this.namespaceRentalFeeSink.address_public_test;
           }else if (element.type === this.arraTypeTransaction.mosaicDefinition.id) {
@@ -190,7 +189,6 @@ export class TransactionsService {
             element['recipientRentalFeeSink'] = 'XXXXX-XXXXX-XXXXXX';
           }
 
-          console.log("***** ESTO NO TIENE MOSAICO *****");
           elementsConfirmed.push(element);
         }
       }

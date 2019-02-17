@@ -357,7 +357,6 @@ export class NemProvider {
    */
   async getInfoMosaicsPromise(mosaicsId: MosaicId[]) {
     const promise = await new Promise(async (resolve, reject) => {
-      console.log("INFO MOSAIC IN GETMOSAIC", this.infoMosaic);
       if (this.infoMosaic === undefined) {
         console.warn("********** INFO MOSAIC ES UNDEFINED **********");
         const mosaicsInfo = await this.getMosaics(mosaicsId).toPromise();
@@ -365,7 +364,7 @@ export class NemProvider {
         // console.log("Ya va a responder...", this.infoMosaic);
         resolve(mosaicsInfo);
       } else {
-        // console.log("Información de mosaico en caché", this.infoMosaic);
+        console.log("Información de mosaico en caché", this.infoMosaic);
         reject(null);
         // if (this.infoMosaic.mosaicId === mosaicId) {
         //   resolve(this.infoMosaic);
@@ -428,7 +427,7 @@ export class NemProvider {
 
   }
 
-  
+
 
   registersubNamespaceTransaction(rootNamespace: string, subnamespaceName: string, network: NetworkType): RegisterNamespaceTransaction {
     // Crear namespace transaction

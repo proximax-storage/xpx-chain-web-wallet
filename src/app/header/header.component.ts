@@ -85,8 +85,8 @@ export class HeaderComponent implements OnInit {
       console.log(message);
       if (this.message === 'balanceChanged') {
         if (this.showOnlyLogged) {
-          console.log("Change...");
-          this.getBalance();
+          console.log("Consulta el balance...");
+          // this.getBalance();
         }
       }
     });
@@ -385,9 +385,9 @@ export class HeaderComponent implements OnInit {
    * @memberof HeaderComponent
    */
   logout(param?: String) {
-    this.dataBridgeService.closeConenection();
-    this._loginService.destroyNodeSelected();
     this._loginService.setLogged(false);
+    this._loginService.destroyNodeSelected();
+    this.dataBridgeService.closeConenection();
     this.route.navigate([`/${param}`]);
   }
 
@@ -399,8 +399,9 @@ export class HeaderComponent implements OnInit {
   getBalance() {
     this.nemProvider.getBalance(this.walletService.address).pipe(mergeMap((_) => _)).pipe(first()).subscribe(
       next => {
+        console.log("balance...", next);
         console.log('You have', next.relativeAmount());
-        this.horizontalHeader.amount.name = `Balance ${next.relativeAmount().toFixed(5)} ${next.mosaicName}`;
+        this.horizontalHeader.amount.name = `Balance ${next.relativeAmount().toFixed(6)} ${next.mosaicName}`;
       },
       err => {
         this.vestedBalance = '0';
@@ -418,10 +419,10 @@ export class HeaderComponent implements OnInit {
     this.isLogged$ = this._loginService.getIsLogged();
     this.isLogged$.subscribe(
       async response => {
-        console.log(response);
         this.showOnlyLogged = response;
         if (this.showOnlyLogged) {
-          this.getBalance();
+          // this.getBalance();
+          console.log("Get balance in read logged");
         } else {
           this.dataBridgeService.closeConenection();
           this.horizontalHeader.amount.name = ''
