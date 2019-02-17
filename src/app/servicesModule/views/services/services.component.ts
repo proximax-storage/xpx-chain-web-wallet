@@ -25,7 +25,7 @@ export class ServicesComponent implements OnInit {
         convertAccountToMultisig: this.structureServiceRoute('Convert an account to multisig', `/${AppConfig.routes.createMultisignature}`),
         editAnExistingContract: this.structureServiceRoute('Edit an existing contract', `/${AppConfig.routes.editMultisignatureContract}`),
         signMultisigTransactions: this.structureServiceRoute('Sign multisig transactions',  `/${AppConfig.routes.signMultiSigTransactions}`),
-      }, true
+      }, false
     );
 
     const storage = this.service.structureServices('img-explorer-file', 'Storage', `Storage`,

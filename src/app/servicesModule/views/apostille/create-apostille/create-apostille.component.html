@@ -2,127 +2,118 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-xl-10 col-lg-10 col-md-10 col-sm-10 mx-auto">
-        <mdb-card>
-          <mdb-card-header class="background-gold white-text text-align-center py-4">
-              <img src="assets/images/logo/logo-white.png" class="size-img-card-header">
-          </mdb-card-header>
-          <ng-container>
-            <mdb-card-body class="px-lg-5 backg-beige">
-              <form [formGroup]="apostillaForm" (ngSubmit)="sendApostille()">
-                <div class="row">
-                  <div class="col-xs-12 col-sm-6  col-md-6 col-lg-6">
+        <form [formGroup]="apostillaForm" (ngSubmit)="sendApostille()">
+          <div class="row">
+            <div class="col-xs-12 col-sm-6  col-md-6 col-lg-6">
 
-                    <!-- Password -->
-                    <div class="md-form mt-5">
+              <!-- Password -->
+              <div class="md-form mt-5">
 
-                      <input type="password" autocomplete="off" required id="password" class="form-control" mdbInputDirective formControlName="password"
-                        data-success="Valid password" [errorMessage]="getError('password')">
-                      <label for="password">password</label>
-                    </div>
+                <input type="password" autocomplete="off" required id="password" class="form-control" mdbInputDirective
+                  formControlName="password" data-success="Valid password" [errorMessage]="getError('password')">
+                <label for="password">password</label>
+              </div>
 
-                    <!-- Tags -->
-                    <div class="md-form mt-5">
+              <!-- Tags -->
+              <div class="md-form mt-5">
 
-                      <input type="text" autocomplete="off" required id="Tags" class="form-control" mdbInputDirective required formControlName="tags"
-                        data-success="Valid tags" [errorMessage]="getError('tags')">
-                      <label for="Tags">Tags</label>
-                    </div>
+                <input type="text" autocomplete="off" required id="Tags" class="form-control" mdbInputDirective
+                  required formControlName="tags" data-success="Valid tags" [errorMessage]="getError('tags')">
+                <label for="Tags">Tags</label>
+              </div>
 
-                    <!--  Hash Function -->
+              <!--  Hash Function -->
 
-                    <div class="md-form  mt-5">
+              <div class="md-form  mt-5">
 
-                      <mdb-select [options]="optionsCrypto" placeholder="Hash Function" class="colorful-select dropdown-default" required formControlName="hash"
-                        data-success="Valid hash" [errorMessage]="getError('hash')"></mdb-select>
+                <mdb-select [options]="optionsCrypto" placeholder="Hash Function" class="colorful-select dropdown-default"
+                  required formControlName="hash" data-success="Valid hash" [errorMessage]="getError('hash')"></mdb-select>
 
-                    </div>
-                    <!--  Storage -->
+              </div>
+              <!--  Storage -->
 
-                    <div class="md-form  mt-5">
+              <div class="md-form  mt-5">
 
-                      <mdb-select [options]="optionsStorage" placeholder=" " class="colorful-select dropdown-default" required formControlName="storage"></mdb-select>
+                <mdb-select [options]="optionsStorage" placeholder=" " class="colorful-select dropdown-default"
+                  required formControlName="storage"></mdb-select>
 
-                    </div>
-                    <div class="mt-4rm">
-                      <div class="row ">
-                        <div class="mx-auto">
-                          <div class="row">
-                            <div class="col-xs-12">
-                              <button mdbBtn color="default" size="lg" rounded="true" class="waves-light" mdbWavesEffect type="submit">Send</button>
-                            </div>
-                          </div>
-                        </div>
+              </div>
+              <div class="mt-4rm">
+                <div class="row ">
+                  <div class="mx-auto">
+                    <div class="row">
+                      <div class="col-xs-12">
+                        <button mdbBtn color="default" size="lg" rounded="true" class="waves-light" mdbWavesEffect type="submit">Send</button>
                       </div>
                     </div>
                   </div>
+                </div>
+              </div>
+            </div>
 
-                  <div class="col-xs-12 col-sm-6  col-md-6 col-lg-6  ">
-                    <!-- Nav tabs -->
-                    <mdb-tabset #staticTabs [buttonClass]="'md-tabs tabs-4 background-proxiwallet white mb-2'" [contentClass]="">
-                      <!--Panel 1-->
-                      <mdb-tab heading="<i class='fa fa-copy fa-1x'></i>">
-                        <div class="row">
-                          <div class="col-12 align-self-center">
-                            <br> <br>
-                            <div class="box text-align-center ">
-                              <button (click)="openInput()" mdbBtn type="button" size="lg" color="default" outline="true" mdbWavesEffect>
-                                  <mdb-icon icon="cloud-upload" size="5x" class="mr-1"></mdb-icon>
-                                </button>
-                              <input id="fileInput" [hidden]="true" type="file" (change)="fileChange($event.target.files,$event)" formControlName="file">
-                            </div>
-
-
-                            <div class="box text-align-center ">
-                              <p class="box" id="nameFile"> {{nameFile}} </p>
-                            </div>
-                            <br> <br>
-                          </div>
-                        </div>
-                      </mdb-tab>
-                      <!--Panel 2-->
-                      <mdb-tab heading="<i class='fa fa-edit fa-1x'></i>">
-                        <div class="row">
-                          <div class="col-12">
-
-                            <!-- Document titlle -->
-                            <div class="md-form mt-5">
-
-                              <input type="text" autocomplete="off" id="titlle" placeholder="Document titlle" class="form-control" mdbInputDirective formControlName="titlle">
-                              <label for="titlle">Document titlle</label>
-                            </div>
-
-                            <!-- Document titlle -->
-                            <div class="md-form mt-5">
-                              <i class="fa fa-pencil prefix"></i>
-                              <textarea type="text" id="contant" class="md-textarea form-control" mdbInputDirective formControlName="contant"></textarea>
-                              <label for="contant">contant</label>
-                            </div>
+            <div class="col-xs-12 col-sm-6  col-md-6 col-lg-6  ">
+              <!-- Nav tabs -->
+              <mdb-tabset #staticTabs [buttonClass]="'md-tabs tabs-4 background-proxiwallet white mb-2'" [contentClass]="">
+                <!--Panel 1-->
+                <mdb-tab heading="<i class='fa fa-copy fa-1x'></i>">
+                  <div class="row">
+                    <div class="col-12 align-self-center">
+                      <br> <br>
+                      <div class="box text-align-center ">
+                        <button (click)="openInput()" mdbBtn type="button" size="lg" color="default" outline="true"
+                          mdbWavesEffect>
+                          <mdb-icon icon="cloud-upload" size="5x" class="mr-1"></mdb-icon>
+                        </button>
+                        <input id="fileInput" [hidden]="true" type="file" (change)="fileChange($event.target.files,$event)"
+                          formControlName="file">
+                      </div>
 
 
-                          </div>
-                        </div>
-                      </mdb-tab>
-                          <!-- Document titlle -->
-                          <div class="md-form mt-5">
-                            <mdb-checkbox formControlName="saveInDFMS" (change)="onSaveInDFMSChanged($event)">Save in DFMS</mdb-checkbox>
-                          </div>
-  
-
-                    </mdb-tabset>
-
+                      <div class="box text-align-center ">
+                        <p class="box" id="nameFile"> {{nameFile}} </p>
+                      </div>
+                      <br> <br>
+                    </div>
                   </div>
+                </mdb-tab>
+                <!--Panel 2-->
+                <mdb-tab heading="<i class='fa fa-edit fa-1x'></i>">
+                  <div class="row">
+                    <div class="col-12">
+
+                      <!-- Document titlle -->
+                      <div class="md-form mt-5">
+
+                        <input type="text" autocomplete="off" id="titlle" placeholder="Document titlle" class="form-control"
+                          mdbInputDirective formControlName="titlle">
+                        <label for="titlle">Document titlle</label>
+                      </div>
+
+                      <!-- Document titlle -->
+                      <div class="md-form mt-5">
+                        <i class="fa fa-pencil prefix"></i>
+                        <textarea type="text" id="contant" class="md-textarea form-control" mdbInputDirective
+                          formControlName="contant"></textarea>
+                        <label for="contant">contant</label>
+                      </div>
 
 
+                    </div>
+                  </div>
+                </mdb-tab>
+                <!-- Document titlle -->
+                <div class="md-form mt-5">
+                  <mdb-checkbox formControlName="saveInDFMS" (change)="onSaveInDFMSChanged($event)">Save in DFMS</mdb-checkbox>
                 </div>
 
 
-              </form>
+              </mdb-tabset>
 
-            </mdb-card-body>
-          </ng-container>
+            </div>
 
 
-        </mdb-card>
+          </div>
+        </form>
       </div>
     </div>
   </div>
