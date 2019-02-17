@@ -120,6 +120,7 @@ export class DataBridgeService {
             audio.play();
             this.messageService.changeMessage('balanceChanged');
             transactionPushed.unshift(element);
+            console.log("lo invoca 2");
             this.transactionsService.setConfirmedTransaction$(transactionPushed);
             this.destroyUnconfirmedTransaction(element);
           });

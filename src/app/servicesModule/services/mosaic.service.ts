@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { MosaicId, NamespaceId, Mosaic, MosaicInfo } from 'proximax-nem2-sdk';
+import { MosaicInfo } from 'proximax-nem2-sdk';
 
 @Injectable({
   providedIn: 'root'

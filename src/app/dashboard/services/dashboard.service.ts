@@ -11,10 +11,7 @@ import { MosaicService } from '../..//servicesModule/services/mosaic.service';
 })
 export class DashboardService {
 
-  private transactionsSubject: BehaviorSubject<any> = new BehaviorSubject<any>([]);
-  private transactions$: Observable<any> = this.transactionsSubject.asObservable();
-
-
+  processComplete = false;
   isLogged$: Observable<boolean>;
   isLoadedDashboard = 0;
   allTransactions: any;
@@ -33,9 +30,13 @@ export class DashboardService {
   ) { }
 
 
+  /**
+   * Subscribe if logged
+   *
+   * @memberof DashboardService
+   */
   subscribeLogged() {
-    this.isLogged$ = this.loginService.getIsLogged();
-    if (this.isLoadedDashboard == 1) {
+    if (this.isLoadedDashboard === 1) {
       this.isLogged$ = this.loginService.getIsLogged();
       this.subscriptions['isLogged'] = this.isLogged$.subscribe(
         response => {
@@ -43,7 +44,6 @@ export class DashboardService {
             // DESTROY SUBSCRIPTION WHEN IS NOT LOGIN
             console.log("Ha cambiado isLogged, destroy subscription");
             this.isLoadedDashboard = 0;
-            this.proximaxProvider.destroyInfoMosaic();
             this.destroySubscription();
            // this.subscriptions['isLogged'].unsubscribe();
             this.walletService.destroyAccountInfo();
@@ -55,6 +55,12 @@ export class DashboardService {
     }
   }
 
+  /**
+   * Get transactions observable
+   *
+   * @returns {Observable<any>}
+   * @memberof DashboardService
+   */
   getTransactionsObs(): Observable<any> {
     return this.allTransactions.transactions$;
   }

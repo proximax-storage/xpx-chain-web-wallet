@@ -9,6 +9,7 @@ import { NemProvider } from '../shared/services/nem.provider';
 import { mergeMap, first } from 'rxjs/operators';
 import { MessageService } from '../shared/services/message.service';
 import { DataBridgeService } from '../shared/services/data-bridge.service';
+import { DashboardService } from '../dashboard/services/dashboard.service';
 
 export interface HorizontalHeaderInterface {
   home: Header;
@@ -56,13 +57,14 @@ export class HeaderComponent implements OnInit {
   message: string;
 
   constructor(
-    private _loginService: LoginService,
+    private loginService: LoginService,
     private route: Router,
     private walletService: WalletService,
     private nemProvider: NemProvider,
     private nodeService: NodeService,
     private messageService: MessageService,
     private dataBridgeService: DataBridgeService,
+    private dashboardService: DashboardService
   ) {
 
   }
@@ -385,9 +387,10 @@ export class HeaderComponent implements OnInit {
    * @memberof HeaderComponent
    */
   logout(param?: String) {
-    this._loginService.setLogged(false);
-    this._loginService.destroyNodeSelected();
-    this.dataBridgeService.closeConenection();
+    this.dashboardService.processComplete = false;
+    this.loginService.setLogged(false);
+    this.loginService.destroyNodeSelected();
+    // this.dataBridgeService.closeConenection();
     this.route.navigate([`/${param}`]);
   }
 
@@ -416,7 +419,7 @@ export class HeaderComponent implements OnInit {
    * @memberof HeaderComponent
    */
   readLogged() {
-    this.isLogged$ = this._loginService.getIsLogged();
+    this.isLogged$ = this.loginService.getIsLogged();
     this.isLogged$.subscribe(
       async response => {
         this.showOnlyLogged = response;
@@ -424,8 +427,8 @@ export class HeaderComponent implements OnInit {
           // this.getBalance();
           console.log("Get balance in read logged");
         } else {
+          this.horizontalHeader.amount.name = '';
           this.dataBridgeService.closeConenection();
-          this.horizontalHeader.amount.name = ''
         }
       }
     );

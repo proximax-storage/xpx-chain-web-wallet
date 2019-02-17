@@ -75,11 +75,12 @@ export class DashboardComponent implements OnInit {
       async transactionsConfirmedCache => {
         if (this.loginService.logged) {
           console.log("Obtiene las transacciones confirmadas en cache", transactionsConfirmedCache);
+          console.log("proceso completado?", this.dashboardService.processComplete);
           if (transactionsConfirmedCache.length > 0) {
             this.elementsConfirmed = transactionsConfirmedCache.slice(0, 10);
             this.cantConfirmed = this.elementsConfirmed.length;
             this.searching = false;
-          } else if (this.dashboardService.isLoadedDashboard === 1 && this.loginService.logged) {
+          } else if (this.dashboardService.isLoadedDashboard === 1 && this.loginService.logged || !this.dashboardService.processComplete) {
             this.getAllTransactions();
           }
         }
@@ -109,14 +110,17 @@ export class DashboardComponent implements OnInit {
    */
   async getAllTransactions() {
     console.log("***** BUSCA TODAS LAS TRANSACCIONES *****");
-    this.subscriptions['getAllTransactions'] = this.nemProvider.getAllTransactionsFromAccount(this.walletService.publicAccount, this.walletService.network).pipe(first()).subscribe(
-      async allTrasactions => {
-        const response = await this.transactionsService.buildTransactions(allTrasactions);
-        this.searching = false;
-        this.transactionsService.setConfirmedTransaction$(response);
-      }, error => {
-        this.searching = false;
-      });
+    this.subscriptions['getAllTransactions'] =
+      this.nemProvider.getAllTransactionsFromAccount(this.walletService.publicAccount, this.walletService.network).pipe(first()).subscribe(
+        async allTrasactions => {
+          const response = await this.transactionsService.buildTransactions(allTrasactions);
+          this.searching = false;
+          this.dashboardService.processComplete = true;
+          console.log("lo invoca 1");
+          this.transactionsService.setConfirmedTransaction$(response);
+        }, error => {
+          this.searching = false;
+        });
   }
 
   /**
