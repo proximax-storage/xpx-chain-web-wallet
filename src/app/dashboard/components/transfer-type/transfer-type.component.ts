@@ -1,4 +1,6 @@
 import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
+import { Deadline } from 'proximax-nem2-sdk';
+import { TransactionsService } from '../../../transactions/service/transactions.service';
 
 @Component({
   selector: 'app-transfer-type',
@@ -9,16 +11,19 @@ export class TransferTypeComponent implements OnInit {
 
   @Input() transferTransaction: any;
 
-  constructor() { }
+  constructor(
+    private transactionService: TransactionsService
+  ) { }
 
   ngOnInit() {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     console.log(changes);
-    //Called before any other lifecycle hook. Use it to inject dependencies, but avoid any serious work here.
-    //Add '${implements OnChanges}' to the class.
+  }
 
+  dateFormat(deadline: Deadline) {
+    return this.transactionService.dateFormat(deadline);
   }
 
 }
