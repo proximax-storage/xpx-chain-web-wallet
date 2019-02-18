@@ -12,7 +12,7 @@ export class TransferTypeComponent implements OnInit {
   @Input() transferTransaction: any;
 
   constructor(
-    private transactionService: TransactionsService
+    public transactionService: TransactionsService
   ) { }
 
   ngOnInit() {

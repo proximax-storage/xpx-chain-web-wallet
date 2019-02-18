@@ -1,3 +1,87 @@
-<p>
-  mosaic-supply-change-type works!
-</p>
+<container>
+  <div class="row">
+    <div class="col-md-3">
+      <span class="fs-08rem fw-bolder w-w-b-w w-w-b-w"><b>Type transaction:</b></span>
+    </div>
+    <div class="col-md-9">
+      <span class="fs-08rem fw-bolder w-w-b-w w-w-b-w">{{mosaicSupplyChange.name_type}}</span>
+    </div>
+  </div>
+  <hr>
+</container>
+
+
+<!-- MOSAIC INFO -->
+<container>
+  <div class="mt-3">
+    <div class="row">
+      <div class="col-md-3">
+        <span class="fs-08rem fw-bolder w-w-b-w"><b>Fee:</b></span>
+      </div>
+      <div class="col-md-9">
+        <span class="fs-08rem fw-bolder w-w-b-w">{{mosaicSupplyChange?.fee.compact()}}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- <div class="mt-3">
+    <div class="row">
+      <div class="col-md-3">
+        <span class="fs-08rem fw-bolder w-w-b-w"><b>Mosaic:</b></span>
+      </div>
+      <div class="col-md-9">
+        <span class="fs-08rem fw-bolder w-w-b-w">{{accountInfo['nameMosaic']}}</span>
+      </div>
+    </div>
+  </div> -->
+  <hr>
+</container>
+
+<!-- SIGNER INFO -->
+<container>
+  <div class="mt-3">
+    <div class="row">
+      <div class="col-md-3">
+        <span class="fs-08rem fw-bolder w-w-b-w"><b>Signer:</b></span>
+      </div>
+      <div class="col-md-9">
+        <span class="fs-08rem fw-bolder w-w-b-w">{{mosaicSupplyChange?.signer.publicKey}}</span>
+      </div>
+    </div>
+  </div>
+  <div class="mt-3">
+    <div class="row">
+      <div class="col-md-3">
+        <span class="fs-08rem fw-bolder w-w-b-w"><b>Signature:</b></span>
+      </div>
+      <div class="col-md-9">
+        <span class="fs-08rem fw-bolder w-w-b-w">{{mosaicSupplyChange?.signature}}</span>
+      </div>
+    </div>
+  </div>
+  <hr>
+</container>
+
+<!-- TIMESTAMP & HASH INFO -->
+<container>
+  <div class="mt-3">
+    <div class="row">
+      <div class="col-md-3">
+        <span class="fs-08rem fw-bolder w-w-b-w"><b>Deadline:</b></span>
+      </div>
+      <div class="col-md-9">
+          <span class="fs-08rem fw-bolder w-w-b-w">{{transactionService.dateFormat(mosaicSupplyChange?.deadline)}}</span>
+      </div>
+    </div>
+  </div>
+  <div class="mt-3">
+    <div class="row">
+      <div class="col-md-3">
+        <span class="fs-08rem fw-bolder w-w-b-w"><b>Hash:</b></span>
+      </div>
+      <div class="col-md-9">
+        <span class="fs-08rem fw-bolder w-w-b-w">{{mosaicSupplyChange?.transactionInfo.hash}}</span>
+      </div>
+    </div>
+  </div>
+</container>

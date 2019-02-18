@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { TransactionsService } from '../../../transactions/service/transactions.service';
 
 @Component({
   selector: 'app-mosaic-supply-change-type',
@@ -7,9 +8,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MosaicSupplyChangeTypeComponent implements OnInit {
 
-  constructor() { }
+  @Input() mosaicSupplyChange: any;
+
+  constructor(
+    public transactionService: TransactionsService
+  ) { }
 
   ngOnInit() {
   }
+
+
 
 }

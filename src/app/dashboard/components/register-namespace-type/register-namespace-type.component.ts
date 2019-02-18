@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
+import { TransactionsService } from '../../../transactions/service/transactions.service';
 
 @Component({
   selector: 'app-register-namespace-type',
@@ -7,9 +8,17 @@ import { Component, OnInit } from '@angular/core';
 })
 export class RegisterNamespaceTypeComponent implements OnInit {
 
-  constructor() { }
+  @Input() registerNamespaceTransaction: any;
+
+  constructor(
+    public transactionService: TransactionsService
+  ) { }
 
   ngOnInit() {
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log("this.registerNamespaceTransaction", this.registerNamespaceTransaction);
   }
 
 }
