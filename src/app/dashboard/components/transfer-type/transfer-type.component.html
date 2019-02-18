@@ -1,75 +1,116 @@
-<p>
-  transfer-type works!
-</p>
+<container>
+  <div class="row">
+    <div class="col-md-3">
+      <span class="fs-08rem fw-bolder w-w-b-w"><b>Type transaction:</b></span>
+    </div>
+    <div class="col-md-9">
+      <span class="fs-08rem fw-bolder w-w-b-w">{{transferTransaction.name_type}}</span>
+    </div>
+  </div>
+  <hr>
+</container>
 
- <!-- <div class="row">
-            <div class="col-md-3">
-              <span class="fs-08rem fw-bolder"><b>From:</b></span>
-            </div>
-            <div class="col-md-9">
-              <span class="fs-08rem fw-bolder">{{dataSelected?.signer}}</span>
-            </div>
-          </div>
 
-          <div class="mt-3">
-            <div class="row">
-              <div class="col-md-3">
-                <span class="fs-08rem fw-bolder"><b>To:</b></span>
-              </div>
-              <div class="col-md-9">
-                <span class="fs-08rem fw-bolder">{{dataSelected?.recipient}}</span>
-              </div>
-            </div>
-          </div>
-          <hr>
-          <div class="row">
-            <div class="col-md-3">
-              <span class="fs-08rem fw-bolder"><b>Amount:</b></span>
-            </div>
-            <div class="col-md-9">
-              <span class="fs-08rem fw-bolder">{{dataSelected?.amount}}</span>
-            </div>
-          </div>
+<!-- FROM & TO INFO-->
+<container>
+  <div class="mt-3">
+    <div class="row">
+      <div class="col-md-3">
+        <span class="fs-08rem fw-bolder w-w-b-w"><b>From:</b></span>
+      </div>
+      <div class="col-md-9">
+        <span class="fs-08rem fw-bolder w-w-b-w">{{transferTransaction?.signer.address.pretty()}}</span>
+      </div>
+    </div>
+  </div>
+  <div class="mt-3">
+    <div class="row">
+      <div class="col-md-3">
+        <span class="fs-08rem fw-bolder w-w-b-w"><b>To:</b></span>
+      </div>
+      <div class="col-md-9">
+        <span class="fs-08rem fw-bolder w-w-b-w">{{transferTransaction?.recipient.pretty()}}</span>
+      </div>
+    </div>
+  </div>
+  <hr>
+</container>
 
-          <div class="mt-3">
-            <div class="row">
-              <div class="col-md-3">
-                <span class="fs-08rem fw-bolder"><b>Fee:</b></span>
-              </div>
-              <div class="col-md-9">
-                <span class="fs-08rem fw-bolder">{{dataSelected?.fee}}</span>
-              </div>
-            </div>
-          </div>
-          <hr>
-          <div class="mt-3">
-            <div class="row">
-              <div class="col-md-3">
-                <span class="fs-08rem fw-bolder"><b>Message:</b></span>
-              </div>
-              <div class="col-md-9">
-                <span class="fs-08rem fw-bolder">{{dataSelected?.message.payload}}</span>
-              </div>
-            </div>
-          </div>
-          <hr>
-          <div class="mt-3">
-            <div class="row">
-              <div class="col-md-3">
-                <span class="fs-08rem fw-bolder"><b>Mosaic:</b></span>
-              </div>
-              <div class="col-md-9">
-                <span class="fs-08rem fw-bolder">{{dataSelected?.mosaic}}</span>
-              </div>
-            </div>
-          </div>
-          <div class="mt-3">
-            <div class="row">
-              <div class="col-md-3">
-                <span class="fs-08rem fw-bolder"><b>Hash:</b></span>
-              </div>
-              <div class="col-md-9">
-                <span class="fs-08rem fw-bolder">{{dataSelected?.transactionInfo.hash}}</span>
-              </div>
-            </div>
-          </div> -->
+
+<!-- MOSAICS INFO -->
+<container>
+  <div class="mt-3">
+    <div class="row">
+      <div class="col-md-3">
+        <span class="fs-08rem fw-bolder w-w-b-w"><b>Fee:</b></span>
+      </div>
+      <div class="col-md-9">
+        <span class="fs-08rem fw-bolder w-w-b-w">{{transferTransaction?.fee.compact()}}</span>
+      </div>
+    </div>
+  </div>
+  <app-mosaics-info [mosaicsArray]="transferTransaction.mosaics"></app-mosaics-info>
+  <hr>
+</container>
+
+
+
+<!-- SIGNER & SIGNATURE INFO -->
+<container>
+  <div class="mt-3">
+    <div class="row">
+      <div class="col-md-3">
+        <span class="fs-08rem fw-bolder w-w-b-w"><b>Signer:</b></span>
+      </div>
+      <div class="col-md-9">
+        <span class="fs-08rem fw-bolder w-w-b-w">{{transferTransaction?.signer.publicKey}}</span>
+      </div>
+    </div>
+  </div>
+  <div class="mt-3">
+    <div class="row">
+      <div class="col-md-3">
+        <span class="fs-08rem fw-bolder w-w-b-w"><b>Signature:</b></span>
+      </div>
+      <div class="col-md-9">
+        <span class="fs-08rem fw-bolder w-w-b-w">{{transferTransaction?.signature}}</span>
+      </div>
+    </div>
+  </div>
+  <hr>
+</container>
+
+<!-- MESSAGE, TIMESTAMP & HASH INFO-->
+<container>
+  <div class="mt-3">
+    <div class="row">
+      <div class="col-md-3">
+        <span class="fs-08rem fw-bolder w-w-b-w"><b>Message:</b></span>
+      </div>
+      <div class="col-md-9">
+        <span class="fs-08rem fw-bolder w-w-b-w">{{transferTransaction?.message.payload}}</span>
+      </div>
+    </div>
+  </div>
+  <div class="mt-3">
+    <div class="row">
+      <div class="col-md-3">
+        <span class="fs-08rem fw-bolder w-w-b-w"><b>Deadline:</b></span>
+      </div>
+      <div class="col-md-9">
+        <span class="fs-08rem fw-bolder w-w-b-w">{{transferTransaction?.deadline.value.toString()}}</span>
+      </div>
+    </div>
+  </div>
+  <div class="mt-3">
+    <div class="row">
+      <div class="col-md-3">
+        <span class="fs-08rem fw-bolder w-w-b-w"><b>Hash:</b></span>
+      </div>
+      <div class="col-md-9">
+        <span class="fs-08rem fw-bolder w-w-b-w">{{transferTransaction?.transactionInfo.hash}}</span>
+      </div>
+    </div>
+  </div>
+</container>
+

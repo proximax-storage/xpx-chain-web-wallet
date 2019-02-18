@@ -6,7 +6,6 @@ import { WalletService } from "../../shared/services/wallet.service";
 import { NodeService } from '../../servicesModule/services/node.service';
 import { environment } from '../../../environments/environment';
 import { MessageService } from '../../shared/services/message.service';
-import { ProximaxProvider } from '../../shared/services/proximax.provider';
 
 @Injectable({
   providedIn: 'root'

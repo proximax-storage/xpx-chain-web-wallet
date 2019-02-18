@@ -355,17 +355,17 @@ export class NemProvider {
    * @returns
    * @memberof NemProvider
    */
-  async getInfoMosaicsPromise(mosaicsId: MosaicId[]) {
+  async getMosaicViewPromise(mosaicsId: MosaicId[]) {
     const promise = await new Promise(async (resolve, reject) => {
-      if (this.infoMosaic === undefined) {
-        console.warn("********** INFO MOSAIC ES UNDEFINED **********");
-        const mosaicsInfo = await this.getMosaics(mosaicsId).toPromise();
+      //if (this.infoMosaic === undefined) {
+        console.warn("********** GET INFO MOSAICS TO PROMISE **********");
+        const mosaicsView = await this.mosaicService.mosaicsView(mosaicsId).toPromise();
         // this.setInfoMosaic(this.infoMosaic);
         // console.log("Ya va a responder...", this.infoMosaic);
-        resolve(mosaicsInfo);
-      } else {
-        console.log("Información de mosaico en caché", this.infoMosaic);
-        reject(null);
+        resolve(mosaicsView);
+      //} else {
+        //console.log("Información de mosaico en caché", this.infoMosaic);
+        //reject(null);
         // if (this.infoMosaic.mosaicId === mosaicId) {
         //   resolve(this.infoMosaic);
         // } else {
@@ -373,7 +373,7 @@ export class NemProvider {
         //   this.setInfoMosaic(this.infoMosaic);
         //   resolve(this.infoMosaic);
         // }
-      }
+      //}
     });
 
     console.log("***RESPUESTA CONSULTA DE MOSAICOS****", promise);

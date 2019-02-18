@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CoreModule } from '../core/core.module';
 import { DashboardRoutingModule } from './dashboard-routing.module';
@@ -13,6 +13,7 @@ import { AggregateBondedTypeComponent } from './components/aggregate-bonded-type
 import { LockTypeComponent } from './components/lock-type/lock-type.component';
 import { SecretLockTypeComponent } from './components/secret-lock-type/secret-lock-type.component';
 import { SecretProofComponent } from './components/secret-proof/secret-proof.component';
+import { MosaicsInfoComponent } from './components/mosaics-info/mosaics-info.component';
 
 @NgModule({
   imports: [
@@ -31,8 +32,10 @@ import { SecretProofComponent } from './components/secret-proof/secret-proof.com
     AggregateBondedTypeComponent,
     LockTypeComponent,
     SecretLockTypeComponent,
-    SecretProofComponent
-  ]
+    SecretProofComponent,
+    MosaicsInfoComponent
+  ],
+  schemas: [NO_ERRORS_SCHEMA]
 
 })
 export class DashboardModule { }
