@@ -44,7 +44,7 @@ import { TransactionsService } from 'src/app/transactions/service/transactions.s
                       </tr>
                     </thead>
                     <tbody>
-                      <tr mdbTableCol *ngFor="let element of mosaicsArray; let i = index">
+                      <tr mdbTableCol *ngFor="let element of mosaicsInfo; let i = index">
                         <td class="font-size-08rem">
                           <a class="text-link mouse-pointer">{{element.id.toHex()}}</a>
                         </td>
@@ -75,15 +75,16 @@ export class MosaicsInfoComponent implements OnInit {
   }
 
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
-    console.log("mosaicsArray", this.mosaicsArray)
+    console.log("mosaicsArray", this.mosaicsArray);
+    this.mosaicsInfo = this.mosaicsArray.slice(0);
     this.mosaicXpx = [];
     this.viewDetail = false;
     this.viewMosaicXpx = false;
-    const mosaicsId = this.mosaicsArray.map((mosaic: Mosaic) => { return mosaic.id; });
+    const mosaicsId = this.mosaicsInfo.map((mosaic: Mosaic) => { return mosaic.id; });
     const mosaicsViewCache: MosaicView[] = await this.mosaicService.searchMosaics(mosaicsId);
     if (mosaicsViewCache.length > 0) {
       console.log("mosaicsViewCache", mosaicsViewCache);
-      for (let ma of this.mosaicsArray) {
+      for (let ma of this.mosaicsInfo) {
         for (let mi of mosaicsViewCache) {
           console.log("ma", ma.id.toHex());
           console.log("mi", mi.mosaicInfo.mosaicId.toHex());
@@ -93,7 +94,7 @@ export class MosaicsInfoComponent implements OnInit {
             if (ma.id.toHex() === 'd423931bd268d1f4') {
               this.mosaicXpx = ma;
               this.viewMosaicXpx = true;
-              this.mosaicsArray.splice(ma);
+              this.mosaicsInfo.splice(ma);
             }
           }
         }
@@ -102,13 +103,9 @@ export class MosaicsInfoComponent implements OnInit {
       console.log("this.viewMosaicXpx", this.viewMosaicXpx);
       console.log("this.mosaicXpx", this.mosaicXpx);
 
-      if (this.mosaicsArray.length > 0) {
+      if (this.mosaicsInfo.length > 0) {
         this.viewDetail = true;
       }
     }
-  }
-
-  amountFormatter(amount: UInt64, mosaicId: MosaicId, mosaics: MosaicInfo[]) {
-
   }
 }
