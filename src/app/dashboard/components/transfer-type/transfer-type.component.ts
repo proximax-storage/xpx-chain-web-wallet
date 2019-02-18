@@ -8,6 +8,7 @@ import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
 export class TransferTypeComponent implements OnInit {
 
   @Input() transferTransaction: any;
+
   constructor() { }
 
   ngOnInit() {
