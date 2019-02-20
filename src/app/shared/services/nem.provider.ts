@@ -48,7 +48,10 @@ import { Observable } from 'rxjs';
 export class NemProvider {
 
   infoMosaic: MosaicInfo;
-
+  mosaic = {
+    mosaic: 'prx:xpx',
+    mosaicId: 'd423931bd268d1f4'
+  };
   transactionHttp: TransactionHttp;
   websocketIsOpen = false;
   connectionWs: Listener;
