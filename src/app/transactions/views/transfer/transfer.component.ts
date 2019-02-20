@@ -55,7 +55,7 @@ export class TransferComponent implements OnInit {
    */
   createForm() {
     this.transferForm = this.fb.group({
-      node: ['0', [Validators.required]],
+      node: [this.mosaicServices.mosaicXpx.mosaic, [Validators.required]],
       acountRecipient: [null, [Validators.required, Validators.minLength(46), Validators.maxLength(46)]],
       amount: [null, [Validators.maxLength(20)]],
       message: [null, [Validators.maxLength(80)]],
