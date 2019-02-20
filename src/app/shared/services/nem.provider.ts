@@ -173,7 +173,7 @@ export class NemProvider {
     return TransferTransaction.create(
       Deadline.create(5),
       recipientAddress,
-      [new Mosaic(new MosaicId(this.mosaic), UInt64.fromUint(Number(amount)))],
+      [new Mosaic(new MosaicId(this.mosaic.mosaic), UInt64.fromUint(Number(amount)))],
       PlainMessage.create(message),
       network
     );
@@ -337,7 +337,7 @@ export class NemProvider {
     return TransferTransaction.create(
       Deadline.create(23),
       Address.createFromRawAddress(address),
-      [new Mosaic(new MosaicId(this.mosaic), UInt64.fromUint(Number(amount)))],
+      [new Mosaic(new MosaicId(this.mosaic.mosaic), UInt64.fromUint(Number(amount)))],
       PlainMessage.create(message),
       network,
     );
