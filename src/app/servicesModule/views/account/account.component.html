@@ -15,7 +15,7 @@
           </div>
         </div>
         <div class="col-2 d-flex align-items-center">
-          <i mdbWavesEffect (click)="copyMessage()" ngxClipboard [cbContent]="address" style="font-size: 1.5rem; padding-top: 35px;"
+          <i mdbWavesEffect (click)="copyMessage('Address')" ngxClipboard [cbContent]="address" style="font-size: 1.5rem; padding-top: 35px;"
             class="fa fa-paste prefix text-gris cursor-pointer"></i>
         </div>
       </div>
@@ -51,7 +51,7 @@
             </div>
           </div>
           <div class="col-2 d-flex align-items-center">
-            <i mdbWavesEffect (click)="copyMessage()" ngxClipboard [cbContent]="privateKey" style="font-size: 1.5rem; padding-top: 35px;"
+            <i mdbWavesEffect (click)="copyMessage('Private key')" ngxClipboard [cbContent]="privateKey" style="font-size: 1.5rem; padding-top: 35px;"
               class="fa fa-paste prefix text-gris cursor-pointer"></i>
             <i mdbWavesEffect (click)="hidePrivateKey()" ngxClipboard style="font-size: 1.5rem; padding-top: 35px; padding-left: 15px;"
               class="fa fa-trash prefix text-gris cursor-pointer"></i>

@@ -26,7 +26,15 @@ import {
   UInt64,
   TransactionStatusError,
   TransactionStatus,
-  MosaicInfo
+  MosaicInfo,
+  NamespaceId,
+  NamespaceInfo,
+  RegisterNamespaceTransaction,
+  MosaicDefinitionTransaction,
+  MosaicProperties,
+  MosaicSupplyChangeTransaction,
+  MosaicSupplyType,
+  NamespaceService
 } from 'proximax-nem2-sdk';
 
 import { crypto } from 'proximax-nem2-library';
@@ -39,7 +47,11 @@ import { Observable } from 'rxjs';
 })
 export class NemProvider {
 
-  mosaic = 'prx:xpx';
+  infoMosaic: MosaicInfo;
+  mosaic = {
+    mosaic: 'prx:xpx',
+    mosaicId: 'd423931bd268d1f4'
+  };
   transactionHttp: TransactionHttp;
   websocketIsOpen = false;
   connectionWs: Listener;
@@ -47,6 +59,7 @@ export class NemProvider {
   mosaicHttp: MosaicHttp;
   namespaceHttp: NamespaceHttp;
   mosaicService: MosaicService;
+  namespaceService: NamespaceService;
   transactionStatusError: TransactionStatusError
   url: any;
 
@@ -60,6 +73,7 @@ export class NemProvider {
     this.mosaicHttp = new MosaicHttp(this.url);
     this.namespaceHttp = new NamespaceHttp(this.url);
     this.mosaicService = new MosaicService(this.accountHttp, this.mosaicHttp, this.namespaceHttp);
+    this.namespaceService = new NamespaceService(this.namespaceHttp);
     this.transactionHttp = new TransactionHttp(this.url);
   }
 
@@ -114,6 +128,18 @@ export class NemProvider {
   }
 
   /**
+   * get
+   *
+   * @param {string} privateKey
+   * @param {*} net
+   * @returns {Account}
+   * @memberof NemProvider
+   */
+  getAccountFromPrivateKey(privateKey: string, net: NetworkType): Account {
+    return Account.createFromPrivateKey(privateKey, net)
+  }
+
+  /**
    * Create a password with at least 8 characters
    *
    * @param {string} value
@@ -147,7 +173,7 @@ export class NemProvider {
     return TransferTransaction.create(
       Deadline.create(5),
       recipientAddress,
-      [new Mosaic(new MosaicId(this.mosaic), UInt64.fromUint(Number(amount)))],
+      [new Mosaic(new MosaicId(this.mosaic.mosaic), UInt64.fromUint(Number(amount)))],
       PlainMessage.create(message),
       network
     );
@@ -170,7 +196,7 @@ export class NemProvider {
    * @param encryptedKey
    * @param iv
    */
-  decryptPrivateKey(password: Password, encryptedKey: string, iv): string {
+  decryptPrivateKey(password: Password, encryptedKey: string, iv: string): string {
     const common: commonInterface = {
       password: password.value,
       privateKey: ''
@@ -209,6 +235,10 @@ export class NemProvider {
     return this.mosaicHttp.getMosaic(mosaicId);
   }
 
+  getMosaics(mosaicIsd: MosaicId[]): Observable<MosaicInfo[]> {
+    return this.mosaicHttp.getMosaics(mosaicIsd);
+  }
+
   /**
    *Gets an AccountInfo for an account.
    *
@@ -241,7 +271,7 @@ export class NemProvider {
    * @memberof NemProvider
    */
   getAllTransactionsFromAccount(publicAccount: PublicAccount, queryParams?: QueryParams): Observable<Transaction[]> {
-    return this.accountHttp.transactions(publicAccount, new QueryParams(queryParams.pageSize,queryParams.id));
+    return this.accountHttp.transactions(publicAccount, new QueryParams(queryParams.pageSize, queryParams.id));
   }
 
   /**
@@ -265,7 +295,7 @@ export class NemProvider {
    * @returns {Observable<Transaction[]>}
    * @memberof NemProvider
    */
-  getUnconfirmedTransactionsFromAnAccount(publicAccount, queryParams?): Observable<Transaction[]> {
+  getUnconfirmedTransactionsFromAnAccount(publicAccount: PublicAccount, queryParams?: QueryParams): Observable<Transaction[]> {
     return this.accountHttp.unconfirmedTransactions(publicAccount, queryParams);
   }
 
@@ -274,7 +304,7 @@ export class NemProvider {
    * @param param
    */
   getTransactionInformation(hash: string, node = ''): Observable<Transaction> {
-    const transaction: TransactionHttp = (node === '') ? this.transactionHttp : new TransactionHttp(environment.protocol + '://'+ `${node}`);
+    const transaction: TransactionHttp = (node === '') ? this.transactionHttp : new TransactionHttp(environment.protocol + '://' + `${node}`);
     return transaction.getTransaction(hash);
   }
 
@@ -303,11 +333,11 @@ export class NemProvider {
   }
 
   sendTransaction(network: NetworkType, address: string, message?: string, amount: number = 0): TransferTransaction {
-    // console.log(address, message)
+    console.log(address, message)
     return TransferTransaction.create(
       Deadline.create(23),
       Address.createFromRawAddress(address),
-      [new Mosaic(new MosaicId(this.mosaic), UInt64.fromUint(Number(amount)))],
+      [new Mosaic(new MosaicId(this.mosaic.mosaic), UInt64.fromUint(Number(amount)))],
       PlainMessage.create(message),
       network,
     );
@@ -316,5 +346,141 @@ export class NemProvider {
 
   announce(signedTransaction: SignedTransaction): Observable<TransactionAnnounceResponse> {
     return this.transactionHttp.announce(signedTransaction);
+  }
+
+  getNamespace(namespace: string): Observable<NamespaceInfo> {
+
+    return this.namespaceHttp.getNamespace(new NamespaceId(namespace))
+  }
+
+
+  /**
+   * GET INFO MOSAICS, RETURN PROMISE
+   *
+   * @param {MosaicId[]} mosaicsId
+   * @returns
+   * @memberof NemProvider
+   */
+  async getMosaicViewPromise(mosaicsId: MosaicId[]) {
+    const promise = await new Promise(async (resolve, reject) => {
+      //if (this.infoMosaic === undefined) {
+        console.warn("********** GET INFO MOSAICS TO PROMISE **********");
+        const mosaicsView = await this.mosaicService.mosaicsView(mosaicsId).toPromise();
+        // this.setInfoMosaic(this.infoMosaic);
+        // console.log("Ya va a responder...", this.infoMosaic);
+        resolve(mosaicsView);
+      //} else {
+        //console.log("Información de mosaico en caché", this.infoMosaic);
+        //reject(null);
+        // if (this.infoMosaic.mosaicId === mosaicId) {
+        //   resolve(this.infoMosaic);
+        // } else {
+        //   this.infoMosaic = await this.nemProvider.getMosaic(mosaicId).toPromise();
+        //   this.setInfoMosaic(this.infoMosaic);
+        //   resolve(this.infoMosaic);
+        // }
+      //}
+    });
+
+    console.log("***RESPUESTA CONSULTA DE MOSAICOS****", promise);
+    return await promise;
+  }
+
+
+  async getNamespaceViewPromise(namespaceId: NamespaceId[]) {
+    const promise = await new Promise(async (resolve, reject) => {
+        console.warn("********** GET NAMESPACE TO PROMISE **********", namespaceId);
+        const namespace = await this.namespaceHttp.getNamespacesName(namespaceId).toPromise();
+        resolve(namespace);
+    });
+
+    console.log("***RESPUESTA CONSULTA DE MOSAICOS****", promise);
+    return await promise;
+  }
+
+
+  async getInfoMosaicFromNamespacePromise(namespaceId: NamespaceId, queryParams?: QueryParams) {
+    const promise = await new Promise(async (resolve, reject) => {
+      if (this.infoMosaic === undefined) {
+        // console.warn("********** INFO MOSAIC ES UNDEFINED **********");
+        const mosaicInfo = await this.mosaicHttp.getMosaicsFromNamespace(namespaceId).toPromise();
+        // console.log("RESPONDIO MOSAIC INFO");
+        // this.setInfoMosaic(this.infoMosaic);
+        // console.log("Ya va a responder...", this.infoMosaic);
+        resolve(mosaicInfo);
+      } else {
+        // console.log("Información de mosaico en caché", this.infoMosaic);
+        reject(null);
+        // if (this.infoMosaic.mosaicId === mosaicId) {
+        //   resolve(this.infoMosaic);
+        // } else {
+        //   this.infoMosaic = await this.nemProvider.getMosaic(mosaicId).toPromise();
+        //   this.setInfoMosaic(this.infoMosaic);
+        //   resolve(this.infoMosaic);
+        // }
+      }
+    });
+    return await promise;
+  }
+
+  mosaicSupplyChangeTransaction(mosaicId:string, supply:number, mosaicSupplyType: number,network: NetworkType):MosaicSupplyChangeTransaction{
+    return MosaicSupplyChangeTransaction.create(
+      Deadline.create(),
+      new MosaicId(mosaicId),
+      mosaicSupplyType,
+      UInt64.fromUint(supply),
+      network);
+
+  }
+
+
+  registerRootNamespaceTransaction(name: string, network: NetworkType, duration: number = 100): RegisterNamespaceTransaction {
+    // Crear namespace transaction
+    console.log('duration;', duration)
+    return RegisterNamespaceTransaction.createRootNamespace(
+      Deadline.create(23),
+      name,
+      UInt64.fromUint(duration),
+      network);
+
+  }
+
+
+
+  registersubNamespaceTransaction(rootNamespace: string, subnamespaceName: string, network: NetworkType): RegisterNamespaceTransaction {
+    // Crear namespace transaction
+    return RegisterNamespaceTransaction.createSubNamespace(
+      Deadline.create(23),
+      subnamespaceName,
+      rootNamespace,
+      network);
+
+  }
+  /**
+   *
+   *
+   * @param {string} mosaicName
+   * @param {string} rootnamespaceName
+   * @param {boolean} supplyMutable
+   * @param {boolean} transferable
+   * @param {boolean} levyMutable
+   * @param {number} divisibility
+   * @param {number} duration
+   * @returns
+   * @memberof NemProvider
+   */
+  buildRegisterMosaicTransaction(mosaicName: string, rootnamespaceName: string, supplyMutable: boolean, transferable: boolean, levyMutable: boolean, divisibility: number, duration: number, network: NetworkType) {
+    return MosaicDefinitionTransaction.create(
+      Deadline.create(),
+      mosaicName,
+      rootnamespaceName,
+      MosaicProperties.create({
+        supplyMutable: supplyMutable,
+        transferable: transferable,
+        levyMutable: levyMutable,
+        divisibility: divisibility,
+        duration: UInt64.fromUint(duration)
+      }),
+      network);
   }
 }

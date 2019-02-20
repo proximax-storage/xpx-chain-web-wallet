@@ -13,12 +13,9 @@ export class HeaderHorizontalComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    
   }
+
   logoutEvent(param){
     this.logout.emit(param);
-
   }
-
-
 }

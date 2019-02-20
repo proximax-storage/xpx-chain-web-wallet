@@ -23,6 +23,14 @@ export const AppConfig: Config = {
     addressBook:'address-book',
     notFound: 'not-found',
     storage: 'storage',
+    createMosaic: 'create-mosaic',
+    editMosaic: 'mosaic-supply-change',
+    createNamespace:'create-namespace',
+    editNamespace:'edit-namespace',
+
+    createMultisignature: 'create-multisignature-contract',
+    editMultisignatureContract:'edit-multisignature-contract',
+    signMultiSigTransactions:'sign-multisignature-transactions'
   }
 };
 
@@ -47,7 +55,15 @@ export const NameRoute = {
   [AppConfig.routes.service]: ' Dashboard service',
   [AppConfig.routes.addressBook]: 'Address Book',
   [AppConfig.routes.notFound]: '404 not found',
-  [AppConfig.routes.storage]: 'storage'
+  [AppConfig.routes.storage]: 'storage',
+  [AppConfig.routes.createMosaic]: 'Create Mosaic',
+  [AppConfig.routes.editMosaic]: 'Mosaic supply change',
+  [AppConfig.routes.createNamespace]: 'Create namespace & sub-namespace',
+  [AppConfig.routes.editNamespace]: 'Edit Namespace',
+  [AppConfig.routes.createMultisignature]: 'Convert an account to multisig',
+  [AppConfig.routes.editMultisignatureContract]: 'Edit multisignature contract',
+  [AppConfig.routes.signMultiSigTransactions]: 'Sign multisignature transactions',
+
 }
 
 export interface Config {
@@ -71,7 +87,21 @@ export interface Config {
     account: string;
     explorerFile: string;
     addressBook: string;
+    createMosaic: string;
+    editMosaic: string;
+    createNamespace: string;
+    editNamespace: string;
+
+    createMultisignature: string;
+    editMultisignatureContract: string;
+    signMultiSigTransactions:string;
+
+
+
     notFound: string;
     storage:string;
+
+
+
   };
 }

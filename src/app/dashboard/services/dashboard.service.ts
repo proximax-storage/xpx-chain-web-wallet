@@ -3,16 +3,15 @@ import { LoginService } from '../../login/services/login.service';
 import { ProximaxProvider } from '../../shared/services/proximax.provider';
 import { MosaicInfo } from 'proximax-nem2-sdk';
 import { Observable, BehaviorSubject } from 'rxjs';
+import { WalletService } from '../../shared/services/wallet.service';
+import { MosaicService } from '../..//servicesModule/services/mosaic.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DashboardService {
 
-  private transactionsSubject: BehaviorSubject<any> = new BehaviorSubject<any>([]);
-  private transactions$: Observable<any> = this.transactionsSubject.asObservable();
-
-
+  processComplete = false;
   isLogged$: Observable<boolean>;
   isLoadedDashboard = 0;
   allTransactions: any;
@@ -25,24 +24,30 @@ export class DashboardService {
   ];
   constructor(
     private loginService: LoginService,
-    private proximaxProvider: ProximaxProvider
+    private proximaxProvider: ProximaxProvider,
+    private walletService: WalletService,
+    private mosaicService: MosaicService
   ) { }
 
 
+  /**
+   * Subscribe if logged
+   *
+   * @memberof DashboardService
+   */
   subscribeLogged() {
-    this.isLogged$ = this.loginService.getIsLogged();
-    if (this.isLoadedDashboard == 1) {
-      console.log("subscription");
+    if (this.isLoadedDashboard === 1) {
       this.isLogged$ = this.loginService.getIsLogged();
       this.subscriptions['isLogged'] = this.isLogged$.subscribe(
         response => {
           if (response === false) {
             // DESTROY SUBSCRIPTION WHEN IS NOT LOGIN
-            console.log("destroy subscription");
+            console.log("Ha cambiado isLogged, destroy subscription");
             this.isLoadedDashboard = 0;
-            this.proximaxProvider.destroyInfoMosaic();
             this.destroySubscription();
-            this.subscriptions['isLogged'].unsubscribe();
+           // this.subscriptions['isLogged'].unsubscribe();
+            this.walletService.destroyAccountInfo();
+            this.mosaicService.destroyMosaicCache();
             return;
           }
         }
@@ -50,6 +55,12 @@ export class DashboardService {
     }
   }
 
+  /**
+   * Get transactions observable
+   *
+   * @returns {Observable<any>}
+   * @memberof DashboardService
+   */
   getTransactionsObs(): Observable<any> {
     return this.allTransactions.transactions$;
   }
@@ -74,7 +85,6 @@ export class DashboardService {
     this.subscriptions.forEach(element => {
       if (this.subscriptions[element] !== undefined) {
         this.subscriptions[element].unsubscribe();
-        this.proximaxProvider.destroyInfoMosaic();
       }
     });
   }

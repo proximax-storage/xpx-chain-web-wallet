@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AppConfig } from '../config/app.config';
 import { LoggedGuard } from '../shared/guard/logged.guard';
-import { NotLoggedGuard } from '../shared/guard/not-logged.guard';
 import { ExplorerComponent } from "./views/explorer/explorer.component";
 import { AddNodeComponent } from "./views/add-node/add-node.component";
 import { SelectNodeComponent } from './views/select-node/select-node.component';
@@ -14,6 +13,18 @@ import { ServicesComponent } from "./views/services/services.component";
 import { AccountComponent } from './views/account/account.component';
 import { AddressBookComponent } from "./views/address-book/address-book.component";
 import { StorageComponent } from './views/storage/storage.component';
+import { CreateMosaicComponent } from './views/mosaic/create-mosaic/create-mosaic.component';
+import { EditMosaicComponent } from './views/mosaic/edit-mosaic/edit-mosaic.component';
+import { CreateNamespaceComponent } from './views/namespace/create-namespace/create-namespace.component';
+import { EditNamespaceComponent } from './views/namespace/edit-namespace/edit-namespace.component';
+import { CreateMosaicResolver } from './views/mosaic/resolvers/creat-mosaic.resolver';
+import { EditMosaicResolver } from './views/mosaic/resolvers/edit-mosaic.resolver';
+import { CreateNamespaceResolver } from './views/namespace/resolvers/creat-namespace.resolver';
+import { CreateMultisignatureComponent } from './views/multisignature/create-multisignature/create-multisignature.component';
+import { EditMultisignatureContractComponent } from './views/multisignature/edit-multisignature-contract/edit-multisignature-contract.component';
+import { SignMultisigTransactionsComponent } from './views/multisignature/sign-multisig-transactions/sign-multisig-transactions.component';
+
+
 
 const routes: Routes = [
   {
@@ -68,14 +79,56 @@ const routes: Routes = [
     path: `${AppConfig.routes.storage}`,
     component: StorageComponent,
     canActivate: [LoggedGuard]
+  },
+  {
+    path: `${AppConfig.routes.createMosaic}`,
+    component: CreateMosaicComponent,
+    canActivate: [LoggedGuard],
+    resolve: { dataNamespace: CreateMosaicResolver }
+  },
+  {
+    path: `${AppConfig.routes.editMosaic}`,
+    component: EditMosaicComponent,
+    canActivate: [LoggedGuard],
+    resolve: { dataNamespace: CreateNamespaceResolver }
+  },
+  {
+    path: `${AppConfig.routes.createNamespace}`,
+    component: CreateNamespaceComponent,
+    canActivate: [LoggedGuard],
+    resolve: { dataNamespace: CreateNamespaceResolver }
+  },
+  {
+    path: `${AppConfig.routes.editNamespace}`,
+    component: EditNamespaceComponent,
+    canActivate: [LoggedGuard]
+  },
+
+
+  {
+    path: `${AppConfig.routes.createMultisignature}`,
+    component: CreateMultisignatureComponent,
+    canActivate: [LoggedGuard]
+  },
+  {
+    path: `${AppConfig.routes.editMultisignatureContract}`,
+    component: EditMultisignatureContractComponent,
+    canActivate: [LoggedGuard]
+  },
+  {
+    path: `${AppConfig.routes.signMultiSigTransactions}`,
+    component: SignMultisigTransactionsComponent,
+    canActivate: [LoggedGuard]
   }
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
-  declarations: [
-
+  providers: [
+    CreateMosaicResolver,
+    CreateNamespaceResolver,
+    EditMosaicResolver
   ]
 })
 export class ServicesRoutingModule { }

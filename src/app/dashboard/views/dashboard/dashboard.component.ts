@@ -2,14 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import {
   MosaicInfo
 } from 'proximax-nem2-sdk';
-import { Observable } from "rxjs";
-import { LoginService } from "../../../login/services/login.service";
+import { first } from 'rxjs/operators';
 import { DashboardService } from '../../services/dashboard.service';
 import { TransactionsService } from '../../../transactions/service/transactions.service';
-import { WalletService } from 'src/app/shared';
-import { NemProvider } from 'src/app/shared/services/nem.provider';
-import { first } from 'rxjs/operators';
-import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
+import { WalletService } from '../../../shared/services/wallet.service';
+import { NemProvider } from '../../../shared/services/nem.provider';
+import { LoginService } from '../../../login/services/login.service';
+import { SharedService } from '../../../shared/services/shared.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -18,114 +17,130 @@ import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
 })
 export class DashboardComponent implements OnInit {
 
+  count = 0;
   cantConfirmed = 0;
   elementsConfirmed: any = [];
-
   elementsUnconfirmed: any;
   confirmedSelected = true;
   unconfirmedSelected = false;
   cantUnconfirmed = 0;
-  dataSelected: any;
+  dataSelected: any = {};
+  searching = true;
+  reload = false;
 
-  headElements = ['Recipient', 'Amount', 'Mosaic', 'Date'];
+  headElements = ['Type', 'Timestamp', 'Fee', 'Sender', 'Recipient'];
   subscriptions = [
     'getConfirmedTransactionsCache',
     'transactionsUnconfirmed',
     'getAllTransactions',
-    'getTransConfirm'
+    'transactionsConfirmed'
   ];
   infoMosaic: MosaicInfo;
+  typeTransaction: any;
 
   constructor(
+    public transactionsService: TransactionsService,
     private dashboardService: DashboardService,
-    private transactionsService: TransactionsService,
     private walletService: WalletService,
     private nemProvider: NemProvider,
-    private proximaxProvider: ProximaxProvider
+    private loginService: LoginService,
+    private sharedService: SharedService,
   ) {
+
   }
 
   ngOnInit() {
+    this.typeTransaction = this.transactionsService.arraTypeTransaction;
     this.dashboardService.loadedDashboard();
     this.dashboardService.subscribeLogged();
-    this.getConfirmedTransactions();
-    this.getUnconfirmedTransactions();
+    this.getTransactions();
+    this.getUnconfirmedTransactionsCache();
   }
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(element => {
       if (this.subscriptions[element] !== undefined && this.subscriptions[element] !== 'isLogged') {
-        console.log("Destruye: ", element);
         this.subscriptions[element].unsubscribe();
       }
     });
   }
 
+
   /**
-   * Get all confirmed transactions
+   * Destroy all subscriptions
    *
    * @memberof DashboardComponent
    */
-  getConfirmedTransactions() {
-    this.subscriptions['getTransConfirm'] = this.transactionsService.getConfirmedTransactionsCache$().subscribe(
-      async cacheTransactions => {
-        console.log("HAY ALGO EN CACHE?", cacheTransactions);
-        if (cacheTransactions.length > 0) {
-          if (cacheTransactions.length > 10) {
-            this.elementsConfirmed = cacheTransactions.slice(0, 10);
-            this.cantConfirmed = this.elementsConfirmed.length;
-          } else {
-            console.log("IGUALA LAS VARIABLES Y PINTALAS PUES");
-            this.cantConfirmed = cacheTransactions.length;
-            this.elementsConfirmed = cacheTransactions;
-          }
-        } else {
-          if (this.dashboardService.isLoadedDashboard == 1) {
-            const allTrasactions = await this.getAllTransactions();
-          }
-        }
+  destroySubscription() {
+    this.subscriptions.forEach(element => {
+      if (this.subscriptions[element] !== undefined) {
+        this.subscriptions[element].unsubscribe();
       }
-    );
+    });
   }
 
-  getUnconfirmedTransactions() {
+
+  /**
+   * Get transactions
+   *
+   * @memberof DashboardComponent
+   */
+  async getTransactions() {
+    //Gets all transactions confirmed in cache
+    this.searching = true;
+    this.reload = false;
+    this.destroySubscription();
+    this.subscriptions['transactionsConfirmed'] = this.transactionsService.getConfirmedTransactionsCache$().subscribe(
+      async transactionsConfirmedCache => {
+        if (this.loginService.logged) {
+          console.log("Obtiene las transacciones confirmadas en cache", transactionsConfirmedCache);
+          console.log("proceso completado?", this.dashboardService.processComplete);
+          if (transactionsConfirmedCache.length > 0) {
+            this.elementsConfirmed = transactionsConfirmedCache.slice(0, 10);
+            this.cantConfirmed = this.elementsConfirmed.length;
+            this.searching = false;
+          } else if (this.dashboardService.isLoadedDashboard === 1 && this.loginService.logged || !this.dashboardService.processComplete) {
+            this.getAllTransactions();
+          }
+        }
+      }, error => {
+        console.log("Has ocurred a error", error);
+      });
+  }
+
+  /**
+   * Get unconfirmed transactions in cache
+   *
+   * @memberof DashboardComponent
+   */
+  getUnconfirmedTransactionsCache() {
     this.subscriptions['transactionsUnconfirmed'] = this.transactionsService.getTransactionsUnconfirmedCache$().subscribe(
       resp => {
-        this.cantUnconfirmed = resp.length;
         this.elementsUnconfirmed = resp;
+        this.cantUnconfirmed = resp.length;
       }
     );
   }
 
   /**
-  * Get all transactions http and
-  * Foreach and assign to elementsConfirmed, to then add it to the observable
-  *
-  * @memberof DashboardComponent
-  */
+   *Get all transactions
+   *
+   * @memberof DashboardComponent
+   */
   async getAllTransactions() {
-    const promise = new Promise(async (resolve, reject) => {
-      this.subscriptions['getAllTransactions'] = this.nemProvider.getAllTransactionsFromAccount(this.walletService.publicAccount, this.walletService.network).pipe(first()).subscribe(
+    console.log("***** BUSCA TODAS LAS TRANSACCIONES *****");
+    this.subscriptions['getAllTransactions'] =
+      this.nemProvider.getAllTransactionsFromAccount(this.walletService.publicAccount, this.walletService.network).pipe(first()).subscribe(
         async allTrasactions => {
-          const elementsConfirmed = [];
-          if (allTrasactions.length > 0) {
-            for (let element of allTrasactions) {
-              // Get mosaic information
-              await this.proximaxProvider.getInfoMosaic(element['mosaics'][0].id).then((mosaicInfo: MosaicInfo) => {
-                this.infoMosaic = mosaicInfo;
-                element['amount'] = this.nemProvider.formatterAmount(element['mosaics'][0].amount.compact(), this.infoMosaic.divisibility);
-                elementsConfirmed.push(this.transactionsService.formatTransaction(element));
-              });
-            };
-            this.transactionsService.setConfirmedTransaction$(elementsConfirmed);
-          }
-          resolve(true);
+          const response = await this.transactionsService.buildTransactions(allTrasactions);
+          this.searching = false;
+          this.dashboardService.processComplete = true;
+          this.transactionsService.setConfirmedTransaction$(response);
         }, error => {
-          console.error("Has ocurred a error", error);
-          reject(false);
+          this.sharedService.showInfo("", "An error occurred while searching for transactions");
+          this.searching = false;
+          this.reload = true;
         });
-    });
-    return await promise;
   }
 
 
@@ -144,4 +159,6 @@ export class DashboardComponent implements OnInit {
       this.unconfirmedSelected = true;
     }
   }
+
+
 }

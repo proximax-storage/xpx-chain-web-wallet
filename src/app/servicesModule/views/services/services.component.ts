@@ -8,7 +8,6 @@ import { ServiceModuleService } from "../../../servicesModule/services/service-m
   styleUrls: ['./services.component.scss']
 })
 export class ServicesComponent implements OnInit {
-
   keyObject = Object.keys;
   coin = 'XPX';
   services: Service;
@@ -18,17 +17,16 @@ export class ServicesComponent implements OnInit {
 
   ngOnInit() {
 
-    // const addNode = this.service.structureServices('img-add-node', 'Nodes', `Add and select node`,
-    //   {
-    //     createPo    // const addNode = this.service.structureServices('img-add-node', 'Nodes', `Add and select node`,
-    //     //   {
-    //     //     createPoll: this.structureServiceRoute('Add node', `/${AppConfig.routes.addNode}`),
-    //     //     selectNode: this.structureServiceRoute('Select node', `/${AppConfig.routes.selectNode}`)
-    //     //   }, true
-    //     // );ll: this.structureServiceRoute('Add node', `/${AppConfig.routes.addNode}`),
-    //     selectNode: this.structureServiceRoute('Select node', `/${AppConfig.routes.selectNode}`)
-    //   }, true
-    // );
+    const multisignature = this.service.structureServices(
+      'fa fa-user-plus',
+      'Multisignature and Multi-User Accounts',
+      'Mutisig accounts are editable on-chain contracts, the most powerful way to secure funds, enable join accounts, and are the foundation of DAOs.',
+      {
+        convertAccountToMultisig: this.structureServiceRoute('Convert an account to multisig', `/${AppConfig.routes.createMultisignature}`),
+        editAnExistingContract: this.structureServiceRoute('Edit an existing contract', `/${AppConfig.routes.editMultisignatureContract}`),
+        signMultisigTransactions: this.structureServiceRoute('Sign multisig transactions',  `/${AppConfig.routes.signMultiSigTransactions}`),
+      }, false
+    );
 
     const storage = this.service.structureServices('img-explorer-file', 'Storage', `Storage`,
       {
@@ -57,30 +55,25 @@ export class ServicesComponent implements OnInit {
       }, true
     );
 
-    const multisignature = this.service.structureServices('fa fa-user-plus', 'Multisignature and Multi-User Accounts',
-      'Mutisig accounts are editable on-chain contracts, the most powerful way to secure funds, enable join accounts, and are the foundation of DAOs.',
-      {
-        convertAccountToMultisig: this.structureServiceRoute('Convert an account to multisig', ''),
-        editAnExistingContract: this.structureServiceRoute('Edit an existing contract', ''),
-        signMultisigTransactions: this.structureServiceRoute('Sign multisig transactions', ''),
-      }, false
-    );
-
-    const nameSpace = this.service.structureServices('img-node', 'Namespaces & Subdomains',
+    const nameSpace = this.service.structureServices('fa fa-linode', 'Namespaces & Subdomains',
       'Namespaces are domain names. Each namespaces is unique and authenticates mosaics (assets) issued on it or on its subdomains',
       {
-        createNamespace: this.structureServiceRoute('Create namespace', ''),
-        renewNamespace: this.structureServiceRoute('Renew namespace', '')
-      }, false
+        createNamespace: this.structureServiceRoute('Create namespace', `/${AppConfig.routes.createNamespace}`),
+       // renewNamespace: this.structureServiceRoute('Renew namespace',  `/${AppConfig.routes.editNamespace}`)
+      }, true
     );
+
+    const mosaics = this.service.structureServices('fa fa-th', 'Mosaics',
+      'The mosaics service, are assets that expose additional properties and other features. To be able to create a mosaic, an account must rent at least one root namespace.',
+      {
+        createMosaic: this.structureServiceRoute('Create mosaic', `/${AppConfig.routes.createMosaic}`),
+        editMosaic: this.structureServiceRoute('Mosaic supply change', `/${AppConfig.routes.editMosaic}`),
+      }, true
+    );
+
 
     const delegatedHarvesting = this.service.structureServices('fa fa-compress', 'Delegated Harvesting',
       'Delegated haversting is the feature that allows "mining" even while your account is closed',
-      {}, false
-    );
-
-    const mosaics = this.service.structureServices('fa fa-compres', 'Mosaics',
-      'The mosaics service, are assets that expose additional properties and other features. To be able to create a mosaic, an account must rent at least one root namespace.',
       {}, false
     );
 
@@ -99,20 +92,19 @@ export class ServicesComponent implements OnInit {
 
     this.services = {
       //explorerFile: explorerFile,
-      explorerTransaction: explorerTransaction,
       //addNode: addNode,
-      //multisignature: multisignature,
+      multisignature: multisignature,
+      explorerTransaction: explorerTransaction,
       nameSpace: nameSpace,
+      mosaics: mosaics,
       delegatedHarvesting: delegatedHarvesting,
       apostille: apostille,
-      mosaics: mosaics,
       changellyInstantExchange: changellyInstantExchange,
       voting: voting,
       addressBook: addressBook,
       storage:storage
     }
   }
-
   structureServiceRoute(name, link) {
     return {
       name: name,
@@ -125,12 +117,12 @@ export class ServicesComponent implements OnInit {
 export interface Service {
   //explorerFile: ItemService;
   //addNode: ItemService;
+  multisignature: ItemService;
   explorerTransaction: ItemService;
-  //multisignature: ItemService;
   nameSpace: ItemService;
+  mosaics: ItemService;
   delegatedHarvesting: ItemService;
   apostille: ItemService;
-  mosaics: ItemService;
   changellyInstantExchange: ItemService;
   addressBook: ItemService;
   voting: ItemService;

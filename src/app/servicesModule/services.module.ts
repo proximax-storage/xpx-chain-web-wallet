@@ -14,6 +14,13 @@ import { ServicesComponent } from "./views/services/services.component";
 import { AccountComponent } from './views/account/account.component';
 import { AddressBookComponent } from './views/address-book/address-book.component';
 import { StorageComponent } from './views/storage/storage.component';
+import { CreateMosaicComponent } from './views/mosaic/create-mosaic/create-mosaic.component';
+import { EditMosaicComponent } from './views/mosaic/edit-mosaic/edit-mosaic.component';
+import { EditNamespaceComponent } from './views/namespace/edit-namespace/edit-namespace.component';
+import { CreateNamespaceComponent } from './views/namespace/create-namespace/create-namespace.component';
+import { CreateMultisignatureComponent } from './views/multisignature/create-multisignature/create-multisignature.component';
+import { EditMultisignatureContractComponent } from './views/multisignature/edit-multisignature-contract/edit-multisignature-contract.component';
+import { SignMultisigTransactionsComponent } from './views/multisignature/sign-multisig-transactions/sign-multisig-transactions.component';
 
 @NgModule({
   imports: [
@@ -33,7 +40,14 @@ import { StorageComponent } from './views/storage/storage.component';
     ServicesComponent,
     AccountComponent,
     AddressBookComponent,
-    StorageComponent
+    StorageComponent,
+    CreateMosaicComponent,
+    EditMosaicComponent,
+    CreateNamespaceComponent,
+    EditNamespaceComponent,
+    CreateMultisignatureComponent,
+    EditMultisignatureContractComponent,
+    SignMultisigTransactionsComponent,
   ],
   schemas: [NO_ERRORS_SCHEMA]
 })

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { NetworkType, PublicAccount } from "proximax-nem2-sdk";
+import { NetworkType, PublicAccount, AccountInfo } from "proximax-nem2-sdk";
 import { crypto } from 'proximax-nem2-library';
 import { Router } from "@angular/router";
 import { AccountsInterface } from '..';
@@ -19,6 +19,7 @@ export class WalletService {
   network: any = '';
   algo: string;
   publicAccount: PublicAccount;
+  private accountInfo: AccountInfo;
 
   constructor(
     private sharedService: SharedService,
@@ -30,31 +31,29 @@ export class WalletService {
   }
 
 
-
+  /**
+   *
+   *
+   * @param {{ password: { length: number; }; }} common
+   * @param {*} wallet
+   * @returns
+   * @memberof WalletService
+   */
   login(common: { password: { length: number; }; }, wallet: any) {
     if (!wallet) {
       this.sharedService.showError('Error', '¡Dear user, the wallet is missing!');
       return false;
-    }
-
-    if (!this.nodeService.getNodeSelected()) {
-      //Check if exist nodeStorage
-      // if (this.nodeService.existArrayNodes() === null) {
-      //   this.sharedService.showError('', 'Please, create a node.');
-      //   this.route.navigate([`/${AppConfig.routes.addNode}`]);
-      // }else {
-        this.sharedService.showError('', 'Please, select a node.');
-        this.route.navigate([`/${AppConfig.routes.selectNode}`]);
-      // }
-
+    } else if (!this.nodeService.getNodeSelected()) {
+      this.sharedService.showError('', 'Please, select a node.');
+      this.route.navigate([`/${AppConfig.routes.selectNode}`]);
       return false;
-    }
-    // Decrypt / generate and check primary
-    if (!this.decrypt(common, wallet.accounts[0], wallet.accounts[0].algo, wallet.accounts[0].network)) { return false; }
-
-    if (wallet.accounts[0].network === NetworkType.MAIN_NET && wallet.accounts[0].algo === 'pass:6k' && common.password.length < 40) {
+    } else if (!this.decrypt(common, wallet.accounts[0], wallet.accounts[0].algo, wallet.accounts[0].network)) {
+      // Decrypt / generate and check primary
+      return false;
+    } else if (wallet.accounts[0].network === NetworkType.MAIN_NET && wallet.accounts[0].algo === 'pass:6k' && common.password.length < 40) {
       this.sharedService.showError('Error', '¡Dear user, the wallet is missing!');
     }
+
     this.use(wallet);
     return true;
   }
@@ -129,7 +128,6 @@ export class WalletService {
     // Try to generate or decrypt key
 
     if (!crypto.passwordToPrivatekey(common, acct, alg)) {
-
       setTimeout(() => {
         this.sharedService.showError('Error', '¡Invalid password!');
       }, 500);
@@ -137,13 +135,10 @@ export class WalletService {
     }
 
     if (common.isHW) {
-      // this._mdboostrap.closeToastr();
-
       return true;
     }
 
     if (!this.isPrivateKeyValid(common.privateKey) || !this.nemProvider.checkAddress(common.privateKey, net, acct.address)) {
-      //   this._mdboostrap.closeToastr();
       setTimeout(() => {
         this.sharedService.showError('Error', '¡Invalid password!');
       }, 500);
@@ -186,15 +181,23 @@ export class WalletService {
     return str.match('^(0x|0X)?[a-fA-F0-9]+$') !== null;
   }
 
-
-
-/**
-   * Create a wallet array or return existing ones
-   * by: roimerj_vzla
+  /**
+   * Get account info
    *
    * @returns
    * @memberof WalletService
    */
+  getAccountInfo() {
+    return this.accountInfo;
+  }
+
+  /**
+     * Create a wallet array or return existing ones
+     * by: roimerj_vzla
+     *
+     * @returns
+     * @memberof WalletService
+     */
   getWalletStorage() {
     let walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
     if (walletsStorage === undefined || walletsStorage === null) {
@@ -205,6 +208,15 @@ export class WalletService {
   }
 
   /**
+   * Destroy account info
+   *
+   * @memberof WalletService
+   */
+  destroyAccountInfo() {
+    this.accountInfo = undefined;
+  }
+
+  /**
    * Create a wallet array
    * by: roimerj_vzla
    *
@@ -212,11 +224,20 @@ export class WalletService {
    * @param {any} accounts
    * @memberof WalletService
    */
-  setAccountWalletStorage(user: string, accounts) {
+  setAccountWalletStorage(user: string, accounts: any) {
     let walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
     walletsStorage.push({ name: user, accounts: { '0': accounts } });
     localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorage));
   }
 
+  /**
+   * Set account info
+   *
+   * @param {AccountInfo} accountInfo
+   * @memberof WalletService
+   */
+  setAccountInfo(accountInfo: AccountInfo) {
+    this.accountInfo = accountInfo
+  }
 }
 

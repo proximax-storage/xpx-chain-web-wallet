@@ -1,0 +1,120 @@
+<container>
+  <div class="row">
+    <div class="col-md-3">
+      <span class="fs-08rem fw-bolder w-w-b-w"><b>Type transaction:</b></span>
+    </div>
+    <div class="col-md-9">
+      <span class="fs-08rem fw-bolder w-w-b-w">{{registerNamespaceTransaction.name_type}}</span>
+    </div>
+  </div>
+  <hr>
+</container>
+
+<!-- MOSAIC INFO -->
+<container>
+  <div class="mt-3">
+    <div class="row">
+      <div class="col-md-3">
+        <span class="fs-08rem fw-bolder w-w-b-w"><b>Fee:</b></span>
+      </div>
+      <div class="col-md-9">
+        <span class="fs-08rem fw-bolder w-w-b-w">{{registerNamespaceTransaction?.feeFormatter}} (XPX)</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-3">
+      <div class="row">
+        <div class="col-md-3">
+          <span class="fs-08rem fw-bolder w-w-b-w"><b>Namespace Id:</b></span>
+        </div>
+        <div class="col-md-9">
+          <span class="fs-08rem fw-bolder w-w-b-w">{{registerNamespaceTransaction?.namespaceId.id.toHex()}}</span>
+        </div>
+      </div>
+    </div>
+
+  <div class="mt-3">
+    <div class="row">
+      <div class="col-md-3">
+        <span class="fs-08rem fw-bolder w-w-b-w"><b>Namespace:</b></span>
+      </div>
+      <div class="col-md-9">
+        <span class="fs-08rem fw-bolder w-w-b-w">{{registerNamespaceTransaction?.namespaceName}}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-3">
+    <div class="row">
+      <div class="col-md-3">
+        <span class="fs-08rem fw-bolder w-w-b-w"><b>Duration:</b></span>
+      </div>
+      <div class="col-md-9">
+        <span class="fs-08rem fw-bolder w-w-b-w"><strong>(Blocks: {{registerNamespaceTransaction?.duration.compact()}})</strong> - {{transactionService.calculateDuration(registerNamespaceTransaction?.duration)}}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-3">
+    <div class="row">
+      <div class="col-md-3">
+        <span class="fs-08rem fw-bolder w-w-b-w"><b>Namespace Type:</b></span>
+      </div>
+      <div class="col-md-9">
+        <span class="fs-08rem fw-bolder w-w-b-w" *ngIf="registerNamespaceTransaction?.namespaceType === 0">{{registerNamespaceTransaction?.namespaceType}} - ROOT_NS</span>
+        <span class="fs-08rem fw-bolder w-w-b-w" *ngIf="registerNamespaceTransaction?.namespaceType !== 0">{{registerNamespaceTransaction?.namespaceType}} - SUB_NS</span>
+      </div>
+    </div>
+  </div>
+  <hr>
+</container>
+
+<!-- SIGNER INFO -->
+<container>
+  <div class="mt-3">
+    <div class="row">
+      <div class="col-md-3">
+        <span class="fs-08rem fw-bolder w-w-b-w"><b>Signer:</b></span>
+      </div>
+      <div class="col-md-9">
+        <span class="fs-08rem fw-bolder w-w-b-w">{{registerNamespaceTransaction?.signer.publicKey}}</span>
+      </div>
+    </div>
+  </div>
+  <div class="mt-3">
+    <div class="row">
+      <div class="col-md-3">
+        <span class="fs-08rem fw-bolder w-w-b-w"><b>Signature:</b></span>
+      </div>
+      <div class="col-md-9">
+        <span class="fs-08rem fw-bolder w-w-b-w">{{registerNamespaceTransaction?.signature}}</span>
+      </div>
+    </div>
+  </div>
+  <hr>
+</container>
+
+<!-- TIMESTAMP & HASH INFO -->
+<container>
+  <div class="mt-3">
+    <div class="row">
+      <div class="col-md-3">
+        <span class="fs-08rem fw-bolder w-w-b-w"><b>Deadline:</b></span>
+      </div>
+      <div class="col-md-9">
+        <span class="fs-08rem fw-bolder w-w-b-w">{{transactionService.dateFormat(registerNamespaceTransaction?.deadline)}}</span>
+      </div>
+    </div>
+  </div>
+  <div class="mt-3">
+    <div class="row">
+      <div class="col-md-3">
+        <span class="fs-08rem fw-bolder w-w-b-w"><b>Hash:</b></span>
+      </div>
+      <div class="col-md-9">
+        <span class="fs-08rem fw-bolder w-w-b-w">{{registerNamespaceTransaction?.transactionInfo.hash}}</span>
+      </div>
+    </div>
+  </div>
+</container>

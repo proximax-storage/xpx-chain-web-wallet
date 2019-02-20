@@ -52,20 +52,33 @@ export class ProximaxProvider {
     );
   }
 
-  async getInfoMosaic(mosaicId: MosaicId) {
-    const promise = new Promise(async (resolve, reject) => {
+  /* async getInfoMosaic(mosaicId: MosaicId) {
+    const promise = await new Promise(async (resolve, reject) => {
       if (this.infoMosaic === undefined) {
         console.warn("Procede a buscar la información del mosaico porque no la tiene en caché");
         this.infoMosaic = await this.nemProvider.getMosaic(mosaicId).toPromise();
         this.setInfoMosaic(this.infoMosaic);
+        console.log("Ya va a responder...", this.infoMosaic);
         resolve(this.infoMosaic);
-      }else {
-        console.log("Información de mosaico en caché");
-        resolve(this.infoMosaic);
+      } else {
+        // console.log("Información de mosaico en caché", this.infoMosaic);
+        reject(this.infoMosaic);
+        // if (this.infoMosaic.mosaicId === mosaicId) {
+        //   resolve(this.infoMosaic);
+        // } else {
+        //   this.infoMosaic = await this.nemProvider.getMosaic(mosaicId).toPromise();
+        //   this.setInfoMosaic(this.infoMosaic);
+        //   resolve(this.infoMosaic);
+        // }
       }
     });
+
+    console.log("RESPUESTA.... ", promise);
     return await promise;
-  }
+  } */
+
+
+
 
   setInfoMosaic(mosaicInfo: MosaicInfo) {
     this.infoMosaic = mosaicInfo;

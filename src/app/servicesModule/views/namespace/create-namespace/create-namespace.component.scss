@@ -1,0 +1,26 @@
+.md-form .prefix ~ mdb-select { 
+    margin-left: 3rem;
+    width: 92%; 
+    width: -webkit-calc(100% - 2rem);
+    width: calc(100% - 3rem);
+}
+
+.btn:disabled {
+    cursor: not-allowed !important;
+}
+
+.disabled, :disabled {
+
+    cursor: not-allowed !important;
+
+}
+
+h5  {
+    color: rgba(0, 0, 0, 0.3);
+    font-weight: 300;
+    font-size: 16px;
+}
+
+h4  {
+    color: rgba(0, 0, 0, 0.3);
+}

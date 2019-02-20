@@ -13,7 +13,7 @@ import { NodeService } from '../../servicesModule/services/node.service';
 export class LoginService {
 
 
-  subscription: [] = [];
+  subscription = {};
   logged: boolean;
   isLoggedSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(this.logged);
   isLogged$: Observable<boolean> = this.isLoggedSubject.asObservable();
@@ -23,8 +23,7 @@ export class LoginService {
     private walletService: WalletService,
     private route: Router,
     private dataBridgeService: DataBridgeService,
-    private nodeService: NodeService,
-    private transactionsService: TransactionsService
+    private nodeService: NodeService
   ) { this.setLogged(false); }
 
 
@@ -49,9 +48,11 @@ export class LoginService {
    * @memberof LoginService
    */
   login(common: any, wallet: any) {
-    if (!this.walletService.login(common, wallet)) { return false; }
-    // this.subscribeNodeSelected();
-    this.transactionsService.destroyAllTransactions();
+    if (!this.walletService.login(common, wallet)){
+      return false;
+    }
+
+    // this.transactionsService.destroyAllTransactions();
     this.dataBridgeService.closeConenection();
     this.dataBridgeService.connectnWs();
     this.route.navigate([`/${AppConfig.routes.dashboard}`]);

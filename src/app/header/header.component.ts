@@ -6,13 +6,15 @@ import { Router, NavigationEnd } from '@angular/router';
 import { WalletService } from "../shared";
 import { NodeService } from "../servicesModule/services/node.service";
 import { NemProvider } from '../shared/services/nem.provider';
-import { mergeMap } from 'rxjs/operators';
+import { mergeMap, first } from 'rxjs/operators';
 import { MessageService } from '../shared/services/message.service';
+import { DataBridgeService } from '../shared/services/data-bridge.service';
+import { DashboardService } from '../dashboard/services/dashboard.service';
 
 export interface HorizontalHeaderInterface {
   home: Header;
   node: Header;
-  amount:Header;
+  amount: Header;
   dashboard: Header;
   nodeSelected: Header;
   createWallet: Header;
@@ -25,13 +27,6 @@ export interface HorizontalHeaderInterface {
 }
 
 export interface VerticalHeaderInterface {
-  // dashboard: Header;
-  // services: Header;
-  // transactions: Header;dashboard: Header;
-  //   // services: Header;
-  //   // transactions: Header;
-  //   // node:Header;
-  // node:Header;
 }
 
 export interface Header {
@@ -59,54 +54,41 @@ export class HeaderComponent implements OnInit {
   horizontalHeader: HorizontalHeaderInterface;
   verticalHeader: VerticalHeaderInterface;
   vestedBalance: string = '0.00';
-  message:string;
+  message: string;
 
   constructor(
-    private _loginService: LoginService,
+    private loginService: LoginService,
     private route: Router,
     private walletService: WalletService,
     private nemProvider: NemProvider,
     private nodeService: NodeService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private dataBridgeService: DataBridgeService,
+    private dashboardService: DashboardService
   ) {
 
-    this.route.events
-      .subscribe((event) => {
-        if (event instanceof NavigationEnd) {
-          var objRoute = event.url.split('/')[event.url.split('/').length - 1];
-          if (NameRoute[objRoute] !== undefined) {
-            this.nameRoute = NameRoute[objRoute];
-          } else {
-            this.nameRoute = '';
-          }
-        }
-      });
   }
 
-   ngOnInit() {
+  ngOnInit() {
     this.buildHeader();
+    this.readRoute();
+    this.readLogged();
+    this.balance();
+  }
 
-
-    /**
-     * Observable state of the login
-     *
-     * @memberof HeaderComponent
-     */
-    this.isLogged$ = this._loginService.getIsLogged();
-    this.isLogged$.subscribe(
-      async response => {
-        this.showOnlyLogged = response;
-        if(this.showOnlyLogged) {
-          await this.getBalance();
-        }
-      }
-    );
-
-    this.messageService.currentMessage.subscribe(async message => {
+  /**
+      * Observable state of the login
+      *
+      * @memberof HeaderComponent
+      */
+  balance() {
+    this.messageService.getCurrentMessage().subscribe(async message => {
       this.message = message;
-      if(this.message === 'balanceChanged') {
-        if(this.showOnlyLogged) {
-          await this.getBalance();
+      console.log(message);
+      if (this.message === 'balanceChanged') {
+        if (this.showOnlyLogged) {
+          console.log("Consulta el balance...");
+          this.getBalance();
         }
       }
     });
@@ -131,7 +113,7 @@ export class HeaderComponent implements OnInit {
       },
       amount: {
         'type': 'default',
-        'name': `Balance 0.00 xpx`,
+        'name': `Balance ${this.vestedBalance}`,
         'class': '',
         'icon': '',
         'rol': true,
@@ -405,17 +387,24 @@ export class HeaderComponent implements OnInit {
    * @memberof HeaderComponent
    */
   logout(param?: String) {
-    this._loginService.destroyNodeSelected();
-    this._loginService.setLogged(false);
+    this.dashboardService.processComplete = false;
+    this.loginService.setLogged(false);
+    this.loginService.destroyNodeSelected();
+    // this.dataBridgeService.closeConenection();
     this.route.navigate([`/${param}`]);
   }
 
+  /**
+   * Get Balance
+   *
+   * @memberof HeaderComponent
+   */
   getBalance() {
-    this.nemProvider.getBalance(this.walletService.address).pipe(mergeMap((_) => _)
-    ).subscribe(
+    this.nemProvider.getBalance(this.walletService.address).pipe(mergeMap((_) => _)).pipe(first()).subscribe(
       next => {
-        console.log('You have',  next.relativeAmount());
-        this.horizontalHeader.amount.name = `Balance ${next.relativeAmount().toFixed(2)} ${next.mosaicName}`;
+        console.log("balance...", next);
+        console.log('You have', next.relativeAmount());
+        this.horizontalHeader.amount.name = `Balance ${next.relativeAmount().toFixed(6)} ${next.mosaicName}`;
       },
       err => {
         this.vestedBalance = '0';
@@ -424,4 +413,43 @@ export class HeaderComponent implements OnInit {
     );
   }
 
+  /**
+   * Read logged
+   *
+   * @memberof HeaderComponent
+   */
+  readLogged() {
+    this.isLogged$ = this.loginService.getIsLogged();
+    this.isLogged$.subscribe(
+      async response => {
+        this.showOnlyLogged = response;
+        if (this.showOnlyLogged) {
+          // this.getBalance();
+          console.log("Get balance in read logged");
+        } else {
+          this.horizontalHeader.amount.name = '';
+          this.dataBridgeService.closeConenection();
+        }
+      }
+    );
+  }
+
+  /**
+   * Read route
+   *
+   * @memberof HeaderComponent
+   */
+  readRoute() {
+    this.route.events
+      .subscribe((event) => {
+        if (event instanceof NavigationEnd) {
+          var objRoute = event.url.split('/')[event.url.split('/').length - 1];
+          if (NameRoute[objRoute] !== undefined) {
+            this.nameRoute = NameRoute[objRoute];
+          } else {
+            this.nameRoute = '';
+          }
+        }
+      });
+  }
 }

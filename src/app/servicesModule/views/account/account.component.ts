@@ -53,8 +53,8 @@ export class AccountComponent implements OnInit {
     );
   }
 
-  copyMessage() {
-    this.sharedService.showSuccess('', 'Address copied');
+  copyMessage(message: string) {
+    this.sharedService.showSuccess('', `${message} copied`);
   }
 
   decryptWallet() {

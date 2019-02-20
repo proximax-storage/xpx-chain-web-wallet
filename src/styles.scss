@@ -11,6 +11,10 @@ html:after {
 }
 
 
+.md-form textarea ~ label.active {
+  color: #757575 !important;
+}
+
 /*BACKGROUND AND COLORS*/
 
 .border-bottom-title{
@@ -134,7 +138,15 @@ html:after {
 }
 
 .green-color{
-  color: #35af8d;
+  color: #35af8d !important;
+}
+
+.green-c{
+  color: #00960c !important;
+}
+
+.color-red{
+  color: #e90000 !important;
 }
 
 /*FIN BACKGROUND AND COLORS*/
@@ -195,6 +207,10 @@ html:after {
   margin-top: 1rem;
 }
 
+.mt-2rem {
+  margin-top: 2rem;
+}
+
 .mt-3rem {
   margin-top: 3rem;
 }
@@ -249,6 +265,31 @@ html:after {
 
 .text-gris {
   color: #757575 !important;
+}
+.text-success {
+  color: #205f2e !important;
+}
+.text-danger {
+  color: #f5a1a8 !important;
+}
+.form-label-alert-m80{
+  margin-left: 80px;
+}
+.form-label-alert-m100{
+  margin-left: 100px;
+}
+.form-label-alert-m120{
+  margin-left: 120px;
+}
+.form-label-alert-m140 {
+
+  margin-left: 140px;
+
+}
+.form-label{
+
+ margin-left: 51px!important;
+ margin-top: 0.3rem !important;
 }
 .md-form .input-group .prefix {
 
@@ -329,6 +370,8 @@ html:after {
 .fs-08rem {
   font-size: 0.8rem;
 }
+
+
 
 
 /***/
@@ -467,6 +510,7 @@ html:after {
 
 .h-description{
   height: 70px;
+  overflow-x: hidden;
 }
 
 .img-node{

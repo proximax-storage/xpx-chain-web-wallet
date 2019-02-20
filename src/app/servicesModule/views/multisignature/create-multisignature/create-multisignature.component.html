@@ -1,0 +1,42 @@
+<div class="mt-3rem mb-3rem animated fadeIn">
+  <div class="container-fluid">
+    <div class="row ">
+      <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mx-auto">
+        <mdb-card>
+          <mdb-card-header class="background-gold white-text text-align-center py-4">
+            <img src="assets/images/logo/logo-white.png" class="size-img-card-header">
+          </mdb-card-header>
+          <ng-container>
+            <mdb-card-body class="px-lg-5 backg-beige">
+
+              <form [formGroup]="namespaceForm" (ngSubmit)="create()">
+                <div class="row">
+                  <div class="col-xs-12 col-sm-6  col-md-10 col-lg-6 ">
+                  </div>
+                  <div class="col-xs-12 col-sm-6  col-md-10 col-lg-6 ">
+                   
+                  </div>
+
+                </div>
+
+                <div class="mt-4rm align-self-center">
+                  <div class="row ">
+                    <div class="mx-auto">
+                      <div class="row">
+                        <div class="col-xs-12">
+                          <button mdbBtn color="default" size="lg" rounded="true" class="waves-light" mdbWavesEffect
+                            type="submit">Create</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </form>
+            </mdb-card-body>
+          </ng-container>
+        </mdb-card>
+      </div>
+    </div>
+  </div>
+</div>

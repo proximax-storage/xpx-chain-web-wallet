@@ -1,36 +1,32 @@
 <div class="mt-3rem mb-3rem animated fadeIn">
   <div class="container-fluid">
     <div class="row">
-      <div class="col-xl-8 col-md-8 col-sm-12 mx-auto">
-        <mdb-card>
-          <mdb-card-header class="background-gold white-text text-align-center py-4">
-            <img src="assets/images/logo/logo-white.png" style="width: 300px;">
-          </mdb-card-header>
+      <div class="col-xl-10 col-md-10 col-sm-10 mx-auto">
 
-          <mdb-card-body class="px-lg-5 backg-beige">
-            <div class="fs-08rem">
-              <span>To add a new node you must place the ip or the domain, followed by the port of the node<br>
-              <b>Example: </b> <br>127.0.0.1:3000 <br> localhost:3000</span>
-            </div>
-            <div class="md-form mt-5" id="container-walletname">
-              <i class="fa fa-codepen prefix text-gris"></i>
-              <input [mdbValidate]="false" type="text" autocomplete="off" id="walletname" class="form-control" mdbInputDirective [(ngModel)]="ngMNode">
-              <label for="walletname">Add node</label>
-            </div>
+        <div class="fs-08rem">
+          <span>To add a new node you must place the ip or the domain, followed by the port of the node<br>
+            <b>Example: </b> <br>127.0.0.1:3000 <br> localhost:3000</span>
+        </div>
+        <div class="md-form mt-5" id="container-walletname">
+          <i class="fa fa-codepen prefix text-gris"></i>
+          <input [mdbValidate]="false" type="text" autocomplete="off" id="walletname" class="form-control"
+            mdbInputDirective [(ngModel)]="ngMNode">
+          <label for="walletname">Add node</label>
+        </div>
 
-            <div class="mt-4rm">
-              <div class="row ">
-                <div class="mx-auto">
-                  <div class="row">
-                    <div class="col-xs-6">
-                      <button mdbBtn type="button" color="default" rounded="true" class="waves-light" mdbWavesEffect type="submit" (click)="saveNode()">Add node</button>
-                    </div>
-                  </div>
+        <div class="mt-4rm">
+          <div class="row ">
+            <div class="mx-auto">
+              <div class="row">
+                <div class="col-xs-6">
+                  <button mdbBtn type="button" color="default" rounded="true" class="waves-light" mdbWavesEffect type="submit"
+                    (click)="saveNode()">Add node</button>
                 </div>
               </div>
             </div>
-          </mdb-card-body>
-        </mdb-card>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>

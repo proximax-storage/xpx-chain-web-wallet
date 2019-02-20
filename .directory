@@ -1,6 +1,11 @@
 [Dolphin]
+<<<<<<< HEAD
 Timestamp=2019,1,11,19,14,39
 Version=4
 
 [Settings]
 HiddenFilesShown=true
+=======
+Timestamp=2019,2,19,1,57,20
+Version=3
+>>>>>>> generic
