@@ -88,7 +88,7 @@ export class HeaderComponent implements OnInit {
       if (this.message === 'balanceChanged') {
         if (this.showOnlyLogged) {
           console.log("Consulta el balance...");
-          // this.getBalance();
+          this.getBalance();
         }
       }
     });

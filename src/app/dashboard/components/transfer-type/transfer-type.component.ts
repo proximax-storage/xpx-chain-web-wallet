@@ -1,5 +1,4 @@
 import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
-import { Deadline } from 'proximax-nem2-sdk';
 import { TransactionsService } from '../../../transactions/service/transactions.service';
 
 @Component({
@@ -10,6 +9,7 @@ import { TransactionsService } from '../../../transactions/service/transactions.
 export class TransferTypeComponent implements OnInit {
 
   @Input() transferTransaction: any;
+  searching = true;
 
   constructor(
     public transactionService: TransactionsService
@@ -19,11 +19,8 @@ export class TransferTypeComponent implements OnInit {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes);
-  }
-
-  dateFormat(deadline: Deadline) {
-    return this.transactionService.dateFormat(deadline);
+    this.searching = true;
+    this.transferTransaction.feeFormatter = this.transactionService.amountFormatterSimple(this.transferTransaction.fee.compact());
   }
 
 }

@@ -3,8 +3,25 @@
     <div class="row">
       <div class="col-xl-10 col-lg-10 col-md-10 col-sm-10 mx-auto">
 
-        <!-- <h4 class="title-form">Create Wallet</h4> -->
         <form [formGroup]="transferForm" (ngSubmit)="sendTransfer()" style="color: #757575;">
+
+
+          <div class="row mt-5">
+            <div class="col-10">
+              <!-- mosaics -->
+              <div class="md-form ">
+                <i class="fa fa-linode prefix text-gris"></i>
+                <mdb-select [options]="node" required formControlName="node" class="colorful-select dropdown-default"
+                  mdbInputDirective data-success="node selected is valid" [errorMessage]="getError('node')"></mdb-select>
+              </div>
+            </div>
+            <div class="col-2 d-flex align-items-center" *ngIf="searchMosaics">
+              <mdb-spinner spinnerType="small" ></mdb-spinner>
+            </div>
+          </div>
+
+
+
 
           <ng-container *ngIf="showContacts">
             <div class="md-form  mt-5">

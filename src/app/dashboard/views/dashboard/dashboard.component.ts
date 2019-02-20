@@ -39,8 +39,8 @@ export class DashboardComponent implements OnInit {
   typeTransaction: any;
 
   constructor(
+    public transactionsService: TransactionsService,
     private dashboardService: DashboardService,
-    private transactionsService: TransactionsService,
     private walletService: WalletService,
     private nemProvider: NemProvider,
     private loginService: LoginService,

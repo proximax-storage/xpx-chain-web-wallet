@@ -19,6 +19,16 @@
                   id="supply" class="form-control" required data-success="Valid supply" [errorMessage]="getError('supply')">
                 <label for="supply" class="">Supply</label>
               </div>
+
+              <!-- MosaicSupplyType -->
+              <div class="md-form ">
+                <i class="fa fa-linode prefix text-gris"></i>
+                <mdb-select [options]="mosaicSupplyType" required formControlName="mosaicSupplyType" class="colorful-select dropdown-default"
+                  mdbInputDirective data-success="Valid Parent Namespace" [errorMessage]="getError('mosaicSupplyType')"></mdb-select>
+              </div>
+
+
+
               <!-- Password -->
               <div class="md-form mt-5">
                 <i class="fa fa-address-book prefix text-gris"></i>

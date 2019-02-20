@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { MosaicInfo, MosaicId, MosaicView } from 'proximax-nem2-sdk';
+import { MosaicInfo, MosaicId, MosaicView, Address, Mosaic, MosaicName, Namespace, NamespaceId } from 'proximax-nem2-sdk';
 import { NemProvider } from '../../shared/services/nem.provider';
+import { NamespacesService } from './namespaces.service';
 
 @Injectable({
   providedIn: 'root'
@@ -8,9 +9,14 @@ import { NemProvider } from '../../shared/services/nem.provider';
 export class MosaicService {
 
   mosaicsViewCache: MosaicView[] = [];
+  mosaicXpx = {
+    mosaic: 'prx:xpx',
+    mosaicId: 'd423931bd268d1f4'
+  };
 
   constructor(
-    private nemProvider: NemProvider
+    private nemProvider: NemProvider,
+    private namespaceServices: NamespacesService
   ) { }
 
 
@@ -42,7 +48,7 @@ export class MosaicService {
    * @returns
    * @memberof MosaicService
    */
-  getMosaicsCache(){
+  getMosaicsCache() {
     return this.mosaicsViewCache;
   }
 
@@ -58,12 +64,12 @@ export class MosaicService {
     console.log("mosaicsId", mosaicsId)
     const infoMosaicsView = [];
     const mosaicsToSearch = [];
-    for(let mosaicId of mosaicsId) {
+    for (let mosaicId of mosaicsId) {
       const filterMosaic = this.filterMosaic(mosaicId);
       console.log("Existe filter mosaic?", filterMosaic)
       if (filterMosaic === undefined) {
         mosaicsToSearch.push(mosaicId);
-      }else {
+      } else {
         infoMosaicsView.push(filterMosaic);
       }
     }
@@ -91,11 +97,45 @@ export class MosaicService {
     console.log("Mosaicos en cache", this.mosaicsViewCache);
     console.log("mosaicId by filter", mosaicId);
     if (this.mosaicsViewCache.length > 0) {
-      const filtered = this.mosaicsViewCache.find(function(element){
+      const filtered = this.mosaicsViewCache.find(function (element) {
         return element.mosaicInfo.mosaicId.toHex() === mosaicId.toHex();
       });
 
       return filtered;
     }
+  }
+
+  async getMosaicFromAddress(address: Address, searchXpx: boolean = true) {
+    const promise = await new Promise(async (resolve, reject) => {
+      const accountInfo = await this.nemProvider.accountHttp.getAccountInfo(address).toPromise();
+      console.log("accountInfo", accountInfo);
+      let mosaicsId = [];
+      if (searchXpx) {
+        mosaicsId = accountInfo.mosaics.map((mosaic: Mosaic) => { return mosaic.id });
+      }else {
+        accountInfo.mosaics.forEach((mosaic: Mosaic) => {
+          if (mosaic.id.toHex() !== 'd423931bd268d1f4') {
+            return mosaicsId.push(mosaic.id);
+          }
+        });
+      }
+
+      let response = {};
+      if (mosaicsId.length > 0) {
+        const mosaicsName: MosaicName[] = await this.getNameMosaic(mosaicsId);
+        console.log("mosaicsName", mosaicsName);
+        const namespacesId = mosaicsName.map((mosaicsName: MosaicName) => { return mosaicsName.namespaceId });
+        const namespaceName = await this.namespaceServices.getNameName(namespacesId);
+        response = {mosaicsName: mosaicsName, namespaceName: namespaceName};
+      }
+
+      resolve(response);
+    });
+
+    return await promise;
+  }
+
+  async getNameMosaic(mosaicsId: MosaicId[]) {
+    return await this.nemProvider.mosaicHttp.getMosaicsName(mosaicsId).toPromise()
   }
 }

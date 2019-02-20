@@ -33,7 +33,8 @@ import {
   MosaicDefinitionTransaction,
   MosaicProperties,
   MosaicSupplyChangeTransaction,
-  MosaicSupplyType
+  MosaicSupplyType,
+  NamespaceService
 } from 'proximax-nem2-sdk';
 
 import { crypto } from 'proximax-nem2-library';
@@ -47,7 +48,7 @@ import { Observable } from 'rxjs';
 export class NemProvider {
 
   infoMosaic: MosaicInfo;
-  mosaic = 'prx:xpx';
+
   transactionHttp: TransactionHttp;
   websocketIsOpen = false;
   connectionWs: Listener;
@@ -55,6 +56,7 @@ export class NemProvider {
   mosaicHttp: MosaicHttp;
   namespaceHttp: NamespaceHttp;
   mosaicService: MosaicService;
+  namespaceService: NamespaceService;
   transactionStatusError: TransactionStatusError
   url: any;
 
@@ -68,6 +70,7 @@ export class NemProvider {
     this.mosaicHttp = new MosaicHttp(this.url);
     this.namespaceHttp = new NamespaceHttp(this.url);
     this.mosaicService = new MosaicService(this.accountHttp, this.mosaicHttp, this.namespaceHttp);
+    this.namespaceService = new NamespaceService(this.namespaceHttp);
     this.transactionHttp = new TransactionHttp(this.url);
   }
 
@@ -381,6 +384,18 @@ export class NemProvider {
   }
 
 
+  async getNamespaceViewPromise(namespaceId: NamespaceId[]) {
+    const promise = await new Promise(async (resolve, reject) => {
+        console.warn("********** GET NAMESPACE TO PROMISE **********", namespaceId);
+        const namespace = await this.namespaceHttp.getNamespacesName(namespaceId).toPromise();
+        resolve(namespace);
+    });
+
+    console.log("***RESPUESTA CONSULTA DE MOSAICOS****", promise);
+    return await promise;
+  }
+
+
   async getInfoMosaicFromNamespacePromise(namespaceId: NamespaceId, queryParams?: QueryParams) {
     const promise = await new Promise(async (resolve, reject) => {
       if (this.infoMosaic === undefined) {
@@ -405,11 +420,11 @@ export class NemProvider {
     return await promise;
   }
 
-  mosaicSupplyChangeTransaction(mosaicId:string,supply:number, network: NetworkType):MosaicSupplyChangeTransaction{
+  mosaicSupplyChangeTransaction(mosaicId:string, supply:number, mosaicSupplyType: number,network: NetworkType):MosaicSupplyChangeTransaction{
     return MosaicSupplyChangeTransaction.create(
       Deadline.create(),
       new MosaicId(mosaicId),
-      MosaicSupplyType.Increase,
+      mosaicSupplyType,
       UInt64.fromUint(supply),
       network);
 

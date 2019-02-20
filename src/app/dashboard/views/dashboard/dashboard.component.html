@@ -112,7 +112,7 @@
         <!-- TYPE REGISTER NAMESPACE TRANSACTION -->
         <app-register-namespace-type [registerNamespaceTransaction]="dataSelected" *ngIf="dataSelected.type === typeTransaction.registerNameSpace.id"></app-register-namespace-type>
         <!-- TYPE MOSAIC DEFINITION TRANSACTION -->
-        <app-mosaic-definition-type *ngIf="dataSelected.type === typeTransaction.mosaicDefinition.id"></app-mosaic-definition-type>
+        <app-mosaic-definition-type [mosaicDefinition]="dataSelected" *ngIf="dataSelected.type === typeTransaction.mosaicDefinition.id"></app-mosaic-definition-type>
         <!-- TYPE MOSAIC SUPPLY CHANGE TRANSACTION -->
         <app-mosaic-supply-change-type [mosaicSupplyChange]="dataSelected" *ngIf="dataSelected.type === typeTransaction.mosaicSupplyChange.id"></app-mosaic-supply-change-type>
         <!-- TYPE MODIFY MULTISIG ACCOUNT TRANSACTION -->

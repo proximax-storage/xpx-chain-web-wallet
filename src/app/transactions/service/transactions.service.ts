@@ -7,6 +7,7 @@ import { NodeService } from '../../servicesModule/services/node.service';
 import { environment } from '../../../environments/environment';
 import { MessageService } from '../../shared/services/message.service';
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -96,14 +97,13 @@ export class TransactionsService {
   }
 
 
-  buildToSendTransfer(common: { password?: any; privateKey?: any; }, recipient: string, message: string, amount: any, network: NetworkType) {
-    console.log("Aqui construye la transaccion");
+  buildToSendTransfer(common: { password?: any; privateKey?: any; }, recipient: string, message: string, amount: any, network: NetworkType, node: string | number[]) {
+    console.log("Aqui construye la transaccion, node", node);
     const recipientAddress = this.nemProvider.createFromRawAddress(recipient);
     const transferTransaction = TransferTransaction.create(
       Deadline.create(5),
       recipientAddress,
-      //[new Mosaic(new MosaicId([3530084852,3559101211]),UInt64.fromUint(0))],
-      [new Mosaic(new MosaicId(this.nemProvider.mosaic), UInt64.fromUint(Number(amount)))],
+      [new Mosaic(new MosaicId(node), UInt64.fromUint(Number(amount)))],
       PlainMessage.create(message),
       network);
     const account = Account.createFromPrivateKey(common.privateKey, network);
@@ -128,15 +128,56 @@ export class TransactionsService {
     for (let m of mosaics) {
       if (m.mosaicId.toHex() === mosaicId.toHex()) {
         const amountDivisibility = Number(amount.compact() / Math.pow(10, m.divisibility));
+        console.log('amountFormatter', (amountDivisibility).toLocaleString('en-us', { minimumFractionDigits: m.divisibility }));
         return (amountDivisibility).toLocaleString('en-us', { minimumFractionDigits: m.divisibility });
       }
     }
   }
 
 
+  /**
+   * Formatter Amount
+   *
+   * @param {UInt64} amount
+   * @param {MosaicId} mosaicId
+   * @param {MosaicInfo[]} mosaics
+   * @returns
+   * @memberof TransactionsService
+   */
+  amountFormatterSimple(amount: Number) {
+    const amountDivisibility = Number(amount) / Math.pow(10, 6);
+    console.log('amountFormatter', (amountDivisibility).toLocaleString('en-us', { minimumFractionDigits: 6 }));
+    return (amountDivisibility).toLocaleString('en-us', { minimumFractionDigits: 6 });
+  }
+
+
+  /**
+   * Calculate duration based in blocks
+   *
+   * @param {UInt64} duration
+   * @returns
+   * @memberof TransactionsService
+   */
+  calculateDuration(duration: UInt64) {
+    const durationCompact = duration.compact();
+    let seconds = durationCompact * 15;
+    let days = Math.floor(seconds / (3600 * 24));
+    seconds -= days * 3600 * 24;
+    let hrs = Math.floor(seconds / 3600);
+    seconds -= hrs * 3600;
+    let mnts = Math.floor(seconds / 60);
+    seconds -= mnts * 60;
+    const response = days + " days, " + hrs + " Hrs, " + mnts + " Minutes, " + seconds + " Seconds";
+    return response;
+  }
+
   dateFormat(deadline: Deadline) {
     return new Date(deadline.value.toString() + (Deadline.timestampNemesisBlock * 1000)).toUTCString();
   }
+
+  formatNumberMilesThousands(numero: number) {
+    return numero.toString().replace(/((?!^)|(?:^|.*?[^\d.,])\d{1,3})(\d{3})(?=(?:\d{3})*(?!\d))/gy, "$1,$2");
+  };
 
 
   /**
@@ -164,26 +205,26 @@ export class TransactionsService {
 
         if (element['mosaics'] !== undefined) {
           console.log("Este tipo de transaccion tiene mosaico");
-         /*
-          // Crea un nuevo array con los id de mosaicos
-          const mosaicsId = element['mosaics'].map((mosaic: Mosaic) => { return mosaic.id; });
-          // Busca la información de los mosaicos, retorna una promesa
-          await this.nemProvider.getInfoMosaicsPromise(mosaicsId).then((mosaicsInfo: MosaicInfo[]) => {
-            element['mosaicsInfo'] = mosaicsInfo;
-            element['mosaics'].forEach((mosaic: any) => {
-              // Da formato al monto de la transacción
-              mosaic['amountFormatter'] = this.amountFormatter(mosaic.amount, mosaic.id, element['mosaicsInfo']);
-            });
-          }); */
+          /*
+           // Crea un nuevo array con los id de mosaicos
+           const mosaicsId = element['mosaics'].map((mosaic: Mosaic) => { return mosaic.id; });
+           // Busca la información de los mosaicos, retorna una promesa
+           await this.nemProvider.getInfoMosaicsPromise(mosaicsId).then((mosaicsInfo: MosaicInfo[]) => {
+             element['mosaicsInfo'] = mosaicsInfo;
+             element['mosaics'].forEach((mosaic: any) => {
+               // Da formato al monto de la transacción
+               mosaic['amountFormatter'] = this.amountFormatter(mosaic.amount, mosaic.id, element['mosaicsInfo']);
+             });
+           }); */
         } else {
           console.log("Esta transaccion no tiene mosaico..");
           if (element.type === this.arraTypeTransaction.registerNameSpace.id) {
             element['recipientRentalFeeSink'] = this.namespaceRentalFeeSink.address_public_test;
-          }else if (element.type === this.arraTypeTransaction.mosaicDefinition.id) {
+          } else if (element.type === this.arraTypeTransaction.mosaicDefinition.id) {
             element['recipientRentalFeeSink'] = this.mosaicRentalFeeSink.address_public_test;
-          }else if (element.type === this.arraTypeTransaction.mosaicSupplyChange.id) {
+          } else if (element.type === this.arraTypeTransaction.mosaicSupplyChange.id) {
             element['recipientRentalFeeSink'] = this.mosaicRentalFeeSink.address_public_test;
-          }else {
+          } else {
             element['recipientRentalFeeSink'] = 'XXXXX-XXXXX-XXXXXX';
           }
         }

@@ -1,3 +1,154 @@
-<p>
-  mosaic-definition-type works!
-</p>
+<container>
+  <div class="row">
+    <div class="col-md-3">
+      <span class="fs-08rem fw-bolder w-w-b-w w-w-b-w"><b>Type transaction:</b></span>
+    </div>
+    <div class="col-md-9">
+      <span class="fs-08rem fw-bolder w-w-b-w w-w-b-w">{{mosaicDefinition.name_type}}</span>
+    </div>
+  </div>
+  <hr>
+</container>
+
+<!-- MOSAIC INFO -->
+<ng-container>
+
+  <div class="mt-3">
+    <div class="row">
+      <div class="col-md-3">
+        <span class="fs-08rem fw-bolder w-w-b-w"><b>Fee:</b></span>
+      </div>
+      <div class="col-md-9">
+        <span class="fs-08rem fw-bolder w-w-b-w">{{mosaicDefinition?.feeFormatter}} (XPX)</span>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="mt-3">
+    <div class="row">
+      <div class="col-md-3">
+        <span class="fs-08rem fw-bolder w-w-b-w"><b>Mosaic:</b></span>
+      </div>
+      <div class="col-md-9">
+        <span class="fs-08rem fw-bolder w-w-b-w">{{mosaicDefinition?.namespaceName}}:{{mosaicDefinition.mosaicName}}</span>
+      </div>
+    </div>
+  </div>
+  <div class="mt-3">
+    <div class="row">
+      <div class="col-md-3">
+        <span class="fs-08rem fw-bolder w-w-b-w"><b>Divisibility:</b></span>
+      </div>
+      <div class="col-md-9">
+        <span class="fs-08rem fw-bolder w-w-b-w">{{mosaicDefinition?.mosaicProperties.divisibility}}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-3">
+    <div class="row">
+      <div class="col-md-3">
+        <span class="fs-08rem fw-bolder w-w-b-w"><b>Supply Mutable:</b></span>
+      </div>
+      <div class="col-md-9">
+        <span class="fs-08rem fw-bolder w-w-b-w" *ngIf="mosaicDefinition?.mosaicProperties.supplyMutable === true"><i
+            class="fa fa-check-circle green-c" aria-hidden="true"></i></span>
+        <span class="fs-08rem fw-bolder w-w-b-w" *ngIf="mosaicDefinition?.mosaicProperties.supplyMutable !== true"><i
+            class="fa fa-minus-circle color-red" aria-hidden="true"></i></span>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="mt-3">
+    <div class="row">
+      <div class="col-md-3">
+        <span class="fs-08rem fw-bolder w-w-b-w"><b>Levy Mutable:</b></span>
+      </div>
+      <div class="col-md-9">
+        <span class="fs-08rem fw-bolder w-w-b-w" *ngIf="mosaicDefinition?.mosaicProperties.levyMutable === true"><i
+            class="fa fa-check-circle green-c" aria-hidden="true"></i></span>
+        <span class="fs-08rem fw-bolder w-w-b-w" *ngIf="mosaicDefinition?.mosaicProperties.levyMutable !== true"><i
+            class="fa fa-minus-circle color-red" aria-hidden="true"></i></span>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="mt-3">
+    <div class="row">
+      <div class="col-md-3">
+        <span class="fs-08rem fw-bolder w-w-b-w"><b>Transferable:</b></span>
+      </div>
+      <div class="col-md-9">
+        <span class="fs-08rem fw-bolder w-w-b-w" *ngIf="mosaicDefinition?.mosaicProperties.transferable === true"><i
+            class="fa fa-check-circle green-c" aria-hidden="true"></i></span>
+        <span class="fs-08rem fw-bolder w-w-b-w" *ngIf="mosaicDefinition?.mosaicProperties.transferable !== true"><i
+            class="fa fa-minus-circle color-red" aria-hidden="true"></i></span>
+      </div>
+    </div>
+  </div>
+  <div class="mt-3">
+    <div class="row">
+      <div class="col-md-3">
+        <span class="fs-08rem fw-bolder w-w-b-w"><b>Duration:</b></span>
+      </div>
+      <div class="col-md-9">
+        <span class="fs-08rem fw-bolder w-w-b-w"><strong>(Blocks:
+            {{mosaicDefinition?.mosaicProperties.duration.compact()}})</strong>
+          {{transactionService.calculateDuration(mosaicDefinition?.mosaicProperties.duration)}}</span>
+      </div>
+    </div>
+  </div>
+  <hr>
+</ng-container>
+
+<!-- SIGNER INFO -->
+<container>
+  <div class="mt-3">
+    <div class="row">
+      <div class="col-md-3">
+        <span class="fs-08rem fw-bolder w-w-b-w"><b>Signer:</b></span>
+      </div>
+      <div class="col-md-9">
+        <span class="fs-08rem fw-bolder w-w-b-w">{{mosaicDefinition?.signer.publicKey}}</span>
+      </div>
+    </div>
+  </div>
+  <div class="mt-3">
+    <div class="row">
+      <div class="col-md-3">
+        <span class="fs-08rem fw-bolder w-w-b-w"><b>Signature:</b></span>
+      </div>
+      <div class="col-md-9">
+        <span class="fs-08rem fw-bolder w-w-b-w">{{mosaicDefinition?.signature}}</span>
+      </div>
+    </div>
+  </div>
+  <hr>
+</container>
+
+<!-- TIMESTAMP & HASH INFO -->
+<container>
+  <div class="mt-3">
+    <div class="row">
+      <div class="col-md-3">
+        <span class="fs-08rem fw-bolder w-w-b-w"><b>Deadline:</b></span>
+      </div>
+      <div class="col-md-9">
+        <span class="fs-08rem fw-bolder w-w-b-w">{{mosaicDefinition?.date}}</span>
+      </div>
+    </div>
+  </div>
+  <div class="mt-3">
+    <div class="row">
+      <div class="col-md-3">
+        <span class="fs-08rem fw-bolder w-w-b-w"><b>Hash:</b></span>
+      </div>
+      <div class="col-md-9">
+        <span class="fs-08rem fw-bolder w-w-b-w">{{mosaicDefinition?.transactionInfo.hash}}</span>
+      </div>
+    </div>
+  </div>
+</container>

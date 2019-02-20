@@ -45,12 +45,12 @@
         <span class="fs-08rem fw-bolder w-w-b-w"><b>Fee:</b></span>
       </div>
       <div class="col-md-9">
-        <span class="fs-08rem fw-bolder w-w-b-w">{{transferTransaction?.fee.compact()}}</span>
+        <span class="fs-08rem fw-bolder w-w-b-w">{{transferTransaction.feeFormatter}} (XPX)</span>
       </div>
     </div>
   </div>
 
-  <app-mosaics-info [mosaicsArray]="transferTransaction.mosaics"></app-mosaics-info>
+  <app-mosaics-info (changeSearch)="searching = false;" [mosaicsArray]="transferTransaction.mosaics"></app-mosaics-info>
 
   <hr>
 </container>
@@ -115,3 +115,7 @@
     </div>
   </div>
 </container>
+
+<div class="col-12 mt-4" *ngIf="searching">
+  <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate" *ngIf="searching"></mdb-progress-bar>
+</div>

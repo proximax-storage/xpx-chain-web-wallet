@@ -24,6 +24,19 @@ export class EditMosaicComponent implements OnInit {
     selected: true,
     disabled: true
   }];
+
+  mosaicSupplyType: any = [{
+    value: '1',
+    label: 'Increase',
+    selected: true,
+    disabled: false
+  },{
+    value: '0',
+    label: 'Decrease',
+    selected: false,
+    disabled: false
+  }];
+
   misaicsInfoSelect: any;
   mosaicsInfo: any[];
   divisibility: number = 0;
@@ -59,6 +72,7 @@ export class EditMosaicComponent implements OnInit {
   createForm() {
     this.formMosaicSupplyChange = this.fb.group({
       parentMosaic: ['1', Validators.required],
+      mosaicSupplyType: ['1', Validators.required],
       supply: ['', [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]],
     });
@@ -68,7 +82,6 @@ export class EditMosaicComponent implements OnInit {
     this.blockUI.start('Processing...');
     const mosaicsInfo = [];
     const mosaicsId = [];
-    const tempSelectMosaic = [];
     this.mosaicsInfo = []
     for (let namespaceInfo of this.route.snapshot.data['dataNamespace']) {
       await this.nemProvider.getInfoMosaicFromNamespacePromise(namespaceInfo.id).then(
@@ -81,6 +94,7 @@ export class EditMosaicComponent implements OnInit {
           }
         }, error => {
           console.log("error ----> ", error);
+          this.sharedService.showError('', error);
         }
       );
     }
@@ -99,7 +113,7 @@ export class EditMosaicComponent implements OnInit {
   *
   * @param mosaicsId
   * @param mosaicsInfo
-  * 
+  *
   */
   async getMosaicName(mosaicsId, mosaicsInfo) {
     const response = [{
@@ -158,7 +172,7 @@ export class EditMosaicComponent implements OnInit {
   }
 
   /**
- *Change of selection option 
+ *Change of selection option
  *
  * @param {*} namespace
  * @memberof EditMosaicComponent
@@ -198,6 +212,7 @@ export class EditMosaicComponent implements OnInit {
         const mosaicSupplyChangeTransaction = this.nemProvider.mosaicSupplyChangeTransaction(
           this.formMosaicSupplyChange.get('parentMosaic').value,
           this.formMosaicSupplyChange.get('supply').value,
+          this.formMosaicSupplyChange.get('mosaicSupplyType').value,
           this.walletService.network
         )
         const signedTransaction = account.sign(mosaicSupplyChangeTransaction);
