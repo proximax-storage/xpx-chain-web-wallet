@@ -14,11 +14,8 @@ import { NemProvider } from '../../../../shared/services/nem.provider';
 import { NodeService } from '../../../../servicesModule/services/node.service';
 import { IpfsConnection, StreamHelper, IpfsClient } from 'xpx2-ts-js-sdk';
 import { environment } from '../../../../../environments/environment';
-<<<<<<< HEAD
-=======
 import { ApostilleService } from '../services/apostille.service';
 
->>>>>>> generic
 
 @Component({
   selector: 'app-create-apostille',
@@ -349,22 +346,12 @@ export class CreateApostilleComponent implements OnInit {
             console.log(hash);
             saveAs(content, hash + '.zip');
           });
-<<<<<<< HEAD
-
-=======
-
->>>>>>> generic
           this.reset();
         } else {
 
           saveAs(content, `PROXIsigned -- Do not Edit --"${date.getFullYear()}-${("00" + (date.getMonth() + 1)).slice(-2)}-${("00" + (date.getDate())).slice(-2)}".zip`);
           this.reset();
         }
-<<<<<<< HEAD
-
-=======
-
->>>>>>> generic
 
 
       });
