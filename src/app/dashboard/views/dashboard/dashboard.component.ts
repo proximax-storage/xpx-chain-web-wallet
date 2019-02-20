@@ -44,7 +44,7 @@ export class DashboardComponent implements OnInit {
     private walletService: WalletService,
     private nemProvider: NemProvider,
     private loginService: LoginService,
-    private sharedService: SharedService
+    private sharedService: SharedService,
   ) {
 
   }

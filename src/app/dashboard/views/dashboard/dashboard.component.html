@@ -47,7 +47,7 @@
                   <tr class="mouse-pointer" *ngFor="let el of elementsConfirmed; let i = index" (click)="dataSelected = el; basicModal.show();">
                     <td class="align-left th-lg">{{el.name_type}}</td>
                     <td class="align-left th-lg">{{el.date}}</td>
-                    <td class="text-right th-lg">{{el.fee.compact()}}</td>
+                    <td class="text-right th-lg">{{transactionsService.amountFormatterSimple(el.fee.compact())}}</td>
                     <td class="text-center th-lg">
                       <i [ngStyle]="{'color': el.isRemitent === true ? 'green' : 'red' }" style="padding-right: 10px;"
                         class="fa fa-send" aria-hidden="true"></i>
