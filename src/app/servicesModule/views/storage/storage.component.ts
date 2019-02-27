@@ -8,7 +8,7 @@ import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { Uploader, ConnectionConfig, BlockchainNetworkConnection, IpfsConnection, UploadParameter, ReadableStreamParameterData, StreamHelper, PrivacyType, SearchParameter, Searcher, SearchResultItem, Downloader, DownloadParameter, TransactionFilter, DirectDownloadParameter } from 'xpx2-ts-js-sdk';
 import { saveAs } from 'file-saver';
 import { crypto } from "proximax-nem2-library";
-import { Address, UInt64, Mosaic, MosaicId } from 'proximax-nem2-sdk/dist';
+import { Address, UInt64, Mosaic, MosaicId, Account, PublicAccount } from 'proximax-nem2-sdk';
 import { FileInterface } from 'src/app/shared';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 
@@ -41,7 +41,7 @@ export class StorageComponent implements OnInit {
 
   headElements = ['Title', 'Transaction', 'Type'];
   transactionResults = [];
-  transactionHash = '';
+  searchName = '';
   searching = false;
   showRecordEntry = false;
   showPassword = false;
@@ -99,8 +99,10 @@ export class StorageComponent implements OnInit {
     if (this.searcher) {
       //this.transactionResults = [];
       //const searchParam = SearchParameter.createForAddress(environment.senderAccount.address);
-      console.log(this.walletService.publicAccount.address.plain());
-      const searchParam = SearchParameter.createForAddress(this.walletService.publicAccount.address.plain());
+      
+      console.log(this.walletService.publicAccount);
+      const searchParam = SearchParameter.createForPublicKey(this.walletService.publicAccount.publicKey);
+      //const searchParam = SearchParameter.createForAddress(this.walletService.publicAccount.address.plain());
       searchParam.withResultSize(10);
     
       console.log('Loading transactions ...');
@@ -122,14 +124,14 @@ export class StorageComponent implements OnInit {
 
   async searchRecord() {
 
-    if (this.transactionHash != null) {
+    if (this.searchName != null) {
       try {
         this.transactionResults = [];
         this.searching = true;
 
         //const searchParam = SearchParameter.createForAddress(environment.senderAccount.address);
         const searchParam = SearchParameter.createForAddress(this.walletService.publicAccount.address.plain());
-        searchParam.withNameFilter(this.transactionHash);
+        searchParam.withNameFilter(this.searchName);
         // searchParam.withFromTransactionId(this.transactionHash);
 
         const searchResult = await this.searcher.search(searchParam.build());
@@ -320,7 +322,7 @@ export class StorageComponent implements OnInit {
             if (useSecureMessage) {
               param.withUseBlockchainSecureMessage(useSecureMessage);
             }
-            console.log('useSecureMessage' + useSecureMessage);
+            console.log('useSecureMessage ' + useSecureMessage);
 
 
             switch (this.privacyType) {

@@ -15,7 +15,7 @@ export const environment = {
     host: 'bctestnet1.xpxsirius.io',
     port: 3000,
     protocol: Protocol.HTTP,
-    useSecureMessage: true
+    useSecureMessage: false
   },
   storageConnection: {
     host: 'ipfs1-dev.xpxsirius.io',
