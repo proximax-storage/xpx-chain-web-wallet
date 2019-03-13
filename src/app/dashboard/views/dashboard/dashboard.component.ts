@@ -100,6 +100,7 @@ export class DashboardComponent implements OnInit {
             this.cantConfirmed = this.elementsConfirmed.length;
             this.searching = false;
           } else if (this.dashboardService.isLoadedDashboard === 1 && this.loginService.logged || !this.dashboardService.processComplete) {
+            this.dashboardService.loadedDashboard();
             this.getAllTransactions();
           }
         }
