@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { mergeMap } from "rxjs/operators";
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
-import { NemProvider } from "../../../shared/services/nem.provider";
 import { WalletService, SharedService } from "../../../shared";
 
 @Component({
@@ -23,12 +21,9 @@ export class AccountComponent implements OnInit {
   address = this.walletService.address.pretty();
   privateKey = '';
   publicKey = '';
-  importanceScore = '';
-  vestedBalance = null;
   password = '';
 
   constructor(
-    private nemProvider: NemProvider,
     private walletService: WalletService,
     private sharedService: SharedService
   ) {
