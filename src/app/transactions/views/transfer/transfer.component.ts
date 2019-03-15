@@ -107,17 +107,19 @@ export class TransferComponent implements OnInit {
     console.log(node);
     const response: any = await this.mosaicServices.getMosaicFromAddress(this.walletService.address, false);
     console.log("Response mosaics", response);
-    for (let mosaicsName of response.mosaicsName) {
-      const namespaceName = response.namespaceName.find(function (namespaceName: NamespaceName) {
-        return namespaceName.namespaceId.toHex() === mosaicsName.namespaceId.toHex();
-      });
+    if (response && response.mosaicsName) {
+      for (let mosaicsName of response.mosaicsName) {
+        const namespaceName = response.namespaceName.find(function (namespaceName: NamespaceName) {
+          return namespaceName.namespaceId.toHex() === mosaicsName.namespaceId.toHex();
+        });
 
-      node.push({
-        label: `${namespaceName.name}:${mosaicsName.name}`,
-        value: `${namespaceName.name}:${mosaicsName.name}`,
-        selected: false,
-        disabled: false
-      });
+        node.push({
+          label: `${namespaceName.name}:${mosaicsName.name}`,
+          value: `${namespaceName.name}:${mosaicsName.name}`,
+          selected: false,
+          disabled: false
+        });
+      }
     }
 
     this.searchMosaics = false;

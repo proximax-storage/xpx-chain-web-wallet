@@ -261,6 +261,18 @@ export class NemProvider {
     return this.mosaicService.mosaicsAmountViewFromAddress(address);
   }
 
+
+  /**
+   *Get balance mosaics in form of MosaicAmountViews for a given account address
+   *
+   * @param {Address} address
+   * @returns {Observable<MosaicAmountView[]>}
+   * @memberof NemProvider
+   */
+  getBalance2(mosaicId: MosaicId): Observable<MosaicInfo> {
+    return this.mosaicHttp.getMosaic(mosaicId);
+  }
+
   /**
    *Gets an array of confirmed transactions for which an account is signer or receiver.
    *

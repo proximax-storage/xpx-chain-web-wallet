@@ -14,7 +14,7 @@ export class LoginService {
 
 
   subscription = {};
-  logged: boolean;
+  logged = false;
   isLoggedSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(this.logged);
   isLogged$: Observable<boolean> = this.isLoggedSubject.asObservable();
 
@@ -24,7 +24,9 @@ export class LoginService {
     private route: Router,
     private dataBridgeService: DataBridgeService,
     private nodeService: NodeService
-  ) { this.setLogged(false); }
+  ) {
+    this.setLogged(false);
+  }
 
 
   /**

@@ -1,12 +1,19 @@
 import { Injectable } from '@angular/core';
 import { MosaicInfo, MosaicId, MosaicView, Address, Mosaic, MosaicName, Namespace, NamespaceId } from 'proximax-nem2-sdk';
+import { first } from 'rxjs/internal/operators/first';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { NemProvider } from '../../shared/services/nem.provider';
 import { NamespacesService } from './namespaces.service';
+import { WalletService } from '../../shared/services/wallet.service';
+import { TransactionsService } from '../../transactions/service/transactions.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MosaicService {
+
+  private balance: BehaviorSubject<any> = new BehaviorSubject<any>('0.000000');
+  private balance$: Observable<any> = this.balance.asObservable();
 
   mosaicsViewCache: MosaicView[] = [];
   mosaicXpx = {
@@ -16,7 +23,9 @@ export class MosaicService {
 
   constructor(
     private nemProvider: NemProvider,
-    private namespaceServices: NamespacesService
+    private namespaceServices: NamespacesService,
+    private walletService: WalletService,
+    private transactionService: TransactionsService
   ) { }
 
 
@@ -112,7 +121,7 @@ export class MosaicService {
       let mosaicsId = [];
       if (searchXpx) {
         mosaicsId = accountInfo.mosaics.map((mosaic: Mosaic) => { return mosaic.id });
-      }else {
+      } else {
         accountInfo.mosaics.forEach((mosaic: Mosaic) => {
           if (mosaic.id.toHex() !== 'd423931bd268d1f4') {
             return mosaicsId.push(mosaic.id);
@@ -126,7 +135,7 @@ export class MosaicService {
         console.log("mosaicsName", mosaicsName);
         const namespacesId = mosaicsName.map((mosaicsName: MosaicName) => { return mosaicsName.namespaceId });
         const namespaceName = await this.namespaceServices.getNameName(namespacesId);
-        response = {mosaicsName: mosaicsName, namespaceName: namespaceName};
+        response = { mosaicsName: mosaicsName, namespaceName: namespaceName };
       }
 
       resolve(response);
@@ -137,5 +146,29 @@ export class MosaicService {
 
   async getNameMosaic(mosaicsId: MosaicId[]) {
     return await this.nemProvider.mosaicHttp.getMosaicsName(mosaicsId).toPromise()
+  }
+
+  setBalance$(amount: any): void {
+    this.balance.next(this.transactionService.amountFormatterSimple(amount));
+  }
+
+  getBalance$(): Observable<any> {
+    return this.balance$;
+  }
+
+  updateBalance() {
+    this.nemProvider.getAccountInfo(this.walletService.address).pipe(first()).subscribe(
+      next => {
+        next.mosaics.forEach(element => {
+          if (element.id.toHex() === this.mosaicXpx.mosaicId) {
+            console.log("balance...", this.transactionService.amountFormatterSimple(element.amount.compact()));
+            this.setBalance$(element.amount.compact());
+          }
+        });
+      },
+      _err => {
+        this.setBalance$('0.000000');
+      }
+    );
   }
 }

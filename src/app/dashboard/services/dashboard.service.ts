@@ -24,7 +24,6 @@ export class DashboardService {
   ];
   constructor(
     private loginService: LoginService,
-    private proximaxProvider: ProximaxProvider,
     private walletService: WalletService,
     private mosaicService: MosaicService
   ) { }
