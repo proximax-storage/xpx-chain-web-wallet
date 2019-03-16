@@ -94,6 +94,7 @@ export class WalletService {
       this.sharedService.showError('Error', '¡you can not set anything like the current wallet!');
       return false;
     }
+    console.log(wallet);
     this.network = wallet.accounts[0].network;
     // Account used
     this.currentAccount = wallet.accounts[0];

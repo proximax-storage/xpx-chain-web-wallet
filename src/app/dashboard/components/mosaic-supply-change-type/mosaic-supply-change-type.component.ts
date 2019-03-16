@@ -10,7 +10,7 @@ import { MosaicSupplyChangeTransaction } from 'proximax-nem2-sdk';
 })
 export class MosaicSupplyChangeTypeComponent implements OnInit {
 
-  @Input() mosaicSupplyChange: MosaicSupplyChangeTransaction;
+  @Input() mosaicSupplyChange: MosaicSupplyChangeTransaction | any;
   viewMosaicName = false;
   searching = true;
 

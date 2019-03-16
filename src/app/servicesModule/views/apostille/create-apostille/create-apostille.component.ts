@@ -346,14 +346,12 @@ export class CreateApostilleComponent implements OnInit {
             console.log(hash);
             saveAs(content, hash + '.zip');
           });
-
           this.reset();
         } else {
 
           saveAs(content, `PROXIsigned -- Do not Edit --"${date.getFullYear()}-${("00" + (date.getMonth() + 1)).slice(-2)}-${("00" + (date.getDate())).slice(-2)}".zip`);
           this.reset();
         }
-
 
 
       });
@@ -435,7 +433,6 @@ export class CreateApostilleComponent implements OnInit {
     this.certificatePrivate = this.apostilleService.getCertificatePrivate();
     this.certificatePublic = this.apostilleService.getCertificatePublic();
   }
-
   reset() {
     const file: any = document.getElementById('fileInput')
     file.value = '';

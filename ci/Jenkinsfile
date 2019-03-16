@@ -35,7 +35,7 @@ pipeline {
 
           // TODO: Build production version in the future
           echo 'Building'
-          sh './node_modules/@angular/cli/bin/ng build'
+          sh './node_modules/@angular/cli/bin/ng build --prod --build-optimizer'
         }
 
           echo 'Leaving Container'
