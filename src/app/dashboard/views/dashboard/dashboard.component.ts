@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import {
   MosaicInfo
 } from 'proximax-nem2-sdk';
-import { first } from 'rxjs/operators';
+import { first, switchMap, catchError } from 'rxjs/operators';
 import { DashboardService } from '../../services/dashboard.service';
 import { TransactionsService } from '../../../transactions/service/transactions.service';
 import { WalletService } from '../../../shared/services/wallet.service';
@@ -15,18 +15,18 @@ import { SharedService } from '../../../shared/services/shared.service';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
 
   count = 0;
   cantConfirmed = 0;
-  elementsConfirmed: any = [];
+  transactionsConfirmed: any = [];
   elementsUnconfirmed: any;
   confirmedSelected = true;
   unconfirmedSelected = false;
   cantUnconfirmed = 0;
   dataSelected: any = {};
   searching = true;
-  reload = false;
+  iconReloadDashboard = false;
 
   headElements = ['Type', 'Timestamp', 'Fee', 'Sender', 'Recipient'];
   subscriptions = [
@@ -36,7 +36,7 @@ export class DashboardComponent implements OnInit {
     'transactionsConfirmed'
   ];
   infoMosaic: MosaicInfo;
-  typeTransaction: any;
+  typeTransactions: any;
 
   constructor(
     public transactionsService: TransactionsService,
@@ -50,19 +50,16 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.typeTransaction = this.transactionsService.arraTypeTransaction;
+    this.typeTransactions = this.transactionsService.arraTypeTransaction;
     this.dashboardService.loadedDashboard();
     this.dashboardService.subscribeLogged();
+    this.destroySubscription();
     this.getTransactions();
     this.getUnconfirmedTransactionsCache();
   }
 
   ngOnDestroy(): void {
-    this.subscriptions.forEach(element => {
-      if (this.subscriptions[element] !== undefined && this.subscriptions[element] !== 'isLogged') {
-        this.subscriptions[element].unsubscribe();
-      }
-    });
+    this.destroySubscription();
   }
 
 
@@ -80,33 +77,55 @@ export class DashboardComponent implements OnInit {
   }
 
 
-  /**
-   * Get transactions
-   *
-   * @memberof DashboardComponent
-   */
-  async getTransactions() {
-    //Gets all transactions confirmed in cache
+  getTransactions() {
+    this.sharedService.logInfo('-------------- BUSCA LAS TRANSACCIONES ------------------------');
     this.searching = true;
-    this.reload = false;
-    this.destroySubscription();
+    this.iconReloadDashboard = false;
+    //Gets all transactions confirmed in cache
     this.subscriptions['transactionsConfirmed'] = this.transactionsService.getConfirmedTransactionsCache$().subscribe(
-      async transactionsConfirmedCache => {
+      transactionsConfirmedCache => {
         if (this.loginService.logged) {
           console.log("Obtiene las transacciones confirmadas en cache", transactionsConfirmedCache);
           console.log("proceso completado?", this.dashboardService.processComplete);
           if (transactionsConfirmedCache.length > 0) {
-            this.elementsConfirmed = transactionsConfirmedCache.slice(0, 10);
-            this.cantConfirmed = this.elementsConfirmed.length;
             this.searching = false;
-          } else if (this.dashboardService.isLoadedDashboard === 1 && this.loginService.logged || !this.dashboardService.processComplete) {
+            this.cantConfirmed = transactionsConfirmedCache.length;
+            this.transactionsConfirmed = transactionsConfirmedCache.slice(0, 10);
+          } else if (this.loginService.logged && this.dashboardService.isLoadedDashboard === 1) {
+            this.dashboardService.loadedDashboard();
             this.getAllTransactions();
           }
         }
       }, error => {
-        console.log("Has ocurred a error", error);
+        this.sharedService.logInfo('-------------- ERROR OBTENIENDO LAS TRANSACCIONES DE CACHE ------------------------');
+        console.log("------> ", error);
+
+        this.searching = false;
+        this.iconReloadDashboard = true;
+        this.sharedService.showInfo("", "An error occurred while searching for transactions");
       });
   }
+
+  /**
+   *Get all transactions
+   *
+   * @memberof DashboardComponent
+   */
+  getAllTransactions() {
+    console.log("***** BUSCA TODAS LAS TRANSACCIONES *****");
+    this.subscriptions['getAllTransactions'] = this.nemProvider.getAllTransactionsFromAccount(this.walletService.publicAccount, this.walletService.network).pipe(first()).subscribe(
+      allTrasactions => {
+        const elementsConfirmed = this.transactionsService.buildTransactions(allTrasactions);
+        this.transactionsService.setConfirmedTransaction$(elementsConfirmed)
+      }, error => {
+        console.log('-------------- ERROR TO SEARCH ALL TRANSACTIONS -------------', error);
+        this.sharedService.showInfo("", "An error occurred while searching for transactions");
+        this.searching = false;
+        this.iconReloadDashboard = true;
+      }
+    );
+  }
+
 
   /**
    * Get unconfirmed transactions in cache
@@ -120,27 +139,6 @@ export class DashboardComponent implements OnInit {
         this.cantUnconfirmed = resp.length;
       }
     );
-  }
-
-  /**
-   *Get all transactions
-   *
-   * @memberof DashboardComponent
-   */
-  async getAllTransactions() {
-    console.log("***** BUSCA TODAS LAS TRANSACCIONES *****");
-    this.subscriptions['getAllTransactions'] =
-      this.nemProvider.getAllTransactionsFromAccount(this.walletService.publicAccount, this.walletService.network).pipe(first()).subscribe(
-        async allTrasactions => {
-          const response = await this.transactionsService.buildTransactions(allTrasactions);
-          this.searching = false;
-          this.dashboardService.processComplete = true;
-          this.transactionsService.setConfirmedTransaction$(response);
-        }, error => {
-          this.sharedService.showInfo("", "An error occurred while searching for transactions");
-          this.searching = false;
-          this.reload = true;
-        });
   }
 
 

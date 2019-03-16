@@ -1,9 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { mergeMap } from "rxjs/operators";
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
-import { NemProvider } from "../../../shared/services/nem.provider";
 import { WalletService, SharedService } from "../../../shared";
-import { LoginService } from "../../../login/services/login.service";
 
 @Component({
   selector: 'app-account',
@@ -24,33 +21,16 @@ export class AccountComponent implements OnInit {
   address = this.walletService.address.pretty();
   privateKey = '';
   publicKey = '';
-  importanceScore = '';
-  vestedBalance = null;
   password = '';
 
   constructor(
-    private nemProvider: NemProvider,
     private walletService: WalletService,
     private sharedService: SharedService
   ) {
   }
 
   ngOnInit() {
-    //this.getBalance();
-    this.blockUI.start('Loading...'); // Start blocking
-    this.nemProvider.getAccountInfo(this.walletService.address).subscribe(
-      next => {
-        //this.vestedBalance = next['mosaics'][0].amount.compact();
-        //this.publicKey = next.publicKey;
-        this.publicKey = this.walletService.publicAccount.publicKey;
-        this.blockUI.stop();
-      }, error => {
-        //this.vestedBalance = '0';
-        //this.publicKey = 'You need to make a transaction to get a public key';
-        this.publicKey = this.walletService.publicAccount.publicKey;
-        this.blockUI.stop();
-      }
-    );
+    this.publicKey = this.walletService.publicAccount.publicKey;
   }
 
   copyMessage(message: string) {
@@ -73,20 +53,6 @@ export class AccountComponent implements OnInit {
     }else {
       this.sharedService.showError('', 'Please, enter a password');
     }
-  }
-
-  getBalance() {
-    this.nemProvider.getBalance(this.walletService.address).pipe(
-      mergeMap((_) => _)
-    ).subscribe(
-      next => {
-        console.log('You have', next, next.fullName());
-      },
-      err => {
-        this.vestedBalance = '0';
-        console.error(err);
-      }
-    );
   }
 
   hidePrivateKey() {

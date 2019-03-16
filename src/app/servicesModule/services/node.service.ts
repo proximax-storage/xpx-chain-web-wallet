@@ -12,7 +12,7 @@ export class NodeService {
 
   nodeObsSelected: BehaviorSubject<any>;
   nameItemsArrayStorage = environment.nameKeyNodeStorage;
-  nameItemSelectedStorage = 'n-s';
+  nameItemSelectedStorage = 'proximax-web-wallet-n-s';
   listNodes = data['nodes'];
 
   constructor(

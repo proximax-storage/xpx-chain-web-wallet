@@ -10,6 +10,9 @@ import { mergeMap, first } from 'rxjs/operators';
 import { MessageService } from '../shared/services/message.service';
 import { DataBridgeService } from '../shared/services/data-bridge.service';
 import { DashboardService } from '../dashboard/services/dashboard.service';
+import { MosaicService } from '../servicesModule/services/mosaic.service';
+import { MosaicId } from 'proximax-nem2-sdk';
+import { TransactionsService } from '../transactions/service/transactions.service';
 
 export interface HorizontalHeaderInterface {
   home: Header;
@@ -53,8 +56,11 @@ export class HeaderComponent implements OnInit {
   isLogged$: Observable<boolean>;
   horizontalHeader: HorizontalHeaderInterface;
   verticalHeader: VerticalHeaderInterface;
-  vestedBalance: string = '0.00';
+  vestedBalance: string = '0.000000';
   message: string;
+  subscriptions = [
+    'balance'
+  ];
 
   constructor(
     private loginService: LoginService,
@@ -62,37 +68,57 @@ export class HeaderComponent implements OnInit {
     private walletService: WalletService,
     private nemProvider: NemProvider,
     private nodeService: NodeService,
-    private messageService: MessageService,
     private dataBridgeService: DataBridgeService,
-    private dashboardService: DashboardService
+    private dashboardService: DashboardService,
+    private mosaicService: MosaicService
   ) {
 
   }
 
   ngOnInit() {
+    this.destroySubscription();
     this.buildHeader();
     this.readRoute();
-    this.readLogged();
+    // this.readLogged();
     this.balance();
   }
 
-  /**
-      * Observable state of the login
-      *
-      * @memberof HeaderComponent
-      */
-  balance() {
-    this.messageService.getCurrentMessage().subscribe(async message => {
-      this.message = message;
-      console.log(message);
-      if (this.message === 'balanceChanged') {
-        if (this.showOnlyLogged) {
-          console.log("Consulta el balance...");
-          this.getBalance();
-        }
+  destroySubscription() {
+    this.subscriptions.forEach(element => {
+      if (this.subscriptions[element] !== undefined) {
+        this.subscriptions[element].unsubscribe();
       }
     });
   }
+
+
+  balance() {
+    this.isLogged$ = this.loginService.getIsLogged();
+    this.isLogged$.subscribe(
+      response => {
+        console.log('showOnlyLoggedshowOnlyLogged', response);
+        this.showOnlyLogged = response;
+        if (this.showOnlyLogged) {
+          this.mosaicService.updateBalance();
+          this.subscriptions['balance'] = this.mosaicService.getBalance$().subscribe(
+            next => {
+              console.log('next ----> ', next);
+              this.horizontalHeader.amount.name = `Balance ${next} XPX`;
+            }, error => {
+              console.log('Error -----> ', error);
+              this.horizontalHeader.amount.name = `Balance 0.000000 XPX`;
+            }
+          );
+        } else {
+          this.mosaicService.setBalance$('0.000000');
+          this.destroySubscription();
+          this.horizontalHeader.amount.name = `Balance 0.000000 XPX`;
+          this.dataBridgeService.closeConenection();
+        }
+      }
+    );
+  }
+
 
   /**
    * Init var with content of header
@@ -113,9 +139,9 @@ export class HeaderComponent implements OnInit {
       },
       amount: {
         'type': 'default',
-        'name': `Balance ${this.vestedBalance}`,
+        'name': ``,
         'class': '',
-        'icon': '',
+        'icon': 'fa fa-money',
         'rol': true,
         'link': '',
         'show': true,
@@ -407,7 +433,7 @@ export class HeaderComponent implements OnInit {
         this.horizontalHeader.amount.name = `Balance ${next.relativeAmount().toFixed(6)} ${next.mosaicName}`;
       },
       err => {
-        this.vestedBalance = '0';
+        this.vestedBalance = '0.000000';
         console.log(err);
       }
     );
@@ -419,15 +445,14 @@ export class HeaderComponent implements OnInit {
    * @memberof HeaderComponent
    */
   readLogged() {
-    this.isLogged$ = this.loginService.getIsLogged();
-    this.isLogged$.subscribe(
+    this.loginService.getIsLogged().subscribe(
       async response => {
         this.showOnlyLogged = response;
         if (this.showOnlyLogged) {
           // this.getBalance();
           console.log("Get balance in read logged");
         } else {
-          this.horizontalHeader.amount.name = '';
+          this.horizontalHeader.amount.name = `Balance ${this.vestedBalance}`;
           this.dataBridgeService.closeConenection();
         }
       }

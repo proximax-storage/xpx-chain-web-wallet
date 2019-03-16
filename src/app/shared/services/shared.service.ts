@@ -12,6 +12,21 @@ export class SharedService {
     private toastrService: ToastService
   ) { }
 
+  logError(message: any) {
+    console.log(`%c ${message}`, 'background: red; color: white; margin: 0.5rem;');
+  }
+
+  logSuccess(message: any) {
+    console.log(`%c ${message}`, 'background: green; color: white; margin: 0.5rem;');
+  }
+
+  logInfo(message: any) {
+    console.log(`%c ${message}`, 'background: #00b8ff; color: black; margin: 0.5rem;');
+  }
+
+  logWarn(message: any) {
+    console.log(`%c ${message}`, 'background: #ffd817; color: black; margin: 0.5rem;');
+  }
 
   showSuccess(title: string, bodyMessage: string) {
     const options = { closeButton: true, tapToDismiss: false, toastClass: 'toastSuccess' };
