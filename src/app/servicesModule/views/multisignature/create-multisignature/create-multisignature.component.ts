@@ -10,7 +10,8 @@ import { BlockUI, NgBlockUI } from 'ng-block-ui';
 })
 export class CreateMultisignatureComponent implements OnInit {
   @BlockUI() blockUI: NgBlockUI;
-  private createMultisignForm: FormGroup;
+  createMultisignForm: FormGroup;
+
   constructor(
     private fb: FormBuilder,
     private walletService: WalletService,
@@ -27,9 +28,6 @@ export class CreateMultisignatureComponent implements OnInit {
       cosignatory: ['', [Validators.required]],
       minsignatures: [1, [Validators.required]],
     });
-    // this.namespaceForm.get('name').valueChanges.subscribe(name => {
-    //   if (!this.namespaceIsValid(name)) return this.sharedService.showError('Error', '¡Name of namespace is invalid!!')
-    // })
   }
 
   /**

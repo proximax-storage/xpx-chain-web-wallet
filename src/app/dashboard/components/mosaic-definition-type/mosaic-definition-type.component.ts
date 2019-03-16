@@ -11,11 +11,11 @@ import { TransactionsService } from '../../../transactions/service/transactions.
 })
 export class MosaicDefinitionTypeComponent implements OnInit {
 
-  @Input() mosaicDefinition: MosaicDefinitionTransaction
+  @Input() mosaicDefinition: MosaicDefinitionTransaction | any;
 
   constructor(
     private namespacesService: NamespacesService,
-    private transactionService: TransactionsService
+    public transactionService: TransactionsService
   ) { }
 
   ngOnInit() {

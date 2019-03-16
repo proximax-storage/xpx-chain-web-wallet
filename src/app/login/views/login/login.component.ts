@@ -87,7 +87,7 @@ export class LoginComponent implements OnInit {
    * @param {*} walletSelect
    * @memberof LoginComponent
    */
-  private optionSelected(walletSelect: any) {
+  optionSelected(walletSelect: any) {
     this.walletSelect = walletSelect.value;
   }
 
@@ -96,7 +96,7 @@ export class LoginComponent implements OnInit {
    *
    * @memberof LoginComponent
    */
-  private onSubmit() {
+  onSubmit() {
     this.loginForm.markAsDirty();
     if (this.loginForm.valid) {
       this._loginService.login(this.loginForm.get('common').value, this.walletSelect);

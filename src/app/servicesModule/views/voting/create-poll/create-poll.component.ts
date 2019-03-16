@@ -23,7 +23,7 @@ export class CreatePollComponent implements OnInit {
   optionslength = false;
   whiteListlength = false;
   whiteList = false;
-  createpollForm: FormGroup;
+  createpollForm: FormGroup | any;
   keyObject = Object.keys;
   optionsData: any;
   whiteListData: any

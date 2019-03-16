@@ -16,12 +16,12 @@ import { WalletService } from "../../../shared";
 export class TransactionsComponent implements OnInit {
   previous: any;
 
-  firstItemIndex;
-  lastItemIndex;
+  firstItemIndex: number;
+  lastItemIndex: number;
   items: any;
   elements: any = [];
   searchText: string;
-  dataSelected: Transaction;
+  dataSelected: any;
   headElements = ['Account', 'Amount', 'Mosaic', 'Date'];
   @ViewChild(MdbTablePaginationComponent) mdbTablePagination: MdbTablePaginationComponent;
 
@@ -78,5 +78,13 @@ export class TransactionsComponent implements OnInit {
       error => {
         console.error(error);
       });
+  }
+
+  onNextPageClick(event: any) {
+
+  }
+
+  onPreviousPageClick(event: any) {
+
   }
 }
