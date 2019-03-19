@@ -77,7 +77,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
 
-  getTransactions() {
+  getTransactions(reload = false) {
     this.sharedService.logInfo('-------------- BUSCA LAS TRANSACCIONES ------------------------');
     this.searching = true;
     this.iconReloadDashboard = false;
@@ -85,20 +85,23 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.subscriptions['transactionsConfirmed'] = this.transactionsService.getConfirmedTransactionsCache$().subscribe(
       transactionsConfirmedCache => {
         if (this.loginService.logged) {
-          console.log("Obtiene las transacciones confirmadas en cache", transactionsConfirmedCache);
-          console.log("proceso completado?", this.dashboardService.processComplete);
+          //  console.log("Obtiene las transacciones confirmadas en cache", transactionsConfirmedCache);
+          //  console.log("proceso completado?", this.dashboardService.processComplete);
           if (transactionsConfirmedCache.length > 0) {
             this.searching = false;
             this.cantConfirmed = transactionsConfirmedCache.length;
             this.transactionsConfirmed = transactionsConfirmedCache.slice(0, 10);
-          } else if (this.loginService.logged && this.dashboardService.isLoadedDashboard === 1) {
+          } else if (this.loginService.logged && this.dashboardService.isLoadedDashboard === 1 || reload) {
             this.dashboardService.loadedDashboard();
             this.getAllTransactions();
+          } else {
+            this.searching = false;
+            this.iconReloadDashboard = true;
           }
         }
       }, error => {
         this.sharedService.logInfo('-------------- ERROR OBTENIENDO LAS TRANSACCIONES DE CACHE ------------------------');
-        console.log("------> ", error);
+        //  console.log("------> ", error);
 
         this.searching = false;
         this.iconReloadDashboard = true;
@@ -112,13 +115,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
    * @memberof DashboardComponent
    */
   getAllTransactions() {
-    console.log("***** BUSCA TODAS LAS TRANSACCIONES *****");
+    //  console.log("***** BUSCA TODAS LAS TRANSACCIONES *****");
     this.subscriptions['getAllTransactions'] = this.nemProvider.getAllTransactionsFromAccount(this.walletService.publicAccount, this.walletService.network).pipe(first()).subscribe(
       allTrasactions => {
         const elementsConfirmed = this.transactionsService.buildTransactions(allTrasactions);
         this.transactionsService.setConfirmedTransaction$(elementsConfirmed)
       }, error => {
-        console.log('-------------- ERROR TO SEARCH ALL TRANSACTIONS -------------', error);
+        //  console.log('-------------- ERROR TO SEARCH ALL TRANSACTIONS -------------', error);
         this.sharedService.showInfo("", "An error occurred while searching for transactions");
         this.searching = false;
         this.iconReloadDashboard = true;
