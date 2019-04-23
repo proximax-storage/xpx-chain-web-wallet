@@ -12,9 +12,6 @@ import { Address, UInt64, Mosaic, MosaicId, Account, PublicAccount } from 'proxi
 import { FileInterface } from 'src/app/shared';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 
-
-
-
 @Component({
   selector: 'app-storage',
   templateUrl: './storage.component.html',
@@ -88,10 +85,8 @@ export class StorageComponent implements OnInit {
   }
 
   ngOnInit() {
-
     this.createForm();
     this.loadTransactions();
-
   }
 
   async loadTransactions() {
@@ -99,12 +94,12 @@ export class StorageComponent implements OnInit {
     if (this.searcher) {
       //this.transactionResults = [];
       //const searchParam = SearchParameter.createForAddress(environment.senderAccount.address);
-      
+
       console.log(this.walletService.publicAccount);
       const searchParam = SearchParameter.createForPublicKey(this.walletService.publicAccount.publicKey);
       //const searchParam = SearchParameter.createForAddress(this.walletService.publicAccount.address.plain());
       searchParam.withResultSize(10);
-    
+
       console.log('Loading transactions ...');
       const searchResult = await this.searcher.search(searchParam.build());
       console.log(searchResult);
@@ -168,12 +163,12 @@ export class StorageComponent implements OnInit {
       recipientPublicKey: [''],
       secureMessage: [''],
       usePasswordPrivacy: [''],
-      password: ['', [Validators.minLength(8), Validators.maxLength(20)]],
+      password: ['', [Validators.minLength(8), Validators.maxLength(30)]],
       fileInput: [''],
       privateKey: [''],
       useSecureMessage: [''],
       encryptionMethod: [''],
-      encryptionPasword: [''],
+      encryptionPasword: ['', [Validators.minLength(8), Validators.maxLength(30)]],
       recipientPrivateKey: ['']
     });
 
@@ -259,6 +254,7 @@ export class StorageComponent implements OnInit {
   }
 
   async addRecord() {
+    console.log(this.addRecordForm.valid);
     if (this.addRecordForm.valid) {
       if (this.files.length <= 0) {
         this.sharedService.showError('Attention', 'Please choose file to upload');
@@ -271,7 +267,7 @@ export class StorageComponent implements OnInit {
             this.showRecordEntry = false;
           } else {
             const title = this.addRecordForm.get('title').value;
-           
+
 
             const selectedFile = this.files[0].nativeFile;
             const fileType = selectedFile.type;
@@ -329,7 +325,9 @@ export class StorageComponent implements OnInit {
               case PrivacyType.PASSWORD:
                 const encryptionPassword = this.addRecordForm.get('encryptionPasword').value;
                 if (this.showEncryptionPassword && encryptionPassword.length > 0) {
+                  console.log('---------- PASSWORD PRIVACY ---------  ');
                   param.withPasswordPrivacy(encryptionPassword);
+                  console.log('---------- PASSW22222222ORD PRIVACY ---------  ');
                 } else {
                   this.sharedService.showWarning("Warning", "Please enter your encryption password");
                 }
@@ -374,7 +372,7 @@ export class StorageComponent implements OnInit {
 
         } catch (error) {
           this.blockUI.stop();
-          this.sharedService.showError('Error', error);
+          this.sharedService.showError('', error);
         }
       }
     }
@@ -462,7 +460,7 @@ export class StorageComponent implements OnInit {
     const dataHash = this.downloadRecordForm.get('downloadDatahash');
     console.log(dataHash.value);
     if (!decryptionPassword || decryptionPassword.length <= 10) {
-      this.sharedService.showError('Invalid decryption password!', 'The password must be greater than 10 characters');
+      this.sharedService.showError('Invalid decryption password!', 'The password must be greater than 8 characters');
     } else if (!this.downloadFile) {
       this.sharedService.showError('Something wrong!', 'Unable to download file');
     } else {
@@ -484,7 +482,7 @@ export class StorageComponent implements OnInit {
   async downloadWithDecryptionKeyPair() {
     const privateKey = this.downloadRecordForm.get('decryptionPrivateKey').value;
     const publicKey = this.downloadRecordForm.get('decryptionPublicKey').value;
-  
+
     if (!privateKey || !publicKey) {
       this.sharedService.showError('Invalid decryption key pair!', 'Please enter decryption private key and public key');
     } else if (!this.downloadFile) {
@@ -500,22 +498,22 @@ export class StorageComponent implements OnInit {
         const downloableFile = new Blob([dataBuffer], { type: this.downloadFile.contentType });
         saveAs(downloableFile, this.downloadFile.name);
       } catch (error) {
+        // this.dlframe.hide();
         this.sharedService.showError('Failure', error);
       }
     }
   }
 
   async downloadRecord(dataHash, type, name, transactionHash, privacyType) {
-    /*console.log(dataHash);
+    console.log(dataHash);
     console.log(type);
     console.log(name);
     console.log(transactionHash);
-    console.log(privacyType);*/
+    console.log(privacyType);
     this.downloadFile = { dataHash: dataHash, contentType: type, name: name };
     try {
 
       if (privacyType === PrivacyType.PLAIN) {
-
         const paramData = DirectDownloadParameter.createFromDataHash(dataHash);
         paramData.withPlainPrivacy();
         const downloadResult = await this.downloader.directDownload(paramData.build());
@@ -523,10 +521,8 @@ export class StorageComponent implements OnInit {
         const downloableFile = new Blob([dataBuffer], { type: type });
         saveAs(downloableFile, name);
       } else {
-
         const dataHashInput = this.downloadRecordForm.get('downloadDatahash');
         dataHashInput.setValue(dataHash);
-
         if (privacyType === PrivacyType.PASSWORD) {
           this.downloadRecordForm.get('decryptionPassword').reset();
           this.showDecryptionPassword = true;
@@ -538,7 +534,6 @@ export class StorageComponent implements OnInit {
           this.showDecryptionKeyPair = true;
         }
         this.dlframe.show();
-
       }
 
 

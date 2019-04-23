@@ -14,6 +14,7 @@ import { LockTypeComponent } from './components/lock-type/lock-type.component';
 import { SecretLockTypeComponent } from './components/secret-lock-type/secret-lock-type.component';
 import { SecretProofComponent } from './components/secret-proof/secret-proof.component';
 import { MosaicsInfoComponent } from './components/mosaics-info/mosaics-info.component';
+import { DashboardComponent2 } from './views/dashboard2/dashboard2.component';
 
 @NgModule({
   imports: [
@@ -23,6 +24,7 @@ import { MosaicsInfoComponent } from './components/mosaics-info/mosaics-info.com
   ],
   declarations: [
     DashboardComponent,
+    DashboardComponent2,
     TransferTypeComponent,
     RegisterNamespaceTypeComponent,
     MosaicDefinitionTypeComponent,

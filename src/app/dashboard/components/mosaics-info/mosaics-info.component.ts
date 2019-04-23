@@ -113,7 +113,7 @@ export class MosaicsInfoComponent implements OnInit {
         this.viewDetail = true;
       }
     }else {
-      const mosaicsName: MosaicName[] = await this.mosaicService.getNameMosaic(mosaicsId);
+      const mosaicsName: MosaicName[] = await this.mosaicService.getNameMosaics(mosaicsId);
       console.log("Mosaic name", mosaicsName);
     }
     this.changeSearch.emit(true);

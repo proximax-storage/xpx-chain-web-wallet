@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { LoginComponent } from './views/login/login.component';
+import { AuthComponent } from './views/auth/auth.component';
 import { AppConfig } from '../config/app.config';
 import { NotLoggedGuard } from '../shared/guard/not-logged.guard';
 
 const routes: Routes = [
 
   {   path: `${AppConfig.routes.login}`,
-      component: LoginComponent,
+      component: AuthComponent,
       canActivate: [NotLoggedGuard]
   }
 ];
@@ -16,4 +16,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class LoginRoutingModule { }
+export class AuthRoutingModule { }

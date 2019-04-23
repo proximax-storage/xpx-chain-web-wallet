@@ -1,18 +1,18 @@
 import { NgModule ,NO_ERRORS_SCHEMA} from '@angular/core';
-import { LoginRoutingModule } from './login-routing.module';
-import { LoginComponent } from './views/login/login.component';
+import { AuthRoutingModule } from './auth-routing.module';
+import { AuthComponent } from './views/auth/auth.component';
 import { CoreModule } from '../core/core.module';
 
 
 
 const declarations = [
-  LoginComponent
+  AuthComponent
 ]
 
 const imports = [
   CoreModule,
-  LoginRoutingModule,
-  
+  AuthRoutingModule,
+
 ]
 
 @NgModule({
@@ -21,8 +21,8 @@ const imports = [
   ],
   declarations: [
     declarations,
-  
+
   ],
-  schemas: [NO_ERRORS_SCHEMA] 
+  schemas: [NO_ERRORS_SCHEMA]
 })
-export class LoginModule { }
+export class AuthModule { }

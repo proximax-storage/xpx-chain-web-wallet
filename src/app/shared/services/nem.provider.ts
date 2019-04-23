@@ -39,7 +39,7 @@ import {
 
 import { crypto } from 'proximax-nem2-library';
 import { environment } from '../../../environments/environment';
-import { commonInterface, walletInterface } from '..';
+import { commonInterface, walletInterface } from '../interfaces/shared.interfaces';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -48,10 +48,11 @@ import { Observable } from 'rxjs';
 export class NemProvider {
 
   infoMosaic: MosaicInfo;
-  mosaic = {
-    mosaic: 'prx:xpx',
-    mosaicId: 'd423931bd268d1f4'
+  mosaicXpx = {
+    mosaic: "prx:xpx",
+    mosaicId: "d423931bd268d1f4"
   };
+
   transactionHttp: TransactionHttp;
   websocketIsOpen = false;
   connectionWs: Listener;
@@ -173,7 +174,7 @@ export class NemProvider {
     return TransferTransaction.create(
       Deadline.create(5),
       recipientAddress,
-      [new Mosaic(new MosaicId(this.mosaic.mosaic), UInt64.fromUint(Number(amount)))],
+      [new Mosaic(new MosaicId(this.mosaicXpx.mosaic), UInt64.fromUint(Number(amount)))],
       PlainMessage.create(message),
       network
     );
@@ -239,16 +240,7 @@ export class NemProvider {
     return this.mosaicHttp.getMosaics(mosaicIsd);
   }
 
-  /**
-   *Gets an AccountInfo for an account.
-   *
-   * @param {Address} address
-   * @returns {Observable<AccountInfo>}
-   * @memberof NemProvider
-   */
-  getAccountInfo(address: Address): Observable<AccountInfo> {
-    return this.accountHttp.getAccountInfo(address)
-  }
+
 
   /**
    *Get balance mosaics in form of MosaicAmountViews for a given account address
@@ -344,12 +336,27 @@ export class NemProvider {
     // account.privateKey
   }
 
+  /**
+   * Get namespace id
+   *
+   * @param {any} id
+   * @returns
+   * @memberof NemProvider
+   */
+  getNamespaceId(id: string | number[]): NamespaceId {
+    return new NamespaceId(id);
+  }
+
+  getMosaicId(id: string | number[]): MosaicId {
+    return new MosaicId(id);
+  }
+
   sendTransaction(network: NetworkType, address: string, message?: string, amount: number = 0): TransferTransaction {
     console.log(address, message)
     return TransferTransaction.create(
       Deadline.create(23),
       Address.createFromRawAddress(address),
-      [new Mosaic(new MosaicId(this.mosaic.mosaic), UInt64.fromUint(Number(amount)))],
+      [new Mosaic(new MosaicId(this.mosaicXpx.mosaic), UInt64.fromUint(Number(amount)))],
       PlainMessage.create(message),
       network,
     );
@@ -376,21 +383,21 @@ export class NemProvider {
   async getMosaicViewPromise(mosaicsId: MosaicId[]) {
     const promise = await new Promise(async (resolve, reject) => {
       //if (this.infoMosaic === undefined) {
-        console.warn("********** GET INFO MOSAICS TO PROMISE **********");
-        const mosaicsView = await this.mosaicService.mosaicsView(mosaicsId).toPromise();
-        // this.setInfoMosaic(this.infoMosaic);
-        // console.log("Ya va a responder...", this.infoMosaic);
-        resolve(mosaicsView);
+      console.warn("********** GET INFO MOSAICS TO PROMISE **********");
+      const mosaicsView = await this.mosaicService.mosaicsView(mosaicsId).toPromise();
+      // this.setInfoMosaic(this.infoMosaic);
+      // console.log("Ya va a responder...", this.infoMosaic);
+      resolve(mosaicsView);
       //} else {
-        //console.log("Información de mosaico en caché", this.infoMosaic);
-        //reject(null);
-        // if (this.infoMosaic.mosaicId === mosaicId) {
-        //   resolve(this.infoMosaic);
-        // } else {
-        //   this.infoMosaic = await this.nemProvider.getMosaic(mosaicId).toPromise();
-        //   this.setInfoMosaic(this.infoMosaic);
-        //   resolve(this.infoMosaic);
-        // }
+      //console.log("Información de mosaico en caché", this.infoMosaic);
+      //reject(null);
+      // if (this.infoMosaic.mosaicId === mosaicId) {
+      //   resolve(this.infoMosaic);
+      // } else {
+      //   this.infoMosaic = await this.nemProvider.getMosaic(mosaicId).toPromise();
+      //   this.setInfoMosaic(this.infoMosaic);
+      //   resolve(this.infoMosaic);
+      // }
       //}
     });
 
@@ -401,9 +408,9 @@ export class NemProvider {
 
   async getNamespaceViewPromise(namespaceId: NamespaceId[]) {
     const promise = await new Promise(async (resolve, reject) => {
-        console.warn("********** GET NAMESPACE TO PROMISE **********", namespaceId);
-        const namespace = await this.namespaceHttp.getNamespacesName(namespaceId).toPromise();
-        resolve(namespace);
+      console.warn("********** GET NAMESPACE TO PROMISE **********", namespaceId);
+      const namespace = await this.namespaceHttp.getNamespacesName(namespaceId).toPromise();
+      resolve(namespace);
     });
 
     console.log("***RESPUESTA CONSULTA DE MOSAICOS****", promise);
@@ -435,7 +442,7 @@ export class NemProvider {
     return await promise;
   }
 
-  mosaicSupplyChangeTransaction(mosaicId:string, supply:number, mosaicSupplyType: number,network: NetworkType):MosaicSupplyChangeTransaction{
+  mosaicSupplyChangeTransaction(mosaicId: string, supply: number, mosaicSupplyType: number, network: NetworkType): MosaicSupplyChangeTransaction {
     return MosaicSupplyChangeTransaction.create(
       Deadline.create(),
       new MosaicId(mosaicId),
@@ -494,5 +501,20 @@ export class NemProvider {
         duration: UInt64.fromUint(duration)
       }),
       network);
+  }
+
+
+
+  // **********************************************************************
+
+  /**
+     * Get account info from address
+     *
+     * @param {Address} address
+     * @returns {Observable<AccountInfo>}
+     * @memberof NemProvider
+     */
+  getAccountInfo(address: Address): Observable<AccountInfo> {
+    return this.accountHttp.getAccountInfo(address)
   }
 }

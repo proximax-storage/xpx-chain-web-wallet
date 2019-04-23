@@ -35,7 +35,7 @@ const modules = [
     modules,
     MdbModule,
     ReversePipePipe
-  ],
+  ]
 })
 export class CoreModule {
   static forRoot(): ModuleWithProviders {

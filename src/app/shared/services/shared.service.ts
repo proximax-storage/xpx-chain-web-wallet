@@ -2,7 +2,17 @@ import { Injectable } from '@angular/core';
 import { ToastService } from 'ng-uikit-pro-standard';
 import { FormGroup, AbstractControl } from "@angular/forms";
 
-declare var $: any;
+export interface StructureHeader {
+  type: string;
+  name: string;
+  class: string;
+  icon: string;
+  rol: boolean;
+  link: string;
+  show: boolean;
+  submenu: object;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -11,6 +21,24 @@ export class SharedService {
   constructor(
     private toastrService: ToastService
   ) { }
+
+
+  buildStructureHeader(
+    typeP: string, nameP: string, classP: string,
+    iconP: string, rolP: boolean, linkP: string,
+    showP: boolean, submenuP: object
+  ) {
+    return {
+      type: typeP,
+      name: nameP,
+      class: classP,
+      icon: iconP,
+      rol: rolP,
+      link: linkP,
+      show: showP,
+      submenu: submenuP
+    }
+  }
 
   logError(message: any) {
     console.log(`%c ${message}`, 'background: red; color: white; margin: 0.5rem;');

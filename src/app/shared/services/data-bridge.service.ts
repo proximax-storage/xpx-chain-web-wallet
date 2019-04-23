@@ -38,7 +38,7 @@ export class DataBridgeService {
     console.log("Connect to websocket");
     const route = (node === undefined) ? this.nodeService.getNodeSelected() : node;
     this.url = `${environment.protocolWs}://${route}`;
-    console.log(this.url);
+    // console.log(this.url);
     this.connector = new Listener(this.url, WebSocket);
     // Try to open the connection
     this.openConnection(this.connector);
@@ -51,7 +51,7 @@ export class DataBridgeService {
    * @memberof DataBridgeService
    */
   closeConenection() {
-    console.log("Destruye conexion con el websocket");
+    // console.log("Destruye conexion con el websocket");
     this.transactionsService.destroyAllTransactions();
     if (this.connector !== undefined) {
       this.connector.close();
@@ -123,7 +123,7 @@ export class DataBridgeService {
 
           // this.messageService.changeMessage('balanceChanged');
           audio.play();
-          this.mosaicService.updateBalance();
+          this.transactionsService.updateBalance();
           this.transactionsService.setConfirmedTransaction$(transactionPushed);
         });
     }, err => {
@@ -163,7 +163,7 @@ export class DataBridgeService {
   */
   getBlockSocket(connector: Listener) {
     connector.newBlock().subscribe(res => {
-      console.log("block::::: ", res.height.lower);
+      // console.log("block::::: ", res.height.lower);
       this.setblock(res.height.lower)
     }, err => {
       this.sharedService.showError('Error', err);

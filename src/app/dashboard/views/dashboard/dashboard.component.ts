@@ -1,154 +1,48 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import {
-  MosaicInfo
-} from 'proximax-nem2-sdk';
-import { first, switchMap, catchError } from 'rxjs/operators';
-import { DashboardService } from '../../services/dashboard.service';
-import { TransactionsService } from '../../../transactions/service/transactions.service';
-import { WalletService } from '../../../shared/services/wallet.service';
-import { NemProvider } from '../../../shared/services/nem.provider';
-import { LoginService } from '../../../login/services/login.service';
-import { SharedService } from '../../../shared/services/shared.service';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.css']
+  styleUrls: ['./dashboard.component.scss']
 })
-export class DashboardComponent implements OnInit, OnDestroy {
+export class DashboardComponent implements OnInit {
 
+  confirmedSelected = true;
   count = 0;
   cantConfirmed = 0;
-  transactionsConfirmed: any = [];
-  elementsUnconfirmed: any;
-  confirmedSelected = true;
-  unconfirmedSelected = false;
   cantUnconfirmed = 0;
   dataSelected: any = {};
-  searching = true;
   iconReloadDashboard = false;
+  searching = true;
+  transactionsConfirmed: any = [];
+  transactionsUnconfirmed: any;
+  unconfirmedSelected = false;
+  // confirmedSelected = true;
+  // unconfirmedSelected = false;
+  // searching = true;
+  // iconReloadDashboard = false;
 
-  headElements = ['Type', 'Timestamp', 'Fee', 'Sender', 'Recipient'];
-  subscriptions = [
-    'getConfirmedTransactionsCache',
-    'transactionsUnconfirmed',
-    'getAllTransactions',
-    'transactionsConfirmed'
-  ];
-  infoMosaic: MosaicInfo;
-  typeTransactions: any;
+  // headElements = ['Type', 'Timestamp', 'Fee', 'Sender', 'Recipient'];
+  // subscriptions = [
+  //   'getConfirmedTransactionsCache',
+  //   'transactionsUnconfirmed',
+  //   'getAllTransactions',
+  //   'transactionsConfirmed'
+  // ];
+  // infoMosaic: MosaicInfo;
+  // typeTransactions: any;
 
-  constructor(
-    public transactionsService: TransactionsService,
-    private dashboardService: DashboardService,
-    private walletService: WalletService,
-    private nemProvider: NemProvider,
-    private loginService: LoginService,
-    private sharedService: SharedService,
-  ) {
 
-  }
+  constructor() { }
 
   ngOnInit() {
-    this.typeTransactions = this.transactionsService.arraTypeTransaction;
-    this.dashboardService.loadedDashboard();
-    this.dashboardService.subscribeLogged();
-    this.destroySubscription();
-    this.getTransactions();
-    this.getUnconfirmedTransactionsCache();
-  }
-
-  ngOnDestroy(): void {
-    this.destroySubscription();
   }
 
 
   /**
-   * Destroy all subscriptions
+   * Select tab
    *
-   * @memberof DashboardComponent
-   */
-  destroySubscription() {
-    this.subscriptions.forEach(element => {
-      if (this.subscriptions[element] !== undefined) {
-        this.subscriptions[element].unsubscribe();
-      }
-    });
-  }
-
-
-  getTransactions(reload = false) {
-    this.sharedService.logInfo('-------------- BUSCA LAS TRANSACCIONES ------------------------');
-    this.searching = true;
-    this.iconReloadDashboard = false;
-    //Gets all transactions confirmed in cache
-    this.subscriptions['transactionsConfirmed'] = this.transactionsService.getConfirmedTransactionsCache$().subscribe(
-      transactionsConfirmedCache => {
-        if (this.loginService.logged) {
-          //  console.log("Obtiene las transacciones confirmadas en cache", transactionsConfirmedCache);
-          //  console.log("proceso completado?", this.dashboardService.processComplete);
-          if (transactionsConfirmedCache.length > 0) {
-            this.searching = false;
-            this.cantConfirmed = transactionsConfirmedCache.length;
-            this.transactionsConfirmed = transactionsConfirmedCache.slice(0, 10);
-          } else if (this.loginService.logged && this.dashboardService.isLoadedDashboard === 1 || reload) {
-            this.dashboardService.loadedDashboard();
-            this.getAllTransactions();
-          } else {
-            this.searching = false;
-            this.iconReloadDashboard = true;
-          }
-        }
-      }, error => {
-        this.sharedService.logInfo('-------------- ERROR OBTENIENDO LAS TRANSACCIONES DE CACHE ------------------------');
-        //  console.log("------> ", error);
-
-        this.searching = false;
-        this.iconReloadDashboard = true;
-        this.sharedService.showInfo("", "An error occurred while searching for transactions");
-      });
-  }
-
-  /**
-   *Get all transactions
-   *
-   * @memberof DashboardComponent
-   */
-  getAllTransactions() {
-    //  console.log("***** BUSCA TODAS LAS TRANSACCIONES *****");
-    this.subscriptions['getAllTransactions'] = this.nemProvider.getAllTransactionsFromAccount(this.walletService.publicAccount, this.walletService.network).pipe(first()).subscribe(
-      allTrasactions => {
-        const elementsConfirmed = this.transactionsService.buildTransactions(allTrasactions);
-        this.transactionsService.setConfirmedTransaction$(elementsConfirmed)
-      }, error => {
-        //  console.log('-------------- ERROR TO SEARCH ALL TRANSACTIONS -------------', error);
-        this.sharedService.showInfo("", "An error occurred while searching for transactions");
-        this.searching = false;
-        this.iconReloadDashboard = true;
-      }
-    );
-  }
-
-
-  /**
-   * Get unconfirmed transactions in cache
-   *
-   * @memberof DashboardComponent
-   */
-  getUnconfirmedTransactionsCache() {
-    this.subscriptions['transactionsUnconfirmed'] = this.transactionsService.getTransactionsUnconfirmedCache$().subscribe(
-      resp => {
-        this.elementsUnconfirmed = resp;
-        this.cantUnconfirmed = resp.length;
-      }
-    );
-  }
-
-
-  /**
-   *
-   *
-   * @param {any} param
+   * @param {*} param
    * @memberof DashboardComponent
    */
   selectTab(param: any) {
@@ -160,6 +54,5 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.unconfirmedSelected = true;
     }
   }
-
 
 }

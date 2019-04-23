@@ -28,7 +28,7 @@
                 <div class="col-1">
                   <div class="mt-3">
                     <a style="background: #565656" mdbBtn floating="true" size="sm" mdbWavesEffect (click)="searchRecord()">
-                      <mdb-icon icon="search"></mdb-icon>
+                      <i class="fa fa-search"></i>
                     </a>
                   </div>
                 </div>
@@ -94,7 +94,7 @@
               <div class="row">
                 <div class="col-8">
                   <div class="md-form " id="container-decryption-password-key">
-                    <input type="text" [validateSuccess]="false" autocomplete="off" formControlName="decryptionPassword"
+                    <input type="password" [validateSuccess]="false" autocomplete="off" formControlName="decryptionPassword"
                       id="decryptionPassword" class="form-control" mdbInputDirective required minlength="10" />
                     <label for="decryptionPassword">Enter your decryption password</label>
                   </div>
@@ -134,6 +134,7 @@
     aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered " role="document">
       <div class="modal-content">
+
         <!-- header-->
         <div class="modal-header background-gold">
           <p class="heading lead" style="font-weight: 500;">Add a new file</p>
@@ -141,6 +142,7 @@
             <span aria-hidden="true" class="white-text">&times;</span>
           </button>
         </div>
+
         <!-- Body-->
         <div class="modal-body">
           <form [formGroup]="addRecordForm" (ngSubmit)="addRecord()" style="color: #757575;" action="#">
@@ -148,8 +150,8 @@
               <div class="row">
                 <div class="col-8">
                   <div class="md-form " id="container-password-key">
-                    <input type="text" [validateSuccess]="false" autocomplete="off" formControlName="password" id="password"
-                      class="form-control" mdbInputDirective required [errorMessage]="getError('password')" minlength="8">
+                    <input type="password" [validateSuccess]="false" autocomplete="off" formControlName="password" id="password"
+                      class="form-control" mdbInputDirective required [errorMessage]="getError('password')">
                     <label for="password">Enter your password</label>
 
                   </div>
@@ -159,7 +161,6 @@
                     <button mdbBtn type="button" size="sm" color="default" rounded="true" class="waves-light"
                       mdbWavesEffect (click)="showRecordEntryPassword()">OK</button>
                   </div>
-
                 </div>
               </div>
             </div>
@@ -186,7 +187,7 @@
               </div>
 
               <div class="md-form mt-4" id="container-encryption-password" *ngIf="showEncryptionPassword">
-                <input type="text" [validateSuccess]="false" autocomplete="off" formControlName="encryptionPasword" id="encryptionPasword"
+                <input type="password" [validateSuccess]="false" autocomplete="off" formControlName="encryptionPasword" id="encryptionPasword"
                   class="form-control" mdbInputDirective>
                 <label for="encryptionPasword">Enter the encryption password</label>
               </div>

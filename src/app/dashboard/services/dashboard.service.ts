@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LoginService } from '../../login/services/login.service';
+import { AuthService } from '../../auth/services/auth.service';
 import { ProximaxProvider } from '../../shared/services/proximax.provider';
 import { MosaicInfo } from 'proximax-nem2-sdk';
 import { Observable, BehaviorSubject } from 'rxjs';
@@ -23,10 +23,15 @@ export class DashboardService {
     'getAllTransactions'
   ];
   constructor(
-    private loginService: LoginService,
+    private authService: AuthService,
     private walletService: WalletService,
     private mosaicService: MosaicService
   ) { }
+
+
+  buildDashboard() {
+
+  }
 
 
   /**
@@ -36,7 +41,7 @@ export class DashboardService {
    */
   subscribeLogged() {
     if (this.isLoadedDashboard === 1) {
-      this.isLogged$ = this.loginService.getIsLogged();
+      this.isLogged$ = this.authService.getIsLogged();
       this.subscriptions['isLogged'] = this.isLogged$.subscribe(
         response => {
           if (response === false) {

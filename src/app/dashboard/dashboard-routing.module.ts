@@ -1,11 +1,19 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { DashboardComponent } from './views/dashboard/dashboard.component';
+import { DashboardComponent2 } from './views/dashboard2/dashboard2.component';
 import { AppConfig } from '../config/app.config';
 import { LoggedGuard } from '../shared/guard/logged.guard';
 import { NotLoggedGuard } from '../shared/guard/not-logged.guard';
+import { DashboardComponent } from './views/dashboard/dashboard.component';
+
+
 const routes: Routes = [
+  // {
+  //   path: `${AppConfig.routes.dashboard}`,
+  //   component: DashboardComponent2,
+  //   canActivate: [LoggedGuard]
+  // },
   {
     path: `${AppConfig.routes.dashboard}`,
     component: DashboardComponent,

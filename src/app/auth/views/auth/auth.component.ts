@@ -1,41 +1,34 @@
 import { Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
-import { LoginService } from '../../services/login.service';
+import { AuthService } from '../../services/auth.service';
 import { environment } from '../../../../environments/environment';
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  selector: 'app-auth',
+  templateUrl: './auth.component.html',
+  styleUrls: ['./auth.component.css']
 })
 
-export class LoginComponent implements OnInit {
+export class AuthComponent implements OnInit {
   walletSelect: any;
   selectedValue: string;
   loginForm: FormGroup;
   wallets: Array<any>;
+
+
   constructor(
     private fb: FormBuilder,
-    private _loginService: LoginService
+    private authService: AuthService
   ) { }
 
-  /**
-   *
-   *
-   * @memberof LoginComponent
-   */
+
   ngOnInit() {
     let walletLocal = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
-    this.wallets = this._loginService.walletsOption(walletLocal);
+    this.wallets = this.authService.walletsOption(walletLocal);
     this.createForm();
   }
 
-  /**
-   *Create login form
-   *
-   * @memberof LoginComponent
-   */
   private createForm() {
     this.loginForm = this.fb.group({
       wallet: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(30)]],
@@ -45,14 +38,7 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  /**
-   *Get form error
-   *
-   * @param {*} param
-   * @param {*} name
-   * @returns
-   * @memberof LoginComponent
-   */
+
   getError(param: string | (string | number)[], name: string = '') {
     if (this.loginForm.get(param).getError('required')) {
       return `This field is required`;
@@ -63,14 +49,7 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  /**
-   *Get form errors
-   *
-   * @param {*} param
-   * @param {*} name
-   * @returns
-   * @memberof LoginComponent
-   */
+
   getErrorGroup(param, name) {
     if (this.loginForm.get(param).get(name).getError('required')) {
       return `This field is required`;
@@ -81,25 +60,15 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  /**
-   *Change of selection option
-   *
-   * @param {*} walletSelect
-   * @memberof LoginComponent
-   */
+
   optionSelected(walletSelect: any) {
     this.walletSelect = walletSelect.value;
   }
 
-  /**
-   *I send data of the form to the logueo service
-   *
-   * @memberof LoginComponent
-   */
   onSubmit() {
     this.loginForm.markAsDirty();
     if (this.loginForm.valid) {
-      this._loginService.login(this.loginForm.get('common').value, this.walletSelect);
+      this.authService.login(this.loginForm.get('common').value, this.walletSelect);
       this.loginForm.get('common').reset();
     }
   }

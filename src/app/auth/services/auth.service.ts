@@ -4,13 +4,15 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { WalletService } from '../../shared/services/wallet.service';
 import { AppConfig } from '../../config/app.config';
 import { DataBridgeService } from "../../shared/services/data-bridge.service";
-import { TransactionsService } from "../../transactions/service/transactions.service";
 import { NodeService } from '../../servicesModule/services/node.service';
+import { MosaicService } from '../../servicesModule/services/mosaic.service';
+import { NamespacesService } from '../../servicesModule/services/namespaces.service';
+import { TransactionsService } from '../../transactions/service/transactions.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class LoginService {
+export class AuthService {
 
 
   subscription = {};
@@ -23,7 +25,10 @@ export class LoginService {
     private walletService: WalletService,
     private route: Router,
     private dataBridgeService: DataBridgeService,
-    private nodeService: NodeService
+    private nodeService: NodeService,
+    private mosaicService: MosaicService,
+    private nameSpaces: NamespacesService,
+    private transactionService: TransactionsService
   ) {
     this.setLogged(false);
   }
@@ -55,12 +60,18 @@ export class LoginService {
     }
 
     // this.transactionsService.destroyAllTransactions();
+    this.setLogged(true);
+    this.route.navigate([`/${AppConfig.routes.dashboard}`]);
     this.dataBridgeService.closeConenection();
     this.dataBridgeService.connectnWs();
-    this.route.navigate([`/${AppConfig.routes.dashboard}`]);
-    this.setLogged(true);
+
+    // load services and components
+    this.transactionService.updateBalance();
+    this.nameSpaces.buildNamespaceStorage();
+    // this.getMosaics();
     return true;
   }
+
 
   /**
    * Subscribe to node
@@ -107,10 +118,11 @@ export class LoginService {
    */
   walletsOption(wallets: Array<any> = []) {
     wallets = (wallets == null) ? [] : wallets
-    const retorno = [{ 'value': '', 'label': 'Select wallet' }];
+    const r = [{ 'value': '', 'label': 'Select wallet' }];
     wallets.forEach((item) => {
-      retorno.push({ value: item, label: item.name });
+      r.push({ value: item, label: item.name });
     });
-    return retorno;
+    return r;
   }
+
 }
