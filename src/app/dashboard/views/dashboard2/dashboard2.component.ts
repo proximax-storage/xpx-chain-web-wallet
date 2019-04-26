@@ -51,7 +51,7 @@ export class DashboardComponent2 implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.typeTransactions = this.transactionsService.arraTypeTransaction;
-    this.dashboardService.loadedDashboard();
+    this.dashboardService.incrementViewDashboard();
     this.dashboardService.subscribeLogged();
     this.destroySubscription();
     this.getTransactions();
@@ -91,8 +91,8 @@ export class DashboardComponent2 implements OnInit, OnDestroy {
             this.searching = false;
             this.cantConfirmed = transactionsConfirmedCache.length;
             this.transactionsConfirmed = transactionsConfirmedCache.slice(0, 10);
-          } else if (this.authService.logged && this.dashboardService.isLoadedDashboard === 1 || reload) {
-            this.dashboardService.loadedDashboard();
+          } else if (this.authService.logged && this.dashboardService.isIncrementViewDashboard === 1 || reload) {
+            this.dashboardService.incrementViewDashboard();
             this.getAllTransactions();
           } else {
             this.searching = false;

@@ -21,6 +21,7 @@ import { environment } from "../../../environments/environment";
 import { MessageService } from "../../shared/services/message.service";
 import { SharedService } from "../../shared/services/shared.service";
 import { first } from "rxjs/operators";
+import { ConfirmedTransactions, TransactionsInterface } from "../../dashboard/services/dashboard.interface";
 
 @Injectable({
   providedIn: "root"
@@ -30,10 +31,12 @@ export class TransactionsService {
   private balance: BehaviorSubject<any> = new BehaviorSubject<any>("0.000000");
   private balance$: Observable<any> = this.balance.asObservable();
 
-  private _transConfirmSubject: BehaviorSubject<any> = new BehaviorSubject<any>([]);
-  private _transConfirm$: Observable<any> = this._transConfirmSubject.asObservable();
-  private _transactionsUnconfirmed = new BehaviorSubject<any>([]);
-  private _transactionsUnconfirmed$: Observable<any> = this._transactionsUnconfirmed.asObservable();
+  private _transConfirmSubject = new BehaviorSubject<TransactionsInterface[]>([]);
+  private _transConfirm$: Observable<TransactionsInterface[]> = this._transConfirmSubject.asObservable();
+  private _transUnConfirmSubject = new BehaviorSubject<TransactionsInterface[]>([]);
+  private _transUnConfirm$: Observable<TransactionsInterface[]> = this._transUnConfirmSubject.asObservable();
+
+
   namespaceRentalFeeSink = environment.namespaceRentalFeeSink;
   mosaicRentalFeeSink = environment.mosaicRentalFeeSink;
   arraTypeTransaction = {
@@ -83,31 +86,9 @@ export class TransactionsService {
     private nemProvider: NemProvider,
     private nodeService: NodeService,
     private walletService: WalletService,
-    private messageService: MessageService,
     private sharedService: SharedService
   ) { }
 
-  destroyAllTransactions() {
-    this.setConfirmedTransaction$([]);
-    this.setTransactionsUnconfirmed$([]);
-  }
-
-  getConfirmedTransactionsCache$(): Observable<any> {
-    this.messageService.changeMessage("balanceChanged");
-    return this._transConfirm$;
-  }
-
-  getTransactionsUnconfirmedCache$(): Observable<any> {
-    return this._transactionsUnconfirmed$;
-  }
-
-  setConfirmedTransaction$(data: any[]) {
-    this._transConfirmSubject.next(data);
-  }
-
-  setTransactionsUnconfirmed$(data: any[]) {
-    this._transactionsUnconfirmed.next(data);
-  }
 
   buildToSendTransfer(
     common: { password?: any; privateKey?: any },
@@ -135,6 +116,7 @@ export class TransactionsService {
       transactionHttp: transactionHttp
     };
   }
+
 
   /**
    * Formatter Amount
@@ -181,54 +163,11 @@ export class TransactionsService {
   }
 
   /**
-   * Calculate duration based in blocks
-   *
-   * @param {UInt64} duration
-   * @returns
-   * @memberof TransactionsService
-   */
-  calculateDuration(duration: UInt64) {
-    const durationCompact = duration.compact();
-    let seconds = durationCompact * 15;
-    let days = Math.floor(seconds / (3600 * 24));
-    seconds -= days * 3600 * 24;
-    let hrs = Math.floor(seconds / 3600);
-    seconds -= hrs * 3600;
-    let mnts = Math.floor(seconds / 60);
-    seconds -= mnts * 60;
-    const response =
-      days +
-      " days, " +
-      hrs +
-      " Hrs, " +
-      mnts +
-      " Minutes, " +
-      seconds +
-      " Seconds";
-    return response;
-  }
-
-  dateFormat(deadline: Deadline) {
-    return new Date(
-      deadline.value.toString() + Deadline.timestampNemesisBlock * 1000
-    ).toUTCString();
-  }
-
-  formatNumberMilesThousands(numero: number) {
-    return numero
-      .toString()
-      .replace(
-        /((?!^)|(?:^|.*?[^\d.,])\d{1,3})(\d{3})(?=(?:\d{3})*(?!\d))/gy,
-        "$1,$2"
-      );
-  }
-
-  /**
-   *
-   *
-   * @param {Transaction[]} transactions
-   * @memberof TransactionsService
-   */
+  *
+  *
+  * @param {Transaction[]} transactions
+  * @memberof TransactionsService
+  */
   buildTransactions(transactions: Transaction[]) {
     const elements = [];
     if (transactions.length > 0) {
@@ -295,6 +234,112 @@ export class TransactionsService {
   /**
    *
    *
+   * @param {Transaction} transaction
+   * @returns {ConfirmedTransactions}
+   * @memberof TransactionsService
+   */
+  buildDashboard(transaction: Transaction): ConfirmedTransactions {
+    const keyType = Object.keys(this.arraTypeTransaction).find(elm => this.arraTypeTransaction[elm].id === transaction.type);
+    let recipientRentalFeeSink = '';
+    if (transaction["mosaics"] !== undefined) {
+      // console.log("Este tipo de transaccion tiene mosaico");
+    } else {
+      if (transaction.type === this.arraTypeTransaction.registerNameSpace.id) {
+        recipientRentalFeeSink = this.namespaceRentalFeeSink.address_public_test;
+      } else if (
+        transaction.type === this.arraTypeTransaction.mosaicDefinition.id ||
+        transaction.type === this.arraTypeTransaction.mosaicSupplyChange.id
+      ) {
+        recipientRentalFeeSink = this.mosaicRentalFeeSink.address_public_test;
+      } else {
+        recipientRentalFeeSink = "XXXXX-XXXXX-XXXXXX";
+      }
+    }
+
+    return {
+      data: transaction,
+      nameType: this.arraTypeTransaction[keyType].name,
+      timestamp: this.dateFormat(transaction.deadline),
+      fee: this.amountFormatterSimple(transaction.fee.compact()),
+      sender: transaction.signer.address.pretty(),
+      recipientRentalFeeSink: recipientRentalFeeSink,
+      recipient: (transaction['recipient'] !== undefined) ? transaction['recipient'].pretty() : '',
+      isRemitent: (transaction['recipient'] !== undefined) ? this.walletService.address.pretty() === transaction["recipient"].pretty() : false
+    }
+  }
+
+  /**
+     * Calculate duration based in blocks
+     *
+     * @param {UInt64} duration
+     * @returns
+     * @memberof TransactionsService
+     */
+  calculateDuration(duration: UInt64) {
+    const durationCompact = duration.compact();
+    let seconds = durationCompact * 15;
+    let days = Math.floor(seconds / (3600 * 24));
+    seconds -= days * 3600 * 24;
+    let hrs = Math.floor(seconds / 3600);
+    seconds -= hrs * 3600;
+    let mnts = Math.floor(seconds / 60);
+    seconds -= mnts * 60;
+    const response =
+      days +
+      " days, " +
+      hrs +
+      " Hrs, " +
+      mnts +
+      " Minutes, " +
+      seconds +
+      " Seconds";
+    return response;
+  }
+
+
+  /**
+   *
+   *
+   * @param {Deadline} deadline
+   * @returns
+   * @memberof TransactionsService
+   */
+  dateFormat(deadline: Deadline) {
+    return new Date(
+      deadline.value.toString() + Deadline.timestampNemesisBlock * 1000
+    ).toUTCString();
+  }
+
+  /**
+   *
+   *
+   * @memberof TransactionsService
+   */
+  destroyAllTransactions() {
+    this.setTransactionsConfirmed$([]);
+    this.setTransactionsUnConfirmed$([]);
+  }
+
+  /**
+   *
+   *
+   * @param {number} numero
+   * @returns
+   * @memberof TransactionsService
+   */
+  formatNumberMilesThousands(numero: number) {
+    return numero
+      .toString()
+      .replace(
+        /((?!^)|(?:^|.*?[^\d.,])\d{1,3})(\d{3})(?=(?:\d{3})*(?!\d))/gy,
+        "$1,$2"
+      );
+  }
+
+
+  /**
+   *
+   *
    * @memberof TransactionsService
    */
   updateBalance() {
@@ -304,10 +349,7 @@ export class TransactionsService {
         this.walletService.setAccountInfo(next);
         next.mosaics.forEach(element => {
           if (element.id.toHex() === this.nemProvider.mosaicXpx.mosaicId) {
-            console.log(
-              "balance...",
-              this.amountFormatterSimple(element.amount.compact())
-            );
+            // console.log("balance...", this.amountFormatterSimple(element.amount.compact()));
             this.setBalance$(element.amount.compact());
           }
         });
@@ -320,8 +362,34 @@ export class TransactionsService {
     );
   }
 
+  /**
+   *
+   *
+   * @returns {Observable<any>}
+   * @memberof TransactionsService
+   */
   getBalance$(): Observable<any> {
     return this.balance$;
+  }
+
+  /**
+  *
+  *
+  * @returns {Observable<TransactionsInterface[]>}
+  * @memberof DashboardService
+  */
+  getTransactionsConfirmed$(): Observable<TransactionsInterface[]> {
+    return this._transConfirm$;
+  }
+
+  /**
+   *
+   *
+   * @returns {Observable<TransactionsInterface[]>}
+   * @memberof DashboardService
+   */
+  getTransactionsUnConfirmed$(): Observable<TransactionsInterface[]> {
+    return this._transUnConfirm$;
   }
 
   setBalance$(amount: any): void {
@@ -329,61 +397,22 @@ export class TransactionsService {
   }
 
   /**
-   * BUILD TRANSACTIONS CONFIRMED/UNCONFIRMED
    *
-   * @param {Transaction[]} transactions
-   * @returns
-   * @memberof TransactionsService
+   *
+   * @param {TransactionsInterface[]} transactions
+   * @memberof DashboardService
    */
-  // async buildTransactions(transactions: Transaction[]) {
-  //   console.log("*****TODAS LAS TRANSACCIONES*****", transactions);
-  //   const elementsConfirmed = [];
-  //   if (transactions.length > 0) {
-  //     for (let element of transactions) {
-  //       element['date'] = this.dateFormat(element.deadline);
-  //       if (element['recipient'] !== undefined) {
-  //         element['isRemitent'] = this.walletService.address.pretty() === element['recipient'].pretty();
-  //       }
+  setTransactionsConfirmed$(transactions: TransactionsInterface[]) {
+    this._transConfirmSubject.next(transactions);
+  }
 
-  //       Object.keys(this.arraTypeTransaction).forEach(elm => {
-  //         if (this.arraTypeTransaction[elm].id === element.type) {
-  //           element['name_type'] = this.arraTypeTransaction[elm].name;
-  //         }
-  //       });
-
-  //       if (element['mosaics'] !== undefined) {
-  //         console.log("Este tipo de transaccion tiene mosaico");
-  //         /*
-  //          // Crea un nuevo array con los id de mosaicos
-  //          const mosaicsId = element['mosaics'].map((mosaic: Mosaic) => { return mosaic.id; });
-  //          // Busca la información de los mosaicos, retorna una promesa
-  //          await this.nemProvider.getInfoMosaicsPromise(mosaicsId).then((mosaicsInfo: MosaicInfo[]) => {
-  //            element['mosaicsInfo'] = mosaicsInfo;
-  //            element['mosaics'].forEach((mosaic: any) => {
-  //              // Da formato al monto de la transacción
-  //              mosaic['amountFormatter'] = this.amountFormatter(mosaic.amount, mosaic.id, element['mosaicsInfo']);
-  //            });
-  //          }); */
-  //       } else {
-  //         console.log("Esta transaccion no tiene mosaico..");
-  //         if (element.type === this.arraTypeTransaction.registerNameSpace.id) {
-  //           element['recipientRentalFeeSink'] = this.namespaceRentalFeeSink.address_public_test;
-  //         } else if (element.type === this.arraTypeTransaction.mosaicDefinition.id) {
-  //           element['recipientRentalFeeSink'] = this.mosaicRentalFeeSink.address_public_test;
-  //         } else if (element.type === this.arraTypeTransaction.mosaicSupplyChange.id) {
-  //           element['recipientRentalFeeSink'] = this.mosaicRentalFeeSink.address_public_test;
-  //         } else {
-  //           element['recipientRentalFeeSink'] = 'XXXXX-XXXXX-XXXXXX';
-  //         }
-  //       }
-
-  //       elementsConfirmed.push(element);
-  //     }
-  //   }
-
-  //   console.warn("*********************************RETORNANDO RESPUESTA DE BUILD TRANSACTION****************************************");
-  //   this.setConfirmedTransaction$(elementsConfirmed)
-  // }
-
-  getMosaicInfo() { }
+  /**
+   *
+   *
+   * @param {TransactionsInterface[]} transactions
+   * @memberof DashboardService
+   */
+  setTransactionsUnConfirmed$(transactions: TransactionsInterface[]) {
+    this._transUnConfirmSubject.next(transactions);
+  }
 }

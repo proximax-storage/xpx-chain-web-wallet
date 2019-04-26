@@ -64,10 +64,16 @@ export class HeaderComponent implements OnInit {
     this.destroySubscription();
     this.buildHeader();
     this.readRoute();
-    // this.readLogged();
     this.balance();
+    // this.readLogged();
   }
 
+
+  /**
+   *
+   *
+   * @memberof HeaderComponent
+   */
   destroySubscription() {
     this.subscriptions.forEach(element => {
       if (this.subscriptions[element] !== undefined) {
@@ -77,20 +83,22 @@ export class HeaderComponent implements OnInit {
   }
 
 
+  /**
+   *
+   *
+   * @memberof HeaderComponent
+   */
   balance() {
     this.isLogged$ = this.authService.getIsLogged();
     this.isLogged$.subscribe(
       response => {
-        // console.log('showOnlyLoggedshowOnlyLogged', response);
         this.showOnlyLogged = response;
         if (this.showOnlyLogged) {
-          // this.mosaicService.updateBalance();
           this.subscriptions['balance'] = this.transactionService.getBalance$().subscribe(
             next => {
-              console.log('Ha cambiado el balance! ----> ', next);
+              console.log('Balance changed! ----> ', next);
               this.horizontalHeader.amount.name = `Balance ${next} XPX`;
             }, error => {
-              // console.log('Reinicia el balance en cero! -----> ', error);
               this.horizontalHeader.amount.name = `Balance 0.000000 XPX`;
             }
           );
@@ -145,7 +153,6 @@ export class HeaderComponent implements OnInit {
     this.dashboardService.processComplete = false;
     this.authService.setLogged(false);
     this.authService.destroyNodeSelected();
-    // this.dataBridgeService.closeConenection();
     this.route.navigate([`/${param}`]);
   }
 
@@ -154,39 +161,39 @@ export class HeaderComponent implements OnInit {
    *
    * @memberof HeaderComponent
    */
-  getBalance() {
-    this.nemProvider.getBalance(this.walletService.address).pipe(mergeMap((_) => _)).pipe(first()).subscribe(
-      next => {
-        console.log("balance...", next);
-        console.log('You have', next.relativeAmount());
-        this.horizontalHeader.amount.name = `Balance ${next.relativeAmount().toFixed(6)} ${next.mosaicName}`;
-      },
-      err => {
-        this.vestedBalance = '0.000000';
-        console.log(err);
-      }
-    );
-  }
+  /* getBalance() {
+     this.nemProvider.getBalance(this.walletService.address).pipe(mergeMap((_) => _)).pipe(first()).subscribe(
+       next => {
+         console.log("balance...", next);
+         console.log('You have', next.relativeAmount());
+         this.horizontalHeader.amount.name = `Balance ${next.relativeAmount().toFixed(6)} ${next.mosaicName}`;
+       },
+       err => {
+         this.vestedBalance = '0.000000';
+         console.log(err);
+       }
+     );
+   }*/
 
   /**
    * Read logged
    *
    * @memberof HeaderComponent
    */
-  readLogged() {
-    this.authService.getIsLogged().subscribe(
-      async response => {
-        this.showOnlyLogged = response;
-        if (this.showOnlyLogged) {
-          // this.getBalance();
-          console.log("Get balance in read logged");
-        } else {
-          this.horizontalHeader.amount.name = `Balance ${this.vestedBalance}`;
-          this.dataBridgeService.closeConenection();
-        }
-      }
-    );
-  }
+  /* readLogged() {
+     this.authService.getIsLogged().subscribe(
+       async response => {
+         this.showOnlyLogged = response;
+         if (this.showOnlyLogged) {
+           // this.getBalance();
+           console.log("Get balance in read logged");
+         } else {
+           this.horizontalHeader.amount.name = `Balance ${this.vestedBalance}`;
+           this.dataBridgeService.closeConenection();
+         }
+       }
+     );
+   }*/
 
   /**
    * Read route

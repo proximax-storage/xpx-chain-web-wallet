@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
 import { AuthService } from '../../auth/services/auth.service';
 import { ProximaxProvider } from '../../shared/services/proximax.provider';
-import { MosaicInfo } from 'proximax-nem2-sdk';
+import { MosaicInfo, QueryParams, PublicAccount, Transaction } from 'proximax-nem2-sdk';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { WalletService } from '../../shared/services/wallet.service';
 import { MosaicService } from '../..//servicesModule/services/mosaic.service';
+import { NemProvider } from 'src/app/shared/services/nem.provider';
+import { TransactionsInterface } from './dashboard.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -13,24 +15,36 @@ export class DashboardService {
 
   processComplete = false;
   isLogged$: Observable<boolean>;
-  isLoadedDashboard = 0;
-  allTransactions: any;
+  isIncrementViewDashboard = 0;
+  searchComplete = false;
+
+
   infoMosaic: MosaicInfo;
   subscriptions = [
     'transactionsUnconfirmed',
-    'getTransConfirm',
+    'transactionsConfirmed',
     'isLogged',
     'getAllTransactions'
   ];
+
   constructor(
     private authService: AuthService,
     private walletService: WalletService,
-    private mosaicService: MosaicService
+    private mosaicService: MosaicService,
+    private nemProvider: NemProvider
   ) { }
 
-
-  buildDashboard() {
-
+  /**
+  * Destroy all subscriptions
+  *
+  * @memberof DashboardService
+  */
+  destroySubscription() {
+    this.subscriptions.forEach(element => {
+      if (this.subscriptions[element] !== undefined) {
+        this.subscriptions[element].unsubscribe();
+      }
+    });
   }
 
 
@@ -40,16 +54,17 @@ export class DashboardService {
    * @memberof DashboardService
    */
   subscribeLogged() {
-    if (this.isLoadedDashboard === 1) {
+    if (this.isIncrementViewDashboard === 1) {
       this.isLogged$ = this.authService.getIsLogged();
       this.subscriptions['isLogged'] = this.isLogged$.subscribe(
         response => {
           if (response === false) {
             // DESTROY SUBSCRIPTION WHEN IS NOT LOGIN
-            console.log("Ha cambiado isLogged, destroy subscription");
-            this.isLoadedDashboard = 0;
+            console.log("NOT LOGGED!");
+            this.searchComplete = false;
+            this.isIncrementViewDashboard = 0;
             this.destroySubscription();
-           // this.subscriptions['isLogged'].unsubscribe();
+            // this.subscriptions['isLogged'].unsubscribe();
             this.walletService.destroyAccountInfo();
             this.mosaicService.destroyMosaicCache();
             return;
@@ -59,16 +74,34 @@ export class DashboardService {
     }
   }
 
+
+
+
   /**
-   * Get transactions observable
    *
-   * @returns {Observable<any>}
+   *
+   * @param {PublicAccount} publicAccount
+   * @param {QueryParams} [queryParams]
+   * @returns {Observable<Transaction[]>}
    * @memberof DashboardService
    */
-  getTransactionsObs(): Observable<any> {
-    return this.allTransactions.transactions$;
+  getAllTransactionsPromise(publicAccount: PublicAccount, queryParams?: QueryParams): Promise<Transaction[]> {
+    if (queryParams !== undefined) {
+      return this.nemProvider.getAllTransactionsFromAccount(publicAccount, queryParams).toPromise();
+    }
+
+    return this.nemProvider.getAllTransactionsFromAccount(publicAccount, this.walletService.network).toPromise();
   }
 
+  /**
+   *
+   *
+   * @returns {number}
+   * @memberof DashboardService
+   */
+  getCantViewDashboard(): number {
+    return this.isIncrementViewDashboard;
+  }
 
 
   /**
@@ -76,21 +109,7 @@ export class DashboardService {
    *
    * @memberof DashboardService
    */
-  loadedDashboard() {
-    this.isLoadedDashboard++;
+  incrementViewDashboard() {
+    this.isIncrementViewDashboard++;
   }
-
-  /**
-   * Destroy all subscriptions
-   *
-   * @memberof DashboardService
-   */
-  destroySubscription() {
-    this.subscriptions.forEach(element => {
-      if (this.subscriptions[element] !== undefined) {
-        this.subscriptions[element].unsubscribe();
-      }
-    });
-  }
-
 }

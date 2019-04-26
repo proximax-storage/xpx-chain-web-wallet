@@ -43,7 +43,7 @@
     "origin-ordered-imports": true,
     "max-line-length": [
       true,
-      250
+      140
     ],
     "member-access": [
       true,

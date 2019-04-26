@@ -8,6 +8,7 @@ import { environment } from '../../../environments/environment';
 import { NodeService } from '../../servicesModule/services/node.service';
 import { SharedService } from './shared.service';
 import { MosaicService } from '../../servicesModule/services/mosaic.service';
+import { TransactionsInterface } from 'src/app/dashboard/services/dashboard.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -18,12 +19,12 @@ export class DataBridgeService {
   connector: Listener;
   blockSubject: BehaviorSubject<number> = new BehaviorSubject<number>(this.block);
   block$: Observable<number> = this.blockSubject.asObservable();
+
   constructor(
     private walletService: WalletService,
     private transactionsService: TransactionsService,
     private nodeService: NodeService,
     private sharedService: SharedService,
-    private mosaicService: MosaicService
   ) { }
 
 
@@ -65,18 +66,18 @@ export class DataBridgeService {
    * @param {*} element
    * @memberof DataBridgeService
    */
-  destroyUnconfirmedTransaction(element) {
-    this.transactionsService.getTransactionsUnconfirmedCache$().pipe(first()).subscribe(
+  destroyUnconfirmedTransaction(element: TransactionsInterface) {
+    this.transactionsService.getTransactionsUnConfirmed$().pipe(first()).subscribe(
       response => {
         if (response.length > 0) {
           let allTransactionUnConfirmed = response;
           let unconfirmed = [];
           for (const elementUnconfirmed of allTransactionUnConfirmed) {
-            if (elementUnconfirmed.transactionInfo.hash !== element.transactionInfo.hash) {
+            if (elementUnconfirmed.data.transactionInfo.hash !== element.data.transactionInfo.hash) {
               unconfirmed.unshift(element);
             }
           }
-          this.transactionsService.setTransactionsUnconfirmed$(unconfirmed);
+          this.transactionsService.setTransactionsUnConfirmed$(unconfirmed);
         }
       });
   }
@@ -113,19 +114,16 @@ export class DataBridgeService {
   getTransactionsConfirmedSocket(connector: Listener, audio: HTMLAudioElement) {
     connector.confirmed(this.walletService.address).subscribe((incomingTransaction: Transaction) => {
       console.log("Transacciones confirmadas entrantes", incomingTransaction);
-      this.transactionsService.getConfirmedTransactionsCache$().pipe(first()).subscribe(
-        async allTransactionConfirmed => {
-          const transactionPushed = allTransactionConfirmed.slice(0);
-          this.transactionsService.buildTransactions([incomingTransaction]).forEach(element => {
-            transactionPushed.unshift(element);
-            this.destroyUnconfirmedTransaction(element);
-          });
-
-          // this.messageService.changeMessage('balanceChanged');
-          audio.play();
-          this.transactionsService.updateBalance();
-          this.transactionsService.setConfirmedTransaction$(transactionPushed);
-        });
+      this.transactionsService.getTransactionsConfirmed$().pipe(first()).subscribe(allTransactionConfirmed => {
+        const transactionPushed = allTransactionConfirmed.slice(0);
+        const transactionFormatter = this.transactionsService.buildDashboard(incomingTransaction);
+        transactionPushed.unshift(transactionFormatter);
+        this.destroyUnconfirmedTransaction(transactionFormatter);
+        this.transactionsService.setTransactionsConfirmed$(transactionPushed);
+        audio.play();
+        // this.messageService.changeMessage('balanceChanged');
+        this.transactionsService.updateBalance();
+      });
     }, err => {
       console.error(err)
     });
@@ -141,14 +139,13 @@ export class DataBridgeService {
    */
   getTransactionsUnConfirmedSocket(connector: Listener, audio: HTMLAudioElement) {
     connector.unconfirmedAdded(this.walletService.address).subscribe(unconfirmedTransaction => {
-      this.transactionsService.getTransactionsUnconfirmedCache$().pipe(first()).subscribe(
+      this.transactionsService.getTransactionsUnConfirmed$().pipe(first()).subscribe(
         async transactionsUnconfirmed => {
           const transactionPushed = transactionsUnconfirmed.slice(0);
-          this.transactionsService.buildTransactions([unconfirmedTransaction]).forEach(element => {
-            transactionPushed.unshift(element);
-          });
+          const transactionFormatter = this.transactionsService.buildDashboard(unconfirmedTransaction);
+          transactionPushed.unshift(transactionFormatter);
+          this.transactionsService.setTransactionsUnConfirmed$(transactionPushed);
           audio.play();
-          this.transactionsService.setTransactionsUnconfirmed$(transactionPushed);
         }, err => {
           console.error(err);
         });
