@@ -23,9 +23,9 @@ export class MosaicSupplyChangeTypeComponent implements OnInit {
   }
 
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
-    this.searching = true;
+    /*this.searching = true;
     this.viewMosaicName = false;
-   // this.mosaicSupplyChange['deltaFormatter'] = this.transactionService.formatNumberMilesThousands(this.mosaicSupplyChange.delta.compact());
+    // this.mosaicSupplyChange['deltaFormatter'] = this.transactionService.formatNumberMilesThousands(this.mosaicSupplyChange.delta.compact());
     const response = await this.mosaicService.searchMosaics([this.mosaicSupplyChange.mosaicId]);
     console.log("MosaicSupplyChangeTypeComponent", response);
     if (response.length > 0) {
@@ -35,12 +35,12 @@ export class MosaicSupplyChangeTypeComponent implements OnInit {
       console.log("su div", this.mosaicSupplyChange['mosaicView'].mosaicInfo.divisibility)
       if (Number(this.mosaicSupplyChange['mosaicView'].mosaicInfo.divisibility) === 0) {
         this.mosaicSupplyChange['deltaFormatter'] = this.transactionService.formatNumberMilesThousands(this.mosaicSupplyChange.delta.compact());
-      }else {
+      } else {
         console.log("formatHere");
         this.mosaicSupplyChange['deltaFormatter'] = this.transactionService.amountFormatter(this.mosaicSupplyChange.delta, this.mosaicSupplyChange.mosaicId, [this.mosaicSupplyChange['mosaicView'].mosaicInfo]);
       }
     }
-    this.searching = false;
+    this.searching = false; */
   }
 
 }

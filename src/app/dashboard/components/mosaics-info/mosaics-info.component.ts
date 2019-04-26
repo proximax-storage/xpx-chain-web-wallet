@@ -1,7 +1,8 @@
 import { Component, OnInit, Input, SimpleChanges, Output, EventEmitter } from '@angular/core';
-import { Mosaic, MosaicView, MosaicName } from 'proximax-nem2-sdk';
+import { Mosaic, MosaicView, MosaicName, MosaicInfo } from 'proximax-nem2-sdk';
 import { MosaicService } from '../../../servicesModule/services/mosaic.service';
-import { TransactionsService } from 'src/app/transactions/service/transactions.service';
+import { TransactionsService } from '../../../transactions/service/transactions.service';
+import { MosaicsStorage } from '../../../servicesModule/interfaces/mosaics-namespaces.interface';
 
 @Component({
   selector: 'app-mosaics-info',
@@ -9,7 +10,7 @@ import { TransactionsService } from 'src/app/transactions/service/transactions.s
                 <ng-container *ngIf="viewMosaicXpx">
                   <div class="mt-3">
                     <!--
-                    <div class="row" *ngIf="viewMosaicXpx">
+                    <div class="row">
                       <div class="col-md-3">
                         <span class="fs-08rem fw-bolder"><b>Mosaic:</b></span>
                       </div>
@@ -30,7 +31,7 @@ import { TransactionsService } from 'src/app/transactions/service/transactions.s
                 </ng-container>
 
 
-                <container *ngIf="viewDetail">
+                <container *ngIf="viewOtherMosaics">
                   <div class="row mt-1rem">
                     <div class="col-6">
                       <span class="fs-08rem fw-bolder"><b>Other mosaics:</b></span>
@@ -61,14 +62,14 @@ import { TransactionsService } from 'src/app/transactions/service/transactions.s
 })
 export class MosaicsInfoComponent implements OnInit {
 
-  @Input() mosaicsArray = [];
+  @Input() mosaicsArray: Mosaic[] = [];
   @Input() viewAmount = false;
   @Output() changeSearch = new EventEmitter();
 
   mosaicsInfo = [];
-  viewDetail = false;
+  viewOtherMosaics = false;
   headElements = ['Id', 'Name', 'Quantity'];
-  mosaicXpx = {};
+  mosaicXpx: any = {};
   viewMosaicXpx = false;
   constructor(
     private mosaicService: MosaicService,
@@ -79,13 +80,37 @@ export class MosaicsInfoComponent implements OnInit {
   }
 
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
+    const mosaicsId = this.mosaicsArray.map((mosaic: Mosaic) => { return mosaic.id });
+    const mosaics: MosaicsStorage[] = await this.mosaicService.searchMosaics(mosaicsId);
+    for (let mosaic of mosaics) {
+      const mosaicId = this.mosaicService.getMosaicId(mosaic.id).toHex();
+      const myMosaic = this.mosaicsArray.find(next => next.id.toHex() === mosaicId)
+      // MOSAIC IS XPX
+      if (mosaicId === this.mosaicService.mosaicXpx.mosaicId) {
+        this.mosaicXpx = {
+          id: this.mosaicService.mosaicXpx.mosaicId,
+          name: this.mosaicService.mosaicXpx.mosaic,
+          amountFormatter: this.transactionService.amountFormatter(myMosaic.amount, myMosaic.id, mosaic.mosaicInfo),
+          mosaicInfo: mosaic
+        }
+        this.viewMosaicXpx = true;
+      }
+    }
+
+    this.changeSearch.emit(true);
+  }
+
+  async hi(changes: SimpleChanges): Promise<void> {
     console.log("mosaicsArray", this.mosaicsArray);
     this.mosaicsInfo = this.mosaicsArray.slice(0);
-    this.mosaicXpx = [];
-    this.viewDetail = false;
+    this.mosaicXpx = null;
+    this.viewOtherMosaics = false;
     this.viewMosaicXpx = false;
-    const mosaicsId = this.mosaicsInfo.map((mosaic: Mosaic) => { return mosaic.id /*if (mosaic.id.toHex() !== 'd423931bd268d1f4') { return mosaic.id }*/ });
-    const mosaicsViewCache: MosaicView[] = await this.mosaicService.searchMosaics(mosaicsId);
+    const mosaicsId = this.mosaicsInfo.map((mosaic: Mosaic) => {
+      // if (mosaic.id.toHex() !== 'd423931bd268d1f4') { return mosaic.id }
+      return mosaic.id
+    });
+    const mosaicsViewCache = await this.mosaicService.searchMosaics(mosaicsId);
     if (mosaicsViewCache.length > 0) {
       console.log("mosaicsViewCache", mosaicsViewCache);
       for (let ma of this.mosaicsInfo) {
@@ -95,7 +120,7 @@ export class MosaicsInfoComponent implements OnInit {
           if (ma.id.toHex() === mi.mosaicInfo.mosaicId.toHex()) {
             ma['mosaicInfo'] = mi;
             if (ma.id.toHex() === 'd423931bd268d1f4') {
-              ma['amountFormatter'] = this.transactionService.amountFormatter(ma.amount, ma.id, [mi.mosaicInfo]);
+              // ma['amountFormatter'] = this.transactionService.amountFormatter(ma.amount, ma.id, [mi.mosaicInfo]);
               this.mosaicXpx = ma;
               this.viewMosaicXpx = true;
               this.mosaicsInfo.splice(ma);
@@ -106,16 +131,14 @@ export class MosaicsInfoComponent implements OnInit {
         }
       }
 
-      console.log("this.viewMosaicXpx", this.viewMosaicXpx);
-      console.log("this.mosaicXpx", this.mosaicXpx);
-
       if (this.mosaicsInfo.length > 0) {
-        this.viewDetail = true;
+        this.viewOtherMosaics = true;
       }
-    }else {
+    } else {
       const mosaicsName: MosaicName[] = await this.mosaicService.getNameMosaics(mosaicsId);
-      console.log("Mosaic name", mosaicsName);
     }
     this.changeSearch.emit(true);
   }
+
+
 }

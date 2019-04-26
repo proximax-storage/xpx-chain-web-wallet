@@ -21,7 +21,7 @@ import { environment } from "../../../environments/environment";
 import { MessageService } from "../../shared/services/message.service";
 import { SharedService } from "../../shared/services/shared.service";
 import { first } from "rxjs/operators";
-import { ConfirmedTransactions, TransactionsInterface } from "../../dashboard/services/dashboard.interface";
+import { TransactionsInterface, MosaicXPXInterface } from "../../dashboard/services/dashboard.interface";
 
 @Injectable({
   providedIn: "root"
@@ -127,23 +127,14 @@ export class TransactionsService {
    * @returns
    * @memberof TransactionsService
    */
-  amountFormatter(amount: UInt64, mosaicId: MosaicId, mosaics: MosaicInfo[]) {
-    for (let m of mosaics) {
-      if (m.mosaicId.toHex() === mosaicId.toHex()) {
-        const amountDivisibility = Number(
-          amount.compact() / Math.pow(10, m.divisibility)
-        );
-        console.log(
-          "amountFormatter",
-          amountDivisibility.toLocaleString("en-us", {
-            minimumFractionDigits: m.divisibility
-          })
-        );
-        return amountDivisibility.toLocaleString("en-us", {
-          minimumFractionDigits: m.divisibility
-        });
-      }
-    }
+  amountFormatter(amount: UInt64, mosaicId: MosaicId, mosaic: MosaicInfo) {
+    const amountDivisibility = Number(
+      amount.compact() / Math.pow(10, mosaic['properties'].divisibility)
+    );
+
+    return amountDivisibility.toLocaleString("en-us", {
+      minimumFractionDigits: mosaic['properties'].divisibility
+    });
   }
 
   /**
@@ -157,9 +148,7 @@ export class TransactionsService {
    */
   amountFormatterSimple(amount: Number) {
     const amountDivisibility = Number(amount) / Math.pow(10, 6);
-    return amountDivisibility.toLocaleString("en-us", {
-      minimumFractionDigits: 6
-    });
+    return amountDivisibility.toLocaleString("en-us", { minimumFractionDigits: 6 });
   }
 
   /**
@@ -238,7 +227,7 @@ export class TransactionsService {
    * @returns {ConfirmedTransactions}
    * @memberof TransactionsService
    */
-  buildDashboard(transaction: Transaction): ConfirmedTransactions {
+  buildDashboard(transaction: Transaction): TransactionsInterface {
     const keyType = Object.keys(this.arraTypeTransaction).find(elm => this.arraTypeTransaction[elm].id === transaction.type);
     let recipientRentalFeeSink = '';
     if (transaction["mosaics"] !== undefined) {
@@ -261,9 +250,9 @@ export class TransactionsService {
       nameType: this.arraTypeTransaction[keyType].name,
       timestamp: this.dateFormat(transaction.deadline),
       fee: this.amountFormatterSimple(transaction.fee.compact()),
-      sender: transaction.signer.address.pretty(),
+      sender: transaction.signer,
       recipientRentalFeeSink: recipientRentalFeeSink,
-      recipient: (transaction['recipient'] !== undefined) ? transaction['recipient'].pretty() : '',
+      recipient: (transaction['recipient'] !== undefined) ? transaction['recipient'] : null,
       isRemitent: (transaction['recipient'] !== undefined) ? this.walletService.address.pretty() === transaction["recipient"].pretty() : false
     }
   }

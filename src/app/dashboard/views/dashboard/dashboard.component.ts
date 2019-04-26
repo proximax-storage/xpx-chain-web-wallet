@@ -11,33 +11,27 @@ import { TransactionsService } from '../../../transactions/service/transactions.
 })
 
 
-
-
 export class DashboardComponent implements OnInit, OnDestroy {
 
-  // count = 0;
   cantConfirmed = 0;
   cantUnconfirmed = 0;
   confirmedSelected = true;
-  dataSelected: any = {};
-  iconReloadDashboard = false;
-  searching = true;
-  transactionsConfirmed: TransactionsInterface[] = [];
-  transactionsUnconfirmed: TransactionsInterface[] = [];
-  unconfirmedSelected = false;
-  // confirmedSelected = true;
-  // unconfirmedSelected = false;
-  // iconReloadDashboard = false;
-
+  dataSelected: TransactionsInterface = null;
   headElements = ['Type', 'Timestamp', 'Fee', 'Sender', 'Recipient'];
+  iconReloadDashboard = false;
+  // infoMosaic: MosaicInfo;
+
+  searching = true;
   subscriptions = [
     'transactionsConfirmed',
     'transactionsUnconfirmed',
     'getAllTransactions',
     'transactionsConfirmed'
   ];
-  // infoMosaic: MosaicInfo;
-  // typeTransactions: any;
+  typeTransactions: any;
+  transactionsConfirmed: TransactionsInterface[] = [];
+  transactionsUnconfirmed: TransactionsInterface[] = [];
+  unconfirmedSelected = false;
 
 
   constructor(
@@ -48,6 +42,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+    this.typeTransactions = this.transactionService.arraTypeTransaction;
     this.dashboardService.incrementViewDashboard();
     this.dashboardService.subscribeLogged();
     this.subscribeTransactions();

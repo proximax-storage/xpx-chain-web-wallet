@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
 import { TransactionsService } from '../../../transactions/service/transactions.service';
+import { TransactionsInterface } from '../../services/dashboard.interface';
 
 @Component({
   selector: 'app-transfer-type',
@@ -8,7 +9,7 @@ import { TransactionsService } from '../../../transactions/service/transactions.
 })
 export class TransferTypeComponent implements OnInit {
 
-  @Input() transferTransaction: any;
+  @Input() transferTransaction: TransactionsInterface;
   searching = true;
 
   constructor(
@@ -20,7 +21,8 @@ export class TransferTypeComponent implements OnInit {
 
   ngOnChanges(changes: SimpleChanges): void {
     this.searching = true;
-    this.transferTransaction.feeFormatter = this.transactionService.amountFormatterSimple(this.transferTransaction.fee.compact());
+    console.log(changes);
+    // this.transferTransaction.feeFormatter = this.transactionService.amountFormatterSimple(this.transferTransaction.fee.compact());
   }
 
 }

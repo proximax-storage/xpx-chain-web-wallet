@@ -34,7 +34,8 @@ import {
   MosaicProperties,
   MosaicSupplyChangeTransaction,
   MosaicSupplyType,
-  NamespaceService
+  NamespaceService,
+  MosaicView
 } from 'proximax-nem2-sdk';
 
 import { crypto } from 'proximax-nem2-library';
@@ -240,8 +241,6 @@ export class NemProvider {
     return this.mosaicHttp.getMosaics(mosaicIsd);
   }
 
-
-
   /**
    *Get balance mosaics in form of MosaicAmountViews for a given account address
    *
@@ -380,8 +379,9 @@ export class NemProvider {
    * @returns
    * @memberof NemProvider
    */
-  async getMosaicViewPromise(mosaicsId: MosaicId[]) {
-    const promise = await new Promise(async (resolve, reject) => {
+  getMosaicViewPromise(mosaicsId: MosaicId[]): Promise<MosaicView[]> {
+    return this.mosaicService.mosaicsView(mosaicsId).toPromise();
+    /*const promise = await new Promise(async (resolve, reject) => {
       //if (this.infoMosaic === undefined) {
       console.warn("********** GET INFO MOSAICS TO PROMISE **********");
       const mosaicsView = await this.mosaicService.mosaicsView(mosaicsId).toPromise();
@@ -402,7 +402,7 @@ export class NemProvider {
     });
 
     console.log("***RESPUESTA CONSULTA DE MOSAICOS****", promise);
-    return await promise;
+    return await promise;*/
   }
 
 
