@@ -46,9 +46,9 @@ import { MosaicsStorage } from '../../../servicesModule/interfaces/mosaics-names
                         </tr>
                       </thead>
                       <tbody>
-                        <tr mdbTableCol *ngFor="let element of mosaicsInfo; let i = index">
+                        <tr mdbTableCol *ngFor="let element of quantity; let i = index">
                           <td class="font-size-08rem">
-                            <a class="text-link mouse-pointer">{{element.id.toHex()}}</a>
+                            <a class="text-link mouse-pointer">{{element.id}}</a>
                           </td>
                           <td class="font-size-08rem">{{element.mosaicInfo.namespaceName}}:{{element.mosaicInfo.mosaicName}}</td>
                           <td class="font-size-08rem">{{element.amountFormatter}}</td>
@@ -71,6 +71,8 @@ export class MosaicsInfoComponent implements OnInit {
   headElements = ['Id', 'Name', 'Quantity'];
   mosaicXpx: any = {};
   viewMosaicXpx = false;
+  quantity = [];
+
   constructor(
     private mosaicService: MosaicService,
     private transactionService: TransactionsService
@@ -80,23 +82,33 @@ export class MosaicsInfoComponent implements OnInit {
   }
 
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
+    this.quantity = [];
     const mosaicsId = this.mosaicsArray.map((mosaic: Mosaic) => { return mosaic.id });
     const mosaics: MosaicsStorage[] = await this.mosaicService.searchMosaics(mosaicsId);
     for (let mosaic of mosaics) {
+      console.log(mosaic);
       const mosaicId = this.mosaicService.getMosaicId(mosaic.id).toHex();
       const myMosaic = this.mosaicsArray.find(next => next.id.toHex() === mosaicId)
-      // MOSAIC IS XPX
-      if (mosaicId === this.mosaicService.mosaicXpx.mosaicId) {
+      if (mosaicId === this.mosaicService.mosaicXpx.mosaicId) {  // MOSAIC IS XPX
+        this.viewMosaicXpx = true;
         this.mosaicXpx = {
           id: this.mosaicService.mosaicXpx.mosaicId,
           name: this.mosaicService.mosaicXpx.mosaic,
           amountFormatter: this.transactionService.amountFormatter(myMosaic.amount, myMosaic.id, mosaic.mosaicInfo),
           mosaicInfo: mosaic
         }
-        this.viewMosaicXpx = true;
+      } else {
+        console.log(mosaic);
+        this.quantity.push({
+          id: myMosaic.id.toHex(),
+          name: mosaic.mosaicName,
+          amountFormatter: this.transactionService.amountFormatter(myMosaic.amount, myMosaic.id, mosaic.mosaicInfo),
+          mosaicInfo: mosaic
+        });
       }
     }
 
+    this.viewOtherMosaics = (this.quantity.length > 0) ? true : false;
     this.changeSearch.emit(true);
   }
 

@@ -20,10 +20,6 @@ export class ImportWalletComponent implements OnInit {
     {
       'value': NetworkType.TEST_NET,
       'label': 'TEST NET'
-    },
-    {
-      'value': NetworkType.MIJIN_TEST,
-      'label': 'MIJIN TEST'
     }
   ];
 

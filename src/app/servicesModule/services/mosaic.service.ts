@@ -8,7 +8,8 @@ import {
   MosaicName,
   Namespace,
   NamespaceId,
-  QueryParams
+  QueryParams,
+  NamespaceName
 } from "proximax-nem2-sdk";
 import { NemProvider } from "../../shared/services/nem.provider";
 import { WalletService } from "../../shared/services/wallet.service";
@@ -47,7 +48,7 @@ export class MosaicService {
   async buildMosaicsStorage(namespaceId: NamespaceId) {
     this.getMosaicsFromNamespace(namespaceId)
       .then(response => {
-        console.log("getMosaicsFromNamespace", response);
+        // console.log("getMosaicsFromNamespace", response);
         if (response.length > 0) {
           this.saveMosaicsStorage(response);
         }
@@ -105,7 +106,7 @@ export class MosaicService {
       const accountInfo = await this.nemProvider.accountHttp
         .getAccountInfo(address)
         .toPromise();
-      console.log("accountInfo", accountInfo);
+      // console.log("accountInfo", accountInfo);
       let mosaicsId = [];
       if (searchXpx) {
         mosaicsId = accountInfo.mosaics.map((mosaic: Mosaic) => {
@@ -122,7 +123,7 @@ export class MosaicService {
       let response = {};
       if (mosaicsId.length > 0) {
         const mosaicsName: MosaicName[] = await this.getNameMosaics(mosaicsId);
-        console.log("mosaicsName", mosaicsName);
+        // console.log("mosaicsName", mosaicsName);
         const namespacesId = mosaicsName.map((mosaicsName: MosaicName) => {
           return mosaicsName.namespaceId;
         });
@@ -146,63 +147,79 @@ export class MosaicService {
    * @memberof MosaicService
    */
   async searchMosaics(mosaicsId: MosaicId[]): Promise<MosaicsStorage[]> {
-    console.log("mosaicsId", mosaicsId);
+    // console.log("mosaicsId", mosaicsId);
     const infoMosaics = [];
     const mosaicsToSearch = [];
-    for (let mosaicId of mosaicsId) {
+    mosaicsId.forEach(mosaicId => {
       const filterMosaic = this.filterMosaic(mosaicId);
       if (filterMosaic === undefined) {
         mosaicsToSearch.push(mosaicId);
       } else {
         infoMosaics.push(filterMosaic);
       }
-    }
+    });
 
     // Search info mosaics
     if (mosaicsToSearch.length > 0) {
       const response = await this.nemProvider.getMosaics(mosaicsToSearch).toPromise();
-      Object.keys(response).forEach(element => {
-        infoMosaics.push({
-          id: [response[element].mosaicId.id.lower, response[element].mosaicId.id.higher],
-          mosaicName: '',
-          mosaicInfo: response[element]
-        });
+      // console.log('---response ----', response);
+      await this.saveMosaicsStorage(response);
+      Object.keys(response).forEach(elm => {
+        // console.log(response[elm].mosaicId);
+        if (this.filterMosaic(response[elm].mosaicId)) {
+          infoMosaics.push(this.filterMosaic(response[elm].mosaicId));
+        }
       });
-
-      this.saveMosaicsStorage(response);
-
     }
+
+    // console.log(infoMosaics);
     return infoMosaics;
   }
 
-  async saveMosaicsStorage(mosaicsInfo: MosaicInfo[]) {
-    console.log('mosaicsInfo ---> ', mosaicsInfo);
+  /**
+   *
+   *
+   * @param {MosaicInfo[]} mosaicsInfo
+   * @param {NamespaceName[]} [namespaceName]
+   * @returns
+   * @memberof MosaicService
+   */
+  async saveMosaicsStorage(mosaicsInfo: MosaicInfo[], namespaceNameParam?: NamespaceName) {
+    // console.log('mosaicsInfo ---> ', mosaicsInfo);
     const mosaicsStorage = this.getMosaicsFromStorage();
     const ids = mosaicsInfo.map(data => data.mosaicId);
-    const nameMosaics = await this.getNameMosaics(ids);
-    mosaicsInfo.forEach(element => {
+    const nameMosaics = (ids.length > 0) ? await this.getNameMosaics(ids) : [];
+    for (let mosaicInfo of mosaicsInfo) {
       // Check if the mosaics id exists in storage
       const existMosaic = mosaicsStorage.find(
         key =>
           this.nemProvider.getMosaicId(key.id).toHex() ===
-          element.mosaicId.toHex()
+          mosaicInfo.mosaicId.toHex()
       );
 
       if (existMosaic === undefined) {
         const mosaicName = nameMosaics.find(
-          data => data.mosaicId.toHex() === element.mosaicId.toHex()
+          data => data.mosaicId.toHex() === mosaicInfo.mosaicId.toHex()
         );
+
+        let namespaceName: NamespaceName | NamespaceName[] = namespaceNameParam;
+        if (namespaceNameParam === undefined) {
+          const x = await this.nemProvider.namespaceHttp.getNamespacesName([mosaicInfo.namespaceId]).toPromise();
+          namespaceName = x[0];
+        }
 
         if (mosaicName) {
           const data: MosaicsStorage = {
             id: [mosaicName.mosaicId.id.lower, mosaicName.mosaicId.id.higher],
+            namespaceName: namespaceName,
             mosaicName: mosaicName,
-            mosaicInfo: element
+            mosaicInfo: mosaicInfo
           };
           mosaicsStorage.push(data);
         }
       }
-    });
+    }
+
     localStorage.setItem(this.getNameStorage(), JSON.stringify(mosaicsStorage));
     return mosaicsStorage;
   }
@@ -223,7 +240,7 @@ export class MosaicService {
    * @returns
    * @memberof MosaicService
    */
-  filterMosaic(mosaicId: MosaicId) {
+  filterMosaic(mosaicId: MosaicId): MosaicsStorage {
     const mosaicsStorage = this.getMosaicsFromStorage();
     if (mosaicsStorage.length > 0) {
       const filtered = mosaicsStorage.find(element => {
