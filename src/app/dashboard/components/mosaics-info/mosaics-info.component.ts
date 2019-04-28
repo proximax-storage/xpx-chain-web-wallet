@@ -82,19 +82,23 @@ export class MosaicsInfoComponent implements OnInit {
   }
 
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
+    this.mosaicXpx = {};
+    this.viewMosaicXpx = false;
+    this.viewOtherMosaics = false;
     this.quantity = [];
     const mosaicsId = this.mosaicsArray.map((mosaic: Mosaic) => { return mosaic.id });
     const mosaics: MosaicsStorage[] = await this.mosaicService.searchMosaics(mosaicsId);
     for (let mosaic of mosaics) {
-      console.log(mosaic);
+      console.log('---- MOSAIC IN FOR ------ ', mosaic);
       const mosaicId = this.mosaicService.getMosaicId(mosaic.id).toHex();
-      const myMosaic = this.mosaicsArray.find(next => next.id.toHex() === mosaicId)
+      const myMosaic = this.mosaicsArray.find(next => next.id.toHex() === mosaicId);
+      const amount = this.transactionService.amountFormatter(myMosaic.amount, myMosaic.id, mosaic.mosaicInfo);
       if (mosaicId === this.mosaicService.mosaicXpx.mosaicId) {  // MOSAIC IS XPX
         this.viewMosaicXpx = true;
         this.mosaicXpx = {
           id: this.mosaicService.mosaicXpx.mosaicId,
           name: this.mosaicService.mosaicXpx.mosaic,
-          amountFormatter: this.transactionService.amountFormatter(myMosaic.amount, myMosaic.id, mosaic.mosaicInfo),
+          amountFormatter: amount,
           mosaicInfo: mosaic
         }
       } else {
@@ -102,7 +106,7 @@ export class MosaicsInfoComponent implements OnInit {
         this.quantity.push({
           id: myMosaic.id.toHex(),
           name: mosaic.mosaicName,
-          amountFormatter: this.transactionService.amountFormatter(myMosaic.amount, myMosaic.id, mosaic.mosaicInfo),
+          amountFormatter: amount,
           mosaicInfo: mosaic
         });
       }
@@ -111,46 +115,4 @@ export class MosaicsInfoComponent implements OnInit {
     this.viewOtherMosaics = (this.quantity.length > 0) ? true : false;
     this.changeSearch.emit(true);
   }
-
-  async hi(changes: SimpleChanges): Promise<void> {
-    console.log("mosaicsArray", this.mosaicsArray);
-    this.mosaicsInfo = this.mosaicsArray.slice(0);
-    this.mosaicXpx = null;
-    this.viewOtherMosaics = false;
-    this.viewMosaicXpx = false;
-    const mosaicsId = this.mosaicsInfo.map((mosaic: Mosaic) => {
-      // if (mosaic.id.toHex() !== 'd423931bd268d1f4') { return mosaic.id }
-      return mosaic.id
-    });
-    const mosaicsViewCache = await this.mosaicService.searchMosaics(mosaicsId);
-    if (mosaicsViewCache.length > 0) {
-      console.log("mosaicsViewCache", mosaicsViewCache);
-      for (let ma of this.mosaicsInfo) {
-        for (let mi of mosaicsViewCache) {
-          console.log("ma", ma.id.toHex());
-          console.log("mi", mi.mosaicInfo.mosaicId.toHex());
-          if (ma.id.toHex() === mi.mosaicInfo.mosaicId.toHex()) {
-            ma['mosaicInfo'] = mi;
-            if (ma.id.toHex() === 'd423931bd268d1f4') {
-              // ma['amountFormatter'] = this.transactionService.amountFormatter(ma.amount, ma.id, [mi.mosaicInfo]);
-              this.mosaicXpx = ma;
-              this.viewMosaicXpx = true;
-              this.mosaicsInfo.splice(ma);
-            } else {
-              ma['amountFormatter'] = this.transactionService.formatNumberMilesThousands(ma.amount.compact());
-            }
-          }
-        }
-      }
-
-      if (this.mosaicsInfo.length > 0) {
-        this.viewOtherMosaics = true;
-      }
-    } else {
-      const mosaicsName: MosaicName[] = await this.mosaicService.getNameMosaics(mosaicsId);
-    }
-    this.changeSearch.emit(true);
-  }
-
-
 }

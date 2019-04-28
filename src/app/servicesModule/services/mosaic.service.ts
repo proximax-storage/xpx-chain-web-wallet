@@ -35,7 +35,6 @@ export class MosaicService {
   constructor(
     private nemProvider: NemProvider,
     private walletService: WalletService,
-    private transactionService: TransactionsService,
     private toastrService: ToastService
   ) { }
 
@@ -186,29 +185,30 @@ export class MosaicService {
    */
   async saveMosaicsStorage(mosaicsInfo: MosaicInfo[], namespaceNameParam?: NamespaceName) {
     // console.log('mosaicsInfo ---> ', mosaicsInfo);
+
+    //filter mosaics id from mosaicsInfo params
+    const mosaicsIds = mosaicsInfo.map(data => data.mosaicId);
+    //get mosaics from storage
     const mosaicsStorage = this.getMosaicsFromStorage();
-    const ids = mosaicsInfo.map(data => data.mosaicId);
-    const nameMosaics = (ids.length > 0) ? await this.getNameMosaics(ids) : [];
+    // If the mosaic identification has data, look for the names of the tiles. This must return an array of mosaics name
+    const mosaicsName = (mosaicsIds.length > 0) ? await this.getNameMosaics(mosaicsIds) : [];
     for (let mosaicInfo of mosaicsInfo) {
       // Check if the mosaics id exists in storage
-      const existMosaic = mosaicsStorage.find(
-        key =>
-          this.nemProvider.getMosaicId(key.id).toHex() ===
-          mosaicInfo.mosaicId.toHex()
-      );
-
+      const existMosaic = mosaicsStorage.find(key => this.nemProvider.getMosaicId(key.id).toHex() === mosaicInfo.mosaicId.toHex());
+      // Mosaic does not exist in storage
       if (existMosaic === undefined) {
-        const mosaicName = nameMosaics.find(
-          data => data.mosaicId.toHex() === mosaicInfo.mosaicId.toHex()
-        );
-
-        let namespaceName: NamespaceName | NamespaceName[] = namespaceNameParam;
-        if (namespaceNameParam === undefined) {
-          const x = await this.nemProvider.namespaceHttp.getNamespacesName([mosaicInfo.namespaceId]).toPromise();
-          namespaceName = x[0];
-        }
-
+        // From the arrangement of the mosaics name, filter the mosaic name data by the mosaic id
+        const mosaicName = mosaicsName.find(data => data.mosaicId.toHex() === mosaicInfo.mosaicId.toHex());
+        // If mosaicName is defined
         if (mosaicName) {
+          let namespaceName: NamespaceName | NamespaceName[] = namespaceNameParam;
+          // If namespaceNameParam is not defined, look up the NamespaceName array by namespaceIds
+          if (namespaceNameParam === undefined) {
+            const x = await this.nemProvider.namespaceHttp.getNamespacesName([mosaicInfo.namespaceId]).toPromise();
+            namespaceName = x[0];
+          }
+
+          // Push to the array of mosaicsStorage
           const data: MosaicsStorage = {
             id: [mosaicName.mosaicId.id.lower, mosaicName.mosaicId.id.higher],
             namespaceName: namespaceName,
@@ -258,10 +258,8 @@ export class MosaicService {
    * @memberof MosaicService
    */
   getNameStorage() {
-    return `proximax-mosaics-${this.walletService.address.address.substr(
-      4,
-      12
-    )}`;
+    return `proximax-mosaics`;
+    // return `proximax-mosaics-${this.walletService.address.address.substr(4, 12)}`;
   }
 
   /**
