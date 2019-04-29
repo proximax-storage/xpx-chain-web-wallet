@@ -6,7 +6,7 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { WalletService } from '../../shared/services/wallet.service';
 import { MosaicService } from '../..//servicesModule/services/mosaic.service';
 import { NemProvider } from 'src/app/shared/services/nem.provider';
-import { TransactionsInterface } from './dashboard.interface';
+import { TransactionsInterface } from './transaction.interface';
 
 @Injectable({
   providedIn: 'root'

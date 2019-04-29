@@ -66,7 +66,6 @@ export class MosaicsInfoComponent implements OnInit {
   @Input() viewAmount = false;
   @Output() changeSearch = new EventEmitter();
 
-  mosaicsInfo = [];
   viewOtherMosaics = false;
   headElements = ['Id', 'Name', 'Quantity'];
   mosaicXpx: any = {};

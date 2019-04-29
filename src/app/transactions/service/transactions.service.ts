@@ -21,7 +21,7 @@ import { environment } from "../../../environments/environment";
 import { MessageService } from "../../shared/services/message.service";
 import { SharedService } from "../../shared/services/shared.service";
 import { first } from "rxjs/operators";
-import { TransactionsInterface, MosaicXPXInterface } from "../../dashboard/services/dashboard.interface";
+import { TransactionsInterface, MosaicXPXInterface } from "../../dashboard/services/transaction.interface";
 
 @Injectable({
   providedIn: "root"

@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
 import { TransactionsService } from '../../../transactions/service/transactions.service';
-import { TransactionsInterface } from '../../services/dashboard.interface';
+import { TransactionsInterface } from '../../services/transaction.interface';
 
 @Component({
   selector: 'app-transfer-type',

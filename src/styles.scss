@@ -564,7 +564,42 @@ mdb-select mdb-select-dropdown .dropdown-content li>span {
 /*FIN SERVICES*/
 
 .modal-body {
-  max-height: 30rem;
+  max-height: 37rem;
   overflow: auto;
   overflow-x: hidden;
 }
+
+
+
+/*
+Full screen Modal
+*/
+/*
+@media (min-width: 768px) {
+  .modal-dialog {
+    width: 750px;
+  }
+}
+
+@media screen and (min-height: 0px) {
+  @media screen and (max-width: 500px) {
+    .modal-body {
+      max-height: 30rem;
+      overflow: auto;
+      overflow-x: hidden;
+    }
+  }
+}
+
+@media (min-width: 992px) {
+  .modal-dialog {
+    width: 970px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .modal-dialog {
+    width: 1170px;
+  }
+}
+*/

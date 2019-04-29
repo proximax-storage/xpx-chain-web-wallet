@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { DashboardService } from '../../services/dashboard.service';
 import { WalletService, SharedService } from '../../../shared';
-import { TransactionsInterface } from '../../services/dashboard.interface';
+import { TransactionsInterface } from '../../services/transaction.interface';
 import { TransactionsService } from '../../../transactions/service/transactions.service';
 
 @Component({

@@ -8,7 +8,7 @@ import { environment } from '../../../environments/environment';
 import { NodeService } from '../../servicesModule/services/node.service';
 import { SharedService } from './shared.service';
 import { MosaicService } from '../../servicesModule/services/mosaic.service';
-import { TransactionsInterface } from 'src/app/dashboard/services/dashboard.interface';
+import { TransactionsInterface } from 'src/app/dashboard/services/transaction.interface';
 
 @Injectable({
   providedIn: 'root'

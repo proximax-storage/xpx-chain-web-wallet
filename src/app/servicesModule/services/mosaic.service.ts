@@ -16,7 +16,7 @@ import { WalletService } from "../../shared/services/wallet.service";
 import { TransactionsService } from "../../transactions/service/transactions.service";
 import { ToastService } from "ng-uikit-pro-standard";
 import { MosaicsStorage } from "../interfaces/mosaics-namespaces.interface";
-import { MosaicXPXInterface } from "../../dashboard/services/dashboard.interface";
+import { MosaicXPXInterface } from "../../dashboard/services/transaction.interface";
 
 @Injectable({
   providedIn: "root"
@@ -258,8 +258,7 @@ export class MosaicService {
    * @memberof MosaicService
    */
   getNameStorage() {
-    return `proximax-mosaics`;
-    // return `proximax-mosaics-${this.walletService.address.address.substr(4, 12)}`;
+    return `proximax-mosaics-${this.walletService.address.address.substr(4, 12)}`;
   }
 
   /**

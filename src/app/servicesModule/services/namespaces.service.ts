@@ -31,6 +31,7 @@ export class NamespacesService {
    * @memberof NamespacesService
    */
   async buildNamespaceStorage() {
+    //Gets array of NamespaceInfo for an account
     this.getNamespacesFromAccountAsync(this.walletService.address)
       .then(response => this.setNamespaceStorage(response))
       .catch(() => {
@@ -48,18 +49,15 @@ export class NamespacesService {
   }
 
   /**
-   * Get the namespace of an account
+   * Gets array of NamespaceInfo for an account
    *
    * @param {Address} address
    * @returns
    * @memberof NamespacesService
    */
-  async getNamespacesFromAccountAsync(
-    address: Address
-  ): Promise<NamespaceInfo[]> {
-    return await this.nemProvider.namespaceHttp
-      .getNamespacesFromAccount(address)
-      .toPromise();
+  async getNamespacesFromAccountAsync(address: Address): Promise<NamespaceInfo[]> {
+    //Gets array of NamespaceInfo for an account
+    return await this.nemProvider.namespaceHttp.getNamespacesFromAccount(address).toPromise();
   }
 
   /**
@@ -69,12 +67,8 @@ export class NamespacesService {
    * @returns {Promise<NamespaceName[]>}
    * @memberof NamespacesService
    */
-  async getNamespacesNameAsync(
-    namespaceIds: NamespaceId[]
-  ): Promise<NamespaceName[]> {
-    return await this.nemProvider.namespaceHttp
-      .getNamespacesName(namespaceIds)
-      .toPromise();
+  async getNamespacesNameAsync(namespaceIds: NamespaceId[]): Promise<NamespaceName[]> {
+    return await this.nemProvider.namespaceHttp.getNamespacesName(namespaceIds).toPromise();
   }
 
   /**
@@ -85,24 +79,21 @@ export class NamespacesService {
    */
   async setNamespaceStorage(namespacesParam: NamespaceInfo[]) {
     if (namespacesParam.length > 0) {
-      const ids = namespacesParam.map(element => {
-        return element.id;
-      });
 
+      //Get the storage namespace
       const namespacesStorage = this.getNamespaceFromStorage();
+      // Map and get an array of ids from NamespaceInfo []
+      const ids = namespacesParam.map(e => { return e.id; });
+      // Gets array of NamespaceName for different namespaceIds
       const namespacesName = await this.getNamespacesNameAsync(ids);
       if (namespacesName) {
         namespacesParam.forEach(async element => {
           // Check if the namespace id exists in storage
-          const existNamespace = namespacesStorage.find(
-            k => this.nemProvider.getNamespaceId(k.id).toHex() === element.id.toHex()
-          );
-
+          const existNamespace = namespacesStorage.find(k => this.nemProvider.getNamespaceId(k.id).toHex() === element.id.toHex());
+          // If existNamespace is undefined
           if (existNamespace === undefined) {
-            const namespaceName = namespacesName.find(
-              data => data.namespaceId.toHex() === element.id.toHex()
-            );
-
+            // Filter by namespaceId the namespaceName from the array of namespacesName
+            const namespaceName = namespacesName.find(data => data.namespaceId.toHex() === element.id.toHex());
             if (namespaceName) {
               const data: NamespaceStorage = {
                 id: [
