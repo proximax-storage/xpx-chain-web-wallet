@@ -138,17 +138,14 @@ export class TransferComponent implements OnInit {
    */
   async getMosaics() {
     const mosaicsSelect = this.mosaicsSelect.slice(0);
-    console.log(mosaicsSelect);
     const response: any = await this.mosaicServices.getMosaicFromAddress(
       this.walletService.address,
       false
     );
-    console.log("Response mosaics", response);
+
     if (response && response.mosaicsName) {
       for (let mosaicsName of response.mosaicsName) {
-        const namespaceName = response.namespaceName.find(function (
-          namespaceName: NamespaceName
-        ) {
+        const namespaceName = response.namespaceName.find((namespaceName: NamespaceName) => {
           return (
             namespaceName.namespaceId.toHex() ===
             mosaicsName.namespaceId.toHex()
