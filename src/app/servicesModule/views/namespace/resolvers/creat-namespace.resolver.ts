@@ -5,7 +5,7 @@ import 'rxjs/add/operator/delay';
 import { first, map, catchError } from 'rxjs/operators';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { QueryParams } from 'proximax-nem2-sdk';
-import { NemProvider } from '../../../../shared/services/nem.provider';
+import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { WalletService } from '../../../../shared/services/wallet.service';
 import { SharedService } from '../../../../shared/services/shared.service';
 import { AppConfig } from '../../../../config/app.config';
@@ -17,13 +17,13 @@ export class CreateNamespaceResolver implements Resolve<any> {
   constructor(
     private router: Router,
     private sharedService: SharedService,
-    private nemProvider: NemProvider,
+    private proximaxProvider: ProximaxProvider,
     private walletService: WalletService,
   ) { }
 
   resolve() {
     this.blockUI.start('Loading...'); // Start blocking
-    return this.nemProvider.namespaceHttp.getNamespacesFromAccount(this.walletService.address, new QueryParams(5)).pipe(first(), map(
+    return this.proximaxProvider.namespaceHttp.getNamespacesFromAccount(this.walletService.address, new QueryParams(5)).pipe(first(), map(
       next => {
         console.log("All namespaces", next);
         if (next.length > 0) {

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs/operators';
-import { NemProvider } from '../../../../shared/services/nem.provider';
+import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { WalletService } from '../../../../shared/services/wallet.service';
 import { MosaicService } from '../../../services/mosaic.service';
 import { SharedService } from '../../../../shared/services/shared.service';
@@ -30,7 +30,7 @@ export class CreateMosaicComponent implements OnInit {
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
-    private nemProvider: NemProvider,
+    private proximaxProvider: ProximaxProvider,
     private walletService: WalletService,
     private sharedService: SharedService
   ) {
@@ -81,7 +81,7 @@ export class CreateMosaicComponent implements OnInit {
 
     for (let h of this.route.snapshot.data['dataNamespace']) {
       await new Promise((resolve, reject) => {
-        this.nemProvider.namespaceHttp.getNamespacesName(h.levels).pipe(first()).subscribe(
+        this.proximaxProvider.namespaceHttp.getNamespacesName(h.levels).pipe(first()).subscribe(
           namespaceName => {
             console.log(namespaceName);
             for (let x of namespaceName) {
@@ -117,9 +117,9 @@ export class CreateMosaicComponent implements OnInit {
       }
 
       if (this.walletService.decrypt(common)) {
-        const account = this.nemProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.network);
+        const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.network);
         console.log(account);
-        const registerMosaicTransaction = this.nemProvider.buildRegisterMosaicTransaction(
+        const registerMosaicTransaction = this.proximaxProvider.buildRegisterMosaicTransaction(
           this.mosaicForm.get('mosaicName').value,
           this.mosaicForm.get('parentNamespace').value,
           this.mosaicForm.get('supplyMutable').value,
@@ -131,7 +131,7 @@ export class CreateMosaicComponent implements OnInit {
         );
 
         const signedTransaction = account.sign(registerMosaicTransaction);
-        this.nemProvider.announce(signedTransaction).subscribe(
+        this.proximaxProvider.announce(signedTransaction).subscribe(
           x => {
             console.log(x)
             this.blockUI.stop(); // Stop blocking
@@ -149,7 +149,7 @@ export class CreateMosaicComponent implements OnInit {
           });
       }
 
-      // this.nemProvider.sendTransaction();
+      // this.proximaxProvider.sendTransaction();
     } else if (this.mosaicForm.get('parentNamespace').value === '1') {
       this.sharedService.showError('', 'Please select a parent namespace');
     } else {

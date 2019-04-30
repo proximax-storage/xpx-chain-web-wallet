@@ -10,7 +10,7 @@ import { TransactionsService } from "../../../transactions/service/transactions.
 import { ServiceModuleService } from "../../../servicesModule/services/service-module.service";
 import { MosaicService } from "../../../servicesModule/services/mosaic.service";
 import { NamespaceName } from "proximax-nem2-sdk";
-import { NemProvider } from "../../../shared/services/nem.provider";
+import { ProximaxProvider } from "../../../shared/services/proximax.provider";
 
 @Component({
   selector: "app-transfer",
@@ -33,8 +33,8 @@ export class TransferComponent implements OnInit {
       disabled: true
     },
     {
-      value: this.nemProvider.mosaicXpx.mosaic,
-      label: this.nemProvider.mosaicXpx.mosaic,
+      value: this.proximaxProvider.mosaicXpx.mosaic,
+      label: this.proximaxProvider.mosaicXpx.mosaic,
       selected: false,
       disabled: false
     }
@@ -47,8 +47,8 @@ export class TransferComponent implements OnInit {
     private transactionService: TransactionsService,
     private ServiceModuleService: ServiceModuleService,
     private mosaicServices: MosaicService,
-    private nemProvider: NemProvider
-  ) {}
+    private proximaxProvider: ProximaxProvider
+  ) { }
 
   ngOnInit() {
     this.contacts = this.ServiceModuleService.getBooksAddress();
@@ -65,7 +65,7 @@ export class TransferComponent implements OnInit {
   createForm() {
     this.transferForm = this.fb.group({
       mosaicsSelect: [
-        this.nemProvider.mosaicXpx.mosaic,
+        this.proximaxProvider.mosaicXpx.mosaic,
         [Validators.required]
       ],
       acountRecipient: [
@@ -146,7 +146,7 @@ export class TransferComponent implements OnInit {
     console.log("Response mosaics", response);
     if (response && response.mosaicsName) {
       for (let mosaicsName of response.mosaicsName) {
-        const namespaceName = response.namespaceName.find(function(
+        const namespaceName = response.namespaceName.find(function (
           namespaceName: NamespaceName
         ) {
           return (
@@ -189,11 +189,11 @@ export class TransferComponent implements OnInit {
       } else if (form.get(control).getError("minlength")) {
         return `This field must contain minimum ${
           form.get(control).getError("minlength").requiredLength
-        } characters`;
+          } characters`;
       } else if (form.get(control).getError("maxlength")) {
         return `This field must contain maximum ${
           form.get(control).getError("maxlength").requiredLength
-        } characters`;
+          } characters`;
       }
     } else {
       if (form.controls[formControl].get(control).getError("required")) {
@@ -204,14 +204,14 @@ export class TransferComponent implements OnInit {
         return `This field must contain minimum ${
           form.controls[formControl].get(control).getError("minlength")
             .requiredLength
-        } characters`;
+          } characters`;
       } else if (
         form.controls[formControl].get(control).getError("maxlength")
       ) {
         return `This field must contain maximum ${
           form.controls[formControl].get(control).getError("maxlength")
             .requiredLength
-        } characters`;
+          } characters`;
       } else if (form.controls[formControl].getError("noMatch")) {
         return `Password doesn't match`;
       }

@@ -7,8 +7,7 @@ import { TransactionsService } from "../../transactions/service/transactions.ser
 import { environment } from '../../../environments/environment';
 import { NodeService } from '../../servicesModule/services/node.service';
 import { SharedService } from './shared.service';
-import { MosaicService } from '../../servicesModule/services/mosaic.service';
-import { TransactionsInterface } from 'src/app/dashboard/services/transaction.interface';
+import { TransactionsInterface } from '../../dashboard/services/transaction.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -36,7 +35,6 @@ export class DataBridgeService {
    * @memberof DataBridgeService
    */
   connectnWs(node?: string) {
-    console.log("Connect to websocket");
     const route = (node === undefined) ? this.nodeService.getNodeSelected() : node;
     this.url = `${environment.protocolWs}://${route}`;
     // console.log(this.url);

@@ -21,8 +21,6 @@ export class TransferTypeComponent implements OnInit {
 
   ngOnChanges(changes: SimpleChanges): void {
     this.searching = true;
-    console.log(changes);
-    // this.transferTransaction.feeFormatter = this.transactionService.amountFormatterSimple(this.transferTransaction.fee.compact());
   }
 
 }

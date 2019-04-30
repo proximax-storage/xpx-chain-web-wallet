@@ -1,7 +1,7 @@
 import { Component, OnInit, createPlatformFactory } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl, FormControl, FormArray } from "@angular/forms";
 import { WalletService } from '../../../../shared/services/wallet.service';
-import { NemProvider } from '../../../../shared/services/nem.provider';
+import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { SharedService } from '../../../../shared';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { Address, UInt64, Account, Transaction } from 'proximax-nem2-sdk';
@@ -46,7 +46,7 @@ export class PollsComponent implements OnInit {
   voteCast = false;
   showVote = false;
   whitelist = false;
-  issueList: any =[]
+  issueList: any = []
   stringsPubliKey: any
   strings: any
   @BlockUI() blockUI: NgBlockUI;
@@ -54,7 +54,7 @@ export class PollsComponent implements OnInit {
 
     private fb: FormBuilder,
     private walletService: WalletService,
-    private nemProvider: NemProvider,
+    private proximaxProvider: ProximaxProvider,
     private sharedService: SharedService,
   ) {
 
@@ -63,7 +63,7 @@ export class PollsComponent implements OnInit {
 
   ngOnInit() {
     this.blockUI.start('Loading...'); // Start blocking
-    this.nemProvider.getAllTransactionsFromAccount(this.nemProvider.getPublicAccountFromPrivateKey(this.privateKey, this.walletService.network)
+    this.proximaxProvider.getAllTransactionsFromAccount(this.proximaxProvider.getPublicAccountFromPrivateKey(this.privateKey, this.walletService.network)
     ).subscribe(
       (infTrans: Transaction[]) => {
         this.listPoll = infTrans.map((tran: any) => {
@@ -124,7 +124,7 @@ export class PollsComponent implements OnInit {
       this.issueList.pop();
     }
 
-    this.issueList=[]
+    this.issueList = []
     this.blockUI.start('Loading...'); // Start blocking
     this.address = data['address']
     this.doe = data['doe']
@@ -135,8 +135,8 @@ export class PollsComponent implements OnInit {
     this.whitelist = false;
     this.voteCast = false;
     this.showVote = false;
-    const publicAccount = this.nemProvider.createPublicAccount(this.publicKey, this.walletService.network);
-    this.nemProvider.getAllTransactionsFromAccount(publicAccount).subscribe(
+    const publicAccount = this.proximaxProvider.createPublicAccount(this.publicKey, this.walletService.network);
+    this.proximaxProvider.getAllTransactionsFromAccount(publicAccount).subscribe(
       (infTrans: Transaction[]) => {
         let data: any
         infTrans.map((tran: any) => {
@@ -217,16 +217,16 @@ export class PollsComponent implements OnInit {
     if (this.issueList.length == 0) {
       this.createForm()
       this.showVote = true;
-    } else if (this.issueList.length > 0  ) {
-      if(this.whitelist){
+    } else if (this.issueList.length > 0) {
+      if (this.whitelist) {
         this.showVote = false;
-      }else{this.voteCast=true;}
+      } else { this.voteCast = true; }
 
     }
   }
   ifvoted(element) {
-    const publicAccount = this.nemProvider.createPublicAccount(element, this.walletService.network);
-    this.nemProvider.getAllTransactionsFromAccount(publicAccount).subscribe(
+    const publicAccount = this.proximaxProvider.createPublicAccount(element, this.walletService.network);
+    this.proximaxProvider.getAllTransactionsFromAccount(publicAccount).subscribe(
       (infTrans: Transaction[]) => {
         this.resultinftrans = infTrans.map((tran: any) => {
           return tran.signer.address['address'];
@@ -278,14 +278,14 @@ export class PollsComponent implements OnInit {
   preparepoll(common) {
     const adders = Address.createFromRawAddress(this.radio).plain()
     let transferTransaction: any
-    transferTransaction = this.nemProvider.sendTransaction(this.walletService.network, adders, '')
+    transferTransaction = this.proximaxProvider.sendTransaction(this.walletService.network, adders, '')
     transferTransaction.fee = UInt64.fromUint(0);
     const account = Account.createFromPrivateKey(common.privateKey, this.walletService.network);
     const signedTransaction = account.sign(transferTransaction);
     this.blockUI.start('Loading...'); // Start blocking
 
-    this.nemProvider.getTransactionStatusError(signedTransaction.hash).subscribe(response => console.log(response))
-    this.nemProvider.announce(signedTransaction).subscribe(
+    this.proximaxProvider.getTransactionStatusError(signedTransaction.hash).subscribe(response => console.log(response))
+    this.proximaxProvider.announce(signedTransaction).subscribe(
       x => {
         this.blockUI.stop(); // Stop blocking
 
@@ -302,8 +302,8 @@ export class PollsComponent implements OnInit {
   result() {
     const datachar = []
     this.stringsPubliKey.forEach((element, index) => {
-      const publicAccount = this.nemProvider.createPublicAccount(element, this.walletService.network);
-      this.nemProvider.getAllTransactionsFromAccount(publicAccount).subscribe(
+      const publicAccount = this.proximaxProvider.createPublicAccount(element, this.walletService.network);
+      this.proximaxProvider.getAllTransactionsFromAccount(publicAccount).subscribe(
         (infTrans: Transaction[]) => {
           datachar.push({ name: this.strings[index], y: infTrans.length })
           this.createcharts(datachar);

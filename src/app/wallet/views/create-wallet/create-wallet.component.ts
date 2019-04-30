@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { NetworkType } from 'proximax-nem2-sdk';
 import { SharedService, WalletService } from "../../../shared";
-import { NemProvider } from '../../../shared/services/nem.provider';
+import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 
 
 @Component({
@@ -28,7 +28,7 @@ export class CreateWalletComponent implements OnInit {
     private fb: FormBuilder,
     private sharedService: SharedService,
     private _walletService: WalletService,
-    private _nemProvider: NemProvider
+    private proximaxProvider: ProximaxProvider
   ) {
   }
 
@@ -62,11 +62,11 @@ export class CreateWalletComponent implements OnInit {
     if (this.createWalletForm.valid) {
       const network = this.createWalletForm.get('network').value;
       const user = this.createWalletForm.get('walletname').value;
-      const password = this._nemProvider.createPassword(this.createWalletForm.controls.passwords.get('password').value);
-      const wallet = this._nemProvider.createAccountSimple(user, password, network);
+      const password = this.proximaxProvider.createPassword(this.createWalletForm.controls.passwords.get('password').value);
+      const wallet = this.proximaxProvider.createAccountSimple(user, password, network);
       const account = wallet.open(password);
       const publicKey = account.publicKey.toString();
-      const publicAccount = this._nemProvider.createPublicAccount(publicKey, network);
+      const publicAccount = this.proximaxProvider.createPublicAccount(publicKey, network);
       const walletsStorage = this._walletService.getWalletStorage();
       const myWallet = walletsStorage.find(function (element: { name: any; }) {
         //verify if name wallet isset
@@ -79,7 +79,7 @@ export class CreateWalletComponent implements OnInit {
         this._walletService.setAccountWalletStorage(user, accounts);
         this.address = wallet.address.pretty();
         this.sharedService.showSuccess('Congratulations!', 'Your wallet has been created successfully');
-        this.privateKey = this._nemProvider.decryptPrivateKey(password, accounts.encrypted, accounts.iv).toUpperCase();
+        this.privateKey = this.proximaxProvider.decryptPrivateKey(password, accounts.encrypted, accounts.iv).toUpperCase();
         this.walletIsCreated = true;
       } else {
         //Error of repeated Wallet

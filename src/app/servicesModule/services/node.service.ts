@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { SharedService } from '../../shared/services/shared.service';
-import { NemProvider } from '../../shared/services/nem.provider';
+import { ProximaxProvider } from '../../shared/services/proximax.provider';
 import * as data from '../../../assets/json/nodes.json';
 
 @Injectable({
@@ -17,8 +17,8 @@ export class NodeService {
 
   constructor(
     private sharedService: SharedService,
-    private nemProvider: NemProvider,
-  ) {}
+    private proximaxProvider: ProximaxProvider,
+  ) { }
 
   addNode(node: string, showMsg = false, msgNodeCreated = '') {
     const dataStorage = this.getAllNodes();
@@ -84,9 +84,9 @@ export class NodeService {
     this.nodeObsSelected.subscribe(
       next => {
         this.setSelectedNodeStorage(next);
-        this.nemProvider.initInstances(next);
-          // this.dataBridge.closeConenection();
-          // this.dataBridge.connectnWs(next);
+        this.proximaxProvider.initInstances(next);
+        // this.dataBridge.closeConenection();
+        // this.dataBridge.connectnWs(next);
       }
     );
   }

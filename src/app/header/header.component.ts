@@ -1,15 +1,12 @@
 import { Router, NavigationEnd } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
-import { mergeMap, first } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { AppConfig, NameRoute } from '../config/app.config';
 import { AuthService } from '../auth/services/auth.service';
-import { WalletService, StructureHeader, SharedService } from "../shared";
+import { StructureHeader, SharedService } from "../shared";
 import { NodeService } from "../servicesModule/services/node.service";
-import { NemProvider } from '../shared/services/nem.provider';
 import { DataBridgeService } from '../shared/services/data-bridge.service';
 import { DashboardService } from '../dashboard/services/dashboard.service';
-import { MosaicService } from '../servicesModule/services/mosaic.service';
 import { TransactionsService } from '../transactions/service/transactions.service';
 
 export interface HorizontalHeaderInterface {
@@ -48,12 +45,9 @@ export class HeaderComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private route: Router,
-    private walletService: WalletService,
-    private nemProvider: NemProvider,
     private nodeService: NodeService,
     private dataBridgeService: DataBridgeService,
     private dashboardService: DashboardService,
-    private mosaicService: MosaicService,
     private transactionService: TransactionsService,
     private sharedService: SharedService
   ) {
@@ -65,7 +59,6 @@ export class HeaderComponent implements OnInit {
     this.buildHeader();
     this.readRoute();
     this.balance();
-    // this.readLogged();
   }
 
 
@@ -96,7 +89,6 @@ export class HeaderComponent implements OnInit {
         if (this.showOnlyLogged) {
           this.subscriptions['balance'] = this.transactionService.getBalance$().subscribe(
             next => {
-              console.log('Balance changed! ----> ', next);
               this.horizontalHeader.amount.name = `Balance ${next} XPX`;
             }, error => {
               this.horizontalHeader.amount.name = `Balance 0.000000 XPX`;
@@ -155,45 +147,6 @@ export class HeaderComponent implements OnInit {
     this.authService.destroyNodeSelected();
     this.route.navigate([`/${param}`]);
   }
-
-  /**
-   * Get Balance
-   *
-   * @memberof HeaderComponent
-   */
-  /* getBalance() {
-     this.nemProvider.getBalance(this.walletService.address).pipe(mergeMap((_) => _)).pipe(first()).subscribe(
-       next => {
-         console.log("balance...", next);
-         console.log('You have', next.relativeAmount());
-         this.horizontalHeader.amount.name = `Balance ${next.relativeAmount().toFixed(6)} ${next.mosaicName}`;
-       },
-       err => {
-         this.vestedBalance = '0.000000';
-         console.log(err);
-       }
-     );
-   }*/
-
-  /**
-   * Read logged
-   *
-   * @memberof HeaderComponent
-   */
-  /* readLogged() {
-     this.authService.getIsLogged().subscribe(
-       async response => {
-         this.showOnlyLogged = response;
-         if (this.showOnlyLogged) {
-           // this.getBalance();
-           console.log("Get balance in read logged");
-         } else {
-           this.horizontalHeader.amount.name = `Balance ${this.vestedBalance}`;
-           this.dataBridgeService.closeConenection();
-         }
-       }
-     );
-   }*/
 
   /**
    * Read route

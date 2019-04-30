@@ -3,7 +3,7 @@ import { NetworkType, PublicAccount, AccountInfo } from "proximax-nem2-sdk";
 import { crypto } from 'proximax-nem2-library';
 import { Router } from "@angular/router";
 import { AccountsInterface } from '..';
-import { NemProvider } from './nem.provider';
+import { ProximaxProvider } from './proximax.provider';
 import { SharedService } from './shared.service';
 import { NodeService } from '../../servicesModule/services/node.service';
 import { AppConfig } from "../../config/app.config";
@@ -24,7 +24,7 @@ export class WalletService {
 
   constructor(
     private sharedService: SharedService,
-    private nemProvider: NemProvider,
+    private proximaxProvider: ProximaxProvider,
     private nodeService: NodeService,
     private route: Router
   ) {
@@ -103,7 +103,7 @@ export class WalletService {
 
     this.algo = wallet.accounts[0].algo;
     // Adress and newwork
-    this.address = this.nemProvider.createFromRawAddress(wallet.accounts[0].address);
+    this.address = this.proximaxProvider.createFromRawAddress(wallet.accounts[0].address);
 
     this.current = wallet;
     // this.contacts = this._AddressBook.getContacts(wallet);
@@ -139,7 +139,7 @@ export class WalletService {
       return true;
     }
 
-    if (!this.isPrivateKeyValid(common.privateKey) || !this.nemProvider.checkAddress(common.privateKey, net, acct.address)) {
+    if (!this.isPrivateKeyValid(common.privateKey) || !this.proximaxProvider.checkAddress(common.privateKey, net, acct.address)) {
       setTimeout(() => {
         this.sharedService.showError('Error', '¡Invalid password!');
       }, 500);
@@ -147,7 +147,7 @@ export class WalletService {
     }
 
     //Get public account from private key
-    this.publicAccount = this.nemProvider.getPublicAccountFromPrivateKey(common.privateKey, net)
+    this.publicAccount = this.proximaxProvider.getPublicAccountFromPrivateKey(common.privateKey, net)
     return true;
   }
 

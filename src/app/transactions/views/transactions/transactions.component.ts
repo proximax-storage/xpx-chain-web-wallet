@@ -1,10 +1,7 @@
-import { Component, OnInit, ViewChild, AfterViewInit, HostListener, ChangeDetectorRef } from '@angular/core';
-import { CollapseComponent, MdbTableService, MdbTablePaginationComponent } from 'ng-uikit-pro-standard';
-import { Observable, Subject } from 'rxjs';
+import { Component, OnInit, ViewChild, HostListener, ChangeDetectorRef } from '@angular/core';
+import { MdbTableService, MdbTablePaginationComponent } from 'ng-uikit-pro-standard';
 import { first } from "rxjs/operators";
-import { Transaction } from "proximax-nem2-sdk";
-import { TransactionsService } from '../../service/transactions.service';
-import { NemProvider } from "../../../shared/services/nem.provider";
+import { ProximaxProvider } from "../../../shared/services/proximax.provider";
 import { WalletService } from "../../../shared";
 
 @Component({
@@ -28,8 +25,7 @@ export class TransactionsComponent implements OnInit {
   constructor(
     private tableService: MdbTableService,
     private cdRef: ChangeDetectorRef,
-    private transactionsService: TransactionsService,
-    private nemProvider: NemProvider,
+    private proximaxProvider: ProximaxProvider,
     private walletService: WalletService
   ) {
   }
@@ -50,11 +46,10 @@ export class TransactionsComponent implements OnInit {
 
   ngOnInit() {
     this.getAllTransactions();
-    //this.getTransactionsConfirmed();
   }
 
   getAllTransactions() {
-    this.nemProvider.getAllTransactionsFromAccount(this.walletService.publicAccount, this.walletService.network).pipe(first()).subscribe(
+    this.proximaxProvider.getAllTransactionsFromAccount(this.walletService.publicAccount, this.walletService.network).pipe(first()).subscribe(
       trans => {
         trans.forEach(element => {
           const date = `${element.deadline.value.monthValue()}/${element.deadline.value.dayOfMonth()}/${element.deadline.value.year()}`;

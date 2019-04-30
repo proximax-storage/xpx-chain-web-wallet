@@ -3,7 +3,7 @@ import { FormGroup, FormBuilder, Validators, Form } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs/operators';
 import { AccountInfo, QueryParams, NamespaceName, MosaicId } from 'proximax-nem2-sdk';
-import { NemProvider } from '../../../../shared/services/nem.provider';
+import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { WalletService } from '../../../../shared/services/wallet.service';
 import { MosaicService } from '../../../services/mosaic.service';
 import { SharedService } from '../../../../shared/services/shared.service';
@@ -30,7 +30,7 @@ export class EditMosaicComponent implements OnInit {
     label: 'Increase',
     selected: true,
     disabled: false
-  },{
+  }, {
     value: '0',
     label: 'Decrease',
     selected: false,
@@ -55,7 +55,7 @@ export class EditMosaicComponent implements OnInit {
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
-    private nemProvider: NemProvider,
+    private proximaxProvider: ProximaxProvider,
     private sharedService: SharedService,
     private walletService: WalletService,
   ) { }

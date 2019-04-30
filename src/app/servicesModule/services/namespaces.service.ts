@@ -3,10 +3,9 @@ import {
   NamespaceInfo,
   NamespaceId,
   NamespaceName,
-  QueryParams,
   Address
 } from "proximax-nem2-sdk";
-import { NemProvider } from "../../shared/services/nem.provider";
+import { ProximaxProvider } from "../../shared/services/proximax.provider";
 import { WalletService } from "../../shared/services/wallet.service";
 import { NamespaceStorage } from "../interfaces/mosaics-namespaces.interface";
 import { ToastService } from "ng-uikit-pro-standard";
@@ -19,7 +18,7 @@ export class NamespacesService {
   namespaceViewCache: NamespaceName[] = [];
 
   constructor(
-    private nemProvider: NemProvider,
+    private proximaxProvider: ProximaxProvider,
     private walletService: WalletService,
     private toastrService: ToastService,
     private mosaicsService: MosaicService
@@ -48,6 +47,22 @@ export class NamespacesService {
       });
   }
 
+
+  async getNamespaceFromId(namespaceId: NamespaceId): Promise<NamespaceStorage> {
+    const data = this.filterNamespace(namespaceId);
+    if (data !== null && data !== undefined) {
+      return data;
+    }
+
+    const namespaceInfo = await this.proximaxProvider.getNamespace(namespaceId).toPromise();
+    if (namespaceInfo && Object.keys(namespaceInfo).length > 0) {
+      await this.setNamespaceStorage([namespaceInfo]);
+      return this.filterNamespace(namespaceId);
+    }
+
+    return null;
+  }
+
   /**
    * Gets array of NamespaceInfo for an account
    *
@@ -57,7 +72,7 @@ export class NamespacesService {
    */
   async getNamespacesFromAccountAsync(address: Address): Promise<NamespaceInfo[]> {
     //Gets array of NamespaceInfo for an account
-    return await this.nemProvider.namespaceHttp.getNamespacesFromAccount(address).toPromise();
+    return await this.proximaxProvider.namespaceHttp.getNamespacesFromAccount(address).toPromise();
   }
 
   /**
@@ -68,7 +83,7 @@ export class NamespacesService {
    * @memberof NamespacesService
    */
   async getNamespacesNameAsync(namespaceIds: NamespaceId[]): Promise<NamespaceName[]> {
-    return await this.nemProvider.namespaceHttp.getNamespacesName(namespaceIds).toPromise();
+    return await this.proximaxProvider.namespaceHttp.getNamespacesName(namespaceIds).toPromise();
   }
 
   /**
@@ -79,42 +94,85 @@ export class NamespacesService {
    */
   async setNamespaceStorage(namespacesParam: NamespaceInfo[]) {
     if (namespacesParam.length > 0) {
-
       //Get the storage namespace
       const namespacesStorage = this.getNamespaceFromStorage();
       // Map and get an array of ids from NamespaceInfo []
       const ids = namespacesParam.map(e => { return e.id; });
-      // Gets array of NamespaceName for different namespaceIds
-      const namespacesName = await this.getNamespacesNameAsync(ids);
-      if (namespacesName) {
-        namespacesParam.forEach(async element => {
-          // Check if the namespace id exists in storage
-          const existNamespace = namespacesStorage.find(k => this.nemProvider.getNamespaceId(k.id).toHex() === element.id.toHex());
-          // If existNamespace is undefined
-          if (existNamespace === undefined) {
-            // Filter by namespaceId the namespaceName from the array of namespacesName
-            const namespaceName = namespacesName.find(data => data.namespaceId.toHex() === element.id.toHex());
-            if (namespaceName) {
-              const data: NamespaceStorage = {
-                id: [
-                  namespaceName.namespaceId.id.lower,
-                  namespaceName.namespaceId.id.higher
-                ],
-                namespaceName: namespaceName,
-                NamespaceInfo: element
-              };
-              namespacesStorage.push(data);
-            }
-          }
-          this.mosaicsService.buildMosaicsStorage(element.id);
-        });
+      const idsToSearch = [];
+      ids.forEach(namespaceId => {
+        const filterNamespace = this.filterNamespace(namespaceId);
+        // console.log(filterNamespace);
+        if (filterNamespace === undefined || filterNamespace === null) {
+          idsToSearch.push(namespaceId);
+        }
+      });
 
-        localStorage.setItem(
-          this.getNameStorage(),
-          JSON.stringify(namespacesStorage)
-        );
+      if (idsToSearch.length > 0) {
+        // Gets array of NamespaceName for different namespaceIds
+        const namespacesName = await this.getNamespacesNameAsync(idsToSearch);
+        if (namespacesName) {
+          namespacesParam.forEach(async element => {
+            // Check if the namespace id exists in storage
+            const existNamespace = namespacesStorage.find(k => this.proximaxProvider.getNamespaceId(k.id).toHex() === element.id.toHex());
+            // If existNamespace is undefined
+            if (existNamespace === undefined) {
+              // Filter by namespaceId the namespaceName from the array of namespacesName
+              const namespaceName = namespacesName.find(data => data.namespaceId.toHex() === element.id.toHex());
+              if (namespaceName) {
+                const data: NamespaceStorage = {
+                  id: [namespaceName.namespaceId.id.lower, namespaceName.namespaceId.id.higher],
+                  namespaceName: namespaceName,
+                  NamespaceInfo: element
+                };
+                namespacesStorage.push(data);
+              }
+            }
+
+            //Build mosaics storage
+            this.mosaicsService.buildMosaicsStorage(element.id);
+          });
+
+          localStorage.setItem(this.getNameStorage(), JSON.stringify(namespacesStorage));
+          return namespacesStorage;
+        }
       }
     }
+
+    return [];
+  }
+
+  /**
+   *
+   *
+   * @param {NamespaceId} namespaceId
+   * @returns {NamespaceStorage}
+   * @memberof NamespacesService
+   */
+  filterNamespace(namespaceId: NamespaceId): NamespaceStorage {
+    if (namespaceId !== undefined) {
+      const namespaceStorage = this.getNamespaceFromStorage();
+      if (namespaceStorage.length > 0) {
+        const filtered = namespaceStorage.find(element => {
+          return this.getNamespaceId(element.id).id.toHex() === namespaceId.id.toHex();
+        });
+
+        return filtered;
+      }
+    }
+
+    return null;
+
+  }
+
+  /**
+   *
+   *
+   * @param {(string | number[])} id
+   * @returns {NamespaceId}
+   * @memberof NamespacesService
+   */
+  getNamespaceId(id: string | number[]): NamespaceId {
+    return this.proximaxProvider.getNamespaceId(id);
   }
 
   /**
@@ -135,104 +193,7 @@ export class NamespacesService {
    * @memberof NamespacesService
    */
   getNameStorage() {
-    return `proximax-namespaces-${this.walletService.address.address.substr(
-      4,
-      12
-    )}`;
-  }
-
-  // ***************** OLD ***********************************************************************************************************************
-
-  destroyNamespaceCache() {
-    this.namespaceViewCache = [];
-  }
-
-  setNamespacesCache(namespaceName: NamespaceName) {
-    this.namespaceViewCache.push(namespaceName);
-  }
-
-  getNamespacesCache() {
-    return this.namespaceViewCache;
-  }
-
-  async getNamespacesFromAccount(address: Address, queryParams?: QueryParams) {
-    const promise = await new Promise(async (resolve, reject) => {
-      const namespaceFromAccount = await this.nemProvider.namespaceHttp
-        .getNamespacesFromAccount(address, queryParams)
-        .toPromise();
-      console.log(namespaceFromAccount);
-      // const accountInfo = await this.nemProvider.accountHttp.getAccountInfo(address).toPromise();
-      // console.log("accountInfo", accountInfo);
-      // let mosaicsId = [];
-      // if (searchXpx) {
-      //   mosaicsId = accountInfo.mosaics.map((mosaic: Mosaic) => { return mosaic.id });
-      // } else {
-      //   accountInfo.mosaics.forEach((mosaic: Mosaic) => {
-      //     if (mosaic.id.toHex() !== 'd423931bd268d1f4') {
-      //       return mosaicsId.push(mosaic.id);
-      //     }
-      //   });
-      // }
-
-      // let response = {};
-      // if (mosaicsId.length > 0) {
-      //   const mosaicsName: MosaicName[] = await this.getNameMosaic(mosaicsId);
-      //   console.log("mosaicsName", mosaicsName);
-      //   const namespacesId = mosaicsName.map((mosaicsName: MosaicName) => { return mosaicsName.namespaceId });
-      //   const namespaceName = await this.namespaceServices.getNameName(namespacesId);
-      //   response = { mosaicsName: mosaicsName, namespaceName: namespaceName };
-      // }
-
-      // resolve(response);
-    });
-
-    return await promise;
-  }
-
-  async searchNamespace(namespacesId: NamespaceId[]) {
-    const infoNamespace = [];
-    const namespaceToSearch = [];
-    for (let namespaceId of namespacesId) {
-      const filterNamespace = this.filterNamespace(namespaceId);
-      console.log("Existe filter namespace?", filterNamespace);
-      if (filterNamespace === undefined) {
-        namespaceToSearch.push(namespaceId);
-      } else {
-        infoNamespace.push(filterNamespace);
-      }
-    }
-
-    // Search info namespace
-    if (namespaceToSearch.length > 0) {
-      const response = await this.nemProvider.getNamespaceViewPromise(
-        namespaceToSearch
-      );
-      console.log("responseresponseresponse", response);
-      Object.keys(response).forEach(element => {
-        infoNamespace.push(response[element]);
-        this.setNamespacesCache(response[element]);
-      });
-    }
-
-    return infoNamespace;
-  }
-
-  filterNamespace(namespaceId: NamespaceId) {
-    console.log("namespace en cache", this.namespaceViewCache);
-    console.log("namespaceId by filter", namespaceId);
-    if (this.namespaceViewCache !== undefined) {
-      if (this.namespaceViewCache.length > 0) {
-        const filtered = this.namespaceViewCache.find(function (element) {
-          return element.namespaceId.toHex() === namespaceId.toHex();
-        });
-        return filtered;
-      }
-    }
-  }
-
-  async getNameName(namespaceId: NamespaceId[]) {
-    return await this.nemProvider.namespaceHttp
-      .getNamespacesName(namespaceId)
-      .toPromise();
+    return `proximax-namespaces`;
+    // return `proximax-namespaces-${this.walletService.address.address.substr(4, 12)}`;
   }
 }

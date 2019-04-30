@@ -11,7 +11,7 @@ import {
   QueryParams,
   NamespaceName
 } from "proximax-nem2-sdk";
-import { NemProvider } from "../../shared/services/nem.provider";
+import { ProximaxProvider } from "../../shared/services/proximax.provider";
 import { WalletService } from "../../shared/services/wallet.service";
 import { TransactionsService } from "../../transactions/service/transactions.service";
 import { ToastService } from "ng-uikit-pro-standard";
@@ -33,8 +33,7 @@ export class MosaicService {
   };
 
   constructor(
-    private nemProvider: NemProvider,
-    private walletService: WalletService,
+    private proximaxProvider: ProximaxProvider,
     private toastrService: ToastService
   ) { }
 
@@ -74,7 +73,7 @@ export class MosaicService {
    * @memberof MosaicService
    */
   async getNameMosaics(mosaicsId: MosaicId[]): Promise<MosaicName[]> {
-    return await this.nemProvider.mosaicHttp
+    return await this.proximaxProvider.mosaicHttp
       .getMosaicsName(mosaicsId)
       .toPromise();
   }
@@ -87,7 +86,7 @@ export class MosaicService {
    * @memberof MosaicService
    */
   async getNameNamespace(namespaceId: NamespaceId[]) {
-    return await this.nemProvider.namespaceHttp
+    return await this.proximaxProvider.namespaceHttp
       .getNamespacesName(namespaceId)
       .toPromise();
   }
@@ -102,7 +101,7 @@ export class MosaicService {
    */
   async getMosaicFromAddress(address: Address, searchXpx: boolean = true) {
     const promise = await new Promise(async (resolve, reject) => {
-      const accountInfo = await this.nemProvider.accountHttp
+      const accountInfo = await this.proximaxProvider.accountHttp
         .getAccountInfo(address)
         .toPromise();
       // console.log("accountInfo", accountInfo);
@@ -151,24 +150,26 @@ export class MosaicService {
     const mosaicsToSearch = [];
     mosaicsId.forEach(mosaicId => {
       const filterMosaic = this.filterMosaic(mosaicId);
-      if (filterMosaic === undefined) {
+      if (filterMosaic === undefined || filterMosaic === null) {
         mosaicsToSearch.push(mosaicId);
       } else {
         infoMosaics.push(filterMosaic);
       }
     });
 
+    // console.log('--- MOSAICS TO SEARCH ----', mosaicsToSearch);
     // Search info mosaics
     if (mosaicsToSearch.length > 0) {
-      const response = await this.nemProvider.getMosaics(mosaicsToSearch).toPromise();
-      // console.log('---response ----', response);
-      await this.saveMosaicsStorage(response);
-      Object.keys(response).forEach(elm => {
-        // console.log(response[elm].mosaicId);
-        if (this.filterMosaic(response[elm].mosaicId)) {
-          infoMosaics.push(this.filterMosaic(response[elm].mosaicId));
+      const mosaics = await this.proximaxProvider.getMosaics(mosaicsToSearch).toPromise();
+      // console.log('---response ----', mosaics);
+      await this.saveMosaicsStorage(mosaics);
+      for (let elm of Object.keys(mosaics)) {
+        // console.log(mosaics[elm].mosaicId);
+        const filterMosaic = this.filterMosaic(mosaics[elm].mosaicId);
+        if (filterMosaic) {
+          infoMosaics.push(filterMosaic);
         }
-      });
+      }
     }
 
     // console.log(infoMosaics);
@@ -183,45 +184,49 @@ export class MosaicService {
    * @returns
    * @memberof MosaicService
    */
-  async saveMosaicsStorage(mosaicsInfo: MosaicInfo[], namespaceNameParam?: NamespaceName) {
-    // console.log('mosaicsInfo ---> ', mosaicsInfo);
+  async saveMosaicsStorage(mosaicsInfo: MosaicInfo[]) {
+    if (mosaicsInfo.length > 0) {
+      // console.log('mosaicsInfo ---> ', mosaicsInfo);
+      //filter mosaics id from mosaicsInfo params
+      const mosaicsIds = mosaicsInfo.map(data => data.mosaicId);
+      //get mosaics from storage
+      const mosaicsStorage = this.getMosaicsFromStorage();
+      // If the mosaic identification has data, look for the names of the tiles. This must return an array of mosaics name
+      const mosaicsName = (mosaicsIds.length > 0) ? await this.getNameMosaics(mosaicsIds) : [];
+      for (let mosaicInfo of mosaicsInfo) {
+        // Check if the mosaics id exists in storage
+        const existMosaic = mosaicsStorage.find(key => this.proximaxProvider.getMosaicId(key.id).toHex() === mosaicInfo.mosaicId.toHex());
+        // Mosaic does not exist in storage
+        if (existMosaic === undefined || existMosaic === null) {
+          // From the arrangement of the mosaics name, filter the mosaic name data by the mosaic id
+          const mosaicName = mosaicsName.find(data => data.mosaicId.toHex() === mosaicInfo.mosaicId.toHex());
+          // If mosaicName is defined
+          if (mosaicName) {
+            /*let namespaceName: NamespaceName | NamespaceName[] = namespaceNameParam;
+            // If namespaceNameParam is not defined, look up the NamespaceName array by namespaceIds
+            if (namespaceNameParam === undefined) {
+              const x = await this.proximaxProvider.namespaceHttp.getNamespacesName([mosaicInfo.namespaceId]).toPromise();
+              namespaceName = x[0];
+            }*/
 
-    //filter mosaics id from mosaicsInfo params
-    const mosaicsIds = mosaicsInfo.map(data => data.mosaicId);
-    //get mosaics from storage
-    const mosaicsStorage = this.getMosaicsFromStorage();
-    // If the mosaic identification has data, look for the names of the tiles. This must return an array of mosaics name
-    const mosaicsName = (mosaicsIds.length > 0) ? await this.getNameMosaics(mosaicsIds) : [];
-    for (let mosaicInfo of mosaicsInfo) {
-      // Check if the mosaics id exists in storage
-      const existMosaic = mosaicsStorage.find(key => this.nemProvider.getMosaicId(key.id).toHex() === mosaicInfo.mosaicId.toHex());
-      // Mosaic does not exist in storage
-      if (existMosaic === undefined) {
-        // From the arrangement of the mosaics name, filter the mosaic name data by the mosaic id
-        const mosaicName = mosaicsName.find(data => data.mosaicId.toHex() === mosaicInfo.mosaicId.toHex());
-        // If mosaicName is defined
-        if (mosaicName) {
-          let namespaceName: NamespaceName | NamespaceName[] = namespaceNameParam;
-          // If namespaceNameParam is not defined, look up the NamespaceName array by namespaceIds
-          if (namespaceNameParam === undefined) {
-            const x = await this.nemProvider.namespaceHttp.getNamespacesName([mosaicInfo.namespaceId]).toPromise();
-            namespaceName = x[0];
+            const x = await this.proximaxProvider.namespaceHttp.getNamespacesName([mosaicInfo.namespaceId]).toPromise();
+            // Push to the array of mosaicsStorage
+            const data: MosaicsStorage = {
+              id: [mosaicName.mosaicId.id.lower, mosaicName.mosaicId.id.higher],
+              namespaceName: x[0],
+              mosaicName: mosaicName,
+              mosaicInfo: mosaicInfo
+            };
+            mosaicsStorage.push(data);
           }
-
-          // Push to the array of mosaicsStorage
-          const data: MosaicsStorage = {
-            id: [mosaicName.mosaicId.id.lower, mosaicName.mosaicId.id.higher],
-            namespaceName: namespaceName,
-            mosaicName: mosaicName,
-            mosaicInfo: mosaicInfo
-          };
-          mosaicsStorage.push(data);
         }
       }
+
+      localStorage.setItem(this.getNameStorage(), JSON.stringify(mosaicsStorage));
+      return mosaicsStorage;
     }
 
-    localStorage.setItem(this.getNameStorage(), JSON.stringify(mosaicsStorage));
-    return mosaicsStorage;
+    return [];
   }
 
   /**
@@ -258,7 +263,8 @@ export class MosaicService {
    * @memberof MosaicService
    */
   getNameStorage() {
-    return `proximax-mosaics-${this.walletService.address.address.substr(4, 12)}`;
+    return `proximax-mosaics`;
+    // return `proximax-mosaics-${this.walletService.address.address.substr(4, 12)}`;
   }
 
   /**
@@ -271,15 +277,6 @@ export class MosaicService {
     return this.mosaicsViewCache;
   }
 
-  /**
-   *
-   *
-   * @returns {Observable<any>}
-   * @memberof MosaicService
-   */
-  // getBalance$(): Observable<any> {
-  //   return this.balance$;
-  // }
 
   /**
    *
@@ -289,26 +286,43 @@ export class MosaicService {
    * @returns {Observable<MosaicInfo[]>}
    * @memberof MosaicService
    */
-  getMosaicsFromNamespace(
-    namespaceId: NamespaceId,
-    queryParams?: QueryParams
-  ): Promise<MosaicInfo[]> {
-    return this.nemProvider.mosaicHttp
+  getMosaicsFromNamespace(namespaceId: NamespaceId, queryParams?: QueryParams): Promise<MosaicInfo[]> {
+    return this.proximaxProvider.mosaicHttp
       .getMosaicsFromNamespace(namespaceId, queryParams)
       .toPromise();
   }
 
+  /**
+   *
+   *
+   * @returns {MosaicsStorage[]}
+   * @memberof MosaicService
+   */
   getMosaicsFromStorage(): MosaicsStorage[] {
     const dataStorage = localStorage.getItem(this.getNameStorage());
     return dataStorage === null ? [] : JSON.parse(dataStorage);
   }
 
+  /**
+   *
+   *
+   * @param {(string | number[])} id
+   * @returns {MosaicId}
+   * @memberof MosaicService
+   */
   getMosaicId(id: string | number[]): MosaicId {
-    return this.nemProvider.getMosaicId(id);
+    return this.proximaxProvider.getMosaicId(id);
   }
 
+  /**
+   *
+   *
+   * @param {MosaicId[]} mosaicIds
+   * @returns {Promise<MosaicInfo[]>}
+   * @memberof MosaicService
+   */
   getMosaicsPromise(mosaicIds: MosaicId[]): Promise<MosaicInfo[]> {
-    return this.nemProvider.getMosaics(mosaicIds).toPromise();
+    return this.proximaxProvider.getMosaics(mosaicIds).toPromise();
   }
 
   /**
@@ -323,35 +337,4 @@ export class MosaicService {
     this.mosaicsViewCache.push(mosaicsViewCache);
   }
 
-  // setBalance$(amount: any): void {
-  //   this.balance.next(this.transactionService.amountFormatterSimple(amount));
-  // }
-
-  /**
-   *
-   *
-   * @memberof MosaicService
-   */
-  // updateBalance() {
-  //   this.nemProvider
-  //     .getAccountInfo(this.walletService.address)
-  //     .pipe(first())
-  //     .subscribe(
-  //       next => {
-  //         console.log("Account Info! ---> ", next);
-  //         this.walletService.setAccountInfo(next);
-  //         next.mosaics.forEach(element => {
-  //           if (element.id.toHex() === this.mosaicXpx.mosaicId) {
-  //             console.log("balance...", this.transactionService.amountFormatterSimple(element.amount.compact()));
-  //             this.setBalance$(element.amount.compact());
-  //           }
-  //         });
-  //       },
-  //       _err => {
-  //         console.log("--- ERROR TO SEARCH BALANCE ----- ", _err);
-  //         this.setBalance$("0.000000");
-  //         // this.updateBalance();
-  //       }
-  //     );
-  // }
 }

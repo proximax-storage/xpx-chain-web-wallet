@@ -1,4 +1,4 @@
-<container>
+<ng-container>
   <div class="row">
     <div class="col-md-3">
       <span class="fs-08rem fw-bolder w-w-b-w"><b>Type transaction:</b></span>
@@ -8,11 +8,11 @@
     </div>
   </div>
   <hr>
-</container>
+</ng-container>
 
 
 <!-- FROM & TO INFO-->
-<container>
+<ng-container>
   <div class="mt-3">
     <div class="row">
       <div class="col-md-3">
@@ -34,11 +34,11 @@
     </div>
   </div>
   <hr>
-</container>
+</ng-container>
 
 
 <!-- MOSAICS INFO-->
-<container>
+<ng-container>
   <div class="mt-3">
     <div class="row">
       <div class="col-md-3">
@@ -53,12 +53,12 @@
   <app-mosaics-info (changeSearch)="searching = false;" [mosaicsArray]="transferTransaction.data.mosaics">
   </app-mosaics-info>
   <hr>
-</container>
+</ng-container>
 
 
 
 <!-- SIGNER & SIGNATURE INFO -->
-<container>
+<ng-container>
   <div class="mt-3">
     <div class="row">
       <div class="col-md-3">
@@ -80,11 +80,11 @@
     </div>
   </div>
   <hr>
-</container>
+</ng-container>
 
 <!-- MESSAGE, TIMESTAMP & HASH INFO-->
 
-<container>
+<ng-container>
   <div class="mt-3">
     <div class="row">
       <div class="col-md-3">
@@ -115,7 +115,7 @@
       </div>
     </div>
   </div>
-</container>
+</ng-container>
 
 <div class="col-12 mt-4" *ngIf="searching">
   <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate" *ngIf="searching"></mdb-progress-bar>

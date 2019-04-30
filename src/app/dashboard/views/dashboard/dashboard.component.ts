@@ -19,8 +19,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   dataSelected: TransactionsInterface = null;
   headElements = ['Type', 'Timestamp', 'Fee', 'Sender', 'Recipient'];
   iconReloadDashboard = false;
-  // infoMosaic: MosaicInfo;
-
   searching = true;
   subscriptions = [
     'transactionsConfirmed',
@@ -78,13 +76,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
           this.iconReloadDashboard = false;
           this.searching = false;
           this.dashboardService.searchComplete = true;
-          console.log(' ----- DATA CONFIRMED TRANSACTIONS ----', data);
+          // console.log(' ----- DATA CONFIRMED TRANSACTIONS ----', data);
         }).catch(err => {
           this.dashboardService.searchComplete = false;
           this.searching = false;
           this.iconReloadDashboard = true;
           this.sharedService.showError('Has ocurred a error', 'Possible causes: the network is offline');
-          console.log('This is error ----> ', err);
+          // console.log('This is error ----> ', err);
         });
     } else {
       this.iconReloadDashboard = (this.dashboardService.searchComplete === false) ? true : false;
@@ -109,6 +107,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   *
+   *
+   * @memberof DashboardComponent
+   */
   subscribeTransactions() {
     this.subscriptions['transactionsConfirmed'] = this.transactionService.getTransactionsConfirmed$().subscribe(
       (next: TransactionsInterface[]) => {

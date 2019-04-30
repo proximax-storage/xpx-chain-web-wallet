@@ -1,13 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import * as crypto from 'crypto-js'
-import { Account, Transaction, TransferTransaction, Message } from 'proximax-nem2-sdk';
+import { TransferTransaction, Message } from 'proximax-nem2-sdk';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
-import { decode } from 'utf8';
-import { NemProvider } from '../../../../shared/services/nem.provider';
+import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { SharedService } from '../../../../shared';
-import { ServiceModuleService } from '../../../services/service-module.service';
 import { NodeService } from '../../../../servicesModule/services/node.service';
-import { KeyPair, convert } from 'proximax-nem2-library';
 import { Verifier } from './audit-apistille-verifier'
 
 @Component({
@@ -29,7 +26,7 @@ export class AuditApostilleComsponent implements OnInit {
   initialFileName: any;
   url: any;
   constructor(
-    private nemProvider: NemProvider,
+    private proximaxProvider: ProximaxProvider,
     private sharedService: SharedService,
     private nodeService: NodeService
   ) {
@@ -108,7 +105,7 @@ export class AuditApostilleComsponent implements OnInit {
     let apostilleTxHash = nameArray[nameArray.length - 4].replace(/^\s+|\s+$/, '');
     // console.log("signedTransaction.hash:", apostilleTxHash);
     this.blockUI.start('Loading...'); // Start blocking
-    this.nemProvider.getTransaction(apostilleTxHash).subscribe((infTrans: TransferTransaction) => {
+    this.proximaxProvider.getTransaction(apostilleTxHash).subscribe((infTrans: TransferTransaction) => {
       const apostilleHashPrefix = 'fe4e545903';
 
       const data = this.file

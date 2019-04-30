@@ -10,7 +10,7 @@ import { KeyPair, convert } from 'proximax-nem2-library'
 import * as crypto from 'crypto-js'
 import * as JSZip from 'jszip';
 import { WalletService, SharedService } from '../../../../shared';
-import { NemProvider } from '../../../../shared/services/nem.provider';
+import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { NodeService } from '../../../../servicesModule/services/node.service';
 import { IpfsConnection, StreamHelper, IpfsClient } from 'xpx2-ts-js-sdk';
 import { environment } from '../../../../../environments/environment';
@@ -49,7 +49,7 @@ export class CreateApostilleComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private walletService: WalletService,
-    private nemProvider: NemProvider,
+    private proximaxProvider: ProximaxProvider,
     private sharedService: SharedService,
     private nodeService: NodeService,
     private apostilleService: ApostilleService
@@ -164,7 +164,7 @@ export class CreateApostilleComponent implements OnInit {
     const dedicatedAccount = Account.createFromPrivateKey(dedicatedPrivateKey, this.walletService.network);
     let transferTransaction: any
 
-    transferTransaction = this.nemProvider.sendTransaction(this.walletService.network, dedicatedAccount.address.plain(), JSON.stringify(apostilleHash))
+    transferTransaction = this.proximaxProvider.sendTransaction(this.walletService.network, dedicatedAccount.address.plain(), JSON.stringify(apostilleHash))
     transferTransaction.fee = UInt64.fromUint(0);
     const signedTransaction = ownerAccount.sign(transferTransaction);
 
@@ -180,7 +180,7 @@ export class CreateApostilleComponent implements OnInit {
       Owner: ownerAccount.address.plain(),
 
     }
-    this.nemProvider.announce(signedTransaction).subscribe(
+    this.proximaxProvider.announce(signedTransaction).subscribe(
       x => {
         this.blockUI.stop(); // Stop blocking
         this.buildApostille(nty)
@@ -200,11 +200,11 @@ export class CreateApostilleComponent implements OnInit {
     const apostilleHashPrefix = 'fe4e545903';
     const hash = crypto.SHA256(this.file);
     const apostilleHash = apostilleHashPrefix + crypto.SHA256(this.file).toString(crypto.enc.Hex);
-    const sinkAddress = this.nemProvider.generateNewAccount(this.walletService.network).address.plain();
+    const sinkAddress = this.proximaxProvider.generateNewAccount(this.walletService.network).address.plain();
     const account = Account.createFromPrivateKey(common.privateKey, this.walletService.network);
     let transferTransaction: any
 
-    transferTransaction = this.nemProvider.sendTransaction(this.walletService.network, sinkAddress, JSON.stringify(apostilleHash))
+    transferTransaction = this.proximaxProvider.sendTransaction(this.walletService.network, sinkAddress, JSON.stringify(apostilleHash))
     transferTransaction.fee = UInt64.fromUint(0);
     const signedTransaction = account.sign(transferTransaction);
     const nty = {
@@ -218,7 +218,7 @@ export class CreateApostilleComponent implements OnInit {
       Owner: account.address.plain()
 
     }
-    this.nemProvider.announce(signedTransaction).subscribe(
+    this.proximaxProvider.announce(signedTransaction).subscribe(
       x => {
         this.blockUI.stop(); // Stop blocking
         // console.log("exis=", x)
@@ -257,7 +257,7 @@ export class CreateApostilleComponent implements OnInit {
     const titlle2 = nty.title.slice(nty.title.lastIndexOf('.'));
     const fecha = `${date.getFullYear()}-${("00" + (date.getMonth() + 1)).slice(-2)}-${("00" + (date.getDate())).slice(-2)}`
 
-    const url = `${this.nemProvider.url}/transaction/${nty.signedTransaction.hash.toLowerCase()}`;
+    const url = `${this.proximaxProvider.url}/transaction/${nty.signedTransaction.hash.toLowerCase()}`;
     let qr = qrcode(10, 'H');
 
     qr.addData(url);

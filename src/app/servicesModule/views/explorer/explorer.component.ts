@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, HostListener, AfterViewInit, ChangeDetect
 import { MdbTablePaginationComponent, MdbTableService } from 'ng-uikit-pro-standard';
 import { MosaicId, Transaction, Address, TransactionType } from 'proximax-nem2-sdk';
 import { AppConfig } from '../../../config/app.config';
-import { NemProvider } from '../../../shared/services/nem.provider';
+import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 import { NodeService } from "../../../servicesModule/services/node.service";
 import { SharedService, WalletService } from "../../../shared";
 import { TransactionsService } from "../../../transactions/service/transactions.service";
@@ -44,7 +44,7 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
     private tableService: MdbTableService,
     private cdRef: ChangeDetectorRef,
     private walletService: WalletService,
-    private nemProvider: NemProvider,
+    private proximaxProvider: ProximaxProvider,
     private nodeService: NodeService,
     private sharedService: SharedService,
     private transactionsService: TransactionsService
@@ -99,10 +99,10 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
     if (this.typeSearch === 'address') {
       //from address
       this.blockInput = true;
-      this.nemProvider.getAccountInfo(Address.createFromRawAddress(this.paramSearch)).pipe(first()).subscribe(
+      this.proximaxProvider.getAccountInfo(Address.createFromRawAddress(this.paramSearch)).pipe(first()).subscribe(
         accountInfo => {
 
-          this.nemProvider.getAllTransactionsFromAccount(accountInfo.publicAccount).subscribe(
+          this.proximaxProvider.getAllTransactionsFromAccount(accountInfo.publicAccount).subscribe(
             resp => {
               console.log('with address info ', resp);
               this.buildTransaction(resp);
@@ -117,8 +117,8 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
     } else if (this.typeSearch === 'publickey') {
       //From publickey
       this.blockInput = true;
-      const publicAccount = this.nemProvider.createPublicAccount(this.paramSearch, this.walletService.network);
-      this.nemProvider.getAllTransactionsFromAccount(publicAccount, this.nodeService.getNodeSelected()).subscribe(
+      const publicAccount = this.proximaxProvider.createPublicAccount(this.paramSearch, this.walletService.network);
+      this.proximaxProvider.getAllTransactionsFromAccount(publicAccount, this.nodeService.getNodeSelected()).subscribe(
         resp => {
 
           this.buildTransaction(resp);
@@ -131,7 +131,7 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
     } else {
       //From hash
       this.blockInput = true;
-      this.nemProvider.getTransactionInformation(this.paramSearch, this.nodeService.getNodeSelected()).subscribe(
+      this.proximaxProvider.getTransactionInformation(this.paramSearch, this.nodeService.getNodeSelected()).subscribe(
         resp => {
           console.log('with hash info', resp);
           this.buildTransaction([resp]);
@@ -156,7 +156,7 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
           message: element['message'],
           transactionInfo: element.transactionInfo,
           fee: element.fee.compact(),
-          mosaic: this.nemProvider.mosaicXpx.mosaic,
+          mosaic: this.proximaxProvider.mosaicXpx.mosaic,
           date: date,
           recipient: element['recipient'],
           signer: element.signer

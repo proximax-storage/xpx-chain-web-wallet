@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl, FormControl, FormArray, ValidatorFn } from "@angular/forms";
 
 import { WalletService } from '../../../../shared/services/wallet.service';
-import { NemProvider } from '../../../../shared/services/nem.provider';
+import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { SharedService } from '../../../../shared';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { Address, UInt64, Account } from 'proximax-nem2-sdk';
@@ -35,12 +35,12 @@ export class CreatePollComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private walletService: WalletService,
-    private nemProvider: NemProvider,
+    private proximaxProvider: ProximaxProvider,
     private sharedService: SharedService,
 
 
   ) {
-    // this.indexAccount = this.nemProvider.generateNewAccount(this.walletService.network).address.plain();
+    // this.indexAccount = this.proximaxProvider.generateNewAccount(this.walletService.network).address.plain();
     this.optionsStorage = [{ value: '', label: 'select ' }, { value: '1', label: 'POI ' }, { value: '2', label: 'white List ' }]
   }
 
@@ -52,7 +52,7 @@ export class CreatePollComponent implements OnInit {
 
   createForm() {
     this.options = [{ value: 'YES' }, { value: 'NO' }]
-    this.optionsData = this.options.map((value, index) => new FormControl(value.value, Validators.required, ))
+    this.optionsData = this.options.map((value, index) => new FormControl(value.value, Validators.required))
     this.createpollForm = this.fb.group({
       title: ['', Validators.required],
       description: ['', Validators.required],
@@ -205,7 +205,7 @@ export class CreatePollComponent implements OnInit {
       strings.push(optionsForm[element])
 
       let accountPoll: Account;
-      accountPoll = this.nemProvider.generateNewAccount(this.walletService.network)
+      accountPoll = this.proximaxProvider.generateNewAccount(this.walletService.network)
       stringsPubliKey.push(accountPoll.publicKey)
       obj[optionsForm[element]] = accountPoll.address.plain();
     })
@@ -234,7 +234,7 @@ export class CreatePollComponent implements OnInit {
 
     }
     let accountPoll: Account;
-    accountPoll = this.nemProvider.generateNewAccount(this.walletService.network)
+    accountPoll = this.proximaxProvider.generateNewAccount(this.walletService.network)
     let datapoll: Datapoll = {}
     if (this.createpollForm.get('whiteList').value.length > 0) {
       let datapoll: Datapoll = {
@@ -276,14 +276,14 @@ export class CreatePollComponent implements OnInit {
   sendAccountPoll(message: any, address, privateKey) {
     this.blockUI.start('Loading...'); // Start blocking
     let transferTransaction: any
-    transferTransaction = this.nemProvider.sendTransaction(this.walletService.network, address, JSON.stringify(message))
+    transferTransaction = this.proximaxProvider.sendTransaction(this.walletService.network, address, JSON.stringify(message))
     transferTransaction.fee = UInt64.fromUint(0);
     const account = Account.createFromPrivateKey(privateKey, this.walletService.network);
     const signedTransaction = account.sign(transferTransaction);
     this.blockUI.stop(); // Stop blocking
     if (this.getMessageLength(signedTransaction, message)) {
       this.blockUI.start('Loading...'); // Start blocking
-      this.nemProvider.announce(signedTransaction).subscribe(
+      this.proximaxProvider.announce(signedTransaction).subscribe(
         x => {
           this.blockUI.stop(); // Stop blocking
           console.log("Se envió la transacción....", x)

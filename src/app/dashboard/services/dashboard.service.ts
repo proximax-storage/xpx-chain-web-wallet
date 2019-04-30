@@ -1,12 +1,10 @@
 import { Injectable } from '@angular/core';
-import { AuthService } from '../../auth/services/auth.service';
-import { ProximaxProvider } from '../../shared/services/proximax.provider';
 import { MosaicInfo, QueryParams, PublicAccount, Transaction } from 'proximax-nem2-sdk';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable } from 'rxjs';
+import { AuthService } from '../../auth/services/auth.service';
 import { WalletService } from '../../shared/services/wallet.service';
-import { MosaicService } from '../..//servicesModule/services/mosaic.service';
-import { NemProvider } from 'src/app/shared/services/nem.provider';
-import { TransactionsInterface } from './transaction.interface';
+import { MosaicService } from '../../servicesModule/services/mosaic.service';
+import { ProximaxProvider } from '../../shared/services/proximax.provider';
 
 @Injectable({
   providedIn: 'root'
@@ -31,7 +29,7 @@ export class DashboardService {
     private authService: AuthService,
     private walletService: WalletService,
     private mosaicService: MosaicService,
-    private nemProvider: NemProvider
+    private proximaxProvider: ProximaxProvider
   ) { }
 
   /**
@@ -60,7 +58,7 @@ export class DashboardService {
         response => {
           if (response === false) {
             // DESTROY SUBSCRIPTION WHEN IS NOT LOGIN
-            console.log("NOT LOGGED!");
+            // console.log("NOT LOGGED!");
             this.searchComplete = false;
             this.isIncrementViewDashboard = 0;
             this.destroySubscription();
@@ -74,9 +72,6 @@ export class DashboardService {
     }
   }
 
-
-
-
   /**
    *
    *
@@ -87,10 +82,10 @@ export class DashboardService {
    */
   getAllTransactionsPromise(publicAccount: PublicAccount, queryParams?: QueryParams): Promise<Transaction[]> {
     if (queryParams !== undefined) {
-      return this.nemProvider.getAllTransactionsFromAccount(publicAccount, queryParams).toPromise();
+      return this.proximaxProvider.getAllTransactionsFromAccount(publicAccount, queryParams).toPromise();
     }
 
-    return this.nemProvider.getAllTransactionsFromAccount(publicAccount, this.walletService.network).toPromise();
+    return this.proximaxProvider.getAllTransactionsFromAccount(publicAccount, this.walletService.network).toPromise();
   }
 
   /**

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { WalletService, SharedService } from '../../../../shared';
-import { NemProvider } from '../../../../shared/services/nem.provider';
+import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs/operators';
@@ -49,7 +49,7 @@ export class CreateNamespaceComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private walletService: WalletService,
-    private nemProvider: NemProvider,
+    private proximaxProvider: ProximaxProvider,
     private sharedService: SharedService,
     private route: ActivatedRoute,
     private router: Router,
@@ -88,7 +88,7 @@ export class CreateNamespaceComponent implements OnInit {
 
   async getNameSpaceRoot(rootNamespace: any, status: boolean) {
     const promise = new Promise((resolve, reject) => {
-      this.nemProvider.namespaceHttp.getNamespacesName(rootNamespace.levels).pipe(first()).subscribe(
+      this.proximaxProvider.namespaceHttp.getNamespacesName(rootNamespace.levels).pipe(first()).subscribe(
         (namespaceName: any) => {
           for (let n of namespaceName) {
             const sts = status ? false : true;
@@ -117,7 +117,7 @@ export class CreateNamespaceComponent implements OnInit {
 
   async getNameSpaceSubnivel(subNamespace: any, status: boolean, depth: number) {
     const promise = new Promise((resolve, reject) => {
-      this.nemProvider.namespaceHttp.getNamespacesName([subNamespace.levels[depth - 1]]).pipe(first()).subscribe(
+      this.proximaxProvider.namespaceHttp.getNamespacesName([subNamespace.levels[depth - 1]]).pipe(first()).subscribe(
         (namespaceName: any) => {
           this.labelnamespace = ''
           const name = this.ordernamespace(namespaceName.sort())
@@ -152,11 +152,11 @@ export class CreateNamespaceComponent implements OnInit {
 
     this.namespaceForm.get('namespace').valueChanges.subscribe(namespace => {
       this.typetransfer = (namespace == 1) ? 1 : 2
-      this.showDuration =false
-      if(namespace == 1){
-        this.showDuration =false
-      }else{
-        this.showDuration =true
+      this.showDuration = false
+      if (namespace == 1) {
+        this.showDuration = false
+      } else {
+        this.showDuration = true
       }
 
     })
@@ -240,7 +240,7 @@ export class CreateNamespaceComponent implements OnInit {
       if (this.walletService.decrypt(common)) {
         this.signedTransactionPromise(common).then(signedTransaction => {
 
-          this.nemProvider.announce(signedTransaction).subscribe(
+          this.proximaxProvider.announce(signedTransaction).subscribe(
             x => {
               this.resectForm()
               this.blockUI.stop(); // Stop blocking
@@ -269,7 +269,7 @@ export class CreateNamespaceComponent implements OnInit {
       if (this.walletService.decrypt(common)) {
         this.signedTransactionPromise(common).then(signedTransaction => {
 
-          this.nemProvider.announce(signedTransaction).subscribe(
+          this.proximaxProvider.announce(signedTransaction).subscribe(
             x => {
               // this.basicModal.hide()
               console.log(x)
@@ -289,18 +289,18 @@ export class CreateNamespaceComponent implements OnInit {
   }
 
   signedTransactionPromise(common): Promise<any> {
-    const account = this.nemProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.network);
+    const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.network);
     const name: string = this.namespaceForm.get('name').value || this.namespaceRenewForm.get('name').value
     const duration: number = this.namespaceForm.get('duration').value || this.namespaceRenewForm.get('duration').value
 
     if (this.typetransfer == 1) {
-      const registerRootNamespaceTransaction = this.nemProvider.registerRootNamespaceTransaction(name, this.walletService.network, duration)
+      const registerRootNamespaceTransaction = this.proximaxProvider.registerRootNamespaceTransaction(name, this.walletService.network, duration)
       const signedTransaction = account.sign(registerRootNamespaceTransaction);
       return Promise.resolve(signedTransaction);
     } else if (this.typetransfer == 2) {
       const rootNamespaceName = this.namespaceForm.get('namespace').value;
       const subnamespaceName = this.namespaceForm.get('name').value;
-      const registersubamespaceTransaction = this.nemProvider.registersubNamespaceTransaction(rootNamespaceName, subnamespaceName, this.walletService.network)
+      const registersubamespaceTransaction = this.proximaxProvider.registersubNamespaceTransaction(rootNamespaceName, subnamespaceName, this.walletService.network)
       const signedTransaction = account.sign(registersubamespaceTransaction);
       return Promise.resolve(signedTransaction);
     }

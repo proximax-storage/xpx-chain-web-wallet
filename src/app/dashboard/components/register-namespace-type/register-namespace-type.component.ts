@@ -18,7 +18,7 @@ export class RegisterNamespaceTypeComponent implements OnInit {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log("this.registerNamespaceTransaction", this.registerNamespaceTransaction);
+    // console.log("this.registerNamespaceTransaction", this.registerNamespaceTransaction);
     /*  this.registerNamespaceTransaction.feeFormatter = this.transactionService.amountFormatterSimple(this.registerNamespaceTransaction.fee.compact());*/
   }
 }

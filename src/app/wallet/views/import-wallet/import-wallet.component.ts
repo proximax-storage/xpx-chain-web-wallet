@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { NetworkType } from 'proximax-nem2-sdk';
 import { SharedService, WalletService } from "../../../shared";
-import { NemProvider } from '../../../shared/services/nem.provider';
+import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 
 
 @Component({
@@ -27,7 +27,7 @@ export class ImportWalletComponent implements OnInit {
     private fb: FormBuilder,
     private sharedService: SharedService,
     private _walletService: WalletService,
-    private _nemProvider: NemProvider
+    private proximaxProvider: ProximaxProvider
   ) {
   }
 
@@ -60,10 +60,10 @@ export class ImportWalletComponent implements OnInit {
   importSimpleWallet() {
     if (this.importWalletForm.valid) {
       const nameWallet = this.importWalletForm.get('walletname').value;
-      const password = this._nemProvider.createPassword(this.importWalletForm.controls.passwords.get('password').value);
+      const password = this.proximaxProvider.createPassword(this.importWalletForm.controls.passwords.get('password').value);
       const privateKey = this.importWalletForm.get('privateKey').value;
       const network = this.importWalletForm.get('network').value;
-      const wallet = this._nemProvider.createAccountFromPrivateKey(nameWallet, password, privateKey, network);
+      const wallet = this.proximaxProvider.createAccountFromPrivateKey(nameWallet, password, privateKey, network);
       const walletsStorage = this._walletService.getWalletStorage();
       //verify if name wallet isset
       const myWallet = walletsStorage.find(function (element) {
@@ -76,7 +76,7 @@ export class ImportWalletComponent implements OnInit {
         this._walletService.setAccountWalletStorage(nameWallet, accounts);
         this.address = wallet.address.pretty();
         this.sharedService.showSuccess('Congratulations!', 'Your wallet has been created successfully');
-        this.pvk = this._nemProvider.decryptPrivateKey(password, accounts.encrypted, accounts.iv).toUpperCase();
+        this.pvk = this.proximaxProvider.decryptPrivateKey(password, accounts.encrypted, accounts.iv).toUpperCase();
         this.walletIsCreated = true;
       } else {
         //Error of repeated Wallet

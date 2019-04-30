@@ -6,7 +6,7 @@ import 'rxjs/add/operator/delay';
 import { first, map, catchError } from 'rxjs/operators';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { QueryParams, NamespaceId, NamespaceInfo } from 'proximax-nem2-sdk';
-import { NemProvider } from '../../../../shared/services/nem.provider';
+import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { WalletService } from '../../../../shared/services/wallet.service';
 import { SharedService } from '../../../../shared/services/shared.service';
 import { AppConfig } from '../../../../config/app.config';
@@ -18,19 +18,19 @@ export class EditMosaicResolver implements Resolve<any> {
   constructor(
     private router: Router,
     private sharedService: SharedService,
-    private nemProvider: NemProvider,
+    private proximaxProvider: ProximaxProvider,
     private walletService: WalletService,
   ) { }
 
   resolve() {
     this.blockUI.start('Loading...'); // Start blocking
-    return this.nemProvider.namespaceHttp.getNamespacesFromAccount(this.walletService.address, new QueryParams(5)).pipe(first(), map(
+    return this.proximaxProvider.namespaceHttp.getNamespacesFromAccount(this.walletService.address, new QueryParams(5)).pipe(first(), map(
       next => {
         console.log("All namespaces", next);
         const response = [];
         if (next.length > 0) {
           for (let element of next) {
-            this.nemProvider.getInfoMosaicFromNamespacePromise(element.id).then(
+            this.proximaxProvider.getInfoMosaicFromNamespacePromise(element.id).then(
               rsp => {
                 console.log("rsprsp", rsp);
               }, error => {
@@ -42,7 +42,7 @@ export class EditMosaicResolver implements Resolve<any> {
           if (response.length > 0) {
             this.blockUI.stop();
             return next;
-          }else {
+          } else {
             this.router.navigate([AppConfig.routes.createMosaic]);
             this.sharedService.showInfo('', 'You must create a mosaic');
             this.blockUI.stop();
