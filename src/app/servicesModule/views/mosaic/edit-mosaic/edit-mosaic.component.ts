@@ -2,10 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, Form } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs/operators';
-import { AccountInfo, QueryParams, NamespaceName, MosaicId } from 'proximax-nem2-sdk';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { WalletService } from '../../../../shared/services/wallet.service';
-import { MosaicService } from '../../../services/mosaic.service';
 import { SharedService } from '../../../../shared/services/shared.service';
 import { AppConfig } from '../../../../config/app.config';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
@@ -84,7 +82,7 @@ export class EditMosaicComponent implements OnInit {
     const mosaicsId = [];
     this.mosaicsInfo = []
     for (let namespaceInfo of this.route.snapshot.data['dataNamespace']) {
-      await this.nemProvider.getInfoMosaicFromNamespacePromise(namespaceInfo.id).then(
+      await this.proximaxProvider.getInfoMosaicFromNamespacePromise(namespaceInfo.id).then(
         async mosaicInfo => {
           if (Object.keys(mosaicInfo).length > 0) {
             for (let element of Object.keys(mosaicInfo)) {
@@ -123,7 +121,7 @@ export class EditMosaicComponent implements OnInit {
       disabled: true
     }];
     const promise = new Promise((resolve, reject) => {
-      this.nemProvider.mosaicHttp.getMosaicsName(mosaicsId).subscribe(
+      this.proximaxProvider.mosaicHttp.getMosaicsName(mosaicsId).subscribe(
         async mosaicsName => {
           for (let x of mosaicsName) {
             const namespac: any = await this.getNamespaceName(x.namespaceId)
@@ -158,7 +156,7 @@ export class EditMosaicComponent implements OnInit {
   */
   async getNamespaceName(namespaceId) {
     const promise = new Promise((resolve, reject) => {
-      this.nemProvider.namespaceHttp.getNamespacesName([namespaceId]).pipe(first()).subscribe(
+      this.proximaxProvider.namespaceHttp.getNamespacesName([namespaceId]).pipe(first()).subscribe(
         namespaceName => {
           resolve(namespaceName);
         }, error => {
@@ -208,15 +206,15 @@ export class EditMosaicComponent implements OnInit {
         privateKey: ''
       }
       if (this.walletService.decrypt(common)) {
-        const account = this.nemProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.network);
-        const mosaicSupplyChangeTransaction = this.nemProvider.mosaicSupplyChangeTransaction(
+        const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.network);
+        const mosaicSupplyChangeTransaction = this.proximaxProvider.mosaicSupplyChangeTransaction(
           this.formMosaicSupplyChange.get('parentMosaic').value,
           this.formMosaicSupplyChange.get('supply').value,
           this.formMosaicSupplyChange.get('mosaicSupplyType').value,
           this.walletService.network
         )
         const signedTransaction = account.sign(mosaicSupplyChangeTransaction);
-        this.nemProvider.announce(signedTransaction).subscribe(
+        this.proximaxProvider.announce(signedTransaction).subscribe(
           x => {
             this.resectForm()
             this.blockUI.stop(); // Stop blocking
