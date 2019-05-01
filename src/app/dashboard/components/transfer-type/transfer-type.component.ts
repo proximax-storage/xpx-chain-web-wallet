@@ -21,6 +21,7 @@ export class TransferTypeComponent implements OnInit {
 
   ngOnChanges(changes: SimpleChanges): void {
     this.searching = true;
+    // console.log(this.transferTransaction);
   }
 
 }

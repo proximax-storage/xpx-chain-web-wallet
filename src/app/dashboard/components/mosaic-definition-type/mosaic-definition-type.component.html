@@ -46,12 +46,12 @@
       <div class="col-md-9">
         <span class="fs-08rem fw-bolder w-w-b-w">
 
-          <ng-container *ngIf="mosaicDefinition?.mosaicsStorage">
-            {{mosaicDefinition?.mosaicsStorage.namespaceName.name}}:
+          <ng-container *ngIf="mosaicDefinition['mosaicsStorage']">
+            {{mosaicDefinition['mosaicsStorage'].namespaceName.name}}:
           </ng-container>
 
           <ng-container>
-            {{mosaicDefinition.data.mosaicName}}
+            {{mosaicDefinition.data['mosaicName']}}
           </ng-container>
         </span>
       </div>
@@ -63,7 +63,7 @@
         <span class="fs-08rem fw-bolder w-w-b-w"><b>Divisibility:</b></span>
       </div>
       <div class="col-md-9">
-        <span class="fs-08rem fw-bolder w-w-b-w">{{mosaicDefinition?.data.mosaicProperties.divisibility}}</span>
+        <span class="fs-08rem fw-bolder w-w-b-w">{{mosaicDefinition?.data['mosaicProperties'].divisibility}}</span>
       </div>
     </div>
   </div>
@@ -75,11 +75,11 @@
       </div>
       <div class="col-md-9">
         <span class="fs-08rem fw-bolder w-w-b-w"
-          *ngIf="mosaicDefinition?.data.mosaicProperties.supplyMutable === true"><i class="fa fa-check-circle green-c"
-            aria-hidden="true"></i></span>
+          *ngIf="mosaicDefinition?.data['mosaicProperties'].supplyMutable === true"><i
+            class="fa fa-check-circle green-c" aria-hidden="true"></i></span>
         <span class="fs-08rem fw-bolder w-w-b-w"
-          *ngIf="mosaicDefinition?.data.mosaicProperties.supplyMutable !== true"><i class="fa fa-minus-circle color-red"
-            aria-hidden="true"></i></span>
+          *ngIf="mosaicDefinition?.data['mosaicProperties'].supplyMutable !== true"><i
+            class="fa fa-minus-circle color-red" aria-hidden="true"></i></span>
       </div>
     </div>
   </div>
@@ -91,9 +91,11 @@
         <span class="fs-08rem fw-bolder w-w-b-w"><b>Levy Mutable:</b></span>
       </div>
       <div class="col-md-9">
-        <span class="fs-08rem fw-bolder w-w-b-w" *ngIf="mosaicDefinition?.data.mosaicProperties.levyMutable === true"><i
-            class="fa fa-check-circle green-c" aria-hidden="true"></i></span>
-        <span class="fs-08rem fw-bolder w-w-b-w" *ngIf="mosaicDefinition?.data.mosaicProperties.levyMutable !== true"><i
+        <span class="fs-08rem fw-bolder w-w-b-w"
+          *ngIf="mosaicDefinition?.data['mosaicProperties'].levyMutable === true"><i class="fa fa-check-circle green-c"
+            aria-hidden="true"></i></span>
+        <span class="fs-08rem fw-bolder w-w-b-w"
+          *ngIf="mosaicDefinition?.data['mosaicProperties'].levyMutable !== true"><i
             class="fa fa-minus-circle color-red" aria-hidden="true"></i></span>
       </div>
     </div>
@@ -106,11 +108,11 @@
       </div>
       <div class="col-md-9">
         <span class="fs-08rem fw-bolder w-w-b-w"
-          *ngIf="mosaicDefinition?.data.mosaicProperties.transferable === true"><i class="fa fa-check-circle green-c"
+          *ngIf="mosaicDefinition?.data['mosaicProperties'].transferable === true"><i class="fa fa-check-circle green-c"
             aria-hidden="true"></i></span>
         <span class="fs-08rem fw-bolder w-w-b-w"
-          *ngIf="mosaicDefinition?.data.mosaicProperties.transferable !== true"><i class="fa fa-minus-circle color-red"
-            aria-hidden="true"></i></span>
+          *ngIf="mosaicDefinition?.data['mosaicProperties'].transferable !== true"><i
+            class="fa fa-minus-circle color-red" aria-hidden="true"></i></span>
       </div>
     </div>
   </div>
@@ -122,8 +124,8 @@
       </div>
       <div class="col-md-9">
         <span class="fs-08rem fw-bolder w-w-b-w"><strong>(Blocks:
-            {{mosaicDefinition?.data.mosaicProperties.duration.compact()}})</strong>
-          {{transactionService.calculateDuration(mosaicDefinition?.data.mosaicProperties.duration)}}</span>
+            {{mosaicDefinition?.data['mosaicProperties'].duration.compact()}})</strong>
+          {{transactionService.calculateDuration(mosaicDefinition?.data['mosaicProperties'].duration)}}</span>
       </div>
     </div>
   </div>

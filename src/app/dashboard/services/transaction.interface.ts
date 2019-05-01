@@ -1,4 +1,4 @@
-import { Transaction, PublicAccount } from 'proximax-nem2-sdk';
+import { Transaction, PublicAccount, Address } from 'proximax-nem2-sdk';
 
 export interface TransactionsInterface {
   data: Transaction;
@@ -7,7 +7,7 @@ export interface TransactionsInterface {
   fee: string;
   sender: PublicAccount;
   recipientRentalFeeSink: string;
-  recipient: PublicAccount;
+  recipient: Address;
   isRemitent: boolean;
 }
 
