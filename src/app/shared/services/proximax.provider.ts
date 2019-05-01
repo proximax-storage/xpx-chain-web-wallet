@@ -33,7 +33,6 @@ import {
   MosaicDefinitionTransaction,
   MosaicProperties,
   MosaicSupplyChangeTransaction,
-  MosaicSupplyType,
   NamespaceService,
   MosaicView
 } from 'proximax-nem2-sdk';
@@ -74,24 +73,6 @@ export class ProximaxProvider {
 
   constructor() {
   }
-
-  /**
-   *
-   *
-   * @param {NamespaceId[]} namespaceId
-   * @returns
-   * @memberof NemProvider
-   */
-  async getNamespaceViewPromise(namespaceId: NamespaceId[]) {
-    const promise = await new Promise(async (resolve, reject) => {
-      const namespace = await this.namespaceHttp.getNamespacesName(namespaceId).toPromise();
-      resolve(namespace);
-    });
-
-    console.log("***RESPUESTA CONSULTA DE MOSAICOS****", promise);
-    return await promise;
-  }
-
 
   /**
    *
@@ -541,7 +522,7 @@ export class ProximaxProvider {
    */
   registerRootNamespaceTransaction(name: string, network: NetworkType, duration: number = 100): RegisterNamespaceTransaction {
     // Crear namespace transaction
-    console.log('duration;', duration)
+    // console.log('duration;', duration)
     return RegisterNamespaceTransaction.createRootNamespace(
       Deadline.create(23),
       name,
@@ -580,7 +561,7 @@ export class ProximaxProvider {
   * @memberof NemProvider
   */
   sendTransaction(network: NetworkType, address: string, message?: string, amount: number = 0): TransferTransaction {
-    console.log(address, message)
+    // console.log(address, message)
     return TransferTransaction.create(
       Deadline.create(23),
       Address.createFromRawAddress(address),

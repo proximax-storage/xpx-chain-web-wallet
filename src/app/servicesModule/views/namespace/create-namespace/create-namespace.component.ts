@@ -106,7 +106,7 @@ export class CreateNamespaceComponent implements OnInit {
           resolve(true);
         }, (error: any) => {
           this.blockUI.stop();
-          console.error("Has ocurred a error", error);
+          // console.error("Has ocurred a error", error);
           // this.router.navigate([AppConfig.routes.home]);
           this.sharedService.showError('', error);
           reject(error);
@@ -128,7 +128,7 @@ export class CreateNamespaceComponent implements OnInit {
           resolve(true);
         }, (error: any) => {
           this.blockUI.stop(); // Stop blocking
-          console.error("Has ocurred a error", error);
+          // console.error("Has ocurred a error", error);
           this.router.navigate([AppConfig.routes.home]);
           this.sharedService.showError('', error);
           reject(error);
@@ -249,7 +249,7 @@ export class CreateNamespaceComponent implements OnInit {
             err => {
               this.resectForm()
               this.blockUI.stop(); // Stop blocking
-              console.error(err)
+              // console.error(err)
               this.sharedService.showError('Error', '¡unexpected error!');
             });
         });
@@ -272,7 +272,7 @@ export class CreateNamespaceComponent implements OnInit {
           this.proximaxProvider.announce(signedTransaction).subscribe(
             x => {
               // this.basicModal.hide()
-              console.log(x)
+              // console.log(x)
               this.resectForm()
               this.blockUI.stop(); // Stop blocking
               this.sharedService.showSuccess('success', 'renew namespace sent')
@@ -280,7 +280,7 @@ export class CreateNamespaceComponent implements OnInit {
             err => {
               this.resectForm()
               this.blockUI.stop(); // Stop blocking
-              console.error(err)
+              // console.error(err)
               this.sharedService.showError('Error', '¡unexpected error!');
             });
         });

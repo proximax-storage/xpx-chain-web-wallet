@@ -286,7 +286,7 @@ export class CreatePollComponent implements OnInit {
       this.proximaxProvider.announce(signedTransaction).subscribe(
         x => {
           this.blockUI.stop(); // Stop blocking
-          console.log("Se envió la transacción....", x)
+          // console.log("Se envió la transacción....", x)
           this.createpollForm.reset()
           this.createpollForm.get('type').patchValue('1')
           this.createpollForm.get('indexAccount').patchValue(this.accountPrin)
@@ -295,7 +295,7 @@ export class CreatePollComponent implements OnInit {
         err => {
           this.blockUI.stop(); // Stop blocking
           this.sharedService.showError('Error', '¡unexpected error!');
-          console.error(err)
+          // console.error(err)
         });
     }
   }

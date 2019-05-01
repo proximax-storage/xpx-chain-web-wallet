@@ -83,7 +83,7 @@ export class CreateMosaicComponent implements OnInit {
       await new Promise((resolve, reject) => {
         this.proximaxProvider.namespaceHttp.getNamespacesName(h.levels).pipe(first()).subscribe(
           namespaceName => {
-            console.log(namespaceName);
+            // console.log(namespaceName);
             for (let x of namespaceName) {
               response.push({
                 label: x.name,
@@ -95,7 +95,7 @@ export class CreateMosaicComponent implements OnInit {
 
             resolve(response);
           }, error => {
-            console.error("Has ocurred a error", error);
+            // console.error("Has ocurred a error", error);
             this.router.navigate([AppConfig.routes.home]);
             this.sharedService.showError('', error);
             reject(error);
@@ -110,7 +110,7 @@ export class CreateMosaicComponent implements OnInit {
 
   send() {
     if (this.mosaicForm.valid && this.mosaicForm.get('parentNamespace').value !== '1') {
-      console.log("Formulario es valido...");
+      // console.log("Formulario es valido...");
       const common = {
         password: this.mosaicForm.get('password').value,
         privateKey: ''
@@ -118,7 +118,7 @@ export class CreateMosaicComponent implements OnInit {
 
       if (this.walletService.decrypt(common)) {
         const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.network);
-        console.log(account);
+        // console.log(account);
         const registerMosaicTransaction = this.proximaxProvider.buildRegisterMosaicTransaction(
           this.mosaicForm.get('mosaicName').value,
           this.mosaicForm.get('parentNamespace').value,
@@ -133,7 +133,7 @@ export class CreateMosaicComponent implements OnInit {
         const signedTransaction = account.sign(registerMosaicTransaction);
         this.proximaxProvider.announce(signedTransaction).subscribe(
           x => {
-            console.log(x)
+            // console.log(x)
             this.blockUI.stop(); // Stop blocking
             this.mosaicForm.reset();
             this.mosaicForm.patchValue({ parentNamespace: '1' });
@@ -142,7 +142,7 @@ export class CreateMosaicComponent implements OnInit {
             this.sharedService.showSuccess('Success', 'Create mosaic sent')
           },
           err => {
-            console.error(err)
+            // console.error(err)
             this.blockUI.stop(); // Stop blocking
             this.mosaicForm.patchValue({ parentNamespace: '1' });
             this.sharedService.showError('', err);

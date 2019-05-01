@@ -41,7 +41,7 @@ export class AccountComponent implements OnInit {
     if (this.password !== '') {
       const common = { password: this.password };
       if (this.walletService.decrypt(common)) {
-        console.log(common);
+        // console.log(common);
         this.privateKey = common['privateKey'].toUpperCase();
         this.password = '';
         this.showPassword = false;
@@ -50,7 +50,7 @@ export class AccountComponent implements OnInit {
       this.password = '';
       this.privateKey = '';
       return;
-    }else {
+    } else {
       this.sharedService.showError('', 'Please, enter a password');
     }
   }

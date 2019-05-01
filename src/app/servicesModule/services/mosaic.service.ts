@@ -43,7 +43,7 @@ export class MosaicService {
    * @param {NamespaceId} namespaceId
    * @memberof MosaicService
    */
-  async buildMosaicsStorage(namespaceId: NamespaceId) {
+  async buildMosaicsFromNamespace(namespaceId: NamespaceId) {
     this.getMosaicsFromNamespace(namespaceId)
       .then(response => {
         // console.log("getMosaicsFromNamespace", response);
@@ -155,12 +155,18 @@ export class MosaicService {
       (filterMosaic === undefined || filterMosaic === null) ? mosaicsToSearch.push(mosaicId.id) : mosaicsStorage.push(filterMosaic);
     });
 
+    // console.log(mosaicsToSearch);
     if (mosaicsToSearch.length > 0) {
       // Gets MosaicInfo for different mosaicIds.
       const mosaicsInfo = await this.proximaxProvider.getMosaics(mosaicsToSearch).toPromise();
-      // console.log('mosaicsInfo --->', mosaicsInfo);
       // There is an array of mosaicsInfo
       if (mosaicsInfo.length > 0) {
+        const infoMosaicsNotFound = [];
+        mosaicsToSearch.forEach(element => {
+          const exist = mosaicsInfo.find(e => e.mosaicId.toHex() === element.toHex());
+          (exist === undefined || exist === null) ? infoMosaicsNotFound.push(element) : [];
+        });
+
         // Save mosaicsInfo in storage
         await this.saveMosaicsStorage(mosaicsInfo, null);
         for (let elm of Object.keys(mosaicsInfo)) {
@@ -169,6 +175,17 @@ export class MosaicService {
           if (filterMosaic) {
             // If the mosaic exists in storage, it is added to the variable mosaicsStorage to be returned later
             mosaicsStorage.push(filterMosaic);
+          }
+        }
+
+        if (infoMosaicsNotFound.length > 0) {
+          // Pass the variable infoMosaicsNotFound per parameter to saveMosaicsStorage to find only the name of the mosaic and save in storage
+          await this.saveMosaicsStorage([], infoMosaicsNotFound);
+          for (let mosaicId of mosaicsId) {
+            const filterMosaic = this.filterMosaic(mosaicId);
+            if (filterMosaic) {
+              mosaicsStorage.push(filterMosaic);
+            }
           }
         }
       } else {

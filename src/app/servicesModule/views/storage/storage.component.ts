@@ -95,14 +95,14 @@ export class StorageComponent implements OnInit {
       //this.transactionResults = [];
       //const searchParam = SearchParameter.createForAddress(environment.senderAccount.address);
 
-      console.log(this.walletService.publicAccount);
+      // console.log(this.walletService.publicAccount);
       const searchParam = SearchParameter.createForPublicKey(this.walletService.publicAccount.publicKey);
       //const searchParam = SearchParameter.createForAddress(this.walletService.publicAccount.address.plain());
       searchParam.withResultSize(10);
 
-      console.log('Loading transactions ...');
+      // console.log('Loading transactions ...');
       const searchResult = await this.searcher.search(searchParam.build());
-      console.log(searchResult);
+      // console.log(searchResult);
       for (let resultItem of searchResult.results.reverse()) {
         const isEncrypted = resultItem.messagePayload.privacyType !== PrivacyType.PLAIN;
         this.transactionResults.push({
@@ -254,7 +254,7 @@ export class StorageComponent implements OnInit {
   }
 
   async addRecord() {
-    console.log(this.addRecordForm.valid);
+    // console.log(this.addRecordForm.valid);
     if (this.addRecordForm.valid) {
       if (this.files.length <= 0) {
         this.sharedService.showError('Attention', 'Please choose file to upload');
@@ -288,14 +288,14 @@ export class StorageComponent implements OnInit {
             );
 
             let recipientPublicKey = this.walletService.publicAccount.publicKey;
-            console.log('Default Public Key' + recipientPublicKey);
+            // console.log('Default Public Key' + recipientPublicKey);
             const recipientPublicKeyInput = this.addRecordForm.get('recipientPublicKey').value;
 
             if (this.showEncryptionKeyPair && recipientPublicKeyInput.length > 0) {
               recipientPublicKey = recipientPublicKeyInput;
             }
 
-            console.log('Current Public Key' + recipientPublicKey);
+            // console.log('Current Public Key' + recipientPublicKey);
 
             if (recipientPublicKey.length > 0) {
               param.withRecipientPublicKey(recipientPublicKey);
@@ -304,11 +304,11 @@ export class StorageComponent implements OnInit {
             param.withTransactionMosaics([new Mosaic(new MosaicId('prx:xpx'), UInt64.fromUint(0))]);
 
             let recipientAddress = this.walletService.address.plain();
-            console.log('default recipientAddress' + recipientAddress);
+            // console.log('default recipientAddress' + recipientAddress);
             if (recipientPublicKey.length > 0) {
               recipientAddress = Address.createFromPublicKey(recipientPublicKey, this.walletService.network).plain();
             }
-            console.log('current recipientAddress' + recipientAddress);
+            // console.log('current recipientAddress' + recipientAddress);
             if (recipientAddress) {
               param.withRecipientAddress(recipientAddress);
             }
@@ -318,20 +318,20 @@ export class StorageComponent implements OnInit {
             if (useSecureMessage) {
               param.withUseBlockchainSecureMessage(useSecureMessage);
             }
-            console.log('useSecureMessage ' + useSecureMessage);
+            // console.log('useSecureMessage ' + useSecureMessage);
 
 
             switch (this.privacyType) {
               case PrivacyType.PASSWORD:
                 const encryptionPassword = this.addRecordForm.get('encryptionPasword').value;
                 if (this.showEncryptionPassword && encryptionPassword.length > 0) {
-                  console.log('---------- PASSWORD PRIVACY ---------  ');
+                  // console.log('---------- PASSWORD PRIVACY ---------  ');
                   param.withPasswordPrivacy(encryptionPassword);
-                  console.log('---------- PASSW22222222ORD PRIVACY ---------  ');
+                  // console.log('---------- PASSW22222222ORD PRIVACY ---------  ');
                 } else {
                   this.sharedService.showWarning("Warning", "Please enter your encryption password");
                 }
-                console.log('encryptionPassword' + encryptionPassword);
+                // console.log('encryptionPassword' + encryptionPassword);
 
                 break;
               case PrivacyType.NEM_KEYS:
@@ -353,7 +353,7 @@ export class StorageComponent implements OnInit {
 
             const gridTitle = result.data.name ? result.data.name : selectedFile.name;
             const isEncrypted = result.privacyType !== PrivacyType.PLAIN;
-            console.log(result);
+            // console.log(result);
             this.transactionResults.push({
               title: gridTitle,
               type: result.data.contentType,
@@ -391,7 +391,7 @@ export class StorageComponent implements OnInit {
 
 
   onEncryptionMethodSelected(event) {
-    console.log(event);
+    // console.log(event);
     switch (event.value) {
       case PrivacyType.PASSWORD:
         this.showEncryptionPassword = true;
@@ -417,7 +417,7 @@ export class StorageComponent implements OnInit {
     };
     const privateKey = crypto.passwordToPrivatekey(common, this.walletService.currentAccount, this.walletService.algo);
     this.signerPrivateKey = this.grabPKey(common);
-    console.log(this.signerPrivateKey);
+    // console.log(this.signerPrivateKey);
 
     if (this.signerPrivateKey.length > 0) {
       this.showRecordEntry = true;
@@ -456,9 +456,9 @@ export class StorageComponent implements OnInit {
 
   async downloadWithDecryptionPassword() {
     const decryptionPassword = this.downloadRecordForm.get('decryptionPassword').value;
-    console.log(decryptionPassword);
+    // console.log(decryptionPassword);
     const dataHash = this.downloadRecordForm.get('downloadDatahash');
-    console.log(dataHash.value);
+    // console.log(dataHash.value);
     if (!decryptionPassword || decryptionPassword.length <= 10) {
       this.sharedService.showError('Invalid decryption password!', 'The password must be greater than 8 characters');
     } else if (!this.downloadFile) {
@@ -466,7 +466,7 @@ export class StorageComponent implements OnInit {
     } else {
 
       try {
-        console.log(this.downloadFile);
+        // console.log(this.downloadFile);
         const paramData = DirectDownloadParameter.createFromDataHash(this.downloadFile.dataHash);
         paramData.withPasswordPrivacy(decryptionPassword);
         const downloadResult = await this.downloader.directDownload(paramData.build());
@@ -490,9 +490,9 @@ export class StorageComponent implements OnInit {
     } else {
 
       try {
-        console.log(this.downloadFile);
+        // console.log(this.downloadFile);
         const paramData = DirectDownloadParameter.createFromDataHash(this.downloadFile.dataHash);
-        paramData.withNemKeysPrivacy(privateKey,publicKey);
+        paramData.withNemKeysPrivacy(privateKey, publicKey);
         const downloadResult = await this.downloader.directDownload(paramData.build());
         const dataBuffer = await StreamHelper.stream2Buffer(downloadResult);
         const downloableFile = new Blob([dataBuffer], { type: this.downloadFile.contentType });
@@ -505,11 +505,11 @@ export class StorageComponent implements OnInit {
   }
 
   async downloadRecord(dataHash, type, name, transactionHash, privacyType) {
-    console.log(dataHash);
-    console.log(type);
-    console.log(name);
-    console.log(transactionHash);
-    console.log(privacyType);
+    // console.log(dataHash);
+    // console.log(type);
+    // console.log(name);
+    // console.log(transactionHash);
+    // console.log(privacyType);
     this.downloadFile = { dataHash: dataHash, contentType: type, name: name };
     try {
 

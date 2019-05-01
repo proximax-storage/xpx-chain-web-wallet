@@ -129,7 +129,7 @@ export class NamespacesService {
             }
 
             //Build mosaics storage
-            this.mosaicsService.buildMosaicsStorage(element.id);
+            this.mosaicsService.buildMosaicsFromNamespace(element.id);
           });
 
           localStorage.setItem(this.getNameStorage(), JSON.stringify(namespacesStorage));

@@ -18,10 +18,9 @@ import { ProximaxProvider } from "../../shared/services/proximax.provider";
 import { WalletService } from "../../shared/services/wallet.service";
 import { NodeService } from "../../servicesModule/services/node.service";
 import { environment } from "../../../environments/environment";
-import { MessageService } from "../../shared/services/message.service";
-import { SharedService } from "../../shared/services/shared.service";
 import { first } from "rxjs/operators";
 import { TransactionsInterface, MosaicXPXInterface } from "../../dashboard/services/transaction.interface";
+import { MosaicService } from "../../servicesModule/services/mosaic.service";
 
 @Injectable({
   providedIn: "root"
@@ -86,7 +85,7 @@ export class TransactionsService {
     private proximaxProvider: ProximaxProvider,
     private nodeService: NodeService,
     private walletService: WalletService,
-    private sharedService: SharedService
+    private mosaicService: MosaicService
   ) { }
 
 
@@ -99,12 +98,8 @@ export class TransactionsService {
     node: string | number[]
   ) {
     const recipientAddress = this.proximaxProvider.createFromRawAddress(recipient);
-    const transferTransaction = TransferTransaction.create(
-      Deadline.create(5),
-      recipientAddress,
-      [new Mosaic(new MosaicId(node), UInt64.fromUint(Number(amount)))],
-      PlainMessage.create(message),
-      network
+    const transferTransaction = TransferTransaction.create(Deadline.create(5), recipientAddress,
+      [new Mosaic(new MosaicId(node), UInt64.fromUint(Number(amount)))], PlainMessage.create(message), network
     );
     const account = Account.createFromPrivateKey(common.privateKey, network);
     const signedTransaction = account.sign(transferTransaction);
@@ -294,7 +289,8 @@ export class TransactionsService {
   updateBalance() {
     this.proximaxProvider.getAccountInfo(this.walletService.address).pipe(first()).subscribe(
       next => {
-        // console.log("Account Info! ---> ", next);
+        console.log("Account Info! ---> ", next);
+        this.mosaicService.searchMosaics(next.mosaics.map(next => next.id));
         this.walletService.setAccountInfo(next);
         next.mosaics.forEach(element => {
           if (element.id.toHex() === this.proximaxProvider.mosaicXpx.mosaicId) {

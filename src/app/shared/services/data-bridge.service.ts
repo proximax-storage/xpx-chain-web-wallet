@@ -111,7 +111,7 @@ export class DataBridgeService {
    */
   getTransactionsConfirmedSocket(connector: Listener, audio: HTMLAudioElement) {
     connector.confirmed(this.walletService.address).subscribe((incomingTransaction: Transaction) => {
-      console.log("Transacciones confirmadas entrantes", incomingTransaction);
+      // console.log("Transacciones confirmadas entrantes", incomingTransaction);
       this.transactionsService.getTransactionsConfirmed$().pipe(first()).subscribe(allTransactionConfirmed => {
         const transactionPushed = allTransactionConfirmed.slice(0);
         const transactionFormatter = this.transactionsService.buildDashboard(incomingTransaction);
@@ -145,7 +145,7 @@ export class DataBridgeService {
           this.transactionsService.setTransactionsUnConfirmed$(transactionPushed);
           audio.play();
         }, err => {
-          console.error(err);
+          // console.error(err);
         });
     });
   }
@@ -162,7 +162,7 @@ export class DataBridgeService {
       this.setblock(res.height.lower)
     }, err => {
       this.sharedService.showError('Error', err);
-      console.error("err::::::", err)
+      // console.error("err::::::", err)
     });
   }
 
@@ -175,11 +175,11 @@ export class DataBridgeService {
    */
   getStatusSocket(connector: Listener, audio: HTMLAudioElement) {
     connector.status(this.walletService.address).subscribe(res => {
-      console.log("Status::::: ", res);
+      // console.log("Status::::: ", res);
       this.sharedService.showWarning('Warning', res.status)
     }, err => {
       this.sharedService.showError('Error', err);
-      console.error("err::::::", err)
+      // console.error("err::::::", err)
     });
   }
 

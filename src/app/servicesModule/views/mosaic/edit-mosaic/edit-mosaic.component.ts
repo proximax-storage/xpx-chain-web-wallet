@@ -91,7 +91,7 @@ export class EditMosaicComponent implements OnInit {
             }
           }
         }, error => {
-          console.log("error ----> ", error);
+          // console.log("error ----> ", error);
           this.sharedService.showError('', error);
         }
       );
@@ -140,7 +140,7 @@ export class EditMosaicComponent implements OnInit {
           }
           resolve(response);
         }, error => {
-          console.error("Has ocurred a error", error);
+          // console.error("Has ocurred a error", error);
           this.router.navigate([AppConfig.routes.home]);
           this.sharedService.showError('', error);
           reject(error);
@@ -160,7 +160,7 @@ export class EditMosaicComponent implements OnInit {
         namespaceName => {
           resolve(namespaceName);
         }, error => {
-          console.error("Has ocurred a error", error);
+          // console.error("Has ocurred a error", error);
           this.router.navigate([AppConfig.routes.home]);
           this.sharedService.showError('', error);
           reject(error);
@@ -223,7 +223,7 @@ export class EditMosaicComponent implements OnInit {
           err => {
             this.resectForm()
             this.blockUI.stop(); // Stop blocking
-            console.error(err)
+            // console.error(err)
             this.sharedService.showError('Error', '¡unexpected error!');
           });
 

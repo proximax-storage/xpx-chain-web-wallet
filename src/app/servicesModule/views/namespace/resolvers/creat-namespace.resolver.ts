@@ -25,7 +25,7 @@ export class CreateNamespaceResolver implements Resolve<any> {
     this.blockUI.start('Loading...'); // Start blocking
     return this.proximaxProvider.namespaceHttp.getNamespacesFromAccount(this.walletService.address, new QueryParams(5)).pipe(first(), map(
       next => {
-        console.log("All namespaces", next);
+        // console.log("All namespaces", next);
         if (next.length > 0) {
           this.blockUI.stop();
           return next;
@@ -34,7 +34,7 @@ export class CreateNamespaceResolver implements Resolve<any> {
           return observableOf(null);
         }
       }), catchError(error => {
-        console.log(error);
+        // console.log(error);
         this.blockUI.stop();
         this.router.navigate([AppConfig.routes.home]);
         this.sharedService.showError('', error);

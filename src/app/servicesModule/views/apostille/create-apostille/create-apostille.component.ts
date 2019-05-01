@@ -343,7 +343,7 @@ export class CreateApostilleComponent implements OnInit {
           const ipfConnection = new IpfsConnection(environment.storageConnection.host, environment.storageConnection.port, environment.storageConnection.options);
           const ifpsClient = new IpfsClient(ipfConnection);
           ifpsClient.addStream(streamContent).subscribe(hash => {
-            console.log(hash);
+            // console.log(hash);
             saveAs(content, hash + '.zip');
           });
           this.reset();

@@ -26,15 +26,15 @@ export class EditMosaicResolver implements Resolve<any> {
     this.blockUI.start('Loading...'); // Start blocking
     return this.proximaxProvider.namespaceHttp.getNamespacesFromAccount(this.walletService.address, new QueryParams(5)).pipe(first(), map(
       next => {
-        console.log("All namespaces", next);
+        // console.log("All namespaces", next);
         const response = [];
         if (next.length > 0) {
           for (let element of next) {
             this.proximaxProvider.getInfoMosaicFromNamespacePromise(element.id).then(
               rsp => {
-                console.log("rsprsp", rsp);
+                // console.log("rsprsp", rsp);
               }, error => {
-                console.log(error);
+                // console.log(error);
               }
             );
           }
@@ -55,7 +55,7 @@ export class EditMosaicResolver implements Resolve<any> {
           return observableOf(null);
         }
       }), catchError(error => {
-        console.log(error);
+        // console.log(error);
         this.blockUI.stop();
         this.router.navigate([AppConfig.routes.home]);
         this.sharedService.showError('', error);

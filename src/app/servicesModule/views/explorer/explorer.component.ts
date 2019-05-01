@@ -104,12 +104,12 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
 
           this.proximaxProvider.getAllTransactionsFromAccount(accountInfo.publicAccount).subscribe(
             resp => {
-              console.log('with address info ', resp);
+              // console.log('with address info ', resp);
               this.buildTransaction(resp);
             },
             error => {
               this.blockInput = false;
-              console.log(error);
+              // console.log(error);
             }
           );
         }
@@ -125,7 +125,7 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
         },
         error => {
           this.blockInput = false;
-          console.log(error);
+          // console.log(error);
         }
       );
     } else {
@@ -133,12 +133,12 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
       this.blockInput = true;
       this.proximaxProvider.getTransactionInformation(this.paramSearch, this.nodeService.getNodeSelected()).subscribe(
         resp => {
-          console.log('with hash info', resp);
+          // console.log('with hash info', resp);
           this.buildTransaction([resp]);
         },
         error => {
           this.blockInput = false;
-          console.log(error);
+          // console.log(error);
         }
       );
     }
