@@ -289,7 +289,7 @@ export class TransactionsService {
   updateBalance() {
     this.proximaxProvider.getAccountInfo(this.walletService.address).pipe(first()).subscribe(
       next => {
-        console.log("Account Info! ---> ", next);
+        // console.log("Account Info! ---> ", next);
         this.mosaicService.searchMosaics(next.mosaics.map(next => next.id));
         this.walletService.setAccountInfo(next);
         next.mosaics.forEach(element => {

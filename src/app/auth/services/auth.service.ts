@@ -55,20 +55,19 @@ export class AuthService {
    * @memberof LoginService
    */
   login(common: any, wallet: any) {
-    if (!this.walletService.login(common, wallet)){
+    if (!this.walletService.login(common, wallet)) {
       return false;
     }
 
     // this.transactionsService.destroyAllTransactions();
     this.setLogged(true);
     this.route.navigate([`/${AppConfig.routes.dashboard}`]);
+
     this.dataBridgeService.closeConenection();
     this.dataBridgeService.connectnWs();
-
     // load services and components
     this.transactionService.updateBalance();
     this.nameSpaces.buildNamespaceStorage();
-    // this.getMosaics();
     return true;
   }
 

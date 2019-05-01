@@ -9,7 +9,6 @@ import { WalletService, SharedService } from "../../../shared";
 import { TransactionsService } from "../../../transactions/service/transactions.service";
 import { ServiceModuleService } from "../../../servicesModule/services/service-module.service";
 import { MosaicService } from "../../../servicesModule/services/mosaic.service";
-import { NamespaceName } from "proximax-nem2-sdk";
 import { ProximaxProvider } from "../../../shared/services/proximax.provider";
 
 @Component({
@@ -138,29 +137,21 @@ export class TransferComponent implements OnInit {
    */
   async getMosaics() {
     const mosaicsSelect = this.mosaicsSelect.slice(0);
-    const response: any = await this.mosaicServices.getMosaicFromAddress(
-      this.walletService.address,
-      false
-    );
-
-    if (response && response.mosaicsName) {
-      for (let mosaicsName of response.mosaicsName) {
-        const namespaceName = response.namespaceName.find((namespaceName: NamespaceName) => {
-          return (
-            namespaceName.namespaceId.toHex() ===
-            mosaicsName.namespaceId.toHex()
-          );
-        });
-
-        mosaicsSelect.push({
-          label: `${namespaceName.name}:${mosaicsName.name}`,
-          value: `${namespaceName.name}:${mosaicsName.name}`,
-          selected: false,
-          disabled: false
-        });
+    // console.log(this.walletService.getAccountInfo());
+    const mosaics = await this.mosaicServices.searchMosaics(this.walletService.getAccountInfo().mosaics.map(n => n.id));
+    // console.log(mosaics);
+    if (mosaics.length > 0) {
+      for (let mosaic of mosaics) {
+        if (this.proximaxProvider.getMosaicId(mosaic.id).id.toHex() !== this.mosaicServices.mosaicXpx.mosaicId) {
+          mosaicsSelect.push({
+            label: `${mosaic.namespaceName.name}:${mosaic.mosaicName.name}`,
+            value: `${mosaic.namespaceName.name}:${mosaic.mosaicName.name}`,
+            selected: false,
+            disabled: false
+          });
+        }
       }
     }
-
     this.searchMosaics = false;
     this.mosaicsSelect = mosaicsSelect;
   }

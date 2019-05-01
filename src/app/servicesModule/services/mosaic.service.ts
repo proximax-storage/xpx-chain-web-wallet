@@ -101,9 +101,7 @@ export class MosaicService {
    */
   async getMosaicFromAddress(address: Address, searchXpx: boolean = true) {
     const promise = await new Promise(async (resolve, reject) => {
-      const accountInfo = await this.proximaxProvider.accountHttp
-        .getAccountInfo(address)
-        .toPromise();
+      const accountInfo = await this.proximaxProvider.accountHttp.getAccountInfo(address).toPromise();
       // console.log("accountInfo", accountInfo);
       let mosaicsId = [];
       if (searchXpx) {
