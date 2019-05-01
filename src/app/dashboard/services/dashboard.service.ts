@@ -64,7 +64,6 @@ export class DashboardService {
             this.destroySubscription();
             // this.subscriptions['isLogged'].unsubscribe();
             this.walletService.destroyAccountInfo();
-            this.mosaicService.destroyMosaicCache();
             return;
           }
         }

@@ -145,35 +145,45 @@ export class MosaicService {
    * @memberof MosaicService
    */
   async searchMosaics(mosaicsId: MosaicId[]): Promise<MosaicsStorage[]> {
-    // console.log("mosaicsId", mosaicsId);
-    const infoMosaics = [];
+    const mosaicsStorage = [];
     const mosaicsToSearch = [];
+    //Filter mosaics to search
     mosaicsId.forEach(mosaicId => {
+      // Filter and get the storage mosaic from mosaicId
       const filterMosaic = this.filterMosaic(mosaicId);
-      if (filterMosaic === undefined || filterMosaic === null) {
-        mosaicsToSearch.push(mosaicId);
-      } else {
-        infoMosaics.push(filterMosaic);
-      }
+      // In case there is no mosaic in storage, add the id in mosaicsToSearch to be searched later
+      (filterMosaic === undefined || filterMosaic === null) ? mosaicsToSearch.push(mosaicId.id) : mosaicsStorage.push(filterMosaic);
     });
 
-    // console.log('--- MOSAICS TO SEARCH ----', mosaicsToSearch);
-    // Search info mosaics
     if (mosaicsToSearch.length > 0) {
-      const mosaics = await this.proximaxProvider.getMosaics(mosaicsToSearch).toPromise();
-      // console.log('---response ----', mosaics);
-      await this.saveMosaicsStorage(mosaics);
-      for (let elm of Object.keys(mosaics)) {
-        // console.log(mosaics[elm].mosaicId);
-        const filterMosaic = this.filterMosaic(mosaics[elm].mosaicId);
-        if (filterMosaic) {
-          infoMosaics.push(filterMosaic);
+      // Gets MosaicInfo for different mosaicIds.
+      const mosaicsInfo = await this.proximaxProvider.getMosaics(mosaicsToSearch).toPromise();
+      // console.log('mosaicsInfo --->', mosaicsInfo);
+      // There is an array of mosaicsInfo
+      if (mosaicsInfo.length > 0) {
+        // Save mosaicsInfo in storage
+        await this.saveMosaicsStorage(mosaicsInfo, null);
+        for (let elm of Object.keys(mosaicsInfo)) {
+          // Filter and get the storage mosaic from mosaicId
+          const filterMosaic = this.filterMosaic(mosaicsInfo[elm].mosaicId);
+          if (filterMosaic) {
+            // If the mosaic exists in storage, it is added to the variable mosaicsStorage to be returned later
+            mosaicsStorage.push(filterMosaic);
+          }
+        }
+      } else {
+        // Pass the variable mosaicsToSearch per parameter to saveMosaicsStorage to find only the name of the mosaic and save in storage
+        await this.saveMosaicsStorage([], mosaicsToSearch);
+        for (let mosaicId of mosaicsId) {
+          const filterMosaic = this.filterMosaic(mosaicId);
+          if (filterMosaic) {
+            mosaicsStorage.push(filterMosaic);
+          }
         }
       }
     }
 
-    // console.log(infoMosaics);
-    return infoMosaics;
+    return mosaicsStorage;
   }
 
   /**
@@ -184,58 +194,63 @@ export class MosaicService {
    * @returns
    * @memberof MosaicService
    */
-  async saveMosaicsStorage(mosaicsInfo: MosaicInfo[]) {
+  async saveMosaicsStorage(mosaicsInfo: MosaicInfo[], mosaicsToSearch?: MosaicId[]) {
+    //get mosaics from storage
+    const mosaicsStorage = this.getMosaicsFromStorage();
+    //filter mosaics id from mosaicsInfo params
+    const mosaicsIds = (mosaicsInfo.length > 0) ? mosaicsInfo.map(data => data.mosaicId) : mosaicsToSearch;
+    // If the mosaic identification has data, look for the names of the tiles. This must return an array of mosaics name
+    const mosaicsName = (mosaicsIds.length > 0) ? await this.getNameMosaics(mosaicsIds) : [];
     if (mosaicsInfo.length > 0) {
-      // console.log('mosaicsInfo ---> ', mosaicsInfo);
-      //filter mosaics id from mosaicsInfo params
-      const mosaicsIds = mosaicsInfo.map(data => data.mosaicId);
-      //get mosaics from storage
-      const mosaicsStorage = this.getMosaicsFromStorage();
-      // If the mosaic identification has data, look for the names of the tiles. This must return an array of mosaics name
-      const mosaicsName = (mosaicsIds.length > 0) ? await this.getNameMosaics(mosaicsIds) : [];
       for (let mosaicInfo of mosaicsInfo) {
-        // Check if the mosaics id exists in storage
-        const existMosaic = mosaicsStorage.find(key => this.proximaxProvider.getMosaicId(key.id).toHex() === mosaicInfo.mosaicId.toHex());
-        // Mosaic does not exist in storage
-        if (existMosaic === undefined || existMosaic === null) {
-          // From the arrangement of the mosaics name, filter the mosaic name data by the mosaic id
-          const mosaicName = mosaicsName.find(data => data.mosaicId.toHex() === mosaicInfo.mosaicId.toHex());
-          // If mosaicName is defined
-          if (mosaicName) {
-            /*let namespaceName: NamespaceName | NamespaceName[] = namespaceNameParam;
-            // If namespaceNameParam is not defined, look up the NamespaceName array by namespaceIds
-            if (namespaceNameParam === undefined) {
-              const x = await this.proximaxProvider.namespaceHttp.getNamespacesName([mosaicInfo.namespaceId]).toPromise();
-              namespaceName = x[0];
-            }*/
-
-            const x = await this.proximaxProvider.namespaceHttp.getNamespacesName([mosaicInfo.namespaceId]).toPromise();
-            // Push to the array of mosaicsStorage
-            const data: MosaicsStorage = {
-              id: [mosaicName.mosaicId.id.lower, mosaicName.mosaicId.id.higher],
-              namespaceName: x[0],
-              mosaicName: mosaicName,
-              mosaicInfo: mosaicInfo
-            };
+        const data = await this.buildStructureMosaicStorage(mosaicsStorage, mosaicInfo.mosaicId, mosaicsName, mosaicInfo);
+        if (data) {
+          mosaicsStorage.push(data);
+        }
+      }
+    } else {
+      if (mosaicsToSearch) {
+        for (let mosaicId of mosaicsToSearch) {
+          const data = await this.buildStructureMosaicStorage(mosaicsStorage, mosaicId, mosaicsName, null);
+          if (data) {
             mosaicsStorage.push(data);
           }
         }
+      } else {
+        return [];
       }
-
-      localStorage.setItem(this.getNameStorage(), JSON.stringify(mosaicsStorage));
-      return mosaicsStorage;
     }
 
-    return [];
+    localStorage.setItem(this.getNameStorage(), JSON.stringify(mosaicsStorage));
+    return mosaicsStorage;
   }
 
-  /**
-   * Destroy mosaics cache
-   *
-   * @memberof MosaicService
-   */
-  destroyMosaicCache() {
-    this.mosaicsViewCache = [];
+  async buildStructureMosaicStorage(mosaicsStorage: MosaicsStorage[], mosaicId: MosaicId, mosaicsName: MosaicName[], mosaicInfo: MosaicInfo): Promise<MosaicsStorage> {
+    // Check if the mosaics id exists in storage
+    const existMosaic = mosaicsStorage.find(key => this.proximaxProvider.getMosaicId(key.id).toHex() === mosaicId.toHex());
+    // Mosaic does not exist in storage
+    if (existMosaic === undefined || existMosaic === null) {
+      // From the arrangement of the mosaics name, filter the mosaic name data by the mosaic id
+      const mosaicName = mosaicsName.find(data => data.mosaicId.toHex() === mosaicId.toHex());
+      // If mosaicName is defined
+      if (mosaicName) {
+        const namespaceId = (mosaicInfo) ? [mosaicInfo.namespaceId] : [mosaicName.namespaceId];
+        const x = await this.proximaxProvider.namespaceHttp.getNamespacesName(namespaceId).toPromise();
+        const infoComplete = (mosaicInfo) ? true : false;
+
+        // Push to the array of mosaicsStorage
+        return {
+          id: [mosaicName.mosaicId.id.lower, mosaicName.mosaicId.id.higher],
+          namespaceName: x[0],
+          mosaicName: mosaicName,
+          mosaicInfo: mosaicInfo,
+          infoComplete: infoComplete
+        };
+
+      }
+    }
+
+    return null;
   }
 
   /**
@@ -249,7 +264,7 @@ export class MosaicService {
     const mosaicsStorage = this.getMosaicsFromStorage();
     if (mosaicsStorage.length > 0) {
       const filtered = mosaicsStorage.find(element => {
-        return this.getMosaicId(element.id).toHex() === mosaicId.toHex();
+        return this.proximaxProvider.getMosaicId(element.id).toHex() === mosaicId.toHex();
       });
 
       return filtered;
@@ -266,17 +281,6 @@ export class MosaicService {
     return `proximax-mosaics`;
     // return `proximax-mosaics-${this.walletService.address.address.substr(4, 12)}`;
   }
-
-  /**
-   * Get all mosaics in cache
-   *
-   * @returns
-   * @memberof MosaicService
-   */
-  getMosaicsCache() {
-    return this.mosaicsViewCache;
-  }
-
 
   /**
    *
@@ -302,39 +306,4 @@ export class MosaicService {
     const dataStorage = localStorage.getItem(this.getNameStorage());
     return dataStorage === null ? [] : JSON.parse(dataStorage);
   }
-
-  /**
-   *
-   *
-   * @param {(string | number[])} id
-   * @returns {MosaicId}
-   * @memberof MosaicService
-   */
-  getMosaicId(id: string | number[]): MosaicId {
-    return this.proximaxProvider.getMosaicId(id);
-  }
-
-  /**
-   *
-   *
-   * @param {MosaicId[]} mosaicIds
-   * @returns {Promise<MosaicInfo[]>}
-   * @memberof MosaicService
-   */
-  getMosaicsPromise(mosaicIds: MosaicId[]): Promise<MosaicInfo[]> {
-    return this.proximaxProvider.getMosaics(mosaicIds).toPromise();
-  }
-
-  /**
-   * Set mosaics in cache
-   *
-   * @param {string} mosaicId
-   * @param {string} [mosaicName]
-   * @param {string} [namespaceName]
-   * @memberof MosaicService
-   */
-  setMosaicsCache(mosaicsViewCache: MosaicView) {
-    this.mosaicsViewCache.push(mosaicsViewCache);
-  }
-
 }

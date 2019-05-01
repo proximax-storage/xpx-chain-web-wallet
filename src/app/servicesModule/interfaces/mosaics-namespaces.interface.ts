@@ -16,4 +16,5 @@ export interface MosaicsStorage {
   namespaceName: NamespaceName;
   mosaicName: MosaicName;
   mosaicInfo: MosaicInfo;
+  infoComplete: boolean;
 }

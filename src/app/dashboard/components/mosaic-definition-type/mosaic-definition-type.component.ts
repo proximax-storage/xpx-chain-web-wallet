@@ -2,6 +2,8 @@ import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
 import { NamespacesService } from '../../../servicesModule/services/namespaces.service';
 import { TransactionsService } from '../../../transactions/service/transactions.service';
 import { TransactionsInterface } from '../../services/transaction.interface';
+import { MosaicService } from '../../../servicesModule/services/mosaic.service';
+import { MosaicsStorage } from 'src/app/servicesModule/interfaces/mosaics-namespaces.interface';
 
 @Component({
   selector: 'app-mosaic-definition-type',
@@ -14,7 +16,7 @@ export class MosaicDefinitionTypeComponent implements OnInit {
   viewNamespaceId: boolean = false;
 
   constructor(
-    private namespacesService: NamespacesService,
+    private mosaicService: MosaicService,
     public transactionService: TransactionsService
   ) { }
 
@@ -23,17 +25,12 @@ export class MosaicDefinitionTypeComponent implements OnInit {
 
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
     this.viewNamespaceId = false;
-    this.namespacesService.getNamespaceFromId(this.mosaicDefinition.data['parentId']).then(
-      response => {
-        if (response) {
-          this.mosaicDefinition['namespaceName'] = response.namespaceName.name;
-        } else {
-          this.viewNamespaceId = false;
-        }
-      }
-    ).catch(err => {
-      this.viewNamespaceId = true;
-    });
+    this.mosaicDefinition['mosaicsStorage'] = null;
+    const mosaics: MosaicsStorage[] = await this.mosaicService.searchMosaics([this.mosaicDefinition.data['mosaicId']]);
+    if (mosaics.length > 0) {
+      this.viewNamespaceId = false;
+      this.mosaicDefinition['mosaicsStorage'] = mosaics[0];
+    }
   }
 
 }

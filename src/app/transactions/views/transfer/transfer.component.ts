@@ -228,13 +228,10 @@ export class TransferComponent implements OnInit {
       this.inputBLocked = true;
       const acountRecipient = this.transferForm.get("acountRecipient").value;
       const amount = this.transferForm.get("amount").value;
-      const message =
-        this.transferForm.get("message").value === null
-          ? ""
-          : this.transferForm.get("message").value;
+      const message = this.transferForm.get("message").value === null ? "" : this.transferForm.get("message").value;
       const password = this.transferForm.get("password").value;
       const node = this.transferForm.get("mosaicsSelect").value;
-      console.log(message);
+      // console.log(message);
       const common = { password: password };
       if (this.walletService.decrypt(common)) {
         const rspBuildSend = this.transactionService.buildToSendTransfer(
@@ -261,7 +258,7 @@ export class TransferComponent implements OnInit {
               this.inputBLocked = false;
               this.cleanForm();
               this.sharedService.showError("Error", err);
-              console.error(err);
+              // console.error(err);
             }
           );
       }
@@ -316,7 +313,7 @@ export class TransferComponent implements OnInit {
    * @memberof TransferComponent
    */
   optionSelected(event: { value: any }) {
-    console.log(event);
+    // console.log(event);
     this.transferForm.get("acountRecipient").patchValue(event.value);
   }
 

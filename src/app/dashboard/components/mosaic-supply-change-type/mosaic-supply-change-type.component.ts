@@ -24,6 +24,7 @@ export class MosaicSupplyChangeTypeComponent implements OnInit {
 
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
     this.viewMosaicName = false;
+    this.mosaicSupplyChange['mosaicsStorage'] = null;
     this.mosaicService.searchMosaics([this.mosaicSupplyChange.data['mosaicId']]).then(
       response => {
         this.searching = false;
