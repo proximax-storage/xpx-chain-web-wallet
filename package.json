@@ -54,7 +54,6 @@
     "ng-html-util": "^2.0.2",
     "ng-uikit-pro-standard": "git+https://oauth2:xds7fpVXkw8SnNJdDtUE@git.mdbootstrap.com/mdb/angular/ng-uikit-pro-standard.git",
     "ngx-clipboard": "^11.1.9",
-    "npm": "^6.5.0",
     "proximax-nem2-library": "^0.9.9",
     "proximax-nem2-sdk": "^0.10.9",
     "qrcode-generator": "^1.4.1",
