@@ -1,4 +1,8 @@
-.wallet-name{
-  font-weight: 600;
-  color: #969696
+.wallet-name {
+  font-weight: 500;
+  color: white
+}
+
+h1 {
+  margin-bottom: 0rem !important;
 }

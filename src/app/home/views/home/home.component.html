@@ -1,27 +1,81 @@
-<div class="container mt-5rem separation">
+<div class="container mt-6rem">
   <div class="row">
-    <div class="col-8 mx-auto">
+    <div class="col-10 mx-auto">
       <h1 class="text-align-center wallet-name">ProximaX Test-Wallet</h1>
-      <hr>
       <h5 class="text-align-center wallet-name">The secure interface that connects to our platform.</h5>
-      <h6 class="text-align-center wallet-name">Note: Wallet is still in early phase development. Please report issues <a href="https://trello.com/invite/b/nVu5ZxqN/e5dad0a439548aa226a61b2c14c5eebb/proximaxtestnetwallet">here</a></h6>
-      <h6 class="text-align-center wallet-name">All services does not require fees at the moment.</h6>
-      <h6 class="text-align-center wallet-name">Make sure to clear cache or launch in Incognito/Private browsing mode.</h6>
     </div>
+  </div>
 
-    <div class="col-12 mt-3rem mx-auto">
+  <div class="row">
+    <div class="col-10 mx-auto">
+      <hr style="background: white;">
+    </div>
+  </div>
+
+  <div class="row mt-1rem mb-1rem">
+    <div class="col-6 t-a-r">
+      <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-dark-green color-white">
+        <i class="fa fa-magic mr-1"></i> CREATE
+      </button>
+    </div>
+    <div class="col-6">
+      <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-dark-green color-white">
+        <i class="fa fa-magic mr-1"></i> IMPORT
+      </button>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-10 mx-auto">
+      <hr style="background: #ffffff73;">
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-8 mx-auto">
       <div class="row">
         <ng-container *ngFor="let item of keyObject(arrayServices);">
           <ng-container *ngIf="arrayServices[item].show">
-            <div class="col-md-3 mt-3rem cursor-pointer text-align-center" (mouseenter)="description = arrayServices[item].text" (mouseleave)="description = ''">
-              <div class="{{arrayServices[item].icon}} size-icon-services" aria-hidden="true"></div>
+            <div class="col-md-3 mt-3rem text-align-center">
+              <div class="row">
+                <div class="col-12">
+                  <div class="{{arrayServices[item].icon}} size-icon-services" aria-hidden="true"></div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12" style="margin-top: 10px;">
+                  <span class="title-service">{{arrayServices[item].title}}</span>
+                </div>
+
+                <div class="col-12">
+                  <span class="color-dark-green" style="font-size: 0.87rem;">{{arrayServices[item].text}}</span>
+                </div>
+              </div>
             </div>
+            <!-- <div class="col-md-3 mt-3rem cursor-pointer text-align-center"
+          (mouseenter)="description = arrayServices[item].text" (mouseleave)="description = ''"> -->
+
           </ng-container>
         </ng-container>
       </div>
-      <div class="mt-3rem text-center">
-        <h6 class="text-align-center wallet-name">{{description}}</h6>
-      </div>
     </div>
   </div>
+
+
+
+  <!-- <div class="col-12 mt-3rem mx-auto">
+    <div class="row">
+      <ng-container *ngFor="let item of keyObject(arrayServices);">
+        <ng-container *ngIf="arrayServices[item].show">
+          <div class="col-md-3 mt-3rem cursor-pointer text-align-center"
+            (mouseenter)="description = arrayServices[item].text" (mouseleave)="description = ''">
+            <div class="{{arrayServices[item].icon}} size-icon-services" aria-hidden="true"></div>
+          </div>
+        </ng-container>
+      </ng-container>
+    </div>
+    <div class="mt-3rem text-center">
+      <h6 class="text-align-center wallet-name">{{description}}</h6>
+    </div>
+  </div> -->
 </div>

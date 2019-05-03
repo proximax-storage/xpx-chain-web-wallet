@@ -3,7 +3,8 @@
     <ng-container *ngFor="let key of keyObject(header)">
       <ng-container *ngIf="header[key]['rol'] === showMenu && header[key]['show']">
         <ng-container *ngIf="header[key]['type'] === 'dropdown'">
-          <li class="nav-item dropdown btn-group" dropdown>
+          <li dropdown
+            [ngClass]="[header[key]['selected'] ? 'nav-item dropdown box-header-selected' : 'nav-item dropdown']">
             <a dropdownToggle type="button" class="nav-link dropdown-toggle waves-light color-text-gris" mdbWavesEffect>
               <i [ngClass]="header[key]['icon']"></i>
               <span class="clearfix d-none d-sm-inline-block font-header">
@@ -13,8 +14,10 @@
             <div *dropdownMenu class="dropdown-menu dropdown dropdown-primary not-margin" role="menu">
               <ng-container *ngFor="let k of keyObject(header[key]['submenu'])">
                 <ng-container *ngIf="header[key]['submenu'][k]['show']">
-                  <a class="dropdown-item waves-light font-header color-text-gris" [routerLink]="[header[key]['submenu'][k]['link']]">
-                    <i [ngClass]="header[key]['submenu'][k]['icon']"></i> <span style="margin-left: 0.2rem;">{{header[key]['submenu'][k]['name'] }}</span>
+                  <a class="dropdown-item waves-light font-header color-text-gris"
+                    [routerLink]="[header[key]['submenu'][k]['link']]">
+                    <i [ngClass]="header[key]['submenu'][k]['icon']"></i>
+                    <span style="margin-left: 0.2rem;">{{header[key]['submenu'][k]['name'] }}</span>
                   </a>
                 </ng-container>
               </ng-container>
@@ -23,17 +26,23 @@
         </ng-container>
 
         <ng-container *ngIf="header[key]['type'] !== 'dropdown'">
-          <li class="nav-item">
+          <li [ngClass]="[header[key]['selected'] ? 'nav-item box-header-selected' : 'nav-item']">
             <ng-container *ngIf="key !== 'signout'">
-              <a *ngIf="header[key]['type'] != 'dropdown'" class="nav-link waves-light color-text-gris" mdbWavesEffect
+              <a *ngIf="header[key]['type'] != 'dropdown'" class="nav-link waves-light" mdbWavesEffect
                 [routerLink]="[header[key]['link']]">
-                <i [ngClass]="header[key]['icon']"></i> <span class="clearfix d-none d-sm-inline-block font-header" style="margin-left: 0.2rem;"> {{header[key]['name'] | uppercase}}</span>
+                <i [ngClass]="header[key]['icon']"></i>
+                <span class="clearfix d-none d-sm-inline-block font-header" style="margin-left: 0.2rem;">
+                  {{header[key]['name'] | uppercase}}
+                </span>
               </a>
             </ng-container>
             <ng-container *ngIf="key === 'signout'">
-              <a *ngIf="header[key]['type'] != 'dropdown'" class="nav-link waves-light color-text-gris" mdbWavesEffect
+              <a *ngIf="header[key]['type'] != 'dropdown'" class="nav-link waves-light" mdbWavesEffect
                 (click)="logoutEvent(header[key]['link'])">
-                <i [ngClass]="header[key]['icon']"></i> <span class="clearfix d-none d-sm-inline-block font-header" style="margin-left: 0.2rem;">{{header[key]['name'] | uppercase}}</span>
+                <i [ngClass]="header[key]['icon']"></i>
+                <span class="clearfix d-none d-sm-inline-block font-header"
+                  style="margin-left: 0.2rem;">{{header[key]['name'] | uppercase}}
+                </span>
               </a>
             </ng-container>
           </li>

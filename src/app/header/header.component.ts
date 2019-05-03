@@ -1,4 +1,4 @@
-import { Router, NavigationEnd } from '@angular/router';
+import { Router, NavigationEnd, NavigationStart } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AppConfig, NameRoute } from '../config/app.config';
@@ -127,8 +127,8 @@ export class HeaderComponent implements OnInit {
         }
       ),
       nodeSelected: this.sharedService.buildStructureHeader('default', `Node selected: ${this.nodeService.getNodeSelected()}`, 'green-color', 'fa fa-codepen', false, '', false, {}),
-      createWallet: this.sharedService.buildStructureHeader('default', `Create wallet`, '', 'fa fa-envelope', false, AppConfig.routes.createWallet, true, {}),
-      importWallet: this.sharedService.buildStructureHeader('default', `Import wallet`, '', 'fa fa-key', false, AppConfig.routes.importWallet, true, {}),
+      createWallet: this.sharedService.buildStructureHeader('default', `Create wallet`, '', 'fa fa-envelope', false, AppConfig.routes.createWallet, false, {}),
+      importWallet: this.sharedService.buildStructureHeader('default', `Import wallet`, '', 'fa fa-key', false, AppConfig.routes.importWallet, false, {}),
       account: this.sharedService.buildStructureHeader('default', `Account`, '', 'fa fa-vcard', true, AppConfig.routes.account, true, {}),
       services: this.sharedService.buildStructureHeader('default', `Services`, '', 'fa fa-wrench', true, AppConfig.routes.services, true, {}),
       signout: this.sharedService.buildStructureHeader('default', `Signout`, '', 'fa fa-sign-out', true, AppConfig.routes.login, true, {})
@@ -156,14 +156,23 @@ export class HeaderComponent implements OnInit {
   readRoute() {
     this.route.events
       .subscribe((event) => {
+        // console.log('event --> ', event);
         if (event instanceof NavigationEnd) {
           var objRoute = event.url.split('/')[event.url.split('/').length - 1];
-          if (NameRoute[objRoute] !== undefined) {
+          Object.keys(this.horizontalHeader).forEach(element => {
+            if (this.horizontalHeader[element].link === objRoute) {
+              this.horizontalHeader[element].selected = true;
+            } else {
+              this.horizontalHeader[element].selected = false;
+            }
+          });
+          /*if (NameRoute[objRoute] !== undefined) {
             this.nameRoute = NameRoute[objRoute];
           } else {
             this.nameRoute = '';
-          }
+          }*/
         }
+
       });
   }
 }

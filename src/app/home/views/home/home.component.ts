@@ -19,7 +19,7 @@ export class HomeComponent implements OnInit {
   ngOnInit() {
     //const explorerFile = this.service.structureServices('img-explorer-file', 'File explorer', `File explorer`, '', true);
     //const addNode = this.service.structureServices('img-add-node', 'Nodes', `Add and select node`, '', true);
-    const explorerTransaction = this.service.structureServices('img-transaction', 'Transaction explorer', `Search All available transactions`, '', true);
+    const explorerTransaction = this.service.structureServices('img-transaction', 'Transactions', `Search All available transactions`, '', true);
     const voting = this.service.structureServices('fa fa-4x fa-pie-chart', 'Voting', `Create and vote on polls`, '', true);
     const apostille = this.service.structureServices('img-apostille', 'Apostille', 'Use Apostille service to create blockchain based notarizations to time stamp, follow and audit file authenticity.', '', true);
     const multisignature = this.service.structureServices('fa fa-user-plus', 'Multisignature and Multi-User Accounts', 'Mutisig accounts are editable on-chain contracts, the most powerful way to secure funds, enable join accounts, and are the foundation of DAOs.', '', false);

@@ -1,15 +1,179 @@
 /* You can add global styles to this file, and also import other style files */
 
+/* ---------------------------- New style -----------------------*/
+html,
 body {
-  background: #f5f7fa;
+  margin: 0;
+  display: table;
+  height: 100%;
+  width: 100%;
 }
 
+html {
+  background-image: url('assets/images/background-color.jpg');
+}
+
+body {
+  background: transparent;
+}
+
+footer {
+  display: table-row;
+  height: 1px;
+}
+
+/******* MARGIN AND SIZE ******/
+.mt-6rem {
+  margin-top: 6rem;
+}
+
+.mt-3rem {
+  margin-top: 3rem;
+}
+
+.mb-3rem {
+  margin-bottom: 3rem;
+}
+
+.mt-1rem {
+  margin-top: 1rem;
+}
+
+.mb-1rem {
+  margin-bottom: 1rem;
+}
+
+.mt-1-5rem {
+  margin-top: 1.5rem;
+}
+
+.f-w-600 {
+  font-weight: 600;
+}
+
+.f-w-500 {
+  font-weight: 500;
+}
+
+/****** ALIGN ******/
+.t-a-r {
+  text-align: right;
+}
+
+
+/*****HEADER******/
+.background-header-inverse {
+  background: transparent !important;
+}
+
+
+/**** BUTTONS AND COLORS*/
+.background-dark-green {
+  background: #023C42;
+}
+
+.color-white {
+  color: white;
+}
+
+.color-transparent-clear-green {
+  color: rgba(4, 96, 104, 0.7)
+}
+
+.color-dark-green {
+  color: #333333;
+}
+
+.box-header-selected {
+  background: #023c42;
+  border-radius: 5rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+/******* SERVICES *********/
+.size-icon-services {
+  font-size: 60px;
+  color: #023C42;
+  margin: auto;
+}
+
+.title-service {
+  color: #023C42;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.img-node {
+  height: 63px;
+  width: 63px;
+  padding: 10px;
+  background-repeat: no-repeat;
+  background-image: url("./assets/images/networking.png");
+}
+
+.img-apostille {
+  height: 63px;
+  width: 63px;
+  padding: 10px;
+  background-repeat: no-repeat;
+  background-image: url("./assets/images/apostille.png");
+}
+
+.img-add-node {
+  height: 63px;
+  width: 63px;
+  padding: 10px;
+  background-repeat: no-repeat;
+  background-image: url("./assets/images/add-node.png");
+}
+
+.img-explorer-file {
+  height: 63px;
+  width: 63px;
+  padding: 10px;
+  background-repeat: no-repeat;
+  background-image: url("./assets/images/explorer-file.png");
+}
+
+.img-transaction {
+  height: 63px;
+  width: 63px;
+  padding: 10px;
+  background-repeat: no-repeat;
+  background-image: url("./assets/images/transaction.png");
+}
+
+
+
+
+
+
+
+
+/* -------------------------- Fin new style ------------------------- */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
 html:after {
   width: 100%;
   display: block;
   content: "";
   height: 100%;
-}
+}*/
 
 
 .md-form textarea~label.active {
@@ -116,9 +280,7 @@ html:after {
   color: white !important;
 }
 
-.color-white {
-  color: white;
-}
+
 
 .color-text-gris {
   color: #969696 !important;
@@ -390,15 +552,6 @@ mdb-select mdb-select-dropdown .dropdown-content li>span {
 }
 
 
-
-
-/***/
-
-
-
-
-
-
 /*CARD ADMIN*/
 .cascading-admin-card .admin-up .data {
   float: right;
@@ -497,10 +650,7 @@ mdb-select mdb-select-dropdown .dropdown-content li>span {
 }
 
 /*SERVICES*/
-.size-icon-services {
-  font-size: 60px;
-  color: #000000;
-}
+
 
 .border-service {
   margin-top: 1rem !important;
@@ -531,35 +681,7 @@ mdb-select mdb-select-dropdown .dropdown-content li>span {
   overflow-x: hidden;
 }
 
-.img-node {
-  height: 60px;
-  background-repeat: no-repeat;
-  background-image: url("./assets/images/networking.png");
-}
 
-.img-apostille {
-  height: 60px;
-  background-repeat: no-repeat;
-  background-image: url("./assets/images/apostille.png");
-}
-
-.img-add-node {
-  height: 60px;
-  background-repeat: no-repeat;
-  background-image: url("./assets/images/add-node.png");
-}
-
-.img-explorer-file {
-  height: 60px;
-  background-repeat: no-repeat;
-  background-image: url("./assets/images/explorer-file.png");
-}
-
-.img-transaction {
-  height: 60px;
-  background-repeat: no-repeat;
-  background-image: url("./assets/images/transaction.png");
-}
 
 /*FIN SERVICES*/
 

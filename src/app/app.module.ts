@@ -14,6 +14,7 @@ import { HeaderHorizontalComponent } from './header/component/header-horizontal/
 
 import { HeaderRebSocialComponent } from './header/component/header-reb-social/header-reb-social.component';
 import { HeaderVerticalComponent } from './header/component/header-vertical/header-vertical.component';
+import { FooterComponent } from './footer/footer.component';
 
 
 @NgModule({
@@ -22,7 +23,8 @@ import { HeaderVerticalComponent } from './header/component/header-vertical/head
     HeaderComponent,
     HeaderHorizontalComponent,
     HeaderRebSocialComponent,
-    HeaderVerticalComponent
+    HeaderVerticalComponent,
+    FooterComponent
 
   ],
   imports: [
