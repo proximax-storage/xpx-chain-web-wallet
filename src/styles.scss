@@ -11,6 +11,9 @@ body {
 
 html {
   background-image: url('assets/images/background-color.jpg');
+  background-color: #f1fbfc;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 body {
@@ -55,6 +58,67 @@ footer {
   font-weight: 500;
 }
 
+.h400px {
+  height: 400px;
+}
+
+.mr-15px {
+  margin-right: 15px !important;
+}
+
+
+.mt-100px {
+  margin-top: 100px;
+}
+
+.mt-1rem {
+  margin-top: 1rem;
+}
+
+.mt-2rem {
+  margin-top: 2rem;
+}
+
+.mt-3rem {
+  margin-top: 3rem;
+}
+
+.mt-5rem {
+  margin-top: 5rem;
+}
+
+.mt-8rem {
+  margin-top: 8rem;
+}
+
+.mt-4rm {
+  margin-top: 4rem !important;
+}
+
+.mb-1rem {
+  margin-bottom: 1rem;
+}
+
+.mb-3rem {
+  margin-bottom: 3rem;
+}
+
+.mb-2rem {
+  margin-bottom: 2rem;
+}
+
+.mt-1rm {
+  margin-top: 1rem !important;
+}
+
+.mt-1-5rem {
+  margin-top: 1.5rem;
+}
+
+.mt-1rm-left {
+  margin-left: 0.2cm;
+}
+
 /****** ALIGN ******/
 .t-a-r {
   text-align: right;
@@ -67,10 +131,39 @@ footer {
 }
 
 
+
 /**** BUTTONS AND COLORS*/
+.btn-dark-green-inverse {
+  border: 1px solid #023c42;
+  color: black;
+  background: white;
+}
+
+.btn-dark-green {
+  color: white;
+  background: #023c42 !important;
+}
+
+.background-divisor {
+  background: #ffffff73 !important;
+}
+
+.wallet-name {
+  font-weight: 500;
+  color: white
+}
+
+.wallet-description {
+  font-size: 1rem;
+  margin-top: .5rem;
+  color: white;
+}
+
 .background-dark-green {
   background: #023C42;
 }
+
+
 
 .color-white {
   color: white;
@@ -90,6 +183,36 @@ footer {
   padding-left: 0.5rem;
   padding-right: 0.5rem;
 }
+
+
+.box-form {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  padding-right: 4rem;
+  padding-left: 4rem;
+  background: rgba(4, 96, 104, 0.7);
+  border-radius: 1rem;
+}
+
+.box-form-inverse {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  padding-right: 4rem;
+  padding-left: 4rem;
+  background: rgba(51, 51, 51, 0.7);
+  border-radius: 1rem;
+}
+
+
+
+
+/*****style mdb******/
+
+mdb-select>div>div.single>div.placeholder,
+.md-form label {
+  color: white !important;
+}
+
 
 /******* SERVICES *********/
 .size-icon-services {
@@ -360,66 +483,7 @@ mdb-select mdb-select-dropdown .dropdown-content li>span {
 /*FIN STYLE SITE*/
 
 /*With and Height*/
-.h400px {
-  height: 400px;
-}
 
-.mr-15px {
-  margin-right: 15px !important;
-}
-
-
-.mt-100px {
-  margin-top: 100px;
-}
-
-.mt-1rem {
-  margin-top: 1rem;
-}
-
-.mt-2rem {
-  margin-top: 2rem;
-}
-
-.mt-3rem {
-  margin-top: 3rem;
-}
-
-.mt-5rem {
-  margin-top: 5rem;
-}
-
-.mt-8rem {
-  margin-top: 8rem;
-}
-
-.mt-4rm {
-  margin-top: 4rem !important;
-}
-
-.mb-1rem {
-  margin-bottom: 1rem;
-}
-
-.mb-3rem {
-  margin-bottom: 3rem;
-}
-
-.mb-2rem {
-  margin-bottom: 2rem;
-}
-
-.mt-1rm {
-  margin-top: 1rem !important;
-}
-
-.mt-1-5rem {
-  margin-top: 1.5rem;
-}
-
-.mt-1rm-left {
-  margin-left: 0.2cm;
-}
 
 .background-proxiwallet {
   background: #f5f7fa;

@@ -1,25 +1,24 @@
 <div class="container mt-6rem">
+  <!-- TITLE -->
   <div class="row">
     <div class="col-10 mx-auto">
       <h1 class="text-align-center wallet-name">ProximaX Test-Wallet</h1>
-      <h5 class="text-align-center wallet-name">The secure interface that connects to our platform.</h5>
+      <h5 class="text-align-center wallet-description">The secure interface that connects to our platform.</h5>
     </div>
-  </div>
 
-  <div class="row">
     <div class="col-10 mx-auto">
-      <hr style="background: white;">
+      <hr class="background-divisor">
     </div>
   </div>
 
   <div class="row mt-1rem mb-1rem">
     <div class="col-6 t-a-r">
-      <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-dark-green color-white">
+      <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 btn-dark-green">
         <i class="fa fa-magic mr-1"></i> CREATE
       </button>
     </div>
     <div class="col-6">
-      <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-dark-green color-white">
+      <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 btn-dark-green">
         <i class="fa fa-magic mr-1"></i> IMPORT
       </button>
     </div>
@@ -27,12 +26,12 @@
 
   <div class="row">
     <div class="col-10 mx-auto">
-      <hr style="background: #ffffff73;">
+      <hr class="background-divisor">
     </div>
   </div>
 
   <div class="row">
-    <div class="col-lg-8 mx-auto">
+    <div class="col-lg-9 mx-auto">
       <div class="row">
         <ng-container *ngFor="let item of keyObject(arrayServices);">
           <ng-container *ngIf="arrayServices[item].show">

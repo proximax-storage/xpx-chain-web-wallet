@@ -1,34 +1,83 @@
-<div class="mt-3rem mb-3rem animated fadeIn">
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col-xl-6 col-md-8 col-sm-10 mx-auto">
+<div class="container mt-6rem">
 
+  <!-- TITLE -->
+  <div class="row">
+    <div class="col-10 mx-auto">
+      <h1 class="text-align-center wallet-name">Wallet Login</h1>
+      <h5 class="text-align-center wallet-description">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Odio
+        obcaecati
+        eveniet cum, dignissimos fugit consequatur tempore, blanditiis quas dolor tempora officiis, fuga numquam minima
+        molestias veritatis velit voluptas error incidunt.</h5>
+    </div>
 
+    <div class="col-10 mx-auto">
+      <hr class="background-divisor">
+    </div>
+  </div>
+
+  <div class="row mt-2rem">
+    <div class="container-fluid">
+      <div class="col-xl-7 col-md-9 col-sm-11 mx-auto">
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="" style="color: #757575;">
-          <div class="md-form  mt-5">
-            <i class="fa fa-user prefix text-gris"></i>
-            <mdb-select [options]="wallets" placeholder="Name wallet" required formControlName="wallet" class="colorful-select dropdown-default"
-              (selected)="optionSelected($event)" mdbInputDirective [errorMessage]="getError('wallet')"></mdb-select>
+
+          <div class="container box-form">
+            <div class="md-form">
+              <i class="fa fa-user prefix text-white"></i>
+              <mdb-select [options]="wallets" placeholder="Name wallet" required formControlName="wallet"
+                class="colorful-select dropdown-default" (selected)="optionSelected($event)" mdbInputDirective
+                [errorMessage]="getError('wallet')"></mdb-select>
+            </div>
+            <div class="md-form mt-5" formGroupName="common">
+              <i class="fa fa-lock prefix text-white"></i>
+              <input type="password" autocomplete="off" required formControlName="password" id="password"
+                class="form-control" data-success="Valid password" mdbInputDirective
+                [errorMessage]="getErrorGroup('common','password')">
+              <label for="password">password</label>
+            </div>
           </div>
-          <div class="md-form mt-5" formGroupName="common">
-            <i class="fa fa-lock prefix text-gris"></i>
-            <input type="password" autocomplete="off" required formControlName="password" id="password" class="form-control"
-              data-success="Valid password" mdbInputDirective [errorMessage]="getErrorGroup('common','password')">
-            <label for="password">password</label>
-          </div>
-          <div class="mt-4rm">
-            <div class="row ">
-              <div class="mx-auto">
-                <div class="row">
-                  <div class="col-xs-6">
-                    <button mdbBtn type="button" color="default" rounded="true" class="waves-light" mdbWavesEffect type="submit">Login</button>
-                  </div>
-                </div>
+
+          <!-- BUTTONS -->
+          <div class="container mt-1rem">
+            <div class="row mt-1rem mb-1rem">
+              <div class="col-6 t-a-r">
+                <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 btn-dark-green-inverse">
+                  CLEAN
+                </button>
+              </div>
+              <div class="col-6">
+                <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 btn-dark-green">
+                  SIGN IN
+                </button>
               </div>
             </div>
           </div>
         </form>
       </div>
+    </div>
+
+    <div class="col-10 mx-auto">
+      <hr class="background-divisor">
+    </div>
+  </div>
+
+
+  <div class="row mt-1rem mb-1rem">
+    <div class="col-12 text-center">
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Eaque recusandae sed quaerat commodi quas
+      necessitatibus
+      ratione aspernatur molestiae perspiciatis incidunt. Eius ad repellat necessitatibus? Illo modi minus blanditiis
+      ipsa rerum.
+    </div>
+
+    <div class="col-6 t-a-r mt-1rem">
+      <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 btn-dark-green">
+        <i class="fa fa-magic mr-1"></i> CREATE
+      </button>
+    </div>
+    <div class="col-6 mt-1rem">
+      <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 btn-dark-green">
+        <i class="fa fa-magic mr-1"></i> IMPORT
+      </button>
     </div>
   </div>
 </div>
