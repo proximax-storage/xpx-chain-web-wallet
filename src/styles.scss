@@ -14,7 +14,7 @@ html {
   background-color: #f1fbfc;
   background-repeat: no-repeat;
   background-position: top center;
-  // background-size: contain;
+  background-size: cover;
 }
 
 body {
@@ -126,12 +126,18 @@ footer {
 }
 
 
-/*****HEADER******/
+/*****BACKGROUND******/
 .background-header-inverse {
   background: transparent !important;
 }
 
+.background-dark-green {
+  background: #023C42;
+}
 
+.background-divisor {
+  background: #ffffff73 !important;
+}
 
 /**** BUTTONS AND COLORS*/
 .btn-dark-green-inverse {
@@ -145,10 +151,19 @@ footer {
   background: #023c42 !important;
 }
 
-.background-divisor {
-  background: #ffffff73 !important;
+.btn-white-transparent {
+  border: 1px solid #ffffff;
+  color: white;
+  background: #ffffff00;
 }
 
+.btn-white {
+  border: 1px solid #ffffff;
+  color: #023c42;
+  background: white;
+}
+
+/*** THEME **/
 .wallet-name {
   font-weight: 500;
   color: white
@@ -159,12 +174,6 @@ footer {
   margin-top: .5rem;
   color: white;
 }
-
-.background-dark-green {
-  background: #023C42;
-}
-
-
 
 .color-white {
   color: white;

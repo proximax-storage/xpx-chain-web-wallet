@@ -3,11 +3,8 @@
   <!-- TITLE -->
   <div class="row">
     <div class="col-10 mx-auto">
-      <h1 class="text-align-center wallet-name">Wallet Login</h1>
-      <h5 class="text-align-center wallet-description">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Odio
-        obcaecati
-        eveniet cum, dignissimos fugit consequatur tempore, blanditiis quas dolor tempora officiis, fuga numquam minima
-        molestias veritatis velit voluptas error incidunt.</h5>
+      <h1 class="text-align-center wallet-name">{{nameModule}}</h1>
+      <h5 class="text-align-center wallet-description">{{descriptionModule}}</h5>
     </div>
 
     <div class="col-10 mx-auto">
@@ -20,7 +17,7 @@
       <div class="col-xl-7 col-md-9 col-sm-11 mx-auto">
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="" style="color: #757575;">
 
-          <div class="container box-form">
+          <div class="container box-form-inverse">
             <div class="md-form">
               <i class="fa fa-user prefix text-white"></i>
               <mdb-select [options]="wallets" placeholder="Name wallet" required formControlName="wallet"
@@ -40,12 +37,12 @@
           <div class="container mt-1rem">
             <div class="row mt-1rem mb-1rem">
               <div class="col-6 t-a-r">
-                <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 btn-dark-green-inverse">
+                <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 btn-white-transparent">
                   CLEAN
                 </button>
               </div>
               <div class="col-6">
-                <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 btn-dark-green-prx">
+                <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 btn-white">
                   SIGN IN
                 </button>
               </div>
@@ -62,7 +59,7 @@
 
 
   <div class="row mt-1rem mb-1rem">
-    <div class="col-12 text-center">
+    <div class="col-12 text-center text-white">
       Lorem ipsum dolor sit amet consectetur adipisicing elit. Eaque recusandae sed quaerat commodi quas
       necessitatibus
       ratione aspernatur molestiae perspiciatis incidunt. Eius ad repellat necessitatibus? Illo modi minus blanditiis

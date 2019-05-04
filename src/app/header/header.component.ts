@@ -31,6 +31,7 @@ export interface HorizontalHeaderInterface {
 })
 export class HeaderComponent implements OnInit {
 
+  imageLogin = false;
   nameRoute = '';
   showOnlyLogged = false;
   keyObject = Object.keys;
@@ -156,9 +157,21 @@ export class HeaderComponent implements OnInit {
   readRoute() {
     this.route.events
       .subscribe((event) => {
-        // console.log('event --> ', event);
         if (event instanceof NavigationEnd) {
           var objRoute = event.url.split('/')[event.url.split('/').length - 1];
+          // background image other module or login
+          if (objRoute === AppConfig.routes.login && !this.imageLogin) {
+            // set background to module login
+            this.imageLogin = true;
+            document.getElementById('first').style.backgroundImage = "url('assets/images/background-black-white.jpg')";
+          } else {
+            if (this.imageLogin) {
+              // set background to other module
+              this.imageLogin = false;
+              document.getElementById('first').style.backgroundImage = "url('assets/images/background-color.jpg')";
+            }
+          }
+
           Object.keys(this.horizontalHeader).forEach(element => {
             if (this.horizontalHeader[element].link === objRoute) {
               this.horizontalHeader[element].selected = true;
@@ -166,11 +179,6 @@ export class HeaderComponent implements OnInit {
               this.horizontalHeader[element].selected = false;
             }
           });
-          /*if (NameRoute[objRoute] !== undefined) {
-            this.nameRoute = NameRoute[objRoute];
-          } else {
-            this.nameRoute = '';
-          }*/
         }
 
       });

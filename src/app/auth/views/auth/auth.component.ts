@@ -15,12 +15,15 @@ export class AuthComponent implements OnInit {
   selectedValue: string;
   loginForm: FormGroup;
   wallets: Array<any>;
-
+  nameModule = 'Wallet Login';
+  descriptionModule = 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Odio obcaecati eveniet cum, dignissimos fugit consequatur tempore, blanditiis quas dolor tempora officiis, fuga numquam minima molestias veritatis velit voluptas error incidunt.';
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService
-  ) { }
+  ) {
+
+  }
 
 
   ngOnInit() {
