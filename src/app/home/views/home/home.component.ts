@@ -9,6 +9,7 @@ import { AppConfig } from "../../../config/app.config";
 })
 export class HomeComponent implements OnInit {
 
+  link = AppConfig.routes;
   arrayServices = {};
   description = '';
   keyObject = Object.keys;

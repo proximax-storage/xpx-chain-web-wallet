@@ -1,8 +1,8 @@
-import { Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { environment } from '../../../../environments/environment';
+import { AppConfig } from '../../../config/app.config';
 
 @Component({
   selector: 'app-auth',
@@ -11,6 +11,8 @@ import { environment } from '../../../../environments/environment';
 })
 
 export class AuthComponent implements OnInit {
+
+  link = AppConfig.routes;
   walletSelect: any;
   selectedValue: string;
   loginForm: FormGroup;

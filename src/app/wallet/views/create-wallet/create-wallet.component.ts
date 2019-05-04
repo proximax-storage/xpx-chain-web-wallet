@@ -13,6 +13,9 @@ import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 })
 export class CreateWalletComponent implements OnInit {
 
+  nameModule = 'Create Wallet';
+  descriptionModule = 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Odio obcaecati eveniet cum, dignissimos fugit consequatur tempore, blanditiis quas dolor tempora officiis, fuga numquam minima molestias veritatis velit voluptas error incidunt.';
+
   createWalletForm: FormGroup;
   walletIsCreated = false;
   privateKey: string;

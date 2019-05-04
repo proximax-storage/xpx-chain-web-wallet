@@ -104,6 +104,10 @@ footer {
   margin-bottom: 3rem;
 }
 
+.mb-5rem {
+  margin-bottom: 5rem;
+}
+
 .mb-2rem {
   margin-bottom: 2rem;
 }
@@ -163,6 +167,12 @@ footer {
   background: white;
 }
 
+.btn-white-green-transparent {
+  border: 1px solid #023c42;
+  color: #023c42;
+  background: #ffffff00;
+}
+
 /*** THEME **/
 .wallet-name {
   font-weight: 500;
@@ -196,8 +206,8 @@ footer {
 
 
 .box-form {
-  padding-top: 1rem;
-  padding-bottom: 1rem;
+  padding-top: .3rem;
+  padding-bottom: .3rem;
   padding-right: 4rem;
   padding-left: 4rem;
   background: rgba(4, 96, 104, 0.7);
@@ -205,21 +215,22 @@ footer {
 }
 
 .box-form-inverse {
-  padding-top: 1rem;
-  padding-bottom: 1rem;
+  padding-top: .3rem;
+  padding-bottom: .3rem;
   padding-right: 4rem;
   padding-left: 4rem;
   background: rgba(51, 51, 51, 0.7);
   border-radius: 1rem;
 }
 
-
-
-
 /*****style mdb******/
 
 mdb-select>div>div.single>div.placeholder,
 .md-form label {
+  color: white !important;
+}
+
+mdb-select>div>div.single>div.value {
   color: white !important;
 }
 
@@ -251,6 +262,12 @@ mdb-select>div>div.single>div.placeholder,
   padding: 10px;
   background-repeat: no-repeat;
   background-image: url("./assets/images/apostille.png");
+}
+
+.img-wallet {
+  width: 35px;
+  margin-bottom: 0.5rem;
+  margin-right: 5px;
 }
 
 .img-add-node {
