@@ -13,12 +13,11 @@
     </div>
   </div>
 
-  <div class="row mt-1rem">
-    <div class="container-fluid">
-      <div class="col-xl-7 col-md-9 col-sm-11 mx-auto">
-        <ng-container *ngIf="!walletIsCreated">
+  <ng-container *ngIf="!walletIsCreated; else walletIsCreatedTemplate">
+    <div class="row">
+      <div class="container-fluid mt-1rem">
+        <div class="col-xl-7 col-md-9 col-sm-11 mx-auto">
           <form [formGroup]="importWalletForm" (ngSubmit)="importSimpleWallet()" style="color: #757575;">
-
             <div class="container box-form">
               <div class="md-form">
                 <i class="fa fa-bars prefix text-white"></i>
@@ -87,12 +86,13 @@
               </div>
             </div>
           </form>
-        </ng-container>
+        </div>
       </div>
     </div>
-  </div>
-</div>
+  </ng-container>
 
-<!-- <ng-container *ngIf="walletIsCreated">
-  <app-wallet-created [privateKey]="pvk" [address]="address"></app-wallet-created>
-</ng-container> -->
+
+  <ng-template #walletIsCreatedTemplate>
+    <app-wallet-created [privateKey]="pvk" [address]="address" class="animated fadeIn"></app-wallet-created>
+  </ng-template>
+</div>

@@ -80,6 +80,8 @@ export class ImportWalletComponent implements OnInit {
         this.sharedService.showSuccess('Congratulations!', 'Your wallet has been created successfully');
         this.pvk = this.proximaxProvider.decryptPrivateKey(password, accounts.encrypted, accounts.iv).toUpperCase();
         this.walletIsCreated = true;
+        this.nameModule = 'Congratulations!';
+        this.descriptionModule = 'Your wallet has been created successfully';
       } else {
         //Error of repeated Wallet
         this.cleanForm('walletname');

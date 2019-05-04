@@ -5,7 +5,9 @@
       <h1 class="text-align-center wallet-name">
         <img class="img-wallet" src="assets/images/wallet.png"> {{nameModule}}
       </h1>
-      <h5 class="text-align-center wallet-description">{{descriptionModule}}</h5>
+      <h5 [ngClass]="[walletIsCreated ? 'f-w-bold color-amarillo text-align-center wallet-description' :
+      'text-align-center wallet-description']">
+        {{descriptionModule}}</h5>
     </div>
 
     <div class="col-10 mx-auto">
@@ -13,11 +15,11 @@
     </div>
   </div>
 
-  <div class="row mt-1rem">
-    <div class="container-fluid">
-      <div class="col-xl-7 col-md-9 col-sm-11 mx-auto">
-        <ng-container *ngIf="!walletIsCreated">
-          <form [formGroup]="createWalletForm" (ngSubmit)="createSimpleWallet()" class="">
+  <ng-container *ngIf="!walletIsCreated; else walletIsCreatedTemplate">
+    <div class="row">
+      <div class="container-fluid mt-1rem">
+        <div class="col-xl-7 col-md-9 col-sm-11 mx-auto">
+          <form [formGroup]="createWalletForm" (ngSubmit)="createSimpleWallet()">
             <div class="container box-form">
               <div class="md-form">
                 <i class="fa fa-bars prefix text-white"></i>
@@ -76,8 +78,12 @@
               </div>
             </div>
           </form>
-        </ng-container>
+        </div>
       </div>
     </div>
-  </div>
+  </ng-container>
+
+  <ng-template #walletIsCreatedTemplate>
+    <app-wallet-created [privateKey]="pvk" [address]="address" class="animated fadeIn"></app-wallet-created>
+  </ng-template>
 </div>
