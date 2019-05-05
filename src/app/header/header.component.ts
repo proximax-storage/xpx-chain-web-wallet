@@ -113,7 +113,7 @@ export class HeaderComponent implements OnInit {
   buildHeader() {
     this.horizontalHeader = {
       home: this.sharedService.buildStructureHeader('default', 'Home', '', 'fa fa-home', false, AppConfig.routes.home, true, {}),
-      login: this.sharedService.buildStructureHeader('default', `Login`, '', 'fa fa-sign-in', false, AppConfig.routes.login, true, {}),
+      login: this.sharedService.buildStructureHeader('default', `SIGN IN`, '', 'fa fa-sign-in', false, AppConfig.routes.login, true, {}),
       amount: this.sharedService.buildStructureHeader('default', '', '', 'fa fa-money', true, '', true, {}),
       dashboard: this.sharedService.buildStructureHeader('default', 'dashboard', '', 'fa fa-home', true, AppConfig.routes.dashboard, true, {}),
       transactions: this.sharedService.buildStructureHeader('dropdown', 'Transactions', '', 'fa fa-tachometer', true, '', true,
@@ -163,11 +163,13 @@ export class HeaderComponent implements OnInit {
           if (objRoute === AppConfig.routes.login && !this.imageLogin) {
             // set background to module login
             this.imageLogin = true;
+            document.getElementById('footer-prx').className = 'footer-copyright text-center py-3 background-white';
             document.getElementById('first').style.backgroundImage = "url('assets/images/background-black-white.jpg')";
           } else {
             if (this.imageLogin) {
               // set background to other module
               this.imageLogin = false;
+              document.getElementById('footer-prx').className = 'footer-copyright text-center py-3 background-gray-prx';
               document.getElementById('first').style.backgroundImage = "url('assets/images/background-color.jpg')";
             }
           }

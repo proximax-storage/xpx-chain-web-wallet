@@ -26,6 +26,7 @@ export class CreateWalletComponent implements OnInit {
       'label': 'TEST NET'
     },
   ];
+  walletName: string;
 
   constructor(
     private fb: FormBuilder,
@@ -69,7 +70,6 @@ export class CreateWalletComponent implements OnInit {
       const wallet = this.proximaxProvider.createAccountSimple(user, password, network);
       const account = wallet.open(password);
       const publicKey = account.publicKey.toString();
-      const publicAccount = this.proximaxProvider.createPublicAccount(publicKey, network);
       const walletsStorage = this._walletService.getWalletStorage();
       const myWallet = walletsStorage.find(function (element: { name: any; }) {
         //verify if name wallet isset
@@ -79,6 +79,7 @@ export class CreateWalletComponent implements OnInit {
       //Wallet does not exist
       if (myWallet === undefined) {
         const accounts = this._walletService.buildAccount(wallet.encryptedPrivateKey.encryptedKey, wallet.encryptedPrivateKey.iv, wallet.address['address'], wallet.network);
+        this.walletName = user;
         this._walletService.setAccountWalletStorage(user, accounts);
         this.address = wallet.address.pretty();
         this.sharedService.showSuccess('Congratulations!', 'Your wallet has been created successfully');

@@ -59,6 +59,10 @@ footer {
   font-weight: 500;
 }
 
+.f-w-400 {
+  font-weight: 400;
+}
+
 .f-w-bold {
   font-weight: bold;
 }
@@ -135,6 +139,10 @@ footer {
   margin-top: 5px;
 }
 
+.mt-3px {
+  margin-top: 3px;
+}
+
 .mb-5px {
   margin-bottom: 5px;
 }
@@ -156,6 +164,14 @@ footer {
 
 .background-divisor {
   background: #ffffff73 !important;
+}
+
+.background-gray-prx {
+  background-color: #D8D8D8 !important;
+}
+
+.background-white {
+  background: #ffffff !important;
 }
 
 /**** BUTTONS AND COLORS*/
@@ -214,6 +230,10 @@ footer {
 
 .color-dark-green {
   color: #333333;
+}
+
+.gray-color {
+  color: #a0a0a0;
 }
 
 .box-header-selected {

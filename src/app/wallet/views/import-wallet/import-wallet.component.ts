@@ -24,6 +24,7 @@ export class ImportWalletComponent implements OnInit {
       'label': 'TEST NET'
     }
   ];
+  walletName: string;
 
   constructor(
     private fb: FormBuilder,
@@ -75,13 +76,14 @@ export class ImportWalletComponent implements OnInit {
       //Wallet does not exist
       if (myWallet === undefined) {
         const accounts = this._walletService.buildAccount(wallet.encryptedPrivateKey.encryptedKey, wallet.encryptedPrivateKey.iv, wallet.address['address'], wallet.network);
+        this.walletName = nameWallet;
         this._walletService.setAccountWalletStorage(nameWallet, accounts);
         this.address = wallet.address.pretty();
-        this.sharedService.showSuccess('Congratulations!', 'Your wallet has been created successfully');
+        this.sharedService.showSuccess('Congratulations!', 'Your wallet has been imported successfully');
         this.pvk = this.proximaxProvider.decryptPrivateKey(password, accounts.encrypted, accounts.iv).toUpperCase();
         this.walletIsCreated = true;
         this.nameModule = 'Congratulations!';
-        this.descriptionModule = 'Your wallet has been created successfully';
+        this.descriptionModule = 'Your wallet has been imported successfully';
       } else {
         //Error of repeated Wallet
         this.cleanForm('walletname');

@@ -5,7 +5,9 @@
       <h1 class="text-align-center wallet-name">
         <img class="img-wallet" src="assets/images/wallet.png"> {{nameModule}}
       </h1>
-      <h5 class="text-align-center wallet-description">{{descriptionModule}}</h5>
+      <h5 [ngClass]="[walletIsCreated ? 'f-w-bold color-amarillo text-align-center wallet-description' :
+      'text-align-center wallet-description']">
+        {{descriptionModule}}</h5>
     </div>
 
     <div class="col-10 mx-auto">
@@ -93,6 +95,7 @@
 
 
   <ng-template #walletIsCreatedTemplate>
-    <app-wallet-created [privateKey]="pvk" [address]="address" class="animated fadeIn"></app-wallet-created>
+    <app-wallet-created [walletName]="walletName" [privateKey]="pvk" [address]="address" class="animated fadeIn">
+    </app-wallet-created>
   </ng-template>
 </div>

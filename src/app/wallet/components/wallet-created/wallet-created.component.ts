@@ -9,9 +9,10 @@ import { SharedService } from '../../../shared';
 })
 export class WalletCreatedComponent implements OnInit {
   messageShowPvk = 'Show private key';
-  showMessage = true;
+  privateKeyIsShow = false;
   @Input() privateKey: string;
   @Input() address: string;
+  @Input() walletName: string;
   routes = {
     login: `/${AppConfig.routes.login}`
   };
@@ -25,12 +26,12 @@ export class WalletCreatedComponent implements OnInit {
   }
 
   showHidePvkAddress() {
-    if (this.showMessage) {
-      this.messageShowPvk = 'Hide private key';
-      this.showMessage = false;
+    if (!this.privateKeyIsShow) {
+      this.privateKeyIsShow = true;
+      this.messageShowPvk = 'HIDE YOUR PRIVATE KEY';
     } else {
-      this.messageShowPvk = 'Show private key';
-      this.showMessage = true;
+      this.privateKeyIsShow = false;
+      this.messageShowPvk = 'SHOW YOUR PRIVATE KEY';
     }
   }
 
