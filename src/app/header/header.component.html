@@ -1,34 +1,66 @@
 <header>
-  <mdb-side-nav #sidenav class="background-header" [fixed]="false">
-    <mdb-navbar-brand>
-      <li>
-        <div class="logo-wrapper waves-light">
-          <a href="#">
-            <img src="assets/images/logo/logo-white.png" class="img-my-header">
-          </a>
+
+
+  <ng-container>
+    <mdb-navbar
+      SideClass="navbar fixed-top navbar-toggleable-md navbar-expand-lg scrolling-navbar double-nav z-depth-0 background-header-inverse"
+      [containerInside]="false">
+
+      <!-- LOGO (breadcrumbs breadcrumbs-hidden-nav breadcrumb-dn mr-aut)-->
+      <mdb-navbar-brand [ngClass]="{'d-none d-sm-blocks':showOnlyLogged}" class="d-none d-sm-block">
+        <ng-container *ngIf="!showOnlyLogged">
+          <div class="breadcrumbs breadcrumbs-hidden-nav mr-auto">
+            <img src="assets/images/logo/logo.png" style="width: 12rem;">
+          </div>
+        </ng-container>
+      </mdb-navbar-brand>
+
+      <!-- ITEMS -->
+      <navlinks>
+        <ul class="nav navbar-nav nav-flex-icons ml-auto ie-double-nav ie-hidden-double-nav"
+          [ngClass]="{'mt-5rem':showOnlyLogged}">
+          <app-header-horizontal [header]=horizontalHeader [showMenu]=showOnlyLogged (logout)="logout($event)">
+          </app-header-horizontal>
+        </ul>
+      </navlinks>
+    </mdb-navbar>
+  </ng-container>
+
+  <!--  -->
+  <ng-container *ngIf="showOnlyLogged">
+    <mdb-navbar
+      SideClass="navbar fixed-top navbar-toggleable-md navbar-expand-lg scrolling-navbar double-nav z-depth-0 background-header-inverse"
+      [containerInside]="false">
+
+      <!-- LOGO -->
+      <mdb-navbar-brand class="d-none d-sm-block">
+        <div class="breadcrumbs breadcrumbs-hidden-nav mr-auto">
+          <img src="assets/images/logo/logo.png" style="width: 12rem;">
         </div>
-      </li>
-    </mdb-navbar-brand>
+      </mdb-navbar-brand>
 
-    <div class="sidenav-bg mask-strong"></div>
-  </mdb-side-nav>
-  <mdb-navbar
-    SideClass="navbar fixed-top navbar-toggleable-md navbar-expand-lg scrolling-navbar double-nav z-depth-0 background-header-inverse"
-    [containerInside]="false">
-    <mdb-navbar-brand>
-      <div class="breadcrumbs breadcrumbs-hidden-nav breadcrumb-dn mr-auto">
-        <img src="assets/images/logo/logo.png" style="width: 12rem;">
-      </div>
-    </mdb-navbar-brand>
-    <navlinks>
-      <ul class="nav navbar-nav nav-flex-icons ml-auto ie-double-nav ie-hidden-double-nav">
-        <app-header-horizontal [header]=horizontalHeader [showMenu]=showOnlyLogged (logout)="logout($event)">
-        </app-header-horizontal>
-      </ul>
-    </navlinks>
-  </mdb-navbar>
+      <!-- ITEMS -->
+      <navlinks>
+        <ul class="nav navbar-nav nav-flex-icons ml-auto ie-double-nav ie-hidden-double-nav">
+          <navlinks>
+            <ul class="nav navbar-nav nav-flex-icons ml-auto ie-double-nav ie-hidden-double-nav box-form-inverse">
+              <li class="nav-item mr-1-2rem">
+                <span class="d-sm-inline-block font-header ml-0-2rem">Wallet name</span> <br>
+                <span class="d-sm-inline-block font-header ml-0-2rem">{{vestedBalance}}</span>
+              </li>
+
+              <li class="nav-item d-flex align-items-center">
+                <div class=" d-md-inline-block font-header ml-0-2rem">
+                  <div class="btn-small-prx f-w-600 btn-dark-orange cursor-pointer" mdbWavesEffect
+                    (click)="logout(routeLogin)"><span>LOG OUT</span>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </navlinks>
+        </ul>
+      </navlinks>
+    </mdb-navbar>
+  </ng-container>
+
 </header>
-
-<!-- <div class="row-fluid">
-  <div class="route-name background-header"> {{nameRoute}} </div>
-</div> -->

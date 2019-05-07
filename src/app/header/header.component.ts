@@ -1,7 +1,7 @@
 import { Router, NavigationEnd, NavigationStart } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { AppConfig, NameRoute } from '../config/app.config';
+import { AppConfig } from '../config/app.config';
 import { AuthService } from '../auth/services/auth.service';
 import { StructureHeader, SharedService } from "../shared";
 import { NodeService } from "../servicesModule/services/node.service";
@@ -12,7 +12,6 @@ import { TransactionsService } from '../transactions/service/transactions.servic
 export interface HorizontalHeaderInterface {
   home: StructureHeader;
   node: StructureHeader;
-  amount: StructureHeader;
   dashboard: StructureHeader;
   nodeSelected: StructureHeader;
   createWallet: StructureHeader;
@@ -31,6 +30,7 @@ export interface HorizontalHeaderInterface {
 })
 export class HeaderComponent implements OnInit {
 
+  routeLogin = AppConfig.routes.login;
   imageLogin = false;
   nameRoute = '';
   showOnlyLogged = false;
@@ -90,9 +90,11 @@ export class HeaderComponent implements OnInit {
         if (this.showOnlyLogged) {
           this.subscriptions['balance'] = this.transactionService.getBalance$().subscribe(
             next => {
-              this.horizontalHeader.amount.name = `Balance ${next} XPX`;
+              this.vestedBalance = `Balance ${next} XPX`;
+              // this.horizontalHeader.amount.name = `Balance ${next} XPX`;
             }, error => {
-              this.horizontalHeader.amount.name = `Balance 0.000000 XPX`;
+              this.vestedBalance = `Balance 0.000000 XPX`;
+              // this.horizontalHeader.amount.name = `Balance 0.000000 XPX`;
             }
           );
         } else {
@@ -112,27 +114,26 @@ export class HeaderComponent implements OnInit {
    */
   buildHeader() {
     this.horizontalHeader = {
-      home: this.sharedService.buildStructureHeader('default', 'Home', '', 'fa fa-home', false, AppConfig.routes.home, true, {}),
-      login: this.sharedService.buildStructureHeader('default', `SIGN IN`, '', 'fa fa-sign-in', false, AppConfig.routes.login, true, {}),
-      amount: this.sharedService.buildStructureHeader('default', '', '', 'fa fa-money', true, '', true, {}),
-      dashboard: this.sharedService.buildStructureHeader('default', 'dashboard', '', 'fa fa-home', true, AppConfig.routes.dashboard, true, {}),
-      transactions: this.sharedService.buildStructureHeader('dropdown', 'Transactions', '', 'fa fa-tachometer', true, '', true,
+      home: this.sharedService.buildStructureHeader('default', 'Home', '', '', false, AppConfig.routes.home, true, {}),
+      login: this.sharedService.buildStructureHeader('default', `SIGN IN`, '', '', false, AppConfig.routes.login, true, {}),
+      dashboard: this.sharedService.buildStructureHeader('default', 'dashboard', '', '', true, AppConfig.routes.dashboard, true, {}),
+      transactions: this.sharedService.buildStructureHeader('dropdown', 'Transactions', '', '', true, '', true,
         {
           transfer: this.sharedService.buildStructureHeader('default', 'Transfer', '', '', true, AppConfig.routes.transferTransaction, true, {})
         }
       ),
-      node: this.sharedService.buildStructureHeader('dropdown', 'Node', '', 'fa fa-codepen', true, '', false,
+      node: this.sharedService.buildStructureHeader('dropdown', 'Node', '', '', true, '', false,
         {
           addNode: this.sharedService.buildStructureHeader('default', 'Add node', '', '', true, AppConfig.routes.addNode, false, {}),
           selectNode: this.sharedService.buildStructureHeader('default', 'Select node', '', '', true, AppConfig.routes.selectNode, false, {})
         }
       ),
-      nodeSelected: this.sharedService.buildStructureHeader('default', `Node selected: ${this.nodeService.getNodeSelected()}`, 'green-color', 'fa fa-codepen', false, '', false, {}),
-      createWallet: this.sharedService.buildStructureHeader('default', `Create wallet`, '', 'fa fa-envelope', false, AppConfig.routes.createWallet, false, {}),
-      importWallet: this.sharedService.buildStructureHeader('default', `Import wallet`, '', 'fa fa-key', false, AppConfig.routes.importWallet, false, {}),
-      account: this.sharedService.buildStructureHeader('default', `Account`, '', 'fa fa-vcard', true, AppConfig.routes.account, true, {}),
-      services: this.sharedService.buildStructureHeader('default', `Services`, '', 'fa fa-wrench', true, AppConfig.routes.services, true, {}),
-      signout: this.sharedService.buildStructureHeader('default', `Signout`, '', 'fa fa-sign-out', true, AppConfig.routes.login, true, {})
+      nodeSelected: this.sharedService.buildStructureHeader('default', `Node selected: ${this.nodeService.getNodeSelected()}`, 'green-color', '', false, '', false, {}),
+      createWallet: this.sharedService.buildStructureHeader('default', `Create wallet`, '', '', false, AppConfig.routes.createWallet, false, {}),
+      importWallet: this.sharedService.buildStructureHeader('default', `Import wallet`, '', '', false, AppConfig.routes.importWallet, false, {}),
+      account: this.sharedService.buildStructureHeader('default', `Account`, '', '', true, AppConfig.routes.account, true, {}),
+      services: this.sharedService.buildStructureHeader('default', `Services`, '', '', true, AppConfig.routes.services, true, {}),
+      signout: this.sharedService.buildStructureHeader('default', `Signout`, '', '', true, AppConfig.routes.login, false, {})
     }
   }
 

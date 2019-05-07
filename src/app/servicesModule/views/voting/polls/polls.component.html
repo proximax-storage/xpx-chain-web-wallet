@@ -5,7 +5,8 @@
 
 
         <!-- Nav Tabs -->
-        <mdb-tabset class="py-4" #staticTabs [buttonClass]="'md-tabs background-gold-md-tabs  tabs-3'" [contentClass]="''">
+        <mdb-tabset class="py-4" #staticTabs [buttonClass]="'md-tabs background-gold-md-tabs  tabs-3'"
+          [contentClass]="''">
           <!--Panel 1-->
           <mdb-tab heading="All">
             <div class="row">
@@ -16,8 +17,8 @@
                     <div class="col-md-3" style="overflow-y: auto;     max-height: 340px;">
                       <div class="list-group">
                         <ng-container *ngFor="let item of listPoll; let i=index">
-                          <a href="javascript:void(0);" (click)="getDataPull(item['poll'])" class="list-group-item  waves-light"
-                            mdbWavesEffect>
+                          <a href="javascript:void(0);" (click)="getDataPull(item['poll'])"
+                            class="list-group-item  waves-light" mdbWavesEffect>
                             <h5>
                               <mdb-badge color="blue" *ngIf="item['poll']['type'] =='1'"> POI</mdb-badge>
                               <mdb-badge color="blue" *ngIf="item['poll']['type'] =='2'"> whrite</mdb-badge>
@@ -41,7 +42,8 @@
                         <h4>
                           <mdb-badge color="blue" *ngIf="type =='1'"> POI</mdb-badge>
                           <mdb-badge color="blue" *ngIf="type =='2'"> whrite</mdb-badge>
-                          <label class="mt-1rm-left" for=""> Date of ending: {{doe | date: 'dd/MM/yyyy h:MM:ss TT'}}</label>
+                          <label class="mt-1rm-left" for=""> Date of ending:
+                            {{doe | date: 'dd/MM/yyyy h:MM:ss TT'}}</label>
                         </h4>
                         <div class="alert background-info white-text" role="alert">
                           {{description.description}}
@@ -75,8 +77,8 @@
                                 <form [formGroup]="createpollsForm" (ngSubmit)="create()">
                                   <!-- Password -->
                                   <div class="md-form mt-5">
-                                    <input type="password" autocomplete="off" formControlName="password" required id="password"
-                                      class="form-control" mdbInputDirective data-success="Valid password"
+                                    <input type="password" autocomplete="off" formControlName="password" required
+                                      id="password" class="form-control" mdbInputDirective data-success="Valid password"
                                       [errorMessage]="getError('password')">
                                     <label for="password">password</label>
                                   </div>
@@ -146,7 +148,8 @@
                               <div class="col-6">
 
 
-                                <highcharts-chart [Highcharts]="Highcharts" [options]="chartOptions" style="width: 100%; height: 400px; display: block;"></highcharts-chart>
+                                <highcharts-chart [Highcharts]="Highcharts" [options]="chartOptions"
+                                  style="width: 100%; height: 400px; display: block;"></highcharts-chart>
                               </div>
                             </div>
                           </mdb-tab>

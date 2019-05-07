@@ -27,29 +27,83 @@ footer {
 }
 
 /******* MARGIN AND SIZE ******/
-.mt-6rem {
-  margin-top: 6rem;
+.mt-1rem {
+  margin-top: 1rem;
+}
+
+.mt-1-5rem {
+  margin-top: 1.5rem;
+}
+
+.mt-2rem {
+  margin-top: 2rem;
 }
 
 .mt-3rem {
   margin-top: 3rem;
 }
 
-.mb-3rem {
-  margin-bottom: 3rem;
+.mt-4rem {
+  margin-top: 4rem;
 }
 
-.mt-1rem {
-  margin-top: 1rem;
+.mt-5rem {
+  margin-top: 5rem;
+}
+
+.mt-6rem {
+  margin-top: 6rem;
+}
+
+.mt-8rem {
+  margin-top: 8rem;
+}
+
+.mt-10rem {
+  margin-top: 10rem;
+}
+
+.mt-3px {
+  margin-top: 3px;
+}
+
+.mt-5px {
+  margin-top: 5px;
+}
+
+.mt-1rm-left {
+  margin-left: 0.2cm;
+}
+
+.mr-1-5rem {
+  margin-right: 1.5rem;
+}
+
+.mr-1-2rem {
+  margin-right: 1.2rem;
+}
+
+.ml-0-5rem {
+  margin-right: 0.5rem;
+}
+
+.ml-0-2rem {
+  margin-right: 0.2rem;
+}
+
+.mb-5px {
+  margin-bottom: 5px;
+}
+
+.mb-3rem {
+  margin-bottom: 3rem;
 }
 
 .mb-1rem {
   margin-bottom: 1rem;
 }
 
-.mt-1-5rem {
-  margin-top: 1.5rem;
-}
+/******* FONT WEIGHT *******/
 
 .f-w-600 {
   font-weight: 600;
@@ -83,30 +137,6 @@ footer {
   margin-top: 100px;
 }
 
-.mt-1rem {
-  margin-top: 1rem;
-}
-
-.mt-2rem {
-  margin-top: 2rem;
-}
-
-.mt-3rem {
-  margin-top: 3rem;
-}
-
-.mt-5rem {
-  margin-top: 5rem;
-}
-
-.mt-8rem {
-  margin-top: 8rem;
-}
-
-.mt-4rm {
-  margin-top: 4rem !important;
-}
-
 .mb-1rem {
   margin-bottom: 1rem;
 }
@@ -121,30 +151,6 @@ footer {
 
 .mb-2rem {
   margin-bottom: 2rem;
-}
-
-.mt-1rm {
-  margin-top: 1rem !important;
-}
-
-.mt-1-5rem {
-  margin-top: 1.5rem;
-}
-
-.mt-1rm-left {
-  margin-left: 0.2cm;
-}
-
-.mt-5px {
-  margin-top: 5px;
-}
-
-.mt-3px {
-  margin-top: 3px;
-}
-
-.mb-5px {
-  margin-bottom: 5px;
 }
 
 /****** ALIGN ******/
@@ -174,7 +180,15 @@ footer {
   background: #ffffff !important;
 }
 
+
 /**** BUTTONS AND COLORS*/
+
+.btn-dark-orange {
+  color: white;
+  background: #EA6002;
+}
+
+
 .btn-dark-green-inverse {
   border: 1px solid #023c42;
   color: black;
@@ -204,6 +218,11 @@ footer {
   background: #ffffff00;
 }
 
+.btn-small-prx {
+  padding: 0.4rem;
+  border-radius: 2rem;
+}
+
 /*** THEME **/
 .wallet-name {
   font-weight: 500;
@@ -216,7 +235,7 @@ footer {
   color: white;
 }
 
-.color-amarillo {
+.color-yellow {
   color: #FFD000;
 }
 
@@ -250,13 +269,7 @@ footer {
   padding-right: 2rem;
   padding-left: 2rem;
   border-radius: 8px;
-
-  // padding-top: .3rem;
-  // padding-bottom: .3rem;
-  // padding-right: 4rem;
-  // padding-left: 4rem;
   background: rgba(4, 96, 104, 0.7);
-  // border-radius: 1rem;
 }
 
 .box-form-inverse {
@@ -278,6 +291,16 @@ mdb-select>div>div.single>div.placeholder,
 mdb-select>div>div.single>div.value {
   color: white !important;
 }
+
+.dropdown .dropdown-menu .dropdown-item,
+.dropup .dropdown-menu .dropdown-item,
+.dropleft .dropdown-menu .dropdown-item,
+.dropright .dropdown-menu .dropdown-item {
+  padding: 0;
+}
+
+
+
 
 
 /******* SERVICES *********/
