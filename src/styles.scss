@@ -55,8 +55,16 @@ footer {
   margin-top: 6rem;
 }
 
+.mt-7rem {
+  margin-top: 7rem;
+}
+
 .mt-8rem {
   margin-top: 8rem;
+}
+
+.mt-9rem {
+  margin-top: 9rem;
 }
 
 .mt-10rem {
@@ -119,6 +127,16 @@ footer {
 
 .f-w-bold {
   font-weight: bold;
+}
+
+
+/******** SIZE *********/
+.f-s-0-8-rem {
+  font-size: 0.8rem;
+}
+
+.f-s-0-5-rem {
+  font-size: 0.5rem;
 }
 
 .f-s-1rem {
@@ -272,6 +290,15 @@ footer {
   background: rgba(4, 96, 104, 0.7);
 }
 
+.box-form-white {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  padding-right: 2rem;
+  padding-left: 2rem;
+  border-radius: 8px;
+  background: white;
+}
+
 .box-form-inverse {
   padding-top: 1rem;
   padding-bottom: 1rem;
@@ -365,9 +392,41 @@ mdb-select>div>div.single>div.value {
 
 
 
+/******* THEME ******/
 
 
+.title-transactions {
+  color: #023c42;
+  font-weight: 500;
+}
 
+.f-s-dashboard-transactions {
+  font-size: 0.8rem;
+}
+
+.f-s-title-transactions {
+  font-size: 1.8rem;
+}
+
+
+/**** MEDIA QUERY*****/
+
+/* If the screen size is 768px wide or less, set the font-size of <div> to 30px */
+@media (max-width: 767px) {
+  .f-s-title-transactions {
+    font-size: 1.2rem !important;
+  }
+
+  .f-s-dashboard-transactions {
+    font-size: 0.6rem;
+  }
+}
+
+@media (max-width: 1199px) {
+  .f-s-title-transactions {
+    font-size: 1.2rem !important;
+  }
+}
 
 /* -------------------------- Fin new style ------------------------- */
 

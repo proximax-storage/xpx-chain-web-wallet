@@ -13,6 +13,7 @@ import { TransactionsService } from '../../../transactions/service/transactions.
 
 export class DashboardComponent implements OnInit, OnDestroy {
 
+  myAddress = '';
   cantConfirmed = 0;
   cantUnconfirmed = 0;
   confirmedSelected = true;
@@ -30,6 +31,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   transactionsConfirmed: TransactionsInterface[] = [];
   transactionsUnconfirmed: TransactionsInterface[] = [];
   unconfirmedSelected = false;
+  vestedBalance: string;
 
 
   constructor(
@@ -37,7 +39,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private walletService: WalletService,
     private transactionService: TransactionsService,
     private sharedService: SharedService
-  ) { }
+  ) {
+    this.myAddress = this.walletService.address;
+  }
 
   ngOnInit() {
     this.typeTransactions = this.transactionService.arraTypeTransaction;
@@ -45,6 +49,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.dashboardService.subscribeLogged();
     this.subscribeTransactions();
     this.loadDashboard();
+    this.balance();
   }
 
   ngOnDestroy(): void {
@@ -88,6 +93,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.iconReloadDashboard = (this.dashboardService.searchComplete === false) ? true : false;
       this.searching = false;
     }
+  }
+
+  balance() {
+    this.subscriptions['balance'] = this.transactionService.getBalance$().subscribe(
+      next => {
+        this.vestedBalance = `${next} XPX`;
+      }, error => {
+        this.vestedBalance = `0.000000 XPX`;
+      }
+    );
   }
 
 

@@ -6,8 +6,8 @@
       SideClass="navbar fixed-top navbar-toggleable-md navbar-expand-lg scrolling-navbar double-nav z-depth-0 background-header-inverse"
       [containerInside]="false">
 
-      <!-- LOGO (breadcrumbs breadcrumbs-hidden-nav breadcrumb-dn mr-aut)-->
-      <mdb-navbar-brand [ngClass]="{'d-none d-sm-blocks':showOnlyLogged}" class="d-none d-sm-block">
+      <!-- LOGO -->
+      <mdb-navbar-brand [ngClass]="{'d-none d-sm-block':showOnlyLogged}">
         <ng-container *ngIf="!showOnlyLogged">
           <div class="breadcrumbs breadcrumbs-hidden-nav mr-auto">
             <img src="assets/images/logo/logo.png" style="width: 12rem;">
@@ -46,7 +46,7 @@
             <ul class="nav navbar-nav nav-flex-icons ml-auto ie-double-nav ie-hidden-double-nav box-form-inverse">
               <li class="nav-item mr-1-2rem">
                 <span class="d-sm-inline-block font-header ml-0-2rem">Wallet name</span> <br>
-                <span class="d-sm-inline-block font-header ml-0-2rem">{{vestedBalance}}</span>
+                <span class="d-sm-inline-block font-header ml-0-2rem">{{vestedBalance}} | USD 0.00</span>
               </li>
 
               <li class="nav-item d-flex align-items-center">
