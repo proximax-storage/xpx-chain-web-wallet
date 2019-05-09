@@ -119,6 +119,10 @@ footer {
   padding-top: 0 !important;
 }
 
+.p-b-0 {
+  padding-bottom: 0 !important;
+}
+
 /******* FONT WEIGHT *******/
 
 .f-w-600 {
@@ -289,6 +293,17 @@ footer {
   color: #a0a0a0;
 }
 
+/***** BOX **/
+.box-light-orange {
+  background: #FF9900;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  padding-right: 2rem;
+  padding-left: 2rem;
+  border-radius: 8px;
+  color: white;
+}
+
 .box-header-selected {
   background: #023c42;
   border-radius: 5rem;
@@ -342,7 +357,9 @@ mdb-select>div>div.single>div.value {
   padding: 0;
 }
 
-
+.modal-backdrop {
+  position: unset;
+}
 
 
 
