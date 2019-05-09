@@ -63,6 +63,70 @@
     </div>
   </div>
 
+  <!--Table-->
+  <!-- <table class="table table-hover table-fixed"> -->
+
+  <div class="row">
+    <ng-container *ngIf="iconReloadDashboard && !searching">
+      <div class="col-12 t-a-r">
+        <i class="fa fa-repeat btn-reload cursor-pointer" aria-hidden="true" mdbTooltip="Reload" placement="bottom"
+          (click)="loadDashboard(true)"></i>
+      </div>
+    </ng-container>
+
+    <!-- Searching -->
+    <ng-container *ngIf="searching">
+      <div class="col-12 mt-1rem">
+        <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate">
+        </mdb-progress-bar>
+      </div>
+    </ng-container>
+
+    <div class="col-12">
+      <div class="table-responsive table-hover">
+        <table mdbTable striped="true" class="table table-hover table-bordered table-hover table-sm z-depth-0"
+          borderless="
+      true">
+          <!--Table head-->
+          <thead>
+            <tr class="header-backg">
+              <th *ngFor="let head of headElements; let i = index" scope="col" class="text-center">{{head}}
+              </th>
+            </tr>
+          </thead>
+          <!--Table head-->
+
+          <!--Table body-->
+          <tbody>
+            <tr class="mouse-pointer" *ngFor="let el of transactionsConfirmed; let i = index"
+              (click)="dataSelected = el; basicModal.show();">
+              <td class="align-center th-lg">{{el.nameType}}</td>
+              <td class="align-left th-lg">{{el.timestamp}}</td>
+              <td class="text-right th-lg">{{el.fee}}</td>
+              <td class="text-center th-lg">
+                <i [ngStyle]="{'color': el.isRemitent === true ? 'green' : 'red' }" style="padding-right: 10px;"
+                  class="fa fa-send" aria-hidden="true"></i>
+                {{el.sender.address.pretty()}}
+              </td>
+              <ng-container *ngIf="el?.recipient !== null; else recipientRentalFee">
+                <td class="text-center th-lg">{{el.recipient.pretty()}}</td>
+              </ng-container>
+              <ng-template #recipientRentalFee>
+                <td class="text-center th-lg">{{el.recipientRentalFeeSink}}</td>
+              </ng-template>
+            </tr>
+          </tbody>
+          <!--Table body-->
+
+        </table>
+        <!--Table-->
+      </div>
+    </div>
+  </div>
+
+
+
+
   <!--<div class="row">
     <div class="w-w-b-w">
       <div class="container-fluid">
@@ -185,63 +249,62 @@
       </div>
     </div>
   </div>-->
-</div>
 
 
 
 
-<!-- MODAL -->
-<div mdbModal #basicModal="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myBasicModalLabel"
-  aria-hidden="true">
-  <div class="modal-dialog modal-notify modal-info modal-lg fullscreen-modal" role="document">
-    <!--Content-->
-    <div class="modal-content">
-      <!--Header-->
-      <div class="modal-header background-gold">
-        <p class="heading lead" style="font-weight: 500;">Transaction info</p>
-        <button type="button" class="close" data-dismiss="modal" (click)="basicModal.hide()">
-          <span aria-hidden="true" class="white-text">&times;</span>
-        </button>
-      </div>
+  <!-- MODAL -->
+  <div mdbModal #basicModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+    aria-labelledby="myBasicModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-notify modal-info modal-lg fullscreen-modal" role="document">
+      <!--Content-->
+      <div class="modal-content">
+        <!--Header-->
+        <div class="modal-header background-gold">
+          <p class="heading lead" style="font-weight: 500;">Transaction info</p>
+          <button type="button" class="close" data-dismiss="modal" (click)="basicModal.hide()">
+            <span aria-hidden="true" class="white-text">&times;</span>
+          </button>
+        </div>
 
-      <!--Body-->
-      <div class="modal-body">
-        <ng-container *ngIf="dataSelected !== null">
-          <!-- TYPE TRANSFER TRANSACTION -->
-          <app-transfer-type [transferTransaction]="dataSelected"
-            *ngIf="dataSelected.data.type === typeTransactions.transfer.id">
-          </app-transfer-type>
-          <!-- TYPE REGISTER NAMESPACE TRANSACTION -->
-          <app-register-namespace-type [registerNamespaceTransaction]="dataSelected"
-            *ngIf="dataSelected.data.type === typeTransactions.registerNameSpace.id">
-          </app-register-namespace-type>
-          <!-- TYPE MOSAIC DEFINITION TRANSACTION -->
-          <app-mosaic-definition-type [mosaicDefinition]="dataSelected"
-            *ngIf="dataSelected.data.type === typeTransactions.mosaicDefinition.id">
-          </app-mosaic-definition-type>
-          <!-- TYPE MOSAIC SUPPLY CHANGE TRANSACTION -->
-          <app-mosaic-supply-change-type [mosaicSupplyChange]="dataSelected"
-            *ngIf="dataSelected.data.type === typeTransactions.mosaicSupplyChange.id">
-          </app-mosaic-supply-change-type>
-          <!-- TYPE MODIFY MULTISIG ACCOUNT TRANSACTION
+        <!--Body-->
+        <div class="modal-body">
+          <ng-container *ngIf="dataSelected !== null">
+            <!-- TYPE TRANSFER TRANSACTION -->
+            <app-transfer-type [transferTransaction]="dataSelected"
+              *ngIf="dataSelected.data.type === typeTransactions.transfer.id">
+            </app-transfer-type>
+            <!-- TYPE REGISTER NAMESPACE TRANSACTION -->
+            <app-register-namespace-type [registerNamespaceTransaction]="dataSelected"
+              *ngIf="dataSelected.data.type === typeTransactions.registerNameSpace.id">
+            </app-register-namespace-type>
+            <!-- TYPE MOSAIC DEFINITION TRANSACTION -->
+            <app-mosaic-definition-type [mosaicDefinition]="dataSelected"
+              *ngIf="dataSelected.data.type === typeTransactions.mosaicDefinition.id">
+            </app-mosaic-definition-type>
+            <!-- TYPE MOSAIC SUPPLY CHANGE TRANSACTION -->
+            <app-mosaic-supply-change-type [mosaicSupplyChange]="dataSelected"
+              *ngIf="dataSelected.data.type === typeTransactions.mosaicSupplyChange.id">
+            </app-mosaic-supply-change-type>
+            <!-- TYPE MODIFY MULTISIG ACCOUNT TRANSACTION
           <app-modify-multisig-account-type
             *ngIf="dataSelected.data.type === typeTransactions.modifyMultisigAccount.id">
           </app-modify-multisig-account-type>-->
-          <!-- TYPE AGGREGATE COMPLETE TRANSACTION
+            <!-- TYPE AGGREGATE COMPLETE TRANSACTION
           <app-aggregate-complete-type *ngIf="dataSelected.data.type === typeTransactions.aggregateComplete.id">
           </app-aggregate-complete-type>-->
-          <!-- TYPE AGGREGATE BONDED TRANSACTION
+            <!-- TYPE AGGREGATE BONDED TRANSACTION
           <app-aggregate-bonded-type *ngIf="dataSelected.data.type === typeTransactions.aggregateBonded.id">
           </app-aggregate-bonded-type> -->
-          <!-- TYPE LOCK TRANSACTION
+            <!-- TYPE LOCK TRANSACTION
           <app-lock-type *ngIf="dataSelected.data.type === typeTransactions.lock.id"></app-lock-type> -->
-          <!-- TYPE SECRET LOCK TRANSACTION
+            <!-- TYPE SECRET LOCK TRANSACTION
           <app-secret-lock-type *ngIf="dataSelected.data.type === typeTransactions.secretLock.id">
           </app-secret-lock-type>-->
-          <!-- TYPE SECRET PROOF TRANSACTION
+            <!-- TYPE SECRET PROOF TRANSACTION
           <app-secret-proof *ngIf="dataSelected.data.type === typeTransactions.secretProof.id"></app-secret-proof>-->
-        </ng-container>
+          </ng-container>
+        </div>
       </div>
     </div>
   </div>
-</div>

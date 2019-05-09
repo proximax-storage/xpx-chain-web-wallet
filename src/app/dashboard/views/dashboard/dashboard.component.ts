@@ -34,6 +34,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   vestedBalance: string;
 
 
+
+
   constructor(
     private dashboardService: DashboardService,
     private walletService: WalletService,
