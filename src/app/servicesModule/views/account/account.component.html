@@ -1,3 +1,66 @@
+<div class="container mt-10rem mb-3rem animated fadeIn">
+  <!-- Title -->
+  <ng-container>
+    <div class="row">
+      <div class="col-10 mx-auto">
+        <h1 class="text-align-center wallet-name"><i class="fa fa-user" aria-hidden="true"></i> Account</h1>
+        <hr class="background-divisor">
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- BOX WALLET NAME -->
+  <div class="row">
+    <div class="col-12 mx-auto">
+      <!-- ADDRESS -->
+      <div class="row box-form-white mt-1rem">
+        <div class="col-12 mt-5px">
+          <h4 class="f-w-500 mb-0rem">{{walletName}}</h4>
+        </div>
+
+        <div class="col-12 mb-5px">
+          <div class="row mt-3px">
+            <div class="col-10 col-md-10 col-lg-11">
+              <span class="f-s-1rem gray-color f-w-400">Address: </span>
+              <span class="f-s-1rem f-w-500">{{address}}</span>
+            </div>
+            <div class="col-2 col-md-2 col-lg-1 d-flex align-items-center">
+              <i mdbWavesEffect (click)="copyMessage('Address')" ngxClipboard [cbContent]="address"
+                class="fa fa-paste prefix cursor-pointer f-s-1-5rem"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PUBLIC KEY -->
+      <div class="row box-form-white mt-1rem">
+        <div class="col-10 col-md-10 col-lg-11">
+          <span class="f-s-1rem gray-color f-w-400">Public key: </span>
+          <span class="f-s-1rem f-w-500">{{publicKey}}</span>
+        </div>
+        <div class="col-2 col-md-2 col-lg-1 d-flex align-items-center">
+          <i mdbWavesEffect (click)="copyMessage('Public key')" ngxClipboard [cbContent]="publicKey"
+            class="fa fa-paste prefix cursor-pointer f-s-1-5rem"></i>
+        </div>
+      </div>
+
+      <!-- <ng-container *ngIf="showPanelPrivateKey">
+            <div class="row mt-3px">
+              <div class="col-10 col-md-10 col-lg-11">
+                <span class="f-s-1rem gray-color f-w-400">Private key: </span>
+                <span class="f-s-1rem f-w-500">{{privateKey}}</span>
+              </div>
+              <div class="col-2 col-md-2 col-lg-1 d-flex align-items-center">
+                <i mdbWavesEffect (click)="copyMessage('Private key')" ngxClipboard [cbContent]="privateKey"
+                  class="fa fa-paste prefix cursor-pointer f-s-1-5rem"></i>
+              </div>
+            </div>
+          </ng-container> -->
+    </div>
+  </div>
+</div>
+
+
 <div class="container-fluid mt-3rem separation">
   <div class="row">
     <!-- PANEL 1 -->
@@ -9,20 +72,20 @@
         <div class="col-10">
           <div class="md-form mt-5">
             <i class="fa fa-user prefix text-gris"></i>
-            <input [mdbValidate]="false" [(ngModel)]="address" readonly type="text" autocomplete="off" required id="walletname"
-              class="form-control" mdbInputDirective data-success="Valid address">
+            <input [mdbValidate]="false" [(ngModel)]="address" readonly type="text" autocomplete="off" required
+              id="walletname" class="form-control" mdbInputDirective data-success="Valid address">
             <label class="active" for="address">Address</label>
           </div>
         </div>
         <div class="col-2 d-flex align-items-center">
-          <i mdbWavesEffect (click)="copyMessage('Address')" ngxClipboard [cbContent]="address" style="font-size: 1.5rem; padding-top: 35px;"
-            class="fa fa-paste prefix text-gris cursor-pointer"></i>
+          <i mdbWavesEffect (click)="copyMessage('Address')" ngxClipboard [cbContent]="address"
+            style="font-size: 1.5rem; padding-top: 35px;" class="fa fa-paste prefix text-gris cursor-pointer"></i>
         </div>
       </div>
       <div class="md-form mt-5">
         <i class="fa fa-key prefix text-gris"></i>
-        <input readonly [mdbValidate]="false" [(ngModel)]="publicKey" type="text" autocomplete="off" required id="publicKey"
-          class="form-control" mdbInputDirective data-success="Valid Public key">
+        <input readonly [mdbValidate]="false" [(ngModel)]="publicKey" type="text" autocomplete="off" required
+          id="publicKey" class="form-control" mdbInputDirective data-success="Valid Public key">
         <label class="active" for="publicKey">Public key</label>
       </div>
     </div>
@@ -45,15 +108,16 @@
           <div class="col-10">
             <div class="md-form mt-5">
               <i class="fa fa-key prefix text-gris"></i>
-              <input readonly [mdbValidate]="false" [(ngModel)]="privateKey" type="text" autocomplete="off" required id="privateKey"
-                class="form-control" mdbInputDirective>
+              <input readonly [mdbValidate]="false" [(ngModel)]="privateKey" type="text" autocomplete="off" required
+                id="privateKey" class="form-control" mdbInputDirective>
               <label class="active" for="privateKey">Private key</label>
             </div>
           </div>
           <div class="col-2 d-flex align-items-center">
-            <i mdbWavesEffect (click)="copyMessage('Private key')" ngxClipboard [cbContent]="privateKey" style="font-size: 1.5rem; padding-top: 35px;"
-              class="fa fa-paste prefix text-gris cursor-pointer"></i>
-            <i mdbWavesEffect (click)="hidePrivateKey()" ngxClipboard style="font-size: 1.5rem; padding-top: 35px; padding-left: 15px;"
+            <i mdbWavesEffect (click)="copyMessage('Private key')" ngxClipboard [cbContent]="privateKey"
+              style="font-size: 1.5rem; padding-top: 35px;" class="fa fa-paste prefix text-gris cursor-pointer"></i>
+            <i mdbWavesEffect (click)="hidePrivateKey()" ngxClipboard
+              style="font-size: 1.5rem; padding-top: 35px; padding-left: 15px;"
               class="fa fa-trash prefix text-gris cursor-pointer"></i>
           </div>
         </div>
@@ -65,13 +129,14 @@
           <div class="col-10">
             <div class="md-form mt-5" id="container-password">
               <i class="fa fa-lock prefix text-gris"></i>
-              <input [mdbValidate]="false" [(ngModel)]="password" type="password" autocomplete="off" required id="password"
-                class="form-control" mdbInputDirective data-success="Valid password">
+              <input [mdbValidate]="false" [(ngModel)]="password" type="password" autocomplete="off" required
+                id="password" class="form-control" mdbInputDirective data-success="Valid password">
               <label for="password">Enter your wallet password</label>
             </div>
           </div>
           <div class="col-2 d-flex align-items-center">
-            <i mdbWavesEffect (click)="decryptWallet()" ngxClipboard [cbContent]="address" style="font-size: 1.5rem; padding-top: 35px;"
+            <i mdbWavesEffect (click)="decryptWallet()" ngxClipboard [cbContent]="address"
+              style="font-size: 1.5rem; padding-top: 35px;"
               class="fa fa-external-link prefix text-gris cursor-pointer"></i>
           </div>
         </div>

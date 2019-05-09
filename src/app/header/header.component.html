@@ -39,9 +39,8 @@
   </ng-container>
 
   <ng-container>
-    <mdb-navbar
-      SideClass="navbar navbar-toggleable-md navbar-expand-lg scrolling-navbar double-nav z-depth-0 background-header-inverse p-t-0"
-      [containerInside]="false">
+    <mdb-navbar SideClass="navbar navbar-toggleable-md navbar-expand-lg scrolling-navbar double-nav z-depth-0
+      background-header-inverse " [ngClass]="{'p-t-0':showOnlyLogged}" [containerInside]="false">
 
       <!-- LOGO -->
       <mdb-navbar-brand [ngClass]="{'d-none d-sm-block':showOnlyLogged}">

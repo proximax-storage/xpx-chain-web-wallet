@@ -22,6 +22,7 @@ export class AccountComponent implements OnInit {
   privateKey = '';
   publicKey = '';
   password = '';
+  walletName = 'Wallet Name';
 
   constructor(
     private walletService: WalletService,
