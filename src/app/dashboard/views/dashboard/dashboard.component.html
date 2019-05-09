@@ -1,256 +1,138 @@
 <div class="container mt-10rem mb-3rem animated fadeIn">
-  <!-- TITLE -->
-  <div class="row">
-    <div class="col-10 mx-auto">
-      <h1 class="text-align-center wallet-name"><i class="fa fa-tachometer" aria-hidden="true"></i> Dashboard</h1>
-      <hr class="background-divisor">
-    </div>
-  </div>
-
-  <div class="row">
-    <!-- BOX BALANCE -->
-    <div class="col-12 col-sm-7">
-      <div class="box-form-white mb-1rem">
-        <div class="row">
-          <div class="col-md-12 col-lg-9">
-            <span class="title-transactions f-s-title-transactions">{{vestedBalance}}</span><br>
-            <span>USD 0.000000</span><br>
-          </div>
-
-          <div class="col-12">
-            <span class="f-s-dashboard-transactions">{{myAddress.address}}</span>
-          </div>
-        </div>
+  <!-- Title -->
+  <ng-container>
+    <div class="row">
+      <div class="col-10 mx-auto">
+        <h1 class="text-align-center wallet-name"><i class="fa fa-tachometer" aria-hidden="true"></i> Dashboard</h1>
+        <hr class="background-divisor">
       </div>
     </div>
-    <!-- BOX TRANSACTIONS -->
-    <div class="col-12 col-sm-5">
-      <div class="box-form-white mb-1rem">
-        <div class="row">
-          <div class="col-6 col-md-12">
-            <div>
-              <span class="title-transactions f-s-title-transactions">Transactions</span>
-            </div>
-          </div>
+  </ng-container>
+
+  <!-- Searching and icon reload -->
+  <ng-container>
+    <div class="row">
+      <!-- Searching -->
+      <ng-container *ngIf="searching">
+        <div class="col-12 mt-1rem">
+          <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate">
+          </mdb-progress-bar>
         </div>
+      </ng-container>
 
-        <div class="row">
-          <div class="col-sm-12 col-lg-5 text-center d-flex align-items-center">
-            <span class="title-transactions f-s-title-transactions">350.000</span>
-          </div>
+      <!-- Icon Reload -->
+      <ng-container *ngIf="iconReloadDashboard && !searching">
+        <div class="col-12 t-a-r">
+          <i class="fa fa-repeat btn-reload cursor-pointer" aria-hidden="true" mdbTooltip="Reload" placement="bottom"
+            (click)="loadDashboard(true)"></i>
+        </div>
+      </ng-container>
+    </div>
+  </ng-container>
 
-          <div class="col-sm-12 col-lg-7">
-            <div class="row">
-              <div class="col-5 col-sm-6">
-                <span class="f-s-dashboard-transactions f-w-400">CONFIRMED: </span>
-              </div>
-              <div class="col-7 col-sm-6">
-                <span class="f-s-dashboard-transactions f-w-600">250.000</span>
-              </div>
+  <!-- BOX BALANCE AND BOX TRANSACTIONS -->
+  <ng-container>
+    <div class="row">
+      <!-- BOX BALANCE -->
+      <div class="col-12 col-sm-7">
+        <div class="box-form-white mb-1rem">
+          <div class="row">
+            <div class="col-md-12 col-lg-9">
+              <span class="title-transactions f-s-title-transactions">{{vestedBalance}}</span><br>
+              <span>USD 0.000000</span><br>
             </div>
 
-            <div class="row">
-              <div class="col-5 col-sm-6">
-                <span class="f-s-dashboard-transactions f-w-400">UNCONFIRMED: </span>
-              </div>
-              <div class="col-7 col-sm-6">
-                <span class="f-s-dashboard-transactions f-w-600">100.000</span>
-              </div>
+            <div class="col-12">
+              <span class="f-s-dashboard-transactions">{{myAddress.address}}</span>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </div>
+      <!-- BOX TRANSACTIONS -->
+      <div class="col-12 col-sm-5">
+        <div class="box-form-white mb-1rem">
+          <div class="row">
+            <div class="col-6 col-md-12">
+              <div>
+                <span class="title-transactions f-s-title-transactions">Transactions</span>
+              </div>
+            </div>
+          </div>
 
-  <!--Table-->
-  <!-- <table class="table table-hover table-fixed"> -->
+          <div class="row">
+            <div class="col-sm-12 col-lg-5 text-center d-flex align-items-center">
+              <span class="title-transactions f-s-title-transactions">{{cantConfirmed + cantUnconfirmed}}</span>
+            </div>
 
-  <div class="row">
-    <ng-container *ngIf="iconReloadDashboard && !searching">
-      <div class="col-12 t-a-r">
-        <i class="fa fa-repeat btn-reload cursor-pointer" aria-hidden="true" mdbTooltip="Reload" placement="bottom"
-          (click)="loadDashboard(true)"></i>
-      </div>
-    </ng-container>
-
-    <!-- Searching -->
-    <ng-container *ngIf="searching">
-      <div class="col-12 mt-1rem">
-        <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate">
-        </mdb-progress-bar>
-      </div>
-    </ng-container>
-
-    <div class="col-12">
-      <div class="table-responsive table-hover">
-        <table mdbTable striped="true" class="table table-hover table-bordered table-hover table-sm z-depth-0"
-          borderless="
-      true">
-          <!--Table head-->
-          <thead>
-            <tr class="header-backg">
-              <th *ngFor="let head of headElements; let i = index" scope="col" class="text-center">{{head}}
-              </th>
-            </tr>
-          </thead>
-          <!--Table head-->
-
-          <!--Table body-->
-          <tbody>
-            <tr class="mouse-pointer" *ngFor="let el of transactionsConfirmed; let i = index"
-              (click)="dataSelected = el; basicModal.show();">
-              <td class="align-center th-lg">{{el.nameType}}</td>
-              <td class="align-left th-lg">{{el.timestamp}}</td>
-              <td class="text-right th-lg">{{el.fee}}</td>
-              <td class="text-center th-lg">
-                <i [ngStyle]="{'color': el.isRemitent === true ? 'green' : 'red' }" style="padding-right: 10px;"
-                  class="fa fa-send" aria-hidden="true"></i>
-                {{el.sender.address.pretty()}}
-              </td>
-              <ng-container *ngIf="el?.recipient !== null; else recipientRentalFee">
-                <td class="text-center th-lg">{{el.recipient.pretty()}}</td>
-              </ng-container>
-              <ng-template #recipientRentalFee>
-                <td class="text-center th-lg">{{el.recipientRentalFeeSink}}</td>
-              </ng-template>
-            </tr>
-          </tbody>
-          <!--Table body-->
-
-        </table>
-        <!--Table-->
-      </div>
-    </div>
-  </div>
-
-
-
-
-  <!--<div class="row">
-    <div class="w-w-b-w">
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-md-12 col-lg-11 mx-auto">
-            <div class="mt-3r">
-
-              <!-- ICON RELOAD
-              <ng-container *ngIf="iconReloadDashboard">
-                <div class="row">
-                  <div class="col-12 t-a-r">
-                    <i class="fa fa-repeat btn-reload cursor-pointer" aria-hidden="true" mdbTooltip="Reload"
-                      placement="bottom" (click)="loadDashboard(true)"></i>
-                  </div>
-                </div>
-              </ng-container>-->
-
-  <!-- HEAD CONFIRMED/UNCONFIRMED
+            <div class="col-sm-12 col-lg-7">
               <div class="row">
-                <div class="col-6">
-                  <div class="tabs-wallet"
-                    [className]="confirmedSelected ? 'background-tabs-selected tabs-wallet' : 'background-tabs-unselected tabs-wallet'"
-                    (click)="selectTab(1)">
-                    <h5 class="text-center">
-                      <span class="mr-15px font-tabs">Confirmed</span>
-                      <mdb-badge color="count">{{cantConfirmed}}</mdb-badge>
-                    </h5>
-                  </div>
+                <div class="col-5 col-sm-6">
+                  <span class="f-s-dashboard-transactions f-w-400">CONFIRMED: </span>
                 </div>
-                <div class="col-6">
-                  <div class="tabs-wallet"
-                    [className]="unconfirmedSelected ? 'background-tabs-selected tabs-wallet' : 'background-tabs-unselected tabs-wallet'"
-                    (click)="selectTab(2)">
-                    <h5 class="text-center">
-                      <span class="mr-15px font-tabs">Unconfirmed</span>
-                      <mdb-badge color="count">{{cantUnconfirmed}}</mdb-badge>
-                    </h5>
-                  </div>
+                <div class="col-7 col-sm-6">
+                  <span class="f-s-dashboard-transactions f-w-600">{{cantConfirmed}}</span>
                 </div>
+              </div>
 
-                <ng-container *ngIf="searching">
-                  <div class="col-12 mt-1rem">
-                    <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate">
-                    </mdb-progress-bar>
-                  </div>
-                </ng-container>
-              </div> -->
-
-  <!-- DATA CONFIRMED
-              <ng-container *ngIf="confirmedSelected; else unconfirmedTemplate">
-                <div class="table-responsive table-striped">
-                  <table mdbTable striped="true"
-                    class="table table-hover table-bordered table-striped table-sm z-depth-0">
-                    <thead>
-                      <tr>
-                        <th *ngFor="let head of headElements; let i = index" scope="col" class="text-center">{{head}}
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr class="mouse-pointer" *ngFor="let el of transactionsConfirmed; let i = index"
-                        (click)="dataSelected = el; basicModal.show();">
-                        <td class="align-center th-lg">{{el.nameType}}</td>
-                        <td class="align-left th-lg">{{el.timestamp}}</td>
-                        <td class="text-right th-lg">{{el.fee}}</td>
-                        <td class="text-center th-lg">
-                          <i [ngStyle]="{'color': el.isRemitent === true ? 'green' : 'red' }"
-                            style="padding-right: 10px;" class="fa fa-send" aria-hidden="true"></i>
-                          {{el.sender.address.pretty()}}
-                        </td>
-                        <ng-container *ngIf="el?.recipient !== null; else recipientRentalFee">
-                          <td class="text-center th-lg">{{el.recipient.pretty()}}</td>
-                        </ng-container>
-                        <ng-template #recipientRentalFee>
-                          <td class="text-center th-lg">{{el.recipientRentalFeeSink}}</td>
-                        </ng-template>
-                      </tr>
-                    </tbody>
-                  </table>
+              <div class="row">
+                <div class="col-5 col-sm-6">
+                  <span class="f-s-dashboard-transactions f-w-400">UNCONFIRMED: </span>
                 </div>
-              </ng-container>-->
-
-
-  <!-- DATA UNCONFIRMED
-              <ng-template #unconfirmedTemplate>
-                <div class="table-responsive table-striped">
-                  <table mdbTable striped="true"
-                    class="table table-hover table-bordered table-striped table-sm z-depth-0">
-                    <thead>
-                      <tr>
-                        <th *ngFor="let head of headElements; let i = index" scope="col" class="text-center">
-                          {{head}}</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr class="mouse-pointer" *ngFor="let el of transactionsUnconfirmed; let i = index"
-                        (click)="dataSelected = el; basicModal.show();">
-                        <td class="align-center th-lg">{{el.nameType}}</td>
-                        <td class="align-left th-lg">{{el.timestamp}}</td>
-                        <td class="text-right th-lg">{{el.fee}}</td>
-                        <td class="text-center th-lg">
-                          <i [ngStyle]="{'color': el.isRemitent === true ? 'green' : 'red' }"
-                            style="padding-right: 10px;" class="fa fa-send" aria-hidden="true"></i>
-                          {{el.sender.address.pretty()}}
-                        </td>
-                        <ng-container *ngIf="el?.recipient !== null; else recipientRentalFee">
-                          <td class="text-center th-lg">{{el.recipient.pretty()}}</td>
-                        </ng-container>
-                        <ng-template #recipientRentalFee>
-                          <td class="text-center th-lg">{{el.recipientRentalFeeSink}}</td>
-                        </ng-template>
-                      </tr>
-                    </tbody>
-                  </table>
+                <div class="col-7 col-sm-6">
+                  <span class="f-s-dashboard-transactions f-w-600">{{cantUnconfirmed}}</span>
                 </div>
-              </ng-template>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>-->
+  </ng-container>
 
+  <!--TABLE-->
+  <ng-container *ngIf="transactionsConfirmed.length > 0">
+    <div class="row">
+      <div class="col-12">
+        <div class="table-responsive table-hover">
+          <table mdbTable striped="true" class="table table-hover table-bordered table-hover table-sm z-depth-0"
+            borderless="true">
+            <!--Table head-->
+            <thead>
+              <tr class="header-backg">
+                <th *ngFor="let head of headElements; let i = index" scope="col" class="text-center">{{head}}
+                </th>
+              </tr>
+            </thead>
+            <!--Table head-->
 
+            <!--Table body-->
+            <tbody>
+              <tr class="mouse-pointer" *ngFor="let el of transactionsConfirmed; let i = index"
+                (click)="dataSelected = el; basicModal.show();">
+                <td class="align-center th-lg">{{el.nameType}}</td>
+                <td class="align-left th-lg">{{el.timestamp}}</td>
+                <td class="text-right th-lg">{{el.fee}}</td>
+                <td class="text-center th-lg">
+                  <i [ngStyle]="{'color': el.isRemitent === true ? 'green' : 'red' }" style="padding-right: 10px;"
+                    class="fa fa-send" aria-hidden="true"></i>
+                  {{el.sender.address.pretty()}}
+                </td>
+                <ng-container *ngIf="el?.recipient !== null; else recipientRentalFee">
+                  <td class="text-center th-lg">{{el.recipient.pretty()}}</td>
+                </ng-container>
+                <ng-template #recipientRentalFee>
+                  <td class="text-center th-lg">{{el.recipientRentalFeeSink}}</td>
+                </ng-template>
+              </tr>
+            </tbody>
+            <!--Table body-->
+
+          </table>
+          <!--Table-->
+        </div>
+      </div>
+    </div>
+  </ng-container>
 
 
   <!-- MODAL -->

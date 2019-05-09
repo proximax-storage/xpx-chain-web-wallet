@@ -1,33 +1,10 @@
 <header>
 
-  <!-- fixed-top scrolling-navbar double-nav ..... -->
-  <ng-container>
-    <mdb-navbar SideClass="navbar navbar-toggleable-md navbar-expand-lg  double-nav z-depth-0 background-header-inverse"
-      [containerInside]="false">
 
-      <!-- LOGO -->
-      <mdb-navbar-brand [ngClass]="{'d-none d-sm-block':showOnlyLogged}">
-        <ng-container *ngIf="!showOnlyLogged">
-          <div class="breadcrumbs breadcrumbs-hidden-nav mr-auto">
-            <img src="assets/images/logo/logo.png" style="width: 12rem;">
-          </div>
-        </ng-container>
-      </mdb-navbar-brand>
-
-      <!-- ITEMS -->
-      <navlinks>
-        <ul class="nav navbar-nav nav-flex-icons ml-auto ie-double-nav ie-hidden-double-nav"
-          [ngClass]="{'mt-5rem':showOnlyLogged}">
-          <app-header-horizontal [header]=horizontalHeader [showMenu]=showOnlyLogged (logout)="logout($event)">
-          </app-header-horizontal>
-        </ul>
-      </navlinks>
-    </mdb-navbar>
-  </ng-container>
-
-  <!-- fixed-top scrolling-navbar double-nav ..... -->
+  <!--  -->
   <ng-container *ngIf="showOnlyLogged">
-    <mdb-navbar SideClass="navbar navbar-toggleable-md navbar-expand-lg double-nav z-depth-0 background-header-inverse"
+    <mdb-navbar
+      SideClass="navbar navbar-toggleable-md navbar-expand-lg scrolling-navbar double-nav z-depth-0 background-header-inverse"
       [containerInside]="false">
 
       <!-- LOGO -->
@@ -56,6 +33,30 @@
               </li>
             </ul>
           </navlinks>
+        </ul>
+      </navlinks>
+    </mdb-navbar>
+  </ng-container>
+
+  <ng-container>
+    <mdb-navbar
+      SideClass="navbar navbar-toggleable-md navbar-expand-lg scrolling-navbar double-nav z-depth-0 background-header-inverse p-t-0"
+      [containerInside]="false">
+
+      <!-- LOGO -->
+      <mdb-navbar-brand [ngClass]="{'d-none d-sm-block':showOnlyLogged}">
+        <ng-container *ngIf="!showOnlyLogged">
+          <div class="breadcrumbs breadcrumbs-hidden-nav mr-auto">
+            <img src="assets/images/logo/logo.png" style="width: 12rem;">
+          </div>
+        </ng-container>
+      </mdb-navbar-brand>
+
+      <!-- ITEMS [ngClass]="{'mt-5rem':showOnlyLogged}" -->
+      <navlinks>
+        <ul class="nav navbar-nav nav-flex-icons ml-auto ie-double-nav ie-hidden-double-nav">
+          <app-header-horizontal [header]=horizontalHeader [showMenu]=showOnlyLogged (logout)="logout($event)">
+          </app-header-horizontal>
         </ul>
       </navlinks>
     </mdb-navbar>

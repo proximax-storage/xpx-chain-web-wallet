@@ -69,6 +69,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
    */
   async loadDashboard(reload = false) {
     this.iconReloadDashboard = true;
+    this.transactionService.updateBalance();
     if (this.dashboardService.getCantViewDashboard() === 1 || reload) {
       this.searching = true;
       this.iconReloadDashboard = false;
