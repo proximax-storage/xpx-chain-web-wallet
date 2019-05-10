@@ -37,7 +37,7 @@
 
           <!-- Contacts -->
           <ng-container *ngIf="showContacts">
-            <div class="row box-form mt-1rem p-t-0 p-b-0">
+            <div class="row box-form mt-1rem p-t-0 p-b-0 animated fadeIn">
               <div class="col-12">
                 <div class="md-form">
                   <i class="fa fa-bars prefix color-white"></i>
@@ -65,10 +65,21 @@
               <div class="row">
                 <ng-container *ngIf="contacts?.length > 0">
                   <div class="col-10 col-md-8 col-lg-9">
-                    <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 btn-white-transparent"
-                      size="sm" (click)="showContacts = true;">
-                      <span>DIRECTORY</span>
-                    </button>
+                    <!-- Show Directory -->
+                    <ng-container *ngIf="!showContacts">
+                      <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 btn-white-transparent"
+                        size="sm" (click)="showContacts = true;">
+                        <span>DIRECTORY</span>
+                      </button>
+                    </ng-container>
+
+                    <!-- Hide Directory -->
+                    <ng-container *ngIf="showContacts">
+                      <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 btn-white-transparent"
+                        size="sm" (click)="showContacts = false;">
+                        <span>HIDE DIRECTORY</span>
+                      </button>
+                    </ng-container>
                   </div>
                 </ng-container>
 
@@ -92,6 +103,52 @@
             </div>
           </div>
 
+          <!-- Quantity and Message -->
+          <div class="row box-form mt-1rem p-t-0 p-b-0">
+            <div class="col-12">
+              <div class="md-form" id="container-walletname">
+                <i class="fa fa-credit-card prefix color-white"></i>
+                <input type="number" autocomplete="off" formControlName="amount" id="amount" class="form-control"
+                  mdbInputDirective data-success="Valid amount" [errorMessage]="getError('amount')">
+                <label for="recipient">Quantity</label>
+              </div>
+
+              <div class="md-form" id="container-walletname">
+                <i class="fa fa-envelope prefix color-white"></i>
+                <input type="text" autocomplete="off" formControlName="message" id="message" class="form-control"
+                  mdbInputDirective data-success="Valid message" [errorMessage]="getError('message')">
+                <label for="recipient">Message</label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Password -->
+          <div class="row box-form mt-1rem p-t-0 p-b-0">
+            <div class="col-12">
+              <div class="md-form" id="container-password">
+                <i class="fa fa-lock prefix color-white"></i>
+                <input type="password" autocomplete="off" required formControlName="password" id="password"
+                  class="form-control" mdbInputDirective data-success="Valid password"
+                  [errorMessage]="getError('password')">
+                <label for="password">Password</label>
+              </div>
+            </div>
+          </div>
+
+          <!-- BUTTONS -->
+          <div class="row mt-1rem mb-1rem">
+            <div class="col-6 t-a-r">
+              <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 btn-white"
+                (click)="cleanForm()">
+                CLEAN
+              </button>
+            </div>
+            <div class="col-6">
+              <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 btn-dark-green-prx">
+                SEND
+              </button>
+            </div>
+          </div>
         </form>
       </ng-container>
     </div>
