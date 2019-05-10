@@ -26,7 +26,11 @@ footer {
   height: 1px;
 }
 
-/******* MARGIN AND SIZE ******/
+/******* MARGIN ******/
+.m-r-0rem {
+  margin-right: 0rem !important;
+}
+
 .mt-1rem {
   margin-top: 1rem;
 }
@@ -103,17 +107,68 @@ footer {
   margin-right: 0.2rem;
 }
 
+
+
+/**** Margin Bottom ******/
 .mb-5px {
   margin-bottom: 5px;
+}
+
+.mb-0rem {
+  margin-bottom: 0 !important;
+}
+
+.mb-1rem {
+  margin-bottom: 1rem;
+}
+
+.mb-2rem {
+  margin-bottom: 2rem;
 }
 
 .mb-3rem {
   margin-bottom: 3rem;
 }
 
-.mb-1rem {
-  margin-bottom: 1rem;
+.mb-5rem {
+  margin-bottom: 5rem;
 }
+
+.mr-15px {
+  margin-right: 15px !important;
+}
+
+.mt-100px {
+  margin-top: 100px;
+}
+
+
+/** Padding **/
+.p-r-0 {
+  padding-right: 0 !important;
+}
+
+.p-r-1rem {
+  padding-right: 1rem;
+}
+
+.p-r-2rem {
+  padding-right: 2rem;
+}
+
+.p-l-0 {
+  padding-left: 0 !important;
+}
+
+
+.p-l-1rem {
+  padding-left: 1rem !important;
+}
+
+.p-l-2rem {
+  padding-left: 2rem !important;
+}
+
 
 .p-t-0 {
   padding-top: 0 !important;
@@ -163,34 +218,6 @@ footer {
   height: 400px;
 }
 
-.mr-15px {
-  margin-right: 15px !important;
-}
-
-.mt-100px {
-  margin-top: 100px;
-}
-
-.mb-0rem {
-  margin-bottom: 0 !important;
-}
-
-.mb-1rem {
-  margin-bottom: 1rem;
-}
-
-.mb-3rem {
-  margin-bottom: 3rem;
-}
-
-.mb-5rem {
-  margin-bottom: 5rem;
-}
-
-.mb-2rem {
-  margin-bottom: 2rem;
-}
-
 /****** ALIGN ******/
 .t-a-r {
   text-align: right;
@@ -218,6 +245,9 @@ footer {
   background: #ffffff !important;
 }
 
+.background-dark-green-plus {
+  background-color: #032c3575;
+}
 
 /**** BUTTONS AND COLORS*/
 
@@ -361,6 +391,9 @@ mdb-select>div>div.single>div.value {
   position: unset;
 }
 
+.md-form .prefix.active {
+  color: #ffffff !important;
+}
 
 
 /******* SERVICES *********/

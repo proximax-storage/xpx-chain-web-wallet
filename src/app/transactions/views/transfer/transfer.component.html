@@ -1,46 +1,98 @@
 <div class="container-fluid mt-11rem mb-3rem animated fadeIn">
   <div class="row">
-    <div class="col-12 col-sm-10 mx-auto">
+    <div class="col-11 col-sm-10 mx-auto">
       <!-- Title -->
-      <ng-container>
-        <div class="row">
-          <div class="col-10 mx-auto">
-            <h1 class="text-align-center wallet-name"><i class="fa fa-user" aria-hidden="true"></i> Transfer </h1>
-            <h5 class="f-w-bold color-yellow text-align-center wallet-description">Make a transfer</h5>
-          </div>
-          <div class="col-10 mx-auto">
-            <hr class="background-divisor">
-          </div>
+      <div class="row">
+        <div class="col-11 col-sm-10 mx-auto">
+          <h1 class="text-align-center wallet-name"><i class="fa fa-user" aria-hidden="true"></i> Transfer</h1>
+          <h5 class="f-w-bold color-yellow text-align-center wallet-description">Make a transfer</h5>
         </div>
-      </ng-container>
+        <div class="col-11 col-sm-10 mx-auto">
+          <hr class="background-divisor">
+        </div>
+      </div>
+    </div>
 
-      <!-- Content -->
+    <div class="col-11 col-sm-8 col-md-7 mx-auto">
       <ng-container>
-        <div class="row mt-1rem">
-          <div class="container-fluid">
-            <div class="col-xl-7 col-md-9 col-sm-11 mx-auto">
-              <form [formGroup]="transferForm" (ngSubmit)="sendTransfer()" style="color: #757575;">
-                <div class="container box-form p-t-0 p-b-0">
-                  <div class="row">
-                    <div class="col-10">
-                      <!-- mosaics -->
-                      <div class="md-form ">
-                        <i class="fa fa-linode prefix color-white"></i>
-                        <mdb-select [options]="mosaicsSelect" required formControlName="mosaicsSelect"
-                          class="colorful-select dropdown-default" mdbInputDirective
-                          data-success="Mosaic selected is valid" [errorMessage]="getError('mosaicsSelect')">
-                        </mdb-select>
-                      </div>
-                    </div>
-                    <div class="col-2 d-flex align-items-center" *ngIf="searchMosaics">
-                      <mdb-spinner spinnerType="small"></mdb-spinner>
-                    </div>
-                  </div>
+        <form [formGroup]="transferForm" (ngSubmit)="sendTransfer()">
+          <!-- Mosaics -->
+          <div class="row box-form mt-1rem p-t-0 p-b-0">
+            <div class="col-10 col-lg-11">
+              <div class="md-form ">
+                <i class="fa fa-linode prefix color-white"></i>
+                <mdb-select [options]="mosaicsSelect" required formControlName="mosaicsSelect"
+                  class="colorful-select dropdown-default" mdbInputDirective data-success="Mosaic selected is valid"
+                  [errorMessage]="getError('mosaicsSelect')">
+                </mdb-select>
+              </div>
+            </div>
+
+            <ng-container *ngIf="searchMosaics">
+              <div class="col-2 col-lg-1 d-flex align-items-center">
+                <mdb-spinner spinnerType="small"></mdb-spinner>
+              </div>
+            </ng-container>
+          </div>
+
+          <!-- Contacts -->
+          <ng-container *ngIf="showContacts">
+            <div class="row box-form mt-1rem p-t-0 p-b-0">
+              <div class="col-12">
+                <div class="md-form">
+                  <i class="fa fa-bars prefix color-white"></i>
+                  <mdb-select [options]="contacts" required placeholder="Select contact/address"
+                    class="colorful-select dropdown-default" mdbInputDirective (selected)="optionSelected($event)">
+                  </mdb-select>
                 </div>
-              </form>
+              </div>
+            </div>
+          </ng-container>
+
+          <!-- Recipient -->
+          <div class="row box-form mt-1rem p-t-0 p-b-0 p-r-0 p-l-0">
+            <div [ngClass]="[contacts?.length > 0 ? myClass['boxRecipientTrue'] : myClass['boxRecipientFalse']]">
+              <div class="md-form" id="container-walletname">
+                <i class="fa fa-address-book prefix color-white"></i>
+                <input type="text" autocomplete="off" required formControlName="acountRecipient" id="acountRecipient"
+                  class="form-control" mdbInputDirective data-success="Valid recipient"
+                  [errorMessage]="getError('acountRecipient')">
+                <label for="recipient">Recipient</label>
+              </div>
+            </div>
+
+            <div [ngClass]="[contacts?.length > 0 ? myClass['boxDirectoryTrue'] : myClass['boxDirectoryFalse']]">
+              <div class="row">
+                <ng-container *ngIf="contacts?.length > 0">
+                  <div class="col-10 col-md-8 col-lg-9">
+                    <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 btn-white-transparent"
+                      size="sm" (click)="showContacts = true;">
+                      <span>DIRECTORY</span>
+                    </button>
+                  </div>
+                </ng-container>
+
+                <div [ngClass]="[contacts?.length > 0 ? myClass['rowAddContactTrue'] : myClass['rowAddContactFalse']]">
+                  <img class="cursor-pointer color-white" src="assets/images/add-contact.png" alt="add contact"
+                    (click)="basicModal.show()">
+                </div>
+              </div>
+
+
+              <!-- <div class="row">
+                <div (click)="basicModal.show()" class="col-2 col-md-1" style="cursor: pointer;">
+                  <img src="assets/images/add-contact.png" alt="add contact">
+                </div>
+                <ng-container *ngIf="contacts?.length > 0">
+                  <div class="col-2 col-md-1" style="cursor: pointer;" (click)="showContacts = true;">
+                    <img src="assets/images/agenda.png" alt="agenda">
+                  </div>
+                </ng-container>
+              </div> -->
             </div>
           </div>
-        </div>
+
+        </form>
       </ng-container>
     </div>
   </div>
@@ -107,6 +159,71 @@
     </mdb-select>
   </div>
 </ng-container>
+
+<div class="row mt-5">
+  <div class="col-10">
+    <div class="md-form" id="container-walletname">
+      <i class="fa fa-address-book prefix color-white"></i>
+      <input type="text" autocomplete="off" required formControlName="acountRecipient" id="acountRecipient"
+        class="form-control" mdbInputDirective data-success="Valid recipient"
+        [errorMessage]="getError('acountRecipient')">
+      <label for="recipient">Recipient</label>
+    </div>
+  </div>
+  <div class="col-2 d-flex align-items-center">
+    <div (click)="basicModal.show()" class="col-1" style="cursor: pointer;">
+      <img src="assets/images/add-contact.png" alt="add contact">
+    </div>
+    <ng-container *ngIf="contacts?.length > 0">
+      <div class="col-1" style="cursor: pointer;" (click)="showContacts = true;">
+        <img src="assets/images/agenda.png" alt="agenda">
+      </div>
+    </ng-container>
+  </div>
+</div>
+
+<div class="md-form mt-5" id="container-walletname">
+  <i class="fa fa-credit-card prefix color-white"></i>
+  <input type="number" autocomplete="off" formControlName="amount" id="amount" class="form-control" mdbInputDirective
+    data-success="Valid amount" [errorMessage]="getError('amount')">
+  <label for="recipient">Amount</label>
+</div>
+
+<div class="md-form mt-5" id="container-walletname">
+  <i class="fa fa-envelope prefix color-white"></i>
+  <input type="text" autocomplete="off" formControlName="message" id="message" class="form-control" mdbInputDirective
+    data-success="Valid message" [errorMessage]="getError('message')">
+  <label for="recipient">message</label>
+</div>
+
+<div class="md-form mt-5" id="container-password">
+  <i class="fa fa-lock prefix color-white"></i>
+  <input type="password" autocomplete="off" required formControlName="password" id="password" class="form-control"
+    mdbInputDirective data-success="Valid password" [errorMessage]="getError('password')">
+  <label for="password">Password</label>
+</div>
+
+<div class="mt-4rm">
+  <div class="row ">
+    <div class="mx-auto">
+      <div class="row">
+        <div class="col-xs-6">
+          <button mdbBtn type="button" rounded="true" class="waves-light btn-reverse" mdbWavesEffect type="submit"
+            (click)="cleanForm()">Clean</button>
+        </div>
+        <div class="col-xs-6">
+          <button mdbBtn type="button" color="default" rounded="true" class="waves-light" mdbWavesEffect
+            type="submit">Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> -->
+
+
+
+
+<!--
 
 <div class="row mt-5">
   <div class="col-10">

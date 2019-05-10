@@ -17,6 +17,18 @@ import { ProximaxProvider } from "../../../shared/services/proximax.provider";
   styleUrls: ["./transfer.component.scss"]
 })
 export class TransferComponent implements OnInit {
+
+
+  myClass = {
+    'boxRecipientTrue': 'col-12 col-md-7 col-lg-8 p-l-2rem p-r-2rem',
+    'boxDirectoryTrue': 'col-12 col-md-5 col-lg-4 d-flex justify-content-center align-items-center background-dark-green-plus',
+    'boxRecipientFalse': 'col-10 p-l-2rem p-r-2rem',
+    'boxDirectoryFalse': 'col-2 d-flex justify-content-center align-items-center background-dark-green-plus',
+    'rowDirectoryTrue': 'col-10 col-md-8 col-lg-9',
+    'rowAddContactTrue': 'col-2 col-md-4 col-lg-3 d-flex align-items-center',
+    'rowAddContactFalse': 'col-12 d-flex align-items-center'
+  }
+
   searchMosaics = true;
   showContacts = false;
   inputBLocked: boolean;
@@ -51,6 +63,7 @@ export class TransferComponent implements OnInit {
 
   ngOnInit() {
     this.contacts = this.ServiceModuleService.getBooksAddress();
+    console.log('this.contacts', this.contacts.length);
     this.createForm();
     this.createFormContact();
     this.getMosaics();
@@ -137,21 +150,23 @@ export class TransferComponent implements OnInit {
    */
   async getMosaics() {
     const mosaicsSelect = this.mosaicsSelect.slice(0);
-    // console.log(this.walletService.getAccountInfo());
-    const mosaics = await this.mosaicServices.searchMosaics(this.walletService.getAccountInfo().mosaics.map(n => n.id));
-    // console.log(mosaics);
-    if (mosaics.length > 0) {
-      for (let mosaic of mosaics) {
-        if (this.proximaxProvider.getMosaicId(mosaic.id).id.toHex() !== this.mosaicServices.mosaicXpx.mosaicId) {
-          mosaicsSelect.push({
-            label: `${mosaic.namespaceName.name}:${mosaic.mosaicName.name}`,
-            value: `${mosaic.namespaceName.name}:${mosaic.mosaicName.name}`,
-            selected: false,
-            disabled: false
-          });
+    if (this.walletService.getAccountInfo() !== undefined) {
+      const mosaics = await this.mosaicServices.searchMosaics(this.walletService.getAccountInfo().mosaics.map(n => n.id));
+      // console.log(mosaics);
+      if (mosaics.length > 0) {
+        for (let mosaic of mosaics) {
+          if (this.proximaxProvider.getMosaicId(mosaic.id).id.toHex() !== this.mosaicServices.mosaicXpx.mosaicId) {
+            mosaicsSelect.push({
+              label: `${mosaic.namespaceName.name}:${mosaic.mosaicName.name}`,
+              value: `${mosaic.namespaceName.name}:${mosaic.mosaicName.name}`,
+              selected: false,
+              disabled: false
+            });
+          }
         }
       }
     }
+
     this.searchMosaics = false;
     this.mosaicsSelect = mosaicsSelect;
   }
