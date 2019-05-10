@@ -1,82 +1,86 @@
-<div class="container mt-6rem animated fadeIn">
-
-  <!-- TITLE -->
+<div class="container-fluid mt-6rem animated fadeIn">
   <div class="row">
-    <div class="col-10 mx-auto">
-      <h1 class="text-align-center wallet-name">{{nameModule}}</h1>
-      <h5 class="text-align-center wallet-description">{{descriptionModule}}</h5>
-    </div>
+    <div class="col-12 col-sm-10 mx-auto">
+      <!-- TITLE -->
+      <div class="row">
+        <div class="col-10 mx-auto">
+          <h1 class="text-align-center wallet-name">{{nameModule}}</h1>
+          <h5 class="text-align-center wallet-description">{{descriptionModule}}</h5>
+        </div>
 
-    <div class="col-10 mx-auto">
-      <hr class="background-divisor">
-    </div>
-  </div>
-
-  <div class="row mt-1rem">
-    <div class="container-fluid">
-      <div class="col-xl-7 col-md-9 col-sm-11 mx-auto">
-        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-          <div class="container box-form-inverse">
-            <div class="md-form">
-              <i class="fa fa-user prefix text-white"></i>
-              <mdb-select [options]="wallets" placeholder="Name wallet" required formControlName="wallet"
-                class="colorful-select dropdown-default" (selected)="optionSelected($event)" mdbInputDirective
-                [errorMessage]="getError('wallet')"></mdb-select>
-            </div>
-            <div class="md-form mt-5" formGroupName="common">
-              <i class="fa fa-lock prefix text-white"></i>
-              <input type="password" autocomplete="off" required formControlName="password" id="password"
-                class="form-control" data-success="Valid password" mdbInputDirective
-                [errorMessage]="getErrorGroup('common','password')">
-              <label for="password">password</label>
-            </div>
-          </div>
-
-          <!-- BUTTONS -->
-          <div class="container mt-1rem">
-            <div class="row mt-1rem mb-1rem">
-              <div class="col-6 t-a-r">
-                <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 btn-white-transparent"
-                  (click)="clean()">
-                  CLEAN
-                </button>
-              </div>
-              <div class="col-6">
-                <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 btn-white">
-                  SIGN IN
-                </button>
-              </div>
-            </div>
-          </div>
-        </form>
+        <div class="col-10 mx-auto">
+          <hr class="background-divisor">
+        </div>
       </div>
-    </div>
 
-    <div class="col-10 mx-auto">
-      <hr class="background-divisor">
-    </div>
-  </div>
+      <div class="row mt-1rem">
+        <div class="container-fluid">
+          <div class="col-xl-7 col-md-9 col-sm-11 mx-auto">
+            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+              <div class="container box-form-inverse">
+                <div class="md-form">
+                  <i class="fa fa-user prefix text-white"></i>
+                  <mdb-select [options]="wallets" placeholder="Name wallet" required formControlName="wallet"
+                    class="colorful-select dropdown-default" (selected)="optionSelected($event)" mdbInputDirective
+                    [errorMessage]="getError('wallet')"></mdb-select>
+                </div>
+                <div class="md-form mt-5" formGroupName="common">
+                  <i class="fa fa-lock prefix text-white"></i>
+                  <input type="password" autocomplete="off" required formControlName="password" id="password"
+                    class="form-control" data-success="Valid password" mdbInputDirective
+                    [errorMessage]="getErrorGroup('common','password')">
+                  <label for="password">password</label>
+                </div>
+              </div>
+
+              <!-- BUTTONS -->
+              <div class="container mt-1rem">
+                <div class="row mt-1rem mb-1rem">
+                  <div class="col-6 t-a-r">
+                    <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 btn-white-transparent"
+                      (click)="clean()">
+                      CLEAN
+                    </button>
+                  </div>
+                  <div class="col-6">
+                    <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 btn-white">
+                      SIGN IN
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="col-10 mx-auto">
+          <hr class="background-divisor">
+        </div>
+      </div>
 
 
-  <div class="row mt-1rem mb-1rem">
-    <div class="col-12 text-center text-white">
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Eaque recusandae sed quaerat commodi quas
-      necessitatibus
-      ratione aspernatur molestiae perspiciatis incidunt. Eius ad repellat necessitatibus? Illo modi minus blanditiis
-      ipsa rerum.
-    </div>
+      <div class="row mt-1rem mb-1rem">
+        <div class="col-12 text-center text-white">
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Eaque recusandae sed quaerat commodi quas
+          necessitatibus
+          ratione aspernatur molestiae perspiciatis incidunt. Eius ad repellat necessitatibus? Illo modi minus
+          blanditiis
+          ipsa rerum.
+        </div>
 
-    <div class="col-6 t-a-r mt-1rem">
-      <button [routerLink]="['/'+link.createWallet]" mdbBtn type="button" rounded="true" mdbWavesEffect
-        class="f-w-600 btn-dark-green-prx">
-        <i class="fa fa-magic mr-1"></i> CREATE
-      </button>
-    </div>
-    <div class="col-6 mt-1rem">
-      <button [routerLink]="['/'+link.importWallet]" mdbBtn type="button" rounded="true" mdbWavesEffect
-        class="f-w-600 btn-dark-green-prx">
-        <i class="fa fa-magic mr-1"></i> IMPORT
-      </button>
+        <div class="col-6 t-a-r mt-1rem">
+          <button [routerLink]="['/'+link.createWallet]" mdbBtn type="button" rounded="true" mdbWavesEffect
+            class="f-w-600 btn-dark-green-prx">
+            <i class="fa fa-magic mr-1"></i> CREATE
+          </button>
+        </div>
+        <div class="col-6 mt-1rem">
+          <button [routerLink]="['/'+link.importWallet]" mdbBtn type="button" rounded="true" mdbWavesEffect
+            class="f-w-600 btn-dark-green-prx">
+            <i class="fa fa-magic mr-1"></i> IMPORT
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </div>

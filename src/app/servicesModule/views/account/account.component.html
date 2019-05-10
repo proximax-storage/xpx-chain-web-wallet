@@ -1,28 +1,27 @@
-<div class="container mt-10rem mb-3rem animated fadeIn">
-  <!-- Title -->
-  <ng-container>
-    <div class="row">
-      <div class="col-10 mx-auto">
-        <h1 class="text-align-center wallet-name"><i class="fa fa-user" aria-hidden="true"></i> Account</h1>
-        <hr class="background-divisor">
-      </div>
-    </div>
-  </ng-container>
-
-  <!-- BOX WALLET NAME -->
+<div class="container-fluid mt-11rem mb-3rem animated fadeIn">
   <div class="row">
-    <div class="col-12 mx-auto">
-      <!-- ADDRESS -->
+    <div class="col-11 col-sm-10 mx-auto">
+      <!-- Title -->
+      <div class="row">
+        <div class="col-11 col-sm-10 mx-auto">
+          <h1 class="text-align-center wallet-name"><i class="fa fa-user" aria-hidden="true"></i> Account</h1>
+        </div>
+        <div class="col-11 col-sm-10 mx-auto">
+          <hr class="background-divisor">
+        </div>
+      </div>
+
+      <!-- Address -->
       <div class="row box-form-white mt-1rem">
         <div class="col-12 mt-5px">
-          <h4 class="f-w-500 mb-0rem">{{walletName}}</h4>
+          <h3 class="f-w-500 mb-0rem">{{walletName}}</h3>
         </div>
 
-        <div class="col-12 mb-5px">
-          <div class="row mt-3px">
+        <div class="col-12">
+          <div class="row">
             <div class="col-10 col-md-10 col-lg-11">
               <span class="f-s-1rem gray-color f-w-400">Address: </span>
-              <span class="f-s-1rem f-w-500">{{address}}</span>
+              <span class="f-s-1rem f-w-500 w-w-b-w">{{address}}</span>
             </div>
             <div class="col-2 col-md-2 col-lg-1 d-flex align-items-center">
               <i mdbWavesEffect (click)="copyMessage('Address')" ngxClipboard [cbContent]="address"
@@ -32,33 +31,40 @@
         </div>
       </div>
 
-      <!-- PUBLIC KEY -->
+
+
+      <!-- Public key -->
       <div class="row box-form-white mt-1rem">
-        <div class="col-12 mt-5px">
-          <h4 class="f-w-500 mb-0rem">Public Key</h4>
+        <div class="col-12">
+          <h3 class="f-w-500 mb-0rem">Public Key</h3>
         </div>
-        <div class="col-10 col-md-10 col-lg-11">
-          <span class="f-s-1rem f-w-500">{{publicKey}}</span>
-        </div>
-        <div class="col-2 col-md-2 col-lg-1 d-flex align-items-center">
-          <i mdbWavesEffect (click)="copyMessage('Public key')" ngxClipboard [cbContent]="publicKey"
-            class="fa fa-paste prefix cursor-pointer f-s-1-5rem"></i>
+
+        <div class="col-12">
+          <div class="row">
+            <div class="col-10 col-md-10 col-lg-11">
+              <span class="f-s-1rem f-w-500 w-w-b-w">{{address}}</span>
+            </div>
+            <div class="col-2 col-md-2 col-lg-1 d-flex align-items-center">
+              <i mdbWavesEffect (click)="copyMessage('Public key')" ngxClipboard [cbContent]="publicKey"
+                class="fa fa-paste prefix cursor-pointer f-s-1-5rem"></i>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- MESSAGE ORANGE -->
+      <!-- Message Orange  -->
       <div class="row box-light-orange mt-3rem">
-        <div class="col-12 col-sm-8 mx-auto text-center">
-          <span class="f-s-1rem f-w-500">Your private key holds all the power of your account.</span> <br>
-          <span class="f-s-1rem f-w-500">It is a priority to make sure it is stored safely somewhere offline.</span>
+        <div class="col-12 mx-auto text-center">
+          <span class="f-s-1rem f-w-500 w-w-b-w">Your private key holds all the power of your account.</span> <br>
+          <span class="f-s-1rem f-w-500 w-w-b-w">It is a priority to make sure it is stored safely somewhere
+            offline.</span>
         </div>
       </div>
 
-
-
+      <!-- Enter password  -->
       <ng-container *ngIf="showPassword">
         <div class="row box-form mt-1rem p-t-0 p-b-0">
-          <div class="col-10">
+          <div class="col-12">
             <div class="md-form" id="container-password">
               <i class="fa fa-lock prefix color-white"></i>
               <input [mdbValidate]="false" [(ngModel)]="password" type="password" autocomplete="off" required
@@ -78,17 +84,23 @@
         </div>
       </ng-container>
 
+      <!-- Show private key-->
       <ng-container *ngIf="privateKey !== ''">
         <div class="row box-form mt-1rem">
           <div class="col-12">
-            <h4 class="f-w-500 mb-0rem color-white">Private Key</h4>
+            <h3 class="f-w-500 mb-0rem color-white">Private Key</h3>
           </div>
-          <div class="col-10 col-md-10 col-lg-11">
-            <span class="f-s-1rem f-w-500 color-white">{{privateKey}}</span>
-          </div>
-          <div class="col-2 col-md-2 col-lg-1 d-flex align-items-center">
-            <i mdbWavesEffect (click)="copyMessage('Public key')" ngxClipboard [cbContent]="privateKey"
-              class="fa fa-paste prefix cursor-pointer f-s-1-5rem"></i>
+
+          <div class="col-12">
+            <div class="row">
+              <div class="col-10 col-md-10 col-lg-11">
+                <span class="f-s-1rem f-w-500 w-w-b-w color-white">{{privateKey}}</span>
+              </div>
+              <div class="col-2 col-md-2 col-lg-1 d-flex align-items-center">
+                <i mdbWavesEffect (click)="copyMessage('Private Key')" ngxClipboard [cbContent]="privateKey"
+                  class="fa fa-paste prefix cursor-pointer f-s-1-5rem color-white"></i>
+              </div>
+            </div>
           </div>
         </div>
 

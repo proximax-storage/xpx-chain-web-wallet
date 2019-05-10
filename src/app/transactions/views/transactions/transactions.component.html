@@ -1,4 +1,4 @@
-<div class="mt-3rem w-w-b-w">
+<!-- <div class="mt-3rem w-w-b-w">
   <div class="container-fluid">
     <div class="row">
       <div class="col-xl-10 col-lg-10 col-md-10 col-sm-10 mx-auto">
@@ -13,7 +13,6 @@
                 </tr>
               </thead>
               <tbody>
-                <!--  -->
                 <tr class="mouse-pointer" *ngFor="let el of elements; let i = index" (click)="basicModal.show(); dataSelected = elements[i]">
                   <th *ngIf="i+1 >= firstItemIndex && i < lastItemIndex" class="th-sm">{{el.address}}</th>
                   <td class="align-right th-lg" *ngIf="i+1 >= firstItemIndex && i < lastItemIndex">{{el.amount}}</td>
@@ -40,9 +39,8 @@
   <div mdbModal #basicModal="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myBasicModalLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-notify modal-info" role="document">
-      <!--Content-->
+
       <div class="modal-content">
-        <!--Header-->
         <div class="modal-header background-gold">
           <p class="heading lead" style="font-weight: 500;">Transaction info</p>
           <button type="button" class="close" data-dismiss="modal" (click)="basicModal.hide()">
@@ -50,7 +48,6 @@
           </button>
         </div>
 
-        <!--Body-->
         <div class="modal-body">
           <div class="row">
             <div class="col-md-3">
@@ -125,7 +122,6 @@
           </div>
         </div>
       </div>
-      <!--/.Content-->
     </div>
   </div>
-</div>
+</div> -->
