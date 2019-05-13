@@ -370,8 +370,8 @@ export class ProximaxProvider {
    * @returns {Observable<Transaction[]>}
    * @memberof NemProvider
    */
-  getAllTransactionsFromAccount(publicAccount: PublicAccount, queryParams?: QueryParams): Observable<Transaction[]> {
-    return this.accountHttp.transactions(publicAccount, new QueryParams(queryParams.pageSize, queryParams.id));
+  getAllTransactionsFromAccount(publicAccount: PublicAccount, queryParams?): Observable<Transaction[]> {
+    return this.accountHttp.transactions(publicAccount, new QueryParams(queryParams));
   }
 
   /**

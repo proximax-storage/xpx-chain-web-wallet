@@ -1,3 +1,141 @@
+<div class="container-fluid mt-11rem mb-3rem animated fadeIn">
+  <div class="row">
+    <div class="col-11 col-sm-10 mx-auto">
+      <!-- Title -->
+      <div class="row">
+        <div class="col-11 col-sm-10 mx-auto">
+          <h1 class="text-align-center wallet-name">
+            <i class="fa fa-user" aria-hidden="true"></i> Transaction Explorer
+          </h1>
+          <h5 class="f-w-bold color-yellow text-align-center wallet-description">
+            << Go to All Services </h5> </div> <div class="col-11 col-sm-10 mx-auto">
+              <hr class="background-divisor">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-11 col-sm-8 col-md-7 mx-auto">
+      <div class="row box-form mt-1rem p-t-0 p-b-0 p-r-0 p-l-0">
+
+        <!-- Type search -->
+        <div class="col-12 col-md-6 col-lg-3">
+          <div class="md-form">
+            <mdb-select placeholder="Select type search" [(ngModel)]="typeSearch" [options]="optionTypeSearch" required
+              class="colorful-select dropdown-default" mdbInputDirective [validateSuccess]="false"
+              [validateError]="false">
+            </mdb-select>
+          </div>
+        </div>
+
+        <!-- Keyword or number -->
+        <div class="col-12 col-md-6 col-lg-6">
+          <div class="md-form" id="container-walletname">
+            <input [(ngModel)]="paramSearch" type="text" autocomplete="off" id="walletname" class="form-control"
+              mdbInputDirective [validateSuccess]="false" [validateError]="false">
+            <label for="walletname">Keyword or number</label>
+          </div>
+        </div>
+
+        <!-- Button Search -->
+        <div
+          class="col-12 col-md-12 col-lg-3 d-flex align-items-center justify-content-center background-dark-green-plus">
+          <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 btn-white-transparent" size="sm"
+            (click)="searchData()">
+            <span>SEARCH</span>
+          </button>
+        </div>
+
+      </div>
+
+      <div class="row mt-0-5rem">
+        <div class="col-12">
+          <hr class="background-divisor">
+        </div>
+      </div>
+
+      <div class="row mt-0-5rem">
+        <div class="col-12">
+          <span>
+            <h4 class="subtitle-dark-green text-center">{{objectKeys(elements).length}} results for "Keyword or Number"
+            </h4>
+          </span>
+        </div>
+      </div>
+
+
+
+      <div class="row mt-0-5rem">
+        <!-- <div class="col-12 box-form p-t-0 p-b-0 p-r-0 p-l-0">
+          <div class="md-form">
+            <input type="text" [(ngModel)]="searchText" class="form-control" id="search" mdbInput>
+            <label for="search">Search</label>
+          </div>
+        </div> -->
+
+        <ng-container *ngIf="searching">
+          <div class="col-12 mt-1rem">
+            <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate">
+            </mdb-progress-bar>
+          </div>
+        </ng-container>
+
+        <div class="col-12">
+          <div class="table-responsive table-hover">
+            <table mdbTable #tableEl="mdbTable" id="mdbTable" striped="true"
+              class="table table-hover table-bordered table-hover table-sm z-depth-0" borderless="true">
+              <!--Table head-->
+              <thead>
+                <tr class="header-backg">
+                  <ng-container *ngFor="let head of headElements; let i = index">
+                    <th scope="col" class="text-center">{{head}}</th>
+                  </ng-container>
+                </tr>
+              </thead>
+              <!--Table head-->
+
+              <!--Table body-->
+              <tbody>
+                <ng-container *ngFor="let el of elements; let i = index">
+                  <tr class="mouse-pointer">
+                    <th *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex"
+                      class="th-sm" scope="row">{{el?.address}}</th>
+                    <td class="align-right th-lg"
+                      *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex">
+                      {{el?.amount}}</td>
+                    <td class="text-center th-lg"
+                      *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex">
+                      {{el?.mosaic}}</td>
+                    <td class="text-center th-lg"
+                      *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex">
+                      {{el?.date}}
+                    </td>
+                  </tr>
+                </ng-container>
+              </tbody>
+              <!--Table body-->
+
+              <tfoot class="lighten-5 w-100">
+                <tr>
+                  <td colspan="4">
+                    <mdb-table-pagination [tableEl]="tableEl" [searchDataSource]="elements"></mdb-table-pagination>
+                  </td>
+                </tr>
+              </tfoot>
+
+            </table>
+            <!--Table-->
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<!--
 <div class="mt-3rem w-w-b-w">
   <div class="container-fluid">
     <div class="row">
@@ -7,14 +145,15 @@
             <div class="col-6">
               <div class="md-form">
                 <mdb-select placeholder="Select type search" [(ngModel)]="typeSearch" [options]="optionTypeSearch"
-                  required class="colorful-select dropdown-default" mdbInputDirective [mdbValidate]="false"></mdb-select>
+                  required class="colorful-select dropdown-default" mdbInputDirective  [validateSuccess]="false" [validateError]="false">
+                </mdb-select>
               </div>
             </div>
 
             <div class="col-4">
               <div class="md-form" id="container-walletname">
                 <input [(ngModel)]="paramSearch" type="text" autocomplete="off" id="walletname" class="form-control"
-                  mdbInputDirective [mdbValidate]="false">
+                  mdbInputDirective  [validateSuccess]="false" [validateError]="false">
                 <label for="walletname">Add</label>
               </div>
             </div>
@@ -36,8 +175,8 @@
                 </tr>
               </thead>
               <tbody>
-                <!--  -->
-                <tr class="mouse-pointer" *ngFor="let el of elements; let i = index" (click)="basicModal.show(); dataSelected = elements[i]">
+                <tr class="mouse-pointer" *ngFor="let el of elements; let i = index"
+                  (click)="basicModal.show(); dataSelected = elements[i]">
                   <th *ngIf="i+1 >= firstItemIndex && i < lastItemIndex" class="th-sm">{{el.address}}</th>
                   <td class="align-right th-lg" *ngIf="i+1 >= firstItemIndex && i < lastItemIndex">{{el.amount}}</td>
                   <td class="text-center th-lg" *ngIf="i+1 >= firstItemIndex && i < lastItemIndex">{{el.mosaic}}</td>
@@ -47,7 +186,8 @@
               <tfoot class="background-gris w-100">
                 <tr>
                   <td colspan="6">
-                    <mdb-table-pagination (nextPageClick)="onNextPageClick($event)" (previousPageClick)="onPreviousPageClick($event)">
+                    <mdb-table-pagination (nextPageClick)="onNextPageClick($event)"
+                      (previousPageClick)="onPreviousPageClick($event)">
                     </mdb-table-pagination>
                   </td>
                 </tr>
@@ -60,12 +200,10 @@
     </div>
   </div>
 
-  <div mdbModal #basicModal="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myBasicModalLabel"
-    aria-hidden="true">
+  <div mdbModal #basicModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+    aria-labelledby="myBasicModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-notify modal-info" role="document">
-      <!--Content-->
       <div class="modal-content">
-        <!--Header-->
         <div class="modal-header background-gold">
           <p class="heading lead" style="font-weight: 500;">Block info</p>
           <button type="button" class="close" data-dismiss="modal" (click)="basicModal.hide()">
@@ -73,7 +211,6 @@
           </button>
         </div>
 
-        <!--Body-->
         <div class="modal-body">
           <div class="row">
             <div class="col-md-3">
@@ -148,7 +285,6 @@
           </div>
         </div>
       </div>
-      <!--/.Content-->
     </div>
   </div>
-</div>
+</div> -->

@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, HostListener, AfterViewInit, ChangeDetectorRef } from '@angular/core';
-import { MdbTablePaginationComponent, MdbTableService } from 'ng-uikit-pro-standard';
+import { MdbTablePaginationComponent, MdbTableService, MdbTableDirective } from 'ng-uikit-pro-standard';
 import { MosaicId, Transaction, Address, TransactionType } from 'proximax-nem2-sdk';
 import { AppConfig } from '../../../config/app.config';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
@@ -14,17 +14,19 @@ import { first } from "rxjs/operators";
   styleUrls: ['./explorer.component.scss']
 })
 export class ExplorerComponent implements OnInit, AfterViewInit {
-  blockInput: boolean;
 
   @ViewChild(MdbTablePaginationComponent) mdbTablePagination: MdbTablePaginationComponent;
+  @ViewChild(MdbTableDirective) mdbTable: MdbTableDirective;
+  searching = false;
+  objectKeys = Object.keys;
   firstItemIndex;
   lastItemIndex;
   typeNode = '';
   typeSearch = '';
   paramSearch = '';
-  previous: any;
-  searchText: string;
-  elements = [];
+  previous: any = '';
+  searchText: string = '';
+  elements: any = [];
   dataSelected: Transaction | any;
   headElements = ['Account', 'Amount', 'Mosaic', 'Date'];
   optionTypeSearch = [
@@ -40,6 +42,8 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
     }
   ];
 
+
+
   constructor(
     private tableService: MdbTableService,
     private cdRef: ChangeDetectorRef,
@@ -51,11 +55,18 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
   ) { }
 
   @HostListener('input') oninput() {
+    // this.searchItems();
     this.mdbTablePagination.searchText = this.searchText;
   }
 
   ngOnInit() {
+    /* for (let i = 1; i <= 10; i++) {
+       this.elements.push({ id: i.toString(), first: 'Wpis ' + i, last: 'Last ' + i, handle: 'Handle ' + i });
+     }
 
+     this.mdbTable.setDataSource(this.elements);
+     this.elements = this.mdbTable.getDataSource();
+     this.previous = this.mdbTable.getDataSource();*/
   }
 
   ngAfterViewInit() {
@@ -79,74 +90,87 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
   }
 
   searchData() {
-    this.elements = [];
-    if (this.typeSearch === '') {
-      this.sharedService.showError('', 'Please, select a type search');
-      return;
-    } else if (this.paramSearch === '') {
-      var tp = '';
-      if (this.typeSearch === 'address') {
-        tp = 'a address';
-      } else if (this.typeSearch === 'hash') {
-        tp = 'a hash';
-      } else if (this.typeSearch === 'publickey') {
-        tp = 'a publickey';
+    if (!this.searching) {
+
+      this.elements = [];
+
+      if (this.typeSearch === '') {
+        this.sharedService.showError('', 'Please, select a type search');
+        return;
+      } else if (this.paramSearch === '') {
+        var tp = '';
+        if (this.typeSearch === 'address') {
+          tp = 'a address';
+        } else if (this.typeSearch === 'hash') {
+          tp = 'a hash';
+        } else if (this.typeSearch === 'publickey') {
+          tp = 'a publickey';
+        }
+
+        this.sharedService.showError('', `Please, add ${tp}`);
+        return;
       }
-      this.sharedService.showError('', `Please, add ${tp}`);
-      return;
-    }
 
-    if (this.typeSearch === 'address') {
-      //from address
-      this.blockInput = true;
-      this.proximaxProvider.getAccountInfo(Address.createFromRawAddress(this.paramSearch)).pipe(first()).subscribe(
-        accountInfo => {
-
-          this.proximaxProvider.getAllTransactionsFromAccount(accountInfo.publicAccount).subscribe(
-            resp => {
-              // console.log('with address info ', resp);
-              this.buildTransaction(resp);
-            },
-            error => {
-              this.blockInput = false;
-              // console.log(error);
+      this.mdbTable.setDataSource(this.elements);
+      this.elements = this.mdbTable.getDataSource();
+      this.previous = this.mdbTable.getDataSource();
+      this.searching = true;
+      if (this.typeSearch === 'address') {
+        //from address
+        if (this.paramSearch.length === 40) {
+          this.proximaxProvider.getAccountInfo(Address.createFromRawAddress(this.paramSearch)).pipe(first()).subscribe(
+            accountInfo => {
+              this.proximaxProvider.getAllTransactionsFromAccount(accountInfo.publicAccount).subscribe(
+                resp => {
+                  // console.log('with address info ', resp);
+                  this.buildTransaction(resp);
+                  this.searching = false;
+                },
+                error => {
+                  // console.log(error);
+                  this.searching = false;
+                }
+              );
             }
           );
+        } else {
+          this.paramSearch = '';
+          this.searching = false;
         }
-      );
-    } else if (this.typeSearch === 'publickey') {
-      //From publickey
-      this.blockInput = true;
-      const publicAccount = this.proximaxProvider.createPublicAccount(this.paramSearch, this.walletService.network);
-      this.proximaxProvider.getAllTransactionsFromAccount(publicAccount, this.nodeService.getNodeSelected()).subscribe(
-        resp => {
 
-          this.buildTransaction(resp);
-        },
-        error => {
-          this.blockInput = false;
-          // console.log(error);
-        }
-      );
-    } else {
-      //From hash
-      this.blockInput = true;
-      this.proximaxProvider.getTransactionInformation(this.paramSearch, this.nodeService.getNodeSelected()).subscribe(
-        resp => {
-          // console.log('with hash info', resp);
-          this.buildTransaction([resp]);
-        },
-        error => {
-          this.blockInput = false;
-          // console.log(error);
-        }
-      );
+      } else if (this.typeSearch === 'publickey') {
+        //From publickey
+        const publicAccount = this.proximaxProvider.createPublicAccount(this.paramSearch, this.walletService.network);
+        this.proximaxProvider.getAllTransactionsFromAccount(publicAccount, this.nodeService.getNodeSelected()).subscribe(
+          resp => {
+            this.searching = false;
+            this.buildTransaction(resp);
+          },
+          error => {
+            this.searching = false;
+            // console.log(error);
+          }
+        );
+      } else {
+        //From hash
+        this.proximaxProvider.getTransactionInformation(this.paramSearch, this.nodeService.getNodeSelected()).subscribe(
+          resp => {
+            // console.log('with hash info', resp);
+            this.searching = false;
+            this.buildTransaction([resp]);
+          },
+          error => {
+            this.searching = false;
+            // console.log(error);
+          }
+        );
+      }
     }
+
   }
 
 
   buildTransaction(param) {
-    this.blockInput = false;
     param.forEach(element => {
       if (element.type === TransactionType.TRANSFER) {
         const date = `${element.deadline.value.monthValue()}/${element.deadline.value.dayOfMonth()}/${element.deadline.value.year()}`;
@@ -161,7 +185,25 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
           recipient: element['recipient'],
           signer: element.signer
         });
+
+        this.mdbTable.setDataSource(this.elements);
+        this.elements = this.mdbTable.getDataSource();
+        this.previous = this.mdbTable.getDataSource();
       }
     });
+  }
+
+  searchItems() {
+    const prev = this.mdbTable.getDataSource();
+
+    if (!this.searchText) {
+      this.mdbTable.setDataSource(this.previous);
+      this.elements = this.mdbTable.getDataSource();
+    }
+
+    if (this.searchText) {
+      this.elements = this.mdbTable.searchLocalDataBy(this.searchText);
+      this.mdbTable.setDataSource(prev);
+    }
   }
 }

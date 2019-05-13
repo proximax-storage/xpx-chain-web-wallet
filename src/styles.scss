@@ -31,6 +31,10 @@ footer {
   margin-right: 0rem !important;
 }
 
+.mt-0-5rem {
+  margin-top: 0.5rem;
+}
+
 .mt-1rem {
   margin-top: 1rem;
 }
@@ -176,6 +180,14 @@ footer {
 
 .p-b-0 {
   padding-bottom: 0 !important;
+}
+
+.p-b-0-5rem {
+  padding-bottom: 0.5rem !important;
+}
+
+.p-b-1rem {
+  padding-bottom: 1rem !important;
 }
 
 /******* FONT WEIGHT *******/
@@ -460,6 +472,10 @@ mdb-select>div>div.single>div.value {
 
 /******* THEME ******/
 
+.subtitle-dark-green {
+  color: #023c42;
+  font-weight: bold;
+}
 
 .title-transactions {
   color: #023c42;
@@ -472,6 +488,11 @@ mdb-select>div>div.single>div.value {
 
 .f-s-title-transactions {
   font-size: 1.8rem;
+}
+
+.header-backg {
+  background: #24464d;
+  color: white;
 }
 
 
