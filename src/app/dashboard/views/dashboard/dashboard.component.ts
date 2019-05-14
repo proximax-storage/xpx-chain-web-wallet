@@ -1,8 +1,9 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { DashboardService } from '../../services/dashboard.service';
 import { WalletService, SharedService } from '../../../shared';
 import { TransactionsInterface } from '../../services/transaction.interface';
 import { TransactionsService } from '../../../transactions/service/transactions.service';
+import { MdbTablePaginationComponent, MdbTableDirective } from 'ng-uikit-pro-standard';
 
 @Component({
   selector: 'app-dashboard',
@@ -12,6 +13,11 @@ import { TransactionsService } from '../../../transactions/service/transactions.
 
 
 export class DashboardComponent implements OnInit, OnDestroy {
+
+  @ViewChild(MdbTablePaginationComponent) mdbTablePagination: MdbTablePaginationComponent;
+  @ViewChild(MdbTableDirective) mdbTable: MdbTableDirective;
+  elements: any = [];
+  previous: any = [];
 
   myAddress = '';
   cantConfirmed = 0;
@@ -37,6 +43,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
 
   constructor(
+    private cdRef: ChangeDetectorRef,
     private dashboardService: DashboardService,
     private walletService: WalletService,
     private transactionService: TransactionsService,
@@ -61,6 +68,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.subscriptions[element].unsubscribe();
       }
     });
+  }
+
+  ngAfterViewInit() {
+    this.mdbTablePagination.setMaxVisibleItemsNumberTo(5);
+    this.mdbTablePagination.calculateFirstItemIndex();
+    this.mdbTablePagination.calculateLastItemIndex();
+    this.cdRef.detectChanges();
   }
 
   /**
@@ -136,6 +150,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
       (next: TransactionsInterface[]) => {
         this.cantConfirmed = next.length;
         this.transactionsConfirmed = next;
+
+        // Datatable
+        this.mdbTable.setDataSource(this.transactionsConfirmed);
+        this.transactionsConfirmed = this.mdbTable.getDataSource();
+        this.previous = this.mdbTable.getDataSource();
       }
     );
 

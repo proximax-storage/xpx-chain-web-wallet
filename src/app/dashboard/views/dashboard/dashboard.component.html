@@ -15,7 +15,8 @@
   </div>
 
   <div class="row">
-    <div class="col-11 col-md-10 col-lg-8 mx-auto">
+    <!-- <div class="col-11 col-md-10 col-lg-8 mx-auto"> -->
+    <div class="col-11 col-sm-10 mx-auto">
       <div class="row">
         <!-- BOX BALANCE -->
         <div class="col-12 col-md-6 col-lg-7 no-p-l">
@@ -69,26 +70,48 @@
   </div>
 
   <div class="row">
-    <div class="col-11 col-md-10 col-lg-8 mx-auto">
-      <div class="row box-form mt-1rem p-t-0 p-b-0 p-r-0 p-l-0">
-        <!-- Keyword or number -->
-        <div class="col-12 col-sm-6 col-md-7">
-          <div class="md-form" id="container-walletname">
-            <input [(ngModel)]="searchTransaction" type="text" autocomplete="off" id="searchTransaction"
-              class="form-control" mdbInputDirective [validateSuccess]="false" [validateError]="false">
-            <label for="searchTransaction">Search</label>
+    <div class="col-11 col-sm-10 mx-auto">
+      <div class="box-form p-t-0 p-b-0 ">
+        <div class="row ">
+          <div class="col-12 col-sm-6 col-md-7">
+            <div class="md-form" id="container-walletname">
+              <input [(ngModel)]="searchTransaction" type="text" autocomplete="off" id="searchTransaction"
+                class="form-control" mdbInputDirective [validateSuccess]="false" [validateError]="false">
+              <label for="searchTransaction">Search</label>
+            </div>
           </div>
-        </div>
 
-        <div class="col-12 col-sm-6 col-md-5 d-flex justify-content-center align-items-center" id="titleCantResults">
-          <h5 class="f-w-400 color-white">20.000 Results | Order by: ASC</h5>
+          <div class="col-12 col-sm-6 col-md-5 d-flex justify-content-center align-items-center" id="titleCantResults">
+            <h5 class="f-w-400 color-white">20.000 Results | Order by: ASC</h5>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
+  <!-- Searching and icon reload -->
   <div class="row mt-2rem">
-    <div class="col-11 col-sm-10 col-md-9 mx-auto p-r-0 p-l-0">
+    <div class="col-11 col-sm-10 mx-auto">
+      <!-- Searching -->
+      <ng-container *ngIf="searching">
+        <div class="col-12">
+          <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate">
+          </mdb-progress-bar>
+        </div>
+      </ng-container>
+
+      <!-- Icon Reload -->
+      <ng-container *ngIf="iconReloadDashboard && !searching">
+        <div class="col-12 t-a-r">
+          <i class="fa fa-repeat btn-reload cursor-pointer" aria-hidden="true" mdbTooltip="Reload" placement="bottom"
+            (click)="loadDashboard(true)"></i>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-11 col-sm-10 mx-auto">
       <div class="table-responsive table-hover">
         <table mdbTable #tableEl="mdbTable" id="mdbTable" striped="true"
           class="table table-hover table-bordered table-hover table-sm z-depth-0" borderless="true">
@@ -96,7 +119,7 @@
           <thead>
             <tr class="header-backg">
               <ng-container *ngFor="let head of headElements; let i = index">
-                <th scope="col" class="text-center">{{head}}</th>
+                <th scope="col" class="text-center f-w-400">{{head}}</th>
               </ng-container>
             </tr>
           </thead>
@@ -106,24 +129,44 @@
           <tbody>
             <ng-container *ngFor="let el of transactionsConfirmed; let i = index">
               <tr class="mouse-pointer" (click)="dataSelected = el; basicModal.show();">
-                <td class="align-center th-lg">{{el.nameType}}</td>
-                <td class="align-left th-lg">{{el.timestamp}}</td>
-                <td class="text-right th-lg">{{el.fee}}</td>
-                <td class="text-center th-lg">
+                <!-- Type transaction -->
+                <th *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex"
+                  class="th-sm" scope="row description-dark-green">{{el.nameType}}</th>
+
+                <!-- timestamp -->
+                <td class="align-right th-sm description-dark-green"
+                  *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex">
+                  {{el.timestamp}}</td>
+
+                <!-- fee -->
+                <td class="text-center th-sm description-dark-green"
+                  *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex">
+                  {{el.fee}}</td>
+
+                <!-- address -->
+                <td class="text-center th-sm description-dark-green"
+                  *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex">
                   <i [ngStyle]="{'color': el.isRemitent === true ? 'green' : 'red' }" style="padding-right: 10px;"
                     class="fa fa-send" aria-hidden="true"></i>
                   {{el.sender.address.pretty()}}
                 </td>
+
+                <!-- recipíent -->
                 <ng-container *ngIf="el?.recipient !== null; else recipientRentalFee">
-                  <td class="text-center th-lg">{{el.recipient.pretty()}}</td>
+                  <td class="text-center th-sm description-dark-green"
+                    *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex">
+                    {{el.recipient.pretty()}}</td>
                 </ng-container>
+
+                <!-- recipient rental fee -->
                 <ng-template #recipientRentalFee>
-                  <td class="text-center th-lg">{{el.recipientRentalFeeSink}}</td>
+                  <td class="text-center th-sm description-dark-green"
+                    *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex">
+                    {{el.recipientRentalFeeSink}}</td>
                 </ng-template>
               </tr>
             </ng-container>
           </tbody>
-          <!--Table body-->
 
           <tfoot class="lighten-5 w-100">
             <tr>
@@ -133,9 +176,7 @@
               </td>
             </tr>
           </tfoot>
-
         </table>
-        <!--Table-->
       </div>
     </div>
   </div>

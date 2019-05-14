@@ -60,13 +60,7 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    /* for (let i = 1; i <= 10; i++) {
-       this.elements.push({ id: i.toString(), first: 'Wpis ' + i, last: 'Last ' + i, handle: 'Handle ' + i });
-     }
 
-     this.mdbTable.setDataSource(this.elements);
-     this.elements = this.mdbTable.getDataSource();
-     this.previous = this.mdbTable.getDataSource();*/
   }
 
   ngAfterViewInit() {
