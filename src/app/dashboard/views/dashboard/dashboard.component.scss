@@ -1,1 +1,50 @@
+.size-box {
+  height: 120px !important;
+}
 
+// Medium screen / tablet
+@media (max-width: 768px) {
+  .size-box {
+    height: 90px !important;
+  }
+}
+
+// Large screen / desktop
+@media (min-width: 992px) {
+  .no-p-l {
+    padding-left: 0;
+    padding-right: 1rem;
+  }
+
+  .no-p-r {
+    padding-right: 0;
+    padding-left: 1rem;
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1200px) {
+  .f-s-title-transactions {
+    font-size: 1.3rem;
+  }
+}
+
+// Small screen / tablet
+@media (max-width: 576px) {
+  .no-p-l {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .no-p-r {
+    padding-right: 0;
+    padding-left: 0;
+  }
+
+  .size-box {
+    height: 110px !important;
+  }
+
+  #boxConfirmedUnconfirmed {
+    margin-top: .4rem;
+  }
+}

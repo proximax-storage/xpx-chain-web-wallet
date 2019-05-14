@@ -32,7 +32,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   transactionsUnconfirmed: TransactionsInterface[] = [];
   unconfirmedSelected = false;
   vestedBalance: string;
-
+  searchTransaction = '';
 
 
 
