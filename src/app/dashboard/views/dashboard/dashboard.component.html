@@ -72,7 +72,7 @@
     <div class="col-11 col-md-10 col-lg-8 mx-auto">
       <div class="row box-form mt-1rem p-t-0 p-b-0 p-r-0 p-l-0">
         <!-- Keyword or number -->
-        <div class="col-12 col-md-7">
+        <div class="col-12 col-sm-6 col-md-7">
           <div class="md-form" id="container-walletname">
             <input [(ngModel)]="searchTransaction" type="text" autocomplete="off" id="searchTransaction"
               class="form-control" mdbInputDirective [validateSuccess]="false" [validateError]="false">
@@ -80,9 +80,118 @@
           </div>
         </div>
 
-        <div class="col-12 col-md-5 d-flex justify-content-center align-items-center">
-          <h5 class="mt-1rem f-w-400 color-white">20.000 Results | Order by: ASC</h5>
+        <div class="col-12 col-sm-6 col-md-5 d-flex justify-content-center align-items-center" id="titleCantResults">
+          <h5 class="f-w-400 color-white">20.000 Results | Order by: ASC</h5>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-2rem">
+    <div class="col-11 col-sm-10 col-md-9 mx-auto p-r-0 p-l-0">
+      <div class="table-responsive table-hover">
+        <table mdbTable #tableEl="mdbTable" id="mdbTable" striped="true"
+          class="table table-hover table-bordered table-hover table-sm z-depth-0" borderless="true">
+          <!--Table head-->
+          <thead>
+            <tr class="header-backg">
+              <ng-container *ngFor="let head of headElements; let i = index">
+                <th scope="col" class="text-center">{{head}}</th>
+              </ng-container>
+            </tr>
+          </thead>
+          <!--Table head-->
+
+          <!--Table body-->
+          <tbody>
+            <ng-container *ngFor="let el of transactionsConfirmed; let i = index">
+              <tr class="mouse-pointer" (click)="dataSelected = el; basicModal.show();">
+                <td class="align-center th-lg">{{el.nameType}}</td>
+                <td class="align-left th-lg">{{el.timestamp}}</td>
+                <td class="text-right th-lg">{{el.fee}}</td>
+                <td class="text-center th-lg">
+                  <i [ngStyle]="{'color': el.isRemitent === true ? 'green' : 'red' }" style="padding-right: 10px;"
+                    class="fa fa-send" aria-hidden="true"></i>
+                  {{el.sender.address.pretty()}}
+                </td>
+                <ng-container *ngIf="el?.recipient !== null; else recipientRentalFee">
+                  <td class="text-center th-lg">{{el.recipient.pretty()}}</td>
+                </ng-container>
+                <ng-template #recipientRentalFee>
+                  <td class="text-center th-lg">{{el.recipientRentalFeeSink}}</td>
+                </ng-template>
+              </tr>
+            </ng-container>
+          </tbody>
+          <!--Table body-->
+
+          <tfoot class="lighten-5 w-100">
+            <tr>
+              <td colspan="5">
+                <mdb-table-pagination [tableEl]="tableEl" [searchDataSource]="transactionsConfirmed">
+                </mdb-table-pagination>
+              </td>
+            </tr>
+          </tfoot>
+
+        </table>
+        <!--Table-->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div mdbModal #basicModal="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myBasicModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-notify modal-info modal-lg fullscreen-modal" role="document">
+    <!--Content-->
+    <div class="modal-content">
+      <!--Header-->
+      <div class="modal-header background-gold">
+        <p class="heading lead" style="font-weight: 500;">Transaction info</p>
+        <button type="button" class="close" data-dismiss="modal" (click)="basicModal.hide()">
+          <span aria-hidden="true" class="white-text">&times;</span>
+        </button>
+      </div>
+
+      <!--Body-->
+      <div class="modal-body">
+        <ng-container *ngIf="dataSelected !== null">
+          <!-- TYPE TRANSFER TRANSACTION -->
+          <app-transfer-type [transferTransaction]="dataSelected"
+            *ngIf="dataSelected.data.type === typeTransactions.transfer.id">
+          </app-transfer-type>
+          <!-- TYPE REGISTER NAMESPACE TRANSACTION -->
+          <app-register-namespace-type [registerNamespaceTransaction]="dataSelected"
+            *ngIf="dataSelected.data.type === typeTransactions.registerNameSpace.id">
+          </app-register-namespace-type>
+          <!-- TYPE MOSAIC DEFINITION TRANSACTION -->
+          <app-mosaic-definition-type [mosaicDefinition]="dataSelected"
+            *ngIf="dataSelected.data.type === typeTransactions.mosaicDefinition.id">
+          </app-mosaic-definition-type>
+          <!-- TYPE MOSAIC SUPPLY CHANGE TRANSACTION -->
+          <app-mosaic-supply-change-type [mosaicSupplyChange]="dataSelected"
+            *ngIf="dataSelected.data.type === typeTransactions.mosaicSupplyChange.id">
+          </app-mosaic-supply-change-type>
+          <!-- TYPE MODIFY MULTISIG ACCOUNT TRANSACTION
+          <app-modify-multisig-account-type
+            *ngIf="dataSelected.data.type === typeTransactions.modifyMultisigAccount.id">
+          </app-modify-multisig-account-type>-->
+          <!-- TYPE AGGREGATE COMPLETE TRANSACTION
+          <app-aggregate-complete-type *ngIf="dataSelected.data.type === typeTransactions.aggregateComplete.id">
+          </app-aggregate-complete-type>-->
+          <!-- TYPE AGGREGATE BONDED TRANSACTION
+          <app-aggregate-bonded-type *ngIf="dataSelected.data.type === typeTransactions.aggregateBonded.id">
+          </app-aggregate-bonded-type> -->
+          <!-- TYPE LOCK TRANSACTION
+          <app-lock-type *ngIf="dataSelected.data.type === typeTransactions.lock.id"></app-lock-type> -->
+          <!-- TYPE SECRET LOCK TRANSACTION
+          <app-secret-lock-type *ngIf="dataSelected.data.type === typeTransactions.secretLock.id">
+          </app-secret-lock-type>-->
+          <!-- TYPE SECRET PROOF TRANSACTION
+          <app-secret-proof *ngIf="dataSelected.data.type === typeTransactions.secretProof.id"></app-secret-proof>-->
+        </ng-container>
       </div>
     </div>
   </div>
