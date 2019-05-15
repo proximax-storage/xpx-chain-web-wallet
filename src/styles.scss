@@ -31,8 +31,60 @@ footer {
   margin-right: 0rem !important;
 }
 
+.m-r-1rem {
+  margin-right: 1rem !important;
+}
+
+.m-r-2rem {
+  margin-right: 2rem !important;
+}
+
+.m-r-3rem {
+  margin-right: 3rem !important;
+}
+
+.mt-1rm-left {
+  margin-left: 0.2cm;
+}
+
+.mr-1-5rem {
+  margin-right: 1.5rem;
+}
+
+.mr-1-2rem {
+  margin-right: 1.2rem;
+}
+
+.ml-0-5rem {
+  margin-right: 0.5rem;
+}
+
+.ml-0-2rem {
+  margin-right: 0.2rem;
+}
+
 .mt-0-5rem {
   margin-top: 0.5rem;
+}
+
+.m-l-1rem {
+  margin-left: 1rem !important;
+}
+
+.m-l-2rem {
+  margin-left: 2rem !important;
+}
+
+.m-l-3rem {
+  margin-left: 3rem !important;
+}
+
+.m-r-1rem {
+  margin-right: 1rem !important;
+}
+
+.m-r-1rem {
+  margin-right: 1rem !important;
 }
 
 .mt-1rem {
@@ -91,25 +143,7 @@ footer {
   margin-top: 5px;
 }
 
-.mt-1rm-left {
-  margin-left: 0.2cm;
-}
 
-.mr-1-5rem {
-  margin-right: 1.5rem;
-}
-
-.mr-1-2rem {
-  margin-right: 1.2rem;
-}
-
-.ml-0-5rem {
-  margin-right: 0.5rem;
-}
-
-.ml-0-2rem {
-  margin-right: 0.2rem;
-}
 
 
 
@@ -176,6 +210,10 @@ footer {
 
 .p-t-0 {
   padding-top: 0 !important;
+}
+
+.p-t-0-5rem {
+  padding-top: 0.5rem !important;
 }
 
 .p-b-0 {
@@ -249,6 +287,14 @@ footer {
   background: #ffffffc7 !important;
 }
 
+.background-divisor-dark-green {
+  background: #023C42 !important;
+}
+
+.background-divisor-separate-content {
+  background: #12AEBF !important;
+}
+
 .background-gray-prx {
   background-color: #D8D8D8 !important;
 }
@@ -262,6 +308,23 @@ footer {
 }
 
 /**** BUTTONS AND COLORS*/
+
+.color-dark-green {
+  color: #023c42;
+}
+
+.btn-dark-green-sm {
+  color: white;
+  font-size: .8rem;
+  background: #023c42;
+  text-align: center;
+  border-radius: .6rem;
+  padding: .4rem .4rem .4rem .4rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 500;
+}
 
 .btn-dark-orange {
   color: white;
@@ -407,6 +470,11 @@ mdb-select>div>div.single>div.value {
   color: #ffffff !important;
 }
 
+a:hover {
+  text-decoration: none !important;
+  color: #d0d0d0 !important;
+  transition: all 0.2s ease-in-out !important;
+}
 
 /******* SERVICES *********/
 .size-icon-services {
@@ -492,7 +560,7 @@ mdb-select>div>div.single>div.value {
 }
 
 .f-s-title-transactions {
-  font-size: 1.8rem;
+  font-size: 1.5rem;
 }
 
 .header-backg {
@@ -504,6 +572,36 @@ mdb-select>div>div.single>div.value {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis
+}
+
+
+/***** BORDER ******/
+.border-1px-green {
+  border: 1px solid green;
+}
+
+.border-1px-blue {
+  border: 1px solid blue;
+}
+
+.border-1px-black {
+  border: 1px solid black;
+}
+
+.border-1px-white {
+  border: 1px solid white;
+}
+
+.border-1px-red {
+  border: 1px solid red;
+}
+
+.border-1px-yellow {
+  border: 1px solid yellow;
+}
+
+.border-1px-coral {
+  border: 1px solid coral;
 }
 
 /**** MEDIA QUERY*****/

@@ -24,7 +24,7 @@ export class ServicesComponent implements OnInit {
       {
         convertAccountToMultisig: this.structureServiceRoute('Convert an account to multisig', `/${AppConfig.routes.createMultisignature}`),
         editAnExistingContract: this.structureServiceRoute('Edit an existing contract', `/${AppConfig.routes.editMultisignatureContract}`),
-        signMultisigTransactions: this.structureServiceRoute('Sign multisig transactions',  `/${AppConfig.routes.signMultiSigTransactions}`),
+        signMultisigTransactions: this.structureServiceRoute('Sign multisig transactions', `/${AppConfig.routes.signMultiSigTransactions}`),
       }, false
     );
 
@@ -56,10 +56,10 @@ export class ServicesComponent implements OnInit {
     );
 
     const nameSpace = this.service.structureServices('fa fa-linode', 'Namespaces & Subdomains',
-      'Namespaces are domain names. Each namespaces is unique and authenticates mosaics (assets) issued on it or on its subdomains',
+      'Namespaces are domain names. Each namespaces is unique and authenticates mosaics (assets).',
       {
         createNamespace: this.structureServiceRoute('Create namespace', `/${AppConfig.routes.createNamespace}`),
-       // renewNamespace: this.structureServiceRoute('Renew namespace',  `/${AppConfig.routes.editNamespace}`)
+        // renewNamespace: this.structureServiceRoute('Renew namespace',  `/${AppConfig.routes.editNamespace}`)
       }, true
     );
 
@@ -102,7 +102,7 @@ export class ServicesComponent implements OnInit {
       changellyInstantExchange: changellyInstantExchange,
       voting: voting,
       addressBook: addressBook,
-      storage:storage
+      storage: storage
     }
   }
   structureServiceRoute(name, link) {

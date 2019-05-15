@@ -20,7 +20,7 @@
       <div class="row">
         <!-- BOX BALANCE -->
         <div class="col-12 col-md-6 col-lg-7 no-p-l">
-          <div class="box-form-white mb-1rem size-box">
+          <div class="box-form-white mb-1rem size-box p-t-0-5rem p-b-0-5rem">
             <div class="row">
               <div class="col-sm-6 col-md-12 col-lg-9">
                 <span class="title-transactions f-s-title-transactions">{{vestedBalance}}</span>
@@ -49,14 +49,14 @@
               </div>
 
               <!-- Confirmed and Unconfirmed -->
-              <div class="col-6 col-sm-6 col-md-6" id="boxConfirmedUnconfirmed">
+              <div class="col-12 col-sm-12 col-md-6" id="boxConfirmedUnconfirmed">
                 <div class="row">
-                  <div class="col-12 col-sm-12 col-md-12 text-center d-flex align-items-center">
+                  <div class="col-6 col-sm-6 col-md-12 text-center d-flex align-items-center">
                     <span class="f-s-dashboard-transactions f-w-400">CONFIRMED: </span>
                     <span class="f-s-dashboard-transactions f-w-600">{{cantConfirmed}}</span>
                   </div>
 
-                  <div class="col-12 col-sm-12 col-md-12 text-center d-flex align-items-center">
+                  <div class="col-6 col-sm-6 col-md-12 text-center d-flex align-items-center">
                     <span class="f-s-dashboard-transactions f-w-400">UNCONFIRMED: </span>
                     <span class="f-s-dashboard-transactions f-w-600">{{cantUnconfirmed}}</span>
                   </div>
@@ -180,6 +180,12 @@
       </div>
     </div>
   </div>
+
+  <ng-template #viewDetailsTransactions>
+
+  </ng-template>
+
+
 </div>
 
 <!-- MODAL -->

@@ -1,11 +1,11 @@
 .size-box {
-  height: 120px !important;
+  height: 105px !important;
 }
 
 // Medium screen / tablet
 @media (max-width: 768px) {
   .size-box {
-    height: 90px !important;
+    height: 75px !important;
   }
 }
 
@@ -21,9 +21,9 @@
 }
 
 @media (min-width: 992px) and (max-width: 1200px) {
-  .f-s-title-transactions {
+  /* .f-s-title-transactions {
     font-size: 1.3rem;
-  }
+  }*/
 }
 
 // Small screen / tablet
@@ -39,7 +39,7 @@
   }
 
   .size-box {
-    height: 110px !important;
+    height: 95px !important;
   }
 
   #boxConfirmedUnconfirmed {

@@ -39,6 +39,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   unconfirmedSelected = false;
   vestedBalance: string;
   searchTransaction = '';
+  viewDashboard = true;
 
 
 
