@@ -2,11 +2,14 @@
   text-align: justify;
   color: dimgrey;
   font-size: .8rem;
+  color: #023C42;
+  font-weight: 400;
 }
 
 .box-service-description {
-  overflow-y: auto;
-  max-height: 80px;
+  line-height: 0.9em;
+  /* overflow-y: auto;
+  max-height: 80px;*/
 }
 
 .box-general {

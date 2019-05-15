@@ -28,9 +28,9 @@
                   <div class="col-9 col-sm-9 col-md-8 col-lg-9 d-flex align-items-center">
                     <div class="row">
                       <div class="col-12">
-                        <span class="title-text">{{services[item].title}}</span>
+                        <span class="title-text color-dark-green">{{services[item].title | uppercase}}</span>
                       </div>
-                      <div class="col-12 box-service-description">
+                      <div class="col-12 box-service-description" style="line-height: 1em;">
                         <span class="color-dark-green service-description">{{services[item].text}}</span>
                       </div>
                     </div>
@@ -47,7 +47,7 @@
                   <ng-container *ngFor="let r of keyObject(services[item].route)">
                     <div class="col-6 d-flex justify-content-center align-items-center">
                       <a class="btn-dark-green-sm" mdbWavesEffect
-                        [routerLink]="services[item].route[r].link">{{services[item].route[r].name}}</a>
+                        [routerLink]="services[item].route[r].link">{{services[item].route[r].name | uppercase}}</a>
                     </div>
                   </ng-container>
                 </div>
