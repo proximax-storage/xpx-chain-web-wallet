@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, Renderer2, EventEmitter, ViewChild } from '@angular/core';
+import { Component, OnInit, ElementRef, Renderer2, EventEmitter, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UploadFile, UploadInput, UploadOutput, humanizeBytes, ModalDirective, BreadcrumbModule } from 'ng-uikit-pro-standard';
 import { SharedService } from '../../../shared/services/shared.service';
@@ -11,6 +11,7 @@ import { crypto } from "proximax-nem2-library";
 import { Address, UInt64, Mosaic, MosaicId, Account, PublicAccount } from 'proximax-nem2-sdk';
 import { FileInterface } from 'src/app/shared';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
+import { MdbTablePaginationComponent, MdbTableDirective } from 'ng-uikit-pro-standard';
 
 @Component({
   selector: 'app-storage',
@@ -21,6 +22,9 @@ export class StorageComponent implements OnInit {
   @BlockUI() blockUI: NgBlockUI;
   @ViewChild('frame') frame: ModalDirective;
   @ViewChild('dlframe') dlframe: ModalDirective;
+  @ViewChild(MdbTablePaginationComponent) mdbTablePagination: MdbTablePaginationComponent;
+  @ViewChild(MdbTableDirective) mdbTable: MdbTableDirective;
+  previous: any = [];
 
   addRecordForm: FormGroup;
   downloadRecordForm: FormGroup;
@@ -52,20 +56,26 @@ export class StorageComponent implements OnInit {
 
   downloadFile: FileInterface;
 
-  constructor(private fb: FormBuilder,
-    private _el: ElementRef,
-    private _r: Renderer2,
+  constructor(
+    private cdRef: ChangeDetectorRef,
+    private fb: FormBuilder,
     private sharedService: SharedService,
     private walletService: WalletService,
-    private proximaxProvider: ProximaxProvider) {
+    private proximaxProvider: ProximaxProvider
+  ) {
 
     this.files = [];
     this.uploadInput = new EventEmitter<UploadInput>();
     this.humanizeBytes = humanizeBytes;
-    this.optionsEncryptionMethods = [{ value: PrivacyType.PLAIN, label: 'PLAIN' }, { value: PrivacyType.PASSWORD, label: 'PASSWORD' }, { value: PrivacyType.NEM_KEYS, label: 'KEY PAIR' },];
+    this.optionsEncryptionMethods = [
+      { value: PrivacyType.PLAIN, label: 'PLAIN' },
+      { value: PrivacyType.PASSWORD, label: 'PASSWORD' },
+      { value: PrivacyType.NEM_KEYS, label: 'KEY PAIR' }
+    ];
+
+
     if (this.walletService.network) {
       const blockChainNetworkType = this.proximaxProvider.getBlockchainNetworkType(this.walletService.network);
-
       this.connectionConfig = ConnectionConfig.createWithLocalIpfsConnection(
         new BlockchainNetworkConnection(
           blockChainNetworkType,
@@ -73,14 +83,12 @@ export class StorageComponent implements OnInit {
           environment.blockchainConnection.port,
           environment.blockchainConnection.protocol
         ),
-        //new IpfsConnection(environment.storageConnection.host, environment.storageConnection.port)
         new IpfsConnection(environment.storageConnection.host, environment.storageConnection.port, environment.storageConnection.options)
       );
 
       this.uploader = new Uploader(this.connectionConfig);
       this.searcher = new Searcher(this.connectionConfig);
       this.downloader = new Downloader(this.connectionConfig);
-
     }
   }
 
@@ -89,17 +97,22 @@ export class StorageComponent implements OnInit {
     this.loadTransactions();
   }
 
+  ngAfterViewInit() {
+    this.mdbTablePagination.setMaxVisibleItemsNumberTo(5);
+    this.mdbTablePagination.calculateFirstItemIndex();
+    this.mdbTablePagination.calculateLastItemIndex();
+    this.cdRef.detectChanges();
+  }
+
   async loadTransactions() {
 
     if (this.searcher) {
       //this.transactionResults = [];
       //const searchParam = SearchParameter.createForAddress(environment.senderAccount.address);
-
       // console.log(this.walletService.publicAccount);
       const searchParam = SearchParameter.createForPublicKey(this.walletService.publicAccount.publicKey);
       //const searchParam = SearchParameter.createForAddress(this.walletService.publicAccount.address.plain());
       searchParam.withResultSize(10);
-
       // console.log('Loading transactions ...');
       const searchResult = await this.searcher.search(searchParam.build());
       // console.log(searchResult);
@@ -112,6 +125,11 @@ export class StorageComponent implements OnInit {
           transactionHash: resultItem.transactionHash, isEncrypted: isEncrypted
         });
       }
+
+      // Datatable
+      this.mdbTable.setDataSource(this.transactionResults);
+      this.transactionResults = this.mdbTable.getDataSource();
+      this.previous = this.mdbTable.getDataSource();
 
     }
 
@@ -140,7 +158,13 @@ export class StorageComponent implements OnInit {
             transactionHash: resultItem.transactionHash, isEncrypted: isEncrypted
           });
         }
+
         this.searching = false;
+
+        // Datatable
+        this.mdbTable.setDataSource(this.transactionResults);
+        this.transactionResults = this.mdbTable.getDataSource();
+        this.previous = this.mdbTable.getDataSource();
       }
       catch (error) {
         this.searching = false;
@@ -234,8 +258,6 @@ export class StorageComponent implements OnInit {
       }
     }
   }
-
-
 
   cleanForm(custom?, formControl?) {
     if (custom !== undefined) {
@@ -363,6 +385,11 @@ export class StorageComponent implements OnInit {
               isEncrypted: isEncrypted
             });
 
+            // Datatable
+            this.mdbTable.setDataSource(this.transactionResults);
+            this.transactionResults = this.mdbTable.getDataSource();
+            this.previous = this.mdbTable.getDataSource();
+
             //this.loadTransactions();
             this.blockUI.stop();
             this.frame.hide();
@@ -410,6 +437,7 @@ export class StorageComponent implements OnInit {
     this.privacyType = event.value;
 
   }
+
   showRecordEntryPassword() {
 
     const common = {

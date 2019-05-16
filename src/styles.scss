@@ -47,6 +47,10 @@ footer {
   margin-left: 0.2cm;
 }
 
+.mr-1rem {
+  margin-right: 1rem;
+}
+
 .mr-1-5rem {
   margin-right: 1.5rem;
 }
@@ -314,7 +318,7 @@ footer {
 }
 
 .btn-dark-green-sm {
-  color: white;
+  color: white !important;
   font-size: .8rem;
   background: #023c42;
   text-align: center;
@@ -602,6 +606,14 @@ a:hover {
 
 .border-1px-coral {
   border: 1px solid coral;
+}
+
+.b-l-0-6rem {
+  border-radius: .6rem 0rem 0rem .6rem;
+}
+
+.b-r-0-6rem {
+  border-radius: 0rem .6rem .6rem 0rem;
 }
 
 /**** MEDIA QUERY*****/

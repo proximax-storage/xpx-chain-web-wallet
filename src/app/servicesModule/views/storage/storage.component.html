@@ -1,80 +1,126 @@
-<div class="mt-3rem w-w-b-w">
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col-10 col-ms-10 col-md-10 col-offset-1 mx-auto">
-        <div class="mt-3r">
+<div class="container mt-11rem mb-3rem animated fadeIn">
+  <div class="row">
+    <div class="col-11 col-sm-10 mx-auto">
 
-          <div class="row">
-            <div class="col-12">
-              <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate" *ngIf="searching"></mdb-progress-bar>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-12">
-              <h3>Storage</h3>
-            </div>
-          </div>
+      <!-- Title and Divir -->
+      <div class="row">
+        <div class="col-11 col-sm-10 mx-auto">
+          <h1 class="text-align-center wallet-name"><i class="fa fa-user" aria-hidden="true"></i> Storage</h1>
+        </div>
+        <div class="col-12 mx-auto">
+          <hr class="background-divisor">
+        </div>
+      </div>
 
+      <!-- New or enter data and search -->
+      <div class="row">
+        <div class="col-3 d-flex justify-content-center align-items-center">
+          <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 btn-dark-green-prx"
+            (click)="openRecordDialog()">
+            <span><i class="fa fa-user" aria-hidden="true"></i> NEW</span>
+          </button>
+        </div>
+
+        <div class="col-9">
           <div class="row">
-            <div class="col-xs-12 col-sm-12  col-md-12 col-lg-12">
-              <div class="row">
-                <div class="col-6">
-                  <div class="md-form" id="container-transaction-search">
-                    <input [(ngModel)]="searchName" type="text" autocomplete="off" id="transactionHash" class="form-control"
-                      mdbInputDirective [mdbValidate]="false">
-                    <label for="walletname">Search by title</label>
-                  </div>
-                </div>
-                <div class="col-1">
-                  <div class="mt-3">
-                    <a style="background: #565656" mdbBtn floating="true" size="sm" mdbWavesEffect (click)="searchRecord()">
-                      <i class="fa fa-search"></i>
-                    </a>
-                  </div>
-                </div>
-                <div class="col-2">
-                </div>
-                <div class="col-3">
-                  <div class="mt-3 float-right">
-                    <button mdbBtn type="button" color="default" rounded="true" size="sm" class="waves-light"
-                      mdbWavesEffect data-toggle="modal" (click)="openRecordDialog()">Add file</button>
-                  </div>
-                </div>
+            <div class="col-8 background-dark-green-plus b-l-0-6rem">
+              <div class="md-form" id="container-transaction-search">
+                <input [(ngModel)]="searchName" type="text" autocomplete="off" id="transactionHash" class="form-control"
+                  mdbInputDirective [validateSuccess]="false" [validateError]="false">
+                <label for="walletname">Search by title</label>
               </div>
-              <hr>
             </div>
-
-            <div class="col-xs-12 col-sm-12  col-md-12 col-lg-12">
-
-              <div class="table-responsive">
-                <table mdbTable>
-                  <thead>
-                    <tr>
-                      <th *ngFor="let head of headElements" scope="col">{{head}}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr mdbTableCol *ngFor="let r of transactionResults.slice().reverse()">
-                      <th style="width:30%;vertical-align: middle;" scope="row">{{r.title}}</th>
-                      <td style="width:50%;vertical-align: middle;" scope="row">{{r.transactionHash}}</td>
-                      <td style="width:10%;vertical-align: middle;text-align: left;" scope="row">
-                        <i [ngClass]="r.isEncrypted?'fa fa-lock fa-lg':'fa fa-unlock fa-lg'"></i>
-                      </td>
-                      <td style="width:5%;vertical-align: middle;text-align: center;" scope="row">
-                        <i class="fa fa-download fa-lg" (click)="downloadRecord(r.dataHash,r.type,r.title,r.transactionHash,r.privacy)"></i>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+            <div class="col-4 d-flex justify-content-center align-items-center background-dark-green b-r-0-6rem">
+              <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 btn-white-transparent" size="sm"
+                (click)="searchRecord()">
+                <span>SEARCH</span>
+              </button>
             </div>
           </div>
 
         </div>
       </div>
+
+      <!-- Second divisor -->
+      <div class="row">
+        <div class="col-12 mx-auto">
+          <hr class="background-divisor">
+        </div>
+      </div>
+
+
+      <!-- Results -->
+      <div class="row mt-1rem mb-1rem">
+        <div class="col-12 d-flex justify-content-center align-items-center" id="titleCantResults">
+          <h5 class="f-w-bold color-dark-green">{{transactionResults.length}} results for "Search by title"</h5>
+        </div>
+      </div>
+
+      <!-- Progress bar -->
+      <div class="row">
+        <div class="col-12">
+          <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate" *ngIf="searching">
+          </mdb-progress-bar>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12 mx-auto">
+          <div class="table-responsive table-hover">
+            <table mdbTable #tableEl="mdbTable" id="mdbTable" striped="true"
+              class="table table-hover table-bordered table-hover table-sm z-depth-0" borderless="true">
+              <!--Table head-->
+              <thead>
+                <tr class="header-backg">
+                  <ng-container *ngFor="let head of headElements; let i = index">
+                    <th scope="col" class="text-center f-w-400">{{head}}</th>
+                  </ng-container>
+                </tr>
+              </thead>
+              <!--Table head-->
+
+              <!--Table body-->
+              <tbody>
+                <ng-container *ngFor="let r of transactionResults.slice().reverse(); let i=index">
+                  <tr class="mouse-pointer">
+                    <!-- Type transaction -->
+                    <th *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex"
+                      class="th-sm" scope="row description-dark-green">{{r.title}}</th>
+
+                    <!-- timestamp -->
+                    <td class="align-right th-sm description-dark-green"
+                      *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex">
+                      {{r.transactionHash}}</td>
+
+                    <td class="mx-auto th-sm description-dark-green"
+                      *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex">
+                      <ng-container>
+                        <i [ngClass]="r.isEncrypted?'fa fa-lock fa-lg mr-1rem':'fa fa-unlock fa-lg mr-1rem'"></i>
+                        <i class="fa fa-download fa-lg"
+                          (click)="downloadRecord(r.dataHash,r.type,r.title,r.transactionHash,r.privacy)"></i>
+                      </ng-container>
+                    </td>
+                  </tr>
+                </ng-container>
+              </tbody>
+
+              <tfoot class="lighten-5 w-100">
+                <tr>
+                  <td colspan="5">
+                    <mdb-table-pagination [tableEl]="tableEl" [searchDataSource]="transactionResults.slice().reverse()">
+                    </mdb-table-pagination>
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
+</div>
 
+<div class="mt-3rem w-w-b-w">
   <!-- Download modal -->
   <div mdbModal #dlframe="mdbModal" class="modal fade left" id="dlFrameModal" tabindex="-1" role="dialog"
     aria-labelledby="myDlModalLabel" aria-hidden="true">
@@ -94,8 +140,9 @@
               <div class="row">
                 <div class="col-8">
                   <div class="md-form " id="container-decryption-password-key">
-                    <input type="password" [validateSuccess]="false" autocomplete="off" formControlName="decryptionPassword"
-                      id="decryptionPassword" class="form-control" mdbInputDirective required minlength="10" />
+                    <input type="password" [validateSuccess]="false" autocomplete="off"
+                      formControlName="decryptionPassword" id="decryptionPassword" class="form-control"
+                      mdbInputDirective required minlength="10" />
                     <label for="decryptionPassword">Enter your decryption password</label>
                   </div>
                 </div>
@@ -119,8 +166,8 @@
                 <label for="decryptionPublicKey">Enter decryption public key </label>
               </div>
               <div class="md-form">
-                <button mdbBtn type="button" size="sm" color="default" rounded="true" class="waves-light"
-                  mdbWavesEffect (click)="downloadWithDecryptionKeyPair()">Download</button>
+                <button mdbBtn type="button" size="sm" color="default" rounded="true" class="waves-light" mdbWavesEffect
+                  (click)="downloadWithDecryptionKeyPair()">Download</button>
               </div>
             </div>
           </form>
@@ -150,8 +197,9 @@
               <div class="row">
                 <div class="col-8">
                   <div class="md-form " id="container-password-key">
-                    <input type="password" [validateSuccess]="false" autocomplete="off" formControlName="password" id="password"
-                      class="form-control" mdbInputDirective required [errorMessage]="getError('password')">
+                    <input type="password" [validateSuccess]="false" autocomplete="off" formControlName="password"
+                      id="password" class="form-control" mdbInputDirective required
+                      [errorMessage]="getError('password')">
                     <label for="password">Enter your password</label>
 
                   </div>
@@ -182,19 +230,22 @@
               </div>
 
               <div class="md-form  mt-4" id="container-encryption">
-                <mdb-select [options]="optionsEncryptionMethods" placeholder="Select encryption method" class="colorful-select dropdown-default"
-                  required formControlName="encryptionMethod" [errorMessage]="getError('encryptionMethod')" (selected)="onEncryptionMethodSelected($event)"></mdb-select>
+                <mdb-select [options]="optionsEncryptionMethods" placeholder="Select encryption method"
+                  class="colorful-select dropdown-default" required formControlName="encryptionMethod"
+                  [errorMessage]="getError('encryptionMethod')" (selected)="onEncryptionMethodSelected($event)">
+                </mdb-select>
               </div>
 
               <div class="md-form mt-4" id="container-encryption-password" *ngIf="showEncryptionPassword">
-                <input type="password" [validateSuccess]="false" autocomplete="off" formControlName="encryptionPasword" id="encryptionPasword"
-                  class="form-control" mdbInputDirective>
+                <input type="password" [validateSuccess]="false" autocomplete="off" formControlName="encryptionPasword"
+                  id="encryptionPasword" class="form-control" mdbInputDirective>
                 <label for="encryptionPasword">Enter the encryption password</label>
               </div>
               <div *ngIf="showEncryptionKeyPair">
                 <div class="md-form mt-4" id="container-encryption-private-key">
-                  <input type="password" [validateSuccess]="false" autocomplete="off" formControlName="recipientPrivateKey"
-                    id="recipientPrivateKey" class="form-control" disabled mdbInputDirective>
+                  <input type="password" [validateSuccess]="false" autocomplete="off"
+                    formControlName="recipientPrivateKey" id="recipientPrivateKey" class="form-control" disabled
+                    mdbInputDirective>
                   <label for="recipientPrivateKey">Current encryption private key </label>
                 </div>
                 <div class="md-form mt-4" id="container-encryption-public-key">
@@ -209,8 +260,8 @@
                   <div class="mx-auto">
                     <div class="row">
                       <div class="col-xs-6">
-                        <button mdbBtn type="button" rounded="true" class="waves-light btn-reverse" mdbWavesEffect type="submit"
-                          (click)="cleanForm()">Reset</button>
+                        <button mdbBtn type="button" rounded="true" class="waves-light btn-reverse" mdbWavesEffect
+                          type="submit" (click)="cleanForm()">Reset</button>
                       </div>
                       <div class="col-xs-6">
                         <button mdbBtn type="button" color="default" rounded="true" class="waves-light" mdbWavesEffect
