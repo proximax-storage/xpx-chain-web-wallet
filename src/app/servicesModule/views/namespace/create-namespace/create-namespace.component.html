@@ -1,3 +1,158 @@
+<div class="container-fluid mt-11rem mb-3rem animated fadeIn">
+  <div class="row">
+    <div class="col-12 mx-auto">
+      <!-- Title and Divir -->
+      <div class="row">
+        <div class="col-9 col-sm-10 mx-auto">
+          <h1 class="text-align-center wallet-name"><i class="fa fa-user" aria-hidden="true"></i> Namespace &
+            Subdomains
+          </h1>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12 mx-auto">
+          <hr class="background-divisor">
+        </div>
+
+        <div class="col-11 col-sm-10 mx-auto">
+          <h4 class="f-w-bold color-yellow text-align-center wallet-description">Create new...</h4>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-1rem">
+    <div class="col-12 mx-auto">
+      <form [formGroup]="namespaceForm" (ngSubmit)="createNamespace()">
+
+        <div class="row d-flex justify-content-center">
+          <div class="col-11">
+            <div class="box-form p-t-0 p-b-0">
+              <div class="row">
+                <div class="col-12">
+                  <!-- name -->
+                  <div class="md-form">
+                    <i class="fa fa-address-book prefix color-white"></i>
+                    <input type="text" autocomplete="off" formControlName="name" required id="name" class="form-control"
+                      mdbInputDirective data-success="Valid name" [errorMessage]="getError('name')">
+                    <label for="name">name</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mt-5rem">
+          <div class="col-xs-12 col-sm-12  col-md-12 col-lg-6 ">
+
+            <!-- Parent Namespace -->
+            <div class="row">
+              <div class="col-xs-8 col-xl-8 col-lg-8 col-md-8 col-sm-9">
+                <div class="md-form  mt-3">
+                  <i class="fa fa-user prefix text-gris"></i>
+                  <mdb-select [options]="arrayselect" formControlName="namespace"
+                    class="colorful-select dropdown-default" mdbInputDirective [errorMessage]="getError('namespace')"
+                    (selected)="optionSelected($event)"></mdb-select>
+                </div>
+              </div>
+              <div class="col-xs-4 col-xl-4 col-lg-4 col-md-4 col-sm-4">
+                <button (click)="basicModal.show()" class="pointer" mdbBtn color="default" size="lg" type="button"
+                  mdbWavesEffect mdbTooltip="see state or renew namespace" placement="top"
+                  [disabled]="statusbuttonNamespace">
+                  <mdb-badge *ngIf="!status" warning="true">Expire</mdb-badge>
+                  <mdb-badge *ngIf="status" success="true">Active</mdb-badge>
+                  | Renovate
+                </button>
+              </div>
+            </div>
+            <!-- Duration -->
+            <div class="md-form mt-5" [hidden]="showDuration">
+              <i class="fa fa-address-book prefix text-gris"></i>
+              <input formControlName="duration" mdbInputDirective type="number" min="1" pattern="^[0-9]+"
+                name="duration" id="duration" class="form-control" data-success="Valid duration"
+                [errorMessage]="getError('duration')">
+              <label for="duration" class="">Duration</label>
+            </div>
+            <!-- Fee -->
+            <div class="md-form mt-5">
+              <div class="row">
+                <div class="col-xs-12 col-xl-6 col-lg-6 col-md-12 col-sm-12">
+                  <i class="fa fa-address-book prefix text-gris"></i>
+                  <label class="form-label" for="">Fee:</label>
+                  <div class="alert background-info white-text form-label-alert-m80" role="alert">
+                    {{fee}}
+                  </div>
+                </div>
+                <div class="col-xs-12 col-xl-6 col-lg-6 col-md-12 col-sm-12">
+                  <i class="fa fa-address-book prefix text-gris"></i>
+
+                  <label class="form-label" for="">Rental fee:</label>
+                  <div class="alert background-info white-text form-label-alert-m140" role="alert">
+                    {{fee}}
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            <!-- Password -->
+            <div class="md-form mt-5">
+              <i class="fa fa-address-book prefix text-gris"></i>
+              <input type="password" autocomplete="off" formControlName="password" required id="password"
+                class="form-control" mdbInputDirective data-success="Valid password"
+                [errorMessage]="getError('password')">
+              <label for="password">password</label>
+            </div>
+          </div>
+
+          <div class="col-xs-12 col-sm-12  col-md-12 col-lg-6 ">
+            <p class="text-justify">Namespaces have certain restrictions with respect to the characters being
+              allowed in the parts as well as the length of a part. A root namespace may have a length of 16
+              characters while sub-namespaces may have a length of 64 characters. Valid characters are:</p>
+            <div class="alert background-info white-text" role="alert">
+              a, b, c, ..., z, 0, 1, 2, ..., 9, _ , -
+            </div>
+            <p class="text-justify">However a part is only allowed to begin with a letter of the alphabet or a
+              number, thus 'alice' is an allowed part for a root namespace while '_alice' is not. Certain
+              strings are reserved and thus not allowed as namespace parts. Among the disallowed namespace
+              parts are:</p>
+            <div class="alert background-info white-text" role="alert">
+              xpx, nem, user, account, org, com, biz, net, edu, mil, gov and info.
+            </div>
+            <p class="text-justify">This list is not final and can be extended in the future. Thus 'user.alice'
+              or 'alice.user' are not allowed in the XPX namespace system. The namespace may have up to 3
+              parts, thus 'qm.metals.silver' is valid while 'qm.metals.silver.coin' is not.</p>
+            <p>
+              where it shows the status of the
+              namespace could renew. with just select it
+              <button class="pointer" mdbBtn color="default" size="sm" type="button" disabled>
+                <mdb-badge success="true">Active</mdb-badge>
+                | Renovate
+              </button>
+            </p>
+          </div>
+        </div>
+
+        <div class="mt-4rm align-self-center">
+          <div class="row ">
+            <div class="mx-auto">
+              <div class="row">
+                <div class="col-xs-12">
+                  <button mdbBtn color="default" size="lg" rounded="true" class="waves-light" mdbWavesEffect
+                    type="submit">Create</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
 <div class="mt-3rem mb-3rem animated fadeIn">
   <div class="container-fluid">
     <div class="row ">
@@ -19,13 +174,15 @@
                 <div class="col-xs-8 col-xl-8 col-lg-8 col-md-8 col-sm-9">
                   <div class="md-form  mt-3">
                     <i class="fa fa-user prefix text-gris"></i>
-                    <mdb-select [options]="arrayselect" formControlName="namespace" class="colorful-select dropdown-default"
-                      mdbInputDirective [errorMessage]="getError('namespace')" (selected)="optionSelected($event)"></mdb-select>
+                    <mdb-select [options]="arrayselect" formControlName="namespace"
+                      class="colorful-select dropdown-default" mdbInputDirective [errorMessage]="getError('namespace')"
+                      (selected)="optionSelected($event)"></mdb-select>
                   </div>
                 </div>
                 <div class="col-xs-4 col-xl-4 col-lg-4 col-md-4 col-sm-4">
                   <button (click)="basicModal.show()" class="pointer" mdbBtn color="default" size="lg" type="button"
-                    mdbWavesEffect mdbTooltip="see state or renew namespace" placement="top" [disabled]="statusbuttonNamespace">
+                    mdbWavesEffect mdbTooltip="see state or renew namespace" placement="top"
+                    [disabled]="statusbuttonNamespace">
                     <mdb-badge *ngIf="!status" warning="true">Expire</mdb-badge>
                     <mdb-badge *ngIf="status" success="true">Active</mdb-badge>
                     | Renovate
@@ -35,8 +192,9 @@
               <!-- Duration -->
               <div class="md-form mt-5" [hidden]="showDuration">
                 <i class="fa fa-address-book prefix text-gris"></i>
-                <input formControlName="duration" mdbInputDirective type="number" min="1" pattern="^[0-9]+" name="duration"
-                  id="duration" class="form-control" data-success="Valid duration" [errorMessage]="getError('duration')">
+                <input formControlName="duration" mdbInputDirective type="number" min="1" pattern="^[0-9]+"
+                  name="duration" id="duration" class="form-control" data-success="Valid duration"
+                  [errorMessage]="getError('duration')">
                 <label for="duration" class="">Duration</label>
               </div>
               <!-- Fee -->
@@ -63,8 +221,9 @@
               <!-- Password -->
               <div class="md-form mt-5">
                 <i class="fa fa-address-book prefix text-gris"></i>
-                <input type="password" autocomplete="off" formControlName="password" required id="password" class="form-control"
-                  mdbInputDirective data-success="Valid password" [errorMessage]="getError('password')">
+                <input type="password" autocomplete="off" formControlName="password" required id="password"
+                  class="form-control" mdbInputDirective data-success="Valid password"
+                  [errorMessage]="getError('password')">
                 <label for="password">password</label>
               </div>
             </div>
@@ -102,7 +261,8 @@
               <div class="mx-auto">
                 <div class="row">
                   <div class="col-xs-12">
-                    <button mdbBtn color="default" size="lg" rounded="true" class="waves-light" mdbWavesEffect type="submit">Create</button>
+                    <button mdbBtn color="default" size="lg" rounded="true" class="waves-light" mdbWavesEffect
+                      type="submit">Create</button>
                   </div>
                 </div>
               </div>
@@ -122,7 +282,8 @@
   <div class="modal-dialog modal-fluid" role="document">
     <div class="modal-content form-elegant">
       <div class="modal-header text-center background-header-box">
-        <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3" id="myModalLabel"><strong class="color-white">Renovate
+        <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3" id="myModalLabel"><strong
+            class="color-white">Renovate
             namespace</strong></h3>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="basicModal.hide()">
           <span aria-hidden="true">&times;</span>
@@ -144,8 +305,9 @@
               <!-- Duration -->
               <div class="md-form mt-5">
                 <i class="fa fa-address-book prefix text-gris"></i>
-                <input formControlName="duration" mdbInputDirective type="number" min="1" pattern="^[0-9]+" name="duration"
-                  id="duration2" class="form-control" data-success="Valid duration" [errorMessage]="getError('duration')">
+                <input formControlName="duration" mdbInputDirective type="number" min="1" pattern="^[0-9]+"
+                  name="duration" id="duration2" class="form-control" data-success="Valid duration"
+                  [errorMessage]="getError('duration')">
                 <label for="duration" class="">Duration</label>
               </div>
 
@@ -171,8 +333,9 @@
               <!-- Password -->
               <div class="md-form mt-5">
                 <i class="fa fa-address-book prefix text-gris"></i>
-                <input type="password" autocomplete="off" formControlName="password" required id="password2" class="form-control"
-                  mdbInputDirective data-success="Valid password" [errorMessage]="getError('password')">
+                <input type="password" autocomplete="off" formControlName="password" required id="password2"
+                  class="form-control" mdbInputDirective data-success="Valid password"
+                  [errorMessage]="getError('password')">
                 <label for="password">password</label>
               </div>
             </div>
@@ -220,11 +383,12 @@
               <div class="mx-auto">
                 <div class="row">
                   <div class="col-xs-6">
-                    <button mdbBtn type="button" rounded="true" class="waves-light btn-reverse" mdbWavesEffect type="button"
-                      (click)="basicModal.hide()">Close</button>
+                    <button mdbBtn type="button" rounded="true" class="waves-light btn-reverse" mdbWavesEffect
+                      type="button" (click)="basicModal.hide()">Close</button>
                   </div>
                   <div class="col-xs-6">
-                    <button mdbBtn type="submit" color="default" rounded="true" class="waves-light" mdbWavesEffect type="submit">renew</button>
+                    <button mdbBtn type="submit" color="default" rounded="true" class="waves-light" mdbWavesEffect
+                      type="submit">renew</button>
                   </div>
                 </div>
               </div>
