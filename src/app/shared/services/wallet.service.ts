@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { NetworkType, PublicAccount, AccountInfo } from "proximax-nem2-sdk";
+import { NetworkType, PublicAccount, AccountInfo } from "tsjs-xpx-catapult-sdk";
 import { crypto } from 'proximax-nem2-library';
 import { Router } from "@angular/router";
 import { AccountsInterface } from '..';

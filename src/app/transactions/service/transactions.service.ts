@@ -13,7 +13,7 @@ import {
   MosaicInfo,
   TransactionType,
   Transaction
-} from "proximax-nem2-sdk";
+} from "tsjs-xpx-catapult-sdk";
 import { ProximaxProvider } from "../../shared/services/proximax.provider";
 import { WalletService } from "../../shared/services/wallet.service";
 import { NodeService } from "../../servicesModule/services/node.service";
@@ -98,8 +98,13 @@ export class TransactionsService {
     node: string | number[]
   ) {
     const recipientAddress = this.proximaxProvider.createFromRawAddress(recipient);
-    const transferTransaction = TransferTransaction.create(Deadline.create(5), recipientAddress,
-      [new Mosaic(new MosaicId(node), UInt64.fromUint(Number(amount)))], PlainMessage.create(message), network
+    const transferTransaction = TransferTransaction.create(
+      Deadline.create(5),
+      recipientAddress,
+      [new Mosaic(new MosaicId(node),
+        UInt64.fromUint(Number(amount)))],
+      PlainMessage.create(message),
+      network
     );
     const account = Account.createFromPrivateKey(common.privateKey, network);
     const signedTransaction = account.sign(transferTransaction);
@@ -172,11 +177,11 @@ export class TransactionsService {
     }
 
     return {
-      data: transaction,
+      data: null,//rj transaction,
       nameType: this.arraTypeTransaction[keyType].name,
       timestamp: this.dateFormat(transaction.deadline),
-      fee: this.amountFormatterSimple(transaction.fee.compact()),
-      sender: transaction.signer,
+      fee: null, //true this.amountFormatterSimple(transaction.fee.compact()),
+      sender: null,//true transaction.signer,
       recipientRentalFeeSink: recipientRentalFeeSink,
       recipient: (transaction['recipient'] !== undefined) ? transaction['recipient'] : null,
       isRemitent: (transaction['recipient'] !== undefined) ? this.walletService.address.pretty() === transaction["recipient"].pretty() : false
@@ -290,7 +295,7 @@ export class TransactionsService {
     this.proximaxProvider.getAccountInfo(this.walletService.address).pipe(first()).subscribe(
       next => {
         // console.log("Account Info! ---> ", next);
-        this.mosaicService.searchMosaics(next.mosaics.map(next => next.id));
+        //true... this.mosaicService.searchMosaics(next.mosaics.map(next => next.id));
         this.walletService.setAccountInfo(next);
         next.mosaics.forEach(element => {
           if (element.id.toHex() === this.proximaxProvider.mosaicXpx.mosaicId) {

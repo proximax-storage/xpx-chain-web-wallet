@@ -35,7 +35,7 @@ import {
   MosaicSupplyChangeTransaction,
   NamespaceService,
   MosaicView
-} from 'proximax-nem2-sdk';
+} from 'tsjs-xpx-catapult-sdk';
 
 
 import {
@@ -487,7 +487,7 @@ export class ProximaxProvider {
     this.accountHttp = new AccountHttp(this.url);
     this.mosaicHttp = new MosaicHttp(this.url);
     this.namespaceHttp = new NamespaceHttp(this.url);
-    this.mosaicService = new MosaicService(this.accountHttp, this.mosaicHttp, this.namespaceHttp);
+    this.mosaicService = new MosaicService(this.accountHttp, this.mosaicHttp);
     this.namespaceService = new NamespaceService(this.namespaceHttp);
     this.transactionHttp = new TransactionHttp(this.url);
   }
