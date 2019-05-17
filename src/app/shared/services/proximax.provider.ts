@@ -61,7 +61,6 @@ export class ProximaxProvider {
     divisibility: 6
   };
 
-
   transactionHttp: TransactionHttp;
   websocketIsOpen = false;
   connectionWs: Listener;
