@@ -13,11 +13,11 @@
       </div>
     </div>
 
-    <div class="col-11 col-sm-8 col-md-11 mx-auto">
+    <div class="col-11 col-sm-10 mx-auto">
       <ng-container>
         <form [formGroup]="transferForm" (ngSubmit)="sendTransfer()">
           <!-- Mosaics -->
-          <div class="row box-form mt-1rem p-t-0 p-b-0">
+          <div class="row box-form mt-1rem pt-0 pb-0">
             <div class="col-10 col-lg-11">
               <div class="md-form ">
                 <i class="fa fa-linode prefix color-white"></i>
@@ -37,7 +37,7 @@
 
           <!-- Contacts -->
           <ng-container *ngIf="showContacts">
-            <div class="row box-form mt-1rem p-t-0 p-b-0 animated fadeIn">
+            <div class="row box-form mt-1rem pt-0 pb-0 animated fadeIn">
               <div class="col-12">
                 <div class="md-form">
                   <i class="fa fa-bars prefix color-white"></i>
@@ -50,7 +50,7 @@
           </ng-container>
 
           <!-- Recipient -->
-          <div class="row box-form mt-1rem p-t-0 p-b-0 p-r-0 p-l-0">
+          <div class="row box-form mt-1rem pt-0 pb-0 pr-0 pl-0">
             <div [ngClass]="[contacts?.length > 0 ? myClass['boxRecipientTrue'] : myClass['boxRecipientFalse']]">
               <div class="md-form" id="container-walletname">
                 <i class="fa fa-address-book prefix color-white"></i>
@@ -92,7 +92,7 @@
           </div>
 
           <!-- Quantity and Message -->
-          <div class="row box-form mt-1rem p-t-0 p-b-0">
+          <div class="row box-form mt-1rem pt-0 pb-0">
             <div class="col-12">
               <div class="md-form" id="container-walletname">
                 <i class="fa fa-credit-card prefix color-white"></i>
@@ -111,7 +111,7 @@
           </div>
 
           <!-- Password -->
-          <div class="row box-form mt-1rem p-t-0 p-b-0">
+          <div class="row box-form mt-1rem pt-0 pb-0">
             <div class="col-12">
               <div class="md-form" id="container-password">
                 <i class="fa fa-lock prefix color-white"></i>

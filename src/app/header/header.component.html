@@ -20,12 +20,12 @@
           <navlinks>
             <ul class="nav navbar-nav nav-flex-icons ml-auto ie-double-nav ie-hidden-double-nav box-form-inverse">
               <li class="nav-item mr-1-2rem">
-                <span class="d-sm-inline-block font-header ml-0-2rem">Wallet name</span> <br>
-                <span class="d-sm-inline-block font-header ml-0-2rem">{{vestedBalance}} | USD 0.00</span>
+                <span class="d-sm-inline-block font-header mr-02rem">Wallet name</span> <br>
+                <span class="d-sm-inline-block font-header mr-02rem">{{vestedBalance}} | USD 0.00</span>
               </li>
 
               <li class="nav-item d-flex align-items-center">
-                <div class=" d-md-inline-block font-header ml-0-2rem">
+                <div class=" d-md-inline-block font-header mr-02rem">
                   <div class="btn-small-prx f-w-600 btn-dark-orange cursor-pointer" mdbWavesEffect
                     (click)="logout(routeLogin)"><span>LOG OUT</span>
                   </div>
@@ -40,7 +40,7 @@
 
   <ng-container>
     <mdb-navbar SideClass="navbar navbar-toggleable-md navbar-expand-lg scrolling-navbar double-nav z-depth-0
-      background-header-inverse " [ngClass]="{'p-t-0':showOnlyLogged}" [containerInside]="false">
+      background-header-inverse " [ngClass]="{'pt-0':showOnlyLogged}" [containerInside]="false">
 
       <!-- LOGO -->
       <mdb-navbar-brand [ngClass]="{'d-none d-sm-block':showOnlyLogged}">

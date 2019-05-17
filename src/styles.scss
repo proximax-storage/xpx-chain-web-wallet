@@ -26,69 +26,59 @@ footer {
   height: 1px;
 }
 
-/******* MARGIN ******/
-.m-r-0rem {
+/********** MARGIN-RIGHT *********/
+.mr-0rem {
   margin-right: 0rem !important;
 }
 
-.m-r-1rem {
-  margin-right: 1rem !important;
-}
-
-.m-r-2rem {
-  margin-right: 2rem !important;
-}
-
-.m-r-3rem {
-  margin-right: 3rem !important;
-}
-
-.mt-1rm-left {
-  margin-left: 0.2cm;
+.mr-02rem {
+  margin-right: 0.2rem;
 }
 
 .mr-1rem {
-  margin-right: 1rem;
-}
-
-.mr-1-5rem {
-  margin-right: 1.5rem;
+  margin-right: 1rem !important;
 }
 
 .mr-1-2rem {
   margin-right: 1.2rem;
 }
 
+.mr-1-5rem {
+  margin-right: 1.5rem;
+}
+
+.mr-2rem {
+  margin-right: 2rem !important;
+}
+
+.mr-3rem {
+  margin-right: 3rem !important;
+}
+
+.mr-15px {
+  margin-right: 15px !important;
+}
+
+/***************** MARGIN-LEFT*********************/
 .ml-0-5rem {
   margin-right: 0.5rem;
 }
 
-.ml-0-2rem {
-  margin-right: 0.2rem;
-}
-
-.mt-0-5rem {
-  margin-top: 0.5rem;
-}
-
-.m-l-1rem {
+.ml-1rem {
   margin-left: 1rem !important;
 }
 
-.m-l-2rem {
+.ml-2rem {
   margin-left: 2rem !important;
 }
 
-.m-l-3rem {
+.ml-3rem {
   margin-left: 3rem !important;
 }
 
-.m-r-1rem {
-  margin-right: 1rem !important;
-}
-
-.m-r-1rem {
-  margin-right: 1rem !important;
+/******************* MARGIN-TOP *****************/
+.mt-05rem {
+  margin-top: 0.5rem;
 }
 
 .mt-1rem {
@@ -147,15 +137,11 @@ footer {
   margin-top: 5px;
 }
 
-
-
-
-
-/**** Margin Bottom ******/
-.mb-5px {
-  margin-bottom: 5px;
+.mt-100px {
+  margin-top: 100px;
 }
 
+/**** MARGIN-BOTTOM ******/
 .mb-0rem {
   margin-bottom: 0 !important;
 }
@@ -172,63 +158,64 @@ footer {
   margin-bottom: 3rem;
 }
 
+.mb-4rem {
+  margin-bottom: 4rem;
+}
+
 .mb-5rem {
   margin-bottom: 5rem;
 }
 
-.mr-15px {
-  margin-right: 15px !important;
+.mb-5px {
+  margin-bottom: 5px;
 }
 
-.mt-100px {
-  margin-top: 100px;
-}
-
-
-/** Padding **/
-.p-r-0 {
+/****************************** PADDING-RIGHT **********************/
+.pr-0 {
   padding-right: 0 !important;
 }
 
-.p-r-1rem {
+.pr-1rem {
   padding-right: 1rem;
 }
 
-.p-r-2rem {
+.pr-2rem {
   padding-right: 2rem;
 }
 
-.p-l-0 {
+/***************** PADDING-LEFT ************************/
+.pl-0 {
   padding-left: 0 !important;
 }
 
-
-.p-l-1rem {
+.pl-1rem {
   padding-left: 1rem !important;
 }
 
-.p-l-2rem {
+.pl-2rem {
   padding-left: 2rem !important;
 }
 
+/************************* PADDING-TOP ***********************/
 
-.p-t-0 {
+.pt-0 {
   padding-top: 0 !important;
 }
 
-.p-t-0-5rem {
+.pt-05rem {
   padding-top: 0.5rem !important;
 }
 
-.p-b-0 {
+/******************************** PADDING-BOTTOM *******************/
+.pb-0 {
   padding-bottom: 0 !important;
 }
 
-.p-b-0-5rem {
+.pb-05rem {
   padding-bottom: 0.5rem !important;
 }
 
-.p-b-1rem {
+.pb-1rem {
   padding-bottom: 1rem !important;
 }
 
@@ -247,11 +234,12 @@ footer {
 }
 
 .f-w-bold {
-  font-weight: bold;
+  font-weight: bold !important;
 }
 
 
 /******** SIZE *********/
+
 .f-s-0-8-rem {
   font-size: 0.8rem;
 }
@@ -276,6 +264,11 @@ footer {
 .t-a-r {
   text-align: right;
 }
+
+.t-a-c {
+  text-align: center;
+}
+
 
 
 /*****BACKGROUND******/
@@ -312,10 +305,6 @@ footer {
 }
 
 /**** BUTTONS AND COLORS*/
-
-.color-dark-green {
-  color: #023c42 !important;
-}
 
 .btn-dark-green-sm {
   color: white !important;
@@ -370,7 +359,7 @@ footer {
   border-radius: 2rem;
 }
 
-/*** THEME **/
+/***************************  THEME ***************************/
 .wallet-name {
   font-weight: 500;
   color: white
@@ -382,27 +371,44 @@ footer {
   color: white;
 }
 
+.description-information {
+  text-align: justify;
+  font-size: .8rem;
+  color: #023C42;
+  font-weight: 400;
+}
+
+/****************************** COLOR ************************/
+
+.color-dark-green {
+  color: #023c42 !important;
+}
+
+.color-light-orange {
+  color: #FF9900 !important;
+}
+
+.color-orange {
+  color: #EA6002 !important;
+}
+
 .color-yellow {
   color: #FFD000 !important;
 }
 
 .color-white {
-  color: white;
+  color: white !important;
 }
 
 .color-transparent-clear-green {
-  color: rgba(4, 96, 104, 0.7)
-}
-
-.color-dark-green {
-  color: #333333;
+  color: rgba(4, 96, 104, 0.7) !important;
 }
 
 .gray-color {
-  color: #a0a0a0;
+  color: #a0a0a0 !important;
 }
 
-/***** BOX **/
+/********************** BOX **********************/
 .box-light-orange {
   background: #FF9900;
   padding-top: 1rem;
@@ -419,7 +425,6 @@ footer {
   padding-left: 0.5rem;
   padding-right: 0.5rem;
 }
-
 
 .box-form {
   padding-top: 1rem;
@@ -446,6 +451,22 @@ footer {
   padding-left: 2rem;
   border-radius: 8px;
   background: rgba(51, 51, 51, 0.7);
+}
+
+
+/************************* OVERFLOW ************************/
+.overflow-ellipsis-nowrap {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis
+}
+
+.overflow-y-auto {
+  overflow-y: auto;
+}
+
+.overflow-x-auto {
+  overflow-x: auto;
 }
 
 /*****style mdb******/
@@ -572,39 +593,37 @@ a:hover {
   color: white;
 }
 
-.overflow-ellipsis-nowrap {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis
-}
-
 
 /***** BORDER ******/
-.border-1px-green {
+.border-green-1px {
   border: 1px solid green;
 }
 
-.border-1px-blue {
+.border-blue-1px {
   border: 1px solid blue;
 }
 
-.border-1px-black {
+.border-black-light-1px {
+  border: 1px solid #00000024;
+}
+
+.border-black-1px {
   border: 1px solid black;
 }
 
-.border-1px-white {
+.border-white-1px {
   border: 1px solid white;
 }
 
-.border-1px-red {
+.border-red-1px {
   border: 1px solid red;
 }
 
-.border-1px-yellow {
+.border-yellow-1px {
   border: 1px solid yellow;
 }
 
-.border-1px-coral {
+.border-coral-1px {
   border: 1px solid coral;
 }
 

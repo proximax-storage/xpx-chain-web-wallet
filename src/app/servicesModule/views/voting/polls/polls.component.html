@@ -22,7 +22,7 @@
                             <h5>
                               <mdb-badge color="blue" *ngIf="item['poll']['type'] =='1'"> POI</mdb-badge>
                               <mdb-badge color="blue" *ngIf="item['poll']['type'] =='2'"> whrite</mdb-badge>
-                              <label class="mt-1rm-left"> {{item['poll']['title']}}
+                              <label class="ml-1rem"> {{item['poll']['title']}}
                               </label>
                             </h5>
                           </a>
@@ -42,7 +42,7 @@
                         <h4>
                           <mdb-badge color="blue" *ngIf="type =='1'"> POI</mdb-badge>
                           <mdb-badge color="blue" *ngIf="type =='2'"> whrite</mdb-badge>
-                          <label class="mt-1rm-left" for=""> Date of ending:
+                          <label class="ml-1rem" for=""> Date of ending:
                             {{doe | date: 'dd/MM/yyyy h:MM:ss TT'}}</label>
                         </h4>
                         <div class="alert background-info white-text" role="alert">
