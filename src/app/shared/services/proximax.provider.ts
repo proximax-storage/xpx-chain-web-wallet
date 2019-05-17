@@ -36,6 +36,8 @@ import {
   NamespaceService,
   MosaicView
 } from 'proximax-nem2-sdk';
+
+
 import {
   BlockchainNetworkType,
   BlockchainNetworkConnection
