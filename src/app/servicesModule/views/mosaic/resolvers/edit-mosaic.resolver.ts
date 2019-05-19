@@ -5,7 +5,7 @@ import { of as observableOf } from 'rxjs';
 import 'rxjs/add/operator/delay';
 import { first, map, catchError } from 'rxjs/operators';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
-import { QueryParams, NamespaceId, NamespaceInfo } from 'proximax-nem2-sdk';
+import { QueryParams, NamespaceId, NamespaceInfo } from 'tsjs-xpx-catapult-sdk';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { WalletService } from '../../../../shared/services/wallet.service';
 import { SharedService } from '../../../../shared/services/shared.service';

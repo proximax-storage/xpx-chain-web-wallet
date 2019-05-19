@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { MosaicInfo, QueryParams, PublicAccount, Transaction } from 'proximax-nem2-sdk';
+import { MosaicInfo, QueryParams, PublicAccount, Transaction } from 'tsjs-xpx-catapult-sdk';
 import { Observable } from 'rxjs';
 import { AuthService } from '../../auth/services/auth.service';
 import { WalletService } from '../../shared/services/wallet.service';

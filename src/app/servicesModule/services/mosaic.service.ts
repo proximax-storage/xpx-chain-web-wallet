@@ -16,7 +16,7 @@ import { TransactionsService } from "../../transactions/service/transactions.ser
 import { ToastService } from "ng-uikit-pro-standard";
 import { MosaicsStorage } from "../interfaces/mosaics-namespaces.interface";
 import { MosaicXPXInterface } from "../../dashboard/services/transaction.interface";
-import { MosaicName } from "proximax-nem2-sdk";
+
 
 @Injectable({
   providedIn: "root"

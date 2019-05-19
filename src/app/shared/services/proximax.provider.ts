@@ -42,7 +42,7 @@ import {
   BlockchainNetworkType,
   BlockchainNetworkConnection
 } from "xpx2-ts-js-sdk";
-import { crypto } from 'proximax-nem2-library';
+import { crypto } from 'js-xpx-catapult-library';
 import { Observable } from 'rxjs';
 
 import { environment } from '../../../environments/environment';

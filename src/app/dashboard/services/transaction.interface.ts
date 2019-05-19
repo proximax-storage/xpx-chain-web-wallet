@@ -1,4 +1,4 @@
-import { Transaction, PublicAccount, Address } from 'proximax-nem2-sdk';
+import { Transaction, PublicAccount, Address } from 'tsjs-xpx-catapult-sdk';
 
 export interface TransactionsInterface {
   data: Transaction;

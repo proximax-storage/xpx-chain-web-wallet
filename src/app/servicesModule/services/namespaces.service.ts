@@ -4,7 +4,7 @@ import {
   NamespaceId,
   NamespaceName,
   Address
-} from "proximax-nem2-sdk";
+} from "tsjs-xpx-catapult-sdk";
 import { ProximaxProvider } from "../../shared/services/proximax.provider";
 import { WalletService } from "../../shared/services/wallet.service";
 import { NamespaceStorage } from "../interfaces/mosaics-namespaces.interface";

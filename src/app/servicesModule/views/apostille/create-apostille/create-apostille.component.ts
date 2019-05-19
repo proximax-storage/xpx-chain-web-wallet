@@ -5,8 +5,8 @@ import * as qrcode from 'qrcode-generator';
 import { saveAs } from 'file-saver';
 import * as jsPDF from 'jspdf';
 import { Verifier } from '../audit-apostille/audit-apistille-verifier'
-import { Account, Address, Deadline, UInt64, TransactionHttp } from 'proximax-nem2-sdk';
-import { KeyPair, convert } from 'proximax-nem2-library'
+import { Account, Address, Deadline, UInt64, TransactionHttp } from 'tsjs-xpx-catapult-sdk';
+import { KeyPair, convert } from 'js-xpx-catapult-library'
 import * as crypto from 'crypto-js'
 import * as JSZip from 'jszip';
 import { WalletService, SharedService } from '../../../../shared';

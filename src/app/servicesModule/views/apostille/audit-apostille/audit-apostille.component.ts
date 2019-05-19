@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import * as crypto from 'crypto-js'
-import { TransferTransaction, Message } from 'proximax-nem2-sdk';
+import { TransferTransaction, Message } from 'tsjs-xpx-catapult-sdk';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { SharedService } from '../../../../shared';
