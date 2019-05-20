@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, Validators, FormBuilder } from "@angular/forms";
-import { ServiceModuleService } from "../../../servicesModule/services/service-module.service";
+import { ServiceModuleService } from "../../services/service-module.service";
 import { SharedService } from "../../../shared";
 
 @Component({
@@ -34,7 +34,7 @@ export class AddressBookComponent implements OnInit {
   }
 
 
-  getError(control, typeForm? ,formControl?) {
+  getError(control, typeForm?, formControl?) {
     const form = this.contactForm;
     if (formControl === undefined) {
       if (form.get(control).getError('required')) {
@@ -83,7 +83,7 @@ export class AddressBookComponent implements OnInit {
     }
   }
 
-  remove(label){
+  remove(label) {
     const newContacts = [];
     this.contacts.forEach(element => {
       if (element.label !== label) {

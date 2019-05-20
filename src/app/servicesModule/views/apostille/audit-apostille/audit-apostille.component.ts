@@ -4,7 +4,7 @@ import { TransferTransaction, Message } from 'tsjs-xpx-catapult-sdk';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { SharedService } from '../../../../shared';
-import { NodeService } from '../../../../servicesModule/services/node.service';
+import { NodeService } from '../../../services/node.service';
 import { Verifier } from './audit-apistille-verifier'
 
 @Component({

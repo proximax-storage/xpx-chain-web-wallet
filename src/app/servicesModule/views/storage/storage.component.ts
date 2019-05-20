@@ -323,7 +323,9 @@ export class StorageComponent implements OnInit {
               param.withRecipientPublicKey(recipientPublicKey);
             }
 
-            param.withTransactionMosaics([new Mosaic(new MosaicId('prx:xpx'), UInt64.fromUint(0))]);
+            const mosaicId = new MosaicId('prx:xpx');
+            const mosaic = new Mosaic(mosaicId, UInt64.fromUint(0));
+            //param.withTransactionMosaics([mosaic]);
 
             let recipientAddress = this.walletService.address.plain();
             // console.log('default recipientAddress' + recipientAddress);

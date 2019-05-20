@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AppConfig } from "../../../config/app.config";
-import { ServiceModuleService } from "../../../servicesModule/services/service-module.service";
+import { ServiceModuleService } from "../../services/service-module.service";
 
 @Component({
   selector: 'app-services',

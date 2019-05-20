@@ -1,43 +1,8 @@
 import { Injectable } from '@angular/core';
-import {
-  Listener,
-  Password,
-  SimpleWallet,
-  Account,
-  Address,
-  AccountHttp,
-  MosaicHttp,
-  NamespaceHttp,
-  MosaicService,
-  MosaicAmountView,
-  Transaction,
-  PublicAccount,
-  QueryParams,
-  AccountInfo,
-  NetworkType,
-  TransactionHttp,
-  TransferTransaction,
-  Deadline,
-  PlainMessage,
-  SignedTransaction,
-  TransactionAnnounceResponse,
-  Mosaic,
-  MosaicId,
-  UInt64,
-  TransactionStatusError,
-  TransactionStatus,
-  MosaicInfo,
-  NamespaceId,
-  NamespaceInfo,
-  RegisterNamespaceTransaction,
-  MosaicDefinitionTransaction,
-  MosaicProperties,
-  MosaicSupplyChangeTransaction,
-  NamespaceService,
-  MosaicView
-} from 'tsjs-xpx-catapult-sdk';
+import { Password, SimpleWallet, MosaicInfo, TransactionHttp, Listener, AccountHttp, MosaicHttp, NamespaceHttp, MosaicService, NamespaceService, TransactionStatusError, TransactionAnnounceResponse, SignedTransaction, NamespaceId, QueryParams, NetworkType, MosaicDefinitionTransaction, Account, PublicAccount, TransferTransaction, Deadline, Mosaic, MosaicId, UInt64, PlainMessage, MosaicProperties, Address, MosaicAmountView, Transaction, TransactionStatus, NamespaceInfo, MosaicView, MosaicSupplyChangeTransaction, RegisterNamespaceTransaction } from 'tsjs-xpx-catapult-sdk';
 
 
+// ********************* FIN COW ******************
 import {
   BlockchainNetworkType,
   BlockchainNetworkConnection
@@ -45,6 +10,7 @@ import {
 import { crypto } from 'js-xpx-catapult-library';
 import { Observable } from 'rxjs';
 
+//*****************************************************
 import { environment } from '../../../environments/environment';
 import { commonInterface, walletInterface } from '../interfaces/shared.interfaces';
 import { MosaicXPXInterface } from '../../dashboard/services/transaction.interface';
@@ -54,6 +20,11 @@ import { MosaicXPXInterface } from '../../dashboard/services/transaction.interfa
 })
 export class ProximaxProvider {
 
+
+
+
+
+  //************************* FIN COW *****************/
   infoMosaic: MosaicInfo;
   mosaicXpx: MosaicXPXInterface = {
     mosaic: "prx:xpx",
@@ -75,6 +46,40 @@ export class ProximaxProvider {
   constructor() {
   }
 
+
+  /**
+   * Create account simple
+   *
+   * @param {string} user
+   * @param {Password} password
+   * @param {number} network
+   * @returns {SimpleWallet}
+   * @memberof NemProvider
+   */
+  createAccountSimple(user: string, password: Password, network: number): SimpleWallet {
+    return SimpleWallet.create(user, password, network);
+  }
+
+
+  /**
+    * Create a password
+    *
+    * @param {string} value
+    * @returns {Password}
+    * @memberof NemProvider
+    */
+  createPassword(value: string): Password {
+    return new Password(value);
+  }
+
+
+
+
+  // ************************************** FIN COW ******************************
+
+
+
+
   /**
    *
    *
@@ -84,15 +89,15 @@ export class ProximaxProvider {
    * @memberof NemProvider
    */
   async getInfoMosaicFromNamespacePromise(namespaceId: NamespaceId, queryParams?: QueryParams) {
-    const promise = await new Promise(async (resolve, reject) => {
-      if (this.infoMosaic === undefined) {
-        const mosaicInfo = await this.mosaicHttp.getMosaicsFromNamespace(namespaceId).toPromise();
-        resolve(mosaicInfo);
-      } else {
-        reject(null);
-      }
-    });
-    return await promise;
+    /* const promise = await new Promise(async (resolve, reject) => {
+       if (this.infoMosaic === undefined) {
+         const mosaicInfo = await this.mosaicHttp.getMosaicsFromNamespace(namespaceId).toPromise();
+         resolve(mosaicInfo);
+       } else {
+         reject(null);
+       }
+     });
+     return await promise;*/
   }
 
 
@@ -103,7 +108,7 @@ export class ProximaxProvider {
    * @returns {Observable<TransactionAnnounceResponse>}
    * @memberof NemProvider
    */
-  announce(signedTransaction: SignedTransaction): Observable<TransactionAnnounceResponse> {
+  announce(signedTransaction: SignedTransaction): any { //Observable<TransactionAnnounceResponse> {
     return this.transactionHttp.announce(signedTransaction);
   }
 
@@ -120,8 +125,17 @@ export class ProximaxProvider {
   * @returns
   * @memberof NemProvider
   */
-  buildRegisterMosaicTransaction(mosaicName: string, rootnamespaceName: string, supplyMutable: boolean, transferable: boolean, levyMutable: boolean, divisibility: number, duration: number, network: NetworkType) {
-    return MosaicDefinitionTransaction.create(
+  buildRegisterMosaicTransaction(
+    mosaicName: string,
+    rootnamespaceName: string,
+    supplyMutable: boolean,
+    transferable: boolean,
+    levyMutable: boolean,
+    divisibility: number,
+    duration: number,
+    network: NetworkType
+  ) {
+    /*return MosaicDefinitionTransaction.create(
       Deadline.create(),
       mosaicName,
       rootnamespaceName,
@@ -132,7 +146,7 @@ export class ProximaxProvider {
         divisibility: divisibility,
         duration: UInt64.fromUint(duration)
       }),
-      network);
+      network);*/
   }
 
   /**
@@ -152,18 +166,7 @@ export class ProximaxProvider {
     )
   }
 
-  /**
-   * Create account simple
-   *
-   * @param {string} user
-   * @param {Password} password
-   * @param {number} network
-   * @returns {SimpleWallet}
-   * @memberof NemProvider
-   */
-  createAccountSimple(user: string, password: Password, network: number): SimpleWallet {
-    return SimpleWallet.create(user, password, network);
-  }
+
 
   /**
    * Create account simple
@@ -189,17 +192,7 @@ export class ProximaxProvider {
     return (Account.createFromPrivateKey(privateKey, net).address.plain() === address) ? true : false;
   }
 
-  /**
-   * Create a password with at least 8 characters
-   *
-   * @param {string} value
-   * @returns {Password}
-   * @memberof NemProvider
-   */
-  createPassword(value: string): Password {
-    const password = new Password(value);
-    return password;
-  }
+
 
   /**
  * createPublicAccount
@@ -281,7 +274,7 @@ export class ProximaxProvider {
    * @returns {Observable<AccountInfo>}
    * @memberof NemProvider
    */
-  getAccountInfo(address: Address): Observable<AccountInfo> {
+  getAccountInfo(address: Address): any { //Observable<AccountInfo> {
     return this.accountHttp.getAccountInfo(address)
   }
 
@@ -347,7 +340,7 @@ export class ProximaxProvider {
    * @returns {Observable<MosaicInfo[]>}
    * @memberof NemProvider
    */
-  getMosaics(mosaicIsd: MosaicId[]): Observable<MosaicInfo[]> {
+  getMosaics(mosaicIsd: MosaicId[]): any { // Observable<MosaicInfo[]> {
     return this.mosaicHttp.getMosaics(mosaicIsd);
   }
 
@@ -358,7 +351,7 @@ export class ProximaxProvider {
    * @returns {Observable<MosaicAmountView[]>}
    * @memberof NemProvider
    */
-  getBalance(address: Address): Observable<MosaicAmountView[]> {
+  getBalance(address: Address): any { //Observable<MosaicAmountView[]> {
     return this.mosaicService.mosaicsAmountViewFromAddress(address);
   }
 
@@ -371,7 +364,7 @@ export class ProximaxProvider {
    * @returns {Observable<Transaction[]>}
    * @memberof NemProvider
    */
-  getAllTransactionsFromAccount(publicAccount: PublicAccount, queryParams?): Observable<Transaction[]> {
+  getAllTransactionsFromAccount(publicAccount: PublicAccount, queryParams?): any { //Observable<Transaction[]> {
     return this.accountHttp.transactions(publicAccount, new QueryParams(queryParams));
   }
 
@@ -382,7 +375,7 @@ export class ProximaxProvider {
    * @returns {Observable<Transaction>}
    * @memberof NemProvider
    */
-  getTransaction(transactionId: string): Observable<Transaction> {
+  getTransaction(transactionId: string): any { //Observable<Transaction> {
     return this.transactionHttp.getTransaction(transactionId)
   }
 
@@ -395,7 +388,7 @@ export class ProximaxProvider {
    * @returns {Observable<Transaction[]>}
    * @memberof NemProvider
    */
-  getUnconfirmedTransactionsFromAnAccount(publicAccount: PublicAccount, queryParams?: QueryParams): Observable<Transaction[]> {
+  getUnconfirmedTransactionsFromAnAccount(publicAccount: PublicAccount, queryParams?: QueryParams): any {//Observable<Transaction[]> {
     return this.accountHttp.unconfirmedTransactions(publicAccount, queryParams);
   }
 
@@ -403,7 +396,7 @@ export class ProximaxProvider {
    * Return getTransaction from id or hash
    * @param param
    */
-  getTransactionInformation(hash: string, node = ''): Observable<Transaction> {
+  getTransactionInformation(hash: string, node = ''): any {//Observable<Transaction> {
     const transaction: TransactionHttp = (node === '') ? this.transactionHttp : new TransactionHttp(environment.protocol + '://' + `${node}`);
     return transaction.getTransaction(hash);
   }
@@ -415,7 +408,7 @@ export class ProximaxProvider {
    * @returns {Observable<TransactionStatus>}
    * @memberof NemProvider
    */
-  getTransactionStatusError(hash: string): Observable<TransactionStatus> {
+  getTransactionStatusError(hash: string): any {//Observable<TransactionStatus> {
     return this.transactionHttp.getTransactionStatus(hash);
   }
 
@@ -461,8 +454,8 @@ export class ProximaxProvider {
    * @returns {Observable<NamespaceInfo>}
    * @memberof NemProvider
    */
-  getNamespace(namespace: NamespaceId): Observable<NamespaceInfo> {
-    return this.namespaceHttp.getNamespace(namespace)
+  getNamespace(namespace: NamespaceId): any {// Observable<NamespaceInfo> {
+    return this.namespaceHttp.getNamespace(namespace);
   }
 
   /**
@@ -472,7 +465,7 @@ export class ProximaxProvider {
    * @returns
    * @memberof NemProvider
    */
-  getMosaicViewPromise(mosaicsId: MosaicId[]): Promise<MosaicView[]> {
+  getMosaicViewPromise(mosaicsId: MosaicId[]): any {//{Promise<MosaicView[]> {
     return this.mosaicService.mosaicsView(mosaicsId).toPromise();
   }
 

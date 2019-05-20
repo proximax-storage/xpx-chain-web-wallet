@@ -3,7 +3,7 @@ import { MdbTablePaginationComponent, MdbTableService, MdbTableDirective } from 
 import { MosaicId, Transaction, Address, TransactionType } from 'tsjs-xpx-catapult-sdk';
 import { AppConfig } from '../../../config/app.config';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
-import { NodeService } from "../../../servicesModule/services/node.service";
+import { NodeService } from "../../services/node.service";
 import { SharedService, WalletService } from "../../../shared";
 import { TransactionsService } from "../../../transactions/service/transactions.service";
 import { first } from "rxjs/operators";

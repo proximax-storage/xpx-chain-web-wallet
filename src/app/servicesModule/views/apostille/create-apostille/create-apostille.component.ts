@@ -11,7 +11,7 @@ import * as crypto from 'crypto-js'
 import * as JSZip from 'jszip';
 import { WalletService, SharedService } from '../../../../shared';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
-import { NodeService } from '../../../../servicesModule/services/node.service';
+import { NodeService } from '../../../services/node.service';
 import { IpfsConnection, StreamHelper, IpfsClient } from 'xpx2-ts-js-sdk';
 import { environment } from '../../../../../environments/environment';
 import { ApostilleService } from '../services/apostille.service';

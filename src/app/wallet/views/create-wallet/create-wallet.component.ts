@@ -31,7 +31,7 @@ export class CreateWalletComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private sharedService: SharedService,
-    private _walletService: WalletService,
+    private walletService: WalletService,
     private proximaxProvider: ProximaxProvider
   ) {
   }
@@ -47,18 +47,43 @@ export class CreateWalletComponent implements OnInit {
    */
   createForm() {
     this.createWalletForm = this.fb.group({
-      walletname: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(30)]],
-      network: [NetworkType.TEST_NET, [Validators.required]],
+      walletname: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(2),
+          Validators.maxLength(30)
+        ]
+      ],
+      network: [
+        NetworkType.TEST_NET,
+        [Validators.required]
+      ],
       passwords: this.fb.group({
-        password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]],
-        confirm_password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]],
-      }, { validator: this.sharedService.passwordConfirming }),
+        password: [
+          '',
+          [
+            Validators.required,
+            Validators.minLength(8),
+            Validators.maxLength(30)
+          ]
+        ],
+        confirm_password: [
+          '',
+          [
+            Validators.required,
+            Validators.minLength(8),
+            Validators.maxLength(30)
+          ]
+        ],
+      }, {
+          validator: this.sharedService.passwordConfirming
+        }),
     });
   }
 
   /**
    * Create a simple wallet
-   * by: roimerj_vzla
    *
    * @memberof CreateWalletComponent
    */
@@ -68,19 +93,17 @@ export class CreateWalletComponent implements OnInit {
       const user = this.createWalletForm.get('walletname').value;
       const password = this.proximaxProvider.createPassword(this.createWalletForm.controls.passwords.get('password').value);
       const wallet = this.proximaxProvider.createAccountSimple(user, password, network);
-      const account = wallet.open(password);
-      const publicKey = account.publicKey.toString();
-      const walletsStorage = this._walletService.getWalletStorage();
-      const myWallet = walletsStorage.find(function (element: { name: any; }) {
+      const walletsStorage = this.walletService.getWalletStorage();
+      const myWallet = walletsStorage.find((element: { name: any; }) => {
         //verify if name wallet isset
         return element.name === user;
       });
 
       //Wallet does not exist
       if (myWallet === undefined) {
-        const accounts = this._walletService.buildAccount(wallet.encryptedPrivateKey.encryptedKey, wallet.encryptedPrivateKey.iv, wallet.address['address'], wallet.network);
+        const accounts = this.walletService.buildAccount(wallet.encryptedPrivateKey.encryptedKey, wallet.encryptedPrivateKey.iv, wallet.address['address'], wallet.network);
         this.walletName = user;
-        this._walletService.setAccountWalletStorage(user, accounts);
+        this.walletService.setAccountWalletStorage(user, accounts);
         this.address = wallet.address.pretty();
         this.sharedService.showSuccess('Congratulations!', 'Your wallet has been created successfully');
         this.privateKey = this.proximaxProvider.decryptPrivateKey(password, accounts.encrypted, accounts.iv).toUpperCase();
@@ -103,14 +126,13 @@ export class CreateWalletComponent implements OnInit {
 
   /**
    * Function that gets errors from a form
-   * by: roimerj_vzla
    *
    * @param {*} param
    * @param {*} name
    * @returns
    * @memberof CreateWalletComponent
    */
-  getError(control, formControl?) {
+  getError(control: any, formControl?: any) {
     if (formControl === undefined) {
       if (this.createWalletForm.get(control).getError('required')) {
         return `This field is required`;
@@ -137,7 +159,7 @@ export class CreateWalletComponent implements OnInit {
    *
    * @memberof CreateWalletComponent
    */
-  cleanForm(custom?, formControl?) {
+  cleanForm(custom?: any, formControl?: any) {
     if (custom !== undefined) {
       if (formControl !== undefined) {
         this.createWalletForm.controls[formControl].get(custom).reset();
