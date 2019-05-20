@@ -1,4 +1,4 @@
-<div class="mt-3rem mb-3rem animated fadeIn">
+  <!--<div class="mt-3rem mb-3rem animated fadeIn">
   <div class="container-fluid">
     <div class="row">
       <div class="col-xl-10 col-lg-10 col-md-10 col-sm-10 mx-auto">
@@ -6,7 +6,7 @@
           <div class="row">
             <div class="col-xs-12 col-sm-6  col-md-6 col-lg-6">
 
-              <!-- Password -->
+              <!-- Password
               <div class="md-form mt-5">
 
                 <input type="password" autocomplete="off" required id="password" class="form-control" mdbInputDirective
@@ -14,7 +14,7 @@
                 <label for="password">password</label>
               </div>
 
-              <!-- Tags -->
+              <!-- Tags
               <div class="md-form mt-5">
 
                 <input type="text" autocomplete="off" required id="Tags" class="form-control" mdbInputDirective
@@ -22,7 +22,7 @@
                 <label for="Tags">Tags</label>
               </div>
 
-              <!--  Hash Function -->
+              <!--  Hash Function
 
               <div class="md-form  mt-5">
 
@@ -30,7 +30,7 @@
                   required formControlName="hash" data-success="Valid hash" [errorMessage]="getError('hash')"></mdb-select>
 
               </div>
-              <!--  Storage -->
+              <!--  Storage
 
               <div class="md-form  mt-5">
 
@@ -52,36 +52,35 @@
             </div>
 
             <div class="col-xs-12 col-sm-6  col-md-6 col-lg-6  ">
-              <!-- Nav tabs -->
+              <!-- Nav tabs
               <mdb-tabset #staticTabs [buttonClass]="'md-tabs tabs-4 background-proxiwallet white mb-2'" [contentClass]="">
                 <!--Panel 1-->
-                <mdb-tab heading="<i class='fa fa-copy fa-1x'></i>">
-                  <div class="row">
-                    <div class="col-12 align-self-center">
-                      <br> <br>
-                      <div class="box text-align-center ">
-                        <button (click)="openInput()" mdbBtn type="button" size="lg" color="default" outline="true"
-                          mdbWavesEffect>
-                          <mdb-icon icon="cloud-upload" size="5x" class="mr-1"></mdb-icon>
-                        </button>
-                        <input id="fileInput" [hidden]="true" type="file" (change)="fileChange($event.target.files,$event)"
-                          formControlName="file">
-                      </div>
+  <mdb-tab heading="<i class='fa fa-copy fa-1x'></i>">
+    <div class="row">
+      <div class="col-12 align-self-center">
+        <br> <br>
+        <div class="box text-align-center ">
+          <button (click)="openInput()" mdbBtn type="button" size="lg" color="default" outline="true" mdbWavesEffect>
+            <mdb-icon icon="cloud-upload" size="5x" class="mr-1"></mdb-icon>
+          </button>
+          <input id="fileInput" [hidden]="true" type="file" (change)="fileChange($event.target.files,$event)"
+            formControlName="file">
+        </div>
 
 
-                      <div class="box text-align-center ">
-                        <p class="box" id="nameFile"> {{nameFile}} </p>
-                      </div>
-                      <br> <br>
-                    </div>
-                  </div>
-                </mdb-tab>
-                <!--Panel 2-->
+        <div class="box text-align-center ">
+          <p class="box" id="nameFile"> {{nameFile}} </p>
+        </div>
+        <br> <br>
+      </div>
+    </div>
+  </mdb-tab>
+  <!--Panel 2
                 <mdb-tab heading="<i class='fa fa-edit fa-1x'></i>">
                   <div class="row">
                     <div class="col-12">
 
-                      <!-- Document titlle -->
+                      <!-- Document titlle
                       <div class="md-form mt-5">
 
                         <input type="text" autocomplete="off" id="titlle" placeholder="Document titlle" class="form-control"
@@ -89,7 +88,7 @@
                         <label for="titlle">Document titlle</label>
                       </div>
 
-                      <!-- Document titlle -->
+                      <!-- Document titlle
                       <div class="md-form mt-5">
                         <i class="fa fa-pencil prefix"></i>
                         <textarea type="text" id="contant" class="md-textarea form-control" mdbInputDirective
@@ -101,7 +100,7 @@
                     </div>
                   </div>
                 </mdb-tab>
-                <!-- Document titlle -->
+                <!-- Document titlle
                 <div class="md-form mt-5">
                   <mdb-checkbox formControlName="saveInDFMS" (change)="onSaveInDFMSChanged($event)">Save in DFMS</mdb-checkbox>
                 </div>

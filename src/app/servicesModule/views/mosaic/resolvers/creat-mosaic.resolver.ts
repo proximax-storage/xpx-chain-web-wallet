@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Resolve, Router } from '@angular/router';
 import { of as observableOf } from 'rxjs';
-import 'rxjs/add/operator/delay';
 import { first, map, catchError } from 'rxjs/operators';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { QueryParams } from 'tsjs-xpx-catapult-sdk';

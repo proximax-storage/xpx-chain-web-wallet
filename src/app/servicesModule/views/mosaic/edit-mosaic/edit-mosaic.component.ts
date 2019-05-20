@@ -121,7 +121,8 @@ export class EditMosaicComponent implements OnInit {
       disabled: true
     }];
     const promise = new Promise((resolve, reject) => {
-      this.proximaxProvider.mosaicHttp.getMosaicsName(mosaicsId).subscribe(
+      resolve(null);
+      /*this.proximaxProvider.mosaicHttp.getMosaicsName(mosaicsId).subscribe(
         async mosaicsName => {
           for (let x of mosaicsName) {
             const namespac: any = await this.getNamespaceName(x.namespaceId)
@@ -144,7 +145,7 @@ export class EditMosaicComponent implements OnInit {
           this.router.navigate([AppConfig.routes.home]);
           this.sharedService.showError('', error);
           reject(error);
-        });
+        });*/
     });
     return await promise;
   }

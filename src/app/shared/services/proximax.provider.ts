@@ -1,16 +1,43 @@
 import { Injectable } from '@angular/core';
-import { Password, SimpleWallet, MosaicInfo, TransactionHttp, Listener, AccountHttp, MosaicHttp, NamespaceHttp, MosaicService, NamespaceService, TransactionStatusError, TransactionAnnounceResponse, SignedTransaction, NamespaceId, QueryParams, NetworkType, MosaicDefinitionTransaction, Account, PublicAccount, TransferTransaction, Deadline, Mosaic, MosaicId, UInt64, PlainMessage, MosaicProperties, Address, MosaicAmountView, Transaction, TransactionStatus, NamespaceInfo, MosaicView, MosaicSupplyChangeTransaction, RegisterNamespaceTransaction } from 'tsjs-xpx-catapult-sdk';
-
-
-// ********************* FIN COW ******************
-import {
-  BlockchainNetworkType,
-  BlockchainNetworkConnection
-} from "xpx2-ts-js-sdk";
 import { crypto } from 'js-xpx-catapult-library';
-import { Observable } from 'rxjs';
+import {
+  Password,
+  SimpleWallet,
+  MosaicInfo,
+  TransactionHttp,
+  Listener,
+  AccountHttp,
+  MosaicHttp,
+  NamespaceHttp,
+  MosaicService,
+  NamespaceService,
+  TransactionStatusError,
+  TransactionAnnounceResponse,
+  SignedTransaction,
+  NamespaceId,
+  QueryParams,
+  NetworkType,
+  MosaicDefinitionTransaction,
+  Account,
+  PublicAccount,
+  TransferTransaction,
+  Deadline,
+  Mosaic,
+  MosaicId,
+  UInt64,
+  PlainMessage,
+  MosaicProperties,
+  Address,
+  MosaicAmountView,
+  Transaction,
+  TransactionStatus,
+  NamespaceInfo,
+  MosaicView,
+  MosaicSupplyChangeTransaction,
+  RegisterNamespaceTransaction
+} from 'tsjs-xpx-catapult-sdk';
 
-//*****************************************************
+import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { commonInterface, walletInterface } from '../interfaces/shared.interfaces';
 import { MosaicXPXInterface } from '../../dashboard/services/transaction.interface';
@@ -20,18 +47,8 @@ import { MosaicXPXInterface } from '../../dashboard/services/transaction.interfa
 })
 export class ProximaxProvider {
 
-
-
-
-
-  //************************* FIN COW *****************/
+  url: any;
   infoMosaic: MosaicInfo;
-  mosaicXpx: MosaicXPXInterface = {
-    mosaic: "prx:xpx",
-    mosaicId: "d423931bd268d1f4",
-    divisibility: 6
-  };
-
   transactionHttp: TransactionHttp;
   websocketIsOpen = false;
   connectionWs: Listener;
@@ -40,11 +57,19 @@ export class ProximaxProvider {
   namespaceHttp: NamespaceHttp;
   mosaicService: MosaicService;
   namespaceService: NamespaceService;
-  transactionStatusError: TransactionStatusError
-  url: any;
+  transactionStatusError: TransactionStatusError;
+  mosaicXpx: MosaicXPXInterface = {
+    mosaic: 'prx:xpx',
+    mosaicId: 'd423931bd268d1f4',
+    divisibility: 6
+  };
 
   constructor() {
   }
+
+
+
+
 
 
   /**
@@ -73,13 +98,6 @@ export class ProximaxProvider {
   }
 
 
-
-
-  // ************************************** FIN COW ******************************
-
-
-
-
   /**
    *
    *
@@ -98,6 +116,7 @@ export class ProximaxProvider {
        }
      });
      return await promise;*/
+    return null;
   }
 
 
@@ -135,6 +154,7 @@ export class ProximaxProvider {
     duration: number,
     network: NetworkType
   ) {
+    return null;
     /*return MosaicDefinitionTransaction.create(
       Deadline.create(),
       mosaicName,
@@ -158,12 +178,12 @@ export class ProximaxProvider {
    */
   blockchainNetworkConnection(network: NetworkType) {
     const blockChainNetworkType = this.getBlockchainNetworkType(network);
-    return new BlockchainNetworkConnection(
+    return null; /* new BlockchainNetworkConnection(
       blockChainNetworkType,
       environment.blockchainConnection.host,
       environment.blockchainConnection.port,
       environment.blockchainConnection.protocol
-    )
+    );*/
   }
 
 
@@ -275,26 +295,26 @@ export class ProximaxProvider {
    * @memberof NemProvider
    */
   getAccountInfo(address: Address): any { //Observable<AccountInfo> {
-    return this.accountHttp.getAccountInfo(address)
+    return this.accountHttp.getAccountInfo(address);
   }
 
   /**
    *
    *
    * @param {NetworkType} network
-   * @returns {BlockchainNetworkType}
+   * @returns {NetworkType}
    * @memberof ProximaxProvider
    */
-  getBlockchainNetworkType(network: NetworkType): BlockchainNetworkType {
+  getBlockchainNetworkType(network: NetworkType): NetworkType {
     switch (network) {
       case NetworkType.MAIN_NET:
-        return BlockchainNetworkType.MAIN_NET;
+        return NetworkType.MAIN_NET;
       case NetworkType.MIJIN:
-        return BlockchainNetworkType.MIJIN;
+        return NetworkType.MIJIN;
       case NetworkType.MIJIN_TEST:
-        return BlockchainNetworkType.MIJIN_TEST;
+        return NetworkType.MIJIN_TEST;
       case NetworkType.TEST_NET:
-        return BlockchainNetworkType.TEST_NET;
+        return NetworkType.TEST_NET;
     }
   }
 
@@ -307,7 +327,7 @@ export class ProximaxProvider {
    * @memberof NemProvider
    */
   getPublicAccountFromPrivateKey(privateKey: string, net: NetworkType): PublicAccount {
-    return Account.createFromPrivateKey(privateKey, net).publicAccount
+    return Account.createFromPrivateKey(privateKey, net).publicAccount;
   }
 
   /**
@@ -319,7 +339,7 @@ export class ProximaxProvider {
    * @memberof NemProvider
    */
   getAccountFromPrivateKey(privateKey: string, net: NetworkType): Account {
-    return Account.createFromPrivateKey(privateKey, net)
+    return Account.createFromPrivateKey(privateKey, net);
   }
 
   /**
@@ -376,7 +396,7 @@ export class ProximaxProvider {
    * @memberof NemProvider
    */
   getTransaction(transactionId: string): any { //Observable<Transaction> {
-    return this.transactionHttp.getTransaction(transactionId)
+    return this.transactionHttp.getTransaction(transactionId);
   }
 
   /**

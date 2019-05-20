@@ -1,8 +1,9 @@
+<!--
 <div class="container mt-11rem mb-3rem animated fadeIn">
   <div class="row">
     <div class="col-11 col-sm-10 mx-auto">
 
-      <!-- Title and Divir -->
+      <!-- Title and Divir --
       <div class="row">
         <div class="col-11 col-sm-10 mx-auto">
           <h1 class="text-align-center wallet-name"><i class="fa fa-user" aria-hidden="true"></i> Storage</h1>
@@ -12,7 +13,7 @@
         </div>
       </div>
 
-      <!-- New or enter data and search -->
+      <!-- New or enter data and search --
       <div class="row">
         <div class="col-3 d-flex justify-content-center align-items-center">
           <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 btn-dark-green-prx"
@@ -41,7 +42,7 @@
         </div>
       </div>
 
-      <!-- Second divisor -->
+      <!-- Second divisor --
       <div class="row">
         <div class="col-12 mx-auto">
           <hr class="background-divisor">
@@ -49,14 +50,14 @@
       </div>
 
 
-      <!-- Results -->
+      <!-- Results --
       <div class="row mt-1rem mb-1rem">
         <div class="col-12 d-flex justify-content-center align-items-center" id="titleCantResults">
           <h5 class="f-w-bold color-dark-green">{{transactionResults.length}} results for "Search by title"</h5>
         </div>
       </div>
 
-      <!-- Progress bar -->
+      <!-- Progress bar --
       <div class="row">
         <div class="col-12">
           <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate" *ngIf="searching">
@@ -70,24 +71,24 @@
             <table mdbTable #tableEl="mdbTable" id="mdbTable" striped="true"
               class="table table-hover table-bordered table-hover table-sm z-depth-0" borderless="true">
               <!--Table head-->
-              <thead>
-                <tr class="header-backg">
-                  <ng-container *ngFor="let head of headElements; let i = index">
-                    <th scope="col" class="text-center f-w-400">{{head}}</th>
-                  </ng-container>
-                </tr>
-              </thead>
-              <!--Table head-->
+<thead>
+  <tr class="header-backg">
+    <ng-container *ngFor="let head of headElements; let i = index">
+      <th scope="col" class="text-center f-w-400">{{head}}</th>
+    </ng-container>
+  </tr>
+</thead>
+<!--Table head--
 
-              <!--Table body-->
+              <!--Table body--
               <tbody>
                 <ng-container *ngFor="let r of transactionResults.slice().reverse(); let i=index">
                   <tr class="mouse-pointer">
-                    <!-- Type transaction -->
+                    <!-- Type transaction --
                     <th *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex"
                       class="th-sm" scope="row description-dark-green">{{r.title}}</th>
 
-                    <!-- timestamp -->
+                    <!-- timestamp --
                     <td class="align-right th-sm description-dark-green"
                       *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex">
                       {{r.transactionHash}}</td>
@@ -121,7 +122,7 @@
 </div>
 
 <div class="mt-3rem w-w-b-w">
-  <!-- Download modal -->
+  <!-- Download modal --
   <div mdbModal #dlframe="mdbModal" class="modal fade left" id="dlFrameModal" tabindex="-1" role="dialog"
     aria-labelledby="myDlModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered " role="document">
@@ -176,13 +177,13 @@
     </div>
   </div>
 
-  <!-- Record modal-->
+  <!-- Record modal--
   <div mdbModal #frame="mdbModal" class="modal fade left" id="frameModalTop" tabindex="-1" role="dialog"
     aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered " role="document">
       <div class="modal-content">
 
-        <!-- header-->
+        <!-- header--
         <div class="modal-header background-gold">
           <p class="heading lead" style="font-weight: 500;">Add a new file</p>
           <button type="button" class="close" data-dismiss="modal" (click)="frame.hide()">
@@ -190,7 +191,7 @@
           </button>
         </div>
 
-        <!-- Body-->
+        <!-- Body--
         <div class="modal-body">
           <form [formGroup]="addRecordForm" (ngSubmit)="addRecord()" style="color: #757575;" action="#">
             <div *ngIf="showPassword">

@@ -1,5 +1,3 @@
-import { Protocol } from 'xpx2-ts-js-sdk';
-
 // This file can be replaced during build by using the `fileReplacements` array.
 // `ng build ---prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
@@ -14,7 +12,7 @@ export const environment = {
   blockchainConnection: {
     host: 'bctestnet1.xpxsirius.io',
     port: 3000,
-    protocol: Protocol.HTTP,
+    protocol: '',
     useSecureMessage: false
   },
   storageConnection: {

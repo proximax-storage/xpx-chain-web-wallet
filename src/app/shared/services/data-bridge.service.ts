@@ -96,7 +96,7 @@ export class DataBridgeService {
       this.getStatusSocket(connector, audio);
       this.getBlockSocket(connector)
     }, (error) => {
-      console.error("errroooor de soquer", error);
+      console.error("error de socket", error);
       this.reconnect(connector);
     });
   }

@@ -107,7 +107,6 @@ export class AuditApostilleComsponent implements OnInit {
     this.blockUI.start('Loading...'); // Start blocking
     this.proximaxProvider.getTransaction(apostilleTxHash).subscribe((infTrans: TransferTransaction) => {
       const apostilleHashPrefix = 'fe4e545903';
-
       const data = this.file
       this.blockUI.stop(); // Stop blocking
 
@@ -126,7 +125,7 @@ export class AuditApostilleComsponent implements OnInit {
       } else {
         this.auditResults.push({
           'filename': this.nameFile,
-          'owner': infTrans.recipient.plain(),
+          'owner': infTrans.recipient,
           'fileHash': Verifier.Hash,
           'result': 'Document apostille!',
           'hash': ''
