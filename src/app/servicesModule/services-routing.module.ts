@@ -39,6 +39,7 @@ const routes: Routes = [
     path: `${AppConfig.routes.selectNode}`,
     component: SelectNodeComponent
   },
+  /*
   {
     path: `${AppConfig.routes.createPoll}`,
     component: CreatePollComponent,
@@ -48,7 +49,8 @@ const routes: Routes = [
     path: `${AppConfig.routes.polls}`,
     component: PollsComponent,
     canActivate: [LoggedGuard]
-  },
+  },*/
+  /*
   {
     path: `${AppConfig.routes.apostille}`,
     component: CreateApostilleComponent,
@@ -58,7 +60,7 @@ const routes: Routes = [
     path: `${AppConfig.routes.audiApostille}`,
     component: AuditApostilleComsponent,
     canActivate: [LoggedGuard]
-  },
+  },*/
   {
     path: `${AppConfig.routes.services}`,
     component: ServicesComponent,
@@ -74,7 +76,7 @@ const routes: Routes = [
     component: AddressBookComponent,
     canActivate: [LoggedGuard]
   }
-  ,
+  /*
   {
     path: `${AppConfig.routes.storage}`,
     component: StorageComponent,
@@ -119,7 +121,7 @@ const routes: Routes = [
     path: `${AppConfig.routes.signMultiSigTransactions}`,
     component: SignMultisigTransactionsComponent,
     canActivate: [LoggedGuard]
-  }
+  }*/
 ];
 
 @NgModule({
