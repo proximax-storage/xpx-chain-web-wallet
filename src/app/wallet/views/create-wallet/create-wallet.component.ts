@@ -89,21 +89,24 @@ export class CreateWalletComponent implements OnInit {
    */
   createSimpleWallet() {
     if (this.createWalletForm.valid) {
-      const network = this.createWalletForm.get('network').value;
-      const user = this.createWalletForm.get('walletname').value;
-      const password = this.proximaxProvider.createPassword(this.createWalletForm.controls.passwords.get('password').value);
-      const wallet = this.proximaxProvider.createAccountSimple(user, password, network);
+      const name = this.createWalletForm.get('walletname').value;
       const walletsStorage = this.walletService.getWalletStorage();
-      const myWallet = walletsStorage.find((element: { name: any; }) => {
-        //verify if name wallet isset
-        return element.name === user;
-      });
+
+      //verify if name wallet isset
+      const myWallet = walletsStorage.find(
+        (element: { name: any; }) => {
+          return element.name === name;
+        }
+      );
 
       //Wallet does not exist
       if (myWallet === undefined) {
+        const network = this.createWalletForm.get('network').value;
+        const password = this.proximaxProvider.createPassword(this.createWalletForm.controls.passwords.get('password').value);
+        const wallet = this.proximaxProvider.createAccountSimple(name, password, network);
         const accounts = this.walletService.buildAccount(wallet.encryptedPrivateKey.encryptedKey, wallet.encryptedPrivateKey.iv, wallet.address['address'], wallet.network);
-        this.walletName = user;
-        this.walletService.setAccountWalletStorage(user, accounts);
+        this.walletName = name;
+        this.walletService.setAccountWalletStorage(name, accounts);
         this.address = wallet.address.pretty();
         this.sharedService.showSuccess('Congratulations!', 'Your wallet has been created successfully');
         this.privateKey = this.proximaxProvider.decryptPrivateKey(password, accounts.encrypted, accounts.iv).toUpperCase();

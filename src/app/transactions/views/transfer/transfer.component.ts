@@ -147,7 +147,7 @@ export class TransferComponent implements OnInit {
    * Get mosaics name
    *
    * @memberof TransferComponent
-   */
+   *
   //
   /* true... async getMosaics() {
      const mosaicsSelect = this.mosaicsSelect.slice(0);

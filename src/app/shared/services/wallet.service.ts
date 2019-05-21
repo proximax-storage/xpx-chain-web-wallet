@@ -147,7 +147,7 @@ export class WalletService {
     }
 
     //Get public account from private key
-    this.publicAccount = this.proximaxProvider.getPublicAccountFromPrivateKey(common.privateKey, net)
+    this.publicAccount = this.proximaxProvider.getPublicAccountFromPrivateKey(common.privateKey, net);
     return true;
   }
 

@@ -12,12 +12,10 @@ import {
   MosaicService,
   NamespaceService,
   TransactionStatusError,
-  TransactionAnnounceResponse,
   SignedTransaction,
   NamespaceId,
   QueryParams,
   NetworkType,
-  MosaicDefinitionTransaction,
   Account,
   PublicAccount,
   TransferTransaction,
@@ -26,13 +24,9 @@ import {
   MosaicId,
   UInt64,
   PlainMessage,
-  MosaicProperties,
   Address,
   MosaicAmountView,
   Transaction,
-  TransactionStatus,
-  NamespaceInfo,
-  MosaicView,
   MosaicSupplyChangeTransaction,
   RegisterNamespaceTransaction
 } from 'tsjs-xpx-catapult-sdk';
@@ -47,6 +41,9 @@ import { MosaicXPXInterface } from '../../dashboard/services/transaction.interfa
 })
 export class ProximaxProvider {
 
+
+
+  /*************** FIN COW */
   url: any;
   infoMosaic: MosaicInfo;
   transactionHttp: TransactionHttp;
@@ -68,23 +65,18 @@ export class ProximaxProvider {
   }
 
 
-
-
-
-
   /**
-   * Create account simple
-   *
-   * @param {string} user
-   * @param {Password} password
-   * @param {number} network
-   * @returns {SimpleWallet}
-   * @memberof ProximaxProvider
-   */
-  createAccountSimple(user: string, password: Password, network: number): SimpleWallet {
-    return SimpleWallet.create(user, password, network);
+     * Create account simple
+     *
+     * @param {string} walletName
+     * @param {Password} password
+     * @param {number} network
+     * @returns {SimpleWallet}
+     * @memberof ProximaxProvider
+     */
+  createAccountSimple(walletName: string, password: Password, network: number): SimpleWallet {
+    return SimpleWallet.create(walletName, password, network);
   }
-
 
   /**
     * Create a password
@@ -96,6 +88,48 @@ export class ProximaxProvider {
   createPassword(value: string): Password {
     return new Password(value);
   }
+
+  /**
+   * Create account simple
+   *
+   * @param {string} nameWallet
+   * @param {Password} password
+   * @param {string} privateKey
+   * @param {number} network
+   * @returns {SimpleWallet}
+   * @memberof ProximaxProvider
+   */
+  createAccountFromPrivateKey(nameWallet: string, password: Password, privateKey: string, network: number): SimpleWallet {
+    return SimpleWallet.createFromPrivateKey(nameWallet, password, privateKey, network);
+  }
+
+  /**
+  * Decrypt and return private key
+  * @param password
+  * @param encryptedKey
+  * @param iv
+  */
+  decryptPrivateKey(password: Password, encryptedKey: string, iv: string): string {
+    const common: commonInterface = {
+      password: password.value,
+      privateKey: ''
+    };
+
+    const wallet: walletInterface = {
+      encrypted: encryptedKey,
+      iv: iv,
+    };
+
+    crypto.passwordToPrivatekey(common, wallet, 'pass:bip32');
+    return common.privateKey;
+  }
+
+
+  /******************** FIN COW **********************/
+
+
+
+
 
 
   /**
@@ -189,20 +223,6 @@ export class ProximaxProvider {
 
 
   /**
-   * Create account simple
-   *
-   * @param {string} nameWallet
-   * @param {Password} password
-   * @param {string} privateKey
-   * @param {number} network
-   * @returns {SimpleWallet}
-   * @memberof ProximaxProvider
-   */
-  createAccountFromPrivateKey(nameWallet: string, password: Password, privateKey: string, network: number): SimpleWallet {
-    return SimpleWallet.createFromPrivateKey(nameWallet, password, privateKey, network);
-  }
-
-  /**
    * Check if Address it is correct
    * @param privateKey privateKey
    * @param address address
@@ -253,26 +273,7 @@ export class ProximaxProvider {
     return Address.createFromRawAddress(address);
   }
 
-  /**
-   * Decrypt and return private key
-   * @param password
-   * @param encryptedKey
-   * @param iv
-   */
-  decryptPrivateKey(password: Password, encryptedKey: string, iv: string): string {
-    const common: commonInterface = {
-      password: password.value,
-      privateKey: ''
-    };
 
-    const wallet: walletInterface = {
-      encrypted: encryptedKey,
-      iv: iv,
-    };
-
-    crypto.passwordToPrivatekey(common, wallet, 'pass:bip32');
-    return common.privateKey;
-  }
 
   /**
   *

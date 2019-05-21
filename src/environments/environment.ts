@@ -4,13 +4,13 @@
 
 export const environment = {
   production: false,
-  nameKeyWalletStorage: `proximax-web-wallet`,
-  nameKeyNodeStorage: `proximax-web-wallet-nodes`,
+  nameKeyWalletStorage: `xpx-catapult-web-wallet`,
+  nameKeyNodeStorage: `xpx-catapult-web-wallet-nodes`,
   protocol: `http`,
   protocolWs: `ws`,
-  nodeDefault: 'bctestnet1.xpxsirius.io:3000',
+  nodeDefault: 'bcstage1.xpxsirius.io:3000',
   blockchainConnection: {
-    host: 'bctestnet1.xpxsirius.io',
+    host: 'bcstage1.xpxsirius.io',
     port: 3000,
     protocol: '',
     useSecureMessage: false
