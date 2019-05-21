@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
-import { NetworkType } from 'proximax-nem2-sdk';
+import { NetworkType } from 'tsjs-xpx-catapult-sdk';
 import { SharedService, WalletService } from "../../../shared";
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 
@@ -63,10 +63,6 @@ export class ImportWalletComponent implements OnInit {
   importSimpleWallet() {
     if (this.importWalletForm.valid) {
       const nameWallet = this.importWalletForm.get('walletname').value;
-      const password = this.proximaxProvider.createPassword(this.importWalletForm.controls.passwords.get('password').value);
-      const privateKey = this.importWalletForm.get('privateKey').value;
-      const network = this.importWalletForm.get('network').value;
-      const wallet = this.proximaxProvider.createAccountFromPrivateKey(nameWallet, password, privateKey, network);
       const walletsStorage = this._walletService.getWalletStorage();
       //verify if name wallet isset
       const myWallet = walletsStorage.find(function (element) {
@@ -75,6 +71,10 @@ export class ImportWalletComponent implements OnInit {
 
       //Wallet does not exist
       if (myWallet === undefined) {
+        const password = this.proximaxProvider.createPassword(this.importWalletForm.controls.passwords.get('password').value);
+        const privateKey = this.importWalletForm.get('privateKey').value;
+        const network = this.importWalletForm.get('network').value;
+        const wallet = this.proximaxProvider.createAccountFromPrivateKey(nameWallet, password, privateKey, network);
         const accounts = this._walletService.buildAccount(wallet.encryptedPrivateKey.encryptedKey, wallet.encryptedPrivateKey.iv, wallet.address['address'], wallet.network);
         this.walletName = nameWallet;
         this._walletService.setAccountWalletStorage(nameWallet, accounts);

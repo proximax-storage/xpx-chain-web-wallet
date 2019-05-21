@@ -1,17 +1,31 @@
-import { Component, OnInit, ElementRef, Renderer2, EventEmitter, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, EventEmitter, ViewChild, ChangeDetectorRef } from '@angular/core';
+/*
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { UploadFile, UploadInput, UploadOutput, humanizeBytes, ModalDirective, BreadcrumbModule } from 'ng-uikit-pro-standard';
+import { UploadFile, UploadInput, UploadOutput, humanizeBytes, ModalDirective } from 'ng-uikit-pro-standard';
+import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { SharedService } from '../../../shared/services/shared.service';
 import { WalletService } from '../../../shared/services/wallet.service';
 import { environment } from '../../../../environments/environment';
-import { BlockUI, NgBlockUI } from 'ng-block-ui';
-import { Uploader, ConnectionConfig, BlockchainNetworkConnection, IpfsConnection, UploadParameter, ReadableStreamParameterData, StreamHelper, PrivacyType, SearchParameter, Searcher, SearchResultItem, Downloader, DownloadParameter, TransactionFilter, DirectDownloadParameter } from 'xpx2-ts-js-sdk';
+import {
+  Uploader,
+  ConnectionConfig,
+  BlockchainNetworkConnection,
+  IpfsConnection,
+  UploadParameter,
+  ReadableStreamParameterData,
+  StreamHelper,
+  PrivacyType,
+  SearchParameter,
+  Searcher,
+  Downloader,
+  DirectDownloadParameter
+} from 'xpx2-ts-js-sdk';
 import { saveAs } from 'file-saver';
-import { crypto } from "proximax-nem2-library";
-import { Address, UInt64, Mosaic, MosaicId, Account, PublicAccount } from 'proximax-nem2-sdk';
+import { crypto } from "js-xpx-catapult-library";
+import { Address, UInt64, Mosaic, MosaicId } from 'tsjs-xpx-catapult-sdk';
 import { FileInterface } from 'src/app/shared';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
-import { MdbTablePaginationComponent, MdbTableDirective } from 'ng-uikit-pro-standard';
+import { MdbTablePaginationComponent, MdbTableDirective } from 'ng-uikit-pro-standard';*/
 
 @Component({
   selector: 'app-storage',
@@ -19,7 +33,11 @@ import { MdbTablePaginationComponent, MdbTableDirective } from 'ng-uikit-pro-sta
   styleUrls: ['./storage.component.scss']
 })
 export class StorageComponent implements OnInit {
-  @BlockUI() blockUI: NgBlockUI;
+
+  ngOnInit() {
+
+  }
+  /*@BlockUI() blockUI: NgBlockUI;
   @ViewChild('frame') frame: ModalDirective;
   @ViewChild('dlframe') dlframe: ModalDirective;
   @ViewChild(MdbTablePaginationComponent) mdbTablePagination: MdbTablePaginationComponent;
@@ -178,7 +196,7 @@ export class StorageComponent implements OnInit {
 
   /**
    * create add record form
-   */
+   *
   createForm() {
     this.addRecordForm = this.fb.group({
       title: [''],
@@ -323,7 +341,9 @@ export class StorageComponent implements OnInit {
               param.withRecipientPublicKey(recipientPublicKey);
             }
 
-            param.withTransactionMosaics([new Mosaic(new MosaicId('prx:xpx'), UInt64.fromUint(0))]);
+            const mosaicId = new MosaicId('prx:xpx');
+            const mosaic = new Mosaic(mosaicId, UInt64.fromUint(0));
+            //param.withTransactionMosaics([mosaic]);
 
             let recipientAddress = this.walletService.address.plain();
             // console.log('default recipientAddress' + recipientAddress);
@@ -571,4 +591,5 @@ export class StorageComponent implements OnInit {
 
 
   }
+  */
 }

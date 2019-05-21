@@ -1,20 +1,18 @@
-import { Protocol } from 'xpx2-ts-js-sdk';
-
 // This file can be replaced during build by using the `fileReplacements` array.
 // `ng build ---prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
   production: false,
-  nameKeyWalletStorage: `proximax-web-wallet`,
-  nameKeyNodeStorage: `proximax-web-wallet-nodes`,
+  nameKeyWalletStorage: `xpx-catapult-web-wallet`,
+  nameKeyNodeStorage: `xpx-catapult-web-wallet-nodes`,
   protocol: `http`,
   protocolWs: `ws`,
-  nodeDefault: 'bctestnet1.xpxsirius.io:3000',
+  nodeDefault: 'bcstage1.xpxsirius.io:3000',
   blockchainConnection: {
-    host: 'bctestnet1.xpxsirius.io',
+    host: 'bcstage1.xpxsirius.io',
     port: 3000,
-    protocol: Protocol.HTTP,
+    protocol: '',
     useSecureMessage: false
   },
   storageConnection: {

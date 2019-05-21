@@ -1,20 +1,21 @@
 import { Component, OnInit } from '@angular/core';
+/*
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import * as qrcode from 'qrcode-generator';
 import { saveAs } from 'file-saver';
 import * as jsPDF from 'jspdf';
 import { Verifier } from '../audit-apostille/audit-apistille-verifier'
-import { Account, Address, Deadline, UInt64, TransactionHttp } from 'proximax-nem2-sdk';
-import { KeyPair, convert } from 'proximax-nem2-library'
+import { Account, Address, Deadline, UInt64, TransactionHttp } from 'tsjs-xpx-catapult-sdk';
+import { KeyPair, convert } from 'js-xpx-catapult-library'
 import * as crypto from 'crypto-js'
 import * as JSZip from 'jszip';
 import { WalletService, SharedService } from '../../../../shared';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
-import { NodeService } from '../../../../servicesModule/services/node.service';
+import { NodeService } from '../../../services/node.service';
 import { IpfsConnection, StreamHelper, IpfsClient } from 'xpx2-ts-js-sdk';
 import { environment } from '../../../../../environments/environment';
-import { ApostilleService } from '../services/apostille.service';
+import { ApostilleService } from '../services/apostille.service';*/
 
 
 @Component({
@@ -23,6 +24,12 @@ import { ApostilleService } from '../services/apostille.service';
   styleUrls: ['./create-apostille.component.scss']
 })
 export class CreateApostilleComponent implements OnInit {
+
+
+  ngOnInit() {
+
+  }
+  /*
   @BlockUI() blockUI: NgBlockUI;
 
   zip: JSZip;
@@ -112,7 +119,7 @@ export class CreateApostilleComponent implements OnInit {
    * This is used to trigger the input
    *
    * @memberof ApostillaComponent
-   */
+   *
   openInput() {
     // your can use ElementRef for this later
     document.getElementById('fileInput').click();
@@ -240,7 +247,7 @@ export class CreateApostilleComponent implements OnInit {
   * @param {string} user
   * @param {any} accounts
   * @memberof WalletService
-  */
+  *
   setAccountWalletStorage(nty) {
     let proxinty = JSON.parse(localStorage.getItem('proxi-nty'));
     if (!proxinty) {
@@ -447,12 +454,12 @@ export class CreateApostilleComponent implements OnInit {
  *
  * @param {*} event
  * @memberof CreateApostilleComponent
- */
+ *
   onSaveInDFMSChanged(event) {
     this.storeInDfms = event.checked;
   }
 
-  /**Will move to util class */
+  /**Will move to util class *
   async convertBlobToBuffer(blob) {
     return new Promise<Buffer>(function (resolve, reject) {
       const reader = new FileReader();
@@ -464,5 +471,5 @@ export class CreateApostilleComponent implements OnInit {
       reader.readAsArrayBuffer(blob);
     });
 
-  }
+  }*/
 }

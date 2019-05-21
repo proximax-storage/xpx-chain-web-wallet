@@ -58,7 +58,7 @@ export class TransactionsComponent implements OnInit {
             amount: element['mosaics'][0].amount.compact(),
             message: element['message'],
             transactionInfo: element.transactionInfo,
-            fee: element.fee.compact(),
+            fee: null, //true... element.fee.compact(),
             mosaic: 'xpx',
             date: date,
             recipient: element['recipient'],

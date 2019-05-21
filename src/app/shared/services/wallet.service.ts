@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { NetworkType, PublicAccount, AccountInfo } from "proximax-nem2-sdk";
-import { crypto } from 'proximax-nem2-library';
+import { NetworkType, PublicAccount, AccountInfo } from "tsjs-xpx-catapult-sdk";
+import { crypto } from 'js-xpx-catapult-library';
 import { Router } from "@angular/router";
 import { AccountsInterface } from '..';
 import { ProximaxProvider } from './proximax.provider';
@@ -147,7 +147,7 @@ export class WalletService {
     }
 
     //Get public account from private key
-    this.publicAccount = this.proximaxProvider.getPublicAccountFromPrivateKey(common.privateKey, net)
+    this.publicAccount = this.proximaxProvider.getPublicAccountFromPrivateKey(common.privateKey, net);
     return true;
   }
 

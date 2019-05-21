@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { first } from "rxjs/operators";
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Listener, Transaction } from "proximax-nem2-sdk";
+import { Listener, Transaction } from "tsjs-xpx-catapult-sdk";
 import { WalletService } from "./wallet.service";
 import { TransactionsService } from "../../transactions/service/transactions.service";
 import { environment } from '../../../environments/environment';
@@ -96,7 +96,7 @@ export class DataBridgeService {
       this.getStatusSocket(connector, audio);
       this.getBlockSocket(connector)
     }, (error) => {
-      console.error("errroooor de soquer", error);
+      console.error("error de socket", error);
       this.reconnect(connector);
     });
   }

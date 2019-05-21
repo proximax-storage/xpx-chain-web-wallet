@@ -26,7 +26,7 @@ export class MosaicDefinitionTypeComponent implements OnInit {
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
     this.viewNamespaceId = false;
     this.mosaicDefinition['mosaicsStorage'] = null;
-    const mosaics: MosaicsStorage[] = await this.mosaicService.searchMosaics([this.mosaicDefinition.data['mosaicId']]);
+    const mosaics: MosaicsStorage[] = null; // await this.mosaicService.searchMosaics([this.mosaicDefinition.data['mosaicId']]);
     if (mosaics.length > 0) {
       this.viewNamespaceId = false;
       this.mosaicDefinition['mosaicsStorage'] = mosaics[0];

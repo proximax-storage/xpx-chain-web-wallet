@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, SimpleChanges, Output, EventEmitter } from '@angular/core';
-import { Mosaic, MosaicView, MosaicName, MosaicInfo } from 'proximax-nem2-sdk';
+import { Mosaic, MosaicView, MosaicInfo } from 'tsjs-xpx-catapult-sdk';
 import { MosaicService } from '../../../servicesModule/services/mosaic.service';
 import { TransactionsService } from '../../../transactions/service/transactions.service';
 import { MosaicsStorage } from '../../../servicesModule/interfaces/mosaics-namespaces.interface';
@@ -96,7 +96,7 @@ export class MosaicsInfoComponent implements OnInit {
     this.viewMosaicXpx = false;
     this.viewOtherMosaics = false;
     this.quantity = [];
-    const mosaics: MosaicsStorage[] = await this.mosaicService.searchMosaics(this.mosaicsArray.map((mosaic: Mosaic) => { return mosaic.id }));
+    const mosaics: MosaicsStorage[] = null;//await this.mosaicService.searchMosaics(this.mosaicsArray.map((mosaic: Mosaic) => { return mosaic.id }));
     if (mosaics.length > 0) {
       for (let mosaic of mosaics) {
         // Create MosaicId from mosaic and namespace string id (ex: nem:xem or domain.subdom.subdome:token)
@@ -119,7 +119,7 @@ export class MosaicsInfoComponent implements OnInit {
           // console.log(mosaic.mosaicName);
           this.quantity.push({
             id: myMosaic.id.toHex(),
-            name: `${mosaic.namespaceName.name}:${mosaic.mosaicName.name}`,
+            name: '',//`${mosaic.namespaceName.name}:${mosaic.mosaicName.name}`,
             amountFormatter: amount,
             mosaicInfo: mosaic,
             existMosaic: true

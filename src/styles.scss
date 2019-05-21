@@ -331,11 +331,13 @@ footer {
   background: white;
 }
 
+.btn-dark-green-prx:hover,
 .btn-dark-green-prx {
   color: white;
   background: #023c42 !important;
 }
 
+.btn-white-transparent:hover,
 .btn-white-transparent {
   border: 1px solid #ffffff;
   color: white;
@@ -348,7 +350,7 @@ footer {
   background: white;
 }
 
-.btn-white-green-transparent {
+.btn-white-green-transparent:hover .btn-white-green-transparent {
   border: 1px solid #023c42;
   color: #023c42;
   background: #ffffff00;
@@ -469,7 +471,7 @@ footer {
   overflow-x: auto;
 }
 
-/*****style mdb******/
+/****************************** ONLY MDB ********************************/
 
 mdb-select>div>div.single>div.placeholder,
 .md-form label {

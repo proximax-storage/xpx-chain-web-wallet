@@ -5,7 +5,7 @@ import { WalletService } from '../../../../shared/services/wallet.service';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { SharedService } from '../../../../shared';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
-import { Address, UInt64, Account } from 'proximax-nem2-sdk';
+import { Address, UInt64, Account } from 'tsjs-xpx-catapult-sdk';
 @Component({
   selector: 'app-create-poll',
   templateUrl: './create-poll.component.html',

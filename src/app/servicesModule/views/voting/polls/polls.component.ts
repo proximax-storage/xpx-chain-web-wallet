@@ -1,13 +1,12 @@
-import { Component, OnInit, createPlatformFactory } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, AbstractControl, FormControl, FormArray } from "@angular/forms";
+import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormBuilder, Validators } from "@angular/forms";
+import { BlockUI, NgBlockUI } from 'ng-block-ui';
+import { Address, UInt64, Account, Transaction } from 'tsjs-xpx-catapult-sdk';
+import * as Highcharts from 'highcharts';
+import { ReplaySubject, Observable } from 'rxjs';
 import { WalletService } from '../../../../shared/services/wallet.service';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { SharedService } from '../../../../shared';
-import { BlockUI, NgBlockUI } from 'ng-block-ui';
-import { Address, UInt64, Account, Transaction } from 'proximax-nem2-sdk';
-import * as Highcharts from 'highcharts';
-import { ReplaySubject } from 'rxjs';
-import { Observable } from 'rxjs/internal/Observable';
 
 @Component({
   selector: 'app-polls',

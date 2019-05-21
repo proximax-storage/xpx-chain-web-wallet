@@ -4,7 +4,7 @@ import {
   NamespaceId,
   NamespaceName,
   Address
-} from "proximax-nem2-sdk";
+} from "tsjs-xpx-catapult-sdk";
 import { ProximaxProvider } from "../../shared/services/proximax.provider";
 import { WalletService } from "../../shared/services/wallet.service";
 import { NamespaceStorage } from "../interfaces/mosaics-namespaces.interface";
@@ -129,7 +129,7 @@ export class NamespacesService {
             }
 
             //Build mosaics storage
-            this.mosaicsService.buildMosaicsFromNamespace(element.id);
+            // this.mosaicsService.buildMosaicsFromNamespace(element.id);
           });
 
           localStorage.setItem(this.getNameStorage(), JSON.stringify(namespacesStorage));

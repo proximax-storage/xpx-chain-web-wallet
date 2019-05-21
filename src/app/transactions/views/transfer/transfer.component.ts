@@ -66,7 +66,7 @@ export class TransferComponent implements OnInit {
     console.log('this.contacts', this.contacts.length);
     this.createForm();
     this.createFormContact();
-    this.getMosaics();
+    // true... this.getMosaics();
   }
 
   /**
@@ -147,29 +147,30 @@ export class TransferComponent implements OnInit {
    * Get mosaics name
    *
    * @memberof TransferComponent
-   */
-  async getMosaics() {
-    const mosaicsSelect = this.mosaicsSelect.slice(0);
-    if (this.walletService.getAccountInfo() !== undefined) {
-      const mosaics = await this.mosaicServices.searchMosaics(this.walletService.getAccountInfo().mosaics.map(n => n.id));
-      // console.log(mosaics);
-      if (mosaics.length > 0) {
-        for (let mosaic of mosaics) {
-          if (this.proximaxProvider.getMosaicId(mosaic.id).id.toHex() !== this.mosaicServices.mosaicXpx.mosaicId) {
-            mosaicsSelect.push({
-              label: `${mosaic.namespaceName.name}:${mosaic.mosaicName.name}`,
-              value: `${mosaic.namespaceName.name}:${mosaic.mosaicName.name}`,
-              selected: false,
-              disabled: false
-            });
-          }
-        }
-      }
-    }
+   *
+  //
+  /* true... async getMosaics() {
+     const mosaicsSelect = this.mosaicsSelect.slice(0);
+     if (this.walletService.getAccountInfo() !== undefined) {
+       const mosaics = await this.mosaicServices.searchMosaics(this.walletService.getAccountInfo().mosaics.map(n => n.id));
+       // console.log(mosaics);
+       if (mosaics.length > 0) {
+         for (let mosaic of mosaics) {
+           if (this.proximaxProvider.getMosaicId(mosaic.id).id.toHex() !== this.mosaicServices.mosaicXpx.mosaicId) {
+             mosaicsSelect.push({
+               label: `${mosaic.namespaceName.name}:${mosaic.mosaicName.name}`,
+               value: `${mosaic.namespaceName.name}:${mosaic.mosaicName.name}`,
+               selected: false,
+               disabled: false
+             });
+           }
+         }
+       }
+     }
 
-    this.searchMosaics = false;
-    this.mosaicsSelect = mosaicsSelect;
-  }
+     this.searchMosaics = false;
+     this.mosaicsSelect = mosaicsSelect;
+   }*/
 
   /**
    * Gets errors
