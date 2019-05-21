@@ -31,7 +31,7 @@ export class ServicesComponent implements OnInit {
     const storage = this.service.structureServices('img-explorer-file', 'Storage', `Storage`,
       {
         explorerFile: this.structureServiceRoute('Storage', `/${AppConfig.routes.storage}`)
-      }, true
+      }, false
     );
 
     const explorerTransaction = this.service.structureServices('img-transaction', 'Transaction explorer', `Explorer transaction`,
@@ -44,7 +44,7 @@ export class ServicesComponent implements OnInit {
       {
         createPoll: this.structureServiceRoute('Create a Poll', `/${AppConfig.routes.createPoll}`),
         polls: this.structureServiceRoute('Vote and See Polls', `/${AppConfig.routes.polls}`),
-      }, true
+      }, false
     );
 
     const apostille = this.service.structureServices('img-apostille', 'Apostille',
@@ -52,7 +52,7 @@ export class ServicesComponent implements OnInit {
       {
         addApostille: this.structureServiceRoute('Apostille create', `/${AppConfig.routes.apostille}`),
         audiApostille: this.structureServiceRoute('Apostille audit', `/${AppConfig.routes.audiApostille}`),
-      }, true
+      }, false
     );
 
     const nameSpace = this.service.structureServices('fa fa-linode', 'Namespaces & Subdomains',
@@ -60,7 +60,7 @@ export class ServicesComponent implements OnInit {
       {
         createNamespace: this.structureServiceRoute('Create namespace', `/${AppConfig.routes.createNamespace}`),
         // renewNamespace: this.structureServiceRoute('Renew namespace',  `/${AppConfig.routes.editNamespace}`)
-      }, true
+      }, false
     );
 
     const mosaics = this.service.structureServices('fa fa-th', 'Mosaics',
@@ -68,7 +68,7 @@ export class ServicesComponent implements OnInit {
       {
         createMosaic: this.structureServiceRoute('Create mosaic', `/${AppConfig.routes.createMosaic}`),
         editMosaic: this.structureServiceRoute('Mosaic supply change', `/${AppConfig.routes.editMosaic}`),
-      }, true
+      }, false
     );
 
 
