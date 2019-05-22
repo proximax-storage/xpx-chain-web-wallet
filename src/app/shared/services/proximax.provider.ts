@@ -28,7 +28,8 @@ import {
   MosaicAmountView,
   Transaction,
   MosaicSupplyChangeTransaction,
-  RegisterNamespaceTransaction
+  RegisterNamespaceTransaction,
+  AccountInfo
 } from 'tsjs-xpx-catapult-sdk';
 
 import { Observable } from 'rxjs';
@@ -57,7 +58,7 @@ export class ProximaxProvider {
   transactionStatusError: TransactionStatusError;
   mosaicXpx: MosaicXPXInterface = {
     mosaic: 'prx:xpx',
-    mosaicId: 'd423931bd268d1f4',
+    mosaicId: '0dc67fbe1cad29e3',
     divisibility: 6
   };
 
@@ -295,7 +296,7 @@ export class ProximaxProvider {
    * @returns {Observable<AccountInfo>}
    * @memberof ProximaxProvider
    */
-  getAccountInfo(address: Address): any { //Observable<AccountInfo> {
+  getAccountInfo(address: Address): Observable<AccountInfo> {
     return this.accountHttp.getAccountInfo(address);
   }
 

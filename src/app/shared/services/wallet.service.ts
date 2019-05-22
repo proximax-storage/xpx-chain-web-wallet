@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { NetworkType, PublicAccount, AccountInfo } from "tsjs-xpx-catapult-sdk";
+import { NetworkType, PublicAccount, AccountInfo, Address } from "tsjs-xpx-catapult-sdk";
 import { crypto } from 'js-xpx-catapult-library';
 import { Router } from "@angular/router";
 import { AccountsInterface } from '..';
@@ -15,7 +15,7 @@ import { environment } from '../../../environments/environment';
 export class WalletService {
 
   currentAccount: any;
-  address: any;
+  address: Address;
   current: any;
   network: any = '';
   algo: string;
@@ -91,6 +91,7 @@ export class WalletService {
    * @memberof WalletService
    */
   use(wallet: any) {
+    console.log('----------------> wallet', wallet)
     if (!wallet) {
       this.sharedService.showError('Error', '¡you can not set anything like the current wallet!');
       return false;
@@ -100,11 +101,9 @@ export class WalletService {
     // Account used
     this.currentAccount = wallet.accounts[0];
     // Algo of the wallet
-
     this.algo = wallet.accounts[0].algo;
     // Adress and newwork
     this.address = this.proximaxProvider.createFromRawAddress(wallet.accounts[0].address);
-
     this.current = wallet;
     // this.contacts = this._AddressBook.getContacts(wallet);
     return true;

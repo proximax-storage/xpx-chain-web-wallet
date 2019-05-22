@@ -85,7 +85,7 @@ export class AuthService {
     this.dataBridgeService.closeConenection();
     this.dataBridgeService.connectnWs();
     // load services and components
-    this.transactionService.updateBalance();
+    //this.transactionService.updateBalance();
     this.nameSpaces.buildNamespaceStorage();
     return true;
   }

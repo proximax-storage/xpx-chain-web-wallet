@@ -51,7 +51,8 @@
 
           <!-- Recipient -->
           <div class="row box-form mt-1rem pt-0 pb-0 pr-0 pl-0">
-            <div [ngClass]="[contacts?.length > 0 ? myClass['boxRecipientTrue'] : myClass['boxRecipientFalse']]">
+            <div
+              [ngClass]="[contacts !== null && contacts?.length > 0 ? myClass['boxRecipientTrue'] : myClass['boxRecipientFalse']]">
               <div class="md-form" id="container-walletname">
                 <i class="fa fa-address-book prefix color-white"></i>
                 <input type="text" autocomplete="off" required formControlName="acountRecipient" id="acountRecipient"
@@ -61,9 +62,10 @@
               </div>
             </div>
 
-            <div [ngClass]="[contacts?.length > 0 ? myClass['boxDirectoryTrue'] : myClass['boxDirectoryFalse']]">
+            <div
+              [ngClass]="[contacts !== null && contacts?.length > 0 ? myClass['boxDirectoryTrue'] : myClass['boxDirectoryFalse']]">
               <div class="row">
-                <ng-container *ngIf="contacts?.length > 0">
+                <ng-container *ngIf="contacts !== null && contacts?.length > 0">
                   <div class="col-10 col-md-8 col-lg-9">
                     <!-- Show Directory -->
                     <ng-container *ngIf="!showContacts">
@@ -83,7 +85,8 @@
                   </div>
                 </ng-container>
 
-                <div [ngClass]="[contacts?.length > 0 ? myClass['rowAddContactTrue'] : myClass['rowAddContactFalse']]">
+                <div
+                  [ngClass]="[contacts !== null && contacts?.length > 0 ? myClass['rowAddContactTrue'] : myClass['rowAddContactFalse']]">
                   <img class="cursor-pointer color-white" src="assets/images/add-contact.png" alt="add contact"
                     (click)="basicModal.show()">
                 </div>
@@ -194,138 +197,3 @@
     </div>
   </div>
 </div>
-
-<!--
-<ng-container *ngIf="showContacts">
-  <div class="md-form  mt-5">
-    <i class="fa fa-bars prefix color-white"></i>
-    <mdb-select [options]="contacts" required placeholder="Select contact/address"
-      class="colorful-select dropdown-default" mdbInputDirective (selected)="optionSelected($event)">
-    </mdb-select>
-  </div>
-</ng-container>
-
-<div class="row mt-5">
-  <div class="col-10">
-    <div class="md-form" id="container-walletname">
-      <i class="fa fa-address-book prefix color-white"></i>
-      <input type="text" autocomplete="off" required formControlName="acountRecipient" id="acountRecipient"
-        class="form-control" mdbInputDirective data-success="Valid recipient"
-        [errorMessage]="getError('acountRecipient')">
-      <label for="recipient">Recipient</label>
-    </div>
-  </div>
-  <div class="col-2 d-flex align-items-center">
-    <div (click)="basicModal.show()" class="col-1" style="cursor: pointer;">
-      <img src="assets/images/add-contact.png" alt="add contact">
-    </div>
-    <ng-container *ngIf="contacts?.length > 0">
-      <div class="col-1" style="cursor: pointer;" (click)="showContacts = true;">
-        <img src="assets/images/agenda.png" alt="agenda">
-      </div>
-    </ng-container>
-  </div>
-</div>
-
-<div class="md-form mt-5" id="container-walletname">
-  <i class="fa fa-credit-card prefix color-white"></i>
-  <input type="number" autocomplete="off" formControlName="amount" id="amount" class="form-control" mdbInputDirective
-    data-success="Valid amount" [errorMessage]="getError('amount')">
-  <label for="recipient">Amount</label>
-</div>
-
-<div class="md-form mt-5" id="container-walletname">
-  <i class="fa fa-envelope prefix color-white"></i>
-  <input type="text" autocomplete="off" formControlName="message" id="message" class="form-control" mdbInputDirective
-    data-success="Valid message" [errorMessage]="getError('message')">
-  <label for="recipient">message</label>
-</div>
-
-<div class="md-form mt-5" id="container-password">
-  <i class="fa fa-lock prefix color-white"></i>
-  <input type="password" autocomplete="off" required formControlName="password" id="password" class="form-control"
-    mdbInputDirective data-success="Valid password" [errorMessage]="getError('password')">
-  <label for="password">Password</label>
-</div>
-
-<div class="mt-4rm">
-  <div class="row ">
-    <div class="mx-auto">
-      <div class="row">
-        <div class="col-xs-6">
-          <button mdbBtn type="button" rounded="true" class="waves-light btn-reverse" mdbWavesEffect type="submit"
-            (click)="cleanForm()">Clean</button>
-        </div>
-        <div class="col-xs-6">
-          <button mdbBtn type="button" color="default" rounded="true" class="waves-light" mdbWavesEffect
-            type="submit">Send</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div> -->
-
-
-
-
-<!--
-
-<div class="row mt-5">
-  <div class="col-10">
-    <div class="md-form" id="container-walletname">
-      <i class="fa fa-address-book prefix color-white"></i>
-      <input type="text" autocomplete="off" required formControlName="acountRecipient" id="acountRecipient"
-        class="form-control" mdbInputDirective data-success="Valid recipient"
-        [errorMessage]="getError('acountRecipient')">
-      <label for="recipient">Recipient</label>
-    </div>
-  </div>
-  <div class="col-2 d-flex align-items-center">
-    <div (click)="basicModal.show()" class="col-1" style="cursor: pointer;">
-      <img src="assets/images/add-contact.png" alt="add contact">
-    </div>
-    <ng-container *ngIf="contacts?.length > 0">
-      <div class="col-1" style="cursor: pointer;" (click)="showContacts = true;">
-        <img src="assets/images/agenda.png" alt="agenda">
-      </div>
-    </ng-container>
-  </div>
-</div>
-
-<div class="md-form mt-5" id="container-walletname">
-  <i class="fa fa-credit-card prefix color-white"></i>
-  <input type="number" autocomplete="off" formControlName="amount" id="amount" class="form-control" mdbInputDirective
-    data-success="Valid amount" [errorMessage]="getError('amount')">
-  <label for="recipient">Amount</label>
-</div>
-
-<div class="md-form mt-5" id="container-walletname">
-  <i class="fa fa-envelope prefix color-white"></i>
-  <input type="text" autocomplete="off" formControlName="message" id="message" class="form-control" mdbInputDirective
-    data-success="Valid message" [errorMessage]="getError('message')">
-  <label for="recipient">message</label>
-</div>
-
-<div class="md-form mt-5" id="container-password">
-  <i class="fa fa-lock prefix color-white"></i>
-  <input type="password" autocomplete="off" required formControlName="password" id="password" class="form-control"
-    mdbInputDirective data-success="Valid password" [errorMessage]="getError('password')">
-  <label for="password">Password</label>
-</div>
-
-<div class="mt-4rm">
-  <div class="row ">
-    <div class="mx-auto">
-      <div class="row">
-        <div class="col-xs-6">
-          <button mdbBtn type="button" rounded="true" class="waves-light btn-reverse" mdbWavesEffect type="submit"
-            (click)="cleanForm()">Clean</button>
-        </div>
-        <div class="col-xs-6">
-          <button mdbBtn type="button" color="default" rounded="true" class="waves-light" mdbWavesEffect
-            type="submit">Send</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div> -->

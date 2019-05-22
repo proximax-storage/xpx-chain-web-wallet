@@ -5,6 +5,7 @@
 
 export const environment = {
   production: true,
+  nameKeyNodeSelected: `xpx-catapult-web-wallet-n-s`,
   nameKeyWalletStorage: `xpx-catapult-web-wallet`,
   nameKeyNodeStorage: `xpx-catapult-web-wallet-nodes`,
   protocol: `http`,

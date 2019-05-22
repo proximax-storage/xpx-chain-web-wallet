@@ -472,6 +472,15 @@ footer {
 }
 
 /****************************** ONLY MDB ********************************/
+.form-control {
+  color: white !important;
+}
+
+.md-form .prefix~.text-success,
+.md-form .prefix~.text-danger {
+  left: 3rem;
+  font-weight: 400;
+}
 
 mdb-select>div>div.single>div.placeholder,
 .md-form label {
@@ -886,11 +895,11 @@ mdb-select mdb-select-dropdown .dropdown-content li>span {
 }
 
 .text-success {
-  color: #205f2e !important;
+  color: #00c751 !important;
 }
 
 .text-danger {
-  color: #f5a1a8 !important;
+  color: #ff4d40 !important;
 }
 
 .form-label-alert-m80 {

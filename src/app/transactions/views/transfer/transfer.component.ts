@@ -57,13 +57,12 @@ export class TransferComponent implements OnInit {
     private sharedService: SharedService,
     private transactionService: TransactionsService,
     private ServiceModuleService: ServiceModuleService,
-    private mosaicServices: MosaicService,
     private proximaxProvider: ProximaxProvider
   ) { }
 
   ngOnInit() {
     this.contacts = this.ServiceModuleService.getBooksAddress();
-    console.log('this.contacts', this.contacts.length);
+    console.log('this.contacts', this.contacts);
     this.createForm();
     this.createFormContact();
     // true... this.getMosaics();
@@ -237,7 +236,7 @@ export class TransferComponent implements OnInit {
       const amount = this.transferForm.get("amount").value;
       const message = this.transferForm.get("message").value === null ? "" : this.transferForm.get("message").value;
       const password = this.transferForm.get("password").value;
-      const node = this.transferForm.get("mosaicsSelect").value;
+      const mosaic = this.transferForm.get("mosaicsSelect").value;
       // console.log(message);
       const common = { password: password };
       if (this.walletService.decrypt(common)) {
@@ -247,7 +246,7 @@ export class TransferComponent implements OnInit {
           message,
           amount,
           this.walletService.network,
-          node
+          mosaic
         );
         rspBuildSend.transactionHttp
           .announce(rspBuildSend.signedTransaction)

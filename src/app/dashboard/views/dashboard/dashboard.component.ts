@@ -4,6 +4,7 @@ import { WalletService, SharedService } from '../../../shared';
 import { TransactionsInterface } from '../../services/transaction.interface';
 import { TransactionsService } from '../../../transactions/service/transactions.service';
 import { MdbTablePaginationComponent, MdbTableDirective } from 'ng-uikit-pro-standard';
+import { Address } from 'tsjs-xpx-catapult-sdk';
 
 @Component({
   selector: 'app-dashboard',
@@ -19,7 +20,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   elements: any = [];
   previous: any = [];
 
-  myAddress = '';
+  myAddress: Address = null;
   cantConfirmed = 0;
   cantUnconfirmed = 0;
   confirmedSelected = true;
@@ -93,20 +94,23 @@ export class DashboardComponent implements OnInit, OnDestroy {
         .then(response => {
           const data = [];
           response.forEach(element => {
-            data.push(this.transactionService.buildDashboard(element));
+            const builderTransactions = this.transactionService.buildDashboard(element);
+            if (builderTransactions !== null) {
+              data.push(builderTransactions);
+            }
           });
 
           this.transactionService.setTransactionsConfirmed$(data);
           this.iconReloadDashboard = false;
           this.searching = false;
           this.dashboardService.searchComplete = true;
-          // console.log(' ----- DATA CONFIRMED TRANSACTIONS ----', data);
+          console.log(' ----- DATA CONFIRMED TRANSACTIONS ----', data);
         }).catch(err => {
           this.dashboardService.searchComplete = false;
           this.searching = false;
           this.iconReloadDashboard = true;
           this.sharedService.showError('Has ocurred a error', 'Possible causes: the network is offline');
-          // console.log('This is error ----> ', err);
+          console.log('This is error ----> ', err);
         });
     } else {
       this.iconReloadDashboard = (this.dashboardService.searchComplete === false) ? true : false;

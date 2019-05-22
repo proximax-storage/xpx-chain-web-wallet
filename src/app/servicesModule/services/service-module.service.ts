@@ -1,12 +1,15 @@
 import { Injectable } from '@angular/core';
+import { WalletService } from '../../shared';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ServiceModuleService {
 
-  booksAddress = 'books-address'
-  constructor() {
+  booksAddress = `books-address-${this.walletService.address}`;
+  constructor(
+    private walletService: WalletService
+  ) {
 
   }
 
