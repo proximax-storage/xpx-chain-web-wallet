@@ -68,18 +68,18 @@ export class TransactionsService {
       id: TransactionType.AGGREGATE_BONDED,
       name: "Aggregate bonded"
     },
-    lock: {
-      id: TransactionType.LOCK,
-      name: "Lock"
-    },
+    /* lock: {
+       id: TransactionType.LOCK,
+       name: "Lock"
+     },*/
     secretLock: {
       id: TransactionType.SECRET_LOCK,
       name: "Secret lock"
     },
-    secretProof: {
-      id: TransactionType.SECRET_PROOF,
-      name: "Secret proof"
-    }
+    /* secretProof: {
+       id: TransactionType.SECRET_PROOF,
+       name: "Secret proof"
+     }*/
   };
 
   constructor(
@@ -104,7 +104,7 @@ export class TransactionsService {
     mosaic: string | number[]
   ) {
     const recipientAddress = this.proximaxProvider.createFromRawAddress(recipient);
-    const mosaicId = new MosaicId('prx.xpx');
+    const mosaicId = new MosaicId(mosaic);
     const transferTransaction = TransferTransaction.create(
       Deadline.create(5),
       recipientAddress,
@@ -113,7 +113,7 @@ export class TransactionsService {
       network
     );
 
-    console.log('transfer transaction', transferTransaction);
+    //console.log('transfer transaction', transferTransaction);
     const account = Account.createFromPrivateKey(common.privateKey, network);
     const signedTransaction = account.sign(transferTransaction);
     const transactionHttp = new TransactionHttp(
@@ -175,7 +175,7 @@ export class TransactionsService {
    * @memberof TransactionsService
    */
   buildDashboard(transaction: Transaction): TransactionsInterface {
-    console.log('My transaction is-- > ', transaction);
+    //console.log('My transaction is-- > ', transaction);
 
 
     const keyType = Object.keys(this.arraTypeTransaction).find(elm => this.arraTypeTransaction[elm].id === transaction.type);
@@ -196,8 +196,8 @@ export class TransactionsService {
         }
       }
 
-      console.log(this.arraTypeTransaction);
-      console.log(keyType);
+      //console.log(this.arraTypeTransaction);
+      //console.log(keyType);
 
       return {
         data: transaction,

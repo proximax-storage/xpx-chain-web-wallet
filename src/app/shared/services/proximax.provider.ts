@@ -57,7 +57,7 @@ export class ProximaxProvider {
   namespaceService: NamespaceService;
   transactionStatusError: TransactionStatusError;
   mosaicXpx: MosaicXPXInterface = {
-    mosaic: 'prx:xpx',
+    mosaic: 'XPX',
     mosaicId: '0dc67fbe1cad29e3',
     divisibility: 6
   };

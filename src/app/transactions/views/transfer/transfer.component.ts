@@ -44,7 +44,7 @@ export class TransferComponent implements OnInit {
       disabled: true
     },
     {
-      value: this.proximaxProvider.mosaicXpx.mosaic,
+      value: this.proximaxProvider.mosaicXpx.mosaicId,
       label: this.proximaxProvider.mosaicXpx.mosaic,
       selected: false,
       disabled: false
@@ -62,7 +62,7 @@ export class TransferComponent implements OnInit {
 
   ngOnInit() {
     this.contacts = this.ServiceModuleService.getBooksAddress();
-    console.log('this.contacts', this.contacts);
+    //console.log('this.contacts', this.contacts);
     this.createForm();
     this.createFormContact();
     // true... this.getMosaics();
@@ -76,7 +76,7 @@ export class TransferComponent implements OnInit {
   createForm() {
     this.transferForm = this.fb.group({
       mosaicsSelect: [
-        this.proximaxProvider.mosaicXpx.mosaic,
+        this.proximaxProvider.mosaicXpx.mosaicId,
         [Validators.required]
       ],
       acountRecipient: [
