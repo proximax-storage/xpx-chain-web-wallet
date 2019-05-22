@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectorRef, HostListener } from '@angular/core';
 import { DashboardService } from '../../services/dashboard.service';
 import { WalletService, SharedService } from '../../../shared';
 import { TransactionsInterface } from '../../services/transaction.interface';
@@ -18,9 +18,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   @ViewChild(MdbTablePaginationComponent) mdbTablePagination: MdbTablePaginationComponent;
   @ViewChild(MdbTableDirective) mdbTable: MdbTableDirective;
-  elements: any = [];
-  previous: any = [];
+  @HostListener('input') oninput() {
+    this.searchItems();
+  }
 
+  previous: any = [];
+  cantTransactions = 0;
   myAddress: Address = null;
   cantConfirmed = 0;
   cantUnconfirmed = 0;
@@ -137,22 +140,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Select tab
-   *
-   * @param {*} param
-   * @memberof DashboardComponent
-   */
-  selectTab(param: any) {
-    if (param === 1) {
-      this.confirmedSelected = true;
-      this.unconfirmedSelected = false;
-    } else {
-      this.confirmedSelected = false;
-      this.unconfirmedSelected = true;
-    }
-  }
-
-  /**
    *
    *
    * @memberof DashboardComponent
@@ -162,6 +149,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       (next: TransactionsInterface[]) => {
         this.cantConfirmed = next.length;
         this.transactionsConfirmed = next;
+        this.cantTransactions = this.cantConfirmed;
 
         // Datatable
         this.mdbTable.setDataSource(this.transactionsConfirmed);
@@ -181,5 +169,36 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.previous = this.mdbTable.getDataSource();*/
       }
     );
+  }
+
+  searchItems() {
+    const prev = this.mdbTable.getDataSource();
+    console.log(prev);
+    if (!this.searchTransaction) {
+      this.mdbTable.setDataSource(this.previous);
+      this.transactionsConfirmed = this.mdbTable.getDataSource();
+    }
+
+    if (this.searchTransaction) {
+      this.transactionsConfirmed = this.mdbTable.searchLocalDataBy(this.searchTransaction);
+      this.mdbTable.setDataSource(prev);
+    }
+    this.cantTransactions = this.transactionsConfirmed.length;
+  }
+
+  /**
+   * Select tab
+   *
+   * @param {*} param
+   * @memberof DashboardComponent
+   */
+  selectTab(param: any) {
+    if (param === 1) {
+      this.confirmedSelected = true;
+      this.unconfirmedSelected = false;
+    } else {
+      this.confirmedSelected = false;
+      this.unconfirmedSelected = true;
+    }
   }
 }

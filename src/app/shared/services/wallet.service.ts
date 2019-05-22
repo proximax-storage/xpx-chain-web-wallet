@@ -91,7 +91,7 @@ export class WalletService {
    * @memberof WalletService
    */
   use(wallet: any) {
-    console.log('----------------> wallet', wallet)
+    // console.log('----------------> wallet', wallet)
     if (!wallet) {
       this.sharedService.showError('Error', '¡you can not set anything like the current wallet!');
       return false;
@@ -102,7 +102,7 @@ export class WalletService {
     this.currentAccount = wallet.accounts[0];
     // Algo of the wallet
     this.algo = wallet.accounts[0].algo;
-    console.log(this.algo);
+    // console.log(this.algo);
     // Adress and newwork
     this.address = this.proximaxProvider.createFromRawAddress(wallet.accounts[0].address);
     this.current = wallet;
@@ -127,6 +127,7 @@ export class WalletService {
     const net = network || this.network;
     const alg = algo || this.algo;
     // Try to generate or decrypt key
+
 
     if (!crypto.passwordToPrivatekey(common, acct, alg)) {
       setTimeout(() => {
