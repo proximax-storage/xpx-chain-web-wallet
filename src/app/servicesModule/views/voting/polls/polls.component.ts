@@ -62,7 +62,7 @@ export class PollsComponent implements OnInit {
 
   ngOnInit() {
     this.blockUI.start('Loading...'); // Start blocking
-    this.proximaxProvider.getAllTransactionsFromAccount(this.proximaxProvider.getPublicAccountFromPrivateKey(this.privateKey, this.walletService.network)
+    this.proximaxProvider.getTransactionsFromAccount(this.proximaxProvider.getPublicAccountFromPrivateKey(this.privateKey, this.walletService.network)
     ).subscribe(
       (infTrans: Transaction[]) => {
         this.listPoll = infTrans.map((tran: any) => {
@@ -135,7 +135,7 @@ export class PollsComponent implements OnInit {
     this.voteCast = false;
     this.showVote = false;
     const publicAccount = this.proximaxProvider.createPublicAccount(this.publicKey, this.walletService.network);
-    this.proximaxProvider.getAllTransactionsFromAccount(publicAccount).subscribe(
+    this.proximaxProvider.getTransactionsFromAccount(publicAccount).subscribe(
       (infTrans: Transaction[]) => {
         let data: any
         infTrans.map((tran: any) => {
@@ -225,7 +225,7 @@ export class PollsComponent implements OnInit {
   }
   ifvoted(element) {
     const publicAccount = this.proximaxProvider.createPublicAccount(element, this.walletService.network);
-    this.proximaxProvider.getAllTransactionsFromAccount(publicAccount).subscribe(
+    this.proximaxProvider.getTransactionsFromAccount(publicAccount).subscribe(
       (infTrans: Transaction[]) => {
         this.resultinftrans = infTrans.map((tran: any) => {
           return tran.signer.address['address'];
@@ -302,7 +302,7 @@ export class PollsComponent implements OnInit {
     const datachar = []
     this.stringsPubliKey.forEach((element, index) => {
       const publicAccount = this.proximaxProvider.createPublicAccount(element, this.walletService.network);
-      this.proximaxProvider.getAllTransactionsFromAccount(publicAccount).subscribe(
+      this.proximaxProvider.getTransactionsFromAccount(publicAccount).subscribe(
         (infTrans: Transaction[]) => {
           datachar.push({ name: this.strings[index], y: infTrans.length })
           this.createcharts(datachar);

@@ -91,6 +91,43 @@ export class TransactionsService {
 
 
 
+  /**
+   *
+   *
+   * @param {Transaction} transaction
+   * @returns {ConfirmedTransactions}
+   * @memberof TransactionsService
+   */
+  getStructureDashboard(transaction: Transaction): TransactionsInterface {
+    const keyType = Object.keys(this.arraTypeTransaction).find(elm => this.arraTypeTransaction[elm].id === transaction.type);
+    if (keyType !== undefined) {
+      let recipientRentalFeeSink = '';
+      if (transaction["mosaics"] === undefined) {
+        if (transaction.type === this.arraTypeTransaction.registerNameSpace.id) {
+          recipientRentalFeeSink = this.namespaceRentalFeeSink.address_public_test;
+        } else if (
+          transaction.type === this.arraTypeTransaction.mosaicDefinition.id ||
+          transaction.type === this.arraTypeTransaction.mosaicSupplyChange.id
+        ) {
+          recipientRentalFeeSink = this.mosaicRentalFeeSink.address_public_test;
+        } else {
+          recipientRentalFeeSink = "XXXXX-XXXXX-XXXXXX";
+        }
+      }
+
+      return {
+        data: transaction,
+        nameType: this.arraTypeTransaction[keyType].name,
+        timestamp: this.dateFormat(transaction.deadline),
+        fee: this.amountFormatterSimple(transaction.maxFee.compact()),
+        sender: transaction.signer,
+        recipientRentalFeeSink: recipientRentalFeeSink,
+        recipient: (transaction['recipient'] !== undefined) ? transaction['recipient'] : null,
+        isRemitent: (transaction['recipient'] !== undefined) ? this.walletService.address.pretty() === transaction["recipient"].pretty() : false
+      }
+    }
+    return null;
+  }
 
 
   /**************************************************************** */
@@ -167,52 +204,7 @@ export class TransactionsService {
     return amountDivisibility.toLocaleString("en-us", { minimumFractionDigits: 6 });
   }
 
-  /**
-   *
-   *
-   * @param {Transaction} transaction
-   * @returns {ConfirmedTransactions}
-   * @memberof TransactionsService
-   */
-  buildDashboard(transaction: Transaction): TransactionsInterface {
-    //console.log('My transaction is-- > ', transaction);
 
-
-    const keyType = Object.keys(this.arraTypeTransaction).find(elm => this.arraTypeTransaction[elm].id === transaction.type);
-    if (keyType !== undefined) {
-      let recipientRentalFeeSink = '';
-      if (transaction["mosaics"] !== undefined) {
-        // console.log("Este tipo de transaccion tiene mosaico");
-      } else {
-        if (transaction.type === this.arraTypeTransaction.registerNameSpace.id) {
-          recipientRentalFeeSink = this.namespaceRentalFeeSink.address_public_test;
-        } else if (
-          transaction.type === this.arraTypeTransaction.mosaicDefinition.id ||
-          transaction.type === this.arraTypeTransaction.mosaicSupplyChange.id
-        ) {
-          recipientRentalFeeSink = this.mosaicRentalFeeSink.address_public_test;
-        } else {
-          recipientRentalFeeSink = "XXXXX-XXXXX-XXXXXX";
-        }
-      }
-
-      //console.log(this.arraTypeTransaction);
-      //console.log(keyType);
-
-      return {
-        data: transaction,
-        nameType: this.arraTypeTransaction[keyType].name,
-        timestamp: this.dateFormat(transaction.deadline),
-        fee: this.amountFormatterSimple(transaction.maxFee.compact()),
-        sender: transaction.signer,
-        recipientRentalFeeSink: recipientRentalFeeSink,
-        recipient: (transaction['recipient'] !== undefined) ? transaction['recipient'] : null,
-        isRemitent: (transaction['recipient'] !== undefined) ? this.walletService.address.pretty() === transaction["recipient"].pretty() : false
-      }
-    }
-
-    return null;
-  }
 
   /**
      * Calculate duration based in blocks
@@ -319,10 +311,13 @@ export class TransactionsService {
    */
   updateBalance() {
     this.proximaxProvider.getAccountInfo(this.walletService.address).pipe(first()).subscribe(
-      (next: AccountInfo) => {
+      (accountInfo: AccountInfo) => {
+        console.log('AccountInfo ---> ', accountInfo);
+        //Search mosaics
+        this.mosaicService.searchMosaics(accountInfo.mosaics.map(next => next.id));
         // Save account info returned in walletService
-        this.walletService.setAccountInfo(next);
-        next.mosaics.forEach(element => {
+        this.walletService.setAccountInfo(accountInfo);
+        accountInfo.mosaics.forEach(element => {
           // If mosaicId is XPX, set balance in XPX
           if (element.id.toHex() === this.proximaxProvider.mosaicXpx.mosaicId) {
             this.setBalance$(element.amount.compact());

@@ -74,22 +74,6 @@ export class DashboardService {
   /**
    *
    *
-   * @param {PublicAccount} publicAccount
-   * @param {QueryParams} [queryParams]
-   * @returns {Observable<Transaction[]>}
-   * @memberof DashboardService
-   */
-  getAllTransactionsPromise(publicAccount: PublicAccount, queryParams?: QueryParams): Promise<Transaction[]> {
-    if (queryParams !== undefined) {
-      return this.proximaxProvider.getAllTransactionsFromAccount(publicAccount, queryParams).toPromise();
-    }
-
-    return this.proximaxProvider.getAllTransactionsFromAccount(publicAccount, this.walletService.network).toPromise();
-  }
-
-  /**
-   *
-   *
    * @returns {number}
    * @memberof DashboardService
    */

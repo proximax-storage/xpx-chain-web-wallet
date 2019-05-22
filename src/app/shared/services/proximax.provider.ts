@@ -386,7 +386,7 @@ export class ProximaxProvider {
    * @returns {Observable<Transaction[]>}
    * @memberof ProximaxProvider
    */
-  getAllTransactionsFromAccount(publicAccount: PublicAccount, queryParams?): Observable<Transaction[]> {
+  getTransactionsFromAccount(publicAccount: PublicAccount, queryParams?): Observable<Transaction[]> {
     return this.accountHttp.transactions(publicAccount, new QueryParams(queryParams));
   }
 

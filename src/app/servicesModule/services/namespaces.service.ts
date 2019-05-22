@@ -25,10 +25,10 @@ export class NamespacesService {
   ) { }
 
   /**
-   * Search and save namespace in cache
-   *
-   * @memberof NamespacesService
-   */
+     * Search and save namespace in cache
+     *
+     * @memberof NamespacesService
+     */
   async buildNamespaceStorage() {
     //Gets array of NamespaceInfo for an account
     this.getNamespacesFromAccountAsync(this.walletService.address)
@@ -46,6 +46,12 @@ export class NamespacesService {
         );
       });
   }
+
+
+  /****************************** FIN COW */
+
+
+
 
 
   async getNamespaceFromId(namespaceId: NamespaceId): Promise<NamespaceStorage> {
@@ -101,17 +107,19 @@ export class NamespacesService {
       const idsToSearch = [];
       ids.forEach(namespaceId => {
         const filterNamespace = this.filterNamespace(namespaceId);
-        // console.log(filterNamespace);
+        //console.log(filterNamespace);
         if (filterNamespace === undefined || filterNamespace === null) {
           idsToSearch.push(namespaceId);
         }
       });
 
       if (idsToSearch.length > 0) {
+        //console.log('---> idToSearch ', idsToSearch);
         // Gets array of NamespaceName for different namespaceIds
         const namespacesName = await this.getNamespacesNameAsync(idsToSearch);
         if (namespacesName) {
           namespacesParam.forEach(async element => {
+            //console.log('namespacesName- ----> ', namespacesName);
             // Check if the namespace id exists in storage
             const existNamespace = namespacesStorage.find(k => this.proximaxProvider.getNamespaceId(k.id).toHex() === element.id.toHex());
             // If existNamespace is undefined
@@ -129,10 +137,11 @@ export class NamespacesService {
             }
 
             //Build mosaics storage
-            // this.mosaicsService.buildMosaicsFromNamespace(element.id);
+            //this.mosaicsService.buildMosaicsFromNamespace(element.id);
           });
 
           localStorage.setItem(this.getNameStorage(), JSON.stringify(namespacesStorage));
+          //console.log(namespacesStorage);
           return namespacesStorage;
         }
       }
@@ -142,7 +151,7 @@ export class NamespacesService {
   }
 
   /**
-   *
+   * Validate if a namespace is in the storage
    *
    * @param {NamespaceId} namespaceId
    * @returns {NamespaceStorage}

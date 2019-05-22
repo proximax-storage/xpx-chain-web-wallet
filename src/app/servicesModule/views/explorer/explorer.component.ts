@@ -114,7 +114,7 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
         if (this.paramSearch.length === 40) {
           this.proximaxProvider.getAccountInfo(Address.createFromRawAddress(this.paramSearch)).pipe(first()).subscribe(
             accountInfo => {
-              this.proximaxProvider.getAllTransactionsFromAccount(accountInfo.publicAccount).subscribe(
+              this.proximaxProvider.getTransactionsFromAccount(accountInfo.publicAccount).subscribe(
                 resp => {
                   // console.log('with address info ', resp);
                   this.buildTransaction(resp);
@@ -135,7 +135,7 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
       } else if (this.typeSearch === 'publickey') {
         //From publickey
         const publicAccount = this.proximaxProvider.createPublicAccount(this.paramSearch, this.walletService.network);
-        this.proximaxProvider.getAllTransactionsFromAccount(publicAccount, this.nodeService.getNodeSelected()).subscribe(
+        this.proximaxProvider.getTransactionsFromAccount(publicAccount, this.nodeService.getNodeSelected()).subscribe(
           resp => {
             this.searching = false;
             this.buildTransaction(resp);

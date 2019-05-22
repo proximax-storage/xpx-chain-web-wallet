@@ -49,7 +49,7 @@ export class TransactionsComponent implements OnInit {
   }
 
   getAllTransactions() {
-    this.proximaxProvider.getAllTransactionsFromAccount(this.walletService.publicAccount, this.walletService.network).pipe(first()).subscribe(
+    this.proximaxProvider.getTransactionsFromAccount(this.walletService.publicAccount, this.walletService.network).pipe(first()).subscribe(
       trans => {
         trans.forEach(element => {
           const date = `${element.deadline.value.monthValue()}/${element.deadline.value.dayOfMonth()}/${element.deadline.value.year()}`;

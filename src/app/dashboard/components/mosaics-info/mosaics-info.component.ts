@@ -96,7 +96,7 @@ export class MosaicsInfoComponent implements OnInit {
     this.viewMosaicXpx = false;
     this.viewOtherMosaics = false;
     this.quantity = [];
-    const mosaics: MosaicsStorage[] = null;//await this.mosaicService.searchMosaics(this.mosaicsArray.map((mosaic: Mosaic) => { return mosaic.id }));
+    const mosaics: MosaicsStorage[] = await this.mosaicService.searchMosaics(this.mosaicsArray.map((mosaic: Mosaic) => { return mosaic.id }));
     if (mosaics.length > 0) {
       for (let mosaic of mosaics) {
         // Create MosaicId from mosaic and namespace string id (ex: nem:xem or domain.subdom.subdome:token)

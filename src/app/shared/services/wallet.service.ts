@@ -102,6 +102,7 @@ export class WalletService {
     this.currentAccount = wallet.accounts[0];
     // Algo of the wallet
     this.algo = wallet.accounts[0].algo;
+    console.log(this.algo);
     // Adress and newwork
     this.address = this.proximaxProvider.createFromRawAddress(wallet.accounts[0].address);
     this.current = wallet;

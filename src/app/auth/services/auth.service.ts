@@ -34,6 +34,30 @@ export class AuthService {
   }
 
 
+  /**
+  * Method to login
+  *
+  * @param {*} common
+  * @param {*} wallet
+  * @returns
+  * @memberof LoginService
+  */
+  login(common: any, wallet: any) {
+    if (!this.walletService.login(common, wallet)) {
+      return false;
+    }
+
+    // this.transactionsService.destroyAllTransactions();
+    this.setLogged(true);
+    this.route.navigate([`/${AppConfig.routes.dashboard}`]);
+
+    this.dataBridgeService.closeConenection();
+    this.dataBridgeService.connectnWs();
+    // load services and components
+    this.nameSpaces.buildNamespaceStorage();
+    return true;
+  }
+
 
   /************ FIN COW *****************/
 
@@ -65,30 +89,7 @@ export class AuthService {
   }
 
 
-  /**
-   * Method to login
-   *
-   * @param {*} common
-   * @param {*} wallet
-   * @returns
-   * @memberof LoginService
-   */
-  login(common: any, wallet: any) {
-    if (!this.walletService.login(common, wallet)) {
-      return false;
-    }
 
-    // this.transactionsService.destroyAllTransactions();
-    this.setLogged(true);
-    this.route.navigate([`/${AppConfig.routes.dashboard}`]);
-
-    this.dataBridgeService.closeConenection();
-    this.dataBridgeService.connectnWs();
-    // load services and components
-    //this.transactionService.updateBalance();
-    this.nameSpaces.buildNamespaceStorage();
-    return true;
-  }
 
 
   /**

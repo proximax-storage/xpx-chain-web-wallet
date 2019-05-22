@@ -114,7 +114,7 @@ export class DataBridgeService {
       // console.log("Transacciones confirmadas entrantes", incomingTransaction);
       this.transactionsService.getTransactionsConfirmed$().pipe(first()).subscribe(allTransactionConfirmed => {
         const transactionPushed = allTransactionConfirmed.slice(0);
-        const transactionFormatter = this.transactionsService.buildDashboard(incomingTransaction);
+        const transactionFormatter = this.transactionsService.getStructureDashboard(incomingTransaction);
         transactionPushed.unshift(transactionFormatter);
         this.destroyUnconfirmedTransaction(transactionFormatter);
         this.transactionsService.setTransactionsConfirmed$(transactionPushed);
@@ -140,7 +140,7 @@ export class DataBridgeService {
       this.transactionsService.getTransactionsUnConfirmed$().pipe(first()).subscribe(
         async transactionsUnconfirmed => {
           const transactionPushed = transactionsUnconfirmed.slice(0);
-          const transactionFormatter = this.transactionsService.buildDashboard(unconfirmedTransaction);
+          const transactionFormatter = this.transactionsService.getStructureDashboard(unconfirmedTransaction);
           transactionPushed.unshift(transactionFormatter);
           this.transactionsService.setTransactionsUnConfirmed$(transactionPushed);
           audio.play();
