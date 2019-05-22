@@ -312,7 +312,7 @@ export class TransactionsService {
   updateBalance() {
     this.proximaxProvider.getAccountInfo(this.walletService.address).pipe(first()).subscribe(
       (accountInfo: AccountInfo) => {
-        console.log('AccountInfo ---> ', accountInfo);
+        // console.log('AccountInfo ---> ', accountInfo);
         //Search mosaics
         this.mosaicService.searchMosaics(accountInfo.mosaics.map(next => next.id));
         // Save account info returned in walletService

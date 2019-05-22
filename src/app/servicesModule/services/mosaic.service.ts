@@ -28,7 +28,7 @@ export class MosaicService {
 
   mosaicsViewCache: MosaicView[] = [];
   mosaicXpx: MosaicXPXInterface = {
-    mosaic: "XPX",
+    mosaic: "prx.xpx",
     mosaicId: "0dc67fbe1cad29e3",
     divisibility: 6
   };
@@ -157,7 +157,7 @@ export class MosaicService {
    * @memberof MosaicService
    */
   async searchMosaics(mosaicsId: MosaicId[]): Promise<MosaicsStorage[]> {
-    console.log('mosaicsId---> ', mosaicsId);
+    // console.log('mosaicsId---> ', mosaicsId);
     const mosaicsStorage = [];
     const mosaicsToSearch = [];
     //Filter mosaics to search
@@ -168,14 +168,14 @@ export class MosaicService {
       (filterMosaic === undefined || filterMosaic === null) ? mosaicsToSearch.push(mosaicId.id) : mosaicsStorage.push(filterMosaic);
     });
 
-    console.log('mosaicsToSearch ---> ', mosaicsToSearch);
-    console.log('mosaicsStorage ---> ', mosaicsStorage);
+    // console.log('mosaicsToSearch ---> ', mosaicsToSearch);
+    // console.log('mosaicsStorage ---> ', mosaicsStorage);
 
-    // console.log(mosaicsToSearch);
+    //console.log(mosaicsToSearch);
     if (mosaicsToSearch.length > 0) {
       // Gets MosaicInfo for different mosaicIds.
       const mosaicsInfo = await this.proximaxProvider.getMosaics(mosaicsToSearch).toPromise();
-      console.log('mosaicsInfo', mosaicsInfo);
+      // console.log('mosaicsInfo', mosaicsInfo);
       // There is an array of mosaicsInfo
       if (mosaicsInfo.length > 0) {
         const infoMosaicsNotFound = [];
@@ -235,6 +235,7 @@ export class MosaicService {
     const mosaicsIds = (mosaicsInfo.length > 0) ? mosaicsInfo.map(data => data.mosaicId) : mosaicsToSearch;
     // If the mosaic identification has data, look for the names of the tiles. This must return an array of mosaics name
     const mosaicsName = (mosaicsIds.length > 0) ? await this.getNameMosaics(mosaicsIds) : [];
+    console.log('----> mosaicsName ', mosaicsName);
     if (mosaicsInfo.length > 0) {
       for (let mosaicInfo of mosaicsInfo) {
         const data = await this.buildStructureMosaicStorage(mosaicsStorage, mosaicInfo.mosaicId, mosaicsName, mosaicInfo);
@@ -268,14 +269,11 @@ export class MosaicService {
       const mosaicName = mosaicsName.find(data => data.mosaicId.toHex() === mosaicId.toHex());
       // If mosaicName is defined
       if (mosaicName) {
-        // const namespaceId = (mosaicInfo) ? [mosaicInfo.namespaceId] : [mosaicName.namespaceId];
-        // const x = await this.proximaxProvider.namespaceHttp.getNamespacesName(namespaceId).toPromise();
         const infoComplete = (mosaicInfo) ? true : false;
-
         // Push to the array of mosaicsStorage
         return {
           id: [mosaicName.mosaicId.id.lower, mosaicName.mosaicId.id.higher],
-          namespaceName: null, //x[0]
+          mosaicNames: mosaicName,
           mosaicInfo: mosaicInfo,
           infoComplete: infoComplete
         };

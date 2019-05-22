@@ -13,7 +13,7 @@ export interface TransactionsInterface {
 
 
 export interface MosaicXPXInterface {
-  mosaic: "XPX",
+  mosaic: "prx.xpx",
   mosaicId: "0dc67fbe1cad29e3",
   divisibility: 6
 }

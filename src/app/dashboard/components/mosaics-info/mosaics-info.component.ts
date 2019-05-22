@@ -117,9 +117,10 @@ export class MosaicsInfoComponent implements OnInit {
           }
         } else {
           // console.log(mosaic.mosaicName);
+          const nameMosaic = (mosaic.mosaicNames.names.length > 0) ? mosaic.mosaicNames.names[0] : this.proximaxProvider.getMosaicId(mosaic.id).toHex();
           this.quantity.push({
             id: myMosaic.id.toHex(),
-            name: '',//`${mosaic.namespaceName.name}:${mosaic.mosaicName.name}`,
+            name: nameMosaic,
             amountFormatter: amount,
             mosaicInfo: mosaic,
             existMosaic: true
