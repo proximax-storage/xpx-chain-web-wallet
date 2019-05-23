@@ -22,7 +22,7 @@ export class HomeComponent implements OnInit {
     //const addNode = this.service.structureServices('img-add-node', 'Nodes', `Add and select node`, '', true);
     const explorerTransaction = this.service.structureServices('icon-transactions-dark-green.svg', 'Transactions', `Search All available transactions`, '', true);
     const voting = this.service.structureServices('icon-voting-dark-green.svg', 'Voting', `Create and vote on polls`, '', true);
-    const apostille = this.service.structureServices('icon-notary-dark-green.svg', 'Notary', 'Use Notarisation service to create blockchain based notarizations to time stamp, follow and audit file authenticity.', '', true);
+    const apostille = this.service.structureServices('icon-notary-dark-green.svg', 'Notary', 'Use notarizations service to create blockchain based notarizations to time stamp, follow and audit file authenticity.', '', true);
     const multisignature = this.service.structureServices('fa fa-user-plus', 'Multisignature and Multi-User Accounts', 'Mutisig accounts are editable on-chain contracts, the most powerful way to secure funds, enable join accounts, and are the foundation of DAOs.', '', false);
     const nameSpace = this.service.structureServices('img-node', 'Namespaces & Subdomains', 'Namespaces are domain names. Each namespaces is unique and authenticates mosaics (assets) issued on it or on its subdomains', '', false);
     const delegatedHarvesting = this.service.structureServices('fa fa-compress', 'Delegated Harvesting', 'Delegated haversting is the feature that allows "mining" even while your account is closed', '', false);

@@ -5,14 +5,15 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { ClipboardModule } from 'ngx-clipboard';
 import { MdbModule } from "../shared/moduls/mdb/mdb.module";
-
+import { NgSelectModule } from '@ng-select/ng-select';
 
 const modules = [
   CommonModule,
   ReactiveFormsModule,
   FormsModule,
   HttpClientModule,
-  ClipboardModule
+  ClipboardModule,
+  NgSelectModule
 ];
 
 @NgModule({

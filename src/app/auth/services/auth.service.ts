@@ -137,7 +137,7 @@ export class AuthService {
    */
   walletsOption(wallets: Array<any> = []) {
     wallets = (wallets == null) ? [] : wallets
-    const r = [{ 'value': '', 'label': 'Select wallet' }];
+    const r = [];
     wallets.forEach((item) => {
       r.push({ value: item, label: item.name });
     });

@@ -6,7 +6,7 @@ import { WalletService } from '../../shared';
 })
 export class ServiceModuleService {
 
-  booksAddress = `books-address-${this.walletService.address}`;
+  booksAddress = `books-address-${this.walletService.address.pretty()}`;
   constructor(
     private walletService: WalletService
   ) {
