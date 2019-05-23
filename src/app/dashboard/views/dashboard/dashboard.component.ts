@@ -173,7 +173,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   searchItems() {
     const prev = this.mdbTable.getDataSource();
-    console.log(prev);
     if (!this.searchTransaction) {
       this.mdbTable.setDataSource(this.previous);
       this.transactionsConfirmed = this.mdbTable.getDataSource();

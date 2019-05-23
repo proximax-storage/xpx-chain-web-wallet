@@ -128,7 +128,6 @@ export class WalletService {
     const alg = algo || this.algo;
     // Try to generate or decrypt key
 
-
     if (!crypto.passwordToPrivatekey(common, acct, alg)) {
       setTimeout(() => {
         this.sharedService.showError('Error', '¡Invalid password!');

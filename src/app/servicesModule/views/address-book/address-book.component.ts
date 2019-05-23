@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectorRef, AfterViewInit, HostListener } from '@angular/core';
 import { FormGroup, Validators, FormBuilder } from "@angular/forms";
+import { ModalDirective, MdbTablePaginationComponent, MdbTableDirective } from 'ng-uikit-pro-standard';
 import { ServiceModuleService } from "../../services/service-module.service";
 import { SharedService } from "../../../shared";
 
@@ -8,22 +9,47 @@ import { SharedService } from "../../../shared";
   templateUrl: './address-book.component.html',
   styleUrls: ['./address-book.component.scss']
 })
-export class AddressBookComponent implements OnInit {
+export class AddressBookComponent implements OnInit, AfterViewInit {
+
+  //Pagination
+  @ViewChild(MdbTablePaginationComponent) mdbTablePagination: MdbTablePaginationComponent;
+  @ViewChild(MdbTableDirective) mdbTable: MdbTableDirective;
+  @HostListener('input') oninput() {
+    this.searchItems();
+  }
+
+  previous: any = [];
 
   headElements = ['Label', 'Account address', 'Actions'];
   contactForm: FormGroup;
   contacts = [];
+  searchContact = '';
+  searching = false;
+
 
   constructor(
+    private cdRef: ChangeDetectorRef,
     private fb: FormBuilder,
     private serviceModuleService: ServiceModuleService,
     private sharedService: SharedService
   ) {
-    this.contacts = this.serviceModuleService.getBooksAddress();
+
   }
 
   ngOnInit() {
+    const contacts = this.serviceModuleService.getBooksAddress();
+    this.contacts = (contacts !== null && contacts !== undefined) ? contacts : [];
+    this.mdbTable.setDataSource(this.contacts);
+    this.contacts = this.mdbTable.getDataSource();
+    this.previous = this.mdbTable.getDataSource();
     this.createFormContact();
+  }
+
+  ngAfterViewInit() {
+    this.mdbTablePagination.setMaxVisibleItemsNumberTo(5);
+    this.mdbTablePagination.calculateFirstItemIndex();
+    this.mdbTablePagination.calculateLastItemIndex();
+    this.cdRef.detectChanges();
   }
 
   createFormContact() {
@@ -83,6 +109,31 @@ export class AddressBookComponent implements OnInit {
     }
   }
 
+
+  /**
+   * Filter contacts
+   *
+   * @memberof AddressBookComponent
+   */
+  searchItems() {
+    const prev = this.mdbTable.getDataSource();
+    if (!this.searchContact) {
+      this.mdbTable.setDataSource(this.previous);
+      this.contacts = this.mdbTable.getDataSource();
+    }
+
+    if (this.searchContact) {
+      this.contacts = this.mdbTable.searchLocalDataBy(this.searchContact);
+      this.mdbTable.setDataSource(prev);
+    }
+  }
+
+  /**
+   * Remove contact
+   *
+   * @param {*} label
+   * @memberof AddressBookComponent
+   */
   remove(label) {
     const newContacts = [];
     this.contacts.forEach(element => {
