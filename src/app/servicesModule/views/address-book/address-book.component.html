@@ -57,129 +57,110 @@
         </div>
       </div>
 
-      <div class="row">
-        <div class="col-12 mx-auto">
-          <div class="table-responsive table-hover">
-            <table mdbTable #tableEl="mdbTable" id="mdbTable" striped="true"
-              class="table table-hover table-bordered table-hover table-sm z-depth-0" borderless="true">
-              <!--Table head-->
-              <thead>
-                <tr class="header-backg">
-                  <ng-container *ngFor="let head of headElements; let i = index">
-                    <th scope="col" class="text-center f-w-400">{{head}}</th>
-                  </ng-container>
-                </tr>
-              </thead>
-              <!--Table head-->
+      <ng-container>
+        <div class="row">
+          <div class="col-12 mx-auto">
+            <div class="table-responsive table-hover">
+              <table mdbTable #tableEl="mdbTable" id="mdbTable" striped="true"
+                class="table table-hover table-bordered table-hover table-sm z-depth-0" borderless="true">
+                <!--Table head-->
+                <thead>
+                  <tr class="header-backg">
+                    <ng-container *ngFor="let head of headElements; let i = index">
+                      <th scope="col" class="text-center f-w-400">{{head}}</th>
+                    </ng-container>
+                  </tr>
+                </thead>
+                <!--Table head-->
 
-              <!--Table body-->
-              <tbody>
-                <ng-container *ngFor="let contact of contacts; let i = index">
-                  <tr class="mouse-pointer">
-                    <th *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex"
-                      class="th-sm text-center" scope="row description-dark-green">{{contact.label}}</th>
-                    <td class="text-center th-sm description-dark-green"
-                      *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex">
-                      {{contact.value}}</td>
-                    <td *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex">
-                      <span class="table-remove text-center d-flex justify-content-center">
-                        <button type="button" mdbBtn color="danger" rounded="true" size="sm" class="my-0"
-                          (click)="remove(contact.label)">Remove</button>
-                      </span>
+                <!--Table body-->
+                <tbody>
+                  <ng-container *ngFor="let contact of contacts; let i = index">
+                    <tr class="mouse-pointer">
+                      <th *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex"
+                        class="th-sm text-center" scope="row description-dark-green">{{contact.label}}</th>
+                      <td class="text-center th-sm description-dark-green"
+                        *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex">
+                        {{contact.value}}</td>
+                      <td *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex">
+                        <span class="table-remove text-center d-flex justify-content-center">
+                          <button type="button" mdbBtn color="danger" rounded="true" size="sm" class="my-0"
+                            (click)="remove(contact.label)">Remove</button>
+                        </span>
+                      </td>
+                    </tr>
+                  </ng-container>
+                </tbody>
+
+                <tfoot class="lighten-5 w-100">
+                  <tr>
+                    <td colspan="5">
+                      <mdb-table-pagination [tableEl]="tableEl" [searchDataSource]="contacts">
+                      </mdb-table-pagination>
                     </td>
                   </tr>
-                </ng-container>
-              </tbody>
-
-              <tfoot class="lighten-5 w-100">
-                <tr>
-                  <td colspan="5">
-                    <mdb-table-pagination [tableEl]="tableEl" [searchDataSource]="contacts">
-                    </mdb-table-pagination>
-                  </td>
-                </tr>
-              </tfoot>
-            </table>
+                </tfoot>
+              </table>
+            </div>
           </div>
         </div>
-      </div>
+      </ng-container>
+
     </div>
   </div>
 </div>
-
-
-<!-- <div class="container mt-3rem">
-  <div class="row">
-    <div class="col-12 col-sm-11 col-md-10">
-
-      <div class="table-responsive table-striped">
-        <div class="card-body">
-          <div id="table" class="table-editable-no">
-            <div class="row">
-              <div class="col-8">
-                <span class="addbooks">Contacts</span>
-              </div>
-              <div class="col-4">
-                <span class="table-add float-right mb-3 mr-2">
-                  <a class="text-add" (click)="basicModal.show()">
-                    <i class="fa fa-address-book" style="font-size: 1.6rem; color: #2ba79d;"></i>
-                  </a>
-                </span>
-              </div>
-            </div>
-            <table class="table table-bordered table-responsive-xs table-striped text-center">
-              <tr>
-                <th *ngFor="let head of headElements; let i = index" class="text-center">{{head}}</th>
-              </tr>
-              <tr *ngFor="let contact of contacts; let id = index">
-                <td contenteditable="false">{{contact.label}}</td>
-                <td contenteditable="false">{{contact.value}}</td>
-                <td>
-                  <span class="table-remove">
-                    <button type="button" mdbBtn color="danger" rounded="true" size="sm" class="my-0"
-                      (click)="remove(contact.label)">Remove</button>
-                  </span>
-                </td>
-              </tr>
-            </table>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</div> -->
 
 <!-- Modal -->
 <div mdbModal #basicModal="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myBasicModalLabel"
   aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content form-elegant">
-      <div class="modal-header text-center background-header-box">
-        <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3" id="myModalLabel"><strong
-            class="color-white">Add
-            Address</strong></h3>
+      <div class="modal-header text-center box-modal-dark-green">
+        <h6 class="modal-title w-100 dark-grey-text" id="myModalLabel">
+          <strong class="title-modal-white">Add contact</strong>
+        </h6>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="basicModal.hide()">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <form [formGroup]="contactForm" (ngSubmit)="saveContact()">
         <div class="modal-body mx-4">
-          <div class="md-form mt-5" id="container-walletname">
-            <input formControlName="user" type="text" autocomplete="off" required id="user" class="form-control"
-              mdbInputDirective data-success="Valid user" [errorMessage]="getError('user')">
-            <label for="recipient">User</label>
+
+          <div class="row box-form mt-1rem pt-0 pb-0">
+            <div class="col-12 col-lg-11">
+              <div class="md-form ">
+                <i class="fa fa-linode prefix color-white"></i>
+                <input formControlName="user" type="text" autocomplete="off" required id="user" class="form-control"
+                  mdbInputDirective data-success="Valid user" [errorMessage]="getError('user')">
+                <label for="recipient">User</label>
+              </div>
+            </div>
           </div>
 
-          <div class="md-form mt-5" id="container-walletname">
-            <input formControlName="address" type="text" autocomplete="off" required id="acountRecipient"
-              class="form-control" mdbInputDirective data-success="Valid recipient"
-              [errorMessage]="getError('address')">
-            <label for="address">Address</label>
+          <div class="row box-form mt-1rem pt-0 pb-0">
+            <div class="col-12 col-lg-11">
+              <div class="md-form ">
+                <i class="fa fa-linode prefix color-white"></i>
+                <input formControlName="address" type="text" autocomplete="off" required id="acountRecipient"
+                  class="form-control" mdbInputDirective data-success="Valid recipient"
+                  [errorMessage]="getError('address')">
+                <label for="recipient">Address</label>
+              </div>
+            </div>
           </div>
 
-          <div class="text-center mt-5 mb-3">
-            <button type="submit" class="btn btn-default btn-block btn-rounded z-depth-1a">Add address</button>
+          <div class="row mt-1rem mb-1rem">
+            <div class="col-6 t-a-r">
+              <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 btn-white"
+                (click)="cleanForm()">
+                CLEAN
+              </button>
+            </div>
+            <div class="col-6">
+              <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 btn-dark-green-prx">
+                Save
+              </button>
+            </div>
           </div>
         </div>
       </form>

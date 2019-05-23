@@ -25,6 +25,7 @@ export class AddressBookComponent implements OnInit, AfterViewInit {
   contacts = [];
   searchContact = '';
   searching = false;
+  hideTable = false;
 
 
   constructor(
@@ -33,10 +34,11 @@ export class AddressBookComponent implements OnInit, AfterViewInit {
     private serviceModuleService: ServiceModuleService,
     private sharedService: SharedService
   ) {
-
+    this.hideTable = false;
   }
 
   ngOnInit() {
+    this.hideTable = false;
     const contacts = this.serviceModuleService.getBooksAddress();
     this.contacts = (contacts !== null && contacts !== undefined) ? contacts : [];
     this.mdbTable.setDataSource(this.contacts);
@@ -59,7 +61,15 @@ export class AddressBookComponent implements OnInit, AfterViewInit {
     });
   }
 
-
+  /**
+   * Get Error
+   *
+   * @param {*} control
+   * @param {*} [typeForm]
+   * @param {*} [formControl]
+   * @returns
+   * @memberof AddressBookComponent
+   */
   getError(control, typeForm?, formControl?) {
     const form = this.contactForm;
     if (formControl === undefined) {
@@ -83,6 +93,12 @@ export class AddressBookComponent implements OnInit, AfterViewInit {
     }
   }
 
+  /**
+   * Save contact
+   *
+   * @returns
+   * @memberof AddressBookComponent
+   */
   saveContact() {
     if (this.contactForm.valid) {
       const dataStorage = this.serviceModuleService.getBooksAddress();
@@ -129,7 +145,7 @@ export class AddressBookComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * Remove contact
+   * Remove contacts
    *
    * @param {*} label
    * @memberof AddressBookComponent

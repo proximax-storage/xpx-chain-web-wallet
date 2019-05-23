@@ -256,17 +256,33 @@ footer {
   font-size: 1.5rem;
 }
 
+.fs-1-2em {
+  font-size: 1.2em;
+}
+
 .h400px {
   height: 400px;
 }
 
+.h2em {
+  height: 2em;
+}
+
+.h3em {
+  height: 3em;
+}
+
 /****** ALIGN ******/
 .t-a-r {
-  text-align: right;
+  text-align: right !important;
 }
 
 .t-a-c {
-  text-align: center;
+  text-align: center !important;
+}
+
+.t-a-j {
+  text-align: justify !important;
 }
 
 
@@ -380,6 +396,26 @@ footer {
   font-weight: 400;
 }
 
+.title-modal-grey {
+  color: #9b9b9b !important;
+  text-align: center;
+  font-weight: 400;
+}
+
+.title-modal-white {
+  color: white !important;
+  text-align: center;
+  font-weight: 400;
+}
+
+.service-description {
+  text-align: justify;
+  color: dimgrey;
+  font-size: .8rem;
+  color: #023C42;
+  font-weight: 400;
+}
+
 /****************************** COLOR ************************/
 
 .color-dark-green {
@@ -455,6 +491,13 @@ footer {
   background: rgba(51, 51, 51, 0.7);
 }
 
+.box-modal-grey {
+  background: #e4e4e4;
+}
+
+.box-modal-dark-green {
+  background: #023c42;
+}
 
 /************************* OVERFLOW ************************/
 .overflow-ellipsis-nowrap {
@@ -498,9 +541,10 @@ mdb-select>div>div.single>div.value {
   padding: 0;
 }
 
+/*
 .modal-backdrop {
   position: unset;
-}
+}*/
 
 .md-form .prefix.active {
   color: #ffffff !important;
