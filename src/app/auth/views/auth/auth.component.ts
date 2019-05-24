@@ -35,7 +35,6 @@ export class AuthComponent implements OnInit {
   ngOnInit() {
     let walletLocal = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
     this.wallets = this.authService.walletsOption(walletLocal);
-    console.log(this.wallets);
     this.createForm();
   }
 

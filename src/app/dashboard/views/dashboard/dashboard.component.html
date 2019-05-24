@@ -4,9 +4,10 @@
       <!-- Title -->
       <div class="row">
         <div class="col-11 col-sm-11 col-lg-10 mx-auto">
-          <h1 class="text-align-center wallet-name">
-            <i class="fa fa-tachometer" aria-hidden="true"></i> Dashboard
-          </h1>
+          <span class="d-flex justify-content-center align-items-center wallet-name">
+            <img class="mr-05rem h2-3em" src="assets/images/img/icon-dashboard-white.svg" alt="">
+            <span class="f-w-bold fs-2em">Dashboard</span>
+          </span>
 
           <hr class="background-divisor">
         </div>
@@ -44,7 +45,7 @@
                 <span class="title-transactions f-s-title-transactions">Transactions</span>
               </div>
 
-              <div class="col-6 col-md-6">
+              <div class="col-6 col-md-6 d-flex align-items-center">
                 <span class="title-transactions f-s-title-transactions">{{cantConfirmed + cantUnconfirmed}}</span>
               </div>
 
@@ -126,7 +127,7 @@
           <!--Table head-->
 
           <!--Table body-->
-          <tbody>
+          <tbody class="background-white">
             <ng-container *ngFor="let el of transactionsConfirmed; let i = index">
               <tr class="mouse-pointer" (click)="dataSelected = el; basicModal.show();">
                 <!-- Type transaction -->

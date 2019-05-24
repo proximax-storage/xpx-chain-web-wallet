@@ -5,7 +5,10 @@
       <!-- Title and Divir -->
       <div class="row">
         <div class="col-11 col-sm-11 col-lg-10 mx-auto">
-          <h1 class="text-align-center wallet-name"><i class="fa fa-user" aria-hidden="true"></i> Address Books</h1>
+          <span class="d-flex justify-content-center align-items-center wallet-name">
+            <img class="mr-05rem h2-3em" src="assets/images/img/icon-directory-white.svg" alt="">
+            <span class="f-w-bold fs-2em">Directory</span>
+          </span>
         </div>
         <div class="col-12 mx-auto">
           <hr class="background-divisor">
@@ -74,7 +77,7 @@
                 <!--Table head-->
 
                 <!--Table body-->
-                <tbody>
+                <tbody class="background-white">
                   <ng-container *ngFor="let contact of contacts; let i = index">
                     <tr class="mouse-pointer">
                       <th *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex"
@@ -113,11 +116,11 @@
 <!-- Modal -->
 <div mdbModal #basicModal="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myBasicModalLabel"
   aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content form-elegant">
-      <div class="modal-header text-center box-modal-dark-green">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content form-elegant b-r-08rem">
+      <div class="modal-header text-center box-modal-grey b-t-r-r-08rem b-t-l-r-08rem">
         <h6 class="modal-title w-100 dark-grey-text" id="myModalLabel">
-          <strong class="title-modal-white">Add contact</strong>
+          <strong class="title-modal-grey">Add contact</strong>
         </h6>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="basicModal.hide()">
           <span aria-hidden="true">&times;</span>

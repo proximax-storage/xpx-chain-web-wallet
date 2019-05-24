@@ -4,7 +4,10 @@
       <!-- Title -->
       <div class="row">
         <div class="col-11 col-sm-10 mx-auto">
-          <h1 class="text-align-center wallet-name"><i class="fa fa-user" aria-hidden="true"></i> Transfer</h1>
+          <span class="d-flex justify-content-center align-items-center wallet-name">
+            <img class="mr-05rem h2-3em" src="assets/images/img/icon-transactions-white.svg">
+            <span class="f-w-bold fs-2em">Transfer</span>
+          </span>
           <h5 class="f-w-bold color-yellow text-align-center wallet-description">Make a transfer</h5>
         </div>
         <div class="col-11 col-sm-10 mx-auto">
@@ -146,54 +149,59 @@
   </div>
 </div>
 
-<!-- Modal -->
 <div mdbModal #basicModal="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myBasicModalLabel"
   aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content form-elegant">
-      <div class="modal-header text-center background-header-box">
-        <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3" id="myModalLabel"><strong
-            class="color-white">Add
-            Address</strong></h3>
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content form-elegant b-r-08rem">
+      <div class="modal-header text-center box-modal-grey b-t-r-r-08rem b-t-l-r-08rem">
+        <h6 class="modal-title w-100 dark-grey-text" id="myModalLabel">
+          <strong class="title-modal-grey">Add contact</strong>
+        </h6>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="basicModal.hide()">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
+      <form [formGroup]="contactForm" (ngSubmit)="saveContact()">
+        <div class="modal-body mx-4">
 
-      <div class="modal-body mx-4">
-        <form [formGroup]="contactForm" (ngSubmit)="saveContact()">
-          <div class="md-form mt-5" id="container-walletname">
-            <input formControlName="user" type="text" autocomplete="off" required id="user" class="form-control"
-              mdbInputDirective data-success="Valid user" [errorMessage]="getError('password')">
-            <label for="recipient">User</label>
-          </div>
-
-          <div class="md-form mt-5" id="container-walletname">
-            <input formControlName="address" type="text" autocomplete="off" required class="form-control"
-              mdbInputDirective data-success="Valid recipient" [errorMessage]="getError('acountRecipient')">
-            <label for="address">Address</label>
-          </div>
-
-
-          <div class="mt-4rm">
-            <div class="row ">
-              <div class="mx-auto">
-                <div class="row">
-                  <div class="col-xs-6">
-                    <button mdbBtn type="button" rounded="true" class="waves-light btn-reverse" mdbWavesEffect
-                      type="button" (click)="basicModal.hide()">Close</button>
-                  </div>
-                  <div class="col-xs-6">
-                    <button mdbBtn type="submit" color="default" rounded="true" class="waves-light" mdbWavesEffect
-                      type="submit">Add
-                      address</button>
-                  </div>
-                </div>
+          <div class="row box-form mt-1rem pt-0 pb-0">
+            <div class="col-12 col-lg-11">
+              <div class="md-form ">
+                <i class="fa fa-linode prefix color-white"></i>
+                <input formControlName="user" type="text" autocomplete="off" required id="user" class="form-control"
+                  mdbInputDirective data-success="Valid user" [errorMessage]="getError('password')">
+                <label for="recipient">User</label>
               </div>
             </div>
           </div>
-        </form>
-      </div>
+
+          <div class="row box-form mt-1rem pt-0 pb-0">
+            <div class="col-12 col-lg-11">
+              <div class="md-form ">
+                <i class="fa fa-linode prefix color-white"></i>
+                <input formControlName="address" type="text" autocomplete="off" required id="acountRecipientModal"
+                  class="form-control" mdbInputDirective data-success="Valid recipient"
+                  [errorMessage]="getError('acountRecipient')">
+                <label for="recipient">Address</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="row mt-1rem mb-1rem">
+            <div class="col-6 t-a-r">
+              <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 btn-white"
+                (click)="cleanForm()">
+                CLEAN
+              </button>
+            </div>
+            <div class="col-6">
+              <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 btn-dark-green-prx">
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
     </div>
   </div>
 </div>

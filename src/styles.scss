@@ -36,6 +36,10 @@ footer {
   margin-right: 0.2rem;
 }
 
+.mr-05rem {
+  margin-right: 0.5rem !important;
+}
+
 .mr-1rem {
   margin-right: 1rem !important;
 }
@@ -261,12 +265,20 @@ footer {
   font-size: 1.2em;
 }
 
+.fs-2em {
+  font-size: 2em;
+}
+
 .h400px {
   height: 400px;
 }
 
 .h1-5em {
   height: 1.5em;
+}
+
+.h2-3em {
+  height: 2.3em;
 }
 
 .h2em {
@@ -466,9 +478,10 @@ ng-select.ng-invalid.ng-touched .ng-select-container {
 }
 
 .title-modal-grey {
-  color: #9b9b9b !important;
+  color: #999999 !important;
   text-align: center;
   font-weight: 400;
+  font-size: 1.3em;
 }
 
 .title-modal-white {
@@ -588,6 +601,39 @@ ng-select.ng-invalid.ng-touched .ng-select-container {
   color: white !important;
 }
 
+.dropdown-default.colorful-select .dropdown-content li.active span,
+.dropdown-default.colorful-select .dropdown-content li.selected span {
+  background-color: #147681 !important;
+}
+
+.dropdown-default .dropdown-content li.active,
+.dropdown-default .dropdown-content li a,
+.dropdown-default .dropdown-content li span:hover {
+  background-color: #147680c7 !important;
+}
+
+.dropdown-default.colorful-select.white-forever .dropdown-content li.active span,
+.dropdown-default.colorful-select .dropdown-content li.selected span {
+  color: white !important;
+}
+
+.mdb-select mdb-select-dropdown .dropdown-content li>a,
+mdb-select mdb-select-dropdown .dropdown-content li>span {
+  color: #009688 !important;
+}
+
+.side-nav .collapsible .card-body li a:hover {
+  background: #147681;
+}
+
+.side-nav .collapsible .card .card-header a h5 {
+  color: #FFFFFF !important;
+}
+
+.side-nav .logo-wrapper {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.63);
+}
+
 .md-form .prefix~.text-success,
 .md-form .prefix~.text-danger {
   // left: 3rem;
@@ -618,6 +664,16 @@ mdb-select>div>div.single>div.value {
 .modal-backdrop {
   position: unset;
 }*/
+
+.counter-danger {
+  border-bottom: 1px solid #FFAC00 !important;
+  box-shadow: 0 1px 0 0 #FFAC00 !important;
+}
+
+.counter-success {
+  border-bottom: 1px solid #A3F96C !important;
+  box-shadow: 0 1px 0 0 #A3F96C !important;
+}
 
 .md-form .prefix.active {
   color: #ffffff !important;
@@ -763,6 +819,18 @@ a:hover {
   border-radius: 0rem .6rem .6rem 0rem;
 }
 
+.b-r-08rem {
+  border-radius: .8rem !important;
+}
+
+.b-t-r-r-08rem {
+  border-top-right-radius: .8rem !important;
+}
+
+.b-t-l-r-08rem {
+  border-top-left-radius: .8rem !important;
+}
+
 /**** MEDIA QUERY*****/
 
 /* If the screen size is 768px wide or less, set the font-size of <div> to 30px */
@@ -849,16 +917,16 @@ html:after {
 
 .background-header {
   background: #009688;
-  background: -moz-linear-gradient(-45deg, #009688 0%, #23b3a5 55%, #129a8e 100%);
-  background: -webkit-linear-gradient(-45deg, #009688 0%, #23b3a5 55%, #129a8e 100%);
-  background: linear-gradient(135deg, #009688 0%, #23b3a5 55%, #129a8e 100%);
+  background: -moz-linear-gradient(-45deg, #009688 0%, #147681 55%, #129a8e 100%);
+  background: -webkit-linear-gradient(-45deg, #009688 0%, #147681 55%, #129a8e 100%);
+  background: linear-gradient(135deg, #009688 0%, #147681 55%, #129a8e 100%);
 }
 
 .background-gold {
   background: #009688;
-  background: -moz-linear-gradient(-45deg, #009688 0%, #23b3a5 55%, #129a8e 100%);
-  background: -webkit-linear-gradient(-45deg, #009688 0%, #23b3a5 55%, #129a8e 100%);
-  background: linear-gradient(135deg, #009688 0%, #23b3a5 55%, #129a8e 100%);
+  background: -moz-linear-gradient(-45deg, #009688 0%, #147681 55%, #129a8e 100%);
+  background: -webkit-linear-gradient(-45deg, #009688 0%, #147681 55%, #129a8e 100%);
+  background: linear-gradient(135deg, #009688 0%, #147681 55%, #129a8e 100%);
 }
 
 .background-gold-md-tabs {
@@ -889,30 +957,18 @@ html:after {
 
 .background-header-box {
   background: #009688 !important;
-  background: -moz-linear-gradient(-45deg, #009688 0%, #23b3a5 55%, #129a8e 100%) !important;
-  background: -webkit-linear-gradient(-45deg, #009688 0%, #23b3a5 55%, #129a8e 100%) !important;
-  background: linear-gradient(135deg, #009688 0%, #23b3a5 55%, #129a8e 100%) !important;
+  background: -moz-linear-gradient(-45deg, #009688 0%, #147681 55%, #129a8e 100%) !important;
+  background: -webkit-linear-gradient(-45deg, #009688 0%, #147681 55%, #129a8e 100%) !important;
+  background: linear-gradient(135deg, #009688 0%, #147681 55%, #129a8e 100%) !important;
 }
 
 
 .btn-default {
   background: #009688 !important;
-  background: -moz-linear-gradient(-45deg, #009688 0%, #23b3a5 55%, #129a8e 100%) !important;
-  background: -webkit-linear-gradient(-45deg, #009688 0%, #23b3a5 55%, #129a8e 100%) !important;
-  background: linear-gradient(135deg, #009688 0%, #23b3a5 55%, #129a8e 100%) !important;
+  background: -moz-linear-gradient(-45deg, #009688 0%, #147681 55%, #129a8e 100%) !important;
+  background: -webkit-linear-gradient(-45deg, #009688 0%, #147681 55%, #129a8e 100%) !important;
+  background: linear-gradient(135deg, #009688 0%, #147681 55%, #129a8e 100%) !important;
 }
-
-.dropdown-default.colorful-select .dropdown-content li.active span,
-.dropdown-default.colorful-select .dropdown-content li.selected span {
-  background-color: #23b3a5 !important;
-}
-
-.dropdown-default.colorful-select.white-forever .dropdown-content li.active span,
-.dropdown-default.colorful-select .dropdown-content li.selected span {
-  color: white !important;
-}
-
-
 
 .color-text-gris {
   color: #969696 !important;
@@ -920,23 +976,6 @@ html:after {
 
 .color-text-gris:hover {
   color: #009688 !important;
-}
-
-.mdb-select mdb-select-dropdown .dropdown-content li>a,
-mdb-select mdb-select-dropdown .dropdown-content li>span {
-  color: #009688 !important;
-}
-
-.side-nav .collapsible .card-body li a:hover {
-  background: #23b3a5;
-}
-
-.side-nav .collapsible .card .card-header a h5 {
-  color: #FFFFFF !important;
-}
-
-.side-nav .logo-wrapper {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.63);
 }
 
 .green-color {
@@ -956,7 +995,7 @@ mdb-select mdb-select-dropdown .dropdown-content li>span {
 
 /*STYLE SITE*/
 .pills-secondary .nav-link.active {
-  background-color: #23b3a5 !important;
+  background-color: #147681 !important;
 }
 
 .side-nav .logo-wrapper img {
@@ -971,7 +1010,7 @@ mdb-select mdb-select-dropdown .dropdown-content li>span {
 }
 
 .background-tabs-selected {
-  background: #23b3a5;
+  background: #147681;
 }
 
 .background-tabs-unselected {
@@ -979,7 +1018,7 @@ mdb-select mdb-select-dropdown .dropdown-content li>span {
 }
 
 .count {
-  background-color: #23b3a5 !important;
+  background-color: #147681 !important;
 }
 
 .font-tabs {
@@ -1012,11 +1051,11 @@ mdb-select mdb-select-dropdown .dropdown-content li>span {
 }
 
 .text-success {
-  color: #00c751 !important;
+  color: #A3F96C !important;
 }
 
 .text-danger {
-  color: #ff4d40 !important;
+  color: #FFAC00 !important;
 }
 
 .form-label-alert-m80 {

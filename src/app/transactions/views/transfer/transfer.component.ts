@@ -109,7 +109,7 @@ export class TransferComponent implements OnInit {
         [Validators.required]
       ],
       acountRecipient: [
-        null,
+        '',
         [
           Validators.required,
           Validators.minLength(40),

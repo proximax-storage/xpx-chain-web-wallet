@@ -4,9 +4,10 @@
       <!-- Title -->
       <div class="row">
         <div class="col-11 col-sm-10 mx-auto">
-          <h1 class="text-align-center wallet-name">
-            <i class="fa fa-user" aria-hidden="true"></i> Transaction Explorer
-          </h1>
+          <span class="d-flex justify-content-center align-items-center wallet-name">
+            <img class="mr-05rem h2-3em" src="assets/images/img/icon-transactions-white.svg" alt="">
+            <span class="f-w-bold fs-2em">Explorer</span>
+          </span>
           <h5 class="f-w-bold color-yellow text-align-center wallet-description">
             << Go to All Services </h5> </div> <div class="col-11 col-sm-10 mx-auto">
               <hr class="background-divisor">
@@ -96,7 +97,7 @@
               <!--Table head-->
 
               <!--Table body-->
-              <tbody>
+              <tbody class="background-white">
                 <ng-container *ngFor="let el of elements; let i = index">
                   <tr class="mouse-pointer">
                     <th *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex"
