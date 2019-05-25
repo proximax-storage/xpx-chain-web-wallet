@@ -52,6 +52,15 @@
             <span class="color-dark-green fw-400 fs-07rem">{{transferTransaction?.sender.address.pretty()}}</span>
           </div>
         </div>
+
+        <div class="row">
+          <div class="col-3">
+            <span class="color-dark-green fw-bold fs-08rem">To: </span>
+          </div>
+          <div class="col-9">
+            <span class="color-dark-green fw-400 fs-07rem">{{transferTransaction?.recipient.pretty()}}</span>
+          </div>
+        </div>
       </div>
 
       <!-- Message -->
@@ -106,6 +115,3 @@
     </div>
   </div>
 </div>
-<!-- <div class="col-12 mt-4" *ngIf="searching">
-  <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate" *ngIf="searching"></mdb-progress-bar>
-</div> -->

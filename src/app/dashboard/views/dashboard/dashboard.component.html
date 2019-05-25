@@ -127,7 +127,7 @@
           <!--Table head-->
 
           <!--Table body-->
-          <tbody class="background-white">
+          <tbody class="background-white ">
             <ng-container *ngFor="let el of transactionsConfirmed; let i = index">
               <tr class="mouse-pointer" (click)="dataSelected = el; basicModal.show();">
                 <!-- Type transaction -->
@@ -135,7 +135,7 @@
                   class="th-sm" scope="row description-dark-green">{{el.nameType}}</th>
 
                 <!-- timestamp -->
-                <td class="align-right th-sm description-dark-green"
+                <td class="th-sm description-dark-green"
                   *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex">
                   {{el.timestamp}}</td>
 
@@ -145,7 +145,7 @@
                   {{el.fee}}</td>
 
                 <!-- address -->
-                <td class="text-center th-sm description-dark-green"
+                <td class="text-center th-md description-dark-green"
                   *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex">
                   <i [ngStyle]="{'color': el.isRemitent === true ? 'green' : 'red' }" style="padding-right: 10px;"
                     class="fa fa-send" aria-hidden="true"></i>
@@ -154,7 +154,7 @@
 
                 <!-- recipíent -->
                 <ng-container *ngIf="el?.recipient !== null; else recipientRentalFee">
-                  <td class="text-center th-sm description-dark-green"
+                  <td class="text-center th-md description-dark-green"
                     *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex">
                     <span>{{el.recipient.pretty()}}</span>
                   </td>

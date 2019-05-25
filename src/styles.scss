@@ -82,6 +82,11 @@ footer {
 }
 
 /******************* MARGIN-TOP *****************/
+.mt-03rem {
+  margin-top: 0.3rem;
+}
+
+
 .mt-04rem {
   margin-top: 0.4rem;
 }
@@ -286,6 +291,10 @@ footer {
 
 .fs-1rem {
   font-size: 1rem;
+}
+
+.fs-1-2rem {
+  font-size: 1.2rem;
 }
 
 .fs-1-3rem {
@@ -648,6 +657,17 @@ ng-select.ng-invalid.ng-touched .ng-select-container {
 }
 
 /****************************** ONLY MDB ********************************/
+table {
+  width: 100% !important;
+  table-layout: fixed !important;
+}
+
+td {
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
 .form-control {
   color: white !important;
 }
@@ -750,6 +770,12 @@ a:hover {
     max-width: 950px !important;
     padding-right: 1rem;
     padding-left: 1rem;
+  }
+}
+
+@media (max-width: 767px) {
+  #boxHashSignerSignature {
+    margin-top: 3rem !important;
   }
 }
 
