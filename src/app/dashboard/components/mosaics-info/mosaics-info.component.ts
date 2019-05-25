@@ -8,33 +8,27 @@ import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 
 @Component({
   selector: 'app-mosaics-info',
-  template: `<!-- MOSAICS -->
+  template: `
+                <!-- MOSAIC XPX -->
                 <ng-container *ngIf="viewMosaicXpx">
-                  <div class="mt-3">
-                    <!--
-                    <div class="row">
-                      <div class="col-3">
-                        <span class="fs-08rem fw-bolder"><b>Mosaic:</b></span>
-                      </div>
-                      <div class="col-9">
-                        <span class="fs-08rem fw-bolder">{{mosaicXpx.mosaicInfo.namespaceName}}:{{mosaicXpx.mosaicInfo.mosaicName}}</span>
-                      </div>
-                    </div>-->
-
-                    <div class="row mt-3">
-                      <div class="col-3">
+                  <div class="row">
+                    <div class="col-3">
                        <span class="color-dark-green fw-bold fs-1-5rem">Amount: </span>
-                      </div>
-                      <div class="col-9">
-                       <span class="color-blue-light fw-bold fs-1-5rem">{{mosaicXpx.amountFormatter}} XPX</span>
-                      </div>
+                    </div>
+                    <div class="col-9">
+                       <span
+                       [ngClass]="{
+                         'color-blue-light': transferTransaction.isRemitent,
+                         'color-orange': !transferTransaction.isRemitent
+                        }"
+                       class="fw-bold fs-1-5rem" >{{mosaicXpx.amountFormatter}} XPX</span>
                     </div>
                   </div>
                 </ng-container>
 
-
+                <!-- OTHER MOSAICS -->
                 <container *ngIf="viewOtherMosaics">
-                  <div class="row mt-1rem">
+                  <div class="row">
                     <div class="col-12">
                       <span class="color-dark-green fw-bold fs-1-5rem">Other mosaics: </span>
                     </div>
@@ -47,7 +41,11 @@ import { ProximaxProvider } from '../../../shared/services/proximax.provider';
                           <th
                           *ngFor="let head of headElements"
                           scope="col"
-                          class="text-align-left color-blue-light fw-500">{{head}}</th>
+                          [ngClass]="{
+                            'color-blue-light': transferTransaction.isRemitent,
+                            'color-orange': !transferTransaction.isRemitent
+                          }"
+                          class="text-align-left fw-500">{{head}}</th>
                         </tr>
                       </thead>
                       <tbody>

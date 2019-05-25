@@ -1,17 +1,26 @@
-<div class="row mt-1rem mr-1rem ml-1rem">
+<div class="row mt-04rem mr-1rem ml-1rem">
   <!-- Data -->
-  <div class="col-12 col-md-6 mb-2rem d-flex align-items-start">
+  <div class="col-12 col-md-7 d-flex align-items-start">
     <div class="row">
       <!-- Type transfer -->
       <div class="col-12">
         <span class="color-dark-green fw-bold fs-2rem">{{transferTransaction.nameType}}</span>
         <img class="mr-1rem ml-1rem h2em" src="assets/images/img/icon-transactions-dark-green.svg" alt="">
-        <span class="color-blue-light fw-bold fs-2rem">Income</span>
+
+        <!-- Income -->
+        <ng-container *ngIf="transferTransaction?.isRemitent">
+          <span class="color-blue-light fw-bold fs-2rem">Income</span>
+        </ng-container>
+
+        <!-- Outcome -->
+        <ng-container *ngIf="!transferTransaction?.isRemitent">
+          <span class="color-orange fw-bold fs-2rem">Outcome</span>
+        </ng-container>
       </div>
 
       <!-- Timestamp -->
-      <div class="col-12 mt-1rem">
-        <span class="color-dark-green fs-08rem fw-500 w-w-b-w">{{transferTransaction?.timestamp}}</span>
+      <div class="col-12 mt-05rem">
+        <span class="color-dark-green fs-07rem fw-500 w-w-b-w">{{transferTransaction?.timestamp}}</span>
       </div>
 
       <div class="col-12">
@@ -40,25 +49,16 @@
             <span class="color-dark-green fw-bold fs-08rem">From: </span>
           </div>
           <div class="col-9">
-            <span class="color-dark-green fw-400 fs-08rem">{{transferTransaction?.sender.address.pretty()}}</span>
+            <span class="color-dark-green fw-400 fs-07rem">{{transferTransaction?.sender.address.pretty()}}</span>
           </div>
         </div>
-
-        <!-- <div class="row">
-          <div class="col-3">
-            <span class="color-dark-green fw-bold fs-08rem">To: </span>
-          </div>
-          <div class="col-9">
-            <span class="color-dark-green fw-400 fs-08rem">{{transferTransaction?.recipient.pretty()}}</span>
-          </div>
-        </div> -->
       </div>
 
       <!-- Message -->
-      <div class="col-12 mt-2rem">
+      <div class="col-12 mt-1rem">
         <div class="row">
           <div class="col-12">
-            <span class="color-dark-green fw-bold fs-08rem">Message: </span>
+            <span class="color-dark-green fw-bold fs-07rem">Message: </span>
           </div>
           <div class="col-12">
             <span class="color-dark-green fw-400 fs-08rem">{{transferTransaction?.data['message'].payload}}</span>
@@ -69,8 +69,8 @@
   </div>
 
   <!-- Box signer, signature, hash -->
-  <div class="col-12 col-md-6">
-    <div class="row gray-color-transparent">
+  <div class="col-12 col-md-5" id="boxHashSignerSignature">
+    <div class="row gray-color-transparent lh-1em">
       <div class="col-12">
         <div class="row">
           <div class="col-12">
@@ -93,7 +93,7 @@
         </div>
       </div>
 
-      <div class="col-12" mt-3>
+      <div class="col-12 mt-3">
         <div class="row">
           <div class="col-12">
             <span class="fs-08rem fw-bolder w-w-b-w"><b>Hash:</b></span>
