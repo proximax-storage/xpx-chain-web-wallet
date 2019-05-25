@@ -13,20 +13,20 @@ import { ProximaxProvider } from '../../../shared/services/proximax.provider';
                   <div class="mt-3">
                     <!--
                     <div class="row">
-                      <div class="col-md-3">
+                      <div class="col-3">
                         <span class="fs-08rem fw-bolder"><b>Mosaic:</b></span>
                       </div>
-                      <div class="col-md-9">
+                      <div class="col-9">
                         <span class="fs-08rem fw-bolder">{{mosaicXpx.mosaicInfo.namespaceName}}:{{mosaicXpx.mosaicInfo.mosaicName}}</span>
                       </div>
                     </div>-->
 
                     <div class="row mt-3">
-                      <div class="col-md-3">
-                        <span class="fs-08rem fw-bolder"><b>Amount:</b></span>
+                      <div class="col-3">
+                       <span class="color-dark-green fw-bold fs-1-5rem">Amount: </span>
                       </div>
-                      <div class="col-md-9">
-                        <span class="fs-08rem fw-bolder">{{mosaicXpx.amountFormatter}} (XPX)</span>
+                      <div class="col-9">
+                       <span class="color-blue-light fw-bold fs-1-5rem">{{mosaicXpx.amountFormatter}} XPX</span>
                       </div>
                     </div>
                   </div>
@@ -35,8 +35,8 @@ import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 
                 <container *ngIf="viewOtherMosaics">
                   <div class="row mt-1rem">
-                    <div class="col-6">
-                      <span class="fs-08rem fw-bolder"><b>Other mosaics:</b></span>
+                    <div class="col-12">
+                      <span class="color-dark-green fw-bold fs-1-5rem">Other mosaics: </span>
                     </div>
                   </div>
 
@@ -44,7 +44,10 @@ import { ProximaxProvider } from '../../../shared/services/proximax.provider';
                     <table mdbTable id="tablePreview" class="table table-hover table-bordered table-striped table-sm z-depth-0">
                       <thead>
                         <tr>
-                          <th *ngFor="let head of headElements" scope="col" class="text-align-left"><b>{{head}}</b></th>
+                          <th
+                          *ngFor="let head of headElements"
+                          scope="col"
+                          class="text-align-left color-blue-light fw-500">{{head}}</th>
                         </tr>
                       </thead>
                       <tbody>

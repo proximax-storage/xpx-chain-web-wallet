@@ -53,12 +53,12 @@
               <div class="col-12 col-sm-12 col-md-6" id="boxConfirmedUnconfirmed">
                 <div class="row">
                   <div class="col-6 col-sm-6 col-md-12 text-center d-flex align-items-center">
-                    <span class="f-s-dashboard-transactions f-w-400">CONFIRMED: </span>
+                    <span class="f-s-dashboard-transactions fw-400">CONFIRMED: </span>
                     <span class="f-s-dashboard-transactions f-w-600">{{cantConfirmed}}</span>
                   </div>
 
                   <div class="col-6 col-sm-6 col-md-12 text-center d-flex align-items-center">
-                    <span class="f-s-dashboard-transactions f-w-400">UNCONFIRMED: </span>
+                    <span class="f-s-dashboard-transactions fw-400">UNCONFIRMED: </span>
                     <span class="f-s-dashboard-transactions f-w-600">{{cantUnconfirmed}}</span>
                   </div>
                 </div>
@@ -83,7 +83,7 @@
           </div>
 
           <div class="col-12 col-sm-6 col-md-5 d-flex justify-content-center align-items-center" id="titleCantResults">
-            <h5 class="f-w-400 color-white">{{cantTransactions}} | Order by: ASC</h5>
+            <h5 class="fw-400 color-white">{{cantTransactions}} | Order by: ASC</h5>
           </div>
         </div>
       </div>
@@ -120,7 +120,7 @@
           <thead>
             <tr class="header-backg">
               <ng-container *ngFor="let head of headElements; let i = index">
-                <th scope="col" class="text-center f-w-400">{{head}}</th>
+                <th scope="col" class="text-center fw-400">{{head}}</th>
               </ng-container>
             </tr>
           </thead>
@@ -188,14 +188,14 @@
 <!-- MODAL -->
 <div mdbModal #basicModal="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myBasicModalLabel"
   aria-hidden="true">
-  <div class="modal-dialog modal-notify modal-info modal-lg fullscreen-modal" role="document">
-    <!--Content-->
-    <div class="modal-content">
-      <!--Header-->
-      <div class="modal-header background-gold">
-        <p class="heading lead" style="font-weight: 500;">Transaction info</p>
-        <button type="button" class="close" data-dismiss="modal" (click)="basicModal.hide()">
-          <span aria-hidden="true" class="white-text">&times;</span>
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content form-elegant b-r-08rem">
+      <div class="modal-header text-center box-modal-grey b-t-r-r-08rem b-t-l-r-08rem">
+        <h6 class="modal-title w-100 dark-grey-text" id="myModalLabel">
+          <strong class="title-modal-grey">Transaction information</strong>
+        </h6>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="basicModal.hide()">
+          <span aria-hidden="true">&times;</span>
         </button>
       </div>
 

@@ -12,14 +12,14 @@
     <div class="col-9 mx-auto">
       <div class="row box-form mt-1rem">
         <div class="col-12 mt-5px">
-          <h4 class="f-w-500">{{walletName}}</h4>
+          <h4 class="fw-500">{{walletName}}</h4>
         </div>
 
         <div class="col-12 mb-5px">
           <div class="row mt-3px">
             <div class="col-10 col-md-10 col-lg-11 overflow-ellipsis-nowrap">
-              <span class="f-s-1rem gray-color f-w-400">Address: </span>
-              <span class="f-s-1rem f-w-500">{{address}}</span>
+              <span class="fs-1rem gray-color fw-400">Address: </span>
+              <span class="fs-1rem fw-500">{{address}}</span>
             </div>
             <div class="col-2 col-md-2 col-lg-1 d-flex align-items-center">
               <i mdbWavesEffect (click)="copyMessage('Address')" ngxClipboard [cbContent]="address"
@@ -30,8 +30,8 @@
           <ng-container *ngIf="privateKeyIsShow">
             <div class="row mt-3px">
               <div class="col-10 col-md-10 col-lg-11 overflow-ellipsis-nowrap">
-                <span class="f-s-1rem gray-color f-w-400">Private key: </span>
-                <span class="f-s-1rem f-w-500">{{privateKey}}</span>
+                <span class="fs-1rem gray-color fw-400">Private key: </span>
+                <span class="fs-1rem fw-500">{{privateKey}}</span>
               </div>
               <div class="col-2 col-md-2 col-lg-1 d-flex align-items-center">
                 <i mdbWavesEffect (click)="copyMessage('Private key')" ngxClipboard [cbContent]="privateKey"

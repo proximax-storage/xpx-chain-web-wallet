@@ -211,6 +211,10 @@ footer {
   padding-top: 0.5rem !important;
 }
 
+.pt-2rem {
+  padding-top: 2rem;
+}
+
 /******************************** PADDING-BOTTOM *******************/
 .pb-0 {
   padding-bottom: 0 !important;
@@ -226,15 +230,23 @@ footer {
 
 /******* FONT WEIGHT *******/
 
+.fw-bold {
+  font-weight: bold;
+}
+
+.fw-bolder {
+  font-weight: bolder;
+}
+
 .f-w-600 {
   font-weight: 600;
 }
 
-.f-w-500 {
+.fw-500 {
   font-weight: 500;
 }
 
-.f-w-400 {
+.fw-400 {
   font-weight: 400;
 }
 
@@ -245,20 +257,36 @@ footer {
 
 /******** SIZE *********/
 
-.f-s-0-8-rem {
+.fs-0-8-rem {
   font-size: 0.8rem;
 }
 
-.f-s-0-5-rem {
+.fs-0-5-rem {
   font-size: 0.5rem;
 }
 
-.f-s-1rem {
+.fs-07rem {
+  font-size: 0.7rem;
+}
+
+.fs-08rem {
+  font-size: 0.8rem;
+}
+
+.fs-1rem {
   font-size: 1rem;
 }
 
-.f-s-1-5rem {
+.fs-1-3rem {
+  font-size: 1.3rem;
+}
+
+.fs-1-5rem {
   font-size: 1.5rem;
+}
+
+.fs-2rem {
+  font-size: 2rem;
 }
 
 .fs-1-2em {
@@ -277,12 +305,16 @@ footer {
   height: 1.5em;
 }
 
-.h2-3em {
-  height: 2.3em;
+.h1em {
+  height: 1em;
 }
 
 .h2em {
   height: 2em;
+}
+
+.h2-3em {
+  height: 2.3em;
 }
 
 .h3em {
@@ -500,6 +532,10 @@ ng-select.ng-invalid.ng-touched .ng-select-container {
 
 /****************************** COLOR ************************/
 
+.color-blue-light {
+  color: #0aabbb !important;
+}
+
 .color-dark-green {
   color: #023c42 !important;
 }
@@ -526,6 +562,10 @@ ng-select.ng-invalid.ng-touched .ng-select-container {
 
 .gray-color {
   color: #a0a0a0 !important;
+}
+
+.gray-color-transparent {
+  background: #e4e4e473 !important;
 }
 
 /********************** BOX **********************/
@@ -683,6 +723,23 @@ a:hover {
   text-decoration: none !important;
   color: #d0d0d0 !important;
   transition: all 0.2s ease-in-out !important;
+}
+
+@media (min-width: 576px) {
+  .modal-dialog {
+    max-width: 750px !important;
+    padding-right: 1rem;
+    padding-left: 1rem;
+  }
+}
+
+
+@media (min-width: 768px) {
+  .modal-dialog {
+    max-width: 950px !important;
+    padding-right: 1rem;
+    padding-left: 1rem;
+  }
 }
 
 /******* SERVICES *********/
@@ -1157,12 +1214,6 @@ html:after {
   text-align: center;
 }
 
-/* font size**/
-
-.fs-08rem {
-  font-size: 0.8rem;
-}
-
 
 /*CARD ADMIN*/
 .cascading-admin-card .admin-up .data {
@@ -1217,10 +1268,6 @@ html:after {
 
 .w-w-b-w {
   word-wrap: break-word;
-}
-
-.fw-bolder {
-  font-weight: bolder;
 }
 
 .background-gris {

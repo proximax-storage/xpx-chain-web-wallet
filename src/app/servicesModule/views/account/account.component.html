@@ -17,18 +17,18 @@
       <!-- Address -->
       <div class="row box-form-white mt-1rem">
         <div class="col-12 mt-5px">
-          <h3 class="f-w-500 mb-0rem">{{walletName}}</h3>
+          <h3 class="fw-500 mb-0rem">{{walletName}}</h3>
         </div>
 
         <div class="col-12">
           <div class="row">
             <div class="col-10 col-md-10 col-lg-11">
-              <span class="f-s-1rem gray-color f-w-400">Address: </span>
-              <span class="f-s-1rem f-w-500 w-w-b-w">{{address}}</span>
+              <span class="fs-1rem gray-color fw-400">Address: </span>
+              <span class="fs-1rem fw-500 w-w-b-w">{{address}}</span>
             </div>
             <div class="col-2 col-md-2 col-lg-1 d-flex align-items-center">
               <i mdbWavesEffect (click)="copyMessage('Address')" ngxClipboard [cbContent]="address"
-                class="fa fa-paste prefix cursor-pointer f-s-1-5rem"></i>
+                class="fa fa-paste prefix cursor-pointer fs-1-5rem"></i>
             </div>
           </div>
         </div>
@@ -39,17 +39,17 @@
       <!-- Public key -->
       <div class="row box-form-white mt-1rem">
         <div class="col-12">
-          <h3 class="f-w-500 mb-0rem">Public Key</h3>
+          <h3 class="fw-500 mb-0rem">Public Key</h3>
         </div>
 
         <div class="col-12">
           <div class="row">
             <div class="col-10 col-md-10 col-lg-11">
-              <span class="f-s-1rem f-w-500 w-w-b-w">{{address}}</span>
+              <span class="fs-1rem fw-500 w-w-b-w">{{address}}</span>
             </div>
             <div class="col-2 col-md-2 col-lg-1 d-flex align-items-center">
               <i mdbWavesEffect (click)="copyMessage('Public key')" ngxClipboard [cbContent]="publicKey"
-                class="fa fa-paste prefix cursor-pointer f-s-1-5rem"></i>
+                class="fa fa-paste prefix cursor-pointer fs-1-5rem"></i>
             </div>
           </div>
         </div>
@@ -58,8 +58,8 @@
       <!-- Message Orange  -->
       <div class="row box-light-orange mt-3rem">
         <div class="col-12 mx-auto text-center">
-          <span class="f-s-1rem f-w-500 w-w-b-w">Your private key holds all the power of your account.</span> <br>
-          <span class="f-s-1rem f-w-500 w-w-b-w">It is a priority to make sure it is stored safely somewhere
+          <span class="fs-1rem fw-500 w-w-b-w">Your private key holds all the power of your account.</span> <br>
+          <span class="fs-1rem fw-500 w-w-b-w">It is a priority to make sure it is stored safely somewhere
             offline.</span>
         </div>
       </div>
@@ -91,17 +91,17 @@
       <ng-container *ngIf="privateKey !== ''">
         <div class="row box-form mt-1rem">
           <div class="col-12">
-            <h3 class="f-w-500 mb-0rem color-white">Private Key</h3>
+            <h3 class="fw-500 mb-0rem color-white">Private Key</h3>
           </div>
 
           <div class="col-12">
             <div class="row">
               <div class="col-10 col-md-10 col-lg-11">
-                <span class="f-s-1rem f-w-500 w-w-b-w color-white">{{privateKey}}</span>
+                <span class="fs-1rem fw-500 w-w-b-w color-white">{{privateKey}}</span>
               </div>
               <div class="col-2 col-md-2 col-lg-1 d-flex align-items-center">
                 <i mdbWavesEffect (click)="copyMessage('Private Key')" ngxClipboard [cbContent]="privateKey"
-                  class="fa fa-paste prefix cursor-pointer f-s-1-5rem color-white"></i>
+                  class="fa fa-paste prefix cursor-pointer fs-1-5rem color-white"></i>
               </div>
             </div>
           </div>
