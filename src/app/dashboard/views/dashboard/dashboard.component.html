@@ -149,21 +149,23 @@
                   *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex">
                   <i [ngStyle]="{'color': el.isRemitent === true ? 'green' : 'red' }" style="padding-right: 10px;"
                     class="fa fa-send" aria-hidden="true"></i>
-                  {{el.sender.address.pretty()}}
+                  <span>{{el.sender.address.pretty()}}</span>
                 </td>
 
                 <!-- recipíent -->
                 <ng-container *ngIf="el?.recipient !== null; else recipientRentalFee">
                   <td class="text-center th-sm description-dark-green"
                     *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex">
-                    {{el.recipient.pretty()}}</td>
+                    <span>{{el.recipient.pretty()}}</span>
+                  </td>
                 </ng-container>
 
                 <!-- recipient rental fee -->
                 <ng-template #recipientRentalFee>
                   <td class="text-center th-sm description-dark-green"
                     *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex">
-                    {{el.recipientRentalFeeSink}}</td>
+                    <span>{{el.recipientRentalFeeSink}}</span>
+                  </td>
                 </ng-template>
               </tr>
             </ng-container>
