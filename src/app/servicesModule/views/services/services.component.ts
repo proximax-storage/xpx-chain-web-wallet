@@ -34,7 +34,7 @@ export class ServicesComponent implements OnInit {
       }, false
     );
 
-    const explorerTransaction = this.service.structureServices('img-transaction', 'Transaction explorer', `Explorer transaction`,
+    const explorerTransaction = this.service.structureServices('icon-transactions-dark-green.svg', 'Transaction explorer', `Explorer transaction`,
       {
         createPoll: this.structureServiceRoute('Transaction explorer', `/${AppConfig.routes.explorer}`)
       }, true
@@ -82,7 +82,7 @@ export class ServicesComponent implements OnInit {
       {}, false
     );
 
-    const addressBook = this.service.structureServices('fa fa-address-card', 'Address book',
+    const addressBook = this.service.structureServices('icon-directory-dark-green.svg', 'Directory',
       `Assign labels to addresses to easily keep track of your contacts`,
       {
         manageAddress: this.structureServiceRoute('Manage address book', `/${AppConfig.routes.addressBook}`),
