@@ -1,172 +1,169 @@
-<ng-container>
-  <div class="row">
-    <div class="col-md-3">
-      <span class="fs-08rem fw-bolder w-w-b-w w-w-b-w"><b>Type transaction:</b></span>
-    </div>
-    <div class="col-md-9">
-      <span class="fs-08rem fw-bolder w-w-b-w w-w-b-w">{{mosaicSupplyChange.nameType}}</span>
-    </div>
-  </div>
-
-  <div class="mt-3">
+<div class="row mt-04rem mr-1rem ml-1rem">
+  <!-- Data -->
+  <div class="col-12 col-md-7 d-flex align-items-start">
     <div class="row">
-      <div class="col-md-3">
-        <span class="fs-08rem fw-bolder w-w-b-w"><b>Fee:</b></span>
+      <!-- Type transfer -->
+      <div class="col-12 overflow-ellipsis-nowrap">
+        <span class="color-dark-green fw-bold fs-2rem">{{mosaicSupplyChange.nameType}}</span>
       </div>
-      <div class="col-md-9">
-        <span class="fs-08rem fw-bolder w-w-b-w">{{mosaicSupplyChange?.fee}} (XPX)</span>
-      </div>
-    </div>
-  </div>
-  <hr>
-</ng-container>
 
-
-
-<!-- MOSAIC INFO -->
-<ng-container>
-  <div class="mt-3">
-    <div class="row">
-      <div class="col-md-3">
-        <span class="fs-08rem fw-bolder w-w-b-w"><b>Mosaic Id:</b></span>
+      <!-- Timestamp -->
+      <div class="col-12 mt-05rem overflow-ellipsis-nowrap">
+        <span class="color-dark-green fs-07rem fw-500">{{mosaicSupplyChange?.timestamp}}</span>
       </div>
-      <div class="col-md-9">
-        <span class="fs-08rem fw-bolder w-w-b-w">{{mosaicSupplyChange.data['mosaicId'].toHex()}}</span>
-      </div>
-    </div>
-  </div>
-</ng-container>
 
-<ng-container *ngIf="viewMosaicName">
-  <div class="mt-3">
-    <div class="row">
-      <div class="col-md-3">
-        <span class="fs-08rem fw-bolder w-w-b-w"><b>Mosaic name:</b></span>
-      </div>
-      <div class="col-md-9">
-        <span
-          class="fs-08rem fw-bolder
-            w-w-b-w">{{mosaicSupplyChange.mosaicsStorage.namespaceName.name}}:{{mosaicSupplyChange.mosaicsStorage.mosaicName.name}}</span>
-      </div>
-    </div>
-  </div>
-
-  <ng-container *ngIf="mosaicSupplyChange?.mosaicsStorage.mosaicInfo !== null">
-    <div class="mt-3">
-      <div class="row">
-        <div class="col-md-3">
-          <span class="fs-08rem fw-bolder w-w-b-w"><b>Divisibility:</b></span>
-        </div>
-        <div class="col-md-9">
-          <span class="fs-08rem fw-bolder
-            w-w-b-w">{{mosaicSupplyChange?.mosaicsStorage.mosaicInfo.properties.divisibility}}</span>
+      <!-- Fee -->
+      <div class="col-12 mb-1rem">
+        <div class="row">
+          <div class="col-3 overflow-ellipsis-nowrap">
+            <span class="color-dark-green fw-bold fs-1-3rem">Fee: </span>
+          </div>
+          <div class="col-9 overflow-ellipsis-nowrap">
+            <span class="color-dark-green fw-400 fs-1-3rem">{{mosaicSupplyChange.fee}} XPX</span>
+          </div>
         </div>
       </div>
-    </div>
-  </ng-container>
-</ng-container>
 
-<ng-container *ngIf="mosaicSupplyChange.data['direction'] === 1">
-  <div class="row mt-3">
-    <div class="col-md-3">
-      <span class="fs-08rem fw-bolder w-w-b-w"><b>Increase:</b></span>
-    </div>
-    <div class="col-md-9">
-      <span class="fs-08rem fw-bolder w-w-b-w"><b class="green-c">+
-          {{transactionService.formatNumberMilesThousands(mosaicSupplyChange.data.delta.compact())}}</b></span>
-    </div>
-  </div>
-</ng-container>
+      <!-- Mosaic Id -->
+      <ng-container *ngIf="mosaicSupplyChange?.mosaicsStorage?.mosaicInfo !== null">
+        <div class="col-12 mt-04rem">
+          <div class="row">
+            <div class="col-4 overflow-ellipsis-nowrap">
+              <span class="color-dark-green fw-bold fs-08rem">Divisibility: </span>
+            </div>
+            <div class="col-8 overflow-ellipsis-nowrap">
+              <span
+                class="color-dark-green fw-400 fs-08rem">{{mosaicSupplyChange?.mosaicsStorage.mosaicInfo.properties.divisibility}}</span>
+            </div>
+          </div>
+        </div>
+      </ng-container>
 
-<ng-container *ngIf="mosaicSupplyChange.data['direction'] !== 1">
-  <div class="row mt-3">
-    <div class="col-md-3">
-      <span class="fs-08rem fw-bolder w-w-b-w"><b>Decrease:</b></span>
-    </div>
-    <div class="col-md-9">
-      <span class="fs-08rem fw-bolder w-w-b-w"><b class="color-red">-
-          {{transactionService.formatNumberMilesThousands(mosaicSupplyChange.data.delta.compact())}}</b></span>
-    </div>
-  </div>
-</ng-container>
+      <!-- Increase -->
+      <ng-container *ngIf="mosaicSupplyChange.data['direction'] === 1; else viewDecrease">
+        <div class="col-12 mt-04rem">
+          <div class="row">
+            <div class="col-4 overflow-ellipsis-nowrap">
+              <span class="color-dark-green fw-bold fs-08rem">Increase: </span>
+            </div>
+            <div class="col-8 overflow-ellipsis-nowrap">
+              <span class="color-dark-green fw-bolder fs-08rem green-c">+
+                {{transactionService.formatNumberMilesThousands(mosaicSupplyChange.data.delta.compact())}}
+              </span>
+            </div>
+          </div>
+        </div>
+      </ng-container>
 
-<hr>
+      <!-- Decrease -->
+      <ng-template #viewDecrease>
+        <div class="col-12 mt-04rem">
+          <div class="row">
+            <div class="col-4 overflow-ellipsis-nowrap">
+              <span class="color-dark-green fw-bold fs-08rem">Decrease: </span>
+            </div>
+            <div class="col-8 overflow-ellipsis-nowrap">
+              <span class="color-dark-green fw-bolder fs-08rem color-red">-
+                {{transactionService.formatNumberMilesThousands(mosaicSupplyChange.data.delta.compact())}}
+              </span>
+            </div>
+          </div>
+        </div>
+      </ng-template>
 
+      <!-- Mosaic Name -->
+      <ng-container *ngIf="viewMosaicName">
+        <div class="col-12 mt-04rem">
+          <div class="row">
+            <div class="col-4 overflow-ellipsis-nowrap">
+              <span class="color-dark-green fw-bold fs-08rem">Mosaic: </span>
+            </div>
+            <div class="col-8 overflow-ellipsis-nowrap">
+              <span class="color-dark-green fw-400 fs-08rem">
+                <!-- Mosaic Name -->
+                <ng-container *ngIf="
+                mosaicSupplyChange['mosaicsStorage'] !== null &&
+                mosaicSupplyChange['mosaicsStorage']['mosaicNames']['names'].lenght > 0;
+                else viewId">
+                  {{ mosaicSupplyChange.mosaicsStorage['mosaicNames']['names'][0] }}
+                </ng-container>
 
-<!-- INCREASE & DECREASE, SIGNER INFO-->
-<ng-container>
-  <div class="mt-3">
-    <div class="row">
-      <div class="col-md-3">
-        <span class="fs-08rem fw-bolder w-w-b-w"><b>Recipient Rental Fee Sink:</b></span>
+                <!-- Mosaic Id -->
+                <ng-template #viewId>
+                  {{ mosaicId }}
+                </ng-template>
+              </span>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- Recipient Rental Fee Sink -->
+      <div class="col-12 mt-04rem">
+        <div class="row">
+          <div class="col-4 overflow-ellipsis-nowrap">
+            <span class="color-dark-green fw-bold fs-08rem">Recipient Rental Fee Sink: </span>
+          </div>
+          <div class="col-8 overflow-ellipsis-nowrap">
+            <span class="color-dark-green fw-400 fs-08rem">{{mosaicSupplyChange?.recipientRentalFeeSink}}</span>
+          </div>
+        </div>
       </div>
-      <div class="col-md-9">
-        <span class="fs-08rem fw-bolder w-w-b-w">{{mosaicSupplyChange?.recipientRentalFeeSink}}</span>
-      </div>
-    </div>
-  </div>
 
-
-  <div class="mt-3">
-    <div class="row">
-      <div class="col-md-3">
-        <span class="fs-08rem fw-bolder w-w-b-w"><b>Signer:</b></span>
-      </div>
-      <div class="col-md-9">
-        <span class="fs-08rem fw-bolder w-w-b-w">{{mosaicSupplyChange?.data.signer.publicKey}}</span>
-      </div>
-    </div>
-  </div>
-
-  <div class="mt-3">
-    <div class="row">
-      <div class="col-md-3">
-        <span class="fs-08rem fw-bolder w-w-b-w"><b>Signature:</b></span>
-      </div>
-      <div class="col-md-9">
-        <span class="fs-08rem fw-bolder w-w-b-w">{{mosaicSupplyChange?.data.signature}}</span>
-      </div>
-    </div>
-  </div>
-  <hr>
-</ng-container>
-
-<!-- TIMESTAMP & HASH INFO -->
-<ng-container>
-  <div class="mt-3">
-    <div class="row">
-      <div class="col-md-3">
-        <span class="fs-08rem fw-bolder w-w-b-w"><b>Deadline:</b></span>
-      </div>
-      <div class="col-md-9">
-        <span class="fs-08rem fw-bolder w-w-b-w">{{mosaicSupplyChange?.timestamp}}</span>
-      </div>
-    </div>
-  </div>
-
-  <div class="mt-3">
-    <div class="row">
-      <div class="col-md-3">
-        <span class="fs-08rem fw-bolder w-w-b-w"><b>Block Height:</b></span>
-      </div>
-      <div class="col-md-9">
-        <span class="fs-08rem fw-bolder w-w-b-w">{{mosaicSupplyChange?.data.transactionInfo.height.compact()}}</span>
-      </div>
-    </div>
-  </div>
-
-
-  <div class="mt-3">
-    <div class="row">
-      <div class="col-md-3">
-        <span class="fs-08rem fw-bolder w-w-b-w"><b>Hash:</b></span>
-      </div>
-      <div class="col-md-9">
-        <span class="fs-08rem fw-bolder w-w-b-w">{{mosaicSupplyChange?.data.transactionInfo.hash}}</span>
+      <!-- Block Height -->
+      <div class="col-12 mt-04rem">
+        <div class="row">
+          <div class="col-4 overflow-ellipsis-nowrap">
+            <span class="color-dark-green fw-bold fs-08rem">Block Height: </span>
+          </div>
+          <div class="col-8 overflow-ellipsis-nowrap">
+            <span
+              class="color-dark-green fw-400 fs-08rem">{{mosaicSupplyChange?.data.transactionInfo.height.compact()}}</span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-</ng-container>
+
+  <!-- Box signer, signature, hash -->
+  <div class="col-12 col-md-5" id="boxHashSignerSignature">
+    <div class="row gray-color-transparent lh-1em">
+      <div class="col-12">
+        <div class="row">
+          <div class="col-12">
+            <span class="fs-08rem fw-bolder w-w-b-w"><b>Signer:</b></span>
+          </div>
+          <div class="col-12">
+            <span class="fs-07rem fw-bolder w-w-b-w">{{mosaicSupplyChange?.data.signer.publicKey}}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 mt-3">
+        <div class="row">
+          <div class="col-12">
+            <span class="fs-08rem fw-bolder w-w-b-w"><b>Signature:</b></span>
+          </div>
+          <div class="col-12">
+            <span class="fs-07rem fw-bolder w-w-b-w">{{mosaicSupplyChange?.data.signature}}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 mt-3">
+        <div class="row">
+          <div class="col-12">
+            <span class="fs-08rem fw-bolder w-w-b-w"><b>Hash:</b></span>
+          </div>
+          <div class="col-12">
+            <span class="fs-07rem fw-bolder w-w-b-w">{{mosaicSupplyChange?.data.transactionInfo.hash}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <div class="col-12 mt-4" *ngIf="searching">
   <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate" *ngIf="searching"></mdb-progress-bar>

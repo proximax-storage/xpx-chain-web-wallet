@@ -2,6 +2,7 @@ import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
 import { TransactionsService } from '../../../transactions/service/transactions.service';
 import { MosaicService } from '../../../servicesModule/services/mosaic.service';
 import { TransactionsInterface } from '../../services/transaction.interface';
+import { MosaicId } from 'tsjs-xpx-catapult-sdk';
 
 @Component({
   selector: 'app-mosaic-supply-change-type',
@@ -13,6 +14,7 @@ export class MosaicSupplyChangeTypeComponent implements OnInit {
   @Input() mosaicSupplyChange: TransactionsInterface;
   viewMosaicName = false;
   searching = true;
+  mosaicId: MosaicId;
 
   constructor(
     public transactionService: TransactionsService,
@@ -25,7 +27,8 @@ export class MosaicSupplyChangeTypeComponent implements OnInit {
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
     this.viewMosaicName = false;
     this.mosaicSupplyChange['mosaicsStorage'] = null;
-    /*this.mosaicService.searchMosaics([this.mosaicSupplyChange.data['mosaicId']]).then(
+    this.mosaicId = this.mosaicSupplyChange.data['mosaicId'].toHex();
+    this.mosaicService.searchMosaics([this.mosaicSupplyChange.data['mosaicId']]).then(
       response => {
         this.searching = false;
         if (response.length > 0) {
@@ -35,6 +38,6 @@ export class MosaicSupplyChangeTypeComponent implements OnInit {
       }).catch(err => {
         this.viewMosaicName = false;
         this.searching = false;
-      });*/
+      });
   }
 }
