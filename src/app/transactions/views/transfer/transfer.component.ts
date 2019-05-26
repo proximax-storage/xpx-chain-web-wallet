@@ -20,7 +20,7 @@ export class TransferComponent implements OnInit {
 
 
   myClass = {
-    'boxRecipientTrue': 'col-7 col-sm-8 col-md-7 col-lg-8 pr-2rem',
+    'boxRecipientTrue': 'col-9 col-sm-8 col-md-7 col-lg-8 pr-2rem',
     'boxRecipientFalse': 'col-10 pl-2rem pr-2rem',
     'boxDirectoryTrue': 'col-12 col-md-4 col-lg-3 d-flex justify-content-center align-items-center background-dark-green-plus',
     'boxDirectoryFalse': 'col-2 d-flex justify-content-center align-items-center background-dark-green-plus',
@@ -29,6 +29,7 @@ export class TransferComponent implements OnInit {
     'rowAddContactFalse': 'col-12 d-flex align-items-center'
   }
 
+  viewReload = false;
   searchMosaics = true;
   showContacts = false;
   inputBLocked: boolean;
@@ -74,10 +75,11 @@ export class TransferComponent implements OnInit {
    * @memberof TransferComponent
    */
   async getMosaics() {
+    this.searchMosaics = true;
     const mosaicsSelect = this.mosaicsSelect.slice(0);
     if (this.walletService.getAccountInfo() !== undefined) {
+      this.viewReload = false;
       const mosaics = await this.mosaicServices.searchMosaics(this.walletService.getAccountInfo().mosaics.map(n => n.id));
-      // console.log(mosaics);
       if (mosaics.length > 0) {
         for (let mosaic of mosaics) {
           if (this.proximaxProvider.getMosaicId(mosaic.id).id.toHex() !== this.mosaicServices.mosaicXpx.mosaicId) {
@@ -91,6 +93,8 @@ export class TransferComponent implements OnInit {
           }
         }
       }
+    } else {
+      this.viewReload = true;
     }
 
     this.searchMosaics = false;
@@ -108,7 +112,7 @@ export class TransferComponent implements OnInit {
         this.proximaxProvider.mosaicXpx.mosaicId,
         [Validators.required]
       ],
-      acountRecipient: [
+      accountRecipient: [
         '',
         [
           Validators.required,
@@ -234,7 +238,7 @@ export class TransferComponent implements OnInit {
       this.inputBLocked = false;
     } else {
       this.inputBLocked = true;
-      const acountRecipient = this.transferForm.get("acountRecipient").value;
+      const acountRecipient = this.transferForm.get("accountRecipient").value;
       const amount = this.transferForm.get("amount").value;
       const message = this.transferForm.get("message").value === null ? "" : this.transferForm.get("message").value;
       const password = this.transferForm.get("password").value;
@@ -321,8 +325,7 @@ export class TransferComponent implements OnInit {
    * @memberof TransferComponent
    */
   optionSelected(event: { value: any }) {
-    // console.log(event);
-    this.transferForm.get("acountRecipient").patchValue(event.value);
+    this.transferForm.get("accountRecipient").patchValue(event.value);
   }
 
   /**
