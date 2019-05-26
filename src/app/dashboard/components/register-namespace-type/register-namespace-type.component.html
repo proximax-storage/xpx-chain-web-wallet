@@ -70,21 +70,24 @@
       </div>
 
       <!-- Duration -->
-      <div class="col-12 mt-04rem">
-        <div class="row">
-          <div class="col-3 overflow-ellipsis-nowrap">
-            <span class=" color-dark-green fw-bold fs-08rem">Duration: </span>
-          </div>
-          <div class="col-9 overflow-ellipsis-nowrap">
-            <span class=" color-dark-green fw-400 fs-08rem">
-              <strong>
-                (Blocks: {{registerNamespaceTransaction?.data.duration.compact()}})
-              </strong> -
-              {{transactionService.calculateDuration(registerNamespaceTransaction?.data.duration)}}
-            </span>
+      <ng-container *ngIf="registerNamespaceTransaction?.data.duration !== undefined">
+        <div class="col-12 mt-04rem">
+          <div class="row">
+            <div class="col-3 overflow-ellipsis-nowrap">
+              <span class=" color-dark-green fw-bold fs-08rem">Duration: </span>
+            </div>
+            <div class="col-9 overflow-ellipsis-nowrap">
+              <span class=" color-dark-green fw-400 fs-08rem">
+                <strong>
+                  (Blocks: {{registerNamespaceTransaction?.data.duration.compact()}})
+                </strong> -
+                {{transactionService.calculateDuration(registerNamespaceTransaction?.data.duration)}}
+              </span>
+            </div>
           </div>
         </div>
-      </div>
+      </ng-container>
+
 
 
     </div>

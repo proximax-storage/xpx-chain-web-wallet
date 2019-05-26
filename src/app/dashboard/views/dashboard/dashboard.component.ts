@@ -63,7 +63,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.typeTransactions = this.transactionService.arraTypeTransaction;
     this.dashboardService.incrementViewDashboard();
     this.dashboardService.subscribeLogged();
-    this.getConfirmedAndUnconfirmedTransactions();
+    this.subscribeTransactionsConfirmedUnconfirmed();
     this.getRecentTransactions();
     this.balance();
   }
@@ -144,7 +144,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
    *
    * @memberof DashboardComponent
    */
-  getConfirmedAndUnconfirmedTransactions() {
+  subscribeTransactionsConfirmedUnconfirmed() {
     this.subscriptions['transactionsConfirmed'] = this.transactionService.getTransactionsConfirmed$().subscribe(
       (next: TransactionsInterface[]) => {
         this.cantConfirmed = next.length;
@@ -171,6 +171,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
     );
   }
 
+  /**
+   *
+   *
+   * @memberof DashboardComponent
+   */
   searchItems() {
     const prev = this.mdbTable.getDataSource();
     if (!this.searchTransaction) {

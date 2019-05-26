@@ -20,8 +20,8 @@ export class TransferComponent implements OnInit {
 
 
   myClass = {
-    'boxRecipientTrue': 'col-12 col-md-7 col-lg-8 pl-2rem pr-2rem',
-    'boxDirectoryTrue': 'col-12 col-md-5 col-lg-4 d-flex justify-content-center align-items-center background-dark-green-plus',
+    'boxRecipientTrue': 'col-10 col-md-7 col-lg-8 pr-2rem',
+    'boxDirectoryTrue': 'col-12 col-md-4 col-lg-3 d-flex justify-content-center align-items-center background-dark-green-plus',
     'boxRecipientFalse': 'col-10 pl-2rem pr-2rem',
     'boxDirectoryFalse': 'col-2 d-flex justify-content-center align-items-center background-dark-green-plus',
     'rowDirectoryTrue': 'col-10 col-md-8 col-lg-9',
