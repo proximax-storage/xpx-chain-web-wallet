@@ -22,11 +22,11 @@
 
           <!-- Mosaics -->
           <div class="row box-form mt-1rem pt-0 pb-0 pb-0 pr-0 pl-0 animated fadeIn">
-            <div class="col-2 col-sm-1 d-flex align-items-center justify-content-end justify-content-sm-end">
+            <div class="col-3 col-sm-2 col-md-1 d-flex align-items-center justify-content-end justify-content-sm-end">
               <img class="h1-5em" src="assets/images/img/icon-mosaics-white.svg" alt="">
             </div>
 
-            <div class="col-8 col-sm-10">
+            <div class="col-7 col-sm-8 col-md-9">
               <div class="md-form">
                 <mdb-select [options]="mosaicsSelect" required formControlName="mosaicsSelect"
                   class="colorful-select dropdown-default" mdbInputDirective data-success="Mosaic selected is valid"
@@ -36,7 +36,7 @@
             </div>
 
             <ng-container *ngIf="searchMosaics">
-              <div class="col-2 col-sm-1 d-flex align-items-center">
+              <div class="col-2 d-flex align-items-center">
                 <mdb-spinner spinnerType="small"></mdb-spinner>
               </div>
             </ng-container>
@@ -45,11 +45,11 @@
           <!-- Contacts -->
           <ng-container *ngIf="showContacts">
             <div class="row box-form mt-1rem pb-0 pr-0 pl-0 animated fadeIn">
-              <div class="col-2 col-sm-1 d-flex align-items-center justify-content-end justify-content-sm-end">
-                <img class="h1-5em" src="assets/images/img/icon-mosaics-white.svg" alt="">
+              <div class="col-3 col-sm-2 col-md-1 d-flex align-items-center justify-content-end justify-content-sm-end">
+                <img class="h1-5em" src="assets/images/img/icon-directory-white.svg" alt="">
               </div>
 
-              <div class="col-8 col-sm-10">
+              <div class="col-7 col-sm-8 col-md-9">
                 <div class="md-form">
                   <mdb-select [options]="contacts" required placeholder="Select contact/address"
                     class="colorful-select dropdown-default" mdbInputDirective (selected)="optionSelected($event)">
@@ -62,7 +62,7 @@
 
           <!-- Recipient -->
           <div class="row box-form mt-1rem pt-0 pb-0 pr-0 pl-0 animated fadeIn">
-            <div class="col-2 col-sm-1 col-md-1 d-flex align-items-center justify-content-end justify-content-sm-end">
+            <div class="col-3 col-sm-2 col-md-1 d-flex align-items-center justify-content-end justify-content-sm-end">
               <img class="h1-5em" src="assets/images/img/icon-directory-white.svg" alt="">
             </div>
 
@@ -117,29 +117,50 @@
           </div>
 
           <!-- Quantity and Message -->
-          <div class="row box-form mt-1rem pt-0 pb-0">
+          <div class="row box-form mt-1rem pt-0 pb-0 pb-0 pr-0 pl-0 animated fadeIn">
             <div class="col-12">
-              <div class="md-form" id="container-walletname">
-                <i class="fa fa-credit-card prefix color-white"></i>
-                <input type="number" autocomplete="off" formControlName="amount" id="amount" class="form-control"
-                  mdbInputDirective data-success="Valid amount" [errorMessage]="getError('amount')">
-                <label for="recipient">Quantity</label>
-              </div>
+              <div class="row">
+                <div
+                  class="col-3 col-sm-2 col-md-1 d-flex align-items-center justify-content-end justify-content-sm-end">
+                  <img class="h1-5em" src="assets/images/img/icon-wallet-import-white.svg" alt="">
+                </div>
 
-              <div class="md-form" id="container-walletname">
-                <i class="fa fa-envelope prefix color-white"></i>
-                <input type="text" autocomplete="off" formControlName="message" id="message" class="form-control"
-                  mdbInputDirective data-success="Valid message" [errorMessage]="getError('message')">
-                <label for="recipient">Message</label>
+                <div class="col-9 col-sm-10 col-md-11">
+                  <div class="md-form">
+                    <input type="number" autocomplete="off" formControlName="amount" id="amount" class="form-control"
+                      mdbInputDirective data-success="Valid amount" [errorMessage]="getError('amount')">
+                    <label for="recipient">Quantity</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12">
+              <div class="row">
+                <div
+                  class="col-3 col-sm-2 col-md-1 d-flex align-items-center justify-content-end justify-content-sm-end">
+                  <img class="h1-5em" src="assets/images/img/icon-meseenger-white.svg" alt="">
+                </div>
+
+                <div class="col-9 col-sm-10 col-md-11">
+                  <div class="md-form">
+                    <input type="text" autocomplete="off" formControlName="message" id="message" class="form-control"
+                      mdbInputDirective data-success="Valid message" [errorMessage]="getError('message')">
+                    <label for="recipient">Message</label>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
           <!-- Password -->
-          <div class="row box-form mt-1rem pt-0 pb-0">
-            <div class="col-12">
-              <div class="md-form" id="container-password">
-                <i class="fa fa-lock prefix color-white"></i>
+          <div class="row box-form mt-1rem pt-0 pb-0 pb-0 pr-0 pl-0 animated fadeIn">
+            <div class="col-3 col-sm-2 col-md-1 d-flex align-items-center justify-content-end justify-content-sm-end">
+              <img class="h1-5em" src="assets/images/img/icon-password-light-gray.svg" alt="">
+            </div>
+
+            <div class="col-9 col-sm-10 col-md-11">
+              <div class="md-form">
                 <input type="password" autocomplete="off" required formControlName="password" id="password"
                   class="form-control" mdbInputDirective data-success="Valid password"
                   [errorMessage]="getError('password')">
@@ -147,6 +168,7 @@
               </div>
             </div>
           </div>
+
 
           <!-- BUTTONS -->
           <div class="row mt-1rem mb-1rem">

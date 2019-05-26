@@ -154,6 +154,23 @@
         </div>
       </div>
 
+      <!-- MOSAIC NONCE -->
+      <ng-container *ngIf="mosaicDefinition.data['nonce'] !== undefined">
+        <div class="col-12 mt-04rem">
+          <div class="row">
+            <div class="col-4 overflow-ellipsis-nowrap">
+              <span class="color-dark-green fw-bold fs-08rem">Nonce: </span>
+            </div>
+            <div class="col-8 overflow-ellipsis-nowrap">
+              <span class="color-dark-green fw-400 fs-08rem">
+                {{ mosaicDefinition.data['nonce'] }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+
     </div>
   </div>
   <!-- Box signer, signature, hash -->
