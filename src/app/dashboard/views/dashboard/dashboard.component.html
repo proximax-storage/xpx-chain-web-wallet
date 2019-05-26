@@ -222,16 +222,17 @@
           <app-aggregate-complete-type [aggregateComplete]="dataSelected"
             *ngIf="dataSelected.data.type === typeTransactions.aggregateComplete.id">
           </app-aggregate-complete-type>
-
+          <!-- TYPE AGGREGATE BONDED -->
+          <app-aggregate-bonded-type [aggregateBonded]="dataSelected"
+            *ngIf="dataSelected.data.type === typeTransactions.aggregateBonded.id">
+          </app-aggregate-bonded-type>
 
           <!-- TYPE MODIFY MULTISIG ACCOUNT TRANSACTION
           <app-modify-multisig-account-type
             *ngIf="dataSelected.data.type === typeTransactions.modifyMultisigAccount.id">
           </app-modify-multisig-account-type>-->
 
-          <!-- TYPE AGGREGATE BONDED TRANSACTION
-          <app-aggregate-bonded-type *ngIf="dataSelected.data.type === typeTransactions.aggregateBonded.id">
-          </app-aggregate-bonded-type> -->
+
           <!-- TYPE LOCK TRANSACTION
           <app-lock-type *ngIf="dataSelected.data.type === typeTransactions.lock.id"></app-lock-type> -->
           <!-- TYPE SECRET LOCK TRANSACTION
