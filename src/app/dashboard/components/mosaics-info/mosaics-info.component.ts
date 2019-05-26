@@ -27,7 +27,7 @@ import { ProximaxProvider } from '../../../shared/services/proximax.provider';
                 </ng-container>
 
                 <!-- OTHER MOSAICS -->
-                <container *ngIf="viewOtherMosaics">
+                <ng-container *ngIf="viewOtherMosaics">
                   <div class="row">
                     <div class="col-12">
                       <span class="color-dark-green fw-bold fs-1-5rem">Other mosaics: </span>
@@ -67,7 +67,7 @@ import { ProximaxProvider } from '../../../shared/services/proximax.provider';
                       </tbody>
                     </table>
                   </div>
-                </container>
+                </ng-container>
 
               `
 })

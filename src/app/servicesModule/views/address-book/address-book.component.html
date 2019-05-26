@@ -51,64 +51,61 @@
           <h5 class="f-w-bold color-dark-green">{{contacts.length}} results for "Search contacts"</h5>
         </div>
       </div>
+    </div>
+  </div>
 
-      <!-- Progress bar -->
-      <div class="row">
-        <div class="col-12">
-          <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate" *ngIf="searching">
-          </mdb-progress-bar>
-        </div>
+  <!-- Progress bar -->
+  <div class="row">
+    <div class="col-12">
+      <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate" *ngIf="searching">
+      </mdb-progress-bar>
+    </div>
+  </div>
+
+  <div class="row d-flex justify-content-center">
+    <div class="col-12 col-sm-12 col-lg-10 d-flex justify-content-center">
+      <div class="table-responsive table-hover">
+        <table mdbTable #tableEl="mdbTable" id="mdbTable" striped="true"
+          class="table table-hover table-bordered table-hover table-sm z-depth-0" borderless="true">
+          <!--Table head-->
+          <thead>
+            <tr class="header-backg">
+              <ng-container *ngFor="let head of headElements; let i = index">
+                <th scope="col" class="text-center fw-400">{{head}}</th>
+              </ng-container>
+            </tr>
+          </thead>
+          <!--Table head-->
+
+          <!--Table body-->
+          <tbody class="background-white">
+            <ng-container *ngFor="let contact of contacts; let i = index">
+              <tr class="mouse-pointer">
+                <th *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex"
+                  class="th-sm text-center" scope="row description-dark-green">{{contact.label}}</th>
+                <td class="text-center th-sm description-dark-green"
+                  *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex">
+                  {{contact.value}}</td>
+                <td *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex">
+                  <span class="table-remove text-center d-flex justify-content-center">
+                    <button type="button" mdbBtn color="danger" rounded="true" size="sm" class="my-0"
+                      (click)="remove(contact.label)">Remove</button>
+                  </span>
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+
+          <tfoot class="lighten-5 w-100">
+            <tr>
+              <td colspan="5">
+                <mdb-table-pagination [tableEl]="tableEl" [searchDataSource]="contacts">
+                </mdb-table-pagination>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
       </div>
-
-      <ng-container>
-        <div class="row">
-          <div class="col-12 mx-auto">
-            <div class="table-responsive table-hover">
-              <table mdbTable #tableEl="mdbTable" id="mdbTable" striped="true"
-                class="table table-hover table-bordered table-hover table-sm z-depth-0" borderless="true">
-                <!--Table head-->
-                <thead>
-                  <tr class="header-backg">
-                    <ng-container *ngFor="let head of headElements; let i = index">
-                      <th scope="col" class="text-center fw-400">{{head}}</th>
-                    </ng-container>
-                  </tr>
-                </thead>
-                <!--Table head-->
-
-                <!--Table body-->
-                <tbody class="background-white">
-                  <ng-container *ngFor="let contact of contacts; let i = index">
-                    <tr class="mouse-pointer">
-                      <th *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex"
-                        class="th-sm text-center" scope="row description-dark-green">{{contact.label}}</th>
-                      <td class="text-center th-sm description-dark-green"
-                        *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex">
-                        {{contact.value}}</td>
-                      <td *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex">
-                        <span class="table-remove text-center d-flex justify-content-center">
-                          <button type="button" mdbBtn color="danger" rounded="true" size="sm" class="my-0"
-                            (click)="remove(contact.label)">Remove</button>
-                        </span>
-                      </td>
-                    </tr>
-                  </ng-container>
-                </tbody>
-
-                <tfoot class="lighten-5 w-100">
-                  <tr>
-                    <td colspan="5">
-                      <mdb-table-pagination [tableEl]="tableEl" [searchDataSource]="contacts">
-                      </mdb-table-pagination>
-                    </td>
-                  </tr>
-                </tfoot>
-              </table>
-            </div>
-          </div>
-        </div>
-      </ng-container>
-
     </div>
   </div>
 </div>

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { CoreModule } from '../core/core.module';
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './views/dashboard/dashboard.component';
+/*
 import { TransferTypeComponent } from './components/transfer-type/transfer-type.component';
 import { RegisterNamespaceTypeComponent } from './components/register-namespace-type/register-namespace-type.component';
 import { MosaicDefinitionTypeComponent } from './components/mosaic-definition-type/mosaic-definition-type.component';
@@ -15,6 +16,20 @@ import { SecretLockTypeComponent } from './components/secret-lock-type/secret-lo
 import { SecretProofComponent } from './components/secret-proof/secret-proof.component';
 import { MosaicsInfoComponent } from './components/mosaics-info/mosaics-info.component';
 
+const components = [
+  TransferTypeComponent,
+  RegisterNamespaceTypeComponent,
+  MosaicDefinitionTypeComponent,
+  MosaicSupplyChangeTypeComponent,
+  ModifyMultisigAccountTypeComponent,
+  AggregateCompleteTypeComponent,
+  AggregateBondedTypeComponent,
+  LockTypeComponent,
+  SecretLockTypeComponent,
+  SecretProofComponent,
+  MosaicsInfoComponent
+]*/
+
 @NgModule({
   imports: [
     CommonModule,
@@ -22,18 +37,7 @@ import { MosaicsInfoComponent } from './components/mosaics-info/mosaics-info.com
     DashboardRoutingModule
   ],
   declarations: [
-    DashboardComponent,
-    TransferTypeComponent,
-    RegisterNamespaceTypeComponent,
-    MosaicDefinitionTypeComponent,
-    MosaicSupplyChangeTypeComponent,
-    ModifyMultisigAccountTypeComponent,
-    AggregateCompleteTypeComponent,
-    AggregateBondedTypeComponent,
-    LockTypeComponent,
-    SecretLockTypeComponent,
-    SecretProofComponent,
-    MosaicsInfoComponent
+    DashboardComponent
   ],
   schemas: [NO_ERRORS_SCHEMA]
 

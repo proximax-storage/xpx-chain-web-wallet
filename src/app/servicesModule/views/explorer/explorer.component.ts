@@ -7,6 +7,7 @@ import { NodeService } from "../../services/node.service";
 import { SharedService, WalletService } from "../../../shared";
 import { TransactionsService } from "../../../transactions/service/transactions.service";
 import { first } from "rxjs/operators";
+import { TransactionsInterface } from 'src/app/dashboard/services/transaction.interface';
 
 @Component({
   selector: 'app-explorer',
@@ -21,14 +22,15 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
   objectKeys = Object.keys;
   firstItemIndex;
   lastItemIndex;
+  typeTransactions: any;
   typeNode = '';
   typeSearch = '';
   paramSearch = '';
   previous: any = '';
   searchText: string = '';
   elements: any = [];
-  dataSelected: Transaction | any;
-  headElements = ['Account', 'Amount', 'Mosaic', 'Date'];
+  dataSelected: TransactionsInterface = null;
+  headElements = ['Type', 'Timestamp', 'Fee', 'Sender', 'Recipient'];
   optionTypeSearch = [
     {
       'value': 'address',
@@ -60,7 +62,7 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-
+    this.typeTransactions = this.transactionsService.arraTypeTransaction;
   }
 
   ngAfterViewInit() {
@@ -111,7 +113,7 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
       this.searching = true;
       if (this.typeSearch === 'address') {
         //from address
-        if (this.paramSearch.length === 40) {
+        if (this.paramSearch.length === 40 || this.paramSearch.length === 46) {
           this.proximaxProvider.getAccountInfo(Address.createFromRawAddress(this.paramSearch)).pipe(first()).subscribe(
             accountInfo => {
               this.proximaxProvider.getTransactionsFromAccount(accountInfo.publicAccount).subscribe(
@@ -165,31 +167,22 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
 
 
   buildTransaction(param) {
+    const data = [];
     param.forEach(element => {
-      if (element.type === TransactionType.TRANSFER) {
-        const date = `${element.deadline.value.monthValue()}/${element.deadline.value.dayOfMonth()}/${element.deadline.value.year()}`;
-        this.elements.push({
-          address: element.signer.address['address'],
-          amount: element['mosaics'][0].amount.compact(),
-          message: element['message'],
-          transactionInfo: element.transactionInfo,
-          fee: element.fee.compact(),
-          mosaic: this.proximaxProvider.mosaicXpx.mosaic,
-          date: date,
-          recipient: element['recipient'],
-          signer: element.signer
-        });
-
-        this.mdbTable.setDataSource(this.elements);
-        this.elements = this.mdbTable.getDataSource();
-        this.previous = this.mdbTable.getDataSource();
+      const builderTransactions = this.transactionsService.getStructureDashboard(element);
+      if (builderTransactions !== null) {
+        data.push(builderTransactions);
       }
+
+      this.elements = data;
+      this.mdbTable.setDataSource(data);
+      this.elements = this.mdbTable.getDataSource();
+      this.previous = this.mdbTable.getDataSource();
     });
   }
 
   searchItems() {
     const prev = this.mdbTable.getDataSource();
-
     if (!this.searchText) {
       this.mdbTable.setDataSource(this.previous);
       this.elements = this.mdbTable.getDataSource();

@@ -11,9 +11,7 @@ import { routing, appRoutingProviders } from './app.routing';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
 import { HeaderHorizontalComponent } from './header/component/header-horizontal/header-horizontal.component';
-
 import { FooterComponent } from './footer/footer.component';
-
 
 @NgModule({
   declarations: [

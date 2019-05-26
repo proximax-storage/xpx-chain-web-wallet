@@ -17,7 +17,7 @@ export class AggregateCompleteTypeComponent implements OnInit {
   }
 
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
-    console.log(this.aggregateComplete);
+    // console.log(this.aggregateComplete);
   }
 
 }
