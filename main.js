@@ -12,7 +12,7 @@ function createWindow() {
     width: 1024,
     height: 600,
     backgroundColor: '#ffffff',
-    icon: `file://${__dirname}/dist/proxiWallet/assets/favicon.ico`
+    icon: `file://${__dirname}/dist/xpx-catapult-web-wallet-cow/assets/favicon.ico`
   })
 
 
@@ -26,7 +26,7 @@ function createWindow() {
     win = null
   })
 
-  win.loadFile('dist/proximax-web-wallet/index.html');
+  win.loadFile('dist/xpx-catapult-web-wallet-cow/index.html');
 }
 
 // Create window on electron intialization

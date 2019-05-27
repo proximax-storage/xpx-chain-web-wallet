@@ -66,7 +66,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr mdbTableCol *ngFor="let el of aggregateComplete?.data.cosignatures; let i = index">
+                  <tr mdbTableCol *ngFor="let el of aggregateComplete?.data['cosignatures']; let i = index">
                     <td class="font-size-08rem">
                       <a class="text-link mouse-pointer">{{el.signer.address.pretty()}}</a>
                     </td>

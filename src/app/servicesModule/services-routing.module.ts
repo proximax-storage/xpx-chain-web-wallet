@@ -5,26 +5,9 @@ import { LoggedGuard } from '../shared/guard/logged.guard';
 import { ExplorerComponent } from "./views/explorer/explorer.component";
 import { AddNodeComponent } from "./views/add-node/add-node.component";
 import { SelectNodeComponent } from './views/select-node/select-node.component';
-import { CreatePollComponent } from "./views/voting/create-poll/create-poll.component";
-import { PollsComponent } from './views/voting/polls/polls.component';
-import { CreateApostilleComponent } from './views/apostille/create-apostille/create-apostille.component';
-import { AuditApostilleComsponent } from './views/apostille/audit-apostille/audit-apostille.component';
 import { ServicesComponent } from "./views/services/services.component";
 import { AccountComponent } from './views/account/account.component';
 import { AddressBookComponent } from "./views/address-book/address-book.component";
-import { StorageComponent } from './views/storage/storage.component';
-import { CreateMosaicComponent } from './views/mosaic/create-mosaic/create-mosaic.component';
-import { EditMosaicComponent } from './views/mosaic/edit-mosaic/edit-mosaic.component';
-import { CreateNamespaceComponent } from './views/namespace/create-namespace/create-namespace.component';
-import { EditNamespaceComponent } from './views/namespace/edit-namespace/edit-namespace.component';
-import { CreateMosaicResolver } from './views/mosaic/resolvers/creat-mosaic.resolver';
-import { EditMosaicResolver } from './views/mosaic/resolvers/edit-mosaic.resolver';
-import { CreateNamespaceResolver } from './views/namespace/resolvers/creat-namespace.resolver';
-import { CreateMultisignatureComponent } from './views/multisignature/create-multisignature/create-multisignature.component';
-import { EditMultisignatureContractComponent } from './views/multisignature/edit-multisignature-contract/edit-multisignature-contract.component';
-import { SignMultisigTransactionsComponent } from './views/multisignature/sign-multisig-transactions/sign-multisig-transactions.component';
-
-
 
 const routes: Routes = [
   {
@@ -128,9 +111,6 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
   providers: [
-    CreateMosaicResolver,
-    CreateNamespaceResolver,
-    EditMosaicResolver
   ]
 })
 export class ServicesRoutingModule { }

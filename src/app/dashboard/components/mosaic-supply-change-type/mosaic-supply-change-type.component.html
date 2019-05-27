@@ -25,15 +25,15 @@
       </div>
 
       <!-- Mosaic Id -->
-      <ng-container *ngIf="mosaicSupplyChange?.mosaicsStorage?.mosaicInfo !== null">
+      <ng-container *ngIf="mosaicSupplyChange['mosaicsStorage'].mosaicInfo !== null">
         <div class="col-12 mt-04rem">
           <div class="row">
             <div class="col-4 overflow-ellipsis-nowrap">
               <span class="color-dark-green fw-bold fs-08rem">Divisibility: </span>
             </div>
             <div class="col-8 overflow-ellipsis-nowrap">
-              <span
-                class="color-dark-green fw-400 fs-08rem">{{mosaicSupplyChange?.mosaicsStorage.mosaicInfo.properties.divisibility}}</span>
+              <span class="color-dark-green fw-400
+                fs-08rem">{{mosaicSupplyChange['mosaicsStorage'].mosaicInfo.properties.divisibility}}</span>
             </div>
           </div>
         </div>

@@ -66,25 +66,40 @@
 
       <!-- Enter password  -->
       <ng-container *ngIf="showPassword">
-        <div class="row box-form mt-1rem pt-0 pb-0">
-          <div class="col-12">
-            <div class="md-form" id="container-password">
-              <i class="fa fa-lock prefix color-white"></i>
-              <input [mdbValidate]="false" [(ngModel)]="password" type="password" autocomplete="off" required
-                id="password" class="form-control" mdbInputDirective data-success="Valid password">
-              <label for="password">Enter your wallet password</label>
+        <form [formGroup]="validatingForm" (ngSubmit)="decryptWallet()">
+          <div class="row box-form mt-1rem pt-0 pb-0">
+            <div class="col-12">
+              <div class="md-form" id="container-password">
+                <i class="fa fa-lock prefix color-white"></i>
+                <input formControlName="password" type="password" autocomplete="off" required id="password"
+                  class="form-control" mdbInputDirective [validateSuccess]="false" [validateError]="false">
+                <label for="password">Enter your wallet password</label>
+                <!-- VALIDATIONS -->
+                <mdb-error class="text-danger fw-500" *ngIf="input.invalid && (input.dirty || input.touched)">Invalid
+                  password</mdb-error>
+
+
+                <mdb-error class="text-danger fw-500"
+                  *ngIf="input.value !== '' && input.value.length >= 1 && input.value.length <= 7">
+                  The password must be greater than 8 characters
+                </mdb-error>
+
+                <mdb-success class="text-success fw-500"
+                  *ngIf="input.valid && (input.dirty || input.touched) && input.value.length >= 8">Valid password
+                </mdb-success>
+
+                <!-- FIN VALIDATIONS -->
+              </div>
             </div>
           </div>
-        </div>
-
-        <div class="row mt-1rem mb-1rem">
-          <div class="col-12 col-sm-6 col-md-4 mx-auto text-center">
-            <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 btn-white"
-              (click)="decryptWallet()">
-              SHOW PRIVATE KEY
-            </button>
+          <div class="row mt-1rem mb-1rem">
+            <div class="col-12 col-sm-6 col-md-4 mx-auto text-center">
+              <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 btn-white">
+                SHOW PRIVATE KEY
+              </button>
+            </div>
           </div>
-        </div>
+        </form>
       </ng-container>
 
       <!-- Show private key-->

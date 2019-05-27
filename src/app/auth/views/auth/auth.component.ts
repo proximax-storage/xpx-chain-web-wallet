@@ -38,13 +38,37 @@ export class AuthComponent implements OnInit {
     this.createForm();
   }
 
-  private createForm() {
+  createForm() {
     this.loginForm = this.fb.group({
       wallet: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(30)]],
       common: this.fb.group({ // <-- the child FormGroup
         password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]]
       })
     });
+  }
+
+  /**
+  * Clean form
+  *
+  * @param {(string | (string | number)[])} [custom]
+  * @param {(string | number)} [formControl]
+  * @returns
+  * @memberof TransferComponent
+  */
+  cleanForm(
+    custom?: string | (string | number)[],
+    formControl?: string | number
+  ) {
+    if (custom !== undefined) {
+      if (formControl !== undefined) {
+        this.loginForm.controls[formControl].get(custom).reset();
+        return;
+      }
+      this.loginForm.get(custom).reset();
+      return;
+    }
+    this.loginForm.reset();
+    return;
   }
 
 

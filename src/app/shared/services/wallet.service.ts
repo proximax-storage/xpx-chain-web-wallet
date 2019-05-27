@@ -41,6 +41,7 @@ export class WalletService {
    * @memberof WalletService
    */
   login(common: { password: { length: number; }; }, wallet: any) {
+    // console.log(wallet);
     if (!wallet) {
       this.sharedService.showError('Error', '¡Dear user, the wallet is missing!');
       return false;
@@ -130,7 +131,7 @@ export class WalletService {
 
     if (!crypto.passwordToPrivatekey(common, acct, alg)) {
       setTimeout(() => {
-        this.sharedService.showError('Error', '¡Invalid password!');
+        this.sharedService.showError('Error', 'Invalid password');
       }, 500);
       return false;
     }
@@ -141,7 +142,7 @@ export class WalletService {
 
     if (!this.isPrivateKeyValid(common.privateKey) || !this.proximaxProvider.checkAddress(common.privateKey, net, acct.address)) {
       setTimeout(() => {
-        this.sharedService.showError('Error', '¡Invalid password!');
+        this.sharedService.showError('Error', 'Invalid password');
       }, 500);
       return false;
     }
@@ -160,10 +161,10 @@ export class WalletService {
    */
   isPrivateKeyValid(privateKey: any) {
     if (privateKey.length !== 64 && privateKey.length !== 66) {
-      console.error('Private key length must be 64 or 66 characters !');
+      // console.error('Private key length must be 64 or 66 characters !');
       return false;
     } else if (!this.isHexadecimal(privateKey)) {
-      console.error('Private key must be hexadecimal only !');
+      // console.error('Private key must be hexadecimal only !');
       return false;
     } else {
       return true;

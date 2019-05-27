@@ -657,6 +657,20 @@ ng-select.ng-invalid.ng-touched .ng-select-container {
 }
 
 /****************************** ONLY MDB ********************************/
+input.form-control.validate-error.ng-invalid.ng-touched+label,
+input.form-control.validate-error.ng-invalid.ng-dirty+label,
+.form-submitted input.form-control.validate-error.ng-invalid+label {
+  color: #f0fafb !important;
+}
+
+input.form-control.validate-error.ng-invalid.ng-touched,
+input.form-control.validate-error.ng-invalid.ng-dirty,
+.form-submitted input.form-control.validate-error.ng-invalid {
+  border-bottom: 1px solid #fe9900 !important;
+  box-shadow: 0 1px 0 0 #fe9900 !important;
+}
+
+
 table {
   width: 100% !important;
   table-layout: fixed !important;

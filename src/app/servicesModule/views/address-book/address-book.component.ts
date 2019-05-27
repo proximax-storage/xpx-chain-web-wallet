@@ -62,6 +62,30 @@ export class AddressBookComponent implements OnInit, AfterViewInit {
   }
 
   /**
+  * Clean form
+  *
+  * @param {(string | (string | number)[])} [custom]
+  * @param {(string | number)} [formControl]
+  * @returns
+  * @memberof TransferComponent
+  */
+  cleanForm(
+    custom?: string | (string | number)[],
+    formControl?: string | number
+  ) {
+    if (custom !== undefined) {
+      if (formControl !== undefined) {
+        this.contactForm.controls[formControl].get(custom).reset();
+        return;
+      }
+      this.contactForm.get(custom).reset();
+      return;
+    }
+    this.contactForm.reset();
+    return;
+  }
+
+  /**
    * Get Error
    *
    * @param {*} control
