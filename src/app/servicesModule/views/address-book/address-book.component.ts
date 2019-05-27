@@ -132,6 +132,9 @@ export class AddressBookComponent implements OnInit, AfterViewInit {
         this.contactForm.reset();
         this.sharedService.showSuccess('', `Successfully created user`);
         this.contacts = this.serviceModuleService.getBooksAddress();
+        this.mdbTable.setDataSource(this.contacts);
+        this.contacts = this.mdbTable.getDataSource();
+        this.previous = this.mdbTable.getDataSource();
         return;
       }
 
@@ -142,6 +145,9 @@ export class AddressBookComponent implements OnInit, AfterViewInit {
         this.contactForm.reset();
         this.sharedService.showSuccess('', `Successfully created contact`);
         this.contacts = this.serviceModuleService.getBooksAddress();
+        this.mdbTable.setDataSource(this.contacts);
+        this.contacts = this.mdbTable.getDataSource();
+        this.previous = this.mdbTable.getDataSource();
         return;
       }
 

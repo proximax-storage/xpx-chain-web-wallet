@@ -46,11 +46,13 @@
 
 
       <!-- Results -->
-      <div class="row mt-1rem mb-1rem">
-        <div class="col-12 d-flex justify-content-center align-items-center" id="titleCantResults">
-          <h5 class="f-w-bold color-dark-green">{{contacts.length}} results for "Search contacts"</h5>
+      <ng-container *ngIf="searchContact !== ''">
+        <div class="row mt-1rem mb-1rem">
+          <div class="col-12 d-flex justify-content-center align-items-center" id="titleCantResults">
+            <h5 class="f-w-bold color-dark-green">{{contacts.length}} results for "Search contacts"</h5>
+          </div>
         </div>
-      </div>
+      </ng-container>
     </div>
   </div>
 

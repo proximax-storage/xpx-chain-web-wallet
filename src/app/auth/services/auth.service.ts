@@ -8,6 +8,7 @@ import { NodeService } from '../../servicesModule/services/node.service';
 import { MosaicService } from '../../servicesModule/services/mosaic.service';
 import { NamespacesService } from '../../servicesModule/services/namespaces.service';
 import { TransactionsService } from '../../transactions/service/transactions.service';
+import { ServiceModuleService } from 'src/app/servicesModule/services/service-module.service';
 
 @Injectable({
   providedIn: 'root'
@@ -28,7 +29,8 @@ export class AuthService {
     private nodeService: NodeService,
     private mosaicService: MosaicService,
     private nameSpaces: NamespacesService,
-    private transactionService: TransactionsService
+    private transactionService: TransactionsService,
+    private serviceModuleService: ServiceModuleService
   ) {
     this.setLogged(false);
   }
@@ -50,11 +52,11 @@ export class AuthService {
     // this.transactionsService.destroyAllTransactions();
     this.setLogged(true);
     this.route.navigate([`/${AppConfig.routes.dashboard}`]);
-
     this.dataBridgeService.closeConenection();
     this.dataBridgeService.connectnWs();
     // load services and components
     this.nameSpaces.buildNamespaceStorage();
+    this.serviceModuleService.changeBooksItem(this.walletService.address);
     return true;
   }
 

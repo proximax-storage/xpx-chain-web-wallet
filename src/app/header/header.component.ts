@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AppConfig } from '../config/app.config';
 import { AuthService } from '../auth/services/auth.service';
-import { StructureHeader, SharedService } from "../shared";
+import { StructureHeader, SharedService, WalletService } from "../shared";
 import { NodeService } from "../servicesModule/services/node.service";
 import { DataBridgeService } from '../shared/services/data-bridge.service';
 import { DashboardService } from '../dashboard/services/dashboard.service';
@@ -30,6 +30,7 @@ export interface HorizontalHeaderInterface {
 })
 export class HeaderComponent implements OnInit {
 
+  walletName = '';
   routeLogin = AppConfig.routes.login;
   imageLogin = false;
   nameRoute = '';
@@ -50,7 +51,8 @@ export class HeaderComponent implements OnInit {
     private dataBridgeService: DataBridgeService,
     private dashboardService: DashboardService,
     private transactionService: TransactionsService,
-    private sharedService: SharedService
+    private sharedService: SharedService,
+    private walletService: WalletService
   ) {
 
   }
@@ -88,6 +90,7 @@ export class HeaderComponent implements OnInit {
       response => {
         this.showOnlyLogged = response;
         if (this.showOnlyLogged) {
+          this.walletName = this.walletService.current.name;
           this.subscriptions['balance'] = this.transactionService.getBalance$().subscribe(
             next => {
               this.vestedBalance = `Balance ${next} XPX`;

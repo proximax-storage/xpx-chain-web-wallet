@@ -1,16 +1,20 @@
 import { Injectable } from '@angular/core';
-import { WalletService } from '../../shared';
+import { Address } from 'tsjs-xpx-catapult-sdk';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ServiceModuleService {
 
-  booksAddress = `books-address-${this.walletService.address}`;
+  booksAddress = ``;
   constructor(
-    private walletService: WalletService
+
   ) {
 
+  }
+
+  changeBooksItem(address: Address) {
+    this.booksAddress = `books-address-${address.pretty()}`;
   }
 
   /**
