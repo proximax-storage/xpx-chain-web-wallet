@@ -21,7 +21,7 @@ export class AccountComponent implements OnInit {
   descriptionBackupWallet = `It is very important that you have backups of your wallets to log in with or your ${this.mosaic} will be lost.`;
   address = this.walletService.address.pretty();
   privateKey = '';
-  publicKey = '';
+  publicKey = this.walletService.publicAccount.publicKey;
   walletName = this.walletService.current.name;
   validatingForm: FormGroup;
 

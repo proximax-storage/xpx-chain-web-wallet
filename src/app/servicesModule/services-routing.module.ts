@@ -8,6 +8,8 @@ import { SelectNodeComponent } from './views/select-node/select-node.component';
 import { ServicesComponent } from "./views/services/services.component";
 import { AccountComponent } from './views/account/account.component';
 import { AddressBookComponent } from "./views/address-book/address-book.component";
+import { CreateMosaicComponent } from './views/mosaic/create-mosaic/create-mosaic.component';
+import { CreateMosaicResolver } from './views/mosaic/resolvers/creat-mosaic.resolver';
 
 const routes: Routes = [
   {
@@ -58,19 +60,20 @@ const routes: Routes = [
     path: `${AppConfig.routes.addressBook}`,
     component: AddressBookComponent,
     canActivate: [LoggedGuard]
-  }
+  },
+  {
+    path: `${AppConfig.routes.createMosaic}`,
+    component: CreateMosaicComponent,
+    canActivate: [LoggedGuard]
+    // resolve: { dataNamespace: CreateMosaicResolver }
+  },
   /*
   {
     path: `${AppConfig.routes.storage}`,
     component: StorageComponent,
     canActivate: [LoggedGuard]
   },
-  {
-    path: `${AppConfig.routes.createMosaic}`,
-    component: CreateMosaicComponent,
-    canActivate: [LoggedGuard],
-    resolve: { dataNamespace: CreateMosaicResolver }
-  },
+
   {
     path: `${AppConfig.routes.editMosaic}`,
     component: EditMosaicComponent,

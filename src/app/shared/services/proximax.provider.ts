@@ -29,7 +29,12 @@ import {
   Transaction,
   MosaicSupplyChangeTransaction,
   RegisterNamespaceTransaction,
-  AccountInfo
+  AccountInfo,
+  MosaicNonce,
+  MosaicDefinitionTransaction,
+  MosaicProperties,
+  TransactionStatus,
+  TransactionAnnounceResponse
 } from 'tsjs-xpx-catapult-sdk';
 
 import { Observable } from 'rxjs';
@@ -162,46 +167,8 @@ export class ProximaxProvider {
    * @returns {Observable<TransactionAnnounceResponse>}
    * @memberof ProximaxProvider
    */
-  announce(signedTransaction: SignedTransaction): any { //Observable<TransactionAnnounceResponse> {
+  announce(signedTransaction: SignedTransaction): Observable<TransactionAnnounceResponse> {
     return this.transactionHttp.announce(signedTransaction);
-  }
-
-  /**
-  *
-  *
-  * @param {string} mosaicName
-  * @param {string} rootnamespaceName
-  * @param {boolean} supplyMutable
-  * @param {boolean} transferable
-  * @param {boolean} levyMutable
-  * @param {number} divisibility
-  * @param {number} duration
-  * @returns
-  * @memberof ProximaxProvider
-  */
-  buildRegisterMosaicTransaction(
-    mosaicName: string,
-    rootnamespaceName: string,
-    supplyMutable: boolean,
-    transferable: boolean,
-    levyMutable: boolean,
-    divisibility: number,
-    duration: number,
-    network: NetworkType
-  ) {
-    return null;
-    /*return MosaicDefinitionTransaction.create(
-      Deadline.create(),
-      mosaicName,
-      rootnamespaceName,
-      MosaicProperties.create({
-        supplyMutable: supplyMutable,
-        transferable: transferable,
-        levyMutable: levyMutable,
-        divisibility: divisibility,
-        duration: UInt64.fromUint(duration)
-      }),
-      network);*/
   }
 
   /**
@@ -274,7 +241,35 @@ export class ProximaxProvider {
     return Address.createFromRawAddress(address);
   }
 
+  createNonceRandom() {
+    return MosaicNonce.createRandom();
+  }
 
+
+  buildMosaicDefinition(
+    nonce: MosaicNonce,
+    account: Account,
+    supplyMutableParam: boolean,
+    transferableParam: boolean,
+    levyMutableParam: boolean,
+    divisibilityParam: number,
+    durationParam: number,
+    network: NetworkType
+  ): MosaicDefinitionTransaction {
+    return MosaicDefinitionTransaction.create(
+      Deadline.create(),
+      nonce,
+      MosaicId.createFromNonce(nonce, account.publicAccount),
+      MosaicProperties.create({
+        supplyMutable: supplyMutableParam,
+        transferable: transferableParam,
+        levyMutable: levyMutableParam,
+        divisibility: divisibilityParam,
+        duration: UInt64.fromUint(durationParam)
+      }),
+      network
+    );
+  }
 
   /**
   *
@@ -430,7 +425,8 @@ export class ProximaxProvider {
    * @returns {Observable<TransactionStatus>}
    * @memberof ProximaxProvider
    */
-  getTransactionStatusError(hash: string): any {//Observable<TransactionStatus> {
+  getTransactionStatusError(hash: string): Observable<TransactionStatus> {
+    // console.log('hash', hash)
     return this.transactionHttp.getTransactionStatus(hash);
   }
 
