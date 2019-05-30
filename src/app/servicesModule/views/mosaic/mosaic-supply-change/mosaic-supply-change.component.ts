@@ -9,11 +9,11 @@ import { AppConfig } from '../../../../config/app.config';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 
 @Component({
-  selector: 'app-edit-mosaic',
-  templateUrl: './edit-mosaic.component.html',
-  styleUrls: ['./edit-mosaic.component.scss']
+  selector: 'app-mosaic-supply-change',
+  templateUrl: './mosaic-supply-change.component.html',
+  styleUrls: ['./mosaic-supply-change.component.scss']
 })
-export class EditMosaicComponent implements OnInit {
+export class MosaicSupplyChange implements OnInit {
   @BlockUI() blockUI: NgBlockUI;
   formMosaicSupplyChange: FormGroup;
   parentMosaic: any = [{

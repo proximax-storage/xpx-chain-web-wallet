@@ -34,7 +34,8 @@ import {
   MosaicDefinitionTransaction,
   MosaicProperties,
   TransactionStatus,
-  TransactionAnnounceResponse
+  TransactionAnnounceResponse,
+  MosaicSupplyType
 } from 'tsjs-xpx-catapult-sdk';
 
 import { Observable } from 'rxjs';
@@ -245,7 +246,46 @@ export class ProximaxProvider {
     return MosaicNonce.createRandom();
   }
 
+  /**
+   *
+   *
+   * @param {MosaicId} mosaicId
+   * @param {MosaicSupplyType} mosaicSupplyType
+   * @param {UInt64} delta
+   * @param {NetworkType} network
+   * @returns {MosaicSupplyChangeTransaction}
+   * @memberof ProximaxProvider
+   */
+  buildMosaicSupplyChange(
+    mosaicId: MosaicId,
+    mosaicSupplyType: MosaicSupplyType,
+    delta: UInt64,
+    network: NetworkType
+  ): MosaicSupplyChangeTransaction {
+    return MosaicSupplyChangeTransaction.create(
+      Deadline.create(5),
+      mosaicId,
+      mosaicSupplyType,
+      delta,
+      network
+    );
+  }
 
+
+  /**
+   *
+   *
+   * @param {MosaicNonce} nonce
+   * @param {Account} account
+   * @param {boolean} supplyMutableParam
+   * @param {boolean} transferableParam
+   * @param {boolean} levyMutableParam
+   * @param {number} divisibilityParam
+   * @param {number} durationParam
+   * @param {NetworkType} network
+   * @returns {MosaicDefinitionTransaction}
+   * @memberof ProximaxProvider
+   */
   buildMosaicDefinition(
     nonce: MosaicNonce,
     account: Account,
@@ -257,7 +297,7 @@ export class ProximaxProvider {
     network: NetworkType
   ): MosaicDefinitionTransaction {
     return MosaicDefinitionTransaction.create(
-      Deadline.create(),
+      Deadline.create(5),
       nonce,
       MosaicId.createFromNonce(nonce, account.publicAccount),
       MosaicProperties.create({

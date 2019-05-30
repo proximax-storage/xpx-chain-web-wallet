@@ -213,7 +213,7 @@ export class DataBridgeService {
   * @returns
   * @memberof DataBridgeService
   */
-  getIblock() {
+  getBlock() {
     return this.block$;
   }
 

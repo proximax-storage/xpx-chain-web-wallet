@@ -33,34 +33,21 @@
           <div class="col-10 col-md-11 mt-1-5rem">
             <div class="box-form pt-0 pb-0">
               <div class="row d-flex justify-content-center">
-                <div class="col-12">
+                <div
+                  class="col-3 col-sm-2 col-md-1 d-flex align-items-center justify-content-end justify-content-sm-end">
+                  <img class="h1-5em" src="assets/images/img/icon-wallet-name-light-gray.svg" alt="">
+                </div>
+
+                <div class="col-9 col-sm-10 col-md-11">
                   <div class="md-form">
-                    <i class="fa fa-linode prefix color-white"></i>
-                    <mdb-select [options]="parentNamespace" required formControlName="parentNamespace"
-                      class="colorful-select dropdown-default" mdbInputDirective data-success="Valid Parent Namespace"
-                      [errorMessage]="getError('parentNamespace')"></mdb-select>
+                    <ng-select [items]="mosaicSupplyType" formControlName="mosaicSupplyType" bindLabel="label"
+                      bindValue="value" placeholder="Select or write Mosaic supply type">
+                    </ng-select>
                   </div>
                 </div>
               </div>
             </div>
           </div>-->
-
-          <!-- Mosaic name -->
-          <div class="col-10 col-md-11 mt-1-5rem">
-            <div class="box-form pt-0 pb-0">
-              <div class="row d-flex justify-content-center">
-                <div class="col-12">
-                  <div class="md-form">
-                    <i class="fa fa-th prefix color-white"></i>
-                    <input type="text" autocomplete="off" required formControlName="mosaicName" id="mosaicName"
-                      class="form-control" mdbInputDirective data-success="Valid mosaic name"
-                      [errorMessage]="getError('mosaicName')">
-                    <label for="walletname">Mosaic name</label>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
 
           <!-- Duration & divisibility-->
           <div class="col-10 col-md-11 mt-1-5rem">
@@ -89,6 +76,26 @@
             </div>
           </div>
 
+          <!-- Supply -->
+          <div class="col-10 col-md-11 mt-1-5rem">
+            <div class="box-form pt-0 pb-0">
+              <div class="row d-flex justify-content-center">
+                <div
+                  class="col-3 col-sm-2 col-md-1 d-flex align-items-center justify-content-end justify-content-sm-end">
+                  <img class="h1-5em" src="assets/images/img/icon-wallet-name-light-gray.svg" alt="">
+                </div>
+
+                <div class="col-9 col-sm-10 col-md-11">
+                  <div class="md-form">
+                    <input type="number" autocomplete="off" required formControlName="deltaSupply" id="deltaSupply"
+                      class="form-control" mdbInputDirective data-success="Valid Supply"
+                      [errorMessage]="getError('deltaSupply')">
+                    <label for="walletname">Supply</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
           <!-- Properties -->
           <div class="col-10 col-md-11 mt-1-5rem">
