@@ -27,7 +27,7 @@ export const AppConfig: Config = {
     MosaicSupplyChange: 'mosaic-supply-change',
     createNamespace: 'create-namespace',
     editNamespace: 'edit-namespace',
-
+    LinkingNamespaceMosaic: 'linking-namespace-to-mosaic',
     createMultisignature: 'create-multisignature-contract',
     editMultisignatureContract: 'edit-multisignature-contract',
     signMultiSigTransactions: 'sign-multisignature-transactions'
@@ -89,19 +89,13 @@ export interface Config {
     addressBook: string;
     createMosaic: string;
     MosaicSupplyChange: string;
+    LinkingNamespaceMosaic: string;
     createNamespace: string;
     editNamespace: string;
-
     createMultisignature: string;
     editMultisignatureContract: string;
     signMultiSigTransactions: string;
-
-
-
     notFound: string;
     storage: string;
-
-
-
   };
 }

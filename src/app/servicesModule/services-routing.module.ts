@@ -9,10 +9,10 @@ import { ServicesComponent } from "./views/services/services.component";
 import { AccountComponent } from './views/account/account.component';
 import { AddressBookComponent } from "./views/address-book/address-book.component";
 import { CreateMosaicComponent } from './views/mosaic/create-mosaic/create-mosaic.component';
-import { CreateMosaicResolver } from './views/mosaic/resolvers/creat-mosaic.resolver';
 import { MosaicSupplyChange } from './views/mosaic/mosaic-supply-change/mosaic-supply-change.component';
 import { CreateNamespaceComponent } from './views/namespace/create-namespace/create-namespace.component';
 import { CreateNamespaceResolver } from './views/namespace/resolvers/creat-namespace.resolver';
+import { LinkingNamespaceToMosaicComponent } from './views/namespace/linking-namespace-to-mosaic/linking-namespace-to-mosaic.component';
 
 const routes: Routes = [
   {
@@ -68,19 +68,21 @@ const routes: Routes = [
     path: `${AppConfig.routes.createMosaic}`,
     component: CreateMosaicComponent,
     canActivate: [LoggedGuard]
-    // resolve: { dataNamespace: CreateMosaicResolver }
   },
   {
     path: `${AppConfig.routes.MosaicSupplyChange}`,
     component: MosaicSupplyChange,
-    canActivate: [LoggedGuard],
-    // resolve: { dataNamespace: CreateNamespaceResolver }
+    canActivate: [LoggedGuard]
   },
   {
     path: `${AppConfig.routes.createNamespace}`,
     component: CreateNamespaceComponent,
     canActivate: [LoggedGuard]
-    // resolve: { dataNamespace: CreateNamespaceResolver }
+  },
+  {
+    path: `${AppConfig.routes.LinkingNamespaceMosaic}`,
+    component: LinkingNamespaceToMosaicComponent,
+    canActivate: [LoggedGuard]
   },
   /*
   {

@@ -210,16 +210,13 @@ export class CreateNamespaceComponent implements OnInit {
       password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]],
     });
 
-    // Form namespace default
     this.namespaceForm.get('namespaceRoot').valueChanges.subscribe(namespaceRoot => {
-      //console.log(namespaceRoot);
       this.typetransfer = (namespaceRoot === '1') ? 1 : 2;
       this.showDuration = (namespaceRoot === '1') ? true : false;
-      //console.log(this.showDuration);
     })
 
     this.namespaceForm.get('name').valueChanges.subscribe(name => {
-      if (!this.validateNamespace(name)) return this.sharedService.showError('Error', '¡Name of namespace is invalid!!')
+      if (!this.validateNamespace(name)) return this.sharedService.showError('', 'Name of namespace is invalid')
     })
   }
 
@@ -293,31 +290,6 @@ export class CreateNamespaceComponent implements OnInit {
     }
   }
 
-
-  /*orderNamespace(value: any, old: any = '') {
-    if (value.length) {
-      for (let i of value) {
-        if (i.parentId == undefined && old == '') {
-          this.labelNamespace = this.labelNamespace.concat(`${i.name}`)
-          this.orderNamespace(value.filter(function (value) {
-            return value.namespaceId.id.lower != i.namespaceId.id.lower;
-          }), i)
-          break
-        } else if (i.parentId != undefined && old != '') {
-          if (i.parentId.id.lower == old.namespaceId.id.lower) {
-            this.labelNamespace = this.labelNamespace.concat(`.${i.name}`)
-            this.orderNamespace(value.filter(function (value) {
-              return value.namespaceId.id.lower != i.namespaceId.id.lower;
-            }), i)
-            break
-          }
-        }
-      }
-      return this.labelNamespace
-    }
-  }*/
-
-
   /**
    *
    *
@@ -326,9 +298,7 @@ export class CreateNamespaceComponent implements OnInit {
    */
   optionSelected(namespace: any) {
     namespace = (namespace === undefined) ? 1 : namespace.value;
-    // console.log('------', namespace);
     this.namespaceChangeInfo = this.namespaceInfo.filter((book: any) => (book.name === namespace));
-    // console.log(this.namespaceChangeInfo);
     if (this.namespaceChangeInfo.length > 0) {
       this.getBlock$();
       this.startHeight = this.namespaceChangeInfo[0].dataNamespace.NamespaceInfo.startHeight.lower;

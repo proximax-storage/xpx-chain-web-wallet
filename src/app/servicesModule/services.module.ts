@@ -11,6 +11,7 @@ import { AddressBookComponent } from './views/address-book/address-book.componen
 import { CreateMosaicComponent } from './views/mosaic/create-mosaic/create-mosaic.component';
 import { MosaicSupplyChange } from './views/mosaic/mosaic-supply-change/mosaic-supply-change.component';
 import { CreateNamespaceComponent } from './views/namespace/create-namespace/create-namespace.component';
+import { LinkingNamespaceToMosaicComponent } from './views/namespace/linking-namespace-to-mosaic/linking-namespace-to-mosaic.component';
 
 
 
@@ -24,6 +25,7 @@ import { CreateNamespaceComponent } from './views/namespace/create-namespace/cre
     ExplorerComponent,
     AddNodeComponent,
     SelectNodeComponent,
+    LinkingNamespaceToMosaicComponent,
     //  CreatePollComponent,
     //  PollsComponent,
     //  CreateApostilleComponent,
