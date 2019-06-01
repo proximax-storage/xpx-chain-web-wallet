@@ -79,8 +79,8 @@ const routes: Routes = [
   {
     path: `${AppConfig.routes.createNamespace}`,
     component: CreateNamespaceComponent,
-    canActivate: [LoggedGuard],
-    resolve: { dataNamespace: CreateNamespaceResolver }
+    canActivate: [LoggedGuard]
+    // resolve: { dataNamespace: CreateNamespaceResolver }
   },
   /*
   {

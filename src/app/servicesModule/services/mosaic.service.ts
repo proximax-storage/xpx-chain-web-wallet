@@ -87,9 +87,7 @@ export class MosaicService {
    * @memberof MosaicService
    */
   async getNameMosaics(mosaicsId: MosaicId[]): Promise<MosaicNames[]> {
-    return await this.proximaxProvider.mosaicHttp
-      .getMosaicNames(mosaicsId)
-      .toPromise();
+    return await this.proximaxProvider.mosaicHttp.getMosaicNames(mosaicsId).toPromise();
   }
 
   /**

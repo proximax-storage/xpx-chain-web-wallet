@@ -8,6 +8,7 @@ import { environment } from '../../../environments/environment';
 import { NodeService } from '../../servicesModule/services/node.service';
 import { SharedService } from './shared.service';
 import { TransactionsInterface } from '../../dashboard/services/transaction.interface';
+import { NamespacesService } from '../../servicesModule/services/namespaces.service';
 
 @Injectable({
   providedIn: 'root'
@@ -24,6 +25,7 @@ export class DataBridgeService {
     private transactionsService: TransactionsService,
     private nodeService: NodeService,
     private sharedService: SharedService,
+    private namespaceService: NamespacesService
   ) { }
 
 
@@ -120,6 +122,7 @@ export class DataBridgeService {
         this.transactionsService.setTransactionsConfirmed$(transactionPushed);
         audio.play();
         // this.messageService.changeMessage('balanceChanged');
+        this.namespaceService.buildNamespaceStorage();
         this.transactionsService.updateBalance();
       });
     }, err => {

@@ -598,8 +598,8 @@ export class ProximaxProvider {
       Deadline.create(23),
       subnamespaceName,
       rootNamespace,
-      network);
-
+      network
+    );
   }
 
   /**

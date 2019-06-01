@@ -1,12 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
-import { WalletService, SharedService } from '../../../../shared';
-import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { ActivatedRoute, Router } from '@angular/router';
+import { SignedTransaction, NamespaceId } from 'tsjs-xpx-catapult-sdk';
 import { first } from 'rxjs/operators';
+
 import { AppConfig } from '../../../../config/app.config';
-import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
+import { DataBridgeService } from '../../../../shared/services/data-bridge.service';
+import { WalletService, SharedService } from '../../../../shared';
+import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
+import { NamespaceStorage } from '../../../../servicesModule/interfaces/mosaics-namespaces.interface';
+import { NamespacesService } from '../../../../servicesModule/services/namespaces.service';
+
 @Component({
   selector: 'app-create-namespace',
   templateUrl: './create-namespace.component.html',
@@ -44,9 +49,10 @@ export class CreateNamespaceComponent implements OnInit {
   status: boolean = true;
   startHeight: number;
   statusButtonNamespace: boolean = true;
-  showDuration: boolean = false;
+  showDuration: boolean = true;
   typetransfer: number = 1;
   validateForm: boolean = false;
+  viewReload: boolean = false;
 
 
   constructor(
@@ -56,7 +62,8 @@ export class CreateNamespaceComponent implements OnInit {
     private sharedService: SharedService,
     private route: ActivatedRoute,
     private router: Router,
-    private dataBridgeService: DataBridgeService
+    private dataBridgeService: DataBridgeService,
+    private namespaceService: NamespacesService
   ) { }
 
 
@@ -71,23 +78,33 @@ export class CreateNamespaceComponent implements OnInit {
    *
    * @memberof CreateNamespaceComponent
    */
-  async getNameNamespace() {
-    if (this.route.snapshot.data['dataNamespace'].value !== null) {
-      this.blockUI.start('Loading...'); // Start blocking
-      for (let dataNamespace of this.route.snapshot.data['dataNamespace']) {
-        if (dataNamespace.depth == 1) {
-          await this.getRootNamespace(dataNamespace, dataNamespace.active);
-        }
-        else {
-          await this.getSubNivelNamespace(dataNamespace, dataNamespace.active, dataNamespace.depth);
-        }
-      }
-    }
+  getNameNamespace() {
+    this.namespaceService.searchNamespaceFromAccountStorage$().then(
+      async dataNamespace => {
+        if (dataNamespace !== undefined && dataNamespace.length > 0) {
+          this.blockUI.start('Loading...');
+          this.viewReload = false;
+          for (let data of dataNamespace) {
+            if (data.NamespaceInfo.depth === 1) {
+              await this.getRootNamespace(data, data.NamespaceInfo.active);
+            } else {
+              await this.getSubNivelNamespace(data, data.NamespaceInfo.active, data.NamespaceInfo.depth);
+            }
+          }
 
-    this.blockUI.stop();
-    this.arrayselect = this.namespace.sort(function (a: any, b: any) {
-      return a.label == b.label ? 0 : +(a.label > b.label) || -1;
-    })
+          this.blockUI.stop();
+          this.arrayselect = this.namespace.sort(function (a: any, b: any) {
+            return a.label === b.label ? 0 : +(a.label > b.label) || -1;
+          });
+        } else {
+          this.viewReload = true;
+        }
+      }).catch(error => {
+        console.log(error);
+        this.blockUI.stop();
+        this.router.navigate([AppConfig.routes.home]);
+        this.sharedService.showError('', 'Please check your connection and try again');
+      });
   }
 
   /**
@@ -98,31 +115,21 @@ export class CreateNamespaceComponent implements OnInit {
    * @returns
    * @memberof CreateNamespaceComponent
    */
-  async getRootNamespace(rootNamespace: any, status: boolean) {
-    const promise = new Promise((resolve, reject) => {
-      this.proximaxProvider.namespaceHttp.getNamespacesName(rootNamespace.levels).pipe(first()).subscribe(
-        (namespaceName: any) => {
-          for (let n of namespaceName) {
-            const sts = status ? false : true;
-            this.namespace.push({
-              value: `${n.name}`,
-              label: `${n.name}`,
-              selected: sts,
-              disabled: false
-            });
-            this.namespaceInfo.push({
-              name: `${n.name}`,
-              dataNamespace: rootNamespace
-            })
-          }
-          resolve(true);
-        }, (error: any) => {
-          this.blockUI.stop();
-          this.sharedService.showError('', error);
-          reject(error);
-        });
+  getRootNamespace(rootNamespace: any, status: boolean) {
+    const sts = status ? false : true;
+    this.namespace.push({
+      value: `${rootNamespace.namespaceName.name}`,
+      label: `${rootNamespace.namespaceName.name}`,
+      selected: sts,
+      disabled: false
     });
-    return await promise;
+
+    this.namespaceInfo.push({
+      name: `${rootNamespace.namespaceName.name}`,
+      dataNamespace: rootNamespace
+    });
+
+    return;
   }
 
   /**
@@ -134,26 +141,52 @@ export class CreateNamespaceComponent implements OnInit {
    * @returns
    * @memberof CreateNamespaceComponent
    */
-  async getSubNivelNamespace(subNamespace: any, status: boolean, depth: number) {
-    const promise = new Promise((resolve, reject) => {
-      this.proximaxProvider.namespaceHttp.getNamespacesName([subNamespace.levels[depth - 1]]).pipe(first()).subscribe(
-        (namespaceName: any) => {
-          this.labelNamespace = ''
-          const name = this.orderNamespace(namespaceName.sort())
-          this.namespace.push({
-            value: name, label: name, selected: false,
-            disabled: false
-          });
-          resolve(true);
-        }, (error: any) => {
-          this.blockUI.stop(); // Stop blocking
-          // console.error("Has ocurred a error", error);
-          this.router.navigate([AppConfig.routes.home]);
-          this.sharedService.showError('', error);
-          reject(error);
-        });
-    });
-    return await promise;
+  async getSubNivelNamespace(subNamespace: NamespaceStorage, status: boolean, depth: number) {
+    const sts = status ? false : true;
+    let disabled = false;
+    let name = '';
+    if (subNamespace.namespaceName.parentId !== undefined) {
+      if (depth === 2) {
+        //Assign level 2
+        const level2 = subNamespace.namespaceName.name;
+        //Search level 1
+        const level1: NamespaceStorage = await this.namespaceService.getNamespaceFromId(
+          this.proximaxProvider.getNamespaceId([subNamespace.namespaceName.parentId.id.lower, subNamespace.namespaceName.parentId.id.higher])
+        );
+
+        name = `${level1.namespaceName.name}.${level2}`;
+      } else if (depth === 3) {
+        disabled = true;
+        //Assign el level3
+        const level3 = subNamespace.namespaceName.name;
+        //search level 2
+        const level2: NamespaceStorage = await this.namespaceService.getNamespaceFromId(
+          this.proximaxProvider.getNamespaceId([subNamespace.namespaceName.parentId.id.lower, subNamespace.namespaceName.parentId.id.higher])
+        );
+
+        //search level 1
+        const level1: NamespaceStorage = await this.namespaceService.getNamespaceFromId(
+          this.proximaxProvider.getNamespaceId([level2.namespaceName.parentId.id.lower, level2.namespaceName.parentId.id.higher])
+        );
+        name = `${level1.namespaceName.name}.${level2.namespaceName.name}.${level3}`;
+      }
+
+      this.namespace.push({
+        value: name,
+        label: name,
+        selected: sts,
+        disabled: disabled
+      });
+
+      this.namespaceInfo.push({
+        name: name,
+        dataNamespace: subNamespace
+      });
+
+      return;
+    }
+
+    return;
   }
 
   /**
@@ -179,8 +212,10 @@ export class CreateNamespaceComponent implements OnInit {
 
     // Form namespace default
     this.namespaceForm.get('namespaceRoot').valueChanges.subscribe(namespaceRoot => {
-      this.typetransfer = (namespaceRoot === 1) ? 1 : 2
-      this.showDuration = (namespaceRoot === 1) ? false : true;
+      //console.log(namespaceRoot);
+      this.typetransfer = (namespaceRoot === '1') ? 1 : 2;
+      this.showDuration = (namespaceRoot === '1') ? true : false;
+      //console.log(this.showDuration);
     })
 
     this.namespaceForm.get('name').valueChanges.subscribe(name => {
@@ -200,21 +235,18 @@ export class CreateNamespaceComponent implements OnInit {
         privateKey: ''
       }
       if (this.walletService.decrypt(common)) {
-        this.signedTransactionPromise(common).then(signedTransaction => {
-
-          this.proximaxProvider.announce(signedTransaction).subscribe(
-            x => {
-              this.resetForm()
-              this.blockUI.stop(); // Stop blocking
-              this.sharedService.showSuccess('success', 'create namespace sent')
-            },
-            err => {
-              this.resetForm()
-              this.blockUI.stop(); // Stop blocking
-              // console.error(err)
-              this.sharedService.showError('Error', '¡unexpected error!');
-            });
-        });
+        const signedTransaction = this.signedTransaction(common);
+        this.proximaxProvider.announce(signedTransaction).subscribe(
+          () => {
+            this.resetForm()
+            this.blockUI.stop();
+            this.sharedService.showSuccess('', 'Transaction sent')
+          }, () => {
+            this.resetForm()
+            this.blockUI.stop();
+            this.sharedService.showError('', 'An unexpected error has occurred');
+          }
+        );
       }
     }
   }
@@ -225,11 +257,12 @@ export class CreateNamespaceComponent implements OnInit {
    *
    * @memberof CreateNamespaceComponent
    */
-  getBlock() {
+  getBlock$() {
     this.dataBridgeService.getBlock().subscribe(
       async response => {
         this.block = response
-      })
+      }
+    );
   }
 
   /**
@@ -260,15 +293,8 @@ export class CreateNamespaceComponent implements OnInit {
     }
   }
 
-  /**
-   *
-   *
-   * @param {*} value
-   * @param {*} [old='']
-   * @returns
-   * @memberof CreateNamespaceComponent
-   */
-  orderNamespace(value: any, old: any = '') {
+
+  /*orderNamespace(value: any, old: any = '') {
     if (value.length) {
       for (let i of value) {
         if (i.parentId == undefined && old == '') {
@@ -289,7 +315,7 @@ export class CreateNamespaceComponent implements OnInit {
       }
       return this.labelNamespace
     }
-  }
+  }*/
 
 
   /**
@@ -299,15 +325,18 @@ export class CreateNamespaceComponent implements OnInit {
    * @memberof CreateNamespaceComponent
    */
   optionSelected(namespace: any) {
-    this.namespaceChangeInfo = this.namespaceInfo.filter((book: any) => (book.name === namespace.value))
+    namespace = (namespace === undefined) ? 1 : namespace.value;
+    // console.log('------', namespace);
+    this.namespaceChangeInfo = this.namespaceInfo.filter((book: any) => (book.name === namespace));
+    // console.log(this.namespaceChangeInfo);
     if (this.namespaceChangeInfo.length > 0) {
-      this.getBlock()
-      this.startHeight = this.namespaceChangeInfo[0].dataNamespace.startHeight.lower
-      this.endHeight = this.namespaceChangeInfo[0].dataNamespace.endHeight.lower
-      this.renewNamespaceForm.get('name').patchValue(this.namespaceChangeInfo[0].name)
-      this.statusButtonNamespace = (this.namespaceChangeInfo[0].dataNamespace.depth == 1) ? false : true
+      this.getBlock$();
+      this.startHeight = this.namespaceChangeInfo[0].dataNamespace.NamespaceInfo.startHeight.lower;
+      this.endHeight = this.namespaceChangeInfo[0].dataNamespace.NamespaceInfo.endHeight.lower;
+      this.renewNamespaceForm.get('name').patchValue(this.namespaceChangeInfo[0].name);
+      this.statusButtonNamespace = (this.namespaceChangeInfo[0].dataNamespace.NamespaceInfo.depth === 1) ? false : true;
     } else {
-      this.statusButtonNamespace = true
+      this.statusButtonNamespace = true;
     }
   }
 
@@ -342,39 +371,44 @@ export class CreateNamespaceComponent implements OnInit {
    * @memberof CreateNamespaceComponent
    */
   resetForm() {
-    this.namespaceForm.get('name').patchValue('')
-    this.namespaceForm.get('password').patchValue('')
-    this.namespaceForm.get('namespaceRoot').patchValue('1')
-    this.statusButtonNamespace = true
+    this.namespaceForm.get('name').patchValue('');
+    this.namespaceForm.get('duration').patchValue('');
+    this.namespaceForm.get('password').patchValue('');
+    this.namespaceForm.get('namespaceRoot').patchValue('1');
+
+    this.renewNamespaceForm.get('name').patchValue('');
+    this.renewNamespaceForm.get('duration').patchValue('');
+    this.renewNamespaceForm.get('password').patchValue('');
+    this.statusButtonNamespace = true;
   }
 
+  /**
+   *
+   *
+   * @memberof CreateNamespaceComponent
+   */
   renewNamespace() {
-    this.typetransfer = 1
-    this.namespaceForm.get('name').patchValue('')
-    this.namespaceForm.get('password').patchValue('')
+    this.typetransfer = 1;
+    this.namespaceForm.get('name').patchValue('');
+    this.namespaceForm.get('password').patchValue('');
     if (this.renewNamespaceForm.valid) {
       const common = {
         password: this.renewNamespaceForm.get('password').value,
         privateKey: ''
       }
       if (this.walletService.decrypt(common)) {
-        this.signedTransactionPromise(common).then(signedTransaction => {
-
-          this.proximaxProvider.announce(signedTransaction).subscribe(
-            x => {
-              // this.basicModal.hide()
-              // console.log(x)
-              this.resetForm()
-              this.blockUI.stop(); // Stop blocking
-              this.sharedService.showSuccess('success', 'renew namespace sent')
-            },
-            err => {
-              this.resetForm()
-              this.blockUI.stop(); // Stop blocking
-              // console.error(err)
-              this.sharedService.showError('Error', '¡unexpected error!');
-            });
-        });
+        const signedTransaction = this.signedTransaction(common);
+        this.proximaxProvider.announce(signedTransaction).subscribe(
+          () => {
+            this.resetForm();
+            this.blockUI.stop();
+            this.sharedService.showSuccess('', 'Transaction sent');
+          }, () => {
+            this.resetForm();
+            this.blockUI.stop();
+            this.sharedService.showError('', 'An unexpected error has occurred');
+          }
+        );
       }
     }
   }
@@ -386,21 +420,20 @@ export class CreateNamespaceComponent implements OnInit {
    * @returns {Promise<any>}
    * @memberof CreateNamespaceComponent
    */
-  signedTransactionPromise(common: any): Promise<any> {
+  signedTransaction(common: any): SignedTransaction {
     const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.network);
-    const name: string = this.namespaceForm.get('name').value || this.renewNamespaceForm.get('name').value
+    const namespaceName: string = this.namespaceForm.get('name').value || this.renewNamespaceForm.get('name').value
     const duration: number = this.namespaceForm.get('duration').value || this.renewNamespaceForm.get('duration').value
-
     if (this.typetransfer == 1) {
-      const registerRootNamespaceTransaction = this.proximaxProvider.registerRootNamespaceTransaction(name, this.walletService.network, duration)
+      const registerRootNamespaceTransaction = this.proximaxProvider.registerRootNamespaceTransaction(namespaceName, this.walletService.network, duration)
       const signedTransaction = account.sign(registerRootNamespaceTransaction);
-      return Promise.resolve(signedTransaction);
+      return signedTransaction;
     } else if (this.typetransfer == 2) {
       const rootNamespaceName = this.namespaceForm.get('namespaceRoot').value;
       const subnamespaceName = this.namespaceForm.get('name').value;
       const registersubamespaceTransaction = this.proximaxProvider.registersubNamespaceTransaction(rootNamespaceName, subnamespaceName, this.walletService.network)
       const signedTransaction = account.sign(registersubamespaceTransaction);
-      return Promise.resolve(signedTransaction);
+      return signedTransaction;
     }
   }
 }

@@ -18,6 +18,18 @@
   max-height: 520px !important;
 }
 
+.modal-body {
+  max-height: none !important;
+  overflow: none !important;
+  overflow-x: none !important;
+}
+
+.sizeMaxRenovate {
+  max-height: 30rem !important;
+  overflow: auto !important;
+  overflow-x: hidden !important;
+}
+
 /*
 h5  {
     color: rgba(0, 0, 0, 0.3);
