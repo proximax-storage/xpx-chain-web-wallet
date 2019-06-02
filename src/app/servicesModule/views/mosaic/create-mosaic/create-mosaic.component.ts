@@ -115,7 +115,7 @@ export class CreateMosaicComponent implements OnInit {
             this.mosaicForm.patchValue({ divisibility: 0 });
             this.sharedService.showSuccess('', 'Transaction sent')
             const statusTransaction = await this.proximaxProvider.getTransactionStatusError(signedTransaction.hash).toPromise();
-            console.log(statusTransaction);
+            // console.log(statusTransaction);
           },
           error => {
             // console.log(error);

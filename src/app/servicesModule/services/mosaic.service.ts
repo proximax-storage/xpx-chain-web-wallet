@@ -241,12 +241,14 @@ export class MosaicService {
    */
   filterMosaic(mosaicId: MosaicId): MosaicsStorage {
     const mosaicsStorage = this.getMosaicsFromStorage();
-    if (mosaicsStorage.length > 0) {
-      const filtered = mosaicsStorage.find(element => {
-        return this.proximaxProvider.getMosaicId(element.id).toHex() === mosaicId.toHex();
-      });
+    if (mosaicsStorage !== null && mosaicsStorage !== undefined) {
+      if (mosaicsStorage.length > 0) {
+        const filtered = mosaicsStorage.find(element => {
+          return this.proximaxProvider.getMosaicId(element.id).toHex() === mosaicId.toHex();
+        });
 
-      return filtered;
+        return filtered;
+      }
     }
 
     return null;
@@ -270,6 +272,10 @@ export class MosaicService {
    */
   getMosaicsFromStorage(): MosaicsStorage[] {
     const dataStorage = localStorage.getItem(this.getNameStorage());
-    return dataStorage === null ? [] : JSON.parse(dataStorage);
+    return (dataStorage !== null && dataStorage !== undefined) ? JSON.parse(dataStorage) : [];
+  }
+
+  resetMosaicsStorage() {
+    localStorage.removeItem(this.getNameStorage());
   }
 }

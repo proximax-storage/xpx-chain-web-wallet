@@ -33,6 +33,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   iconReloadDashboard = false;
   searching = true;
   subscriptions = [
+    'balance',
     'transactionsConfirmed',
     'transactionsUnconfirmed',
     'getAllTransactions',

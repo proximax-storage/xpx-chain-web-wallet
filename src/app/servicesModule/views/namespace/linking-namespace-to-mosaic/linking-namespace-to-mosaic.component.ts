@@ -168,6 +168,8 @@ export class LinkingNamespaceToMosaicComponent implements OnInit {
             this.resetForm();
             this.blockUI.stop(); // Stop blocking
             this.sharedService.showSuccess('success', 'Transaction sent');
+            this.mosaicService.resetMosaicsStorage();
+            this.namespaceService.resetNamespaceStorage();
           },
           err => {
             this.resetForm();
