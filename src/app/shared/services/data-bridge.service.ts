@@ -9,6 +9,7 @@ import { NodeService } from '../../servicesModule/services/node.service';
 import { SharedService } from './shared.service';
 import { TransactionsInterface } from '../../dashboard/services/transaction.interface';
 import { NamespacesService } from '../../servicesModule/services/namespaces.service';
+import { MosaicService } from '../../servicesModule/services/mosaic.service';
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +26,8 @@ export class DataBridgeService {
     private transactionsService: TransactionsService,
     private nodeService: NodeService,
     private sharedService: SharedService,
-    private namespaceService: NamespacesService
+    private namespaceService: NamespacesService,
+    private mosaicService: MosaicService
   ) { }
 
 
@@ -98,7 +100,6 @@ export class DataBridgeService {
       this.getStatusSocket(connector, audio);
       this.getBlockSocket(connector)
     }, (error) => {
-      console.error("error de socket", error);
       this.reconnect(connector);
     });
   }
@@ -122,8 +123,9 @@ export class DataBridgeService {
         this.transactionsService.setTransactionsConfirmed$(transactionPushed);
         audio.play();
         // this.messageService.changeMessage('balanceChanged');
-        this.namespaceService.buildNamespaceStorage();
-        this.transactionsService.updateBalance();
+        this.transactionsService.validateTypeTransaction(incomingTransaction.type);
+        // this.namespaceService.buildNamespaceStorage();
+        // this.transactionsService.updateBalance();
       });
     }, err => {
       console.error(err)

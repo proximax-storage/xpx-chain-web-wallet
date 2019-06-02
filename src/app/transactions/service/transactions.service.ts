@@ -22,6 +22,7 @@ import { environment } from "../../../environments/environment";
 import { first } from "rxjs/operators";
 import { TransactionsInterface, MosaicXPXInterface } from "../../dashboard/services/transaction.interface";
 import { MosaicService } from "../../servicesModule/services/mosaic.service";
+import { NamespacesService } from "src/app/servicesModule/services/namespaces.service";
 
 @Injectable({
   providedIn: "root"
@@ -90,7 +91,8 @@ export class TransactionsService {
     private proximaxProvider: ProximaxProvider,
     private nodeService: NodeService,
     private walletService: WalletService,
-    private mosaicService: MosaicService
+    private mosaicService: MosaicService,
+    private namespaceService: NamespacesService
   ) { }
 
 
@@ -363,5 +365,27 @@ export class TransactionsService {
    */
   setTransactionsUnConfirmed$(transactions: TransactionsInterface[]) {
     this._transUnConfirmSubject.next(transactions);
+  }
+
+  /**
+   *
+   *
+   * @param {TransactionType} type
+   * @memberof TransactionsService
+   */
+  validateTypeTransaction(type: TransactionType) {
+    if (
+      type === this.arraTypeTransaction.mosaicAlias.id ||
+      type === this.arraTypeTransaction.mosaicSupplyChange.id ||
+      type === this.arraTypeTransaction.mosaicDefinition.id ||
+      type === this.arraTypeTransaction.registerNameSpace.id ||
+      type === this.arraTypeTransaction.aggregateComplete.id
+    ) {
+      this.mosaicService.resetMosaicsStorage();
+      this.namespaceService.resetNamespaceStorage();
+    }
+
+    this.namespaceService.buildNamespaceStorage();
+    this.updateBalance();
   }
 }
