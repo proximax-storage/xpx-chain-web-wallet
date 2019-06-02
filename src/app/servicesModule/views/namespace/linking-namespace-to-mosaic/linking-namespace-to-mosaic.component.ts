@@ -8,6 +8,7 @@ import { SharedService, WalletService } from 'src/app/shared';
 import { MosaicService } from 'src/app/servicesModule/services/mosaic.service';
 import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
 import { NamespaceId, MosaicId } from 'tsjs-xpx-catapult-sdk';
+import { NamespaceStorage } from 'src/app/servicesModule/interfaces/mosaics-namespaces.interface';
 
 @Component({
   selector: 'app-linking-namespace-to-mosaic',
@@ -76,13 +77,49 @@ export class LinkingNamespaceToMosaicComponent implements OnInit {
         if (namespaceStorage !== undefined && namespaceStorage.length > 0) {
           for (let data of namespaceStorage) {
             if (data.NamespaceInfo.depth === 1) {
-              const sts = status ? false : true;
               namespaceSelect.push({
                 value: `${data.namespaceName.name}`,
                 label: `${data.namespaceName.name}`,
-                selected: sts,
+                selected: false,
                 disabled: false
               });
+            } else {
+              let name = '';
+              if (data.NamespaceInfo.depth === 2) {
+                //Assign level 2
+                const level2 = data.namespaceName.name;
+                //Search level 1
+                const level1: NamespaceStorage = await this.namespaceService.getNamespaceFromId(
+                  this.proximaxProvider.getNamespaceId([data.namespaceName.parentId.id.lower, data.namespaceName.parentId.id.higher])
+                );
+
+                name = `${level1.namespaceName.name}.${level2}`;
+                namespaceSelect.push({
+                  value: `${name}`,
+                  label: `${name}`,
+                  selected: false,
+                  disabled: false
+                });
+              } else if (data.NamespaceInfo.depth === 3) {
+                //Assign el level3
+                const level3 = data.namespaceName.name;
+                //search level 2
+                const level2: NamespaceStorage = await this.namespaceService.getNamespaceFromId(
+                  this.proximaxProvider.getNamespaceId([data.namespaceName.parentId.id.lower, data.namespaceName.parentId.id.higher])
+                );
+
+                //search level 1
+                const level1: NamespaceStorage = await this.namespaceService.getNamespaceFromId(
+                  this.proximaxProvider.getNamespaceId([level2.namespaceName.parentId.id.lower, level2.namespaceName.parentId.id.higher])
+                );
+                name = `${level1.namespaceName.name}.${level2.namespaceName.name}.${level3}`;
+                namespaceSelect.push({
+                  value: `${name}`,
+                  label: `${name}`,
+                  selected: false,
+                  disabled: false
+                });
+              }
             }
           }
         }
