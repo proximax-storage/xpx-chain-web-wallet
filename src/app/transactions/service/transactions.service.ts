@@ -68,6 +68,10 @@ export class TransactionsService {
       id: TransactionType.AGGREGATE_BONDED,
       name: "Aggregate bonded"
     },
+    mosaicAlias: {
+      id: TransactionType.MOSAIC_ALIAS,
+      name: "Mosaic Alias"
+    },
     /* lock: {
        id: TransactionType.LOCK,
        name: "Lock"

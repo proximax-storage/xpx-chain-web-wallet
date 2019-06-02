@@ -226,6 +226,10 @@
           <app-aggregate-bonded-type [aggregateBonded]="dataSelected"
             *ngIf="dataSelected.data.type === typeTransactions.aggregateBonded.id">
           </app-aggregate-bonded-type>
+          <!-- MOSAIC ALIAS -->
+          <app-mosaic-alias [mosaicAlias]="dataSelected"
+            *ngIf="dataSelected.data.type === typeTransactions.mosaicAlias.id">
+          </app-mosaic-alias>
 
           <!-- TYPE MODIFY MULTISIG ACCOUNT TRANSACTION
           <app-modify-multisig-account-type

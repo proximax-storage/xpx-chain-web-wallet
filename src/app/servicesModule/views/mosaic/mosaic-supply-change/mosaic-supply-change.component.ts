@@ -177,24 +177,21 @@ export class MosaicSupplyChange implements OnInit {
         const signedTransaction = account.sign(mosaicSupplyChangeTransaction);
         this.proximaxProvider.announce(signedTransaction).subscribe(
           x => {
-            this.resectForm()
+            this.resetForm()
             this.blockUI.stop(); // Stop blocking
             this.sharedService.showSuccess('success', 'create Supply sent')
           },
           err => {
-            this.resectForm()
+            this.resetForm()
             this.blockUI.stop(); // Stop blocking
             // console.error(err)
-            this.sharedService.showError('Error', '¡unexpected error!');
+            this.sharedService.showError('', 'An unexpected error has occurred');
           });
-
       }
-
     }
-
   }
 
-  resectForm() {
+  resetForm() {
     this.formMosaicSupplyChange.get('password').patchValue('')
     this.formMosaicSupplyChange.get('deltaSupply').patchValue('')
     this.formMosaicSupplyChange.get('parentMosaic').patchValue(MosaicSupplyType.Increase);

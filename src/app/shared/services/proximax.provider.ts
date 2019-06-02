@@ -35,7 +35,9 @@ import {
   MosaicProperties,
   TransactionStatus,
   TransactionAnnounceResponse,
-  MosaicSupplyType
+  MosaicSupplyType,
+  AliasTransaction,
+  AliasActionType
 } from 'tsjs-xpx-catapult-sdk';
 
 import { Observable } from 'rxjs';
@@ -553,6 +555,26 @@ export class ProximaxProvider {
     this.mosaicService = new MosaicService(this.accountHttp, this.mosaicHttp);
     this.namespaceService = new NamespaceService(this.namespaceHttp);
     this.transactionHttp = new TransactionHttp(this.url);
+  }
+
+  /**
+   *
+   *
+   * @param {AliasActionType} aliasActionType
+   * @param {NamespaceId} namespaceId
+   * @param {MosaicId} mosaicId
+   * @param {NetworkType} network
+   * @returns
+   * @memberof ProximaxProvider
+   */
+  linkingNamespaceToMosaic(aliasActionType: AliasActionType, namespaceId: NamespaceId, mosaicId: MosaicId, network: NetworkType) {
+    return AliasTransaction.createForMosaic(
+      Deadline.create(),
+      aliasActionType,
+      namespaceId,
+      mosaicId,
+      network
+    );
   }
 
   /**
