@@ -185,6 +185,7 @@ export class TransactionsService {
    * @memberof TransactionsService
    */
   amountFormatter(amount: UInt64, mosaic: MosaicInfo) {
+    // console.log(mosaic);
     const amountDivisibility = Number(
       amount.compact() / Math.pow(10, mosaic['properties'].divisibility)
     );

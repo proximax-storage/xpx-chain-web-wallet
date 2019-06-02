@@ -35,22 +35,36 @@
             <div class="box-form pt-0 pb-0">
               <div class="row d-flex justify-content-center">
                 <div class="col-12 col-sm-6">
-                  <div class="md-form">
-                    <i class="fa fa-th prefix color-white"></i>
-                    <input type="number" autocomplete="off" required formControlName="duration" id="duration"
-                      class="form-control" mdbInputDirective data-success="Valid mosaic name"
-                      [errorMessage]="getError('duration')">
-                    <label for="walletname">Duration</label>
+                  <div class="row">
+                    <div class="col-3 col-sm-2 d-flex align-items-center justify-content-end justify-content-sm-center">
+                      <img class="h1-5em" src="assets/images/img/icon-duration-light-green.svg" alt="">
+                    </div>
+
+                    <div class="col-9 col-sm-10">
+                      <div class="md-form">
+                        <input type="number" autocomplete="off" required formControlName="duration" id="duration"
+                          class="form-control" mdbInputDirective data-success="Valid mosaic name"
+                          [errorMessage]="getError('duration')">
+                        <label for="duration">Duration</label>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
                 <div class="col-12 col-sm-6">
-                  <div class="md-form">
-                    <i class="fa fa-th prefix color-white"></i>
-                    <input type="number" autocomplete="off" required formControlName="divisibility" id="divisibility"
-                      class="form-control" mdbInputDirective data-success="Valid mosaic name"
-                      [errorMessage]="getError('divisibility')">
-                    <label for="walletname">Divisibility</label>
+                  <div class="row">
+                    <div class="col-3 col-sm-2 d-flex align-items-center justify-content-end justify-content-sm-center">
+                      <img class="h1-5em" src="assets/images/img/icon-namespaces-white.svg" alt="">
+                    </div>
+
+                    <div class="col-9 col-sm-10">
+                      <div class="md-form">
+                        <input type="number" autocomplete="off" required formControlName="divisibility"
+                          id="divisibility" class="form-control" mdbInputDirective data-success="Valid mosaic name"
+                          [errorMessage]="getError('divisibility')">
+                        <label for="walletname">Divisibility</label>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -62,8 +76,8 @@
             <div class="box-form pt-0 pb-0">
               <div class="row d-flex justify-content-center">
                 <div
-                  class="col-3 col-sm-2 col-md-1 d-flex align-items-center justify-content-end justify-content-sm-end">
-                  <img class="h1-5em" src="assets/images/img/icon-wallet-name-light-gray.svg" alt="">
+                  class="col-3 col-sm-2 col-md-1 d-flex align-items-center justify-content-end justify-content-sm-center">
+                  <img class="h1-5em" src="assets/images/img/icon-amount-white.svg" alt="">
                 </div>
 
                 <div class="col-9 col-sm-10 col-md-11">
@@ -78,19 +92,20 @@
             </div>
           </div>
 
+
           <!-- Properties -->
           <div class="col-10 col-md-11 mt-1-5rem">
             <div class="box-form">
               <div class="row d-flex justify-content-center">
-                <div class="col-12 col-sm-4 color-white fw-400">
+                <div class="col-12 col-sm-4 color-white fw-400 d-flex justify-content-center">
                   <mdb-checkbox formControlName="transferable">Transferable</mdb-checkbox>
                 </div>
 
-                <div class="col-12 col-sm-4 color-white fw-400">
+                <div class="col-12 col-sm-4 color-white fw-400 d-flex justify-content-center">
                   <mdb-checkbox formControlName="supplyMutable">Supply Mutable</mdb-checkbox>
                 </div>
 
-                <div class="col-12 col-sm-4 color-white fw-400">
+                <div class="col-12 col-sm-4 color-white fw-400 d-flex justify-content-center">
                   <mdb-checkbox formControlName="levyMutable">Levy Mutable</mdb-checkbox>
                 </div>
               </div>
@@ -101,9 +116,13 @@
           <div class="col-10 col-md-11 mt-1-5rem">
             <div class="box-form pt-0 pb-0">
               <div class="row d-flex justify-content-center">
-                <div class="col-12">
+                <div
+                  class="col-3 col-sm-2 col-md-1 d-flex align-items-center justify-content-end justify-content-sm-center">
+                  <img class="h1-5em" src="assets/images/img/icon-password-white.svg" alt="">
+                </div>
+
+                <div class="col-9 col-sm-10 col-md-11">
                   <div class="md-form">
-                    <i class="fa fa-th prefix color-white"></i>
                     <input type="password" autocomplete="off" required formControlName="password" id="password"
                       class="form-control" mdbInputDirective data-success="Valid password"
                       [errorMessage]="getError('password')">

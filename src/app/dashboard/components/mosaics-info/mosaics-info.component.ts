@@ -105,7 +105,7 @@ export class MosaicsInfoComponent implements OnInit {
         const mosaicId = this.proximaxProvider.getMosaicId(mosaic.id).toHex();
         const myMosaic = this.mosaicsArray.find(next => next.id.toHex() === mosaicId);
         const amount = (mosaic.mosaicInfo !== null) ?
-          this.transactionService.amountFormatter(myMosaic.amount, myMosaic.id, mosaic.mosaicInfo) :
+          this.transactionService.amountFormatter(myMosaic.amount, mosaic.mosaicInfo) :
           this.transactionService.amountFormatterSimple(myMosaic.amount.compact());
         // MOSAIC IS XPX
         if (mosaicId === this.mosaicService.mosaicXpx.mosaicId) {

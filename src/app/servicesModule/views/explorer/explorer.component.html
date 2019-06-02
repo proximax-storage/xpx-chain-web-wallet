@@ -9,8 +9,9 @@
             <span class="f-w-bold fs-2em">Explorer</span>
           </span>
           <h5 class="f-w-bold color-yellow text-align-center wallet-description">
-            << Go to All Services </h5> </div> <div class="col-11 col-sm-10 mx-auto">
-              <hr class="background-divisor">
+            <a [routerLink]="goBack" class="f-w-bold color-yellow text-align-center wallet-description">
+              << Go to All Services </a> </h5> </div> <div class="col-11 col-sm-10 mx-auto">
+                <hr class="background-divisor">
         </div>
       </div>
     </div>
@@ -199,6 +200,10 @@
           <app-aggregate-bonded-type [aggregateBonded]="dataSelected"
             *ngIf="dataSelected.data.type === typeTransactions.aggregateBonded.id">
           </app-aggregate-bonded-type>
+          <!-- MOSAIC ALIAS -->
+          <app-mosaic-alias [mosaicAlias]="dataSelected"
+            *ngIf="dataSelected.data.type === typeTransactions.mosaicAlias.id">
+          </app-mosaic-alias>
         </ng-container>
       </div>
     </div>

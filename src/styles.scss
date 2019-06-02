@@ -664,6 +664,22 @@ ng-select.ng-invalid.ng-touched .ng-select-container {
 }
 
 /****************************** ONLY MDB ********************************/
+.form-check-input[type="checkbox"]+label:before,
+.form-check-input[type="checkbox"]:not(.filled-in)+label:after,
+label.btn input[type="checkbox"]+label:before,
+label.btn input[type="checkbox"]:not(.filled-in)+label:after {
+  border: 2px solid #ffffff !important;
+}
+
+.form-check-input[type="checkbox"]:checked+label:before,
+label.btn input[type="checkbox"]:checked+label:before {
+  border-top: 2px solid transparent !important;
+  border-left: 2px solid transparent !important;
+  border-right: 2px solid #a3f96c !important;
+  border-bottom: 2px solid #a3f96c !important;
+}
+
+
 input.form-control.validate-error.ng-invalid.ng-touched+label,
 input.form-control.validate-error.ng-invalid.ng-dirty+label,
 .form-submitted input.form-control.validate-error.ng-invalid+label {
@@ -777,7 +793,8 @@ mdb-select>div>div.single>div.value {
 
 a:hover {
   text-decoration: none !important;
-  color: #d0d0d0 !important;
+  // color: #d0d0d0 !important;
+  color: white !important;
   transition: all 0.2s ease-in-out !important;
 }
 

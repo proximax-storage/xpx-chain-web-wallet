@@ -23,13 +23,13 @@
           <!-- Mosaics -->
           <div class="row box-form mt-1rem pr-0 pl-0 pt-0 pb-0">
             <div class="col-3 col-sm-2 col-md-1 d-flex align-items-center justify-content-end justify-content-sm-end">
-              <img class="h1-5em" src="assets/images/img/icon-wallet-name-light-gray.svg" alt="">
+              <img class="h1-5em" src="assets/images/img/icon-mosaics-white.svg" alt="">
             </div>
 
             <div class="col-8 col-sm-8 col-md-9">
               <div class="md-form">
                 <ng-select [items]="mosaicsSelect" formControlName="mosaicsSelect" bindLabel="label" bindValue="value"
-                  placeholder="Select or write account">
+                  placeholder="Select or write mosaic">
                 </ng-select>
               </div>
             </div>
@@ -162,7 +162,7 @@
           <!-- Password -->
           <div class="row box-form mt-1rem pt-0 pb-0 pb-0 pr-0 pl-0 pt-0 pb-0">
             <div class="col-3 col-sm-2 col-md-1 d-flex align-items-center justify-content-end justify-content-sm-end">
-              <img class="h1-5em" src="assets/images/img/icon-password-light-gray.svg" alt="">
+              <img class="h1-5em" src="assets/images/img/icon-password-white.svg" alt="">
             </div>
 
             <div class="col-9 col-sm-10 col-md-11">
@@ -213,36 +213,52 @@
 
           <div class="row box-form mt-1rem pt-0 pb-0">
             <div class="col-12 col-lg-11">
-              <div class="md-form ">
-                <i class="fa fa-linode prefix color-white"></i>
-                <input formControlName="user" type="text" autocomplete="off" required id="user" class="form-control"
-                  mdbInputDirective data-success="Valid user" [errorMessage]="getError('password')">
-                <label for="recipient">User</label>
+              <div class="row">
+                <div
+                  class="col-3 col-sm-2 col-md-1 d-flex align-items-center justify-content-end justify-content-sm-end">
+                  <img class="h1-5em" src="assets/images/img/icon-account-white.svg" alt="">
+                </div>
+
+                <div class="col-9 col-sm-10 col-md-11">
+                  <div class="md-form">
+                    <input formControlName="user" type="text" autocomplete="off" required id="user" class="form-control"
+                      mdbInputDirective data-success="Valid user" [errorMessage]="getError('user', 'contactForm')">
+                    <label for="recipient">User</label>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
           <div class="row box-form mt-1rem pt-0 pb-0">
             <div class="col-12 col-lg-11">
-              <div class="md-form ">
-                <i class="fa fa-linode prefix color-white"></i>
-                <input formControlName="address" type="text" autocomplete="off" required id="acountRecipientModal"
-                  class="form-control" mdbInputDirective data-success="Valid recipient"
-                  [errorMessage]="getError('accountRecipient')">
-                <label for="recipient">Address</label>
+              <div class="row">
+                <div
+                  class="col-3 col-sm-2 col-md-1 d-flex align-items-center justify-content-end justify-content-sm-end">
+                  <img class="h1-5em" src="assets/images/img/icon-account-white.svg" alt="">
+                </div>
+
+                <div class="col-9 col-sm-10 col-md-11">
+                  <div class="md-form">
+                    <input formControlName="address" type="text" autocomplete="off" required id="acountRecipient"
+                      class="form-control" mdbInputDirective data-success="Valid recipient"
+                      [errorMessage]="getError('address', 'contactForm')">
+                    <label for="recipient">Address</label>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
           <div class="row mt-1rem mb-1rem">
             <div class="col-6 t-a-r">
-              <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 btn-white"
+              <button mdbBtn type="button" size="sm" rounded="true" mdbWavesEffect class="f-w-600 btn-white"
                 (click)="cleanForm()">
                 CLEAN
               </button>
             </div>
             <div class="col-6">
-              <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 btn-dark-green-prx">
+              <button mdbBtn type="submit" size="sm" rounded="true" mdbWavesEffect class="f-w-600 btn-dark-green-prx">
                 Save
               </button>
             </div>

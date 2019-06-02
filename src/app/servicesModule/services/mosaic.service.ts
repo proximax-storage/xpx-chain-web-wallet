@@ -173,7 +173,7 @@ export class MosaicService {
     const mosaicsIds = (mosaicsInfo.length > 0) ? mosaicsInfo.map(data => data.mosaicId) : mosaicsToSearch;
     // If the mosaic identification has data, look for the names of the tiles. This must return an array of mosaics name
     const mosaicsName = (mosaicsIds.length > 0) ? await this.getNameMosaics(mosaicsIds) : [];
-    console.log('----> mosaicsName ', mosaicsName);
+    // console.log('----> mosaicsName ', mosaicsName);
     if (mosaicsInfo.length > 0) {
       for (let mosaicInfo of mosaicsInfo) {
         const data = await this.buildStructureMosaicStorage(mosaicsStorage, mosaicInfo.mosaicId, mosaicsName, mosaicInfo);

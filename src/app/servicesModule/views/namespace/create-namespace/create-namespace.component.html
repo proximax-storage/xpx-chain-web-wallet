@@ -36,11 +36,20 @@
               <div class="row">
                 <div class="col-12">
                   <!-- name -->
-                  <div class="md-form">
-                    <i class="fa fa-address-book prefix color-white"></i>
-                    <input type="text" autocomplete="off" formControlName="name" required id="name" class="form-control"
-                      mdbInputDirective data-success="Valid name" [errorMessage]="getError('name')">
-                    <label for="name">name</label>
+                  <div class="row d-flex justify-content-center">
+                    <div
+                      class="col-3 col-sm-2 col-md-1 d-flex align-items-center justify-content-end justify-content-sm-center">
+                      <img class="h1-5em" src="assets/images/img/icon-namespaces-white.svg" alt="">
+                    </div>
+
+                    <div class="col-9 col-sm-10 col-md-11">
+                      <div class="md-form">
+                        <input type="text" autocomplete="off" formControlName="name" required id="name"
+                          class="form-control" mdbInputDirective data-success="Valid name"
+                          [errorMessage]="getError('name')">
+                        <label for="name">Name</label>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -50,13 +59,14 @@
                   <div class="row">
                     <!-- Select namespace -->
                     <div class="col-12 col-sm-8">
-                      <div class="md-form">
-                        <div class="row">
-                          <div class="col-2 col-sm-2 col-md-1 d-flex align-items-center">
-                            <img class="h1-5em" src="assets/images/img/icon-namespaces-white.svg" alt="">
-                          </div>
+                      <div class="row d-flex justify-content-center">
+                        <div
+                          class="col-3 col-sm-2 col-md-1 d-flex align-items-center justify-content-end justify-content-sm-center">
+                          <img class="h1-5em" src="assets/images/img/icon-namespaces-white.svg" alt="">
+                        </div>
 
-                          <div class="col-10 col-sm-10 col-md-11">
+                        <div class="col-9 col-sm-10 col-md-11">
+                          <div class="md-form">
                             <ng-select [items]="arrayselect" formControlName="namespaceRoot" bindLabel="label"
                               bindValue="value" placeholder="Select namespace" (change)="optionSelected($event)">
                             </ng-select>
@@ -90,12 +100,20 @@
                 <!-- Duration -->
                 <ng-container *ngIf="showDuration">
                   <div class="col-12">
-                    <div class="md-form">
-                      <i class="fa fa-address-book prefix color-white"></i>
-                      <input formControlName="duration" mdbInputDirective type="number" min="1" pattern="^[0-9]+"
-                        name="duration" id="duration" class="form-control" data-success="Valid duration"
-                        [errorMessage]="getError('duration')">
-                      <label for="duration">Duration</label>
+                    <div class="row d-flex justify-content-center">
+                      <div
+                        class="col-3 col-sm-2 col-md-1 d-flex align-items-center justify-content-end justify-content-sm-center">
+                        <img class="h1-5em" src="assets/images/img/icon-duration-white.svg" alt="">
+                      </div>
+
+                      <div class="col-9 col-sm-10 col-md-11">
+                        <div class="md-form">
+                          <input formControlName="duration" mdbInputDirective type="number" min="1" pattern="^[0-9]+"
+                            name="duration" id="duration" class="form-control" data-success="Valid duration"
+                            [errorMessage]="getError('duration')">
+                          <label for="duration">Duration</label>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </ng-container>
@@ -121,12 +139,16 @@
           </div>
 
           <!-- Password -->
-          <div class="col-11 mt-1-5rem">
+          <div class="col-10 col-md-11 mt-1-5rem">
             <div class="box-form pt-0 pb-0">
               <div class="row d-flex justify-content-center">
-                <div class="col-12">
+                <div
+                  class="col-3 col-sm-2 col-md-1 d-flex align-items-center justify-content-end justify-content-sm-center">
+                  <img class="h1-5em" src="assets/images/img/icon-password-white.svg" alt="">
+                </div>
+
+                <div class="col-9 col-sm-10 col-md-11">
                   <div class="md-form">
-                    <i class="fa fa-address-book prefix color-white"></i>
                     <input type="password" autocomplete="off" formControlName="password" required id="password"
                       class="form-control" mdbInputDirective data-success="Valid password"
                       [errorMessage]="getError('password')">

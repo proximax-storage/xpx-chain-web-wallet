@@ -18,6 +18,7 @@ import { LockTypeComponent } from '../dashboard/components/lock-type/lock-type.c
 import { SecretLockTypeComponent } from '../dashboard/components/secret-lock-type/secret-lock-type.component';
 import { SecretProofComponent } from '../dashboard/components/secret-proof/secret-proof.component';
 import { MosaicsInfoComponent } from '../dashboard/components/mosaics-info/mosaics-info.component';
+import { MosaicAliasComponent } from '../dashboard/components/mosaic-alias/mosaic-alias.component';
 
 const components = [
   TransferTypeComponent,
@@ -30,7 +31,8 @@ const components = [
   LockTypeComponent,
   SecretLockTypeComponent,
   SecretProofComponent,
-  MosaicsInfoComponent
+  MosaicsInfoComponent,
+  MosaicAliasComponent
 ]
 
 

@@ -97,9 +97,9 @@ export class MosaicSupplyChange implements OnInit {
    */
   createForm() {
     this.formMosaicSupplyChange = this.fb.group({
-      parentMosaic: ['', Validators.required],
+      parentMosaic: ['1', Validators.required],
       mosaicSupplyType: [MosaicSupplyType.Increase, Validators.required],
-      deltaSupply: ['', [Validators.required]],
+      deltaSupply: ['2000000', [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]],
     });
   }
@@ -159,6 +159,8 @@ export class MosaicSupplyChange implements OnInit {
       return `This field must contain maximum ${this.formMosaicSupplyChange.get(param).getError('maxlength').requiredLength} characters`;
     }
   }
+
+  get input() { return this.formMosaicSupplyChange.get('password'); }
 
   send() {
     if (this.formMosaicSupplyChange.valid) {

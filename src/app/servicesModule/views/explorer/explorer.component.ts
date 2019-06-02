@@ -18,6 +18,8 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
 
   @ViewChild(MdbTablePaginationComponent) mdbTablePagination: MdbTablePaginationComponent;
   @ViewChild(MdbTableDirective) mdbTable: MdbTableDirective;
+
+  goBack = `/${AppConfig.routes.services}`;
   searching = false;
   objectKeys = Object.keys;
   firstItemIndex;

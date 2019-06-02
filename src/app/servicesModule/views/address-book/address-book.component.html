@@ -130,36 +130,52 @@
 
           <div class="row box-form mt-1rem pt-0 pb-0">
             <div class="col-12 col-lg-11">
-              <div class="md-form ">
-                <i class="fa fa-linode prefix color-white"></i>
-                <input formControlName="user" type="text" autocomplete="off" required id="user" class="form-control"
-                  mdbInputDirective data-success="Valid user" [errorMessage]="getError('user')">
-                <label for="recipient">User</label>
+              <div class="row">
+                <div
+                  class="col-3 col-sm-2 col-md-1 d-flex align-items-center justify-content-end justify-content-sm-end">
+                  <img class="h1-5em" src="assets/images/img/icon-account-white.svg" alt="">
+                </div>
+
+                <div class="col-9 col-sm-10 col-md-11">
+                  <div class="md-form">
+                    <input formControlName="user" type="text" autocomplete="off" required id="user" class="form-control"
+                      mdbInputDirective data-success="Valid user" [errorMessage]="getError('user')">
+                    <label for="recipient">User</label>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
           <div class="row box-form mt-1rem pt-0 pb-0">
             <div class="col-12 col-lg-11">
-              <div class="md-form ">
-                <i class="fa fa-linode prefix color-white"></i>
-                <input formControlName="address" type="text" autocomplete="off" required id="acountRecipient"
-                  class="form-control" mdbInputDirective data-success="Valid recipient"
-                  [errorMessage]="getError('address')">
-                <label for="recipient">Address</label>
+              <div class="row">
+                <div
+                  class="col-3 col-sm-2 col-md-1 d-flex align-items-center justify-content-end justify-content-sm-end">
+                  <img class="h1-5em" src="assets/images/img/icon-account-white.svg" alt="">
+                </div>
+
+                <div class="col-9 col-sm-10 col-md-11">
+                  <div class="md-form">
+                    <input formControlName="address" type="text" autocomplete="off" required id="acountRecipient"
+                      class="form-control" mdbInputDirective data-success="Valid recipient"
+                      [errorMessage]="getError('address')">
+                    <label for="recipient">Address</label>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
           <div class="row mt-1rem mb-1rem">
             <div class="col-6 t-a-r">
-              <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 btn-white"
+              <button mdbBtn type="button" size="sm" rounded="true" mdbWavesEffect class="f-w-600 btn-white"
                 (click)="cleanForm()">
                 CLEAN
               </button>
             </div>
             <div class="col-6">
-              <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 btn-dark-green-prx">
+              <button mdbBtn type="submit" size="sm" rounded="true" mdbWavesEffect class="f-w-600 btn-dark-green-prx">
                 Save
               </button>
             </div>

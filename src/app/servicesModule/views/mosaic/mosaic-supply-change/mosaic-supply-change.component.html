@@ -57,7 +57,7 @@
               <div class="row d-flex justify-content-center">
                 <div
                   class="col-3 col-sm-2 col-md-2 col-lg-1 d-flex align-items-center justify-content-end justify-content-sm-end">
-                  <img class="h1-5em" src="assets/images/img/icon-namespaces-white.svg" alt="">
+                  <img class="h1-5em" src="assets/images/img/icon-type-increase-decrease-white.svg" alt="">
                 </div>
 
                 <div class="col-9 col-sm-10 col-md-10 col-lg-11">
@@ -78,7 +78,7 @@
               <div class="row d-flex justify-content-center">
                 <div
                   class="col-3 col-sm-2 col-md-2 col-lg-1 d-flex align-items-center justify-content-end justify-content-sm-end">
-                  <img class="h1-5em" src="assets/images/img/icon-wallet-name-light-gray.svg" alt="">
+                  <img class="h1-5em" src="assets/images/img/icon-amount-white.svg" alt="">
                 </div>
 
                 <div class="col-9 col-sm-10 col-md-10 col-lg-11">
@@ -97,13 +97,32 @@
           <div class="col-10 col-md-11 mt-1-5rem">
             <div class="box-form pt-0 pb-0">
               <div class="row d-flex justify-content-center">
-                <div class="col-12">
+                <div
+                  class="col-3 col-sm-2 col-md-1 d-flex align-items-center justify-content-end justify-content-sm-end">
+                  <img class="h1-5em" src="assets/images/img/icon-password-white.svg" alt="">
+                </div>
+
+                <div class="col-9 col-sm-10 col-md-11">
                   <div class="md-form">
-                    <i class="fa fa-th prefix color-white"></i>
-                    <input type="password" autocomplete="off" required formControlName="password" id="password"
-                      class="form-control" mdbInputDirective data-success="Valid password"
-                      [errorMessage]="getError('password')">
-                    <label for="walletname">Password</label>
+                    <input formControlName="password" type="password" autocomplete="off" required id="password"
+                      class="form-control" mdbInputDirective [validateSuccess]="false" [validateError]="false">
+                    <label for="password">Enter your wallet password</label>
+                    <!-- VALIDATIONS -->
+                    <mdb-error class="text-danger fw-500"
+                      *ngIf="input.invalid && (input.dirty || input.touched) && input.value === ''">Invalid
+                      password</mdb-error>
+
+
+                    <mdb-error class="text-danger fw-500"
+                      *ngIf="input.value !== '' && input.value.length >= 1 && input.value.length <= 7">
+                      The password must be greater than 8 characters
+                    </mdb-error>
+
+                    <mdb-success class="text-success fw-500"
+                      *ngIf="input.valid && (input.dirty || input.touched) && input.value.length >= 8">Valid password
+                    </mdb-success>
+
+                    <!-- FIN VALIDATIONS -->
                   </div>
                 </div>
               </div>

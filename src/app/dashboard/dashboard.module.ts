@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { CoreModule } from '../core/core.module';
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './views/dashboard/dashboard.component';
-import { MosaicAliasComponent } from './components/mosaic-alias/mosaic-alias.component';
+
 /*
 import { TransferTypeComponent } from './components/transfer-type/transfer-type.component';
 import { RegisterNamespaceTypeComponent } from './components/register-namespace-type/register-namespace-type.component';
@@ -38,8 +38,7 @@ const components = [
     DashboardRoutingModule
   ],
   declarations: [
-    DashboardComponent,
-    MosaicAliasComponent
+    DashboardComponent
   ],
   schemas: [NO_ERRORS_SCHEMA]
 
