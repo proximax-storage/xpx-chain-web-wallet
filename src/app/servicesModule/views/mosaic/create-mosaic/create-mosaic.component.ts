@@ -39,8 +39,6 @@ export class CreateMosaicComponent implements OnInit {
     private walletService: WalletService,
     private sharedService: SharedService
   ) {
-
-
   }
 
   ngOnInit() {

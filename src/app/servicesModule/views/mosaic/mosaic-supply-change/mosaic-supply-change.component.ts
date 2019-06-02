@@ -2,11 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, Form } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs/operators';
+import { BlockUI, NgBlockUI } from 'ng-block-ui';
+import { MosaicSupplyType, UInt64 } from 'tsjs-xpx-catapult-sdk';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { WalletService } from '../../../../shared/services/wallet.service';
 import { SharedService } from '../../../../shared/services/shared.service';
 import { AppConfig } from '../../../../config/app.config';
-import { BlockUI, NgBlockUI } from 'ng-block-ui';
+import { MosaicService } from 'src/app/servicesModule/services/mosaic.service';
+import { MosaicsStorage } from 'src/app/servicesModule/interfaces/mosaics-namespaces.interface';
 
 @Component({
   selector: 'app-mosaic-supply-change',
@@ -24,21 +27,22 @@ export class MosaicSupplyChange implements OnInit {
   }];
 
   mosaicSupplyType: any = [{
-    value: '1',
+    value: MosaicSupplyType.Increase,
     label: 'Increase',
     selected: true,
     disabled: false
   }, {
-    value: '0',
+    value: MosaicSupplyType.Decrease,
     label: 'Decrease',
     selected: false,
     disabled: false
   }];
 
-  misaicsInfoSelect: any;
+  mosaicsInfoSelected: MosaicsStorage = null;
   mosaicsInfo: any[];
   divisibility: number = 0;
   duration: number = 0;
+  supply: number = 0;
   levyMutable: boolean = false;
   supplyMutable: boolean = false;
   transferable: boolean = false;
@@ -56,10 +60,32 @@ export class MosaicSupplyChange implements OnInit {
     private proximaxProvider: ProximaxProvider,
     private sharedService: SharedService,
     private walletService: WalletService,
+    private mosaicService: MosaicService
   ) { }
-  ngOnInit() {
-    this.searchMosaics();
+  async ngOnInit() {
+    // this.searchMosaics();
     this.createForm();
+    const data = await this.mosaicService.searchMosaicsFromAccountStorage$();
+    // console.log(data);
+    const mosaicsSelect = this.parentMosaic.slice(0);
+    data.forEach(element => {
+      const nameMosaic = (element.mosaicNames.names.length > 0) ? element.mosaicNames.names[0] : this.proximaxProvider.getMosaicId(element.id).toHex();
+      const addressOwner = this.proximaxProvider.createAddressFromPublicKey(
+        element.mosaicInfo.owner.publicKey,
+        element.mosaicInfo.owner.address['networkType']
+      );
+      const isOwner = (addressOwner.pretty() === this.walletService.address.pretty()) ? true : false;
+      if (isOwner && element.mosaicInfo['properties']['supplyMutable']) {
+        mosaicsSelect.push({
+          value: element.id,
+          label: nameMosaic,
+          selected: false,
+          disabled: false
+        });
+      }
+    });
+
+    this.parentMosaic = mosaicsSelect;
   }
 
   /**
@@ -69,120 +95,45 @@ export class MosaicSupplyChange implements OnInit {
    */
   createForm() {
     this.formMosaicSupplyChange = this.fb.group({
-      parentMosaic: ['1', Validators.required],
-      mosaicSupplyType: ['1', Validators.required],
-      supply: ['', [Validators.required]],
+      parentMosaic: ['', Validators.required],
+      mosaicSupplyType: [MosaicSupplyType.Increase, Validators.required],
+      deltaSupply: ['', [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]],
     });
   }
 
-  async searchMosaics() {
-    this.blockUI.start('Processing...');
-    const mosaicsInfo = [];
-    const mosaicsId = [];
-    this.mosaicsInfo = []
-    for (let namespaceInfo of this.route.snapshot.data['dataNamespace']) {
-      await this.proximaxProvider.getInfoMosaicFromNamespacePromise(namespaceInfo.id).then(
-        async mosaicInfo => {
-          if (Object.keys(mosaicInfo).length > 0) {
-            for (let element of Object.keys(mosaicInfo)) {
-              mosaicsId.push(mosaicInfo[element].mosaicId);
-              mosaicsInfo.push(mosaicInfo[element]);
-            }
-          }
-        }, error => {
-          // console.log("error ----> ", error);
-          this.sharedService.showError('', error);
-        }
-      );
+
+  optionSelected(mosaic: any) {
+    if (mosaic !== undefined) {
+      this.mosaicsInfoSelected = this.mosaicService.filterMosaic(this.proximaxProvider.getMosaicId(mosaic['value']));
+      if (this.mosaicsInfoSelected !== null || this.mosaicsInfoSelected !== undefined) {
+        this.divisibility = this.mosaicsInfoSelected.mosaicInfo['properties'].divisibility;
+        this.duration = new UInt64([
+          this.mosaicsInfoSelected.mosaicInfo['properties']['duration']['lower'], this.mosaicsInfoSelected.mosaicInfo.supply['higher']
+        ]).compact();
+        this.levyMutable = this.mosaicsInfoSelected.mosaicInfo['properties'].levyMutable;
+        this.supplyMutable = this.mosaicsInfoSelected.mosaicInfo['properties'].supplyMutable;
+        this.transferable = this.mosaicsInfoSelected.mosaicInfo['properties'].transferable;
+        this.supply = new UInt64([
+          this.mosaicsInfoSelected.mosaicInfo.supply['lower'], this.mosaicsInfoSelected.mosaicInfo.supply['higher']
+        ]).compact();
+        return;
+      }
     }
-    if (mosaicsInfo.length > 0) {
-      const response = await this.getMosaicName(mosaicsId, mosaicsInfo)
-      this.parentMosaic = response;
-      this.blockUI.stop();
-    } else {
-      this.router.navigate([AppConfig.routes.createMosaic]);
-      this.sharedService.showInfo('', 'You must create a mosaic');
-      this.blockUI.stop();
-    }
-  }
 
-  /**
-  *
-  * @param mosaicsId
-  * @param mosaicsInfo
-  *
-  */
-  async getMosaicName(mosaicsId, mosaicsInfo) {
-    const response = [{
-      value: '1',
-      label: 'Select parent namespace',
-      selected: true,
-      disabled: true
-    }];
-    const promise = new Promise((resolve, reject) => {
-      resolve(null);
-      /*this.proximaxProvider.mosaicHttp.getMosaicsName(mosaicsId).subscribe(
-        async mosaicsName => {
-          for (let x of mosaicsName) {
-            const namespac: any = await this.getNamespaceName(x.namespaceId)
-            response.push({
-              label: `${namespac[0].name}:${x.name}`,
-              value: `${namespac[0].name}:${x.name}`,
-              selected: false,
-              disabled: false
-            });
-
-            mosaicsInfo.forEach(element => {
-              if (element.mosaicId.id.lower == x.mosaicId.id.lower) {
-                this.mosaicsInfo.push({ value: `${namespac[0].name}:${x.name}`, mosaicsinfo: element })
-              }
-            });
-          }
-          resolve(response);
-        }, error => {
-          // console.error("Has ocurred a error", error);
-          this.router.navigate([AppConfig.routes.home]);
-          this.sharedService.showError('', error);
-          reject(error);
-        });*/
-    });
-    return await promise;
-  }
-
-  /**
-  *
-  * @param param
-  * @param formControl
-  */
-  async getNamespaceName(namespaceId) {
-    const promise = new Promise((resolve, reject) => {
-      this.proximaxProvider.namespaceHttp.getNamespacesName([namespaceId]).pipe(first()).subscribe(
-        namespaceName => {
-          resolve(namespaceName);
-        }, error => {
-          // console.error("Has ocurred a error", error);
-          this.router.navigate([AppConfig.routes.home]);
-          this.sharedService.showError('', error);
-          reject(error);
-        });
-    });
-    return await promise;
-  }
-
-  /**
- *Change of selection option
- *
- * @param {*} namespace
- * @memberof EditMosaicComponent
- */
-  optionSelected(namespace: any) {
-    this.misaicsInfoSelect = this.mosaicsInfo.filter((book: any) => (book.value === namespace.value))
-    this.divisibility = this.misaicsInfoSelect[0].mosaicsinfo.properties.divisibility
-    this.duration = this.misaicsInfoSelect[0].mosaicsinfo.properties.duration.lower
-    this.levyMutable = this.misaicsInfoSelect[0].mosaicsinfo.properties.levyMutable
-    this.supplyMutable = this.misaicsInfoSelect[0].mosaicsinfo.properties.supplyMutable
-    this.transferable = this.misaicsInfoSelect[0].mosaicsinfo.properties.transferable
+    this.divisibility = 0;
+    this.duration = 0;
+    this.supply = 0;
+    this.levyMutable = false;
+    this.supplyMutable = false;
+    this.transferable = false;
+    // console.log('------------- this.supply ---------', this.supply);
+    // console.log('------------- this.divisibility ---------', this.divisibility);
+    // console.log('------------- this.duration ---------', this.duration);
+    // console.log('------------- this.levyMutable ---------', this.levyMutable);
+    // console.log('------------- this.supplyMutable ---------', this.supplyMutable);
+    // console.log('------------- this.transferable ---------', this.transferable);
+    return;
   }
 
   /**
@@ -210,7 +161,7 @@ export class MosaicSupplyChange implements OnInit {
         const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.network);
         const mosaicSupplyChangeTransaction = this.proximaxProvider.mosaicSupplyChangeTransaction(
           this.formMosaicSupplyChange.get('parentMosaic').value,
-          this.formMosaicSupplyChange.get('supply').value,
+          this.formMosaicSupplyChange.get('deltaSupply').value,
           this.formMosaicSupplyChange.get('mosaicSupplyType').value,
           this.walletService.network
         )
@@ -236,8 +187,8 @@ export class MosaicSupplyChange implements OnInit {
 
   resectForm() {
     this.formMosaicSupplyChange.get('password').patchValue('')
-    this.formMosaicSupplyChange.get('supply').patchValue('')
-    this.formMosaicSupplyChange.get('parentMosaic').patchValue('1')
+    this.formMosaicSupplyChange.get('deltaSupply').patchValue('')
+    this.formMosaicSupplyChange.get('parentMosaic').patchValue(MosaicSupplyType.Increase);
   }
 
 }

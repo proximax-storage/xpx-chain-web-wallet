@@ -23,8 +23,6 @@ import { MosaicNames } from "tsjs-xpx-catapult-sdk/dist/src/model/mosaic/MosaicN
   providedIn: "root"
 })
 export class MosaicService {
-  // private balance: BehaviorSubject<any> = new BehaviorSubject<any>("0.000000");
-  // private balance$: Observable<any> = this.balance.asObservable();
 
   mosaicsViewCache: MosaicView[] = [];
   mosaicXpx: MosaicXPXInterface = {
@@ -35,49 +33,8 @@ export class MosaicService {
 
   constructor(
     private proximaxProvider: ProximaxProvider,
-    private toastrService: ToastService
+    private walletService: WalletService
   ) { }
-
-
-
-
-
-
-
-
-
-
-
-
-  /******************************************** */
-
-  /**
-   *
-   *
-   * @param {NamespaceId} namespaceId
-   * @memberof MosaicService
-   */
-  /* async buildMosaicsFromNamespace(namespaceId: NamespaceId) {
-     this.getMosaicsFromNamespace(namespaceId)
-       .then(response => {
-         // console.log("getMosaicsFromNamespace", response);
-         if (response.length > 0) {
-           this.saveMosaicsStorage(response);
-         }
-       })
-       .catch(() => {
-         const options = {
-           closeButton: true,
-           tapToDismiss: false,
-           toastClass: "toastError"
-         };
-         this.toastrService.error(
-           "Has ocurred a unexpected error, possible causes: the network is offline",
-           "",
-           options
-         );
-       });
-   }*/
 
   /**
    *
@@ -90,62 +47,6 @@ export class MosaicService {
     return await this.proximaxProvider.mosaicHttp.getMosaicNames(mosaicsId).toPromise();
   }
 
-  /**
-   *
-   *
-   * @param {NamespaceId[]} namespaceId
-   * @returns
-   * @memberof MosaicService
-   */
-  /* async getNameNamespace(namespaceId: NamespaceId[]) {
-     return await this.proximaxProvider.namespaceHttp
-       .getNamespacesName(namespaceId)
-       .toPromise();
-   }*/
-
-  /**
-   *
-   *
-   * @param {Address} address
-   * @param {boolean} [searchXpx=true]
-   * @returns
-   * @memberof MosaicService
-   */
-  /* async getMosaicFromAddress(address: Address, searchXpx: boolean = true) {
-     const promise = await new Promise(async (resolve, reject) => {
-       const accountInfo = await this.proximaxProvider.accountHttp.getAccountInfo(address).toPromise();
-       // console.log("accountInfo", accountInfo);
-       let mosaicsId = [];
-       if (searchXpx) {
-         mosaicsId = accountInfo.mosaics.map((mosaic: Mosaic) => {
-           return mosaic.id;
-         });
-       } else {
-         accountInfo.mosaics.forEach((mosaic: Mosaic) => {
-           if (mosaic.id.toHex() !== "d423931bd268d1f4") {
-             return mosaicsId.push(mosaic.id);
-           }
-         });
-       }
-
-       let response = {};
-       if (mosaicsId.length > 0) {
-         const mosaicsName: MosaicName[] = await this.getNameMosaics(mosaicsId);
-         // console.log("mosaicsName", mosaicsName);
-         const namespacesId = mosaicsName.map((mosaicsName: MosaicName) => {
-           return mosaicsName.namespaceId;
-         });
-         response = {
-           mosaicsName: mosaicsName,
-           namespaceName: await this.getNameNamespace(namespacesId)
-         };
-       }
-
-       resolve(response);
-     });
-
-     return await promise;
-   }*/
 
   /**
    * Search mosaics by mosaicsId
@@ -221,6 +122,45 @@ export class MosaicService {
   /**
    *
    *
+   * @returns {Promise<MosaicsStorage[]>}
+   * @memberof MosaicService
+   */
+  async searchMosaicsFromAccountStorage$(): Promise<MosaicsStorage[]> {
+    const mosaicFound = [];
+    const mosaicsToSearch: MosaicId[] = [];
+    // Mapea los mosaicos de una cuenta
+    const mosaicsFromAccount: MosaicsStorage[] = await this.searchMosaics(this.walletService.getAccountInfo().mosaics.map(n => n.id));
+    // Valida si la cuenta tiene mosaicos
+    if (mosaicsFromAccount.length > 0) {
+      //Ejecuta bucle de los mosaicos de una cuenta
+      for (let element of mosaicsFromAccount) {
+        // Busca el id de un mosaico
+        const mosaicId = this.proximaxProvider.getMosaicId(element.id);
+        // Filtra si el mosaico existe en el storage
+        const existMosaic = this.filterMosaic(mosaicId);
+        // Si el mosaico no existe en el storage, lo asigna a mosaicsToSearch para ser buscado más tarde.
+        //De lo contrario, hace push a mosaicos encontrados.
+        if (existMosaic === null || existMosaic === undefined) {
+          mosaicsToSearch.push(mosaicId);
+        } else {
+          mosaicFound.push(existMosaic);
+        }
+      }
+
+      // Si existe algun dato en MosaicsToSearch, procede a buscar los mosaicos y guardarlo en el storage
+      if (mosaicsToSearch.length > 0) {
+        const response = await this.searchMosaics(mosaicsToSearch);
+        response.forEach(element => {
+          mosaicFound.push(element);
+        });
+      }
+    }
+    return mosaicFound;
+  }
+
+  /**
+   *
+   *
    * @param {MosaicInfo[]} mosaicsInfo
    * @param {NamespaceName[]} [namespaceName]
    * @returns
@@ -258,6 +198,16 @@ export class MosaicService {
     return mosaicsStorage;
   }
 
+  /**
+   *
+   *
+   * @param {MosaicsStorage[]} mosaicsStorage
+   * @param {MosaicId} mosaicId
+   * @param {MosaicNames[]} mosaicsName
+   * @param {MosaicInfo} mosaicInfo
+   * @returns {Promise<MosaicsStorage>}
+   * @memberof MosaicService
+   */
   async buildStructureMosaicStorage(mosaicsStorage: MosaicsStorage[], mosaicId: MosaicId, mosaicsName: MosaicNames[], mosaicInfo: MosaicInfo): Promise<MosaicsStorage> {
     // Check if the mosaics id exists in storage
     const existMosaic = mosaicsStorage.find(key => this.proximaxProvider.getMosaicId(key.id).toHex() === mosaicId.toHex());
@@ -298,6 +248,8 @@ export class MosaicService {
 
       return filtered;
     }
+
+    return null;
   }
 
   /**
@@ -308,22 +260,7 @@ export class MosaicService {
    */
   getNameStorage() {
     return `proximax-mosaics`;
-    // return `proximax-mosaics-${this.walletService.address.address.substr(4, 12)}`;
   }
-
-  /**
-   *
-   *
-   * @param {NamespaceId} namespaceId
-   * @param {QueryParams} [queryParams]
-   * @returns {Observable<MosaicInfo[]>}
-   * @memberof MosaicService
-   */
-  /*getMosaicsFromNamespace(namespaceId: NamespaceId, queryParams?: QueryParams): Promise<MosaicInfo[]> {
-    return this.proximaxProvider.mosaicHttp
-      .getMosaicsFromNamespace(namespaceId, queryParams)
-      .toPromise();
-  }*/
 
   /**
    *

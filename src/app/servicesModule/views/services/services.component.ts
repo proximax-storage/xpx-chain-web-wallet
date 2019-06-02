@@ -69,7 +69,7 @@ export class ServicesComponent implements OnInit {
       'The mosaics service, are assets that expose additional properties and other features. To be able to create a mosaic, an account must rent at least one root namespace.',
       {
         createMosaic: this.structureServiceRoute('Create mosaic', `/${AppConfig.routes.createMosaic}`),
-        // editMosaic: this.structureServiceRoute('Mosaic supply change', `/${AppConfig.routes.MosaicSupplyChange}`),
+        editMosaic: this.structureServiceRoute('Mosaic supply change', `/${AppConfig.routes.MosaicSupplyChange}`),
       }, true
     );
 

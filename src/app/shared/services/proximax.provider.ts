@@ -214,6 +214,18 @@ export class ProximaxProvider {
   }
 
   /**
+   *
+   *
+   * @param {string} publicKey
+   * @param {NetworkType} networkType
+   * @returns {Address}
+   * @memberof ProximaxProvider
+   */
+  createAddressFromPublicKey(publicKey: string, networkType: NetworkType): Address {
+    return Address.createFromPublicKey(publicKey, networkType)
+  }
+
+  /**
    * Create transaction
    *
    * @param recipientAddress
