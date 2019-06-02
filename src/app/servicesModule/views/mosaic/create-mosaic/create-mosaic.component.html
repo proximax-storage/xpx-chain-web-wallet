@@ -1,7 +1,7 @@
 <div class="container-fluid mt-11rem mb-3rem animated fadeIn">
   <!-- TITLE -->
   <div class="row">
-    <div class="col-12 mx-auto">
+    <div class="col-11 mx-auto">
       <!-- Title and Divir -->
       <div class="row">
         <div class="col-9 col-sm-10 mx-auto">
@@ -30,27 +30,6 @@
     <div class="col-12 mb-1rem">
       <form [formGroup]="mosaicForm" (ngSubmit)="send()">
         <div class="row d-flex justify-content-center">
-
-          <!-- Parentnamespace
-          <div class="col-10 col-md-11 mt-1-5rem">
-            <div class="box-form pt-0 pb-0">
-              <div class="row d-flex justify-content-center">
-                <div
-                  class="col-3 col-sm-2 col-md-1 d-flex align-items-center justify-content-end justify-content-sm-end">
-                  <img class="h1-5em" src="assets/images/img/icon-wallet-name-light-gray.svg" alt="">
-                </div>
-
-                <div class="col-9 col-sm-10 col-md-11">
-                  <div class="md-form">
-                    <ng-select [items]="mosaicSupplyType" formControlName="mosaicSupplyType" bindLabel="label"
-                      bindValue="value" placeholder="Select or write Mosaic supply type">
-                    </ng-select>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>-->
-
           <!-- Duration & divisibility-->
           <div class="col-10 col-md-11 mt-1-5rem">
             <div class="box-form pt-0 pb-0">
@@ -138,11 +117,11 @@
           <div class="col-10 col-md-11 mt-1-5rem d-flex justify-content-center">
             <div class="row">
               <div class="col-6">
-                <button mdbBtn size="lg" rounded="true" class="waves-light btn-white" mdbWavesEffect
+                <button mdbBtn size="md" rounded="true" class="waves-light btn-white" mdbWavesEffect
                   type="button">Clean</button>
               </div>
               <div class="col-6">
-                <button mdbBtn size="lg" rounded="true" class="waves-light btn-dark-green-prx" mdbWavesEffect
+                <button mdbBtn size="md" rounded="true" class="waves-light btn-dark-green-prx" mdbWavesEffect
                   type="submit">Create</button>
               </div>
             </div>
