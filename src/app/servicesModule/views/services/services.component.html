@@ -50,8 +50,8 @@
                 <div class="row">
                   <ng-container *ngFor="let r of keyObject(services[item].route)">
                     <div class="col-6 d-flex justify-content-center align-items-center">
-                      <a class="btn-dark-green-sm" mdbWavesEffect
-                        [routerLink]="services[item].route[r].link">{{services[item].route[r].name | uppercase}}</a>
+                      <a class="btn-dark-green-sm" mdbWavesEffect [routerLink]="services[item].route[r].link"
+                        mdbTooltip="{{services[item].route[r].name | uppercase}}">{{services[item].route[r].name | uppercase}}</a>
                     </div>
                   </ng-container>
                 </div>
