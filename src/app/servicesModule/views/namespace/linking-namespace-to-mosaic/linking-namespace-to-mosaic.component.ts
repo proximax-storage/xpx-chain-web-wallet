@@ -110,7 +110,7 @@ export class LinkingNamespaceToMosaicComponent implements OnInit {
         element.mosaicInfo.owner.address['networkType']
       );
       const isOwner = (addressOwner.pretty() === this.walletService.address.pretty()) ? true : false;
-      if (isOwner && element.mosaicInfo['properties']['supplyMutable']) {
+      if (isOwner) {
         mosaicsSelect.push({
           value: element.id,
           label: nameMosaic,
@@ -143,9 +143,12 @@ export class LinkingNamespaceToMosaicComponent implements OnInit {
     }
   }
 
+  get input() { return this.linkingNamespaceToMosaic.get('password'); }
+
   resetForm() {
     this.linkingNamespaceToMosaic.get('namespace').patchValue('1');
     this.linkingNamespaceToMosaic.get('mosaic').patchValue('1');
+    this.linkingNamespaceToMosaic.get('password').patchValue('');
   }
 
   send() {

@@ -6,7 +6,7 @@
         <div class="col-11 col-sm-10 mx-auto">
           <span class="d-flex justify-content-center align-items-center wallet-name">
             <img class="mr-05rem h2-3em" src="assets/images/img/icon-namespaces-white.svg">
-            <span class="f-w-bold fs-2em">Namespace & Subdomains</span>
+            <span class="f-w-bold fs-2em">Linking a namespace to a mosaic</span>
           </span>
         </div>
         <div class="col-11 col-sm-10 mx-auto">
@@ -56,10 +56,25 @@
 
           <div class="col-9 col-sm-10 col-md-11">
             <div class="md-form">
-              <input type="password" autocomplete="off" formControlName="password" required id="password"
-                class="form-control" mdbInputDirective data-success="Valid password"
-                [errorMessage]="getError('password')">
-              <label for="password">password</label>
+              <input formControlName="password" type="password" autocomplete="off" required id="password"
+                class="form-control" mdbInputDirective [validateSuccess]="false" [validateError]="false">
+              <label for="password">Enter your wallet password</label>
+              <!-- VALIDATIONS -->
+              <mdb-error class="text-danger fw-500"
+                *ngIf="input.invalid && (input.dirty || input.touched) && input.value === ''">Invalid
+                password</mdb-error>
+
+
+              <mdb-error class="text-danger fw-500"
+                *ngIf="input.value !== '' && input.value.length >= 1 && input.value.length <= 7">
+                The password must be greater than 8 characters
+              </mdb-error>
+
+              <mdb-success class="text-success fw-500"
+                *ngIf="input.valid && (input.dirty || input.touched) && input.value.length >= 8">Valid password
+              </mdb-success>
+
+              <!-- FIN VALIDATIONS -->
             </div>
           </div>
         </div>
