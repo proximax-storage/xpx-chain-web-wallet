@@ -180,7 +180,7 @@ export class TransactionsService {
    * @returns
    * @memberof TransactionsService
    */
-  amountFormatter(amount: UInt64, mosaicId: MosaicId, mosaic: MosaicInfo) {
+  amountFormatter(amount: UInt64, mosaic: MosaicInfo) {
     const amountDivisibility = Number(
       amount.compact() / Math.pow(10, mosaic['properties'].divisibility)
     );
@@ -265,8 +265,8 @@ export class TransactionsService {
    * @returns
    * @memberof TransactionsService
    */
-  formatNumberMilesThousands(numero: number) {
-    return numero
+  formatNumberMilesThousands(n: number) {
+    return n
       .toString()
       .replace(
         /((?!^)|(?:^|.*?[^\d.,])\d{1,3})(\d{3})(?=(?:\d{3})*(?!\d))/gy,

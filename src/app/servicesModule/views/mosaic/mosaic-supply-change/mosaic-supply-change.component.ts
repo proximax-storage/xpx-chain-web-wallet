@@ -10,6 +10,7 @@ import { SharedService } from '../../../../shared/services/shared.service';
 import { AppConfig } from '../../../../config/app.config';
 import { MosaicService } from 'src/app/servicesModule/services/mosaic.service';
 import { MosaicsStorage } from 'src/app/servicesModule/interfaces/mosaics-namespaces.interface';
+import { TransactionsService } from 'src/app/transactions/service/transactions.service';
 
 @Component({
   selector: 'app-mosaic-supply-change',
@@ -41,8 +42,8 @@ export class MosaicSupplyChange implements OnInit {
   mosaicsInfoSelected: MosaicsStorage = null;
   mosaicsInfo: any[];
   divisibility: number = 0;
-  duration: number = 0;
-  supply: number = 0;
+  duration: string = '0 days';
+  supply: string = '0';
   levyMutable: boolean = false;
   supplyMutable: boolean = false;
   transferable: boolean = false;
@@ -60,7 +61,8 @@ export class MosaicSupplyChange implements OnInit {
     private proximaxProvider: ProximaxProvider,
     private sharedService: SharedService,
     private walletService: WalletService,
-    private mosaicService: MosaicService
+    private mosaicService: MosaicService,
+    private transactionService: TransactionsService
   ) { }
   async ngOnInit() {
     // this.searchMosaics();
@@ -106,24 +108,31 @@ export class MosaicSupplyChange implements OnInit {
   optionSelected(mosaic: any) {
     if (mosaic !== undefined) {
       this.mosaicsInfoSelected = this.mosaicService.filterMosaic(this.proximaxProvider.getMosaicId(mosaic['value']));
+      // console.log(this.mosaicsInfoSelected);
       if (this.mosaicsInfoSelected !== null || this.mosaicsInfoSelected !== undefined) {
         this.divisibility = this.mosaicsInfoSelected.mosaicInfo['properties'].divisibility;
-        this.duration = new UInt64([
-          this.mosaicsInfoSelected.mosaicInfo['properties']['duration']['lower'], this.mosaicsInfoSelected.mosaicInfo.supply['higher']
-        ]).compact();
         this.levyMutable = this.mosaicsInfoSelected.mosaicInfo['properties'].levyMutable;
         this.supplyMutable = this.mosaicsInfoSelected.mosaicInfo['properties'].supplyMutable;
         this.transferable = this.mosaicsInfoSelected.mosaicInfo['properties'].transferable;
-        this.supply = new UInt64([
-          this.mosaicsInfoSelected.mosaicInfo.supply['lower'], this.mosaicsInfoSelected.mosaicInfo.supply['higher']
-        ]).compact();
+        this.supply = this.transactionService.amountFormatter(
+          new UInt64([
+            this.mosaicsInfoSelected.mosaicInfo.supply['lower'],
+            this.mosaicsInfoSelected.mosaicInfo.supply['higher']
+          ]), this.mosaicsInfoSelected.mosaicInfo
+        );
+        this.duration = this.transactionService.calculateDuration(
+          new UInt64([
+            this.mosaicsInfoSelected.mosaicInfo['properties']['duration']['lower'],
+            this.mosaicsInfoSelected.mosaicInfo.supply['higher']
+          ])
+        );
         return;
       }
     }
 
     this.divisibility = 0;
-    this.duration = 0;
-    this.supply = 0;
+    this.duration = '0 days';
+    this.supply = '0';
     this.levyMutable = false;
     this.supplyMutable = false;
     this.transferable = false;
