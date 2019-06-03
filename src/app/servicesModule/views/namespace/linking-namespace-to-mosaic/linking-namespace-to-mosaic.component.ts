@@ -19,6 +19,7 @@ export class LinkingNamespaceToMosaicComponent implements OnInit {
 
   @BlockUI() blockUI: NgBlockUI;
   linkingNamespaceToMosaic: FormGroup;
+  blockSend: boolean = false;
   mosaicSelect: Array<object> = [
     {
       value: '1',
@@ -123,12 +124,14 @@ export class LinkingNamespaceToMosaicComponent implements OnInit {
             }
           }
         }
+
         this.namespaceSelect = namespaceSelect;
-      }).catch(error => {
-        this.blockUI.stop();
-        this.router.navigate([AppConfig.routes.home]);
-        this.sharedService.showError('', 'Please check your connection and try again');
-      });
+      }
+    ).catch(error => {
+      this.blockUI.stop();
+      this.router.navigate([AppConfig.routes.home]);
+      this.sharedService.showError('', 'Please check your connection and try again');
+    });
   }
 
   /**
@@ -189,7 +192,8 @@ export class LinkingNamespaceToMosaicComponent implements OnInit {
   }
 
   send() {
-    if (this.linkingNamespaceToMosaic.valid) {
+    if (this.linkingNamespaceToMosaic.valid && !this.blockSend) {
+      this.blockSend = true;
       const common = {
         password: this.linkingNamespaceToMosaic.get('password').value,
         privateKey: ''
@@ -202,6 +206,7 @@ export class LinkingNamespaceToMosaicComponent implements OnInit {
         const signedTransaction = account.sign(mosaicSupplyChangeTransaction);
         this.proximaxProvider.announce(signedTransaction).subscribe(
           x => {
+            this.blockSend = false;
             this.resetForm();
             this.blockUI.stop(); // Stop blocking
             this.sharedService.showSuccess('success', 'Transaction sent');
@@ -209,10 +214,13 @@ export class LinkingNamespaceToMosaicComponent implements OnInit {
             this.namespaceService.resetNamespaceStorage();
           },
           err => {
+            this.blockSend = false;
             this.resetForm();
             this.blockUI.stop(); // Stop blocking
             this.sharedService.showError('', 'An unexpected error has occurred');
           });
+      } else {
+        this.blockSend = false;
       }
     }
   }
