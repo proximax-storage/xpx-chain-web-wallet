@@ -32,7 +32,7 @@ export class TransferComponent implements OnInit {
   viewReload = false;
   searchMosaics = true;
   showContacts = false;
-  inputBLocked: boolean;
+  inputBlocked: boolean;
   contacts = [];
   transferForm: FormGroup;
   contactForm: FormGroup;
@@ -51,6 +51,7 @@ export class TransferComponent implements OnInit {
       disabled: false
     }
   ];
+  blockSendButton: boolean;
 
   constructor(
     private fb: FormBuilder,
@@ -235,16 +236,16 @@ export class TransferComponent implements OnInit {
   sendTransfer() {
     if (this.transferForm.invalid) {
       this.validateAllFormFields(this.transferForm);
-      this.inputBLocked = false;
-    } else {
-      this.inputBLocked = true;
+      this.inputBlocked = false;
+    } else if (!this.inputBlocked) {
+      this.inputBlocked = true;
       const acountRecipient = this.transferForm.get("accountRecipient").value;
       const amount = this.transferForm.get("amount").value;
       const message = this.transferForm.get("message").value === null ? "" : this.transferForm.get("message").value;
       const password = this.transferForm.get("password").value;
       const mosaic = this.transferForm.get("mosaicsSelect").value;
-      // console.log(message);
       const common = { password: password };
+      this.blockSendButton = true;
       if (this.walletService.decrypt(common)) {
         const rspBuildSend = this.transactionService.buildToSendTransfer(
           common,
@@ -259,15 +260,15 @@ export class TransferComponent implements OnInit {
           .subscribe(
             rsp => {
               this.showContacts = false;
-              this.inputBLocked = false;
               this.sharedService.showSuccess(
                 "Congratulations!",
                 "Transaction sent"
               );
+              this.inputBlocked = false;
               this.cleanForm();
             },
             err => {
-              this.inputBLocked = false;
+              this.inputBlocked = false;
               this.cleanForm();
               this.sharedService.showError("Error", err);
               // console.error(err);
