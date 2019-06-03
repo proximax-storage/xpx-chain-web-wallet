@@ -53,7 +53,7 @@ export class CreateNamespaceComponent implements OnInit {
   typetransfer: number = 1;
   validateForm: boolean = false;
   viewReload: boolean = false;
-
+  blockBtnSend: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -226,7 +226,8 @@ export class CreateNamespaceComponent implements OnInit {
    * @memberof CreateNamespaceComponent
    */
   createNamespace() {
-    if (this.namespaceForm.valid && this.validateForm) {
+    if (this.namespaceForm.valid && this.validateForm && !this.blockBtnSend) {
+      this.blockBtnSend = true;
       const common = {
         password: this.namespaceForm.get('password').value,
         privateKey: ''
@@ -235,15 +236,19 @@ export class CreateNamespaceComponent implements OnInit {
         const signedTransaction = this.signedTransaction(common);
         this.proximaxProvider.announce(signedTransaction).subscribe(
           () => {
+            this.blockBtnSend = false;
             this.resetForm()
             this.blockUI.stop();
             this.sharedService.showSuccess('', 'Transaction sent')
           }, () => {
+            this.blockBtnSend = false;
             this.resetForm()
             this.blockUI.stop();
             this.sharedService.showError('', 'An unexpected error has occurred');
           }
         );
+      } else {
+        this.blockBtnSend = false;
       }
     }
   }

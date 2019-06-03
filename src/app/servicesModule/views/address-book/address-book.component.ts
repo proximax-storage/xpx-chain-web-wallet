@@ -177,10 +177,10 @@ export class AddressBookComponent implements OnInit, AfterViewInit {
   /**
    * Remove contacts
    *
-   * @param {*} label
+   * @param {string} label
    * @memberof AddressBookComponent
    */
-  remove(label) {
+  remove(label: string) {
     const newContacts = [];
     this.contacts.forEach(element => {
       if (element.label !== label) {
@@ -189,6 +189,9 @@ export class AddressBookComponent implements OnInit, AfterViewInit {
     });
     this.serviceModuleService.setBookAddress(newContacts);
     this.contacts = newContacts;
+    this.mdbTable.setDataSource(this.contacts);
+    this.contacts = this.mdbTable.getDataSource();
+    this.previous = this.mdbTable.getDataSource();
   }
 
 }
