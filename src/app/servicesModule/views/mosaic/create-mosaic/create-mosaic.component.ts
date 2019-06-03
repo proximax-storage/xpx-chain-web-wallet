@@ -32,6 +32,7 @@ export class CreateMosaicComponent implements OnInit {
     selected: false,
     disabled: false
   }];
+  blockSend: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -65,12 +66,14 @@ export class CreateMosaicComponent implements OnInit {
   }
 
   send() {
-    if (this.mosaicForm.valid) {
+    if (this.mosaicForm.valid && !this.blockSend) {
       const common = {
         password: this.mosaicForm.get('password').value,
         privateKey: ''
       }
+
       if (this.walletService.decrypt(common)) {
+        this.blockSend = true;
         const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.network);
         const nonce = this.proximaxProvider.createNonceRandom();
 
@@ -89,7 +92,6 @@ export class CreateMosaicComponent implements OnInit {
         const mosaicSupplyChangeTransaction = this.proximaxProvider.buildMosaicSupplyChange(
           mosaicDefinitionTransaction.mosaicId,
           MosaicSupplyType.Increase,
-          // this.mosaicForm.get('mosaicSupplyType').value,
           UInt64.fromUint(this.mosaicForm.get('deltaSupply').value),
           this.walletService.network
         );
@@ -110,17 +112,19 @@ export class CreateMosaicComponent implements OnInit {
         //ANNOUNCEMENT THE TRANSACTION-
         this.proximaxProvider.announce(signedTransaction).subscribe(
           async x => {
+            this.blockSend = false;
             this.mosaicForm.reset();
             this.mosaicForm.patchValue({ duration: 1000 });
             this.mosaicForm.patchValue({ divisibility: 0 });
             this.sharedService.showSuccess('', 'Transaction sent')
             const statusTransaction = await this.proximaxProvider.getTransactionStatusError(signedTransaction.hash).toPromise();
             // console.log(statusTransaction);
-          },
-          error => {
-            // console.log(error);
+          }, error => {
+            this.blockSend = false;
           }
         );
+      } else {
+        this.blockSend = false;
       }
     }
   }
@@ -137,6 +141,8 @@ export class CreateMosaicComponent implements OnInit {
       return `This field must contain minimum ${this.mosaicForm.get(param).getError('minlength').requiredLength} characters`;
     } else if (this.mosaicForm.get(param).getError('maxlength')) {
       return `This field must contain maximum ${this.mosaicForm.get(param).getError('maxlength').requiredLength} characters`;
+    } else {
+      return `Invalid input`;
     }
   }
 }

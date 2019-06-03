@@ -42,8 +42,8 @@
 
                     <div class="col-9 col-sm-10">
                       <div class="md-form">
-                        <input type="number" autocomplete="off" required formControlName="duration" id="duration"
-                          class="form-control" mdbInputDirective data-success="Valid mosaic name"
+                        <input pattern="[0-9]+" type="number" autocomplete="off" required formControlName="duration"
+                          id="duration" class="form-control" mdbInputDirective data-success="Valid mosaic name"
                           [errorMessage]="getError('duration')">
                         <label for="duration">Duration</label>
                       </div>
@@ -59,7 +59,7 @@
 
                     <div class="col-9 col-sm-10">
                       <div class="md-form">
-                        <input type="number" autocomplete="off" required formControlName="divisibility"
+                        <input pattern="[0-9]+" type="number" autocomplete="off" required formControlName="divisibility"
                           id="divisibility" class="form-control" mdbInputDirective data-success="Valid mosaic name"
                           [errorMessage]="getError('divisibility')">
                         <label for="walletname">Divisibility</label>
