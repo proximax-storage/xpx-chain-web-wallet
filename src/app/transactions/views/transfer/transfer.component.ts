@@ -17,9 +17,22 @@ import { ProximaxProvider } from "../../../shared/services/proximax.provider";
   styleUrls: ["./transfer.component.scss"]
 })
 export class TransferComponent implements OnInit {
+
+
+  myClass = {
+    'boxRecipientTrue': 'col-9 col-sm-8 col-md-7 pr-2rem',
+    'boxDirectoryTrue': 'col-12 col-md-4 col-lg-4 d-flex justify-content-center align-items-center background-dark-green-plus',
+    'boxRecipientFalse': 'col-9 col-sm-8 col-md-8 pl-2rem pr-2rem',
+    'boxDirectoryFalse': 'col-12 col-sm-2 col-md-3 d-flex justify-content-center align-items-center background-dark-green-plus',
+    'rowDirectoryTrue': 'col-10 col-md-8 col-lg-9',
+    'rowAddContactTrue': 'col-2 col-md-4 col-lg-3 d-flex align-items-center',
+    'rowAddContactFalse': 'col-12 d-flex align-items-center'
+  }
+
+  viewReload = false;
   searchMosaics = true;
   showContacts = false;
-  inputBLocked: boolean;
+  inputBlocked: boolean;
   contacts = [];
   transferForm: FormGroup;
   contactForm: FormGroup;
@@ -32,12 +45,13 @@ export class TransferComponent implements OnInit {
       disabled: true
     },
     {
-      value: this.proximaxProvider.mosaicXpx.mosaic,
+      value: this.proximaxProvider.mosaicXpx.mosaicId,
       label: this.proximaxProvider.mosaicXpx.mosaic,
       selected: false,
       disabled: false
     }
   ];
+  blockSendButton: boolean;
 
   constructor(
     private fb: FormBuilder,
@@ -45,8 +59,8 @@ export class TransferComponent implements OnInit {
     private sharedService: SharedService,
     private transactionService: TransactionsService,
     private ServiceModuleService: ServiceModuleService,
-    private mosaicServices: MosaicService,
-    private proximaxProvider: ProximaxProvider
+    private proximaxProvider: ProximaxProvider,
+    private mosaicServices: MosaicService
   ) { }
 
   ngOnInit() {
@@ -57,6 +71,38 @@ export class TransferComponent implements OnInit {
   }
 
   /**
+   * Get mosaics name
+   *
+   * @memberof TransferComponent
+   */
+  async getMosaics() {
+    this.searchMosaics = true;
+    const mosaicsSelect = this.mosaicsSelect.slice(0);
+    if (this.walletService.getAccountInfo() !== undefined) {
+      this.viewReload = false;
+      const mosaics = await this.mosaicServices.searchMosaics(this.walletService.getAccountInfo().mosaics.map(n => n.id));
+      if (mosaics.length > 0) {
+        for (let mosaic of mosaics) {
+          if (this.proximaxProvider.getMosaicId(mosaic.id).id.toHex() !== this.mosaicServices.mosaicXpx.mosaicId) {
+            const nameMosaic = (mosaic.mosaicNames.names.length > 0) ? mosaic.mosaicNames.names[0] : this.proximaxProvider.getMosaicId(mosaic.id).toHex();
+            mosaicsSelect.push({
+              label: nameMosaic,
+              value: mosaic.id,
+              selected: false,
+              disabled: false
+            });
+          }
+        }
+      }
+    } else {
+      this.viewReload = true;
+    }
+
+    this.searchMosaics = false;
+    this.mosaicsSelect = mosaicsSelect;
+  }
+
+  /**
    * Create form send transfer
    *
    * @memberof TransferComponent
@@ -64,11 +110,11 @@ export class TransferComponent implements OnInit {
   createForm() {
     this.transferForm = this.fb.group({
       mosaicsSelect: [
-        this.proximaxProvider.mosaicXpx.mosaic,
+        this.proximaxProvider.mosaicXpx.mosaicId,
         [Validators.required]
       ],
-      acountRecipient: [
-        null,
+      accountRecipient: [
+        '',
         [
           Validators.required,
           Validators.minLength(40),
@@ -76,7 +122,7 @@ export class TransferComponent implements OnInit {
         ]
       ],
       amount: [null, [Validators.maxLength(20)]],
-      message: ["", [Validators.maxLength(80)]],
+      message: ["", [Validators.maxLength(1023)]],
       password: [
         null,
         [Validators.required, Validators.minLength(8), Validators.maxLength(30)]
@@ -130,31 +176,7 @@ export class TransferComponent implements OnInit {
     return;
   }
 
-  /**
-   * Get mosaics name
-   *
-   * @memberof TransferComponent
-   */
-  async getMosaics() {
-    const mosaicsSelect = this.mosaicsSelect.slice(0);
-    // console.log(this.walletService.getAccountInfo());
-    const mosaics = await this.mosaicServices.searchMosaics(this.walletService.getAccountInfo().mosaics.map(n => n.id));
-    // console.log(mosaics);
-    if (mosaics.length > 0) {
-      for (let mosaic of mosaics) {
-        if (this.proximaxProvider.getMosaicId(mosaic.id).id.toHex() !== this.mosaicServices.mosaicXpx.mosaicId) {
-          mosaicsSelect.push({
-            label: `${mosaic.namespaceName.name}:${mosaic.mosaicName.name}`,
-            value: `${mosaic.namespaceName.name}:${mosaic.mosaicName.name}`,
-            selected: false,
-            disabled: false
-          });
-        }
-      }
-    }
-    this.searchMosaics = false;
-    this.mosaicsSelect = mosaicsSelect;
-  }
+
 
   /**
    * Gets errors
@@ -214,16 +236,16 @@ export class TransferComponent implements OnInit {
   sendTransfer() {
     if (this.transferForm.invalid) {
       this.validateAllFormFields(this.transferForm);
-      this.inputBLocked = false;
-    } else {
-      this.inputBLocked = true;
-      const acountRecipient = this.transferForm.get("acountRecipient").value;
+      this.inputBlocked = false;
+    } else if (!this.inputBlocked) {
+      this.inputBlocked = true;
+      const acountRecipient = this.transferForm.get("accountRecipient").value;
       const amount = this.transferForm.get("amount").value;
       const message = this.transferForm.get("message").value === null ? "" : this.transferForm.get("message").value;
       const password = this.transferForm.get("password").value;
-      const node = this.transferForm.get("mosaicsSelect").value;
-      // console.log(message);
+      const mosaic = this.transferForm.get("mosaicsSelect").value;
       const common = { password: password };
+      this.blockSendButton = true;
       if (this.walletService.decrypt(common)) {
         const rspBuildSend = this.transactionService.buildToSendTransfer(
           common,
@@ -231,22 +253,22 @@ export class TransferComponent implements OnInit {
           message,
           amount,
           this.walletService.network,
-          node
+          mosaic
         );
         rspBuildSend.transactionHttp
           .announce(rspBuildSend.signedTransaction)
           .subscribe(
             rsp => {
               this.showContacts = false;
-              this.inputBLocked = false;
               this.sharedService.showSuccess(
                 "Congratulations!",
                 "Transaction sent"
               );
+              this.inputBlocked = false;
               this.cleanForm();
             },
             err => {
-              this.inputBLocked = false;
+              this.inputBlocked = false;
               this.cleanForm();
               this.sharedService.showError("Error", err);
               // console.error(err);
@@ -304,8 +326,7 @@ export class TransferComponent implements OnInit {
    * @memberof TransferComponent
    */
   optionSelected(event: { value: any }) {
-    // console.log(event);
-    this.transferForm.get("acountRecipient").patchValue(event.value);
+    this.transferForm.get("accountRecipient").patchValue(event.value);
   }
 
   /**

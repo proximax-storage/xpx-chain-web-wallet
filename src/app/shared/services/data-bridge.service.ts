@@ -1,13 +1,15 @@
 import { Injectable } from '@angular/core';
 import { first } from "rxjs/operators";
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Listener, Transaction } from "proximax-nem2-sdk";
+import { Listener, Transaction } from "tsjs-xpx-catapult-sdk";
 import { WalletService } from "./wallet.service";
 import { TransactionsService } from "../../transactions/service/transactions.service";
 import { environment } from '../../../environments/environment';
 import { NodeService } from '../../servicesModule/services/node.service';
 import { SharedService } from './shared.service';
 import { TransactionsInterface } from '../../dashboard/services/transaction.interface';
+import { NamespacesService } from '../../servicesModule/services/namespaces.service';
+import { MosaicService } from '../../servicesModule/services/mosaic.service';
 
 @Injectable({
   providedIn: 'root'
@@ -24,6 +26,8 @@ export class DataBridgeService {
     private transactionsService: TransactionsService,
     private nodeService: NodeService,
     private sharedService: SharedService,
+    private namespaceService: NamespacesService,
+    private mosaicService: MosaicService
   ) { }
 
 
@@ -96,7 +100,6 @@ export class DataBridgeService {
       this.getStatusSocket(connector, audio);
       this.getBlockSocket(connector)
     }, (error) => {
-      console.error("errroooor de soquer", error);
       this.reconnect(connector);
     });
   }
@@ -114,13 +117,15 @@ export class DataBridgeService {
       // console.log("Transacciones confirmadas entrantes", incomingTransaction);
       this.transactionsService.getTransactionsConfirmed$().pipe(first()).subscribe(allTransactionConfirmed => {
         const transactionPushed = allTransactionConfirmed.slice(0);
-        const transactionFormatter = this.transactionsService.buildDashboard(incomingTransaction);
+        const transactionFormatter = this.transactionsService.getStructureDashboard(incomingTransaction);
         transactionPushed.unshift(transactionFormatter);
         this.destroyUnconfirmedTransaction(transactionFormatter);
         this.transactionsService.setTransactionsConfirmed$(transactionPushed);
         audio.play();
         // this.messageService.changeMessage('balanceChanged');
-        this.transactionsService.updateBalance();
+        this.transactionsService.validateTypeTransaction(incomingTransaction.type);
+        // this.namespaceService.buildNamespaceStorage();
+        // this.transactionsService.updateBalance();
       });
     }, err => {
       console.error(err)
@@ -140,7 +145,7 @@ export class DataBridgeService {
       this.transactionsService.getTransactionsUnConfirmed$().pipe(first()).subscribe(
         async transactionsUnconfirmed => {
           const transactionPushed = transactionsUnconfirmed.slice(0);
-          const transactionFormatter = this.transactionsService.buildDashboard(unconfirmedTransaction);
+          const transactionFormatter = this.transactionsService.getStructureDashboard(unconfirmedTransaction);
           transactionPushed.unshift(transactionFormatter);
           this.transactionsService.setTransactionsUnConfirmed$(transactionPushed);
           audio.play();
@@ -213,7 +218,7 @@ export class DataBridgeService {
   * @returns
   * @memberof DataBridgeService
   */
-  getIblock() {
+  getBlock() {
     return this.block$;
   }
 

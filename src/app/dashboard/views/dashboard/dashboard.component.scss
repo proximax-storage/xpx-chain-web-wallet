@@ -1,23 +1,56 @@
-// .mat-tab-group {
-//   width: 100%;
-// }
+.size-box {
+  height: 105px !important;
+}
 
-// .classic-tabs .nav li a {
-//   color: rgba(0, 0, 0, 0.7) !important;
-// }
+// Medium screen / tablet
+@media (max-width: 768px) {
+  .size-box {
+    height: 75px !important;
+  }
+}
 
-// .classic-tabs .nav li a.active {
-//   color: #3f3f3f;
-//   font-weight: 550;
-// }
+// Large screen / desktop
+@media (min-width: 992px) {
+  .no-p-l {
+    padding-right: 1rem;
+  }
 
-// .nav-item ng-star-inserted active {
-//   background: #20807330 !important;
-// }
+  .no-p-r {
+    padding-left: 1rem;
+  }
+}
 
-// .btn-reload{
-//   padding-right: 1.2rem;
-//   margin-bottom: 0.5rem;
-//   font-size: 1.2rem;
-//   color: #30ada1;
-// }
+@media (min-width: 992px) and (max-width: 1200px) {
+  /* .f-s-title-transactions {
+    font-size: 1.3rem;
+  }*/
+}
+
+// Small screen / tablet
+@media (max-width: 576px) {
+  .no-p-l {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .no-p-r {
+    padding-right: 0;
+    padding-left: 0;
+  }
+
+  .size-box {
+    height: 95px !important;
+  }
+
+  #boxConfirmedUnconfirmed {
+    margin-top: .4rem;
+  }
+
+  .md-form {
+    margin-bottom: 0rem;
+  }
+
+  .titleCantResults {
+    margin-bottom: 1rem;
+  }
+}

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { MosaicInfo, QueryParams, PublicAccount, Transaction } from 'proximax-nem2-sdk';
+import { MosaicInfo, QueryParams, PublicAccount, Transaction } from 'tsjs-xpx-catapult-sdk';
 import { Observable } from 'rxjs';
 import { AuthService } from '../../auth/services/auth.service';
 import { WalletService } from '../../shared/services/wallet.service';
@@ -69,22 +69,6 @@ export class DashboardService {
         }
       );
     }
-  }
-
-  /**
-   *
-   *
-   * @param {PublicAccount} publicAccount
-   * @param {QueryParams} [queryParams]
-   * @returns {Observable<Transaction[]>}
-   * @memberof DashboardService
-   */
-  getAllTransactionsPromise(publicAccount: PublicAccount, queryParams?: QueryParams): Promise<Transaction[]> {
-    if (queryParams !== undefined) {
-      return this.proximaxProvider.getAllTransactionsFromAccount(publicAccount, queryParams).toPromise();
-    }
-
-    return this.proximaxProvider.getAllTransactionsFromAccount(publicAccount, this.walletService.network).toPromise();
   }
 
   /**

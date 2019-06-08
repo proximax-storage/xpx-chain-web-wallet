@@ -1,12 +1,13 @@
 import { Component, OnInit, ViewChild, HostListener, AfterViewInit, ChangeDetectorRef } from '@angular/core';
-import { MdbTablePaginationComponent, MdbTableService } from 'ng-uikit-pro-standard';
-import { MosaicId, Transaction, Address, TransactionType } from 'proximax-nem2-sdk';
+import { MdbTablePaginationComponent, MdbTableService, MdbTableDirective } from 'ng-uikit-pro-standard';
+import { MosaicId, Transaction, Address, TransactionType } from 'tsjs-xpx-catapult-sdk';
 import { AppConfig } from '../../../config/app.config';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
-import { NodeService } from "../../../servicesModule/services/node.service";
+import { NodeService } from "../../services/node.service";
 import { SharedService, WalletService } from "../../../shared";
 import { TransactionsService } from "../../../transactions/service/transactions.service";
 import { first } from "rxjs/operators";
+import { TransactionsInterface } from 'src/app/dashboard/services/transaction.interface';
 
 @Component({
   selector: 'app-explorer',
@@ -14,19 +15,24 @@ import { first } from "rxjs/operators";
   styleUrls: ['./explorer.component.scss']
 })
 export class ExplorerComponent implements OnInit, AfterViewInit {
-  blockInput: boolean;
 
   @ViewChild(MdbTablePaginationComponent) mdbTablePagination: MdbTablePaginationComponent;
+  @ViewChild(MdbTableDirective) mdbTable: MdbTableDirective;
+
+  goBack = `/${AppConfig.routes.services}`;
+  searching = false;
+  objectKeys = Object.keys;
   firstItemIndex;
   lastItemIndex;
+  typeTransactions: any;
   typeNode = '';
   typeSearch = '';
   paramSearch = '';
-  previous: any;
-  searchText: string;
-  elements = [];
-  dataSelected: Transaction | any;
-  headElements = ['Account', 'Amount', 'Mosaic', 'Date'];
+  previous: any = '';
+  searchText: string = '';
+  elements: any = [];
+  dataSelected: TransactionsInterface = null;
+  headElements = ['Type', 'Timestamp', 'Fee', 'Sender', 'Recipient'];
   optionTypeSearch = [
     {
       'value': 'address',
@@ -40,6 +46,8 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
     }
   ];
 
+
+
   constructor(
     private tableService: MdbTableService,
     private cdRef: ChangeDetectorRef,
@@ -51,11 +59,12 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
   ) { }
 
   @HostListener('input') oninput() {
+    // this.searchItems();
     this.mdbTablePagination.searchText = this.searchText;
   }
 
   ngOnInit() {
-
+    this.typeTransactions = this.transactionsService.arraTypeTransaction;
   }
 
   ngAfterViewInit() {
@@ -79,89 +88,111 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
   }
 
   searchData() {
-    this.elements = [];
-    if (this.typeSearch === '') {
-      this.sharedService.showError('', 'Please, select a type search');
-      return;
-    } else if (this.paramSearch === '') {
-      var tp = '';
-      if (this.typeSearch === 'address') {
-        tp = 'a address';
-      } else if (this.typeSearch === 'hash') {
-        tp = 'a hash';
-      } else if (this.typeSearch === 'publickey') {
-        tp = 'a publickey';
+    if (!this.searching) {
+
+      this.elements = [];
+
+      if (this.typeSearch === '') {
+        this.sharedService.showError('', 'Please, select a type search');
+        return;
+      } else if (this.paramSearch === '') {
+        var tp = '';
+        if (this.typeSearch === 'address') {
+          tp = 'a address';
+        } else if (this.typeSearch === 'hash') {
+          tp = 'a hash';
+        } else if (this.typeSearch === 'publickey') {
+          tp = 'a publickey';
+        }
+
+        this.sharedService.showError('', `Please, add ${tp}`);
+        return;
       }
-      this.sharedService.showError('', `Please, add ${tp}`);
-      return;
-    }
 
-    if (this.typeSearch === 'address') {
-      //from address
-      this.blockInput = true;
-      this.proximaxProvider.getAccountInfo(Address.createFromRawAddress(this.paramSearch)).pipe(first()).subscribe(
-        accountInfo => {
-
-          this.proximaxProvider.getAllTransactionsFromAccount(accountInfo.publicAccount).subscribe(
-            resp => {
-              // console.log('with address info ', resp);
-              this.buildTransaction(resp);
-            },
-            error => {
-              this.blockInput = false;
-              // console.log(error);
+      this.mdbTable.setDataSource(this.elements);
+      this.elements = this.mdbTable.getDataSource();
+      this.previous = this.mdbTable.getDataSource();
+      this.searching = true;
+      if (this.typeSearch === 'address') {
+        //from address
+        if (this.paramSearch.length === 40 || this.paramSearch.length === 46) {
+          this.proximaxProvider.getAccountInfo(Address.createFromRawAddress(this.paramSearch)).pipe(first()).subscribe(
+            accountInfo => {
+              this.proximaxProvider.getTransactionsFromAccount(accountInfo.publicAccount).subscribe(
+                resp => {
+                  // console.log('with address info ', resp);
+                  this.buildTransaction(resp);
+                  this.searching = false;
+                },
+                error => {
+                  // console.log(error);
+                  this.searching = false;
+                }
+              );
             }
           );
+        } else {
+          this.paramSearch = '';
+          this.searching = false;
         }
-      );
-    } else if (this.typeSearch === 'publickey') {
-      //From publickey
-      this.blockInput = true;
-      const publicAccount = this.proximaxProvider.createPublicAccount(this.paramSearch, this.walletService.network);
-      this.proximaxProvider.getAllTransactionsFromAccount(publicAccount, this.nodeService.getNodeSelected()).subscribe(
-        resp => {
 
-          this.buildTransaction(resp);
-        },
-        error => {
-          this.blockInput = false;
-          // console.log(error);
-        }
-      );
-    } else {
-      //From hash
-      this.blockInput = true;
-      this.proximaxProvider.getTransactionInformation(this.paramSearch, this.nodeService.getNodeSelected()).subscribe(
-        resp => {
-          // console.log('with hash info', resp);
-          this.buildTransaction([resp]);
-        },
-        error => {
-          this.blockInput = false;
-          // console.log(error);
-        }
-      );
+      } else if (this.typeSearch === 'publickey') {
+        //From publickey
+        const publicAccount = this.proximaxProvider.createPublicAccount(this.paramSearch, this.walletService.network);
+        this.proximaxProvider.getTransactionsFromAccount(publicAccount, this.nodeService.getNodeSelected()).subscribe(
+          resp => {
+            this.searching = false;
+            this.buildTransaction(resp);
+          },
+          error => {
+            this.searching = false;
+            // console.log(error);
+          }
+        );
+      } else {
+        //From hash
+        this.proximaxProvider.getTransactionInformation(this.paramSearch, this.nodeService.getNodeSelected()).subscribe(
+          resp => {
+            // console.log('with hash info', resp);
+            this.searching = false;
+            this.buildTransaction([resp]);
+          },
+          error => {
+            this.searching = false;
+            // console.log(error);
+          }
+        );
+      }
     }
+
   }
 
 
   buildTransaction(param) {
-    this.blockInput = false;
+    const data = [];
     param.forEach(element => {
-      if (element.type === TransactionType.TRANSFER) {
-        const date = `${element.deadline.value.monthValue()}/${element.deadline.value.dayOfMonth()}/${element.deadline.value.year()}`;
-        this.elements.push({
-          address: element.signer.address['address'],
-          amount: element['mosaics'][0].amount.compact(),
-          message: element['message'],
-          transactionInfo: element.transactionInfo,
-          fee: element.fee.compact(),
-          mosaic: this.proximaxProvider.mosaicXpx.mosaic,
-          date: date,
-          recipient: element['recipient'],
-          signer: element.signer
-        });
+      const builderTransactions = this.transactionsService.getStructureDashboard(element);
+      if (builderTransactions !== null) {
+        data.push(builderTransactions);
       }
+
+      this.elements = data;
+      this.mdbTable.setDataSource(data);
+      this.elements = this.mdbTable.getDataSource();
+      this.previous = this.mdbTable.getDataSource();
     });
+  }
+
+  searchItems() {
+    const prev = this.mdbTable.getDataSource();
+    if (!this.searchText) {
+      this.mdbTable.setDataSource(this.previous);
+      this.elements = this.mdbTable.getDataSource();
+    }
+
+    if (this.searchText) {
+      this.elements = this.mdbTable.searchLocalDataBy(this.searchText);
+      this.mdbTable.setDataSource(prev);
+    }
   }
 }

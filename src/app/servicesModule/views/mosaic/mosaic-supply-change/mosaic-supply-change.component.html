@@ -1,0 +1,357 @@
+<div class="container-fluid mt-11rem mb-3rem animated fadeIn">
+  <!-- TITLE -->
+  <div class="row">
+    <div class="col-11 mx-auto">
+      <!-- Title and Divir -->
+      <div class="row">
+        <div class="col-9 col-sm-10 mx-auto">
+          <span class="d-flex justify-content-center align-items-center wallet-name">
+            <img class="mr-05rem h2-3em" src="assets/images/img/icon-mosaics-white.svg" alt="">
+            <span class="f-w-bold fs-2em">Mosaics</span>
+          </span>
+        </div>
+      </div>
+
+      <!-- Supply change.... -->
+      <div class="row">
+        <div class="col-12 mx-auto">
+          <hr class="background-divisor">
+        </div>
+
+        <div class="col-11 col-sm-10 mx-auto">
+          <h5 class="f-w-bold color-yellow text-align-center">Supply change...</h5>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-1rem">
+    <!-- FORM -->
+    <div class="col-12 col-md-7 col-lg-9 mb-1rem">
+      <form [formGroup]="formMosaicSupplyChange" (ngSubmit)="send()">
+        <div class="row d-flex justify-content-center">
+
+          <!-- Parentnamespace -->
+          <div class="col-10 col-md-11 mt-1-5rem">
+            <div class="box-form pt-0 pb-0">
+              <div class="row d-flex justify-content-center">
+                <div
+                  class="col-3 col-sm-2 col-md-2 col-lg-1 d-flex align-items-center justify-content-end justify-content-sm-end">
+                  <img class="h1-5em" src="assets/images/img/icon-mosaics-white.svg" alt="">
+                </div>
+
+                <div class="col-9 col-sm-10 col-md-10 col-lg-11">
+                  <div class="md-form">
+                    <ng-select [items]="parentMosaic" formControlName="parentMosaic" bindLabel="label" bindValue="value"
+                      placeholder="Select or write Parent Mosaic" (change)="optionSelected($event)">
+                    </ng-select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mosaic supply type -->
+          <div class="col-10 col-md-11 mt-1-5rem">
+            <div class="box-form pt-0 pb-0">
+              <div class="row d-flex justify-content-center">
+                <div
+                  class="col-3 col-sm-2 col-md-2 col-lg-1 d-flex align-items-center justify-content-end justify-content-sm-end">
+                  <img class="h1-5em" src="assets/images/img/icon-type-increase-decrease-white.svg" alt="">
+                </div>
+
+                <div class="col-9 col-sm-10 col-md-10 col-lg-11">
+                  <div class="md-form">
+                    <ng-select [items]="mosaicSupplyType" formControlName="mosaicSupplyType" bindLabel="label"
+                      bindValue="value" placeholder="Select or write Mosaic supply type">
+                    </ng-select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+          <!-- Supply -->
+          <div class="col-10 col-md-11 mt-1-5rem">
+            <div class="box-form pt-0 pb-0">
+              <div class="row d-flex justify-content-center">
+                <div
+                  class="col-3 col-sm-2 col-md-2 col-lg-1 d-flex align-items-center justify-content-end justify-content-sm-end">
+                  <img class="h1-5em" src="assets/images/img/icon-amount-white.svg" alt="">
+                </div>
+
+                <div class="col-9 col-sm-10 col-md-10 col-lg-11">
+                  <div class="md-form">
+                    <input type="number" autocomplete="off" required formControlName="deltaSupply" id="deltaSupply"
+                      class="form-control" mdbInputDirective data-success="Valid Supply"
+                      [errorMessage]="getError('deltaSupply')">
+                    <label for="walletname">Supply</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Password -->
+          <div class="col-10 col-md-11 mt-1-5rem">
+            <div class="box-form pt-0 pb-0">
+              <div class="row d-flex justify-content-center">
+                <div
+                  class="col-3 col-sm-2 col-md-1 d-flex align-items-center justify-content-end justify-content-sm-end">
+                  <img class="h1-5em" src="assets/images/img/icon-password-white.svg" alt="">
+                </div>
+
+                <div class="col-9 col-sm-10 col-md-11">
+                  <div class="md-form">
+                    <input formControlName="password" type="password" autocomplete="off" required id="password"
+                      class="form-control" mdbInputDirective [validateSuccess]="false" [validateError]="false">
+                    <label for="password">Enter your wallet password</label>
+                    <!-- VALIDATIONS -->
+                    <mdb-error class="text-danger fw-500"
+                      *ngIf="input.invalid && (input.dirty || input.touched) && input.value === ''">Invalid
+                      password</mdb-error>
+
+
+                    <mdb-error class="text-danger fw-500"
+                      *ngIf="input.value !== '' && input.value.length >= 1 && input.value.length <= 7">
+                      The password must be greater than 8 characters
+                    </mdb-error>
+
+                    <mdb-success class="text-success fw-500"
+                      *ngIf="input.valid && (input.dirty || input.touched) && input.value.length >= 8">Valid password
+                    </mdb-success>
+
+                    <!-- FIN VALIDATIONS -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-10 col-md-11 mt-1-5rem d-flex justify-content-center">
+            <div class="row">
+              <div class="col-6">
+                <button mdbBtn size="md" rounded="true" class="waves-light btn-white" mdbWavesEffect type="button"
+                  (click)="resetForm()">Clean</button>
+              </div>
+              <div class="col-6">
+                <button mdbBtn size="md" rounded="true" class="waves-light btn-dark-green-prx" mdbWavesEffect
+                  type="submit">Create</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="col-12 col-md-5 col-lg-3">
+      <div class="row mt-1rem d-flex justify-content-center">
+        <div class="col-10 col-md-12 d-flex justify-content-center">
+          <div class="box-form-white border-black-light-1px">
+            <div class="row">
+              <div class="col-12">
+                <span class="title-information">Properties</span>
+                <hr class="background-divisor mt-05rem">
+              </div>
+
+              <div class="col-12">
+                <div class="row">
+                  <div class="col-6 col-sm-4 col-md-6 col-lg-7 col-xl-4">
+                    <span class="description-information">Supply: </span>
+                  </div>
+                  <div class="col-6 col-sm-8 col-md-6 col-lg-5 col-xl-8">
+                    <span class="description-information color-orange">{{supply}}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-12">
+                <div class="row">
+                  <div class="col-6 col-sm-4 col-md-6 col-lg-7 col-xl-4">
+                    <span class="description-information">Duration: </span>
+                  </div>
+                  <div class="col-6 col-sm-8 col-md-6 col-lg-5 col-xl-8">
+                    <span class="description-information color-orange">{{duration}}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-12">
+                <div class="row">
+                  <div class="col-6 col-sm-4 col-md-6 col-lg-7 col-xl-4">
+                    <span class="description-information">Divisibility: </span>
+                  </div>
+                  <div class="col-6 col-sm-8 col-md-6 col-lg-5 col-xl-8">
+                    <span class="description-information color-orange">{{divisibility}}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-12">
+                <div class="row">
+                  <div class="col-6 col-sm-4 col-md-6 col-lg-7 col-xl-4">
+                    <span class="description-information">Levy Mutable: </span>
+                  </div>
+                  <div class="col-6 col-sm-8 col-md-6 col-lg-5 col-xl-8 d-flex align-items-center">
+                    <ng-container *ngIf="levyMutable !== null">
+                      <i *ngIf="levyMutable" class="fa fa-check-square prefix text-success"></i>
+                      <i *ngIf="!levyMutable" class="fa fa-minus-square prefix text-danger"></i>
+                    </ng-container>
+
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-12">
+                <div class="row">
+                  <div class="col-6 col-sm-4 col-md-6 col-lg-7 col-xl-4">
+                    <span class="description-information">Transferable: </span>
+                  </div>
+                  <div class="col-6 col-sm-8 col-md-6 col-lg-5 col-xl-8 d-flex align-items-center">
+                    <ng-container *ngIf="transferable !== null">
+                      <i *ngIf="transferable" class="fa fa-check-square prefix text-success"></i>
+                      <i *ngIf="!transferable" class="fa fa-minus-square prefix text-danger"></i>
+                    </ng-container>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-12">
+                <div class="row">
+                  <div class="col-6 col-sm-4 col-md-6 col-lg-7 col-xl-4">
+                    <span class="description-information">Supply Mutable: </span>
+                  </div>
+                  <div class="col-6 col-sm-8 col-md-6 col-lg-5 col-xl-8 d-flex align-items-center">
+                    <ng-container *ngIf="supplyMutable !== null">
+                      <i *ngIf="supplyMutable" class="fa fa-check-square prefix text-success"></i>
+                      <i *ngIf="!supplyMutable" class="fa fa-minus-square prefix text-danger"></i>
+                    </ng-container>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!--<div class="container-fluid mt-11rem mb-3rem animated fadeIn">
+  <!- TITLE --
+  <div class="row">
+    <div class="col-12 mx-auto">
+      <!- Title and Divir --
+      <div class="row">
+        <div class="col-9 col-sm-10 mx-auto">
+          <h1 class="text-align-center wallet-name"><i class="fa fa-user" aria-hidden="true"></i> Mosaics
+          </h1>
+        </div>
+      </div>
+
+      <!- Supply change.... --
+      <div class="row">
+        <div class="col-12 mx-auto">
+          <hr class="background-divisor">
+        </div>
+
+        <div class="col-11 col-sm-10 mx-auto">
+          <h5 class="f-w-bold color-yellow text-align-center">Supply change...</h5>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-1rem">
+    <!- FORM --
+    <div class="col-10 mb-1rem">
+      <form [formGroup]="formMosaicSupplyChange" (ngSubmit)="send()">
+        <div class="row d-flex justify-content-center">
+          <!- Parent Namespace --
+          <div class="col-10 col-md-11 mt-1-5rem">
+            <div class="box-form pt-0 pb-0">
+              <div class="row d-flex justify-content-center">
+                <div class="col-12">
+                  <div class="md-form">
+                    <i class="fa fa-linode prefix color-white"></i>
+                    <mdb-select [options]="parentMosaic" required formControlName="parentMosaic"
+                      class="colorful-select dropdown-default" mdbInputDirective data-success="Valid Parent Namespace"
+                      [errorMessage]="getError('parentMosaic')" (selected)="optionSelected($event)"></mdb-select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!- Supply --
+          <div class="col-10 col-md-11 mt-1-5rem">
+            <div class="box-form pt-0 pb-0">
+              <div class="row d-flex justify-content-center">
+                <div class="col-12">
+                  <div class="md-form">
+                    <i class="fa fa-address-book prefix color-white"></i>
+                    <input formControlName="supply" mdbInputDirective type="number" min="1" pattern="^[0-9]+"
+                      name="supply" id="supply" class="form-control" required data-success="Valid supply"
+                      [errorMessage]="getError('supply')">
+                    <label for="supply" class="">Supply</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!- MosaicSupplyType --
+          <div class="col-10 col-md-11 mt-1-5rem">
+            <div class="box-form pt-0 pb-0">
+              <div class="row d-flex justify-content-center">
+                <div class="col-12">
+                  <div class="md-form">
+                    <i class="fa fa-linode prefix color-white"></i>
+                    <mdb-select [options]="mosaicSupplyType" required formControlName="mosaicSupplyType"
+                      class="colorful-select dropdown-default" mdbInputDirective
+                      data-success="Valid mosaic supply change" [errorMessage]="getError('mosaicSupplyType')">
+                    </mdb-select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!- Password --
+          <div class="col-10 col-md-11 mt-1-5rem">
+            <div class="box-form pt-0 pb-0">
+              <div class="row d-flex justify-content-center">
+                <div class="col-12">
+                  <div class="md-form">
+                    <i class="fa fa-address-book prefix color-white"></i>
+                    <input type="password" autocomplete="off" formControlName="password" required id="password"
+                      class="form-control" mdbInputDirective data-success="Valid password"
+                      [errorMessage]="getError('password')">
+                    <label for="password">password</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!- Clean/Create --
+          <div class="col-10 col-md-11 mt-1-5rem">
+            <div class="row d-flex justify-content-center">
+              <div class="col-6 d-flex justify-content-end">
+                <button mdbBtn size="lg" rounded="true" class="waves-light btn-white" mdbWavesEffect
+                  type="button">Clean</button>
+              </div>
+              <div class="col-6 d-flex justify-content-start">
+                <button mdbBtn size="lg" rounded="true" class="waves-light btn-dark-green-prx" mdbWavesEffect
+                  type="submit">Create</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+-->

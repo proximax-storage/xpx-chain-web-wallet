@@ -1,48 +1,46 @@
 import { Injectable } from '@angular/core';
+import { crypto } from 'js-xpx-catapult-library';
 import {
-  Listener,
   Password,
   SimpleWallet,
-  Account,
-  Address,
+  MosaicInfo,
+  TransactionHttp,
+  Listener,
   AccountHttp,
   MosaicHttp,
   NamespaceHttp,
   MosaicService,
-  MosaicAmountView,
-  Transaction,
-  PublicAccount,
+  NamespaceService,
+  TransactionStatusError,
+  SignedTransaction,
+  NamespaceId,
   QueryParams,
-  AccountInfo,
   NetworkType,
-  TransactionHttp,
+  Account,
+  PublicAccount,
   TransferTransaction,
   Deadline,
-  PlainMessage,
-  SignedTransaction,
-  TransactionAnnounceResponse,
   Mosaic,
   MosaicId,
   UInt64,
-  TransactionStatusError,
-  TransactionStatus,
-  MosaicInfo,
-  NamespaceId,
-  NamespaceInfo,
+  PlainMessage,
+  Address,
+  MosaicAmountView,
+  Transaction,
+  MosaicSupplyChangeTransaction,
   RegisterNamespaceTransaction,
+  AccountInfo,
+  MosaicNonce,
   MosaicDefinitionTransaction,
   MosaicProperties,
-  MosaicSupplyChangeTransaction,
-  NamespaceService,
-  MosaicView
-} from 'proximax-nem2-sdk';
-import {
-  BlockchainNetworkType,
-  BlockchainNetworkConnection
-} from "xpx2-ts-js-sdk";
-import { crypto } from 'proximax-nem2-library';
-import { Observable } from 'rxjs';
+  TransactionStatus,
+  TransactionAnnounceResponse,
+  MosaicSupplyType,
+  AliasTransaction,
+  AliasActionType
+} from 'tsjs-xpx-catapult-sdk';
 
+import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { commonInterface, walletInterface } from '../interfaces/shared.interfaces';
 import { MosaicXPXInterface } from '../../dashboard/services/transaction.interface';
@@ -52,14 +50,11 @@ import { MosaicXPXInterface } from '../../dashboard/services/transaction.interfa
 })
 export class ProximaxProvider {
 
+
+
+  /*************** FIN COW */
+  url: any;
   infoMosaic: MosaicInfo;
-  mosaicXpx: MosaicXPXInterface = {
-    mosaic: "prx:xpx",
-    mosaicId: "d423931bd268d1f4",
-    divisibility: 6
-  };
-
-
   transactionHttp: TransactionHttp;
   websocketIsOpen = false;
   connectionWs: Listener;
@@ -68,100 +63,39 @@ export class ProximaxProvider {
   namespaceHttp: NamespaceHttp;
   mosaicService: MosaicService;
   namespaceService: NamespaceService;
-  transactionStatusError: TransactionStatusError
-  url: any;
+  transactionStatusError: TransactionStatusError;
+  mosaicXpx: MosaicXPXInterface = {
+    mosaic: 'prx.xpx',
+    mosaicId: '0dc67fbe1cad29e3',
+    divisibility: 6
+  };
 
   constructor() {
   }
 
-  /**
-   *
-   *
-   * @param {NamespaceId} namespaceId
-   * @param {QueryParams} [queryParams]
-   * @returns
-   * @memberof NemProvider
-   */
-  async getInfoMosaicFromNamespacePromise(namespaceId: NamespaceId, queryParams?: QueryParams) {
-    const promise = await new Promise(async (resolve, reject) => {
-      if (this.infoMosaic === undefined) {
-        const mosaicInfo = await this.mosaicHttp.getMosaicsFromNamespace(namespaceId).toPromise();
-        resolve(mosaicInfo);
-      } else {
-        reject(null);
-      }
-    });
-    return await promise;
-  }
-
 
   /**
-   *
-   *
-   * @param {SignedTransaction} signedTransaction
-   * @returns {Observable<TransactionAnnounceResponse>}
-   * @memberof NemProvider
-   */
-  announce(signedTransaction: SignedTransaction): Observable<TransactionAnnounceResponse> {
-    return this.transactionHttp.announce(signedTransaction);
+     * Create account simple
+     *
+     * @param {string} walletName
+     * @param {Password} password
+     * @param {number} network
+     * @returns {SimpleWallet}
+     * @memberof ProximaxProvider
+     */
+  createAccountSimple(walletName: string, password: Password, network: number): SimpleWallet {
+    return SimpleWallet.create(walletName, password, network);
   }
 
   /**
-  *
-  *
-  * @param {string} mosaicName
-  * @param {string} rootnamespaceName
-  * @param {boolean} supplyMutable
-  * @param {boolean} transferable
-  * @param {boolean} levyMutable
-  * @param {number} divisibility
-  * @param {number} duration
-  * @returns
-  * @memberof NemProvider
-  */
-  buildRegisterMosaicTransaction(mosaicName: string, rootnamespaceName: string, supplyMutable: boolean, transferable: boolean, levyMutable: boolean, divisibility: number, duration: number, network: NetworkType) {
-    return MosaicDefinitionTransaction.create(
-      Deadline.create(),
-      mosaicName,
-      rootnamespaceName,
-      MosaicProperties.create({
-        supplyMutable: supplyMutable,
-        transferable: transferable,
-        levyMutable: levyMutable,
-        divisibility: divisibility,
-        duration: UInt64.fromUint(duration)
-      }),
-      network);
-  }
-
-  /**
-   *
-   *
-   * @param {NetworkType} network
-   * @returns
-   * @memberof NemProvider
-   */
-  blockchainNetworkConnection(network: NetworkType) {
-    const blockChainNetworkType = this.getBlockchainNetworkType(network);
-    return new BlockchainNetworkConnection(
-      blockChainNetworkType,
-      environment.blockchainConnection.host,
-      environment.blockchainConnection.port,
-      environment.blockchainConnection.protocol
-    )
-  }
-
-  /**
-   * Create account simple
-   *
-   * @param {string} user
-   * @param {Password} password
-   * @param {number} network
-   * @returns {SimpleWallet}
-   * @memberof NemProvider
-   */
-  createAccountSimple(user: string, password: Password, network: number): SimpleWallet {
-    return SimpleWallet.create(user, password, network);
+    * Create a password
+    *
+    * @param {string} value
+    * @returns {Password}
+    * @memberof ProximaxProvider
+    */
+  createPassword(value: string): Password {
+    return new Password(value);
   }
 
   /**
@@ -172,11 +106,92 @@ export class ProximaxProvider {
    * @param {string} privateKey
    * @param {number} network
    * @returns {SimpleWallet}
-   * @memberof NemProvider
+   * @memberof ProximaxProvider
    */
   createAccountFromPrivateKey(nameWallet: string, password: Password, privateKey: string, network: number): SimpleWallet {
     return SimpleWallet.createFromPrivateKey(nameWallet, password, privateKey, network);
   }
+
+  /**
+  * Decrypt and return private key
+  * @param password
+  * @param encryptedKey
+  * @param iv
+  */
+  decryptPrivateKey(password: Password, encryptedKey: string, iv: string): string {
+    const common: commonInterface = {
+      password: password.value,
+      privateKey: ''
+    };
+
+    const wallet: walletInterface = {
+      encrypted: encryptedKey,
+      iv: iv,
+    };
+
+    crypto.passwordToPrivatekey(common, wallet, 'pass:bip32');
+    return common.privateKey;
+  }
+
+
+  /******************** FIN COW **********************/
+
+
+
+
+
+
+  /**
+   *
+   *
+   * @param {NamespaceId} namespaceId
+   * @param {QueryParams} [queryParams]
+   * @returns
+   * @memberof ProximaxProvider
+   */
+  async getInfoMosaicFromNamespacePromise(namespaceId: NamespaceId, queryParams?: QueryParams) {
+    /* const promise = await new Promise(async (resolve, reject) => {
+       if (this.infoMosaic === undefined) {
+         const mosaicInfo = await this.mosaicHttp.getMosaicsFromNamespace(namespaceId).toPromise();
+         resolve(mosaicInfo);
+       } else {
+         reject(null);
+       }
+     });
+     return await promise;*/
+    return null;
+  }
+
+
+  /**
+   *
+   *
+   * @param {SignedTransaction} signedTransaction
+   * @returns {Observable<TransactionAnnounceResponse>}
+   * @memberof ProximaxProvider
+   */
+  announce(signedTransaction: SignedTransaction): Observable<TransactionAnnounceResponse> {
+    return this.transactionHttp.announce(signedTransaction);
+  }
+
+  /**
+   *
+   *
+   * @param {NetworkType} network
+   * @returns
+   * @memberof ProximaxProvider
+   */
+  blockchainNetworkConnection(network: NetworkType) {
+    const blockChainNetworkType = this.getBlockchainNetworkType(network);
+    return null; /* new BlockchainNetworkConnection(
+      blockChainNetworkType,
+      environment.blockchainConnection.host,
+      environment.blockchainConnection.port,
+      environment.blockchainConnection.protocol
+    );*/
+  }
+
+
 
   /**
    * Check if Address it is correct
@@ -188,17 +203,7 @@ export class ProximaxProvider {
     return (Account.createFromPrivateKey(privateKey, net).address.plain() === address) ? true : false;
   }
 
-  /**
-   * Create a password with at least 8 characters
-   *
-   * @param {string} value
-   * @returns {Password}
-   * @memberof NemProvider
-   */
-  createPassword(value: string): Password {
-    const password = new Password(value);
-    return password;
-  }
+
 
   /**
  * createPublicAccount
@@ -208,6 +213,18 @@ export class ProximaxProvider {
  */
   createPublicAccount(publicKey: string, network: NetworkType): PublicAccount {
     return PublicAccount.createFromPublicKey(publicKey, network);
+  }
+
+  /**
+   *
+   *
+   * @param {string} publicKey
+   * @param {NetworkType} networkType
+   * @returns {Address}
+   * @memberof ProximaxProvider
+   */
+  createAddressFromPublicKey(publicKey: string, networkType: NetworkType): Address {
+    return Address.createFromPublicKey(publicKey, networkType)
   }
 
   /**
@@ -233,31 +250,79 @@ export class ProximaxProvider {
    *
    * @param {*} address
    * @returns {Address}
-   * @memberof NemProvider
+   * @memberof ProximaxProvider
    */
   createFromRawAddress(address: string): Address {
     return Address.createFromRawAddress(address);
   }
 
+  createNonceRandom() {
+    return MosaicNonce.createRandom();
+  }
+
   /**
-   * Decrypt and return private key
-   * @param password
-   * @param encryptedKey
-   * @param iv
+   *
+   *
+   * @param {MosaicId} mosaicId
+   * @param {MosaicSupplyType} mosaicSupplyType
+   * @param {UInt64} delta
+   * @param {NetworkType} network
+   * @returns {MosaicSupplyChangeTransaction}
+   * @memberof ProximaxProvider
    */
-  decryptPrivateKey(password: Password, encryptedKey: string, iv: string): string {
-    const common: commonInterface = {
-      password: password.value,
-      privateKey: ''
-    };
+  buildMosaicSupplyChange(
+    mosaicId: MosaicId,
+    mosaicSupplyType: MosaicSupplyType,
+    delta: UInt64,
+    network: NetworkType
+  ): MosaicSupplyChangeTransaction {
+    return MosaicSupplyChangeTransaction.create(
+      Deadline.create(5),
+      mosaicId,
+      mosaicSupplyType,
+      delta,
+      network
+    );
+  }
 
-    const wallet: walletInterface = {
-      encrypted: encryptedKey,
-      iv: iv,
-    };
 
-    crypto.passwordToPrivatekey(common, wallet, 'pass:bip32');
-    return common.privateKey;
+  /**
+   *
+   *
+   * @param {MosaicNonce} nonce
+   * @param {Account} account
+   * @param {boolean} supplyMutableParam
+   * @param {boolean} transferableParam
+   * @param {boolean} levyMutableParam
+   * @param {number} divisibilityParam
+   * @param {number} durationParam
+   * @param {NetworkType} network
+   * @returns {MosaicDefinitionTransaction}
+   * @memberof ProximaxProvider
+   */
+  buildMosaicDefinition(
+    nonce: MosaicNonce,
+    account: Account,
+    supplyMutableParam: boolean,
+    transferableParam: boolean,
+    levyMutableParam: boolean,
+    divisibilityParam: number,
+    durationParam: number,
+    network: NetworkType
+  ): MosaicDefinitionTransaction {
+    return MosaicDefinitionTransaction.create(
+      Deadline.create(5),
+      nonce,
+      MosaicId.createFromNonce(nonce, account.publicAccount),
+      MosaicProperties.create({
+        supplyMutable: supplyMutableParam,
+        transferable: transferableParam,
+        levyMutable: levyMutableParam,
+        divisibility: divisibilityParam,
+        duration: UInt64.fromUint(durationParam)
+      }),
+      network
+    );
   }
 
   /**
@@ -266,7 +331,7 @@ export class ProximaxProvider {
   * @param {any} amount
   * @param {any} divisibility
   * @returns
-  * @memberof NemProvider
+  * @memberof ProximaxProvider
   */
   formatterAmount(amount: number, divisibility: number) {
     const amountDivisibility = Number(amount / Math.pow(10, divisibility));
@@ -278,29 +343,29 @@ export class ProximaxProvider {
    *
    * @param {Address} address
    * @returns {Observable<AccountInfo>}
-   * @memberof NemProvider
+   * @memberof ProximaxProvider
    */
   getAccountInfo(address: Address): Observable<AccountInfo> {
-    return this.accountHttp.getAccountInfo(address)
+    return this.accountHttp.getAccountInfo(address);
   }
 
   /**
    *
    *
    * @param {NetworkType} network
-   * @returns {BlockchainNetworkType}
+   * @returns {NetworkType}
    * @memberof ProximaxProvider
    */
-  getBlockchainNetworkType(network: NetworkType): BlockchainNetworkType {
+  getBlockchainNetworkType(network: NetworkType): NetworkType {
     switch (network) {
       case NetworkType.MAIN_NET:
-        return BlockchainNetworkType.MAIN_NET;
+        return NetworkType.MAIN_NET;
       case NetworkType.MIJIN:
-        return BlockchainNetworkType.MIJIN;
+        return NetworkType.MIJIN;
       case NetworkType.MIJIN_TEST:
-        return BlockchainNetworkType.MIJIN_TEST;
+        return NetworkType.MIJIN_TEST;
       case NetworkType.TEST_NET:
-        return BlockchainNetworkType.TEST_NET;
+        return NetworkType.TEST_NET;
     }
   }
 
@@ -310,10 +375,10 @@ export class ProximaxProvider {
    * @param {string} privateKey
    * @param {*} net
    * @returns {PublicAccount}
-   * @memberof NemProvider
+   * @memberof ProximaxProvider
    */
   getPublicAccountFromPrivateKey(privateKey: string, net: NetworkType): PublicAccount {
-    return Account.createFromPrivateKey(privateKey, net).publicAccount
+    return Account.createFromPrivateKey(privateKey, net).publicAccount;
   }
 
   /**
@@ -322,10 +387,10 @@ export class ProximaxProvider {
    * @param {string} privateKey
    * @param {*} net
    * @returns {Account}
-   * @memberof NemProvider
+   * @memberof ProximaxProvider
    */
   getAccountFromPrivateKey(privateKey: string, net: NetworkType): Account {
-    return Account.createFromPrivateKey(privateKey, net)
+    return Account.createFromPrivateKey(privateKey, net);
   }
 
   /**
@@ -333,7 +398,7 @@ export class ProximaxProvider {
    *
    * @param {any} mosaicId
    * @returns
-   * @memberof NemProvider
+   * @memberof ProximaxProvider
    */
   getMosaic(mosaicId: MosaicId): Observable<MosaicInfo> {
     return this.mosaicHttp.getMosaic(mosaicId);
@@ -344,7 +409,7 @@ export class ProximaxProvider {
    *
    * @param {MosaicId[]} mosaicIsd
    * @returns {Observable<MosaicInfo[]>}
-   * @memberof NemProvider
+   * @memberof ProximaxProvider
    */
   getMosaics(mosaicIsd: MosaicId[]): Observable<MosaicInfo[]> {
     return this.mosaicHttp.getMosaics(mosaicIsd);
@@ -355,7 +420,7 @@ export class ProximaxProvider {
    *
    * @param {Address} address
    * @returns {Observable<MosaicAmountView[]>}
-   * @memberof NemProvider
+   * @memberof ProximaxProvider
    */
   getBalance(address: Address): Observable<MosaicAmountView[]> {
     return this.mosaicService.mosaicsAmountViewFromAddress(address);
@@ -368,10 +433,10 @@ export class ProximaxProvider {
    * @param {NetworkType} network
    * @param {QueryParams} [queryParams]
    * @returns {Observable<Transaction[]>}
-   * @memberof NemProvider
+   * @memberof ProximaxProvider
    */
-  getAllTransactionsFromAccount(publicAccount: PublicAccount, queryParams?: QueryParams): Observable<Transaction[]> {
-    return this.accountHttp.transactions(publicAccount, new QueryParams(queryParams.pageSize, queryParams.id));
+  getTransactionsFromAccount(publicAccount: PublicAccount, queryParams?): Observable<Transaction[]> {
+    return this.accountHttp.transactions(publicAccount, new QueryParams(100));
   }
 
   /**
@@ -379,10 +444,10 @@ export class ProximaxProvider {
    *
    * @param {string} transactionId
    * @returns {Observable<Transaction>}
-   * @memberof NemProvider
+   * @memberof ProximaxProvider
    */
-  getTransaction(transactionId: string): Observable<Transaction> {
-    return this.transactionHttp.getTransaction(transactionId)
+  getTransaction(transactionId: string): any { //Observable<Transaction> {
+    return this.transactionHttp.getTransaction(transactionId);
   }
 
   /**
@@ -392,9 +457,9 @@ export class ProximaxProvider {
    * @param {NetworkType} network
    * @param {QueryParams} [queryParams]
    * @returns {Observable<Transaction[]>}
-   * @memberof NemProvider
+   * @memberof ProximaxProvider
    */
-  getUnconfirmedTransactionsFromAnAccount(publicAccount: PublicAccount, queryParams?: QueryParams): Observable<Transaction[]> {
+  getUnconfirmedTransactionsFromAnAccount(publicAccount: PublicAccount, queryParams?: QueryParams): any {//Observable<Transaction[]> {
     return this.accountHttp.unconfirmedTransactions(publicAccount, queryParams);
   }
 
@@ -402,7 +467,7 @@ export class ProximaxProvider {
    * Return getTransaction from id or hash
    * @param param
    */
-  getTransactionInformation(hash: string, node = ''): Observable<Transaction> {
+  getTransactionInformation(hash: string, node = ''): any {//Observable<Transaction> {
     const transaction: TransactionHttp = (node === '') ? this.transactionHttp : new TransactionHttp(environment.protocol + '://' + `${node}`);
     return transaction.getTransaction(hash);
   }
@@ -412,9 +477,10 @@ export class ProximaxProvider {
    *
    * @param {string} hash
    * @returns {Observable<TransactionStatus>}
-   * @memberof NemProvider
+   * @memberof ProximaxProvider
    */
   getTransactionStatusError(hash: string): Observable<TransactionStatus> {
+    // console.log('hash', hash)
     return this.transactionHttp.getTransactionStatus(hash);
   }
 
@@ -423,7 +489,7 @@ export class ProximaxProvider {
    *
    * @param {*} network
    * @returns {Account}
-   * @memberof NemProvider
+   * @memberof ProximaxProvider
    */
   generateNewAccount(network: NetworkType): Account {
     return Account.generateNewAccount(network);
@@ -436,7 +502,7 @@ export class ProximaxProvider {
    *
    * @param {any} id
    * @returns
-   * @memberof NemProvider
+   * @memberof ProximaxProvider
    */
   getNamespaceId(id: string | number[]): NamespaceId {
     return new NamespaceId(id);
@@ -447,7 +513,7 @@ export class ProximaxProvider {
    *
    * @param {(string | number[])} id
    * @returns {MosaicId}
-   * @memberof NemProvider
+   * @memberof ProximaxProvider
    */
   getMosaicId(id: string | number[]): MosaicId {
     return new MosaicId(id);
@@ -458,10 +524,10 @@ export class ProximaxProvider {
    *
    * @param {NamespaceId} namespace
    * @returns {Observable<NamespaceInfo>}
-   * @memberof NemProvider
+   * @memberof ProximaxProvider
    */
-  getNamespace(namespace: NamespaceId): Observable<NamespaceInfo> {
-    return this.namespaceHttp.getNamespace(namespace)
+  getNamespace(namespace: NamespaceId): any {// Observable<NamespaceInfo> {
+    return this.namespaceHttp.getNamespace(namespace);
   }
 
   /**
@@ -469,9 +535,9 @@ export class ProximaxProvider {
    *
    * @param {MosaicId[]} mosaicsId
    * @returns
-   * @memberof NemProvider
+   * @memberof ProximaxProvider
    */
-  getMosaicViewPromise(mosaicsId: MosaicId[]): Promise<MosaicView[]> {
+  getMosaicViewPromise(mosaicsId: MosaicId[]): any {//{Promise<MosaicView[]> {
     return this.mosaicService.mosaicsView(mosaicsId).toPromise();
   }
 
@@ -479,16 +545,36 @@ export class ProximaxProvider {
   *
   *
   * @param {string} url
-  * @memberof NemProvider
+  * @memberof ProximaxProvider
   */
   initInstances(url: string) {
     this.url = `${environment.protocol}://${url}`;
     this.accountHttp = new AccountHttp(this.url);
     this.mosaicHttp = new MosaicHttp(this.url);
     this.namespaceHttp = new NamespaceHttp(this.url);
-    this.mosaicService = new MosaicService(this.accountHttp, this.mosaicHttp, this.namespaceHttp);
+    this.mosaicService = new MosaicService(this.accountHttp, this.mosaicHttp);
     this.namespaceService = new NamespaceService(this.namespaceHttp);
     this.transactionHttp = new TransactionHttp(this.url);
+  }
+
+  /**
+   *
+   *
+   * @param {AliasActionType} aliasActionType
+   * @param {NamespaceId} namespaceId
+   * @param {MosaicId} mosaicId
+   * @param {NetworkType} network
+   * @returns
+   * @memberof ProximaxProvider
+   */
+  linkingNamespaceToMosaic(aliasActionType: AliasActionType, namespaceId: NamespaceId, mosaicId: MosaicId, network: NetworkType) {
+    return AliasTransaction.createForMosaic(
+      Deadline.create(),
+      aliasActionType,
+      namespaceId,
+      mosaicId,
+      network
+    );
   }
 
   /**
@@ -499,7 +585,7 @@ export class ProximaxProvider {
    * @param {number} mosaicSupplyType
    * @param {NetworkType} network
    * @returns {MosaicSupplyChangeTransaction}
-   * @memberof NemProvider
+   * @memberof ProximaxProvider
    */
   mosaicSupplyChangeTransaction(mosaicId: string, supply: number, mosaicSupplyType: number, network: NetworkType): MosaicSupplyChangeTransaction {
     return MosaicSupplyChangeTransaction.create(
@@ -518,7 +604,7 @@ export class ProximaxProvider {
    * @param {NetworkType} network
    * @param {number} [duration=100]
    * @returns {RegisterNamespaceTransaction}
-   * @memberof NemProvider
+   * @memberof ProximaxProvider
    */
   registerRootNamespaceTransaction(name: string, network: NetworkType, duration: number = 100): RegisterNamespaceTransaction {
     // Crear namespace transaction
@@ -538,7 +624,7 @@ export class ProximaxProvider {
    * @param {string} subnamespaceName
    * @param {NetworkType} network
    * @returns {RegisterNamespaceTransaction}
-   * @memberof NemProvider
+   * @memberof ProximaxProvider
    */
   registersubNamespaceTransaction(rootNamespace: string, subnamespaceName: string, network: NetworkType): RegisterNamespaceTransaction {
     // Crear namespace transaction
@@ -546,8 +632,8 @@ export class ProximaxProvider {
       Deadline.create(23),
       subnamespaceName,
       rootNamespace,
-      network);
-
+      network
+    );
   }
 
   /**
@@ -558,7 +644,7 @@ export class ProximaxProvider {
   * @param {string} [message]
   * @param {number} [amount=0]
   * @returns {TransferTransaction}
-  * @memberof NemProvider
+  * @memberof ProximaxProvider
   */
   sendTransaction(network: NetworkType, address: string, message?: string, amount: number = 0): TransferTransaction {
     // console.log(address, message)

@@ -12,8 +12,9 @@ import {
   MosaicId,
   MosaicInfo,
   TransactionType,
-  Transaction
-} from "proximax-nem2-sdk";
+  Transaction,
+  AccountInfo
+} from "tsjs-xpx-catapult-sdk";
 import { ProximaxProvider } from "../../shared/services/proximax.provider";
 import { WalletService } from "../../shared/services/wallet.service";
 import { NodeService } from "../../servicesModule/services/node.service";
@@ -21,6 +22,7 @@ import { environment } from "../../../environments/environment";
 import { first } from "rxjs/operators";
 import { TransactionsInterface, MosaicXPXInterface } from "../../dashboard/services/transaction.interface";
 import { MosaicService } from "../../servicesModule/services/mosaic.service";
+import { NamespacesService } from "src/app/servicesModule/services/namespaces.service";
 
 @Injectable({
   providedIn: "root"
@@ -67,27 +69,74 @@ export class TransactionsService {
       id: TransactionType.AGGREGATE_BONDED,
       name: "Aggregate bonded"
     },
-    lock: {
-      id: TransactionType.LOCK,
-      name: "Lock"
+    mosaicAlias: {
+      id: TransactionType.MOSAIC_ALIAS,
+      name: "Mosaic Alias"
     },
+    /* lock: {
+       id: TransactionType.LOCK,
+       name: "Lock"
+     },*/
     secretLock: {
       id: TransactionType.SECRET_LOCK,
       name: "Secret lock"
     },
-    secretProof: {
-      id: TransactionType.SECRET_PROOF,
-      name: "Secret proof"
-    }
+    /* secretProof: {
+       id: TransactionType.SECRET_PROOF,
+       name: "Secret proof"
+     }*/
   };
 
   constructor(
     private proximaxProvider: ProximaxProvider,
     private nodeService: NodeService,
     private walletService: WalletService,
-    private mosaicService: MosaicService
+    private mosaicService: MosaicService,
+    private namespaceService: NamespacesService
   ) { }
 
+
+
+  /**
+   *
+   *
+   * @param {Transaction} transaction
+   * @returns {ConfirmedTransactions}
+   * @memberof TransactionsService
+   */
+  getStructureDashboard(transaction: Transaction): TransactionsInterface {
+    const keyType = Object.keys(this.arraTypeTransaction).find(elm => this.arraTypeTransaction[elm].id === transaction.type);
+    if (keyType !== undefined) {
+      let recipientRentalFeeSink = '';
+      if (transaction["mosaics"] === undefined) {
+        if (transaction.type === this.arraTypeTransaction.registerNameSpace.id) {
+          recipientRentalFeeSink = this.namespaceRentalFeeSink.address_public_test;
+        } else if (
+          transaction.type === this.arraTypeTransaction.mosaicDefinition.id ||
+          transaction.type === this.arraTypeTransaction.mosaicSupplyChange.id
+        ) {
+          recipientRentalFeeSink = this.mosaicRentalFeeSink.address_public_test;
+        } else {
+          recipientRentalFeeSink = "XXXXX-XXXXX-XXXXXX";
+        }
+      }
+
+      return {
+        data: transaction,
+        nameType: this.arraTypeTransaction[keyType].name,
+        timestamp: this.dateFormat(transaction.deadline),
+        fee: this.amountFormatterSimple(transaction.maxFee.compact()),
+        sender: transaction.signer,
+        recipientRentalFeeSink: recipientRentalFeeSink,
+        recipient: (transaction['recipient'] !== undefined) ? transaction['recipient'] : null,
+        isRemitent: (transaction['recipient'] !== undefined) ? this.walletService.address.pretty() === transaction["recipient"].pretty() : false
+      }
+    }
+    return null;
+  }
+
+
+  /**************************************************************** */
 
   buildToSendTransfer(
     common: { password?: any; privateKey?: any },
@@ -95,12 +144,19 @@ export class TransactionsService {
     message: string,
     amount: any,
     network: NetworkType,
-    node: string | number[]
+    mosaic: string | number[]
   ) {
     const recipientAddress = this.proximaxProvider.createFromRawAddress(recipient);
-    const transferTransaction = TransferTransaction.create(Deadline.create(5), recipientAddress,
-      [new Mosaic(new MosaicId(node), UInt64.fromUint(Number(amount)))], PlainMessage.create(message), network
+    const mosaicId = new MosaicId(mosaic);
+    const transferTransaction = TransferTransaction.create(
+      Deadline.create(5),
+      recipientAddress,
+      [new Mosaic(mosaicId, UInt64.fromUint(Number(amount)))],
+      PlainMessage.create(message),
+      network
     );
+
+    //console.log('transfer transaction', transferTransaction);
     const account = Account.createFromPrivateKey(common.privateKey, network);
     const signedTransaction = account.sign(transferTransaction);
     const transactionHttp = new TransactionHttp(
@@ -110,6 +166,14 @@ export class TransactionsService {
       signedTransaction: signedTransaction,
       transactionHttp: transactionHttp
     };
+  }
+
+  toHex(str) {
+    var result = '';
+    for (var i = 0; i < str.length; i++) {
+      result += str.charCodeAt(i).toString(16);
+    }
+    return result;
   }
 
 
@@ -122,7 +186,8 @@ export class TransactionsService {
    * @returns
    * @memberof TransactionsService
    */
-  amountFormatter(amount: UInt64, mosaicId: MosaicId, mosaic: MosaicInfo) {
+  amountFormatter(amount: UInt64, mosaic: MosaicInfo) {
+    // console.log(mosaic);
     const amountDivisibility = Number(
       amount.compact() / Math.pow(10, mosaic['properties'].divisibility)
     );
@@ -146,42 +211,7 @@ export class TransactionsService {
     return amountDivisibility.toLocaleString("en-us", { minimumFractionDigits: 6 });
   }
 
-  /**
-   *
-   *
-   * @param {Transaction} transaction
-   * @returns {ConfirmedTransactions}
-   * @memberof TransactionsService
-   */
-  buildDashboard(transaction: Transaction): TransactionsInterface {
-    const keyType = Object.keys(this.arraTypeTransaction).find(elm => this.arraTypeTransaction[elm].id === transaction.type);
-    let recipientRentalFeeSink = '';
-    if (transaction["mosaics"] !== undefined) {
-      // console.log("Este tipo de transaccion tiene mosaico");
-    } else {
-      if (transaction.type === this.arraTypeTransaction.registerNameSpace.id) {
-        recipientRentalFeeSink = this.namespaceRentalFeeSink.address_public_test;
-      } else if (
-        transaction.type === this.arraTypeTransaction.mosaicDefinition.id ||
-        transaction.type === this.arraTypeTransaction.mosaicSupplyChange.id
-      ) {
-        recipientRentalFeeSink = this.mosaicRentalFeeSink.address_public_test;
-      } else {
-        recipientRentalFeeSink = "XXXXX-XXXXX-XXXXXX";
-      }
-    }
 
-    return {
-      data: transaction,
-      nameType: this.arraTypeTransaction[keyType].name,
-      timestamp: this.dateFormat(transaction.deadline),
-      fee: this.amountFormatterSimple(transaction.fee.compact()),
-      sender: transaction.signer,
-      recipientRentalFeeSink: recipientRentalFeeSink,
-      recipient: (transaction['recipient'] !== undefined) ? transaction['recipient'] : null,
-      isRemitent: (transaction['recipient'] !== undefined) ? this.walletService.address.pretty() === transaction["recipient"].pretty() : false
-    }
-  }
 
   /**
      * Calculate duration based in blocks
@@ -242,8 +272,8 @@ export class TransactionsService {
    * @returns
    * @memberof TransactionsService
    */
-  formatNumberMilesThousands(numero: number) {
-    return numero
+  formatNumberMilesThousands(n: number) {
+    return n
       .toString()
       .replace(
         /((?!^)|(?:^|.*?[^\d.,])\d{1,3})(\d{3})(?=(?:\d{3})*(?!\d))/gy,
@@ -288,21 +318,21 @@ export class TransactionsService {
    */
   updateBalance() {
     this.proximaxProvider.getAccountInfo(this.walletService.address).pipe(first()).subscribe(
-      next => {
-        // console.log("Account Info! ---> ", next);
-        this.mosaicService.searchMosaics(next.mosaics.map(next => next.id));
-        this.walletService.setAccountInfo(next);
-        next.mosaics.forEach(element => {
+      (accountInfo: AccountInfo) => {
+        // console.log('AccountInfo ---> ', accountInfo);
+        //Search mosaics
+        this.mosaicService.searchMosaics(accountInfo.mosaics.map(next => next.id));
+        // Save account info returned in walletService
+        this.walletService.setAccountInfo(accountInfo);
+        accountInfo.mosaics.forEach(element => {
+          // If mosaicId is XPX, set balance in XPX
           if (element.id.toHex() === this.proximaxProvider.mosaicXpx.mosaicId) {
-            // console.log("balance...", this.amountFormatterSimple(element.amount.compact()));
             this.setBalance$(element.amount.compact());
           }
         });
       },
-      _err => {
-        // console.log("--- ERROR TO SEARCH BALANCE ----- ", _err);
+      (_err: any) => {
         this.setBalance$("0.000000");
-        // this.updateBalance();
       }
     );
   }
@@ -335,5 +365,27 @@ export class TransactionsService {
    */
   setTransactionsUnConfirmed$(transactions: TransactionsInterface[]) {
     this._transUnConfirmSubject.next(transactions);
+  }
+
+  /**
+   *
+   *
+   * @param {TransactionType} type
+   * @memberof TransactionsService
+   */
+  validateTypeTransaction(type: TransactionType) {
+    if (
+      type === this.arraTypeTransaction.mosaicAlias.id ||
+      type === this.arraTypeTransaction.mosaicSupplyChange.id ||
+      type === this.arraTypeTransaction.mosaicDefinition.id ||
+      type === this.arraTypeTransaction.registerNameSpace.id ||
+      type === this.arraTypeTransaction.aggregateComplete.id
+    ) {
+      this.mosaicService.resetMosaicsStorage();
+      this.namespaceService.resetNamespaceStorage();
+    }
+
+    this.namespaceService.buildNamespaceStorage();
+    this.updateBalance();
   }
 }

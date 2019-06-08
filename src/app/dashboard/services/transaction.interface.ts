@@ -1,4 +1,4 @@
-import { Transaction, PublicAccount, Address } from 'proximax-nem2-sdk';
+import { Transaction, PublicAccount, Address } from 'tsjs-xpx-catapult-sdk';
 
 export interface TransactionsInterface {
   data: Transaction;
@@ -13,7 +13,7 @@ export interface TransactionsInterface {
 
 
 export interface MosaicXPXInterface {
-  mosaic: "prx:xpx",
-  mosaicId: "d423931bd268d1f4",
+  mosaic: "prx.xpx",
+  mosaicId: "0dc67fbe1cad29e3",
   divisibility: 6
 }

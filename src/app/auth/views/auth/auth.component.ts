@@ -1,8 +1,9 @@
-import { Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { environment } from '../../../../environments/environment';
+import { AppConfig } from '../../../config/app.config';
+import { NgSelectConfig } from '@ng-select/ng-select';
 
 @Component({
   selector: 'app-auth',
@@ -11,16 +12,24 @@ import { environment } from '../../../../environments/environment';
 })
 
 export class AuthComponent implements OnInit {
-  walletSelect: any;
+
+  link = AppConfig.routes;
   selectedValue: string;
   loginForm: FormGroup;
   wallets: Array<any>;
-
+  nameModule = 'Wallet Login';
+  descriptionModule = 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Odio obcaecati eveniet cum, dignissimos fugit consequatur tempore, blanditiis quas dolor tempora officiis, fuga numquam minima molestias veritatis velit voluptas error incidunt.';
+  simpleItems = [true, 'Two', 3];
+  selectedSimpleItem = '';
 
   constructor(
     private fb: FormBuilder,
-    private authService: AuthService
-  ) { }
+    private authService: AuthService,
+    private config: NgSelectConfig
+  ) {
+    this.config.notFoundText = 'Custom not found';
+    this.simpleItems = [true, 'Two', 3];
+  }
 
 
   ngOnInit() {
@@ -29,13 +38,37 @@ export class AuthComponent implements OnInit {
     this.createForm();
   }
 
-  private createForm() {
+  createForm() {
     this.loginForm = this.fb.group({
       wallet: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(30)]],
       common: this.fb.group({ // <-- the child FormGroup
         password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]]
       })
     });
+  }
+
+  /**
+  * Clean form
+  *
+  * @param {(string | (string | number)[])} [custom]
+  * @param {(string | number)} [formControl]
+  * @returns
+  * @memberof TransferComponent
+  */
+  cleanForm(
+    custom?: string | (string | number)[],
+    formControl?: string | number
+  ) {
+    if (custom !== undefined) {
+      if (formControl !== undefined) {
+        this.loginForm.controls[formControl].get(custom).reset();
+        return;
+      }
+      this.loginForm.get(custom).reset();
+      return;
+    }
+    this.loginForm.reset();
+    return;
   }
 
 
@@ -60,15 +93,11 @@ export class AuthComponent implements OnInit {
     }
   }
 
-
-  optionSelected(walletSelect: any) {
-    this.walletSelect = walletSelect.value;
-  }
-
   onSubmit() {
     this.loginForm.markAsDirty();
     if (this.loginForm.valid) {
-      this.authService.login(this.loginForm.get('common').value, this.walletSelect);
+      this.authService.login(this.loginForm.get('common').value, this.loginForm.get('wallet').value);
+      this.loginForm.get('wallet').reset();
       this.loginForm.get('common').reset();
     }
   }

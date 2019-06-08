@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
+import { AbstractControl } from '@angular/forms';
 import { ToastService } from 'ng-uikit-pro-standard';
-import { FormGroup, AbstractControl } from "@angular/forms";
+
 
 export interface StructureHeader {
   type: string;
@@ -36,7 +37,8 @@ export class SharedService {
       rol: rolP,
       link: linkP,
       show: showP,
-      submenu: submenuP
+      submenu: submenuP,
+      selected: false
     }
   }
 
@@ -76,7 +78,7 @@ export class SharedService {
     this.toastrService.info(bodyMessage, title, options);
   }
 
-  closeAlertMsg(type: string = "") { }
+  closeAlertMsg(type: string = '') { }
 
   passwordConfirming(c: AbstractControl): { noMatch: boolean } {
     if (c.get('password').value !== c.get('confirm_password').value) {

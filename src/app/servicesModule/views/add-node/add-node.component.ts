@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AppConfig } from "../../../config/app.config";
 import { SharedService } from "../../../shared";
-import { NodeService } from "../../../servicesModule/services/node.service";
+import { NodeService } from "../../services/node.service";
 
 @Component({
   selector: 'app-add-node',

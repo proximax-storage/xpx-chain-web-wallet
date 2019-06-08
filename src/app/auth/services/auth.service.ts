@@ -8,6 +8,7 @@ import { NodeService } from '../../servicesModule/services/node.service';
 import { MosaicService } from '../../servicesModule/services/mosaic.service';
 import { NamespacesService } from '../../servicesModule/services/namespaces.service';
 import { TransactionsService } from '../../transactions/service/transactions.service';
+import { ServiceModuleService } from 'src/app/servicesModule/services/service-module.service';
 
 @Injectable({
   providedIn: 'root'
@@ -28,10 +29,54 @@ export class AuthService {
     private nodeService: NodeService,
     private mosaicService: MosaicService,
     private nameSpaces: NamespacesService,
-    private transactionService: TransactionsService
+    private transactionService: TransactionsService,
+    private serviceModuleService: ServiceModuleService
   ) {
     this.setLogged(false);
   }
+
+
+  /**
+  * Method to login
+  *
+  * @param {*} common
+  * @param {*} wallet
+  * @returns
+  * @memberof LoginService
+  */
+  login(common: any, wallet: any) {
+    if (!this.walletService.login(common, wallet)) {
+      return false;
+    }
+
+    // this.transactionsService.destroyAllTransactions();
+    this.setLogged(true);
+    this.route.navigate([`/${AppConfig.routes.dashboard}`]);
+    this.dataBridgeService.closeConenection();
+    this.dataBridgeService.connectnWs();
+    // load services and components
+    this.nameSpaces.buildNamespaceStorage();
+    this.serviceModuleService.changeBooksItem(this.walletService.address);
+    return true;
+  }
+
+
+  /************ FIN COW *****************/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
   /**
@@ -46,30 +91,7 @@ export class AuthService {
   }
 
 
-  /**
-   * Method to login
-   *
-   * @param {*} common
-   * @param {*} wallet
-   * @returns
-   * @memberof LoginService
-   */
-  login(common: any, wallet: any) {
-    if (!this.walletService.login(common, wallet)) {
-      return false;
-    }
 
-    // this.transactionsService.destroyAllTransactions();
-    this.setLogged(true);
-    this.route.navigate([`/${AppConfig.routes.dashboard}`]);
-
-    this.dataBridgeService.closeConenection();
-    this.dataBridgeService.connectnWs();
-    // load services and components
-    this.transactionService.updateBalance();
-    this.nameSpaces.buildNamespaceStorage();
-    return true;
-  }
 
 
   /**
@@ -117,7 +139,7 @@ export class AuthService {
    */
   walletsOption(wallets: Array<any> = []) {
     wallets = (wallets == null) ? [] : wallets
-    const r = [{ 'value': '', 'label': 'Select wallet' }];
+    const r = [];
     wallets.forEach((item) => {
       r.push({ value: item, label: item.name });
     });

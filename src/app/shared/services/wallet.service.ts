@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { NetworkType, PublicAccount, AccountInfo } from "proximax-nem2-sdk";
-import { crypto } from 'proximax-nem2-library';
+import { NetworkType, PublicAccount, AccountInfo, Address } from "tsjs-xpx-catapult-sdk";
+import { crypto } from 'js-xpx-catapult-library';
 import { Router } from "@angular/router";
 import { AccountsInterface } from '..';
 import { ProximaxProvider } from './proximax.provider';
@@ -15,7 +15,7 @@ import { environment } from '../../../environments/environment';
 export class WalletService {
 
   currentAccount: any;
-  address: any;
+  address: Address;
   current: any;
   network: any = '';
   algo: string;
@@ -41,8 +41,9 @@ export class WalletService {
    * @memberof WalletService
    */
   login(common: { password: { length: number; }; }, wallet: any) {
+    // console.log(wallet);
     if (!wallet) {
-      this.sharedService.showError('Error', '¡Dear user, the wallet is missing!');
+      this.sharedService.showError('', 'Dear user, the wallet is missing');
       return false;
     } else if (!this.nodeService.getNodeSelected()) {
       this.sharedService.showError('', 'Please, select a node.');
@@ -52,7 +53,7 @@ export class WalletService {
       // Decrypt / generate and check primary
       return false;
     } else if (wallet.accounts[0].network === NetworkType.MAIN_NET && wallet.accounts[0].algo === 'pass:6k' && common.password.length < 40) {
-      this.sharedService.showError('Error', '¡Dear user, the wallet is missing!');
+      this.sharedService.showError('', 'Dear user, the wallet is missing');
     }
 
     this.use(wallet);
@@ -91,8 +92,9 @@ export class WalletService {
    * @memberof WalletService
    */
   use(wallet: any) {
+    // console.log('----------------> wallet', wallet)
     if (!wallet) {
-      this.sharedService.showError('Error', '¡you can not set anything like the current wallet!');
+      this.sharedService.showError('', 'You can not set anything like the current wallet');
       return false;
     }
     // console.log(wallet);
@@ -100,11 +102,10 @@ export class WalletService {
     // Account used
     this.currentAccount = wallet.accounts[0];
     // Algo of the wallet
-
     this.algo = wallet.accounts[0].algo;
+    // console.log(this.algo);
     // Adress and newwork
     this.address = this.proximaxProvider.createFromRawAddress(wallet.accounts[0].address);
-
     this.current = wallet;
     // this.contacts = this._AddressBook.getContacts(wallet);
     return true;
@@ -130,7 +131,7 @@ export class WalletService {
 
     if (!crypto.passwordToPrivatekey(common, acct, alg)) {
       setTimeout(() => {
-        this.sharedService.showError('Error', '¡Invalid password!');
+        this.sharedService.showError('', 'Invalid password');
       }, 500);
       return false;
     }
@@ -141,13 +142,13 @@ export class WalletService {
 
     if (!this.isPrivateKeyValid(common.privateKey) || !this.proximaxProvider.checkAddress(common.privateKey, net, acct.address)) {
       setTimeout(() => {
-        this.sharedService.showError('Error', '¡Invalid password!');
+        this.sharedService.showError('', 'Invalid password');
       }, 500);
       return false;
     }
 
     //Get public account from private key
-    this.publicAccount = this.proximaxProvider.getPublicAccountFromPrivateKey(common.privateKey, net)
+    this.publicAccount = this.proximaxProvider.getPublicAccountFromPrivateKey(common.privateKey, net);
     return true;
   }
 
@@ -160,10 +161,10 @@ export class WalletService {
    */
   isPrivateKeyValid(privateKey: any) {
     if (privateKey.length !== 64 && privateKey.length !== 66) {
-      console.error('Private key length must be 64 or 66 characters !');
+      // console.error('Private key length must be 64 or 66 characters !');
       return false;
     } else if (!this.isHexadecimal(privateKey)) {
-      console.error('Private key must be hexadecimal only !');
+      // console.error('Private key must be hexadecimal only !');
       return false;
     } else {
       return true;

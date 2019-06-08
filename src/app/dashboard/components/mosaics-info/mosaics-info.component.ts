@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, SimpleChanges, Output, EventEmitter } from '@angular/core';
-import { Mosaic, MosaicView, MosaicName, MosaicInfo } from 'proximax-nem2-sdk';
+import { Mosaic, MosaicView, MosaicInfo } from 'tsjs-xpx-catapult-sdk';
 import { MosaicService } from '../../../servicesModule/services/mosaic.service';
 import { TransactionsService } from '../../../transactions/service/transactions.service';
 import { MosaicsStorage } from '../../../servicesModule/interfaces/mosaics-namespaces.interface';
@@ -8,35 +8,29 @@ import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 
 @Component({
   selector: 'app-mosaics-info',
-  template: `<!-- MOSAICS -->
+  template: `
+                <!-- MOSAIC XPX -->
                 <ng-container *ngIf="viewMosaicXpx">
-                  <div class="mt-3">
-                    <!--
-                    <div class="row">
-                      <div class="col-md-3">
-                        <span class="fs-08rem fw-bolder"><b>Mosaic:</b></span>
-                      </div>
-                      <div class="col-md-9">
-                        <span class="fs-08rem fw-bolder">{{mosaicXpx.mosaicInfo.namespaceName}}:{{mosaicXpx.mosaicInfo.mosaicName}}</span>
-                      </div>
-                    </div>-->
-
-                    <div class="row mt-3">
-                      <div class="col-md-3">
-                        <span class="fs-08rem fw-bolder"><b>Amount:</b></span>
-                      </div>
-                      <div class="col-md-9">
-                        <span class="fs-08rem fw-bolder">{{mosaicXpx.amountFormatter}} (XPX)</span>
-                      </div>
+                  <div class="row">
+                    <div class="col-3">
+                       <span class="color-dark-green fw-bold fs-1-5rem">Amount: </span>
+                    </div>
+                    <div class="col-9">
+                       <span
+                       [ngClass]="{
+                         'color-blue-light': transferTransaction.isRemitent,
+                         'color-orange': !transferTransaction.isRemitent
+                        }"
+                       class="fw-bold fs-1-5rem" >{{mosaicXpx.amountFormatter}} XPX</span>
                     </div>
                   </div>
                 </ng-container>
 
-
-                <container *ngIf="viewOtherMosaics">
-                  <div class="row mt-1rem">
-                    <div class="col-6">
-                      <span class="fs-08rem fw-bolder"><b>Other mosaics:</b></span>
+                <!-- OTHER MOSAICS -->
+                <ng-container *ngIf="viewOtherMosaics">
+                  <div class="row">
+                    <div class="col-12">
+                      <span class="color-dark-green fw-bold fs-1-5rem">Other mosaics: </span>
                     </div>
                   </div>
 
@@ -44,7 +38,14 @@ import { ProximaxProvider } from '../../../shared/services/proximax.provider';
                     <table mdbTable id="tablePreview" class="table table-hover table-bordered table-striped table-sm z-depth-0">
                       <thead>
                         <tr>
-                          <th *ngFor="let head of headElements" scope="col" class="text-align-left"><b>{{head}}</b></th>
+                          <th
+                          *ngFor="let head of headElements"
+                          scope="col"
+                          [ngClass]="{
+                            'color-blue-light': transferTransaction.isRemitent,
+                            'color-orange': !transferTransaction.isRemitent
+                          }"
+                          class="text-align-left fw-500">{{head}}</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -66,7 +67,7 @@ import { ProximaxProvider } from '../../../shared/services/proximax.provider';
                       </tbody>
                     </table>
                   </div>
-                </container>
+                </ng-container>
 
               `
 })
@@ -104,7 +105,7 @@ export class MosaicsInfoComponent implements OnInit {
         const mosaicId = this.proximaxProvider.getMosaicId(mosaic.id).toHex();
         const myMosaic = this.mosaicsArray.find(next => next.id.toHex() === mosaicId);
         const amount = (mosaic.mosaicInfo !== null) ?
-          this.transactionService.amountFormatter(myMosaic.amount, myMosaic.id, mosaic.mosaicInfo) :
+          this.transactionService.amountFormatter(myMosaic.amount, mosaic.mosaicInfo) :
           this.transactionService.amountFormatterSimple(myMosaic.amount.compact());
         // MOSAIC IS XPX
         if (mosaicId === this.mosaicService.mosaicXpx.mosaicId) {
@@ -117,9 +118,10 @@ export class MosaicsInfoComponent implements OnInit {
           }
         } else {
           // console.log(mosaic.mosaicName);
+          const nameMosaic = (mosaic.mosaicNames.names.length > 0) ? mosaic.mosaicNames.names[0] : this.proximaxProvider.getMosaicId(mosaic.id).toHex();
           this.quantity.push({
             id: myMosaic.id.toHex(),
-            name: `${mosaic.namespaceName.name}:${mosaic.mosaicName.name}`,
+            name: nameMosaic,
             amountFormatter: amount,
             mosaicInfo: mosaic,
             existMosaic: true

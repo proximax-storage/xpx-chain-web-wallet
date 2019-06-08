@@ -7,30 +7,30 @@ export const AppConfig: Config = {
     dashboard: 'dashboard',
     createWallet: 'create-wallet',
     importWallet: 'import-wallet',
-    audiApostille:'audit-apostille',
-    apostille:'apostille',
-    transactions:'transactions-get',
-    transferTransaction:'transfer',
+    audiApostille: 'audit-apostille',
+    apostille: 'apostille',
+    transactions: 'transactions-get',
+    transferTransaction: 'transfer',
     addNode: 'add-node',
     selectNode: 'select-node',
     explorer: 'explorer',
-    createPoll:'create-poll',
-    polls:'polls',
-    service:'dashboard-service',
-    services:'services',
-    account:'account',
-    explorerFile:'explorer-file',
-    addressBook:'address-book',
+    createPoll: 'create-poll',
+    polls: 'polls',
+    service: 'dashboard-service',
+    services: 'services',
+    account: 'account',
+    explorerFile: 'explorer-file',
+    addressBook: 'address-book',
     notFound: 'not-found',
     storage: 'storage',
     createMosaic: 'create-mosaic',
-    editMosaic: 'mosaic-supply-change',
-    createNamespace:'create-namespace',
-    editNamespace:'edit-namespace',
-
+    MosaicSupplyChange: 'mosaic-supply-change',
+    createNamespace: 'create-namespace',
+    renovateNamespace: 'renovate-namespace',
+    LinkingNamespaceMosaic: 'linking-namespace-to-mosaic',
     createMultisignature: 'create-multisignature-contract',
-    editMultisignatureContract:'edit-multisignature-contract',
-    signMultiSigTransactions:'sign-multisignature-transactions'
+    editMultisignatureContract: 'edit-multisignature-contract',
+    signMultiSigTransactions: 'sign-multisignature-transactions'
   }
 };
 
@@ -57,9 +57,9 @@ export const NameRoute = {
   [AppConfig.routes.notFound]: '404 not found',
   [AppConfig.routes.storage]: 'storage',
   [AppConfig.routes.createMosaic]: 'Create Mosaic',
-  [AppConfig.routes.editMosaic]: 'Mosaic supply change',
+  [AppConfig.routes.MosaicSupplyChange]: 'Mosaic supply change',
   [AppConfig.routes.createNamespace]: 'Create namespace & sub-namespace',
-  [AppConfig.routes.editNamespace]: 'Edit Namespace',
+  [AppConfig.routes.renovateNamespace]: 'Renovate Namespace',
   [AppConfig.routes.createMultisignature]: 'Convert an account to multisig',
   [AppConfig.routes.editMultisignatureContract]: 'Edit multisignature contract',
   [AppConfig.routes.signMultiSigTransactions]: 'Sign multisignature transactions',
@@ -73,35 +73,29 @@ export interface Config {
     dashboard: string;
     createWallet: string;
     importWallet: string;
-    audiApostille:string;
+    audiApostille: string;
     apostille: string;
-    transactions:string;
+    transactions: string;
     transferTransaction: string;
     addNode: string;
-    selectNode:string;
+    selectNode: string;
     explorer: string;
-    createPoll:string;
-    polls:string;
-    service:string;
+    createPoll: string;
+    polls: string;
+    service: string;
     services: string;
     account: string;
     explorerFile: string;
     addressBook: string;
     createMosaic: string;
-    editMosaic: string;
+    MosaicSupplyChange: string;
+    LinkingNamespaceMosaic: string;
     createNamespace: string;
-    editNamespace: string;
-
+    renovateNamespace: string;
     createMultisignature: string;
     editMultisignatureContract: string;
-    signMultiSigTransactions:string;
-
-
-
+    signMultiSigTransactions: string;
     notFound: string;
-    storage:string;
-
-
-
+    storage: string;
   };
 }
