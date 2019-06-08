@@ -43,7 +43,7 @@ export class WalletService {
   login(common: { password: { length: number; }; }, wallet: any) {
     // console.log(wallet);
     if (!wallet) {
-      this.sharedService.showError('Error', '¡Dear user, the wallet is missing!');
+      this.sharedService.showError('', 'Dear user, the wallet is missing');
       return false;
     } else if (!this.nodeService.getNodeSelected()) {
       this.sharedService.showError('', 'Please, select a node.');
@@ -53,7 +53,7 @@ export class WalletService {
       // Decrypt / generate and check primary
       return false;
     } else if (wallet.accounts[0].network === NetworkType.MAIN_NET && wallet.accounts[0].algo === 'pass:6k' && common.password.length < 40) {
-      this.sharedService.showError('Error', '¡Dear user, the wallet is missing!');
+      this.sharedService.showError('', 'Dear user, the wallet is missing');
     }
 
     this.use(wallet);
@@ -94,7 +94,7 @@ export class WalletService {
   use(wallet: any) {
     // console.log('----------------> wallet', wallet)
     if (!wallet) {
-      this.sharedService.showError('Error', '¡you can not set anything like the current wallet!');
+      this.sharedService.showError('', 'You can not set anything like the current wallet');
       return false;
     }
     // console.log(wallet);
@@ -131,7 +131,7 @@ export class WalletService {
 
     if (!crypto.passwordToPrivatekey(common, acct, alg)) {
       setTimeout(() => {
-        this.sharedService.showError('Error', 'Invalid password');
+        this.sharedService.showError('', 'Invalid password');
       }, 500);
       return false;
     }
@@ -142,7 +142,7 @@ export class WalletService {
 
     if (!this.isPrivateKeyValid(common.privateKey) || !this.proximaxProvider.checkAddress(common.privateKey, net, acct.address)) {
       setTimeout(() => {
-        this.sharedService.showError('Error', 'Invalid password');
+        this.sharedService.showError('', 'Invalid password');
       }, 500);
       return false;
     }

@@ -58,7 +58,7 @@
                 <div class="col-12">
                   <div class="row">
                     <!-- Select namespace -->
-                    <div class="col-12 col-sm-8">
+                    <div class="col-12">
                       <div class="row d-flex justify-content-center">
                         <div
                           class="col-3 col-sm-2 col-md-1 d-flex align-items-center justify-content-end justify-content-sm-center">
@@ -76,7 +76,7 @@
                     </div>
 
                     <!-- Button Renovate -->
-                    <div class="col-12 col-sm-4 d-flex align-items-center">
+                    <!-- <div class="col-12 col-sm-4 d-flex align-items-center">
                       <ng-container *ngIf="!viewReload; else viewReloadTemplate">
                         <button mdbBtn type="button" rounded="true" mdbWavesEffect
                           class="f-w-600 background-dark-green color-white" size="sm" (click)="basicModal.show()"
@@ -93,7 +93,7 @@
                           <mdb-badge success="true">Reload</mdb-badge> namespace
                         </button>
                       </ng-template>
-                    </div>
+                    </div> -->
                   </div>
                 </div>
 
@@ -117,6 +117,28 @@
                     </div>
                   </div>
                 </ng-container>
+
+                <ng-container *ngIf="viewReload">
+                  <div class="col-12 mb-1rem d-flex align-items-center justify-content-center">
+                    <ng-container *ngIf="!viewReload; else viewReloadTemplate">
+                      <button mdbBtn type="button" rounded="true" mdbWavesEffect
+                        class="f-w-600 background-dark-green color-white" size="sm" (click)="basicModal.show()"
+                        mdbTooltip="See state or renew namespace" [disabled]="statusButtonNamespace">
+                        <mdb-badge *ngIf="!status" warning="true">Expire</mdb-badge>
+                        <mdb-badge *ngIf="status" success="true">Active</mdb-badge> | Renovate
+                      </button>
+                    </ng-container>
+
+                    <ng-template #viewReloadTemplate>
+                      <button mdbBtn type="button" rounded="true" mdbWavesEffect
+                        class="f-w-600 background-dark-green color-white" size="sm" (click)="getNameNamespace()"
+                        mdbTooltip="Reload namespace">
+                        <mdb-badge success="true">Reload</mdb-badge> namespace
+                      </button>
+                    </ng-template>
+                  </div>
+                </ng-container>
+
               </div>
             </div>
           </div>
@@ -208,18 +230,18 @@
             <p class="description-information">
               This list is not final and can be extended in the future. Thus 'user.alice' or 'alice.user' are not
               allowed in the XPX namespace system. The namespace may have up to 3 parts, thus 'qm.metals.silver' is
-              valid while 'qm.metals.silver.coin' is not. <br>
-              where it shows the status of the namespace could renew. with just select it
+              valid while 'qm.metals.silver.coin' is not.
+              <!--<br> where it shows the status of the namespace could renew. with just select it -->
             </p>
           </div>
 
-          <div class="12 d-flex align-items-center justify-content-center">
+          <!-- <div class="12 d-flex align-items-center justify-content-center">
             <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-dark-green color-white"
               size="sm" mdbTooltip="See state or renew namespace">
               <mdb-badge *ngIf="!status" warning="true">Expire</mdb-badge>
               <mdb-badge *ngIf="status" success="true">Active</mdb-badge> | Renovate
             </button>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>

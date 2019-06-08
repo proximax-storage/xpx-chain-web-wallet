@@ -194,8 +194,9 @@ export class MosaicSupplyChange implements OnInit {
   }
 
   resetForm() {
-    this.formMosaicSupplyChange.get('password').patchValue('')
-    this.formMosaicSupplyChange.get('deltaSupply').patchValue('')
+    this.mosaicsInfoSelected = null;
+    this.formMosaicSupplyChange.get('password').patchValue('');
+    this.formMosaicSupplyChange.get('deltaSupply').patchValue('');
     this.formMosaicSupplyChange.get('parentMosaic').patchValue(MosaicSupplyType.Increase);
   }
 

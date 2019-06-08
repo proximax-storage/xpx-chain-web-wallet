@@ -122,7 +122,7 @@ export class TransferComponent implements OnInit {
         ]
       ],
       amount: [null, [Validators.maxLength(20)]],
-      message: ["", [Validators.maxLength(80)]],
+      message: ["", [Validators.maxLength(1023)]],
       password: [
         null,
         [Validators.required, Validators.minLength(8), Validators.maxLength(30)]

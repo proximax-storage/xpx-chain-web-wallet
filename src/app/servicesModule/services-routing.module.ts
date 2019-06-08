@@ -11,8 +11,8 @@ import { AddressBookComponent } from "./views/address-book/address-book.componen
 import { CreateMosaicComponent } from './views/mosaic/create-mosaic/create-mosaic.component';
 import { MosaicSupplyChange } from './views/mosaic/mosaic-supply-change/mosaic-supply-change.component';
 import { CreateNamespaceComponent } from './views/namespace/create-namespace/create-namespace.component';
-import { CreateNamespaceResolver } from './views/namespace/resolvers/creat-namespace.resolver';
 import { LinkingNamespaceToMosaicComponent } from './views/namespace/linking-namespace-to-mosaic/linking-namespace-to-mosaic.component';
+import { RenovateNamespaceComponent } from './views/namespace/renovate-namespace/renovate-namespace.component';
 
 const routes: Routes = [
   {
@@ -84,32 +84,17 @@ const routes: Routes = [
     component: LinkingNamespaceToMosaicComponent,
     canActivate: [LoggedGuard]
   },
+  {
+    path: `${AppConfig.routes.renovateNamespace}`,
+    component: RenovateNamespaceComponent,
+    canActivate: [LoggedGuard]
+  },
   /*
   {
     path: `${AppConfig.routes.storage}`,
     component: StorageComponent,
     canActivate: [LoggedGuard]
   },
-
-  {
-    path: `${AppConfig.routes.MosaicSupplyChange}`,
-    component: EditMosaicComponent,
-    canActivate: [LoggedGuard],
-    resolve: { dataNamespace: CreateNamespaceResolver }
-  },
-  {
-    path: `${AppConfig.routes.createNamespace}`,
-    component: CreateNamespaceComponent,
-    canActivate: [LoggedGuard],
-    resolve: { dataNamespace: CreateNamespaceResolver }
-  },
-  {
-    path: `${AppConfig.routes.editNamespace}`,
-    component: EditNamespaceComponent,
-    canActivate: [LoggedGuard]
-  },
-
-
   {
     path: `${AppConfig.routes.createMultisignature}`,
     component: CreateMultisignatureComponent,
@@ -130,8 +115,6 @@ const routes: Routes = [
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
-  providers: [
-    CreateNamespaceResolver
-  ]
+  providers: []
 })
 export class ServicesRoutingModule { }

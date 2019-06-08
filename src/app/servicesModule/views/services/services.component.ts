@@ -55,18 +55,17 @@ export class ServicesComponent implements OnInit {
       }, false
     );
 
-    const nameSpace = this.service.structureServices('icon-namespaces-dark-green.svg', 'Namespaces & Subdomains',
+    const nameSpace = this.service.structureServices('icon-namespaces-dark-green.svg', 'Namespaces Subnamespaces',
       'Namespaces are domain names. Each namespaces is unique and authenticates mosaics (assets).',
       {
-        createNamespace: this.structureServiceRoute('Namespaces & Subdomains', `/${AppConfig.routes.createNamespace}`),
+        createNamespace: this.structureServiceRoute('Namespaces & Subnamespaces', `/${AppConfig.routes.createNamespace}`),
         linkNamespaceToMosaic: this.structureServiceRoute('Linking to namespace to a mosaic', `/${AppConfig.routes.LinkingNamespaceMosaic}`),
-
-        // renewNamespace: this.structureServiceRoute('Renew namespace',  `/${AppConfig.routes.editNamespace}`)
+        renewNamespace: this.structureServiceRoute('Renovate namespace', `/${AppConfig.routes.renovateNamespace}`),
       }, true
     );
 
     const mosaics = this.service.structureServices('icon-mosaics-dark-green.svg', 'Mosaics',
-      'The mosaics service, are assets that expose additional properties and other features. To be able to create a mosaic, an account must rent at least one root namespace.',
+      'The mosaics service, are assets that expose additional properties and other features.',
       {
         createMosaic: this.structureServiceRoute('Create mosaic', `/${AppConfig.routes.createMosaic}`),
         editMosaic: this.structureServiceRoute('Mosaic supply change', `/${AppConfig.routes.MosaicSupplyChange}`),

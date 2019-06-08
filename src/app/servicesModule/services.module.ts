@@ -12,6 +12,7 @@ import { CreateMosaicComponent } from './views/mosaic/create-mosaic/create-mosai
 import { MosaicSupplyChange } from './views/mosaic/mosaic-supply-change/mosaic-supply-change.component';
 import { CreateNamespaceComponent } from './views/namespace/create-namespace/create-namespace.component';
 import { LinkingNamespaceToMosaicComponent } from './views/namespace/linking-namespace-to-mosaic/linking-namespace-to-mosaic.component';
+import { RenovateNamespaceComponent } from './views/namespace/renovate-namespace/renovate-namespace.component';
 
 
 
@@ -36,7 +37,8 @@ import { LinkingNamespaceToMosaicComponent } from './views/namespace/linking-nam
     AddressBookComponent,
     CreateMosaicComponent,
     MosaicSupplyChange,
-    CreateNamespaceComponent
+    CreateNamespaceComponent,
+    RenovateNamespaceComponent
     /* StorageComponent,
      EditMosaicComponent,
      EditNamespaceComponent,

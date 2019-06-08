@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { CoreModule } from '../core/core.module';
 import { TransactionsRoutingModule } from './transactions-routing.module';
 import { TransferComponent } from './views/transfer/transfer.component';
-import { TransactionsComponent } from './views/transactions/transactions.component';
 
 
 @NgModule({
@@ -12,6 +11,6 @@ import { TransactionsComponent } from './views/transactions/transactions.compone
     CoreModule,
     TransactionsRoutingModule
   ],
-  declarations: [TransferComponent, TransactionsComponent]
+  declarations: [TransferComponent]
 })
 export class TransactionsModule { }
