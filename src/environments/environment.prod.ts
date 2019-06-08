@@ -1,4 +1,3 @@
-
 // This file can be replaced during build by using the `fileReplacements` array.
 // `ng build ---prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
@@ -10,12 +9,12 @@ export const environment = {
   nameKeyNodeStorage: `xpx-catapult-web-wallet-nodes`,
   protocol: `http`,
   protocolWs: `ws`,
-  nodeDefault: 'bcstage1.xpxsirius.io:3000',
+  nodeDefault: 'bctestnet1.xpxsirius.io:3000',
   blockchainConnection: {
-    host: 'bcstage1.xpxsirius.io',
+    host: 'bctestnet1.xpxsirius.io',
     port: 3000,
     protocol: '',
-    useSecureMessage: true
+    useSecureMessage: false
   },
   storageConnection: {
     host: 'ipfs1-dev.xpxsirius.io',
