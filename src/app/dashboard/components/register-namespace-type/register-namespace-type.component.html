@@ -45,7 +45,7 @@
           </div>
           <div class="col-9 overflow-ellipsis-nowrap">
             <span class=" color-dark-green fw-400 fs-08rem">
-              {{registerNamespaceTransaction?.data.namespaceName}}
+              {{nameNamespace}}
             </span>
           </div>
         </div>
@@ -58,11 +58,13 @@
             <span class="color-dark-green fw-bold fs-08rem">Type: </span>
           </div>
           <div class="col-9 overflow-ellipsis-nowrap">
-            <span class="color-dark-green fw-400 fs-08rem" *ngIf="registerNamespaceTransaction?.namespaceType === 0">
+            <span class="color-dark-green fw-400 fs-08rem"
+              *ngIf="registerNamespaceTransaction?.data.namespaceType === 0">
               {{registerNamespaceTransaction?.data.namespaceType}} - ROOT_NS
             </span>
 
-            <span class="color-dark-green fw-400 fs-08rem" *ngIf="registerNamespaceTransaction?.namespaceType !== 0">
+            <span class="color-dark-green fw-400 fs-08rem"
+              *ngIf="registerNamespaceTransaction?.data.namespaceType !== 0">
               {{registerNamespaceTransaction?.data.namespaceType}} - SUB_NS
             </span>
           </div>

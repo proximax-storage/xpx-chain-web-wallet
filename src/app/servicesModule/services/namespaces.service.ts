@@ -3,15 +3,11 @@ import {
   NamespaceInfo,
   NamespaceId,
   NamespaceName,
-  Address,
-  QueryParams
+  Address
 } from "tsjs-xpx-catapult-sdk";
 import { ProximaxProvider } from "../../shared/services/proximax.provider";
 import { WalletService } from "../../shared/services/wallet.service";
 import { NamespaceStorage } from "../interfaces/mosaics-namespaces.interface";
-import { ToastService } from "ng-uikit-pro-standard";
-import { MosaicService } from "./mosaic.service";
-import { Observable, BehaviorSubject } from "rxjs";
 
 @Injectable({
   providedIn: "root"
@@ -22,9 +18,7 @@ export class NamespacesService {
 
   constructor(
     private proximaxProvider: ProximaxProvider,
-    private walletService: WalletService,
-    private toastrService: ToastService,
-    private mosaicsService: MosaicService
+    private walletService: WalletService
   ) { }
 
   /**
@@ -39,16 +33,7 @@ export class NamespacesService {
         this.namespaceFromAccount = response;
         this.setNamespaceStorage(response);
       }).catch(() => {
-        /*const options = {
-          closeButton: true,
-          tapToDismiss: false,
-          toastClass: "toastError"
-        };
-        this.toastrService.error(
-          "Has ocurred a unexpected error, possible causes: the network is offline",
-          "",
-          options
-        ); */
+        //Nothing!
       });
   }
 
@@ -65,10 +50,14 @@ export class NamespacesService {
       return data;
     }
 
-    const namespaceInfo = await this.proximaxProvider.getNamespace(namespaceId).toPromise();
-    if (namespaceInfo && Object.keys(namespaceInfo).length > 0) {
-      await this.setNamespaceStorage([namespaceInfo]);
-      return this.filterNamespace(namespaceId);
+    try {
+      const namespaceInfo = await this.proximaxProvider.getNamespace(namespaceId).toPromise();
+      if (namespaceInfo && Object.keys(namespaceInfo).length > 0) {
+        await this.setNamespaceStorage([namespaceInfo]);
+        return this.filterNamespace(namespaceId);
+      }
+    } catch (error) {
+      //Nothing!
     }
 
     return null;
@@ -82,8 +71,14 @@ export class NamespacesService {
    * @memberof NamespacesService
    */
   async getNamespacesFromAccountAsync(address: Address): Promise<NamespaceInfo[]> {
-    //Gets array of NamespaceInfo for an account
-    return await this.proximaxProvider.namespaceHttp.getNamespacesFromAccount(address).toPromise();
+    try {
+      //Gets array of NamespaceInfo for an account
+      const namespaceInfo = await this.proximaxProvider.namespaceHttp.getNamespacesFromAccount(address).toPromise();
+      return namespaceInfo;
+    } catch (error) {
+      //Nothing!
+      return [];
+    }
   }
 
   /**
@@ -94,7 +89,14 @@ export class NamespacesService {
    * @memberof NamespacesService
    */
   async getNamespacesNameAsync(namespaceIds: NamespaceId[]): Promise<NamespaceName[]> {
-    return await this.proximaxProvider.namespaceHttp.getNamespacesName(namespaceIds).toPromise();
+    try {
+      //Gets array of NamespaceName for an account
+      const NamespaceName = await this.proximaxProvider.namespaceHttp.getNamespacesName(namespaceIds).toPromise();
+      return NamespaceName;
+    } catch (error) {
+      //Nothing!
+      return [];
+    }
   }
 
   /**
@@ -127,9 +129,9 @@ export class NamespacesService {
    */
   async setNamespaceStorage(namespacesParam: NamespaceInfo[]) {
     if (namespacesParam.length > 0) {
+      const idsToSearch = [];
       //Get the storage namespace
       const namespacesStorage = this.getNamespaceFromStorage();
-      const idsToSearch = [];
       // Map and get an array of ids from NamespaceInfo []
       const namespacesId = namespacesParam.map(e => { return e.id; });
       namespacesId.forEach(id => {
@@ -170,7 +172,6 @@ export class NamespacesService {
           return namespacesStorage;
         }
       }
-
     }
 
     return [];

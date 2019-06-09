@@ -274,6 +274,8 @@ export class TransferComponent implements OnInit {
               // console.error(err);
             }
           );
+      } else {
+        this.inputBlocked = false;
       }
     }
   }

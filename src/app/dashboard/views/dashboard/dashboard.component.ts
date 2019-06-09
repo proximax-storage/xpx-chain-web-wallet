@@ -113,7 +113,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.searching = true;
       this.iconReloadDashboard = false;
       this.proximaxProvider.getTransactionsFromAccount(this.walletService.publicAccount, this.walletService.network).toPromise().then(response => {
-        // console.log(response);
+        console.log(response);
         const data = [];
         response.forEach(element => {
           //Sets the data structure of the dashboard
