@@ -24,11 +24,13 @@ export class RenovateNamespaceComponent implements OnInit {
     disabled: true
   }];
   namespaceChangeInfo: any = [];
-  startHeight = null;
-  endHeight = null;
-  block: Promise<number> = null;
+  startHeight: number = 0;
+  endHeight: number = 0;
+  block: number = 0;
   blockBtnSend: boolean = false;
   fee = '';
+  titleInformation = 'Namespace Information';
+  subscriptions = ['block'];
 
   constructor(
     private router: Router,
@@ -46,6 +48,10 @@ export class RenovateNamespaceComponent implements OnInit {
     this.getNameNamespace();
   }
 
+  ngOnDestroy(): void {
+    this.destroySubscription();
+  }
+
   /**
    *
    *
@@ -57,6 +63,19 @@ export class RenovateNamespaceComponent implements OnInit {
       rootNamespace: ['', [Validators.required]],
       duration: [''],
       password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]],
+    });
+  }
+
+  /**
+   *
+   *
+   * @memberof RenovateNamespaceComponent
+   */
+  destroySubscription() {
+    this.subscriptions.forEach(element => {
+      if (this.subscriptions[element] !== undefined) {
+        this.subscriptions[element].unsubscribe();
+      }
     });
   }
 
@@ -90,6 +109,8 @@ export class RenovateNamespaceComponent implements OnInit {
         return `This field must contain maximum ${form.controls[formControl].get(control).getError('maxlength').requiredLength} characters`;
       } else if (form.controls[formControl].getError('noMatch')) {
         return `Password doesn't match`;
+      } else {
+        return `Invalid data`;
       }
     }
   }
@@ -137,9 +158,10 @@ export class RenovateNamespaceComponent implements OnInit {
   optionSelected(namespace: any) {
     namespace = (namespace === undefined) ? 1 : namespace.value;
     this.namespaceChangeInfo = this.namespaceInfo.filter((book: any) => (book.name === namespace));
-    console.log(this.namespaceChangeInfo);
     if (this.namespaceChangeInfo.length > 0) {
-      this.block = this.dataBridgeService.getBlock().toPromise();
+      this.subscriptions['block'] = this.dataBridgeService.getBlock().subscribe(
+        next => this.block = next
+      );
       this.startHeight = this.namespaceChangeInfo[0].dataNamespace.NamespaceInfo.startHeight.lower;
       this.endHeight = this.namespaceChangeInfo[0].dataNamespace.NamespaceInfo.endHeight.lower;
     }

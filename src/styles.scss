@@ -290,7 +290,7 @@ footer {
 }
 
 .fs-1rem {
-  font-size: 1rem;
+  font-size: 1rem !important;
 }
 
 .fs-1-2rem {
@@ -1176,6 +1176,10 @@ html:after {
 
 .border-proxiWallet {
   border: 1px solid -webkit-linear-gradient(140deg, rgb(32, 128, 115) 0%, rgb(32, 181, 172) 33%, rgb(120, 182, 228) 100%);
+}
+
+.t-a-c {
+  text-align: center;
 }
 
 .t-a-r {

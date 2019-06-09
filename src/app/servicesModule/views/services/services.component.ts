@@ -55,10 +55,10 @@ export class ServicesComponent implements OnInit {
       }, false
     );
 
-    const nameSpace = this.service.structureServices('icon-namespaces-dark-green.svg', 'Namespaces Subnamespaces',
+    const nameSpace = this.service.structureServices('icon-namespaces-dark-green.svg', 'Namespaces & Subnamespaces',
       'Namespaces are domain names. Each namespaces is unique and authenticates mosaics (assets).',
       {
-        createNamespace: this.structureServiceRoute('Namespaces & Subnamespaces', `/${AppConfig.routes.createNamespace}`),
+        createNamespace: this.structureServiceRoute('Create Namespaces', `/${AppConfig.routes.createNamespace}`),
         linkNamespaceToMosaic: this.structureServiceRoute('Linking to namespace to a mosaic', `/${AppConfig.routes.LinkingNamespaceMosaic}`),
         renewNamespace: this.structureServiceRoute('Renovate namespace', `/${AppConfig.routes.renovateNamespace}`),
       }, true

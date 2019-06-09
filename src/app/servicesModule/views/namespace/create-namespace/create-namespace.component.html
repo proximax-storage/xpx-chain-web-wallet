@@ -74,26 +74,6 @@
                         </div>
                       </div>
                     </div>
-
-                    <!-- Button Renovate -->
-                    <!-- <div class="col-12 col-sm-4 d-flex align-items-center">
-                      <ng-container *ngIf="!viewReload; else viewReloadTemplate">
-                        <button mdbBtn type="button" rounded="true" mdbWavesEffect
-                          class="f-w-600 background-dark-green color-white" size="sm" (click)="basicModal.show()"
-                          mdbTooltip="See state or renew namespace" [disabled]="statusButtonNamespace">
-                          <mdb-badge *ngIf="!status" warning="true">Expire</mdb-badge>
-                          <mdb-badge *ngIf="status" success="true">Active</mdb-badge> | Renovate
-                        </button>
-                      </ng-container>
-
-                      <ng-template #viewReloadTemplate>
-                        <button mdbBtn type="button" rounded="true" mdbWavesEffect
-                          class="f-w-600 background-dark-green color-white" size="sm" (click)="getNameNamespace()"
-                          mdbTooltip="Reload namespace">
-                          <mdb-badge success="true">Reload</mdb-badge> namespace
-                        </button>
-                      </ng-template>
-                    </div> -->
                   </div>
                 </div>
 
@@ -133,7 +113,7 @@
                       <button mdbBtn type="button" rounded="true" mdbWavesEffect
                         class="f-w-600 background-dark-green color-white" size="sm" (click)="getNameNamespace()"
                         mdbTooltip="Reload namespace">
-                        <mdb-badge success="true">Reload</mdb-badge> namespace
+                        <i class="fa fa-refresh refreshIcon" aria-hidden="true"></i> Reload namespace
                       </button>
                     </ng-template>
                   </div>
@@ -161,7 +141,7 @@
           </div>
 
           <!-- Password -->
-          <div class="col-10 col-md-11 mt-1-5rem">
+          <div class="col-11 mt-1-5rem">
             <div class="box-form pt-0 pb-0">
               <div class="row d-flex justify-content-center">
                 <div

@@ -8,8 +8,7 @@ import { environment } from '../../../environments/environment';
 import { NodeService } from '../../servicesModule/services/node.service';
 import { SharedService } from './shared.service';
 import { TransactionsInterface } from '../../dashboard/services/transaction.interface';
-import { NamespacesService } from '../../servicesModule/services/namespaces.service';
-import { MosaicService } from '../../servicesModule/services/mosaic.service';
+
 
 @Injectable({
   providedIn: 'root'
@@ -25,10 +24,9 @@ export class DataBridgeService {
     private walletService: WalletService,
     private transactionsService: TransactionsService,
     private nodeService: NodeService,
-    private sharedService: SharedService,
-    private namespaceService: NamespacesService,
-    private mosaicService: MosaicService
+    private sharedService: SharedService
   ) { }
+
 
 
   /**
@@ -98,9 +96,9 @@ export class DataBridgeService {
       this.getTransactionsConfirmedSocket(connector, audio2);
       this.getTransactionsUnConfirmedSocket(connector, audio);
       this.getStatusSocket(connector, audio);
-      this.getBlockSocket(connector)
+      this.getBlockSocket(connector);
     }, (error) => {
-      this.reconnect(connector);
+      // this.reconnect(connector);
     });
   }
 
@@ -163,13 +161,13 @@ export class DataBridgeService {
   */
   getBlockSocket(connector: Listener) {
     connector.newBlock().subscribe(res => {
-      // console.log("block::::: ", res.height.lower);
-      this.setblock(res.height.lower)
+      this.setblock(res.height.compact())
     }, err => {
       this.sharedService.showError('Error', err);
-      // console.error("err::::::", err)
     });
   }
+
+
 
   /**
    * Get the status from the socket
@@ -202,6 +200,7 @@ export class DataBridgeService {
     this.openConnection(connector);
     return;
   }
+
   /**
    * Allow to load the component in the routing
    *
@@ -212,6 +211,8 @@ export class DataBridgeService {
     this.block = params;
     this.blockSubject.next(this.block);
   }
+
+
   /**
   *Set value to log in and block
   *
