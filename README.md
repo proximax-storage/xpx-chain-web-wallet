@@ -11,6 +11,7 @@ An account can represent a deposit of tokens, as in most known blockchains. Howe
 Remember to keep your private key in a safe place without an Internet connection. The private key can not be recovered.
 
 ***Create Account:***
+
 To create an account you must click on the "create" button located in "home" or in the Auth module.
 <h5>Functionality</h5>
 
