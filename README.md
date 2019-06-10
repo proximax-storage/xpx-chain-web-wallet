@@ -86,7 +86,9 @@ action signed by an account changes its state.
 Transactions accepted by the network are stored permanently on blocks.
 
 With our transaction browser you can search all types of transactions confirmed by the network.
-<h6>It has 3 types of searches:</h6>
+
+It has 3 types of searches:
+
     Address
     Public key
     Transaction hash
@@ -106,8 +108,9 @@ To perform a search in the transaction browser, you must log in to your wallet a
 
 
 
-Namespace & Subnamespace Service
-NAMESPACE:
+# Namespace & Subnamespace Service
+
+<h5>NAMESPACE:</h5>
 
 Namespaces allow you to create an on-chain unique place for your business and your assets on the SIRIUS blockchain.
 
@@ -117,7 +120,7 @@ that will appear as unique in the SIRIUS ecosystem.
 An account can link to a registered name (namespace or subnamespace) with an account or a mosaic identifier.
 
 
-SUBNAMESPACE:
+<h5>SUBNAMESPACE:</h5>
 
 On the internet, a domain can have a sub-domain. In SIRIUS, namespaces can have subnamespaces.
 
@@ -127,19 +130,16 @@ subnamespaces foo.bar and foo2.bar.
 Namespaces can have up to 3 levels, a namespace and its two levels of subnamespace domains.
 Register a namespace:
 
-Choose a name of preference. To register a namespace you must log in to your wallet and go to the menu: SERVICES → BOX
-NAMESPACE & SUBNAMESPACE → CREATE NAMESPACE.
-
-<h6>Functionality:</h6>
-
-Enter a namespace name
-
-Select root namespace
-
-Enter the duration of namespaces
-
-Enter your account password.
-
+Choose a name of preference. To register a namespace you must log in to your wallet and go to the menu: <b>SERVICES → BOX NAMESPACE & SUBNAMESPACE → CREATE NAMESPACE.</b>
+  <h6>Functionality:</h6>
+  <blockquote>
+      <ul>
+          <li>Enter a namespace name</li>
+          <li>Select root namespace</li>
+          <li>Enter the duration of namespaces</li>
+          <li>Enter your account password.</li>
+      </ul>
+  </blockquote>
 
 Renovate a namespace:
 
