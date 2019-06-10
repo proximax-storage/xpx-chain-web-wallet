@@ -13,17 +13,17 @@ An account can represent a deposit of tokens, as in most known blockchains. Howe
 Remember to keep your private key in a safe place without an Internet connection. The private key can not be recovered.
 
 
-# Create Account:
-To create an account you must click on the "create" button located in "home" or in the Auth module.
+  # Create Account:
+  To create an account you must click on the "create" button located in "home" or in the Auth module.
 
-## Functionality:
+  Functionality:
 
     Choose the type of network
     Enter the name of the wallet
     Enter your password, then confirm the password.
 
-NOTE:
-Once your account is created, a screen will appear indicating your address and your private key.
+  NOTE:
+    Once your account is created, a screen will appear indicating your address and your private key.
 
 
 # Import Account:
