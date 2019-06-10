@@ -1,26 +1,10 @@
-# ProximaX web wallet
-
-This wallet is still in its early phase of development. However, it has some useful features that can be used to test out the ProximaX testnet.
-
-## Development server
-
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
-
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod --build-optimizer` flag for a production build optimized
-
-
-Xpx Wallet Concept Paper
-
+# Xpx Wallet Concept Paper
 
 The XPX Wallet is one of the official applications of ProximaX, offering total security for the storage, sending and receiving of your assets. With the XPX Wallet you can make use of mosaics, namespace, notarization of documents, voting, transaction explorer, contact directory as well as create and import your encrypted account.
 
 It is available for Windows operating systems, Mac OS, Linux and a generic version.
 
-
-Account Service
-
+# Account Service
 
 This service consists of a pair of keys (public and private key) associated with a mutable state stored in the Sirius blockchain platform of ProximaX.
 
@@ -29,8 +13,7 @@ An account can represent a deposit of tokens, as in most known blockchains. Howe
 Remember to keep your private key in a safe place without an Internet connection. The private key can not be recovered.
 
 
-Create Account:
-
+# Create Account:
 To create an account you must click on the "create" button located in "home" or in the Auth module.
 
 Functionality:
@@ -40,13 +23,10 @@ Functionality:
     Enter your password, then confirm the password.
 
 NOTE:
-
 Once your account is created, a screen will appear indicating your address and your private key.
 
 
-
-Import Account:
-
+# Import Account:
 To import an account click on the "Import" button located in "Home" or in the Auth module.
 
 Functionality:
