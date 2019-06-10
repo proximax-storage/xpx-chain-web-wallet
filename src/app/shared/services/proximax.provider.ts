@@ -44,15 +44,13 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { commonInterface, walletInterface } from '../interfaces/shared.interfaces';
 import { MosaicXPXInterface } from '../../dashboard/services/transaction.interface';
+import { mergeMap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProximaxProvider {
 
-
-
-  /*************** FIN COW */
   url: any;
   infoMosaic: MosaicInfo;
   transactionHttp: TransactionHttp;
@@ -540,6 +538,25 @@ export class ProximaxProvider {
   getMosaicViewPromise(mosaicsId: MosaicId[]): any {//{Promise<MosaicView[]> {
     return this.mosaicService.mosaicsView(mosaicsId).toPromise();
   }
+
+
+  /**
+   * How many different mosaics does your account hold?
+   * Call mosaicsAmountViewFromAddress function, passing your account’s address as a parameter.
+   *
+   * @param {Address} address
+   * @memberof ProximaxProvider
+   */
+  getMosaicsAmountView(address: Address) {
+    this.mosaicService
+      .mosaicsAmountViewFromAddress(address)
+      .pipe(
+        mergeMap((_) => _)
+      )
+      .subscribe(mosaic => console.log('You have', mosaic.relativeAmount(), mosaic.fullName()),
+        err => console.error(err));
+  }
+
 
   /**
   *

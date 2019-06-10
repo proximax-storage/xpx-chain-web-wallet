@@ -5,7 +5,7 @@ import { TransactionsInterface } from '../../services/transaction.interface';
 import { TransactionsService } from '../../../transactions/service/transactions.service';
 import { MdbTablePaginationComponent, MdbTableDirective } from 'ng-uikit-pro-standard';
 import { Address } from 'tsjs-xpx-catapult-sdk';
-import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
+import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 
 @Component({
   selector: 'app-dashboard',
@@ -67,6 +67,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.subscribeTransactionsConfirmedUnconfirmed();
     this.getRecentTransactions();
     this.balance();
+
+    this.proximaxProvider.getMosaicsAmountView(this.myAddress);
   }
 
   ngOnDestroy(): void {
