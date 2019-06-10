@@ -16,7 +16,7 @@ Remember to keep your private key in a safe place without an Internet connection
 # Create Account:
 To create an account you must click on the "create" button located in "home" or in the Auth module.
 
-Functionality:
+## Functionality:
 
     Choose the type of network
     Enter the name of the wallet
