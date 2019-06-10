@@ -22,6 +22,7 @@ Remember to keep your private key in a safe place without an Internet connection
 
 	> <h6>NOTE:</h6>  Once your account is created, a screen will appear indicating your address and your private key.
   
+  <br>
 - ***Import Account:***
 
   To import an account click on the "Import" button located in "Home" or in the Auth module.
