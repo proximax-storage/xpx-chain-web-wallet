@@ -17,6 +17,7 @@ Remember to keep your private key in a safe place without an Internet connection
 	 - Choose the type of network
 	 - Enter the name of the wallet
 	 - Enter your password, then confirm the password.
+   
 
 	> <h6>NOTE:</h6>  Once your account is created, a screen will appear
 	> indicating your address and your private key.
