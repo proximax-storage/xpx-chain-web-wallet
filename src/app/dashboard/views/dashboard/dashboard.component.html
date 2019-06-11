@@ -21,8 +21,8 @@
       <div class="row">
         <!-- BOX BALANCE -->
         <div class="col-12 col-md-6 col-lg-7 no-p-l">
-          <div class="box-form-white mb-1rem size-box pt-05rem pb-05rem">
-            <div class="row">
+          <div class="box-form-white mb-1rem size-box pt-05rem pb-05rem d-flex align-items-center">
+            <div class="row overflow-ellipsis-nowrap">
               <div class="col-sm-6 col-md-12 col-lg-9 overflow-ellipsis-nowrap">
                 <span class="title-transactions f-s-title-transactions">{{vestedBalance}}</span>
               </div>
@@ -39,8 +39,8 @@
         </div>
         <!-- BOX TRANSACTIONS -->
         <div class="col-12 col-md-6 col-lg-5 no-p-r">
-          <div class="box-form-white mb-1rem size-box">
-            <div class="row">
+          <div class="box-form-white mb-1rem size-box d-flex align-items-center">
+            <div class="row overflow-ellipsis-nowrap">
               <div class="col-6 col-md-12">
                 <span class="title-transactions f-s-title-transactions">Transactions</span>
               </div>
@@ -52,14 +52,28 @@
               <!-- Confirmed and Unconfirmed -->
               <div class="col-12 col-sm-12 col-md-6" id="boxConfirmedUnconfirmed">
                 <div class="row">
-                  <div class="col-6 col-sm-6 col-md-12 text-center d-flex align-items-center">
-                    <span class="f-s-dashboard-transactions fw-400">CONFIRMED: </span>
-                    <span class="f-s-dashboard-transactions f-w-600">{{cantConfirmed}}</span>
+                  <div class="col-6 col-sm-6 col-md-12 text-center d-flex align-items-center"
+                    (click)="selectTransactions(1)">
+                    <div class="row d-flex align-items-center">
+                      <div class="col-9 col-md-9 d-flex justify-content-start justify-content-lg-start">
+                        <span class="f-s-dashboard-transactions btnConfirmedUnconfirmed">CONFIRMED</span>
+                      </div>
+                      <div class="col-3 col-md-3 d-flex justify-content-start justify-content-lg-start">
+                        <span class="f-s-dashboard-transactions f-w-600">{{cantConfirmed}}</span>
+                      </div>
+                    </div>
                   </div>
 
-                  <div class="col-6 col-sm-6 col-md-12 text-center d-flex align-items-center">
-                    <span class="f-s-dashboard-transactions fw-400">UNCONFIRMED: </span>
-                    <span class="f-s-dashboard-transactions f-w-600">{{cantUnconfirmed}}</span>
+                  <div class="col-6 col-sm-6 col-md-12 text-center d-flex align-items-center mt-03rem"
+                    (click)="selectTransactions(0)">
+                    <div class="row d-flex align-items-center">
+                      <div class="col-9 col-md-9 d-flex justify-content-start justify-content-lg-start">
+                        <span class="f-s-dashboard-transactions btnConfirmedUnconfirmed">UNCONFIRMED</span>
+                      </div>
+                      <div class="col-3 col-md-3 d-flex justify-content-start justify-content-lg-start">
+                        <span class="f-s-dashboard-transactions f-w-600">{{cantUnconfirmed}}</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -128,7 +142,7 @@
 
           <!--Table body-->
           <tbody class="background-white ">
-            <ng-container *ngFor="let el of transactionsConfirmed; let i = index">
+            <ng-container *ngFor="let el of transactions; let i = index">
               <tr class="mouse-pointer" (click)="dataSelected = el; basicModal.show();">
                 <!-- Type transaction -->
                 <th *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex"
@@ -174,7 +188,7 @@
           <tfoot class="lighten-5 w-100">
             <tr>
               <td colspan="5">
-                <mdb-table-pagination [tableEl]="tableEl" [searchDataSource]="transactionsConfirmed">
+                <mdb-table-pagination [tableEl]="tableEl" [searchDataSource]="transactions">
                 </mdb-table-pagination>
               </td>
             </tr>

@@ -46,7 +46,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   vestedBalance: string;
   searchTransaction = '';
   viewDashboard = true;
-
+  transactions: TransactionsInterface[] = [];
 
 
   constructor(
@@ -68,7 +68,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.getRecentTransactions();
     this.balance();
 
-    this.proximaxProvider.getMosaicsAmountView(this.myAddress);
+    // this.proximaxProvider.getMosaicsAmountView(this.myAddress);
   }
 
   ngOnDestroy(): void {
@@ -115,7 +115,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.searching = true;
       this.iconReloadDashboard = false;
       this.proximaxProvider.getTransactionsFromAccount(this.walletService.publicAccount, this.walletService.network).toPromise().then(response => {
-        console.log(response);
+        // console.log(response);
         const data = [];
         response.forEach(element => {
           //Sets the data structure of the dashboard
@@ -154,10 +154,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.cantConfirmed = next.length;
         this.transactionsConfirmed = next;
         this.cantTransactions = this.cantConfirmed;
+        this.transactions = next;
 
         // Datatable
         this.mdbTable.setDataSource(this.transactionsConfirmed);
-        this.transactionsConfirmed = this.mdbTable.getDataSource();
+        this.transactions = this.mdbTable.getDataSource();
         this.previous = this.mdbTable.getDataSource();
       }
     );
@@ -184,14 +185,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
     const prev = this.mdbTable.getDataSource();
     if (!this.searchTransaction) {
       this.mdbTable.setDataSource(this.previous);
-      this.transactionsConfirmed = this.mdbTable.getDataSource();
+      this.transactions = this.mdbTable.getDataSource();
     }
 
     if (this.searchTransaction) {
-      this.transactionsConfirmed = this.mdbTable.searchLocalDataBy(this.searchTransaction);
+      this.transactions = this.mdbTable.searchLocalDataBy(this.searchTransaction);
       this.mdbTable.setDataSource(prev);
     }
-    this.cantTransactions = this.transactionsConfirmed.length;
+    this.cantTransactions = this.transactions.length;
   }
 
   /**
@@ -207,6 +208,22 @@ export class DashboardComponent implements OnInit, OnDestroy {
     } else {
       this.confirmedSelected = false;
       this.unconfirmedSelected = true;
+    }
+  }
+
+  selectTransactions(type: number) {
+    if (type === 1) {
+      // Confirmed
+      this.mdbTable.setDataSource(this.transactionsConfirmed);
+      this.transactions = this.mdbTable.getDataSource();
+      this.previous = this.mdbTable.getDataSource();
+      this.cantTransactions = this.transactions.length;
+    } else {
+      // Unconfirmed
+      this.mdbTable.setDataSource(this.transactionsUnconfirmed);
+      this.transactions = this.mdbTable.getDataSource();
+      this.previous = this.mdbTable.getDataSource();
+      this.cantTransactions = this.transactions.length;
     }
   }
 }

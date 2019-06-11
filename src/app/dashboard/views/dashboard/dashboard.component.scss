@@ -1,11 +1,11 @@
 .size-box {
-  height: 105px !important;
+  height: 125px !important;
 }
 
 // Medium screen / tablet
 @media (max-width: 768px) {
   .size-box {
-    height: 75px !important;
+    height: 82px !important;
   }
 }
 
@@ -39,7 +39,7 @@
   }
 
   .size-box {
-    height: 95px !important;
+    height: 102px !important;
   }
 
   #boxConfirmedUnconfirmed {
@@ -53,4 +53,13 @@
   .titleCantResults {
     margin-bottom: 1rem;
   }
+}
+
+.btnConfirmedUnconfirmed {
+  background: #023c42;
+  color: white;
+  padding: .3rem;
+  border-radius: .3rem;
+  font-weight: 500;
+  cursor: pointer;
 }
