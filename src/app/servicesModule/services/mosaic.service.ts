@@ -36,6 +36,9 @@ export class MosaicService {
     private walletService: WalletService
   ) { }
 
+
+
+
   /**
    *
    *

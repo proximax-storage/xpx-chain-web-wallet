@@ -13,6 +13,7 @@ import { MosaicSupplyChange } from './views/mosaic/mosaic-supply-change/mosaic-s
 import { CreateNamespaceComponent } from './views/namespace/create-namespace/create-namespace.component';
 import { LinkingNamespaceToMosaicComponent } from './views/namespace/linking-namespace-to-mosaic/linking-namespace-to-mosaic.component';
 import { RenovateNamespaceComponent } from './views/namespace/renovate-namespace/renovate-namespace.component';
+import { LinkTheNamespaceToAndAddressComponent } from './views/namespace/link-the-namespace-to-and-address/link-the-namespace-to-and-address.component';
 
 const routes: Routes = [
   {
@@ -89,6 +90,13 @@ const routes: Routes = [
     component: RenovateNamespaceComponent,
     canActivate: [LoggedGuard]
   },
+  {
+    path: `${AppConfig.routes.linkTheNamespaceToAnAddress}`,
+    component: LinkTheNamespaceToAndAddressComponent,
+    canActivate: [LoggedGuard]
+  },
+
+
   /*
   {
     path: `${AppConfig.routes.storage}`,

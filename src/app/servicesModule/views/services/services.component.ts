@@ -61,6 +61,7 @@ export class ServicesComponent implements OnInit {
         createNamespace: this.structureServiceRoute('Create Namespaces', `/${AppConfig.routes.createNamespace}`),
         linkNamespaceToMosaic: this.structureServiceRoute('Linking to namespace to a mosaic', `/${AppConfig.routes.LinkingNamespaceMosaic}`),
         renewNamespace: this.structureServiceRoute('Renovate namespace', `/${AppConfig.routes.renovateNamespace}`),
+        linkTheNamespaceToAnAddress: this.structureServiceRoute('Link the namespace to an address', `/${AppConfig.routes.linkTheNamespaceToAnAddress}`),
       }, true
     );
 

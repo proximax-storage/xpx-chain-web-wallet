@@ -27,6 +27,7 @@ export const AppConfig: Config = {
     MosaicSupplyChange: 'mosaic-supply-change',
     createNamespace: 'create-namespace',
     renovateNamespace: 'renovate-namespace',
+    linkTheNamespaceToAnAddress: 'link-namespace-to-an-address',
     LinkingNamespaceMosaic: 'linking-namespace-to-mosaic',
     createMultisignature: 'create-multisignature-contract',
     editMultisignatureContract: 'edit-multisignature-contract',
@@ -60,6 +61,7 @@ export const NameRoute = {
   [AppConfig.routes.MosaicSupplyChange]: 'Mosaic supply change',
   [AppConfig.routes.createNamespace]: 'Create namespace & sub-namespace',
   [AppConfig.routes.renovateNamespace]: 'Renovate Namespace',
+  [AppConfig.routes.linkTheNamespaceToAnAddress]: 'Link the namespace to an address',
   [AppConfig.routes.createMultisignature]: 'Convert an account to multisig',
   [AppConfig.routes.editMultisignatureContract]: 'Edit multisignature contract',
   [AppConfig.routes.signMultiSigTransactions]: 'Sign multisignature transactions',
@@ -92,6 +94,7 @@ export interface Config {
     LinkingNamespaceMosaic: string;
     createNamespace: string;
     renovateNamespace: string;
+    linkTheNamespaceToAnAddress: string;
     createMultisignature: string;
     editMultisignatureContract: string;
     signMultiSigTransactions: string;

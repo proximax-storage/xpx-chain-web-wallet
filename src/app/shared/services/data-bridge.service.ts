@@ -126,7 +126,7 @@ export class DataBridgeService {
         // this.transactionsService.updateBalance();
       });
     }, err => {
-      console.error(err)
+      // console.error(err)
     });
   }
 
