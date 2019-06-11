@@ -98,7 +98,7 @@ export class DataBridgeService {
       this.getStatusSocket(connector, audio);
       this.getBlockSocket(connector);
     }, (error) => {
-      // this.reconnect(connector);
+      this.reconnect(connector);
     });
   }
 
@@ -161,6 +161,7 @@ export class DataBridgeService {
   */
   getBlockSocket(connector: Listener) {
     connector.newBlock().subscribe(res => {
+      console.log(res.height.compact());
       this.setblock(res.height.compact())
     }, err => {
       this.sharedService.showError('Error', err);
@@ -178,11 +179,11 @@ export class DataBridgeService {
    */
   getStatusSocket(connector: Listener, audio: HTMLAudioElement) {
     connector.status(this.walletService.address).subscribe(res => {
-      // console.log("Status::::: ", res);
+      console.log("Status::::: ", res);
       this.sharedService.showWarning('Warning', res.status)
     }, err => {
       this.sharedService.showError('Error', err);
-      // console.error("err::::::", err)
+      console.error("err::::::", err)
     });
   }
 

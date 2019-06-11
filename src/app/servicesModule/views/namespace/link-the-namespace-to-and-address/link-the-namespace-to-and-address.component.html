@@ -1,4 +1,4 @@
-<div class="container-fluid mt-11rem mb-3rem pt-0 pb-0">
+<div class="container-fluid mt-11rem mb-3rem pt-0 pb-0 margin-sm">
   <div class="row">
     <div class="col-11 col-sm-10 mx-auto">
       <!-- Title -->
@@ -6,7 +6,7 @@
         <div class="col-11 col-sm-10 mx-auto">
           <span class="d-flex justify-content-center align-items-center wallet-name">
             <img class="mr-05rem h2-3em" src="assets/images/img/icon-namespaces-white.svg">
-            <span class="f-w-bold fs-2em">Link the namespace to an address</span>
+            <span class="f-w-bold fs-1-5rem title-module">Link the namespace to an address</span>
           </span>
         </div>
         <div class="col-11 col-sm-10 mx-auto">
@@ -16,7 +16,68 @@
     </div>
 
     <div class="col-11 col-sm-10 mx-auto">
+      <form [formGroup]="LinkTheNamespaceToAndAddressForm" (ngSubmit)="send()">
+        <!-- Namespace -->
+        <div class="row box-form mt-1rem pr-0 pl-0 pt-0 pb-0">
+          <div class="col-3 col-sm-2 col-md-1 d-flex align-items-center justify-content-end justify-content-sm-end">
+            <img class="h1-5em" src="assets/images/img/icon-namespaces-white.svg" alt="">
+          </div>
 
+          <div class="col-9 col-sm-10 col-md-11">
+            <div class="md-form">
+              <ng-select [items]="namespaceSelect" formControlName="namespace" bindLabel="label" bindValue="value"
+                placeholder="Select or write namespace">
+              </ng-select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Address -->
+        <div class="row box-form mt-1rem pr-0 pl-0 pt-0 pb-0">
+          <div class="col-3 col-sm-2 col-md-1 d-flex align-items-center justify-content-end justify-content-sm-end">
+            <img class="h1-5em" src="assets/images/img/icon-directory-white.svg" alt="">
+          </div>
+
+          <div class="col-9 col-sm-10 col-md-11">
+            <div class="md-form">
+              <input type="text" autocomplete="off" required formControlName="address" id="address" class="form-control"
+                mdbInputDirective data-success="Address valid" [errorMessage]="getError('address')">
+              <label for="address">Address</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div class="row box-form mt-1rem pt-0 pb-0 pb-0 pr-0 pl-0 pt-0 pb-0">
+          <div class="col-3 col-sm-2 col-md-1 d-flex align-items-center justify-content-end justify-content-sm-end">
+            <img class="h1-5em" src="assets/images/img/icon-password-white.svg" alt="">
+          </div>
+
+          <div class="col-9 col-sm-10 col-md-11">
+            <div class="md-form">
+              <input type="password" autocomplete="off" required formControlName="password" id="password"
+                class="form-control" mdbInputDirective data-success="Valid password"
+                [errorMessage]="getError('password')">
+              <label for="password">Password</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- BUTTONS -->
+        <div class="row mt-1rem mb-1rem">
+          <div class="col-6 t-a-r">
+            <button mdbBtn size="md" type="button" rounded="true" mdbWavesEffect class="f-w-600 btn-white"
+              (click)="resetForm()">
+              CLEAN
+            </button>
+          </div>
+          <div class="col-6">
+            <button mdbBtn size="md" type="submit" rounded="true" mdbWavesEffect class="f-w-600 btn-dark-green-prx">
+              SEND
+            </button>
+          </div>
+        </div>
+      </form>
     </div>
   </div>
 </div>

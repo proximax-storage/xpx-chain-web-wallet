@@ -969,6 +969,13 @@ a:hover {
 
 /**** MEDIA QUERY*****/
 
+// Small devices (landscape phones, 576px and up)
+@media (max-width: 576px) {
+  .margin-sm {
+    margin-top: 12rem;
+  }
+}
+
 /* If the screen size is 768px wide or less, set the font-size of <div> to 30px */
 @media (max-width: 767px) {
   .f-s-title-transactions {
@@ -978,12 +985,20 @@ a:hover {
   .f-s-dashboard-transactions {
     font-size: 0.6rem;
   }
+
+  .title-module {
+    font-size: 1rem !important;
+  }
 }
 
-//1199px
+//991px
 @media (max-width: 991px) {
   .f-s-title-transactions {
     font-size: 1.2rem !important;
+  }
+
+  .title-module {
+    font-size: 1.4rem !important;
   }
 }
 

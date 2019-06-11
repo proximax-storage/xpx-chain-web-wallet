@@ -3,7 +3,12 @@ import {
   NamespaceInfo,
   NamespaceId,
   NamespaceName,
-  Address
+  Address,
+  AliasActionType,
+  NetworkType,
+  AliasTransaction,
+  Deadline,
+  EncryptedPrivateKey
 } from "tsjs-xpx-catapult-sdk";
 import { ProximaxProvider } from "../../shared/services/proximax.provider";
 import { WalletService } from "../../shared/services/wallet.service";
@@ -15,11 +20,34 @@ import { NamespaceStorage } from "../interfaces/mosaics-namespaces.interface";
 export class NamespacesService {
   namespaceViewCache: NamespaceName[] = [];
   namespaceFromAccount: NamespaceInfo[] = null;
+  network = this.walletService.network;
 
   constructor(
     private proximaxProvider: ProximaxProvider,
     private walletService: WalletService
   ) { }
+
+
+  async addressAliasTransaction(
+    aliasActionType: AliasActionType,
+    namespaceId: NamespaceId,
+    address: Address,
+    common: any,
+    network?: NetworkType
+  ) {
+    network = (network !== undefined) ? network : this.walletService.network;
+    const addressAliasTransaction = AliasTransaction.createForAddress(
+      Deadline.create(),
+      aliasActionType,
+      namespaceId,
+      address,
+      network
+    );
+
+    const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.network);
+    const signedTransaction = account.sign(addressAliasTransaction);
+    return this.proximaxProvider.announce(signedTransaction)
+  }
 
   /**
      * Search and save namespace in cache

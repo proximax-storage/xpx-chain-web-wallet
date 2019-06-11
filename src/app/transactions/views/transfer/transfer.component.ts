@@ -64,7 +64,8 @@ export class TransferComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.contacts = this.ServiceModuleService.getBooksAddress();
+    const bookAddress = this.ServiceModuleService.getBooksAddress();
+    this.contacts = (bookAddress !== undefined) ? bookAddress : [];
     this.createForm();
     this.createFormContact();
     this.getMosaics();
@@ -122,7 +123,7 @@ export class TransferComponent implements OnInit {
         ]
       ],
       amount: [null, [Validators.maxLength(20)]],
-      message: ["", [Validators.maxLength(1023)]],
+      message: ["", [Validators.maxLength(1024)]],
       password: [
         null,
         [Validators.required, Validators.minLength(8), Validators.maxLength(30)]
