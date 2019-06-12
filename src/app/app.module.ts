@@ -29,7 +29,7 @@ import { FooterComponent } from './footer/footer.component';
     BlockUIModule.forRoot(),
     ToastModule.forRoot({
       maxOpened: 1,
-      newestOnTop: false,
+      newestOnTop: true,
       preventDuplicates: true,
       autoDismiss: true,
       progressBar: true

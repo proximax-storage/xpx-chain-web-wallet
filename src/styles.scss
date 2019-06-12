@@ -1260,17 +1260,27 @@ html:after {
 
 //class to toast
 .toastSuccess {
+  border-radius: 7px !important;
   opacity: 1.0 !important;
-  background-color: #35af8d;
+  background-color: rgba(27, 178, 169, 0.9) !important;
 }
 
 .toastError {
+  border-radius: 7px !important;
   opacity: 1.0 !important;
-  background-color: #e42c2c;
+  background-color: rgba(238, 103, 35, 0.9) !important;
 }
 
 .toastWarning {
-  opacity: 1.0 !important;
+  border-radius: 7px !important;
+  opacity: 1.0 !important !important;
+  background-color: rgba(241, 168, 31, 0.9) !important;
+}
+
+.toastInfo {
+  border-radius: 7px !important;
+  opacity: 1.0 !important !important;
+  background-color: rgba(122, 180, 226, 0.9) !important;
 }
 
 //fin class to toast
