@@ -95,6 +95,10 @@ footer {
   margin-top: 0.5rem;
 }
 
+.mt-06rem {
+  margin-top: 0.6rem;
+}
+
 .mt-1rem {
   margin-top: 1rem;
 }
@@ -1003,32 +1007,33 @@ a:hover {
 }
 
 /* -------------------------- Fin new style ------------------------- */
+.form-check-input[type="radio"]:not(:checked)+label:before,
+.form-check-input[type="radio"]:not(:checked)+label:after,
+label.btn input[type="radio"]:not(:checked)+label:before,
+label.btn input[type="radio"]:not(:checked)+label:after {
+  color: white !important;
+}
+
+.form-check-input[type="radio"]:not(:checked)+label:before,
+.form-check-input[type="radio"]:not(:checked)+label:after,
+label.btn input[type="radio"]:not(:checked)+label:before,
+label.btn input[type="radio"]:not(:checked)+label:after {
+  border: 2px solid #ffff !important;
+  background-color: #ffff !important;
+}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-html:after {
-  width: 100%;
-  display: block;
-  content: "";
-  height: 100%;
-}*/
+.form-check-input[type="radio"]:checked+label:after,
+.form-check-input[type="radio"].with-gap:checked+label:after,
+label.btn input[type="radio"]:checked+label:after,
+label.btn input[type="radio"].with-gap:checked+label:after {
+  border: 2px solid #013a40;
+  background-color: #013a40 !important;
+}
 
 
 .md-form textarea~label.active {
-  color: #757575 !important;
+  color: white !important;
 }
 
 /*BACKGROUND AND COLORS*/
@@ -1273,13 +1278,13 @@ html:after {
 
 .toastWarning {
   border-radius: 7px !important;
-  opacity: 1.0 !important !important;
-  background-color: rgba(241, 168, 31, 0.9) !important;
+  opacity: 1.0 !important;
+  background-color: rgba(253, 173, 25, 0.98) !important;
 }
 
 .toastInfo {
   border-radius: 7px !important;
-  opacity: 1.0 !important !important;
+  opacity: 1.0 !important;
   background-color: rgba(122, 180, 226, 0.9) !important;
 }
 

@@ -14,6 +14,7 @@ import { CreateNamespaceComponent } from './views/namespace/create-namespace/cre
 import { LinkingNamespaceToMosaicComponent } from './views/namespace/linking-namespace-to-mosaic/linking-namespace-to-mosaic.component';
 import { RenovateNamespaceComponent } from './views/namespace/renovate-namespace/renovate-namespace.component';
 import { LinkTheNamespaceToAndAddressComponent } from './views/namespace/link-the-namespace-to-and-address/link-the-namespace-to-and-address.component';
+import { ApostilleCreateComponent } from './views/apostille/apostille-create/apostille-create.component';
 
 
 
@@ -40,7 +41,8 @@ import { LinkTheNamespaceToAndAddressComponent } from './views/namespace/link-th
     MosaicSupplyChange,
     CreateNamespaceComponent,
     RenovateNamespaceComponent,
-    LinkTheNamespaceToAndAddressComponent
+    LinkTheNamespaceToAndAddressComponent,
+    ApostilleCreateComponent
     /* StorageComponent,
      EditMosaicComponent,
      EditNamespaceComponent,

@@ -98,6 +98,7 @@ export class DataBridgeService {
       this.getStatusSocket(connector, audio);
       this.getBlockSocket(connector);
     }, (error) => {
+      this.sharedService.showWarning('', 'Error connecting to the node');
       this.reconnect(connector);
     });
   }

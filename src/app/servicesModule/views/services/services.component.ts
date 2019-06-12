@@ -47,12 +47,12 @@ export class ServicesComponent implements OnInit {
       }, false
     );
 
-    const apostille = this.service.structureServices('img-apostille', 'Apostille',
+    const apostille = this.service.structureServices('icon-notary-dark-green.svg', 'Apostille',
       'Use Apostille service to create blockchain based notarizations to time stamp, follow and audit file authenticity.',
       {
         addApostille: this.structureServiceRoute('Apostille create', `/${AppConfig.routes.apostille}`),
         audiApostille: this.structureServiceRoute('Apostille audit', `/${AppConfig.routes.audiApostille}`),
-      }, false
+      }, true
     );
 
     const nameSpace = this.service.structureServices('icon-namespaces-dark-green.svg', 'Namespaces & Subnamespaces',
