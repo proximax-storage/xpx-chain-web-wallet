@@ -240,26 +240,24 @@ export class TransferComponent implements OnInit {
       this.inputBlocked = false;
     } else if (!this.inputBlocked) {
       this.inputBlocked = true;
-      const acountRecipient = this.transferForm.get("accountRecipient").value;
-      const amount = this.transferForm.get("amount").value;
-      const message = this.transferForm.get("message").value === null ? "" : this.transferForm.get("message").value;
-      const password = this.transferForm.get("password").value;
-      const mosaic = this.transferForm.get("mosaicsSelect").value;
-      const common = { password: password };
+      let acountRecipient = this.transferForm.get("accountRecipient").value;
+      let amount = this.transferForm.get("amount").value;
+      let message = this.transferForm.get("message").value === null ? "" : this.transferForm.get("message").value;
+      let password = this.transferForm.get("password").value;
+      let mosaic = this.transferForm.get("mosaicsSelect").value;
+      let common = { password: password };
       this.blockSendButton = true;
       if (this.walletService.decrypt(common)) {
-        const rspBuildSend = this.transactionService.buildToSendTransfer(
-          common,
-          acountRecipient,
-          message,
-          amount,
-          this.walletService.network,
-          mosaic
+        const buildTransferTransaction = this.transactionService.buildToSendTransfer(
+          common, acountRecipient,
+          message, amount,
+          this.walletService.network, mosaic
         );
-        rspBuildSend.transactionHttp
-          .announce(rspBuildSend.signedTransaction)
+
+        buildTransferTransaction.transactionHttp
+          .announce(buildTransferTransaction.signedTransaction)
           .subscribe(
-            rsp => {
+            response => {
               this.showContacts = false;
               this.sharedService.showSuccess(
                 "Congratulations!",
@@ -271,11 +269,16 @@ export class TransferComponent implements OnInit {
             err => {
               this.inputBlocked = false;
               this.cleanForm();
-              this.sharedService.showError("Error", err);
-              // console.error(err);
+              this.sharedService.showError("", err);
             }
           );
       } else {
+        acountRecipient = '';
+        amount = '';
+        message = '';
+        password = '';
+        mosaic = '';
+        common = null;
         this.inputBlocked = false;
       }
     }
