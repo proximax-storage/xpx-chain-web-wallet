@@ -13,6 +13,7 @@ export class WalletCreatedComponent implements OnInit {
   @Input() privateKey: string;
   @Input() address: string;
   @Input() walletName: string;
+  @Input() publicKey: string;
   routes = {
     login: `/${AppConfig.routes.login}`
   };

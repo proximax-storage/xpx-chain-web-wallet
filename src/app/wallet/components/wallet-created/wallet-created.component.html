@@ -20,8 +20,14 @@
         <div class="col-12 mb-5px">
           <div class="row mt-3px">
             <div class="col-10 col-md-10 col-lg-11 overflow-ellipsis-nowrap">
-              <span class="fs-1rem gray-color fw-400">Address: </span>
-              <span class="fs-1rem fw-500">{{address}}</span>
+              <div class="row">
+                <div class="col-3 col-lg-2">
+                  <span class="fs-1rem gray-color fw-400">Address: </span>
+                </div>
+                <div class="col-9 col-lg-10">
+                  <span class="fs-1rem fw-500">{{address}}</span>
+                </div>
+              </div>
             </div>
             <div class="col-2 col-md-2 col-lg-1 d-flex align-items-center">
               <i mdbWavesEffect (click)="copyMessage('Address')" ngxClipboard [cbContent]="address"
@@ -29,11 +35,34 @@
             </div>
           </div>
 
+          <div class="row mt-3px">
+            <div class="col-10 col-md-10 col-lg-11 overflow-ellipsis-nowrap">
+              <div class="row">
+                <div class="col-3 col-lg-2">
+                  <span class="fs-1rem gray-color fw-400">Public Key: </span>
+                </div>
+                <div class="col-9 col-lg-10">
+                  <span class="fs-1rem fw-500">{{publicKey}}</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-2 col-md-2 col-lg-1 d-flex align-items-center">
+              <i mdbWavesEffect (click)="copyMessage('Public Key')" ngxClipboard [cbContent]="publicKey"
+                style="font-size: 1.5rem;" class="fa fa-paste prefix cursor-pointer"></i>
+            </div>
+          </div>
+
           <ng-container *ngIf="privateKeyIsShow">
             <div class="row mt-3px">
               <div class="col-10 col-md-10 col-lg-11 overflow-ellipsis-nowrap">
-                <span class="fs-1rem gray-color fw-400">Private key: </span>
-                <span class="fs-1rem fw-500">{{privateKey}}</span>
+                <div class="row">
+                  <div class="col-3 col-lg-2">
+                    <span class="fs-1rem gray-color fw-400">Private Key: </span>
+                  </div>
+                  <div class="col-9 col-lg-10">
+                    <span class="fs-1rem fw-500">{{privateKey}}</span>
+                  </div>
+                </div>
               </div>
               <div class="col-2 col-md-2 col-lg-1 d-flex align-items-center">
                 <i mdbWavesEffect (click)="copyMessage('Private key')" ngxClipboard [cbContent]="privateKey"
@@ -41,7 +70,6 @@
               </div>
             </div>
           </ng-container>
-
         </div>
       </div>
     </div>

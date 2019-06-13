@@ -20,6 +20,7 @@ export class CreateWalletComponent implements OnInit {
   walletIsCreated = false;
   privateKey: string;
   address: string;
+  publicKey: string;
   typeNetwork = [
     {
       'value': NetworkType.TEST_NET,
@@ -108,20 +109,21 @@ export class CreateWalletComponent implements OnInit {
         this.walletName = name;
         this.walletService.setAccountWalletStorage(name, accounts);
         this.address = wallet.address.pretty();
-        this.sharedService.showSuccess('Congratulations!', 'Your wallet has been created successfully');
+        this.sharedService.showSuccess('', 'Your wallet has been created successfully');
         this.privateKey = this.proximaxProvider.decryptPrivateKey(password, accounts.encrypted, accounts.iv).toUpperCase();
+        this.publicKey = this.proximaxProvider.getPublicAccountFromPrivateKey(this.privateKey, network).publicKey;
         this.walletIsCreated = true;
         this.nameModule = 'Congratulations!';
         this.descriptionModule = 'Your wallet has been created successfully';
       } else {
         //Error of repeated Wallet
         this.cleanForm('walletname');
-        this.sharedService.showError('Attention!', 'This name is already in use, try another name');
+        this.sharedService.showError('', 'This name is already in use, try another name');
       }
     } else if (this.createWalletForm.controls.passwords.get('password').valid &&
       this.createWalletForm.controls.passwords.get('confirm_password').valid &&
       this.createWalletForm.controls.passwords.getError('noMatch')) {
-      this.sharedService.showError('Attention!', `Password doesn't match`);
+      this.sharedService.showError('', `Password doesn't match`);
       this.cleanForm('password', 'passwords');
       this.cleanForm('confirm_password', 'passwords');
     }

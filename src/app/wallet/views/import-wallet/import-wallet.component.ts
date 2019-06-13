@@ -25,6 +25,7 @@ export class ImportWalletComponent implements OnInit {
     }
   ];
   walletName: string;
+  publicKey: string;
 
   constructor(
     private fb: FormBuilder,
@@ -81,6 +82,7 @@ export class ImportWalletComponent implements OnInit {
         this.address = wallet.address.pretty();
         this.sharedService.showSuccess('Congratulations!', 'Your wallet has been imported successfully');
         this.pvk = this.proximaxProvider.decryptPrivateKey(password, accounts.encrypted, accounts.iv).toUpperCase();
+        this.publicKey = this.proximaxProvider.getPublicAccountFromPrivateKey(this.pvk, network).publicKey;
         this.walletIsCreated = true;
         this.nameModule = 'Congratulations!';
         this.descriptionModule = 'Your wallet has been imported successfully';
