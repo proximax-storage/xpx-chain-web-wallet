@@ -33,7 +33,12 @@ export class TransferComponent implements OnInit {
   searchMosaics = true;
   showContacts = false;
   inputBlocked: boolean;
-  contacts = [];
+  contacts: any = [{
+    value: "",
+    label: "Select contact",
+    selected: false,
+    disabled: true
+  }];
   transferForm: FormGroup;
   contactForm: FormGroup;
   transferIsSend = false;
@@ -52,6 +57,7 @@ export class TransferComponent implements OnInit {
     }
   ];
   blockSendButton: boolean;
+  contactSelected = '';
 
   constructor(
     private fb: FormBuilder,
@@ -64,11 +70,19 @@ export class TransferComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    const data = this.contacts.slice(0);
     const bookAddress = this.ServiceModuleService.getBooksAddress();
-    this.contacts = (bookAddress !== undefined) ? bookAddress : [];
+    this.contacts = [];
+    if (bookAddress !== undefined) {
+      for (let x of bookAddress) {
+        data.push(x);
+      }
+      this.contacts = data;
+    }
     this.createForm();
     this.createFormContact();
     this.getMosaics();
+    this.changeAddress();
   }
 
   /**
@@ -114,6 +128,7 @@ export class TransferComponent implements OnInit {
         this.proximaxProvider.mosaicXpx.mosaicId,
         [Validators.required]
       ],
+      contact: [''],
       accountRecipient: [
         '',
         [
@@ -152,6 +167,24 @@ export class TransferComponent implements OnInit {
       ]
     });
   }
+
+  /**
+   *
+   *
+   * @memberof TransferComponent
+   */
+  changeAddress() {
+    this.transferForm.get('accountRecipient').valueChanges.subscribe(
+      value => {
+        if (this.contactSelected !== '') {
+          if (this.contactSelected !== value) {
+            this.transferForm.get('contact').patchValue('');
+          }
+        }
+      }
+    );
+  }
+
 
   /**
    * Clean form
@@ -327,8 +360,12 @@ export class TransferComponent implements OnInit {
    * @param {{ value: any; }} event
    * @memberof TransferComponent
    */
-  optionSelected(event: { value: any }) {
-    this.transferForm.get("accountRecipient").patchValue(event.value);
+  optionSelected(event: any) {
+    this.contactSelected = '';
+    if (event !== undefined) {
+      this.contactSelected = event.value;
+      this.transferForm.get("accountRecipient").patchValue(event.value);
+    }
   }
 
   /**

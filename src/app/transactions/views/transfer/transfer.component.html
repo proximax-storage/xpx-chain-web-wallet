@@ -55,9 +55,9 @@
                 <img class="h1-5em" src="assets/images/img/icon-directory-white.svg" alt="">
               </div>
 
-              <div class="col-7 col-sm-8 col-md-9">
+              <div class="col-9 col-sm-10 col-md-11">
                 <div class="md-form">
-                  <ng-select [items]="contacts" bindLabel="label" bindValue="value"
+                  <ng-select [items]="contacts" formControlName="contact" bindLabel="label" bindValue="value"
                     placeholder="Select or write contact" (change)="optionSelected($event)">
                   </ng-select>
                 </div>
