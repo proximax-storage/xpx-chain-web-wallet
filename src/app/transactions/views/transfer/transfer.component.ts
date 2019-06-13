@@ -259,10 +259,6 @@ export class TransferComponent implements OnInit {
           .subscribe(
             response => {
               this.showContacts = false;
-              this.sharedService.showSuccess(
-                "Congratulations!",
-                "Transaction sent"
-              );
               this.inputBlocked = false;
               this.cleanForm();
             },
