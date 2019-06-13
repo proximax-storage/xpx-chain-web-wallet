@@ -244,13 +244,15 @@
           <app-mosaic-alias [mosaicAlias]="dataSelected"
             *ngIf="dataSelected.data.type === typeTransactions.mosaicAlias.id">
           </app-mosaic-alias>
+          <!--  ADDRESS ALIAS-->
+          <app-address-alias-type [addressAlias]="dataSelected"
+            *ngIf="dataSelected.data.type === typeTransactions.addressAlias.id">
+          </app-address-alias-type>
 
           <!-- TYPE MODIFY MULTISIG ACCOUNT TRANSACTION
           <app-modify-multisig-account-type
             *ngIf="dataSelected.data.type === typeTransactions.modifyMultisigAccount.id">
           </app-modify-multisig-account-type>-->
-
-
           <!-- TYPE LOCK TRANSACTION
           <app-lock-type *ngIf="dataSelected.data.type === typeTransactions.lock.id"></app-lock-type> -->
           <!-- TYPE SECRET LOCK TRANSACTION

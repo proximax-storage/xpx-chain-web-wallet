@@ -86,6 +86,7 @@ export class NamespacesService {
       }
     } catch (error) {
       //Nothing!
+      return null;
     }
 
     return null;
@@ -260,8 +261,6 @@ export class NamespacesService {
   getNameStorage() {
     return `proximax-namespaces`;
   }
-
-
 
   resetNamespaceStorage() {
     localStorage.removeItem(this.getNameStorage());

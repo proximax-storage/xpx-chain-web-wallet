@@ -117,14 +117,16 @@ export class DataBridgeService {
       this.transactionsService.getTransactionsConfirmed$().pipe(first()).subscribe(allTransactionConfirmed => {
         const transactionPushed = allTransactionConfirmed.slice(0);
         const transactionFormatter = this.transactionsService.getStructureDashboard(incomingTransaction);
-        transactionPushed.unshift(transactionFormatter);
-        this.destroyUnconfirmedTransaction(transactionFormatter);
-        this.transactionsService.setTransactionsConfirmed$(transactionPushed);
-        audio.play();
-        // this.messageService.changeMessage('balanceChanged');
-        this.transactionsService.validateTypeTransaction(incomingTransaction.type);
-        // this.namespaceService.buildNamespaceStorage();
-        // this.transactionsService.updateBalance();
+        if (transactionFormatter !== null) {
+          transactionPushed.unshift(transactionFormatter);
+          this.destroyUnconfirmedTransaction(transactionFormatter);
+          this.transactionsService.setTransactionsConfirmed$(transactionPushed);
+          audio.play();
+          // this.messageService.changeMessage('balanceChanged');
+          this.transactionsService.validateTypeTransaction(incomingTransaction.type);
+          // this.namespaceService.buildNamespaceStorage();
+          // this.transactionsService.updateBalance();
+        }
       });
     }, err => {
       // console.error(err)
@@ -180,11 +182,11 @@ export class DataBridgeService {
    */
   getStatusSocket(connector: Listener, audio: HTMLAudioElement) {
     connector.status(this.walletService.address).subscribe(res => {
-      console.log("Status::::: ", res);
+      // console.log("Status::::: ", res);
       this.sharedService.showWarning('Warning', res.status)
     }, err => {
+      // console.error("err::::::", err);
       this.sharedService.showError('Error', err);
-      console.error("err::::::", err)
     });
   }
 

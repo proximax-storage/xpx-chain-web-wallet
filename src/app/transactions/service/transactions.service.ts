@@ -73,6 +73,11 @@ export class TransactionsService {
       id: TransactionType.MOSAIC_ALIAS,
       name: "Mosaic Alias"
     },
+    addressAlias: {
+      id: TransactionType.ADDRESS_ALIAS,
+      name: "Address Alias"
+    },
+
     /* lock: {
        id: TransactionType.LOCK,
        name: "Lock"

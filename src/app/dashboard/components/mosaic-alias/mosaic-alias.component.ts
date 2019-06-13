@@ -12,8 +12,10 @@ import { NamespacesService } from 'src/app/servicesModule/services/namespaces.se
 export class MosaicAliasComponent implements OnInit {
 
   @Input() mosaicAlias: TransactionsInterface = null;
-  mosaicNameId: string = '';
-  namespaceNameId: string = '';
+  mosaicName: string = '';
+  mosaicId: string = '';
+  namespaceId: string = '';
+  namespaceName: string = '';
 
   constructor(
     private mosaicService: MosaicService,
@@ -23,21 +25,25 @@ export class MosaicAliasComponent implements OnInit {
   ngOnInit() {
   }
 
-  ngOnChanges(changes: SimpleChanges) {
+  async ngOnChanges(changes: SimpleChanges) {
+    this.mosaicName = '';
+    this.mosaicId = '';
+    this.namespaceId = '';
+    this.namespaceName = '';
+
     const mosaicId = new MosaicId([this.mosaicAlias.data['mosaicId'].id.lower, this.mosaicAlias.data['mosaicId'].id.higher]);
-    this.mosaicNameId = mosaicId.toHex();
-    const mosaicInfo = this.mosaicService.filterMosaic(mosaicId);
+    this.mosaicId = mosaicId.toHex();
+    const mosaicInfo = await this.mosaicService.searchMosaics([mosaicId]);
     if (mosaicInfo !== null && mosaicInfo !== undefined) {
-      this.mosaicNameId = (mosaicInfo.mosaicNames.names.length > 0) ? mosaicInfo.mosaicNames.names[0] : mosaicId.toHex();
+      this.mosaicName = (mosaicInfo[0].mosaicNames.names.length > 0) ? mosaicInfo[0].mosaicNames.names[0] : '';
     }
 
     // NAMESPACE
     const namespaceId = new NamespaceId([this.mosaicAlias.data['namespaceId'].id.lower, this.mosaicAlias.data['namespaceId'].id.higher]);
-    this.namespaceNameId = namespaceId.toHex();
-    const namespaceInfo = this.namespaceService.filterNamespace(namespaceId);
+    this.namespaceId = namespaceId.toHex();
+    const namespaceInfo = await this.namespaceService.getNamespaceFromId(namespaceId);
     if (namespaceInfo !== null && namespaceInfo !== undefined) {
-      // console.log(namespaceInfo);
-      this.namespaceNameId = (namespaceInfo.namespaceName.name !== '') ? namespaceInfo.namespaceName.name : namespaceId.toHex();
+      this.namespaceName = (namespaceInfo.namespaceName.name !== '') ? namespaceInfo.namespaceName.name : '';
     }
   }
 

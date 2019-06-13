@@ -19,6 +19,7 @@ import { SecretLockTypeComponent } from '../dashboard/components/secret-lock-typ
 import { SecretProofComponent } from '../dashboard/components/secret-proof/secret-proof.component';
 import { MosaicsInfoComponent } from '../dashboard/components/mosaics-info/mosaics-info.component';
 import { MosaicAliasComponent } from '../dashboard/components/mosaic-alias/mosaic-alias.component';
+import { AddressAliasTypeComponent } from '../dashboard/components/address-alias-type/address-alias-type.component';
 
 const components = [
   TransferTypeComponent,
@@ -32,9 +33,9 @@ const components = [
   SecretLockTypeComponent,
   SecretProofComponent,
   MosaicsInfoComponent,
-  MosaicAliasComponent
+  MosaicAliasComponent,
+  AddressAliasTypeComponent
 ]
-
 
 const modules = [
   CommonModule,
@@ -44,8 +45,6 @@ const modules = [
   ClipboardModule,
   NgSelectModule
 ];
-
-
 @NgModule({
   imports: [
     modules,

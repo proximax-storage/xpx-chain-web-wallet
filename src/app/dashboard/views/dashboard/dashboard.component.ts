@@ -67,8 +67,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.subscribeTransactionsConfirmedUnconfirmed();
     this.getRecentTransactions();
     this.balance();
-
-    // this.proximaxProvider.getMosaicsAmountView(this.myAddress);
   }
 
   ngOnDestroy(): void {

@@ -34,9 +34,9 @@ export class ServicesComponent implements OnInit {
       }, false
     );
 
-    const explorerTransaction = this.service.structureServices('icon-transactions-dark-green.svg', 'Explorer', `Search All available transactions`,
+    const explorerTransaction = this.service.structureServices('icon-transactions-dark-green.svg', 'Transaction Explorer', `Search All available transactions`,
       {
-        createPoll: this.structureServiceRoute('Explorer', `/${AppConfig.routes.explorer}`)
+        createPoll: this.structureServiceRoute('Open Explorer', `/${AppConfig.routes.explorer}`)
       }, true
     );
 
@@ -50,16 +50,16 @@ export class ServicesComponent implements OnInit {
     const apostille = this.service.structureServices('icon-notary-dark-green.svg', 'Apostille',
       'Use Apostille service to create blockchain based notarizations to time stamp, follow and audit file authenticity.',
       {
-        addApostille: this.structureServiceRoute('Apostille create', `/${AppConfig.routes.apostille}`),
-        audiApostille: this.structureServiceRoute('Apostille audit', `/${AppConfig.routes.audiApostille}`),
+        addApostille: this.structureServiceRoute('Create New', `/${AppConfig.routes.apostille}`),
+        audiApostille: this.structureServiceRoute('Audit', `/${AppConfig.routes.audiApostille}`),
       }, true
     );
 
     const nameSpace = this.service.structureServices('icon-namespaces-dark-green.svg', 'Namespaces & Subnamespaces',
       'Namespaces are domain names. Each namespaces is unique and authenticates mosaics (assets).',
       {
-        createNamespace: this.structureServiceRoute('Create Namespaces', `/${AppConfig.routes.createNamespace}`),
-        linkNamespaceToMosaic: this.structureServiceRoute('Linking to namespace to a mosaic', `/${AppConfig.routes.LinkingNamespaceMosaic}`),
+        createNamespace: this.structureServiceRoute('Create Namespace', `/${AppConfig.routes.createNamespace}`),
+        linkNamespaceToMosaic: this.structureServiceRoute('Link to namespace to a mosaic', `/${AppConfig.routes.LinkingNamespaceMosaic}`),
         renewNamespace: this.structureServiceRoute('Renovate namespace', `/${AppConfig.routes.renovateNamespace}`),
         linkTheNamespaceToAnAddress: this.structureServiceRoute('Link the namespace to an address', `/${AppConfig.routes.linkTheNamespaceToAnAddress}`),
       }, true
@@ -68,8 +68,8 @@ export class ServicesComponent implements OnInit {
     const mosaics = this.service.structureServices('icon-mosaics-dark-green.svg', 'Mosaics',
       'The mosaics service, are assets that expose additional properties and other features.',
       {
-        createMosaic: this.structureServiceRoute('Create mosaic', `/${AppConfig.routes.createMosaic}`),
-        editMosaic: this.structureServiceRoute('Mosaic supply change', `/${AppConfig.routes.MosaicSupplyChange}`),
+        createMosaic: this.structureServiceRoute('Create new', `/${AppConfig.routes.createMosaic}`),
+        editMosaic: this.structureServiceRoute('Supply change', `/${AppConfig.routes.MosaicSupplyChange}`),
       }, true
     );
 
@@ -87,7 +87,7 @@ export class ServicesComponent implements OnInit {
     const addressBook = this.service.structureServices('icon-directory-dark-green.svg', 'Directory',
       `Assign labels to addresses to easily keep track of your contacts`,
       {
-        manageAddress: this.structureServiceRoute('Directory', `/${AppConfig.routes.addressBook}`),
+        manageAddress: this.structureServiceRoute('Open Directory', `/${AppConfig.routes.addressBook}`),
       }, true
     );
 
