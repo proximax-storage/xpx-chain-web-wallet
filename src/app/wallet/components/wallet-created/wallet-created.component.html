@@ -77,6 +77,11 @@
 
   <div class="row mt-1rem mb-1rem mx-auto">
     <div class="col-4 t-a-r mx-auto overflow-ellipsis-nowrap d-flex justify-content-center">
+      <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 btn-white" size="sm"
+        [routerLink]="['/'+link.login]">
+        <i class="fa fa-arrow-circle-left"></i> Finish
+      </button>
+
       <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 btn-dark-green-prx" size="sm"
         (click)="showHidePvkAddress()">
         <i class="fa fa-magic mr-1"></i> {{messageShowPvk}}

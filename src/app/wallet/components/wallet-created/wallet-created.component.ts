@@ -8,6 +8,8 @@ import { SharedService } from '../../../shared';
   styleUrls: ['./wallet-created.component.scss']
 })
 export class WalletCreatedComponent implements OnInit {
+
+  link = AppConfig.routes;
   messageShowPvk = 'Show private key';
   privateKeyIsShow = false;
   @Input() privateKey: string;
