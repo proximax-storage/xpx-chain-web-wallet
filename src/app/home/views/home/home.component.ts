@@ -23,7 +23,7 @@ export class HomeComponent implements OnInit {
       'File explorer',
       `File explorer`,
       '',
-      true
+      false
     );
 
     const explorerTransaction = this.service.structureServices(

@@ -24,21 +24,27 @@
     </div>
   </div>
 
-  <!-- Button Upload File -->
-  <div class="row mt-1rem">
-    <div class="col-12 d-flex justify-content-center">
-      <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 btn-dark-green-prx" size="md">
-        <img class="mr-1rem h2em" src="assets/images/img/icon-upload-file-white.svg" alt="">
-        <span>UPLOAD FILE</span>
-      </button>
-    </div>
-    <div class="col-12 d-flex justify-content-center">
-      <span class="color-dark-green fw-500 fs-08rem">Not file selected yet...</span>
-    </div>
-  </div>
-
   <!-- Form -->
   <form [formGroup]="apostilleCreateForm" (ngSubmit)="createApostille()">
+    <!-- Button Upload File -->
+    <div class="row d-flex justify-content-center mt-1rem">
+      <!-- Button Upload File -->
+      <div class="col-12 d-flex justify-content-center">
+        <button (click)="openInput()" mdbBtn type="button" rounded="true" mdbWavesEffect
+          class="f-w-600 btn-dark-green-prx" size="md">
+          <img class="mr-1rem h2em" src="assets/images/img/icon-upload-file-white.svg" alt="">
+          <span>UPLOAD FILE</span>
+        </button>
+        <input id="fileInput" [hidden]="true" type="file" (change)="fileChange($event.target.files,$event)"
+          formControlName="file">
+      </div>
+      <!-- Name File -->
+      <div class="col-12 col-sm-10 col-md-8 d-flex justify-content-center mt-08rem">
+        <span class="color-dark-green fw-500 fs-08rem t-a-c">{{nameFile}}</span>
+      </div>
+    </div>
+
+
     <div class="row mt-1rem d-flex justify-content-center">
       <div class="col-11">
         <div class="box-form pt-0 pb-0">
@@ -91,7 +97,8 @@
         <div class="box-form">
           <div class="row">
             <div class="col-12 color-white fw-400 d-flex justify-content-center">
-              <mdb-checkbox [default]="true" formControlName="safeDFMS">Safe in DFMS
+              <mdb-checkbox (change)="onSaveInDFMSChanged($event)" [default]="true" formControlName="safeDFMS">Safe in
+                DFMS
               </mdb-checkbox>
             </div>
           </div>
@@ -144,7 +151,7 @@
           <div class="row">
             <div class="col-6 color-white fw-400 d-flex justify-content-end">
               <div class="form-check form-check-inline">
-                <input formControlName="typePrivatePublic" [value]="false" type="radio" class="form-check-input"
+                <input formControlName="typePrivatePublic" [value]="2" type="radio" class="form-check-input"
                   id="private" name="typePrivatePublic" mdbInput>
                 <label class="form-check-label" for="private">Private</label>
               </div>
@@ -152,8 +159,8 @@
 
             <div class="col-6 color-white fw-400 d-flex justify-content-start">
               <div class="form-check form-check-inline">
-                <input formControlName="typePrivatePublic" [value]="true" type="radio" class="form-check-input"
-                  id="public" name="typePrivatePublic" mdbInput>
+                <input formControlName="typePrivatePublic" [value]="1" type="radio" class="form-check-input" id="public"
+                  name="typePrivatePublic" mdbInput>
                 <label class="form-check-label" for="public">Public</label>
               </div>
             </div>

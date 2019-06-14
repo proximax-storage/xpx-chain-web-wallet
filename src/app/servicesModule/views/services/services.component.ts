@@ -16,7 +16,6 @@ export class ServicesComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-
     const multisignature = this.service.structureServices(
       'fa fa-user-plus',
       'Multisignature and Multi-User Accounts',
@@ -34,7 +33,7 @@ export class ServicesComponent implements OnInit {
       }, false
     );
 
-    const explorerTransaction = this.service.structureServices('icon-transactions-dark-green.svg', 'Transaction Explorer', `Search All available transactions`,
+    const explorerTransaction = this.service.structureServices('icon-transactions-dark-green.svg', 'Transaction Explorer', `Explorer all transactions in the wallet`,
       {
         createPoll: this.structureServiceRoute('Open Explorer', `/${AppConfig.routes.explorer}`)
       }, true
@@ -55,7 +54,7 @@ export class ServicesComponent implements OnInit {
       }, true
     );
 
-    const nameSpace = this.service.structureServices('icon-namespaces-dark-green.svg', 'Namespaces & Subnamespaces',
+    const namespace = this.service.structureServices('icon-namespaces-dark-green.svg', 'Namespaces & Subnamespaces',
       'Namespaces are domain names. Each namespaces is unique and authenticates mosaics (assets).',
       {
         createNamespace: this.structureServiceRoute('Create Namespace', `/${AppConfig.routes.createNamespace}`),
@@ -97,7 +96,7 @@ export class ServicesComponent implements OnInit {
       //addNode: addNode,
       multisignature: multisignature,
       explorerTransaction: explorerTransaction,
-      nameSpace: nameSpace,
+      nameSpace: namespace,
       mosaics: mosaics,
       delegatedHarvesting: delegatedHarvesting,
       apostille: apostille,
@@ -107,6 +106,15 @@ export class ServicesComponent implements OnInit {
       storage: storage
     }
   }
+
+  /**
+   *
+   *
+   * @param {*} name
+   * @param {*} link
+   * @returns
+   * @memberof ServicesComponent
+   */
   structureServiceRoute(name, link) {
     return {
       name: name,

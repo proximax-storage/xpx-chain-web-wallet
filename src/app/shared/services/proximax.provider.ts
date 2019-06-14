@@ -663,14 +663,14 @@ export class ProximaxProvider {
   * @returns {TransferTransaction}
   * @memberof ProximaxProvider
   */
-  sendTransaction(network: NetworkType, address: string, message?: string, amount: number = 0): TransferTransaction {
-    // console.log(address, message)
+  buildTransferTransaction(network: NetworkType, address: Address, message?: string, amount: number = 0): TransferTransaction {
+    const mosaicId = new MosaicId(this.mosaicXpx.mosaicId);
     return TransferTransaction.create(
-      Deadline.create(23),
-      Address.createFromRawAddress(address),
-      [new Mosaic(new MosaicId(this.mosaicXpx.mosaic), UInt64.fromUint(Number(amount)))],
+      Deadline.create(5),
+      address,
+      [new Mosaic(mosaicId, UInt64.fromUint(Number(amount)))],
       PlainMessage.create(message),
-      network,
+      network
     );
   }
 }

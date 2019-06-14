@@ -153,6 +153,7 @@ export class TransactionsService {
   ) {
     const recipientAddress = this.proximaxProvider.createFromRawAddress(recipient);
     const mosaicId = new MosaicId(mosaic);
+
     const transferTransaction = TransferTransaction.create(
       Deadline.create(5),
       recipientAddress,
