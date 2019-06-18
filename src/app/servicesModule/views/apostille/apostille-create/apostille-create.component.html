@@ -84,7 +84,6 @@
                       formControlName="content" id="content" class="md-textarea form-control"
                       mdbInputDirective></textarea>
                     <label for="content">Content</label>
-                    <!-- <mdb-error class="text-danger fw-500" *ngIf="input.invalid && (input.dirty || input.touched)">Invalid password</mdb-error> -->
                   </div>
                 </div>
               </div>
@@ -140,7 +139,7 @@
                 <div class="col-9 col-sm-10 col-md-10 col-lg-11">
                   <div class="md-form">
                     <ng-select [items]="typeEncrypted" formControlName="typeEncrypted" bindLabel="label"
-                      bindValue="value" placeholder="Select type Encrypted" (change)="optionSelected($event)">
+                      bindValue="value" placeholder="Select type Encrypted">
                     </ng-select>
                   </div>
                 </div>

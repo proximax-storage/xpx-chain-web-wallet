@@ -42,8 +42,8 @@ export class ApostilleCreateComponent implements OnInit {
     { value: '1', label: 'MD5' },
     { value: '2', label: 'SHA1' },
     { value: '3', label: 'SHA256' },
-    { value: '4', label: 'SHA3-256' },
-    { value: '5', label: 'SHA3-512' }
+    { value: '4', label: 'SHA3' },
+    { value: '5', label: 'SHA512' }
   ];
 
   // ---------- FILE ---------
@@ -233,6 +233,28 @@ export class ApostilleCreateComponent implements OnInit {
     }
   }
 
+
+  /**
+   *
+   *
+   * @returns
+   * @memberof ApostilleCreateComponent
+   */
+  encryptData(data: string) {
+    switch (this.apostilleCreateForm.get('typeEncrypted').value) {
+      case "1":
+        return crypto.MD5(data);
+      case "2":
+        return crypto.SHA1(data);
+      case "3":
+        return crypto.SHA256(data);
+      case "4":
+        return crypto.SHA3(data);
+      case "5":
+        return crypto.SHA512(data);
+    }
+  }
+
   /**
    * The FileReader object lets web applications asynchronously read the contents of files (or raw data buffers)
    * stored on the user's computer, using File or Blob objects to specify the file or data to read.
@@ -299,16 +321,6 @@ export class ApostilleCreateComponent implements OnInit {
       proxinty.data.push(nty.data)
       localStorage.setItem('proxi-nty', JSON.stringify(proxinty))
     }
-  }
-
-  /**
-   *
-   *
-   * @param {Event} event
-   * @memberof ApostilleCreateComponent
-   */
-  optionSelected(event: Event) {
-
   }
 
   /**
@@ -410,8 +422,8 @@ export class ApostilleCreateComponent implements OnInit {
     const title = this.nameFile;
     //Create an account from my private key
     const ownerAccount = Account.createFromPrivateKey(common.privateKey, this.walletService.network);
-    //create an encrypted hash in sha256
-    const hash = crypto.SHA256(this.file.toString());
+    //create an encrypted hash
+    const hash = this.encryptData(this.file.toString());
     // The string contentHash is converted to byte
     const fileHash = this.hexStringToByte(hash.toString());
     // Create pair of owner keys
@@ -420,10 +432,10 @@ export class ApostilleCreateComponent implements OnInit {
     const contentHashSig = KeyPair.sign(ownerKeypair, fileHash);
     // create a prefix hash
     const apostilleHashPrefix = 'fe4e545903';
-    // Concatenates the hash prefix with SHA256 and the result gives the apostille hash
+    // Concatenates the hash prefix and the result gives the apostille hash
     const apostilleHash = apostilleHashPrefix + convert.uint8ToHex(contentHashSig).toLowerCase();
-    // Encrypt the title with sha256
-    const fileNameHash = crypto.SHA256(title);
+    // Encrypt the title
+    const fileNameHash = this.encryptData(title);
     // Sign the fileNameHash with the ownerKeypair
     const fileNameHashSign = KeyPair.sign(ownerKeypair, this.hexStringToByte(fileNameHash.toString()));
     // Take the first 32 UINT8 to get the private key
@@ -445,6 +457,7 @@ export class ApostilleCreateComponent implements OnInit {
     this.proximaxProvider.announce(signedTransaction).subscribe(
       x => {
         // Aqui falta validar si la transacción fue aceptada por el blockchain
+
         //Create arrangement to assemble the certificate
         const nty = {
           signedTransaction: signedTransaction,
@@ -457,7 +470,7 @@ export class ApostilleCreateComponent implements OnInit {
           Owner: ownerAccount.address.plain(),
         }
 
-        // Si todo fue OK, construye y arma el certificado
+        // If everything went OK, build and build the certificate
         this.buildApostille(nty)
       },
       err => {
@@ -475,9 +488,9 @@ export class ApostilleCreateComponent implements OnInit {
   preparePublicApostille(common: any) {
     //create a hash prefix
     const apostilleHashPrefix = 'fe4e545903';
-    //create an encrypted hash in sha256
-    const hash = crypto.SHA256(this.file.toString());
-    //concatenates the hash prefix with SHA256 and the result gives the apostilleHash
+    //create an encrypted hash
+    const hash = this.encryptData(this.file.toString());
+    //concatenates the hash prefix and the result gives the apostilleHash
     const apostilleHash = apostilleHashPrefix + hash.toString();
     //Generate an account to send the transaction with the apostilleHash
     const sinkAddress = this.proximaxProvider.createFromRawAddress(this.proximaxProvider.generateNewAccount(this.walletService.network).address.plain());
@@ -528,6 +541,6 @@ export class ApostilleCreateComponent implements OnInit {
     this.zip = new JSZip();
     this.nameFile = 'Not file selected yet...';
     this.apostilleCreateForm.reset();
-    // location.reload();
+    this.apostilleCreateForm.get('typeEncrypted').patchValue('');
   }
 }
