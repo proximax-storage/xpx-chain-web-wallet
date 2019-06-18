@@ -35,7 +35,7 @@
           <img class="mr-1rem h2em" src="assets/images/img/icon-upload-file-white.svg" alt="">
           <span>UPLOAD FILE</span>
         </button>
-        <input id="fileInput" [hidden]="true" type="file" (change)="fileChange($event.target.files,$event)"
+        <input id="fileInput" [hidden]="true" type="file" (change)="fileReader($event.target.files)"
           formControlName="file">
       </div>
       <!-- Name File -->
@@ -84,6 +84,7 @@
                       formControlName="content" id="content" class="md-textarea form-control"
                       mdbInputDirective></textarea>
                     <label for="content">Content</label>
+                    <!-- <mdb-error class="text-danger fw-500" *ngIf="input.invalid && (input.dirty || input.touched)">Invalid password</mdb-error> -->
                   </div>
                 </div>
               </div>
@@ -151,7 +152,7 @@
           <div class="row">
             <div class="col-6 color-white fw-400 d-flex justify-content-end">
               <div class="form-check form-check-inline">
-                <input formControlName="typePrivatePublic" [value]="2" type="radio" class="form-check-input"
+                <input formControlName="typePrivatePublic" [value]="false" type="radio" class="form-check-input"
                   id="private" name="typePrivatePublic" mdbInput>
                 <label class="form-check-label" for="private">Private</label>
               </div>
@@ -159,8 +160,8 @@
 
             <div class="col-6 color-white fw-400 d-flex justify-content-start">
               <div class="form-check form-check-inline">
-                <input formControlName="typePrivatePublic" [value]="1" type="radio" class="form-check-input" id="public"
-                  name="typePrivatePublic" mdbInput>
+                <input formControlName="typePrivatePublic" checked [value]="true" type="radio" class="form-check-input"
+                  id="public" name="typePrivatePublic" mdbInput>
                 <label class="form-check-label" for="public">Public</label>
               </div>
             </div>

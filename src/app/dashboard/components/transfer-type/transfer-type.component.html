@@ -62,18 +62,6 @@
           </div>
         </div>
       </div>
-
-      <!-- Message -->
-      <div class="col-12 mt-1rem">
-        <div class="row">
-          <div class="col-12">
-            <span class="color-dark-green fw-bold fs-07rem">Message: </span>
-          </div>
-          <div class="col-12">
-            <span class="color-dark-green fw-400 fs-08rem">{{transferTransaction?.data['message'].payload}}</span>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 
@@ -111,6 +99,18 @@
             <span class="fs-07rem fw-bolder w-w-b-w">{{transferTransaction?.data.transactionInfo.hash}}</span>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Message -->
+  <div class="col-12 mt-1rem">
+    <div class="row">
+      <div class="col-12">
+        <span class="color-dark-green fw-bold fs-07rem">Message: </span>
+      </div>
+      <div class="col-12 overflow-ellipsis-nowrap">
+        <span class="color-dark-green fw-400 fs-08rem">{{transferTransaction?.data['message'].payload}}</span>
       </div>
     </div>
   </div>

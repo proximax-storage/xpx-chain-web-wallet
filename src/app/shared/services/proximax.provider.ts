@@ -478,7 +478,6 @@ export class ProximaxProvider {
    * @memberof ProximaxProvider
    */
   getTransactionStatusError(hash: string): Observable<TransactionStatus> {
-    // console.log('hash', hash)
     return this.transactionHttp.getTransactionStatus(hash);
   }
 
@@ -491,8 +490,6 @@ export class ProximaxProvider {
    */
   generateNewAccount(network: NetworkType): Account {
     return Account.generateNewAccount(network);
-    // account.address.pretty()
-    // account.privateKey
   }
 
   /**
@@ -550,9 +547,7 @@ export class ProximaxProvider {
   getMosaicsAmountView(address: Address) {
     this.mosaicService
       .mosaicsAmountViewFromAddress(address)
-      .pipe(
-        mergeMap((_) => _)
-      )
+      .pipe(mergeMap((_) => _))
       .subscribe(mosaic => console.log('You have', mosaic.relativeAmount(), mosaic.fullName()),
         err => console.error(err));
   }
