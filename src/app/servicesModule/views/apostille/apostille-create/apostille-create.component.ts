@@ -7,12 +7,12 @@ import { saveAs } from 'file-saver';
 import * as jsPDF from 'jspdf';
 import { Account, UInt64 } from 'tsjs-xpx-catapult-sdk';
 import { IpfsConnection, StreamHelper, IpfsClient } from 'xpx2-ts-js-sdk';
+import { KeyPair, convert } from 'js-xpx-catapult-library';
 import { WalletService } from '../../../../shared';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { Verifier } from '../services/audit-apistille-verifier';
 import { ApostilleService } from '../services/apostille.service';
 import { environment } from '../../../../../environments/environment';
-import { KeyPair, convert } from 'js-xpx-catapult-library';
 
 @Component({
   selector: 'app-apostille-create',
@@ -90,26 +90,21 @@ export class ApostilleCreateComponent implements OnInit {
    */
   buildApostille(nty: any) {
     const date = new Date();
-    const title = nty.title.slice(0, nty.title.lastIndexOf('.'));
-    const extension = nty.title.slice(nty.title.lastIndexOf('.'));
-    const dateFull = `${date.getFullYear()}-${("00" + (date.getMonth() + 1)).slice(-2)}-${("00" + (date.getDate())).slice(-2)}`
     const url = `${this.proximaxProvider.url}/transaction/${nty.signedTransaction.hash.toLowerCase()}`;
+    const title = (nty.title.slice(0, nty.title.lastIndexOf('.'))).slice(0, 15);
     let qr = qrcode(10, 'H');
     qr.addData(url);
     qr.make();
-    // const apostilleFilename = `${title} -- Apostille TX ${nty.signedTransaction.hash.toLowerCase()} -- Date ${dateFull.toString()}${title2}`;
-    const apostilleFilename = `${title} -- Apostille TX ${nty.signedTransaction.hash.toLowerCase()} -- Date ${date.toUTCString()}${extension}`;
-    const validation = (this.apostilleCreateForm.get('typePrivatePublic').value == true);
     this.ntyData = {
       data: [
         {
-          "filename": nty.title,
+          "filename": title,
           "tags": nty.tags.join(' '),
           "fileHash": nty.apostilleHash,
           "owner": nty.account.address,
           "fromMultisig": nty.account.address,
           "dedicatedAccount": nty.sinkAddress,
-          "dedicatedPrivateKey": validation ? "None (public sink)" : nty.dedicatedPrivateKey,
+          "dedicatedPrivateKey": (this.apostilleCreateForm.get('typePrivatePublic').value == true) ? "None (public sink)" : nty.dedicatedPrivateKey,
           "txHash": nty.signedTransaction.hash.toLowerCase(),
           "txMultisigHash": "",
           "timeStamp": date.toUTCString()
@@ -117,26 +112,22 @@ export class ApostilleCreateComponent implements OnInit {
       ]
     };
 
-    const base64ImageString = qr.createDataURL();
-    // Apostille public
+    // Add Certificate PDF to zip
+    const nameCertificate = `Certificate of ${title} -- Apostille TX ${nty.signedTransaction.hash.toLowerCase()} -- Date ${date.toUTCString()}.pdf`;
     if (Verifier.isPrivateApostille(nty.apostilleHash)) {
-      this.zip.file(
-        `Certificate of ${apostilleFilename}.pdf`,
-        this.pdfcertificatePrivate(base64ImageString, url, nty)
-      ), {};
+      this.zip.file(nameCertificate, this.pdfcertificatePrivate(qr.createDataURL(), url, nty), {});
+    } else if (Verifier.isPublicApostille(nty.apostilleHash)) {
+      this.zip.file(nameCertificate, this.pdfcertificatePublic(qr.createDataURL(), url, nty), {});
     }
 
-    // Apostille public
-    if (Verifier.isPublicApostille(nty.apostilleHash)) {
-      this.zip.file(
-        `Certificate of ${apostilleFilename}.pdf`,
-        this.pdfcertificatePublic(base64ImageString, url, nty)
-      ), {};
-    }
-
-    this.zip.file(apostilleFilename, (crypto.enc.Base64.stringify(this.rawFileContent)), {
-      base64: true
-    });
+    // Add Original File to zip
+    const extensionFile = nty.title.slice(nty.title.lastIndexOf('.'));
+    const dateFull = `${date.getFullYear()}-${("00" + (date.getMonth() + 1)).slice(-2)}-${("00" + (date.getDate())).slice(-2)}`;
+    this.zip.file(
+      `${title} -- Apostille TX ${nty.signedTransaction.hash.toLowerCase()} -- Date ${dateFull.toString()}${extensionFile}`,
+      (crypto.enc.Base64.stringify(this.rawFileContent)),
+      { base64: true }
+    );
 
     this.setAccountWalletStorage(this.ntyData);
     this.downloadSignedFiles();
@@ -200,7 +191,6 @@ export class ApostilleCreateComponent implements OnInit {
         if (this.apostilleCreateForm.get('typePrivatePublic').value === true) {
           this.preparePublicApostille(common);
         } else {
-          console.log('is privated!');
           this.preparePrivateApostille(common);
         }
       }
@@ -221,7 +211,11 @@ export class ApostilleCreateComponent implements OnInit {
         if (this.storeInDfms) {
           const bufferContent = await this.convertBlobToBuffer(content);
           const streamContent = await StreamHelper.buffer2Stream(bufferContent);
-          const ipfConnection = new IpfsConnection(environment.storageConnection.host, environment.storageConnection.port, environment.storageConnection.options);
+          const ipfConnection = new IpfsConnection(
+            environment.storageConnection.host,
+            environment.storageConnection.port,
+            environment.storageConnection.options
+          );
           const ifpsClient = new IpfsClient(ipfConnection);
           ifpsClient.addStream(streamContent).subscribe(hash => {
             saveAs(content, `${hash}.zip`);
@@ -232,7 +226,7 @@ export class ApostilleCreateComponent implements OnInit {
           const dateFull = `${date.getFullYear()}-${("00" + (date.getMonth() + 1)).slice(-2)}-${("00" + (date.getDate())).slice(-2)}`;
           saveAs(
             content,
-            `PROXIsigned -- Do not Edit --"${date.toUTCString()}".zip`
+            `PROXIsigned -- Do not Edit --"${dateFull}".zip`
           );
         }
       });
@@ -353,7 +347,7 @@ export class ApostilleCreateComponent implements OnInit {
     doc.addImage(base64ImageString, 'gif', 45, 244, 51, 50);
     doc.setFontType('normal');
     doc.setTextColor(0, 0, 0);
-    doc.text(80, 89, nty.title);
+    doc.text(80, 89, (nty.title.slice(0, nty.title.lastIndexOf('.'))).slice(0, 40));
 
     doc.text(80, 99, date.toUTCString());
     doc.setFontSize(13);
@@ -388,7 +382,7 @@ export class ApostilleCreateComponent implements OnInit {
     doc.addImage(base64ImageString, 'gif', 45, 244, 51, 50);
     doc.setFontType('normal');
     doc.setTextColor(0, 0, 0);
-    doc.text(80, 89, nty.title);
+    doc.text(80, 89, (nty.title.slice(0, nty.title.lastIndexOf('.'))).slice(0, 40));
 
     doc.text(80, 99, date.toUTCString());
     doc.setFontSize(13);
@@ -412,44 +406,42 @@ export class ApostilleCreateComponent implements OnInit {
    * @memberof ApostilleCreateComponent
    */
   preparePrivateApostille(common: any) {
-    //Obtiene el nombre del archivo
+    //Get the name of the file
     const title = this.nameFile;
     //Create an account from my private key
     const ownerAccount = Account.createFromPrivateKey(common.privateKey, this.walletService.network);
     //create an encrypted hash in sha256
     const hash = crypto.SHA256(this.file.toString());
-    // El contentHash se convierte a byte
+    // The string contentHash is converted to byte
     const fileHash = this.hexStringToByte(hash.toString());
-    //Crea par de llaves del owner
+    // Create pair of owner keys
     const ownerKeypair = KeyPair.createKeyPairFromPrivateKeyString(common.privateKey);
-    // Se firma fileHash con el ownerKeypair
+    // FileHash is signed with ownerKeypair
     const contentHashSig = KeyPair.sign(ownerKeypair, fileHash);
-    //create a hash prefix
+    // create a prefix hash
     const apostilleHashPrefix = 'fe4e545903';
-    //Concatena el prefijo de hash con SHA256 y el resultado da el hash del apostille
+    // Concatenates the hash prefix with SHA256 and the result gives the apostille hash
     const apostilleHash = apostilleHashPrefix + convert.uint8ToHex(contentHashSig).toLowerCase();
-    // Encripta el titulo con sha256
+    // Encrypt the title with sha256
     const fileNameHash = crypto.SHA256(title);
-    //Firma el fileNameHash con el ownerKeypair
+    // Sign the fileNameHash with the ownerKeypair
     const fileNameHashSign = KeyPair.sign(ownerKeypair, this.hexStringToByte(fileNameHash.toString()));
-    console.log('----fileNameHashSign----', fileNameHashSign);
-    console.log('----fileNameHashSign.slice(0, 32)----', fileNameHashSign.slice(0, 32));
-    // QUE HACE???
+    // Take the first 32 UINT8 to get the private key
     const dedicatedPrivateKey = convert.uint8ToHex(fileNameHashSign.slice(0, 32));
-    // Crea una cuenta a partir de la dedicatedPrivateKey para enviarle una transacción con mensaje del apostilleHash
+    // Create an account from the dedicatedPrivateKey to send a transaction with apostilleHash message
     const dedicatedAccount = Account.createFromPrivateKey(dedicatedPrivateKey, this.walletService.network);
     let transferTransaction: any;
-    //Arma la transacción tipo transfer
+    // Build the transfer type transaction
     transferTransaction = this.proximaxProvider.buildTransferTransaction(
       this.walletService.network,
       this.proximaxProvider.createFromRawAddress(dedicatedAccount.address.plain()),
       JSON.stringify(apostilleHash)
     );
-    // Se agrega fee cero
+    // Zero fee is added
     transferTransaction.fee = UInt64.fromUint(0);
-    // Firma la transacción
+    // Sign the transaction
     const signedTransaction = ownerAccount.sign(transferTransaction);
-    //announce the transaction
+    // announce the transaction
     this.proximaxProvider.announce(signedTransaction).subscribe(
       x => {
         // Aqui falta validar si la transacción fue aceptada por el blockchain
@@ -481,7 +473,6 @@ export class ApostilleCreateComponent implements OnInit {
    * @memberof preparePublicApostille
    */
   preparePublicApostille(common: any) {
-    console.log(this.file.toString());
     //create a hash prefix
     const apostilleHashPrefix = 'fe4e545903';
     //create an encrypted hash in sha256
@@ -509,7 +500,7 @@ export class ApostilleCreateComponent implements OnInit {
           tags: [this.apostilleCreateForm.get('tags').value],
           apostilleHash: apostilleHash,
           account: myAccount,
-          sinkAddress: sinkAddress,
+          sinkAddress: sinkAddress.plain(),
           dedicatedPrivateKey: "",
           Owner: myAccount.address.plain()
         }
@@ -534,6 +525,7 @@ export class ApostilleCreateComponent implements OnInit {
   reset() {
     const file: HTMLElement = document.getElementById('fileInput');
     file['value'] = '';
+    this.zip = new JSZip();
     this.nameFile = 'Not file selected yet...';
     this.apostilleCreateForm.reset();
     // location.reload();
