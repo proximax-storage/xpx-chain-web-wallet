@@ -58,6 +58,7 @@ export class TransferComponent implements OnInit {
   ];
   blockSendButton: boolean;
   contactSelected = '';
+  titleLabelAmount = 'Amount';
 
   constructor(
     private fb: FormBuilder,
@@ -83,6 +84,10 @@ export class TransferComponent implements OnInit {
     this.createFormContact();
     this.getMosaics();
     this.changeAddress();
+
+    this.transferForm.get('mosaicsSelect').valueChanges.subscribe(
+      value => this.titleLabelAmount = (typeof (value) === 'string' && value === this.proximaxProvider.mosaicXpx.mosaicId) ? 'Amount' : 'Quantity'
+    );
   }
 
   /**
