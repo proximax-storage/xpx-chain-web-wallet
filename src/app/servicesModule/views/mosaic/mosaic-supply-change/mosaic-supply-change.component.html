@@ -98,11 +98,11 @@
             <div class="box-form pt-0 pb-0">
               <div class="row d-flex justify-content-center">
                 <div
-                  class="col-3 col-sm-2 col-md-1 d-flex align-items-center justify-content-end justify-content-sm-end">
+                  class="col-3 col-sm-2 col-md-2 d-flex align-items-center justify-content-end justify-content-sm-end">
                   <img class="h1-5em" src="assets/images/img/icon-password-white.svg" alt="">
                 </div>
 
-                <div class="col-9 col-sm-10 col-md-11">
+                <div class="col-9 col-sm-10 col-md-10">
                   <div class="md-form">
                     <input formControlName="password" type="password" autocomplete="off" required id="password"
                       class="form-control" mdbInputDirective [validateSuccess]="false" [validateError]="false">
@@ -111,7 +111,6 @@
                     <mdb-error class="text-danger fw-500"
                       *ngIf="input.invalid && (input.dirty || input.touched) && input.value === ''">Invalid
                       password</mdb-error>
-
 
                     <mdb-error class="text-danger fw-500"
                       *ngIf="input.value !== '' && input.value.length >= 1 && input.value.length <= 7">

@@ -73,7 +73,7 @@ export class TransferComponent implements OnInit {
     const data = this.contacts.slice(0);
     const bookAddress = this.ServiceModuleService.getBooksAddress();
     this.contacts = [];
-    if (bookAddress !== undefined) {
+    if (bookAddress !== undefined && bookAddress !== null) {
       for (let x of bookAddress) {
         data.push(x);
       }
