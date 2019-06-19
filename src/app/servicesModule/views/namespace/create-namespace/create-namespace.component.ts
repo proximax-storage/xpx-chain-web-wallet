@@ -56,6 +56,9 @@ export class CreateNamespaceComponent implements OnInit {
   validateForm: boolean = false;
   viewReload: boolean = false;
   blockBtnSend: boolean = false;
+  calculateRentalFee: any = '0.000000';
+  rentalFee = 0.100000;
+
 
   constructor(
     private fb: FormBuilder,
@@ -72,14 +75,17 @@ export class CreateNamespaceComponent implements OnInit {
   ngOnInit() {
     this.createForm();
     this.getNameNamespace();
-    this.fee = `0.0 ${this.feeType}`
-
+    this.fee = `0.000000 ${this.feeType}`
+    this.durationByBlock = this.transactionService.calculateDuration(UInt64.fromUint(this.namespaceForm.get('duration').value));
     this.namespaceForm.get('duration').valueChanges.subscribe(
       next => {
-        if (next !== null) {
+        if (next !== null && next !== undefined && String(next) !== '0') {
+          this.calculateRentalFee = (this.rentalFee * next).toFixed(6);
           this.durationByBlock = this.transactionService.calculateDuration(UInt64.fromUint(next));
         } else {
+          this.calculateRentalFee = '0.000000';
           this.durationByBlock = '0 days, 0 Hrs, 0 Minutes, 0 Seconds';
+          this.namespaceForm.get('duration').patchValue(1);
         }
       }
     );
@@ -152,7 +158,7 @@ export class CreateNamespaceComponent implements OnInit {
     this.namespaceForm = this.fb.group({
       name: ['', [Validators.required, Validators.maxLength(64)]],
       namespaceRoot: ['1'],
-      duration: [''],
+      duration: [1, [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]],
     });
 
