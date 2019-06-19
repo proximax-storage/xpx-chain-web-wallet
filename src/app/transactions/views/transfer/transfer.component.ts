@@ -20,7 +20,7 @@ export class TransferComponent implements OnInit {
 
 
   myClass = {
-    'boxRecipientTrue': 'col-9 col-sm-8 col-md-7 pr-2rem',
+    'boxRecipientTrue': 'col-9 col-sm-10 col-md-6 col-lg-7 pr-2rem',
     'boxDirectoryTrue': 'col-12 col-md-4 col-lg-4 d-flex justify-content-center align-items-center background-dark-green-plus',
     'boxRecipientFalse': 'col-9 col-sm-8 col-md-8 pl-2rem pr-2rem',
     'boxDirectoryFalse': 'col-12 col-sm-2 col-md-3 d-flex justify-content-center align-items-center background-dark-green-plus',
@@ -88,6 +88,15 @@ export class TransferComponent implements OnInit {
     this.transferForm.get('mosaicsSelect').valueChanges.subscribe(
       value => this.titleLabelAmount = (typeof (value) === 'string' && value === this.proximaxProvider.mosaicXpx.mosaicId) ? 'Amount' : 'Quantity'
     );
+
+    this.transferForm.get('amount').valueChanges.subscribe(
+      value => {
+        if (value !== null && value !== undefined && value < 0) {
+          this.transferForm.get('amount').patchValue(0);
+        }
+      }
+    );
+
   }
 
   /**
@@ -142,7 +151,7 @@ export class TransferComponent implements OnInit {
           Validators.maxLength(46)
         ]
       ],
-      amount: [null, [Validators.maxLength(20)]],
+      amount: [0, [Validators.maxLength(20)]],
       message: ["", [Validators.maxLength(1024)]],
       password: [
         null,
