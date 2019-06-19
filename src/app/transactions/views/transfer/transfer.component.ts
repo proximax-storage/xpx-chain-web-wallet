@@ -59,6 +59,7 @@ export class TransferComponent implements OnInit {
   blockSendButton: boolean;
   contactSelected = '';
   titleLabelAmount = 'Amount';
+  msgErrorUnsupported = '';
 
   constructor(
     private fb: FormBuilder,
@@ -84,6 +85,20 @@ export class TransferComponent implements OnInit {
     this.createFormContact();
     this.getMosaics();
     this.changeAddress();
+
+    this.transferForm.get('accountRecipient').valueChanges.subscribe(
+      value => {
+        if (value.length >= 40 && value.length <= 46) {
+          if (!this.proximaxProvider.verifyNetworkAddressEquals(this.walletService.address.plain(), value)) {
+            this.msgErrorUnsupported = 'Recipient Address Network unsupported';
+          } else {
+            this.msgErrorUnsupported = '';
+          }
+        } else {
+          this.msgErrorUnsupported = '';
+        }
+      }
+    );
 
     this.transferForm.get('mosaicsSelect').valueChanges.subscribe(
       value => this.titleLabelAmount = (typeof (value) === 'string' && value === this.proximaxProvider.mosaicXpx.mosaicId) ? 'Amount' : 'Quantity'
@@ -245,36 +260,27 @@ export class TransferComponent implements OnInit {
       if (form.get(control).getError("required")) {
         return `This field is required`;
       } else if (form.get(control).getError("minlength")) {
-        return `This field must contain minimum ${
-          form.get(control).getError("minlength").requiredLength
-          } characters`;
+        return `This field must contain minimum ${form.get(control).getError("minlength").requiredLength} characters`;
       } else if (form.get(control).getError("maxlength")) {
-        return `This field must contain maximum ${
-          form.get(control).getError("maxlength").requiredLength
-          } characters`;
+        return `This field must contain maximum ${form.get(control).getError("maxlength").requiredLength} characters`;
       }
     } else {
       if (form.controls[formControl].get(control).getError("required")) {
         return `This field is required`;
-      } else if (
-        form.controls[formControl].get(control).getError("minlength")
-      ) {
-        return `This field must contain minimum ${
-          form.controls[formControl].get(control).getError("minlength")
-            .requiredLength
-          } characters`;
-      } else if (
-        form.controls[formControl].get(control).getError("maxlength")
-      ) {
-        return `This field must contain maximum ${
-          form.controls[formControl].get(control).getError("maxlength")
-            .requiredLength
-          } characters`;
+      } else if (form.controls[formControl].get(control).getError("minlength")) {
+        return `This field must contain minimum ${form.controls[formControl].get(control).getError("minlength").requiredLength} characters`;
+      } else if (form.controls[formControl].get(control).getError("maxlength")) {
+        return `This field must contain maximum ${form.controls[formControl].get(control).getError("maxlength").requiredLength} characters`;
       } else if (form.controls[formControl].getError("noMatch")) {
         return `Password doesn't match`;
       }
     }
   }
+
+  get input() { return this.transferForm.get('accountRecipient'); }
+
+
+
 
   /**
    * Send a transfer transaction

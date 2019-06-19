@@ -39,12 +39,11 @@ import {
   AliasTransaction,
   AliasActionType
 } from 'tsjs-xpx-catapult-sdk';
-
+import { mergeMap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { commonInterface, walletInterface } from '../interfaces/shared.interfaces';
 import { MosaicXPXInterface } from '../../dashboard/services/transaction.interface';
-import { mergeMap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -73,95 +72,6 @@ export class ProximaxProvider {
 
 
   /**
-     * Create account simple
-     *
-     * @param {string} walletName
-     * @param {Password} password
-     * @param {number} network
-     * @returns {SimpleWallet}
-     * @memberof ProximaxProvider
-     */
-  createAccountSimple(walletName: string, password: Password, network: number): SimpleWallet {
-    return SimpleWallet.create(walletName, password, network);
-  }
-
-  /**
-    * Create a password
-    *
-    * @param {string} value
-    * @returns {Password}
-    * @memberof ProximaxProvider
-    */
-  createPassword(value: string): Password {
-    return new Password(value);
-  }
-
-  /**
-   * Create account simple
-   *
-   * @param {string} nameWallet
-   * @param {Password} password
-   * @param {string} privateKey
-   * @param {number} network
-   * @returns {SimpleWallet}
-   * @memberof ProximaxProvider
-   */
-  createAccountFromPrivateKey(nameWallet: string, password: Password, privateKey: string, network: number): SimpleWallet {
-    return SimpleWallet.createFromPrivateKey(nameWallet, password, privateKey, network);
-  }
-
-  /**
-  * Decrypt and return private key
-  * @param password
-  * @param encryptedKey
-  * @param iv
-  */
-  decryptPrivateKey(password: Password, encryptedKey: string, iv: string): string {
-    const common: commonInterface = {
-      password: password.value,
-      privateKey: ''
-    };
-
-    const wallet: walletInterface = {
-      encrypted: encryptedKey,
-      iv: iv,
-    };
-
-    crypto.passwordToPrivatekey(common, wallet, 'pass:bip32');
-    return common.privateKey;
-  }
-
-
-  /******************** FIN COW **********************/
-
-
-
-
-
-
-  /**
-   *
-   *
-   * @param {NamespaceId} namespaceId
-   * @param {QueryParams} [queryParams]
-   * @returns
-   * @memberof ProximaxProvider
-   */
-  async getInfoMosaicFromNamespacePromise(namespaceId: NamespaceId, queryParams?: QueryParams) {
-    /* const promise = await new Promise(async (resolve, reject) => {
-       if (this.infoMosaic === undefined) {
-         const mosaicInfo = await this.mosaicHttp.getMosaicsFromNamespace(namespaceId).toPromise();
-         resolve(mosaicInfo);
-       } else {
-         reject(null);
-       }
-     });
-     return await promise;*/
-    return null;
-  }
-
-
-  /**
    *
    *
    * @param {SignedTransaction} signedTransaction
@@ -173,89 +83,24 @@ export class ProximaxProvider {
   }
 
   /**
-   *
-   *
-   * @param {NetworkType} network
-   * @returns
-   * @memberof ProximaxProvider
-   */
-  blockchainNetworkConnection(network: NetworkType) {
-    const blockChainNetworkType = this.getBlockchainNetworkType(network);
-    return null; /* new BlockchainNetworkConnection(
-      blockChainNetworkType,
-      environment.blockchainConnection.host,
-      environment.blockchainConnection.port,
-      environment.blockchainConnection.protocol
-    );*/
-  }
-
-
-
-  /**
-   * Check if Address it is correct
-   * @param privateKey privateKey
-   * @param address address
-   * @return checkAddress
-   */
-  checkAddress(privateKey: string, net: NetworkType, address: string): boolean {
-    return (Account.createFromPrivateKey(privateKey, net).address.plain() === address) ? true : false;
-  }
-
-
-
-  /**
- * createPublicAccount
- * @param publicKey
- * @param network
- * @returns {PublicAccount}
- */
-  createPublicAccount(publicKey: string, network: NetworkType): PublicAccount {
-    return PublicAccount.createFromPublicKey(publicKey, network);
-  }
-
-  /**
-   *
-   *
-   * @param {string} publicKey
-   * @param {NetworkType} networkType
-   * @returns {Address}
-   * @memberof ProximaxProvider
-   */
-  createAddressFromPublicKey(publicKey: string, networkType: NetworkType): Address {
-    return Address.createFromPublicKey(publicKey, networkType)
-  }
-
-  /**
-   * Create transaction
-   *
-   * @param recipientAddress
-   * @param message
-   * @param network
-   */
-  createTransaction(recipient: string, amount: any, message: string, network: NetworkType) {
-    const recipientAddress = this.createFromRawAddress(recipient);
+  *
+  *
+  * @param {NetworkType} network
+  * @param {string} address
+  * @param {string} [message]
+  * @param {number} [amount=0]
+  * @returns {TransferTransaction}
+  * @memberof ProximaxProvider
+  */
+  buildTransferTransaction(network: NetworkType, address: Address, message?: string, amount: number = 0): TransferTransaction {
+    const mosaicId = new MosaicId(this.mosaicXpx.mosaicId);
     return TransferTransaction.create(
       Deadline.create(5),
-      recipientAddress,
-      [new Mosaic(new MosaicId(this.mosaicXpx.mosaic), UInt64.fromUint(Number(amount)))],
+      address,
+      [new Mosaic(mosaicId, UInt64.fromUint(Number(amount)))],
       PlainMessage.create(message),
       network
     );
-  }
-
-  /**
-   * Create an Address from a given raw address.
-   *
-   * @param {*} address
-   * @returns {Address}
-   * @memberof ProximaxProvider
-   */
-  createFromRawAddress(address: string): Address {
-    return Address.createFromRawAddress(address);
-  }
-
-  createNonceRandom() {
-    return MosaicNonce.createRandom();
   }
 
   /**
@@ -323,52 +168,141 @@ export class ProximaxProvider {
     );
   }
 
+
   /**
-  *
-  *
-  * @param {any} amount
-  * @param {any} divisibility
-  * @returns
-  * @memberof ProximaxProvider
-  */
-  formatterAmount(amount: number, divisibility: number) {
-    const amountDivisibility = Number(amount / Math.pow(10, divisibility));
-    return (amountDivisibility).toLocaleString('en-us', { minimumFractionDigits: divisibility });
+     * Create account simple
+     *
+     * @param {string} walletName
+     * @param {Password} password
+     * @param {number} network
+     * @returns {SimpleWallet}
+     * @memberof ProximaxProvider
+     */
+  createAccountSimple(walletName: string, password: Password, network: number): SimpleWallet {
+    return SimpleWallet.create(walletName, password, network);
   }
 
   /**
-   * Get account info from address
+    * Create a password
+    *
+    * @param {string} value
+    * @returns {Password}
+    * @memberof ProximaxProvider
+    */
+  createPassword(value: string): Password {
+    return new Password(value);
+  }
+
+  /**
+   * Create account simple
    *
-   * @param {Address} address
-   * @returns {Observable<AccountInfo>}
+   * @param {string} nameWallet
+   * @param {Password} password
+   * @param {string} privateKey
+   * @param {number} network
+   * @returns {SimpleWallet}
    * @memberof ProximaxProvider
    */
+  createAccountFromPrivateKey(nameWallet: string, password: Password, privateKey: string, network: number): SimpleWallet {
+    return SimpleWallet.createFromPrivateKey(nameWallet, password, privateKey, network);
+  }
+
+  /**
+  * Decrypt and return private key
+  * @param password
+  * @param encryptedKey
+  * @param iv
+  */
+  decryptPrivateKey(password: Password, encryptedKey: string, iv: string): string {
+    const common: commonInterface = {
+      password: password.value,
+      privateKey: ''
+    };
+
+    const wallet: walletInterface = {
+      encrypted: encryptedKey,
+      iv: iv,
+    };
+
+    crypto.passwordToPrivatekey(common, wallet, 'pass:bip32');
+    return common.privateKey;
+  }
+
+
+  /**
+   * Check if Address it is correct
+   * @param privateKey privateKey
+   * @param address address
+   * @return checkAddress
+   */
+  checkAddress(privateKey: string, net: NetworkType, address: string): boolean {
+    return (Account.createFromPrivateKey(privateKey, net).address.plain() === address) ? true : false;
+  }
+
+
+
+  /**
+ * createPublicAccount
+ * @param publicKey
+ * @param network
+ * @returns {PublicAccount}
+ */
+  createPublicAccount(publicKey: string, network: NetworkType): PublicAccount {
+    return PublicAccount.createFromPublicKey(publicKey, network);
+  }
+
+  /**
+   *
+   *
+   * @param {string} publicKey
+   * @param {NetworkType} networkType
+   * @returns {Address}
+   * @memberof ProximaxProvider
+   */
+  createAddressFromPublicKey(publicKey: string, networkType: NetworkType): Address {
+    return Address.createFromPublicKey(publicKey, networkType)
+  }
+
+
+  /**
+   * Create an Address from a given raw address.
+   *
+   * @param {*} address
+   * @returns {Address}
+   * @memberof ProximaxProvider
+   */
+  createFromRawAddress(address: string): Address {
+    return Address.createFromRawAddress(address);
+  }
+
+  /**
+   *
+   *
+   * @returns
+   * @memberof ProximaxProvider
+   */
+  createNonceRandom() {
+    return MosaicNonce.createRandom();
+  }
+
+
+  /******************** FIN COW **********************/
+
+
+  /**
+     * Get account info from address
+     *
+     * @param {Address} address
+     * @returns {Observable<AccountInfo>}
+     * @memberof ProximaxProvider
+     */
   getAccountInfo(address: Address): Observable<AccountInfo> {
     return this.accountHttp.getAccountInfo(address);
   }
 
-  /**
-   *
-   *
-   * @param {NetworkType} network
-   * @returns {NetworkType}
-   * @memberof ProximaxProvider
-   */
-  getBlockchainNetworkType(network: NetworkType): NetworkType {
-    switch (network) {
-      case NetworkType.MAIN_NET:
-        return NetworkType.MAIN_NET;
-      case NetworkType.MIJIN:
-        return NetworkType.MIJIN;
-      case NetworkType.MIJIN_TEST:
-        return NetworkType.MIJIN_TEST;
-      case NetworkType.TEST_NET:
-        return NetworkType.TEST_NET;
-    }
-  }
 
   /**
-   * get
+   *
    *
    * @param {string} privateKey
    * @param {*} net
@@ -391,16 +325,6 @@ export class ProximaxProvider {
     return Account.createFromPrivateKey(privateKey, net);
   }
 
-  /**
-   * Get mosaic
-   *
-   * @param {any} mosaicId
-   * @returns
-   * @memberof ProximaxProvider
-   */
-  getMosaic(mosaicId: MosaicId): Observable<MosaicInfo> {
-    return this.mosaicHttp.getMosaic(mosaicId);
-  }
 
   /**
    *
@@ -411,17 +335,6 @@ export class ProximaxProvider {
    */
   getMosaics(mosaicIsd: MosaicId[]): Observable<MosaicInfo[]> {
     return this.mosaicHttp.getMosaics(mosaicIsd);
-  }
-
-  /**
-   *Get balance mosaics in form of MosaicAmountViews for a given account address
-   *
-   * @param {Address} address
-   * @returns {Observable<MosaicAmountView[]>}
-   * @memberof ProximaxProvider
-   */
-  getBalance(address: Address): Observable<MosaicAmountView[]> {
-    return this.mosaicService.mosaicsAmountViewFromAddress(address);
   }
 
   /**
@@ -437,29 +350,6 @@ export class ProximaxProvider {
     return this.accountHttp.transactions(publicAccount, new QueryParams(100));
   }
 
-  /**
-   * Gets a transaction for a transactionId
-   *
-   * @param {string} transactionId
-   * @returns {Observable<Transaction>}
-   * @memberof ProximaxProvider
-   */
-  getTransaction(transactionId: string): any { //Observable<Transaction> {
-    return this.transactionHttp.getTransaction(transactionId);
-  }
-
-  /**
-   *Gets the array of transactions for which an account is the sender or receiver and which have not yet been included in a block.
-   *
-   * @param {*} publicKey
-   * @param {NetworkType} network
-   * @param {QueryParams} [queryParams]
-   * @returns {Observable<Transaction[]>}
-   * @memberof ProximaxProvider
-   */
-  getUnconfirmedTransactionsFromAnAccount(publicAccount: PublicAccount, queryParams?: QueryParams): any {//Observable<Transaction[]> {
-    return this.accountHttp.unconfirmedTransactions(publicAccount, queryParams);
-  }
 
   /**
    * Return getTransaction from id or hash
@@ -525,16 +415,6 @@ export class ProximaxProvider {
     return this.namespaceHttp.getNamespace(namespace);
   }
 
-  /**
-   * GET INFO MOSAICS, RETURN PROMISE
-   *
-   * @param {MosaicId[]} mosaicsId
-   * @returns
-   * @memberof ProximaxProvider
-   */
-  getMosaicViewPromise(mosaicsId: MosaicId[]): any {//{Promise<MosaicView[]> {
-    return this.mosaicService.mosaicsView(mosaicsId).toPromise();
-  }
 
 
   /**
@@ -619,8 +499,6 @@ export class ProximaxProvider {
    * @memberof ProximaxProvider
    */
   registerRootNamespaceTransaction(name: string, network: NetworkType, duration: number = 100): RegisterNamespaceTransaction {
-    // Crear namespace transaction
-    // console.log('duration;', duration)
     return RegisterNamespaceTransaction.createRootNamespace(
       Deadline.create(23),
       name,
@@ -648,24 +526,32 @@ export class ProximaxProvider {
     );
   }
 
-  /**
-  *
-  *
-  * @param {NetworkType} network
-  * @param {string} address
-  * @param {string} [message]
-  * @param {number} [amount=0]
-  * @returns {TransferTransaction}
-  * @memberof ProximaxProvider
-  */
-  buildTransferTransaction(network: NetworkType, address: Address, message?: string, amount: number = 0): TransferTransaction {
-    const mosaicId = new MosaicId(this.mosaicXpx.mosaicId);
-    return TransferTransaction.create(
-      Deadline.create(5),
-      address,
-      [new Mosaic(mosaicId, UInt64.fromUint(Number(amount)))],
-      PlainMessage.create(message),
-      network
-    );
+  verifyNetworkAddressEquals(value: string, value2: string) {
+    if ((value.length === 40 || value.length === 46) && (value2.length === 40 || value2.length === 46)) {
+      if (value.charAt(0) === 'S' && value2.charAt(0) === 'S') {
+        // NetworkType.MIJIN_TEST
+        return true;
+      } else if (value.charAt(0) === 'M' && value2.charAt(0) === 'M') {
+        // NetworkType.MIJIN
+        return true;
+      } else if (value.charAt(0) === 'V' && value2.charAt(0) === 'V') {
+        // NetworkType.TEST_NET
+        return true;
+      } else if (value.charAt(0) === 'X' && value2.charAt(0) === 'X') {
+        // NetworkType.MAIN_NET
+        return true;
+      } else if (value.charAt(0) === 'W' && value2.charAt(0) === 'W') {
+        // NetworkType.PRIVATE_TEST
+        return true;
+      } else if (value.charAt(0) === 'Z' && value2.charAt(0) === 'Z') {
+        // NetworkType.PRIVATE
+        return true;
+      } else {
+        // Address Network unsupported
+        return false;
+      }
+    }
   }
+
+
 }

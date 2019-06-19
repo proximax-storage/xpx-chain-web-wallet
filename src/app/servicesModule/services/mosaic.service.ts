@@ -2,18 +2,10 @@ import { Injectable } from "@angular/core";
 import {
   MosaicInfo,
   MosaicId,
-  MosaicView,
-  Address,
-  Mosaic,
-  Namespace,
-  NamespaceId,
-  QueryParams,
-  NamespaceName
+  MosaicView
 } from "tsjs-xpx-catapult-sdk";
 import { ProximaxProvider } from "../../shared/services/proximax.provider";
 import { WalletService } from "../../shared/services/wallet.service";
-import { TransactionsService } from "../../transactions/service/transactions.service";
-import { ToastService } from "ng-uikit-pro-standard";
 import { MosaicsStorage } from "../interfaces/mosaics-namespaces.interface";
 import { MosaicXPXInterface } from "../../dashboard/services/transaction.interface";
 import { MosaicNames } from "tsjs-xpx-catapult-sdk/dist/src/model/mosaic/MosaicNames";
@@ -35,8 +27,6 @@ export class MosaicService {
     private proximaxProvider: ProximaxProvider,
     private walletService: WalletService
   ) { }
-
-
 
 
   /**

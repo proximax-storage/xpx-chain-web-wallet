@@ -40,12 +40,12 @@
               </div>
             </ng-container>
 
-            <ng-container *ngIf="viewReload">
+            <!-- <ng-container *ngIf="viewReload">
               <div class="col-2 d-flex justify-content-start align-items-center">
                 <i class="fa fa-repeat btn-reload cursor-pointer color-white" aria-hidden="true" mdbTooltip="Reload"
                   placement="bottom" (click)="getMosaics()"></i>
               </div>
-            </ng-container>
+            </ng-container> -->
           </div>
 
           <!-- Contacts -->
@@ -80,9 +80,14 @@
 
               <div class="md-form">
                 <input type="text" autocomplete="off" required formControlName="accountRecipient" id="accountRecipient"
-                  class="form-control" mdbInputDirective data-success="Valid recipient"
-                  [errorMessage]="getError('accountRecipient')">
+                  class="form-control" mdbInputDirective [validateSuccess]="false" [validateError]="false">
                 <label for="recipient">Recipient</label>
+                <!-- VALIDATIONS -->
+                <mdb-error class="text-danger fw-500"
+                  *ngIf="input.invalid && (input.dirty || input.touched) && getError('accountRecipient')">Invalid
+                  Recipient</mdb-error>
+                <mdb-error class="text-danger fw-500" *ngIf="msgErrorUnsupported !== ''">{{msgErrorUnsupported}}
+                </mdb-error>
               </div>
             </div>
 
