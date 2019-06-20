@@ -6,6 +6,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { ClipboardModule } from 'ngx-clipboard';
 import { MdbModule } from "../shared/moduls/mdb/mdb.module";
 import { NgSelectModule } from '@ng-select/ng-select';
+import { NgxMaskModule, IConfig } from 'ngx-mask';
 
 import { TransferTypeComponent } from '../dashboard/components/transfer-type/transfer-type.component';
 import { RegisterNamespaceTypeComponent } from '../dashboard/components/register-namespace-type/register-namespace-type.component';
@@ -45,9 +46,13 @@ const modules = [
   ClipboardModule,
   NgSelectModule
 ];
+
+export let options: Partial<IConfig> | (() => Partial<IConfig>);
+
 @NgModule({
   imports: [
     modules,
+    NgxMaskModule.forRoot(options),
     MdbModule.forRoot()
   ],
   declarations: [
@@ -56,6 +61,7 @@ const modules = [
   exports: [
     components,
     modules,
+    NgxMaskModule,
     MdbModule
   ]
 })

@@ -121,18 +121,18 @@ export class MosaicService {
   async searchMosaicsFromAccountStorage$(): Promise<MosaicsStorage[]> {
     const mosaicFound = [];
     const mosaicsToSearch: MosaicId[] = [];
-    // Mapea los mosaicos de una cuenta
+    // Map mosaics of an account
     const mosaicsFromAccount: MosaicsStorage[] = await this.searchMosaics(this.walletService.getAccountInfo().mosaics.map(n => n.id));
-    // Valida si la cuenta tiene mosaicos
+    // Valid if the account has tiles
     if (mosaicsFromAccount.length > 0) {
-      //Ejecuta bucle de los mosaicos de una cuenta
+      //Starts the mosaic loop of an account
       for (let element of mosaicsFromAccount) {
-        // Busca el id de un mosaico
+        //Find the id of a mosaic
         const mosaicId = this.proximaxProvider.getMosaicId(element.id);
-        // Filtra si el mosaico existe en el storage
+        // Filter if the mosaic exists in the storage
         const existMosaic = this.filterMosaic(mosaicId);
-        // Si el mosaico no existe en el storage, lo asigna a mosaicsToSearch para ser buscado más tarde.
-        //De lo contrario, hace push a mosaicos encontrados.
+        /*If the mosaic does not exist in the storage, assign it to mosaicsToSearch to be searched later.
+          Otherwise, push mosaics found.*/
         if (existMosaic === null || existMosaic === undefined) {
           mosaicsToSearch.push(mosaicId);
         } else {
@@ -140,7 +140,7 @@ export class MosaicService {
         }
       }
 
-      // Si existe algun dato en MosaicsToSearch, procede a buscar los mosaicos y guardarlo en el storage
+      //If there is any data in MosaicsToSearch, proceed to find the tiles and save it in the storage
       if (mosaicsToSearch.length > 0) {
         const response = await this.searchMosaics(mosaicsToSearch);
         response.forEach(element => {
@@ -268,6 +268,11 @@ export class MosaicService {
     return (dataStorage !== null && dataStorage !== undefined) ? JSON.parse(dataStorage) : [];
   }
 
+  /**
+   *
+   *
+   * @memberof MosaicService
+   */
   resetMosaicsStorage() {
     localStorage.removeItem(this.getNameStorage());
   }

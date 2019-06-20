@@ -58,7 +58,7 @@
               <div class="col-9 col-sm-10 col-md-10 col-lg-11">
                 <div class="md-form">
                   <ng-select [items]="contacts" formControlName="contact" bindLabel="label" bindValue="value"
-                    placeholder="Select or write contact" (change)="optionSelected($event)">
+                    placeholder="Select or write contact">
                   </ng-select>
                 </div>
               </div>
@@ -129,36 +129,37 @@
 
           <!-- Quantity and Message -->
           <div class="row box-form mt-1rem pt-0 pb-0 pb-0 pr-0 pl-0 pt-0 pb-0">
-            <div class="col-12">
-              <div class="row">
-                <div class="col-3 col-sm-2 col-md-2 col-lg-1 d-flex align-items-center justify-content-center">
-                  <img class="h1-5em" src="assets/images/img/icon-wallet-import-white.svg" alt="">
-                </div>
+            <div class="col-3 col-sm-2 col-md-2 col-lg-1 d-flex align-items-center justify-content-center">
+              <img class="h1-5em" src="assets/images/img/icon-wallet-import-white.svg" alt="">
+            </div>
 
-                <div class="col-9 col-sm-10 col-md-10 col-lg-11">
-                  <div class="md-form">
-                    <input pattern="^[+]?([0-9]*[.])?[0-9]+$" type="text" autocomplete="off" formControlName="amount"
-                      id="amount" class="form-control" mdbInputDirective data-success="Valid value"
-                      [errorMessage]="getError('amount')">
-                    <label for="recipient">{{titleLabelAmount}}</label>
-                  </div>
-                </div>
+            <div class="col-9 col-sm-10 col-md-6 col-lg-7">
+              <div class="md-form">
+                <input [mask]="maskData" pattern="^[+]?([0-9]*[.])?[0-9]+$" type="text" autocomplete="off"
+                  formControlName="amount" id="amount" class="form-control" mdbInputDirective
+                  [errorMessage]="getError('amount')">
+                <label for="recipient">{{titleLabelAmount}}</label>
               </div>
             </div>
 
-            <div class="col-12">
-              <div class="row">
-                <div class="col-3 col-sm-2 col-md-2 col-lg-1 d-flex align-items-center justify-content-center">
-                  <img class="h1-5em" src="assets/images/img/icon-meseenger-white.svg" alt="">
-                </div>
+            <div class="col-12 col-md-4 d-flex justify-content-center align-items-center background-dark-green-plus">
+              <div class="row text-center">
+                <div class="col-12 fw-400 color-yellow">They will be sent:</div>
+                <div class="col-12 color-white">{{amountSend}}</div>
+              </div>
+            </div>
+          </div>
 
-                <div class="col-9 col-sm-10 col-md-10 col-lg-11">
-                  <div class="md-form">
-                    <input type="text" autocomplete="off" formControlName="message" id="message" class="form-control"
-                      mdbInputDirective data-success="Valid message" [errorMessage]="getError('message')">
-                    <label for="recipient">Message</label>
-                  </div>
-                </div>
+          <div class="row box-form mt-1rem pt-0 pb-0 pb-0 pr-0 pl-0 pt-0 pb-0">
+            <div class="col-3 col-sm-2 col-md-2 col-lg-1 d-flex align-items-center justify-content-center">
+              <img class="h1-5em" src="assets/images/img/icon-meseenger-white.svg" alt="">
+            </div>
+
+            <div class="col-9 col-sm-10 col-md-10 col-lg-11">
+              <div class="md-form">
+                <input type="text" autocomplete="off" formControlName="message" id="message" class="form-control"
+                  mdbInputDirective data-success="Valid message" [errorMessage]="getError('message')">
+                <label for="recipient">Message</label>
               </div>
             </div>
           </div>

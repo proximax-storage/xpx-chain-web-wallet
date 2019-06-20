@@ -5,6 +5,7 @@ import {
   Validators,
   FormControl
 } from "@angular/forms";
+import { MosaicId } from "tsjs-xpx-catapult-sdk";
 import { WalletService, SharedService } from "../../../shared";
 import { TransactionsService } from "../../../transactions/service/transactions.service";
 import { ServiceModuleService } from "../../../servicesModule/services/service-module.service";
@@ -19,29 +20,17 @@ import { ProximaxProvider } from "../../../shared/services/proximax.provider";
 export class TransferComponent implements OnInit {
 
 
-  myClass = {
-    'boxRecipientTrue': 'col-9 col-sm-10 col-md-6 col-lg-7 pr-2rem',
-    'boxDirectoryTrue': 'col-12 col-md-4 col-lg-4 d-flex justify-content-center align-items-center background-dark-green-plus',
-    'boxRecipientFalse': 'col-9 col-sm-8 col-md-8 pl-2rem pr-2rem',
-    'boxDirectoryFalse': 'col-12 col-sm-2 col-md-3 d-flex justify-content-center align-items-center background-dark-green-plus',
-    'rowDirectoryTrue': 'col-10 col-md-8 col-lg-9',
-    'rowAddContactTrue': 'col-2 col-md-4 col-lg-3 d-flex align-items-center',
-    'rowAddContactFalse': 'col-12 d-flex align-items-center'
-  }
-
-  viewReload = false;
-  searchMosaics = true;
-  showContacts = false;
-  inputBlocked: boolean;
+  amountSend: string | number = '0.000000';
+  blockSendButton: boolean;
+  contactForm: FormGroup;
+  contactSelected = '';
   contacts: any = [{
     value: "",
     label: "Select contact",
     selected: false,
     disabled: true
   }];
-  transferForm: FormGroup;
-  contactForm: FormGroup;
-  transferIsSend = false;
+  inputBlocked: boolean;
   mosaicsSelect: any = [
     {
       value: "0",
@@ -56,10 +45,25 @@ export class TransferComponent implements OnInit {
       disabled: false
     }
   ];
-  blockSendButton: boolean;
-  contactSelected = '';
-  titleLabelAmount = 'Amount';
   msgErrorUnsupported = '';
+  maskData = '0*';
+  myClass = {
+    'boxRecipientTrue': 'col-9 col-sm-10 col-md-6 col-lg-7 pr-2rem',
+    'boxDirectoryTrue': 'col-12 col-md-4 col-lg-4 d-flex justify-content-center align-items-center background-dark-green-plus',
+    'boxRecipientFalse': 'col-9 col-sm-8 col-md-8 pl-2rem pr-2rem',
+    'boxDirectoryFalse': 'col-12 col-sm-2 col-md-3 d-flex justify-content-center align-items-center background-dark-green-plus',
+    'rowDirectoryTrue': 'col-10 col-md-8 col-lg-9',
+    'rowAddContactTrue': 'col-2 col-md-4 col-lg-3 d-flex align-items-center',
+    'rowAddContactFalse': 'col-12 d-flex align-items-center'
+  }
+
+  searchMosaics = true;
+  showContacts = false;
+  transferForm: FormGroup;
+  transferIsSend = false;
+  titleLabelAmount = 'Amount';
+  viewReload = false;
+
 
   constructor(
     private fb: FormBuilder,
@@ -85,33 +89,7 @@ export class TransferComponent implements OnInit {
     this.createFormContact();
     this.getMosaics();
     this.changeAddress();
-
-    this.transferForm.get('accountRecipient').valueChanges.subscribe(
-      value => {
-        if (value.length >= 40 && value.length <= 46) {
-          if (!this.proximaxProvider.verifyNetworkAddressEquals(this.walletService.address.plain(), value)) {
-            this.msgErrorUnsupported = 'Recipient Address Network unsupported';
-          } else {
-            this.msgErrorUnsupported = '';
-          }
-        } else {
-          this.msgErrorUnsupported = '';
-        }
-      }
-    );
-
-    this.transferForm.get('mosaicsSelect').valueChanges.subscribe(
-      value => this.titleLabelAmount = (typeof (value) === 'string' && value === this.proximaxProvider.mosaicXpx.mosaicId) ? 'Amount' : 'Quantity'
-    );
-
-    this.transferForm.get('amount').valueChanges.subscribe(
-      value => {
-        if (value !== null && value !== undefined && value < 0) {
-          this.transferForm.get('amount').patchValue(0);
-        }
-      }
-    );
-
+    this.subscribeControls();
   }
 
   /**
@@ -166,7 +144,7 @@ export class TransferComponent implements OnInit {
           Validators.maxLength(46)
         ]
       ],
-      amount: [0, [Validators.maxLength(20)]],
+      amount: ['0', [Validators.maxLength(20)]],
       message: ["", [Validators.maxLength(1024)]],
       password: [
         null,
@@ -235,6 +213,7 @@ export class TransferComponent implements OnInit {
       this.transferForm.get(custom).reset();
       return;
     }
+    this.amountSend = 0;
     this.transferForm.reset();
     return;
   }
@@ -250,11 +229,7 @@ export class TransferComponent implements OnInit {
    * @returns
    * @memberof TransferComponent
    */
-  getError(
-    control: string | (string | number)[],
-    typeForm?: any,
-    formControl?: string | number
-  ) {
+  getError(control: string | (string | number)[], typeForm?: any, formControl?: string | number) {
     const form = typeForm === undefined ? this.transferForm : this.contactForm;
     if (formControl === undefined) {
       if (form.get(control).getError("required")) {
@@ -279,7 +254,46 @@ export class TransferComponent implements OnInit {
 
   get input() { return this.transferForm.get('accountRecipient'); }
 
+  /**
+   * Save contact
+   *
+   * @returns
+   * @memberof TransferComponent
+   */
+  saveContact() {
+    if (this.contactForm.valid) {
+      const dataStorage = this.ServiceModuleService.getBooksAddress();
+      const books = {
+        value: this.contactForm.get("address").value,
+        label: this.contactForm.get("user").value
+      };
+      if (dataStorage === null) {
+        this.ServiceModuleService.setBookAddress([books]);
+        this.contactForm.reset();
+        this.sharedService.showSuccess("", `Successfully created user`);
+        this.contacts = this.ServiceModuleService.getBooksAddress();
+        return;
+      }
 
+      const issetData = dataStorage.find(
+        (element: { label: any }) =>
+          element.label === this.contactForm.get("user").value
+      );
+      if (issetData === undefined) {
+        dataStorage.push(books);
+        this.ServiceModuleService.setBookAddress(dataStorage);
+        this.contactForm.reset();
+        this.sharedService.showSuccess("", `Successfully created contact`);
+        this.contacts = this.ServiceModuleService.getBooksAddress();
+        return;
+      }
+
+      this.sharedService.showError(
+        "User repeated",
+        `The contact "${this.contactForm.get("user").value}" already exists`
+      );
+    }
+  }
 
 
   /**
@@ -334,58 +348,64 @@ export class TransferComponent implements OnInit {
   }
 
   /**
-   * Save contact
    *
-   * @returns
+   *
    * @memberof TransferComponent
    */
-  saveContact() {
-    if (this.contactForm.valid) {
-      const dataStorage = this.ServiceModuleService.getBooksAddress();
-      const books = {
-        value: this.contactForm.get("address").value,
-        label: this.contactForm.get("user").value
-      };
-      if (dataStorage === null) {
-        this.ServiceModuleService.setBookAddress([books]);
-        this.contactForm.reset();
-        this.sharedService.showSuccess("", `Successfully created user`);
-        this.contacts = this.ServiceModuleService.getBooksAddress();
-        return;
+  subscribeControls() {
+    // Account Recipient
+    this.transferForm.get('accountRecipient').valueChanges.subscribe(
+      value => {
+        if (value !== null && value !== undefined && value.length >= 40 && value.length <= 46) {
+          if (!this.proximaxProvider.verifyNetworkAddressEquals(this.walletService.address.plain(), value)) {
+            this.msgErrorUnsupported = 'Recipient Address Network unsupported';
+          } else {
+            this.msgErrorUnsupported = '';
+          }
+        } else {
+          this.msgErrorUnsupported = '';
+        }
       }
+    );
 
-      const issetData = dataStorage.find(
-        (element: { label: any }) =>
-          element.label === this.contactForm.get("user").value
-      );
-      if (issetData === undefined) {
-        dataStorage.push(books);
-        this.ServiceModuleService.setBookAddress(dataStorage);
-        this.contactForm.reset();
-        this.sharedService.showSuccess("", `Successfully created contact`);
-        this.contacts = this.ServiceModuleService.getBooksAddress();
-        return;
+    // Mosaic Select
+    this.transferForm.get('mosaicsSelect').valueChanges.subscribe(
+      value => {
+        this.titleLabelAmount = (typeof (value) === 'string' && value === this.proximaxProvider.mosaicXpx.mosaicId) ? 'Amount' : 'Quantity';
+        if (value !== null) {
+          const mosaic = this.mosaicServices.filterMosaic(new MosaicId(value));
+          const a = Number(this.transferForm.get('amount').value);
+          this.amountSend = (mosaic !== null) ? this.transactionService.amountFormatter(a, mosaic.mosaicInfo) : a;
+        }
       }
+    );
 
-      this.sharedService.showError(
-        "User repeated",
-        `The contact "${this.contactForm.get("user").value}" already exists`
-      );
-    }
-  }
+    // Amount
+    this.transferForm.get('amount').valueChanges.subscribe(
+      value => {
+        if (value !== null && value !== undefined && value < 0) {
+          this.transferForm.get('amount').patchValue(0);
+          return;
+        } else {
+          if (value !== null) {
+            const mosaic = this.mosaicServices.filterMosaic(new MosaicId(this.transferForm.get('mosaicsSelect').value));
+            const a = Number(this.transferForm.get('amount').value);
+            this.amountSend = (mosaic !== null) ? this.transactionService.amountFormatter(a, mosaic.mosaicInfo) : a;
+          }
+        }
+      }
+    );
 
-  /**
-   * Options selected
-   *
-   * @param {{ value: any; }} event
-   * @memberof TransferComponent
-   */
-  optionSelected(event: any) {
-    this.contactSelected = '';
-    if (event !== undefined) {
-      this.contactSelected = event.value;
-      this.transferForm.get("accountRecipient").patchValue(event.value);
-    }
+    // Contact
+    this.transferForm.get('contact').valueChanges.subscribe(
+      value => {
+        this.contactSelected = '';
+        if (value !== undefined && value !== null && value !== '') {
+          this.contactSelected = value;
+          this.transferForm.get("accountRecipient").patchValue(value);
+        }
+      }
+    );
   }
 
   /**

@@ -192,10 +192,10 @@ export class TransactionsService {
    * @returns
    * @memberof TransactionsService
    */
-  amountFormatter(amount: UInt64, mosaic: MosaicInfo) {
-    // console.log(mosaic);
+  amountFormatter(amountParam: UInt64 | number, mosaic: MosaicInfo) {
+    const amount = (typeof (amountParam) === 'number') ? amountParam : amountParam.compact();
     const amountDivisibility = Number(
-      amount.compact() / Math.pow(10, mosaic['properties'].divisibility)
+      amount / Math.pow(10, mosaic['properties'].divisibility)
     );
 
     return amountDivisibility.toLocaleString("en-us", {
