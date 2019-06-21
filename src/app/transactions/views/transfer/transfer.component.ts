@@ -11,6 +11,7 @@ import { TransactionsService } from "../../../transactions/service/transactions.
 import { ServiceModuleService } from "../../../servicesModule/services/service-module.service";
 import { MosaicService } from "../../../servicesModule/services/mosaic.service";
 import { ProximaxProvider } from "../../../shared/services/proximax.provider";
+import { MosaicsStorage } from "src/app/servicesModule/interfaces/mosaics-namespaces.interface";
 
 @Component({
   selector: "app-transfer",
@@ -22,6 +23,7 @@ export class TransferComponent implements OnInit {
 
   amountSend: string | number = '0.000000';
   blockSendButton: boolean;
+  insufficientBalance = false;
   contactForm: FormGroup;
   contactSelected = '';
   contacts: any = [{
@@ -30,6 +32,20 @@ export class TransferComponent implements OnInit {
     selected: false,
     disabled: true
   }];
+  configurationForm = {
+    accountRecipient: {
+      minLength: 40, maxLength: 46
+    },
+    amount: {
+      maxLength: 20
+    },
+    message: {
+      maxLength: 1024
+    },
+    password: {
+      minLength: 8, maxLength: 30
+    }
+  }
   inputBlocked: boolean;
   mosaicsSelect: any = [
     {
@@ -140,15 +156,19 @@ export class TransferComponent implements OnInit {
         '',
         [
           Validators.required,
-          Validators.minLength(40),
-          Validators.maxLength(46)
+          Validators.minLength(this.configurationForm.accountRecipient.minLength),
+          Validators.maxLength(this.configurationForm.accountRecipient.maxLength)
         ]
       ],
-      amount: ['0', [Validators.maxLength(20)]],
-      message: ["", [Validators.maxLength(1024)]],
+      amount: ['0', [Validators.maxLength(this.configurationForm.amount.maxLength)]],
+      message: ["", [Validators.maxLength(this.configurationForm.message.maxLength)]],
       password: [
         null,
-        [Validators.required, Validators.minLength(8), Validators.maxLength(30)]
+        [
+          Validators.required,
+          Validators.minLength(this.configurationForm.password.minLength),
+          Validators.maxLength(this.configurationForm.password.maxLength)
+        ]
       ]
     });
   }
@@ -201,10 +221,7 @@ export class TransferComponent implements OnInit {
    * @returns
    * @memberof TransferComponent
    */
-  cleanForm(
-    custom?: string | (string | number)[],
-    formControl?: string | number
-  ) {
+  cleanForm(custom?: string | (string | number)[], formControl?: string | number) {
     if (custom !== undefined) {
       if (formControl !== undefined) {
         this.transferForm.controls[formControl].get(custom).reset();
@@ -216,6 +233,17 @@ export class TransferComponent implements OnInit {
     this.amountSend = 0;
     this.transferForm.reset();
     return;
+  }
+
+  /**
+   *
+   *
+   * @param {(string | (string | number)[])} control
+   * @returns
+   * @memberof TransferComponent
+   */
+  getInput(control: string | (string | number)[]) {
+    return this.transferForm.get(control);
   }
 
 
@@ -252,7 +280,9 @@ export class TransferComponent implements OnInit {
     }
   }
 
-  get input() { return this.transferForm.get('accountRecipient'); }
+  get input() {
+    return this.transferForm.get('accountRecipient');
+  }
 
   /**
    * Save contact
@@ -372,10 +402,13 @@ export class TransferComponent implements OnInit {
     this.transferForm.get('mosaicsSelect').valueChanges.subscribe(
       value => {
         this.titleLabelAmount = (typeof (value) === 'string' && value === this.proximaxProvider.mosaicXpx.mosaicId) ? 'Amount' : 'Quantity';
-        if (value !== null) {
+        if (value !== null && value !== undefined) {
           const mosaic = this.mosaicServices.filterMosaic(new MosaicId(value));
           const a = Number(this.transferForm.get('amount').value);
           this.amountSend = (mosaic !== null) ? this.transactionService.amountFormatter(a, mosaic.mosaicInfo) : a;
+          this.validateAmountToTransfer(a, mosaic)
+        } else {
+          this.amountSend = 0;
         }
       }
     );
@@ -387,10 +420,13 @@ export class TransferComponent implements OnInit {
           this.transferForm.get('amount').patchValue(0);
           return;
         } else {
-          if (value !== null) {
+          if (this.transferForm.get('mosaicsSelect').value !== null && this.transferForm.get('mosaicsSelect').value !== undefined) {
             const mosaic = this.mosaicServices.filterMosaic(new MosaicId(this.transferForm.get('mosaicsSelect').value));
             const a = Number(this.transferForm.get('amount').value);
             this.amountSend = (mosaic !== null) ? this.transactionService.amountFormatter(a, mosaic.mosaicInfo) : a;
+            this.validateAmountToTransfer(a, mosaic)
+          } else {
+            this.amountSend = 0;
           }
         }
       }
@@ -423,5 +459,37 @@ export class TransferComponent implements OnInit {
         this.validateAllFormFields(control);
       }
     });
+  }
+
+  /**
+   *
+   *
+   * @param {*} amount
+   * @param {MosaicsStorage} mosaic
+   * @returns
+   * @memberof TransferComponent
+   */
+  validateAmountToTransfer(amount, mosaic: MosaicsStorage) {
+    const filtered = this.walletService.getAccountInfo().mosaics.find(element => {
+      return element.id.toHex() === new MosaicId(mosaic.id).toHex();
+    });
+
+    const isValidBalance = filtered.amount.compact() < amount;
+    if (isValidBalance && !this.insufficientBalance) {
+      this.insufficientBalance = true;
+      this.inputBlocked = true;
+      this.transferForm.controls['contact'].disable();
+      this.transferForm.controls['accountRecipient'].disable();
+      this.transferForm.controls['message'].disable();
+      this.transferForm.controls['password'].disable();
+    } else if (!isValidBalance && this.insufficientBalance) {
+      this.insufficientBalance = false;
+      this.inputBlocked = false;
+      this.transferForm.controls['mosaicsSelect'].enable();
+      this.transferForm.controls['contact'].enable();
+      this.transferForm.controls['accountRecipient'].enable();
+      this.transferForm.controls['message'].enable();
+      this.transferForm.controls['password'].enable();
+    }
   }
 }

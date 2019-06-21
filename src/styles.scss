@@ -8,6 +8,7 @@ body {
   display: table;
   height: 100%;
   width: 100%;
+  font-family: lato !important;
 }
 
 html {
@@ -1163,6 +1164,10 @@ label.btn input[type="radio"].with-gap:checked+label:after {
 
 
 /*STYLE SITE*/
+.text-uppercase {
+  text-transform: uppercase;
+}
+
 .pills-secondary .nav-link.active {
   background-color: #147681 !important;
 }

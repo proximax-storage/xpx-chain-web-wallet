@@ -80,13 +80,20 @@
 
               <div class="md-form">
                 <input type="text" autocomplete="off" required formControlName="accountRecipient" id="accountRecipient"
-                  class="form-control" mdbInputDirective [validateSuccess]="false" [validateError]="false">
+                  class="form-control" mdbInputDirective [validateSuccess]="false" [validateError]="false"
+                  [maxlength]="configurationForm.accountRecipient.maxLength"
+                  [minlength]="configurationForm.accountRecipient.minLength">
                 <label for="recipient">Recipient</label>
-                <!-- VALIDATIONS -->
-                <mdb-error class="text-danger fw-500"
-                  *ngIf="input.invalid && (input.dirty || input.touched) && getError('accountRecipient')">Invalid
-                  Recipient</mdb-error>
-                <mdb-error class="text-danger fw-500" *ngIf="msgErrorUnsupported !== ''">{{msgErrorUnsupported}}
+
+                <!-- Invalid Recipient -->
+                <mdb-error *ngIf="input.invalid &&
+                  (input.dirty || input.touched) &&
+                  getError('accountRecipient')">
+                  <span class="text-danger fw-500">Invalid Recipient</span>
+                </mdb-error>
+                <!-- Message Unsupported -->
+                <mdb-error *ngIf="msgErrorUnsupported !== ''">
+                  <span class="text-danger fw-500">{{msgErrorUnsupported}}</span>
                 </mdb-error>
               </div>
             </div>
@@ -136,13 +143,26 @@
             <div class="col-9 col-sm-10 col-md-6 col-lg-7">
               <div class="md-form">
                 <input [mask]="maskData" pattern="^[+]?([0-9]*[.])?[0-9]+$" type="text" autocomplete="off"
-                  formControlName="amount" id="amount" class="form-control" mdbInputDirective
-                  [errorMessage]="getError('amount')">
+                  formControlName="amount" id="amount" class="form-control" mdbInputDirective [validateSuccess]="false"
+                  [validateError]="false" [minlength]="configurationForm.amount.minLength"
+                  [maxlength]="configurationForm.amount.maxLength">
                 <label for="recipient">{{titleLabelAmount}}</label>
+
+                <!-- Message Error invalid Amount -->
+                <mdb-error class="text-danger fw-500" *ngIf="(getInput('amount').invalid || getInput('amount').required) &&
+                        (getInput('amount').dirty || getInput('amount').touched)">
+                  <span class="text-danger fw-500">Invalid amount</span>
+                </mdb-error>
+
+                <!-- Message Error Insufficient balance-->
+                <mdb-error class="text-danger fw-500" *ngIf="insufficientBalance">
+                  <span class="text-danger fw-500">Insufficient balance</span>
+                </mdb-error>
               </div>
             </div>
 
-            <div class="col-12 col-md-4 d-flex justify-content-center align-items-center background-dark-green-plus">
+            <div
+              class="col-12 col-md-4 d-flex justify-content-center align-items-center background-dark-green-plus overflow-ellipsis-nowrap">
               <div class="row text-center">
                 <div class="col-12 fw-400 color-yellow">They will be sent:</div>
                 <div class="col-12 color-white">{{amountSend}}</div>
@@ -158,7 +178,8 @@
             <div class="col-9 col-sm-10 col-md-10 col-lg-11">
               <div class="md-form">
                 <input type="text" autocomplete="off" formControlName="message" id="message" class="form-control"
-                  mdbInputDirective data-success="Valid message" [errorMessage]="getError('message')">
+                  mdbInputDirective data-success="Valid message" [errorMessage]="getError('message')"
+                  [maxlength]="configurationForm.message.maxLength">
                 <label for="recipient">Message</label>
               </div>
             </div>
@@ -174,7 +195,8 @@
               <div class="md-form">
                 <input type="password" autocomplete="off" required formControlName="password" id="password"
                   class="form-control" mdbInputDirective data-success="Valid password"
-                  [errorMessage]="getError('password')">
+                  [errorMessage]="getError('password')" [minlength]="configurationForm.password.minLength"
+                  [maxlength]="configurationForm.password.maxLength">
                 <label for="password">Password</label>
               </div>
             </div>
