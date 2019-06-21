@@ -178,9 +178,20 @@
             <div class="col-9 col-sm-10 col-md-10 col-lg-11">
               <div class="md-form">
                 <input type="text" autocomplete="off" formControlName="message" id="message" class="form-control"
-                  mdbInputDirective data-success="Valid message" [errorMessage]="getError('message')"
+                  mdbInputDirective [validateSuccess]="false" [validateError]="false"
                   [maxlength]="configurationForm.message.maxLength">
                 <label for="recipient">Message</label>
+
+                <!-- Message Error Insufficient balance-->
+                <mdb-error *ngIf="getInput('message').invalid &&
+                  (getInput('message').dirty || getInput('message').touched) &&
+                  getError('message')">
+                  <span class="text-danger fw-500">Invalid Recipient</span>
+                </mdb-error>
+
+                <mdb-error class="text-danger fw-500" *ngIf="getError('message')">
+                  <span class="text-danger fw-500">Insufficient balance</span>
+                </mdb-error>
               </div>
             </div>
           </div>
