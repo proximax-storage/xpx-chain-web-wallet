@@ -470,26 +470,28 @@ export class TransferComponent implements OnInit {
    * @memberof TransferComponent
    */
   validateAmountToTransfer(amount, mosaic: MosaicsStorage) {
-    const filtered = this.walletService.getAccountInfo().mosaics.find(element => {
-      return element.id.toHex() === new MosaicId(mosaic.id).toHex();
-    });
-
-    const isValidBalance = filtered.amount.compact() < amount;
-    if (isValidBalance && !this.insufficientBalance) {
-      this.insufficientBalance = true;
-      this.inputBlocked = true;
-      this.transferForm.controls['contact'].disable();
-      this.transferForm.controls['accountRecipient'].disable();
-      this.transferForm.controls['message'].disable();
-      this.transferForm.controls['password'].disable();
-    } else if (!isValidBalance && this.insufficientBalance) {
-      this.insufficientBalance = false;
-      this.inputBlocked = false;
-      this.transferForm.controls['mosaicsSelect'].enable();
-      this.transferForm.controls['contact'].enable();
-      this.transferForm.controls['accountRecipient'].enable();
-      this.transferForm.controls['message'].enable();
-      this.transferForm.controls['password'].enable();
+    const accountInfo = this.walletService.getAccountInfo();
+    if (accountInfo !== undefined && accountInfo !== null && Object.keys(accountInfo).length > 0) {
+      const filtered = accountInfo.mosaics.find(element => {
+        return element.id.toHex() === new MosaicId(mosaic.id).toHex();
+      });
+      const isValidBalance = filtered.amount.compact() < amount;
+      if (isValidBalance && !this.insufficientBalance) {
+        this.insufficientBalance = true;
+        this.inputBlocked = true;
+        this.transferForm.controls['contact'].disable();
+        this.transferForm.controls['accountRecipient'].disable();
+        this.transferForm.controls['message'].disable();
+        this.transferForm.controls['password'].disable();
+      } else if (!isValidBalance && this.insufficientBalance) {
+        this.insufficientBalance = false;
+        this.inputBlocked = false;
+        this.transferForm.controls['mosaicsSelect'].enable();
+        this.transferForm.controls['contact'].enable();
+        this.transferForm.controls['accountRecipient'].enable();
+        this.transferForm.controls['message'].enable();
+        this.transferForm.controls['password'].enable();
+      }
     }
   }
 }

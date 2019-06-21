@@ -17,6 +17,7 @@ export class DataBridgeService {
   block: number;
   url: any
   connector: Listener;
+  destroyConection = false;
   blockSubject: BehaviorSubject<number> = new BehaviorSubject<number>(this.block);
   block$: Observable<number> = this.blockSubject.asObservable();
 
@@ -42,7 +43,8 @@ export class DataBridgeService {
     // console.log(this.url);
     this.connector = new Listener(this.url, WebSocket);
     // Try to open the connection
-    this.openConnection(this.connector);
+    this.destroyConection = false;
+    this.openConnection();
     return;
   }
 
@@ -53,6 +55,7 @@ export class DataBridgeService {
    */
   closeConenection() {
     // console.log("Destruye conexion con el websocket");
+    this.destroyConection = true;
     this.transactionsService.destroyAllTransactions();
     if (this.connector !== undefined) {
       this.connector.close();
@@ -89,18 +92,21 @@ export class DataBridgeService {
    * @param {*} connector
    * @memberof DataBridgeService
    */
-  openConnection(connector: Listener) {
-    connector.open().then(() => {
-      const audio = new Audio('assets/audio/ding.ogg');
-      const audio2 = new Audio('assets/audio/ding2.ogg');
-      this.getTransactionsConfirmedSocket(connector, audio2);
-      this.getTransactionsUnConfirmedSocket(connector, audio);
-      this.getStatusSocket(connector, audio);
-      this.getBlockSocket(connector);
-    }, (error) => {
-      this.sharedService.showWarning('', 'Error connecting to the node');
-      this.reconnect(connector);
-    });
+  openConnection() {
+    if (!this.destroyConection) {
+      this.connector.open().then(() => {
+        const audio = new Audio('assets/audio/ding.ogg');
+        const audio2 = new Audio('assets/audio/ding2.ogg');
+        this.getTransactionsConfirmedSocket(this.connector, audio2);
+        this.getTransactionsUnConfirmedSocket(this.connector, audio);
+        this.getStatusSocket(this.connector, audio);
+        this.getBlockSocket(this.connector);
+      }, (error) => {
+        this.sharedService.showWarning('', 'Error connecting to the node');
+        this.reconnect(this.connector);
+      });
+    }
+
   }
 
 
@@ -201,7 +207,7 @@ export class DataBridgeService {
   reconnect(connector: Listener) {
     // Close connector
     connector.close();
-    this.openConnection(connector);
+    this.openConnection();
     return;
   }
 

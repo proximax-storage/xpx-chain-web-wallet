@@ -5,6 +5,7 @@ import { AuthService } from '../../auth/services/auth.service';
 import { WalletService } from '../../shared/services/wallet.service';
 import { MosaicService } from '../../servicesModule/services/mosaic.service';
 import { ProximaxProvider } from '../../shared/services/proximax.provider';
+import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
 
 @Injectable({
   providedIn: 'root'
@@ -28,8 +29,7 @@ export class DashboardService {
   constructor(
     private authService: AuthService,
     private walletService: WalletService,
-    private mosaicService: MosaicService,
-    private proximaxProvider: ProximaxProvider
+    private dataBridgeService: DataBridgeService
   ) { }
 
   /**
@@ -58,11 +58,12 @@ export class DashboardService {
         response => {
           if (response === false) {
             // DESTROY SUBSCRIPTION WHEN IS NOT LOGIN
-            // console.log("NOT LOGGED!");
+            console.log("NOT LOGGED!");
             this.searchComplete = false;
             this.isIncrementViewDashboard = 0;
             this.destroySubscription();
             // this.subscriptions['isLogged'].unsubscribe();
+            this.dataBridgeService.closeConenection();
             this.walletService.destroyAccountInfo();
             return;
           }

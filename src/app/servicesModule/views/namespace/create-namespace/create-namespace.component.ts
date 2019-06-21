@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SignedTransaction, NamespaceId, UInt64 } from 'tsjs-xpx-catapult-sdk';
+import { SignedTransaction, NamespaceId, UInt64, MosaicId } from 'tsjs-xpx-catapult-sdk';
 import { first } from 'rxjs/operators';
 
 import { AppConfig } from '../../../../config/app.config';
@@ -77,11 +77,16 @@ export class CreateNamespaceComponent implements OnInit {
     this.getNameNamespace();
     this.fee = `0.000000 ${this.feeType}`
     this.durationByBlock = this.transactionService.calculateDuration(UInt64.fromUint(this.namespaceForm.get('duration').value));
+
+    // Duration ValueChange
     this.namespaceForm.get('duration').valueChanges.subscribe(
       next => {
         if (next !== null && next !== undefined && String(next) !== '0') {
           this.calculateRentalFee = (this.rentalFee * next).toFixed(6);
           this.durationByBlock = this.transactionService.calculateDuration(UInt64.fromUint(next));
+          if (this.showDuration) {
+            this.validateRentalFee(this.rentalFee * next);
+          }
         } else {
           this.calculateRentalFee = '0.000000';
           this.durationByBlock = '0 days, 0 Hrs, 0 Minutes, 0 Seconds';
@@ -89,6 +94,15 @@ export class CreateNamespaceComponent implements OnInit {
         }
       }
     );
+    // namespaceRoot ValueChange
+    this.namespaceForm.get('namespaceRoot').valueChanges.subscribe(namespaceRoot => {
+      this.typetransfer = (namespaceRoot === '1') ? 1 : 2;
+      this.showDuration = (namespaceRoot === '1') ? true : false;
+    })
+    // NamespaceName ValueChange
+    this.namespaceForm.get('name').valueChanges.subscribe(name => {
+      if (!this.validateNamespace(name)) return this.sharedService.showError('', 'Name of namespace is invalid')
+    })
   }
 
   /**
@@ -161,15 +175,6 @@ export class CreateNamespaceComponent implements OnInit {
       duration: [1, [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]],
     });
-
-    this.namespaceForm.get('namespaceRoot').valueChanges.subscribe(namespaceRoot => {
-      this.typetransfer = (namespaceRoot === '1') ? 1 : 2;
-      this.showDuration = (namespaceRoot === '1') ? true : false;
-    })
-
-    this.namespaceForm.get('name').valueChanges.subscribe(name => {
-      if (!this.validateNamespace(name)) return this.sharedService.showError('', 'Name of namespace is invalid')
-    })
   }
 
   /**
@@ -311,7 +316,7 @@ export class CreateNamespaceComponent implements OnInit {
    * @param {*} namespace
    * @memberof CreateNamespaceComponent
    */
-  optionSelected(namespace: any) {
+  /*selectNamespace(namespace: any) {
     namespace = (namespace === undefined) ? 1 : namespace.value;
     this.namespaceChangeInfo = this.namespaceInfo.filter((book: any) => (book.name === namespace));
     if (this.namespaceChangeInfo.length > 0) {
@@ -322,7 +327,7 @@ export class CreateNamespaceComponent implements OnInit {
     } else {
       this.statusButtonNamespace = true;
     }
-  }
+  }*/
 
   /**
    *
@@ -383,6 +388,27 @@ export class CreateNamespaceComponent implements OnInit {
       const registersubamespaceTransaction = this.proximaxProvider.registersubNamespaceTransaction(rootNamespaceName, subnamespaceName, this.walletService.network)
       const signedTransaction = account.sign(registersubamespaceTransaction);
       return signedTransaction;
+    }
+  }
+
+  /**
+   *
+   *
+   * @param {*} amount
+   * @param {MosaicsStorage} mosaic
+   * @memberof CreateNamespaceComponent
+   */
+  validateRentalFee(amount: number) {
+    const accountInfo = this.walletService.getAccountInfo();
+    if (accountInfo !== undefined && accountInfo !== null && Object.keys(accountInfo).length > 0) {
+      const filtered = accountInfo.mosaics.find(element => {
+        return element.id.toHex() === new MosaicId(this.proximaxProvider.mosaicXpx.mosaicId).toHex();
+      });
+
+      console.log(amount);
+      console.log(filtered.amount.compact());
+      const isValidBalance = filtered.amount.compact() < amount;
+      console.log(isValidBalance);
     }
   }
 }
