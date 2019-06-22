@@ -23,7 +23,6 @@ export class TransferComponent implements OnInit {
 
   amountSend: string | number = '0.000000';
   blockSendButton: boolean;
-  insufficientBalance = false;
   contactForm: FormGroup;
   contactSelected = '';
   contacts: any = [{
@@ -47,6 +46,7 @@ export class TransferComponent implements OnInit {
     }
   }
   inputBlocked: boolean;
+  insufficientBalance = false;
   mosaicsSelect: any = [
     {
       value: "0",
@@ -70,15 +70,17 @@ export class TransferComponent implements OnInit {
     'boxDirectoryFalse': 'col-12 col-sm-2 col-md-2 d-flex justify-content-center align-items-center background-dark-green-plus',
     'rowDirectoryTrue': 'col-10 col-md-8 col-lg-9',
     'rowAddContactTrue': 'col-2 col-md-4 col-lg-3 d-flex align-items-center',
-    'rowAddContactFalse': 'col-12 d-flex align-items-center'
+    'rowAddContactFalse': 'col-12 d-flex align-items-center',
+    'rowSearchingMosaicTrue': 'col-8 col-sm-8 col-md-8 col-lg-9',
+    'rowSearchingMosaicFalse': 'col-10 col-sm-10 col-md-10 col-lg-11'
   }
 
-  searchMosaics = true;
   showContacts = false;
+  subscribe = ['accountInfo'];
   transferForm: FormGroup;
   transferIsSend = false;
   titleLabelAmount = 'Amount';
-  viewReload = false;
+  searchMosaics: boolean = false;
 
 
   constructor(
@@ -108,36 +110,48 @@ export class TransferComponent implements OnInit {
     this.subscribeControls();
   }
 
+  ngOnDestroy(): void {
+    this.subscribe.forEach(element => {
+      if (this.subscribe[element] !== undefined) {
+        this.subscribe[element].unsubscribe();
+      }
+    });
+  }
+
   /**
    * Get mosaics name
    *
    * @memberof TransferComponent
    */
   async getMosaics() {
-    this.searchMosaics = true;
-    const mosaicsSelect = this.mosaicsSelect.slice(0);
-    if (this.walletService.getAccountInfo() !== undefined) {
-      this.viewReload = false;
-      const mosaics = await this.mosaicServices.searchMosaics(this.walletService.getAccountInfo().mosaics.map(n => n.id));
-      if (mosaics.length > 0) {
-        for (let mosaic of mosaics) {
-          if (this.proximaxProvider.getMosaicId(mosaic.id).id.toHex() !== this.mosaicServices.mosaicXpx.mosaicId) {
-            const nameMosaic = (mosaic.mosaicNames.names.length > 0) ? mosaic.mosaicNames.names[0] : this.proximaxProvider.getMosaicId(mosaic.id).toHex();
-            mosaicsSelect.push({
-              label: nameMosaic,
-              value: mosaic.id,
-              selected: false,
-              disabled: false
-            });
+    this.subscribe['accountInfo'] = this.walletService.getAccountInfoAsync().subscribe(
+      async accountInfo => {
+        this.searchMosaics = true;
+        const mosaicsSelect = this.mosaicsSelect.slice(0);
+        if (accountInfo !== undefined && accountInfo !== null) {
+          if (accountInfo.mosaics.length > 0) {
+            const mosaics = await this.mosaicServices.searchMosaics(accountInfo.mosaics.map(n => n.id));
+            if (mosaics.length > 0) {
+              for (let mosaic of mosaics) {
+                if (this.proximaxProvider.getMosaicId(mosaic.id).id.toHex() !== this.mosaicServices.mosaicXpx.mosaicId) {
+                  const nameMosaic = (mosaic.mosaicNames.names.length > 0) ? mosaic.mosaicNames.names[0] : this.proximaxProvider.getMosaicId(mosaic.id).toHex();
+                  mosaicsSelect.push({
+                    label: nameMosaic,
+                    value: mosaic.id,
+                    selected: false,
+                    disabled: false
+                  });
+                }
+              }
+
+              this.mosaicsSelect = mosaicsSelect;
+            }
           }
+
+          this.searchMosaics = false;
         }
       }
-    } else {
-      this.viewReload = true;
-    }
-
-    this.searchMosaics = false;
-    this.mosaicsSelect = mosaicsSelect;
+    );
   }
 
   /**

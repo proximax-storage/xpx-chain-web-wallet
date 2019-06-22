@@ -8,6 +8,7 @@ import { SharedService } from './shared.service';
 import { NodeService } from '../../servicesModule/services/node.service';
 import { AppConfig } from "../../config/app.config";
 import { environment } from '../../../environments/environment';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -21,6 +22,8 @@ export class WalletService {
   algo: string;
   publicAccount: PublicAccount;
   private accountInfo: AccountInfo;
+  private accountInfoSubject: BehaviorSubject<AccountInfo> = new BehaviorSubject<AccountInfo>(null);
+  private accountInfo$: Observable<AccountInfo> = this.accountInfoSubject.asObservable();
 
   constructor(
     private sharedService: SharedService,
@@ -194,6 +197,16 @@ export class WalletService {
   }
 
   /**
+   *
+   *
+   * @returns {Observable<AccountInfo>}
+   * @memberof WalletService
+   */
+  getAccountInfoAsync(): Observable<AccountInfo> {
+    return this.accountInfo$;
+  }
+
+  /**
      * Create a wallet array or return existing ones
      * by: roimerj_vzla
      *
@@ -216,6 +229,7 @@ export class WalletService {
    */
   destroyAccountInfo() {
     this.accountInfo = undefined;
+    this.accountInfoSubject.next(null);
   }
 
   /**
@@ -240,6 +254,7 @@ export class WalletService {
    */
   setAccountInfo(accountInfo: AccountInfo) {
     this.accountInfo = accountInfo
+    this.accountInfoSubject.next(accountInfo);
   }
 }
 
