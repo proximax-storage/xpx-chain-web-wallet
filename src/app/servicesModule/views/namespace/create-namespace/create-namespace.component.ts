@@ -190,7 +190,7 @@ export class CreateNamespaceComponent implements OnInit {
    * @memberof CreateNamespaceComponent
    */
   createNamespace() {
-    if (this.namespaceForm.valid && this.validateForm && !this.blockBtnSend) {
+    if (this.namespaceForm.valid && this.validateForm && !this.blockBtnSend && !this.inputBlocked) {
       this.blockBtnSend = true;
       const common = {
         password: this.namespaceForm.get('password').value,
@@ -430,15 +430,24 @@ export class CreateNamespaceComponent implements OnInit {
         if (invalidBalance && !this.insufficientBalance) {
           this.insufficientBalance = true;
           this.inputBlocked = true;
+          this.blockBtnSend = true;
+          this.namespaceForm.controls['name'].disable();
+          this.namespaceForm.controls['password'].disable();
         } else if (!invalidBalance && this.insufficientBalance) {
           this.insufficientBalance = false;
           this.inputBlocked = false;
+          this.blockBtnSend = false;
+          this.namespaceForm.controls['name'].enable();
+          this.namespaceForm.controls['password'].enable();
         }
       }
     } else {
       this.calculateRentalFee = '0.000000';
       this.insufficientBalance = false;
       this.inputBlocked = false;
+      this.blockBtnSend = false;
+      this.namespaceForm.controls['name'].enable();
+      this.namespaceForm.controls['password'].enable();
     }
   }
 }
