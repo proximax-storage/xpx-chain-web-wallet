@@ -102,9 +102,13 @@ export class CreateNamespaceComponent implements OnInit {
     );
     // namespaceRoot ValueChange
     this.namespaceForm.get('namespaceRoot').valueChanges.subscribe(namespaceRoot => {
-      this.typetransfer = (namespaceRoot === '1') ? 1 : 2;
-      this.showDuration = (namespaceRoot === '1') ? true : false;
-      this.validateRentalFee(this.rentalFee * this.namespaceForm.get('duration').value);
+      if (namespaceRoot === null || namespaceRoot === undefined) {
+        this.namespaceForm.get('namespaceRoot').setValue('1');
+      } else {
+        this.showDuration = (namespaceRoot === '1') ? true : false;
+        this.typetransfer = (namespaceRoot === '1') ? 1 : 2;
+        this.validateRentalFee(this.rentalFee * this.namespaceForm.get('duration').value);
+      }
     })
     // NamespaceName ValueChange
     this.namespaceForm.get('name').valueChanges.subscribe(name => {
@@ -331,25 +335,6 @@ export class CreateNamespaceComponent implements OnInit {
   /**
    *
    *
-   * @param {*} namespace
-   * @memberof CreateNamespaceComponent
-   */
-  /*selectNamespace(namespace: any) {
-    namespace = (namespace === undefined) ? 1 : namespace.value;
-    this.namespaceChangeInfo = this.namespaceInfo.filter((book: any) => (book.name === namespace));
-    if (this.namespaceChangeInfo.length > 0) {
-      this.getBlock$();
-      this.startHeight = this.namespaceChangeInfo[0].dataNamespace.NamespaceInfo.startHeight.lower;
-      this.endHeight = this.namespaceChangeInfo[0].dataNamespace.NamespaceInfo.endHeight.lower;
-      this.statusButtonNamespace = (this.namespaceChangeInfo[0].dataNamespace.NamespaceInfo.depth === 1) ? false : true;
-    } else {
-      this.statusButtonNamespace = true;
-    }
-  }*/
-
-  /**
-   *
-   *
    * @param {string} namespace
    * @param {*} [isParent]
    * @returns
@@ -420,25 +405,33 @@ export class CreateNamespaceComponent implements OnInit {
     if (this.namespaceForm.get('namespaceRoot').value === '1') {
       const accountInfo = this.walletService.getAccountInfo();
       if (accountInfo !== undefined && accountInfo !== null && Object.keys(accountInfo).length > 0) {
-        const filtered = accountInfo.mosaics.find(element => {
-          return element.id.toHex() === new MosaicId(this.proximaxProvider.mosaicXpx.mosaicId).toHex();
-        });
+        if (accountInfo.mosaics.length > 0) {
+          const filtered = accountInfo.mosaics.find(element => {
+            return element.id.toHex() === new MosaicId(this.proximaxProvider.mosaicXpx.mosaicId).toHex();
+          });
 
-        const invalidBalance = filtered.amount.compact() < amount;
-        const mosaic = this.mosaicServices.filterMosaic(filtered.id);
-        this.calculateRentalFee = this.transactionService.amountFormatter(amount, mosaic.mosaicInfo);
-        if (invalidBalance && !this.insufficientBalance) {
+          const invalidBalance = filtered.amount.compact() < amount;
+          const mosaic = this.mosaicServices.filterMosaic(filtered.id);
+          this.calculateRentalFee = this.transactionService.amountFormatter(amount, mosaic.mosaicInfo);
+          if (invalidBalance && !this.insufficientBalance) {
+            this.insufficientBalance = true;
+            this.inputBlocked = true;
+            this.blockBtnSend = true;
+            this.namespaceForm.controls['name'].disable();
+            this.namespaceForm.controls['password'].disable();
+          } else if (!invalidBalance && this.insufficientBalance) {
+            this.insufficientBalance = false;
+            this.inputBlocked = false;
+            this.blockBtnSend = false;
+            this.namespaceForm.controls['name'].enable();
+            this.namespaceForm.controls['password'].enable();
+          }
+        } else {
           this.insufficientBalance = true;
           this.inputBlocked = true;
           this.blockBtnSend = true;
           this.namespaceForm.controls['name'].disable();
           this.namespaceForm.controls['password'].disable();
-        } else if (!invalidBalance && this.insufficientBalance) {
-          this.insufficientBalance = false;
-          this.inputBlocked = false;
-          this.blockBtnSend = false;
-          this.namespaceForm.controls['name'].enable();
-          this.namespaceForm.controls['password'].enable();
         }
       }
     } else {
