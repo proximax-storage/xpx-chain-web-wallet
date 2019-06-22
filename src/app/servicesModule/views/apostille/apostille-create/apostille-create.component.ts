@@ -486,12 +486,15 @@ export class ApostilleCreateComponent implements OnInit {
    * @memberof preparePublicApostille
    */
   preparePublicApostille(common: any) {
-    //create a hash prefix
+    //create a hash prefix (dice si es privado o publico0000)
     const apostilleHashPrefix = 'fe4e545903';
-    //create an encrypted hash
+    //create an encrypted hash (contenido del archivo)
     const hash = this.encryptData(this.file.toString());
+    console.log('--- hash encrypted by byte----', hash);
+    console.log('--- hash encrypted ----', hash.toString());
     //concatenates the hash prefix and the result gives the apostilleHash
     const apostilleHash = apostilleHashPrefix + hash.toString();
+    console.log('--- apostilleHash ----', apostilleHash);
     //Generate an account to send the transaction with the apostilleHash
     const sinkAddress = this.proximaxProvider.createFromRawAddress(this.proximaxProvider.generateNewAccount(this.walletService.network).address.plain());
     //Create an account from my private key

@@ -186,11 +186,7 @@
                 <mdb-error *ngIf="getInput('message').invalid &&
                   (getInput('message').dirty || getInput('message').touched) &&
                   getError('message')">
-                  <span class="text-danger fw-500">Invalid Recipient</span>
-                </mdb-error>
-
-                <mdb-error class="text-danger fw-500" *ngIf="getError('message')">
-                  <span class="text-danger fw-500">Insufficient balance</span>
+                  <span class="text-danger fw-500">Invalid Message</span>
                 </mdb-error>
               </div>
             </div>

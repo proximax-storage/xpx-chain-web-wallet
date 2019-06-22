@@ -12,6 +12,7 @@ import { ProximaxProvider } from '../../../../shared/services/proximax.provider'
 import { NamespaceStorage } from '../../../../servicesModule/interfaces/mosaics-namespaces.interface';
 import { NamespacesService } from '../../../../servicesModule/services/namespaces.service';
 import { TransactionsService } from 'src/app/transactions/service/transactions.service';
+import { MosaicService } from 'src/app/servicesModule/services/mosaic.service';
 
 @Component({
   selector: 'app-create-namespace',
@@ -35,6 +36,8 @@ export class CreateNamespaceComponent implements OnInit {
   endHeight: number;
   fee: string;
   feeType: string = 'XPX';
+  insufficientBalance = false;
+  inputBlocked = false;
   labelNamespace: string = '';
   namespaceChangeInfo: any;
   namespaceInfo: Array<object> = [];
@@ -57,8 +60,8 @@ export class CreateNamespaceComponent implements OnInit {
   viewReload: boolean = false;
   blockBtnSend: boolean = false;
   calculateRentalFee: any = '0.000000';
-  rentalFee = 0.100000;
-
+  rentalFee = 100000;
+  maskData = '0*';
 
   constructor(
     private fb: FormBuilder,
@@ -68,23 +71,26 @@ export class CreateNamespaceComponent implements OnInit {
     private router: Router,
     private dataBridgeService: DataBridgeService,
     private namespaceService: NamespacesService,
-    private transactionService: TransactionsService
+    private transactionService: TransactionsService,
+    private mosaicServices: MosaicService
   ) { }
 
 
   ngOnInit() {
     this.createForm();
     this.getNameNamespace();
+
+    const duration = this.namespaceForm.get('duration').value;
     this.fee = `0.000000 ${this.feeType}`
-    this.durationByBlock = this.transactionService.calculateDuration(UInt64.fromUint(this.namespaceForm.get('duration').value));
+    this.durationByBlock = this.transactionService.calculateDuration(UInt64.fromUint(duration));
+    this.validateRentalFee(this.rentalFee * duration);
 
     // Duration ValueChange
     this.namespaceForm.get('duration').valueChanges.subscribe(
       next => {
         if (next !== null && next !== undefined && String(next) !== '0') {
-          this.calculateRentalFee = (this.rentalFee * next).toFixed(6);
-          this.durationByBlock = this.transactionService.calculateDuration(UInt64.fromUint(next));
           if (this.showDuration) {
+            this.durationByBlock = this.transactionService.calculateDuration(UInt64.fromUint(next));
             this.validateRentalFee(this.rentalFee * next);
           }
         } else {
@@ -98,6 +104,7 @@ export class CreateNamespaceComponent implements OnInit {
     this.namespaceForm.get('namespaceRoot').valueChanges.subscribe(namespaceRoot => {
       this.typetransfer = (namespaceRoot === '1') ? 1 : 2;
       this.showDuration = (namespaceRoot === '1') ? true : false;
+      this.validateRentalFee(this.rentalFee * this.namespaceForm.get('duration').value);
     })
     // NamespaceName ValueChange
     this.namespaceForm.get('name').valueChanges.subscribe(name => {
@@ -313,6 +320,17 @@ export class CreateNamespaceComponent implements OnInit {
   /**
    *
    *
+   * @param {(string | (string | number)[])} control
+   * @returns
+   * @memberof CreateNamespaceComponent
+   */
+  getInput(control: string | (string | number)[]) {
+    return this.namespaceForm.get(control);
+  }
+
+  /**
+   *
+   *
    * @param {*} namespace
    * @memberof CreateNamespaceComponent
    */
@@ -399,16 +417,28 @@ export class CreateNamespaceComponent implements OnInit {
    * @memberof CreateNamespaceComponent
    */
   validateRentalFee(amount: number) {
-    const accountInfo = this.walletService.getAccountInfo();
-    if (accountInfo !== undefined && accountInfo !== null && Object.keys(accountInfo).length > 0) {
-      const filtered = accountInfo.mosaics.find(element => {
-        return element.id.toHex() === new MosaicId(this.proximaxProvider.mosaicXpx.mosaicId).toHex();
-      });
+    if (this.namespaceForm.get('namespaceRoot').value === '1') {
+      const accountInfo = this.walletService.getAccountInfo();
+      if (accountInfo !== undefined && accountInfo !== null && Object.keys(accountInfo).length > 0) {
+        const filtered = accountInfo.mosaics.find(element => {
+          return element.id.toHex() === new MosaicId(this.proximaxProvider.mosaicXpx.mosaicId).toHex();
+        });
 
-      console.log(amount);
-      console.log(filtered.amount.compact());
-      const isValidBalance = filtered.amount.compact() < amount;
-      console.log(isValidBalance);
+        const invalidBalance = filtered.amount.compact() < amount;
+        const mosaic = this.mosaicServices.filterMosaic(filtered.id);
+        this.calculateRentalFee = this.transactionService.amountFormatter(amount, mosaic.mosaicInfo);
+        if (invalidBalance && !this.insufficientBalance) {
+          this.insufficientBalance = true;
+          this.inputBlocked = true;
+        } else if (!invalidBalance && this.insufficientBalance) {
+          this.insufficientBalance = false;
+          this.inputBlocked = false;
+        }
+      }
+    } else {
+      this.calculateRentalFee = '0.000000';
+      this.insufficientBalance = false;
+      this.inputBlocked = false;
     }
   }
 }

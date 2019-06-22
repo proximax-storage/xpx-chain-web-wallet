@@ -86,10 +86,20 @@
 
                     <div class="col-9 col-sm-10 col-md-10">
                       <div class="md-form">
-                        <input formControlName="duration" mdbInputDirective type="text" min="1" pattern="^[0-9]+"
-                          name="duration" id="duration" class="form-control" data-success="Valid duration"
-                          [errorMessage]="getError('duration')">
+                        <input [mask]="maskData" pattern="^[+]?([0-9]*[.])?[0-9]+$" type="text" autocomplete="off"
+                          formControlName="duration" mdbInputDirective type="text" min="1" pattern="^[0-9]+"
+                          name="duration" id="duration" class="form-control" [validateSuccess]="false"
+                          [validateError]="false">
                         <label for="duration">Duration per Block</label>
+                        <!-- Message Error-->
+                        <mdb-error
+                          *ngIf="getInput('duration').invalid && (getInput('duration').dirty || getInput('duration').touched) && getError('duration')">
+                          <span class="text-danger fw-500">Invalid Duration</span>
+                        </mdb-error>
+                        <!-- Insufficient balance  -->
+                        <mdb-error class="text-danger fw-500" *ngIf="insufficientBalance">
+                          <span class="text-danger fw-500">Insufficient balance</span>
+                        </mdb-error>
                       </div>
                     </div>
                   </div>

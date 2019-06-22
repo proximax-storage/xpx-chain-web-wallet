@@ -475,15 +475,15 @@ export class TransferComponent implements OnInit {
       const filtered = accountInfo.mosaics.find(element => {
         return element.id.toHex() === new MosaicId(mosaic.id).toHex();
       });
-      const isValidBalance = filtered.amount.compact() < amount;
-      if (isValidBalance && !this.insufficientBalance) {
+      const invalidBalance = filtered.amount.compact() < amount;
+      if (invalidBalance && !this.insufficientBalance) {
         this.insufficientBalance = true;
         this.inputBlocked = true;
         this.transferForm.controls['contact'].disable();
         this.transferForm.controls['accountRecipient'].disable();
         this.transferForm.controls['message'].disable();
         this.transferForm.controls['password'].disable();
-      } else if (!isValidBalance && this.insufficientBalance) {
+      } else if (!invalidBalance && this.insufficientBalance) {
         this.insufficientBalance = false;
         this.inputBlocked = false;
         this.transferForm.controls['mosaicsSelect'].enable();
