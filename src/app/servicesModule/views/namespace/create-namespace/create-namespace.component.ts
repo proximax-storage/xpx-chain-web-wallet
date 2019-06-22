@@ -57,11 +57,11 @@ export class CreateNamespaceComponent implements OnInit {
   showDuration: boolean = true;
   typetransfer: number = 1;
   validateForm: boolean = false;
-  viewReload: boolean = false;
   blockBtnSend: boolean = false;
   calculateRentalFee: any = '0.000000';
   rentalFee = 100000;
   maskData = '0*';
+  subscribe = ['accountInfo'];
 
   constructor(
     private fb: FormBuilder,
@@ -84,36 +84,15 @@ export class CreateNamespaceComponent implements OnInit {
     this.fee = `0.000000 ${this.feeType}`
     this.durationByBlock = this.transactionService.calculateDuration(UInt64.fromUint(duration));
     this.validateRentalFee(this.rentalFee * duration);
+    this.subscribeValueChange();
+  }
 
-    // Duration ValueChange
-    this.namespaceForm.get('duration').valueChanges.subscribe(
-      next => {
-        if (next !== null && next !== undefined && String(next) !== '0') {
-          if (this.showDuration) {
-            this.durationByBlock = this.transactionService.calculateDuration(UInt64.fromUint(next));
-            this.validateRentalFee(this.rentalFee * next);
-          }
-        } else {
-          this.calculateRentalFee = '0.000000';
-          this.durationByBlock = '0 days, 0 Hrs, 0 Minutes, 0 Seconds';
-          this.namespaceForm.get('duration').patchValue(1);
-        }
+  ngOnDestroy(): void {
+    this.subscribe.forEach(element => {
+      if (this.subscribe[element] !== undefined) {
+        this.subscribe[element].unsubscribe();
       }
-    );
-    // namespaceRoot ValueChange
-    this.namespaceForm.get('namespaceRoot').valueChanges.subscribe(namespaceRoot => {
-      if (namespaceRoot === null || namespaceRoot === undefined) {
-        this.namespaceForm.get('namespaceRoot').setValue('1');
-      } else {
-        this.showDuration = (namespaceRoot === '1') ? true : false;
-        this.typetransfer = (namespaceRoot === '1') ? 1 : 2;
-        this.validateRentalFee(this.rentalFee * this.namespaceForm.get('duration').value);
-      }
-    })
-    // NamespaceName ValueChange
-    this.namespaceForm.get('name').valueChanges.subscribe(name => {
-      if (!this.validateNamespace(name)) return this.sharedService.showError('', 'Name of namespace is invalid')
-    })
+    });
   }
 
   /**
@@ -227,32 +206,43 @@ export class CreateNamespaceComponent implements OnInit {
    * @memberof CreateNamespaceComponent
    */
   getNameNamespace() {
-    this.namespaceService.searchNamespaceFromAccountStorage$().then(
-      async dataNamespace => {
-        if (dataNamespace !== undefined && dataNamespace.length > 0) {
-          this.blockUI.start('Loading...');
-          this.viewReload = false;
-          for (let data of dataNamespace) {
-            if (data.NamespaceInfo.depth === 1) {
-              await this.getRootNamespace(data, data.NamespaceInfo.active);
-            } else {
-              await this.getSubNivelNamespace(data, data.NamespaceInfo.active, data.NamespaceInfo.depth);
-            }
-          }
+    this.subscribe['accountInfo'] = this.namespaceService.getNamespaceFromAccountAsync().subscribe(
+      namespaceInfo => {
+        if (namespaceInfo !== null && namespaceInfo !== undefined) {
+          this.namespaceService.searchNamespaceFromAccountStorage$().then(
+            async namespaceStorage => {
+              if (namespaceStorage !== undefined && namespaceStorage.length > 0) {
+                this.blockUI.start('Loading...');
+                for (let data of namespaceStorage) {
+                  if (data.NamespaceInfo.depth === 1) {
+                    await this.getRootNamespace(data, data.NamespaceInfo.active);
+                  } else {
+                    await this.getSubNivelNamespace(data, data.NamespaceInfo.active, data.NamespaceInfo.depth);
+                  }
+                }
 
-          this.blockUI.stop();
-          this.arrayselect = this.namespace.sort(function (a: any, b: any) {
-            return a.label === b.label ? 0 : +(a.label > b.label) || -1;
-          });
-        } else {
-          this.viewReload = true;
+                this.blockUI.stop();
+                this.arrayselect = this.namespace.sort(function (a: any, b: any) {
+                  return a.label === b.label ? 0 : +(a.label > b.label) || -1;
+                });
+              }
+            }).catch(error => {
+              console.log(error);
+              this.blockUI.stop();
+              this.router.navigate([AppConfig.routes.home]);
+              this.sharedService.showError('', 'Check your connection and try again');
+            });
         }
-      }).catch(error => {
+      },
+      error => {
         console.log(error);
         this.blockUI.stop();
         this.router.navigate([AppConfig.routes.home]);
-        this.sharedService.showError('', 'Please check your connection and try again');
-      });
+        this.sharedService.showError('', 'Check your connection and try again');
+      }
+    );
+
+
   }
 
   /**
@@ -392,6 +382,45 @@ export class CreateNamespaceComponent implements OnInit {
       const signedTransaction = account.sign(registersubamespaceTransaction);
       return signedTransaction;
     }
+  }
+
+  /**
+   *
+   *
+   * @memberof CreateNamespaceComponent
+   */
+  subscribeValueChange() {
+    // Duration ValueChange
+    this.namespaceForm.get('duration').valueChanges.subscribe(
+      next => {
+        if (next !== null && next !== undefined && String(next) !== '0') {
+          if (this.showDuration) {
+            this.durationByBlock = this.transactionService.calculateDuration(UInt64.fromUint(next));
+            this.validateRentalFee(this.rentalFee * next);
+          }
+        } else {
+          this.calculateRentalFee = '0.000000';
+          this.durationByBlock = '0 days, 0 Hrs, 0 Minutes, 0 Seconds';
+          this.namespaceForm.get('duration').patchValue(1);
+        }
+      }
+    );
+
+    // namespaceRoot ValueChange
+    this.namespaceForm.get('namespaceRoot').valueChanges.subscribe(namespaceRoot => {
+      if (namespaceRoot === null || namespaceRoot === undefined) {
+        this.namespaceForm.get('namespaceRoot').setValue('1');
+      } else {
+        this.showDuration = (namespaceRoot === '1') ? true : false;
+        this.typetransfer = (namespaceRoot === '1') ? 1 : 2;
+        this.validateRentalFee(this.rentalFee * this.namespaceForm.get('duration').value);
+      }
+    });
+
+    // NamespaceName ValueChange
+    this.namespaceForm.get('name').valueChanges.subscribe(name => {
+      if (!this.validateNamespace(name)) return this.sharedService.showError('', 'Name of namespace is invalid')
+    })
   }
 
   /**

@@ -13,14 +13,18 @@ import {
 import { ProximaxProvider } from "../../shared/services/proximax.provider";
 import { WalletService } from "../../shared/services/wallet.service";
 import { NamespaceStorage } from "../interfaces/mosaics-namespaces.interface";
+import { BehaviorSubject, Observable } from "rxjs";
 
 @Injectable({
   providedIn: "root"
 })
 export class NamespacesService {
+
   namespaceViewCache: NamespaceName[] = [];
   namespaceFromAccount: NamespaceInfo[] = null;
   network = this.walletService.network;
+  private namespaceFromAccountSubject: BehaviorSubject<NamespaceInfo[]> = new BehaviorSubject<NamespaceInfo[]>(null);
+  private namespaceFromAccount$: Observable<NamespaceInfo[]> = this.namespaceFromAccountSubject.asObservable();
 
   constructor(
     private proximaxProvider: ProximaxProvider,
@@ -59,6 +63,7 @@ export class NamespacesService {
     this.getNamespacesFromAccountAsync(this.walletService.address)
       .then(response => {
         this.namespaceFromAccount = response;
+        this.namespaceFromAccountSubject.next(response);
         this.setNamespaceStorage(response);
       }).catch(() => {
         //Nothing!
@@ -207,6 +212,15 @@ export class NamespacesService {
   }
 
   /**
+   *
+   *
+   * @memberof NamespacesService
+   */
+  destroyDataNamespace() {
+    this.namespaceFromAccountSubject.next(null);
+  }
+
+  /**
    * Validate if a namespace is in the storage
    *
    * @param {NamespaceId} namespaceId
@@ -262,6 +276,21 @@ export class NamespacesService {
     return `proximax-namespaces`;
   }
 
+  /**
+   *
+   *
+   * @returns {Observable<NamespaceInfo[]>}
+   * @memberof NamespacesService
+   */
+  getNamespaceFromAccountAsync(): Observable<NamespaceInfo[]> {
+    return this.namespaceFromAccount$;
+  }
+
+  /**
+   *
+   *
+   * @memberof NamespacesService
+   */
   resetNamespaceStorage() {
     localStorage.removeItem(this.getNameStorage());
   }

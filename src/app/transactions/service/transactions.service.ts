@@ -20,7 +20,7 @@ import { WalletService } from "../../shared/services/wallet.service";
 import { NodeService } from "../../servicesModule/services/node.service";
 import { environment } from "../../../environments/environment";
 import { first } from "rxjs/operators";
-import { TransactionsInterface, MosaicXPXInterface } from "../../dashboard/services/transaction.interface";
+import { TransactionsInterface } from "../../dashboard/services/transaction.interface";
 import { MosaicService } from "../../servicesModule/services/mosaic.service";
 import { NamespacesService } from "src/app/servicesModule/services/namespaces.service";
 

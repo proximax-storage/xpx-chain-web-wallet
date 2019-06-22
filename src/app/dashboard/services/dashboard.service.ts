@@ -3,9 +3,8 @@ import { MosaicInfo, QueryParams, PublicAccount, Transaction } from 'tsjs-xpx-ca
 import { Observable } from 'rxjs';
 import { AuthService } from '../../auth/services/auth.service';
 import { WalletService } from '../../shared/services/wallet.service';
-import { MosaicService } from '../../servicesModule/services/mosaic.service';
-import { ProximaxProvider } from '../../shared/services/proximax.provider';
-import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
+import { DataBridgeService } from '../../shared/services/data-bridge.service';
+import { NamespacesService } from '../../servicesModule/services/namespaces.service';
 
 @Injectable({
   providedIn: 'root'
@@ -29,7 +28,8 @@ export class DashboardService {
   constructor(
     private authService: AuthService,
     private walletService: WalletService,
-    private dataBridgeService: DataBridgeService
+    private dataBridgeService: DataBridgeService,
+    private namespaceService: NamespacesService
   ) { }
 
   /**
@@ -65,6 +65,7 @@ export class DashboardService {
             // this.subscriptions['isLogged'].unsubscribe();
             this.dataBridgeService.closeConenection();
             this.walletService.destroyAccountInfo();
+            this.namespaceService.destroyDataNamespace();
             return;
           }
         }
