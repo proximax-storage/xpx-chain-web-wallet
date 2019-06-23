@@ -5,13 +5,14 @@ import {
   Validators,
   FormControl
 } from "@angular/forms";
-import { MosaicId } from "tsjs-xpx-catapult-sdk";
+import { MosaicId, SignedTransaction } from "tsjs-xpx-catapult-sdk";
 import { WalletService, SharedService } from "../../../shared";
 import { TransactionsService } from "../../../transactions/service/transactions.service";
 import { ServiceModuleService } from "../../../servicesModule/services/service-module.service";
 import { MosaicService } from "../../../servicesModule/services/mosaic.service";
 import { ProximaxProvider } from "../../../shared/services/proximax.provider";
-import { MosaicsStorage } from "src/app/servicesModule/interfaces/mosaics-namespaces.interface";
+import { MosaicsStorage } from "../../../servicesModule/interfaces/mosaics-namespaces.interface";
+import { DataBridgeService } from "../../../shared/services/data-bridge.service";
 
 @Component({
   selector: "app-transfer",
@@ -76,12 +77,12 @@ export class TransferComponent implements OnInit {
   }
 
   showContacts = false;
-  subscribe = ['accountInfo'];
+  subscribe = ['accountInfo', 'transactionStatus'];
   transferForm: FormGroup;
   transferIsSend = false;
   titleLabelAmount = 'Amount';
   searchMosaics: boolean = false;
-
+  signedTransaction: SignedTransaction = null;
 
   constructor(
     private fb: FormBuilder,
@@ -90,7 +91,8 @@ export class TransferComponent implements OnInit {
     private transactionService: TransactionsService,
     private ServiceModuleService: ServiceModuleService,
     private proximaxProvider: ProximaxProvider,
-    private mosaicServices: MosaicService
+    private mosaicServices: MosaicService,
+    private dataBridge: DataBridgeService
   ) { }
 
   ngOnInit() {
@@ -260,6 +262,31 @@ export class TransferComponent implements OnInit {
     return this.transferForm.get(control);
   }
 
+  /**
+   *
+   *
+   * @memberof TransferComponent
+   */
+  getTransactionStatus() {
+    // Get transaction status
+    this.subscribe['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
+      statusTransaction => {
+        if (statusTransaction !== null && statusTransaction !== undefined && this.signedTransaction !== null) {
+          const match = statusTransaction['data'].transactionInfo.hash === this.signedTransaction.hash;
+          if (statusTransaction['type'] === 'confirmed' && match) {
+            this.signedTransaction = null;
+            this.sharedService.showSuccess('', 'Transaction confirmed');
+          } else if (statusTransaction['type'] === 'unconfirmed' && match) {
+            this.signedTransaction = null;
+            this.sharedService.showInfo('', 'Transaction unconfirmed');
+          } else if (match) {
+            this.signedTransaction = null;
+            this.sharedService.showWarning('', statusTransaction['type'].status);
+          }
+        }
+      }
+    );
+  }
 
 
   /**
@@ -351,41 +378,33 @@ export class TransferComponent implements OnInit {
       this.inputBlocked = false;
     } else if (!this.inputBlocked) {
       this.inputBlocked = true;
-      let acountRecipient = this.transferForm.get("accountRecipient").value;
-      let amount = this.transferForm.get("amount").value;
-      let message = this.transferForm.get("message").value === null ? "" : this.transferForm.get("message").value;
-      let password = this.transferForm.get("password").value;
-      let mosaic = this.transferForm.get("mosaicsSelect").value;
-      let common = { password: password };
+      let common = { password: this.transferForm.get("password").value };
       this.blockSendButton = true;
       if (this.walletService.decrypt(common)) {
         const buildTransferTransaction = this.transactionService.buildToSendTransfer(
-          common, acountRecipient,
-          message, amount,
-          this.walletService.network, mosaic
+          common,
+          this.transferForm.get("accountRecipient").value,
+          this.transferForm.get("message").value === null ? "" : this.transferForm.get("message").value,
+          this.transferForm.get("amount").value,
+          this.walletService.network,
+          this.transferForm.get("mosaicsSelect").value
         );
 
-        buildTransferTransaction.transactionHttp
-          .announce(buildTransferTransaction.signedTransaction)
-          .subscribe(
-            response => {
-              this.showContacts = false;
-              this.inputBlocked = false;
-              this.cleanForm();
-            },
-            err => {
-              this.inputBlocked = false;
-              this.cleanForm();
-              this.sharedService.showError("", err);
-            }
-          );
+        this.dataBridge.setTransactionStatus(null);
+        buildTransferTransaction.transactionHttp.announce(buildTransferTransaction.signedTransaction).subscribe(
+          async () => {
+            this.showContacts = false;
+            this.inputBlocked = false;
+            this.cleanForm();
+            this.signedTransaction = buildTransferTransaction.signedTransaction;
+            this.getTransactionStatus();
+          }, err => {
+            this.inputBlocked = false;
+            this.cleanForm();
+            this.sharedService.showError('', err);
+          }
+        );
       } else {
-        acountRecipient = '';
-        amount = '';
-        message = '';
-        password = '';
-        mosaic = '';
-        common = null;
         this.inputBlocked = false;
       }
     }
