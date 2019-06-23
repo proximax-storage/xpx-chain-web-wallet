@@ -82,7 +82,7 @@ export class TransferComponent implements OnInit {
   transferIsSend = false;
   titleLabelAmount = 'Amount';
   searchMosaics: boolean = false;
-  signedTransaction: SignedTransaction = null;
+  transactionSigned: SignedTransaction = null;
 
   constructor(
     private fb: FormBuilder,
@@ -271,16 +271,16 @@ export class TransferComponent implements OnInit {
     // Get transaction status
     this.subscribe['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
       statusTransaction => {
-        if (statusTransaction !== null && statusTransaction !== undefined && this.signedTransaction !== null) {
-          const match = statusTransaction['data'].transactionInfo.hash === this.signedTransaction.hash;
+        if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
+          const match = statusTransaction['data'].transactionInfo.hash === this.transactionSigned.hash;
           if (statusTransaction['type'] === 'confirmed' && match) {
-            this.signedTransaction = null;
+            this.transactionSigned = null;
             this.sharedService.showSuccess('', 'Transaction confirmed');
           } else if (statusTransaction['type'] === 'unconfirmed' && match) {
-            this.signedTransaction = null;
+            this.transactionSigned = null;
             this.sharedService.showInfo('', 'Transaction unconfirmed');
           } else if (match) {
-            this.signedTransaction = null;
+            this.transactionSigned = null;
             this.sharedService.showWarning('', statusTransaction['type'].status);
           }
         }
@@ -391,12 +391,12 @@ export class TransferComponent implements OnInit {
         );
 
         this.dataBridge.setTransactionStatus(null);
+        this.transactionSigned = buildTransferTransaction.signedTransaction;
         buildTransferTransaction.transactionHttp.announce(buildTransferTransaction.signedTransaction).subscribe(
           async () => {
             this.showContacts = false;
             this.inputBlocked = false;
             this.cleanForm();
-            this.signedTransaction = buildTransferTransaction.signedTransaction;
             this.getTransactionStatus();
           }, err => {
             this.inputBlocked = false;

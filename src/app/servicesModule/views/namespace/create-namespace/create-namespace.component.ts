@@ -11,8 +11,8 @@ import { WalletService, SharedService } from '../../../../shared';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { NamespaceStorage } from '../../../../servicesModule/interfaces/mosaics-namespaces.interface';
 import { NamespacesService } from '../../../../servicesModule/services/namespaces.service';
-import { TransactionsService } from 'src/app/transactions/service/transactions.service';
-import { MosaicService } from 'src/app/servicesModule/services/mosaic.service';
+import { TransactionsService } from '../../../../transactions/service/transactions.service';
+import { MosaicService } from '../../../../servicesModule/services/mosaic.service';
 
 @Component({
   selector: 'app-create-namespace',
@@ -55,13 +55,14 @@ export class CreateNamespaceComponent implements OnInit {
   startHeight: number;
   statusButtonNamespace: boolean = true;
   showDuration: boolean = true;
+  transactionSigned: SignedTransaction = null;
   typetransfer: number = 1;
   validateForm: boolean = false;
   blockBtnSend: boolean = false;
   calculateRentalFee: any = '0.000000';
   rentalFee = 100000;
   maskData = '0*';
-  subscribe = ['accountInfo'];
+  subscribe = ['accountInfo', 'transactionStatus'];
 
   constructor(
     private fb: FormBuilder,
@@ -72,7 +73,8 @@ export class CreateNamespaceComponent implements OnInit {
     private dataBridgeService: DataBridgeService,
     private namespaceService: NamespacesService,
     private transactionService: TransactionsService,
-    private mosaicServices: MosaicService
+    private mosaicServices: MosaicService,
+    private dataBridge: DataBridgeService
   ) { }
 
 
@@ -181,16 +183,16 @@ export class CreateNamespaceComponent implements OnInit {
       }
       if (this.walletService.decrypt(common)) {
         const signedTransaction = this.signedTransaction(common);
+        this.transactionSigned = signedTransaction;
+        this.dataBridge.setTransactionStatus(null);
         this.proximaxProvider.announce(signedTransaction).subscribe(
           () => {
+            this.getTransactionStatus();
             this.blockBtnSend = false;
             this.resetForm()
-            this.blockUI.stop();
-            this.sharedService.showSuccess('', 'Transaction sent')
           }, () => {
             this.blockBtnSend = false;
             this.resetForm()
-            this.blockUI.stop();
             this.sharedService.showError('', 'An unexpected error has occurred');
           }
         );
@@ -241,8 +243,6 @@ export class CreateNamespaceComponent implements OnInit {
         this.sharedService.showError('', 'Check your connection and try again');
       }
     );
-
-
   }
 
   /**
@@ -320,6 +320,32 @@ export class CreateNamespaceComponent implements OnInit {
    */
   getInput(control: string | (string | number)[]) {
     return this.namespaceForm.get(control);
+  }
+
+  /**
+   *
+   *
+   * @memberof CreateNamespaceComponent
+   */
+  getTransactionStatus() {
+    // Get transaction status
+    this.subscribe['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
+      statusTransaction => {
+        if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
+          const match = statusTransaction['data'].transactionInfo.hash === this.transactionSigned.hash;
+          if (statusTransaction['type'] === 'confirmed' && match) {
+            this.transactionSigned = null;
+            this.sharedService.showSuccess('', 'Transaction confirmed');
+          } else if (statusTransaction['type'] === 'unconfirmed' && match) {
+            this.transactionSigned = null;
+            this.sharedService.showInfo('', 'Transaction unconfirmed');
+          } else if (match) {
+            this.transactionSigned = null;
+            this.sharedService.showWarning('', statusTransaction['type'].status);
+          }
+        }
+      }
+    );
   }
 
   /**
