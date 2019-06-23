@@ -1,8 +1,19 @@
 import { Injectable } from '@angular/core';
+import { AbstractControl } from '@angular/forms';
 import { ToastService } from 'ng-uikit-pro-standard';
-import { FormGroup, AbstractControl } from "@angular/forms";
 
-declare var $: any;
+
+export interface StructureHeader {
+  type: string;
+  name: string;
+  class: string;
+  icon: string;
+  rol: boolean;
+  link: string;
+  show: boolean;
+  submenu: object;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -11,6 +22,25 @@ export class SharedService {
   constructor(
     private toastrService: ToastService
   ) { }
+
+
+  buildStructureHeader(
+    typeP: string, nameP: string, classP: string,
+    iconP: string, rolP: boolean, linkP: string,
+    showP: boolean, submenuP: object
+  ) {
+    return {
+      type: typeP,
+      name: nameP,
+      class: classP,
+      icon: iconP,
+      rol: rolP,
+      link: linkP,
+      show: showP,
+      submenu: submenuP,
+      selected: false
+    }
+  }
 
   logError(message: any) {
     console.log(`%c ${message}`, 'background: red; color: white; margin: 0.5rem;');
@@ -29,26 +59,26 @@ export class SharedService {
   }
 
   showSuccess(title: string, bodyMessage: string) {
-    const options = { closeButton: true, tapToDismiss: false, toastClass: 'toastSuccess' };
-    this.toastrService.success(bodyMessage, title, options);
+    const options = { closeButton: true, tapToDismiss: false, toastClass: 'toastSuccess', timeOut: 4000 };
+    this.toastrService.success(bodyMessage, '', options);
   }
 
   showError(title: string, bodyMessage: string) {
-    const options = { closeButton: true, tapToDismiss: false, toastClass: 'toastError' };
-    this.toastrService.error(bodyMessage, title, options);
+    const options = { closeButton: true, tapToDismiss: false, toastClass: 'toastError', timeOut: 4000 };
+    this.toastrService.error(bodyMessage, '', options);
   }
 
   showWarning(title: string, bodyMessage: string) {
-    const options = { closeButton: true, tapToDismiss: false, toastClass: 'toastWarning' };
-    this.toastrService.warning(bodyMessage, title, options);
+    const options = { closeButton: true, tapToDismiss: false, toastClass: 'toastWarning', timeOut: 4000 };
+    this.toastrService.warning(bodyMessage, '', options);
   }
 
   showInfo(title: string, bodyMessage: string) {
-    const options = { closeButton: true, tapToDismiss: false, toastClass: 'toastWarning' };
-    this.toastrService.info(bodyMessage, title, options);
+    const options = { closeButton: true, tapToDismiss: false, toastClass: 'toastInfo', timeOut: 4000 };
+    this.toastrService.info(bodyMessage, '', options);
   }
 
-  closeAlertMsg(type: string = "") { }
+  closeAlertMsg(type: string = '') { }
 
   passwordConfirming(c: AbstractControl): { noMatch: boolean } {
     if (c.get('password').value !== c.get('confirm_password').value) {

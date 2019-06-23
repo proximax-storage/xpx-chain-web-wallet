@@ -1,46 +1,26 @@
+import { Router, NavigationEnd, NavigationStart } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
-import { AppConfig, NameRoute } from '../config/app.config';
 import { Observable } from 'rxjs';
-import { LoginService } from '../login/services/login.service';
-import { Router, NavigationEnd } from '@angular/router';
-import { WalletService } from "../shared";
+import { AppConfig } from '../config/app.config';
+import { AuthService } from '../auth/services/auth.service';
+import { StructureHeader, SharedService, WalletService } from "../shared";
 import { NodeService } from "../servicesModule/services/node.service";
-import { NemProvider } from '../shared/services/nem.provider';
-import { mergeMap, first } from 'rxjs/operators';
-import { MessageService } from '../shared/services/message.service';
 import { DataBridgeService } from '../shared/services/data-bridge.service';
 import { DashboardService } from '../dashboard/services/dashboard.service';
-import { MosaicService } from '../servicesModule/services/mosaic.service';
-import { MosaicId } from 'proximax-nem2-sdk';
 import { TransactionsService } from '../transactions/service/transactions.service';
 
 export interface HorizontalHeaderInterface {
-  home: Header;
-  node: Header;
-  amount: Header;
-  dashboard: Header;
-  nodeSelected: Header;
-  createWallet: Header;
-  importWallet: Header;
-  transactions: Header;
-  login: Header;
-  account: Header;
-  services: Header;
-  signout: Header;
-}
-
-export interface VerticalHeaderInterface {
-}
-
-export interface Header {
-  type: string;
-  name: string;
-  class: string;
-  icon: string;
-  rol: boolean;
-  link: string;
-  show: boolean;
-  submenu: object;
+  home: StructureHeader;
+  node: StructureHeader;
+  dashboard: StructureHeader;
+  nodeSelected: StructureHeader;
+  createWallet: StructureHeader;
+  importWallet: StructureHeader;
+  transactions: StructureHeader;
+  login: StructureHeader;
+  account: StructureHeader;
+  services: StructureHeader;
+  signout: StructureHeader;
 }
 
 @Component({
@@ -50,12 +30,14 @@ export interface Header {
 })
 export class HeaderComponent implements OnInit {
 
+  walletName = '';
+  routeLogin = AppConfig.routes.login;
+  imageLogin = false;
   nameRoute = '';
   showOnlyLogged = false;
   keyObject = Object.keys;
   isLogged$: Observable<boolean>;
   horizontalHeader: HorizontalHeaderInterface;
-  verticalHeader: VerticalHeaderInterface;
   vestedBalance: string = '0.000000';
   message: string;
   subscriptions = [
@@ -63,14 +45,14 @@ export class HeaderComponent implements OnInit {
   ];
 
   constructor(
-    private loginService: LoginService,
+    private authService: AuthService,
     private route: Router,
-    private walletService: WalletService,
-    private nemProvider: NemProvider,
     private nodeService: NodeService,
     private dataBridgeService: DataBridgeService,
     private dashboardService: DashboardService,
-    private mosaicService: MosaicService
+    private transactionService: TransactionsService,
+    private sharedService: SharedService,
+    private walletService: WalletService
   ) {
 
   }
@@ -79,10 +61,15 @@ export class HeaderComponent implements OnInit {
     this.destroySubscription();
     this.buildHeader();
     this.readRoute();
-    // this.readLogged();
     this.balance();
   }
 
+
+  /**
+   *
+   *
+   * @memberof HeaderComponent
+   */
   destroySubscription() {
     this.subscriptions.forEach(element => {
       if (this.subscriptions[element] !== undefined) {
@@ -92,27 +79,30 @@ export class HeaderComponent implements OnInit {
   }
 
 
+  /**
+   *
+   *
+   * @memberof HeaderComponent
+   */
   balance() {
-    this.isLogged$ = this.loginService.getIsLogged();
+    this.isLogged$ = this.authService.getIsLogged();
     this.isLogged$.subscribe(
       response => {
-        console.log('showOnlyLoggedshowOnlyLogged', response);
         this.showOnlyLogged = response;
         if (this.showOnlyLogged) {
-          this.mosaicService.updateBalance();
-          this.subscriptions['balance'] = this.mosaicService.getBalance$().subscribe(
+          this.walletName = this.walletService.current.name;
+          this.subscriptions['balance'] = this.transactionService.getBalance$().subscribe(
             next => {
-              console.log('next ----> ', next);
-              this.horizontalHeader.amount.name = `Balance ${next} XPX`;
+              this.vestedBalance = `Balance ${next} XPX`;
+              // this.horizontalHeader.amount.name = `Balance ${next} XPX`;
             }, error => {
-              console.log('Error -----> ', error);
-              this.horizontalHeader.amount.name = `Balance 0.000000 XPX`;
+              this.vestedBalance = `Balance 0.000000 XPX`;
+              // this.horizontalHeader.amount.name = `Balance 0.000000 XPX`;
             }
           );
         } else {
-          this.mosaicService.setBalance$('0.000000');
+          this.transactionService.setBalance$('0.000000');
           this.destroySubscription();
-          this.horizontalHeader.amount.name = `Balance 0.000000 XPX`;
           this.dataBridgeService.closeConenection();
         }
       }
@@ -127,282 +117,26 @@ export class HeaderComponent implements OnInit {
    */
   buildHeader() {
     this.horizontalHeader = {
-      home: {
-        'type': 'default',
-        'name': 'Home',
-        'class': '',
-        'icon': 'fa fa-home',
-        'rol': false,
-        'link': AppConfig.routes.home,
-        'show': true,
-        'submenu': {}
-      },
-      amount: {
-        'type': 'default',
-        'name': ``,
-        'class': '',
-        'icon': 'fa fa-money',
-        'rol': true,
-        'link': '',
-        'show': true,
-        'submenu': {}
-      },
-      dashboard: {
-        'type': 'default',
-        'name': 'dashboard',
-        'class': '',
-        'icon': 'fa fa-home',
-        'rol': true,
-        'link': AppConfig.routes.dashboard,
-        'show': true,
-        'submenu': {}
-      },
-      transactions: {
-        'type': 'dropdown',
-        'name': 'Transactions',
-        'class': '',
-        'icon': 'fa fa-tachometer',
-        'rol': true,
-        'link': '',
-        'show': true,
-        'submenu': {
-          'transfer': {
-            'type': 'default',
-            'name': 'Transfer',
-            'class': '',
-            'icon': '',
-            'rol': true,
-            'link': AppConfig.routes.transferTransaction,
-            'show': true,
-            'submenu': {}
-          }
+      home: this.sharedService.buildStructureHeader('default', 'Home', '', '', false, AppConfig.routes.home, true, {}),
+      login: this.sharedService.buildStructureHeader('default', `SIGN IN`, '', '', false, AppConfig.routes.login, true, {}),
+      dashboard: this.sharedService.buildStructureHeader('default', 'dashboard', '', '', true, AppConfig.routes.dashboard, true, {}),
+      transactions: this.sharedService.buildStructureHeader('dropdown', 'Transactions', '', '', true, '', true,
+        {
+          transfer: this.sharedService.buildStructureHeader('default', 'Transfer', '', '', true, AppConfig.routes.transferTransaction, true, {})
         }
-      },
-      node: {
-        'type': 'dropdown',
-        'name': 'Node',
-        'class': '',
-        'icon': 'fa fa-codepen',
-        'rol': true,
-        'link': '',
-        'show': false,
-        'submenu': {
-          'addNode': {
-            'type': 'default',
-            'name': 'Add node',
-            'class': '',
-            'icon': '',
-            'rol': true,
-            'link': AppConfig.routes.addNode,
-            'show': false,
-            'submenu': {}
-          },
-          'selectNode': {
-            'type': 'default',
-            'name': 'Select Node',
-            'class': '',
-            'icon': '',
-            'rol': true,
-            'link': AppConfig.routes.selectNode,
-            'show': false,
-            'submenu': {}
-          }
+      ),
+      node: this.sharedService.buildStructureHeader('dropdown', 'Node', '', '', true, '', false,
+        {
+          addNode: this.sharedService.buildStructureHeader('default', 'Add node', '', '', true, AppConfig.routes.addNode, false, {}),
+          selectNode: this.sharedService.buildStructureHeader('default', 'Select node', '', '', true, AppConfig.routes.selectNode, false, {})
         }
-      },
-      nodeSelected: {
-        'type': 'default',
-        'name': `Node selected: ${this.nodeService.getNodeSelected()}`,
-        'class': 'green-color',
-        'icon': 'fa-codepen',
-        'rol': false,
-        'link': '',
-        'show': false,
-        'submenu': {}
-      },
-      createWallet: {
-        'type': 'default',
-        'name': 'Create wallet',
-        'class': '',
-        'icon': 'fa fa-envelope',
-        'rol': false,
-        'link': AppConfig.routes.createWallet,
-        'show': true,
-        'submenu': {}
-      },
-      importWallet: {
-        'type': 'default',
-        'name': 'Import wallet',
-        'class': '',
-        'icon': 'fa fa-key',
-        'rol': false,
-        'link': AppConfig.routes.importWallet,
-        'show': true,
-        'submenu': {}
-      },
-      login: {
-        'type': 'default',
-        'name': 'login',
-        'class': '',
-        'icon': 'fa fa-home',
-        'rol': false,
-        'link': AppConfig.routes.login,
-        'show': true,
-        'submenu': {}
-      },
-      account: {
-        'type': 'default',
-        'name': 'Account',
-        'class': '',
-        'icon': 'fa fa-vcard',
-        'rol': true,
-        'link': AppConfig.routes.account,
-        'show': true,
-        'submenu': {}
-      },
-      services: {
-        'type': 'default',
-        'name': 'Services',
-        'class': '',
-        'icon': 'fa fa-wrench',
-        'rol': true,
-        'link': AppConfig.routes.services,
-        'show': true,
-        'submenu': {}
-      },
-      signout: {
-        'type': 'default',
-        'name': 'signout',
-        'class': '',
-        'icon': 'fa fa-lock',
-        'rol': true,
-        'link': AppConfig.routes.login,
-        'show': true,
-        'submenu': {}
-      }
-    }
-
-    this.verticalHeader = {
-      dashboard: {
-        'type': 'default',
-        'name': 'dashboard',
-        'class': '',
-        'icon': 'fa fa-home',
-        'rol': true,
-        'link': AppConfig.routes.dashboard,
-        'show': true,
-        'submenu': {}
-      }, services: {
-        'type': 'dropdown',
-        'name': 'services',
-        'class': '',
-        'icon': 'fa fa-tachometer',
-        'rol': true,
-        'link': '',
-        'show': true,
-        'submenu': {
-          'explorer': {
-            'type': 'default',
-            'name': 'Transaction explorer',
-            'class': '',
-            'icon': 'fa fa-home',
-            'rol': true,
-            'link': AppConfig.routes.explorer,
-            'show': true,
-            'submenu': {}
-          },
-          'apostille': {
-            'type': 'default',
-            'name': 'Apostille Create',
-            'class': '',
-            'icon': 'fa fa-codepen',
-            'rol': true,
-            'link': `${AppConfig.routes.apostille}`,
-            'show': true,
-            'submenu': {}
-          },
-          'auditApostille': {
-            'type': 'default',
-            'name': 'Apostille Audit',
-            'class': '',
-            'icon': 'fa fa-codepen',
-            'rol': true,
-            'link': `${AppConfig.routes.audiApostille}`,
-            'show': true,
-            'submenu': {}
-          },
-          'createPoll': {
-            'type': 'default',
-            'name': 'Create a Poll',
-            'class': '',
-            'icon': 'fa fa-codepen',
-            'rol': true,
-            'link': `${AppConfig.routes.createPoll}`,
-            'show': true,
-            'submenu': {}
-          }, 'polls': {
-            'type': 'default',
-            'name': 'See Polls',
-            'class': '',
-            'icon': 'fa fa-codepen',
-            'rol': true,
-            'link': `${AppConfig.routes.polls}`,
-            'show': true,
-            'submenu': {}
-          }
-        }
-      },
-      transactions: {
-        'type': 'dropdown',
-        'name': 'Transactions',
-        'class': '',
-        'icon': 'fa fa-tachometer',
-        'rol': true,
-        'link': '',
-        'show': true,
-        'submenu': {
-          'transfer': {
-            'type': 'default',
-            'name': 'Transfer',
-            'class': '',
-            'icon': 'fa fa-home',
-            'rol': true,
-            'link': AppConfig.routes.transferTransaction,
-            'show': true,
-            'submenu': {}
-          }
-        }
-      },
-      node: {
-        'type': 'dropdown',
-        'name': 'Node',
-        'class': '',
-        'icon': 'fa fa-codepen',
-        'rol': false,
-        'link': '',
-        'show': true,
-        'submenu': {
-          'addNode': {
-            'type': 'dropdown',
-            'name': 'Add node',
-            'class': '',
-            'icon': '',
-            'rol': false,
-            'link': AppConfig.routes.addNode,
-            'show': true,
-            'submenu': {}
-          },
-          'selectNode': {
-            'type': 'default',
-            'name': 'Select Node',
-            'class': '',
-            'icon': '',
-            'rol': false,
-            'link': AppConfig.routes.selectNode,
-            'show': true,
-            'submenu': {}
-          }
-        }
-      }
+      ),
+      nodeSelected: this.sharedService.buildStructureHeader('default', `Node selected: ${this.nodeService.getNodeSelected()}`, 'green-color', '', false, '', false, {}),
+      createWallet: this.sharedService.buildStructureHeader('default', `Create wallet`, '', '', false, AppConfig.routes.createWallet, false, {}),
+      importWallet: this.sharedService.buildStructureHeader('default', `Import wallet`, '', '', false, AppConfig.routes.importWallet, false, {}),
+      account: this.sharedService.buildStructureHeader('default', `Account`, '', '', true, AppConfig.routes.account, true, {}),
+      services: this.sharedService.buildStructureHeader('default', `Services`, '', '', true, AppConfig.routes.services, true, {}),
+      signout: this.sharedService.buildStructureHeader('default', `Signout`, '', '', true, AppConfig.routes.login, false, {})
     }
   }
 
@@ -414,49 +148,9 @@ export class HeaderComponent implements OnInit {
    */
   logout(param?: String) {
     this.dashboardService.processComplete = false;
-    this.loginService.setLogged(false);
-    this.loginService.destroyNodeSelected();
-    // this.dataBridgeService.closeConenection();
+    this.authService.setLogged(false);
+    this.authService.destroyNodeSelected();
     this.route.navigate([`/${param}`]);
-  }
-
-  /**
-   * Get Balance
-   *
-   * @memberof HeaderComponent
-   */
-  getBalance() {
-    this.nemProvider.getBalance(this.walletService.address).pipe(mergeMap((_) => _)).pipe(first()).subscribe(
-      next => {
-        console.log("balance...", next);
-        console.log('You have', next.relativeAmount());
-        this.horizontalHeader.amount.name = `Balance ${next.relativeAmount().toFixed(6)} ${next.mosaicName}`;
-      },
-      err => {
-        this.vestedBalance = '0.000000';
-        console.log(err);
-      }
-    );
-  }
-
-  /**
-   * Read logged
-   *
-   * @memberof HeaderComponent
-   */
-  readLogged() {
-    this.loginService.getIsLogged().subscribe(
-      async response => {
-        this.showOnlyLogged = response;
-        if (this.showOnlyLogged) {
-          // this.getBalance();
-          console.log("Get balance in read logged");
-        } else {
-          this.horizontalHeader.amount.name = `Balance ${this.vestedBalance}`;
-          this.dataBridgeService.closeConenection();
-        }
-      }
-    );
   }
 
   /**
@@ -469,12 +163,30 @@ export class HeaderComponent implements OnInit {
       .subscribe((event) => {
         if (event instanceof NavigationEnd) {
           var objRoute = event.url.split('/')[event.url.split('/').length - 1];
-          if (NameRoute[objRoute] !== undefined) {
-            this.nameRoute = NameRoute[objRoute];
+          // background image other module or login
+          if (objRoute === AppConfig.routes.login && !this.imageLogin) {
+            // set background to module login
+            this.imageLogin = true;
+            document.getElementById('footer-prx').className = 'footer-copyright text-center py-3 background-white';
+            document.getElementById('first').style.backgroundImage = "url('assets/images/background-black-white.jpg')";
           } else {
-            this.nameRoute = '';
+            if (this.imageLogin) {
+              // set background to other module
+              this.imageLogin = false;
+              document.getElementById('footer-prx').className = 'footer-copyright text-center py-3 background-gray-prx';
+              document.getElementById('first').style.backgroundImage = "url('assets/images/background-color.jpg')";
+            }
           }
+
+          Object.keys(this.horizontalHeader).forEach(element => {
+            if (this.horizontalHeader[element].link === objRoute) {
+              this.horizontalHeader[element].selected = true;
+            } else {
+              this.horizontalHeader[element].selected = false;
+            }
+          });
         }
+
       });
   }
 }

@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
-import { NetworkType } from 'proximax-nem2-sdk';
+import { NetworkType } from 'tsjs-xpx-catapult-sdk';
 import { SharedService, WalletService } from "../../../shared";
-import { NemProvider } from '../../../shared/services/nem.provider';
+import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 
 
 @Component({
@@ -12,6 +12,8 @@ import { NemProvider } from '../../../shared/services/nem.provider';
 })
 export class ImportWalletComponent implements OnInit {
 
+  nameModule = 'Import Wallet';
+  descriptionModule = 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Odio obcaecati eveniet cum, dignissimos fugit consequatur tempore, blanditiis quas dolor tempora officiis, fuga numquam minima molestias veritatis velit voluptas error incidunt.';
   importWalletForm: FormGroup;
   walletIsCreated = false;
   pvk: string;
@@ -20,18 +22,16 @@ export class ImportWalletComponent implements OnInit {
     {
       'value': NetworkType.TEST_NET,
       'label': 'TEST NET'
-    },
-    {
-      'value': NetworkType.MIJIN_TEST,
-      'label': 'MIJIN TEST'
     }
   ];
+  walletName: string;
+  publicKey: string;
 
   constructor(
     private fb: FormBuilder,
     private sharedService: SharedService,
     private _walletService: WalletService,
-    private _nemProvider: NemProvider
+    private proximaxProvider: ProximaxProvider
   ) {
   }
 
@@ -64,10 +64,6 @@ export class ImportWalletComponent implements OnInit {
   importSimpleWallet() {
     if (this.importWalletForm.valid) {
       const nameWallet = this.importWalletForm.get('walletname').value;
-      const password = this._nemProvider.createPassword(this.importWalletForm.controls.passwords.get('password').value);
-      const privateKey = this.importWalletForm.get('privateKey').value;
-      const network = this.importWalletForm.get('network').value;
-      const wallet = this._nemProvider.createAccountFromPrivateKey(nameWallet, password, privateKey, network);
       const walletsStorage = this._walletService.getWalletStorage();
       //verify if name wallet isset
       const myWallet = walletsStorage.find(function (element) {
@@ -76,12 +72,20 @@ export class ImportWalletComponent implements OnInit {
 
       //Wallet does not exist
       if (myWallet === undefined) {
+        const password = this.proximaxProvider.createPassword(this.importWalletForm.controls.passwords.get('password').value);
+        const privateKey = this.importWalletForm.get('privateKey').value;
+        const network = this.importWalletForm.get('network').value;
+        const wallet = this.proximaxProvider.createAccountFromPrivateKey(nameWallet, password, privateKey, network);
         const accounts = this._walletService.buildAccount(wallet.encryptedPrivateKey.encryptedKey, wallet.encryptedPrivateKey.iv, wallet.address['address'], wallet.network);
+        this.walletName = nameWallet;
         this._walletService.setAccountWalletStorage(nameWallet, accounts);
         this.address = wallet.address.pretty();
-        this.sharedService.showSuccess('Congratulations!', 'Your wallet has been created successfully');
-        this.pvk = this._nemProvider.decryptPrivateKey(password, accounts.encrypted, accounts.iv).toUpperCase();
+        this.sharedService.showSuccess('Congratulations!', 'Your wallet has been imported successfully');
+        this.pvk = this.proximaxProvider.decryptPrivateKey(password, accounts.encrypted, accounts.iv).toUpperCase();
+        this.publicKey = this.proximaxProvider.getPublicAccountFromPrivateKey(this.pvk, network).publicKey;
         this.walletIsCreated = true;
+        this.nameModule = 'Congratulations!';
+        this.descriptionModule = 'Your wallet has been imported successfully';
       } else {
         //Error of repeated Wallet
         this.cleanForm('walletname');

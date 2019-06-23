@@ -1,0 +1,208 @@
+<div class="container-fluid mt-11rem mb-3rem animated fadeIn">
+  <!-- TITLE -->
+  <div class="row">
+    <div class="col-11 mx-auto">
+      <!-- Title and Divir -->
+      <div class="row">
+        <div class="col-9 col-sm-10 mx-auto">
+          <span class="d-flex justify-content-center align-items-center wallet-name">
+            <img class="mr-05rem h2-3em" src="assets/images/img/icon-notary-white.svg" alt="">
+            <span class="f-w-bold fs-1-5rem title-module">Apostille</span>
+          </span>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12 mx-auto">
+          <hr class="background-divisor">
+        </div>
+
+        <div class="col-11 col-sm-10 mx-auto">
+          <h5 class="f-w-bold color-yellow text-align-center">Create new...</h5>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Form -->
+  <form [formGroup]="apostilleCreateForm" (ngSubmit)="createApostille()">
+    <!-- Button Upload File -->
+    <div class="row d-flex justify-content-center mt-1rem">
+      <!-- Button Upload File -->
+      <div class="col-12 d-flex justify-content-center">
+        <button (click)="openInput()" mdbBtn type="button" rounded="true" mdbWavesEffect
+          class="f-w-600 btn-dark-green-prx" size="md">
+          <img class="mr-1rem h2em" src="assets/images/img/icon-upload-file-white.svg" alt="">
+          <span>UPLOAD FILE</span>
+        </button>
+        <input id="fileInput" [hidden]="true" type="file" (change)="fileReader($event.target.files)"
+          formControlName="file">
+      </div>
+      <!-- Name File -->
+      <div class="col-12 col-sm-10 col-md-8 d-flex justify-content-center mt-08rem">
+        <span class="color-dark-green fw-500 fs-08rem t-a-c">{{nameFile}}</span>
+      </div>
+    </div>
+
+
+    <div class="row mt-1rem d-flex justify-content-center">
+      <div class="col-11">
+        <div class="box-form pt-0 pb-0">
+          <div class="row">
+            <!-- Document title -->
+            <div class="col-12">
+              <div class="row">
+                <div
+                  class="col-3 col-md-2 col-lg-1 d-flex align-items-center justify-content-end justify-content-sm-center">
+                  <img class="h1-5em" src="assets/images/img/icon-namespaces-white.svg" alt="">
+                </div>
+
+                <div class="col-9 col-md-10 col-lg-11">
+                  <div class="md-form">
+                    <input [maxlength]="configurationForm.documentTitle.maxLength"
+                      [minlength]="configurationForm.documentTitle.minLength" type="text" autocomplete="off"
+                      formControlName="documentTitle" required id="documentTitle" class="form-control"
+                      mdbInputDirective>
+                    <label for="documentTitle">Document title</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Content -->
+            <div class="col-12">
+              <div class="row">
+                <div
+                  class="col-3 col-md-2 col-lg-1 d-flex align-items-center justify-content-end justify-content-sm-center">
+                  <img class="h1-5em" src="assets/images/img/icon-namespaces-white.svg" alt="">
+                </div>
+
+                <div class="col-9 col-md-10 col-lg-11">
+                  <div class="md-form">
+                    <textarea [maxlength]="configurationForm.content.maxLength"
+                      [minlength]="configurationForm.content.minLength" type="textarea" autocomplete="off"
+                      formControlName="content" id="content" class="md-textarea form-control"
+                      mdbInputDirective></textarea>
+                    <label for="content">Content</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Safe in DFMS -->
+      <div class="col-11 mt-1rem">
+        <div class="box-form">
+          <div class="row">
+            <div class="col-12 color-white fw-400 d-flex justify-content-center">
+              <mdb-checkbox (change)="onSaveInDFMSChanged($event)" [default]="true" formControlName="safeDFMS">Safe in
+                DFMS
+              </mdb-checkbox>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-11 mt-1rem">
+        <div class="box-form pt-0 pb-0">
+          <!-- Tags ||  Type Encrypted -->
+          <div class="row">
+            <!-- Tags -->
+            <div class="col-12 col-sm-6 mt-06rem">
+              <div class="row d-flex justify-content-center">
+                <div class="col-3 col-sm-2 col-md-2 col-lg-1 d-flex align-items-center justify-content-end
+                  justify-content-sm-center">
+                  <img class="h1-5em" src="assets/images/img/icon-duration-white.svg" alt="">
+                </div>
+
+                <div class="col-9 col-sm-10 col-md-10 col-lg-11">
+                  <div class="md-form">
+                    <input [maxlength]="configurationForm.tags.maxLength" [minlength]="configurationForm.tags.minLength"
+                      type="text" autocomplete="off" required formControlName="tags" id="tags" class="form-control"
+                      mdbInputDirective>
+                    <label for="walletname">Tags</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Type Encrypted -->
+            <div class="col-12 col-sm-6">
+              <div class="row d-flex justify-content-center">
+                <div class="col-3 col-sm-2 col-md-2 col-lg-1 d-flex align-items-center justify-content-end
+                  justify-content-sm-center">
+                  <img class="h1-5em" src="assets/images/img/icon-namespaces-white.svg" alt="">
+                </div>
+
+                <div class="col-9 col-sm-10 col-md-10 col-lg-11">
+                  <div class="md-form">
+                    <ng-select [items]="typeEncrypted" formControlName="typeEncrypted" bindLabel="label"
+                      bindValue="value" placeholder="Select type Encrypted">
+                    </ng-select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Private || Public -->
+          <div class="row">
+            <div class="col-6 color-white fw-400 d-flex justify-content-end">
+              <div class="form-check form-check-inline">
+                <input formControlName="typePrivatePublic" [value]="false" type="radio" class="form-check-input"
+                  id="private" name="typePrivatePublic" mdbInput>
+                <label class="form-check-label" for="private">Private</label>
+              </div>
+            </div>
+
+            <div class="col-6 color-white fw-400 d-flex justify-content-start">
+              <div class="form-check form-check-inline">
+                <input formControlName="typePrivatePublic" checked [value]="true" type="radio" class="form-check-input"
+                  id="public" name="typePrivatePublic" mdbInput>
+                <label class="form-check-label" for="public">Public</label>
+              </div>
+            </div>
+          </div>
+
+
+          <!-- Password -->
+          <div class="row">
+            <div class="col-12">
+              <div class="row d-flex justify-content-center">
+                <div
+                  class="col-3 col-sm-2 col-md-1 d-flex align-items-center justify-content-end justify-content-sm-center">
+                  <img class="h1-5em" src="assets/images/img/icon-password-white.svg" alt="">
+                </div>
+
+                <div class="col-9 col-sm-10 col-md-11">
+                  <div class="md-form">
+                    <input [maxlength]="configurationForm.password.maxLength"
+                      [minlength]="configurationForm.password.minLength" type="password" autocomplete="off" required
+                      formControlName="password" id="password" class="form-control" mdbInputDirective>
+                    <label for="walletname">Password</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Buttons -->
+      <div class="col-11 mt-1-5rem d-flex justify-content-center">
+        <div class="row">
+          <div class="col-6">
+            <button mdbBtn size="md" rounded="true" class="waves-light btn-white" mdbWavesEffect
+              type="button">Clean</button>
+          </div>
+          <div class="col-6">
+            <button mdbBtn size="md" rounded="true" class="waves-light btn-dark-green-prx" mdbWavesEffect
+              type="submit">Create</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

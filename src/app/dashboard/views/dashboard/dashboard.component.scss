@@ -1,0 +1,65 @@
+.size-box {
+  height: 125px !important;
+}
+
+// Medium screen / tablet
+@media (max-width: 768px) {
+  .size-box {
+    height: 82px !important;
+  }
+}
+
+// Large screen / desktop
+@media (min-width: 992px) {
+  .no-p-l {
+    padding-right: 1rem;
+  }
+
+  .no-p-r {
+    padding-left: 1rem;
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1200px) {
+  /* .f-s-title-transactions {
+    font-size: 1.3rem;
+  }*/
+}
+
+// Small screen / tablet
+@media (max-width: 576px) {
+  .no-p-l {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .no-p-r {
+    padding-right: 0;
+    padding-left: 0;
+  }
+
+  .size-box {
+    height: 102px !important;
+  }
+
+  #boxConfirmedUnconfirmed {
+    margin-top: .4rem;
+  }
+
+  .md-form {
+    margin-bottom: 0rem;
+  }
+
+  .titleCantResults {
+    margin-bottom: 1rem;
+  }
+}
+
+.btnConfirmedUnconfirmed {
+  background: #023c42;
+  color: white;
+  padding: .3rem;
+  border-radius: .3rem;
+  font-weight: 500;
+  cursor: pointer;
+}

@@ -1,13 +1,20 @@
 import { Injectable } from '@angular/core';
+import { Address } from 'tsjs-xpx-catapult-sdk';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ServiceModuleService {
 
-  booksAddress = 'books-address'
-  constructor() {
+  booksAddress = ``;
+  constructor(
 
+  ) {
+
+  }
+
+  changeBooksItem(address: Address) {
+    this.booksAddress = `books-address-${address.pretty()}`;
   }
 
   /**

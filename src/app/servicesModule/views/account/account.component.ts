@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { WalletService, SharedService } from "../../../shared";
+import { FormGroup, Validators, FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-account',
@@ -20,8 +21,9 @@ export class AccountComponent implements OnInit {
   descriptionBackupWallet = `It is very important that you have backups of your wallets to log in with or your ${this.mosaic} will be lost.`;
   address = this.walletService.address.pretty();
   privateKey = '';
-  publicKey = '';
-  password = '';
+  publicKey = this.walletService.publicAccount.publicKey;
+  walletName = this.walletService.current.name;
+  validatingForm: FormGroup;
 
   constructor(
     private walletService: WalletService,
@@ -31,6 +33,9 @@ export class AccountComponent implements OnInit {
 
   ngOnInit() {
     this.publicKey = this.walletService.publicAccount.publicKey;
+    this.validatingForm = new FormGroup({
+      password: new FormControl('', Validators.required)
+    });
   }
 
   copyMessage(message: string) {
@@ -38,22 +43,24 @@ export class AccountComponent implements OnInit {
   }
 
   decryptWallet() {
-    if (this.password !== '') {
-      const common = { password: this.password };
+    if (this.validatingForm.get('password').value !== '') {
+      const common = { password: this.validatingForm.get('password').value };
       if (this.walletService.decrypt(common)) {
-        console.log(common);
+        // console.log(common);
         this.privateKey = common['privateKey'].toUpperCase();
-        this.password = '';
+        this.validatingForm.get('password').patchValue('')
         this.showPassword = false;
         return;
       }
-      this.password = '';
+      this.validatingForm.get('password').patchValue('');
       this.privateKey = '';
       return;
-    }else {
+    } else {
       this.sharedService.showError('', 'Please, enter a password');
     }
   }
+
+  get input() { return this.validatingForm.get('password'); }
 
   hidePrivateKey() {
     this.privateKey = '';

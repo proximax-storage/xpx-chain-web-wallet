@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AppConfig } from "../../../config/app.config";
-import { ServiceModuleService } from "../../../servicesModule/services/service-module.service";
+import { ServiceModuleService } from "../../services/service-module.service";
 
 @Component({
   selector: 'app-services',
@@ -16,7 +16,6 @@ export class ServicesComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-
     const multisignature = this.service.structureServices(
       'fa fa-user-plus',
       'Multisignature and Multi-User Accounts',
@@ -24,19 +23,19 @@ export class ServicesComponent implements OnInit {
       {
         convertAccountToMultisig: this.structureServiceRoute('Convert an account to multisig', `/${AppConfig.routes.createMultisignature}`),
         editAnExistingContract: this.structureServiceRoute('Edit an existing contract', `/${AppConfig.routes.editMultisignatureContract}`),
-        signMultisigTransactions: this.structureServiceRoute('Sign multisig transactions',  `/${AppConfig.routes.signMultiSigTransactions}`),
+        signMultisigTransactions: this.structureServiceRoute('Sign multisig transactions', `/${AppConfig.routes.signMultiSigTransactions}`),
       }, false
     );
 
     const storage = this.service.structureServices('img-explorer-file', 'Storage', `Storage`,
       {
         explorerFile: this.structureServiceRoute('Storage', `/${AppConfig.routes.storage}`)
-      }, true
+      }, false
     );
 
-    const explorerTransaction = this.service.structureServices('img-transaction', 'Transaction explorer', `Explorer transaction`,
+    const explorerTransaction = this.service.structureServices('icon-transactions-dark-green.svg', 'Transaction Explorer', `Explorer all transactions in the wallet`,
       {
-        createPoll: this.structureServiceRoute('Transaction explorer', `/${AppConfig.routes.explorer}`)
+        createPoll: this.structureServiceRoute('Open Explorer', `/${AppConfig.routes.explorer}`)
       }, true
     );
 
@@ -44,30 +43,32 @@ export class ServicesComponent implements OnInit {
       {
         createPoll: this.structureServiceRoute('Create a Poll', `/${AppConfig.routes.createPoll}`),
         polls: this.structureServiceRoute('Vote and See Polls', `/${AppConfig.routes.polls}`),
-      }, true
+      }, false
     );
 
-    const apostille = this.service.structureServices('img-apostille', 'Apostille',
+    const apostille = this.service.structureServices('icon-notary-dark-green.svg', 'Apostille',
       'Use Apostille service to create blockchain based notarizations to time stamp, follow and audit file authenticity.',
       {
-        addApostille: this.structureServiceRoute('Apostille create', `/${AppConfig.routes.apostille}`),
-        audiApostille: this.structureServiceRoute('Apostille audit', `/${AppConfig.routes.audiApostille}`),
+        addApostille: this.structureServiceRoute('Create New', `/${AppConfig.routes.apostille}`),
+        audiApostille: this.structureServiceRoute('Audit', `/${AppConfig.routes.audiApostille}`),
+      }, false
+    );
+
+    const namespace = this.service.structureServices('icon-namespaces-dark-green.svg', 'Namespaces & Subnamespaces',
+      'Namespaces are domain names. Each namespaces is unique and authenticates mosaics (assets).',
+      {
+        createNamespace: this.structureServiceRoute('Create Namespace', `/${AppConfig.routes.createNamespace}`),
+        linkNamespaceToMosaic: this.structureServiceRoute('Link to namespace to a mosaic', `/${AppConfig.routes.LinkingNamespaceMosaic}`),
+        renewNamespace: this.structureServiceRoute('Renovate namespace', `/${AppConfig.routes.renovateNamespace}`),
+        linkTheNamespaceToAnAddress: this.structureServiceRoute('Link the namespace to an address', `/${AppConfig.routes.linkTheNamespaceToAnAddress}`),
       }, true
     );
 
-    const nameSpace = this.service.structureServices('fa fa-linode', 'Namespaces & Subdomains',
-      'Namespaces are domain names. Each namespaces is unique and authenticates mosaics (assets) issued on it or on its subdomains',
+    const mosaics = this.service.structureServices('icon-mosaics-dark-green.svg', 'Mosaics',
+      'The mosaics service, are assets that expose additional properties and other features.',
       {
-        createNamespace: this.structureServiceRoute('Create namespace', `/${AppConfig.routes.createNamespace}`),
-       // renewNamespace: this.structureServiceRoute('Renew namespace',  `/${AppConfig.routes.editNamespace}`)
-      }, true
-    );
-
-    const mosaics = this.service.structureServices('fa fa-th', 'Mosaics',
-      'The mosaics service, are assets that expose additional properties and other features. To be able to create a mosaic, an account must rent at least one root namespace.',
-      {
-        createMosaic: this.structureServiceRoute('Create mosaic', `/${AppConfig.routes.createMosaic}`),
-        editMosaic: this.structureServiceRoute('Mosaic supply change', `/${AppConfig.routes.editMosaic}`),
+        createMosaic: this.structureServiceRoute('Create new', `/${AppConfig.routes.createMosaic}`),
+        editMosaic: this.structureServiceRoute('Supply change', `/${AppConfig.routes.MosaicSupplyChange}`),
       }, true
     );
 
@@ -82,10 +83,10 @@ export class ServicesComponent implements OnInit {
       {}, false
     );
 
-    const addressBook = this.service.structureServices('fa fa-address-card', 'Address book',
+    const addressBook = this.service.structureServices('icon-directory-dark-green.svg', 'Directory',
       `Assign labels to addresses to easily keep track of your contacts`,
       {
-        manageAddress: this.structureServiceRoute('Manage address book', `/${AppConfig.routes.addressBook}`),
+        manageAddress: this.structureServiceRoute('Open Directory', `/${AppConfig.routes.addressBook}`),
       }, true
     );
 
@@ -95,16 +96,25 @@ export class ServicesComponent implements OnInit {
       //addNode: addNode,
       multisignature: multisignature,
       explorerTransaction: explorerTransaction,
-      nameSpace: nameSpace,
+      nameSpace: namespace,
       mosaics: mosaics,
       delegatedHarvesting: delegatedHarvesting,
       apostille: apostille,
       changellyInstantExchange: changellyInstantExchange,
       voting: voting,
       addressBook: addressBook,
-      storage:storage
+      storage: storage
     }
   }
+
+  /**
+   *
+   *
+   * @param {*} name
+   * @param {*} link
+   * @returns
+   * @memberof ServicesComponent
+   */
   structureServiceRoute(name, link) {
     return {
       name: name,

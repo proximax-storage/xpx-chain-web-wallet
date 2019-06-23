@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
+import { TransactionsInterface } from '../../services/transaction.interface';
 
 @Component({
   selector: 'app-aggregate-bonded-type',
@@ -7,9 +8,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AggregateBondedTypeComponent implements OnInit {
 
+  @Input() aggregateBonded: TransactionsInterface;
+  headElements = ['Signer', 'Public Key', 'signature'];
+
   constructor() { }
 
   ngOnInit() {
+  }
+
+  async ngOnChanges(changes: SimpleChanges): Promise<void> {
+    // console.log(this.aggregateBonded);
   }
 
 }

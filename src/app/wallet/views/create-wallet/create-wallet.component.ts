@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
-import { NetworkType } from 'proximax-nem2-sdk';
+import { NetworkType } from 'tsjs-xpx-catapult-sdk';
 import { SharedService, WalletService } from "../../../shared";
-import { NemProvider } from '../../../shared/services/nem.provider';
+import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 
 
 @Component({
@@ -13,22 +13,27 @@ import { NemProvider } from '../../../shared/services/nem.provider';
 })
 export class CreateWalletComponent implements OnInit {
 
+  nameModule = 'Create Wallet';
+  descriptionModule = 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Odio obcaecati eveniet cum, dignissimos fugit consequatur tempore, blanditiis quas dolor tempora officiis, fuga numquam minima molestias veritatis velit voluptas error incidunt.';
+
   createWalletForm: FormGroup;
   walletIsCreated = false;
   privateKey: string;
   address: string;
+  publicKey: string;
   typeNetwork = [
     {
       'value': NetworkType.TEST_NET,
       'label': 'TEST NET'
     },
   ];
+  walletName: string;
 
   constructor(
     private fb: FormBuilder,
     private sharedService: SharedService,
-    private _walletService: WalletService,
-    private _nemProvider: NemProvider
+    private walletService: WalletService,
+    private proximaxProvider: ProximaxProvider
   ) {
   }
 
@@ -43,53 +48,82 @@ export class CreateWalletComponent implements OnInit {
    */
   createForm() {
     this.createWalletForm = this.fb.group({
-      walletname: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(30)]],
-      network: [NetworkType.TEST_NET, [Validators.required]],
+      walletname: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(2),
+          Validators.maxLength(30)
+        ]
+      ],
+      network: [
+        NetworkType.TEST_NET,
+        [Validators.required]
+      ],
       passwords: this.fb.group({
-        password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]],
-        confirm_password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]],
-      }, { validator: this.sharedService.passwordConfirming }),
+        password: [
+          '',
+          [
+            Validators.required,
+            Validators.minLength(8),
+            Validators.maxLength(30)
+          ]
+        ],
+        confirm_password: [
+          '',
+          [
+            Validators.required,
+            Validators.minLength(8),
+            Validators.maxLength(30)
+          ]
+        ],
+      }, {
+          validator: this.sharedService.passwordConfirming
+        }),
     });
   }
 
   /**
    * Create a simple wallet
-   * by: roimerj_vzla
    *
    * @memberof CreateWalletComponent
    */
   createSimpleWallet() {
     if (this.createWalletForm.valid) {
-      const network = this.createWalletForm.get('network').value;
-      const user = this.createWalletForm.get('walletname').value;
-      const password = this._nemProvider.createPassword(this.createWalletForm.controls.passwords.get('password').value);
-      const wallet = this._nemProvider.createAccountSimple(user, password, network);
-      const account = wallet.open(password);
-      const publicKey = account.publicKey.toString();
-      const publicAccount = this._nemProvider.createPublicAccount(publicKey, network);
-      const walletsStorage = this._walletService.getWalletStorage();
-      const myWallet = walletsStorage.find(function (element: { name: any; }) {
-        //verify if name wallet isset
-        return element.name === user;
-      });
+      const name = this.createWalletForm.get('walletname').value;
+      const walletsStorage = this.walletService.getWalletStorage();
+
+      //verify if name wallet isset
+      const myWallet = walletsStorage.find(
+        (element: { name: any; }) => {
+          return element.name === name;
+        }
+      );
 
       //Wallet does not exist
       if (myWallet === undefined) {
-        const accounts = this._walletService.buildAccount(wallet.encryptedPrivateKey.encryptedKey, wallet.encryptedPrivateKey.iv, wallet.address['address'], wallet.network);
-        this._walletService.setAccountWalletStorage(user, accounts);
+        const network = this.createWalletForm.get('network').value;
+        const password = this.proximaxProvider.createPassword(this.createWalletForm.controls.passwords.get('password').value);
+        const wallet = this.proximaxProvider.createAccountSimple(name, password, network);
+        const accounts = this.walletService.buildAccount(wallet.encryptedPrivateKey.encryptedKey, wallet.encryptedPrivateKey.iv, wallet.address['address'], wallet.network);
+        this.walletName = name;
+        this.walletService.setAccountWalletStorage(name, accounts);
         this.address = wallet.address.pretty();
-        this.sharedService.showSuccess('Congratulations!', 'Your wallet has been created successfully');
-        this.privateKey = this._nemProvider.decryptPrivateKey(password, accounts.encrypted, accounts.iv).toUpperCase();
+        this.sharedService.showSuccess('', 'Your wallet has been created successfully');
+        this.privateKey = this.proximaxProvider.decryptPrivateKey(password, accounts.encrypted, accounts.iv).toUpperCase();
+        this.publicKey = this.proximaxProvider.getPublicAccountFromPrivateKey(this.privateKey, network).publicKey;
         this.walletIsCreated = true;
+        this.nameModule = 'Congratulations!';
+        this.descriptionModule = 'Your wallet has been created successfully';
       } else {
         //Error of repeated Wallet
         this.cleanForm('walletname');
-        this.sharedService.showError('Attention!', 'This name is already in use, try another name');
+        this.sharedService.showError('', 'This name is already in use, try another name');
       }
     } else if (this.createWalletForm.controls.passwords.get('password').valid &&
       this.createWalletForm.controls.passwords.get('confirm_password').valid &&
       this.createWalletForm.controls.passwords.getError('noMatch')) {
-      this.sharedService.showError('Attention!', `Password doesn't match`);
+      this.sharedService.showError('', `Password doesn't match`);
       this.cleanForm('password', 'passwords');
       this.cleanForm('confirm_password', 'passwords');
     }
@@ -97,14 +131,13 @@ export class CreateWalletComponent implements OnInit {
 
   /**
    * Function that gets errors from a form
-   * by: roimerj_vzla
    *
    * @param {*} param
    * @param {*} name
    * @returns
    * @memberof CreateWalletComponent
    */
-  getError(control, formControl?) {
+  getError(control: any, formControl?: any) {
     if (formControl === undefined) {
       if (this.createWalletForm.get(control).getError('required')) {
         return `This field is required`;
@@ -131,7 +164,7 @@ export class CreateWalletComponent implements OnInit {
    *
    * @memberof CreateWalletComponent
    */
-  cleanForm(custom?, formControl?) {
+  cleanForm(custom?: any, formControl?: any) {
     if (custom !== undefined) {
       if (formControl !== undefined) {
         this.createWalletForm.controls[formControl].get(custom).reset();

@@ -1,8 +1,10 @@
 import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
-import { MosaicDefinitionTransaction, NamespaceService } from 'proximax-nem2-sdk';
 import { NamespacesService } from '../../../servicesModule/services/namespaces.service';
-import { NemProvider } from 'src/app/shared/services/nem.provider';
 import { TransactionsService } from '../../../transactions/service/transactions.service';
+import { TransactionsInterface } from '../../services/transaction.interface';
+import { MosaicService } from '../../../servicesModule/services/mosaic.service';
+import { MosaicsStorage } from 'src/app/servicesModule/interfaces/mosaics-namespaces.interface';
+import { MosaicId } from 'tsjs-xpx-catapult-sdk';
 
 @Component({
   selector: 'app-mosaic-definition-type',
@@ -11,10 +13,12 @@ import { TransactionsService } from '../../../transactions/service/transactions.
 })
 export class MosaicDefinitionTypeComponent implements OnInit {
 
-  @Input() mosaicDefinition: MosaicDefinitionTransaction | any;
+  @Input() mosaicDefinition: TransactionsInterface;
+  viewNamespaceId: boolean = false;
+  mosaicId: MosaicId;
 
   constructor(
-    private namespacesService: NamespacesService,
+    private mosaicService: MosaicService,
     public transactionService: TransactionsService
   ) { }
 
@@ -22,10 +26,16 @@ export class MosaicDefinitionTypeComponent implements OnInit {
   }
 
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
-    console.log(this.mosaicDefinition.parentId.toHex());
-    this.mosaicDefinition['feeFormatter'] = this.transactionService.amountFormatterSimple(this.mosaicDefinition.fee.compact());
-    const resultado = await this.namespacesService.searchNamespace([this.mosaicDefinition.parentId]);
-    this.mosaicDefinition['namespaceName'] = resultado[0].name;
+    this.viewNamespaceId = false;
+    this.mosaicDefinition['mosaicsStorage'] = null;
+    this.mosaicId = this.mosaicDefinition.data['mosaicId'].toHex();
+    const mosaics: MosaicsStorage[] = await this.mosaicService.searchMosaics([this.mosaicDefinition.data['mosaicId']]);
+    if (mosaics !== undefined && mosaics !== null) {
+      if (mosaics.length > 0) {
+        this.viewNamespaceId = false;
+        this.mosaicDefinition['mosaicsStorage'] = mosaics[0];
+      }
+    }
   }
 
 }

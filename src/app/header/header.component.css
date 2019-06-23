@@ -1,12 +1,26 @@
-mdb-navbar nav .navbar{
-    box-shadow: none !important;
+mdb-navbar nav .navbar {
+  box-shadow: none !important;
 }
 
 mdb-navbar {
-    color: white;
+  color: white;
 }
 
-.img-my-header{
+.img-my-header {
   width: 225px;
   padding-left: 20px !important;
+}
+
+.box-form-inverse {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  padding-right: 1rem;
+  padding-left: 1rem;
+}
+
+
+.clearfix::after {
+  display: none !important;
+  clear: both;
+  content: none;
 }

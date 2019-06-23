@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { SharedService } from '../../shared/services/shared.service';
-import { NemProvider } from '../../shared/services/nem.provider';
+import { ProximaxProvider } from '../../shared/services/proximax.provider';
 import * as data from '../../../assets/json/nodes.json';
 
 @Injectable({
@@ -12,13 +12,13 @@ export class NodeService {
 
   nodeObsSelected: BehaviorSubject<any>;
   nameItemsArrayStorage = environment.nameKeyNodeStorage;
-  nameItemSelectedStorage = 'proximax-web-wallet-n-s';
+  nameItemSelectedStorage = environment.nameKeyNodeSelected;
   listNodes = data['nodes'];
 
   constructor(
     private sharedService: SharedService,
-    private nemProvider: NemProvider,
-  ) {}
+    private proximaxProvider: ProximaxProvider,
+  ) { }
 
   addNode(node: string, showMsg = false, msgNodeCreated = '') {
     const dataStorage = this.getAllNodes();
@@ -84,9 +84,9 @@ export class NodeService {
     this.nodeObsSelected.subscribe(
       next => {
         this.setSelectedNodeStorage(next);
-        this.nemProvider.initInstances(next);
-          // this.dataBridge.closeConenection();
-          // this.dataBridge.connectnWs(next);
+        this.proximaxProvider.initInstances(next);
+        // this.dataBridge.closeConenection();
+        // this.dataBridge.connectnWs(next);
       }
     );
   }

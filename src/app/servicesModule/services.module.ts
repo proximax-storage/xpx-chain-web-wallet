@@ -5,22 +5,18 @@ import { ServicesRoutingModule } from './services-routing.module';
 import { ExplorerComponent } from './views/explorer/explorer.component';
 import { AddNodeComponent } from './views/add-node/add-node.component';
 import { SelectNodeComponent } from './views/select-node/select-node.component';
-import { CreatePollComponent } from './views/voting/create-poll/create-poll.component';
-import { PollsComponent } from './views/voting/polls/polls.component';
-import { HighchartsChartComponent } from './highcharts-chart.component';
-import { CreateApostilleComponent } from './views/apostille/create-apostille/create-apostille.component';
-import { AuditApostilleComsponent } from './views/apostille/audit-apostille/audit-apostille.component';
 import { ServicesComponent } from "./views/services/services.component";
 import { AccountComponent } from './views/account/account.component';
 import { AddressBookComponent } from './views/address-book/address-book.component';
-import { StorageComponent } from './views/storage/storage.component';
 import { CreateMosaicComponent } from './views/mosaic/create-mosaic/create-mosaic.component';
-import { EditMosaicComponent } from './views/mosaic/edit-mosaic/edit-mosaic.component';
-import { EditNamespaceComponent } from './views/namespace/edit-namespace/edit-namespace.component';
+import { MosaicSupplyChange } from './views/mosaic/mosaic-supply-change/mosaic-supply-change.component';
 import { CreateNamespaceComponent } from './views/namespace/create-namespace/create-namespace.component';
-import { CreateMultisignatureComponent } from './views/multisignature/create-multisignature/create-multisignature.component';
-import { EditMultisignatureContractComponent } from './views/multisignature/edit-multisignature-contract/edit-multisignature-contract.component';
-import { SignMultisigTransactionsComponent } from './views/multisignature/sign-multisig-transactions/sign-multisig-transactions.component';
+import { LinkingNamespaceToMosaicComponent } from './views/namespace/linking-namespace-to-mosaic/linking-namespace-to-mosaic.component';
+import { RenovateNamespaceComponent } from './views/namespace/renovate-namespace/renovate-namespace.component';
+import { LinkTheNamespaceToAndAddressComponent } from './views/namespace/link-the-namespace-to-and-address/link-the-namespace-to-and-address.component';
+import { ApostilleCreateComponent } from './views/apostille/apostille-create/apostille-create.component';
+
+
 
 @NgModule({
   imports: [
@@ -32,22 +28,27 @@ import { SignMultisigTransactionsComponent } from './views/multisignature/sign-m
     ExplorerComponent,
     AddNodeComponent,
     SelectNodeComponent,
-    CreatePollComponent,
-    PollsComponent,
-    CreateApostilleComponent,
-    AuditApostilleComsponent,
-    HighchartsChartComponent,
+    LinkingNamespaceToMosaicComponent,
+    //  CreatePollComponent,
+    //  PollsComponent,
+    //  CreateApostilleComponent,
+    //AuditApostilleComsponent,
+    //  HighchartsChartComponent,
     ServicesComponent,
     AccountComponent,
     AddressBookComponent,
-    StorageComponent,
     CreateMosaicComponent,
-    EditMosaicComponent,
+    MosaicSupplyChange,
     CreateNamespaceComponent,
-    EditNamespaceComponent,
-    CreateMultisignatureComponent,
-    EditMultisignatureContractComponent,
-    SignMultisigTransactionsComponent,
+    RenovateNamespaceComponent,
+    LinkTheNamespaceToAndAddressComponent,
+    ApostilleCreateComponent
+    /* StorageComponent,
+     EditMosaicComponent,
+     EditNamespaceComponent,
+     CreateMultisignatureComponent,
+     EditMultisignatureContractComponent,
+     SignMultisigTransactionsComponent,*/
   ],
   schemas: [NO_ERRORS_SCHEMA]
 })

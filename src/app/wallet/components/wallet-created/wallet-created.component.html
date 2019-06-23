@@ -1,32 +1,91 @@
-<h4 class="title-form">Congratulations, your wallet has been created!</h4>
-<hr>
-<mdb-card-text>
-    Your wallet has been created, then we show you your address and your private key, for your security, we recommend that you keep your private key in a safe place outside the internet
-</mdb-card-text>
-
-<h5 (click)="pvk.toggle(); showHidePvkAddress();" class="show-pvk">
-    {{messageShowPvk}}
-</h5>
-
-<div mdbCollapse #pvk="bs-collapse" class="mt-1-5rem">
-    <mdb-card-text class="detail-pvk">
-        <span class="pvk-address">Private key</span> <br> {{privateKey}} <br><br>
-    </mdb-card-text>
-</div>
-
-
-<mdb-card-text class="detail-pvk">
-    <span class="pvk-address">Address</span> <br> {{address}}
-</mdb-card-text>
-
-<div class="mt-4rm">
-    <div class="row ">
-        <div class="mx-auto">
-            <div class="row">
-                <div class="col-xs-6">
-                    <button mdbBtn type="button" color="default" rounded="true" class="waves-light" mdbWavesEffect type="submit" [routerLink]="routes.login">Sign In</button>
-                </div>
-            </div>
-        </div>
+<div class="mt-5px mb-1rem">
+  <div class="row">
+    <div class="col-8 mx-auto">
+      <h5 class="text-align-center wallet-description">
+        Here your wallet address and your private key. We recommend that you keep your private key in a safe place
+        outside the internet. The private key cannot be recovered
+      </h5>
     </div>
+  </div>
+
+  <div class="row">
+    <div class="col-9 mx-auto">
+      <div class="row box-form mt-1rem">
+        <div class="col-12 mt-5px">
+          <h4 class="fw-500">
+            <span class="gray-color">Wallet name: </span> {{walletName}}
+          </h4>
+        </div>
+
+        <div class="col-12 mb-5px">
+          <div class="row mt-3px">
+            <div class="col-10 col-md-10 col-lg-11 overflow-ellipsis-nowrap">
+              <div class="row">
+                <div class="col-3 col-lg-2">
+                  <span class="fs-1rem gray-color fw-400">Address: </span>
+                </div>
+                <div class="col-9 col-lg-10">
+                  <span class="fs-1rem fw-500">{{address}}</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-2 col-md-2 col-lg-1 d-flex align-items-center">
+              <i mdbWavesEffect (click)="copyMessage('Address')" ngxClipboard [cbContent]="address"
+                style="font-size: 1.5rem;" class="fa fa-paste prefix cursor-pointer"></i>
+            </div>
+          </div>
+
+          <div class="row mt-3px">
+            <div class="col-10 col-md-10 col-lg-11 overflow-ellipsis-nowrap">
+              <div class="row">
+                <div class="col-3 col-lg-2">
+                  <span class="fs-1rem gray-color fw-400">Public Key: </span>
+                </div>
+                <div class="col-9 col-lg-10">
+                  <span class="fs-1rem fw-500">{{publicKey}}</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-2 col-md-2 col-lg-1 d-flex align-items-center">
+              <i mdbWavesEffect (click)="copyMessage('Public Key')" ngxClipboard [cbContent]="publicKey"
+                style="font-size: 1.5rem;" class="fa fa-paste prefix cursor-pointer"></i>
+            </div>
+          </div>
+
+          <ng-container *ngIf="privateKeyIsShow">
+            <div class="row mt-3px">
+              <div class="col-10 col-md-10 col-lg-11 overflow-ellipsis-nowrap">
+                <div class="row">
+                  <div class="col-3 col-lg-2">
+                    <span class="fs-1rem gray-color fw-400">Private Key: </span>
+                  </div>
+                  <div class="col-9 col-lg-10">
+                    <span class="fs-1rem fw-500">{{privateKey}}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="col-2 col-md-2 col-lg-1 d-flex align-items-center">
+                <i mdbWavesEffect (click)="copyMessage('Private key')" ngxClipboard [cbContent]="privateKey"
+                  style="font-size: 1.5rem;" class="fa fa-paste prefix cursor-pointer"></i>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-1rem mb-1rem mx-auto">
+    <div class="col-4 t-a-r mx-auto overflow-ellipsis-nowrap d-flex justify-content-center">
+      <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 btn-white" size="sm"
+        [routerLink]="['/'+link.login]">
+        <i class="fa fa-arrow-circle-left"></i> Finish
+      </button>
+
+      <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 btn-dark-green-prx" size="sm"
+        (click)="showHidePvkAddress()">
+        <i class="fa fa-magic mr-1"></i> {{messageShowPvk}}
+      </button>
+    </div>
+  </div>
 </div>

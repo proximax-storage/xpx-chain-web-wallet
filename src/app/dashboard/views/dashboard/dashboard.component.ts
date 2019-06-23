@@ -1,74 +1,75 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import {
-  MosaicInfo
-} from 'proximax-nem2-sdk';
-import { first, switchMap, catchError } from 'rxjs/operators';
+import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectorRef, HostListener } from '@angular/core';
 import { DashboardService } from '../../services/dashboard.service';
+import { WalletService, SharedService } from '../../../shared';
+import { TransactionsInterface } from '../../services/transaction.interface';
 import { TransactionsService } from '../../../transactions/service/transactions.service';
-import { WalletService } from '../../../shared/services/wallet.service';
-import { NemProvider } from '../../../shared/services/nem.provider';
-import { LoginService } from '../../../login/services/login.service';
-import { SharedService } from '../../../shared/services/shared.service';
+import { MdbTablePaginationComponent, MdbTableDirective } from 'ng-uikit-pro-standard';
+import { Address } from 'tsjs-xpx-catapult-sdk';
+import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.css']
+  styleUrls: ['./dashboard.component.scss']
 })
+
+
 export class DashboardComponent implements OnInit, OnDestroy {
 
-  count = 0;
-  cantConfirmed = 0;
-  transactionsConfirmed: any = [];
-  elementsUnconfirmed: any;
-  confirmedSelected = true;
-  unconfirmedSelected = false;
-  cantUnconfirmed = 0;
-  dataSelected: any = {};
-  searching = true;
-  iconReloadDashboard = false;
+  @ViewChild(MdbTablePaginationComponent) mdbTablePagination: MdbTablePaginationComponent;
+  @ViewChild(MdbTableDirective) mdbTable: MdbTableDirective;
+  @HostListener('input') oninput() {
+    this.searchItems();
+  }
 
+  previous: any = [];
+  cantTransactions = 0;
+  myAddress: Address = null;
+  cantConfirmed = 0;
+  cantUnconfirmed = 0;
+  confirmedSelected = true;
+  dataSelected: TransactionsInterface = null;
   headElements = ['Type', 'Timestamp', 'Fee', 'Sender', 'Recipient'];
+  iconReloadDashboard = false;
+  searching = true;
   subscriptions = [
-    'getConfirmedTransactionsCache',
+    'balance',
+    'transactionsConfirmed',
     'transactionsUnconfirmed',
     'getAllTransactions',
     'transactionsConfirmed'
   ];
-  infoMosaic: MosaicInfo;
   typeTransactions: any;
+  transactionsConfirmed: TransactionsInterface[] = [];
+  transactionsUnconfirmed: TransactionsInterface[] = [];
+  unconfirmedSelected = false;
+  vestedBalance: string;
+  searchTransaction = '';
+  viewDashboard = true;
+  transactions: TransactionsInterface[] = [];
+
 
   constructor(
-    public transactionsService: TransactionsService,
+    private cdRef: ChangeDetectorRef,
     private dashboardService: DashboardService,
     private walletService: WalletService,
-    private nemProvider: NemProvider,
-    private loginService: LoginService,
+    private transactionService: TransactionsService,
     private sharedService: SharedService,
+    private proximaxProvider: ProximaxProvider
   ) {
-
+    this.myAddress = this.walletService.address;
   }
 
   ngOnInit() {
-    this.typeTransactions = this.transactionsService.arraTypeTransaction;
-    this.dashboardService.loadedDashboard();
+    this.typeTransactions = this.transactionService.arraTypeTransaction;
+    this.dashboardService.incrementViewDashboard();
     this.dashboardService.subscribeLogged();
-    this.destroySubscription();
-    this.getTransactions();
-    this.getUnconfirmedTransactionsCache();
+    this.subscribeTransactionsConfirmedUnconfirmed();
+    this.getRecentTransactions();
+    this.balance();
   }
 
   ngOnDestroy(): void {
-    this.destroySubscription();
-  }
-
-
-  /**
-   * Destroy all subscriptions
-   *
-   * @memberof DashboardComponent
-   */
-  destroySubscription() {
     this.subscriptions.forEach(element => {
       if (this.subscriptions[element] !== undefined) {
         this.subscriptions[element].unsubscribe();
@@ -76,76 +77,126 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
   }
 
+  ngAfterViewInit() {
+    this.mdbTablePagination.setMaxVisibleItemsNumberTo(5);
+    this.mdbTablePagination.calculateFirstItemIndex();
+    this.mdbTablePagination.calculateLastItemIndex();
+    this.cdRef.detectChanges();
+  }
 
-  getTransactions() {
-    this.sharedService.logInfo('-------------- BUSCA LAS TRANSACCIONES ------------------------');
-    this.searching = true;
-    this.iconReloadDashboard = false;
-    //Gets all transactions confirmed in cache
-    this.subscriptions['transactionsConfirmed'] = this.transactionsService.getConfirmedTransactionsCache$().subscribe(
-      transactionsConfirmedCache => {
-        if (this.loginService.logged) {
-          console.log("Obtiene las transacciones confirmadas en cache", transactionsConfirmedCache);
-          console.log("proceso completado?", this.dashboardService.processComplete);
-          if (transactionsConfirmedCache.length > 0) {
-            this.searching = false;
-            this.cantConfirmed = transactionsConfirmedCache.length;
-            this.transactionsConfirmed = transactionsConfirmedCache.slice(0, 10);
-          } else if (this.loginService.logged && this.dashboardService.isLoadedDashboard === 1) {
-            this.dashboardService.loadedDashboard();
-            this.getAllTransactions();
+  /**
+   * Get balance from account
+   *
+   * @memberof DashboardComponent
+   */
+  balance() {
+    this.subscriptions['balance'] = this.transactionService.getBalance$().subscribe(
+      next => {
+        this.vestedBalance = `${next} XPX`;
+      }, () => {
+        this.vestedBalance = `0.000000 XPX`;
+      }
+    );
+  }
+
+  /**
+   * Get the recent transactions of an account
+   *
+   * @memberof DashboardComponent
+   */
+  getRecentTransactions(reload = false) {
+    this.iconReloadDashboard = true;
+    // Update balance
+    this.transactionService.updateBalance();
+    // Validate if it is the first time the dashboard is loaded or if you click on the reload button
+    if (this.dashboardService.getCantViewDashboard() === 1 || reload) {
+      this.searching = true;
+      this.iconReloadDashboard = false;
+      this.proximaxProvider.getTransactionsFromAccount(this.walletService.publicAccount, this.walletService.network).toPromise().then(response => {
+        // console.log(response);
+        const data = [];
+        response.forEach(element => {
+          //Sets the data structure of the dashboard
+          const builderTransactions = this.transactionService.getStructureDashboard(element);
+          if (builderTransactions !== null) {
+            data.push(builderTransactions);
           }
-        }
-      }, error => {
-        this.sharedService.logInfo('-------------- ERROR OBTENIENDO LAS TRANSACCIONES DE CACHE ------------------------');
-        console.log("------> ", error);
+        });
 
+        // Establishes confirmed transactions in the observable type variable
+        this.transactionService.setTransactionsConfirmed$(data);
+        this.iconReloadDashboard = false;
+        this.searching = false;
+        this.dashboardService.searchComplete = true;
+      }).catch(err => {
+        this.dashboardService.searchComplete = false;
         this.searching = false;
         this.iconReloadDashboard = true;
-        this.sharedService.showInfo("", "An error occurred while searching for transactions");
+        this.sharedService.showError('Has ocurred a error', 'Possible causes: the network is offline');
+        //console.log('This is error ----> ', err);
       });
+    } else {
+      this.iconReloadDashboard = (this.dashboardService.searchComplete === false) ? true : false;
+      this.searching = false;
+    }
   }
 
   /**
-   *Get all transactions
+   *
    *
    * @memberof DashboardComponent
    */
-  getAllTransactions() {
-    console.log("***** BUSCA TODAS LAS TRANSACCIONES *****");
-    this.subscriptions['getAllTransactions'] = this.nemProvider.getAllTransactionsFromAccount(this.walletService.publicAccount, this.walletService.network).pipe(first()).subscribe(
-      allTrasactions => {
-        const elementsConfirmed = this.transactionsService.buildTransactions(allTrasactions);
-        this.transactionsService.setConfirmedTransaction$(elementsConfirmed)
-      }, error => {
-        console.log('-------------- ERROR TO SEARCH ALL TRANSACTIONS -------------', error);
-        this.sharedService.showInfo("", "An error occurred while searching for transactions");
-        this.searching = false;
-        this.iconReloadDashboard = true;
+  subscribeTransactionsConfirmedUnconfirmed() {
+    this.subscriptions['transactionsConfirmed'] = this.transactionService.getTransactionsConfirmed$().subscribe(
+      (next: TransactionsInterface[]) => {
+        this.cantConfirmed = next.length;
+        this.transactionsConfirmed = next;
+        this.cantTransactions = this.cantConfirmed;
+        this.transactions = next;
+
+        // Datatable
+        this.mdbTable.setDataSource(this.transactionsConfirmed);
+        this.transactions = this.mdbTable.getDataSource();
+        this.previous = this.mdbTable.getDataSource();
+      }
+    );
+
+    this.subscriptions['transactionsUnconfirmed'] = this.transactionService.getTransactionsUnConfirmed$().subscribe(
+      (next: TransactionsInterface[]) => {
+        this.cantUnconfirmed = next.length;
+        this.transactionsUnconfirmed = next;
+
+        // Datatable
+        /*this.mdbTable.setDataSource(this.transactionsUnconfirmed);
+        this.transactionsUnconfirmed = this.mdbTable.getDataSource();
+        this.previous = this.mdbTable.getDataSource();*/
       }
     );
   }
 
-
   /**
-   * Get unconfirmed transactions in cache
+   *
    *
    * @memberof DashboardComponent
    */
-  getUnconfirmedTransactionsCache() {
-    this.subscriptions['transactionsUnconfirmed'] = this.transactionsService.getTransactionsUnconfirmedCache$().subscribe(
-      resp => {
-        this.elementsUnconfirmed = resp;
-        this.cantUnconfirmed = resp.length;
-      }
-    );
+  searchItems() {
+    const prev = this.mdbTable.getDataSource();
+    if (!this.searchTransaction) {
+      this.mdbTable.setDataSource(this.previous);
+      this.transactions = this.mdbTable.getDataSource();
+    }
+
+    if (this.searchTransaction) {
+      this.transactions = this.mdbTable.searchLocalDataBy(this.searchTransaction);
+      this.mdbTable.setDataSource(prev);
+    }
+    this.cantTransactions = this.transactions.length;
   }
 
-
   /**
+   * Select tab
    *
-   *
-   * @param {any} param
+   * @param {*} param
    * @memberof DashboardComponent
    */
   selectTab(param: any) {
@@ -158,5 +209,19 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
   }
 
-
+  selectTransactions(type: number) {
+    if (type === 1) {
+      // Confirmed
+      this.mdbTable.setDataSource(this.transactionsConfirmed);
+      this.transactions = this.mdbTable.getDataSource();
+      this.previous = this.mdbTable.getDataSource();
+      this.cantTransactions = this.transactions.length;
+    } else {
+      // Unconfirmed
+      this.mdbTable.setDataSource(this.transactionsUnconfirmed);
+      this.transactions = this.mdbTable.getDataSource();
+      this.previous = this.mdbTable.getDataSource();
+      this.cantTransactions = this.transactions.length;
+    }
+  }
 }

@@ -1,3 +1,129 @@
-<p>
-  aggregate-complete-type works!
-</p>
+<div class="row mt-04rem mr-1rem ml-1rem">
+  <!-- Data -->
+  <div class="col-12 col-md-7 d-flex align-items-start">
+    <div class="row">
+      <!-- Type transfer -->
+      <div class="col-12">
+        <span class="color-dark-green fw-bold fs-2rem">{{aggregateComplete.nameType}}</span>
+      </div>
+
+      <!-- Timestamp -->
+      <div class="col-12 mt-05rem">
+        <span class="color-dark-green fs-07rem fw-500 w-w-b-w">{{aggregateComplete?.timestamp}}</span>
+      </div>
+
+      <!-- Fee -->
+      <div class="col-12 mb-2rem">
+        <div class="row">
+          <div class="col-3">
+            <span class="color-dark-green fw-bold fs-1-3rem">Fee: </span>
+          </div>
+          <div class="col-9">
+            <span class="color-dark-green fw-400 fs-1-3rem">{{aggregateComplete.fee}} XPX</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- recipientRentalFeeSink -->
+      <div class="col-12 mt-04rem">
+        <div class="row">
+          <div class="col-4 overflow-ellipsis-nowrap">
+            <span class="color-dark-green fw-bold fs-08rem">Recipient Rental Fee Sink: </span>
+          </div>
+          <div class="col-8 overflow-ellipsis-nowrap">
+            <span class="color-dark-green fw-400
+              fs-08rem">{{aggregateComplete?.recipientRentalFeeSink}}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- sender -->
+      <div class="col-12 mt-04rem">
+        <div class="row">
+          <div class="col-4 overflow-ellipsis-nowrap">
+            <span class="color-dark-green fw-bold fs-08rem">Sender: </span>
+          </div>
+          <div class="col-8 overflow-ellipsis-nowrap">
+            <span class="color-dark-green fw-400
+              fs-08rem">{{aggregateComplete?.sender['address'].pretty()}}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cosignatures -->
+      <div class="col-12 mt-04rem">
+        <div class="row">
+          <div class="col-12 overflow-ellipsis-nowrap">
+            <span class="color-dark-green fw-bold fs-08rem">Cosignatures: </span>
+          </div>
+          <div class="col-12 overflow-ellipsis-nowrap">
+            <div class="table-responsive table-striped ">
+              <table mdbTable id="tablePreview"
+                class="table table-hover table-bordered table-striped table-sm z-depth-0">
+                <thead>
+                  <tr>
+                    <th *ngFor="let head of headElements" scope="col" class="text-align-left fw-500">{{head}}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr mdbTableCol *ngFor="let el of aggregateComplete?.data['cosignatures']; let i = index">
+                    <td class="font-size-08rem">
+                      <a class="text-link mouse-pointer">{{el.signer.address.pretty()}}</a>
+                    </td>
+
+                    <td class="font-size-08rem">
+                      <a class="text-link mouse-pointer">{{el.signer.publicKey}}</a>
+                    </td>
+
+                    <td class="font-size-08rem">
+                      <a class="text-link mouse-pointer">{{el.signature}}</a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Box signer, signature, hash -->
+  <div class="col-12 col-md-5" id="boxHashSignerSignature">
+    <div class="row gray-color-transparent lh-1em">
+      <div class="col-12">
+        <div class="row">
+          <div class="col-12">
+            <span class="fs-08rem fw-bolder w-w-b-w"><b>Signer:</b></span>
+          </div>
+          <div class="col-12">
+            <span class="fs-07rem fw-bolder w-w-b-w">{{aggregateComplete?.data.signer.publicKey}}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 mt-3">
+        <div class="row">
+          <div class="col-12">
+            <span class="fs-08rem fw-bolder w-w-b-w"><b>Signature:</b></span>
+          </div>
+          <div class="col-12">
+            <span class="fs-07rem fw-bolder w-w-b-w">{{aggregateComplete?.data.signature}}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 mt-3">
+        <div class="row">
+          <div class="col-12">
+            <span class="fs-08rem fw-bolder w-w-b-w"><b>Hash:</b></span>
+          </div>
+          <div class="col-12">
+            <span class="fs-07rem fw-bolder w-w-b-w">{{aggregateComplete?.data.transactionInfo.hash}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
