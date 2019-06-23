@@ -51,7 +51,7 @@ export class ServicesComponent implements OnInit {
       {
         addApostille: this.structureServiceRoute('Create New', `/${AppConfig.routes.apostille}`),
         audiApostille: this.structureServiceRoute('Audit', `/${AppConfig.routes.audiApostille}`),
-      }, true
+      }, false
     );
 
     const namespace = this.service.structureServices('icon-namespaces-dark-green.svg', 'Namespaces & Subnamespaces',
