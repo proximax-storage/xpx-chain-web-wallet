@@ -1,5 +1,5 @@
 {
-  "name": "xpx-catapult-web-wallet-cow",
+  "name": "xpx-catapult-web-wallet",
   "version": "0.1.1",
   "scripts": {
     "ng": "ng",

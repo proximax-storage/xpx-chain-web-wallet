@@ -47,12 +47,12 @@ const modules = [
   NgSelectModule
 ];
 
-export let options: Partial<IConfig> | (() => Partial<IConfig>);
+// export const options: Partial<IConfig> | (() => Partial<IConfig>);
 
 @NgModule({
   imports: [
     modules,
-    NgxMaskModule.forRoot(options),
+    NgxMaskModule.forRoot(),
     MdbModule.forRoot()
   ],
   declarations: [

@@ -8,7 +8,7 @@ import { NodeService } from '../../servicesModule/services/node.service';
 import { MosaicService } from '../../servicesModule/services/mosaic.service';
 import { NamespacesService } from '../../servicesModule/services/namespaces.service';
 import { TransactionsService } from '../../transactions/service/transactions.service';
-import { ServiceModuleService } from 'src/app/servicesModule/services/service-module.service';
+import { ServiceModuleService } from '../../servicesModule/services/service-module.service';
 
 @Injectable({
   providedIn: 'root'

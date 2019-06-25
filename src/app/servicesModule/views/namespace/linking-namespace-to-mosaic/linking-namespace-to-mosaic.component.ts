@@ -1,14 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { Validators, FormGroup, FormBuilder } from '@angular/forms';
-import { NamespacesService } from 'src/app/servicesModule/services/namespaces.service';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { Router } from '@angular/router';
-import { AppConfig } from 'src/app/config/app.config';
-import { SharedService, WalletService } from 'src/app/shared';
-import { MosaicService } from 'src/app/servicesModule/services/mosaic.service';
-import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
 import { NamespaceId, MosaicId } from 'tsjs-xpx-catapult-sdk';
-import { NamespaceStorage } from 'src/app/servicesModule/interfaces/mosaics-namespaces.interface';
+import { AppConfig } from '../../../../config/app.config';
+import { SharedService, WalletService } from '../../../../shared';
+import { MosaicService } from '../../../../servicesModule/services/mosaic.service';
+import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
+import { NamespaceStorage } from '../../../../servicesModule/interfaces/mosaics-namespaces.interface';
+import { NamespacesService } from '../../../../servicesModule/services/namespaces.service';
+
 
 @Component({
   selector: 'app-linking-namespace-to-mosaic',
