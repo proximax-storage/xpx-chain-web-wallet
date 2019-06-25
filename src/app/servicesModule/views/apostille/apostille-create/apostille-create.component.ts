@@ -3,7 +3,7 @@ import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import * as crypto from 'crypto-js'
 import * as JSZip from 'jszip';
 import * as qrcode from 'qrcode-generator';
-import { saveAs } from 'file-saver';
+// import { saveAs } from 'file-saver';
 import * as jsPDF from 'jspdf';
 import { Account, UInt64 } from 'tsjs-xpx-catapult-sdk';
 import { IpfsConnection, StreamHelper, IpfsClient } from 'xpx2-ts-js-sdk';
@@ -218,16 +218,16 @@ export class ApostilleCreateComponent implements OnInit {
           );
           const ifpsClient = new IpfsClient(ipfConnection);
           ifpsClient.addStream(streamContent).subscribe(hash => {
-            saveAs(content, `${hash}.zip`);
+            // saveAs(content, `${hash}.zip`);
           });
           this.reset();
         } else {
           this.reset();
           const dateFull = `${date.getFullYear()}-${("00" + (date.getMonth() + 1)).slice(-2)}-${("00" + (date.getDate())).slice(-2)}`;
-          saveAs(
+          /*saveAs(
             content,
             `PROXIsigned -- Do not Edit --"${dateFull}".zip`
-          );
+          );*/
         }
       });
     }

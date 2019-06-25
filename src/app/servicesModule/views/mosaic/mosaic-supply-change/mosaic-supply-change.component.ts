@@ -1,16 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, Form } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { first } from 'rxjs/operators';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { MosaicSupplyType, UInt64 } from 'tsjs-xpx-catapult-sdk';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { WalletService } from '../../../../shared/services/wallet.service';
 import { SharedService } from '../../../../shared/services/shared.service';
-import { AppConfig } from '../../../../config/app.config';
-import { MosaicService } from 'src/app/servicesModule/services/mosaic.service';
-import { MosaicsStorage } from 'src/app/servicesModule/interfaces/mosaics-namespaces.interface';
-import { TransactionsService } from 'src/app/transactions/service/transactions.service';
+import { MosaicService } from '../../../../servicesModule/services/mosaic.service';
+import { MosaicsStorage } from '../../../../servicesModule/interfaces/mosaics-namespaces.interface';
+import { TransactionsService } from '../../../../transactions/service/transactions.service';
 
 @Component({
   selector: 'app-mosaic-supply-change',

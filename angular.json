@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "xpx-catapult-web-wallet-cow": {
+    "xpx-catapult-web-wallet": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/xpx-catapult-web-wallet-cow",
+            "outputPath": "dist/xpx-catapult-web-wallet",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -63,18 +63,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "xpx-catapult-web-wallet-cow:build"
+            "browserTarget": "xpx-catapult-web-wallet:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "xpx-catapult-web-wallet-cow:build:production"
+              "browserTarget": "xpx-catapult-web-wallet:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "xpx-catapult-web-wallet-cow:build"
+            "browserTarget": "xpx-catapult-web-wallet:build"
           }
         },
         "test": {
@@ -115,7 +115,7 @@
         }
       }
     },
-    "xpx-catapult-web-wallet-cow-e2e": {
+    "xpx-catapult-web-wallet-e2e": {
       "root": "e2e/",
       "projectType": "application",
       "architect": {
@@ -123,7 +123,7 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "xpx-catapult-web-wallet-cow:serve"
+            "devServerTarget": "xpx-catapult-web-wallet:serve"
           }
         },
         "lint": {
@@ -138,7 +138,7 @@
       }
     }
   },
-  "defaultProject": "xpx-catapult-web-wallet-cow",
+  "defaultProject": "xpx-catapult-web-wallet",
   "schematics": {
     "@schematics/angular:component": {
       "styleext": "scss"

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { AppConfig } from "src/app/config/app.config";
+import { AppConfig } from "../../../config/app.config";
 import { SharedService } from '../../../shared';
 
 @Component({

@@ -148,12 +148,11 @@
               <div class="md-form">
                 <input [mask]="maskData" pattern="^[+]?([0-9]*[.])?[0-9]+$" type="text" autocomplete="off"
                   formControlName="amount" id="amount" class="form-control" mdbInputDirective [validateSuccess]="false"
-                  [validateError]="false" [minlength]="configurationForm.amount.minLength"
-                  [maxlength]="configurationForm.amount.maxLength">
+                  [validateError]="false" [maxlength]="configurationForm.amount.maxLength">
                 <label for="recipient">{{titleLabelAmount}}</label>
 
                 <!-- Message Error invalid Amount -->
-                <mdb-error class="text-danger fw-500" *ngIf="(getInput('amount').invalid || getInput('amount').required) &&
+                <mdb-error class="text-danger fw-500" *ngIf="(getInput('amount').invalid) &&
                         (getInput('amount').dirty || getInput('amount').touched)">
                   <span class="text-danger fw-500">Invalid amount</span>
                 </mdb-error>
