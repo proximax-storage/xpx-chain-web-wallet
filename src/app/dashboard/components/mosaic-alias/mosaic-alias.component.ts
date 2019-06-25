@@ -1,8 +1,8 @@
 import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
-import { MosaicAlias, MosaicId, NamespaceId } from 'tsjs-xpx-catapult-sdk';
-import { MosaicService } from 'src/app/servicesModule/services/mosaic.service';
+import { MosaicId, NamespaceId } from 'tsjs-xpx-catapult-sdk';
+import { MosaicService } from '../../../servicesModule/services/mosaic.service';
 import { TransactionsInterface } from '../../services/transaction.interface';
-import { NamespacesService } from 'src/app/servicesModule/services/namespaces.service';
+import { NamespacesService } from '../../../servicesModule/services/namespaces.service';
 
 @Component({
   selector: 'app-mosaic-alias',

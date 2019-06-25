@@ -1,13 +1,13 @@
 import { Component, OnInit, ViewChild, HostListener, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { MdbTablePaginationComponent, MdbTableService, MdbTableDirective } from 'ng-uikit-pro-standard';
-import { MosaicId, Transaction, Address, TransactionType } from 'tsjs-xpx-catapult-sdk';
+import { Address } from 'tsjs-xpx-catapult-sdk';
+import { first } from "rxjs/operators";
 import { AppConfig } from '../../../config/app.config';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 import { NodeService } from "../../services/node.service";
 import { SharedService, WalletService } from "../../../shared";
 import { TransactionsService } from "../../../transactions/service/transactions.service";
-import { first } from "rxjs/operators";
-import { TransactionsInterface } from 'src/app/dashboard/services/transaction.interface';
+import { TransactionsInterface } from '../../../dashboard/services/transaction.interface';
 
 @Component({
   selector: 'app-explorer',
