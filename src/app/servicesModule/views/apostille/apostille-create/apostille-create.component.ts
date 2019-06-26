@@ -13,6 +13,7 @@ import { ProximaxProvider } from '../../../../shared/services/proximax.provider'
 import { Verifier } from '../services/audit-apistille-verifier';
 import { ApostilleService } from '../services/apostille.service';
 import { environment } from '../../../../../environments/environment';
+declare const Buffer: any;
 
 @Component({
   selector: 'app-apostille-create',
@@ -71,7 +72,7 @@ export class ApostilleCreateComponent implements OnInit {
 
   /**Will move to util class **/
   async convertBlobToBuffer(blob: any) {
-    return new Promise<Buffer>(function (resolve, reject) {
+    /*return new Promise<Buffer>(function (resolve, reject) {
       const reader = new FileReader();
       reader.onloadend = () => {
         const fileContent = Buffer.from(reader.result as ArrayBuffer);
@@ -79,7 +80,7 @@ export class ApostilleCreateComponent implements OnInit {
       };
       reader.onerror = event => reject(event);
       reader.readAsArrayBuffer(blob);
-    });
+    });*/
   }
 
   /**
