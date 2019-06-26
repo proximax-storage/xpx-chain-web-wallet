@@ -5,7 +5,7 @@ import {
   Validators,
   FormControl
 } from "@angular/forms";
-import { MosaicId, SignedTransaction } from "tsjs-xpx-catapult-sdk";
+import { MosaicId, SignedTransaction } from "tsjs-xpx-chain-sdk";
 import { WalletService, SharedService } from "../../../shared";
 import { TransactionsService } from "../../../transactions/service/transactions.service";
 import { ServiceModuleService } from "../../../servicesModule/services/service-module.service";

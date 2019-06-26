@@ -2,7 +2,7 @@ import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
 import { TransactionsService } from '../../../transactions/service/transactions.service';
 import { MosaicService } from '../../../servicesModule/services/mosaic.service';
 import { TransactionsInterface } from '../../services/transaction.interface';
-import { MosaicId } from 'tsjs-xpx-catapult-sdk';
+import { MosaicId } from 'tsjs-xpx-chain-sdk';
 
 @Component({
   selector: 'app-mosaic-supply-change-type',

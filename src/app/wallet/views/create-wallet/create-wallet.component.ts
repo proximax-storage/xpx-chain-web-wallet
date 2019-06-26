@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
-import { NetworkType } from 'tsjs-xpx-catapult-sdk';
+import { NetworkType } from 'tsjs-xpx-chain-sdk';
 import { SharedService, WalletService } from "../../../shared";
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 

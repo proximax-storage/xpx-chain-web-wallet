@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Address } from 'tsjs-xpx-catapult-sdk';
+import { Address } from 'tsjs-xpx-chain-sdk';
 
 @Injectable({
   providedIn: 'root'

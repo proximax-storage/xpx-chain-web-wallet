@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, SimpleChanges, Output, EventEmitter } from '@angular/core';
-import { Mosaic, MosaicView, MosaicInfo } from 'tsjs-xpx-catapult-sdk';
+import { Mosaic, MosaicView, MosaicInfo } from 'tsjs-xpx-chain-sdk';
 import { MosaicService } from '../../../servicesModule/services/mosaic.service';
 import { TransactionsService } from '../../../transactions/service/transactions.service';
 import { MosaicsStorage } from '../../../servicesModule/interfaces/mosaics-namespaces.interface';

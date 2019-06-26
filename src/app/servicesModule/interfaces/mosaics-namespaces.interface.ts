@@ -2,8 +2,8 @@ import {
   NamespaceInfo,
   MosaicInfo,
   NamespaceName
-} from "tsjs-xpx-catapult-sdk";
-import { MosaicNames } from "tsjs-xpx-catapult-sdk/dist/src/model/mosaic/MosaicNames";
+} from "tsjs-xpx-chain-sdk";
+import { MosaicNames } from "tsjs-xpx-chain-sdk/dist/src/model/mosaic/MosaicNames";
 
 export interface NamespaceStorage {
   id: number[];

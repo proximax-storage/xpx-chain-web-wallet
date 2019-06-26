@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Validators, FormGroup, FormBuilder } from '@angular/forms';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { Router } from '@angular/router';
-import { NamespaceId, MosaicId } from 'tsjs-xpx-catapult-sdk';
+import { NamespaceId, MosaicId } from 'tsjs-xpx-chain-sdk';
 import { AppConfig } from '../../../../config/app.config';
 import { SharedService, WalletService } from '../../../../shared';
 import { MosaicService } from '../../../../servicesModule/services/mosaic.service';

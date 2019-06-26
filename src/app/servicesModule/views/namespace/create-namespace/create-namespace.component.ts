@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SignedTransaction, NamespaceId, UInt64, MosaicId } from 'tsjs-xpx-catapult-sdk';
+import { SignedTransaction, NamespaceId, UInt64, MosaicId } from 'tsjs-xpx-chain-sdk';
 import { first } from 'rxjs/operators';
 
 import { AppConfig } from '../../../../config/app.config';

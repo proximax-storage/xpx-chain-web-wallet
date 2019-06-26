@@ -1,4 +1,4 @@
-import { Transaction, PublicAccount, Address } from 'tsjs-xpx-catapult-sdk';
+import { Transaction, PublicAccount, Address } from 'tsjs-xpx-chain-sdk';
 
 export interface TransactionsInterface {
   data: Transaction;

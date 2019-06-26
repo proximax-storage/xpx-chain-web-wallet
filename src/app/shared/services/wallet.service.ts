@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { NetworkType, PublicAccount, AccountInfo, Address } from "tsjs-xpx-catapult-sdk";
-import { crypto } from 'js-xpx-catapult-library';
+import { NetworkType, PublicAccount, AccountInfo, Address } from "tsjs-xpx-chain-sdk";
+import { crypto } from 'js-xpx-chain-library';
 import { Router } from "@angular/router";
 import { AccountsInterface } from '..';
 import { ProximaxProvider } from './proximax.provider';

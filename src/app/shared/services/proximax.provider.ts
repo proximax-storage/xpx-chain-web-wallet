@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { crypto } from 'js-xpx-catapult-library';
+import { crypto } from 'js-xpx-chain-library';
 import {
   Password,
   SimpleWallet,
@@ -38,7 +38,7 @@ import {
   MosaicSupplyType,
   AliasTransaction,
   AliasActionType
-} from 'tsjs-xpx-catapult-sdk';
+} from 'tsjs-xpx-chain-sdk';
 import { mergeMap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
