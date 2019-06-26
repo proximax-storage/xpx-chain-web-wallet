@@ -3,7 +3,7 @@ import { Resolve, Router } from '@angular/router';
 import { of as observableOf } from 'rxjs';
 import { first, map, catchError } from 'rxjs/operators';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
-import { QueryParams } from 'tsjs-xpx-catapult-sdk';
+import { QueryParams } from 'tsjs-xpx-chain-sdk';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { WalletService } from '../../../../shared/services/wallet.service';
 import { SharedService } from '../../../../shared/services/shared.service';

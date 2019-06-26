@@ -1,6 +1,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "types": ["node", "lodash", "express", "zone.js"],
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
     "sourceMap": true,

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
-import { AliasActionType, Address, NamespaceId } from 'tsjs-xpx-catapult-sdk';
+import { AliasActionType, Address, NamespaceId } from 'tsjs-xpx-chain-sdk';
 import { Router } from '@angular/router';
 import { NgBlockUI, BlockUI } from 'ng-block-ui';
 import { NamespacesService } from '../../../../servicesModule/services/namespaces.service';

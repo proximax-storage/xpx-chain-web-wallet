@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
-import { SignedTransaction } from 'tsjs-xpx-catapult-sdk';
+import { SignedTransaction } from 'tsjs-xpx-chain-sdk';
 import { NamespacesService } from '../../../../servicesModule/services/namespaces.service';
 import { AppConfig } from '../../../../config/app.config';
 import { SharedService, WalletService } from '../../../../shared';

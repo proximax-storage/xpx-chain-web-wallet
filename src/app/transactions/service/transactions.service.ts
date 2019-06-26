@@ -14,7 +14,7 @@ import {
   TransactionType,
   Transaction,
   AccountInfo
-} from "tsjs-xpx-catapult-sdk";
+} from "tsjs-xpx-chain-sdk";
 import { first } from "rxjs/operators";
 import { ProximaxProvider } from "../../shared/services/proximax.provider";
 import { WalletService } from "../../shared/services/wallet.service";

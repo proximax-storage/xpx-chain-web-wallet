@@ -5,9 +5,9 @@ import * as JSZip from 'jszip';
 import * as qrcode from 'qrcode-generator';
 // import { saveAs } from 'file-saver';
 import * as jsPDF from 'jspdf';
-import { Account, UInt64 } from 'tsjs-xpx-catapult-sdk';
-import { IpfsConnection, StreamHelper, IpfsClient } from 'xpx2-ts-js-sdk';
-import { KeyPair, convert } from 'js-xpx-catapult-library';
+import { Account, UInt64 } from 'tsjs-xpx-chain-sdk';
+import { IpfsConnection, IpfsClient } from 'xpx2-ts-js-sdk';
+import { KeyPair, convert } from 'js-xpx-chain-library';
 import { WalletService } from '../../../../shared';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { Verifier } from '../services/audit-apistille-verifier';
@@ -210,10 +210,10 @@ export class ApostilleCreateComponent implements OnInit {
       }).then(async (content: any) => {
         if (this.storeInDfms) {
           const bufferContent = await this.convertBlobToBuffer(content);
-          const streamContent = await StreamHelper.buffer2Stream(bufferContent);
+          const streamContent = null; /*await StreamHelper.buffer2Stream(bufferContent);*/
           const ipfConnection = new IpfsConnection(
             environment.storageConnection.host,
-            environment.storageConnection.port,
+            environment.storageConnection.port.toString(),
             environment.storageConnection.options
           );
           const ifpsClient = new IpfsClient(ipfConnection);

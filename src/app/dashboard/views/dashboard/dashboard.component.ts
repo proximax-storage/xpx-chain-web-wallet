@@ -4,7 +4,7 @@ import { WalletService, SharedService } from '../../../shared';
 import { TransactionsInterface } from '../../services/transaction.interface';
 import { TransactionsService } from '../../../transactions/service/transactions.service';
 import { MdbTablePaginationComponent, MdbTableDirective } from 'ng-uikit-pro-standard';
-import { Address } from 'tsjs-xpx-catapult-sdk';
+import { Address } from 'tsjs-xpx-chain-sdk';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 
 @Component({

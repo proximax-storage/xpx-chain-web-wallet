@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core";
+import { BehaviorSubject, Observable } from "rxjs";
 import {
   NamespaceInfo,
   NamespaceId,
@@ -9,11 +10,10 @@ import {
   AliasTransaction,
   Deadline,
   EncryptedPrivateKey
-} from "tsjs-xpx-catapult-sdk";
+} from "tsjs-xpx-chain-sdk";
 import { ProximaxProvider } from "../../shared/services/proximax.provider";
 import { WalletService } from "../../shared/services/wallet.service";
 import { NamespaceStorage } from "../interfaces/mosaics-namespaces.interface";
-import { BehaviorSubject, Observable } from "rxjs";
 
 @Injectable({
   providedIn: "root"

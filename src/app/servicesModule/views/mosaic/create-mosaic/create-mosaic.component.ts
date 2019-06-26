@@ -8,7 +8,7 @@ import { MosaicService } from '../../../services/mosaic.service';
 import { SharedService } from '../../../../shared/services/shared.service';
 import { AppConfig } from '../../../../config/app.config';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
-import { UInt64, Deadline, AggregateTransaction, NetworkType, MosaicSupplyType, AliasActionType } from 'tsjs-xpx-catapult-sdk';
+import { UInt64, Deadline, AggregateTransaction, NetworkType, MosaicSupplyType, AliasActionType } from 'tsjs-xpx-chain-sdk';
 
 @Component({
   selector: 'app-create-mosaic',

@@ -1,7 +1,7 @@
 import * as CryptoJS from 'crypto-js'
-import { PublicAccount } from 'tsjs-xpx-catapult-sdk';
+import { PublicAccount } from 'tsjs-xpx-chain-sdk';
 import { Errors } from './Errors';
-import { KeyPair, convert } from 'js-xpx-catapult-library';
+import { KeyPair, convert } from 'js-xpx-chain-library';
 
 /**
  * @description - a class with diffrent verifier function utilities
