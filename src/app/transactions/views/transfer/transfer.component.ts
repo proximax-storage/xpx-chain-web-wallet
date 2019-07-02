@@ -292,7 +292,9 @@ export class TransferComponent implements OnInit {
     this.subscribe['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
       statusTransaction => {
         if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
-          const match = statusTransaction['data'].transactionInfo.hash === this.transactionSigned.hash;
+          this.subscribe['transactionStatus'].unsubscribe();
+          const statusTransactionHash = (statusTransaction['type'] === 'error') ? statusTransaction['data'].hash : statusTransaction['data'].transactionInfo.hash;
+          const match = statusTransactionHash === this.transactionSigned.hash;
           if (statusTransaction['type'] === 'confirmed' && match) {
             this.transactionSigned = null;
             this.sharedService.showSuccess('', 'Transaction confirmed');
@@ -301,7 +303,7 @@ export class TransferComponent implements OnInit {
             this.sharedService.showInfo('', 'Transaction unconfirmed');
           } else if (match) {
             this.transactionSigned = null;
-            this.sharedService.showWarning('', statusTransaction['type'].status);
+            this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
           }
         }
       }
@@ -417,7 +419,9 @@ export class TransferComponent implements OnInit {
             this.showContacts = false;
             this.inputBlocked = false;
             this.cleanForm();
-            this.getTransactionStatus();
+            if (this.subscribe['transactionStatus'] === undefined || this.subscribe['transactionStatus'] === null) {
+              this.getTransactionStatus();
+            }
           }, err => {
             this.inputBlocked = false;
             this.cleanForm();
