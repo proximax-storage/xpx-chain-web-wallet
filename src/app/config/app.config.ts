@@ -27,8 +27,8 @@ export const AppConfig: Config = {
     MosaicSupplyChange: 'mosaic-supply-change',
     createNamespace: 'create-namespace',
     renovateNamespace: 'renovate-namespace',
-    linkTheNamespaceToAnAddress: 'link-namespace-to-an-address',
-    LinkingNamespaceMosaic: 'linking-namespace-to-mosaic',
+    linkTheNamespaceToAnAddress: 'alias-namespace-to-an-address',
+    LinkingNamespaceMosaic: 'alias-namespace-to-mosaic',
     createMultisignature: 'create-multisignature-contract',
     editMultisignatureContract: 'edit-multisignature-contract',
     signMultiSigTransactions: 'sign-multisignature-transactions'

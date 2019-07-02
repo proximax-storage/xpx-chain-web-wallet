@@ -5,7 +5,7 @@ import {
   Validators,
   FormControl
 } from "@angular/forms";
-import { MosaicId, SignedTransaction } from "tsjs-xpx-chain-sdk";
+import { MosaicId, SignedTransaction, Address } from "tsjs-xpx-chain-sdk";
 import { WalletService, SharedService } from "../../../shared";
 import { TransactionsService } from "../../../transactions/service/transactions.service";
 import { ServiceModuleService } from "../../../servicesModule/services/service-module.service";
@@ -21,7 +21,8 @@ import { DataBridgeService } from "../../../shared/services/data-bridge.service"
 })
 export class TransferComponent implements OnInit {
 
-
+  accountRecipient = '';
+  accountContactRecipient = '';
   amountSend: string | number = '0.000000';
   blockSendButton: boolean;
   contactForm: FormGroup;
@@ -47,6 +48,7 @@ export class TransferComponent implements OnInit {
     }
   }
   inputBlocked: boolean;
+  inputContactBlocked: boolean;
   insufficientBalance = false;
   mosaicsSelect: any = [
     {
@@ -63,6 +65,7 @@ export class TransferComponent implements OnInit {
     }
   ];
   msgErrorUnsupported = '';
+  msgErrorUnsupportedContact = '';
   maskData = '0*';
   myClass = {
     'boxRecipientTrue': 'col-9 col-sm-10 col-md-6 col-lg-7 pr-2rem',
@@ -197,7 +200,7 @@ export class TransferComponent implements OnInit {
   createFormContact() {
     this.contactForm = this.fb.group({
       user: [
-        null,
+        '',
         [
           Validators.required,
           Validators.minLength(2),
@@ -205,7 +208,7 @@ export class TransferComponent implements OnInit {
         ]
       ],
       address: [
-        null,
+        '',
         [
           Validators.required,
           Validators.minLength(this.configurationForm.accountRecipient.minLength),
@@ -252,6 +255,19 @@ export class TransferComponent implements OnInit {
     }
     this.amountSend = 0;
     this.transferForm.reset();
+    return;
+  }
+
+  cleanFormContact(custom?: string | (string | number)[], formControl?: string | number) {
+    if (custom !== undefined) {
+      if (formControl !== undefined) {
+        this.contactForm.controls[formControl].get(custom).reset();
+        return;
+      }
+      this.contactForm.get(custom).reset();
+      return;
+    }
+    this.contactForm.reset();
     return;
   }
 
@@ -387,7 +403,7 @@ export class TransferComponent implements OnInit {
       if (this.walletService.decrypt(common)) {
         const buildTransferTransaction = this.transactionService.buildToSendTransfer(
           common,
-          this.transferForm.get("accountRecipient").value,
+          this.accountRecipient,
           this.transferForm.get("message").value === null ? "" : this.transferForm.get("message").value,
           this.transferForm.get("amount").value,
           this.walletService.network,
@@ -420,16 +436,48 @@ export class TransferComponent implements OnInit {
    * @memberof TransferComponent
    */
   subscribeControls() {
+    // Account Contact Recipient
+    this.contactForm.get('address').valueChanges.subscribe(
+      value => {
+        value = (value !== undefined && value !== null) ? value.split('-').join('') : '';
+        this.accountRecipient = value;
+        this.accountContactRecipient = value.split('-').join('');
+        if (this.accountContactRecipient !== '' && this.accountContactRecipient.length === 40) {
+          if (!this.proximaxProvider.verifyNetworkAddressEqualsNetwork(this.walletService.address.plain(), this.accountContactRecipient)) {
+            this.inputContactBlocked = true;
+            this.msgErrorUnsupportedContact = 'Contact Address Network unsupported';
+          } else {
+            this.inputContactBlocked = false;
+            this.msgErrorUnsupportedContact = '';
+          }
+        } else if (!this.contactForm.get('address').getError("required") && !this.contactForm.get('address').invalid) {
+          this.inputContactBlocked = true;
+          this.msgErrorUnsupportedContact = 'Contact Address Network unsupported';
+        } else {
+          this.inputContactBlocked = false;
+          this.msgErrorUnsupportedContact = '';
+        }
+      }
+    );
+
     // Account Recipient
     this.transferForm.get('accountRecipient').valueChanges.subscribe(
       value => {
-        if (value !== null && value !== undefined && value.length >= 40 && value.length <= 46) {
-          if (!this.proximaxProvider.verifyNetworkAddressEquals(this.walletService.address.plain(), value)) {
+        value = (value !== undefined && value !== null) ? value.split('-').join('') : '';
+        this.accountRecipient = value;
+        if (this.accountRecipient !== null && this.accountRecipient !== undefined && this.accountRecipient.length === 40) {
+          if (!this.proximaxProvider.verifyNetworkAddressEqualsNetwork(this.walletService.address.plain(), this.accountRecipient)) {
+            this.inputBlocked = true;
             this.msgErrorUnsupported = 'Recipient Address Network unsupported';
           } else {
+            this.inputBlocked = false;
             this.msgErrorUnsupported = '';
           }
+        } else if (!this.transferForm.get('accountRecipient').getError("required") && !this.transferForm.get('accountRecipient').invalid) {
+          this.inputBlocked = true;
+          this.msgErrorUnsupported = 'Recipient Address Network unsupported';
         } else {
+          this.inputBlocked = false;
           this.msgErrorUnsupported = '';
         }
       }

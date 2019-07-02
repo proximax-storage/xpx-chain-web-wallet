@@ -90,7 +90,7 @@
                 <label for="recipient">Recipient</label>
 
                 <!-- Invalid Recipient -->
-                <mdb-error *ngIf="input.invalid &&
+                <mdb-error *ngIf="msgErrorUnsupported === '' && input.invalid &&
                   (input.dirty || input.touched) &&
                   getError('accountRecipient')">
                   <span class="text-danger fw-500">Invalid Recipient</span>
@@ -222,7 +222,8 @@
               </button>
             </div>
             <div class="col-6">
-              <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 btn-dark-green-prx">
+              <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 btn-dark-green-prx"
+                [disabled]="inputBlocked">
                 SEND
               </button>
             </div>
@@ -276,9 +277,20 @@
                 <div class="col-9 col-sm-10 col-md-10 col-lg-11">
                   <div class="md-form">
                     <input formControlName="address" type="text" autocomplete="off" required id="acountRecipient"
-                      class="form-control" mdbInputDirective data-success="Valid recipient"
-                      [errorMessage]="getError('address', 'contactForm')">
-                    <label for="recipient">Address</label>
+                      class="form-control" mdbInputDirective [validateError]="false" [validateSuccess]="false"
+                      [maxlength]="configurationForm.accountRecipient.maxLength"
+                      [minlength]="configurationForm.accountRecipient.minLength">
+                    <label for="acountRecipient">Recipient</label>
+                    <!-- Invalid Recipient -->
+                    <mdb-error *ngIf="msgErrorUnsupportedContact === '' && contactForm.get('address').invalid &&
+                  (contactForm.get('address').dirty || contactForm.get('address').touched) &&
+                  getError('address', 'contactForm')">
+                      <span class="text-danger fw-500">Invalid Recipient</span>
+                    </mdb-error>
+                    <!-- Message Unsupported -->
+                    <mdb-error *ngIf="msgErrorUnsupportedContact !== ''">
+                      <span class="text-danger fw-500">{{msgErrorUnsupportedContact}}</span>
+                    </mdb-error>
                   </div>
                 </div>
               </div>
@@ -288,13 +300,13 @@
           <div class="row mt-1rem mb-1rem">
             <div class="col-6 t-a-r">
               <button mdbBtn type="button" size="sm" rounded="true" mdbWavesEffect class="f-w-600 btn-white"
-                (click)="cleanForm()">
+                (click)="cleanFormContact()">
                 CLEAN
               </button>
             </div>
             <div class="col-6">
               <button mdbBtn type="submit" size="sm" rounded="true" mdbWavesEffect class="f-w-600 btn-dark-green-prx"
-                [disabled]="inputBlocked">
+                [disabled]="inputContactBlocked">
                 Save
               </button>
             </div>
