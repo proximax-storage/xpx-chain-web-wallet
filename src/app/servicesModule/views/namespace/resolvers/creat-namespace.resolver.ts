@@ -29,7 +29,7 @@ export class CreateNamespaceResolver implements Resolve<any> {
         this.blockUI.stop();
         return response;
       }).catch(error => {
-        console.log(error);
+        // console.log(error);
         this.blockUI.stop();
         this.router.navigate([AppConfig.routes.home]);
         this.sharedService.showError('', 'Please check your connection and try again');

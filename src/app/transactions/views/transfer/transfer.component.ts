@@ -198,14 +198,18 @@ export class TransferComponent implements OnInit {
     this.contactForm = this.fb.group({
       user: [
         null,
-        [Validators.required, Validators.minLength(2), Validators.maxLength(30)]
+        [
+          Validators.required,
+          Validators.minLength(2),
+          Validators.maxLength(30)
+        ]
       ],
       address: [
         null,
         [
           Validators.required,
-          Validators.minLength(46),
-          Validators.maxLength(46)
+          Validators.minLength(this.configurationForm.accountRecipient.minLength),
+          Validators.maxLength(this.configurationForm.accountRecipient.maxLength)
         ]
       ]
     });
@@ -439,7 +443,7 @@ export class TransferComponent implements OnInit {
           const mosaic = this.mosaicServices.filterMosaic(new MosaicId(value));
           const a = Number(this.transferForm.get('amount').value);
           this.amountSend = (mosaic !== null) ? this.transactionService.amountFormatter(a, mosaic.mosaicInfo) : a;
-          this.validateAmountToTransfer(a, mosaic)
+          this.validateAmountToTransfer(a, mosaic);
         } else {
           this.amountSend = 0;
         }
@@ -457,7 +461,7 @@ export class TransferComponent implements OnInit {
             const mosaic = this.mosaicServices.filterMosaic(new MosaicId(this.transferForm.get('mosaicsSelect').value));
             const a = Number(this.transferForm.get('amount').value);
             this.amountSend = (mosaic !== null) ? this.transactionService.amountFormatter(a, mosaic.mosaicInfo) : a;
-            this.validateAmountToTransfer(a, mosaic)
+            this.validateAmountToTransfer(a, mosaic);
           } else {
             this.amountSend = 0;
           }
@@ -503,20 +507,51 @@ export class TransferComponent implements OnInit {
    * @memberof TransferComponent
    */
   validateAmountToTransfer(amount, mosaic: MosaicsStorage) {
+    let validateAmount = false;
     const accountInfo = this.walletService.getAccountInfo();
     if (accountInfo !== undefined && accountInfo !== null && Object.keys(accountInfo).length > 0) {
-      const filtered = accountInfo.mosaics.find(element => {
-        return element.id.toHex() === new MosaicId(mosaic.id).toHex();
-      });
-      const invalidBalance = filtered.amount.compact() < amount;
-      if (invalidBalance && !this.insufficientBalance) {
+      if (accountInfo.mosaics.length > 0) {
+        const filtered = accountInfo.mosaics.find(element => {
+          return element.id.toHex() === new MosaicId(mosaic.id).toHex();
+        });
+
+        if (filtered !== undefined && filtered !== null) {
+          const invalidBalance = filtered.amount.compact() < amount;
+          if (invalidBalance && !this.insufficientBalance) {
+            this.insufficientBalance = true;
+            this.inputBlocked = true;
+            this.transferForm.controls['contact'].disable();
+            this.transferForm.controls['accountRecipient'].disable();
+            this.transferForm.controls['message'].disable();
+            this.transferForm.controls['password'].disable();
+          } else if (!invalidBalance && this.insufficientBalance) {
+            this.insufficientBalance = false;
+            this.inputBlocked = false;
+            this.transferForm.controls['mosaicsSelect'].enable();
+            this.transferForm.controls['contact'].enable();
+            this.transferForm.controls['accountRecipient'].enable();
+            this.transferForm.controls['message'].enable();
+            this.transferForm.controls['password'].enable();
+          }
+        } else {
+          validateAmount = true;
+        }
+      } else {
+        validateAmount = true;
+      }
+    } else {
+      validateAmount = true;
+    }
+
+    if (validateAmount) {
+      if (amount >= 1) {
         this.insufficientBalance = true;
         this.inputBlocked = true;
         this.transferForm.controls['contact'].disable();
         this.transferForm.controls['accountRecipient'].disable();
         this.transferForm.controls['message'].disable();
         this.transferForm.controls['password'].disable();
-      } else if (!invalidBalance && this.insufficientBalance) {
+      } else if ((amount === 0 || amount === '') && this.insufficientBalance) {
         this.insufficientBalance = false;
         this.inputBlocked = false;
         this.transferForm.controls['mosaicsSelect'].enable();

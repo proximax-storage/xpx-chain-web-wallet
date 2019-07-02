@@ -229,7 +229,7 @@ export class CreateNamespaceComponent implements OnInit {
                 });
               }
             }).catch(error => {
-              console.log(error);
+              // console.log(error);
               this.blockUI.stop();
               this.router.navigate([AppConfig.routes.home]);
               this.sharedService.showError('', 'Check your connection and try again');
@@ -237,7 +237,7 @@ export class CreateNamespaceComponent implements OnInit {
         }
       },
       error => {
-        console.log(error);
+        // console.log(error);
         this.blockUI.stop();
         this.router.navigate([AppConfig.routes.home]);
         this.sharedService.showError('', 'Check your connection and try again');
