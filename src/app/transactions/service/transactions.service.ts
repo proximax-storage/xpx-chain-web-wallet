@@ -326,16 +326,23 @@ export class TransactionsService {
     this.proximaxProvider.getAccountInfo(this.walletService.address).pipe(first()).subscribe(
       (accountInfo: AccountInfo) => {
         // console.log('AccountInfo ---> ', accountInfo);
-        //Search mosaics
-        this.mosaicService.searchMosaics(accountInfo.mosaics.map(next => next.id));
-        // Save account info returned in walletService
-        this.walletService.setAccountInfo(accountInfo);
-        accountInfo.mosaics.forEach(element => {
-          // If mosaicId is XPX, set balance in XPX
-          if (element.id.toHex() === this.proximaxProvider.mosaicXpx.mosaicId) {
-            this.setBalance$(element.amount.compact());
+        if (accountInfo !== null && accountInfo !== undefined) {
+          //Search mosaics
+          this.mosaicService.searchMosaics(accountInfo.mosaics.map(next => next.id));
+          // Save account info returned in walletService
+          this.walletService.setAccountInfo(accountInfo);
+          if (accountInfo.mosaics.length > 0) {
+            accountInfo.mosaics.forEach(element => {
+              // If mosaicId is XPX, set balance in XPX
+              if (element.id.toHex() === this.proximaxProvider.mosaicXpx.mosaicId) {
+                // console.log('fure...');
+                this.setBalance$(element.amount.compact());
+              }
+            });
+          } else {
+            this.setBalance$("0.000000");
           }
-        });
+        }
       },
       (_err: any) => {
         this.setBalance$("0.000000");

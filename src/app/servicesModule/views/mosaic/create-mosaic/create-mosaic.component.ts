@@ -46,6 +46,14 @@ export class CreateMosaicComponent implements OnInit {
     this.createForm();
   }
 
+  ngOnDestroy(): void {
+    this.subscribe.forEach(element => {
+      if (this.subscribe[element] !== undefined) {
+        this.subscribe[element].unsubscribe();
+      }
+    });
+  }
+
 
 
   /**

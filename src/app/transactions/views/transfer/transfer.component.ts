@@ -292,7 +292,6 @@ export class TransferComponent implements OnInit {
     this.subscribe['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
       statusTransaction => {
         if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
-          this.subscribe['transactionStatus'].unsubscribe();
           const statusTransactionHash = (statusTransaction['type'] === 'error') ? statusTransaction['data'].hash : statusTransaction['data'].transactionInfo.hash;
           const match = statusTransactionHash === this.transactionSigned.hash;
           if (statusTransaction['type'] === 'confirmed' && match) {
