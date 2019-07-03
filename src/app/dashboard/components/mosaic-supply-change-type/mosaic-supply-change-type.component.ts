@@ -1,8 +1,10 @@
 import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
+import { MosaicId } from 'tsjs-xpx-chain-sdk';
+import * as cloneDeep from 'lodash/cloneDeep';
 import { TransactionsService } from '../../../transactions/service/transactions.service';
 import { MosaicService } from '../../../servicesModule/services/mosaic.service';
 import { TransactionsInterface } from '../../services/transaction.interface';
-import { MosaicId } from 'tsjs-xpx-chain-sdk';
+
 
 @Component({
   selector: 'app-mosaic-supply-change-type',
@@ -12,9 +14,11 @@ import { MosaicId } from 'tsjs-xpx-chain-sdk';
 export class MosaicSupplyChangeTypeComponent implements OnInit {
 
   @Input() mosaicSupplyChange: TransactionsInterface;
+  @Input() viewBox: boolean;
   viewMosaicName = false;
   searching = true;
   mosaicId: MosaicId;
+  typeTransactionHex: string;
 
   constructor(
     public transactionService: TransactionsService,
@@ -25,10 +29,24 @@ export class MosaicSupplyChangeTypeComponent implements OnInit {
   }
 
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
+    this.viewBox = (changes['viewBox'] !== null && changes['viewBox'] !== undefined) ? changes['viewBox'].currentValue : true;
     this.viewMosaicName = false;
     this.mosaicSupplyChange['mosaicsStorage'] = null;
-    this.mosaicId = this.mosaicSupplyChange.data['mosaicId'].toHex();
-    this.mosaicService.searchMosaics([this.mosaicSupplyChange.data['mosaicId']]).then(
+    if (this.viewBox) {
+      this.typeTransactionHex = `${this.mosaicSupplyChange.data['type'].toString(16).toUpperCase()}`;
+      this.mosaicId = this.mosaicSupplyChange.data['mosaicId'].toHex();
+      await this.searchMosaics([this.mosaicSupplyChange.data['mosaicId']]);
+      this.mosaicSupplyChange['fee'] = cloneDeep(this.mosaicSupplyChange.data['maxFee'].compact());
+    } else {
+      this.typeTransactionHex = `${this.mosaicSupplyChange['type'].toString(16).toUpperCase()}`;
+      this.mosaicId = this.mosaicSupplyChange['mosaicId'].toHex();
+      await this.searchMosaics([this.mosaicSupplyChange['mosaicId']]);
+      this.mosaicSupplyChange['fee'] = cloneDeep(this.mosaicSupplyChange['maxFee'].compact());
+    }
+  }
+
+  searchMosaics(mosaicsId: MosaicId[]) {
+    this.mosaicService.searchMosaics(mosaicsId).then(
       response => {
         this.searching = false;
         if (response.length > 0) {

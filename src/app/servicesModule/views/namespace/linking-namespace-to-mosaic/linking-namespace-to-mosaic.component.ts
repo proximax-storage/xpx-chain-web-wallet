@@ -9,6 +9,7 @@ import { MosaicService } from '../../../../servicesModule/services/mosaic.servic
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { NamespaceStorage } from '../../../../servicesModule/interfaces/mosaics-namespaces.interface';
 import { NamespacesService } from '../../../../servicesModule/services/namespaces.service';
+import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
 
 
 @Component({
@@ -37,6 +38,8 @@ export class LinkingNamespaceToMosaicComponent implements OnInit {
       disabled: true
     }
   ];
+  transactionSigned: any;
+  subscribe = ['transactionStatus'];
 
   constructor(
     private fb: FormBuilder,
@@ -45,7 +48,8 @@ export class LinkingNamespaceToMosaicComponent implements OnInit {
     private namespaceService: NamespacesService,
     private mosaicService: MosaicService,
     private proximaxProvider: ProximaxProvider,
-    private walletService: WalletService
+    private walletService: WalletService,
+    private dataBridge: DataBridgeService
   ) { }
 
   ngOnInit() {
@@ -164,6 +168,29 @@ export class LinkingNamespaceToMosaicComponent implements OnInit {
     this.mosaicSelect = mosaicsSelect;
   }
 
+  getTransactionStatus() {
+    this.subscribe['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
+      statusTransaction => {
+        if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
+          const statusTransactionHash = (statusTransaction['type'] === 'error') ? statusTransaction['data'].hash : statusTransaction['data'].transactionInfo.hash;
+          const match = statusTransactionHash === this.transactionSigned.hash;
+          if (statusTransaction['type'] === 'confirmed' && match) {
+            this.transactionSigned = null;
+            this.sharedService.showSuccess('', 'Transaction confirmed');
+            this.mosaicService.resetMosaicsStorage();
+            this.namespaceService.resetNamespaceStorage();
+          } else if (statusTransaction['type'] === 'unconfirmed' && match) {
+            this.transactionSigned = null;
+            this.sharedService.showInfo('', 'Transaction unconfirmed');
+          } else if (match) {
+            this.transactionSigned = null;
+            this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
+          }
+        }
+      }
+    );
+  }
+
   /**
    *
    *
@@ -205,14 +232,16 @@ export class LinkingNamespaceToMosaicComponent implements OnInit {
         const mosaicId = new MosaicId(this.linkingNamespaceToMosaic.get('mosaic').value);
         const mosaicSupplyChangeTransaction = this.proximaxProvider.linkingNamespaceToMosaic(0, namespaceId, mosaicId, this.walletService.network);
         const signedTransaction = account.sign(mosaicSupplyChangeTransaction);
+        this.transactionSigned = signedTransaction;
         this.proximaxProvider.announce(signedTransaction).subscribe(
           x => {
             this.blockSend = false;
             this.resetForm();
             this.blockUI.stop(); // Stop blocking
-            this.sharedService.showSuccess('success', 'Transaction sent');
-            this.mosaicService.resetMosaicsStorage();
-            this.namespaceService.resetNamespaceStorage();
+            // this.sharedService.showSuccess('success', 'Transaction sent');
+            if (this.subscribe['transactionStatus'] === undefined || this.subscribe['transactionStatus'] === null) {
+              this.getTransactionStatus();
+            }
           },
           err => {
             this.blockSend = false;

@@ -7,6 +7,7 @@ import { ClipboardModule } from 'ngx-clipboard';
 import { MdbModule } from "../shared/moduls/mdb/mdb.module";
 import { NgSelectModule } from '@ng-select/ng-select';
 import { NgxMaskModule, IConfig } from 'ngx-mask';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 import { TransferTypeComponent } from '../dashboard/components/transfer-type/transfer-type.component';
 import { RegisterNamespaceTypeComponent } from '../dashboard/components/register-namespace-type/register-namespace-type.component';
@@ -53,7 +54,8 @@ const modules = [
   imports: [
     modules,
     NgxMaskModule.forRoot(),
-    MdbModule.forRoot()
+    MdbModule.forRoot(),
+    NgxPaginationModule
   ],
   declarations: [
     components

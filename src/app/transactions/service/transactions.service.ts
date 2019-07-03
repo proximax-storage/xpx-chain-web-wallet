@@ -110,7 +110,7 @@ export class TransactionsService {
    * @memberof TransactionsService
    */
   getStructureDashboard(transaction: Transaction): TransactionsInterface {
-    const keyType = Object.keys(this.arraTypeTransaction).find(elm => this.arraTypeTransaction[elm].id === transaction.type);
+    const keyType = this.getNameTypeTransaction(transaction.type);
     if (keyType !== undefined) {
       let recipientRentalFeeSink = '';
       if (transaction["mosaics"] === undefined) {
@@ -138,6 +138,17 @@ export class TransactionsService {
       }
     }
     return null;
+  }
+
+  /**
+   *
+   *
+   * @param {*} type
+   * @returns
+   * @memberof TransactionsService
+   */
+  getNameTypeTransaction(type: any) {
+    return Object.keys(this.arraTypeTransaction).find(elm => this.arraTypeTransaction[elm].id === type);
   }
 
 

@@ -15,22 +15,35 @@
       <!-- Fee -->
       <div class="col-12">
         <div class="row">
-          <div class="col-3 overflow-ellipsis-nowrap">
+          <div class="col-12 col-sm-4 overflow-ellipsis-nowrap">
             <span class="color-dark-green fw-bold fs-1-3rem">Fee: </span>
           </div>
-          <div class="col-9 overflow-ellipsis-nowrap">
+          <div class="col-12 col-sm-8 overflow-ellipsis-nowrap">
             <span class="color-dark-green fw-400 fs-1-3rem">{{mosaicAlias.fee}} XPX</span>
           </div>
         </div>
       </div>
 
-      <!-- Namespace Id -->
+      <!-- Type Hex -->
       <div class="col-12 mt-2rem">
         <div class="row">
-          <div class="col-3 overflow-ellipsis-nowrap">
+          <div class="col-12 col-sm-4 overflow-ellipsis-nowrap">
+            <span class="color-dark-green fw-bold fs-08rem">Type Hex: </span>
+          </div>
+          <div class="col-12 col-sm-8 overflow-ellipsis-nowrap">
+            <span class="color-dark-green fw-400
+              fs-08rem">{{typeTransactionHex}}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Namespace Id -->
+      <div class="col-12 mt-05rem">
+        <div class="row">
+          <div class="col-12 col-sm-4 overflow-ellipsis-nowrap">
             <span class=" color-dark-green fw-bold fs-08rem">NamespaceId: </span>
           </div>
-          <div class="col-9 overflow-ellipsis-nowrap">
+          <div class="col-12 col-sm-8 overflow-ellipsis-nowrap">
             <span class=" color-dark-green fw-400 fs-08rem">
               {{namespaceId}}</span>
           </div>
@@ -39,12 +52,12 @@
 
       <!-- Namespace Name -->
       <ng-container *ngIf="namespaceName !== ''">
-        <div class="col-12">
+        <div class="col-12 mt-04rem">
           <div class="row">
-            <div class="col-3 overflow-ellipsis-nowrap">
+            <div class="col-12 col-sm-4 overflow-ellipsis-nowrap">
               <span class=" color-dark-green fw-bold fs-08rem">NamespaceName: </span>
             </div>
-            <div class="col-9 overflow-ellipsis-nowrap">
+            <div class="col-12 col-sm-8 overflow-ellipsis-nowrap">
               <span class=" color-dark-green fw-400 fs-08rem">
                 {{namespaceName}}</span>
             </div>
@@ -53,12 +66,12 @@
       </ng-container>
 
       <!-- Mosaic Id -->
-      <div class="col-12 mt-04rem">
+      <div class="col-12 mt-05rem">
         <div class="row">
-          <div class="col-3 overflow-ellipsis-nowrap">
+          <div class="col-12 col-sm-4 overflow-ellipsis-nowrap">
             <span class=" color-dark-green fw-bold fs-08rem">MosaicId: </span>
           </div>
-          <div class="col-9 overflow-ellipsis-nowrap">
+          <div class="col-12 col-sm-8 overflow-ellipsis-nowrap">
             <span class=" color-dark-green fw-400 fs-08rem">
               {{mosaicId}}</span>
           </div>
@@ -67,12 +80,12 @@
 
       <!-- Mosaic Name -->
       <ng-container *ngIf="mosaicName !== ''">
-        <div class="col-12">
+        <div class="col-12 mt-04rem">
           <div class="row">
-            <div class="col-3 overflow-ellipsis-nowrap">
+            <div class="col-12 col-sm-4 overflow-ellipsis-nowrap">
               <span class=" color-dark-green fw-bold fs-08rem">MosaicName: </span>
             </div>
-            <div class="col-9 overflow-ellipsis-nowrap">
+            <div class="col-12 col-sm-8 overflow-ellipsis-nowrap">
               <span class=" color-dark-green fw-400 fs-08rem">
                 {{mosaicName}}</span>
             </div>

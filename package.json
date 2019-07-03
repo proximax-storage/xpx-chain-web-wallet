@@ -44,6 +44,7 @@
     "ng-uikit-pro-standard": "git+https://oauth2:xds7fpVXkw8SnNJdDtUE@git.mdbootstrap.com/mdb/angular/ng-uikit-pro-standard.git",
     "ngx-clipboard": "^12.0.0",
     "ngx-mask": "^7.9.10",
+    "ngx-pagination": "^4.0.0",
     "qrcode-generator": "^1.4.3",
     "rxjs": "^6.5.2",
     "screenfull": "^4.2.0",
