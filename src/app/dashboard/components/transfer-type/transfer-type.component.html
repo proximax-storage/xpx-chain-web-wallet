@@ -23,21 +23,26 @@
         <span class="color-dark-green fs-07rem fw-500 w-w-b-w">{{transferTransaction?.timestamp}}</span>
       </div>
 
-      <div class="col-12">
-        <!-- MOSAICS INFO-->
-        <app-mosaics-info (changeSearch)="searching = false;" [mosaicsArray]="transferTransaction.data['mosaics']"
-          [transferTransaction]="transferTransaction">
-        </app-mosaics-info>
-      </div>
-
       <!-- Fee -->
-      <div class="col-12">
+      <div class="col-12 mt-05rem">
         <div class="row">
           <div class="col-3">
             <span class="color-dark-green fw-bold fs-1-3rem">Fee: </span>
           </div>
           <div class="col-9">
             <span class="color-dark-green fw-400 fs-1-3rem">{{transferTransaction.fee}} XPX</span>
+          </div>
+        </div>
+      </div>
+      <!-- Type Hex -->
+      <div class="col-12 mt-2rem">
+        <div class="row">
+          <div class="col-3 overflow-ellipsis-nowrap">
+            <span class="color-dark-green fw-bold fs-08rem">Type Hex: </span>
+          </div>
+          <div class="col-9 overflow-ellipsis-nowrap">
+            <span class="color-dark-green fw-400
+              fs-08rem">{{typeTransactionHex}}</span>
           </div>
         </div>
       </div>
@@ -104,13 +109,27 @@
   </div>
 
   <!-- Message -->
-  <div class="col-12 mt-1rem">
+  <ng-container *ngIf="transferTransaction?.data['message'].payload !== ''">
+    <div class="col-12 mt-1rem">
+      <div class="row">
+        <div class="col-12">
+          <span class="color-dark-green fw-bold fs-07rem">Message: </span>
+        </div>
+        <div class="col-12 overflow-ellipsis-nowrap">
+          <span class="color-dark-green fw-400 fs-08rem">{{transferTransaction?.data['message'].payload}}</span>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+
+  <div class="col-12 mt-2rem">
     <div class="row">
       <div class="col-12">
-        <span class="color-dark-green fw-bold fs-07rem">Message: </span>
-      </div>
-      <div class="col-12 overflow-ellipsis-nowrap">
-        <span class="color-dark-green fw-400 fs-08rem">{{transferTransaction?.data['message'].payload}}</span>
+        <!-- MOSAICS INFO-->
+        <app-mosaics-info (changeSearch)="searching = false;" [mosaicsArray]="transferTransaction.data['mosaics']"
+          [transferTransaction]="transferTransaction">
+        </app-mosaics-info>
       </div>
     </div>
   </div>

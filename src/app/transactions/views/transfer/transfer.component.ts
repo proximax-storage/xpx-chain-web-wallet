@@ -5,7 +5,7 @@ import {
   Validators,
   FormControl
 } from "@angular/forms";
-import { MosaicId, SignedTransaction } from "tsjs-xpx-chain-sdk";
+import { MosaicId, SignedTransaction, Address } from "tsjs-xpx-chain-sdk";
 import { WalletService, SharedService } from "../../../shared";
 import { TransactionsService } from "../../../transactions/service/transactions.service";
 import { ServiceModuleService } from "../../../servicesModule/services/service-module.service";
@@ -21,7 +21,8 @@ import { DataBridgeService } from "../../../shared/services/data-bridge.service"
 })
 export class TransferComponent implements OnInit {
 
-
+  accountRecipient = '';
+  accountContactRecipient = '';
   amountSend: string | number = '0.000000';
   blockSendButton: boolean;
   contactForm: FormGroup;
@@ -47,6 +48,7 @@ export class TransferComponent implements OnInit {
     }
   }
   inputBlocked: boolean;
+  inputContactBlocked: boolean;
   insufficientBalance = false;
   mosaicsSelect: any = [
     {
@@ -63,6 +65,7 @@ export class TransferComponent implements OnInit {
     }
   ];
   msgErrorUnsupported = '';
+  msgErrorUnsupportedContact = '';
   maskData = '0*';
   myClass = {
     'boxRecipientTrue': 'col-9 col-sm-10 col-md-6 col-lg-7 pr-2rem',
@@ -197,15 +200,19 @@ export class TransferComponent implements OnInit {
   createFormContact() {
     this.contactForm = this.fb.group({
       user: [
-        null,
-        [Validators.required, Validators.minLength(2), Validators.maxLength(30)]
-      ],
-      address: [
-        null,
+        '',
         [
           Validators.required,
-          Validators.minLength(46),
-          Validators.maxLength(46)
+          Validators.minLength(2),
+          Validators.maxLength(30)
+        ]
+      ],
+      address: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(this.configurationForm.accountRecipient.minLength),
+          Validators.maxLength(this.configurationForm.accountRecipient.maxLength)
         ]
       ]
     });
@@ -251,6 +258,19 @@ export class TransferComponent implements OnInit {
     return;
   }
 
+  cleanFormContact(custom?: string | (string | number)[], formControl?: string | number) {
+    if (custom !== undefined) {
+      if (formControl !== undefined) {
+        this.contactForm.controls[formControl].get(custom).reset();
+        return;
+      }
+      this.contactForm.get(custom).reset();
+      return;
+    }
+    this.contactForm.reset();
+    return;
+  }
+
   /**
    *
    *
@@ -272,7 +292,8 @@ export class TransferComponent implements OnInit {
     this.subscribe['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
       statusTransaction => {
         if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
-          const match = statusTransaction['data'].transactionInfo.hash === this.transactionSigned.hash;
+          const statusTransactionHash = (statusTransaction['type'] === 'error') ? statusTransaction['data'].hash : statusTransaction['data'].transactionInfo.hash;
+          const match = statusTransactionHash === this.transactionSigned.hash;
           if (statusTransaction['type'] === 'confirmed' && match) {
             this.transactionSigned = null;
             this.sharedService.showSuccess('', 'Transaction confirmed');
@@ -281,7 +302,7 @@ export class TransferComponent implements OnInit {
             this.sharedService.showInfo('', 'Transaction unconfirmed');
           } else if (match) {
             this.transactionSigned = null;
-            this.sharedService.showWarning('', statusTransaction['type'].status);
+            this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
           }
         }
       }
@@ -383,7 +404,7 @@ export class TransferComponent implements OnInit {
       if (this.walletService.decrypt(common)) {
         const buildTransferTransaction = this.transactionService.buildToSendTransfer(
           common,
-          this.transferForm.get("accountRecipient").value,
+          this.accountRecipient,
           this.transferForm.get("message").value === null ? "" : this.transferForm.get("message").value,
           this.transferForm.get("amount").value,
           this.walletService.network,
@@ -397,7 +418,9 @@ export class TransferComponent implements OnInit {
             this.showContacts = false;
             this.inputBlocked = false;
             this.cleanForm();
-            this.getTransactionStatus();
+            if (this.subscribe['transactionStatus'] === undefined || this.subscribe['transactionStatus'] === null) {
+              this.getTransactionStatus();
+            }
           }, err => {
             this.inputBlocked = false;
             this.cleanForm();
@@ -416,16 +439,48 @@ export class TransferComponent implements OnInit {
    * @memberof TransferComponent
    */
   subscribeControls() {
+    // Account Contact Recipient
+    this.contactForm.get('address').valueChanges.subscribe(
+      value => {
+        value = (value !== undefined && value !== null) ? value.split('-').join('') : '';
+        this.accountRecipient = value;
+        this.accountContactRecipient = value.split('-').join('');
+        if (this.accountContactRecipient !== '' && this.accountContactRecipient.length === 40) {
+          if (!this.proximaxProvider.verifyNetworkAddressEqualsNetwork(this.walletService.address.plain(), this.accountContactRecipient)) {
+            this.inputContactBlocked = true;
+            this.msgErrorUnsupportedContact = 'Contact Address Network unsupported';
+          } else {
+            this.inputContactBlocked = false;
+            this.msgErrorUnsupportedContact = '';
+          }
+        } else if (!this.contactForm.get('address').getError("required") && !this.contactForm.get('address').invalid) {
+          this.inputContactBlocked = true;
+          this.msgErrorUnsupportedContact = 'Contact Address Network unsupported';
+        } else {
+          this.inputContactBlocked = false;
+          this.msgErrorUnsupportedContact = '';
+        }
+      }
+    );
+
     // Account Recipient
     this.transferForm.get('accountRecipient').valueChanges.subscribe(
       value => {
-        if (value !== null && value !== undefined && value.length >= 40 && value.length <= 46) {
-          if (!this.proximaxProvider.verifyNetworkAddressEquals(this.walletService.address.plain(), value)) {
+        value = (value !== undefined && value !== null) ? value.split('-').join('') : '';
+        this.accountRecipient = value;
+        if (this.accountRecipient !== null && this.accountRecipient !== undefined && this.accountRecipient.length === 40) {
+          if (!this.proximaxProvider.verifyNetworkAddressEqualsNetwork(this.walletService.address.plain(), this.accountRecipient)) {
+            this.inputBlocked = true;
             this.msgErrorUnsupported = 'Recipient Address Network unsupported';
           } else {
+            this.inputBlocked = false;
             this.msgErrorUnsupported = '';
           }
+        } else if (!this.transferForm.get('accountRecipient').getError("required") && !this.transferForm.get('accountRecipient').invalid) {
+          this.inputBlocked = true;
+          this.msgErrorUnsupported = 'Recipient Address Network unsupported';
         } else {
+          this.inputBlocked = false;
           this.msgErrorUnsupported = '';
         }
       }
@@ -439,7 +494,7 @@ export class TransferComponent implements OnInit {
           const mosaic = this.mosaicServices.filterMosaic(new MosaicId(value));
           const a = Number(this.transferForm.get('amount').value);
           this.amountSend = (mosaic !== null) ? this.transactionService.amountFormatter(a, mosaic.mosaicInfo) : a;
-          this.validateAmountToTransfer(a, mosaic)
+          this.validateAmountToTransfer(a, mosaic);
         } else {
           this.amountSend = 0;
         }
@@ -457,7 +512,7 @@ export class TransferComponent implements OnInit {
             const mosaic = this.mosaicServices.filterMosaic(new MosaicId(this.transferForm.get('mosaicsSelect').value));
             const a = Number(this.transferForm.get('amount').value);
             this.amountSend = (mosaic !== null) ? this.transactionService.amountFormatter(a, mosaic.mosaicInfo) : a;
-            this.validateAmountToTransfer(a, mosaic)
+            this.validateAmountToTransfer(a, mosaic);
           } else {
             this.amountSend = 0;
           }
@@ -503,20 +558,51 @@ export class TransferComponent implements OnInit {
    * @memberof TransferComponent
    */
   validateAmountToTransfer(amount, mosaic: MosaicsStorage) {
+    let validateAmount = false;
     const accountInfo = this.walletService.getAccountInfo();
     if (accountInfo !== undefined && accountInfo !== null && Object.keys(accountInfo).length > 0) {
-      const filtered = accountInfo.mosaics.find(element => {
-        return element.id.toHex() === new MosaicId(mosaic.id).toHex();
-      });
-      const invalidBalance = filtered.amount.compact() < amount;
-      if (invalidBalance && !this.insufficientBalance) {
+      if (accountInfo.mosaics.length > 0) {
+        const filtered = accountInfo.mosaics.find(element => {
+          return element.id.toHex() === new MosaicId(mosaic.id).toHex();
+        });
+
+        if (filtered !== undefined && filtered !== null) {
+          const invalidBalance = filtered.amount.compact() < amount;
+          if (invalidBalance && !this.insufficientBalance) {
+            this.insufficientBalance = true;
+            this.inputBlocked = true;
+            this.transferForm.controls['contact'].disable();
+            this.transferForm.controls['accountRecipient'].disable();
+            this.transferForm.controls['message'].disable();
+            this.transferForm.controls['password'].disable();
+          } else if (!invalidBalance && this.insufficientBalance) {
+            this.insufficientBalance = false;
+            this.inputBlocked = false;
+            this.transferForm.controls['mosaicsSelect'].enable();
+            this.transferForm.controls['contact'].enable();
+            this.transferForm.controls['accountRecipient'].enable();
+            this.transferForm.controls['message'].enable();
+            this.transferForm.controls['password'].enable();
+          }
+        } else {
+          validateAmount = true;
+        }
+      } else {
+        validateAmount = true;
+      }
+    } else {
+      validateAmount = true;
+    }
+
+    if (validateAmount) {
+      if (amount >= 1) {
         this.insufficientBalance = true;
         this.inputBlocked = true;
         this.transferForm.controls['contact'].disable();
         this.transferForm.controls['accountRecipient'].disable();
         this.transferForm.controls['message'].disable();
         this.transferForm.controls['password'].disable();
-      } else if (!invalidBalance && this.insufficientBalance) {
+      } else if ((amount === 0 || amount === '') && this.insufficientBalance) {
         this.insufficientBalance = false;
         this.inputBlocked = false;
         this.transferForm.controls['mosaicsSelect'].enable();

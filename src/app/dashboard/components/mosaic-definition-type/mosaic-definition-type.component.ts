@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
 import { MosaicId } from 'tsjs-xpx-chain-sdk';
+import * as cloneDeep from 'lodash/cloneDeep';
 import { TransactionsService } from '../../../transactions/service/transactions.service';
 import { TransactionsInterface } from '../../services/transaction.interface';
 import { MosaicService } from '../../../servicesModule/services/mosaic.service';
@@ -13,8 +14,10 @@ import { MosaicsStorage } from '../../../servicesModule/interfaces/mosaics-names
 export class MosaicDefinitionTypeComponent implements OnInit {
 
   @Input() mosaicDefinition: TransactionsInterface;
+  @Input() viewBox: boolean;
   viewNamespaceId: boolean = false;
   mosaicId: MosaicId;
+  typeTransactionHex: string;
 
   constructor(
     private mosaicService: MosaicService,
@@ -25,10 +28,23 @@ export class MosaicDefinitionTypeComponent implements OnInit {
   }
 
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
+    this.viewBox = (changes['viewBox'] !== null && changes['viewBox'] !== undefined) ? changes['viewBox'].currentValue : true;
+    if (this.viewBox) {
+      this.typeTransactionHex = `${this.mosaicDefinition.data['type'].toString(16).toUpperCase()}`;
+      this.mosaicId = this.mosaicDefinition.data['mosaicId'].toHex();
+      await this.getMosaicStorage([this.mosaicDefinition.data['mosaicId']]);
+    } else {
+      this.typeTransactionHex = `${this.mosaicDefinition['type'].toString(16).toUpperCase()}`;
+      this.mosaicId = this.mosaicDefinition['mosaicId'].toHex();
+      await this.getMosaicStorage([this.mosaicDefinition['mosaicId']]);
+      this.mosaicDefinition['fee'] = cloneDeep(this.mosaicDefinition['maxFee'].compact());
+    }
+  }
+
+  async getMosaicStorage(mosaicsId: MosaicId[]) {
     this.viewNamespaceId = false;
     this.mosaicDefinition['mosaicsStorage'] = null;
-    this.mosaicId = this.mosaicDefinition.data['mosaicId'].toHex();
-    const mosaics: MosaicsStorage[] = await this.mosaicService.searchMosaics([this.mosaicDefinition.data['mosaicId']]);
+    const mosaics: MosaicsStorage[] = await this.mosaicService.searchMosaics(mosaicsId);
     if (mosaics !== undefined && mosaics !== null) {
       if (mosaics.length > 0) {
         this.viewNamespaceId = false;

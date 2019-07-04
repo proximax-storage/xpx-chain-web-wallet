@@ -16,6 +16,7 @@ export class MosaicAliasComponent implements OnInit {
   mosaicId: string = '';
   namespaceId: string = '';
   namespaceName: string = '';
+  typeTransactionHex: string;
 
   constructor(
     private mosaicService: MosaicService,
@@ -31,6 +32,7 @@ export class MosaicAliasComponent implements OnInit {
     this.namespaceId = '';
     this.namespaceName = '';
 
+    this.typeTransactionHex = `${this.mosaicAlias.data['type'].toString(16).toUpperCase()}`;
     const mosaicId = new MosaicId([this.mosaicAlias.data['mosaicId'].id.lower, this.mosaicAlias.data['mosaicId'].id.higher]);
     this.mosaicId = mosaicId.toHex();
     const mosaicInfo = await this.mosaicService.searchMosaics([mosaicId]);

@@ -58,7 +58,6 @@ export class DashboardService {
         response => {
           if (response === false) {
             // DESTROY SUBSCRIPTION WHEN IS NOT LOGIN
-            console.log("NOT LOGGED!");
             this.searchComplete = false;
             this.isIncrementViewDashboard = 0;
             this.destroySubscription();

@@ -609,6 +609,10 @@ footer {
 }
 
 /****************************** ONLY MDB ********************************/
+body.modal-open {
+  overflow: hidden !important;
+}
+
 .ng-select.custom {
   border: 0px;
   min-height: 0px;
@@ -786,6 +790,25 @@ mdb-select>div>div.single>div.value {
   padding: 0;
 }
 
+.modal-body {
+  max-height: 90%;
+  overflow: auto;
+  overflow-x: hidden;
+}
+
+
+.modal-dialog {
+  max-height: 90vh !important;
+}
+
+.modal-dialog .modal-content {
+  max-height: 90vh !important;
+}
+
+// .modal-body {
+//   max-height: 95% !important;
+// }
+
 /*
 .modal-backdrop {
   position: unset;
@@ -812,7 +835,7 @@ mdb-select>div>div.single>div.value {
 a:hover {
   text-decoration: none !important;
   // color: #d0d0d0 !important;
-  color: white !important;
+  // color: #212529 !important;
   transition: all 0.2s ease-in-out !important;
 }
 
@@ -1475,11 +1498,6 @@ label.btn input[type="radio"].with-gap:checked+label:after {
 
 /*FIN SERVICES*/
 
-.modal-body {
-  max-height: 30rem;
-  overflow: auto;
-  overflow-x: hidden;
-}
 
 
 

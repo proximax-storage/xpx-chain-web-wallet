@@ -32,7 +32,7 @@ export class NamespacesService {
   ) { }
 
 
-  async addressAliasTransaction(
+  addressAliasTransaction(
     aliasActionType: AliasActionType,
     namespaceId: NamespaceId,
     address: Address,
@@ -50,7 +50,8 @@ export class NamespacesService {
 
     const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.network);
     const signedTransaction = account.sign(addressAliasTransaction);
-    return this.proximaxProvider.announce(signedTransaction)
+    // this.proximaxProvider.announce(signedTransaction)
+    return signedTransaction;
   }
 
   /**

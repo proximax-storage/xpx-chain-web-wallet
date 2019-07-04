@@ -526,7 +526,7 @@ export class ProximaxProvider {
     );
   }
 
-  verifyNetworkAddressEquals(value: string, value2: string) {
+  verifyNetworkAddressEqualsNetwork(value: string, value2: string) {
     if ((value.length === 40 || value.length === 46) && (value2.length === 40 || value2.length === 46)) {
       if (value.charAt(0) === 'S' && value2.charAt(0) === 'S') {
         // NetworkType.MIJIN_TEST

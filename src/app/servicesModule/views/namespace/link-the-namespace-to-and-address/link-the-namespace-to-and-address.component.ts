@@ -6,6 +6,8 @@ import { NgBlockUI, BlockUI } from 'ng-block-ui';
 import { NamespacesService } from '../../../../servicesModule/services/namespaces.service';
 import { AppConfig } from '../../../../config/app.config';
 import { SharedService, WalletService } from '../../../../shared';
+import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
+import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
 
 @Component({
   selector: 'app-link-the-namespace-to-and-address',
@@ -25,13 +27,17 @@ export class LinkTheNamespaceToAndAddressComponent implements OnInit {
       disabled: true
     }
   ];
+  subscribe = ['transactionStatus'];
+  transactionSigned: any;
 
   constructor(
     private fb: FormBuilder,
     private router: Router,
     private sharedService: SharedService,
     private namespaceService: NamespacesService,
-    private walletService: WalletService
+    private walletService: WalletService,
+    private proximaxProvider: ProximaxProvider,
+    private dataBridge: DataBridgeService
   ) { }
 
   ngOnInit() {
@@ -85,6 +91,27 @@ export class LinkTheNamespaceToAndAddressComponent implements OnInit {
     }
   }
 
+  getTransactionStatus() {
+    this.subscribe['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
+      statusTransaction => {
+        if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
+          const statusTransactionHash = (statusTransaction['type'] === 'error') ? statusTransaction['data'].hash : statusTransaction['data'].transactionInfo.hash;
+          const match = statusTransactionHash === this.transactionSigned.hash;
+          if (statusTransaction['type'] === 'confirmed' && match) {
+            this.transactionSigned = null;
+            this.sharedService.showSuccess('', 'Transaction confirmed');
+          } else if (statusTransaction['type'] === 'unconfirmed' && match) {
+            this.transactionSigned = null;
+            this.sharedService.showInfo('', 'Transaction unconfirmed');
+          } else if (match) {
+            this.transactionSigned = null;
+            this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
+          }
+        }
+      }
+    );
+  }
+
   async send() {
     if (this.LinkTheNamespaceToAndAddressForm.valid && !this.blockSend) {
       this.blockSend = true;
@@ -96,9 +123,17 @@ export class LinkTheNamespaceToAndAddressComponent implements OnInit {
       if (this.walletService.decrypt(common)) {
         const namespaceId = new NamespaceId(this.LinkTheNamespaceToAndAddressForm.get('namespace').value);
         const address = Address.createFromRawAddress(this.LinkTheNamespaceToAndAddressForm.get('address').value);
-        this.namespaceService.addressAliasTransaction(AliasActionType.Link, namespaceId, address, common);
-        this.blockSend = false;
-        this.resetForm();
+        this.transactionSigned = this.namespaceService.addressAliasTransaction(AliasActionType.Link, namespaceId, address, common);
+        this.proximaxProvider.announce(this.transactionSigned).subscribe(
+          next => {
+            this.blockSend = false;
+            this.resetForm();
+            if (this.subscribe['transactionStatus'] === undefined || this.subscribe['transactionStatus'] === null) {
+              this.getTransactionStatus();
+            }
+          }
+        );
+
       } else {
         this.LinkTheNamespaceToAndAddressForm.get('password').patchValue('');
         this.blockSend = false;

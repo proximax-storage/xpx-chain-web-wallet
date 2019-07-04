@@ -13,6 +13,7 @@ export class RegisterNamespaceTypeComponent implements OnInit {
 
   @Input() registerNamespaceTransaction: any = null;
   nameNamespace = '';
+  typeTransactionHex: string;
 
   constructor(
     public transactionService: TransactionsService,
@@ -24,8 +25,10 @@ export class RegisterNamespaceTypeComponent implements OnInit {
   }
 
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
-    this.nameNamespace = this.registerNamespaceTransaction.data.namespaceName;
+
     let name = '';
+    this.typeTransactionHex = `${this.registerNamespaceTransaction.data['type'].toString(16).toUpperCase()}`;
+    this.nameNamespace = this.registerNamespaceTransaction.data.namespaceName;
     if (this.registerNamespaceTransaction.data.namespaceType !== 0) {
       if (this.registerNamespaceTransaction.data.parentId !== undefined) {
         let level: NamespaceStorage = await this.namespaceService.getNamespaceFromId(this.registerNamespaceTransaction.data.parentId);
