@@ -73,6 +73,21 @@ export class CreateMosaicComponent implements OnInit {
     });
   }
 
+  /**
+   *
+   *
+   * @memberof CreateMosaicComponent
+   */
+  clearForm() {
+    this.mosaicForm.get('deltaSupply').patchValue(1000000);
+    this.mosaicForm.get('password').patchValue('');
+    this.mosaicForm.get('duration').patchValue(1000);
+    this.mosaicForm.get('divisibility').patchValue(0);
+    this.mosaicForm.get('transferable').patchValue(false);
+    this.mosaicForm.get('supplyMutable').patchValue(false);
+    this.mosaicForm.get('levyMutable').patchValue(false);
+  }
+
   send() {
     if (this.mosaicForm.valid && !this.blockSend) {
       const common = {

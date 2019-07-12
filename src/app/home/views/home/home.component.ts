@@ -28,8 +28,8 @@ export class HomeComponent implements OnInit {
 
     const explorerTransaction = this.service.structureServices(
       'icon-transactions-dark-green.svg',
-      'Transactions',
-      `Search All available transactions`,
+      'Transactions explorer',
+      `Search all available transactions`,
       '',
       true
     );
@@ -37,7 +37,7 @@ export class HomeComponent implements OnInit {
     const voting = this.service.structureServices(
       'icon-voting-dark-green.svg',
       'Voting',
-      `Create and vote on polls`,
+      `Create polls and vote`,
       '',
       true
     );
@@ -45,7 +45,7 @@ export class HomeComponent implements OnInit {
     const apostille = this.service.structureServices(
       'icon-notary-dark-green.svg',
       'Notary',
-      'Use notarizations service to create blockchain based notarizations to time stamp, follow and audit file authenticity.',
+      'Verify and authenticate documents',
       '',
       true
     );

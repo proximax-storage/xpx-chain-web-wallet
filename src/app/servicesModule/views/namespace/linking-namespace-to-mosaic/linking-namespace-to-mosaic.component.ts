@@ -25,7 +25,7 @@ export class LinkingNamespaceToMosaicComponent implements OnInit {
   mosaicSelect: Array<object> = [
     {
       value: '1',
-      label: 'Select mosaics',
+      label: 'Enter here',
       selected: true,
       disabled: true
     }
@@ -33,7 +33,7 @@ export class LinkingNamespaceToMosaicComponent implements OnInit {
   namespaceSelect: Array<object> = [
     {
       value: '1',
-      label: 'Select namespaces',
+      label: 'Enter here',
       selected: true,
       disabled: true
     }
@@ -69,6 +69,12 @@ export class LinkingNamespaceToMosaicComponent implements OnInit {
       mosaic: ['1', [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]]
     });
+  }
+
+  clearForm() {
+    this.linkingNamespaceToMosaic.get('namespace').patchValue('1');
+    this.linkingNamespaceToMosaic.get('mosaic').patchValue('1');
+    this.linkingNamespaceToMosaic.get('password').patchValue('');
   }
 
   /**

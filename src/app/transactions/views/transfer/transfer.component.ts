@@ -237,14 +237,14 @@ export class TransferComponent implements OnInit {
 
 
   /**
-   * Clean form
+   * Clear form
    *
    * @param {(string | (string | number)[])} [custom]
    * @param {(string | number)} [formControl]
    * @returns
    * @memberof TransferComponent
    */
-  cleanForm(custom?: string | (string | number)[], formControl?: string | number) {
+  clearForm(custom?: string | (string | number)[], formControl?: string | number) {
     if (custom !== undefined) {
       if (formControl !== undefined) {
         this.transferForm.controls[formControl].get(custom).reset();
@@ -258,7 +258,7 @@ export class TransferComponent implements OnInit {
     return;
   }
 
-  cleanFormContact(custom?: string | (string | number)[], formControl?: string | number) {
+  clearFormContact(custom?: string | (string | number)[], formControl?: string | number) {
     if (custom !== undefined) {
       if (formControl !== undefined) {
         this.contactForm.controls[formControl].get(custom).reset();
@@ -417,13 +417,13 @@ export class TransferComponent implements OnInit {
           async () => {
             this.showContacts = false;
             this.inputBlocked = false;
-            this.cleanForm();
+            this.clearForm();
             if (this.subscribe['transactionStatus'] === undefined || this.subscribe['transactionStatus'] === null) {
               this.getTransactionStatus();
             }
           }, err => {
             this.inputBlocked = false;
-            this.cleanForm();
+            this.clearForm();
             this.sharedService.showError('', err);
           }
         );

@@ -126,6 +126,9 @@ export class TransactionsService {
         }
       }
 
+      // console.log(transaction);
+
+
       return {
         data: transaction,
         nameType: this.arraTypeTransaction[keyType].name,
@@ -133,8 +136,9 @@ export class TransactionsService {
         fee: this.amountFormatterSimple(transaction.maxFee.compact()),
         sender: transaction.signer,
         recipientRentalFeeSink: recipientRentalFeeSink,
-        recipient: (transaction['recipient'] !== undefined) ? transaction['recipient'] : null,
-        isRemitent: (transaction['recipient'] !== undefined) ? this.walletService.address.pretty() === transaction["recipient"].pretty() : false
+        recipient: (transaction['recipient'] !== undefined) ? transaction['recipient'].pretty() : null,
+        isRemitent: (transaction['recipient'] !== undefined) ? this.walletService.address.pretty() === transaction["recipient"].pretty() : false,
+        senderAddress: transaction['signer'].address.pretty()
       }
     }
     return null;
@@ -269,7 +273,7 @@ export class TransactionsService {
   dateFormat(deadline: Deadline) {
     return new Date(
       deadline.value.toString() + Deadline.timestampNemesisBlock * 1000
-    ).toUTCString();
+    ).toLocaleDateString();
   }
 
   /**

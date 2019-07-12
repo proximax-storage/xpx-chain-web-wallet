@@ -22,7 +22,7 @@ export class LinkTheNamespaceToAndAddressComponent implements OnInit {
   namespaceSelect: Array<object> = [
     {
       value: '1',
-      label: 'Select namespaces',
+      label: 'Select or enter here',
       selected: true,
       disabled: true
     }
@@ -51,6 +51,12 @@ export class LinkTheNamespaceToAndAddressComponent implements OnInit {
       address: ['', [Validators.required, Validators.minLength(40), Validators.maxLength(46)]],
       password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]]
     });
+  }
+
+  clearForm() {
+    this.LinkTheNamespaceToAndAddressForm.get('namespace').patchValue('1');
+    this.LinkTheNamespaceToAndAddressForm.get('address').patchValue('');
+    this.LinkTheNamespaceToAndAddressForm.get('password').patchValue('');
   }
 
   getNameNamespace() {

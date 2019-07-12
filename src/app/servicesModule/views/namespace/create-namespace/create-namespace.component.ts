@@ -25,7 +25,7 @@ export class CreateNamespaceComponent implements OnInit {
   arrayselect: Array<object> = [
     {
       value: '1',
-      label: '.(New root Namespace)',
+      label: 'New root Namespace',
       selected: true,
       disabled: false
     }
@@ -164,9 +164,16 @@ export class CreateNamespaceComponent implements OnInit {
     this.namespaceForm = this.fb.group({
       name: ['', [Validators.required, Validators.maxLength(64)]],
       namespaceRoot: ['1'],
-      duration: [1, [Validators.required]],
+      duration: [100, [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]],
     });
+  }
+
+  clearForm() {
+    this.namespaceForm.get('name').patchValue('');
+    this.namespaceForm.get('namespaceRoot').patchValue('1');
+    this.namespaceForm.get('duration').patchValue(100);
+    this.namespaceForm.get('password').patchValue('');
   }
 
   /**
@@ -201,6 +208,7 @@ export class CreateNamespaceComponent implements OnInit {
       }
     }
   }
+
 
   /**
    *

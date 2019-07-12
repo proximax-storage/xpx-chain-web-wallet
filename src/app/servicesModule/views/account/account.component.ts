@@ -16,8 +16,8 @@ export class AccountComponent implements OnInit {
   mosaic = 'XPX';
   titleAccountInformation = 'Account information';
   titlePrivateKey = 'Private key';
-  descriptionPrivateKey = `Your private key holds all the power of your account.
-  It is a priority to make sure it is stored safely somewhere offline.`;
+  descriptionPrivateKey = `Make sure you store your private key in a safe place.
+  Access to your digital assets cannot be recovered without it.`;
   descriptionBackupWallet = `It is very important that you have backups of your wallets to log in with or your ${this.mosaic} will be lost.`;
   address = this.walletService.address.pretty();
   privateKey = '';

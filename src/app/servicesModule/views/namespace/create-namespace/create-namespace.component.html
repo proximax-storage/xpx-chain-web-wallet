@@ -7,7 +7,7 @@
         <div class="col-9 col-sm-10 mx-auto">
           <span class="d-flex justify-content-center align-items-center wallet-name">
             <img class="mr-05rem h2-3em" src="assets/images/img/icon-namespaces-white.svg" alt="">
-            <span class="f-w-bold fs-1-5rem title-module">Namespace & Subdomains</span>
+            <span class="f-w-bold fs-1-5rem title-module">Create Namespace & Sub-Namespace</span>
           </span>
         </div>
       </div>
@@ -15,10 +15,6 @@
       <div class="row">
         <div class="col-12 mx-auto">
           <hr class="background-divisor">
-        </div>
-
-        <div class="col-11 col-sm-10 mx-auto">
-          <h5 class="f-w-bold color-yellow text-align-center">Create new...</h5>
         </div>
       </div>
     </div>
@@ -161,11 +157,11 @@
 
             <div class="row mt-1rem d-flex justify-content-center">
               <div class="col-6 d-flex justify-content-end">
-                <button (click)="resetForm()" mdbBtn size="md" rounded="true" class="waves-light btn-white"
-                  mdbWavesEffect type="button">Clean</button>
+                <button (click)="clearForm()" mdbBtn size="sm" rounded="true" class="waves-light btn-white"
+                  mdbWavesEffect type="button">Clear</button>
               </div>
               <div class="col-6 d-flex justify-content-start">
-                <button mdbBtn size="md" rounded="true" class="waves-light btn-dark-green-prx" mdbWavesEffect
+                <button mdbBtn size="sm" rounded="true" class="waves-light btn-dark-green-prx" mdbWavesEffect
                   type="submit">Create</button>
               </div>
             </div>
@@ -178,38 +174,23 @@
             <div class="box-form-white border-black-light-1px">
               <div class="col-12">
                 <p class="description-information">
-                  Namespaces have certain restrictions with respect to the characters being allowed in the parts as well
-                  as
-                  the length of a part. A root namespace may have a length of 16 characters while sub-namespaces may
-                  have a
-                  length of 64 characters. Valid characters are:
+                  A namespace can have a maximium length of 16 alphanumerical characters while a sub-namespaces can have
+                  a maximium length of 64 alphanumerical characters.
                 </p>
-              </div>
-
-              <div class="col-12 d-flex justify-content-center">
-                <p class="description-information color-orange f-w-bold">a, b, c, ..., z, 0, 1, 2, ..., 9, _ , -</p>
               </div>
 
               <div class="col-12">
                 <p class="description-information">
-                  However a part is only allowed to begin with a letter of the alphabet or a number, thus 'alice' is an
-                  allowed part for a root namespace while '_alice' is not. Certain strings are reserved and thus not
-                  allowed
-                  as namespace parts. Among the disallowed namespace parts are:
+                  A namespace may consist of three parts, each separated by a full stop <br>
+                  <span class="description-information color-orange f-w-bold">(i.e test1.test2.test3)</span>.
                 </p>
-              </div>
-
-              <div class="col-12 d-flex justify-content-center">
-                <p class="description-information color-orange f-w-bold">xpx, nem, user, account, org, com, biz, net,
-                  edu,
-                  mil, gov and info.</p>
               </div>
 
               <div class="col-12">
                 <p class="description-information">
-                  This list is not final and can be extended in the future. Thus 'user.alice' or 'alice.user' are not
-                  allowed in the XPX namespace system. The namespace may have up to 3 parts, thus 'qm.metals.silver' is
-                  valid while 'qm.metals.silver.coin' is not.
+                  Certain phrases are already reserved <br>
+                  <span class="description-information color-orange f-w-bold">(i.e
+                    xpx; user; account; org; com; biz; net; edu; mil; gov; info)</span>.
                 </p>
               </div>
             </div>

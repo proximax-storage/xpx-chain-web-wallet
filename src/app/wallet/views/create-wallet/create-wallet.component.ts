@@ -109,23 +109,23 @@ export class CreateWalletComponent implements OnInit {
         this.walletName = name;
         this.walletService.setAccountWalletStorage(name, accounts);
         this.address = wallet.address.pretty();
-        this.sharedService.showSuccess('', 'Your wallet has been created successfully');
+        this.sharedService.showSuccess('', 'Your wallet has been successfully created');
         this.privateKey = this.proximaxProvider.decryptPrivateKey(password, accounts.encrypted, accounts.iv).toUpperCase();
         this.publicKey = this.proximaxProvider.getPublicAccountFromPrivateKey(this.privateKey, network).publicKey;
         this.walletIsCreated = true;
         this.nameModule = 'Congratulations!';
-        this.descriptionModule = 'Your wallet has been created successfully';
+        this.descriptionModule = 'Your wallet has been successfully created';
       } else {
         //Error of repeated Wallet
-        this.cleanForm('walletname');
+        this.clearForm('walletname');
         this.sharedService.showError('', 'This name is already in use, try another name');
       }
     } else if (this.createWalletForm.controls.passwords.get('password').valid &&
       this.createWalletForm.controls.passwords.get('confirm_password').valid &&
       this.createWalletForm.controls.passwords.getError('noMatch')) {
       this.sharedService.showError('', `Password doesn't match`);
-      this.cleanForm('password', 'passwords');
-      this.cleanForm('confirm_password', 'passwords');
+      this.clearForm('password', 'passwords');
+      this.clearForm('confirm_password', 'passwords');
     }
   }
 
@@ -160,11 +160,11 @@ export class CreateWalletComponent implements OnInit {
   }
 
   /**
-   * Clean form
+   * Clear form
    *
    * @memberof CreateWalletComponent
    */
-  cleanForm(custom?: any, formControl?: any) {
+  clearForm(custom?: any, formControl?: any) {
     if (custom !== undefined) {
       if (formControl !== undefined) {
         this.createWalletForm.controls[formControl].get(custom).reset();

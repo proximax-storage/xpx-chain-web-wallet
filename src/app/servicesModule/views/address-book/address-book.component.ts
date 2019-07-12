@@ -57,19 +57,19 @@ export class AddressBookComponent implements OnInit, AfterViewInit {
   createFormContact() {
     this.contactForm = this.fb.group({
       user: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(30)]],
-      address: ['', [Validators.required, Validators.minLength(46), Validators.maxLength(46)]]
+      address: ['', [Validators.required, Validators.minLength(40), Validators.maxLength(46)]]
     });
   }
 
   /**
-  * Clean form
+  * clearForm form
   *
   * @param {(string | (string | number)[])} [custom]
   * @param {(string | number)} [formControl]
   * @returns
   * @memberof TransferComponent
   */
-  cleanForm(
+  clearForm(
     custom?: string | (string | number)[],
     formControl?: string | number
   ) {

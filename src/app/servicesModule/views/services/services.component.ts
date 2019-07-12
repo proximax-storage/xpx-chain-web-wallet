@@ -16,6 +16,15 @@ export class ServicesComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    const account = this.service.structureServices(
+      'icon-account-green.svg',
+      'ACCOUNT',
+      ``,
+      {
+        linkTheNamespaceToAnAddress: this.structureServiceRoute('Alias to address', `/${AppConfig.routes.linkTheNamespaceToAnAddress}`)
+      }, true
+    );
+
     const multisignature = this.service.structureServices(
       'fa fa-user-plus',
       'Multisignature and Multi-User Accounts',
@@ -33,42 +42,47 @@ export class ServicesComponent implements OnInit {
       }, false
     );
 
-    const explorerTransaction = this.service.structureServices('icon-transactions-dark-green.svg', 'Transaction Explorer', `Explorer all transactions in the wallet`,
+    const explorerTransaction = this.service.structureServices(
+      'icon-transactions-dark-green.svg',
+      'Transactions explorer',
+      `Search all available transactions`,
       {
-        createPoll: this.structureServiceRoute('Open Explorer', `/${AppConfig.routes.explorer}`)
+        createPoll: this.structureServiceRoute('Explorer all transactions', `/${AppConfig.routes.explorer}`)
       }, true
     );
 
-    const voting = this.service.structureServices('fa fa-4x fa-pie-chart', 'Voting', `Create and vote on polls`,
+    const voting = this.service.structureServices(
+      'icon-voting-dark-green.svg',
+      'Voting',
+      `Create polls and vote`,
       {
-        createPoll: this.structureServiceRoute('Create a Poll', `/${AppConfig.routes.createPoll}`),
-        polls: this.structureServiceRoute('Vote and See Polls', `/${AppConfig.routes.polls}`),
+        createPoll: this.structureServiceRoute('Create a poll', `/${AppConfig.routes.createPoll}`),
+        polls: this.structureServiceRoute('Vote and see polls', `/${AppConfig.routes.polls}`),
       }, false
     );
 
     const apostille = this.service.structureServices('icon-notary-dark-green.svg', 'Apostille',
-      'Use Apostille service to create blockchain based notarizations to time stamp, follow and audit file authenticity.',
+      'Verify and authenticate documents',
       {
         addApostille: this.structureServiceRoute('Create New', `/${AppConfig.routes.apostille}`),
         audiApostille: this.structureServiceRoute('Audit', `/${AppConfig.routes.audiApostille}`),
       }, false
     );
 
-    const namespace = this.service.structureServices('icon-namespaces-dark-green.svg', 'Namespaces & Subnamespaces',
+    const namespace = this.service.structureServices('icon-namespaces-dark-green.svg', 'Namespaces & Sub-namespaces',
       'Namespaces are domain names. Each namespaces is unique and authenticates mosaics (assets).',
       {
-        createNamespace: this.structureServiceRoute('Create Namespace', `/${AppConfig.routes.createNamespace}`),
-        linkNamespaceToMosaic: this.structureServiceRoute('Alias to a mosaic', `/${AppConfig.routes.LinkingNamespaceMosaic}`),
-        renewNamespace: this.structureServiceRoute('Renovate namespace', `/${AppConfig.routes.renovateNamespace}`),
-        linkTheNamespaceToAnAddress: this.structureServiceRoute('Alias to an address', `/${AppConfig.routes.linkTheNamespaceToAnAddress}`),
+        createNamespace: this.structureServiceRoute('Create', `/${AppConfig.routes.createNamespace}`),
+        renewNamespace: this.structureServiceRoute('Renew', `/${AppConfig.routes.renovateNamespace}`)
       }, true
     );
 
     const mosaics = this.service.structureServices('icon-mosaics-dark-green.svg', 'Mosaics',
       'The mosaics service, are assets that expose additional properties and other features.',
       {
-        createMosaic: this.structureServiceRoute('Create new', `/${AppConfig.routes.createMosaic}`),
-        editMosaic: this.structureServiceRoute('Supply change', `/${AppConfig.routes.MosaicSupplyChange}`),
+        createMosaic: this.structureServiceRoute('Create', `/${AppConfig.routes.createMosaic}`),
+        editMosaic: this.structureServiceRoute('Change Supply', `/${AppConfig.routes.MosaicSupplyChange}`),
+        linkNamespaceToMosaic: this.structureServiceRoute('ALIAS TO NAMESPACE', `/${AppConfig.routes.LinkingNamespaceMosaic}`),
       }, true
     );
 
@@ -94,6 +108,7 @@ export class ServicesComponent implements OnInit {
     this.services = {
       //explorerFile: explorerFile,
       //addNode: addNode,
+      account: account,
       multisignature: multisignature,
       explorerTransaction: explorerTransaction,
       nameSpace: namespace,
@@ -127,6 +142,7 @@ export class ServicesComponent implements OnInit {
 export interface Service {
   //explorerFile: ItemService;
   //addNode: ItemService;
+  account: ItemService;
   multisignature: ItemService;
   explorerTransaction: ItemService;
   nameSpace: ItemService;

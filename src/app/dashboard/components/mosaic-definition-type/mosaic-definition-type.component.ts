@@ -28,6 +28,7 @@ export class MosaicDefinitionTypeComponent implements OnInit {
   }
 
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
+    // console.log(this.mosaicDefinition);
     this.viewBox = (changes['viewBox'] !== null && changes['viewBox'] !== undefined) ? changes['viewBox'].currentValue : true;
     if (this.viewBox) {
       this.typeTransactionHex = `${this.mosaicDefinition.data['type'].toString(16).toUpperCase()}`;
