@@ -36,7 +36,7 @@ export class MosaicSupplyChangeTypeComponent implements OnInit {
       this.typeTransactionHex = `${this.mosaicSupplyChange.data['type'].toString(16).toUpperCase()}`;
       this.mosaicId = this.mosaicSupplyChange.data['mosaicId'].toHex();
       await this.searchMosaics([this.mosaicSupplyChange.data['mosaicId']]);
-      this.mosaicSupplyChange['fee'] = cloneDeep(this.mosaicSupplyChange.data['maxFee'].compact());
+      // this.mosaicSupplyChange['fee'] = cloneDeep(this.mosaicSupplyChange.data['maxFee'].compact());
     } else {
       this.typeTransactionHex = `${this.mosaicSupplyChange['type'].toString(16).toUpperCase()}`;
       this.mosaicId = this.mosaicSupplyChange['mosaicId'].toHex();
