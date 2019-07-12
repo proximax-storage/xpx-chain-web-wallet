@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { MosaicSupplyType, UInt64 } from 'tsjs-xpx-chain-sdk';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
@@ -9,6 +8,7 @@ import { SharedService } from '../../../../shared/services/shared.service';
 import { MosaicService } from '../../../../servicesModule/services/mosaic.service';
 import { MosaicsStorage } from '../../../../servicesModule/interfaces/mosaics-namespaces.interface';
 import { TransactionsService } from '../../../../transactions/service/transactions.service';
+
 
 @Component({
   selector: 'app-mosaic-supply-change',
@@ -20,7 +20,7 @@ export class MosaicSupplyChange implements OnInit {
   formMosaicSupplyChange: FormGroup;
   parentMosaic: any = [{
     value: '1',
-    label: 'Select mosaic',
+    label: 'Select or enter here',
     selected: true,
     disabled: true
   }];
@@ -54,19 +54,17 @@ export class MosaicSupplyChange implements OnInit {
    */
   constructor(
     private fb: FormBuilder,
-    private route: ActivatedRoute,
-    private router: Router,
     private proximaxProvider: ProximaxProvider,
     private sharedService: SharedService,
     private walletService: WalletService,
     private mosaicService: MosaicService,
     private transactionService: TransactionsService
   ) { }
+
+
   async ngOnInit() {
-    // this.searchMosaics();
     this.createForm();
     const data = await this.mosaicService.searchMosaicsFromAccountStorage$();
-    // console.log(data);
     const mosaicsSelect = this.parentMosaic.slice(0);
     data.forEach(element => {
       const nameMosaic = (element.mosaicNames.names.length > 0) ? element.mosaicNames.names[0] : this.proximaxProvider.getMosaicId(element.id).toHex();
@@ -97,9 +95,21 @@ export class MosaicSupplyChange implements OnInit {
     this.formMosaicSupplyChange = this.fb.group({
       parentMosaic: ['1', Validators.required],
       mosaicSupplyType: [MosaicSupplyType.Increase, Validators.required],
-      deltaSupply: ['2000000', [Validators.required]],
+      deltaSupply: [2000000, [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]],
     });
+  }
+
+  /**
+   *
+   *
+   * @memberof MosaicSupplyChange
+   */
+  clearForm() {
+    this.mosaicsInfoSelected = null;
+    this.formMosaicSupplyChange.get('password').patchValue('');
+    this.formMosaicSupplyChange.get('deltaSupply').patchValue('');
+    this.formMosaicSupplyChange.get('parentMosaic').patchValue(MosaicSupplyType.Increase);
   }
 
 
@@ -191,11 +201,6 @@ export class MosaicSupplyChange implements OnInit {
     }
   }
 
-  clearForm() {
-    this.mosaicsInfoSelected = null;
-    this.formMosaicSupplyChange.get('password').patchValue('');
-    this.formMosaicSupplyChange.get('deltaSupply').patchValue('');
-    this.formMosaicSupplyChange.get('parentMosaic').patchValue(MosaicSupplyType.Increase);
-  }
+
 
 }

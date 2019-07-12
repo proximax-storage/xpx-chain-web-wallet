@@ -39,9 +39,9 @@
 
                   <div class="col-9 col-sm-10 col-md-10">
                     <div class="md-form">
-                      <input type="text" autocomplete="off" formControlName="name" required id="name"
+                      <input mask="S{18}" type="text" autocomplete="off" formControlName="name" required id="name"
                         class="form-control" mdbInputDirective data-success="Valid name"
-                        [errorMessage]="getError('name')">
+                        onkeyup="javascript:this.value=this.value.toLowerCase();" [errorMessage]="getError('name')">
                       <label for="name">Name</label>
                     </div>
                   </div>

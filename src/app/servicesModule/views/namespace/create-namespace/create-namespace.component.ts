@@ -162,13 +162,18 @@ export class CreateNamespaceComponent implements OnInit {
   createForm() {
     //Form namespace default
     this.namespaceForm = this.fb.group({
-      name: ['', [Validators.required, Validators.maxLength(64)]],
+      name: ['', [Validators.required, Validators.maxLength(18)]],
       namespaceRoot: ['1'],
       duration: [100, [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]],
     });
   }
 
+  /**
+   *
+   *
+   * @memberof CreateNamespaceComponent
+   */
   clearForm() {
     this.namespaceForm.get('name').patchValue('');
     this.namespaceForm.get('namespaceRoot').patchValue('1');
@@ -370,7 +375,7 @@ export class CreateNamespaceComponent implements OnInit {
       return false;
     }
 
-    let pattern = /^[a-z0-9.\-_]*$/;
+    let pattern = /^[A-Za-z-9.\-_]*$/;
     // Test if has special chars or space excluding hyphens
     if (pattern.test(namespace) == false) {
       this.validateForm = false;

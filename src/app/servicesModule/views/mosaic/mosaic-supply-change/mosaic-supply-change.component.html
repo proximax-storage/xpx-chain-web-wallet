@@ -7,7 +7,7 @@
         <div class="col-9 col-sm-10 mx-auto">
           <span class="d-flex justify-content-center align-items-center wallet-name">
             <img class="mr-05rem h2-3em" src="assets/images/img/icon-mosaics-white.svg" alt="">
-            <span class="f-w-bold fs-1-5rem title-module">Mosaics</span>
+            <span class="f-w-bold fs-1-5rem title-module">Change Supply</span>
           </span>
         </div>
       </div>
@@ -16,10 +16,6 @@
       <div class="row">
         <div class="col-12 mx-auto">
           <hr class="background-divisor">
-        </div>
-
-        <div class="col-11 col-sm-10 mx-auto">
-          <h5 class="f-w-bold color-yellow text-align-center">Supply change...</h5>
         </div>
       </div>
     </div>
@@ -43,7 +39,7 @@
                 <div class="col-9 col-sm-10 col-md-10 col-lg-11">
                   <div class="md-form">
                     <ng-select [items]="parentMosaic" formControlName="parentMosaic" bindLabel="label" bindValue="value"
-                      placeholder="Select or write Parent Mosaic" (change)="optionSelected($event)">
+                      placeholder="Select or write Mosaic" (change)="optionSelected($event)">
                     </ng-select>
                   </div>
                 </div>
@@ -63,7 +59,7 @@
                 <div class="col-9 col-sm-10 col-md-10 col-lg-11">
                   <div class="md-form">
                     <ng-select [items]="mosaicSupplyType" formControlName="mosaicSupplyType" bindLabel="label"
-                      bindValue="value" placeholder="Select or write Mosaic supply type">
+                      bindValue="value" placeholder="Increase or decrease">
                     </ng-select>
                   </div>
                 </div>
@@ -83,9 +79,9 @@
 
                 <div class="col-9 col-sm-10 col-md-10 col-lg-11">
                   <div class="md-form">
-                    <input type="number" autocomplete="off" required formControlName="deltaSupply" id="deltaSupply"
-                      class="form-control" mdbInputDirective data-success="Valid Supply"
-                      [errorMessage]="getError('deltaSupply')">
+                    <input mask="comma_separator.0" type="text" autocomplete="off" required
+                      formControlName="deltaSupply" id="deltaSupply" class="form-control" mdbInputDirective
+                      data-success="Valid Supply" [errorMessage]="getError('deltaSupply')">
                     <label for="walletname">Supply</label>
                   </div>
                 </div>

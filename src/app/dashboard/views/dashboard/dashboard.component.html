@@ -173,10 +173,10 @@
                 </td>
 
                 <!-- recipíent -->
-                <ng-container *ngIf="el?.recipient !== null; else recipientRentalFee">
+                <ng-container *ngIf="el?.recipientAddress !== null; else recipientRentalFee">
                   <td class="text-center th-md description-dark-green fs-0-8-rem"
                     *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex">
-                    <span>{{el.recipient}}</span>
+                    <span>{{el.recipientAddress}}</span>
                   </td>
                 </ng-container>
 

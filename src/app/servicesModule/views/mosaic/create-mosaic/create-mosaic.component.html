@@ -38,9 +38,9 @@
 
                     <div class="col-9 col-sm-10">
                       <div class="md-form">
-                        <input pattern="[0-9]+" type="number" autocomplete="off" required formControlName="duration"
-                          id="duration" class="form-control" mdbInputDirective data-success="Valid duration"
-                          [errorMessage]="getError('duration')">
+                        <input pattern="[0-9]+" mask="0*" type="text" autocomplete="off" required
+                          formControlName="duration" id="duration" class="form-control" mdbInputDirective
+                          data-success="Valid duration" [errorMessage]="getError('duration')">
                         <label for="duration">Duration (Number of blocks)</label>
                       </div>
                     </div>
@@ -55,9 +55,10 @@
 
                     <div class="col-9 col-sm-10">
                       <div class="md-form">
-                        <input pattern="[0-9]+" type="number" autocomplete="off" required formControlName="divisibility"
-                          id="divisibility" class="form-control" mdbInputDirective data-success="Valid divisibility"
-                          [errorMessage]="getError('divisibility')">
+                        <input pattern="[1-6]{1}" mask="0{1}" type="text" autocomplete="off" required
+                          formControlName="divisibility" id="divisibility" class="form-control" mdbInputDirective
+                          data-success="Valid divisibility" [errorMessage]="getError('divisibility', 'The divisibility
+                          must be between 1 and 6')">
                         <label for="walletname">Divisibility (decimal places)</label>
                       </div>
                     </div>
@@ -78,9 +79,9 @@
 
                 <div class="col-9 col-sm-10 col-md-11">
                   <div class="md-form">
-                    <input type="number" autocomplete="off" required formControlName="deltaSupply" id="deltaSupply"
-                      class="form-control" mdbInputDirective data-success="Valid Supply"
-                      [errorMessage]="getError('deltaSupply')">
+                    <input mask="comma_separator.0" type="text" autocomplete="off" required
+                      formControlName="deltaSupply" id="deltaSupply" class="form-control" mdbInputDirective
+                      data-success="Valid Supply" [errorMessage]="getError('deltaSupply')">
                     <label for="walletname">Supply</label>
                   </div>
                 </div>

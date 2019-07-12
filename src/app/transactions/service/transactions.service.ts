@@ -136,7 +136,8 @@ export class TransactionsService {
         fee: this.amountFormatterSimple(transaction.maxFee.compact()),
         sender: transaction.signer,
         recipientRentalFeeSink: recipientRentalFeeSink,
-        recipient: (transaction['recipient'] !== undefined) ? transaction['recipient'].pretty() : null,
+        recipient: (transaction['recipient'] !== undefined) ? transaction['recipient'] : null,
+        recipientAddress: (transaction['recipient'] !== undefined) ? transaction['recipient'].pretty() : null,
         isRemitent: (transaction['recipient'] !== undefined) ? this.walletService.address.pretty() === transaction["recipient"].pretty() : false,
         senderAddress: transaction['signer'].address.pretty()
       }
@@ -273,7 +274,13 @@ export class TransactionsService {
   dateFormat(deadline: Deadline) {
     return new Date(
       deadline.value.toString() + Deadline.timestampNemesisBlock * 1000
-    ).toLocaleDateString();
+    ).toUTCString();
+  }
+
+  dateFormatLocal(deadline: Deadline) {
+    return new Date(
+      deadline.value.toString() + Deadline.timestampNemesisBlock * 1000
+    ).toLocaleString();
   }
 
   /**

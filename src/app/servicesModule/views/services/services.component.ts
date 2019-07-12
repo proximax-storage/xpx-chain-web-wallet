@@ -19,9 +19,11 @@ export class ServicesComponent implements OnInit {
     const account = this.service.structureServices(
       'icon-account-green.svg',
       'ACCOUNT',
-      ``,
+      `Accounts may configure a set of smart rules to block announcing or receiving transactions given a series of restrictions.                                also can link a registered name (namespace or subnamespace).`,
       {
-        linkTheNamespaceToAnAddress: this.structureServiceRoute('Alias to address', `/${AppConfig.routes.linkTheNamespaceToAnAddress}`)
+        linkTheNamespaceToAnAddress: this.structureServiceRoute('Alias to Namespace', `/${AppConfig.routes.linkTheNamespaceToAnAddress}`),
+        myAccount: this.structureServiceRoute('Details', `/${AppConfig.routes.account}`),
+        filter: this.structureServiceRoute('Filter', ``, true)
       }, true
     );
 
@@ -36,7 +38,10 @@ export class ServicesComponent implements OnInit {
       }, false
     );
 
-    const storage = this.service.structureServices('img-explorer-file', 'Storage', `Storage`,
+    const storage = this.service.structureServices(
+      'img-explorer-file',
+      'Storage',
+      `Storage`,
       {
         explorerFile: this.structureServiceRoute('Storage', `/${AppConfig.routes.storage}`)
       }, false
@@ -45,7 +50,7 @@ export class ServicesComponent implements OnInit {
     const explorerTransaction = this.service.structureServices(
       'icon-transactions-dark-green.svg',
       'Transactions explorer',
-      `Search all available transactions`,
+      `Get detailed information about any transaction, address and block`,
       {
         createPoll: this.structureServiceRoute('Explorer all transactions', `/${AppConfig.routes.explorer}`)
       }, true
@@ -69,35 +74,44 @@ export class ServicesComponent implements OnInit {
       }, false
     );
 
-    const namespace = this.service.structureServices('icon-namespaces-dark-green.svg', 'Namespaces & Sub-namespaces',
-      'Namespaces are domain names. Each namespaces is unique and authenticates mosaics (assets).',
+    const namespace = this.service.structureServices(
+      'icon-namespaces-dark-green.svg',
+      'Namespaces & Sub-namespaces',
+      'Create a domain and subdomains',
       {
         createNamespace: this.structureServiceRoute('Create', `/${AppConfig.routes.createNamespace}`),
         renewNamespace: this.structureServiceRoute('Renew', `/${AppConfig.routes.renovateNamespace}`)
       }, true
     );
 
-    const mosaics = this.service.structureServices('icon-mosaics-dark-green.svg', 'Mosaics',
-      'The mosaics service, are assets that expose additional properties and other features.',
+    const mosaics = this.service.structureServices(
+      'icon-mosaics-dark-green.svg', 'Mosaics',
+      'Create digital assets with unique properties',
       {
         createMosaic: this.structureServiceRoute('Create', `/${AppConfig.routes.createMosaic}`),
         editMosaic: this.structureServiceRoute('Change Supply', `/${AppConfig.routes.MosaicSupplyChange}`),
-        linkNamespaceToMosaic: this.structureServiceRoute('ALIAS TO NAMESPACE', `/${AppConfig.routes.LinkingNamespaceMosaic}`),
+        linkNamespaceToMosaic: this.structureServiceRoute('ALIAS TO NAMESPACE', `/${AppConfig.routes.LinkingNamespaceMosaic}`)
       }, true
     );
 
 
-    const delegatedHarvesting = this.service.structureServices('fa fa-compress', 'Delegated Harvesting',
+    const delegatedHarvesting = this.service.structureServices(
+      'fa fa-compress',
+      'Delegated Harvesting',
       'Delegated haversting is the feature that allows "mining" even while your account is closed',
       {}, false
     );
 
-    const changellyInstantExchange = this.service.structureServices('fa fa-compress', 'Changelly Instant Exchange',
+    const changellyInstantExchange = this.service.structureServices(
+      'fa fa-compress',
+      'Changelly Instant Exchange',
       `Use the changelly widget to buy ${this.coin} at the best rates!`,
       {}, false
     );
 
-    const addressBook = this.service.structureServices('icon-directory-dark-green.svg', 'Directory',
+    const addressBook = this.service.structureServices(
+      'icon-directory-dark-green.svg',
+      'Directory',
       `Assign labels to addresses to easily keep track of your contacts`,
       {
         manageAddress: this.structureServiceRoute('Open Directory', `/${AppConfig.routes.addressBook}`),
@@ -106,8 +120,6 @@ export class ServicesComponent implements OnInit {
 
 
     this.services = {
-      //explorerFile: explorerFile,
-      //addNode: addNode,
       account: account,
       multisignature: multisignature,
       explorerTransaction: explorerTransaction,
@@ -130,10 +142,11 @@ export class ServicesComponent implements OnInit {
    * @returns
    * @memberof ServicesComponent
    */
-  structureServiceRoute(name, link) {
+  structureServiceRoute(name: string, link: string, disabled = false) {
     return {
       name: name,
-      link: link
+      link: link,
+      disabled: disabled
     }
   }
 
