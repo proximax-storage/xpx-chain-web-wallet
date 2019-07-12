@@ -38,9 +38,7 @@ The text font was changed to open Sans to match the mobile wallet.
 </ul>
 
 <!-- RELEASE TESTNET v0.1.1 -->
-<h1>
-    <b>release-testnet-v0.1.1</b>
-</h1>
+## [release-testnet-v0.1.1](https://github.com/proximax-storage/xpx-chain-web-wallet/releases/tag/release-testnet-v0.1.1)
 
 <h2>Fixed bugs</h2>
 <ul>
@@ -65,9 +63,7 @@ The text font was changed to open Sans to match the mobile wallet.
 </ul>
 
 <!-- RELEASE TESTNET v0.0.5 -->
-<h1>
-  <b>release-testnet-v0.0.5</b>
-</h1>
+## [release-testnet-v0.0.5](https://github.com/proximax-storage/xpx-chain-web-wallet/releases/tag/release-testnet-v0.0.5)
 
 <h2>Supports and corrections</h2>
 
@@ -87,9 +83,7 @@ The text font was changed to open Sans to match the mobile wallet.
 </ul>
 
 <!-- RELEASE TESTNET v0.0.4 -->
-<h1>
-    <b>release-testnet-v0.0.4</b>
-</h1>
+## [release-testnet-v0.0.4](https://github.com/proximax-storage/xpx-chain-web-wallet/releases/tag/release-testnet-v0.0.4)
 
 <ul>
   <li>
@@ -130,9 +124,7 @@ The text font was changed to open Sans to match the mobile wallet.
 
 
 <!-- RELEASE TESTNET v0.0.3 -->
-<h1>
-    <b>release-testnet-v0.0.3</b>
-</h1>
+## [release-testnet-v0.0.3](https://github.com/proximax-storage/xpx-chain-web-wallet/releases/tag/release-testnet-v0.0.3)
 
 <h2>Updates</h2>
 
