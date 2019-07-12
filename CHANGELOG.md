@@ -1,7 +1,5 @@
 <!-- RELEASE TESTNET v0.1.4 -->
-<h1>
-  <b>release-testnet-v0.1.5</b>
-</h1>
+## [release-testnet-v0.1.5](https://github.com/proximax-storage/xpx-chain-web-wallet/releases/tag/release-testnet-v0.1.3)
 
 <h2>Fixed bugs</h2>
 <ul>
