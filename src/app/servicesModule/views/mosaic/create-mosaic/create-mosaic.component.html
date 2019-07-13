@@ -7,7 +7,7 @@
         <div class="col-9 col-sm-10 mx-auto">
           <span class="d-flex justify-content-center align-items-center wallet-name">
             <img class="mr-05rem h2-3em" src="assets/images/img/icon-mosaics-white.svg" alt="">
-            <span class="f-w-bold fs-1-5rem title-module">Mosaics</span>
+            <span class="f-w-bold fs-1-5rem title-module">Create Mosaic</span>
           </span>
         </div>
       </div>
@@ -16,10 +16,6 @@
       <div class="row">
         <div class="col-12 mx-auto">
           <hr class="background-divisor">
-        </div>
-
-        <div class="col-11 col-sm-10 mx-auto">
-          <h5 class="f-w-bold color-yellow text-align-center">Create new...</h5>
         </div>
       </div>
     </div>
@@ -42,10 +38,10 @@
 
                     <div class="col-9 col-sm-10">
                       <div class="md-form">
-                        <input pattern="[0-9]+" type="number" autocomplete="off" required formControlName="duration"
-                          id="duration" class="form-control" mdbInputDirective data-success="Valid duration"
-                          [errorMessage]="getError('duration')">
-                        <label for="duration">Duration</label>
+                        <input pattern="[0-9]+" mask="0*" type="text" autocomplete="off" required
+                          formControlName="duration" id="duration" class="form-control" mdbInputDirective
+                          data-success="Valid duration" [errorMessage]="getError('duration')">
+                        <label for="duration">Duration (Number of blocks)</label>
                       </div>
                     </div>
                   </div>
@@ -59,10 +55,11 @@
 
                     <div class="col-9 col-sm-10">
                       <div class="md-form">
-                        <input pattern="[0-9]+" type="number" autocomplete="off" required formControlName="divisibility"
-                          id="divisibility" class="form-control" mdbInputDirective data-success="Valid divisibility"
-                          [errorMessage]="getError('divisibility')">
-                        <label for="walletname">Divisibility</label>
+                        <input pattern="[1-6]{1}" mask="0{1}" type="text" autocomplete="off" required
+                          formControlName="divisibility" id="divisibility" class="form-control" mdbInputDirective
+                          data-success="Valid divisibility" [errorMessage]="getError('divisibility', 'The divisibility
+                          must be between 1 and 6')">
+                        <label for="walletname">Divisibility (decimal places)</label>
                       </div>
                     </div>
                   </div>
@@ -82,9 +79,9 @@
 
                 <div class="col-9 col-sm-10 col-md-11">
                   <div class="md-form">
-                    <input type="number" autocomplete="off" required formControlName="deltaSupply" id="deltaSupply"
-                      class="form-control" mdbInputDirective data-success="Valid Supply"
-                      [errorMessage]="getError('deltaSupply')">
+                    <input mask="comma_separator.0" type="text" autocomplete="off" required
+                      formControlName="deltaSupply" id="deltaSupply" class="form-control" mdbInputDirective
+                      data-success="Valid Supply" [errorMessage]="getError('deltaSupply')">
                     <label for="walletname">Supply</label>
                   </div>
                 </div>
@@ -136,11 +133,11 @@
           <div class="col-10 col-md-11 mt-1-5rem d-flex justify-content-center">
             <div class="row">
               <div class="col-6">
-                <button mdbBtn size="md" rounded="true" class="waves-light btn-white" mdbWavesEffect
-                  type="button">Clean</button>
+                <button mdbBtn size="sm" rounded="true" class="waves-light btn-white" mdbWavesEffect type="button"
+                  (click)="clearForm()">Clear</button>
               </div>
               <div class="col-6">
-                <button mdbBtn size="md" rounded="true" class="waves-light btn-dark-green-prx" mdbWavesEffect
+                <button mdbBtn size="sm" rounded="true" class="waves-light btn-dark-green-prx" mdbWavesEffect
                   type="submit">Create</button>
               </div>
             </div>

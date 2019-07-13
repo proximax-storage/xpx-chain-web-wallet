@@ -8,7 +8,9 @@ export interface TransactionsInterface {
   sender: PublicAccount;
   recipientRentalFeeSink: string;
   recipient: Address;
+  recipientAddress: string;
   isRemitent: boolean;
+  senderAddress: string;
 }
 
 

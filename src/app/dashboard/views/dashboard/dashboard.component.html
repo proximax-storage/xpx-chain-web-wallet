@@ -31,8 +31,13 @@
                 <span>USD 0.000000</span><br>
               </div>
 
-              <div class="col-12 overflow-ellipsis-nowrap" id="addressBox">
+              <div class="col-10 col-sm-9 col-md-10 col-lg-11 overflow-ellipsis-nowrap" id="addressBox">
                 <span class="f-s-dashboard-transactions">{{myAddress['address']}}</span>
+              </div>
+
+              <div class="col-2 col-sm-3 col-md-2 col-lg-1 d-flex align-items-center">
+                <i mdbWavesEffect (click)="copyMessage('Address')" ngxClipboard [cbContent]="myAddress['address']"
+                  style="font-size: 1.2em;" class="fa fa-paste prefix cursor-pointer"></i>
               </div>
             </div>
           </div>
@@ -129,12 +134,13 @@
     <div class="col-11 col-sm-11 col-lg-10 mx-auto">
       <div class="table-responsive table-hover">
         <table mdbTable #tableEl="mdbTable" id="mdbTable" striped="true"
-          class="table table-hover table-bordered table-hover table-sm z-depth-0" borderless="true">
+          class="table table-hover table-bordered table-hover table-sm z-depth-0" cellspacing="0" width="100%"
+          borderless="true">
           <!--Table head-->
           <thead>
             <tr class="header-backg">
               <ng-container *ngFor="let head of headElements; let i = index">
-                <th scope="col" class="text-center fw-400">{{head}}</th>
+                <th scope="col" class="text-center fw-400 th-sm">{{head}}</th>
               </ng-container>
             </tr>
           </thead>
@@ -146,37 +152,37 @@
               <tr class="mouse-pointer" (click)="dataSelected = el; basicModal.show();">
                 <!-- Type transaction -->
                 <th *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex"
-                  class="th-sm" scope="row description-dark-green">{{el.nameType}}</th>
+                  class="th-sm fs-0-8-rem" scope="row description-dark-green">{{el.nameType}}</th>
 
                 <!-- timestamp -->
-                <td class="th-sm description-dark-green"
+                <td class="th-sm description-dark-green fs-0-8-rem"
                   *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex">
                   {{el.timestamp}}</td>
 
                 <!-- fee -->
-                <td class="text-center th-sm description-dark-green"
+                <td class="text-center th-sm description-dark-green fs-0-8-rem"
                   *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex">
                   {{el.fee}}</td>
 
                 <!-- address -->
-                <td class="text-center th-md description-dark-green"
+                <td class="text-center th-md description-dark-green fs-0-8-rem"
                   *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex">
                   <i [ngStyle]="{'color': el.isRemitent === true ? 'green' : 'red' }" style="padding-right: 10px;"
                     class="fa fa-send" aria-hidden="true"></i>
-                  <span>{{el.sender.address.pretty()}}</span>
+                  <span>{{el.senderAddress}}</span>
                 </td>
 
                 <!-- recipíent -->
-                <ng-container *ngIf="el?.recipient !== null; else recipientRentalFee">
-                  <td class="text-center th-md description-dark-green"
+                <ng-container *ngIf="el?.recipientAddress !== null; else recipientRentalFee">
+                  <td class="text-center th-md description-dark-green fs-0-8-rem"
                     *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex">
-                    <span>{{el.recipient.pretty()}}</span>
+                    <span>{{el.recipientAddress}}</span>
                   </td>
                 </ng-container>
 
                 <!-- recipient rental fee -->
                 <ng-template #recipientRentalFee>
-                  <td class="text-center th-sm description-dark-green"
+                  <td class="text-center th-sm description-dark-green fs-0-8-rem"
                     *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex">
                     <span>{{el.recipientRentalFeeSink}}</span>
                   </td>

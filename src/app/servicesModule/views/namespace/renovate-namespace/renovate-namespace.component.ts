@@ -71,6 +71,17 @@ export class RenovateNamespaceComponent implements OnInit {
    *
    * @memberof RenovateNamespaceComponent
    */
+  clearForm() {
+    this.renovateNamespaceForm.get('rootNamespace').patchValue('');
+    this.renovateNamespaceForm.get('duration').patchValue('');
+    this.renovateNamespaceForm.get('password').patchValue('');
+  }
+
+  /**
+   *
+   *
+   * @memberof RenovateNamespaceComponent
+   */
   destroySubscription() {
     this.subscriptions.forEach(element => {
       if (this.subscriptions[element] !== undefined) {

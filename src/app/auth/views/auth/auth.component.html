@@ -5,7 +5,6 @@
       <div class="row">
         <div class="col-10 mx-auto">
           <h1 class="text-align-center wallet-name">{{nameModule}}</h1>
-          <h5 class="text-align-center wallet-description">{{descriptionModule}}</h5>
         </div>
 
         <div class="col-10 mx-auto">
@@ -51,8 +50,8 @@
                 <div class="row mt-1rem mb-1rem">
                   <div class="col-6 t-a-r">
                     <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 btn-white-transparent"
-                      (click)="cleanForm()">
-                      CLEAN
+                      (click)="clearForm()">
+                      Clear
                     </button>
                   </div>
                   <div class="col-6">
@@ -73,14 +72,6 @@
 
 
       <div class="row mt-1rem mb-1rem">
-        <div class="col-12 text-center text-white">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Eaque recusandae sed quaerat commodi quas
-          necessitatibus
-          ratione aspernatur molestiae perspiciatis incidunt. Eius ad repellat necessitatibus? Illo modi minus
-          blanditiis
-          ipsa rerum.
-        </div>
-
         <div class="col-6 t-a-r mt-1rem">
           <button [routerLink]="['/'+link.createWallet]" mdbBtn type="button" rounded="true" mdbWavesEffect
             class="f-w-600 btn-dark-green-prx">

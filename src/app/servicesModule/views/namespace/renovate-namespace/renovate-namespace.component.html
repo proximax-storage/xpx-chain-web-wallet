@@ -7,7 +7,7 @@
         <div class="col-9 col-sm-10 mx-auto">
           <span class="d-flex justify-content-center align-items-center wallet-name">
             <img class="mr-05rem h2-3em" src="assets/images/img/icon-namespaces-white.svg" alt="">
-            <span class="f-w-bold fs-1-5rem title-module">Namespace</span>
+            <span class="f-w-bold fs-1-5rem title-module">Renew Namespace</span>
           </span>
         </div>
       </div>
@@ -15,10 +15,6 @@
       <div class="row">
         <div class="col-12 mx-auto">
           <hr class="background-divisor">
-        </div>
-
-        <div class="col-11 col-sm-10 mx-auto">
-          <h5 class="f-w-bold color-yellow text-align-center">Renovate Namespace...</h5>
         </div>
       </div>
     </div>
@@ -119,11 +115,11 @@
           <div class="col-11 mt-1-5rem d-flex justify-content-center">
             <div class="row">
               <div class="col-6">
-                <button mdbBtn size="md" rounded="true" class="waves-light btn-white" mdbWavesEffect type="button"
-                  (click)="resetForm()">Clean</button>
+                <button mdbBtn size="sm" rounded="true" class="waves-light btn-white" mdbWavesEffect type="button"
+                  (click)="clearForm()">CLEAR</button>
               </div>
               <div class="col-6">
-                <button mdbBtn size="md" rounded="true" class="waves-light btn-dark-green-prx" mdbWavesEffect
+                <button mdbBtn size="sm" rounded="true" class="waves-light btn-dark-green-prx" mdbWavesEffect
                   type="submit">Create</button>
               </div>
             </div>
@@ -209,9 +205,8 @@
           <!-- Renewal Period Information -->
           <div class="col-12 mt-1-5rem">
             <span class="description-information color-orange f-w-bold fs-1rem">Renewal Period</span>
-            <p class="description-information">The namespace contracts are leases and last according to the amount of
-              the block you rent. by default they are 100 (one block is generated every 15 seconds). <br> If not renewed
-              in time, all sub-namespaces and mosaics created under it will be lost.</p>
+            <p class="description-information">Namespace are leases that last according to the amount of blocks you
+              rent. If not renewed in time, all sub-namespaces and mosaics created under it will be lost.</p>
           </div>
         </div>
       </div>

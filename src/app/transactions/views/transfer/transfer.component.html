@@ -146,7 +146,7 @@
 
             <div class="col-9 col-sm-10 col-md-6 col-lg-7">
               <div class="md-form">
-                <input [mask]="maskData" pattern="^[+]?([0-9]*[.])?[0-9]+$" type="text" autocomplete="off"
+                <input pattern="^[+]?([0-9]*[.])?[0-9]+$" mask="comma_separator.0" type="text" autocomplete="off"
                   formControlName="amount" id="amount" class="form-control" mdbInputDirective [validateSuccess]="false"
                   [validateError]="false" [maxlength]="configurationForm.amount.maxLength">
                 <label for="recipient">{{titleLabelAmount}}</label>
@@ -217,8 +217,8 @@
           <div class="row mt-1rem mb-1rem">
             <div class="col-6 t-a-r">
               <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 btn-white"
-                (click)="cleanForm()">
-                CLEAN
+                (click)="clearForm()">
+                CLEAR
               </button>
             </div>
             <div class="col-6">
@@ -300,8 +300,8 @@
           <div class="row mt-1rem mb-1rem">
             <div class="col-6 t-a-r">
               <button mdbBtn type="button" size="sm" rounded="true" mdbWavesEffect class="f-w-600 btn-white"
-                (click)="cleanFormContact()">
-                CLEAN
+                (click)="clearFormContact()">
+                CLEAR
               </button>
             </div>
             <div class="col-6">

@@ -88,15 +88,15 @@ export class ImportWalletComponent implements OnInit {
         this.descriptionModule = 'Your wallet has been imported successfully';
       } else {
         //Error of repeated Wallet
-        this.cleanForm('walletname');
+        this.clearForm('walletname');
         this.sharedService.showError('Attention!', 'This name is already in use, try another name');
       }
     } else if (this.importWalletForm.controls.passwords.get('password').valid &&
       this.importWalletForm.controls.passwords.get('confirm_password').valid &&
       this.importWalletForm.controls.passwords.getError('noMatch')) {
       this.sharedService.showError('Attention!', `Password doesn't match`);
-      this.cleanForm('password', 'passwords');
-      this.cleanForm('confirm_password', 'passwords');
+      this.clearForm('password', 'passwords');
+      this.clearForm('confirm_password', 'passwords');
     }
 
   }
@@ -136,11 +136,11 @@ export class ImportWalletComponent implements OnInit {
   }
 
   /**
-   * Clean form
+   * Clear form
    *
    * @memberof ImportWalletComponent
    */
-  cleanForm(custom?, formControl?) {
+  clearForm(custom?, formControl?) {
     if (custom !== undefined) {
       if (formControl !== undefined) {
         this.importWalletForm.controls[formControl].get(custom).reset();

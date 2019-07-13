@@ -48,14 +48,14 @@ export class AuthComponent implements OnInit {
   }
 
   /**
-  * Clean form
+  * Clear form
   *
   * @param {(string | (string | number)[])} [custom]
   * @param {(string | number)} [formControl]
   * @returns
   * @memberof TransferComponent
   */
-  cleanForm(
+  clearForm(
     custom?: string | (string | number)[],
     formControl?: string | number
   ) {

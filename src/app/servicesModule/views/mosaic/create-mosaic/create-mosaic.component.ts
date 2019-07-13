@@ -66,11 +66,26 @@ export class CreateMosaicComponent implements OnInit {
       deltaSupply: [1000000, [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]],
       duration: [1000, [Validators.required]],
-      divisibility: [0, [Validators.required]],
+      divisibility: [1, [Validators.required]],
       transferable: [false],
       supplyMutable: [false],
       levyMutable: [false]
     });
+  }
+
+  /**
+   *
+   *
+   * @memberof CreateMosaicComponent
+   */
+  clearForm() {
+    this.mosaicForm.get('deltaSupply').patchValue(1000000);
+    this.mosaicForm.get('password').patchValue('');
+    this.mosaicForm.get('duration').patchValue(1000);
+    this.mosaicForm.get('divisibility').patchValue(1);
+    this.mosaicForm.get('transferable').patchValue(false);
+    this.mosaicForm.get('supplyMutable').patchValue(false);
+    this.mosaicForm.get('levyMutable').patchValue(false);
   }
 
   send() {
@@ -167,13 +182,15 @@ export class CreateMosaicComponent implements OnInit {
    * @param param
    * @param formControl
    */
-  getError(param: string | (string | number)[], formControl?: any) {
+  getError(param: any, customMsg = '') {
     if (this.mosaicForm.get(param).getError('required')) {
       return `This field is required`;
     } else if (this.mosaicForm.get(param).getError('minlength')) {
       return `This field must contain minimum ${this.mosaicForm.get(param).getError('minlength').requiredLength} characters`;
     } else if (this.mosaicForm.get(param).getError('maxlength')) {
       return `This field must contain maximum ${this.mosaicForm.get(param).getError('maxlength').requiredLength} characters`;
+    } else if (customMsg !== '') {
+      return customMsg;
     } else {
       return `Invalid input`;
     }

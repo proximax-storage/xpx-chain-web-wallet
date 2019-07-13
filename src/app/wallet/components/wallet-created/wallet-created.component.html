@@ -2,8 +2,8 @@
   <div class="row">
     <div class="col-8 mx-auto">
       <h5 class="text-align-center wallet-description">
-        Here your wallet address and your private key. We recommend that you keep your private key in a safe place
-        outside the internet. The private key cannot be recovered
+        Warning! before proceeding, make sure store your private key in a safe place. Access to your digital assets
+        cannot be recovered without it.
       </h5>
     </div>
   </div>
@@ -76,12 +76,15 @@
   </div>
 
   <div class="row mt-1rem mb-1rem mx-auto">
-    <div class="col-4 t-a-r mx-auto overflow-ellipsis-nowrap d-flex justify-content-center">
+
+    <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
       <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 btn-white" size="sm"
         [routerLink]="['/'+link.login]">
         <i class="fa fa-arrow-circle-left"></i> Finish
       </button>
+    </div>
 
+    <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
       <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 btn-dark-green-prx" size="sm"
         (click)="showHidePvkAddress()">
         <i class="fa fa-magic mr-1"></i> {{messageShowPvk}}

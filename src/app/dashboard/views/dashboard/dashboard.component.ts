@@ -29,7 +29,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   cantUnconfirmed = 0;
   confirmedSelected = true;
   dataSelected: TransactionsInterface = null;
-  headElements = ['Type', 'Timestamp', 'Fee', 'Sender', 'Recipient'];
+  headElements = ['Type', 'Deadline', 'Fee', 'Sender', 'Recipient'];
   iconReloadDashboard = false;
   searching = true;
   subscriptions = [
@@ -97,6 +97,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.vestedBalance = `0.000000 XPX`;
       }
     );
+  }
+
+  copyMessage(message: string) {
+    this.sharedService.showSuccess('', `${message} copied`);
   }
 
   /**
@@ -190,6 +194,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.transactions = this.mdbTable.searchLocalDataBy(this.searchTransaction);
       this.mdbTable.setDataSource(prev);
     }
+
     this.cantTransactions = this.transactions.length;
   }
 
