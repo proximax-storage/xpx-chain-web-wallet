@@ -1,7 +1,7 @@
 pipeline {
   agent {
     node {
-      label 'docker-build-node'
+      label 'docker-build-node-t3Xlarge'
     }
   }
 
