@@ -1,12 +1,12 @@
 .size-box {
-  height: 125px !important;
+  height: 8em !important;
 }
 
 // Medium screen / tablet
 @media (max-width: 768px) {
-  .size-box {
+  /*.size-box {
     height: 82px !important;
-  }
+  }*/
 }
 
 // Large screen / desktop
@@ -38,9 +38,9 @@
     padding-left: 0;
   }
 
-  .size-box {
+ /* .size-box {
     height: 102px !important;
-  }
+  }*/
 
   #boxConfirmedUnconfirmed {
     margin-top: .4rem;
@@ -58,8 +58,10 @@
 .btnConfirmedUnconfirmed {
   background: #023c42;
   color: white;
-  padding: .3rem;
-  border-radius: .3rem;
-  font-weight: 500;
+  border-radius: .4rem;
+  padding-top: .3em;
+  padding-bottom: .3em;
+  margin-top: .4em;
+  text-align: center;
   cursor: pointer;
 }

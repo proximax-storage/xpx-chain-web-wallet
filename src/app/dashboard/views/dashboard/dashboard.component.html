@@ -20,8 +20,8 @@
     <div class="col-11 col-sm-11 col-lg-10 mx-auto">
       <div class="row">
         <!-- BOX BALANCE -->
-        <div class="col-12 col-md-6 col-lg-7 no-p-l">
-          <div class="box-form-white mb-1rem size-box pt-05rem pb-05rem d-flex align-items-center">
+        <div class="col-12 col-md-6 col-lg-7 mb-1rem">
+          <div class="box-form-white size-box pt-05rem pb-05rem d-flex align-items-center">
             <div class="row overflow-ellipsis-nowrap">
               <div class="col-sm-6 col-md-12 col-lg-9 overflow-ellipsis-nowrap">
                 <span class="title-transactions f-s-title-transactions">{{vestedBalance}}</span>
@@ -42,9 +42,43 @@
             </div>
           </div>
         </div>
+
+
         <!-- BOX TRANSACTIONS -->
-        <div class="col-12 col-md-6 col-lg-5 no-p-r">
-          <div class="box-form-white mb-1rem size-box d-flex align-items-center">
+        <div class="col-12 col-md-6 col-lg-5 mb-1rem">
+          <div class="box-form-white size-box">
+            <div class="row">
+              <div class="col-6 col-md-7 col-xl-8">
+                <span class="title-transactions f-s-title-transactions">Transactions</span>
+              </div>
+
+              <div class="col-6 col-md-5 col-xl-4">
+                <span class="title-transactions f-s-title-transactions">{{cantConfirmed + cantUnconfirmed}}</span>
+              </div>
+            </div>
+
+            <div class="row mt-03rem">
+              <div class="col-12">
+                <div class="row d-flex justify-content-center align-items-center">
+                  <div class="col-6 col-md-7 col-xl-8 f-s-dashboard-transactions">
+                    <div class="btnConfirmedUnconfirmed">CONFIRMED</div>
+                  </div>
+                  <div class="col-6 col-md-5 col-xl-4 f-s-dashboard-transactions">
+                    {{cantConfirmed}}
+                  </div>
+                </div>
+                <div class="row d-flex justify-content-center align-items-center">
+                  <div class="col-6 col-md-7 col-xl-8 f-s-dashboard-transactions">
+                    <div class="btnConfirmedUnconfirmed">UNCONFIRMED</div>
+                  </div>
+                  <div class="col-6 col-md-5 col-xl-4 f-s-dashboard-transactions">
+                    {{cantUnconfirmed}}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- <div class="box-form-white mb-1rem size-box d-flex align-items-center">
             <div class="row overflow-ellipsis-nowrap">
               <div class="col-6 col-md-12">
                 <span class="title-transactions f-s-title-transactions">Transactions</span>
@@ -54,7 +88,7 @@
                 <span class="title-transactions f-s-title-transactions">{{cantConfirmed + cantUnconfirmed}}</span>
               </div>
 
-              <!-- Confirmed and Unconfirmed -->
+              <!- Confirmed and Unconfirmed --
               <div class="col-12 col-sm-12 col-md-6" id="boxConfirmedUnconfirmed">
                 <div class="row">
                   <div class="col-6 col-sm-6 col-md-12 text-center d-flex align-items-center"
@@ -83,7 +117,7 @@
                 </div>
               </div>
             </div>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>
