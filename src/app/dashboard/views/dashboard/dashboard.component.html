@@ -60,7 +60,7 @@
             <div class="row mt-03rem">
               <div class="col-12">
                 <div class="row d-flex justify-content-center align-items-center">
-                  <div class="col-6 col-md-7 col-xl-8 f-s-dashboard-transactions">
+                  <div class="col-6 col-md-7 col-xl-8 f-s-dashboard-transactions" (click)="selectTransactions(1)">
                     <div class="btnConfirmedUnconfirmed">CONFIRMED</div>
                   </div>
                   <div class="col-6 col-md-5 col-xl-4 f-s-dashboard-transactions">
@@ -68,7 +68,7 @@
                   </div>
                 </div>
                 <div class="row d-flex justify-content-center align-items-center">
-                  <div class="col-6 col-md-7 col-xl-8 f-s-dashboard-transactions">
+                  <div class="col-6 col-md-7 col-xl-8 f-s-dashboard-transactions" (click)="selectTransactions(0)">
                     <div class="btnConfirmedUnconfirmed">UNCONFIRMED</div>
                   </div>
                   <div class="col-6 col-md-5 col-xl-4 f-s-dashboard-transactions">

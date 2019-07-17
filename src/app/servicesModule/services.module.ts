@@ -15,7 +15,7 @@ import { LinkingNamespaceToMosaicComponent } from './views/namespace/linking-nam
 import { RenovateNamespaceComponent } from './views/namespace/renovate-namespace/renovate-namespace.component';
 import { LinkTheNamespaceToAndAddressComponent } from './views/namespace/link-the-namespace-to-and-address/link-the-namespace-to-and-address.component';
 import { ApostilleCreateComponent } from './views/apostille/apostille-create/apostille-create.component';
-
+import { StorageComponent } from './views/storage/storage.component';
 
 
 @NgModule({
@@ -42,8 +42,9 @@ import { ApostilleCreateComponent } from './views/apostille/apostille-create/apo
     CreateNamespaceComponent,
     RenovateNamespaceComponent,
     LinkTheNamespaceToAndAddressComponent,
-    ApostilleCreateComponent
-    /* StorageComponent,
+    ApostilleCreateComponent,
+    StorageComponent
+    /* ,
      EditMosaicComponent,
      EditNamespaceComponent,
      CreateMultisignatureComponent,
