@@ -39,12 +39,12 @@ export class ServicesComponent implements OnInit {
     );
 
     const storage = this.service.structureServices(
-      'img-explorer-file',
+      'icon-storage-dark-green.svg',
       'Storage',
       `Storage`,
       {
         explorerFile: this.structureServiceRoute('Storage', `/${AppConfig.routes.storage}`)
-      }, false
+      }, true
     );
 
     const explorerTransaction = this.service.structureServices(
