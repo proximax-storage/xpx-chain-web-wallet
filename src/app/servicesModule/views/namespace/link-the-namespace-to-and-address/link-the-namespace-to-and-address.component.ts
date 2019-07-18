@@ -22,7 +22,7 @@ export class LinkTheNamespaceToAndAddressComponent implements OnInit {
   namespaceSelect: Array<object> = [
     {
       value: '1',
-      label: 'Select or enter here',
+      label: 'Select or enter namespace',
       selected: true,
       disabled: true
     }
