@@ -19,7 +19,7 @@ export class ServicesComponent implements OnInit {
     const account = this.service.structureServices(
       'icon-account-green.svg',
       'ACCOUNT',
-      `Accounts may configure a set of smart rules to block announcing or receiving transactions given a series of restrictions.                                also can link a registered name (namespace or subnamespace).`,
+      `View account details, link address to namespace, create smart rules restrictions`,
       {
         linkTheNamespaceToAnAddress: this.structureServiceRoute('Alias to Namespace', `/${AppConfig.routes.linkTheNamespaceToAnAddress}`),
         myAccount: this.structureServiceRoute('Details', `/${AppConfig.routes.account}`),
@@ -44,7 +44,7 @@ export class ServicesComponent implements OnInit {
       `Storage`,
       {
         explorerFile: this.structureServiceRoute('Storage', `/${AppConfig.routes.storage}`)
-      }, true
+      }, false
     );
 
     const explorerTransaction = this.service.structureServices(
