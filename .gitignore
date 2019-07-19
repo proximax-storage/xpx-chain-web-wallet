@@ -4,6 +4,7 @@
 /dist
 /tmp
 /out-tsc
+/release-buildsv1
 /angular-electron-linux-x64
 /angular-electron-win32-x64
 

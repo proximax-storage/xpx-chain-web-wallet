@@ -8,68 +8,7 @@ import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 
 @Component({
   selector: 'app-mosaics-info',
-  template: `
-                <!-- MOSAIC XPX -->
-                <ng-container *ngIf="viewMosaicXpx">
-                  <div class="row">
-                    <div class="col-3">
-                       <span class="color-dark-green fw-bold fs-1-5rem">Amount: </span>
-                    </div>
-                    <div class="col-9">
-                       <span
-                       [ngClass]="{
-                         'color-blue-light': transferTransaction.isRemitent,
-                         'color-orange': !transferTransaction.isRemitent
-                        }"
-                       class="fw-bold fs-1-5rem" >{{mosaicXpx.amountFormatter}} XPX</span>
-                    </div>
-                  </div>
-                </ng-container>
-
-                <!-- OTHER MOSAICS -->
-                <ng-container *ngIf="viewOtherMosaics">
-                  <div class="row">
-                    <div class="col-12">
-                      <span class="color-dark-green fw-bold fs-1-5rem">Other mosaics: </span>
-                    </div>
-                  </div>
-
-                  <div class="table-responsive table-striped ">
-                    <table mdbTable id="tablePreview" class="table table-hover table-bordered table-striped table-sm z-depth-0">
-                      <thead>
-                        <tr>
-                          <th
-                          *ngFor="let head of headElements"
-                          scope="col"
-                          [ngClass]="{
-                            'color-blue-light': transferTransaction.isRemitent,
-                            'color-orange': !transferTransaction.isRemitent
-                          }"
-                          class="text-align-left fw-500">{{head}}</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr mdbTableCol *ngFor="let element of quantity; let i = index">
-                          <td class="font-size-08rem">
-                            <a class="text-link mouse-pointer">{{element.id}}</a>
-                          </td>
-
-                          <ng-container *ngIf="!element.existMosaic; else viewMosaicInfo">
-                            <td class="font-size-08rem">{{element.amountFormatter}}</td>
-                            <td class="font-size-08rem">Mosaic no longer exists</td>
-                          </ng-container>
-
-                          <ng-template #viewMosaicInfo>
-                             <td class="font-size-08rem">{{element.name}}</td>
-                             <td class="font-size-08rem">{{element.amountFormatter}}</td>
-                          </ng-template>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </ng-container>
-
-              `
+  templateUrl: `./mosaics-info.component.html`
 })
 export class MosaicsInfoComponent implements OnInit {
 

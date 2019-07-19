@@ -45,7 +45,7 @@ export class CreateNamespaceComponent implements OnInit {
   namespace: Array<object> = [
     {
       value: '1',
-      label: '.(New root Namespace)',
+      label: '(New root Namespace)',
       selected: true,
       disabled: false
     }

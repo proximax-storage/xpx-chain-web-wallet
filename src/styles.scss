@@ -22,7 +22,21 @@ html {
 body {
   background: transparent;
 }
-
+body {
+  -ms-overflow-style: scrollbar;
+  -webkit-app-region:drag;
+}
+input[type="submit"],
+input[type="reset"],
+input[type="button"],
+input[type="text"],
+button,
+textarea {
+	-webkit-app-region: no-drag;
+}
+::-webkit-scrollbar {
+  display: none;
+}
 footer {
   display: table-row;
   height: 1px;
@@ -955,7 +969,7 @@ a:hover {
 }
 
 .f-s-title-transactions {
-  font-size: 1.5rem;
+  font-size: 1.2rem;
 }
 
 .header-backg {
@@ -1032,9 +1046,9 @@ a:hover {
     font-size: 1.2rem !important;
   }
 
-  .f-s-dashboard-transactions {
+  /*.f-s-dashboard-transactions {
     font-size: 0.6rem;
-  }
+  }*/
 
   .title-module {
     font-size: 1rem !important;

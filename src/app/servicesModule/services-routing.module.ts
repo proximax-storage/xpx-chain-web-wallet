@@ -15,6 +15,7 @@ import { LinkingNamespaceToMosaicComponent } from './views/namespace/linking-nam
 import { RenovateNamespaceComponent } from './views/namespace/renovate-namespace/renovate-namespace.component';
 import { LinkTheNamespaceToAndAddressComponent } from './views/namespace/link-the-namespace-to-and-address/link-the-namespace-to-and-address.component';
 import { ApostilleCreateComponent } from './views/apostille/apostille-create/apostille-create.component';
+import { StorageComponent } from './views/storage/storage.component';
 
 const routes: Routes = [
   {
@@ -101,14 +102,15 @@ const routes: Routes = [
     component: ApostilleCreateComponent,
     canActivate: [LoggedGuard]
   },
-
-
-  /*
   {
     path: `${AppConfig.routes.storage}`,
     component: StorageComponent,
     canActivate: [LoggedGuard]
-  },
+  }
+
+
+  /*
+
   {
     path: `${AppConfig.routes.createMultisignature}`,
     component: CreateMultisignatureComponent,

@@ -49,13 +49,13 @@
               <div class="container mt-1rem">
                 <div class="row mt-1rem mb-1rem">
                   <div class="col-6 t-a-r">
-                    <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 btn-white-transparent"
+                    <button size="md" mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 btn-white btn btn-rounded"
                       (click)="clearForm()">
                       Clear
                     </button>
                   </div>
                   <div class="col-6">
-                    <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 btn-white">
+                    <button size="md" mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 btn-dark-green-prx btn btn-rounded">
                       SIGN IN
                     </button>
                   </div>
@@ -73,14 +73,14 @@
 
       <div class="row mt-1rem mb-1rem">
         <div class="col-6 t-a-r mt-1rem">
-          <button [routerLink]="['/'+link.createWallet]" mdbBtn type="button" rounded="true" mdbWavesEffect
+          <button size="md" [routerLink]="['/'+link.createWallet]" mdbBtn type="button" rounded="true" mdbWavesEffect
             class="f-w-600 btn-dark-green-prx">
             <img class="mr-1rem h2em" src="assets/images/img/icon-wallet-import-white.svg" alt="">
             <span class="fs-1-2em">CREATE</span>
           </button>
         </div>
         <div class="col-6 mt-1rem">
-          <button [routerLink]="['/'+link.importWallet]" mdbBtn type="button" rounded="true" mdbWavesEffect
+          <button size="md" [routerLink]="['/'+link.importWallet]" mdbBtn type="button" rounded="true" mdbWavesEffect
             class="f-w-600 btn-dark-green-prx">
             <img class="mr-1rem h2em" src="assets/images/img/icon-wallet-import-white.svg" alt="">
             <span class="fs-1-2em">IMPORT</span>

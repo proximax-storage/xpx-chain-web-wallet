@@ -1,0 +1,43 @@
+.mat-tab-group {
+  width: 100%;
+}
+
+.classic-tabs .nav li a {
+  color: rgba(0, 0, 0, 0.7) !important;
+}
+
+.classic-tabs .nav li a.active {
+  color: #3f3f3f;
+  font-weight: 550;
+}
+
+.nav-item ng-star-inserted active {
+  background: #20807330 !important;
+}
+
+.md-form .prefix~mdb-select {
+  margin-left: 3rem;
+  width: 92%;
+  width: -webkit-calc(100% - 2rem);
+  width: calc(100% - 3rem);
+}
+
+.btn-dark-green-sm {
+  padding-left: 2rem !important;
+  padding-top: .5rem !important;
+  padding-bottom: .5rem !important;
+  padding-right: 2rem !important;
+}
+
+
+.btn-create-new {
+  background: #023c42;
+  color: white;
+  border-radius: 1.5em;
+  padding-top: .7em;
+  padding-bottom: .7em;
+  margin-top: .4em;
+  text-align: center;
+  cursor: pointer;
+  width: 100%;
+}
