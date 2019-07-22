@@ -21,8 +21,8 @@ export class ServicesComponent implements OnInit {
       'ACCOUNT',
       `View account details, link address to namespace, create smart rules restrictions`,
       {
-        linkTheNamespaceToAnAddress: this.structureServiceRoute('Link to Namespace', `/${AppConfig.routes.linkTheNamespaceToAnAddress}`),
         myAccount: this.structureServiceRoute('Details', `/${AppConfig.routes.account}`),
+        linkTheNamespaceToAnAddress: this.structureServiceRoute('Link to Namespace', `/${AppConfig.routes.linkTheNamespaceToAnAddress}`),
         filter: this.structureServiceRoute('Filter', ``, true)
       }, true
     );
@@ -90,7 +90,7 @@ export class ServicesComponent implements OnInit {
       {
         createMosaic: this.structureServiceRoute('Create', `/${AppConfig.routes.createMosaic}`),
         editMosaic: this.structureServiceRoute('Change Supply', `/${AppConfig.routes.MosaicSupplyChange}`),
-        linkNamespaceToMosaic: this.structureServiceRoute('ALIAS TO NAMESPACE', `/${AppConfig.routes.LinkingNamespaceMosaic}`)
+        linkNamespaceToMosaic: this.structureServiceRoute('LINK TO NAMESPACE', `/${AppConfig.routes.LinkingNamespaceMosaic}`)
       }, true
     );
 
