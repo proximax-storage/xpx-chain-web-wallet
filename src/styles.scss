@@ -22,7 +22,21 @@ html {
 body {
   background: transparent;
 }
-
+body {
+  -ms-overflow-style: scrollbar;
+  -webkit-app-region:drag;
+}
+input[type="submit"],
+input[type="reset"],
+input[type="button"],
+input[type="text"],
+button,
+textarea {
+	-webkit-app-region: no-drag;
+}
+::-webkit-scrollbar {
+  display: none;
+}
 footer {
   display: table-row;
   height: 1px;

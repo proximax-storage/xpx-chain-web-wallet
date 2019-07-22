@@ -168,13 +168,13 @@ export class HeaderComponent implements OnInit {
             // set background to module login
             this.imageLogin = true;
             document.getElementById('footer-prx').className = 'footer-copyright text-center py-3 background-white';
-            document.getElementById('first').style.backgroundImage = "url('assets/images/background-black-white.jpg')";
+          //  document.getElementById('first').style.backgroundImage = "url('assets/images/background-black-white.jpg')";
           } else {
             if (this.imageLogin) {
               // set background to other module
               this.imageLogin = false;
               document.getElementById('footer-prx').className = 'footer-copyright text-center py-3 background-gray-prx';
-              document.getElementById('first').style.backgroundImage = "url('assets/images/background-color.jpg')";
+             // document.getElementById('first').style.backgroundImage = "url('assets/images/background-color.jpg')";
             }
           }
 

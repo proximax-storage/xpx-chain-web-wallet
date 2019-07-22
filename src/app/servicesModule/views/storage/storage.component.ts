@@ -139,7 +139,7 @@ export class StorageComponent implements OnInit {
       // Initilises upload service
       this.downloadService = new DownloadService(this.transactionService,this.dataService);
 
-      this.loadTransactions();
+      // this.loadTransactions();
       
 
 
@@ -172,36 +172,36 @@ export class StorageComponent implements OnInit {
   //   this.cdRef.detectChanges();
   // }
 
-  async loadTransactions() {
+  // async loadTransactions() {
 
-    // the transaction hash
-    const transactionHash = '';
+  //   // the transaction hash
+  //   const transactionHash = '';
 
-    // sender and recipient account infos
-    const privateKey = '';
+  //   // sender and recipient account infos
+  //   const privateKey = '';
 
-    // privacy type
-    const privacyType = PrivacyType.PLAIN;
+  //   // privacy type
+  //   const privacyType = PrivacyType.PLAIN;
 
-    // creates upload parameter
-    const downloadParam = new DownloadParameter(
-        transactionHash,  
-        privateKey,
-        privacyType
-    );
+  //   // creates upload parameter
+  //   const downloadParam = new DownloadParameter(
+  //       transactionHash,  
+  //       privateKey,
+  //       privacyType
+  //   );
 
-    // validates download parameter
-    downloadParam.validate();
+  //   // validates download parameter
+  //   downloadParam.validate();
 
-    // call download services
-    this.downloadService.download(downloadParam).subscribe(
-      result => {
-        console.log(result);
+  //   // call download services
+  //   this.downloadService.download(downloadParam).subscribe(
+  //     result => {
+  //       console.log(result);
         
-          // const blob = new Blob([result.data.bytes], { type: result.data.contentType });
-          // this.fileUrl = window.URL.createObjectURL(blob);
-      }
-    );
+  //         // const blob = new Blob([result.data.bytes], { type: result.data.contentType });
+  //         // this.fileUrl = window.URL.createObjectURL(blob);
+  //     }
+  //   );
 
     // if (this.searcher) {
     //   //this.transactionResults = [];
@@ -230,7 +230,7 @@ export class StorageComponent implements OnInit {
 
     // }
 
-  }
+  // }
 
   // async searchRecord() {
 

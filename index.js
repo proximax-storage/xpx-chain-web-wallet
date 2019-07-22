@@ -1,16 +1,16 @@
-import { app, BrowserWindow } from 'electron';
-import * as path from 'path'
-import * as url from 'url'
 
+const electron = require('electron')
+const {app, BrowserWindow} = electron
 let win;
 function createWindow() {
   // Create the browser window.
   //example https://angularfirebase.com/lessons/desktop-apps-with-electron-and-angular/
   win = new BrowserWindow({
     width: 1024,
-    height: 600,
+   //  height: 600,
     backgroundColor: '#ffffff',
-    icon: `file://${__dirname}/dist/xpx-catapult-web-wallet/assets/favicon.ico`
+    frame: false,
+     icon: `file://${__dirname}/dist/xpx-catapult-web-wallet/assets/favicon.ico`
   })
 
   win.loadFile(`dist/xpx-catapult-web-wallet/index.html`);

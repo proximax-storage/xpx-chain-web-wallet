@@ -9,9 +9,9 @@ export const environment = {
   nameKeyNodeStorage: `xpx-catapult-web-wallet-nodes`,
   protocol: `http`,
   protocolWs: `ws`,
-  nodeDefault: 'bcstage1.xpxsirius.io:3000',
+  nodeDefault: 'bctestnet1.xpxsirius.io:3000',
   blockchainConnection: {
-    host: 'bcstage1.xpxsirius.io',
+    host: 'bctestnet1.xpxsirius.io',
     port: 3000,
     protocol: 'http',
     useSecureMessage: false
