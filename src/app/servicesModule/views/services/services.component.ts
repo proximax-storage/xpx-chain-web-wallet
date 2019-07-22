@@ -52,7 +52,7 @@ export class ServicesComponent implements OnInit {
       'Transactions explorer',
       `Get detailed information about any transaction, address and block`,
       {
-        createPoll: this.structureServiceRoute('Explorer all transactions', `/${AppConfig.routes.explorer}`)
+        createPoll: this.structureServiceRoute('Explore', `/${AppConfig.routes.explorer}`)
       }, true
     );
 
