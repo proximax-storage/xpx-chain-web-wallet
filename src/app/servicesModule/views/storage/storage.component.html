@@ -24,9 +24,9 @@
   <div class="row">
     <div class="col-11 mx-auto">
       <div class="row">
-        <div class="col-3 col-md-3 d-flex justify-content-center align-items-center">
+        <div class="col-md-4 col-sm-12 mb-2 d-flex justify-content-center align-items-center">
           <div class="btn-create-new" (click)="openRecordDialog()">
-            <img class="mr-05rem " src="assets/images/img/icon-docs-file-white.svg" alt=""> NEW
+            <img class="img-new" src="assets/images/img/icon-docs-file-white.svg" alt=""> NEW
           </div>
 
           <!-- <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 btn-dark-green-prx"
@@ -35,16 +35,16 @@
           </button> -->
         </div>
 
-        <div class="col-9 col-md-8 ">
+        <div class="col-md-8 col-sm-12 mb-2 space-search">
           <div class="row">
-            <div class="col-8 background-dark-green-plus b-l-0-6rem">
+            <div class="col-md-8 col-sm-12 background-dark-green-plus border-firts">
               <div class="md-form" id="container-transaction-search">
                 <input [(ngModel)]="searchName" type="text" autocomplete="off" id="transactionHash" class="form-control"
                   mdbInputDirective [validateSuccess]="false" [validateError]="false">
                 <label for="walletname">Search by title</label>
               </div>
             </div>
-            <div class="col-4 d-flex justify-content-center align-items-center background-dark-green b-r-0-6rem">
+            <div class="col-md-4 col-sm-12 d-flex justify-content-center align-items-center background-dark-green border-last">
               <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 btn-white-transparent" size="sm"
                 (click)="searchRecord()">
                 <span>SEARCH</span>
@@ -57,6 +57,196 @@
     </div>
   </div>
 </div>
+
+<div mdbModal #frame="mdbModal" class="modal fade" tabindex="-1" id="FrameModal" role="dialog" aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header background-gold" style="color: white;">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="frame.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel">Modal title</h4>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="addRecordForm" (ngSubmit)="addRecord()" style="color: #757575;" action="#">
+          <div>
+            <div class="row">
+              <div class="col-8">
+                <div class="md-form " id="container-password-key">
+                  <input type="password" [validateSuccess]="false" autocomplete="off" placeholder="Enter your password" formControlName="password"
+                    id="password" class="form-control" mdbInputDirective required
+                    [errorMessage]="getError('password')">
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="md-form">
+                  <button mdbBtn type="button" size="sm" color="default" rounded="true" class="waves-light"
+                    mdbWavesEffect (click)="showRecordEntryPassword()">OK</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div >
+            <div class="md-form mt-4" id="container-title">
+              <input type="text" autocomplete="off" formControlName="title" placeholder="Enter title" id="title" class="form-control"
+                mdbInputDirective [validateSuccess]="false">
+            </div>
+            <div class="file-field md-form mt-4" id="container-file-input">
+              <div mdbBtn color="default" rounded="true" size="sm" class="waves-light" mdbWavesEffect>
+                <span>Choose file</span>
+                <input type="file" mdbFileSelect (uploadOutput)="onUploadOutput($event)" [uploadInput]="uploadInput">
+              </div>
+              <div class="file-path-wrapper">
+                <input class="file-path" type="text" placeholder="Upload your file" [value]="showFiles()">
+              </div>
+            </div>
+
+            <div class="md-form  mt-4" id="container-encryption">
+              <mdb-select [options]="optionsEncryptionMethods" placeholder="Select encryption method"
+                class="colorful-select dropdown-default" required formControlName="encryptionMethod"
+                [errorMessage]="getError('encryptionMethod')" (selected)="onEncryptionMethodSelected($event)">
+              </mdb-select>
+            </div>
+
+            <div class="md-form mt-4" id="container-encryption-password" *ngIf="showEncryptionPassword">
+              <input type="password" [validateSuccess]="false" autocomplete="off" placeholder="Enter the encryption password" formControlName="encryptionPasword"
+                id="encryptionPasword" class="form-control" mdbInputDirective>
+            </div>
+            <div *ngIf="showEncryptionKeyPair">
+              <div class="md-form mt-4" id="container-encryption-private-key">
+                <input type="password" [validateSuccess]="false" autocomplete="off"
+                  formControlName="recipientPrivateKey" id="recipientPrivateKey" placeholder="Current encryption private key" class="form-control" disabled
+                  mdbInputDirective>
+                <label for="recipientPrivateKey">Current encryption private key </label>
+              </div>
+              <div class="md-form mt-4" id="container-encryption-public-key">
+                <input type="text" [validateSuccess]="false" autocomplete="off" placeholder="Current encryption public key" formControlName="recipientPublicKey"
+                  id="recipientPublicKey" class="form-control" disabled mdbInputDirective>
+                <label for="recipientPublicKey">Current encryption public key </label>
+              </div>
+            </div>
+
+            <div class="mt-3">
+              <div class="row ">
+                <div class="mx-auto">
+                  <div class="row">
+                    <div class="col-xs-6">
+                      <button mdbBtn type="button" rounded="true" class="waves-light btn-reverse" mdbWavesEffect
+                        type="submit" (click)="cleanForm()">Reset</button>
+                    </div>
+                    <div class="col-xs-6">
+                      <button mdbBtn type="button" color="default" rounded="true" class="waves-light" mdbWavesEffect
+                        type="submit">Upload</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <!-- <div mdbModal #frame="mdbModal" class="modal fade left" id="FrameModal" tabindex="-1" role="dialog"
+    aria-labelledby="myDlModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-header background-gold">
+        <p class="heading lead" style="font-weight: 500; color: #fff">Add a new file</p>
+        <button type="button" class="close" data-dismiss="modal" (click)="frame.hide()">
+          <span aria-hidden="true" class="white-text">&times;</span>
+        </button>
+      </div>
+
+
+
+      <div class="modal-body">
+        <form [formGroup]="addRecordForm" style="color: #757575;" action="#">
+          <div>
+            <div class="row">
+              <div class="col-8">
+                <div class="md-form " id="container-password-key">
+                  <input type="password" [validateSuccess]="false" autocomplete="off" formControlName="password"
+                    id="password" class="form-control" mdbInputDirective required
+                    [errorMessage]="getError('password')">
+                  <label for="password">Enter your password</label>
+
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="md-form">
+                  <button mdbBtn type="button" size="sm" color="default" rounded="true" class="waves-light"
+                    mdbWavesEffect (click)="showRecordEntryPassword()">OK</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div >
+            <div class="md-form mt-4" id="container-title">
+              <input type="text" autocomplete="off" formControlName="title" id="title" class="form-control"
+                mdbInputDirective [validateSuccess]="false">
+              <label for="title">Enter title</label>
+            </div>
+            <div class="file-field md-form mt-4" id="container-file-input">
+              <div mdbBtn color="default" rounded="true" size="sm" class="waves-light" mdbWavesEffect>
+                <span>Choose file</span>
+                <input type="file" mdbFileSelect (uploadOutput)="onUploadOutput($event)" [uploadInput]="uploadInput">
+              </div>
+              <div class="file-path-wrapper">
+                <input class="file-path" type="text" placeholder="Upload your file" [value]="showFiles()">
+              </div>
+            </div>
+
+            <div class="md-form  mt-4" id="container-encryption">
+              <mdb-select [options]="optionsEncryptionMethods" placeholder="Select encryption method"
+                class="colorful-select dropdown-default" required formControlName="encryptionMethod"
+                [errorMessage]="getError('encryptionMethod')" (selected)="onEncryptionMethodSelected($event)">
+              </mdb-select>
+            </div>
+
+            <div class="md-form mt-4" id="container-encryption-password" *ngIf="showEncryptionPassword">
+              <input type="password" [validateSuccess]="false" autocomplete="off" formControlName="encryptionPasword"
+                id="encryptionPasword" class="form-control" mdbInputDirective>
+              <label for="encryptionPasword">Enter the encryption password</label>
+            </div>
+            <div *ngIf="showEncryptionKeyPair">
+              <div class="md-form mt-4" id="container-encryption-private-key">
+                <input type="password" [validateSuccess]="false" autocomplete="off"
+                  formControlName="recipientPrivateKey" id="recipientPrivateKey" class="form-control" disabled
+                  mdbInputDirective>
+                <label for="recipientPrivateKey">Current encryption private key </label>
+              </div>
+              <div class="md-form mt-4" id="container-encryption-public-key">
+                <input type="text" [validateSuccess]="false" autocomplete="off" formControlName="recipientPublicKey"
+                  id="recipientPublicKey" class="form-control" disabled mdbInputDirective>
+                <label for="recipientPublicKey">Current encryption public key </label>
+              </div>
+            </div>
+
+            <div class="mt-3">
+              <div class="row ">
+                <div class="mx-auto">
+                  <div class="row">
+                    <div class="col-xs-6">
+                      <button mdbBtn type="button" rounded="true" class="waves-light btn-reverse" mdbWavesEffect
+                        type="submit" (click)="cleanForm()">Reset</button>
+                    </div>
+                    <div class="col-xs-6">
+                      <button mdbBtn type="button" color="default" rounded="true" class="waves-light" mdbWavesEffect
+                        type="submit">Upload</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div> -->
 
 <!--
 <div class="container mt-11rem mb-3rem animated fadeIn">

@@ -13,13 +13,15 @@ export const environment = {
   blockchainConnection: {
     host: 'bcstage1.xpxsirius.io',
     port: 3000,
-    protocol: '',
+    protocol: 'http',
     useSecureMessage: false
   },
   storageConnection: {
-    host: 'ipfs1-dev.xpxsirius.io',
+    host: 'ipfs2-dev.xpxsirius.io',
     port: 5001,
-    options: {}
+    options: {
+      protocol: 'http'
+    }
   },
   namespaceRentalFeeSink: {
     public_key: 'F3B8194C36CC55500DCB8CD3734DFA07FE8B649219BE315C8DFAE1DAC59F3595',

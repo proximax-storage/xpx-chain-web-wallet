@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import { crypto } from 'js-xpx-chain-library';
 import {
+  BlockchainNetworkType
+} from 'xpx2-ts-js-sdk';
+import {
   Password,
   SimpleWallet,
   MosaicInfo,
@@ -68,6 +71,25 @@ export class ProximaxProvider {
   };
 
   constructor() {
+  }
+
+  /**
+   * Method to return blockchain network type
+   * 
+   * @param {NetworkType} network network type
+   * @returns {BlockchainNetworkType} BlockchainNetworkType
+   */
+  getBlockchainNetworkType(network: NetworkType): BlockchainNetworkType {
+    switch (network) {
+      case NetworkType.MAIN_NET:
+        return BlockchainNetworkType.MAIN_NET
+      case NetworkType.MIJIN:
+        return BlockchainNetworkType.MIJIN
+      case NetworkType.MIJIN_TEST:
+        return BlockchainNetworkType.MIJIN_TEST
+      case NetworkType.TEST_NET:
+        return BlockchainNetworkType.TEST_NET
+    }
   }
 
 

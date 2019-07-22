@@ -1,5 +1,4 @@
 import { Component, OnInit, EventEmitter, ViewChild, ChangeDetectorRef } from '@angular/core';
-/*
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UploadFile, UploadInput, UploadOutput, humanizeBytes, ModalDirective } from 'ng-uikit-pro-standard';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
@@ -7,25 +6,33 @@ import { SharedService } from '../../../shared/services/shared.service';
 import { WalletService } from '../../../shared/services/wallet.service';
 import { environment } from '../../../../environments/environment';
 import {
-  Uploader,
-  ConnectionConfig,
   BlockchainNetworkConnection,
+  UploadService,
+  TransactionClient,
+  BlockchainTransactionService,
+  ProximaxDataService,
+  IpfsClient,
   IpfsConnection,
+  UploadParameterData,
   UploadParameter,
-  ReadableStreamParameterData,
-  StreamHelper,
   PrivacyType,
-  SearchParameter,
-  Searcher,
-  Downloader,
-  DirectDownloadParameter
+  DownloadService,
+  DownloadParameter
+  // Uploader,
+  // ConnectionConfig,
+  // ReadableStreamParameterData,
+  // StreamHelper,
+  // SearchParameter,
+  // Searcher,
+  // Downloader,
+  // DirectDownloadParameter
 } from 'xpx2-ts-js-sdk';
 import { saveAs } from 'file-saver';
-import { crypto } from "js-xpx-catapult-library";
-import { Address, UInt64, Mosaic, MosaicId } from 'tsjs-xpx-catapult-sdk';
+import { crypto } from "js-xpx-chain-library";
+// import { Address, UInt64, Mosaic, MosaicId } from 'tsjs-xpx-catapult-sdk';
 import { FileInterface } from 'src/app/shared';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
-import { MdbTablePaginationComponent, MdbTableDirective } from 'ng-uikit-pro-standard';*/
+import { MdbTablePaginationComponent, MdbTableDirective } from 'ng-uikit-pro-standard';
 
 @Component({
   selector: 'app-storage',
@@ -33,11 +40,7 @@ import { MdbTablePaginationComponent, MdbTableDirective } from 'ng-uikit-pro-sta
   styleUrls: ['./storage.component.scss']
 })
 export class StorageComponent implements OnInit {
-
-  ngOnInit() {
-
-  }
-  /*@BlockUI() blockUI: NgBlockUI;
+  @BlockUI() blockUI: NgBlockUI;
   @ViewChild('frame') frame: ModalDirective;
   @ViewChild('dlframe') dlframe: ModalDirective;
   @ViewChild(MdbTablePaginationComponent) mdbTablePagination: MdbTablePaginationComponent;
@@ -53,10 +56,20 @@ export class StorageComponent implements OnInit {
   humanizeBytes: Function;
   dragOver: boolean;
 
-  connectionConfig: ConnectionConfig;
-  uploader: Uploader;
-  downloader: Downloader;
-  searcher: Searcher;
+  ipfsConnection: IpfsConnection;
+  blockchainConnection: BlockchainNetworkConnection;
+  ipfsClient: IpfsClient;
+  transactionClient: TransactionClient;
+  dataService: ProximaxDataService;
+  transactionService: BlockchainTransactionService;
+  uploadService: UploadService;
+  downloadService: DownloadService;
+
+  // connectionConfig: ConnectionConfig;
+  // uploader: Uploader;
+  // downloader: Downloader;
+  // searcher: Searcher;
+  privacyType = PrivacyType.PLAIN;
 
   headElements = ['Title', 'Transaction', 'Type'];
   transactionResults = [];
@@ -70,7 +83,6 @@ export class StorageComponent implements OnInit {
   showDecryptionKeyPair = false;
   signerPrivateKey = '';
   optionsEncryptionMethods: Array<any>;
-  privacyType = PrivacyType.PLAIN;
 
   downloadFile: FileInterface;
 
@@ -91,112 +103,179 @@ export class StorageComponent implements OnInit {
       { value: PrivacyType.NEM_KEYS, label: 'KEY PAIR' }
     ];
 
+    const blockChainNetworkType = this.proximaxProvider.getBlockchainNetworkType(this.walletService.network);
 
-    if (this.walletService.network) {
-      const blockChainNetworkType = this.proximaxProvider.getBlockchainNetworkType(this.walletService.network);
-      this.connectionConfig = ConnectionConfig.createWithLocalIpfsConnection(
-        new BlockchainNetworkConnection(
-          blockChainNetworkType,
-          environment.blockchainConnection.host,
-          environment.blockchainConnection.port,
-          environment.blockchainConnection.protocol
-        ),
-        new IpfsConnection(environment.storageConnection.host, environment.storageConnection.port, environment.storageConnection.options)
+    // Creates ipfs connection
+      this.ipfsConnection = new IpfsConnection(
+        environment.storageConnection.host, // the host or multi address
+        environment.storageConnection.port.toString(), // the port number
+        environment.storageConnection.options // the optional protocol
       );
 
-      this.uploader = new Uploader(this.connectionConfig);
-      this.searcher = new Searcher(this.connectionConfig);
-      this.downloader = new Downloader(this.connectionConfig);
-    }
+      const blockchaintPath = `${environment.blockchainConnection.protocol}://${environment.blockchainConnection.host}:${environment.blockchainConnection.port}`
+
+      // Creates Proximax blockchain network connection
+      this.blockchainConnection = new BlockchainNetworkConnection(
+        blockChainNetworkType, // the network type
+        blockchaintPath // the rest api base endpoint,
+      ); 
+
+      // Creates the ipfs client
+      this.ipfsClient = new IpfsClient(this.ipfsConnection);
+
+      // Creates the blockchain transaction client
+      this.transactionClient = new TransactionClient(this.blockchainConnection);
+
+      // Initilises Proximax data service
+      this.dataService = new ProximaxDataService(this.ipfsClient);
+
+      // Initilises blockchain transaction service
+      this.transactionService = new BlockchainTransactionService(this.blockchainConnection, this.transactionClient);
+
+      // Initilises upload service
+      this.uploadService = new UploadService(this.transactionService,this.dataService);
+      console.log('This is the conection test', this.uploadService);
+
+      // Initilises upload service
+      this.downloadService = new DownloadService(this.transactionService,this.dataService);
+
+      this.loadTransactions();
+      
+
+
+    // if (this.walletService.network) {
+    //   const blockChainNetworkType = this.proximaxProvider.getBlockchainNetworkType(this.walletService.network);
+    //   this.connectionConfig = ConnectionConfig.createWithLocalIpfsConnection(
+    //     new BlockchainNetworkConnection(
+    //       blockChainNetworkType,
+    //       environment.blockchainConnection.host,
+    //       environment.blockchainConnection.port,
+    //       environment.blockchainConnection.protocol
+    //     ),
+    //     new IpfsConnection(environment.storageConnection.host, environment.storageConnection.port, environment.storageConnection.options)
+    //   );
+
+    //   this.uploader = new Uploader(this.connectionConfig);
+    //   this.searcher = new Searcher(this.connectionConfig);
+    //   this.downloader = new Downloader(this.connectionConfig);
   }
 
   ngOnInit() {
     this.createForm();
-    this.loadTransactions();
+    // this.loadTransactions();
   }
 
-  ngAfterViewInit() {
-    this.mdbTablePagination.setMaxVisibleItemsNumberTo(5);
-    this.mdbTablePagination.calculateFirstItemIndex();
-    this.mdbTablePagination.calculateLastItemIndex();
-    this.cdRef.detectChanges();
-  }
+  // ngAfterViewInit() {
+  //   this.mdbTablePagination.setMaxVisibleItemsNumberTo(5);
+  //   this.mdbTablePagination.calculateFirstItemIndex();
+  //   this.mdbTablePagination.calculateLastItemIndex();
+  //   this.cdRef.detectChanges();
+  // }
 
   async loadTransactions() {
 
-    if (this.searcher) {
-      //this.transactionResults = [];
-      //const searchParam = SearchParameter.createForAddress(environment.senderAccount.address);
-      // console.log(this.walletService.publicAccount);
-      const searchParam = SearchParameter.createForPublicKey(this.walletService.publicAccount.publicKey);
-      //const searchParam = SearchParameter.createForAddress(this.walletService.publicAccount.address.plain());
-      searchParam.withResultSize(10);
-      // console.log('Loading transactions ...');
-      const searchResult = await this.searcher.search(searchParam.build());
-      // console.log(searchResult);
-      for (let resultItem of searchResult.results.reverse()) {
-        const isEncrypted = resultItem.messagePayload.privacyType !== PrivacyType.PLAIN;
-        this.transactionResults.push({
-          title: resultItem.messagePayload.data.name, type: resultItem.messagePayload.data.contentType,
-          privacy: resultItem.messagePayload.privacyType,
-          dataHash: resultItem.messagePayload.data.dataHash,
-          transactionHash: resultItem.transactionHash, isEncrypted: isEncrypted
-        });
+    // the transaction hash
+    const transactionHash = '';
+
+    // sender and recipient account infos
+    const privateKey = '';
+
+    // privacy type
+    const privacyType = PrivacyType.PLAIN;
+
+    // creates upload parameter
+    const downloadParam = new DownloadParameter(
+        transactionHash,  
+        privateKey,
+        privacyType
+    );
+
+    // validates download parameter
+    downloadParam.validate();
+
+    // call download services
+    this.downloadService.download(downloadParam).subscribe(
+      result => {
+        console.log(result);
+        
+          // const blob = new Blob([result.data.bytes], { type: result.data.contentType });
+          // this.fileUrl = window.URL.createObjectURL(blob);
       }
+    );
 
-      // Datatable
-      this.mdbTable.setDataSource(this.transactionResults);
-      this.transactionResults = this.mdbTable.getDataSource();
-      this.previous = this.mdbTable.getDataSource();
+    // if (this.searcher) {
+    //   //this.transactionResults = [];
+    //   //const searchParam = SearchParameter.createForAddress(environment.senderAccount.address);
+    //   // console.log(this.walletService.publicAccount);
+    //   const searchParam = SearchParameter.createForPublicKey(this.walletService.publicAccount.publicKey);
+    //   //const searchParam = SearchParameter.createForAddress(this.walletService.publicAccount.address.plain());
+    //   searchParam.withResultSize(10);
+    //   // console.log('Loading transactions ...');
+    //   const searchResult = await this.searcher.search(searchParam.build());
+    //   // console.log(searchResult);
+    //   for (let resultItem of searchResult.results.reverse()) {
+    //     const isEncrypted = resultItem.messagePayload.privacyType !== PrivacyType.PLAIN;
+    //     this.transactionResults.push({
+    //       title: resultItem.messagePayload.data.name, type: resultItem.messagePayload.data.contentType,
+    //       privacy: resultItem.messagePayload.privacyType,
+    //       dataHash: resultItem.messagePayload.data.dataHash,
+    //       transactionHash: resultItem.transactionHash, isEncrypted: isEncrypted
+    //     });
+    //   }
 
-    }
+    //   // Datatable
+    //   this.mdbTable.setDataSource(this.transactionResults);
+    //   this.transactionResults = this.mdbTable.getDataSource();
+    //   this.previous = this.mdbTable.getDataSource();
+
+    // }
 
   }
 
-  async searchRecord() {
+  // async searchRecord() {
 
-    if (this.searchName != null) {
-      try {
-        this.transactionResults = [];
-        this.searching = true;
+  //   if (this.searchName != null) {
+  //     try {
+  //       this.transactionResults = [];
+  //       this.searching = true;
 
-        //const searchParam = SearchParameter.createForAddress(environment.senderAccount.address);
-        const searchParam = SearchParameter.createForAddress(this.walletService.publicAccount.address.plain());
-        searchParam.withNameFilter(this.searchName);
-        // searchParam.withFromTransactionId(this.transactionHash);
+  //       //const searchParam = SearchParameter.createForAddress(environment.senderAccount.address);
+  //       const searchParam = SearchParameter.createForAddress(this.walletService.publicAccount.address.plain());
+  //       searchParam.withNameFilter(this.searchName);
+  //       // searchParam.withFromTransactionId(this.transactionHash);
 
-        const searchResult = await this.searcher.search(searchParam.build());
+  //       const searchResult = await this.searcher.search(searchParam.build());
 
-        for (let resultItem of searchResult.results) {
-          const isEncrypted = resultItem.messagePayload.privacyType !== PrivacyType.PLAIN;
-          this.transactionResults.push({
-            title: resultItem.messagePayload.data.name, type: resultItem.messagePayload.data.contentType,
-            privacy: resultItem.messagePayload.privacyType,
-            dataHash: resultItem.messagePayload.data.dataHash,
-            transactionHash: resultItem.transactionHash, isEncrypted: isEncrypted
-          });
-        }
+  //       for (let resultItem of searchResult.results) {
+  //         const isEncrypted = resultItem.messagePayload.privacyType !== PrivacyType.PLAIN;
+  //         this.transactionResults.push({
+  //           title: resultItem.messagePayload.data.name, type: resultItem.messagePayload.data.contentType,
+  //           privacy: resultItem.messagePayload.privacyType,
+  //           dataHash: resultItem.messagePayload.data.dataHash,
+  //           transactionHash: resultItem.transactionHash, isEncrypted: isEncrypted
+  //         });
+  //       }
 
-        this.searching = false;
+  //       this.searching = false;
 
-        // Datatable
-        this.mdbTable.setDataSource(this.transactionResults);
-        this.transactionResults = this.mdbTable.getDataSource();
-        this.previous = this.mdbTable.getDataSource();
-      }
-      catch (error) {
-        this.searching = false;
-        this.sharedService.showError("Attention!", error);
-      }
+  //       // Datatable
+  //       this.mdbTable.setDataSource(this.transactionResults);
+  //       this.transactionResults = this.mdbTable.getDataSource();
+  //       this.previous = this.mdbTable.getDataSource();
+  //     }
+  //     catch (error) {
+  //       this.searching = false;
+  //       this.sharedService.showError("Attention!", error);
+  //     }
 
-    }
+  //   }
 
-  }
+  // }
 
 
   /**
    * create add record form
-   *
+   */
   createForm() {
     this.addRecordForm = this.fb.group({
       title: [''],
@@ -298,7 +377,7 @@ export class StorageComponent implements OnInit {
     if (this.addRecordForm.valid) {
       if (this.files.length <= 0) {
         this.sharedService.showError('Attention', 'Please choose file to upload');
-      } else if (this.connectionConfig === null) {
+      } else if (this.blockchainConnection === null) {
         this.sharedService.showError('Attention', 'Your network configuration is invalid');
       } else {
         try {
@@ -314,106 +393,165 @@ export class StorageComponent implements OnInit {
             const fileContents = await this.readFileToBuffer(selectedFile);
             const name = title ? title : selectedFile.name;
 
-            const paramData = ReadableStreamParameterData.create(
-              async () => StreamHelper.buffer2Stream(fileContents),
-              name,
-              null,
-              fileType,
-              null
+            // const paramData = ReadableStreamParameterData.create(
+            //   async () => StreamHelper.buffer2Stream(fileContents),
+            //   name,
+            //   null,
+            //   fileType,
+            //   null
+            // );
+
+            const paramData = new UploadParameterData(
+              fileContents, // the content to be upload
+              undefined, // the file path , null for text content
+              undefined, // the callback options e.g for progress handler
+              undefined, // the content description
+              fileType, // the content type
+              undefined,  // the optional metadata
+              name
             );
 
-            const param = UploadParameter.createForReadableStreamUpload(
-              paramData,
-              this.signerPrivateKey
+            paramData.validate();
+
+
+
+            // sender and recipient account infos
+            const recipientPublicKey = this.walletService.publicAccount.publicKey;
+
+            const recipientAddress = this.walletService.address.plain();
+
+            // transaction deadline
+            // const deadline = 1; // 1 hour
+
+            // use blockchain secure message for transaction
+            const useBlockchainSecureMessage = environment.blockchainConnection.useSecureMessage;
+
+            // auto detect content type
+            const autoDetectContentType = true;
+
+            // creates upload parameter
+            const uploadParam = new UploadParameter(
+                paramData,  // the data parameter
+                this.signerPrivateKey,
+                this.privacyType,
+                undefined,
+                recipientPublicKey,
+                recipientAddress,
+                undefined,
+                useBlockchainSecureMessage,
+                autoDetectContentType
             );
 
-            let recipientPublicKey = this.walletService.publicAccount.publicKey;
-            // console.log('Default Public Key' + recipientPublicKey);
-            const recipientPublicKeyInput = this.addRecordForm.get('recipientPublicKey').value;
-
-            if (this.showEncryptionKeyPair && recipientPublicKeyInput.length > 0) {
-              recipientPublicKey = recipientPublicKeyInput;
-            }
-
-            // console.log('Current Public Key' + recipientPublicKey);
-
-            if (recipientPublicKey.length > 0) {
-              param.withRecipientPublicKey(recipientPublicKey);
-            }
-
-            const mosaicId = new MosaicId('prx:xpx');
-            const mosaic = new Mosaic(mosaicId, UInt64.fromUint(0));
-            //param.withTransactionMosaics([mosaic]);
-
-            let recipientAddress = this.walletService.address.plain();
-            // console.log('default recipientAddress' + recipientAddress);
-            if (recipientPublicKey.length > 0) {
-              recipientAddress = Address.createFromPublicKey(recipientPublicKey, this.walletService.network).plain();
-            }
-            // console.log('current recipientAddress' + recipientAddress);
-            if (recipientAddress) {
-              param.withRecipientAddress(recipientAddress);
-            }
-
-            let useSecureMessage = environment.blockchainConnection.useSecureMessage;
-
-            if (useSecureMessage) {
-              param.withUseBlockchainSecureMessage(useSecureMessage);
-            }
-            // console.log('useSecureMessage ' + useSecureMessage);
+            // validates upload parameter
+            uploadParam.validate();
+            console.log('Thissss hereeeeeeee');
+            
+            // call upload services
+           this.uploadService.upload(uploadParam).subscribe(
+              transactionHash => {
+                  console.log(transactionHash);
+              }
+            )
 
 
-            switch (this.privacyType) {
-              case PrivacyType.PASSWORD:
-                const encryptionPassword = this.addRecordForm.get('encryptionPasword').value;
-                if (this.showEncryptionPassword && encryptionPassword.length > 0) {
-                  // console.log('---------- PASSWORD PRIVACY ---------  ');
-                  param.withPasswordPrivacy(encryptionPassword);
-                  // console.log('---------- PASSW22222222ORD PRIVACY ---------  ');
-                } else {
-                  this.sharedService.showWarning("Warning", "Please enter your encryption password");
-                }
-                // console.log('encryptionPassword' + encryptionPassword);
 
-                break;
-              case PrivacyType.NEM_KEYS:
-                if (this.showEncryptionKeyPair) {
-                  const privateKey = this.addRecordForm.get('recipientPrivateKey').value;
-                  const publicKey = this.addRecordForm.get('recipientPublicKey').value;
-                  param.withNemKeysPrivacy(privateKey, publicKey);
-                }
-                break;
-              default:
-                param.withPlainPrivacy();
-            }
 
-            //default deadline
-            param.withTransactionDeadline(12);
 
-            this.blockUI.start('uploading record ...');
-            const result = await this.uploader.upload(param.build());
 
-            const gridTitle = result.data.name ? result.data.name : selectedFile.name;
-            const isEncrypted = result.privacyType !== PrivacyType.PLAIN;
-            // console.log(result);
-            this.transactionResults.push({
-              title: gridTitle,
-              type: result.data.contentType,
-              privacy: result.privacyType,
-              dataHash: result.data.dataHash,
-              transactionHash: result.transactionHash,
-              isEncrypted: isEncrypted
-            });
 
-            // Datatable
-            this.mdbTable.setDataSource(this.transactionResults);
-            this.transactionResults = this.mdbTable.getDataSource();
-            this.previous = this.mdbTable.getDataSource();
 
-            //this.loadTransactions();
-            this.blockUI.stop();
-            this.frame.hide();
-            this.sharedService.showSuccess('Success', 'Record saved succesfully');
+            // const param = UploadParameter.createForReadableStreamUpload(
+            //   paramData,
+            //   this.signerPrivateKey
+            // );
+
+            // // let recipientPublicKey = this.walletService.publicAccount.publicKey;
+            // // console.log('Default Public Key' + recipientPublicKey);
+            // const recipientPublicKeyInput = this.addRecordForm.get('recipientPublicKey').value;
+
+            // if (this.showEncryptionKeyPair && recipientPublicKeyInput.length > 0) {
+            //   recipientPublicKey = recipientPublicKeyInput;
+            // }
+
+            // // console.log('Current Public Key' + recipientPublicKey);
+
+            // if (recipientPublicKey.length > 0) {
+            //   param.withRecipientPublicKey(recipientPublicKey);
+            // }
+
+            // const mosaicId = new MosaicId('prx:xpx');
+            // const mosaic = new Mosaic(mosaicId, UInt64.fromUint(0));
+            // //param.withTransactionMosaics([mosaic]);
+
+            // // let recipientAddress = this.walletService.address.plain();
+            // // console.log('default recipientAddress' + recipientAddress);
+            // if (recipientPublicKey.length > 0) {
+            //   recipientAddress = Address.createFromPublicKey(recipientPublicKey, this.walletService.network).plain();
+            // }
+            // // console.log('current recipientAddress' + recipientAddress);
+            // if (recipientAddress) {
+            //   param.withRecipientAddress(recipientAddress);
+            // }
+
+            // let useSecureMessage = environment.blockchainConnection.useSecureMessage;
+
+            // if (useSecureMessage) {
+            //   param.withUseBlockchainSecureMessage(useSecureMessage);
+            // }
+            // // console.log('useSecureMessage ' + useSecureMessage);
+
+
+            // switch (this.privacyType) {
+            //   case PrivacyType.PASSWORD:
+            //     const encryptionPassword = this.addRecordForm.get('encryptionPasword').value;
+            //     if (this.showEncryptionPassword && encryptionPassword.length > 0) {
+            //       // console.log('---------- PASSWORD PRIVACY ---------  ');
+            //       param.withPasswordPrivacy(encryptionPassword);
+            //       // console.log('---------- PASSW22222222ORD PRIVACY ---------  ');
+            //     } else {
+            //       this.sharedService.showWarning("Warning", "Please enter your encryption password");
+            //     }
+            //     // console.log('encryptionPassword' + encryptionPassword);
+
+            //     break;
+            //   case PrivacyType.NEM_KEYS:
+            //     if (this.showEncryptionKeyPair) {
+            //       const privateKey = this.addRecordForm.get('recipientPrivateKey').value;
+            //       const publicKey = this.addRecordForm.get('recipientPublicKey').value;
+            //       param.withNemKeysPrivacy(privateKey, publicKey);
+            //     }
+            //     break;
+            //   default:
+            //     param.withPlainPrivacy();
+            // }
+
+            // //default deadline
+            // param.withTransactionDeadline(12);
+
+            // this.blockUI.start('uploading record ...');
+            // const result = await this.uploader.upload(param.build());
+
+            // const gridTitle = result.data.name ? result.data.name : selectedFile.name;
+            // const isEncrypted = result.privacyType !== PrivacyType.PLAIN;
+            // // console.log(result);
+            // this.transactionResults.push({
+            //   title: gridTitle,
+            //   type: result.data.contentType,
+            //   privacy: result.privacyType,
+            //   dataHash: result.data.dataHash,
+            //   transactionHash: result.transactionHash,
+            //   isEncrypted: isEncrypted
+            // });
+
+            // // Datatable
+            // this.mdbTable.setDataSource(this.transactionResults);
+            // this.transactionResults = this.mdbTable.getDataSource();
+            // this.previous = this.mdbTable.getDataSource();
+
+            // //this.loadTransactions();
+            // this.blockUI.stop();
+            // this.frame.hide();
+            // this.sharedService.showSuccess('Success', 'Record saved succesfully');
           }
 
 
@@ -427,13 +565,6 @@ export class StorageComponent implements OnInit {
 
   grabPKey(common) {
     return common.privateKey
-  }
-
-  openRecordDialog() {
-    this.cleanForm();
-    this.frame.show();
-    this.showEncryptionKeyPair = false;
-    this.showEncryptionPassword = false;
   }
 
 
@@ -459,11 +590,10 @@ export class StorageComponent implements OnInit {
   }
 
   showRecordEntryPassword() {
-
     const common = {
       password: this.addRecordForm.get('password').value
     };
-    const privateKey = crypto.passwordToPrivatekey(common, this.walletService.currentAccount, this.walletService.algo);
+    crypto.passwordToPrivatekey(common, this.walletService.currentAccount, this.walletService.algo);
     this.signerPrivateKey = this.grabPKey(common);
     // console.log(this.signerPrivateKey);
 
@@ -502,94 +632,100 @@ export class StorageComponent implements OnInit {
   }
 
 
-  async downloadWithDecryptionPassword() {
-    const decryptionPassword = this.downloadRecordForm.get('decryptionPassword').value;
-    // console.log(decryptionPassword);
-    const dataHash = this.downloadRecordForm.get('downloadDatahash');
-    // console.log(dataHash.value);
-    if (!decryptionPassword || decryptionPassword.length <= 10) {
-      this.sharedService.showError('Invalid decryption password!', 'The password must be greater than 8 characters');
-    } else if (!this.downloadFile) {
-      this.sharedService.showError('Something wrong!', 'Unable to download file');
-    } else {
+  // async downloadWithDecryptionPassword() {
+  //   const decryptionPassword = this.downloadRecordForm.get('decryptionPassword').value;
+  //   // console.log(decryptionPassword);
+  //   const dataHash = this.downloadRecordForm.get('downloadDatahash');
+  //   // console.log(dataHash.value);
+  //   if (!decryptionPassword || decryptionPassword.length <= 10) {
+  //     this.sharedService.showError('Invalid decryption password!', 'The password must be greater than 8 characters');
+  //   } else if (!this.downloadFile) {
+  //     this.sharedService.showError('Something wrong!', 'Unable to download file');
+  //   } else {
 
-      try {
-        // console.log(this.downloadFile);
-        const paramData = DirectDownloadParameter.createFromDataHash(this.downloadFile.dataHash);
-        paramData.withPasswordPrivacy(decryptionPassword);
-        const downloadResult = await this.downloader.directDownload(paramData.build());
-        const dataBuffer = await StreamHelper.stream2Buffer(downloadResult);
-        const downloableFile = new Blob([dataBuffer], { type: this.downloadFile.contentType });
-        saveAs(downloableFile, this.downloadFile.name);
-      } catch (error) {
-        this.sharedService.showError('Failure', error);
-      }
-    }
+  //     try {
+  //       // console.log(this.downloadFile);
+  //       const paramData = DirectDownloadParameter.createFromDataHash(this.downloadFile.dataHash);
+  //       paramData.withPasswordPrivacy(decryptionPassword);
+  //       const downloadResult = await this.downloader.directDownload(paramData.build());
+  //       const dataBuffer = await StreamHelper.stream2Buffer(downloadResult);
+  //       const downloableFile = new Blob([dataBuffer], { type: this.downloadFile.contentType });
+  //       saveAs(downloableFile, this.downloadFile.name);
+  //     } catch (error) {
+  //       this.sharedService.showError('Failure', error);
+  //     }
+  //   }
+  // }
+
+  // async downloadWithDecryptionKeyPair() {
+  //   const privateKey = this.downloadRecordForm.get('decryptionPrivateKey').value;
+  //   const publicKey = this.downloadRecordForm.get('decryptionPublicKey').value;
+
+  //   if (!privateKey || !publicKey) {
+  //     this.sharedService.showError('Invalid decryption key pair!', 'Please enter decryption private key and public key');
+  //   } else if (!this.downloadFile) {
+  //     this.sharedService.showError('Something wrong!', 'Unable to download file');
+  //   } else {
+
+  //     try {
+  //       // console.log(this.downloadFile);
+  //       const paramData = DirectDownloadParameter.createFromDataHash(this.downloadFile.dataHash);
+  //       paramData.withNemKeysPrivacy(privateKey, publicKey);
+  //       const downloadResult = await this.downloader.directDownload(paramData.build());
+  //       const dataBuffer = await StreamHelper.stream2Buffer(downloadResult);
+  //       const downloableFile = new Blob([dataBuffer], { type: this.downloadFile.contentType });
+  //       saveAs(downloableFile, this.downloadFile.name);
+  //     } catch (error) {
+  //       // this.dlframe.hide();
+  //       this.sharedService.showError('Failure', error);
+  //     }
+  //   }
+  // }
+
+  // async downloadRecord(dataHash, type, name, transactionHash, privacyType) {
+  //   // console.log(dataHash);
+  //   // console.log(type);
+  //   // console.log(name);
+  //   // console.log(transactionHash);
+  //   // console.log(privacyType);
+  //   this.downloadFile = { dataHash: dataHash, contentType: type, name: name };
+  //   try {
+
+  //     if (privacyType === PrivacyType.PLAIN) {
+  //       const paramData = DirectDownloadParameter.createFromDataHash(dataHash);
+  //       paramData.withPlainPrivacy();
+  //       const downloadResult = await this.downloader.directDownload(paramData.build());
+  //       const dataBuffer = await StreamHelper.stream2Buffer(downloadResult);
+  //       const downloableFile = new Blob([dataBuffer], { type: type });
+  //       saveAs(downloableFile, name);
+  //     } else {
+  //       const dataHashInput = this.downloadRecordForm.get('downloadDatahash');
+  //       dataHashInput.setValue(dataHash);
+  //       if (privacyType === PrivacyType.PASSWORD) {
+  //         this.downloadRecordForm.get('decryptionPassword').reset();
+  //         this.showDecryptionPassword = true;
+  //         this.showDecryptionKeyPair = false;
+  //       } else if (privacyType === PrivacyType.NEM_KEYS) {
+  //         this.downloadRecordForm.get('decryptionPrivateKey').setValue(this.signerPrivateKey.toUpperCase());
+  //         this.downloadRecordForm.get('decryptionPublicKey').setValue(this.walletService.publicAccount.publicKey);
+  //         this.showDecryptionPassword = false;
+  //         this.showDecryptionKeyPair = true;
+  //       }
+  //       this.dlframe.show();
+  //     }
+
+
+  //   } catch (error) {
+  //     this.sharedService.showError('Failure', 'Unable to download data');
+  //   }
+
+
+  // }
+
+  openRecordDialog() {
+    // this.cleanForm();
+    this.frame.show();
+    this.showEncryptionKeyPair = false;
+    this.showEncryptionPassword = false;
   }
-
-  async downloadWithDecryptionKeyPair() {
-    const privateKey = this.downloadRecordForm.get('decryptionPrivateKey').value;
-    const publicKey = this.downloadRecordForm.get('decryptionPublicKey').value;
-
-    if (!privateKey || !publicKey) {
-      this.sharedService.showError('Invalid decryption key pair!', 'Please enter decryption private key and public key');
-    } else if (!this.downloadFile) {
-      this.sharedService.showError('Something wrong!', 'Unable to download file');
-    } else {
-
-      try {
-        // console.log(this.downloadFile);
-        const paramData = DirectDownloadParameter.createFromDataHash(this.downloadFile.dataHash);
-        paramData.withNemKeysPrivacy(privateKey, publicKey);
-        const downloadResult = await this.downloader.directDownload(paramData.build());
-        const dataBuffer = await StreamHelper.stream2Buffer(downloadResult);
-        const downloableFile = new Blob([dataBuffer], { type: this.downloadFile.contentType });
-        saveAs(downloableFile, this.downloadFile.name);
-      } catch (error) {
-        // this.dlframe.hide();
-        this.sharedService.showError('Failure', error);
-      }
-    }
-  }
-
-  async downloadRecord(dataHash, type, name, transactionHash, privacyType) {
-    // console.log(dataHash);
-    // console.log(type);
-    // console.log(name);
-    // console.log(transactionHash);
-    // console.log(privacyType);
-    this.downloadFile = { dataHash: dataHash, contentType: type, name: name };
-    try {
-
-      if (privacyType === PrivacyType.PLAIN) {
-        const paramData = DirectDownloadParameter.createFromDataHash(dataHash);
-        paramData.withPlainPrivacy();
-        const downloadResult = await this.downloader.directDownload(paramData.build());
-        const dataBuffer = await StreamHelper.stream2Buffer(downloadResult);
-        const downloableFile = new Blob([dataBuffer], { type: type });
-        saveAs(downloableFile, name);
-      } else {
-        const dataHashInput = this.downloadRecordForm.get('downloadDatahash');
-        dataHashInput.setValue(dataHash);
-        if (privacyType === PrivacyType.PASSWORD) {
-          this.downloadRecordForm.get('decryptionPassword').reset();
-          this.showDecryptionPassword = true;
-          this.showDecryptionKeyPair = false;
-        } else if (privacyType === PrivacyType.NEM_KEYS) {
-          this.downloadRecordForm.get('decryptionPrivateKey').setValue(this.signerPrivateKey.toUpperCase());
-          this.downloadRecordForm.get('decryptionPublicKey').setValue(this.walletService.publicAccount.publicKey);
-          this.showDecryptionPassword = false;
-          this.showDecryptionKeyPair = true;
-        }
-        this.dlframe.show();
-      }
-
-
-    } catch (error) {
-      this.sharedService.showError('Failure', 'Unable to download data');
-    }
-
-
-  }
-  */
 }
