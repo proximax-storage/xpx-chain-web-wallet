@@ -77,7 +77,7 @@ export class ServicesComponent implements OnInit {
     const namespace = this.service.structureServices(
       'icon-namespaces-dark-green.svg',
       'Namespaces & Sub-namespaces',
-      'Create a domain and subdomains',
+      'Create a domains and subdomains',
       {
         createNamespace: this.structureServiceRoute('Create', `/${AppConfig.routes.createNamespace}`),
         renewNamespace: this.structureServiceRoute('Renew', `/${AppConfig.routes.renovateNamespace}`)
