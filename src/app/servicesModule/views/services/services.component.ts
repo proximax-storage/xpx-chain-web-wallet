@@ -111,10 +111,10 @@ export class ServicesComponent implements OnInit {
 
     const addressBook = this.service.structureServices(
       'icon-directory-dark-green.svg',
-      'Directory',
+      'Address Book',
       `Assign labels to addresses to easily keep track of your contacts`,
       {
-        manageAddress: this.structureServiceRoute('Open Directory', `/${AppConfig.routes.addressBook}`),
+        manageAddress: this.structureServiceRoute('Open', `/${AppConfig.routes.addressBook}`),
       }, true
     );
 
