@@ -21,7 +21,7 @@ export class ServicesComponent implements OnInit {
       'ACCOUNT',
       `View account details, link address to namespace, create smart rules restrictions`,
       {
-        linkTheNamespaceToAnAddress: this.structureServiceRoute('Alias to Namespace', `/${AppConfig.routes.linkTheNamespaceToAnAddress}`),
+        linkTheNamespaceToAnAddress: this.structureServiceRoute('Link to Namespace', `/${AppConfig.routes.linkTheNamespaceToAnAddress}`),
         myAccount: this.structureServiceRoute('Details', `/${AppConfig.routes.account}`),
         filter: this.structureServiceRoute('Filter', ``, true)
       }, true
