@@ -344,6 +344,7 @@ export class CreateNamespaceComponent implements OnInit {
     // Get transaction status
     this.subscribe['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
       statusTransaction => {
+        console.log(statusTransaction);
         if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
           const match = statusTransaction['data'].transactionInfo.hash === this.transactionSigned.hash;
           if (statusTransaction['type'] === 'confirmed' && match) {
