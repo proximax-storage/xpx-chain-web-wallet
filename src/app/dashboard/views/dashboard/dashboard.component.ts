@@ -1,11 +1,13 @@
-import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectorRef, HostListener } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectorRef, HostListener, Inject } from '@angular/core';
 import { DashboardService } from '../../services/dashboard.service';
 import { WalletService, SharedService } from '../../../shared';
 import { TransactionsInterface } from '../../services/transaction.interface';
 import { TransactionsService } from '../../../transactions/service/transactions.service';
-import { MdbTablePaginationComponent, MdbTableDirective } from 'ng-uikit-pro-standard';
+import { MdbTableDirective } from 'ng-uikit-pro-standard';
 import { Address } from 'tsjs-xpx-chain-sdk';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
+import { DOCUMENT } from "@angular/platform-browser";
+
 
 @Component({
   selector: 'app-dashboard',
@@ -16,12 +18,11 @@ import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 
 export class DashboardComponent implements OnInit, OnDestroy {
 
-  @ViewChild(MdbTablePaginationComponent) mdbTablePagination: MdbTablePaginationComponent;
+  // @ViewChild(MdbTablePaginationComponent) mdbTablePagination: MdbTablePaginationComponent;
   @ViewChild(MdbTableDirective) mdbTable: MdbTableDirective;
   @HostListener('input') oninput() {
     this.searchItems();
   }
-
   previous: any = [];
   cantTransactions = 0;
   myAddress: Address = null;
@@ -32,6 +33,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   headElements = ['Type', 'Deadline', 'Fee', 'Sender', 'Recipient'];
   iconReloadDashboard = false;
   searching = true;
+  searchTransactions = true;
   subscriptions = [
     'balance',
     'transactionsConfirmed',
@@ -47,6 +49,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   searchTransaction = '';
   viewDashboard = true;
   transactions: TransactionsInterface[] = [];
+  windowScrolled: boolean;
 
 
   constructor(
@@ -55,9 +58,29 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private walletService: WalletService,
     private transactionService: TransactionsService,
     private sharedService: SharedService,
-    private proximaxProvider: ProximaxProvider
+    private proximaxProvider: ProximaxProvider,
+    @Inject(DOCUMENT) private document: Document
   ) {
     this.myAddress = this.walletService.address;
+  }
+
+  @HostListener("window:scroll", [])
+  onWindowScroll() {
+      if (window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop > 100) {
+          this.windowScrolled = true;
+      } 
+      else if (this.windowScrolled && window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop < 10) {
+          this.windowScrolled = false;
+      }
+  }
+  scrollToTop() {
+      (function smoothscroll() {
+          var currentScroll = document.documentElement.scrollTop || document.body.scrollTop;
+          if (currentScroll > 0) {
+              window.requestAnimationFrame(smoothscroll);
+              window.scrollTo(0, currentScroll - (currentScroll / 8));
+          }
+      })();
   }
 
   ngOnInit() {
@@ -78,9 +101,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-    this.mdbTablePagination.setMaxVisibleItemsNumberTo(5);
-    this.mdbTablePagination.calculateFirstItemIndex();
-    this.mdbTablePagination.calculateLastItemIndex();
+    // this.mdbTablePagination.setMaxVisibleItemsNumberTo(5);
+    // this.mdbTablePagination.calculateFirstItemIndex();
+    // this.mdbTablePagination.calculateLastItemIndex();
     this.cdRef.detectChanges();
   }
 
@@ -116,33 +139,59 @@ export class DashboardComponent implements OnInit, OnDestroy {
     if (this.dashboardService.getCantViewDashboard() === 1 || reload) {
       this.searching = true;
       this.iconReloadDashboard = false;
-      this.proximaxProvider.getTransactionsFromAccount(this.walletService.publicAccount, this.walletService.network).toPromise().then(response => {
-        // console.log(response);
-        const data = [];
-        response.forEach(element => {
-          //Sets the data structure of the dashboard
-          const builderTransactions = this.transactionService.getStructureDashboard(element);
-          if (builderTransactions !== null) {
-            data.push(builderTransactions);
-          }
-        });
-
-        // Establishes confirmed transactions in the observable type variable
-        this.transactionService.setTransactionsConfirmed$(data);
-        this.iconReloadDashboard = false;
-        this.searching = false;
-        this.dashboardService.searchComplete = true;
-      }).catch(err => {
-        this.dashboardService.searchComplete = false;
-        this.searching = false;
-        this.iconReloadDashboard = true;
-        this.sharedService.showError('Has ocurred a error', 'Possible causes: the network is offline');
-        //console.log('This is error ----> ', err);
-      });
+      this.loadTransactions();
     } else {
       this.iconReloadDashboard = (this.dashboardService.searchComplete === false) ? true : false;
       this.searching = false;
     }
+  }
+
+  /**
+   * Method to get more transactions when scrolling in the screen
+   */
+  onScroll() {
+    if (this.searchTransactions) {
+      // console.log(this.transactions[this.transactions.length - 1].data.transactionInfo.id);
+      const lastTransactionId = this.transactions[this.transactions.length - 1].data.transactionInfo.id;
+      
+      this.loadTransactions(lastTransactionId);
+    }
+  }
+
+  /**
+   * Method to load transactions by public account.
+   * @param {string} id Id of the transaction to start the next search.
+   */
+  loadTransactions(id = null) {
+    this.transactions = (id) ? this.transactions : [];
+    this.proximaxProvider.getTransactionsFromAccountId(this.walletService.publicAccount, id).toPromise().then(response => {
+      console.log(response);
+      this.searchTransactions = !(response.length < 25);
+      const data = [];
+      response.forEach(element => {
+        //Sets the data structure of the dashboard
+        const builderTransactions = this.transactionService.getStructureDashboard(element);
+        if (builderTransactions !== null) {
+          data.push(builderTransactions);
+        }
+      });
+
+      // Establishes confirmed transactions in the observable type variable
+      this.transactions = this.transactions.concat(data);
+      console.log(data);
+      console.log(this.transactions);
+
+      this.transactionService.setTransactionsConfirmed$(this.transactions);
+      this.iconReloadDashboard = false;
+      this.searching = false;
+      this.dashboardService.searchComplete = true;
+    }).catch(err => {
+      this.dashboardService.searchComplete = false;
+      this.searching = false;
+      this.iconReloadDashboard = true;
+      this.sharedService.showError('Has ocurred a error', 'Possible causes: the network is offline');
+      //console.log('This is error ----> ', err);
+    });
   }
 
   /**

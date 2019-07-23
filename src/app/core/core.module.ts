@@ -9,6 +9,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { NgxMaskModule, IConfig } from 'ngx-mask';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { NumeralModule } from 'ngx-numeral';
+import {InfiniteScrollModule} from 'ngx-infinite-scroll';
 
 import { TransferTypeComponent } from '../dashboard/components/transfer-type/transfer-type.component';
 import { RegisterNamespaceTypeComponent } from '../dashboard/components/register-namespace-type/register-namespace-type.component';
@@ -46,7 +47,8 @@ const modules = [
   FormsModule,
   HttpClientModule,
   ClipboardModule,
-  NgSelectModule
+  NgSelectModule,
+  InfiniteScrollModule
 ];
 
 // export const options: Partial<IConfig> | (() => Partial<IConfig>);
