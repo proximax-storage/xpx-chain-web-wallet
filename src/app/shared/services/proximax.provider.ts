@@ -372,6 +372,21 @@ export class ProximaxProvider {
     return this.accountHttp.transactions(publicAccount, new QueryParams(100));
   }
 
+  /**
+   * Gets an array of confirmed transactions for which an account is signer or receiver.
+   *
+   * @param {*} publicKey
+   * @param {NetworkType} network
+   * @param {QueryParams} queryParams
+   * @param {string} id
+   * @returns {Observable<Transaction[]>}
+   * @memberof ProximaxProvider
+   */
+  getTransactionsFromAccountId(publicAccount: PublicAccount, id = null, queryParams = 25): Observable<Transaction[]> {
+    const query = (id) ? new QueryParams(queryParams, id) : new QueryParams(queryParams);
+    return this.accountHttp.transactions(publicAccount, query);
+  }
+
 
   /**
    * Return getTransaction from id or hash
