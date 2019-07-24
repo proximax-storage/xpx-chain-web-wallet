@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { NetworkType } from 'tsjs-xpx-chain-sdk';
 import { SharedService, WalletService } from "../../../shared";
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
+import { ModalDirective } from 'ng-uikit-pro-standard';
+import { AppConfig } from 'src/app/config/app.config';
 
 
 @Component({
@@ -13,6 +15,7 @@ import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 })
 export class CreateWalletComponent implements OnInit {
 
+  @ViewChild('frame') private frame: ModalDirective;
   nameModule = 'Create Wallet';
   descriptionModule = '';
 
@@ -28,6 +31,10 @@ export class CreateWalletComponent implements OnInit {
     },
   ];
   walletName: string;
+  routes = {
+    login: `/${AppConfig.routes.login}`
+  };
+
 
   constructor(
     private fb: FormBuilder,
@@ -176,5 +183,10 @@ export class CreateWalletComponent implements OnInit {
     this.createWalletForm.reset();
     this.createWalletForm.get('network').setValue(NetworkType.TEST_NET);
     return;
+  }
+
+  viewModal(event){
+    console.log(event);
+    this.frame.show();
   }
 }

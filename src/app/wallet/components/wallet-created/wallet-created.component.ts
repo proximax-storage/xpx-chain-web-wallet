@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { AppConfig } from "../../../config/app.config";
 import { SharedService } from '../../../shared';
 
@@ -16,6 +16,8 @@ export class WalletCreatedComponent implements OnInit {
   @Input() address: string;
   @Input() walletName: string;
   @Input() publicKey: string;
+  @Output() viewModal: EventEmitter<any> = new EventEmitter();
+
   routes = {
     login: `/${AppConfig.routes.login}`
   };
@@ -40,5 +42,9 @@ export class WalletCreatedComponent implements OnInit {
 
   copyMessage(message: string) {
     this.sharedService.showSuccess('', `${message} copied`);
+  }
+
+  finish() {
+    this.viewModal.emit(true);
   }
 }
