@@ -25,6 +25,7 @@ export class TransferComponent implements OnInit {
   accountContactRecipient = '';
   amountSend: string | number = '0.000000';
   blockSendButton: boolean;
+  calculateRentalFee = 0;
   contactForm: FormGroup;
   contactSelected = '';
   contacts: any = [{
@@ -47,6 +48,8 @@ export class TransferComponent implements OnInit {
       minLength: 8, maxLength: 30
     }
   }
+
+  fee = 0;
   inputBlocked: boolean;
   inputContactBlocked: boolean;
   insufficientBalance = false;
@@ -59,7 +62,7 @@ export class TransferComponent implements OnInit {
     },
     {
       value: this.proximaxProvider.mosaicXpx.mosaicId,
-      label: this.proximaxProvider.mosaicXpx.mosaic,
+      label: `${this.proximaxProvider.mosaicXpx.mosaic}`,
       selected: false,
       disabled: false
     }
@@ -70,7 +73,7 @@ export class TransferComponent implements OnInit {
   myClass = {
     'boxRecipientTrue': 'col-9 col-sm-10 col-md-6 col-lg-7 pr-2rem',
     'boxDirectoryTrue': 'col-12 col-md-4 col-lg-4 d-flex justify-content-center align-items-center background-dark-green-plus',
-    'boxRecipientFalse': 'col-9 col-sm-8 col-md-8 col-lg-9 pl-2rem pr-2rem',
+    'boxRecipientFalse': 'col-9 col-sm-8 col-md-8 col-lg-9 pr-2rem',
     'boxDirectoryFalse': 'col-12 col-sm-2 col-md-2 d-flex justify-content-center align-items-center background-dark-green-plus',
     'rowDirectoryTrue': 'col-10 col-md-8 col-lg-9',
     'rowAddContactTrue': 'col-2 col-md-4 col-lg-3 d-flex align-items-center',
@@ -108,6 +111,7 @@ export class TransferComponent implements OnInit {
       }
       this.contacts = data;
     }
+
     this.createForm();
     this.createFormContact();
     this.getMosaics();
@@ -138,13 +142,26 @@ export class TransferComponent implements OnInit {
             const mosaics = await this.mosaicServices.searchMosaics(accountInfo.mosaics.map(n => n.id));
             if (mosaics.length > 0) {
               for (let mosaic of mosaics) {
+                const currentMosaic = accountInfo.mosaics.find(element => element.id.toHex() === this.proximaxProvider.getMosaicId(mosaic.id).toHex());
+                const amount = (mosaic.mosaicInfo !== null) ?
+                    this.transactionService.amountFormatter(currentMosaic.amount, mosaic.mosaicInfo) :
+                    this.transactionService.amountFormatterSimple(currentMosaic.amount.compact());
                 if (this.proximaxProvider.getMosaicId(mosaic.id).id.toHex() !== this.mosaicServices.mosaicXpx.mosaicId) {
                   const nameMosaic = (mosaic.mosaicNames.names.length > 0) ? mosaic.mosaicNames.names[0] : this.proximaxProvider.getMosaicId(mosaic.id).toHex();
                   mosaicsSelect.push({
-                    label: nameMosaic,
+                    label: `${nameMosaic} - (${amount})`,
                     value: mosaic.id,
+                    balance: amount,
                     selected: false,
                     disabled: false
+                  });
+                } else {
+                  mosaicsSelect.forEach(element => {
+                    if (element.value === this.mosaicServices.mosaicXpx.mosaicId) {
+                      element.label = `${this.mosaicServices.mosaicXpx.mosaic} - (${amount})`;
+                      element.balance = amount;
+                      return;
+                    }
                   });
                 }
               }
@@ -417,12 +434,14 @@ export class TransferComponent implements OnInit {
           async () => {
             this.showContacts = false;
             this.inputBlocked = false;
+            //this.resetMosaic();
             this.clearForm();
             if (this.subscribe['transactionStatus'] === undefined || this.subscribe['transactionStatus'] === null) {
               this.getTransactionStatus();
             }
           }, err => {
             this.inputBlocked = false;
+            //this.resetMosaic();
             this.clearForm();
             this.sharedService.showError('', err);
           }
@@ -612,5 +631,24 @@ export class TransferComponent implements OnInit {
         this.transferForm.controls['password'].enable();
       }
     }
+  }
+
+  resetMosaic() {
+    this.mosaicsSelect = [
+      {
+        value: "0",
+        label: "Select mosaic",
+        selected: true,
+        disabled: true
+      },
+      {
+        value: this.proximaxProvider.mosaicXpx.mosaicId,
+        label: `${this.proximaxProvider.mosaicXpx.mosaic}`,
+        selected: false,
+        disabled: false
+      }
+    ];
+
+    this.getMosaics();
   }
 }

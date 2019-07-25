@@ -37,20 +37,32 @@
                 </ng-select>
               </div>
             </div>
-
-            <!-- <ng-container *ngIf="searchMosaics">
-              <div class="col-2 d-flex align-items-center">
-                <mdb-spinner spinnerType="small"></mdb-spinner>
-              </div>
-            </ng-container> -->
-
-            <!-- <ng-container *ngIf="viewReload">
-              <div class="col-2 d-flex justify-content-start align-items-center">
-                <i class="fa fa-repeat btn-reload cursor-pointer color-white" aria-hidden="true" mdbTooltip="Reload"
-                  placement="bottom" (click)="getMosaics()"></i>
-              </div>
-            </ng-container> -->
           </div>
+
+           <!-- BALANCE & MOSAICO
+           <div class="row box-form mt-1rem pt-0 pb-0 pb-0 pr-0 pl-0 pt-0 pb-0">
+            <div class="col-2 col-sm-2 col-md-2 col-lg-1 d-flex align-items-center justify-content-center">
+              <img class="h1-5em" src="assets/images/img/icon-mosaics-white.svg" alt="">
+            </div>
+
+            <div class="col-9 col-sm-10 col-md-6 col-lg-7">
+              <div class="md-form">
+                <div class="md-form">
+                  <ng-select [items]="mosaicsSelect" formControlName="mosaicsSelect" bindLabel="label" bindValue="value"
+                    placeholder="Select or write mosaic">
+                  </ng-select>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="col-12 col-md-4 d-flex justify-content-center align-items-center background-dark-green-plus overflow-ellipsis-nowrap">
+              <div class="row text-center">
+                <div class="col-12 fw-400 color-yellow">Balance:</div>
+                <div class="col-12 color-white">{{balance}}</div>
+              </div>
+            </div>
+          </div>-->
 
           <!-- Contacts -->
           <ng-container *ngIf="showContacts">
@@ -169,6 +181,31 @@
               <div class="row text-center">
                 <div class="col-12 fw-400 color-yellow">They will be sent:</div>
                 <div class="col-12 color-white">{{amountSend}}</div>
+              </div>
+            </div>
+          </div>
+
+           <!-- Fee & Rental fee-->
+           <div class="row box-form-white mt-1rem d-flex justify-content-center">
+            <div class="col-12 col-md-6 t-a-c">
+              <div class="row">
+                <div class="col-6 col-md-12">
+                  <span class="fw-400 color-dark-green">Fee: </span>
+                </div>
+                <div class="col-6 col-md-12">
+                  <span class="f-w-bold color-dark-green">{{fee}} XPX</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12 col-md-6 t-a-c">
+              <div class="row">
+                <div class="col-6 col-md-12">
+                  <span class="fw-400 color-dark-green">Rental Fee: </span>
+                </div>
+                <div class="col-6 col-md-12">
+                  <span class="f-w-bold color-dark-green">{{calculateRentalFee}} XPX</span>
+                </div>
               </div>
             </div>
           </div>
