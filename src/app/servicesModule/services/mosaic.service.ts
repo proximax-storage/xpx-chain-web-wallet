@@ -2,13 +2,15 @@ import { Injectable } from "@angular/core";
 import {
   MosaicInfo,
   MosaicId,
-  MosaicView
+  MosaicView,
+  NamespaceName
 } from "tsjs-xpx-chain-sdk";
 import { ProximaxProvider } from "../../shared/services/proximax.provider";
 import { WalletService } from "../../shared/services/wallet.service";
 import { MosaicsStorage } from "../interfaces/mosaics-namespaces.interface";
 import { MosaicXPXInterface } from "../../dashboard/services/transaction.interface";
 import { MosaicNames } from "tsjs-xpx-chain-sdk/dist/src/model/mosaic/MosaicNames";
+import { NamespacesService } from "./namespaces.service";
 
 
 @Injectable({
@@ -25,7 +27,8 @@ export class MosaicService {
 
   constructor(
     private proximaxProvider: ProximaxProvider,
-    private walletService: WalletService
+    private walletService: WalletService,
+    private namespacesService: NamespacesService
   ) { }
 
 
@@ -165,26 +168,89 @@ export class MosaicService {
    * @memberof MosaicService
    */
   async saveMosaicsStorage(mosaicsInfo: MosaicInfo[], mosaicsToSearch?: MosaicId[]) {
+    // console.log('-----mosaicsInfo ----', mosaicsInfo);
+    // console.log('-----mosaicsToSearch ----', mosaicsToSearch);
     //get mosaics from storage
     const mosaicsStorage = this.getMosaicsFromStorage();
     //filter mosaics id from mosaicsInfo params
     const mosaicsIds = (mosaicsInfo.length > 0) ? mosaicsInfo.map(data => data.mosaicId) : mosaicsToSearch;
     // If the mosaic identification has data, look for the names of the tiles. This must return an array of mosaics name
     const mosaicsName = (mosaicsIds.length > 0) ? await this.getNameMosaics(mosaicsIds) : [];
-    // console.log('----> mosaicsName ', mosaicsName);
+    // NamespaceName
+    const namespacesId = [];
     if (mosaicsInfo.length > 0) {
       for (let mosaicInfo of mosaicsInfo) {
-        const data = await this.buildStructureMosaicStorage(mosaicsStorage, mosaicInfo.mosaicId, mosaicsName, mosaicInfo);
-        if (data) {
-          mosaicsStorage.push(data);
+        const currentMosaic = mosaicsName.find(data => data.mosaicId.toHex() === mosaicInfo.mosaicId.toHex());
+        if (currentMosaic && currentMosaic.names.length > 0) {
+          const data = await this.buildStructureMosaicStorage(mosaicsStorage, mosaicInfo.mosaicId, mosaicsName, mosaicInfo);
+          if (data) {
+            mosaicsStorage.push(data);
+          }
+        } else {
+          namespacesId.push(this.namespacesService.getNamespaceId([mosaicInfo.mosaicId.id.lower, mosaicInfo.mosaicId.id.higher]));
+          // console.log('Busca la vaina por Namespace entonces menor!');
+        }
+      }
+
+      if (namespacesId.length > 0) {
+        const namespacesName = await this.namespacesService.getNamespacesNameAsync(namespacesId);
+        const names = [];
+        if (namespacesName.length > 0) {
+          namespacesName.forEach(element => {
+            if (element.parentId !== undefined) {
+              const parent = namespacesName.find(data => data.namespaceId.toHex() === element.parentId.toHex());
+              names.push({
+                id: element.namespaceId,
+                name: `${element.name}.${parent.name}`
+              });
+            }
+          });
+        }
+        // console.log('----namespacesName-----', namespacesName);
+        for (let element of namespacesId) {
+          const data = await this.buildStructureMosaicStorage(mosaicsStorage, element, [], null, names);
+          if (data) {
+            mosaicsStorage.push(data);
+          }
         }
       }
     } else {
       if (mosaicsToSearch) {
         for (let mosaicId of mosaicsToSearch) {
-          const data = await this.buildStructureMosaicStorage(mosaicsStorage, mosaicId, mosaicsName, null);
-          if (data) {
-            mosaicsStorage.push(data);
+          const currentMosaic = mosaicsName.find(data => data.mosaicId.toHex() === mosaicId.toHex());
+          if (currentMosaic && currentMosaic.names.length > 0) {
+            const data = await this.buildStructureMosaicStorage(mosaicsStorage, mosaicId, mosaicsName, null);
+            if (data) {
+              mosaicsStorage.push(data);
+            }
+          } else {
+            // console.log(mosaicId);
+            namespacesId.push(this.namespacesService.getNamespaceId([mosaicId['lower'], mosaicId['higher']]));
+            // console.log('Busca la vaina por Namespace entonces menor!');
+          }
+        }
+
+        if (namespacesId.length > 0) {
+          const namespacesName = await this.namespacesService.getNamespacesNameAsync(namespacesId);
+          const names = [];
+          if (namespacesName.length > 0) {
+            namespacesName.forEach(element => {
+              if (element.parentId !== undefined) {
+                const parent = namespacesName.find(data => data.namespaceId.toHex() === element.parentId.toHex());
+                names.push({
+                  id: element.namespaceId,
+                  name: `${parent.name}.${element.name}`
+                });
+              }
+            });
+          }
+          // console.log('----namespacesName-----', namespacesName);
+          for (let element of namespacesId) {
+            const data = await this.buildStructureMosaicStorage(mosaicsStorage, element, [], null, names);
+            // console.log('----data ', data);
+            if (data) {
+              mosaicsStorage.push(data);
+            }
           }
         }
       } else {
@@ -192,7 +258,14 @@ export class MosaicService {
       }
     }
 
-    localStorage.setItem(this.getNameStorage(), JSON.stringify(mosaicsStorage));
+    const saveDataStorage = [];
+    mosaicsStorage.forEach(element => {
+      if (element.mosaicNames.names.length > 0) {
+        saveDataStorage.push(element);
+      }
+    });
+    // console.log('mosaicsStorage', mosaicsStorage);
+    localStorage.setItem(this.getNameStorage(), JSON.stringify(saveDataStorage));
     return mosaicsStorage;
   }
 
@@ -206,28 +279,51 @@ export class MosaicService {
    * @returns {Promise<MosaicsStorage>}
    * @memberof MosaicService
    */
-  async buildStructureMosaicStorage(mosaicsStorage: MosaicsStorage[], mosaicId: MosaicId, mosaicsName: MosaicNames[], mosaicInfo: MosaicInfo): Promise<MosaicsStorage> {
+  async buildStructureMosaicStorage(
+    mosaicsStorage: MosaicsStorage[],
+    mosaicId: MosaicId,
+    mosaicsName: MosaicNames[],
+    mosaicInfo: MosaicInfo,
+    namespaceName: any[] = null
+  ): Promise<MosaicsStorage> {
     // Check if the mosaics id exists in storage
     const existMosaic = mosaicsStorage.find(key => this.proximaxProvider.getMosaicId(key.id).toHex() === mosaicId.toHex());
     // Mosaic does not exist in storage
     if (existMosaic === undefined || existMosaic === null) {
-      // From the arrangement of the mosaics name, filter the mosaic name data by the mosaic id
-      const mosaicName = mosaicsName.find(data => data.mosaicId.toHex() === mosaicId.toHex());
+      let name = [];
+      if (namespaceName !== null && namespaceName !== undefined) {
+        // From the arrangement of the mosaics name, filter the mosaic name data by the mosaic id
+        const data = namespaceName.find(data => data.id.toHex() === mosaicId.toHex());
+        // console.log('by namespace', data);
+        if (data !== undefined) {
+          name = [data.name];
+        }
+      } else {
+        // From the arrangement of the mosaics name, filter the mosaic name data by the mosaic id
+        const data = mosaicsName.find(data => data.mosaicId.toHex() === mosaicId.toHex());
+        name = data.names;
+        // console.log('by mosaicname', data);
+      }
+
       // If mosaicName is defined
-      if (mosaicName) {
+      if (name) {
+        // console.log('name------------');
         const infoComplete = (mosaicInfo) ? true : false;
         // Push to the array of mosaicsStorage
         return {
-          id: [mosaicName.mosaicId.id.lower, mosaicName.mosaicId.id.higher],
-          mosaicNames: mosaicName,
+          id: [mosaicId.id.lower, mosaicId.id.higher],
+          mosaicNames: new MosaicNames(new MosaicId([mosaicId.id.lower, mosaicId.id.higher]), name),
           mosaicInfo: mosaicInfo,
           infoComplete: infoComplete
         };
-
       }
     }
 
     return null;
+  }
+
+  findNameFromNamespace() {
+
   }
 
   /**

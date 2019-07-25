@@ -152,8 +152,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   onScroll() {
     if (this.searchTransactions) {
       // console.log(this.transactions[this.transactions.length - 1].data.transactionInfo.id);
-      const lastTransactionId = this.transactions[this.transactions.length - 1].data.transactionInfo.id;
-
+      const lastTransactionId = (this.transactions.length > 0) ? this.transactions[this.transactions.length - 1].data.transactionInfo.id : null;
       this.loadTransactions(lastTransactionId);
     }
   }
