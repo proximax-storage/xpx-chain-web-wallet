@@ -68,7 +68,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   onWindowScroll() {
       if (window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop > 100) {
           this.windowScrolled = true;
-      } 
+      }
       else if (this.windowScrolled && window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop < 10) {
           this.windowScrolled = false;
       }
@@ -153,7 +153,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     if (this.searchTransactions) {
       // console.log(this.transactions[this.transactions.length - 1].data.transactionInfo.id);
       const lastTransactionId = this.transactions[this.transactions.length - 1].data.transactionInfo.id;
-      
+
       this.loadTransactions(lastTransactionId);
     }
   }
@@ -165,7 +165,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   loadTransactions(id = null) {
     this.transactions = (id) ? this.transactions : [];
     this.proximaxProvider.getTransactionsFromAccountId(this.walletService.publicAccount, id).toPromise().then(response => {
-      console.log(response);
       this.searchTransactions = !(response.length < 25);
       const data = [];
       response.forEach(element => {
@@ -178,9 +177,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
       // Establishes confirmed transactions in the observable type variable
       this.transactions = this.transactions.concat(data);
-      console.log(data);
-      console.log(this.transactions);
-
       this.transactionService.setTransactionsConfirmed$(this.transactions);
       this.iconReloadDashboard = false;
       this.searching = false;
