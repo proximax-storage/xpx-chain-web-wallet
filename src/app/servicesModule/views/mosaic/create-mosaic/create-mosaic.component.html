@@ -26,11 +26,11 @@
     <div class="col-12 mb-1rem">
       <form [formGroup]="mosaicForm" (ngSubmit)="send()">
         <div class="row d-flex justify-content-center">
-          <!-- Duration & divisibility-->
+          <!-- Duration-->
           <div class="col-10 col-md-11 mt-1-5rem">
             <div class="box-form pt-0 pb-0">
               <div class="row d-flex justify-content-center">
-                <div class="col-12 col-sm-6">
+                <div class="col-md-12">
                   <div class="row">
                     <div class="col-3 col-sm-2 d-flex align-items-center justify-content-end justify-content-sm-center">
                       <img class="h1-5em" src="assets/images/img/icon-duration-light-green.svg" alt="">
@@ -38,31 +38,20 @@
 
                     <div class="col-9 col-sm-10">
                       <div class="md-form">
-                        <input pattern="[0-9]+" mask="0*" type="text" autocomplete="off" required
+                        <input mask="0*" pattern="^[0-9]+" min="1" type="text" autocomplete="off" required
                           formControlName="duration" id="duration" class="form-control" mdbInputDirective
                           data-success="Valid duration" [errorMessage]="getError('duration')">
-                        <label for="duration">Duration (Number of blocks)</label>
+                        <label for="duration">Duration (number of days)</label>
                       </div>
                     </div>
                   </div>
-                </div>
-
-                <div class="col-12 col-sm-6">
-                  <div class="row">
-                    <div class="col-3 col-sm-2 d-flex align-items-center justify-content-end justify-content-sm-center">
-                      <img class="h1-5em" src="assets/images/img/icon-namespaces-white.svg" alt="">
-                    </div>
-
-                    <div class="col-9 col-sm-10">
-                      <div class="md-form">
-                        <input pattern="[1-6]{1}" mask="0{1}" type="text" autocomplete="off" required
-                          formControlName="divisibility" id="divisibility" class="form-control" mdbInputDirective
-                          data-success="Valid divisibility" [errorMessage]="getError('divisibility', 'The divisibility
-                          must be between 1 and 6')">
-                        <label for="walletname">Divisibility (decimal places)</label>
+                  <div class="col-12 background-dark-green-plus d-flex align-items-center justify-content-center">
+                      <div class="row">
+                        <div class="col-12">
+                          <span class="text-white fw-400 fs-0-8-rem">Approximately in blocks: <strong>{{durationByBlock}}</strong></span>
+                        </div>
                       </div>
                     </div>
-                  </div>
                 </div>
               </div>
             </div>
@@ -72,18 +61,39 @@
           <div class="col-10 col-md-11 mt-1-5rem">
             <div class="box-form pt-0 pb-0">
               <div class="row d-flex justify-content-center">
-                <div
-                  class="col-3 col-sm-2 col-md-1 d-flex align-items-center justify-content-end justify-content-sm-center">
-                  <img class="h1-5em" src="assets/images/img/icon-amount-white.svg" alt="">
-                </div>
-
-                <div class="col-9 col-sm-10 col-md-11">
-                  <div class="md-form">
-                    <input mask="comma_separator.0" type="text" autocomplete="off" required
-                      formControlName="deltaSupply" id="deltaSupply" class="form-control" mdbInputDirective
-                      data-success="Valid Supply" [errorMessage]="getError('deltaSupply')">
-                    <label for="walletname">Supply</label>
+                <div class="col-md-6 col-sm-12">
+                  <div class="row">
+                    <div
+                      class="col-3 col-sm-2 col-md-1 d-flex align-items-center justify-content-end justify-content-sm-center">
+                      <img class="h1-5em" src="assets/images/img/icon-amount-white.svg" alt="">
+                    </div>
+    
+                    <div class="col-9 col-sm-10 col-md-11">
+                      <div class="md-form">
+                        <input mask="comma_separator.0" type="text" autocomplete="off" required
+                          formControlName="deltaSupply" id="deltaSupply" class="form-control" mdbInputDirective
+                          data-success="Valid Supply" [errorMessage]="getError('deltaSupply')">
+                        <label for="walletname">Supply</label>
+                      </div>
+                    </div>
                   </div>
+                </div>
+                <div class="col-md-6 col-sm-12">
+                  <div class="row">
+                    <div class="col-3 col-sm-2 d-flex align-items-center justify-content-end justify-content-sm-center">
+                      <img class="h1-5em" src="assets/images/img/icon-namespaces-white.svg" alt="">
+                    </div>
+    
+                    <div class="col-9 col-sm-10">
+                      <div class="md-form">
+                        <input pattern="[1-6]{1}" mask="0{1}" type="text" autocomplete="off" required
+                          formControlName="divisibility" id="divisibility" class="form-control" mdbInputDirective
+                          data-success="Valid divisibility" [errorMessage]="getError('divisibility', 'The divisibility
+                          must be between 1 and 6')">
+                        <label for="walletname">Divisibility (decimal places)</label>
+                      </div>
+                    </div>
+                  </div>                
                 </div>
               </div>
             </div>

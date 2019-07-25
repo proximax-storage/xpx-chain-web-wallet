@@ -6,6 +6,7 @@ import { ProximaxProvider } from '../../../../shared/services/proximax.provider'
 import { WalletService } from '../../../../shared/services/wallet.service';
 import { SharedService } from '../../../../shared/services/shared.service';
 import { DataBridgeService } from '../../../../shared/services/data-bridge.service';
+import { TransactionsService } from 'src/app/transactions/service/transactions.service';
 
 @Component({
   selector: 'app-create-mosaic',
@@ -29,6 +30,7 @@ export class CreateMosaicComponent implements OnInit {
     selected: false,
     disabled: false
   }];
+  durationByBlock = '5760';
   blockSend: boolean = false;
   transactionSigned: SignedTransaction = null;
   subscribe = ['transactionStatus'];
@@ -38,12 +40,16 @@ export class CreateMosaicComponent implements OnInit {
     private proximaxProvider: ProximaxProvider,
     private walletService: WalletService,
     private dataBridge: DataBridgeService,
-    private sharedService: SharedService
+    private sharedService: SharedService,
+    private transactionService: TransactionsService
   ) {
   }
 
   ngOnInit() {
     this.createForm();
+    this.mosaicForm.get('duration').valueChanges.subscribe(next => {
+      this.durationByBlock = this.transactionService.calculateDurationforDay(next).toString();
+    });
   }
 
   ngOnDestroy(): void {
@@ -65,7 +71,7 @@ export class CreateMosaicComponent implements OnInit {
     this.mosaicForm = this.fb.group({
       deltaSupply: [1000000, [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]],
-      duration: [1000, [Validators.required]],
+      duration: [1, [Validators.required]],
       divisibility: [1, [Validators.required]],
       transferable: [false],
       supplyMutable: [false],
@@ -81,7 +87,7 @@ export class CreateMosaicComponent implements OnInit {
   clearForm() {
     this.mosaicForm.get('deltaSupply').patchValue(1000000);
     this.mosaicForm.get('password').patchValue('');
-    this.mosaicForm.get('duration').patchValue(1000);
+    this.mosaicForm.get('duration').patchValue(1);
     this.mosaicForm.get('divisibility').patchValue(1);
     this.mosaicForm.get('transferable').patchValue(false);
     this.mosaicForm.get('supplyMutable').patchValue(false);
@@ -108,7 +114,7 @@ export class CreateMosaicComponent implements OnInit {
           this.mosaicForm.get('transferable').value,
           this.mosaicForm.get('levyMutable').value,
           this.mosaicForm.get('divisibility').value,
-          this.mosaicForm.get('duration').value,
+          parseFloat(this.durationByBlock),
           this.walletService.network
         );
 
@@ -139,7 +145,7 @@ export class CreateMosaicComponent implements OnInit {
           async x => {
             this.blockSend = false;
             this.mosaicForm.reset();
-            this.mosaicForm.patchValue({ duration: 1000 });
+            this.mosaicForm.patchValue({ duration: 1 });
             this.mosaicForm.patchValue({ divisibility: 10 });
             this.mosaicForm.patchValue({ deltaSupply: 1000000 });
             if (this.subscribe['transactionStatus'] === undefined || this.subscribe['transactionStatus'] === null) {

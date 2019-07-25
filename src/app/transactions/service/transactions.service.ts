@@ -263,6 +263,17 @@ export class TransactionsService {
     return response;
   }
 
+  /**
+   * Calculate duration based in days
+   *
+   * @param {number} duration
+   * @returns
+   * @memberof TransactionsService
+   */
+  calculateDurationforDay(duration: number) {
+    return duration * 5760;
+  }
+
 
   /**
    *
