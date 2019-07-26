@@ -21,8 +21,8 @@ export class ServicesComponent implements OnInit {
       'ACCOUNT',
       `View account details, link address to namespace, create smart rules restrictions`,
       {
-        linkTheNamespaceToAnAddress: this.structureServiceRoute('Alias to Namespace', `/${AppConfig.routes.linkTheNamespaceToAnAddress}`),
         myAccount: this.structureServiceRoute('Details', `/${AppConfig.routes.account}`),
+        linkTheNamespaceToAnAddress: this.structureServiceRoute('Link to Namespace', `/${AppConfig.routes.linkTheNamespaceToAnAddress}`),
         filter: this.structureServiceRoute('Filter', ``, true)
       }, true
     );
@@ -52,7 +52,7 @@ export class ServicesComponent implements OnInit {
       'Transactions explorer',
       `Get detailed information about any transaction, address and block`,
       {
-        createPoll: this.structureServiceRoute('Explorer all transactions', `/${AppConfig.routes.explorer}`)
+        createPoll: this.structureServiceRoute('Explore', `/${AppConfig.routes.explorer}`)
       }, true
     );
 
@@ -77,7 +77,7 @@ export class ServicesComponent implements OnInit {
     const namespace = this.service.structureServices(
       'icon-namespaces-dark-green.svg',
       'Namespaces & Sub-namespaces',
-      'Create a domain and subdomains',
+      'Create a domains and subdomains',
       {
         createNamespace: this.structureServiceRoute('Create', `/${AppConfig.routes.createNamespace}`),
         renewNamespace: this.structureServiceRoute('Renew', `/${AppConfig.routes.renovateNamespace}`)
@@ -90,7 +90,7 @@ export class ServicesComponent implements OnInit {
       {
         createMosaic: this.structureServiceRoute('Create', `/${AppConfig.routes.createMosaic}`),
         editMosaic: this.structureServiceRoute('Change Supply', `/${AppConfig.routes.MosaicSupplyChange}`),
-        linkNamespaceToMosaic: this.structureServiceRoute('ALIAS TO NAMESPACE', `/${AppConfig.routes.LinkingNamespaceMosaic}`)
+        linkNamespaceToMosaic: this.structureServiceRoute('LINK TO NAMESPACE', `/${AppConfig.routes.LinkingNamespaceMosaic}`)
       }, true
     );
 
@@ -111,10 +111,10 @@ export class ServicesComponent implements OnInit {
 
     const addressBook = this.service.structureServices(
       'icon-directory-dark-green.svg',
-      'Directory',
+      'Address Book',
       `Assign labels to addresses to easily keep track of your contacts`,
       {
-        manageAddress: this.structureServiceRoute('Open Directory', `/${AppConfig.routes.addressBook}`),
+        manageAddress: this.structureServiceRoute('Open', `/${AppConfig.routes.addressBook}`),
       }, true
     );
 

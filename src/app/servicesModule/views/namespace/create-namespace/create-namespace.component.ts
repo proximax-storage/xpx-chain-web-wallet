@@ -32,7 +32,7 @@ export class CreateNamespaceComponent implements OnInit {
   ];
 
   block: number = null;
-  durationByBlock = '0 days, 0 Hrs, 0 Minutes, 0 Seconds';
+  durationByBlock = '5760';
   endHeight: number;
   fee: string;
   feeType: string = 'XPX';
@@ -83,8 +83,8 @@ export class CreateNamespaceComponent implements OnInit {
     this.getNameNamespace();
 
     const duration = this.namespaceForm.get('duration').value;
-    this.fee = `0.000000 ${this.feeType}`
-    this.durationByBlock = this.transactionService.calculateDuration(UInt64.fromUint(duration));
+    this.fee = `0.000000 ${this.feeType}`;
+    this.durationByBlock = this.transactionService.calculateDurationforDay(duration).toString();
     this.validateRentalFee(this.rentalFee * duration);
     this.subscribeValueChange();
   }
@@ -164,7 +164,7 @@ export class CreateNamespaceComponent implements OnInit {
     this.namespaceForm = this.fb.group({
       name: ['', [Validators.required, Validators.maxLength(18)]],
       namespaceRoot: ['1'],
-      duration: [100, [Validators.required]],
+      duration: [1, [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]],
     });
   }
@@ -177,7 +177,7 @@ export class CreateNamespaceComponent implements OnInit {
   clearForm() {
     this.namespaceForm.get('name').patchValue('');
     this.namespaceForm.get('namespaceRoot').patchValue('1');
-    this.namespaceForm.get('duration').patchValue(100);
+    this.namespaceForm.get('duration').patchValue(1);
     this.namespaceForm.get('password').patchValue('');
   }
 
@@ -344,6 +344,7 @@ export class CreateNamespaceComponent implements OnInit {
     // Get transaction status
     this.subscribe['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
       statusTransaction => {
+        console.log(statusTransaction);
         if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
           const match = statusTransaction['data'].transactionInfo.hash === this.transactionSigned.hash;
           if (statusTransaction['type'] === 'confirmed' && match) {
@@ -393,7 +394,7 @@ export class CreateNamespaceComponent implements OnInit {
    */
   resetForm() {
     this.namespaceForm.get('name').patchValue('');
-    this.namespaceForm.get('duration').patchValue('');
+    this.namespaceForm.get('duration').patchValue(1);
     this.namespaceForm.get('password').patchValue('');
     this.namespaceForm.get('namespaceRoot').patchValue('1');
     this.statusButtonNamespace = true;
@@ -409,7 +410,8 @@ export class CreateNamespaceComponent implements OnInit {
   signedTransaction(common: any): SignedTransaction {
     const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.network);
     const namespaceName: string = this.namespaceForm.get('name').value;
-    const duration: number = this.namespaceForm.get('duration').value;
+    const duration: number = parseFloat(this.durationByBlock);
+    // const duration: number = 20;
     if (this.typetransfer == 1) {
       const registerRootNamespaceTransaction = this.proximaxProvider.registerRootNamespaceTransaction(namespaceName, this.walletService.network, duration)
       const signedTransaction = account.sign(registerRootNamespaceTransaction);
@@ -431,15 +433,15 @@ export class CreateNamespaceComponent implements OnInit {
   subscribeValueChange() {
     // Duration ValueChange
     this.namespaceForm.get('duration').valueChanges.subscribe(
-      next => {
+      next => {       
         if (next !== null && next !== undefined && String(next) !== '0') {
           if (this.showDuration) {
-            this.durationByBlock = this.transactionService.calculateDuration(UInt64.fromUint(next));
+            this.durationByBlock = this.transactionService.calculateDurationforDay(next).toString();
             this.validateRentalFee(this.rentalFee * next);
           }
         } else {
           this.calculateRentalFee = '0.000000';
-          this.durationByBlock = '0 days, 0 Hrs, 0 Minutes, 0 Seconds';
+          this.durationByBlock = '5760';
           this.namespaceForm.get('duration').patchValue(1);
         }
       }

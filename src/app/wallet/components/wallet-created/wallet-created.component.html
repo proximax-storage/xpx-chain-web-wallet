@@ -2,7 +2,7 @@
   <div class="row">
     <div class="col-8 mx-auto">
       <h5 class="text-align-center wallet-description">
-        Warning! before proceeding, make sure store your private key in a safe place. Access to your digital assets
+        Warning! Before proceeding, make sure you save your private key in a safe place. Access to your digital assets
         cannot be recovered without it.
       </h5>
     </div>
@@ -78,8 +78,9 @@
   <div class="row mt-1rem mb-1rem mx-auto">
 
     <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-      <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 btn-white" size="sm"
-        [routerLink]="['/'+link.login]">
+
+      <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 btn-white" size="sm" data-toggle="modal"
+        data-target="#basicExample" (click)="finish()">
         <i class="fa fa-arrow-circle-left"></i> Finish
       </button>
     </div>
@@ -92,3 +93,8 @@
     </div>
   </div>
 </div>
+
+
+
+
+

@@ -163,11 +163,10 @@
       </ng-container>
     </div>
   </div>
-
   <div class="row">
     <div class="col-11 col-sm-11 col-lg-10 mx-auto">
       <div class="table-responsive table-hover">
-        <table mdbTable #tableEl="mdbTable" id="mdbTable" striped="true"
+        <table mdbTable #tableEl="mdbTable" id="mdbTable" striped="true" infiniteScroll [infiniteScrollDistance]="2"  (scrolled)="onScroll()"
           class="table table-hover table-bordered table-hover table-sm z-depth-0" cellspacing="0" width="100%"
           borderless="true">
           <!--Table head-->
@@ -181,62 +180,50 @@
           <!--Table head-->
 
           <!--Table body-->
-          <tbody class="background-white ">
+          <tbody class="background-white">
             <ng-container *ngFor="let el of transactions; let i = index">
               <tr class="mouse-pointer" (click)="dataSelected = el; basicModal.show();">
                 <!-- Type transaction -->
-                <th *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex"
-                  class="th-sm fs-0-8-rem" scope="row description-dark-green">{{el.nameType}}</th>
+                <th class="th-sm fs-0-8-rem" scope="row description-dark-green">{{el.nameType}}</th>
 
                 <!-- timestamp -->
-                <td class="th-sm description-dark-green fs-0-8-rem"
-                  *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex">
-                  {{el.timestamp}}</td>
+                <td class="th-sm description-dark-green fs-0-8-rem">{{el.timestamp}}</td>
 
                 <!-- fee -->
-                <td class="text-center th-sm description-dark-green fs-0-8-rem"
-                  *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex">
-                  {{el.fee}}</td>
+                <td class="text-center th-sm description-dark-green fs-0-8-rem">{{el.fee}}</td>
 
                 <!-- address -->
-                <td class="text-center th-md description-dark-green fs-0-8-rem"
-                  *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex">
-                  <i [ngStyle]="{'color': el.isRemitent === true ? 'green' : 'red' }" style="padding-right: 10px;"
+                <td class="text-center th-md description-dark-green fs-0-8-rem"><i [ngStyle]="{'color': el.isRemitent === true ? 'green' : 'red' }" style="padding-right: 10px;"
                     class="fa fa-send" aria-hidden="true"></i>
                   <span>{{el.senderAddress}}</span>
                 </td>
 
                 <!-- recipíent -->
                 <ng-container *ngIf="el?.recipientAddress !== null; else recipientRentalFee">
-                  <td class="text-center th-md description-dark-green fs-0-8-rem"
-                    *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex">
+                  <td class="text-center th-md description-dark-green fs-0-8-rem">
                     <span>{{el.recipientAddress}}</span>
                   </td>
                 </ng-container>
 
                 <!-- recipient rental fee -->
                 <ng-template #recipientRentalFee>
-                  <td class="text-center th-sm description-dark-green fs-0-8-rem"
-                    *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex">
+                  <td class="text-center th-sm description-dark-green fs-0-8-rem">
                     <span>{{el.recipientRentalFeeSink}}</span>
                   </td>
                 </ng-template>
               </tr>
             </ng-container>
           </tbody>
-
-          <tfoot class="lighten-5 w-100">
-            <tr>
-              <td colspan="5">
-                <mdb-table-pagination [tableEl]="tableEl" [searchDataSource]="transactions">
-                </mdb-table-pagination>
-              </td>
-            </tr>
-          </tfoot>
         </table>
       </div>
     </div>
-  </div>
+  </div>  
+</div>
+
+<div class="scroll-to-top" [ngClass]="{'show-scrollTop': windowScrolled}">
+  <a mdbBtn floating="true" size="md" mdbWavesEffect class="btn-dark-green-prx" (click)="scrollToTop()">
+    <i class="fa fa-angle-up" aria-hidden="true"></i>
+  </a>
 </div>
 
 <!-- MODAL -->

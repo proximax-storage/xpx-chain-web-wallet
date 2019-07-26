@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import { crypto } from 'js-xpx-chain-library';
 import {
+  BlockchainNetworkType
+} from 'xpx2-ts-js-sdk';
+import {
   Password,
   SimpleWallet,
   MosaicInfo,
@@ -68,6 +71,25 @@ export class ProximaxProvider {
   };
 
   constructor() {
+  }
+
+  /**
+   * Method to return blockchain network type
+   * 
+   * @param {NetworkType} network network type
+   * @returns {BlockchainNetworkType} BlockchainNetworkType
+   */
+  getBlockchainNetworkType(network: NetworkType): BlockchainNetworkType {
+    switch (network) {
+      case NetworkType.MAIN_NET:
+        return BlockchainNetworkType.MAIN_NET
+      case NetworkType.MIJIN:
+        return BlockchainNetworkType.MIJIN
+      case NetworkType.MIJIN_TEST:
+        return BlockchainNetworkType.MIJIN_TEST
+      case NetworkType.TEST_NET:
+        return BlockchainNetworkType.TEST_NET
+    }
   }
 
 
@@ -348,6 +370,21 @@ export class ProximaxProvider {
    */
   getTransactionsFromAccount(publicAccount: PublicAccount, queryParams?): Observable<Transaction[]> {
     return this.accountHttp.transactions(publicAccount, new QueryParams(100));
+  }
+
+  /**
+   * Gets an array of confirmed transactions for which an account is signer or receiver.
+   *
+   * @param {*} publicKey
+   * @param {NetworkType} network
+   * @param {QueryParams} queryParams
+   * @param {string} id
+   * @returns {Observable<Transaction[]>}
+   * @memberof ProximaxProvider
+   */
+  getTransactionsFromAccountId(publicAccount: PublicAccount, id = null, queryParams = 25): Observable<Transaction[]> {
+    const query = (id) ? new QueryParams(queryParams, id) : new QueryParams(queryParams);
+    return this.accountHttp.transactions(publicAccount, query);
   }
 
 

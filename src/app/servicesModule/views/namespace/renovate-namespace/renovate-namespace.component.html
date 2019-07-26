@@ -62,12 +62,19 @@
 
                     <div class="col-9 col-sm-10 col-md-10">
                       <div class="md-form">
-                        <input formControlName="duration" mdbInputDirective type="number" min="1" pattern="^[0-9]+"
+                        <input mask="0*" formControlName="duration" mdbInputDirective type="text" min="1" pattern="^[0-9]+"
                           name="duration" id="duration" class="form-control" data-success="Valid duration"
                           [errorMessage]="getError('duration')">
-                        <label for="duration">Duration</label>
+                        <label for="duration">Duration (number of days)</label>
                       </div>
                     </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-12 background-dark-green-plus d-flex align-items-center justify-content-center">
+                <div>
+                  <div class="col-12">
+                    <span class="text-white fw-400 fs-0-8-rem">Approximately in blocks: <strong>{{ durationByBlock }}</strong></span>
                   </div>
                 </div>
               </div>
@@ -85,7 +92,7 @@
 
                 <div class="col-12 col-md-6 t-a-c">
                   <span class="fw-400 color-dark-green">Rental Fee: </span>
-                  <span class="f-w-bold color-dark-green">{{fee}}</span>
+                  <span class="f-w-bold color-dark-green">{{calculateRentalFee}} XPX</span>
                 </div>
               </div>
             </div>
