@@ -79,8 +79,8 @@
 
     <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
 
-      <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 btn-white" size="sm" data-toggle="modal"
-        data-target="#basicExample" (click)="finish()">
+      <!-- <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 btn-white" size="sm" (click)="finish()"> -->
+          <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 btn-white" size="sm" [routerLink]="['/'+routes.login]">
         <i class="fa fa-arrow-circle-left"></i> Finish
       </button>
     </div>
