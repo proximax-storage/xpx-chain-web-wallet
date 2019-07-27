@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { NetworkType } from 'tsjs-xpx-chain-sdk';
 
 @Component({
   selector: 'app-create-wallet',
@@ -7,9 +8,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class CreateWalletComponent implements OnInit {
 
-  typeRed = [{
-    value: 'asdasd',
-    label: 'TEST'
+  typeNetwork = [{
+    value: NetworkType.TEST_NET,
+    label: 'TEST NET'
   }];
 
 
