@@ -1,41 +1,22 @@
-// Modules
 import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
-import { CoreModule } from './core/core.module';
-import { ToastModule } from 'ng-uikit-pro-standard';
-import { BlockUIModule } from 'ng-block-ui';
-// Routing
-import { routing, appRoutingProviders } from './app.routing';
-// components
-import { AppComponent } from './app.component';
-import { HeaderComponent } from './header/header.component';
-import { HeaderHorizontalComponent } from './header/component/header-horizontal/header-horizontal.component';
-import { FooterComponent } from './footer/footer.component';
 
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { CoreModule } from './core/core.module';
+import { SharedModule } from './shared/shared.module';
 
 @NgModule({
   declarations: [
-    AppComponent,
-    HeaderComponent,
-    HeaderHorizontalComponent,
-    FooterComponent
+    AppComponent
   ],
   imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    routing,
-    CoreModule.forRoot(),
-    BlockUIModule.forRoot(),
-    ToastModule.forRoot({
-      maxOpened: 1,
-      newestOnTop: true,
-      preventDuplicates: true,
-      autoDismiss: true,
-      progressBar: true
-    })
+    BrowserModule.withServerTransition({ appId: 'serverApp' }),
+    AppRoutingModule,
+    CoreModule,
+    SharedModule.forRoot()
   ],
-  providers: [appRoutingProviders],
+  providers: [],
   bootstrap: [AppComponent],
   schemas: [NO_ERRORS_SCHEMA]
 })

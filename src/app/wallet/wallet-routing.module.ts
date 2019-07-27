@@ -1,19 +1,31 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { AppConfig } from "../config/app.config";
-import { CreateWalletComponent } from "../wallet/views/create-wallet/create-wallet.component";
-import { ImportWalletComponent } from "../wallet/views/import-wallet/import-wallet.component";
+import { AppConfig } from '../config/app.config';
+import { CreateWalletComponent } from './views/create-wallet/create-wallet.component';
+import { ImportWalletComponent } from './views/import-wallet/import-wallet.component';
 
 const routes: Routes = [
   {
-    path: `${AppConfig.routes.createWallet}`,
+    path: AppConfig.routes.createWallet,
     component: CreateWalletComponent,
-    //canActivate: [NotLoggedGuard]
+    data: {
+      meta: {
+        title: 'createWallet.title',
+        description: 'createWallet.text',
+        override: true,
+      },
+    }
   },
   {
-    path: `${AppConfig.routes.importWallet}`,
+    path: AppConfig.routes.importWallet,
     component: ImportWalletComponent,
-    //canActivate: [NotLoggedGuard]
+    data: {
+      meta: {
+        title: 'importWallet.title',
+        description: 'importWallet.text',
+        override: true,
+      },
+    }
   }
 ];
 

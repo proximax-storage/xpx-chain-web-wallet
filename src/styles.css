@@ -1,0 +1,613 @@
+/* You can add global styles to this file, and also import other style files */
+@import "~@ng-select/ng-select/themes/material.theme.css";
+html,
+body {
+  margin: 0;
+  display: table;
+  height: 100%;
+  width: 100%;
+  font-family: 'Open Sans' !important;
+}
+
+
+/************* MARGIN **************/
+
+.m-0{
+  margin: 0 !important;
+}
+
+.mt-0 {
+  margin-top: 0;
+}
+
+.mt-01rem {
+  margin-top: .1rem;
+}
+
+.mt-02rem {
+  margin-top: .2rem;
+}
+
+.mt-03rem {
+  margin-top: .3rem;
+}
+
+.mt-04rem {
+  margin-top: .4rem;
+}
+
+.mt-05rem {
+  margin-top: .5rem;
+}
+
+.mt-07rem {
+  margin-top: 0.7rem;
+}
+
+.mt-08rem {
+  margin-top: 0.8rem;
+}
+
+.mt-09rem {
+  margin-top: 0.9rem;
+}
+
+.mt-1rem {
+  margin-top: 1rem;
+}
+
+.mt-1-5rem {
+  margin-top: 1.5rem;
+}
+
+.mt-2rem {
+  margin-top: 2rem;
+}
+
+.mt-2-5rem {
+  margin-top: 2.5rem;
+}
+
+.mt-3rem {
+  margin-top: 3rem;
+}
+
+.mt-5rem {
+  margin-top: 5rem;
+}
+
+.mt-6rem {
+  margin-top: 6rem;
+}
+
+.mt-7rem {
+  margin-top: 7rem;
+}
+
+.mb-1rem {
+  margin-bottom: 1rem;
+}
+
+.mb-0{
+  margin-bottom: 0;
+}
+
+.mb-04rem{
+  margin-bottom: .4rem;
+}
+
+.mb-06rem{
+  margin-bottom: .6rem;
+}
+
+.mb-1-5rem {
+  margin-bottom: 1.5rem;
+}
+
+.mb-2rem {
+  margin-bottom: 2rem;
+}
+
+
+.mt-3rem {
+  margin-top: 3rem;
+}
+
+.mt-4rem {
+  margin-top: 4rem;
+}
+
+.mt-5px {
+  margin-top: 5px;
+}
+
+.ml-01rem {
+  margin-left: .1rem;
+}
+
+.ml-1rem {
+  margin-left: 1rem;
+}
+
+.ml-3rem {
+  margin-left: 3rem;
+}
+
+.ml-05rem {
+  margin-left: .5rem;
+}
+
+.mb-0rem {
+  margin-bottom: 0rem;
+}
+
+.mb-1rem {
+  margin-bottom: 1rem;
+}
+
+.mb-2rem {
+  margin-bottom: 2rem;
+}
+
+.mr-0rem {
+  margin-right: 0rem !important;
+}
+
+.mr-01rem {
+  margin-right: .1rem;
+}
+
+.mr-05rem {
+  margin-right: .5rem !important;
+}
+
+/********************* PADDING -*******************************/
+
+/** TOP **/
+.pt-08rem {
+  padding-top: .8rem;
+}
+
+.pt-2rem {
+  padding-top: 2rem;
+}
+
+.pt-3rem {
+  padding-top: 3rem;
+}
+
+.pt-4rem{
+  padding-top: 4rem;
+}
+
+/** BOTTOM **/
+.pb-03rem {
+  padding-bottom: 0.3rem;
+}
+
+.pb-04rem {
+  padding-bottom: 0.4rem;
+}
+
+.pb-2rem {
+  padding-bottom: 2rem;
+}
+
+.pb-08rem {
+  padding-bottom: .8rem;
+}
+
+/** LEFT **/
+
+.pl-0px {
+  padding-left: 0px;
+}
+
+.pl-1rem {
+  padding-left: 1rem;
+}
+
+.pl-1-5rem {
+  padding-left: 1.5rem;
+}
+
+.pl-2rem {
+  padding-left: 2rem !important;
+}
+
+.pl-3rem {
+  padding-left: 3rem;
+}
+
+/** RIGHT **/
+.pr-040rem {
+  padding-right: .4rem;
+}
+
+.pr-1rem {
+  padding-right: 1rem;
+}
+
+.pr-2rem{
+  padding-right: 2rem !important;
+}
+
+.pr-05rem{
+  padding-right: .5rem;
+}
+
+/************************** BORDER ******************************/
+
+.bordb-2px-solid-land {
+  border-bottom: 2px solid #765544;
+}
+
+/************************* LINE HEIGHT *****************/
+.line-h-07em{
+  line-height: .7em;
+}
+
+.line-h-08em{
+  line-height: .8em;
+}
+
+.line-h-09em {
+  line-height: .9em;
+}
+
+.line-h-1em {
+  line-height: 1em;
+}
+
+.line-h-1-2em {
+  line-height: 1.2em;
+}
+
+.line-h-1-4em {
+  line-height: 1.4em;
+}
+
+/************ HEIGHT *************************/
+.h-5em {
+  height: 5em;
+}
+
+.h-06em {
+  height: .6em;
+}
+
+.h-1-5em {
+  height: 1.5em;
+}
+
+.h-2em {
+  height: 2em;
+}
+
+.h-2-6em {
+  height: 2.6em;
+}
+
+
+.h-2-8em {
+  height: 2.8em;
+}
+
+.h-3em {
+  height: 3em;
+}
+
+.h-4em {
+  height: 4em;
+}
+
+
+.h-6em {
+  height: 6em;
+}
+
+.h-7em {
+  height: 7em;
+}
+
+.h-3rem {
+  height: 3rem;
+}
+
+.h-7rem {
+  height: 7rem;
+}
+
+.h-100porcent {
+  height: 100%
+}
+
+.h-98porcent {
+  height: 98%;
+}
+
+.h-70px{
+  height: 70px;
+}
+
+.h-100px {
+  height: 100px;
+}
+
+
+/******************** FONT-WEIGHT ****************/
+.fw-300 {
+  font-weight: 300;
+}
+
+.fw-400 {
+  font-weight: 400;
+}
+
+.fw-600 {
+  font-weight: 600;
+}
+
+.fw-700 {
+  font-weight: 700;
+}
+
+.fw-800 {
+  font-weight: 800;
+}
+
+.fw-900 {
+  font-weight: 900;
+}
+
+/******************* FONT-SIZE *******************/
+.fs-05rem {
+  font-size: 0.5rem;
+}
+
+.fs-06rem {
+  font-size: .6rem;
+}
+
+.fs-07rem {
+  font-size: 0.7rem;
+}
+
+.fs-08rem {
+  font-size: .8rem !important;
+}
+
+.fs-09rem {
+  font-size: 0.9rem;
+}
+
+.fs-1rem {
+  font-size: 1rem;
+}
+
+.fs-1-2rem {
+  font-size: 1.2rem;
+}
+
+.fs-1-3rem {
+  font-size: 1.3rem;
+}
+
+.fs-1-4rem {
+  font-size: 1.4rem;
+}
+
+.fs-1-5rem {
+  font-size: 1.5rem;
+}
+
+.fs-1-6rem {
+  font-size: 1.6rem;
+}
+
+.fs-1-7rem {
+    font-size: 1.7rem;
+  }
+
+.fs-2rem{
+    font-size: 2rem !important;
+}
+
+.font-small {
+  font-size: .9rem;
+}
+
+.fs-14px{
+    font-size: 14px;
+}
+
+.fs-20px{
+    font-size: 20px;
+}
+
+.fs-22px{
+    font-size: 22px;
+}
+
+.fs-34px{
+    font-size: 34px;
+}
+
+
+/****************** TEXT-ALIGN ******************/
+.txt-a-center {
+  text-align: center;
+}
+
+.txt-a-left {
+  text-align: left;
+}
+
+.txt-a-right {
+  text-align: right;
+}
+
+/**************************** COLOR *****************************/
+.color-item-menu{
+  color: #2BA1B9 !important;
+}
+
+.color-blue-intermedio{
+  color: #2BA1B9 !important;
+}
+
+.color-white{
+  color: white !important;
+}
+
+.color-black{
+  color: black !important;
+}
+
+/**************************** BACKGROUND *****************************/
+
+.background-btn{
+  background: #2BA1B9 !important;
+}
+
+/**************************** THEME *****************************/
+.item-menu{
+  font-size: .8rem !important;
+}
+
+.item-menu:hover{
+  font-weight: 800 !important;
+}
+
+footer {
+  display: table-row;
+  height: 1px;
+}
+
+body {
+  position: relative;
+}
+
+footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 74px;
+}
+
+footer.page-footer .footer-copyright{
+  background-color: rgba(0, 0, 0, 0) !important;
+}
+
+@media (max-width: 768px) {
+  footer {
+    height: 45px;
+  }
+}
+
+
+
+/************************* NG SELECT *******************/
+
+.md-form input[type=text], .md-form input[type=password], .md-form input[type=email], .md-form input[type=url], .md-form input[type=time], .md-form input[type=date], .md-form input[type=datetime-local], .md-form input[type=tel], .md-form input[type=number], .md-form input[type=search-md], .md-form input[type=search], .md-form textarea.md-textarea, input[type=text]{
+  border: 1px solid #ced4da;
+  border-radius: 3rem !important;
+  padding-left: 1rem;
+}
+
+.md-form input[type=text]:focus:not([readonly]), .md-form input[type=password]:focus:not([readonly]), .md-form input[type=email]:focus:not([readonly]), .md-form input[type=url]:focus:not([readonly]), .md-form input[type=time]:focus:not([readonly]), .md-form input[type=date]:focus:not([readonly]), .md-form input[type=datetime-local]:focus:not([readonly]), .md-form input[type=tel]:focus:not([readonly]), .md-form input[type=number]:focus:not([readonly]), .md-form input[type=search-md]:focus:not([readonly]), .md-form input[type=search]:focus:not([readonly]), .md-form textarea.md-textarea:focus:not([readonly]),
+.md-form input[type=text]:focus:not([readonly]), .md-form input[type=password]:focus:not([readonly]), .md-form input[type=email]:focus:not([readonly]), .md-form input[type=url]:focus:not([readonly]), .md-form input[type=time]:focus:not([readonly]), .md-form input[type=date]:focus:not([readonly]), .md-form input[type=datetime-local]:focus:not([readonly]), .md-form input[type=tel]:focus:not([readonly]), .md-form input[type=number]:focus:not([readonly]), .md-form input[type=search-md]:focus:not([readonly]), .md-form input[type=search]:focus:not([readonly]), .md-form textarea.md-textarea:focus:not([readonly]),
+.md-form input[type=text]:focus:not([readonly]), .md-form input[type=password]:focus:not([readonly]), .md-form input[type=email]:focus:not([readonly]), .md-form input[type=url]:focus:not([readonly]), .md-form input[type=time]:focus:not([readonly]), .md-form input[type=date]:focus:not([readonly]), .md-form input[type=datetime-local]:focus:not([readonly]), .md-form input[type=tel]:focus:not([readonly]), .md-form input[type=number]:focus:not([readonly]), .md-form input[type=search-md]:focus:not([readonly]), .md-form input[type=search]:focus:not([readonly]), .md-form textarea.md-textarea:focus:not([readonly]){
+  box-shadow: none !important;
+  border: 2px solid #2BA1B9 !important;
+}
+
+.md-form input[type=text]:focus:not([readonly]), .md-form input[type=password]:focus:not([readonly]), .md-form input[type=email]:focus:not([readonly]), .md-form input[type=url]:focus:not([readonly]), .md-form input[type=time]:focus:not([readonly]), .md-form input[type=date]:focus:not([readonly]), .md-form input[type=datetime-local]:focus:not([readonly]), .md-form input[type=tel]:focus:not([readonly]), .md-form input[type=number]:focus:not([readonly]), .md-form input[type=search-md]:focus:not([readonly]), .md-form input[type=search]:focus:not([readonly]), .md-form textarea.md-textarea:focus:not([readonly]) {
+  box-shadow: 0 1px 0 0 #2BA1B9;
+  border-bottom: 1px solid #2BA1B9;
+}
+
+.md-form input[type=text]:focus:not([readonly]) + label, .md-form input[type=password]:focus:not([readonly]) + label, .md-form input[type=email]:focus:not([readonly]) + label, .md-form input[type=url]:focus:not([readonly]) + label, .md-form input[type=time]:focus:not([readonly]) + label, .md-form input[type=date]:focus:not([readonly]) + label, .md-form input[type=datetime-local]:focus:not([readonly]) + label, .md-form input[type=tel]:focus:not([readonly]) + label, .md-form input[type=number]:focus:not([readonly]) + label, .md-form input[type=search-md]:focus:not([readonly]) + label, .md-form input[type=search]:focus:not([readonly]) + label, .md-form textarea.md-textarea:focus:not([readonly]) + label {
+  color: #2BA1B9 !important;
+}
+
+.ng-select.ng-select-focused .ng-select-container .ng-value-container .ng-placeholder{
+  color: #2BA1B9 !important;
+}
+
+.ng-select.ng-select-focused .ng-select-container:after{
+  border-color: #2BA1B9 !important;
+}
+
+.ng-select.ng-select-focused .ng-select-container:after{
+  border-color: #2BA1B9 !important;
+  border-bottom: thin solid #2BA1B9 !important;
+}
+
+.ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-selected{
+  color: #2BA1B9 !important;
+}
+
+.ng-select .ng-select-container {
+  color: #2BA1B9 !important;
+}
+
+.selectWrapper{
+  border-radius:36px;
+  border:1px solid #cccccc;
+}
+
+.ng-select.ng-select-focused .ng-select-container:after,
+.ng-select .ng-select-container:after{
+  border-bottom: none !important;
+}
+
+.ng-value-label{
+  padding-left: 2rem !important;
+}
+
+.ng-select{
+  padding-bottom: 0 !important;
+}
+
+.ng-placeholder{
+  padding-left: 1rem !important;
+}
+
+.ng-arrow-wrapper{
+  padding-right: 1rem !important;
+}
+
+.ng-select .ng-select-container .ng-value-container{
+  padding: 0 !important;
+}
+
+.ng-select.ng-select-single .ng-select-container .ng-arrow-wrapper{
+  bottom: 14px !important;
+}
+
+.ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-marked{
+  border-radius: 3rem;
+}
+
+.ng-dropdown-panel.ng-select-bottom{
+  margin-top: 1.4rem;
+  box-shadow: rgba(0, 0, 0, 0.36) 0 0 10px;
+  border-radius: 3rem;
+}
+
+.ng-select.ng-select-single .ng-select-container .ng-clear-wrapper{
+  bottom: 10px;
+}
+
+
+.selectWrapper.ng-select.ng-select-single.ng-select-searchable.ng-select-clearable.ng-select-bottom.ng-select-opened .ng-value-container .ng-placeholder{
+  padding-left: 2rem !important;
+  padding-top: .8rem !important;
+}
+
+
+.selectWrapper.ng-select.ng-select-single.ng-select-searchable.ng-select-clearable.ng-select-bottom .ng-value-container .ng-placeholder{
+  display: none !important;
+}
+/************************* FIN NG SELECT *******************/

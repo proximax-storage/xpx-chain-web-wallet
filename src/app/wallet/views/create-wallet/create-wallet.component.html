@@ -1,130 +1,66 @@
-<div class="container-fluid mt-6rem animated fadeIn">
+<div class="container mt-3rem mb-2rem animated fadeIn">
   <div class="row">
-    <div class="col-12 col-sm-10 mx-auto">
-      <!-- TITLE -->
-      <div class="row">
-        <div class="col-10 mx-auto">
-          <h1 class="text-align-center wallet-name">
-            <img class="img-wallet" src="assets/images/wallet.png"> {{nameModule}}
-          </h1>
-          <h5 [ngClass]="[walletIsCreated ? 'f-w-bold color-yellow text-align-center wallet-description' :
-      'text-align-center wallet-description']">
-            {{descriptionModule}}</h5>
-        </div>
+    <div class="col-12 d-flex justify-content-center">
+      <span class="fs-1-7rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">Create Wallet</span>
+    </div>
+    <div class="col-11 col-md-10 mx-auto">
+      <hr class="mt-05rem mb-06rem">
+    </div>
+    <div class="col-12 d-flex justify-content-center">
+      <span class="fs-08rem txt-a-center line-h-1-2em">This wallet makes it easy to access your crypto and interact with
+        blockchain. ProximaX does not have access to your funds.</span>
+    </div>
+  </div>
 
-        <div class="col-10 mx-auto">
-          <hr class="background-divisor">
-        </div>
+
+  <div class="row mt-1-5rem">
+    <div class="col-11 col-sm-10 col-md-8 col-lg-6 mx-auto">
+        <ng-select class="selectWrapper" [items]="typeRed" bindLabel="label" bindValue="value"
+        placeholder="Select account">
+      </ng-select>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-11 col-sm-10 col-md-8 col-lg-6 mx-auto">
+      <div class="md-form form-sm mt-1rem mb-0rem">
+        <input mdbInputDirective [validateSuccess]="false" [validateError]="false" type="text" id="form1"
+          class="form-control form-control-sm input-border" placeholder="Wallet name">
       </div>
+    </div>
+  </div>
 
-      <ng-container *ngIf="!walletIsCreated; else walletIsCreatedTemplate">
-        <div class="row">
-          <div class="container-fluid mt-1rem">
-            <div class="col-xl-7 col-md-9 col-sm-11 mx-auto">
-              <form [formGroup]="createWalletForm" (ngSubmit)="createSimpleWallet()">
-                <div class="container box-form">
-                  <div class="md-form">
-                    <i class="fa fa-bars prefix text-white"></i>
-                    <mdb-select [options]="typeNetwork" placeholder="Select type network" required
-                      formControlName="network" class="colorful-select dropdown-default" mdbInputDirective
-                      [errorMessage]="getError('network')">
-                    </mdb-select>
-                  </div>
-                </div>
+  <div class="row">
+    <div class="col-11 col-sm-10 col-md-8 col-lg-6 mx-auto">
+      <div class="md-form form-sm mt-1rem mb-0rem">
+        <input mdbInputDirective [validateSuccess]="false" [validateError]="false" type="password" id="password1"
+          class="form-control form-control-sm input-border" placeholder="Password">
+      </div>
+    </div>
+  </div>
 
-                <div class="container box-form mt-2rem">
-                  <div class="md-form" id="container-walletname">
-                    <i class="fa fa-user prefix text-white"></i>
-                    <input type="text" autocomplete="off" required formControlName="walletname" id="walletname"
-                      class="form-control" mdbInputDirective data-success="Valid Wallet name"
-                      [errorMessage]="getError('walletname')">
-                    <label for="walletname">Wallet name</label>
-                  </div>
+  <div class="row">
+    <div class="col-11 col-sm-10 col-md-8 col-lg-6 mx-auto">
+      <div class="md-form form-sm mt-1rem mb-0rem">
+        <input mdbInputDirective [validateSuccess]="false" [validateError]="false" type="password" id="password2"
+          class="form-control form-control-sm input-border" placeholder="Confirm password">
+      </div>
+    </div>
+  </div>
 
-                  <div formGroupName="passwords">
-                    <div class="row">
-                      <div class="col-12 col-md-6">
-                        <div class="md-form" id="container-password">
-                          <i class="fa fa-lock prefix text-white"></i>
-                          <input type="password" autocomplete="off" required formControlName="password" id="password"
-                            class="form-control" mdbInputDirective data-success="Valid password"
-                            [errorMessage]="getError('password', 'passwords')">
-                          <label for="password">Password</label>
-                        </div>
-                      </div>
-                      <div class="col-12 col-md-6">
-                        <div class="md-form" id="container-confirm_password">
-                          <i class="fa fa-lock prefix text-white"></i>
-                          <input type="password" autocomplete="off" required formControlName="confirm_password"
-                            id="confirm_password" class="form-control" mdbInputDirective data-success="Valid password"
-                            [errorMessage]="getError('confirm_password', 'passwords')">
-                          <label for="confirm_password">Confirm Password</label>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <!-- BUTTONS -->
-                <div class="container mt-1rem">
-                  <div class="row mt-1rem mb-1rem">
-                    <div class="col-6 t-a-r">
-                      <button mdbBtn type="submit" rounded="true" mdbWavesEffect
-                        class="f-w-600 btn-white-green-transparent" (click)="clearForm()">
-                        CLEAR
-                      </button>
-                    </div>
-                    <div class="col-6">
-                      <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 btn-dark-green-prx">
-                        CREATE
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      </ng-container>
-
-      <ng-template #walletIsCreatedTemplate>
-        <app-wallet-created [walletName]="walletName" [privateKey]="privateKey" [address]="address"
-          [publicKey]="publicKey" (viewModal)="viewModal($event)" class="animated fadeIn">
-        </app-wallet-created>
-      </ng-template>
+  <div class="row mt-2rem">
+    <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
+      <button mdbBtn type="button" rounded="true" mdbWavesEffect
+        class="f-w-600 background-btn pl-2rem pr-2rem" size="sm">
+        <span class="fs-1-2em color-white">CLEAR</span>
+      </button>
     </div>
 
+    <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
+        <button mdbBtn type="button" rounded="true" mdbWavesEffect
+          class="f-w-600 background-btn pl-2rem pr-2rem" size="sm">
+          <span class="fs-1-2em color-white">CREATE</span>
+        </button>
+      </div>
   </div>
 </div>
-
-<!-- MODAL
-<div mdbModal #frame="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myBasicModalLabel"
-  aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content form-elegant b-r-08rem">
-      <div class="modal-header text-center box-modal-grey b-t-r-r-08rem b-t-l-r-08rem">
-        <h6 class="modal-title w-100 dark-grey-text" id="myModalLabel">
-          <strong class="title-modal-grey">Confirma</strong>
-        </h6>
-      </div>
-
-      <div class="modal-body">
-        <span class="text-confirm">
-          I confirm thah i have saved a copy of my private key in a safe place. <br>
-          I confirm I understand that if I do not save a copy of muy private key, and there is a system malfunction, I
-          risk losing access to my digital assets
-        </span>
-      </div>
-
-      <div class="modal-footer justify-content-center">
-        <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 btn-white" size="sm"
-          data-toggle="modal" data-target="#basicExample" [routerLink]="['/'+routes.login]">
-          <i class="fa fa-arrow-circle-left"></i> Confirm
-        </button>
-
-        <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 btn-white" size="sm"
-          data-toggle="modal" data-target="#basicExample" (click)="frame.hide()">Not now
-        </button>
-      </div>
-    </div>
-  </div>
-</div>-->

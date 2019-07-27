@@ -4,9 +4,9 @@
 
 export const environment = {
   production: false,
-  nameKeyNodeSelected: `xpx-catapult-web-wallet-n-s`,
-  nameKeyWalletStorage: `xpx-catapult-web-wallet`,
-  nameKeyNodeStorage: `xpx-catapult-web-wallet-nodes`,
+  nameKeyNodeSelected: `sirius-wallet-nodeSelected`,
+  nameKeyWalletStorage: `sirius-wallet`,
+  nameKeyNodeStorage: `sirius-wallet-nodes`,
   protocol: `http`,
   protocolWs: `ws`,
   nodeDefault: 'bctestnet1.xpxsirius.io:3000',

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ServiceModuleService } from "../../../servicesModule/services/service-module.service";
-import { AppConfig } from "../../../config/app.config";
+import { ServicesService, StructureService } from '../../../services/services/services.service';
+import { AppConfig } from '../../../config/app.config';
 
 @Component({
   selector: 'app-home',
@@ -9,97 +9,27 @@ import { AppConfig } from "../../../config/app.config";
 })
 export class HomeComponent implements OnInit {
 
-  link = AppConfig.routes;
-  arrayServices = {};
-  description = '';
-  keyObject = Object.keys;
+  link = {
+    createWallet: AppConfig.routes.createWallet,
+    importWallet: AppConfig.routes.importWallet
+  };
+  objectKeys = Object.keys;
+  servicesList: StructureService[]  = [];
+
+
   constructor(
-    private service: ServiceModuleService
+    private services: ServicesService
   ) { }
 
   ngOnInit() {
-    const explorerFile = this.service.structureServices(
-      'img-explorer-file',
-      'File explorer',
-      `File explorer`,
-      '',
-      false
-    );
-
-    const explorerTransaction = this.service.structureServices(
-      'icon-transactions-dark-green.svg',
-      'Transactions explorer',
-      `Search all available transactions`,
-      '',
-      true
-    );
-
-    const voting = this.service.structureServices(
-      'icon-voting-dark-green.svg',
-      'Voting',
-      `Create polls and vote`,
-      '',
-      true
-    );
-
-    const apostille = this.service.structureServices(
-      'icon-notary-dark-green.svg',
-      'Notary',
-      'Verify and authenticate documents',
-      '',
-      true
-    );
-
-    const multisignature = this.service.structureServices(
-      'fa fa-user-plus',
-      'Multisignature and Multi-User Accounts',
-      'Mutisig accounts are editable on-chain contracts, the most powerful way to secure funds, enable join accounts, and are the foundation of DAOs.',
-      '',
-      false
-    );
-
-    const nameSpace = this.service.structureServices(
-      'img-node',
-      'Namespaces & Subdomains',
-      'Namespaces are domain names. Each namespaces is unique and authenticates mosaics (assets) issued on it or on its subdomains',
-      '',
-      false
-    );
-
-    const delegatedHarvesting = this.service.structureServices(
-      'fa fa-compress',
-      'Delegated Harvesting',
-      'Delegated haversting is the feature that allows "mining" even while your account is closed',
-      '',
-      false
-    );
-
-    const mosaics = this.service.structureServices(
-      'fa fa-compres',
-      'Mosaics',
-      'The mosaics service, are assets that expose additional properties and other features. To be able to create a mosaic, an account must rent at least one root namespace.',
-      '',
-      false
-    );
-
-    const addressBook = this.service.structureServices(
-      'icon-directory-dark-green.svg',
-      'Directory',
-      `Assign labels to addresses to easily keep track of your contacts`,
-      '',
-      true
-    );
-
-    this.arrayServices = {
-      explorerFile: explorerFile,
-      explorerTransaction: explorerTransaction,
-      multisignature: multisignature,
-      nameSpace: nameSpace,
-      delegatedHarvesting: delegatedHarvesting,
-      apostille: apostille,
-      mosaics: mosaics,
-      voting: voting,
-      addressBook: addressBook
-    }
+    this.servicesList = [
+      this.services.buildStructureService('Transactions', 'Search all available transactions', 'icon-transactions-dark-green.svg', true),
+      this.services.buildStructureService('Notary', 'Verify and authenticate documents', 'icon-notary-dark-green.svg', true),
+      this.services.buildStructureService('Voting', 'Create polls and vote', 'icon-voting-dark-green.svg', true),
+      this.services.buildStructureService(
+        'Directory', 'Assign labels to addresses to easily keep track of your contacts', 'icon-directory-dark-green.svg', true
+      )
+    ];
   }
+
 }
