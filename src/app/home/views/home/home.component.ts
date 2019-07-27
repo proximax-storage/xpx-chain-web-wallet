@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ServicesService, StructureService } from '../../../services/services/services.service';
+import { ServicesModuleService, StructureService } from '../../../servicesModule/services/services-module.service';
 import { AppConfig } from '../../../config/app.config';
 
 @Component({
@@ -18,16 +18,34 @@ export class HomeComponent implements OnInit {
 
 
   constructor(
-    private services: ServicesService
+    private services: ServicesModuleService
   ) { }
 
   ngOnInit() {
     this.servicesList = [
-      this.services.buildStructureService('Transactions', 'Search all available transactions', 'icon-transactions-dark-green.svg', true),
-      this.services.buildStructureService('Notary', 'Verify and authenticate documents', 'icon-notary-dark-green.svg', true),
-      this.services.buildStructureService('Voting', 'Create polls and vote', 'icon-voting-dark-green.svg', true),
       this.services.buildStructureService(
-        'Directory', 'Assign labels to addresses to easily keep track of your contacts', 'icon-directory-dark-green.svg', true
+        'Transactions',
+        'Search all available transactions',
+        'icon-transactions-dark-green.svg',
+        true
+      ),
+      this.services.buildStructureService(
+        'Notary',
+        'Verify and authenticate documents',
+        'icon-notary-dark-green.svg',
+        true
+      ),
+      this.services.buildStructureService(
+        'Voting',
+        'Create polls and vote',
+        'icon-voting-dark-green.svg',
+        true
+      ),
+      this.services.buildStructureService(
+        'Directory',
+        'Assign labels to addresses to easily keep track of your contacts',
+        'icon-directory-dark-green.svg',
+        true
       )
     ];
   }
