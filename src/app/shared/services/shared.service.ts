@@ -60,6 +60,7 @@ export interface ItemsHeaderInterface {
   account?: StructureHeader;
   services?: StructureHeader;
   signout?: StructureHeader;
+  wallet?: StructureHeader;
 }
 
 export interface StructureHeader {

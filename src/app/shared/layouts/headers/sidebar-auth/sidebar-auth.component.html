@@ -26,18 +26,14 @@
                 <span class="item-menu">{{itemsHeader[key]['name'] | uppercase}}</span>
                 <span class="caret"></span>
               </a>
-              <div *dropdownMenu class="dropdown-menu dropdown dropdown-primary" role="menu">
+
+              <div *dropdownMenu class="dropdown-menu dropdown dropdown-primary {{itemsHeader[key]['class']}}" role="menu">
                 <ng-container *ngFor="let k of keyObject(itemsHeader[key]['submenu'])">
                   <a class="dropdown-item waves-light" mdbWavesEffect
                     [routerLink]="[itemsHeader[key]['submenu'][k]['link']]">
                     {{itemsHeader[key]['submenu'][k]['name']}}
                   </a>
                 </ng-container>
-
-
-                <!-- <a class="dropdown-item waves-light" mdbWavesEffect href="#">Another action</a>
-                <div class="divider dropdown-divider"></div>
-                <a class="dropdown-item waves-light" mdbWavesEffect href="#">Separated link</a> -->
               </div>
             </li>
           </ng-container>

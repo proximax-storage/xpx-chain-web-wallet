@@ -121,6 +121,10 @@ body {
   margin-top: 5px;
 }
 
+.ml-m05rem{
+  margin-left: -5rem !important;
+}
+
 .ml-01rem {
   margin-left: .1rem;
 }
@@ -611,9 +615,9 @@ footer.page-footer .footer-copyright{
   display: none !important;
 }
 
-.dropdown-menu{
-  margin-left: -1rem !important;
-}
+/* .dropdown-menu{
+  margin-left: -5rem !important;
+} */
 
 .double-nav a{
   color: #0275d8 !important;

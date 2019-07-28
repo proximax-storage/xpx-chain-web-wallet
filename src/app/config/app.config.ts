@@ -12,7 +12,7 @@ export const AppConfig: Config = {
 
 export const NameRoute = {
   [AppConfig.routes.auth]: 'Authorization',
-  [AppConfig.routes.auth]: 'Create wallet',
+  [AppConfig.routes.createWallet]: 'Create wallet',
   [AppConfig.routes.dashboard]: 'Dashboard',
   [AppConfig.routes.home]: 'Home',
   [AppConfig.routes.importWallet]: 'Import wallet'

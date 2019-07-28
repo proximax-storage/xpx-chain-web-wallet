@@ -8,6 +8,9 @@ import { NetworkType } from 'tsjs-xpx-chain-sdk';
 })
 export class CreateWalletComponent implements OnInit {
 
+
+  description = 'This wallet makes it easy to access your crypto and interact with blockchain. ProximaX does not have access to your funds.';
+  title = 'Create Wallet';
   typeNetwork = [{
     value: NetworkType.TEST_NET,
     label: 'TEST NET'

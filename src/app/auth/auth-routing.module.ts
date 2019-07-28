@@ -1,9 +1,10 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AuthComponent } from './views/auth/auth.component';
+import { AppConfig } from '../config/app.config';
 
 const routes: Routes = [{
-  path: '',
+  path: AppConfig.routes.auth,
   component: AuthComponent,
   data: {
     meta: {
