@@ -15,7 +15,7 @@
 
   <div class="row mt-1-5rem">
     <div class="col-11 col-sm-10 col-md-8 col-lg-6 mx-auto">
-        <ng-select class="selectWrapper" [items]="typeNetwork" bindLabel="label" bindValue="value"
+      <ng-select class="selectWrapper" [items]="typeNetwork" bindLabel="label" bindValue="value"
         placeholder="Select account">
       </ng-select>
     </div>
@@ -32,35 +32,38 @@
 
   <div class="row">
     <div class="col-11 col-sm-10 col-md-8 col-lg-6 mx-auto">
-      <div class="md-form form-sm mt-1rem mb-0rem">
-        <input mdbInputDirective [validateSuccess]="false" [validateError]="false" type="password" id="password1"
-          class="form-control form-control-sm input-border" placeholder="Password">
+      <div class="row">
+        <div class="col-12 col-md-6 col-lg-6 mx-auto">
+          <div class="md-form form-sm mt-1rem mb-0rem">
+            <input mdbInputDirective [validateSuccess]="false" [validateError]="false" type="password" id="password1"
+              class="form-control form-control-sm input-border" placeholder="Password">
+          </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-6 mx-auto">
+          <div class="md-form form-sm mt-1rem mb-0rem">
+            <input mdbInputDirective [validateSuccess]="false" [validateError]="false" type="password" id="password2"
+              class="form-control form-control-sm input-border" placeholder="Confirm password">
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
-  <div class="row">
-    <div class="col-11 col-sm-10 col-md-8 col-lg-6 mx-auto">
-      <div class="md-form form-sm mt-1rem mb-0rem">
-        <input mdbInputDirective [validateSuccess]="false" [validateError]="false" type="password" id="password2"
-          class="form-control form-control-sm input-border" placeholder="Confirm password">
-      </div>
-    </div>
-  </div>
+
 
   <div class="row mt-2rem">
     <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-      <button mdbBtn type="button" rounded="true" mdbWavesEffect
-        class="f-w-600 background-btn pl-2rem pr-2rem" size="sm">
+      <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+        size="sm">
         <span class="fs-1-2em color-white">CLEAR</span>
       </button>
     </div>
 
     <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-        <button mdbBtn type="button" rounded="true" mdbWavesEffect
-          class="f-w-600 background-btn pl-2rem pr-2rem" size="sm">
-          <span class="fs-1-2em color-white">CREATE</span>
-        </button>
-      </div>
+      <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+        size="sm">
+        <span class="fs-1-2em color-white">CREATE</span>
+      </button>
+    </div>
   </div>
 </div>

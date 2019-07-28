@@ -610,4 +610,12 @@ footer.page-footer .footer-copyright{
 .selectWrapper.ng-select.ng-select-single.ng-select-searchable.ng-select-clearable.ng-select-bottom .ng-value-container .ng-placeholder{
   display: none !important;
 }
+
+.dropdown-menu{
+  margin-left: -1rem !important;
+}
+
+.double-nav a{
+  color: #0275d8 !important;
+}
 /************************* FIN NG SELECT *******************/

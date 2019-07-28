@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AppConfig } from './config/app.config';
-import { WrapperAuthComponent } from './shared/layouts/wrapper-auth/wrapper-auth.component';
+import { WrapperAuthComponent } from './shared/layouts/wrapper/wrapper-auth/wrapper-auth.component';
 
 const routes: Routes = [
   {

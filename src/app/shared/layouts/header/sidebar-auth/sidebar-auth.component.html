@@ -1,0 +1,48 @@
+<mdb-navbar
+  SideClass="navbar navbar-toggleable-md navbar-expand-lg scrolling-navbar double-nav z-depth-0 background-header-inverse"
+  [containerInside]="false">
+  <mdb-navbar-brand class="d-flex align-items-end">
+    <a class="navbar-brand mr-05rem">
+      <img src="assets/images/img/logo-proximax-sirius-wallet.svg" height="40" class="d-inline-block align-top">
+    </a>
+    <span class="fs-08rem" style="color: #616161;">v0.2.0</span>
+  </mdb-navbar-brand>
+  <links>
+    <ul class="nav navbar-nav nav-flex-icons ml-auto ie-double-nav ie-hidden-double-nav">
+      <ng-container *ngFor="let key of keyObject(itemsHeader)">
+        <ng-container *ngIf="!itemsHeader[key]['rol']">
+          <ng-container *ngIf="itemsHeader[key]['type'] === 'default' && itemsHeader[key]['show']">
+            <li class="nav-item color-item-menu active">
+              <a [routerLink]="[itemsHeader[key]['link']]" class="nav-link waves-light" mdbWavesEffect>
+                <span class="item-menu">{{itemsHeader[key]['name'] | uppercase}}</span>
+              </a>
+            </li>
+          </ng-container>
+
+          <ng-container *ngIf="itemsHeader[key]['type'] === 'dropdown' && itemsHeader[key]['show']">
+            <li class="nav-item dropdown" dropdown>
+              <a dropdownToggle mdbWavesEffect type="button" class="nav-link dropdown-toggle waves-light"
+                mdbWavesEffect>
+                <span class="item-menu">{{itemsHeader[key]['name'] | uppercase}}</span>
+                <span class="caret"></span>
+              </a>
+              <div *dropdownMenu class="dropdown-menu dropdown dropdown-primary" role="menu">
+                <ng-container *ngFor="let k of keyObject(itemsHeader[key]['submenu'])">
+                  <a class="dropdown-item waves-light" mdbWavesEffect
+                    [routerLink]="[itemsHeader[key]['submenu'][k]['link']]">
+                    {{itemsHeader[key]['submenu'][k]['name']}}
+                  </a>
+                </ng-container>
+
+
+                <!-- <a class="dropdown-item waves-light" mdbWavesEffect href="#">Another action</a>
+                <div class="divider dropdown-divider"></div>
+                <a class="dropdown-item waves-light" mdbWavesEffect href="#">Separated link</a> -->
+              </div>
+            </li>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+    </ul>
+  </links>
+</mdb-navbar>
