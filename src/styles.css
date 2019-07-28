@@ -524,7 +524,7 @@ button.navbar-toggler{
 
 .md-form input[type=text], .md-form input[type=password], .md-form input[type=email], .md-form input[type=url], .md-form input[type=time], .md-form input[type=date], .md-form input[type=datetime-local], .md-form input[type=tel], .md-form input[type=number], .md-form input[type=search-md], .md-form input[type=search], .md-form textarea.md-textarea, input[type=text]{
   border: 1px solid #ced4da;
-  border-radius: 3rem !important;
+  border-radius: 1.5rem !important;
   padding-left: 1rem;
 }
 
@@ -543,6 +543,31 @@ button.navbar-toggler{
 .md-form input[type=text]:focus:not([readonly]) + label, .md-form input[type=password]:focus:not([readonly]) + label, .md-form input[type=email]:focus:not([readonly]) + label, .md-form input[type=url]:focus:not([readonly]) + label, .md-form input[type=time]:focus:not([readonly]) + label, .md-form input[type=date]:focus:not([readonly]) + label, .md-form input[type=datetime-local]:focus:not([readonly]) + label, .md-form input[type=tel]:focus:not([readonly]) + label, .md-form input[type=number]:focus:not([readonly]) + label, .md-form input[type=search-md]:focus:not([readonly]) + label, .md-form input[type=search]:focus:not([readonly]) + label, .md-form textarea.md-textarea:focus:not([readonly]) + label {
   color: #2BA1B9 !important;
 }
+
+/** INPUTS VALIDATION **/
+input.form-control.validate-error.ng-invalid.ng-touched, input.form-control.validate-error.ng-invalid.ng-dirty, .form-submitted input.form-control.validate-error.ng-invalid{
+  box-shadow: none !important;
+  border: 2px solid #f2a91d !important;
+}
+
+input.form-control.validate-success.ng-valid.ng-dirty, input.form-control.validate-success.ng-valid.ng-touched, .form-submitted input.form-control.validate-success.ng-valid{
+  box-shadow: none !important;
+  border: 2px solid #2ba1b9 !important;
+}
+
+.error-message{
+  color: #f2a91d !important;
+}
+
+.success-message{
+  color: #2ba1b9 !important;
+}
+
+.md-form.form-sm mdb-error, .md-form.form-sm mdb-success{
+  left: 1rem !important;
+}
+
+/** INPUTS VALIDATION **/
 
 .ng-select.ng-select-focused .ng-select-container .ng-value-container .ng-placeholder{
   color: #2BA1B9 !important;
@@ -600,13 +625,13 @@ button.navbar-toggler{
 }
 
 .ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-marked{
-  border-radius: 3rem;
+  border-radius: 1.5rem;
 }
 
 .ng-dropdown-panel.ng-select-bottom{
   margin-top: 1.4rem;
   box-shadow: rgba(0, 0, 0, 0.36) 0 0 10px;
-  border-radius: 3rem;
+  border-radius: 1.5rem;
 }
 
 .ng-select.ng-select-single .ng-select-container .ng-clear-wrapper{
@@ -632,3 +657,17 @@ button.navbar-toggler{
   color: #0275d8 !important;
 }
 /************************* FIN NG SELECT *******************/
+
+.box-grey{
+  border-radius: 1.5rem;
+  background: #f4f4f4;
+  padding: 10px 20px;
+  margin: 10px;
+}
+
+.box-transparent-border-orange{
+  border-radius: 1.5rem;
+  border: solid #f3ad27;
+  padding: 10px 20px;
+  margin: 10px; text-align: center;
+}

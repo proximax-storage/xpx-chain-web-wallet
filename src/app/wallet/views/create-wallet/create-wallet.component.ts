@@ -44,7 +44,7 @@ export class CreateWalletComponent implements OnInit {
         Validators.maxLength(this.configurationForm.nameWallet.maxLength)
       ]],
       network: [
-        NetworkType.TEST_NET, [ Validators.required ]
+        NetworkType.TEST_NET, [Validators.required]
       ],
       passwords: this.fb.group(
         {
@@ -70,7 +70,20 @@ export class CreateWalletComponent implements OnInit {
   }
 
   createSimpleWallet() {
+    if (this.createWalletForm.valid) {
+      const name = this.createWalletForm.get('nameWallet').value;
+      const network = this.createWalletForm.get('network').value;
+      const password = this.createWalletForm.controls.passwords.get('password').value;
+      console.log('---- name', name);
+      console.log('---- network', network);
+      console.log('----- password ', password);
+      // const walletsStorage = this.walletService.getWalletStorage();
+    }
+  }
 
+  validateInput(nameInput: string, nameControl: string = '') {
+    const validation = (nameControl !== '') ? this.createWalletForm.controls[nameControl].get(nameInput) : this.createWalletForm.get(nameInput);
+    return validation;
   }
 
 }
