@@ -1,10 +1,20 @@
 import { Injectable } from '@angular/core';
+import { AbstractControl } from '@angular/forms';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SharedService {
 
+  configurationForm: ConfigurationForm = {
+    nameWallet: {
+      minLength: 2, maxLength: 30
+    },
+    passwordWallet: {
+      minLength: 8,
+      maxLength: 30
+    }
+  };
 
   constructor() { }
 
@@ -45,7 +55,31 @@ export class SharedService {
     }
   }
 
+  /**
+   *
+   *
+   * @param {AbstractControl} abstractControl
+   * @returns {{ noMatch: boolean }}
+   * @memberof SharedService
+   */
+  equalsPassword(abstractControl: AbstractControl): { noMatch: boolean } {
+    if (abstractControl.get('password').value !== abstractControl.get('confirm_password').value) {
+      return {
+        noMatch: true
+      };
+    }
+  }
+}
 
+export interface ConfigurationForm {
+  nameWallet?: {
+    minLength: number;
+    maxLength: number;
+  };
+  passwordWallet?: {
+    minLength: number;
+    maxLength: number;
+  };
 }
 
 export interface ItemsHeaderInterface {

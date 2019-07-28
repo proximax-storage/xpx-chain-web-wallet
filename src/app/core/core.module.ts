@@ -2,11 +2,11 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MdbModule } from '../shared/moduls/mdb/mdb.module';
 import { NgSelectModule } from '@ng-select/ng-select';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 const moduls = [
-  MdbModule.forRoot(),
   NgSelectModule,
+  ReactiveFormsModule,
   FormsModule
 ];
 
@@ -15,12 +15,12 @@ const moduls = [
   declarations: [],
   imports: [
     CommonModule,
-    moduls
+    moduls,
+    MdbModule.forRoot()
   ],
   exports: [
     MdbModule,
-    NgSelectModule,
-    FormsModule
+    moduls
   ]
 })
 export class CoreModule { }

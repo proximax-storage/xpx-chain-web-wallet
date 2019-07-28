@@ -512,6 +512,15 @@ footer.page-footer .footer-copyright{
 
 
 /************************* NG SELECT *******************/
+.navbar.navbar-dark .breadcrumb .nav-item .nav-link, .navbar.navbar-dark .navbar-nav .nav-item .nav-link{
+  color: #2ba1b9 !important;
+}
+
+button.navbar-toggler{
+  color: white !important;
+  background-color: #2BA1B9 !important;
+}
+
 
 .md-form input[type=text], .md-form input[type=password], .md-form input[type=email], .md-form input[type=url], .md-form input[type=time], .md-form input[type=date], .md-form input[type=datetime-local], .md-form input[type=tel], .md-form input[type=number], .md-form input[type=search-md], .md-form input[type=search], .md-form textarea.md-textarea, input[type=text]{
   border: 1px solid #ced4da;

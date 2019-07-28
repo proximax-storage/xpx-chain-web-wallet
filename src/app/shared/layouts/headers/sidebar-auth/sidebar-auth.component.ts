@@ -20,7 +20,7 @@ export class SidebarAuthComponent implements OnInit {
     this.itemsHeader = {
       home: this.sharedService.buildHeader('default', 'Home', '', '', false, `/${AppConfig.routes.home}`, true, {}, false),
       auth: this.sharedService.buildHeader('default', 'Sign In', '', '', false, `/${AppConfig.routes.auth}`, true, {}, false),
-      wallet: this.sharedService.buildHeader('dropdown', 'Wallet', 'ml-m05rem', '', false, ``, true, {
+      wallet: this.sharedService.buildHeader('dropdown', 'Wallet', 'ml-m05rem', '', false, ``, false, {
         create: this.sharedService.buildHeader('default', 'Create', '', '', false, `/${AppConfig.routes.createWallet}`, true, {}, false),
         import: this.sharedService.buildHeader('default', 'Import', '', '', false, `/${AppConfig.routes.importWallet}`, true, {}, false)
       }, false),
