@@ -7,6 +7,7 @@ export const AppConfig: Config = {
     dashboard: 'dashboard',
     home: 'home',
     importWallet: 'import-wallet',
+    selectNode: 'select-node',
     walletCreated: 'wallet-created'
   }
 };
@@ -17,6 +18,7 @@ export const NameRoute = {
   [AppConfig.routes.dashboard]: 'Dashboard',
   [AppConfig.routes.home]: 'Home',
   [AppConfig.routes.importWallet]: 'Import wallet',
+  [AppConfig.routes.selectNode]: 'Select node',
   [AppConfig.routes.walletCreated]: 'Wallet Created'
 };
 
@@ -27,6 +29,7 @@ export interface Config {
     dashboard: string;
     home: string;
     importWallet: string;
+    selectNode: string;
     walletCreated: string;
   };
 }

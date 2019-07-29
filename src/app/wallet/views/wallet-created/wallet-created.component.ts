@@ -37,14 +37,14 @@ export class WalletCreatedComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.algo = this.walletService.algo;
+    this.algo = this.walletService.algoData;
     if (this.algo !== null) {
       this.subtitle = this.algo.data.name;
       this.address = this.algo.wallet.address.pretty();
       this.privateKey = this.proximaxProvider.decryptPrivateKey(this.algo.data.algo, this.algo.dataAccount.encrypted, this.algo.dataAccount.iv).toUpperCase();
       this.publicKey = this.proximaxProvider.getPublicAccountFromPrivateKey(this.privateKey, this.algo.data.network).publicKey;
       this.algo = null;
-      this.walletService.algo = null;
+      this.walletService.algoData = null;
     }else {
       this.router.navigate([`/${AppConfig.routes.home}`]);
     }
@@ -52,7 +52,7 @@ export class WalletCreatedComponent implements OnInit {
 
   ngOnDestroy(): void {
     this.algo = null;
-    this.walletService.algo = null;
+    this.walletService.algoData = null;
   }
 
   copyMessage(message: string) {
