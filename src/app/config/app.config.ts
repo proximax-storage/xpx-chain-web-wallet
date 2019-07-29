@@ -8,7 +8,8 @@ export const AppConfig: Config = {
     home: 'home',
     importWallet: 'import-wallet',
     selectNode: 'select-node',
-    walletCreated: 'wallet-created'
+    walletCreated: 'wallet-created',
+    createTransfer: 'create-transfer'
   }
 };
 
@@ -19,7 +20,8 @@ export const NameRoute = {
   [AppConfig.routes.home]: 'Home',
   [AppConfig.routes.importWallet]: 'Import wallet',
   [AppConfig.routes.selectNode]: 'Select node',
-  [AppConfig.routes.walletCreated]: 'Wallet Created'
+  [AppConfig.routes.walletCreated]: 'Wallet Created',
+  [AppConfig.routes.createTransfer]: 'Create Transfer'
 };
 
 export interface Config {
@@ -31,5 +33,6 @@ export interface Config {
     importWallet: string;
     selectNode: string;
     walletCreated: string;
+    createTransfer: string;
   };
 }
