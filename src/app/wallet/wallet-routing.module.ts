@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { AppConfig } from '../config/app.config';
 import { CreateWalletComponent } from './views/create-wallet/create-wallet.component';
 import { ImportWalletComponent } from './views/import-wallet/import-wallet.component';
+import { WalletCreatedComponent } from './views/wallet-created/wallet-created.component';
 
 const routes: Routes = [
   {
@@ -23,6 +24,17 @@ const routes: Routes = [
       meta: {
         title: 'importWallet.title',
         description: 'importWallet.text',
+        override: true,
+      },
+    }
+  },
+  {
+    path: AppConfig.routes.walletCreated,
+    component: WalletCreatedComponent,
+    data: {
+      meta: {
+        title: 'walletCreated.title',
+        description: 'walletCreated.text',
         override: true,
       },
     }
