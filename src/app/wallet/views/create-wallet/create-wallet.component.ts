@@ -17,16 +17,14 @@ export class CreateWalletComponent implements OnInit {
   createWalletForm: FormGroup;
   configurationForm: ConfigurationForm = {};
   description = 'This wallet makes it easy to access your crypto and interact with blockchain. ProximaX does not have access to your funds.';
+  errorMatchPassword: string;
+  errorWalletExist: string;
+  isValid: boolean = false;
   title = 'Create Wallet';
   typeNetwork = [{
     value: NetworkType.TEST_NET,
     label: 'TEST NET'
   }];
-  errorMatchPassword: string;
-  errorWalletExist: string;
-  isValid: boolean = false;
-
-
 
   constructor(
     private fb: FormBuilder,
@@ -107,8 +105,13 @@ export class CreateWalletComponent implements OnInit {
           wallet.network
         );
 
+
         this.clearForm();
-        this.walletService.saveDataWalletCreated(nameWallet, dataAccount, wallet);
+        this.walletService.saveDataWalletCreated({
+          name: nameWallet,
+          algo: password,
+          network: wallet.network
+        }, dataAccount, wallet);
         this.walletService.saveAccountStorage(nameWallet, dataAccount);
         this.router.navigate([`/${AppConfig.routes.walletCreated}`]);
         // this.sharedService.showSuccess('', 'Your wallet has been successfully created');

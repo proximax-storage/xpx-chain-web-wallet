@@ -11,7 +11,11 @@ import { SharedService } from '../../shared/services/shared.service';
 })
 export class WalletService {
 
-  algo: any = {};
+  algo: {
+    data: any;
+    dataAccount: AccountsInterface;
+    wallet: SimpleWallet
+  } = null;
 
   constructor(
     private sharedService: SharedService,
@@ -68,10 +72,10 @@ export class WalletService {
    * @param {SimpleWallet} wallet
    * @memberof WalletService
    */
-  saveDataWalletCreated(nameWallet: string, dataAccount: AccountsInterface, wallet: SimpleWallet) {
+  saveDataWalletCreated(data: any, dataAccount: AccountsInterface, wallet: SimpleWallet) {
     this.algo = {
-      name: nameWallet,
-      account: dataAccount,
+      data: data,
+      dataAccount: dataAccount,
       wallet: wallet
     }
   }
