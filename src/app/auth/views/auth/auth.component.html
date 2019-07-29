@@ -25,9 +25,9 @@
       <div class="row">
         <div class="col-11 col-sm-10 col-md-8 col-lg-6 mx-auto">
           <div class="md-form form-sm mt-1rem mb-0rem">
-            <input formControlName="password" mdbInputDirective mdbValidate [validateSuccess]="true"
-              [validateError]="true" type="password" id="password{{errorMatchPassword}}"
-              class="form-control form-control-sm input-border" placeholder="Password">
+            <input [maxlength]="configurationForm.passwordWallet.maxLength" [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" mdbInputDirective mdbValidate [validateSuccess]="true"
+              [validateError]="true" type="password" id="password"
+              class="form-control form-control-sm input-border" placeholder="Enter password">
 
             <!-- VALIDATION -->
             <mdb-error *ngIf="

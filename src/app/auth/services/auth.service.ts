@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { NetworkType } from 'tsjs-xpx-chain-sdk';
 import { AppConfig } from '../../config/app.config';
 import { WalletService } from '../../wallet/services/wallet.service';
 import { DataBridgeService } from '../../shared/services/data-bridge.service';
@@ -10,7 +11,6 @@ import { NamespacesService } from '../../servicesModule/services/namespaces.serv
 import { TransactionsService } from '../../transfer/services/transactions.service';
 import { ServicesModuleService } from '../../servicesModule/services/services-module.service';
 import { SharedService } from '../../shared/services/shared.service';
-import { NetworkType } from 'tsjs-xpx-chain-sdk';
 
 @Injectable({
   providedIn: 'root'
@@ -30,19 +30,13 @@ export class AuthService {
     private dataBridgeService: DataBridgeService,
     private nodeService: NodeService,
     private mosaicService: MosaicService,
-    private nameSpaces: NamespacesService,
+    private namespaces: NamespacesService,
     private transactionService: TransactionsService,
     private serviceModuleService: ServicesModuleService,
     private sharedService: SharedService
   ) {
     this.setLogged(false);
   }
-
-
-
-
- /*************************************************************************** */
-
 
   /**
   * Method to login
@@ -80,7 +74,7 @@ export class AuthService {
     this.dataBridgeService.connectnWs();
     // load services and components
     this.route.navigate([`/${AppConfig.routes.dashboard}`]);
-    this.nameSpaces.buildNamespaceStorage();
+    this.namespaces.buildNamespaceStorage();
     this.serviceModuleService.changeBooksItem(this.walletService.address);
     return true;
   }
@@ -93,7 +87,7 @@ export class AuthService {
    */
   setLogged(params: any) {
     this.logged = params;
-    console.log(this.logged);
+    this.isLogged = params;
     this.isLoggedSubject.next(this.logged);
   }
 
@@ -125,9 +119,6 @@ export class AuthService {
     //   this.subscription['nodeSelected'].unsubscribe();
     // }
   }
-
-
-
 
 
   /**

@@ -45,6 +45,7 @@
     "js-xpx-chain-library": "^0.3.0",
     "ng-uikit-pro-standard": "git+https://oauth2:xds7fpVXkw8SnNJdDtUE@git.mdbootstrap.com/mdb/angular/ng-uikit-pro-standard.git",
     "ngx-clipboard": "^12.2.0",
+    "ngx-mask": "^8.0.2",
     "rxjs": "~6.4.0",
     "screenfull": "^4.2.0",
     "tsjs-xpx-chain-sdk": "^0.2.0",

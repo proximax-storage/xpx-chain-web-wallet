@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { ClipboardModule } from 'ngx-clipboard';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgxMaskModule } from 'ngx-mask';
+
 import { MdbModule } from '../shared/moduls/mdb/mdb.module';
 
 const moduls = [
@@ -18,10 +20,12 @@ const moduls = [
   imports: [
     CommonModule,
     moduls,
+    NgxMaskModule.forRoot(),
     MdbModule.forRoot(),
   ],
   exports: [
     MdbModule,
+    NgxMaskModule,
     moduls
   ]
 })

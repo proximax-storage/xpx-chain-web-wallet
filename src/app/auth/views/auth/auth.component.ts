@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { environment } from '../../../../environments/environment';
+import { ConfigurationForm, SharedService } from 'src/app/shared/services/shared.service';
 
 @Component({
   selector: 'app-auth',
@@ -11,15 +12,18 @@ import { environment } from '../../../../environments/environment';
 export class AuthComponent implements OnInit {
 
   authForm: FormGroup;
+  configurationForm: ConfigurationForm = {};
   title = 'Sign in to your Wallet';
   wallets: Array<any>;
 
   constructor(
+    private authService: AuthService,
     private fb: FormBuilder,
-    private authService: AuthService
+    private sharedService: SharedService
   ) { }
 
   ngOnInit(){
+    this.configurationForm = this.sharedService.configurationForm;
     this.wallets = this.authService.walletsOption(JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage)));
     this.createForm();
   }
@@ -45,9 +49,18 @@ export class AuthComponent implements OnInit {
    */
   createForm() {
     this.authForm = this.fb.group({
-      wallet: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(30)]],
+      wallet: ['', [
+        Validators.required,
+        Validators.minLength(this.configurationForm.nameWallet.minLength),
+        Validators.maxLength(this.configurationForm.nameWallet.maxLength)
+      ]],
       common: this.fb.group({
-        password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]]
+        password: ['',
+        [
+          Validators.required,
+          Validators.minLength(this.configurationForm.passwordWallet.minLength),
+          Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
+        ]]
       })
     });
   }
