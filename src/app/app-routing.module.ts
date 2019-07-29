@@ -34,12 +34,7 @@ const routes: Routes = [
     children: [{
       path: '',
       loadChildren: './dashboard/dashboard.module#DashboardModule'
-    }]
-  }, {
-    path: ``,
-    component: WrapperAuthComponent,
-    canActivate: [NotLoggedGuard],
-    children: [{
+    }, {
       path: '',
       loadChildren: './transfer/transfer.module#TransferModule'
     }]
