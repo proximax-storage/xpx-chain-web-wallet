@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ItemsHeaderInterface, SharedService } from '../../../services/shared.service';
 import { AppConfig } from 'src/app/config/app.config';
+import { environment } from 'src/environments/environment.prod';
 
 @Component({
   selector: 'app-sidebar-auth',
@@ -11,10 +12,12 @@ export class SidebarAuthComponent implements OnInit {
 
   itemsHeader: ItemsHeaderInterface;
   keyObject = Object.keys;
-
+  version = '';
   constructor(
     private sharedService: SharedService
-  ) { }
+  ) {
+    this.version = environment.version;
+  }
 
   ngOnInit() {
     this.itemsHeader = {

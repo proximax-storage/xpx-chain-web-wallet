@@ -1,5 +1,8 @@
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
+import { ToastModule } from 'ng-uikit-pro-standard';
+
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -12,9 +15,17 @@ import { SharedModule } from './shared/shared.module';
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
+    BrowserAnimationsModule,
     AppRoutingModule,
     CoreModule,
-    SharedModule.forRoot()
+    SharedModule.forRoot(),
+    ToastModule.forRoot({
+      maxOpened: 1,
+      newestOnTop: true,
+      preventDuplicates: true,
+      autoDismiss: true,
+      progressBar: true
+    })
   ],
   providers: [],
   bootstrap: [AppComponent],

@@ -1,16 +1,12 @@
-<!-- <mdb-navbar
-  SideClass="navbar navbar-toggleable-md navbar-expand-lg scrolling-navbar double-nav z-depth-0 background-header-inverse"
-  [containerInside]="false"> -->
 <mdb-navbar SideClass="navbar navbar-expand-sm navbar-dark background-header-inverse z-depth-0"
   [containerInside]="false">
   <mdb-navbar-brand class="d-flex align-items-end">
     <a class="navbar-brand mr-05rem">
       <img src="assets/images/img/logo-proximax-sirius-wallet.svg" height="40" class="d-inline-block align-top">
     </a>
-    <span class="fs-08rem" style="color: #616161;">v0.2.0</span>
+    <span class="fs-08rem" style="color: #616161;">v{{version}}</span>
   </mdb-navbar-brand>
   <links>
-    <!-- <ul class="nav navbar-nav nav-flex-icons ml-auto ie-double-nav ie-hidden-double-nav"> -->
     <ul class="navbar-nav ml-auto">
       <ng-container *ngFor="let key of keyObject(itemsHeader)">
         <ng-container *ngIf="!itemsHeader[key]['rol']">

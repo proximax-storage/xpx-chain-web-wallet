@@ -15,20 +15,30 @@
   <form [formGroup]="createWalletForm" (ngSubmit)="createSimpleWallet()">
     <div class="row mt-1-5rem">
       <div class="col-11 col-sm-10 col-md-8 col-lg-6 mx-auto">
-        <ng-select class="selectWrapper" [items]="typeNetwork" bindLabel="label" bindValue="value" placeholder=""
+        <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" class="selectWrapper"
+          [items]="typeNetwork" bindLabel="label" bindValue="value" placeholder="Select network"
           formControlName="network">
         </ng-select>
+        <mdb-error class="mt-1rem ml-1rem"
+          *ngIf="validateInput('network').invalid && (validateInput('network').dirty || validateInput('network').touched)">
+          <span>Select network</span>
+        </mdb-error>
       </div>
     </div>
 
     <div class="row">
       <div class="col-11 col-sm-10 col-md-8 col-lg-6 mx-auto">
         <div class="md-form form-sm mt-1rem mb-0rem">
-          <input mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text" id="form1"
+          <input mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text" id="name-wallet{{errorWalletExist}}"
             class="form-control form-control-sm input-border" placeholder="Wallet name" formControlName="nameWallet">
           <mdb-error
             *ngIf="validateInput('nameWallet').invalid && (validateInput('nameWallet').dirty || validateInput('nameWallet').touched)">
             <span>Input invalid</span>
+          </mdb-error>
+
+          <mdb-error
+            *ngIf="validateInput('nameWallet').valid && validateNameWallet()">
+            <span>Wallet name already exists</span>
           </mdb-error>
           <!-- <mdb-success *ngIf="input.valid && (input.dirty || input.touched)">Input valid</mdb-success> -->
         </div>
@@ -42,26 +52,37 @@
             <div class="col-12 col-md-6 col-lg-6 mx-auto">
               <div class="md-form form-sm mt-1rem mb-0rem">
                 <input formControlName="password" mdbInputDirective mdbValidate [validateSuccess]="true"
-                  [validateError]="true" type="password" id="password1"
+                  [validateError]="true" type="password" id="password{{errorMatchPassword}}"
                   class="form-control form-control-sm input-border" placeholder="Password">
+
+                <!-- VALIDATION -->
                 <mdb-error *ngIf="
-                  validateInput('password', 'passwords').invalid &&
-                  (validateInput('password', 'passwords').dirty || validateInput('password', 'passwords').touched)
-                  ">
+                validateInput('password', 'passwords').invalid &&
+                (validateInput('password', 'passwords').dirty || validateInput('password', 'passwords').touched)">
                   <span>Input invalid</span>
+                </mdb-error>
+
+                <mdb-error *ngIf="validateMatchPassword()">
+                  <span>Password doesn't match</span>
                 </mdb-error>
               </div>
             </div>
             <div class="col-12 col-md-6 col-lg-6 mx-auto">
               <div class="md-form form-sm mt-1rem mb-0rem">
                 <input formControlName="confirm_password" mdbInputDirective mdbValidate [validateSuccess]="true"
-                  [validateError]="true" type="password" id="password2"
+                  [validateError]="true" type="password" id="confirm-password{{errorMatchPassword}}"
                   class="form-control form-control-sm input-border" placeholder="Confirm password">
-                  <mdb-error *ngIf="
+
+                <!-- VALIDATION -->
+                <mdb-error
+                  *ngIf="
                   validateInput('confirm_password', 'passwords').invalid &&
-                  (validateInput('confirm_password', 'passwords').dirty || validateInput('confirm_password', 'passwords').touched)
-                  ">
+                  (validateInput('confirm_password', 'passwords').dirty || validateInput('confirm_password', 'passwords').touched)">
                   <span>Input invalid</span>
+                </mdb-error>
+
+                <mdb-error *ngIf="validateMatchPassword()">
+                  <span>Password doesn't match</span>
                 </mdb-error>
               </div>
             </div>
@@ -75,7 +96,7 @@
     <div class="row mt-2rem">
       <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
         <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
-          size="md">
+          size="md" (click)="clearForm()">
           <span class="fs-1-2em color-white">CLEAR</span>
         </button>
       </div>

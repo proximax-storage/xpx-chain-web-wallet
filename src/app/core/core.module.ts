@@ -16,7 +16,7 @@ const moduls = [
   imports: [
     CommonModule,
     moduls,
-    MdbModule.forRoot()
+    MdbModule.forRoot(),
   ],
   exports: [
     MdbModule,

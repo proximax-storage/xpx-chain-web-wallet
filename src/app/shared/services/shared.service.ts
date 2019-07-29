@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { AbstractControl } from '@angular/forms';
+import { AbstractControl, FormGroup } from '@angular/forms';
+import { ToastService } from 'ng-uikit-pro-standard';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +17,9 @@ export class SharedService {
     }
   };
 
-  constructor() { }
+  constructor(
+    private toastrService: ToastService
+  ) { }
 
   /**
    *
@@ -69,7 +72,29 @@ export class SharedService {
       };
     }
   }
+
+  showSuccess(title: string, bodyMessage: string) {
+    const options = { closeButton: true, tapToDismiss: false, toastClass: 'toastSuccess', timeOut: 4000 };
+    this.toastrService.success(bodyMessage, '', options);
+  }
+
+  showError(title: string, bodyMessage: string) {
+    const options = { closeButton: true, tapToDismiss: false, toastClass: 'toastError', timeOut: 4000 };
+    this.toastrService.error(bodyMessage, '', options);
+  }
+
+  showWarning(title: string, bodyMessage: string) {
+    const options = { closeButton: true, tapToDismiss: false, toastClass: 'toastWarning', timeOut: 4000 };
+    this.toastrService.warning(bodyMessage, '', options);
+  }
+
+  showInfo(title: string, bodyMessage: string) {
+    const options = { closeButton: true, tapToDismiss: false, toastClass: 'toastInfo', timeOut: 4000 };
+    this.toastrService.info(bodyMessage, '', options);
+  }
 }
+
+
 
 export interface ConfigurationForm {
   nameWallet?: {

@@ -509,11 +509,19 @@ footer.page-footer .footer-copyright{
   }
 }
 
+.toastSuccess {
+  opacity: 1.0 !important;
+  background-color: #35af8d;
+}
 
+.toastError {
+  opacity: 1.0 !important;
+  background-color: #e42c2c;
+}
 
 /************************* NG SELECT *******************/
 .navbar.navbar-dark .breadcrumb .nav-item .nav-link, .navbar.navbar-dark .navbar-nav .nav-item .nav-link{
-  color: #2ba1b9 !important;
+  color: #2BA1B9 !important;
 }
 
 button.navbar-toggler{
@@ -552,7 +560,14 @@ input.form-control.validate-error.ng-invalid.ng-touched, input.form-control.vali
 
 input.form-control.validate-success.ng-valid.ng-dirty, input.form-control.validate-success.ng-valid.ng-touched, .form-submitted input.form-control.validate-success.ng-valid{
   box-shadow: none !important;
-  border: 2px solid #2ba1b9 !important;
+  border: 2px solid #2BA1B9 !important;
+}
+
+#confirm-password-invalid,
+#password-invalid,
+#name-wallet-invalid{
+  box-shadow: none !important;
+  border: 2px solid #f2a91d !important;
 }
 
 .error-message{
@@ -560,15 +575,33 @@ input.form-control.validate-success.ng-valid.ng-dirty, input.form-control.valida
 }
 
 .success-message{
-  color: #2ba1b9 !important;
+  color: #2BA1B9 !important;
 }
 
 .md-form.form-sm mdb-error, .md-form.form-sm mdb-success{
   left: 1rem !important;
 }
+/** FIN INPUTS VALIDATION **/
 
-/** INPUTS VALIDATION **/
+/************* SELECT ************/
+.ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-selected{
+  color: #2BA1B9 !important;
+}
 
+.ng-select.ng-select-focused .ng-select-container:after{
+  border-color: #2BA1B9 !important;
+}
+
+.ng-select.ng-select-focused .ng-select-container .ng-arrow-wrapper .ng-arrow,
+.ng-select.ng-select-focused .ng-select-container .ng-value-container .ng-placeholder{
+  color: #2BA1B9 !important;
+}
+
+.selectWrapper.ng-select.validate-success.validate-error.ng-select-single.ng-select-searchable.ng-select-clearable.ng-dirty.ng-invalid.ng-touched.ng-select .ng-select-container:after{
+  border-color: #f2a91d !important;
+}
+
+/*
 .ng-select.ng-select-focused .ng-select-container .ng-value-container .ng-placeholder{
   color: #2BA1B9 !important;
 }
@@ -647,7 +680,7 @@ input.form-control.validate-success.ng-valid.ng-dirty, input.form-control.valida
 
 .selectWrapper.ng-select.ng-select-single.ng-select-searchable.ng-select-clearable.ng-select-bottom .ng-value-container .ng-placeholder{
   display: none !important;
-}
+}*/
 
 /* .dropdown-menu{
   margin-left: -5rem !important;
@@ -671,3 +704,5 @@ input.form-control.validate-success.ng-valid.ng-dirty, input.form-control.valida
   padding: 10px 20px;
   margin: 10px; text-align: center;
 }
+
+
