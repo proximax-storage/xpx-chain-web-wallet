@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { CoreModule } from '../../core/core.module';
 import { SidebarAuthComponent } from './headers/sidebar-auth/sidebar-auth.component';
 import { WrapperAuthComponent } from './wrappers/wrapper-auth/wrapper-auth.component';
+import { SidebarMainComponent } from './headers/sidebar-main/sidebar-main.component';
 
 
 const components = [
@@ -17,7 +18,8 @@ const components = [
     RouterModule
   ],
   declarations: [
-    components
+    components,
+    SidebarMainComponent
   ],
   exports: [
     components
