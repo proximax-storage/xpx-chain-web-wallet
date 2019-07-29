@@ -5,6 +5,7 @@ import { WrapperAuthComponent } from './shared/layouts/wrappers/wrapper-auth/wra
 import { SelectivePreloadingService } from './selective-preloading.service';
 import { NotLoggedGuard } from './shared/guard/not-logged.guard';
 import { LoggedGuard } from './shared/guard/logged.guard';
+import { WrapperMainComponent } from './shared/layouts/wrappers/wrapper-main/wrapper-main.component';
 
 const routes: Routes = [
   {
@@ -28,7 +29,7 @@ const routes: Routes = [
     }]
   }, {
     path: ``,
-    component: WrapperAuthComponent,
+    component: WrapperMainComponent,
     canActivate: [LoggedGuard],
     children: [{
       path: '',
