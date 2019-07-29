@@ -7,21 +7,35 @@
 
   <form [formGroup]="authForm" (ngSubmit)="auth()">
     <!-- wallet name -->
-    <div class="row">
+    <div class="row mt-1-5rem">
       <div class="col-11 col-sm-10 col-md-8 col-lg-6 mx-auto">
-        <div class="md-form form-sm mt-1rem mb-0rem">
-          <input mdbInputDirective [validateSuccess]="false" [validateError]="false" type="text"
-            class="form-control form-control-sm input-border" placeholder="Wallet name">
-        </div>
+        <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" class="selectWrapper"
+          [items]="wallets" formControlName="wallet" bindLabel="value.name" bindValue="value"
+          placeholder="Select a wallet">
+        </ng-select>
+        <mdb-error class="mt-1rem ml-1rem"
+          *ngIf="validateInput('wallet').invalid && (validateInput('wallet').dirty || validateInput('wallet').touched)">
+          <span>Select a wallet</span>
+        </mdb-error>
       </div>
     </div>
 
     <!-- password -->
-    <div class="row">
-      <div class="col-11 col-sm-10 col-md-8 col-lg-6 mx-auto">
-        <div class="md-form form-sm mt-1rem mb-0rem">
-          <input mdbInputDirective [validateSuccess]="false" [validateError]="false" type="password" id="password"
-            class="form-control form-control-sm input-border" placeholder="Password">
+    <div formGroupName="common">
+      <div class="row">
+        <div class="col-11 col-sm-10 col-md-8 col-lg-6 mx-auto">
+          <div class="md-form form-sm mt-1rem mb-0rem">
+            <input formControlName="password" mdbInputDirective mdbValidate [validateSuccess]="true"
+              [validateError]="true" type="password" id="password{{errorMatchPassword}}"
+              class="form-control form-control-sm input-border" placeholder="Password">
+
+            <!-- VALIDATION -->
+            <mdb-error *ngIf="
+                validateInput('password', 'common').invalid &&
+                (validateInput('password', 'common').dirty || validateInput('password', 'common').touched)">
+              <span>Input invalid</span>
+            </mdb-error>
+          </div>
         </div>
       </div>
     </div>

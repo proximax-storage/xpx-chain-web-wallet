@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { NodeService } from './servicesModule/services/node.service';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +7,9 @@ import { Component } from '@angular/core';
 })
 
 export class AppComponent {
-  title = 'proximaxSiriusWallet';
+  title = 'Sirius Wallet';
+
+  constructor(private nodeService: NodeService) {
+    this.nodeService.initNode();
+  }
 }

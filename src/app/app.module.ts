@@ -4,7 +4,7 @@ import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { ToastModule } from 'ng-uikit-pro-standard';
 
 
-import { AppRoutingModule } from './app-routing.module';
+import { routing, appRoutingProviders } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CoreModule } from './core/core.module';
 import { SharedModule } from './shared/shared.module';
@@ -16,7 +16,7 @@ import { SharedModule } from './shared/shared.module';
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
     BrowserAnimationsModule,
-    AppRoutingModule,
+    routing,
     CoreModule,
     SharedModule.forRoot(),
     ToastModule.forRoot({
@@ -27,7 +27,7 @@ import { SharedModule } from './shared/shared.module';
       progressBar: true
     })
   ],
-  providers: [],
+  providers: [appRoutingProviders],
   bootstrap: [AppComponent],
   schemas: [NO_ERRORS_SCHEMA]
 })

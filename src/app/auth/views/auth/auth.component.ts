@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-auth',
@@ -11,6 +12,7 @@ export class AuthComponent implements OnInit {
 
   authForm: FormGroup;
   title = 'Sign in to your Wallet';
+  wallets: Array<any>;
 
   constructor(
     private fb: FormBuilder,
@@ -18,6 +20,7 @@ export class AuthComponent implements OnInit {
   ) { }
 
   ngOnInit(){
+    this.wallets = this.authService.walletsOption(JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage)));
     this.createForm();
   }
 
@@ -67,5 +70,26 @@ export class AuthComponent implements OnInit {
 
     this.authForm.reset();
     return;
+  }
+
+  /**
+   *
+   *
+   * @param {string} [nameInput='']
+   * @param {string} [nameControl='']
+   * @param {string} [nameValidation='']
+   * @returns
+   * @memberof AuthComponent
+   */
+  validateInput(nameInput: string = '', nameControl: string = '', nameValidation: string = '') {
+    let validation: AbstractControl = null;
+    if (nameInput !== '' && nameControl !== '') {
+      validation = this.authForm.controls[nameControl].get(nameInput);
+    } else if (nameInput === '' && nameControl !== '' && nameValidation !== '') {
+      validation = this.authForm.controls[nameControl].getError(nameValidation);
+    } else if (nameInput !== '') {
+      validation = this.authForm.get(nameInput);
+    }
+    return validation;
   }
 }
