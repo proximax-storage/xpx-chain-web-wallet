@@ -9,6 +9,9 @@ body {
   font-family: 'Open Sans' !important;
 }
 
+.cursor-p{
+  cursor: pointer;
+}
 
 /************* MARGIN **************/
 
@@ -94,6 +97,10 @@ body {
 
 .mb-04rem{
   margin-bottom: .4rem;
+}
+
+.mb-05rem{
+  margin-bottom: .5rem;
 }
 
 .mb-06rem{

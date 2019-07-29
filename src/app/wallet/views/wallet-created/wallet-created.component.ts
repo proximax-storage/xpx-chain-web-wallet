@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { SimpleWallet } from 'tsjs-xpx-chain-sdk';
+import { Router } from '@angular/router';
 import { WalletService, AccountsInterface } from '../../services/wallet.service';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
-import { Router } from '@angular/router';
-import { AppConfig } from 'src/app/config/app.config';
+import { AppConfig } from '../../../config/app.config';
+import { SharedService } from '../../../shared/services/shared.service';
 
 @Component({
   selector: 'app-wallet-created',
@@ -22,13 +23,16 @@ export class WalletCreatedComponent implements OnInit {
   description = 'Warning! before proceeding, make sure store your private key in a safe place. Access to your digital assets cannot be recovered without it.';
   publicKey = '';
   privateKey = '';
-  title = 'Congratulations!';
+  title = 'Congratulations';
   titleDescription = 'Your wallet has been created successfully';
   subtitle = '';
+  viewPrivateKey = false;
+  routeHome = AppConfig.routes.home;
 
   constructor(
     private walletService: WalletService,
     private proximaxProvider: ProximaxProvider,
+    private sharedService: SharedService,
     private router: Router
   ) { }
 
@@ -49,5 +53,9 @@ export class WalletCreatedComponent implements OnInit {
   ngOnDestroy(): void {
     this.algo = null;
     this.walletService.algo = null;
+  }
+
+  copyMessage(message: string) {
+    this.sharedService.showSuccess('', `${message} copied`);
   }
 }

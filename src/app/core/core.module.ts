@@ -1,13 +1,15 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MdbModule } from '../shared/moduls/mdb/mdb.module';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { ClipboardModule } from 'ngx-clipboard';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MdbModule } from '../shared/moduls/mdb/mdb.module';
 
 const moduls = [
   NgSelectModule,
   ReactiveFormsModule,
-  FormsModule
+  FormsModule,
+  ClipboardModule
 ];
 
 
