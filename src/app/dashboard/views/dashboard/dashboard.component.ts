@@ -18,14 +18,14 @@ import { SharedService } from 'src/app/shared/services/shared.service';
 
 export class DashboardComponent implements OnInit, OnDestroy {
 
-  // @ViewChild(MdbTablePaginationComponent) mdbTablePagination: MdbTablePaginationComponent;
   @ViewChild(MdbTableDirective, {static: true}) mdbTable: MdbTableDirective;
   @HostListener('input') oninput() {
     this.searchItems();
   }
   previous: any = [];
   cantTransactions = 0;
-  myAddress: Address = null;
+  // myAddress: Address = null;
+  myAddress: string;
   cantConfirmed = 0;
   cantUnconfirmed = 0;
   confirmedSelected = true;
@@ -61,7 +61,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private proximaxProvider: ProximaxProvider,
     @Inject(DOCUMENT) private document: Document
   ) {
-    this.myAddress = this.walletService.address;
+    this.myAddress = this.walletService.address.pretty();
   }
 
   @HostListener("window:scroll", [])
