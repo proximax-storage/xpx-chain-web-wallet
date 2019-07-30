@@ -13,7 +13,24 @@ export class SidebarMainComponent implements OnInit {
 
   changeMenu = true;
   itemsHeader: ItemsHeaderInterface;
-  itemsMenu: [];
+  itemsMenu = [
+    {
+      label: 'DASHBOARD',
+      url: `/${AppConfig.routes.dashboard}`
+    },
+    {
+      label: 'TRANSACTIONS',
+      url: `/${AppConfig.routes.createTransfer}`
+    },
+    {
+      label: 'ACCOUNT',
+      url: `/${AppConfig.routes.dashboard}`
+    },
+    {
+      label: 'SERVICES',
+      url: `/${AppConfig.routes.dashboard}`
+    },
+  ];
   keyObject = Object.keys;
   version = '';
   constructor(
@@ -27,12 +44,14 @@ export class SidebarMainComponent implements OnInit {
       signout: this.sharedService.buildHeader('default', 'LOG OUT', '', '', false, `/${AppConfig.routes.home}`, true, {}, false),
     }
   }
+
   myFunction() {
-    let x = document.getElementById("myTopnav");
-    if (x.className === "topnav") {
-      x.className += " responsive";
+    let menuNav = document.getElementById("myTopnav");
+
+    if (menuNav.classList.contains('responsive')) {
+      menuNav.classList.remove('responsive');
     } else {
-      x.className = "topnav";
+      menuNav.classList.add('responsive');
     }
   }
 }
