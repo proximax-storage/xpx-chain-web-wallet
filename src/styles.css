@@ -608,6 +608,11 @@ input.form-control.validate-success.ng-valid.ng-dirty, input.form-control.valida
   border-color: #f2a91d !important;
 }
 
+.navbar-toggler-icon{
+  height: 25px !important;
+    width: 20px !important;
+}
+
 /*
 .ng-select.ng-select-focused .ng-select-container .ng-value-container .ng-placeholder{
   color: #2BA1B9 !important;
