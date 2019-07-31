@@ -19,7 +19,7 @@ export class SidebarMainComponent implements OnInit {
       url: `/${AppConfig.routes.dashboard}`
     },
     {
-      label: 'TRANSACTIONS',
+      label: 'TRANSFER',
       url: `/${AppConfig.routes.createTransfer}`
     },
     {
@@ -47,7 +47,6 @@ export class SidebarMainComponent implements OnInit {
 
   myFunction() {
     let menuNav = document.getElementById("myTopnav");
-
     if (menuNav.classList.contains('responsive')) {
       menuNav.classList.remove('responsive');
     } else {

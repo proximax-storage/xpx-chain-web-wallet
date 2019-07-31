@@ -45,7 +45,7 @@
 
 <div class="topnav" id="myTopnav">
   <div class="d-flex flex-column flex-sm-column flex-md-row align-items-center justify-content-center">
-    <a *ngFor="let key of itemsMenu" [href]="key.url">{{ key.label }}</a>
+    <a *ngFor="let key of itemsMenu" [routerLink]="[key.url]">{{ key.label }}</a>
   </div>
   <input type="checkbox" class="menu-btn" id="menu-btn" (click)="myFunction()">
   <label for="menu-btn" class="icon"><i class="fa fa-bars"></i></label>
