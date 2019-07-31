@@ -24,6 +24,18 @@ import { TransactionsInterface } from "../../dashboard/services/transaction.inte
 import { MosaicService } from "../../servicesModule/services/mosaic.service";
 import { NamespacesService } from "../../servicesModule/services/namespaces.service";
 
+
+
+export interface TransferInterface {
+  common: { password?: any; privateKey?: any };
+  recipient: string;
+  message: string;
+  network: NetworkType;
+  mosaic: any;
+}
+
+
+
 @Injectable({
   providedIn: "root"
 })
@@ -100,6 +112,40 @@ export class TransactionsService {
     private namespaceService: NamespacesService
   ) { }
 
+
+  buildTransferTransaction(params: TransferInterface) {
+    const recipientAddress = this.proximaxProvider.createFromRawAddress(params.recipient);
+    const mosaics = params.mosaic;
+    const allMosaics = [];
+    mosaics.forEach(element => {
+      console.log(element);
+      allMosaics.push(new Mosaic(
+        new MosaicId(element.id),
+        UInt64.fromUint(Number(element.amount))
+        )
+      );
+    });
+
+    console.log(allMosaics);
+    const transferTransaction = TransferTransaction.create(
+      Deadline.create(5),
+      recipientAddress,
+      allMosaics,
+      PlainMessage.create(params.message),
+      params.network
+    );
+
+    console.log('transfer transaction', transferTransaction);
+    const account = Account.createFromPrivateKey(params.common.privateKey, params.network);
+    const signedTransaction = account.sign(transferTransaction);
+    const transactionHttp = new TransactionHttp(
+      environment.protocol + "://" + `${this.nodeService.getNodeSelected()}`
+    );
+    return {
+      signedTransaction: signedTransaction,
+      transactionHttp: transactionHttp
+    };
+  }
 
 
   /**

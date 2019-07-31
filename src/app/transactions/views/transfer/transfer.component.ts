@@ -7,7 +7,7 @@ import {
 } from "@angular/forms";
 import { MosaicId, SignedTransaction, Address } from "tsjs-xpx-chain-sdk";
 import { WalletService, SharedService } from "../../../shared";
-import { TransactionsService } from "../../../transactions/service/transactions.service";
+import { TransactionsService, TransferInterface } from "../../../transactions/service/transactions.service";
 import { ServiceModuleService } from "../../../servicesModule/services/service-module.service";
 import { MosaicService } from "../../../servicesModule/services/mosaic.service";
 import { ProximaxProvider } from "../../../shared/services/proximax.provider";
@@ -144,8 +144,8 @@ export class TransferComponent implements OnInit {
               for (let mosaic of mosaics) {
                 const currentMosaic = accountInfo.mosaics.find(element => element.id.toHex() === this.proximaxProvider.getMosaicId(mosaic.id).toHex());
                 const amount = (mosaic.mosaicInfo !== null) ?
-                    this.transactionService.amountFormatter(currentMosaic.amount, mosaic.mosaicInfo) :
-                    this.transactionService.amountFormatterSimple(currentMosaic.amount.compact());
+                  this.transactionService.amountFormatter(currentMosaic.amount, mosaic.mosaicInfo) :
+                  this.transactionService.amountFormatterSimple(currentMosaic.amount.compact());
                 if (this.proximaxProvider.getMosaicId(mosaic.id).id.toHex() !== this.mosaicServices.mosaicXpx.mosaicId) {
                   const nameMosaic = (mosaic.mosaicNames.names.length > 0) ? mosaic.mosaicNames.names[0] : this.proximaxProvider.getMosaicId(mosaic.id).toHex();
                   mosaicsSelect.push({
@@ -252,7 +252,6 @@ export class TransferComponent implements OnInit {
     );
   }
 
-
   /**
    * Clear form
    *
@@ -275,6 +274,14 @@ export class TransferComponent implements OnInit {
     return;
   }
 
+  /**
+   *
+   *
+   * @param {(string | (string | number)[])} [custom]
+   * @param {(string | number)} [formControl]
+   * @returns
+   * @memberof TransferComponent
+   */
   clearFormContact(custom?: string | (string | number)[], formControl?: string | number) {
     if (custom !== undefined) {
       if (formControl !== undefined) {
@@ -419,15 +426,21 @@ export class TransferComponent implements OnInit {
       let common = { password: this.transferForm.get("password").value };
       this.blockSendButton = true;
       if (this.walletService.decrypt(common)) {
-        const buildTransferTransaction = this.transactionService.buildToSendTransfer(
-          common,
-          this.accountRecipient,
-          this.transferForm.get("message").value === null ? "" : this.transferForm.get("message").value,
-          this.transferForm.get("amount").value,
-          this.walletService.network,
-          this.transferForm.get("mosaicsSelect").value
-        );
+        const params: TransferInterface = {
+          common: common,
+          recipient: this.accountRecipient,
+          message: (this.transferForm.get("message").value === null) ? "" : this.transferForm.get("message").value,
+          network: this.walletService.network,
+          mosaic: [{
+            id: [519256100, 642862634],
+            amount: 1
+          },{
+            id: '0dc67fbe1cad29e3',
+            amount: 250
+          }]
+        };
 
+        const buildTransferTransaction = this.transactionService.buildTransferTransaction(params);
         this.dataBridge.setTransactionStatus(null);
         this.transactionSigned = buildTransferTransaction.signedTransaction;
         buildTransferTransaction.transactionHttp.announce(buildTransferTransaction.signedTransaction).subscribe(
@@ -505,8 +518,23 @@ export class TransferComponent implements OnInit {
       }
     );
 
-    // Mosaic Select
     this.transferForm.get('mosaicsSelect').valueChanges.subscribe(
+      value => {
+        console.log(value);
+        /* this.titleLabelAmount = (typeof (value) === 'string' && value === this.proximaxProvider.mosaicXpx.mosaicId) ? 'Amount' : 'Quantity';
+         if (value !== null && value !== undefined) {
+           const mosaic = this.mosaicServices.filterMosaic(new MosaicId(value));
+           const a = Number(this.transferForm.get('amount').value);
+           this.amountSend = (mosaic !== null) ? this.transactionService.amountFormatter(a, mosaic.mosaicInfo) : a;
+           this.validateAmountToTransfer(a, mosaic);
+         } else {
+           this.amountSend = 0;
+         }*/
+      }
+    );
+
+    // Mosaic Select
+    /*this.transferForm.get('mosaicsSelect').valueChanges.subscribe(
       value => {
         this.titleLabelAmount = (typeof (value) === 'string' && value === this.proximaxProvider.mosaicXpx.mosaicId) ? 'Amount' : 'Quantity';
         if (value !== null && value !== undefined) {
@@ -518,26 +546,26 @@ export class TransferComponent implements OnInit {
           this.amountSend = 0;
         }
       }
-    );
+    );*/
 
     // Amount
-    this.transferForm.get('amount').valueChanges.subscribe(
-      value => {
-        if (value !== null && value !== undefined && value < 0) {
-          this.transferForm.get('amount').patchValue(0);
-          return;
-        } else {
-          if (this.transferForm.get('mosaicsSelect').value !== null && this.transferForm.get('mosaicsSelect').value !== undefined) {
-            const mosaic = this.mosaicServices.filterMosaic(new MosaicId(this.transferForm.get('mosaicsSelect').value));
-            const a = Number(this.transferForm.get('amount').value);
-            this.amountSend = (mosaic !== null) ? this.transactionService.amountFormatter(a, mosaic.mosaicInfo) : a;
-            this.validateAmountToTransfer(a, mosaic);
-          } else {
-            this.amountSend = 0;
-          }
-        }
-      }
-    );
+    /* this.transferForm.get('amount').valueChanges.subscribe(
+       value => {
+         if (value !== null && value !== undefined && value < 0) {
+           this.transferForm.get('amount').patchValue(0);
+           return;
+         } else {
+           if (this.transferForm.get('mosaicsSelect').value !== null && this.transferForm.get('mosaicsSelect').value !== undefined) {
+             const mosaic = this.mosaicServices.filterMosaic(new MosaicId(this.transferForm.get('mosaicsSelect').value));
+             const a = Number(this.transferForm.get('amount').value);
+             this.amountSend = (mosaic !== null) ? this.transactionService.amountFormatter(a, mosaic.mosaicInfo) : a;
+             this.validateAmountToTransfer(a, mosaic);
+           } else {
+             this.amountSend = 0;
+           }
+         }
+       }
+     );*/
 
     // Contact
     this.transferForm.get('contact').valueChanges.subscribe(
@@ -633,6 +661,11 @@ export class TransferComponent implements OnInit {
     }
   }
 
+  /**
+   *
+   *
+   * @memberof TransferComponent
+   */
   resetMosaic() {
     this.mosaicsSelect = [
       {
