@@ -83,6 +83,8 @@ export class DataBridgeService {
               unconfirmed.unshift(element);
             }
           }
+
+
           this.transactionsService.setTransactionsUnConfirmed$(unconfirmed);
         }
       });
@@ -109,7 +111,6 @@ export class DataBridgeService {
         this.reconnect(this.connector);
       });
     }
-
   }
 
   /**
@@ -158,7 +159,6 @@ export class DataBridgeService {
           this.destroyUnconfirmedTransaction(transactionFormatter);
           this.transactionsService.setTransactionsConfirmed$(transactionPushed);
           audio.play();
-          // this.messageService.changeMessage('balanceChanged');
           this.transactionsService.validateTypeTransaction(incomingTransaction.type);
           // this.namespaceService.buildNamespaceStorage();
           // this.transactionsService.updateBalance();
@@ -182,6 +182,7 @@ export class DataBridgeService {
         'type': 'unconfirmed',
         'data': unconfirmedTransaction
       });
+
       this.transactionsService.getTransactionsUnConfirmed$().pipe(first()).subscribe(
         async transactionsUnconfirmed => {
           const transactionPushed = transactionsUnconfirmed.slice(0);

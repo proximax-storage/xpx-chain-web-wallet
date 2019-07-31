@@ -118,7 +118,6 @@ export class TransactionsService {
     const mosaics = params.mosaic;
     const allMosaics = [];
     mosaics.forEach(element => {
-      console.log(element);
       allMosaics.push(new Mosaic(
         new MosaicId(element.id),
         UInt64.fromUint(Number(element.amount))
@@ -126,7 +125,6 @@ export class TransactionsService {
       );
     });
 
-    console.log(allMosaics);
     const transferTransaction = TransferTransaction.create(
       Deadline.create(5),
       recipientAddress,
@@ -135,7 +133,6 @@ export class TransactionsService {
       params.network
     );
 
-    console.log('transfer transaction', transferTransaction);
     const account = Account.createFromPrivateKey(params.common.privateKey, params.network);
     const signedTransaction = account.sign(transferTransaction);
     const transactionHttp = new TransactionHttp(

@@ -55,7 +55,8 @@ export class CreateNamespaceComponent implements OnInit {
   startHeight: number;
   statusButtonNamespace: boolean = true;
   showDuration: boolean = true;
-  transactionSigned: SignedTransaction = null;
+  transactionSigned: SignedTransaction[] = [];
+  transactionReady: SignedTransaction[] = [];
   typetransfer: number = 1;
   validateForm: boolean = false;
   blockBtnSend: boolean = false;
@@ -195,23 +196,45 @@ export class CreateNamespaceComponent implements OnInit {
       }
       if (this.walletService.decrypt(common)) {
         const signedTransaction = this.signedTransaction(common);
-        this.transactionSigned = signedTransaction;
+        this.transactionSigned.push(signedTransaction);
         this.dataBridge.setTransactionStatus(null);
         this.proximaxProvider.announce(signedTransaction).subscribe(
           () => {
-            this.getTransactionStatus();
+            if (this.subscribe['transactionStatus'] === undefined || this.subscribe['transactionStatus'] === null) {
+              this.getTransactionStatus();
+            }
             this.blockBtnSend = false;
-            this.resetForm()
+            this.resetForm();
+            this.setTimeOutValidate(signedTransaction.hash);
           }, () => {
             this.blockBtnSend = false;
             this.resetForm()
-            this.sharedService.showError('', 'An unexpected error has occurred');
+            this.sharedService.showError('', 'Error connecting to the node');
           }
         );
       } else {
         this.blockBtnSend = false;
       }
     }
+  }
+
+  /**
+   *
+   *
+   * @param {string} hash
+   * @memberof CreateNamespaceComponent
+   */
+  setTimeOutValidate(hash: string) {
+    setTimeout(() => {
+      let exist = false;
+      for (let element of this.transactionReady) {
+        if (hash === element.hash) {
+          exist = true;
+        }
+      }
+
+      (exist) ? '' : this.sharedService.showWarning('', 'An error has occurred');
+    }, 5000);
   }
 
 
@@ -344,18 +367,20 @@ export class CreateNamespaceComponent implements OnInit {
     // Get transaction status
     this.subscribe['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
       statusTransaction => {
-        console.log(statusTransaction);
-        if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
-          const match = statusTransaction['data'].transactionInfo.hash === this.transactionSigned.hash;
-          if (statusTransaction['type'] === 'confirmed' && match) {
-            this.transactionSigned = null;
-            this.sharedService.showSuccess('', 'Transaction confirmed');
-          } else if (statusTransaction['type'] === 'unconfirmed' && match) {
-            this.transactionSigned = null;
-            this.sharedService.showInfo('', 'Transaction unconfirmed');
-          } else if (match) {
-            this.transactionSigned = null;
-            this.sharedService.showWarning('', statusTransaction['type'].status);
+        if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned.length > 0) {
+          for(let element of this.transactionSigned) {
+            if (statusTransaction['data'].transactionInfo.hash === element.hash) {
+              this.transactionReady.push(element);
+              if (statusTransaction['type'] === 'confirmed') {
+                this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['data'].transactionInfo.hash);
+                this.sharedService.showSuccess('', 'Transaction confirmed');
+              } else if (statusTransaction['type'] === 'unconfirmed') {
+                this.sharedService.showInfo('', 'Transaction unconfirmed');
+              } else {
+                this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['data'].transactionInfo.hash);
+                this.sharedService.showWarning('', statusTransaction['type'].status);
+              }
+            }
           }
         }
       }
@@ -433,7 +458,7 @@ export class CreateNamespaceComponent implements OnInit {
   subscribeValueChange() {
     // Duration ValueChange
     this.namespaceForm.get('duration').valueChanges.subscribe(
-      next => {       
+      next => {
         if (next !== null && next !== undefined && String(next) !== '0') {
           if (this.showDuration) {
             this.durationByBlock = this.transactionService.calculateDurationforDay(next).toString();

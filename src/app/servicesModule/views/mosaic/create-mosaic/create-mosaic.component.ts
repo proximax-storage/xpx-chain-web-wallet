@@ -32,7 +32,8 @@ export class CreateMosaicComponent implements OnInit {
   }];
   durationByBlock = '5760';
   blockSend: boolean = false;
-  transactionSigned: SignedTransaction = null;
+  transactionSigned: SignedTransaction[] = [];
+  transactionReady: SignedTransaction[] = [];
   subscribe = ['transactionStatus'];
 
   constructor(
@@ -139,7 +140,7 @@ export class CreateMosaicComponent implements OnInit {
         this.dataBridge.setTransactionStatus(null);
         // I SIGN THE TRANSACTION
         const signedTransaction = account.sign(aggregateTransaction);
-        this.transactionSigned = signedTransaction;
+        this.transactionSigned.push(signedTransaction);
         //ANNOUNCEMENT THE TRANSACTION-
         this.proximaxProvider.announce(signedTransaction).subscribe(
           async x => {
@@ -151,6 +152,8 @@ export class CreateMosaicComponent implements OnInit {
             if (this.subscribe['transactionStatus'] === undefined || this.subscribe['transactionStatus'] === null) {
               this.getTransactionStatus();
             }
+
+            this.setTimeOutValidate(signedTransaction.hash);
           }, error => {
             this.blockSend = false;
           }
@@ -161,22 +164,37 @@ export class CreateMosaicComponent implements OnInit {
     }
   }
 
+  setTimeOutValidate(hash: string) {
+    setTimeout(() => {
+      let exist = false;
+      for (let element of this.transactionReady) {
+        if (hash === element.hash) {
+          exist = true;
+        }
+      }
+
+      (exist) ? '' : this.sharedService.showWarning('', 'Error connecting to the node');
+    }, 5000);
+  }
+
   getTransactionStatus() {
     // Get transaction status
     this.subscribe['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
       statusTransaction => {
-        if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
-          const statusTransactionHash = (statusTransaction['type'] === 'error') ? statusTransaction['data'].hash : statusTransaction['data'].transactionInfo.hash;
-          const match = statusTransactionHash === this.transactionSigned.hash;
-          if (statusTransaction['type'] === 'confirmed' && match) {
-            this.transactionSigned = null;
-            this.sharedService.showSuccess('', 'Transaction confirmed');
-          } else if (statusTransaction['type'] === 'unconfirmed' && match) {
-            this.transactionSigned = null;
-            this.sharedService.showInfo('', 'Transaction unconfirmed');
-          } else if (match) {
-            this.transactionSigned = null;
-            this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
+        if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned.length > 0) {
+          for(let element of this.transactionSigned) {
+            if (statusTransaction['data'].transactionInfo.hash === element.hash) {
+              this.transactionReady.push(element);
+              if (statusTransaction['type'] === 'confirmed') {
+                this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['data'].transactionInfo.hash);
+                this.sharedService.showSuccess('', 'Transaction confirmed');
+              } else if (statusTransaction['type'] === 'unconfirmed') {
+                this.sharedService.showInfo('', 'Transaction unconfirmed');
+              } else {
+                this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['data'].transactionInfo.hash);
+                this.sharedService.showWarning('', statusTransaction['type'].status);
+              }
+            }
           }
         }
       }
