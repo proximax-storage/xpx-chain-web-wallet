@@ -1,0 +1,17 @@
+.height-box-description{
+  height: 50px;
+}
+
+.border-hr{
+  border-color: #cdcdcd;
+}
+
+.active-text{
+  color: #2c6eb7;
+  font-weight: 600;
+}
+
+.inactive-text{
+  color: #9e9e9e;
+  font-weight: 600;
+}

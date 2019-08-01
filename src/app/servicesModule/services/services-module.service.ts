@@ -22,12 +22,23 @@ export class ServicesModuleService {
    * @returns {StructureService}
    * @memberof ServicesModuleService
    */
-  buildStructureService(titleParam: string, descriptionParam: string, imageParam: string, showParam: boolean): StructureService {
+  buildStructureService(
+    titleParam: string,
+    showParam: boolean,
+    descriptionParam?: string,
+    imageParam?: string,
+    routeParam?: string,
+    childrenParam?: {},
+    viewChildrenParam: boolean = false
+  ): StructureService {
     return {
       title: titleParam,
+      show: showParam,
       description: descriptionParam,
       image: imageParam,
-      show: showParam
+      route: routeParam,
+      children: childrenParam,
+      viewChildren: viewChildrenParam
     };
   }
 
@@ -90,7 +101,10 @@ export class ServicesModuleService {
 
 export interface StructureService {
   title: string;
-  description: string;
-  image: string;
   show: boolean;
+  description?: string;
+  image?: string;
+  route?: string;
+  children?: {};
+  viewChildren?: boolean;
 }

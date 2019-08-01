@@ -13,6 +13,10 @@ body {
   cursor: pointer;
 }
 
+.cursor-n-a{
+  cursor: not-allowed;
+}
+
 /************* MARGIN **************/
 
 .m-0{
@@ -93,6 +97,10 @@ body {
 
 .mb-0{
   margin-bottom: 0;
+}
+
+.mb-03rem{
+  margin-bottom: .3rem;
 }
 
 .mb-04rem{
