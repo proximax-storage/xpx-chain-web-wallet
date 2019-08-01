@@ -37,6 +37,10 @@ const routes: Routes = [
     }, {
       path: '',
       loadChildren: './transfer/transfer.module#TransferModule'
+    },
+    {
+      path: '',
+      loadChildren: './servicesModule/services-module.module#ServicesModule'
     }]
   }, {
     path: '**',
