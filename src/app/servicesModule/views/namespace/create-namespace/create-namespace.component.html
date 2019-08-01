@@ -1,1 +1,111 @@
-<p>create-namespace works!</p>
+<div class="container mt-3rem mb-2rem animated fadeIn">
+  <div class="row">
+    <div class="col-12">
+      <span class="fs-1-3rem txt-a-center line-h-1-2em color-grey">{{moduleName}}</span>
+      <span class="fs-1-3rem txt-a-center line-h-1-2em color-grey"> > </span>
+      <span class="fs-1-3rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">{{componentName}}</span>
+    </div>
+    <div class="col-12">
+      <hr class="mt-03rem mb-05rem">
+    </div>
+  </div>
+
+
+  <form [formGroup]="namespaceForm" (ngSubmit)="createNamespace()">
+    <div class="row">
+      <div class="col-12 col-md-6">
+        <div class="row">
+          <div class="col-11 mx-auto">
+            <div class="md-form form-sm mt-1rem mb-0rem">
+              <input mask="S{18}" [maxlength]="configurationForm.namespaceName.maxLength"
+                [minlength]="configurationForm.namespaceName.minLength" formControlName="name" required
+                mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text" id="name"
+                class="form-control form-control-sm input-border" placeholder="Enter name"
+                onkeyup="javascript:this.value=this.value.toLowerCase();">
+
+              <!-- VALIDATION -->
+              <mdb-error *ngIf="
+                          validateInput('name', '').invalid &&
+                          (validateInput('name', '').dirty || validateInput('name', '').touched)">
+                <span>Input invalid</span>
+              </mdb-error>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mt-1rem">
+          <div class="col-11 mx-auto">
+            <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
+              class="selectWrapper" [items]="arrayselect" formControlName="namespaceRoot" bindLabel="label"
+              bindValue="value" placeholder="Select namespace"></ng-select>
+            <mdb-error class="mt-1rem ml-1rem"
+              *ngIf="validateInput('namespaceRoot').invalid && (validateInput('namespaceRoot').dirty || validateInput('namespaceRoot').touched)">
+              <span>Select namespace</span>
+            </mdb-error>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-6 description-namespace">
+        <span>
+          A namespace can have a maximium length of 16 alphanumerical characters while sub-namespaces can have a
+          maximium length of 64 alphanumerical characters. <br><br>
+          A namespace may consist of three parts, each separated by a full stop (i.e test1.test2.test3).
+          <br><br>
+          Certain phrases are already reserved (i.e xpx; user; account; org; com; biz; net; edu; mil; gov; info).
+        </span>
+      </div>
+    </div>
+
+    <!-- <div class="row mt-1-5rem">
+      <div class="col-11 col-sm-10 col-md-8 col-lg-6 mx-auto">
+        <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" class="selectWrapper"
+          [items]="typeNetwork" bindLabel="label" bindValue="value" placeholder="Select network"
+          formControlName="network">
+        </ng-select>
+        <mdb-error class="mt-1rem ml-1rem"
+          *ngIf="validateInput('network').invalid && (validateInput('network').dirty || validateInput('network').touched)">
+          <span>Select network</span>
+        </mdb-error>
+      </div>
+    </div> -->
+
+    <!-- password -->
+    <!-- <div formGroupName="common">
+      <div class="row">
+        <div class="col-11 col-sm-10 col-md-8 col-lg-6 mx-auto">
+          <div class="md-form form-sm mt-1rem mb-0rem">
+            <input [maxlength]="configurationForm.passwordWallet.maxLength" [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" mdbInputDirective mdbValidate [validateSuccess]="true"
+              [validateError]="true" type="password" id="password"
+              class="form-control form-control-sm input-border" placeholder="Enter password"> -->
+
+    <!-- VALIDATION -->
+    <!-- <mdb-error *ngIf="
+                validateInput('password', 'common').invalid &&
+                (validateInput('password', 'common').dirty || validateInput('password', 'common').touched)">
+              <span>Input invalid</span>
+            </mdb-error>
+          </div>
+        </div>
+      </div>
+    </div> -->
+
+
+
+    <!-- <div class="row mt-2rem">
+      <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
+        <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+          size="md" (click)="clearForm()">
+          <span class="fs-1-2em color-white">CLEAR</span>
+        </button>
+      </div>
+
+      <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
+        <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+          size="md">
+          <span class="fs-1-2em color-white">CREATE</span>
+        </button>
+      </div>
+    </div> -->
+  </form>
+</div>

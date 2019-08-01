@@ -11,6 +11,9 @@ export class SharedService {
     nameWallet: {
       minLength: 2, maxLength: 30
     },
+    namespaceName: {
+      minLength: 4, maxLength: 20
+    },
     privateKey: {
       minLength: 64, maxLength: 64
     },
@@ -101,6 +104,10 @@ export class SharedService {
 
 export interface ConfigurationForm {
   nameWallet?: {
+    minLength: number;
+    maxLength: number;
+  };
+  namespaceName?: {
     minLength: number;
     maxLength: number;
   };

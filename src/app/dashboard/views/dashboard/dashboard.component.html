@@ -77,14 +77,14 @@
       </ng-container>
     </div>
   </div>
-  
+
   <div class="row mt-2rem">
     <div class="col-12 mx-auto">
       <div class="table-responsive table-hover">
         <table mdbTable #tableEl="mdbTable" id="mdbTable" striped="true" infiniteScroll [infiniteScrollDistance]="2"
           (scrolled)="onScroll()" class="table table-hover table-bordered table-hover table-sm z-depth-0"
           cellspacing="0" width="100%" borderless="true">
-          
+
           <!--Table head-->
           <thead>
             <tr class="header-backg">
@@ -152,7 +152,7 @@
       </ng-container>
     </div>
   </div>
-  
+
   <div>
     <!-- MODAL -->
     <div mdbModal #basicModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
@@ -168,7 +168,7 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-  
+
           <!--Body-->
           <div class="modal-body">
             <ng-container *ngIf="dataSelected !== null">
@@ -204,7 +204,7 @@
               <app-address-alias-type [addressAlias]="dataSelected"
                 *ngIf="dataSelected.data.type === typeTransactions.addressAlias.id">
               </app-address-alias-type>
-  
+
               <!-- TYPE MODIFY MULTISIG ACCOUNT TRANSACTION
             <app-modify-multisig-account-type
               *ngIf="dataSelected.data.type === typeTransactions.modifyMultisigAccount.id">

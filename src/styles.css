@@ -329,6 +329,14 @@ body {
   height: 7rem;
 }
 
+.h-75porcent{
+  height: 75%;
+}
+
+.h-85porcent{
+  height: 85%;
+}
+
 .h-100porcent {
   height: 100%
 }
@@ -469,6 +477,10 @@ body {
 }
 
 /**************************** COLOR *****************************/
+.color-grey{
+  color: #9a9a9a !important;
+}
+
 .color-main-wallet{
   color: #427dbe;
 }
