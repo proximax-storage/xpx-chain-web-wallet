@@ -45,7 +45,7 @@ export class HomeComponent implements OnInit {
         'Supercontracts',
         true,
         'Easily modifiable digital contracts',
-        'icon-supercontracts-gradient-80h-proximax-sirius-wallet',
+        'icon-supercontracts-gradient-80h-proximax-sirius-wallet.svg',
       )
     ];
   }

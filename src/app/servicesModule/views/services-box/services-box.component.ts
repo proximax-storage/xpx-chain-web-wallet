@@ -196,7 +196,7 @@ export class ServicesBoxComponent implements OnInit {
         'Nodes',
         true,
         'Add and edits nodes.',
-        'icon-address-green-book-60h-proximax-sirius-wallet.svg',
+        'icon-nodes-green-60h-proximax-sirius-wallet.svg',
         '',
         {
           details: this.services.buildStructureService(

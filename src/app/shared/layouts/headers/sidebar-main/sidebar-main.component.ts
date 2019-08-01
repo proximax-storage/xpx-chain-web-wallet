@@ -57,11 +57,11 @@ export class SidebarMainComponent implements OnInit {
    * @param {String} [param]
    * @memberof HeaderComponent
    */
-  logout(param?: String) {
+  logOut() {
     this.dashboardService.processComplete = false;
     this.authService.setLogged(false);
     this.authService.destroyNodeSelected();
-    this.route.navigate([`/${param}`]);
+    this.route.navigate([`/${AppConfig.routes.auth}`]);
   }
 
   /**

@@ -9,14 +9,6 @@ body {
   font-family: 'Open Sans' !important;
 }
 
-.cursor-p{
-  cursor: pointer;
-}
-
-.cursor-n-a{
-  cursor: not-allowed;
-}
-
 /************* MARGIN **************/
 
 .m-0{
@@ -743,4 +735,11 @@ input.form-control.validate-success.ng-valid.ng-dirty, input.form-control.valida
   cursor: pointer !important;
 }
 
+.cursor-p{
+  cursor: pointer;
+}
 
+.cursor-n-a{
+  cursor: not-allowed !important;
+  pointer-events: none !important;
+}
