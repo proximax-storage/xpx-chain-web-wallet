@@ -554,15 +554,7 @@ footer.page-footer .footer-copyright{
   }
 }
 
-.toastSuccess {
-  opacity: 1.0 !important;
-  background-color: #35af8d;
-}
 
-.toastError {
-  opacity: 1.0 !important;
-  background-color: #e42c2c;
-}
 
 /************************* NG SELECT *******************/
 .navbar.navbar-dark .breadcrumb .nav-item .nav-link, .navbar.navbar-dark .navbar-nav .nav-item .nav-link{
@@ -600,7 +592,7 @@ button.navbar-toggler{
 /** INPUTS VALIDATION **/
 input.form-control.validate-error.ng-invalid.ng-touched, input.form-control.validate-error.ng-invalid.ng-dirty, .form-submitted input.form-control.validate-error.ng-invalid{
   box-shadow: none !important;
-  border: 2px solid #f2a91d !important;
+  border: 2px solid #e06e38 !important;
 }
 
 input.form-control.validate-success.ng-valid.ng-dirty, input.form-control.validate-success.ng-valid.ng-touched, .form-submitted input.form-control.validate-success.ng-valid{
@@ -612,11 +604,11 @@ input.form-control.validate-success.ng-valid.ng-dirty, input.form-control.valida
 #password-invalid,
 #name-wallet-invalid{
   box-shadow: none !important;
-  border: 2px solid #f2a91d !important;
+  border: 2px solid #e06e38 !important;
 }
 
 .error-message{
-  color: #f2a91d !important;
+  color: #e06e38 !important;
 }
 
 .success-message{
@@ -625,6 +617,26 @@ input.form-control.validate-success.ng-valid.ng-dirty, input.form-control.valida
 
 .md-form.form-sm mdb-error, .md-form.form-sm mdb-success{
   left: 1rem !important;
+}
+
+.toastInfo {
+  opacity: 1.0 !important;
+  background-color: #2BA1B9 !important;
+}
+
+.toastSuccess {
+  opacity: 1.0 !important;
+  background-color: #54b1aa !important;
+}
+
+.toastWarning {
+  opacity: 1.0 !important;
+  background-color: #f2a91d !important;
+}
+
+.toastError {
+  opacity: 1.0 !important;
+  background-color: #e06e38 !important;
 }
 /** FIN INPUTS VALIDATION **/
 
@@ -643,7 +655,7 @@ input.form-control.validate-success.ng-valid.ng-dirty, input.form-control.valida
 }
 
 .selectWrapper.ng-select.validate-success.validate-error.ng-select-single.ng-select-searchable.ng-select-clearable.ng-dirty.ng-invalid.ng-touched.ng-select .ng-select-container:after{
-  border-color: #f2a91d !important;
+  border-color: #e06e38 !important;
 }
 
 .navbar-toggler-icon{

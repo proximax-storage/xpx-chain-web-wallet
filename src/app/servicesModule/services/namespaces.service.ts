@@ -8,12 +8,10 @@ import {
   AliasActionType,
   NetworkType,
   AliasTransaction,
-  Deadline,
-  EncryptedPrivateKey
+  Deadline
 } from "tsjs-xpx-chain-sdk";
 import { ProximaxProvider } from "../../shared/services/proximax.provider";
 import { WalletService } from '../../wallet/services/wallet.service';
-import { NamespaceStorage } from './mosaic.service';
 
 @Injectable({
   providedIn: "root"
@@ -295,4 +293,11 @@ export class NamespacesService {
   resetNamespaceStorage() {
     localStorage.removeItem(this.getNameStorage());
   }
+}
+
+
+export interface NamespaceStorage {
+  id: number[];
+  namespaceName: NamespaceName;
+  NamespaceInfo: NamespaceInfo;
 }

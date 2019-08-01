@@ -6,7 +6,7 @@ import { environment } from '../../../environments/environment';
 import { NodeService } from '../../servicesModule/services/node.service';
 import { SharedService } from './shared.service';
 import { WalletService } from '../../wallet/services/wallet.service';
-import { TransactionsService, TransactionsInterface } from '../../transfer/services/transactions.service';
+import { TransactionsInterface, TransactionsService } from '../../transfer/services/transactions.service';
 
 
 @Injectable({
@@ -82,6 +82,8 @@ export class DataBridgeService {
               unconfirmed.unshift(element);
             }
           }
+
+
           this.transactionsService.setTransactionsUnConfirmed$(unconfirmed);
         }
       });
@@ -108,7 +110,6 @@ export class DataBridgeService {
         this.reconnect(this.connector);
       });
     }
-
   }
 
   /**
@@ -136,6 +137,7 @@ export class DataBridgeService {
   }
 
 
+
   /**
    * Get the confirmed transactions from the socket
    *
@@ -157,7 +159,6 @@ export class DataBridgeService {
           this.destroyUnconfirmedTransaction(transactionFormatter);
           this.transactionsService.setTransactionsConfirmed$(transactionPushed);
           audio.play();
-          // this.messageService.changeMessage('balanceChanged');
           this.transactionsService.validateTypeTransaction(incomingTransaction.type);
           // this.namespaceService.buildNamespaceStorage();
           // this.transactionsService.updateBalance();
@@ -181,6 +182,7 @@ export class DataBridgeService {
         'type': 'unconfirmed',
         'data': unconfirmedTransaction
       });
+
       this.transactionsService.getTransactionsUnConfirmed$().pipe(first()).subscribe(
         async transactionsUnconfirmed => {
           const transactionPushed = transactionsUnconfirmed.slice(0);

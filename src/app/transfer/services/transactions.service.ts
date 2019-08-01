@@ -19,20 +19,29 @@ import {
 } from "tsjs-xpx-chain-sdk";
 import { first } from "rxjs/operators";
 import { ProximaxProvider } from "../../shared/services/proximax.provider";
+import { NodeService } from "../../servicesModule/services/node.service";
 import { environment } from "../../../environments/environment";
-import { NodeService } from '../../servicesModule/services/node.service';
+import { MosaicService } from "../../servicesModule/services/mosaic.service";
+import { NamespacesService } from "../../servicesModule/services/namespaces.service";
 import { WalletService } from '../../wallet/services/wallet.service';
-import { NamespacesService } from '../../servicesModule/services/namespaces.service';
-import { MosaicService } from '../../servicesModule/services/mosaic.service';
+
+
+
+export interface TransferInterface {
+  common: { password?: any; privateKey?: any };
+  recipient: string;
+  message: string;
+  network: NetworkType;
+  mosaic: any;
+}
+
+
 
 @Injectable({
   providedIn: "root"
 })
 export class TransactionsService {
 
-
-
-  /************************************************************** */
   private balance: BehaviorSubject<any> = new BehaviorSubject<any>("0.000000");
   private balance$: Observable<any> = this.balance.asObservable();
 
@@ -105,10 +114,37 @@ export class TransactionsService {
   ) { }
 
 
+  buildTransferTransaction(params: TransferInterface) {
+    const recipientAddress = this.proximaxProvider.createFromRawAddress(params.recipient);
+    const mosaics = params.mosaic;
+    const allMosaics = [];
+    mosaics.forEach(element => {
+      allMosaics.push(new Mosaic(
+        new MosaicId(element.id),
+        UInt64.fromUint(Number(element.amount))
+        )
+      );
+    });
 
+    const transferTransaction = TransferTransaction.create(
+      Deadline.create(5),
+      recipientAddress,
+      allMosaics,
+      PlainMessage.create(params.message),
+      params.network
+    );
 
+    const account = Account.createFromPrivateKey(params.common.privateKey, params.network);
+    const signedTransaction = account.sign(transferTransaction);
+    const transactionHttp = new TransactionHttp(
+      environment.protocol + "://" + `${this.nodeService.getNodeSelected()}`
+    );
+    return {
+      signedTransaction: signedTransaction,
+      transactionHttp: transactionHttp
+    };
+  }
 
-  /*************************************************************************************/
 
   /**
    *
@@ -164,6 +200,8 @@ export class TransactionsService {
     return Object.keys(this.arraTypeTransaction).find(elm => this.arraTypeTransaction[elm].id === type);
   }
 
+
+  /**************************************************************** */
 
   buildToSendTransfer(
     common: { password?: any; privateKey?: any },
