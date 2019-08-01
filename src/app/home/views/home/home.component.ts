@@ -25,27 +25,27 @@ export class HomeComponent implements OnInit {
     this.servicesList = [
       this.services.buildStructureService(
         'Transactions',
+        true,
         'Search all available transactions',
         'icon-transactions-green-60h-proximax-sirius-wallet.svg',
-        true
       ),
       this.services.buildStructureService(
         'Streaming',
+        true,
         '',
         'icon-streaming-gradient-80h-proximax-sirius-wallet.svg',
-        true
       ),
       this.services.buildStructureService(
         'Storage',
+        true,
         '',
         'icon-storage-green-60h-proximax-sirius-wallet.svg',
-        true
       ),
       this.services.buildStructureService(
         'Address Book',
+        true,
         'Assign labels to addresses to easily keep track of your contacts',
         'icon-address-green-book-60h-proximax-sirius-wallet.svg',
-        true
       )
     ];
   }
