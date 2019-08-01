@@ -66,6 +66,16 @@ export class ServicesBoxComponent implements OnInit {
         true,
         'Explore all transactions, network stats, and node locations',
         'icon-transactions-green-60h-proximax-sirius-wallet.svg',
+        '',
+        {
+          explorer: this.services.buildStructureService(
+            'Explorer',
+            true,
+            '',
+            '',
+            AppConfig.routes.explorer
+          )
+        }
       ),
 
       //Namespaces
@@ -74,6 +84,22 @@ export class ServicesBoxComponent implements OnInit {
         true,
         'Create a domain and subdmains',
         'icon-streaming-gradient-80h-proximax-sirius-wallet.svg',
+        '',
+        {
+          create: this.services.buildStructureService(
+            'Create',
+            true,
+            '',
+            '',
+            AppConfig.routes.createMosaic
+          ), renew: this.services.buildStructureService(
+            'Renew',
+            true,
+            '',
+            '',
+            AppConfig.routes.renovateNamespace
+          )
+        }
       ),
 
       //Mosaics
@@ -82,6 +108,16 @@ export class ServicesBoxComponent implements OnInit {
         true,
         'Create digital assets with unique properties',
         'icon-storage-green-60h-proximax-sirius-wallet.svg',
+        '',
+        {
+          details: this.services.buildStructureService(
+            'Details',
+            true,
+            '',
+            '',
+            AppConfig.routes.account
+          )
+        }
       ),
 
       // Address Book
@@ -90,6 +126,16 @@ export class ServicesBoxComponent implements OnInit {
         true,
         'Assign labels to addresses to easily keep track of your contacts',
         'icon-address-green-book-60h-proximax-sirius-wallet.svg',
+        '',
+        {
+          details: this.services.buildStructureService(
+            'Details',
+            true,
+            '',
+            '',
+            AppConfig.routes.account
+          )
+        }
       ),
 
       // Storage
@@ -98,6 +144,16 @@ export class ServicesBoxComponent implements OnInit {
         true,
         'Upload and download your files and encrypt them',
         'icon-address-green-book-60h-proximax-sirius-wallet.svg',
+        '',
+        {
+          details: this.services.buildStructureService(
+            'Details',
+            true,
+            '',
+            '',
+            AppConfig.routes.account
+          )
+        }
       ),
 
       // NOdes
@@ -106,6 +162,16 @@ export class ServicesBoxComponent implements OnInit {
         true,
         'Add and edits nodes.',
         'icon-address-green-book-60h-proximax-sirius-wallet.svg',
+        '',
+        {
+          details: this.services.buildStructureService(
+            'Details',
+            true,
+            '',
+            '',
+            AppConfig.routes.account
+          )
+        }
       ),
 
       // Services 08
@@ -114,6 +180,16 @@ export class ServicesBoxComponent implements OnInit {
         true,
         'Create digital assets with unique properties',
         'icon-address-green-book-60h-proximax-sirius-wallet.svg',
+        '',
+        {
+          details: this.services.buildStructureService(
+            'Details',
+            true,
+            '',
+            '',
+            AppConfig.routes.account
+          )
+        }
       )
     ];
 
