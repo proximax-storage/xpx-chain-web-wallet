@@ -7,7 +7,7 @@
 
   <form [formGroup]="authForm" (ngSubmit)="auth()">
     <!-- wallet name -->
-    <div class="row mt-1-5rem">
+    <div class="row mt-2rem">
       <div class="col-11 col-sm-10 col-md-8 col-lg-6 mx-auto">
         <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" class="selectWrapper"
           [items]="wallets" formControlName="wallet" bindLabel="value.name" bindValue="value"
