@@ -9,6 +9,8 @@ import { RenewNamespaceComponent } from './views/namespace/renew-namespace/renew
 import { AddressBookComponent } from './views/address-book/address-book.component';
 import { CreateMosaicComponent } from './views/mosaic/create-mosaic/create-mosaic.component';
 import { AliasAddressToNamespaceComponent } from './views/account/alias-address-to-namespace/alias-address-to-namespace.component';
+import { MosaicsSupplyChangeComponent } from './views/mosaic/mosaics-supply-change/mosaics-supply-change.component';
+import { AliasMosaicsToNamespaceComponent } from './views/mosaic/alias-mosaics-to-namespace/alias-mosaics-to-namespace.component';
 
 const routes: Routes = [
   {
@@ -56,17 +58,6 @@ const routes: Routes = [
     }
   },
   {
-    path: AppConfig.routes.addressBook,
-    component: AddressBookComponent,
-    data: {
-      meta: {
-        title: 'createNamespace.title',
-        description: 'createNamespace.text',
-        override: true,
-      }
-    },
-  },
-  {
     path: AppConfig.routes.renewNamespace,
     component: RenewNamespaceComponent,
     data: {
@@ -78,12 +69,46 @@ const routes: Routes = [
     }
   },
   {
+    path: AppConfig.routes.addressBook,
+    component: AddressBookComponent,
+    data: {
+      meta: {
+        title: 'createNamespace.title',
+        description: 'createNamespace.text',
+        override: true,
+      }
+    },
+  },
+  
+  {
     path: AppConfig.routes.createMosaic,
     component: CreateMosaicComponent,
     data: {
       meta: {
         title: 'createMosaic.title',
         description: 'createMosaic.text',
+        override: true,
+      }
+    }
+  },
+  {
+    path: AppConfig.routes.MosaicSupplyChange,
+    component: MosaicsSupplyChangeComponent,
+    data: {
+      meta: {
+        title: 'mosaicsSupplyChange.title',
+        description: 'mosaicsSupplyChange.text',
+        override: true,
+      }
+    }
+  },
+  {
+    path: AppConfig.routes.LinkingNamespaceMosaic,
+    component: AliasMosaicsToNamespaceComponent,
+    data: {
+      meta: {
+        title: 'aliasMosaicsToNamespace.title',
+        description: 'aliasMosaicsToNamespace.text',
         override: true,
       }
     }
@@ -99,6 +124,8 @@ const routes: Routes = [
       }
     }
   }
+
+  
 ];
 
 @NgModule({

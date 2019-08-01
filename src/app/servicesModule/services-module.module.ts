@@ -11,6 +11,8 @@ import { AddressBookComponent } from './views/address-book/address-book.componen
 import { RenewNamespaceComponent } from './views/namespace/renew-namespace/renew-namespace.component';
 import { CreateMosaicComponent } from './views/mosaic/create-mosaic/create-mosaic.component';
 import { AliasAddressToNamespaceComponent } from './views/account/alias-address-to-namespace/alias-address-to-namespace.component';
+import { MosaicsSupplyChangeComponent } from './views/mosaic/mosaics-supply-change/mosaics-supply-change.component';
+import { AliasMosaicsToNamespaceComponent } from './views/mosaic/alias-mosaics-to-namespace/alias-mosaics-to-namespace.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +24,9 @@ import { AliasAddressToNamespaceComponent } from './views/account/alias-address-
     AddressBookComponent,
     RenewNamespaceComponent,
     CreateMosaicComponent,
-    AliasAddressToNamespaceComponent
+    AliasAddressToNamespaceComponent,
+    MosaicsSupplyChangeComponent,
+    AliasMosaicsToNamespaceComponent    
   ],
   imports: [
     CoreModule,
