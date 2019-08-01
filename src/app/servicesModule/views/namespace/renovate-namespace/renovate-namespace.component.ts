@@ -36,8 +36,10 @@ export class RenovateNamespaceComponent implements OnInit {
   block: number = 0;
   blockBtnSend: boolean = false;
   fee = '';
+  transactionSigned: SignedTransaction[] = [];
+  transactionReady: SignedTransaction[] = [];
   titleInformation = 'Namespace Information';
-  subscriptions = ['block'];
+  subscriptions = ['block', 'transactionStatus'];
 
   constructor(
     private router: Router,
@@ -185,6 +187,30 @@ export class RenovateNamespaceComponent implements OnInit {
       });
   }
 
+  getTransactionStatus() {
+    // Get transaction status
+    this.subscriptions['transactionStatus'] = this.dataBridgeService.getTransactionStatus().subscribe(
+      statusTransaction => {
+        if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned.length > 0) {
+          for(let element of this.transactionSigned) {
+            if (statusTransaction['data'].transactionInfo.hash === element.hash) {
+              this.transactionReady.push(element);
+              if (statusTransaction['type'] === 'confirmed') {
+                this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['data'].transactionInfo.hash);
+                this.sharedService.showSuccess('', 'Transaction confirmed');
+              } else if (statusTransaction['type'] === 'unconfirmed') {
+                this.sharedService.showInfo('', 'Transaction unconfirmed');
+              } else {
+                this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['data'].transactionInfo.hash);
+                this.sharedService.showWarning('', statusTransaction['type'].status);
+              }
+            }
+          }
+        }
+      }
+    );
+  }
+
   /**
    *
    *
@@ -226,12 +252,19 @@ export class RenovateNamespaceComponent implements OnInit {
         password: this.renovateNamespaceForm.get('password').value,
         privateKey: ''
       }
+
       if (this.walletService.decrypt(common)) {
-        this.proximaxProvider.announce(this.signedTransaction(common)).subscribe(
+        const signedTransaction = this.signedTransaction(common);
+        this.transactionSigned.push(signedTransaction);
+        this.proximaxProvider.announce(signedTransaction).subscribe(
           () => {
             this.blockBtnSend = false;
             this.resetForm();
-            this.sharedService.showSuccess('', 'Transaction sent')
+            if (this.subscriptions['transactionStatus'] === undefined || this.subscriptions['transactionStatus'] === null) {
+              this.getTransactionStatus();
+            }
+
+            this.setTimeOutValidate(signedTransaction.hash);
           }, () => {
             this.blockBtnSend = false;
             this.resetForm();
@@ -244,6 +277,25 @@ export class RenovateNamespaceComponent implements OnInit {
     }
   }
 
+  /**
+   *
+   *
+   * @param {string} hash
+   * @memberof RenovateNamespaceComponent
+   */
+  setTimeOutValidate(hash: string) {
+    setTimeout(() => {
+      let exist = false;
+      for (let element of this.transactionReady) {
+        if (hash === element.hash) {
+          exist = true;
+        }
+      }
+
+      (exist) ? '' : this.sharedService.showWarning('', 'An error has occurred');
+    }, 5000);
+  }
+
 
   /**
    *
@@ -253,6 +305,7 @@ export class RenovateNamespaceComponent implements OnInit {
    * @memberof RenovateNamespaceComponent
    */
   signedTransaction(common: any): SignedTransaction {
+    // console.log(common);
     const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.network);
     const rootNamespaceToRenovate: string = this.renovateNamespaceForm.get('rootNamespace').value;
     // const duration: number = parseFloat(this.durationByBlock);
@@ -269,8 +322,8 @@ export class RenovateNamespaceComponent implements OnInit {
    * @param {MosaicsStorage} mosaic
    * @memberof CreateNamespaceComponent
    */
-  validateRentalFee(amount: number) {    
-    console.log('This is a test', amount);
+  validateRentalFee(amount: number) {
+    // console.log('This is a test', amount);
     const accountInfo = this.walletService.getAccountInfo();
     if (accountInfo !== undefined && accountInfo !== null && Object.keys(accountInfo).length > 0) {
       if (accountInfo.mosaics.length > 0) {

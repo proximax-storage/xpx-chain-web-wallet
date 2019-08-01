@@ -505,8 +505,11 @@ export class CreateNamespaceComponent implements OnInit {
             return element.id.toHex() === new MosaicId(this.proximaxProvider.mosaicXpx.mosaicId).toHex();
           });
 
+          // console.log(filtered.id.toHex());
+
           const invalidBalance = filtered.amount.compact() < amount;
           const mosaic = this.mosaicServices.filterMosaic(filtered.id);
+          // console.log('---mosaic---', mosaic);
           this.calculateRentalFee = this.transactionService.amountFormatter(amount, mosaic.mosaicInfo);
           if (invalidBalance && !this.insufficientBalance) {
             this.insufficientBalance = true;

@@ -181,19 +181,18 @@ export class CreateMosaicComponent implements OnInit {
     // Get transaction status
     this.subscribe['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
       statusTransaction => {
-        if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned.length > 0) {
-          for(let element of this.transactionSigned) {
-            if (statusTransaction['data'].transactionInfo.hash === element.hash) {
-              this.transactionReady.push(element);
-              if (statusTransaction['type'] === 'confirmed') {
-                this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['data'].transactionInfo.hash);
-                this.sharedService.showSuccess('', 'Transaction confirmed');
-              } else if (statusTransaction['type'] === 'unconfirmed') {
-                this.sharedService.showInfo('', 'Transaction unconfirmed');
-              } else {
-                this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['data'].transactionInfo.hash);
-                this.sharedService.showWarning('', statusTransaction['type'].status);
-              }
+        if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
+          for (let element of this.transactionSigned) {
+            const statusTransactionHash = (statusTransaction['type'] === 'error') ? statusTransaction['data'].hash : statusTransaction['data'].transactionInfo.hash;
+            const match = statusTransactionHash === element.hash;
+            if (statusTransaction['type'] === 'confirmed' && match) {
+              this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransactionHash);
+              this.sharedService.showSuccess('', 'Transaction confirmed');
+            } else if (statusTransaction['type'] === 'unconfirmed' && match) {
+              this.sharedService.showInfo('', 'Transaction unconfirmed');
+            } else if (match) {
+              this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransactionHash);
+              this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
             }
           }
         }

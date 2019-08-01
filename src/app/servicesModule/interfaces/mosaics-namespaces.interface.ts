@@ -13,7 +13,7 @@ export interface NamespaceStorage {
 
 export interface MosaicsStorage {
   id: number[];
-  mosaicNames: MosaicNames
+  mosaicNames: MosaicNames | any;
   mosaicInfo: MosaicInfo;
   infoComplete: boolean;
 }

@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
-import { MosaicSupplyType, UInt64 } from 'tsjs-xpx-chain-sdk';
+import { MosaicSupplyType, UInt64, SignedTransaction } from 'tsjs-xpx-chain-sdk';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { WalletService } from '../../../../shared/services/wallet.service';
 import { SharedService } from '../../../../shared/services/shared.service';
 import { MosaicService } from '../../../../servicesModule/services/mosaic.service';
 import { MosaicsStorage } from '../../../../servicesModule/interfaces/mosaics-namespaces.interface';
 import { TransactionsService } from '../../../../transactions/service/transactions.service';
+import { DataBridgeService } from '../../../../shared/services/data-bridge.service';
 
 
 @Component({
@@ -45,7 +46,9 @@ export class MosaicSupplyChange implements OnInit {
   levyMutable: boolean = false;
   supplyMutable: boolean = false;
   transferable: boolean = false;
-
+  transactionSigned: SignedTransaction[] = [];
+  transactionReady: SignedTransaction[] = [];
+  subscriptions = ['transactionStatus'];
 
   /**
    * Initialize dependencies and properties
@@ -58,7 +61,8 @@ export class MosaicSupplyChange implements OnInit {
     private sharedService: SharedService,
     private walletService: WalletService,
     private mosaicService: MosaicService,
-    private transactionService: TransactionsService
+    private transactionService: TransactionsService,
+    private dataBridge: DataBridgeService
   ) { }
 
 
@@ -66,20 +70,31 @@ export class MosaicSupplyChange implements OnInit {
     this.createForm();
     const data = await this.mosaicService.searchMosaicsFromAccountStorage$();
     const mosaicsSelect = this.parentMosaic.slice(0);
+    // console.log(data);
     data.forEach(element => {
-      const nameMosaic = (element.mosaicNames.names.length > 0) ? element.mosaicNames.names[0] : this.proximaxProvider.getMosaicId(element.id).toHex();
-      const addressOwner = this.proximaxProvider.createAddressFromPublicKey(
-        element.mosaicInfo.owner.publicKey,
-        element.mosaicInfo.owner.address['networkType']
-      );
-      const isOwner = (addressOwner.pretty() === this.walletService.address.pretty()) ? true : false;
-      if (isOwner && element.mosaicInfo['properties']['supplyMutable']) {
-        mosaicsSelect.push({
-          value: element.id,
-          label: nameMosaic,
-          selected: false,
-          disabled: false
-        });
+      // console.log(element);
+      if (element.mosaicInfo) {
+        const nameMosaic = (element.mosaicNames.names.length > 0) ? element.mosaicNames.names[0] : this.proximaxProvider.getMosaicId(element.id).toHex();
+        const addressOwner = this.proximaxProvider.createAddressFromPublicKey(
+          element.mosaicInfo.owner.publicKey,
+          element.mosaicInfo.owner.address['networkType']
+        );
+
+        const isOwner = (addressOwner.pretty() === this.walletService.address.pretty()) ? true : false;
+        /*console.log(addressOwner.pretty());
+        console.log(this.walletService.address.pretty());
+        console.log(element.mosaicInfo['properties']['supplyMutable']);
+        console.log(isOwner);
+        console.log('-------------------------------------------\n');*/
+
+        if (isOwner && element.mosaicInfo['properties']['supplyMutable']) {
+          mosaicsSelect.push({
+            value: element.id,
+            label: nameMosaic,
+            selected: false,
+            disabled: false
+          });
+        }
       }
     });
 
@@ -170,6 +185,29 @@ export class MosaicSupplyChange implements OnInit {
 
   get input() { return this.formMosaicSupplyChange.get('password'); }
 
+  getTransactionStatus() {
+    // Get transaction status
+    this.subscriptions['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
+      statusTransaction => {
+        if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
+          for (let element of this.transactionSigned) {
+            const statusTransactionHash = (statusTransaction['type'] === 'error') ? statusTransaction['data'].hash : statusTransaction['data'].transactionInfo.hash;
+            const match = statusTransactionHash === element.hash;
+            if (statusTransaction['type'] === 'confirmed' && match) {
+              this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransactionHash);
+              this.sharedService.showSuccess('', 'Transaction confirmed');
+            } else if (statusTransaction['type'] === 'unconfirmed' && match) {
+              this.sharedService.showInfo('', 'Transaction unconfirmed');
+            } else if (match) {
+              this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransactionHash);
+              this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
+            }
+          }
+        }
+      }
+    );
+  }
+
   send() {
     if (this.formMosaicSupplyChange.valid) {
       const common = {
@@ -185,11 +223,16 @@ export class MosaicSupplyChange implements OnInit {
           this.walletService.network
         )
         const signedTransaction = account.sign(mosaicSupplyChangeTransaction);
+        this.transactionSigned.push(signedTransaction);
         this.proximaxProvider.announce(signedTransaction).subscribe(
           x => {
             this.clearForm()
-            this.blockUI.stop(); // Stop blocking
-            this.sharedService.showSuccess('success', 'create Supply sent')
+            this.blockUI.stop();
+            if (this.subscriptions['transactionStatus'] === undefined || this.subscriptions['transactionStatus'] === null) {
+              this.getTransactionStatus();
+            }
+
+            this.setTimeOutValidate(signedTransaction.hash);
           },
           err => {
             this.clearForm()
@@ -201,6 +244,16 @@ export class MosaicSupplyChange implements OnInit {
     }
   }
 
+  setTimeOutValidate(hash: string) {
+    setTimeout(() => {
+      let exist = false;
+      for (let element of this.transactionReady) {
+        if (hash === element.hash) {
+          exist = true;
+        }
+      }
 
-
+      (exist) ? '' : this.sharedService.showWarning('', 'An error has occurred');
+    }, 5000);
+  }
 }

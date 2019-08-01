@@ -520,7 +520,7 @@ export class TransferComponent implements OnInit {
 
     this.transferForm.get('mosaicsSelect').valueChanges.subscribe(
       value => {
-        console.log(value);
+        // console.log(value);
         /* this.titleLabelAmount = (typeof (value) === 'string' && value === this.proximaxProvider.mosaicXpx.mosaicId) ? 'Amount' : 'Quantity';
          if (value !== null && value !== undefined) {
            const mosaic = this.mosaicServices.filterMosaic(new MosaicId(value));
