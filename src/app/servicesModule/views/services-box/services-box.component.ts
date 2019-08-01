@@ -150,7 +150,7 @@ export class ServicesBoxComponent implements OnInit {
         '',
         {
           addContact: this.services.buildStructureService(
-            'Add contact',
+            'My Contacts',
             true,
             '',
             '',

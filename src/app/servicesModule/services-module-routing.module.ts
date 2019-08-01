@@ -5,6 +5,7 @@ import { ExplorerComponent } from './views/explorer/explorer.component';
 import { ServicesBoxComponent } from "./views/services-box/services-box.component"
 import { DetailAccountComponent } from './views/account/detail-account/detail-account.component';
 import { CreateNamespaceComponent } from './views/namespace/create-namespace/create-namespace.component';
+import { AddressBookComponent } from './views/address-book/address-book.component';
 
 const routes: Routes = [
   {
@@ -43,6 +44,17 @@ const routes: Routes = [
   {
     path: AppConfig.routes.createNamespace,
     component: CreateNamespaceComponent,
+    data: {
+      meta: {
+        title: 'createNamespace.title',
+        description: 'createNamespace.text',
+        override: true,
+      }
+    }
+  },
+  {
+    path: AppConfig.routes.addressBook,
+    component: AddressBookComponent,
     data: {
       meta: {
         title: 'createNamespace.title',
