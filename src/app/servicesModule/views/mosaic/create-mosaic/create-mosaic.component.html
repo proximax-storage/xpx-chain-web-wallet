@@ -1,1 +1,88 @@
-<p>create-mosaic works!</p>
+<div class="container mt-3rem mb-2rem animated fadeIn">
+    <div class="row">
+        <div class="col-12">
+            <span class="fs-1-3rem txt-a-center line-h-1-2em color-grey">{{moduleName}}</span>
+            <span class="fs-1-3rem txt-a-center line-h-1-2em color-grey"> > </span>
+            <span class="fs-1-3rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">{{componentName}}</span>
+        </div>
+        <div class="col-12">
+            <hr class="mt-03rem mb-05rem">
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12 justify-content-center">
+            <form [formGroup]="mosaicsForm" (ngSubmit)="createMosaic()">
+                <div class="row">
+                    <div class="col-11 col-sm-12 col-md-10 col-lg-8  mx-auto">
+                        <div class="md-form form-sm mt-1rem mb-0rem">
+                            <input formControlName="duration" mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
+                                id="duration" class="form-control form-control-sm input-border" placeholder="Duration (number of days)">
+
+                            <!-- VALIDATION -->
+                            <mdb-error *ngIf="
+                                                validateInput('duration', '').invalid &&
+                                                (validateInput('duration', '').dirty || validateInput('duration', '').touched)">
+                                <span>Input invalid</span>
+                            </mdb-error>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-11 col-sm-12 col-md-10 col-lg-8  mx-auto">
+                        <div class="md-form form-sm mt-1rem mb-0rem">
+                            <input formControlName="supply" mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
+                                id="supply" class="form-control form-control-sm input-border" placeholder="Supply">
+
+                            <!-- VALIDATION -->
+                            <mdb-error *ngIf="
+                                            validateInput('supply', '').invalid &&
+                                            (validateInput('supply', '').dirty || validateInput('supply', '').touched)">
+                                <span>Input invalid</span>
+                            </mdb-error>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row ml-01rem ">
+                    <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto box-grey">
+                        <div class="col-10 d-flex justify-content-center mx-auto">
+                            <span> 0.000000XPX</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row ml-01rem ">
+                    <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto box-grey d-flex justify-content-center">
+                            <!-- Material inline 1 -->
+                    <mdb-checkbox formControlName="transferable" [inline]="true">Transferable</mdb-checkbox>
+
+                    <!-- Material inline 2 -->
+                    <mdb-checkbox formControlName="supplyMutable" [inline]="true">Supply Mutable</mdb-checkbox>
+
+                    <!-- Material inline 3 -->
+                    <mdb-checkbox formControlName="levyMutable" [inline]="true">Levy Mutable</mdb-checkbox>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto">
+                        <div class="md-form form-sm mt-1rem mb-0rem">
+                            <input formControlName="password" mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password"
+                                id="password" class="form-control form-control-sm input-border" placeholder="Enter password">
+
+                            <!-- VALIDATION -->
+                            <mdb-error *ngIf="
+                                        validateInput('password', '').invalid &&
+                                        (validateInput('password', '').dirty || validateInput('password', '').touched)">
+                                <span>Input invalid</span>
+                            </mdb-error>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
