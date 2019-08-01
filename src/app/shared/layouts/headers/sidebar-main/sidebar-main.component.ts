@@ -27,11 +27,11 @@ export class SidebarMainComponent implements OnInit {
     },
     {
       label: 'ACCOUNT',
-      url: `/${AppConfig.routes.dashboard}`
+      url: `/${AppConfig.routes.account}`
     },
     {
       label: 'SERVICES',
-      url: `/${AppConfig.routes.dashboard}`
+      url: `/${AppConfig.routes.service}`
     },
   ];
   keyObject = Object.keys;

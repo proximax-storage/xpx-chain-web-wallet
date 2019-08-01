@@ -16,6 +16,7 @@ export const AppConfig: Config = {
     dashboard: 'dashboard',
     editMultisignatureContract: 'edit-multisignature-contract',
     explorer: 'explorer',
+    service: 'dashboard-service',
     storage: 'storage',
     home: 'home',
     importWallet: 'import-wallet',
@@ -50,7 +51,8 @@ export const NameRoute = {
   [AppConfig.routes.dashboard]: 'Dashboard',
   [AppConfig.routes.editMultisignatureContract]: 'Edit multisignature contract',
   [AppConfig.routes.explorer]: 'Explorer Transaction',
-  [AppConfig.routes.storage]: 'storage',
+  [AppConfig.routes.service]: 'Dashboard service',
+  [AppConfig.routes.storage]: 'Storage',
   [AppConfig.routes.home]: 'Home',
   [AppConfig.routes.importWallet]: 'Import wallet',
   [AppConfig.routes.linkTheNamespaceToAnAddress]: 'Link the namespace to an address',
@@ -82,6 +84,7 @@ export interface Config {
     dashboard: string;
     editMultisignatureContract: string;
     explorer: string;
+    service: string;
     storage: string;
     home: string;
     importWallet: string;
