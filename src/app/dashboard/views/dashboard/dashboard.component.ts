@@ -148,10 +148,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
   /**
    * Method to get more transactions when scrolling in the screen
    */
-  onScroll() {    
+  onScroll() {
     if (this.searchTransactions) {
       this.searching = true;
-      console.log(this.transactions[this.transactions.length - 1].data.transactionInfo.id);
       const lastTransactionId = (this.transactions.length > 0) ? this.transactions[this.transactions.length - 1].data.transactionInfo.id : null;
       this.loadTransactions(lastTransactionId);
     }

@@ -39,6 +39,17 @@ export class AuthService {
   }
 
   /**
+   * Destroy node selected
+   *
+   * @memberof LoginService
+   */
+  destroyNodeSelected() {
+    if (this.subscription['nodeSelected'] !== undefined) {
+      this.subscription['nodeSelected'].unsubscribe();
+    }
+  }
+
+  /**
   * Method to login
   *
   * @param {*} common
@@ -91,34 +102,7 @@ export class AuthService {
     this.isLoggedSubject.next(this.logged);
   }
 
-  /************ FIN COW *****************/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  /**
-   * Destroy node selected
-   *
-   * @memberof LoginService
-   */
-  destroyNodeSelected() {
-    // if (this.subscription['nodeSelected'] !== undefined) {
-    //   this.subscription['nodeSelected'].unsubscribe();
-    // }
-  }
+  /**************************************************/
 
 
   /**

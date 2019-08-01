@@ -10,7 +10,7 @@
   display: block;
   color: white;
   text-align: center;
-  width: 200px;
+  /* width: 200px; */
   padding: 5px 20px;
   text-decoration: none;
   font-size: 16px;
@@ -57,7 +57,7 @@
     border-bottom: 0;
     background: white;
     color: #0f7084;
-  }  
+  }
   .topnav a.active {
     border-bottom: 0;
     background: white;
