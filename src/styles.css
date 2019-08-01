@@ -55,6 +55,10 @@ body {
   margin-top: 1rem;
 }
 
+.mt-1-2rem {
+  margin-top: 1.2rem;
+}
+
 .mt-1-5rem {
   margin-top: 1.5rem;
 }
@@ -508,6 +512,14 @@ body {
 }
 
 /**************************** THEME *****************************/
+.description-p-module{
+  font-size: .8rem;
+  text-align: justify;
+  line-height: 17px;
+  font-style: italic;
+}
+
+
 .item-menu{
   font-size: .8rem !important;
 }
@@ -731,9 +743,10 @@ input.form-control.validate-success.ng-valid.ng-dirty, input.form-control.valida
 
 .box-grey{
   border-radius: 1.5rem;
-  background: #f4f4f4;
+  background: #dedede;
   padding: 10px 20px;
   margin: 10px;
+  color: #797979;
 }
 
 .box-transparent-border-orange{

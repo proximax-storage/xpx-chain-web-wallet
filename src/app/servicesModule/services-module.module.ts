@@ -8,6 +8,7 @@ import { CoreModule } from '../core/core.module';
 import { ExplorerComponent } from './views/explorer/explorer.component';
 import { CreateNamespaceComponent } from './views/namespace/create-namespace/create-namespace.component';
 import { AddressBookComponent } from './views/address-book/address-book.component';
+import { RenewNamespaceComponent } from './views/namespace/renew-namespace/renew-namespace.component';
 import { CreateMosaicComponent } from './views/mosaic/create-mosaic/create-mosaic.component';
 import { MosaicsSupplyChangeComponent } from './views/mosaic/mosaics-supply-change/mosaics-supply-change.component';
 import { AliasMosaicsToNamespaceComponent } from './views/mosaic/alias-mosaics-to-namespace/alias-mosaics-to-namespace.component';
@@ -20,9 +21,11 @@ import { AliasMosaicsToNamespaceComponent } from './views/mosaic/alias-mosaics-t
     ExplorerComponent,
     CreateNamespaceComponent,
     AddressBookComponent,
+    RenewNamespaceComponent,
     CreateMosaicComponent,
     MosaicsSupplyChangeComponent,
     AliasMosaicsToNamespaceComponent
+    
   ],
   imports: [
     CoreModule,

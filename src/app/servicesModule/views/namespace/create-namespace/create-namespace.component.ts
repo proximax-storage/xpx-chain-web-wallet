@@ -24,6 +24,7 @@ export class CreateNamespaceComponent implements OnInit {
   configurationForm: ConfigurationForm = {};
   moduleName = 'Namespaces & Sub-Namespaces';
   componentName = 'Create';
+  backToService = `/${AppConfig.routes.service}`;
   /*********************************** */
   arrayselect: Array<object> = [
     {
@@ -170,8 +171,12 @@ export class CreateNamespaceComponent implements OnInit {
     this.namespaceForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(this.configurationForm.namespaceName.minLength), Validators.maxLength(this.configurationForm.namespaceName.maxLength)]],
       namespaceRoot: ['1'],
-      duration: [1, [Validators.required]],
-      password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]],
+      duration: ['', [Validators.required]],
+      password: ['', [
+        Validators.required,
+        Validators.minLength(this.configurationForm.passwordWallet.minLength),
+        Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
+      ]],
     });
   }
 
@@ -183,7 +188,7 @@ export class CreateNamespaceComponent implements OnInit {
   clearForm() {
     this.namespaceForm.get('name').patchValue('');
     this.namespaceForm.get('namespaceRoot').patchValue('1');
-    this.namespaceForm.get('duration').patchValue(1);
+    this.namespaceForm.get('duration').patchValue('');
     this.namespaceForm.get('password').patchValue('');
   }
 
