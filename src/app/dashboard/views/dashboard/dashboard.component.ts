@@ -8,7 +8,6 @@ import { TransactionsInterface, TransactionsService } from 'src/app/transfer/ser
 import { WalletService } from 'src/app/wallet/services/wallet.service';
 import { SharedService } from 'src/app/shared/services/shared.service';
 
-
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -149,9 +148,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
   /**
    * Method to get more transactions when scrolling in the screen
    */
-  onScroll() {
+  onScroll() {    
     if (this.searchTransactions) {
-      // console.log(this.transactions[this.transactions.length - 1].data.transactionInfo.id);
+      this.searching = true;
+      console.log(this.transactions[this.transactions.length - 1].data.transactionInfo.id);
       const lastTransactionId = (this.transactions.length > 0) ? this.transactions[this.transactions.length - 1].data.transactionInfo.id : null;
       this.loadTransactions(lastTransactionId);
     }
@@ -274,4 +274,3 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
   }
 }
-22
