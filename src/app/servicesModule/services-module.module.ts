@@ -8,6 +8,7 @@ import { CoreModule } from '../core/core.module';
 import { ExplorerComponent } from './views/explorer/explorer.component';
 import { CreateNamespaceComponent } from './views/namespace/create-namespace/create-namespace.component';
 import { AddressBookComponent } from './views/address-book/address-book.component';
+import { RenewNamespaceComponent } from './views/namespace/renew-namespace/renew-namespace.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { AddressBookComponent } from './views/address-book/address-book.componen
     DetailAccountComponent,
     ExplorerComponent,
     CreateNamespaceComponent,
-    AddressBookComponent
+    AddressBookComponent,
+    RenewNamespaceComponent
   ],
   imports: [
     CoreModule,
