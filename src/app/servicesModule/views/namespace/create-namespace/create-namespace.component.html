@@ -1,10 +1,18 @@
 <div class="container mt-3rem mb-2rem animated fadeIn">
   <div class="row">
-    <div class="col-12">
-      <span class="fs-1-3rem txt-a-center line-h-1-2em color-grey">{{moduleName}}</span>
-      <span class="fs-1-3rem txt-a-center line-h-1-2em color-grey"> > </span>
-      <span class="fs-1-3rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">{{componentName}}</span>
+    <div class="col-12 col-md-8">
+      <span class="fs-1rem txt-a-center line-h-1-2em color-grey">{{moduleName}}</span>
+      <span class="fs-1rem txt-a-center line-h-1-2em color-grey"> > </span>
+      <span class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">{{componentName}}</span>
     </div>
+
+    <div class="col-12 col-md-4 d-flex justify-content-start justify-content-md-end">
+      <a class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio" [routerLink]="[backToService]">
+        <span>Back to Services</span>
+      </a>
+    </div>
+  </div>
+  <div class="row">
     <div class="col-12">
       <hr class="mt-03rem mb-05rem">
     </div>
@@ -13,10 +21,10 @@
 
   <form [formGroup]="namespaceForm" (ngSubmit)="createNamespace()">
     <div class="row">
-      <div class="col-12 col-md-6">
-        <div class="row">
+      <div class="col-12 col-sm-7 col-md-8 mb-2rem">
+        <div class="row mt-1rem">
           <div class="col-11 mx-auto">
-            <div class="md-form form-sm mt-1rem mb-0rem">
+            <div class="md-form form-sm">
               <input mask="S{18}" [maxlength]="configurationForm.namespaceName.maxLength"
                 [minlength]="configurationForm.namespaceName.minLength" formControlName="name" required
                 mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text" id="name"
@@ -24,16 +32,15 @@
                 onkeyup="javascript:this.value=this.value.toLowerCase();">
 
               <!-- VALIDATION -->
-              <mdb-error *ngIf="
-                          validateInput('name', '').invalid &&
-                          (validateInput('name', '').dirty || validateInput('name', '').touched)">
+              <mdb-error
+                *ngIf="validateInput('name', '').invalid && (validateInput('name', '').dirty || validateInput('name', '').touched)">
                 <span>Input invalid</span>
               </mdb-error>
             </div>
           </div>
         </div>
 
-        <div class="row mt-1rem">
+        <div class="row">
           <div class="col-11 mx-auto">
             <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
               class="selectWrapper" [items]="arrayselect" formControlName="namespaceRoot" bindLabel="label"
@@ -44,9 +51,73 @@
             </mdb-error>
           </div>
         </div>
+
+        <div class="row">
+          <div class="col-11 mx-auto">
+            <div class="md-form form-sm">
+              <input mask="0*" formControlName="duration" required mdbInputDirective mdbValidate
+                [validateSuccess]="true" [validateError]="true" type="text" id="duration"
+                class="form-control form-control-sm input-border" placeholder="Duration (number of days)">
+
+              <!-- VALIDATION -->
+              <mdb-error
+                *ngIf="validateInput('duration', '').invalid && (validateInput('duration', '').dirty || validateInput('duration', '').touched)">
+                <span>Input invalid</span>
+              </mdb-error>
+            </div>
+          </div>
+        </div>
+
+        <div class="row ml-01rem">
+          <div class="col-12 col-lg-6 mx-auto">
+            <div class="box-grey">
+              <span>Fee: 0.000000 XPX</span>
+            </div>
+          </div>
+
+          <div class="col-12 col-lg-6 mx-auto">
+            <div class="box-grey">
+              <span>Rental Fee: {{calculateRentalFee}} XPX</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-11 mx-auto">
+            <div class="md-form form-sm">
+              <input [maxlength]="configurationForm.passwordWallet.maxLength"
+                [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" required
+                mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password"
+                id="password" class="form-control form-control-sm input-border" placeholder="Enter password">
+
+              <!-- VALIDATION -->
+              <mdb-error
+                *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
+                <span>Input invalid</span>
+              </mdb-error>
+            </div>
+          </div>
+        </div>
+
+        <!-- BUTTONS -->
+        <div class="row">
+          <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
+            <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+              size="md" (click)="clearForm()">
+              <span class="fs-1-2em color-white">CLEAR</span>
+            </button>
+          </div>
+
+          <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
+            <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+              size="md">
+              <span class="fs-1-2em color-white">CREATE</span>
+            </button>
+          </div>
+        </div>
       </div>
 
-      <div class="col-12 col-md-6 description-namespace">
+      <div class="col-11 col-sm-5 col-md-4 description-p-module mt-1-5rem mb-2rem">
         <span>
           A namespace can have a maximium length of 16 alphanumerical characters while sub-namespaces can have a
           maximium length of 64 alphanumerical characters. <br><br>
@@ -56,56 +127,5 @@
         </span>
       </div>
     </div>
-
-    <!-- <div class="row mt-1-5rem">
-      <div class="col-11 col-sm-10 col-md-8 col-lg-6 mx-auto">
-        <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" class="selectWrapper"
-          [items]="typeNetwork" bindLabel="label" bindValue="value" placeholder="Select network"
-          formControlName="network">
-        </ng-select>
-        <mdb-error class="mt-1rem ml-1rem"
-          *ngIf="validateInput('network').invalid && (validateInput('network').dirty || validateInput('network').touched)">
-          <span>Select network</span>
-        </mdb-error>
-      </div>
-    </div> -->
-
-    <!-- password -->
-    <!-- <div formGroupName="common">
-      <div class="row">
-        <div class="col-11 col-sm-10 col-md-8 col-lg-6 mx-auto">
-          <div class="md-form form-sm mt-1rem mb-0rem">
-            <input [maxlength]="configurationForm.passwordWallet.maxLength" [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" mdbInputDirective mdbValidate [validateSuccess]="true"
-              [validateError]="true" type="password" id="password"
-              class="form-control form-control-sm input-border" placeholder="Enter password"> -->
-
-    <!-- VALIDATION -->
-    <!-- <mdb-error *ngIf="
-                validateInput('password', 'common').invalid &&
-                (validateInput('password', 'common').dirty || validateInput('password', 'common').touched)">
-              <span>Input invalid</span>
-            </mdb-error>
-          </div>
-        </div>
-      </div>
-    </div> -->
-
-
-
-    <!-- <div class="row mt-2rem">
-      <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-        <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
-          size="md" (click)="clearForm()">
-          <span class="fs-1-2em color-white">CLEAR</span>
-        </button>
-      </div>
-
-      <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-        <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
-          size="md">
-          <span class="fs-1-2em color-white">CREATE</span>
-        </button>
-      </div>
-    </div> -->
   </form>
 </div>
