@@ -2,7 +2,7 @@ import { InjectionToken } from '@angular/core';
 export const APP_CONFIG = new InjectionToken('app.config');
 export const AppConfig: Config = {
   routes: {
-    account :'',
+    account: 'details-account',
     addressBook: 'address-book',
     apostille: 'apostille',
     audiApostille: 'audit-apostille',
@@ -28,10 +28,10 @@ export const AppConfig: Config = {
     selectNode: 'select-node',
     signMultiSigTransactions: 'sign-multisignature-transactions',
     walletCreated: 'wallet-created',
-    
-    
-    
-    
+
+
+
+
 
   }
 };
@@ -63,9 +63,9 @@ export const NameRoute = {
   [AppConfig.routes.signMultiSigTransactions]: 'Sign multisignature transactions',
   [AppConfig.routes.walletCreated]: 'Wallet Created',
 
-  
-  
-  
+
+
+
 };
 
 export interface Config {
@@ -96,14 +96,14 @@ export interface Config {
     selectNode: string;
     signMultiSigTransactions: string;
     walletCreated: string;
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
+
+
+
   };
 }

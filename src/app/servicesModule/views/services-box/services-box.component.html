@@ -1,1 +1,38 @@
-<p>services-box works!</p>
+<div class="container mt-3rem mb-2rem animated fadeIn">
+  <div class="row">
+    <ng-container *ngFor="let item of objectKeys(servicesList)">
+      <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mt-1rem">
+        <!-- Icon and Title -->
+        <div class="row">
+          <div class="col-12 d-flex justify-content-center">
+            <img class="mr-1rem h-70px" src="assets/images/img/{{servicesList[item].image}}">
+          </div>
+          <div class="col-12 txt-a-center mt-1rem">
+            <span class="fs-1rem fw-600">{{servicesList[item].title}}</span>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div class="row height-box-description">
+          <div class="col-12 txt-a-center line-h-1em">
+            <span class="fs-08rem">{{servicesList[item].description}}</span>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <ng-container *ngIf="servicesList[item].viewChildren === true">
+          <div class="row mb-1rem">
+            <ng-container *ngFor="let itm of objectKeys(servicesList[item]['children'])">
+              <div class="col-12 txt-a-center line-h-1em">
+                <hr class="mb-03rem mt-03rem border-hr">
+                <span class="fs-08rem"
+                [ngClass]="[
+                servicesList[item].children[itm].show ? 'active-text cursor-p' : 'inactive-text cursor-n-a']">{{servicesList[item].children[itm].title | uppercase }}</span>
+              </div>
+            </ng-container>
+          </div>
+        </ng-container>
+      </div>
+    </ng-container>
+  </div>
+</div>
