@@ -477,6 +477,10 @@ body {
 }
 
 /**************************** COLOR *****************************/
+.color-main-wallet{
+  color: #427dbe;
+}
+
 .color-item-menu{
   color: #2BA1B9 !important;
 }
@@ -733,6 +737,10 @@ input.form-control.validate-success.ng-valid.ng-dirty, input.form-control.valida
   border: solid #f3ad27;
   padding: 10px 20px;
   margin: 10px; text-align: center;
+}
+
+.topnav label.icon{
+  cursor: pointer !important;
 }
 
 

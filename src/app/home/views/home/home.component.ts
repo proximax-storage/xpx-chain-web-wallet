@@ -24,28 +24,28 @@ export class HomeComponent implements OnInit {
   ngOnInit() {
     this.servicesList = [
       this.services.buildStructureService(
-        'Transactions',
+        'Blockchain',
         true,
-        'Search all available transactions',
+        'Multisg, aggregated tx, cross chain, meta data',
         'icon-transactions-green-60h-proximax-sirius-wallet.svg',
-      ),
-      this.services.buildStructureService(
-        'Streaming',
-        true,
-        '',
-        'icon-streaming-gradient-80h-proximax-sirius-wallet.svg',
       ),
       this.services.buildStructureService(
         'Storage',
         true,
-        '',
+        'P2P decentralised storage for any type file',
         'icon-storage-green-60h-proximax-sirius-wallet.svg',
       ),
-      this.services.buildStructureService(
-        'Address Book',
+        this.services.buildStructureService(
+        'Streaming',
         true,
-        'Assign labels to addresses to easily keep track of your contacts',
-        'icon-address-green-book-60h-proximax-sirius-wallet.svg',
+        'P2P decentralised streaming for video and chat',
+        'icon-streaming-gradient-80h-proximax-sirius-wallet.svg',
+      ),
+      this.services.buildStructureService(
+        'Supercontracts',
+        true,
+        'Easily modifiable digital contracts',
+        'icon-supercontracts-gradient-80h-proximax-sirius-wallet',
       )
     ];
   }

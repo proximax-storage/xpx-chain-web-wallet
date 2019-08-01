@@ -236,7 +236,5 @@ export class ServicesBoxComponent implements OnInit {
         true
       )
     ];
-
-    console.log(this.servicesList);
   }
 }

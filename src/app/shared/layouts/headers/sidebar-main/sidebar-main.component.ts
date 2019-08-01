@@ -64,6 +64,11 @@ export class SidebarMainComponent implements OnInit {
     this.route.navigate([`/${param}`]);
   }
 
+  /**
+   *
+   *
+   * @memberof SidebarMainComponent
+   */
   myFunction() {
     let menuNav = document.getElementById("myTopnav");
     if (menuNav.classList.contains('responsive')) {

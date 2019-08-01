@@ -1,4 +1,26 @@
-<mdb-navbar SideClass="navbar navbar-expand-sm navbar-dark background-header-inverse z-depth-0"
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-6">
+      <mdb-navbar SideClass="navbar navbar-expand-sm navbar-dark background-header-inverse z-depth-0"
+        [containerInside]="false">
+        <mdb-navbar-brand class="d-flex align-items-end">
+          <a class="navbar-brand mr-05rem">
+            <img src="assets/images/img/logo-proximax-sirius-wallet-proximax-sirius-wallet.svg" height="35"
+              class="d-inline-block align-top">
+          </a>
+          <span class="fs-08rem" style="color: #616161;">v{{version}}</span>
+        </mdb-navbar-brand>
+      </mdb-navbar>
+    </div>
+
+    <div class="col-6 d-flex align-items-center justify-content-end">
+      <div class="nav-link waves-light" mdbWavesEffect (click)="logout(auth)">
+        <span class="item-menu cursor-p font-header mr-02rem color-main-wallet">LOG OUT</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- <mdb-navbar SideClass="navbar navbar-expand-sm navbar-dark background-header-inverse z-depth-0"
   [containerInside]="false">
   <mdb-navbar-brand class="d-flex align-items-end">
     <a class="navbar-brand mr-05rem">
@@ -7,7 +29,27 @@
     </a>
     <span class="fs-08rem" style="color: #616161;">v{{version}}</span>
   </mdb-navbar-brand>
-  <links>
+
+  <div>
+    <div class="d-md-inline-block font-header mr-02rem">
+      <div class="nav-link waves-light" mdbWavesEffect (click)="logout(auth)"><span class="item-menu cursor-p">LOG
+          OUT</span>
+      </div>
+    </div>
+  </div> -->
+
+  <!-- <links>
+    <li class="nav-item color-item-menu active">
+      <div class=" d-md-inline-block font-header mr-02rem">
+        <div class="nav-link waves-light" mdbWavesEffect (click)="logout(auth)"><span class="item-menu cursor-p">LOG
+            OUT</span>
+        </div>
+      </div>
+    </li>
+  </links> -->
+
+
+  <!-- <links>
     <ul class="navbar-nav ml-auto">
       <ng-container *ngFor="let key of keyObject(itemsHeader)">
         <ng-container *ngIf="!itemsHeader[key]['rol']">
@@ -42,19 +84,19 @@
       </ng-container>
       <li class="nav-item color-item-menu active">
         <div class=" d-md-inline-block font-header mr-02rem">
-          <div class="nav-link waves-light" mdbWavesEffect
-            (click)="logout(auth)"><span class="item-menu cursor-p">LOG OUT</span>
+          <div class="nav-link waves-light" mdbWavesEffect (click)="logout(auth)"><span class="item-menu cursor-p">LOG
+              OUT</span>
           </div>
         </div>
       </li>
     </ul>
-  </links>
-</mdb-navbar>
+  </links> -->
+  <!-- </mdb-navbar> -->
 
-<div class="topnav" id="myTopnav">
-  <div class="d-flex flex-column flex-sm-column flex-md-row align-items-center justify-content-center">
-    <a *ngFor="let key of itemsMenu" [routerLink]="[key.url]">{{ key.label }}</a>
+  <div class="topnav" id="myTopnav">
+    <div class="d-flex flex-column flex-sm-column flex-md-row align-items-center justify-content-center">
+      <a *ngFor="let key of itemsMenu" [routerLink]="[key.url]">{{ key.label }}</a>
+    </div>
+    <input type="checkbox" class="menu-btn" id="menu-btn" (click)="myFunction()">
+    <label for="menu-btn" class="icon"><i class="fa fa-bars"></i></label>
   </div>
-  <input type="checkbox" class="menu-btn" id="menu-btn" (click)="myFunction()">
-  <label for="menu-btn" class="icon"><i class="fa fa-bars"></i></label>
-</div>
