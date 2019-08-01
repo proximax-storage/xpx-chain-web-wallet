@@ -1,3 +1,22 @@
 .line-separator {
   border-right: .5px solid #d6d6d6;
 }
+
+.header-backg {
+  background: #303030;
+  color: white;
+}
+
+.scroll-to-top {
+  z-index: 10000;
+  position: fixed;
+  bottom: 15px;
+  right: 15px;
+  opacity: 0;
+  transition: all .2s ease-in-out;
+ }
+
+ .show-scrollTop {
+  opacity: 1;
+  transition: all .2s ease-in-out;
+ }

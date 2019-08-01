@@ -2,6 +2,7 @@ import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './views/dashboard/dashboard.component';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { CoreModule } from '../core/core.module';
 
 @NgModule({
@@ -10,7 +11,8 @@ import { CoreModule } from '../core/core.module';
   ],
   imports: [
     CoreModule,
-    DashboardRoutingModule
+    DashboardRoutingModule,
+    InfiniteScrollModule
   ],
   schemas: [NO_ERRORS_SCHEMA]
 })
