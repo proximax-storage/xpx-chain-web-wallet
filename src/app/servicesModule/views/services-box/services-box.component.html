@@ -25,10 +25,9 @@
             <ng-container *ngFor="let itm of objectKeys(servicesList[item]['children'])">
               <div class="col-12 txt-a-center line-h-1em">
                 <hr class="mb-03rem mt-03rem border-hr">
-                <a [routerLink]="['/'+servicesList[item].children[itm].route]">
-                    <span class="fs-08rem"
-                    [ngClass]="[
-                    servicesList[item].children[itm].show ? 'active-text cursor-p' : 'inactive-text cursor-n-a']">{{servicesList[item].children[itm].title | uppercase }}</span>
+                <a [routerLink]="['/'+servicesList[item].children[itm].route]" [ngClass]="[
+                servicesList[item].children[itm].show ? 'active-text cursor-p' : 'inactive-text cursor-n-a']">
+                  <span class="fs-08rem">{{servicesList[item].children[itm].title | uppercase }}</span>
                 </a>
               </div>
             </ng-container>
@@ -38,4 +37,3 @@
     </ng-container>
   </div>
 </div>
-
