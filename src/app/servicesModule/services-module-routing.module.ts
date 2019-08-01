@@ -7,6 +7,8 @@ import { DetailAccountComponent } from './views/account/detail-account/detail-ac
 import { CreateNamespaceComponent } from './views/namespace/create-namespace/create-namespace.component';
 import { AddressBookComponent } from './views/address-book/address-book.component';
 import { CreateMosaicComponent } from './views/mosaic/create-mosaic/create-mosaic.component';
+import { MosaicsSupplyChangeComponent } from './views/mosaic/mosaics-supply-change/mosaics-supply-change.component';
+import { AliasMosaicsToNamespaceComponent } from './views/mosaic/alias-mosaics-to-namespace/alias-mosaics-to-namespace.component';
 
 const routes: Routes = [
   {
@@ -74,7 +76,31 @@ const routes: Routes = [
         override: true,
       }
     }
+  },
+  {
+    path: AppConfig.routes.MosaicSupplyChange,
+    component: MosaicsSupplyChangeComponent,
+    data: {
+      meta: {
+        title: 'mosaicsSupplyChange.title',
+        description: 'mosaicsSupplyChange.text',
+        override: true,
+      }
+    }
+  },
+  {
+    path: AppConfig.routes.LinkingNamespaceMosaic,
+    component: AliasMosaicsToNamespaceComponent,
+    data: {
+      meta: {
+        title: 'aliasMosaicsToNamespace.title',
+        description: 'aliasMosaicsToNamespace.text',
+        override: true,
+      }
+    }
   }
+
+  
 ];
 
 @NgModule({
