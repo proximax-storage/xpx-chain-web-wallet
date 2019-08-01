@@ -37,7 +37,7 @@ export const AppConfig: Config = {
 };
 
 export const NameRoute = {
-  [AppConfig.routes.account]: '',
+  [AppConfig.routes.account]: 'Details Account',
   [AppConfig.routes.addressBook]: 'Address Book',
   [AppConfig.routes.apostille]: 'Apostille create',
   [AppConfig.routes.audiApostille]: 'Apostille Audit',

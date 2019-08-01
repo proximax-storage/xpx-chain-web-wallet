@@ -41,7 +41,8 @@ const routes: Routes = [
     {
       path: '',
       loadChildren: './servicesModule/services-module.module#ServicesModule'
-    }]
+    },
+  ]
   }, {
     path: '**',
     redirectTo: `/${AppConfig.routes.home}`
