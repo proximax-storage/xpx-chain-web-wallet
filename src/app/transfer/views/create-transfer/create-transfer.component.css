@@ -1,0 +1,29 @@
+.caja-gris {    
+  padding: 10px 20px !important;
+  margin: 0 !important;
+  border: 1px solid #CCC;
+  border-radius: 20px;
+  display: flex;
+}
+
+.caja-gris input, .caja-gris textarea, .caja-gris ng-select  {
+  margin: 0 !important;
+  border: 0 !important;
+  width: 100%;
+  flex: 1;
+}
+
+.icono {
+  width:16px;
+  padding-right:10px;
+  display: inline-block;
+  line-height:18px;
+}
+
+.ng-arrow-wrapper::after {
+  border:0;
+}
+
+.ng-select-container:after { 
+  border:0;
+}

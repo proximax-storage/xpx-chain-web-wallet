@@ -5,8 +5,12 @@ import { ExplorerComponent } from './views/explorer/explorer.component';
 import { ServicesBoxComponent } from "./views/services-box/services-box.component"
 import { DetailAccountComponent } from './views/account/detail-account/detail-account.component';
 import { CreateNamespaceComponent } from './views/namespace/create-namespace/create-namespace.component';
+import { RenewNamespaceComponent } from './views/namespace/renew-namespace/renew-namespace.component';
 import { AddressBookComponent } from './views/address-book/address-book.component';
 import { CreateMosaicComponent } from './views/mosaic/create-mosaic/create-mosaic.component';
+import { AliasAddressToNamespaceComponent } from './views/account/alias-address-to-namespace/alias-address-to-namespace.component';
+import { MosaicsSupplyChangeComponent } from './views/mosaic/mosaics-supply-change/mosaics-supply-change.component';
+import { AliasMosaicsToNamespaceComponent } from './views/mosaic/alias-mosaics-to-namespace/alias-mosaics-to-namespace.component';
 
 const routes: Routes = [
   {
@@ -54,6 +58,17 @@ const routes: Routes = [
     }
   },
   {
+    path: AppConfig.routes.renewNamespace,
+    component: RenewNamespaceComponent,
+    data: {
+      meta: {
+        title: 'renewNamespace.title',
+        description: 'renewNamespace.text',
+        override: true,
+      }
+    }
+  },
+  {
     path: AppConfig.routes.addressBook,
     component: AddressBookComponent,
     data: {
@@ -62,8 +77,9 @@ const routes: Routes = [
         description: 'createNamespace.text',
         override: true,
       }
-    }
+    },
   },
+  
   {
     path: AppConfig.routes.createMosaic,
     component: CreateMosaicComponent,
@@ -74,7 +90,42 @@ const routes: Routes = [
         override: true,
       }
     }
+  },
+  {
+    path: AppConfig.routes.MosaicSupplyChange,
+    component: MosaicsSupplyChangeComponent,
+    data: {
+      meta: {
+        title: 'mosaicsSupplyChange.title',
+        description: 'mosaicsSupplyChange.text',
+        override: true,
+      }
+    }
+  },
+  {
+    path: AppConfig.routes.LinkingNamespaceMosaic,
+    component: AliasMosaicsToNamespaceComponent,
+    data: {
+      meta: {
+        title: 'aliasMosaicsToNamespace.title',
+        description: 'aliasMosaicsToNamespace.text',
+        override: true,
+      }
+    }
+  },
+  {
+    path: AppConfig.routes.aliasAddressToNamespace,
+    component: AliasAddressToNamespaceComponent,
+    data: {
+      meta: {
+        title: 'aliasAddressToNamespace.title',
+        description: 'aliasAddressToNamespace.text',
+        override: true,
+      }
+    }
   }
+
+  
 ];
 
 @NgModule({
