@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { NamespacesService } from '../../../services/namespaces.service';
 import { SharedService } from 'src/app/shared/services/shared.service';
-import { SignedTransaction, MosaicId, MosaicService } from 'tsjs-xpx-chain-sdk';
 import { AppConfig } from '../../../../config/app.config';
 import { Router } from '@angular/router';
 import { TransactionsService } from 'src/app/transfer/services/transactions.service';
@@ -38,7 +37,6 @@ export class RenewNamespaceComponent implements OnInit {
     private transactionService: TransactionsService,
     private walletService: WalletService,
     private proximaxProvider: ProximaxProvider,
-    private mosaicServices: MosaicService,
     private router: Router
   ) { }
 

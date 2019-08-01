@@ -8,6 +8,7 @@ import { CreateNamespaceComponent } from './views/namespace/create-namespace/cre
 import { RenewNamespaceComponent } from './views/namespace/renew-namespace/renew-namespace.component';
 import { AddressBookComponent } from './views/address-book/address-book.component';
 import { CreateMosaicComponent } from './views/mosaic/create-mosaic/create-mosaic.component';
+import { AliasAddressToNamespaceComponent } from './views/account/alias-address-to-namespace/alias-address-to-namespace.component';
 
 const routes: Routes = [
   {
@@ -83,6 +84,17 @@ const routes: Routes = [
       meta: {
         title: 'createMosaic.title',
         description: 'createMosaic.text',
+        override: true,
+      }
+    }
+  },
+  {
+    path: AppConfig.routes.aliasAddressToNamespace,
+    component: AliasAddressToNamespaceComponent,
+    data: {
+      meta: {
+        title: 'aliasAddressToNamespace.title',
+        description: 'aliasAddressToNamespace.text',
         override: true,
       }
     }

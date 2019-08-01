@@ -29,6 +29,7 @@ export const AppConfig: Config = {
     selectNode: 'select-node',
     signMultiSigTransactions: 'sign-multisignature-transactions',
     walletCreated: 'wallet-created',
+    aliasAddressToNamespace: 'alias-address-to-namespace'
 
 
 
@@ -64,6 +65,7 @@ export const NameRoute = {
   [AppConfig.routes.selectNode]: 'Select node',
   [AppConfig.routes.signMultiSigTransactions]: 'Sign multisignature transactions',
   [AppConfig.routes.walletCreated]: 'Wallet Created',
+  [AppConfig.routes.aliasAddressToNamespace]: 'Alias Address to Namespace',
 
 
 
@@ -99,7 +101,7 @@ export interface Config {
     selectNode: string;
     signMultiSigTransactions: string;
     walletCreated: string;
-
+    aliasAddressToNamespace: string;
 
 
 
