@@ -48,13 +48,13 @@ export class ServicesBoxComponent implements OnInit {
             false,
             '',
             '',
-            AppConfig.routes.linkTheNamespaceToAnAddress
+            ''
           ), metadata: this.services.buildStructureService(
             'Metadata',
             false,
             '',
             '',
-            AppConfig.routes.linkTheNamespaceToAnAddress
+            ''
           ),
         },
         true
@@ -75,7 +75,8 @@ export class ServicesBoxComponent implements OnInit {
             '',
             AppConfig.routes.explorer
           )
-        }
+        },
+        true
       ),
 
       //Namespaces
@@ -83,7 +84,32 @@ export class ServicesBoxComponent implements OnInit {
         'Namespaces',
         true,
         'Create a domain and subdmains',
-        'icon-streaming-gradient-80h-proximax-sirius-wallet.svg',
+        'icon-namespaces-green-60h-proximax-sirius-wallet.svg',
+        '',
+        {
+          create: this.services.buildStructureService(
+            'Create',
+            true,
+            '',
+            '',
+            AppConfig.routes.createNamespace
+          ), renew: this.services.buildStructureService(
+            'Renew',
+            true,
+            '',
+            '',
+            AppConfig.routes.renovateNamespace
+          )
+        },
+        true
+      ),
+
+      //Mosaics
+      this.services.buildStructureService(
+        'Mosaics',
+        true,
+        'Create digital assets with unique properties',
+        'icon-mosaics-green-60h-proximax-sirius-wallet.svg',
         '',
         {
           create: this.services.buildStructureService(
@@ -92,32 +118,27 @@ export class ServicesBoxComponent implements OnInit {
             '',
             '',
             AppConfig.routes.createMosaic
+          ), changeSupply: this.services.buildStructureService(
+            'Change Supply',
+            true,
+            '',
+            '',
+            AppConfig.routes.MosaicSupplyChange
+          ), linkToNamespace: this.services.buildStructureService(
+            'Link to namespace',
+            true,
+            '',
+            '',
+            AppConfig.routes.LinkingNamespaceMosaic
           ), renew: this.services.buildStructureService(
             'Renew',
-            true,
+            false,
             '',
             '',
-            AppConfig.routes.renovateNamespace
+            ''
           )
-        }
-      ),
-
-      //Mosaics
-      this.services.buildStructureService(
-        'Mosaics',
-        true,
-        'Create digital assets with unique properties',
-        'icon-storage-green-60h-proximax-sirius-wallet.svg',
-        '',
-        {
-          details: this.services.buildStructureService(
-            'Details',
-            true,
-            '',
-            '',
-            AppConfig.routes.account
-          )
-        }
+        },
+        true
       ),
 
       // Address Book
@@ -128,14 +149,21 @@ export class ServicesBoxComponent implements OnInit {
         'icon-address-green-book-60h-proximax-sirius-wallet.svg',
         '',
         {
-          details: this.services.buildStructureService(
-            'Details',
+          addContact: this.services.buildStructureService(
+            'Add contact',
             true,
             '',
             '',
-            AppConfig.routes.account
+            AppConfig.routes.addressBook
+          ), open: this.services.buildStructureService(
+            'Open',
+            false,
+            '',
+            '',
+            ''
           )
-        }
+        },
+        true
       ),
 
       // Storage
@@ -143,20 +171,27 @@ export class ServicesBoxComponent implements OnInit {
         'Storage',
         true,
         'Upload and download your files and encrypt them',
-        'icon-address-green-book-60h-proximax-sirius-wallet.svg',
+        'icon-storage-green-60h-proximax-sirius-wallet.svg',
         '',
         {
-          details: this.services.buildStructureService(
-            'Details',
-            true,
+          myFiles: this.services.buildStructureService(
+            'My files',
+            false,
             '',
             '',
-            AppConfig.routes.account
+            ''
+          ), upload: this.services.buildStructureService(
+            'Upload',
+            false,
+            '',
+            '',
+            ''
           )
-        }
+        },
+        true
       ),
 
-      // NOdes
+      // Nodes
       this.services.buildStructureService(
         'Nodes',
         true,
@@ -171,25 +206,34 @@ export class ServicesBoxComponent implements OnInit {
             '',
             AppConfig.routes.account
           )
-        }
+        },
+        true
       ),
 
       // Services 08
       this.services.buildStructureService(
-        'Address Book',
+        'Services 08',
         true,
         'Create digital assets with unique properties',
-        'icon-address-green-book-60h-proximax-sirius-wallet.svg',
+        'icon-mosaics-green-60h-proximax-sirius-wallet.svg',
         '',
         {
-          details: this.services.buildStructureService(
-            'Details',
-            true,
+          create: this.services.buildStructureService(
+            'Create',
+            false,
             '',
             '',
-            AppConfig.routes.account
+            ''
+          ),
+          renew: this.services.buildStructureService(
+            'Renew',
+            false,
+            '',
+            '',
+            ''
           )
-        }
+        },
+        true
       )
     ];
 
