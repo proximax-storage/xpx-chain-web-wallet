@@ -5,6 +5,8 @@ import { AppConfig } from 'src/app/config/app.config';
 import { environment } from 'src/environments/environment.prod';
 import { DashboardService } from '../../../../dashboard/services/dashboard.service';
 import { AuthService } from '../../../../auth/services/auth.service';
+import { WalletService } from 'src/app/wallet/services/wallet.service';
+import { TransactionsService } from 'src/app/transfer/services/transactions.service';
 
 @Component({
   selector: 'app-sidebar-main',
@@ -14,6 +16,11 @@ import { AuthService } from '../../../../auth/services/auth.service';
 
 export class SidebarMainComponent implements OnInit {
 
+  walletName = '';
+  vestedBalance: string = '0.000000';
+  subscriptions = [
+    'balance'
+  ];
   changeMenu = true;
   itemsHeader: ItemsHeaderInterface;
   itemsMenu = [
@@ -41,11 +48,37 @@ export class SidebarMainComponent implements OnInit {
     private route: Router,
     private authService: AuthService,
     private dashboardService: DashboardService,
-  ) {
+    private transactionService: TransactionsService,
+    private walletService: WalletService
+    ) {
     this.version = environment.version;
   }
 
+  /**
+   *
+   *
+   * @memberof HeaderComponent
+   */
+  destroySubscription() {
+    this.subscriptions.forEach(element => {
+      if (this.subscriptions[element] !== undefined) {
+        this.subscriptions[element].unsubscribe();
+      }
+    });
+  }
+
   ngOnInit() {
+    this.destroySubscription();
+    this.walletName = this.walletService.current.name;
+    this.subscriptions['balance'] = this.transactionService.getBalance$().subscribe(
+      next => {
+        this.vestedBalance = `Balance ${next} XPX`;
+        // this.horizontalHeader.amount.name = `Balance ${next} XPX`;
+      }, error => {
+        this.vestedBalance = `Balance 0.000000 XPX`;
+        // this.horizontalHeader.amount.name = `Balance 0.000000 XPX`;
+      }
+    );
     this.itemsHeader = {
       signout: this.sharedService.buildHeader('default', 'LOG OUT', '', '', false, `/${AppConfig.routes.home}`, false, {}, false),
     }
