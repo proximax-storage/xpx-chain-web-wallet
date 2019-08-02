@@ -518,6 +518,10 @@ body {
 }
 
 /**************************** COLOR *****************************/
+.color-blue-light {
+  color: #0aabbb !important;
+}
+
 .green-color {
   color: #35af8d !important;
 }
@@ -532,6 +536,14 @@ body {
 
 .color-dark-green {
   color: #023c42 !important;
+}
+
+.color-light-orange {
+  color: #FF9900 !important;
+}
+
+.color-orange {
+  color: #EA6002 !important;
 }
 
 .color-grey{
