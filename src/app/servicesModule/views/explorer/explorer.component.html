@@ -19,16 +19,33 @@
   </div>
 </div>
 
-<div class="container-fluid background-header-grey">
+<div class="container-fluid background-header-grey pb-1rem pt-1rem">
   <div class="row">
-    <div class="col-2 col-md-1 d-flex align-items-center">
-      <span class="fs-1rem txt-a-center line-h-1-2em color-grey"> > </span>
-    </div>
-    <div class="col-5 col-md-4">
-      <div class="md-form mt-1rem mb-1rem">
-        <mdb-select placeholder="Select type search" [(ngModel)]="typeSearch" [options]="optionTypeSearch" required
-          class="colorful-select dropdown-default" mdbInputDirective [validateSuccess]="false" [validateError]="false">
-        </mdb-select>
+    <div class="col-10 mx-auto">
+      <div class="row">
+        <!-- SELECT -->
+        <div class="col-12 col-sm-6 col-md-4 col-lg-5 mx-auto pt-07rem">
+          <div class="md-form mt-1rem mb-1rem caja-gris">
+            <!-- <img class="icono" src="assets/images/img/icon-storage-green-16h-proximax-sirius-wallet.svg" alt=""> -->
+            <mdb-select placeholder="Select type search" [(ngModel)]="typeSearch" [options]="optionTypeSearch" required
+              class="colorful-select dropdown-default" mdbInputDirective [validateSuccess]="false"
+              [validateError]="false">
+            </mdb-select>
+          </div>
+        </div>
+
+        <!-- Keyword or number -->
+        <div class="col-12 col-sm-6 col-md-4 col-lg-5 mx-auto d-flex align-items-center pt-05rem">
+          <input [(ngModel)]="paramSearch" type="text" autocomplete="off" id="searchTransaction" class="form-control"
+            mdbInputDirective [validateSuccess]="false" [validateError]="false" placeholder="Keyword or number">
+        </div>
+
+        <div class="col-12 col-md-4 col-lg-2 d-flex align-items-center justify-content-center background-dark-green-plus pt-05rem">
+          <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn overflow-ellipsis-nowrap"
+            size="md" (click)="searchData()">
+            <span class="fs-1em color-white">SEARCH</span>
+          </button>
+        </div>
       </div>
     </div>
   </div>
