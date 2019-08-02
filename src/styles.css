@@ -593,6 +593,11 @@ body {
   background: #2BA1B9 !important;
 }
 
+.background-btn-inverse{
+  background-color: white !important;
+  border: 2px solid #2ba7c0 !important;
+}
+
 .background-header-grey{
   background-color: #f4f4f4 !important;
 }
@@ -764,6 +769,11 @@ input.form-control.validate-error.ng-invalid.ng-touched, input.form-control.vali
 input.form-control.validate-success.ng-valid.ng-dirty, input.form-control.validate-success.ng-valid.ng-touched, .form-submitted input.form-control.validate-success.ng-valid{
   box-shadow: none !important;
   border: 2px solid #2BA1B9 !important;
+}
+
+.md-textarea.validate-success.ng-valid {
+  border: 2px solid #2BA1B9 !important;
+  box-shadow: none !important;
 }
 
 #confirm-password-invalid,
