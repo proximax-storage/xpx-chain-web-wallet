@@ -19,6 +19,8 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
   @ViewChild(MdbTablePaginationComponent, {static: true}) mdbTablePagination: MdbTablePaginationComponent;
   @ViewChild(MdbTableDirective, {static: true}) mdbTable: MdbTableDirective;
 
+  moduleName = 'Transaction explorer';
+  componentName = 'Explore';
   goBack = `/${AppConfig.routes.service}`;
   searching = false;
   objectKeys = Object.keys;
