@@ -19,7 +19,7 @@ export class AliasAddressToNamespaceComponent implements OnInit {
 
   @BlockUI() blockUI: NgBlockUI;
   moduleName = 'Accounts';
-  componentName = 'Link to Namespace';
+  componentName = 'Alias to Namespace';
   backToService = `/${AppConfig.routes.service}`;
   configurationForm: ConfigurationForm = {};
   blockSend: boolean = false;
