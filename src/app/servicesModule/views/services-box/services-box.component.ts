@@ -38,7 +38,7 @@ export class ServicesBoxComponent implements OnInit {
             '',
             AppConfig.routes.account
           ), aliasToNamespace: this.services.buildStructureService(
-            'Alias to Namespace',
+            'Link to Namespace',
             true,
             '',
             '',
