@@ -1006,3 +1006,47 @@ mdb-select>div>div.single>div.value{
 
 
 /****************************************/
+
+.title-modal-white {
+  color: white !important;
+}
+
+.box-modal-main {
+  background: -webkit-linear-gradient(top, #33b7d2, #0f7084);
+}
+
+body.modal-open {
+  overflow: hidden !important;
+}
+
+.modal-body {
+  max-height: 90%;
+  overflow: auto;
+  overflow-x: hidden;
+}
+
+
+.modal-dialog {
+  max-height: 90vh !important;
+}
+
+.modal-dialog .modal-content {
+  max-height: 90vh !important;
+}
+
+@media (min-width: 576px) {
+  .modal-dialog {
+    max-width: 750px !important;
+    padding-right: 1rem;
+    padding-left: 1rem;
+  }
+}
+
+
+@media (min-width: 768px) {
+  .modal-dialog {
+    max-width: 950px !important;
+    padding-right: 1rem;
+    padding-left: 1rem;
+  }
+}
