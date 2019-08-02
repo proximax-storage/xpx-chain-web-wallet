@@ -20,7 +20,7 @@
 
   <form [formGroup]="LinkToNamespaceForm" (ngSubmit)="send()">
     <div class="row mt-1-5rem">
-      <div class="col-11 col-sm-10 col-md-8 col-lg-6 mx-auto">
+      <div class="col-11 col-sm-10 col-lg-8 mx-auto">
         <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
           class="selectWrapper" [items]="namespaceSelect" formControlName="namespace" bindLabel="label"
           bindValue="value" placeholder="Select namespace"></ng-select>
@@ -31,8 +31,8 @@
       </div>
     </div>
 
-    <div class="row mt-1-5rem">
-      <div class="col-11 col-sm-10 col-md-8 col-lg-6 mx-auto">
+    <div class="row">
+      <div class="col-11 col-sm-10 col-lg-8 mx-auto">
         <div class="md-form form-sm">
           <input formControlName="address" required mdbInputDirective mdbValidate
             [validateSuccess]="true" [validateError]="true" type="text" id="address"
@@ -47,16 +47,16 @@
       </div>
     </div>
 
-    <div class="row mt-1-5rem">
-      <div class="col-11 col-sm-10 col-md-8 col-lg-6 mx-auto">
+    <div class="row">
+      <div class="col-11 col-sm-10 col-lg-8 mx-auto">
         <div class="box-grey txt-a-center">
           <span>Fee: 0.000000 XPX</span>
         </div>
       </div>
     </div>
 
-    <div class="row mt-1-5rem">
-      <div class="col-11 col-sm-10 col-md-8 col-lg-6 mx-auto">
+    <div class="row">
+      <div class="col-11 col-sm-10 col-lg-8 mx-auto">
         <div class="md-form form-sm">
           <input [maxlength]="configurationForm.passwordWallet.maxLength"
             [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" required
