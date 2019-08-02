@@ -9,6 +9,11 @@ body {
   font-family: 'Open Sans' !important;
 }
 
+.overflow-ellipsis-nowrap {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis
+}
 /************* MARGIN **************/
 
 .m-0{
@@ -531,6 +536,29 @@ body {
   background-color: #f4f4f4 !important;
 }
 /**************************** THEME *****************************/
+.line-separator {
+  border-right: .5px solid #d6d6d6;
+}
+
+.header-backg {
+  background: #303030;
+  color: white;
+}
+
+.scroll-to-top {
+  z-index: 10000;
+  position: fixed;
+  bottom: 15px;
+  right: 15px;
+  opacity: 0;
+  transition: all .2s ease-in-out;
+ }
+
+ .show-scrollTop {
+  opacity: 1;
+  transition: all .2s ease-in-out;
+ }
+
 .description-p-module{
   font-size: .8rem;
   text-align: justify;
