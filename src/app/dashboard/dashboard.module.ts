@@ -5,6 +5,7 @@ import { DashboardComponent } from './views/dashboard/dashboard.component';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { CoreModule } from '../core/core.module';
 
+
 @NgModule({
   declarations: [
     DashboardComponent

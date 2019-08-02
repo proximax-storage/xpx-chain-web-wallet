@@ -132,3 +132,59 @@
     </div>
   </div>
 </div>
+
+
+<!-- MODAL -->
+<div mdbModal #basicModal="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myBasicModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content form-elegant b-r-08rem">
+      <div class="modal-header text-center box-modal-grey b-t-r-r-08rem b-t-l-r-08rem">
+        <h6 class="modal-title w-100 dark-grey-text" id="myModalLabel">
+          <strong class="title-modal-grey">Transaction information</strong>
+        </h6>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="basicModal.hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <!--Body-->
+      <div class="modal-body">
+        <ng-container *ngIf="dataSelected !== null">
+          <!-- TYPE TRANSFER TRANSACTION -->
+          <app-transfer-type [transferTransaction]="dataSelected"
+            *ngIf="dataSelected.data.type === typeTransactions.transfer.id">
+          </app-transfer-type>
+          <!-- TYPE REGISTER NAMESPACE TRANSACTION -->
+          <app-register-namespace-type [registerNamespaceTransaction]="dataSelected"
+            *ngIf="dataSelected.data.type === typeTransactions.registerNameSpace.id">
+          </app-register-namespace-type>
+          <!-- TYPE MOSAIC DEFINITION TRANSACTION -->
+          <app-mosaic-definition-type [mosaicDefinition]="dataSelected"
+            *ngIf="dataSelected.data.type === typeTransactions.mosaicDefinition.id">
+          </app-mosaic-definition-type>
+          <!-- TYPE MOSAIC SUPPLY CHANGE TRANSACTION -->
+          <app-mosaic-supply-change-type [mosaicSupplyChange]="dataSelected"
+            *ngIf="dataSelected.data.type === typeTransactions.mosaicSupplyChange.id">
+          </app-mosaic-supply-change-type>
+          <!-- TYPE AGGREGATE COMPLETE TRANSACTION-->
+          <app-aggregate-complete-type [aggregateComplete]="dataSelected"
+            *ngIf="dataSelected.data.type === typeTransactions.aggregateComplete.id">
+          </app-aggregate-complete-type>
+          <!-- TYPE AGGREGATE BONDED -->
+          <app-aggregate-bonded-type [aggregateBonded]="dataSelected"
+            *ngIf="dataSelected.data.type === typeTransactions.aggregateBonded.id">
+          </app-aggregate-bonded-type>
+          <!-- MOSAIC ALIAS -->
+          <app-mosaic-alias [mosaicAlias]="dataSelected"
+            *ngIf="dataSelected.data.type === typeTransactions.mosaicAlias.id">
+          </app-mosaic-alias>
+          <!--  ADDRESS ALIAS-->
+          <app-address-alias-type [addressAlias]="dataSelected"
+            *ngIf="dataSelected.data.type === typeTransactions.addressAlias.id">
+          </app-address-alias-type>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>
