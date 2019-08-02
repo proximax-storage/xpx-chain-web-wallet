@@ -6,11 +6,11 @@ import { SignedTransaction, MosaicId } from 'tsjs-xpx-chain-sdk';
 
 import { AppConfig } from '../../../../config/app.config';
 import { DataBridgeService } from '../../../../shared/services/data-bridge.service';
-import { MosaicService, NamespaceStorage } from '../../../../servicesModule/services/mosaic.service';
+import { MosaicService } from '../../../../servicesModule/services/mosaic.service';
 import { WalletService } from '../../../../wallet/services/wallet.service';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { SharedService, ConfigurationForm } from '../../../../shared/services/shared.service';
-import { NamespacesService } from '../../../../servicesModule/services/namespaces.service';
+import { NamespacesService, NamespaceStorage } from '../../../../servicesModule/services/namespaces.service';
 import { TransactionsService } from '../../../../transfer/services/transactions.service';
 
 @Component({

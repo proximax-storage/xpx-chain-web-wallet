@@ -1,1 +1,201 @@
-<p>explorer works!</p>
+<div class="container">
+    <div class="row mt-1rem mb-2rem animated fadeIn">
+      <div class="col-12 col-md-6 col-lg-5 mt-2rem">
+        <div class="row">
+          <div class="col-12 col-sm-2 col-md-3 col-lg-2 d-flex align-items-center ">
+            <figure style="margin: 0">
+              <img src="assets/images/img/icon-qr-code-proximax-sirius-wallet.svg" alt="" width="60">
+            </figure>
+          </div>
+          <div class="col-12 col-sm-10 col-md-9 col-lg-10">
+            <div class="d-flex flex-column justify-content-between">
+              <span class="fs-09rem color-blue-intermedio">Available</span>
+              <span class="fs-1rem">{{vestedBalance}} | USD 0.00</span>
+              <div class="row">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div class="col-10">
+                    <span class="fs-07rem f-s-dashboard-transactions">{{myAddress}}</span>
+                  </div>
+                  <div class="col-2 d-flex justify-content-end">
+                    <i mdbWavesEffect (click)="copyMessage('Address')" ngxClipboard [cbContent]="myAddress"
+                      class="fa fa-paste prefix cursor-pointer fs-08rem"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-12 col-sm-10 mx-auto">
+        <input [(ngModel)]="searchTransaction" type="text" autocomplete="off" id="searchTransaction"
+          class="form-control" mdbInputDirective [validateSuccess]="false" [validateError]="false" placeholder="Search">
+      </div>
+    </div>
+
+    <!-- Searching and icon reload -->
+    <div class="row mt-2rem">
+      <div class="col-11 col-sm-11 col-lg-10 mx-auto">
+        <!-- Icon Reload -->
+        <ng-container *ngIf="iconReloadDashboard && !searching">
+          <div class="col-12 t-a-r">
+            <i class="fa fa-repeat btn-reload cursor-pointer" aria-hidden="true" mdbTooltip="Reload" placement="bottom"
+              (click)="getRecentTransactions(true)"></i>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="row mt-2rem">
+      <div class="col-12 mx-auto">
+        <div class="table-responsive table-hover">
+          <table mdbTable #tableEl="mdbTable" id="mdbTable" striped="true" infiniteScroll [infiniteScrollDistance]="2"
+            (scrolled)="onScroll()" class="table table-hover table-bordered table-hover table-sm z-depth-0"
+            cellspacing="0" width="100%" borderless="true">
+
+            <!--Table head-->
+            <thead>
+              <tr class="header-backg">
+                <ng-container *ngFor="let head of headElements; let i = index">
+                  <th scope="col" class="text-center fw-400 th-sm">{{head}}</th>
+                </ng-container>
+              </tr>
+            </thead>
+            <!--Table head-->
+
+            <!--Table body-->
+            <tbody class="background-white">
+              <ng-container *ngFor="let el of transactions; let i = index">
+                <tr class="mouse-pointer" (click)="dataSelected = el; basicModal.show();">
+                  <!-- Type transaction -->
+                  <th class="th-sm fs-0-8-rem" scope="row description-dark-green">{{el.nameType}}</th>
+
+                  <!-- timestamp -->
+                  <td class="th-sm description-dark-green fs-0-8-rem">{{el.timestamp}}</td>
+
+                  <!-- fee -->
+                  <td class="text-center th-sm description-dark-green fs-0-8-rem">{{el.fee}}</td>
+
+                  <!-- address -->
+                  <td class="text-center th-md description-dark-green fs-0-8-rem"><i
+                      [ngStyle]="{'color': el.isRemitent === true ? 'green' : 'red' }" style="padding-right: 10px;"
+                      class="fa fa-send" aria-hidden="true"></i>
+                    <span>{{el.senderAddress}}</span>
+                  </td>
+
+                  <!-- recipíent -->
+                  <ng-container *ngIf="el?.recipientAddress !== null; else recipientRentalFee">
+                    <td class="text-center th-md description-dark-green fs-0-8-rem">
+                      <span>{{el.recipientAddress}}</span>
+                    </td>
+                  </ng-container>
+
+                  <!-- recipient rental fee -->
+                  <ng-template #recipientRentalFee>
+                    <td class="text-center th-sm description-dark-green fs-0-8-rem">
+                      <span>{{el.recipientRentalFeeSink}}</span>
+                    </td>
+                  </ng-template>
+                </tr>
+              </ng-container>
+              <ng-container *ngIf="transactions.length === 0 && !searching">
+                <tr>
+                  <td colspan="5" class="txt-a-center">nothing to show</td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <!-- Searching and icon reload -->
+    <div class="row mt-2rem">
+      <div class="col-11 col-sm-11 col-lg-10 mx-auto">
+        <!-- Searching -->
+        <ng-container *ngIf="searching">
+          <div class="col-12">
+            <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate">
+            </mdb-progress-bar>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+
+    <div>
+      <!-- MODAL -->
+      <div mdbModal #basicModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+        aria-labelledby="myBasicModalLabel" aria-hidden="true">
+        <!-- <div class="d-flex align-items-center" style="height: 100%"> -->
+        <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content form-elegant b-r-08rem">
+            <div class="modal-header text-center box-modal-grey b-t-r-r-08rem b-t-l-r-08rem">
+              <h6 class="modal-title w-100 dark-grey-text" id="myModalLabel">
+                <strong class="title-modal-grey">Transaction information</strong>
+              </h6>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="basicModal.hide()">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+
+            <!--Body-->
+            <div class="modal-body">
+              <ng-container *ngIf="dataSelected !== null">
+                <!-- TYPE TRANSFER TRANSACTION -->
+                <app-transfer-type [transferTransaction]="dataSelected"
+                  *ngIf="dataSelected.data.type === typeTransactions.transfer.id">
+                </app-transfer-type>
+                <!-- TYPE REGISTER NAMESPACE TRANSACTION -->
+                <app-register-namespace-type [registerNamespaceTransaction]="dataSelected"
+                  *ngIf="dataSelected.data.type === typeTransactions.registerNameSpace.id">
+                </app-register-namespace-type>
+                <!-- TYPE MOSAIC DEFINITION TRANSACTION -->
+                <app-mosaic-definition-type [mosaicDefinition]="dataSelected"
+                  *ngIf="dataSelected.data.type === typeTransactions.mosaicDefinition.id">
+                </app-mosaic-definition-type>
+                <!-- TYPE MOSAIC SUPPLY CHANGE TRANSACTION -->
+                <app-mosaic-supply-change-type [mosaicSupplyChange]="dataSelected"
+                  *ngIf="dataSelected.data.type === typeTransactions.mosaicSupplyChange.id">
+                </app-mosaic-supply-change-type>
+                <!-- TYPE AGGREGATE COMPLETE TRANSACTION-->
+                <app-aggregate-complete-type [aggregateComplete]="dataSelected"
+                  *ngIf="dataSelected.data.type === typeTransactions.aggregateComplete.id">
+                </app-aggregate-complete-type>
+                <!-- TYPE AGGREGATE BONDED -->
+                <app-aggregate-bonded-type [aggregateBonded]="dataSelected"
+                  *ngIf="dataSelected.data.type === typeTransactions.aggregateBonded.id">
+                </app-aggregate-bonded-type>
+                <!-- MOSAIC ALIAS -->
+                <app-mosaic-alias [mosaicAlias]="dataSelected"
+                  *ngIf="dataSelected.data.type === typeTransactions.mosaicAlias.id">
+                </app-mosaic-alias>
+                <!--  ADDRESS ALIAS-->
+                <app-address-alias-type [addressAlias]="dataSelected"
+                  *ngIf="dataSelected.data.type === typeTransactions.addressAlias.id">
+                </app-address-alias-type>
+
+                <!-- TYPE MODIFY MULTISIG ACCOUNT TRANSACTION
+              <app-modify-multisig-account-type
+                *ngIf="dataSelected.data.type === typeTransactions.modifyMultisigAccount.id">
+              </app-modify-multisig-account-type>-->
+                <!-- TYPE LOCK TRANSACTION
+              <app-lock-type *ngIf="dataSelected.data.type === typeTransactions.lock.id"></app-lock-type> -->
+                <!-- TYPE SECRET LOCK TRANSACTION
+              <app-secret-lock-type *ngIf="dataSelected.data.type === typeTransactions.secretLock.id">
+              </app-secret-lock-type>-->
+                <!-- TYPE SECRET PROOF TRANSACTION
+              <app-secret-proof *ngIf="dataSelected.data.type === typeTransactions.secretProof.id"></app-secret-proof>-->
+              </ng-container>
+            </div>
+          </div>
+        </div>
+        <!-- </div> -->
+      </div>
+    </div>
+    <div class="scroll-to-top" [ngClass]="{'show-scrollTop': windowScrolled}">
+      <a mdbBtn floating="true" size="md" mdbWavesEffect class="background-btn" (click)="scrollToTop()">
+        <i class="fa fa-angle-up" aria-hidden="true"></i>
+      </a>
+    </div>
+  </div>

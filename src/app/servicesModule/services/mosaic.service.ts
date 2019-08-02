@@ -3,7 +3,8 @@ import {
   MosaicInfo,
   MosaicId,
   MosaicView,
-  NamespaceName
+  NamespaceName,
+  NamespaceInfo
 } from "tsjs-xpx-chain-sdk";
 import { MosaicNames } from "tsjs-xpx-chain-sdk/dist/src/model/mosaic/MosaicNames";
 import { ProximaxProvider } from "../../shared/services/proximax.provider";
@@ -390,6 +391,7 @@ export class MosaicService {
     localStorage.removeItem(this.getNameStorage());
   }
 }
+
 
 export interface MosaicsStorage {
   id: number[];

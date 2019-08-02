@@ -16,7 +16,7 @@ export const AppConfig: Config = {
     dashboard: 'dashboard',
     editMultisignatureContract: 'edit-multisignature-contract',
     explorer: 'explorer',
-    service: 'dashboard-service',
+    service: 'services',
     storage: 'storage',
     home: 'home',
     importWallet: 'import-wallet',
