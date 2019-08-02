@@ -1,1 +1,116 @@
-<p>mosaics-supply-change works!</p>
+<div class="container mt-3rem mb-2rem animated fadeIn">
+    <div class="row">
+        <div class="col-12 col-md-8">
+            <span class="fs-1rem txt-a-center line-h-1-2em color-grey">{{moduleName}}</span>
+            <span class="fs-1rem txt-a-center line-h-1-2em color-grey"> > </span>
+            <span class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">{{componentName}}</span>
+        </div>
+
+        <div class="col-12 col-md-4 d-flex justify-content-start justify-content-md-end">
+            <a class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio" [routerLink]="[backToService]">
+                <span>Back to Services</span>
+            </a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <hr class="mt-03rem mb-05rem">
+        </div>
+    </div>
+
+
+    <form [formGroup]="supplyForm" (ngSubmit)="send()">
+            <br>
+        <div class="row">
+            <div class="col-12 col-sm-7 col-md-8 mb-2rem">
+
+
+                <div class="row">
+                    <div class="col-11 mx-auto">
+                        <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" class="selectWrapper" [items]="arrayselect"
+                            formControlName="mosaic" bindLabel="label" bindValue="value" placeholder="Select or write mosaic"></ng-select>
+                        <mdb-error class="mt-1rem ml-1rem" *ngIf="validateInput('mosaic').invalid && (validateInput('mosaic').dirty || validateInput('mosaic').touched)">
+                            <span>Select or write mosaic</span>
+                        </mdb-error>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-11 mx-auto">
+                        <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" class="selectWrapper" [items]="arrayselect"
+                            formControlName="increordecre" bindLabel="label" bindValue="value" placeholder="Increase or decrease"></ng-select>
+                        <mdb-error class="mt-1rem ml-1rem" *ngIf="validateInput('increordecre').invalid && (validateInput('increordecre').dirty || validateInput('increordecre').touched)">
+                            <span>Increase or decrease</span>
+                        </mdb-error>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-11 mx-auto">
+                        <div class="md-form form-sm mt-1rem mb-0rem">
+                            <input mask="comma_separator.0" formControlName="amount" mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
+                                type="text" id="amount" class="form-control form-control-sm input-border" placeholder="Amount to increase o decrease">
+
+                            <mdb-error *ngIf="validateInput('amount', '').invalid && (validateInput('amount', '').dirty || validateInput('amount', '').touched)">
+                                <span>Input invalid</span>
+                            </mdb-error>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-1rem ml-01rem">
+                    <div class="col-11 mx-auto  box-grey">
+                        <div class="col-10 d-flex justify-content-center mx-auto">
+                            <span> Fee: 0.000000 XPX</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-11 mx-auto">
+                        <div class="md-form form-sm mt-1rem mb-0rem">
+                            <input [maxlength]="configurationForm.passwordWallet.maxLength" [minlength]="configurationForm.passwordWallet.minLength"
+                                formControlName="password" required mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
+                                type="password" id="password" class="form-control form-control-sm input-border" placeholder="Enter password">
+
+                            <mdb-error *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
+                                <span>Input invalid</span>
+                            </mdb-error>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-1rem mb-0rem ">
+                        <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
+                          <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+                            size="md" (click)="clearForm()">
+                            <span class="fs-1-2em color-white">CLEAR</span>
+                          </button>
+                        </div>
+              
+                        <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
+                          <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+                            size="md">
+                            <span class="fs-1-2em color-white">CREATE</span>
+                          </button>
+                        </div>
+                      </div>
+            </div>
+            <div class="col-11 col-sm-5 col-md-4 description-p-module mt-1-5rem mb-2rem">
+                    <span class="fw-600">Properties:</span>
+                        <br><br>
+                        <span>Supply: 0</span>
+                        <br>
+                        <span>Duration: 0 days</span>
+                        <br>
+                        <span>Divisibility: 0</span>
+                        <br>
+                        <span>Levy Mutable: </span>
+                        <br>
+                        <span>Transferable: </span>
+                        <br>
+                        <span>Supply Mutable: </span>
+                  </div>
+        </div>
+    </form>
+</div>
