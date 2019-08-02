@@ -19,16 +19,115 @@
   </div>
 </div>
 
-<div class="container-fluid background-header-grey">
+<!-- HEADER SEARCH -->
+<div class="container-fluid background-header-grey pb-1rem pt-1rem">
   <div class="row">
-    <div class="col-2 col-md-1 d-flex align-items-center">
-      <span class="fs-1rem txt-a-center line-h-1-2em color-grey"> > </span>
+    <div class="col-10 mx-auto">
+      <div class="row">
+        <!-- SELECT -->
+        <div class="col-12 col-sm-6 col-md-6 col-lg-5 mx-auto pt-07rem">
+          <div class="md-form mt-1rem mb-1rem caja-gris">
+            <!-- <img class="icono" src="assets/images/img/icon-storage-green-16h-proximax-sirius-wallet.svg" alt=""> -->
+            <mdb-select placeholder="Select type search" [(ngModel)]="typeSearch" [options]="optionTypeSearch" required
+              class="colorful-select dropdown-default" mdbInputDirective [validateSuccess]="false"
+              [validateError]="false">
+            </mdb-select>
+          </div>
+        </div>
+
+        <!-- Keyword or number -->
+        <div class="col-12 col-sm-6 col-md-6 col-lg-5 mx-auto d-flex align-items-center pt-05rem">
+          <input [(ngModel)]="paramSearch" type="text" autocomplete="off" id="searchTransaction" class="form-control"
+            mdbInputDirective [validateSuccess]="false" [validateError]="false" placeholder="Keyword or number">
+        </div>
+
+        <div
+          class="col-12 col-md-12 col-lg-2 d-flex align-items-center justify-content-center background-dark-green-plus pt-05rem">
+          <button mdbBtn type="submit" rounded="true" mdbWavesEffect
+            class="f-w-600 background-btn overflow-ellipsis-nowrap" size="md" (click)="searchData()">
+            <span class="fs-1em color-white">SEARCH</span>
+          </button>
+        </div>
+      </div>
     </div>
-    <div class="col-5 col-md-4">
-      <div class="md-form mt-1rem mb-1rem">
-        <mdb-select placeholder="Select type search" [(ngModel)]="typeSearch" [options]="optionTypeSearch" required
-          class="colorful-select dropdown-default" mdbInputDirective [validateSuccess]="false" [validateError]="false">
-        </mdb-select>
+  </div>
+</div>
+
+<ng-container *ngIf="searching">
+  <div class="col-10 mx-auto mt-1rem">
+    <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate">
+    </mdb-progress-bar>
+  </div>
+</ng-container>
+
+<!-- TABLE -->
+<div class="container">
+  <div class="row mt-2rem">
+    <div class="col-12 mx-auto">
+      <div class="table-responsive table-hover">
+        <table mdbTable #tableEl="mdbTable" id="mdbTable" striped="true"
+          class="table table-hover table-bordered table-hover table-sm z-depth-0" cellspacing="0" width="100%"
+          borderless="true">
+
+          <!--Table head-->
+          <thead>
+            <tr class="header-backg">
+              <ng-container *ngFor="let head of headElements; let i = index">
+                <th scope="col" class="text-center fw-400 th-sm">{{head}}</th>
+              </ng-container>
+            </tr>
+          </thead>
+          <!--Table head-->
+
+          <!--Table body-->
+          <tbody class="background-white">
+            <ng-container *ngFor="let el of elements; let i = index">
+              <tr class="mouse-pointer" (click)="dataSelected = el; basicModal.show();">
+                <!-- Type transaction -->
+                <th class="th-sm fs-0-8-rem" scope="row description-dark-green">{{el.nameType}}</th>
+
+                <!-- timestamp -->
+                <td class="th-sm description-dark-green fs-0-8-rem">{{el.timestamp}}</td>
+
+                <!-- fee -->
+                <td class="text-center th-sm description-dark-green fs-0-8-rem">{{el.fee}}</td>
+
+                <!-- address -->
+                <td class="text-center th-md description-dark-green fs-0-8-rem"><i
+                    [ngStyle]="{'color': el.isRemitent === true ? 'green' : 'red' }" style="padding-right: 10px;"
+                    class="fa fa-send" aria-hidden="true"></i>
+                  <span>{{el.senderAddress}}</span>
+                </td>
+
+                <!-- recipíent -->
+                <ng-container *ngIf="el?.recipientAddress !== null; else recipientRentalFee">
+                  <td class="text-center th-md description-dark-green fs-0-8-rem">
+                    <span>{{el.recipientAddress}}</span>
+                  </td>
+                </ng-container>
+
+                <!-- recipient rental fee -->
+                <ng-template #recipientRentalFee>
+                  <td class="text-center th-sm description-dark-green fs-0-8-rem">
+                    <span>{{el.recipientRentalFeeSink}}</span>
+                  </td>
+                </ng-template>
+              </tr>
+            </ng-container>
+            <ng-container *ngIf="elements.length === 0 && !searching">
+              <tr>
+                <td colspan="5" class="txt-a-center">nothing to show</td>
+              </tr>
+            </ng-container>
+          </tbody>
+          <tfoot class="lighten-5 w-100">
+            <tr>
+              <td colspan="5">
+                <mdb-table-pagination [tableEl]="tableEl" [searchDataSource]="elements"></mdb-table-pagination>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
       </div>
     </div>
   </div>

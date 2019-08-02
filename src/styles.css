@@ -9,6 +9,11 @@ body {
   font-family: 'Open Sans' !important;
 }
 
+.overflow-ellipsis-nowrap {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis
+}
 /************* MARGIN **************/
 
 .m-0{
@@ -179,6 +184,14 @@ body {
 /********************* PADDING -*******************************/
 
 /** TOP **/
+.pt-05rem {
+  padding-top: .5rem;
+}
+
+.pt-07rem {
+  padding-top: .7rem;
+}
+
 .pt-08rem {
   padding-top: .8rem;
 }
@@ -523,6 +536,29 @@ body {
   background-color: #f4f4f4 !important;
 }
 /**************************** THEME *****************************/
+.line-separator {
+  border-right: .5px solid #d6d6d6;
+}
+
+.header-backg {
+  background: #303030;
+  color: white;
+}
+
+.scroll-to-top {
+  z-index: 10000;
+  position: fixed;
+  bottom: 15px;
+  right: 15px;
+  opacity: 0;
+  transition: all .2s ease-in-out;
+ }
+
+ .show-scrollTop {
+  opacity: 1;
+  transition: all .2s ease-in-out;
+ }
+
 .description-p-module{
   font-size: .8rem;
   text-align: justify;
@@ -800,3 +836,34 @@ input.form-control.validate-success.ng-valid.ng-dirty, input.form-control.valida
   cursor: not-allowed !important;
   pointer-events: none !important;
 }
+
+.dropdown-default.colorful-select .dropdown-content li.active span, .dropdown-default.colorful-select .dropdown-content li.selected span,
+.dropdown-default .dropdown-content li a, .dropdown-default .dropdown-content li span:hover, .dropdown-default .dropdown-content li.active {
+  background-color: #2ba1b9!important;
+}
+
+/*************FOR SELECT*****************/
+
+mdb-select>div>div.single{
+  border-bottom: 0px !important;
+}
+
+.mdb-select-toggle{
+  margin-top: -0.3rem !important;
+}
+
+mdb-select>div>div.single>div.value{
+  padding-top: .3rem !important;
+}
+
+mdb-select>div>div.single>div.placeholder{
+  padding: 0 !important;
+  line-height: 1.5rem !important;
+}
+
+mdb-select>div>div.single>div.value{
+  line-height: 1.1rem !important;
+}
+
+
+/****************************************/
