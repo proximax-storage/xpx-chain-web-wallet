@@ -1,0 +1,153 @@
+<div class="row mt-04rem mr-1rem ml-1rem">
+  <!-- Data -->
+  <div class="col-12 col-lg-7 d-flex align-items-start">
+    <div class="row">
+      <!-- Type transfer -->
+      <div class="col-12 overflow-ellipsis-nowrap">
+        <span class="color-dark-green fw-bold fs-2rem">{{registerNamespaceTransaction.nameType}}</span>
+      </div>
+
+      <!-- Timestamp -->
+      <div class="col-12 mt-05rem overflow-ellipsis-nowrap">
+        <span class="color-dark-green fs-07rem fw-500">{{registerNamespaceTransaction?.timestamp}}</span>
+      </div>
+
+      <!-- Fee -->
+      <div class="col-12">
+        <div class="row">
+          <div class="col-3 overflow-ellipsis-nowrap">
+            <span class="color-dark-green fw-bold fs-1-3rem">Fee: </span>
+          </div>
+          <div class="col-9 overflow-ellipsis-nowrap">
+            <span class="color-dark-green fw-400 fs-1-3rem">{{registerNamespaceTransaction.fee}} XPX</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Type Hex -->
+      <div class="col-12 mt-2rem">
+        <div class="row">
+          <div class="col-3">
+            <span class="color-dark-green fw-bold fs-08rem">Height: </span>
+          </div>
+          <div class="col-9">
+            <span class="color-dark-green fw-400
+                fs-07rem">{{registerNamespaceTransaction?.data.transactionInfo.height.compact()}}</span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-3 overflow-ellipsis-nowrap">
+            <span class="color-dark-green fw-bold fs-08rem">Type Hex: </span>
+          </div>
+          <div class="col-9 overflow-ellipsis-nowrap">
+            <span class="color-dark-green fw-400
+              fs-08rem">{{typeTransactionHex}}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Id -->
+      <div class="col-12">
+        <div class="row">
+          <div class="col-3 overflow-ellipsis-nowrap">
+            <span class=" color-dark-green fw-bold fs-08rem">Id: </span>
+          </div>
+          <div class="col-9 overflow-ellipsis-nowrap">
+            <span class=" color-dark-green fw-400 fs-08rem">
+              {{registerNamespaceTransaction?.data.namespaceId.id.toHex()}}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Name -->
+      <div class="col-12 mt-04rem">
+        <div class="row">
+          <div class="col-3 overflow-ellipsis-nowrap">
+            <span class=" color-dark-green fw-bold fs-08rem">Name: </span>
+          </div>
+          <div class="col-9 overflow-ellipsis-nowrap">
+            <span class=" color-dark-green fw-400 fs-08rem">
+              {{nameNamespace}}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Namespace Type -->
+      <div class="col-12 mt-04rem">
+        <div class="row">
+          <div class="col-3 overflow-ellipsis-nowrap">
+            <span class="color-dark-green fw-bold fs-08rem">Type: </span>
+          </div>
+          <div class="col-9 overflow-ellipsis-nowrap">
+            <span class="color-dark-green fw-400 fs-08rem"
+              *ngIf="registerNamespaceTransaction?.data.namespaceType === 0">
+              {{registerNamespaceTransaction?.data.namespaceType}} - ROOT_NS
+            </span>
+
+            <span class="color-dark-green fw-400 fs-08rem"
+              *ngIf="registerNamespaceTransaction?.data.namespaceType !== 0">
+              {{registerNamespaceTransaction?.data.namespaceType}} - SUB_NS
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Duration -->
+      <ng-container *ngIf="registerNamespaceTransaction?.data.duration !== undefined">
+        <div class="col-12 mt-04rem">
+          <div class="row">
+            <div class="col-3 overflow-ellipsis-nowrap">
+              <span class=" color-dark-green fw-bold fs-08rem">Duration: </span>
+            </div>
+            <div class="col-9 overflow-ellipsis-nowrap">
+              <span class=" color-dark-green fw-400 fs-08rem">
+                <strong>
+                  (Blocks: {{registerNamespaceTransaction?.data.duration.compact()}})
+                </strong> -
+                {{transactionService.calculateDuration(registerNamespaceTransaction?.data.duration)}}
+              </span>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+  <!-- Box signer, signature, hash -->
+  <div class="col-12 col-lg-5" id="boxHashSignerSignature">
+    <div class="row gray-color-transparent lh-1em">
+      <div class="col-12">
+        <div class="row">
+          <div class="col-12">
+            <span class="fs-08rem fw-bolder w-w-b-w"><b>Signer:</b></span>
+          </div>
+          <div class="col-12">
+            <span class="fs-07rem fw-bolder w-w-b-w">{{registerNamespaceTransaction?.data.signer.publicKey}}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 mt-3">
+        <div class="row">
+          <div class="col-12">
+            <span class="fs-08rem fw-bolder w-w-b-w"><b>Signature:</b></span>
+          </div>
+          <div class="col-12">
+            <span class="fs-07rem fw-bolder w-w-b-w">{{registerNamespaceTransaction?.data.signature}}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 mt-3">
+        <div class="row">
+          <div class="col-12">
+            <span class="fs-08rem fw-bolder w-w-b-w"><b>Hash:</b></span>
+          </div>
+          <div class="col-12">
+            <span class="fs-07rem fw-bolder w-w-b-w">{{registerNamespaceTransaction?.data.transactionInfo.hash}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

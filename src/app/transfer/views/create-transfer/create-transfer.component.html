@@ -1,66 +1,101 @@
 <div class="container mt-3rem mb-2rem animated fadeIn">
   <div class="row">
     <div class="col-12 d-flex justify-content-center">
-      <span class="fs-1-7rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">{{title}}</span>
+      <span class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">{{title}}</span>
     </div>
-    <div class="col-11 col-md-10 mx-auto">
+    <div class="col-11 mx-auto">
       <hr class="mt-05rem mb-06rem">
     </div>
   </div>
 
-  <form>
-    <div class="row mt-1-5rem">
-      <div class="col-11 col-sm-10 col-md-8 col-lg-6 mx-auto">
-        <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" class="selectWrapper"
-          [items]="accountSelect" placeholder="Select your account">
-        </ng-select>
-      </div>
-    </div>
-    <div class="row mt-1-5rem">
-      <div class="col-11 col-sm-10 col-md-8 col-lg-6 mx-auto">
-        <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" class="selectWrapper"
-          [items]="mosaicSelect" placeholder="Select the mosaic to transfer">
-        </ng-select>
-      </div>
-    </div>
+  <form [formGroup]="transferForm" (ngSubmit)="sendTransfer()">
+
+    <!-- RECIPIENT -->
     <div class="row">
-      <div class="col-11 col-sm-10 col-md-8 col-lg-6 mx-auto">
+      <div class="col-11 col-md-10 col-lg-8 mx-auto">
         <div class="md-form form-sm mt-1rem mb-0rem">
-          <input mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text" id="amount"
-            class="form-control form-control-sm input-border" placeholder="Amount">
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-11 col-sm-10 col-md-8 col-lg-6 mx-auto">
-        <div class="md-form form-sm mt-1rem mb-0rem">
-            <textarea mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" 
-            type="text" id="message" class="md-textarea form-control" mdbInput placeholder="Message"></textarea>
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-11 col-sm-10 col-md-8 col-lg-6 mx-auto">
-        <div class="md-form form-sm mt-1rem mb-0rem">
-          <input mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password" id="password"
-            class="form-control form-control-sm input-border" placeholder="Password">
+          <input mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
+            class="form-control form-control-sm input-border" style="border: 2px solid #2ba1b9;" placeholder="Recipient"
+            formControlName="accountRecipient" id="recipient-invalid-{{invalidRecipient}}"
+            [maxlength]="configurationForm.accountRecipient.maxLength"
+            [minlength]="configurationForm.accountRecipient.minLength">
+          <mdb-error
+            *ngIf="validateInput('accountRecipient').invalid && (validateInput('accountRecipient').dirty || validateInput('accountRecipient').touched)">
+            <span>Invalid Recipient</span>
+          </mdb-error>
+
+          <mdb-error *ngIf="msgErrorUnsupported !== ''">
+            <span>{{msgErrorUnsupported}}</span>
+          </mdb-error>
         </div>
       </div>
     </div>
 
-    <div class="row mt-2rem">
-      <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-        <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
-          size="md">
-          <span class="fs-1-2em color-white">CLEAR</span>
-        </button>
+    <!-- SEPARED -->
+    <div class="row">
+      <div class="col-12 col-md-11 col-lg-9 mx-auto">
+        <hr>
+      </div>
+    </div>
+
+    <!-- MOSAIC XPX -->
+    <div class="row">
+      <div class="col-11 col-md-10 col-lg-8 mx-auto">
+        <div class="box-grey pt-1rem pb-1rem">
+          <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" alt="">
+          <span>PRX.XPX</span>
+        </div>
       </div>
 
-      <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-        <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
-          size="md">
-          <span class="fs-1-2em color-white">SENT</span>
-        </button>
+      <div class="col-11 col-md-10 col-lg-8 mx-auto txt-a-center">
+        <span class="fw-600">Balance: 0.000024 XPX</span>
+      </div>
+    </div>
+
+    <!-- AMOUNT & TO BE SENT -->
+    <div class="row">
+      <div class="col-11 col-md-10 col-lg-8 mx-auto">
+        <div class="row d-flex align-items-center">
+          <!-- Amount to be Sent -->
+          <div class="col-11 col-md-5 mx-auto">
+            <div class="box-grey pt-1rem pb-1rem txt-a-center">
+              <span class="fs-08rem">Amount to be sent <br></span>
+              <span class="fs-1rem">{{amountSend}}</span>
+            </div>
+          </div>
+
+          <!-- Angle -->
+          <div class="col-1 d-none d-md-block">
+            <i class="fa fa-angle-right fs-2rem" aria-hidden="true"></i>
+          </div>
+
+          <!-- Amount Input -->
+          <div class="col-11 col-md-5 mx-auto">
+            <div class="md-form form-sm mt-1rem mb-0rem">
+              <input pattern="^[+]?([0-9]*[.])?[0-9]+$" mask="comma_separator.0" mdbInputDirective mdbValidate
+                [validateSuccess]="true" [maxlength]="configurationForm.amount.maxLength" [validateError]="true"
+                type="text" class="form-control form-control-sm input-border" placeholder="Enter amount"
+                formControlName="amount">
+
+              <mdb-error
+                *ngIf="validateInput('amount').invalid && (validateInput('amount').dirty || validateInput('amount').touched)">
+                <span>Invalid amount</span>
+              </mdb-error>
+
+              <!-- Message Error Insufficient balance-->
+              <mdb-error class="text-danger fw-500" *ngIf="insufficientBalance">
+                <span class="text-danger fw-500">Insufficient balance</span>
+              </mdb-error>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEPARED -->
+    <div class="row">
+      <div class="col-12 col-md-11 col-lg-9 mx-auto">
+        <hr>
       </div>
     </div>
   </form>

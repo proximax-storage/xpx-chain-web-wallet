@@ -1,4 +1,4 @@
-.caja-gris {    
+.caja-gris {
   padding: 10px 20px !important;
   margin: 0 !important;
   border: 1px solid #CCC;
@@ -14,7 +14,7 @@
 }
 
 .icono {
-  width:16px;
+  width:30px;
   padding-right:10px;
   display: inline-block;
   line-height:18px;
@@ -24,6 +24,17 @@
   border:0;
 }
 
-.ng-select-container:after { 
+.ng-select-container:after {
   border:0;
+}
+
+#recipient-invalid-true{
+  box-shadow: none !important;
+  border: 2px solid #e06e38 !important;
+}
+
+.amountToBeSent{
+  text-align: center;
+  line-height: 1rem;
+  color: #171717;
 }

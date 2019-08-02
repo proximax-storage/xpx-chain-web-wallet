@@ -24,6 +24,10 @@ body {
   margin-top: 0;
 }
 
+.mr-1rem {
+  margin-right: 1rem !important;
+}
+
 .mt-01rem {
   margin-top: .1rem;
 }
@@ -146,7 +150,7 @@ body {
 }
 
 .ml-1rem {
-  margin-left: 1rem;
+  margin-left: 1rem !important;
 }
 
 .ml-3rem {
@@ -279,6 +283,10 @@ body {
 }
 
 /************************* LINE HEIGHT *****************/
+.lh-1em {
+  line-height: 1em
+}
+
 .line-h-07em{
   line-height: .7em;
 }
@@ -390,6 +398,14 @@ body {
 
 
 /******************** FONT-WEIGHT ****************/
+.fw-bold {
+  font-weight: bold;
+}
+
+.fw-bolder {
+  font-weight: bolder;
+}
+
 .fw-300 {
   font-weight: 300;
 }
@@ -502,6 +518,34 @@ body {
 }
 
 /**************************** COLOR *****************************/
+.color-blue-light {
+  color: #0aabbb !important;
+}
+
+.green-color {
+  color: #35af8d !important;
+}
+
+.green-c {
+  color: #00960c !important;
+}
+
+.color-red {
+  color: #e90000 !important;
+}
+
+.color-dark-green {
+  color: #023c42 !important;
+}
+
+.color-light-orange {
+  color: #FF9900 !important;
+}
+
+.color-orange {
+  color: #EA6002 !important;
+}
+
 .color-grey{
   color: #9a9a9a !important;
 }
@@ -526,7 +570,19 @@ body {
   color: black !important;
 }
 
+.gray-color {
+  color: #a0a0a0 !important;
+}
+
 /**************************** BACKGROUND *****************************/
+
+.gray-color-transparent {
+  background: #e4e4e473 !important;
+}
+
+.background-white {
+  background: #ffffff !important;
+}
 
 .background-btn{
   background: #2BA1B9 !important;
@@ -535,7 +591,27 @@ body {
 .background-header-grey{
   background-color: #f4f4f4 !important;
 }
+
+.box-modal-grey {
+  background: #e4e4e4;
+}
 /**************************** THEME *****************************/
+.modal-body {
+  max-height: 90%;
+  overflow: auto;
+  overflow-x: hidden;
+}
+
+
+.modal-dialog {
+  max-height: 90vh !important;
+}
+
+.modal-dialog .modal-content {
+  max-height: 90vh !important;
+}
+
+
 .line-separator {
   border-right: .5px solid #d6d6d6;
 }
@@ -602,6 +678,28 @@ footer.page-footer .footer-copyright{
 }
 
 
+@media (min-width: 576px) {
+  .modal-dialog {
+    max-width: 750px !important;
+    padding-right: 1rem;
+    padding-left: 1rem;
+  }
+}
+
+
+@media (min-width: 768px) {
+  .modal-dialog {
+    max-width: 950px !important;
+    padding-right: 1rem;
+    padding-left: 1rem;
+  }
+}
+
+@media (max-width: 992px) {
+  #boxHashSignerSignature {
+    margin-top: 3rem !important;
+  }
+}
 
 /************************* NG SELECT *******************/
 .navbar.navbar-dark .breadcrumb .nav-item .nav-link, .navbar.navbar-dark .navbar-nav .nav-item .nav-link{
@@ -808,6 +906,25 @@ input.form-control.validate-success.ng-valid.ng-dirty, input.form-control.valida
   color: #0275d8 !important;
 }
 /************************* FIN NG SELECT *******************/
+
+.w-w-b-w {
+  word-wrap: break-word;
+}
+
+.b-t-r-r-08rem {
+  border-top-right-radius: .8rem !important;
+}
+
+.b-t-l-r-08rem {
+  border-top-left-radius: .8rem !important;
+}
+
+.title-modal-grey {
+  color: #999999 !important;
+  text-align: center;
+  font-weight: 400;
+  font-size: 1.3em;
+}
 
 .box-grey{
   border-radius: 1.5rem;

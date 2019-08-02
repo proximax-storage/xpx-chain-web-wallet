@@ -49,7 +49,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   viewDashboard = true;
   transactions: TransactionsInterface[] = [];
   windowScrolled: boolean;
-
+  nameWallet = '';
 
   constructor(
     private cdRef: ChangeDetectorRef,
@@ -83,6 +83,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.nameWallet = this.walletService.current.name;
     this.typeTransactions = this.transactionService.arraTypeTransaction;
     this.dashboardService.incrementViewDashboard();
     this.dashboardService.subscribeLogged();
