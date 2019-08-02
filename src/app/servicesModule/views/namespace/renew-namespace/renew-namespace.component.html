@@ -1,40 +1,38 @@
 <div class="container mt-3rem mb-2rem animated fadeIn">
-    <div class="row">
-      <div class="col-12 col-md-8">
-        <span class="fs-1rem txt-a-center line-h-1-2em color-grey">{{moduleName}}</span>
-        <span class="fs-1rem txt-a-center line-h-1-2em color-grey"> > </span>
-        <span class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">{{componentName}}</span>
-      </div>
-  
-      <div class="col-12 col-md-4 d-flex justify-content-start justify-content-md-end">
-        <a class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio" [routerLink]="[backToService]">
-          <span>Back to Services</span>
-        </a>
-      </div>
+  <div class="row">
+    <div class="col-12 col-md-8">
+      <span class="fs-1rem txt-a-center line-h-1-2em color-grey">{{moduleName}}</span>
+      <span class="fs-1rem txt-a-center line-h-1-2em color-grey"> > </span>
+      <span class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">{{componentName}}</span>
     </div>
-    <div class="row">
-      <div class="col-12">
-        <hr class="mt-03rem mb-05rem">
-      </div>
+
+    <div class="col-12 col-md-4 d-flex justify-content-start justify-content-md-end">
+      <a class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio" [routerLink]="[backToService]">
+        <span>Back to Services</span>
+      </a>
     </div>
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <hr class="mt-03rem mb-05rem">
+    </div>
+  </div>
 
   <form [formGroup]="renewNamespaceForm" (ngSubmit)="renovateNamespace()">
     <div class="row">
       <div class="col-12 col-sm-7 col-md-8 mb-2rem">
         <div class="row mt-1rem">
           <div class="col-11 mx-auto">
-            <div class="md-form form-sm">
-              <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
-                class="selectWrapper" [items]="arrayselect" formControlName="namespaceRoot" bindLabel="label"
-                bindValue="value" placeholder="Select namespace"></ng-select>
-              <mdb-error class="mt-1rem ml-1rem"
-                *ngIf="validateInput('namespaceRoot').invalid && (validateInput('namespaceRoot').dirty || validateInput('namespaceRoot').touched)">
-                <span>Select namespace</span>
-              </mdb-error>
-            </div>
+            <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
+              class="selectWrapper" [items]="arrayselect" formControlName="namespaceRoot" bindLabel="label"
+              bindValue="value" placeholder="Select namespace"></ng-select>
+            <mdb-error class="mt-1rem ml-1rem"
+              *ngIf="validateInput('namespaceRoot').invalid && (validateInput('namespaceRoot').dirty || validateInput('namespaceRoot').touched)">
+              <span>Select namespace</span>
+            </mdb-error>
           </div>
         </div>
-        
+
         <div class="row">
           <div class="col-11 mx-auto">
             <div class="md-form form-sm">

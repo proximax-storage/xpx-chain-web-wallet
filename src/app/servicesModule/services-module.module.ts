@@ -26,7 +26,7 @@ import { AliasMosaicsToNamespaceComponent } from './views/mosaic/alias-mosaics-t
     CreateMosaicComponent,
     AliasAddressToNamespaceComponent,
     MosaicsSupplyChangeComponent,
-    AliasMosaicsToNamespaceComponent    
+    AliasMosaicsToNamespaceComponent
   ],
   imports: [
     CoreModule,
