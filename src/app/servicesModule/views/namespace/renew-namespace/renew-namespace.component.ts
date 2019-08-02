@@ -1,12 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, Validators, FormBuilder } from '@angular/forms';
-import { NamespacesService } from '../../../services/namespaces.service';
-import { SharedService } from 'src/app/shared/services/shared.service';
-import { AppConfig } from '../../../../config/app.config';
 import { Router } from '@angular/router';
-import { TransactionsService } from 'src/app/transfer/services/transactions.service';
+import { FormGroup, Validators, FormBuilder, AbstractControl } from '@angular/forms';
+import { SignedTransaction, MosaicId } from 'tsjs-xpx-chain-sdk';
+import { NamespacesService } from '../../../../servicesModule/services/namespaces.service';
+import { AppConfig } from '../../../../config/app.config';
+import { DataBridgeService } from '../../../../shared/services/data-bridge.service';
+import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
+import { MosaicService } from '../../../../servicesModule/services/mosaic.service';
+import { SharedService, ConfigurationForm } from 'src/app/shared/services/shared.service';
 import { WalletService } from 'src/app/wallet/services/wallet.service';
-import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
+import { TransactionsService } from 'src/app/transfer/services/transactions.service';
 
 @Component({
   selector: 'app-renew-namespace',
@@ -17,35 +20,153 @@ export class RenewNamespaceComponent implements OnInit {
 
   moduleName = 'Namespaces & Sub-Namespaces';
   componentName = 'Renew';
+  backToService = `/${AppConfig.routes.service}`;
   renewNamespaceForm: FormGroup;
+  configurationForm: ConfigurationForm = {};
+  arrayselect: Array<object> = [
+    {
+      value: '1',
+      label: 'New root Namespace',
+      selected: true,
+      disabled: false
+    }
+  ];
   namespaceSelect: Array<object> = [];
-  namespaceInfo: any = [{
-    value: '0',
-    label: 'Select root namespace',
-    selected: false,
-    disabled: true
-  }];
-  fee = '';
+  calculateRentalFee: any = '0.000000';
+  rentalFee = 100000;
   feeType: string = 'XPX';
   durationByBlock = '0';
-
+  insufficientBalance = false;
+  namespaceChangeInfo: any = [];
+  startHeight: number = 0;
+  endHeight: number = 0;
+  block: number = 0;
+  blockBtnSend: boolean = false;
+  fee = '';
+  titleInformation = 'Namespace Information';
+  subscriptions = ['block'];
 
   constructor(
+    private router: Router,
     private fb: FormBuilder,
-    private namespaceService: NamespacesService,
     private sharedService: SharedService,
-    private transactionService: TransactionsService,
+    private namespaceService: NamespacesService,
+    private dataBridgeService: DataBridgeService,
     private walletService: WalletService,
     private proximaxProvider: ProximaxProvider,
-    private router: Router
+    private transactionService: TransactionsService,
+    private mosaicServices: MosaicService
   ) { }
 
   ngOnInit() {
+    this.configurationForm = this.sharedService.configurationForm;
     this.fee = `0.000000 ${this.feeType}`;
     this.createForm();
     this.getNameNamespace();
     const duration = this.renewNamespaceForm.get('duration').value;
     this.durationByBlock = this.transactionService.calculateDurationforDay(duration).toString();
+    this.validateRentalFee(this.rentalFee * duration);
+    this.renewNamespaceForm.get('duration').valueChanges.subscribe(next => {
+      this.validateRentalFee(this.rentalFee * next);
+      this.durationByBlock = this.transactionService.calculateDurationforDay(next).toString();
+    });
+
+    // namespaceRoot ValueChange
+    this.renewNamespaceForm.get('namespaceRoot').valueChanges.subscribe(namespaceRoot => {
+      if (namespaceRoot === null || namespaceRoot === undefined) {
+        this.renewNamespaceForm.get('namespaceRoot').setValue('1');
+      } else {
+        this.validateRentalFee(this.rentalFee * this.renewNamespaceForm.get('duration').value);
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.destroySubscription();
+  }
+
+  /**
+   *
+   *
+   * @memberof RenewNamespaceComponent
+   */
+  createForm() {
+    // Form Renew Namespace
+    this.renewNamespaceForm = this.fb.group({
+      namespaceRoot: ['', [Validators.required]],
+      duration: [''],
+      password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]],
+    });
+
+    this.renewNamespaceForm = this.fb.group({
+      namespaceRoot: ['1'],
+      duration: ['', [Validators.required]],
+      password: ['', [
+        Validators.required,
+        Validators.minLength(this.configurationForm.passwordWallet.minLength),
+        Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
+      ]],
+    });
+  }
+
+  /**
+   *
+   *
+   * @memberof RenewNamespaceComponent
+   */
+  clearForm() {
+    this.renewNamespaceForm.get('namespaceRoot').patchValue('');
+    this.renewNamespaceForm.get('duration').patchValue('');
+    this.renewNamespaceForm.get('password').patchValue('');
+  }
+
+  /**
+   *
+   *
+   * @memberof RenewNamespaceComponent
+   */
+  destroySubscription() {
+    this.subscriptions.forEach(element => {
+      if (this.subscriptions[element] !== undefined) {
+        this.subscriptions[element].unsubscribe();
+      }
+    });
+  }
+
+  /**
+   *
+   *
+   * @param {(string | (string | number)[])} control
+   * @param {*} [typeForm]
+   * @param {(string | number)} [formControl]
+   * @returns
+   * @memberof RenewNamespaceComponent
+   */
+  getError(control: string | (string | number)[], typeForm?: any, formControl?: string | number) {
+    const form = this.renewNamespaceForm;
+    if (formControl === undefined) {
+      if (form.get(control).getError('required')) {
+        return `This field is required`;
+      } else if (form.get(control).getError('minlength')) {
+        return `This field must contain minimum ${form.get(control).getError('minlength').requiredLength} characters`;
+      } else if (form.get(control).getError('maxlength')) {
+        return `This field must contain maximum ${form.get(control).getError('maxlength').requiredLength} characters`;
+      } else {
+        return `Invalid data`;
+      }
+    } else {
+      if (form.controls[formControl].get(control).getError('required')) {
+        return `This field is required`;
+      } else if (form.controls[formControl].get(control).getError('minlength')) {
+        return `This field must contain minimum ${form.controls[formControl].get(control).getError('minlength').requiredLength} characters`;
+      } else if (form.controls[formControl].get(control).getError('maxlength')) {
+        return `This field must contain maximum ${form.controls[formControl].get(control).getError('maxlength').requiredLength} characters`;
+      } else if (form.controls[formControl].getError('noMatch')) {
+        return `Password doesn't match`;
+      } else {
+        return `Invalid data`;
+      }
+    }
   }
 
   /**
@@ -57,24 +178,24 @@ export class RenewNamespaceComponent implements OnInit {
     this.namespaceService.searchNamespaceFromAccountStorage$().then(
       async dataNamespace => {
         if (dataNamespace !== undefined && dataNamespace.length > 0) {
-          const namespaceSelect = [];
-          for (let rootNamespace of dataNamespace) {
-            if (rootNamespace.NamespaceInfo.depth === 1) {
-              namespaceSelect.push({
-                value: `${rootNamespace.namespaceName.name}`,
-                label: `${rootNamespace.namespaceName.name}`,
+          const arrayselect = [];
+          for (let namespaceRoot of dataNamespace) {
+            if (namespaceRoot.NamespaceInfo.depth === 1) {
+              arrayselect.push({
+                value: `${namespaceRoot.namespaceName.name}`,
+                label: `${namespaceRoot.namespaceName.name}`,
                 selected: false,
                 disabled: false
               });
 
-              this.namespaceInfo.push({
-                name: `${rootNamespace.namespaceName.name}`,
-                dataNamespace: rootNamespace
+              this.arrayselect.push({
+                name: `${namespaceRoot.namespaceName.name}`,
+                dataNamespace: namespaceRoot
               });
             }
           }
 
-          this.namespaceSelect = namespaceSelect;
+          this.arrayselect = arrayselect;
         }
       }).catch(error => {
         this.router.navigate([AppConfig.routes.home]);
@@ -85,44 +206,135 @@ export class RenewNamespaceComponent implements OnInit {
   /**
    *
    *
+   * @param {*} namespace
    * @memberof RenewNamespaceComponent
    */
-  createForm() {
-    // Form Renew Namespace
-    this.renewNamespaceForm = this.fb.group({
-      rootNamespace: ['', [Validators.required]],
-      duration: [''],
-      password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]],
-    });
+  optionSelected(namespace: any) {
+    namespace = (namespace === undefined) ? 1 : namespace.value;
+    this.namespaceChangeInfo = this.arrayselect.filter((book: any) => (book.name === namespace));
+    if (this.namespaceChangeInfo.length > 0) {
+      this.subscriptions['block'] = this.dataBridgeService.getBlock().subscribe(
+        next => this.block = next
+      );
+      this.startHeight = this.namespaceChangeInfo[0].dataNamespace.NamespaceInfo.startHeight.lower;
+      this.endHeight = this.namespaceChangeInfo[0].dataNamespace.NamespaceInfo.endHeight.lower;
+    }
   }
 
-  // /**
-  //  *
-  //  *
-  //  * @memberof RenewNamespaceComponent
-  //  */
-  // renovateNamespace() {
-  //   if (this.renewNamespaceForm.valid && !this.blockBtnSend) {
-  //     this.blockBtnSend = true;
-  //     const common = {
-  //       password: this.renewNamespaceForm.get('password').value,
-  //       privateKey: ''
-  //     }
-  //     if (this.walletService.decrypt(common)) {
-  //       this.proximaxProvider.announce(this.signedTransaction(common)).subscribe(
-  //         () => {
-  //           this.blockBtnSend = false;
-  //           this.resetForm();
-  //           this.sharedService.showSuccess('', 'Transaction sent')
-  //         }, () => {
-  //           this.blockBtnSend = false;
-  //           this.resetForm();
-  //           this.sharedService.showError('', 'An unexpected error has occurred');
-  //         }
-  //       );
-  //     } else {
-  //       this.blockBtnSend = false;
-  //     }
-  //   }
+  /**
+   *
+   *
+   * @memberof RenewNamespaceComponent
+   */
+  resetForm() {
+    this.renewNamespaceForm.get('namespaceRoot').patchValue('1');
+    this.renewNamespaceForm.get('duration').patchValue('');
+    this.renewNamespaceForm.get('password').patchValue('');
+  }
+
+  /**
+   *
+   *
+   * @memberof RenewNamespaceComponent
+   */
+  renovateNamespace() {
+    if (this.renewNamespaceForm.valid && !this.blockBtnSend) {
+      this.blockBtnSend = true;
+      const common = {
+        password: this.renewNamespaceForm.get('password').value,
+        privateKey: ''
+      }
+      if (this.walletService.decrypt(common)) {
+        this.proximaxProvider.announce(this.signedTransaction(common)).subscribe(
+          () => {
+            this.blockBtnSend = false;
+            this.resetForm();
+            this.sharedService.showSuccess('', 'Transaction sent')
+          }, () => {
+            this.blockBtnSend = false;
+            this.resetForm();
+            this.sharedService.showError('', 'An unexpected error has occurred');
+          }
+        );
+      } else {
+        this.blockBtnSend = false;
+      }
+    }
+  }
+
+  /**
+   *
+   *
+   * @param {string} [nameInput='']
+   * @param {string} [nameControl='']
+   * @param {string} [nameValidation='']
+   * @returns
+   * @memberof CreateNamespaceComponent
+   */
+  validateInput(nameInput: string = '', nameControl: string = '', nameValidation: string = '') {
+    let validation: AbstractControl = null;
+    if (nameInput !== '' && nameControl !== '') {
+      validation = this.renewNamespaceForm.controls[nameControl].get(nameInput);
+    } else if (nameInput === '' && nameControl !== '' && nameValidation !== '') {
+      validation = this.renewNamespaceForm.controls[nameControl].getError(nameValidation);
+    } else if (nameInput !== '') {
+      validation = this.renewNamespaceForm.get(nameInput);
+    }
+    return validation;
+  }
+
+
+  /**
+   *
+   *
+   * @param {*} common
+   * @returns {SignedTransaction}
+   * @memberof RenewNamespaceComponent
+   */
+  signedTransaction(common: any): SignedTransaction {
+    const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.network);
+    const namespaceRootToRenovate: string = this.renewNamespaceForm.get('namespaceRoot').value;
+    // const duration: number = parseFloat(this.durationByBlock);
+    const duration: number = 20;
+    const registernamespaceRootTransaction = this.proximaxProvider.registerRootNamespaceTransaction(namespaceRootToRenovate, this.walletService.network, duration);
+    const signedTransaction = account.sign(registernamespaceRootTransaction);
+    return signedTransaction;
+  }
+
+  /**
+   *
+   *
+   * @param {*} amount
+   * @param {MosaicsStorage} mosaic
+   * @memberof CreateNamespaceComponent
+   */
+  validateRentalFee(amount: number) {    
+    console.log('This is a test', amount);
+    const accountInfo = this.walletService.getAccountInfo();
+    if (accountInfo !== undefined && accountInfo !== null && Object.keys(accountInfo).length > 0) {
+      if (accountInfo.mosaics.length > 0) {
+        const filtered = accountInfo.mosaics.find(element => {
+          return element.id.toHex() === new MosaicId(this.proximaxProvider.mosaicXpx.mosaicId).toHex();
+        });
+
+        const invalidBalance = filtered.amount.compact() < amount;
+        const mosaic = this.mosaicServices.filterMosaic(filtered.id);
+        this.calculateRentalFee = this.transactionService.amountFormatter(amount, mosaic.mosaicInfo);
+        if (invalidBalance && !this.insufficientBalance) {
+          this.insufficientBalance = true;
+          this.blockBtnSend = true;
+          this.renewNamespaceForm.controls['password'].disable();
+        } else if (!invalidBalance && this.insufficientBalance) {
+          this.insufficientBalance = false;
+          this.blockBtnSend = false;
+          this.renewNamespaceForm.controls['password'].enable();
+        }
+      } else {
+        this.insufficientBalance = true;
+        this.blockBtnSend = true;
+        this.renewNamespaceForm.controls['password'].disable();
+      }
+    }
+  }
 
 }

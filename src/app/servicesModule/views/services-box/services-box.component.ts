@@ -42,7 +42,7 @@ export class ServicesBoxComponent implements OnInit {
             true,
             '',
             '',
-            AppConfig.routes.linkTheNamespaceToAnAddress
+            AppConfig.routes.aliasAddressToNamespace
           ), multiSign: this.services.buildStructureService(
             'Multi-Sign',
             false,
