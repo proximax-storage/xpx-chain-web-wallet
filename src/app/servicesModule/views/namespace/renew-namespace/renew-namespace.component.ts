@@ -136,42 +136,6 @@ export class RenewNamespaceComponent implements OnInit {
   /**
    *
    *
-   * @param {(string | (string | number)[])} control
-   * @param {*} [typeForm]
-   * @param {(string | number)} [formControl]
-   * @returns
-   * @memberof RenewNamespaceComponent
-   */
-  getError(control: string | (string | number)[], typeForm?: any, formControl?: string | number) {
-    const form = this.renewNamespaceForm;
-    if (formControl === undefined) {
-      if (form.get(control).getError('required')) {
-        return `This field is required`;
-      } else if (form.get(control).getError('minlength')) {
-        return `This field must contain minimum ${form.get(control).getError('minlength').requiredLength} characters`;
-      } else if (form.get(control).getError('maxlength')) {
-        return `This field must contain maximum ${form.get(control).getError('maxlength').requiredLength} characters`;
-      } else {
-        return `Invalid data`;
-      }
-    } else {
-      if (form.controls[formControl].get(control).getError('required')) {
-        return `This field is required`;
-      } else if (form.controls[formControl].get(control).getError('minlength')) {
-        return `This field must contain minimum ${form.controls[formControl].get(control).getError('minlength').requiredLength} characters`;
-      } else if (form.controls[formControl].get(control).getError('maxlength')) {
-        return `This field must contain maximum ${form.controls[formControl].get(control).getError('maxlength').requiredLength} characters`;
-      } else if (form.controls[formControl].getError('noMatch')) {
-        return `Password doesn't match`;
-      } else {
-        return `Invalid data`;
-      }
-    }
-  }
-
-  /**
-   *
-   *
    * @memberof RenewNamespaceComponent
    */
   getNameNamespace() {
