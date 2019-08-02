@@ -189,7 +189,7 @@ export class CreateTransferComponent implements OnInit {
           Validators.maxLength(this.configurationForm.accountRecipient.maxLength)
         ]
       ],
-      amount: ['0', [Validators.maxLength(this.configurationForm.amount.maxLength)]],
+      amount: ['', [Validators.maxLength(this.configurationForm.amount.maxLength)]],
       message: ["", [Validators.maxLength(this.configurationForm.message.maxLength)]],
       password: [
         null,
