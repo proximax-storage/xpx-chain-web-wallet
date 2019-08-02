@@ -11,6 +11,11 @@ export const environment = {
   protocol: `http`,
   protocolWs: `ws`,
   nodeDefault: 'bctestnet1.xpxsirius.io:3000',
+  mosaicXpxInfo: {
+    name: 'prx.xpx',
+    id: '0dc67fbe1cad29e3',
+    divisibility: 6
+  },
   blockchainConnection: {
     host: 'bctestnet1.xpxsirius.io',
     port: 3000,

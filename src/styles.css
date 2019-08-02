@@ -518,6 +518,10 @@ body {
 }
 
 /**************************** COLOR *****************************/
+.color-dark-green {
+  color: #023c42 !important;
+}
+
 .color-blue-light {
   color: #0aabbb !important;
 }
@@ -526,9 +530,6 @@ body {
   color: #35af8d !important;
 }
 
-.green-c {
-  color: #00960c !important;
-}
 
 .color-red {
   color: #e90000 !important;
@@ -556,6 +557,10 @@ body {
 
 .color-item-menu{
   color: #2BA1B9 !important;
+}
+
+.green-c {
+  color: #00960c !important;
 }
 
 .color-blue-intermedio{
@@ -588,6 +593,11 @@ body {
   background: #2BA1B9 !important;
 }
 
+.background-btn-inverse{
+  background-color: white !important;
+  border: 2px solid #2ba7c0 !important;
+}
+
 .background-header-grey{
   background-color: #f4f4f4 !important;
 }
@@ -596,6 +606,13 @@ body {
   background: #e4e4e4;
 }
 /**************************** THEME *****************************/
+.description-information {
+  text-align: justify;
+  font-size: .8rem;
+  color: #023C42;
+  font-weight: 400;
+}
+
 .modal-body {
   max-height: 90%;
   overflow: auto;
@@ -752,6 +769,11 @@ input.form-control.validate-error.ng-invalid.ng-touched, input.form-control.vali
 input.form-control.validate-success.ng-valid.ng-dirty, input.form-control.validate-success.ng-valid.ng-touched, .form-submitted input.form-control.validate-success.ng-valid{
   box-shadow: none !important;
   border: 2px solid #2BA1B9 !important;
+}
+
+.md-textarea.validate-success.ng-valid {
+  border: 2px solid #2BA1B9 !important;
+  box-shadow: none !important;
 }
 
 #confirm-password-invalid,

@@ -8,6 +8,9 @@ import { ToastService } from 'ng-uikit-pro-standard';
 export class SharedService {
 
   configurationForm: ConfigurationForm = {
+    accountRecipient: {
+      minLength: 40, maxLength: 46
+    },
     nameWallet: {
       minLength: 2, maxLength: 30
     },
@@ -20,6 +23,12 @@ export class SharedService {
     passwordWallet: {
       minLength: 8,
       maxLength: 30
+    },
+    amount: {
+      maxLength: 20
+    },
+    message: {
+      maxLength: 1024
     }
   };
 
@@ -103,6 +112,16 @@ export class SharedService {
 
 
 export interface ConfigurationForm {
+  accountRecipient?: {
+    minLength: number;
+    maxLength: number;
+  };
+  amount?: {
+    maxLength: number;
+  };
+  message?: {
+    maxLength: 1024
+  }
   nameWallet?: {
     minLength: number;
     maxLength: number;
