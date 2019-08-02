@@ -1,6 +1,6 @@
 <div class="container">
   <div class="row mt-1rem mb-2rem animated fadeIn">
-    <div class="col-12 col-md-6 col-lg-5 mt-2rem">
+    <div class="col-12 col-md-6 col-lg-6 mt-2rem">
       <div class="row">
         <div class="col-12 col-sm-2 col-md-3 col-lg-2 d-flex align-items-center ">
           <figure style="margin: 0">
@@ -13,10 +13,10 @@
             <span class="fs-1rem">{{vestedBalance}} | USD 0.00</span>
             <div class="row">
               <div class="d-flex justify-content-between align-items-center">
-                <div class="col-10">
+                <div class="col-11">
                   <span class="fs-07rem f-s-dashboard-transactions">{{myAddress}}</span>
                 </div>
-                <div class="col-2 d-flex justify-content-end">
+                <div class="col-1 d-flex justify-content-end">
                   <i mdbWavesEffect (click)="copyMessage('Address')" ngxClipboard [cbContent]="myAddress"
                     class="fa fa-paste prefix cursor-pointer fs-08rem"></i>
                 </div>
@@ -27,7 +27,7 @@
       </div>
     </div>
 
-    <div class="col-2 d-none d-sm-none d-md-none d-lg-block d-xl-block d-flex justify-content-center">
+    <div class="col-1 d-none d-sm-none d-md-none d-lg-block d-xl-block d-flex justify-content-center">
       <div class="row h-100porcent">
         <div class="col-6">
           <div class="line-separator h-100porcent"></div>
@@ -49,7 +49,7 @@
           </button>
         </div>
         <div class="col-12 col-lg-6">
-          <button mdbBtn type="button" rounded="true" mdbWavesEffect (click)="selectTransactions(0)"
+          <button mdbBtn type="button" rounded="true" mdbWavesEffect [disabled]="transactionsUnconfirmed.length === 0" (click)="selectTransactions(0)"
             class="f-w-600  w-100porcent background-btn pl-2rem pr-2rem" size="sm">
             <span class="fs-1-2em color-white">UNCONFIRMED: <span class="fw-400">{{cantUnconfirmed}}</span></span>
           </button>
@@ -107,24 +107,26 @@
 
                 <!-- fee -->
                 <td class="text-center th-sm description-dark-green fs-0-8-rem">{{el.fee}}</td>
-
                 <!-- address -->
-                <td class="text-center th-md description-dark-green fs-0-8-rem"><i
-                    [ngStyle]="{'color': el.isRemitent === true ? 'green' : 'red' }" style="padding-right: 10px;"
-                    class="fa fa-send" aria-hidden="true"></i>
+                <td class="text-center th-md description-dark-green fs-0-8-rem">
+                  <img src="assets/images/img/arrow-transaction-receive-green-proximax-sirius-explorer.svg" alt="" width="25" *ngIf="el.isRemitent">
+                  <img src="assets/images/img/arrow-transaction-sender-orange-proximax-sirius-explorer.svg" alt="" width="25" *ngIf="!el.isRemitent">
+                </td>
+                <!-- address -->
+                <td class="th-md description-dark-green fs-0-8-rem">
                   <span>{{el.senderAddress}}</span>
                 </td>
 
                 <!-- recipíent -->
                 <ng-container *ngIf="el?.recipientAddress !== null; else recipientRentalFee">
-                  <td class="text-center th-md description-dark-green fs-0-8-rem">
+                  <td class="th-md description-dark-green fs-0-8-rem">
                     <span>{{el.recipientAddress}}</span>
                   </td>
                 </ng-container>
 
                 <!-- recipient rental fee -->
                 <ng-template #recipientRentalFee>
-                  <td class="text-center th-sm description-dark-green fs-0-8-rem">
+                  <td class="th-sm description-dark-green fs-0-8-rem">
                     <span>{{el.recipientRentalFeeSink}}</span>
                   </td>
                 </ng-template>

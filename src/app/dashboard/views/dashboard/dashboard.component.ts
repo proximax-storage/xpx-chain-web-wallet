@@ -29,7 +29,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   cantUnconfirmed = 0;
   confirmedSelected = true;
   dataSelected: TransactionsInterface = null;
-  headElements = ['Type', 'Deadline', 'Fee', 'Sender', 'Recipient'];
+  headElements = ['Type', 'Deadline', 'Fee', '', 'Sender', 'Recipient'];
   iconReloadDashboard = false;
   searching = true;
   searchTransactions = true;
@@ -60,6 +60,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private proximaxProvider: ProximaxProvider,
     @Inject(DOCUMENT) private document: Document
   ) {
+    this.walletService.accountValid = false;
     this.myAddress = this.walletService.address.pretty();
   }
 
@@ -164,6 +165,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
   loadTransactions(id = null) {
     this.transactions = (id) ? this.transactions : [];
     this.proximaxProvider.getTransactionsFromAccountId(this.walletService.publicAccount, id).toPromise().then(response => {
+
+      if (response.length > 0) {
+        this.walletService.accountValid = true;
+      }
       this.searchTransactions = !(response.length < 25);
       const data = [];
       response.forEach(element => {

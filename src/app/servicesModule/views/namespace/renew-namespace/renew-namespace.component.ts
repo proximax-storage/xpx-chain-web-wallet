@@ -28,7 +28,7 @@ export class RenewNamespaceComponent implements OnInit {
       value: '1',
       label: 'New root Namespace',
       selected: true,
-      disabled: false
+      disabled: true
     }
   ];
   namespaceSelect: Array<object> = [];
@@ -94,12 +94,6 @@ export class RenewNamespaceComponent implements OnInit {
     // Form Renew Namespace
     this.renewNamespaceForm = this.fb.group({
       namespaceRoot: ['', [Validators.required]],
-      duration: [''],
-      password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]],
-    });
-
-    this.renewNamespaceForm = this.fb.group({
-      namespaceRoot: ['1'],
       duration: ['', [Validators.required]],
       password: ['', [
         Validators.required,

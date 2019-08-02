@@ -23,7 +23,7 @@
     </div>
   </div>
   <!-- public key -->
-  <div class="row">
+  <div class="row" *ngIf="accountValid">
     <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto d-flex align-items-center box-grey">
       <div class="col-10">
         <span>{{ titlePublickey }} </span>
@@ -92,7 +92,7 @@
   <!-- buttons create and clear -->
   <div class="row mt-2rem">
     <div class="col-11 col-sm-6 d-flex justify-content-center mx-auto">
-      <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+      <button mdbBtn type="button" rounded="true" [disabled]="!validatingForm.valid" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
         size="md" (click)="decryptWallet()" *ngIf="showPassword">
         <!-- <span class="fs-1-2em color-white" *ngIf="viewPrivateKey"><i class="fa fa-magic mr-1"></i> HIDE PRIVATE KEY</span> -->
         <span class="fs-1-2em color-white">

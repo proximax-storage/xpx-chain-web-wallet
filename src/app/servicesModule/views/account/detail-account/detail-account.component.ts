@@ -12,7 +12,7 @@ export class DetailAccountComponent implements OnInit {
 
   configurationForm: ConfigurationForm;
   showPassword: boolean = true;
-  // showPanelPrivateKey = false;
+  accountValid: boolean = false;
   // mosaic = 'XPX';
   // titleAccountInformation = 'Account information';
   titleAddress = 'Address:';
@@ -35,6 +35,7 @@ export class DetailAccountComponent implements OnInit {
 
   ngOnInit() {
     this.configurationForm = this.sharedService.configurationForm;
+    this.accountValid = this.walletService.accountValid;
     this.publicKey = this.walletService.publicAccount.publicKey;
     this.validatingForm = new FormGroup({
       password: new FormControl('', [

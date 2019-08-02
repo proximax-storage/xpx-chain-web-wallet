@@ -55,6 +55,19 @@ export class ServicesBoxComponent implements OnInit {
             '',
             '',
             ''
+          ), restrinctions: this.services.buildStructureService(
+            'Restictions',
+            false,
+            '',
+            '',
+            ''
+          ),
+          delegate: this.services.buildStructureService(
+            'Delegate',
+            false,
+            '',
+            '',
+            ''
           ),
         },
         true
@@ -83,12 +96,12 @@ export class ServicesBoxComponent implements OnInit {
       this.services.buildStructureService(
         'Namespaces',
         true,
-        'Create a domain and subdmains',
+        'Create a namespaces and sub-namespaces',
         'icon-namespaces-green-60h-proximax-sirius-wallet.svg',
         '',
         {
           create: this.services.buildStructureService(
-            'Create',
+            'Register',
             true,
             '',
             '',
@@ -96,6 +109,12 @@ export class ServicesBoxComponent implements OnInit {
           ), renew: this.services.buildStructureService(
             'Renew',
             true,
+            '',
+            '',
+            AppConfig.routes.renewNamespace
+          ), extend: this.services.buildStructureService(
+            'Extend Duration',
+            false,
             '',
             '',
             AppConfig.routes.renewNamespace
@@ -136,6 +155,12 @@ export class ServicesBoxComponent implements OnInit {
             '',
             '',
             ''
+          ), extend: this.services.buildStructureService(
+            'Extend Duration',
+            false,
+            '',
+            '',
+            ''
           )
         },
         true
@@ -156,7 +181,7 @@ export class ServicesBoxComponent implements OnInit {
             '',
             AppConfig.routes.addressBook
           ), open: this.services.buildStructureService(
-            'Open',
+            'Add Contact',
             false,
             '',
             '',
@@ -181,7 +206,7 @@ export class ServicesBoxComponent implements OnInit {
             '',
             ''
           ), upload: this.services.buildStructureService(
-            'Upload',
+            'Upload File',
             false,
             '',
             '',
@@ -199,20 +224,149 @@ export class ServicesBoxComponent implements OnInit {
         'icon-nodes-green-60h-proximax-sirius-wallet.svg',
         '',
         {
-          details: this.services.buildStructureService(
-            'Details',
-            true,
+          blockchain: this.services.buildStructureService(
+            'Blockchain',
+            false,
             '',
             '',
-            AppConfig.routes.account
+            ''
+          ), storage: this.services.buildStructureService(
+            'Storage',
+            false,
+            '',
+            '',
+            ''
           )
         },
         true
       ),
 
-      // Services 08
+      // Notarization
       this.services.buildStructureService(
-        'Services 08',
+        'Notarization',
+        true,
+        'Create digital assets with unique properties',
+        'icon-mosaics-green-60h-proximax-sirius-wallet.svg',
+        '',
+        {
+          notarize: this.services.buildStructureService(
+            'Notarize',
+            false,
+            '',
+            '',
+            ''
+          ),
+          audit: this.services.buildStructureService(
+            'Audit',
+            false,
+            '',
+            '',
+            ''
+          )
+        },
+        true
+      ),
+
+      // Voting
+      this.services.buildStructureService(
+        'Voting',
+        true,
+        'Create digital assets with unique properties',
+        'icon-mosaics-green-60h-proximax-sirius-wallet.svg',
+        '',
+        {
+          poll: this.services.buildStructureService(
+            'Create Poll',
+            false,
+            '',
+            '',
+            ''
+          ),
+          view: this.services.buildStructureService(
+            'View Result',
+            false,
+            '',
+            '',
+            ''
+          )
+        },
+        true
+      ),
+
+      // Agregate transactions
+      this.services.buildStructureService(
+        'Agregate Transactions',
+        true,
+        'Create digital assets with unique properties',
+        'icon-mosaics-green-60h-proximax-sirius-wallet.svg',
+        '',
+        {
+          complete: this.services.buildStructureService(
+            'Complete',
+            false,
+            '',
+            '',
+            ''
+          ),
+          bonded: this.services.buildStructureService(
+            'Bonded',
+            false,
+            '',
+            '',
+            ''
+          )
+        },
+        true
+      ),
+
+      // Cross-Chain Swaps
+      this.services.buildStructureService(
+        'Cross-Chain Swaps',
+        true,
+        'Create digital assets with unique properties',
+        'icon-mosaics-green-60h-proximax-sirius-wallet.svg',
+        '',
+        {
+          secretLock: this.services.buildStructureService(
+            'SecretLock',
+            false,
+            '',
+            '',
+            ''
+          ),
+          secretProof: this.services.buildStructureService(
+            'SecretProof',
+            false,
+            '',
+            '',
+            ''
+          )
+        },
+        true
+      ),
+
+      // Message
+      this.services.buildStructureService(
+        'Message',
+        true,
+        'Create digital assets with unique properties',
+        'icon-mosaics-green-60h-proximax-sirius-wallet.svg',
+        '',
+        {
+          send: this.services.buildStructureService(
+            'Send',
+            false,
+            '',
+            '',
+            ''
+          )
+        },
+        true
+      ),
+
+      // Message
+      this.services.buildStructureService(
+        'Invoice',
         true,
         'Create digital assets with unique properties',
         'icon-mosaics-green-60h-proximax-sirius-wallet.svg',
@@ -220,13 +374,6 @@ export class ServicesBoxComponent implements OnInit {
         {
           create: this.services.buildStructureService(
             'Create',
-            false,
-            '',
-            '',
-            ''
-          ),
-          renew: this.services.buildStructureService(
-            'Renew',
             false,
             '',
             '',
