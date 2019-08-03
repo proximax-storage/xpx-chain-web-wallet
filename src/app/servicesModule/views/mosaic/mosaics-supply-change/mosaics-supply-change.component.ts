@@ -22,14 +22,14 @@ export class MosaicsSupplyChangeComponent implements OnInit {
   parentMosaic: any = [{
     value: '1',
     label: 'Select or enter here',
-    selected: true,
+    selected: false,
     disabled: true
   }];
 
   mosaicSupplyType: any = [{
     value: MosaicSupplyType.Increase,
     label: 'Increase',
-    selected: true,
+    selected: false,
     disabled: false
   }, {
     value: MosaicSupplyType.Decrease,
