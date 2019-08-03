@@ -19,7 +19,7 @@ import { TransactionsService } from 'src/app/transfer/services/transactions.serv
 export class RenewNamespaceComponent implements OnInit {
 
   moduleName = 'Namespaces & Sub-Namespaces';
-  componentName = 'Renew';
+  componentName = 'RENEW';
   backToService = `/${AppConfig.routes.service}`;
   renewNamespaceForm: FormGroup;
   configurationForm: ConfigurationForm = {};

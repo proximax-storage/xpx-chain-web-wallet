@@ -20,7 +20,7 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
   @ViewChild(MdbTableDirective, {static: true}) mdbTable: MdbTableDirective;
 
   moduleName = 'Transaction explorer';
-  componentName = 'Explore';
+  componentName = 'EXPLORE';
   goBack = `/${AppConfig.routes.service}`;
   searching = false;
   objectKeys = Object.keys;

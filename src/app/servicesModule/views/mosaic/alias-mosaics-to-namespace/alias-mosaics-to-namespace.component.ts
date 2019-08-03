@@ -21,7 +21,7 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
 
   @BlockUI() blockUI: NgBlockUI;
   moduleName = 'Mosaics';
-  componentName = 'Alias to Namespace';
+  componentName = 'LINK TO NAMESPACE';
   backToService = `/${AppConfig.routes.service}`;
   configurationForm: ConfigurationForm = {};
   linkingNamespaceToMosaic: FormGroup;

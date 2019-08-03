@@ -51,7 +51,7 @@ export class MosaicsSupplyChangeComponent implements OnInit {
   subscriptions = ['transactionStatus'];
   configurationForm: ConfigurationForm = {};
   moduleName = 'Mosaics';
-  componentName = 'Change Supply';
+  componentName = 'MODIFY SUPPLY';
   backToService = `/${AppConfig.routes.service}`;
 
   /**
@@ -113,7 +113,7 @@ export class MosaicsSupplyChangeComponent implements OnInit {
    */
   createForm() {
     this.formMosaicSupplyChange = this.fb.group({
-      parentMosaic: ['1', Validators.required],
+      parentMosaic: ['', Validators.required],
       mosaicSupplyType: [MosaicSupplyType.Increase, Validators.required],
       deltaSupply: [2000000, [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]],

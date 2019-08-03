@@ -23,7 +23,7 @@ export class CreateNamespaceComponent implements OnInit {
 
   configurationForm: ConfigurationForm = {};
   moduleName = 'Namespaces & Sub-Namespaces';
-  componentName = 'Create';
+  componentName = 'REGISTER';
   backToService = `/${AppConfig.routes.service}`;
   /*********************************** */
   arrayselect: Array<object> = [

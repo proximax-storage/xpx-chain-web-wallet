@@ -13,7 +13,7 @@ import { AppConfig } from '../../../config/app.config';
 export class AddressBookComponent {
 
   moduleName = 'Address Book';
-  componentName = 'My Contacs';
+  componentName = 'LIST';
   goBack = `/${AppConfig.routes.service}`;
   //Pagination
   @ViewChild(MdbTablePaginationComponent, {static: true}) mdbTablePagination: MdbTablePaginationComponent;

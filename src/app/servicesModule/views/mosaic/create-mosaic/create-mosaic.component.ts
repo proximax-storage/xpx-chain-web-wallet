@@ -18,7 +18,7 @@ export class CreateMosaicComponent implements OnInit {
 
   @BlockUI() blockUI: NgBlockUI;
   moduleName = 'Mosaics';
-  componentName = 'Create';
+  componentName = 'CREATE';
   backToService = `/${AppConfig.routes.service}`;
   configurationForm: ConfigurationForm = {};
   isOwner = false;
