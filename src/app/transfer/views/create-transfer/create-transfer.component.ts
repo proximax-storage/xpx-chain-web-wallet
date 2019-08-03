@@ -448,6 +448,7 @@ export class CreateTransferComponent implements OnInit {
   validateMosaicsToSend() {
     const mosaics = [];
     const amountXpx = this.formTransfer.get("amountXpx").value;
+    console.log(amountXpx);
     if (amountXpx !== '') {
       mosaics.push({
         id: this.mosaicXpx.id,
