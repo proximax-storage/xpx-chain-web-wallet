@@ -96,24 +96,67 @@
 
     <!--  OTHER MOSAICS -->
     <ng-container *ngIf="otherMosaics.length > 0">
-      <ng-container *ngFor="let otherMosaic of otherMosaics; let i=index;">
+      <ng-container *ngFor="let otherMosaic of otherMosaics; let i = index">
         <!-- SEPARED -->
         <div class="row">
           <div class="col-11 col-md-11 col-lg-9 mx-auto">
             <hr>
           </div>
           <div class="col-1 d-flex justify-content-start">
-            <span title="Delete" (click)="deleteMoreMosaic(i)">x</span>
+            <span class="cursor-p" title="Delete" (click)="deleteMoreMosaic(i)">x</span>
           </div>
         </div>
 
         <div class="row">
           <div class="col-11 col-md-10 col-lg-8 mx-auto">
             <ng-select mdbInputDirective mdbValidate class="selectWrapper" [items]="selectOtherMosaics"
-              bindLabel="label" bindValue="value" placeholder="Select mosaic" (change)="otherMosaicsChange($event)">
+              bindLabel="label" bindValue="value" placeholder="Select mosaic" (change)="otherMosaicsChange($event, i)">
             </ng-select>
           </div>
+
+          <!-- Balance -->
+          <ng-container *ngIf="otherMosaic.balance !== ''">
+            <div class="col-11 col-md-10 col-lg-8 mx-auto txt-a-center">
+              <span class="fw-600">Balance: {{otherMosaic.balance}} </span>
+            </div>
+          </ng-container>
         </div>
+
+        <ng-container *ngIf="otherMosaic.balance !== ''">
+          <!-- Amount to be sent -->
+          <div class="row">
+            <div class="col-11 col-md-10 col-lg-8 mx-auto">
+              <div class="row d-flex align-items-center">
+                <!-- Amount to be Sent -->
+                <div class="col-11 col-md-5 mx-auto">
+                  <div class="box-grey pt-1rem pb-1rem txt-a-center">
+                    <span class="fs-08rem">Amount to be sent <br></span>
+                    <span class="fs-1rem">0</span>
+                  </div>
+                </div>
+
+                <!-- Arrow Right -->
+                <div class="col-1 d-none d-md-block">
+                  <i class="fa fa-angle-right fs-2rem" aria-hidden="true"></i>
+                </div>
+
+                <!-- Amount Input -->
+                <div class="col-11 col-md-5 mx-auto">
+                  <div class="md-form form-sm mt-1rem mb-0rem">
+                    <input pattern="^[+]?([0-9]*[.])?[0-9]+$" mask="comma_separator.0" mdbInputDirective mdbValidate
+                      [maxlength]="configurationForm.amount.maxLength" type="text"
+                      class="form-control form-control-sm input-border" [(ngModel)]="otherMosaics[i].amount" [ngModelOptions]="{standalone: true}" placeholder="Enter quantity">
+
+                    <!-- Message Error Insufficient balance-->
+                    <mdb-error class="text-danger fw-500" *ngIf="insufficientBalance">
+                      <span class="text-danger fw-500">Insufficient balance</span>
+                    </mdb-error>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
       </ng-container>
     </ng-container>
     <!--  FIN MOSAICS -->

@@ -34,6 +34,7 @@ export class CreateTransferComponent implements OnInit {
   msgErrorUnsupportedContact = '';
   mosaicXpx: { id: string, name: string; divisibility: number } = null;
   otherMosaics = [];
+  optionOtherMosaics
   incrementMosaics = 0;
   selectOtherMosaics = [];
   subscribe = ['accountInfo', 'transactionStatus'];
@@ -101,7 +102,6 @@ export class CreateTransferComponent implements OnInit {
                   });
                 } else {
                   this.balanceXpx = amount;
-                  console.log('mosaic xpx');
                 }
               }
               this.selectOtherMosaics = mosaicsSelect;
@@ -163,13 +163,27 @@ export class CreateTransferComponent implements OnInit {
     return;
   }
 
+  /**
+   *
+   *
+   * @param {number} position
+   * @memberof CreateTransferComponent
+   */
   deleteMoreMosaic(position: number) {
-    console.log(this.otherMosaics);
-    console.log(position);
-    const otherMosaics = this.otherMosaics.filter(elemt => elemt !== position);
+    const otherMosaics = [];
+    Object.keys(this.otherMosaics).forEach(element => {
+      if (Number(element) !== position) {
+        otherMosaics.push(this.otherMosaics[Number(element)]);
+      }
+    });
     this.otherMosaics = otherMosaics;
   }
 
+  /**
+   *
+   *
+   * @memberof CreateTransferComponent
+   */
   getTransactionStatus() {
     // Get transaction status
     this.subscribe['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
@@ -199,15 +213,35 @@ export class CreateTransferComponent implements OnInit {
    * @param {number} i
    * @memberof CreateTransferComponent
    */
-  otherMosaicsChange(mosaicSelected: any) {
-    console.log(mosaicSelected);
+  otherMosaicsChange(mosaicSelected: any, position: number) {
+    if (mosaicSelected !== undefined) {
+      this.otherMosaics[position].id = mosaicSelected.value;
+      this.otherMosaics[position].balance = mosaicSelected.balance;
+    } else {
+      this.otherMosaics[position].id = '';
+      this.otherMosaics[position].balance = '';
+      this.otherMosaics[position].amount = '';
+    }
+
+    console.log(this.otherMosaics);
   }
 
+  /**
+   *
+   *
+   * @memberof CreateTransferComponent
+   */
   pushedOtherMosaics() {
-    this.otherMosaics.push({
-      id: '',
-      amount: ''
-    });
+    console.log(this.otherMosaics);
+    const permited = this.otherMosaics.find(el => el.id === '');
+    if (!permited) {
+      this.otherMosaics.push({
+        id: '',
+        balance: '',
+        amount: '',
+        random: Math.floor(Math.random() * 1455654)
+      });
+    }
   }
 
   /**
@@ -268,7 +302,14 @@ export class CreateTransferComponent implements OnInit {
       });
     }
 
-
+    this.otherMosaics.forEach(element => {
+      if (element.id !== '' && element.amount !== '') {
+        mosaics.push({
+          id: element.id,
+          amount: element.amount
+        });
+      }
+    });
 
     return mosaics;
   }
