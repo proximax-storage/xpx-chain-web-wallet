@@ -4,12 +4,13 @@ import { Address, PublicAccount } from 'tsjs-xpx-chain-sdk';
 import { SearchParameter, ConnectionConfig, BlockchainNetworkConnection, BlockchainNetworkType, Protocol, IpfsConnection, Searcher, TransactionFilter, PrivacyType, Downloader } from 'xpx2-ts-js-sdk';
 import { first } from "rxjs/operators";
 import { AppConfig } from 'src/app/config/app.config';
-import { TransactionsInterface, TransactionsService } from 'src/app/transfer/services/transactions.service';
+import { TransactionsService } from 'src/app/transfer/services/transactions.service';
 import { WalletService } from 'src/app/wallet/services/wallet.service';
 import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
 import { NodeService } from 'src/app/servicesModule/services/node.service';
 import { SharedService } from 'src/app/shared/services/shared.service';
 import { environment } from 'src/environments/environment';
+import { SearchResultInterface } from '../services/storage.service';
 
 
 
@@ -39,7 +40,7 @@ export class MyFileComponent implements OnInit, AfterViewInit {
   previous: any = '';
   searchText: string = '';
   elements: any = [];
-  dataSelected: TransactionsInterface = null;
+  dataSelected: SearchResultInterface = null;
   headElements = ['Timestamp', 'Name', 'Action'];
   optionTypeSearch = [
     {
