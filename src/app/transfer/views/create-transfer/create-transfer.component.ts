@@ -27,6 +27,7 @@ export class CreateTransferComponent implements OnInit {
   amountXpxToSend = '0.000000';
   balanceXpx = '0.000000';
   configurationForm: ConfigurationForm;
+  errorOtherMosaics: boolean = false;
   formTransfer: FormGroup;
   blockSendButton = false;
   invalidRecipient = false;
@@ -216,6 +217,25 @@ export class CreateTransferComponent implements OnInit {
   /**
    *
    *
+   * @param {string} amount
+   * @param {(string | [])} mosaicId
+   * @param {number} position
+   * @memberof CreateTransferComponent
+   */
+  modelChanged(amount: string, mosaicId: string | [], position: number) {
+    if (amount !== null && amount !== undefined) {
+      const mosaic = this.mosaicServices.filterMosaic(new MosaicId(mosaicId));
+      const a = Number(amount);
+      this.otherMosaics[position].amountToBeSent = String((mosaic !== null) ? this.transactionService.amountFormatter(a, mosaic.mosaicInfo) : a);
+      this.validateAmountToTransfer(amount, mosaic, position);
+    } else {
+      this.otherMosaics[position].amountToBeSent = '0';
+    }
+  }
+
+  /**
+   *
+   *
    * @param {Event} $event
    * @param {number} i
    * @memberof CreateTransferComponent
@@ -228,9 +248,11 @@ export class CreateTransferComponent implements OnInit {
       this.otherMosaics[position].id = '';
       this.otherMosaics[position].balance = '';
       this.otherMosaics[position].amount = '';
+      this.otherMosaics[position].errorBalance = false;
+      this.otherMosaics[position].amountToBeSent = 0;
     }
 
-    console.log(this.otherMosaics);
+    // console.log(this.otherMosaics);
   }
 
   /**
@@ -239,13 +261,14 @@ export class CreateTransferComponent implements OnInit {
    * @memberof CreateTransferComponent
    */
   pushedOtherMosaics() {
-    console.log(this.otherMosaics);
-    const permited = this.otherMosaics.find(el => el.id === '');
-    if (!permited) {
+    // console.log(this.otherMosaics);
+    if (!this.otherMosaics.find(el => el.id === '')) {
       this.otherMosaics.push({
         id: '',
         balance: '',
         amount: '',
+        errorBalance: false,
+        amountToBeSent: 0,
         random: Math.floor(Math.random() * 1455654)
       });
     }
@@ -257,8 +280,7 @@ export class CreateTransferComponent implements OnInit {
    * @memberof CreateTransferComponent
    */
   sendTransfer() {
-    console.log('send transfer....');
-    if (this.formTransfer.valid) {
+    if (this.formTransfer.valid && (!this.blockSendButton || !this.errorOtherMosaics)) {
       const mosaicsToSend = this.validateMosaicsToSend();
       this.blockSendButton = true;
       let common = { password: this.formTransfer.get("password").value };
@@ -271,9 +293,9 @@ export class CreateTransferComponent implements OnInit {
           mosaic: mosaicsToSend
         };
 
-        console.log('----- TRANSACTION ----', params);
+        // console.log('----- TRANSACTION ----', params);
         const buildTransferTransaction = this.transactionService.buildTransferTransaction(params);
-        console.log('----- buildTransferTransaction ----', buildTransferTransaction);
+        // console.log('----- buildTransferTransaction ----', buildTransferTransaction);
         this.transactionSigned = buildTransferTransaction.signedTransaction;
         this.clearForm();
         buildTransferTransaction.transactionHttp.announce(buildTransferTransaction.signedTransaction).subscribe(
@@ -324,17 +346,53 @@ export class CreateTransferComponent implements OnInit {
     //Amount XPX
     this.formTransfer.get('amountXpx').valueChanges.subscribe(
       value => {
-         if (value !== null && value !== undefined) {
-           const mosaic = this.mosaicServices.filterMosaic(new MosaicId(this.mosaicXpx.id));
-           const a = Number(value);
-           this.amountXpxToSend = String((mosaic !== null) ? this.transactionService.amountFormatter(a, mosaic.mosaicInfo) : a);
-           this.validateAmountToTransfer(value, mosaic);
-         } else {
-           this.amountXpxToSend = '0.000000';
-         }
+        if (value !== null && value !== undefined) {
+          const mosaic = this.mosaicServices.filterMosaic(new MosaicId(this.mosaicXpx.id));
+          const a = Number(value);
+          this.amountXpxToSend = String((mosaic !== null) ? this.transactionService.amountFormatter(a, mosaic.mosaicInfo) : a);
+         // this.validateAmountToTransfer(value, mosaic);
+          let validateAmount = false;
+          const accountInfo = this.walletService.getAccountInfo();
+          if (accountInfo !== undefined && accountInfo !== null && Object.keys(accountInfo).length > 0) {
+            if (accountInfo.mosaics.length > 0) {
+              const filtered = accountInfo.mosaics.find(element => {
+                return element.id.toHex() === new MosaicId(mosaic.id).toHex();
+              });
+
+              if (filtered !== undefined && filtered !== null) {
+                const invalidBalance = filtered.amount.compact() < Number(value);
+                if (invalidBalance && !this.insufficientBalance) {
+                  this.insufficientBalance = true;
+                  this.blockSendButton = true;
+                } else if (!invalidBalance && this.insufficientBalance) {
+                  this.insufficientBalance = false;
+                  this.blockSendButton = false;
+                }
+              } else {
+                validateAmount = true;
+              }
+            } else {
+              validateAmount = true;
+            }
+          } else {
+            validateAmount = true;
+          }
+
+          if (validateAmount) {
+            if (Number(value) >= 1) {
+              this.insufficientBalance = true;
+              this.blockSendButton = true;
+            } else if ((Number(value) === 0 || value === '') && this.insufficientBalance) {
+              this.insufficientBalance = false;
+            }
+          }
+        } else {
+          this.amountXpxToSend = '0.000000';
+        }
       }
     );
   }
+
 
   /**
    *
@@ -343,7 +401,7 @@ export class CreateTransferComponent implements OnInit {
    * @param {MosaicsStorage} mosaic
    * @memberof CreateTransferComponent
    */
-  validateAmountToTransfer(amount: string, mosaic: MosaicsStorage) {
+  validateAmountToTransfer(amount: string, mosaic: MosaicsStorage, position: number) {
     let validateAmount = false;
     const accountInfo = this.walletService.getAccountInfo();
     if (accountInfo !== undefined && accountInfo !== null && Object.keys(accountInfo).length > 0) {
@@ -354,12 +412,12 @@ export class CreateTransferComponent implements OnInit {
 
         if (filtered !== undefined && filtered !== null) {
           const invalidBalance = filtered.amount.compact() < Number(amount);
-          if (invalidBalance && !this.insufficientBalance) {
-            this.insufficientBalance = true;
-            this.blockSendButton = true;
-          } else if (!invalidBalance && this.insufficientBalance) {
-            this.insufficientBalance = false;
-            this.blockSendButton = false;
+          if (invalidBalance && !this.otherMosaics[position].errorBalance) {
+            this.otherMosaics[position].errorBalance = true;
+            this.errorOtherMosaics = true;
+          } else if (!invalidBalance && this.otherMosaics[position].errorBalance) {
+            this.otherMosaics[position].errorBalance = false;
+            this.errorOtherMosaics = false;
           }
         } else {
           validateAmount = true;
@@ -373,10 +431,10 @@ export class CreateTransferComponent implements OnInit {
 
     if (validateAmount) {
       if (Number(amount) >= 1) {
-        this.insufficientBalance = true;
-        this.blockSendButton = true;
-      } else if ((Number(amount) === 0 || amount === '') && this.insufficientBalance) {
-        this.insufficientBalance = false;
+        this.otherMosaics[position].errorBalance = true;
+        this.errorOtherMosaics = true;
+      } else if ((Number(amount) === 0 || amount === '') && this.otherMosaics[position].errorBalance) {
+        this.otherMosaics[position].errorBalance = false;
       }
     }
   }

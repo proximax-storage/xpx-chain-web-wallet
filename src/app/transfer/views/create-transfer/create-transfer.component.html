@@ -131,7 +131,7 @@
                 <div class="col-11 col-md-5 mx-auto">
                   <div class="box-grey pt-1rem pb-1rem txt-a-center">
                     <span class="fs-08rem">Amount to be sent <br></span>
-                    <span class="fs-1rem">0</span>
+                    <span class="fs-1rem">{{otherMosaic.amountToBeSent}}</span>
                   </div>
                 </div>
 
@@ -145,10 +145,11 @@
                   <div class="md-form form-sm mt-1rem mb-0rem">
                     <input pattern="^[+]?([0-9]*[.])?[0-9]+$" mask="comma_separator.0" mdbInputDirective mdbValidate
                       [maxlength]="configurationForm.amount.maxLength" type="text"
-                      class="form-control form-control-sm input-border" [(ngModel)]="otherMosaics[i].amount" [ngModelOptions]="{standalone: true}" placeholder="Enter quantity">
+                      class="form-control form-control-sm input-border" [(ngModel)]="otherMosaics[i].amount" [ngModelOptions]="{standalone: true}"
+                      (ngModelChange)="modelChanged($event, otherMosaic.id, i)" placeholder="Enter quantity">
 
                     <!-- Message Error Insufficient balance-->
-                    <mdb-error class="text-danger fw-500" *ngIf="insufficientBalance">
+                    <mdb-error class="text-danger fw-500" *ngIf="otherMosaic.errorBalance">
                       <span class="text-danger fw-500">Insufficient balance</span>
                     </mdb-error>
                   </div>
@@ -227,7 +228,7 @@
       </div>
 
       <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-        <button [disabled]="blockSendButton || formTransfer.invalid" mdbBtn type="submit" rounded="true" mdbWavesEffect
+        <button [disabled]="blockSendButton || formTransfer.invalid || errorOtherMosaics" mdbBtn type="submit" rounded="true" mdbWavesEffect
           class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
           <span class="fs-1-2em color-white">SEND</span>
         </button>
