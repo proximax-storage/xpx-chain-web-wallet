@@ -77,5 +77,16 @@
     "tslint": "~5.15.0",
     "typescript": "~3.4.3",
     "webpack-cli": "^3.1.0"
+  },
+  "browser": {
+    "fs": false,
+    "path": false,
+    "os": false,
+    "tls": false,
+    "net": false,
+    "https": false,
+    "fs-contants": false,
+    "stream": false,
+    "util": false
   }
 }
