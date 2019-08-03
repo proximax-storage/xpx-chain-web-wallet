@@ -16,6 +16,7 @@ import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
 })
 export class WalletService {
 
+  accountValid = false;
   algoData: {
     data: any;
     dataAccount: AccountsInterface;

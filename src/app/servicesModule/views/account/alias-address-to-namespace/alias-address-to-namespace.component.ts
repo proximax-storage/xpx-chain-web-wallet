@@ -19,7 +19,7 @@ export class AliasAddressToNamespaceComponent implements OnInit {
 
   @BlockUI() blockUI: NgBlockUI;
   moduleName = 'Accounts';
-  componentName = 'Alias to Namespace';
+  componentName = 'LINK TO NAMESPACE';
   backToService = `/${AppConfig.routes.service}`;
   configurationForm: ConfigurationForm = {};
   blockSend: boolean = false;
@@ -49,11 +49,12 @@ export class AliasAddressToNamespaceComponent implements OnInit {
     this.configurationForm = this.sharedService.configurationForm;
     this.createForm();
     this.getNameNamespace();
+    this.LinkToNamespaceForm.get('address').setValue(this.walletService.currentAccount.address);
   }
 
   createForm() {
     this.LinkToNamespaceForm = this.fb.group({
-      namespace: ['1', [Validators.required]],
+      namespace: ['', [Validators.required]],
       address: ['', [Validators.required, Validators.minLength(40), Validators.maxLength(46)]],
       password: ['', [Validators.required, Validators.minLength(this.configurationForm.passwordWallet.minLength),
         Validators.maxLength(this.configurationForm.passwordWallet.maxLength)]]

@@ -189,6 +189,7 @@ export class DataBridgeService {
           const transactionFormatter = this.transactionsService.getStructureDashboard(unconfirmedTransaction);
           transactionPushed.unshift(transactionFormatter);
           this.transactionsService.setTransactionsUnConfirmed$(transactionPushed);
+          this.walletService.accountValid = true;
           audio.play();
         }, err => {
           // console.error(err);

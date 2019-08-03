@@ -23,7 +23,7 @@ export class CreateNamespaceComponent implements OnInit {
 
   configurationForm: ConfigurationForm = {};
   moduleName = 'Namespaces & Sub-Namespaces';
-  componentName = 'Create';
+  componentName = 'REGISTER';
   backToService = `/${AppConfig.routes.service}`;
   /*********************************** */
   arrayselect: Array<object> = [
@@ -31,7 +31,7 @@ export class CreateNamespaceComponent implements OnInit {
       value: '1',
       label: 'New root Namespace',
       selected: true,
-      disabled: false
+      disabled: true
     }
   ];
 
@@ -51,7 +51,7 @@ export class CreateNamespaceComponent implements OnInit {
       value: '1',
       label: '(New root Namespace)',
       selected: true,
-      disabled: false
+      disabled: true
     }
   ];
 
@@ -170,7 +170,7 @@ export class CreateNamespaceComponent implements OnInit {
     //Form namespace default
     this.namespaceForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(this.configurationForm.namespaceName.minLength), Validators.maxLength(this.configurationForm.namespaceName.maxLength)]],
-      namespaceRoot: ['1'],
+      namespaceRoot: [''],
       duration: ['', [Validators.required]],
       password: ['', [
         Validators.required,
