@@ -1,12 +1,22 @@
 <div class="container mt-3rem mb-1rem animated fadeIn">
   <div class="row">
     <div class="col-12 col-md-8">
-      <span class="fs-1rem txt-a-center line-h-1-2em color-grey">{{moduleName}}</span>
+      <span class="fs-1rem txt-a-center line-h-1-2em color-grey">{{
+        moduleName
+      }}</span>
       <span class="fs-1rem txt-a-center line-h-1-2em color-grey"> > </span>
-      <span class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">{{componentName}}</span>
+      <span class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">{{ componentName }}</span>
     </div>
 
     <div class="col-12 col-md-4 d-flex justify-content-start justify-content-md-end">
+      <a class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio" [routerLink]="[uploadNew]">
+        <span>Upload a new file</span>
+      </a>
+      <div class="col-2 d-flex justify-content-center">
+        <div class="col-6">
+          <div class="line-separator h-100porcent"></div>
+        </div>
+      </div>
       <a class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio" [routerLink]="[goBack]">
         <span>Back to Services</span>
       </a>
@@ -14,7 +24,7 @@
   </div>
   <div class="row">
     <div class="col-12">
-      <hr class="mt-03rem mb-05rem">
+      <hr class="mt-03rem mb-05rem" />
     </div>
   </div>
 </div>
@@ -25,7 +35,7 @@
     <div class="col-10 mx-auto">
       <div class="row">
         <!-- SELECT -->
-        <div class="col-12 col-sm-6 col-md-6 col-lg-5 mx-auto pt-07rem">
+        <div class="col-12 col-sm-6 col-md-6 col-lg-4 mx-auto pt-07rem">
           <div class="md-form mt-1rem mb-1rem caja-gris">
             <!-- <img class="icono" src="assets/images/img/icon-address-green-book-16h-proximax-sirius-wallet.svg" alt=""> -->
             <mdb-select placeholder="Select type search" [(ngModel)]="typeSearch" [options]="optionTypeSearch" required
@@ -36,9 +46,9 @@
         </div>
 
         <!-- Keyword or number -->
-        <div class="col-12 col-sm-6 col-md-6 col-lg-5 mx-auto d-flex align-items-center pt-05rem">
+        <div class="col-12 col-sm-6 col-md-6 col-lg-4 mx-auto d-flex align-items-center pt-05rem">
           <input [(ngModel)]="paramSearch" type="text" autocomplete="off" id="searchTransaction" class="form-control"
-            mdbInputDirective [validateSuccess]="false" [validateError]="false" placeholder="Keyword or number">
+            mdbInputDirective [validateSuccess]="false" [validateError]="false" placeholder="Keyword or number" />
         </div>
 
         <div
@@ -48,6 +58,13 @@
             <span class="fs-1em color-white">SEARCH</span>
           </button>
         </div>
+        <div
+        class="col-12 col-md-12 col-lg-2 d-flex align-items-center justify-content-center background-dark-green-plus pt-05rem">
+        <button mdbBtn type="submit" rounded="true" mdbWavesEffect
+          class="f-w-600 background-btn overflow-ellipsis-nowrap" size="md" (click)="clearData()">
+          <span class="fs-1em color-white">CLEAR</span>
+        </button>
+      </div>
       </div>
     </div>
   </div>
@@ -68,12 +85,11 @@
         <table mdbTable #tableEl="mdbTable" id="mdbTable" striped="true"
           class="table table-hover table-bordered table-hover table-sm z-depth-0" cellspacing="0" width="100%"
           borderless="true">
-
           <!--Table head-->
           <thead>
             <tr class="header-backg">
               <ng-container *ngFor="let head of headElements; let i = index">
-                <th scope="col" class="text-center fw-400 th-sm">{{head}}</th>
+                <th scope="col" class="text-center fw-400 th-sm">{{ head }}</th>
               </ng-container>
             </tr>
           </thead>
@@ -84,16 +100,20 @@
             <ng-container *ngFor="let el of elements; let i = index">
               <tr>
                 <!-- timestamp -->
-                <td class="th-sm text-center description-dark-green fs-0-8-rem">{{el.timestamp}}</td>
+                <td class="th-sm text-center description-dark-green fs-0-8-rem">
+                  {{ el.timestamp }}
+                </td>
 
                 <!-- name -->
                 <th class="th-sm description-dark-green fs-0-8-rem">
-                  <img src="{{el.contentTypeIcon}}" width="25" alt="">
-                  {{el.name}}</th>
-                
+                  <img src="{{ el.contentTypeIcon }}" width="25" alt="" />
+                  {{ el.name }}
+                </th>
+
                 <!-- action -->
                 <th class="th-sm text-center description-dark-green fs-0-8-rem mouse-pointer">
-                   <img src="assets/images/img/icon-download-green-16h-proximax-sirius-wallet.svg" width="25" alt="download" title="Download"  (click)="dataSelected = el; basicModal.show();">
+                  <img src="assets/images/img/icon-download-green-16h-proximax-sirius-wallet.svg" width="25"
+                    alt="download" title="Download" (click)="dataSelected = el; basicModal.show()" />
                 </th>
               </tr>
             </ng-container>
@@ -106,8 +126,8 @@
           <tfoot class="lighten-5 w-100">
             <tr>
               <td>
-                 <button mdbBtn type="button" rounded="true" mdbWavesEffect [disabled]="fromTransactionId === undefined" (click)="getFiles()"
-                  class="f-w-600  w-100porcent background-btn pl-2rem pr-2rem" size="sm">
+                <button mdbBtn type="button" rounded="true" mdbWavesEffect [disabled]="fromTransactionId === undefined"
+                  (click)="getFiles()" class="f-w-600  w-100porcent background-btn pl-2rem pr-2rem" size="sm">
                   <span class="fs-1-2em color-white">Next</span>
                 </button>
               </td>
@@ -119,10 +139,9 @@
   </div>
 </div>
 
-
 <!-- MODAL -->
-<div mdbModal #basicModal="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myBasicModalLabel"
-  aria-hidden="true">
+<div mdbModal #basicModal="mdbModal" id="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myBasicModalLabel" aria-hidden="true" (open)="onDownloadFormOpen($event)">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content form-elegant b-r-08rem">
       <div class="modal-header text-center box-modal-grey b-t-r-r-08rem b-t-l-r-08rem">
@@ -137,7 +156,57 @@
       <!--Body-->
       <div class="modal-body">
         <ng-container *ngIf="dataSelected !== null">
-          Test
+          <form [formGroup]="downloadForm" (ngSubmit)="download(dataSelected)">
+            <div *ngIf="dataSelected.encryptionType !== 1001 && dataSelected.encryptionType !== 1004">
+              <span class="title">Your file "<strong>{{ dataSelected.name }}</strong>" is not available for
+                download.</span>
+            </div>
+            <div *ngIf="dataSelected.encryptionType === 1001">
+              <span class="title">Your file "<strong>{{ dataSelected.name }}</strong>" is ready for download.</span>
+            </div>
+            <div *ngIf="dataSelected.encryptionType === 1004">
+              <span class="title">Your file "<strong>{{ dataSelected.name }}</strong>" has been encrypted with
+                <strong>PASSWORD</strong>.</span>
+
+              <div class="row">
+                <div class="col-11 col-sm-10 col-md-8 col-lg-6 mx-auto">
+                  <div class="md-form form-sm mt-1rem mb-0rem">
+                    <input [maxlength]="20" [minlength]="10" formControlName="encryptionPassword" mdbInputDirective
+                      mdbValidate [validateSuccess]="true" [validateError]="true" type="password"
+                      id="encryptionPassword" class="form-control form-control-sm input-border"
+                      placeholder="Enter password" />
+
+                    <!-- VALIDATION -->
+                    <mdb-error *ngIf="
+                          validateInput('encryptionPassword')
+                            .invalid &&
+                          (validateInput('encryptionPassword')
+                            .dirty ||
+                            validateInput('encryptionPassword')
+                              .touched)
+                        ">
+                      <span>Input invalid</span>
+                    </mdb-error>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row mt-2rem">
+              <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
+                <button mdbBtn type="button" rounded="true" mdbWavesEffect
+                  class="f-w-600 background-btn pl-2rem pr-2rem" size="md" (click)="clearForm()">
+                  <span class="fs-1-2em color-white">CLEAR</span>
+                </button>
+              </div>
+              <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
+                <button mdbBtn type="submit" rounded="true" mdbWavesEffect
+                  class="f-w-600 background-btn pl-2rem pr-2rem"
+                  [disabled]="dataSelected.encryptionType !== 1001 && dataSelected.encryptionType !== 1004" size="md">
+                  <span class="fs-1-2em color-white">DOWNLOAD</span>
+                </button>
+              </div>
+            </div>
+          </form>
         </ng-container>
       </div>
     </div>

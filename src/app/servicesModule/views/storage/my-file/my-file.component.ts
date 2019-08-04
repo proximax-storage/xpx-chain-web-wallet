@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, HostListener, AfterViewInit, ChangeDetectorRef } from '@angular/core';
-import { MdbTablePaginationComponent, MdbTableService, MdbTableDirective, BreadcrumbModule } from 'ng-uikit-pro-standard';
+import { MdbTablePaginationComponent, MdbTableService, MdbTableDirective, BreadcrumbModule, ModalDirective } from 'ng-uikit-pro-standard';
 import { Address, PublicAccount } from 'tsjs-xpx-chain-sdk';
-import { SearchParameter, ConnectionConfig, BlockchainNetworkConnection, BlockchainNetworkType, Protocol, IpfsConnection, Searcher, TransactionFilter, PrivacyType, Downloader } from 'xpx2-ts-js-sdk';
+import { SearchParameter, ConnectionConfig, BlockchainNetworkConnection, BlockchainNetworkType, Protocol, IpfsConnection, Searcher, TransactionFilter, PrivacyType, Downloader, DownloadParameter, DirectDownloadParameter, PrivacyStrategy, StreamHelper } from 'xpx2-ts-js-sdk';
 import { first } from "rxjs/operators";
 import { AppConfig } from 'src/app/config/app.config';
 import { TransactionsService } from 'src/app/transfer/services/transactions.service';
@@ -11,7 +11,8 @@ import { NodeService } from 'src/app/servicesModule/services/node.service';
 import { SharedService } from 'src/app/shared/services/shared.service';
 import { environment } from 'src/environments/environment';
 import { SearchResultInterface } from '../services/storage.service';
-
+import { FormGroup, Validators, FormBuilder, AbstractControl } from '@angular/forms';
+import { saveAs } from 'file-saver';
 
 
 @Component({
@@ -23,15 +24,16 @@ export class MyFileComponent implements OnInit, AfterViewInit {
 
   @ViewChild(MdbTablePaginationComponent, { static: true }) mdbTablePagination: MdbTablePaginationComponent;
   @ViewChild(MdbTableDirective, { static: true }) mdbTable: MdbTableDirective;
-
+  @ViewChild(ModalDirective, {static : true})  basicModal: ModalDirective;
+  
   moduleName = 'Storage';
   componentName = 'My Files';
   goBack = `/${AppConfig.routes.service}`;
+  uploadNew =  `/${AppConfig.routes.uploadFile}`;
+  downloadForm: FormGroup;
   searching = false;
   objectKeys = Object.keys;
-  resultSize = 5;
-  firstItemIndex;
-  lastItemIndex;
+  resultSize = 10;
   typeTransactions: any;
   fromTransactionId: string;
   typeNode = '';
@@ -44,14 +46,12 @@ export class MyFileComponent implements OnInit, AfterViewInit {
   headElements = ['Timestamp', 'Name', 'Action'];
   optionTypeSearch = [
     {
-      'value': 'address',
-      'label': 'Address'
-    }, {
-      'value': 'publickey',
-      'label': 'Public Key'
-    }, {
-      'value': 'hash',
-      'label': 'Hash'
+      'value': 'name',
+      'label': 'File Name'
+    },
+    {
+      'value': 'dataHash',
+      'label': 'Data Hash'
     }
   ];
   searcher: Searcher;
@@ -61,6 +61,7 @@ export class MyFileComponent implements OnInit, AfterViewInit {
   constructor(
     private tableService: MdbTableService,
     private cdRef: ChangeDetectorRef,
+    private fb: FormBuilder,
     private walletService: WalletService,
     private proximaxProvider: ProximaxProvider,
     private nodeService: NodeService,
@@ -70,20 +71,76 @@ export class MyFileComponent implements OnInit, AfterViewInit {
 
   @HostListener('input') oninput() {
     // this.searchItems();
-    this.mdbTablePagination.searchText = this.searchText;
+    
   }
 
   ngOnInit() {
     this.typeTransactions = this.transactionsService.arraTypeTransaction;
+    this.createForm();
     this.initialiseStorage();
     this.getFiles();
   }
 
   ngAfterViewInit() {
-   
+
     this.cdRef.detectChanges();
   }
 
+  createForm() {
+    this.downloadForm = this.fb.group({
+      encryptionPassword: ['',
+        [
+          Validators.required,
+          Validators.minLength(10),
+          Validators.maxLength(20)
+        ]]
+    });
+  }
+
+  /**
+   *
+   * @param nameInput
+   * @param nameControl
+   */
+  clearForm(nameInput: string = '', nameControl: string = '') {
+    if (nameInput !== '') {
+      if (nameControl !== '') {
+        this.downloadForm.controls[nameControl].get(nameInput).reset();
+        return;
+      }
+
+      this.downloadForm.get(nameInput).reset();
+      return;
+    }
+
+    this.downloadForm.reset();
+    return;
+  }
+
+  /**
+   *
+   *
+   * @param {string} [nameInput='']
+   * @param {string} [nameControl='']
+   * @param {string} [nameValidation='']
+   * @returns
+   * @memberof AuthComponent
+   */
+  validateInput(nameInput: string = '', nameControl: string = '', nameValidation: string = '') {
+    let validation: AbstractControl = null;
+    if (nameInput !== '' && nameControl !== '') {
+      validation = this.downloadForm.controls[nameControl].get(nameInput);
+    } else if (nameInput === '' && nameControl !== '' && nameValidation !== '') {
+      validation = this.downloadForm.controls[nameControl].getError(nameValidation);
+    } else if (nameInput !== '') {
+      validation = this.downloadForm.get(nameInput);
+    }
+    return validation;
+  }
+
+  onDownloadFormOpen(event:any) {
+    this.downloadForm.get('encryptionPassword').setValue('');
+  }
 
   initialiseStorage() {
     const blockChainNetworkType = this.proximaxProvider.getBlockchainNetworkType(this.walletService.network);
@@ -103,8 +160,8 @@ export class MyFileComponent implements OnInit, AfterViewInit {
     this.downloader = new Downloader(connectionConfig);
   }
 
-  async getFiles(dataHash?: string, title?: string, transaction?: TransactionFilter) {
-    
+  async getFiles(dataHash?: string, title?: string) {
+
     console.log(this.fromTransactionId);
 
     const param = SearchParameter.createForPublicKey(
@@ -119,14 +176,11 @@ export class MyFileComponent implements OnInit, AfterViewInit {
     if (title) {
       param.withNameFilter(title);
     }
-
-    if (transaction) {
-      param.withTransactionFilter(transaction);
-    }
-
+    
     if (this.fromTransactionId) {
       param.withFromTransactionId(this.fromTransactionId);
     }
+  
 
     const response = await this.searcher.search(param.build());
     console.log(response);
@@ -135,10 +189,7 @@ export class MyFileComponent implements OnInit, AfterViewInit {
       this.fromTransactionId = response.toTransactionId;
     }
 
-    console.log(this.fromTransactionId);
-
-
-
+    // console.log(this.fromTransactionId);
     // this.elements = [];
 
     response.results.forEach(el => {
@@ -158,23 +209,27 @@ export class MyFileComponent implements OnInit, AfterViewInit {
 
   }
 
-  searchData() {
+  async clearData() {
+    this.elements = [];
+    this.fromTransactionId = undefined;
+    await this.getFiles();
+  }
+
+  async searchData() {
     if (!this.searching) {
 
       this.elements = [];
-
+      this.fromTransactionId = undefined;
       if (this.typeSearch === '') {
         this.sharedService.showError('', 'Please, select a type search');
         return;
       } else if (this.paramSearch === '') {
         var tp = '';
-        if (this.typeSearch === 'address') {
-          tp = 'a address';
-        } else if (this.typeSearch === 'hash') {
-          tp = 'a hash';
-        } else if (this.typeSearch === 'publickey') {
-          tp = 'a publickey';
-        }
+        if (this.typeSearch === 'dataHash') {
+          tp = 'a dataHash';
+        } else if (this.typeSearch === 'name') {
+          tp = 'a name';
+        } 
 
         this.sharedService.showError('', `Please, add ${tp}`);
         return;
@@ -182,90 +237,29 @@ export class MyFileComponent implements OnInit, AfterViewInit {
 
       this.mdbTable.setDataSource(this.elements);
       this.elements = this.mdbTable.getDataSource();
-      this.previous = this.mdbTable.getDataSource();
       this.searching = true;
-      if (this.typeSearch === 'address') {
-        //from address
-        if (this.paramSearch.length === 40 || this.paramSearch.length === 46) {
-          this.proximaxProvider.getAccountInfo(Address.createFromRawAddress(this.paramSearch)).pipe(first()).subscribe(
-            accountInfo => {
-              this.proximaxProvider.getTransactionsFromAccount(accountInfo.publicAccount).subscribe(
-                resp => {
-                  // console.log('with address info ', resp);
-                  this.buildTransaction(resp);
-                  this.searching = false;
-                },
-                error => {
-                  // console.log(error);
-                  this.searching = false;
-                }
-              );
-            }
-          );
-        } else {
-          this.paramSearch = '';
+      if (this.typeSearch === 'dataHash') {
+        try {
+          const response = await this.getFiles(this.paramSearch);
+          console.log(response);
+          this.searching = false;
+        }catch(err) {
           this.searching = false;
         }
-
-      } else if (this.typeSearch === 'publickey') {
-        //From publickey
-        const publicAccount = this.proximaxProvider.createPublicAccount(this.paramSearch, this.walletService.network);
-        this.proximaxProvider.getTransactionsFromAccount(publicAccount, this.nodeService.getNodeSelected()).subscribe(
-          resp => {
-            this.searching = false;
-            this.buildTransaction(resp);
-          },
-          error => {
-            this.searching = false;
-            // console.log(error);
-          }
-        );
-      } else {
-        //From hash
-        this.proximaxProvider.getTransactionInformation(this.paramSearch, this.nodeService.getNodeSelected()).subscribe(
-          resp => {
-            // console.log('with hash info', resp);
-            this.searching = false;
-            this.buildTransaction([resp]);
-          },
-          error => {
-            this.searching = false;
-            // console.log(error);
-          }
-        );
-      }
+      } else if (this.typeSearch === 'name') {
+        try {
+          const response = await this.getFiles(undefined,this.paramSearch);
+          console.log(response);
+          this.searching = false;
+        }catch(err) {
+          this.searching = false;
+        }
+      } 
     }
 
   }
 
 
-  buildTransaction(param) {
-    const data = [];
-    param.forEach(element => {
-      const builderTransactions = this.transactionsService.getStructureDashboard(element);
-      if (builderTransactions !== null) {
-        data.push(builderTransactions);
-      }
-
-      this.elements = data;
-      this.mdbTable.setDataSource(data);
-      this.elements = this.mdbTable.getDataSource();
-      this.previous = this.mdbTable.getDataSource();
-    });
-  }
-
-  searchItems() {
-    const prev = this.mdbTable.getDataSource();
-    if (!this.searchText) {
-      this.mdbTable.setDataSource(this.previous);
-      this.elements = this.mdbTable.getDataSource();
-    }
-
-    if (this.searchText) {
-      this.elements = this.mdbTable.searchLocalDataBy(this.searchText);
-      this.mdbTable.setDataSource(prev);
-    }
-  }
 
   getContentTypeIcon(contentType: string) {
     const baseAsset = 'assets/images/img/';
@@ -344,8 +338,31 @@ export class MyFileComponent implements OnInit, AfterViewInit {
     return new Date(timestamp).toUTCString();
   }
 
-  async download(item:any) {
+  async download(item: any) {
     console.log(item);
-
+    this.downloadForm.markAsDirty();
+    if(this.downloadForm.valid) {
+      if(item.dataHash) {
+     
+        try {
+          const param = DirectDownloadParameter.createFromDataHash(item.dataHash);
+          if(item.encryptionType === PrivacyType.PASSWORD) {
+            param.withPasswordPrivacy(this.downloadForm.get('encryptionPassword').value);
+          } else if (item.encryptionType === PrivacyType.PLAIN) {
+            param.withPlainPrivacy();
+          }
+    
+          const response = await this.downloader.directDownload(param.build());
+          // console.log(response);
+  
+          const downloadBuffer = await StreamHelper.stream2Buffer(response);
+          const downloableFile = new Blob([downloadBuffer], {type: item.contentType});
+          saveAs(downloableFile, item.name);
+          this.basicModal.hide();
+        } catch (err) {
+          console.log(err);
+        }
+      }
+    }
   }
 }
