@@ -35,7 +35,7 @@
     <div class="col-10 mx-auto">
       <div class="row">
         <!-- SELECT -->
-        <div class="col-12 col-sm-6 col-md-6 col-lg-4 mx-auto pt-07rem">
+        <div class="col-12 col-sm-6 col-md-6 col-lg-3 mx-auto pt-07rem">
           <div class="md-form mt-1rem mb-1rem caja-gris">
             <!-- <img class="icono" src="assets/images/img/icon-address-green-book-16h-proximax-sirius-wallet.svg" alt=""> -->
             <mdb-select placeholder="Select type search" [(ngModel)]="typeSearch" [options]="optionTypeSearch" required
@@ -46,25 +46,25 @@
         </div>
 
         <!-- Keyword or number -->
-        <div class="col-12 col-sm-6 col-md-6 col-lg-4 mx-auto d-flex align-items-center pt-05rem">
+        <div class="col-12 col-sm-6 col-md-6 col-lg-5 mx-auto d-flex align-items-center pt-05rem">
           <input [(ngModel)]="paramSearch" type="text" autocomplete="off" id="searchTransaction" class="form-control"
             mdbInputDirective [validateSuccess]="false" [validateError]="false" placeholder="Keyword or number" />
         </div>
 
         <div
-          class="col-12 col-md-12 col-lg-2 d-flex align-items-center justify-content-center background-dark-green-plus pt-05rem">
+          class="col-12 col-md-12 col-lg-2 d-flex align-items-center justify-content-end background-dark-green-plus pt-05rem">
           <button mdbBtn type="submit" rounded="true" mdbWavesEffect
             class="f-w-600 background-btn overflow-ellipsis-nowrap" size="md" (click)="searchData()">
             <span class="fs-1em color-white">SEARCH</span>
           </button>
         </div>
         <div
-        class="col-12 col-md-12 col-lg-2 d-flex align-items-center justify-content-center background-dark-green-plus pt-05rem">
-        <button mdbBtn type="submit" rounded="true" mdbWavesEffect
-          class="f-w-600 background-btn overflow-ellipsis-nowrap" size="md" (click)="clearData()">
-          <span class="fs-1em color-white">CLEAR</span>
-        </button>
-      </div>
+          class="col-12 col-md-12 col-lg-2 d-flex align-items-center justify-content-start background-dark-green-plus pt-05rem">
+          <button mdbBtn type="submit" rounded="true" mdbWavesEffect
+            class="f-w-600 background-btn overflow-ellipsis-nowrap" size="md" (click)="clearData()">
+            <span class="fs-1em color-white">CLEAR</span>
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -171,7 +171,7 @@
               <div class="row">
                 <div class="col-11 col-sm-10 col-md-8 col-lg-6 mx-auto">
                   <div class="md-form form-sm mt-1rem mb-0rem">
-                    <input [maxlength]="20" [minlength]="10" formControlName="encryptionPassword" mdbInputDirective
+                    <input formControlName="encryptionPassword" mdbInputDirective
                       mdbValidate [validateSuccess]="true" [validateError]="true" type="password"
                       id="encryptionPassword" class="form-control form-control-sm input-border"
                       placeholder="Enter password" />

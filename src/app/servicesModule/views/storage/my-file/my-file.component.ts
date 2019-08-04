@@ -59,12 +59,10 @@ export class MyFileComponent implements OnInit, AfterViewInit {
 
 
   constructor(
-    private tableService: MdbTableService,
     private cdRef: ChangeDetectorRef,
     private fb: FormBuilder,
     private walletService: WalletService,
     private proximaxProvider: ProximaxProvider,
-    private nodeService: NodeService,
     private sharedService: SharedService,
     private transactionsService: TransactionsService
   ) { }
@@ -90,18 +88,12 @@ export class MyFileComponent implements OnInit, AfterViewInit {
     this.downloadForm = this.fb.group({
       encryptionPassword: ['',
         [
-          Validators.required,
           Validators.minLength(10),
           Validators.maxLength(20)
         ]]
     });
   }
 
-  /**
-   *
-   * @param nameInput
-   * @param nameControl
-   */
   clearForm(nameInput: string = '', nameControl: string = '') {
     if (nameInput !== '') {
       if (nameControl !== '') {
@@ -117,15 +109,6 @@ export class MyFileComponent implements OnInit, AfterViewInit {
     return;
   }
 
-  /**
-   *
-   *
-   * @param {string} [nameInput='']
-   * @param {string} [nameControl='']
-   * @param {string} [nameValidation='']
-   * @returns
-   * @memberof AuthComponent
-   */
   validateInput(nameInput: string = '', nameControl: string = '', nameValidation: string = '') {
     let validation: AbstractControl = null;
     if (nameInput !== '' && nameControl !== '') {
@@ -183,7 +166,7 @@ export class MyFileComponent implements OnInit, AfterViewInit {
   
 
     const response = await this.searcher.search(param.build());
-    console.log(response);
+    // console.log(response);
 
     if (response.toTransactionId) {
       this.fromTransactionId = response.toTransactionId;
@@ -211,6 +194,7 @@ export class MyFileComponent implements OnInit, AfterViewInit {
 
   async clearData() {
     this.elements = [];
+    this.paramSearch = '';
     this.fromTransactionId = undefined;
     await this.getFiles();
   }
@@ -241,18 +225,20 @@ export class MyFileComponent implements OnInit, AfterViewInit {
       if (this.typeSearch === 'dataHash') {
         try {
           const response = await this.getFiles(this.paramSearch);
-          console.log(response);
+          // console.log(response);
           this.searching = false;
         }catch(err) {
           this.searching = false;
+          this.sharedService.showError("Warning",err);
         }
       } else if (this.typeSearch === 'name') {
         try {
           const response = await this.getFiles(undefined,this.paramSearch);
-          console.log(response);
+          //console.log(response);
           this.searching = false;
         }catch(err) {
           this.searching = false;
+          this.sharedService.showError("Warning",err);
         }
       } 
     }
@@ -340,7 +326,9 @@ export class MyFileComponent implements OnInit, AfterViewInit {
 
   async download(item: any) {
     console.log(item);
-    this.downloadForm.markAsDirty();
+    console.log(this.downloadForm.valid);
+    // this.downloadForm.markAsDirty();
+    
     if(this.downloadForm.valid) {
       if(item.dataHash) {
      
@@ -351,16 +339,17 @@ export class MyFileComponent implements OnInit, AfterViewInit {
           } else if (item.encryptionType === PrivacyType.PLAIN) {
             param.withPlainPrivacy();
           }
-    
+          console.log('Downloading ...');
           const response = await this.downloader.directDownload(param.build());
-          // console.log(response);
+          console.log(response);
   
           const downloadBuffer = await StreamHelper.stream2Buffer(response);
           const downloableFile = new Blob([downloadBuffer], {type: item.contentType});
           saveAs(downloableFile, item.name);
           this.basicModal.hide();
         } catch (err) {
-          console.log(err);
+          //console.log(err);
+          this.sharedService.showError("Unable to download",err);
         }
       }
     }

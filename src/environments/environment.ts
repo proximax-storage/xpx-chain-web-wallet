@@ -23,7 +23,7 @@ export const environment = {
     useSecureMessage: false
   },
   storageConnection: {
-    host: 'ipfs2-dev.xpxsirius.io',
+    host: 'ipfs1-dev.xpxsirius.io',
     port: 5001,
     options: {
       protocol: 'http'
