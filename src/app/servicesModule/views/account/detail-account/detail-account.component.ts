@@ -13,6 +13,7 @@ export class DetailAccountComponent implements OnInit {
   configurationForm: ConfigurationForm;
   showPassword: boolean = true;
   accountValid: boolean = false;
+  subscribeAccount;
   // mosaic = 'XPX';
   // titleAccountInformation = 'Account information';
   titleAddress = 'Address:';
@@ -35,7 +36,6 @@ export class DetailAccountComponent implements OnInit {
 
   ngOnInit() {
     this.configurationForm = this.sharedService.configurationForm;
-    this.accountValid = this.walletService.accountValid;
     this.publicKey = this.walletService.publicAccount.publicKey;
     this.validatingForm = new FormGroup({
       password: new FormControl('', [
@@ -44,6 +44,16 @@ export class DetailAccountComponent implements OnInit {
         Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
       ])
     });
+
+    this.subscribeAccount = this.walletService.getAccountInfoAsync().subscribe(
+      async accountInfo => {
+        this.accountValid = (accountInfo !== null && accountInfo !== undefined);
+      }
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.subscribeAccount.unsubscribe();
   }
 
   copyMessage(message: string) {

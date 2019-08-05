@@ -5,7 +5,7 @@ import { crypto } from 'js-xpx-chain-library';
 import { AbstractControl } from '@angular/forms';
 import { environment } from '../../../environments/environment';
 import { SharedService } from '../../shared/services/shared.service';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { NodeService } from 'src/app/servicesModule/services/node.service';
 import { AppConfig } from 'src/app/config/app.config';
 import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
@@ -16,7 +16,6 @@ import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
 })
 export class WalletService {
 
-  accountValid = false;
   algoData: {
     data: any;
     dataAccount: AccountsInterface;
@@ -285,7 +284,6 @@ export class WalletService {
   getAccountInfoAsync(): Observable<AccountInfo> {
     return this.accountInfo$;
   }
-
 
   /**
    * Destroy account info

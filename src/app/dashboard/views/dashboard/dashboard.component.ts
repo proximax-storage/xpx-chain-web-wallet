@@ -60,7 +60,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private proximaxProvider: ProximaxProvider,
     @Inject(DOCUMENT) private document: Document
   ) {
-    this.walletService.accountValid = false;
     this.myAddress = this.walletService.address.pretty();
   }
 
@@ -151,7 +150,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
    * Method to get more transactions when scrolling in the screen
    */
   onScroll() {
-    if (this.searchTransactions) {
+    if (this.searchTransactions && !this.searching) {
       this.searching = true;
       const lastTransactionId = (this.transactions.length > 0) ? this.transactions[this.transactions.length - 1].data.transactionInfo.id : null;
       this.loadTransactions(lastTransactionId);
@@ -165,10 +164,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   loadTransactions(id = null) {
     this.transactions = (id) ? this.transactions : [];
     this.proximaxProvider.getTransactionsFromAccountId(this.walletService.publicAccount, id).toPromise().then(response => {
-
-      if (response.length > 0) {
-        this.walletService.accountValid = true;
-      }
       this.searchTransactions = !(response.length < 25);
       const data = [];
       response.forEach(element => {

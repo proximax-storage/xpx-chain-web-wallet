@@ -175,17 +175,11 @@ export class ServicesBoxComponent implements OnInit {
         '',
         {
           addContact: this.services.buildStructureService(
-            'LIST',
+            'ADD AND LIST CONTACTS',
             true,
             '',
             '',
             AppConfig.routes.addressBook
-          ), open: this.services.buildStructureService(
-            'Add Contact',
-            false,
-            '',
-            '',
-            ''
           )
         },
         true
