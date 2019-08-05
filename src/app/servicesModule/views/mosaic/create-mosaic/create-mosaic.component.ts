@@ -76,7 +76,7 @@ export class CreateMosaicComponent implements OnInit {
    */
   createForm() {
     this.mosaicForm = this.fb.group({
-      deltaSupply: [1000000, [Validators.required]],
+      deltaSupply: ['', [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]],
       duration: ['', [Validators.required]],
       divisibility: ['', [Validators.required]],

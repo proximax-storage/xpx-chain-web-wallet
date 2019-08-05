@@ -3,9 +3,9 @@ import { FormGroup, Validators, FormBuilder, AbstractControl } from '@angular/fo
 import { AliasActionType, Address, NamespaceId } from 'tsjs-xpx-chain-sdk';
 import { Router } from '@angular/router';
 import { NgBlockUI, BlockUI } from 'ng-block-ui';
-import { NamespacesService } from '../../../../servicesModule/services/namespaces.service';
 import { AppConfig } from '../../../../config/app.config';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
+import { NamespacesService, NamespaceStorage } from '../../../../servicesModule/services/namespaces.service';
 import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
 import { SharedService, ConfigurationForm } from 'src/app/shared/services/shared.service';
 import { WalletService } from 'src/app/wallet/services/wallet.service';
@@ -49,7 +49,7 @@ export class AliasAddressToNamespaceComponent implements OnInit {
     this.configurationForm = this.sharedService.configurationForm;
     this.createForm();
     this.getNameNamespace();
-    this.LinkToNamespaceForm.get('address').setValue(this.walletService.currentAccount.address);
+    this.LinkToNamespaceForm.get('address').patchValue(this.walletService.currentAccount.address);
   }
 
   createForm() {
@@ -63,10 +63,14 @@ export class AliasAddressToNamespaceComponent implements OnInit {
 
   clearForm() {
     this.LinkToNamespaceForm.get('namespace').patchValue('1');
-    this.LinkToNamespaceForm.get('address').patchValue('');
     this.LinkToNamespaceForm.get('password').patchValue('');
   }
 
+  /**
+   *
+   *
+   * @memberof LinkingNamespaceToMosaicComponent
+   */
   getNameNamespace() {
     this.namespaceService.searchNamespaceFromAccountStorage$().then(
       async namespaceStorage => {
@@ -80,6 +84,43 @@ export class AliasAddressToNamespaceComponent implements OnInit {
                 selected: false,
                 disabled: false
               });
+            } else {
+              let name = '';
+              if (data.NamespaceInfo.depth === 2) {
+                //Assign level 2
+                const level2 = data.namespaceName.name;
+                //Search level 1
+                const level1: NamespaceStorage = await this.namespaceService.getNamespaceFromId(
+                  this.proximaxProvider.getNamespaceId([data.namespaceName.parentId.id.lower, data.namespaceName.parentId.id.higher])
+                );
+
+                name = `${level1.namespaceName.name}.${level2}`;
+                namespaceSelect.push({
+                  value: `${name}`,
+                  label: `${name}`,
+                  selected: false,
+                  disabled: false
+                });
+              } else if (data.NamespaceInfo.depth === 3) {
+                //Assign el level3
+                const level3 = data.namespaceName.name;
+                //search level 2
+                const level2: NamespaceStorage = await this.namespaceService.getNamespaceFromId(
+                  this.proximaxProvider.getNamespaceId([data.namespaceName.parentId.id.lower, data.namespaceName.parentId.id.higher])
+                );
+
+                //search level 1
+                const level1: NamespaceStorage = await this.namespaceService.getNamespaceFromId(
+                  this.proximaxProvider.getNamespaceId([level2.namespaceName.parentId.id.lower, level2.namespaceName.parentId.id.higher])
+                );
+                name = `${level1.namespaceName.name}.${level2.namespaceName.name}.${level3}`;
+                namespaceSelect.push({
+                  value: `${name}`,
+                  label: `${name}`,
+                  selected: false,
+                  disabled: false
+                });
+              }
             }
           }
         }

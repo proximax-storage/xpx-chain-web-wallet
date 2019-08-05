@@ -114,7 +114,7 @@ export class MosaicsSupplyChangeComponent implements OnInit {
     this.formMosaicSupplyChange = this.fb.group({
       parentMosaic: ['', Validators.required],
       mosaicSupplyType: [MosaicSupplyType.Increase, Validators.required],
-      deltaSupply: [2000000, [Validators.required]],
+      deltaSupply: ['', [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]],
     });
   }
