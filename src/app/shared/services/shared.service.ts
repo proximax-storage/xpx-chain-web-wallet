@@ -93,6 +93,11 @@ export class SharedService {
     this.toastrService.success(bodyMessage, '', options);
   }
 
+  showSuccessTimeout(title: string, bodyMessage: string, timeout:number) {
+    const options = { closeButton: true, tapToDismiss: false, toastClass: 'toastSuccess', timeOut: timeout };
+    this.toastrService.success(bodyMessage, '', options);
+  }
+
   showError(title: string, bodyMessage: string) {
     const options = { closeButton: true, tapToDismiss: false, toastClass: 'toastError', timeOut: 4000 };
     this.toastrService.error(bodyMessage, '', options);

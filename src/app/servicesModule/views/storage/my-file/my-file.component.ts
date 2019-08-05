@@ -32,6 +32,7 @@ export class MyFileComponent implements OnInit, AfterViewInit {
   uploadNew =  `/${AppConfig.routes.uploadFile}`;
   downloadForm: FormGroup;
   searching = false;
+  downloading = false;
   objectKeys = Object.keys;
   resultSize = 10;
   typeTransactions: any;
@@ -330,6 +331,7 @@ export class MyFileComponent implements OnInit, AfterViewInit {
     // this.downloadForm.markAsDirty();
     
     if(this.downloadForm.valid) {
+      this.downloading = true;
       if(item.dataHash) {
      
         try {
@@ -346,9 +348,11 @@ export class MyFileComponent implements OnInit, AfterViewInit {
           const downloadBuffer = await StreamHelper.stream2Buffer(response);
           const downloableFile = new Blob([downloadBuffer], {type: item.contentType});
           saveAs(downloableFile, item.name);
+          this.downloading = false;
           this.basicModal.hide();
         } catch (err) {
           //console.log(err);
+          this.downloading = false;
           this.sharedService.showError("Unable to download",err);
         }
       }

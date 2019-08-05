@@ -9,7 +9,7 @@ import { WalletService } from 'src/app/wallet/services/wallet.service';
 import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
 import { TransactionsService } from 'src/app/transfer/services/transactions.service';
 import { Uploader, PrivacyType, Uint8ArrayParameterData, UploadParameter, Protocol, ConnectionConfig, BlockchainNetworkConnection, IpfsConnection } from 'xpx2-ts-js-sdk';
-import { UploadInput, humanizeBytes, UploadOutput, UploadFile } from 'ng-uikit-pro-standard';
+import { UploadInput, humanizeBytes, UploadOutput, UploadFile, FasDirective } from 'ng-uikit-pro-standard';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -23,9 +23,11 @@ export class UploadFileComponent implements OnInit,AfterViewInit {
   moduleName = 'Storage';
   componentName = 'Upload File';
   backToService = `/${AppConfig.routes.service}`;
+  myFiles = `/${AppConfig.routes.myFile}`;
   configurationForm: ConfigurationForm = {};
   uploadForm: FormGroup;
   blockUpload: boolean = false;
+  uploading:false;
   files: any[];
   uploadInput: any;
   humanizeBytes: (bytes: number) => string;
@@ -40,6 +42,7 @@ export class UploadFileComponent implements OnInit,AfterViewInit {
   constructor(
     private cdRef: ChangeDetectorRef,
     private fb: FormBuilder,
+    private route: Router,
     private walletService: WalletService,
     private proximaxProvider: ProximaxProvider,
     private sharedService: SharedService,
@@ -115,7 +118,7 @@ export class UploadFileComponent implements OnInit,AfterViewInit {
       this.uploadForm.get(nameInput).reset();
       return;
     }
-
+    this.files = [];
     this.uploadForm.reset();
     return;
   }
@@ -264,6 +267,7 @@ export class UploadFileComponent implements OnInit,AfterViewInit {
 
       if (this.walletService.decrypt(common)) {
         this.blockUpload = true;
+  
         const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.network);
         console.log(account);
 
@@ -308,9 +312,9 @@ export class UploadFileComponent implements OnInit,AfterViewInit {
 
           const result = await this.uploader.upload(uploadParams.build());
           console.log(result);
-      
-          this.sharedService.showSuccess('Upload successful','Upload successfully. Your data hash ' + result.data.dataHash);
           this.clearForm();
+          this.sharedService.showSuccessTimeout('Upload','Upload successfully.',8000);
+          this.blockUpload = false;
         } catch (error) {
           this.blockUpload = false;
           this.sharedService.showError('Error', error);
