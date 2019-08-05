@@ -15,7 +15,7 @@ export class SharedService {
       minLength: 2, maxLength: 30
     },
     namespaceName: {
-      minLength: 4, maxLength: 20
+      minLength: 3, maxLength: 64
     },
     privateKey: {
       minLength: 64, maxLength: 64
@@ -148,6 +148,7 @@ export interface ItemsHeaderInterface {
   createWallet?: StructureHeader;
   importWallet?: StructureHeader;
   transactions?: StructureHeader;
+  transfer?: StructureHeader;
   auth?: StructureHeader;
   account?: StructureHeader;
   services?: StructureHeader;

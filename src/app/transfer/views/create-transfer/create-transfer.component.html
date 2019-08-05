@@ -10,23 +10,52 @@
 
   <form [formGroup]="formTransfer" (ngSubmit)="sendTransfer()">
 
+    <!-- Contacts -->
+    <ng-container *ngIf="showContacts && listContacts.length > 0">
+      <div class="row">
+        <div class="col-11 col-md-10 col-lg-8 mx-auto">
+          <ng-select mdbInputDirective mdbValidate formControlName="contact" class="selectWrapper"
+            [items]="listContacts" bindLabel="label" bindValue="value" placeholder="Select contact"
+            (change)="selectContact($event)">
+          </ng-select>
+        </div>
+      </div>
+    </ng-container>
+
     <!-- RECIPIENT -->
     <div class="row">
       <div class="col-11 col-md-10 col-lg-8 mx-auto">
-        <div class="md-form form-sm mt-1rem mb-0rem">
-          <input mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
-            class="form-control form-control-sm input-border" style="border: 2px solid #2ba1b9;" placeholder="Recipient"
-            formControlName="accountRecipient" id="recipient-invalid-{{invalidRecipient}}"
-            [maxlength]="configurationForm.accountRecipient.maxLength"
-            [minlength]="configurationForm.accountRecipient.minLength">
-          <mdb-error
-            *ngIf="validateInput('accountRecipient').invalid && (validateInput('accountRecipient').dirty || validateInput('accountRecipient').touched)">
-            <span>Invalid Recipient</span>
-          </mdb-error>
+        <div class="row">
+          <div [ngClass]="[listContacts.length > 0 ? 'col-8 col-sm-9 col-md-10' : 'col-12']">
+            <div class="md-form form-sm mt-1rem mb-0rem">
+              <input mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
+                class="form-control form-control-sm input-border" style="border: 2px solid #2ba1b9;"
+                placeholder="Recipient" formControlName="accountRecipient" id="recipient-invalid-{{invalidRecipient}}"
+                [maxlength]="configurationForm.accountRecipient.maxLength"
+                [minlength]="configurationForm.accountRecipient.minLength">
+              <mdb-error
+                *ngIf="validateInput('accountRecipient').invalid && (validateInput('accountRecipient').dirty || validateInput('accountRecipient').touched)">
+                <span>Invalid Recipient</span>
+              </mdb-error>
 
-          <mdb-error *ngIf="msgErrorUnsupported !== ''">
-            <span>{{msgErrorUnsupported}}</span>
-          </mdb-error>
+              <mdb-error *ngIf="msgErrorUnsupported !== ''">
+                <span>{{msgErrorUnsupported}}</span>
+              </mdb-error>
+            </div>
+          </div>
+
+          <!-- Show Contacts -->
+          <ng-container *ngIf="listContacts.length > 0">
+            <div class="col-4 col-sm-3 col-md-2 d-flex justify-content-center align-items-center pt-10px">
+              <div class="background-gray-icons p-12px bord-rad-25px cursor-p" (click)="showContacts = !showContacts"
+                [title]="(!showContacts) ? 'Show contacts': 'Hide contacts'">
+                <img class=" w-30px" [src]="(!showContacts) ?
+                'assets/images/img/icon-address-book-gray-28h-proximax-sirius-wallet.svg' :
+                'assets/images/img/icon-address-green-book-16h-proximax-sirius-wallet.svg'
+                ">
+              </div>
+            </div>
+          </ng-container>
         </div>
       </div>
     </div>
@@ -108,6 +137,7 @@
         </div>
 
         <div class="row">
+          <!-- Select mosaic -->
           <div class="col-11 col-md-10 col-lg-8 mx-auto">
             <ng-select mdbInputDirective mdbValidate class="selectWrapper" [items]="selectOtherMosaics"
               bindLabel="label" bindValue="value" placeholder="Select mosaic" (change)="otherMosaicsChange($event, i)">
@@ -123,7 +153,6 @@
         </div>
 
         <ng-container *ngIf="otherMosaic.balance !== ''">
-          <!-- Amount to be sent -->
           <div class="row">
             <div class="col-11 col-md-10 col-lg-8 mx-auto">
               <div class="row d-flex align-items-center">
@@ -145,8 +174,9 @@
                   <div class="md-form form-sm mt-1rem mb-0rem">
                     <input pattern="^[+]?([0-9]*[.])?[0-9]+$" mask="comma_separator.0" mdbInputDirective mdbValidate
                       [maxlength]="configurationForm.amount.maxLength" type="text"
-                      class="form-control form-control-sm input-border" [(ngModel)]="otherMosaics[i].amount" [ngModelOptions]="{standalone: true}"
-                      (ngModelChange)="modelChanged($event, otherMosaic.id, i)" placeholder="Enter quantity">
+                      class="form-control form-control-sm input-border" [(ngModel)]="otherMosaics[i].amount"
+                      [ngModelOptions]="{standalone: true}" (ngModelChange)="modelChanged($event, otherMosaic.id, i)"
+                      placeholder="Enter quantity">
 
                     <!-- Message Error Insufficient balance-->
                     <mdb-error class="text-danger fw-500" *ngIf="otherMosaic.errorBalance">
@@ -228,8 +258,8 @@
       </div>
 
       <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-        <button [disabled]="blockSendButton || formTransfer.invalid || errorOtherMosaics" mdbBtn type="submit" rounded="true" mdbWavesEffect
-          class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
+        <button [disabled]="blockSendButton || formTransfer.invalid || errorOtherMosaics" mdbBtn type="submit"
+          rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
           <span class="fs-1-2em color-white">SEND</span>
         </button>
       </div>

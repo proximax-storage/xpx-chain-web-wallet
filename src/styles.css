@@ -216,6 +216,14 @@ body {
   padding-top: 4rem;
 }
 
+.pt-10px{
+  padding-top: 10px;
+}
+
+.p-12px{
+  padding: 12px;
+}
+
 /** BOTTOM **/
 .pb-1rem {
   padding-bottom: 1rem;
@@ -281,6 +289,11 @@ body {
 .bordb-2px-solid-land {
   border-bottom: 2px solid #765544;
 }
+
+.bord-rad-25px{
+  border-radius: 25px;
+}
+
 
 /************************* LINE HEIGHT *****************/
 .lh-1em {
@@ -391,6 +404,9 @@ body {
 }
 
 /********************** WIDTH **********************/
+.w-30px{
+  width: 30px !important;
+}
 
 .w-100porcent {
   width: 100%;
@@ -581,6 +597,7 @@ body {
 
 /**************************** BACKGROUND *****************************/
 
+
 .gray-color-transparent {
   background: #e4e4e473 !important;
 }
@@ -605,6 +622,11 @@ body {
 .box-modal-grey {
   background: #e4e4e4;
 }
+
+.background-gray-icons{
+  background: #efefef;
+}
+
 /**************************** THEME *****************************/
 .description-information {
   text-align: justify;
