@@ -201,16 +201,16 @@ export class ServicesBoxComponent implements OnInit {
         {
           myFiles: this.services.buildStructureService(
             'MY FILES',
-            false,
+            true,
             '',
             '',
-            '',
+            AppConfig.routes.myFile,
           ), upload: this.services.buildStructureService(
-            'UPLOAD FILES',
-            false,
+            'UPLOAD FILE',
+            true,
             '',
             '',
-            ''
+            AppConfig.routes.uploadFile
           )
         },
         true
