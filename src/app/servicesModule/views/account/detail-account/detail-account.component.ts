@@ -47,7 +47,7 @@ export class DetailAccountComponent implements OnInit {
 
     this.subscribeAccount = this.walletService.getAccountInfoAsync().subscribe(
       async accountInfo => {
-        this.accountValid = (accountInfo !== null && accountInfo !== undefined);
+        this.accountValid = (accountInfo !== null && accountInfo !== undefined && accountInfo.publicKey !== "0000000000000000000000000000000000000000000000000000000000000000");
       }
     );
   }
