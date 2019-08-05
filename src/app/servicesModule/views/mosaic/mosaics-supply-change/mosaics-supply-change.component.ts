@@ -37,8 +37,7 @@ export class MosaicsSupplyChangeComponent implements OnInit {
     selected: false,
     disabled: false
   }];
-
-  mosaicsInfoSelected: MosaicsStorage = null;
+  ;
   mosaicsInfo: any[];
   divisibility: number = 0;
   duration: string = '0 days';
@@ -86,11 +85,11 @@ export class MosaicsSupplyChangeComponent implements OnInit {
         );
 
         const isOwner = (addressOwner.pretty() === this.walletService.address.pretty()) ? true : false;
-       /* console.log(addressOwner.pretty());
-        console.log(this.walletService.address.pretty());
-        console.log(element.mosaicInfo['properties']['supplyMutable']);
-        console.log(isOwner);
-        console.log('-------------------------------------------\n');*/
+        /* console.log(addressOwner.pretty());
+         console.log(this.walletService.address.pretty());
+         console.log(element.mosaicInfo['properties']['supplyMutable']);
+         console.log(isOwner);
+         console.log('-------------------------------------------\n');*/
 
         if (isOwner && element.mosaicInfo['properties']['supplyMutable']) {
           mosaicsSelect.push({
@@ -126,34 +125,47 @@ export class MosaicsSupplyChangeComponent implements OnInit {
    * @memberof MosaicSupplyChange
    */
   clearForm() {
-    this.mosaicsInfoSelected = null;
     this.formMosaicSupplyChange.get('password').patchValue('');
     this.formMosaicSupplyChange.get('deltaSupply').patchValue('');
     this.formMosaicSupplyChange.get('parentMosaic').patchValue(MosaicSupplyType.Increase);
   }
 
 
+  /**
+   *
+   *
+   * @param {*} mosaic
+   * @returns
+   * @memberof MosaicsSupplyChangeComponent
+   */
   optionSelected(mosaic: any) {
     if (mosaic !== undefined) {
-      this.mosaicsInfoSelected = this.mosaicService.filterMosaic(this.proximaxProvider.getMosaicId(mosaic['value']));
-      // console.log(this.mosaicsInfoSelected);
-      if (this.mosaicsInfoSelected !== null || this.mosaicsInfoSelected !== undefined) {
-        this.divisibility = this.mosaicsInfoSelected.mosaicInfo['properties'].divisibility;
-        this.levyMutable = this.mosaicsInfoSelected.mosaicInfo['properties'].levyMutable;
-        this.supplyMutable = this.mosaicsInfoSelected.mosaicInfo['properties'].supplyMutable;
-        this.transferable = this.mosaicsInfoSelected.mosaicInfo['properties'].transferable;
+      const mosaicsInfoSelected: MosaicsStorage = this.mosaicService.filterMosaic(this.proximaxProvider.getMosaicId(mosaic['value']));
+    //  console.log(mosaicsInfoSelected);
+      if (mosaicsInfoSelected !== null || mosaicsInfoSelected !== undefined) {
+        this.divisibility = mosaicsInfoSelected.mosaicInfo['properties'].divisibility;
+        this.levyMutable = mosaicsInfoSelected.mosaicInfo['properties'].levyMutable;
+        this.supplyMutable = mosaicsInfoSelected.mosaicInfo['properties'].supplyMutable;
+        this.transferable = mosaicsInfoSelected.mosaicInfo['properties'].transferable;
         this.supply = this.transactionService.amountFormatter(
           new UInt64([
-            this.mosaicsInfoSelected.mosaicInfo.supply['lower'],
-            this.mosaicsInfoSelected.mosaicInfo.supply['higher']
-          ]), this.mosaicsInfoSelected.mosaicInfo
+            mosaicsInfoSelected.mosaicInfo.supply['lower'],
+            mosaicsInfoSelected.mosaicInfo.supply['higher']
+          ]), mosaicsInfoSelected.mosaicInfo
         );
         this.duration = this.transactionService.calculateDuration(
           new UInt64([
-            this.mosaicsInfoSelected.mosaicInfo['properties']['duration']['lower'],
-            this.mosaicsInfoSelected.mosaicInfo.supply['higher']
+            mosaicsInfoSelected.mosaicInfo['properties']['duration']['lower'],
+            mosaicsInfoSelected.mosaicInfo.supply['higher']
           ])
         );
+
+        /*console.log('------------- this.supply ---------', this.supply);
+        console.log('------------- this.divisibility ---------', this.divisibility);
+        console.log('------------- this.duration ---------', this.duration);
+        console.log('------------- this.levyMutable ---------', this.levyMutable);
+        console.log('------------- this.supplyMutable ---------', this.supplyMutable);
+        console.log('------------- this.transferable ---------', this.transferable);*/
         return;
       }
     }
