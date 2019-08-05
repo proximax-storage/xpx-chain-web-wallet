@@ -13,6 +13,8 @@ import { CreateMosaicComponent } from './views/mosaic/create-mosaic/create-mosai
 import { AliasAddressToNamespaceComponent } from './views/account/alias-address-to-namespace/alias-address-to-namespace.component';
 import { MosaicsSupplyChangeComponent } from './views/mosaic/mosaics-supply-change/mosaics-supply-change.component';
 import { AliasMosaicsToNamespaceComponent } from './views/mosaic/alias-mosaics-to-namespace/alias-mosaics-to-namespace.component';
+import { UploadFileComponent } from './views/storage/upload-file/upload-file.component';
+import { MyFileComponent } from './views/storage/my-file/my-file.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +28,9 @@ import { AliasMosaicsToNamespaceComponent } from './views/mosaic/alias-mosaics-t
     CreateMosaicComponent,
     AliasAddressToNamespaceComponent,
     MosaicsSupplyChangeComponent,
-    AliasMosaicsToNamespaceComponent
+    AliasMosaicsToNamespaceComponent,
+    UploadFileComponent,
+    MyFileComponent
   ],
   imports: [
     CoreModule,

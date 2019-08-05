@@ -11,6 +11,8 @@ import { CreateMosaicComponent } from './views/mosaic/create-mosaic/create-mosai
 import { AliasAddressToNamespaceComponent } from './views/account/alias-address-to-namespace/alias-address-to-namespace.component';
 import { MosaicsSupplyChangeComponent } from './views/mosaic/mosaics-supply-change/mosaics-supply-change.component';
 import { AliasMosaicsToNamespaceComponent } from './views/mosaic/alias-mosaics-to-namespace/alias-mosaics-to-namespace.component';
+import { UploadFileComponent } from './views/storage/upload-file/upload-file.component';
+import { MyFileComponent } from './views/storage/my-file/my-file.component';
 
 const routes: Routes = [
   {
@@ -53,6 +55,28 @@ const routes: Routes = [
       meta: {
         title: 'createNamespace.title',
         description: 'createNamespace.text',
+        override: true,
+      }
+    }
+  },
+  {
+    path: AppConfig.routes.uploadFile,
+    component: UploadFileComponent,
+    data: {
+      meta: {
+        title: 'uploadFile.title',
+        description: 'uploadFile.text',
+        override: true,
+      }
+    }
+  },
+  {
+    path: AppConfig.routes.myFile,
+    component: MyFileComponent,
+    data: {
+      meta: {
+        title: 'myFile.title',
+        description: 'myFile.text',
         override: true,
       }
     }

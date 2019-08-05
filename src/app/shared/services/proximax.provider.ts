@@ -43,6 +43,7 @@ import { mergeMap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { walletInterface } from '../../wallet/services/wallet.service';
+import { BlockchainNetworkType } from 'xpx2-ts-js-sdk';
 
 @Injectable({
   providedIn: 'root'
@@ -75,18 +76,20 @@ export class ProximaxProvider {
    * @param {NetworkType} network network type
    * @returns {BlockchainNetworkType} BlockchainNetworkType
    */
-  getBlockchainNetworkType(network: NetworkType): NetworkType {
+  getBlockchainNetworkType(network: NetworkType): BlockchainNetworkType {
     switch (network) {
       case NetworkType.MAIN_NET:
-        return NetworkType.MAIN_NET
+        return BlockchainNetworkType.MAIN_NET
       case NetworkType.MIJIN:
-        return NetworkType.MIJIN
+        return BlockchainNetworkType.MIJIN
       case NetworkType.MIJIN_TEST:
-        return NetworkType.MIJIN_TEST
+        return BlockchainNetworkType.MIJIN_TEST
       case NetworkType.TEST_NET:
-        return NetworkType.TEST_NET
+        return BlockchainNetworkType.TEST_NET
     }
   }
+
+ 
 
 
   /**

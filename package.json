@@ -40,6 +40,7 @@
     "electron": "^5.0.7",
     "electron-builder": "^21.1.1",
     "express": "^4.15.2",
+    "file-saver": "^2.0.2",
     "font-awesome": "^4.7.0",
     "hammerjs": "^2.0.8",
     "js-xpx-chain-library": "^0.3.0",
@@ -53,6 +54,7 @@
     "screenfull": "^4.2.0",
     "tsjs-xpx-chain-sdk": "^0.2.0",
     "tslib": "^1.9.0",
+    "xpx2-ts-js-sdk": "^0.0.51",
     "zone.js": "~0.9.1"
   },
   "devDependencies": {
@@ -77,5 +79,16 @@
     "tslint": "~5.15.0",
     "typescript": "~3.4.3",
     "webpack-cli": "^3.1.0"
+  },
+  "browser": {
+    "fs": false,
+    "path": false,
+    "os": false,
+    "tls": false,
+    "net": false,
+    "https": false,
+    "fs-contants": false,
+    "stream": false,
+    "util": false
   }
 }

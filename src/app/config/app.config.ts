@@ -18,6 +18,8 @@ export const AppConfig: Config = {
     explorer: 'explorer',
     service: 'services',
     storage: 'storage',
+    uploadFile: 'upload-file',
+    myFile: 'my-file',
     home: 'home',
     importWallet: 'import-wallet',
     LinkingNamespaceMosaic: 'alias-namespace-to-mosaic',
@@ -55,6 +57,8 @@ export const NameRoute = {
   [AppConfig.routes.explorer]: 'Explorer Transaction',
   [AppConfig.routes.service]: 'Dashboard service',
   [AppConfig.routes.storage]: 'Storage',
+  [AppConfig.routes.uploadFile]: 'Upload File',
+  [AppConfig.routes.myFile]: 'My Files',
   [AppConfig.routes.home]: 'Home',
   [AppConfig.routes.importWallet]: 'Import wallet',
   [AppConfig.routes.linkTheNamespaceToAnAddress]: 'Link the namespace to an address',
@@ -90,6 +94,8 @@ export interface Config {
     explorer: string;
     service: string;
     storage: string;
+    uploadFile: string;
+    myFile: string;
     home: string;
     importWallet: string;
     LinkingNamespaceMosaic: string;
