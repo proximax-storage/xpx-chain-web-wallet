@@ -276,6 +276,7 @@ export class CreateTransferComponent implements OnInit {
       this.otherMosaics[position].errorBalance = false;
       this.otherMosaics[position].amountToBeSent = 0;
     }
+
   }
 
   /**
@@ -284,6 +285,7 @@ export class CreateTransferComponent implements OnInit {
    * @memberof CreateTransferComponent
    */
   pushedOtherMosaics() {
+    console.log(this.selectOtherMosaics);
     if (this.otherMosaics.length === 0) {
       this.otherMosaics.push({
         id: '',
@@ -291,7 +293,8 @@ export class CreateTransferComponent implements OnInit {
         amount: '',
         errorBalance: false,
         amountToBeSent: 0,
-        random: Math.floor(Math.random() * 1455654)
+        random: Math.floor(Math.random() * 1455654),
+        selectOtherMosaics: this.selectOtherMosaics
       });
     } else {
       this.otherMosaics.forEach(element => {
@@ -302,7 +305,8 @@ export class CreateTransferComponent implements OnInit {
             amount: '',
             errorBalance: false,
             amountToBeSent: 0,
-            random: Math.floor(Math.random() * 1455654)
+            random: Math.floor(Math.random() * 1455654),
+            selectOtherMosaics: this.selectOtherMosaics
           });
         }
       });
