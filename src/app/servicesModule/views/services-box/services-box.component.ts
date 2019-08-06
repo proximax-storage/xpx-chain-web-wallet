@@ -36,21 +36,9 @@ export class ServicesBoxComponent implements OnInit {
             true,
             '',
             '',
-            AppConfig.routes.account
-          ), aliasToNamespace: this.services.buildStructureService(
-            'LINK TO NAMESPACE',
-            true,
-            '',
-            '',
-            AppConfig.routes.aliasAddressToNamespace
+            AppConfig.routes.account,
           ), multiSign: this.services.buildStructureService(
             'MULTISIGN',
-            false,
-            '',
-            '',
-            ''
-          ), metadata: this.services.buildStructureService(
-            'METADATA',
             false,
             '',
             '',
@@ -61,16 +49,27 @@ export class ServicesBoxComponent implements OnInit {
             '',
             '',
             ''
-          ),
-          delegate: this.services.buildStructureService(
+          ), metadata: this.services.buildStructureService(
+            'METADATA',
+            false,
+            '',
+            '',
+            ''
+          ), delegate: this.services.buildStructureService(
             'DELEGATE',
             false,
             '',
             '',
             ''
-          ),
+          ), aliasToNamespace: this.services.buildStructureService(
+            'LINK TO NAMESPACE',
+            true,
+            '',
+            '',
+            AppConfig.routes.aliasAddressToNamespace
+          )
         },
-        true
+        true,
       ),
 
       //Namespaces
@@ -87,15 +86,15 @@ export class ServicesBoxComponent implements OnInit {
             '',
             '',
             AppConfig.routes.createNamespace
-          ), renew: this.services.buildStructureService(
-            'RENEW',
-            true,
+          ),  extend: this.services.buildStructureService(
+            'EXTEND DURATION',
+            false,
             '',
             '',
             AppConfig.routes.renewNamespace
-          ), extend: this.services.buildStructureService(
-            'EXTEND DURATION',
-            false,
+          ), renew: this.services.buildStructureService(
+            'RENEW',
+            true,
             '',
             '',
             AppConfig.routes.renewNamespace
@@ -166,25 +165,6 @@ export class ServicesBoxComponent implements OnInit {
         true
       ),
 
-      // Address Book
-      this.services.buildStructureService(
-        'Address Book',
-        true,
-        'Assign labels to addresses to easily keep track of your contacts',
-        'icon-address-green-book-60h-proximax-sirius-wallet.svg',
-        '',
-        {
-          addContact: this.services.buildStructureService(
-            'ADD AND LIST CONTACTS',
-            true,
-            '',
-            '',
-            AppConfig.routes.addressBook
-          )
-        },
-        true
-      ),
-
       // Storage
       this.services.buildStructureService(
         'Storage',
@@ -210,26 +190,20 @@ export class ServicesBoxComponent implements OnInit {
         true
       ),
 
-      // Nodes
+      // Address Book
       this.services.buildStructureService(
-        'Nodes',
+        'Address Book',
         true,
-        'Add and edits nodes.',
-        'icon-nodes-green-60h-proximax-sirius-wallet.svg',
+        'Assign labels to addresses to easily keep track of your contacts',
+        'icon-address-green-book-60h-proximax-sirius-wallet.svg',
         '',
         {
-          blockchain: this.services.buildStructureService(
-            'BLOCKCHAIN',
-            false,
+          addContact: this.services.buildStructureService(
+            'ADD AND LIST CONTACTS',
+            true,
             '',
             '',
-            ''
-          ), storage: this.services.buildStructureService(
-            'STORAGE',
-            false,
-            '',
-            '',
-            ''
+            AppConfig.routes.addressBook
           )
         },
         true
@@ -258,7 +232,8 @@ export class ServicesBoxComponent implements OnInit {
             ''
           )
         },
-        true
+        true,
+        'disable-module'
       ),
 
       // Voting
@@ -284,7 +259,8 @@ export class ServicesBoxComponent implements OnInit {
             ''
           )
         },
-        true
+        true,
+        'disable-module'
       ),
 
       // Agregate transactions
@@ -310,7 +286,8 @@ export class ServicesBoxComponent implements OnInit {
             ''
           )
         },
-        true
+        true,
+        'disable-module'
       ),
 
       // Cross-Chain Swaps
@@ -336,7 +313,34 @@ export class ServicesBoxComponent implements OnInit {
             ''
           )
         },
-        true
+        true,
+        'disable-module'
+      ),
+
+      // Nodes
+      this.services.buildStructureService(
+        'Nodes',
+        true,
+        'Add and edits nodes.',
+        'icon-nodes-green-60h-proximax-sirius-wallet.svg',
+        '',
+        {
+          blockchain: this.services.buildStructureService(
+            'BLOCKCHAIN',
+            false,
+            '',
+            '',
+            ''
+          ), storage: this.services.buildStructureService(
+            'STORAGE',
+            false,
+            '',
+            '',
+            ''
+          )
+        },
+        true,
+        'disable-module'
       ),
 
       // Message
@@ -355,10 +359,11 @@ export class ServicesBoxComponent implements OnInit {
             ''
           )
         },
-        true
+        true,
+        'disable-module'
       ),
 
-      // Message
+      // Invoice
       this.services.buildStructureService(
         'Invoice',
         true,
@@ -374,7 +379,8 @@ export class ServicesBoxComponent implements OnInit {
             ''
           )
         },
-        true
+        true,
+        'disable-module'
       )
     ];
   }
