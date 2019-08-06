@@ -946,6 +946,11 @@ input.form-control.validate-success.ng-valid.ng-dirty, input.form-control.valida
   margin-left: -5rem !important;
 } */
 
+.disable-module {
+  filter: grayscale(100%) opacity(50%);
+  color: gray;
+}
+
 .double-nav a{
   color: #0275d8 !important;
 }

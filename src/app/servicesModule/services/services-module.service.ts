@@ -16,9 +16,13 @@ export class ServicesModuleService {
    *
    *
    * @param {string} titleParam
+   * @param {boolean} showParam
    * @param {string} descriptionParam
    * @param {string} imageParam
-   * @param {boolean} showParam
+   * @param {string} routeParam
+   * @param {StructureService} childrenParam
+   * @param {boolean} viewChildrenParam
+   * @param {string} classNameParam
    * @returns {StructureService}
    * @memberof ServicesModuleService
    */
@@ -29,7 +33,8 @@ export class ServicesModuleService {
     imageParam?: string,
     routeParam?: string,
     childrenParam?: {},
-    viewChildrenParam: boolean = false
+    viewChildrenParam: boolean = false,
+    classNameParam?: string
   ): StructureService {
     return {
       title: titleParam,
@@ -38,7 +43,8 @@ export class ServicesModuleService {
       image: imageParam,
       route: routeParam,
       children: childrenParam,
-      viewChildren: viewChildrenParam
+      viewChildren: viewChildrenParam,
+      className: classNameParam
     };
   }
 
@@ -64,16 +70,18 @@ export class ServicesModuleService {
    * @param {any} text
    * @param {any} route
    * @param {any} show
+   * @param {any} class
    * @returns
    * @memberof ServiceModuleService
    */
-  structureServices(icon, title, text, route, show) {
+  structureServices(icon, title, text, route, show, className) {
     return {
       icon: icon,
       title: title,
       text: text,
       route: route,
-      show: show
+      show: show,
+      className: className
     }
   }
 
@@ -107,4 +115,5 @@ export interface StructureService {
   route?: string;
   children?: {};
   viewChildren?: boolean;
+  className?: string;
 }
