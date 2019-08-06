@@ -1,18 +1,26 @@
 import { Component, OnInit, ViewChild, HostListener, AfterViewInit, ChangeDetectorRef } from '@angular/core';
-import { MdbTablePaginationComponent, MdbTableService, MdbTableDirective, BreadcrumbModule, ModalDirective } from 'ng-uikit-pro-standard';
-import { Address, PublicAccount } from 'tsjs-xpx-chain-sdk';
-import { SearchParameter, ConnectionConfig, BlockchainNetworkConnection, BlockchainNetworkType, Protocol, IpfsConnection, Searcher, TransactionFilter, PrivacyType, Downloader, DownloadParameter, DirectDownloadParameter, PrivacyStrategy, StreamHelper } from 'xpx2-ts-js-sdk';
-import { first } from "rxjs/operators";
-import { AppConfig } from 'src/app/config/app.config';
-import { TransactionsService } from 'src/app/transfer/services/transactions.service';
-import { WalletService } from 'src/app/wallet/services/wallet.service';
-import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
-import { NodeService } from 'src/app/servicesModule/services/node.service';
-import { SharedService } from 'src/app/shared/services/shared.service';
-import { environment } from 'src/environments/environment';
-import { SearchResultInterface } from '../services/storage.service';
-import { FormGroup, Validators, FormBuilder, AbstractControl } from '@angular/forms';
+import { MdbTablePaginationComponent, MdbTableDirective, ModalDirective } from 'ng-uikit-pro-standard';
+import {
+  SearchParameter,
+  ConnectionConfig,
+  BlockchainNetworkConnection,
+  Protocol,
+  IpfsConnection,
+  Searcher,
+  PrivacyType,
+  Downloader,
+  DirectDownloadParameter,
+  StreamHelper
+} from 'xpx2-ts-js-sdk';
 import { saveAs } from 'file-saver';
+import { FormGroup, Validators, FormBuilder, AbstractControl } from '@angular/forms';
+import { AppConfig } from '../../../../config/app.config';
+import { TransactionsService } from '../../../../transfer/services/transactions.service';
+import { WalletService } from '../../../../wallet/services/wallet.service';
+import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
+import { SharedService, ConfigurationForm } from '../../../../shared/services/shared.service';
+import { environment } from '../../../../../environments/environment';
+import { SearchResultInterface } from '../services/storage.service';
 
 
 @Component({
@@ -25,8 +33,9 @@ export class MyFileComponent implements OnInit, AfterViewInit {
   @ViewChild(MdbTablePaginationComponent, { static: true }) mdbTablePagination: MdbTablePaginationComponent;
   @ViewChild(MdbTableDirective, { static: true }) mdbTable: MdbTableDirective;
   @ViewChild(ModalDirective, {static : true})  basicModal: ModalDirective;
-  
+
   moduleName = 'Storage';
+  configurationForm: ConfigurationForm = {};
   componentName = 'My Files';
   goBack = `/${AppConfig.routes.service}`;
   uploadNew =  `/${AppConfig.routes.uploadFile}`;
@@ -70,10 +79,11 @@ export class MyFileComponent implements OnInit, AfterViewInit {
 
   @HostListener('input') oninput() {
     // this.searchItems();
-    
+
   }
 
   ngOnInit() {
+    this.configurationForm = this.sharedService.configurationForm;
     this.typeTransactions = this.transactionsService.arraTypeTransaction;
     this.createForm();
     this.initialiseStorage();
@@ -87,11 +97,10 @@ export class MyFileComponent implements OnInit, AfterViewInit {
 
   createForm() {
     this.downloadForm = this.fb.group({
-      encryptionPassword: ['',
-        [
-          Validators.minLength(10),
-          Validators.maxLength(20)
-        ]]
+      encryptionPassword: ['',[
+        Validators.minLength(this.configurationForm.passwordWallet.minLength),
+        Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
+      ]],
     });
   }
 
@@ -160,11 +169,11 @@ export class MyFileComponent implements OnInit, AfterViewInit {
     if (title) {
       param.withNameFilter(title);
     }
-    
+
     if (this.fromTransactionId) {
       param.withFromTransactionId(this.fromTransactionId);
     }
-  
+
 
     const response = await this.searcher.search(param.build());
     // console.log(response);
@@ -214,7 +223,7 @@ export class MyFileComponent implements OnInit, AfterViewInit {
           tp = 'a dataHash';
         } else if (this.typeSearch === 'name') {
           tp = 'a name';
-        } 
+        }
 
         this.sharedService.showError('', `Please, add ${tp}`);
         return;
@@ -241,7 +250,7 @@ export class MyFileComponent implements OnInit, AfterViewInit {
           this.searching = false;
           this.sharedService.showError("Warning",err);
         }
-      } 
+      }
     }
 
   }
@@ -329,11 +338,11 @@ export class MyFileComponent implements OnInit, AfterViewInit {
     console.log(item);
     console.log(this.downloadForm.valid);
     // this.downloadForm.markAsDirty();
-    
+
     if(this.downloadForm.valid) {
       this.downloading = true;
       if(item.dataHash) {
-     
+
         try {
           const param = DirectDownloadParameter.createFromDataHash(item.dataHash);
           if(item.encryptionType === PrivacyType.PASSWORD) {
@@ -344,7 +353,7 @@ export class MyFileComponent implements OnInit, AfterViewInit {
           console.log('Downloading ...');
           const response = await this.downloader.directDownload(param.build());
           console.log(response);
-  
+
           const downloadBuffer = await StreamHelper.stream2Buffer(response);
           const downloableFile = new Blob([downloadBuffer], {type: item.contentType});
           saveAs(downloableFile, item.name);

@@ -3,10 +3,9 @@ import {
   FormGroup,
   FormBuilder,
   Validators,
-  FormControl,
   AbstractControl
 } from "@angular/forms";
-import { MosaicId, SignedTransaction, Address } from "tsjs-xpx-chain-sdk";
+import { MosaicId, SignedTransaction, Address, UInt64 } from "tsjs-xpx-chain-sdk";
 import { MosaicService, MosaicsStorage } from "../../../servicesModule/services/mosaic.service";
 import { ProximaxProvider } from "../../../shared/services/proximax.provider";
 import { DataBridgeService } from "../../../shared/services/data-bridge.service";
@@ -23,7 +22,6 @@ import { ServicesModuleService } from '../../../servicesModule/services/services
 })
 export class CreateTransferComponent implements OnInit {
 
-  // accountRecipient = '';
   allMosaics = [];
   amountXpxToSend = '0.000000';
   balanceXpx = '0.000000';
@@ -45,6 +43,7 @@ export class CreateTransferComponent implements OnInit {
   subscribe = ['accountInfo', 'transactionStatus'];
   title = 'Make a transfer';
   transactionSigned: SignedTransaction = null;
+  currentBlock: number = 0;
 
 
   constructor(
@@ -101,21 +100,46 @@ export class CreateTransferComponent implements OnInit {
         if (accountInfo !== undefined && accountInfo !== null) {
           if (accountInfo.mosaics.length > 0) {
             const mosaics = await this.mosaicServices.searchMosaics(accountInfo.mosaics.map(n => n.id));
-            console.log(mosaics);
+            this.subscribe['block'] = this.dataBridge.getBlock().subscribe(next => this.currentBlock = next);
             if (mosaics.length > 0) {
               for (let mosaic of mosaics) {
                 const currentMosaic = accountInfo.mosaics.find(element => element.id.toHex() === this.proximaxProvider.getMosaicId(mosaic.id).toHex());
-                const amount = (mosaic.mosaicInfo !== null) ?
-                  this.transactionService.amountFormatter(currentMosaic.amount, mosaic.mosaicInfo) :
-                  this.transactionService.amountFormatterSimple(currentMosaic.amount.compact());
+                let amount = '';
+                let expired = false;
+                let nameExpired = '';
+                if (mosaic.mosaicInfo !== null) {
+                  amount = this.transactionService.amountFormatter(currentMosaic.amount, mosaic.mosaicInfo);
+                  const durationMosaic = new UInt64([
+                    mosaic.mosaicInfo['properties']['duration']['lower'],
+                     mosaic.mosaicInfo['properties']['duration']['higher']
+                  ]);
+
+                  const createdBlock = new UInt64([
+                    mosaic.mosaicInfo.height.lower,
+                    mosaic.mosaicInfo.height.higher
+                  ]);
+
+                  if (durationMosaic.compact() > 0) {
+                    if (this.currentBlock >= durationMosaic.compact()+createdBlock.compact()) {
+                      expired = true;
+                      nameExpired = ' - Expired';
+                    }
+                  }
+                } else {
+                  amount = this.transactionService.amountFormatterSimple(currentMosaic.amount.compact());
+                  nameExpired = ' - Expired';
+                  expired = true;
+                }
+
                 if (this.proximaxProvider.getMosaicId(mosaic.id).id.toHex() !== this.mosaicServices.mosaicXpx.mosaicId) {
                   const nameMosaic = (mosaic.mosaicNames.names.length > 0) ? mosaic.mosaicNames.names[0] : this.proximaxProvider.getMosaicId(mosaic.id).toHex();
                   mosaicsSelect.push({
-                    label: `${nameMosaic}`,
+                    label: `${nameMosaic}${nameExpired}`,
                     value: mosaic.id,
                     balance: amount,
+                    expired: false,
                     selected: false,
-                    disabled: false
+                    disabled: expired
                   });
                 } else {
                   this.balanceXpx = amount;
@@ -216,28 +240,28 @@ export class CreateTransferComponent implements OnInit {
    * @param {number} position
    * @memberof CreateTransferComponent
    */
- /* deleteMoreMosaic(position: number) {
-    console.log('this.otherMosaics', this.otherMosaics);
-    const otherMosaics = [];
-    Object.keys(this.otherMosaics).forEach(element => {
-    /*  const selectOtherMosaics = [];
-      this.otherMosaics[position].selectOtherMosaics.forEach(element => {
-        if (element.label === this.otherMosaics[position].beforeValue) {
-          element.disabled = false;
-          selectOtherMosaics.push(element);
-        }else {
-          selectOtherMosaics.push(element);
-        }
-      });
+  /* deleteMoreMosaic(position: number) {
+     console.log('this.otherMosaics', this.otherMosaics);
+     const otherMosaics = [];
+     Object.keys(this.otherMosaics).forEach(element => {
+     /*  const selectOtherMosaics = [];
+       this.otherMosaics[position].selectOtherMosaics.forEach(element => {
+         if (element.label === this.otherMosaics[position].beforeValue) {
+           element.disabled = false;
+           selectOtherMosaics.push(element);
+         }else {
+           selectOtherMosaics.push(element);
+         }
+       });
 
-      this.otherMosaics[position].selectOtherMosaics = selectOtherMosaics;*
+       this.otherMosaics[position].selectOtherMosaics = selectOtherMosaics;*
 
-      if (Number(element) !== position) {
-        otherMosaics.push(this.otherMosaics[position]);
-      }
-    });
-    this.otherMosaics = otherMosaics;
-  }*/
+       if (Number(element) !== position) {
+         otherMosaics.push(this.otherMosaics[position]);
+       }
+     });
+     this.otherMosaics = otherMosaics;
+   }*/
 
   /**
    *
@@ -300,7 +324,6 @@ export class CreateTransferComponent implements OnInit {
 
 
       this.otherMosaics.forEach(element => {
-        console.log('-----element-----', element);
         const newMosaic = [];
         let otherMosaic = element.selectOtherMosaics.filter(elm => elm.label !== mosaicSelected.label);
         let currentMosaic = element.selectOtherMosaics.filter(elm => elm.label === mosaicSelected.label);
@@ -319,9 +342,6 @@ export class CreateTransferComponent implements OnInit {
           }
         });
 
-        console.log('currentMosaic', currentMosaic);
-        console.log('otherMosaic', otherMosaic);
-        console.log('newMosaic', newMosaic);
         element.selectOtherMosaics = newMosaic;
         /* if (this.otherMosaics[position].beforeValue !== '' && this.otherMosaics[position].beforeValue) {
            const current = this.allMosaics.find(e => e.label === this.otherMosaics[position].beforeValue);
@@ -381,7 +401,6 @@ export class CreateTransferComponent implements OnInit {
    * @memberof CreateTransferComponent
    */
   pushedOtherMosaics() {
-    console.log(this.selectOtherMosaics);
     if (this.selectOtherMosaics.length > 0) {
       if (this.otherMosaics.length === 0) {
         this.otherMosaics.push({

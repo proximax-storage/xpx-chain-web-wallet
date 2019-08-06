@@ -56,6 +56,7 @@ export class UploadFileComponent implements OnInit,AfterViewInit {
 
 
   ngOnInit() {
+    this.configurationForm = this.sharedService.configurationForm;
     this.createForm();
     this.initialiseStorage();
   }
@@ -98,12 +99,18 @@ export class UploadFileComponent implements OnInit,AfterViewInit {
       secureMessage: [''],
       usePasswordPrivacy: [''],
       walletPassword: [''],
-      password: ['', [Validators.minLength(8), Validators.maxLength(30)]],
+      password: ['', [
+        Validators.minLength(this.configurationForm.passwordWallet.minLength),
+        Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
+      ]],
       fileInput: [''],
       privateKey: [''],
       useSecureMessage: [''],
       encryptionMethod: [''],
-      encryptionPassword: ['', [Validators.minLength(10), Validators.maxLength(20)]],
+      encryptionPassword: ['', [
+        Validators.minLength(this.configurationForm.passwordWallet.minLength),
+        Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
+      ]],
       recipientPrivateKey: ['', [Validators.minLength(64), Validators.maxLength(64)]]
     });
 

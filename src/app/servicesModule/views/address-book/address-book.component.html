@@ -36,7 +36,7 @@
         <!-- Keyword or number -->
         <div class="col-12 col-lg-10 mx-auto d-flex align-items-center pt-05rem">
           <input [(ngModel)]="searchContact" type="text" autocomplete="off" id="searchTransaction" class="form-control"
-            mdbInputDirective [validateSuccess]="false" [validateError]="false" placeholder="Keyword or number">
+            mdbInputDirective [validateSuccess]="false" [validateError]="false" placeholder="Keyword">
         </div>
       </div>
     </div>
@@ -132,7 +132,7 @@
                   <div class="md-form form-sm">
                     <input formControlName="user" required mdbInputDirective mdbValidate [validateSuccess]="true"
                       [validateError]="true" type="text" id="user" class="form-control form-control-sm input-border"
-                      placeholder="User">
+                      placeholder="Name">
 
                     <!-- VALIDATION -->
                     <mdb-error

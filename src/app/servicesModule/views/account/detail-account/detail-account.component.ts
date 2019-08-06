@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { FormGroup, Validators, FormControl, AbstractControl } from '@angular/forms';
 import { WalletService } from "../../../../wallet/services/wallet.service";
 import { SharedService, ConfigurationForm } from "../../../../shared/services/shared.service"
-import { FormGroup, Validators, FormControl, AbstractControl } from '@angular/forms';
+import { AppConfig } from '../../../../config/app.config';
 
 @Component({
   selector: 'app-detail-account',
@@ -10,6 +11,7 @@ import { FormGroup, Validators, FormControl, AbstractControl } from '@angular/fo
 })
 export class DetailAccountComponent implements OnInit {
 
+  backToService = `/${AppConfig.routes.service}`;
   configurationForm: ConfigurationForm;
   showPassword: boolean = true;
   accountValid: boolean = false;
@@ -19,7 +21,7 @@ export class DetailAccountComponent implements OnInit {
   titleAddress = 'Address:';
   titlePrivateKey = 'Private Key:';
   titlePublickey = 'Public Key:';
-  descriptionPrivateKey = `Make sure you store your private key in a safe place.   
+  descriptionPrivateKey = `Make sure you store your private key in a safe place.
   Access to your digital assets cannot be recovered without it.`;
   // descriptionBackupWallet = `It is very important that you have backups of your wallets to log in with or your ${this.mosaic} will be lost.`;
   address = this.walletService.address.pretty();

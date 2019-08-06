@@ -140,7 +140,7 @@ export class SidebarMainComponent implements OnInit {
               let x = false;
               this.routesExcludedInServices.forEach(element => {
                 if (objRoute === element) {
-                   x = true;
+                  x = true;
                 }
               });
 
