@@ -8,6 +8,7 @@ import { AppConfig } from '../../config/app.config';
   providedIn: 'root'
 })
 export class LoggedGuard implements CanActivate {
+
   constructor(
     private _authService: AuthService,
     private route: Router
@@ -15,11 +16,15 @@ export class LoggedGuard implements CanActivate {
 
   }
 
-  canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
-    if (this._authService.logged) {
+  canActivate(
+    next: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+  ): Observable<boolean> | Promise<boolean> | boolean {
+    if (this._authService.isLogged) {
       return true;
     }
-    this.route.navigate([`/${AppConfig.routes.login}`]);
+
+    this.route.navigate([`/${AppConfig.routes.auth}`]);
     return false;
   }
 }

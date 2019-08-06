@@ -1,19 +1,23 @@
 import { Component, OnInit, ViewChild, ChangeDetectorRef, AfterViewInit, HostListener } from '@angular/core';
-import { FormGroup, Validators, FormBuilder } from "@angular/forms";
+import { FormGroup, Validators, FormBuilder, AbstractControl } from "@angular/forms";
 import { ModalDirective, MdbTablePaginationComponent, MdbTableDirective } from 'ng-uikit-pro-standard';
-import { ServiceModuleService } from "../../services/service-module.service";
-import { SharedService } from "../../../shared";
+import { SharedService } from 'src/app/shared/services/shared.service';
+import { ServicesModuleService } from "../../services/services-module.service";
+import { AppConfig } from '../../../config/app.config';
 
 @Component({
   selector: 'app-address-book',
   templateUrl: './address-book.component.html',
-  styleUrls: ['./address-book.component.scss']
+  styleUrls: ['./address-book.component.css']
 })
-export class AddressBookComponent implements OnInit, AfterViewInit {
+export class AddressBookComponent {
 
+  moduleName = 'Address Book';
+  componentName = 'ADD AND LIST CONTACTS';
+  goBack = `/${AppConfig.routes.service}`;
   //Pagination
-  @ViewChild(MdbTablePaginationComponent) mdbTablePagination: MdbTablePaginationComponent;
-  @ViewChild(MdbTableDirective) mdbTable: MdbTableDirective;
+  @ViewChild(MdbTablePaginationComponent, {static: true}) mdbTablePagination: MdbTablePaginationComponent;
+  @ViewChild(MdbTableDirective, {static: true}) mdbTable: MdbTableDirective;
   @HostListener('input') oninput() {
     this.searchItems();
   }
@@ -31,7 +35,7 @@ export class AddressBookComponent implements OnInit, AfterViewInit {
   constructor(
     private cdRef: ChangeDetectorRef,
     private fb: FormBuilder,
-    private serviceModuleService: ServiceModuleService,
+    private serviceModuleService: ServicesModuleService,
     private sharedService: SharedService
   ) {
     this.hideTable = false;
@@ -118,6 +122,27 @@ export class AddressBookComponent implements OnInit, AfterViewInit {
   }
 
   /**
+   *
+   *
+   * @param {string} [nameInput='']
+   * @param {string} [nameControl='']
+   * @param {string} [nameValidation='']
+   * @returns
+   * @memberof CreateNamespaceComponent
+   */
+  validateInput(nameInput: string = '', nameControl: string = '', nameValidation: string = '') {
+    let validation: AbstractControl = null;
+    if (nameInput !== '' && nameControl !== '') {
+      validation = this.contactForm.controls[nameControl].get(nameInput);
+    } else if (nameInput === '' && nameControl !== '' && nameValidation !== '') {
+      validation = this.contactForm.controls[nameControl].getError(nameValidation);
+    } else if (nameInput !== '') {
+      validation = this.contactForm.get(nameInput);
+    }
+    return validation;
+  }
+
+  /**
    * Save contact
    *
    * @returns
@@ -195,3 +220,4 @@ export class AddressBookComponent implements OnInit, AfterViewInit {
   }
 
 }
+

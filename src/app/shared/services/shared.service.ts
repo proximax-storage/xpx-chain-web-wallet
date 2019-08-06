@@ -1,65 +1,100 @@
 import { Injectable } from '@angular/core';
-import { AbstractControl } from '@angular/forms';
+import { AbstractControl, FormGroup } from '@angular/forms';
 import { ToastService } from 'ng-uikit-pro-standard';
-
-
-export interface StructureHeader {
-  type: string;
-  name: string;
-  class: string;
-  icon: string;
-  rol: boolean;
-  link: string;
-  show: boolean;
-  submenu: object;
-}
 
 @Injectable({
   providedIn: 'root'
 })
 export class SharedService {
 
+  configurationForm: ConfigurationForm = {
+    accountRecipient: {
+      minLength: 40, maxLength: 46
+    },
+    nameWallet: {
+      minLength: 2, maxLength: 30
+    },
+    namespaceName: {
+      minLength: 3, maxLength: 64
+    },
+    privateKey: {
+      minLength: 64, maxLength: 64
+    },
+    passwordWallet: {
+      minLength: 8,
+      maxLength: 30
+    },
+    amount: {
+      maxLength: 20
+    },
+    message: {
+      maxLength: 1024
+    }
+  };
+
   constructor(
     private toastrService: ToastService
   ) { }
 
-
-  buildStructureHeader(
-    typeP: string, nameP: string, classP: string,
-    iconP: string, rolP: boolean, linkP: string,
-    showP: boolean, submenuP: object
-  ) {
+  /**
+   *
+   *
+   * @param {string} typeParam
+   * @param {string} nameParam
+   * @param {string} classParam
+   * @param {string} iconParam
+   * @param {string} linkParam
+   * @param {boolean} viewParam
+   * @param {object} subMenuParam
+   * @returns
+   * @memberof SharedService
+   */
+  buildHeader(
+    typeParam: 'default' | 'dropdown',
+    nameParam: string,
+    classParam: string,
+    iconParam: string,
+    rolParam: boolean,
+    linkParam: string,
+    viewParam: boolean,
+    subMenuParam: object,
+    selectedParam: boolean
+  ): StructureHeader {
     return {
-      type: typeP,
-      name: nameP,
-      class: classP,
-      icon: iconP,
-      rol: rolP,
-      link: linkP,
-      show: showP,
-      submenu: submenuP,
-      selected: false
+      type: typeParam,
+      name: nameParam,
+      class: classParam,
+      icon: iconParam,
+      rol: rolParam,
+      link: linkParam,
+      show: viewParam,
+      submenu: subMenuParam,
+      selected: selectedParam
     }
   }
 
-  logError(message: any) {
-    console.log(`%c ${message}`, 'background: red; color: white; margin: 0.5rem;');
-  }
-
-  logSuccess(message: any) {
-    console.log(`%c ${message}`, 'background: green; color: white; margin: 0.5rem;');
-  }
-
-  logInfo(message: any) {
-    console.log(`%c ${message}`, 'background: #00b8ff; color: black; margin: 0.5rem;');
-  }
-
-  logWarn(message: any) {
-    console.log(`%c ${message}`, 'background: #ffd817; color: black; margin: 0.5rem;');
+  /**
+   *
+   *
+   * @param {AbstractControl} abstractControl
+   * @returns {{ noMatch: boolean }}
+   * @memberof SharedService
+   */
+  equalsPassword(abstractControl: AbstractControl): { noMatch: boolean } {
+    if (abstractControl.get('password').value !== abstractControl.get('confirm_password').value) {
+      return {
+        noMatch: true
+      };
+    }
   }
 
   showSuccess(title: string, bodyMessage: string) {
     const options = { closeButton: true, tapToDismiss: false, toastClass: 'toastSuccess', timeOut: 4000 };
+    this.toastrService.success(bodyMessage, '', options);
+  }
+
+  showSuccessTimeout(title: string, bodyMessage: string, timeout:number) {
+    const options = { closeButton: true, tapToDismiss: false, toastClass: 'toastSuccess', timeOut: timeout };
     this.toastrService.success(bodyMessage, '', options);
   }
 
@@ -77,21 +112,63 @@ export class SharedService {
     const options = { closeButton: true, tapToDismiss: false, toastClass: 'toastInfo', timeOut: 4000 };
     this.toastrService.info(bodyMessage, '', options);
   }
+}
 
-  closeAlertMsg(type: string = '') { }
 
-  passwordConfirming(c: AbstractControl): { noMatch: boolean } {
-    if (c.get('password').value !== c.get('confirm_password').value) {
-      return {
-        noMatch: true
-      };
-    }
+
+export interface ConfigurationForm {
+  accountRecipient?: {
+    minLength: number;
+    maxLength: number;
+  };
+  amount?: {
+    maxLength: number;
+  };
+  message?: {
+    maxLength: 1024
   }
+  nameWallet?: {
+    minLength: number;
+    maxLength: number;
+  };
+  namespaceName?: {
+    minLength: number;
+    maxLength: number;
+  };
+  privateKey?: {
+    minLength: number;
+    maxLength: number;
+  };
+  passwordWallet?: {
+    minLength: number;
+    maxLength: number;
+  };
+}
 
-  removeItemFromArr(arr, item) {
-    var i = arr.indexOf(item);
-    arr.splice(i, 1);
-    return arr;
-  }
+export interface ItemsHeaderInterface {
+  home?: StructureHeader;
+  node?: StructureHeader;
+  dashboard?: StructureHeader;
+  nodeSelected?: StructureHeader;
+  createWallet?: StructureHeader;
+  importWallet?: StructureHeader;
+  transactions?: StructureHeader;
+  transfer?: StructureHeader;
+  auth?: StructureHeader;
+  account?: StructureHeader;
+  services?: StructureHeader;
+  signout?: StructureHeader;
+  wallet?: StructureHeader;
+}
 
+export interface StructureHeader {
+  type: string;
+  name: string;
+  class: string;
+  icon: string;
+  rol: boolean;
+  link: string;
+  show: boolean;
+  submenu: object;
+  selected: boolean;
 }

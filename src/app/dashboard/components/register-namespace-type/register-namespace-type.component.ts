@@ -1,13 +1,12 @@
 import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
-import { TransactionsService } from '../../../transactions/service/transactions.service';
-import { NamespaceStorage } from '../../../servicesModule/interfaces/mosaics-namespaces.interface';
-import { NamespacesService } from '../../../servicesModule/services/namespaces.service';
+import { NamespacesService, NamespaceStorage } from '../../../servicesModule/services/namespaces.service';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
+import { TransactionsService } from '../../../transfer/services/transactions.service';
 
 @Component({
   selector: 'app-register-namespace-type',
   templateUrl: './register-namespace-type.component.html',
-  styleUrls: ['./register-namespace-type.component.scss']
+  styleUrls: ['./register-namespace-type.component.css']
 })
 export class RegisterNamespaceTypeComponent implements OnInit {
 

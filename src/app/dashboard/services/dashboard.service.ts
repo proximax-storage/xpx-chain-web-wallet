@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { MosaicInfo, QueryParams, PublicAccount, Transaction } from 'tsjs-xpx-chain-sdk';
 import { Observable } from 'rxjs';
 import { AuthService } from '../../auth/services/auth.service';
-import { WalletService } from '../../shared/services/wallet.service';
 import { DataBridgeService } from '../../shared/services/data-bridge.service';
 import { NamespacesService } from '../../servicesModule/services/namespaces.service';
+import { WalletService } from '../../wallet/services/wallet.service';
 
 @Injectable({
   providedIn: 'root'

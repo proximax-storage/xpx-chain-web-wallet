@@ -1,10 +1,8 @@
 import { Component, OnInit, Input, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { Mosaic, MosaicView, MosaicInfo } from 'tsjs-xpx-chain-sdk';
-import { MosaicService } from '../../../servicesModule/services/mosaic.service';
-import { TransactionsService } from '../../../transactions/service/transactions.service';
-import { MosaicsStorage } from '../../../servicesModule/interfaces/mosaics-namespaces.interface';
-import { TransactionsInterface } from '../../services/transaction.interface';
+import { MosaicService, MosaicsStorage } from '../../../servicesModule/services/mosaic.service';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
+import { TransactionsService, TransactionsInterface } from '../../../transfer/services/transactions.service';
 
 @Component({
   selector: 'app-mosaics-info',

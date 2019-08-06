@@ -1,13 +1,13 @@
 import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
 import { MosaicId, NamespaceId } from 'tsjs-xpx-chain-sdk';
 import { MosaicService } from '../../../servicesModule/services/mosaic.service';
-import { TransactionsInterface } from '../../services/transaction.interface';
 import { NamespacesService } from '../../../servicesModule/services/namespaces.service';
+import { TransactionsInterface } from '../../../transfer/services/transactions.service';
 
 @Component({
   selector: 'app-mosaic-alias',
   templateUrl: './mosaic-alias.component.html',
-  styleUrls: ['./mosaic-alias.component.scss']
+  styleUrls: ['./mosaic-alias.component.css']
 })
 export class MosaicAliasComponent implements OnInit {
 

@@ -1,9 +1,6 @@
 import { Injectable } from '@angular/core';
 import { crypto } from 'js-xpx-chain-library';
 import {
-  BlockchainNetworkType
-} from 'xpx2-ts-js-sdk';
-import {
   Password,
   SimpleWallet,
   MosaicInfo,
@@ -45,8 +42,8 @@ import {
 import { mergeMap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { commonInterface, walletInterface } from '../interfaces/shared.interfaces';
-import { MosaicXPXInterface } from '../../dashboard/services/transaction.interface';
+import { walletInterface } from '../../wallet/services/wallet.service';
+import { BlockchainNetworkType } from 'xpx2-ts-js-sdk';
 
 @Injectable({
   providedIn: 'root'
@@ -64,7 +61,7 @@ export class ProximaxProvider {
   mosaicService: MosaicService;
   namespaceService: NamespaceService;
   transactionStatusError: TransactionStatusError;
-  mosaicXpx: MosaicXPXInterface = {
+  mosaicXpx: {mosaic: string, mosaicId: string; divisibility: number} = {
     mosaic: 'prx.xpx',
     mosaicId: '0dc67fbe1cad29e3',
     divisibility: 6
@@ -75,7 +72,7 @@ export class ProximaxProvider {
 
   /**
    * Method to return blockchain network type
-   * 
+   *
    * @param {NetworkType} network network type
    * @returns {BlockchainNetworkType} BlockchainNetworkType
    */
@@ -91,6 +88,8 @@ export class ProximaxProvider {
         return BlockchainNetworkType.TEST_NET
     }
   }
+
+ 
 
 
   /**
@@ -589,6 +588,9 @@ export class ProximaxProvider {
       }
     }
   }
+}
 
-
+export interface commonInterface {
+  password: string;
+  privateKey: string;
 }

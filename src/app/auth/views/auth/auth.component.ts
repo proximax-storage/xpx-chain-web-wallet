@@ -1,104 +1,108 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { environment } from '../../../../environments/environment';
-import { AppConfig } from '../../../config/app.config';
-import { NgSelectConfig } from '@ng-select/ng-select';
+import { ConfigurationForm, SharedService } from 'src/app/shared/services/shared.service';
 
 @Component({
   selector: 'app-auth',
   templateUrl: './auth.component.html',
   styleUrls: ['./auth.component.css']
 })
-
 export class AuthComponent implements OnInit {
 
-  link = AppConfig.routes;
-  selectedValue: string;
-  loginForm: FormGroup;
+  authForm: FormGroup;
+  configurationForm: ConfigurationForm = {};
+  title = 'Sign in to your Wallet';
   wallets: Array<any>;
-  nameModule = 'Wallet Login';
-  descriptionModule = 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Odio obcaecati eveniet cum, dignissimos fugit consequatur tempore, blanditiis quas dolor tempora officiis, fuga numquam minima molestias veritatis velit voluptas error incidunt.';
-  simpleItems = [true, 'Two', 3];
-  selectedSimpleItem = '';
 
   constructor(
-    private fb: FormBuilder,
     private authService: AuthService,
-    private config: NgSelectConfig
-  ) {
-    this.config.notFoundText = 'Custom not found';
-    this.simpleItems = [true, 'Two', 3];
-  }
+    private fb: FormBuilder,
+    private sharedService: SharedService
+  ) { }
 
-
-  ngOnInit() {
-    let walletLocal = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
-    this.wallets = this.authService.walletsOption(walletLocal);
+  ngOnInit(){
+    this.configurationForm = this.sharedService.configurationForm;
+    this.wallets = this.authService.walletsOption(JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage)));
     this.createForm();
   }
 
+  /**
+   *
+   *
+   * @memberof AuthComponent
+   */
+  auth() {
+    this.authForm.markAsDirty();
+    if (this.authForm.valid) {
+      this.authService.login(this.authForm.get('common').value, this.authForm.get('wallet').value);
+      this.authForm.get('wallet').reset();
+      this.authForm.get('common').reset();
+    }
+  }
+
+  /**
+   *
+   *
+   * @memberof AuthComponent
+   */
   createForm() {
-    this.loginForm = this.fb.group({
-      wallet: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(30)]],
-      common: this.fb.group({ // <-- the child FormGroup
-        password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]]
+    this.authForm = this.fb.group({
+      wallet: ['', [
+        Validators.required,
+        Validators.minLength(this.configurationForm.nameWallet.minLength),
+        Validators.maxLength(this.configurationForm.nameWallet.maxLength)
+      ]],
+      common: this.fb.group({
+        password: ['',
+        [
+          Validators.required,
+          Validators.minLength(this.configurationForm.passwordWallet.minLength),
+          Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
+        ]]
       })
     });
   }
 
   /**
-  * Clear form
-  *
-  * @param {(string | (string | number)[])} [custom]
-  * @param {(string | number)} [formControl]
-  * @returns
-  * @memberof TransferComponent
-  */
-  clearForm(
-    custom?: string | (string | number)[],
-    formControl?: string | number
-  ) {
-    if (custom !== undefined) {
-      if (formControl !== undefined) {
-        this.loginForm.controls[formControl].get(custom).reset();
+   *
+   * @param nameInput
+   * @param nameControl
+   */
+  clearForm(nameInput: string = '', nameControl: string = '') {
+    if (nameInput !== '') {
+      if (nameControl !== '') {
+        this.authForm.controls[nameControl].get(nameInput).reset();
         return;
       }
-      this.loginForm.get(custom).reset();
+
+      this.authForm.get(nameInput).reset();
       return;
     }
-    this.loginForm.reset();
+
+    this.authForm.reset();
     return;
   }
 
-
-  getError(param: string | (string | number)[], name: string = '') {
-    if (this.loginForm.get(param).getError('required')) {
-      return `This field is required`;
-    } else if (this.loginForm.get(param).getError('minlength')) {
-      return `This field must contain minimum ${this.loginForm.get(param).getError('minlength').requiredLength} characters`;
-    } else if (this.loginForm.get(param).getError('maxlength')) {
-      return `This field must contain maximum ${this.loginForm.get(param).getError('maxlength').requiredLength} characters`;
+  /**
+   *
+   *
+   * @param {string} [nameInput='']
+   * @param {string} [nameControl='']
+   * @param {string} [nameValidation='']
+   * @returns
+   * @memberof AuthComponent
+   */
+  validateInput(nameInput: string = '', nameControl: string = '', nameValidation: string = '') {
+    let validation: AbstractControl = null;
+    if (nameInput !== '' && nameControl !== '') {
+      validation = this.authForm.controls[nameControl].get(nameInput);
+    } else if (nameInput === '' && nameControl !== '' && nameValidation !== '') {
+      validation = this.authForm.controls[nameControl].getError(nameValidation);
+    } else if (nameInput !== '') {
+      validation = this.authForm.get(nameInput);
     }
-  }
-
-
-  getErrorGroup(param, name) {
-    if (this.loginForm.get(param).get(name).getError('required')) {
-      return `This field is required`;
-    } else if (this.loginForm.get(param).get(name).getError('minlength')) {
-      return `This field must contain minimum ${this.loginForm.get(param).get(name).getError('minlength').requiredLength} characters`;
-    } else if (this.loginForm.get(param).get(name).getError('maxlength')) {
-      return `This field must contain maximum ${this.loginForm.get(param).get(name).getError('maxlength').requiredLength} characters`;
-    }
-  }
-
-  onSubmit() {
-    this.loginForm.markAsDirty();
-    if (this.loginForm.valid) {
-      this.authService.login(this.loginForm.get('common').value, this.loginForm.get('wallet').value);
-      this.loginForm.get('wallet').reset();
-      this.loginForm.get('common').reset();
-    }
+    return validation;
   }
 }

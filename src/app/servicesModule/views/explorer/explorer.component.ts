@@ -5,21 +5,23 @@ import { first } from "rxjs/operators";
 import { AppConfig } from '../../../config/app.config';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 import { NodeService } from "../../services/node.service";
-import { SharedService, WalletService } from "../../../shared";
-import { TransactionsService } from "../../../transactions/service/transactions.service";
-import { TransactionsInterface } from '../../../dashboard/services/transaction.interface';
+import { TransactionsInterface, TransactionsService } from '../../../transfer/services/transactions.service';
+import { WalletService } from '../../../wallet/services/wallet.service';
+import { SharedService } from '../../../shared/services/shared.service';
 
 @Component({
   selector: 'app-explorer',
   templateUrl: './explorer.component.html',
-  styleUrls: ['./explorer.component.scss']
+  styleUrls: ['./explorer.component.css']
 })
 export class ExplorerComponent implements OnInit, AfterViewInit {
 
-  @ViewChild(MdbTablePaginationComponent) mdbTablePagination: MdbTablePaginationComponent;
-  @ViewChild(MdbTableDirective) mdbTable: MdbTableDirective;
+  @ViewChild(MdbTablePaginationComponent, {static: true}) mdbTablePagination: MdbTablePaginationComponent;
+  @ViewChild(MdbTableDirective, {static: true}) mdbTable: MdbTableDirective;
 
-  goBack = `/${AppConfig.routes.services}`;
+  moduleName = 'Transaction explorer';
+  componentName = 'EXPLORE';
+  goBack = `/${AppConfig.routes.service}`;
   searching = false;
   objectKeys = Object.keys;
   firstItemIndex;

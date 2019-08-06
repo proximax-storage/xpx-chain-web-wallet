@@ -1,11 +1,10 @@
 import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
-import { TransactionsService } from '../../../transactions/service/transactions.service';
-import { TransactionsInterface } from '../../services/transaction.interface';
+import { TransactionsInterface, TransactionsService } from '../../../transfer/services/transactions.service';
 
 @Component({
   selector: 'app-transfer-type',
   templateUrl: './transfer-type.component.html',
-  styleUrls: ['./transfer-type.component.scss']
+  styleUrls: ['./transfer-type.component.css']
 })
 export class TransferTypeComponent implements OnInit {
 

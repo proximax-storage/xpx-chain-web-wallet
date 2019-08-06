@@ -1,107 +1,125 @@
-<div class="container-fluid mt-6rem animated fadeIn">
+<div class="container mt-3rem mb-2rem animated fadeIn">
   <div class="row">
-    <div class="col-12 col-sm-10 mx-auto">
-      <!-- TITLE -->
-      <div class="row">
-        <div class="col-10 mx-auto">
-          <h1 class="text-align-center wallet-name">
-            <img class="img-wallet" src="assets/images/wallet.png"> {{nameModule}}
-          </h1>
-          <h5 [ngClass]="[walletIsCreated ? 'f-w-bold color-yellow text-align-center wallet-description' :
-      'text-align-center wallet-description']">
-            {{descriptionModule}}</h5>
-        </div>
+    <div class="col-12 d-flex justify-content-center">
+      <span class="fs-1-7rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">{{title}}</span>
+    </div>
+    <div class="col-11 col-md-10 mx-auto">
+      <hr class="mt-05rem mb-06rem">
+    </div>
+    <div class="col-12 d-flex justify-content-center">
+      <span class="fs-08rem txt-a-center line-h-1-2em">{{description}}</span>
+    </div>
+  </div>
 
-        <div class="col-10 mx-auto">
-          <hr class="background-divisor">
+
+  <form [formGroup]="importWalletForm" (ngSubmit)="importSimpleWallet()">
+    <div class="row mt-1-5rem">
+      <div class="col-11 col-sm-10 col-md-8 col-lg-6 mx-auto">
+        <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" class="selectWrapper"
+          [items]="typeNetwork" bindLabel="label" bindValue="value" placeholder="Select network"
+          formControlName="network">
+        </ng-select>
+        <mdb-error class="mt-1rem ml-1rem"
+          *ngIf="validateInput('network').invalid && (validateInput('network').dirty || validateInput('network').touched)">
+          <span>Select network</span>
+        </mdb-error>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-11 col-sm-10 col-md-8 col-lg-6 mx-auto">
+        <div class="md-form form-sm mt-1rem mb-0rem">
+          <input mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text" id="privateKey"
+            class="form-control form-control-sm input-border" placeholder="Private key" formControlName="privateKey">
+          <mdb-error
+            *ngIf="validateInput('privateKey').invalid && (validateInput('privateKey').dirty || validateInput('privateKey').touched)">
+            <span>Input invalid</span>
+          </mdb-error>
         </div>
       </div>
+    </div>
 
-      <ng-container *ngIf="!walletIsCreated; else walletIsCreatedTemplate">
-        <div class="row">
-          <div class="container-fluid mt-1rem">
-            <div class="col-xl-7 col-md-9 col-sm-11 mx-auto">
-              <form [formGroup]="importWalletForm" (ngSubmit)="importSimpleWallet()" style="color: #757575;">
-                <div class="container box-form">
-                  <div class="md-form">
-                    <i class="fa fa-bars prefix text-white"></i>
-                    <mdb-select [options]="typeNetwork" placeholder="Select type network" required
-                      formControlName="network" class="colorful-select dropdown-default" mdbInputDirective
-                      [errorMessage]="getError('network')">
-                    </mdb-select>
-                  </div>
-                </div>
+    <div class="row">
+      <div class="col-11 col-sm-10 col-md-8 col-lg-6 mx-auto">
+        <div class="md-form form-sm mt-1rem mb-0rem">
+          <input mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text" id="name-wallet{{errorWalletExist}}"
+            class="form-control form-control-sm input-border" placeholder="Wallet name" formControlName="nameWallet">
+          <mdb-error
+            *ngIf="validateInput('nameWallet').invalid && (validateInput('nameWallet').dirty || validateInput('nameWallet').touched)">
+            <span>Input invalid</span>
+          </mdb-error>
 
-                <div class="container box-form mt-2rem">
-                  <div class="md-form">
-                    <i class="fa fa-key prefix text-white"></i>
-                    <input type="text" autocomplete="off" required formControlName="privateKey" id="privateKey"
-                      class="form-control" mdbInputDirective data-success="Valid privateKey"
-                      [errorMessage]="getError('privateKey')">
-                    <label for="privateKey">Private key</label>
-                  </div>
-                </div>
+          <mdb-error
+            *ngIf="validateInput('nameWallet').valid && validateNameWallet()">
+            <span>Wallet name already exists</span>
+          </mdb-error>
+          <!-- <mdb-success *ngIf="input.valid && (input.dirty || input.touched)">Input valid</mdb-success> -->
+        </div>
+      </div>
+    </div>
 
-                <div class="container box-form mt-2rem">
-                  <div class="md-form" id="container-walletname">
-                    <i class="fa fa-user prefix text-white"></i>
-                    <input type="text" autocomplete="off" required formControlName="walletname" id="walletname"
-                      class="form-control" mdbInputDirective data-success="Valid Wallet name"
-                      [errorMessage]="getError('walletname')">
-                    <label for="walletname">Wallet name</label>
-                  </div>
+    <div formGroupName="passwords">
+      <div class="row">
+        <div class="col-11 col-sm-10 col-md-8 col-lg-6 mx-auto">
+          <div class="row">
+            <div class="col-12 col-md-6 col-lg-6 mx-auto">
+              <div class="md-form form-sm mt-1rem mb-0rem">
+                <input formControlName="password" mdbInputDirective mdbValidate [validateSuccess]="true"
+                  [validateError]="true" type="password" id="password{{errorMatchPassword}}"
+                  class="form-control form-control-sm input-border" placeholder="Password">
 
-                  <div formGroupName="passwords">
-                    <div class="row">
-                      <div class="col-12 col-md-6">
-                        <div class="md-form" id="container-password">
-                          <i class="fa fa-lock prefix text-white"></i>
-                          <input type="password" autocomplete="off" required formControlName="password" id="password"
-                            class="form-control" mdbInputDirective data-success="Valid password"
-                            [errorMessage]="getError('password', 'passwords')">
-                          <label for="password">Password</label>
-                        </div>
-                      </div>
-                      <div class="col-12 col-md-6">
-                        <div class="md-form" id="container-confirm_password">
-                          <i class="fa fa-lock prefix text-white"></i>
-                          <input type="password" autocomplete="off" required formControlName="confirm_password"
-                            id="confirm_password" class="form-control" mdbInputDirective data-success="Valid password"
-                            [errorMessage]="getError('confirm_password', 'passwords')">
-                          <label for="confirm_password">Confirm Password</label>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <!-- BUTTONS -->
-                <div class="container mt-1rem">
-                  <div class="row mt-1rem mb-1rem">
-                    <div class="col-6 t-a-r">
-                      <button mdbBtn type="submit" rounded="true" mdbWavesEffect
-                        class="f-w-600 btn-white-green-transparent" (click)="clearForm()">
-                        CLEAR
-                      </button>
-                    </div>
-                    <div class="col-6">
-                      <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 btn-dark-green-prx">
-                        CREATE
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </form>
+                <!-- VALIDATION -->
+                <mdb-error *ngIf="
+                validateInput('password', 'passwords').invalid &&
+                (validateInput('password', 'passwords').dirty || validateInput('password', 'passwords').touched)">
+                  <span>Input invalid</span>
+                </mdb-error>
+
+                <mdb-error *ngIf="validateMatchPassword()">
+                  <span>Password doesn't match</span>
+                </mdb-error>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-6 mx-auto">
+              <div class="md-form form-sm mt-1rem mb-0rem">
+                <input formControlName="confirm_password" mdbInputDirective mdbValidate [validateSuccess]="true"
+                  [validateError]="true" type="password" id="confirm-password{{errorMatchPassword}}"
+                  class="form-control form-control-sm input-border" placeholder="Confirm password">
+
+                <!-- VALIDATION -->
+                <mdb-error
+                  *ngIf="
+                  validateInput('confirm_password', 'passwords').invalid &&
+                  (validateInput('confirm_password', 'passwords').dirty || validateInput('confirm_password', 'passwords').touched)">
+                  <span>Input invalid</span>
+                </mdb-error>
+
+                <mdb-error *ngIf="validateMatchPassword()">
+                  <span>Password doesn't match</span>
+                </mdb-error>
+              </div>
             </div>
           </div>
         </div>
-      </ng-container>
-
-
-      <ng-template #walletIsCreatedTemplate>
-        <app-wallet-created [walletName]="walletName" [privateKey]="pvk" [publicKey]="publicKey" [address]="address"
-          class="animated fadeIn">
-        </app-wallet-created>
-      </ng-template>
+      </div>
     </div>
-  </div>
+
+
+
+    <div class="row mt-2rem">
+      <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
+        <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+          size="md" (click)="clearForm()">
+          <span class="fs-1-2em color-white">CLEAR</span>
+        </button>
+      </div>
+
+      <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
+        <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+          size="md">
+          <span class="fs-1-2em color-white">CREATE</span>
+        </button>
+      </div>
+    </div>
+  </form>
 </div>

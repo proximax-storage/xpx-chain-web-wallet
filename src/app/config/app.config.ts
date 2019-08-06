@@ -2,103 +2,119 @@ import { InjectionToken } from '@angular/core';
 export const APP_CONFIG = new InjectionToken('app.config');
 export const AppConfig: Config = {
   routes: {
-    home: 'home',
-    login: 'login',
-    dashboard: 'dashboard',
-    createWallet: 'create-wallet',
-    importWallet: 'import-wallet',
-    audiApostille: 'audit-apostille',
-    apostille: 'apostille',
-    transactions: 'transactions-get',
-    transferTransaction: 'transfer',
-    addNode: 'add-node',
-    selectNode: 'select-node',
-    explorer: 'explorer',
-    createPoll: 'create-poll',
-    polls: 'polls',
-    service: 'dashboard-service',
-    services: 'services',
-    account: 'account',
-    explorerFile: 'explorer-file',
+    account: 'details-account',
     addressBook: 'address-book',
-    notFound: 'not-found',
-    storage: 'storage',
+    apostille: 'apostille',
+    audiApostille: 'audit-apostille',
+    auth: 'auth',
     createMosaic: 'create-mosaic',
-    MosaicSupplyChange: 'mosaic-supply-change',
-    createNamespace: 'create-namespace',
-    renovateNamespace: 'renovate-namespace',
-    linkTheNamespaceToAnAddress: 'alias-namespace-to-an-address',
-    LinkingNamespaceMosaic: 'alias-namespace-to-mosaic',
     createMultisignature: 'create-multisignature-contract',
+    createNamespace: 'create-namespace',
+    createPoll: 'create-poll',
+    createTransfer: 'create-transfer',
+    createWallet: 'create-wallet',
+    dashboard: 'dashboard',
     editMultisignatureContract: 'edit-multisignature-contract',
-    signMultiSigTransactions: 'sign-multisignature-transactions'
+    explorer: 'explorer',
+    service: 'services',
+    storage: 'storage',
+    uploadFile: 'upload-file',
+    myFile: 'my-file',
+    home: 'home',
+    importWallet: 'import-wallet',
+    LinkingNamespaceMosaic: 'alias-namespace-to-mosaic',
+    linkTheNamespaceToAnAddress: 'alias-namespace-to-an-address',
+    MosaicSupplyChange: 'mosaic-supply-change',
+    polls: 'polls',
+    renewNamespace: 'renew-namespace',
+    renovateNamespace: 'renovate-namespace',
+    selectNode: 'select-node',
+    signMultiSigTransactions: 'sign-multisignature-transactions',
+    walletCreated: 'wallet-created',
+    aliasAddressToNamespace: 'alias-address-to-namespace'
+
+
+
+
+
   }
 };
 
 export const NameRoute = {
-  [AppConfig.routes.home]: 'Home',
-  [AppConfig.routes.login]: 'Login',
-  [AppConfig.routes.dashboard]: 'Dashboard',
-  [AppConfig.routes.createWallet]: 'Create wallet',
-  [AppConfig.routes.importWallet]: 'Import wallet',
-  [AppConfig.routes.audiApostille]: 'Apostille Audit',
-  [AppConfig.routes.apostille]: 'Apostille create',
-  [AppConfig.routes.transactions]: 'Transactions get',
-  [AppConfig.routes.transferTransaction]: 'Transfer',
-  [AppConfig.routes.addNode]: 'Add node',
-  [AppConfig.routes.selectNode]: 'Select node',
-  [AppConfig.routes.explorer]: 'Explorer Transaction',
-  [AppConfig.routes.explorerFile]: 'Explorer File',
-  [AppConfig.routes.createPoll]: 'Create a Poll',
-  [AppConfig.routes.polls]: 'Vote and See Polls',
-  [AppConfig.routes.services]: 'Services',
-  [AppConfig.routes.account]: 'Account',
-  [AppConfig.routes.service]: ' Dashboard service',
+  [AppConfig.routes.account]: 'Details Account',
   [AppConfig.routes.addressBook]: 'Address Book',
-  [AppConfig.routes.notFound]: '404 not found',
-  [AppConfig.routes.storage]: 'storage',
+  [AppConfig.routes.apostille]: 'Apostille create',
+  [AppConfig.routes.audiApostille]: 'Apostille Audit',
+  [AppConfig.routes.auth]: 'Authorization',
   [AppConfig.routes.createMosaic]: 'Create Mosaic',
-  [AppConfig.routes.MosaicSupplyChange]: 'Mosaic supply change',
-  [AppConfig.routes.createNamespace]: 'Create namespace & sub-namespace',
-  [AppConfig.routes.renovateNamespace]: 'Renovate Namespace',
-  [AppConfig.routes.linkTheNamespaceToAnAddress]: 'Link the namespace to an address',
   [AppConfig.routes.createMultisignature]: 'Convert an account to multisig',
+  [AppConfig.routes.createNamespace]: 'Create namespace & sub-namespace',
+  [AppConfig.routes.createPoll]: 'Create a Poll',
+  [AppConfig.routes.createTransfer]: 'Create Transfer',
+  [AppConfig.routes.createWallet]: 'Create wallet',
+  [AppConfig.routes.dashboard]: 'Dashboard',
   [AppConfig.routes.editMultisignatureContract]: 'Edit multisignature contract',
+  [AppConfig.routes.explorer]: 'Explorer Transaction',
+  [AppConfig.routes.service]: 'Dashboard service',
+  [AppConfig.routes.storage]: 'Storage',
+  [AppConfig.routes.uploadFile]: 'Upload File',
+  [AppConfig.routes.myFile]: 'My Files',
+  [AppConfig.routes.home]: 'Home',
+  [AppConfig.routes.importWallet]: 'Import wallet',
+  [AppConfig.routes.linkTheNamespaceToAnAddress]: 'Link the namespace to an address',
+  [AppConfig.routes.MosaicSupplyChange]: 'Mosaic supply change',
+  [AppConfig.routes.polls]: 'Vote and See Polls',
+  [AppConfig.routes.renewNamespace]: 'Renew Namespace',
+  [AppConfig.routes.renovateNamespace]: 'Renovate Namespace',
+  [AppConfig.routes.selectNode]: 'Select node',
   [AppConfig.routes.signMultiSigTransactions]: 'Sign multisignature transactions',
+  [AppConfig.routes.walletCreated]: 'Wallet Created',
+  [AppConfig.routes.aliasAddressToNamespace]: 'Alias Address to Namespace',
 
-}
+
+
+
+};
 
 export interface Config {
   routes: {
-    home: string;
-    login: string;
-    dashboard: string;
-    createWallet: string;
-    importWallet: string;
-    audiApostille: string;
-    apostille: string;
-    transactions: string;
-    transferTransaction: string;
-    addNode: string;
-    selectNode: string;
-    explorer: string;
-    createPoll: string;
-    polls: string;
-    service: string;
-    services: string;
     account: string;
-    explorerFile: string;
     addressBook: string;
+    apostille: string;
+    audiApostille: string;
+    auth: string;
     createMosaic: string;
-    MosaicSupplyChange: string;
-    LinkingNamespaceMosaic: string;
-    createNamespace: string;
-    renovateNamespace: string;
-    linkTheNamespaceToAnAddress: string;
     createMultisignature: string;
+    createNamespace: string;
+    createPoll: string;
+    createTransfer: string;
+    createWallet: string;
+    dashboard: string;
     editMultisignatureContract: string;
-    signMultiSigTransactions: string;
-    notFound: string;
+    explorer: string;
+    service: string;
     storage: string;
+    uploadFile: string;
+    myFile: string;
+    home: string;
+    importWallet: string;
+    LinkingNamespaceMosaic: string;
+    linkTheNamespaceToAnAddress: string;
+    MosaicSupplyChange: string;
+    polls: string;
+    renewNamespace: string;
+    renovateNamespace: string;
+    selectNode: string;
+    signMultiSigTransactions: string;
+    walletCreated: string;
+    aliasAddressToNamespace: string;
+
+
+
+
+
+
+
+
   };
 }

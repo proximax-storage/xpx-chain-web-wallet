@@ -1,28 +1,16 @@
-import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
-import { CoreModule } from "../core/core.module";
+import { NgModule } from '@angular/core';
+
 import { WalletRoutingModule } from './wallet-routing.module';
 import { CreateWalletComponent } from './views/create-wallet/create-wallet.component';
-import { WalletCreatedComponent } from './components/wallet-created/wallet-created.component';
 import { ImportWalletComponent } from './views/import-wallet/import-wallet.component';
-
-const declarations = [
-  CreateWalletComponent,
-  WalletCreatedComponent
-]
-
-const imports = [
-  CoreModule,
-  WalletRoutingModule
-]
+import { CoreModule } from '../core/core.module';
+import { WalletCreatedComponent } from './views/wallet-created/wallet-created.component';
 
 @NgModule({
+  declarations: [CreateWalletComponent, ImportWalletComponent, WalletCreatedComponent],
   imports: [
-    imports
-  ],
-  declarations: [
-    declarations,
-    ImportWalletComponent
-  ],
-  schemas: [NO_ERRORS_SCHEMA] 
+    CoreModule,
+    WalletRoutingModule
+  ]
 })
 export class WalletModule { }

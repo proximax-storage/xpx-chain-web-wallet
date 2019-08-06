@@ -9,11 +9,11 @@ function createWindow() {
     width: 1024,
    //  height: 600,
     backgroundColor: '#ffffff',
-    frame: false,
-     icon: `file://${__dirname}/dist/xpx-catapult-web-wallet/assets/favicon.ico`
+    frame: true,
+     icon: `file://${__dirname}/dist/proximax-sirius-wallet/assets/favicon.ico`
   })
 
-  win.loadFile(`dist/xpx-catapult-web-wallet/index.html`);
+  win.loadFile(`dist/proximax-sirius-wallet/index.html`);
   //win.loadURL('http://localhost:4200/');
    //win.loadFile(`index.html`);
     //// uncomment below to open the DevTools.

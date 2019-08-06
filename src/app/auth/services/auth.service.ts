@@ -1,21 +1,23 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { WalletService } from '../../shared/services/wallet.service';
+import { NetworkType } from 'tsjs-xpx-chain-sdk';
 import { AppConfig } from '../../config/app.config';
-import { DataBridgeService } from "../../shared/services/data-bridge.service";
+import { WalletService } from '../../wallet/services/wallet.service';
+import { DataBridgeService } from '../../shared/services/data-bridge.service';
 import { NodeService } from '../../servicesModule/services/node.service';
 import { MosaicService } from '../../servicesModule/services/mosaic.service';
 import { NamespacesService } from '../../servicesModule/services/namespaces.service';
-import { TransactionsService } from '../../transactions/service/transactions.service';
-import { ServiceModuleService } from '../../servicesModule/services/service-module.service';
+import { TransactionsService } from '../../transfer/services/transactions.service';
+import { ServicesModuleService } from '../../servicesModule/services/services-module.service';
+import { SharedService } from '../../shared/services/shared.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-
+  isLogged = false;
   subscription = {};
   logged = false;
   isLoggedSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(this.logged);
@@ -28,13 +30,24 @@ export class AuthService {
     private dataBridgeService: DataBridgeService,
     private nodeService: NodeService,
     private mosaicService: MosaicService,
-    private nameSpaces: NamespacesService,
+    private namespaces: NamespacesService,
     private transactionService: TransactionsService,
-    private serviceModuleService: ServiceModuleService
+    private serviceModuleService: ServicesModuleService,
+    private sharedService: SharedService
   ) {
     this.setLogged(false);
   }
 
+  /**
+   * Destroy node selected
+   *
+   * @memberof LoginService
+   */
+  destroyNodeSelected() {
+    if (this.subscription['nodeSelected'] !== undefined) {
+      this.subscription['nodeSelected'].unsubscribe();
+    }
+  }
 
   /**
   * Method to login
@@ -45,53 +58,51 @@ export class AuthService {
   * @memberof LoginService
   */
   login(common: any, wallet: any) {
-    if (!this.walletService.login(common, wallet)) {
+    let isValid = false;
+    if (!wallet) {
+      this.sharedService.showError('', 'Dear user, the wallet is missing');
+      isValid = false;
+    } else if (!this.nodeService.getNodeSelected()) {
+      this.sharedService.showError('', 'Please, select a node.');
+      this.route.navigate([`/${AppConfig.routes.selectNode}`]);
+      isValid = false;
+    } else if (!this.walletService.decrypt(common, wallet.accounts[0], wallet.accounts[0].algo, wallet.accounts[0].network)) {
+      // Decrypt / generate and check primary
+      isValid = false;
+    } else if (wallet.accounts[0].network === NetworkType.MAIN_NET && wallet.accounts[0].algo === 'pass:6k' && common.password.length < 40) {
+      this.sharedService.showError('', 'Dear user, the wallet is missing');
+    }else {
+      isValid = true;
+      this.walletService.use(wallet);
+    }
+
+    if (!isValid) {
       return false;
     }
 
-    // this.transactionsService.destroyAllTransactions();
     this.setLogged(true);
-    this.route.navigate([`/${AppConfig.routes.dashboard}`]);
     this.dataBridgeService.closeConenection();
     this.dataBridgeService.connectnWs();
     // load services and components
-    this.nameSpaces.buildNamespaceStorage();
+    this.route.navigate([`/${AppConfig.routes.dashboard}`]);
+    this.namespaces.buildNamespaceStorage();
     this.serviceModuleService.changeBooksItem(this.walletService.address);
     return true;
   }
 
-
-  /************ FIN COW *****************/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   /**
-   * Destroy node selected
+   * Allow to load the component in the routing
    *
+   * @param {*} params
    * @memberof LoginService
    */
-  destroyNodeSelected() {
-    // if (this.subscription['nodeSelected'] !== undefined) {
-    //   this.subscription['nodeSelected'].unsubscribe();
-    // }
+  setLogged(params: any) {
+    this.logged = params;
+    this.isLogged = params;
+    this.isLoggedSubject.next(this.logged);
   }
 
-
-
+  /**************************************************/
 
 
   /**
@@ -109,16 +120,7 @@ export class AuthService {
   }
 
 
-  /**
-   * Allow to load the component in the routing
-   *
-   * @param {*} params
-   * @memberof LoginService
-   */
-  setLogged(params: any) {
-    this.logged = params;
-    this.isLoggedSubject.next(this.logged);
-  }
+
 
   /**
    *Set value to log in and log out
@@ -145,5 +147,6 @@ export class AuthService {
     });
     return r;
   }
+
 
 }

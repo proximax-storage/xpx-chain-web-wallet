@@ -1,33 +1,37 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from "@angular/forms";
+import { FormGroup, FormBuilder, Validators, AbstractControl } from "@angular/forms";
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
-import { ActivatedRoute, Router } from '@angular/router';
-import { SignedTransaction, NamespaceId, UInt64, MosaicId } from 'tsjs-xpx-chain-sdk';
-import { first } from 'rxjs/operators';
+import { Router } from '@angular/router';
+import { SignedTransaction, MosaicId } from 'tsjs-xpx-chain-sdk';
 
 import { AppConfig } from '../../../../config/app.config';
 import { DataBridgeService } from '../../../../shared/services/data-bridge.service';
-import { WalletService, SharedService } from '../../../../shared';
-import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
-import { NamespaceStorage } from '../../../../servicesModule/interfaces/mosaics-namespaces.interface';
-import { NamespacesService } from '../../../../servicesModule/services/namespaces.service';
-import { TransactionsService } from '../../../../transactions/service/transactions.service';
 import { MosaicService } from '../../../../servicesModule/services/mosaic.service';
+import { WalletService } from '../../../../wallet/services/wallet.service';
+import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
+import { SharedService, ConfigurationForm } from '../../../../shared/services/shared.service';
+import { NamespacesService, NamespaceStorage } from '../../../../servicesModule/services/namespaces.service';
+import { TransactionsService } from '../../../../transfer/services/transactions.service';
 
 @Component({
   selector: 'app-create-namespace',
   templateUrl: './create-namespace.component.html',
-  styleUrls: ['./create-namespace.component.scss']
+  styleUrls: ['./create-namespace.component.css']
 })
 export class CreateNamespaceComponent implements OnInit {
   @BlockUI() blockUI: NgBlockUI;
 
+  configurationForm: ConfigurationForm = {};
+  moduleName = 'Namespaces & Sub-Namespaces';
+  componentName = 'REGISTER';
+  backToService = `/${AppConfig.routes.service}`;
+  /*********************************** */
   arrayselect: Array<object> = [
     {
       value: '1',
       label: 'New root Namespace',
       selected: true,
-      disabled: false
+      disabled: true
     }
   ];
 
@@ -47,7 +51,7 @@ export class CreateNamespaceComponent implements OnInit {
       value: '1',
       label: '(New root Namespace)',
       selected: true,
-      disabled: false
+      disabled: true
     }
   ];
 
@@ -55,7 +59,9 @@ export class CreateNamespaceComponent implements OnInit {
   startHeight: number;
   statusButtonNamespace: boolean = true;
   showDuration: boolean = true;
-  transactionSigned: SignedTransaction = null;
+
+  transactionSigned: SignedTransaction[] = [];
+  transactionReady: SignedTransaction[] = [];
   typetransfer: number = 1;
   validateForm: boolean = false;
   blockBtnSend: boolean = false;
@@ -79,6 +85,7 @@ export class CreateNamespaceComponent implements OnInit {
 
 
   ngOnInit() {
+    this.configurationForm = this.sharedService.configurationForm;
     this.createForm();
     this.getNameNamespace();
 
@@ -162,10 +169,14 @@ export class CreateNamespaceComponent implements OnInit {
   createForm() {
     //Form namespace default
     this.namespaceForm = this.fb.group({
-      name: ['', [Validators.required, Validators.maxLength(18)]],
-      namespaceRoot: ['1'],
-      duration: [1, [Validators.required]],
-      password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]],
+      name: ['', [Validators.required, Validators.minLength(this.configurationForm.namespaceName.minLength), Validators.maxLength(this.configurationForm.namespaceName.maxLength)]],
+      namespaceRoot: [''],
+      duration: ['', [Validators.required]],
+      password: ['', [
+        Validators.required,
+        Validators.minLength(this.configurationForm.passwordWallet.minLength),
+        Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
+      ]],
     });
   }
 
@@ -177,7 +188,7 @@ export class CreateNamespaceComponent implements OnInit {
   clearForm() {
     this.namespaceForm.get('name').patchValue('');
     this.namespaceForm.get('namespaceRoot').patchValue('1');
-    this.namespaceForm.get('duration').patchValue(1);
+    this.namespaceForm.get('duration').patchValue('');
     this.namespaceForm.get('password').patchValue('');
   }
 
@@ -195,23 +206,45 @@ export class CreateNamespaceComponent implements OnInit {
       }
       if (this.walletService.decrypt(common)) {
         const signedTransaction = this.signedTransaction(common);
-        this.transactionSigned = signedTransaction;
+        this.transactionSigned.push(signedTransaction);
         this.dataBridge.setTransactionStatus(null);
         this.proximaxProvider.announce(signedTransaction).subscribe(
           () => {
-            this.getTransactionStatus();
+            if (this.subscribe['transactionStatus'] === undefined || this.subscribe['transactionStatus'] === null) {
+              this.getTransactionStatus();
+            }
             this.blockBtnSend = false;
-            this.resetForm()
+            this.resetForm();
+            this.setTimeOutValidate(signedTransaction.hash);
           }, () => {
             this.blockBtnSend = false;
             this.resetForm()
-            this.sharedService.showError('', 'An unexpected error has occurred');
+            this.sharedService.showError('', 'Error connecting to the node');
           }
         );
       } else {
         this.blockBtnSend = false;
       }
     }
+  }
+
+  /**
+   *
+   *
+   * @param {string} hash
+   * @memberof CreateNamespaceComponent
+   */
+  setTimeOutValidate(hash: string) {
+    setTimeout(() => {
+      let exist = false;
+      for (let element of this.transactionReady) {
+        if (hash === element.hash) {
+          exist = true;
+        }
+      }
+
+      (exist) ? '' : this.sharedService.showWarning('', 'An error has occurred');
+    }, 5000);
   }
 
 
@@ -298,30 +331,23 @@ export class CreateNamespaceComponent implements OnInit {
 
   /**
    *
-   * @param param
-   * @param formControl
+   *
+   * @param {string} [nameInput='']
+   * @param {string} [nameControl='']
+   * @param {string} [nameValidation='']
+   * @returns
+   * @memberof CreateNamespaceComponent
    */
-  getError(control: string | (string | number)[], typeForm?: any, formControl?: string | number) {
-    const form = (typeForm === undefined) ? this.namespaceForm : this.namespaceForm;
-    if (formControl === undefined) {
-      if (form.get(control).getError('required')) {
-        return `This field is required`;
-      } else if (form.get(control).getError('minlength')) {
-        return `This field must contain minimum ${form.get(control).getError('minlength').requiredLength} characters`;
-      } else if (form.get(control).getError('maxlength')) {
-        return `This field must contain maximum ${form.get(control).getError('maxlength').requiredLength} characters`;
-      }
-    } else {
-      if (form.controls[formControl].get(control).getError('required')) {
-        return `This field is required`;
-      } else if (form.controls[formControl].get(control).getError('minlength')) {
-        return `This field must contain minimum ${form.controls[formControl].get(control).getError('minlength').requiredLength} characters`;
-      } else if (form.controls[formControl].get(control).getError('maxlength')) {
-        return `This field must contain maximum ${form.controls[formControl].get(control).getError('maxlength').requiredLength} characters`;
-      } else if (form.controls[formControl].getError('noMatch')) {
-        return `Password doesn't match`;
-      }
+  validateInput(nameInput: string = '', nameControl: string = '', nameValidation: string = '') {
+    let validation: AbstractControl = null;
+    if (nameInput !== '' && nameControl !== '') {
+      validation = this.namespaceForm.controls[nameControl].get(nameInput);
+    } else if (nameInput === '' && nameControl !== '' && nameValidation !== '') {
+      validation = this.namespaceForm.controls[nameControl].getError(nameValidation);
+    } else if (nameInput !== '') {
+      validation = this.namespaceForm.get(nameInput);
     }
+    return validation;
   }
 
   /**
@@ -335,32 +361,60 @@ export class CreateNamespaceComponent implements OnInit {
     return this.namespaceForm.get(control);
   }
 
-  /**
-   *
-   *
-   * @memberof CreateNamespaceComponent
-   */
   getTransactionStatus() {
     // Get transaction status
     this.subscribe['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
       statusTransaction => {
-        console.log(statusTransaction);
         if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
-          const match = statusTransaction['data'].transactionInfo.hash === this.transactionSigned.hash;
-          if (statusTransaction['type'] === 'confirmed' && match) {
-            this.transactionSigned = null;
-            this.sharedService.showSuccess('', 'Transaction confirmed');
-          } else if (statusTransaction['type'] === 'unconfirmed' && match) {
-            this.transactionSigned = null;
-            this.sharedService.showInfo('', 'Transaction unconfirmed');
-          } else if (match) {
-            this.transactionSigned = null;
-            this.sharedService.showWarning('', statusTransaction['type'].status);
+          for (let element of this.transactionSigned) {
+            const statusTransactionHash = (statusTransaction['type'] === 'error') ? statusTransaction['data'].hash : statusTransaction['data'].transactionInfo.hash;
+            const match = statusTransactionHash === element.hash;
+            if (match) {
+              this.transactionReady.push(element);
+            }
+            if (statusTransaction['type'] === 'confirmed' && match) {
+              this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransactionHash);
+              this.sharedService.showSuccess('', 'Transaction confirmed');
+            } else if (statusTransaction['type'] === 'unconfirmed' && match) {
+              this.sharedService.showInfo('', 'Transaction unconfirmed');
+            } else if (match) {
+              this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransactionHash);
+              this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
+            }
           }
         }
       }
     );
   }
+
+  /**
+   *
+   *
+   * @memberof CreateNamespaceComponent
+   */
+  /*getTransactionStatus() {
+    // Get transaction status
+    this.subscribe['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
+      statusTransaction => {
+        if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned.length > 0) {
+          for(let element of this.transactionSigned) {
+            if (statusTransaction['data'].transactionInfo.hash === element.hash) {
+              this.transactionReady.push(element);
+              if (statusTransaction['type'] === 'confirmed') {
+                this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['data'].transactionInfo.hash);
+                this.sharedService.showSuccess('', 'Transaction confirmed');
+              } else if (statusTransaction['type'] === 'unconfirmed') {
+                this.sharedService.showInfo('', 'Transaction unconfirmed');
+              } else {
+                this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['data'].transactionInfo.hash);
+                this.sharedService.showWarning('', statusTransaction['type'].status);
+              }
+            }
+          }
+        }
+      }
+    );
+  }*/
 
   /**
    *
@@ -433,7 +487,7 @@ export class CreateNamespaceComponent implements OnInit {
   subscribeValueChange() {
     // Duration ValueChange
     this.namespaceForm.get('duration').valueChanges.subscribe(
-      next => {       
+      next => {
         if (next !== null && next !== undefined && String(next) !== '0') {
           if (this.showDuration) {
             this.durationByBlock = this.transactionService.calculateDurationforDay(next).toString();
@@ -480,8 +534,11 @@ export class CreateNamespaceComponent implements OnInit {
             return element.id.toHex() === new MosaicId(this.proximaxProvider.mosaicXpx.mosaicId).toHex();
           });
 
+          // console.log(filtered.id.toHex());
+
           const invalidBalance = filtered.amount.compact() < amount;
           const mosaic = this.mosaicServices.filterMosaic(filtered.id);
+          // console.log('---mosaic---', mosaic);
           this.calculateRentalFee = this.transactionService.amountFormatter(amount, mosaic.mosaicInfo);
           if (invalidBalance && !this.insufficientBalance) {
             this.insufficientBalance = true;

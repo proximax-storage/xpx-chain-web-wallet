@@ -5,17 +5,22 @@ import { AuthService } from '../../auth/services/auth.service';
 import { AppConfig } from '../../config/app.config';
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root'
 })
 export class NotLoggedGuard implements CanActivate {
 
-    constructor(private authService: AuthService, private route: Router) { }
+  constructor(private authService: AuthService, private route: Router) { }
 
-    canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
-        if (this.authService.logged) {
-            this.route.navigate([`/${AppConfig.routes.dashboard}`]);
-            return false;
-        }
-        return true;
+  canActivate(
+    next: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+  ): Observable<boolean> | Promise<boolean> | boolean {
+
+    if (this.authService.isLogged) {
+      this.route.navigate([`/${AppConfig.routes.dashboard}`]);
+      return false;
     }
+
+    return true;
+  }
 }

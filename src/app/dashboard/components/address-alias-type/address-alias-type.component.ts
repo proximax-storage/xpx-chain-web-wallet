@@ -1,13 +1,13 @@
 import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
 import { NamespaceId } from 'tsjs-xpx-chain-sdk';
 
-import { TransactionsInterface } from '../../services/transaction.interface';
 import { NamespacesService } from '../../../servicesModule/services/namespaces.service';
+import { TransactionsInterface } from '../../../transfer/services/transactions.service';
 
 @Component({
   selector: 'app-address-alias-type',
   templateUrl: './address-alias-type.component.html',
-  styleUrls: ['./address-alias-type.component.scss']
+  styleUrls: ['./address-alias-type.component.css']
 })
 export class AddressAliasTypeComponent implements OnInit {
 

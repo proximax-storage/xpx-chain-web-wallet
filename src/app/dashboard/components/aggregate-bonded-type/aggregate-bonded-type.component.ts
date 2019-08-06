@@ -1,10 +1,10 @@
 import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
-import { TransactionsInterface } from '../../services/transaction.interface';
+import { TransactionsInterface } from '../../../transfer/services/transactions.service';
 
 @Component({
   selector: 'app-aggregate-bonded-type',
   templateUrl: './aggregate-bonded-type.component.html',
-  styleUrls: ['./aggregate-bonded-type.component.scss']
+  styleUrls: ['./aggregate-bonded-type.component.css']
 })
 export class AggregateBondedTypeComponent implements OnInit {
 

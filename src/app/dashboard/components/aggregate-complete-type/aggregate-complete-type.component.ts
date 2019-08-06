@@ -1,11 +1,10 @@
 import { Component, OnInit, SimpleChanges, Input } from '@angular/core';
-import { TransactionsInterface } from '../../services/transaction.interface';
-import { TransactionsService } from 'src/app/transactions/service/transactions.service';
+import { TransactionsInterface, TransactionsService } from '../../../transfer/services/transactions.service';
 
 @Component({
   selector: 'app-aggregate-complete-type',
   templateUrl: './aggregate-complete-type.component.html',
-  styleUrls: ['./aggregate-complete-type.component.scss']
+  styleUrls: ['./aggregate-complete-type.component.css']
 })
 export class AggregateCompleteTypeComponent implements OnInit {
 

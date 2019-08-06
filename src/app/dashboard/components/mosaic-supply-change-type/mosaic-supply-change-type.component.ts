@@ -1,15 +1,14 @@
 import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
 import { MosaicId } from 'tsjs-xpx-chain-sdk';
 import * as cloneDeep from 'lodash/cloneDeep';
-import { TransactionsService } from '../../../transactions/service/transactions.service';
 import { MosaicService } from '../../../servicesModule/services/mosaic.service';
-import { TransactionsInterface } from '../../services/transaction.interface';
+import { TransactionsInterface, TransactionsService } from '../../../transfer/services/transactions.service';
 
 
 @Component({
   selector: 'app-mosaic-supply-change-type',
   templateUrl: './mosaic-supply-change-type.component.html',
-  styleUrls: ['./mosaic-supply-change-type.component.scss']
+  styleUrls: ['./mosaic-supply-change-type.component.css']
 })
 export class MosaicSupplyChangeTypeComponent implements OnInit {
 

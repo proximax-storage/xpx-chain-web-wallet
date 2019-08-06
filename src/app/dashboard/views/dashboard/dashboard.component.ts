@@ -1,36 +1,35 @@
 import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectorRef, HostListener, Inject } from '@angular/core';
-import { DashboardService } from '../../services/dashboard.service';
-import { WalletService, SharedService } from '../../../shared';
-import { TransactionsInterface } from '../../services/transaction.interface';
-import { TransactionsService } from '../../../transactions/service/transactions.service';
 import { MdbTableDirective } from 'ng-uikit-pro-standard';
+import { DOCUMENT } from '@angular/common';
 import { Address } from 'tsjs-xpx-chain-sdk';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
-import { DOCUMENT } from "@angular/platform-browser";
-
+import { DashboardService } from '../../services/dashboard.service';
+import { TransactionsInterface, TransactionsService } from 'src/app/transfer/services/transactions.service';
+import { WalletService } from 'src/app/wallet/services/wallet.service';
+import { SharedService } from 'src/app/shared/services/shared.service';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss']
+  styleUrls: ['./dashboard.component.css']
 })
 
 
 export class DashboardComponent implements OnInit, OnDestroy {
 
-  // @ViewChild(MdbTablePaginationComponent) mdbTablePagination: MdbTablePaginationComponent;
-  @ViewChild(MdbTableDirective) mdbTable: MdbTableDirective;
+  @ViewChild(MdbTableDirective, {static: true}) mdbTable: MdbTableDirective;
   @HostListener('input') oninput() {
     this.searchItems();
   }
   previous: any = [];
   cantTransactions = 0;
-  myAddress: Address = null;
+  // myAddress: Address = null;
+  myAddress: string;
   cantConfirmed = 0;
   cantUnconfirmed = 0;
   confirmedSelected = true;
   dataSelected: TransactionsInterface = null;
-  headElements = ['Type', 'Deadline', 'Fee', 'Sender', 'Recipient'];
+  headElements = ['Type', 'Deadline', 'Fee', '', 'Sender', 'Recipient'];
   iconReloadDashboard = false;
   searching = true;
   searchTransactions = true;
@@ -50,7 +49,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   viewDashboard = true;
   transactions: TransactionsInterface[] = [];
   windowScrolled: boolean;
-
+  nameWallet = '';
 
   constructor(
     private cdRef: ChangeDetectorRef,
@@ -61,7 +60,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private proximaxProvider: ProximaxProvider,
     @Inject(DOCUMENT) private document: Document
   ) {
-    this.myAddress = this.walletService.address;
+    this.myAddress = this.walletService.address.pretty();
   }
 
   @HostListener("window:scroll", [])
@@ -84,6 +83,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.nameWallet = this.walletService.current.name;
     this.typeTransactions = this.transactionService.arraTypeTransaction;
     this.dashboardService.incrementViewDashboard();
     this.dashboardService.subscribeLogged();
@@ -150,8 +150,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
    * Method to get more transactions when scrolling in the screen
    */
   onScroll() {
-    if (this.searchTransactions) {
-      // console.log(this.transactions[this.transactions.length - 1].data.transactionInfo.id);
+    if (this.searchTransactions && !this.searching) {
+      this.searching = true;
       const lastTransactionId = (this.transactions.length > 0) ? this.transactions[this.transactions.length - 1].data.transactionInfo.id : null;
       this.loadTransactions(lastTransactionId);
     }

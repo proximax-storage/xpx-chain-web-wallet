@@ -1,0 +1,44 @@
+<mdb-navbar SideClass="navbar navbar-expand-sm navbar-dark background-header-inverse z-depth-0"
+  [containerInside]="false">
+  <mdb-navbar-brand class="d-flex align-items-end">
+    <a class="navbar-brand mr-05rem">
+      <img src="assets/images/img/logo-proximax-sirius-wallet-proximax-sirius-wallet.svg" height="35" class="d-inline-block align-top">
+    </a>
+    <span class="fs-08rem" style="color: #616161;">v{{version}}</span>
+  </mdb-navbar-brand>
+  <links>
+    <ul class="navbar-nav ml-auto">
+      <ng-container *ngFor="let key of keyObject(itemsHeader)">
+        <ng-container *ngIf="!itemsHeader[key]['rol']">
+          <ng-container *ngIf="itemsHeader[key]['type'] === 'default' && itemsHeader[key]['show']">
+            <li class="nav-item color-item-menu active">
+              <a [routerLink]="[itemsHeader[key]['link']]" class="nav-link waves-light" mdbWavesEffect>
+                <span class="item-menu">{{itemsHeader[key]['name'] | uppercase}}</span>
+              </a>
+            </li>
+          </ng-container>
+
+          <ng-container *ngIf="itemsHeader[key]['type'] === 'dropdown' && itemsHeader[key]['show']">
+            <li class="nav-item dropdown" dropdown>
+              <a dropdownToggle mdbWavesEffect type="button" class="nav-link dropdown-toggle waves-light"
+                mdbWavesEffect>
+                <span class="item-menu">{{itemsHeader[key]['name'] | uppercase}}</span>
+                <span class="caret"></span>
+              </a>
+
+              <div *dropdownMenu class="dropdown-menu dropdown dropdown-primary {{itemsHeader[key]['class']}}"
+                role="menu">
+                <ng-container *ngFor="let k of keyObject(itemsHeader[key]['submenu'])">
+                  <a class="dropdown-item waves-light" mdbWavesEffect
+                    [routerLink]="[itemsHeader[key]['submenu'][k]['link']]">
+                    {{itemsHeader[key]['submenu'][k]['name']}}
+                  </a>
+                </ng-container>
+              </div>
+            </li>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+    </ul>
+  </links>
+</mdb-navbar>

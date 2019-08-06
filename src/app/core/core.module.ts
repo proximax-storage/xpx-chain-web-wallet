@@ -1,16 +1,12 @@
-import { NgModule, ModuleWithProviders } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule } from '@angular/forms';
-import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
-import { ClipboardModule } from 'ngx-clipboard';
-import { MdbModule } from "../shared/moduls/mdb/mdb.module";
 import { NgSelectModule } from '@ng-select/ng-select';
-import { NgxMaskModule, IConfig } from 'ngx-mask';
+import { ClipboardModule } from 'ngx-clipboard';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgxMaskModule } from 'ngx-mask';
 import { NgxPaginationModule } from 'ngx-pagination';
-import { NumeralModule } from 'ngx-numeral';
-import {InfiniteScrollModule} from 'ngx-infinite-scroll';
 
+import { MdbModule } from '../shared/moduls/mdb/mdb.module';
 import { TransferTypeComponent } from '../dashboard/components/transfer-type/transfer-type.component';
 import { RegisterNamespaceTypeComponent } from '../dashboard/components/register-namespace-type/register-namespace-type.component';
 import { MosaicDefinitionTypeComponent } from '../dashboard/components/mosaic-definition-type/mosaic-definition-type.component';
@@ -41,40 +37,28 @@ const components = [
   AddressAliasTypeComponent
 ]
 
-const modules = [
-  CommonModule,
+const moduls = [
+  NgSelectModule,
+  NgxPaginationModule,
   ReactiveFormsModule,
   FormsModule,
-  HttpClientModule,
-  ClipboardModule,
-  NgSelectModule,
-  InfiniteScrollModule
+  ClipboardModule
 ];
 
-// export const options: Partial<IConfig> | (() => Partial<IConfig>);
 
 @NgModule({
+  declarations: [components],
   imports: [
-    modules,
+    CommonModule,
+    moduls,
     NgxMaskModule.forRoot(),
     MdbModule.forRoot(),
-    NumeralModule.forRoot(),
-    NgxPaginationModule
-  ],
-  declarations: [
-    components
   ],
   exports: [
-    components,
-    modules,
+    MdbModule,
     NgxMaskModule,
-    MdbModule
+    moduls,
+    components
   ]
 })
-export class CoreModule {
-  static forRoot(): ModuleWithProviders {
-    return {
-      ngModule: CoreModule
-    };
-  }
-}
+export class CoreModule { }

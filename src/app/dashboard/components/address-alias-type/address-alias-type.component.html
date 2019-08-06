@@ -1,6 +1,6 @@
 <div class="row mt-04rem mr-1rem ml-1rem">
   <!-- Data -->
-  <div class="col-12 col-md-7 d-flex align-items-start">
+  <div class="col-12 col-lg-7 d-flex align-items-start">
     <div class="row">
       <!-- Type transfer -->
       <div class="col-12 overflow-ellipsis-nowrap">
@@ -28,20 +28,20 @@
       <!-- Type Hex -->
       <div class="col-12 mt-2rem">
         <div class="row">
-          <div class="col-3">
+          <div class="col-5">
             <span class="color-dark-green fw-bold fs-08rem">Height: </span>
           </div>
-          <div class="col-9">
+          <div class="col-7">
             <span
               class="color-dark-green fw-400 fs-07rem">{{addressAlias?.data.transactionInfo.height.compact()}}</span>
           </div>
         </div>
 
         <div class="row">
-          <div class="col-3 overflow-ellipsis-nowrap">
-            <span class="color-dark-green fw-bold fs-08rem">Type Hex: </span>
+          <div class="col-5 overflow-ellipsis-nowrap">
+            <span class="color-dark-green fw-bold fs-08rem">Type: </span>
           </div>
-          <div class="col-9 overflow-ellipsis-nowrap">
+          <div class="col-7 overflow-ellipsis-nowrap">
             <span class="color-dark-green fw-400
               fs-08rem">{{typeTransactionHex}}</span>
           </div>
@@ -51,10 +51,10 @@
       <!-- Namespace Id -->
       <div class="col-12 mt-04rem">
         <div class="row">
-          <div class="col-3 overflow-ellipsis-nowrap">
+          <div class="col-5 overflow-ellipsis-nowrap">
             <span class=" color-dark-green fw-bold fs-08rem">NamespaceId: </span>
           </div>
-          <div class="col-9 overflow-ellipsis-nowrap">
+          <div class="col-7 overflow-ellipsis-nowrap">
             <span class=" color-dark-green fw-400 fs-08rem">
               {{namespaceId}}</span>
           </div>
@@ -65,10 +65,10 @@
       <ng-container *ngIf="namespaceName !== ''">
         <div class="col-12">
           <div class="row">
-            <div class="col-3 overflow-ellipsis-nowrap">
+            <div class="col-5 overflow-ellipsis-nowrap">
               <span class=" color-dark-green fw-bold fs-08rem">NamespaceName: </span>
             </div>
-            <div class="col-9 overflow-ellipsis-nowrap">
+            <div class="col-7 overflow-ellipsis-nowrap">
               <span class=" color-dark-green fw-400 fs-08rem">
                 {{namespaceName}}</span>
             </div>
@@ -79,10 +79,10 @@
       <!-- Address -->
       <div class="col-12">
         <div class="row">
-          <div class="col-3 overflow-ellipsis-nowrap">
+          <div class="col-5 overflow-ellipsis-nowrap">
             <span class=" color-dark-green fw-bold fs-08rem">Address: </span>
           </div>
-          <div class="col-9 overflow-ellipsis-nowrap">
+          <div class="col-7 overflow-ellipsis-nowrap">
             <span class=" color-dark-green fw-400 fs-08rem">
               {{addressAlias?.data['address'].pretty()}}</span>
           </div>
@@ -91,7 +91,7 @@
     </div>
   </div>
   <!-- Box signer, signature, hash -->
-  <div class="col-12 col-md-5" id="boxHashSignerSignature">
+  <div class="col-12 col-lg-5" id="boxHashSignerSignature">
     <div class="row gray-color-transparent lh-1em">
       <div class="col-12">
         <div class="row">

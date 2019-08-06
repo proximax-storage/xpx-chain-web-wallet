@@ -1,158 +1,131 @@
-<div class="container-fluid mt-11rem mb-3rem animated fadeIn">
-  <!-- TITLE -->
+<div class="container mt-3rem mb-2rem animated fadeIn">
   <div class="row">
-    <div class="col-11 mx-auto">
-      <!-- Title and Divir -->
-      <div class="row">
-        <div class="col-9 col-sm-10 mx-auto">
-          <span class="d-flex justify-content-center align-items-center wallet-name">
-            <img class="mr-05rem h2-3em" src="assets/images/img/icon-mosaics-white.svg" alt="">
-            <span class="f-w-bold fs-1-5rem title-module">Create Mosaic</span>
-          </span>
-        </div>
-      </div>
+    <div class="col-12 col-md-8">
+      <span class="fs-1rem txt-a-center line-h-1-2em color-grey">{{moduleName}}</span>
+      <span class="fs-1rem txt-a-center line-h-1-2em color-grey"> > </span>
+      <span class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">{{componentName}}</span>
+    </div>
 
-      <!-- Create new.... -->
-      <div class="row">
-        <div class="col-12 mx-auto">
-          <hr class="background-divisor">
-        </div>
-      </div>
+    <div class="col-12 col-md-4 d-flex justify-content-start justify-content-md-end">
+      <a class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio" [routerLink]="[backToService]">
+        <span>Back to Services</span>
+      </a>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <hr class="mt-03rem mb-05rem">
     </div>
   </div>
 
-  <div class="row mt-1rem">
-    <!-- FORM -->
-    <div class="col-12 mb-1rem">
+  <div class="row">
+    <div class="col-12 justify-content-center">
       <form [formGroup]="mosaicForm" (ngSubmit)="send()">
-        <div class="row d-flex justify-content-center">
-          <!-- Duration-->
-          <div class="col-10 col-md-11 mt-1-5rem">
-            <div class="box-form pt-0 pb-0">
-              <div class="row d-flex justify-content-center">
-                <div class="col-md-12">
-                  <div class="row">
-                    <div class="col-3 col-sm-2 d-flex align-items-center justify-content-end justify-content-sm-center">
-                      <img class="h1-5em" src="assets/images/img/icon-duration-light-green.svg" alt="">
-                    </div>
+        <div class="row">
+          <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto">
+            <div class="md-form form-sm mt-1rem mb-0rem">
+              <input formControlName="duration" mdbInputDirective mdbValidate [validateSuccess]="true"
+                [validateError]="true" type="text" id="duration" class="form-control form-control-sm input-border"
+                placeholder="Duration (number of days)">
 
-                    <div class="col-9 col-sm-10">
-                      <div class="md-form">
-                        <input mask="0*" pattern="^[0-9]+" min="1" type="text" autocomplete="off" required
-                          formControlName="duration" id="duration" class="form-control" mdbInputDirective
-                          data-success="Valid duration" [errorMessage]="getError('duration')">
-                        <label for="duration">Duration (number of days)</label>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-12 background-dark-green-plus d-flex align-items-center justify-content-center">
-                      <div class="row">
-                        <div class="col-12">
-                          <span class="text-white fw-400 fs-0-8-rem">Approximately in blocks: <strong>{{durationByBlock}}</strong></span>
-                        </div>
-                      </div>
-                    </div>
-                </div>
-              </div>
+              <!-- VALIDATION -->
+              <mdb-error
+                *ngIf="validateInput('duration', '').invalid && (validateInput('duration', '').dirty || validateInput('duration', '').touched)">
+                <span>Input invalid</span>
+              </mdb-error>
             </div>
           </div>
+        </div>
 
-          <!-- Supply -->
-          <div class="col-10 col-md-11 mt-1-5rem">
-            <div class="box-form pt-0 pb-0">
-              <div class="row d-flex justify-content-center">
-                <div class="col-md-6 col-sm-12">
-                  <div class="row">
-                    <div
-                      class="col-3 col-sm-2 col-md-1 d-flex align-items-center justify-content-end justify-content-sm-center">
-                      <img class="h1-5em" src="assets/images/img/icon-amount-white.svg" alt="">
-                    </div>
-    
-                    <div class="col-9 col-sm-10 col-md-11">
-                      <div class="md-form">
-                        <input mask="comma_separator.0" type="text" autocomplete="off" required
-                          formControlName="deltaSupply" id="deltaSupply" class="form-control" mdbInputDirective
-                          data-success="Valid Supply" [errorMessage]="getError('deltaSupply')">
-                        <label for="walletname">Supply</label>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-6 col-sm-12">
-                  <div class="row">
-                    <div class="col-3 col-sm-2 d-flex align-items-center justify-content-end justify-content-sm-center">
-                      <img class="h1-5em" src="assets/images/img/icon-namespaces-white.svg" alt="">
-                    </div>
-    
-                    <div class="col-9 col-sm-10">
-                      <div class="md-form">
-                        <input pattern="[1-6]{1}" mask="0{1}" type="text" autocomplete="off" required
-                          formControlName="divisibility" id="divisibility" class="form-control" mdbInputDirective
-                          data-success="Valid divisibility" [errorMessage]="getError('divisibility', 'The divisibility
-                          must be between 1 and 6')">
-                        <label for="walletname">Divisibility (decimal places)</label>
-                      </div>
-                    </div>
-                  </div>                
-                </div>
-              </div>
-            </div>
-          </div>
-
-
-          <!-- Properties -->
-          <div class="col-10 col-md-11 mt-1-5rem">
-            <div class="box-form">
-              <div class="row d-flex justify-content-center">
-                <div class="col-12 col-sm-4 color-white fw-400 d-flex justify-content-center">
-                  <mdb-checkbox formControlName="transferable">Transferable</mdb-checkbox>
-                </div>
-
-                <div class="col-12 col-sm-4 color-white fw-400 d-flex justify-content-center">
-                  <mdb-checkbox formControlName="supplyMutable">Supply Mutable</mdb-checkbox>
-                </div>
-
-                <div class="col-12 col-sm-4 color-white fw-400 d-flex justify-content-center">
-                  <mdb-checkbox formControlName="levyMutable">Levy Mutable</mdb-checkbox>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Password -->
-          <div class="col-10 col-md-11 mt-1-5rem">
-            <div class="box-form pt-0 pb-0">
-              <div class="row d-flex justify-content-center">
-                <div
-                  class="col-3 col-sm-2 col-md-1 d-flex align-items-center justify-content-end justify-content-sm-center">
-                  <img class="h1-5em" src="assets/images/img/icon-password-white.svg" alt="">
-                </div>
-
-                <div class="col-9 col-sm-10 col-md-11">
-                  <div class="md-form">
-                    <input type="password" autocomplete="off" required formControlName="password" id="password"
-                      class="form-control" mdbInputDirective data-success="Valid password"
-                      [errorMessage]="getError('password')">
-                    <label for="walletname">Password</label>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-10 col-md-11 mt-1-5rem d-flex justify-content-center">
+        <div class="row">
+          <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto">
             <div class="row">
-              <div class="col-6">
-                <button mdbBtn size="sm" rounded="true" class="waves-light btn-white" mdbWavesEffect type="button"
-                  (click)="clearForm()">Clear</button>
+              <div class="col-12 col-md-6">
+                <div class="md-form form-sm mt-1rem mb-0rem">
+                  <input mask="comma_separator.0" formControlName="deltaSupply" mdbInputDirective mdbValidate
+                    [validateSuccess]="true" [validateError]="true" type="text" id="supply"
+                    class="form-control form-control-sm input-border" placeholder="Supply">
+
+                  <!-- VALIDATION -->
+                  <mdb-error
+                    *ngIf="validateInput('deltaSupply', '').invalid && (validateInput('deltaSupply', '').dirty || validateInput('deltaSupply', '').touched)">
+                    <span>Input invalid</span>
+                  </mdb-error>
+                </div>
               </div>
-              <div class="col-6">
-                <button mdbBtn size="sm" rounded="true" class="waves-light btn-dark-green-prx" mdbWavesEffect
-                  type="submit">Create</button>
+
+              <div class="col-12 col-md-6">
+                <div class="md-form form-sm mt-1rem mb-0rem">
+                  <input formControlName="divisibility" mdbInputDirective mdbValidate [validateSuccess]="true"
+                    [validateError]="true" type="text" id="divisibility"
+                    class="form-control form-control-sm input-border" placeholder="Divisibility">
+
+                  <!-- VALIDATION -->
+                  <mdb-error
+                    *ngIf="validateInput('divisibility', '').invalid && (validateInput('divisibility', '').dirty || validateInput('divisibility', '').touched)">
+                    <span>Input invalid</span>
+                  </mdb-error>
+                </div>
               </div>
             </div>
+          </div>
+        </div>
+
+        <div class="row ml-01rem ">
+          <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto box-grey">
+            <div class="col-10 d-flex justify-content-center mx-auto">
+              <span> 0.000000 XPX</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="row ml-01rem ">
+          <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto box-grey d-flex justify-content-center">
+            <!-- Transferable -->
+            <mdb-checkbox formControlName="transferable" [inline]="true">Transferable</mdb-checkbox>
+
+            <!-- Supply Mutable -->
+            <mdb-checkbox formControlName="supplyMutable" [inline]="true">Supply Mutable</mdb-checkbox>
+
+            <!-- Levy Mutable -->
+            <mdb-checkbox formControlName="levyMutable" [inline]="true">Levy Mutable</mdb-checkbox>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto">
+            <div class="md-form form-sm mt-1rem mb-0rem">
+              <input [maxlength]="configurationForm.passwordWallet.maxLength"
+                [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" required
+                mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password"
+                id="password" class="form-control form-control-sm input-border" placeholder="Enter password">
+
+              <!-- VALIDATION -->
+              <mdb-error
+                *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
+                <span>Input invalid</span>
+              </mdb-error>
+            </div>
+          </div>
+        </div>
+
+        <!-- BUTTONS -->
+        <div class="row">
+          <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
+            <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+              size="md" (click)="clearForm()">
+              <span class="fs-1-2em color-white">CLEAR</span>
+            </button>
+          </div>
+
+          <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
+            <button mdbBtn type="submit" rounded="true" [disabled]="!mosaicForm.valid" mdbWavesEffect
+              class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
+              <span class="fs-1-2em color-white">CREATE</span>
+            </button>
           </div>
         </div>
       </form>
     </div>
   </div>
+</div>

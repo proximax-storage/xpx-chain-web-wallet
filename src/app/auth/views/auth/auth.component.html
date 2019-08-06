@@ -1,92 +1,60 @@
-<div class="container-fluid mt-6rem animated fadeIn">
+<div class="container mt-7rem mb-2rem animated fadeIn">
   <div class="row">
-    <div class="col-12 col-sm-10 mx-auto">
-      <!-- TITLE -->
+    <div class="col-12 d-flex justify-content-center">
+      <span class="fs-1-7rem fw-500 txt-a-center line-h-1-2em">{{title}}</span>
+    </div>
+  </div>
+
+  <form [formGroup]="authForm" (ngSubmit)="auth()">
+    <!-- wallet name -->
+    <div class="row mt-2rem">
+      <div class="col-11 col-sm-10 col-md-8 col-lg-6 mx-auto">
+        <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" class="selectWrapper"
+          [items]="wallets" formControlName="wallet" bindLabel="value.name" bindValue="value"
+          placeholder="Select a wallet">
+        </ng-select>
+        <mdb-error class="mt-1rem ml-1rem"
+          *ngIf="validateInput('wallet').invalid && (validateInput('wallet').dirty || validateInput('wallet').touched)">
+          <span>Select a wallet</span>
+        </mdb-error>
+      </div>
+    </div>
+
+    <!-- password -->
+    <div formGroupName="common">
       <div class="row">
-        <div class="col-10 mx-auto">
-          <h1 class="text-align-center wallet-name">{{nameModule}}</h1>
-        </div>
+        <div class="col-11 col-sm-10 col-md-8 col-lg-6 mx-auto">
+          <div class="md-form form-sm mt-1rem mb-0rem">
+            <input [maxlength]="configurationForm.passwordWallet.maxLength" [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" mdbInputDirective mdbValidate [validateSuccess]="true"
+              [validateError]="true" type="password" id="password"
+              class="form-control form-control-sm input-border" placeholder="Enter password">
 
-        <div class="col-10 mx-auto">
-          <hr class="background-divisor">
-        </div>
-      </div>
-
-      <div class="row mt-1rem">
-        <div class="container-fluid">
-          <div class="col-xl-7 col-md-11 mx-auto">
-            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-              <div class="container box-form-inverse">
-                <div class="md-form">
-                  <div class="row">
-                    <div class="col-2 col-sm-2 col-md-1 d-flex align-items-center">
-                      <img class="h1-5em" src="assets/images/img/icon-wallet-name-light-gray.svg" alt="">
-                    </div>
-
-                    <div class="col-10 col-sm-10 col-md-11">
-                      <ng-select [items]="wallets" formControlName="wallet" bindLabel="value.name" bindValue="value"
-                        placeholder="Select account">
-                      </ng-select>
-                    </div>
-                  </div>
-                </div>
-                <div class="md-form mt-5" formGroupName="common">
-                  <div class="row">
-                    <div class="col-2 col-sm-2 col-md-1 d-flex align-items-center">
-                      <img class="h1-5em" src="assets/images/img/icon-password-light-gray.svg" alt="">
-                    </div>
-                    <div class="col-10 col-sm-10 col-md-11">
-                      <input type="password" autocomplete="off" required formControlName="password" id="password"
-                        class="form-control" data-success="Valid password" mdbInputDirective
-                        [errorMessage]="getErrorGroup('common','password')">
-                      <label for="password">password</label>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- BUTTONS -->
-              <div class="container mt-1rem">
-                <div class="row mt-1rem mb-1rem">
-                  <div class="col-6 t-a-r">
-                    <button size="md" mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 btn-white btn btn-rounded"
-                      (click)="clearForm()">
-                      Clear
-                    </button>
-                  </div>
-                  <div class="col-6">
-                    <button size="md" mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 btn-dark-green-prx btn btn-rounded">
-                      SIGN IN
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </form>
+            <!-- VALIDATION -->
+            <mdb-error *ngIf="
+                validateInput('password', 'common').invalid &&
+                (validateInput('password', 'common').dirty || validateInput('password', 'common').touched)">
+              <span>Input invalid</span>
+            </mdb-error>
           </div>
-        </div>
-
-        <div class="col-10 mx-auto">
-          <hr class="background-divisor">
-        </div>
-      </div>
-
-
-      <div class="row mt-1rem mb-1rem">
-        <div class="col-6 t-a-r mt-1rem">
-          <button size="md" [routerLink]="['/'+link.createWallet]" mdbBtn type="button" rounded="true" mdbWavesEffect
-            class="f-w-600 btn-dark-green-prx">
-            <img class="mr-1rem h2em" src="assets/images/img/icon-wallet-import-white.svg" alt="">
-            <span class="fs-1-2em">CREATE</span>
-          </button>
-        </div>
-        <div class="col-6 mt-1rem">
-          <button size="md" [routerLink]="['/'+link.importWallet]" mdbBtn type="button" rounded="true" mdbWavesEffect
-            class="f-w-600 btn-dark-green-prx">
-            <img class="mr-1rem h2em" src="assets/images/img/icon-wallet-import-white.svg" alt="">
-            <span class="fs-1-2em">IMPORT</span>
-          </button>
         </div>
       </div>
     </div>
-  </div>
+
+    <!-- buttons create and clear -->
+    <div class="row mt-2rem">
+      <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
+        <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+          size="md" (click)="clearForm()">
+          <span class="fs-1-2em color-white">CLEAR</span>
+        </button>
+      </div>
+
+      <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
+        <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+          size="md">
+          <span class="fs-1-2em color-white">SIGN IN</span>
+        </button>
+      </div>
+    </div>
+  </form>
 </div>

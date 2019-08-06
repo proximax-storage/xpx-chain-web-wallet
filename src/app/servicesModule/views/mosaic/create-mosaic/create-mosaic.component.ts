@@ -1,21 +1,26 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { UInt64, Deadline, AggregateTransaction, NetworkType, MosaicSupplyType, AliasActionType, SignedTransaction } from 'tsjs-xpx-chain-sdk';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
-import { WalletService } from '../../../../shared/services/wallet.service';
-import { SharedService } from '../../../../shared/services/shared.service';
+import { SharedService, ConfigurationForm } from '../../../../shared/services/shared.service';
 import { DataBridgeService } from '../../../../shared/services/data-bridge.service';
-import { TransactionsService } from 'src/app/transactions/service/transactions.service';
+import { WalletService } from '../../../../wallet/services/wallet.service';
+import { TransactionsService } from '../../../../transfer/services/transactions.service';
+import { AppConfig } from '../../../../config/app.config';
 
 @Component({
   selector: 'app-create-mosaic',
   templateUrl: './create-mosaic.component.html',
-  styleUrls: ['./create-mosaic.component.scss']
+  styleUrls: ['./create-mosaic.component.css']
 })
 export class CreateMosaicComponent implements OnInit {
 
   @BlockUI() blockUI: NgBlockUI;
+  moduleName = 'Mosaics';
+  componentName = 'CREATE';
+  backToService = `/${AppConfig.routes.service}`;
+  configurationForm: ConfigurationForm = {};
   isOwner = false;
   mosaicForm: FormGroup;
 
@@ -32,7 +37,8 @@ export class CreateMosaicComponent implements OnInit {
   }];
   durationByBlock = '5760';
   blockSend: boolean = false;
-  transactionSigned: SignedTransaction = null;
+  transactionSigned: SignedTransaction[] = [];
+  transactionReady: SignedTransaction[] = [];
   subscribe = ['transactionStatus'];
 
   constructor(
@@ -46,6 +52,7 @@ export class CreateMosaicComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.configurationForm = this.sharedService.configurationForm;
     this.createForm();
     this.mosaicForm.get('duration').valueChanges.subscribe(next => {
       this.durationByBlock = this.transactionService.calculateDurationforDay(next).toString();
@@ -69,10 +76,10 @@ export class CreateMosaicComponent implements OnInit {
    */
   createForm() {
     this.mosaicForm = this.fb.group({
-      deltaSupply: [1000000, [Validators.required]],
+      deltaSupply: ['', [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]],
-      duration: [1, [Validators.required]],
-      divisibility: [1, [Validators.required]],
+      duration: ['', [Validators.required]],
+      divisibility: ['', [Validators.required]],
       transferable: [false],
       supplyMutable: [false],
       levyMutable: [false]
@@ -139,7 +146,7 @@ export class CreateMosaicComponent implements OnInit {
         this.dataBridge.setTransactionStatus(null);
         // I SIGN THE TRANSACTION
         const signedTransaction = account.sign(aggregateTransaction);
-        this.transactionSigned = signedTransaction;
+        this.transactionSigned.push(signedTransaction);
         //ANNOUNCEMENT THE TRANSACTION-
         this.proximaxProvider.announce(signedTransaction).subscribe(
           async x => {
@@ -151,6 +158,8 @@ export class CreateMosaicComponent implements OnInit {
             if (this.subscribe['transactionStatus'] === undefined || this.subscribe['transactionStatus'] === null) {
               this.getTransactionStatus();
             }
+
+            this.setTimeOutValidate(signedTransaction.hash);
           }, error => {
             this.blockSend = false;
           }
@@ -161,44 +170,54 @@ export class CreateMosaicComponent implements OnInit {
     }
   }
 
+  setTimeOutValidate(hash: string) {
+    setTimeout(() => {
+      let exist = false;
+      for (let element of this.transactionReady) {
+        if (hash === element.hash) {
+          exist = true;
+        }
+      }
+
+      (exist) ? '' : this.sharedService.showWarning('', 'Error connecting to the node');
+    }, 5000);
+  }
+
   getTransactionStatus() {
     // Get transaction status
     this.subscribe['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
       statusTransaction => {
         if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
-          const statusTransactionHash = (statusTransaction['type'] === 'error') ? statusTransaction['data'].hash : statusTransaction['data'].transactionInfo.hash;
-          const match = statusTransactionHash === this.transactionSigned.hash;
-          if (statusTransaction['type'] === 'confirmed' && match) {
-            this.transactionSigned = null;
-            this.sharedService.showSuccess('', 'Transaction confirmed');
-          } else if (statusTransaction['type'] === 'unconfirmed' && match) {
-            this.transactionSigned = null;
-            this.sharedService.showInfo('', 'Transaction unconfirmed');
-          } else if (match) {
-            this.transactionSigned = null;
-            this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
+          for (let element of this.transactionSigned) {
+            const statusTransactionHash = (statusTransaction['type'] === 'error') ? statusTransaction['data'].hash : statusTransaction['data'].transactionInfo.hash;
+            const match = statusTransactionHash === element.hash;
+            if (match) {
+              this.transactionReady.push(element);
+            }
+            if (statusTransaction['type'] === 'confirmed' && match) {
+              this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransactionHash);
+              this.sharedService.showSuccess('', 'Transaction confirmed');
+            } else if (statusTransaction['type'] === 'unconfirmed' && match) {
+              this.sharedService.showInfo('', 'Transaction unconfirmed');
+            } else if (match) {
+              this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransactionHash);
+              this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
+            }
           }
         }
       }
     );
   }
 
-  /**
-   *
-   * @param param
-   * @param formControl
-   */
-  getError(param: any, customMsg = '') {
-    if (this.mosaicForm.get(param).getError('required')) {
-      return `This field is required`;
-    } else if (this.mosaicForm.get(param).getError('minlength')) {
-      return `This field must contain minimum ${this.mosaicForm.get(param).getError('minlength').requiredLength} characters`;
-    } else if (this.mosaicForm.get(param).getError('maxlength')) {
-      return `This field must contain maximum ${this.mosaicForm.get(param).getError('maxlength').requiredLength} characters`;
-    } else if (customMsg !== '') {
-      return customMsg;
-    } else {
-      return `Invalid input`;
+  validateInput(nameInput: string = '', nameControl: string = '', nameValidation: string = '') {
+    let validation: AbstractControl = null;
+    if (nameInput !== '' && nameControl !== '') {
+      validation = this.mosaicForm.controls[nameControl].get(nameInput);
+    } else if (nameInput === '' && nameControl !== '' && nameValidation !== '') {
+      validation = this.mosaicForm.controls[nameControl].getError(nameValidation);
+    } else if (nameInput !== '') {
+      validation = this.mosaicForm.get(nameInput);
     }
+    return validation;
   }
 }

@@ -4,20 +4,26 @@
 
 export const environment = {
   production: true,
-  nameKeyNodeSelected: `xpx-catapult-web-wallet-n-s`,
-  nameKeyWalletStorage: `xpx-catapult-web-wallet`,
-  nameKeyNodeStorage: `xpx-catapult-web-wallet-nodes`,
+  version: '0.2.0',
+  nameKeyNodeSelected: `sirius-wallet-node-selected`,
+  nameKeyWalletStorage: `sirius-wallets`,
+  nameKeyNodeStorage: `sirius-wallet-nodes`,
   protocol: `http`,
   protocolWs: `ws`,
-  nodeDefault: 'bctestnet1.xpxsirius.io:3000',
+  nodeDefault: 'bctestnet2.xpxsirius.io:3000',
+  mosaicXpxInfo: {
+    name: 'prx.xpx',
+    id: '0dc67fbe1cad29e3',
+    divisibility: 6
+  },
   blockchainConnection: {
-    host: 'bctestnet1.xpxsirius.io',
+    host: 'bctestnet2.xpxsirius.io',
     port: 3000,
     protocol: '',
     useSecureMessage: false
   },
   storageConnection: {
-    host: 'ipfs1-dev.xpxsirius.io',
+    host: 'ipfs2-dev.xpxsirius.io',
     port: 5001,
     options: {}
   },

@@ -1,83 +1,72 @@
-<div class="container mt-11rem mb-3rem animated fadeIn">
+<div class="container mt-3rem mb-1rem animated fadeIn">
   <div class="row">
-    <div class="col-11 col-sm-12 col-lg-10 mx-auto">
+    <div class="col-12 col-md-8">
+      <span class="fs-1rem txt-a-center line-h-1-2em color-grey">{{moduleName}}</span>
+      <span class="fs-1rem txt-a-center line-h-1-2em color-grey"> > </span>
+      <span class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">{{componentName}}</span>
+    </div>
 
-      <!-- Title and Divir -->
-      <div class="row">
-        <div class="col-11 col-sm-11 col-lg-10 mx-auto">
-          <span class="d-flex justify-content-center align-items-center wallet-name">
-            <img class="mr-05rem h2-3em" src="assets/images/img/icon-directory-white.svg" alt="">
-            <span class="f-w-bold fs-1-5rem title-module">Directory</span>
-          </span>
-        </div>
-        <div class="col-12 mx-auto">
-          <hr class="background-divisor">
-        </div>
-      </div>
-
-      <!-- New or enter data and search -->
-      <div class="row">
-        <div class="col-6 col-sm-4 col-md-3 d-flex justify-content-center align-items-center">
-          <button (click)="basicModal.show()" mdbBtn type="button" rounded="true" mdbWavesEffect
-            class="f-w-600 btn-dark-green-prx" size="md">
-            <span><i class="fa fa-user" aria-hidden="true"></i> NEW</span>
-          </button>
-        </div>
-
-        <div class="col-6 col-sm-8 col-md-9">
-          <div class="row">
-            <div class="col-12 box-form pt-0 pb-0">
-              <div class="md-form" id="containerSearch">
-                <input [(ngModel)]="searchContact" type="text" autocomplete="off" id="searchContact"
-                  class="form-control" mdbInputDirective [validateSuccess]="false" [validateError]="false">
-                <label for="searchContact">Filter Contact</label>
-              </div>
-            </div>
-          </div>
+    <div class="col-12 col-md-4 d-flex justify-content-start justify-content-md-end">
+      <span (click)="basicModal.show()"
+        class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio cursor-p">
+        <span>Add new contact</span>
+      </span>
+      <div class="col-2 d-flex justify-content-center">
+        <div class="col-6">
+          <div class="line-separator h-100porcent"></div>
         </div>
       </div>
-
-      <!-- Second divisor -->
-      <div class="row">
-        <div class="col-12 mx-auto">
-          <hr class="background-divisor">
-        </div>
-      </div>
-
-
-      <!-- Results -->
-      <ng-container *ngIf="searchContact !== ''">
-        <div class="row mt-1rem mb-1rem">
-          <div class="col-12 d-flex justify-content-center align-items-center" id="titleCantResults">
-            <h5 class="f-w-bold color-dark-green">{{contacts.length}} results for "Search contacts"</h5>
-          </div>
-        </div>
-      </ng-container>
+      <a class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio" [routerLink]="[goBack]">
+        <span>Back to Services</span>
+      </a>
     </div>
   </div>
-
-  <!-- Progress bar -->
   <div class="row">
     <div class="col-12">
-      <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate" *ngIf="searching">
-      </mdb-progress-bar>
+      <hr class="mt-03rem mb-05rem">
     </div>
   </div>
+</div>
 
-  <div class="row d-flex justify-content-center">
-    <div class="col-12 col-sm-12 col-lg-10 d-flex justify-content-center">
+<!-- HEADER SEARCH -->
+<div class="container-fluid background-header-grey pb-1rem pt-1rem">
+  <div class="row">
+    <div class="col-10 mx-auto">
+      <div class="row">
+        <!-- Keyword or number -->
+        <div class="col-12 col-lg-10 mx-auto d-flex align-items-center pt-05rem">
+          <input [(ngModel)]="searchContact" type="text" autocomplete="off" id="searchTransaction" class="form-control"
+            mdbInputDirective [validateSuccess]="false" [validateError]="false" placeholder="Keyword">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Progress bar -->
+<div class="row">
+  <div class="col-12">
+    <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate" *ngIf="searching">
+    </mdb-progress-bar>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row mt-2rem">
+    <div class="col-12 mx-auto">
       <div class="table-responsive table-hover">
         <table mdbTable #tableEl="mdbTable" id="mdbTable" striped="true"
-          class="table table-hover table-bordered table-hover table-sm z-depth-0" borderless="true">
+          class="table table-hover table-bordered table-hover table-sm z-depth-0" cellspacing="0" width="100%"
+          borderless="true">
+
           <!--Table head-->
           <thead>
             <tr class="header-backg">
               <ng-container *ngFor="let head of headElements; let i = index">
-                <th scope="col" class="text-center fw-400">{{head}}</th>
+                <th scope="col" class="text-center fw-400 th-sm">{{head}}</th>
               </ng-container>
             </tr>
           </thead>
-          <!--Table head-->
 
           <!--Table body-->
           <tbody class="background-white">
@@ -96,6 +85,11 @@
                 </td>
               </tr>
             </ng-container>
+            <ng-container *ngIf="contacts.length === 0 && !searching">
+              <tr>
+                <td colspan="3" class="txt-a-center">nothing to show</td>
+              </tr>
+            </ng-container>
           </tbody>
 
           <tfoot class="lighten-5 w-100">
@@ -112,76 +106,79 @@
   </div>
 </div>
 
-<!-- Modal -->
-<div mdbModal #basicModal="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myBasicModalLabel"
-  aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content form-elegant b-r-08rem">
-      <div class="modal-header text-center box-modal-grey b-t-r-r-08rem b-t-l-r-08rem">
-        <h6 class="modal-title w-100 dark-grey-text" id="myModalLabel">
-          <strong class="title-modal-grey">Add contact</strong>
-        </h6>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="basicModal.hide()">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <form [formGroup]="contactForm" (ngSubmit)="saveContact()">
-        <div class="modal-body mx-4">
-
-          <div class="row box-form mt-1rem pt-0 pb-0">
-            <div class="col-12 col-lg-11">
-              <div class="row">
-                <div
-                  class="col-3 col-sm-2 col-md-1 d-flex align-items-center justify-content-end justify-content-sm-end">
-                  <img class="h1-5em" src="assets/images/img/icon-account-white.svg" alt="">
-                </div>
-
-                <div class="col-9 col-sm-10 col-md-11">
-                  <div class="md-form">
-                    <input formControlName="user" type="text" autocomplete="off" required id="user" class="form-control"
-                      mdbInputDirective data-success="Valid user" [errorMessage]="getError('user')">
-                    <label for="recipient">User</label>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="row box-form mt-1rem pt-0 pb-0">
-            <div class="col-12 col-lg-11">
-              <div class="row">
-                <div
-                  class="col-3 col-sm-2 col-md-1 d-flex align-items-center justify-content-end justify-content-sm-end">
-                  <img class="h1-5em" src="assets/images/img/icon-account-white.svg" alt="">
-                </div>
-
-                <div class="col-9 col-sm-10 col-md-11">
-                  <div class="md-form">
-                    <input formControlName="address" type="text" autocomplete="off" required id="acountRecipient"
-                      class="form-control" mdbInputDirective data-success="Valid recipient"
-                      [errorMessage]="getError('address')">
-                    <label for="recipient">Address</label>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="row mt-1rem mb-1rem">
-            <div class="col-6 t-a-r">
-              <button mdbBtn type="button" size="sm" rounded="true" mdbWavesEffect class="f-w-600 btn-white"
-                (click)="clearForm()">
-                CLEAR
-              </button>
-            </div>
-            <div class="col-6">
-              <button mdbBtn type="submit" size="sm" rounded="true" mdbWavesEffect class="f-w-600 btn-dark-green-prx">
-                Save
-              </button>
-            </div>
-          </div>
+<div>
+  <!-- MODAL -->
+  <div mdbModal #basicModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+    aria-labelledby="myBasicModalLabel" aria-hidden="true">
+    <!-- <div class="d-flex align-items-center" style="height: 100%"> -->
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content form-elegant b-r-08rem">
+        <div class="modal-header text-center box-modal-grey b-t-r-r-08rem b-t-l-r-08rem">
+          <h6 class="modal-title w-100 dark-grey-text" id="myModalLabel">
+            <strong class="title-modal-grey">ADD CONTACT</strong>
+          </h6>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="basicModal.hide()">
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
-      </form>
+
+        <!--Body-->
+        <div class="modal-body">
+          <form [formGroup]="contactForm" (ngSubmit)="saveContact()">
+            <div class="modal-body mx-4">
+
+              <div class="row">
+                <div class="col-11 col-sm-10 col-lg-8 mx-auto">
+                  <div class="md-form form-sm">
+                    <input formControlName="user" required mdbInputDirective mdbValidate [validateSuccess]="true"
+                      [validateError]="true" type="text" id="user" class="form-control form-control-sm input-border"
+                      placeholder="Name">
+
+                    <!-- VALIDATION -->
+                    <mdb-error
+                      *ngIf="validateInput('user', '').invalid && (validateInput('address', '').dirty || validateInput('address', '').touched)">
+                      <span>Input invalid</span>
+                    </mdb-error>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-11 col-sm-10 col-lg-8 mx-auto">
+                  <div class="md-form form-sm">
+                    <input formControlName="address" required mdbInputDirective mdbValidate [validateSuccess]="true"
+                      [validateError]="true" type="text" id="address" class="form-control form-control-sm input-border"
+                      placeholder="address">
+
+                    <!-- VALIDATION -->
+                    <mdb-error
+                      *ngIf="validateInput('address', '').invalid && (validateInput('address', '').dirty || validateInput('address', '').touched)">
+                      <span>Input invalid</span>
+                    </mdb-error>
+                  </div>
+                </div>
+              </div>
+              <!-- BUTTONS -->
+              <div class="row">
+                <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
+                  <button mdbBtn type="button" rounded="true" mdbWavesEffect
+                    class="f-w-600 background-btn pl-2rem pr-2rem" size="md" (click)="clearForm()">
+                    <span class="fs-1-2em color-white">CLEAR</span>
+                  </button>
+                </div>
+
+                <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
+                  <button mdbBtn type="submit" rounded="true" mdbWavesEffect [disabled]="!contactForm.valid"
+                    class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
+                    <span class="fs-1-2em color-white">CREATE</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
+    <!-- </div> -->
   </div>
 </div>
