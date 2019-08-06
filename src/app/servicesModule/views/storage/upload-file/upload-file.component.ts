@@ -38,6 +38,7 @@ export class UploadFileComponent implements OnInit,AfterViewInit {
   signerPrivateKey: any;
   privacyType: any;
   uploader: Uploader;
+  goBack = `/${AppConfig.routes.service}`;
 
   constructor(
     private cdRef: ChangeDetectorRef,
@@ -47,7 +48,7 @@ export class UploadFileComponent implements OnInit,AfterViewInit {
     private proximaxProvider: ProximaxProvider,
     private sharedService: SharedService,
     private transactionsService: TransactionsService
-  ) { 
+  ) {
     this.files = [];
     this.uploadInput = new EventEmitter<UploadInput>();
     this.humanizeBytes = humanizeBytes;
@@ -73,7 +74,7 @@ export class UploadFileComponent implements OnInit,AfterViewInit {
       new IpfsConnection(storageHost, storagePort, storageOptions)
     );
 
- 
+
     this.uploader = new Uploader(connectionConfig);
   }
 
@@ -175,7 +176,7 @@ export class UploadFileComponent implements OnInit,AfterViewInit {
         this.showEncryptionPassword = true;
         this.showEncryptionKeyPair = false;
         this.uploadForm.controls['encryptionPassword'].setValidators([Validators.required, Validators.minLength(10), Validators.maxLength(20)]);
-       
+
         break;
       case PrivacyType.NEM_KEYS:
         this.showEncryptionPassword = false;
@@ -253,7 +254,7 @@ export class UploadFileComponent implements OnInit,AfterViewInit {
       //this.blockUpload = false;
     }
   }
-  
+
   async upload() {
 
     this.doValidate();
@@ -267,7 +268,7 @@ export class UploadFileComponent implements OnInit,AfterViewInit {
 
       if (this.walletService.decrypt(common)) {
         this.blockUpload = true;
-  
+
         const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.network);
         console.log(account);
 

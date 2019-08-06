@@ -24,6 +24,7 @@ import { ServicesModuleService } from '../../../servicesModule/services/services
 export class CreateTransferComponent implements OnInit {
 
   // accountRecipient = '';
+  allMosaics = [];
   amountXpxToSend = '0.000000';
   balanceXpx = '0.000000';
   configurationForm: ConfigurationForm;
@@ -72,6 +73,7 @@ export class CreateTransferComponent implements OnInit {
       disabled: true
     }];
 
+    this.ngOnDestroy();
     this.booksAddress();
     this.createFormTransfer();
     this.getMosaics();
@@ -95,11 +97,11 @@ export class CreateTransferComponent implements OnInit {
   async getMosaics() {
     this.subscribe['accountInfo'] = this.walletService.getAccountInfoAsync().subscribe(
       async accountInfo => {
-        const mosaicsSelect = this.selectOtherMosaics.slice(0);
+        const mosaicsSelect: any = [];
         if (accountInfo !== undefined && accountInfo !== null) {
           if (accountInfo.mosaics.length > 0) {
             const mosaics = await this.mosaicServices.searchMosaics(accountInfo.mosaics.map(n => n.id));
-            // console.log(mosaics);
+            console.log(mosaics);
             if (mosaics.length > 0) {
               for (let mosaic of mosaics) {
                 const currentMosaic = accountInfo.mosaics.find(element => element.id.toHex() === this.proximaxProvider.getMosaicId(mosaic.id).toHex());
@@ -119,6 +121,8 @@ export class CreateTransferComponent implements OnInit {
                   this.balanceXpx = amount;
                 }
               }
+
+              this.allMosaics = mosaicsSelect;
               this.selectOtherMosaics = mosaicsSelect;
             }
           }
@@ -196,12 +200,6 @@ export class CreateTransferComponent implements OnInit {
     return;
   }
 
-  /**
-   *
-   *
-   * @param {number} position
-   * @memberof CreateTransferComponent
-   */
   deleteMoreMosaic(position: number) {
     const otherMosaics = [];
     Object.keys(this.otherMosaics).forEach(element => {
@@ -211,6 +209,35 @@ export class CreateTransferComponent implements OnInit {
     });
     this.otherMosaics = otherMosaics;
   }
+
+  /**
+   *
+   *
+   * @param {number} position
+   * @memberof CreateTransferComponent
+   */
+ /* deleteMoreMosaic(position: number) {
+    console.log('this.otherMosaics', this.otherMosaics);
+    const otherMosaics = [];
+    Object.keys(this.otherMosaics).forEach(element => {
+    /*  const selectOtherMosaics = [];
+      this.otherMosaics[position].selectOtherMosaics.forEach(element => {
+        if (element.label === this.otherMosaics[position].beforeValue) {
+          element.disabled = false;
+          selectOtherMosaics.push(element);
+        }else {
+          selectOtherMosaics.push(element);
+        }
+      });
+
+      this.otherMosaics[position].selectOtherMosaics = selectOtherMosaics;*
+
+      if (Number(element) !== position) {
+        otherMosaics.push(this.otherMosaics[position]);
+      }
+    });
+    this.otherMosaics = otherMosaics;
+  }*/
 
   /**
    *
@@ -269,6 +296,62 @@ export class CreateTransferComponent implements OnInit {
     if (mosaicSelected !== undefined) {
       this.otherMosaics[position].id = mosaicSelected.value;
       this.otherMosaics[position].balance = mosaicSelected.balance;
+
+
+
+      this.otherMosaics.forEach(element => {
+        console.log('-----element-----', element);
+        const newMosaic = [];
+        let otherMosaic = element.selectOtherMosaics.filter(elm => elm.label !== mosaicSelected.label);
+        let currentMosaic = element.selectOtherMosaics.filter(elm => elm.label === mosaicSelected.label);
+        currentMosaic.forEach(current => {
+          current.disabled = true;
+          newMosaic.push(current);
+        });
+
+        otherMosaic.forEach(others => {
+          newMosaic.push(others);
+        });
+
+        newMosaic.forEach(element => {
+          if (this.otherMosaics[position].beforeValue !== '' && element.label === this.otherMosaics[position].beforeValue) {
+            element.disabled = false;
+          }
+        });
+
+        console.log('currentMosaic', currentMosaic);
+        console.log('otherMosaic', otherMosaic);
+        console.log('newMosaic', newMosaic);
+        element.selectOtherMosaics = newMosaic;
+        /* if (this.otherMosaics[position].beforeValue !== '' && this.otherMosaics[position].beforeValue) {
+           const current = this.allMosaics.find(e => e.label === this.otherMosaics[position].beforeValue);
+
+         }*/
+
+        /*  if (element.random !== this.otherMosaics[position].random) {
+            element.selectOtherMosaics = this.selectOtherMosaics;
+          }*/
+
+        /* if (this.selectOtherMosaics.length > 0) {
+           if (element.random !== this.otherMosaics[position].random) {
+            /* if (this.otherMosaics[position].beforeValue !== '' && this.otherMosaics[position].beforeValue) {
+               const current = this.allMosaics.find(e => e.label === this.otherMosaics[position].beforeValue);
+               console.log(current);
+               console.log('----this.selectOtherMosaics---', this.selectOtherMosaics);
+             /*  if(Object.keys(current).length > 0) {
+                 this.selectOtherMosaics.push(current);
+               }*
+             }*
+             console.log('----this.selectOtherMosaics---', this.selectOtherMosaics);
+             element.selectOtherMosaics = this.selectOtherMosaics;
+           } else {
+             this.otherMosaics[position].beforeValue = mosaicSelected.label;
+           }
+         }*/
+      });
+
+      this.otherMosaics[position].beforeValue = mosaicSelected.label;
+
     } else {
       this.otherMosaics[position].id = '';
       this.otherMosaics[position].balance = '';
@@ -277,6 +360,19 @@ export class CreateTransferComponent implements OnInit {
       this.otherMosaics[position].amountToBeSent = 0;
     }
 
+    /*this.otherMosaics.forEach(element => {
+      console.log('old', this.otherMosaics[position].beforeValue);
+      const newMosaic = [];
+      this.selectOtherMosaics = element.selectOtherMosaics.filter(elm => elm.label !== mosaicSelected.label);
+      if (this.selectOtherMosaics.length > 0) {
+        if (element.random !== this.otherMosaics[position].random) {
+          element.selectOtherMosaics = this.selectOtherMosaics;
+        }else {
+          this.otherMosaics[position].beforeValue = mosaicSelected.value;
+        }
+      }
+       console.log('old', this.otherMosaics[position].beforeValue);
+    });*/
   }
 
   /**
@@ -286,19 +382,27 @@ export class CreateTransferComponent implements OnInit {
    */
   pushedOtherMosaics() {
     console.log(this.selectOtherMosaics);
-    if (this.otherMosaics.length === 0) {
-      this.otherMosaics.push({
-        id: '',
-        balance: '',
-        amount: '',
-        errorBalance: false,
-        amountToBeSent: 0,
-        random: Math.floor(Math.random() * 1455654),
-        selectOtherMosaics: this.selectOtherMosaics
-      });
-    } else {
-      this.otherMosaics.forEach(element => {
-        if (element.id !== '' && element.amount !== '' && Number(element.amount) !== 0) {
+    if (this.selectOtherMosaics.length > 0) {
+      if (this.otherMosaics.length === 0) {
+        this.otherMosaics.push({
+          id: '',
+          balance: '',
+          beforeValue: '',
+          amount: '',
+          errorBalance: false,
+          amountToBeSent: 0,
+          random: Math.floor(Math.random() * 1455654),
+          selectOtherMosaics: this.selectOtherMosaics
+        });
+      } else {
+        let x = false;
+        this.otherMosaics.forEach(element => {
+          if (element.id === '' || element.amount === '' || Number(element.amount) === 0) {
+            x = true;
+          }
+        });
+
+        if (!x) {
           this.otherMosaics.push({
             id: '',
             balance: '',
@@ -309,9 +413,8 @@ export class CreateTransferComponent implements OnInit {
             selectOtherMosaics: this.selectOtherMosaics
           });
         }
-      });
+      }
     }
-
   }
 
   /**
