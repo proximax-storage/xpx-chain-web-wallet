@@ -6,7 +6,7 @@ export const environment = {
   production: true,
   version: '0.2.0',
   nameKeyNodeSelected: `sirius-wallet-node-selected`,
-  nameKeyWalletStorage: `sw-01`,
+  nameKeyWalletStorage: `sw-02`,
   nameKeyNodeStorage: `sirius-wallet-nodes`,
   protocol: `http`,
   protocolWs: `ws`,

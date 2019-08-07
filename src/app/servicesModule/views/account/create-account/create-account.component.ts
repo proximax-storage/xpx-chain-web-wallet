@@ -81,7 +81,7 @@ export class CreateAccountComponent implements OnInit {
           newAccount.address['address'],
           newAccount.network,
           nameAccount,
-          nameAccount
+          false
         );
 
         this.clearForm();

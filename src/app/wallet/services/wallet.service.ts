@@ -54,15 +54,15 @@ export class WalletService {
    * @returns {AccountsInterface}
    * @memberof WalletService
    */
-  buildAccount(encrypted: string, iv: string, address: string, network: number, nameWallet: string, labelParams = 'Primary'): AccountsInterface {
+  buildAccount(encrypted: string, iv: string, address: string, network: number, nameAccount: string = 'Primary', byDefault = true): AccountsInterface {
     const accounts: AccountsInterface = {
-      'address': address,
       'algo': 'pass:bip32',
+      'address': address,
       'brain': true,
+      'default': byDefault,
       'encrypted': encrypted,
       'iv': iv,
-      'name': nameWallet,
-      'label': labelParams,
+      'name': nameAccount,
       'network': network
     }
 
@@ -84,11 +84,11 @@ export class WalletService {
     );
 
     myAccounts.forEach(element => {
-        if (element.name === name) {
-          element.label = 'Primary';
-        }else {
-          element.label = element.name;
-        }
+      if (element.name === name) {
+        element.default = true;
+      } else {
+        element.default = false;
+      }
     });
 
     this.current.accounts = myAccounts;
@@ -244,7 +244,7 @@ export class WalletService {
     }
     // console.log(wallet);
 
-    const x = this.getAccountPrimary(wallet);
+    const x = this.getAccountDefault(wallet);
     this.network = x.network;
     // Account used
     this.currentAccount = x;
@@ -357,8 +357,8 @@ export class WalletService {
    * @returns
    * @memberof WalletService
    */
-  getAccountPrimary(wallet: any){
-    return wallet.accounts.find(x => x.label === 'Primary');
+  getAccountDefault(wallet: any) {
+    return wallet.accounts.find(x => x.default === true);
   }
 
   /**
@@ -400,11 +400,11 @@ export class WalletService {
 
 export interface AccountsInterface {
   brain: boolean;
+  default: boolean;
   algo: string;
   encrypted: string;
   iv: string;
   address: string;
-  label: string;
   name: string;
   network: number;
 }

@@ -50,8 +50,8 @@ export class SidebarMainComponent implements OnInit {
   ngOnInit() {
     this.destroySubscription();
     this.readRoute();
-    const currentPrimary = this.walletService.getAccountPrimary(this.walletService.current);
-    this.walletName = currentPrimary.name;
+    const currentDefault = this.walletService.getAccountDefault(this.walletService.current);
+    this.walletName = currentDefault.name;
     this.subscriptions['balance'] = this.transactionService.getBalance$().subscribe(next => {
       this.vestedBalance = `Balance ${next} XPX`;
     }, error => {

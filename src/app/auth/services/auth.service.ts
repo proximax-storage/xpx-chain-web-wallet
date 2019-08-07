@@ -58,7 +58,7 @@ export class AuthService {
   * @memberof LoginService
   */
   login(common: any, wallet: any) {
-    const currentAccount = wallet.accounts.find(elm => elm.label === 'Primary');
+    const currentAccount = wallet.accounts.find(elm => elm.default === true);
     let isValid = false;
     if (currentAccount) {
       if (!wallet) {
@@ -148,9 +148,8 @@ export class AuthService {
     wallets = (wallets == null) ? [] : wallets;
     const r = [];
     wallets.forEach((item) => {
-      console.log(item);
       const a = item.accounts.find(x => x.label === 'Primary');
-      r.push({ value: item, label: a.name });
+      r.push({ value: item, label: item.name });
     });
     return r;
   }
