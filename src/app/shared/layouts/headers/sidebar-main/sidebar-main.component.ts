@@ -31,7 +31,8 @@ export class SidebarMainComponent implements OnInit {
     AppConfig.routes.createWallet,
     AppConfig.routes.dashboard,
     AppConfig.routes.importWallet,
-    AppConfig.routes.service
+    AppConfig.routes.service,
+    AppConfig.routes.viewAllAccount
   ];
 
 
@@ -49,7 +50,8 @@ export class SidebarMainComponent implements OnInit {
   ngOnInit() {
     this.destroySubscription();
     this.readRoute();
-    this.walletName = this.walletService.current.name;
+    const currentPrimary = this.walletService.getAccountPrimary(this.walletService.current);
+    this.walletName = currentPrimary.name;
     this.subscriptions['balance'] = this.transactionService.getBalance$().subscribe(next => {
       this.vestedBalance = `Balance ${next} XPX`;
     }, error => {
@@ -65,7 +67,7 @@ export class SidebarMainComponent implements OnInit {
         'default', 'Transfer', '', '', false, `/${AppConfig.routes.createTransfer}`, true, {}, false
       ),
       account: this.sharedService.buildHeader(
-        'default', 'Account', '', '', false, `/${AppConfig.routes.account}`, true, {}, false
+        'default', 'Account', '', '', false, `/${AppConfig.routes.viewAllAccount}`, true, {}, false
       ),
       services: this.sharedService.buildHeader(
         'default', 'Services', '', '', false, `/${AppConfig.routes.service}`, true, {}, false
@@ -138,6 +140,7 @@ export class SidebarMainComponent implements OnInit {
               this.itemsHeader[element].selected = true;
             } else {
               let x = false;
+              this.itemsHeader[element].selected = false;
               this.routesExcludedInServices.forEach(element => {
                 if (objRoute === element) {
                   x = true;

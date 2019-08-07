@@ -13,6 +13,9 @@ import { MosaicsSupplyChangeComponent } from './views/mosaic/mosaics-supply-chan
 import { AliasMosaicsToNamespaceComponent } from './views/mosaic/alias-mosaics-to-namespace/alias-mosaics-to-namespace.component';
 import { UploadFileComponent } from './views/storage/upload-file/upload-file.component';
 import { MyFileComponent } from './views/storage/my-file/my-file.component';
+import { CreateAccountComponent } from './views/account/create-account/create-account.component';
+import { ViewAllAccountsComponent } from './views/account/view-all-accounts/view-all-accounts.component';
+import { AccountCreatedComponent } from './views/account/account-created/account-created.component';
 
 const routes: Routes = [
   {
@@ -25,8 +28,27 @@ const routes: Routes = [
         override: true,
       },
     }
-  },
-  {
+  }, {
+    path: AppConfig.routes.accountCreated,
+    component: AccountCreatedComponent,
+    data: {
+      meta: {
+        title: 'accountCreated.title',
+        description: 'accountCreated.text',
+        override: true,
+      },
+    }
+  }, {
+    path: AppConfig.routes.createAccount,
+    component: CreateAccountComponent,
+    data: {
+      meta: {
+        title: 'createAccount.title',
+        description: 'createAccount.text',
+        override: true,
+      },
+    }
+  }, {
     path: AppConfig.routes.service,
     component: ServicesBoxComponent,
     data: {
@@ -36,8 +58,7 @@ const routes: Routes = [
         override: true,
       },
     }
-  },
-  {
+  }, {
     path: AppConfig.routes.explorer,
     component: ExplorerComponent,
     data: {
@@ -47,8 +68,7 @@ const routes: Routes = [
         override: true,
       }
     }
-  },
-  {
+  }, {
     path: AppConfig.routes.createNamespace,
     component: CreateNamespaceComponent,
     data: {
@@ -58,8 +78,7 @@ const routes: Routes = [
         override: true,
       }
     }
-  },
-  {
+  }, {
     path: AppConfig.routes.uploadFile,
     component: UploadFileComponent,
     data: {
@@ -69,8 +88,7 @@ const routes: Routes = [
         override: true,
       }
     }
-  },
-  {
+  }, {
     path: AppConfig.routes.myFile,
     component: MyFileComponent,
     data: {
@@ -80,8 +98,7 @@ const routes: Routes = [
         override: true,
       }
     }
-  },
-  {
+  }, {
     path: AppConfig.routes.renewNamespace,
     component: RenewNamespaceComponent,
     data: {
@@ -91,8 +108,7 @@ const routes: Routes = [
         override: true,
       }
     }
-  },
-  {
+  }, {
     path: AppConfig.routes.addressBook,
     component: AddressBookComponent,
     data: {
@@ -102,9 +118,7 @@ const routes: Routes = [
         override: true,
       }
     },
-  },
-  
-  {
+  }, {
     path: AppConfig.routes.createMosaic,
     component: CreateMosaicComponent,
     data: {
@@ -114,8 +128,7 @@ const routes: Routes = [
         override: true,
       }
     }
-  },
-  {
+  }, {
     path: AppConfig.routes.MosaicSupplyChange,
     component: MosaicsSupplyChangeComponent,
     data: {
@@ -125,8 +138,7 @@ const routes: Routes = [
         override: true,
       }
     }
-  },
-  {
+  }, {
     path: AppConfig.routes.LinkingNamespaceMosaic,
     component: AliasMosaicsToNamespaceComponent,
     data: {
@@ -136,8 +148,7 @@ const routes: Routes = [
         override: true,
       }
     }
-  },
-  {
+  }, {
     path: AppConfig.routes.aliasAddressToNamespace,
     component: AliasAddressToNamespaceComponent,
     data: {
@@ -147,9 +158,17 @@ const routes: Routes = [
         override: true,
       }
     }
+  }, {
+    path: AppConfig.routes.viewAllAccount,
+    component: ViewAllAccountsComponent,
+    data: {
+      meta: {
+        title: 'viewAllAccount.title',
+        description: 'viewAllAccount.text',
+        override: true,
+      }
+    }
   }
-
-  
 ];
 
 @NgModule({

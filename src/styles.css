@@ -149,12 +149,20 @@ body {
   margin-left: .1rem;
 }
 
+.ml-10px {
+  margin-left: 10px !important;
+}
+
 .ml-1rem {
   margin-left: 1rem !important;
 }
 
 .ml-3rem {
   margin-left: 3rem;
+}
+
+.ml-04rem {
+  margin-left: .4rem;
 }
 
 .ml-05rem {
@@ -179,6 +187,10 @@ body {
 
 .mr-01rem {
   margin-right: .1rem;
+}
+
+.mr-04rem{
+  margin-right: .4rem;
 }
 
 .mr-05rem {
@@ -448,15 +460,15 @@ body {
 
 /******************* FONT-SIZE *******************/
 .fs-05rem {
-  font-size: 0.5rem;
+  font-size: 0.5rem !important;
 }
 
 .fs-06rem {
-  font-size: .6rem;
+  font-size: .6rem !important;
 }
 
 .fs-07rem {
-  font-size: 0.7rem;
+  font-size: 0.7rem !important;
 }
 
 .fs-08rem {
@@ -464,11 +476,11 @@ body {
 }
 
 .fs-09rem {
-  font-size: 0.9rem;
+  font-size: 0.9rem !important;
 }
 
 .fs-1rem {
-  font-size: 1rem;
+  font-size: 1rem !important;
 }
 
 .fs-1-2rem {
@@ -572,7 +584,7 @@ body {
 }
 
 .color-item-menu{
-  color: #2BA1B9 !important;
+  color: #306EB5 !important;
 }
 
 .green-c {
@@ -607,12 +619,12 @@ body {
 }
 
 .background-btn{
-  background: #2BA1B9 !important;
+  background: #306EB5 !important;
 }
 
 .background-btn-inverse{
   background-color: white !important;
-  border: 2px solid #2ba7c0 !important;
+  border: 2px solid #306EB5 !important;
 }
 
 .background-header-grey{
@@ -627,7 +639,21 @@ body {
   background: #efefef;
 }
 
+
 /**************************** THEME *****************************/
+.box-list-account-gray,
+.box-list-account{
+  color: white;
+  background: #2aa1b9;
+  border-radius: 1rem;
+  margin-top: 1rem;
+}
+
+.box-list-account-gray{
+  color: black !important;
+  background: #f4f4f4 !important;
+}
+
 .description-information {
   text-align: justify;
   font-size: .8rem;
@@ -650,6 +676,10 @@ body {
   max-height: 90vh !important;
 }
 
+.line-separator-gray{
+  height: 100%;
+  border: .03rem solid #cecece;
+}
 
 .line-separator {
   border-right: .5px solid #d6d6d6;
@@ -742,12 +772,16 @@ footer.page-footer .footer-copyright{
 
 /************************* NG SELECT *******************/
 .navbar.navbar-dark .breadcrumb .nav-item .nav-link, .navbar.navbar-dark .navbar-nav .nav-item .nav-link{
-  color: #2BA1B9 !important;
+  color: #306EB5 !important;
 }
 
 button.navbar-toggler{
   color: white !important;
-  background-color: #2BA1B9 !important;
+  background-color: #306EB5 !important;
+}
+
+.text-cl-m {
+  color: #306EB5 !important;
 }
 
 

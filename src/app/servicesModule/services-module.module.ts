@@ -15,6 +15,8 @@ import { MosaicsSupplyChangeComponent } from './views/mosaic/mosaics-supply-chan
 import { AliasMosaicsToNamespaceComponent } from './views/mosaic/alias-mosaics-to-namespace/alias-mosaics-to-namespace.component';
 import { UploadFileComponent } from './views/storage/upload-file/upload-file.component';
 import { MyFileComponent } from './views/storage/my-file/my-file.component';
+import { ViewAllAccountsComponent } from './views/account/view-all-accounts/view-all-accounts.component';
+import { AccountCreatedComponent } from './views/account/account-created/account-created.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +32,9 @@ import { MyFileComponent } from './views/storage/my-file/my-file.component';
     MosaicsSupplyChangeComponent,
     AliasMosaicsToNamespaceComponent,
     UploadFileComponent,
-    MyFileComponent
+    MyFileComponent,
+    ViewAllAccountsComponent,
+    AccountCreatedComponent
   ],
   imports: [
     CoreModule,

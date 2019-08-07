@@ -11,7 +11,8 @@ export class HomeComponent implements OnInit {
 
   link = {
     createWallet: AppConfig.routes.createWallet,
-    importWallet: AppConfig.routes.importWallet
+    importWallet: AppConfig.routes.importWallet,
+    selectTypeCreationWallet: AppConfig.routes.selectTypeCreationWallet
   };
   objectKeys = Object.keys;
   servicesList: StructureService[]  = [];
@@ -27,13 +28,13 @@ export class HomeComponent implements OnInit {
         'Blockchain',
         true,
         'Multisg, aggregated tx, cross chain, meta data',
-        'icon-transactions-green-60h-proximax-sirius-wallet.svg',
+        'icon-blockchain-gradient-80h-proximax-sirius-wallet.svg',
       ),
       this.services.buildStructureService(
         'Storage',
         true,
         'P2P decentralised storage for any type file',
-        'icon-storage-green-60h-proximax-sirius-wallet.svg',
+        'icon-storage-gradient-80h-proximax-sirius-wallet.svg',
       ),
         this.services.buildStructureService(
         'Streaming',

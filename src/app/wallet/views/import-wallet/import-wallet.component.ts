@@ -115,7 +115,8 @@ export class ImportWalletComponent implements OnInit {
           wallet.encryptedPrivateKey.encryptedKey,
           wallet.encryptedPrivateKey.iv,
           wallet.address['address'],
-          wallet.network
+          wallet.network,
+          nameWallet
         );
 
         this.clearForm();
@@ -124,7 +125,7 @@ export class ImportWalletComponent implements OnInit {
           algo: password,
           network: wallet.network
         }, dataAccount, wallet);
-        this.walletService.saveAccountStorage(nameWallet, dataAccount);
+        this.walletService.saveWalletStorage(nameWallet, dataAccount);
         this.router.navigate([`/${AppConfig.routes.walletCreated}`]);
       } else {
         //Error of repeated Wallet

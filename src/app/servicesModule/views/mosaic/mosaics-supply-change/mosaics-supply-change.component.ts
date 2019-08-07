@@ -42,6 +42,7 @@ export class MosaicsSupplyChangeComponent implements OnInit {
   divisibility: number = 0;
   duration: string = '0 days';
   supply: string = '0';
+  blockButton: boolean = false;
   levyMutable: boolean = false;
   supplyMutable: boolean = false;
   transferable: boolean = false;
@@ -250,6 +251,7 @@ export class MosaicsSupplyChangeComponent implements OnInit {
 
   send() {
     if (this.formMosaicSupplyChange.valid) {
+      this.blockButton = true;
       const common = {
         password: this.formMosaicSupplyChange.get('password').value,
         privateKey: ''
@@ -266,6 +268,7 @@ export class MosaicsSupplyChangeComponent implements OnInit {
         this.transactionSigned.push(signedTransaction);
         this.proximaxProvider.announce(signedTransaction).subscribe(
           x => {
+            this.blockButton = false;
             this.clearForm()
             this.blockUI.stop();
             if (this.subscriptions['transactionStatus'] === undefined || this.subscriptions['transactionStatus'] === null) {
@@ -275,6 +278,7 @@ export class MosaicsSupplyChangeComponent implements OnInit {
             this.setTimeOutValidate(signedTransaction.hash);
           },
           err => {
+            this.blockButton = false;
             this.clearForm()
             this.blockUI.stop(); // Stop blocking
             // console.error(err)
