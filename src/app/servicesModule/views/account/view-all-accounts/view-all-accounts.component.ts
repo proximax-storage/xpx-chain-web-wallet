@@ -23,10 +23,21 @@ export class ViewAllAccountsComponent implements OnInit {
     private walletService: WalletService
   ) {
     let walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
-    this.currentAccount = this.walletService.current;// walletsStorage.find(elm => elm.name === this.walletService.current.name);
+    this.currentAccount = this.walletService.current;
   }
 
   ngOnInit() {
+  }
+
+  /**
+   *
+   *
+   * @param {string} nameSelected
+   * @memberof ViewAllAccountsComponent
+   */
+  changeAsPrimary(nameSelected: string) {
+    this.walletService.changeAsPrimary(nameSelected);
+    this.currentAccount = this.walletService.current;
   }
 
 }

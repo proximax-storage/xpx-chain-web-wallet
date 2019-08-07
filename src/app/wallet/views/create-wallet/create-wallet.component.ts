@@ -103,7 +103,7 @@ export class CreateWalletComponent implements OnInit {
           wallet.encryptedPrivateKey.iv,
           wallet.address['address'],
           wallet.network,
-          nameWallet
+          `${nameWallet}`
         );
 
 

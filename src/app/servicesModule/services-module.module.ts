@@ -16,6 +16,7 @@ import { AliasMosaicsToNamespaceComponent } from './views/mosaic/alias-mosaics-t
 import { UploadFileComponent } from './views/storage/upload-file/upload-file.component';
 import { MyFileComponent } from './views/storage/my-file/my-file.component';
 import { ViewAllAccountsComponent } from './views/account/view-all-accounts/view-all-accounts.component';
+import { AccountCreatedComponent } from './views/account/account-created/account-created.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { ViewAllAccountsComponent } from './views/account/view-all-accounts/view
     AliasMosaicsToNamespaceComponent,
     UploadFileComponent,
     MyFileComponent,
-    ViewAllAccountsComponent
+    ViewAllAccountsComponent,
+    AccountCreatedComponent
   ],
   imports: [
     CoreModule,

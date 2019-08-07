@@ -16,6 +16,7 @@ import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
 })
 export class WalletService {
 
+  address: Address;
   algoData: {
     data: any;
     dataAccount: AccountsInterface;
@@ -25,7 +26,6 @@ export class WalletService {
   /******************** */
 
   currentAccount: any;
-  address: Address;
   current: any;
   network: any = '';
   algo: string;
@@ -72,6 +72,38 @@ export class WalletService {
   /**
    *
    *
+   * @param {string} name
+   * @memberof WalletService
+   */
+  changeAsPrimary(name: string) {
+    const myAccounts = Object.assign(this.current.accounts);
+    const othersWallet = this.getWalletStorage().filter(
+      (element: any) => {
+        return element.name !== this.current.name;
+      }
+    );
+
+    myAccounts.forEach(element => {
+        if (element.name === name) {
+          element.label = 'Primary';
+        }else {
+          element.label = element.name;
+        }
+    });
+
+    this.current.accounts = myAccounts;
+    othersWallet.push({
+      name: this.current.name,
+      accounts: myAccounts
+    });
+
+    localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(othersWallet));
+  }
+
+
+  /**
+   *
+   *
    * @returns
    * @memberof WalletService
    */
@@ -108,6 +140,7 @@ export class WalletService {
 
     localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(othersWallet));
   }
+
 
   /**
    *
@@ -210,14 +243,16 @@ export class WalletService {
       return false;
     }
     // console.log(wallet);
-    this.network = wallet.accounts[0].network;
+
+    const x = this.getAccountPrimary(wallet);
+    this.network = x.network;
     // Account used
-    this.currentAccount = wallet.accounts[0];
+    this.currentAccount = x;
     // Algo of the wallet
-    this.algo = wallet.accounts[0].algo;
+    this.algo = x.algo;
     // console.log(this.algo);
     // Adress and newwork
-    this.address = this.proximaxProvider.createFromRawAddress(wallet.accounts[0].address);
+    this.address = this.proximaxProvider.createFromRawAddress(x.address);
     this.current = wallet;
     // this.contacts = this._AddressBook.getContacts(wallet);
     return true;
@@ -313,6 +348,17 @@ export class WalletService {
    */
   getAccountInfoAsync(): Observable<AccountInfo> {
     return this.accountInfo$;
+  }
+
+  /**
+   *
+   *
+   * @param {*} wallet
+   * @returns
+   * @memberof WalletService
+   */
+  getAccountPrimary(wallet: any){
+    return wallet.accounts.find(x => x.label === 'Primary');
   }
 
   /**

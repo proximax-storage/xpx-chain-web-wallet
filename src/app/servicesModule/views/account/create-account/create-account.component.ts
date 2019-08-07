@@ -73,7 +73,7 @@ export class CreateAccountComponent implements OnInit {
       const nameAccount = this.formCreateAccount.get('nameWallet').value;
       if (Object.keys(this.walletService.current.accounts).find(elm => this.walletService.current.accounts[elm].name !== nameAccount)) {
         const network = NetworkType.TEST_NET;
-        const password = this.proximaxProvider.createPassword('12345678');
+        const password = this.proximaxProvider.createPassword(this.formCreateAccount.get('password').value);
         const newAccount = this.proximaxProvider.createAccountSimple(nameAccount, password, network);
         const accountBuilded = this.walletService.buildAccount(
           newAccount.encryptedPrivateKey.encryptedKey,
@@ -83,9 +83,15 @@ export class CreateAccountComponent implements OnInit {
           nameAccount,
           nameAccount
         );
+
         this.clearForm();
+        this.walletService.saveDataWalletCreated({
+          name: nameAccount,
+          algo: password,
+          network: newAccount.network
+        }, accountBuilded, newAccount);
         this.walletService.saveAccountStorage(nameAccount, accountBuilded);
-        this.router.navigate([`/${AppConfig.routes.viewAllAccount}`]);
+        this.router.navigate([`/${AppConfig.routes.accountCreated}`]);
       }
     }
   }

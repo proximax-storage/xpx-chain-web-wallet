@@ -15,6 +15,7 @@ import { UploadFileComponent } from './views/storage/upload-file/upload-file.com
 import { MyFileComponent } from './views/storage/my-file/my-file.component';
 import { CreateAccountComponent } from './views/account/create-account/create-account.component';
 import { ViewAllAccountsComponent } from './views/account/view-all-accounts/view-all-accounts.component';
+import { AccountCreatedComponent } from './views/account/account-created/account-created.component';
 
 const routes: Routes = [
   {
@@ -24,6 +25,16 @@ const routes: Routes = [
       meta: {
         title: 'detailAccount.title',
         description: 'detailAccount.text',
+        override: true,
+      },
+    }
+  }, {
+    path: AppConfig.routes.accountCreated,
+    component: AccountCreatedComponent,
+    data: {
+      meta: {
+        title: 'accountCreated.title',
+        description: 'accountCreated.text',
         override: true,
       },
     }

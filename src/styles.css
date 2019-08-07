@@ -641,11 +641,17 @@ body {
 
 
 /**************************** THEME *****************************/
+.box-list-account-gray,
 .box-list-account{
   color: white;
   background: #2aa1b9;
   border-radius: 1rem;
   margin-top: 1rem;
+}
+
+.box-list-account-gray{
+  color: black !important;
+  background: #f4f4f4 !important;
 }
 
 .description-information {
