@@ -1,3 +1,18 @@
+<!-- RELEASE TESTNET v0.1.7 -->
+## [Version: 0.1.7](https://github.com/proximax-storage/xpx-chain-web-wallet/releases/tag/0.1.7)
+
+<h2>Fixed bugs</h2>
+<ul>
+  <li>Search More Dashboard Transactions</li>
+  <li>Infinite Scroll in the module of Dashboard</li>
+  <li>#CreateMosaic: Add duration field by time, and you must calculate the approximate in blocks</li>
+ <li>#RenovateNamespace: Add duration field by time, and you must calculate the approximate in blocks</li>
+<li>#Dashboard - Fix in mosaic alias transaction. Does not show the mosaic alias name</li>
+<li>Add quantity of token next to the mosaics in transfer: Example prx.xpx (100000)</li>
+<li>Change descriptive text box services</li>
+</ul>
+
+
 <!-- RELEASE TESTNET v0.1.4 -->
 ## [release-testnet-v0.1.4](https://github.com/proximax-storage/xpx-chain-web-wallet/releases/tag/release-testnet-v0.1.4)
 

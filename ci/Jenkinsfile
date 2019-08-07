@@ -18,13 +18,13 @@ pipeline {
     stage('Build') {
       steps {
         echo 'Writing Nexus Credentials'
-        script {
-          // Writes a multi-line .npmrc file with the authentication hash for Nexus
-          writeFile file: '.npmrc', text: 'registry=https://nexus.internal.proximax.io/repository/npm-group/\n@scope:registry=https://nexus.internal.proximax.io/repository/npm-private/\nemail=jenkins@proximax.io\nalways-auth=true\n_auth=' + env.nexusAuth + '\n'
-        }
+        // script {
+        //   // Writes a multi-line .npmrc file with the authentication hash for Nexus
+        //   writeFile file: '.npmrc', text: 'registry=https://nexus.internal.proximax.io/repository/npm-group/\n@scope:registry=https://nexus.internal.proximax.io/repository/npm-private/\nemail=jenkins@proximax.io\nalways-auth=true\n_auth=' + env.nexusAuth + '\n'
+        // }
 
         echo 'Starting Docker Container'
-        withDockerContainer(image: 'node:8') {
+        withDockerContainer(image: 'node:10.16') {
           echo 'Installing dependencies'
           sh 'npm install'
 
@@ -35,7 +35,7 @@ pipeline {
 
           // TODO: Build production version in the future
           echo 'Building'
-          sh './node_modules/@angular/cli/bin/ng build --prod --build-optimizer'
+          sh './node_modules/@angular/cli/bin/ng build --aot --prod --build-optimizer=true --vendor-chunk=true'
         }
 
           echo 'Leaving Container'
@@ -67,7 +67,7 @@ pipeline {
             s3Delete bucket: 'bctestnetwallet.xpxsirius.io', path: './'
 
             echo 'Uploading new files'
-            s3Upload bucket: 'bctestnetwallet.xpxsirius.io', acl: 'PublicRead', file: 'dist/proxiWallet/', sseAlgorithm: 'AES256'
+            s3Upload bucket: 'bctestnetwallet.xpxsirius.io', acl: 'PublicRead', file: 'dist/proximax-sirius-wallet/', sseAlgorithm: 'AES256'
           }
 
           echo 'Managing CloudFront'
