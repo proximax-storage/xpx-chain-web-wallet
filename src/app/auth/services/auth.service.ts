@@ -148,6 +148,7 @@ export class AuthService {
     wallets = (wallets == null) ? [] : wallets;
     const r = [];
     wallets.forEach((item) => {
+      console.log(item);
       const a = item.accounts.find(x => x.label === 'Primary');
       r.push({ value: item, label: a.name });
     });

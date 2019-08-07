@@ -11,7 +11,7 @@ import { AppConfig } from '../../../../config/app.config';
 export class ViewAllAccountsComponent implements OnInit {
 
   componentName = 'View all';
-  currentAccount = [];
+  currentAccount: any = [];
   moduleName = 'Accounts';
   objectKeys = Object.keys;
   routes = {
