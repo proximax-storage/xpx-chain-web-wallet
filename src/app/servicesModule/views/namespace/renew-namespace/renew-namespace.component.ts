@@ -280,16 +280,13 @@ export class RenewNamespaceComponent implements OnInit {
         this.calculateRentalFee = this.transactionService.amountFormatter(amount, mosaic.mosaicInfo);
         if (invalidBalance && !this.insufficientBalance) {
           this.insufficientBalance = true;
-          this.blockBtnSend = true;
           this.renewNamespaceForm.controls['password'].disable();
         } else if (!invalidBalance && this.insufficientBalance) {
           this.insufficientBalance = false;
-          this.blockBtnSend = false;
           this.renewNamespaceForm.controls['password'].enable();
         }
       } else {
         this.insufficientBalance = true;
-        this.blockBtnSend = true;
         this.renewNamespaceForm.controls['password'].disable();
       }
     }

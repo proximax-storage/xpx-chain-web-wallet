@@ -29,6 +29,7 @@ export class CreateTransferComponent implements OnInit {
   errorOtherMosaics: boolean = false;
   formTransfer: FormGroup;
   blockSendButton = false;
+  blockButton: boolean = false;
   invalidRecipient = false;
   insufficientBalance = false;
   msgErrorUnsupported = '';
@@ -444,6 +445,7 @@ export class CreateTransferComponent implements OnInit {
   sendTransfer() {
     if (this.formTransfer.valid && (!this.blockSendButton || !this.errorOtherMosaics)) {
       const mosaicsToSend = this.validateMosaicsToSend();
+      this.blockButton = true;
       this.blockSendButton = true;
       let common = { password: this.formTransfer.get("password").value };
       if (this.walletService.decrypt(common)) {
@@ -460,16 +462,20 @@ export class CreateTransferComponent implements OnInit {
         this.clearForm();
         transferBuilder.transactionHttp.announce(transferBuilder.signedTransaction).subscribe(
           async () => {
+            this.blockButton = false;
             this.blockSendButton = false;
             if (this.subscribe['transactionStatus'] === undefined || this.subscribe['transactionStatus'] === null) {
               this.getTransactionStatus();
             }
           }, err => {
+            this.blockButton = false;
             this.blockSendButton = false;
             this.clearForm();
             this.sharedService.showError('', err);
           }
         );
+      } else {
+        this.blockButton = false;
       }
     }
   }

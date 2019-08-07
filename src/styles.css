@@ -460,15 +460,15 @@ body {
 
 /******************* FONT-SIZE *******************/
 .fs-05rem {
-  font-size: 0.5rem;
+  font-size: 0.5rem !important;
 }
 
 .fs-06rem {
-  font-size: .6rem;
+  font-size: .6rem !important;
 }
 
 .fs-07rem {
-  font-size: 0.7rem;
+  font-size: 0.7rem !important;
 }
 
 .fs-08rem {
@@ -476,11 +476,11 @@ body {
 }
 
 .fs-09rem {
-  font-size: 0.9rem;
+  font-size: 0.9rem !important;
 }
 
 .fs-1rem {
-  font-size: 1rem;
+  font-size: 1rem !important;
 }
 
 .fs-1-2rem {
@@ -584,7 +584,7 @@ body {
 }
 
 .color-item-menu{
-  color: #2BA1B9 !important;
+  color: #306EB5 !important;
 }
 
 .green-c {
@@ -619,12 +619,12 @@ body {
 }
 
 .background-btn{
-  background: #2BA1B9 !important;
+  background: #306EB5 !important;
 }
 
 .background-btn-inverse{
   background-color: white !important;
-  border: 2px solid #2ba7c0 !important;
+  border: 2px solid #306EB5 !important;
 }
 
 .background-header-grey{
@@ -772,12 +772,16 @@ footer.page-footer .footer-copyright{
 
 /************************* NG SELECT *******************/
 .navbar.navbar-dark .breadcrumb .nav-item .nav-link, .navbar.navbar-dark .navbar-nav .nav-item .nav-link{
-  color: #2BA1B9 !important;
+  color: #306EB5 !important;
 }
 
 button.navbar-toggler{
   color: white !important;
-  background-color: #2BA1B9 !important;
+  background-color: #306EB5 !important;
+}
+
+.text-cl-m {
+  color: #306EB5 !important;
 }
 
 
