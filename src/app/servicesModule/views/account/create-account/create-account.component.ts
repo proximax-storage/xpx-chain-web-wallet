@@ -1,4 +1,12 @@
 import { Component, OnInit } from '@angular/core';
+import { FormGroup, Validators, FormBuilder, AbstractControl } from '@angular/forms';
+import { NetworkType } from 'tsjs-xpx-chain-sdk';
+import { WalletService } from '../../../../wallet/services/wallet.service';
+import { environment } from '../../../../../environments/environment';
+import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
+import { AppConfig } from '../../../../config/app.config';
+import { ConfigurationForm, SharedService } from '../../../../shared/services/shared.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-create-account',
@@ -7,9 +15,152 @@ import { Component, OnInit } from '@angular/core';
 })
 export class CreateAccountComponent implements OnInit {
 
-  constructor() { }
+  formCreateAccount: FormGroup;
+  componentName = 'Create account';
+  configurationForm: ConfigurationForm = {}
+  currentWallet = [];
+  errorWalletExist: string;
+  isValid = false;
+  moduleName = 'Accounts';
+  othersAccounts = [];
+  routes = {
+    backToService: `/${AppConfig.routes.service}`,
+  };
+
+  constructor(
+    private walletService: WalletService,
+    private proximaxProvider: ProximaxProvider,
+    private fb: FormBuilder,
+    private sharedService: SharedService,
+    private router: Router
+  ) { }
 
   ngOnInit() {
+    this.configurationForm = this.sharedService.configurationForm;
+    const walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
+    this.othersAccounts = walletsStorage.filter(elm => elm.name !== this.walletService.current.name);
+    this.createForm();
+    this.createAccount();
+  }
+
+  /**
+   *
+   *
+   * @memberof CreateAccountComponent
+   */
+  createForm() {
+    this.formCreateAccount = this.fb.group({
+      nameWallet: ['', [
+        Validators.required,
+        Validators.minLength(this.configurationForm.nameWallet.minLength),
+        Validators.maxLength(this.configurationForm.nameWallet.maxLength)
+      ]],
+      password: ['', [
+        Validators.required,
+        Validators.minLength(this.configurationForm.passwordWallet.minLength),
+        Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
+      ]]
+    });
+  }
+
+  /**
+   *
+   *
+   * @memberof CreateAccountComponent
+   */
+  createAccount() {
+    if (this.formCreateAccount.valid && this.isValid) {
+      const nameAccount = this.formCreateAccount.get('nameWallet').value;
+      if (Object.keys(this.walletService.current.accounts).find(elm => this.walletService.current.accounts[elm].name !== nameAccount)) {
+        const network = NetworkType.TEST_NET;
+        const password = this.proximaxProvider.createPassword(this.formCreateAccount.get('password').value);
+        const newAccount = this.proximaxProvider.createAccountSimple(nameAccount, password, network);
+        const accountBuilded = this.walletService.buildAccount(
+          newAccount.encryptedPrivateKey.encryptedKey,
+          newAccount.encryptedPrivateKey.iv,
+          newAccount.address['address'],
+          newAccount.network,
+          nameAccount,
+          nameAccount
+        );
+
+        this.clearForm();
+        this.walletService.saveDataWalletCreated({
+          name: nameAccount,
+          algo: password,
+          network: newAccount.network
+        }, accountBuilded, newAccount);
+        this.walletService.saveAccountStorage(nameAccount, accountBuilded);
+        this.router.navigate([`/${AppConfig.routes.accountCreated}`]);
+      }
+    }
+  }
+
+
+  /**
+   *
+   *
+   * @param {string} [nameInput='']
+   * @param {string} [nameControl='']
+   * @returns
+   * @memberof CreateAccountComponent
+   */
+  clearForm(nameInput: string = '', nameControl: string = '') {
+    if (nameInput !== '') {
+      if (nameControl !== '') {
+        this.formCreateAccount.controls[nameControl].get(nameInput).reset();
+        return;
+      }
+
+      this.formCreateAccount.get(nameInput).reset();
+      return;
+    }
+
+    this.formCreateAccount.reset();
+    return;
+  }
+
+  /**
+   *
+   *
+   * @param {string} [nameInput='']
+   * @param {string} [nameControl='']
+   * @param {string} [nameValidation='']
+   * @returns
+   * @memberof CreateAccountComponent
+   */
+  validateInput(nameInput: string = '', nameControl: string = '', nameValidation: string = '') {
+    let validation: AbstractControl = null;
+    if (nameInput !== '' && nameControl !== '') {
+      validation = this.formCreateAccount.controls[nameControl].get(nameInput);
+    } else if (nameInput === '' && nameControl !== '' && nameValidation !== '') {
+      validation = this.formCreateAccount.controls[nameControl].getError(nameValidation);
+    } else if (nameInput !== '') {
+      validation = this.formCreateAccount.get(nameInput);
+    }
+    return validation;
+  }
+
+  /**
+   *
+   *
+   * @returns
+   * @memberof CreateAccountComponent
+   */
+  validateNameAccount() {
+    if (this.formCreateAccount.get('nameWallet').valid) {
+      const nameAccount = this.formCreateAccount.get('nameWallet').value;
+      const existWallet = Object.keys(this.walletService.current.accounts).find(elm => this.walletService.current.accounts[elm].name === nameAccount);
+      if (existWallet !== undefined) {
+        this.isValid = false;
+        this.errorWalletExist = '-invalid';
+        return true;
+      } else {
+        this.isValid = true;
+        this.errorWalletExist = '';
+        return false;
+      }
+    }
   }
 
 }

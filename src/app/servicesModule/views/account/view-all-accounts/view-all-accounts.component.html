@@ -1,0 +1,62 @@
+<div class="container-fluid mt-3rem mb-2rem animated fadeIn">
+  <div class="row">
+    <div class="col-11 col-xl-9 mx-auto">
+      <!-- HEADER MODULE -->
+      <div class="row">
+        <!-- NAME MODULE -->
+        <div class="col-12 col-md-6 col-lg-4">
+          <span class="fs-1rem txt-a-center line-h-1-2em color-grey">{{moduleName}}</span>
+          <span class="fs-1rem txt-a-center line-h-1-2em color-grey"> > </span>
+          <span class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">{{componentName}}</span>
+        </div>
+
+        <!-- ITEMS MENU -->
+        <div class="col-12 col-md-6 col-lg-8 d-flex justify-content-start justify-content-md-end">
+          <a class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio"
+            [routerLink]="[routes.createNewAccount]">
+            <span>Create new account</span>
+          </a>
+
+          <div class="ml-04rem mr-04rem">
+            <span class="line-separator-gray"></span>
+          </div>
+
+          <a class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio"
+            [routerLink]="[routes.backToService]">
+            <span>Back to Services</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- BORDER SEPARATOR -->
+      <div class="row">
+        <div class="col-12">
+          <hr class="mt-03rem mb-05rem">
+        </div>
+      </div>
+
+      <!-- BOX LIST ACCOUNT -->
+      <div class="row">
+        <ng-container *ngFor="let x of objectKeys(currentAccount.accounts)">
+          <div class="col-12 col-md-10 col-lg-9 col-xl-10 mx-auto box-list-account-gray fs-08rem pb-1rem"
+            [ngClass]="{'isPrimary':currentAccount.accounts[x].label === 'Primary'}">
+            <div class="row">
+              <div class="col-12 col-sm-10 col-md-9 col-lg-10 col-xl-10 pt-1rem">
+                Account: {{currentAccount.accounts[x].label}} <br>
+                {{currentAccount.accounts[x].address}}
+              </div>
+              <div
+                class="col-12 col-sm-2 col-md-3 col-lg-2 col-xl-2 d-flex align-items-center justify-content-start justify-content-sm-end justify-content-md-end justify-content-lg-end justify-content-xl-end pt-1rem">
+                <i class="fa fa-pencil-square-o fs-1-5rem cursor-p" aria-hidden="true" title="Modify account"></i>
+                <ng-container *ngIf="currentAccount.accounts[x].label !== 'Primary'">
+                  <i class="fa fa-star-half-o fs-1-5rem ml-10px cursor-p" aria-hidden="true"
+                    (click)="changeAsPrimary(currentAccount.accounts[x].name)" title="Select account as primary"></i>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>

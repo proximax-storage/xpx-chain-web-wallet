@@ -102,7 +102,8 @@ export class CreateWalletComponent implements OnInit {
           wallet.encryptedPrivateKey.encryptedKey,
           wallet.encryptedPrivateKey.iv,
           wallet.address['address'],
-          wallet.network
+          wallet.network,
+          `${nameWallet}`
         );
 
 
@@ -112,7 +113,7 @@ export class CreateWalletComponent implements OnInit {
           algo: password,
           network: wallet.network
         }, dataAccount, wallet);
-        this.walletService.saveAccountStorage(nameWallet, dataAccount);
+        this.walletService.saveWalletStorage(nameWallet, dataAccount);
         this.router.navigate([`/${AppConfig.routes.walletCreated}`]);
         // this.sharedService.showSuccess('', 'Your wallet has been successfully created');
       } else {
@@ -205,7 +206,7 @@ export class CreateWalletComponent implements OnInit {
         this.isValid = false;
         this.errorWalletExist = '-invalid';
         return true;
-      }else {
+      } else {
         this.isValid = true;
         this.errorWalletExist = '';
         return false;

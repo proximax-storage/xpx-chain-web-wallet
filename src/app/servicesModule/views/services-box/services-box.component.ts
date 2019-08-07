@@ -32,7 +32,7 @@ export class ServicesBoxComponent implements OnInit {
         '',
         {
           details: this.services.buildStructureService(
-            'DETAILS',
+            'ACCOUNTS',
             true,
             '',
             '',

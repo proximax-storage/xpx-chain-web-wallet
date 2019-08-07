@@ -4,6 +4,7 @@ import { AppConfig } from '../config/app.config';
 import { CreateWalletComponent } from './views/create-wallet/create-wallet.component';
 import { ImportWalletComponent } from './views/import-wallet/import-wallet.component';
 import { WalletCreatedComponent } from './views/wallet-created/wallet-created.component';
+import { SelectionWalletCreationTypeComponent } from './views/selection-wallet-creation-type/selection-wallet-creation-type.component';
 
 const routes: Routes = [
   {
@@ -35,6 +36,17 @@ const routes: Routes = [
       meta: {
         title: 'walletCreated.title',
         description: 'walletCreated.text',
+        override: true,
+      },
+    }
+  },
+  {
+    path: AppConfig.routes.selectTypeCreationWallet,
+    component: SelectionWalletCreationTypeComponent,
+    data: {
+      meta: {
+        title: 'selectTypeCreationWallet.title',
+        description: 'selectTypeCreationWallet.text',
         override: true,
       },
     }
