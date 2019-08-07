@@ -102,7 +102,8 @@ export class CreateWalletComponent implements OnInit {
           wallet.encryptedPrivateKey.encryptedKey,
           wallet.encryptedPrivateKey.iv,
           wallet.address['address'],
-          wallet.network
+          wallet.network,
+          nameWallet
         );
 
 
@@ -205,7 +206,7 @@ export class CreateWalletComponent implements OnInit {
         this.isValid = false;
         this.errorWalletExist = '-invalid';
         return true;
-      }else {
+      } else {
         this.isValid = true;
         this.errorWalletExist = '';
         return false;

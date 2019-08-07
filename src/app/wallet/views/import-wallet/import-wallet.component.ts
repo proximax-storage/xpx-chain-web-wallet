@@ -115,7 +115,8 @@ export class ImportWalletComponent implements OnInit {
           wallet.encryptedPrivateKey.encryptedKey,
           wallet.encryptedPrivateKey.iv,
           wallet.address['address'],
-          wallet.network
+          wallet.network,
+          nameWallet
         );
 
         this.clearForm();

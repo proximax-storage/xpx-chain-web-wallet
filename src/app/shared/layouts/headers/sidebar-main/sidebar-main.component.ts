@@ -31,7 +31,8 @@ export class SidebarMainComponent implements OnInit {
     AppConfig.routes.createWallet,
     AppConfig.routes.dashboard,
     AppConfig.routes.importWallet,
-    AppConfig.routes.service
+    AppConfig.routes.service,
+    AppConfig.routes.viewAllAccount
   ];
 
 
@@ -65,7 +66,7 @@ export class SidebarMainComponent implements OnInit {
         'default', 'Transfer', '', '', false, `/${AppConfig.routes.createTransfer}`, true, {}, false
       ),
       account: this.sharedService.buildHeader(
-        'default', 'Account', '', '', false, `/${AppConfig.routes.account}`, true, {}, false
+        'default', 'Account', '', '', false, `/${AppConfig.routes.viewAllAccount}`, true, {}, false
       ),
       services: this.sharedService.buildHeader(
         'default', 'Services', '', '', false, `/${AppConfig.routes.service}`, true, {}, false
@@ -138,6 +139,7 @@ export class SidebarMainComponent implements OnInit {
               this.itemsHeader[element].selected = true;
             } else {
               let x = false;
+              this.itemsHeader[element].selected = false;
               this.routesExcludedInServices.forEach(element => {
                 if (objRoute === element) {
                   x = true;

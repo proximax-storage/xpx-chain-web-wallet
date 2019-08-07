@@ -11,7 +11,8 @@ export class HomeComponent implements OnInit {
 
   link = {
     createWallet: AppConfig.routes.createWallet,
-    importWallet: AppConfig.routes.importWallet
+    importWallet: AppConfig.routes.importWallet,
+    selectTypeCreationWallet: AppConfig.routes.selectTypeCreationWallet
   };
   objectKeys = Object.keys;
   servicesList: StructureService[]  = [];

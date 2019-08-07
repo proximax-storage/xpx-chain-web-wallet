@@ -54,17 +54,19 @@ export class WalletService {
    * @returns {AccountsInterface}
    * @memberof WalletService
    */
-  buildAccount(encrypted: string, iv: string, address: string, network: number): AccountsInterface {
+  buildAccount(encrypted: string, iv: string, address: string, network: number, nameWallet: string, labelParams = 'Primary'): AccountsInterface {
     const accounts: AccountsInterface = {
-      'brain': true,
+      'address': address,
       'algo': 'pass:bip32',
+      'brain': true,
       'encrypted': encrypted,
       'iv': iv,
-      'address': address,
-      'label': 'Primary',
+      'name': nameWallet,
+      'label': labelParams,
       'network': network
     }
-    return accounts
+
+    return accounts;
   }
 
   /**
@@ -106,9 +108,15 @@ export class WalletService {
    * @param {*} accounts
    * @memberof WalletService
    */
-  saveAccountStorage(user: string, accounts: any) {
+  saveAccountStorage(nameWallet: string, accountsParams: any) {
     let walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
-    walletsStorage.push({ name: user, accounts: { '0': accounts } });
+    walletsStorage.push({
+      name: nameWallet,
+      accounts: {
+        '0': accountsParams
+      }
+    });
+
     localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorage));
   }
 
@@ -329,6 +337,7 @@ export interface AccountsInterface {
   iv: string;
   address: string;
   label: string;
+  name: string;
   network: number;
 }
 
