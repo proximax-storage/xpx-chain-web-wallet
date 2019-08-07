@@ -16,6 +16,7 @@ import { AliasMosaicsToNamespaceComponent } from './views/mosaic/alias-mosaics-t
 import { UploadFileComponent } from './views/storage/upload-file/upload-file.component';
 import { MyFileComponent } from './views/storage/my-file/my-file.component';
 import { MultiSignatureContractComponent } from './views/multi-sign/multi-signature-contract/multi-signature-contract.component';
+import { CreateMultiSignatureComponent } from './views/multi-sign/components/create-multi-signature/create-multi-signature.component';
 
 @NgModule({
   declarations: [
@@ -32,11 +33,14 @@ import { MultiSignatureContractComponent } from './views/multi-sign/multi-signat
     AliasMosaicsToNamespaceComponent,
     UploadFileComponent,
     MyFileComponent,
-    MultiSignatureContractComponent
+    MultiSignatureContractComponent,
+    CreateMultiSignatureComponent
   ],
   imports: [
     CoreModule,
     ServicesModuleRoutingModule
+  ], exports: [
+    CreateMultiSignatureComponent
   ]
 })
 export class ServicesModule { }

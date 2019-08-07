@@ -1,0 +1,115 @@
+<form>
+    <div class="row">
+        <div class="col-sm-12 col-md-7 col-lg-7 col-xl-7 mb-2rem">
+            <div class="row mt-1rem">
+                <div class="col-11 mx-auto">
+                    <div class="md-form form-sm">
+                        <input required mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
+                            type="text" id="name" class="form-control form-control-sm input-border" placeholder="Account to convert private key">
+
+                        <!-- VALIDATION -->
+                        <!-- <mdb-error *ngIf="validateInput('name', '').invalid && (validateInput('name', '').dirty || validateInput('name', '').touched)">
+                            <span>Input invalid</span>
+                        </mdb-error> -->
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-11 mx-auto">
+                    <div class="md-form form-sm">
+                        <input required mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
+                            type="text" id="name" class="form-control form-control-sm input-border" placeholder="Cosignatory: (Account address)">
+
+                        <!-- VALIDATION -->
+                        <!-- <mdb-error *ngIf="validateInput('name', '').invalid && (validateInput('name', '').dirty || validateInput('name', '').touched)">
+                                <span>Input invalid</span>
+                            </mdb-error> -->
+                    </div>
+                </div>
+            </div>
+            <!-- Add mosaics -->
+            <div class="row mt-1rem">
+                <div class="col-12 d-flex justify-content-center" style="background-image: url(assets/images/img/horizontal-line-background.jpg);">
+                    <button mdbBtn type="button" rounded="true" mdbWavesEffect class="background-btn-inverse pl-2rem pr-2rem"
+                        size="md" (click)="pushedOtherMosaics()">
+                        <span class="fs-1-2em color-blue-intermedio fw-700">(+) Add Cosignatory</span>
+                    </button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-11 mx-auto">
+                    <div class="md-form form-sm">
+                        <input required mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
+                            type="text" id="name" class="form-control form-control-sm input-border" placeholder="Min signatures">
+
+                        <!-- VALIDATION -->
+                        <!-- <mdb-error *ngIf="validateInput('name', '').invalid && (validateInput('name', '').dirty || validateInput('name', '').touched)">
+                                    <span>Input invalid</span>
+                                </mdb-error> -->
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-11 mx-auto">
+                    <div class="md-form form-sm">
+                        <input required mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
+                            type="text" id="name" class="form-control form-control-sm input-border" placeholder="Fee">
+
+                        <!-- VALIDATION -->
+                        <!-- <mdb-error *ngIf="validateInput('name', '').invalid && (validateInput('name', '').dirty || validateInput('name', '').touched)">
+                                        <span>Input invalid</span>
+                                    </mdb-error> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-5 col-lg-5 col-xl-5">
+
+            <div class="row mt-2rem">
+                <div class="col-12 mx-auto">
+                    <div class="table-responsive table-hover">
+
+
+                        <table mdbTable #tableEl="mdbTable" id="mdbTable" striped="true" class="table table-hover table-bordered table-hover table-sm z-depth-0"
+                            cellspacing="0" width="100%" borderless="true">
+
+                            <thead>
+                                <tr class="header-backg">
+                                    <ng-container *ngFor="let head of headElements; let i = index">
+                                        <th scope="col" class="text-center fw-400 th-sm">{{head}}</th>
+                                    </ng-container>
+                                </tr>
+                            </thead>
+                            <tbody class="background-white">
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+
+        </div>
+
+
+    </div>
+    <!-- BUTTONS -->
+    <div class="row">
+        <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
+            <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+                size="md" (click)="clearForm()">
+                <span class="fs-1-2em color-white">CLEAR</span>
+            </button>
+        </div>
+        <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
+            <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+                size="md">
+                <span class="fs-1-2em color-white">CREATE</span>
+            </button>
+        </div>
+    </div>
+</form>
