@@ -113,7 +113,7 @@ export class CreateWalletComponent implements OnInit {
           algo: password,
           network: wallet.network
         }, dataAccount, wallet);
-        this.walletService.saveAccountStorage(nameWallet, dataAccount);
+        this.walletService.saveWalletStorage(nameWallet, dataAccount);
         this.router.navigate([`/${AppConfig.routes.walletCreated}`]);
         // this.sharedService.showSuccess('', 'Your wallet has been successfully created');
       } else {

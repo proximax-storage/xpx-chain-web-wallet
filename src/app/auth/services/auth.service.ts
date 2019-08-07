@@ -58,22 +58,27 @@ export class AuthService {
   * @memberof LoginService
   */
   login(common: any, wallet: any) {
+    const currentAccount = wallet.accounts.find(elm => elm.label === 'Primary');
     let isValid = false;
-    if (!wallet) {
-      this.sharedService.showError('', 'Dear user, the wallet is missing');
-      isValid = false;
-    } else if (!this.nodeService.getNodeSelected()) {
-      this.sharedService.showError('', 'Please, select a node.');
-      this.route.navigate([`/${AppConfig.routes.selectNode}`]);
-      isValid = false;
-    } else if (!this.walletService.decrypt(common, wallet.accounts[0], wallet.accounts[0].algo, wallet.accounts[0].network)) {
-      // Decrypt / generate and check primary
-      isValid = false;
-    } else if (wallet.accounts[0].network === NetworkType.MAIN_NET && wallet.accounts[0].algo === 'pass:6k' && common.password.length < 40) {
-      this.sharedService.showError('', 'Dear user, the wallet is missing');
+    if (currentAccount) {
+      if (!wallet) {
+        this.sharedService.showError('', 'Dear user, the wallet is missing');
+        isValid = false;
+      } else if (!this.nodeService.getNodeSelected()) {
+        this.sharedService.showError('', 'Please, select a node.');
+        this.route.navigate([`/${AppConfig.routes.selectNode}`]);
+        isValid = false;
+      } else if (!this.walletService.decrypt(common, currentAccount, currentAccount.algo, currentAccount.network)) {
+        // Decrypt / generate and check primary
+        isValid = false;
+      } else if (currentAccount.network === NetworkType.MAIN_NET && currentAccount.algo === 'pass:6k' && common.password.length < 40) {
+        this.sharedService.showError('', 'Dear user, the wallet is missing');
+      } else {
+        isValid = true;
+        this.walletService.use(wallet);
+      }
     }else {
-      isValid = true;
-      this.walletService.use(wallet);
+      this.sharedService.showError('', 'Dear user, the main account is missing');
     }
 
     if (!isValid) {
@@ -140,7 +145,7 @@ export class AuthService {
    * @memberof LoginService
    */
   walletsOption(wallets: Array<any> = []) {
-    wallets = (wallets == null) ? [] : wallets
+    wallets = (wallets == null) ? [] : wallets;
     const r = [];
     wallets.forEach((item) => {
       r.push({ value: item, label: item.name });

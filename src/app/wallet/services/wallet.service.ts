@@ -84,6 +84,30 @@ export class WalletService {
     return walletsStorage;
   }
 
+  /**
+   *
+   *
+   * @param {string} nameWallet
+   * @param {*} accountsParams
+   * @memberof WalletService
+   */
+  saveAccountStorage(nameWallet: string, accountsParams: any) {
+    const myAccounts = Object.assign(this.current.accounts);
+    const othersWallet = this.getWalletStorage().filter(
+      (element: any) => {
+        return element.name !== this.current.name;
+      }
+    );
+
+    myAccounts.push(accountsParams)
+    this.current.accounts = myAccounts;
+    othersWallet.push({
+      name: this.current.name,
+      accounts: myAccounts
+    });
+
+    localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(othersWallet));
+  }
 
   /**
    *
@@ -108,13 +132,11 @@ export class WalletService {
    * @param {*} accounts
    * @memberof WalletService
    */
-  saveAccountStorage(nameWallet: string, accountsParams: any) {
+  saveWalletStorage(nameWallet: string, accountsParams: any) {
     let walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
     walletsStorage.push({
       name: nameWallet,
-      accounts: {
-        '0': accountsParams
-      }
+      accounts: [accountsParams]
     });
 
     localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorage));
