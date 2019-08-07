@@ -25,6 +25,7 @@ export const AppConfig: Config = {
     LinkingNamespaceMosaic: 'alias-namespace-to-mosaic',
     linkTheNamespaceToAnAddress: 'alias-namespace-to-an-address',
     MosaicSupplyChange: 'mosaic-supply-change',
+    MultiSign: 'multi-signatures',
     polls: 'polls',
     renewNamespace: 'renew-namespace',
     renovateNamespace: 'renovate-namespace',
@@ -63,6 +64,7 @@ export const NameRoute = {
   [AppConfig.routes.importWallet]: 'Import wallet',
   [AppConfig.routes.linkTheNamespaceToAnAddress]: 'Link the namespace to an address',
   [AppConfig.routes.MosaicSupplyChange]: 'Mosaic supply change',
+  [AppConfig.routes.MultiSign]: 'Multi signatures',
   [AppConfig.routes.polls]: 'Vote and See Polls',
   [AppConfig.routes.renewNamespace]: 'Renew Namespace',
   [AppConfig.routes.renovateNamespace]: 'Renovate Namespace',
@@ -101,6 +103,7 @@ export interface Config {
     LinkingNamespaceMosaic: string;
     linkTheNamespaceToAnAddress: string;
     MosaicSupplyChange: string;
+    MultiSign: string;
     polls: string;
     renewNamespace: string;
     renovateNamespace: string;
