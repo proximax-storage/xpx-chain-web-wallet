@@ -118,7 +118,7 @@ export class CreateTransferComponent implements OnInit {
                   amount = this.transactionService.amountFormatter(currentMosaic.amount, mosaic.mosaicInfo);
                   const durationMosaic = new UInt64([
                     mosaic.mosaicInfo['properties']['duration']['lower'],
-                     mosaic.mosaicInfo['properties']['duration']['higher']
+                    mosaic.mosaicInfo['properties']['duration']['higher']
                   ]);
 
                   const createdBlock = new UInt64([
@@ -127,7 +127,7 @@ export class CreateTransferComponent implements OnInit {
                   ]);
 
                   if (durationMosaic.compact() > 0) {
-                    if (this.currentBlock >= durationMosaic.compact()+createdBlock.compact()) {
+                    if (this.currentBlock >= durationMosaic.compact() + createdBlock.compact()) {
                       expired = true;
                       nameExpired = ' - Expired';
                     }
@@ -534,13 +534,15 @@ export class CreateTransferComponent implements OnInit {
     );
 
     //Amount XPX
+    const mosaic = this.mosaicServices.filterMosaic(new MosaicId(this.mosaicXpx.id));
     this.formTransfer.get('amountXpx').valueChanges.subscribe(
       value => {
         if (value !== null && value !== undefined) {
-          const mosaic = this.mosaicServices.filterMosaic(new MosaicId(this.mosaicXpx.id));
           const a = Number(value);
-          this.amountXpxToSend = String((mosaic !== null) ? this.transactionService.amountFormatter(a, mosaic.mosaicInfo) : a);
-          // this.validateAmountToTransfer(value, mosaic);
+          this.amountXpxToSend = String((mosaic !== null) ?
+            this.transactionService.amountFormatter(a, mosaic.mosaicInfo) :
+            this.transactionService.amountFormatter(a, null, String(environment.mosaicXpxInfo.divisibility)));
+
           let validateAmount = false;
           const accountInfo = this.walletService.getAccountInfo();
           if (accountInfo !== undefined && accountInfo !== null && Object.keys(accountInfo).length > 0) {

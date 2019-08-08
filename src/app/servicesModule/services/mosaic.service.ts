@@ -170,8 +170,6 @@ export class MosaicService {
    * @memberof MosaicService
    */
   async saveMosaicsStorage(mosaicsInfo: MosaicInfo[], mosaicsToSearch?: MosaicId[]) {
-    console.log('-----mosaicsToSearch-----', mosaicsToSearch);
-    console.log('-----mosaicsInfo-----', mosaicsInfo);
     // searchByNamespaceId
     const searchByNamespaceId = [];
     //get mosaics from storage
@@ -215,7 +213,6 @@ export class MosaicService {
         if (currentMosaic && currentMosaic.names.length > 0) {
           const data = await this.buildStructureMosaicStorage(mosaicsStorage, mosaicInfo.mosaicId, mosaicsName, mosaicInfo);
           if (data) {
-            console.log('------data------', data);
             mosaicsStorage.push(data);
           }
         } else {
@@ -240,15 +237,11 @@ export class MosaicService {
 
         // console.log('----namespacesName-----', namespacesName);
         for (let element of searchByNamespaceId) {
-          console.log(element.toHex());
           if (mosaicsInfo.length > 0) {
             const currentMosaicInfo = mosaicsInfo.find(elm => elm.mosaicId.toHex() === element.toHex());
-            console.log('-----mosaicsInfo-----', mosaicsInfo);
             // const currentMosaic = mosaicsName.find(data => data.mosaicId.toHex() === currentMosaicInfo.mosaicId.toHex());
             const data = await this.buildStructureMosaicStorage(mosaicsStorage, element, [], currentMosaicInfo, names);
             if (data) {
-              console.log(currentMosaicInfo);
-              console.log('------data------', data);
               mosaicsStorage.push(data);
             }
           }
@@ -263,7 +256,6 @@ export class MosaicService {
           if (currentMosaic && currentMosaic.names.length > 0) {
             const data = await this.buildStructureMosaicStorage(mosaicsStorage, mosaicId, mosaicsName, null);
             if (data) {
-              console.log('------data------', data);
               mosaicsStorage.push(data);
             }
           } else {
@@ -291,7 +283,6 @@ export class MosaicService {
           for (let element of searchByNamespaceId) {
             const data = await this.buildStructureMosaicStorage(mosaicsStorage, element, [], null, names);
             if (data) {
-              console.log('------data------', data);
               mosaicsStorage.push(data);
             }
           }
