@@ -32,6 +32,7 @@ export class CreateTransferComponent implements OnInit {
   blockButton: boolean = false;
   invalidRecipient = false;
   insufficientBalance = false;
+  charRest: number;
   msgErrorUnsupported = '';
   msgErrorUnsupportedContact = '';
   mosaicXpx: { id: string, name: string; divisibility: number } = null;
@@ -41,7 +42,7 @@ export class CreateTransferComponent implements OnInit {
   incrementMosaics = 0;
   selectOtherMosaics = [];
   showContacts = false;
-  subscribe = ['accountInfo', 'transactionStatus'];
+  subscribe = ['accountInfo', 'transactionStatus', 'char'];
   title = 'Make a transfer';
   transactionSigned: SignedTransaction = null;
   currentBlock: number = 0;
@@ -60,6 +61,7 @@ export class CreateTransferComponent implements OnInit {
 
   ngOnInit() {
     this.configurationForm = this.sharedService.configurationForm;
+    this.charRest = this.configurationForm.message.maxLength;
     this.mosaicXpx = {
       id: environment.mosaicXpxInfo.id,
       name: environment.mosaicXpxInfo.name,
@@ -76,6 +78,10 @@ export class CreateTransferComponent implements OnInit {
     this.ngOnDestroy();
     this.booksAddress();
     this.createFormTransfer();
+
+    this.subscribe['char'] = this.formTransfer.get('message').valueChanges.subscribe(val => {
+      this.charRest = this.configurationForm.message.maxLength - val.length;
+    });
     this.getMosaics();
     this.subscribeValue();
   }
