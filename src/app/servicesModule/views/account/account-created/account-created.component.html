@@ -51,26 +51,28 @@
             </div>
             <div
               class="col-12 col-sm-2 col-md-3 col-lg-2 col-xl-2 d-flex align-items-center justify-content-start justify-content-sm-end justify-content-md-end justify-content-lg-end justify-content-xl-end pt-1rem">
-                <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="cursor-p"
+              <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="cursor-p"
                 title="Copy" width="20" (click)="copyMessage('Address')" ngxClipboard [cbContent]="address">
             </div>
           </div>
         </div>
 
         <!-- Public key  -->
-        <div class="col-12 col-md-10 col-lg-9 col-xl-10 mx-auto box-list-account-gray fs-08rem pb-1rem">
-          <div class="row">
-            <div class="col-12 col-sm-10 col-md-9 col-lg-10 col-xl-10 pt-1rem w-b-a">
-              Public key: <br>
-              {{publicKey}}
-            </div>
-            <div
-              class="col-12 col-sm-2 col-md-3 col-lg-2 col-xl-2 d-flex align-items-center justify-content-start justify-content-sm-end justify-content-md-end justify-content-lg-end justify-content-xl-end pt-1rem">
-              <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="cursor-p"
-                title="Copy" width="20" (click)="copyMessage('Public Key')" ngxClipboard [cbContent]="publicKey">
+        <ng-container *ngIf="viewPublicKey">
+          <div class="col-12 col-md-10 col-lg-9 col-xl-10 mx-auto box-list-account-gray fs-08rem pb-1rem">
+            <div class="row">
+              <div class="col-12 col-sm-10 col-md-9 col-lg-10 col-xl-10 pt-1rem w-b-a">
+                Public key: <br>
+                {{publicKey}}
+              </div>
+              <div
+                class="col-12 col-sm-2 col-md-3 col-lg-2 col-xl-2 d-flex align-items-center justify-content-start justify-content-sm-end justify-content-md-end justify-content-lg-end justify-content-xl-end pt-1rem">
+                <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="cursor-p"
+                  title="Copy" width="20" (click)="copyMessage('Public Key')" ngxClipboard [cbContent]="publicKey">
+              </div>
             </div>
           </div>
-        </div>
+        </ng-container>
 
         <!-- privateKey key  -->
         <ng-container *ngIf="viewPrivateKey">
@@ -82,8 +84,8 @@
               </div>
               <div
                 class="col-12 col-sm-2 col-md-3 col-lg-2 col-xl-2 d-flex align-items-center justify-content-start justify-content-sm-end justify-content-md-end justify-content-lg-end justify-content-xl-end pt-1rem">
-                  <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="cursor-p"
-                title="Copy" width="20" (click)="copyMessage('Private Key')" ngxClipboard [cbContent]="privateKey">
+                <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="cursor-p"
+                  title="Copy" width="20" (click)="copyMessage('Private Key')" ngxClipboard [cbContent]="privateKey">
               </div>
             </div>
           </div>

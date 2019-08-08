@@ -17,7 +17,9 @@ import { AppConfig } from '../../../../config/app.config';
   styleUrls: ['./mosaics-supply-change.component.css']
 })
 export class MosaicsSupplyChangeComponent implements OnInit {
+
   @BlockUI() blockUI: NgBlockUI;
+  currentBlock: number = 0;
   formMosaicSupplyChange: FormGroup;
   parentMosaic: any = [{
     value: '1',
@@ -53,6 +55,7 @@ export class MosaicsSupplyChangeComponent implements OnInit {
   moduleName = 'Mosaics';
   componentName = 'MODIFY SUPPLY';
   backToService = `/${AppConfig.routes.service}`;
+  subscribe = ['block'];
 
   /**
    * Initialize dependencies and properties
@@ -73,11 +76,15 @@ export class MosaicsSupplyChangeComponent implements OnInit {
   async ngOnInit() {
     this.configurationForm = this.sharedService.configurationForm;
     this.createForm();
+    this.subscribe['block'] = await this.dataBridge.getBlock().subscribe(next => this.currentBlock = next);
     const data = await this.mosaicService.searchMosaicsFromAccountStorage$();
     const mosaicsSelect = this.parentMosaic.slice(0);
     // console.log(data);
     data.forEach(element => {
       // console.log(element);
+
+      let expired = false;
+      let nameExpired = '';
       if (element.mosaicInfo) {
         const nameMosaic = (element.mosaicNames.names.length > 0) ? element.mosaicNames.names[0] : this.proximaxProvider.getMosaicId(element.id).toHex();
         const addressOwner = this.proximaxProvider.createAddressFromPublicKey(
@@ -86,6 +93,22 @@ export class MosaicsSupplyChangeComponent implements OnInit {
         );
 
         const isOwner = (addressOwner.pretty() === this.walletService.address.pretty()) ? true : false;
+        const durationMosaic = new UInt64([
+          element.mosaicInfo['properties']['duration']['lower'],
+          element.mosaicInfo['properties']['duration']['higher']
+        ]);
+
+        const createdBlock = new UInt64([
+          element.mosaicInfo.height.lower,
+          element.mosaicInfo.height.higher
+        ]);
+
+        if (durationMosaic.compact() > 0) {
+          if (this.currentBlock >= durationMosaic.compact() + createdBlock.compact()) {
+            expired = true;
+            nameExpired = ' - Expired';
+          }
+        }
         /* console.log(addressOwner.pretty());
          console.log(this.walletService.address.pretty());
          console.log(element.mosaicInfo['properties']['supplyMutable']);
@@ -95,9 +118,9 @@ export class MosaicsSupplyChangeComponent implements OnInit {
         if (isOwner && element.mosaicInfo['properties']['supplyMutable']) {
           mosaicsSelect.push({
             value: element.id,
-            label: nameMosaic,
+            label: `${nameMosaic}${nameExpired}`,
             selected: false,
-            disabled: false
+            disabled: expired
           });
         }
       }
@@ -142,7 +165,7 @@ export class MosaicsSupplyChangeComponent implements OnInit {
   optionSelected(mosaic: any) {
     if (mosaic !== undefined) {
       const mosaicsInfoSelected: MosaicsStorage = this.mosaicService.filterMosaic(this.proximaxProvider.getMosaicId(mosaic['value']));
-    //  console.log(mosaicsInfoSelected);
+      //  console.log(mosaicsInfoSelected);
       if (mosaicsInfoSelected !== null || mosaicsInfoSelected !== undefined) {
         this.divisibility = mosaicsInfoSelected.mosaicInfo['properties'].divisibility;
         this.levyMutable = mosaicsInfoSelected.mosaicInfo['properties'].levyMutable;
@@ -203,7 +226,7 @@ export class MosaicsSupplyChangeComponent implements OnInit {
 
   get input() { return this.formMosaicSupplyChange.get('password'); }
 
-  getTransactionStatus() {
+  /*getTransactionStatus2() {
     // Get transaction status
     this.subscriptions['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
       statusTransaction => {
@@ -224,7 +247,35 @@ export class MosaicsSupplyChangeComponent implements OnInit {
         }
       }
     );
+  }*/
+
+
+  getTransactionStatus() {
+    // Get transaction status
+    this.subscriptions['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
+      statusTransaction => {
+        if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
+          for (let element of this.transactionSigned) {
+            const statusTransactionHash = (statusTransaction['type'] === 'error') ? statusTransaction['data'].hash : statusTransaction['data'].transactionInfo.hash;
+            const match = statusTransactionHash === element.hash;
+            if (match) {
+              this.transactionReady.push(element);
+            }
+            if (statusTransaction['type'] === 'confirmed' && match) {
+              this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransactionHash);
+              this.sharedService.showSuccess('', 'Transaction confirmed');
+            } else if (statusTransaction['type'] === 'unconfirmed' && match) {
+              this.sharedService.showInfo('', 'Transaction unconfirmed');
+            } else if (match) {
+              this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransactionHash);
+              this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
+            }
+          }
+        }
+      }
+    );
   }
+
   /*
     getTransactionStatus() {
       // Get transaction status

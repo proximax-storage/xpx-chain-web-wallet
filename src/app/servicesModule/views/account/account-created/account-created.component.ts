@@ -25,6 +25,7 @@ export class AccountCreatedComponent implements OnInit {
   publicKey: any;
   router: any;
   viewPrivateKey = false;
+  viewPublicKey = false;
 
   constructor(
     private walletService: WalletService,
@@ -39,6 +40,7 @@ export class AccountCreatedComponent implements OnInit {
       this.address = this.algo.wallet.address.pretty();
       this.privateKey = this.proximaxProvider.decryptPrivateKey(this.algo.data.algo, this.algo.dataAccount.encrypted, this.algo.dataAccount.iv).toUpperCase();
       this.publicKey = this.proximaxProvider.getPublicAccountFromPrivateKey(this.privateKey, this.algo.data.network).publicKey;
+      this.viewPublicKey = this.algo.data.fromPrivateKey;
       this.algo = null;
       this.walletService.algoData = null;
     }else {
