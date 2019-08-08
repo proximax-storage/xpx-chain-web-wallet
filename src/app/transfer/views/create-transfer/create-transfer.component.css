@@ -39,3 +39,7 @@
   line-height: 1rem;
   color: #171717;
 }
+
+.input-amount {
+  padding: 8px 10px !important;
+}

@@ -86,25 +86,12 @@
     <div class="row">
       <div class="col-11 col-md-10 col-lg-8 mx-auto">
         <div class="row d-flex align-items-center">
-          <!-- Amount to be Sent -->
-          <div class="col-11 col-md-5 mx-auto">
-            <div class="box-grey pt-1rem pb-1rem txt-a-center">
-              <span class="fs-08rem">Amount to be sent <br></span>
-              <span class="fs-1rem">{{amountXpxToSend}}</span>
-            </div>
-          </div>
-
-          <!-- Arrow Right -->
-          <div class="col-1 d-none d-md-block">
-            <i class="fa fa-angle-right fs-2rem" aria-hidden="true"></i>
-          </div>
-
           <!-- Amount Input -->
-          <div class="col-11 col-md-5 mx-auto">
+          <div class="col-12 mx-auto">
             <div class="md-form form-sm mt-1rem mb-0rem">
-              <input pattern="^[+]?([0-9]*[.])?[0-9]+$" mask="comma_separator.0" mdbInputDirective mdbValidate
+              <input pattern="^[+]?([0-9]*[.])?[0-9]+$"  currencyMask [options]="optionsXPX" mdbInputDirective mdbValidate
                 [validateSuccess]="true" [maxlength]="configurationForm.amount.maxLength" [validateError]="true"
-                type="text" class="form-control form-control-sm input-border" placeholder="Enter amount"
+                type="text" class="form-control form-control-sm input-border input-amount" placeholder="Enter amount"
                 formControlName="amountXpx">
 
               <mdb-error
@@ -157,25 +144,13 @@
           <div class="row">
             <div class="col-11 col-md-10 col-lg-8 mx-auto">
               <div class="row d-flex align-items-center">
-                <!-- Amount to be Sent -->
-                <div class="col-11 col-md-5 mx-auto">
-                  <div class="box-grey pt-1rem pb-1rem txt-a-center">
-                    <span class="fs-08rem">Amount to be sent <br></span>
-                    <span class="fs-1rem">{{otherMosaic.amountToBeSent}}</span>
-                  </div>
-                </div>
-
-                <!-- Arrow Right -->
-                <div class="col-1 d-none d-md-block">
-                  <i class="fa fa-angle-right fs-2rem" aria-hidden="true"></i>
-                </div>
-
                 <!-- Amount Input -->
-                <div class="col-11 col-md-5 mx-auto">
+                <div class="col-12 mx-auto">
                   <div class="md-form form-sm mt-1rem mb-0rem">
-                    <input pattern="^[+]?([0-9]*[.])?[0-9]+$" mask="comma_separator.0" mdbInputDirective mdbValidate
+                    {{otherMosaics[i].config | json}}
+                    <input currencyMask [options]="otherMosaics[i].config" mdbInputDirective mdbValidate
                       [maxlength]="configurationForm.amount.maxLength" type="text"
-                      class="form-control form-control-sm input-border" [(ngModel)]="otherMosaics[i].amount"
+                      class="form-control form-control-sm input-border input-amount" [(ngModel)]="otherMosaics[i].amount"
                       [ngModelOptions]="{standalone: true}" (ngModelChange)="modelChanged($event, otherMosaic.id, i)"
                       placeholder="Enter quantity">
 

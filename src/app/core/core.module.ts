@@ -5,6 +5,7 @@ import { ClipboardModule } from 'ngx-clipboard';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxMaskModule } from 'ngx-mask';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { NgxCurrencyModule } from "ngx-currency";
 
 import { MdbModule } from '../shared/moduls/mdb/mdb.module';
 import { TransferTypeComponent } from '../dashboard/components/transfer-type/transfer-type.component';
@@ -42,7 +43,8 @@ const moduls = [
   NgxPaginationModule,
   ReactiveFormsModule,
   FormsModule,
-  ClipboardModule
+  ClipboardModule,
+  NgxCurrencyModule
 ];
 
 

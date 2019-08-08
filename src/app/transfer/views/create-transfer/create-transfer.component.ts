@@ -23,6 +23,12 @@ import { ServicesModuleService } from '../../../servicesModule/services/services
 export class CreateTransferComponent implements OnInit {
 
   allMosaics = [];
+  optionsXPX = {
+    prefix: '',
+    thousands: ',',
+    decimal: '.',
+    precision: '6'
+  };
   amountXpxToSend = '0.000000';
   balanceXpx = '0.000000';
   configurationForm: ConfigurationForm;
@@ -107,19 +113,31 @@ export class CreateTransferComponent implements OnInit {
         if (accountInfo !== undefined && accountInfo !== null) {
           if (accountInfo.mosaics.length > 0) {
             const mosaics = await this.mosaicServices.searchMosaics(accountInfo.mosaics.map(n => n.id));
-            this.subscribe['block'] = this.dataBridge.getBlock().subscribe(next => this.currentBlock = next);
+            this.subscribe['block'] = await this.dataBridge.getBlock().subscribe(next => this.currentBlock = next);
             if (mosaics.length > 0) {
+              
               for (let mosaic of mosaics) {
+                let configInput = {
+                  prefix: '',
+                  thousands: ',',
+                  decimal: '.',
+                  precision: '0'
+                };
+
                 const currentMosaic = accountInfo.mosaics.find(element => element.id.toHex() === this.proximaxProvider.getMosaicId(mosaic.id).toHex());
+                // console.log('Current Mosaic', mosaic);
                 let amount = '';
                 let expired = false;
                 let nameExpired = '';
-                if (mosaic.mosaicInfo !== null) {
+                if ('mosaicInfo' in mosaic) {
+                  console.log('Aquiiii llegaaaaaaaaaaaaaaaa');
                   amount = this.transactionService.amountFormatter(currentMosaic.amount, mosaic.mosaicInfo);
                   const durationMosaic = new UInt64([
                     mosaic.mosaicInfo['properties']['duration']['lower'],
                     mosaic.mosaicInfo['properties']['duration']['higher']
                   ]);
+
+                  configInput.precision = mosaic.mosaicInfo['properties']['divisibility'];
 
                   const createdBlock = new UInt64([
                     mosaic.mosaicInfo.height.lower,
@@ -146,12 +164,16 @@ export class CreateTransferComponent implements OnInit {
                     balance: amount,
                     expired: false,
                     selected: false,
-                    disabled: expired
+                    disabled: expired,
+                    config: configInput
                   });
                 } else {
                   this.balanceXpx = amount;
                 }
               }
+
+              console.log('Mosaic Select ', mosaicsSelect);
+              
 
               this.allMosaics = mosaicsSelect;
               this.selectOtherMosaics = mosaicsSelect;
@@ -324,6 +346,9 @@ export class CreateTransferComponent implements OnInit {
    * @memberof CreateTransferComponent
    */
   otherMosaicsChange(mosaicSelected: any, position: number) {
+
+    console.log(mosaicSelected);
+    console.log(position);
     if (mosaicSelected !== undefined) {
       this.otherMosaics[position].id = mosaicSelected.value;
       this.otherMosaics[position].balance = mosaicSelected.balance;
