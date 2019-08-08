@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ItemsHeaderInterface, SharedService } from '../../../services/shared.service';
-import { AppConfig } from 'src/app/config/app.config';
-import { environment } from 'src/environments/environment.prod';
+import { AppConfig } from '../../../../config/app.config';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-sidebar-auth',

@@ -54,16 +54,17 @@ export class WalletService {
    * @returns {AccountsInterface}
    * @memberof WalletService
    */
-  buildAccount(encrypted: string, iv: string, address: string, network: number, nameAccount: string = 'Primary', byDefault = true): AccountsInterface {
+  buildAccount(data: any): AccountsInterface {
     const accounts: AccountsInterface = {
       'algo': 'pass:bip32',
-      'address': address,
+      'address': data.address,
       'brain': true,
-      'default': byDefault,
-      'encrypted': encrypted,
-      'iv': iv,
-      'name': nameAccount,
-      'network': network
+      'default': data.byDefault,
+      'encrypted': data.encrypted,
+      'iv': data.iv,
+      'name': data.nameAccount,
+      'network': data.network,
+      'publicAccount': data.publicAccount
     }
 
     return accounts;
@@ -88,6 +89,36 @@ export class WalletService {
         element.default = true;
       } else {
         element.default = false;
+      }
+    });
+
+    this.current.accounts = myAccounts;
+    othersWallet.push({
+      name: this.current.name,
+      accounts: myAccounts
+    });
+
+    localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(othersWallet));
+  }
+
+  /**
+   *
+   *
+   * @param {string} oldName
+   * @param {string} newName
+   * @memberof WalletService
+   */
+  changeName(oldName: string, newName: string) {
+    const myAccounts = Object.assign(this.current.accounts);
+    const othersWallet = this.getWalletStorage().filter(
+      (element: any) => {
+        return element.name !== this.current.name;
+      }
+    );
+
+    myAccounts.forEach(element => {
+      if (element.name === oldName) {
+        element.name = newName;
       }
     });
 
@@ -173,6 +204,22 @@ export class WalletService {
     });
 
     localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorage));
+  }
+
+  /**
+   *
+   *
+   * @returns
+   * @memberof WalletService
+   */
+  validateNameAccount(nameWallet: string) {
+    const nameAccount = nameWallet;
+    const existAccount = Object.keys(this.current.accounts).find(elm => this.current.accounts[elm].name === nameAccount);
+    if (existAccount !== undefined) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
 
@@ -331,6 +378,23 @@ export class WalletService {
   }
 
   /**
+   *
+   *
+   * @param {string} byName
+   * @param {boolean} [byDefault=null]
+   * @returns
+   * @memberof WalletService
+   */
+  filterAccount(byName: string, byDefault: boolean = null) {
+    if (byDefault !== null) {
+      return this.current.accounts.find(elm => elm.default === true);
+    } else {
+      return this.current.accounts.find(elm => elm.name === byName);
+    }
+  }
+
+
+  /**
    * Get account info
    *
    * @returns
@@ -407,6 +471,7 @@ export interface AccountsInterface {
   address: string;
   name: string;
   network: number;
+  publicAccount: string;
 }
 
 export interface WalletAccountInterface {

@@ -17,7 +17,6 @@ export const AppConfig: Config = {
     createWallet: 'create-wallet',
     createAccount: 'create-account',
     dashboard: 'dashboard',
-    viewAllAccount: 'view-all-account',
     editMultisignatureContract: 'edit-multisignature-contract',
     explorer: 'explorer',
     service: 'services',
@@ -37,6 +36,7 @@ export const AppConfig: Config = {
     selectTypeCreationWallet: 'select-type-creation-wallet',
     selectTypeCreationAccount: 'select-type-creation-account',
     signMultiSigTransactions: 'sign-multisignature-transactions',
+    viewAllAccount: 'view-all-account',
     walletCreated: 'wallet-created',
   }
 };
@@ -60,7 +60,6 @@ export interface Config {
     createWallet: string;
     createAccount: string;
     dashboard: string;
-    viewAllAccount: string;
     editMultisignatureContract: string;
     explorer: string;
     service: string;
@@ -80,6 +79,7 @@ export interface Config {
     selectTypeCreationWallet: string;
     selectTypeCreationAccount: string;
     signMultiSigTransactions: string;
+    viewAllAccount: string;
     walletCreated: string;
   };
 }

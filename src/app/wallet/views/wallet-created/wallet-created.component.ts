@@ -27,7 +27,7 @@ export class WalletCreatedComponent implements OnInit {
   titleDescription = 'Your wallet has been created successfully';
   subtitle = '';
   viewPrivateKey = false;
-  routeHome = AppConfig.routes.home;
+  routeAuth = AppConfig.routes.auth;
 
   constructor(
     private walletService: WalletService,

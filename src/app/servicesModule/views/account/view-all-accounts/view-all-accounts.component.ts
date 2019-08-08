@@ -17,7 +17,8 @@ export class ViewAllAccountsComponent implements OnInit {
   objectKeys = Object.keys;
   routes = {
     backToService: `/${AppConfig.routes.service}`,
-    createNewAccount: `/${AppConfig.routes.selectTypeCreationAccount}`
+    createNewAccount: `/${AppConfig.routes.selectTypeCreationAccount}`,
+    viewDetails: `/${AppConfig.routes.account}/`
   };
 
   constructor(
@@ -38,7 +39,7 @@ export class ViewAllAccountsComponent implements OnInit {
    * @memberof ViewAllAccountsComponent
    */
   changeAsPrimary(nameSelected: string) {
-    this.sharedService.showSuccess('', 'Account changed to primary');
+    this.sharedService.showSuccess('', 'Account changed to default');
     this.walletService.changeAsPrimary(nameSelected);
     this.currentAccount = this.walletService.current;
   }

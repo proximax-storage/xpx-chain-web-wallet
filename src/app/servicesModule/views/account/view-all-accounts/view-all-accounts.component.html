@@ -47,9 +47,10 @@
               </div>
               <div
                 class="col-12 col-sm-2 col-md-3 col-lg-2 col-xl-2 d-flex align-items-center justify-content-start justify-content-sm-end justify-content-md-end justify-content-lg-end justify-content-xl-end pt-1rem">
-                <i class="fa fa-pencil-square-o fs-1-5rem cursor-p" aria-hidden="true" title="Details"></i>
+                <i class="fa fa-eye fs-1-2rem cursor-p" aria-hidden="true" title="View details"
+                [routerLink]="[routes.viewDetails+currentAccount.accounts[x].name]"></i>
                 <ng-container *ngIf="!currentAccount.accounts[x].default">
-                  <i class="fa fa-star-half-o fs-1-5rem ml-10px cursor-p" aria-hidden="true"
+                  <i class="fa fa-star-half-o fs-1-2rem ml-10px cursor-p" aria-hidden="true"
                     (click)="changeAsPrimary(currentAccount.accounts[x].name)" title="Select account as primary"></i>
                 </ng-container>
               </div>

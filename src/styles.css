@@ -197,6 +197,10 @@ body {
   margin-right: .5rem !important;
 }
 
+.mr-06rem {
+  margin-right: .6rem !important;
+}
+
 /********************* PADDING -*******************************/
 
 /** TOP **/
@@ -650,7 +654,7 @@ body {
 }
 
 .box-list-account-gray{
-  color: black !important;
+  color: #424242 !important;
   background: #f4f4f4 !important;
 }
 

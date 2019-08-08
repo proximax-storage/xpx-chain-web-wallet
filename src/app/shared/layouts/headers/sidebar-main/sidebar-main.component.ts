@@ -1,12 +1,12 @@
 import { Router, NavigationEnd } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { ItemsHeaderInterface, SharedService } from '../../../services/shared.service';
-import { AppConfig } from 'src/app/config/app.config';
-import { environment } from 'src/environments/environment.prod';
+import { AppConfig } from '../../../../config/app.config';
+import { environment } from '../../../../../environments/environment.prod';
 import { DashboardService } from '../../../../dashboard/services/dashboard.service';
 import { AuthService } from '../../../../auth/services/auth.service';
-import { WalletService } from 'src/app/wallet/services/wallet.service';
-import { TransactionsService } from 'src/app/transfer/services/transactions.service';
+import { WalletService } from '../../../../wallet/services/wallet.service';
+import { TransactionsService } from '../../../../transfer/services/transactions.service';
 
 @Component({
   selector: 'app-sidebar-main',
@@ -67,7 +67,7 @@ export class SidebarMainComponent implements OnInit {
         'default', 'Transfer', '', '', false, `/${AppConfig.routes.createTransfer}`, true, {}, false
       ),
       account: this.sharedService.buildHeader(
-        'default', 'Account', '', '', false, `/${AppConfig.routes.viewAllAccount}`, true, {}, false
+        'default', 'Account', '', '', false, `/${AppConfig.routes.account}`, true, {}, false
       ),
       services: this.sharedService.buildHeader(
         'default', 'Services', '', '', false, `/${AppConfig.routes.service}`, true, {}, false

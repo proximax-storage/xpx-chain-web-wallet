@@ -30,6 +30,16 @@ const routes: Routes = [
       },
     }
   }, {
+    path: `${AppConfig.routes.account}/:name`,
+    component: DetailAccountComponent,
+    data: {
+      meta: {
+        title: 'detailAccount.title',
+        description: 'detailAccount.text',
+        override: true,
+      },
+    }
+  }, {
     path: AppConfig.routes.accountCreated,
     component: AccountCreatedComponent,
     data: {
