@@ -58,7 +58,6 @@
   </ng-container>
 
   <!-- buttons create and clear -->
-<<<<<<< HEAD
   <div class="row mt-2rem d-flex justify-content-center">
     <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
       size="md" [routerLink]="['/'+routeHome]">
@@ -69,23 +68,5 @@
       <span class="fs-1-2em color-white" *ngIf="viewPrivateKey"><i class="fa fa-magic mr-1"></i> HIDE PRIVATE KEY</span>
       <span class="fs-1-2em color-white" *ngIf="!viewPrivateKey"><i class="fa fa-magic mr-1"></i> SHOW PRIVATE KEY</span>
     </button>
-=======
-  <div class="row mt-2rem">
-    <div class="col-11 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-      <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
-        size="md" [routerLink]="['/'+routeHome]">
-        <span class="fs-1-2em color-white"><i class="fa fa-arrow-circle-left"></i> FINISH</span>
-      </button>
-    </div>
-    <div class="col-11 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-      <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
-        size="md" (click)="viewPrivateKey = !viewPrivateKey">
-        <span class="fs-1-2em color-white" *ngIf="viewPrivateKey"><i class="fa fa-magic mr-1"></i> HIDE PRIVATE
-          KEY</span>
-        <span class="fs-1-2em color-white" *ngIf="!viewPrivateKey"><i class="fa fa-magic mr-1"></i> SHOW PRIVATE
-          KEY</span>
-      </button>
-    </div>
->>>>>>> 8d5bbd98ba288886a6103bca80eadfc1e61b4c95
   </div>
 </div>
