@@ -19,6 +19,8 @@ export class CreateMultiSignatureComponent implements OnInit {
   createMultsignForm: FormGroup;
   modifyMultisigAccountTransactionObject: ModifyMultisigAccountTransactionObject;
   cosignatoryList: CosignatoryList[] = [];
+  minApprovaMaxLength: number = 1;
+  minApprovaMinLength: number = 0;
   constructor(
     private fb: FormBuilder,
     private sharedService: SharedService,
@@ -26,7 +28,6 @@ export class CreateMultiSignatureComponent implements OnInit {
   ) {
     this.configurationForm = this.sharedService.configurationForm;
   }
-
   ngOnInit() {
     this.createForm()
     this.subscribeValueChange();
@@ -55,13 +56,15 @@ export class CreateMultiSignatureComponent implements OnInit {
         Validators.maxLength(this.configurationForm.privateKey.maxLength),
         Validators.pattern('^(0x|0X)?[a-fA-F0-9]+$')]
       ],
-      cosignatory: ['', [
-        Validators.required,
-        Validators.minLength(this.configurationForm.publicKey.minLength),
-        Validators.maxLength(this.configurationForm.publicKey.maxLength)]
-      ],
-
+      cosignatory: [''],
+      minApprovalDelta: [1, [
+        Validators.required, Validators.minLength(1),
+        Validators.maxLength(1)]],
+      minRemovalDelta: [1, [
+        Validators.required, Validators.minLength(1),
+        Validators.maxLength(1)]]
     });
+    this.validatorsCosignatory();
   }
 
   /**
@@ -72,17 +75,18 @@ export class CreateMultiSignatureComponent implements OnInit {
   clearForm() {
     this.createMultsignForm.get('privateKeyAccountMultisign').patchValue('');
     this.createMultsignForm.get('cosignatory').patchValue('');
+    this.createMultsignForm.get('minApprovalDelta').patchValue(1);
   }
 
   /**
- *
- *
- * @param {string} [nameInput='']
- * @param {string} [nameControl='']
- * @param {string} [nameValidation='']
- * @returns
- * @memberof CreateMultiSignatureComponent
- */
+   *
+   *
+   * @param {string} [nameInput='']
+   * @param {string} [nameControl='']
+   * @param {string} [nameValidation='']
+   * @returns
+   * @memberof CreateMultiSignatureComponent
+   */
   validateInput(nameInput: string = '', nameControl: string = '', nameValidation: string = '') {
     let validation: AbstractControl = null;
     if (nameInput !== '' && nameControl !== '') {
@@ -101,7 +105,18 @@ export class CreateMultiSignatureComponent implements OnInit {
   * @memberof CreateMultiSignatureComponent
   */
   convertIntoMultisigTransaction() {
-    console.log("enviar")
+
+    this.modifyMultisigAccountTransactionObject = {
+      modifications: this.getCosignatoryList()
+    }
+
+    console.log("validador", this.createMultsignForm.valid)
+
+    if (this.createMultsignForm.valid && this.cosignatoryList.length > 0) {
+      console.log("enviar",this.modifyMultisigAccountTransactionObject)
+
+    }
+
   }
 
   /**
@@ -110,7 +125,7 @@ export class CreateMultiSignatureComponent implements OnInit {
   * @memberof CreateNamespaceComponent
   */
   subscribeValueChange() {
-    // privateKeyAccountMultisign ValueChange
+    // PrivateKeyAccountMultisign ValueChange
     this.createMultsignForm.get('privateKeyAccountMultisign').valueChanges.subscribe(
       next => {
         if ((next !== null && next !== undefined)
@@ -118,10 +133,74 @@ export class CreateMultiSignatureComponent implements OnInit {
           this.modifyMultisigAccountTransactionObject = {
             accountMultisign: Account.createFromPrivateKey(next, this.walletService.network)
           }
+          console.log()
         }
       }
     );
+
+    // Cosignatory ValueChange
+    this.createMultsignForm.get('cosignatory').valueChanges.subscribe(
+      next => {
+        if (next !== null && next !== undefined) {
+
+        }
+        this.validatorsCosignatory()
+      }
+    );
   }
+
+  /**
+   * Change the form validator (cosignatory)
+   * @memberof CreateMultiSignatureComponent
+   */
+  validatorsCosignatory() {
+    const validators = [
+      Validators.required,
+      Validators.minLength(this.configurationForm.publicKey.minLength),
+      Validators.maxLength(this.configurationForm.publicKey.maxLength),
+      Validators.pattern('^(0x|0X)?[a-fA-F0-9]+$')];
+    if (this.cosignatoryList.length > 0 && (this.createMultsignForm.get('cosignatory').value === null
+      || this.createMultsignForm.get('cosignatory').value === undefined
+      || this.createMultsignForm.get('cosignatory').value === '')) {
+      this.createMultsignForm.controls['cosignatory'].setValidators(null);
+    } else {
+      this.createMultsignForm.controls['cosignatory'].setValidators(validators);
+    }
+    this.createMultsignForm.controls['cosignatory'].updateValueAndValidity({ emitEvent: false });
+  }
+
+  /**
+  * Change the form validator (minApprovalDelta)
+  * @memberof CreateMultiSignatureComponent
+  */
+  validatorsMinApprovalDelta() {
+    const validators = [Validators.required,
+    Validators.minLength(1),
+    Validators.maxLength(this.cosignatoryList.length)]
+    this.minApprovaMinLength = 0;
+    this.minApprovaMaxLength = this.cosignatoryList.length
+    this.createMultsignForm.get('minApprovalDelta').patchValue(0);
+    this.createMultsignForm.controls['minApprovalDelta'].setValidators(validators);
+    this.createMultsignForm.controls['minApprovalDelta'].updateValueAndValidity({ emitEvent: false });
+
+  }
+
+  /**
+* Change the form validator (minRemovalDelta)
+* @memberof CreateMultiSignatureComponent
+*/
+  validatorsMinRemovalDelta() {
+    const validators = [Validators.required,
+    Validators.minLength(1),
+    Validators.maxLength(this.cosignatoryList.length)]
+    this.minApprovaMinLength = 0;
+    this.minApprovaMaxLength = this.cosignatoryList.length
+    this.createMultsignForm.get('minRemovalDelta').patchValue(0);
+    this.createMultsignForm.controls['minRemovalDelta'].setValidators(validators);
+    this.createMultsignForm.controls['minRemovalDelta'].updateValueAndValidity({ emitEvent: false });
+
+  }
+
   /**
   * Add cosignatory to the board
   * @memberof CreateMultiSignatureComponent
@@ -134,6 +213,7 @@ export class CreateMultiSignatureComponent implements OnInit {
       );
       if (!Boolean(this.cosignatoryList.find(item => { return item.publicAccount.address.plain() === cosignatory.address.plain() }))) {
         this.cosignatoryList.push({ publicAccount: cosignatory, action: 'Add', id: cosignatory.address });
+        this.setCosignatoryList(this.cosignatoryList);
         this.createMultsignForm.get('cosignatory').patchValue('');
       }
     }
@@ -146,11 +226,31 @@ export class CreateMultiSignatureComponent implements OnInit {
   */
   deleteCosignatory(id: Address) {
     this.cosignatoryList = this.cosignatoryList.filter(item => item.id.plain() !== id.plain());
+    this.setCosignatoryList(this.cosignatoryList);
+    this.validatorsCosignatory()
+  }
+
+  /**
+  * Set cosignatory list
+  * @memberof CreateMultiSignatureComponent
+  * @param {CosignatoryList} [cosignatoryListParam] - list cosignatory 
+  */
+  setCosignatoryList(cosignatoryListParam: CosignatoryList[]) {
+    this.cosignatoryList = cosignatoryListParam;
+    this.validatorsMinApprovalDelta();
+    this.validatorsMinRemovalDelta();
+  }
+
+  /**
+    * Get cosignatory list
+    * @memberof CreateMultiSignatureComponent
+    * @return {CosignatoryList} list cosignatory 
+    */
+  getCosignatoryList(): CosignatoryList[] {
+    return this.cosignatoryList;
   }
 
 }
-
-
 
 /**
  * Create a modify multisig account transaction object

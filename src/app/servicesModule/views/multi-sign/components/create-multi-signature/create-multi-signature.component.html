@@ -45,26 +45,30 @@
             <div class="row">
                 <div class="col-11 mx-auto">
                     <div class="md-form form-sm">
-                        <input required mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
-                            type="text" id="name" class="form-control form-control-sm input-border" placeholder="Min signatures">
+                        <input max="{{minApprovaMaxLength}}" min="{{minApprovaMinLength}}" formControlName="minApprovalDelta"
+                            required mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="number"
+                            id="minApprovalDelta" class="form-control form-control-sm input-border" placeholder="Min approval"
+                            onkeyup="javascript:this.value=this.value.toLowerCase();">
 
                         <!-- VALIDATION -->
-                        <!-- <mdb-error *ngIf="validateInput('name', '').invalid && (validateInput('name', '').dirty || validateInput('name', '').touched)">
-                                    <span>Input invalid</span>
-                                </mdb-error> -->
+                        <mdb-error *ngIf="validateInput('minApprovalDelta', '').invalid && (validateInput('minApprovalDelta', '').dirty || validateInput('minApprovalDelta', '').touched)">
+                            <span>Input invalid</span>
+                        </mdb-error>
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-11 mx-auto">
                     <div class="md-form form-sm">
-                        <input required mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
-                            type="text" id="name" class="form-control form-control-sm input-border" placeholder="Fee">
+                        <input max="{{minApprovaMaxLength}}" min="{{minApprovaMinLength}}" formControlName="minRemovalDelta"
+                            required mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="number"
+                            id="minRemovalDelta" class="form-control form-control-sm input-border" placeholder="Min removal"
+                            onkeyup="javascript:this.value=this.value.toLowerCase();">
 
                         <!-- VALIDATION -->
-                        <!-- <mdb-error *ngIf="validateInput('name', '').invalid && (validateInput('name', '').dirty || validateInput('name', '').touched)">
-                                        <span>Input invalid</span>
-                                    </mdb-error> -->
+                        <mdb-error *ngIf="validateInput('minRemovalDelta', '').invalid && (validateInput('minRemovalDelta', '').dirty || validateInput('minRemovalDelta', '').touched)">
+                            <span>Input invalid</span>
+                        </mdb-error>
                     </div>
                 </div>
             </div>
@@ -120,7 +124,8 @@
             </button>
         </div>
         <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-            <button mdbBtn type="submit" rounded="true" [disabled]="!createMultsignForm.valid" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+            <!-- [disabled]="!createMultsignForm.valid" -->
+            <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
                 size="md">
                 <span class="fs-1-2em color-white">CREATE</span>
             </button>
