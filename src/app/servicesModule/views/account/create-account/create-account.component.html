@@ -13,6 +13,15 @@
         <!-- ITEMS MENU -->
         <div class="col-12 col-md-6 col-lg-8 d-flex justify-content-start justify-content-md-end">
           <a class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio"
+            [routerLink]="[routes.back]">
+            <span>Back to select type</span>
+          </a>
+
+          <div class="ml-04rem mr-04rem">
+            <span class="line-separator-gray"></span>
+          </div>
+
+          <a class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio"
             [routerLink]="[routes.backToService]">
             <span>Back to Services</span>
           </a>
@@ -67,20 +76,21 @@
             </div>
 
             <div class="row">
-                <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-                  <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
-                    size="md" (click)="clearForm()">
-                    <span class="fs-1-2em color-white">CLEAR</span>
-                  </button>
-                </div>
-
-                <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-                  <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
-                    size="md" [disabled]="formCreateAccount.invalid || !isValid">
-                    <span class="fs-1-2em color-white">CREATE</span>
-                  </button>
-                </div>
+              <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
+                <button mdbBtn type="button" rounded="true" mdbWavesEffect
+                  class="f-w-600 background-btn pl-2rem pr-2rem" size="md" (click)="clearForm()">
+                  <span class="fs-1-2em color-white">CLEAR</span>
+                </button>
               </div>
+
+              <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
+                <button mdbBtn type="submit" rounded="true" mdbWavesEffect
+                  class="f-w-600 background-btn pl-2rem pr-2rem" size="md"
+                  [disabled]="formCreateAccount.invalid || !isValid">
+                  <span class="fs-1-2em color-white">CREATE</span>
+                </button>
+              </div>
+            </div>
           </form>
         </div>
       </div>

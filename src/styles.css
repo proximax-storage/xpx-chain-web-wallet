@@ -990,6 +990,10 @@ input.form-control.validate-success.ng-valid.ng-dirty, input.form-control.valida
 }
 /************************* FIN NG SELECT *******************/
 
+.w-b-a {
+  word-break: break-all;
+}
+
 .w-w-b-w {
   word-wrap: break-word;
 }

@@ -17,7 +17,7 @@ export class ViewAllAccountsComponent implements OnInit {
   objectKeys = Object.keys;
   routes = {
     backToService: `/${AppConfig.routes.service}`,
-    createNewAccount: `/${AppConfig.routes.createAccount}`
+    createNewAccount: `/${AppConfig.routes.selectTypeCreationAccount}`
   };
 
   constructor(

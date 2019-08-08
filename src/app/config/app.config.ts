@@ -25,6 +25,7 @@ export const AppConfig: Config = {
     uploadFile: 'upload-file',
     myFile: 'my-file',
     home: 'home',
+    importAccount: 'import-account',
     importWallet: 'import-wallet',
     LinkingNamespaceMosaic: 'alias-namespace-to-mosaic',
     linkTheNamespaceToAnAddress: 'alias-namespace-to-an-address',
@@ -34,6 +35,7 @@ export const AppConfig: Config = {
     renovateNamespace: 'renovate-namespace',
     selectNode: 'select-node',
     selectTypeCreationWallet: 'select-type-creation-wallet',
+    selectTypeCreationAccount: 'select-type-creation-account',
     signMultiSigTransactions: 'sign-multisignature-transactions',
     walletCreated: 'wallet-created',
   }
@@ -67,6 +69,7 @@ export interface Config {
     myFile: string;
     home: string;
     importWallet: string;
+    importAccount: string;
     LinkingNamespaceMosaic: string;
     linkTheNamespaceToAnAddress: string;
     MosaicSupplyChange: string;
@@ -75,6 +78,7 @@ export interface Config {
     renovateNamespace: string;
     selectNode: string;
     selectTypeCreationWallet: string;
+    selectTypeCreationAccount: string;
     signMultiSigTransactions: string;
     walletCreated: string;
   };
