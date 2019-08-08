@@ -1,29 +1,35 @@
-<form>
+<form [formGroup]="createMultsignForm" (ngSubmit)="convertIntoMultisigTransaction()">
     <div class="row">
-        <div class="col-sm-12 col-md-7 col-lg-7 col-xl-7 mb-2rem">
+        <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mb-2rem">
             <div class="row mt-1rem">
                 <div class="col-11 mx-auto">
                     <div class="md-form form-sm">
-                        <input required mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
-                            type="text" id="name" class="form-control form-control-sm input-border" placeholder="Account to convert private key">
+
+                        <input [maxlength]="configurationForm.privateKey.maxLength" [minlength]="configurationForm.privateKey.minLength"
+                            formControlName="privateKeyAccountMultisign" required mdbInputDirective mdbValidate
+                            [validateSuccess]="true" [validateError]="true" type="text" id="privateKeyAccountMultisign"
+                            class="form-control form-control-sm input-border" placeholder="Account to convert private key"
+                            onkeyup="javascript:this.value=this.value.toLowerCase();">
 
                         <!-- VALIDATION -->
-                        <!-- <mdb-error *ngIf="validateInput('name', '').invalid && (validateInput('name', '').dirty || validateInput('name', '').touched)">
+                        <mdb-error *ngIf="validateInput('privateKeyAccountMultisign', '').invalid && (validateInput('privateKeyAccountMultisign', '').dirty || validateInput('privateKeyAccountMultisign', '').touched)">
                             <span>Input invalid</span>
-                        </mdb-error> -->
+                        </mdb-error>
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-11 mx-auto">
                     <div class="md-form form-sm">
-                        <input required mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
-                            type="text" id="name" class="form-control form-control-sm input-border" placeholder="Cosignatory: (Account address)">
+                        <input [maxlength]="configurationForm.privateKey.maxLength" [minlength]="configurationForm.privateKey.minLength"
+                            formControlName="cosignatory" required mdbInputDirective mdbValidate [validateSuccess]="true"
+                            [validateError]="true" type="text" id="cosignatory" class="form-control form-control-sm input-border"
+                            placeholder="Cosignatory: (Account public key)" onkeyup="javascript:this.value=this.value.toLowerCase();">
 
                         <!-- VALIDATION -->
-                        <!-- <mdb-error *ngIf="validateInput('name', '').invalid && (validateInput('name', '').dirty || validateInput('name', '').touched)">
-                                <span>Input invalid</span>
-                            </mdb-error> -->
+                        <mdb-error *ngIf="validateInput('cosignatory', '').invalid && (validateInput('cosignatory', '').dirty || validateInput('cosignatory', '').touched)">
+                            <span>Input invalid</span>
+                        </mdb-error>
                     </div>
                 </div>
             </div>
@@ -31,7 +37,7 @@
             <div class="row mt-1rem">
                 <div class="col-12 d-flex justify-content-center" style="background-image: url(assets/images/img/horizontal-line-background.jpg);">
                     <button mdbBtn type="button" rounded="true" mdbWavesEffect class="background-btn-inverse pl-2rem pr-2rem"
-                        size="md" (click)="pushedOtherMosaics()">
+                        size="md" (click)="addCosignatory()">
                         <span class="fs-1-2em color-blue-intermedio fw-700">(+) Add Cosignatory</span>
                     </button>
                 </div>
@@ -63,7 +69,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-sm-12 col-md-5 col-lg-5 col-xl-5">
+        <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
 
             <div class="row mt-2rem">
                 <div class="col-12 mx-auto">
@@ -81,6 +87,14 @@
                                 </tr>
                             </thead>
                             <tbody class="background-white">
+                                <ng-container *ngFor="let cosign of cosignatoryList">
+                                    <tr class="mouse-pointer" mdbTableCol>
+                                        <td class="text-center">{{cosign.publicAccount.address.plain()}}</td>
+                                        <td class="text-center">{{cosign.action}}</td>
+                                        <td class="text-center" style="cursor: pointer;" (click)="deleteCosignatory(cosign.id)">(X)</td>
+                                    </tr>
+                                </ng-container>
+
                             </tbody>
                         </table>
 
@@ -106,7 +120,7 @@
             </button>
         </div>
         <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-            <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+            <button mdbBtn type="submit" rounded="true" [disabled]="!createMultsignForm.valid" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
                 size="md">
                 <span class="fs-1-2em color-white">CREATE</span>
             </button>
