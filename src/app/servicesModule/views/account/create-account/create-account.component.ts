@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, Validators, FormBuilder, AbstractControl } from '@angular/forms';
-import { NetworkType } from 'tsjs-xpx-chain-sdk';
+import { NetworkType, SimpleWallet } from 'tsjs-xpx-chain-sdk';
+import { Router, ActivatedRoute } from '@angular/router';
 import { WalletService } from '../../../../wallet/services/wallet.service';
 import { environment } from '../../../../../environments/environment';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { AppConfig } from '../../../../config/app.config';
 import { ConfigurationForm, SharedService } from '../../../../shared/services/shared.service';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-create-account',
@@ -14,6 +14,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./create-account.component.css']
 })
 export class CreateAccountComponent implements OnInit {
+
 
   formCreateAccount: FormGroup;
   componentName = 'Create account';
@@ -23,23 +24,28 @@ export class CreateAccountComponent implements OnInit {
   isValid = false;
   moduleName = 'Accounts';
   othersAccounts = [];
+  fromPrivateKey = false;
   routes = {
-    backToService: `/${AppConfig.routes.service}`,
+    back: `/${AppConfig.routes.selectTypeCreationAccount}`,
+    backToService: `/${AppConfig.routes.service}`
   };
 
+
   constructor(
+    private activateRoute: ActivatedRoute,
     private walletService: WalletService,
     private proximaxProvider: ProximaxProvider,
     private fb: FormBuilder,
     private sharedService: SharedService,
     private router: Router
-  ) { }
+  ) {}
 
   ngOnInit() {
+    let param = this.activateRoute.snapshot.paramMap.get('id');
     this.configurationForm = this.sharedService.configurationForm;
     const walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
     this.othersAccounts = walletsStorage.filter(elm => elm.name !== this.walletService.current.name);
-    this.createForm();
+    this.createForm(param);
     this.createAccount();
   }
 
@@ -48,12 +54,17 @@ export class CreateAccountComponent implements OnInit {
    *
    * @memberof CreateAccountComponent
    */
-  createForm() {
+  createForm(param: string) {
     this.formCreateAccount = this.fb.group({
       nameWallet: ['', [
         Validators.required,
         Validators.minLength(this.configurationForm.nameWallet.minLength),
         Validators.maxLength(this.configurationForm.nameWallet.maxLength)
+      ]],
+      privateKey: ['', [
+        Validators.minLength(this.configurationForm.privateKey.minLength),
+        Validators.maxLength(this.configurationForm.privateKey.maxLength),
+        Validators.pattern('^(0x|0X)?[a-fA-F0-9]+$')
       ]],
       password: ['', [
         Validators.required,
@@ -61,6 +72,11 @@ export class CreateAccountComponent implements OnInit {
         Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
       ]]
     });
+
+    if (param === '1') {
+      this.formCreateAccount.get('privateKey').setValidators([Validators.required]);
+      this.fromPrivateKey = true;
+    }
   }
 
   /**
@@ -74,14 +90,20 @@ export class CreateAccountComponent implements OnInit {
       if (Object.keys(this.walletService.current.accounts).find(elm => this.walletService.current.accounts[elm].name !== nameAccount)) {
         const network = NetworkType.TEST_NET;
         const password = this.proximaxProvider.createPassword(this.formCreateAccount.get('password').value);
-        const newAccount = this.proximaxProvider.createAccountSimple(nameAccount, password, network);
+        let newAccount: SimpleWallet = null;
+        if (this.fromPrivateKey) {
+          newAccount = this.proximaxProvider.createAccountFromPrivateKey(nameAccount, password, this.formCreateAccount.get('privateKey').value, network);
+        }else {
+          newAccount = this.proximaxProvider.createAccountSimple(nameAccount, password, network);
+        }
+
         const accountBuilded = this.walletService.buildAccount(
           newAccount.encryptedPrivateKey.encryptedKey,
           newAccount.encryptedPrivateKey.iv,
           newAccount.address['address'],
           newAccount.network,
           nameAccount,
-          nameAccount
+          false
         );
 
         this.clearForm();

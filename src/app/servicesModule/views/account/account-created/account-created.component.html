@@ -31,7 +31,7 @@
         <!-- Name -->
         <div class="col-12 col-md-10 col-lg-9 col-xl-10 mx-auto box-list-account-gray fs-08rem pb-1rem">
           <div class="row">
-            <div class="col-12 col-sm-10 col-md-9 col-lg-10 col-xl-10 pt-1rem">
+            <div class="col-12 col-sm-10 col-md-9 col-lg-10 col-xl-10 pt-1rem w-b-a">
               Name: <br>
               {{name}}
             </div>
@@ -45,13 +45,14 @@
         <!-- Address -->
         <div class="col-12 col-md-10 col-lg-9 col-xl-10 mx-auto box-list-account-gray fs-08rem pb-1rem">
           <div class="row">
-            <div class="col-12 col-sm-10 col-md-9 col-lg-10 col-xl-10 pt-1rem">
+            <div class="col-12 col-sm-10 col-md-9 col-lg-10 col-xl-10 pt-1rem w-b-a">
               Address: <br>
               {{address}}
             </div>
             <div
               class="col-12 col-sm-2 col-md-3 col-lg-2 col-xl-2 d-flex align-items-center justify-content-start justify-content-sm-end justify-content-md-end justify-content-lg-end justify-content-xl-end pt-1rem">
-              <i mdbWavesEffect (click)="copyMessage('Address')" ngxClipboard [cbContent]="address" class="fa fa-copy cursor-p fs-1-5rem" aria-hidden="true" title="Copy"></i>
+                <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="cursor-p"
+                title="Copy" width="20" (click)="copyMessage('Address')" ngxClipboard [cbContent]="address">
             </div>
           </div>
         </div>
@@ -59,13 +60,14 @@
         <!-- Public key  -->
         <div class="col-12 col-md-10 col-lg-9 col-xl-10 mx-auto box-list-account-gray fs-08rem pb-1rem">
           <div class="row">
-            <div class="col-12 col-sm-10 col-md-9 col-lg-10 col-xl-10 pt-1rem">
+            <div class="col-12 col-sm-10 col-md-9 col-lg-10 col-xl-10 pt-1rem w-b-a">
               Public key: <br>
               {{publicKey}}
             </div>
             <div
               class="col-12 col-sm-2 col-md-3 col-lg-2 col-xl-2 d-flex align-items-center justify-content-start justify-content-sm-end justify-content-md-end justify-content-lg-end justify-content-xl-end pt-1rem">
-              <i mdbWavesEffect (click)="copyMessage('Public Key')" ngxClipboard [cbContent]="publicKey" class="fa fa-copy cursor-p fs-1-5rem" aria-hidden="true" title="Copy"></i>
+              <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="cursor-p"
+                title="Copy" width="20" (click)="copyMessage('Public Key')" ngxClipboard [cbContent]="publicKey">
             </div>
           </div>
         </div>
@@ -74,13 +76,14 @@
         <ng-container *ngIf="viewPrivateKey">
           <div class="col-12 col-md-10 col-lg-9 col-xl-10 mx-auto box-list-account-gray fs-08rem pb-1rem">
             <div class="row">
-              <div class="col-12 col-sm-10 col-md-9 col-lg-10 col-xl-10 pt-1rem">
+              <div class="col-12 col-sm-10 col-md-9 col-lg-10 col-xl-10 pt-1rem w-b-a">
                 Private key: <br>
                 {{privateKey}}
               </div>
               <div
                 class="col-12 col-sm-2 col-md-3 col-lg-2 col-xl-2 d-flex align-items-center justify-content-start justify-content-sm-end justify-content-md-end justify-content-lg-end justify-content-xl-end pt-1rem">
-                <i mdbWavesEffect (click)="copyMessage('Private Key')" ngxClipboard [cbContent]="privateKey" class="fa fa-copy cursor-p fs-1-5rem" aria-hidden="true" title="Copy"></i>
+                  <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="cursor-p"
+                title="Copy" width="20" (click)="copyMessage('Private Key')" ngxClipboard [cbContent]="privateKey">
               </div>
             </div>
           </div>

@@ -17,6 +17,7 @@ import { UploadFileComponent } from './views/storage/upload-file/upload-file.com
 import { MyFileComponent } from './views/storage/my-file/my-file.component';
 import { ViewAllAccountsComponent } from './views/account/view-all-accounts/view-all-accounts.component';
 import { AccountCreatedComponent } from './views/account/account-created/account-created.component';
+import { SelectionAccountTypeComponent } from './views/account/selection-account-creation-type/selection-account-creation-type.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { AccountCreatedComponent } from './views/account/account-created/account
     UploadFileComponent,
     MyFileComponent,
     ViewAllAccountsComponent,
-    AccountCreatedComponent
+    AccountCreatedComponent,
+    SelectionAccountTypeComponent
   ],
   imports: [
     CoreModule,

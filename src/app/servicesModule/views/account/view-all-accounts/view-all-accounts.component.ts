@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { environment } from '../../../../../environments/environment';
 import { WalletService } from '../../../../wallet/services/wallet.service';
 import { AppConfig } from '../../../../config/app.config';
+import { SharedService } from '../../../../shared/services/shared.service';
 
 @Component({
   selector: 'app-view-all-accounts',
@@ -16,11 +17,12 @@ export class ViewAllAccountsComponent implements OnInit {
   objectKeys = Object.keys;
   routes = {
     backToService: `/${AppConfig.routes.service}`,
-    createNewAccount: `/${AppConfig.routes.createAccount}`
+    createNewAccount: `/${AppConfig.routes.selectTypeCreationAccount}`
   };
 
   constructor(
-    private walletService: WalletService
+    private walletService: WalletService,
+    private sharedService: SharedService
   ) {
     let walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
     this.currentAccount = this.walletService.current;
@@ -36,6 +38,7 @@ export class ViewAllAccountsComponent implements OnInit {
    * @memberof ViewAllAccountsComponent
    */
   changeAsPrimary(nameSelected: string) {
+    this.sharedService.showSuccess('', 'Account changed to primary');
     this.walletService.changeAsPrimary(nameSelected);
     this.currentAccount = this.walletService.current;
   }

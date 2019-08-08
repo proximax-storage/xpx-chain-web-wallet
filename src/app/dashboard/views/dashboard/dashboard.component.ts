@@ -83,7 +83,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    const currentPrimary = this.walletService.getAccountPrimary(this.walletService.current);
+    const currentPrimary = this.walletService.getAccountDefault(this.walletService.current);
     this.nameWallet = currentPrimary.name;
     this.typeTransactions = this.transactionService.arraTypeTransaction;
     this.dashboardService.incrementViewDashboard();

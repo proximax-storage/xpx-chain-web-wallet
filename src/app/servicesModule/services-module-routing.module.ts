@@ -16,6 +16,7 @@ import { MyFileComponent } from './views/storage/my-file/my-file.component';
 import { CreateAccountComponent } from './views/account/create-account/create-account.component';
 import { ViewAllAccountsComponent } from './views/account/view-all-accounts/view-all-accounts.component';
 import { AccountCreatedComponent } from './views/account/account-created/account-created.component';
+import { SelectionAccountTypeComponent } from './views/account/selection-account-creation-type/selection-account-creation-type.component';
 
 const routes: Routes = [
   {
@@ -39,12 +40,32 @@ const routes: Routes = [
       },
     }
   }, {
-    path: AppConfig.routes.createAccount,
+    path: `${AppConfig.routes.createAccount}/:id`,
     component: CreateAccountComponent,
     data: {
       meta: {
         title: 'createAccount.title',
         description: 'createAccount.text',
+        override: true,
+      },
+    }
+  }, {
+    path: `${AppConfig.routes.importAccount}/:id`,
+    component: CreateAccountComponent,
+    data: {
+      meta: {
+        title: 'importAccount.title',
+        description: 'importAccount.text',
+        override: true,
+      },
+    }
+  }, {
+    path: AppConfig.routes.selectTypeCreationAccount,
+    component: SelectionAccountTypeComponent,
+    data: {
+      meta: {
+        title: 'selectTypeCreationAccount.title',
+        description: 'selectTypeCreationAccount.text',
         override: true,
       },
     }
