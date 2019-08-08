@@ -66,7 +66,8 @@
                 <ng-container *ngIf="editNameAccount">
                   <i mdbWavesEffect (click)="changeNameAccount(accountName, newNameAccount)"
                     class="fa fa-check-square-o cursor-p mr-06rem" title="Update name account"></i>
-                  <i class="fa fa-window-close-o cursor-p" aria-hidden="true" (click)="editNameAccount = !editNameAccount" title="I don't want to update"></i>
+                  <i class="fa fa-window-close-o cursor-p" aria-hidden="true"
+                    (click)="editNameAccount = !editNameAccount" title="I don't want to update"></i>
                 </ng-container>
               </div>
             </div>
@@ -86,6 +87,8 @@
               </div>
             </div>
           </div>
+
+
           <!-- public key -->
           <div class="row" *ngIf="accountValid">
             <div class="col-11 col-sm-12 col-md-12 mx-auto d-flex align-items-center box-grey">
@@ -103,7 +106,7 @@
 
           <!-- public key -->
           <div class="row" *ngIf="!accountValid">
-            <div class="col-11 col-sm-12 col-md-11 mx-auto box-transparent-border-orange">
+            <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto box-transparent-border-orange">
               <div class="col-12 d-flex flex-column align-items-center">
                 <span class="fw-600">{{ titlePublickey }} </span>
                 <span class="font-small d-flex text-center">This user has not made transactions with this
@@ -111,6 +114,7 @@
               </div>
             </div>
           </div>
+
 
           <!-- Information -->
           <div class="row">

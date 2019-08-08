@@ -54,7 +54,7 @@
             <div class="md-form form-sm mt-1rem mb-0rem">
               <input mask="comma_separator.0" formControlName="deltaSupply" mdbInputDirective mdbValidate
                 [validateSuccess]="true" [validateError]="true" type="text" id="deltaSupply"
-                class="form-control form-control-sm input-border" placeholder="Amount to increase o decrease">
+                class="form-control form-control-sm input-border" placeholder="Quantity of increase/decrease">
 
               <mdb-error
                 *ngIf="validateInput('deltaSupply', '').invalid && (validateInput('deltaSupply', '').dirty || validateInput('deltaSupply', '').touched)">
