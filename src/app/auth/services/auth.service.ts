@@ -105,6 +105,7 @@ export class AuthService {
     this.logged = params;
     this.isLogged = params;
     this.isLoggedSubject.next(this.logged);
+    this.transactionService.setBalance$('0.000000');
   }
 
   /**************************************************/

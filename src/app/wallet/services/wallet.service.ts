@@ -25,6 +25,9 @@ export class WalletService {
 
   /******************** */
 
+  private currentAccountObs: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  private currentAccountObs$: Observable<any> = this.currentAccountObs.asObservable();
+
   currentAccount: any;
   current: any;
   network: any = '';
@@ -131,6 +134,13 @@ export class WalletService {
     localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(othersWallet));
   }
 
+  /**
+   *
+   */
+  getNameAccount$(): Observable<any> {
+    return this.currentAccountObs$;
+  }
+
 
   /**
    *
@@ -204,6 +214,10 @@ export class WalletService {
     });
 
     localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorage));
+  }
+
+  setCurrentAccount(currentAccount: any) {
+    this.currentAccountObs.next(currentAccount);
   }
 
   /**
@@ -293,15 +307,11 @@ export class WalletService {
 
     const x = this.getAccountDefault(wallet);
     this.network = x.network;
-    // Account used
     this.currentAccount = x;
-    // Algo of the wallet
     this.algo = x.algo;
-    // console.log(this.algo);
-    // Adress and newwork
     this.address = this.proximaxProvider.createFromRawAddress(x.address);
     this.current = wallet;
-    // this.contacts = this._AddressBook.getContacts(wallet);
+    this.setCurrentAccount(this.currentAccount);
     return true;
   }
 
@@ -317,7 +327,6 @@ export class WalletService {
    */
 
   decrypt(common: any, account: any = '', algo: any = '', network: any = '') {
-
     const acct = account || this.currentAccount;
     const net = network || this.network;
     const alg = algo || this.algo;
