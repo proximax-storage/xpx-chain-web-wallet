@@ -63,24 +63,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.myAddress = this.walletService.address.pretty();
   }
 
-  @HostListener("window:scroll", [])
-  onWindowScroll() {
-    if (window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop > 100) {
-      this.windowScrolled = true;
-    }
-    else if (this.windowScrolled && window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop < 10) {
-      this.windowScrolled = false;
-    }
-  }
-  scrollToTop() {
-    (function smoothscroll() {
-      var currentScroll = document.documentElement.scrollTop || document.body.scrollTop;
-      if (currentScroll > 0) {
-        window.requestAnimationFrame(smoothscroll);
-        window.scrollTo(0, currentScroll - (currentScroll / 8));
-      }
-    })();
-  }
 
   ngOnInit() {
     // NAME ACCOUNT
@@ -97,6 +79,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    // moment
+    this.transactionService.setTransactionsConfirmed$([]);
+
+    //
     this.subscriptions.forEach(element => {
       if (this.subscriptions[element] !== undefined) {
         this.subscriptions[element].unsubscribe();
@@ -105,9 +91,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-    // this.mdbTablePagination.setMaxVisibleItemsNumberTo(5);
-    // this.mdbTablePagination.calculateFirstItemIndex();
-    // this.mdbTablePagination.calculateLastItemIndex();
     this.cdRef.detectChanges();
   }
 
@@ -126,6 +109,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
     );
   }
 
+  /**
+   *
+   *
+   * @param {string} message
+   * @memberof DashboardComponent
+   */
   copyMessage(message: string) {
     this.sharedService.showSuccess('', `${message} copied`);
   }
@@ -140,14 +129,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
     // Update balance
     this.transactionService.updateBalance();
     // Validate if it is the first time the dashboard is loaded or if you click on the reload button
-    if (this.dashboardService.getCantViewDashboard() === 1 || reload) {
+    //if (this.dashboardService.getCantViewDashboard() === 1 || reload) {
       this.searching = true;
       this.iconReloadDashboard = false;
       this.loadTransactions();
-    } else {
+   /* } else {
       this.iconReloadDashboard = (this.dashboardService.searchComplete === false) ? true : false;
       this.searching = false;
-    }
+    }*/
   }
 
   /**
@@ -161,13 +150,23 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
   }
 
+  @HostListener("window:scroll", [])
+  onWindowScroll() {
+    if (window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop > 100) {
+      this.windowScrolled = true;
+    }
+    else if (this.windowScrolled && window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop < 10) {
+      this.windowScrolled = false;
+    }
+  }
+
   /**
    * Method to load transactions by public account.
    * @param {string} id Id of the transaction to start the next search.
    */
   loadTransactions(id = null) {
     this.transactions = (id) ? this.transactions : [];
-    this.proximaxProvider.getTransactionsFromAccountId(this.walletService.publicAccount, id).toPromise().then(response => {
+    this.proximaxProvider.getTransactionsFromAccountId(this.walletService.currentAccount.publicAccount, id).toPromise().then(response => {
       this.searchTransactions = !(response.length < 25);
       const data = [];
       response.forEach(element => {
@@ -191,6 +190,21 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.sharedService.showError('Has ocurred a error', 'Possible causes: the network is offline');
       //console.log('This is error ----> ', err);
     });
+  }
+
+  /**
+   *
+   *
+   * @memberof DashboardComponent
+   */
+  scrollToTop() {
+    (function smoothscroll() {
+      var currentScroll = document.documentElement.scrollTop || document.body.scrollTop;
+      if (currentScroll > 0) {
+        window.requestAnimationFrame(smoothscroll);
+        window.scrollTo(0, currentScroll - (currentScroll / 8));
+      }
+    })();
   }
 
   /**
