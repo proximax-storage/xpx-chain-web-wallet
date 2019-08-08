@@ -12,8 +12,7 @@
 
         <!-- ITEMS MENU -->
         <div class="col-12 col-md-6 col-lg-8 d-flex justify-content-start justify-content-md-end">
-          <a class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio"
-            [routerLink]="[routes.back]">
+          <a class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio" [routerLink]="[routes.back]">
             <span>Back to select type</span>
           </a>
 
@@ -39,6 +38,24 @@
       <div class="row">
         <div class="col-12 col-md-10 col-lg-9 col-xl-10 mx-auto">
           <form [formGroup]="formCreateAccount" (ngSubmit)="createAccount()">
+
+            <ng-container *ngIf="fromPrivateKey">
+              <div class="row">
+                <div class="col-11 mx-auto">
+                  <div class="md-form form-sm mt-1rem mb-0rem">
+                    <input mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
+                      id="privateKey" class="form-control form-control-sm input-border"
+                      placeholder="Enter private key" formControlName="privateKey">
+                    <mdb-error
+                      *ngIf="validateInput('privateKey').invalid && (validateInput('privateKey').dirty || validateInput('privateKey').touched)">
+                      <span>Input invalid</span>
+                    </mdb-error>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+
+
             <div class="row">
               <div class="col-11 mx-auto">
                 <div class="md-form form-sm mt-1rem mb-0rem">
@@ -53,7 +70,6 @@
                   <mdb-error *ngIf="validateInput('nameWallet').valid && validateNameAccount()">
                     <span>Wallet name already exists</span>
                   </mdb-error>
-                  <!-- <mdb-success *ngIf="input.valid && (input.dirty || input.touched)">Input valid</mdb-success> -->
                 </div>
               </div>
             </div>

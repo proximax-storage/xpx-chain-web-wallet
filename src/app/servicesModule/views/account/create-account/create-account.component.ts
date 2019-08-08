@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, Validators, FormBuilder, AbstractControl } from '@angular/forms';
-import { NetworkType } from 'tsjs-xpx-chain-sdk';
+import { NetworkType, SimpleWallet } from 'tsjs-xpx-chain-sdk';
 import { Router, ActivatedRoute } from '@angular/router';
 import { WalletService } from '../../../../wallet/services/wallet.service';
 import { environment } from '../../../../../environments/environment';
@@ -24,10 +24,12 @@ export class CreateAccountComponent implements OnInit {
   isValid = false;
   moduleName = 'Accounts';
   othersAccounts = [];
+  fromPrivateKey = false;
   routes = {
     back: `/${AppConfig.routes.selectTypeCreationAccount}`,
     backToService: `/${AppConfig.routes.service}`
   };
+
 
   constructor(
     private activateRoute: ActivatedRoute,
@@ -40,7 +42,6 @@ export class CreateAccountComponent implements OnInit {
 
   ngOnInit() {
     let param = this.activateRoute.snapshot.paramMap.get('id');
-    console.log('----type----', param);
     this.configurationForm = this.sharedService.configurationForm;
     const walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
     this.othersAccounts = walletsStorage.filter(elm => elm.name !== this.walletService.current.name);
@@ -72,9 +73,9 @@ export class CreateAccountComponent implements OnInit {
       ]]
     });
 
-    if (param === '0') {
-      console.log('es cero...');
-      this.formCreateAccount.get('nameWallet').setValidators([Validators.required]);
+    if (param === '1') {
+      this.formCreateAccount.get('privateKey').setValidators([Validators.required]);
+      this.fromPrivateKey = true;
     }
   }
 
@@ -89,7 +90,13 @@ export class CreateAccountComponent implements OnInit {
       if (Object.keys(this.walletService.current.accounts).find(elm => this.walletService.current.accounts[elm].name !== nameAccount)) {
         const network = NetworkType.TEST_NET;
         const password = this.proximaxProvider.createPassword(this.formCreateAccount.get('password').value);
-        const newAccount = this.proximaxProvider.createAccountSimple(nameAccount, password, network);
+        let newAccount: SimpleWallet = null;
+        if (this.fromPrivateKey) {
+          newAccount = this.proximaxProvider.createAccountFromPrivateKey(nameAccount, password, this.formCreateAccount.get('privateKey').value, network);
+        }else {
+          newAccount = this.proximaxProvider.createAccountSimple(nameAccount, password, network);
+        }
+
         const accountBuilded = this.walletService.buildAccount(
           newAccount.encryptedPrivateKey.encryptedKey,
           newAccount.encryptedPrivateKey.iv,
