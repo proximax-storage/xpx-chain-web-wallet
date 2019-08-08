@@ -128,7 +128,8 @@ export class CreateAccountComponent implements OnInit {
         this.walletService.saveDataWalletCreated({
           name: nameAccount,
           algo: password,
-          network: newAccount.network
+          network: newAccount.network,
+          fromPrivateKey: this.fromPrivateKey
         }, accountBuilded, newAccount);
         this.walletService.saveAccountStorage(nameAccount, accountBuilded);
         this.router.navigate([`/${AppConfig.routes.accountCreated}`]);

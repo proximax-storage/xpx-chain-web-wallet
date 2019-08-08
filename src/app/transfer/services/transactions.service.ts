@@ -258,9 +258,12 @@ export class TransactionsService {
       amount / Math.pow(10, mosaic['properties'].divisibility)
     );
 
-    return amountDivisibility.toLocaleString("en-us", {
+    const amountFormatter = amountDivisibility.toLocaleString("en-us", {
       minimumFractionDigits: mosaic['properties'].divisibility
     });
+
+    console.log(amountFormatter);
+    return amountFormatter;
   }
 
   /**
