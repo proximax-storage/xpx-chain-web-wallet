@@ -3,6 +3,7 @@ import { environment } from '../../../../../environments/environment';
 import { WalletService } from '../../../../wallet/services/wallet.service';
 import { AppConfig } from '../../../../config/app.config';
 import { SharedService } from '../../../../shared/services/shared.service';
+import { TransactionsService } from '../../../../transfer/services/transactions.service';
 
 @Component({
   selector: 'app-view-all-accounts',
@@ -11,6 +12,7 @@ import { SharedService } from '../../../../shared/services/shared.service';
 })
 export class ViewAllAccountsComponent implements OnInit {
 
+  accountChanged: boolean = false;
   componentName = 'View all';
   currentAccount: any = [];
   moduleName = 'Accounts';
@@ -22,14 +24,12 @@ export class ViewAllAccountsComponent implements OnInit {
   };
 
   constructor(
-    private walletService: WalletService,
-    private sharedService: SharedService
-  ) {
-    let walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
-    this.currentAccount = this.walletService.current;
-  }
+    private transactionService: TransactionsService,
+    private walletService: WalletService
+  ) {}
 
   ngOnInit() {
+    this.currentAccount = this.walletService.current;
   }
 
   /**
@@ -39,9 +39,15 @@ export class ViewAllAccountsComponent implements OnInit {
    * @memberof ViewAllAccountsComponent
    */
   changeAsPrimary(nameSelected: string) {
-    this.sharedService.showSuccess('', 'Account changed to default');
+    // this.sharedService.showSuccess('', 'Account changed to default');
+    this.accountChanged = true;
     this.walletService.changeAsPrimary(nameSelected);
+    this.walletService.use(this.walletService.current);
     this.currentAccount = this.walletService.current;
+    this.transactionService.updateBalance();
+    setTimeout(() => {
+      this.accountChanged = false;
+    }, 2000);
   }
 
 }

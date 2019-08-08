@@ -17,7 +17,7 @@ import { SharedService } from 'src/app/shared/services/shared.service';
 
 export class DashboardComponent implements OnInit, OnDestroy {
 
-  @ViewChild(MdbTableDirective, {static: true}) mdbTable: MdbTableDirective;
+  @ViewChild(MdbTableDirective, { static: true }) mdbTable: MdbTableDirective;
   @HostListener('input') oninput() {
     this.searchItems();
   }
@@ -65,26 +65,29 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   @HostListener("window:scroll", [])
   onWindowScroll() {
-      if (window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop > 100) {
-          this.windowScrolled = true;
-      }
-      else if (this.windowScrolled && window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop < 10) {
-          this.windowScrolled = false;
-      }
+    if (window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop > 100) {
+      this.windowScrolled = true;
+    }
+    else if (this.windowScrolled && window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop < 10) {
+      this.windowScrolled = false;
+    }
   }
   scrollToTop() {
-      (function smoothscroll() {
-          var currentScroll = document.documentElement.scrollTop || document.body.scrollTop;
-          if (currentScroll > 0) {
-              window.requestAnimationFrame(smoothscroll);
-              window.scrollTo(0, currentScroll - (currentScroll / 8));
-          }
-      })();
+    (function smoothscroll() {
+      var currentScroll = document.documentElement.scrollTop || document.body.scrollTop;
+      if (currentScroll > 0) {
+        window.requestAnimationFrame(smoothscroll);
+        window.scrollTo(0, currentScroll - (currentScroll / 8));
+      }
+    })();
   }
 
   ngOnInit() {
-    const currentPrimary = this.walletService.getAccountDefault(this.walletService.current);
-    this.nameWallet = currentPrimary.name;
+    // NAME ACCOUNT
+    this.subscriptions['nameAccount'] = this.walletService.getNameAccount$().subscribe(next => {
+      this.nameWallet = next.name;
+    });
+
     this.typeTransactions = this.transactionService.arraTypeTransaction;
     this.dashboardService.incrementViewDashboard();
     this.dashboardService.subscribeLogged();
