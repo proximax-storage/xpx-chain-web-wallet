@@ -264,10 +264,14 @@ export class MosaicsSupplyChangeComponent implements OnInit {
           this.formMosaicSupplyChange.get('mosaicSupplyType').value,
           this.walletService.network
         )
+        
         const signedTransaction = account.sign(mosaicSupplyChangeTransaction);
         this.transactionSigned.push(signedTransaction);
+        console.log(signedTransaction);
+        console.log(this.transactionSigned);
         this.proximaxProvider.announce(signedTransaction).subscribe(
           x => {
+            console.log('Este no es ningun error', x);
             this.blockButton = false;
             this.clearForm()
             this.blockUI.stop();
@@ -278,11 +282,11 @@ export class MosaicsSupplyChangeComponent implements OnInit {
             this.setTimeOutValidate(signedTransaction.hash);
           },
           err => {
+            console.log('Este es un ERROR', err);
             this.blockButton = false;
             this.clearForm()
             this.blockUI.stop(); // Stop blocking
-            // console.error(err)
-            this.sharedService.showError('', 'An unexpected error has occurred');
+            // this.sharedService.showError('', 'An unexpected error has occurred');
           });
       }
     }

@@ -222,7 +222,7 @@
           <textarea mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
             id="message" class="md-textarea form-control" mdbInput placeholder="Message" formControlName="message"
             [maxlength]="configurationForm.message.maxLength"></textarea>
-            <span class="fs-08rem text-cl-m d-flex justify-content-center">{{ charRest }}</span>
+            <span class="fs-08rem text-cl-m d-flex justify-content-end">{{ charRest }}</span>
           <mdb-error
             *ngIf="validateInput('message').invalid && (validateInput('message').dirty || validateInput('message').touched)">
             <span>Invalid Recipient</span>

@@ -9,12 +9,12 @@
 
         <!-- Income -->
         <ng-container *ngIf="transferTransaction?.isRemitent">
-          <span class="color-blue-light fw-bold fs-2rem">Incoming</span>
+          <span class="color-blue-light fw-bold fs-2rem">Received</span>
         </ng-container>
 
         <!-- Outcome -->
         <ng-container *ngIf="!transferTransaction?.isRemitent">
-          <span class="color-orange fw-bold fs-2rem">Outcoming</span>
+          <span class="color-orange fw-bold fs-2rem">Send</span>
         </ng-container>
       </div>
 
