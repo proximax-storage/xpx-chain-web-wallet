@@ -309,9 +309,13 @@ export class MosaicsSupplyChangeComponent implements OnInit {
       }
       if (this.walletService.decrypt(common)) {
         const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.network);
+
+        const quatityZeros = this.transactionService.addZeros(this.divisibility);
+        const mosaicSupply = parseInt(`${this.formMosaicSupplyChange.get('deltaSupply').value}${quatityZeros}`);
+
         const mosaicSupplyChangeTransaction = this.proximaxProvider.mosaicSupplyChangeTransaction(
           this.formMosaicSupplyChange.get('parentMosaic').value,
-          this.formMosaicSupplyChange.get('deltaSupply').value,
+          mosaicSupply,
           this.formMosaicSupplyChange.get('mosaicSupplyType').value,
           this.walletService.network
         )

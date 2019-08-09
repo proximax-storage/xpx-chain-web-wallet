@@ -124,11 +124,13 @@ export class CreateMosaicComponent implements OnInit {
           parseFloat(this.durationByBlock),
           this.walletService.network
         );
+        const quatityZeros = this.transactionService.addZeros(this.mosaicForm.get('divisibility').value);
+        const mosaicSupply = parseInt(`${this.mosaicForm.get('deltaSupply').value}${quatityZeros}`);
 
         const mosaicSupplyChangeTransaction = this.proximaxProvider.buildMosaicSupplyChange(
           mosaicDefinitionTransaction.mosaicId,
           MosaicSupplyType.Increase,
-          UInt64.fromUint(this.mosaicForm.get('deltaSupply').value),
+          UInt64.fromUint(mosaicSupply),
           this.walletService.network
         );
 
