@@ -29,6 +29,7 @@ export const AppConfig: Config = {
     LinkingNamespaceMosaic: 'alias-namespace-to-mosaic',
     linkTheNamespaceToAnAddress: 'alias-namespace-to-an-address',
     MosaicSupplyChange: 'mosaic-supply-change',
+    MultiSign: 'multi-signatures',
     polls: 'polls',
     renewNamespace: 'renew-namespace',
     renovateNamespace: 'renovate-namespace',
@@ -72,6 +73,7 @@ export interface Config {
     LinkingNamespaceMosaic: string;
     linkTheNamespaceToAnAddress: string;
     MosaicSupplyChange: string;
+    MultiSign: string;
     polls: string;
     renewNamespace: string;
     renovateNamespace: string;

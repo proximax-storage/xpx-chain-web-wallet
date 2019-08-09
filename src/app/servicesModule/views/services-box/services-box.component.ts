@@ -39,10 +39,10 @@ export class ServicesBoxComponent implements OnInit {
             AppConfig.routes.viewAllAccount,
           ), multiSign: this.services.buildStructureService(
             'MULTISIGN',
-            false,
+            true,
             '',
             '',
-            ''
+            AppConfig.routes.MultiSign,
           ), restrinctions: this.services.buildStructureService(
             'RESTRICTIONS',
             false,
@@ -86,7 +86,7 @@ export class ServicesBoxComponent implements OnInit {
             '',
             '',
             AppConfig.routes.createNamespace
-          ),  extend: this.services.buildStructureService(
+          ), extend: this.services.buildStructureService(
             'EXTEND DURATION',
             false,
             '',
@@ -129,7 +129,7 @@ export class ServicesBoxComponent implements OnInit {
             '',
             '',
             AppConfig.routes.LinkingNamespaceMosaic
-          ),extend: this.services.buildStructureService(
+          ), extend: this.services.buildStructureService(
             'EXTEND DURATION',
             false,
             '',
