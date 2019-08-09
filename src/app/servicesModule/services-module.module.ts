@@ -37,7 +37,7 @@ import { SelectionAccountTypeComponent } from './views/account/selection-account
     UploadFileComponent,
     MyFileComponent,
     MultiSignatureContractComponent,
-    CreateMultiSignatureComponent
+    CreateMultiSignatureComponent,
     ViewAllAccountsComponent,
     AccountCreatedComponent,
     SelectionAccountTypeComponent
