@@ -15,6 +15,8 @@ import { MosaicsSupplyChangeComponent } from './views/mosaic/mosaics-supply-chan
 import { AliasMosaicsToNamespaceComponent } from './views/mosaic/alias-mosaics-to-namespace/alias-mosaics-to-namespace.component';
 import { UploadFileComponent } from './views/storage/upload-file/upload-file.component';
 import { MyFileComponent } from './views/storage/my-file/my-file.component';
+import { MultiSignatureContractComponent } from './views/multi-sign/multi-signature-contract/multi-signature-contract.component';
+import { CreateMultiSignatureComponent } from './views/multi-sign/components/create-multi-signature/create-multi-signature.component';
 import { ViewAllAccountsComponent } from './views/account/view-all-accounts/view-all-accounts.component';
 import { AccountCreatedComponent } from './views/account/account-created/account-created.component';
 import { SelectionAccountTypeComponent } from './views/account/selection-account-creation-type/selection-account-creation-type.component';
@@ -34,6 +36,8 @@ import { SelectionAccountTypeComponent } from './views/account/selection-account
     AliasMosaicsToNamespaceComponent,
     UploadFileComponent,
     MyFileComponent,
+    MultiSignatureContractComponent,
+    CreateMultiSignatureComponent
     ViewAllAccountsComponent,
     AccountCreatedComponent,
     SelectionAccountTypeComponent
@@ -41,6 +45,8 @@ import { SelectionAccountTypeComponent } from './views/account/selection-account
   imports: [
     CoreModule,
     ServicesModuleRoutingModule
+  ], exports: [
+    CreateMultiSignatureComponent
   ]
 })
 export class ServicesModule { }
