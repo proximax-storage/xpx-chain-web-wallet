@@ -558,13 +558,12 @@ export class CreateTransferComponent implements OnInit {
     //Amount XPX
     const mosaic = this.mosaicServices.filterMosaic(new MosaicId(this.mosaicXpx.id));
     this.formTransfer.get('amountXpx').valueChanges.subscribe(
-      value => {
+      value => {        
         if (value !== null && value !== undefined) {
           const a = Number(value);
           this.amountXpxToSend = String((mosaic !== null) ?
             this.transactionService.amountFormatter(a, mosaic.mosaicInfo) :
             this.transactionService.amountFormatter(a, null, String(environment.mosaicXpxInfo.divisibility)));
-
           let validateAmount = false;
           const accountInfo = this.walletService.getAccountInfo();
           if (accountInfo !== undefined && accountInfo !== null && Object.keys(accountInfo).length > 0) {
@@ -573,8 +572,21 @@ export class CreateTransferComponent implements OnInit {
                 return element.id.toHex() === new MosaicId(mosaic.id).toHex();
               });
 
+              let arrAmount = value.toString().replace(/,/g, "").split('.');
+              let decimal;
+              let realAmount;
+
+              if (arrAmount.length < 2) {
+                decimal = this.addZeros(environment.mosaicXpxInfo.divisibility);
+              } else {
+                let arrDecimals = arrAmount[1].split('');
+                decimal = this.addZeros(environment.mosaicXpxInfo.divisibility - arrDecimals.length, arrAmount[1]);
+              }
+  
+              realAmount = `${arrAmount[0]}${decimal}`
+
               if (filtered !== undefined && filtered !== null) {
-                const invalidBalance = filtered.amount.compact() < Number(value);
+                const invalidBalance = filtered.amount.compact() < Number(realAmount);
                 if (invalidBalance && !this.insufficientBalance) {
                   this.insufficientBalance = true;
                   this.blockSendButton = true;
@@ -625,7 +637,25 @@ export class CreateTransferComponent implements OnInit {
         });
 
         if (filtered !== undefined && filtered !== null) {
-          const invalidBalance = filtered.amount.compact() < Number(amount);
+          let arrAmount = amount.toString().replace(/,/g, "").split('.');
+          let decimal;
+          let realAmount;
+
+          if (mosaic.mosaicInfo['properties'].divisibility > 0) {
+            if (arrAmount.length < 2) {
+              decimal = this.addZeros(mosaic.mosaicInfo['properties'].divisibility);
+            } else {
+              let arrDecimals = arrAmount[1].split('');
+              decimal = this.addZeros(mosaic.mosaicInfo['properties'].divisibility - arrDecimals.length, arrAmount[1]);
+            }
+
+            realAmount = `${arrAmount[0]}${decimal}`
+          } else {
+            realAmount = arrAmount[0]
+          }
+
+          const invalidBalance = Number(realAmount) > filtered.amount.compact();
+          console.log('invalidBalance', invalidBalance);
           if (invalidBalance && !this.boxOtherMosaics[position].errorBalance) {
             this.boxOtherMosaics[position].errorBalance = true;
             this.errorOtherMosaics = true;
@@ -644,13 +674,28 @@ export class CreateTransferComponent implements OnInit {
     }
 
     if (validateAmount) {
-      if (Number(amount) >= 1) {
+      if (Number(amount) >= 0) {
         this.boxOtherMosaics[position].errorBalance = true;
         this.errorOtherMosaics = true;
       } else if ((Number(amount) === 0 || amount === '') && this.boxOtherMosaics[position].errorBalance) {
         this.boxOtherMosaics[position].errorBalance = false;
       }
     }
+  }
+
+  addZeros(cant, amount = '0') {
+    let x = '0';
+    if (amount === '0') {
+      for (let index = 0; index < cant - 1; index++) {
+        amount += x;
+      }
+    } else {
+      for (let index = 0; index < cant; index++) {
+        amount += x;
+      }
+    }
+
+    return amount;
   }
 
   /**
@@ -662,18 +707,46 @@ export class CreateTransferComponent implements OnInit {
   validateMosaicsToSend() {
     const mosaics = [];
     const amountXpx = this.formTransfer.get("amountXpx").value;
+    
     if (amountXpx !== '') {
+      let arrAmount = amountXpx.toString().replace(/,/g, "").split('.');
+      let decimal;
+      let realAmount;
+  
+      if (arrAmount.length < 2) {
+        decimal = this.addZeros(environment.mosaicXpxInfo.divisibility);
+      } else {
+        let arrDecimals = arrAmount[1].split('');
+        decimal = this.addZeros(environment.mosaicXpxInfo.divisibility - arrDecimals.length, arrAmount[1]);
+      }
+      realAmount = `${arrAmount[0]}${decimal}`
       mosaics.push({
         id: this.mosaicXpx.id,
-        amount: amountXpx
+        amount: realAmount
       });
     }
 
     this.boxOtherMosaics.forEach(element => {
       if (element.id !== '' && element.amount !== '') {
+        let arrAmount = element.amount.toString().replace(/,/g, "").split('.');
+        let decimal;
+        let realAmount;
+
+        if (element.config.precision != undefined && element.config.precision != null && element.config.precision > 0) {
+          if (arrAmount.length < 2) {
+            decimal = this.addZeros(element.config.precision);
+          } else {
+            let arrDecimals = arrAmount[1].split('');
+            decimal = this.addZeros(element.config.precision - arrDecimals.length, arrAmount[1]);
+          }
+
+          realAmount = `${arrAmount[0]}${decimal}`
+        } else {
+          realAmount = arrAmount[0]
+        }
         mosaics.push({
           id: element.id,
-          amount: element.amount
+          amount: realAmount
         });
       }
     });
