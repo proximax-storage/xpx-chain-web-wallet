@@ -22,6 +22,7 @@ import { ServicesModuleService } from '../../../servicesModule/services/services
 })
 export class CreateTransferComponent implements OnInit {
 
+  accounts: any = null;
   allMosaics = [];
   optionsXPX = {
     prefix: '',
@@ -66,6 +67,7 @@ export class CreateTransferComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.accounts = this.walletService.current.accounts.slice(0,4);
     this.configurationForm = this.sharedService.configurationForm;
     this.charRest = this.configurationForm.message.maxLength;
     this.mosaicXpx = {
@@ -101,6 +103,29 @@ export class CreateTransferComponent implements OnInit {
         this.subscribe[element].unsubscribe();
       }
     });
+  }
+
+  /**
+   *
+   *
+   * @param {string} position
+   * @param {*} account
+   * @memberof CreateTransferComponent
+   */
+  accountSelected(position: number, account: any) {
+    const accounts = [];
+    Object.keys(this.accounts).forEach(element => {
+      console.log(position, element);
+      if (element === String(position)) {
+        this.accounts[position].active = true;
+      }else {
+        this.accounts[position].active = false;
+      }
+
+      accounts.push(this.accounts[position]);
+    });
+
+    this.accounts = accounts;
   }
 
 
@@ -558,7 +583,7 @@ export class CreateTransferComponent implements OnInit {
     //Amount XPX
     const mosaic = this.mosaicServices.filterMosaic(new MosaicId(this.mosaicXpx.id));
     this.formTransfer.get('amountXpx').valueChanges.subscribe(
-      value => {        
+      value => {
         if (value !== null && value !== undefined) {
           const a = Number(value);
           this.amountXpxToSend = String((mosaic !== null) ?
@@ -582,7 +607,7 @@ export class CreateTransferComponent implements OnInit {
                 let arrDecimals = arrAmount[1].split('');
                 decimal = this.addZeros(environment.mosaicXpxInfo.divisibility - arrDecimals.length, arrAmount[1]);
               }
-  
+
               realAmount = `${arrAmount[0]}${decimal}`
 
               if (filtered !== undefined && filtered !== null) {
@@ -707,12 +732,12 @@ export class CreateTransferComponent implements OnInit {
   validateMosaicsToSend() {
     const mosaics = [];
     const amountXpx = this.formTransfer.get("amountXpx").value;
-    
+
     if (amountXpx !== '') {
       let arrAmount = amountXpx.toString().replace(/,/g, "").split('.');
       let decimal;
       let realAmount;
-  
+
       if (arrAmount.length < 2) {
         decimal = this.addZeros(environment.mosaicXpxInfo.divisibility);
       } else {

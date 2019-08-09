@@ -60,6 +60,7 @@ export class WalletService {
   buildAccount(data: any): AccountsInterface {
     const accounts: AccountsInterface = {
       'algo': 'pass:bip32',
+      'active': false,
       'address': data.address,
       'brain': true,
       'default': data.byDefault,
@@ -473,6 +474,7 @@ export class WalletService {
 
 export interface AccountsInterface {
   brain: boolean;
+  active: boolean;
   default: boolean;
   algo: string;
   encrypted: string;

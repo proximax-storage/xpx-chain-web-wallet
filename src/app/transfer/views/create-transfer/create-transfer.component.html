@@ -10,6 +10,18 @@
 
   <form [formGroup]="formTransfer" (ngSubmit)="sendTransfer()">
 
+    <!-- <ng-container *ngIf="accounts.length > 1">
+      <div class="row mb-2rem d-flex justify-content-center">
+        <ng-container *ngFor="let account of accounts; let i=index">
+          <div class="col-12 col-sm-6 col-md-3 col-xl-3 mt-1-5rem d-flex align-items-center mx-auto" mdbWavesEffect (click)="accountSelected(i, account)">
+            <div [ngClass]="[account.active ? 'z-depth-1 box-accounts box-accounts-active' : 'z-depth-1 box-accounts']" class="z-depth-1 box-accounts">
+                <span class="">{{account.name}}</span>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </ng-container> -->
+
     <!-- Contacts -->
     <ng-container *ngIf="showContacts && listContacts.length > 0">
       <div class="row">
