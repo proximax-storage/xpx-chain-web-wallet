@@ -22,7 +22,7 @@ import { ServicesModuleService } from '../../../servicesModule/services/services
 })
 export class CreateTransferComponent implements OnInit {
 
-  accounts: any = null;
+  accounts: any = [];
   allMosaics = [];
   optionsXPX = {
     prefix: '',
@@ -67,7 +67,14 @@ export class CreateTransferComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.accounts = this.walletService.current.accounts.slice(0,4);
+
+    this.walletService.current.accounts.forEach(element => {
+      this.accounts.push({
+        label: element.name,
+        value: element
+      });
+    });
+
     this.configurationForm = this.sharedService.configurationForm;
     this.charRest = this.configurationForm.message.maxLength;
     this.mosaicXpx = {
@@ -251,7 +258,11 @@ export class CreateTransferComponent implements OnInit {
           Validators.minLength(this.configurationForm.passwordWallet.minLength),
           Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
         ]
-      ]
+      ],
+      selectAccount: ['', [
+        Validators.minLength(this.configurationForm.accountRecipient.minLength),
+        Validators.maxLength(this.configurationForm.accountRecipient.maxLength)
+      ]],
     });
   }
 
@@ -277,6 +288,12 @@ export class CreateTransferComponent implements OnInit {
     return;
   }
 
+  /**
+   *
+   *
+   * @param {number} position
+   * @memberof CreateTransferComponent
+   */
   deleteMoreMosaic(position: number) {
     const otherMosaics = [];
     Object.keys(this.boxOtherMosaics).forEach(element => {
@@ -533,6 +550,10 @@ export class CreateTransferComponent implements OnInit {
     }
   }
 
+  selectAccount($event: Event) {
+    console.log($event);
+  }
+
   /**
    *
    *
@@ -544,8 +565,6 @@ export class CreateTransferComponent implements OnInit {
       this.formTransfer.get('accountRecipient').patchValue(event.value);
     }
   }
-
-
 
   /**
    *

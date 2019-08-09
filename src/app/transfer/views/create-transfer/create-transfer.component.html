@@ -22,6 +22,17 @@
       </div>
     </ng-container> -->
 
+    <ng-container *ngIf="accounts.length > 1">
+      <div class="row">
+        <div class="col-11 col-md-10 col-lg-8 mx-auto">
+          <ng-select mdbInputDirective mdbValidate formControlName="selectAccount" class="selectWrapper"
+            [items]="accounts" bindLabel="label" bindValue="value" placeholder="Select account"
+            (change)="selectAccount($event)">
+          </ng-select>
+        </div>
+      </div>
+    </ng-container>
+
     <!-- Contacts -->
     <ng-container *ngIf="showContacts && listContacts.length > 0">
       <div class="row">
