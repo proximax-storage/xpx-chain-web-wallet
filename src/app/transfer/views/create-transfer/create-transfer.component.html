@@ -89,10 +89,10 @@
           <!-- Amount Input -->
           <div class="col-12 mx-auto">
             <div class="md-form form-sm mt-1rem mb-0rem">
-              <input pattern="^[+]?([0-9]*[.])?[0-9]+$"  currencyMask [options]="optionsXPX" mdbInputDirective mdbValidate
-                [validateSuccess]="true" [maxlength]="configurationForm.amount.maxLength" [validateError]="true"
-                type="text" class="form-control form-control-sm input-border input-amount" placeholder="Enter amount"
-                formControlName="amountXpx">
+              <input pattern="^[+]?([0-9]*[.])?[0-9]+$" currencyMask [options]="optionsXPX" mdbInputDirective
+                mdbValidate [validateSuccess]="true" [maxlength]="configurationForm.amount.maxLength"
+                [validateError]="true" type="text" class="form-control form-control-sm input-border input-amount"
+                placeholder="Enter amount" formControlName="amountXpx">
 
               <mdb-error
                 *ngIf="validateInput('amountXpx').invalid && (validateInput('amountXpx').dirty || validateInput('amountXpx').touched)">
@@ -111,12 +111,12 @@
     <!-- FIN XPX -->
 
     <!--  OTHER MOSAICS -->
-    <ng-container *ngIf="otherMosaics.length > 0">
-      <ng-container *ngFor="let otherMosaic of otherMosaics; let i = index">
+    <ng-container *ngIf="boxOtherMosaics.length > 0">
+      <ng-container *ngFor="let otherMosaic of boxOtherMosaics; let i = index">
         <!-- SEPARED -->
         <div class="row">
           <!-- <div class="col-11 col-md-11 col-lg-9 mx-auto"> -->
-              <div class="col-11 col-md-10 col-lg-8 mx-auto">
+          <div class="col-11 col-md-10 col-lg-8 mx-auto">
             <hr>
           </div>
           <!-- <div class="col-1 d-flex justify-content-start">
@@ -147,12 +147,11 @@
                 <!-- Amount Input -->
                 <div class="col-12 mx-auto">
                   <div class="md-form form-sm mt-1rem mb-0rem">
-                    {{otherMosaics[i].config | json}}
-                    <input currencyMask [options]="otherMosaics[i].config" mdbInputDirective mdbValidate
+                    <input currencyMask [options]="boxOtherMosaics[i].config" mdbInputDirective mdbValidate
                       [maxlength]="configurationForm.amount.maxLength" type="text"
-                      class="form-control form-control-sm input-border input-amount" [(ngModel)]="otherMosaics[i].amount"
-                      [ngModelOptions]="{standalone: true}" (ngModelChange)="modelChanged($event, otherMosaic.id, i)"
-                      placeholder="Enter quantity">
+                      class="form-control form-control-sm input-border input-amount"
+                      [(ngModel)]="boxOtherMosaics[i].amount" [ngModelOptions]="{standalone: true}"
+                      (ngModelChange)="modelChanged($event, otherMosaic.id, i)" placeholder="Enter quantity">
 
                     <!-- Message Error Insufficient balance-->
                     <mdb-error class="text-danger fw-500" *ngIf="otherMosaic.errorBalance">
@@ -197,7 +196,7 @@
           <textarea mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
             id="message" class="md-textarea form-control" mdbInput placeholder="Message" formControlName="message"
             [maxlength]="configurationForm.message.maxLength"></textarea>
-            <span class="fs-08rem text-cl-m d-flex justify-content-end">{{ charRest }}</span>
+          <span class="fs-08rem text-cl-m d-flex justify-content-end">{{ charRest }}</span>
           <mdb-error
             *ngIf="validateInput('message').invalid && (validateInput('message').dirty || validateInput('message').touched)">
             <span>Invalid Recipient</span>
@@ -237,7 +236,8 @@
       <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
         <button [disabled]="blockSendButton || formTransfer.invalid || errorOtherMosaics" mdbBtn type="submit"
           rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
-          <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true" *ngIf="blockButton"></span>
+          <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
+            *ngIf="blockButton"></span>
           <span class="fs-1-2em color-white">SEND</span>
         </button>
       </div>
