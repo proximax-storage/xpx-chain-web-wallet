@@ -31,8 +31,7 @@ export class SidebarMainComponent implements OnInit {
     AppConfig.routes.createWallet,
     AppConfig.routes.dashboard,
     AppConfig.routes.importWallet,
-    AppConfig.routes.service,
-    AppConfig.routes.viewAllAccount
+    AppConfig.routes.service
   ];
 
 
