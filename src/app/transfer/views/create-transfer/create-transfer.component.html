@@ -105,6 +105,7 @@
                 mdbValidate [validateSuccess]="true" [maxlength]="configurationForm.amount.maxLength"
                 [validateError]="true" type="text" class="form-control form-control-sm input-border input-amount"
                 placeholder="Enter amount" formControlName="amountXpx">
+                <span class="label-i fw-600">SEND</span>
 
               <mdb-error
                 *ngIf="validateInput('amountXpx').invalid && (validateInput('amountXpx').dirty || validateInput('amountXpx').touched)">
@@ -164,6 +165,7 @@
                       class="form-control form-control-sm input-border input-amount"
                       [(ngModel)]="boxOtherMosaics[i].amount" [ngModelOptions]="{standalone: true}"
                       (ngModelChange)="modelChanged($event, otherMosaic.id, i)" placeholder="Enter quantity">
+                      <span  class="label-i fw-600">SEND</span>
 
                     <!-- Message Error Insufficient balance-->
                     <mdb-error class="text-danger fw-500" *ngIf="otherMosaic.errorBalance">

@@ -386,6 +386,58 @@ export class ServicesBoxComponent implements OnInit {
         },
         true,
         'disable-module'
+      ),
+
+      // VIDEO CONFERENCING
+      this.services.buildStructureService(
+        'Video Conferencing',
+        true,
+        'Encrypted face-to-face comunication',
+        'icon-streaming-green-60h-proximax-sirius-wallet.svg',
+        '',
+        {
+          schedule: this.services.buildStructureService(
+            'SCHEDULE',
+            false,
+            '',
+            '',
+            ''
+          ), start: this.services.buildStructureService(
+            'START',
+            false,
+            '',
+            '',
+            ''
+          )
+        },
+        true,
+        'disable-module'
+      ),
+
+      // SUPERCONTRACTS
+      this.services.buildStructureService(
+        'Supercontracts',
+        true,
+        'Create supercontracts',
+        'icon-supercontracts-green-60h-proximax-sirius-wallet.svg',
+        '',
+        {
+          create: this.services.buildStructureService(
+            'CREATE',
+            false,
+            '',
+            '',
+            ''
+          ), status: this.services.buildStructureService(
+            'STATUS',
+            false,
+            '',
+            '',
+            ''
+          )
+        },
+        true,
+        'disable-module'
       )
     ];
   }

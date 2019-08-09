@@ -480,6 +480,26 @@ export class TransactionsService {
     this.namespaceService.buildNamespaceStorage();
     this.updateBalance();
   }
+
+  /**
+   * Method to add leading zeros
+   * 
+   * @param cant Quantity of zeros to add
+   * @param amount Amount to add zeros
+   */
+  addZeros(cant, amount = '0') {
+    let x = '0';
+    if (amount === '0') {
+      for (let index = 0; index < cant - 1; index++) {
+        amount += x;
+      }
+    } else {
+      for (let index = 0; index < cant; index++) {
+        amount += x;
+      }
+    }
+    return amount;
+  }
 }
 
 

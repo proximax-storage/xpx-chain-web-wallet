@@ -92,10 +92,10 @@ export class CreateMosaicComponent implements OnInit {
    * @memberof CreateMosaicComponent
    */
   clearForm() {
-    this.mosaicForm.get('deltaSupply').patchValue(1000000);
+    this.mosaicForm.get('deltaSupply').patchValue('');
     this.mosaicForm.get('password').patchValue('');
-    this.mosaicForm.get('duration').patchValue(1);
-    this.mosaicForm.get('divisibility').patchValue(1);
+    this.mosaicForm.get('duration').patchValue('');
+    this.mosaicForm.get('divisibility').patchValue('');
     this.mosaicForm.get('transferable').patchValue(false);
     this.mosaicForm.get('supplyMutable').patchValue(false);
     this.mosaicForm.get('levyMutable').patchValue(false);
