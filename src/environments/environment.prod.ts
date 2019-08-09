@@ -4,28 +4,30 @@
 
 export const environment = {
   production: true,
-  version: '0.2.0',
+  version: '0.2.1',
   nameKeyNodeSelected: `sirius-wallet-node-selected`,
-  nameKeyWalletStorage: `sirius-wallets`,
+  nameKeyWalletStorage: `sw-03`,
   nameKeyNodeStorage: `sirius-wallet-nodes`,
   protocol: `http`,
   protocolWs: `ws`,
-  nodeDefault: 'bctestnet2.xpxsirius.io:3000',
+  nodeDefault: 'bctestnet1.xpxsirius.io:3000',
   mosaicXpxInfo: {
     name: 'prx.xpx',
     id: '0dc67fbe1cad29e3',
     divisibility: 6
   },
   blockchainConnection: {
-    host: 'bctestnet2.xpxsirius.io',
+    host: 'bctestnet1.xpxsirius.io',
     port: 3000,
-    protocol: '',
+    protocol: 'http',
     useSecureMessage: false
   },
   storageConnection: {
-    host: 'ipfs2-dev.xpxsirius.io',
+    host: 'ipfs1-dev.xpxsirius.io',
     port: 5001,
-    options: {}
+    options: {
+      protocol: 'http'
+    }
   },
   namespaceRentalFeeSink: {
     public_key: 'F3B8194C36CC55500DCB8CD3734DFA07FE8B649219BE315C8DFAE1DAC59F3595',

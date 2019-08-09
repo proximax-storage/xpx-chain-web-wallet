@@ -17,6 +17,9 @@ import { UploadFileComponent } from './views/storage/upload-file/upload-file.com
 import { MyFileComponent } from './views/storage/my-file/my-file.component';
 import { MultiSignatureContractComponent } from './views/multi-sign/multi-signature-contract/multi-signature-contract.component';
 import { CreateMultiSignatureComponent } from './views/multi-sign/components/create-multi-signature/create-multi-signature.component';
+import { ViewAllAccountsComponent } from './views/account/view-all-accounts/view-all-accounts.component';
+import { AccountCreatedComponent } from './views/account/account-created/account-created.component';
+import { SelectionAccountTypeComponent } from './views/account/selection-account-creation-type/selection-account-creation-type.component';
 
 @NgModule({
   declarations: [
@@ -35,6 +38,9 @@ import { CreateMultiSignatureComponent } from './views/multi-sign/components/cre
     MyFileComponent,
     MultiSignatureContractComponent,
     CreateMultiSignatureComponent
+    ViewAllAccountsComponent,
+    AccountCreatedComponent,
+    SelectionAccountTypeComponent
   ],
   imports: [
     CoreModule,

@@ -54,7 +54,7 @@
             <div class="md-form form-sm mt-1rem mb-0rem">
               <input mask="comma_separator.0" formControlName="deltaSupply" mdbInputDirective mdbValidate
                 [validateSuccess]="true" [validateError]="true" type="text" id="deltaSupply"
-                class="form-control form-control-sm input-border" placeholder="Amount to increase o decrease">
+                class="form-control form-control-sm input-border" placeholder="Quantity of increase/decrease">
 
               <mdb-error
                 *ngIf="validateInput('deltaSupply', '').invalid && (validateInput('deltaSupply', '').dirty || validateInput('deltaSupply', '').touched)">
@@ -102,6 +102,7 @@
           <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
             <button mdbBtn type="submit" rounded="true" [disabled]="!formMosaicSupplyChange.valid" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
               size="md">
+              <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true" *ngIf="blockButton"></span>
               <span class="fs-1-2em color-white">CREATE</span>
             </button>
           </div>

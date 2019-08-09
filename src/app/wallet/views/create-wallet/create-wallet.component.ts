@@ -20,6 +20,7 @@ export class CreateWalletComponent implements OnInit {
   errorMatchPassword: string;
   errorWalletExist: string;
   isValid: boolean = false;
+  newName: string = '';
   title = 'Create Wallet';
   typeNetwork = [{
     value: NetworkType.TEST_NET,
@@ -98,12 +99,22 @@ export class CreateWalletComponent implements OnInit {
         const network = this.createWalletForm.get('network').value;
         const password = this.proximaxProvider.createPassword(this.createWalletForm.controls.passwords.get('password').value);
         const wallet = this.proximaxProvider.createAccountSimple(nameWallet, password, network);
-        const dataAccount = this.walletService.buildAccount(
-          wallet.encryptedPrivateKey.encryptedKey,
-          wallet.encryptedPrivateKey.iv,
-          wallet.address['address'],
-          wallet.network
-        );
+
+        // Account Builded
+        const accountBuilded = this.walletService.buildAccount({
+          address: wallet.address['address'],
+          byDefault: true,
+          encrypted: wallet.encryptedPrivateKey.encryptedKey,
+          iv: wallet.encryptedPrivateKey.iv,
+          network: wallet.network,
+          nameAccount: 'Primary',
+          publicAccount: this.proximaxProvider.getPublicAccountFromPrivateKey(this.proximaxProvider.decryptPrivateKey(
+            password,
+            wallet.
+            encryptedPrivateKey.encryptedKey,
+            wallet.encryptedPrivateKey.iv
+          ).toUpperCase(), wallet.network)
+        });
 
 
         this.clearForm();
@@ -111,16 +122,28 @@ export class CreateWalletComponent implements OnInit {
           name: nameWallet,
           algo: password,
           network: wallet.network
-        }, dataAccount, wallet);
-        this.walletService.saveAccountStorage(nameWallet, dataAccount);
+        }, accountBuilded, wallet);
+
+        this.walletService.saveWalletStorage(nameWallet, accountBuilded);
         this.router.navigate([`/${AppConfig.routes.walletCreated}`]);
-        // this.sharedService.showSuccess('', 'Your wallet has been successfully created');
       } else {
         //Error of repeated Wallet
         this.clearForm('nameWallet');
         this.sharedService.showError('', 'This name is already in use, try another name');
       }
     }
+  }
+
+
+  /**
+   *
+   *
+   * @param {string} oldName
+   * @param {string} newName
+   * @memberof CreateWalletComponent
+   */
+  changeNameAccount(oldName: string, newName: string) {
+    this.walletService.changeName(oldName, newName);
   }
 
   /**
@@ -205,7 +228,7 @@ export class CreateWalletComponent implements OnInit {
         this.isValid = false;
         this.errorWalletExist = '-invalid';
         return true;
-      }else {
+      } else {
         this.isValid = true;
         this.errorWalletExist = '';
         return false;

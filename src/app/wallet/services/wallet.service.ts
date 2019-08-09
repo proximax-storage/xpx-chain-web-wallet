@@ -16,6 +16,7 @@ import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
 })
 export class WalletService {
 
+  address: Address;
   algoData: {
     data: any;
     dataAccount: AccountsInterface;
@@ -24,8 +25,10 @@ export class WalletService {
 
   /******************** */
 
+  private currentAccountObs: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  private currentAccountObs$: Observable<any> = this.currentAccountObs.asObservable();
+
   currentAccount: any;
-  address: Address;
   current: any;
   network: any = '';
   algo: string;
@@ -54,18 +57,91 @@ export class WalletService {
    * @returns {AccountsInterface}
    * @memberof WalletService
    */
-  buildAccount(encrypted: string, iv: string, address: string, network: number): AccountsInterface {
+  buildAccount(data: any): AccountsInterface {
     const accounts: AccountsInterface = {
-      'brain': true,
       'algo': 'pass:bip32',
-      'encrypted': encrypted,
-      'iv': iv,
-      'address': address,
-      'label': 'Primary',
-      'network': network
+      'active': false,
+      'address': data.address,
+      'brain': true,
+      'default': data.byDefault,
+      'encrypted': data.encrypted,
+      'iv': data.iv,
+      'name': data.nameAccount,
+      'network': data.network,
+      'publicAccount': data.publicAccount
     }
-    return accounts
+
+    return accounts;
   }
+
+  /**
+   *
+   *
+   * @param {string} name
+   * @memberof WalletService
+   */
+  changeAsPrimary(name: string) {
+    const myAccounts = Object.assign(this.current.accounts);
+    const othersWallet = this.getWalletStorage().filter(
+      (element: any) => {
+        return element.name !== this.current.name;
+      }
+    );
+
+    myAccounts.forEach(element => {
+      if (element.name === name) {
+        element.default = true;
+      } else {
+        element.default = false;
+      }
+    });
+
+    this.current.accounts = myAccounts;
+    othersWallet.push({
+      name: this.current.name,
+      accounts: myAccounts
+    });
+
+    localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(othersWallet));
+  }
+
+  /**
+   *
+   *
+   * @param {string} oldName
+   * @param {string} newName
+   * @memberof WalletService
+   */
+  changeName(oldName: string, newName: string) {
+    const myAccounts = Object.assign(this.current.accounts);
+    const othersWallet = this.getWalletStorage().filter(
+      (element: any) => {
+        return element.name !== this.current.name;
+      }
+    );
+
+    myAccounts.forEach(element => {
+      if (element.name === oldName) {
+        element.name = newName;
+      }
+    });
+
+    this.current.accounts = myAccounts;
+    othersWallet.push({
+      name: this.current.name,
+      accounts: myAccounts
+    });
+
+    localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(othersWallet));
+  }
+
+  /**
+   *
+   */
+  getNameAccount$(): Observable<any> {
+    return this.currentAccountObs$;
+  }
+
 
   /**
    *
@@ -80,6 +156,31 @@ export class WalletService {
       walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
     }
     return walletsStorage;
+  }
+
+  /**
+   *
+   *
+   * @param {string} nameWallet
+   * @param {*} accountsParams
+   * @memberof WalletService
+   */
+  saveAccountStorage(nameWallet: string, accountsParams: any) {
+    const myAccounts = Object.assign(this.current.accounts);
+    const othersWallet = this.getWalletStorage().filter(
+      (element: any) => {
+        return element.name !== this.current.name;
+      }
+    );
+
+    myAccounts.push(accountsParams)
+    this.current.accounts = myAccounts;
+    othersWallet.push({
+      name: this.current.name,
+      accounts: myAccounts
+    });
+
+    localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(othersWallet));
   }
 
 
@@ -106,10 +207,34 @@ export class WalletService {
    * @param {*} accounts
    * @memberof WalletService
    */
-  saveAccountStorage(user: string, accounts: any) {
+  saveWalletStorage(nameWallet: string, accountsParams: any) {
     let walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
-    walletsStorage.push({ name: user, accounts: { '0': accounts } });
+    walletsStorage.push({
+      name: nameWallet,
+      accounts: [accountsParams]
+    });
+
     localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorage));
+  }
+
+  setCurrentAccount(currentAccount: any) {
+    this.currentAccountObs.next(currentAccount);
+  }
+
+  /**
+   *
+   *
+   * @returns
+   * @memberof WalletService
+   */
+  validateNameAccount(nameWallet: string) {
+    const nameAccount = nameWallet;
+    const existAccount = Object.keys(this.current.accounts).find(elm => this.current.accounts[elm].name === nameAccount);
+    if (existAccount !== undefined) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
 
@@ -180,16 +305,14 @@ export class WalletService {
       return false;
     }
     // console.log(wallet);
-    this.network = wallet.accounts[0].network;
-    // Account used
-    this.currentAccount = wallet.accounts[0];
-    // Algo of the wallet
-    this.algo = wallet.accounts[0].algo;
-    // console.log(this.algo);
-    // Adress and newwork
-    this.address = this.proximaxProvider.createFromRawAddress(wallet.accounts[0].address);
+
+    const x = this.getAccountDefault(wallet);
+    this.network = x.network;
+    this.currentAccount = x;
+    this.algo = x.algo;
+    this.address = this.proximaxProvider.createFromRawAddress(x.address);
     this.current = wallet;
-    // this.contacts = this._AddressBook.getContacts(wallet);
+    this.setCurrentAccount(this.currentAccount);
     return true;
   }
 
@@ -205,7 +328,6 @@ export class WalletService {
    */
 
   decrypt(common: any, account: any = '', algo: any = '', network: any = '') {
-
     const acct = account || this.currentAccount;
     const net = network || this.network;
     const alg = algo || this.algo;
@@ -266,6 +388,23 @@ export class WalletService {
   }
 
   /**
+   *
+   *
+   * @param {string} byName
+   * @param {boolean} [byDefault=null]
+   * @returns
+   * @memberof WalletService
+   */
+  filterAccount(byName: string, byDefault: boolean = null) {
+    if (byDefault !== null) {
+      return this.current.accounts.find(elm => elm.default === true);
+    } else {
+      return this.current.accounts.find(elm => elm.name === byName);
+    }
+  }
+
+
+  /**
    * Get account info
    *
    * @returns
@@ -283,6 +422,17 @@ export class WalletService {
    */
   getAccountInfoAsync(): Observable<AccountInfo> {
     return this.accountInfo$;
+  }
+
+  /**
+   *
+   *
+   * @param {*} wallet
+   * @returns
+   * @memberof WalletService
+   */
+  getAccountDefault(wallet: any) {
+    return wallet.accounts.find(x => x.default === true);
   }
 
   /**
@@ -324,12 +474,15 @@ export class WalletService {
 
 export interface AccountsInterface {
   brain: boolean;
+  active: boolean;
+  default: boolean;
   algo: string;
   encrypted: string;
   iv: string;
   address: string;
-  label: string;
+  name: string;
   network: number;
+  publicAccount: string;
 }
 
 export interface WalletAccountInterface {

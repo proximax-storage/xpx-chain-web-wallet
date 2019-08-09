@@ -111,20 +111,29 @@ export class ImportWalletComponent implements OnInit {
         const privateKey = this.importWalletForm.get('privateKey').value;
         const password = this.proximaxProvider.createPassword(this.importWalletForm.controls.passwords.get('password').value);
         const wallet = this.proximaxProvider.createAccountFromPrivateKey(nameWallet, password, privateKey, network);
-        const dataAccount = this.walletService.buildAccount(
-          wallet.encryptedPrivateKey.encryptedKey,
-          wallet.encryptedPrivateKey.iv,
-          wallet.address['address'],
-          wallet.network
-        );
+
+        const accountBuilded = this.walletService.buildAccount({
+          address: wallet.address['address'],
+          byDefault: true,
+          encrypted: wallet.encryptedPrivateKey.encryptedKey,
+          iv: wallet.encryptedPrivateKey.iv,
+          network: wallet.network,
+          nameAccount: 'Primary',
+          publicAccount: this.proximaxProvider.getPublicAccountFromPrivateKey(this.proximaxProvider.decryptPrivateKey(
+            password,
+            wallet.
+            encryptedPrivateKey.encryptedKey,
+            wallet.encryptedPrivateKey.iv
+          ).toUpperCase(), wallet.network)
+        });
 
         this.clearForm();
         this.walletService.saveDataWalletCreated({
           name: nameWallet,
           algo: password,
           network: wallet.network
-        }, dataAccount, wallet);
-        this.walletService.saveAccountStorage(nameWallet, dataAccount);
+        }, accountBuilded, wallet);
+        this.walletService.saveWalletStorage(nameWallet, accountBuilded);
         this.router.navigate([`/${AppConfig.routes.walletCreated}`]);
       } else {
         //Error of repeated Wallet

@@ -1,12 +1,12 @@
 import { Router, NavigationEnd } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { ItemsHeaderInterface, SharedService } from '../../../services/shared.service';
-import { AppConfig } from 'src/app/config/app.config';
-import { environment } from 'src/environments/environment.prod';
+import { AppConfig } from '../../../../config/app.config';
+import { environment } from '../../../../../environments/environment.prod';
 import { DashboardService } from '../../../../dashboard/services/dashboard.service';
 import { AuthService } from '../../../../auth/services/auth.service';
-import { WalletService } from 'src/app/wallet/services/wallet.service';
-import { TransactionsService } from 'src/app/transfer/services/transactions.service';
+import { WalletService } from '../../../../wallet/services/wallet.service';
+import { TransactionsService } from '../../../../transfer/services/transactions.service';
 
 @Component({
   selector: 'app-sidebar-main',
@@ -49,10 +49,18 @@ export class SidebarMainComponent implements OnInit {
   ngOnInit() {
     this.destroySubscription();
     this.readRoute();
-    this.walletName = this.walletService.current.name;
+
+    // NAME ACCOUNT
+    this.subscriptions['nameAccount'] = this.walletService.getNameAccount$().subscribe(next => {
+      this.walletName = next.name;
+    });
+
+    // BALANCE
     this.subscriptions['balance'] = this.transactionService.getBalance$().subscribe(next => {
+      const currentDefault = this.walletService.getAccountDefault(this.walletService.current);
       this.vestedBalance = `Balance ${next} XPX`;
     }, error => {
+      const currentDefault = this.walletService.getAccountDefault(this.walletService.current);
       this.vestedBalance = `Balance 0.000000 XPX`;
     });
 
@@ -138,6 +146,7 @@ export class SidebarMainComponent implements OnInit {
               this.itemsHeader[element].selected = true;
             } else {
               let x = false;
+              this.itemsHeader[element].selected = false;
               this.routesExcludedInServices.forEach(element => {
                 if (objRoute === element) {
                   x = true;

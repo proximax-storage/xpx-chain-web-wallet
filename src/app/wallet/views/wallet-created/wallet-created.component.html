@@ -27,28 +27,17 @@
         <span class="font-small d-flex">{{address}}</span>
       </div>
       <div class="col-2 text-right">
-        <i mdbWavesEffect (click)="copyMessage('Address')" ngxClipboard [cbContent]="address" class="fa fa-copy cursor-p"></i>
+        <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="cursor-p" alt="Copy"
+          width="20" (click)="copyMessage('Address')" ngxClipboard [cbContent]="address">
       </div>
     </div>
   </div>
-  <!-- public key -->
-  <!-- <div class="row">
-    <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto d-flex align-items-center box-grey">
-      <div class="col-10">
-        <span>Public Key: </span><br>
-        <span class="font-small d-flex ">{{ publicKey }}</span>
-      </div>
-      <div class="col-2 text-right">
-        <i mdbWavesEffect (click)="copyMessage('Public Key')" ngxClipboard [cbContent]="publicKey" class="fa fa-copy cursor-p"></i>
-      </div>
-    </div>
-  </div> -->
-  <!-- Information -->
+
   <div class="row">
     <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto box-transparent-border-orange">
       <div>
-        <span class="fw-600">Make sure you store your private key in a safe place</span><br>
-        <span class="fw-600">Access to your digital assets cannot be recovered without it</span>
+        <span class="fw-600">Make sure you store your private key in a safe place.</span><br>
+        <span class="fw-600">Access to your digital assets cannot be recovered without it.</span>
       </div>
     </div>
   </div>
@@ -61,26 +50,23 @@
           <span class="font-small d-flex">{{ privateKey }}</span>
         </div>
         <div class="col-2 text-right">
-          <i mdbWavesEffect (click)="copyMessage('Private Key')" ngxClipboard [cbContent]="privateKey" class="fa fa-copy cursor-p"></i>
+          <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="cursor-p" alt="Copy"
+            width="20" (click)="copyMessage('Private Key')" ngxClipboard [cbContent]="privateKey">
         </div>
       </div>
     </div>
   </ng-container>
 
   <!-- buttons create and clear -->
-  <div class="row mt-2rem">
-    <div class="col-11 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-      <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
-        size="md" [routerLink]="['/'+routeHome]">
-        <span class="fs-1-2em color-white"><i class="fa fa-arrow-circle-left"></i> FINISH</span>
-      </button>
-    </div>
-    <div class="col-11 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-      <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
-        size="md" (click)="viewPrivateKey = !viewPrivateKey">
-        <span class="fs-1-2em color-white" *ngIf="viewPrivateKey"><i class="fa fa-magic mr-1"></i> HIDE PRIVATE KEY</span>
-        <span class="fs-1-2em color-white" *ngIf="!viewPrivateKey"><i class="fa fa-magic mr-1"></i> SHOW PRIVATE KEY</span>
-      </button>
-    </div>
+  <div class="row mt-2rem d-flex justify-content-center">
+    <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+      size="md" [routerLink]="['/'+routeAuth]">
+      <span class="fs-1-2em color-white"><i class="fa fa-arrow-circle-left"></i> FINISH</span>
+    </button>
+    <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+      size="md" (click)="viewPrivateKey = !viewPrivateKey">
+      <span class="fs-1-2em color-white" *ngIf="viewPrivateKey"><i class="fa fa-magic mr-1"></i> HIDE PRIVATE KEY</span>
+      <span class="fs-1-2em color-white" *ngIf="!viewPrivateKey"><i class="fa fa-magic mr-1"></i> SHOW PRIVATE KEY</span>
+    </button>
   </div>
 </div>

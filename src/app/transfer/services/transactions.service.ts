@@ -252,15 +252,17 @@ export class TransactionsService {
    * @returns
    * @memberof TransactionsService
    */
-  amountFormatter(amountParam: UInt64 | number, mosaic: MosaicInfo) {
+  amountFormatter(amountParam: UInt64 | number, mosaic: MosaicInfo, manualDivisibility = '') {
+    const divisibility = (manualDivisibility === '') ? mosaic['properties'].divisibility : manualDivisibility;
     const amount = (typeof (amountParam) === 'number') ? amountParam : amountParam.compact();
     const amountDivisibility = Number(
-      amount / Math.pow(10, mosaic['properties'].divisibility)
+      amount / Math.pow(10, divisibility)
     );
 
-    return amountDivisibility.toLocaleString("en-us", {
-      minimumFractionDigits: mosaic['properties'].divisibility
+    const amountFormatter = amountDivisibility.toLocaleString("en-us", {
+      minimumFractionDigits: divisibility
     });
+    return amountFormatter;
   }
 
   /**
@@ -477,6 +479,26 @@ export class TransactionsService {
 
     this.namespaceService.buildNamespaceStorage();
     this.updateBalance();
+  }
+
+  /**
+   * Method to add leading zeros
+   * 
+   * @param cant Quantity of zeros to add
+   * @param amount Amount to add zeros
+   */
+  addZeros(cant, amount = '0') {
+    let x = '0';
+    if (amount === '0') {
+      for (let index = 0; index < cant - 1; index++) {
+        amount += x;
+      }
+    } else {
+      for (let index = 0; index < cant; index++) {
+        amount += x;
+      }
+    }
+    return amount;
   }
 }
 

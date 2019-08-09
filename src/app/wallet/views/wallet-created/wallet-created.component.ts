@@ -20,14 +20,14 @@ export class WalletCreatedComponent implements OnInit {
     dataAccount: AccountsInterface;
     wallet: SimpleWallet
   } = null;
-  description = 'Warning! before proceeding, make sure store your private key in a safe place. Access to your digital assets cannot be recovered without it.';
+  description = 'Warning! Before proceeding, make sure store your private key in a safe place. Access to your digital assets cannot be recovered without it.';
   publicKey = '';
   privateKey = '';
   title = 'Congratulations';
-  titleDescription = 'Your wallet has been created successfully';
+  titleDescription = 'Your wallet has been successfully created';
   subtitle = '';
   viewPrivateKey = false;
-  routeHome = AppConfig.routes.home;
+  routeAuth = AppConfig.routes.auth;
 
   constructor(
     private walletService: WalletService,
