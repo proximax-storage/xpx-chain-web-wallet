@@ -17,7 +17,6 @@ import { TransactionsService, TransferInterface } from '../../services/transacti
 import { environment } from '../../../../environments/environment';
 import { ServicesModuleService } from '../../../servicesModule/services/services-module.service';
 import { AppConfig } from '../../../config/app.config';
-import { first } from 'rxjs/operators';
 
 
 @Component({
@@ -368,34 +367,6 @@ export class CreateTransferComponent implements OnInit {
     this.boxOtherMosaics = otherMosaics;
   }
 
-  /**
-   *
-   *
-   * @param {number} position
-   * @memberof CreateTransferComponent
-   */
-  /* deleteMoreMosaic(position: number) {
-     console.log('this.boxOtherMosaics', this.boxOtherMosaics);
-     const otherMosaics = [];
-     Object.keys(this.boxOtherMosaics).forEach(element => {
-     /*  const selectOtherMosaics = [];
-       this.boxOtherMosaics[position].selectOtherMosaics.forEach(element => {
-         if (element.label === this.boxOtherMosaics[position].beforeValue) {
-           element.disabled = false;
-           selectOtherMosaics.push(element);
-         }else {
-           selectOtherMosaics.push(element);
-         }
-       });
-
-       this.boxOtherMosaics[position].selectOtherMosaics = selectOtherMosaics;*
-
-       if (Number(element) !== position) {
-         otherMosaics.push(this.boxOtherMosaics[position]);
-       }
-     });
-     this.boxOtherMosaics = otherMosaics;
-   }*/
 
   /**
    *
@@ -476,31 +447,6 @@ export class CreateTransferComponent implements OnInit {
         });
 
         element.selectOtherMosaics = newMosaic;
-        /* if (this.boxOtherMosaics[position].beforeValue !== '' && this.boxOtherMosaics[position].beforeValue) {
-           const current = this.allMosaics.find(e => e.label === this.boxOtherMosaics[position].beforeValue);
-
-         }*/
-
-        /*  if (element.random !== this.boxOtherMosaics[position].random) {
-            element.selectOtherMosaics = this.selectOtherMosaics;
-          }*/
-
-        /* if (this.selectOtherMosaics.length > 0) {
-           if (element.random !== this.boxOtherMosaics[position].random) {
-            /* if (this.boxOtherMosaics[position].beforeValue !== '' && this.boxOtherMosaics[position].beforeValue) {
-               const current = this.allMosaics.find(e => e.label === this.boxOtherMosaics[position].beforeValue);
-               console.log(current);
-               console.log('----this.selectOtherMosaics---', this.selectOtherMosaics);
-             /*  if(Object.keys(current).length > 0) {
-                 this.selectOtherMosaics.push(current);
-               }*
-             }*
-             console.log('----this.selectOtherMosaics---', this.selectOtherMosaics);
-             element.selectOtherMosaics = this.selectOtherMosaics;
-           } else {
-             this.boxOtherMosaics[position].beforeValue = mosaicSelected.label;
-           }
-         }*/
       });
 
       this.boxOtherMosaics[position].beforeValue = mosaicSelected.label;
@@ -512,20 +458,6 @@ export class CreateTransferComponent implements OnInit {
       this.boxOtherMosaics[position].errorBalance = false;
       this.boxOtherMosaics[position].amountToBeSent = 0;
     }
-
-    /*this.boxOtherMosaics.forEach(element => {
-      console.log('old', this.boxOtherMosaics[position].beforeValue);
-      const newMosaic = [];
-      this.selectOtherMosaics = element.selectOtherMosaics.filter(elm => elm.label !== mosaicSelected.label);
-      if (this.selectOtherMosaics.length > 0) {
-        if (element.random !== this.boxOtherMosaics[position].random) {
-          element.selectOtherMosaics = this.selectOtherMosaics;
-        }else {
-          this.boxOtherMosaics[position].beforeValue = mosaicSelected.value;
-        }
-      }
-       console.log('old', this.boxOtherMosaics[position].beforeValue);
-    });*/
   }
 
   /**
