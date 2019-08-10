@@ -14,6 +14,7 @@ import { SharedService, ConfigurationForm } from '../../../shared/services/share
 import { TransactionsService, TransferInterface } from '../../services/transactions.service';
 import { environment } from '../../../../environments/environment';
 import { ServicesModuleService } from '../../../servicesModule/services/services-module.service';
+import { NgxUiLoaderService } from 'ngx-ui-loader';
 
 @Component({
   selector: "app-create-transfer",
@@ -63,10 +64,17 @@ export class CreateTransferComponent implements OnInit {
     private serviceModuleService: ServicesModuleService,
     private sharedService: SharedService,
     private transactionService: TransactionsService,
-    private walletService: WalletService
+    private walletService: WalletService,
+    private ngxService: NgxUiLoaderService
   ) { }
 
   ngOnInit() {
+    this.ngxService.start(); // start foreground spinner of the master loader with 'default' taskId
+    // Stop the foreground loading after 5s
+    setTimeout(() => {
+      this.ngxService.stop(); // stop foreground spinner of the master loader with 'default' taskId
+    }, 1500);
+
     this.configurationForm = this.sharedService.configurationForm;
     this.createFormTransfer();
     this.init(this.walletService.currentAccount);
@@ -77,8 +85,6 @@ export class CreateTransferComponent implements OnInit {
         value: element
       });
     });
-
-    console.log(this.accounts);
   }
 
   ngOnDestroy(): void {

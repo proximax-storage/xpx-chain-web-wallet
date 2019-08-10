@@ -52,6 +52,7 @@
     "ngx-loading": "^3.0.1",
     "ngx-mask": "^8.0.2",
     "ngx-pagination": "^4.1.0",
+    "ngx-ui-loader": "^8.0.0",
     "rxjs": "~6.4.0",
     "screenfull": "^4.2.0",
     "tsjs-xpx-chain-sdk": "^0.2.0",

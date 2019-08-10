@@ -6,6 +6,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxMaskModule } from 'ngx-mask';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { NgxCurrencyModule } from "ngx-currency";
+import { NgxUiLoaderModule, NgxUiLoaderConfig, POSITION, SPINNER, PB_DIRECTION } from 'ngx-ui-loader';
 
 import { MdbModule } from '../shared/moduls/mdb/mdb.module';
 import { TransferTypeComponent } from '../dashboard/components/transfer-type/transfer-type.component';
@@ -21,6 +22,19 @@ import { SecretProofComponent } from '../dashboard/components/secret-proof/secre
 import { MosaicsInfoComponent } from '../dashboard/components/mosaics-info/mosaics-info.component';
 import { MosaicAliasComponent } from '../dashboard/components/mosaic-alias/mosaic-alias.component';
 import { AddressAliasTypeComponent } from '../dashboard/components/address-alias-type/address-alias-type.component';
+
+const ngxUiLoaderConfig: NgxUiLoaderConfig = {
+  bgsColor: '#306eb5',
+  bgsPosition: POSITION.bottomCenter,
+  bgsSize: 40,
+  bgsType: SPINNER.rectangleBounce, // background spinner type
+  fgsType: SPINNER.chasingDots, // foreground spinner type
+  pbDirection: PB_DIRECTION.leftToRight, // progress bar direction
+  pbThickness: 5, // progress bar thickness,
+  logoPosition: "center-center",
+  logoSize: 120,
+  logoUrl: "assets/images/ProximaX-Favicon.png"
+};
 
 const components = [
   TransferTypeComponent,
@@ -55,10 +69,12 @@ const moduls = [
     moduls,
     NgxMaskModule.forRoot(),
     MdbModule.forRoot(),
+    NgxUiLoaderModule.forRoot(ngxUiLoaderConfig)
   ],
   exports: [
     MdbModule,
     NgxMaskModule,
+    NgxUiLoaderModule,
     moduls,
     components
   ]
