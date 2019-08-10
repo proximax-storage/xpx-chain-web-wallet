@@ -69,12 +69,6 @@ export class CreateTransferComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.ngxService.start(); // start foreground spinner of the master loader with 'default' taskId
-    // Stop the foreground loading after 5s
-    setTimeout(() => {
-      this.ngxService.stop(); // stop foreground spinner of the master loader with 'default' taskId
-    }, 1500);
-
     this.configurationForm = this.sharedService.configurationForm;
     this.createFormTransfer();
     this.init(this.walletService.currentAccount);
@@ -96,6 +90,11 @@ export class CreateTransferComponent implements OnInit {
   }
 
   init(accountToSend: AccountsInterface) {
+    this.ngxService.start(); // start foreground spinner of the master loader with 'default' taskId
+    // Stop the foreground loading after 5s
+   /* setTimeout(() => {
+      this.ngxService.stop(); // stop foreground spinner of the master loader with 'default' taskId
+    }, 1500);*/
     console.log('---accountToSend---', accountToSend);
     this.reset();
     this.accountToSend = accountToSend;
@@ -243,8 +242,11 @@ export class CreateTransferComponent implements OnInit {
 
           this.allMosaics = mosaicsSelect;
           this.selectOtherMosaics = mosaicsSelect;
+          this.ngxService.stop();
         }
       }
+    }else {
+      this.ngxService.stop();
     }
   }
 
