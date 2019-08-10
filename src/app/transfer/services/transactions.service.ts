@@ -425,7 +425,7 @@ export class TransactionsService {
    *
    * @memberof TransactionsService
    */
-  updateBalance() {
+  updateBalance2() {
     const currentAccount  = Object.assign({}, this.walletService.getCurrentAccount());
     this.proximaxProvider.getAccountInfo(this.proximaxProvider.createFromRawAddress(currentAccount.address)).pipe(first()).subscribe(
       (accountInfo: AccountInfo) => {
@@ -489,7 +489,16 @@ export class TransactionsService {
         const currentAccount  = Object.assign({}, this.walletService.getCurrentAccount());
         this.proximaxProvider.getAccountInfo(this.proximaxProvider.createFromRawAddress(currentAccount.address)).subscribe(
           next => {
-            // console.log(next);
+            // set balance
+            if(element.default) {
+              next.mosaics.forEach(mosaic => {
+                if(mosaic.id.toHex() === environment.mosaicXpxInfo.id) {
+                  this.setBalance$(mosaic.amount.compact());
+                }
+              });
+            }
+
+            // Set accounts info
             this.walletService.setAccountsInfo({
               name: element.name,
               accountInfo: next
@@ -557,7 +566,7 @@ export class TransactionsService {
     }
 
     this.namespaceService.buildNamespaceStorage();
-    this.updateBalance();
+    this.updateBalance2();
   }
 
   /**

@@ -138,6 +138,22 @@ export class WalletService {
     localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(othersWallet));
   }
 
+  /**
+   * Destroy account info
+   *
+   * @memberof WalletService
+   */
+  destroyAccountInfo() {
+    this.accountInfo = undefined;
+    this.accountInfoSubject.next(null);
+  }
+
+  /**
+   *
+   *
+   * @returns {CurrentWalletInterface}
+   * @memberof WalletService
+   */
   getCurrentWallet(): CurrentWalletInterface {
     return this.currentWallet;
   }
@@ -244,6 +260,12 @@ export class WalletService {
     this.accountsInfo.push(accountInfo);
   }
 
+  /**
+   *
+   *
+   * @param {*} currentAccount
+   * @memberof WalletService
+   */
   setCurrentAccount(currentAccount: any) {
     this.currentAccountObs.next(currentAccount);
   }
@@ -288,34 +310,6 @@ export class WalletService {
 
 
   /**************************************************************************************************/
-
-  /**
-   *
-   *
-   * @param {{ password: { length: number; }; }} common
-   * @param {*} wallet
-   * @returns
-   * @memberof WalletService
-   */
-  login(common: { password: { length: number; }; }, wallet: any) {
-    // console.log(wallet);
-    if (!wallet) {
-      this.sharedService.showError('', 'Dear user, the wallet is missing');
-      return false;
-    } else if (!this.nodeService.getNodeSelected()) {
-      this.sharedService.showError('', 'Please, select a node.');
-      this.route.navigate([`/${AppConfig.routes.selectNode}`]);
-      return false;
-    } else if (!this.decrypt(common, wallet.accounts[0], wallet.accounts[0].algo, wallet.accounts[0].network)) {
-      // Decrypt / generate and check primary
-      return false;
-    } else if (wallet.accounts[0].network === NetworkType.MAIN_NET && wallet.accounts[0].algo === 'pass:6k' && common.password.length < 40) {
-      this.sharedService.showError('', 'Dear user, the wallet is missing');
-    }
-
-    this.use(wallet);
-    return true;
-  }
 
 
   /**
@@ -456,18 +450,12 @@ export class WalletService {
    * @memberof WalletService
    */
   getAccountDefault(wallet: any) {
-    return wallet.accounts.find(x => x.default === true);
+    if (wallet) {
+      return wallet.accounts.find(x => x.default === true);
+    }
   }
 
-  /**
-   * Destroy account info
-   *
-   * @memberof WalletService
-   */
-  destroyAccountInfo() {
-    this.accountInfo = undefined;
-    this.accountInfoSubject.next(null);
-  }
+
 
   /**
    * Create a wallet array

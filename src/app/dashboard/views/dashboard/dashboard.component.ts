@@ -67,6 +67,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
 
   ngOnInit() {
+    this.balance();
     this.dashboardService.incrementViewDashboard();
     this.dashboardService.subscribeLogged();
     this.currentAccount = Object.assign({}, this.walletService.getCurrentAccount());
@@ -75,8 +76,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.typeTransactions = this.transactionService.getTypeTransactions();
     this.vestedBalance = `0.000000 ${environment.mosaicXpxInfo.coin}`;
     /*this.subscribeTransactionsConfirmedUnconfirmed();
-     this.getRecentTransactions();
-     this.balance();*/
+     this.getRecentTransactions();*/
   }
 
   ngOnDestroy(): void {
@@ -132,7 +132,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   getRecentTransactions(reload = false) {
     this.iconReloadDashboard = true;
     // Update balance
-    this.transactionService.updateBalance();
+    this.transactionService.updateBalance2();
     // Validate if it is the first time the dashboard is loaded or if you click on the reload button
     if (this.dashboardService.getCantViewDashboard() === 1 || reload) {
       this.searching = true;
