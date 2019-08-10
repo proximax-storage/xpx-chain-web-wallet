@@ -487,7 +487,7 @@ export class TransactionsService {
       const accountsInfo = [];
       accounts.forEach(async element => {
         const currentAccount  = Object.assign({}, this.walletService.getCurrentAccount());
-        this.proximaxProvider.getAccountInfo(currentAccount.address).subscribe(
+        this.proximaxProvider.getAccountInfo(this.proximaxProvider.createFromRawAddress(currentAccount.address)).subscribe(
           next => {
             // console.log(next);
             this.walletService.setAccountsInfo({
