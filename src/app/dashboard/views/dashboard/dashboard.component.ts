@@ -70,7 +70,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.dashboardService.incrementViewDashboard();
     this.dashboardService.subscribeLogged();
     this.currentAccount = Object.assign({}, this.walletService.getCurrentAccount());
-    this.currentAccount.address = this.proximaxProvider.createFromRawAddress(this.currentAccount.address).pretty();
+    this.currentAccount.address = this.proximaxProvider.createFromRawAddress(
+      this.currentAccount.address).pretty();
     this.typeTransactions = this.transactionService.getTypeTransactions();
     this.vestedBalance = `0.000000 ${environment.mosaicXpxInfo.coin}`;
     /*this.subscribeTransactionsConfirmedUnconfirmed();

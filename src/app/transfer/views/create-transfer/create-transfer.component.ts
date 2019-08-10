@@ -642,9 +642,9 @@ export class CreateTransferComponent implements OnInit {
         }
 
         if (accountRecipient !== null && accountRecipient !== undefined && accountRecipient.length === 40) {
-          const address = this.walletService.currentAccount.address;
+          const currentAccount  = Object.assign({}, this.walletService.getCurrentAccount());
           if (!this.proximaxProvider.verifyNetworkAddressEqualsNetwork(
-            this.proximaxProvider.createFromRawAddress(address).plain(), accountRecipient)
+            this.proximaxProvider.createFromRawAddress(currentAccount.address).plain(), accountRecipient)
           ) {
             this.blockSendButton = true;
             this.msgErrorUnsupported = 'Recipient Address Network unsupported';

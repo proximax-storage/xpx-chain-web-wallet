@@ -95,7 +95,9 @@ export class AuthService {
     this.route.navigate([`/${AppConfig.routes.dashboard}`]);
     this.namespaces.buildNamespaceStorage();
     this.transactionService.getAccountsInfo(wallet.accounts);
-    this.serviceModuleService.changeBooksItem(this.proximaxProvider.createFromRawAddress(currentAccount.address));
+    this.serviceModuleService.changeBooksItem(
+      this.proximaxProvider.createFromRawAddress(currentAccount.address)
+    );
     return true;
   }
 

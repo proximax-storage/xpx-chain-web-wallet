@@ -138,6 +138,11 @@ export class WalletService {
     localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(othersWallet));
   }
 
+  getCurrentWallet(): CurrentWalletInterface {
+    return this.currentWallet;
+  }
+
+
   /**
    *
    *

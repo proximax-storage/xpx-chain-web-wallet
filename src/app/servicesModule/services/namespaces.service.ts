@@ -59,8 +59,8 @@ export class NamespacesService {
      */
   async buildNamespaceStorage() {
     //Gets array of NamespaceInfo for an account
-    const address = this.walletService.currentAccount.address;
-    this.getNamespacesFromAccountAsync(this.proximaxProvider.createFromRawAddress(address))
+    const currentAccount  = Object.assign({}, this.walletService.getCurrentAccount());
+    this.getNamespacesFromAccountAsync(this.proximaxProvider.createFromRawAddress(currentAccount.address))
       .then(response => {
         this.namespaceFromAccount = response;
         this.namespaceFromAccountSubject.next(response);

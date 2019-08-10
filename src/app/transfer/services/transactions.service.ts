@@ -188,7 +188,8 @@ export class TransactionsService {
       if (transaction['recipient'] !== undefined) {
         recipient = transaction['recipient'];
         recipientPretty = transaction['recipient'].pretty();
-        this.walletService.currentWallet.accounts.forEach(element => {
+        const currentWallet  = Object.assign({}, this.walletService.getCurrentWallet());
+        currentWallet.accounts.forEach(element => {
           const address = this.proximaxProvider.createFromRawAddress(element.address);
           if (address.pretty() === transaction["recipient"].pretty()) {
             isReceive = true;
@@ -425,8 +426,8 @@ export class TransactionsService {
    * @memberof TransactionsService
    */
   updateBalance() {
-    const address = this.walletService.currentAccount.address;
-    this.proximaxProvider.getAccountInfo(this.proximaxProvider.createFromRawAddress(address)).pipe(first()).subscribe(
+    const currentAccount  = Object.assign({}, this.walletService.getCurrentAccount());
+    this.proximaxProvider.getAccountInfo(this.proximaxProvider.createFromRawAddress(currentAccount.address)).pipe(first()).subscribe(
       (accountInfo: AccountInfo) => {
         // console.log('AccountInfo ---> ', accountInfo);
         if (accountInfo !== null && accountInfo !== undefined) {
@@ -485,8 +486,8 @@ export class TransactionsService {
     try {
       const accountsInfo = [];
       accounts.forEach(async element => {
-        const address = this.proximaxProvider.createFromRawAddress(element.address);
-        this.proximaxProvider.getAccountInfo(address).subscribe(
+        const currentAccount  = Object.assign({}, this.walletService.getCurrentAccount());
+        this.proximaxProvider.getAccountInfo(currentAccount.address).subscribe(
           next => {
             // console.log(next);
             this.walletService.setAccountsInfo({
