@@ -20,14 +20,14 @@ export class NamespacesService {
 
   namespaceViewCache: NamespaceName[] = [];
   namespaceFromAccount: NamespaceInfo[] = null;
-  network = this.walletService.currentAccount.network;
   private namespaceFromAccountSubject: BehaviorSubject<NamespaceInfo[]> = new BehaviorSubject<NamespaceInfo[]>(null);
   private namespaceFromAccount$: Observable<NamespaceInfo[]> = this.namespaceFromAccountSubject.asObservable();
 
   constructor(
     private proximaxProvider: ProximaxProvider,
     private walletService: WalletService
-  ) { }
+  ) {
+  }
 
 
   addressAliasTransaction(
@@ -37,7 +37,7 @@ export class NamespacesService {
     common: any,
     network?: NetworkType
   ) {
-    network = (network !== undefined) ? network : this.network;
+    network = (network !== undefined) ? network : this.walletService.currentAccount.network;
     const addressAliasTransaction = AliasTransaction.createForAddress(
       Deadline.create(),
       aliasActionType,
@@ -46,7 +46,7 @@ export class NamespacesService {
       network
     );
 
-    const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.network);
+    const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
     const signedTransaction = account.sign(addressAliasTransaction);
     // this.proximaxProvider.announce(signedTransaction)
     return signedTransaction;

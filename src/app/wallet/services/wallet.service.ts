@@ -22,8 +22,8 @@ export class WalletService {
     dataAccount: AccountsInterface;
     wallet: SimpleWallet
   } = null;
-  currentAccount: AccountsInterface;
-  currentWallet: CurrentWalletInterface;
+  currentAccount: AccountsInterface = null;
+  currentWallet: CurrentWalletInterface = null;
 
 
   /******************** */
