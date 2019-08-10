@@ -64,5 +64,12 @@
   position: absolute;
   margin-top: -50px;
   padding: 12px;
-  color: #7979796e;
+  color: #b5b5b5;
+  font-size: .8rem;
+  padding-top: .8rem;
+}
+
+.isActive{
+  background: #306eb5 !important;
+  color: white !important;
 }
