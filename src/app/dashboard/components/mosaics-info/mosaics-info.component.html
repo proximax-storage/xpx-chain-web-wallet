@@ -7,8 +7,8 @@
     <div class="col-9">
        <span
        [ngClass]="{
-         'color-blue-light': transferTransaction.isRemitent,
-         'color-orange': !transferTransaction.isRemitent
+         'color-blue-light': transferTransaction.receive,
+         'color-orange': !transferTransaction.receive
         }"
        class="fw-bold fs-1-5rem" >{{mosaicXpx.amountFormatter}} XPX</span>
     </div>
@@ -31,8 +31,8 @@
           *ngFor="let head of headElements"
           scope="col"
           [ngClass]="{
-            'color-blue-light': transferTransaction.isRemitent,
-            'color-orange': !transferTransaction.isRemitent
+            'color-blue-light': transferTransaction.receive,
+            'color-orange': !transferTransaction.receive
           }"
           class="text-align-left fw-500">{{head}}</th>
         </tr>

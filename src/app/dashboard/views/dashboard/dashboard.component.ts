@@ -172,8 +172,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     for (let account of this.walletService.currentWallet.accounts) {
       this.proximaxProvider.getTransactionsFromAccountId(account.publicAccount, id).toPromise().then(response => {
         const data = [];
-        console.log(response);
-        console.log('-------------------------------------------');
         this.searchTransactions = !(response.length < 25);
         response.forEach(element => {
           //Sets the data structure of the dashboard
@@ -182,6 +180,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
             data.push(builderTransactions);
           }
         });
+
 
         // Establishes confirmed transactions in the observable type variable
         this.transactions = this.transactions.concat(data);
@@ -250,7 +249,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   subscribeTransactionsConfirmedUnconfirmed() {
     this.subscriptions['transactionsConfirmed'] = this.transactionService.getTransactionsConfirmed$().subscribe(
       (next: TransactionsInterface[]) => {
-        console.log(this.walletService.currentAccount);
         this.cantConfirmed = next.length;
         this.transactionsConfirmed = next;
         this.cantTransactions = this.cantConfirmed;

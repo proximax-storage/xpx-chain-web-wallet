@@ -172,6 +172,19 @@ export class TransactionsService {
         }
       }
 
+      let recipient = null;
+      let recipientPretty = null;
+      let isReceive = false;
+      if (transaction['recipient'] !== undefined) {
+        recipient = transaction['recipient'];
+        recipientPretty = transaction['recipient'].pretty();
+        this.walletService.currentWallet.accounts.forEach(element => {
+          if (this.proximaxProvider.createFromRawAddress(element.address).pretty() === transaction["recipient"].pretty()) {
+            isReceive = true;
+          }
+        });
+      }
+
       return {
         data: transaction,
         nameType: this.arraTypeTransaction[keyType].name,
@@ -179,9 +192,9 @@ export class TransactionsService {
         fee: this.amountFormatterSimple(transaction.maxFee.compact()),
         sender: transaction.signer,
         recipientRentalFeeSink: recipientRentalFeeSink,
-        recipient: (transaction['recipient'] !== undefined) ? transaction['recipient'] : null,
-        recipientAddress: (transaction['recipient'] !== undefined) ? transaction['recipient'].pretty() : null,
-        isRemitent: (transaction['recipient'] !== undefined) ? this.walletService.address.pretty() === transaction["recipient"].pretty() : false,
+        recipient: recipient,
+        recipientAddress: recipientPretty,
+        receive: isReceive,
         senderAddress: transaction['signer'].address.pretty()
       }
     }
@@ -511,6 +524,6 @@ export interface TransactionsInterface {
   recipientRentalFeeSink: string;
   recipient: Address;
   recipientAddress: string;
-  isRemitent: boolean;
+  receive: boolean;
   senderAddress: string;
 }
