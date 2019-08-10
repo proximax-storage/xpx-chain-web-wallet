@@ -70,7 +70,7 @@ export class CreateTransferComponent implements OnInit {
     this.configurationForm = this.sharedService.configurationForm;
     this.createFormTransfer();
     this.init(this.walletService.currentAccount);
-    this.walletService.current.accounts.forEach(element => {
+    this.walletService.currentWallet.accounts.forEach(element => {
       this.accounts.push({
         label: element.name,
         active: element.default,
@@ -79,9 +79,6 @@ export class CreateTransferComponent implements OnInit {
     });
 
     console.log(this.accounts);
-    if (this.accounts.length > 1) {
-      this.formTransfer.get('selectAccount').setValidators([Validators.required]);
-    }
   }
 
   ngOnDestroy(): void {
@@ -276,11 +273,7 @@ export class CreateTransferComponent implements OnInit {
           Validators.minLength(this.configurationForm.passwordWallet.minLength),
           Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
         ]
-      ],
-      selectAccount: ['', [
-        Validators.minLength(this.configurationForm.accountRecipient.minLength),
-        Validators.maxLength(this.configurationForm.accountRecipient.maxLength)
-      ]],
+      ]
     });
   }
 
@@ -536,7 +529,7 @@ export class CreateTransferComponent implements OnInit {
       this.blockButton = true;
       this.blockSendButton = true;
       let common = { password: this.formTransfer.get("password").value };
-      if (this.walletService.decrypt(common, this.formTransfer.get("selectAccount").value)) {
+      if (this.walletService.decrypt(common, this.accountToSend)) {
         const params: TransferInterface = {
           common: common,
           recipient: this.formTransfer.get("accountRecipient").value,

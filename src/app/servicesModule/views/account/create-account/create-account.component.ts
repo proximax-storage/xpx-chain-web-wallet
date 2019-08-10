@@ -46,7 +46,7 @@ export class CreateAccountComponent implements OnInit {
     this.buttonSend = (param === '0') ? 'Create' : 'Import';
     this.configurationForm = this.sharedService.configurationForm;
     const walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
-    this.othersAccounts = walletsStorage.filter(elm => elm.name !== this.walletService.current.name);
+    this.othersAccounts = walletsStorage.filter(elm => elm.name !== this.walletService.currentWallet.name);
     this.createForm(param);
     this.createAccount();
   }
@@ -89,7 +89,7 @@ export class CreateAccountComponent implements OnInit {
   createAccount() {
     if (this.formCreateAccount.valid && this.isValid) {
       const nameAccount = this.formCreateAccount.get('nameWallet').value;
-      if (Object.keys(this.walletService.current.accounts).find(elm => this.walletService.current.accounts[elm].name !== nameAccount)) {
+      if (Object.keys(this.walletService.currentWallet.accounts).find(elm => this.walletService.currentWallet.accounts[elm].name !== nameAccount)) {
         const network = NetworkType.TEST_NET;
         const password = this.proximaxProvider.createPassword(this.formCreateAccount.get('password').value);
         let newAccount: SimpleWallet = null;
@@ -191,7 +191,7 @@ export class CreateAccountComponent implements OnInit {
   validateNameAccount() {
     if (this.formCreateAccount.get('nameWallet').valid) {
       const nameAccount = this.formCreateAccount.get('nameWallet').value;
-      const existWallet = Object.keys(this.walletService.current.accounts).find(elm => this.walletService.current.accounts[elm].name === nameAccount);
+      const existWallet = Object.keys(this.walletService.currentWallet.accounts).find(elm => this.walletService.currentWallet.accounts[elm].name === nameAccount);
       if (existWallet !== undefined) {
         this.isValid = false;
         this.errorWalletExist = '-invalid';

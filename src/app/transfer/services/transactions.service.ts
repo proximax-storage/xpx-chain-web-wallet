@@ -45,8 +45,10 @@ export class TransactionsService {
   private balance: BehaviorSubject<any> = new BehaviorSubject<any>("0.000000");
   private balance$: Observable<any> = this.balance.asObservable();
 
+  //Confirmed
   private _transConfirmSubject = new BehaviorSubject<TransactionsInterface[]>([]);
   private _transConfirm$: Observable<TransactionsInterface[]> = this._transConfirmSubject.asObservable();
+  //Unconfirmed
   private _transUnConfirmSubject = new BehaviorSubject<TransactionsInterface[]>([]);
   private _transUnConfirm$: Observable<TransactionsInterface[]> = this._transUnConfirmSubject.asObservable();
 
@@ -122,7 +124,7 @@ export class TransactionsService {
       allMosaics.push(new Mosaic(
         new MosaicId(element.id),
         UInt64.fromUint(Number(element.amount))
-        )
+      )
       );
     });
 
@@ -169,9 +171,6 @@ export class TransactionsService {
           recipientRentalFeeSink = "XXXXX-XXXXX-XXXXXX";
         }
       }
-
-      // console.log(transaction);
-
 
       return {
         data: transaction,
@@ -483,7 +482,7 @@ export class TransactionsService {
 
   /**
    * Method to add leading zeros
-   * 
+   *
    * @param cant Quantity of zeros to add
    * @param amount Amount to add zeros
    */

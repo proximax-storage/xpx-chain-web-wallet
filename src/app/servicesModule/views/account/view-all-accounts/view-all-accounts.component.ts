@@ -29,7 +29,7 @@ export class ViewAllAccountsComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.currentAccount = this.walletService.current;
+    this.currentAccount = this.walletService.currentWallet;
   }
 
   /**
@@ -42,8 +42,8 @@ export class ViewAllAccountsComponent implements OnInit {
     // this.sharedService.showSuccess('', 'Account changed to default');
     this.accountChanged = true;
     this.walletService.changeAsPrimary(nameSelected);
-    this.walletService.use(this.walletService.current);
-    this.currentAccount = this.walletService.current;
+    this.walletService.use(this.walletService.currentWallet);
+    this.currentAccount = this.walletService.currentWallet;
     this.transactionService.updateBalance();
     setTimeout(() => {
       this.accountChanged = false;

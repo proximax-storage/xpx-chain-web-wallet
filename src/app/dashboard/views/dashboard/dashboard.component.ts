@@ -80,9 +80,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     // moment
-    this.transactionService.setTransactionsConfirmed$([]);
-
-    //
+    // this.transactionService.setTransactionsConfirmed$([]);
     this.subscriptions.forEach(element => {
       if (this.subscriptions[element] !== undefined) {
         this.subscriptions[element].unsubscribe();
@@ -129,27 +127,32 @@ export class DashboardComponent implements OnInit, OnDestroy {
     // Update balance
     this.transactionService.updateBalance();
     // Validate if it is the first time the dashboard is loaded or if you click on the reload button
-    //if (this.dashboardService.getCantViewDashboard() === 1 || reload) {
+    if (this.dashboardService.getCantViewDashboard() === 1 || reload) {
       this.searching = true;
       this.iconReloadDashboard = false;
       this.loadTransactions();
-   /* } else {
+    } else {
       this.iconReloadDashboard = (this.dashboardService.searchComplete === false) ? true : false;
       this.searching = false;
-    }*/
+    }
   }
 
   /**
    * Method to get more transactions when scrolling in the screen
    */
   onScroll() {
-    if (this.searchTransactions && !this.searching) {
-      this.searching = true;
-      const lastTransactionId = (this.transactions.length > 0) ? this.transactions[this.transactions.length - 1].data.transactionInfo.id : null;
-      this.loadTransactions(lastTransactionId);
-    }
+    /*  if (this.searchTransactions && !this.searching) {
+        this.searching = true;
+        const lastTransactionId = (this.transactions.length > 0) ? this.transactions[this.transactions.length - 1].data.transactionInfo.id : null;
+        this.loadTransactions(lastTransactionId);
+      }*/
   }
 
+  /**
+   *
+   *
+   * @memberof DashboardComponent
+   */
   @HostListener("window:scroll", [])
   onWindowScroll() {
     if (window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop > 100) {
@@ -166,30 +169,62 @@ export class DashboardComponent implements OnInit, OnDestroy {
    */
   loadTransactions(id = null) {
     this.transactions = (id) ? this.transactions : [];
-    this.proximaxProvider.getTransactionsFromAccountId(this.walletService.currentAccount.publicAccount, id).toPromise().then(response => {
-      this.searchTransactions = !(response.length < 25);
-      const data = [];
-      response.forEach(element => {
-        //Sets the data structure of the dashboard
-        const builderTransactions = this.transactionService.getStructureDashboard(element);
-        if (builderTransactions !== null) {
-          data.push(builderTransactions);
-        }
-      });
+    for (let account of this.walletService.currentWallet.accounts) {
+      this.proximaxProvider.getTransactionsFromAccountId(account.publicAccount, id).toPromise().then(response => {
+        const data = [];
+        console.log(response);
+        console.log('-------------------------------------------');
+        this.searchTransactions = !(response.length < 25);
+        response.forEach(element => {
+          //Sets the data structure of the dashboard
+          const builderTransactions = this.transactionService.getStructureDashboard(element);
+          if (builderTransactions !== null) {
+            data.push(builderTransactions);
+          }
+        });
 
-      // Establishes confirmed transactions in the observable type variable
-      this.transactions = this.transactions.concat(data);
-      this.transactionService.setTransactionsConfirmed$(this.transactions);
-      this.iconReloadDashboard = false;
-      this.searching = false;
-      this.dashboardService.searchComplete = true;
-    }).catch(err => {
-      this.dashboardService.searchComplete = false;
-      this.searching = false;
-      this.iconReloadDashboard = true;
-      this.sharedService.showError('Has ocurred a error', 'Possible causes: the network is offline');
-      //console.log('This is error ----> ', err);
-    });
+        // Establishes confirmed transactions in the observable type variable
+        this.transactions = this.transactions.concat(data);
+        this.transactionService.setTransactionsConfirmed$(this.transactions);
+        this.iconReloadDashboard = false;
+        this.searching = false;
+        this.dashboardService.searchComplete = true;
+      }).catch(err => {
+        this.dashboardService.searchComplete = false;
+        this.searching = false;
+        this.iconReloadDashboard = true;
+        this.sharedService.showError('Has ocurred a error', 'Possible causes: the network is offline');
+        //console.log('This is error ----> ', err);
+      });
+    }
+
+    /*  console.log(this.walletService.currentWallet);
+      this.proximaxProvider.getTransactionsFromAccountId(this.walletService.currentAccount.publicAccount, id).toPromise().then(response => {
+        const data = [];
+        console.log(response);
+        console.log('-------------------------------------------');
+        this.searchTransactions = !(response.length < 25);
+        response.forEach(element => {
+          //Sets the data structure of the dashboard
+          const builderTransactions = this.transactionService.getStructureDashboard(element);
+          if (builderTransactions !== null) {
+            data.push(builderTransactions);
+          }
+        });
+
+        // Establishes confirmed transactions in the observable type variable
+        this.transactions = this.transactions.concat(data);
+        this.transactionService.setTransactionsConfirmed$(this.transactions);
+        this.iconReloadDashboard = false;
+        this.searching = false;
+        this.dashboardService.searchComplete = true;
+      }).catch(err => {
+        this.dashboardService.searchComplete = false;
+        this.searching = false;
+        this.iconReloadDashboard = true;
+        this.sharedService.showError('Has ocurred a error', 'Possible causes: the network is offline');
+        //console.log('This is error ----> ', err);
+      });*/
   }
 
   /**
@@ -215,6 +250,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   subscribeTransactionsConfirmedUnconfirmed() {
     this.subscriptions['transactionsConfirmed'] = this.transactionService.getTransactionsConfirmed$().subscribe(
       (next: TransactionsInterface[]) => {
+        console.log(this.walletService.currentAccount);
         this.cantConfirmed = next.length;
         this.transactionsConfirmed = next;
         this.cantTransactions = this.cantConfirmed;
