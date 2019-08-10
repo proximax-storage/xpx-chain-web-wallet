@@ -73,14 +73,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.currentAccount.address = this.proximaxProvider.createFromRawAddress(this.currentAccount.address).pretty();
     this.typeTransactions = this.transactionService.getTypeTransactions();
     this.vestedBalance = `0.000000 ${environment.mosaicXpxInfo.coin}`;
+
+
     //-----------------------------------------------
 
 
 
 
-   /* this.subscribeTransactionsConfirmedUnconfirmed();
+   this.subscribeTransactionsConfirmedUnconfirmed();
     this.getRecentTransactions();
-    this.balance();*/
+    this.balance();
   }
 
   ngOnDestroy(): void {
