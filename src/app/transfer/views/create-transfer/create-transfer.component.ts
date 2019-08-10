@@ -54,7 +54,7 @@ export class CreateTransferComponent implements OnInit {
     precision: '6'
   };
   selectOtherMosaics = [];
-  showContacts = false;
+  showContacts = true;
   subscribe = ['accountInfo', 'transactionStatus', 'char', 'block'];
   title = 'Make a transfer';
   transactionSigned: SignedTransaction = null;

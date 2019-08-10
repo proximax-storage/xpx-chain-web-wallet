@@ -51,7 +51,7 @@
     <div class="row">
       <div class="col-11 col-md-10 col-lg-8 mx-auto">
         <div class="row">
-          <div [ngClass]="[listContacts.length > 0 ? 'col-8 col-sm-9 col-md-10' : 'col-12']">
+          <div class="col-8 col-sm-9 col-md-10">
             <div class="md-form form-sm mt-1rem mb-0rem">
               <input mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
                 class="form-control form-control-sm input-border" style="border: 2px solid #2ba1b9;"
@@ -70,9 +70,9 @@
           </div>
 
           <!-- Show Contacts -->
-          <ng-container *ngIf="listContacts.length > 0">
+          <ng-container>
             <div class="col-4 col-sm-3 col-md-2 d-flex justify-content-center align-items-center pt-10px">
-              <div class="background-gray-icons p-12px bord-rad-25px cursor-p" (click)="showContacts = !showContacts"
+              <div [disabled]="listContacts.length === 0" class="background-gray-icons p-12px bord-rad-25px cursor-p" (click)="showContacts = (listContacts.length > 0) ? !showContacts : showContacts"
                 [title]="(!showContacts) ? 'Show contacts': 'Hide contacts'">
                 <img class=" w-30px" [src]="(!showContacts) ?
                 'assets/images/img/icon-address-book-gray-28h-proximax-sirius-wallet.svg' :
