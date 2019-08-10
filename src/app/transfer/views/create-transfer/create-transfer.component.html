@@ -10,25 +10,21 @@
 
   <form [formGroup]="formTransfer" (ngSubmit)="sendTransfer()">
 
-    <!-- <ng-container *ngIf="accounts.length > 1">
-      <div class="row mb-2rem d-flex justify-content-center">
-        <ng-container *ngFor="let account of accounts; let i=index">
-          <div class="col-12 col-sm-6 col-md-3 col-xl-3 mt-1-5rem d-flex align-items-center mx-auto" mdbWavesEffect (click)="accountSelected(i, account)">
-            <div [ngClass]="[account.active ? 'z-depth-1 box-accounts box-accounts-active' : 'z-depth-1 box-accounts']" class="z-depth-1 box-accounts">
-                <span class="">{{account.name}}</span>
-            </div>
-          </div>
-        </ng-container>
-      </div>
-    </ng-container> -->
-
+    <!-- Accounts -->
     <ng-container *ngIf="accounts.length > 1">
-      <div class="row">
-        <div class="col-11 col-md-10 col-lg-8 mx-auto">
-          <ng-select mdbInputDirective mdbValidate formControlName="selectAccount" class="selectWrapper"
-            [items]="accounts" bindLabel="label" bindValue="value" placeholder="Select account"
-            (change)="selectAccount($event)">
-          </ng-select>
+      <div class="row mb-2rem d-flex justify-content-center">
+        <div class="col-11 col-md-10 d-flex justify-content-center col-lg-8  mx-auto">
+          <ul class="nav nav-tabs fs-09rem" id="myTab" role="tablist">
+            <ng-container *ngFor="let account of accounts; let i=index">
+              <li class="nav-item cursor-p" (click)="init(account.value)">
+                <span
+                  [ngClass]="[account.active ? 'nav-link active isActive' : 'nav-link']">{{account.value.name}}</span>
+              </li>
+            </ng-container>
+          </ul>
+        </div>
+        <div class="col-11 col-md-10 col-lg-8 mx-auto txt-a-center d-none d-md-block">
+          <span class="fs-08rem" style="color: #404040ad;">{{accountToSend.address}}</span>
         </div>
       </div>
     </ng-container>
@@ -116,7 +112,7 @@
                 mdbValidate [validateSuccess]="true" [maxlength]="configurationForm.amount.maxLength"
                 [validateError]="true" type="text" class="form-control form-control-sm input-border input-amount"
                 placeholder="Enter amount" formControlName="amountXpx">
-                <span class="label-i fw-600">SEND</span>
+              <span class="label-i fw-600">SEND</span>
 
               <mdb-error
                 *ngIf="validateInput('amountXpx').invalid && (validateInput('amountXpx').dirty || validateInput('amountXpx').touched)">
@@ -176,7 +172,7 @@
                       class="form-control form-control-sm input-border input-amount"
                       [(ngModel)]="boxOtherMosaics[i].amount" [ngModelOptions]="{standalone: true}"
                       (ngModelChange)="modelChanged($event, otherMosaic.id, i)" placeholder="Enter quantity">
-                      <span  class="label-i fw-600">SEND</span>
+                    <span class="label-i fw-600">SEND</span>
 
                     <!-- Message Error Insufficient balance-->
                     <mdb-error class="text-danger fw-500" *ngIf="otherMosaic.errorBalance">
