@@ -1,12 +1,12 @@
 import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectorRef, HostListener, Inject } from '@angular/core';
 import { MdbTableDirective } from 'ng-uikit-pro-standard';
 import { DOCUMENT } from '@angular/common';
-import { Address } from 'tsjs-xpx-chain-sdk';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 import { DashboardService } from '../../services/dashboard.service';
-import { TransactionsInterface, TransactionsService } from 'src/app/transfer/services/transactions.service';
-import { WalletService, AccountsInterface } from 'src/app/wallet/services/wallet.service';
-import { SharedService } from 'src/app/shared/services/shared.service';
+import { TransactionsInterface, TransactionsService } from '../../../transfer/services/transactions.service';
+import { WalletService, AccountsInterface } from '../../../wallet/services/wallet.service';
+import { SharedService } from '../../../shared/services/shared.service';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-dashboard',
@@ -20,6 +20,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   currentAccount: AccountsInterface;
   nameAccount = '';
+  typeTransactions: any;
+  vestedBalance = '';
 
   // --------------------------------------------------------------------------
   @ViewChild(MdbTableDirective, { static: true }) mdbTable: MdbTableDirective;
@@ -44,11 +46,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
     'getAllTransactions',
     'transactionsConfirmed'
   ];
-  typeTransactions: any;
   transactionsConfirmed: TransactionsInterface[] = [];
   transactionsUnconfirmed: TransactionsInterface[] = [];
   unconfirmedSelected = false;
-  vestedBalance: string;
   searchTransaction = '';
   viewDashboard = true;
   transactions: TransactionsInterface[] = [];
@@ -67,17 +67,20 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
 
   ngOnInit() {
-    this.currentAccount = this.walletService.currentAccount;
-    this.currentAccount.address = this.proximaxProvider.createFromRawAddress(this.currentAccount.address);
+    this.dashboardService.incrementViewDashboard();
+    this.dashboardService.subscribeLogged();
+    this.currentAccount = this.walletService.getCurrentAccount();
+    this.currentAccount.address = this.proximaxProvider.createFromRawAddress(this.currentAccount.address).pretty();
+    this.typeTransactions = this.transactionService.getTypeTransactions();
+    this.vestedBalance = `0.000000 ${environment.mosaicXpxInfo.coin}`;
     //-----------------------------------------------
 
 
-    this.typeTransactions = this.transactionService.arraTypeTransaction;
-    this.dashboardService.incrementViewDashboard();
-    this.dashboardService.subscribeLogged();
-    this.subscribeTransactionsConfirmedUnconfirmed();
+
+
+   /* this.subscribeTransactionsConfirmedUnconfirmed();
     this.getRecentTransactions();
-    this.balance();
+    this.balance();*/
   }
 
   ngOnDestroy(): void {

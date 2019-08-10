@@ -165,7 +165,12 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
         element.mosaicInfo.owner.publicKey,
         element.mosaicInfo.owner.address['networkType']
       );
-      const isOwner = (addressOwner.pretty() === this.walletService.address.pretty()) ? true : false;
+
+      const isOwner = (
+        addressOwner.pretty() ===
+        this.proximaxProvider.createFromRawAddress(this.walletService.currentAccount.address).pretty()
+      ) ? true : false;
+
       if (isOwner) {
         mosaicsSelect.push({
           value: element.id,
@@ -233,8 +238,8 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
   }
 
   send() {
-   /* const namespaceValue = this.linkingNamespaceToMosaic.get('namespace').value;
-    const mosaicValue = this.linkingNamespaceToMosaic.get('mosaic').value;*/
+    /* const namespaceValue = this.linkingNamespaceToMosaic.get('namespace').value;
+     const mosaicValue = this.linkingNamespaceToMosaic.get('mosaic').value;*/
     if (this.linkingNamespaceToMosaic.valid && !this.blockSend) {
       this.blockSend = true;
       const common = {
@@ -243,10 +248,10 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
       }
 
       if (this.walletService.decrypt(common)) {
-        const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.network);
+        const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
         const namespaceId = new NamespaceId(this.linkingNamespaceToMosaic.get('namespace').value);
         const mosaicId = new MosaicId(this.linkingNamespaceToMosaic.get('mosaic').value);
-        const mosaicSupplyChangeTransaction = this.proximaxProvider.linkingNamespaceToMosaic(0, namespaceId, mosaicId, this.walletService.network);
+        const mosaicSupplyChangeTransaction = this.proximaxProvider.linkingNamespaceToMosaic(0, namespaceId, mosaicId, this.walletService.currentAccount.network);
         const signedTransaction = account.sign(mosaicSupplyChangeTransaction);
         this.transactionSigned = signedTransaction;
         this.proximaxProvider.announce(signedTransaction).subscribe(

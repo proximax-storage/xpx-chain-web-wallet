@@ -11,6 +11,7 @@ import { NamespacesService } from '../../servicesModule/services/namespaces.serv
 import { TransactionsService } from '../../transfer/services/transactions.service';
 import { ServicesModuleService } from '../../servicesModule/services/services-module.service';
 import { SharedService } from '../../shared/services/shared.service';
+import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
 
 @Injectable({
   providedIn: 'root'
@@ -33,7 +34,8 @@ export class AuthService {
     private namespaces: NamespacesService,
     private transactionService: TransactionsService,
     private serviceModuleService: ServicesModuleService,
-    private sharedService: SharedService
+    private sharedService: SharedService,
+    private proximaxProvider: ProximaxProvider
   ) {
     this.setLogged(false);
   }
@@ -92,7 +94,8 @@ export class AuthService {
     // load services and components
     this.route.navigate([`/${AppConfig.routes.dashboard}`]);
     this.namespaces.buildNamespaceStorage();
-    this.serviceModuleService.changeBooksItem(this.walletService.address);
+    this.transactionService.getAccountInfo();
+    this.serviceModuleService.changeBooksItem(this.proximaxProvider.createFromRawAddress(this.walletService.currentAccount.address));
     return true;
   }
 

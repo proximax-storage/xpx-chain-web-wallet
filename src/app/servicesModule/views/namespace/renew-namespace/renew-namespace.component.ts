@@ -257,11 +257,11 @@ export class RenewNamespaceComponent implements OnInit {
    * @memberof RenewNamespaceComponent
    */
   signedTransaction(common: any): SignedTransaction {
-    const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.network);
+    const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
     const namespaceRootToRenovate: string = this.renewNamespaceForm.get('namespaceRoot').value;
     // const duration: number = parseFloat(this.durationByBlock);
     const duration: number = parseFloat(this.durationByBlock);
-    const registernamespaceRootTransaction = this.proximaxProvider.registerRootNamespaceTransaction(namespaceRootToRenovate, this.walletService.network, duration);
+    const registernamespaceRootTransaction = this.proximaxProvider.registerRootNamespaceTransaction(namespaceRootToRenovate, this.walletService.currentAccount.network, duration);
     const signedTransaction = account.sign(registernamespaceRootTransaction);
     return signedTransaction;
   }
@@ -273,7 +273,7 @@ export class RenewNamespaceComponent implements OnInit {
    * @param {MosaicsStorage} mosaic
    * @memberof CreateNamespaceComponent
    */
-  validateRentalFee(amount: number) {    
+  validateRentalFee(amount: number) {
     console.log('This is a test', amount);
     const accountInfo = this.walletService.getAccountInfo();
     if (accountInfo !== undefined && accountInfo !== null && Object.keys(accountInfo).length > 0) {

@@ -42,13 +42,13 @@ export class CreateMultiSignatureComponent implements OnInit {
     this.createForm()
     this.subscribeValueChange();
 
-    // cuenta multi firma    
+    // cuenta multi firma
     //9efe61fb49eea91fdfd89c80bae15b769c64e687917584473c823a6c0962ee90
     //TBFZFICV47MMUVYVHNOKJ3APF27SSW3AD6UV55OA
 
 
 
-    //consignatario 
+    //consignatario
     //ac54e59fec8f0e1770e6e7cb35f7ecf3d6ed7356b9f88787d15d3d9bd01f90f9
     // TCQXBGF4VMERBI5AMXJCS7RXWGCYVWOWSN6E2VIV
 
@@ -149,7 +149,7 @@ export class CreateMultiSignatureComponent implements OnInit {
         if ((next !== null && next !== undefined)
           && (this.createMultsignForm.get('privateKeyAccountMultisign').valid)) {
 
-          this.accountToConvert = Account.createFromPrivateKey(next, this.walletService.network)
+          this.accountToConvert = Account.createFromPrivateKey(next, this.walletService.currentAccount.network)
 
         }
       }
@@ -226,7 +226,7 @@ export class CreateMultiSignatureComponent implements OnInit {
     if (this.createMultsignForm.get('cosignatory').valid) {
       const cosignatory: PublicAccount = PublicAccount.createFromPublicKey(
         this.createMultsignForm.get('cosignatory').value,
-        this.walletService.network
+        this.walletService.currentAccount.network
       );
       // Cosignatory needs a public key
       // if (!this.cosignatoryPubKey) return this._Alert.cosignatoryhasNoPubKey();
@@ -260,7 +260,7 @@ export class CreateMultiSignatureComponent implements OnInit {
   /**
   * Set cosignatory list
   * @memberof CreateMultiSignatureComponent
-  * @param {CosignatoryList} [cosignatoryListParam] - list cosignatory 
+  * @param {CosignatoryList} [cosignatoryListParam] - list cosignatory
   */
   setCosignatoryList(cosignatoryListParam: CosignatoryList[]) {
     this.cosignatoryList = cosignatoryListParam;
@@ -271,7 +271,7 @@ export class CreateMultiSignatureComponent implements OnInit {
   /**
     * Get cosignatory list
     * @memberof CreateMultiSignatureComponent
-    * @return {CosignatoryList} list cosignatory 
+    * @return {CosignatoryList} list cosignatory
     */
   getCosignatoryList(): CosignatoryList[] {
     return this.cosignatoryList;

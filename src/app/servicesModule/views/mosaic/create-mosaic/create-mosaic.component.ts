@@ -110,7 +110,7 @@ export class CreateMosaicComponent implements OnInit {
 
       if (this.walletService.decrypt(common)) {
         this.blockSend = true;
-        const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.network);
+        const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
         const nonce = this.proximaxProvider.createNonceRandom();
 
         //BUILD TRANSACTION
@@ -122,7 +122,7 @@ export class CreateMosaicComponent implements OnInit {
           this.mosaicForm.get('levyMutable').value,
           this.mosaicForm.get('divisibility').value,
           parseFloat(this.durationByBlock),
-          this.walletService.network
+          this.walletService.currentAccount.network
         );
         const quatityZeros = this.transactionService.addZeros(this.mosaicForm.get('divisibility').value);
         const mosaicSupply = parseInt(`${this.mosaicForm.get('deltaSupply').value}${quatityZeros}`);
@@ -131,7 +131,7 @@ export class CreateMosaicComponent implements OnInit {
           mosaicDefinitionTransaction.mosaicId,
           MosaicSupplyType.Increase,
           UInt64.fromUint(mosaicSupply),
-          this.walletService.network
+          this.walletService.currentAccount.network
         );
 
         const aggregateTransaction = AggregateTransaction.createComplete(
@@ -140,7 +140,7 @@ export class CreateMosaicComponent implements OnInit {
             mosaicDefinitionTransaction.toAggregate(account.publicAccount),
             mosaicSupplyChangeTransaction.toAggregate(account.publicAccount)
           ],
-          this.walletService.network,
+          this.walletService.currentAccount.network,
           []
         );
 

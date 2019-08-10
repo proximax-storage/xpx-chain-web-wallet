@@ -140,7 +140,7 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
 
       } else if (this.typeSearch === 'publickey') {
         //From publickey
-        const publicAccount = this.proximaxProvider.createPublicAccount(this.paramSearch, this.walletService.network);
+        const publicAccount = this.proximaxProvider.createPublicAccount(this.paramSearch, this.walletService.currentAccount.network);
         this.proximaxProvider.getTransactionsFromAccount(publicAccount, this.nodeService.getNodeSelected()).subscribe(
           resp => {
             this.searching = false;

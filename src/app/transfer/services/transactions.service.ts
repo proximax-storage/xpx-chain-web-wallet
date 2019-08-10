@@ -151,6 +151,16 @@ export class TransactionsService {
   /**
    *
    *
+   * @returns
+   * @memberof TransactionsService
+   */
+  getTypeTransactions(){
+    return this.arraTypeTransaction;
+  }
+
+  /**
+   *
+   *
    * @param {Transaction} transaction
    * @returns {ConfirmedTransactions}
    * @memberof TransactionsService
@@ -414,7 +424,7 @@ export class TransactionsService {
    * @memberof TransactionsService
    */
   updateBalance() {
-    this.proximaxProvider.getAccountInfo(this.walletService.address).pipe(first()).subscribe(
+    this.proximaxProvider.getAccountInfo(this.proximaxProvider.createFromRawAddress(this.walletService.currentAccount.address)).pipe(first()).subscribe(
       (accountInfo: AccountInfo) => {
         // console.log('AccountInfo ---> ', accountInfo);
         if (accountInfo !== null && accountInfo !== undefined) {
@@ -448,7 +458,7 @@ export class TransactionsService {
    * @returns
    * @memberof TransactionsService
    */
-  async getAccountInfo(address: Address): Promise<AccountInfo> {
+  async getAccountInfo(address: Address = null): Promise<AccountInfo> {
     try {
       const accountInfo = await this.proximaxProvider.getAccountInfo(address).toPromise();
       // console.log(accountInfo);

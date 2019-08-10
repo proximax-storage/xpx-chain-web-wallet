@@ -34,7 +34,7 @@ export class AccountCreatedComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.algo = this.walletService.algoData;
+    this.algo = this.walletService.accountWalletCreated;
     if (this.algo !== null) {
       this.name = this.algo.data.name;
       this.address = this.algo.wallet.address.pretty();
@@ -42,7 +42,7 @@ export class AccountCreatedComponent implements OnInit {
       this.publicKey = this.proximaxProvider.getPublicAccountFromPrivateKey(this.privateKey, this.algo.data.network).publicKey;
       this.viewPublicKey = this.algo.data.fromPrivateKey;
       this.algo = null;
-      this.walletService.algoData = null;
+      this.walletService.accountWalletCreated = null;
     }else {
       this.router.navigate([`/${AppConfig.routes.home}`]);
     }

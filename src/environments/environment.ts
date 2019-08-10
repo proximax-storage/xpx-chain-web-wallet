@@ -13,6 +13,7 @@ export const environment = {
   nodeDefault: 'bctestnet1.xpxsirius.io:3000',
   mosaicXpxInfo: {
     name: 'prx.xpx',
+    coin: 'XPX',
     id: '0dc67fbe1cad29e3',
     divisibility: 6
   },

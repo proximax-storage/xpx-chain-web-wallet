@@ -16,12 +16,13 @@ import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
 })
 export class WalletService {
 
-  address: Address;
-  algoData: {
+  // address: Address;
+  accountWalletCreated: {
     data: any;
     dataAccount: AccountsInterface;
     wallet: SimpleWallet
   } = null;
+  currentAccount: AccountsInterface;
   currentWallet: CurrentWalletInterface;
 
 
@@ -30,10 +31,9 @@ export class WalletService {
   private currentAccountObs: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   private currentAccountObs$: Observable<any> = this.currentAccountObs.asObservable();
 
-  currentAccount: AccountsInterface;
-  network: any = '';
+  //network: any = '';
   algo: string;
-  publicAccount: PublicAccount;
+  //publicAccount: PublicAccount;
   private accountInfo: AccountInfo;
   private accountInfoSubject: BehaviorSubject<AccountInfo> = new BehaviorSubject<AccountInfo>(null);
   private accountInfo$: Observable<AccountInfo> = this.accountInfoSubject.asObservable();
@@ -137,6 +137,16 @@ export class WalletService {
 
   /**
    *
+   *
+   * @returns {AccountsInterface}
+   * @memberof WalletService
+   */
+  getCurrentAccount(): AccountsInterface {
+    return this.currentAccount;
+  }
+
+  /**
+   *
    */
   getNameAccount$(): Observable<any> {
     return this.currentAccountObs$;
@@ -193,7 +203,7 @@ export class WalletService {
    * @memberof WalletService
    */
   saveDataWalletCreated(data: any, dataAccount: AccountsInterface, wallet: SimpleWallet) {
-    this.algoData = {
+    this.accountWalletCreated = {
       data: data,
       dataAccount: dataAccount,
       wallet: wallet
@@ -307,10 +317,9 @@ export class WalletService {
     // console.log(wallet);
 
     const x = this.getAccountDefault(wallet);
-    this.network = x.network;
     this.currentAccount = x;
     this.algo = x.algo;
-    this.address = this.proximaxProvider.createFromRawAddress(x.address);
+    // this.address = this.proximaxProvider.createFromRawAddress(x.address);
     this.currentWallet = wallet;
     this.setCurrentAccount(this.currentAccount);
     return true;
@@ -329,7 +338,7 @@ export class WalletService {
 
   decrypt(common: any, account: any = '', algo: any = '', network: any = '') {
     const acct = account || this.currentAccount;
-    const net = network || this.network;
+    const net = network || this.currentAccount.network;
     const alg = algo || this.algo;
     // Try to generate or decrypt key
 
@@ -352,7 +361,7 @@ export class WalletService {
     }
 
     //Get public account from private key
-    this.publicAccount = this.proximaxProvider.getPublicAccountFromPrivateKey(common.privateKey, net);
+    // this.publicAccount = this.proximaxProvider.getPublicAccountFromPrivateKey(common.privateKey, net);
     return true;
   }
 
@@ -479,7 +488,7 @@ export interface CurrentWalletInterface {
 
 
 export interface AccountsInterface {
-  address: string | Address;
+  address: any;
   algo: string;
   brain: boolean;
   default: boolean;

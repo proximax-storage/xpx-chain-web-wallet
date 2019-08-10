@@ -13,13 +13,7 @@ import { SharedService } from '../../../shared/services/shared.service';
 })
 export class WalletCreatedComponent implements OnInit {
 
-
   address = '';
-  algo: {
-    data: any,
-    dataAccount: AccountsInterface;
-    wallet: SimpleWallet
-  } = null;
   description = 'Warning! Before proceeding, make sure store your private key in a safe place. Access to your digital assets cannot be recovered without it.';
   publicKey = '';
   privateKey = '';
@@ -28,6 +22,11 @@ export class WalletCreatedComponent implements OnInit {
   subtitle = '';
   viewPrivateKey = false;
   routeAuth = AppConfig.routes.auth;
+  walletData: {
+    data: any,
+    dataAccount: AccountsInterface;
+    wallet: SimpleWallet
+  } = null;
 
   constructor(
     private walletService: WalletService,
@@ -37,24 +36,32 @@ export class WalletCreatedComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.algo = this.walletService.algoData;
-    if (this.algo !== null) {
-      this.subtitle = this.algo.data.name;
-      this.address = this.algo.wallet.address.pretty();
-      this.privateKey = this.proximaxProvider.decryptPrivateKey(this.algo.data.algo, this.algo.dataAccount.encrypted, this.algo.dataAccount.iv).toUpperCase();
-      this.publicKey = this.proximaxProvider.getPublicAccountFromPrivateKey(this.privateKey, this.algo.data.network).publicKey;
-      this.algo = null;
-      this.walletService.algoData = null;
+    this.walletData = this.walletService.accountWalletCreated;
+    if (this.walletData !== null) {
+      this.subtitle = this.walletData.data.name;
+      this.address = this.walletData.wallet.address.pretty();
+      this.privateKey = this.proximaxProvider.decryptPrivateKey(
+        this.walletData.data.algo, this.walletData.dataAccount.encrypted, this.walletData.dataAccount.iv
+      ).toUpperCase();
+      this.publicKey = this.proximaxProvider.getPublicAccountFromPrivateKey(this.privateKey, this.walletData.data.network).publicKey;
+      this.walletData = null;
+      this.walletService.accountWalletCreated = null;
     }else {
       this.router.navigate([`/${AppConfig.routes.home}`]);
     }
   }
 
   ngOnDestroy(): void {
-    this.algo = null;
-    this.walletService.algoData = null;
+    this.walletData = null;
+    this.walletService.accountWalletCreated = null;
   }
 
+  /**
+   *
+   *
+   * @param {string} message
+   * @memberof WalletCreatedComponent
+   */
   copyMessage(message: string) {
     this.sharedService.showSuccess('', `${message} copied`);
   }

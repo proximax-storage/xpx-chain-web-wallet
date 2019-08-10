@@ -202,7 +202,7 @@ export class CreateTransferComponent implements OnInit {
       } else {
         this.disabledBtnAddMosaic = true;
         this.ngxService.stop();
-       // this.router.navigate([`/${AppConfig.routes.dashboard}`]);
+        // this.router.navigate([`/${AppConfig.routes.dashboard}`]);
       }
     } else {
       this.subscribe['accountInfo'] = this.walletService.getAccountInfoAsync().subscribe(
@@ -211,7 +211,7 @@ export class CreateTransferComponent implements OnInit {
         }, error => {
           this.disabledBtnAddMosaic = true;
           this.ngxService.stop();
-         // this.router.navigate([`/${AppConfig.routes.dashboard}`])
+          // this.router.navigate([`/${AppConfig.routes.dashboard}`])
         }
       );
     }
@@ -305,7 +305,7 @@ export class CreateTransferComponent implements OnInit {
           this.selectOtherMosaics = mosaicsSelect;
           this.ngxService.stop();
         }
-      }else {
+      } else {
         this.ngxService.stop();
       }
     } else {
@@ -587,7 +587,7 @@ export class CreateTransferComponent implements OnInit {
           common: common,
           recipient: this.formTransfer.get("accountRecipient").value,
           message: (this.formTransfer.get("message").value === null) ? "" : this.formTransfer.get("message").value,
-          network: this.walletService.network,
+          network: this.walletService.currentAccount.network,
           mosaic: mosaicsToSend
         };
 
@@ -642,7 +642,9 @@ export class CreateTransferComponent implements OnInit {
         }
 
         if (accountRecipient !== null && accountRecipient !== undefined && accountRecipient.length === 40) {
-          if (!this.proximaxProvider.verifyNetworkAddressEqualsNetwork(this.walletService.address.plain(), accountRecipient)) {
+          if (!this.proximaxProvider.verifyNetworkAddressEqualsNetwork(
+            this.proximaxProvider.createFromRawAddress(this.walletService.currentAccount.address).plain(), accountRecipient)
+          ) {
             this.blockSendButton = true;
             this.msgErrorUnsupported = 'Recipient Address Network unsupported';
           } else {
