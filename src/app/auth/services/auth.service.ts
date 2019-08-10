@@ -44,6 +44,7 @@ export class AuthService {
    * @memberof LoginService
    */
   destroyNodeSelected() {
+    this.dataBridgeService.closeConenection();
     if (this.subscription['nodeSelected'] !== undefined) {
       this.subscription['nodeSelected'].unsubscribe();
     }

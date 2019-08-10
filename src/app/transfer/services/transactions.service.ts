@@ -449,13 +449,17 @@ export class TransactionsService {
    * @memberof TransactionsService
    */
   async getAccountInfo(address: Address): Promise<AccountInfo> {
-    const accountInfo = await this.proximaxProvider.getAccountInfo(address).toPromise();
-    console.log(accountInfo);
-    if (accountInfo !== null && accountInfo !== undefined) {
-      //Search mosaics
-      this.mosaicService.searchMosaics(accountInfo.mosaics.map(next => next.id));
+    try {
+      const accountInfo = await this.proximaxProvider.getAccountInfo(address).toPromise();
+      console.log(accountInfo);
+      if (accountInfo !== null && accountInfo !== undefined) {
+        //Search mosaics
+        this.mosaicService.searchMosaics(accountInfo.mosaics.map(next => next.id));
+      }
+      return accountInfo;
+    } catch (error) {
+      return null;
     }
-    return accountInfo;
   }
 
 

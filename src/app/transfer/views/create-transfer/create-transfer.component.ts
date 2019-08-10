@@ -5,6 +5,8 @@ import {
   Validators,
   AbstractControl
 } from "@angular/forms";
+import { NgxUiLoaderService } from 'ngx-ui-loader';
+import { Router } from '@angular/router';
 import { MosaicId, SignedTransaction, Address, UInt64, AccountInfo } from "tsjs-xpx-chain-sdk";
 import { MosaicService, MosaicsStorage } from "../../../servicesModule/services/mosaic.service";
 import { ProximaxProvider } from "../../../shared/services/proximax.provider";
@@ -14,7 +16,9 @@ import { SharedService, ConfigurationForm } from '../../../shared/services/share
 import { TransactionsService, TransferInterface } from '../../services/transactions.service';
 import { environment } from '../../../../environments/environment';
 import { ServicesModuleService } from '../../../servicesModule/services/services-module.service';
-import { NgxUiLoaderService } from 'ngx-ui-loader';
+import { AppConfig } from '../../../config/app.config';
+import { first } from 'rxjs/operators';
+
 
 @Component({
   selector: "app-create-transfer",
@@ -51,7 +55,7 @@ export class CreateTransferComponent implements OnInit {
   };
   selectOtherMosaics = [];
   showContacts = false;
-  subscribe = ['accountInfo', 'transactionStatus', 'char'];
+  subscribe = ['accountInfo', 'transactionStatus', 'char', 'block'];
   title = 'Make a transfer';
   transactionSigned: SignedTransaction = null;
 
@@ -65,7 +69,8 @@ export class CreateTransferComponent implements OnInit {
     private sharedService: SharedService,
     private transactionService: TransactionsService,
     private walletService: WalletService,
-    private ngxService: NgxUiLoaderService
+    private ngxService: NgxUiLoaderService,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -89,16 +94,17 @@ export class CreateTransferComponent implements OnInit {
     });
   }
 
+  /**
+   *
+   *
+   * @param {AccountsInterface} accountToSend
+   * @memberof CreateTransferComponent
+   */
   init(accountToSend: AccountsInterface) {
-    this.ngxService.start(); // start foreground spinner of the master loader with 'default' taskId
-    // Stop the foreground loading after 5s
-   /* setTimeout(() => {
-      this.ngxService.stop(); // stop foreground spinner of the master loader with 'default' taskId
-    }, 1500);*/
-    console.log('---accountToSend---', accountToSend);
+    // this.ngxService.start(); // start foreground spinner of the master loader with 'default' taskId
+    this.ngOnDestroy();
     this.reset();
     this.accountToSend = accountToSend;
-
     const accounts = [];
     this.accounts.forEach(element => {
       if (accountToSend.name === element.value.name) {
@@ -108,7 +114,6 @@ export class CreateTransferComponent implements OnInit {
       }
     });
 
-    this.ngOnDestroy();
     this.charRest = this.configurationForm.message.maxLength;
     this.mosaicXpx = {
       id: environment.mosaicXpxInfo.id,
@@ -164,28 +169,56 @@ export class CreateTransferComponent implements OnInit {
    * @memberof CreateTransferComponent
    */
   async getMosaics(currentAccount: AccountsInterface = null) {
+    this.ngxService.start();
     if (currentAccount && !currentAccount.default) {
-      console.log('---- busca por esta ------');
       const accountInfo = await this.transactionService.getAccountInfo(this.proximaxProvider.createFromRawAddress(currentAccount.address));
-      console.log('-----accountInfo-----', accountInfo);
-      this.buildAll(accountInfo);
-    }else {
+      if (accountInfo) {
+        this.checkBlock(accountInfo);
+      } else {
+        this.ngxService.stop();
+        this.router.navigate([`/${AppConfig.routes.dashboard}`]);
+      }
+    } else {
       this.subscribe['accountInfo'] = this.walletService.getAccountInfoAsync().subscribe(
         async accountInfo => {
-          this.buildAll(accountInfo);
+          this.checkBlock(accountInfo);
+        }, error => {
+          this.ngxService.stop();
+          this.router.navigate([`/${AppConfig.routes.dashboard}`])
         }
       );
     }
   }
 
+  /**
+   *
+   *
+   * @memberof CreateTransferComponent
+   */
+  checkBlock(accountInfo: AccountInfo) {
+    this.buildAll(accountInfo);
+    if (this.currentBlock === 0 && (this.subscribe['block'] === undefined || this.subscribe['block'] === null)) {
+      this.subscribe['block'] = this.dataBridge.getBlock().subscribe(next => {
+        if (this.currentBlock === 0 && next) {
+          this.currentBlock = next;
+          this.buildAll(accountInfo);
+        }
+      });
+    }
+  }
+
+  /**
+   *
+   *
+   * @param {AccountInfo} accountInfo
+   * @memberof CreateTransferComponent
+   */
   async buildAll(accountInfo: AccountInfo) {
     const mosaicsSelect: any = [];
     if (accountInfo !== undefined && accountInfo !== null) {
       if (accountInfo.mosaics.length > 0) {
         const mosaics = await this.mosaicServices.searchMosaics(accountInfo.mosaics.map(n => n.id));
-        this.subscribe['block'] = await this.dataBridge.getBlock().subscribe(next => this.currentBlock = next);
         if (mosaics.length > 0) {
-
           for (let mosaic of mosaics) {
             let configInput = {
               prefix: '',
@@ -245,7 +278,7 @@ export class CreateTransferComponent implements OnInit {
           this.ngxService.stop();
         }
       }
-    }else {
+    } else {
       this.ngxService.stop();
     }
   }
@@ -871,7 +904,7 @@ export class CreateTransferComponent implements OnInit {
     };
     this.selectOtherMosaics = [];
     this.showContacts = false;
-    this.subscribe = ['accountInfo', 'transactionStatus', 'char'];
+    this.subscribe = ['accountInfo', 'transactionStatus', 'char', 'block'];
     this.title = 'Make a transfer';
     this.transactionSigned = null;
   }
