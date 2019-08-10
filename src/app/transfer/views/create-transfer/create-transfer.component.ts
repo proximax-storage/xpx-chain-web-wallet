@@ -37,6 +37,7 @@ export class CreateTransferComponent implements OnInit {
   charRest: number;
   configurationForm: ConfigurationForm;
   currentBlock: number = 0;
+  disabledBtnAddMosaic: boolean = false;
   errorOtherMosaics: boolean = false;
   formTransfer: FormGroup;
   incrementMosaics = 0;
@@ -169,21 +170,24 @@ export class CreateTransferComponent implements OnInit {
    */
   async getMosaics(currentAccount: AccountsInterface = null) {
     this.ngxService.start();
+    this.disabledBtnAddMosaic = false;
     if (currentAccount && !currentAccount.default) {
       const accountInfo = await this.transactionService.getAccountInfo(this.proximaxProvider.createFromRawAddress(currentAccount.address));
       if (accountInfo) {
         this.checkBlock(accountInfo);
       } else {
+        this.disabledBtnAddMosaic = true;
         this.ngxService.stop();
-        this.router.navigate([`/${AppConfig.routes.dashboard}`]);
+       // this.router.navigate([`/${AppConfig.routes.dashboard}`]);
       }
     } else {
       this.subscribe['accountInfo'] = this.walletService.getAccountInfoAsync().subscribe(
         async accountInfo => {
           this.checkBlock(accountInfo);
         }, error => {
+          this.disabledBtnAddMosaic = true;
           this.ngxService.stop();
-          this.router.navigate([`/${AppConfig.routes.dashboard}`])
+         // this.router.navigate([`/${AppConfig.routes.dashboard}`])
         }
       );
     }
@@ -214,6 +218,7 @@ export class CreateTransferComponent implements OnInit {
    */
   async buildAll(accountInfo: AccountInfo) {
     const mosaicsSelect: any = [];
+    console.log(accountInfo);
     if (accountInfo !== undefined && accountInfo !== null) {
       if (accountInfo.mosaics.length > 0) {
         const mosaics = await this.mosaicServices.searchMosaics(accountInfo.mosaics.map(n => n.id));
@@ -276,6 +281,8 @@ export class CreateTransferComponent implements OnInit {
           this.selectOtherMosaics = mosaicsSelect;
           this.ngxService.stop();
         }
+      }else {
+        this.ngxService.stop();
       }
     } else {
       this.ngxService.stop();
@@ -820,6 +827,7 @@ export class CreateTransferComponent implements OnInit {
     this.blockButton = false;
     this.charRest = 0;
     this.currentBlock = 0;
+    this.disabledBtnAddMosaic = false;
     this.errorOtherMosaics = false;
     this.incrementMosaics = 0;
     this.invalidRecipient = false;

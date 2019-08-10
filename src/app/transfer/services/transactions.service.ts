@@ -451,7 +451,7 @@ export class TransactionsService {
   async getAccountInfo(address: Address): Promise<AccountInfo> {
     try {
       const accountInfo = await this.proximaxProvider.getAccountInfo(address).toPromise();
-      console.log(accountInfo);
+      // console.log(accountInfo);
       if (accountInfo !== null && accountInfo !== undefined) {
         //Search mosaics
         this.mosaicService.searchMosaics(accountInfo.mosaics.map(next => next.id));

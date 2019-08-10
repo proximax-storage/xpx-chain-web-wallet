@@ -20,8 +20,10 @@
           <ul class="nav nav-tabs fs-09rem h-account" id="myTab" role="tablist">
             <ng-container *ngFor="let account of accounts; let i=index">
               <li class="nav-item cursor-p" (click)="init(account.value)">
-                <span
-                  [ngClass]="[account.active ? 'nav-link active isActive' : 'nav-link']">{{account.value.name}}</span>
+                <span [ngClass]="[account.active ? 'nav-link active isActive' : 'nav-link']">
+                  {{account.value.name}} <i *ngIf="account.value.default" class="fa fa-star fs-1rem ml-10px cursor-p" aria-hidden="true" title="Default account"></i>
+                </span>
+
               </li>
             </ng-container>
           </ul>
@@ -196,10 +198,10 @@
     <div class="row mt-1rem">
       <div class="col-12 d-flex justify-content-center"
         style="background-image: url(assets/images/img/horizontal-line-background.jpg);">
-        <button [disabled]="currentBlock === 0" mdbBtn type="button" rounded="true" mdbWavesEffect
+        <button [disabled]="currentBlock === 0 || disabledBtnAddMosaic" mdbBtn type="button" rounded="true" mdbWavesEffect
           class="background-btn-inverse pl-2rem pr-2rem" size="md" (click)="pushedOtherMosaics()">
           <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
-            *ngIf="currentBlock === 0"></span>
+            *ngIf="currentBlock === 0 && !disabledBtnAddMosaic"></span>
           <span class="fs-1-2em text-cl-m fw-700">(+) Add Mosaics</span>
         </button>
       </div>
