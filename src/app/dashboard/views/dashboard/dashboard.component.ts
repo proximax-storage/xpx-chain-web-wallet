@@ -5,7 +5,7 @@ import { Address } from 'tsjs-xpx-chain-sdk';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 import { DashboardService } from '../../services/dashboard.service';
 import { TransactionsInterface, TransactionsService } from 'src/app/transfer/services/transactions.service';
-import { WalletService } from 'src/app/wallet/services/wallet.service';
+import { WalletService, AccountsInterface } from 'src/app/wallet/services/wallet.service';
 import { SharedService } from 'src/app/shared/services/shared.service';
 
 @Component({
@@ -17,6 +17,11 @@ import { SharedService } from 'src/app/shared/services/shared.service';
 
 export class DashboardComponent implements OnInit, OnDestroy {
 
+
+  currentAccount: AccountsInterface;
+  nameAccount = '';
+
+  // --------------------------------------------------------------------------
   @ViewChild(MdbTableDirective, { static: true }) mdbTable: MdbTableDirective;
   @HostListener('input') oninput() {
     this.searchItems();
@@ -24,7 +29,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   previous: any = [];
   cantTransactions = 0;
   // myAddress: Address = null;
-  myAddress: string;
   cantConfirmed = 0;
   cantUnconfirmed = 0;
   confirmedSelected = true;
@@ -59,16 +63,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private sharedService: SharedService,
     private proximaxProvider: ProximaxProvider,
     @Inject(DOCUMENT) private document: Document
-  ) {
-    this.myAddress = this.walletService.address.pretty();
-  }
+  ) {}
 
 
   ngOnInit() {
-    // NAME ACCOUNT
-    this.subscriptions['nameAccount'] = this.walletService.getNameAccount$().subscribe(next => {
-      this.nameWallet = next.name;
-    });
+    this.currentAccount = this.walletService.currentAccount;
+    this.currentAccount.address = this.proximaxProvider.createFromRawAddress(this.currentAccount.address);
+    //-----------------------------------------------
+
 
     this.typeTransactions = this.transactionService.arraTypeTransaction;
     this.dashboardService.incrementViewDashboard();
@@ -193,7 +195,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.searching = false;
         this.iconReloadDashboard = true;
         this.sharedService.showError('Has ocurred a error', 'Possible causes: the network is offline');
-        //console.log('This is error ----> ', err);
       });
     }
 

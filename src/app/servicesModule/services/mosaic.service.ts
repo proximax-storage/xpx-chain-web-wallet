@@ -59,8 +59,7 @@ export class MosaicService {
       // Filter and get the storage mosaic from mosaicId
       const filterMosaic = this.filterMosaic(mosaicId);
       // In case there is no mosaic in storage, add the id in mosaicsToSearch to be searched later
-      // (filterMosaic === undefined || filterMosaic === null) ? mosaicsToSearch.push(mosaicId.id) : mosaicsStorage.push(filterMosaic);
-      mosaicsToSearch.push(mosaicId.id)
+      (filterMosaic === undefined || filterMosaic === null) ? mosaicsToSearch.push(mosaicId.id) : mosaicsStorage.push(filterMosaic);
     });
 
     // console.log('mosaicsToSearch ---> ', mosaicsToSearch);
@@ -173,7 +172,6 @@ export class MosaicService {
   async saveMosaicsStorage(mosaicsInfo: MosaicInfo[], mosaicsToSearch?: MosaicId[]) {
     // searchByNamespaceId
     const searchByNamespaceId = [];
-    const mosaicsToSaveStorage: MosaicsStorage[] = [];
     //get mosaics from storage
     const mosaicsStorage = this.getMosaicsFromStorage();
     //filter mosaics id from mosaicsInfo params
@@ -207,7 +205,6 @@ export class MosaicService {
 
      return mosaicsStorage;*/
 
-     //First mosaicsInfo
     if (mosaicsInfo.length > 0) {
       mosaicsIds = mosaicsInfo.map(data => data.mosaicId);
       mosaicsName = await this.getNameMosaics(mosaicsIds);
@@ -217,7 +214,6 @@ export class MosaicService {
           const data = await this.buildStructureMosaicStorage(mosaicsStorage, mosaicInfo.mosaicId, mosaicsName, mosaicInfo);
           if (data) {
             mosaicsStorage.push(data);
-            mosaicsToSaveStorage.push(data);
           }
         } else {
           searchByNamespaceId.push(this.namespacesService.getNamespaceId([mosaicInfo.mosaicId.id.lower, mosaicInfo.mosaicId.id.higher]));
@@ -247,7 +243,6 @@ export class MosaicService {
             const data = await this.buildStructureMosaicStorage(mosaicsStorage, element, [], currentMosaicInfo, names);
             if (data) {
               mosaicsStorage.push(data);
-              mosaicsToSaveStorage.push(data);
             }
           }
         }
@@ -262,7 +257,6 @@ export class MosaicService {
             const data = await this.buildStructureMosaicStorage(mosaicsStorage, mosaicId, mosaicsName, null);
             if (data) {
               mosaicsStorage.push(data);
-              mosaicsToSaveStorage.push(data);
             }
           } else {
             // console.log(mosaicId);
@@ -290,7 +284,6 @@ export class MosaicService {
             const data = await this.buildStructureMosaicStorage(mosaicsStorage, element, [], null, names);
             if (data) {
               mosaicsStorage.push(data);
-              mosaicsToSaveStorage.push(data);
             }
           }
         }
@@ -309,19 +302,8 @@ export class MosaicService {
     });*/
     // console.log('mosaicsStorage', mosaicsStorage);
     //localStorage.setItem(this.getNameStorage(), JSON.stringify(saveDataStorage));
-
-
-    mosaicsStorage.forEach(element => {
-      const currentId = this.proximaxProvider.getMosaicId(element.id).toHex();
-      const noExist = mosaicsToSaveStorage.find(key => this.proximaxProvider.getMosaicId(key.id).toHex() === currentId);
-      if (!noExist) {
-        mosaicsToSaveStorage.push(element);
-      }
-    });
-
- //   console.log(mosaicsToSaveStorage);
-    localStorage.setItem(this.getNameStorage(), JSON.stringify(mosaicsToSaveStorage));
-    return mosaicsToSaveStorage;
+    localStorage.setItem(this.getNameStorage(), JSON.stringify(mosaicsStorage));
+    return mosaicsStorage;
   }
 
   /**
@@ -344,7 +326,7 @@ export class MosaicService {
     /* console.log('------mosaicId------', mosaicId);
      console.log('-----buildStructureMosaicStorage mosaicInfo-----', mosaicInfo);*/
     // Check if the mosaics id exists in storage
-    const existMosaic = null; // mosaicsStorage.find(key => this.proximaxProvider.getMosaicId(key.id).toHex() === mosaicId.toHex());
+    const existMosaic = mosaicsStorage.find(key => this.proximaxProvider.getMosaicId(key.id).toHex() === mosaicId.toHex());
     // Mosaic does not exist in storage
     if (existMosaic === undefined || existMosaic === null) {
       let name = [];

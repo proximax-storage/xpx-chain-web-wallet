@@ -30,7 +30,7 @@ export class WalletService {
   private currentAccountObs: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   private currentAccountObs$: Observable<any> = this.currentAccountObs.asObservable();
 
-  currentAccount: any;
+  currentAccount: AccountsInterface;
   network: any = '';
   algo: string;
   publicAccount: PublicAccount;
@@ -479,7 +479,7 @@ export interface CurrentWalletInterface {
 
 
 export interface AccountsInterface {
-  address: string;
+  address: string | Address;
   algo: string;
   brain: boolean;
   default: boolean;
