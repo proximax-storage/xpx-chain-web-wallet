@@ -42,7 +42,7 @@ export class MosaicsSupplyChangeComponent implements OnInit {
   ;
   mosaicsInfo: any[];
   divisibility: number = 0;
-  duration: string = '0 days';
+  duration: string = '() 0 days';
   supply: string = '0';
   blockButton: boolean = false;
   levyMutable: boolean = false;
@@ -177,12 +177,14 @@ export class MosaicsSupplyChangeComponent implements OnInit {
             mosaicsInfoSelected.mosaicInfo.supply['higher']
           ]), mosaicsInfoSelected.mosaicInfo
         );
-        this.duration = this.transactionService.calculateDuration(
-          new UInt64([
-            mosaicsInfoSelected.mosaicInfo['properties']['duration']['lower'],
-            mosaicsInfoSelected.mosaicInfo.supply['higher']
-          ])
-        );
+        const durationBlock = new UInt64([
+          mosaicsInfoSelected.mosaicInfo['properties']['duration']['lower'],
+          mosaicsInfoSelected.mosaicInfo.supply['higher']
+        ]);
+
+        const durationDays = this.transactionService.calculateDuration(durationBlock);
+
+        this.duration = `(${durationBlock.compact()}) ${durationDays}`;
 
         /*console.log('------------- this.supply ---------', this.supply);
         console.log('------------- this.divisibility ---------', this.divisibility);
