@@ -166,9 +166,10 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
         element.mosaicInfo.owner.address['networkType']
       );
 
+      const address = this.walletService.currentAccount.address;
       const isOwner = (
         addressOwner.pretty() ===
-        this.proximaxProvider.createFromRawAddress(this.walletService.currentAccount.address).pretty()
+        this.proximaxProvider.createFromRawAddress(address).pretty()
       ) ? true : false;
 
       if (isOwner) {

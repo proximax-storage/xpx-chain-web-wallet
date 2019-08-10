@@ -49,7 +49,8 @@ export class AliasAddressToNamespaceComponent implements OnInit {
     this.configurationForm = this.sharedService.configurationForm;
     this.createForm();
     this.getNameNamespace();
-    this.LinkToNamespaceForm.get('address').patchValue(this.walletService.currentAccount.address);
+    const address = this.walletService.currentAccount.address;
+    this.LinkToNamespaceForm.get('address').patchValue(address);
   }
 
   createForm() {

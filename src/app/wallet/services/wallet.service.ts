@@ -22,6 +22,8 @@ export class WalletService {
     dataAccount: AccountsInterface;
     wallet: SimpleWallet
   } = null;
+
+  accountsInfo: AccountsInfoInterface[] = [];
   currentAccount: AccountsInterface = null;
   currentWallet: CurrentWalletInterface = null;
 
@@ -32,7 +34,7 @@ export class WalletService {
   private currentAccountObs$: Observable<any> = this.currentAccountObs.asObservable();
 
   //network: any = '';
-  algo: string;
+  // algo: string;
   //publicAccount: PublicAccount;
   private accountInfo: AccountInfo;
   private accountInfoSubject: BehaviorSubject<AccountInfo> = new BehaviorSubject<AccountInfo>(null);
@@ -65,6 +67,7 @@ export class WalletService {
       'brain': true,
       'default': data.byDefault,
       'encrypted': data.encrypted,
+      'firstAccount': data.firstAccount,
       'iv': data.iv,
       'name': data.nameAccount,
       'network': data.network,
@@ -227,6 +230,15 @@ export class WalletService {
     localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorage));
   }
 
+  /**
+   *
+   *
+   * @memberof WalletService
+   */
+  setAccountsInfo(accountInfo: AccountsInfoInterface) {
+    this.accountsInfo.push(accountInfo);
+  }
+
   setCurrentAccount(currentAccount: any) {
     this.currentAccountObs.next(currentAccount);
   }
@@ -318,7 +330,7 @@ export class WalletService {
 
     const x = this.getAccountDefault(wallet);
     this.currentAccount = x;
-    this.algo = x.algo;
+    // this.algo = x.algo;
     // this.address = this.proximaxProvider.createFromRawAddress(x.address);
     this.currentWallet = wallet;
     this.setCurrentAccount(this.currentAccount);
@@ -336,12 +348,10 @@ export class WalletService {
    * @memberof WalletService
    */
 
-  decrypt(common: any, account: any = '', algo: any = '', network: any = '') {
-    const acct = account || this.currentAccount;
-    const net = network || this.currentAccount.network;
-    const alg = algo || this.algo;
-    // Try to generate or decrypt key
-
+  decrypt(common: any, account: any = '') {
+    const acct = (account) ? account : this.currentAccount;
+    const net = (account) ? account.network : this.currentAccount.network;
+    const alg = (account) ? account.algo : this.currentAccount.algo;
     if (!crypto.passwordToPrivatekey(common, acct, alg)) {
       setTimeout(() => {
         this.sharedService.showError('', 'Invalid password');
@@ -493,10 +503,17 @@ export interface AccountsInterface {
   brain: boolean;
   default: boolean;
   encrypted: string;
+  firstAccount: boolean;
   iv: string;
   name: string;
   network: number;
   publicAccount: PublicAccount;
+}
+
+
+export interface AccountsInfoInterface {
+  name: string;
+  accountInfo: AccountInfo;
 }
 
 export interface WalletAccountInterface {

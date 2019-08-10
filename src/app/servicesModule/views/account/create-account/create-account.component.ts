@@ -110,6 +110,7 @@ export class CreateAccountComponent implements OnInit {
           address: newAccount.address['address'],
           byDefault: false,
           encrypted: newAccount.encryptedPrivateKey.encryptedKey,
+          firstAccount: false,
           iv: newAccount.encryptedPrivateKey.iv,
           network: newAccount.network,
           nameAccount: nameAccount,

@@ -150,7 +150,8 @@ export class DataBridgeService {
    */
   getSocketTransactionsConfirmed(connector: Listener, audio: HTMLAudioElement) {
     this.walletService.currentWallet.accounts.forEach(element => {
-      connector.confirmed(this.proximaxProvider.createFromRawAddress(element.address)).subscribe((incomingTransaction: Transaction) => {
+      const address = this.proximaxProvider.createFromRawAddress(element.address);
+      connector.confirmed(address).subscribe((incomingTransaction: Transaction) => {
         this.setTransactionStatus({
           'type': 'confirmed',
           'data': incomingTransaction
@@ -183,7 +184,8 @@ export class DataBridgeService {
    */
   getSocketTransactionsUnConfirmed(connector: Listener, audio: HTMLAudioElement) {
     this.walletService.currentWallet.accounts.forEach(element => {
-      connector.unconfirmedAdded(this.proximaxProvider.createFromRawAddress(element.address)).subscribe(unconfirmedTransaction => {
+      const address = this.proximaxProvider.createFromRawAddress(element.address);
+      connector.unconfirmedAdded(address).subscribe(unconfirmedTransaction => {
         this.setTransactionStatus({
           'type': 'unconfirmed',
           'data': unconfirmedTransaction
@@ -212,7 +214,8 @@ export class DataBridgeService {
    */
   getSocketStatusError(connector: Listener, audio: HTMLAudioElement) {
     this.walletService.currentWallet.accounts.forEach(element => {
-      connector.status(this.proximaxProvider.createFromRawAddress(element.address)).subscribe(error => {
+      const address = this.proximaxProvider.createFromRawAddress(element.address);
+      connector.status(address).subscribe(error => {
         this.setTransactionStatus({
           'type': 'error',
           'data': error

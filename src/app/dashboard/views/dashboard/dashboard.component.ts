@@ -18,7 +18,7 @@ import { environment } from '../../../../environments/environment';
 export class DashboardComponent implements OnInit, OnDestroy {
 
 
-  currentAccount: AccountsInterface;
+  currentAccount: AccountsInterface = null;
   nameAccount = '';
   typeTransactions: any;
   vestedBalance = '';
@@ -63,30 +63,22 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private sharedService: SharedService,
     private proximaxProvider: ProximaxProvider,
     @Inject(DOCUMENT) private document: Document
-  ) {}
+  ) { }
 
 
   ngOnInit() {
     this.dashboardService.incrementViewDashboard();
     this.dashboardService.subscribeLogged();
-    this.currentAccount = this.walletService.getCurrentAccount();
+    this.currentAccount = Object.assign({}, this.walletService.getCurrentAccount());
     this.currentAccount.address = this.proximaxProvider.createFromRawAddress(this.currentAccount.address).pretty();
     this.typeTransactions = this.transactionService.getTypeTransactions();
     this.vestedBalance = `0.000000 ${environment.mosaicXpxInfo.coin}`;
-
-
-    //-----------------------------------------------
-
-
-
-
-   this.subscribeTransactionsConfirmedUnconfirmed();
-    this.getRecentTransactions();
-    this.balance();
+    /*this.subscribeTransactionsConfirmedUnconfirmed();
+     this.getRecentTransactions();
+     this.balance();*/
   }
 
   ngOnDestroy(): void {
-    // moment
     // this.transactionService.setTransactionsConfirmed$([]);
     this.subscriptions.forEach(element => {
       if (this.subscriptions[element] !== undefined) {
@@ -98,6 +90,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
   ngAfterViewInit() {
     this.cdRef.detectChanges();
   }
+
+
+  //-----------------------------------------------
+
+
+
+
 
   /**
    * Get balance from account

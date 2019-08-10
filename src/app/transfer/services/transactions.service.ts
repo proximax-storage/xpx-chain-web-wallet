@@ -23,7 +23,7 @@ import { NodeService } from "../../servicesModule/services/node.service";
 import { environment } from "../../../environments/environment";
 import { MosaicService } from "../../servicesModule/services/mosaic.service";
 import { NamespacesService } from "../../servicesModule/services/namespaces.service";
-import { WalletService } from '../../wallet/services/wallet.service';
+import { WalletService, AccountsInfoInterface, AccountsInterface } from '../../wallet/services/wallet.service';
 
 
 
@@ -154,7 +154,7 @@ export class TransactionsService {
    * @returns
    * @memberof TransactionsService
    */
-  getTypeTransactions(){
+  getTypeTransactions() {
     return this.arraTypeTransaction;
   }
 
@@ -189,7 +189,8 @@ export class TransactionsService {
         recipient = transaction['recipient'];
         recipientPretty = transaction['recipient'].pretty();
         this.walletService.currentWallet.accounts.forEach(element => {
-          if (this.proximaxProvider.createFromRawAddress(element.address).pretty() === transaction["recipient"].pretty()) {
+          const address = this.proximaxProvider.createFromRawAddress(element.address);
+          if (address.pretty() === transaction["recipient"].pretty()) {
             isReceive = true;
           }
         });
@@ -424,7 +425,8 @@ export class TransactionsService {
    * @memberof TransactionsService
    */
   updateBalance() {
-    this.proximaxProvider.getAccountInfo(this.proximaxProvider.createFromRawAddress(this.walletService.currentAccount.address)).pipe(first()).subscribe(
+    const address = this.walletService.currentAccount.address;
+    this.proximaxProvider.getAccountInfo(this.proximaxProvider.createFromRawAddress(address)).pipe(first()).subscribe(
       (accountInfo: AccountInfo) => {
         // console.log('AccountInfo ---> ', accountInfo);
         if (accountInfo !== null && accountInfo !== undefined) {
@@ -458,7 +460,7 @@ export class TransactionsService {
    * @returns
    * @memberof TransactionsService
    */
-  async getAccountInfo(address: Address = null): Promise<AccountInfo> {
+  async getAccountInfo(address: Address): Promise<AccountInfo> {
     try {
       const accountInfo = await this.proximaxProvider.getAccountInfo(address).toPromise();
       // console.log(accountInfo);
@@ -467,6 +469,38 @@ export class TransactionsService {
         this.mosaicService.searchMosaics(accountInfo.mosaics.map(next => next.id));
       }
       return accountInfo;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  /**
+   *
+   *
+   * @param {AccountsInfoInterface[]} accounts
+   * @returns {Promise<AccountInfo[]>}
+   * @memberof TransactionsService
+   */
+  async getAccountsInfo(accounts: AccountsInterface[]): Promise<AccountInfo[]> {
+    try {
+      const accountsInfo = [];
+      accounts.forEach(async element => {
+        const address = this.proximaxProvider.createFromRawAddress(element.address);
+        this.proximaxProvider.getAccountInfo(address).subscribe(
+          next => {
+            // console.log(next);
+            this.walletService.setAccountsInfo({
+              name: element.name,
+              accountInfo: next
+            });
+          }, error => {
+            this.walletService.setAccountsInfo({
+              name: element.name,
+              accountInfo: null
+            });
+          }
+        );
+      });
     } catch (error) {
       return null;
     }

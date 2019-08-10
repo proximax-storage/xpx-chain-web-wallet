@@ -92,7 +92,8 @@ export class MosaicsSupplyChangeComponent implements OnInit {
           element.mosaicInfo.owner.address['networkType']
         );
 
-        const isOwner = (addressOwner.pretty() === this.proximaxProvider.createFromRawAddress(this.walletService.currentAccount.address).pretty()) ? true : false;
+        const address = this.walletService.currentAccount.address;
+        const isOwner = (addressOwner.pretty() === this.proximaxProvider.createFromRawAddress(address).pretty()) ? true : false;
         const durationMosaic = new UInt64([
           element.mosaicInfo['properties']['duration']['lower'],
           element.mosaicInfo['properties']['duration']['higher']
