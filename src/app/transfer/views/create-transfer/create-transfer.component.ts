@@ -97,12 +97,36 @@ export class CreateTransferComponent implements OnInit {
   /**
    *
    *
+   * @param {*} cant
+   * @param {string} [amount='0']
+   * @returns
+   * @memberof CreateTransferComponent
+   */
+  addZeros(cant, amount = '0') {
+    let x = '0';
+    if (amount === '0') {
+      for (let index = 0; index < cant - 1; index++) {
+        amount += x;
+      }
+    } else {
+      for (let index = 0; index < cant; index++) {
+        amount += x;
+      }
+    }
+
+    return amount;
+  }
+
+  /**
+   *
+   *
    * @param {AccountsInterface} accountToSend
    * @memberof CreateTransferComponent
    */
   init(accountToSend: AccountsInterface) {
     // this.ngxService.start(); // start foreground spinner of the master loader with 'default' taskId
     this.ngOnDestroy();
+    this.clearForm();
     this.reset();
     this.accountToSend = accountToSend;
     const accounts = [];
@@ -515,6 +539,43 @@ export class CreateTransferComponent implements OnInit {
    *
    * @memberof CreateTransferComponent
    */
+  reset() {
+    this.accountToSend = {};
+    this.allMosaics = [];
+    this.amountXpxToSend = '0.000000';
+    this.balanceXpx = '0.000000';
+    this.boxOtherMosaics = [];
+    this.blockSendButton = false;
+    this.blockButton = false;
+    this.charRest = 0;
+    this.currentBlock = 0;
+    this.disabledBtnAddMosaic = false;
+    this.errorOtherMosaics = false;
+    this.incrementMosaics = 0;
+    this.invalidRecipient = false;
+    this.insufficientBalance = false;
+    this.msgErrorUnsupported = '';
+    this.msgErrorUnsupportedContact = '';
+    this.mosaicXpx = null;
+    this.listContacts = [];
+    this.optionsXPX = {
+      prefix: '',
+      thousands: ',',
+      decimal: '.',
+      precision: '6'
+    };
+    this.selectOtherMosaics = [];
+    this.showContacts = false;
+    this.subscribe = ['accountInfo', 'transactionStatus', 'char', 'block'];
+    this.title = 'Make a transfer';
+    this.transactionSigned = null;
+  }
+
+  /**
+   *
+   *
+   * @memberof CreateTransferComponent
+   */
   sendTransfer() {
     if (this.formTransfer.valid && (!this.blockSendButton || !this.errorOtherMosaics)) {
       const mosaicsToSend = this.validateMosaicsToSend();
@@ -725,20 +786,7 @@ export class CreateTransferComponent implements OnInit {
     }
   }
 
-  addZeros(cant, amount = '0') {
-    let x = '0';
-    if (amount === '0') {
-      for (let index = 0; index < cant - 1; index++) {
-        amount += x;
-      }
-    } else {
-      for (let index = 0; index < cant; index++) {
-        amount += x;
-      }
-    }
 
-    return amount;
-  }
 
   /**
    *
@@ -750,7 +798,8 @@ export class CreateTransferComponent implements OnInit {
     const mosaics = [];
     const amountXpx = this.formTransfer.get("amountXpx").value;
 
-    if (amountXpx !== '') {
+    if (amountXpx !== '' && amountXpx !== null) {
+      console.log(amountXpx);
       let arrAmount = amountXpx.toString().replace(/,/g, "").split('.');
       let decimal;
       let realAmount;
@@ -817,35 +866,5 @@ export class CreateTransferComponent implements OnInit {
     return validation;
   }
 
-  reset() {
-    this.accountToSend = {};
-    this.allMosaics = [];
-    this.amountXpxToSend = '0.000000';
-    this.balanceXpx = '0.000000';
-    this.boxOtherMosaics = [];
-    this.blockSendButton = false;
-    this.blockButton = false;
-    this.charRest = 0;
-    this.currentBlock = 0;
-    this.disabledBtnAddMosaic = false;
-    this.errorOtherMosaics = false;
-    this.incrementMosaics = 0;
-    this.invalidRecipient = false;
-    this.insufficientBalance = false;
-    this.msgErrorUnsupported = '';
-    this.msgErrorUnsupportedContact = '';
-    this.mosaicXpx = null;
-    this.listContacts = [];
-    this.optionsXPX = {
-      prefix: '',
-      thousands: ',',
-      decimal: '.',
-      precision: '6'
-    };
-    this.selectOtherMosaics = [];
-    this.showContacts = false;
-    this.subscribe = ['accountInfo', 'transactionStatus', 'char', 'block'];
-    this.title = 'Make a transfer';
-    this.transactionSigned = null;
-  }
+
 }

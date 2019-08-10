@@ -21,7 +21,8 @@
             <ng-container *ngFor="let account of accounts; let i=index">
               <li class="nav-item cursor-p" (click)="init(account.value)">
                 <span [ngClass]="[account.active ? 'nav-link active isActive' : 'nav-link']">
-                  {{account.value.name}} <i *ngIf="account.value.default" class="fa fa-star fs-1rem ml-10px cursor-p" aria-hidden="true" title="Default account"></i>
+                  {{account.value.name}} <i *ngIf="account.value.default" class="fa fa-star fs-1rem ml-10px cursor-p"
+                    aria-hidden="true" title="Default account"></i>
                 </span>
 
               </li>
@@ -195,17 +196,21 @@
 
 
     <!-- Add mosaics -->
-    <div class="row mt-1rem">
-      <div class="col-12 d-flex justify-content-center"
-        style="background-image: url(assets/images/img/horizontal-line-background.jpg);">
-        <button [disabled]="currentBlock === 0 || disabledBtnAddMosaic" mdbBtn type="button" rounded="true" mdbWavesEffect
-          class="background-btn-inverse pl-2rem pr-2rem" size="md" (click)="pushedOtherMosaics()">
-          <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
-            *ngIf="currentBlock === 0 && !disabledBtnAddMosaic"></span>
-          <span class="fs-1-2em text-cl-m fw-700">(+) Add Mosaics</span>
-        </button>
+    <ng-container>
+      <div class="row mt-1rem">
+        <div class="col-12 d-flex justify-content-center"
+          style="background-image: url(assets/images/img/horizontal-line-background.jpg);">
+          <button [disabled]="currentBlock === 0 || disabledBtnAddMosaic || selectOtherMosaics.length === 0" mdbBtn
+            type="button" rounded="true" mdbWavesEffect class="background-btn-inverse pl-2rem pr-2rem" size="md"
+            (click)="pushedOtherMosaics()">
+            <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
+              *ngIf="currentBlock === 0 && !disabledBtnAddMosaic"></span>
+            <span class="fs-1-2em text-cl-m fw-700">(+) Add Mosaics </span>
+          </button>
+        </div>
       </div>
-    </div>
+    </ng-container>
+
 
 
     <!-- FEE -->
