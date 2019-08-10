@@ -73,3 +73,23 @@
   background: #306eb5 !important;
   color: white !important;
 }
+
+.h-account {
+  height: 50px;
+  overflow-x: auto;
+  display: -webkit-box;
+  overflow-y: hidden;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+}
