@@ -92,7 +92,7 @@ export class MosaicsSupplyChangeComponent implements OnInit {
           element.mosaicInfo.owner.address['networkType']
         );
 
-        const isOwner = (addressOwner.pretty() === this.walletService.address.pretty()) ? true : false;
+        const isOwner = (addressOwner.pretty() === this.proximaxProvider.createFromRawAddress(this.walletService.currentAccount.address).pretty()) ? true : false;
         const durationMosaic = new UInt64([
           element.mosaicInfo['properties']['duration']['lower'],
           element.mosaicInfo['properties']['duration']['higher']
@@ -308,7 +308,7 @@ export class MosaicsSupplyChangeComponent implements OnInit {
         privateKey: ''
       }
       if (this.walletService.decrypt(common)) {
-        const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.network);
+        const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
 
         const quatityZeros = this.transactionService.addZeros(this.divisibility);
         const mosaicSupply = parseInt(`${this.formMosaicSupplyChange.get('deltaSupply').value}${quatityZeros}`);
@@ -317,9 +317,9 @@ export class MosaicsSupplyChangeComponent implements OnInit {
           this.formMosaicSupplyChange.get('parentMosaic').value,
           mosaicSupply,
           this.formMosaicSupplyChange.get('mosaicSupplyType').value,
-          this.walletService.network
+          this.walletService.currentAccount.network
         )
-        
+
         const signedTransaction = account.sign(mosaicSupplyChangeTransaction);
         this.transactionSigned.push(signedTransaction);
         console.log(signedTransaction);
