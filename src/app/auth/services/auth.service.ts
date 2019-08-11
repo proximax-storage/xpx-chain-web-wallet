@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { NetworkType } from 'tsjs-xpx-chain-sdk';
+import { NetworkType, UInt64 } from 'tsjs-xpx-chain-sdk';
+import { NgxUiLoaderService } from 'ngx-ui-loader';
+
 import { AppConfig } from '../../config/app.config';
 import { WalletService } from '../../wallet/services/wallet.service';
 import { DataBridgeService } from '../../shared/services/data-bridge.service';
@@ -35,7 +37,8 @@ export class AuthService {
     private transactionService: TransactionsService,
     private serviceModuleService: ServicesModuleService,
     private sharedService: SharedService,
-    private proximaxProvider: ProximaxProvider
+    private proximaxProvider: ProximaxProvider,
+    private ngxService: NgxUiLoaderService
   ) {
     this.setLogged(false);
   }
@@ -60,7 +63,7 @@ export class AuthService {
   * @returns
   * @memberof LoginService
   */
-  login(common: any, wallet: any) {
+  async login(common: any, wallet: any) {
     const currentAccount = Object.assign({}, wallet.accounts.find(elm => elm.default === true));
     let isValid = false;
     if (currentAccount) {
@@ -80,7 +83,7 @@ export class AuthService {
         isValid = true;
         this.walletService.use(wallet);
       }
-    }else {
+    } else {
       this.sharedService.showError('', 'Dear user, the main account is missing');
     }
 
@@ -91,6 +94,8 @@ export class AuthService {
     this.setLogged(true);
     this.dataBridgeService.closeConenection();
     this.dataBridgeService.connectnWs();
+    const blockchainHeight: UInt64 = await this.proximaxProvider.getBlockchainHeight().toPromise();
+    this.dataBridgeService.setblock(blockchainHeight.compact());
     // load services and components
     this.route.navigate([`/${AppConfig.routes.dashboard}`]);
     this.namespaces.buildNamespaceStorage();
@@ -98,6 +103,7 @@ export class AuthService {
     this.serviceModuleService.changeBooksItem(
       this.proximaxProvider.createFromRawAddress(currentAccount.address)
     );
+
     return true;
   }
 

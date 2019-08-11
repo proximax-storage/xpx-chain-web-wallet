@@ -3,6 +3,7 @@ import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/fo
 import { AuthService } from '../../services/auth.service';
 import { environment } from '../../../../environments/environment';
 import { ConfigurationForm, SharedService } from 'src/app/shared/services/shared.service';
+import { NgxUiLoaderService } from 'ngx-ui-loader';
 
 @Component({
   selector: 'app-auth',
@@ -19,10 +20,11 @@ export class AuthComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private fb: FormBuilder,
-    private sharedService: SharedService
+    private sharedService: SharedService,
+    private ngxService: NgxUiLoaderService
   ) { }
 
-  ngOnInit(){
+  ngOnInit() {
     this.configurationForm = this.sharedService.configurationForm;
     this.wallets = this.authService.walletsOption(JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage)));
     this.createForm();
@@ -56,11 +58,11 @@ export class AuthComponent implements OnInit {
       ]],
       common: this.fb.group({
         password: ['',
-        [
-          Validators.required,
-          Validators.minLength(this.configurationForm.passwordWallet.minLength),
-          Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
-        ]]
+          [
+            Validators.required,
+            Validators.minLength(this.configurationForm.passwordWallet.minLength),
+            Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
+          ]]
       })
     });
   }

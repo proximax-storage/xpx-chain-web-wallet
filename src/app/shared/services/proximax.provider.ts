@@ -37,7 +37,8 @@ import {
   TransactionAnnounceResponse,
   MosaicSupplyType,
   AliasTransaction,
-  AliasActionType
+  AliasActionType,
+  BlockchainHttp
 } from 'tsjs-xpx-chain-sdk';
 import { mergeMap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
@@ -50,6 +51,7 @@ import { BlockchainNetworkType } from 'xpx2-ts-js-sdk';
 })
 export class ProximaxProvider {
 
+  blockchainHttp: BlockchainHttp;
   url: any;
   infoMosaic: MosaicInfo;
   transactionHttp: TransactionHttp;
@@ -68,6 +70,17 @@ export class ProximaxProvider {
   };
 
   constructor() {
+  }
+
+
+  /**
+   *
+   *
+   * @returns {Observable<UInt64>}
+   * @memberof ProximaxProvider
+   */
+  getBlockchainHeight(): Observable<UInt64> {
+    return this.blockchainHttp.getBlockchainHeight();
   }
 
   /**
@@ -477,6 +490,7 @@ export class ProximaxProvider {
   */
   initInstances(url: string) {
     this.url = `${environment.protocol}://${url}`;
+    this.blockchainHttp = new BlockchainHttp(this.url);
     this.accountHttp = new AccountHttp(this.url);
     this.mosaicHttp = new MosaicHttp(this.url);
     this.namespaceHttp = new NamespaceHttp(this.url);

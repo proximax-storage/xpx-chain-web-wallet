@@ -68,7 +68,6 @@ export class CreateTransferComponent implements OnInit {
     private sharedService: SharedService,
     private transactionService: TransactionsService,
     private walletService: WalletService,
-    private ngxService: NgxUiLoaderService,
     private router: Router
   ) { }
 
@@ -96,6 +95,11 @@ export class CreateTransferComponent implements OnInit {
         active: element.default,
         value: element
       });
+    });
+
+    this.subscribe['block'] = this.dataBridge.getBlock().subscribe(next => {
+      // console.log(next);
+      this.currentBlock = next;
     });
   }
 
@@ -192,10 +196,6 @@ export class CreateTransferComponent implements OnInit {
     this.accounts = accounts;
   }
 
-  updateAccountInfo() {
-    console.log('-----UPDATE ACCOUNT INFO-----');
-  }
-
 
   /**
    *
@@ -227,22 +227,6 @@ export class CreateTransferComponent implements OnInit {
     }
   }*/
 
-  /**
-   *
-   *
-   * @memberof CreateTransferComponent
-   */
-  /*checkBlock(accountInfo: AccountInfo) {
-    this.buildAll(accountInfo);
-    if (this.currentBlock === 0 && (this.subscribe['block'] === undefined || this.subscribe['block'] === null)) {
-      this.subscribe['block'] = this.dataBridge.getBlock().subscribe(next => {
-        if (this.currentBlock === 0 && next) {
-          this.currentBlock = next;
-          this.buildAll(accountInfo);
-        }
-      });
-    }
-  }*/
 
   /**
    *
@@ -252,7 +236,7 @@ export class CreateTransferComponent implements OnInit {
    */
   async buildCurrentAccountInfo(accountInfo: AccountInfo) {
     const mosaicsSelect: any = [];
-    console.log(accountInfo);
+    // console.log(accountInfo);
     if (accountInfo !== undefined && accountInfo !== null) {
       if (accountInfo.mosaics.length > 0) {
         const mosaics = await this.mosaicServices.searchMosaics(accountInfo.mosaics.map(n => n.id));
@@ -556,7 +540,6 @@ export class CreateTransferComponent implements OnInit {
     this.blockSendButton = false;
     this.blockButton = false;
     this.charRest = 0;
-    this.currentBlock = 0;
     this.disabledBtnAddMosaic = false;
     this.errorOtherMosaics = false;
     this.incrementMosaics = 0;
@@ -654,7 +637,7 @@ export class CreateTransferComponent implements OnInit {
         }
 
         if (accountRecipient !== null && accountRecipient !== undefined && accountRecipient.length === 40) {
-          const currentAccount  = Object.assign({}, this.walletService.getCurrentAccount());
+          const currentAccount = Object.assign({}, this.walletService.getCurrentAccount());
           if (!this.proximaxProvider.verifyNetworkAddressEqualsNetwork(
             this.proximaxProvider.createFromRawAddress(currentAccount.address).plain(), accountRecipient)
           ) {
@@ -678,7 +661,7 @@ export class CreateTransferComponent implements OnInit {
     // const mosaic = this.mosaicServices.filterMosaic(new MosaicId(this.mosaicXpx.id));
     this.formTransfer.get('amountXpx').valueChanges.subscribe(
       value => {
-        console.log('----VALUE INPUT XPX-------', value);
+        // console.log('----VALUE INPUT XPX-------', value);
         if (value !== null && value !== undefined) {
           const a = Number(value);
           let validateAmount = false;
@@ -808,7 +791,7 @@ export class CreateTransferComponent implements OnInit {
     const amountXpx = this.formTransfer.get("amountXpx").value;
 
     if (amountXpx !== '' && amountXpx !== null) {
-      console.log(amountXpx);
+      // console.log(amountXpx);
       let arrAmount = amountXpx.toString().replace(/,/g, "").split('.');
       let decimal;
       let realAmount;
