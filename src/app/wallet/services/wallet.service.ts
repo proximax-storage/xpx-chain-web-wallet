@@ -260,6 +260,11 @@ export class WalletService {
     this.accountsInfo.push(accountInfo);
   }
 
+
+  getAccountsInfo(): AccountsInfoInterface[] {
+    return this.accountsInfo;
+  }
+
   /**
    *
    *

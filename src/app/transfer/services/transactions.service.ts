@@ -188,7 +188,7 @@ export class TransactionsService {
       if (transaction['recipient'] !== undefined) {
         recipient = transaction['recipient'];
         recipientPretty = transaction['recipient'].pretty();
-        const currentWallet  = Object.assign({}, this.walletService.getCurrentWallet());
+        const currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
         if (currentWallet.accounts.find(element => this.proximaxProvider.createFromRawAddress(element.address).pretty() === transaction["recipient"].pretty())) {
           isReceive = true;
         }
@@ -423,7 +423,7 @@ export class TransactionsService {
    * @memberof TransactionsService
    */
   updateBalance2() {
-    const currentAccount  = Object.assign({}, this.walletService.getCurrentAccount());
+    const currentAccount = Object.assign({}, this.walletService.getCurrentAccount());
     this.proximaxProvider.getAccountInfo(this.proximaxProvider.createFromRawAddress(currentAccount.address)).pipe(first()).subscribe(
       (accountInfo: AccountInfo) => {
         // console.log('AccountInfo ---> ', accountInfo);
@@ -449,6 +449,19 @@ export class TransactionsService {
         this.setBalance$("0.000000");
       }
     );
+  }
+
+  /**
+   *
+   *
+   * @memberof TransactionsService
+   */
+  updateBalance() {
+    const accountsInfo = this.walletService.getAccountsInfo().slice(0);
+    const currentAccount = Object.assign({}, this.walletService.getCurrentAccount());
+    const dataBalance = accountsInfo.find(next => next.name === currentAccount.name);
+    const balance = dataBalance.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id).amount.compact();
+    this.setBalance$(balance);
   }
 
   /**
@@ -482,14 +495,14 @@ export class TransactionsService {
   async getAccountsInfo(accounts: AccountsInterface[]): Promise<AccountInfo[]> {
     try {
       const accountsInfo = [];
-      accounts.forEach(async element => {
-        const currentAccount  = Object.assign({}, this.walletService.getCurrentAccount());
-        this.proximaxProvider.getAccountInfo(this.proximaxProvider.createFromRawAddress(currentAccount.address)).subscribe(
+      for (let element of accounts) {
+        this.proximaxProvider.getAccountInfo(this.proximaxProvider.createFromRawAddress(element.address)).subscribe(
           next => {
+            const mosaics = next.mosaics.slice(0);
             // set balance
-            if(element.default) {
+            if (element.default) {
               next.mosaics.forEach(mosaic => {
-                if(mosaic.id.toHex() === environment.mosaicXpxInfo.id) {
+                if (mosaic.id.toHex() === environment.mosaicXpxInfo.id) {
                   this.setBalance$(mosaic.amount.compact());
                 }
               });
@@ -507,7 +520,7 @@ export class TransactionsService {
             });
           }
         );
-      });
+      };
     } catch (error) {
       return null;
     }
