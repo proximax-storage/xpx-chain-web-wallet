@@ -275,10 +275,10 @@ export class RenewNamespaceComponent implements OnInit {
    */
   validateRentalFee(amount: number) {
     console.log('This is a test', amount);
-    const accountInfo = this.walletService.getAccountInfo();
+    const accountInfo = this.walletService.filterAccountInfo();
     if (accountInfo !== undefined && accountInfo !== null && Object.keys(accountInfo).length > 0) {
-      if (accountInfo.mosaics.length > 0) {
-        const filtered = accountInfo.mosaics.find(element => {
+      if (accountInfo.accountInfo.mosaics.length > 0) {
+        const filtered = accountInfo.accountInfo.mosaics.find(element => {
           return element.id.toHex() === new MosaicId(this.proximaxProvider.mosaicXpx.mosaicId).toHex();
         });
 

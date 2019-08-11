@@ -7,6 +7,7 @@ import { TransactionsInterface, TransactionsService } from '../../../transfer/se
 import { WalletService, AccountsInterface } from '../../../wallet/services/wallet.service';
 import { SharedService } from '../../../shared/services/shared.service';
 import { environment } from '../../../../environments/environment';
+import { AppConfig } from 'src/app/config/app.config';
 
 @Component({
   selector: 'app-dashboard',
@@ -52,6 +53,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   searchTransaction = '';
   viewDashboard = true;
   transactions: TransactionsInterface[] = [];
+  viewDetailsAccount = `/${AppConfig.routes.account}/`;
   windowScrolled: boolean;
   nameWallet = '';
 

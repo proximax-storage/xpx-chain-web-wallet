@@ -11,7 +11,7 @@
             </div>
             <div class="col-12 col-sm-10 col-md-9 col-lg-10">
               <div class="d-flex flex-column justify-content-between">
-                <span class="fs-09rem color-blue-intermedio">
+                <span class="fs-09rem color-blue-intermedio cursor-p" [routerLink]="[viewDetailsAccount+currentAccount.name]">
                   <span style="color: #2a2e32 !important;">DEFAULT ACCOUNT:</span> {{currentAccount.name}}
                 </span>
                 <span class="fs-1rem">{{vestedBalance}} | USD 0.00</span>

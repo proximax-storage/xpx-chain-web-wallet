@@ -537,9 +537,8 @@ export class CreateNamespaceComponent implements OnInit {
    * @memberof CreateNamespaceComponent
    */
   validateRentalFee(amount: number) {
-
-    const accountInfo = this.walletService.getAccountInfo();
-    const filtered = accountInfo.mosaics.find(element => {
+    const accountInfo = this.walletService.filterAccountInfo();
+    const filtered = accountInfo.accountInfo.mosaics.find(element => {
       return element.id.toHex() === new MosaicId(this.proximaxProvider.mosaicXpx.mosaicId).toHex();
     });
     console.log('Este es el monto', amount);
@@ -547,7 +546,7 @@ export class CreateNamespaceComponent implements OnInit {
 
     if (this.namespaceForm.get('namespaceRoot').value === '') {
       if (accountInfo !== undefined && accountInfo !== null && Object.keys(accountInfo).length > 0) {
-        if (accountInfo.mosaics.length > 0) {
+        if (accountInfo.accountInfo.mosaics.length > 0) {
           const invalidBalance = filtered.amount.compact() < amount;
           const mosaic = this.mosaicServices.filterMosaic(filtered.id);
           // console.log('---mosaic---', mosaic);

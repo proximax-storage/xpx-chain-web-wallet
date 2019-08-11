@@ -267,8 +267,12 @@ export class WalletService {
    * @returns
    * @memberof WalletService
    */
-  filterAccountInfo(nameAccount: string): AccountsInfoInterface {
-    return this.accountsInfo.find(next => next.name === nameAccount);
+  filterAccountInfo(nameAccount?: string): AccountsInfoInterface {
+    if (nameAccount) {
+      return this.accountsInfo.find(next => next.name === nameAccount);
+    }else {
+      return this.accountsInfo.find(next => next.name === this.currentAccount.name);
+    }
   }
 
   /**
@@ -449,9 +453,9 @@ export class WalletService {
    * @returns
    * @memberof WalletService
    */
-  getAccountInfo() {
+/*  getAccountInfo() {
     return this.accountInfo;
-  }
+  }*/
 
   /**
    *
