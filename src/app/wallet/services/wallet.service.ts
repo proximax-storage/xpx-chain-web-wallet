@@ -260,7 +260,23 @@ export class WalletService {
     this.accountsInfo.push(accountInfo);
   }
 
+  /**
+   *
+   *
+   * @param {string} nameAccount
+   * @returns
+   * @memberof WalletService
+   */
+  filterAccountInfo(nameAccount: string): AccountsInfoInterface {
+    return this.accountsInfo.find(next => next.name === nameAccount);
+  }
 
+  /**
+   *
+   *
+   * @returns {AccountsInfoInterface[]}
+   * @memberof WalletService
+   */
   getAccountsInfo(): AccountsInfoInterface[] {
     return this.accountsInfo;
   }

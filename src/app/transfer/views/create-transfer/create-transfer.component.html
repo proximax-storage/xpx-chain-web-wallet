@@ -19,7 +19,8 @@
         <div class="col-11 col-md-10 col-lg-8 mx-auto">
           <ul class="nav nav-tabs fs-09rem h-account" id="myTab" role="tablist">
             <ng-container *ngFor="let account of accounts; let i=index">
-              <li class="nav-item cursor-p" (click)="init(account.value)">
+              <!-- <li class="nav-item cursor-p" (click)="init(account.value)"> -->
+              <li class="nav-item cursor-p" (click)="changeSender(account.value)">
                 <span [ngClass]="[account.active ? 'nav-link active isActive' : 'nav-link']">
                   {{account.value.name}} <i *ngIf="account.value.default" class="fa fa-star fs-1rem ml-10px cursor-p"
                     aria-hidden="true" title="Default account"></i>
@@ -30,7 +31,7 @@
           </ul>
         </div>
         <div class="col-11 col-md-10 col-lg-8 mx-auto d-none d-md-block">
-          <span class="fs-08rem" style="color: #404040ad;">{{accountToSend.address}}</span>
+          <span class="fs-08rem" style="color: #404040ad;">{{sender.address}}</span>
         </div>
       </div>
     </ng-container>
@@ -72,7 +73,8 @@
           <!-- Show Contacts -->
           <ng-container>
             <div class="col-4 col-sm-3 col-md-2 d-flex justify-content-center align-items-center pt-10px">
-              <div [disabled]="listContacts.length === 0" class="background-gray-icons p-12px bord-rad-25px cursor-p" (click)="showContacts = (listContacts.length > 0) ? !showContacts : showContacts"
+              <div [disabled]="listContacts.length === 0" class="background-gray-icons p-12px bord-rad-25px cursor-p"
+                (click)="showContacts = (listContacts.length > 0) ? !showContacts : showContacts"
                 [title]="(!showContacts) ? 'Show contacts': 'Hide contacts'">
                 <img class=" w-30px" [src]="(!showContacts) ?
                 'assets/images/img/icon-address-book-gray-28h-proximax-sirius-wallet.svg' :
