@@ -56,13 +56,9 @@ export class SidebarMainComponent implements OnInit {
     });
 
     // BALANCE
-   this.subscriptions['balance'] = this.transactionService.getBalance$().subscribe(next => {
-      // const currentDefault = this.walletService.getAccountDefault(this.walletService.currentWallet);
-      // console.log(currentDefault);
-      console.log(next);
+    this.subscriptions['balance'] = this.transactionService.getBalance$().subscribe(next => {
       this.vestedBalance = `Balance ${next} XPX`;
     }, error => {
-      const currentDefault = this.walletService.getAccountDefault(this.walletService.currentWallet);
       this.vestedBalance = `Balance 0.000000 XPX`;
     });
 

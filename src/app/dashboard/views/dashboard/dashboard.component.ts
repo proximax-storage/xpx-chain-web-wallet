@@ -67,7 +67,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
 
   ngOnInit() {
-    this.balance();
     this.dashboardService.incrementViewDashboard();
     this.dashboardService.subscribeLogged();
     this.currentAccount = Object.assign({}, this.walletService.getCurrentAccount());
@@ -75,8 +74,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.currentAccount.address).pretty();
     this.typeTransactions = this.transactionService.getTypeTransactions();
     this.vestedBalance = `0.000000 ${environment.mosaicXpxInfo.coin}`;
-    /*this.subscribeTransactionsConfirmedUnconfirmed();
-     this.getRecentTransactions();*/
+    this.balance();
+    this.subscribeTransactionsConfirmedUnconfirmed();
+    this.getRecentTransactions();
   }
 
   ngOnDestroy(): void {
@@ -94,10 +94,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
 
   //-----------------------------------------------
-
-
-
-
 
   /**
    * Get balance from account
@@ -131,8 +127,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
    */
   getRecentTransactions(reload = false) {
     this.iconReloadDashboard = true;
-    // Update balance
-    this.transactionService.updateBalance2();
     // Validate if it is the first time the dashboard is loaded or if you click on the reload button
     if (this.dashboardService.getCantViewDashboard() === 1 || reload) {
       this.searching = true;
@@ -174,13 +168,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
    * Method to load transactions by public account.
    * @param {string} id Id of the transaction to start the next search.
    */
-  loadTransactions(id = null) {
-    this.transactions = (id) ? this.transactions : [];
+  async loadTransactions(id: any = null) {
+    // this.transactions = (id) ? this.transactions.slice(0) : [];
+    const data = this.transactions.slice(0);
     for (let account of this.walletService.currentWallet.accounts) {
-      this.proximaxProvider.getTransactionsFromAccountId(account.publicAccount, id).toPromise().then(response => {
-        const data = [];
-        this.searchTransactions = !(response.length < 25);
-        response.forEach(element => {
+      try {
+        const transactions = await this.proximaxProvider.getTransactionsFromAccountId(account.publicAccount, id).toPromise();
+        transactions.forEach(element => {
           //Sets the data structure of the dashboard
           const builderTransactions = this.transactionService.getStructureDashboard(element);
           if (builderTransactions !== null) {
@@ -188,48 +182,23 @@ export class DashboardComponent implements OnInit, OnDestroy {
           }
         });
 
-
-        // Establishes confirmed transactions in the observable type variable
-        this.transactions = this.transactions.concat(data);
-        this.transactionService.setTransactionsConfirmed$(this.transactions);
-        this.iconReloadDashboard = false;
-        this.searching = false;
-        this.dashboardService.searchComplete = true;
-      }).catch(err => {
+        this.transactions = data;
+        this.cantConfirmed = this.transactions.length;
+        this.cantTransactions = this.cantConfirmed;
+      } catch (error) {
         this.dashboardService.searchComplete = false;
         this.searching = false;
         this.iconReloadDashboard = true;
         this.sharedService.showError('Has ocurred a error', 'Possible causes: the network is offline');
-      });
+      }
     }
 
-    /*  console.log(this.walletService.currentWallet);
-      this.proximaxProvider.getTransactionsFromAccountId(this.walletService.currentAccount.publicAccount, id).toPromise().then(response => {
-        const data = [];
-        console.log(response);
-        console.log('-------------------------------------------');
-        this.searchTransactions = !(response.length < 25);
-        response.forEach(element => {
-          //Sets the data structure of the dashboard
-          const builderTransactions = this.transactionService.getStructureDashboard(element);
-          if (builderTransactions !== null) {
-            data.push(builderTransactions);
-          }
-        });
-
-        // Establishes confirmed transactions in the observable type variable
-        this.transactions = this.transactions.concat(data);
-        this.transactionService.setTransactionsConfirmed$(this.transactions);
-        this.iconReloadDashboard = false;
-        this.searching = false;
-        this.dashboardService.searchComplete = true;
-      }).catch(err => {
-        this.dashboardService.searchComplete = false;
-        this.searching = false;
-        this.iconReloadDashboard = true;
-        this.sharedService.showError('Has ocurred a error', 'Possible causes: the network is offline');
-        //console.log('This is error ----> ', err);
-      });*/
+    // Establishes confirmed transactions in the observable type variable
+    this.transactions = data; // this.transactions.concat(data);
+    this.transactionService.setTransactionsConfirmed$(this.transactions);
+    this.iconReloadDashboard = false;
+    this.searching = false;
+    this.dashboardService.searchComplete = true;
   }
 
   /**
