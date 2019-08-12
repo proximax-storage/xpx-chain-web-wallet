@@ -350,7 +350,7 @@ export class ServicesBoxComponent implements OnInit {
 
       // Message
       this.services.buildStructureService(
-        'Message',
+        'Messaging',
         true,
         'Send encrypted messages',
         'icon-messenger-green-16h-proximax-sirius-wallet.svg',
