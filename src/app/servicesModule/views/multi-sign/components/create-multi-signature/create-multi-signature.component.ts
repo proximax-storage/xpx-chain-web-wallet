@@ -4,7 +4,7 @@ import { AppConfig } from 'src/app/config/app.config';
 import { SharedService, ConfigurationForm } from 'src/app/shared/services/shared.service';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { WalletService } from 'src/app/wallet/services/wallet.service';
-import { Account, PublicAccount, ModifyMultisigAccountTransaction, Deadline, MultisigCosignatoryModification, UInt64, NetworkType, Address } from 'tsjs-xpx-chain-sdk';
+import { Account, PublicAccount, ModifyMultisigAccountTransaction, Deadline, MultisigCosignatoryModification, UInt64, NetworkType, Address, MultisigCosignatoryModificationType } from 'tsjs-xpx-chain-sdk';
 
 @Component({
   selector: 'app-create-multi-signature',
@@ -14,16 +14,19 @@ import { Account, PublicAccount, ModifyMultisigAccountTransaction, Deadline, Mul
 export class CreateMultiSignatureComponent implements OnInit {
 
   @BlockUI() blockUI: NgBlockUI;
-  accountToConvert: Account;
+  publicAccountToConvert: PublicAccount;
+
   blockSend: boolean;
   configurationForm: ConfigurationForm = {};
   createMultsignForm: FormGroup;
-  currentAccounts: any;
+  currentAccounts: any = [];
+  currentAccountToConvert: any;
   cosignatoryList: CosignatoryList[] = [];
   headElements: string[];
   modifyMultisigAccountTransactionObject: ModifyMultisigAccountTransactionObject;
   minApprovaMaxLength: number = 1;
   minApprovaMinLength: number = 0;
+  accountToConvert: Account;
 
 
   constructor(
@@ -35,12 +38,12 @@ export class CreateMultiSignatureComponent implements OnInit {
     this.headElements = ['Address', 'Action', 'Remove'];
     this.configurationForm = this.sharedService.configurationForm;
     this.blockSend = false;
-
     this.currentAccounts = []
   }
   ngOnInit() {
     this.createForm()
     this.subscribeValueChange();
+    this.getAccounts();
 
     // cuenta multi firma
     //9efe61fb49eea91fdfd89c80bae15b769c64e687917584473c823a6c0962ee90
@@ -65,11 +68,9 @@ export class CreateMultiSignatureComponent implements OnInit {
   createForm() {
     //Form create multisignature default
     this.createMultsignForm = this.fb.group({
-      privateKeyAccountMultisign: ['', [
-        Validators.required,
-        Validators.minLength(this.configurationForm.privateKey.minLength),
-        Validators.maxLength(this.configurationForm.privateKey.maxLength),
-        Validators.pattern('^(0x|0X)?[a-fA-F0-9]+$')]
+      selectAccount: ['', [
+        Validators.required
+      ]
       ],
       cosignatory: [''],
       minApprovalDelta: [1, [
@@ -77,7 +78,13 @@ export class CreateMultiSignatureComponent implements OnInit {
         Validators.maxLength(1)]],
       minRemovalDelta: [1, [
         Validators.required, Validators.minLength(1),
-        Validators.maxLength(1)]]
+        Validators.maxLength(1)]],
+      password: ['', [
+        Validators.required,
+        Validators.minLength(this.configurationForm.passwordWallet.minLength),
+        Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
+      ]
+      ],
     });
     this.validatorsCosignatory();
   }
@@ -88,9 +95,23 @@ export class CreateMultiSignatureComponent implements OnInit {
   * @memberof CreateMultiSignatureComponent
   */
   clearForm() {
-    this.createMultsignForm.get('privateKeyAccountMultisign').patchValue('');
-    this.createMultsignForm.get('cosignatory').patchValue('');
-    this.createMultsignForm.get('minApprovalDelta').patchValue(1);
+    this.createMultsignForm.get('selectAccount').patchValue('', { emitEvent: false });
+    this.createMultsignForm.get('cosignatory').patchValue('', { emitEvent: false });
+    this.createMultsignForm.get('minRemovalDelta').patchValue(1, { emitEvent: false });
+
+  }
+
+  /**
+ *
+ *
+ * @memberof CreateMultiSignatureComponent
+ */
+  clearData() {
+    // this.createMultsignForm.get('selectAccount').patchValue('');
+    this.createMultsignForm.get('cosignatory').patchValue('', { emitEvent: false });
+    this.createMultsignForm.get('minApprovalDelta').patchValue(1, { emitEvent: false });
+    this.createMultsignForm.get('minRemovalDelta').patchValue(1, { emitEvent: false });
+    this.cosignatoryList = []
   }
 
   /**
@@ -114,47 +135,89 @@ export class CreateMultiSignatureComponent implements OnInit {
     return validation;
   }
 
+
+  /**
+   *
+   * Get accounts wallet
+   * @memberof CreateMultiSignatureComponent
+   */
+  getAccounts() {
+
+    this.walletService.currentWallet.accounts.forEach(element => {
+      this.currentAccounts.push({
+        label: element.name,
+        value: element
+      });
+    });
+  }
+
   /**
   *
   *
   * @memberof CreateMultiSignatureComponent
   */
   convertIntoMultisigTransaction() {
+    this.blockSend = true;
+    let common: any = { password: this.createMultsignForm.get("password").value };
 
-    this.modifyMultisigAccountTransactionObject = {
-      modifications: this.getCosignatoryList()
-    }
-    this.modifyMultisigAccountTransactionObject = {
-      deadline: Deadline.create(),
-      accountToConvert: this.accountToConvert,
-      modifications: this.cosignatoryList,
-      minApprovalDelta: this.createMultsignForm.get('minApprovalDelta').value,
-      minRemovalDelta: this.createMultsignForm.get('minRemovalDelta').value
-    }
+    if (this.walletService.decrypt(common, this.currentAccountToConvert)) {
 
-    if (this.createMultsignForm.valid && this.cosignatoryList.length > 0) {
-      console.log("modifyMult", this.modifyMultisigAccountTransactionObject)
-    }
+      if (this.createMultsignForm.valid && this.cosignatoryList.length > 0) {
+        this.accountToConvert = Account.createFromPrivateKey(common.privateKey, this.currentAccountToConvert.network)
+        // common = '';
+        this.modifyMultisigAccountTransactionObject = {
+          deadline: Deadline.create(),
+          accountToConvert: this.accountToConvert,
+          modifications: this.multisigCosignatoryModification(this.cosignatoryList,
+            MultisigCosignatoryModificationType.Add),
+          minApprovalDelta: this.createMultsignForm.get('minApprovalDelta').value,
+          minRemovalDelta: this.createMultsignForm.get('minRemovalDelta').value,
+          networkType: this.currentAccountToConvert.network
+        }
+        const convertIntoMultisigTransaction = ModifyMultisigAccountTransaction.create(
+          this.modifyMultisigAccountTransactionObject.deadline,
+          this.modifyMultisigAccountTransactionObject.minApprovalDelta,
+          this.modifyMultisigAccountTransactionObject.minRemovalDelta,
+          this.modifyMultisigAccountTransactionObject.modifications,
+          this.modifyMultisigAccountTransactionObject.networkType);
 
+          console.log("convertIntoMultisigTransaction:",convertIntoMultisigTransaction)
+          this.blockSend = false;
+      }
+    } else {
+      this.blockSend = false;
+
+    }
   }
+
+  /**
+   * With a multisig cosignatory modification a cosignatory is added to or deleted from a multisig account.
+   *
+   * @memberof CreateMultiSignatureComponent
+   * @param {CosignatoryList}  cosignatoryList  - Cosignatory list.
+   * @param {MultisigCosignatoryModificationType} type  - type modification.
+   */
+  multisigCosignatoryModification(cosignatoryList: CosignatoryList[], type: MultisigCosignatoryModificationType): MultisigCosignatoryModification[] {
+    const cosignatory = []
+    for (let index = 0; index < cosignatoryList.length; index++) {
+      const element = cosignatoryList[index];
+      cosignatory.push(
+        new MultisigCosignatoryModification(
+          type,
+          cosignatoryList[index].publicAccount,
+        )
+      )
+    }
+    return cosignatory
+  }
+
   /**
   *
   *
   * @memberof CreateNamespaceComponent
+  * 
   */
   subscribeValueChange() {
-    // PrivateKeyAccountMultisign ValueChange
-    this.createMultsignForm.get('privateKeyAccountMultisign').valueChanges.subscribe(
-      next => {
-        if ((next !== null && next !== undefined)
-          && (this.createMultsignForm.get('privateKeyAccountMultisign').valid)) {
-
-          this.accountToConvert = Account.createFromPrivateKey(next, this.walletService.currentAccount.network)
-
-        }
-      }
-    );
-
     // Cosignatory ValueChange
     this.createMultsignForm.get('cosignatory').valueChanges.subscribe(
       next => {
@@ -165,7 +228,12 @@ export class CreateMultiSignatureComponent implements OnInit {
       }
     );
   }
-
+  selectAccount($event: Event) {
+    this.clearData()
+    const account: any = $event
+    this.currentAccountToConvert = account.value;
+    this.publicAccountToConvert = PublicAccount.createFromPublicKey(this.currentAccountToConvert.publicAccount.publicKey, this.currentAccountToConvert.network)
+  }
   /**
    * Change the form validator (cosignatory)
    * @memberof CreateMultiSignatureComponent
@@ -232,7 +300,7 @@ export class CreateMultiSignatureComponent implements OnInit {
       // if (!this.cosignatoryPubKey) return this._Alert.cosignatoryhasNoPubKey();
 
       // Multisig cannot be cosignatory
-      if (this.accountToConvert.address.plain() === cosignatory.address.plain())
+      if (this.publicAccountToConvert.address.plain() === cosignatory.address.plain())
         return this.sharedService.showError('Attention', 'A multisig account cannot be set as cosignatory');
 
       // Check presence in cosignatory List array
@@ -293,7 +361,7 @@ export interface ModifyMultisigAccountTransactionObject {
   accountToConvert?: Account;
   minApprovalDelta?: number;
   minRemovalDelta?: number;
-  modifications?: CosignatoryList[];
+  modifications?: MultisigCosignatoryModification[];
   networkType?: NetworkType,
   maxFee?: UInt64
 }
