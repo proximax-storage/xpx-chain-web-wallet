@@ -1,38 +1,23 @@
 <form [formGroup]="createMultsignForm" (ngSubmit)="convertIntoMultisigTransaction()">
     <div class="row">
+        <!-- FORM COSIGNATORY LIST -->
         <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mb-2rem">
+            <!--  ACCOUNT CONVERT -->
             <div class="row mt-1rem">
-                <!-- <div class="col-11 mx-auto">
-                    <div class="md-form form-sm">
-
-                        <input [maxlength]="configurationForm.privateKey.maxLength" [minlength]="configurationForm.privateKey.minLength"
-                            formControlName="privateKeyAccountMultisign" required mdbInputDirective mdbValidate
-                            [validateSuccess]="true" [validateError]="true" type="text" id="privateKeyAccountMultisign"
-                            class="form-control form-control-sm input-border" placeholder="Account to convert private key"
-                            onkeyup="javascript:this.value=this.value.toLowerCase();">
-
-                        <mdb-error *ngIf="validateInput('privateKeyAccountMultisign', '').invalid && (validateInput('privateKeyAccountMultisign', '').dirty || validateInput('privateKeyAccountMultisign', '').touched)">
-                            <span>Input invalid</span>
-                        </mdb-error>
-                    </div>
-                </div> -->
-
-
-
-
                 <div class="col-11  mx-auto">
-
                     <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" class="selectWrapper"
-                        [items]="currentAccounts" formControlName="privateKeyAccountMultisign" bindLabel="value.name"
-                        bindValue="value" placeholder="Account to convert private key">
+                        [items]="currentAccounts" formControlName="selectAccount" bindLabel="label" bindValue="value"
+                        placeholder="Account to convert private key" (change)="selectAccount($event)">
                     </ng-select>
-                    <mdb-error class="mt-1rem ml-1rem" *ngIf="validateInput('privateKeyAccountMultisign').invalid && (validateInput('privateKeyAccountMultisign').dirty || validateInput('privateKeyAccountMultisign').touched)">
+
+                    <!-- VALIDATION -->
+                    <mdb-error class="mt-1rem ml-1rem" *ngIf="validateInput('selectAccount').invalid && (validateInput('selectAccount').dirty || validateInput('selectAccount').touched)">
                         <span>Input invalid</span>
                     </mdb-error>
 
                 </div>
-
             </div>
+            <!-- COSIGNATORY -->
             <div class="row">
                 <div class="col-11 mx-auto">
                     <div class="md-form form-sm">
@@ -48,7 +33,7 @@
                     </div>
                 </div>
             </div>
-            <!-- Add mosaics -->
+            <!-- ADD MOSAICS -->
             <div class="row mt-1rem">
                 <div class="col-12 d-flex justify-content-center" style="background-image: url(assets/images/img/horizontal-line-background.jpg);">
                     <button mdbBtn type="button" rounded="true" mdbWavesEffect class="background-btn-inverse pl-2rem pr-2rem"
@@ -57,6 +42,17 @@
                     </button>
                 </div>
             </div>
+
+            <!-- FEE -->
+            <div class="row ml-01rem">
+                <div class="col-11 col-md-10 col-lg-8 mx-auto">
+                    <div class="box-grey">
+                        <span>Fee: 0.000000 XPX</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MIN APPROVAL DEELTA -->
             <div class="row">
                 <div class="col-11 mx-auto">
                     <div class="md-form form-sm">
@@ -72,6 +68,7 @@
                     </div>
                 </div>
             </div>
+            <!-- MIN REMOVAL DEELTA -->
             <div class="row">
                 <div class="col-11 mx-auto">
                     <div class="md-form form-sm">
@@ -87,17 +84,31 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
 
+            <!-- PASSWORD -->
+            <div class="row">
+                <div class="col-11 mx-auto">
+                    <div class="md-form form-sm">
+                        <input [maxlength]="configurationForm.passwordWallet.maxLength" [minlength]="configurationForm.passwordWallet.minLength"
+                            formControlName="password" required mdbInputDirective mdbValidate [validateSuccess]="true"
+                            [validateError]="true" type="password" id="password" class="form-control form-control-sm input-border"
+                            placeholder="Enter password">
+
+                        <!-- VALIDATION -->
+                        <mdb-error *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
+                            <span>Input invalid</span>
+                        </mdb-error>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- TABLE COSIGNATORY LIST -->
+        <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
             <div class="row mt-2rem">
                 <div class="col-12 mx-auto">
                     <div class="table-responsive table-hover">
-
-
                         <table mdbTable #tableEl="mdbTable" id="mdbTable" striped="true" class="table table-hover table-bordered table-hover table-sm z-depth-0"
                             cellspacing="0" width="100%" borderless="true">
-
                             <thead>
                                 <tr class="header-backg">
                                     <ng-container *ngFor="let head of headElements; let i = index">
@@ -113,22 +124,17 @@
                                         <td class="text-center" style="cursor: pointer;" (click)="deleteCosignatory(cosign.id)">(X)</td>
                                     </tr>
                                 </ng-container>
-
+                                <ng-container *ngIf="cosignatoryList.length === 0">
+                                        <tr>
+                                          <td colspan="3" class="txt-a-center">nothing to show</td>
+                                        </tr>
+                                      </ng-container>
                             </tbody>
                         </table>
-
                     </div>
                 </div>
             </div>
-
-
-
-
-
-
         </div>
-
-
     </div>
     <!-- BUTTONS -->
     <div class="row">
