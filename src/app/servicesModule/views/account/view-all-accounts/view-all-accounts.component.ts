@@ -37,7 +37,7 @@ export class ViewAllAccountsComponent implements OnInit {
   ngOnDestroy(): void {
     // console.log('----ngOnDestroy---');
     this.subscription.forEach(subscription => {
-      console.log(subscription);
+      // console.log(subscription);
       subscription.unsubscribe();
     });
   }
