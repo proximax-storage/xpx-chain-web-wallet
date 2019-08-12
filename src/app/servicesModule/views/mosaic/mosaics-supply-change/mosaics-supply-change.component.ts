@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
-import { MosaicSupplyType, UInt64, SignedTransaction } from 'tsjs-xpx-chain-sdk';
+import { MosaicSupplyType, UInt64, SignedTransaction, MosaicId } from 'tsjs-xpx-chain-sdk';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { SharedService, ConfigurationForm } from '../../../../shared/services/shared.service';
 import { MosaicService, MosaicsStorage } from '../../../../servicesModule/services/mosaic.service';
@@ -180,7 +180,7 @@ export class MosaicsSupplyChangeComponent implements OnInit {
         );
         const durationBlock = new UInt64([
           mosaicsInfoSelected.mosaicInfo['properties']['duration']['lower'],
-          mosaicsInfoSelected.mosaicInfo.supply['higher']
+          mosaicsInfoSelected.mosaicInfo['properties']['duration']['higher']
         ]);
 
         const durationDays = this.transactionService.calculateDuration(durationBlock);

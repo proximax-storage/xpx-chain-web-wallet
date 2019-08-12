@@ -62,7 +62,9 @@
 
             <div class="row">
               <div class="col-12 col-sm-10 col-md-9 col-lg-10 col-xl-10 pt-05rem w-b-a fw-600">
-                Balance {{currentWallet.accounts[x].balance}} XPX
+                  <img *ngIf="currentWallet.accounts[x].default" class="icono" src="assets/images/img/icon-proximax-white.svg" width="20" alt="">
+                  <img *ngIf="!currentWallet.accounts[x].default" class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20" alt="">
+                  &nbsp;Balance {{currentWallet.accounts[x].balance}} XPX
                 <!-- <img class="h-1-5em ml-03rem" [ngClass]="{'iconInactive':currentWallet.accounts[x].default}" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" alt=""><br> -->
               </div>
             </div>

@@ -82,8 +82,11 @@
                 <span class="font-small d-flex">{{address}}</span>
               </div>
               <div class="col-2 text-right">
-                <i mdbWavesEffect (click)="copyMessage('Address')" ngxClipboard [cbContent]="address"
-                  class="fa fa-copy cursor-p"></i>
+                <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="cursor-p"
+                  alt="Copy" width="20" (click)="copyMessage('Address')" ngxClipboard
+                  [cbContent]="address">
+                <!-- <i mdbWavesEffect (click)="copyMessage('Address')" ngxClipboard [cbContent]="address"
+                  class="fa fa-copy cursor-p"></i> -->
               </div>
             </div>
           </div>
@@ -99,8 +102,11 @@
                   <span class="font-small d-flex ">{{ publicKey }}</span>
                 </div>
                 <div class="col-2 text-right">
-                  <i mdbWavesEffect (click)="copyMessage('Public Key')" ngxClipboard [cbContent]="publicKey"
-                    class="fa fa-copy cursor-p"></i>
+                  <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="cursor-p"
+                    alt="Copy" width="20" (click)="copyMessage('Public Key')" ngxClipboard
+                    [cbContent]="publicKey">
+                  <!-- <i mdbWavesEffect (click)="copyMessage('Public Key')" ngxClipboard [cbContent]="publicKey"
+                    class="fa fa-copy cursor-p"></i> -->
                 </div>
               </div>
             </div>
@@ -139,8 +145,11 @@
                   <span class="font-small d-flex">{{ privateKey }}</span>
                 </div>
                 <div class="col-2 text-right">
-                  <i mdbWavesEffect (click)="copyMessage('Private Key')" ngxClipboard [cbContent]="privateKey"
-                    class="fa fa-copy cursor-p"></i>
+                  <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="cursor-p"
+                    alt="Copy" width="20" (click)="copyMessage('Private Key')" ngxClipboard
+                    [cbContent]="privateKey">
+                  <!-- <i mdbWavesEffect (click)="copyMessage('Private Key')" ngxClipboard [cbContent]="privateKey"
+                    class="fa fa-copy cursor-p"></i> -->
                 </div>
               </div>
             </div>
