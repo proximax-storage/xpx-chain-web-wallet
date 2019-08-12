@@ -81,7 +81,15 @@ export class CreateTransferComponent implements OnInit {
     this.createFormTransfer();
     this.subscribeValue();
     this.booksAddress();
-    this.changeSender(this.walletService.currentAccount);
+
+    this.subscribe['accountInfo'] = this.walletService.getAccountsInfo$().subscribe(
+      next => {
+        // console.log(next);
+        if(next){
+          this.changeSender(this.walletService.currentAccount);
+        }
+      }
+    );
 
     this.mosaicXpx = {
       id: environment.mosaicXpxInfo.id,
@@ -98,7 +106,6 @@ export class CreateTransferComponent implements OnInit {
     });
 
     this.subscribe['block'] = this.dataBridge.getBlock().subscribe(next => {
-      // console.log(next);
       this.currentBlock = next;
     });
   }
@@ -170,8 +177,10 @@ export class CreateTransferComponent implements OnInit {
 
     // this.updateAccountInfo();
     // this.getMosaics(accountToSend);
-    const accountInfo = this.walletService.filterAccountInfo(this.sender.name).accountInfo;
-    this.buildCurrentAccountInfo(accountInfo);
+    const accountFiltered = this.walletService.filterAccountInfo(this.sender.name);
+    if(accountFiltered) {
+      this.buildCurrentAccountInfo(accountFiltered.accountInfo);
+    }
   }
 
   /**
@@ -297,13 +306,8 @@ export class CreateTransferComponent implements OnInit {
 
           this.allMosaics = mosaicsSelect;
           this.selectOtherMosaics = mosaicsSelect;
-          // this.ngxService.stop();
         }
-      } else {
-        // this.ngxService.stop();
       }
-    } else {
-      // this.ngxService.stop();
     }
   }
 
@@ -554,12 +558,7 @@ export class CreateTransferComponent implements OnInit {
       decimal: '.',
       precision: '6'
     };
-    this.selectOtherMosaics = [{
-      value: "0",
-      label: "Select mosaic",
-      selected: true,
-      disabled: true
-    }];
+    this.selectOtherMosaics = [];
     this.showContacts = false;
     this.subscribe = ['accountInfo', 'transactionStatus', 'char', 'block'];
     this.title = 'Make a transfer';
