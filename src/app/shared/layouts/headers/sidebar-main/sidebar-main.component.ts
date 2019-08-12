@@ -57,10 +57,8 @@ export class SidebarMainComponent implements OnInit {
 
     // BALANCE
     this.subscriptions['balance'] = this.transactionService.getBalance$().subscribe(next => {
-      const currentDefault = this.walletService.getAccountDefault(this.walletService.current);
       this.vestedBalance = `Balance ${next} XPX`;
     }, error => {
-      const currentDefault = this.walletService.getAccountDefault(this.walletService.current);
       this.vestedBalance = `Balance 0.000000 XPX`;
     });
 
@@ -79,11 +77,6 @@ export class SidebarMainComponent implements OnInit {
         'default', 'Services', '', '', false, `/${AppConfig.routes.service}`, true, {}, false
       )
     }
-
-
-    // this.itemsHeader = {
-    //   signout: this.sharedService.buildHeader('default', 'LOG OUT', '', '', false, `/${AppConfig.routes.home}`, false, {}, false),
-    // }
   }
 
   ngOnDestroy(): void {
@@ -125,6 +118,10 @@ export class SidebarMainComponent implements OnInit {
    * @memberof HeaderComponent
    */
   logOut() {
+    this.walletService.accountsInfo = [];
+    this.walletService.accountsInfo = [];
+    this.walletService.currentAccount = null;
+    this.walletService.currentWallet = null;
     this.dashboardService.processComplete = false;
     this.authService.setLogged(false);
     this.authService.destroyNodeSelected();

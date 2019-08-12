@@ -1,12 +1,13 @@
 import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectorRef, HostListener, Inject } from '@angular/core';
 import { MdbTableDirective } from 'ng-uikit-pro-standard';
 import { DOCUMENT } from '@angular/common';
-import { Address } from 'tsjs-xpx-chain-sdk';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 import { DashboardService } from '../../services/dashboard.service';
-import { TransactionsInterface, TransactionsService } from 'src/app/transfer/services/transactions.service';
-import { WalletService } from 'src/app/wallet/services/wallet.service';
-import { SharedService } from 'src/app/shared/services/shared.service';
+import { TransactionsInterface, TransactionsService } from '../../../transfer/services/transactions.service';
+import { WalletService, AccountsInterface } from '../../../wallet/services/wallet.service';
+import { SharedService } from '../../../shared/services/shared.service';
+import { environment } from '../../../../environments/environment';
+import { AppConfig } from 'src/app/config/app.config';
 
 @Component({
   selector: 'app-dashboard',
@@ -17,6 +18,13 @@ import { SharedService } from 'src/app/shared/services/shared.service';
 
 export class DashboardComponent implements OnInit, OnDestroy {
 
+
+  currentAccount: AccountsInterface = null;
+  nameAccount = '';
+  typeTransactions: any;
+  vestedBalance = '';
+
+  // --------------------------------------------------------------------------
   @ViewChild(MdbTableDirective, { static: true }) mdbTable: MdbTableDirective;
   @HostListener('input') oninput() {
     this.searchItems();
@@ -24,7 +32,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   previous: any = [];
   cantTransactions = 0;
   // myAddress: Address = null;
-  myAddress: string;
   cantConfirmed = 0;
   cantUnconfirmed = 0;
   confirmedSelected = true;
@@ -40,14 +47,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
     'getAllTransactions',
     'transactionsConfirmed'
   ];
-  typeTransactions: any;
   transactionsConfirmed: TransactionsInterface[] = [];
   transactionsUnconfirmed: TransactionsInterface[] = [];
   unconfirmedSelected = false;
-  vestedBalance: string;
   searchTransaction = '';
   viewDashboard = true;
   transactions: TransactionsInterface[] = [];
+  viewDetailsAccount = `/${AppConfig.routes.account}/`;
   windowScrolled: boolean;
   nameWallet = '';
 
@@ -59,30 +65,24 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private sharedService: SharedService,
     private proximaxProvider: ProximaxProvider,
     @Inject(DOCUMENT) private document: Document
-  ) {
-    this.myAddress = this.walletService.address.pretty();
-  }
+  ) { }
 
 
   ngOnInit() {
-    // NAME ACCOUNT
-    this.subscriptions['nameAccount'] = this.walletService.getNameAccount$().subscribe(next => {
-      this.nameWallet = next.name;
-    });
-
-    this.typeTransactions = this.transactionService.arraTypeTransaction;
     this.dashboardService.incrementViewDashboard();
     this.dashboardService.subscribeLogged();
+    this.currentAccount = Object.assign({}, this.walletService.getCurrentAccount());
+    this.currentAccount.address = this.proximaxProvider.createFromRawAddress(
+      this.currentAccount.address).pretty();
+    this.typeTransactions = this.transactionService.getTypeTransactions();
+    this.vestedBalance = `0.000000 ${environment.mosaicXpxInfo.coin}`;
+    this.balance();
     this.subscribeTransactionsConfirmedUnconfirmed();
     this.getRecentTransactions();
-    this.balance();
   }
 
   ngOnDestroy(): void {
-    // moment
-    this.transactionService.setTransactionsConfirmed$([]);
-
-    //
+    // this.transactionService.setTransactionsConfirmed$([]);
     this.subscriptions.forEach(element => {
       if (this.subscriptions[element] !== undefined) {
         this.subscriptions[element].unsubscribe();
@@ -93,6 +93,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
   ngAfterViewInit() {
     this.cdRef.detectChanges();
   }
+
+
+  //-----------------------------------------------
 
   /**
    * Get balance from account
@@ -126,30 +129,33 @@ export class DashboardComponent implements OnInit, OnDestroy {
    */
   getRecentTransactions(reload = false) {
     this.iconReloadDashboard = true;
-    // Update balance
-    this.transactionService.updateBalance();
     // Validate if it is the first time the dashboard is loaded or if you click on the reload button
-    //if (this.dashboardService.getCantViewDashboard() === 1 || reload) {
+    if (this.dashboardService.getCantViewDashboard() === 1 || reload) {
       this.searching = true;
       this.iconReloadDashboard = false;
       this.loadTransactions();
-   /* } else {
+    } else {
       this.iconReloadDashboard = (this.dashboardService.searchComplete === false) ? true : false;
       this.searching = false;
-    }*/
+    }
   }
 
   /**
    * Method to get more transactions when scrolling in the screen
    */
   onScroll() {
-    if (this.searchTransactions && !this.searching) {
-      this.searching = true;
-      const lastTransactionId = (this.transactions.length > 0) ? this.transactions[this.transactions.length - 1].data.transactionInfo.id : null;
-      this.loadTransactions(lastTransactionId);
-    }
+    /*  if (this.searchTransactions && !this.searching) {
+        this.searching = true;
+        const lastTransactionId = (this.transactions.length > 0) ? this.transactions[this.transactions.length - 1].data.transactionInfo.id : null;
+        this.loadTransactions(lastTransactionId);
+      }*/
   }
 
+  /**
+   *
+   *
+   * @memberof DashboardComponent
+   */
   @HostListener("window:scroll", [])
   onWindowScroll() {
     if (window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop > 100) {
@@ -164,32 +170,37 @@ export class DashboardComponent implements OnInit, OnDestroy {
    * Method to load transactions by public account.
    * @param {string} id Id of the transaction to start the next search.
    */
-  loadTransactions(id = null) {
-    this.transactions = (id) ? this.transactions : [];
-    this.proximaxProvider.getTransactionsFromAccountId(this.walletService.currentAccount.publicAccount, id).toPromise().then(response => {
-      this.searchTransactions = !(response.length < 25);
-      const data = [];
-      response.forEach(element => {
-        //Sets the data structure of the dashboard
-        const builderTransactions = this.transactionService.getStructureDashboard(element);
-        if (builderTransactions !== null) {
-          data.push(builderTransactions);
-        }
-      });
+  async loadTransactions(id: any = null) {
+    // this.transactions = (id) ? this.transactions.slice(0) : [];
+    const data = this.transactions.slice(0);
+    for (let account of this.walletService.currentWallet.accounts) {
+      try {
+        const transactions = await this.proximaxProvider.getTransactionsFromAccountId(account.publicAccount, id).toPromise();
+        transactions.forEach(element => {
+          //Sets the data structure of the dashboard
+          const builderTransactions = this.transactionService.getStructureDashboard(element);
+          if (builderTransactions !== null) {
+            data.push(builderTransactions);
+          }
+        });
 
-      // Establishes confirmed transactions in the observable type variable
-      this.transactions = this.transactions.concat(data);
-      this.transactionService.setTransactionsConfirmed$(this.transactions);
-      this.iconReloadDashboard = false;
-      this.searching = false;
-      this.dashboardService.searchComplete = true;
-    }).catch(err => {
-      this.dashboardService.searchComplete = false;
-      this.searching = false;
-      this.iconReloadDashboard = true;
-      this.sharedService.showError('Has ocurred a error', 'Possible causes: the network is offline');
-      //console.log('This is error ----> ', err);
-    });
+        this.transactions = data;
+        this.cantConfirmed = this.transactions.length;
+        this.cantTransactions = this.cantConfirmed;
+      } catch (error) {
+        this.dashboardService.searchComplete = false;
+        this.searching = false;
+        this.iconReloadDashboard = true;
+        this.sharedService.showError('Has ocurred a error', 'Possible causes: the network is offline');
+      }
+    }
+
+    // Establishes confirmed transactions in the observable type variable
+    this.transactions = data; // this.transactions.concat(data);
+    this.transactionService.setTransactionsConfirmed$(this.transactions);
+    this.iconReloadDashboard = false;
+    this.searching = false;
+    this.dashboardService.searchComplete = true;
   }
 
   /**

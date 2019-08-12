@@ -116,6 +116,7 @@ export class ImportWalletComponent implements OnInit {
           address: wallet.address['address'],
           byDefault: true,
           encrypted: wallet.encryptedPrivateKey.encryptedKey,
+          firstAccount: true,
           iv: wallet.encryptedPrivateKey.iv,
           network: wallet.network,
           nameAccount: 'Primary',

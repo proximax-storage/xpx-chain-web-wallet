@@ -92,7 +92,7 @@ export class CreateNamespaceComponent implements OnInit {
     const duration = this.namespaceForm.get('duration').value;
     this.fee = `0.000000 ${this.feeType}`;
     this.durationByBlock = this.transactionService.calculateDurationforDay(duration).toString();
-    this.validateRentalFee(this.rentalFee * duration);
+    this.validateRentalFee(this.rentalFee * parseFloat(this.durationByBlock));
     this.subscribeValueChange();
   }
 
@@ -462,18 +462,18 @@ export class CreateNamespaceComponent implements OnInit {
    * @memberof CreateNamespaceComponent
    */
   signedTransaction(common: any): SignedTransaction {
-    const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.network);
+    const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
     const namespaceName: string = this.namespaceForm.get('name').value;
     const duration: number = parseFloat(this.durationByBlock);
     // const duration: number = 20;
     if (this.typetransfer == 1) {
-      const registerRootNamespaceTransaction = this.proximaxProvider.registerRootNamespaceTransaction(namespaceName, this.walletService.network, duration)
+      const registerRootNamespaceTransaction = this.proximaxProvider.registerRootNamespaceTransaction(namespaceName, this.walletService.currentAccount.network, duration)
       const signedTransaction = account.sign(registerRootNamespaceTransaction);
       return signedTransaction;
     } else if (this.typetransfer == 2) {
       const rootNamespaceName = this.namespaceForm.get('namespaceRoot').value;
       const subnamespaceName = this.namespaceForm.get('name').value;
-      const registersubamespaceTransaction = this.proximaxProvider.registersubNamespaceTransaction(rootNamespaceName, subnamespaceName, this.walletService.network)
+      const registersubamespaceTransaction = this.proximaxProvider.registersubNamespaceTransaction(rootNamespaceName, subnamespaceName, this.walletService.currentAccount.network)
       const signedTransaction = account.sign(registersubamespaceTransaction);
       return signedTransaction;
     }
@@ -491,12 +491,12 @@ export class CreateNamespaceComponent implements OnInit {
         if (next !== null && next !== undefined && String(next) !== '0') {
           if (this.showDuration) {
             this.durationByBlock = this.transactionService.calculateDurationforDay(next).toString();
-            this.validateRentalFee(this.rentalFee * next);
+            this.validateRentalFee(this.rentalFee * parseFloat(this.durationByBlock));
           }
         } else {
           this.calculateRentalFee = '0.000000';
-          this.durationByBlock = '5760';
-          this.namespaceForm.get('duration').patchValue(1);
+          this.durationByBlock = '0';
+          this.namespaceForm.get('duration').patchValue('');
         }
       }
     );
@@ -504,11 +504,22 @@ export class CreateNamespaceComponent implements OnInit {
     // namespaceRoot ValueChange
     this.namespaceForm.get('namespaceRoot').valueChanges.subscribe(namespaceRoot => {
       if (namespaceRoot === null || namespaceRoot === undefined) {
-        this.namespaceForm.get('namespaceRoot').setValue('1');
+        this.namespaceForm.get('namespaceRoot').setValue('');
       } else {
-        this.showDuration = (namespaceRoot === '1') ? true : false;
-        this.typetransfer = (namespaceRoot === '1') ? 1 : 2;
-        this.validateRentalFee(this.rentalFee * this.namespaceForm.get('duration').value);
+        if (namespaceRoot === '') {
+          this.namespaceForm.get('duration').setValidators([Validators.required]);
+          this.showDuration = true;
+          this.typetransfer = 1;
+          this.durationByBlock = this.transactionService.calculateDurationforDay(this.namespaceForm.get('duration').value).toString();
+          this.validateRentalFee(this.rentalFee * parseFloat(this.durationByBlock));
+        } else {
+          this.namespaceForm.get('duration').clearValidators();
+          this.namespaceForm.get('duration').updateValueAndValidity();
+          this.showDuration = false;
+          this.typetransfer = 2;
+          this.calculateRentalFee = '10.000000';
+          this.validateRentalFee(parseFloat(this.calculateRentalFee));
+        }
       }
     });
 
@@ -526,16 +537,16 @@ export class CreateNamespaceComponent implements OnInit {
    * @memberof CreateNamespaceComponent
    */
   validateRentalFee(amount: number) {
-    if (this.namespaceForm.get('namespaceRoot').value === '1') {
-      const accountInfo = this.walletService.getAccountInfo();
+    const accountInfo = this.walletService.filterAccountInfo();
+    const filtered = accountInfo.accountInfo.mosaics.find(element => {
+      return element.id.toHex() === new MosaicId(this.proximaxProvider.mosaicXpx.mosaicId).toHex();
+    });
+    console.log('Este es el monto', amount);
+
+
+    if (this.namespaceForm.get('namespaceRoot').value === '') {
       if (accountInfo !== undefined && accountInfo !== null && Object.keys(accountInfo).length > 0) {
-        if (accountInfo.mosaics.length > 0) {
-          const filtered = accountInfo.mosaics.find(element => {
-            return element.id.toHex() === new MosaicId(this.proximaxProvider.mosaicXpx.mosaicId).toHex();
-          });
-
-          // console.log(filtered.id.toHex());
-
+        if (accountInfo.accountInfo.mosaics.length > 0) {
           const invalidBalance = filtered.amount.compact() < amount;
           const mosaic = this.mosaicServices.filterMosaic(filtered.id);
           // console.log('---mosaic---', mosaic);
@@ -559,7 +570,9 @@ export class CreateNamespaceComponent implements OnInit {
         }
       }
     } else {
-      this.calculateRentalFee = '0.000000';
+      console.log('No validate', amount);
+
+      this.calculateRentalFee = '10.000000';
       this.insufficientBalance = false;
       this.inputBlocked = false;
       this.namespaceForm.controls['name'].enable();

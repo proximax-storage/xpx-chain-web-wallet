@@ -42,7 +42,7 @@ export class MosaicsSupplyChangeComponent implements OnInit {
   ;
   mosaicsInfo: any[];
   divisibility: number = 0;
-  duration: string = '0 days';
+  duration: string = '() 0 days';
   supply: string = '0';
   blockButton: boolean = false;
   levyMutable: boolean = false;
@@ -92,7 +92,8 @@ export class MosaicsSupplyChangeComponent implements OnInit {
           element.mosaicInfo.owner.address['networkType']
         );
 
-        const isOwner = (addressOwner.pretty() === this.walletService.address.pretty()) ? true : false;
+        const currentAccount  = Object.assign({}, this.walletService.getCurrentAccount());
+        const isOwner = (addressOwner.pretty() === this.proximaxProvider.createFromRawAddress(currentAccount.address).pretty()) ? true : false;
         const durationMosaic = new UInt64([
           element.mosaicInfo['properties']['duration']['lower'],
           element.mosaicInfo['properties']['duration']['higher']
@@ -177,12 +178,14 @@ export class MosaicsSupplyChangeComponent implements OnInit {
             mosaicsInfoSelected.mosaicInfo.supply['higher']
           ]), mosaicsInfoSelected.mosaicInfo
         );
-        this.duration = this.transactionService.calculateDuration(
-          new UInt64([
-            mosaicsInfoSelected.mosaicInfo['properties']['duration']['lower'],
-            mosaicsInfoSelected.mosaicInfo.supply['higher']
-          ])
-        );
+        const durationBlock = new UInt64([
+          mosaicsInfoSelected.mosaicInfo['properties']['duration']['lower'],
+          mosaicsInfoSelected.mosaicInfo.supply['higher']
+        ]);
+
+        const durationDays = this.transactionService.calculateDuration(durationBlock);
+
+        this.duration = `(${durationBlock.compact()}) ${durationDays}`;
 
         /*console.log('------------- this.supply ---------', this.supply);
         console.log('------------- this.divisibility ---------', this.divisibility);
@@ -308,14 +311,18 @@ export class MosaicsSupplyChangeComponent implements OnInit {
         privateKey: ''
       }
       if (this.walletService.decrypt(common)) {
-        const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.network);
+        const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
+
+        const quatityZeros = this.transactionService.addZeros(this.divisibility);
+        const mosaicSupply = parseInt(`${this.formMosaicSupplyChange.get('deltaSupply').value}${quatityZeros}`);
+
         const mosaicSupplyChangeTransaction = this.proximaxProvider.mosaicSupplyChangeTransaction(
           this.formMosaicSupplyChange.get('parentMosaic').value,
-          this.formMosaicSupplyChange.get('deltaSupply').value,
+          mosaicSupply,
           this.formMosaicSupplyChange.get('mosaicSupplyType').value,
-          this.walletService.network
+          this.walletService.currentAccount.network
         )
-        
+
         const signedTransaction = account.sign(mosaicSupplyChangeTransaction);
         this.transactionSigned.push(signedTransaction);
         console.log(signedTransaction);

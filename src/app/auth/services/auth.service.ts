@@ -11,6 +11,7 @@ import { NamespacesService } from '../../servicesModule/services/namespaces.serv
 import { TransactionsService } from '../../transfer/services/transactions.service';
 import { ServicesModuleService } from '../../servicesModule/services/services-module.service';
 import { SharedService } from '../../shared/services/shared.service';
+import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
 
 @Injectable({
   providedIn: 'root'
@@ -33,7 +34,8 @@ export class AuthService {
     private namespaces: NamespacesService,
     private transactionService: TransactionsService,
     private serviceModuleService: ServicesModuleService,
-    private sharedService: SharedService
+    private sharedService: SharedService,
+    private proximaxProvider: ProximaxProvider
   ) {
     this.setLogged(false);
   }
@@ -44,6 +46,7 @@ export class AuthService {
    * @memberof LoginService
    */
   destroyNodeSelected() {
+    this.dataBridgeService.closeConenection();
     if (this.subscription['nodeSelected'] !== undefined) {
       this.subscription['nodeSelected'].unsubscribe();
     }
@@ -58,7 +61,7 @@ export class AuthService {
   * @memberof LoginService
   */
   login(common: any, wallet: any) {
-    const currentAccount = wallet.accounts.find(elm => elm.default === true);
+    const currentAccount = Object.assign({}, wallet.accounts.find(elm => elm.default === true));
     let isValid = false;
     if (currentAccount) {
       if (!wallet) {
@@ -68,7 +71,7 @@ export class AuthService {
         this.sharedService.showError('', 'Please, select a node.');
         this.route.navigate([`/${AppConfig.routes.selectNode}`]);
         isValid = false;
-      } else if (!this.walletService.decrypt(common, currentAccount, currentAccount.algo, currentAccount.network)) {
+      } else if (!this.walletService.decrypt(common, currentAccount)) {
         // Decrypt / generate and check primary
         isValid = false;
       } else if (currentAccount.network === NetworkType.MAIN_NET && currentAccount.algo === 'pass:6k' && common.password.length < 40) {
@@ -91,7 +94,10 @@ export class AuthService {
     // load services and components
     this.route.navigate([`/${AppConfig.routes.dashboard}`]);
     this.namespaces.buildNamespaceStorage();
-    this.serviceModuleService.changeBooksItem(this.walletService.address);
+    this.transactionService.getAccountsInfo(wallet.accounts);
+    this.serviceModuleService.changeBooksItem(
+      this.proximaxProvider.createFromRawAddress(currentAccount.address)
+    );
     return true;
   }
 

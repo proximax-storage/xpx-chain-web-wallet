@@ -14,7 +14,7 @@ export class ViewAllAccountsComponent implements OnInit {
 
   accountChanged: boolean = false;
   componentName = 'View all';
-  currentAccount: any = [];
+  currentWallet: any = [];
   moduleName = 'Accounts';
   objectKeys = Object.keys;
   routes = {
@@ -26,10 +26,10 @@ export class ViewAllAccountsComponent implements OnInit {
   constructor(
     private transactionService: TransactionsService,
     private walletService: WalletService
-  ) {}
+  ) { }
 
   ngOnInit() {
-    this.currentAccount = this.walletService.current;
+    this.load();
   }
 
   /**
@@ -42,12 +42,30 @@ export class ViewAllAccountsComponent implements OnInit {
     // this.sharedService.showSuccess('', 'Account changed to default');
     this.accountChanged = true;
     this.walletService.changeAsPrimary(nameSelected);
-    this.walletService.use(this.walletService.current);
-    this.currentAccount = this.walletService.current;
+    this.walletService.use(this.walletService.currentWallet);
+    this.load();
     this.transactionService.updateBalance();
     setTimeout(() => {
       this.accountChanged = false;
     }, 2000);
   }
 
+  /**
+   *
+   *
+   * @memberof ViewAllAccountsComponent
+   */
+  load() {
+    const currentWallet = Object.assign({}, this.walletService.currentWallet);
+    for (let element of currentWallet.accounts) {
+      const balance = this.walletService.filterAccountInfo(element.name);
+      const mosaicXPX = balance.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id);
+      if (mosaicXPX) {
+        element['balance'] = this.transactionService.amountFormatterSimple(mosaicXPX.amount.compact());
+      } else {
+        element['balance'] = '0.000000';
+      }
+    }
+    this.currentWallet = currentWallet;
+  }
 }

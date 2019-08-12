@@ -10,25 +10,28 @@
 
   <form [formGroup]="formTransfer" (ngSubmit)="sendTransfer()">
 
-    <!-- <ng-container *ngIf="accounts.length > 1">
-      <div class="row mb-2rem d-flex justify-content-center">
-        <ng-container *ngFor="let account of accounts; let i=index">
-          <div class="col-12 col-sm-6 col-md-3 col-xl-3 mt-1-5rem d-flex align-items-center mx-auto" mdbWavesEffect (click)="accountSelected(i, account)">
-            <div [ngClass]="[account.active ? 'z-depth-1 box-accounts box-accounts-active' : 'z-depth-1 box-accounts']" class="z-depth-1 box-accounts">
-                <span class="">{{account.name}}</span>
-            </div>
-          </div>
-        </ng-container>
-      </div>
-    </ng-container> -->
-
+    <!-- Accounts -->
     <ng-container *ngIf="accounts.length > 1">
-      <div class="row">
+      <div class="row mt-1rem mb-2rem">
         <div class="col-11 col-md-10 col-lg-8 mx-auto">
-          <ng-select mdbInputDirective mdbValidate formControlName="selectAccount" class="selectWrapper"
-            [items]="accounts" bindLabel="label" bindValue="value" placeholder="Select account"
-            (change)="selectAccount($event)">
-          </ng-select>
+          <span class="fs-1rem fw-600 line-h-1-2em color-blue-intermedio">Accounts...</span>
+        </div>
+        <div class="col-11 col-md-10 col-lg-8 mx-auto">
+          <ul class="nav nav-tabs fs-09rem h-account" id="myTab" role="tablist">
+            <ng-container *ngFor="let account of accounts; let i=index">
+              <!-- <li class="nav-item cursor-p" (click)="init(account.value)"> -->
+              <li class="nav-item cursor-p" (click)="changeSender(account.value)">
+                <span [ngClass]="[account.active ? 'nav-link active isActive' : 'nav-link']">
+                  {{account.value.name}} <i *ngIf="account.value.default" class="fa fa-star fs-1rem ml-10px cursor-p"
+                    aria-hidden="true" title="Default account"></i>
+                </span>
+
+              </li>
+            </ng-container>
+          </ul>
+        </div>
+        <div class="col-11 col-md-10 col-lg-8 mx-auto d-none d-md-block">
+          <span class="fs-08rem" style="color: #404040ad;">{{sender.address}}</span>
         </div>
       </div>
     </ng-container>
@@ -38,7 +41,7 @@
       <div class="row">
         <div class="col-11 col-md-10 col-lg-8 mx-auto">
           <ng-select mdbInputDirective mdbValidate formControlName="contact" class="selectWrapper"
-            [items]="listContacts" bindLabel="label" bindValue="value" placeholder="Select contact"
+            [items]="listContacts" bindLabel="label" bindValue="value" placeholder="Contact"
             (change)="selectContact($event)">
           </ng-select>
         </div>
@@ -49,7 +52,7 @@
     <div class="row">
       <div class="col-11 col-md-10 col-lg-8 mx-auto">
         <div class="row">
-          <div [ngClass]="[listContacts.length > 0 ? 'col-8 col-sm-9 col-md-10' : 'col-12']">
+          <div class="col-8 col-sm-9 col-md-10">
             <div class="md-form form-sm mt-1rem mb-0rem">
               <input mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
                 class="form-control form-control-sm input-border" style="border: 2px solid #2ba1b9;"
@@ -68,9 +71,10 @@
           </div>
 
           <!-- Show Contacts -->
-          <ng-container *ngIf="listContacts.length > 0">
+          <ng-container>
             <div class="col-4 col-sm-3 col-md-2 d-flex justify-content-center align-items-center pt-10px">
-              <div class="background-gray-icons p-12px bord-rad-25px cursor-p" (click)="showContacts = !showContacts"
+              <div [disabled]="listContacts.length === 0" class="background-gray-icons p-12px bord-rad-25px cursor-p"
+                (click)="showContacts = (listContacts.length > 0) ? !showContacts : showContacts"
                 [title]="(!showContacts) ? 'Show contacts': 'Hide contacts'">
                 <img class=" w-30px" [src]="(!showContacts) ?
                 'assets/images/img/icon-address-book-gray-28h-proximax-sirius-wallet.svg' :
@@ -116,7 +120,7 @@
                 mdbValidate [validateSuccess]="true" [maxlength]="configurationForm.amount.maxLength"
                 [validateError]="true" type="text" class="form-control form-control-sm input-border input-amount"
                 placeholder="Enter amount" formControlName="amountXpx">
-                <span class="label-i fw-600">SEND</span>
+              <span class="label-i fw-600">SEND</span>
 
               <mdb-error
                 *ngIf="validateInput('amountXpx').invalid && (validateInput('amountXpx').dirty || validateInput('amountXpx').touched)">
@@ -176,7 +180,7 @@
                       class="form-control form-control-sm input-border input-amount"
                       [(ngModel)]="boxOtherMosaics[i].amount" [ngModelOptions]="{standalone: true}"
                       (ngModelChange)="modelChanged($event, otherMosaic.id, i)" placeholder="Enter quantity">
-                      <span  class="label-i fw-600">SEND</span>
+                    <span class="label-i fw-600">SEND</span>
 
                     <!-- Message Error Insufficient balance-->
                     <mdb-error class="text-danger fw-500" *ngIf="otherMosaic.errorBalance">
@@ -194,15 +198,21 @@
 
 
     <!-- Add mosaics -->
-    <div class="row mt-1rem">
-      <div class="col-12 d-flex justify-content-center"
-        style="background-image: url(assets/images/img/horizontal-line-background.jpg);">
-        <button mdbBtn type="button" rounded="true" mdbWavesEffect class="background-btn-inverse pl-2rem pr-2rem"
-          size="md" (click)="pushedOtherMosaics()">
-          <span class="fs-1-2em text-cl-m fw-700">(+) Add Mosaics</span>
-        </button>
+    <ng-container>
+      <div class="row mt-1rem">
+        <div class="col-12 d-flex justify-content-center"
+          style="background-image: url(assets/images/img/horizontal-line-background.jpg);">
+          <button [disabled]="currentBlock === 0 || disabledBtnAddMosaic || selectOtherMosaics.length === 0" mdbBtn
+            type="button" rounded="true" mdbWavesEffect class="background-btn-inverse pl-2rem pr-2rem" size="md"
+            (click)="pushedOtherMosaics()">
+            <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
+              *ngIf="currentBlock === 0 && !disabledBtnAddMosaic"></span>
+            <span class="fs-1-2em text-cl-m fw-700">(+) Add Mosaics </span>
+          </button>
+        </div>
       </div>
-    </div>
+    </ng-container>
+
 
 
     <!-- FEE -->
@@ -269,3 +279,6 @@
     </div>
   </form>
 </div>
+
+<ngx-ui-loader>
+</ngx-ui-loader>

@@ -45,13 +45,13 @@ export class CreateMultiSignatureComponent implements OnInit {
     this.subscribeValueChange();
     this.getAccounts();
 
-    // cuenta multi firma    
+    // cuenta multi firma
     //9efe61fb49eea91fdfd89c80bae15b769c64e687917584473c823a6c0962ee90
     //TBFZFICV47MMUVYVHNOKJ3APF27SSW3AD6UV55OA
 
 
 
-    //consignatario 
+    //consignatario
     //ac54e59fec8f0e1770e6e7cb35f7ecf3d6ed7356b9f88787d15d3d9bd01f90f9
     // TCQXBGF4VMERBI5AMXJCS7RXWGCYVWOWSN6E2VIV
 
@@ -143,7 +143,7 @@ export class CreateMultiSignatureComponent implements OnInit {
    */
   getAccounts() {
 
-    this.walletService.current.accounts.forEach(element => {
+    this.walletService.currentWallet.accounts.forEach(element => {
       this.currentAccounts.push({
         label: element.name,
         value: element
@@ -160,7 +160,7 @@ export class CreateMultiSignatureComponent implements OnInit {
     this.blockSend = true;
     let common: any = { password: this.createMultsignForm.get("password").value };
 
-    if (this.walletService.decrypt(common, this.currentAccountToConvert, this.currentAccountToConvert.algo, this.currentAccountToConvert.network)) {
+    if (this.walletService.decrypt(common, this.currentAccountToConvert)) {
 
       if (this.createMultsignForm.valid && this.cosignatoryList.length > 0) {
         this.accountToConvert = Account.createFromPrivateKey(common.privateKey, this.currentAccountToConvert.network)
@@ -294,7 +294,7 @@ export class CreateMultiSignatureComponent implements OnInit {
     if (this.createMultsignForm.get('cosignatory').valid) {
       const cosignatory: PublicAccount = PublicAccount.createFromPublicKey(
         this.createMultsignForm.get('cosignatory').value,
-        this.walletService.network
+        this.walletService.currentAccount.network
       );
       // Cosignatory needs a public key
       // if (!this.cosignatoryPubKey) return this._Alert.cosignatoryhasNoPubKey();
@@ -328,7 +328,7 @@ export class CreateMultiSignatureComponent implements OnInit {
   /**
   * Set cosignatory list
   * @memberof CreateMultiSignatureComponent
-  * @param {CosignatoryList} [cosignatoryListParam] - list cosignatory 
+  * @param {CosignatoryList} [cosignatoryListParam] - list cosignatory
   */
   setCosignatoryList(cosignatoryListParam: CosignatoryList[]) {
     this.cosignatoryList = cosignatoryListParam;
@@ -339,7 +339,7 @@ export class CreateMultiSignatureComponent implements OnInit {
   /**
     * Get cosignatory list
     * @memberof CreateMultiSignatureComponent
-    * @return {CosignatoryList} list cosignatory 
+    * @return {CosignatoryList} list cosignatory
     */
   getCosignatoryList(): CosignatoryList[] {
     return this.cosignatoryList;

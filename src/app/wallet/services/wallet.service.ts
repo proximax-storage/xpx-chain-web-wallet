@@ -16,23 +16,26 @@ import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
 })
 export class WalletService {
 
-  address: Address;
-  algoData: {
+  // address: Address;
+  accountWalletCreated: {
     data: any;
     dataAccount: AccountsInterface;
     wallet: SimpleWallet
   } = null;
+
+  accountsInfo: AccountsInfoInterface[] = [];
+  currentAccount: AccountsInterface = null;
+  currentWallet: CurrentWalletInterface = null;
+
 
   /******************** */
 
   private currentAccountObs: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   private currentAccountObs$: Observable<any> = this.currentAccountObs.asObservable();
 
-  currentAccount: any;
-  current: any;
-  network: any = '';
-  algo: string;
-  publicAccount: PublicAccount;
+  //network: any = '';
+  // algo: string;
+  //publicAccount: PublicAccount;
   private accountInfo: AccountInfo;
   private accountInfoSubject: BehaviorSubject<AccountInfo> = new BehaviorSubject<AccountInfo>(null);
   private accountInfo$: Observable<AccountInfo> = this.accountInfoSubject.asObservable();
@@ -60,11 +63,11 @@ export class WalletService {
   buildAccount(data: any): AccountsInterface {
     const accounts: AccountsInterface = {
       'algo': 'pass:bip32',
-      'active': false,
       'address': data.address,
       'brain': true,
       'default': data.byDefault,
       'encrypted': data.encrypted,
+      'firstAccount': data.firstAccount,
       'iv': data.iv,
       'name': data.nameAccount,
       'network': data.network,
@@ -81,10 +84,10 @@ export class WalletService {
    * @memberof WalletService
    */
   changeAsPrimary(name: string) {
-    const myAccounts = Object.assign(this.current.accounts);
-    const othersWallet = this.getWalletStorage().filter(
+    const myAccounts: AccountsInterface[] = Object.assign(this.currentWallet.accounts);
+    const othersWallet: CurrentWalletInterface[] = this.getWalletStorage().filter(
       (element: any) => {
-        return element.name !== this.current.name;
+        return element.name !== this.currentWallet.name;
       }
     );
 
@@ -96,9 +99,9 @@ export class WalletService {
       }
     });
 
-    this.current.accounts = myAccounts;
+    this.currentWallet.accounts = myAccounts;
     othersWallet.push({
-      name: this.current.name,
+      name: this.currentWallet.name,
       accounts: myAccounts
     });
 
@@ -113,10 +116,10 @@ export class WalletService {
    * @memberof WalletService
    */
   changeName(oldName: string, newName: string) {
-    const myAccounts = Object.assign(this.current.accounts);
+    const myAccounts = Object.assign(this.currentWallet.accounts);
     const othersWallet = this.getWalletStorage().filter(
       (element: any) => {
-        return element.name !== this.current.name;
+        return element.name !== this.currentWallet.name;
       }
     );
 
@@ -126,13 +129,44 @@ export class WalletService {
       }
     });
 
-    this.current.accounts = myAccounts;
+    this.currentWallet.accounts = myAccounts;
     othersWallet.push({
-      name: this.current.name,
+      name: this.currentWallet.name,
       accounts: myAccounts
     });
 
     localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(othersWallet));
+  }
+
+  /**
+   * Destroy account info
+   *
+   * @memberof WalletService
+   */
+  destroyAccountInfo() {
+    this.accountInfo = undefined;
+    this.accountInfoSubject.next(null);
+  }
+
+  /**
+   *
+   *
+   * @returns {CurrentWalletInterface}
+   * @memberof WalletService
+   */
+  getCurrentWallet(): CurrentWalletInterface {
+    return this.currentWallet;
+  }
+
+
+  /**
+   *
+   *
+   * @returns {AccountsInterface}
+   * @memberof WalletService
+   */
+  getCurrentAccount(): AccountsInterface {
+    return this.currentAccount;
   }
 
   /**
@@ -166,17 +200,17 @@ export class WalletService {
    * @memberof WalletService
    */
   saveAccountStorage(nameWallet: string, accountsParams: any) {
-    const myAccounts = Object.assign(this.current.accounts);
+    const myAccounts = Object.assign(this.currentWallet.accounts);
     const othersWallet = this.getWalletStorage().filter(
       (element: any) => {
-        return element.name !== this.current.name;
+        return element.name !== this.currentWallet.name;
       }
     );
 
     myAccounts.push(accountsParams)
-    this.current.accounts = myAccounts;
+    this.currentWallet.accounts = myAccounts;
     othersWallet.push({
-      name: this.current.name,
+      name: this.currentWallet.name,
       accounts: myAccounts
     });
 
@@ -193,7 +227,7 @@ export class WalletService {
    * @memberof WalletService
    */
   saveDataWalletCreated(data: any, dataAccount: AccountsInterface, wallet: SimpleWallet) {
-    this.algoData = {
+    this.accountWalletCreated = {
       data: data,
       dataAccount: dataAccount,
       wallet: wallet
@@ -217,6 +251,46 @@ export class WalletService {
     localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorage));
   }
 
+  /**
+   *
+   *
+   * @memberof WalletService
+   */
+  setAccountsInfo(accountInfo: AccountsInfoInterface) {
+    this.accountsInfo.push(accountInfo);
+  }
+
+  /**
+   *
+   *
+   * @param {string} nameAccount
+   * @returns
+   * @memberof WalletService
+   */
+  filterAccountInfo(nameAccount?: string): AccountsInfoInterface {
+    if (nameAccount) {
+      return this.accountsInfo.find(next => next.name === nameAccount);
+    }else {
+      return this.accountsInfo.find(next => next.name === this.currentAccount.name);
+    }
+  }
+
+  /**
+   *
+   *
+   * @returns {AccountsInfoInterface[]}
+   * @memberof WalletService
+   */
+  getAccountsInfo(): AccountsInfoInterface[] {
+    return this.accountsInfo;
+  }
+
+  /**
+   *
+   *
+   * @param {*} currentAccount
+   * @memberof WalletService
+   */
   setCurrentAccount(currentAccount: any) {
     this.currentAccountObs.next(currentAccount);
   }
@@ -229,7 +303,7 @@ export class WalletService {
    */
   validateNameAccount(nameWallet: string) {
     const nameAccount = nameWallet;
-    const existAccount = Object.keys(this.current.accounts).find(elm => this.current.accounts[elm].name === nameAccount);
+    const existAccount = Object.keys(this.currentWallet.accounts).find(elm => this.currentWallet.accounts[elm].name === nameAccount);
     if (existAccount !== undefined) {
       return true;
     } else {
@@ -262,34 +336,6 @@ export class WalletService {
 
   /**************************************************************************************************/
 
-  /**
-   *
-   *
-   * @param {{ password: { length: number; }; }} common
-   * @param {*} wallet
-   * @returns
-   * @memberof WalletService
-   */
-  login(common: { password: { length: number; }; }, wallet: any) {
-    // console.log(wallet);
-    if (!wallet) {
-      this.sharedService.showError('', 'Dear user, the wallet is missing');
-      return false;
-    } else if (!this.nodeService.getNodeSelected()) {
-      this.sharedService.showError('', 'Please, select a node.');
-      this.route.navigate([`/${AppConfig.routes.selectNode}`]);
-      return false;
-    } else if (!this.decrypt(common, wallet.accounts[0], wallet.accounts[0].algo, wallet.accounts[0].network)) {
-      // Decrypt / generate and check primary
-      return false;
-    } else if (wallet.accounts[0].network === NetworkType.MAIN_NET && wallet.accounts[0].algo === 'pass:6k' && common.password.length < 40) {
-      this.sharedService.showError('', 'Dear user, the wallet is missing');
-    }
-
-    this.use(wallet);
-    return true;
-  }
-
 
   /**
    *Set a wallet as current
@@ -307,11 +353,10 @@ export class WalletService {
     // console.log(wallet);
 
     const x = this.getAccountDefault(wallet);
-    this.network = x.network;
     this.currentAccount = x;
-    this.algo = x.algo;
-    this.address = this.proximaxProvider.createFromRawAddress(x.address);
-    this.current = wallet;
+    // this.algo = x.algo;
+    // this.address = this.proximaxProvider.createFromRawAddress(x.address);
+    this.currentWallet = wallet;
     this.setCurrentAccount(this.currentAccount);
     return true;
   }
@@ -327,12 +372,10 @@ export class WalletService {
    * @memberof WalletService
    */
 
-  decrypt(common: any, account: any = '', algo: any = '', network: any = '') {
-    const acct = account || this.currentAccount;
-    const net = network || this.network;
-    const alg = algo || this.algo;
-    // Try to generate or decrypt key
-
+  decrypt(common: any, account: any = '') {
+    const acct = (account) ? account : this.currentAccount;
+    const net = (account) ? account.network : this.currentAccount.network;
+    const alg = (account) ? account.algo : this.currentAccount.algo;
     if (!crypto.passwordToPrivatekey(common, acct, alg)) {
       setTimeout(() => {
         this.sharedService.showError('', 'Invalid password');
@@ -352,7 +395,7 @@ export class WalletService {
     }
 
     //Get public account from private key
-    this.publicAccount = this.proximaxProvider.getPublicAccountFromPrivateKey(common.privateKey, net);
+    // this.publicAccount = this.proximaxProvider.getPublicAccountFromPrivateKey(common.privateKey, net);
     return true;
   }
 
@@ -397,9 +440,9 @@ export class WalletService {
    */
   filterAccount(byName: string, byDefault: boolean = null) {
     if (byDefault !== null) {
-      return this.current.accounts.find(elm => elm.default === true);
+      return this.currentWallet.accounts.find(elm => elm.default === true);
     } else {
-      return this.current.accounts.find(elm => elm.name === byName);
+      return this.currentWallet.accounts.find(elm => elm.name === byName);
     }
   }
 
@@ -410,9 +453,9 @@ export class WalletService {
    * @returns
    * @memberof WalletService
    */
-  getAccountInfo() {
+/*  getAccountInfo() {
     return this.accountInfo;
-  }
+  }*/
 
   /**
    *
@@ -432,18 +475,12 @@ export class WalletService {
    * @memberof WalletService
    */
   getAccountDefault(wallet: any) {
-    return wallet.accounts.find(x => x.default === true);
+    if (wallet) {
+      return wallet.accounts.find(x => x.default === true);
+    }
   }
 
-  /**
-   * Destroy account info
-   *
-   * @memberof WalletService
-   */
-  destroyAccountInfo() {
-    this.accountInfo = undefined;
-    this.accountInfoSubject.next(null);
-  }
+
 
   /**
    * Create a wallet array
@@ -472,17 +509,29 @@ export class WalletService {
 
 }
 
+export interface CurrentWalletInterface {
+  name: string;
+  accounts: AccountsInterface[],
+}
+
+
 export interface AccountsInterface {
-  brain: boolean;
-  active: boolean;
-  default: boolean;
+  address: any;
   algo: string;
+  brain: boolean;
+  default: boolean;
   encrypted: string;
+  firstAccount: boolean;
   iv: string;
-  address: string;
   name: string;
   network: number;
-  publicAccount: string;
+  publicAccount: PublicAccount;
+}
+
+
+export interface AccountsInfoInterface {
+  name: string;
+  accountInfo: AccountInfo;
 }
 
 export interface WalletAccountInterface {

@@ -19,7 +19,7 @@ import { TransactionsService } from 'src/app/transfer/services/transactions.serv
 export class RenewNamespaceComponent implements OnInit {
 
   moduleName = 'Namespaces & Sub-Namespaces';
-  componentName = 'RENEW';
+  componentName = 'EXTEND DURATION';
   backToService = `/${AppConfig.routes.service}`;
   renewNamespaceForm: FormGroup;
   configurationForm: ConfigurationForm = {};
@@ -67,16 +67,23 @@ export class RenewNamespaceComponent implements OnInit {
     this.durationByBlock = this.transactionService.calculateDurationforDay(duration).toString();
     this.validateRentalFee(this.rentalFee * duration);
     this.renewNamespaceForm.get('duration').valueChanges.subscribe(next => {
-      this.validateRentalFee(this.rentalFee * next);
-      this.durationByBlock = this.transactionService.calculateDurationforDay(next).toString();
+      if (next !== null && next !== undefined && String(next) !== '0') {
+        this.durationByBlock = this.transactionService.calculateDurationforDay(next).toString();
+        this.validateRentalFee(this.rentalFee * parseFloat(this.durationByBlock));
+      } else {
+        this.calculateRentalFee = '0.000000';
+        this.durationByBlock = '0';
+        this.renewNamespaceForm.get('duration').patchValue('');
+      }
     });
 
     // namespaceRoot ValueChange
     this.renewNamespaceForm.get('namespaceRoot').valueChanges.subscribe(namespaceRoot => {
       if (namespaceRoot === null || namespaceRoot === undefined) {
-        this.renewNamespaceForm.get('namespaceRoot').setValue('1');
+        this.renewNamespaceForm.get('namespaceRoot').setValue('');
       } else {
-        this.validateRentalFee(this.rentalFee * this.renewNamespaceForm.get('duration').value);
+        this.durationByBlock = this.transactionService.calculateDurationforDay(this.renewNamespaceForm.get('duration').value).toString();
+        this.validateRentalFee(this.rentalFee * parseFloat(this.durationByBlock));
       }
     });
   }
@@ -250,11 +257,11 @@ export class RenewNamespaceComponent implements OnInit {
    * @memberof RenewNamespaceComponent
    */
   signedTransaction(common: any): SignedTransaction {
-    const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.network);
+    const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
     const namespaceRootToRenovate: string = this.renewNamespaceForm.get('namespaceRoot').value;
     // const duration: number = parseFloat(this.durationByBlock);
-    const duration: number = 20;
-    const registernamespaceRootTransaction = this.proximaxProvider.registerRootNamespaceTransaction(namespaceRootToRenovate, this.walletService.network, duration);
+    const duration: number = parseFloat(this.durationByBlock);
+    const registernamespaceRootTransaction = this.proximaxProvider.registerRootNamespaceTransaction(namespaceRootToRenovate, this.walletService.currentAccount.network, duration);
     const signedTransaction = account.sign(registernamespaceRootTransaction);
     return signedTransaction;
   }
@@ -266,12 +273,12 @@ export class RenewNamespaceComponent implements OnInit {
    * @param {MosaicsStorage} mosaic
    * @memberof CreateNamespaceComponent
    */
-  validateRentalFee(amount: number) {    
+  validateRentalFee(amount: number) {
     console.log('This is a test', amount);
-    const accountInfo = this.walletService.getAccountInfo();
+    const accountInfo = this.walletService.filterAccountInfo();
     if (accountInfo !== undefined && accountInfo !== null && Object.keys(accountInfo).length > 0) {
-      if (accountInfo.mosaics.length > 0) {
-        const filtered = accountInfo.mosaics.find(element => {
+      if (accountInfo.accountInfo.mosaics.length > 0) {
+        const filtered = accountInfo.accountInfo.mosaics.find(element => {
           return element.id.toHex() === new MosaicId(this.proximaxProvider.mosaicXpx.mosaicId).toHex();
         });
 

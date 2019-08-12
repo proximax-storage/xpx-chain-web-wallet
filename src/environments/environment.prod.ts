@@ -6,13 +6,14 @@ export const environment = {
   production: true,
   version: '0.2.1',
   nameKeyNodeSelected: `sirius-wallet-node-selected`,
-  nameKeyWalletStorage: `sw-03`,
+  nameKeyWalletStorage: `sw-04`,
   nameKeyNodeStorage: `sirius-wallet-nodes`,
   protocol: `http`,
   protocolWs: `ws`,
   nodeDefault: 'bctestnet1.xpxsirius.io:3000',
   mosaicXpxInfo: {
     name: 'prx.xpx',
+    coin: 'XPX',
     id: '0dc67fbe1cad29e3',
     divisibility: 6
   },

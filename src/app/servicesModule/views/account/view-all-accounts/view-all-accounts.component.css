@@ -8,3 +8,9 @@
   font-weight: 700;
   color: #2ba1b9;
 }
+
+.iconInactive{
+  -webkit-filter: grayscale(100%) opacity(50%);
+    filter: grayscale(100%) opacity(50%);
+    color: gray;
+}

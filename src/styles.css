@@ -149,6 +149,10 @@ body {
   margin-left: .1rem;
 }
 
+.ml-03rem {
+  margin-left: .3rem;
+}
+
 .ml-10px {
   margin-left: 10px !important;
 }
@@ -341,6 +345,10 @@ body {
 }
 
 /************ HEIGHT *************************/
+.h-3em {
+  height: 3em;
+}
+
 .h-5em {
   height: 5em;
 }

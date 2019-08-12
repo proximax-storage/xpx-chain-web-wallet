@@ -124,11 +124,11 @@ export class MosaicService {
   async searchMosaicsFromAccountStorage$(): Promise<MosaicsStorage[]> {
     const mosaicFound = [];
     const mosaicsToSearch: MosaicId[] = [];
-    const accountInfo = this.walletService.getAccountInfo();
+    const accountInfo = this.walletService.filterAccountInfo();
     // console.log(accountInfo);
     if (accountInfo !== undefined) {
       // Map mosaics of an account
-      const mosaicsFromAccount: MosaicsStorage[] = await this.searchMosaics(accountInfo.mosaics.map(n => n.id));
+      const mosaicsFromAccount: MosaicsStorage[] = await this.searchMosaics(accountInfo.accountInfo.mosaics.map(n => n.id));
       // console.log(mosaicsFromAccount);
       // Valid if the account has tiles
       if (mosaicsFromAccount.length > 0) {

@@ -125,7 +125,7 @@ export class DetailAccountComponent implements OnInit {
   decryptWallet() {
     if (this.validatingForm.get('password').value !== '') {
       const common = { password: this.validatingForm.get('password').value };
-      if (this.walletService.decrypt(common)) {
+      if (this.walletService.decrypt(common, this.currenAccount)) {
         this.privateKey = common['privateKey'].toUpperCase();
         this.validatingForm.get('password').patchValue('')
         this.showPassword = false;
