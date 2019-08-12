@@ -422,45 +422,19 @@ export class TransactionsService {
    *
    * @memberof TransactionsService
    */
-  updateBalance2() {
-    const currentAccount = Object.assign({}, this.walletService.getCurrentAccount());
-    this.proximaxProvider.getAccountInfo(this.proximaxProvider.createFromRawAddress(currentAccount.address)).pipe(first()).subscribe(
-      (accountInfo: AccountInfo) => {
-        // console.log('AccountInfo ---> ', accountInfo);
-        if (accountInfo !== null && accountInfo !== undefined) {
-          //Search mosaics
-          this.mosaicService.searchMosaics(accountInfo.mosaics.map(next => next.id));
-          // Save account info returned in walletService
-          this.walletService.setAccountInfo(accountInfo);
-          if (accountInfo.mosaics.length > 0) {
-            accountInfo.mosaics.forEach(element => {
-              // If mosaicId is XPX, set balance in XPX
-              if (element.id.toHex() === this.proximaxProvider.mosaicXpx.mosaicId) {
-                // console.log('fure...');
-                this.setBalance$(element.amount.compact());
-              }
-            });
-          } else {
-            this.setBalance$("0.000000");
-          }
-        }
-      },
-      (_err: any) => {
-        this.setBalance$("0.000000");
-      }
-    );
-  }
-
-  /**
-   *
-   *
-   * @memberof TransactionsService
-   */
   updateBalance() {
     const accountsInfo = this.walletService.getAccountsInfo().slice(0);
     const currentAccount = Object.assign({}, this.walletService.getCurrentAccount());
     const dataBalance = accountsInfo.find(next => next.name === currentAccount.name);
-    const balance = dataBalance.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id).amount.compact();
+    let balance = 0.000000;
+    if(dataBalance.accountInfo) {
+      // console.log('----dataBalance----', dataBalance);
+      const x =  dataBalance.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id);
+      if(x) {
+        balance = x.amount.compact();
+      }
+    }
+
     this.setBalance$(balance);
   }
 
@@ -492,38 +466,33 @@ export class TransactionsService {
    * @returns {Promise<AccountInfo[]>}
    * @memberof TransactionsService
    */
-  async getAccountsInfo(accounts: AccountsInterface[]): Promise<AccountInfo[]> {
-    try {
-      const accountsInfo = [];
-      for (let element of accounts) {
-        this.proximaxProvider.getAccountInfo(this.proximaxProvider.createFromRawAddress(element.address)).subscribe(
-          next => {
-            const mosaics = next.mosaics.slice(0);
-            // set balance
-            if (element.default) {
-              next.mosaics.forEach(mosaic => {
-                if (mosaic.id.toHex() === environment.mosaicXpxInfo.id) {
-                  this.setBalance$(mosaic.amount.compact());
-                }
-              });
-            }
-
-            // Set accounts info
-            this.walletService.setAccountsInfo({
-              name: element.name,
-              accountInfo: next
-            });
-          }, error => {
-            this.walletService.setAccountsInfo({
-              name: element.name,
-              accountInfo: null
-            });
+  async searchAccountsInfo(accounts: AccountsInterface[]): Promise<AccountInfo[]> {
+    const accountsInfo = [];
+    for (let element of accounts) {
+      try {
+        const info = await this.proximaxProvider.getAccountInfo(this.proximaxProvider.createFromRawAddress(element.address)).toPromise();
+        const mosaics = info.mosaics.slice(0);
+        if (element.default) {
+          const findXPX = mosaics.find(mosaic => mosaic.id.toHex() === environment.mosaicXpxInfo.id);
+          if(findXPX) {
+            this.setBalance$(findXPX.amount.compact());
           }
-        );
-      };
-    } catch (error) {
-      return null;
-    }
+        }
+
+        accountsInfo.push({
+          name: element.name,
+          accountInfo: info
+        });
+      } catch (error) {
+        accountsInfo.push({
+          name: element.name,
+          accountInfo: null
+        });
+      }
+    };
+
+    this.walletService.setAccountsInfo(accountsInfo);
+    return accountsInfo;
   }
 
 
@@ -576,7 +545,7 @@ export class TransactionsService {
     }
 
     this.namespaceService.buildNamespaceStorage();
-    this.updateBalance2();
+    // this.updateBalance2();
   }
 
   /**

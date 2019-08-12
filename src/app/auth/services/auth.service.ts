@@ -94,12 +94,8 @@ export class AuthService {
     this.setLogged(true);
     this.dataBridgeService.closeConenection();
     this.dataBridgeService.connectnWs();
-    const blockchainHeight: UInt64 = await this.proximaxProvider.getBlockchainHeight().toPromise();
-    this.dataBridgeService.setblock(blockchainHeight.compact());
     // load services and components
     this.route.navigate([`/${AppConfig.routes.dashboard}`]);
-    this.namespaces.buildNamespaceStorage();
-    this.transactionService.getAccountsInfo(wallet.accounts);
     this.serviceModuleService.changeBooksItem(
       this.proximaxProvider.createFromRawAddress(currentAccount.address)
     );

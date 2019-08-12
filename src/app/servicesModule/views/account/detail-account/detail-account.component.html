@@ -90,31 +90,34 @@
 
 
           <!-- public key -->
-          <div class="row" *ngIf="accountValid">
-            <div class="col-11 col-sm-12 col-md-12 mx-auto d-flex align-items-center box-grey">
-              <div class="col-10">
-                <span>{{ titlePublickey }} </span>
-                <br>
-                <span class="font-small d-flex ">{{ publicKey }}</span>
-              </div>
-              <div class="col-2 text-right">
-                <i mdbWavesEffect (click)="copyMessage('Public Key')" ngxClipboard [cbContent]="publicKey"
-                  class="fa fa-copy cursor-p"></i>
+          <ng-container *ngIf="accountValid">
+            <div class="row">
+              <div class="col-11 col-sm-12 col-md-12 mx-auto d-flex align-items-center box-grey">
+                <div class="col-10">
+                  <span>{{ titlePublickey }} </span>
+                  <br>
+                  <span class="font-small d-flex ">{{ publicKey }}</span>
+                </div>
+                <div class="col-2 text-right">
+                  <i mdbWavesEffect (click)="copyMessage('Public Key')" ngxClipboard [cbContent]="publicKey"
+                    class="fa fa-copy cursor-p"></i>
+                </div>
               </div>
             </div>
-          </div>
+          </ng-container>
 
           <!-- public key -->
-          <div class="row" *ngIf="!accountValid">
-            <div class="col-11 col-sm-12 col-md-11 mx-auto box-transparent-border-orange">
-              <div class="col-12 d-flex flex-column align-items-center">
-                <span class="fw-600">{{ titlePublickey }} </span>
-                <span class="font-small d-flex text-center">This user has not made transactions with this
-                  account.</span>
+          <ng-container *ngIf="!accountValid">
+            <div class="row">
+              <div class="col-11 col-sm-12 col-md-11 mx-auto box-transparent-border-orange">
+                <div class="col-12 d-flex flex-column align-items-center">
+                  <span class="fw-600">{{ titlePublickey }} </span>
+                  <span class="font-small d-flex text-center">This user has not made transactions with this
+                    account.</span>
+                </div>
               </div>
             </div>
-          </div>
-
+          </ng-container>
 
           <!-- Information -->
           <div class="row">

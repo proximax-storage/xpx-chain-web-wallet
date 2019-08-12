@@ -8,6 +8,9 @@ import { WalletService, AccountsInterface } from '../../../wallet/services/walle
 import { SharedService } from '../../../shared/services/shared.service';
 import { environment } from '../../../../environments/environment';
 import { AppConfig } from 'src/app/config/app.config';
+import { UInt64 } from 'tsjs-xpx-chain-sdk';
+import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
+import { NamespacesService } from 'src/app/servicesModule/services/namespaces.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -64,6 +67,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private transactionService: TransactionsService,
     private sharedService: SharedService,
     private proximaxProvider: ProximaxProvider,
+    private dataBridgeService: DataBridgeService,
+    private namespacesService: NamespacesService,
     @Inject(DOCUMENT) private document: Document
   ) { }
 
@@ -127,10 +132,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
    *
    * @memberof DashboardComponent
    */
-  getRecentTransactions(reload = false) {
+  async getRecentTransactions(reload = false) {
     this.iconReloadDashboard = true;
     // Validate if it is the first time the dashboard is loaded or if you click on the reload button
     if (this.dashboardService.getCantViewDashboard() === 1 || reload) {
+      if (!reload) {
+        const blockchainHeight: UInt64 = await this.proximaxProvider.getBlockchainHeight().toPromise();
+        this.dataBridgeService.setblock(blockchainHeight.compact());
+        this.namespacesService.buildNamespaceStorage();
+        this.transactionService.searchAccountsInfo(this.walletService.currentWallet.accounts);
+      }
+
       this.searching = true;
       this.iconReloadDashboard = false;
       this.loadTransactions();

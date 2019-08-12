@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, Validators, FormControl, AbstractControl } from '@angular/forms';
-import { WalletService } from "../../../../wallet/services/wallet.service";
+import { WalletService, AccountsInterface, AccountsInfoInterface } from "../../../../wallet/services/wallet.service";
 import { SharedService, ConfigurationForm } from "../../../../shared/services/shared.service"
 import { AppConfig } from '../../../../config/app.config';
 import { ActivatedRoute } from '@angular/router';
@@ -13,30 +13,29 @@ import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
 })
 export class DetailAccountComponent implements OnInit {
 
+  address = '';
+  accountName = '';
+  accountInfo: AccountsInfoInterface = null;
   accountValid: boolean = false;
   configurationForm: ConfigurationForm;
+  currenAccount: AccountsInterface = null;
+  descriptionPrivateKey = `Make sure you store your private key in a safe place.
+  Access to your digital assets cannot be recovered without it.`;
   editNameAccount = false;
   newNameAccount: string = '';
-  showPassword: boolean = true;
-  subscribeAccount;
+  privateKey = '';
+  publicKey = '';
   routes = {
     backToService: `/${AppConfig.routes.service}`,
     viewAllAccounts: `/${AppConfig.routes.viewAllAccount}`
-  }
-  // mosaic = 'XPX';
-  // titleAccountInformation = 'Account information';
+  };
+  showPassword: boolean = true;
+  subscribeAccount = null;
   titleAddress = 'Address:';
   titlePrivateKey = 'Private Key:';
   titlePublickey = 'Public Key:';
-  descriptionPrivateKey = `Make sure you store your private key in a safe place.
-  Access to your digital assets cannot be recovered without it.`;
-  // descriptionBackupWallet = `It is very important that you have backups of your wallets to log in with or your ${this.mosaic} will be lost.`;
-  address = '';
-  privateKey = '';
-  publicKey = '';
-  accountName = '';
   validatingForm: FormGroup;
-  currenAccount = null;
+
 
   constructor(
     private activateRoute: ActivatedRoute,
@@ -47,28 +46,39 @@ export class DetailAccountComponent implements OnInit {
   }
 
   ngOnInit() {
-    let param = this.activateRoute.snapshot.paramMap.get('name');
-    if (param) {
-      this.currenAccount = this.walletService.filterAccount(param);
-    } else {
-      this.currenAccount = this.walletService.filterAccount('', true);
-    }
-    this.buildData();
     this.configurationForm = this.sharedService.configurationForm;
+    let param = this.activateRoute.snapshot.paramMap.get('name');
+    this.currenAccount = (param) ? this.currenAccount = this.walletService.filterAccount(param) : this.currenAccount = this.walletService.filterAccount('', true);
+    this.buildData();
     this.createForm();
-    this.subscribeAccount = this.walletService.getAccountInfoAsync().subscribe(
+    this.subscribeAccount = this.walletService.getAccountsInfo$().subscribe(
       async accountInfo => {
-        this.accountValid = (
-          accountInfo !== null &&
-          accountInfo !== undefined &&
-          accountInfo.publicKey !== "0000000000000000000000000000000000000000000000000000000000000000"
-        );
+        if (accountInfo && !this.accountInfo) {
+          this.accountInfo = this.walletService.filterAccountInfo(this.currenAccount.name);
+          this.accountValid = (
+            this.accountInfo !== null &&
+            this.accountInfo !== undefined &&
+            this.accountInfo.accountInfo &&
+            this.accountInfo.accountInfo.publicKey !== "0000000000000000000000000000000000000000000000000000000000000000"
+          );
+
+          if (this.subscribeAccount) {
+            this.subscribeAccount.unsubscribe();
+          }
+        }
       }
     );
   }
 
+  /**
+   *
+   *
+   * @memberof DetailAccountComponent
+   */
   ngOnDestroy(): void {
-    this.subscribeAccount.unsubscribe();
+    if (this.subscribeAccount) {
+      this.subscribeAccount.unsubscribe();
+    }
   }
 
   /**

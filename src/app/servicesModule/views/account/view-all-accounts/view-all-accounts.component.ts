@@ -22,6 +22,7 @@ export class ViewAllAccountsComponent implements OnInit {
     createNewAccount: `/${AppConfig.routes.selectTypeCreationAccount}`,
     viewDetails: `/${AppConfig.routes.account}/`
   };
+  subscriptions = ['accountInfo'];
 
   constructor(
     private transactionService: TransactionsService,
@@ -30,6 +31,15 @@ export class ViewAllAccountsComponent implements OnInit {
 
   ngOnInit() {
     this.load();
+  }
+
+  ngOnDestroy(): void {
+    // this.transactionService.setTransactionsConfirmed$([]);
+    this.subscriptions.forEach(element => {
+      if (this.subscriptions[element] !== undefined) {
+        this.subscriptions[element].unsubscribe();
+      }
+    });
   }
 
   /**
@@ -56,16 +66,26 @@ export class ViewAllAccountsComponent implements OnInit {
    * @memberof ViewAllAccountsComponent
    */
   load() {
-    const currentWallet = Object.assign({}, this.walletService.currentWallet);
-    for (let element of currentWallet.accounts) {
-      const balance = this.walletService.filterAccountInfo(element.name);
-      const mosaicXPX = balance.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id);
-      if (mosaicXPX) {
-        element['balance'] = this.transactionService.amountFormatterSimple(mosaicXPX.amount.compact());
-      } else {
-        element['balance'] = '0.000000';
+    // console.log(this.walletService.accountsInfo);
+    this.subscriptions['accountInfo'] = this.walletService.getAccountsInfo$().subscribe(
+      next => {
+        // console.log('----- ACCOUNT INFO -----', next);
+        const currentWallet = Object.assign({}, this.walletService.currentWallet);
+        for (let element of currentWallet.accounts) {
+          const accountFiltered = this.walletService.filterAccountInfo(element.name);
+          if (accountFiltered && accountFiltered.accountInfo) {
+            const mosaicXPX = accountFiltered.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id);
+            if (mosaicXPX) {
+              element['balance'] = this.transactionService.amountFormatterSimple(mosaicXPX.amount.compact());
+            } else {
+              element['balance'] = '0.000000';
+            }
+          } else {
+            element['balance'] = '0.000000';
+          }
+        }
+        this.currentWallet = currentWallet;
       }
-    }
-    this.currentWallet = currentWallet;
+    );
   }
 }
