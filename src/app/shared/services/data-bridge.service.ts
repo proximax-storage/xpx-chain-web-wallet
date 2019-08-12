@@ -57,9 +57,11 @@ export class DataBridgeService {
    *
    * @memberof DataBridgeService
    */
-  closeConenection() {
+  closeConenection(deleteAll = true) {
     // console.log("Destruye conexion con el websocket");
-    this.setblock(null);
+    if(deleteAll) {
+      this.setblock(null);
+    }
     this.destroyConection = true;
     this.transactionsService.destroyAllTransactions();
     if (this.connector !== undefined) {
@@ -150,6 +152,7 @@ export class DataBridgeService {
    */
   getSocketTransactionsConfirmed(connector: Listener, audio: HTMLAudioElement) {
     const currentWallet  = Object.assign({}, this.walletService.getCurrentWallet());
+    console.log(currentWallet);
     currentWallet.accounts.forEach(element => {
       const address = this.proximaxProvider.createFromRawAddress(element.address);
       connector.confirmed(address).subscribe((incomingTransaction: Transaction) => {
