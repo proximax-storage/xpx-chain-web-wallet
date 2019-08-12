@@ -17,6 +17,8 @@ import { TransactionsService, TransferInterface } from '../../services/transacti
 import { environment } from '../../../../environments/environment';
 import { ServicesModuleService } from '../../../servicesModule/services/services-module.service';
 import { AppConfig } from '../../../config/app.config';
+import { first } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -52,12 +54,15 @@ export class CreateTransferComponent implements OnInit {
     decimal: '.',
     precision: '6'
   };
+
+  searching = true;
   selectOtherMosaics = [];
   showContacts = true;
-  subscribe = ['accountInfo', 'transactionStatus', 'char', 'block'];
+  // subscribe = ['accountInfo', 'transactionStatus', 'char', 'block'];
   title = 'Make a transfer';
+  transactionStatus: boolean = false;
   transactionSigned: SignedTransaction = null;
-
+  subscription: Subscription[] = [];
 
   constructor(
     private dataBridge: DataBridgeService,
@@ -81,15 +86,7 @@ export class CreateTransferComponent implements OnInit {
     this.createFormTransfer();
     this.subscribeValue();
     this.booksAddress();
-
-    this.subscribe['accountInfo'] = this.walletService.getAccountsInfo$().subscribe(
-      next => {
-        // console.log(next);
-        if(next){
-          this.changeSender(this.walletService.currentAccount);
-        }
-      }
-    );
+    this.getAccountInfo();
 
     this.mosaicXpx = {
       id: environment.mosaicXpxInfo.id,
@@ -105,9 +102,10 @@ export class CreateTransferComponent implements OnInit {
       });
     });
 
-    this.subscribe['block'] = this.dataBridge.getBlock().subscribe(next => {
+    //this.subscribe['block'] =
+    this.subscription.push(this.dataBridge.getBlock().subscribe(next => {
       this.currentBlock = next;
-    });
+    }));
   }
 
   /**
@@ -116,10 +114,10 @@ export class CreateTransferComponent implements OnInit {
    * @memberof CreateTransferComponent
    */
   ngOnDestroy(): void {
-    this.subscribe.forEach(element => {
-      if (this.subscribe[element] !== undefined) {
-        this.subscribe[element].unsubscribe();
-      }
+    // console.log('----ngOnDestroy---');
+    this.subscription.forEach(subscription => {
+      // console.log(subscription);
+      subscription.unsubscribe();
     });
   }
 
@@ -154,32 +152,36 @@ export class CreateTransferComponent implements OnInit {
    * @memberof CreateTransferComponent
    */
   changeSender(accountToSend: AccountsInterface) {
-    // this.ngxService.start(); // start foreground spinner of the master loader with 'default' taskId
-    this.ngOnDestroy();
-    this.clearForm();
-    this.reset();
-    this.sender = accountToSend;
-    this.accounts.forEach(element => {
-      if (accountToSend.name === element.value.name) {
-        element.active = true;
-      } else {
-        element.active = false;
-      }
-    });
+    if (accountToSend) {
+      // console.log(accountToSend);
+      // this.ngxService.start(); // start foreground spinner of the master loader with 'default' taskId
+      // this.ngOnDestroy();
+      this.clearForm();
+      this.reset();
+      this.sender = accountToSend;
+      this.accounts.forEach(element => {
+        if (accountToSend.name === element.value.name) {
+          element.active = true;
+        } else {
+          element.active = false;
+        }
+      });
 
-    this.charRest = this.configurationForm.message.maxLength;
-    this.listContacts = [];
-    this.subscribe['char'] = this.formTransfer.get('message').valueChanges.subscribe(val => {
-      if (val) {
-        this.charRest = this.configurationForm.message.maxLength - val.length;
-      }
-    });
+      this.charRest = this.configurationForm.message.maxLength;
+      this.listContacts = [];
+      //this.subscribe['char'] =
+      this.subscription.push(this.formTransfer.get('message').valueChanges.subscribe(val => {
+        if (val) {
+          this.charRest = this.configurationForm.message.maxLength - val.length;
+        }
+      }));
 
-    // this.updateAccountInfo();
-    // this.getMosaics(accountToSend);
-    const accountFiltered = this.walletService.filterAccountInfo(this.sender.name);
-    if(accountFiltered) {
-      this.buildCurrentAccountInfo(accountFiltered.accountInfo);
+      // this.updateAccountInfo();
+      // this.getMosaics(accountToSend);
+      const accountFiltered = this.walletService.filterAccountInfo(this.sender.name);
+      if (accountFiltered) {
+        this.buildCurrentAccountInfo(accountFiltered.accountInfo);
+      }
     }
   }
 
@@ -396,6 +398,24 @@ export class CreateTransferComponent implements OnInit {
     this.boxOtherMosaics = otherMosaics;
   }
 
+  /**
+   *
+   *
+   * @memberof CreateTransferComponent
+   */
+  getAccountInfo() {
+    //this.subscribe['accountsInfo'] =
+    this.subscription.push(this.walletService.getAccountsInfo$().subscribe(
+      next => {
+        // console.log(next);
+        if (next && next.length > 1 && this.searching) {
+          this.searching = false;
+          this.changeSender(this.walletService.currentAccount);
+        }
+      }
+    ));
+  }
+
 
   /**
    *
@@ -404,8 +424,10 @@ export class CreateTransferComponent implements OnInit {
    */
   getTransactionStatus() {
     // Get transaction status
-    this.subscribe['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
+    //this.subscribe['transactionStatus'] =
+    this.subscription.push(this.dataBridge.getTransactionStatus().subscribe(
       statusTransaction => {
+        this.transactionStatus = true;
         if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
           const statusTransactionHash = (statusTransaction['type'] === 'error') ? statusTransaction['data'].hash : statusTransaction['data'].transactionInfo.hash;
           const match = statusTransactionHash === this.transactionSigned.hash;
@@ -421,7 +443,7 @@ export class CreateTransferComponent implements OnInit {
           }
         }
       }
-    );
+    ));
   }
 
   /**
@@ -452,9 +474,11 @@ export class CreateTransferComponent implements OnInit {
    */
   otherMosaicsChange(mosaicSelected: any, position: number) {
     if (mosaicSelected !== undefined) {
-      this.boxOtherMosaics[position].id = mosaicSelected.value;
+      this.boxOtherMosaics[position].amount = '';
       this.boxOtherMosaics[position].balance = mosaicSelected.balance;
       this.boxOtherMosaics[position].config = mosaicSelected.config;
+      this.boxOtherMosaics[position].errorBalance = false;
+      this.boxOtherMosaics[position].id = mosaicSelected.value;
 
       this.boxOtherMosaics.forEach(element => {
         const newMosaic = [];
@@ -560,7 +584,7 @@ export class CreateTransferComponent implements OnInit {
     };
     this.selectOtherMosaics = [];
     this.showContacts = false;
-    this.subscribe = ['accountInfo', 'transactionStatus', 'char', 'block'];
+    // this.subscribe = ['accountsInfo', 'transactionStatus', 'char', 'block'];
     this.title = 'Make a transfer';
     this.transactionSigned = null;
   }
@@ -592,7 +616,7 @@ export class CreateTransferComponent implements OnInit {
           async () => {
             this.blockButton = false;
             this.blockSendButton = false;
-            if (this.subscribe['transactionStatus'] === undefined || this.subscribe['transactionStatus'] === null) {
+            if (!this.transactionStatus) {
               this.getTransactionStatus();
             }
           }, err => {

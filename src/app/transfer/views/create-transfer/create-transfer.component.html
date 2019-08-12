@@ -23,16 +23,30 @@
               <li class="nav-item cursor-p" (click)="changeSender(account.value)">
                 <span [ngClass]="[account.active ? 'nav-link active isActive' : 'nav-link']">
                   {{account.value.name}}
-                  <i *ngIf="account.value.default" class="fa fa-star fs-1rem ml-10px cursor-p" aria-hidden="true" title="Default account"></i>
+                  <i *ngIf="account.value.default" class="fa fa-star fs-1rem ml-10px cursor-p" aria-hidden="true"
+                    title="Default account"></i>
                 </span>
 
               </li>
             </ng-container>
           </ul>
         </div>
-        <div class="col-11 col-md-10 col-lg-8 mx-auto d-none d-sm-block">
-          <span class="fs-08rem" style="color: #404040ad;">{{sender?.address}}</span>
-        </div>
+
+        <ng-container *ngIf="!searching; else searchTemplate">
+          <div class="col-11 col-md-10 col-lg-8 mx-auto d-none d-sm-block">
+            <span class="fs-08rem" style="color: #404040ad;">{{sender?.address}}</span>
+          </div>
+        </ng-container>
+
+
+        <ng-template #searchTemplate>
+          <div class="col-11 col-md-10 col-lg-8 mx-auto d-flex justify-content-center ">
+            <div class="col-12">
+              <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate">
+              </mdb-progress-bar>
+            </div>
+          </div>
+        </ng-template>
       </div>
     </ng-container>
 

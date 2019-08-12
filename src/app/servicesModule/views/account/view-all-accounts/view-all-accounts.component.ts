@@ -71,20 +71,22 @@ export class ViewAllAccountsComponent implements OnInit {
       next => {
         // console.log('----- ACCOUNT INFO -----', next);
         const currentWallet = Object.assign({}, this.walletService.currentWallet);
-        for (let element of currentWallet.accounts) {
-          const accountFiltered = this.walletService.filterAccountInfo(element.name);
-          if (accountFiltered && accountFiltered.accountInfo) {
-            const mosaicXPX = accountFiltered.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id);
-            if (mosaicXPX) {
-              element['balance'] = this.transactionService.amountFormatterSimple(mosaicXPX.amount.compact());
+        if (currentWallet) {
+          for (let element of currentWallet.accounts) {
+            const accountFiltered = this.walletService.filterAccountInfo(element.name);
+            if (accountFiltered && accountFiltered.accountInfo) {
+              const mosaicXPX = accountFiltered.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id);
+              if (mosaicXPX) {
+                element['balance'] = this.transactionService.amountFormatterSimple(mosaicXPX.amount.compact());
+              } else {
+                element['balance'] = '0.000000';
+              }
             } else {
               element['balance'] = '0.000000';
             }
-          } else {
-            element['balance'] = '0.000000';
           }
+          this.currentWallet = currentWallet;
         }
-        this.currentWallet = currentWallet;
       }
     );
   }

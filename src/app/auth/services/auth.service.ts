@@ -64,6 +64,7 @@ export class AuthService {
   * @memberof LoginService
   */
   async login(common: any, wallet: any) {
+    this.walletService.destroyAll();
     const currentAccount = Object.assign({}, wallet.accounts.find(elm => elm.default === true));
     let isValid = false;
     if (currentAccount) {

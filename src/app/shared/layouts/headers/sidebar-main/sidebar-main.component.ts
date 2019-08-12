@@ -52,12 +52,16 @@ export class SidebarMainComponent implements OnInit {
 
     // NAME ACCOUNT
     this.subscriptions['nameAccount'] = this.walletService.getNameAccount$().subscribe(next => {
-      this.walletName = next.name;
+      if(next) {
+        this.walletName = next.name;
+      }
     });
 
     // BALANCE
     this.subscriptions['balance'] = this.transactionService.getBalance$().subscribe(next => {
-      this.vestedBalance = `Balance ${next} XPX`;
+      if(next) {
+        this.vestedBalance = `Balance ${next} XPX`;
+      }
     }, error => {
       this.vestedBalance = `Balance 0.000000 XPX`;
     });
@@ -118,10 +122,7 @@ export class SidebarMainComponent implements OnInit {
    * @memberof HeaderComponent
    */
   logOut() {
-    this.walletService.accountsInfo = [];
-    this.walletService.accountsInfo = [];
-    this.walletService.currentAccount = null;
-    this.walletService.currentWallet = null;
+    this.walletService.destroyAll();
     this.dashboardService.processComplete = false;
     this.authService.setLogged(false);
     this.authService.destroyNodeSelected();

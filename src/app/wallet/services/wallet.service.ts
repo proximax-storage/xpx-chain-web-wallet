@@ -130,6 +130,18 @@ export class WalletService {
   /**
    *
    *
+   * @memberof WalletService
+   */
+  destroyAll() {
+    console.log('desteoty all');
+    this.currentWallet = null;
+    this.setCurrentAccount(null);
+    this.setAccountsInfo([]);
+  }
+
+  /**
+   *
+   *
    * @param {*} common
    * @param {*} [account='']
    * @param {*} [algo='']
@@ -343,7 +355,7 @@ export class WalletService {
    * @param {*} currentAccount
    * @memberof WalletService
    */
-  setCurrentAccount(currentAccount: any) {
+  setCurrentAccount(currentAccount: AccountsInterface) {
     this.currentAccountObs.next(currentAccount);
   }
 
@@ -460,20 +472,6 @@ export class WalletService {
     } else {
       return this.currentWallet.accounts.find(elm => elm.name === byName);
     }
-  }
-
-  /**
-   * Create a wallet array
-   * by: roimerj_vzla
-   *
-   * @param {string} user
-   * @param {any} accounts
-   * @memberof WalletService
-   */
-  setAccountWalletStorage(user: string, accounts: any) {
-    let walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
-    walletsStorage.push({ name: user, accounts: { '0': accounts } });
-    localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorage));
   }
 
   /**

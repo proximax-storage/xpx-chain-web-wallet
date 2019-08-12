@@ -136,12 +136,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.iconReloadDashboard = true;
     // Validate if it is the first time the dashboard is loaded or if you click on the reload button
     if (this.dashboardService.getCantViewDashboard() === 1 || reload) {
-      if (!reload) {
-        // this.namespacesService.buildNamespaceStorage();
-        // this.transactionService.searchAccountsInfo(this.walletService.currentWallet.accounts);
-        // const blockchainHeight: UInt64 = await this.proximaxProvider.getBlockchainHeight().toPromise();
-        // this.dataBridgeService.setblock(blockchainHeight.compact());
-      }
+     /* if (!reload) {
+        this.namespacesService.buildNamespaceStorage();
+        this.transactionService.searchAccountsInfo(this.walletService.currentWallet.accounts);
+        const blockchainHeight: UInt64 = await this.proximaxProvider.getBlockchainHeight().toPromise();
+        this.dataBridgeService.setblock(blockchainHeight.compact());
+      }*/
 
       this.searching = true;
       this.iconReloadDashboard = false;
@@ -203,7 +203,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.dashboardService.searchComplete = false;
         this.searching = false;
         this.iconReloadDashboard = true;
-        this.sharedService.showError('Has ocurred a error', 'Possible causes: the network is offline');
+        // this.sharedService.showError('Has ocurred a error', 'Possible causes: the network is offline');
       }
     }
 
