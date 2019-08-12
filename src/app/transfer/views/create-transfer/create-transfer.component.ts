@@ -726,7 +726,7 @@ export class CreateTransferComponent implements OnInit {
    */
   validateAmountToTransfer(amount: string, mosaic: MosaicsStorage, position: number) {
     let validateAmount = false;
-    const accountInfo = this.walletService.filterAccountInfo();
+    const accountInfo = this.walletService.filterAccountInfo(this.sender.name);
     if (accountInfo !== undefined && accountInfo !== null && Object.keys(accountInfo).length > 0) {
       if (accountInfo.accountInfo.mosaics.length > 0) {
         const filtered = accountInfo.accountInfo.mosaics.find(element => {

@@ -165,6 +165,7 @@ export class DataBridgeService {
             this.destroyUnconfirmedTransaction(transactionFormatter);
             this.transactionsService.setTransactionsConfirmed$(transactionPushed);
             audio.play();
+            this.transactionsService.searchAccountsInfo(this.walletService.currentWallet.accounts);
             // this.transactionsService.validateTypeTransaction(incomingTransaction.type);
             // this.namespaceService.buildNamespaceStorage();
             // this.transactionsService.updateBalance();

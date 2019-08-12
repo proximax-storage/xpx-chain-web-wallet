@@ -99,6 +99,10 @@ export class AuthService {
     this.serviceModuleService.changeBooksItem(
       this.proximaxProvider.createFromRawAddress(currentAccount.address)
     );
+    this.namespaces.buildNamespaceStorage();
+    this.transactionService.searchAccountsInfo(this.walletService.currentWallet.accounts);
+    const blockchainHeight: UInt64 = await this.proximaxProvider.getBlockchainHeight().toPromise();
+    this.dataBridgeService.setblock(blockchainHeight.compact());
 
     return true;
   }

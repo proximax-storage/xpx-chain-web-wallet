@@ -22,8 +22,8 @@
               <!-- <li class="nav-item cursor-p" (click)="init(account.value)"> -->
               <li class="nav-item cursor-p" (click)="changeSender(account.value)">
                 <span [ngClass]="[account.active ? 'nav-link active isActive' : 'nav-link']">
-                  {{account.value.name}} <i *ngIf="account.value.default" class="fa fa-star fs-1rem ml-10px cursor-p"
-                    aria-hidden="true" title="Default account"></i>
+                  {{account.value.name}}
+                  <i *ngIf="account.value.default" class="fa fa-star fs-1rem ml-10px cursor-p" aria-hidden="true" title="Default account"></i>
                 </span>
 
               </li>
