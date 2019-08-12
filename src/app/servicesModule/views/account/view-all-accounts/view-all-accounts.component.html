@@ -37,41 +37,43 @@
 
       <!-- BOX LIST ACCOUNT -->
       <div class="row">
-        <ng-container *ngFor="let x of objectKeys(currentWallet.accounts)">
-          <div class="col-12 col-md-10 col-lg-9 col-xl-10 mx-auto box-list-account-gray fs-08rem pb-1rem"
-            [ngClass]="{'isPrimary':currentWallet.accounts[x].default}">
-            <div class="row">
-              <div class="col-12 col-sm-10 col-md-9 col-lg-10 col-xl-10 pt-1rem w-b-a">
-                Account: {{currentWallet.accounts[x].name}} <br>
-                {{currentWallet.accounts[x].address}}
+        <ng-container *ngIf="currentWallet?.accounts?.length > 0">
+          <ng-container *ngFor="let currentAccount of currentWallet.accounts">
+            <div class="col-12 col-md-10 col-lg-9 col-xl-10 mx-auto box-list-account-gray fs-08rem pb-1rem"
+              [ngClass]="{'isPrimary':currentAccount.default}">
+              <div class="row">
+                <div class="col-12 col-sm-10 col-md-9 col-lg-10 col-xl-10 pt-1rem w-b-a">
+                  Account: {{currentAccount.name}} <br>
+                  {{currentAccount.address}}
+                </div>
+                <div
+                  class="col-12 col-sm-2 col-md-3 col-lg-2 col-xl-2 d-flex align-items-center justify-content-start justify-content-sm-end justify-content-md-end justify-content-lg-end justify-content-xl-end pt-1rem">
+
+                  <!-- View Details -->
+                  <i class="fa fa-eye fs-1-2rem cursor-p" aria-hidden="true" title="View details"
+                    [routerLink]="[routes.viewDetails+currentAccount.name]"></i>
+
+                  <!-- Select account default -->
+                  <ng-container *ngIf="!currentAccount.default">
+                    <i class="fa fa-star fs-1-2rem ml-10px cursor-p" aria-hidden="true"
+                      (click)="changeAsPrimary(currentAccount.name)" title="Select account as default"></i>
+                  </ng-container>
+                </div>
               </div>
-              <div
-                class="col-12 col-sm-2 col-md-3 col-lg-2 col-xl-2 d-flex align-items-center justify-content-start justify-content-sm-end justify-content-md-end justify-content-lg-end justify-content-xl-end pt-1rem">
 
-                <!-- View Details -->
-                <i class="fa fa-eye fs-1-2rem cursor-p" aria-hidden="true" title="View details"
-                  [routerLink]="[routes.viewDetails+currentWallet.accounts[x].name]"></i>
-
-                <!-- Select account default -->
-                <ng-container *ngIf="!currentWallet.accounts[x].default">
-                  <i class="fa fa-star fs-1-2rem ml-10px cursor-p" aria-hidden="true"
-                    (click)="changeAsPrimary(currentWallet.accounts[x].name)" title="Select account as default"></i>
-                </ng-container>
+              <div class="row">
+                <div class="col-12 col-sm-10 col-md-9 col-lg-10 col-xl-10 pt-05rem w-b-a fw-600">
+                  Balance {{currentAccount.balance}} XPX
+                  <!-- <img class="h-1-5em ml-03rem" [ngClass]="{'iconInactive':currentAccount.default}" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" alt=""><br> -->
+                </div>
               </div>
             </div>
 
-            <div class="row">
-              <div class="col-12 col-sm-10 col-md-9 col-lg-10 col-xl-10 pt-05rem w-b-a fw-600">
-                Balance {{currentWallet.accounts[x].balance}} XPX
-                <!-- <img class="h-1-5em ml-03rem" [ngClass]="{'iconInactive':currentWallet.accounts[x].default}" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" alt=""><br> -->
+            <ng-container *ngIf="accountChanged && currentAccount.default">
+              <div class="col-12 col-md-10 col-lg-9 col-xl-10 mx-auto d-flex justify-content-end animated fadeIn">
+                <span class="msgSuccess">Account changed to default</span>
               </div>
-            </div>
-          </div>
-
-          <ng-container *ngIf="accountChanged && currentWallet.accounts[x].default">
-            <div class="col-12 col-md-10 col-lg-9 col-xl-10 mx-auto d-flex justify-content-end animated fadeIn">
-              <span class="msgSuccess">Account changed to default</span>
-            </div>
+            </ng-container>
           </ng-container>
         </ng-container>
       </div>

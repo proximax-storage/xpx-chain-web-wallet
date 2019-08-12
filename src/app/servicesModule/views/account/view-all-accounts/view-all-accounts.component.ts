@@ -37,9 +37,36 @@ export class ViewAllAccountsComponent implements OnInit {
   ngOnDestroy(): void {
     // console.log('----ngOnDestroy---');
     this.subscription.forEach(subscription => {
-       console.log(subscription);
+      console.log(subscription);
       subscription.unsubscribe();
     });
+  }
+
+  /**
+   *
+   *
+   * @memberof ViewAllAccountsComponent
+   */
+  build() {
+    const currentWallet = Object.assign({}, this.walletService.currentWallet);
+    // console.log(currentWallet);
+    if (currentWallet && Object.keys(currentWallet).length > 0) {
+      // console.log('es mayor a cero');
+      for (let element of currentWallet.accounts) {
+        const accountFiltered = this.walletService.filterAccountInfo(element.name);
+        if (accountFiltered && accountFiltered.accountInfo) {
+          const mosaicXPX = accountFiltered.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id);
+          if (mosaicXPX) {
+            element['balance'] = this.transactionService.amountFormatterSimple(mosaicXPX.amount.compact());
+          } else {
+            element['balance'] = '0.000000';
+          }
+        } else {
+          element['balance'] = '0.000000';
+        }
+      }
+      this.currentWallet = currentWallet;
+    }
   }
 
   /**
@@ -53,7 +80,7 @@ export class ViewAllAccountsComponent implements OnInit {
     this.accountChanged = true;
     this.walletService.changeAsPrimary(nameSelected);
     this.walletService.use(this.walletService.currentWallet);
-    this.load();
+    this.build();
     this.transactionService.updateBalance();
     setTimeout(() => {
       this.accountChanged = false;
@@ -69,25 +96,8 @@ export class ViewAllAccountsComponent implements OnInit {
     // console.log(this.walletService.accountsInfo);
     this.subscription.push(this.walletService.getAccountsInfo$().subscribe(
       next => {
-        // console.log('----- ACCOUNT INFO -----', next);
-        const currentWallet = Object.assign({}, this.walletService.currentWallet);
-        console.log(currentWallet);
-        if (currentWallet && Object.keys(currentWallet).length > 0) {
-          for (let element of currentWallet.accounts) {
-            const accountFiltered = this.walletService.filterAccountInfo(element.name);
-            if (accountFiltered && accountFiltered.accountInfo) {
-              const mosaicXPX = accountFiltered.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id);
-              if (mosaicXPX) {
-                element['balance'] = this.transactionService.amountFormatterSimple(mosaicXPX.amount.compact());
-              } else {
-                element['balance'] = '0.000000';
-              }
-            } else {
-              element['balance'] = '0.000000';
-            }
-          }
-          this.currentWallet = currentWallet;
-        }
+        console.log('----- ACCOUNT INFO -----', next);
+        this.build();
       }
     ));
   }

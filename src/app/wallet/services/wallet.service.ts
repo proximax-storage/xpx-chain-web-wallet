@@ -189,10 +189,13 @@ export class WalletService {
    * @memberof WalletService
    */
   filterAccountInfo(nameAccount?: string): AccountsInfoInterface {
-    if (nameAccount) {
-      return this.accountsInfo.find(next => next.name === nameAccount);
-    } else {
-      return this.accountsInfo.find(next => next.name === this.currentAccount.name);
+    if(this.accountsInfo && this.accountsInfo.length > 0) {
+      if (nameAccount) {
+        // console.log('---nameAccount---', nameAccount);
+        return this.accountsInfo.find(next => next.name === nameAccount);
+      } else {
+        return this.accountsInfo.find(next => next.name === this.currentAccount.name);
+      }
     }
   }
 
