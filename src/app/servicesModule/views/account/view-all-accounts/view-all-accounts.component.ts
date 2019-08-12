@@ -96,7 +96,7 @@ export class ViewAllAccountsComponent implements OnInit {
     // console.log(this.walletService.accountsInfo);
     this.subscription.push(this.walletService.getAccountsInfo$().subscribe(
       next => {
-        console.log('----- ACCOUNT INFO -----', next);
+        // console.log('----- ACCOUNT INFO -----', next);
         this.build();
       }
     ));

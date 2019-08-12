@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, Validators, FormBuilder, AbstractControl } from '@angular/forms';
 import { NetworkType, SimpleWallet } from 'tsjs-xpx-chain-sdk';
 import { Router, ActivatedRoute } from '@angular/router';
-import { WalletService } from '../../../../wallet/services/wallet.service';
+import { WalletService, AccountsInterface } from '../../../../wallet/services/wallet.service';
 import { environment } from '../../../../../environments/environment';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { AppConfig } from '../../../../config/app.config';
@@ -88,52 +88,57 @@ export class CreateAccountComponent implements OnInit {
    */
   createAccount() {
     if (this.formCreateAccount.valid && this.isValid) {
+      const allAccounts = this.walletService.currentWallet.accounts.slice(0);
       const nameAccount = this.formCreateAccount.get('nameWallet').value;
-      if (Object.keys(this.walletService.currentWallet.accounts).find(elm => this.walletService.currentWallet.accounts[elm].name !== nameAccount)) {
-        const network = NetworkType.TEST_NET;
+      if (Object.keys(allAccounts).find(elm => allAccounts[elm].name !== nameAccount)) {
         const password = this.proximaxProvider.createPassword(this.formCreateAccount.get('password').value);
-        let newAccount: SimpleWallet = null;
-        if (this.fromPrivateKey) {
-          newAccount = this.proximaxProvider.createAccountFromPrivateKey(nameAccount, password, this.formCreateAccount.get('privateKey').value, network);
-        } else {
-          newAccount = this.proximaxProvider.createAccountSimple(nameAccount, password, network);
+        let common = { password: this.formCreateAccount.get('password').value };
+        const currentAccount: AccountsInterface = allAccounts.find(next => next.firstAccount);
+        if (this.walletService.decrypt(common, currentAccount)) {
+          const network = NetworkType.TEST_NET;
+          let newAccount: SimpleWallet = null;
+          if (this.fromPrivateKey) {
+            newAccount = this.proximaxProvider.createAccountFromPrivateKey(nameAccount, password, this.formCreateAccount.get('privateKey').value, network);
+          } else {
+            newAccount = this.proximaxProvider.createAccountSimple(nameAccount, password, network);
+          }
+
+          const pvk = this.proximaxProvider.decryptPrivateKey(
+            password,
+            newAccount.
+              encryptedPrivateKey.encryptedKey,
+            newAccount.encryptedPrivateKey.iv
+          ).toUpperCase();
+
+          const accountBuilded = this.walletService.buildAccount({
+            address: newAccount.address['address'],
+            byDefault: false,
+            encrypted: newAccount.encryptedPrivateKey.encryptedKey,
+            firstAccount: false,
+            iv: newAccount.encryptedPrivateKey.iv,
+            network: newAccount.network,
+            nameAccount: nameAccount,
+            publicAccount: this.proximaxProvider.getPublicAccountFromPrivateKey(
+              this.proximaxProvider.decryptPrivateKey(
+                password,
+                newAccount.encryptedPrivateKey.encryptedKey,
+                newAccount.encryptedPrivateKey.iv
+              ).toUpperCase(), newAccount.network
+            )
+          });
+
+
+
+          this.clearForm();
+          this.walletService.saveDataWalletCreated({
+            name: nameAccount,
+            algo: password,
+            network: newAccount.network,
+            fromPrivateKey: this.fromPrivateKey
+          }, accountBuilded, newAccount);
+          this.walletService.saveAccountStorage(nameAccount, accountBuilded);
+          this.router.navigate([`/${AppConfig.routes.accountCreated}`]);
         }
-
-        const pvk = this.proximaxProvider.decryptPrivateKey(
-          password,
-          newAccount.
-            encryptedPrivateKey.encryptedKey,
-          newAccount.encryptedPrivateKey.iv
-        ).toUpperCase();
-
-        const accountBuilded = this.walletService.buildAccount({
-          address: newAccount.address['address'],
-          byDefault: false,
-          encrypted: newAccount.encryptedPrivateKey.encryptedKey,
-          firstAccount: false,
-          iv: newAccount.encryptedPrivateKey.iv,
-          network: newAccount.network,
-          nameAccount: nameAccount,
-          publicAccount: this.proximaxProvider.getPublicAccountFromPrivateKey(
-            this.proximaxProvider.decryptPrivateKey(
-              password,
-              newAccount.encryptedPrivateKey.encryptedKey,
-              newAccount.encryptedPrivateKey.iv
-            ).toUpperCase(), newAccount.network
-          )
-        });
-
-
-
-        this.clearForm();
-        this.walletService.saveDataWalletCreated({
-          name: nameAccount,
-          algo: password,
-          network: newAccount.network,
-          fromPrivateKey: this.fromPrivateKey
-        }, accountBuilded, newAccount);
-        this.walletService.saveAccountStorage(nameAccount, accountBuilded);
-        this.router.navigate([`/${AppConfig.routes.accountCreated}`]);
       }
     }
   }
