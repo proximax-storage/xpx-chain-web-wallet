@@ -136,7 +136,7 @@ export class WalletService {
     console.log('desteoty all');
     this.currentWallet = null;
     this.setCurrentAccount(null);
-    this.setAccountsInfo([]);
+    this.setAccountsInfo(null);
   }
 
   /**
@@ -150,12 +150,12 @@ export class WalletService {
    * @memberof WalletService
    */
 
-  decrypt(common: any, account: any = '') {
+  decrypt(common: any, account: AccountsInterface = null) {
     const acct = (account) ? account : this.currentAccount;
     const net = (account) ? account.network : this.currentAccount.network;
     const alg = (account) ? account.algo : this.currentAccount.algo;
     if (!crypto.passwordToPrivatekey(common, acct, alg)) {
-      this.sharedService.showError('', 'Invalid password');
+      this.sharedService.showError('', 'Invalid password 1');
       return false;
     }
 
@@ -189,10 +189,13 @@ export class WalletService {
    * @memberof WalletService
    */
   filterAccountInfo(nameAccount?: string): AccountsInfoInterface {
-    if (nameAccount) {
-      return this.accountsInfo.find(next => next.name === nameAccount);
-    } else {
-      return this.accountsInfo.find(next => next.name === this.currentAccount.name);
+    if(this.accountsInfo && this.accountsInfo.length > 0) {
+      if (nameAccount) {
+        // console.log('---nameAccount---', nameAccount);
+        return this.accountsInfo.find(next => next.name === nameAccount);
+      } else {
+        return this.accountsInfo.find(next => next.name === this.currentAccount.name);
+      }
     }
   }
 

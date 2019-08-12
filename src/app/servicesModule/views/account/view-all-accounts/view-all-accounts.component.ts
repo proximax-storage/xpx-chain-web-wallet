@@ -4,6 +4,7 @@ import { WalletService } from '../../../../wallet/services/wallet.service';
 import { AppConfig } from '../../../../config/app.config';
 import { SharedService } from '../../../../shared/services/shared.service';
 import { TransactionsService } from '../../../../transfer/services/transactions.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-view-all-accounts',
@@ -22,7 +23,7 @@ export class ViewAllAccountsComponent implements OnInit {
     createNewAccount: `/${AppConfig.routes.selectTypeCreationAccount}`,
     viewDetails: `/${AppConfig.routes.account}/`
   };
-  subscriptions = ['accountInfo'];
+  subscription: Subscription[] = [];
 
   constructor(
     private transactionService: TransactionsService,
@@ -34,12 +35,38 @@ export class ViewAllAccountsComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    // this.transactionService.setTransactionsConfirmed$([]);
-    this.subscriptions.forEach(element => {
-      if (this.subscriptions[element] !== undefined) {
-        this.subscriptions[element].unsubscribe();
-      }
+    // console.log('----ngOnDestroy---');
+    this.subscription.forEach(subscription => {
+      // console.log(subscription);
+      subscription.unsubscribe();
     });
+  }
+
+  /**
+   *
+   *
+   * @memberof ViewAllAccountsComponent
+   */
+  build() {
+    const currentWallet = Object.assign({}, this.walletService.currentWallet);
+    // console.log(currentWallet);
+    if (currentWallet && Object.keys(currentWallet).length > 0) {
+      // console.log('es mayor a cero');
+      for (let element of currentWallet.accounts) {
+        const accountFiltered = this.walletService.filterAccountInfo(element.name);
+        if (accountFiltered && accountFiltered.accountInfo) {
+          const mosaicXPX = accountFiltered.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id);
+          if (mosaicXPX) {
+            element['balance'] = this.transactionService.amountFormatterSimple(mosaicXPX.amount.compact());
+          } else {
+            element['balance'] = '0.000000';
+          }
+        } else {
+          element['balance'] = '0.000000';
+        }
+      }
+      this.currentWallet = currentWallet;
+    }
   }
 
   /**
@@ -53,7 +80,7 @@ export class ViewAllAccountsComponent implements OnInit {
     this.accountChanged = true;
     this.walletService.changeAsPrimary(nameSelected);
     this.walletService.use(this.walletService.currentWallet);
-    this.load();
+    this.build();
     this.transactionService.updateBalance();
     setTimeout(() => {
       this.accountChanged = false;
@@ -67,27 +94,11 @@ export class ViewAllAccountsComponent implements OnInit {
    */
   load() {
     // console.log(this.walletService.accountsInfo);
-    this.subscriptions['accountInfo'] = this.walletService.getAccountsInfo$().subscribe(
+    this.subscription.push(this.walletService.getAccountsInfo$().subscribe(
       next => {
         // console.log('----- ACCOUNT INFO -----', next);
-        const currentWallet = Object.assign({}, this.walletService.currentWallet);
-        if (currentWallet) {
-          for (let element of currentWallet.accounts) {
-            const accountFiltered = this.walletService.filterAccountInfo(element.name);
-            if (accountFiltered && accountFiltered.accountInfo) {
-              const mosaicXPX = accountFiltered.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id);
-              if (mosaicXPX) {
-                element['balance'] = this.transactionService.amountFormatterSimple(mosaicXPX.amount.compact());
-              } else {
-                element['balance'] = '0.000000';
-              }
-            } else {
-              element['balance'] = '0.000000';
-            }
-          }
-          this.currentWallet = currentWallet;
-        }
+        this.build();
       }
-    );
+    ));
   }
 }
