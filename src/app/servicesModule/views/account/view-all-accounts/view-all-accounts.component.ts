@@ -4,6 +4,7 @@ import { WalletService } from '../../../../wallet/services/wallet.service';
 import { AppConfig } from '../../../../config/app.config';
 import { SharedService } from '../../../../shared/services/shared.service';
 import { TransactionsService } from '../../../../transfer/services/transactions.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-view-all-accounts',
@@ -22,7 +23,7 @@ export class ViewAllAccountsComponent implements OnInit {
     createNewAccount: `/${AppConfig.routes.selectTypeCreationAccount}`,
     viewDetails: `/${AppConfig.routes.account}/`
   };
-  subscriptions = ['accountInfo'];
+  subscription: Subscription[] = [];
 
   constructor(
     private transactionService: TransactionsService,
@@ -34,11 +35,10 @@ export class ViewAllAccountsComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    // this.transactionService.setTransactionsConfirmed$([]);
-    this.subscriptions.forEach(element => {
-      if (this.subscriptions[element] !== undefined) {
-        this.subscriptions[element].unsubscribe();
-      }
+    // console.log('----ngOnDestroy---');
+    this.subscription.forEach(subscription => {
+       console.log(subscription);
+      subscription.unsubscribe();
     });
   }
 
@@ -67,11 +67,12 @@ export class ViewAllAccountsComponent implements OnInit {
    */
   load() {
     // console.log(this.walletService.accountsInfo);
-    this.subscriptions['accountInfo'] = this.walletService.getAccountsInfo$().subscribe(
+    this.subscription.push(this.walletService.getAccountsInfo$().subscribe(
       next => {
         // console.log('----- ACCOUNT INFO -----', next);
         const currentWallet = Object.assign({}, this.walletService.currentWallet);
-        if (currentWallet) {
+        console.log(currentWallet);
+        if (currentWallet && Object.keys(currentWallet).length > 0) {
           for (let element of currentWallet.accounts) {
             const accountFiltered = this.walletService.filterAccountInfo(element.name);
             if (accountFiltered && accountFiltered.accountInfo) {
@@ -88,6 +89,6 @@ export class ViewAllAccountsComponent implements OnInit {
           this.currentWallet = currentWallet;
         }
       }
-    );
+    ));
   }
 }

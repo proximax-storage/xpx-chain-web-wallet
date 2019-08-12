@@ -427,7 +427,7 @@ export class TransactionsService {
     const currentAccount = Object.assign({}, this.walletService.getCurrentAccount());
     const dataBalance = accountsInfo.find(next => next.name === currentAccount.name);
     let balance = 0.000000;
-    if(dataBalance.accountInfo) {
+    if(dataBalance && dataBalance.accountInfo) {
       // console.log('----dataBalance----', dataBalance);
       const x =  dataBalance.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id);
       if(x) {

@@ -136,7 +136,7 @@ export class WalletService {
     console.log('desteoty all');
     this.currentWallet = null;
     this.setCurrentAccount(null);
-    this.setAccountsInfo([]);
+    this.setAccountsInfo(null);
   }
 
   /**
