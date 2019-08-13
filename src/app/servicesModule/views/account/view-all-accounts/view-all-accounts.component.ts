@@ -50,9 +50,9 @@ export class ViewAllAccountsComponent implements OnInit {
    */
   build() {
     const currentWallet = Object.assign({}, this.walletService.currentWallet);
-    // console.log(currentWallet);
+    console.log(currentWallet);
     if (currentWallet && Object.keys(currentWallet).length > 0) {
-      // console.log('es mayor a cero');
+      console.log('es mayor a cero');
       for (let element of currentWallet.accounts) {
         const accountFiltered = this.walletService.filterAccountInfo(element.name);
         if (accountFiltered && accountFiltered.accountInfo) {
