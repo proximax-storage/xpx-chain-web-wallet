@@ -5,9 +5,8 @@ import {
   Validators,
   AbstractControl
 } from "@angular/forms";
-import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { Router } from '@angular/router';
-import { MosaicId, SignedTransaction, Address, UInt64, AccountInfo } from "tsjs-xpx-chain-sdk";
+import { MosaicId, SignedTransaction, UInt64, AccountInfo } from "tsjs-xpx-chain-sdk";
 import { MosaicService, MosaicsStorage } from "../../../servicesModule/services/mosaic.service";
 import { ProximaxProvider } from "../../../shared/services/proximax.provider";
 import { DataBridgeService } from "../../../shared/services/data-bridge.service";
@@ -16,8 +15,6 @@ import { SharedService, ConfigurationForm } from '../../../shared/services/share
 import { TransactionsService, TransferInterface } from '../../services/transactions.service';
 import { environment } from '../../../../environments/environment';
 import { ServicesModuleService } from '../../../servicesModule/services/services-module.service';
-import { AppConfig } from '../../../config/app.config';
-import { first } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 
 
@@ -153,6 +150,7 @@ export class CreateTransferComponent implements OnInit {
    * @memberof CreateTransferComponent
    */
   changeSender(accountToSend: AccountsInterface) {
+    // console.log(accountToSend);
     if (accountToSend) {
       // console.log(accountToSend);
       this.clearForm();
@@ -168,12 +166,12 @@ export class CreateTransferComponent implements OnInit {
 
       this.charRest = this.configurationForm.message.maxLength;
       this.listContacts = [];
-      //this.subscribe['char'] 
+      //this.subscribe['char']
 
       // this.updateAccountInfo();
       // this.getMosaics(accountToSend);
       const accountFiltered = this.walletService.filterAccountInfo(this.sender.name);
-      console.log('----accountFiltered----',accountFiltered);
+      // console.log('----accountFiltered----',accountFiltered);
       if (accountFiltered) {
         this.buildCurrentAccountInfo(accountFiltered.accountInfo);
       }
@@ -201,37 +199,6 @@ export class CreateTransferComponent implements OnInit {
 
     this.accounts = accounts;
   }
-
-
-  /**
-   *
-   *
-   * @memberof CreateTransferComponent
-   */
-  /*async getMosaics(currentAccount: AccountsInterface = null) {
-    // this.ngxService.start();
-    this.disabledBtnAddMosaic = false;
-    if (currentAccount && !currentAccount.default) {
-      const accountInfo = await this.transactionService.getAccountInfo(this.proximaxProvider.createFromRawAddress(currentAccount.address));
-      if (accountInfo) {
-        this.checkBlock(accountInfo);
-      } else {
-        this.disabledBtnAddMosaic = true;
-        // this.ngxService.stop();
-        // this.router.navigate([`/${AppConfig.routes.dashboard}`]);
-      }
-    } else {
-      this.subscribe['accountInfo'] = this.walletService.getAccountInfoAsync().subscribe(
-        async accountInfo => {
-          this.checkBlock(accountInfo);
-        }, error => {
-          this.disabledBtnAddMosaic = true;
-          // this.ngxService.stop();
-          // this.router.navigate([`/${AppConfig.routes.dashboard}`])
-        }
-      );
-    }
-  }*/
 
 
   /**
@@ -402,8 +369,8 @@ export class CreateTransferComponent implements OnInit {
     //this.subscribe['accountsInfo'] =
     this.subscription.push(this.walletService.getAccountsInfo$().subscribe(
       next => {
-        console.log(next);
-        if (next && next.length > 1 && this.searching) {
+        // console.log(next);
+        if (next && next.length > 1) {
           this.searching = false;
           this.changeSender(this.walletService.currentAccount);
         }
