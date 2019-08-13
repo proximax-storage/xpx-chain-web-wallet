@@ -18,7 +18,8 @@
                 </div>
             </div>
 
-            <div *ngIf="showCurrentAccountToConvert"  class="col-12 col-md-10 col-lg-9 col-xl-10 mx-auto box-list-account-gray fs-08rem pb-1rem" [ngClass]="{'isPrimary':currentAccountToConvert.default}">
+            <div *ngIf="showCurrentAccountToConvert" class="col-12 col-md-10 col-lg-9 col-xl-10 mx-auto box-list-account-gray fs-08rem pb-1rem"
+                [ngClass]="{'isPrimary':currentAccountToConvert.default}">
                 <div class="row">
                     <div class="col-12 col-sm-10 col-md-9 col-lg-10 col-xl-10 pt-1rem w-b-a">
                         Account: {{currentAccountToConvert.name}} <br>
@@ -28,17 +29,22 @@
                         <!-- View Details -->
                         <i class="fa fa-eye fs-1-2rem cursor-p" aria-hidden="true" title="View details" [routerLink]="[routes.viewDetails+currentAccountToConvert.name]"></i>
                         <!-- Select account default -->
-                        <!-- <ng-container *ngIf="!currentAccountToConvert.default">
-                            <i class="fa fa-star fs-1-2rem ml-10px cursor-p" aria-hidden="true" (click)="changeAsPrimary(currentAccountToConvert.name)"
-                                title="Select account as default"></i>
-                        </ng-container> -->
+                        <ng-container *ngIf="currentAccountToConvert.default">
+                            <i class="fa fa-star fs-1-2rem ml-10px cursor-p" aria-hidden="true"></i>
+                        </ng-container>
                     </div>
                 </div>
 
+
+
+                <!-- {{currentAccountToConvert}} -->
                 <div class="row">
                     <div class="col-12 col-sm-10 col-md-9 col-lg-10 col-xl-10 pt-05rem w-b-a fw-600">
-                        Balance {{balance}} XPX
-                        <!-- <img class="h-1-5em ml-03rem" [ngClass]="{'iconInactive':currentAccount.default}" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" alt=""><br> -->
+                        <img *ngIf="currentAccountToConvert.default" class="icono" src="assets/images/img/icon-proximax-white.svg"
+                            width="20" alt="">
+                        <img *ngIf="!currentAccountToConvert.default" class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
+                            width="20" alt="">
+                        &nbsp;Balance {{balance}} XPX
                     </div>
                 </div>
             </div>
@@ -100,7 +106,8 @@
             <div class="row ml-01rem">
                 <div class="col-11 col-md-10 col-lg-8 mx-auto">
                     <div class="box-grey">
-                        <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20" alt="">&nbsp;
+                        <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
+                            width="20" alt="">&nbsp;
                         <span>Fee: 0.000000 XPX</span>
                     </div>
                 </div>
