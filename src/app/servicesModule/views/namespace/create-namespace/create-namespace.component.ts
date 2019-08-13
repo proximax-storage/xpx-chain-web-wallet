@@ -478,7 +478,7 @@ export class CreateNamespaceComponent implements OnInit {
       if (namespaceRoot === null || namespaceRoot === undefined) {
         this.namespaceForm.get('namespaceRoot').setValue('');
       } else {
-        if (namespaceRoot === '') {
+        if (namespaceRoot === '' || namespaceRoot === '1') {
           this.namespaceForm.get('duration').setValidators([Validators.required]);
           this.showDuration = true;
           this.typetransfer = 1;
@@ -521,7 +521,7 @@ export class CreateNamespaceComponent implements OnInit {
       // console.log('Este es el monto', amount);
 
 
-      if (this.namespaceForm.get('namespaceRoot').value === '') {
+      if (this.namespaceForm.get('namespaceRoot').value === '' || this.namespaceForm.get('namespaceRoot').value === '1') {
         if (accountInfo !== undefined && accountInfo !== null && Object.keys(accountInfo).length > 0) {
           if (accountInfo.accountInfo.mosaics.length > 0) {
             const invalidBalance = filtered.amount.compact() < amount;
