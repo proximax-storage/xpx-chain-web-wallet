@@ -25,11 +25,11 @@ export class WalletService {
   currentWallet: CurrentWalletInterface = null;
 
 
-  private currentAccountObs: BehaviorSubject<any> = new BehaviorSubject<any>(null);
-  private currentAccountObs$: Observable<any> = this.currentAccountObs.asObservable();
+  currentAccountObs: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  currentAccountObs$: Observable<any> = this.currentAccountObs.asObservable();
 
-  private accountsInfoSubject: BehaviorSubject<AccountsInfoInterface[]> = new BehaviorSubject<AccountsInfoInterface[]>(null);
-  private accountsInfo$: Observable<AccountsInfoInterface[]> = this.accountsInfoSubject.asObservable();
+  accountsInfoSubject: BehaviorSubject<AccountsInfoInterface[]> = new BehaviorSubject<AccountsInfoInterface[]>(null);
+  accountsInfo$: Observable<AccountsInfoInterface[]> = this.accountsInfoSubject.asObservable();
 
   constructor(
     private sharedService: SharedService,

@@ -41,7 +41,7 @@ export class SidebarMainComponent implements OnInit {
     private authService: AuthService,
     private dashboardService: DashboardService,
     private transactionService: TransactionsService,
-    private walletService: WalletService
+    public walletService: WalletService
   ) {
     this.version = environment.version;
   }
