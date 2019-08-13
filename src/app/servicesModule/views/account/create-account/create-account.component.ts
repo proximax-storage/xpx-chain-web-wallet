@@ -9,6 +9,7 @@ import { AppConfig } from '../../../../config/app.config';
 import { ConfigurationForm, SharedService } from '../../../../shared/services/shared.service';
 import { DataBridgeService } from '../../../../shared/services/data-bridge.service';
 import { DashboardService } from '../../../../dashboard/services/dashboard.service';
+import { TransactionsService } from 'src/app/transfer/services/transactions.service';
 
 @Component({
   selector: 'app-create-account',
@@ -41,7 +42,8 @@ export class CreateAccountComponent implements OnInit {
     private sharedService: SharedService,
     private router: Router,
     private dataBridgeService: DataBridgeService,
-    private dashboardService: DashboardService
+    private dashboardService: DashboardService,
+    private transactionService: TransactionsService
   ) { }
 
   ngOnInit() {
@@ -145,6 +147,8 @@ export class CreateAccountComponent implements OnInit {
           this.dataBridgeService.closeConenection();
           this.dataBridgeService.connectnWs();
           this.dashboardService.isIncrementViewDashboard = 0;
+          this.transactionService.searchAccountsInfo(this.walletService.currentWallet.accounts);
+
         }
       }
     }

@@ -155,8 +155,6 @@ export class CreateTransferComponent implements OnInit {
   changeSender(accountToSend: AccountsInterface) {
     if (accountToSend) {
       // console.log(accountToSend);
-      // this.ngxService.start(); // start foreground spinner of the master loader with 'default' taskId
-      // this.ngOnDestroy();
       this.clearForm();
       this.reset();
       this.sender = accountToSend;
@@ -175,6 +173,7 @@ export class CreateTransferComponent implements OnInit {
       // this.updateAccountInfo();
       // this.getMosaics(accountToSend);
       const accountFiltered = this.walletService.filterAccountInfo(this.sender.name);
+      console.log('----accountFiltered----',accountFiltered);
       if (accountFiltered) {
         this.buildCurrentAccountInfo(accountFiltered.accountInfo);
       }
@@ -403,7 +402,7 @@ export class CreateTransferComponent implements OnInit {
     //this.subscribe['accountsInfo'] =
     this.subscription.push(this.walletService.getAccountsInfo$().subscribe(
       next => {
-        // console.log(next);
+        console.log(next);
         if (next && next.length > 1 && this.searching) {
           this.searching = false;
           this.changeSender(this.walletService.currentAccount);

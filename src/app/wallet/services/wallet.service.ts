@@ -299,8 +299,6 @@ export class WalletService {
     });
 
     localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(othersWallet));
-    // this.dataBridgeService.closeConenection();
-    // this.dataBridgeService.connectnWs();
   }
 
 
