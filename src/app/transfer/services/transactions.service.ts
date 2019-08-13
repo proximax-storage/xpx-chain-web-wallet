@@ -165,9 +165,18 @@ export class TransactionsService {
    * @returns {ConfirmedTransactions}
    * @memberof TransactionsService
    */
-  getStructureDashboard(transaction: Transaction): TransactionsInterface {
+  getStructureDashboard(transaction: Transaction, othersTransactions?: TransactionsInterface[]): TransactionsInterface {
+    let isValid = true;
+    if (othersTransactions && othersTransactions.length > 0) {
+      const x = othersTransactions.filter(next => next.data.transactionInfo.hash === transaction.transactionInfo.hash);
+      if (x && x.length > 0) {
+        isValid = false;
+      }
+    }
+
+
     const keyType = this.getNameTypeTransaction(transaction.type);
-    if (keyType !== undefined) {
+    if (keyType !== undefined && isValid) {
       let recipientRentalFeeSink = '';
       if (transaction["mosaics"] === undefined) {
         if (transaction.type === this.arraTypeTransaction.registerNameSpace.id) {
@@ -427,10 +436,10 @@ export class TransactionsService {
     const currentAccount = Object.assign({}, this.walletService.getCurrentAccount());
     const dataBalance = accountsInfo.find(next => next.name === currentAccount.name);
     let balance = 0.000000;
-    if(dataBalance && dataBalance.accountInfo) {
+    if (dataBalance && dataBalance.accountInfo) {
       // console.log('----dataBalance----', dataBalance);
-      const x =  dataBalance.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id);
-      if(x) {
+      const x = dataBalance.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id);
+      if (x) {
         balance = x.amount.compact();
       }
     }
@@ -474,7 +483,7 @@ export class TransactionsService {
         const mosaics = info.mosaics.slice(0);
         if (element.default) {
           const findXPX = mosaics.find(mosaic => mosaic.id.toHex() === environment.mosaicXpxInfo.id);
-          if(findXPX) {
+          if (findXPX) {
             this.setBalance$(findXPX.amount.compact());
           }
         }

@@ -8,6 +8,7 @@ import { SharedService } from './shared.service';
 import { WalletService } from '../../wallet/services/wallet.service';
 import { TransactionsInterface, TransactionsService } from '../../transfer/services/transactions.service';
 import { ProximaxProvider } from './proximax.provider';
+import { NamespacesService } from 'src/app/servicesModule/services/namespaces.service';
 
 
 @Injectable({
@@ -29,7 +30,8 @@ export class DataBridgeService {
     private transactionsService: TransactionsService,
     private nodeService: NodeService,
     private sharedService: SharedService,
-    private proximaxProvider: ProximaxProvider
+    private proximaxProvider: ProximaxProvider,
+    private namespaces: NamespacesService
   ) { }
 
 
@@ -77,16 +79,11 @@ export class DataBridgeService {
   destroyUnconfirmedTransaction(element: TransactionsInterface) {
     this.transactionsService.getTransactionsUnConfirmed$().pipe(first()).subscribe(
       response => {
+        console.log('-----confirmada-----', element);
+        console.log('---response----', response);
         if (response.length > 0) {
-          let allTransactionUnConfirmed = response;
-          let unconfirmed = [];
-          for (const elementUnconfirmed of allTransactionUnConfirmed) {
-            if (elementUnconfirmed.data.transactionInfo.hash !== element.data.transactionInfo.hash) {
-              unconfirmed.unshift(element);
-            }
-          }
-
-
+          let allTransactionUnConfirmed = response.slice(0);
+          let unconfirmed = allTransactionUnConfirmed.filter(elementUnconfirmed => elementUnconfirmed.data.transactionInfo.hash !== element.data.transactionInfo.hash);
           this.transactionsService.setTransactionsUnConfirmed$(unconfirmed);
         }
       });
@@ -149,7 +146,7 @@ export class DataBridgeService {
    * @memberof DataBridgeService
    */
   getSocketTransactionsConfirmed(connector: Listener, audio: HTMLAudioElement) {
-    const currentWallet  = Object.assign({}, this.walletService.getCurrentWallet());
+    const currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
     currentWallet.accounts.forEach(element => {
       const address = this.proximaxProvider.createFromRawAddress(element.address);
       connector.confirmed(address).subscribe((incomingTransaction: Transaction) => {
@@ -157,15 +154,17 @@ export class DataBridgeService {
           'type': 'confirmed',
           'data': incomingTransaction
         });
+
         this.transactionsService.getTransactionsConfirmed$().pipe(first()).subscribe(allTransactionConfirmed => {
           const transactionPushed = allTransactionConfirmed.slice(0);
-          const transactionFormatter = this.transactionsService.getStructureDashboard(incomingTransaction);
+          const transactionFormatter = this.transactionsService.getStructureDashboard(incomingTransaction, transactionPushed);
           if (transactionFormatter !== null) {
             transactionPushed.unshift(transactionFormatter);
             this.destroyUnconfirmedTransaction(transactionFormatter);
             this.transactionsService.setTransactionsConfirmed$(transactionPushed);
             audio.play();
             this.transactionsService.searchAccountsInfo(this.walletService.currentWallet.accounts);
+            this.namespaces.buildNamespaceStorage();
             // this.transactionsService.validateTypeTransaction(incomingTransaction.type);
             // this.namespaceService.buildNamespaceStorage();
             // this.transactionsService.updateBalance();
@@ -185,22 +184,30 @@ export class DataBridgeService {
    * @memberof DataBridgeService
    */
   getSocketTransactionsUnConfirmed(connector: Listener, audio: HTMLAudioElement) {
-    const currentWallet  = Object.assign({}, this.walletService.getCurrentWallet());
+    const currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
     currentWallet.accounts.forEach(element => {
       const address = this.proximaxProvider.createFromRawAddress(element.address);
       connector.unconfirmedAdded(address).subscribe(unconfirmedTransaction => {
+        console.log('----connector----', connector);
+        console.log('----unconfirmedTransaction----', unconfirmedTransaction);
+
+        // aqui las que me llegan del WS
         this.setTransactionStatus({
           'type': 'unconfirmed',
           'data': unconfirmedTransaction
         });
 
+
+        // Aqui las que tengo por confirmar en mi variable
         this.transactionsService.getTransactionsUnConfirmed$().pipe(first()).subscribe(
           async transactionsUnconfirmed => {
             const transactionPushed = transactionsUnconfirmed.slice(0);
-            const transactionFormatter = this.transactionsService.getStructureDashboard(unconfirmedTransaction);
-            transactionPushed.unshift(transactionFormatter);
-            this.transactionsService.setTransactionsUnConfirmed$(transactionPushed);
-            audio.play();
+            const transactionFormatter = this.transactionsService.getStructureDashboard(unconfirmedTransaction, transactionPushed);
+            if (transactionFormatter !== null) {
+              transactionPushed.unshift(transactionFormatter);
+              this.transactionsService.setTransactionsUnConfirmed$(transactionPushed);
+              audio.play();
+            }
           }, err => {
             // console.error(err);
           });
@@ -216,7 +223,7 @@ export class DataBridgeService {
    * @memberof DataBridgeService
    */
   getSocketStatusError(connector: Listener, audio: HTMLAudioElement) {
-    const currentWallet  = Object.assign({}, this.walletService.getCurrentWallet());
+    const currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
     currentWallet.accounts.forEach(element => {
       const address = this.proximaxProvider.createFromRawAddress(element.address);
       connector.status(address).subscribe(error => {

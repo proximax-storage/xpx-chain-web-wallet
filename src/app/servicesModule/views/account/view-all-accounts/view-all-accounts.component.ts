@@ -27,7 +27,8 @@ export class ViewAllAccountsComponent implements OnInit {
 
   constructor(
     private transactionService: TransactionsService,
-    private walletService: WalletService
+    private walletService: WalletService,
+    private sharedService: SharedService
   ) { }
 
   ngOnInit() {
@@ -67,6 +68,10 @@ export class ViewAllAccountsComponent implements OnInit {
       }
       this.currentWallet = currentWallet;
     }
+  }
+
+  copyMessage(message: string) {
+    this.sharedService.showSuccess('', `${message} copied`);
   }
 
   /**
