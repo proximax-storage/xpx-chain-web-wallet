@@ -40,6 +40,7 @@ export class CreateMosaicComponent implements OnInit {
   transactionSigned: SignedTransaction[] = [];
   transactionReady: SignedTransaction[] = [];
   subscribe = ['transactionStatus'];
+  calculateRentalFee = '500.000000';
 
   constructor(
     private fb: FormBuilder,

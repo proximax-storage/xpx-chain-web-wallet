@@ -5,7 +5,8 @@
       <!-- Type transfer -->
       <div class="col-12">
         <span class="color-dark-green fw-bold fs-2rem">{{transferTransaction.nameType}}</span>
-        <img class="mr-1rem ml-1rem h-2em" src="assets/images/img/icon-transactions-green-16h-proximax-sirius-wallet.svg" alt="">
+        <img class="mr-1rem ml-1rem h-2em"
+          src="assets/images/img/icon-transactions-green-16h-proximax-sirius-wallet.svg" alt="">
 
         <!-- Income -->
         <ng-container *ngIf="transferTransaction?.receive">
@@ -30,8 +31,13 @@
             <span class="color-dark-green fw-bold fs-1-3rem">Fee: </span>
           </div>
           <div class="col-9 d-flex">
-            <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="16" alt="">&nbsp;
-            <span class="color-dark-green fw-400 fs-1-3rem">{{transferTransaction.fee}} XPX</span>
+            <div class="row">
+              <div class="col-12">
+                <img class="icono mb-03rem" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="16"
+                  alt="">&nbsp;
+                <span class="color-dark-green fw-400 fs-1-3rem">{{transferTransaction.fee}} XPX</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
