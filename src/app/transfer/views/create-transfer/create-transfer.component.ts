@@ -627,6 +627,8 @@ export class CreateTransferComponent implements OnInit {
           }
         );
       } else {
+        this.formTransfer.get('password').setValue('');
+        this.blockSendButton = false;
         this.blockButton = false;
       }
     }
@@ -688,34 +690,38 @@ export class CreateTransferComponent implements OnInit {
         if (value !== null && value !== undefined) {
           const a = Number(value);
           let validateAmount = false;
-          const accountInfo = this.walletService.filterAccountInfo(this.sender.name).accountInfo;
-          if (accountInfo !== undefined && accountInfo !== null && Object.keys(accountInfo).length > 0) {
-            if (accountInfo.mosaics.length > 0) {
-              const filtered = accountInfo.mosaics.find(element => {
-                return element.id.toHex() === new MosaicId(environment.mosaicXpxInfo.id).toHex();
-              });
+          if (this.sender) {
+            const accountInfo = this.walletService.filterAccountInfo(this.sender.name).accountInfo;
+            if (accountInfo !== undefined && accountInfo !== null && Object.keys(accountInfo).length > 0) {
+              if (accountInfo.mosaics.length > 0) {
+                const filtered = accountInfo.mosaics.find(element => {
+                  return element.id.toHex() === new MosaicId(environment.mosaicXpxInfo.id).toHex();
+                });
 
-              let arrAmount = value.toString().replace(/,/g, "").split('.');
-              let decimal;
-              let realAmount;
+                let arrAmount = value.toString().replace(/,/g, "").split('.');
+                let decimal;
+                let realAmount;
 
-              if (arrAmount.length < 2) {
-                decimal = this.addZeros(environment.mosaicXpxInfo.divisibility);
-              } else {
-                let arrDecimals = arrAmount[1].split('');
-                decimal = this.addZeros(environment.mosaicXpxInfo.divisibility - arrDecimals.length, arrAmount[1]);
-              }
+                if (arrAmount.length < 2) {
+                  decimal = this.addZeros(environment.mosaicXpxInfo.divisibility);
+                } else {
+                  let arrDecimals = arrAmount[1].split('');
+                  decimal = this.addZeros(environment.mosaicXpxInfo.divisibility - arrDecimals.length, arrAmount[1]);
+                }
 
-              realAmount = `${arrAmount[0]}${decimal}`
+                realAmount = `${arrAmount[0]}${decimal}`
 
-              if (filtered !== undefined && filtered !== null) {
-                const invalidBalance = filtered.amount.compact() < Number(realAmount);
-                if (invalidBalance && !this.insufficientBalance) {
-                  this.insufficientBalance = true;
-                  this.blockSendButton = true;
-                } else if (!invalidBalance && this.insufficientBalance) {
-                  this.insufficientBalance = false;
-                  this.blockSendButton = false;
+                if (filtered !== undefined && filtered !== null) {
+                  const invalidBalance = filtered.amount.compact() < Number(realAmount);
+                  if (invalidBalance && !this.insufficientBalance) {
+                    this.insufficientBalance = true;
+                    this.blockSendButton = true;
+                  } else if (!invalidBalance && this.insufficientBalance) {
+                    this.insufficientBalance = false;
+                    this.blockSendButton = false;
+                  }
+                } else {
+                  validateAmount = true;
                 }
               } else {
                 validateAmount = true;
@@ -723,8 +729,6 @@ export class CreateTransferComponent implements OnInit {
             } else {
               validateAmount = true;
             }
-          } else {
-            validateAmount = true;
           }
 
           if (validateAmount) {

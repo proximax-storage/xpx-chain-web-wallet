@@ -49,22 +49,37 @@ export class SidebarMainComponent implements OnInit {
   ngOnInit() {
     this.destroySubscription();
     this.readRoute();
+    this.walletName = this.walletService.currentWallet.name;
+    // console.log(this.walletService.currentWallet);
 
-    // NAME ACCOUNT
-    this.subscriptions['nameAccount'] = this.walletService.getNameAccount$().subscribe(next => {
-      if(next) {
-        this.walletName = next.name;
+    this.subscriptions['nameAccount'] = this.walletService.getAccountsInfo$().subscribe(next => {
+      // NAME ACCOUNT
+      let amountTotal = 0.000000;
+      if (next && next.length > 0) {
+        for (let element of next) {
+          if (element && element.accountInfo) {
+            if (element.accountInfo.mosaics && element.accountInfo.mosaics.length > 0) {
+              const mosaicXpx = element.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id);
+              if (mosaicXpx) {
+                amountTotal = amountTotal + mosaicXpx.amount.compact();
+              }
+            }
+          }
+        };
+
+        const amountFormatter = this.transactionService.amountFormatterSimple(amountTotal);
+        this.vestedBalance = `Total Balance ${amountFormatter} XPX`;
       }
     });
 
     // BALANCE
-    this.subscriptions['balance'] = this.transactionService.getBalance$().subscribe(next => {
-      if(next) {
+    /* this.subscriptions['balance'] = this.transactionService.getBalance$().subscribe(next => {
+      if (next) {
         this.vestedBalance = `Balance ${next} XPX`;
       }
     }, error => {
       this.vestedBalance = `Balance 0.000000 XPX`;
-    });
+    });*/
 
 
     this.itemsHeader = {
