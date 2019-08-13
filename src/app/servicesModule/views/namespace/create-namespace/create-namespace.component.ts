@@ -41,7 +41,6 @@ export class CreateNamespaceComponent implements OnInit {
   fee: string;
   feeType: string = 'XPX';
   insufficientBalance = false;
-  inputBlocked = false;
   labelNamespace: string = '';
   namespaceChangeInfo: any;
   namespaceInfo: Array<object> = [];
@@ -51,7 +50,7 @@ export class CreateNamespaceComponent implements OnInit {
       value: '1',
       label: '(New root Namespace)',
       selected: true,
-      disabled: true
+      disabled: false
     }
   ];
 
@@ -170,7 +169,7 @@ export class CreateNamespaceComponent implements OnInit {
     //Form namespace default
     this.namespaceForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(this.configurationForm.namespaceName.minLength), Validators.maxLength(this.configurationForm.namespaceName.maxLength)]],
-      namespaceRoot: [''],
+      namespaceRoot: ['1'],
       duration: ['', [Validators.required]],
       password: ['', [
         Validators.required,
@@ -198,7 +197,10 @@ export class CreateNamespaceComponent implements OnInit {
    * @memberof CreateNamespaceComponent
    */
   createNamespace() {
-    if (this.namespaceForm.valid && this.validateForm && !this.blockBtnSend && !this.inputBlocked) {
+    // console.log('this.namespaceForm.valid', this.namespaceForm.valid);
+    // console.log('validateForm', this.validateForm);
+    // console.log('this.blockBtnSend', this.blockBtnSend);
+    if (this.namespaceForm.valid && this.validateForm && !this.blockBtnSend) {
       this.blockBtnSend = true;
       const common = {
         password: this.namespaceForm.get('password').value,
@@ -256,11 +258,11 @@ export class CreateNamespaceComponent implements OnInit {
   getNameNamespace() {
     this.subscribe['accountInfo'] = this.namespaceService.getNamespaceFromAccountAsync().subscribe(
       namespaceInfo => {
+        // console.log('-----namespaceInfo----', namespaceInfo);
         if (namespaceInfo !== null && namespaceInfo !== undefined) {
           this.namespaceService.searchNamespaceFromAccountStorage$().then(
             async namespaceStorage => {
               if (namespaceStorage !== undefined && namespaceStorage.length > 0) {
-                this.blockUI.start('Loading...');
                 for (let data of namespaceStorage) {
                   if (data.NamespaceInfo.depth === 1) {
                     await this.getRootNamespace(data, data.NamespaceInfo.active);
@@ -269,7 +271,6 @@ export class CreateNamespaceComponent implements OnInit {
                   }
                 }
 
-                this.blockUI.stop();
                 this.arrayselect = this.namespace.sort(function (a: any, b: any) {
                   return a.label === b.label ? 0 : +(a.label > b.label) || -1;
                 });
@@ -386,35 +387,6 @@ export class CreateNamespaceComponent implements OnInit {
       }
     );
   }
-
-  /**
-   *
-   *
-   * @memberof CreateNamespaceComponent
-   */
-  /*getTransactionStatus() {
-    // Get transaction status
-    this.subscribe['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
-      statusTransaction => {
-        if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned.length > 0) {
-          for(let element of this.transactionSigned) {
-            if (statusTransaction['data'].transactionInfo.hash === element.hash) {
-              this.transactionReady.push(element);
-              if (statusTransaction['type'] === 'confirmed') {
-                this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['data'].transactionInfo.hash);
-                this.sharedService.showSuccess('', 'Transaction confirmed');
-              } else if (statusTransaction['type'] === 'unconfirmed') {
-                this.sharedService.showInfo('', 'Transaction unconfirmed');
-              } else {
-                this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['data'].transactionInfo.hash);
-                this.sharedService.showWarning('', statusTransaction['type'].status);
-              }
-            }
-          }
-        }
-      }
-    );
-  }*/
 
   /**
    *
@@ -538,45 +510,50 @@ export class CreateNamespaceComponent implements OnInit {
    */
   validateRentalFee(amount: number) {
     const accountInfo = this.walletService.filterAccountInfo();
-    const filtered = accountInfo.accountInfo.mosaics.find(element => {
-      return element.id.toHex() === new MosaicId(this.proximaxProvider.mosaicXpx.mosaicId).toHex();
-    });
-    console.log('Este es el monto', amount);
+    // console.log(accountInfo);
+    if (
+      accountInfo && accountInfo.accountInfo &&
+      accountInfo.accountInfo.mosaics && accountInfo.accountInfo.mosaics.length > 0
+    ) {
+      const filtered = accountInfo.accountInfo.mosaics.find(element => {
+        return element.id.toHex() === new MosaicId(this.proximaxProvider.mosaicXpx.mosaicId).toHex();
+      });
+      // console.log('Este es el monto', amount);
 
 
-    if (this.namespaceForm.get('namespaceRoot').value === '') {
-      if (accountInfo !== undefined && accountInfo !== null && Object.keys(accountInfo).length > 0) {
-        if (accountInfo.accountInfo.mosaics.length > 0) {
-          const invalidBalance = filtered.amount.compact() < amount;
-          const mosaic = this.mosaicServices.filterMosaic(filtered.id);
-          // console.log('---mosaic---', mosaic);
-          this.calculateRentalFee = this.transactionService.amountFormatter(amount, mosaic.mosaicInfo);
-          if (invalidBalance && !this.insufficientBalance) {
+      if (this.namespaceForm.get('namespaceRoot').value === '') {
+        if (accountInfo !== undefined && accountInfo !== null && Object.keys(accountInfo).length > 0) {
+          if (accountInfo.accountInfo.mosaics.length > 0) {
+            const invalidBalance = filtered.amount.compact() < amount;
+            const mosaic = this.mosaicServices.filterMosaic(filtered.id);
+            // console.log('---mosaic---', mosaic);
+            this.calculateRentalFee = this.transactionService.amountFormatter(amount, mosaic.mosaicInfo);
+            if (invalidBalance && !this.insufficientBalance) {
+              this.insufficientBalance = true;
+              // this.namespaceForm.controls['name'].disable();
+              // this.namespaceForm.controls['password'].disable();
+            } else if (!invalidBalance && this.insufficientBalance) {
+              this.insufficientBalance = false;
+              // this.namespaceForm.controls['name'].enable();
+              // this.namespaceForm.controls['password'].enable();
+            }
+          } else {
             this.insufficientBalance = true;
-            this.inputBlocked = true;
-            this.namespaceForm.controls['name'].disable();
-            this.namespaceForm.controls['password'].disable();
-          } else if (!invalidBalance && this.insufficientBalance) {
-            this.insufficientBalance = false;
-            this.inputBlocked = false;
-            this.namespaceForm.controls['name'].enable();
-            this.namespaceForm.controls['password'].enable();
+            // this.namespaceForm.controls['name'].disable();
+            // this.namespaceForm.controls['password'].disable();
           }
-        } else {
-          this.insufficientBalance = true;
-          this.inputBlocked = true;
-          this.namespaceForm.controls['name'].disable();
-          this.namespaceForm.controls['password'].disable();
         }
-      }
-    } else {
-      console.log('No validate', amount);
+      } else {
+        // console.log('No validate', amount);
 
-      this.calculateRentalFee = '10.000000';
-      this.insufficientBalance = false;
-      this.inputBlocked = false;
-      this.namespaceForm.controls['name'].enable();
-      this.namespaceForm.controls['password'].enable();
+        this.calculateRentalFee = '10.000000';
+        this.insufficientBalance = false;
+        this.namespaceForm.controls['name'].enable();
+        this.namespaceForm.controls['password'].enable();
+      }
+    }else {
+      this.sharedService.showWarning('', 'You do not have enough balance in the default account');
+      this.router.navigate([`/${AppConfig.routes.service}`]);
     }
   }
 }

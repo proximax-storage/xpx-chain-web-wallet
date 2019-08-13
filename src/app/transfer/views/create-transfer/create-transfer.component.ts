@@ -152,6 +152,7 @@ export class CreateTransferComponent implements OnInit {
    * @memberof CreateTransferComponent
    */
   changeSender(accountToSend: AccountsInterface) {
+    // console.log(accountToSend);
     if (accountToSend) {
       // console.log(accountToSend);
       this.clearForm();
@@ -177,7 +178,7 @@ export class CreateTransferComponent implements OnInit {
       // this.updateAccountInfo();
       // this.getMosaics(accountToSend);
       const accountFiltered = this.walletService.filterAccountInfo(this.sender.name);
-      console.log('----accountFiltered----',accountFiltered);
+      // console.log('----accountFiltered----',accountFiltered);
       if (accountFiltered) {
         this.buildCurrentAccountInfo(accountFiltered.accountInfo);
       }
@@ -406,8 +407,8 @@ export class CreateTransferComponent implements OnInit {
     //this.subscribe['accountsInfo'] =
     this.subscription.push(this.walletService.getAccountsInfo$().subscribe(
       next => {
-        console.log(next);
-        if (next && next.length > 1 && this.searching) {
+        // console.log(next);
+        if (next && next.length > 1) {
           this.searching = false;
           this.changeSender(this.walletService.currentAccount);
         }
