@@ -11,10 +11,16 @@
             </div>
             <div class="col-12 col-sm-10 col-md-9 col-lg-10">
               <div class="d-flex flex-column justify-content-between">
-                <span class="fs-09rem color-blue-intermedio cursor-p" [routerLink]="[viewDetailsAccount+currentAccount.name]">
-                  <span style="color: #2a2e32 !important;">DEFAULT ACCOUNT:</span> {{currentAccount.name}}
+                <span class="fs-09rem color-blue-intermedio cursor-p">
+                  <span style="color: #2a2e32 !important;">DEFAULT ACCOUNT <br>  </span>
+                  <a [routerLink]="[viewDetailsAccount+currentAccount.name]">{{currentAccount.name}}</a>
                 </span>
-                <span class="fs-1rem">{{vestedBalance}} | USD 0.00</span>
+                <div class="row">
+                  <div class="col-11">
+                    <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
+                      width="20" alt=""><span class="fs-1rem">&nbsp;{{vestedBalance}} | USD 0.00</span>
+                  </div>
+                </div>
                 <div class="row d-flex align-items-center">
                   <div class="d-flex justify-content-between">
                     <div class="col-11">
@@ -22,7 +28,8 @@
                     </div>
                     <div class="col-1">
                       <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="cursor-p"
-                        alt="Copy" width="20" (click)="copyMessage('Address')" ngxClipboard [cbContent]="currentAccount.address">
+                        alt="Copy" width="20" (click)="copyMessage('Address')" ngxClipboard
+                        [cbContent]="currentAccount.address">
                     </div>
                   </div>
                 </div>

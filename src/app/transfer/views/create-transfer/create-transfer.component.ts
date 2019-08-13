@@ -57,7 +57,7 @@ export class CreateTransferComponent implements OnInit {
 
   searching = true;
   selectOtherMosaics = [];
-  showContacts = true;
+  showContacts = false;
   // subscribe = ['accountInfo', 'transactionStatus', 'char', 'block'];
   title = 'Make a transfer';
   transactionStatus: boolean = false;

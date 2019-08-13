@@ -48,6 +48,9 @@
                 </div>
                 <div
                   class="col-12 col-sm-2 col-md-3 col-lg-2 col-xl-2 d-flex align-items-center justify-content-start justify-content-sm-end justify-content-md-end justify-content-lg-end justify-content-xl-end pt-1rem">
+                      <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="cursor-p"
+                    alt="Copy" width="20" (click)="copyMessage('Address')" ngxClipboard
+                    [cbContent]="currentAccount.address">&nbsp;&nbsp;
 
                   <!-- View Details -->
                   <i class="fa fa-eye fs-1-2rem cursor-p" aria-hidden="true" title="View details"
@@ -63,17 +66,20 @@
 
               <div class="row">
                 <div class="col-12 col-sm-10 col-md-9 col-lg-10 col-xl-10 pt-05rem w-b-a fw-600">
-                  Balance {{currentAccount.balance}} XPX
-                  <!-- <img class="h-1-5em ml-03rem" [ngClass]="{'iconInactive':currentAccount.default}" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" alt=""><br> -->
+                  <img *ngIf="currentAccount.default" class="icono" src="assets/images/img/icon-proximax-white.svg"
+                    width="20" alt="">
+                  <img *ngIf="!currentAccount.default" class="icono"
+                    src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20" alt="">
+                  &nbsp;Balance {{currentAccount.balance}} XPX
                 </div>
               </div>
-            </div>
 
-            <ng-container *ngIf="accountChanged && currentAccount.default">
-              <div class="col-12 col-md-10 col-lg-9 col-xl-10 mx-auto d-flex justify-content-end animated fadeIn">
-                <span class="msgSuccess">Account changed to default</span>
-              </div>
-            </ng-container>
+              <ng-container *ngIf="accountChanged && currentAccount.default">
+                <div class="col-12 col-md-10 col-lg-9 col-xl-10 mx-auto d-flex justify-content-end animated fadeIn">
+                  <span class="msgSuccess">Account changed to default</span>
+                </div>
+              </ng-container>
+            </div>
           </ng-container>
         </ng-container>
       </div>

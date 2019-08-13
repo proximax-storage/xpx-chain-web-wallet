@@ -90,7 +90,7 @@
               <div [disabled]="listContacts.length === 0" class="background-gray-icons p-12px bord-rad-25px cursor-p"
                 (click)="showContacts = (listContacts.length > 0) ? !showContacts : showContacts"
                 [title]="(!showContacts) ? 'Show contacts': 'Hide contacts'">
-                <img class=" w-30px" [src]="(!showContacts) ?
+                <img class=" w-30px" [src]="(!showContacts && listContacts.length === 0) ?
                 'assets/images/img/icon-address-book-gray-28h-proximax-sirius-wallet.svg' :
                 'assets/images/img/icon-address-green-book-16h-proximax-sirius-wallet.svg'
                 ">
@@ -112,9 +112,13 @@
     <!-- MOSAIC XPX -->
     <div class="row">
       <div class="col-11 col-md-10 col-lg-8 mx-auto">
-        <div class="box-grey pt-1rem pb-1rem">
-          <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" alt="">
-          <span>{{mosaicXpx.name | uppercase}}</span>
+        <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
+          <div class="row">
+            <div class="col-12">
+              <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" alt="">
+              <span>{{mosaicXpx.name | uppercase}}</span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -228,12 +232,16 @@
     </ng-container>
 
 
-
     <!-- FEE -->
     <div class="row ml-01rem">
       <div class="col-11 col-md-10 col-lg-8 mx-auto">
-        <div class="box-grey">
-          <span>Fee: 0.000000 XPX</span>
+        <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
+          <div class="row">
+            <div class="col-12">
+              <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" alt="">
+              <span>Fee: 0.000000 XPX</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
