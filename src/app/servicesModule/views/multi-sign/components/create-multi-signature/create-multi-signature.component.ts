@@ -3,8 +3,35 @@ import { NgBlockUI, BlockUI } from 'ng-block-ui';
 import { AppConfig } from 'src/app/config/app.config';
 import { SharedService, ConfigurationForm } from 'src/app/shared/services/shared.service';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
-import { WalletService } from 'src/app/wallet/services/wallet.service';
-import { Account, PublicAccount, ModifyMultisigAccountTransaction, Deadline, MultisigCosignatoryModification, UInt64, NetworkType, Address, MultisigCosignatoryModificationType } from 'tsjs-xpx-chain-sdk';
+import { WalletService, AccountsInfoInterface } from 'src/app/wallet/services/wallet.service';
+import {
+  Account, PublicAccount,
+  ModifyMultisigAccountTransaction,
+  Deadline,
+  MultisigCosignatoryModification,
+  UInt64,
+  NetworkType,
+  Address,
+  MultisigCosignatoryModificationType,
+  HashLockTransaction,
+  Listener,
+  LockFundsTransaction,
+  TransactionHttp,
+  SignedTransaction,
+  NetworkCurrencyMosaic,
+  AggregateTransaction,
+  Mosaic,
+  NamespaceId,
+  MosaicId,
+  AccountInfo
+} from 'tsjs-xpx-chain-sdk';
+import { environment } from '../../../../../../environments/environment';
+import { NodeService } from 'src/app/servicesModule/services/node.service';
+import { mergeMap, filter } from 'rxjs/operators';
+import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
+import { ServicesModuleService } from 'src/app/servicesModule/services/services-module.service';
+import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
+import { TransactionsService } from 'src/app/transfer/services/transactions.service';
 
 @Component({
   selector: 'app-create-multi-signature',
@@ -14,12 +41,23 @@ import { Account, PublicAccount, ModifyMultisigAccountTransaction, Deadline, Mul
 export class CreateMultiSignatureComponent implements OnInit {
 
   @BlockUI() blockUI: NgBlockUI;
+  accountInfo: AccountsInfoInterface = null;
   publicAccountToConvert: PublicAccount;
-
+  subscribe = ['accountInfo', 'transactionStatus', 'char', 'block'];
   blockSend: boolean;
+  showCurrentAccountToConvert: boolean;
+  accountValid: boolean;
+  showContacts: boolean;
+  listContact: any = [];
+  subscribeAccount = null;
   configurationForm: ConfigurationForm = {};
   createMultsignForm: FormGroup;
   currentAccounts: any = [];
+  routes = {
+    backToService: `/${AppConfig.routes.service}`,
+    createNewAccount: `/${AppConfig.routes.selectTypeCreationAccount}`,
+    viewDetails: `/${AppConfig.routes.account}/`
+  };
   currentAccountToConvert: any;
   cosignatoryList: CosignatoryList[] = [];
   headElements: string[];
@@ -27,24 +65,53 @@ export class CreateMultiSignatureComponent implements OnInit {
   minApprovaMaxLength: number = 1;
   minApprovaMinLength: number = 0;
   accountToConvert: Account;
-
+  connector: Listener;
+  transactionHttp: TransactionHttp
+  balance: string;
 
   constructor(
     private fb: FormBuilder,
     private sharedService: SharedService,
     private walletService: WalletService,
+    private nodeService: NodeService,
+    private dataBridge: DataBridgeService,
+    private serviceModuleService: ServicesModuleService,
+    private proximaxProvider: ProximaxProvider,
+    private transactionService: TransactionsService,
 
   ) {
     this.headElements = ['Address', 'Action', 'Remove'];
     this.configurationForm = this.sharedService.configurationForm;
     this.blockSend = false;
+    this.accountValid = false;
+    this.listContact = [];
+    this.showContacts = false;
+    this.showCurrentAccountToConvert = false
     this.currentAccounts = []
+
+    this.transactionHttp = new TransactionHttp(environment.protocol + "://" + `${this.nodeService.getNodeSelected()}`
+    );
   }
+
+
+  /**
+ *
+ *
+ * @memberof CreateTransferComponent
+ */
+  ngOnDestroy(): void {
+    this.subscribe.forEach(element => {
+      if (this.subscribe[element] !== undefined) {
+        this.subscribe[element].unsubscribe();
+      }
+    });
+  }
+
   ngOnInit() {
     this.createForm()
     this.subscribeValueChange();
     this.getAccounts();
-
+    this.booksAddress()
     // cuenta multi firma
     //9efe61fb49eea91fdfd89c80bae15b769c64e687917584473c823a6c0962ee90
     //TBFZFICV47MMUVYVHNOKJ3APF27SSW3AD6UV55OA
@@ -73,6 +140,7 @@ export class CreateMultiSignatureComponent implements OnInit {
       ]
       ],
       cosignatory: [''],
+      contact: [''],
       minApprovalDelta: [1, [
         Validators.required, Validators.minLength(1),
         Validators.maxLength(1)]],
@@ -113,6 +181,50 @@ export class CreateMultiSignatureComponent implements OnInit {
     this.createMultsignForm.get('minRemovalDelta').patchValue(1, { emitEvent: false });
     this.cosignatoryList = []
   }
+
+  /**
+  *
+  *
+  * @memberof CreateTransferComponent
+  */
+  booksAddress() {
+    const data = this.listContact.slice(0);
+    const bookAddress = this.serviceModuleService.getBooksAddress();
+
+    this.listContact = [];
+    if (bookAddress !== undefined && bookAddress !== null) {
+      for (let x of bookAddress) {
+        data.push(x);
+      }
+      this.listContact = data;
+    }
+  }
+
+  /**
+ *
+ *
+ * @param {*} event
+ * @memberof CreateMultiSignatureComponent
+ */
+  async selectContact(event: { label: string, value: string }) {
+    if (event !== undefined && event.value !== '') {
+      this.proximaxProvider.getAccountInfo(Address.createFromRawAddress(event.value)).subscribe((res: AccountInfo) => {
+        console.log(res)
+        if (res.publicKeyHeight.toHex() === '0000000000000000') {
+
+          this.sharedService.showWarning('', 'you need a public key');
+        } else {
+          this.createMultsignForm.get('cosignatory').patchValue(res.publicKey, { emitEvent: true })
+        }
+      }, err => {
+        this.sharedService.showWarning('', 'Address is not valid');
+      })
+    }
+  }
+
+
+
+
 
   /**
    *
@@ -181,14 +293,126 @@ export class CreateMultiSignatureComponent implements OnInit {
           this.modifyMultisigAccountTransactionObject.modifications,
           this.modifyMultisigAccountTransactionObject.networkType);
 
-          console.log("convertIntoMultisigTransaction:",convertIntoMultisigTransaction)
-          this.blockSend = false;
+
+        /**
+         * Create Bonded
+         */
+        const aggregateTransaction = AggregateTransaction.createBonded(
+          Deadline.create(),
+          [convertIntoMultisigTransaction.toAggregate(this.accountToConvert.publicAccount)],
+          this.modifyMultisigAccountTransactionObject.networkType);
+        const signedTransaction = this.accountToConvert.sign(aggregateTransaction)
+
+        /**
+        * Create Hash lock transaction
+        */
+
+        console.log("net", NetworkCurrencyMosaic.createRelative(10))
+
+        console.log("xpx", new Mosaic(new MosaicId('0dc67fbe1cad29e3'), UInt64.fromUint(Number(10000000))))
+        console.log(new NamespaceId('prx.xpx').toHex())
+        const hashLockTransaction = HashLockTransaction.create(
+          Deadline.create(),
+          new Mosaic(new MosaicId('0dc67fbe1cad29e3'), UInt64.fromUint(Number(10000000))),
+          UInt64.fromUint(480),
+          signedTransaction,
+          this.modifyMultisigAccountTransactionObject.networkType);
+
+        this.hashLock(this.accountToConvert.sign(hashLockTransaction), signedTransaction)
+
       }
     } else {
       this.blockSend = false;
 
     }
   }
+
+  // @param {LockFundsTransaction} lockFundsTransaction  - lock funds transaction.
+
+  /**
+   * Before sending an aggregate bonded transaction, the future 
+   * multisig account needs to lock at least 10 cat.currency.
+   * This transaction is required to prevent network spamming and ensure that the inner
+   * transactions are cosigned. After the hash lock transaction has been confirmed,
+   * announce the aggregate transaction.
+   *
+   * @memberof CreateMultiSignatureComponent
+   * @param {SignedTransaction} hashLockTransactionSigned  - Hash lock funds transaction.
+   * @param {SignedTransaction} signedTransaction  - Signed transaction of Bonded.
+   */
+
+  hashLock(hashLockTransactionSigned: SignedTransaction, signedTransaction: SignedTransaction) {
+
+    this.transactionHttp
+      .announce(hashLockTransactionSigned)
+      .subscribe(
+        async () => {
+          this.getTransactionStatushashLock(hashLockTransactionSigned)
+          this.blockSend = false;
+        },
+        err => {
+          this.sharedService.showError('', err);
+          this.blockSend = false;
+        });
+
+  }
+  /**
+   *
+   *
+   * @memberof CreateMultiSignatureComponent
+   *  @param {SignedTransaction} signedTransaction  - Signed transaction.
+   */
+  getTransactionStatushashLock(signedTransaction) {
+    // Get transaction status
+    this.subscribe['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
+      statusTransaction => {
+        if (statusTransaction !== null && statusTransaction !== undefined && signedTransaction !== null) {
+          const statusTransactionHash = (statusTransaction['type'] === 'error') ? statusTransaction['data'].hash : statusTransaction['data'].transactionInfo.hash;
+          const match = statusTransactionHash === signedTransaction.hash;
+          if (statusTransaction['type'] === 'confirmed' && match) {
+            signedTransaction = null;
+            this.sharedService.showSuccess('', 'Transaction confirmed');
+          } else if (statusTransaction['type'] === 'unconfirmed' && match) {
+            signedTransaction = null;
+            this.sharedService.showInfo('', 'Transaction unconfirmed');
+          } else if (match) {
+            signedTransaction = null;
+            this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
+          }
+        }
+      }
+    );
+  }
+
+  // /**
+  // * @memberof CreateMultiSignatureComponent
+  // * @param {SignedTransaction} hashLockTransactionSigned  - Hash lock funds transaction.
+  // * @param {SignedTransaction} signedTransaction  - Signed transaction of Bonded.
+  // * @param {Account} account  - Account to convert 
+  // */
+  // hashLockMonitor(account: Account, hashLockTransactionSigned: SignedTransaction, signedTransaction: SignedTransaction) {
+  //   this.connector.open().then(() => {
+  //     this.connector.confirmed(account.address)
+  //       .pipe(
+  //         filter((transaction) => transaction.transactionInfo !== undefined
+  //           && transaction.transactionInfo.hash === hashLockTransactionSigned.hash),
+  //         mergeMap(ignored => this.transactionHttp.announceAggregateBonded(signedTransaction))
+  //       )
+  //       .subscribe(announcedAggregateBonded => console.log(announcedAggregateBonded),
+  //         err => console.error(err));
+  //   });
+  // }
+
+
+
+
+
+
+
+
+
+
+
 
   /**
    * With a multisig cosignatory modification a cosignatory is added to or deleted from a multisig account.
@@ -231,8 +455,48 @@ export class CreateMultiSignatureComponent implements OnInit {
   selectAccount($event: Event) {
     this.clearData()
     const account: any = $event
-    this.currentAccountToConvert = account.value;
-    this.publicAccountToConvert = PublicAccount.createFromPublicKey(this.currentAccountToConvert.publicAccount.publicKey, this.currentAccountToConvert.network)
+    console.log(account)
+    this.showCurrentAccountToConvert = false;
+    if (account !== null && account !== undefined) {
+      this.currentAccountToConvert = account.value;
+      this.showCurrentAccountToConvert = true;
+      this.subscribeAccount = this.walletService.getAccountsInfo$().subscribe(
+        async accountInfo => {
+          console.log(this.currentAccountToConvert)
+          console.log(accountInfo)
+
+          this.accountInfo = this.walletService.filterAccountInfo(this.currentAccountToConvert.name);
+          console.log(this.accountInfo)
+          this.accountValid = (
+            this.accountInfo !== null &&
+            this.accountInfo !== undefined &&
+            this.accountInfo.accountInfo &&
+            this.accountInfo.accountInfo.publicKey !== "0000000000000000000000000000000000000000000000000000000000000000"
+          );
+          if (this.subscribeAccount) {
+            this.subscribeAccount.unsubscribe();
+          }
+          this.balance = '0.000000'
+          if (this.accountValid) {
+            const mosaicXPX = this.accountInfo.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id);
+
+            if (mosaicXPX) {
+              this.balance = this.transactionService.amountFormatterSimple(mosaicXPX.amount.compact());
+            }
+
+            console.log('mosaicXPX', mosaicXPX)
+            console.log('balance', this.balance)
+            this.publicAccountToConvert = PublicAccount.createFromPublicKey(this.currentAccountToConvert.publicAccount.publicKey, this.currentAccountToConvert.network)
+          } else {
+            this.sharedService.showWarning('', 'you need a public key');
+          }
+        }
+      );
+
+    }
+
+
+
   }
   /**
    * Change the form validator (cosignatory)
@@ -292,6 +556,7 @@ export class CreateMultiSignatureComponent implements OnInit {
   */
   addCosignatory() {
     if (this.createMultsignForm.get('cosignatory').valid) {
+      this.showContacts = false;
       const cosignatory: PublicAccount = PublicAccount.createFromPublicKey(
         this.createMultsignForm.get('cosignatory').value,
         this.walletService.currentAccount.network

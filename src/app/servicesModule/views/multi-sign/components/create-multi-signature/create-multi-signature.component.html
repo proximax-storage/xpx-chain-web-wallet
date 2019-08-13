@@ -17,10 +17,48 @@
 
                 </div>
             </div>
+
+            <div *ngIf="showCurrentAccountToConvert"  class="col-12 col-md-10 col-lg-9 col-xl-10 mx-auto box-list-account-gray fs-08rem pb-1rem" [ngClass]="{'isPrimary':currentAccountToConvert.default}">
+                <div class="row">
+                    <div class="col-12 col-sm-10 col-md-9 col-lg-10 col-xl-10 pt-1rem w-b-a">
+                        Account: {{currentAccountToConvert.name}} <br>
+                        {{currentAccountToConvert.address}}
+                    </div>
+                    <div class="col-12 col-sm-2 col-md-3 col-lg-2 col-xl-2 d-flex align-items-center justify-content-start justify-content-sm-end justify-content-md-end justify-content-lg-end justify-content-xl-end pt-1rem">
+                        <!-- View Details -->
+                        <i class="fa fa-eye fs-1-2rem cursor-p" aria-hidden="true" title="View details" [routerLink]="[routes.viewDetails+currentAccountToConvert.name]"></i>
+                        <!-- Select account default -->
+                        <!-- <ng-container *ngIf="!currentAccountToConvert.default">
+                            <i class="fa fa-star fs-1-2rem ml-10px cursor-p" aria-hidden="true" (click)="changeAsPrimary(currentAccountToConvert.name)"
+                                title="Select account as default"></i>
+                        </ng-container> -->
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12 col-sm-10 col-md-9 col-lg-10 col-xl-10 pt-05rem w-b-a fw-600">
+                        Balance {{balance}} XPX
+                        <!-- <img class="h-1-5em ml-03rem" [ngClass]="{'iconInactive':currentAccount.default}" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" alt=""><br> -->
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Contacts -->
+            <ng-container *ngIf="showContacts && listContact.length > 0">
+                <div class="row">
+                    <div class="col-11  mx-auto">
+                        <ng-select mdbInputDirective mdbValidate formControlName="contact" class="selectWrapper"
+                            [items]="listContact" bindLabel="label" bindValue="value" placeholder="Contact" (change)="selectContact($event)">
+                        </ng-select>
+                    </div>
+                </div>
+            </ng-container>
+
             <!-- COSIGNATORY -->
             <div class="row">
-                <div class="col-11 mx-auto">
-                    <div class="md-form form-sm">
+                <div class="col-7 col-sm-8 col-md-9">
+                    <div class="md-form form-sm mt-1rem mb-0rem">
                         <input [maxlength]="configurationForm.privateKey.maxLength" [minlength]="configurationForm.privateKey.minLength"
                             formControlName="cosignatory" required mdbInputDirective mdbValidate [validateSuccess]="true"
                             [validateError]="true" type="text" id="cosignatory" class="form-control form-control-sm input-border"
@@ -32,6 +70,21 @@
                         </mdb-error>
                     </div>
                 </div>
+
+                <!-- Show Contacts -->
+                <ng-container>
+                    <div class="col-3 col-sm-2 col-md-2 d-flex justify-content-center align-items-center pt-10px">
+                        <div [attr.disabled]="listContact.length === 0" class="background-gray-icons p-12px bord-rad-25px cursor-p"
+                            (click)="showContacts = (listContact.length > 0) ? !showContacts : showContacts" [title]="(!showContacts) ? 'Show contacts': 'Hide contacts'">
+                            <img class=" w-30px" [src]="(!showContacts) ?
+                'assets/images/img/icon-address-book-gray-28h-proximax-sirius-wallet.svg' :
+                'assets/images/img/icon-address-green-book-16h-proximax-sirius-wallet.svg'
+                ">
+                        </div>
+                    </div>
+                </ng-container>
+
+
             </div>
             <!-- ADD MOSAICS -->
             <div class="row mt-1rem">
@@ -125,10 +178,10 @@
                                     </tr>
                                 </ng-container>
                                 <ng-container *ngIf="cosignatoryList.length === 0">
-                                        <tr>
-                                          <td colspan="3" class="txt-a-center">nothing to show</td>
-                                        </tr>
-                                      </ng-container>
+                                    <tr>
+                                        <td colspan="3" class="txt-a-center">nothing to show</td>
+                                    </tr>
+                                </ng-container>
                             </tbody>
                         </table>
                     </div>
