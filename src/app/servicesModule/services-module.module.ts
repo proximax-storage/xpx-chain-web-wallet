@@ -20,6 +20,7 @@ import { CreateMultiSignatureComponent } from './views/multi-sign/components/cre
 import { ViewAllAccountsComponent } from './views/account/view-all-accounts/view-all-accounts.component';
 import { AccountCreatedComponent } from './views/account/account-created/account-created.component';
 import { SelectionAccountTypeComponent } from './views/account/selection-account-creation-type/selection-account-creation-type.component';
+import { AddContactsComponent } from './views/address-book/add-contacts/add-contacts.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { SelectionAccountTypeComponent } from './views/account/selection-account
     CreateMultiSignatureComponent,
     ViewAllAccountsComponent,
     AccountCreatedComponent,
-    SelectionAccountTypeComponent
+    SelectionAccountTypeComponent,
+    AddContactsComponent
   ],
   imports: [
     CoreModule,

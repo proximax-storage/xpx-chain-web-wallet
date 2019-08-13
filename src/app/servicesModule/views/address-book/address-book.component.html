@@ -7,10 +7,9 @@
     </div>
 
     <div class="col-12 col-md-4 d-flex justify-content-start justify-content-md-end">
-      <span (click)="basicModal.show()"
-        class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio cursor-p">
+      <a class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio" [routerLink]="[addContacts]">
         <span>Add new contact</span>
-      </span>
+      </a>
       <div class="col-2 d-flex justify-content-center">
         <div class="col-6">
           <div class="line-separator h-100porcent"></div>
@@ -79,8 +78,10 @@
                   {{contact.value}}</td>
                 <td *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex">
                   <span class="table-remove text-center d-flex justify-content-center">
-                    <button type="button" mdbBtn color="danger" rounded="true" size="sm" class="my-0"
-                      (click)="remove(contact.label)">Remove</button>
+                    <button type="button" mdbBtn class="background-btn" title="Edit" rounded="true" size="sm" class="my-0"
+                     (click)="navigate(contact.label)"><i class="fa fa-edit"></i></button>
+                    <button type="button" mdbBtn color="danger" rounded="true" title="Delete" size="sm" class="my-0"
+                      (click)="remove(contact.label)"><i class="fa fa-trash"></i></button>
                   </span>
                 </td>
               </tr>

@@ -4,6 +4,7 @@ import { ModalDirective, MdbTablePaginationComponent, MdbTableDirective } from '
 import { SharedService } from 'src/app/shared/services/shared.service';
 import { ServicesModuleService } from "../../services/services-module.service";
 import { AppConfig } from '../../../config/app.config';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-address-book',
@@ -13,8 +14,9 @@ import { AppConfig } from '../../../config/app.config';
 export class AddressBookComponent {
 
   moduleName = 'Address Book';
-  componentName = 'ADD AND LIST CONTACTS';
+  componentName = 'LIST';
   goBack = `/${AppConfig.routes.service}`;
+  addContacts = `/${AppConfig.routes.addContacts}`;
   //Pagination
   @ViewChild(MdbTablePaginationComponent, {static: true}) mdbTablePagination: MdbTablePaginationComponent;
   @ViewChild(MdbTableDirective, {static: true}) mdbTable: MdbTableDirective;
@@ -36,7 +38,8 @@ export class AddressBookComponent {
     private cdRef: ChangeDetectorRef,
     private fb: FormBuilder,
     private serviceModuleService: ServicesModuleService,
-    private sharedService: SharedService
+    private sharedService: SharedService,
+    private router: Router
   ) {
     this.hideTable = false;
   }
@@ -140,6 +143,10 @@ export class AddressBookComponent {
       validation = this.contactForm.get(nameInput);
     }
     return validation;
+  }
+
+  navigate(name) {
+    this.router.navigate([`${AppConfig.routes.addContacts}/${name}`]);
   }
 
   /**

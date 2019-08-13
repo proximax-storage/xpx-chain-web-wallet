@@ -5,6 +5,7 @@ export const AppConfig: Config = {
     account: 'details-account',
     accountCreated: 'account-created',
     addressBook: 'address-book',
+    addContacts: 'add-contacts',
     apostille: 'apostille',
     audiApostille: 'audit-apostille',
     auth: 'auth',
@@ -49,6 +50,7 @@ export interface Config {
     account: string;
     accountCreated: string;
     addressBook: string;
+    addContacts: string;
     apostille: string;
     audiApostille: string;
     auth: string;
