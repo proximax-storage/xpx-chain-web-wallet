@@ -111,7 +111,7 @@ export class TransactionsService {
     private proximaxProvider: ProximaxProvider,
     private nodeService: NodeService,
     private walletService: WalletService,
-    private mosaicService: MosaicService,
+    private mosaicServices: MosaicService,
     private namespaceService: NamespacesService
   ) { }
 
@@ -460,7 +460,7 @@ export class TransactionsService {
       // console.log(accountInfo);
       if (accountInfo !== null && accountInfo !== undefined) {
         //Search mosaics
-        this.mosaicService.searchMosaics(accountInfo.mosaics.map(next => next.id));
+        this.mosaicServices.searchMosaics(accountInfo.mosaics.map(next => next.id));
       }
       return accountInfo;
     } catch (error) {
@@ -492,6 +492,8 @@ export class TransactionsService {
           name: element.name,
           accountInfo: info
         });
+
+        this.mosaicServices.searchMosaics(info.mosaics.map(n => n.id));
       } catch (error) {
         accountsInfo.push({
           name: element.name,
@@ -549,7 +551,7 @@ export class TransactionsService {
       type === this.arraTypeTransaction.registerNameSpace.id ||
       type === this.arraTypeTransaction.aggregateComplete.id
     ) {
-      this.mosaicService.resetMosaicsStorage();
+      this.mosaicServices.resetMosaicsStorage();
       this.namespaceService.resetNamespaceStorage();
     }
 

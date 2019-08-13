@@ -177,6 +177,7 @@ export class CreateTransferComponent implements OnInit {
       // this.updateAccountInfo();
       // this.getMosaics(accountToSend);
       const accountFiltered = this.walletService.filterAccountInfo(this.sender.name);
+      console.log('----accountFiltered----',accountFiltered);
       if (accountFiltered) {
         this.buildCurrentAccountInfo(accountFiltered.accountInfo);
       }
