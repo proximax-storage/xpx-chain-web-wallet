@@ -7,6 +7,8 @@ import { environment } from '../../../../../environments/environment';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { AppConfig } from '../../../../config/app.config';
 import { ConfigurationForm, SharedService } from '../../../../shared/services/shared.service';
+import { DataBridgeService } from '../../../../shared/services/data-bridge.service';
+import { DashboardService } from '../../../../dashboard/services/dashboard.service';
 
 @Component({
   selector: 'app-create-account',
@@ -37,7 +39,9 @@ export class CreateAccountComponent implements OnInit {
     private proximaxProvider: ProximaxProvider,
     private fb: FormBuilder,
     private sharedService: SharedService,
-    private router: Router
+    private router: Router,
+    private dataBridgeService: DataBridgeService,
+    private dashboardService: DashboardService
   ) { }
 
   ngOnInit() {
@@ -138,6 +142,9 @@ export class CreateAccountComponent implements OnInit {
           }, accountBuilded, newAccount);
           this.walletService.saveAccountStorage(nameAccount, accountBuilded);
           this.router.navigate([`/${AppConfig.routes.accountCreated}`]);
+          this.dataBridgeService.closeConenection();
+          this.dataBridgeService.connectnWs();
+          this.dashboardService.isIncrementViewDashboard = 0;
         }
       }
     }

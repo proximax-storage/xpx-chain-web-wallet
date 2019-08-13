@@ -189,7 +189,7 @@ export class WalletService {
    * @memberof WalletService
    */
   filterAccountInfo(nameAccount?: string): AccountsInfoInterface {
-    if(this.accountsInfo && this.accountsInfo.length > 0) {
+    if (this.accountsInfo && this.accountsInfo.length > 0) {
       if (nameAccount) {
         // console.log('---nameAccount---', nameAccount);
         return this.accountsInfo.find(next => next.name === nameAccount);
@@ -199,25 +199,25 @@ export class WalletService {
     }
   }
 
-   /**
-   *
-   *
-   * @param {*} wallet
-   * @returns
-   * @memberof WalletService
-   */
+  /**
+  *
+  *
+  * @param {*} wallet
+  * @returns
+  * @memberof WalletService
+  */
   getAccountDefault(wallet: any) {
     if (wallet) {
       return wallet.accounts.find(x => x.default === true);
     }
   }
 
-    /**
-   *
-   *
-   * @returns {AccountsInfoInterface[]}
-   * @memberof WalletService
-   */
+  /**
+ *
+ *
+ * @returns {AccountsInfoInterface[]}
+ * @memberof WalletService
+ */
   getAccountsInfo(): AccountsInfoInterface[] {
     return this.accountsInfo;
   }
@@ -299,6 +299,8 @@ export class WalletService {
     });
 
     localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(othersWallet));
+    // this.dataBridgeService.closeConenection();
+    // this.dataBridgeService.connectnWs();
   }
 
 
@@ -342,7 +344,7 @@ export class WalletService {
    */
   setAccountsInfo(accountsInfo: AccountsInfoInterface[], pushed = false) {
     if (pushed) {
-      for(let element of accountsInfo) {
+      for (let element of accountsInfo) {
         this.accountsInfo.push(element);
       }
     } else {
