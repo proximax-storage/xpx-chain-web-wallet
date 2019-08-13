@@ -83,6 +83,7 @@ export class CreateTransferComponent implements OnInit {
    */
   ngOnInit() {
     this.configurationForm = this.sharedService.configurationForm;
+    this.charRest = this.configurationForm.message.maxLength;
     this.createFormTransfer();
     this.subscribeValue();
     this.booksAddress();
@@ -168,12 +169,7 @@ export class CreateTransferComponent implements OnInit {
 
       this.charRest = this.configurationForm.message.maxLength;
       this.listContacts = [];
-      //this.subscribe['char'] =
-      this.subscription.push(this.formTransfer.get('message').valueChanges.subscribe(val => {
-        if (val) {
-          this.charRest = this.configurationForm.message.maxLength - val.length;
-        }
-      }));
+      //this.subscribe['char'] 
 
       // this.updateAccountInfo();
       // this.getMosaics(accountToSend);
@@ -567,7 +563,7 @@ export class CreateTransferComponent implements OnInit {
     this.boxOtherMosaics = [];
     this.blockSendButton = false;
     this.blockButton = false;
-    this.charRest = 0;
+    this.charRest = this.configurationForm.message.maxLength;
     this.disabledBtnAddMosaic = false;
     this.errorOtherMosaics = false;
     this.incrementMosaics = 0;
@@ -681,6 +677,12 @@ export class CreateTransferComponent implements OnInit {
         }
       }
     );
+
+    this.subscription.push(this.formTransfer.get('message').valueChanges.subscribe(val => {
+      if (val) {
+        this.charRest = this.configurationForm.message.maxLength - val.length;
+      }
+    }));
 
     //Amount XPX
     // const mosaic = this.mosaicServices.filterMosaic(new MosaicId(this.mosaicXpx.id));
