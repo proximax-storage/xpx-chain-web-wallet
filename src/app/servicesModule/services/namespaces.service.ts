@@ -8,10 +8,12 @@ import {
   AliasActionType,
   NetworkType,
   AliasTransaction,
-  Deadline
+  Deadline,
+  Namespace
 } from "tsjs-xpx-chain-sdk";
 import { ProximaxProvider } from "../../shared/services/proximax.provider";
 import { WalletService } from '../../wallet/services/wallet.service';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: "root"
@@ -22,6 +24,9 @@ export class NamespacesService {
   namespaceFromAccount: NamespaceInfo[] = null;
   private namespaceFromAccountSubject: BehaviorSubject<NamespaceInfo[]> = new BehaviorSubject<NamespaceInfo[]>(null);
   private namespaceFromAccount$: Observable<NamespaceInfo[]> = this.namespaceFromAccountSubject.asObservable();
+
+  private namespacesChangedSubject: BehaviorSubject<NamespaceStorageInterface[]> = new BehaviorSubject<NamespaceStorageInterface[]>(null);
+  private namespacesChanged$: Observable<NamespaceStorageInterface[]> = this.namespacesChangedSubject.asObservable();
 
   constructor(
     private proximaxProvider: ProximaxProvider,
@@ -52,32 +57,138 @@ export class NamespacesService {
     return signedTransaction;
   }
 
+
   /**
-     * Search and save namespace in cache
-     *
-     * @memberof NamespacesService
-     */
-  async buildNamespaceStorage() {
-    //Gets array of NamespaceInfo for an account
-    const currentAccount  = Object.assign({}, this.walletService.getCurrentAccount());
-    this.getNamespacesFromAccountAsync(this.proximaxProvider.createFromRawAddress(currentAccount.address))
-      .then(response => {
-        this.namespaceFromAccount = response;
-        this.namespaceFromAccountSubject.next(response);
-        this.setNamespaceStorage(response);
-      }).catch(() => {
-        //Nothing!
-      });
+   *
+   *
+   * @param {Address[]} allAddress
+   * @returns
+   * @memberof NamespacesService
+   */
+  async searchNamespacesFromAccounts(allAddress: Address[]) {
+    let allNamespaces: NamespaceInfo[] = [];
+    for (let address of allAddress) {
+      try {
+        //Gets array of NamespaceInfo for an account
+        const namespaceInfo: NamespaceInfo[] = await this.proximaxProvider.getNamespaceFromAccount(address).toPromise();
+        if (namespaceInfo && namespaceInfo.length > 0) {
+          namespaceInfo.forEach(element => {
+            allNamespaces.push(element);
+          });
+        }
+      } catch (error) {
+        console.log('----error---', error);
+      }
+    }
+
+    console.log('allNamespaces', allNamespaces);
+    this.saveNamespaceStorage(allNamespaces);
   }
 
   /**
    *
    *
-   * @param {NamespaceId} namespaceId
-   * @returns {Promise<NamespaceStorage>}
+   * @param {NamespaceInfo[]} namespaceInfo
    * @memberof NamespacesService
    */
-  async getNamespaceFromId(namespaceId: NamespaceId): Promise<NamespaceStorage> {
+  async saveNamespaceStorage(namespaceInfo: NamespaceInfo[]) {
+    // console.log('----namespaceInfo----', namespaceInfo);
+    const data = localStorage.getItem(environment.nameKeyNamespaces);
+    const names = await this.proximaxProvider.namespaceHttp.getNamespacesName(namespaceInfo.map(x => x.id)).toPromise();
+    // console.log('----names---', names);
+    const namespacesFound: NamespaceStorageInterface[] = [];
+    for (let info of namespaceInfo) {
+      namespacesFound.push({
+        id: [info.id.id.lower, info.id.id.higher],
+        idToHex: info.id.toHex(),
+        namespaceName: names.find(name => name.namespaceId.toHex() === info.id.toHex()),
+        namespaceInfo: info
+      });
+    };
+
+    const namespaceToSaved = namespacesFound.slice(0);
+    if (data !== null && data !== undefined && namespaceToSaved.length > 0) {
+      for (let namespacesSaved of JSON.parse(data)) {
+        const existNamespace = namespaceToSaved.find(b => b.idToHex === namespacesSaved.idToHex);
+        // console.log('----existe?----', existNamespace);
+        if (!existNamespace) {
+          namespaceToSaved.push(namespacesSaved);
+        }
+      }
+    }
+
+    // console.log('-TODO LO QUE GUARDARÉ', namespaceToStorage);
+    localStorage.setItem(environment.nameKeyNamespaces, JSON.stringify(namespaceToSaved));
+    const currentAccount = this.walletService.getCurrentAccount();
+    const namespacesCurrentAccount = namespacesFound.filter(next =>
+      next.namespaceInfo.owner.address.pretty() ===
+      this.proximaxProvider.createFromRawAddress(currentAccount.address).pretty()
+    );
+    this.setNamespaceChanged(namespacesCurrentAccount);
+  }
+
+
+  /**
+   *
+   *
+   * @param {Address} address
+   * @returns
+   * @memberof NamespacesService
+   */
+  getFromStorageNamespacesOfAccount(address: Address) {
+    const namespacesStorage = localStorage.getItem(environment.nameKeyNamespaces);
+    console.log('----namespacesStorage---', JSON.parse(namespacesStorage));
+    if (namespacesStorage !== null && namespacesStorage !== undefined) {
+      return JSON.parse(namespacesStorage).filter((next: NamespaceStorageInterface) =>
+        this.proximaxProvider.createFromRawAddress(next.namespaceInfo.owner.address['address']).pretty() ===
+        address.pretty()
+      );
+    }
+  }
+
+  /**
+   *
+   *
+   * @memberof NamespacesService
+   */
+  setNamespaceChanged(namespacesFound: NamespaceStorageInterface[]) {
+    this.namespacesChangedSubject.next(namespacesFound);
+  }
+
+  /**
+   *
+   *
+   * @returns {Observable<NamespaceStorageInterface[]>}
+   * @memberof NamespacesService
+   */
+  getNamespaceChanged(): Observable<NamespaceStorageInterface[]> {
+    return this.namespacesChanged$;
+  }
+
+
+  /**
+   *
+   * (NO SE ESTA USANDO)
+   * @param {NamespaceId} idNamespace
+   * @returns
+   * @memberof NamespacesService
+   */
+  filterNamespaceStorage(idNamespace: NamespaceId) {
+    const dataStorage = localStorage.getItem(environment.nameKeyNamespaces);
+    const allNamespacesSaved = (dataStorage !== null && dataStorage !== undefined) ? JSON.parse(dataStorage) : [];
+    return (allNamespacesSaved.length > 0) ? allNamespacesSaved.find(x => new NamespaceId(x.id).toHex() === idNamespace.toHex()) : [];
+  }
+
+  // ---------------------------------------------------------------------------------------------
+
+  /**
+   *
+   *
+   * @param {NamespaceId} namespaceId
+   * @returns {Promise<NamespaceStorageInterface>}
+   * @memberof NamespacesService
+   */
+  async getNamespaceFromId(namespaceId: NamespaceId): Promise<NamespaceStorageInterface> {
     const data = this.filterNamespace(namespaceId);
     if (data !== null && data !== undefined) {
       return data;
@@ -95,24 +206,6 @@ export class NamespacesService {
     }
 
     return null;
-  }
-
-  /**
-   * Gets array of NamespaceInfo for an account
-   *
-   * @param {Address} address
-   * @returns
-   * @memberof NamespacesService
-   */
-  async getNamespacesFromAccountAsync(address: Address): Promise<NamespaceInfo[]> {
-    try {
-      //Gets array of NamespaceInfo for an account
-      const namespaceInfo = await this.proximaxProvider.namespaceHttp.getNamespacesFromAccount(address).toPromise();
-      return namespaceInfo;
-    } catch (error) {
-      //Nothing!
-      return [];
-    }
   }
 
   /**
@@ -139,7 +232,7 @@ export class NamespacesService {
    * @returns {Observable<any>}
    * @memberof NamespacesService
    */
-  async searchNamespaceFromAccountStorage$(): Promise<NamespaceStorage[]> {
+  async searchNamespaceFromAccountStorage$(): Promise<NamespaceStorageInterface[]> {
     const namespaceFound = [];
     if (this.namespaceFromAccount !== null) {
       for (let element of this.namespaceFromAccount) {
@@ -188,10 +281,11 @@ export class NamespacesService {
             // Filter by namespaceId the namespaceName from the array of namespacesName
             const namespaceName = namespacesName.find(data => data.namespaceId.toHex() === element.id.toHex());
             if (namespaceName) {
-              const data: NamespaceStorage = {
+              const data: NamespaceStorageInterface = {
                 id: [namespaceName.namespaceId.id.lower, namespaceName.namespaceId.id.higher],
+                idToHex: namespaceName.namespaceId.toHex(),
                 namespaceName: namespaceName,
-                NamespaceInfo: element
+                namespaceInfo: element
               };
               namespacesStorage.push(data);
             }
@@ -201,7 +295,7 @@ export class NamespacesService {
             //this.mosaicsService.buildMosaicsFromNamespace(element.id);
           });
 
-          localStorage.setItem(this.getNameStorage(), JSON.stringify(namespacesStorage));
+          localStorage.setItem(environment.nameKeyNamespaces, JSON.stringify(namespacesStorage));
           //console.log(namespacesStorage);
           return namespacesStorage;
         }
@@ -227,7 +321,7 @@ export class NamespacesService {
    * @returns {NamespaceStorage}
    * @memberof NamespacesService
    */
-  filterNamespace(namespaceId: NamespaceId): NamespaceStorage {
+  filterNamespace(namespaceId: NamespaceId): NamespaceStorageInterface {
     if (namespaceId !== undefined) {
       const namespaceStorage = this.getNamespaceFromStorage();
       if (namespaceStorage !== null && namespaceStorage !== undefined) {
@@ -261,19 +355,9 @@ export class NamespacesService {
    * @returns
    * @memberof NamespacesService
    */
-  getNamespaceFromStorage(): NamespaceStorage[] {
-    const dataStorage = localStorage.getItem(this.getNameStorage());
+  getNamespaceFromStorage(): NamespaceStorageInterface[] {
+    const dataStorage = localStorage.getItem(environment.nameKeyNamespaces);
     return (dataStorage !== null && dataStorage !== undefined) ? JSON.parse(dataStorage) : [];
-  }
-
-  /**
-   *
-   *
-   * @returns
-   * @memberof NamespacesService
-   */
-  getNameStorage() {
-    return `proximax-namespaces`;
   }
 
   /**
@@ -292,13 +376,18 @@ export class NamespacesService {
    * @memberof NamespacesService
    */
   resetNamespaceStorage() {
-    localStorage.removeItem(this.getNameStorage());
+    localStorage.removeItem(environment.nameKeyNamespaces);
   }
 }
 
+export interface NamespacesOfAccountsInterface {
+  nameAccount: string;
+  namespaces: NamespaceStorageInterface[]
+}
 
-export interface NamespaceStorage {
+export interface NamespaceStorageInterface {
   id: number[];
+  idToHex: string;
   namespaceName: NamespaceName;
-  NamespaceInfo: NamespaceInfo;
+  namespaceInfo: NamespaceInfo;
 }

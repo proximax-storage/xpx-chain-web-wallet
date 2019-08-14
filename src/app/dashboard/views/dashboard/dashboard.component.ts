@@ -77,8 +77,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.dashboardService.incrementViewDashboard();
     this.dashboardService.subscribeLogged();
     this.currentAccount = Object.assign({}, this.walletService.getCurrentAccount());
-    this.currentAccount.address = this.proximaxProvider.createFromRawAddress(
-      this.currentAccount.address).pretty();
+    this.currentAccount.address = this.proximaxProvider.createFromRawAddress(this.currentAccount.address).pretty();
     this.typeTransactions = this.transactionService.getTypeTransactions();
     this.vestedBalance = `0.000000 ${environment.mosaicXpxInfo.coin}`;
     this.balance();
@@ -100,8 +99,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
 
-  //-----------------------------------------------
-
   /**
    * Get balance from account
    *
@@ -110,6 +107,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   balance() {
     this.subscriptions['balance'] = this.transactionService.getBalance$().subscribe(
       next => {
+        console.log(next);
         this.vestedBalance = `${next} XPX`;
       }, () => {
         this.vestedBalance = `0.000000 XPX`;
@@ -136,13 +134,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.iconReloadDashboard = true;
     // Validate if it is the first time the dashboard is loaded or if you click on the reload button
     if (this.dashboardService.getCantViewDashboard() === 1 || reload) {
-     /* if (!reload) {
-        this.namespacesService.buildNamespaceStorage();
-        this.transactionService.searchAccountsInfo(this.walletService.currentWallet.accounts);
-        const blockchainHeight: UInt64 = await this.proximaxProvider.getBlockchainHeight().toPromise();
-        this.dataBridgeService.setblock(blockchainHeight.compact());
-      }*/
-
       this.searching = true;
       this.iconReloadDashboard = false;
       this.loadTransactions();
@@ -254,11 +245,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
       (next: TransactionsInterface[]) => {
         this.cantUnconfirmed = next.length;
         this.transactionsUnconfirmed = next;
-
-        // Datatable
-        /*this.mdbTable.setDataSource(this.transactionsUnconfirmed);
-        this.transactionsUnconfirmed = this.mdbTable.getDataSource();
-        this.previous = this.mdbTable.getDataSource();*/
       }
     );
   }

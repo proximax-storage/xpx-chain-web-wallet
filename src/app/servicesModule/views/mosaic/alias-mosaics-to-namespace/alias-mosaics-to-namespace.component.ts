@@ -6,7 +6,7 @@ import { NamespaceId, MosaicId } from 'tsjs-xpx-chain-sdk';
 import { AppConfig } from '../../../../config/app.config';
 import { MosaicService } from '../../../../servicesModule/services/mosaic.service';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
-import { NamespacesService, NamespaceStorage } from '../../../../servicesModule/services/namespaces.service';
+import { NamespacesService, NamespaceStorageInterface } from '../../../../servicesModule/services/namespaces.service';
 import { DataBridgeService } from '../../../../shared/services/data-bridge.service';
 import { SharedService, ConfigurationForm } from '../../../../shared/services/shared.service';
 import { WalletService } from '../../../../wallet/services/wallet.service';
@@ -93,7 +93,7 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
         const namespaceSelect = this.namespaceSelect.slice(0);
         if (namespaceStorage !== undefined && namespaceStorage.length > 0) {
           for (let data of namespaceStorage) {
-            if (data.NamespaceInfo.depth === 1) {
+            if (data.namespaceInfo.depth === 1) {
               namespaceSelect.push({
                 value: `${data.namespaceName.name}`,
                 label: `${data.namespaceName.name}`,
@@ -102,11 +102,11 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
               });
             } else {
               let name = '';
-              if (data.NamespaceInfo.depth === 2) {
+              if (data.namespaceInfo.depth === 2) {
                 //Assign level 2
                 const level2 = data.namespaceName.name;
                 //Search level 1
-                const level1: NamespaceStorage = await this.namespaceService.getNamespaceFromId(
+                const level1: NamespaceStorageInterface = await this.namespaceService.getNamespaceFromId(
                   this.proximaxProvider.getNamespaceId([data.namespaceName.parentId.id.lower, data.namespaceName.parentId.id.higher])
                 );
 
@@ -117,16 +117,16 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
                   selected: false,
                   disabled: false
                 });
-              } else if (data.NamespaceInfo.depth === 3) {
+              } else if (data.namespaceInfo.depth === 3) {
                 //Assign el level3
                 const level3 = data.namespaceName.name;
                 //search level 2
-                const level2: NamespaceStorage = await this.namespaceService.getNamespaceFromId(
+                const level2: NamespaceStorageInterface = await this.namespaceService.getNamespaceFromId(
                   this.proximaxProvider.getNamespaceId([data.namespaceName.parentId.id.lower, data.namespaceName.parentId.id.higher])
                 );
 
                 //search level 1
-                const level1: NamespaceStorage = await this.namespaceService.getNamespaceFromId(
+                const level1: NamespaceStorageInterface = await this.namespaceService.getNamespaceFromId(
                   this.proximaxProvider.getNamespaceId([level2.namespaceName.parentId.id.lower, level2.namespaceName.parentId.id.higher])
                 );
                 name = `${level1.namespaceName.name}.${level2.namespaceName.name}.${level3}`;
@@ -166,7 +166,7 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
         element.mosaicInfo.owner.address['networkType']
       );
 
-      const currentAccount  = Object.assign({}, this.walletService.getCurrentAccount());
+      const currentAccount = Object.assign({}, this.walletService.getCurrentAccount());
       const isOwner = (
         addressOwner.pretty() ===
         this.proximaxProvider.createFromRawAddress(currentAccount.address).pretty()

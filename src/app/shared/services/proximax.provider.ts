@@ -38,7 +38,8 @@ import {
   MosaicSupplyType,
   AliasTransaction,
   AliasActionType,
-  BlockchainHttp
+  BlockchainHttp,
+  NamespaceInfo
 } from 'tsjs-xpx-chain-sdk';
 import { mergeMap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
@@ -63,7 +64,7 @@ export class ProximaxProvider {
   mosaicService: MosaicService;
   namespaceService: NamespaceService;
   transactionStatusError: TransactionStatusError;
-  mosaicXpx: {mosaic: string, mosaicId: string; divisibility: number} = {
+  mosaicXpx: { mosaic: string, mosaicId: string; divisibility: number } = {
     mosaic: 'prx.xpx',
     mosaicId: '0dc67fbe1cad29e3',
     divisibility: 6
@@ -332,6 +333,16 @@ export class ProximaxProvider {
      */
   getAccountInfo(address: Address): Observable<AccountInfo> {
     return this.accountHttp.getAccountInfo(address);
+  }
+
+  /**
+   *
+   *
+   * @param {Address} address
+   * @memberof ProximaxProvider
+   */
+  getNamespaceFromAccount(address: Address): Observable<NamespaceInfo[]> {
+    return this.namespaceHttp.getNamespacesFromAccount(address);
   }
 
 

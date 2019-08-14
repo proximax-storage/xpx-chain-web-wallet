@@ -25,11 +25,11 @@ export class WalletService {
   currentWallet: CurrentWalletInterface = null;
 
 
-  private currentAccountObs: BehaviorSubject<any> = new BehaviorSubject<any>(null);
-  private currentAccountObs$: Observable<any> = this.currentAccountObs.asObservable();
+  currentAccountObs: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  currentAccountObs$: Observable<any> = this.currentAccountObs.asObservable();
 
-  private accountsInfoSubject: BehaviorSubject<AccountsInfoInterface[]> = new BehaviorSubject<AccountsInfoInterface[]>(null);
-  private accountsInfo$: Observable<AccountsInfoInterface[]> = this.accountsInfoSubject.asObservable();
+  accountsInfoSubject: BehaviorSubject<AccountsInfoInterface[]> = new BehaviorSubject<AccountsInfoInterface[]>(null);
+  accountsInfo$: Observable<AccountsInfoInterface[]> = this.accountsInfoSubject.asObservable();
 
   constructor(
     private sharedService: SharedService,
@@ -206,9 +206,11 @@ export class WalletService {
   * @returns
   * @memberof WalletService
   */
-  getAccountDefault(wallet: any) {
+  getAccountDefault(wallet?: WalletAccountInterface): AccountsInterface {
     if (wallet) {
       return wallet.accounts.find(x => x.default === true);
+    } else {
+      return this.currentWallet.accounts.find(x => x.default === true);
     }
   }
 
@@ -299,8 +301,6 @@ export class WalletService {
     });
 
     localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(othersWallet));
-    // this.dataBridgeService.closeConenection();
-    // this.dataBridgeService.connectnWs();
   }
 
 
@@ -414,18 +414,13 @@ export class WalletService {
    * @memberof WalletService
    */
   use(wallet: any) {
-    // console.log('----------------> wallet', wallet)
     if (!wallet) {
       this.sharedService.showError('', 'You can not set anything like the current wallet');
       return false;
     }
-    // console.log(wallet);
 
-    const x = this.getAccountDefault(wallet);
-    this.currentAccount = x;
-    // this.algo = x.algo;
-    // this.address = this.proximaxProvider.createFromRawAddress(x.address);
     this.currentWallet = wallet;
+    this.currentAccount = this.getAccountDefault(wallet);
     this.setCurrentAccount(this.currentAccount);
     return true;
   }
@@ -519,7 +514,7 @@ export interface AccountsInfoInterface {
 
 export interface WalletAccountInterface {
   name: string,
-  accounts: object;
+  accounts: AccountsInterface[];
 }
 
 export interface walletInterface {

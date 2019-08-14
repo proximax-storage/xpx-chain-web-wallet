@@ -153,6 +153,12 @@ export class MosaicsSupplyChangeComponent implements OnInit {
     this.formMosaicSupplyChange.get('password').patchValue('');
     this.formMosaicSupplyChange.get('deltaSupply').patchValue('');
     this.formMosaicSupplyChange.get('parentMosaic').patchValue(MosaicSupplyType.Increase);
+    this.divisibility = 0;
+    this.duration = '0 days';
+    this.supply = '0';
+    this.levyMutable = false;
+    this.supplyMutable = false;
+    this.transferable = false;
   }
 
 

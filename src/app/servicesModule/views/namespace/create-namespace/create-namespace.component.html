@@ -22,6 +22,7 @@
   <form [formGroup]="namespaceForm" (ngSubmit)="createNamespace()">
     <div class="row">
       <div class="col-12 col-sm-7 col-md-8 mb-2rem">
+
         <div class="row mt-1rem">
           <div class="col-11 mx-auto">
             <div class="md-form form-sm">
@@ -71,14 +72,16 @@
         <div class="row ml-01rem">
           <div class="col-12 col-lg-6 mx-auto">
             <div class="box-grey d-flex justify-content-center">
-              <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20" alt="">&nbsp;
+              <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20"
+                alt="">&nbsp;
               <span>Fee: 0.000000 XPX</span>
             </div>
           </div>
 
           <div class="col-12 col-lg-6 mx-auto">
             <div class="box-grey d-flex justify-content-center">
-              <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20" alt="">&nbsp;
+              <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20"
+                alt="">&nbsp;
               <span>Rental Fee: {{calculateRentalFee}} XPX</span>
             </div>
           </div>
@@ -111,9 +114,10 @@
           </div>
 
           <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-            <button mdbBtn type="submit" rounded="true" [disabled]="!namespaceForm.valid" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
-              size="md">
-              <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true" *ngIf="blockBtnSend"></span>
+            <button mdbBtn type="submit" rounded="true" [disabled]="!namespaceForm.valid" mdbWavesEffect
+              class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
+              <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
+                *ngIf="blockBtnSend"></span>
               <span class="fs-1-2em color-white">CREATE</span>
             </button>
           </div>
@@ -123,7 +127,8 @@
       <div class="col-11 col-sm-5 col-md-4 description-p-module mt-1-5rem mb-2rem">
         <span>
           <p>
-            Namespace can have 3 levels. Convention for addressing uses a dot to represent it, i.e. parent.child.grandchild.
+            Namespace can have 3 levels. Convention for addressing uses a dot to represent it, i.e.
+            parent.child.grandchild.
           </p>
 
           <p>

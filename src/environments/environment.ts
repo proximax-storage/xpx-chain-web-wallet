@@ -4,13 +4,14 @@
 
 export const environment = {
   production: false,
-  version: '0.2.1',
-  nameKeyNodeSelected: `sirius-wallet-node-selected`,
+  version: '0.2.1+20',
+  nameKeyNodeSelected: `sw-nodes-selected`,
+  nameKeyNamespaces: `sw-namespaces`,
   nameKeyWalletStorage: `sw-04`,
-  nameKeyNodeStorage: `sirius-wallet-nodes`,
+  nameKeyNodeStorage: `sw-nodes`,
   protocol: `http`,
   protocolWs: `ws`,
-  nodeDefault: 'bctestnet1.xpxsirius.io:3000',
+  nodeDefault: 'bctestnet1-cow.xpxsirius.io:3000',
   mosaicXpxInfo: {
     name: 'prx.xpx',
     coin: 'XPX',
@@ -18,7 +19,7 @@ export const environment = {
     divisibility: 6
   },
   blockchainConnection: {
-    host: 'bctestnet1.xpxsirius.io',
+    host: 'bctestnet1-cow.xpxsirius.io',
     port: 3000,
     protocol: 'http',
     useSecureMessage: false

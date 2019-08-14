@@ -164,7 +164,7 @@ export class DataBridgeService {
             this.transactionsService.setTransactionsConfirmed$(transactionPushed);
             audio.play();
             this.transactionsService.searchAccountsInfo(this.walletService.currentWallet.accounts);
-            this.namespaces.buildNamespaceStorage();
+            this.namespaces.searchNamespacesFromAccounts([this.proximaxProvider.createFromRawAddress(this.walletService.getCurrentAccount().address)]);
             // this.transactionsService.validateTypeTransaction(incomingTransaction.type);
             // this.namespaceService.buildNamespaceStorage();
             // this.transactionsService.updateBalance();

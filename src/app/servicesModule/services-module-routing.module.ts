@@ -18,6 +18,7 @@ import { CreateAccountComponent } from './views/account/create-account/create-ac
 import { ViewAllAccountsComponent } from './views/account/view-all-accounts/view-all-accounts.component';
 import { AccountCreatedComponent } from './views/account/account-created/account-created.component';
 import { SelectionAccountTypeComponent } from './views/account/selection-account-creation-type/selection-account-creation-type.component';
+import { AddContactsComponent } from './views/address-book/add-contacts/add-contacts.component';
 
 const routes: Routes = [
   {
@@ -145,8 +146,28 @@ const routes: Routes = [
     component: AddressBookComponent,
     data: {
       meta: {
-        title: 'createNamespace.title',
-        description: 'createNamespace.text',
+        title: 'addressBook.title',
+        description: 'addressBook.text',
+        override: true,
+      }
+    },
+  }, {
+    path: AppConfig.routes.addContacts,
+    component: AddContactsComponent,
+    data: {
+      meta: {
+        title: 'addContaccts.title',
+        description: 'addContaccts.text',
+        override: true,
+      }
+    },
+  }, {
+    path: `${AppConfig.routes.addContacts}/:name`,
+    component: AddContactsComponent,
+    data: {
+      meta: {
+        title: 'addContaccts.title',
+        description: 'addContaccts.text',
         override: true,
       }
     },
