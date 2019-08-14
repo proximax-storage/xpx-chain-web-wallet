@@ -209,12 +209,12 @@ export class CreateTransferComponent implements OnInit {
    */
   async buildCurrentAccountInfo(accountInfo: AccountInfo) {
     const mosaicsSelect: any = [];
-    // console.log(accountInfo);
     if (accountInfo !== undefined && accountInfo !== null) {
       if (accountInfo.mosaics.length > 0) {
         const mosaics = await this.mosaicServices.searchMosaics(accountInfo.mosaics.map(n => n.id));
         if (mosaics.length > 0) {
           for (let mosaic of mosaics) {
+            // console.log('----mosaic---', mosaic);
             let configInput = {
               prefix: '',
               thousands: ',',
@@ -252,7 +252,9 @@ export class CreateTransferComponent implements OnInit {
               expired = true;
             }
 
-            if (this.proximaxProvider.getMosaicId(mosaic.id).id.toHex() !== this.mosaicServices.mosaicXpx.mosaicId) {
+            const x = this.proximaxProvider.getMosaicId(mosaic.id).id.toHex() !== this.mosaicServices.mosaicXpx.mosaicId;
+            // console.log('------x------', x);
+            if (x) {
               const nameMosaic = (mosaic.mosaicNames.names.length > 0) ? mosaic.mosaicNames.names[0] : this.proximaxProvider.getMosaicId(mosaic.id).toHex();
               mosaicsSelect.push({
                 label: `${nameMosaic}${nameExpired}`,
@@ -370,7 +372,7 @@ export class CreateTransferComponent implements OnInit {
     this.subscription.push(this.walletService.getAccountsInfo$().subscribe(
       next => {
         // console.log(next);
-        if (next && next.length > 1) {
+        if (next && next.length > 0) {
           this.searching = false;
           this.changeSender(this.walletService.currentAccount);
         }
