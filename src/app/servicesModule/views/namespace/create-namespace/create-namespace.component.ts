@@ -258,7 +258,7 @@ export class CreateNamespaceComponent implements OnInit {
   getNameNamespace() {
     this.subscribe['accountInfo'] = this.namespaceService.getNamespaceFromAccountAsync().subscribe(
       namespaceInfo => {
-        // console.log('-----namespaceInfo----', namespaceInfo);
+        console.log('-----namespaceInfo----', namespaceInfo);
         if (namespaceInfo !== null && namespaceInfo !== undefined) {
           this.namespaceService.searchNamespaceFromAccountStorage$().then(
             async namespaceStorage => {
