@@ -204,12 +204,19 @@ export class ServicesBoxComponent implements OnInit {
         'icon-address-green-book-60h-proximax-sirius-wallet.svg',
         '',
         {
-          addContact: this.services.buildStructureService(
-            'ADD AND LIST CONTACTS',
+          list: this.services.buildStructureService(
+            'LIST',
             true,
             '',
             '',
             AppConfig.routes.addressBook
+          ),
+          addContact: this.services.buildStructureService(
+            'ADD CONTACTS',
+            true,
+            '',
+            '',
+            AppConfig.routes.addContacts
           )
         },
         true
