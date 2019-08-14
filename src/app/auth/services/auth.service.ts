@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { NetworkType, UInt64 } from 'tsjs-xpx-chain-sdk';
+import { NetworkType, UInt64, Address } from 'tsjs-xpx-chain-sdk';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
 
 import { AppConfig } from '../../config/app.config';
-import { WalletService } from '../../wallet/services/wallet.service';
+import { WalletService, CurrentWalletInterface } from '../../wallet/services/wallet.service';
 import { DataBridgeService } from '../../shared/services/data-bridge.service';
 import { NodeService } from '../../servicesModule/services/node.service';
 import { MosaicService } from '../../servicesModule/services/mosaic.service';
@@ -63,12 +63,12 @@ export class AuthService {
   * @returns
   * @memberof LoginService
   */
-  async login(common: any, wallet: any) {
+  async login(common: any, currentWallet: CurrentWalletInterface) {
     this.walletService.destroyAll();
-    const currentAccount = Object.assign({}, wallet.accounts.find(elm => elm.default === true));
+    const currentAccount = Object.assign({}, currentWallet.accounts.find(elm => elm.default === true));
     let isValid = false;
     if (currentAccount) {
-      if (!wallet) {
+      if (!currentWallet) {
         this.sharedService.showError('', 'Dear user, the wallet is missing');
         isValid = false;
       } else if (!this.nodeService.getNodeSelected()) {
@@ -82,7 +82,7 @@ export class AuthService {
         this.sharedService.showError('', 'Dear user, the wallet is missing');
       } else {
         isValid = true;
-        this.walletService.use(wallet);
+        this.walletService.use(currentWallet);
       }
     } else {
       this.sharedService.showError('', 'Dear user, the main account is missing');
@@ -100,11 +100,17 @@ export class AuthService {
     this.serviceModuleService.changeBooksItem(
       this.proximaxProvider.createFromRawAddress(currentAccount.address)
     );
-    this.namespaces.buildNamespaceStorage();
+
+    //this.namespaces.buildNamespaceStorage();
+    const address: Address[] = [];
+    for (let account of currentWallet.accounts) {
+      address.push(this.proximaxProvider.createFromRawAddress(account.address));
+    }
+
+    this.namespaces.searchNamespacesFromAccounts(address);
     this.transactionService.searchAccountsInfo(this.walletService.currentWallet.accounts);
     const blockchainHeight: UInt64 = await this.proximaxProvider.getBlockchainHeight().toPromise();
     this.dataBridgeService.setblock(blockchainHeight.compact());
-
     return true;
   }
 

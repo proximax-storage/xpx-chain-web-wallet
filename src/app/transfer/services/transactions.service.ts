@@ -557,7 +557,7 @@ export class TransactionsService {
       this.namespaceService.resetNamespaceStorage();
     }
 
-    this.namespaceService.buildNamespaceStorage();
+    //  this.namespaceService.buildNamespaceStorage();
     // this.updateBalance2();
   }
 

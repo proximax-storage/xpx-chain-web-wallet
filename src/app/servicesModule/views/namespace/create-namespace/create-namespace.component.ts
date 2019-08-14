@@ -7,10 +7,10 @@ import { SignedTransaction, MosaicId } from 'tsjs-xpx-chain-sdk';
 import { AppConfig } from '../../../../config/app.config';
 import { DataBridgeService } from '../../../../shared/services/data-bridge.service';
 import { MosaicService } from '../../../../servicesModule/services/mosaic.service';
-import { WalletService } from '../../../../wallet/services/wallet.service';
+import { WalletService, AccountsInterface } from '../../../../wallet/services/wallet.service';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { SharedService, ConfigurationForm } from '../../../../shared/services/shared.service';
-import { NamespacesService, NamespaceStorage } from '../../../../servicesModule/services/namespaces.service';
+import { NamespacesService, NamespaceStorageInterface } from '../../../../servicesModule/services/namespaces.service';
 import { TransactionsService } from '../../../../transfer/services/transactions.service';
 
 @Component({
@@ -86,8 +86,7 @@ export class CreateNamespaceComponent implements OnInit {
   ngOnInit() {
     this.configurationForm = this.sharedService.configurationForm;
     this.createForm();
-    this.getNameNamespace();
-
+    this.getNamespaces();
     const duration = this.namespaceForm.get('duration').value;
     this.fee = `0.000000 ${this.feeType}`;
     this.durationByBlock = this.transactionService.calculateDurationforDay(duration).toString();
@@ -112,7 +111,7 @@ export class CreateNamespaceComponent implements OnInit {
    * @returns
    * @memberof CreateNamespaceComponent
    */
-  async getSubNivelNamespace(subNamespace: NamespaceStorage, status: boolean, depth: number) {
+  async getSubNivelNamespace(subNamespace: NamespaceStorageInterface, status: boolean, depth: number) {
     const sts = status ? false : true;
     let disabled = false;
     let name = '';
@@ -121,7 +120,7 @@ export class CreateNamespaceComponent implements OnInit {
         //Assign level 2
         const level2 = subNamespace.namespaceName.name;
         //Search level 1
-        const level1: NamespaceStorage = await this.namespaceService.getNamespaceFromId(
+        const level1: NamespaceStorageInterface = await this.namespaceService.getNamespaceFromId(
           this.proximaxProvider.getNamespaceId([subNamespace.namespaceName.parentId.id.lower, subNamespace.namespaceName.parentId.id.higher])
         );
 
@@ -131,12 +130,12 @@ export class CreateNamespaceComponent implements OnInit {
         //Assign el level3
         const level3 = subNamespace.namespaceName.name;
         //search level 2
-        const level2: NamespaceStorage = await this.namespaceService.getNamespaceFromId(
+        const level2: NamespaceStorageInterface = await this.namespaceService.getNamespaceFromId(
           this.proximaxProvider.getNamespaceId([subNamespace.namespaceName.parentId.id.lower, subNamespace.namespaceName.parentId.id.higher])
         );
 
         //search level 1
-        const level1: NamespaceStorage = await this.namespaceService.getNamespaceFromId(
+        const level1: NamespaceStorageInterface = await this.namespaceService.getNamespaceFromId(
           this.proximaxProvider.getNamespaceId([level2.namespaceName.parentId.id.lower, level2.namespaceName.parentId.id.higher])
         );
         name = `${level1.namespaceName.name}.${level2.namespaceName.name}.${level3}`;
@@ -255,6 +254,39 @@ export class CreateNamespaceComponent implements OnInit {
    *
    * @memberof CreateNamespaceComponent
    */
+  getNamespaces() {
+    this.subscribe['namespacesChanged'] = this.namespaceService.getNamespaceChanged().subscribe(
+      async namespaceInfo => {
+        if (namespaceInfo !== null && namespaceInfo !== undefined) {
+          console.log('namespaceInfo ---> ', namespaceInfo);
+          for (let data of namespaceInfo) {
+            if (data.namespaceInfo.depth === 1) {
+              await this.getRootNamespace(data, data.namespaceInfo.active);
+            } else {
+              await this.getSubNivelNamespace(data, data.namespaceInfo.active, data.namespaceInfo.depth);
+            }
+          }
+
+          this.arrayselect = this.namespace.sort(function (a: any, b: any) {
+            return a.label === b.label ? 0 : +(a.label > b.label) || -1;
+          });
+        }
+      },
+      error => {
+        // console.log(error);
+        this.blockUI.stop();
+        this.router.navigate([AppConfig.routes.home]);
+        this.sharedService.showError('', 'Check your connection and try again');
+      }
+    );
+  }
+
+
+  /**
+   *
+   *
+   * @memberof CreateNamespaceComponent
+   */
   getNameNamespace() {
     this.subscribe['accountInfo'] = this.namespaceService.getNamespaceFromAccountAsync().subscribe(
       namespaceInfo => {
@@ -264,10 +296,10 @@ export class CreateNamespaceComponent implements OnInit {
             async namespaceStorage => {
               if (namespaceStorage !== undefined && namespaceStorage.length > 0) {
                 for (let data of namespaceStorage) {
-                  if (data.NamespaceInfo.depth === 1) {
-                    await this.getRootNamespace(data, data.NamespaceInfo.active);
+                  if (data.namespaceInfo.depth === 1) {
+                    await this.getRootNamespace(data, data.namespaceInfo.active);
                   } else {
-                    await this.getSubNivelNamespace(data, data.NamespaceInfo.active, data.NamespaceInfo.depth);
+                    await this.getSubNivelNamespace(data, data.namespaceInfo.active, data.namespaceInfo.depth);
                   }
                 }
 
@@ -551,7 +583,7 @@ export class CreateNamespaceComponent implements OnInit {
         this.namespaceForm.controls['name'].enable();
         this.namespaceForm.controls['password'].enable();
       }
-    }else {
+    } else {
       this.sharedService.showWarning('', 'You do not have enough balance in the default account');
       this.router.navigate([`/${AppConfig.routes.service}`]);
     }
