@@ -18,37 +18,6 @@
                 </div>
             </div>
 
-            <div *ngIf="showCurrentAccountToConvert" class="col-12 col-md-10 col-lg-9 col-xl-10 mx-auto box-list-account-gray fs-08rem pb-1rem"
-                [ngClass]="{'isPrimary':currentAccountToConvert.default}">
-                <div class="row">
-                    <div class="col-12 col-sm-10 col-md-9 col-lg-10 col-xl-10 pt-1rem w-b-a">
-                        Account: {{currentAccountToConvert.name}} <br>
-                        {{currentAccountToConvert.address}}
-                    </div>
-                    <div class="col-12 col-sm-2 col-md-3 col-lg-2 col-xl-2 d-flex align-items-center justify-content-start justify-content-sm-end justify-content-md-end justify-content-lg-end justify-content-xl-end pt-1rem">
-                        <!-- View Details -->
-                        <i class="fa fa-eye fs-1-2rem cursor-p" aria-hidden="true" title="View details" [routerLink]="[routes.viewDetails+currentAccountToConvert.name]"></i>
-                        <!-- Select account default -->
-                        <ng-container *ngIf="currentAccountToConvert.default">
-                            <i class="fa fa-star fs-1-2rem ml-10px cursor-p" aria-hidden="true"></i>
-                        </ng-container>
-                    </div>
-                </div>
-
-
-
-                <!-- {{currentAccountToConvert}} -->
-                <div class="row">
-                    <div class="col-12 col-sm-10 col-md-9 col-lg-10 col-xl-10 pt-05rem w-b-a fw-600">
-                        <img *ngIf="currentAccountToConvert.default" class="icono" src="assets/images/img/icon-proximax-white.svg"
-                            width="20" alt="">
-                        <img *ngIf="!currentAccountToConvert.default" class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
-                            width="20" alt="">
-                        &nbsp;Balance {{balance}} XPX
-                    </div>
-                </div>
-            </div>
-
 
             <!-- Contacts -->
             <ng-container *ngIf="showContacts && listContact.length > 0">
@@ -60,6 +29,18 @@
                     </div>
                 </div>
             </ng-container>
+            <!-- Searching and icon reload -->
+            <div class="row">
+                <div class="col-11 col-sm-11 col-lg-10 mx-auto">
+                    <!-- Searching -->
+                    <ng-container *ngIf="searchContact">
+                        <div class="col-12">
+                            <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate">
+                            </mdb-progress-bar>
+                        </div>
+                    </ng-container>
+                </div>
+            </div>
 
             <!-- COSIGNATORY -->
             <div class="row">
@@ -95,7 +76,7 @@
             <!-- ADD MOSAICS -->
             <div class="row mt-1rem">
                 <div class="col-12 d-flex justify-content-center" style="background-image: url(assets/images/img/horizontal-line-background.jpg);">
-                    <button mdbBtn type="button" rounded="true" mdbWavesEffect class="background-btn-inverse pl-2rem pr-2rem"
+                    <button mdbBtn type="button" rounded="true" [disabled]="mdbBtnAddCosignatory" mdbWavesEffect class="background-btn-inverse pl-2rem pr-2rem"
                         size="md" (click)="addCosignatory()">
                         <span class="fs-1-2em color-blue-intermedio fw-700">(+) Add Cosignatory</span>
                     </button>
@@ -165,6 +146,34 @@
         </div>
         <!-- TABLE COSIGNATORY LIST -->
         <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
+
+            <div *ngIf="showCurrentAccountToConvert" class="col-12 col-md-10 col-lg-9 col-xl-10 mx-auto box-list-account-gray fs-08rem pb-1rem"
+                [ngClass]="{'isPrimary':currentAccountToConvert.default}">
+                <div class="row">
+                    <div class="col-12 col-sm-10 col-md-9 col-lg-10 col-xl-10 pt-1rem w-b-a">
+                        Account: {{currentAccountToConvert.name}} <br>
+                        {{currentAccountToConvert.address}}
+                    </div>
+                    <div class="col-12 col-sm-2 col-md-3 col-lg-2 col-xl-2 d-flex align-items-center justify-content-start justify-content-sm-end justify-content-md-end justify-content-lg-end justify-content-xl-end pt-1rem">
+                        <!-- View Details -->
+                        <i class="fa fa-eye fs-1-2rem cursor-p" aria-hidden="true" title="View details" [routerLink]="[routes.viewDetails+currentAccountToConvert.name]"></i>
+                        <!-- Select account default -->
+                        <ng-container *ngIf="currentAccountToConvert.default">
+                            <i class="fa fa-star fs-1-2rem ml-10px cursor-p" aria-hidden="true"></i>
+                        </ng-container>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-sm-10 col-md-9 col-lg-10 col-xl-10 pt-05rem w-b-a fw-600">
+                        <img *ngIf="currentAccountToConvert.default" class="icono" src="assets/images/img/icon-proximax-white.svg"
+                            width="20" alt="">
+                        <img *ngIf="!currentAccountToConvert.default" class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
+                            width="20" alt="">
+                        &nbsp;Balance {{balance}} XPX
+                    </div>
+                </div>
+            </div>
+
             <div class="row mt-2rem">
                 <div class="col-12 mx-auto">
                     <div class="table-responsive table-hover">
@@ -207,8 +216,8 @@
         </div>
         <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
             <!-- [disabled]="!createMultsignForm.valid" -->
-            <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
-                size="md">
+            <button [disabled]="btnBlock" mdbBtn type="submit"
+                rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
                 <!---->
                 <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
                     *ngIf="blockSend"></span>
