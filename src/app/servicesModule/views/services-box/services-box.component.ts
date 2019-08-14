@@ -22,6 +22,11 @@ export class ServicesBoxComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    const contacts = this.services.getBooksAddress();
+    const showItems = {
+      listContact:  (contacts !== null && contacts !== undefined && contacts.length > 0) ? true : false
+    }
+
     this.servicesList = [
       //Account
       this.services.buildStructureService(
@@ -206,7 +211,7 @@ export class ServicesBoxComponent implements OnInit {
         {
           list: this.services.buildStructureService(
             'LIST',
-            true,
+            showItems.listContact,
             '',
             '',
             AppConfig.routes.addressBook
