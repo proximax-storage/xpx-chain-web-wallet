@@ -47,19 +47,27 @@
                   {{currentAccount.address}}
                 </div>
                 <div
-                  class="col-12 col-sm-2 col-md-3 col-lg-2 col-xl-2 d-flex align-items-center justify-content-start justify-content-sm-end justify-content-md-end justify-content-lg-end justify-content-xl-end pt-1rem">
-                      <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="cursor-p"
-                    alt="Copy" width="20" (click)="copyMessage('Address')" ngxClipboard
-                    [cbContent]="currentAccount.address">&nbsp;&nbsp;
-
+                  class="col-12 col-sm-2 col-md-3 col-lg-2 col-xl-2 d-flex align-items-center justify-content-start justify-content-sm-end justify-content-md-end justify-content-lg-end justify-content-xl-end pt-2rem">
+                  <img src="assets/images/img/icon-copy-clipboard-white.svg" class="cursor-p"
+                  alt="Copy" width="20" (click)="copyMessage('Address')" ngxClipboard *ngIf="currentAccount.default"
+                  [cbContent]="currentAccount.address"  title="Copy Address">
+                  <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="cursor-p"
+                  alt="Copy" width="20" (click)="copyMessage('Address')" ngxClipboard *ngIf="!currentAccount.default"
+                  [cbContent]="currentAccount.address"  title="Copy Address">&nbsp;
                   <!-- View Details -->
-                  <i class="fa fa-eye fs-1-2rem cursor-p" aria-hidden="true" title="View details"
-                    [routerLink]="[routes.viewDetails+currentAccount.name]"></i>
+                  <!-- <i class="fa fa-eye fs-1-2rem cursor-p" aria-hidden="true" title="View details"
+                    [routerLink]="[routes.viewDetails+currentAccount.name]"></i> -->
+                    <img src="assets/images/img/icon-edit-white-proximax-sirius-wallet.svg" class="cursor-p" *ngIf="currentAccount.default"
+                    width="20" [routerLink]="[routes.viewDetails+currentAccount.name]" title="View details">
+                    <img src="assets/images/img/icon-edit-gray-proximax-sirius-wallet.svg" class="cursor-p" *ngIf="!currentAccount.default"
+                    width="20" [routerLink]="[routes.viewDetails+currentAccount.name]" title="View details">&nbsp;
 
                   <!-- Select account default -->
-                  <ng-container *ngIf="!currentAccount.default">
-                    <i class="fa fa-star fs-1-2rem ml-10px cursor-p" aria-hidden="true"
-                      (click)="changeAsPrimary(currentAccount.name)" title="Select account as default"></i>
+                  <ng-container>
+                    <img src="assets/images/img/icon-default-white-proximax-sirius-wallet.svg" class="cursor-p" *ngIf="currentAccount.default"
+                    width="20" title="Select account as default">
+                    <img src="assets/images/img/icon-default-gray-proximax-sirius-wallet.svg" class="cursor-p" *ngIf="!currentAccount.default"
+                    width="20" (click)="changeAsPrimary(currentAccount.name)" title="Select account as default">
                   </ng-container>
                 </div>
               </div>
@@ -73,12 +81,6 @@
                   &nbsp;Balance {{currentAccount.balance}} XPX
                 </div>
               </div>
-
-              <ng-container *ngIf="accountChanged && currentAccount.default">
-                <div class="col-12 col-md-10 col-lg-9 col-xl-10 mx-auto d-flex justify-content-end animated fadeIn">
-                  <span class="msgSuccess">Account changed to default</span>
-                </div>
-              </ng-container>
             </div>
           </ng-container>
         </ng-container>

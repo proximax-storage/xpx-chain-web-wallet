@@ -619,7 +619,11 @@ export class CreateTransferComponent implements OnInit {
     // Account recipient
     this.formTransfer.get('accountRecipient').valueChanges.subscribe(
       value => {
-        const accountRecipient = (value !== undefined && value !== null && value !== '') ? value.split('-').join('') : '';
+        let valueWithoutSpaces = '';
+        if (value) {
+          valueWithoutSpaces = value.trim();
+        }
+        const accountRecipient = (valueWithoutSpaces !== undefined && valueWithoutSpaces !== null && valueWithoutSpaces !== '') ? valueWithoutSpaces.split('-').join('') : '';
         const accountSelected = (this.formTransfer.get('contact').value) ? this.formTransfer.get('contact').value.split('-').join('') : '';
         if ((accountSelected !== '') && (accountSelected !== accountRecipient)) {
           this.formTransfer.get('contact').patchValue('');
@@ -630,6 +634,9 @@ export class CreateTransferComponent implements OnInit {
           if (!this.proximaxProvider.verifyNetworkAddressEqualsNetwork(
             this.proximaxProvider.createFromRawAddress(currentAccount.address).plain(), accountRecipient)
           ) {
+            if (valueWithoutSpaces !== value) {
+              this.formTransfer.get('accountRecipient').setValue(valueWithoutSpaces);
+            }
             this.blockSendButton = true;
             this.msgErrorUnsupported = 'Recipient Address Network unsupported';
           } else {
@@ -640,6 +647,9 @@ export class CreateTransferComponent implements OnInit {
           this.blockSendButton = true;
           this.msgErrorUnsupported = 'Recipient Address Network unsupported';
         } else {
+          if (valueWithoutSpaces !== value) {
+            this.formTransfer.get('accountRecipient').setValue(valueWithoutSpaces);
+          }
           this.blockSendButton = false;
           this.msgErrorUnsupported = '';
         }
