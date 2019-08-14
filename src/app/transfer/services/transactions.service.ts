@@ -485,6 +485,8 @@ export class TransactionsService {
           const findXPX = mosaics.find(mosaic => mosaic.id.toHex() === environment.mosaicXpxInfo.id);
           if (findXPX) {
             this.setBalance$(findXPX.amount.compact());
+          }else {
+            this.setBalance$('0.000000');
           }
         }
 
@@ -555,7 +557,7 @@ export class TransactionsService {
       this.namespaceService.resetNamespaceStorage();
     }
 
-    this.namespaceService.buildNamespaceStorage();
+    //  this.namespaceService.buildNamespaceStorage();
     // this.updateBalance2();
   }
 

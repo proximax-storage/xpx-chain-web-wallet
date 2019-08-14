@@ -145,7 +145,7 @@ export class RenewNamespaceComponent implements OnInit {
         if (dataNamespace !== undefined && dataNamespace.length > 0) {
           const arrayselect = [];
           for (let namespaceRoot of dataNamespace) {
-            if (namespaceRoot.NamespaceInfo.depth === 1) {
+            if (namespaceRoot.namespaceInfo.depth === 1) {
               arrayselect.push({
                 value: `${namespaceRoot.namespaceName.name}`,
                 label: `${namespaceRoot.namespaceName.name}`,
