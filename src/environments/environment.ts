@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  version: '0.2.1',
+  version: '0.2.1+19',
   nameKeyNodeSelected: `sw-nodes-selected`,
   nameKeyWalletStorage: `sw-04`,
   nameKeyNodeStorage: `sw-nodes`,

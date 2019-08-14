@@ -418,7 +418,7 @@ export class CreateTransferComponent implements OnInit {
    * @param {number} position
    * @memberof CreateTransferComponent
    */
-  modelChanged(amount: string, mosaicId: string | [], position: number) {
+  amountOtherMosaicChanged(amount: string, mosaicId: string | [], position: number) {
     if (amount !== null && amount !== undefined) {
       const mosaic = this.mosaicServices.filterMosaic(new MosaicId(mosaicId));
       const a = Number(amount);
@@ -660,8 +660,10 @@ export class CreateTransferComponent implements OnInit {
         if (value !== null && value !== undefined) {
           const a = Number(value);
           let validateAmount = false;
+          // console.log('----sender----', this.sender);
           if (this.sender) {
             const accountInfo = this.walletService.filterAccountInfo(this.sender.name).accountInfo;
+            // console.log('Account INfo- ---->', accountInfo);
             if (accountInfo !== undefined && accountInfo !== null && Object.keys(accountInfo).length > 0) {
               if (accountInfo.mosaics.length > 0) {
                 const filtered = accountInfo.mosaics.find(element => {
@@ -702,7 +704,8 @@ export class CreateTransferComponent implements OnInit {
           }
 
           if (validateAmount) {
-            if (Number(value) >= 1) {
+            // console.log('----validateAmount---', value);
+            if (Number(value) > 0) {
               this.insufficientBalance = true;
               this.blockSendButton = true;
             } else if ((Number(value) === 0 || value === '') && this.insufficientBalance) {

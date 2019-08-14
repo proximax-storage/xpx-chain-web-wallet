@@ -197,7 +197,7 @@
                       [maxlength]="configurationForm.amount.maxLength" type="text"
                       class="form-control form-control-sm input-border input-amount"
                       [(ngModel)]="boxOtherMosaics[i].amount" [ngModelOptions]="{standalone: true}"
-                      (ngModelChange)="modelChanged($event, otherMosaic.id, i)" placeholder="Enter quantity">
+                      (ngModelChange)="amountOtherMosaicChanged($event, otherMosaic.id, i)" placeholder="Enter quantity">
                     <span class="label-i fw-600">SEND</span>
 
                     <!-- Message Error Insufficient balance-->

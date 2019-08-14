@@ -31,6 +31,11 @@ export class MosaicService {
   ) { }
 
 
+
+
+
+
+
   /**
    *
    *
@@ -41,7 +46,6 @@ export class MosaicService {
   async getNameMosaics(mosaicsId: MosaicId[]): Promise<MosaicNames[]> {
     return await this.proximaxProvider.mosaicHttp.getMosaicNames(mosaicsId).toPromise();
   }
-
 
   /**
    * Search mosaics by mosaicsId
