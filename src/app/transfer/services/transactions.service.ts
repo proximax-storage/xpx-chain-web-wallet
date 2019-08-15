@@ -16,7 +16,8 @@ import {
   AccountInfo,
   PublicAccount,
   Address,
-  MultisigAccountInfo
+  MultisigAccountInfo,
+  NamespaceId
 } from "tsjs-xpx-chain-sdk";
 import { first } from "rxjs/operators";
 import { ProximaxProvider } from "../../shared/services/proximax.provider";
@@ -478,6 +479,7 @@ export class TransactionsService {
    */
   async searchAccountsInfo(accounts: AccountsInterface[]): Promise<AccountsInfoInterface[]> {
     const accountsInfo: AccountsInfoInterface[] = [];
+    const mosaicsIds: (NamespaceId | MosaicId)[] = [];
     for (let element of accounts) {
       let info: AccountInfo = null;
       try {
@@ -512,11 +514,19 @@ export class TransactionsService {
           }
         }
 
-        this.mosaicServices.searchMosaics(info.mosaics.map(n => n.id));
+        info.mosaics.map(n => n.id).forEach(id => {
+          const pushea = mosaicsIds.find(next => next.id.toHex() === id.toHex());
+          console.log('pushea', pushea);
+          if (!pushea) {
+            mosaicsIds.push(id);
+          }
+        });
       }
     };
 
-    console.log(accountsInfo);
+    // console.log('---accountsInfo---', accountsInfo);
+    //    this.mosaicServices.searchInfoMosaics(mosaicsIds);
+    this.mosaicServices.searchMosaics(mosaicsIds);
     this.walletService.setAccountsInfo(accountsInfo);
     return accountsInfo;
   }
