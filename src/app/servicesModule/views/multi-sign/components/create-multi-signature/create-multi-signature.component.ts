@@ -50,6 +50,7 @@ export class CreateMultiSignatureComponent implements OnInit {
   showContacts: boolean;
   searchContact: boolean;
   btnBlock: boolean;
+  ban: boolean;
   mdbBtnAddCosignatory: boolean;
   listContact: any = [];
   subscribeAccount = null;
@@ -86,6 +87,7 @@ export class CreateMultiSignatureComponent implements OnInit {
     this.headElements = ['Address', 'Action', 'Remove'];
     this.configurationForm = this.sharedService.configurationForm;
     this.blockSend = false;
+    this.ban = false;
     this.btnBlock = true;
     this.accountValid = false;
     this.listContact = [];
@@ -164,16 +166,27 @@ export class CreateMultiSignatureComponent implements OnInit {
     this.changeformStatus()
   }
 
-  /**
-  *
-  *
-  * @memberof CreateMultiSignatureComponent
-  */
-  clearForm() {
-    this.createMultsignForm.get('selectAccount').patchValue('', { emitEvent: false, onlySelf: true });
-    this.createMultsignForm.get('cosignatory').patchValue('', { emitEvent: false, onlySelf: true });
-    this.createMultsignForm.get('minRemovalDelta').patchValue(1, { emitEvent: false, onlySelf: true });
 
+  /**
+   *
+   *
+   * @param {(string | (string | number)[])} [custom]
+   * @param {(string | number)} [formControl]
+   * @returns
+   * @memberof CreateTransferComponent
+   */
+  clearForm(custom?: string | (string | number)[], formControl?: string | number) {
+    if (custom !== undefined) {
+      if (formControl !== undefined) {
+        this.createMultsignForm.controls[formControl].get(custom).reset();
+        return;
+      }
+      this.createMultsignForm.get(custom).reset();
+      return;
+    }
+
+    this.createMultsignForm.reset();
+    return;
   }
 
   /**
@@ -182,16 +195,15 @@ export class CreateMultiSignatureComponent implements OnInit {
  * @memberof CreateMultiSignatureComponent
  */
   clearData() {
-    console.log("limpio")
     // this.createMultsignForm.get('selectAccount').patchValue('');
     this.createMultsignForm.get('cosignatory').patchValue('', { emitEvent: false, onlySelf: true });
-     this.createMultsignForm.get('contact').patchValue('', { emitEvent: false, onlySelf: true });
-     this.createMultsignForm.get('minApprovalDelta').patchValue(1, { emitEvent: false, onlySelf: true });
-     this.createMultsignForm.get('minRemovalDelta').patchValue(1, { emitEvent: false, onlySelf: true });
-     this.publicAccountToConvert = undefined;
-     this.cosignatoryList = []
-     this.showContacts = false;
-     this.mdbBtnAddCosignatory = true;
+    this.createMultsignForm.get('contact').patchValue('', { emitEvent: false, onlySelf: true });
+    this.createMultsignForm.get('minApprovalDelta').patchValue(1, { emitEvent: false, onlySelf: true });
+    this.createMultsignForm.get('minRemovalDelta').patchValue(1, { emitEvent: false, onlySelf: true });
+    this.publicAccountToConvert = undefined;
+    this.cosignatoryList = []
+    this.showContacts = false;
+    this.mdbBtnAddCosignatory = true;
   }
 
   changeformStatus() {
@@ -200,7 +212,7 @@ export class CreateMultiSignatureComponent implements OnInit {
     }
     );
   }
-  btnblckfun(){
+  btnblckfun() {
     this.btnBlock = true;
     if (this.createMultsignForm.valid && this.cosignatoryList.length > 0) {
       this.btnBlock = false;
@@ -216,10 +228,12 @@ export class CreateMultiSignatureComponent implements OnInit {
   booksAddress() {
     const data = this.listContact.slice(0);
     const bookAddress = this.serviceModuleService.getBooksAddress();
+    console.log(bookAddress)
 
     this.listContact = [];
     if (bookAddress !== undefined && bookAddress !== null) {
       for (let x of bookAddress) {
+        console.log(x)
         data.push(x);
       }
       this.listContact = data;
@@ -233,10 +247,11 @@ export class CreateMultiSignatureComponent implements OnInit {
  * @memberof CreateMultiSignatureComponent
  */
   async selectContact(event: { label: string, value: string }) {
+    console.log(event)
     if (event !== undefined && event.value !== '') {
       this.searchContact = true;
       this.createMultsignForm.get('cosignatory').patchValue('', { emitEvent: false, onlySelf: true });
-      this.proximaxProvider.getAccountInfo(Address.createFromRawAddress('VCXWTDRDMJY2GL7XPJVO747B7SINU6AJRRUWJMO5')).subscribe((res: AccountInfo) => {
+      this.proximaxProvider.getAccountInfo(Address.createFromRawAddress(event.value)).subscribe((res: AccountInfo) => {
         console.log(res)
         this.searchContact = false;
         if (res.publicKeyHeight.toHex() === '0000000000000000') {
@@ -308,7 +323,8 @@ export class CreateMultiSignatureComponent implements OnInit {
 
     if (this.walletService.decrypt(common, this.currentAccountToConvert)) {
 
-      if (this.createMultsignForm.valid && this.cosignatoryList.length > 0) {
+      if (this.createMultsignForm.valid && this.cosignatoryList.length > 0 && !this.ban) {
+        this.ban = true;
         this.accountToConvert = Account.createFromPrivateKey(common.privateKey, this.currentAccountToConvert.network)
         // common = '';
         this.modifyMultisigAccountTransactionObject = {
@@ -379,6 +395,9 @@ export class CreateMultiSignatureComponent implements OnInit {
           // this.blockSend = false;
         },
         err => {
+          this.ban = false;
+          this.blockSend = false;
+          this.btnBlock = true;
           this.sharedService.showError('', err);
           // this.blockSend = false;
         });
@@ -392,14 +411,21 @@ export class CreateMultiSignatureComponent implements OnInit {
    *  @param {SignedTransaction} signedTransaction  - Signed transaction.
    */
   announceAggregateBonded(signedTransaction: SignedTransaction) {
+    this.clearData();
+    this.clearForm();
+
     this.transactionHttp.announceAggregateBonded(signedTransaction).subscribe(
       async () => {
         this.getTransactionStatus(signedTransaction)
         this.blockSend = false;
+        this.btnBlock = true;
+        this.ban = false;
       },
       err => {
         this.sharedService.showError('', err);
+        this.ban = false;
         this.blockSend = false;
+        this.btnBlock = true;
       });
 
   }
@@ -414,8 +440,7 @@ export class CreateMultiSignatureComponent implements OnInit {
     // Get transaction status
     this.subscribe['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
       statusTransaction => {
-        this.blockSend = false;
-        this.clearData()
+        // this.blockSend = false;
         if (statusTransaction !== null && statusTransaction !== undefined && signedTransaction !== null) {
           const statusTransactionHash = (statusTransaction['type'] === 'error') ? statusTransaction['data'].hash : statusTransaction['data'].transactionInfo.hash;
           const match = statusTransactionHash === signedTransaction.hash;
@@ -443,7 +468,7 @@ export class CreateMultiSignatureComponent implements OnInit {
     // Get transaction status
     this.subscribe['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
       statusTransaction => {
-        this.blockSend = false;
+        // //  this.blockSend = false;
         if (statusTransaction !== null && statusTransaction !== undefined && signedTransactionHashLock !== null) {
           const statusTransactionHash = (statusTransaction['type'] === 'error') ? statusTransaction['data'].hash : statusTransaction['data'].transactionInfo.hash;
           const match = statusTransactionHash === signedTransactionHashLock.hash;
@@ -455,6 +480,9 @@ export class CreateMultiSignatureComponent implements OnInit {
             // signedTransactionHashLock = null;
             this.sharedService.showInfo('', 'Transaction unconfirmed hash Lock');
           } else if (match) {
+            this.blockSend = false;
+            this.ban = false;
+            this.btnBlock = true;
             signedTransactionHashLock = null;
             this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
           }
@@ -503,6 +531,8 @@ export class CreateMultiSignatureComponent implements OnInit {
   }
   selectAccount($event: Event) {
     this.clearData()
+
+    // this.clearForm()
     const account: any = $event
     this.showCurrentAccountToConvert = false;
     if (account !== null && account !== undefined) {
@@ -566,9 +596,9 @@ export class CreateMultiSignatureComponent implements OnInit {
     const validators = [Validators.required,
     Validators.minLength(1),
     Validators.maxLength(this.cosignatoryList.length)]
-    this.minApprovaMinLength = 0;
+    this.minApprovaMinLength = 1;
     this.minApprovaMaxLength = this.cosignatoryList.length
-    this.createMultsignForm.get('minApprovalDelta').patchValue(0);
+    this.createMultsignForm.get('minApprovalDelta').patchValue(1, { emitEvent: false, onlySelf: true });
     this.createMultsignForm.controls['minApprovalDelta'].setValidators(validators);
     this.createMultsignForm.controls['minApprovalDelta'].updateValueAndValidity({ emitEvent: false, onlySelf: true });
 
@@ -582,9 +612,9 @@ export class CreateMultiSignatureComponent implements OnInit {
     const validators = [Validators.required,
     Validators.minLength(1),
     Validators.maxLength(this.cosignatoryList.length)]
-    this.minApprovaMinLength = 0;
+    this.minApprovaMinLength = 1;
     this.minApprovaMaxLength = this.cosignatoryList.length
-    this.createMultsignForm.get('minRemovalDelta').patchValue(0);
+    this.createMultsignForm.get('minRemovalDelta').patchValue(1, { emitEvent: false, onlySelf: true });
     this.createMultsignForm.controls['minRemovalDelta'].setValidators(validators);
     this.createMultsignForm.controls['minRemovalDelta'].updateValueAndValidity({ emitEvent: false, onlySelf: true });
 
