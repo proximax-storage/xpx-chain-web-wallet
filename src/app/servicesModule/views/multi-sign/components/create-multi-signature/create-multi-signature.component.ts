@@ -541,6 +541,8 @@ export class CreateMultiSignatureComponent implements OnInit {
       this.subscribeAccount = this.walletService.getAccountsInfo$().subscribe(
         async accountInfo => {
           this.accountInfo = this.walletService.filterAccountInfo(this.currentAccountToConvert.name);
+
+          console.log(this.accountInfo)
           this.accountValid = (
             this.accountInfo !== null &&
             this.accountInfo !== undefined && this.accountInfo.accountInfo !== null
