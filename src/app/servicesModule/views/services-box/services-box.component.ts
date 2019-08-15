@@ -97,7 +97,7 @@ export class ServicesBoxComponent implements OnInit {
             true,
             '',
             '',
-            AppConfig.routes.renewNamespace
+            AppConfig.routes.extendNamespace
           ), renew: this.services.buildStructureService(
             'RENEW',
             false,
