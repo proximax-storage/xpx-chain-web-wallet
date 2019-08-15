@@ -5,6 +5,7 @@ import { AppConfig } from '../../../../config/app.config';
 import { SharedService } from '../../../../shared/services/shared.service';
 import { TransactionsService } from '../../../../transfer/services/transactions.service';
 import { Subscription } from 'rxjs';
+import { NamespacesService } from 'src/app/servicesModule/services/namespaces.service';
 
 @Component({
   selector: 'app-view-all-accounts',
@@ -28,7 +29,8 @@ export class ViewAllAccountsComponent implements OnInit {
   constructor(
     private transactionService: TransactionsService,
     private walletService: WalletService,
-    private sharedService: SharedService
+    private sharedService: SharedService,
+    private namespacesService: NamespacesService
   ) { }
 
   ngOnInit() {
@@ -85,6 +87,7 @@ export class ViewAllAccountsComponent implements OnInit {
     this.accountChanged = true;
     this.walletService.changeAsPrimary(nameSelected);
     this.walletService.use(this.walletService.currentWallet);
+    this.namespacesService.fillNamespacesDefaultAccount();
     this.build();
     this.transactionService.updateBalance();
     setTimeout(() => {

@@ -4,6 +4,7 @@ import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/fo
 import { Router } from '@angular/router';
 import { SharedService, ConfigurationForm } from '../../../shared/services/shared.service';
 import { WalletService } from '../../services/wallet.service';
+import { NamespacesService } from '../../../servicesModule/services/namespaces.service';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 import { AppConfig } from 'src/app/config/app.config';
 
@@ -21,7 +22,7 @@ export class ImportWalletComponent implements OnInit {
   errorMatchPassword: string;
   errorWalletExist: string;
   isValid: boolean = false;
-  title = 'Import Wallet';
+  title = 'Create Wallet';
   typeNetwork = [{
     value: NetworkType.TEST_NET,
     label: 'TEST NET'
@@ -32,7 +33,8 @@ export class ImportWalletComponent implements OnInit {
     private sharedService: SharedService,
     private walletService: WalletService,
     private proximaxProvider: ProximaxProvider,
-    private router: Router
+    private router: Router,
+    private namespaceService: NamespacesService
   ) { }
 
   ngOnInit() {
@@ -112,6 +114,9 @@ export class ImportWalletComponent implements OnInit {
         const password = this.proximaxProvider.createPassword(this.importWalletForm.controls.passwords.get('password').value);
         const wallet = this.proximaxProvider.createAccountFromPrivateKey(nameWallet, password, privateKey, network);
 
+        console.log('this a wallet', wallet);
+        
+
         const accountBuilded = this.walletService.buildAccount({
           address: wallet.address['address'],
           byDefault: true,
@@ -135,6 +140,7 @@ export class ImportWalletComponent implements OnInit {
           network: wallet.network
         }, accountBuilded, wallet);
         this.walletService.saveWalletStorage(nameWallet, accountBuilded);
+        this.namespaceService.searchNamespacesFromAccounts([wallet.address]);
         this.router.navigate([`/${AppConfig.routes.walletCreated}`]);
       } else {
         //Error of repeated Wallet
