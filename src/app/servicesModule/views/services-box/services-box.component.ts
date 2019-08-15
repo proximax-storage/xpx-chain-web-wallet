@@ -22,6 +22,12 @@ export class ServicesBoxComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    const contacts = this.services.getBooksAddress();
+    const showItems = {
+      listContact: (contacts !== null && contacts !== undefined && contacts.length > 0) ? true : false
+    }
+
+
     this.servicesList = [
       //Account
       this.services.buildStructureService(
@@ -204,12 +210,19 @@ export class ServicesBoxComponent implements OnInit {
         'icon-address-green-book-60h-proximax-sirius-wallet.svg',
         '',
         {
-          addContact: this.services.buildStructureService(
-            'ADD AND LIST CONTACTS',
-            true,
+          list: this.services.buildStructureService(
+            'LIST',
+            showItems.listContact,
             '',
             '',
             AppConfig.routes.addressBook
+          ),
+          addContact: this.services.buildStructureService(
+            'ADD CONTACTS',
+            true,
+            '',
+            '',
+            AppConfig.routes.addContacts
           )
         },
         true
