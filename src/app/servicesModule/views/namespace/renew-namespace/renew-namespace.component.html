@@ -1,0 +1,114 @@
+<div class="container mt-3rem mb-2rem animated fadeIn">
+  <div class="row">
+    <div class="col-12 col-md-8">
+      <span class="fs-1rem txt-a-center line-h-1-2em color-grey">{{moduleName}}</span>
+      <span class="fs-1rem txt-a-center line-h-1-2em color-grey"> > </span>
+      <span class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">{{componentName}}</span>
+    </div>
+
+    <div class="col-12 col-md-4 d-flex justify-content-start justify-content-md-end">
+      <a class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio" [routerLink]="[backToService]">
+        <span>Back to Services</span>
+      </a>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <hr class="mt-03rem mb-05rem">
+    </div>
+  </div>
+
+  <form [formGroup]="renewNamespaceForm" (ngSubmit)="renovateNamespace()">
+    <div class="row">
+      <div class="col-12 col-sm-7 col-md-8 mb-2rem">
+        <div class="row mt-1rem">
+          <div class="col-11 mx-auto">
+            <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
+              class="selectWrapper" [items]="arrayselect" formControlName="namespaceRoot" bindLabel="label"
+              bindValue="value" placeholder="Select namespace"></ng-select>
+            <mdb-error class="mt-1rem ml-1rem"
+              *ngIf="validateInput('namespaceRoot').invalid && (validateInput('namespaceRoot').dirty || validateInput('namespaceRoot').touched)">
+              <span>Select namespace</span>
+            </mdb-error>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-11 mx-auto">
+            <div class="md-form form-sm">
+              <input mask="0*" formControlName="duration" required mdbInputDirective mdbValidate
+                [validateSuccess]="true" [validateError]="true" type="text" id="duration"
+                class="form-control form-control-sm input-border" placeholder="Duration (number of days)">
+
+              <!-- VALIDATION -->
+              <mdb-error
+                *ngIf="validateInput('duration', '').invalid && (validateInput('duration', '').dirty || validateInput('duration', '').touched)">
+                <span>Input invalid</span>
+              </mdb-error>
+            </div>
+          </div>
+        </div>
+
+        <div class="row ml-01rem">
+          <div class="col-12 col-lg-6 mx-auto">
+            <div class="box-grey d-flex justify-content-center">
+              <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20" alt="">&nbsp;
+              <span>Fee: 0.000000 XPX</span>
+            </div>
+          </div>
+
+          <div class="col-12 col-lg-6 mx-auto">
+            <div class="box-grey d-flex justify-content-center">
+              <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20" alt="">&nbsp;
+              <span>Rental Fee: {{calculateRentalFee}} XPX</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-11 mx-auto">
+            <div class="md-form form-sm">
+              <input [maxlength]="configurationForm.passwordWallet.maxLength"
+                [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" required
+                mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password"
+                id="password" class="form-control form-control-sm input-border" placeholder="Enter password">
+
+              <!-- VALIDATION -->
+              <mdb-error
+                *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
+                <span>Input invalid</span>
+              </mdb-error>
+            </div>
+          </div>
+        </div>
+
+        <!-- BUTTONS -->
+        <div class="row">
+          <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
+            <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+              size="md" (click)="clearForm()">
+              <span class="fs-1-2em color-white">CLEAR</span>
+            </button>
+          </div>
+
+          <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
+            <button mdbBtn type="submit" rounded="true" [disabled]="!renewNamespaceForm.valid" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+              size="md">
+              <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true" *ngIf="blockBtnSend"></span>
+              <span class="fs-1-2em color-white">CREATE</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="col-11 col-sm-5 col-md-4 description-p-module mt-1-5rem mb-2rem">
+        <span>
+          A namespace can have a maximium length of 16 alphanumerical characters while sub-namespaces can have a
+          maximium length of 64 alphanumerical characters. <br><br>
+          A namespace may consist of three parts, each separated by a full stop (i.e test1.test2.test3).
+          <br><br>
+          Certain phrases are already reserved (i.e xpx; user; account; org; com; biz; net; edu; mil; gov; info).
+        </span>
+      </div>
+    </div>
+  </form>
+</div>
