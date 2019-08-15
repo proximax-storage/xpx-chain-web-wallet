@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { SimpleWallet, PublicAccount, AccountInfo, MultisigAccountInfo, Account, NetworkHttp } from 'tsjs-xpx-chain-sdk';
+import { SimpleWallet, PublicAccount, AccountInfo, MultisigAccountInfo } from 'tsjs-xpx-chain-sdk';
 import { crypto } from 'js-xpx-chain-library';
 import { AbstractControl } from '@angular/forms';
 import { BehaviorSubject, Observable } from 'rxjs';
