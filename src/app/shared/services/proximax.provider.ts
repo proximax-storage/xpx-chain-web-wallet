@@ -564,8 +564,8 @@ export class ProximaxProvider {
       Deadline.create(23),
       name,
       UInt64.fromUint(duration),
-      network);
-
+      network
+    );
   }
 
   /**

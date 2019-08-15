@@ -24,7 +24,7 @@ export class ServicesBoxComponent implements OnInit {
   ngOnInit() {
     const contacts = this.services.getBooksAddress();
     const showItems = {
-      listContact:  (contacts !== null && contacts !== undefined && contacts.length > 0) ? true : false
+      listContact: (contacts !== null && contacts !== undefined && contacts.length > 0) ? true : false
     }
 
     this.servicesList = [
@@ -96,7 +96,7 @@ export class ServicesBoxComponent implements OnInit {
             true,
             '',
             '',
-            AppConfig.routes.renewNamespace
+            AppConfig.routes.extendNamespace
           ), renew: this.services.buildStructureService(
             'RENEW',
             false,

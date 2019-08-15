@@ -5,7 +5,7 @@ import { ExplorerComponent } from './views/explorer/explorer.component';
 import { ServicesBoxComponent } from "./views/services-box/services-box.component"
 import { DetailAccountComponent } from './views/account/detail-account/detail-account.component';
 import { CreateNamespaceComponent } from './views/namespace/create-namespace/create-namespace.component';
-import { RenewNamespaceComponent } from './views/namespace/renew-namespace/renew-namespace.component';
+import { ExtendDurationNamespaceComponent } from './views/namespace/extend-duration-namespace/extend-duration-namespace.component';
 import { AddressBookComponent } from './views/address-book/address-book.component';
 import { CreateMosaicComponent } from './views/mosaic/create-mosaic/create-mosaic.component';
 import { AliasAddressToNamespaceComponent } from './views/account/alias-address-to-namespace/alias-address-to-namespace.component';
@@ -133,11 +133,21 @@ const routes: Routes = [
     }
   }, {
     path: AppConfig.routes.renewNamespace,
-    component: RenewNamespaceComponent,
+    component: ExtendDurationNamespaceComponent,
     data: {
       meta: {
         title: 'renewNamespace.title',
         description: 'renewNamespace.text',
+        override: true,
+      }
+    }
+  }, {
+    path: AppConfig.routes.extendNamespace,
+    component: ExtendDurationNamespaceComponent,
+    data: {
+      meta: {
+        title: 'extendNamespace.title',
+        description: 'extendNamespace.text',
         override: true,
       }
     }

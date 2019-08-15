@@ -12,6 +12,7 @@ import { ProximaxProvider } from '../../../../shared/services/proximax.provider'
 import { SharedService, ConfigurationForm } from '../../../../shared/services/shared.service';
 import { NamespacesService, NamespaceStorageInterface } from '../../../../servicesModule/services/namespaces.service';
 import { TransactionsService } from '../../../../transfer/services/transactions.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-create-namespace',
@@ -67,7 +68,8 @@ export class CreateNamespaceComponent implements OnInit {
   calculateRentalFee: any = '0.000000';
   rentalFee = 100000;
   maskData = '0*';
-  subscribe = ['accountInfo', 'transactionStatus'];
+  subscription: Subscription[] = [];
+  transactionStatus: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -95,10 +97,10 @@ export class CreateNamespaceComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    this.subscribe.forEach(element => {
-      if (this.subscribe[element] !== undefined) {
-        this.subscribe[element].unsubscribe();
-      }
+    // console.log('----ngOnDestroy---');
+    this.subscription.forEach(subscription => {
+      // console.log(subscription);
+      subscription.unsubscribe();
     });
   }
 
@@ -211,7 +213,7 @@ export class CreateNamespaceComponent implements OnInit {
         this.dataBridge.setTransactionStatus(null);
         this.proximaxProvider.announce(signedTransaction).subscribe(
           () => {
-            if (this.subscribe['transactionStatus'] === undefined || this.subscribe['transactionStatus'] === null) {
+            if (!this.transactionStatus) {
               this.getTransactionStatus();
             }
             this.blockBtnSend = false;
@@ -255,10 +257,16 @@ export class CreateNamespaceComponent implements OnInit {
    * @memberof CreateNamespaceComponent
    */
   getNamespaces() {
-    this.subscribe['namespacesChanged'] = this.namespaceService.getNamespaceChanged().subscribe(
+    this.subscription.push(this.namespaceService.getNamespaceChanged().subscribe(
       async namespaceInfo => {
+        this.namespace = [{
+          value: '1',
+          label: '(New root Namespace)',
+          selected: true,
+          disabled: false
+        }];
+
         if (namespaceInfo !== null && namespaceInfo !== undefined) {
-          console.log('namespaceInfo ---> ', namespaceInfo);
           for (let data of namespaceInfo) {
             if (data.namespaceInfo.depth === 1) {
               await this.getRootNamespace(data, data.namespaceInfo.active);
@@ -278,51 +286,9 @@ export class CreateNamespaceComponent implements OnInit {
         this.router.navigate([AppConfig.routes.home]);
         this.sharedService.showError('', 'Check your connection and try again');
       }
-    );
+    ));
   }
 
-
-  /**
-   *
-   *
-   * @memberof CreateNamespaceComponent
-   */
-  getNameNamespace() {
-    this.subscribe['accountInfo'] = this.namespaceService.getNamespaceFromAccountAsync().subscribe(
-      namespaceInfo => {
-        console.log('-----namespaceInfo----', namespaceInfo);
-        if (namespaceInfo !== null && namespaceInfo !== undefined) {
-          this.namespaceService.searchNamespaceFromAccountStorage$().then(
-            async namespaceStorage => {
-              if (namespaceStorage !== undefined && namespaceStorage.length > 0) {
-                for (let data of namespaceStorage) {
-                  if (data.namespaceInfo.depth === 1) {
-                    await this.getRootNamespace(data, data.namespaceInfo.active);
-                  } else {
-                    await this.getSubNivelNamespace(data, data.namespaceInfo.active, data.namespaceInfo.depth);
-                  }
-                }
-
-                this.arrayselect = this.namespace.sort(function (a: any, b: any) {
-                  return a.label === b.label ? 0 : +(a.label > b.label) || -1;
-                });
-              }
-            }).catch(error => {
-              // console.log(error);
-              this.blockUI.stop();
-              this.router.navigate([AppConfig.routes.home]);
-              this.sharedService.showError('', 'Check your connection and try again');
-            });
-        }
-      },
-      error => {
-        // console.log(error);
-        this.blockUI.stop();
-        this.router.navigate([AppConfig.routes.home]);
-        this.sharedService.showError('', 'Check your connection and try again');
-      }
-    );
-  }
 
   /**
    *
@@ -395,8 +361,9 @@ export class CreateNamespaceComponent implements OnInit {
   }
 
   getTransactionStatus() {
+    this.transactionStatus = true;
     // Get transaction status
-    this.subscribe['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
+    this.subscription.push(this.dataBridge.getTransactionStatus().subscribe(
       statusTransaction => {
         if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
           for (let element of this.transactionSigned) {
@@ -417,7 +384,7 @@ export class CreateNamespaceComponent implements OnInit {
           }
         }
       }
-    );
+    ));
   }
 
   /**
