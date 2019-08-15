@@ -39,7 +39,8 @@ import {
   AliasTransaction,
   AliasActionType,
   BlockchainHttp,
-  NamespaceInfo
+  NamespaceInfo,
+  MultisigAccountInfo
 } from 'tsjs-xpx-chain-sdk';
 import { mergeMap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
@@ -333,6 +334,17 @@ export class ProximaxProvider {
      */
   getAccountInfo(address: Address): Observable<AccountInfo> {
     return this.accountHttp.getAccountInfo(address);
+  }
+
+  /**
+   *
+   *
+   * @param {Address} address
+   * @returns {Observable<MultisigAccountInfo>}
+   * @memberof ProximaxProvider
+   */
+  getMultisigAccountInfo(address: Address): Observable<MultisigAccountInfo> {
+    return this.accountHttp.getMultisigAccountInfo(address);
   }
 
   /**

@@ -58,7 +58,6 @@ export class WalletService {
       encrypted: data.encrypted,
       firstAccount: data.firstAccount,
       iv: data.iv,
-      multisig: new MultisigAccountInfo(data.publicAccount,0,0,[],[]),
       name: data.nameAccount,
       network: data.network,
       publicAccount: data.publicAccount
@@ -501,7 +500,6 @@ export interface AccountsInterface {
   encrypted: string;
   firstAccount: boolean;
   iv: string;
-  multisig: MultisigAccountInfo
   name: string;
   network: number;
   publicAccount: PublicAccount;
@@ -511,6 +509,7 @@ export interface AccountsInterface {
 export interface AccountsInfoInterface {
   name: string;
   accountInfo: AccountInfo;
+  multisigInfo: MultisigAccountInfo;
 }
 
 export interface WalletAccountInterface {

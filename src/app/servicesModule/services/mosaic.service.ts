@@ -28,7 +28,39 @@ export class MosaicService {
 
 
 
+  async searchInfoMosaics(mosaicsId: MosaicId[]) {
+    console.log('----MOSAICS ID-----', mosaicsId);
+    let mosaicsInfo: MosaicInfo[] = [];
+    try {
+      mosaicsInfo = await this.proximaxProvider.getMosaics(mosaicsId).toPromise();
+      console.log('-----MOSAICS INFO------', mosaicsInfo);
+    } catch (error) {
+      console.log('---ERROR---');
+    }
+  }
 
+
+  async saveMosaicStorage(mosaicsId: MosaicId[]) {
+    const mosaicsStorage = this.getMosaicsFromStorage();
+    const mosaicsName = await this.getNameMosaics(mosaicsId);
+    console.log('---mosaicsStorage---', mosaicsStorage);
+  }
+
+
+  /**
+  *
+  *
+  * @returns {MosaicsStorage[]}
+  * @memberof MosaicService
+  */
+  getMosaicsFromStorage(): MosaicsStorage[] {
+    const dataStorage = localStorage.getItem(this.getNameStorage());
+    return (dataStorage !== null && dataStorage !== undefined) ? JSON.parse(dataStorage) : [];
+  }
+
+
+
+  // ----------------------------------------------------------------------------------------------------------------
 
 
 
@@ -376,16 +408,7 @@ export class MosaicService {
     return `proximax-mosaics`;
   }
 
-  /**
-   *
-   *
-   * @returns {MosaicsStorage[]}
-   * @memberof MosaicService
-   */
-  getMosaicsFromStorage(): MosaicsStorage[] {
-    const dataStorage = localStorage.getItem(this.getNameStorage());
-    return (dataStorage !== null && dataStorage !== undefined) ? JSON.parse(dataStorage) : [];
-  }
+
 
   /**
    *
