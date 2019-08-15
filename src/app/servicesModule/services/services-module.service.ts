@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Address } from 'tsjs-xpx-chain-sdk';
+import { WalletService } from '../../wallet/services/wallet.service';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,9 @@ import { Address } from 'tsjs-xpx-chain-sdk';
 export class ServicesModuleService {
 
   booksAddress = ``;
-  constructor() { }
+  constructor(
+    private walletService: WalletService
+  ) { }
 
 
   /**
@@ -56,7 +59,7 @@ export class ServicesModuleService {
    * @memberof ServicesModuleService
    */
   changeBooksItem(address: Address) {
-    this.booksAddress = `books-address-${address.pretty()}`;
+    this.booksAddress = `books-address-${this.walletService.getCurrentWallet().name}`;
   }
 
 

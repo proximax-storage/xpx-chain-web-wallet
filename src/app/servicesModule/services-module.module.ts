@@ -7,7 +7,7 @@ import { DetailAccountComponent } from './views/account/detail-account/detail-ac
 import { CoreModule } from '../core/core.module';
 import { ExplorerComponent } from './views/explorer/explorer.component';
 import { CreateNamespaceComponent } from './views/namespace/create-namespace/create-namespace.component';
-import { AddressBookComponent } from './views/address-book/address-book.component';
+import { ListContactsComponent } from './views/address-book/list-contacts/list-contacts.component';
 import { ExtendDurationNamespaceComponent } from './views/namespace/extend-duration-namespace/extend-duration-namespace.component';
 import { CreateMosaicComponent } from './views/mosaic/create-mosaic/create-mosaic.component';
 import { AliasAddressToNamespaceComponent } from './views/account/alias-address-to-namespace/alias-address-to-namespace.component';
@@ -29,7 +29,7 @@ import { AddContactsComponent } from './views/address-book/add-contacts/add-cont
     DetailAccountComponent,
     ExplorerComponent,
     CreateNamespaceComponent,
-    AddressBookComponent,
+    ListContactsComponent,
     ExtendDurationNamespaceComponent,
     CreateMosaicComponent,
     AliasAddressToNamespaceComponent,
