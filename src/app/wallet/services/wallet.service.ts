@@ -353,6 +353,7 @@ export class WalletService {
       this.accountsInfo = accountsInfo;
     }
 
+    console.log('accountinfo', this.accountsInfo);
     this.accountsInfoSubject.next(this.accountsInfo);
   }
 

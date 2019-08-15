@@ -115,7 +115,7 @@ export class ImportWalletComponent implements OnInit {
         const wallet = this.proximaxProvider.createAccountFromPrivateKey(nameWallet, password, privateKey, network);
 
         console.log('this a wallet', wallet);
-        
+
 
         const accountBuilded = this.walletService.buildAccount({
           address: wallet.address['address'],
@@ -128,7 +128,7 @@ export class ImportWalletComponent implements OnInit {
           publicAccount: this.proximaxProvider.getPublicAccountFromPrivateKey(this.proximaxProvider.decryptPrivateKey(
             password,
             wallet.
-            encryptedPrivateKey.encryptedKey,
+              encryptedPrivateKey.encryptedKey,
             wallet.encryptedPrivateKey.iv
           ).toUpperCase(), wallet.network)
         });
@@ -140,7 +140,6 @@ export class ImportWalletComponent implements OnInit {
           network: wallet.network
         }, accountBuilded, wallet);
         this.walletService.saveWalletStorage(nameWallet, accountBuilded);
-        this.namespaceService.searchNamespacesFromAccounts([wallet.address]);
         this.router.navigate([`/${AppConfig.routes.walletCreated}`]);
       } else {
         //Error of repeated Wallet
@@ -190,7 +189,7 @@ export class ImportWalletComponent implements OnInit {
         this.isValid = false;
         this.errorWalletExist = '-invalid';
         return true;
-      }else {
+      } else {
         this.isValid = true;
         this.errorWalletExist = '';
         return false;

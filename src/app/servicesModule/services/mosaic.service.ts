@@ -28,24 +28,57 @@ export class MosaicService {
 
 
 
+  /**
+   *
+   *
+   * @param {MosaicId[]} mosaicsId
+   * @memberof MosaicService
+   */
   async searchInfoMosaics(mosaicsId: MosaicId[]) {
     console.log('----MOSAICS ID-----', mosaicsId);
-    let mosaicsInfo: MosaicInfo[] = [];
+    const mosaicsStorage: MosaicsStorage[] = [];
     try {
-      mosaicsInfo = await this.proximaxProvider.getMosaics(mosaicsId).toPromise();
+      let mosaicsInfo: MosaicInfo[] = await this.proximaxProvider.getMosaics(mosaicsId).toPromise();
+      const mosaicsName = await this.getMosaicsName(mosaicsId);
+      console.log('-----MOSAICS NAME------', mosaicsName);
       console.log('-----MOSAICS INFO------', mosaicsInfo);
+      mosaicsInfo.forEach(infoMosaic => {
+        mosaicsStorage.push({
+          id: [infoMosaic.mosaicId.id.lower, infoMosaic.mosaicId.id.higher],
+          mosaicNames: null,
+          mosaicInfo: infoMosaic,
+          infoComplete: false
+        });
+      });
+
+      console.log('-----MOSAICS STORAGE------', mosaicsStorage);
     } catch (error) {
       console.log('---ERROR---');
     }
   }
 
 
+  /**
+   *
+   *
+   * @param {MosaicId[]} mosaicsId
+   * @memberof MosaicService
+   */
   async saveMosaicStorage(mosaicsId: MosaicId[]) {
     const mosaicsStorage = this.getMosaicsFromStorage();
-    const mosaicsName = await this.getNameMosaics(mosaicsId);
     console.log('---mosaicsStorage---', mosaicsStorage);
   }
 
+  /**
+   *
+   *
+   * @param {MosaicId[]} mosaicsId
+   * @returns {Promise<MosaicNames[]>}
+   * @memberof MosaicService
+   */
+  async getMosaicsName(mosaicsId: MosaicId[]): Promise<MosaicNames[]> {
+    return await this.proximaxProvider.mosaicHttp.getMosaicNames(mosaicsId).toPromise();
+  }
 
   /**
   *
@@ -57,6 +90,12 @@ export class MosaicService {
     const dataStorage = localStorage.getItem(this.getNameStorage());
     return (dataStorage !== null && dataStorage !== undefined) ? JSON.parse(dataStorage) : [];
   }
+
+
+
+
+
+
 
 
 
@@ -366,7 +405,7 @@ export class MosaicService {
         // Push to the array of mosaicsStorage
         return {
           id: [mosaicId.id.lower, mosaicId.id.higher],
-          mosaicNames: [],
+          mosaicNames: null,
           mosaicInfo: mosaicInfo,
           infoComplete: infoComplete
         };
@@ -423,13 +462,7 @@ export class MosaicService {
 
 export interface MosaicsStorage {
   id: number[];
-  mosaicNames: MosaicNames | any;
+  mosaicNames: MosaicNames;
   mosaicInfo: MosaicInfo;
   infoComplete: boolean;
-}
-
-export interface MosaicXPXInterface {
-  mosaic: "prx.xpx",
-  mosaicId: "0dc67fbe1cad29e3",
-  divisibility: 6
 }

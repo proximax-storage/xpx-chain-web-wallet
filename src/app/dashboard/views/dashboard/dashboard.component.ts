@@ -11,6 +11,7 @@ import { AppConfig } from 'src/app/config/app.config';
 import { UInt64 } from 'tsjs-xpx-chain-sdk';
 import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
 import { NamespacesService } from 'src/app/servicesModule/services/namespaces.service';
+import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'app-dashboard',
@@ -33,7 +34,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.searchItems();
   }
   previous: any = [];
-  cantTransactions = 0;
   // myAddress: Address = null;
   cantConfirmed = 0;
   cantUnconfirmed = 0;
@@ -176,34 +176,99 @@ export class DashboardComponent implements OnInit, OnDestroy {
   async loadTransactions(id: any = null) {
     // this.transactions = (id) ? this.transactions.slice(0) : [];
     const data = this.transactions.slice(0);
-    for (let account of this.walletService.currentWallet.accounts) {
-      try {
-        const transactions = await this.proximaxProvider.getTransactionsFromAccountId(account.publicAccount, id).toPromise();
-        transactions.forEach(element => {
-          //Sets the data structure of the dashboard
-          const builderTransactions = this.transactionService.getStructureDashboard(element);
-          if (builderTransactions !== null) {
-            data.push(builderTransactions);
+    const transactionUnconfirmed = this.transactionsUnconfirmed.slice(0);
+    this.walletService.currentWallet.accounts.forEach(account => {
+      // Unconfirmed transactions
+      this.proximaxProvider.getUnconfirmedTransactions(account.publicAccount, id).pipe(first()).subscribe(
+        transactionsUnconfirmed => {
+          if (transactionsUnconfirmed && transactionsUnconfirmed.length > 0) {
+            transactionsUnconfirmed.forEach(element => {
+              //Sets the data structure of the dashboard
+              const builderTransactions = this.transactionService.getStructureDashboard(element);
+              if (builderTransactions !== null) {
+                transactionUnconfirmed.push(builderTransactions);
+              }
+            });
+
+            this.transactionsUnconfirmed = transactionUnconfirmed;
+            this.cantUnconfirmed = this.transactionsUnconfirmed.length;
+            this.transactionService.setTransactionsUnConfirmed$(this.transactionsUnconfirmed);
           }
-        });
 
-        this.transactions = data;
-        this.cantConfirmed = this.transactions.length;
-        this.cantTransactions = this.cantConfirmed;
-      } catch (error) {
-        this.dashboardService.searchComplete = false;
-        this.searching = false;
-        this.iconReloadDashboard = true;
-        // this.sharedService.showError('Has ocurred a error', 'Possible causes: the network is offline');
+        }, error => {
+        }
+      );
+
+      // Confirmed transactions
+      this.proximaxProvider.getTransactionsFromAccountId(account.publicAccount, id).pipe(first()).subscribe(
+        transactions => {
+          if (transactions && transactions.length > 0) {
+            transactions.forEach(element => {
+              //Sets the data structure of the dashboard
+              const builderTransactions = this.transactionService.getStructureDashboard(element);
+              if (builderTransactions !== null) {
+                data.push(builderTransactions);
+              }
+            });
+
+            this.transactions = data;
+            this.cantConfirmed = this.transactions.length;
+            this.transactionService.setTransactionsConfirmed$(this.transactions);
+            this.iconReloadDashboard = false;
+            this.searching = false;
+            this.dashboardService.searchComplete = true;
+          }
+        }, error => {
+        }
+      );
+    });
+
+    /*  for (let account of this.walletService.currentWallet.accounts) {
+        try {
+          const transactions = await this.proximaxProvider.getUnconfirmedTransactions(account.publicAccount, id).toPromise();
+          transactions.forEach(element => {
+            //Sets the data structure of the dashboard
+            const builderTransactions = this.transactionService.getStructureDashboard(element);
+            if (builderTransactions !== null) {
+              transactionUnconfirmed.push(builderTransactions);
+            }
+          });
+
+          this.transactionsUnconfirmed = transactionUnconfirmed;
+          this.cantUnconfirmed = this.transactionsUnconfirmed.length;
+        } catch (error) {
+          this.dashboardService.searchComplete = false;
+          this.searching = false;
+          this.iconReloadDashboard = true;
+        }
+
+        try {
+          const transactions = await this.proximaxProvider.getTransactionsFromAccountId(account.publicAccount, id).toPromise();
+          transactions.forEach(element => {
+            //Sets the data structure of the dashboard
+            const builderTransactions = this.transactionService.getStructureDashboard(element);
+            if (builderTransactions !== null) {
+              data.push(builderTransactions);
+            }
+          });
+
+          this.transactions = data;
+          this.cantConfirmed = this.transactions.length;
+        } catch (error) {
+          this.dashboardService.searchComplete = false;
+          this.searching = false;
+          this.iconReloadDashboard = true;
+        }
       }
-    }
 
-    // Establishes confirmed transactions in the observable type variable
-    this.transactions = data; // this.transactions.concat(data);
-    this.transactionService.setTransactionsConfirmed$(this.transactions);
-    this.iconReloadDashboard = false;
-    this.searching = false;
-    this.dashboardService.searchComplete = true;
+      // Establishes confirmed transactions in the observable type variable
+      this.transactions = data; // this.transactions.concat(data);
+      this.transactionsUnconfirmed = transactionUnconfirmed; // this.transactions.concat(data);
+      this.transactionService.setTransactionsConfirmed$(this.transactions);
+      this.transactionService.setTransactionsUnConfirmed$(this.transactionsUnconfirmed);
+      this.iconReloadDashboard = false;
+      this.searching = false;
+      this.dashboardService.searchComplete = true;*/
   }
 
   /**
@@ -231,7 +296,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
       (next: TransactionsInterface[]) => {
         this.cantConfirmed = next.length;
         this.transactionsConfirmed = next;
-        this.cantTransactions = this.cantConfirmed;
         this.transactions = next;
 
         // Datatable
@@ -266,7 +330,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.mdbTable.setDataSource(prev);
     }
 
-    this.cantTransactions = this.transactions.length;
   }
 
   /**
@@ -291,13 +354,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.mdbTable.setDataSource(this.transactionsConfirmed);
       this.transactions = this.mdbTable.getDataSource();
       this.previous = this.mdbTable.getDataSource();
-      this.cantTransactions = this.transactions.length;
     } else {
       // Unconfirmed
       this.mdbTable.setDataSource(this.transactionsUnconfirmed);
       this.transactions = this.mdbTable.getDataSource();
       this.previous = this.mdbTable.getDataSource();
-      this.cantTransactions = this.transactions.length;
     }
   }
 }
