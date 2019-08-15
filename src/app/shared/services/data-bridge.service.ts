@@ -79,8 +79,6 @@ export class DataBridgeService {
   destroyUnconfirmedTransaction(element: TransactionsInterface) {
     this.transactionsService.getTransactionsUnConfirmed$().pipe(first()).subscribe(
       response => {
-        console.log('-----confirmada-----', element);
-        console.log('---response----', response);
         if (response.length > 0) {
           let allTransactionUnConfirmed = response.slice(0);
           let unconfirmed = allTransactionUnConfirmed.filter(elementUnconfirmed => elementUnconfirmed.data.transactionInfo.hash !== element.data.transactionInfo.hash);
@@ -188,8 +186,8 @@ export class DataBridgeService {
     currentWallet.accounts.forEach(element => {
       const address = this.proximaxProvider.createFromRawAddress(element.address);
       connector.unconfirmedAdded(address).subscribe(unconfirmedTransaction => {
-        console.log('----connector----', connector);
-        console.log('----unconfirmedTransaction----', unconfirmedTransaction);
+        // console.log('----connector----', connector);
+        // console.log('----unconfirmedTransaction----', unconfirmedTransaction);
 
         // aqui las que me llegan del WS
         this.setTransactionStatus({

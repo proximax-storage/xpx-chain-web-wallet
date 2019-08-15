@@ -477,7 +477,7 @@ export class TransactionsService {
    * @returns {Promise<AccountInfo[]>}
    * @memberof TransactionsService
    */
-  async searchAccountsInfo(accounts: AccountsInterface[]): Promise<AccountsInfoInterface[]> {
+  async searchAccountsInfo(accounts: AccountsInterface[], pushed = false): Promise<AccountsInfoInterface[]> {
     const accountsInfo: AccountsInfoInterface[] = [];
     const mosaicsIds: (NamespaceId | MosaicId)[] = [];
     for (let element of accounts) {
@@ -516,7 +516,6 @@ export class TransactionsService {
 
         info.mosaics.map(n => n.id).forEach(id => {
           const pushea = mosaicsIds.find(next => next.id.toHex() === id.toHex());
-          console.log('pushea', pushea);
           if (!pushea) {
             mosaicsIds.push(id);
           }
@@ -527,7 +526,7 @@ export class TransactionsService {
     // console.log('---accountsInfo---', accountsInfo);
     //    this.mosaicServices.searchInfoMosaics(mosaicsIds);
     this.mosaicServices.searchMosaics(mosaicsIds);
-    this.walletService.setAccountsInfo(accountsInfo);
+    this.walletService.setAccountsInfo(accountsInfo, pushed);
     return accountsInfo;
   }
 
