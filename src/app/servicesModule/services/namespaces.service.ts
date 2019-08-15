@@ -80,7 +80,7 @@ export class NamespacesService {
             await this.saveNamespaceStorage([namespaceInfo]);
           }
         } catch (error) {
-          console.log('----Search namespaces from accounts error----', error);
+          // console.log('----Search namespaces from accounts error----', error);
         }
       }
 
@@ -109,7 +109,7 @@ export class NamespacesService {
           });
         }
       } catch (error) {
-        console.log('----Search namespaces from accounts error----', error);
+        // console.log('----Search namespaces from accounts error----', error);
       }
     }
 
