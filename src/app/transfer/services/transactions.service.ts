@@ -501,7 +501,7 @@ export class TransactionsService {
         accountInfo: info,
         multisigInfo: isMultisig
       });
-
+      console.log('accountsInfo',accountsInfo)
 
       if (info) {
         const mosaics = info.mosaics.slice(0);
