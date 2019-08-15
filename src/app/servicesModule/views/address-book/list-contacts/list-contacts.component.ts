@@ -2,24 +2,24 @@ import { Component, OnInit, ViewChild, ChangeDetectorRef, AfterViewInit, HostLis
 import { FormGroup, Validators, FormBuilder, AbstractControl } from "@angular/forms";
 import { ModalDirective, MdbTablePaginationComponent, MdbTableDirective } from 'ng-uikit-pro-standard';
 import { SharedService } from 'src/app/shared/services/shared.service';
-import { ServicesModuleService } from "../../services/services-module.service";
-import { AppConfig } from '../../../config/app.config';
+import { ServicesModuleService } from "../../../services/services-module.service";
+import { AppConfig } from '../../../../config/app.config';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-address-book',
-  templateUrl: './address-book.component.html',
-  styleUrls: ['./address-book.component.css']
+  selector: 'app-list-contacts',
+  templateUrl: './list-contacts.component.html',
+  styleUrls: ['./list-contacts.component.css']
 })
-export class AddressBookComponent {
+export class ListContactsComponent {
 
   moduleName = 'Address Book';
   componentName = 'LIST';
   goBack = `/${AppConfig.routes.service}`;
   addContacts = `/${AppConfig.routes.addContacts}`;
   //Pagination
-  @ViewChild(MdbTablePaginationComponent, {static: true}) mdbTablePagination: MdbTablePaginationComponent;
-  @ViewChild(MdbTableDirective, {static: true}) mdbTable: MdbTableDirective;
+  @ViewChild(MdbTablePaginationComponent, { static: true }) mdbTablePagination: MdbTablePaginationComponent;
+  @ViewChild(MdbTableDirective, { static: true }) mdbTable: MdbTableDirective;
   @HostListener('input') oninput() {
     this.searchItems();
   }
