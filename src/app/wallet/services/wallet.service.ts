@@ -342,10 +342,13 @@ export class WalletService {
    * @memberof WalletService
    */
   setAccountsInfo(accountsInfo: AccountsInfoInterface[], pushed = false) {
+    let accounts = (this.accountsInfo && this.accountsInfo.length > 0) ? this.accountsInfo.slice(0) : [];
     if (pushed) {
       for (let element of accountsInfo) {
-        this.accountsInfo.push(element);
+        accounts = accounts.filter(x => x.name !== element.name);
+        accounts.push(element);
       }
+      this.accountsInfo = accounts;
     } else {
       this.accountsInfo = accountsInfo;
     }
@@ -457,6 +460,7 @@ export class WalletService {
     return str.match('^(0x|0X)?[a-fA-F0-9]+$') !== null;
   }
 
+
   /**
    *
    *
@@ -465,8 +469,8 @@ export class WalletService {
    * @returns
    * @memberof WalletService
    */
-  filterAccount(byName: string, byDefault: boolean = null) {
-    if (byDefault !== null) {
+  filterAccount(byName: string, byDefault: boolean = null): AccountsInterface {
+    if (byDefault !== null && byName === '') {
       return this.currentWallet.accounts.find(elm => elm.default === true);
     } else {
       return this.currentWallet.accounts.find(elm => elm.name === byName);
