@@ -15,7 +15,8 @@ import {
   Transaction,
   AccountInfo,
   PublicAccount,
-  Address
+  Address,
+  MultisigAccountInfo
 } from "tsjs-xpx-chain-sdk";
 import { first } from "rxjs/operators";
 import { ProximaxProvider } from "../../shared/services/proximax.provider";
@@ -475,35 +476,47 @@ export class TransactionsService {
    * @returns {Promise<AccountInfo[]>}
    * @memberof TransactionsService
    */
-  async searchAccountsInfo(accounts: AccountsInterface[]): Promise<AccountInfo[]> {
-    const accountsInfo = [];
+  async searchAccountsInfo(accounts: AccountsInterface[]): Promise<AccountsInfoInterface[]> {
+    const accountsInfo: AccountsInfoInterface[] = [];
     for (let element of accounts) {
+      let info: AccountInfo = null;
       try {
-        const info = await this.proximaxProvider.getAccountInfo(this.proximaxProvider.createFromRawAddress(element.address)).toPromise();
+        info = await this.proximaxProvider.getAccountInfo(this.proximaxProvider.createFromRawAddress(element.address)).toPromise();
+      } catch (error) {
+        info = null
+      }
+
+      let isMultisig: MultisigAccountInfo = null;
+      try {
+        isMultisig = await this.proximaxProvider.getMultisigAccountInfo(this.proximaxProvider.createFromRawAddress(element.address)).toPromise();
+      } catch (error) {
+        isMultisig = null
+      }
+
+
+      accountsInfo.push({
+        name: element.name,
+        accountInfo: info,
+        multisigInfo: isMultisig
+      });
+
+
+      if (info) {
         const mosaics = info.mosaics.slice(0);
         if (element.default) {
           const findXPX = mosaics.find(mosaic => mosaic.id.toHex() === environment.mosaicXpxInfo.id);
           if (findXPX) {
             this.setBalance$(findXPX.amount.compact());
-          }else {
+          } else {
             this.setBalance$('0.000000');
           }
         }
 
-        accountsInfo.push({
-          name: element.name,
-          accountInfo: info
-        });
-
         this.mosaicServices.searchMosaics(info.mosaics.map(n => n.id));
-      } catch (error) {
-        accountsInfo.push({
-          name: element.name,
-          accountInfo: null
-        });
       }
     };
 
+    console.log(accountsInfo);
     this.walletService.setAccountsInfo(accountsInfo);
     return accountsInfo;
   }
