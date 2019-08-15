@@ -471,7 +471,7 @@ export class ProximaxProvider {
    * @returns {Observable<NamespaceInfo>}
    * @memberof ProximaxProvider
    */
-  getNamespace(namespace: NamespaceId): any {// Observable<NamespaceInfo> {
+  getNamespace(namespace: NamespaceId): Observable<NamespaceInfo> {
     return this.namespaceHttp.getNamespace(namespace);
   }
 

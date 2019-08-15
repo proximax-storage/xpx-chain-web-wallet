@@ -36,16 +36,16 @@ export class MosaicAliasComponent implements OnInit {
     const mosaicId = new MosaicId([this.mosaicAlias.data['mosaicId'].id.lower, this.mosaicAlias.data['mosaicId'].id.higher]);
     this.mosaicId = mosaicId.toHex();
     const mosaicInfo = await this.mosaicService.searchMosaics([mosaicId]);
-    if (mosaicInfo !== null && mosaicInfo !== undefined) {
+    if (mosaicInfo !== null && mosaicInfo !== undefined && mosaicInfo.length > 0) {
       this.mosaicName = (mosaicInfo[0].mosaicNames.names.length > 0) ? mosaicInfo[0].mosaicNames.names[0] : '';
     }
 
     // NAMESPACE
     const namespaceId = new NamespaceId([this.mosaicAlias.data['namespaceId'].id.lower, this.mosaicAlias.data['namespaceId'].id.higher]);
     this.namespaceId = namespaceId.toHex();
-    const namespaceInfo = await this.namespaceService.getNamespaceFromId(namespaceId);
-    if (namespaceInfo !== null && namespaceInfo !== undefined) {
-      this.namespaceName = (namespaceInfo.namespaceName.name !== '') ? namespaceInfo.namespaceName.name : '';
+    const namespaceInfo = await this.namespaceService.getNamespaceFromId([namespaceId]);
+    if (namespaceInfo !== null && namespaceInfo !== undefined && namespaceInfo.length > 0) {
+      this.namespaceName = (namespaceInfo[0].namespaceName.name !== '') ? namespaceInfo[0].namespaceName.name : '';
     }
   }
 

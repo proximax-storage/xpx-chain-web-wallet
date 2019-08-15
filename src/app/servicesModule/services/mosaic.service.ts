@@ -4,7 +4,8 @@ import {
   MosaicId,
   MosaicView,
   NamespaceName,
-  NamespaceInfo
+  NamespaceInfo,
+  NamespaceId
 } from "tsjs-xpx-chain-sdk";
 import { MosaicNames } from "tsjs-xpx-chain-sdk/dist/src/model/mosaic/MosaicNames";
 import { ProximaxProvider } from "../../shared/services/proximax.provider";
@@ -18,11 +19,6 @@ import { WalletService } from '../../wallet/services/wallet.service';
 export class MosaicService {
 
   mosaicsViewCache: MosaicView[] = [];
-  mosaicXpx: MosaicXPXInterface = {
-    mosaic: "prx.xpx",
-    mosaicId: "0dc67fbe1cad29e3",
-    divisibility: 6
-  };
 
   constructor(
     private proximaxProvider: ProximaxProvider,
@@ -175,39 +171,13 @@ export class MosaicService {
    */
   async saveMosaicsStorage(mosaicsInfo: MosaicInfo[], mosaicsToSearch?: MosaicId[]) {
     // searchByNamespaceId
-    const searchByNamespaceId = [];
+    const searchByNamespaceId: NamespaceId[] = [];
     //get mosaics from storage
     const mosaicsStorage = this.getMosaicsFromStorage();
     //filter mosaics id from mosaicsInfo params
     let mosaicsIds = [];
     // If the mosaic identification has data, look for the names of the tiles. This must return an array of mosaics name
     let mosaicsName = [];
-
-    // Init process
-    /* if (mosaicsInfo.length > 0) {
-       mosaicsIds = mosaicsInfo.map(data => data.mosaicId);
-       mosaicsName = await this.getNameMosaics(mosaicsIds);
-       for (let mosaicInfo of mosaicsInfo) {
-         console.log('----mosaicInfo-----', mosaicInfo);
-         // Valida si el mosaico posee name
-         const currentMosaicName = mosaicsName.find(data => data.mosaicId.toHex() === mosaicInfo.mosaicId.toHex());
-         console.log('----currentMosaicName---', currentMosaicName);
-         if (currentMosaicName && currentMosaicName.names.length > 0) {
-           const data = await this.buildStructureMosaicStorage(mosaicsStorage, mosaicInfo.mosaicId, mosaicsName, mosaicInfo);
-           if (data) {
-             console.log('------data------', data);
-             mosaicsStorage.push(data);
-           }
-         } else {
-           searchByNamespaceId.push(this.namespacesService.getNamespaceId([mosaicInfo.mosaicId.id.lower, mosaicInfo.mosaicId.id.higher]));
-         }
-       }
-     } else {
-       mosaicsIds = mosaicsToSearch;
-       mosaicsName = [];
-     }
-
-     return mosaicsStorage;*/
 
     if (mosaicsInfo.length > 0) {
       mosaicsIds = mosaicsInfo.map(data => data.mosaicId);
@@ -225,15 +195,19 @@ export class MosaicService {
       }
 
       if (searchByNamespaceId.length > 0) {
-        const namespacesName = await this.namespacesService.getNamespacesNameAsync(searchByNamespaceId);
+        const namespacesInfo = await this.namespacesService.getNamespaceFromId(searchByNamespaceId);
         const names = [];
-        if (namespacesName.length > 0) {
-          namespacesName.forEach(element => {
-            if (element.parentId !== undefined) {
-              const parent = namespacesName.find(data => data.namespaceId.toHex() === element.parentId.toHex());
+        if (namespacesInfo.length > 0) {
+          namespacesInfo.forEach(element => {
+            if (element.namespaceName !== undefined && element.namespaceName !== null) {
+              const parent = namespacesInfo.find(data =>
+                this.namespacesService.getNamespaceId([data.namespaceName.namespaceId.id.lower, data.namespaceName.namespaceId.id.higher]).toHex() ===
+                this.namespacesService.getNamespaceId([element.namespaceName.parentId.id.lower, element.namespaceName.parentId.id.higher]).toHex()
+              );
+
               names.push({
-                id: element.namespaceId,
-                name: `${element.name}.${parent.name}`
+                id: element.namespaceName.namespaceId,
+                name: `${element.namespaceName.name}.${parent.namespaceName.name}`
               });
             }
           });
@@ -270,15 +244,19 @@ export class MosaicService {
         }
 
         if (searchByNamespaceId.length > 0) {
-          const namespacesName = await this.namespacesService.getNamespacesNameAsync(searchByNamespaceId);
+          const namespacesInfo = await this.namespacesService.getNamespaceFromId(searchByNamespaceId);
           const names = [];
-          if (namespacesName.length > 0) {
-            namespacesName.forEach(element => {
-              if (element.parentId !== undefined) {
-                const parent = namespacesName.find(data => data.namespaceId.toHex() === element.parentId.toHex());
+          if (namespacesInfo.length > 0) {
+            namespacesInfo.forEach(element => {
+              if (element.namespaceName !== undefined && element.namespaceName !== null) {
+                const parent = namespacesInfo.find(data =>
+                  this.namespacesService.getNamespaceId([data.namespaceName.namespaceId.id.lower, data.namespaceName.namespaceId.id.higher]).toHex() ===
+                  this.namespacesService.getNamespaceId([element.namespaceName.parentId.id.lower, element.namespaceName.parentId.id.higher]).toHex()
+                );
+
                 names.push({
-                  id: element.namespaceId,
-                  name: `${parent.name}.${element.name}`
+                  id: element.namespaceName.namespaceId,
+                  name: `${element.namespaceName.name}.${parent.namespaceName.name}`
                 });
               }
             });
@@ -297,15 +275,6 @@ export class MosaicService {
     }
 
     const saveDataStorage = [];
-    // console.log(mosaicsStorage);
-    /*mosaicsStorage.forEach(element => {
-      // console.log(element);
-      if (element.mosaicNames.length > 0) {
-        saveDataStorage.push(element);
-      }
-    });*/
-    // console.log('mosaicsStorage', mosaicsStorage);
-    //localStorage.setItem(this.getNameStorage(), JSON.stringify(saveDataStorage));
     localStorage.setItem(this.getNameStorage(), JSON.stringify(mosaicsStorage));
     return mosaicsStorage;
   }

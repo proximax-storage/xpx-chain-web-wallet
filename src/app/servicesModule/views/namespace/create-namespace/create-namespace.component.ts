@@ -122,9 +122,12 @@ export class CreateNamespaceComponent implements OnInit {
         //Assign level 2
         const level2 = subNamespace.namespaceName.name;
         //Search level 1
-        const level1: NamespaceStorageInterface = await this.namespaceService.getNamespaceFromId(
-          this.proximaxProvider.getNamespaceId([subNamespace.namespaceName.parentId.id.lower, subNamespace.namespaceName.parentId.id.higher])
-        );
+        const level1: NamespaceStorageInterface = await this.namespaceService.getNamespaceFromId([
+          this.namespaceService.getNamespaceId([
+            subNamespace.namespaceName.parentId.id.lower,
+            subNamespace.namespaceName.parentId.id.higher
+          ])
+        ])[0];
 
         name = `${level1.namespaceName.name}.${level2}`;
       } else if (depth === 3) {
@@ -133,13 +136,13 @@ export class CreateNamespaceComponent implements OnInit {
         const level3 = subNamespace.namespaceName.name;
         //search level 2
         const level2: NamespaceStorageInterface = await this.namespaceService.getNamespaceFromId(
-          this.proximaxProvider.getNamespaceId([subNamespace.namespaceName.parentId.id.lower, subNamespace.namespaceName.parentId.id.higher])
-        );
+          [this.proximaxProvider.getNamespaceId([subNamespace.namespaceName.parentId.id.lower, subNamespace.namespaceName.parentId.id.higher])]
+        )[0];
 
         //search level 1
         const level1: NamespaceStorageInterface = await this.namespaceService.getNamespaceFromId(
-          this.proximaxProvider.getNamespaceId([level2.namespaceName.parentId.id.lower, level2.namespaceName.parentId.id.higher])
-        );
+          [this.proximaxProvider.getNamespaceId([level2.namespaceName.parentId.id.lower, level2.namespaceName.parentId.id.higher])]
+        )[0];
         name = `${level1.namespaceName.name}.${level2.namespaceName.name}.${level3}`;
       }
 

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { SimpleWallet, PublicAccount, AccountInfo } from 'tsjs-xpx-chain-sdk';
+import { SimpleWallet, PublicAccount, AccountInfo, MultisigAccountInfo } from 'tsjs-xpx-chain-sdk';
 import { crypto } from 'js-xpx-chain-library';
 import { AbstractControl } from '@angular/forms';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -50,20 +50,23 @@ export class WalletService {
    * @memberof WalletService
    */
   buildAccount(data: any): AccountsInterface {
-    const accounts: AccountsInterface = {
-      'algo': 'pass:bip32',
-      'address': data.address,
-      'brain': true,
-      'default': data.byDefault,
-      'encrypted': data.encrypted,
-      'firstAccount': data.firstAccount,
-      'iv': data.iv,
-      'name': data.nameAccount,
-      'network': data.network,
-      'publicAccount': data.publicAccount
+    return {
+      algo: 'pass:bip32',
+      address: data.address,
+      brain: true,
+      default: data.byDefault,
+      encrypted: data.encrypted,
+      firstAccount: data.firstAccount,
+      iv: data.iv,
+      multisig: {
+        cosignatoriesAccountsInfo: [],
+        multisigAccountsInfo: [],
+        multisigInfo: null
+      },
+      name: data.nameAccount,
+      network: data.network,
+      publicAccount: data.publicAccount
     }
-
-    return accounts;
   }
 
   /**
@@ -502,6 +505,11 @@ export interface AccountsInterface {
   encrypted: string;
   firstAccount: boolean;
   iv: string;
+  multisig: {
+    cosignatoriesAccountsInfo: AccountsInfoInterface[],
+    multisigAccountsInfo: AccountsInfoInterface[],
+    multisigInfo: MultisigAccountInfo
+  };
   name: string;
   network: number;
   publicAccount: PublicAccount;

@@ -10,6 +10,7 @@ import { MosaicService } from '../../../services/mosaic.service';
 import { SharedService, ConfigurationForm } from '../../../../shared/services/shared.service';
 import { WalletService } from '../../../../wallet/services/wallet.service';
 import { TransactionsService } from '../../../../transfer/services/transactions.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-extend-duration-namespace',
@@ -44,7 +45,7 @@ export class ExtendDurationNamespaceComponent implements OnInit {
   blockBtnSend: boolean = false;
   fee = '';
   titleInformation = 'Namespace Information';
-  subscriptions = ['block'];
+  subscription: Subscription[] = [];
 
   constructor(
     private router: Router,
@@ -62,7 +63,7 @@ export class ExtendDurationNamespaceComponent implements OnInit {
     this.configurationForm = this.sharedService.configurationForm;
     this.fee = `0.000000 ${this.feeType}`;
     this.createForm();
-    this.getNameNamespace();
+    this.getNamespaces();
     const duration = this.extendDurationNamespaceForm.get('duration').value;
     this.durationByBlock = this.transactionService.calculateDurationforDay(duration).toString();
     this.validateRentalFee(this.rentalFee * duration);
@@ -127,10 +128,8 @@ export class ExtendDurationNamespaceComponent implements OnInit {
    * @memberof ExtendDurationNamespaceComponent
    */
   destroySubscription() {
-    this.subscriptions.forEach(element => {
-      if (this.subscriptions[element] !== undefined) {
-        this.subscriptions[element].unsubscribe();
-      }
+    this.subscription.forEach(subscription => {
+      subscription.unsubscribe();
     });
   }
 
@@ -139,12 +138,13 @@ export class ExtendDurationNamespaceComponent implements OnInit {
    *
    * @memberof ExtendDurationNamespaceComponent
    */
-  getNameNamespace() {
-    this.namespaceService.searchNamespaceFromAccountStorage$().then(
-      async dataNamespace => {
-        if (dataNamespace !== undefined && dataNamespace.length > 0) {
+  getNamespaces() {
+    this.subscription.push(this.namespaceService.getNamespaceChanged().subscribe(
+      async namespaceInfo => {
+        console.log(namespaceInfo);
+        if (namespaceInfo !== undefined && namespaceInfo !== null && namespaceInfo.length > 0) {
           const arrayselect = [];
-          for (let namespaceRoot of dataNamespace) {
+          for (let namespaceRoot of namespaceInfo) {
             if (namespaceRoot.namespaceInfo.depth === 1) {
               arrayselect.push({
                 value: `${namespaceRoot.namespaceName.name}`,
@@ -162,10 +162,12 @@ export class ExtendDurationNamespaceComponent implements OnInit {
 
           this.arrayselect = arrayselect;
         }
-      }).catch(error => {
+      }, error => {
         this.router.navigate([AppConfig.routes.home]);
-        this.sharedService.showError('', 'Please check your connection and try again');
-      });
+        this.sharedService.showError('', 'Check your connection and try again');
+      }
+    ));
+
   }
 
   /**
@@ -178,9 +180,9 @@ export class ExtendDurationNamespaceComponent implements OnInit {
     namespace = (namespace === undefined) ? 1 : namespace.value;
     this.namespaceChangeInfo = this.arrayselect.filter((book: any) => (book.name === namespace));
     if (this.namespaceChangeInfo.length > 0) {
-      this.subscriptions['block'] = this.dataBridgeService.getBlock().subscribe(
+      this.subscription.push(this.dataBridgeService.getBlock().subscribe(
         next => this.block = next
-      );
+      ));
       this.startHeight = this.namespaceChangeInfo[0].dataNamespace.NamespaceInfo.startHeight.lower;
       this.endHeight = this.namespaceChangeInfo[0].dataNamespace.NamespaceInfo.endHeight.lower;
     }
@@ -274,9 +276,11 @@ export class ExtendDurationNamespaceComponent implements OnInit {
    * @memberof ExtendDurationNamespaceComponent
    */
   validateRentalFee(amount: number) {
-    console.log('This is a test', amount);
     const accountInfo = this.walletService.filterAccountInfo();
-    if (accountInfo !== undefined && accountInfo !== null && Object.keys(accountInfo).length > 0) {
+    if (
+      accountInfo && accountInfo.accountInfo &&
+      accountInfo.accountInfo.mosaics && accountInfo.accountInfo.mosaics.length > 0
+    ) {
       if (accountInfo.accountInfo.mosaics.length > 0) {
         const filtered = accountInfo.accountInfo.mosaics.find(element => {
           return element.id.toHex() === new MosaicId(this.proximaxProvider.mosaicXpx.mosaicId).toHex();
@@ -296,6 +300,9 @@ export class ExtendDurationNamespaceComponent implements OnInit {
         this.insufficientBalance = true;
         this.extendDurationNamespaceForm.controls['password'].disable();
       }
+    } else {
+      this.sharedService.showWarning('', 'You do not have enough balance in the default account');
+      this.router.navigate([`/${AppConfig.routes.service}`]);
     }
   }
 

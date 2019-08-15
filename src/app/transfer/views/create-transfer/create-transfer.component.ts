@@ -252,7 +252,7 @@ export class CreateTransferComponent implements OnInit {
               expired = true;
             }
 
-            const x = this.proximaxProvider.getMosaicId(mosaic.id).id.toHex() !== this.mosaicServices.mosaicXpx.mosaicId;
+            const x = this.proximaxProvider.getMosaicId(mosaic.id).id.toHex() !== environment.mosaicXpxInfo.id;
             // console.log('------x------', x);
             if (x) {
               const nameMosaic = (mosaic.mosaicNames.names.length > 0) ? mosaic.mosaicNames.names[0] : this.proximaxProvider.getMosaicId(mosaic.id).toHex();
