@@ -20,6 +20,7 @@ export const AppConfig: Config = {
     dashboard: 'dashboard',
     editMultisignatureContract: 'edit-multisignature-contract',
     explorer: 'explorer',
+    extendNamespace: 'extend-namespace',
     service: 'services',
     storage: 'storage',
     uploadFile: 'upload-file',
@@ -65,6 +66,7 @@ export interface Config {
     dashboard: string;
     editMultisignatureContract: string;
     explorer: string;
+    extendNamespace: string;
     service: string;
     storage: string;
     uploadFile: string;

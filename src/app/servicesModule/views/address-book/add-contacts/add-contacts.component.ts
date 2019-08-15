@@ -57,6 +57,28 @@ export class AddContactsComponent implements OnInit {
   }
 
   /**
+   *
+   *
+   * @param {(string | (string | number)[])} [custom]
+   * @param {(string | number)} [formControl]
+   * @returns
+   * @memberof AddContactsComponent
+   */
+  clearForm(custom?: string | (string | number)[], formControl?: string | number) {
+    if (custom !== undefined) {
+      if (formControl !== undefined) {
+        this.contactForm.controls[formControl].get(custom).reset();
+        return;
+      }
+      this.contactForm.get(custom).reset();
+      return;
+    }
+
+    this.contactForm.reset();
+    return;
+  }
+
+  /**
    * Save contact
    *
    * @returns

@@ -2,26 +2,26 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormGroup, Validators, FormBuilder, AbstractControl } from '@angular/forms';
 import { SignedTransaction, MosaicId } from 'tsjs-xpx-chain-sdk';
-import { NamespacesService } from '../../../../servicesModule/services/namespaces.service';
+import { NamespacesService } from '../../../services/namespaces.service';
 import { AppConfig } from '../../../../config/app.config';
 import { DataBridgeService } from '../../../../shared/services/data-bridge.service';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
-import { MosaicService } from '../../../../servicesModule/services/mosaic.service';
-import { SharedService, ConfigurationForm } from 'src/app/shared/services/shared.service';
-import { WalletService } from 'src/app/wallet/services/wallet.service';
-import { TransactionsService } from 'src/app/transfer/services/transactions.service';
+import { MosaicService } from '../../../services/mosaic.service';
+import { SharedService, ConfigurationForm } from '../../../../shared/services/shared.service';
+import { WalletService } from '../../../../wallet/services/wallet.service';
+import { TransactionsService } from '../../../../transfer/services/transactions.service';
 
 @Component({
-  selector: 'app-renew-namespace',
-  templateUrl: './renew-namespace.component.html',
-  styleUrls: ['./renew-namespace.component.css']
+  selector: 'app-extend-duration-namespace',
+  templateUrl: './extend-duration-namespace.component.html',
+  styleUrls: ['./extend-duration-namespace.component.css']
 })
-export class RenewNamespaceComponent implements OnInit {
+export class ExtendDurationNamespaceComponent implements OnInit {
 
   moduleName = 'Namespaces & Sub-Namespaces';
   componentName = 'EXTEND DURATION';
   backToService = `/${AppConfig.routes.service}`;
-  renewNamespaceForm: FormGroup;
+  extendDurationNamespaceForm: FormGroup;
   configurationForm: ConfigurationForm = {};
   arrayselect: Array<object> = [
     {
@@ -63,26 +63,26 @@ export class RenewNamespaceComponent implements OnInit {
     this.fee = `0.000000 ${this.feeType}`;
     this.createForm();
     this.getNameNamespace();
-    const duration = this.renewNamespaceForm.get('duration').value;
+    const duration = this.extendDurationNamespaceForm.get('duration').value;
     this.durationByBlock = this.transactionService.calculateDurationforDay(duration).toString();
     this.validateRentalFee(this.rentalFee * duration);
-    this.renewNamespaceForm.get('duration').valueChanges.subscribe(next => {
+    this.extendDurationNamespaceForm.get('duration').valueChanges.subscribe(next => {
       if (next !== null && next !== undefined && String(next) !== '0') {
         this.durationByBlock = this.transactionService.calculateDurationforDay(next).toString();
         this.validateRentalFee(this.rentalFee * parseFloat(this.durationByBlock));
       } else {
         this.calculateRentalFee = '0.000000';
         this.durationByBlock = '0';
-        this.renewNamespaceForm.get('duration').patchValue('');
+        this.extendDurationNamespaceForm.get('duration').patchValue('');
       }
     });
 
     // namespaceRoot ValueChange
-    this.renewNamespaceForm.get('namespaceRoot').valueChanges.subscribe(namespaceRoot => {
+    this.extendDurationNamespaceForm.get('namespaceRoot').valueChanges.subscribe(namespaceRoot => {
       if (namespaceRoot === null || namespaceRoot === undefined) {
-        this.renewNamespaceForm.get('namespaceRoot').setValue('');
+        this.extendDurationNamespaceForm.get('namespaceRoot').setValue('');
       } else {
-        this.durationByBlock = this.transactionService.calculateDurationforDay(this.renewNamespaceForm.get('duration').value).toString();
+        this.durationByBlock = this.transactionService.calculateDurationforDay(this.extendDurationNamespaceForm.get('duration').value).toString();
         this.validateRentalFee(this.rentalFee * parseFloat(this.durationByBlock));
       }
     });
@@ -95,11 +95,11 @@ export class RenewNamespaceComponent implements OnInit {
   /**
    *
    *
-   * @memberof RenewNamespaceComponent
+   * @memberof ExtendDurationNamespaceComponent
    */
   createForm() {
     // Form Renew Namespace
-    this.renewNamespaceForm = this.fb.group({
+    this.extendDurationNamespaceForm = this.fb.group({
       namespaceRoot: ['', [Validators.required]],
       duration: ['', [Validators.required]],
       password: ['', [
@@ -113,18 +113,18 @@ export class RenewNamespaceComponent implements OnInit {
   /**
    *
    *
-   * @memberof RenewNamespaceComponent
+   * @memberof ExtendDurationNamespaceComponent
    */
   clearForm() {
-    this.renewNamespaceForm.get('namespaceRoot').patchValue('');
-    this.renewNamespaceForm.get('duration').patchValue('');
-    this.renewNamespaceForm.get('password').patchValue('');
+    this.extendDurationNamespaceForm.get('namespaceRoot').patchValue('');
+    this.extendDurationNamespaceForm.get('duration').patchValue('');
+    this.extendDurationNamespaceForm.get('password').patchValue('');
   }
 
   /**
    *
    *
-   * @memberof RenewNamespaceComponent
+   * @memberof ExtendDurationNamespaceComponent
    */
   destroySubscription() {
     this.subscriptions.forEach(element => {
@@ -137,7 +137,7 @@ export class RenewNamespaceComponent implements OnInit {
   /**
    *
    *
-   * @memberof RenewNamespaceComponent
+   * @memberof ExtendDurationNamespaceComponent
    */
   getNameNamespace() {
     this.namespaceService.searchNamespaceFromAccountStorage$().then(
@@ -172,7 +172,7 @@ export class RenewNamespaceComponent implements OnInit {
    *
    *
    * @param {*} namespace
-   * @memberof RenewNamespaceComponent
+   * @memberof ExtendDurationNamespaceComponent
    */
   optionSelected(namespace: any) {
     namespace = (namespace === undefined) ? 1 : namespace.value;
@@ -189,24 +189,24 @@ export class RenewNamespaceComponent implements OnInit {
   /**
    *
    *
-   * @memberof RenewNamespaceComponent
+   * @memberof ExtendDurationNamespaceComponent
    */
   resetForm() {
-    this.renewNamespaceForm.get('namespaceRoot').patchValue('1');
-    this.renewNamespaceForm.get('duration').patchValue('');
-    this.renewNamespaceForm.get('password').patchValue('');
+    this.extendDurationNamespaceForm.get('namespaceRoot').patchValue('1');
+    this.extendDurationNamespaceForm.get('duration').patchValue('');
+    this.extendDurationNamespaceForm.get('password').patchValue('');
   }
 
   /**
    *
    *
-   * @memberof RenewNamespaceComponent
+   * @memberof ExtendDurationNamespaceComponent
    */
-  renovateNamespace() {
-    if (this.renewNamespaceForm.valid && !this.blockBtnSend) {
+  extendDuration() {
+    if (this.extendDurationNamespaceForm.valid && !this.blockBtnSend) {
       this.blockBtnSend = true;
       const common = {
-        password: this.renewNamespaceForm.get('password').value,
+        password: this.extendDurationNamespaceForm.get('password').value,
         privateKey: ''
       }
       if (this.walletService.decrypt(common)) {
@@ -234,16 +234,16 @@ export class RenewNamespaceComponent implements OnInit {
    * @param {string} [nameControl='']
    * @param {string} [nameValidation='']
    * @returns
-   * @memberof CreateNamespaceComponent
+   * @memberof ExtendDurationNamespaceComponent
    */
   validateInput(nameInput: string = '', nameControl: string = '', nameValidation: string = '') {
     let validation: AbstractControl = null;
     if (nameInput !== '' && nameControl !== '') {
-      validation = this.renewNamespaceForm.controls[nameControl].get(nameInput);
+      validation = this.extendDurationNamespaceForm.controls[nameControl].get(nameInput);
     } else if (nameInput === '' && nameControl !== '' && nameValidation !== '') {
-      validation = this.renewNamespaceForm.controls[nameControl].getError(nameValidation);
+      validation = this.extendDurationNamespaceForm.controls[nameControl].getError(nameValidation);
     } else if (nameInput !== '') {
-      validation = this.renewNamespaceForm.get(nameInput);
+      validation = this.extendDurationNamespaceForm.get(nameInput);
     }
     return validation;
   }
@@ -254,15 +254,15 @@ export class RenewNamespaceComponent implements OnInit {
    *
    * @param {*} common
    * @returns {SignedTransaction}
-   * @memberof RenewNamespaceComponent
+   * @memberof ExtendDurationNamespaceComponent
    */
   signedTransaction(common: any): SignedTransaction {
     const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
-    const namespaceRootToRenovate: string = this.renewNamespaceForm.get('namespaceRoot').value;
+    const namespaceRootToExtend: string = this.extendDurationNamespaceForm.get('namespaceRoot').value;
     // const duration: number = parseFloat(this.durationByBlock);
     const duration: number = parseFloat(this.durationByBlock);
-    const registernamespaceRootTransaction = this.proximaxProvider.registerRootNamespaceTransaction(namespaceRootToRenovate, this.walletService.currentAccount.network, duration);
-    const signedTransaction = account.sign(registernamespaceRootTransaction);
+    const extendNamespaceRootTransaction = this.proximaxProvider.registerRootNamespaceTransaction(namespaceRootToExtend, this.walletService.currentAccount.network, duration);
+    const signedTransaction = account.sign(extendNamespaceRootTransaction);
     return signedTransaction;
   }
 
@@ -271,7 +271,7 @@ export class RenewNamespaceComponent implements OnInit {
    *
    * @param {*} amount
    * @param {MosaicsStorage} mosaic
-   * @memberof CreateNamespaceComponent
+   * @memberof ExtendDurationNamespaceComponent
    */
   validateRentalFee(amount: number) {
     console.log('This is a test', amount);
@@ -287,14 +287,14 @@ export class RenewNamespaceComponent implements OnInit {
         this.calculateRentalFee = this.transactionService.amountFormatter(amount, mosaic.mosaicInfo);
         if (invalidBalance && !this.insufficientBalance) {
           this.insufficientBalance = true;
-          this.renewNamespaceForm.controls['password'].disable();
+          this.extendDurationNamespaceForm.controls['password'].disable();
         } else if (!invalidBalance && this.insufficientBalance) {
           this.insufficientBalance = false;
-          this.renewNamespaceForm.controls['password'].enable();
+          this.extendDurationNamespaceForm.controls['password'].enable();
         }
       } else {
         this.insufficientBalance = true;
-        this.renewNamespaceForm.controls['password'].disable();
+        this.extendDurationNamespaceForm.controls['password'].disable();
       }
     }
   }
