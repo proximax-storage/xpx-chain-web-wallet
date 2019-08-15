@@ -80,9 +80,10 @@ export class WalletService {
       }
     );
 
-    myAccounts.forEach(element => {
+    myAccounts.forEach((element: AccountsInterface) => {
       if (element.name === name) {
         element.default = true;
+        this.setCurrentAccount$(element);
       } else {
         element.default = false;
       }
@@ -135,7 +136,7 @@ export class WalletService {
   destroyAll() {
     console.log('desteoty all');
     this.currentWallet = null;
-    this.setCurrentAccount(null);
+    this.setCurrentAccount$(null);
     this.setAccountsInfo(null);
   }
 
@@ -360,7 +361,7 @@ export class WalletService {
    * @param {*} currentAccount
    * @memberof WalletService
    */
-  setCurrentAccount(currentAccount: AccountsInterface) {
+  setCurrentAccount$(currentAccount: AccountsInterface) {
     this.currentAccountObs.next(currentAccount);
   }
 
@@ -421,7 +422,7 @@ export class WalletService {
 
     this.currentWallet = wallet;
     this.currentAccount = this.getAccountDefault(wallet);
-    this.setCurrentAccount(this.currentAccount);
+    this.setCurrentAccount$(this.currentAccount);
     return true;
   }
 

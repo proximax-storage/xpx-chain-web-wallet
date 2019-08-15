@@ -9,6 +9,7 @@ import { AppConfig } from '../../../../config/app.config';
 import { ConfigurationForm, SharedService } from '../../../../shared/services/shared.service';
 import { DataBridgeService } from '../../../../shared/services/data-bridge.service';
 import { DashboardService } from '../../../../dashboard/services/dashboard.service';
+import { NamespacesService } from '../../../services/namespaces.service';
 import { TransactionsService } from 'src/app/transfer/services/transactions.service';
 
 @Component({
@@ -43,7 +44,8 @@ export class CreateAccountComponent implements OnInit {
     private router: Router,
     private dataBridgeService: DataBridgeService,
     private dashboardService: DashboardService,
-    private transactionService: TransactionsService
+    private transactionService: TransactionsService,
+    private namespaceService: NamespacesService
   ) { }
 
   ngOnInit() {
@@ -116,6 +118,8 @@ export class CreateAccountComponent implements OnInit {
             newAccount.encryptedPrivateKey.iv
           ).toUpperCase();
 
+          this.namespaceService.searchNamespacesFromAccounts([newAccount.address]);
+
           const accountBuilded = this.walletService.buildAccount({
             address: newAccount.address['address'],
             byDefault: false,
@@ -132,8 +136,6 @@ export class CreateAccountComponent implements OnInit {
               ).toUpperCase(), newAccount.network
             )
           });
-
-
 
           this.clearForm();
           this.walletService.saveDataWalletCreated({

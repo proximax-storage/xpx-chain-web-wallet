@@ -120,11 +120,7 @@ export class NamespacesService {
     // console.log('-TODO LO QUE GUARDARÉ', namespaceToStorage);
     localStorage.setItem(environment.nameKeyNamespaces, JSON.stringify(namespaceToSaved));
     const currentAccount = this.walletService.getCurrentAccount();
-    const namespacesCurrentAccount = namespacesFound.filter(next =>
-      next.namespaceInfo.owner.address.pretty() ===
-      this.proximaxProvider.createFromRawAddress(currentAccount.address).pretty()
-    );
-    this.setNamespaceChanged(namespacesCurrentAccount);
+    this.fillNamespacesDefaultAccount();
   }
 
 
@@ -163,6 +159,19 @@ export class NamespacesService {
    */
   getNamespaceChanged(): Observable<NamespaceStorageInterface[]> {
     return this.namespacesChanged$;
+  }
+
+
+  fillNamespacesDefaultAccount() {
+    let namespacesCurrentAccount = [];
+    const namespacesStorage = JSON.parse(localStorage.getItem(environment.nameKeyNamespaces));
+    if (namespacesStorage !== null && namespacesStorage !== undefined) {
+      namespacesCurrentAccount = namespacesStorage.filter((next: NamespaceStorageInterface) =>
+        this.proximaxProvider.createFromRawAddress(next.namespaceInfo.owner.address['address']).pretty() ===
+        this.proximaxProvider.createFromRawAddress(this.walletService.getAccountDefault().address).pretty()
+      );
+    }
+    this.setNamespaceChanged(namespacesCurrentAccount);
   }
 
 
