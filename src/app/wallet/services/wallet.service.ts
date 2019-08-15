@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { SimpleWallet, PublicAccount, AccountInfo, MultisigAccountInfo } from 'tsjs-xpx-chain-sdk';
+import { SimpleWallet, PublicAccount, AccountInfo, MultisigAccountInfo, Account, NetworkHttp } from 'tsjs-xpx-chain-sdk';
 import { crypto } from 'js-xpx-chain-library';
 import { AbstractControl } from '@angular/forms';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -58,11 +58,7 @@ export class WalletService {
       encrypted: data.encrypted,
       firstAccount: data.firstAccount,
       iv: data.iv,
-      multisig: {
-        cosignatoriesAccountsInfo: [],
-        multisigAccountsInfo: [],
-        multisigInfo: null
-      },
+      multisig: new MultisigAccountInfo(data.publicAccount,0,0,[],[]),
       name: data.nameAccount,
       network: data.network,
       publicAccount: data.publicAccount
@@ -505,11 +501,7 @@ export interface AccountsInterface {
   encrypted: string;
   firstAccount: boolean;
   iv: string;
-  multisig: {
-    cosignatoriesAccountsInfo: AccountsInfoInterface[],
-    multisigAccountsInfo: AccountsInfoInterface[],
-    multisigInfo: MultisigAccountInfo
-  };
+  multisig: MultisigAccountInfo;
   name: string;
   network: number;
   publicAccount: PublicAccount;
