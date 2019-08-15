@@ -161,7 +161,7 @@ export class DataBridgeService {
             this.destroyUnconfirmedTransaction(transactionFormatter);
             this.transactionsService.setTransactionsConfirmed$(transactionPushed);
             audio.play();
-            this.transactionsService.searchAccountsInfo(this.walletService.currentWallet.accounts, true);
+            this.transactionsService.searchAccountsInfo(this.walletService.currentWallet.accounts);
             this.namespaces.searchNamespacesFromAccounts([this.proximaxProvider.createFromRawAddress(this.walletService.getCurrentAccount().address)]);
             // this.transactionsService.validateTypeTransaction(incomingTransaction.type);
             // this.namespaceService.buildNamespaceStorage();
@@ -186,8 +186,8 @@ export class DataBridgeService {
     currentWallet.accounts.forEach(element => {
       const address = this.proximaxProvider.createFromRawAddress(element.address);
       connector.unconfirmedAdded(address).subscribe(unconfirmedTransaction => {
-        console.log('----connector----', connector);
-        console.log('----unconfirmedTransaction----', unconfirmedTransaction);
+        // console.log('----connector----', connector);
+        // console.log('----unconfirmedTransaction----', unconfirmedTransaction);
 
         // aqui las que me llegan del WS
         this.setTransactionStatus({
