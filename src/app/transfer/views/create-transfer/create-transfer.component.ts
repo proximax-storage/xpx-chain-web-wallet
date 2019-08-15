@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import {
   FormGroup,
   FormBuilder,
@@ -16,6 +16,7 @@ import { TransactionsService, TransferInterface } from '../../services/transacti
 import { environment } from '../../../../environments/environment';
 import { ServicesModuleService } from '../../../servicesModule/services/services-module.service';
 import { Subscription } from 'rxjs';
+import { ModalDirective } from 'ng-uikit-pro-standard';
 
 
 @Component({
@@ -25,6 +26,7 @@ import { Subscription } from 'rxjs';
 })
 export class CreateTransferComponent implements OnInit {
 
+  @ViewChild('basicModal', { static: true }) basicModal: ModalDirective;
   accounts: any = [];
   sender: AccountsInterface = null;
   allMosaics = [];
@@ -38,6 +40,11 @@ export class CreateTransferComponent implements OnInit {
   disabledBtnAddMosaic: boolean = false;
   errorOtherMosaics: boolean = false;
   formTransfer: FormGroup;
+  saveContact: boolean;
+  formContact = {
+    name: '',
+    address: ''
+  };
   incrementMosaics = 0;
   invalidRecipient = false;
   insufficientBalance = false;
@@ -60,6 +67,7 @@ export class CreateTransferComponent implements OnInit {
   transactionStatus: boolean = false;
   transactionSigned: SignedTransaction = null;
   subscription: Subscription[] = [];
+  getBooksAddress: any;
 
   constructor(
     private dataBridge: DataBridgeService,
@@ -575,6 +583,20 @@ export class CreateTransferComponent implements OnInit {
 
         const transferBuilder = this.transactionService.buildTransferTransaction(params);
         this.transactionSigned = transferBuilder.signedTransaction;
+        this.getBooksAddress = this.serviceModuleService.getBooksAddress();
+        if (this.getBooksAddress) {
+          const contact = this.getBooksAddress.find(el => el.value === this.formTransfer.get("accountRecipient").value);
+          if (!contact) {
+            console.log('No hay contacto');
+            this.formContact.address = this.formTransfer.get("accountRecipient").value;
+            this.saveContact = false;
+            this.basicModal.show();
+          }
+        } else {
+          this.formContact.address = this.formTransfer.get("accountRecipient").value;
+          this.saveContact = false;
+          this.basicModal.show();
+        }
         this.clearForm();
         transferBuilder.transactionHttp.announce(transferBuilder.signedTransaction).subscribe(
           async () => {
@@ -845,6 +867,37 @@ export class CreateTransferComponent implements OnInit {
     });
 
     return mosaics;
+  }
+
+  /**
+   * Save contact
+   *
+   * @returns
+   * @memberof CreateTransferComponent
+   */
+  saveContactNew() {
+    const books = { value: this.formContact.address, label: this.formContact.name };
+    if (!this.getBooksAddress) {
+      this.serviceModuleService.setBookAddress([books]);
+      this.formContact = { name: '', address: '' };
+      this.booksAddress();
+      this.basicModal.hide();
+      this.sharedService.showSuccess('', `Successfully saved contact`);
+      return;
+    }
+
+    const issetData = this.getBooksAddress.find(element => element.label === this.formContact.name);
+    if (issetData === undefined) {
+      this.getBooksAddress.push(books);
+      this.serviceModuleService.setBookAddress(this.getBooksAddress);
+      this.formContact = { name: '', address: '' };
+      this.booksAddress();
+      this.basicModal.hide();
+      this.sharedService.showSuccess('', `Successfully saved contact`);
+      return;
+    }
+
+    this.sharedService.showError('User repeated', `The contact "${this.formContact.name}" already exists`);
   }
 
   /**
