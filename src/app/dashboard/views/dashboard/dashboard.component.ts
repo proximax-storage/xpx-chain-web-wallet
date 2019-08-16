@@ -179,6 +179,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     const transactionUnconfirmed = this.transactionsUnconfirmed.slice(0);
     this.walletService.currentWallet.accounts.forEach(account => {
       // Unconfirmed transactions
+      this.searching = true;
       this.proximaxProvider.getUnconfirmedTransactions(account.publicAccount, id).pipe(first()).subscribe(
         transactionsUnconfirmed => {
           if (transactionsUnconfirmed && transactionsUnconfirmed.length > 0) {
@@ -193,9 +194,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
             this.transactionsUnconfirmed = transactionUnconfirmed;
             this.cantUnconfirmed = this.transactionsUnconfirmed.length;
             this.transactionService.setTransactionsUnConfirmed$(this.transactionsUnconfirmed);
+          } else {
+            this.iconReloadDashboard = false;
+            this.searching = false;
+            this.dashboardService.searchComplete = true;
           }
 
         }, error => {
+          this.iconReloadDashboard = false;
+          this.searching = false;
+          this.dashboardService.searchComplete = true;
         }
       );
 
@@ -217,8 +225,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
             this.iconReloadDashboard = false;
             this.searching = false;
             this.dashboardService.searchComplete = true;
+          } else {
+            this.iconReloadDashboard = false;
+            this.searching = false;
+            this.dashboardService.searchComplete = true;
           }
         }, error => {
+          this.iconReloadDashboard = false;
+          this.searching = false;
+          this.dashboardService.searchComplete = true;
         }
       );
     });
