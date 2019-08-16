@@ -141,7 +141,6 @@ export class ExtendDurationNamespaceComponent implements OnInit {
   getNamespaces() {
     this.subscription.push(this.namespaceService.getNamespaceChanged().subscribe(
       async namespaceInfo => {
-        console.log(namespaceInfo);
         if (namespaceInfo !== undefined && namespaceInfo !== null && namespaceInfo.length > 0) {
           const arrayselect = [];
           for (let namespaceRoot of namespaceInfo) {
@@ -286,15 +285,20 @@ export class ExtendDurationNamespaceComponent implements OnInit {
           return element.id.toHex() === new MosaicId(this.proximaxProvider.mosaicXpx.mosaicId).toHex();
         });
 
-        const invalidBalance = filtered.amount.compact() < amount;
-        const mosaic = this.mosaicServices.filterMosaic(filtered.id);
-        this.calculateRentalFee = this.transactionService.amountFormatter(amount, mosaic.mosaicInfo);
-        if (invalidBalance && !this.insufficientBalance) {
-          this.insufficientBalance = true;
-          this.extendDurationNamespaceForm.controls['password'].disable();
-        } else if (!invalidBalance && this.insufficientBalance) {
-          this.insufficientBalance = false;
-          this.extendDurationNamespaceForm.controls['password'].enable();
+        if (filtered) {
+          const invalidBalance = filtered.amount.compact() < amount;
+          const mosaic = this.mosaicServices.filterMosaic(filtered.id);
+          this.calculateRentalFee = this.transactionService.amountFormatter(amount, mosaic.mosaicInfo);
+          if (invalidBalance && !this.insufficientBalance) {
+            this.insufficientBalance = true;
+            this.extendDurationNamespaceForm.controls['password'].disable();
+          } else if (!invalidBalance && this.insufficientBalance) {
+            this.insufficientBalance = false;
+            this.extendDurationNamespaceForm.controls['password'].enable();
+          }
+        } else {
+          this.sharedService.showWarning('', 'You do not have enough balance in the default account');
+          this.router.navigate([`/${AppConfig.routes.service}`]);
         }
       } else {
         this.insufficientBalance = true;

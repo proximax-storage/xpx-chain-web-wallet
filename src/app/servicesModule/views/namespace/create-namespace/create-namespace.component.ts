@@ -520,39 +520,32 @@ export class CreateNamespaceComponent implements OnInit {
       const filtered = accountInfo.accountInfo.mosaics.find(element => {
         return element.id.toHex() === new MosaicId(this.proximaxProvider.mosaicXpx.mosaicId).toHex();
       });
-      // console.log('Este es el monto', amount);
-
 
       if (this.namespaceForm.get('namespaceRoot').value === '' || this.namespaceForm.get('namespaceRoot').value === '1') {
-        if (accountInfo !== undefined && accountInfo !== null && Object.keys(accountInfo).length > 0) {
-          if (accountInfo.accountInfo.mosaics.length > 0) {
-            const invalidBalance = filtered.amount.compact() < amount;
-            const mosaic = this.mosaicServices.filterMosaic(filtered.id);
-            if (mosaic && mosaic.mosaicInfo) {
-              this.calculateRentalFee = this.transactionService.amountFormatter(amount, mosaic.mosaicInfo);
-            } else {
-              this.sharedService.showWarning('', 'Your account is being updated, please wait');
-              this.router.navigate([`/${AppConfig.routes.service}`]);
-            }
-
-            if (invalidBalance && !this.insufficientBalance) {
-              this.insufficientBalance = true;
-              // this.namespaceForm.controls['name'].disable();
-              // this.namespaceForm.controls['password'].disable();
-            } else if (!invalidBalance && this.insufficientBalance) {
-              this.insufficientBalance = false;
-              // this.namespaceForm.controls['name'].enable();
-              // this.namespaceForm.controls['password'].enable();
-            }
+        if (filtered) {
+          const invalidBalance = filtered.amount.compact() < amount;
+          const mosaic = this.mosaicServices.filterMosaic(filtered.id);
+          if (mosaic && mosaic.mosaicInfo) {
+            this.calculateRentalFee = this.transactionService.amountFormatter(amount, mosaic.mosaicInfo);
           } else {
+            this.sharedService.showWarning('', 'Your account is being updated, please wait');
+            this.router.navigate([`/${AppConfig.routes.service}`]);
+          }
+
+          if (invalidBalance && !this.insufficientBalance) {
             this.insufficientBalance = true;
             // this.namespaceForm.controls['name'].disable();
             // this.namespaceForm.controls['password'].disable();
+          } else if (!invalidBalance && this.insufficientBalance) {
+            this.insufficientBalance = false;
+            // this.namespaceForm.controls['name'].enable();
+            // this.namespaceForm.controls['password'].enable();
           }
+        } else {
+          this.sharedService.showWarning('', 'You do not have enough balance in the default account');
+          this.router.navigate([`/${AppConfig.routes.service}`]);
         }
       } else {
-        // console.log('No validate', amount);
-
         this.calculateRentalFee = '10.000000';
         this.insufficientBalance = false;
         this.namespaceForm.controls['name'].enable();
