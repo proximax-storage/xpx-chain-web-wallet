@@ -107,7 +107,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   balance() {
     this.subscriptions['balance'] = this.transactionService.getBalance$().subscribe(
       next => {
-        console.log(next);
+        // console.log(next);
         this.vestedBalance = `${next} XPX`;
       }, () => {
         this.vestedBalance = `0.000000 XPX`;

@@ -6,7 +6,8 @@ import { SharedService, ConfigurationForm } from '../../../shared/services/share
 import { WalletService } from '../../services/wallet.service';
 import { NamespacesService } from '../../../servicesModule/services/namespaces.service';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
-import { AppConfig } from 'src/app/config/app.config';
+import { AppConfig } from '../../../config/app.config';
+import { ServicesModuleService } from '../../../servicesModule/services/services-module.service';
 
 
 @Component({
@@ -34,7 +35,7 @@ export class ImportWalletComponent implements OnInit {
     private walletService: WalletService,
     private proximaxProvider: ProximaxProvider,
     private router: Router,
-    private namespaceService: NamespacesService
+    private serviceModuleService: ServicesModuleService
   ) { }
 
   ngOnInit() {
@@ -139,6 +140,14 @@ export class ImportWalletComponent implements OnInit {
           algo: password,
           network: wallet.network
         }, accountBuilded, wallet);
+
+        this.serviceModuleService.saveContacts({
+          name: accountBuilded.name,
+          address: accountBuilded.address,
+          walletContact: true,
+          nameItem: nameWallet
+        });
+
         this.walletService.saveWalletStorage(nameWallet, accountBuilded);
         this.router.navigate([`/${AppConfig.routes.walletCreated}`]);
       } else {

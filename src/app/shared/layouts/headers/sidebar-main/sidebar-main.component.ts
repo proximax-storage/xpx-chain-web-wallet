@@ -54,7 +54,6 @@ export class SidebarMainComponent implements OnInit {
     // console.log(this.walletService.currentWallet);
 
     this.subscriptions['nameAccount'] = this.walletService.getAccountsInfo$().subscribe(next => {
-      console.log('next', next)
       this.searchBalance = true;
       // NAME ACCOUNT
       let amountTotal = 0.000000;

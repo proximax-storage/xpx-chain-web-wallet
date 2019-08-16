@@ -11,6 +11,7 @@ import { DataBridgeService } from '../../../../shared/services/data-bridge.servi
 import { DashboardService } from '../../../../dashboard/services/dashboard.service';
 import { NamespacesService } from '../../../services/namespaces.service';
 import { TransactionsService } from 'src/app/transfer/services/transactions.service';
+import { ServicesModuleService } from 'src/app/servicesModule/services/services-module.service';
 
 @Component({
   selector: 'app-create-account',
@@ -45,7 +46,8 @@ export class CreateAccountComponent implements OnInit {
     private dataBridgeService: DataBridgeService,
     private dashboardService: DashboardService,
     private transactionService: TransactionsService,
-    private namespaceService: NamespacesService
+    private namespaceService: NamespacesService,
+    private serviceModuleService: ServicesModuleService
   ) { }
 
   ngOnInit() {
@@ -145,6 +147,7 @@ export class CreateAccountComponent implements OnInit {
             fromPrivateKey: this.fromPrivateKey
           }, accountBuilded, newAccount);
           this.walletService.saveAccountStorage(nameAccount, accountBuilded);
+          this.serviceModuleService.saveContacts({ name: nameAccount, address: accountBuilded.address, walletContact: true, nameItem: '' });
           this.router.navigate([`/${AppConfig.routes.accountCreated}`]);
           this.dataBridgeService.closeConenection();
           this.dataBridgeService.connectnWs();

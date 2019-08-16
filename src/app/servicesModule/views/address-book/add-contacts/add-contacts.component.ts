@@ -86,18 +86,14 @@ export class AddContactsComponent implements OnInit {
    */
   saveContact() {
     if (this.contactForm.valid) {
-      const books = { value: this.contactForm.get('address').value, label: this.contactForm.get('user').value };
-      if (this.dataStorage === null) {
-        this.serviceModuleService.setBookAddress([books]);
-        this.contactForm.reset();
-        this.sharedService.showSuccess('', `Successfully saved contact`);
-        return;
+      const params = {
+        name: this.contactForm.get('user').value,
+        address: this.contactForm.get('address').value,
+        walletContact: false,
+        nameItem: ''
       }
-
-      const issetData = this.dataStorage.find(element => element.label === this.contactForm.get('user').value || element.value === this.contactForm.get('address').value);
-      if (issetData === undefined) {
-        this.dataStorage.push(books);
-        this.serviceModuleService.setBookAddress(this.dataStorage);
+      const saved = this.serviceModuleService.saveContacts(params);
+      if (saved) {
         this.contactForm.reset();
         this.sharedService.showSuccess('', `Successfully saved contact`);
         return;
