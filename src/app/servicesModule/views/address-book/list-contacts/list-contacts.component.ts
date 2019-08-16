@@ -150,45 +150,6 @@ export class ListContactsComponent {
   }
 
   /**
-   * Save contact
-   *
-   * @returns
-   * @memberof AddressBookComponent
-   */
-  saveContact() {
-    if (this.contactForm.valid) {
-      const dataStorage = this.serviceModuleService.getBooksAddress();
-      const books = { value: this.contactForm.get('address').value, label: this.contactForm.get('user').value };
-      if (dataStorage === null) {
-        this.serviceModuleService.setBookAddress([books]);
-        this.contactForm.reset();
-        this.sharedService.showSuccess('', `Successfully created user`);
-        this.contacts = this.serviceModuleService.getBooksAddress();
-        this.mdbTable.setDataSource(this.contacts);
-        this.contacts = this.mdbTable.getDataSource();
-        this.previous = this.mdbTable.getDataSource();
-        return;
-      }
-
-      const issetData = dataStorage.find(element => element.label === this.contactForm.get('user').value);
-      if (issetData === undefined) {
-        dataStorage.push(books);
-        this.serviceModuleService.setBookAddress(dataStorage);
-        this.contactForm.reset();
-        this.sharedService.showSuccess('', `Successfully created contact`);
-        this.contacts = this.serviceModuleService.getBooksAddress();
-        this.mdbTable.setDataSource(this.contacts);
-        this.contacts = this.mdbTable.getDataSource();
-        this.previous = this.mdbTable.getDataSource();
-        return;
-      }
-
-      this.sharedService.showError('User repeated', `The contact "${this.contactForm.get('user').value}" already exists`);
-    }
-  }
-
-
-  /**
    * Filter contacts
    *
    * @memberof AddressBookComponent
@@ -219,7 +180,7 @@ export class ListContactsComponent {
         newContacts.push(element);
       }
     });
-    this.serviceModuleService.setBookAddress(newContacts);
+    this.serviceModuleService.setBookAddress(newContacts, '');
     this.contacts = newContacts;
     this.mdbTable.setDataSource(this.contacts);
     this.contacts = this.mdbTable.getDataSource();

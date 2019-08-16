@@ -78,10 +78,11 @@
                   {{contact.value}}</td>
                 <td *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex">
                   <span class="table-remove text-center d-flex justify-content-center">
-                    <button type="button" mdbBtn class="background-btn" title="Edit" rounded="true" size="sm" class="my-0"
+                    <button *ngIf="!contact.walletContact" type="button" mdbBtn class="background-btn" title="Edit" rounded="true" size="sm" class="my-0"
                      (click)="navigate(contact.label)"><i class="fa fa-edit"></i></button>
-                    <button type="button" mdbBtn color="danger" rounded="true" title="Delete" size="sm" class="my-0"
+                    <button *ngIf="!contact.walletContact" type="button" mdbBtn color="danger" rounded="true" title="Delete" size="sm" class="my-0"
                       (click)="remove(contact.label)"><i class="fa fa-trash"></i></button>
+                    <span class="contact-not-edit" *ngIf="contact.walletContact">Contact belongs to your wallet</span>
                   </span>
                 </td>
               </tr>

@@ -871,7 +871,7 @@ export class CreateTransferComponent implements OnInit {
   saveContactNew() {
     const books = { value: this.formContact.address, label: this.formContact.name };
     if (!this.getBooksAddress) {
-      this.serviceModuleService.setBookAddress([books]);
+      this.serviceModuleService.setBookAddress([books], '');
       this.formContact = { name: '', address: '' };
       this.booksAddress();
       this.basicModal.hide();
@@ -882,7 +882,7 @@ export class CreateTransferComponent implements OnInit {
     const issetData = this.getBooksAddress.find(element => element.label === this.formContact.name);
     if (issetData === undefined) {
       this.getBooksAddress.push(books);
-      this.serviceModuleService.setBookAddress(this.getBooksAddress);
+      this.serviceModuleService.setBookAddress(this.getBooksAddress, '');
       this.formContact = { name: '', address: '' };
       this.booksAddress();
       this.basicModal.hide();

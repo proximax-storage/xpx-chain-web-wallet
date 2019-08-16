@@ -215,12 +215,13 @@
     </ng-container>
     <!--  FIN MOSAICS -->
 
+    <hr>
+
 
     <!-- Add mosaics -->
     <ng-container>
       <div class="row mt-1rem">
-        <div class="col-12 d-flex justify-content-center"
-          style="background-image: url(assets/images/img/horizontal-line-background.jpg); background-position-y: center;">
+        <div class="col-12 d-flex justify-content-center">
           <button [disabled]="currentBlock === 0 || disabledBtnAddMosaic || selectOtherMosaics.length === 0" mdbBtn
             type="button" rounded="true" mdbWavesEffect class="background-btn-inverse pl-2rem pr-2rem" size="md"
             (click)="pushedOtherMosaics()">

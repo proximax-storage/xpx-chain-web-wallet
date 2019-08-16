@@ -59,27 +59,46 @@ export class ServicesModuleService {
    * @param {string} addressContact
    * @memberof ServicesModuleService
    */
-  saveContacts(params: { name: string, address: string, walletContact: boolean, nameItem: string }) {
+  saveContacts(params: ContactsStorageInterface) {
     const dataStorage = (params.nameItem === '') ? this.getBooksAddress() : localStorage.getItem(`${environment.itemBooksAddress}-${params.nameItem}`);
-    console.log('---data-', dataStorage);
     const books = { label: params.name, value: params.address, walletContact: params.walletContact };
-    if (dataStorage === null) {
-      this.setBookAddress([books], params.nameItem);
-      return true;
+    if (params.update) {
+
+      const contactsFiltered = dataStorage.filter(element =>
+        element.label !== params.dataComparate.name &&
+        element.value !== params.dataComparate.address
+      );
+
+      const issetData = contactsFiltered.find(element =>
+        element.label === params.name ||
+        element.value === params.address
+      );
+
+      if (issetData === undefined) {
+        contactsFiltered.push(books);
+        this.setBookAddress(contactsFiltered, params.nameItem);
+        return true;
+      }
+
+      return false;
+    } else {
+      if (dataStorage === null) {
+        this.setBookAddress([books], params.nameItem);
+        return true;
+      }
+
+      const issetData = dataStorage.find(element =>
+        element.label === params.name ||
+        element.value === params.address
+      );
+      if (issetData === undefined) {
+        dataStorage.push(books);
+        this.setBookAddress(dataStorage, params.nameItem);
+        return true;
+      }
+
+      return false;
     }
-
-    const issetData = dataStorage.find(element =>
-      element.label === params.name ||
-      element.value === params.address
-    );
-
-    if (issetData === undefined) {
-      dataStorage.push(books);
-      this.setBookAddress(dataStorage, params.nameItem);
-      return true;
-    }
-
-    return false;
   }
 
   /**
@@ -154,3 +173,15 @@ export interface StructureService {
   viewChildren?: boolean;
   className?: string;
 }
+
+export interface ContactsStorageInterface {
+  name: string;
+  address: string;
+  walletContact: boolean;
+  nameItem: string;
+  update?: boolean;
+  dataComparate?: {
+    name: string;
+    address: string;
+  }
+};
