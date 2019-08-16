@@ -173,13 +173,7 @@ export class CreateTransferComponent implements OnInit {
       });
 
       this.charRest = this.configurationForm.message.maxLength;
-      this.listContacts = [];
-      //this.subscribe['char']
-
-      // this.updateAccountInfo();
-      // this.getMosaics(accountToSend);
       const accountFiltered = this.walletService.filterAccountInfo(this.sender.name);
-      // console.log('----accountFiltered----',accountFiltered);
       if (accountFiltered) {
         this.buildCurrentAccountInfo(accountFiltered.accountInfo);
       }
@@ -210,7 +204,7 @@ export class CreateTransferComponent implements OnInit {
 
 
   /**
-   *
+   * Build with mosaics
    *
    * @param {AccountInfo} accountInfo
    * @memberof CreateTransferComponent
@@ -380,10 +374,10 @@ export class CreateTransferComponent implements OnInit {
     this.subscription.push(this.walletService.getAccountsInfo$().subscribe(
       next => {
         // console.log(next);
-        if (next && next.length > 0) {
-          this.searching = false;
-          this.changeSender(this.walletService.currentAccount);
-        }
+        // if (next && next.length > 0) {
+        this.searching = false;
+        this.changeSender(this.walletService.currentAccount);
+        // }
       }
     ));
   }
@@ -547,7 +541,6 @@ export class CreateTransferComponent implements OnInit {
     this.insufficientBalance = false;
     this.msgErrorUnsupported = '';
     this.msgErrorUnsupportedContact = '';
-    this.listContacts = [];
     this.optionsXPX = {
       prefix: '',
       thousands: ',',
@@ -587,7 +580,7 @@ export class CreateTransferComponent implements OnInit {
         if (this.getBooksAddress) {
           const contact = this.getBooksAddress.find(el => el.value === this.formTransfer.get("accountRecipient").value);
           if (!contact) {
-            console.log('No hay contacto');
+            // console.log('No hay contacto');
             this.formContact.address = this.formTransfer.get("accountRecipient").value;
             this.saveContact = false;
             this.basicModal.show();
@@ -694,11 +687,11 @@ export class CreateTransferComponent implements OnInit {
           let validateAmount = false;
           // console.log('----sender----', this.sender);
           if (this.sender) {
-            const accountInfo = this.walletService.filterAccountInfo(this.sender.name).accountInfo;
+            let accountInfo = this.walletService.filterAccountInfo(this.sender.name);
             // console.log('Account INfo- ---->', accountInfo);
             if (accountInfo !== undefined && accountInfo !== null && Object.keys(accountInfo).length > 0) {
-              if (accountInfo.mosaics.length > 0) {
-                const filtered = accountInfo.mosaics.find(element => {
+              if (accountInfo.accountInfo.mosaics.length > 0) {
+                const filtered = accountInfo.accountInfo.mosaics.find(element => {
                   return element.id.toHex() === new MosaicId(environment.mosaicXpxInfo.id).toHex();
                 });
 
