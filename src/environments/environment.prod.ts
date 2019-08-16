@@ -4,7 +4,7 @@
 
 export const environment = {
   production: true,
-  version: '0.2.1+24',
+  version: '0.2.4+24',
   itemBooksAddress: 'sw-books',
   nameKeyNodeSelected: `sw-nodes-selected`,
   nameKeyNamespaces: `sw-namespaces`,
