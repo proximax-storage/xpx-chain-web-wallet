@@ -1,6 +1,6 @@
-import { Component, OnInit, ViewChild, ChangeDetectorRef, AfterViewInit, HostListener } from '@angular/core';
-import { FormGroup, Validators, FormBuilder, AbstractControl } from "@angular/forms";
-import { ModalDirective, MdbTablePaginationComponent, MdbTableDirective } from 'ng-uikit-pro-standard';
+import { Component, OnInit, ViewChild, ChangeDetectorRef, HostListener } from '@angular/core';
+import { FormBuilder } from "@angular/forms";
+import { MdbTablePaginationComponent, MdbTableDirective } from 'ng-uikit-pro-standard';
 import { SharedService } from 'src/app/shared/services/shared.service';
 import { ServicesModuleService } from "../../../services/services-module.service";
 import { AppConfig } from '../../../../config/app.config';
@@ -25,9 +25,7 @@ export class ListContactsComponent {
   }
 
   previous: any = [];
-
   headElements = ['Label', 'Account address', 'Actions'];
-  contactForm: FormGroup;
   contacts = [];
   searchContact = '';
   searching = false;
@@ -36,9 +34,7 @@ export class ListContactsComponent {
 
   constructor(
     private cdRef: ChangeDetectorRef,
-    private fb: FormBuilder,
     private serviceModuleService: ServicesModuleService,
-    private sharedService: SharedService,
     private router: Router
   ) {
     this.hideTable = false;
@@ -51,7 +47,6 @@ export class ListContactsComponent {
     this.mdbTable.setDataSource(this.contacts);
     this.contacts = this.mdbTable.getDataSource();
     this.previous = this.mdbTable.getDataSource();
-    this.createFormContact();
   }
 
   ngAfterViewInit() {
@@ -61,89 +56,6 @@ export class ListContactsComponent {
     this.cdRef.detectChanges();
   }
 
-  createFormContact() {
-    this.contactForm = this.fb.group({
-      user: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(30)]],
-      address: ['', [Validators.required, Validators.minLength(40), Validators.maxLength(46)]]
-    });
-  }
-
-  /**
-  * clearForm form
-  *
-  * @param {(string | (string | number)[])} [custom]
-  * @param {(string | number)} [formControl]
-  * @returns
-  * @memberof TransferComponent
-  */
-  clearForm(
-    custom?: string | (string | number)[],
-    formControl?: string | number
-  ) {
-    if (custom !== undefined) {
-      if (formControl !== undefined) {
-        this.contactForm.controls[formControl].get(custom).reset();
-        return;
-      }
-      this.contactForm.get(custom).reset();
-      return;
-    }
-    this.contactForm.reset();
-    return;
-  }
-
-  /**
-   * Get Error
-   *
-   * @param {*} control
-   * @param {*} [typeForm]
-   * @param {*} [formControl]
-   * @returns
-   * @memberof AddressBookComponent
-   */
-  getError(control, typeForm?, formControl?) {
-    const form = this.contactForm;
-    if (formControl === undefined) {
-      if (form.get(control).getError('required')) {
-        return `This field is required`;
-      } else if (form.get(control).getError('minlength')) {
-        return `This field must contain minimum ${form.get(control).getError('minlength').requiredLength} characters`;
-      } else if (form.get(control).getError('maxlength')) {
-        return `This field must contain maximum ${form.get(control).getError('maxlength').requiredLength} characters`;
-      }
-    } else {
-      if (form.controls[formControl].get(control).getError('required')) {
-        return `This field is required`;
-      } else if (form.controls[formControl].get(control).getError('minlength')) {
-        return `This field must contain minimum ${form.controls[formControl].get(control).getError('minlength').requiredLength} characters`;
-      } else if (form.controls[formControl].get(control).getError('maxlength')) {
-        return `This field must contain maximum ${form.controls[formControl].get(control).getError('maxlength').requiredLength} characters`;
-      } else if (form.controls[formControl].getError('noMatch')) {
-        return `Password doesn't match`;
-      }
-    }
-  }
-
-  /**
-   *
-   *
-   * @param {string} [nameInput='']
-   * @param {string} [nameControl='']
-   * @param {string} [nameValidation='']
-   * @returns
-   * @memberof CreateNamespaceComponent
-   */
-  validateInput(nameInput: string = '', nameControl: string = '', nameValidation: string = '') {
-    let validation: AbstractControl = null;
-    if (nameInput !== '' && nameControl !== '') {
-      validation = this.contactForm.controls[nameControl].get(nameInput);
-    } else if (nameInput === '' && nameControl !== '' && nameValidation !== '') {
-      validation = this.contactForm.controls[nameControl].getError(nameValidation);
-    } else if (nameInput !== '') {
-      validation = this.contactForm.get(nameInput);
-    }
-    return validation;
-  }
 
   navigate(name) {
     this.router.navigate([`${AppConfig.routes.addContacts}/${name}`]);
@@ -186,6 +98,5 @@ export class ListContactsComponent {
     this.contacts = this.mdbTable.getDataSource();
     this.previous = this.mdbTable.getDataSource();
   }
-
 }
 
