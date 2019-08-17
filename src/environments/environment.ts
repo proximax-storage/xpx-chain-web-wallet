@@ -10,8 +10,8 @@ export const environment = {
   nameKeyNamespaces: `sw-namespaces`,
   nameKeyWalletStorage: `sw-04`,
   nameKeyNodeStorage: `sw-nodes`,
-  protocol: `http`,
-  protocolWs: `ws`,
+  protocol: `https`,
+  protocolWs: `wss`,
   nodeDefault: 'bctestnet1-cow.xpxsirius.io:3000',
   mosaicXpxInfo: {
     name: 'prx.xpx',
