@@ -1,0 +1,9 @@
+table td {
+    font-size: .7rem;
+    font-weight: 3000;
+}
+
+.isPrimary{
+    color: white !important;
+    background-color: #2aa1b9 !important;
+  }

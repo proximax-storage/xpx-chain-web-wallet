@@ -5,21 +5,34 @@ import { ExplorerComponent } from './views/explorer/explorer.component';
 import { ServicesBoxComponent } from "./views/services-box/services-box.component"
 import { DetailAccountComponent } from './views/account/detail-account/detail-account.component';
 import { CreateNamespaceComponent } from './views/namespace/create-namespace/create-namespace.component';
-import { RenewNamespaceComponent } from './views/namespace/renew-namespace/renew-namespace.component';
-import { AddressBookComponent } from './views/address-book/address-book.component';
+import { ExtendDurationNamespaceComponent } from './views/namespace/extend-duration-namespace/extend-duration-namespace.component';
+import { ListContactsComponent } from './views/address-book/list-contacts/list-contacts.component';
 import { CreateMosaicComponent } from './views/mosaic/create-mosaic/create-mosaic.component';
 import { AliasAddressToNamespaceComponent } from './views/account/alias-address-to-namespace/alias-address-to-namespace.component';
 import { MosaicsSupplyChangeComponent } from './views/mosaic/mosaics-supply-change/mosaics-supply-change.component';
 import { AliasMosaicsToNamespaceComponent } from './views/mosaic/alias-mosaics-to-namespace/alias-mosaics-to-namespace.component';
 import { UploadFileComponent } from './views/storage/upload-file/upload-file.component';
 import { MyFileComponent } from './views/storage/my-file/my-file.component';
+import { MultiSignatureContractComponent } from './views/multi-sign/multi-signature-contract/multi-signature-contract.component';
 import { CreateAccountComponent } from './views/account/create-account/create-account.component';
 import { ViewAllAccountsComponent } from './views/account/view-all-accounts/view-all-accounts.component';
 import { AccountCreatedComponent } from './views/account/account-created/account-created.component';
+import { SelectionAccountTypeComponent } from './views/account/selection-account-creation-type/selection-account-creation-type.component';
+import { AddContactsComponent } from './views/address-book/add-contacts/add-contacts.component';
 
 const routes: Routes = [
   {
     path: AppConfig.routes.account,
+    component: DetailAccountComponent,
+    data: {
+      meta: {
+        title: 'detailAccount.title',
+        description: 'detailAccount.text',
+        override: true,
+      },
+    }
+  }, {
+    path: `${AppConfig.routes.account}/:name`,
     component: DetailAccountComponent,
     data: {
       meta: {
@@ -39,12 +52,32 @@ const routes: Routes = [
       },
     }
   }, {
-    path: AppConfig.routes.createAccount,
+    path: `${AppConfig.routes.createAccount}/:id`,
     component: CreateAccountComponent,
     data: {
       meta: {
         title: 'createAccount.title',
         description: 'createAccount.text',
+        override: true,
+      },
+    }
+  }, {
+    path: `${AppConfig.routes.importAccount}/:id`,
+    component: CreateAccountComponent,
+    data: {
+      meta: {
+        title: 'importAccount.title',
+        description: 'importAccount.text',
+        override: true,
+      },
+    }
+  }, {
+    path: AppConfig.routes.selectTypeCreationAccount,
+    component: SelectionAccountTypeComponent,
+    data: {
+      meta: {
+        title: 'selectTypeCreationAccount.title',
+        description: 'selectTypeCreationAccount.text',
         override: true,
       },
     }
@@ -100,7 +133,7 @@ const routes: Routes = [
     }
   }, {
     path: AppConfig.routes.renewNamespace,
-    component: RenewNamespaceComponent,
+    component: ExtendDurationNamespaceComponent,
     data: {
       meta: {
         title: 'renewNamespace.title',
@@ -109,12 +142,42 @@ const routes: Routes = [
       }
     }
   }, {
-    path: AppConfig.routes.addressBook,
-    component: AddressBookComponent,
+    path: AppConfig.routes.extendNamespace,
+    component: ExtendDurationNamespaceComponent,
     data: {
       meta: {
-        title: 'createNamespace.title',
-        description: 'createNamespace.text',
+        title: 'extendNamespace.title',
+        description: 'extendNamespace.text',
+        override: true,
+      }
+    }
+  }, {
+    path: AppConfig.routes.addressBook,
+    component: ListContactsComponent,
+    data: {
+      meta: {
+        title: 'addressBook.title',
+        description: 'addressBook.text',
+        override: true,
+      }
+    },
+  }, {
+    path: AppConfig.routes.addContacts,
+    component: AddContactsComponent,
+    data: {
+      meta: {
+        title: 'addContaccts.title',
+        description: 'addContaccts.text',
+        override: true,
+      }
+    },
+  }, {
+    path: `${AppConfig.routes.addContacts}/:name`,
+    component: AddContactsComponent,
+    data: {
+      meta: {
+        title: 'addContaccts.title',
+        description: 'addContaccts.text',
         override: true,
       }
     },
@@ -135,6 +198,17 @@ const routes: Routes = [
       meta: {
         title: 'mosaicsSupplyChange.title',
         description: 'mosaicsSupplyChange.text',
+        override: true,
+      }
+    }
+  },
+  {
+    path: AppConfig.routes.MultiSign,
+    component: MultiSignatureContractComponent,
+    data: {
+      meta: {
+        title: 'multiSign.title',
+        description: 'multiSign.text',
         override: true,
       }
     }

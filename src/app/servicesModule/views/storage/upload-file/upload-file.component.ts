@@ -62,7 +62,7 @@ export class UploadFileComponent implements OnInit,AfterViewInit {
   }
 
   initialiseStorage() {
-    const blockChainNetworkType = this.proximaxProvider.getBlockchainNetworkType(this.walletService.network);
+    const blockChainNetworkType = this.proximaxProvider.getBlockchainNetworkType(this.walletService.currentAccount.network);
     const blockChainHost = environment.blockchainConnection.host;
     const blockChainPort = environment.blockchainConnection.port;
     const blockChainProtocol = environment.blockchainConnection.protocol === 'https' ? Protocol.HTTPS : Protocol.HTTP;
@@ -276,7 +276,7 @@ export class UploadFileComponent implements OnInit,AfterViewInit {
       if (this.walletService.decrypt(common)) {
         this.blockUpload = true;
 
-        const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.network);
+        const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
         console.log(account);
 
         try {
@@ -309,7 +309,7 @@ export class UploadFileComponent implements OnInit,AfterViewInit {
             case PrivacyType.NEM_KEYS:
               const publicKey = this.uploadForm.get('recipientPublicKey').value;
               const privateKey = this.uploadForm.get('recipientPrivateKey').value;
-              // const recipientAccount = this.proximaxProvider.getAccountFromPrivateKey(privateKey, this.walletService.network);
+              // const recipientAccount = this.proximaxProvider.getAccountFromPrivateKey(privateKey, this.walletService.currentAccount.network);
               // console.log(publicKey);
               // console.log(privateKey);
               // console.log(recipientAccount);

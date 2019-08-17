@@ -1,21 +1,22 @@
 <div class="container-fluid">
   <div class="row">
-    <div class="col-6">
+    <div class="col-6 col-sm-5 col-md-4 col-lg-6">
       <mdb-navbar SideClass="navbar navbar-expand-sm navbar-dark background-header-inverse z-depth-0"
         [containerInside]="false">
         <mdb-navbar-brand class="d-flex align-items-end">
           <a class="navbar-brand mr-05rem">
-            <img src="assets/images/img/logo-proximax-sirius-wallet-proximax-sirius-wallet.svg" height="35"
+            <img src="assets/images/img/logo-proximax-sirius-wallet.svg" height="35"
               class="d-inline-block align-top">
           </a>
           <span class="fs-08rem" style="color: #616161;">v{{version}}</span>
         </mdb-navbar-brand>
       </mdb-navbar>
     </div>
-    <div class="d-flex justify-content-end col-6">
+    <div class="d-flex justify-content-end col-6  col-sm-7 col-md-8 col-lg-6">
       <div class="d-none d-sm-none d-md-block d-lg-block d-xl-block mt-05rem">
-        <span class="fw-600">{{walletName}}</span><br>
-        <span class="fs-09rem">{{vestedBalance}} | USD 0.00</span>
+        <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true" *ngIf="searchBalance"></span>
+        <span class="fw-600">{{ walletService.currentWallet.name }}</span><br>
+        <span class="fs-09rem">{{ vestedBalance }} | USD 0.00</span>
       </div>
       <div class="d-flex align-items-center justify-content-end" style="padding: 0">
         <div class="nav-link waves-light" mdbWavesEffect (click)="logOut()">
@@ -28,9 +29,10 @@
 
 <div class="topnav" id="myTopnav">
   <div class="d-flex flex-column flex-sm-column flex-md-row align-items-center justify-content-center">
-      <ng-container *ngFor="let key of keyObject(itemsHeader)">
+    <ng-container *ngFor="let key of keyObject(itemsHeader)">
       <ng-container *ngIf="itemsHeader[key].show">
-        <a [ngClass]="{'active':itemsHeader[key].selected}" [routerLink]="[itemsHeader[key].link]">{{ itemsHeader[key].name }}</a>
+        <a [ngClass]="{'active':itemsHeader[key].selected}"
+          [routerLink]="[itemsHeader[key].link]">{{ itemsHeader[key].name }}</a>
       </ng-container>
     </ng-container>
   </div>

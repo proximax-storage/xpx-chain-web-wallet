@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, Validators, FormControl, AbstractControl } from '@angular/forms';
-import { WalletService } from "../../../../wallet/services/wallet.service";
+import { WalletService, AccountsInterface, AccountsInfoInterface } from "../../../../wallet/services/wallet.service";
 import { SharedService, ConfigurationForm } from "../../../../shared/services/shared.service"
 import { AppConfig } from '../../../../config/app.config';
+import { ActivatedRoute } from '@angular/router';
+import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
+import { ServicesModuleService, ContactsStorageInterface } from 'src/app/servicesModule/services/services-module.service';
 
 @Component({
   selector: 'app-detail-account',
@@ -11,34 +14,91 @@ import { AppConfig } from '../../../../config/app.config';
 })
 export class DetailAccountComponent implements OnInit {
 
-  backToService = `/${AppConfig.routes.service}`;
-  configurationForm: ConfigurationForm;
-  showPassword: boolean = true;
+  address = '';
+  accountName = '';
+  accountInfo: AccountsInfoInterface = null;
   accountValid: boolean = false;
-  subscribeAccount;
-  // mosaic = 'XPX';
-  // titleAccountInformation = 'Account information';
+  configurationForm: ConfigurationForm;
+  currenAccount: AccountsInterface = null;
+  descriptionPrivateKey = `Make sure you store your private key in a safe place.
+  Access to your digital assets cannot be recovered without it.`;
+  editNameAccount = false;
+  newNameAccount: string = '';
+  privateKey = '';
+  publicKey = '';
+  routes = {
+    backToService: `/${AppConfig.routes.service}`,
+    viewAllAccounts: `/${AppConfig.routes.viewAllAccount}`
+  };
+  showPassword: boolean = true;
+  subscribeAccount = null;
   titleAddress = 'Address:';
   titlePrivateKey = 'Private Key:';
   titlePublickey = 'Public Key:';
-  descriptionPrivateKey = `Make sure you store your private key in a safe place.
-  Access to your digital assets cannot be recovered without it.`;
-  // descriptionBackupWallet = `It is very important that you have backups of your wallets to log in with or your ${this.mosaic} will be lost.`;
-  address = this.walletService.address.pretty();
-  privateKey = '';
-  publicKey = this.walletService.publicAccount.publicKey;
-  walletName = this.walletService.current.name;
   validatingForm: FormGroup;
 
+
   constructor(
+    private activateRoute: ActivatedRoute,
+    private proximaxProvider: ProximaxProvider,
+    private sharedService: SharedService,
     private walletService: WalletService,
-    private sharedService: SharedService
+    private serviceModuleService: ServicesModuleService
   ) {
   }
 
   ngOnInit() {
     this.configurationForm = this.sharedService.configurationForm;
-    this.publicKey = this.walletService.publicAccount.publicKey;
+    let param = this.activateRoute.snapshot.paramMap.get('name');
+    this.currenAccount = (param) ? this.currenAccount = this.walletService.filterAccount(param) : this.currenAccount = this.walletService.filterAccount('', true);
+    this.buildData();
+    this.createForm();
+    this.subscribeAccount = this.walletService.getAccountsInfo$().subscribe(
+      async accountInfo => {
+        if (accountInfo && !this.accountInfo) {
+          this.accountInfo = this.walletService.filterAccountInfo(this.currenAccount.name);
+          this.accountValid = (
+            this.accountInfo !== null &&
+            this.accountInfo !== undefined &&
+            this.accountInfo.accountInfo &&
+            this.accountInfo.accountInfo.publicKey !== "0000000000000000000000000000000000000000000000000000000000000000"
+          );
+
+          if (this.subscribeAccount) {
+            this.subscribeAccount.unsubscribe();
+          }
+        }
+      }
+    );
+  }
+
+  /**
+   *
+   *
+   * @memberof DetailAccountComponent
+   */
+  ngOnDestroy(): void {
+    if (this.subscribeAccount) {
+      this.subscribeAccount.unsubscribe();
+    }
+  }
+
+  /**
+   *
+   *
+   * @memberof DetailAccountComponent
+   */
+  buildData() {
+    this.accountName = this.currenAccount.name;
+    this.address = this.proximaxProvider.createFromRawAddress(this.currenAccount.address).pretty();
+    this.publicKey = this.currenAccount.publicAccount.publicKey;
+  }
+
+  copyMessage(message: string) {
+    this.sharedService.showSuccess('', `${message} copied`);
+  }
+
+  createForm() {
     this.validatingForm = new FormGroup({
       password: new FormControl('', [
         Validators.required,
@@ -46,26 +106,55 @@ export class DetailAccountComponent implements OnInit {
         Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
       ])
     });
+  }
 
-    this.subscribeAccount = this.walletService.getAccountInfoAsync().subscribe(
-      async accountInfo => {
-        this.accountValid = (accountInfo !== null && accountInfo !== undefined && accountInfo.publicKey !== "0000000000000000000000000000000000000000000000000000000000000000");
+  /**
+   *
+   *
+   * @memberof DetailAccountComponent
+   */
+  changeNameAccount() {
+    if (this.newNameAccount !== '') {
+      if (!this.walletService.validateNameAccount(this.newNameAccount)) {
+        const paramsStorage: ContactsStorageInterface = {
+          name: this.newNameAccount,
+          address: this.address,
+          walletContact: true,
+          nameItem: '',
+          update: true,
+          dataComparate: {
+            name: this.accountName,
+            address: this.address
+          }
+        }
+        const saved = this.serviceModuleService.saveContacts(paramsStorage);
+
+        if (!saved) {
+          this.sharedService.showError('', `Contact or account name already exists`);
+          return;
+        }
+        this.walletService.changeName(this.accountName, this.newNameAccount);
+        this.editNameAccount = !this.editNameAccount;
+        this.currenAccount = this.walletService.filterAccount(this.newNameAccount);
+        this.newNameAccount = '';
+        this.buildData();
+        this.sharedService.showSuccess('', 'Your account and contact name has been updated');
+      } else {
+        this.sharedService.showWarning('', 'This name is already in use');
       }
-    );
+    }
   }
 
-  ngOnDestroy(): void {
-    this.subscribeAccount.unsubscribe();
-  }
-
-  copyMessage(message: string) {
-    this.sharedService.showSuccess('', `${message} copied`);
-  }
-
+  /**
+   *
+   *
+   * @returns
+   * @memberof DetailAccountComponent
+   */
   decryptWallet() {
     if (this.validatingForm.get('password').value !== '') {
       const common = { password: this.validatingForm.get('password').value };
-      if (this.walletService.decrypt(common)) {
+      if (this.walletService.decrypt(common, this.currenAccount)) {
         this.privateKey = common['privateKey'].toUpperCase();
         this.validatingForm.get('password').patchValue('')
         this.showPassword = false;
@@ -81,20 +170,25 @@ export class DetailAccountComponent implements OnInit {
 
   get input() { return this.validatingForm.get('password'); }
 
+  /**
+   *
+   *
+   * @memberof DetailAccountComponent
+   */
   hidePrivateKey() {
     this.privateKey = '';
     this.showPassword = true;
   }
 
-   /**
-   *
-   *
-   * @param {string} [nameInput='']
-   * @param {string} [nameControl='']
-   * @param {string} [nameValidation='']
-   * @returns
-   * @memberof AuthComponent
-   */
+  /**
+  *
+  *
+  * @param {string} [nameInput='']
+  * @param {string} [nameControl='']
+  * @param {string} [nameValidation='']
+  * @returns
+  * @memberof AuthComponent
+  */
   validateInput(nameInput: string = '', nameControl: string = '', nameValidation: string = '') {
     let validation: AbstractControl = null;
     if (nameInput !== '' && nameControl !== '') {

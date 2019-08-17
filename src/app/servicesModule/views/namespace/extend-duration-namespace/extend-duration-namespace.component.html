@@ -18,7 +18,7 @@
     </div>
   </div>
 
-  <form [formGroup]="renewNamespaceForm" (ngSubmit)="renovateNamespace()">
+  <form [formGroup]="extendDurationNamespaceForm" (ngSubmit)="extendDuration()">
     <div class="row">
       <div class="col-12 col-sm-7 col-md-8 mb-2rem">
         <div class="row mt-1rem">
@@ -51,14 +51,26 @@
 
         <div class="row ml-01rem">
           <div class="col-12 col-lg-6 mx-auto">
-            <div class="box-grey">
-              <span>Fee: 0.000000 XPX</span>
+            <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
+              <div class="row">
+                <div class="col-12">
+                  <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
+                    width="20" alt="">&nbsp;
+                  <span>Fee: 0.000000 XPX</span>
+                </div>
+              </div>
             </div>
           </div>
 
           <div class="col-12 col-lg-6 mx-auto">
-            <div class="box-grey">
-              <span>Rental Fee: {{calculateRentalFee}} XPX</span>
+            <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
+              <div class="row">
+                <div class="col-12">
+                  <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
+                    width="20" alt="">&nbsp;
+                  <span>Rental Fee: {{calculateRentalFee}} XPX</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -90,9 +102,10 @@
           </div>
 
           <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-            <button mdbBtn type="submit" rounded="true" [disabled]="!renewNamespaceForm.valid" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
-              size="md">
-              <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true" *ngIf="blockBtnSend"></span>
+            <button mdbBtn type="submit" rounded="true" [disabled]="!extendDurationNamespaceForm.valid" mdbWavesEffect
+              class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
+              <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
+                *ngIf="blockBtnSend"></span>
               <span class="fs-1-2em color-white">CREATE</span>
             </button>
           </div>

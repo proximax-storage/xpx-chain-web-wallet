@@ -22,12 +22,18 @@ export class ServicesBoxComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    const contacts = this.services.getBooksAddress();
+    const showItems = {
+      listContact: (contacts !== null && contacts !== undefined && contacts.length > 0) ? true : false
+    }
+
+
     this.servicesList = [
       //Account
       this.services.buildStructureService(
         'Accounts',
         true,
-        'Accounts details, link address to namespace, smart rules restrictions.',
+        'Manage your accounts.',
         'icon-account-green-60h-proximax-sirius-wallet.svg',
         '',
         {
@@ -36,13 +42,13 @@ export class ServicesBoxComponent implements OnInit {
             true,
             '',
             '',
-            AppConfig.routes.account,
+            AppConfig.routes.viewAllAccount,
           ), multiSign: this.services.buildStructureService(
             'MULTISIGN',
             false,
             '',
             '',
-            ''
+            AppConfig.routes.MultiSign,
           ), restrinctions: this.services.buildStructureService(
             'RESTRICTIONS',
             false,
@@ -76,7 +82,7 @@ export class ServicesBoxComponent implements OnInit {
       this.services.buildStructureService(
         'Namespaces',
         true,
-        'Create a namespaces and sub-namespaces',
+        'Create namespaces and sub-namespaces',
         'icon-namespaces-green-60h-proximax-sirius-wallet.svg',
         '',
         {
@@ -86,15 +92,15 @@ export class ServicesBoxComponent implements OnInit {
             '',
             '',
             AppConfig.routes.createNamespace
-          ),  extend: this.services.buildStructureService(
+          ), extend: this.services.buildStructureService(
             'EXTEND DURATION',
-            false,
+            true,
             '',
             '',
-            AppConfig.routes.renewNamespace
+            AppConfig.routes.extendNamespace
           ), renew: this.services.buildStructureService(
             'RENEW',
-            true,
+            false,
             '',
             '',
             AppConfig.routes.renewNamespace
@@ -129,7 +135,7 @@ export class ServicesBoxComponent implements OnInit {
             '',
             '',
             AppConfig.routes.LinkingNamespaceMosaic
-          ),extend: this.services.buildStructureService(
+          ), extend: this.services.buildStructureService(
             'EXTEND DURATION',
             false,
             '',
@@ -150,7 +156,7 @@ export class ServicesBoxComponent implements OnInit {
       this.services.buildStructureService(
         'Transactions Explorer',
         true,
-        'Explore all transactions, network stats, and node locations',
+        'Explore all transactions',
         'icon-transactions-green-60h-proximax-sirius-wallet.svg',
         '',
         {
@@ -174,7 +180,7 @@ export class ServicesBoxComponent implements OnInit {
         '',
         {
           myFiles: this.services.buildStructureService(
-            'MY FILES',
+            'FILES',
             true,
             '',
             '',
@@ -185,6 +191,12 @@ export class ServicesBoxComponent implements OnInit {
             '',
             '',
             AppConfig.routes.uploadFile
+          ), shareFile: this.services.buildStructureService(
+            'SEND/SHARE',
+            true,
+            '',
+            '',
+            ''
           )
         },
         true
@@ -194,16 +206,23 @@ export class ServicesBoxComponent implements OnInit {
       this.services.buildStructureService(
         'Address Book',
         true,
-        'Assign labels to addresses to easily keep track of your contacts',
+        'Assign labels to addresses',
         'icon-address-green-book-60h-proximax-sirius-wallet.svg',
         '',
         {
-          addContact: this.services.buildStructureService(
-            'ADD AND LIST CONTACTS',
-            true,
+          list: this.services.buildStructureService(
+            'LIST',
+            showItems.listContact,
             '',
             '',
             AppConfig.routes.addressBook
+          ),
+          addContact: this.services.buildStructureService(
+            'ADD CONTACTS',
+            true,
+            '',
+            '',
+            AppConfig.routes.addContacts
           )
         },
         true
@@ -211,14 +230,14 @@ export class ServicesBoxComponent implements OnInit {
 
       // Notarization
       this.services.buildStructureService(
-        'Notarization',
+        'Attestation',
         true,
-        'Notarization documents',
+        'Proof of existence / proof of origination',
         'icon-notarization-green-60h.svg',
         '',
         {
           notarize: this.services.buildStructureService(
-            'NOTARIZE',
+            'CREATE',
             false,
             '',
             '',
@@ -240,12 +259,12 @@ export class ServicesBoxComponent implements OnInit {
       this.services.buildStructureService(
         'Voting',
         true,
-        'Create votes and see your results',
+        'Create polls and vew results',
         'icon-voting-green-60h.svg',
         '',
         {
           poll: this.services.buildStructureService(
-            'CREATE POOL',
+            'CREATE POLL',
             false,
             '',
             '',
@@ -265,7 +284,7 @@ export class ServicesBoxComponent implements OnInit {
 
       // Agregate transactions
       this.services.buildStructureService(
-        'Agregate Transactions',
+        'Aggregate Transactions',
         true,
         'Merge multiple transactions into one',
         'icon-aggregated-transactions-green-60h.svg',
@@ -294,19 +313,12 @@ export class ServicesBoxComponent implements OnInit {
       this.services.buildStructureService(
         'Cross-Chain Swaps',
         true,
-        'Atomic cross-chain swap between public and private network',
+        'Atomic cross-chain swap between public and private networks',
         'icon-cross-chain-green-60h.svg',
         '',
         {
           secretLock: this.services.buildStructureService(
-            'SECRETLOCK',
-            false,
-            '',
-            '',
-            ''
-          ),
-          secretProof: this.services.buildStructureService(
-            'SECRETPROOF',
+            'SWAP',
             false,
             '',
             '',
@@ -321,7 +333,7 @@ export class ServicesBoxComponent implements OnInit {
       this.services.buildStructureService(
         'Nodes',
         true,
-        'Add and edits nodes.',
+        'Add and edits nodes',
         'icon-nodes-green-60h-proximax-sirius-wallet.svg',
         '',
         {
@@ -337,6 +349,12 @@ export class ServicesBoxComponent implements OnInit {
             '',
             '',
             ''
+          ), streaming: this.services.buildStructureService(
+            'STREAMING',
+            false,
+            '',
+            '',
+            ''
           )
         },
         true,
@@ -345,14 +363,14 @@ export class ServicesBoxComponent implements OnInit {
 
       // Message
       this.services.buildStructureService(
-        'Message',
+        'Messaging',
         true,
-        'Send personalized and encrypted messages',
+        'Send encrypted messages',
         'icon-messenger-green-16h-proximax-sirius-wallet.svg',
         '',
         {
           send: this.services.buildStructureService(
-            'SEND',
+            'CHAT',
             false,
             '',
             '',
@@ -373,6 +391,58 @@ export class ServicesBoxComponent implements OnInit {
         {
           create: this.services.buildStructureService(
             'CREATE',
+            false,
+            '',
+            '',
+            ''
+          )
+        },
+        true,
+        'disable-module'
+      ),
+
+      // VIDEO CONFERENCING
+      this.services.buildStructureService(
+        'Video Conferencing',
+        true,
+        'Encrypted face-to-face comunication',
+        'icon-streaming-green-60h-proximax-sirius-wallet.svg',
+        '',
+        {
+          schedule: this.services.buildStructureService(
+            'SCHEDULE',
+            false,
+            '',
+            '',
+            ''
+          ), start: this.services.buildStructureService(
+            'START',
+            false,
+            '',
+            '',
+            ''
+          )
+        },
+        true,
+        'disable-module'
+      ),
+
+      // SUPERCONTRACTS
+      this.services.buildStructureService(
+        'Supercontracts',
+        true,
+        'Create supercontracts',
+        'icon-supercontracts-green-60h-proximax-sirius-wallet.svg',
+        '',
+        {
+          create: this.services.buildStructureService(
+            'CREATE',
+            false,
+            '',
+            '',
+            ''
+          ), status: this.services.buildStructureService(
+            'STATUS',
             false,
             '',
             '',

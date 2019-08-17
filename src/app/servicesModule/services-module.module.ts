@@ -7,16 +7,20 @@ import { DetailAccountComponent } from './views/account/detail-account/detail-ac
 import { CoreModule } from '../core/core.module';
 import { ExplorerComponent } from './views/explorer/explorer.component';
 import { CreateNamespaceComponent } from './views/namespace/create-namespace/create-namespace.component';
-import { AddressBookComponent } from './views/address-book/address-book.component';
-import { RenewNamespaceComponent } from './views/namespace/renew-namespace/renew-namespace.component';
+import { ListContactsComponent } from './views/address-book/list-contacts/list-contacts.component';
+import { ExtendDurationNamespaceComponent } from './views/namespace/extend-duration-namespace/extend-duration-namespace.component';
 import { CreateMosaicComponent } from './views/mosaic/create-mosaic/create-mosaic.component';
 import { AliasAddressToNamespaceComponent } from './views/account/alias-address-to-namespace/alias-address-to-namespace.component';
 import { MosaicsSupplyChangeComponent } from './views/mosaic/mosaics-supply-change/mosaics-supply-change.component';
 import { AliasMosaicsToNamespaceComponent } from './views/mosaic/alias-mosaics-to-namespace/alias-mosaics-to-namespace.component';
 import { UploadFileComponent } from './views/storage/upload-file/upload-file.component';
 import { MyFileComponent } from './views/storage/my-file/my-file.component';
+import { MultiSignatureContractComponent } from './views/multi-sign/multi-signature-contract/multi-signature-contract.component';
+import { CreateMultiSignatureComponent } from './views/multi-sign/components/create-multi-signature/create-multi-signature.component';
 import { ViewAllAccountsComponent } from './views/account/view-all-accounts/view-all-accounts.component';
 import { AccountCreatedComponent } from './views/account/account-created/account-created.component';
+import { SelectionAccountTypeComponent } from './views/account/selection-account-creation-type/selection-account-creation-type.component';
+import { AddContactsComponent } from './views/address-book/add-contacts/add-contacts.component';
 
 @NgModule({
   declarations: [
@@ -25,20 +29,26 @@ import { AccountCreatedComponent } from './views/account/account-created/account
     DetailAccountComponent,
     ExplorerComponent,
     CreateNamespaceComponent,
-    AddressBookComponent,
-    RenewNamespaceComponent,
+    ListContactsComponent,
+    ExtendDurationNamespaceComponent,
     CreateMosaicComponent,
     AliasAddressToNamespaceComponent,
     MosaicsSupplyChangeComponent,
     AliasMosaicsToNamespaceComponent,
     UploadFileComponent,
     MyFileComponent,
+    MultiSignatureContractComponent,
+    CreateMultiSignatureComponent,
     ViewAllAccountsComponent,
-    AccountCreatedComponent
+    AccountCreatedComponent,
+    SelectionAccountTypeComponent,
+    AddContactsComponent
   ],
   imports: [
     CoreModule,
     ServicesModuleRoutingModule
+  ], exports: [
+    CreateMultiSignatureComponent
   ]
 })
 export class ServicesModule { }

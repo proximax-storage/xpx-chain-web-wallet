@@ -1,0 +1,82 @@
+<div class="container mt-3rem mb-2rem animated fadeIn">
+  <div class="row">
+    <div class="col-12 col-md-8">
+      <span class="fs-1rem txt-a-center line-h-1-2em color-grey">{{moduleName}}</span>
+      <span class="fs-1rem txt-a-center line-h-1-2em color-grey"> > </span>
+      <span class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">{{componentName}}</span>
+    </div>
+
+    <div class="col-12 col-md-4 d-flex justify-content-start justify-content-md-end">
+      <a class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio" [routerLink]="[list]">
+        <span>List</span>
+      </a>
+      <div class="col-2 d-flex justify-content-center">
+        <div class="col-6">
+          <div class="line-separator h-100porcent"></div>
+        </div>
+      </div>
+      <a class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio" [routerLink]="[goBack]">
+        <span>Back to Services</span>
+      </a>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <hr class="mt-03rem mb-05rem">
+    </div>
+  </div>
+  <form [formGroup]="contactForm" (ngSubmit)="saveContact()">
+
+    <div class="row">
+      <div class="col-11 col-sm-10 col-lg-8 mx-auto">
+        <div class="md-form form-sm">
+          <input formControlName="user" required mdbInputDirective mdbValidate [validateSuccess]="true"
+            [validateError]="true" type="text" id="user" class="form-control form-control-sm input-border"
+            placeholder="Name">
+
+          <!-- VALIDATION -->
+          <mdb-error
+            *ngIf="validateInput('user', '').invalid && (validateInput('address', '').dirty || validateInput('address', '').touched)">
+            <span>Input invalid</span>
+          </mdb-error>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-11 col-sm-10 col-lg-8 mx-auto">
+        <div class="md-form form-sm">
+          <input formControlName="address" required mdbInputDirective mdbValidate [validateSuccess]="true"
+            [validateError]="true" type="text" id="address" class="form-control form-control-sm input-border"
+            placeholder="address">
+
+          <!-- VALIDATION -->
+          <mdb-error
+            *ngIf="validateInput('address', '').invalid && (validateInput('address', '').dirty || validateInput('address', '').touched)">
+            <span>Input invalid</span>
+          </mdb-error>
+          <mdb-error *ngIf="msgErrorUnsupported !== ''">
+            <span>{{msgErrorUnsupported}}</span>
+          </mdb-error>
+        </div>
+      </div>
+    </div>
+    <!-- BUTTONS -->
+    <div class="row">
+      <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
+        <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+          size="md" (click)="clearForm()">
+          <span class="fs-1-2em color-white">CLEAR</span>
+        </button>
+      </div>
+
+      <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
+        <button mdbBtn type="submit" rounded="true" mdbWavesEffect [disabled]="blockSendButton || !contactForm.valid"
+          class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
+          <span class="fs-1-2em color-white">SAVE</span>
+        </button>
+      </div>
+    </div>
+  </form>
+
+</div>

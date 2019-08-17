@@ -1,14 +1,12 @@
 import { Injectable } from '@angular/core';
-import { Router } from "@angular/router";
-import { SimpleWallet, Address, PublicAccount, AccountInfo, NetworkType } from 'tsjs-xpx-chain-sdk';
+import { SimpleWallet, PublicAccount, AccountInfo, MultisigAccountInfo } from 'tsjs-xpx-chain-sdk';
 import { crypto } from 'js-xpx-chain-library';
 import { AbstractControl } from '@angular/forms';
+import { BehaviorSubject, Observable } from 'rxjs';
+
 import { environment } from '../../../environments/environment';
 import { SharedService } from '../../shared/services/shared.service';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { NodeService } from 'src/app/servicesModule/services/node.service';
-import { AppConfig } from 'src/app/config/app.config';
-import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
+import { ProximaxProvider } from '../../shared/services/proximax.provider';
 
 
 @Injectable({
@@ -16,28 +14,25 @@ import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
 })
 export class WalletService {
 
-  address: Address;
-  algoData: {
+  accountWalletCreated: {
     data: any;
     dataAccount: AccountsInterface;
     wallet: SimpleWallet
   } = null;
 
-  /******************** */
+  accountsInfo: AccountsInfoInterface[] = [];
+  currentAccount: AccountsInterface = null;
+  currentWallet: CurrentWalletInterface = null;
 
-  currentAccount: any;
-  current: any;
-  network: any = '';
-  algo: string;
-  publicAccount: PublicAccount;
-  private accountInfo: AccountInfo;
-  private accountInfoSubject: BehaviorSubject<AccountInfo> = new BehaviorSubject<AccountInfo>(null);
-  private accountInfo$: Observable<AccountInfo> = this.accountInfoSubject.asObservable();
+
+  currentAccountObs: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  currentAccountObs$: Observable<any> = this.currentAccountObs.asObservable();
+
+  accountsInfoSubject: BehaviorSubject<AccountsInfoInterface[]> = new BehaviorSubject<AccountsInfoInterface[]>(null);
+  accountsInfo$: Observable<AccountsInfoInterface[]> = this.accountsInfoSubject.asObservable();
 
   constructor(
     private sharedService: SharedService,
-    private route: Router,
-    private nodeService: NodeService,
     private proximaxProvider: ProximaxProvider
   ) {
 
@@ -54,19 +49,19 @@ export class WalletService {
    * @returns {AccountsInterface}
    * @memberof WalletService
    */
-  buildAccount(encrypted: string, iv: string, address: string, network: number, nameWallet: string, labelParams = 'Primary'): AccountsInterface {
-    const accounts: AccountsInterface = {
-      'address': address,
-      'algo': 'pass:bip32',
-      'brain': true,
-      'encrypted': encrypted,
-      'iv': iv,
-      'name': nameWallet,
-      'label': labelParams,
-      'network': network
+  buildAccount(data: any): AccountsInterface {
+    return {
+      algo: 'pass:bip32',
+      address: data.address,
+      brain: true,
+      default: data.byDefault,
+      encrypted: data.encrypted,
+      firstAccount: data.firstAccount,
+      iv: data.iv,
+      name: data.nameAccount,
+      network: data.network,
+      publicAccount: data.publicAccount
     }
-
-    return accounts;
   }
 
   /**
@@ -76,28 +71,194 @@ export class WalletService {
    * @memberof WalletService
    */
   changeAsPrimary(name: string) {
-    const myAccounts = Object.assign(this.current.accounts);
-    const othersWallet = this.getWalletStorage().filter(
+    const myAccounts: AccountsInterface[] = Object.assign(this.currentWallet.accounts);
+    const othersWallet: CurrentWalletInterface[] = this.getWalletStorage().filter(
       (element: any) => {
-        return element.name !== this.current.name;
+        return element.name !== this.currentWallet.name;
       }
     );
 
-    myAccounts.forEach(element => {
-        if (element.name === name) {
-          element.label = 'Primary';
-        }else {
-          element.label = element.name;
-        }
+    myAccounts.forEach((element: AccountsInterface) => {
+      if (element.name === name) {
+        element.default = true;
+        this.setCurrentAccount$(element);
+      } else {
+        element.default = false;
+      }
     });
 
-    this.current.accounts = myAccounts;
+    this.currentWallet.accounts = myAccounts;
     othersWallet.push({
-      name: this.current.name,
+      name: this.currentWallet.name,
       accounts: myAccounts
     });
 
     localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(othersWallet));
+  }
+
+  /**
+   *
+   *
+   * @param {string} oldName
+   * @param {string} newName
+   * @memberof WalletService
+   */
+  changeName(oldName: string, newName: string) {
+    const myAccounts = Object.assign(this.currentWallet.accounts);
+    const othersWallet = this.getWalletStorage().filter(
+      (element: any) => {
+        return element.name !== this.currentWallet.name;
+      }
+    );
+
+    myAccounts.forEach(element => {
+      if (element.name === oldName) {
+        element.name = newName;
+      }
+    });
+
+    this.currentWallet.accounts = myAccounts;
+    othersWallet.push({
+      name: this.currentWallet.name,
+      accounts: myAccounts
+    });
+
+    localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(othersWallet));
+  }
+
+  /**
+   *
+   *
+   * @memberof WalletService
+   */
+  destroyAll() {
+    // console.log('desteoty all');
+    this.currentWallet = null;
+    this.setCurrentAccount$(null);
+    this.setAccountsInfo(null);
+  }
+
+  /**
+   *
+   *
+   * @param {*} common
+   * @param {*} [account='']
+   * @param {*} [algo='']
+   * @param {*} [network='']
+   * @returns
+   * @memberof WalletService
+   */
+
+  decrypt(common: any, account: AccountsInterface = null) {
+    const acct = (account) ? account : this.currentAccount;
+    const net = (account) ? account.network : this.currentAccount.network;
+    const alg = (account) ? account.algo : this.currentAccount.algo;
+    if (!crypto.passwordToPrivatekey(common, acct, alg)) {
+      this.sharedService.showError('', 'Invalid password 1');
+      return false;
+    }
+
+    if (common.isHW) {
+      return true;
+    }
+
+    if (!this.isPrivateKeyValid(common.privateKey) || !this.proximaxProvider.checkAddress(common.privateKey, net, acct.address)) {
+      this.sharedService.showError('', 'Invalid password');
+      return false;
+    }
+
+    return true;
+  }
+
+  /**
+   * Destroy account info
+   *
+   * @memberof WalletService
+   */
+  destroyAccountInfo() {
+    // this.accountInfo = undefined;
+    // this.accountInfoSubject.next(null);
+  }
+
+  /**
+   *
+   *
+   * @param {string} nameAccount
+   * @returns
+   * @memberof WalletService
+   */
+  filterAccountInfo(nameAccount?: string): AccountsInfoInterface {
+    if (this.accountsInfo && this.accountsInfo.length > 0) {
+      if (nameAccount) {
+        // console.log('---nameAccount---', nameAccount);
+        return this.accountsInfo.find(next => next.name === nameAccount);
+      } else {
+        return this.accountsInfo.find(next => next.name === this.currentAccount.name);
+      }
+    }
+  }
+
+  /**
+  *
+  *
+  * @param {*} wallet
+  * @returns
+  * @memberof WalletService
+  */
+  getAccountDefault(wallet?: WalletAccountInterface): AccountsInterface {
+    if (wallet) {
+      return wallet.accounts.find(x => x.default === true);
+    } else {
+      return this.currentWallet.accounts.find(x => x.default === true);
+    }
+  }
+
+  /**
+ *
+ *
+ * @returns {AccountsInfoInterface[]}
+ * @memberof WalletService
+ */
+  getAccountsInfo(): AccountsInfoInterface[] {
+    return this.accountsInfo;
+  }
+
+  /**
+   *
+   *
+   * @returns {Observable<AccountsInfoInterface[]>}
+   * @memberof WalletService
+   */
+  getAccountsInfo$(): Observable<AccountsInfoInterface[]> {
+    return this.accountsInfo$;
+  }
+
+  /**
+  *
+  *
+  * @returns {CurrentWalletInterface}
+  * @memberof WalletService
+  */
+  getCurrentWallet(): CurrentWalletInterface {
+    return this.currentWallet;
+  }
+
+
+  /**
+   *
+   *
+   * @returns {AccountsInterface}
+   * @memberof WalletService
+   */
+  getCurrentAccount(): AccountsInterface {
+    return this.currentAccount;
+  }
+
+  /**
+   *
+   */
+  getNameAccount$(): Observable<any> {
+    return this.currentAccountObs$;
   }
 
 
@@ -124,19 +285,20 @@ export class WalletService {
    * @memberof WalletService
    */
   saveAccountStorage(nameWallet: string, accountsParams: any) {
-    const myAccounts = Object.assign(this.current.accounts);
+    const myAccounts = Object.assign(this.currentWallet.accounts);
     const othersWallet = this.getWalletStorage().filter(
       (element: any) => {
-        return element.name !== this.current.name;
+        return element.name !== this.currentWallet.name;
       }
     );
 
     myAccounts.push(accountsParams)
-    this.current.accounts = myAccounts;
+    this.currentWallet.accounts = myAccounts;
     othersWallet.push({
-      name: this.current.name,
+      name: this.currentWallet.name,
       accounts: myAccounts
     });
+
 
     localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(othersWallet));
   }
@@ -151,7 +313,7 @@ export class WalletService {
    * @memberof WalletService
    */
   saveDataWalletCreated(data: any, dataAccount: AccountsInterface, wallet: SimpleWallet) {
-    this.algoData = {
+    this.accountWalletCreated = {
       data: data,
       dataAccount: dataAccount,
       wallet: wallet
@@ -173,6 +335,53 @@ export class WalletService {
     });
 
     localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorage));
+  }
+
+  /**
+   *
+   *
+   * @memberof WalletService
+   */
+  setAccountsInfo(accountsInfo: AccountsInfoInterface[], pushed = false) {
+    let accounts = (this.accountsInfo && this.accountsInfo.length > 0) ? this.accountsInfo.slice(0) : [];
+    if (pushed) {
+      for (let element of accountsInfo) {
+        accounts = accounts.filter(x => x.name !== element.name);
+        accounts.push(element);
+      }
+      this.accountsInfo = accounts;
+    } else {
+      this.accountsInfo = accountsInfo;
+    }
+
+    // console.log('accountinfo', this.accountsInfo);
+    this.accountsInfoSubject.next(this.accountsInfo);
+  }
+
+  /**
+   *
+   *
+   * @param {*} currentAccount
+   * @memberof WalletService
+   */
+  setCurrentAccount$(currentAccount: AccountsInterface) {
+    this.currentAccountObs.next(currentAccount);
+  }
+
+  /**
+   *
+   *
+   * @returns
+   * @memberof WalletService
+   */
+  validateNameAccount(nameWallet: string) {
+    const nameAccount = nameWallet;
+    const existAccount = Object.keys(this.currentWallet.accounts).find(elm => this.currentWallet.accounts[elm].name === nameAccount);
+    if (existAccount !== undefined) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
 
@@ -200,34 +409,6 @@ export class WalletService {
 
   /**************************************************************************************************/
 
-  /**
-   *
-   *
-   * @param {{ password: { length: number; }; }} common
-   * @param {*} wallet
-   * @returns
-   * @memberof WalletService
-   */
-  login(common: { password: { length: number; }; }, wallet: any) {
-    // console.log(wallet);
-    if (!wallet) {
-      this.sharedService.showError('', 'Dear user, the wallet is missing');
-      return false;
-    } else if (!this.nodeService.getNodeSelected()) {
-      this.sharedService.showError('', 'Please, select a node.');
-      this.route.navigate([`/${AppConfig.routes.selectNode}`]);
-      return false;
-    } else if (!this.decrypt(common, wallet.accounts[0], wallet.accounts[0].algo, wallet.accounts[0].network)) {
-      // Decrypt / generate and check primary
-      return false;
-    } else if (wallet.accounts[0].network === NetworkType.MAIN_NET && wallet.accounts[0].algo === 'pass:6k' && common.password.length < 40) {
-      this.sharedService.showError('', 'Dear user, the wallet is missing');
-    }
-
-    this.use(wallet);
-    return true;
-  }
-
 
   /**
    *Set a wallet as current
@@ -237,67 +418,18 @@ export class WalletService {
    * @memberof WalletService
    */
   use(wallet: any) {
-    // console.log('----------------> wallet', wallet)
     if (!wallet) {
       this.sharedService.showError('', 'You can not set anything like the current wallet');
       return false;
     }
-    // console.log(wallet);
 
-    const x = this.getAccountPrimary(wallet);
-    this.network = x.network;
-    // Account used
-    this.currentAccount = x;
-    // Algo of the wallet
-    this.algo = x.algo;
-    // console.log(this.algo);
-    // Adress and newwork
-    this.address = this.proximaxProvider.createFromRawAddress(x.address);
-    this.current = wallet;
-    // this.contacts = this._AddressBook.getContacts(wallet);
+    this.currentWallet = wallet;
+    this.currentAccount = this.getAccountDefault(wallet);
+    this.setCurrentAccount$(this.currentAccount);
     return true;
   }
 
-  /**
-   *
-   *
-   * @param {*} common
-   * @param {*} [account='']
-   * @param {*} [algo='']
-   * @param {*} [network='']
-   * @returns
-   * @memberof WalletService
-   */
 
-  decrypt(common: any, account: any = '', algo: any = '', network: any = '') {
-
-    const acct = account || this.currentAccount;
-    const net = network || this.network;
-    const alg = algo || this.algo;
-    // Try to generate or decrypt key
-
-    if (!crypto.passwordToPrivatekey(common, acct, alg)) {
-      setTimeout(() => {
-        this.sharedService.showError('', 'Invalid password');
-      }, 500);
-      return false;
-    }
-
-    if (common.isHW) {
-      return true;
-    }
-
-    if (!this.isPrivateKeyValid(common.privateKey) || !this.proximaxProvider.checkAddress(common.privateKey, net, acct.address)) {
-      setTimeout(() => {
-        this.sharedService.showError('', 'Invalid password');
-      }, 500);
-      return false;
-    }
-
-    //Get public account from private key
-    this.publicAccount = this.proximaxProvider.getPublicAccountFromPrivateKey(common.privateKey, net);
-    return true;
-  }
 
   /**
    *
@@ -330,59 +462,21 @@ export class WalletService {
     return str.match('^(0x|0X)?[a-fA-F0-9]+$') !== null;
   }
 
+
   /**
-   * Get account info
    *
+   *
+   * @param {string} byName
+   * @param {boolean} [byDefault=null]
    * @returns
    * @memberof WalletService
    */
-  getAccountInfo() {
-    return this.accountInfo;
-  }
-
-  /**
-   *
-   *
-   * @returns {Observable<AccountInfo>}
-   * @memberof WalletService
-   */
-  getAccountInfoAsync(): Observable<AccountInfo> {
-    return this.accountInfo$;
-  }
-
-  /**
-   *
-   *
-   * @param {*} wallet
-   * @returns
-   * @memberof WalletService
-   */
-  getAccountPrimary(wallet: any){
-    return wallet.accounts.find(x => x.label === 'Primary');
-  }
-
-  /**
-   * Destroy account info
-   *
-   * @memberof WalletService
-   */
-  destroyAccountInfo() {
-    this.accountInfo = undefined;
-    this.accountInfoSubject.next(null);
-  }
-
-  /**
-   * Create a wallet array
-   * by: roimerj_vzla
-   *
-   * @param {string} user
-   * @param {any} accounts
-   * @memberof WalletService
-   */
-  setAccountWalletStorage(user: string, accounts: any) {
-    let walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
-    walletsStorage.push({ name: user, accounts: { '0': accounts } });
-    localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorage));
+  filterAccount(byName: string, byDefault: boolean = null): AccountsInterface {
+    if (byDefault !== null && byName === '') {
+      return this.currentWallet.accounts.find(elm => elm.default === true);
+    } else {
+      return this.currentWallet.accounts.find(elm => elm.name === byName);
+    }
   }
 
   /**
@@ -392,26 +486,41 @@ export class WalletService {
    * @memberof WalletService
    */
   setAccountInfo(accountInfo: AccountInfo) {
-    this.accountInfo = accountInfo
-    this.accountInfoSubject.next(accountInfo);
+    // this.accountInfo = accountInfo
+    // this.accountInfoSubject.next(accountInfo);
   }
 
 }
 
+export interface CurrentWalletInterface {
+  name: string;
+  accounts: AccountsInterface[],
+}
+
+
 export interface AccountsInterface {
-  brain: boolean;
+  address: any;
   algo: string;
+  brain: boolean;
+  default: boolean;
   encrypted: string;
+  firstAccount: boolean;
   iv: string;
-  address: string;
-  label: string;
   name: string;
   network: number;
+  publicAccount: PublicAccount;
+}
+
+
+export interface AccountsInfoInterface {
+  name: string;
+  accountInfo: AccountInfo;
+  multisigInfo: MultisigAccountInfo;
 }
 
 export interface WalletAccountInterface {
   name: string,
-  accounts: object;
+  accounts: AccountsInterface[];
 }
 
 export interface walletInterface {

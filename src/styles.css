@@ -149,6 +149,10 @@ body {
   margin-left: .1rem;
 }
 
+.ml-03rem {
+  margin-left: .3rem;
+}
+
 .ml-10px {
   margin-left: 10px !important;
 }
@@ -195,6 +199,10 @@ body {
 
 .mr-05rem {
   margin-right: .5rem !important;
+}
+
+.mr-06rem {
+  margin-right: .6rem !important;
 }
 
 /********************* PADDING -*******************************/
@@ -337,6 +345,10 @@ body {
 }
 
 /************ HEIGHT *************************/
+.h-3em {
+  height: 3em;
+}
+
 .h-5em {
   height: 5em;
 }
@@ -650,7 +662,7 @@ body {
 }
 
 .box-list-account-gray{
-  color: black !important;
+  color: #424242 !important;
   background: #f4f4f4 !important;
 }
 
@@ -989,6 +1001,10 @@ input.form-control.validate-success.ng-valid.ng-dirty, input.form-control.valida
   color: #0275d8 !important;
 }
 /************************* FIN NG SELECT *******************/
+
+.w-b-a {
+  word-break: break-all;
+}
 
 .w-w-b-w {
   word-wrap: break-word;

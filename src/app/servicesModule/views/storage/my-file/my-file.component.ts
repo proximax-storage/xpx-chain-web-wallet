@@ -136,7 +136,7 @@ export class MyFileComponent implements OnInit, AfterViewInit {
   }
 
   initialiseStorage() {
-    const blockChainNetworkType = this.proximaxProvider.getBlockchainNetworkType(this.walletService.network);
+    const blockChainNetworkType = this.proximaxProvider.getBlockchainNetworkType(this.walletService.currentAccount.network);
     const blockChainHost = environment.blockchainConnection.host;
     const blockChainPort = environment.blockchainConnection.port;
     const blockChainProtocol = environment.blockchainConnection.protocol === 'https' ? Protocol.HTTPS : Protocol.HTTP;
@@ -158,7 +158,7 @@ export class MyFileComponent implements OnInit, AfterViewInit {
     console.log(this.fromTransactionId);
 
     const param = SearchParameter.createForPublicKey(
-      this.walletService.publicAccount.publicKey
+      this.walletService.currentAccount.publicAccount.publicKey
     );
     param.withResultSize(this.resultSize);
 

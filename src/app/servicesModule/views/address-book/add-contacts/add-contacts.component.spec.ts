@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { RenewNamespaceComponent } from './renew-namespace.component';
+import { AddContactsComponent } from './add-contacts.component';
 
-describe('RenewNamespaceComponent', () => {
-  let component: RenewNamespaceComponent;
-  let fixture: ComponentFixture<RenewNamespaceComponent>;
+describe('AddContactsComponent', () => {
+  let component: AddContactsComponent;
+  let fixture: ComponentFixture<AddContactsComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ RenewNamespaceComponent ]
+      declarations: [ AddContactsComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(RenewNamespaceComponent);
+    fixture = TestBed.createComponent(AddContactsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

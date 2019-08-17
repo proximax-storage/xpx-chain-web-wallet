@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
 import { NamespaceId } from 'tsjs-xpx-chain-sdk';
 
-import { NamespacesService } from '../../../servicesModule/services/namespaces.service';
+import { NamespacesService, NamespaceStorageInterface } from '../../../servicesModule/services/namespaces.service';
 import { TransactionsInterface } from '../../../transfer/services/transactions.service';
 
 @Component({
@@ -28,12 +28,11 @@ export class AddressAliasTypeComponent implements OnInit {
     this.namespaceId = '';
     this.namespaceName = '';
     this.typeTransactionHex = `${this.addressAlias.data['type'].toString(16).toUpperCase()}`;
-    const namespaceId = new NamespaceId([this.addressAlias.data['namespaceId'].id.lower, this.addressAlias.data['namespaceId'].id.higher]);
+    const namespaceId = this.namespaceService.getNamespaceId([this.addressAlias.data['namespaceId'].id.lower, this.addressAlias.data['namespaceId'].id.higher]);
     this.namespaceId = namespaceId.toHex();
-    const namespaceInfo = await this.namespaceService.getNamespaceFromId(namespaceId);
+    const namespaceInfo: NamespaceStorageInterface[] = await this.namespaceService.getNamespaceFromId([namespaceId]);
     if (namespaceInfo !== null && namespaceInfo !== undefined) {
-      this.namespaceName = (namespaceInfo.namespaceName.name !== '') ? namespaceInfo.namespaceName.name : '';
+      this.namespaceName = (namespaceInfo.length > 0) ? namespaceInfo[0].namespaceName.name : '';
     }
   }
-
 }

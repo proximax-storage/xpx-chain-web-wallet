@@ -24,7 +24,7 @@ export class MosaicSupplyChangeTypeComponent implements OnInit {
     private mosaicService: MosaicService
   ) { }
 
-  ngOnInit() {
+  ngOnInit() {    
   }
 
   async ngOnChanges(changes: SimpleChanges): Promise<void> {

@@ -37,7 +37,10 @@ import {
   TransactionAnnounceResponse,
   MosaicSupplyType,
   AliasTransaction,
-  AliasActionType
+  AliasActionType,
+  BlockchainHttp,
+  NamespaceInfo,
+  MultisigAccountInfo
 } from 'tsjs-xpx-chain-sdk';
 import { mergeMap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
@@ -50,6 +53,7 @@ import { BlockchainNetworkType } from 'xpx2-ts-js-sdk';
 })
 export class ProximaxProvider {
 
+  blockchainHttp: BlockchainHttp;
   url: any;
   infoMosaic: MosaicInfo;
   transactionHttp: TransactionHttp;
@@ -61,13 +65,24 @@ export class ProximaxProvider {
   mosaicService: MosaicService;
   namespaceService: NamespaceService;
   transactionStatusError: TransactionStatusError;
-  mosaicXpx: {mosaic: string, mosaicId: string; divisibility: number} = {
+  mosaicXpx: { mosaic: string, mosaicId: string; divisibility: number } = {
     mosaic: 'prx.xpx',
     mosaicId: '0dc67fbe1cad29e3',
     divisibility: 6
   };
 
   constructor() {
+  }
+
+
+  /**
+   *
+   *
+   * @returns {Observable<UInt64>}
+   * @memberof ProximaxProvider
+   */
+  getBlockchainHeight(): Observable<UInt64> {
+    return this.blockchainHttp.getBlockchainHeight();
   }
 
   /**
@@ -89,7 +104,7 @@ export class ProximaxProvider {
     }
   }
 
- 
+
 
 
   /**
@@ -321,6 +336,27 @@ export class ProximaxProvider {
     return this.accountHttp.getAccountInfo(address);
   }
 
+  /**
+   *
+   *
+   * @param {Address} address
+   * @returns {Observable<MultisigAccountInfo>}
+   * @memberof ProximaxProvider
+   */
+  getMultisigAccountInfo(address: Address): Observable<MultisigAccountInfo> {
+    return this.accountHttp.getMultisigAccountInfo(address);
+  }
+
+  /**
+   *
+   *
+   * @param {Address} address
+   * @memberof ProximaxProvider
+   */
+  getNamespaceFromAccount(address: Address): Observable<NamespaceInfo[]> {
+    return this.namespaceHttp.getNamespacesFromAccount(address);
+  }
+
 
   /**
    *
@@ -381,9 +417,23 @@ export class ProximaxProvider {
    * @returns {Observable<Transaction[]>}
    * @memberof ProximaxProvider
    */
-  getTransactionsFromAccountId(publicAccount: PublicAccount, id = null, queryParams = 25): Observable<Transaction[]> {
+  getTransactionsFromAccountId(publicAccount: PublicAccount, id = null, queryParams = 100): Observable<Transaction[]> {
     const query = (id) ? new QueryParams(queryParams, id) : new QueryParams(queryParams);
     return this.accountHttp.transactions(publicAccount, query);
+  }
+
+  /**
+   *
+   *
+   * @param {PublicAccount} publicAccount
+   * @param {*} [id=null]
+   * @param {number} [queryParams=100]
+   * @returns {Observable<Transaction[]>}
+   * @memberof ProximaxProvider
+   */
+  getUnconfirmedTransactions(publicAccount: PublicAccount, id = null, queryParams = 100): Observable<Transaction[]> {
+    const query = (id) ? new QueryParams(queryParams, id) : new QueryParams(queryParams);
+    return this.accountHttp.unconfirmedTransactions(publicAccount, query);
   }
 
 
@@ -447,7 +497,7 @@ export class ProximaxProvider {
    * @returns {Observable<NamespaceInfo>}
    * @memberof ProximaxProvider
    */
-  getNamespace(namespace: NamespaceId): any {// Observable<NamespaceInfo> {
+  getNamespace(namespace: NamespaceId): Observable<NamespaceInfo> {
     return this.namespaceHttp.getNamespace(namespace);
   }
 
@@ -477,6 +527,7 @@ export class ProximaxProvider {
   */
   initInstances(url: string) {
     this.url = `${environment.protocol}://${url}`;
+    this.blockchainHttp = new BlockchainHttp(this.url);
     this.accountHttp = new AccountHttp(this.url);
     this.mosaicHttp = new MosaicHttp(this.url);
     this.namespaceHttp = new NamespaceHttp(this.url);
@@ -539,8 +590,8 @@ export class ProximaxProvider {
       Deadline.create(23),
       name,
       UInt64.fromUint(duration),
-      network);
-
+      network
+    );
   }
 
   /**

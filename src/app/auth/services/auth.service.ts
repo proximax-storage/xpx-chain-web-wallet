@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { NetworkType } from 'tsjs-xpx-chain-sdk';
+import { NetworkType, UInt64, Address } from 'tsjs-xpx-chain-sdk';
+import { NgxUiLoaderService } from 'ngx-ui-loader';
+
 import { AppConfig } from '../../config/app.config';
-import { WalletService } from '../../wallet/services/wallet.service';
+import { WalletService, CurrentWalletInterface } from '../../wallet/services/wallet.service';
 import { DataBridgeService } from '../../shared/services/data-bridge.service';
 import { NodeService } from '../../servicesModule/services/node.service';
 import { MosaicService } from '../../servicesModule/services/mosaic.service';
@@ -11,6 +13,7 @@ import { NamespacesService } from '../../servicesModule/services/namespaces.serv
 import { TransactionsService } from '../../transfer/services/transactions.service';
 import { ServicesModuleService } from '../../servicesModule/services/services-module.service';
 import { SharedService } from '../../shared/services/shared.service';
+import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
 
 @Injectable({
   providedIn: 'root'
@@ -33,7 +36,9 @@ export class AuthService {
     private namespaces: NamespacesService,
     private transactionService: TransactionsService,
     private serviceModuleService: ServicesModuleService,
-    private sharedService: SharedService
+    private sharedService: SharedService,
+    private proximaxProvider: ProximaxProvider,
+    private ngxService: NgxUiLoaderService
   ) {
     this.setLogged(false);
   }
@@ -44,6 +49,7 @@ export class AuthService {
    * @memberof LoginService
    */
   destroyNodeSelected() {
+    this.dataBridgeService.closeConenection();
     if (this.subscription['nodeSelected'] !== undefined) {
       this.subscription['nodeSelected'].unsubscribe();
     }
@@ -57,27 +63,28 @@ export class AuthService {
   * @returns
   * @memberof LoginService
   */
-  login(common: any, wallet: any) {
-    const currentAccount = wallet.accounts.find(elm => elm.label === 'Primary');
+  async login(common: any, currentWallet: CurrentWalletInterface) {
+    this.walletService.destroyAll();
+    const currentAccount = Object.assign({}, currentWallet.accounts.find(elm => elm.default === true));
     let isValid = false;
     if (currentAccount) {
-      if (!wallet) {
+      if (!currentWallet) {
         this.sharedService.showError('', 'Dear user, the wallet is missing');
         isValid = false;
       } else if (!this.nodeService.getNodeSelected()) {
         this.sharedService.showError('', 'Please, select a node.');
         this.route.navigate([`/${AppConfig.routes.selectNode}`]);
         isValid = false;
-      } else if (!this.walletService.decrypt(common, currentAccount, currentAccount.algo, currentAccount.network)) {
+      } else if (!this.walletService.decrypt(common, currentAccount)) {
         // Decrypt / generate and check primary
         isValid = false;
       } else if (currentAccount.network === NetworkType.MAIN_NET && currentAccount.algo === 'pass:6k' && common.password.length < 40) {
         this.sharedService.showError('', 'Dear user, the wallet is missing');
       } else {
         isValid = true;
-        this.walletService.use(wallet);
+        this.walletService.use(currentWallet);
       }
-    }else {
+    } else {
       this.sharedService.showError('', 'Dear user, the main account is missing');
     }
 
@@ -90,8 +97,20 @@ export class AuthService {
     this.dataBridgeService.connectnWs();
     // load services and components
     this.route.navigate([`/${AppConfig.routes.dashboard}`]);
-    this.namespaces.buildNamespaceStorage();
-    this.serviceModuleService.changeBooksItem(this.walletService.address);
+    this.serviceModuleService.changeBooksItem(
+      this.proximaxProvider.createFromRawAddress(currentAccount.address)
+    );
+
+    //this.namespaces.buildNamespaceStorage();
+    const address: Address[] = [];
+    for (let account of currentWallet.accounts) {
+      address.push(this.proximaxProvider.createFromRawAddress(account.address));
+    }
+
+    this.namespaces.searchNamespacesFromAccounts(address);
+    this.transactionService.searchAccountsInfo(this.walletService.currentWallet.accounts);
+    const blockchainHeight: UInt64 = await this.proximaxProvider.getBlockchainHeight().toPromise();
+    this.dataBridgeService.setblock(blockchainHeight.compact());
     return true;
   }
 
@@ -105,6 +124,7 @@ export class AuthService {
     this.logged = params;
     this.isLogged = params;
     this.isLoggedSubject.next(this.logged);
+    this.transactionService.setBalance$('0.000000');
   }
 
   /**************************************************/
@@ -148,9 +168,8 @@ export class AuthService {
     wallets = (wallets == null) ? [] : wallets;
     const r = [];
     wallets.forEach((item) => {
-      console.log(item);
       const a = item.accounts.find(x => x.label === 'Primary');
-      r.push({ value: item, label: a.name });
+      r.push({ value: item, label: item.name });
     });
     return r;
   }

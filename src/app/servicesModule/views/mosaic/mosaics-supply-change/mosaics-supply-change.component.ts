@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
-import { MosaicSupplyType, UInt64, SignedTransaction } from 'tsjs-xpx-chain-sdk';
+import { MosaicSupplyType, UInt64, SignedTransaction, MosaicId } from 'tsjs-xpx-chain-sdk';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { SharedService, ConfigurationForm } from '../../../../shared/services/shared.service';
 import { MosaicService, MosaicsStorage } from '../../../../servicesModule/services/mosaic.service';
@@ -17,7 +17,9 @@ import { AppConfig } from '../../../../config/app.config';
   styleUrls: ['./mosaics-supply-change.component.css']
 })
 export class MosaicsSupplyChangeComponent implements OnInit {
+
   @BlockUI() blockUI: NgBlockUI;
+  currentBlock: number = 0;
   formMosaicSupplyChange: FormGroup;
   parentMosaic: any = [{
     value: '1',
@@ -40,7 +42,7 @@ export class MosaicsSupplyChangeComponent implements OnInit {
   ;
   mosaicsInfo: any[];
   divisibility: number = 0;
-  duration: string = '0 days';
+  duration: string = '() 0 days';
   supply: string = '0';
   blockButton: boolean = false;
   levyMutable: boolean = false;
@@ -53,6 +55,7 @@ export class MosaicsSupplyChangeComponent implements OnInit {
   moduleName = 'Mosaics';
   componentName = 'MODIFY SUPPLY';
   backToService = `/${AppConfig.routes.service}`;
+  subscribe = ['block'];
 
   /**
    * Initialize dependencies and properties
@@ -73,11 +76,15 @@ export class MosaicsSupplyChangeComponent implements OnInit {
   async ngOnInit() {
     this.configurationForm = this.sharedService.configurationForm;
     this.createForm();
+    this.subscribe['block'] = await this.dataBridge.getBlock().subscribe(next => this.currentBlock = next);
     const data = await this.mosaicService.searchMosaicsFromAccountStorage$();
     const mosaicsSelect = this.parentMosaic.slice(0);
     // console.log(data);
     data.forEach(element => {
       // console.log(element);
+
+      let expired = false;
+      let nameExpired = '';
       if (element.mosaicInfo) {
         const nameMosaic = (element.mosaicNames.names.length > 0) ? element.mosaicNames.names[0] : this.proximaxProvider.getMosaicId(element.id).toHex();
         const addressOwner = this.proximaxProvider.createAddressFromPublicKey(
@@ -85,7 +92,24 @@ export class MosaicsSupplyChangeComponent implements OnInit {
           element.mosaicInfo.owner.address['networkType']
         );
 
-        const isOwner = (addressOwner.pretty() === this.walletService.address.pretty()) ? true : false;
+        const currentAccount  = Object.assign({}, this.walletService.getCurrentAccount());
+        const isOwner = (addressOwner.pretty() === this.proximaxProvider.createFromRawAddress(currentAccount.address).pretty()) ? true : false;
+        const durationMosaic = new UInt64([
+          element.mosaicInfo['properties']['duration']['lower'],
+          element.mosaicInfo['properties']['duration']['higher']
+        ]);
+
+        const createdBlock = new UInt64([
+          element.mosaicInfo.height.lower,
+          element.mosaicInfo.height.higher
+        ]);
+
+        if (durationMosaic.compact() > 0) {
+          if (this.currentBlock >= durationMosaic.compact() + createdBlock.compact()) {
+            expired = true;
+            nameExpired = ' - Expired';
+          }
+        }
         /* console.log(addressOwner.pretty());
          console.log(this.walletService.address.pretty());
          console.log(element.mosaicInfo['properties']['supplyMutable']);
@@ -95,9 +119,9 @@ export class MosaicsSupplyChangeComponent implements OnInit {
         if (isOwner && element.mosaicInfo['properties']['supplyMutable']) {
           mosaicsSelect.push({
             value: element.id,
-            label: nameMosaic,
+            label: `${nameMosaic}${nameExpired}`,
             selected: false,
-            disabled: false
+            disabled: expired
           });
         }
       }
@@ -129,6 +153,12 @@ export class MosaicsSupplyChangeComponent implements OnInit {
     this.formMosaicSupplyChange.get('password').patchValue('');
     this.formMosaicSupplyChange.get('deltaSupply').patchValue('');
     this.formMosaicSupplyChange.get('parentMosaic').patchValue(MosaicSupplyType.Increase);
+    this.divisibility = 0;
+    this.duration = '0 days';
+    this.supply = '0';
+    this.levyMutable = false;
+    this.supplyMutable = false;
+    this.transferable = false;
   }
 
 
@@ -142,7 +172,7 @@ export class MosaicsSupplyChangeComponent implements OnInit {
   optionSelected(mosaic: any) {
     if (mosaic !== undefined) {
       const mosaicsInfoSelected: MosaicsStorage = this.mosaicService.filterMosaic(this.proximaxProvider.getMosaicId(mosaic['value']));
-    //  console.log(mosaicsInfoSelected);
+      //  console.log(mosaicsInfoSelected);
       if (mosaicsInfoSelected !== null || mosaicsInfoSelected !== undefined) {
         this.divisibility = mosaicsInfoSelected.mosaicInfo['properties'].divisibility;
         this.levyMutable = mosaicsInfoSelected.mosaicInfo['properties'].levyMutable;
@@ -154,12 +184,14 @@ export class MosaicsSupplyChangeComponent implements OnInit {
             mosaicsInfoSelected.mosaicInfo.supply['higher']
           ]), mosaicsInfoSelected.mosaicInfo
         );
-        this.duration = this.transactionService.calculateDuration(
-          new UInt64([
-            mosaicsInfoSelected.mosaicInfo['properties']['duration']['lower'],
-            mosaicsInfoSelected.mosaicInfo.supply['higher']
-          ])
-        );
+        const durationBlock = new UInt64([
+          mosaicsInfoSelected.mosaicInfo['properties']['duration']['lower'],
+          mosaicsInfoSelected.mosaicInfo['properties']['duration']['higher']
+        ]);
+
+        const durationDays = this.transactionService.calculateDuration(durationBlock);
+
+        this.duration = `(${durationBlock.compact()}) ${durationDays}`;
 
         /*console.log('------------- this.supply ---------', this.supply);
         console.log('------------- this.divisibility ---------', this.divisibility);
@@ -203,7 +235,7 @@ export class MosaicsSupplyChangeComponent implements OnInit {
 
   get input() { return this.formMosaicSupplyChange.get('password'); }
 
-  getTransactionStatus() {
+  /*getTransactionStatus2() {
     // Get transaction status
     this.subscriptions['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
       statusTransaction => {
@@ -224,7 +256,35 @@ export class MosaicsSupplyChangeComponent implements OnInit {
         }
       }
     );
+  }*/
+
+
+  getTransactionStatus() {
+    // Get transaction status
+    this.subscriptions['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
+      statusTransaction => {
+        if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
+          for (let element of this.transactionSigned) {
+            const statusTransactionHash = (statusTransaction['type'] === 'error') ? statusTransaction['data'].hash : statusTransaction['data'].transactionInfo.hash;
+            const match = statusTransactionHash === element.hash;
+            if (match) {
+              this.transactionReady.push(element);
+            }
+            if (statusTransaction['type'] === 'confirmed' && match) {
+              this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransactionHash);
+              this.sharedService.showSuccess('', 'Transaction confirmed');
+            } else if (statusTransaction['type'] === 'unconfirmed' && match) {
+              this.sharedService.showInfo('', 'Transaction unconfirmed');
+            } else if (match) {
+              this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransactionHash);
+              this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
+            }
+          }
+        }
+      }
+    );
   }
+
   /*
     getTransactionStatus() {
       // Get transaction status
@@ -257,17 +317,25 @@ export class MosaicsSupplyChangeComponent implements OnInit {
         privateKey: ''
       }
       if (this.walletService.decrypt(common)) {
-        const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.network);
+        const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
+
+        const quatityZeros = this.transactionService.addZeros(this.divisibility);
+        const mosaicSupply = parseInt(`${this.formMosaicSupplyChange.get('deltaSupply').value}${quatityZeros}`);
+
         const mosaicSupplyChangeTransaction = this.proximaxProvider.mosaicSupplyChangeTransaction(
           this.formMosaicSupplyChange.get('parentMosaic').value,
-          this.formMosaicSupplyChange.get('deltaSupply').value,
+          mosaicSupply,
           this.formMosaicSupplyChange.get('mosaicSupplyType').value,
-          this.walletService.network
+          this.walletService.currentAccount.network
         )
+
         const signedTransaction = account.sign(mosaicSupplyChangeTransaction);
         this.transactionSigned.push(signedTransaction);
+        console.log(signedTransaction);
+        console.log(this.transactionSigned);
         this.proximaxProvider.announce(signedTransaction).subscribe(
           x => {
+            console.log('Este no es ningun error', x);
             this.blockButton = false;
             this.clearForm()
             this.blockUI.stop();
@@ -278,11 +346,11 @@ export class MosaicsSupplyChangeComponent implements OnInit {
             this.setTimeOutValidate(signedTransaction.hash);
           },
           err => {
+            console.log('Este es un ERROR', err);
             this.blockButton = false;
             this.clearForm()
             this.blockUI.stop(); // Stop blocking
-            // console.error(err)
-            this.sharedService.showError('', 'An unexpected error has occurred');
+            // this.sharedService.showError('', 'An unexpected error has occurred');
           });
       }
     }

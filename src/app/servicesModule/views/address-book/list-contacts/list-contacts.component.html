@@ -1,0 +1,111 @@
+<div class="container mt-3rem mb-1rem animated fadeIn">
+  <div class="row">
+    <div class="col-12 col-md-8">
+      <span class="fs-1rem txt-a-center line-h-1-2em color-grey">{{moduleName}}</span>
+      <span class="fs-1rem txt-a-center line-h-1-2em color-grey"> > </span>
+      <span class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">{{componentName}}</span>
+    </div>
+
+    <div class="col-12 col-md-4 d-flex justify-content-start justify-content-md-end">
+      <a class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio" [routerLink]="[addContacts]">
+        <span>Add new contact</span>
+      </a>
+      <div class="col-2 d-flex justify-content-center">
+        <div class="col-6">
+          <div class="line-separator h-100porcent"></div>
+        </div>
+      </div>
+      <a class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio" [routerLink]="[goBack]">
+        <span>Back to Services</span>
+      </a>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <hr class="mt-03rem mb-05rem">
+    </div>
+  </div>
+</div>
+
+<!-- HEADER SEARCH -->
+<div class="container-fluid background-header-grey pb-1rem pt-1rem">
+  <div class="row">
+    <div class="col-10 mx-auto">
+      <div class="row">
+        <!-- Keyword or number -->
+        <div class="col-12 col-lg-10 mx-auto d-flex align-items-center pt-05rem">
+          <input [(ngModel)]="searchContact" type="text" autocomplete="off" id="searchTransaction" class="form-control"
+            mdbInputDirective [validateSuccess]="false" [validateError]="false" placeholder="Keyword">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Progress bar -->
+<div class="row">
+  <div class="col-12">
+    <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate" *ngIf="searching">
+    </mdb-progress-bar>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row mt-2rem">
+    <div class="col-12 mx-auto">
+      <div class="table-responsive table-hover">
+        <table mdbTable #tableEl="mdbTable" id="mdbTable" striped="true"
+          class="table table-hover table-bordered table-hover table-sm z-depth-0" cellspacing="0" width="100%"
+          borderless="true">
+
+          <!--Table head-->
+          <thead>
+            <tr class="header-backg">
+              <ng-container *ngFor="let head of headElements; let i = index">
+                <th scope="col" class="text-center fw-400 th-sm">{{head}}</th>
+              </ng-container>
+            </tr>
+          </thead>
+
+          <!--Table body-->
+          <tbody class="background-white">
+            <ng-container *ngFor="let contact of contacts; let i = index">
+              <tr class="mouse-pointer">
+                <th *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex"
+                  class="th-sm text-center" scope="row description-dark-green">{{contact.label}}</th>
+                <td class="text-center th-sm description-dark-green"
+                  *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex">
+                  {{contact.value}}</td>
+                <td *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex">
+                  <span class="table-remove text-center d-flex justify-content-center">
+                    <button *ngIf="!contact.walletContact" type="button" mdbBtn class="background-btn" title="Edit"
+                      rounded="true" size="sm" class="my-0" (click)="navigate(contact.label)"><i
+                        class="fa fa-edit"></i></button>
+                    <button *ngIf="!contact.walletContact" type="button" mdbBtn color="danger" rounded="true"
+                      title="Delete" size="sm" class="my-0" (click)="remove(contact.label)"><i
+                        class="fa fa-trash"></i></button>
+                    <span class="contact-not-edit" *ngIf="contact.walletContact">Contact belongs to your wallet</span>
+                  </span>
+                </td>
+              </tr>
+            </ng-container>
+            <ng-container *ngIf="contacts.length === 0 && !searching">
+              <tr>
+                <td colspan="3" class="txt-a-center">nothing to show</td>
+              </tr>
+            </ng-container>
+          </tbody>
+
+          <tfoot class="lighten-5 w-100">
+            <tr>
+              <td colspan="5">
+                <mdb-table-pagination [tableEl]="tableEl" [searchDataSource]="contacts">
+                </mdb-table-pagination>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

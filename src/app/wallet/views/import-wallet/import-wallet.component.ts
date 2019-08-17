@@ -4,8 +4,10 @@ import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/fo
 import { Router } from '@angular/router';
 import { SharedService, ConfigurationForm } from '../../../shared/services/shared.service';
 import { WalletService } from '../../services/wallet.service';
+import { NamespacesService } from '../../../servicesModule/services/namespaces.service';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
-import { AppConfig } from 'src/app/config/app.config';
+import { AppConfig } from '../../../config/app.config';
+import { ServicesModuleService } from '../../../servicesModule/services/services-module.service';
 
 
 @Component({
@@ -21,7 +23,7 @@ export class ImportWalletComponent implements OnInit {
   errorMatchPassword: string;
   errorWalletExist: string;
   isValid: boolean = false;
-  title = 'Import Wallet';
+  title = 'Create Wallet';
   typeNetwork = [{
     value: NetworkType.TEST_NET,
     label: 'TEST NET'
@@ -32,7 +34,8 @@ export class ImportWalletComponent implements OnInit {
     private sharedService: SharedService,
     private walletService: WalletService,
     private proximaxProvider: ProximaxProvider,
-    private router: Router
+    private router: Router,
+    private serviceModuleService: ServicesModuleService
   ) { }
 
   ngOnInit() {
@@ -111,21 +114,41 @@ export class ImportWalletComponent implements OnInit {
         const privateKey = this.importWalletForm.get('privateKey').value;
         const password = this.proximaxProvider.createPassword(this.importWalletForm.controls.passwords.get('password').value);
         const wallet = this.proximaxProvider.createAccountFromPrivateKey(nameWallet, password, privateKey, network);
-        const dataAccount = this.walletService.buildAccount(
-          wallet.encryptedPrivateKey.encryptedKey,
-          wallet.encryptedPrivateKey.iv,
-          wallet.address['address'],
-          wallet.network,
-          nameWallet
-        );
+
+        console.log('this a wallet', wallet);
+
+
+        const accountBuilded = this.walletService.buildAccount({
+          address: wallet.address['address'],
+          byDefault: true,
+          encrypted: wallet.encryptedPrivateKey.encryptedKey,
+          firstAccount: true,
+          iv: wallet.encryptedPrivateKey.iv,
+          network: wallet.network,
+          nameAccount: 'Primary',
+          publicAccount: this.proximaxProvider.getPublicAccountFromPrivateKey(this.proximaxProvider.decryptPrivateKey(
+            password,
+            wallet.
+              encryptedPrivateKey.encryptedKey,
+            wallet.encryptedPrivateKey.iv
+          ).toUpperCase(), wallet.network)
+        });
 
         this.clearForm();
         this.walletService.saveDataWalletCreated({
           name: nameWallet,
           algo: password,
           network: wallet.network
-        }, dataAccount, wallet);
-        this.walletService.saveWalletStorage(nameWallet, dataAccount);
+        }, accountBuilded, wallet);
+
+        this.serviceModuleService.saveContacts({
+          name: accountBuilded.name,
+          address: accountBuilded.address,
+          walletContact: true,
+          nameItem: nameWallet
+        });
+
+        this.walletService.saveWalletStorage(nameWallet, accountBuilded);
         this.router.navigate([`/${AppConfig.routes.walletCreated}`]);
       } else {
         //Error of repeated Wallet
@@ -175,7 +198,7 @@ export class ImportWalletComponent implements OnInit {
         this.isValid = false;
         this.errorWalletExist = '-invalid';
         return true;
-      }else {
+      } else {
         this.isValid = true;
         this.errorWalletExist = '';
         return false;

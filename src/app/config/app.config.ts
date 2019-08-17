@@ -5,6 +5,7 @@ export const AppConfig: Config = {
     account: 'details-account',
     accountCreated: 'account-created',
     addressBook: 'address-book',
+    addContacts: 'add-contacts',
     apostille: 'apostille',
     audiApostille: 'audit-apostille',
     auth: 'auth',
@@ -17,24 +18,28 @@ export const AppConfig: Config = {
     createWallet: 'create-wallet',
     createAccount: 'create-account',
     dashboard: 'dashboard',
-    viewAllAccount: 'view-all-account',
     editMultisignatureContract: 'edit-multisignature-contract',
     explorer: 'explorer',
+    extendNamespace: 'extend-namespace',
     service: 'services',
     storage: 'storage',
     uploadFile: 'upload-file',
     myFile: 'my-file',
     home: 'home',
+    importAccount: 'import-account',
     importWallet: 'import-wallet',
     LinkingNamespaceMosaic: 'alias-namespace-to-mosaic',
     linkTheNamespaceToAnAddress: 'alias-namespace-to-an-address',
     MosaicSupplyChange: 'mosaic-supply-change',
+    MultiSign: 'multi-signatures',
     polls: 'polls',
     renewNamespace: 'renew-namespace',
     renovateNamespace: 'renovate-namespace',
     selectNode: 'select-node',
     selectTypeCreationWallet: 'select-type-creation-wallet',
+    selectTypeCreationAccount: 'select-type-creation-account',
     signMultiSigTransactions: 'sign-multisignature-transactions',
+    viewAllAccount: 'view-all-account',
     walletCreated: 'wallet-created',
   }
 };
@@ -46,6 +51,7 @@ export interface Config {
     account: string;
     accountCreated: string;
     addressBook: string;
+    addContacts: string;
     apostille: string;
     audiApostille: string;
     auth: string;
@@ -58,24 +64,28 @@ export interface Config {
     createWallet: string;
     createAccount: string;
     dashboard: string;
-    viewAllAccount: string;
     editMultisignatureContract: string;
     explorer: string;
+    extendNamespace: string;
     service: string;
     storage: string;
     uploadFile: string;
     myFile: string;
     home: string;
     importWallet: string;
+    importAccount: string;
     LinkingNamespaceMosaic: string;
     linkTheNamespaceToAnAddress: string;
     MosaicSupplyChange: string;
+    MultiSign: string;
     polls: string;
     renewNamespace: string;
     renovateNamespace: string;
     selectNode: string;
     selectTypeCreationWallet: string;
+    selectTypeCreationAccount: string;
     signMultiSigTransactions: string;
+    viewAllAccount: string;
     walletCreated: string;
   };
 }

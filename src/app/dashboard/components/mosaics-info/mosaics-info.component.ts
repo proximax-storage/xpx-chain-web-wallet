@@ -3,6 +3,7 @@ import { Mosaic, MosaicView, MosaicInfo } from 'tsjs-xpx-chain-sdk';
 import { MosaicService, MosaicsStorage } from '../../../servicesModule/services/mosaic.service';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 import { TransactionsService, TransactionsInterface } from '../../../transfer/services/transactions.service';
+import { environment } from 'src/environments/environment.prod';
 
 @Component({
   selector: 'app-mosaics-info',
@@ -45,11 +46,11 @@ export class MosaicsInfoComponent implements OnInit {
           this.transactionService.amountFormatter(myMosaic.amount, mosaic.mosaicInfo) :
           this.transactionService.amountFormatterSimple(myMosaic.amount.compact());
         // MOSAIC IS XPX
-        if (mosaicId === this.mosaicService.mosaicXpx.mosaicId) {
+        if (mosaicId === environment.mosaicXpxInfo.id) {
           this.viewMosaicXpx = true;
           this.mosaicXpx = {
-            id: this.mosaicService.mosaicXpx.mosaicId,
-            name: this.mosaicService.mosaicXpx.mosaic,
+            id: environment.mosaicXpxInfo.id,
+            name: environment.mosaicXpxInfo.name,
             amountFormatter: amount,
             mosaicInfo: mosaic
           }

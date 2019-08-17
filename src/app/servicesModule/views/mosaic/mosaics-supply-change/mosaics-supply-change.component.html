@@ -54,7 +54,7 @@
             <div class="md-form form-sm mt-1rem mb-0rem">
               <input mask="comma_separator.0" formControlName="deltaSupply" mdbInputDirective mdbValidate
                 [validateSuccess]="true" [validateError]="true" type="text" id="deltaSupply"
-                class="form-control form-control-sm input-border" placeholder="Amount to increase o decrease">
+                class="form-control form-control-sm input-border" placeholder="Quantity of increase/decrease">
 
               <mdb-error
                 *ngIf="validateInput('deltaSupply', '').invalid && (validateInput('deltaSupply', '').dirty || validateInput('deltaSupply', '').touched)">
@@ -68,6 +68,7 @@
         <div class="row mt-1rem ml-01rem">
           <div class="col-11 mx-auto  box-grey">
             <div class="col-10 d-flex justify-content-center mx-auto">
+              <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20" alt="">&nbsp;
               <span> Fee: 0.000000 XPX</span>
             </div>
           </div>

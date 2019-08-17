@@ -19,8 +19,14 @@
             <div class="col-4 overflow-ellipsis-nowrap">
               <span class="color-dark-green fw-bold fs-1-3rem">Fee: </span>
             </div>
-            <div class="col-8 overflow-ellipsis-nowrap">
-              <span class="color-dark-green fw-400 fs-1-3rem">{{mosaicSupplyChange.fee}} XPX</span>
+            <div class="col-8 d-flex">
+              <div class="row">
+                <div class="col-12">
+                  <img class="icono mb-03rem" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
+                    width="16" alt="">&nbsp;
+                  <span class="color-dark-green fw-400 fs-1-3rem">{{mosaicSupplyChange.fee}} XPX</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -64,7 +70,7 @@
         </ng-container>
 
         <!-- Increase -->
-        <ng-container *ngIf="mosaicSupplyChange.data['direction'] === 1; else viewDecrease">
+        <ng-container *ngIf="mosaicSupplyChange.data['direction'] === 1 && mosaicSupplyChange['mosaicsStorage'];">
           <div class="col-12 mt-04rem">
             <div class="row">
               <div class="col-4 overflow-ellipsis-nowrap">
@@ -72,7 +78,7 @@
               </div>
               <div class="col-8 overflow-ellipsis-nowrap">
                 <span class="color-dark-green fw-bolder fs-08rem green-c">+
-                  {{transactionService.formatNumberMilesThousands(mosaicSupplyChange.data.delta.compact())}}
+                  {{transactionService.amountFormatter(mosaicSupplyChange.data.delta.compact(), mosaicSupplyChange['mosaicsStorage']['mosaicInfo'])}}
                 </span>
               </div>
             </div>
@@ -80,7 +86,7 @@
         </ng-container>
 
         <!-- Decrease -->
-        <ng-template #viewDecrease>
+        <ng-container *ngIf="mosaicSupplyChange.data['direction'] !== 1 && mosaicSupplyChange['mosaicsStorage'];">
           <div class="col-12 mt-04rem">
             <div class="row">
               <div class="col-4 overflow-ellipsis-nowrap">
@@ -88,12 +94,12 @@
               </div>
               <div class="col-8 overflow-ellipsis-nowrap">
                 <span class="color-dark-green fw-bolder fs-08rem color-red">-
-                  {{transactionService.formatNumberMilesThousands(mosaicSupplyChange.data.delta.compact())}}
+                  {{transactionService.amountFormatter(mosaicSupplyChange.data.delta.compact(), mosaicSupplyChange['mosaicsStorage']['mosaicInfo'])}}
                 </span>
               </div>
             </div>
           </div>
-        </ng-template>
+        </ng-container>
 
         <!-- Mosaic Name -->
         <ng-container *ngIf="viewMosaicName">
@@ -203,7 +209,9 @@
         <div class="col-12 col-sm-4 col-md-3 overflow-ellipsis-nowrap">
           <span class="color-dark-green fw-bold fs-08rem">Fee: </span>
         </div>
-        <div class="col-12 col-sm-8 col-md-9 overflow-ellipsis-nowrap">
+        <div class="col-12 col-sm-8 col-md-9">
+          <img class="icono mb-03rem" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="16"
+            alt="">&nbsp;
           <span class="color-dark-green fw-400 fs-08rem">{{mosaicSupplyChange.fee}} XPX</span>
         </div>
       </div>
@@ -241,7 +249,7 @@
     </ng-container>
 
     <!-- Increase -->
-    <ng-container *ngIf="mosaicSupplyChange['direction'] === 1; else viewDecrease">
+    <ng-container *ngIf="mosaicSupplyChange['direction'] === 1 && mosaicSupplyChange['mosaicsStorage']">
       <div class="col-12">
         <div class="row">
           <div class="col-12 col-sm-4 col-md-3 overflow-ellipsis-nowrap">
@@ -249,14 +257,14 @@
           </div>
           <div class="col-12 col-sm-8 col-md-9 overflow-ellipsis-nowrap">
             <span class="color-dark-green fw-400 fs-08rem green-c">+
-              {{transactionService.formatNumberMilesThousands(mosaicSupplyChange.delta.compact())}}</span>
+              {{transactionService.amountFormatter(mosaicSupplyChange.delta.compact(), mosaicSupplyChange['mosaicsStorage']['mosaicInfo'])}}</span>
           </div>
         </div>
       </div>
     </ng-container>
 
     <!-- Decrease -->
-    <ng-template #viewDecrease>
+    <ng-container *ngIf="mosaicSupplyChange['direction'] !== 1 && mosaicSupplyChange['mosaicsStorage']">
       <div class="col-12">
         <div class="row">
           <div class="col-12 col-sm-4 col-md-3 overflow-ellipsis-nowrap">
@@ -264,10 +272,10 @@
           </div>
           <div class="col-12 col-sm-8 col-md-9 overflow-ellipsis-nowrap">
             <span class="color-dark-green fw-400 fs-08rem color-red">-
-              {{transactionService.formatNumberMilesThousands(mosaicSupplyChange.delta.compact())}}</span>
+              {{transactionService.amountFormatter(mosaicSupplyChange.delta.compact(), mosaicSupplyChange['mosaicsStorage']['mosaicInfo'])}}</span>
           </div>
         </div>
       </div>
-    </ng-template>
+    </ng-container>
   </div>
 </ng-template>
