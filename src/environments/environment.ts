@@ -10,6 +10,7 @@ export const environment = {
   nameKeyNamespaces: `sw-namespaces`,
   nameKeyWalletStorage: `sw-04`,
   nameKeyNodeStorage: `sw-nodes`,
+  nameKeyMosaicStorage: `sw-mosaics`,
   protocol: `http`,
   protocolWs: `ws`,
   nodeDefault: 'bctestnet1-cow.xpxsirius.io:3000',

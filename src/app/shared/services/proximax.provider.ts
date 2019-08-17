@@ -501,6 +501,16 @@ export class ProximaxProvider {
     return this.namespaceHttp.getNamespace(namespace);
   }
 
+  /**
+   *
+   *
+   * @param {NamespaceId} namespace
+   * @returns {Observable<MosaicId>}
+   * @memberof ProximaxProvider
+   */
+  getLinkedMosaicId(namespace: NamespaceId): Observable<MosaicId> {
+    return this.namespaceHttp.getLinkedMosaicId(namespace);
+  }
 
 
   /**

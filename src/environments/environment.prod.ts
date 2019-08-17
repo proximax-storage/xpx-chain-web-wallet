@@ -4,12 +4,13 @@
 
 export const environment = {
   production: true,
-  version: '0.2.4+24',
   itemBooksAddress: 'sw-books',
+  version: '0.2.4+24',
   nameKeyNodeSelected: `sw-nodes-selected`,
   nameKeyNamespaces: `sw-namespaces`,
   nameKeyWalletStorage: `sw-04`,
   nameKeyNodeStorage: `sw-nodes`,
+  nameKeyMosaicStorage: `sw-mosaics`,
   protocol: `http`,
   protocolWs: `ws`,
   nodeDefault: 'bctestnet1-cow.xpxsirius.io:3000',
