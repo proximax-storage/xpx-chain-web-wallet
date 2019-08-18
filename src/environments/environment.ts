@@ -8,6 +8,7 @@ export const environment = {
   version: '0.2.4.2',
   nameKeyNodeSelected: `sw-selected-node`,
   nameKeyNamespaces: `sw-namespaces`,
+  nameKeyMosaicNamespaceLinked: `sw-m-n-linked`,
   nameKeyWalletStorage: `sw-04`,
   nameKeyNodeStorage: `sw-nodes`,
   nameKeyMosaicStorage: `sw-mosaics`,

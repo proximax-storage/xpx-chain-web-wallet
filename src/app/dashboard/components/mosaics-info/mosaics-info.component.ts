@@ -36,53 +36,50 @@ export class MosaicsInfoComponent implements OnInit {
     this.viewOtherMosaics = false;
     this.quantity = [];
 
-    console.log('---this.mosaicsArray--', this.mosaicsArray)
-    const mosaicsInfo = await this.mosaicService.searchInfoMosaics(this.mosaicsArray.map((mosaic: Mosaic) => { return mosaic.id }));
-    console.log('----mosaicsInfo-----', mosaicsInfo);
-    // const mosaics: MosaicsStorage[] = await this.mosaicService.searchMosaics(this.mosaicsArray.map((mosaic: Mosaic) => { return mosaic.id }));
-
-    /* const mosaics: MosaicsStorage[] = await this.mosaicService.searchMosaics(this.mosaicsArray.map((mosaic: Mosaic) => { return mosaic.id }));
-     if (mosaics.length > 0) {
-       for (let mosaic of mosaics) {
-         // Create MosaicId from mosaic and namespace string id (ex: nem:xem or domain.subdom.subdome:token)
-         // console.log(mosaic);
-         const mosaicId = this.proximaxProvider.getMosaicId(mosaic.id).toHex();
-         const myMosaic = this.mosaicsArray.find(next => next.id.toHex() === mosaicId);
-         const amount = (mosaic.mosaicInfo !== null) ?
-           this.transactionService.amountFormatter(myMosaic.amount, mosaic.mosaicInfo) :
-           this.transactionService.amountFormatterSimple(myMosaic.amount.compact());
-         // MOSAIC IS XPX
-         if (mosaicId === environment.mosaicXpxInfo.id) {
-           this.viewMosaicXpx = true;
-           this.mosaicXpx = {
-             id: environment.mosaicXpxInfo.id,
-             name: environment.mosaicXpxInfo.name,
-             amountFormatter: amount,
-             mosaicInfo: mosaic
-           }
-         } else {
-           // console.log(mosaic.mosaicName);
-           const nameMosaic = (mosaic.mosaicNames.names.length > 0) ? mosaic.mosaicNames.names[0] : this.proximaxProvider.getMosaicId(mosaic.id).toHex();
-           this.quantity.push({
-             id: myMosaic.id.toHex(),
-             name: nameMosaic,
-             amountFormatter: amount,
-             mosaicInfo: mosaic,
-             existMosaic: true
-           });
-         }
-       }
-     } else {
-       this.transferTransaction.data['mosaics'].forEach((_element: Mosaic) => {
-         this.quantity.push({
-           id: _element.id.toHex(),
-           name: '',
-           amountFormatter: this.transactionService.amountFormatterSimple(_element.amount.compact()),
-           mosaicInfo: null,
-           existMosaic: false
-         });
-       });
-     }*/
+    console.log('-----this.mosaicsArray----', this.mosaicsArray);
+    const mosaics: MosaicsStorage[] = await this.mosaicService.filterMosaics(this.mosaicsArray.map((mosaic: Mosaic) => { return mosaic.id }));
+    console.log('----mosaicos encontrados-----', mosaics);
+    if (mosaics.length > 0) {
+      for (let mosaic of mosaics) {
+        // Create MosaicId from mosaic and namespace string id (ex: nem:xem or domain.subdom.subdome:token)
+        const mosaicId = this.proximaxProvider.getMosaicId(mosaic.id).toHex();
+        const myMosaic = this.mosaicsArray.find(next => next.id.toHex() === mosaicId);
+        console.log('---myMosaic---', myMosaic);
+        const amount = (mosaic.mosaicInfo !== null) ?
+          this.transactionService.amountFormatter(myMosaic.amount, mosaic.mosaicInfo) :
+          this.transactionService.amountFormatterSimple(myMosaic.amount.compact());
+        // MOSAIC IS XPX
+        if (mosaicId === environment.mosaicXpxInfo.id) {
+          this.viewMosaicXpx = true;
+          this.mosaicXpx = {
+            id: environment.mosaicXpxInfo.id,
+            name: environment.mosaicXpxInfo.name,
+            amountFormatter: amount,
+            mosaicInfo: mosaic
+          }
+        } else {
+          // console.log(mosaic.mosaicName);
+          const nameMosaic = (mosaic.mosaicNames.names.length > 0) ? mosaic.mosaicNames.names[0] : this.proximaxProvider.getMosaicId(mosaic.id).toHex();
+          this.quantity.push({
+            id: myMosaic.id.toHex(),
+            name: nameMosaic,
+            amountFormatter: amount,
+            mosaicInfo: mosaic,
+            existMosaic: true
+          });
+        }
+      }
+    } else {
+      this.transferTransaction.data['mosaics'].forEach((_element: Mosaic) => {
+        this.quantity.push({
+          id: _element.id.toHex(),
+          name: '',
+          amountFormatter: this.transactionService.amountFormatterSimple(_element.amount.compact()),
+          mosaicInfo: null,
+          existMosaic: false
+        });
+      });
+    }
 
     this.viewOtherMosaics = (this.quantity.length > 0) ? true : false;
     this.changeSearch.emit(true);
