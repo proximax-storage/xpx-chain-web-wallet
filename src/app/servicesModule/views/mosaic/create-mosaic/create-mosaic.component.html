@@ -22,6 +22,21 @@
     <div class="col-12 justify-content-center">
       <form [formGroup]="mosaicForm" (ngSubmit)="send()">
         <div class="row">
+          <!-- <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto">
+            <div class="md-form form-sm mt-1rem mb-1rem fs-075rem">
+              <span class="fw-700">Account Sender</span> <br>
+              <span>{{currentAccount.address}}</span> <br>
+              <span>
+                <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" alt="">
+                Balance: 0.000000 XPX
+              </span>
+            </div>
+          </div> -->
+
+          <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto mb-1rem">
+            <span>Balance insuficiente</span>
+          </div>
+
           <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto">
             <div class="md-form form-sm mt-1rem mb-0rem">
               <input formControlName="duration" mdbInputDirective mdbValidate [validateSuccess]="true"

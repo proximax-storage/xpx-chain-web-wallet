@@ -5,7 +5,7 @@ import { UInt64, Deadline, AggregateTransaction, NetworkType, MosaicSupplyType, 
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { SharedService, ConfigurationForm } from '../../../../shared/services/shared.service';
 import { DataBridgeService } from '../../../../shared/services/data-bridge.service';
-import { WalletService } from '../../../../wallet/services/wallet.service';
+import { WalletService, AccountsInterface } from '../../../../wallet/services/wallet.service';
 import { TransactionsService } from '../../../../transfer/services/transactions.service';
 import { AppConfig } from '../../../../config/app.config';
 
@@ -41,6 +41,8 @@ export class CreateMosaicComponent implements OnInit {
   transactionReady: SignedTransaction[] = [];
   subscribe = ['transactionStatus'];
   calculateRentalFee = '500.000000';
+  currentAccount: AccountsInterface;
+  disabledBtn = true;
 
   constructor(
     private fb: FormBuilder,
@@ -53,6 +55,8 @@ export class CreateMosaicComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.currentAccount = this.walletService.currentAccount;
+
     this.configurationForm = this.sharedService.configurationForm;
     this.createForm();
     this.mosaicForm.get('duration').valueChanges.subscribe(next => {
@@ -77,13 +81,13 @@ export class CreateMosaicComponent implements OnInit {
    */
   createForm() {
     this.mosaicForm = this.fb.group({
-      deltaSupply: ['', [Validators.required]],
-      password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]],
-      duration: ['', [Validators.required]],
-      divisibility: ['', [Validators.required]],
-      transferable: [false],
-      supplyMutable: [false],
-      levyMutable: [false]
+      deltaSupply: [{ value: '', disabled: true }, [Validators.required]],
+      password: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(8), Validators.maxLength(30)]],
+      duration: [{ value: '', disabled: true }, [Validators.required]],
+      divisibility: [{ value: '', disabled: true }, [Validators.required]],
+      transferable: [{ value: false, disabled: true }],
+      supplyMutable: [{ value: false, disabled: true }],
+      levyMutable: [{ value: false, disabled: true }]
     });
   }
 
