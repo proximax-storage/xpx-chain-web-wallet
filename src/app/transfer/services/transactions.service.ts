@@ -479,7 +479,8 @@ export class TransactionsService {
    */
   async searchAccountsInfo(accounts: AccountsInterface[], pushed = false) {//: Promise<AccountsInfoInterface[]> {
     const accountsInfo: AccountsInfoInterface[] = [];
-    accounts.forEach(element => {
+    let counter = 0;
+    accounts.forEach((element, i) => {
       //  console.log('paso esta cuenta...', element);
       this.proximaxProvider.getAccountInfo(this.proximaxProvider.createFromRawAddress(element.address)).pipe(first()).subscribe(
         async info => {
@@ -503,7 +504,7 @@ export class TransactionsService {
             });
           }
 
-          this.mosaicServices.searchMosaics(mosaicsIds);
+          // this.mosaicServices.searchMosaics(mosaicsIds);
           let isMultisig: MultisigAccountInfo = null;
           try {
             isMultisig = await this.proximaxProvider.getMultisigAccountInfo(this.proximaxProvider.createFromRawAddress(element.address)).toPromise();
@@ -517,8 +518,16 @@ export class TransactionsService {
           }];
 
           this.walletService.setAccountsInfo(accountsInfo, true);
+          counter = counter + 1;
+          if (accounts.length === counter) {
+            console.log('este es el último búcle');
+            this.mosaicServices.searchInfoMosaics(mosaicsIds);
+          }
         }, error => {
-
+          counter = counter + 1;
+          if (accounts.length === i) {
+            console.log('este es el último búcle');
+          }
         }
       );
     });

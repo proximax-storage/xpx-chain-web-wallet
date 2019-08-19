@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, SimpleChanges, Output, EventEmitter } from '@angular/core';
-import { Mosaic, MosaicView, MosaicInfo } from 'tsjs-xpx-chain-sdk';
+import { Mosaic, MosaicView, MosaicInfo, NamespaceId } from 'tsjs-xpx-chain-sdk';
 import { MosaicService, MosaicsStorage } from '../../../servicesModule/services/mosaic.service';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 import { TransactionsService, TransactionsInterface } from '../../../transfer/services/transactions.service';
@@ -35,13 +35,16 @@ export class MosaicsInfoComponent implements OnInit {
     this.viewMosaicXpx = false;
     this.viewOtherMosaics = false;
     this.quantity = [];
-    const mosaics: MosaicsStorage[] = await this.mosaicService.searchMosaics(this.mosaicsArray.map((mosaic: Mosaic) => { return mosaic.id }));
+
+    console.log('-----this.mosaicsArray----', this.mosaicsArray);
+    const mosaics: MosaicsStorage[] = await this.mosaicService.filterMosaics(this.mosaicsArray.map((mosaic: Mosaic) => { return mosaic.id }));
+    console.log('----mosaicos encontrados-----', mosaics);
     if (mosaics.length > 0) {
       for (let mosaic of mosaics) {
         // Create MosaicId from mosaic and namespace string id (ex: nem:xem or domain.subdom.subdome:token)
-        // console.log(mosaic);
         const mosaicId = this.proximaxProvider.getMosaicId(mosaic.id).toHex();
         const myMosaic = this.mosaicsArray.find(next => next.id.toHex() === mosaicId);
+        console.log('---myMosaic---', myMosaic);
         const amount = (mosaic.mosaicInfo !== null) ?
           this.transactionService.amountFormatter(myMosaic.amount, mosaic.mosaicInfo) :
           this.transactionService.amountFormatterSimple(myMosaic.amount.compact());
