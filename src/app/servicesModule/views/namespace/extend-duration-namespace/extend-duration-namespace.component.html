@@ -112,14 +112,62 @@
         </div>
       </div>
       <div class="col-11 col-sm-5 col-md-4 description-p-module mt-1-5rem mb-2rem">
-        <span>
-          A namespace can have a maximium length of 16 alphanumerical characters while sub-namespaces can have a
-          maximium length of 64 alphanumerical characters. <br><br>
-          A namespace may consist of three parts, each separated by a full stop (i.e test1.test2.test3).
-          <br><br>
-          Certain phrases are already reserved (i.e xpx; user; account; org; com; biz; net; edu; mil; gov; info).
-        </span>
+        <div class="row">
+
+          <!-- Start block  -->
+          <div class="col-4">
+            <div class="row">
+              <div class="col-12 d-flex justify-content-center">
+                <i class="fa fa-hourglass-start text-gris fa-3x"></i>
+              </div>
+              <div class="col-12 d-flex justify-content-center overflow-ellipsis-nowrap">
+                <span class="description-information">Start block:</span>
+              </div>
+              <div class="col-12 d-flex justify-content-center">
+                <span class="description-information">{{startHeight}}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- End block  -->
+          <div class="col-4">
+            <div class="row">
+              <div class="col-12 d-flex justify-content-center">
+                <i class="fa fa-hourglass-start text-gris fa-3x"></i>
+              </div>
+              <div class="col-12 d-flex justify-content-center overflow-ellipsis-nowrap">
+                <span class="description-information">End block:</span>
+              </div>
+              <div class="col-12 d-flex justify-content-center">
+                <span class="description-information">{{endHeight}}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Current Block -->
+          <div class="col-4">
+            <div class="row">
+              <div class="col-12 d-flex justify-content-center">
+                <i class="fa fa-hourglass-start text-gris fa-3x"></i>
+              </div>
+              <div class="col-12 d-flex justify-content-center overflow-ellipsis-nowrap">
+                <span class="description-information">Current block:</span>
+              </div>
+              <div class="col-12 d-flex justify-content-center">
+                <span class="description-information">{{block}}</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+      <span>
+        A namespace can have a maximium length of 16 alphanumerical characters while sub-namespaces can have a
+        maximium length of 64 alphanumerical characters. <br><br>
+        A namespace may consist of three parts, each separated by a full stop (i.e test1.test2.test3).
+        <br><br>
+        Certain phrases are already reserved (i.e xpx; user; account; org; com; biz; net; edu; mil; gov; info).
+      </span>
     </div>
-  </form>
+</div>
+</form>
 </div>
