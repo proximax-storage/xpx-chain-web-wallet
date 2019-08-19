@@ -170,7 +170,7 @@ export class MosaicService {
    *
    * @memberof MosaicService
    */
-  async filterMosaics(mosaicsId: MosaicId[]) {
+  async filterMosaics(mosaicsId: MosaicId[]): Promise<MosaicsStorage[]> {
     console.log('---MOSAICS TO FILTER----', mosaicsId);
     const mosaicsFromStorage: MosaicsStorage[] = this.getMosaicsFromStorage();
     if (mosaicsFromStorage.length > 0) {
