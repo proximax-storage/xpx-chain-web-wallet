@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Address } from 'tsjs-xpx-chain-sdk';
 import { WalletService } from '../../wallet/services/wallet.service';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -51,6 +52,54 @@ export class ServicesModuleService {
     };
   }
 
+  /**
+   *
+   *
+   * @param {string} nameContact
+   * @param {string} addressContact
+   * @memberof ServicesModuleService
+   */
+  saveContacts(params: ContactsStorageInterface) {
+    const dataStorage = (params.nameItem === '') ? this.getBooksAddress() : localStorage.getItem(`${environment.itemBooksAddress}-${params.nameItem}`);
+    const books = { label: params.name, value: params.address, walletContact: params.walletContact };
+    if (params.update) {
+
+      const contactsFiltered = dataStorage.filter(element =>
+        element.label !== params.dataComparate.name &&
+        element.value !== params.dataComparate.address
+      );
+
+      const issetData = contactsFiltered.find(element =>
+        element.label === params.name ||
+        element.value === params.address
+      );
+
+      if (issetData === undefined) {
+        contactsFiltered.push(books);
+        this.setBookAddress(contactsFiltered, params.nameItem);
+        return true;
+      }
+
+      return false;
+    } else {
+      if (dataStorage === null) {
+        this.setBookAddress([books], params.nameItem);
+        return true;
+      }
+
+      const issetData = dataStorage.find(element =>
+        element.label === params.name ||
+        element.value === params.address
+      );
+      if (issetData === undefined) {
+        dataStorage.push(books);
+        this.setBookAddress(dataStorage, params.nameItem);
+        return true;
+      }
+
+      return false;
+    }
+  }
 
   /**
    *
@@ -59,7 +108,7 @@ export class ServicesModuleService {
    * @memberof ServicesModuleService
    */
   changeBooksItem(address: Address) {
-    this.booksAddress = `books-address-${this.walletService.getCurrentWallet().name}`;
+    this.booksAddress = `${environment.itemBooksAddress}-${this.walletService.getCurrentWallet().name}`;
   }
 
 
@@ -94,8 +143,12 @@ export class ServicesModuleService {
    *
    * @memberof ServiceModuleService
    */
-  setBookAddress(contacts) {
-    localStorage.setItem(this.booksAddress, JSON.stringify(contacts));
+  setBookAddress(contacts: any, nameItem: string) {
+    if (nameItem === '') {
+      localStorage.setItem(this.booksAddress, JSON.stringify(contacts));
+    } else {
+      localStorage.setItem(`${environment.itemBooksAddress}-${nameItem}`, JSON.stringify(contacts));
+    }
   }
 
   /**
@@ -120,3 +173,15 @@ export interface StructureService {
   viewChildren?: boolean;
   className?: string;
 }
+
+export interface ContactsStorageInterface {
+  name: string;
+  address: string;
+  walletContact: boolean;
+  nameItem: string;
+  update?: boolean;
+  dataComparate?: {
+    name: string;
+    address: string;
+  }
+};

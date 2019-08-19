@@ -5,7 +5,8 @@ import { Router } from '@angular/router';
 import { SharedService, ConfigurationForm } from '../../../shared/services/shared.service';
 import { WalletService } from '../../services/wallet.service';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
-import { AppConfig } from 'src/app/config/app.config';
+import { AppConfig } from '../../../config/app.config';
+import { ServicesModuleService } from '../../../servicesModule/services/services-module.service';
 
 @Component({
   selector: 'app-create-wallet',
@@ -32,7 +33,8 @@ export class CreateWalletComponent implements OnInit {
     private sharedService: SharedService,
     private walletService: WalletService,
     private proximaxProvider: ProximaxProvider,
-    private router: Router
+    private router: Router,
+    private serviceModuleService: ServicesModuleService
   ) { }
 
   ngOnInit() {
@@ -112,18 +114,29 @@ export class CreateWalletComponent implements OnInit {
           publicAccount: this.proximaxProvider.getPublicAccountFromPrivateKey(this.proximaxProvider.decryptPrivateKey(
             password,
             wallet.
-            encryptedPrivateKey.encryptedKey,
+              encryptedPrivateKey.encryptedKey,
             wallet.encryptedPrivateKey.iv
           ).toUpperCase(), wallet.network)
         });
 
 
         this.clearForm();
-        this.walletService.saveDataWalletCreated({
-          name: nameWallet,
-          algo: password,
-          network: wallet.network
-        }, accountBuilded, wallet);
+        this.walletService.saveDataWalletCreated(
+          {
+            name: nameWallet,
+            algo: password,
+            network: wallet.network
+          },
+          accountBuilded,
+          wallet
+        );
+
+        this.serviceModuleService.saveContacts({
+          name: accountBuilded.name,
+          address: accountBuilded.address,
+          walletContact: true,
+          nameItem: nameWallet
+        });
 
         this.walletService.saveWalletStorage(nameWallet, accountBuilded);
         this.router.navigate([`/${AppConfig.routes.walletCreated}`]);

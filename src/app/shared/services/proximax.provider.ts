@@ -422,6 +422,20 @@ export class ProximaxProvider {
     return this.accountHttp.transactions(publicAccount, query);
   }
 
+  /**
+   *
+   *
+   * @param {PublicAccount} publicAccount
+   * @param {*} [id=null]
+   * @param {number} [queryParams=100]
+   * @returns {Observable<Transaction[]>}
+   * @memberof ProximaxProvider
+   */
+  getUnconfirmedTransactions(publicAccount: PublicAccount, id = null, queryParams = 100): Observable<Transaction[]> {
+    const query = (id) ? new QueryParams(queryParams, id) : new QueryParams(queryParams);
+    return this.accountHttp.unconfirmedTransactions(publicAccount, query);
+  }
+
 
   /**
    * Return getTransaction from id or hash
@@ -487,6 +501,16 @@ export class ProximaxProvider {
     return this.namespaceHttp.getNamespace(namespace);
   }
 
+  /**
+   *
+   *
+   * @param {NamespaceId} namespace
+   * @returns {Observable<MosaicId>}
+   * @memberof ProximaxProvider
+   */
+  getLinkedMosaicId(namespace: NamespaceId): Observable<MosaicId> {
+    return this.namespaceHttp.getLinkedMosaicId(namespace);
+  }
 
 
   /**

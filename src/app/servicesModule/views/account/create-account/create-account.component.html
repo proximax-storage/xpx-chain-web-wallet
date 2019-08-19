@@ -44,8 +44,8 @@
                 <div class="col-11 mx-auto">
                   <div class="md-form form-sm mt-1rem mb-0rem">
                     <input mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
-                      id="privateKey" class="form-control form-control-sm input-border"
-                      placeholder="Enter private key" formControlName="privateKey">
+                      id="privateKey" class="form-control form-control-sm input-border" placeholder="Enter private key"
+                      formControlName="privateKey">
                     <mdb-error
                       *ngIf="validateInput('privateKey').invalid && (validateInput('privateKey').dirty || validateInput('privateKey').touched)">
                       <span>Input invalid</span>
@@ -61,14 +61,14 @@
                 <div class="md-form form-sm mt-1rem mb-0rem">
                   <input mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
                     id="name-wallet{{errorWalletExist}}" class="form-control form-control-sm input-border"
-                    placeholder="Wallet name" formControlName="nameWallet">
+                    placeholder="Account name" formControlName="nameWallet">
                   <mdb-error
                     *ngIf="validateInput('nameWallet').invalid && (validateInput('nameWallet').dirty || validateInput('nameWallet').touched)">
                     <span>Input invalid</span>
                   </mdb-error>
 
                   <mdb-error *ngIf="validateInput('nameWallet').valid && validateNameAccount()">
-                    <span>Wallet name already exists</span>
+                    <span>Account name already exists</span>
                   </mdb-error>
                 </div>
               </div>

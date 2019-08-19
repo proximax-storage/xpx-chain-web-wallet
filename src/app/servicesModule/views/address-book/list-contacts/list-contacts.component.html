@@ -78,10 +78,13 @@
                   {{contact.value}}</td>
                 <td *ngIf="i+1 >= mdbTablePagination.firstItemIndex && i < mdbTablePagination.lastItemIndex">
                   <span class="table-remove text-center d-flex justify-content-center">
-                    <button type="button" mdbBtn class="background-btn" title="Edit" rounded="true" size="sm" class="my-0"
-                     (click)="navigate(contact.label)"><i class="fa fa-edit"></i></button>
-                    <button type="button" mdbBtn color="danger" rounded="true" title="Delete" size="sm" class="my-0"
-                      (click)="remove(contact.label)"><i class="fa fa-trash"></i></button>
+                    <button *ngIf="!contact.walletContact" type="button" mdbBtn class="background-btn" title="Edit"
+                      rounded="true" size="sm" class="my-0" (click)="navigate(contact.label)"><i
+                        class="fa fa-edit"></i></button>
+                    <button *ngIf="!contact.walletContact" type="button" mdbBtn color="danger" rounded="true"
+                      title="Delete" size="sm" class="my-0" (click)="remove(contact.label)"><i
+                        class="fa fa-trash"></i></button>
+                    <span class="contact-not-edit" *ngIf="contact.walletContact">Contact belongs to your wallet</span>
                   </span>
                 </td>
               </tr>
@@ -104,82 +107,5 @@
         </table>
       </div>
     </div>
-  </div>
-</div>
-
-<div>
-  <!-- MODAL -->
-  <div mdbModal #basicModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
-    aria-labelledby="myBasicModalLabel" aria-hidden="true">
-    <!-- <div class="d-flex align-items-center" style="height: 100%"> -->
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content form-elegant b-r-08rem">
-        <div class="modal-header text-center box-modal-grey b-t-r-r-08rem b-t-l-r-08rem">
-          <h6 class="modal-title w-100 dark-grey-text" id="myModalLabel">
-            <strong class="title-modal-grey">ADD CONTACT</strong>
-          </h6>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="basicModal.hide()">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-
-        <!--Body-->
-        <div class="modal-body">
-          <form [formGroup]="contactForm" (ngSubmit)="saveContact()">
-            <div class="modal-body mx-4">
-
-              <div class="row">
-                <div class="col-11 col-sm-10 col-lg-8 mx-auto">
-                  <div class="md-form form-sm">
-                    <input formControlName="user" required mdbInputDirective mdbValidate [validateSuccess]="true"
-                      [validateError]="true" type="text" id="user" class="form-control form-control-sm input-border"
-                      placeholder="Name">
-
-                    <!-- VALIDATION -->
-                    <mdb-error
-                      *ngIf="validateInput('user', '').invalid && (validateInput('address', '').dirty || validateInput('address', '').touched)">
-                      <span>Input invalid</span>
-                    </mdb-error>
-                  </div>
-                </div>
-              </div>
-
-              <div class="row">
-                <div class="col-11 col-sm-10 col-lg-8 mx-auto">
-                  <div class="md-form form-sm">
-                    <input formControlName="address" required mdbInputDirective mdbValidate [validateSuccess]="true"
-                      [validateError]="true" type="text" id="address" class="form-control form-control-sm input-border"
-                      placeholder="address">
-
-                    <!-- VALIDATION -->
-                    <mdb-error
-                      *ngIf="validateInput('address', '').invalid && (validateInput('address', '').dirty || validateInput('address', '').touched)">
-                      <span>Input invalid</span>
-                    </mdb-error>
-                  </div>
-                </div>
-              </div>
-              <!-- BUTTONS -->
-              <div class="row">
-                <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-                  <button mdbBtn type="button" rounded="true" mdbWavesEffect
-                    class="f-w-600 background-btn pl-2rem pr-2rem" size="md" (click)="clearForm()">
-                    <span class="fs-1-2em color-white">CLEAR</span>
-                  </button>
-                </div>
-
-                <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-                  <button mdbBtn type="submit" rounded="true" mdbWavesEffect [disabled]="!contactForm.valid"
-                    class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
-                    <span class="fs-1-2em color-white">CREATE</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-    <!-- </div> -->
   </div>
 </div>

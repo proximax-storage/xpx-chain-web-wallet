@@ -122,28 +122,28 @@ export class CreateNamespaceComponent implements OnInit {
         //Assign level 2
         const level2 = subNamespace.namespaceName.name;
         //Search level 1
-        const level1: NamespaceStorageInterface = await this.namespaceService.getNamespaceFromId([
+        const level1: NamespaceStorageInterface[] = await this.namespaceService.getNamespaceFromId([
           this.namespaceService.getNamespaceId([
             subNamespace.namespaceName.parentId.id.lower,
             subNamespace.namespaceName.parentId.id.higher
           ])
-        ])[0];
+        ]);
 
-        name = `${level1.namespaceName.name}.${level2}`;
+        name = `${level1[0].namespaceName.name}.${level2}`;
       } else if (depth === 3) {
         disabled = true;
         //Assign el level3
         const level3 = subNamespace.namespaceName.name;
         //search level 2
-        const level2: NamespaceStorageInterface = await this.namespaceService.getNamespaceFromId(
+        const level2: NamespaceStorageInterface[] = await this.namespaceService.getNamespaceFromId(
           [this.proximaxProvider.getNamespaceId([subNamespace.namespaceName.parentId.id.lower, subNamespace.namespaceName.parentId.id.higher])]
-        )[0];
+        );
 
         //search level 1
-        const level1: NamespaceStorageInterface = await this.namespaceService.getNamespaceFromId(
-          [this.proximaxProvider.getNamespaceId([level2.namespaceName.parentId.id.lower, level2.namespaceName.parentId.id.higher])]
-        )[0];
-        name = `${level1.namespaceName.name}.${level2.namespaceName.name}.${level3}`;
+        const level1: NamespaceStorageInterface[] = await this.namespaceService.getNamespaceFromId(
+          [this.proximaxProvider.getNamespaceId([level2[0].namespaceName.parentId.id.lower, level2[0].namespaceName.parentId.id.higher])]
+        );
+        name = `${level1[0].namespaceName.name}.${level2[0].namespaceName.name}.${level3}`;
       }
 
       this.namespace.push({
@@ -520,34 +520,32 @@ export class CreateNamespaceComponent implements OnInit {
       const filtered = accountInfo.accountInfo.mosaics.find(element => {
         return element.id.toHex() === new MosaicId(this.proximaxProvider.mosaicXpx.mosaicId).toHex();
       });
-      // console.log('Este es el monto', amount);
-
 
       if (this.namespaceForm.get('namespaceRoot').value === '' || this.namespaceForm.get('namespaceRoot').value === '1') {
-        if (accountInfo !== undefined && accountInfo !== null && Object.keys(accountInfo).length > 0) {
-          if (accountInfo.accountInfo.mosaics.length > 0) {
-            const invalidBalance = filtered.amount.compact() < amount;
-            const mosaic = this.mosaicServices.filterMosaic(filtered.id);
-            // console.log('---mosaic---', mosaic);
+        if (filtered) {
+          const invalidBalance = filtered.amount.compact() < amount;
+          const mosaic = this.mosaicServices.filterMosaic(filtered.id);
+          if (mosaic && mosaic.mosaicInfo) {
             this.calculateRentalFee = this.transactionService.amountFormatter(amount, mosaic.mosaicInfo);
-            if (invalidBalance && !this.insufficientBalance) {
-              this.insufficientBalance = true;
-              // this.namespaceForm.controls['name'].disable();
-              // this.namespaceForm.controls['password'].disable();
-            } else if (!invalidBalance && this.insufficientBalance) {
-              this.insufficientBalance = false;
-              // this.namespaceForm.controls['name'].enable();
-              // this.namespaceForm.controls['password'].enable();
-            }
           } else {
+            this.sharedService.showWarning('', 'Your account is being updated, please wait');
+            this.router.navigate([`/${AppConfig.routes.service}`]);
+          }
+
+          if (invalidBalance && !this.insufficientBalance) {
             this.insufficientBalance = true;
             // this.namespaceForm.controls['name'].disable();
             // this.namespaceForm.controls['password'].disable();
+          } else if (!invalidBalance && this.insufficientBalance) {
+            this.insufficientBalance = false;
+            // this.namespaceForm.controls['name'].enable();
+            // this.namespaceForm.controls['password'].enable();
           }
+        } else {
+          this.sharedService.showWarning('', 'You do not have enough balance in the default account');
+          this.router.navigate([`/${AppConfig.routes.service}`]);
         }
       } else {
-        // console.log('No validate', amount);
-
         this.calculateRentalFee = '10.000000';
         this.insufficientBalance = false;
         this.namespaceForm.controls['name'].enable();

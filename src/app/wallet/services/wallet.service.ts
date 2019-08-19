@@ -132,7 +132,7 @@ export class WalletService {
    * @memberof WalletService
    */
   destroyAll() {
-    console.log('desteoty all');
+    // console.log('desteoty all');
     this.currentWallet = null;
     this.setCurrentAccount$(null);
     this.setAccountsInfo(null);
@@ -299,6 +299,7 @@ export class WalletService {
       accounts: myAccounts
     });
 
+
     localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(othersWallet));
   }
 
@@ -353,6 +354,7 @@ export class WalletService {
       this.accountsInfo = accountsInfo;
     }
 
+    // console.log('accountinfo', this.accountsInfo);
     this.accountsInfoSubject.next(this.accountsInfo);
   }
 

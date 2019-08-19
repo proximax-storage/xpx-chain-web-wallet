@@ -115,11 +115,11 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
                 //Assign level 2
                 const level2 = data.namespaceName.name;
                 //Search level 1
-                const level1: NamespaceStorageInterface = await this.namespaceService.getNamespaceFromId(
+                const level1: NamespaceStorageInterface[] = await this.namespaceService.getNamespaceFromId(
                   [this.proximaxProvider.getNamespaceId([data.namespaceName.parentId.id.lower, data.namespaceName.parentId.id.higher])]
-                )[0];
+                );
 
-                name = `${level1.namespaceName.name}.${level2}`;
+                name = `${level1[0].namespaceName.name}.${level2}`;
                 namespaceSelect.push({
                   value: `${name}`,
                   label: `${name}`,
@@ -130,15 +130,15 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
                 //Assign el level3
                 const level3 = data.namespaceName.name;
                 //search level 2
-                const level2: NamespaceStorageInterface = await this.namespaceService.getNamespaceFromId(
+                const level2: NamespaceStorageInterface[] = await this.namespaceService.getNamespaceFromId(
                   [this.proximaxProvider.getNamespaceId([data.namespaceName.parentId.id.lower, data.namespaceName.parentId.id.higher])]
-                )[0];
+                );
 
                 //search level 1
-                const level1: NamespaceStorageInterface = await this.namespaceService.getNamespaceFromId(
-                  [this.proximaxProvider.getNamespaceId([level2.namespaceName.parentId.id.lower, level2.namespaceName.parentId.id.higher])]
-                )[0];
-                name = `${level1.namespaceName.name}.${level2.namespaceName.name}.${level3}`;
+                const level1: NamespaceStorageInterface[] = await this.namespaceService.getNamespaceFromId(
+                  [this.proximaxProvider.getNamespaceId([level2[0].namespaceName.parentId.id.lower, level2[0].namespaceName.parentId.id.higher])]
+                );
+                name = `${level1[0].namespaceName.name}.${level2[0].namespaceName.name}.${level3}`;
                 namespaceSelect.push({
                   value: `${name}`,
                   label: `${name}`,

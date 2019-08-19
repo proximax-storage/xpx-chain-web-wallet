@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { AppConfig } from 'src/app/config/app.config';
 import { FormGroup, Validators, FormBuilder, AbstractControl } from '@angular/forms';
-import { ServicesModuleService } from 'src/app/servicesModule/services/services-module.service';
+import { ServicesModuleService, ContactsStorageInterface } from 'src/app/servicesModule/services/services-module.service';
 import { SharedService } from 'src/app/shared/services/shared.service';
 import { WalletService } from 'src/app/wallet/services/wallet.service';
 import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-add-contacts',
@@ -22,6 +22,7 @@ export class AddContactsComponent implements OnInit {
   blockSendButton: boolean;
   msgErrorUnsupported: string;
   dataStorage: any;
+  contact: any;
 
   constructor(
     private fb: FormBuilder,
@@ -29,7 +30,8 @@ export class AddContactsComponent implements OnInit {
     private sharedService: SharedService,
     private walletService: WalletService,
     private proximaxProvider: ProximaxProvider,
-    private activateRoute: ActivatedRoute
+    private activateRoute: ActivatedRoute,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -38,15 +40,13 @@ export class AddContactsComponent implements OnInit {
     let param = this.activateRoute.snapshot.paramMap.get('name');
     if (param && param !== null) {
       const dataStorage = this.serviceModuleService.getBooksAddress();
-      const contact = dataStorage.find(el => el.label === param);
-      if (contact) {
-        this.dataStorage = dataStorage.filter(element => element.label !== contact.label);
-        this.contactForm.get('user').setValue(contact.label);
-        this.contactForm.get('address').setValue(contact.value);
+      this.contact = dataStorage.find(el => el.label === param);
+      if (this.contact) {
+        this.dataStorage = dataStorage.filter(element => element.label !== this.contact.label);
+        this.contactForm.get('user').setValue(this.contact.label);
+        this.contactForm.get('address').setValue(this.contact.value);
       }
-    } else {
-      this.dataStorage = this.serviceModuleService.getBooksAddress();
-    }
+    }    
   }
 
   createFormContact() {
@@ -86,24 +86,28 @@ export class AddContactsComponent implements OnInit {
    */
   saveContact() {
     if (this.contactForm.valid) {
-      const books = { value: this.contactForm.get('address').value, label: this.contactForm.get('user').value };
-      if (this.dataStorage === null) {
-        this.serviceModuleService.setBookAddress([books]);
+      const isUpdate = this.activateRoute.snapshot.paramMap.get('name');
+      const paramsStorage: ContactsStorageInterface = {
+        name: this.contactForm.get('user').value,
+        address: this.contactForm.get('address').value,
+        walletContact: false,
+        nameItem: '',
+        update: (isUpdate) ? true : false,
+        dataComparate: (isUpdate) ? {
+          name: this.contact.label,
+          address: this.contact.value
+        } : null
+      }
+
+      const saved = this.serviceModuleService.saveContacts(paramsStorage);
+      if (saved) {
         this.contactForm.reset();
         this.sharedService.showSuccess('', `Successfully saved contact`);
+        this.router.navigate([`/${AppConfig.routes.addressBook}`]);
         return;
       }
 
-      const issetData = this.dataStorage.find(element => element.label === this.contactForm.get('user').value || element.value === this.contactForm.get('address').value);
-      if (issetData === undefined) {
-        this.dataStorage.push(books);
-        this.serviceModuleService.setBookAddress(this.dataStorage);
-        this.contactForm.reset();
-        this.sharedService.showSuccess('', `Successfully saved contact`);
-        return;
-      }
-
-      this.sharedService.showError('User repeated', `The contact "${this.contactForm.get('user').value}" already exists`);
+      this.sharedService.showError('User repeated', `Address or name already exists`);
     }
   }
 

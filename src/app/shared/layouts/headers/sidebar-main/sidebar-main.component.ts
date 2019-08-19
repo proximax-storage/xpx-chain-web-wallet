@@ -33,7 +33,7 @@ export class SidebarMainComponent implements OnInit {
     AppConfig.routes.importWallet,
     AppConfig.routes.service
   ];
-  searchBalance = true;
+  searchBalance = false;
 
 
   constructor(
@@ -69,11 +69,17 @@ export class SidebarMainComponent implements OnInit {
           }
         };
 
+
+        const amountFormatter = this.transactionService.amountFormatterSimple(amountTotal);
+        this.vestedBalance = `Total Balance ${amountFormatter} XPX`;
         setTimeout(() => {
           this.searchBalance = false;
         }, 1000);
-        const amountFormatter = this.transactionService.amountFormatterSimple(amountTotal);
-        this.vestedBalance = `Total Balance ${amountFormatter} XPX`;
+      } else {
+        this.vestedBalance = `Total Balance 0.000000 XPX`;
+        setTimeout(() => {
+          this.searchBalance = false;
+        }, 1000);
       }
     });
 

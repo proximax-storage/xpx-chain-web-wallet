@@ -5,6 +5,7 @@ import { SharedService, ConfigurationForm } from "../../../../shared/services/sh
 import { AppConfig } from '../../../../config/app.config';
 import { ActivatedRoute } from '@angular/router';
 import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
+import { ServicesModuleService, ContactsStorageInterface } from 'src/app/servicesModule/services/services-module.service';
 
 @Component({
   selector: 'app-detail-account',
@@ -41,7 +42,8 @@ export class DetailAccountComponent implements OnInit {
     private activateRoute: ActivatedRoute,
     private proximaxProvider: ProximaxProvider,
     private sharedService: SharedService,
-    private walletService: WalletService
+    private walletService: WalletService,
+    private serviceModuleService: ServicesModuleService
   ) {
   }
 
@@ -114,12 +116,29 @@ export class DetailAccountComponent implements OnInit {
   changeNameAccount() {
     if (this.newNameAccount !== '') {
       if (!this.walletService.validateNameAccount(this.newNameAccount)) {
+        const paramsStorage: ContactsStorageInterface = {
+          name: this.newNameAccount,
+          address: this.address,
+          walletContact: true,
+          nameItem: '',
+          update: true,
+          dataComparate: {
+            name: this.accountName,
+            address: this.address
+          }
+        }
+        const saved = this.serviceModuleService.saveContacts(paramsStorage);
+
+        if (!saved) {
+          this.sharedService.showError('', `Contact or account name already exists`);
+          return;
+        }
         this.walletService.changeName(this.accountName, this.newNameAccount);
         this.editNameAccount = !this.editNameAccount;
         this.currenAccount = this.walletService.filterAccount(this.newNameAccount);
         this.newNameAccount = '';
         this.buildData();
-        this.sharedService.showSuccess('', 'Your account name has been updated');
+        this.sharedService.showSuccess('', 'Your account and contact name has been updated');
       } else {
         this.sharedService.showWarning('', 'This name is already in use');
       }

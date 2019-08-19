@@ -197,7 +197,8 @@
                       [maxlength]="configurationForm.amount.maxLength" type="text"
                       class="form-control form-control-sm input-border input-amount"
                       [(ngModel)]="boxOtherMosaics[i].amount" [ngModelOptions]="{standalone: true}"
-                      (ngModelChange)="amountOtherMosaicChanged($event, otherMosaic.id, i)" placeholder="Enter quantity">
+                      (ngModelChange)="amountOtherMosaicChanged($event, otherMosaic.id, i)"
+                      placeholder="Enter quantity">
                     <span class="label-i fw-600">SEND</span>
 
                     <!-- Message Error Insufficient balance-->
@@ -214,12 +215,13 @@
     </ng-container>
     <!--  FIN MOSAICS -->
 
+    <hr>
+
 
     <!-- Add mosaics -->
     <ng-container>
       <div class="row mt-1rem">
-        <div class="col-12 d-flex justify-content-center"
-          style="background-image: url(assets/images/img/horizontal-line-background.jpg);">
+        <div class="col-12 d-flex justify-content-center">
           <button [disabled]="currentBlock === 0 || disabledBtnAddMosaic || selectOtherMosaics.length === 0" mdbBtn
             type="button" rounded="true" mdbWavesEffect class="background-btn-inverse pl-2rem pr-2rem" size="md"
             (click)="pushedOtherMosaics()">
@@ -300,6 +302,82 @@
       </div>
     </div>
   </form>
+</div>
+
+<!-- Modal -->
+<div mdbModal #basicModal="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myBasicModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content form-elegant b-r-08rem">
+      <div class="modal-header text-center box-modal-grey b-t-r-r-08rem b-t-l-r-08rem">
+        <h6 class="modal-title w-100 dark-grey-text" id="myModalLabel">
+          <strong class="title-modal-grey">Add contact</strong>
+        </h6>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="basicModal.hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="row mt-1rem mb-1rem" *ngIf="!saveContact">
+        <div class="col-11 col-sm-12 col-md-11 mx-auto box-transparent-border-orange">
+          <div class="col-12 d-flex flex-column align-items-center">
+            <span class="font-small d-flex text-center">Do you want to save the entered address?</span>
+          </div>
+        </div>
+        <!-- BUTTONS -->
+        <div class="row mx-auto">
+          <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
+            <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+              size="md" (click)="basicModal.hide()">
+              <span class="fs-1-2em color-white">NO</span>
+            </button>
+          </div>
+
+          <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
+            <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+              (click)="saveContact = true" size="md">
+              <span class="fs-1-2em color-white">YES</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="saveContact">
+        <form>
+          <div class="modal-body mx-4">
+
+            <div class="row">
+              <div class="col-11 col-sm-10 col-lg-8 mx-auto">
+                <div class="md-form form-sm">
+                  <input required mdbInputDirective mdbValidate [validateSuccess]="true"
+                    [validateError]="true" type="text" id="user" [(ngModel)]="formContact.name" [ngModelOptions]="{standalone: true}" 
+                     class="form-control form-control-sm input-border"
+                    placeholder="Name">
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-11 col-sm-10 col-lg-8 mx-auto">
+                <div class="md-form form-sm">
+                  <input required mdbInputDirective readonly mdbValidate [validateSuccess]="true"
+                    [validateError]="true" type="text" [(ngModel)]="formContact.address" [ngModelOptions]="{standalone: true}" id="address" class="form-control form-control-sm input-border"
+                    placeholder="address">
+                </div>
+              </div>
+            </div>
+
+            <div class="row mx-auto">
+              <div class="col-12 d-flex justify-content-center">
+                <button mdbBtn type="button" [disabled]="formContact.name === ''" rounded="true" mdbWavesEffect
+                  class="f-w-600 background-btn pl-2rem pr-2rem" size="md" (click)="saveContactNew()">
+                  <span class="fs-1-2em color-white">SAVE</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 </div>
 
 <ngx-ui-loader>

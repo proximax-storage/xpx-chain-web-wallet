@@ -4,14 +4,17 @@
 
 export const environment = {
   production: false,
-  version: '0.2.1+21',
-  nameKeyNodeSelected: `sw-nodes-selected`,
+  itemBooksAddress: 'sw-books',
+  version: '0.2.4.2',
+  nameKeyNodeSelected: `sw-selected-node`,
   nameKeyNamespaces: `sw-namespaces`,
+  nameKeyMosaicNamespaceLinked: `sw-m-n-linked`,
   nameKeyWalletStorage: `sw-04`,
   nameKeyNodeStorage: `sw-nodes`,
-  protocol: `http`,
-  protocolWs: `ws`,
-  nodeDefault: 'bctestnet1-cow.xpxsirius.io:3000',
+  nameKeyMosaicStorage: `sw-mosaics`,
+  protocol: `https`,
+  protocolWs: `wss`,
+  nodeDefault: 'bctestnet1-cow.xpxsirius.io:443',
   mosaicXpxInfo: {
     name: 'prx.xpx',
     coin: 'XPX',
