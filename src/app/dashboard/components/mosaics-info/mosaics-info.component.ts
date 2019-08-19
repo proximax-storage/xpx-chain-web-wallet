@@ -20,6 +20,7 @@ export class MosaicsInfoComponent implements OnInit {
   quantity = [];
   viewOtherMosaics = false;
   viewMosaicXpx = false;
+  searching = true;
 
   constructor(
     private mosaicService: MosaicService,
@@ -35,19 +36,22 @@ export class MosaicsInfoComponent implements OnInit {
     this.viewMosaicXpx = false;
     this.viewOtherMosaics = false;
     this.quantity = [];
+    this.searching = true;
 
     console.log('-----this.mosaicsArray----', this.mosaicsArray);
     const mosaics: MosaicsStorage[] = await this.mosaicService.filterMosaics(this.mosaicsArray.map((mosaic: Mosaic) => { return mosaic.id }));
     console.log('----mosaicos encontrados-----', mosaics);
+    this.searching = false;
     if (mosaics.length > 0) {
       for (let mosaic of mosaics) {
         // Create MosaicId from mosaic and namespace string id (ex: nem:xem or domain.subdom.subdome:token)
-        const mosaicId = this.proximaxProvider.getMosaicId(mosaic.id).toHex();
+        const mosaicId = this.proximaxProvider.getMosaicId(mosaic.idMosaic).toHex();
         const myMosaic = this.mosaicsArray.find(next => next.id.toHex() === mosaicId);
         console.log('---myMosaic---', myMosaic);
         const amount = (mosaic.mosaicInfo !== null) ?
           this.transactionService.amountFormatter(myMosaic.amount, mosaic.mosaicInfo) :
           this.transactionService.amountFormatterSimple(myMosaic.amount.compact());
+
         // MOSAIC IS XPX
         if (mosaicId === environment.mosaicXpxInfo.id) {
           this.viewMosaicXpx = true;
@@ -58,8 +62,10 @@ export class MosaicsInfoComponent implements OnInit {
             mosaicInfo: mosaic
           }
         } else {
-          // console.log(mosaic.mosaicName);
-          const nameMosaic = (mosaic.mosaicNames.names.length > 0) ? mosaic.mosaicNames.names[0] : this.proximaxProvider.getMosaicId(mosaic.id).toHex();
+          console.log(mosaic.mosaicNames);
+          const nameMosaic = (mosaic.mosaicNames && mosaic.mosaicNames.names.length > 0) ?
+            mosaic.mosaicNames.names[0] : '';
+
           this.quantity.push({
             id: myMosaic.id.toHex(),
             name: nameMosaic,

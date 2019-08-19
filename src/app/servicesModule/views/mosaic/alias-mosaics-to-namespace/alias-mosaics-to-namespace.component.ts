@@ -168,7 +168,7 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
     // console.log(data);
     const mosaicsSelect = this.mosaicSelect.slice(0);
     data.forEach(element => {
-      const nameMosaic = (element.mosaicNames.names.length > 0) ? element.mosaicNames.names[0] : this.proximaxProvider.getMosaicId(element.id).toHex();
+      const nameMosaic = (element.mosaicNames.names.length > 0) ? element.mosaicNames.names[0] : this.proximaxProvider.getMosaicId(element.idMosaic).toHex();
       const addressOwner = this.proximaxProvider.createAddressFromPublicKey(
         element.mosaicInfo.owner.publicKey,
         element.mosaicInfo.owner.address['networkType']
@@ -182,7 +182,7 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
 
       if (isOwner) {
         mosaicsSelect.push({
-          value: element.id,
+          value: element.idMosaic,
           label: nameMosaic,
           selected: false,
           disabled: false

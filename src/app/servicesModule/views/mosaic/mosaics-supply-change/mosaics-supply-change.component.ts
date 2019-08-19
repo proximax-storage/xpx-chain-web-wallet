@@ -86,13 +86,13 @@ export class MosaicsSupplyChangeComponent implements OnInit {
       let expired = false;
       let nameExpired = '';
       if (element.mosaicInfo) {
-        const nameMosaic = (element.mosaicNames.names.length > 0) ? element.mosaicNames.names[0] : this.proximaxProvider.getMosaicId(element.id).toHex();
+        const nameMosaic = (element.mosaicNames.names.length > 0) ? element.mosaicNames.names[0] : this.proximaxProvider.getMosaicId(element.idMosaic).toHex();
         const addressOwner = this.proximaxProvider.createAddressFromPublicKey(
           element.mosaicInfo.owner.publicKey,
           element.mosaicInfo.owner.address['networkType']
         );
 
-        const currentAccount  = Object.assign({}, this.walletService.getCurrentAccount());
+        const currentAccount = Object.assign({}, this.walletService.getCurrentAccount());
         const isOwner = (addressOwner.pretty() === this.proximaxProvider.createFromRawAddress(currentAccount.address).pretty()) ? true : false;
         const durationMosaic = new UInt64([
           element.mosaicInfo['properties']['duration']['lower'],
@@ -118,7 +118,7 @@ export class MosaicsSupplyChangeComponent implements OnInit {
 
         if (isOwner && element.mosaicInfo['properties']['supplyMutable']) {
           mosaicsSelect.push({
-            value: element.id,
+            value: element.idMosaic,
             label: `${nameMosaic}${nameExpired}`,
             selected: false,
             disabled: expired

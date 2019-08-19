@@ -224,7 +224,7 @@ export class CreateTransferComponent implements OnInit {
               precision: '0'
             };
 
-            const currentMosaic = accountInfo.mosaics.find(element => element.id.toHex() === this.proximaxProvider.getMosaicId(mosaic.id).toHex());
+            const currentMosaic = accountInfo.mosaics.find(element => element.id.toHex() === this.proximaxProvider.getMosaicId(mosaic.idMosaic).toHex());
             let amount = '';
             let expired = false;
             let nameExpired = '';
@@ -254,13 +254,13 @@ export class CreateTransferComponent implements OnInit {
               expired = true;
             }
 
-            const x = this.proximaxProvider.getMosaicId(mosaic.id).id.toHex() !== environment.mosaicXpxInfo.id;
+            const x = this.proximaxProvider.getMosaicId(mosaic.idMosaic).id.toHex() !== environment.mosaicXpxInfo.id;
             // console.log('------x------', x);
             if (x) {
-              const nameMosaic = (mosaic.mosaicNames.names.length > 0) ? mosaic.mosaicNames.names[0] : this.proximaxProvider.getMosaicId(mosaic.id).toHex();
+              const nameMosaic = (mosaic.mosaicNames.names.length > 0) ? mosaic.mosaicNames.names[0] : this.proximaxProvider.getMosaicId(mosaic.idMosaic).toHex();
               mosaicsSelect.push({
                 label: `${nameMosaic}${nameExpired}`,
-                value: mosaic.id,
+                value: mosaic.idMosaic,
                 balance: amount,
                 expired: false,
                 selected: false,
@@ -756,7 +756,7 @@ export class CreateTransferComponent implements OnInit {
     if (accountInfo !== undefined && accountInfo !== null && Object.keys(accountInfo).length > 0) {
       if (accountInfo.accountInfo.mosaics.length > 0) {
         const filtered = accountInfo.accountInfo.mosaics.find(element => {
-          return element.id.toHex() === new MosaicId(mosaic.id).toHex();
+          return element.id.toHex() === new MosaicId(mosaic.idMosaic).toHex();
         });
 
         if (filtered !== undefined && filtered !== null) {
