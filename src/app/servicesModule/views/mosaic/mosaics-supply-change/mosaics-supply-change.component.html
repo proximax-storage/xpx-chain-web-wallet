@@ -21,7 +21,7 @@
 
   <form [formGroup]="formMosaicSupplyChange" (ngSubmit)="send()">
     <div class="row mt-1rem">
-      <div class="col-12 col-md-6 mb-2rem">
+      <div class="col-12 col-md-8 col-xl-7 mb-2rem">
         <!-- Parent Mosaic -->
         <div class="row">
           <div class="col-11 mx-auto">
@@ -64,12 +64,31 @@
           </div>
         </div>
 
-        <!-- Fee -->
-        <div class="row mt-1rem ml-01rem">
-          <div class="col-11 mx-auto  box-grey">
-            <div class="col-10 d-flex justify-content-center mx-auto">
-              <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20" alt="">&nbsp;
-              <span> Fee: 0.000000 XPX</span>
+
+        <!-- FEE -->
+        <div class="row ml-01rem">
+          <div class="col-11 col-md-10 col-lg-8 mx-auto">
+            <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
+              <div class="row">
+                <div class="col-12">
+                  <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" alt="">
+                  <span>Fee: 0.000000 XPX</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RENTAL FEE -->
+        <div class="row ml-01rem">
+          <div class="col-11 col-md-10 col-lg-8 mx-auto">
+            <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
+              <div class="row">
+                <div class="col-12">
+                  <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" alt="">
+                  <span> Rental Fee: 0.000000 XPX</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -101,16 +120,17 @@
           </div>
 
           <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-            <button mdbBtn type="submit" rounded="true" [disabled]="!formMosaicSupplyChange.valid" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
-              size="md">
-              <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true" *ngIf="blockButton"></span>
+            <button mdbBtn type="submit" rounded="true" [disabled]="!formMosaicSupplyChange.valid" mdbWavesEffect
+              class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
+              <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
+                *ngIf="blockButton"></span>
               <span class="fs-1-2em color-white">CREATE</span>
             </button>
           </div>
         </div>
       </div>
 
-      <div class="col-12 col-md-6 description-p-module mt-1-5rem mb-2rem">
+      <div class="col-12 col-md-4 col-xl-5 description-p-module mt-1-5rem mb-2rem">
         <div class="row">
           <div class="col-12">
             <span class="title-information">Properties</span>
