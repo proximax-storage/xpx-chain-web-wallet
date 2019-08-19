@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormGroup, Validators, FormBuilder, AbstractControl } from '@angular/forms';
-import { SignedTransaction, MosaicId } from 'tsjs-xpx-chain-sdk';
-import { NamespacesService } from '../../../services/namespaces.service';
+import { SignedTransaction, MosaicId, NamespaceInfo } from 'tsjs-xpx-chain-sdk';
+import { NamespacesService, NamespaceStorageInterface } from '../../../services/namespaces.service';
 import { AppConfig } from '../../../../config/app.config';
 import { DataBridgeService } from '../../../../shared/services/data-bridge.service';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
@@ -26,6 +26,7 @@ export class ExtendDurationNamespaceComponent implements OnInit {
   configurationForm: ConfigurationForm = {};
   arrayselect: Array<object> = [
     {
+      id: null,
       value: '1',
       label: 'New root Namespace',
       selected: true,
@@ -38,7 +39,7 @@ export class ExtendDurationNamespaceComponent implements OnInit {
   feeType: string = 'XPX';
   durationByBlock = '0';
   insufficientBalance = false;
-  namespaceChangeInfo: any = [];
+  namespaceChangeInfo: NamespaceStorageInterface = null;
   startHeight: number = 0;
   endHeight: number = 0;
   block: number = 0;
@@ -46,6 +47,7 @@ export class ExtendDurationNamespaceComponent implements OnInit {
   fee = '';
   titleInformation = 'Namespace Information';
   subscription: Subscription[] = [];
+  namespaceInfo: NamespaceStorageInterface[] = [];
 
   constructor(
     private router: Router,
@@ -66,6 +68,10 @@ export class ExtendDurationNamespaceComponent implements OnInit {
     this.getNamespaces();
     const duration = this.extendDurationNamespaceForm.get('duration').value;
     this.durationByBlock = this.transactionService.calculateDurationforDay(duration).toString();
+    this.subscription.push(this.dataBridgeService.getBlock().subscribe(
+      next => this.block = next
+    ));
+
     this.validateRentalFee(this.rentalFee * duration);
     this.extendDurationNamespaceForm.get('duration').valueChanges.subscribe(next => {
       if (next !== null && next !== undefined && String(next) !== '0') {
@@ -80,6 +86,7 @@ export class ExtendDurationNamespaceComponent implements OnInit {
 
     // namespaceRoot ValueChange
     this.extendDurationNamespaceForm.get('namespaceRoot').valueChanges.subscribe(namespaceRoot => {
+      // this.optionSelected(namespaceRoot);
       if (namespaceRoot === null || namespaceRoot === undefined) {
         this.extendDurationNamespaceForm.get('namespaceRoot').setValue('');
       } else {
@@ -117,9 +124,9 @@ export class ExtendDurationNamespaceComponent implements OnInit {
    * @memberof ExtendDurationNamespaceComponent
    */
   clearForm() {
-    this.extendDurationNamespaceForm.get('namespaceRoot').patchValue('');
-    this.extendDurationNamespaceForm.get('duration').patchValue('');
-    this.extendDurationNamespaceForm.get('password').patchValue('');
+    this.extendDurationNamespaceForm.get('namespaceRoot').patchValue('', { emitEvent: false });
+    this.extendDurationNamespaceForm.get('duration').patchValue('', { emitEvent: false });
+    this.extendDurationNamespaceForm.get('password').patchValue('', { emitEvent: false });
   }
 
   /**
@@ -141,11 +148,14 @@ export class ExtendDurationNamespaceComponent implements OnInit {
   getNamespaces() {
     this.subscription.push(this.namespaceService.getNamespaceChanged().subscribe(
       async namespaceInfo => {
+        this.namespaceInfo = namespaceInfo;
+
         if (namespaceInfo !== undefined && namespaceInfo !== null && namespaceInfo.length > 0) {
           const arrayselect = [];
           for (let namespaceRoot of namespaceInfo) {
             if (namespaceRoot.namespaceInfo.depth === 1) {
               arrayselect.push({
+                id: `${this.proximaxProvider.getNamespaceId(namespaceRoot.id).toHex()}`,
                 value: `${namespaceRoot.namespaceName.name}`,
                 label: `${namespaceRoot.namespaceName.name}`,
                 selected: false,
@@ -175,15 +185,19 @@ export class ExtendDurationNamespaceComponent implements OnInit {
    * @param {*} namespace
    * @memberof ExtendDurationNamespaceComponent
    */
-  optionSelected(namespace: any) {
-    namespace = (namespace === undefined) ? 1 : namespace.value;
-    this.namespaceChangeInfo = this.arrayselect.filter((book: any) => (book.name === namespace));
-    if (this.namespaceChangeInfo.length > 0) {
-      this.subscription.push(this.dataBridgeService.getBlock().subscribe(
-        next => this.block = next
-      ));
-      this.startHeight = this.namespaceChangeInfo[0].dataNamespace.NamespaceInfo.startHeight.lower;
-      this.endHeight = this.namespaceChangeInfo[0].dataNamespace.NamespaceInfo.endHeight.lower;
+  optionSelected($event: any) {
+    if ($event && $event.value !== '1') {
+      this.namespaceChangeInfo = this.namespaceInfo.find(book =>
+        this.proximaxProvider.getNamespaceId(book.id).toHex() ===
+        $event.id
+      );
+      if (this.namespaceChangeInfo) {
+        this.startHeight = this.namespaceChangeInfo.namespaceInfo.startHeight.lower;
+        this.endHeight = this.namespaceChangeInfo.namespaceInfo.endHeight.lower;
+      }
+    }else {
+      this.startHeight = 0;
+      this.endHeight = 0;
     }
   }
 
