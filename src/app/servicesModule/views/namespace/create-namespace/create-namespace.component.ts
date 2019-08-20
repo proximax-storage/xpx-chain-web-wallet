@@ -67,7 +67,6 @@ export class CreateNamespaceComponent implements OnInit {
   blockBtnSend: boolean = false;
   calculateRentalFee: any = '0.000000';
   rentalFee = 100000;
-  maskData = '0*';
   subscription: Subscription[] = [];
   transactionStatus: boolean = false;
 
@@ -404,7 +403,7 @@ export class CreateNamespaceComponent implements OnInit {
       return false;
     }
 
-    let pattern = /^[A-Za-z-9.\-_]*$/;
+    let pattern = /^[A-Za-z0-9.\-_]*$/;
     // Test if has special chars or space excluding hyphens
     if (pattern.test(namespace) == false) {
       this.validateForm = false;
