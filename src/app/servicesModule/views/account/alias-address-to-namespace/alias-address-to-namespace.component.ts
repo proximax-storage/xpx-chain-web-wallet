@@ -166,6 +166,11 @@ export class AliasAddressToNamespaceComponent implements OnInit {
     return validation;
   }
 
+  /**
+   *
+   *
+   * @memberof AliasAddressToNamespaceComponent
+   */
   getTransactionStatus() {
     this.subscribe['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
       statusTransaction => {
@@ -187,6 +192,11 @@ export class AliasAddressToNamespaceComponent implements OnInit {
     );
   }
 
+  /**
+   *
+   *
+   * @memberof AliasAddressToNamespaceComponent
+   */
   async send() {
     if (this.LinkToNamespaceForm.valid && !this.blockSend) {
       this.blockSend = true;
@@ -223,10 +233,13 @@ export class AliasAddressToNamespaceComponent implements OnInit {
     }
   }
 
+  /**
+   *
+   *
+   * @memberof AliasAddressToNamespaceComponent
+   */
   resetForm() {
     this.LinkToNamespaceForm.get('namespace').patchValue('');
-    this.LinkToNamespaceForm.get('address').patchValue('');
     this.LinkToNamespaceForm.get('password').patchValue('');
   }
-
 }

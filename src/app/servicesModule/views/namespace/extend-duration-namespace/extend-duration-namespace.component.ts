@@ -157,13 +157,14 @@ export class ExtendDurationNamespaceComponent implements OnInit {
       }
       if (this.walletService.decrypt(common)) {
         const signedTransaction = this.signedTransaction(common);
+        this.transactionSigned.push(signedTransaction);
         this.proximaxProvider.announce(signedTransaction).subscribe(
           () => {
             this.blockBtnSend = false;
             this.resetForm();
             this.startHeight = 0;
             this.endHeight = 0;
-            if (!this.statusTransaction) {
+            if (this.statusTransaction === false) {
               this.statusTransaction = true;
               this.getTransactionStatus();
             }
@@ -187,12 +188,19 @@ export class ExtendDurationNamespaceComponent implements OnInit {
    * @memberof ExtendDurationNamespaceComponent
    */
   getTransactionStatus() {
+    // console.log('--getTransactionStatus---');
+
     // Get transaction status
     this.subscription.push(this.dataBridgeService.getTransactionStatus().subscribe(
       statusTransaction => {
+        // console.log(statusTransaction);
+
         if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
           for (let element of this.transactionSigned) {
             const statusTransactionHash = (statusTransaction['type'] === 'error') ? statusTransaction['data'].hash : statusTransaction['data'].transactionInfo.hash;
+            // console.log('---statusTransactionHash---', statusTransactionHash);
+            // console.log('----element----', element);
+
             const match = statusTransactionHash === element.hash;
             if (match) {
               this.transactionReady.push(element);
@@ -372,18 +380,18 @@ export class ExtendDurationNamespaceComponent implements OnInit {
             this.insufficientBalance = false;
             this.extendDurationNamespaceForm.controls['password'].enable();
           }
-        } else {
+        }/* else {
           this.sharedService.showWarning('', 'You do not have enough balance in the default account');
           this.router.navigate([`/${AppConfig.routes.service}`]);
-        }
+        }*/
       } else {
         this.insufficientBalance = true;
         this.extendDurationNamespaceForm.controls['password'].disable();
       }
-    } else {
+    }/* else {
       this.sharedService.showWarning('', 'You do not have enough balance in the default account');
       this.router.navigate([`/${AppConfig.routes.service}`]);
-    }
+    }*/
   }
 
 }

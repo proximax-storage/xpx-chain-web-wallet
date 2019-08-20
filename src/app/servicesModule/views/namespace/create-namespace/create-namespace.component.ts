@@ -541,19 +541,19 @@ export class CreateNamespaceComponent implements OnInit {
             // this.namespaceForm.controls['name'].enable();
             // this.namespaceForm.controls['password'].enable();
           }
-        } else {
+        } /*else {
           this.sharedService.showWarning('', 'You do not have enough balance in the default account');
           this.router.navigate([`/${AppConfig.routes.service}`]);
-        }
+        }*/
       } else {
         this.calculateRentalFee = '10.000000';
         this.insufficientBalance = false;
         this.namespaceForm.controls['name'].enable();
         this.namespaceForm.controls['password'].enable();
       }
-    } else {
+    }/* else {
       this.sharedService.showWarning('', 'You do not have enough balance in the default account');
       this.router.navigate([`/${AppConfig.routes.service}`]);
-    }
+    }*/
   }
 }

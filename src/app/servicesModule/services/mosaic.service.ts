@@ -13,6 +13,7 @@ import { NamespacesService } from "./namespaces.service";
 import { WalletService } from '../../wallet/services/wallet.service';
 import { environment } from 'src/environments/environment';
 import { mosaicId } from 'js-xpx-chain-library';
+import { Observable, BehaviorSubject } from 'rxjs';
 
 export interface NamespaceLinkedMosaic {
   mosaicId: MosaicId,
@@ -24,7 +25,11 @@ export interface NamespaceLinkedMosaic {
 })
 export class MosaicService {
 
+  increment = 0;
   mosaicsViewCache: MosaicView[] = [];
+
+  private mosaicChangedSubject: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+  private mosaicChanged$: Observable<number> = this.mosaicChangedSubject.asObservable();
 
   constructor(
     private namespacesService: NamespacesService,
@@ -158,6 +163,7 @@ export class MosaicService {
     });
 
     // console.log('mosaicsTosavedStorage', mosaicsTosaved);
+    this.setMosaicChanged();
     localStorage.setItem(this.getItemMosaicStorage(), JSON.stringify(mosaicsStorage));
   }
 
@@ -195,7 +201,7 @@ export class MosaicService {
       }
     } else {
       const accountInfo = await this.walletService.filterAccountInfo(this.walletService.currentAccount.name);
-      if (accountInfo.accountInfo && accountInfo.accountInfo.mosaics && accountInfo.accountInfo.mosaics.length > 0) {
+      if (accountInfo && accountInfo.accountInfo && accountInfo.accountInfo.mosaics && accountInfo.accountInfo.mosaics.length > 0) {
         const mosaicsId = accountInfo.accountInfo.mosaics.map(x => x.id);
         return this.filterMosaics(mosaicsId);
       } else {
@@ -204,6 +210,16 @@ export class MosaicService {
     }
   }
 
+
+  /**
+   *
+   *
+   * @returns {Observable<boolean>}
+   * @memberof MosaicService
+   */
+  getMosaicChanged(): Observable<boolean> {
+    return this.mosaicChanged$;
+  }
 
   /**
     *
@@ -234,6 +250,16 @@ export class MosaicService {
   resetMosaicsStorage() {
     localStorage.removeItem(this.getItemMosaicStorage());
   }
+
+  /**
+   *
+   *
+   * @memberof MosaicService
+   */
+  setMosaicChanged() {
+    this.mosaicChangedSubject.next(this.increment + 1);
+  }
+
 
   /**
    *

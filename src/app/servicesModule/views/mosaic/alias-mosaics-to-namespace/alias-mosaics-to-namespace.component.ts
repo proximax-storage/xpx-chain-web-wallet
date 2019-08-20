@@ -169,55 +169,67 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
    * @memberof LinkingNamespaceToMosaicComponent
    */
   async getMosaic() {
-    const data = await this.mosaicService.filterMosaics();
-    console.log(data);
-    const mosaicsSelect = this.mosaicSelect.slice(0);
-    if (data) {
-      data.forEach(element => {
-        const nameMosaic = (element.mosaicNames.names.length > 0) ? element.mosaicNames.names[0] : this.proximaxProvider.getMosaicId(element.idMosaic).toHex();
-        const addressOwner = this.proximaxProvider.createAddressFromPublicKey(
-          element.mosaicInfo.owner.publicKey,
-          element.mosaicInfo.owner.address['networkType']
-        );
 
-        let expired = false;
-        let nameExpired = '';
+    this.mosaicService.getMosaicChanged().subscribe(
+      async next => {
+        const data = await this.mosaicService.filterMosaics();
+        console.log(data);
+        //this.mosaicSelect.slice(0);
+        const mosaicsSelect: any = [{
+          value: '1',
+          label: 'Enter here',
+          selected: true,
+          disabled: true
+        }];
 
-        const durationMosaic = new UInt64([
-          element.mosaicInfo['properties']['duration']['lower'],
-          element.mosaicInfo['properties']['duration']['higher']
-        ]);
+        if (data) {
+          data.forEach(element => {
+            const nameMosaic = (element.mosaicNames.names.length > 0) ? element.mosaicNames.names[0] : this.proximaxProvider.getMosaicId(element.idMosaic).toHex();
+            const addressOwner = this.proximaxProvider.createAddressFromPublicKey(
+              element.mosaicInfo.owner.publicKey,
+              element.mosaicInfo.owner.address['networkType']
+            );
 
-        const createdBlock = new UInt64([
-          element.mosaicInfo.height.lower,
-          element.mosaicInfo.height.higher
-        ]);
+            let expired = false;
+            let nameExpired = '';
+
+            const durationMosaic = new UInt64([
+              element.mosaicInfo['properties']['duration']['lower'],
+              element.mosaicInfo['properties']['duration']['higher']
+            ]);
+
+            const createdBlock = new UInt64([
+              element.mosaicInfo.height.lower,
+              element.mosaicInfo.height.higher
+            ]);
 
 
-        if (durationMosaic.compact() > 0) {
-          if (this.currentBlock >= durationMosaic.compact() + createdBlock.compact()) {
-            expired = true;
-            nameExpired = ' - Expired';
-          }
-        }
+            if (durationMosaic.compact() > 0) {
+              if (this.currentBlock >= durationMosaic.compact() + createdBlock.compact()) {
+                expired = true;
+                nameExpired = ' - Expired';
+              }
+            }
 
-        const currentAccount = Object.assign({}, this.walletService.getCurrentAccount());
-        const isOwner = (
-          addressOwner.pretty() ===
-          this.proximaxProvider.createFromRawAddress(currentAccount.address).pretty()
-        ) ? true : false;
+            const currentAccount = Object.assign({}, this.walletService.getCurrentAccount());
+            const isOwner = (
+              addressOwner.pretty() ===
+              this.proximaxProvider.createFromRawAddress(currentAccount.address).pretty()
+            ) ? true : false;
 
-        if (isOwner) {
-          mosaicsSelect.push({
-            value: element.idMosaic,
-            label: `${nameMosaic}${nameExpired}`,
-            selected: false,
-            disabled: expired
+            if (isOwner) {
+              mosaicsSelect.push({
+                value: element.idMosaic,
+                label: `${nameMosaic}${nameExpired}`,
+                selected: false,
+                disabled: expired
+              });
+            }
           });
         }
-      });
-    }
-    this.mosaicSelect = mosaicsSelect;
+        this.mosaicSelect = mosaicsSelect;
+      }
+    );
   }
 
   /**
