@@ -585,7 +585,6 @@ export class CreateTransferComponent implements OnInit {
     this.showContacts = false;
     // this.subscribe = ['accountsInfo', 'transactionStatus', 'char', 'block'];
     this.title = 'Make a transfer';
-    this.transactionSigned = null;
   }
 
 

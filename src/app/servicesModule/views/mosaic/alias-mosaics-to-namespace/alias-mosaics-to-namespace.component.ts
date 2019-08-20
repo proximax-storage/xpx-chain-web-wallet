@@ -31,7 +31,7 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
   mosaicSelect: Array<object> = [
     {
       value: '1',
-      label: 'Enter here',
+      label: 'Select mosaic',
       selected: true,
       disabled: true
     }
@@ -39,7 +39,7 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
   namespaceSelect: Array<object> = [
     {
       value: '1',
-      label: 'Enter here',
+      label: 'Select namespace',
       selected: true,
       disabled: true
     }
