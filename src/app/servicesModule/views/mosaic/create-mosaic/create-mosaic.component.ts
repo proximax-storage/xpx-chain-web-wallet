@@ -5,9 +5,10 @@ import { UInt64, Deadline, AggregateTransaction, NetworkType, MosaicSupplyType, 
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { SharedService, ConfigurationForm } from '../../../../shared/services/shared.service';
 import { DataBridgeService } from '../../../../shared/services/data-bridge.service';
-import { WalletService, AccountsInterface } from '../../../../wallet/services/wallet.service';
+import { WalletService, AccountsInterface, AccountsInfoInterface } from '../../../../wallet/services/wallet.service';
 import { TransactionsService } from '../../../../transfer/services/transactions.service';
 import { AppConfig } from '../../../../config/app.config';
+import { environment } from 'src/environments/environment.prod';
 
 @Component({
   selector: 'app-create-mosaic',
@@ -40,9 +41,11 @@ export class CreateMosaicComponent implements OnInit {
   transactionSigned: SignedTransaction[] = [];
   transactionReady: SignedTransaction[] = [];
   subscribe = ['transactionStatus'];
-  calculateRentalFee = '500.000000';
+  rentalFee = '500000000';
+  calculateRentalFee = '';
   currentAccount: AccountsInterface;
-  disabledBtn = true;
+  insuficienteBalance = true;
+  accountInfo: AccountsInfoInterface;
 
   constructor(
     private fb: FormBuilder,
@@ -55,10 +58,14 @@ export class CreateMosaicComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.currentAccount = this.walletService.currentAccount;
-
-    this.configurationForm = this.sharedService.configurationForm;
     this.createForm();
+    this.walletService.getAccountsInfo$().subscribe(
+      x => this.validateBalance()
+    );
+    this.calculateRentalFee = this.transactionService.amountFormatterSimple(Number(this.rentalFee));
+    this.configurationForm = this.sharedService.configurationForm;
+    this.mosaicForm.disable();
+    this.validateBalance();
     this.mosaicForm.get('duration').valueChanges.subscribe(next => {
       this.durationByBlock = this.transactionService.calculateDurationforDay(next).toString();
     });
@@ -81,13 +88,13 @@ export class CreateMosaicComponent implements OnInit {
    */
   createForm() {
     this.mosaicForm = this.fb.group({
-      deltaSupply: [{ value: '', disabled: true }, [Validators.required]],
-      password: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(8), Validators.maxLength(30)]],
-      duration: [{ value: '', disabled: true }, [Validators.required]],
-      divisibility: [{ value: '', disabled: true }, [Validators.required]],
-      transferable: [{ value: false, disabled: true }],
-      supplyMutable: [{ value: false, disabled: true }],
-      levyMutable: [{ value: false, disabled: true }]
+      deltaSupply: ['', [Validators.required]],
+      password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]],
+      duration: ['', [Validators.required]],
+      divisibility: ['', [Validators.required]],
+      transferable: [false],
+      supplyMutable: [false],
+      levyMutable: [false]
     });
   }
 
@@ -159,9 +166,6 @@ export class CreateMosaicComponent implements OnInit {
           async x => {
             this.blockSend = false;
             this.mosaicForm.reset();
-            this.mosaicForm.patchValue({ duration: 1 });
-            this.mosaicForm.patchValue({ divisibility: 10 });
-            this.mosaicForm.patchValue({ deltaSupply: 1000000 });
             if (this.subscribe['transactionStatus'] === undefined || this.subscribe['transactionStatus'] === null) {
               this.getTransactionStatus();
             }
@@ -177,6 +181,12 @@ export class CreateMosaicComponent implements OnInit {
     }
   }
 
+  /**
+   *
+   *
+   * @param {string} hash
+   * @memberof CreateMosaicComponent
+   */
   setTimeOutValidate(hash: string) {
     setTimeout(() => {
       let exist = false;
@@ -201,6 +211,7 @@ export class CreateMosaicComponent implements OnInit {
             if (match) {
               this.transactionReady.push(element);
             }
+
             if (statusTransaction['type'] === 'confirmed' && match) {
               this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransactionHash);
               this.sharedService.showSuccess('', 'Transaction confirmed');
@@ -216,6 +227,37 @@ export class CreateMosaicComponent implements OnInit {
     );
   }
 
+  /**
+   *
+   *
+   * @memberof CreateMosaicComponent
+   */
+  validateBalance() {
+    this.mosaicForm.disable();
+    this.currentAccount = this.walletService.currentAccount;
+    this.accountInfo = this.walletService.filterAccountInfo(this.currentAccount.name);
+    if (this.accountInfo && this.accountInfo.accountInfo.mosaics && this.accountInfo.accountInfo.mosaics.length > 0) {
+      const mosaicXPX = this.accountInfo.accountInfo.mosaics.find(x => x.id.toHex() === environment.mosaicXpxInfo.id);
+      if (mosaicXPX) {
+        if (mosaicXPX.amount.compact() >= Number(this.rentalFee)) {
+          this.insuficienteBalance = false;
+          this.mosaicForm.enable();
+          return;
+        }
+      }
+      this.insuficienteBalance = true;
+    }
+  }
+
+  /**
+   *
+   *
+   * @param {string} [nameInput='']
+   * @param {string} [nameControl='']
+   * @param {string} [nameValidation='']
+   * @returns
+   * @memberof CreateMosaicComponent
+   */
   validateInput(nameInput: string = '', nameControl: string = '', nameValidation: string = '') {
     let validation: AbstractControl = null;
     if (nameInput !== '' && nameControl !== '') {

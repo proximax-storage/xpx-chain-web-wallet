@@ -46,8 +46,11 @@ export class ExtendDurationNamespaceComponent implements OnInit {
   blockBtnSend: boolean = false;
   fee = '';
   titleInformation = 'Namespace Information';
+  transactionSigned: SignedTransaction[] = [];
+  transactionReady: SignedTransaction[] = [];
   subscription: Subscription[] = [];
   namespaceInfo: NamespaceStorageInterface[] = [];
+  statusTransaction: boolean = false;
 
   constructor(
     private router: Router,
@@ -145,6 +148,76 @@ export class ExtendDurationNamespaceComponent implements OnInit {
    *
    * @memberof ExtendDurationNamespaceComponent
    */
+  extendDuration() {
+    if (this.extendDurationNamespaceForm.valid && !this.blockBtnSend) {
+      this.blockBtnSend = true;
+      const common = {
+        password: this.extendDurationNamespaceForm.get('password').value,
+        privateKey: ''
+      }
+      if (this.walletService.decrypt(common)) {
+        const signedTransaction = this.signedTransaction(common);
+        this.proximaxProvider.announce(signedTransaction).subscribe(
+          () => {
+            this.blockBtnSend = false;
+            this.resetForm();
+            this.startHeight = 0;
+            this.endHeight = 0;
+            if (!this.statusTransaction) {
+              this.statusTransaction = true;
+              this.getTransactionStatus();
+            }
+
+            this.setTimeOutValidate(signedTransaction.hash);
+          }, () => {
+            this.blockBtnSend = false;
+            this.resetForm();
+          }
+        );
+      } else {
+        this.blockBtnSend = false;
+      }
+    }
+  }
+
+
+  /**
+   *
+   *
+   * @memberof ExtendDurationNamespaceComponent
+   */
+  getTransactionStatus() {
+    // Get transaction status
+    this.subscription.push(this.dataBridgeService.getTransactionStatus().subscribe(
+      statusTransaction => {
+        if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
+          for (let element of this.transactionSigned) {
+            const statusTransactionHash = (statusTransaction['type'] === 'error') ? statusTransaction['data'].hash : statusTransaction['data'].transactionInfo.hash;
+            const match = statusTransactionHash === element.hash;
+            if (match) {
+              this.transactionReady.push(element);
+            }
+
+            if (statusTransaction['type'] === 'confirmed' && match) {
+              this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransactionHash);
+              this.sharedService.showSuccess('', 'Transaction confirmed');
+            } else if (statusTransaction['type'] === 'unconfirmed' && match) {
+              this.sharedService.showInfo('', 'Transaction unconfirmed');
+            } else if (match) {
+              this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransactionHash);
+              this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
+            }
+          }
+        }
+      }
+    ));
+  }
+
+  /**
+   *
+   *
+   * @memberof ExtendDurationNamespaceComponent
+   */
   getNamespaces() {
     this.subscription.push(this.namespaceService.getNamespaceChanged().subscribe(
       async namespaceInfo => {
@@ -195,7 +268,7 @@ export class ExtendDurationNamespaceComponent implements OnInit {
         this.startHeight = this.namespaceChangeInfo.namespaceInfo.startHeight.lower;
         this.endHeight = this.namespaceChangeInfo.namespaceInfo.endHeight.lower;
       }
-    }else {
+    } else {
       this.startHeight = 0;
       this.endHeight = 0;
     }
@@ -212,35 +285,6 @@ export class ExtendDurationNamespaceComponent implements OnInit {
     this.extendDurationNamespaceForm.get('password').patchValue('');
   }
 
-  /**
-   *
-   *
-   * @memberof ExtendDurationNamespaceComponent
-   */
-  extendDuration() {
-    if (this.extendDurationNamespaceForm.valid && !this.blockBtnSend) {
-      this.blockBtnSend = true;
-      const common = {
-        password: this.extendDurationNamespaceForm.get('password').value,
-        privateKey: ''
-      }
-      if (this.walletService.decrypt(common)) {
-        this.proximaxProvider.announce(this.signedTransaction(common)).subscribe(
-          () => {
-            this.blockBtnSend = false;
-            this.resetForm();
-            this.sharedService.showSuccess('', 'Transaction sent')
-          }, () => {
-            this.blockBtnSend = false;
-            this.resetForm();
-            this.sharedService.showError('', 'An unexpected error has occurred');
-          }
-        );
-      } else {
-        this.blockBtnSend = false;
-      }
-    }
-  }
 
   /**
    *
@@ -263,6 +307,24 @@ export class ExtendDurationNamespaceComponent implements OnInit {
     return validation;
   }
 
+  /**
+   *
+   *
+   * @param {string} hash
+   * @memberof ExtendDurationNamespaceComponent
+   */
+  setTimeOutValidate(hash: string) {
+    setTimeout(() => {
+      let exist = false;
+      for (let element of this.transactionReady) {
+        if (hash === element.hash) {
+          exist = true;
+        }
+      }
+
+      (exist) ? '' : this.sharedService.showWarning('', 'An error has occurred');
+    }, 5000);
+  }
 
   /**
    *
@@ -288,7 +350,7 @@ export class ExtendDurationNamespaceComponent implements OnInit {
    * @param {MosaicsStorage} mosaic
    * @memberof ExtendDurationNamespaceComponent
    */
-  validateRentalFee(amount: number) {
+  async validateRentalFee(amount: number) {
     const accountInfo = this.walletService.filterAccountInfo();
     if (
       accountInfo && accountInfo.accountInfo &&
@@ -301,8 +363,8 @@ export class ExtendDurationNamespaceComponent implements OnInit {
 
         if (filtered) {
           const invalidBalance = filtered.amount.compact() < amount;
-          const mosaic = this.mosaicServices.filterMosaic(filtered.id);
-          this.calculateRentalFee = this.transactionService.amountFormatter(amount, mosaic.mosaicInfo);
+          const mosaic = await this.mosaicServices.filterMosaics([filtered.id]);
+          this.calculateRentalFee = this.transactionService.amountFormatter(amount, mosaic[0].mosaicInfo);
           if (invalidBalance && !this.insufficientBalance) {
             this.insufficientBalance = true;
             this.extendDurationNamespaceForm.controls['password'].disable();

@@ -77,7 +77,7 @@ export class MosaicsSupplyChangeComponent implements OnInit {
     this.configurationForm = this.sharedService.configurationForm;
     this.createForm();
     this.subscribe['block'] = await this.dataBridge.getBlock().subscribe(next => this.currentBlock = next);
-    const data = await this.mosaicService.searchMosaicsFromAccountStorage$();
+    const data = await this.mosaicService.filterMosaics();
     const mosaicsSelect = this.parentMosaic.slice(0);
     data.forEach(element => {
       let expired = false;
@@ -161,24 +161,24 @@ export class MosaicsSupplyChangeComponent implements OnInit {
    * @returns
    * @memberof MosaicsSupplyChangeComponent
    */
-  optionSelected(mosaic: any) {
+  async optionSelected(mosaic: any) {
     if (mosaic !== undefined) {
-      const mosaicsInfoSelected: MosaicsStorage = this.mosaicService.filterMosaic(this.proximaxProvider.getMosaicId(mosaic['value']));
+      const mosaicsInfoSelected: MosaicsStorage[] = await this.mosaicService.filterMosaics([this.proximaxProvider.getMosaicId(mosaic['value'])]);
       //  console.log(mosaicsInfoSelected);
       if (mosaicsInfoSelected !== null || mosaicsInfoSelected !== undefined) {
-        this.divisibility = mosaicsInfoSelected.mosaicInfo['properties'].divisibility;
-        this.levyMutable = mosaicsInfoSelected.mosaicInfo['properties'].levyMutable;
-        this.supplyMutable = mosaicsInfoSelected.mosaicInfo['properties'].supplyMutable;
-        this.transferable = mosaicsInfoSelected.mosaicInfo['properties'].transferable;
+        this.divisibility = mosaicsInfoSelected[0].mosaicInfo['properties'].divisibility;
+        this.levyMutable = mosaicsInfoSelected[0].mosaicInfo['properties'].levyMutable;
+        this.supplyMutable = mosaicsInfoSelected[0].mosaicInfo['properties'].supplyMutable;
+        this.transferable = mosaicsInfoSelected[0].mosaicInfo['properties'].transferable;
         this.supply = this.transactionService.amountFormatter(
           new UInt64([
-            mosaicsInfoSelected.mosaicInfo.supply['lower'],
-            mosaicsInfoSelected.mosaicInfo.supply['higher']
-          ]), mosaicsInfoSelected.mosaicInfo
+            mosaicsInfoSelected[0].mosaicInfo.supply['lower'],
+            mosaicsInfoSelected[0].mosaicInfo.supply['higher']
+          ]), mosaicsInfoSelected[0].mosaicInfo
         );
         const durationBlock = new UInt64([
-          mosaicsInfoSelected.mosaicInfo['properties']['duration']['lower'],
-          mosaicsInfoSelected.mosaicInfo['properties']['duration']['higher']
+          mosaicsInfoSelected[0].mosaicInfo['properties']['duration']['lower'],
+          mosaicsInfoSelected[0].mosaicInfo['properties']['duration']['higher']
         ]);
 
         const durationDays = this.transactionService.calculateDuration(durationBlock);

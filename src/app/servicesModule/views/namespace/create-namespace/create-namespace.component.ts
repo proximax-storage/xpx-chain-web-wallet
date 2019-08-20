@@ -510,7 +510,7 @@ export class CreateNamespaceComponent implements OnInit {
    * @param {MosaicsStorage} mosaic
    * @memberof CreateNamespaceComponent
    */
-  validateRentalFee(amount: number) {
+  async validateRentalFee(amount: number) {
     const accountInfo = this.walletService.filterAccountInfo();
     // console.log(accountInfo);
     if (
@@ -524,9 +524,9 @@ export class CreateNamespaceComponent implements OnInit {
       if (this.namespaceForm.get('namespaceRoot').value === '' || this.namespaceForm.get('namespaceRoot').value === '1') {
         if (filtered) {
           const invalidBalance = filtered.amount.compact() < amount;
-          const mosaic = this.mosaicServices.filterMosaic(filtered.id);
-          if (mosaic && mosaic.mosaicInfo) {
-            this.calculateRentalFee = this.transactionService.amountFormatter(amount, mosaic.mosaicInfo);
+          const mosaic = await this.mosaicServices.filterMosaics([filtered.id]);
+          if (mosaic && mosaic[0].mosaicInfo) {
+            this.calculateRentalFee = this.transactionService.amountFormatter(amount, mosaic[0].mosaicInfo);
           } else {
             this.sharedService.showWarning('', 'Your account is being updated, please wait');
             this.router.navigate([`/${AppConfig.routes.service}`]);

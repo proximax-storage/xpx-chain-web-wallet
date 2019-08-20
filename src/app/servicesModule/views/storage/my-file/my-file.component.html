@@ -37,7 +37,7 @@
         <!-- SELECT -->
         <div class="col-12 col-sm-6 col-md-6 col-lg-3 mx-auto pt-07rem">
           <div class="md-form mt-1rem mb-1rem caja-gris">
-         
+
             <mdb-select placeholder="Select type search" [(ngModel)]="typeSearch" [options]="optionTypeSearch" required
               class="colorful-select dropdown-default" mdbInputDirective [validateSuccess]="false"
               [validateError]="false">
@@ -171,9 +171,11 @@
               <div class="row">
                 <div class="col-11 col-sm-10 col-md-8 col-lg-6 mx-auto">
                   <div class="md-form form-sm mt-1rem mb-0rem">
-                    <input formControlName="encryptionPassword" mdbInputDirective mdbValidate [validateSuccess]="true"
-                      [validateError]="true" type="password" id="encryptionPassword"
-                      class="form-control form-control-sm input-border" placeholder="Enter password" />
+                    <input [maxlength]="configurationForm.passwordWallet.maxLength"
+                      [minlength]="configurationForm.passwordWallet.minLength" formControlName="encryptionPassword"
+                      mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password"
+                      id="encryptionPassword" class="form-control form-control-sm input-border"
+                      placeholder="Enter password" />
 
                     <!-- VALIDATION -->
                     <mdb-error *ngIf="
@@ -201,7 +203,8 @@
                 <button mdbBtn type="submit" rounded="true" mdbWavesEffect
                   class="f-w-600 background-btn pl-2rem pr-2rem"
                   [disabled]="dataSelected.encryptionType !== 1001 && dataSelected.encryptionType !== 1004" size="md">
-                  <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true" *ngIf="downloading"></span>
+                  <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
+                    *ngIf="downloading"></span>
                   <span class="fs-1-2em color-white">DOWNLOAD</span>
                 </button>
               </div>

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Validators, FormGroup, FormBuilder, AbstractControl } from '@angular/forms';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { Router } from '@angular/router';
-import { NamespaceId, MosaicId } from 'tsjs-xpx-chain-sdk';
+import { NamespaceId, MosaicId, UInt64 } from 'tsjs-xpx-chain-sdk';
 import { AppConfig } from '../../../../config/app.config';
 import { MosaicService } from '../../../../servicesModule/services/mosaic.service';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
@@ -21,6 +21,7 @@ import { Subscription } from 'rxjs';
 export class AliasMosaicsToNamespaceComponent implements OnInit {
 
   @BlockUI() blockUI: NgBlockUI;
+  currentBlock: number = 0;
   moduleName = 'Mosaics';
   componentName = 'LINK TO NAMESPACE';
   backToService = `/${AppConfig.routes.service}`;
@@ -63,6 +64,10 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
     this.createForm();
     this.getNameNamespace();
     this.getMosaic();
+
+    this.subscription.push(this.dataBridge.getBlock().subscribe(next => {
+      this.currentBlock = next;
+    }));
   }
 
   ngOnDestroy(): void {
@@ -164,35 +169,62 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
    * @memberof LinkingNamespaceToMosaicComponent
    */
   async getMosaic() {
-    const data = await this.mosaicService.searchMosaicsFromAccountStorage$();
-    // console.log(data);
+    const data = await this.mosaicService.filterMosaics();
+    console.log(data);
     const mosaicsSelect = this.mosaicSelect.slice(0);
-    data.forEach(element => {
-      const nameMosaic = (element.mosaicNames.names.length > 0) ? element.mosaicNames.names[0] : this.proximaxProvider.getMosaicId(element.idMosaic).toHex();
-      const addressOwner = this.proximaxProvider.createAddressFromPublicKey(
-        element.mosaicInfo.owner.publicKey,
-        element.mosaicInfo.owner.address['networkType']
-      );
+    if (data) {
+      data.forEach(element => {
+        const nameMosaic = (element.mosaicNames.names.length > 0) ? element.mosaicNames.names[0] : this.proximaxProvider.getMosaicId(element.idMosaic).toHex();
+        const addressOwner = this.proximaxProvider.createAddressFromPublicKey(
+          element.mosaicInfo.owner.publicKey,
+          element.mosaicInfo.owner.address['networkType']
+        );
 
-      const currentAccount = Object.assign({}, this.walletService.getCurrentAccount());
-      const isOwner = (
-        addressOwner.pretty() ===
-        this.proximaxProvider.createFromRawAddress(currentAccount.address).pretty()
-      ) ? true : false;
+        let expired = false;
+        let nameExpired = '';
 
-      if (isOwner) {
-        mosaicsSelect.push({
-          value: element.idMosaic,
-          label: nameMosaic,
-          selected: false,
-          disabled: false
-        });
-      }
-    });
+        const durationMosaic = new UInt64([
+          element.mosaicInfo['properties']['duration']['lower'],
+          element.mosaicInfo['properties']['duration']['higher']
+        ]);
 
+        const createdBlock = new UInt64([
+          element.mosaicInfo.height.lower,
+          element.mosaicInfo.height.higher
+        ]);
+
+
+        if (durationMosaic.compact() > 0) {
+          if (this.currentBlock >= durationMosaic.compact() + createdBlock.compact()) {
+            expired = true;
+            nameExpired = ' - Expired';
+          }
+        }
+
+        const currentAccount = Object.assign({}, this.walletService.getCurrentAccount());
+        const isOwner = (
+          addressOwner.pretty() ===
+          this.proximaxProvider.createFromRawAddress(currentAccount.address).pretty()
+        ) ? true : false;
+
+        if (isOwner) {
+          mosaicsSelect.push({
+            value: element.idMosaic,
+            label: `${nameMosaic}${nameExpired}`,
+            selected: false,
+            disabled: expired
+          });
+        }
+      });
+    }
     this.mosaicSelect = mosaicsSelect;
   }
 
+  /**
+   *
+   *
+   * @memberof AliasMosaicsToNamespaceComponent
+   */
   getTransactionStatus() {
     this.subscribe['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
       statusTransaction => {
@@ -240,15 +272,23 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
 
   get input() { return this.linkingNamespaceToMosaic.get('password'); }
 
+  /**
+   *
+   *
+   * @memberof AliasMosaicsToNamespaceComponent
+   */
   resetForm() {
     this.linkingNamespaceToMosaic.get('namespace').patchValue('1');
     this.linkingNamespaceToMosaic.get('mosaic').patchValue('1');
     this.linkingNamespaceToMosaic.get('password').patchValue('');
   }
 
+  /**
+   *
+   *
+   * @memberof AliasMosaicsToNamespaceComponent
+   */
   send() {
-    /* const namespaceValue = this.linkingNamespaceToMosaic.get('namespace').value;
-     const mosaicValue = this.linkingNamespaceToMosaic.get('mosaic').value;*/
     if (this.linkingNamespaceToMosaic.valid && !this.blockSend) {
       this.blockSend = true;
       const common = {
