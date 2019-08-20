@@ -127,9 +127,17 @@ export class ExtendDurationNamespaceComponent implements OnInit {
    * @memberof ExtendDurationNamespaceComponent
    */
   clearForm() {
-    this.extendDurationNamespaceForm.get('namespaceRoot').patchValue('', { emitEvent: false });
-    this.extendDurationNamespaceForm.get('duration').patchValue('', { emitEvent: false });
-    this.extendDurationNamespaceForm.get('password').patchValue('', { emitEvent: false });
+    this.extendDurationNamespaceForm.reset({
+      namespaceRoot: '',
+      duration: '',
+      password: ''
+    },
+    {
+      emitEvent: false
+    });
+    // this.extendDurationNamespaceForm.get('namespaceRoot').patchValue('', { emitEvent: false });
+    // this.extendDurationNamespaceForm.get('duration').patchValue('', { emitEvent: false });
+    // this.extendDurationNamespaceForm.get('password').patchValue('', { emitEvent: false });
   }
 
   /**
@@ -161,7 +169,7 @@ export class ExtendDurationNamespaceComponent implements OnInit {
         this.proximaxProvider.announce(signedTransaction).subscribe(
           () => {
             this.blockBtnSend = false;
-            this.resetForm();
+            this.clearForm();
             this.startHeight = 0;
             this.endHeight = 0;
             if (this.statusTransaction === false) {
@@ -172,7 +180,7 @@ export class ExtendDurationNamespaceComponent implements OnInit {
             this.setTimeOutValidate(signedTransaction.hash);
           }, () => {
             this.blockBtnSend = false;
-            this.resetForm();
+            this.clearForm();
           }
         );
       } else {
@@ -281,18 +289,6 @@ export class ExtendDurationNamespaceComponent implements OnInit {
       this.endHeight = 0;
     }
   }
-
-  /**
-   *
-   *
-   * @memberof ExtendDurationNamespaceComponent
-   */
-  resetForm() {
-    this.extendDurationNamespaceForm.get('namespaceRoot').patchValue('1');
-    this.extendDurationNamespaceForm.get('duration').patchValue('');
-    this.extendDurationNamespaceForm.get('password').patchValue('');
-  }
-
 
   /**
    *

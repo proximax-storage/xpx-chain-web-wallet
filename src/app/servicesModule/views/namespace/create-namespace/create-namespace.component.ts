@@ -188,10 +188,16 @@ export class CreateNamespaceComponent implements OnInit {
    * @memberof CreateNamespaceComponent
    */
   clearForm() {
-    this.namespaceForm.get('name').patchValue('');
-    this.namespaceForm.get('namespaceRoot').patchValue('1');
-    this.namespaceForm.get('duration').patchValue('');
-    this.namespaceForm.get('password').patchValue('');
+    this.namespaceForm.reset({
+      name: '',
+      namespaceRoot: '1',
+      duration: '',
+      password: ''
+    },
+    {
+      emitEvent:false
+    });
+    this.statusButtonNamespace = true;
   }
 
   /**
@@ -219,11 +225,11 @@ export class CreateNamespaceComponent implements OnInit {
               this.getTransactionStatus();
             }
             this.blockBtnSend = false;
-            this.resetForm();
+            this.clearForm();
             this.setTimeOutValidate(signedTransaction.hash);
           }, () => {
             this.blockBtnSend = false;
-            this.resetForm()
+            this.clearForm()
             this.sharedService.showError('', 'Error connecting to the node');
           }
         );
@@ -412,19 +418,6 @@ export class CreateNamespaceComponent implements OnInit {
       this.validateForm = true;
       return true;
     }
-  }
-
-  /**
-   *
-   *
-   * @memberof CreateNamespaceComponent
-   */
-  resetForm() {
-    this.namespaceForm.get('name').patchValue('');
-    this.namespaceForm.get('duration').patchValue(1);
-    this.namespaceForm.get('password').patchValue('');
-    this.namespaceForm.get('namespaceRoot').patchValue('1');
-    this.statusButtonNamespace = true;
   }
 
   /**
