@@ -21,15 +21,15 @@ export const environment = {
   },
   blockchainConnection: {
     host: 'bctestnet1-cow.xpxsirius.io',
-    port: 3000,
-    protocol: 'http',
+    port: 443,
+    protocol: 'https',
     useSecureMessage: false
   },
   storageConnection: {
     host: 'ipfs1-dev.xpxsirius.io',
-    port: 5001,
+    port: 443,
     options: {
-      protocol: 'http'
+      protocol: 'https'
     }
   },
   namespaceRentalFeeSink: {
