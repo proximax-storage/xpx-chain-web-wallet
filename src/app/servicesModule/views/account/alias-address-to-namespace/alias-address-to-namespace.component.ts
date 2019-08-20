@@ -74,8 +74,13 @@ export class AliasAddressToNamespaceComponent implements OnInit {
   }
 
   clearForm() {
-    this.LinkToNamespaceForm.get('namespace').patchValue('1');
-    this.LinkToNamespaceForm.get('password').patchValue('');
+    this.LinkToNamespaceForm.reset({
+      namespace: '',
+      password: ''
+    },
+    {
+      emitEvent: false
+    });
   }
 
   /**
@@ -219,7 +224,7 @@ export class AliasAddressToNamespaceComponent implements OnInit {
         this.proximaxProvider.announce(this.transactionSigned).subscribe(
           next => {
             this.blockSend = false;
-            this.resetForm();
+            this.clearForm();
             if (this.subscribe['transactionStatus'] === undefined || this.subscribe['transactionStatus'] === null) {
               this.getTransactionStatus();
             }
@@ -231,15 +236,5 @@ export class AliasAddressToNamespaceComponent implements OnInit {
         this.blockSend = false;
       }
     }
-  }
-
-  /**
-   *
-   *
-   * @memberof AliasAddressToNamespaceComponent
-   */
-  resetForm() {
-    this.LinkToNamespaceForm.get('namespace').patchValue('');
-    this.LinkToNamespaceForm.get('password').patchValue('');
   }
 }

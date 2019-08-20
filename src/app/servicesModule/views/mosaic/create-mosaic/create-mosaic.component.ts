@@ -104,13 +104,18 @@ export class CreateMosaicComponent implements OnInit {
    * @memberof CreateMosaicComponent
    */
   clearForm() {
-    this.mosaicForm.get('deltaSupply').patchValue('');
-    this.mosaicForm.get('password').patchValue('');
-    this.mosaicForm.get('duration').patchValue('');
-    this.mosaicForm.get('divisibility').patchValue('');
-    this.mosaicForm.get('transferable').patchValue(false);
-    this.mosaicForm.get('supplyMutable').patchValue(false);
-    this.mosaicForm.get('levyMutable').patchValue(false);
+    this.mosaicForm.reset({
+      deltaSupply: '',
+      password: '',
+      duration: '',
+      divisibility: '',
+      transferable: false,
+      supplyMutable: false,
+      levyMutable: false
+    },
+    {
+      emitEvent: false
+    });
   }
 
   send() {
@@ -165,7 +170,7 @@ export class CreateMosaicComponent implements OnInit {
         this.proximaxProvider.announce(signedTransaction).subscribe(
           async x => {
             this.blockSend = false;
-            this.mosaicForm.reset();
+            this.clearForm();
             if (this.subscribe['transactionStatus'] === undefined || this.subscribe['transactionStatus'] === null) {
               this.getTransactionStatus();
             }

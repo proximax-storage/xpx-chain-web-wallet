@@ -91,9 +91,17 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
   }
 
   clearForm() {
-    this.linkingNamespaceToMosaic.get('namespace').patchValue('1');
-    this.linkingNamespaceToMosaic.get('mosaic').patchValue('1');
-    this.linkingNamespaceToMosaic.get('password').patchValue('');
+    this.linkingNamespaceToMosaic.reset({
+      namespace: '',
+      mosaic: '',
+      password: ''
+    },
+    {
+      emitEvent: false
+    });
+    // this.linkingNamespaceToMosaic.get('namespace').patchValue('1');
+    // this.linkingNamespaceToMosaic.get('mosaic').patchValue('1');
+    // this.linkingNamespaceToMosaic.get('password').patchValue('');
   }
 
   /**
@@ -289,17 +297,6 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
    *
    * @memberof AliasMosaicsToNamespaceComponent
    */
-  resetForm() {
-    this.linkingNamespaceToMosaic.get('namespace').patchValue('1');
-    this.linkingNamespaceToMosaic.get('mosaic').patchValue('1');
-    this.linkingNamespaceToMosaic.get('password').patchValue('');
-  }
-
-  /**
-   *
-   *
-   * @memberof AliasMosaicsToNamespaceComponent
-   */
   send() {
     if (this.linkingNamespaceToMosaic.valid && !this.blockSend) {
       this.blockSend = true;
@@ -318,7 +315,7 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
         this.proximaxProvider.announce(signedTransaction).subscribe(
           x => {
             this.blockSend = false;
-            this.resetForm();
+            this.clearForm();
             this.blockUI.stop(); // Stop blocking
             // this.sharedService.showSuccess('success', 'Transaction sent');
             if (this.subscribe['transactionStatus'] === undefined || this.subscribe['transactionStatus'] === null) {
@@ -327,7 +324,7 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
           },
           err => {
             this.blockSend = false;
-            this.resetForm();
+            this.clearForm();
             this.blockUI.stop(); // Stop blocking
             this.sharedService.showError('', 'An unexpected error has occurred');
           });
