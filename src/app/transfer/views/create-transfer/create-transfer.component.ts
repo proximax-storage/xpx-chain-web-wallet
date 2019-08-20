@@ -306,8 +306,8 @@ export class CreateTransferComponent implements OnInit {
     this.formTransfer = this.fb.group({
       accountRecipient: ['', [
         Validators.required,
-        Validators.minLength(this.configurationForm.accountRecipient.minLength),
-        Validators.maxLength(this.configurationForm.accountRecipient.maxLength)
+        Validators.minLength(this.configurationForm.address.minLength),
+        Validators.maxLength(this.configurationForm.address.maxLength)
       ]],
       amountXpx: ['', [
         Validators.maxLength(this.configurationForm.amount.maxLength)

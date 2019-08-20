@@ -64,23 +64,40 @@ export class AliasAddressToNamespaceComponent implements OnInit {
     });
   }
 
+  /**
+   *
+   *
+   * @memberof AliasAddressToNamespaceComponent
+   */
   createForm() {
     this.LinkToNamespaceForm = this.fb.group({
       namespace: ['', [Validators.required]],
-      address: ['', [Validators.required, Validators.minLength(40), Validators.maxLength(46)]],
+      address: ['', [
+        Validators.required,
+        Validators.minLength(this.configurationForm.address.minLength),
+        Validators.maxLength(this.configurationForm.address.maxLength)
+      ]],
       password: ['', [Validators.required, Validators.minLength(this.configurationForm.passwordWallet.minLength),
       Validators.maxLength(this.configurationForm.passwordWallet.maxLength)]]
     });
   }
 
+  /**
+   *
+   *
+   * @memberof AliasAddressToNamespaceComponent
+   */
   clearForm() {
+    const valueAddress = this.LinkToNamespaceForm.get('address').value;
     this.LinkToNamespaceForm.reset({
       namespace: '',
       password: ''
-    },
-    {
-      emitEvent: false
-    });
+    }, {
+        emitEvent: false
+      }
+    );
+
+    this.LinkToNamespaceForm.get('address').setValue(valueAddress, { emitEvent: false });
   }
 
   /**

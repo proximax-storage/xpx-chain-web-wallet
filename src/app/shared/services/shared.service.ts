@@ -8,7 +8,7 @@ import { ToastService } from 'ng-uikit-pro-standard';
 export class SharedService {
 
   configurationForm: ConfigurationForm = {
-    accountRecipient: {
+    address: {
       minLength: 40, maxLength: 46
     },
     nameWallet: {
@@ -96,7 +96,7 @@ export class SharedService {
     this.toastrService.success(bodyMessage, '', options);
   }
 
-  showSuccessTimeout(title: string, bodyMessage: string, timeout:number) {
+  showSuccessTimeout(title: string, bodyMessage: string, timeout: number) {
     const options = { closeButton: true, tapToDismiss: false, toastClass: 'toastSuccess', timeOut: timeout };
     this.toastrService.success(bodyMessage, '', options);
   }
@@ -120,7 +120,7 @@ export class SharedService {
 
 
 export interface ConfigurationForm {
-  accountRecipient?: {
+  address?: {
     minLength: number;
     maxLength: number;
   };
