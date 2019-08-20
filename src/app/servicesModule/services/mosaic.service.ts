@@ -574,9 +574,11 @@ export class MosaicService {
    */
   filterMosaic(mosaicId: MosaicId): MosaicsStorage {
     const mosaicsStorage = this.getMosaicsFromStorage();
+    console.log(mosaicsStorage);
     if (mosaicsStorage !== null && mosaicsStorage !== undefined) {
       if (mosaicsStorage.length > 0) {
         const filtered = mosaicsStorage.find(element => {
+          
           return this.proximaxProvider.getMosaicId(element.idMosaic).toHex() === mosaicId.toHex();
         });
 
