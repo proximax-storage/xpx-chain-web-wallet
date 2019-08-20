@@ -3,8 +3,6 @@ import {
   MosaicInfo,
   MosaicId,
   MosaicView,
-  NamespaceName,
-  NamespaceInfo,
   NamespaceId
 } from "tsjs-xpx-chain-sdk";
 import { MosaicNames } from "tsjs-xpx-chain-sdk/dist/src/model/mosaic/MosaicNames";
@@ -217,7 +215,7 @@ export class MosaicService {
    * @returns {Observable<boolean>}
    * @memberof MosaicService
    */
-  getMosaicChanged(): Observable<boolean> {
+  getMosaicChanged(): Observable<number> {
     return this.mosaicChanged$;
   }
 
@@ -614,7 +612,7 @@ export class MosaicService {
     if (mosaicsStorage !== null && mosaicsStorage !== undefined) {
       if (mosaicsStorage.length > 0) {
         const filtered = mosaicsStorage.find(element => {
-          
+
           return this.proximaxProvider.getMosaicId(element.idMosaic).toHex() === mosaicId.toHex();
         });
 
