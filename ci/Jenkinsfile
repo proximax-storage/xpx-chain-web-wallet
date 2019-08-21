@@ -80,7 +80,7 @@ pipeline {
         success {
           slackSend channel: '#devops',
             color: 'good',
-            message: "Branch *${env.GIT_BRANCH}* build of *${currentBuild.fullDisplayName}* completed successfully :100:\nDeployed to http://bctestnetwallet.xpxsirius.io"
+            message: "Branch *${env.GIT_BRANCH}* build of *${currentBuild.fullDisplayName}* completed successfully :100:\nDeployed to https://bcstagingwallet.xpxsirius.io"
         }
         failure {
           slackSend channel: '#devops',
