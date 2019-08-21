@@ -35,7 +35,7 @@ export class MosaicAliasComponent implements OnInit {
     this.typeTransactionHex = `${this.mosaicAlias.data['type'].toString(16).toUpperCase()}`;
     const mosaicId = new MosaicId([this.mosaicAlias.data['mosaicId'].id.lower, this.mosaicAlias.data['mosaicId'].id.higher]);
     this.mosaicId = mosaicId.toHex();
-    const mosaicInfo = await this.mosaicService.searchMosaics([mosaicId]);
+    const mosaicInfo = await this.mosaicService.filterMosaics([mosaicId]);
     if (mosaicInfo !== null && mosaicInfo !== undefined && mosaicInfo.length > 0) {
       this.mosaicName = (mosaicInfo[0].mosaicNames.names.length > 0) ? mosaicInfo[0].mosaicNames.names[0] : '';
     }

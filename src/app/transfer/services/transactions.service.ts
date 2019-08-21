@@ -462,7 +462,7 @@ export class TransactionsService {
       // console.log(accountInfo);
       if (accountInfo !== null && accountInfo !== undefined) {
         //Search mosaics
-        this.mosaicServices.searchMosaics(accountInfo.mosaics.map(next => next.id));
+        this.mosaicServices.searchInfoMosaics(accountInfo.mosaics.map(next => next.id));
       }
       return accountInfo;
     } catch (error) {
@@ -520,13 +520,12 @@ export class TransactionsService {
           this.walletService.setAccountsInfo(accountsInfo, true);
           counter = counter + 1;
           if (accounts.length === counter) {
-            console.log('este es el último búcle');
+            console.log('FIRE----------------> ', mosaicsIds);
             this.mosaicServices.searchInfoMosaics(mosaicsIds);
           }
         }, error => {
           counter = counter + 1;
           if (accounts.length === i) {
-            console.log('este es el último búcle');
           }
         }
       );

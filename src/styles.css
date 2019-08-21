@@ -943,6 +943,10 @@ input.form-control.validate-success.ng-valid.ng-touched,
   color: #e06e38 !important;
 }
 
+.color-error-message {
+  color: #e06e38 !important;
+}
+
 .success-message {
   color: #2BA1B9 !important;
 }

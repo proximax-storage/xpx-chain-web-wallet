@@ -1,29 +1,29 @@
 <div class="container mt-3rem mb-2rem animated fadeIn">
-    <div class="row">
-      <div class="col-12 col-md-8">
-        <span class="fs-1rem txt-a-center line-h-1-2em color-grey">{{moduleName}}</span>
-        <span class="fs-1rem txt-a-center line-h-1-2em color-grey"> > </span>
-        <span class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">{{componentName}}</span>
-      </div>
-  
-      <div class="col-12 col-md-4 d-flex justify-content-start justify-content-md-end">
-        <a class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio" [routerLink]="[backToService]">
-          <span>Back to Services</span>
-        </a>
-      </div>
+  <div class="row">
+    <div class="col-12 col-md-8">
+      <span class="fs-1rem txt-a-center line-h-1-2em color-grey">{{moduleName}}</span>
+      <span class="fs-1rem txt-a-center line-h-1-2em color-grey"> > </span>
+      <span class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">{{componentName}}</span>
     </div>
-    <div class="row">
-      <div class="col-12">
-        <hr class="mt-03rem mb-05rem">
-      </div>
+
+    <div class="col-12 col-md-4 d-flex justify-content-start justify-content-md-end">
+      <a class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio" [routerLink]="[backToService]">
+        <span>Back to Services</span>
+      </a>
     </div>
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <hr class="mt-03rem mb-05rem">
+    </div>
+  </div>
 
   <form [formGroup]="LinkToNamespaceForm" (ngSubmit)="send()">
     <div class="row mt-1-5rem">
       <div class="col-11 col-sm-10 col-lg-8 mx-auto">
-        <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
-          class="selectWrapper" [items]="namespaceSelect" formControlName="namespace" bindLabel="label"
-          bindValue="value" placeholder="Select namespace"></ng-select>
+        <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" class="selectWrapper"
+          [items]="namespaceSelect" formControlName="namespace" bindLabel="label" bindValue="value"
+          placeholder="Select namespace"></ng-select>
         <mdb-error class="mt-1rem ml-1rem"
           *ngIf="validateInput('namespace').invalid && (validateInput('namespace').dirty || validateInput('namespace').touched)">
           <span>Select namespace</span>
@@ -34,10 +34,11 @@
     <div class="row">
       <div class="col-11 col-sm-10 col-lg-8 mx-auto">
         <div class="md-form form-sm">
-          <input formControlName="address" readonly required mdbInputDirective mdbValidate
-            [validateSuccess]="true" [validateError]="true" type="text" id="address"
-            class="form-control form-control-sm input-border" placeholder="Address">
-  
+          <input formControlName="address" readonly required mdbInputDirective mdbValidate [validateSuccess]="true"
+            [validateError]="true" type="text" id="address" class="form-control form-control-sm input-border"
+            placeholder="Address" [maxlength]="configurationForm.address.maxLength"
+            [minlength]="configurationForm.address.minLength">
+
           <!-- VALIDATION -->
           <mdb-error
             *ngIf="validateInput('address', '').invalid && (validateInput('address', '').dirty || validateInput('address', '').touched)">
@@ -50,7 +51,8 @@
     <div class="row">
       <div class="col-11 col-sm-10 col-lg-8 mx-auto">
         <div class="box-grey txt-a-center">
-          <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20" alt="">&nbsp;
+          <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20"
+            alt="">&nbsp;
           <span>Fee: 0.000000 XPX</span>
         </div>
       </div>
@@ -61,8 +63,8 @@
         <div class="md-form form-sm">
           <input [maxlength]="configurationForm.passwordWallet.maxLength"
             [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" required
-            mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password"
-            id="password" class="form-control form-control-sm input-border" placeholder="Enter password">
+            mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password" id="password"
+            class="form-control form-control-sm input-border" placeholder="Enter password">
 
           <!-- VALIDATION -->
           <mdb-error
@@ -83,9 +85,10 @@
       </div>
 
       <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-        <button mdbBtn type="submit" rounded="true" [disabled]="!LinkToNamespaceForm.valid" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
-          size="md">
-          <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true" *ngIf="blockSend"></span>
+        <button mdbBtn type="submit" rounded="true" [disabled]="!LinkToNamespaceForm.valid" mdbWavesEffect
+          class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
+          <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
+            *ngIf="blockSend"></span>
           <span class="fs-1-2em color-white">CREATE</span>
         </button>
       </div>

@@ -71,8 +71,7 @@
               <input mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
                 class="form-control form-control-sm input-border" style="border: 2px solid #2ba1b9;"
                 placeholder="Recipient" formControlName="accountRecipient" id="recipient-invalid-{{invalidRecipient}}"
-                [maxlength]="configurationForm.accountRecipient.maxLength"
-                [minlength]="configurationForm.accountRecipient.minLength">
+                [maxlength]="configurationForm.address.maxLength" [minlength]="configurationForm.address.minLength">
               <mdb-error
                 *ngIf="validateInput('accountRecipient').invalid && (validateInput('accountRecipient').dirty || validateInput('accountRecipient').touched)">
                 <span>Invalid Recipient</span>
@@ -347,10 +346,9 @@
             <div class="row">
               <div class="col-11 col-sm-10 col-lg-8 mx-auto">
                 <div class="md-form form-sm">
-                  <input required mdbInputDirective mdbValidate [validateSuccess]="true"
-                    [validateError]="true" type="text" id="user" [(ngModel)]="formContact.name" [ngModelOptions]="{standalone: true}" 
-                     class="form-control form-control-sm input-border"
-                    placeholder="Name">
+                  <input required mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
+                    type="text" id="user" [(ngModel)]="formContact.name" [ngModelOptions]="{standalone: true}"
+                    class="form-control form-control-sm input-border" placeholder="Name">
                 </div>
               </div>
             </div>
@@ -358,9 +356,9 @@
             <div class="row">
               <div class="col-11 col-sm-10 col-lg-8 mx-auto">
                 <div class="md-form form-sm">
-                  <input required mdbInputDirective readonly mdbValidate [validateSuccess]="true"
-                    [validateError]="true" type="text" [(ngModel)]="formContact.address" [ngModelOptions]="{standalone: true}" id="address" class="form-control form-control-sm input-border"
-                    placeholder="address">
+                  <input required mdbInputDirective readonly mdbValidate [validateSuccess]="true" [validateError]="true"
+                    type="text" [(ngModel)]="formContact.address" [ngModelOptions]="{standalone: true}" id="address"
+                    class="form-control form-control-sm input-border" placeholder="address">
                 </div>
               </div>
             </div>

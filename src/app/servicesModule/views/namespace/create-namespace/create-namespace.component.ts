@@ -67,7 +67,6 @@ export class CreateNamespaceComponent implements OnInit {
   blockBtnSend: boolean = false;
   calculateRentalFee: any = '0.000000';
   rentalFee = 100000;
-  maskData = '0*';
   subscription: Subscription[] = [];
   transactionStatus: boolean = false;
 
@@ -189,10 +188,16 @@ export class CreateNamespaceComponent implements OnInit {
    * @memberof CreateNamespaceComponent
    */
   clearForm() {
-    this.namespaceForm.get('name').patchValue('');
-    this.namespaceForm.get('namespaceRoot').patchValue('1');
-    this.namespaceForm.get('duration').patchValue('');
-    this.namespaceForm.get('password').patchValue('');
+    this.namespaceForm.reset({
+      name: '',
+      namespaceRoot: '1',
+      duration: '',
+      password: ''
+    },
+    {
+      emitEvent:false
+    });
+    this.statusButtonNamespace = true;
   }
 
   /**
@@ -220,11 +225,11 @@ export class CreateNamespaceComponent implements OnInit {
               this.getTransactionStatus();
             }
             this.blockBtnSend = false;
-            this.resetForm();
+            this.clearForm();
             this.setTimeOutValidate(signedTransaction.hash);
           }, () => {
             this.blockBtnSend = false;
-            this.resetForm()
+            this.clearForm()
             this.sharedService.showError('', 'Error connecting to the node');
           }
         );
@@ -404,7 +409,7 @@ export class CreateNamespaceComponent implements OnInit {
       return false;
     }
 
-    let pattern = /^[A-Za-z-9.\-_]*$/;
+    let pattern = /^[A-Za-z0-9.\-_]*$/;
     // Test if has special chars or space excluding hyphens
     if (pattern.test(namespace) == false) {
       this.validateForm = false;
@@ -413,19 +418,6 @@ export class CreateNamespaceComponent implements OnInit {
       this.validateForm = true;
       return true;
     }
-  }
-
-  /**
-   *
-   *
-   * @memberof CreateNamespaceComponent
-   */
-  resetForm() {
-    this.namespaceForm.get('name').patchValue('');
-    this.namespaceForm.get('duration').patchValue(1);
-    this.namespaceForm.get('password').patchValue('');
-    this.namespaceForm.get('namespaceRoot').patchValue('1');
-    this.statusButtonNamespace = true;
   }
 
   /**
@@ -510,7 +502,7 @@ export class CreateNamespaceComponent implements OnInit {
    * @param {MosaicsStorage} mosaic
    * @memberof CreateNamespaceComponent
    */
-  validateRentalFee(amount: number) {
+  async validateRentalFee(amount: number) {
     const accountInfo = this.walletService.filterAccountInfo();
     // console.log(accountInfo);
     if (
@@ -524,9 +516,9 @@ export class CreateNamespaceComponent implements OnInit {
       if (this.namespaceForm.get('namespaceRoot').value === '' || this.namespaceForm.get('namespaceRoot').value === '1') {
         if (filtered) {
           const invalidBalance = filtered.amount.compact() < amount;
-          const mosaic = this.mosaicServices.filterMosaic(filtered.id);
-          if (mosaic && mosaic.mosaicInfo) {
-            this.calculateRentalFee = this.transactionService.amountFormatter(amount, mosaic.mosaicInfo);
+          const mosaic = await this.mosaicServices.filterMosaics([filtered.id]);
+          if (mosaic && mosaic[0].mosaicInfo) {
+            this.calculateRentalFee = this.transactionService.amountFormatter(amount, mosaic[0].mosaicInfo);
           } else {
             this.sharedService.showWarning('', 'Your account is being updated, please wait');
             this.router.navigate([`/${AppConfig.routes.service}`]);
@@ -541,19 +533,19 @@ export class CreateNamespaceComponent implements OnInit {
             // this.namespaceForm.controls['name'].enable();
             // this.namespaceForm.controls['password'].enable();
           }
-        } else {
+        } /*else {
           this.sharedService.showWarning('', 'You do not have enough balance in the default account');
           this.router.navigate([`/${AppConfig.routes.service}`]);
-        }
+        }*/
       } else {
         this.calculateRentalFee = '10.000000';
         this.insufficientBalance = false;
         this.namespaceForm.controls['name'].enable();
         this.namespaceForm.controls['password'].enable();
       }
-    } else {
+    }/* else {
       this.sharedService.showWarning('', 'You do not have enough balance in the default account');
       this.router.navigate([`/${AppConfig.routes.service}`]);
-    }
+    }*/
   }
 }

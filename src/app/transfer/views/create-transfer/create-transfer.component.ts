@@ -65,7 +65,8 @@ export class CreateTransferComponent implements OnInit {
   // subscribe = ['accountInfo', 'transactionStatus', 'char', 'block'];
   title = 'Make a transfer';
   transactionStatus: boolean = false;
-  transactionSigned: SignedTransaction = null;
+  transactionSigned: SignedTransaction[] = [];
+  transactionReady: SignedTransaction[] = [];
   subscription: Subscription[] = [];
   getBooksAddress: any;
 
@@ -213,7 +214,7 @@ export class CreateTransferComponent implements OnInit {
     const mosaicsSelect: any = [];
     if (accountInfo !== undefined && accountInfo !== null) {
       if (accountInfo.mosaics.length > 0) {
-        const mosaics = await this.mosaicServices.searchMosaics(accountInfo.mosaics.map(n => n.id));
+        const mosaics = await this.mosaicServices.filterMosaics(accountInfo.mosaics.map(n => n.id));
         if (mosaics.length > 0) {
           for (let mosaic of mosaics) {
             // console.log('----mosaic---', mosaic);
@@ -305,8 +306,8 @@ export class CreateTransferComponent implements OnInit {
     this.formTransfer = this.fb.group({
       accountRecipient: ['', [
         Validators.required,
-        Validators.minLength(this.configurationForm.accountRecipient.minLength),
-        Validators.maxLength(this.configurationForm.accountRecipient.maxLength)
+        Validators.minLength(this.configurationForm.address.minLength),
+        Validators.maxLength(this.configurationForm.address.maxLength)
       ]],
       amountXpx: ['', [
         Validators.maxLength(this.configurationForm.amount.maxLength)
@@ -382,13 +383,44 @@ export class CreateTransferComponent implements OnInit {
     ));
   }
 
-
   /**
    *
    *
    * @memberof CreateTransferComponent
    */
   getTransactionStatus() {
+    // Get transaction status
+    this.subscription.push(this.dataBridge.getTransactionStatus().subscribe(
+      statusTransaction => {
+        if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
+          for (let element of this.transactionSigned) {
+            const statusTransactionHash = (statusTransaction['type'] === 'error') ? statusTransaction['data'].hash : statusTransaction['data'].transactionInfo.hash;
+            const match = statusTransactionHash === element.hash;
+            if (match) {
+              this.transactionReady.push(element);
+            }
+
+            if (statusTransaction['type'] === 'confirmed' && match) {
+              this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransactionHash);
+              this.sharedService.showSuccess('', 'Transaction confirmed');
+            } else if (statusTransaction['type'] === 'unconfirmed' && match) {
+              this.sharedService.showInfo('', 'Transaction unconfirmed');
+            } else if (match) {
+              this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransactionHash);
+              this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
+            }
+          }
+        }
+      }
+    ));
+  }
+
+  /**
+   *
+   *
+   * @memberof CreateTransferComponent
+   */
+  /*getTransactionStatus() {
     // Get transaction status
     //this.subscribe['transactionStatus'] =
     this.subscription.push(this.dataBridge.getTransactionStatus().subscribe(
@@ -410,7 +442,7 @@ export class CreateTransferComponent implements OnInit {
         }
       }
     ));
-  }
+  }*/
 
   /**
    *
@@ -420,12 +452,14 @@ export class CreateTransferComponent implements OnInit {
    * @param {number} position
    * @memberof CreateTransferComponent
    */
-  amountOtherMosaicChanged(amount: string, mosaicId: string | [], position: number) {
+  async amountOtherMosaicChanged(amount: string, mosaicId: string | [], position: number) {
     if (amount !== null && amount !== undefined) {
-      const mosaic = this.mosaicServices.filterMosaic(new MosaicId(mosaicId));
+      const mosaic = await this.mosaicServices.filterMosaics([new MosaicId(mosaicId)]);
+      console.log(mosaic);
+
       const a = Number(amount);
-      this.boxOtherMosaics[position].amountToBeSent = String((mosaic !== null) ? this.transactionService.amountFormatter(a, mosaic.mosaicInfo) : a);
-      this.validateAmountToTransfer(amount, mosaic, position);
+      this.boxOtherMosaics[position].amountToBeSent = String((mosaic !== null) ? this.transactionService.amountFormatter(a, mosaic[0].mosaicInfo) : a);
+      this.validateAmountToTransfer(amount, mosaic[0], position);
     } else {
       this.boxOtherMosaics[position].amountToBeSent = '0';
     }
@@ -551,7 +585,26 @@ export class CreateTransferComponent implements OnInit {
     this.showContacts = false;
     // this.subscribe = ['accountsInfo', 'transactionStatus', 'char', 'block'];
     this.title = 'Make a transfer';
-    this.transactionSigned = null;
+  }
+
+
+  /**
+   *
+   *
+   * @param {string} hash
+   * @memberof CreateTransferComponent
+   */
+  setTimeOutValidate(hash: string) {
+    setTimeout(() => {
+      let exist = false;
+      for (let element of this.transactionReady) {
+        if (hash === element.hash) {
+          exist = true;
+        }
+      }
+
+      (exist) ? '' : this.sharedService.showWarning('', 'An error has occurred');
+    }, 5000);
   }
 
   /**
@@ -575,7 +628,7 @@ export class CreateTransferComponent implements OnInit {
         };
 
         const transferBuilder = this.transactionService.buildTransferTransaction(params);
-        this.transactionSigned = transferBuilder.signedTransaction;
+        this.transactionSigned.push(transferBuilder.signedTransaction);
         this.getBooksAddress = this.serviceModuleService.getBooksAddress();
         if (this.getBooksAddress) {
           const contact = this.getBooksAddress.find(el => el.value === this.formTransfer.get("accountRecipient").value);

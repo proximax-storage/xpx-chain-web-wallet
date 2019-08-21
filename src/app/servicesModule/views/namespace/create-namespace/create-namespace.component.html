@@ -26,7 +26,7 @@
         <div class="row mt-1rem">
           <div class="col-11 mx-auto">
             <div class="md-form form-sm">
-              <input mask="S{18}" [maxlength]="configurationForm.namespaceName.maxLength"
+              <input [maxlength]="configurationForm.namespaceName.maxLength"
                 [minlength]="configurationForm.namespaceName.minLength" formControlName="name" required
                 mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text" id="name"
                 class="form-control form-control-sm input-border" placeholder="Enter name"
