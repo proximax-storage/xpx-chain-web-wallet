@@ -200,14 +200,28 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
       case PrivacyType.PASSWORD:
         this.showEncryptionPassword = true;
         this.showEncryptionKeyPair = false;
-        this.uploadForm.controls['encryptionPassword'].setValidators([Validators.required, Validators.minLength(10), Validators.maxLength(20)]);
+
+        this.uploadForm.controls['encryptionPassword'].setValidators([
+          Validators.minLength(this.configurationForm.passwordWallet.minLength),
+          Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
+        ]);
 
         break;
       case PrivacyType.NEM_KEYS:
         this.showEncryptionPassword = false;
         this.showEncryptionKeyPair = true;
-        this.uploadForm.controls['recipientPrivateKey'].setValidators([Validators.required, Validators.minLength(64), Validators.maxLength(64)]);
-        this.uploadForm.controls['recipientPublicKey'].setValidators([Validators.required, Validators.minLength(64), Validators.maxLength(64)]);
+
+        this.uploadForm.controls['recipientPrivateKey'].setValidators([
+          Validators.required,
+          Validators.minLength(this.configurationForm.privateKey.minLength),
+          Validators.maxLength(this.configurationForm.privateKey.maxLength)
+        ]);
+
+        this.uploadForm.controls['recipientPublicKey'].setValidators([
+          Validators.required,
+          Validators.minLength(this.configurationForm.publicKey.minLength),
+          Validators.maxLength(this.configurationForm.publicKey.maxLength)
+        ]);
         break;
       default:
         this.showEncryptionPassword = false;

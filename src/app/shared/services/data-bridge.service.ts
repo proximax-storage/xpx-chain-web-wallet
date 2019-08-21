@@ -59,11 +59,14 @@ export class DataBridgeService {
    *
    * @memberof DataBridgeService
    */
-  closeConenection() {
+  closeConenection(destroyTransactions = true) {
     // console.log("Destruye conexion con el websocket");
     this.setblock(null);
     this.destroyConection = true;
-    this.transactionsService.destroyAllTransactions();
+    if (destroyTransactions) {
+      console.log('destroy transactions');
+      this.transactionsService.destroyAllTransactions();
+    }
     if (this.connector !== undefined) {
       this.connector.close();
     }
@@ -113,6 +116,7 @@ export class DataBridgeService {
     }
   }
 
+
   /**
   *
   * @returns
@@ -157,7 +161,11 @@ export class DataBridgeService {
           'data': incomingTransaction
         });
 
+        console.log('incomingTransaction', incomingTransaction);
+
         this.transactionsService.getTransactionsConfirmed$().pipe(first()).subscribe(allTransactionConfirmed => {
+          console.log('allTransactionConfirmed', allTransactionConfirmed);
+
           const transactionPushed = allTransactionConfirmed.slice(0);
           const transactionFormatter = this.transactionsService.getStructureDashboard(incomingTransaction, transactionPushed);
           if (transactionFormatter !== null) {

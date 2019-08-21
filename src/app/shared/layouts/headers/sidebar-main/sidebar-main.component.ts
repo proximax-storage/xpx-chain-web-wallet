@@ -161,7 +161,7 @@ export class SidebarMainComponent implements OnInit {
 
   validate() {
     //emit 0 after 1 second then complete, since no second argument is supplied
-    const source = timer(16000, 17000);
+    const source = timer(20000, 20000);
     this.subscription.push(source.subscribe(val => {
       console.log('---val--', val);
       if (this.currentBlock > this.cacheBlock) {
@@ -171,7 +171,7 @@ export class SidebarMainComponent implements OnInit {
         this.reconnecting = true;
         this.statusNodeName = 'Reconnecting';
         this.colorStatus = 'color-light-orange';
-        this.dataBridge.closeConenection();
+        this.dataBridge.closeConenection(false);
         this.dataBridge.connectnWs();
       }
     }));
