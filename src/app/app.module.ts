@@ -23,7 +23,7 @@ import { SharedModule } from './shared/shared.module';
       maxOpened: 1,
       newestOnTop: true,
       preventDuplicates: true,
-      autoDismiss: true,
+      autoDismiss: false,
       progressBar: true
     })
   ],

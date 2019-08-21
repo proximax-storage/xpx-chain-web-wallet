@@ -7,6 +7,8 @@ import { DashboardService } from '../../../../dashboard/services/dashboard.servi
 import { AuthService } from '../../../../auth/services/auth.service';
 import { WalletService } from '../../../../wallet/services/wallet.service';
 import { TransactionsService } from '../../../../transfer/services/transactions.service';
+import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-sidebar-main',
@@ -18,12 +20,6 @@ export class SidebarMainComponent implements OnInit {
 
   itemsHeader: ItemsHeaderInterface;
   keyObject = Object.keys;
-  walletName = '';
-  subscriptions = [
-    'balance'
-  ];
-  vestedBalance: string = '0.000000';
-  version = '';
   routesExcludedInServices = [
     AppConfig.routes.account,
     AppConfig.routes.auth,
@@ -34,26 +30,72 @@ export class SidebarMainComponent implements OnInit {
     AppConfig.routes.service
   ];
   searchBalance = false;
+  statusNode = false;
+  statusNodeName = 'Inactive';
+  subscription: Subscription[] = [];
+  vestedBalance: string = '0.000000';
+  version = '';
+  walletName = '';
 
 
   constructor(
+    private dataBridge: DataBridgeService,
     private sharedService: SharedService,
     private route: Router,
     private authService: AuthService,
     private dashboardService: DashboardService,
     private transactionService: TransactionsService,
-    public walletService: WalletService
+    private walletService: WalletService
   ) {
     this.version = environment.version;
   }
 
   ngOnInit() {
-    this.destroySubscription();
-    this.readRoute();
+    this.statusNode = false;
     this.walletName = this.walletService.currentWallet.name;
-    // console.log(this.walletService.currentWallet);
+    this.readRoute();
+    this.getBlocks();
+    this.getAccountInfo();
+    this.buildItemsHeader();
 
-    this.subscriptions['nameAccount'] = this.walletService.getAccountsInfo$().subscribe(next => {
+
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.forEach(subscription => {
+      subscription.unsubscribe();
+    });
+  }
+
+  /**
+   *
+   *
+   * @memberof SidebarMainComponent
+   */
+  buildItemsHeader() {
+    this.itemsHeader = {
+      dashboard: this.sharedService.buildHeader(
+        'default', 'Dashboard', '', '', false, `/${AppConfig.routes.dashboard}`, true, {}, true
+      ),
+      transfer: this.sharedService.buildHeader(
+        'default', 'Transfer', '', '', false, `/${AppConfig.routes.createTransfer}`, true, {}, false
+      ),
+      account: this.sharedService.buildHeader(
+        'default', 'Account', '', '', false, `/${AppConfig.routes.account}`, true, {}, false
+      ),
+      services: this.sharedService.buildHeader(
+        'default', 'Services', '', '', false, `/${AppConfig.routes.service}`, true, {}, false
+      )
+    }
+  }
+
+  /**
+   *
+   *
+   * @memberof SidebarMainComponent
+   */
+  getAccountInfo() {
+    this.subscription.push(this.walletService.getAccountsInfo$().subscribe(next => {
       this.searchBalance = true;
       // NAME ACCOUNT
       let amountTotal = 0.000000;
@@ -81,49 +123,24 @@ export class SidebarMainComponent implements OnInit {
           this.searchBalance = false;
         }, 1000);
       }
-    });
-
-    // BALANCE
-    /* this.subscriptions['balance'] = this.transactionService.getBalance$().subscribe(next => {
-      if (next) {
-        this.vestedBalance = `Balance ${next} XPX`;
-      }
-    }, error => {
-      this.vestedBalance = `Balance 0.000000 XPX`;
-    });*/
-
-
-    this.itemsHeader = {
-      dashboard: this.sharedService.buildHeader(
-        'default', 'Dashboard', '', '', false, `/${AppConfig.routes.dashboard}`, true, {}, true
-      ),
-      transfer: this.sharedService.buildHeader(
-        'default', 'Transfer', '', '', false, `/${AppConfig.routes.createTransfer}`, true, {}, false
-      ),
-      account: this.sharedService.buildHeader(
-        'default', 'Account', '', '', false, `/${AppConfig.routes.account}`, true, {}, false
-      ),
-      services: this.sharedService.buildHeader(
-        'default', 'Services', '', '', false, `/${AppConfig.routes.service}`, true, {}, false
-      )
-    }
-  }
-
-  ngOnDestroy(): void {
-    this.destroySubscription();
+    }));
   }
 
   /**
    *
    *
-   * @memberof HeaderComponent
+   * @memberof SidebarMainComponent
    */
-  destroySubscription() {
-    this.subscriptions.forEach(element => {
-      if (this.subscriptions[element] !== undefined) {
-        this.subscriptions[element].unsubscribe();
+  getBlocks() {
+    this.subscription.push(this.dataBridge.getBlock().subscribe(
+      next => {
+        if (next !== null) {
+          this.sharedService.showSuccess('', 'status active');
+          this.statusNodeName = 'Active';
+          this.statusNode = true;
+        }
       }
-    });
+    ));
   }
 
 

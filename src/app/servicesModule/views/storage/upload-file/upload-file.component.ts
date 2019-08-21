@@ -17,7 +17,7 @@ import { environment } from 'src/environments/environment';
   templateUrl: './upload-file.component.html',
   styleUrls: ['./upload-file.component.css']
 })
-export class UploadFileComponent implements OnInit,AfterViewInit {
+export class UploadFileComponent implements OnInit, AfterViewInit {
 
   @BlockUI() blockUI: NgBlockUI;
   moduleName = 'Storage';
@@ -27,7 +27,7 @@ export class UploadFileComponent implements OnInit,AfterViewInit {
   configurationForm: ConfigurationForm = {};
   uploadForm: FormGroup;
   blockUpload: boolean = false;
-  uploading:false;
+  uploading: false;
   files: any[];
   uploadInput: any;
   humanizeBytes: (bytes: number) => string;
@@ -87,31 +87,49 @@ export class UploadFileComponent implements OnInit,AfterViewInit {
     this.optionsEncryptionMethods = [
       { value: PrivacyType.PLAIN, name: 'DO NOT ENCRYPT' },
       { value: PrivacyType.PASSWORD, name: 'PASSWORD' },
-     /* { value: PrivacyType.NEM_KEYS, name: 'KEY PAIR' }*/
+      /* { value: PrivacyType.NEM_KEYS, name: 'KEY PAIR' }*/
     ];
 
     this.uploadForm = this.fb.group({
       title: [''],
       description: [''],
       filePath: [''],
-      recipientAddress: [''],
-      recipientPublicKey: ['', [Validators.minLength(64), Validators.maxLength(64)]],
+      recipientAddress: ['', [
+        Validators.minLength(this.configurationForm.address.minLength),
+        Validators.maxLength(this.configurationForm.address.maxLength)
+      ]],
+      recipientPublicKey: ['', [
+        Validators.minLength(this.configurationForm.publicKey.minLength),
+        Validators.maxLength(this.configurationForm.publicKey.maxLength)
+      ]],
       secureMessage: [''],
-      usePasswordPrivacy: [''],
-      walletPassword: [''],
+      usePasswordPrivacy: ['', [
+        Validators.minLength(this.configurationForm.passwordWallet.minLength),
+        Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
+      ]],
+      walletPassword: ['', [
+        Validators.minLength(this.configurationForm.passwordWallet.minLength),
+        Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
+      ]],
       password: ['', [
         Validators.minLength(this.configurationForm.passwordWallet.minLength),
         Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
       ]],
       fileInput: [''],
-      privateKey: [''],
+      privateKey: ['', [
+        Validators.minLength(this.configurationForm.privateKey.minLength),
+        Validators.maxLength(this.configurationForm.privateKey.maxLength)
+      ]],
       useSecureMessage: [''],
       encryptionMethod: [''],
       encryptionPassword: ['', [
         Validators.minLength(this.configurationForm.passwordWallet.minLength),
         Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
       ]],
-      recipientPrivateKey: ['', [Validators.minLength(64), Validators.maxLength(64)]]
+      recipientPrivateKey: ['', [
+        Validators.minLength(this.configurationForm.privateKey.minLength),
+        Validators.maxLength(this.configurationForm.privateKey.maxLength)
+      ]]
     });
 
   }
@@ -286,8 +304,8 @@ export class UploadFileComponent implements OnInit,AfterViewInit {
           //console.log(uploadedFileType);
           const uploadedFileContent = await this.readFile(uploadedFile);
           const fileName = this.uploadForm.get('filePath').value;
-         // console.log(uploadedFile.name);
-         // const optionalFileName =  fileName ===  undefined ? uploadedFile.name: fileName;
+          // console.log(uploadedFile.name);
+          // const optionalFileName =  fileName ===  undefined ? uploadedFile.name: fileName;
           //console.log(optionalFileName);
           const optionalFileName = uploadedFile.name;
           const metaParams = Uint8ArrayParameterData.create(uploadedFileContent, optionalFileName, '', uploadedFileType);
@@ -321,7 +339,7 @@ export class UploadFileComponent implements OnInit,AfterViewInit {
           const result = await this.uploader.upload(uploadParams.build());
           console.log(result);
           this.clearForm();
-          this.sharedService.showSuccessTimeout('Upload','Upload successfully.',8000);
+          this.sharedService.showSuccessTimeout('Upload', 'Upload successfully.', 8000);
           this.blockUpload = false;
         } catch (error) {
           this.blockUpload = false;

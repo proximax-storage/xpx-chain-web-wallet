@@ -181,7 +181,7 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
         //this.mosaicSelect.slice(0);
         const mosaicsSelect: any = [{
           value: '1',
-          label: 'Enter here',
+          label: 'Select',
           selected: true,
           disabled: true
         }];
