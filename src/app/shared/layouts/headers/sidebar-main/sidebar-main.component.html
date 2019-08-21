@@ -20,8 +20,8 @@
             <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
               *ngIf="searchBalance"></span>
             <span class="fw-600 fs-09rem">{{ walletName }}
-              <i class="fa fa-circle ml-05rem cursor-p" aria-hidden="true" title="{{statusNodeName}} node" [ngClass]="[statusNode ? 'green-color' :
-                'color-light-orange']"></i></span><br>
+              <i class="fa fa-circle ml-05rem cursor-p {{colorStatus}}" aria-hidden="true"
+                title="{{statusNodeName}} node"></i></span><br>
             <span class="fs-08rem">{{ vestedBalance }}</span>
           </div>
 
@@ -37,8 +37,8 @@
           <div
             class="d-flex align-items-center justify-content-end d-block d-sm-none d-md-none d-lg-none d-xl-none ml-05rem">
             <div class="nav-link waves-light p-0" mdbWavesEffect>
-              <i class="fa fa-circle ml-05rem cursor-p" [ngClass]="[statusNode ? 'green-color' :
-                'color-light-orange']" aria-hidden="true" title="{{statusNodeName}} node"></i>
+              <i class="fa fa-circle ml-05rem cursor-p {{colorStatus}}" aria-hidden="true"
+                title="{{statusNodeName}} node"></i>
             </div>
           </div>
         </div>

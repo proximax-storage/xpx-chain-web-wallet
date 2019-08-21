@@ -23,7 +23,7 @@ export class DataBridgeService {
   block$: Observable<number> = this.blockSubject.asObservable();
   transactionSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   transaction$: Observable<any> = this.transactionSubject.asObservable();
-
+  reconnectNode = 0;
 
   constructor(
     private walletService: WalletService,
@@ -105,7 +105,10 @@ export class DataBridgeService {
         this.getBlockSocket(this.connector);
       }, (error) => {
         this.sharedService.showWarning('', 'Error connecting to the node');
-        this.reconnect(this.connector);
+        /* if (this.reconnectNode < 1) {
+           this.reconnectNode = this.reconnectNode + 1;
+           this.reconnect(this.connector);
+         }*/
       });
     }
   }

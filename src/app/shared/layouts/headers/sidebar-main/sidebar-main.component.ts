@@ -18,10 +18,13 @@ import { Subscription, timer } from 'rxjs';
 
 export class SidebarMainComponent implements OnInit {
 
-  currentBlock = 0;
+
   cacheBlock = 0;
+  colorStatus = 'color-red';
+  currentBlock = 0;
   itemsHeader: ItemsHeaderInterface;
   keyObject = Object.keys;
+  reconnecting = false;
   routesExcludedInServices = [
     AppConfig.routes.account,
     AppConfig.routes.auth,
@@ -57,6 +60,8 @@ export class SidebarMainComponent implements OnInit {
     this.walletName = this.walletService.currentWallet.name;
     this.readRoute();
     this.getBlocks();
+    this.validate();
+
     this.getAccountInfo();
     this.buildItemsHeader();
 
@@ -134,22 +139,21 @@ export class SidebarMainComponent implements OnInit {
    * @memberof SidebarMainComponent
    */
   getBlocks() {
-    this.validate();
     this.subscription.push(this.dataBridge.getBlock().subscribe(
       next => {
-        console.log(next);
+        console.log('Block', next);
         if (next !== null) {
+          this.colorStatus = 'green-color';
           this.currentBlock = next;
           this.statusNodeName = 'Active';
           this.statusNode = true;
         } else {
-          if (this.currentBlock !== 0) {
-            this.sharedService.showError('', 'Inactive node');
-          }
-
           this.currentBlock = 0;
-          this.statusNodeName = 'Inactive';
           this.statusNode = false;
+          if (!this.reconnecting) {
+            this.colorStatus = 'color-red';
+            this.statusNodeName = 'Inactive';
+          }
         }
       }
     ));
@@ -157,20 +161,16 @@ export class SidebarMainComponent implements OnInit {
 
   validate() {
     //emit 0 after 1 second then complete, since no second argument is supplied
-    const source = timer(15000, 20000);
+    const source = timer(16000, 17000);
     this.subscription.push(source.subscribe(val => {
       console.log('---val--', val);
       if (this.currentBlock > this.cacheBlock) {
+        this.reconnecting = false;
         this.cacheBlock = this.currentBlock;
       } else {
-        this.sharedService.showError('', 'Inactive node');
-      }
-
-      if (val === 1) {
-        this.dataBridge.closeConenection();
-      }
-
-      if (val === 3) {
+        this.reconnecting = true;
+        this.statusNodeName = 'Reconnecting';
+        this.colorStatus = 'color-light-orange';
         this.dataBridge.closeConenection();
         this.dataBridge.connectnWs();
       }
@@ -198,6 +198,7 @@ export class SidebarMainComponent implements OnInit {
    * @memberof HeaderComponent
    */
   logOut() {
+    this.currentBlock = 0;
     this.walletService.destroyAll();
     this.dashboardService.processComplete = false;
     this.authService.setLogged(false);
