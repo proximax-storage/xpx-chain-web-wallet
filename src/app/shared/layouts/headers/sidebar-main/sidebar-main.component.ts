@@ -8,7 +8,7 @@ import { AuthService } from '../../../../auth/services/auth.service';
 import { WalletService } from '../../../../wallet/services/wallet.service';
 import { TransactionsService } from '../../../../transfer/services/transactions.service';
 import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
-import { Subscription } from 'rxjs';
+import { Subscription, timer } from 'rxjs';
 
 @Component({
   selector: 'app-sidebar-main',
@@ -18,6 +18,8 @@ import { Subscription } from 'rxjs';
 
 export class SidebarMainComponent implements OnInit {
 
+  currentBlock = 0;
+  cacheBlock = 0;
   itemsHeader: ItemsHeaderInterface;
   keyObject = Object.keys;
   routesExcludedInServices = [
@@ -132,17 +134,48 @@ export class SidebarMainComponent implements OnInit {
    * @memberof SidebarMainComponent
    */
   getBlocks() {
+    this.validate();
     this.subscription.push(this.dataBridge.getBlock().subscribe(
       next => {
+        console.log(next);
         if (next !== null) {
-          this.sharedService.showSuccess('', 'status active');
+          this.currentBlock = next;
           this.statusNodeName = 'Active';
           this.statusNode = true;
+        } else {
+          if (this.currentBlock !== 0) {
+            this.sharedService.showError('', 'Inactive node');
+          }
+
+          this.currentBlock = 0;
+          this.statusNodeName = 'Inactive';
+          this.statusNode = false;
         }
       }
     ));
   }
 
+  validate() {
+    //emit 0 after 1 second then complete, since no second argument is supplied
+    const source = timer(15000, 20000);
+    this.subscription.push(source.subscribe(val => {
+      console.log('---val--', val);
+      if (this.currentBlock > this.cacheBlock) {
+        this.cacheBlock = this.currentBlock;
+      } else {
+        this.sharedService.showError('', 'Inactive node');
+      }
+
+      if (val === 1) {
+        this.dataBridge.closeConenection();
+      }
+
+      if (val === 3) {
+        this.dataBridge.closeConenection();
+        this.dataBridge.connectnWs();
+      }
+    }));
+  }
 
   /**
    *

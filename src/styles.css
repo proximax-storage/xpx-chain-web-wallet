@@ -969,32 +969,55 @@ input.form-control.validate-success.ng-valid.ng-touched,
 .toastInfo {
   opacity: 1.0 !important;
   background-color: white !important;
-  border: 3px solid #2BA1B9 !important;
+  border: 2px solid #2BA1B9 !important;
 }
 
 .toastSuccess {
   opacity: 1.0 !important;
   background-color: white !important;
-  border: 3px solid #54b1aa !important;
+  border: 2px solid #54b1aa !important;
 }
 
 .toastWarning {
   opacity: 1.0 !important;
   background-color: white !important;
-  border: 3px solid #f2a91d !important;
+  border: 2px solid #f2a91d !important;
 }
 
 .toastError {
   opacity: 1.0 !important;
   background-color: white !important;
-  border: 3px solid #e06e38 !important;
+  border: 2px solid #e06e38 !important;
+}
+
+button.md-toast-close-button {
+  padding-right: .5rem !important;
+  color: #505050 !important;
 }
 
 .messageClass {
   font-family: sans-serif !important;
-  font-size: 1rem;
+  font-size: .9rem;
   color: #505050 !important;
+  font-weight: 600;
 }
+
+.md-toast-success:before {
+  color: #54b1aa !important;
+}
+
+.md-toast-info:before {
+  color: #2BA1B9 !important;
+}
+
+.md-toast-warning:before {
+  color: #f2a91d !important;
+}
+
+.md-toast-error:before {
+  color: #e06e38 !important;
+}
+
 
 .md-toast-success:before,
 .md-toast-info:before,
@@ -1007,7 +1030,6 @@ input.form-control.validate-success.ng-valid.ng-touched,
   float: left !important;
   margin-left: -2em !important;
   padding-right: .2em !important;
-  color: #505050 !important;
 }
 
 .md-toast-success:before {
@@ -1019,7 +1041,7 @@ input.form-control.validate-success.ng-valid.ng-touched,
 }
 
 .md-toast-info:before {
-  content: "\f129";
+  content: "\f05a";
 }
 
 .md-toast-error:before {

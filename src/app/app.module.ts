@@ -23,8 +23,8 @@ import { SharedModule } from './shared/shared.module';
       maxOpened: 1,
       newestOnTop: true,
       preventDuplicates: true,
-      autoDismiss: false,
-      progressBar: true
+      autoDismiss: true,
+      progressBar: false
     })
   ],
   providers: [appRoutingProviders],
