@@ -49,6 +49,7 @@ export class MultiSignatureContractComponent implements OnInit {
    */
   build() {
     const currentWallet = Object.assign({}, this.walletService.currentWallet);
+    console.log("poooo",currentWallet)
     if (currentWallet && Object.keys(currentWallet).length > 0) {
       for (let element of currentWallet.accounts) {
         const accountFiltered = this.walletService.filterAccountInfo(element.name);
@@ -77,7 +78,8 @@ export class MultiSignatureContractComponent implements OnInit {
     // console.log(this.walletService.accountsInfo);
     this.subscription.push(this.walletService.getAccountsInfo$().subscribe(
       next => {
-        // console.log('----- ACCOUNT INFO -----', next);
+        
+         console.log('----- ACCOUNT INFO -----', next);
         this.build();
       }
     ));

@@ -131,7 +131,8 @@ export class ImportWalletComponent implements OnInit {
             wallet.
               encryptedPrivateKey.encryptedKey,
             wallet.encryptedPrivateKey.iv
-          ).toUpperCase(), wallet.network)
+          ).toUpperCase(), wallet.network),
+          isMultisign: null
         });
 
         this.clearForm();
