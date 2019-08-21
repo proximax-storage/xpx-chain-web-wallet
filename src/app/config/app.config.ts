@@ -9,6 +9,7 @@ export const AppConfig: Config = {
     apostille: 'apostille',
     audiApostille: 'audit-apostille',
     auth: 'auth',
+    convertToAccountMultisign:'convert-account-multisign',
     aliasAddressToNamespace: 'alias-address-to-namespace',
     createMosaic: 'create-mosaic',
     createMultisignature: 'create-multisignature-contract',
@@ -55,6 +56,7 @@ export interface Config {
     apostille: string;
     audiApostille: string;
     auth: string;
+    convertToAccountMultisign:string;
     aliasAddressToNamespace: string;
     createMosaic: string;
     createMultisignature: string;

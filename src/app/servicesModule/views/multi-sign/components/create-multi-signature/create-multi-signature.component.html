@@ -1,3 +1,25 @@
+
+
+<div class="container mt-3rem mb-2rem animated fadeIn">
+    <div class="row">
+        <div class="col-12 col-md-8">
+            <span class="fs-1rem txt-a-center line-h-1-2em color-grey"></span>
+            <span class="fs-1rem txt-a-center line-h-1-2em color-grey"> > </span>
+            <span class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio"></span>
+        </div>
+
+        <div class="col-12 col-md-4 d-flex justify-content-start justify-content-md-end">
+            <a class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio" [routerLink]="[routes.backToService]">
+                <span>Back to Services</span>
+            </a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <hr class="mt-03rem mb-05rem">
+        </div>
+    </div>
+
 <form [formGroup]="createMultsignForm" (ngSubmit)="convertIntoMultisigTransaction()">
     <div class="row">
         <!-- FORM COSIGNATORY LIST -->
@@ -214,12 +236,14 @@
                                 <ng-container *ngFor="let cosign of cosignatoryList">
                                     <tr class="mouse-pointer" mdbTableCol>
                                         <td class="text-center">{{cosign.publicAccount.address.plain()}}</td>
-                                        <td class="text-center">{{cosign.action}}</td>
+                                        <!-- <td class="text-center">{{cosign.action}}</td> -->
 
 
-                                        <td  class="text-center" style="cursor: pointer;"
-                                            (click)="deleteCosignatory(cosign.id ,cosign.disableItem, cosign.type)">
-                                            <i [style.color]="getColor(cosign.type)" class="fa fa-times" aria-hidden="true"></i>
+                                        <td class="text-center" style="cursor: pointer;" (click)="deleteCosignatory(cosign.id ,cosign.disableItem, cosign.type)">
+                                            <i *ngIf="cosign.action =='Add'" [style.color]="getColor(cosign.type)"
+                                                class="fa fa-plus" aria-hidden="true"></i>
+                                                <i *ngIf="cosign.action =='edit'" [style.color]="getColor(cosign.type)"
+                                                class="fa fa-minus" aria-hidden="true"></i>
                                         </td>
 
 
@@ -257,3 +281,6 @@
         </div>
     </div>
 </form>
+
+
+</div>

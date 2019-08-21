@@ -19,6 +19,7 @@ import { ViewAllAccountsComponent } from './views/account/view-all-accounts/view
 import { AccountCreatedComponent } from './views/account/account-created/account-created.component';
 import { SelectionAccountTypeComponent } from './views/account/selection-account-creation-type/selection-account-creation-type.component';
 import { AddContactsComponent } from './views/address-book/add-contacts/add-contacts.component';
+import { CreateMultiSignatureComponent } from './views/multi-sign/components/create-multi-signature/create-multi-signature.component';
 
 const routes: Routes = [
   {
@@ -209,6 +210,16 @@ const routes: Routes = [
       meta: {
         title: 'multiSign.title',
         description: 'multiSign.text',
+        override: true,
+      }
+    }
+  }, {
+    path: AppConfig.routes.convertToAccountMultisign,
+    component: CreateMultiSignatureComponent,
+    data: {
+      meta: {
+        title: 'convertToAccountMultisign.title',
+        description: 'convertToAccountMultisign.text',
         override: true,
       }
     }

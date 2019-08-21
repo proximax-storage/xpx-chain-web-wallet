@@ -1,24 +1,69 @@
 <div class="container mt-3rem mb-2rem animated fadeIn">
-    <div class="row">
-        <div class="col-12 col-md-8">
+    <!-- HEADER MODULE -->
+    <div class="row"> 
+        <!-- NAME MODULE -->
+        <div class="col-12 col-md-6 col-lg-4">
             <span class="fs-1rem txt-a-center line-h-1-2em color-grey">{{moduleName}}</span>
             <span class="fs-1rem txt-a-center line-h-1-2em color-grey"> > </span>
             <span class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">{{componentName}}</span>
         </div>
 
-        <div class="col-12 col-md-4 d-flex justify-content-start justify-content-md-end">
-            <a class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio" [routerLink]="[backToService]">
+        <!-- ITEMS MENU -->
+        <div class="col-12 col-md-6 col-lg-8 d-flex justify-content-start justify-content-md-end">
+            <a class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio" [routerLink]="[routes.convertToAccount]">
+                <span>Convert to multisign account </span>
+            </a>
+
+            <div class="ml-04rem mr-04rem">
+                <span class="line-separator-gray"></span>
+            </div>
+
+            <a class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio" [routerLink]="[routes.backToService]">
                 <span>Back to Services</span>
             </a>
         </div>
     </div>
+    <!-- BORDER SEPARATOR -->
     <div class="row">
         <div class="col-12">
             <hr class="mt-03rem mb-05rem">
         </div>
     </div>
-    <app-create-multi-signature></app-create-multi-signature>
+
+    <!-- BOX LIST ACCOUNT -->
+    <div class="row">
+        <ng-container *ngIf="currentWallet?.accounts?.length > 0">
+          <ng-container *ngFor="let currentAccount of currentWallet.accounts">
+            <div class="col-12 col-md-10 col-lg-9 col-xl-10 mx-auto box-list-account-gray fs-08rem pb-1rem"
+              [ngClass]="{'isPrimary':currentAccount.default}">
+              <div class="row">
+                <div class="col-12 col-sm-10 col-md-9 col-lg-10 col-xl-10 pt-1rem w-b-a">
+                  Account: {{currentAccount.name}} <br>
+                  {{currentAccount.address}}
+                </div>
+                <div
+                  class="col-12 col-sm-2 col-md-3 col-lg-2 col-xl-2 d-flex align-items-center justify-content-start justify-content-sm-end justify-content-md-end justify-content-lg-end justify-content-xl-end pt-2rem">
+                  <img src="assets/images/img/icon-copy-clipboard-white.svg" class="cursor-p"
+                  alt="Copy" width="20" (click)="copyMessage('Address')" ngxClipboard *ngIf="currentAccount.default"
+                  [cbContent]="currentAccount.address"  title="Copy Address">
+                  <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="cursor-p"
+                  alt="Copy" width="20" (click)="copyMessage('Address')" ngxClipboard *ngIf="!currentAccount.default"
+                  [cbContent]="currentAccount.address"  title="Copy Address">&nbsp;
+                  <!-- View Details -->
 
 
+
+                    <img src="assets/images/img/icon-edit-white-proximax-sirius-wallet.svg" class="cursor-p" *ngIf="currentAccount.default"
+                    width="20" [routerLink]="[routes.viewDetails+currentAccount.name]" title="edit">
+                    <img src="assets/images/img/icon-edit-gray-proximax-sirius-wallet.svg" class="cursor-p" *ngIf="!currentAccount.default"
+                    width="20" [routerLink]="[routes.viewDetails+currentAccount.name]" title="edit">&nbsp;
+
+
+                </div>
+              </div>
+            </div>
+          </ng-container>
+        </ng-container>
+      </div>
 
 </div>
