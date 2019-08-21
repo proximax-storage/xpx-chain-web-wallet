@@ -132,9 +132,14 @@ export class ExtendDurationNamespaceComponent implements OnInit {
       duration: '',
       password: ''
     },
-    {
-      emitEvent: false
-    });
+      {
+        emitEvent: false
+      });
+
+    this.startHeight = 0;
+    this.endHeight = 0;
+
+
     // this.extendDurationNamespaceForm.get('namespaceRoot').patchValue('', { emitEvent: false });
     // this.extendDurationNamespaceForm.get('duration').patchValue('', { emitEvent: false });
     // this.extendDurationNamespaceForm.get('password').patchValue('', { emitEvent: false });

@@ -96,12 +96,9 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
       mosaic: '',
       password: ''
     },
-    {
-      emitEvent: false
-    });
-    // this.linkingNamespaceToMosaic.get('namespace').patchValue('1');
-    // this.linkingNamespaceToMosaic.get('mosaic').patchValue('1');
-    // this.linkingNamespaceToMosaic.get('password').patchValue('');
+      {
+        emitEvent: false
+      });
   }
 
   /**
@@ -177,7 +174,6 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
    * @memberof LinkingNamespaceToMosaicComponent
    */
   async getMosaic() {
-
     this.mosaicService.getMosaicChanged().subscribe(
       async next => {
         const data = await this.mosaicService.filterMosaics();
