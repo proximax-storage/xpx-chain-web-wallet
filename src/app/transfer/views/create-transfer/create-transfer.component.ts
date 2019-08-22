@@ -631,15 +631,15 @@ export class CreateTransferComponent implements OnInit {
         this.transactionSigned.push(transferBuilder.signedTransaction);
         this.getBooksAddress = this.serviceModuleService.getBooksAddress();
         if (this.getBooksAddress) {
-          const contact = this.getBooksAddress.find(el => el.value === this.formTransfer.get("accountRecipient").value);
+          const contact = this.getBooksAddress.find(el => el.value === this.formTransfer.get("accountRecipient").value.split('-').join(''));
           if (!contact) {
             // console.log('No hay contacto');
-            this.formContact.address = this.formTransfer.get("accountRecipient").value;
+            this.formContact.address = this.formTransfer.get("accountRecipient").value.split('-').join('');
             this.saveContact = false;
             this.basicModal.show();
           }
         } else {
-          this.formContact.address = this.formTransfer.get("accountRecipient").value;
+          this.formContact.address = this.formTransfer.get("accountRecipient").value.split('-').join('');
           this.saveContact = false;
           this.basicModal.show();
         }
