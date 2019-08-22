@@ -44,7 +44,7 @@ export class CreateMosaicComponent implements OnInit {
   rentalFee = '500000000';
   calculateRentalFee = '';
   currentAccount: AccountsInterface;
-  insuficienteBalance = true;
+  insufficientBalance = true;
   accountInfo: AccountsInfoInterface;
 
   constructor(
@@ -113,9 +113,9 @@ export class CreateMosaicComponent implements OnInit {
       supplyMutable: false,
       levyMutable: false
     },
-    {
-      emitEvent: false
-    });
+      {
+        emitEvent: false
+      });
   }
 
   send() {
@@ -245,12 +245,12 @@ export class CreateMosaicComponent implements OnInit {
       const mosaicXPX = this.accountInfo.accountInfo.mosaics.find(x => x.id.toHex() === environment.mosaicXpxInfo.id);
       if (mosaicXPX) {
         if (mosaicXPX.amount.compact() >= Number(this.rentalFee)) {
-          this.insuficienteBalance = false;
+          this.insufficientBalance = false;
           this.mosaicForm.enable();
           return;
         }
       }
-      this.insuficienteBalance = true;
+      this.insufficientBalance = true;
     }
   }
 

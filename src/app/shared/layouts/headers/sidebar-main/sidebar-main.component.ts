@@ -24,6 +24,7 @@ export class SidebarMainComponent implements OnInit {
   currentBlock = 0;
   itemsHeader: ItemsHeaderInterface;
   keyObject = Object.keys;
+  prorroga = false;
   reconnecting = false;
   routesExcludedInServices = [
     AppConfig.routes.account,
@@ -41,6 +42,7 @@ export class SidebarMainComponent implements OnInit {
   vestedBalance: string = '0.000000';
   version = '';
   walletName = '';
+  reset = 0;
 
 
   constructor(
@@ -141,12 +143,14 @@ export class SidebarMainComponent implements OnInit {
   getBlocks() {
     this.subscription.push(this.dataBridge.getBlock().subscribe(
       next => {
-        console.log('Block', next);
+        // console.log('Block', next);
         if (next !== null) {
-          this.colorStatus = 'green-color';
-          this.currentBlock = next;
-          this.statusNodeName = 'Active';
+          this.prorroga = false;
+          this.reconnecting = false;
           this.statusNode = true;
+          this.currentBlock = next;
+          this.colorStatus = 'green-color';
+          this.statusNodeName = 'Active';
         } else {
           this.currentBlock = 0;
           this.statusNode = false;
@@ -161,21 +165,27 @@ export class SidebarMainComponent implements OnInit {
 
   validate() {
     //emit 0 after 1 second then complete, since no second argument is supplied
-    const source = timer(20000, 25000);
+    const source = timer(20000, 20000);
     this.subscription.push(source.subscribe(val => {
-      console.log('---val--', val);
-      console.log('---this.currentBlock--', this.currentBlock);
-      console.log('---this.cacheBlock--', this.cacheBlock);
-
+      console.log('-----RESETED-----------', this.reset);
+      console.log('-----CURRENT BLOCK-----', this.currentBlock);
+      console.log('-----CACHE BLOCK-------', this.cacheBlock, '\n\n\n');
       if (this.currentBlock > this.cacheBlock) {
         this.reconnecting = false;
         this.cacheBlock = this.currentBlock;
-      } else {
+        this.prorroga = false;
+      } else if (this.prorroga) {
+        this.reset = this.reset + 1;
         this.reconnecting = true;
         this.statusNodeName = 'Reconnecting';
         this.colorStatus = 'color-light-orange';
         this.dataBridge.closeConenection(false);
         this.dataBridge.connectnWs();
+      } else {
+        this.statusNodeName = 'Reconnecting';
+        this.colorStatus = 'color-light-orange';
+        this.reconnecting = true;
+        this.prorroga = true;
       }
     }));
   }

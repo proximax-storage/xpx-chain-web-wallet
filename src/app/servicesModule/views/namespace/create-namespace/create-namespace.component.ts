@@ -42,6 +42,7 @@ export class CreateNamespaceComponent implements OnInit {
   fee: string;
   feeType: string = 'XPX';
   insufficientBalance = false;
+  insufficientBalanceDuration = false;
   labelNamespace: string = '';
   namespaceChangeInfo: any;
   namespaceInfo: Array<object> = [];
@@ -191,6 +192,7 @@ export class CreateNamespaceComponent implements OnInit {
   clearForm() {
     this.showDuration = true;
     this.insufficientBalance = false;
+    this.insufficientBalanceDuration = false;
     this.calculateRentalFee = '0.000000';
     this.namespaceForm.reset({
       name: '',
@@ -397,31 +399,6 @@ export class CreateNamespaceComponent implements OnInit {
   /**
    *
    *
-   * @param {string} namespace
-   * @param {*} [isParent]
-   * @returns
-   * @memberof CreateNamespaceComponent
-   */
-  validateNamespace(namespace: string, isParent?: any) {
-    // Test if correct length and if name starts with hyphens
-    if (!isParent ? namespace.length > 16 : namespace.length > 64 || /^([_-])/.test(namespace)) {
-      return false;
-    }
-
-    let pattern = /^[A-Za-z0-9.\-_]*$/;
-    // Test if has special chars or space excluding hyphens
-    if (pattern.test(namespace) == false) {
-      this.validateForm = false;
-      return false;
-    } else {
-      this.validateForm = true;
-      return true;
-    }
-  }
-
-  /**
-   *
-   *
    * @param {*} common
    * @returns {Promise<any>}
    * @memberof CreateNamespaceComponent
@@ -432,13 +409,26 @@ export class CreateNamespaceComponent implements OnInit {
     const duration: number = parseFloat(this.durationByBlock);
     // const duration: number = 20;
     if (this.typetransfer == 1) {
-      const registerRootNamespaceTransaction = this.proximaxProvider.registerRootNamespaceTransaction(namespaceName, this.walletService.currentAccount.network, duration)
+      const registerRootNamespaceTransaction = this.proximaxProvider.registerRootNamespaceTransaction(
+        namespaceName,
+        this.walletService.currentAccount.network,
+        duration
+      )
+
+      console.log('----namespaceName----', namespaceName);
       const signedTransaction = account.sign(registerRootNamespaceTransaction);
       return signedTransaction;
     } else if (this.typetransfer == 2) {
       const rootNamespaceName = this.namespaceForm.get('namespaceRoot').value;
       const subnamespaceName = this.namespaceForm.get('name').value;
-      const registersubamespaceTransaction = this.proximaxProvider.registersubNamespaceTransaction(rootNamespaceName, subnamespaceName, this.walletService.currentAccount.network)
+      const registersubamespaceTransaction = this.proximaxProvider.registersubNamespaceTransaction(
+        rootNamespaceName,
+        subnamespaceName,
+        this.walletService.currentAccount.network
+      );
+
+      console.log('----rootNamespaceName----', rootNamespaceName);
+      console.log('----subnamespaceName----', subnamespaceName);
       const signedTransaction = account.sign(registersubamespaceTransaction);
       return signedTransaction;
     }
@@ -453,17 +443,12 @@ export class CreateNamespaceComponent implements OnInit {
     // Duration ValueChange
     this.namespaceForm.get('duration').valueChanges.subscribe(
       next => {
-        // console.log(next);
         if (next !== null && next !== undefined && String(next) !== '0' && next !== '') {
           if (this.showDuration) {
             this.durationByBlock = this.transactionService.calculateDurationforDay(next).toString();
             this.validateRentalFee(this.rentalFee * parseFloat(this.durationByBlock));
           }
-        }/* else {
-          this.calculateRentalFee = '0.000000';
-          this.durationByBlock = '0';
-          // this.namespaceForm.get('duration').patchValue('');
-        }*/
+        }
       }
     );
 
@@ -501,6 +486,31 @@ export class CreateNamespaceComponent implements OnInit {
   /**
    *
    *
+   * @param {string} namespace
+   * @param {*} [isParent]
+   * @returns
+   * @memberof CreateNamespaceComponent
+   */
+  validateNamespace(namespace: string, isParent?: any) {
+    // Test if correct length and if name starts with hyphens
+    if (!isParent ? namespace.length > 16 : namespace.length > 64 || /^([_-])/.test(namespace)) {
+      return false;
+    }
+
+    let pattern = /^[A-Za-z0-9.\-_]*$/;
+    // Test if has special chars or space excluding hyphens
+    if (pattern.test(namespace) == false) {
+      this.validateForm = false;
+      return false;
+    } else {
+      this.validateForm = true;
+      return true;
+    }
+  }
+
+  /**
+   *
+   *
    * @param {*} amount
    * @param {MosaicsStorage} mosaic
    * @memberof CreateNamespaceComponent
@@ -524,6 +534,7 @@ export class CreateNamespaceComponent implements OnInit {
           } else {
             // console.log('entra 1');
             this.insufficientBalance = true;
+            // this.insufficientBalanceDuration = true;
             if (this.namespaceForm.enabled) {
               this.namespaceForm.disable();
             }
@@ -531,9 +542,11 @@ export class CreateNamespaceComponent implements OnInit {
 
           if (invalidBalance && !this.insufficientBalance) {
             this.insufficientBalance = true;
+            this.insufficientBalanceDuration = true;
           } else if (!invalidBalance && this.insufficientBalance) {
             // console.log('entra 2');
             this.insufficientBalance = false;
+            this.insufficientBalanceDuration = false;
             if (this.namespaceForm.disabled) {
               this.namespaceForm.enable();
             }
@@ -542,6 +555,7 @@ export class CreateNamespaceComponent implements OnInit {
           // console.log('entra 3');
           this.calculateRentalFee = '10.000000';
           this.insufficientBalance = false;
+          this.insufficientBalanceDuration = false;
           if (this.namespaceForm.disabled) {
             this.namespaceForm.enable();
           }
@@ -549,6 +563,7 @@ export class CreateNamespaceComponent implements OnInit {
       } else {
         // console.log('entra 4');
         this.insufficientBalance = true;
+        // this.insufficientBalanceDuration = true;
         if (this.namespaceForm.enabled) {
           this.namespaceForm.disable();
         }
@@ -556,6 +571,7 @@ export class CreateNamespaceComponent implements OnInit {
     } else {
       // console.log('entra 5');
       this.insufficientBalance = true;
+      // this.insufficientBalanceDuration = true;
       if (this.namespaceForm.enabled) {
         this.namespaceForm.disable();
       }

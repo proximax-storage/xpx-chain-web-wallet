@@ -24,7 +24,7 @@
 
         <div class="row mt-1rem">
 
-          <ng-container *ngIf="insuficienteBalance">
+          <ng-container *ngIf="insufficientBalance">
             <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto d-flex justify-content-end">
               <span class="fs-08rem fw-600 color-error-message">Insufficient balance</span>
             </div>
@@ -141,8 +141,8 @@
         <!-- BUTTONS -->
         <div class="row">
           <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-            <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
-              size="md" (click)="clearForm()">
+            <button [disabled]="insufficientBalance" mdbBtn type="button" rounded="true" mdbWavesEffect
+              class="f-w-600 background-btn pl-2rem pr-2rem" size="md" (click)="clearForm()">
               <span class="fs-1-2em color-white">CLEAR</span>
             </button>
           </div>
