@@ -72,7 +72,6 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
 
   ngOnDestroy(): void {
     this.subscription.forEach(subscription => {
-      // console.log(subscription);
       subscription.unsubscribe();
     });
   }
@@ -174,7 +173,7 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
    * @memberof LinkingNamespaceToMosaicComponent
    */
   async getMosaic() {
-    this.mosaicService.getMosaicChanged().subscribe(
+    this.subscription.push(this.mosaicService.getMosaicChanged().subscribe(
       async next => {
         const data = await this.mosaicService.filterMosaics();
         console.log(data);
@@ -233,7 +232,7 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
         }
         this.mosaicSelect = mosaicsSelect;
       }
-    );
+    ));
   }
 
   /**
@@ -242,7 +241,7 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
    * @memberof AliasMosaicsToNamespaceComponent
    */
   getTransactionStatus() {
-    this.subscribe['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
+    this.subscription.push(this.dataBridge.getTransactionStatus().subscribe(
       statusTransaction => {
         if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
           const statusTransactionHash = (statusTransaction['type'] === 'error') ? statusTransaction['data'].hash : statusTransaction['data'].transactionInfo.hash;
@@ -261,7 +260,7 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
           }
         }
       }
-    );
+    ));
   }
 
   /**
@@ -286,14 +285,12 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
   }
 
 
-  get input() { return this.linkingNamespaceToMosaic.get('password'); }
-
   /**
    *
    *
    * @memberof AliasMosaicsToNamespaceComponent
    */
-  send() {
+  sendTransaction() {
     if (this.linkingNamespaceToMosaic.valid && !this.blockSend) {
       this.blockSend = true;
       const common = {

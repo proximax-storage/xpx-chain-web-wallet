@@ -18,7 +18,7 @@
     </div>
   </div>
 
-  <form [formGroup]="linkingNamespaceToMosaic" (ngSubmit)="send()">
+  <form [formGroup]="linkingNamespaceToMosaic" (ngSubmit)="sendTransaction()">
     <div class="row mt-1-5rem">
       <div class="col-11 col-sm-10 col-lg-8 mx-auto">
         <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" class="selectWrapper"
@@ -46,7 +46,8 @@
     <div class="row  pt-1rem">
       <div class="col-11 col-sm-10 col-lg-8 mx-auto">
         <div class="box-grey txt-a-center">
-          <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20" alt="">&nbsp;
+          <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20"
+            alt="">&nbsp;
           <span>Fee: 0.000000 XPX</span>
         </div>
       </div>
@@ -79,9 +80,10 @@
       </div>
 
       <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-        <button mdbBtn type="submit" rounded="true" [disabled]="!linkingNamespaceToMosaic.valid" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
-          size="md">
-          <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true" *ngIf="blockSend"></span>
+        <button mdbBtn type="submit" rounded="true" [disabled]="!linkingNamespaceToMosaic.valid" mdbWavesEffect
+          class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
+          <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
+            *ngIf="blockSend"></span>
           <span class="fs-1-2em color-white">CREATE</span>
         </button>
       </div>
