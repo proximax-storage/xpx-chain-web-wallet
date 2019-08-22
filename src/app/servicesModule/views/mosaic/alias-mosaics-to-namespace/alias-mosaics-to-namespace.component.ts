@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Validators, FormGroup, FormBuilder, AbstractControl } from '@angular/forms';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { Router } from '@angular/router';
-import { NamespaceId, MosaicId, UInt64 } from 'tsjs-xpx-chain-sdk';
+import { NamespaceId, MosaicId, UInt64, AliasActionType } from 'tsjs-xpx-chain-sdk';
 import { AppConfig } from '../../../../config/app.config';
 import { MosaicService } from '../../../../servicesModule/services/mosaic.service';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
@@ -44,6 +44,20 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
       disabled: true
     }
   ];
+
+  typeAction: any = [{
+    value: AliasActionType.Link,
+    label: 'Link',
+    selected: true,
+    disabled: false
+  }, {
+    value: AliasActionType.Unlink,
+    label: 'Unlink',
+    selected: false,
+    disabled: false
+  }];
+
+
   transactionSigned: any;
   subscribe = ['transactionStatus'];
   subscription: Subscription[] = [];
@@ -84,10 +98,22 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
   createForm() {
     this.linkingNamespaceToMosaic = this.fb.group({
       namespace: ['', [Validators.required]],
+      typeAction: [
+        AliasActionType.Link,
+        [
+          Validators.required
+        ]
+      ],
       mosaic: ['', [Validators.required]],
-      password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]]
+      password: ['', [
+        Validators.required,
+        Validators.minLength(this.configurationForm.passwordWallet.minLength),
+        Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
+      ]]
     });
   }
+
+
 
   clearForm() {
     this.linkingNamespaceToMosaic.reset({
@@ -299,10 +325,16 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
       }
 
       if (this.walletService.decrypt(common)) {
+        const action = this.linkingNamespaceToMosaic.get('typeAction').value;
         const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
         const namespaceId = new NamespaceId(this.linkingNamespaceToMosaic.get('namespace').value);
         const mosaicId = new MosaicId(this.linkingNamespaceToMosaic.get('mosaic').value);
-        const mosaicSupplyChangeTransaction = this.proximaxProvider.linkingNamespaceToMosaic(0, namespaceId, mosaicId, this.walletService.currentAccount.network);
+        const mosaicSupplyChangeTransaction = this.proximaxProvider.linkingNamespaceToMosaic(
+          action,
+          namespaceId,
+          mosaicId,
+          this.walletService.currentAccount.network
+        );
         const signedTransaction = account.sign(mosaicSupplyChangeTransaction);
         this.transactionSigned = signedTransaction;
         this.proximaxProvider.announce(signedTransaction).subscribe(

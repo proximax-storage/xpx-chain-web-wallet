@@ -39,7 +39,6 @@ export class MosaicsSupplyChangeComponent implements OnInit {
     selected: false,
     disabled: false
   }];
-  ;
   mosaicsInfo: any[];
   divisibility: number = 0;
   duration: string = '() 0 days';
@@ -148,9 +147,9 @@ export class MosaicsSupplyChangeComponent implements OnInit {
       deltaSupply: '',
       password: ''
     },
-    {
-      emitEvent: false
-    });
+      {
+        emitEvent: false
+      });
   }
 
 

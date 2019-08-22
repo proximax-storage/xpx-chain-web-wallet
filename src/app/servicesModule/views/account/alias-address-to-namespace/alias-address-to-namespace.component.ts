@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, Validators, FormBuilder, AbstractControl } from '@angular/forms';
-import { AliasActionType, Address, NamespaceId } from 'tsjs-xpx-chain-sdk';
+import { AliasActionType, Address, NamespaceId, LinkAction } from 'tsjs-xpx-chain-sdk';
 import { Router } from '@angular/router';
 import { NgBlockUI, BlockUI } from 'ng-block-ui';
 import { AppConfig } from '../../../../config/app.config';
@@ -35,6 +35,17 @@ export class AliasAddressToNamespaceComponent implements OnInit {
   ];
   subscribe = ['transactionStatus'];
   transactionSigned: any;
+  typeAction: any = [{
+    value: AliasActionType.Link,
+    label: 'Link',
+    selected: true,
+    disabled: false
+  }, {
+    value: AliasActionType.Unlink,
+    label: 'Unlink',
+    selected: false,
+    disabled: false
+  }];
   subscription: Subscription[] = [];
 
   constructor(
@@ -72,13 +83,22 @@ export class AliasAddressToNamespaceComponent implements OnInit {
   createForm() {
     this.LinkToNamespaceForm = this.fb.group({
       namespace: ['', [Validators.required]],
+      typeAction: [
+        AliasActionType.Link,
+        [
+          Validators.required
+        ]
+      ],
       address: ['', [
         Validators.required,
         Validators.minLength(this.configurationForm.address.minLength),
         Validators.maxLength(this.configurationForm.address.maxLength)
       ]],
-      password: ['', [Validators.required, Validators.minLength(this.configurationForm.passwordWallet.minLength),
-      Validators.maxLength(this.configurationForm.passwordWallet.maxLength)]]
+      password: ['', [
+        Validators.required,
+        Validators.minLength(this.configurationForm.passwordWallet.minLength),
+        Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
+      ]]
     });
   }
 
@@ -228,10 +248,11 @@ export class AliasAddressToNamespaceComponent implements OnInit {
       }
 
       if (this.walletService.decrypt(common)) {
+        const action = this.LinkToNamespaceForm.get('typeAction').value;
         const namespaceId = new NamespaceId(this.LinkToNamespaceForm.get('namespace').value);
         const address = Address.createFromRawAddress(this.LinkToNamespaceForm.get('address').value);
         const params: AddressAliasTransactionInterface = {
-          aliasActionType: AliasActionType.Link,
+          aliasActionType: action,
           namespaceId: namespaceId,
           address: address,
           common: common
