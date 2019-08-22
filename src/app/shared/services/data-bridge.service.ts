@@ -10,7 +10,6 @@ import { TransactionsInterface, TransactionsService } from '../../transfer/servi
 import { ProximaxProvider } from './proximax.provider';
 import { NamespacesService } from 'src/app/servicesModule/services/namespaces.service';
 
-
 @Injectable({
   providedIn: 'root'
 })

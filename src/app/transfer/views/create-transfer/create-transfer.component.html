@@ -74,11 +74,11 @@
                 [maxlength]="configurationForm.address.maxLength" [minlength]="configurationForm.address.minLength">
               <mdb-error
                 *ngIf="validateInput('accountRecipient').invalid && (validateInput('accountRecipient').dirty || validateInput('accountRecipient').touched)">
-                <span>Invalid Recipient</span>
+                <span class="fs-08rem fw-600 color-error-message">Invalid Recipient</span>
               </mdb-error>
 
               <mdb-error *ngIf="msgErrorUnsupported !== ''">
-                <span>{{msgErrorUnsupported}}</span>
+                <span class="fs-08rem fw-600 color-error-message">{{msgErrorUnsupported}}</span>
               </mdb-error>
             </div>
           </div>
@@ -141,12 +141,12 @@
 
               <mdb-error
                 *ngIf="validateInput('amountXpx').invalid && (validateInput('amountXpx').dirty || validateInput('amountXpx').touched)">
-                <span>Invalid amount</span>
+                <span class="fs-08rem fw-600 color-error-message">Invalid amount</span>
               </mdb-error>
 
               <!-- Message Error Insufficient balance-->
-              <mdb-error class="text-danger fw-500" *ngIf="insufficientBalance">
-                <span class="text-danger fw-500">Insufficient balance</span>
+              <mdb-error *ngIf="insufficientBalance">
+                <span class="fs-08rem fw-600 color-error-message">Insufficient balance</span>
               </mdb-error>
             </div>
           </div>
@@ -201,8 +201,8 @@
                     <span class="label-i fw-600">SEND</span>
 
                     <!-- Message Error Insufficient balance-->
-                    <mdb-error class="text-danger fw-500" *ngIf="otherMosaic.errorBalance">
-                      <span class="text-danger fw-500">Insufficient balance</span>
+                    <mdb-error *ngIf="otherMosaic.errorBalance">
+                      <span class="fs-08rem fw-600 color-error-message">Insufficient balance</span>
                     </mdb-error>
                   </div>
                 </div>
