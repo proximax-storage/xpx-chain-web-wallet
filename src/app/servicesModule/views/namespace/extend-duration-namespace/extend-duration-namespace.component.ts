@@ -135,12 +135,14 @@ export class ExtendDurationNamespaceComponent implements OnInit {
     }, { emitEvent: false }
     );
 
-    this.startHeight = 0;
-    this.endHeight = 0;
+
     if (this.extendDurationNamespaceForm.disabled) {
       this.extendDurationNamespaceForm.enable();
     }
 
+    this.startHeight = 0;
+    this.endHeight = 0;
+    this.durationByBlock = '0';
     this.calculateRentalFee = '0.000000';
     this.insufficientBalance = false;
     this.insufficientBalanceDuration = false;

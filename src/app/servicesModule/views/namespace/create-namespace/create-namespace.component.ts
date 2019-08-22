@@ -448,6 +448,8 @@ export class CreateNamespaceComponent implements OnInit {
             this.durationByBlock = this.transactionService.calculateDurationforDay(next).toString();
             this.validateRentalFee(this.rentalFee * parseFloat(this.durationByBlock));
           }
+        } else {
+          this.calculateRentalFee = '0.000000';
         }
       }
     );
@@ -517,10 +519,7 @@ export class CreateNamespaceComponent implements OnInit {
    */
   async validateRentalFee(amount: number) {
     const accountInfo = this.walletService.filterAccountInfo();
-    if (
-      accountInfo && accountInfo.accountInfo &&
-      accountInfo.accountInfo.mosaics && accountInfo.accountInfo.mosaics.length > 0
-    ) {
+    if (accountInfo && accountInfo.accountInfo && accountInfo.accountInfo.mosaics && accountInfo.accountInfo.mosaics.length > 0) {
       const xpxInBalance = accountInfo.accountInfo.mosaics.find(element => {
         return element.id.toHex() === new MosaicId(this.proximaxProvider.mosaicXpx.mosaicId).toHex();
       });
@@ -532,19 +531,18 @@ export class CreateNamespaceComponent implements OnInit {
           if (mosaic && mosaic[0].mosaicInfo) {
             this.calculateRentalFee = this.transactionService.amountFormatter(amount, mosaic[0].mosaicInfo);
           } else {
-            // console.log('entra 1');
+            // **********INSUFFICIENT BALANCE*************
             this.insufficientBalance = true;
-            // this.insufficientBalanceDuration = true;
             if (this.namespaceForm.enabled) {
               this.namespaceForm.disable();
             }
           }
 
-          if (invalidBalance && !this.insufficientBalance) {
-            this.insufficientBalance = true;
+          if (invalidBalance) {
+            // **********DURATION INSUFFICIENT BALANCE*************
+            this.insufficientBalance = false;
             this.insufficientBalanceDuration = true;
-          } else if (!invalidBalance && this.insufficientBalance) {
-            // console.log('entra 2');
+          } else if (!invalidBalance) {
             this.insufficientBalance = false;
             this.insufficientBalanceDuration = false;
             if (this.namespaceForm.disabled) {
@@ -552,26 +550,31 @@ export class CreateNamespaceComponent implements OnInit {
             }
           }
         } else {
-          // console.log('entra 3');
-          this.calculateRentalFee = '10.000000';
-          this.insufficientBalance = false;
-          this.insufficientBalanceDuration = false;
-          if (this.namespaceForm.disabled) {
-            this.namespaceForm.enable();
+          // **********SUBNAMESPACE*************
+          const invalidBalance = xpxInBalance.amount.compact() < 10000000;
+          if (invalidBalance) {
+            // **********DURATION INSUFFICIENT BALANCE*************
+            this.insufficientBalance = true;
+            this.insufficientBalanceDuration = false;
+          } else {
+            this.calculateRentalFee = '10.000000';
+            this.insufficientBalance = false;
+            this.insufficientBalanceDuration = false;
+            if (this.namespaceForm.disabled) {
+              this.namespaceForm.enable();
+            }
           }
         }
       } else {
-        // console.log('entra 4');
+        // **********INSUFFICIENT BALANCE*************
         this.insufficientBalance = true;
-        // this.insufficientBalanceDuration = true;
         if (this.namespaceForm.enabled) {
           this.namespaceForm.disable();
         }
       }
     } else {
-      // console.log('entra 5');
+      // **********INSUFFICIENT BALANCE*************
       this.insufficientBalance = true;
-      // this.insufficientBalanceDuration = true;
       if (this.namespaceForm.enabled) {
         this.namespaceForm.disable();
       }
