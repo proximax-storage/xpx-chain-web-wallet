@@ -135,7 +135,7 @@ export class DataBridgeService {
   getBlockSocket(connector: Listener) {
     connector.newBlock().subscribe(res => {
       this.setblock(res.height.compact())
-      console.log('new block -->', res);
+      // console.log('new block -->', res);
     }, err => {
       this.sharedService.showError('Error', err);
     });

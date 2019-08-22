@@ -24,8 +24,14 @@
       <div class="col-12 col-sm-7 col-md-8 mb-2rem">
 
         <div class="row mt-1rem">
+          <ng-container *ngIf="insufficientBalance">
+            <div class="col-11 mx-auto d-flex justify-content-end">
+              <span class="fs-08rem fw-600 color-error-message">Insufficient balance</span>
+            </div>
+          </ng-container>
+
           <div class="col-11 mx-auto">
-            <div class="md-form form-sm">
+            <div class="md-form form-sm mt-0">
               <input [maxlength]="configurationForm.namespaceName.maxLength"
                 [minlength]="configurationForm.namespaceName.minLength" formControlName="name" required
                 mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text" id="name"
@@ -122,8 +128,8 @@
           </div>
 
           <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-            <button mdbBtn type="submit" rounded="true" [disabled]="!namespaceForm.valid" mdbWavesEffect
-              class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
+            <button mdbBtn type="submit" rounded="true" [disabled]="namespaceForm.invalid || insufficientBalance"
+              mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
               <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
                 *ngIf="blockBtnSend"></span>
               <span class="fs-1-2em color-white">CREATE</span>
