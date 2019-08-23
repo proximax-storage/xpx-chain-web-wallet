@@ -51,27 +51,26 @@
             <div class="row">
               <div class="col-12 col-md-6">
                 <div class="md-form form-sm mt-1rem mb-0rem">
-                  <input mask="comma_separator.0" formControlName="deltaSupply" mdbInputDirective mdbValidate
-                    [validateSuccess]="true" [validateError]="true" type="text" id="supply"
-                    class="form-control form-control-sm input-border" placeholder="Supply">
-
-                  <!-- VALIDATION -->
-                  <mdb-error
-                    *ngIf="validateInput('deltaSupply', '').invalid && (validateInput('deltaSupply', '').dirty || validateInput('deltaSupply', '').touched)">
-                    <span>Input invalid</span>
-                  </mdb-error>
-                </div>
-              </div>
-
-              <div class="col-12 col-md-6">
-                <div class="md-form form-sm mt-1rem mb-0rem">
                   <input formControlName="divisibility" mdbInputDirective mdbValidate [validateSuccess]="true"
-                    [validateError]="true" type="text" id="divisibility" maxlength="1"
+                    [validateError]="true" type="text" id="divisibility" maxlength="1" id="divisibility{{errorDivisibility}}"
                     class="form-control form-control-sm input-border" placeholder="Divisibility">
 
                   <!-- VALIDATION -->
                   <mdb-error
-                    *ngIf="validateInput('divisibility', '').invalid && (validateInput('divisibility', '').dirty || validateInput('divisibility', '').touched)">
+                    *ngIf="validateInput('divisibility', '').invalid && (validateInput('divisibility', '').dirty || validateInput('divisibility', '').touched) || invalidDivisibility">
+                    <span>Input invalid</span>
+                  </mdb-error>
+                </div>
+              </div>
+              <div class="col-12 col-md-6">
+                <div class="md-form form-sm mt-1rem mb-0rem">
+                  <input formControlName="deltaSupply" mdbInputDirective mdbValidate currencyMask [options]="optionsSuply"
+                    [validateSuccess]="true" [validateError]="true" type="text" id="supply" maxlength="32"
+                    class="form-control form-control-sm input-border input-amount" placeholder="Supply">
+
+                  <!-- VALIDATION -->
+                  <mdb-error
+                    *ngIf="validateInput('deltaSupply', '').invalid && (validateInput('deltaSupply', '').dirty || validateInput('deltaSupply', '').touched)">
                     <span>Input invalid</span>
                   </mdb-error>
                 </div>
@@ -148,7 +147,7 @@
           </div>
 
           <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-            <button mdbBtn type="submit" rounded="true" [disabled]="!mosaicForm.valid" mdbWavesEffect
+            <button mdbBtn type="submit" rounded="true" [disabled]="!mosaicForm.valid || blockButton" mdbWavesEffect
               class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
               <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
                 *ngIf="blockSend"></span>

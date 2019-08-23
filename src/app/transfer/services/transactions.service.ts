@@ -593,7 +593,32 @@ export class TransactionsService {
    * @param cant Quantity of zeros to add
    * @param amount Amount to add zeros
    */
-  addZeros(cant, amount = '0') {
+  addZeros(cant, amount = 0) {
+    let decimal;
+    let realAmount;
+    if (amount === 0) {
+      decimal = this.addDecimals(cant);
+      realAmount = `0${decimal}`
+    } else {
+      let arrAmount = amount.toString().replace(/,/g, "").split('.');
+      if (arrAmount.length < 2) {
+        decimal = this.addDecimals(cant);
+      } else {
+        let arrDecimals = arrAmount[1].split('');
+        decimal = this.addDecimals(cant - arrDecimals.length, arrAmount[1]);
+      }
+      realAmount = `${arrAmount[0]}${decimal}`
+    }
+    return realAmount;
+  }
+
+  /**
+   * Method to add leading zeros
+   *
+   * @param cant Quantity of zeros to add
+   * @param amount Amount to add zeros
+   */
+  addDecimals(cant, amount = '0') {
     let x = '0';
     if (amount === '0') {
       for (let index = 0; index < cant - 1; index++) {

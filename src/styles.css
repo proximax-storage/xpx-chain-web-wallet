@@ -943,9 +943,14 @@ input.form-control.validate-success.ng-valid.ng-touched,
 
 #confirm-password-invalid,
 #password-invalid,
-#name-wallet-invalid {
+#name-wallet-invalid,
+#divisibility-invalid {
   box-shadow: none !important;
   border: 2px solid #e06e38 !important;
+}
+
+.input-amount {
+  padding: 8px 10px !important;
 }
 
 .error-message {
