@@ -24,7 +24,7 @@ export class MosaicSupplyChangeTypeComponent implements OnInit {
     private mosaicService: MosaicService
   ) { }
 
-  ngOnInit() {    
+  ngOnInit() {
   }
 
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
@@ -44,8 +44,14 @@ export class MosaicSupplyChangeTypeComponent implements OnInit {
     }
   }
 
+  /**
+   *
+   *
+   * @param {MosaicId[]} mosaicsId
+   * @memberof MosaicSupplyChangeTypeComponent
+   */
   searchMosaics(mosaicsId: MosaicId[]) {
-    this.mosaicService.searchMosaics(mosaicsId).then(
+    this.mosaicService.filterMosaics(mosaicsId).then(
       response => {
         this.searching = false;
         if (response.length > 0) {

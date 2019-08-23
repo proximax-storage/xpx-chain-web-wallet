@@ -8,7 +8,7 @@ import { ToastService } from 'ng-uikit-pro-standard';
 export class SharedService {
 
   configurationForm: ConfigurationForm = {
-    accountRecipient: {
+    address: {
       minLength: 40, maxLength: 46
     },
     nameWallet: {
@@ -92,27 +92,27 @@ export class SharedService {
   }
 
   showSuccess(title: string, bodyMessage: string) {
-    const options = { closeButton: true, tapToDismiss: false, toastClass: 'toastSuccess', timeOut: 4000 };
+    const options = { closeButton: true, tapToDismiss: false, toastClass: 'toastSuccess', timeOut: 4000, messageClass: 'messageClass' };
     this.toastrService.success(bodyMessage, '', options);
   }
 
-  showSuccessTimeout(title: string, bodyMessage: string, timeout:number) {
-    const options = { closeButton: true, tapToDismiss: false, toastClass: 'toastSuccess', timeOut: timeout };
+  showSuccessTimeout(title: string, bodyMessage: string, timeout: number) {
+    const options = { closeButton: true, tapToDismiss: false, toastClass: 'toastSuccess', timeOut: 4000, messageClass: 'messageClass' };
     this.toastrService.success(bodyMessage, '', options);
   }
 
   showError(title: string, bodyMessage: string) {
-    const options = { closeButton: true, tapToDismiss: false, toastClass: 'toastError', timeOut: 4000 };
+    const options = { closeButton: true, tapToDismiss: false, toastClass: 'toastError', timeOut: 4000, messageClass: 'messageClass' };
     this.toastrService.error(bodyMessage, '', options);
   }
 
   showWarning(title: string, bodyMessage: string) {
-    const options = { closeButton: true, tapToDismiss: false, toastClass: 'toastWarning', timeOut: 4000 };
+    const options = { closeButton: true, tapToDismiss: false, toastClass: 'toastWarning', timeOut: 4000, messageClass: 'messageClass' };
     this.toastrService.warning(bodyMessage, '', options);
   }
 
   showInfo(title: string, bodyMessage: string) {
-    const options = { closeButton: true, tapToDismiss: false, toastClass: 'toastInfo', timeOut: 4000 };
+    const options = { closeButton: true, tapToDismiss: false, toastClass: 'toastInfo', timeOut: 4000, messageClass: 'messageClass' };
     this.toastrService.info(bodyMessage, '', options);
   }
 }
@@ -120,7 +120,7 @@ export class SharedService {
 
 
 export interface ConfigurationForm {
-  accountRecipient?: {
+  address?: {
     minLength: number;
     maxLength: number;
   };

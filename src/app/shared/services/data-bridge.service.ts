@@ -10,7 +10,6 @@ import { TransactionsInterface, TransactionsService } from '../../transfer/servi
 import { ProximaxProvider } from './proximax.provider';
 import { NamespacesService } from 'src/app/servicesModule/services/namespaces.service';
 
-
 @Injectable({
   providedIn: 'root'
 })
@@ -23,7 +22,7 @@ export class DataBridgeService {
   block$: Observable<number> = this.blockSubject.asObservable();
   transactionSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   transaction$: Observable<any> = this.transactionSubject.asObservable();
-
+  reconnectNode = 0;
 
   constructor(
     private walletService: WalletService,
@@ -59,11 +58,14 @@ export class DataBridgeService {
    *
    * @memberof DataBridgeService
    */
-  closeConenection() {
+  closeConenection(destroyTransactions = true) {
     // console.log("Destruye conexion con el websocket");
     this.setblock(null);
     this.destroyConection = true;
-    this.transactionsService.destroyAllTransactions();
+    if (destroyTransactions) {
+      console.log('destroy transactions');
+      this.transactionsService.destroyAllTransactions();
+    }
     if (this.connector !== undefined) {
       this.connector.close();
     }
@@ -105,10 +107,14 @@ export class DataBridgeService {
         this.getBlockSocket(this.connector);
       }, (error) => {
         this.sharedService.showWarning('', 'Error connecting to the node');
-        this.reconnect(this.connector);
+        /* if (this.reconnectNode < 1) {
+           this.reconnectNode = this.reconnectNode + 1;
+           this.reconnect(this.connector);
+         }*/
       });
     }
   }
+
 
   /**
   *
@@ -129,6 +135,7 @@ export class DataBridgeService {
   getBlockSocket(connector: Listener) {
     connector.newBlock().subscribe(res => {
       this.setblock(res.height.compact())
+      // console.log('new block -->', res);
     }, err => {
       this.sharedService.showError('Error', err);
     });
@@ -153,7 +160,11 @@ export class DataBridgeService {
           'data': incomingTransaction
         });
 
+        console.log('incomingTransaction', incomingTransaction);
+
         this.transactionsService.getTransactionsConfirmed$().pipe(first()).subscribe(allTransactionConfirmed => {
+          console.log('allTransactionConfirmed', allTransactionConfirmed);
+
           const transactionPushed = allTransactionConfirmed.slice(0);
           const transactionFormatter = this.transactionsService.getStructureDashboard(incomingTransaction, transactionPushed);
           if (transactionFormatter !== null) {

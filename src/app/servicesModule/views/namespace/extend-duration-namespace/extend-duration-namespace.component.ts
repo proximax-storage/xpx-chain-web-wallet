@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormGroup, Validators, FormBuilder, AbstractControl } from '@angular/forms';
-import { SignedTransaction, MosaicId } from 'tsjs-xpx-chain-sdk';
-import { NamespacesService } from '../../../services/namespaces.service';
+import { SignedTransaction, MosaicId, NamespaceInfo } from 'tsjs-xpx-chain-sdk';
+import { NamespacesService, NamespaceStorageInterface } from '../../../services/namespaces.service';
 import { AppConfig } from '../../../../config/app.config';
 import { DataBridgeService } from '../../../../shared/services/data-bridge.service';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
@@ -26,6 +26,7 @@ export class ExtendDurationNamespaceComponent implements OnInit {
   configurationForm: ConfigurationForm = {};
   arrayselect: Array<object> = [
     {
+      id: null,
       value: '1',
       label: 'New root Namespace',
       selected: true,
@@ -38,14 +39,19 @@ export class ExtendDurationNamespaceComponent implements OnInit {
   feeType: string = 'XPX';
   durationByBlock = '0';
   insufficientBalance = false;
-  namespaceChangeInfo: any = [];
+  insufficientBalanceDuration = false;
+  namespaceChangeInfo: NamespaceStorageInterface = null;
   startHeight: number = 0;
   endHeight: number = 0;
   block: number = 0;
   blockBtnSend: boolean = false;
   fee = '';
   titleInformation = 'Namespace Information';
+  transactionSigned: SignedTransaction[] = [];
+  transactionReady: SignedTransaction[] = [];
   subscription: Subscription[] = [];
+  namespaceInfo: NamespaceStorageInterface[] = [];
+  statusTransaction: boolean = false;
 
   constructor(
     private router: Router,
@@ -66,6 +72,10 @@ export class ExtendDurationNamespaceComponent implements OnInit {
     this.getNamespaces();
     const duration = this.extendDurationNamespaceForm.get('duration').value;
     this.durationByBlock = this.transactionService.calculateDurationforDay(duration).toString();
+    this.subscription.push(this.dataBridgeService.getBlock().subscribe(
+      next => this.block = next
+    ));
+
     this.validateRentalFee(this.rentalFee * duration);
     this.extendDurationNamespaceForm.get('duration').valueChanges.subscribe(next => {
       if (next !== null && next !== undefined && String(next) !== '0') {
@@ -80,6 +90,7 @@ export class ExtendDurationNamespaceComponent implements OnInit {
 
     // namespaceRoot ValueChange
     this.extendDurationNamespaceForm.get('namespaceRoot').valueChanges.subscribe(namespaceRoot => {
+      // this.optionSelected(namespaceRoot);
       if (namespaceRoot === null || namespaceRoot === undefined) {
         this.extendDurationNamespaceForm.get('namespaceRoot').setValue('');
       } else {
@@ -117,9 +128,24 @@ export class ExtendDurationNamespaceComponent implements OnInit {
    * @memberof ExtendDurationNamespaceComponent
    */
   clearForm() {
-    this.extendDurationNamespaceForm.get('namespaceRoot').patchValue('');
-    this.extendDurationNamespaceForm.get('duration').patchValue('');
-    this.extendDurationNamespaceForm.get('password').patchValue('');
+    this.extendDurationNamespaceForm.reset({
+      namespaceRoot: '',
+      duration: '',
+      password: ''
+    }, { emitEvent: false }
+    );
+
+
+    if (this.extendDurationNamespaceForm.disabled) {
+      this.extendDurationNamespaceForm.enable();
+    }
+
+    this.startHeight = 0;
+    this.endHeight = 0;
+    this.durationByBlock = '0';
+    this.calculateRentalFee = '0.000000';
+    this.insufficientBalance = false;
+    this.insufficientBalanceDuration = false;
   }
 
   /**
@@ -138,14 +164,95 @@ export class ExtendDurationNamespaceComponent implements OnInit {
    *
    * @memberof ExtendDurationNamespaceComponent
    */
+  extendDuration() {
+    if (this.extendDurationNamespaceForm.valid && !this.blockBtnSend) {
+      this.blockBtnSend = true;
+      const common = {
+        password: this.extendDurationNamespaceForm.get('password').value,
+        privateKey: ''
+      }
+      if (this.walletService.decrypt(common)) {
+        const signedTransaction = this.signedTransaction(common);
+        this.transactionSigned.push(signedTransaction);
+        this.proximaxProvider.announce(signedTransaction).subscribe(
+          () => {
+            this.blockBtnSend = false;
+            this.clearForm();
+            this.startHeight = 0;
+            this.endHeight = 0;
+            if (this.statusTransaction === false) {
+              this.statusTransaction = true;
+              this.getTransactionStatus();
+            }
+
+            this.setTimeOutValidate(signedTransaction.hash);
+          }, () => {
+            this.blockBtnSend = false;
+            this.clearForm();
+          }
+        );
+      } else {
+        this.blockBtnSend = false;
+      }
+    }
+  }
+
+
+  /**
+   *
+   *
+   * @memberof ExtendDurationNamespaceComponent
+   */
+  getTransactionStatus() {
+    // console.log('--getTransactionStatus---');
+
+    // Get transaction status
+    this.subscription.push(this.dataBridgeService.getTransactionStatus().subscribe(
+      statusTransaction => {
+        // console.log(statusTransaction);
+
+        if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
+          for (let element of this.transactionSigned) {
+            const statusTransactionHash = (statusTransaction['type'] === 'error') ? statusTransaction['data'].hash : statusTransaction['data'].transactionInfo.hash;
+            // console.log('---statusTransactionHash---', statusTransactionHash);
+            // console.log('----element----', element);
+
+            const match = statusTransactionHash === element.hash;
+            if (match) {
+              this.transactionReady.push(element);
+            }
+
+            if (statusTransaction['type'] === 'confirmed' && match) {
+              this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransactionHash);
+              this.sharedService.showSuccess('', 'Transaction confirmed');
+            } else if (statusTransaction['type'] === 'unconfirmed' && match) {
+              this.sharedService.showInfo('', 'Transaction unconfirmed');
+            } else if (match) {
+              this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransactionHash);
+              this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
+            }
+          }
+        }
+      }
+    ));
+  }
+
+  /**
+   *
+   *
+   * @memberof ExtendDurationNamespaceComponent
+   */
   getNamespaces() {
     this.subscription.push(this.namespaceService.getNamespaceChanged().subscribe(
       async namespaceInfo => {
+        this.namespaceInfo = namespaceInfo;
+
         if (namespaceInfo !== undefined && namespaceInfo !== null && namespaceInfo.length > 0) {
           const arrayselect = [];
           for (let namespaceRoot of namespaceInfo) {
             if (namespaceRoot.namespaceInfo.depth === 1) {
               arrayselect.push({
+                id: `${this.proximaxProvider.getNamespaceId(namespaceRoot.id).toHex()}`,
                 value: `${namespaceRoot.namespaceName.name}`,
                 label: `${namespaceRoot.namespaceName.name}`,
                 selected: false,
@@ -175,56 +282,19 @@ export class ExtendDurationNamespaceComponent implements OnInit {
    * @param {*} namespace
    * @memberof ExtendDurationNamespaceComponent
    */
-  optionSelected(namespace: any) {
-    namespace = (namespace === undefined) ? 1 : namespace.value;
-    this.namespaceChangeInfo = this.arrayselect.filter((book: any) => (book.name === namespace));
-    if (this.namespaceChangeInfo.length > 0) {
-      this.subscription.push(this.dataBridgeService.getBlock().subscribe(
-        next => this.block = next
-      ));
-      this.startHeight = this.namespaceChangeInfo[0].dataNamespace.NamespaceInfo.startHeight.lower;
-      this.endHeight = this.namespaceChangeInfo[0].dataNamespace.NamespaceInfo.endHeight.lower;
-    }
-  }
-
-  /**
-   *
-   *
-   * @memberof ExtendDurationNamespaceComponent
-   */
-  resetForm() {
-    this.extendDurationNamespaceForm.get('namespaceRoot').patchValue('1');
-    this.extendDurationNamespaceForm.get('duration').patchValue('');
-    this.extendDurationNamespaceForm.get('password').patchValue('');
-  }
-
-  /**
-   *
-   *
-   * @memberof ExtendDurationNamespaceComponent
-   */
-  extendDuration() {
-    if (this.extendDurationNamespaceForm.valid && !this.blockBtnSend) {
-      this.blockBtnSend = true;
-      const common = {
-        password: this.extendDurationNamespaceForm.get('password').value,
-        privateKey: ''
+  optionSelected($event: any) {
+    if ($event && $event.value !== '1') {
+      this.namespaceChangeInfo = this.namespaceInfo.find(book =>
+        this.proximaxProvider.getNamespaceId(book.id).toHex() ===
+        $event.id
+      );
+      if (this.namespaceChangeInfo) {
+        this.startHeight = this.namespaceChangeInfo.namespaceInfo.startHeight.lower;
+        this.endHeight = this.namespaceChangeInfo.namespaceInfo.endHeight.lower;
       }
-      if (this.walletService.decrypt(common)) {
-        this.proximaxProvider.announce(this.signedTransaction(common)).subscribe(
-          () => {
-            this.blockBtnSend = false;
-            this.resetForm();
-            this.sharedService.showSuccess('', 'Transaction sent')
-          }, () => {
-            this.blockBtnSend = false;
-            this.resetForm();
-            this.sharedService.showError('', 'An unexpected error has occurred');
-          }
-        );
-      } else {
-        this.blockBtnSend = false;
-      }
+    } else {
+      this.startHeight = 0;
+      this.endHeight = 0;
     }
   }
 
@@ -249,6 +319,24 @@ export class ExtendDurationNamespaceComponent implements OnInit {
     return validation;
   }
 
+  /**
+   *
+   *
+   * @param {string} hash
+   * @memberof ExtendDurationNamespaceComponent
+   */
+  setTimeOutValidate(hash: string) {
+    setTimeout(() => {
+      let exist = false;
+      for (let element of this.transactionReady) {
+        if (hash === element.hash) {
+          exist = true;
+        }
+      }
+
+      (exist) ? '' : this.sharedService.showWarning('', 'An error has occurred');
+    }, 5000);
+  }
 
   /**
    *
@@ -274,7 +362,7 @@ export class ExtendDurationNamespaceComponent implements OnInit {
    * @param {MosaicsStorage} mosaic
    * @memberof ExtendDurationNamespaceComponent
    */
-  validateRentalFee(amount: number) {
+  async validateRentalFee(amount: number) {
     const accountInfo = this.walletService.filterAccountInfo();
     if (
       accountInfo && accountInfo.accountInfo &&
@@ -287,26 +375,36 @@ export class ExtendDurationNamespaceComponent implements OnInit {
 
         if (filtered) {
           const invalidBalance = filtered.amount.compact() < amount;
-          const mosaic = this.mosaicServices.filterMosaic(filtered.id);
-          this.calculateRentalFee = this.transactionService.amountFormatter(amount, mosaic.mosaicInfo);
-          if (invalidBalance && !this.insufficientBalance) {
-            this.insufficientBalance = true;
-            this.extendDurationNamespaceForm.controls['password'].disable();
-          } else if (!invalidBalance && this.insufficientBalance) {
+          const mosaic = await this.mosaicServices.filterMosaics([filtered.id]);
+          this.calculateRentalFee = this.transactionService.amountFormatter(amount, mosaic[0].mosaicInfo);
+          if (invalidBalance) {
             this.insufficientBalance = false;
-            this.extendDurationNamespaceForm.controls['password'].enable();
+            this.insufficientBalanceDuration = true;
+          } else {
+            this.insufficientBalance = false;
+            this.insufficientBalanceDuration = false;
           }
         } else {
-          this.sharedService.showWarning('', 'You do not have enough balance in the default account');
-          this.router.navigate([`/${AppConfig.routes.service}`]);
+          if (this.extendDurationNamespaceForm.enabled) {
+            this.extendDurationNamespaceForm.disable();
+          }
+          this.insufficientBalanceDuration = false;
+          this.insufficientBalance = true;
         }
       } else {
+        if (this.extendDurationNamespaceForm.enabled) {
+          this.extendDurationNamespaceForm.disable();
+        }
+        this.insufficientBalanceDuration = false;
         this.insufficientBalance = true;
         this.extendDurationNamespaceForm.controls['password'].disable();
       }
     } else {
-      this.sharedService.showWarning('', 'You do not have enough balance in the default account');
-      this.router.navigate([`/${AppConfig.routes.service}`]);
+      if (this.extendDurationNamespaceForm.enabled) {
+        this.extendDurationNamespaceForm.disable();
+      }
+      this.insufficientBalanceDuration = false;
+      this.insufficientBalance = true;
     }
   }
 

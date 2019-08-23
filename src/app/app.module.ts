@@ -24,7 +24,7 @@ import { SharedModule } from './shared/shared.module';
       newestOnTop: true,
       preventDuplicates: true,
       autoDismiss: true,
-      progressBar: true
+      progressBar: false
     })
   ],
   providers: [appRoutingProviders],

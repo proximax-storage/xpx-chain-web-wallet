@@ -154,7 +154,7 @@ export class WalletService {
     const net = (account) ? account.network : this.currentAccount.network;
     const alg = (account) ? account.algo : this.currentAccount.algo;
     if (!crypto.passwordToPrivatekey(common, acct, alg)) {
-      this.sharedService.showError('', 'Invalid password 1');
+      this.sharedService.showError('', 'Invalid password');
       return false;
     }
 
@@ -208,7 +208,7 @@ export class WalletService {
   getAccountDefault(wallet?: WalletAccountInterface): AccountsInterface {
     if (wallet) {
       return wallet.accounts.find(x => x.default === true);
-    } else {
+    } else if (this.currentWallet && this.currentWallet.accounts.length > 0) {
       return this.currentWallet.accounts.find(x => x.default === true);
     }
   }

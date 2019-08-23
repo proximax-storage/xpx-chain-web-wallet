@@ -1,5 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 @import "~@ng-select/ng-select/themes/material.theme.css";
+
 html,
 body {
   margin: 0;
@@ -14,9 +15,10 @@ body {
   overflow: hidden;
   text-overflow: ellipsis
 }
+
 /************* MARGIN **************/
 
-.m-0{
+.m-0 {
   margin: 0 !important;
 }
 
@@ -100,23 +102,23 @@ body {
   margin-bottom: 1rem;
 }
 
-.mb-0{
+.mb-0 {
   margin-bottom: 0;
 }
 
-.mb-03rem{
+.mb-03rem {
   margin-bottom: .3rem;
 }
 
-.mb-04rem{
+.mb-04rem {
   margin-bottom: .4rem;
 }
 
-.mb-05rem{
+.mb-05rem {
   margin-bottom: .5rem;
 }
 
-.mb-06rem{
+.mb-06rem {
   margin-bottom: .6rem;
 }
 
@@ -141,7 +143,7 @@ body {
   margin-top: 5px;
 }
 
-.ml-m05rem{
+.ml-m05rem {
   margin-left: -5rem !important;
 }
 
@@ -151,6 +153,10 @@ body {
 
 .ml-03rem {
   margin-left: .3rem;
+}
+
+.ml-05rem {
+  margin-left: .5rem;
 }
 
 .ml-10px {
@@ -193,7 +199,7 @@ body {
   margin-right: .1rem;
 }
 
-.mr-04rem{
+.mr-04rem {
   margin-right: .4rem;
 }
 
@@ -206,6 +212,11 @@ body {
 }
 
 /********************* PADDING -*******************************/
+
+
+.p-0 {
+  padding: 0 !important;
+}
 
 /** TOP **/
 .pt-05rem {
@@ -232,15 +243,15 @@ body {
   padding-top: 3rem;
 }
 
-.pt-4rem{
+.pt-4rem {
   padding-top: 4rem;
 }
 
-.pt-10px{
+.pt-10px {
   padding-top: 10px;
 }
 
-.p-12px{
+.p-12px {
   padding: 12px;
 }
 
@@ -296,11 +307,11 @@ body {
   padding-right: 1rem;
 }
 
-.pr-2rem{
+.pr-2rem {
   padding-right: 2rem !important;
 }
 
-.pr-05rem{
+.pr-05rem {
   padding-right: .5rem;
 }
 
@@ -310,7 +321,7 @@ body {
   border-bottom: 2px solid #765544;
 }
 
-.bord-rad-25px{
+.bord-rad-25px {
   border-radius: 25px;
 }
 
@@ -320,11 +331,11 @@ body {
   line-height: 1em
 }
 
-.line-h-07em{
+.line-h-07em {
   line-height: .7em;
 }
 
-.line-h-08em{
+.line-h-08em {
   line-height: .8em;
 }
 
@@ -399,11 +410,11 @@ body {
   height: 7rem;
 }
 
-.h-75porcent{
+.h-75porcent {
   height: 75%;
 }
 
-.h-85porcent{
+.h-85porcent {
   height: 85%;
 }
 
@@ -415,11 +426,11 @@ body {
   height: 98%;
 }
 
-.h-60px{
+.h-60px {
   height: 60px;
 }
 
-.h-70px{
+.h-70px {
   height: 70px;
 }
 
@@ -428,7 +439,7 @@ body {
 }
 
 /********************** WIDTH **********************/
-.w-30px{
+.w-30px {
   width: 30px !important;
 }
 
@@ -483,6 +494,10 @@ body {
   font-size: 0.7rem !important;
 }
 
+.fs-075rem {
+  font-size: .75rem !important;
+}
+
 .fs-08rem {
   font-size: .8rem !important;
 }
@@ -516,31 +531,31 @@ body {
 }
 
 .fs-1-7rem {
-    font-size: 1.7rem;
-  }
+  font-size: 1.7rem;
+}
 
-.fs-2rem{
-    font-size: 2rem !important;
+.fs-2rem {
+  font-size: 2rem !important;
 }
 
 .font-small {
   font-size: .9rem;
 }
 
-.fs-14px{
-    font-size: 14px;
+.fs-14px {
+  font-size: 14px;
 }
 
-.fs-20px{
-    font-size: 20px;
+.fs-20px {
+  font-size: 20px;
 }
 
-.fs-22px{
-    font-size: 22px;
+.fs-22px {
+  font-size: 22px;
 }
 
-.fs-34px{
-    font-size: 34px;
+.fs-34px {
+  font-size: 34px;
 }
 
 
@@ -587,15 +602,15 @@ body {
   color: #EA6002 !important;
 }
 
-.color-grey{
+.color-grey {
   color: #9a9a9a !important;
 }
 
-.color-main-wallet{
+.color-main-wallet {
   color: #427dbe;
 }
 
-.color-item-menu{
+.color-item-menu {
   color: #306EB5 !important;
 }
 
@@ -603,15 +618,15 @@ body {
   color: #00960c !important;
 }
 
-.color-blue-intermedio{
+.color-blue-intermedio {
   color: #2BA1B9 !important;
 }
 
-.color-white{
+.color-white {
   color: white !important;
 }
 
-.color-black{
+.color-black {
   color: black !important;
 }
 
@@ -630,16 +645,16 @@ body {
   background: #ffffff !important;
 }
 
-.background-btn{
+.background-btn {
   background: #306EB5 !important;
 }
 
-.background-btn-inverse{
+.background-btn-inverse {
   background-color: white !important;
   border: 2px solid #306EB5 !important;
 }
 
-.background-header-grey{
+.background-header-grey {
   background-color: #f4f4f4 !important;
 }
 
@@ -647,21 +662,28 @@ body {
   background: #e4e4e4;
 }
 
-.background-gray-icons{
+.background-gray-icons {
   background: #efefef;
 }
 
 
 /**************************** THEME *****************************/
+.icono {
+  width: 28px;
+  padding-right: 10px;
+  display: inline-block;
+  line-height: 18px;
+}
+
 .box-list-account-gray,
-.box-list-account{
+.box-list-account {
   color: white;
   background: #2aa1b9;
   border-radius: 1rem;
   margin-top: 1rem;
 }
 
-.box-list-account-gray{
+.box-list-account-gray {
   color: #424242 !important;
   background: #f4f4f4 !important;
 }
@@ -688,7 +710,7 @@ body {
   max-height: 90vh !important;
 }
 
-.line-separator-gray{
+.line-separator-gray {
   height: 100%;
   border: .03rem solid #cecece;
 }
@@ -709,14 +731,14 @@ body {
   right: 15px;
   opacity: 0;
   transition: all .2s ease-in-out;
- }
+}
 
- .show-scrollTop {
+.show-scrollTop {
   opacity: 1;
   transition: all .2s ease-in-out;
- }
+}
 
-.description-p-module{
+.description-p-module {
   font-size: .8rem;
   text-align: justify;
   line-height: 17px;
@@ -724,11 +746,11 @@ body {
 }
 
 
-.item-menu{
+.item-menu {
   font-size: .8rem !important;
 }
 
-.item-menu:hover{
+.item-menu:hover {
   font-weight: 800 !important;
 }
 
@@ -748,7 +770,7 @@ footer {
   /* height: 74px; */
 }
 
-footer.page-footer .footer-copyright{
+footer.page-footer .footer-copyright {
   background-color: rgba(0, 0, 0, 0) !important;
 }
 
@@ -783,11 +805,12 @@ footer.page-footer .footer-copyright{
 }
 
 /************************* NG SELECT *******************/
-.navbar.navbar-dark .breadcrumb .nav-item .nav-link, .navbar.navbar-dark .navbar-nav .nav-item .nav-link{
+.navbar.navbar-dark .breadcrumb .nav-item .nav-link,
+.navbar.navbar-dark .navbar-nav .nav-item .nav-link {
   color: #306EB5 !important;
 }
 
-button.navbar-toggler{
+button.navbar-toggler {
   color: white !important;
   background-color: #306EB5 !important;
 }
@@ -797,44 +820,118 @@ button.navbar-toggler{
 }
 
 
-.md-form input[type=text], .md-form input[type=password], .md-form input[type=email], .md-form input[type=url], .md-form input[type=time], .md-form input[type=date], .md-form input[type=datetime-local], .md-form input[type=tel], .md-form input[type=number], .md-form input[type=search-md], .md-form input[type=search], .md-form textarea.md-textarea, input[type=text]{
+.md-form input[type=text],
+.md-form input[type=password],
+.md-form input[type=email],
+.md-form input[type=url],
+.md-form input[type=time],
+.md-form input[type=date],
+.md-form input[type=datetime-local],
+.md-form input[type=tel],
+.md-form input[type=number],
+.md-form input[type=search-md],
+.md-form input[type=search],
+.md-form textarea.md-textarea,
+input[type=text] {
   border: 1px solid #ced4da;
   border-radius: 1.5rem !important;
   padding-left: 1rem;
 }
 
-.md-form input[type=text]:focus:not([readonly]), .md-form input[type=password]:focus:not([readonly]), .md-form input[type=email]:focus:not([readonly]), .md-form input[type=url]:focus:not([readonly]), .md-form input[type=time]:focus:not([readonly]), .md-form input[type=date]:focus:not([readonly]), .md-form input[type=datetime-local]:focus:not([readonly]), .md-form input[type=tel]:focus:not([readonly]), .md-form input[type=number]:focus:not([readonly]), .md-form input[type=search-md]:focus:not([readonly]), .md-form input[type=search]:focus:not([readonly]), .md-form textarea.md-textarea:focus:not([readonly]),
-.md-form input[type=text]:focus:not([readonly]), .md-form input[type=password]:focus:not([readonly]), .md-form input[type=email]:focus:not([readonly]), .md-form input[type=url]:focus:not([readonly]), .md-form input[type=time]:focus:not([readonly]), .md-form input[type=date]:focus:not([readonly]), .md-form input[type=datetime-local]:focus:not([readonly]), .md-form input[type=tel]:focus:not([readonly]), .md-form input[type=number]:focus:not([readonly]), .md-form input[type=search-md]:focus:not([readonly]), .md-form input[type=search]:focus:not([readonly]), .md-form textarea.md-textarea:focus:not([readonly]),
-.md-form input[type=text]:focus:not([readonly]), .md-form input[type=password]:focus:not([readonly]), .md-form input[type=email]:focus:not([readonly]), .md-form input[type=url]:focus:not([readonly]), .md-form input[type=time]:focus:not([readonly]), .md-form input[type=date]:focus:not([readonly]), .md-form input[type=datetime-local]:focus:not([readonly]), .md-form input[type=tel]:focus:not([readonly]), .md-form input[type=number]:focus:not([readonly]), .md-form input[type=search-md]:focus:not([readonly]), .md-form input[type=search]:focus:not([readonly]), .md-form textarea.md-textarea:focus:not([readonly]){
+.md-form input[type=text]:focus:not([readonly]),
+.md-form input[type=password]:focus:not([readonly]),
+.md-form input[type=email]:focus:not([readonly]),
+.md-form input[type=url]:focus:not([readonly]),
+.md-form input[type=time]:focus:not([readonly]),
+.md-form input[type=date]:focus:not([readonly]),
+.md-form input[type=datetime-local]:focus:not([readonly]),
+.md-form input[type=tel]:focus:not([readonly]),
+.md-form input[type=number]:focus:not([readonly]),
+.md-form input[type=search-md]:focus:not([readonly]),
+.md-form input[type=search]:focus:not([readonly]),
+.md-form textarea.md-textarea:focus:not([readonly]),
+.md-form input[type=text]:focus:not([readonly]),
+.md-form input[type=password]:focus:not([readonly]),
+.md-form input[type=email]:focus:not([readonly]),
+.md-form input[type=url]:focus:not([readonly]),
+.md-form input[type=time]:focus:not([readonly]),
+.md-form input[type=date]:focus:not([readonly]),
+.md-form input[type=datetime-local]:focus:not([readonly]),
+.md-form input[type=tel]:focus:not([readonly]),
+.md-form input[type=number]:focus:not([readonly]),
+.md-form input[type=search-md]:focus:not([readonly]),
+.md-form input[type=search]:focus:not([readonly]),
+.md-form textarea.md-textarea:focus:not([readonly]),
+.md-form input[type=text]:focus:not([readonly]),
+.md-form input[type=password]:focus:not([readonly]),
+.md-form input[type=email]:focus:not([readonly]),
+.md-form input[type=url]:focus:not([readonly]),
+.md-form input[type=time]:focus:not([readonly]),
+.md-form input[type=date]:focus:not([readonly]),
+.md-form input[type=datetime-local]:focus:not([readonly]),
+.md-form input[type=tel]:focus:not([readonly]),
+.md-form input[type=number]:focus:not([readonly]),
+.md-form input[type=search-md]:focus:not([readonly]),
+.md-form input[type=search]:focus:not([readonly]),
+.md-form textarea.md-textarea:focus:not([readonly]) {
   box-shadow: none !important;
   border: 2px solid #2BA1B9 !important;
 }
 
-.md-form input[type=text]:focus:not([readonly]), .md-form input[type=password]:focus:not([readonly]), .md-form input[type=email]:focus:not([readonly]), .md-form input[type=url]:focus:not([readonly]), .md-form input[type=time]:focus:not([readonly]), .md-form input[type=date]:focus:not([readonly]), .md-form input[type=datetime-local]:focus:not([readonly]), .md-form input[type=tel]:focus:not([readonly]), .md-form input[type=number]:focus:not([readonly]), .md-form input[type=search-md]:focus:not([readonly]), .md-form input[type=search]:focus:not([readonly]), .md-form textarea.md-textarea:focus:not([readonly]) {
+.md-form input[type=text]:focus:not([readonly]),
+.md-form input[type=password]:focus:not([readonly]),
+.md-form input[type=email]:focus:not([readonly]),
+.md-form input[type=url]:focus:not([readonly]),
+.md-form input[type=time]:focus:not([readonly]),
+.md-form input[type=date]:focus:not([readonly]),
+.md-form input[type=datetime-local]:focus:not([readonly]),
+.md-form input[type=tel]:focus:not([readonly]),
+.md-form input[type=number]:focus:not([readonly]),
+.md-form input[type=search-md]:focus:not([readonly]),
+.md-form input[type=search]:focus:not([readonly]),
+.md-form textarea.md-textarea:focus:not([readonly]) {
   box-shadow: 0 1px 0 0 #2BA1B9;
   border-bottom: 1px solid #2BA1B9;
 }
 
-.md-form input[type=text]:focus:not([readonly]) + label, .md-form input[type=password]:focus:not([readonly]) + label, .md-form input[type=email]:focus:not([readonly]) + label, .md-form input[type=url]:focus:not([readonly]) + label, .md-form input[type=time]:focus:not([readonly]) + label, .md-form input[type=date]:focus:not([readonly]) + label, .md-form input[type=datetime-local]:focus:not([readonly]) + label, .md-form input[type=tel]:focus:not([readonly]) + label, .md-form input[type=number]:focus:not([readonly]) + label, .md-form input[type=search-md]:focus:not([readonly]) + label, .md-form input[type=search]:focus:not([readonly]) + label, .md-form textarea.md-textarea:focus:not([readonly]) + label {
+.md-form input[type=text]:focus:not([readonly])+label,
+.md-form input[type=password]:focus:not([readonly])+label,
+.md-form input[type=email]:focus:not([readonly])+label,
+.md-form input[type=url]:focus:not([readonly])+label,
+.md-form input[type=time]:focus:not([readonly])+label,
+.md-form input[type=date]:focus:not([readonly])+label,
+.md-form input[type=datetime-local]:focus:not([readonly])+label,
+.md-form input[type=tel]:focus:not([readonly])+label,
+.md-form input[type=number]:focus:not([readonly])+label,
+.md-form input[type=search-md]:focus:not([readonly])+label,
+.md-form input[type=search]:focus:not([readonly])+label,
+.md-form textarea.md-textarea:focus:not([readonly])+label {
   color: #2BA1B9 !important;
 }
 
 
-.dropdown-default .dropdown-content li a, .dropdown-default .dropdown-content li span:hover, .dropdown-default .dropdown-content li.active{
+.dropdown-default .dropdown-content li a,
+.dropdown-default .dropdown-content li span:hover,
+.dropdown-default .dropdown-content li.active {
   background-color: #609ca9 !important;
 }
 
-.dropdown-default.colorful-select .dropdown-content li.active span, .dropdown-default.colorful-select .dropdown-content li.selected span{
+.dropdown-default.colorful-select .dropdown-content li.active span,
+.dropdown-default.colorful-select .dropdown-content li.selected span {
   background-color: #2ba1b9 !important;
 }
 
 /** INPUTS VALIDATION **/
-input.form-control.validate-error.ng-invalid.ng-touched, input.form-control.validate-error.ng-invalid.ng-dirty, .form-submitted input.form-control.validate-error.ng-invalid{
+input.form-control.validate-error.ng-invalid.ng-touched,
+input.form-control.validate-error.ng-invalid.ng-dirty,
+.form-submitted input.form-control.validate-error.ng-invalid {
   box-shadow: none !important;
   border: 2px solid #e06e38 !important;
 }
 
-input.form-control.validate-success.ng-valid.ng-dirty, input.form-control.validate-success.ng-valid.ng-touched, .form-submitted input.form-control.validate-success.ng-valid{
+input.form-control.validate-success.ng-valid.ng-dirty,
+input.form-control.validate-success.ng-valid.ng-touched,
+.form-submitted input.form-control.validate-success.ng-valid {
   box-shadow: none !important;
   border: 2px solid #2BA1B9 !important;
 }
@@ -846,65 +943,142 @@ input.form-control.validate-success.ng-valid.ng-dirty, input.form-control.valida
 
 #confirm-password-invalid,
 #password-invalid,
-#name-wallet-invalid{
+#name-wallet-invalid {
   box-shadow: none !important;
   border: 2px solid #e06e38 !important;
 }
 
-.error-message{
+.error-message {
   color: #e06e38 !important;
 }
 
-.success-message{
+.color-error-message {
+  color: #e06e38 !important;
+}
+
+.success-message {
   color: #2BA1B9 !important;
 }
 
-.md-form.form-sm mdb-error, .md-form.form-sm mdb-success{
+.md-form.form-sm mdb-error,
+.md-form.form-sm mdb-success {
   left: 1rem !important;
 }
 
+/*************TOASTR**************/
 .toastInfo {
   opacity: 1.0 !important;
-  background-color: #2BA1B9 !important;
+  background-color: white !important;
+  border: 2px solid #2BA1B9 !important;
 }
 
 .toastSuccess {
   opacity: 1.0 !important;
-  background-color: #54b1aa !important;
+  background-color: white !important;
+  border: 2px solid #54b1aa !important;
 }
 
 .toastWarning {
   opacity: 1.0 !important;
-  background-color: #f2a91d !important;
+  background-color: white !important;
+  border: 2px solid #f2a91d !important;
 }
 
 .toastError {
   opacity: 1.0 !important;
-  background-color: #e06e38 !important;
+  background-color: white !important;
+  border: 2px solid #e06e38 !important;
 }
-/** FIN INPUTS VALIDATION **/
 
-/************* SELECT ************/
-.ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-selected{
+button.md-toast-close-button {
+  padding-right: .5rem !important;
+  color: #505050 !important;
+}
+
+.messageClass {
+  font-family: sans-serif !important;
+  font-size: .9rem;
+  color: #505050 !important;
+  font-weight: 600;
+}
+
+.md-toast-success:before {
+  color: #54b1aa !important;
+}
+
+.md-toast-info:before {
   color: #2BA1B9 !important;
 }
 
-.ng-select.ng-select-focused .ng-select-container:after{
+.md-toast-warning:before {
+  color: #f2a91d !important;
+}
+
+.md-toast-error:before {
+  color: #e06e38 !important;
+}
+
+
+.md-toast-success:before,
+.md-toast-info:before,
+.md-toast-warning:before,
+.md-toast-error:before,
+#toast-container>mdb-toast-component {
+  font-family: FontAwesome !important;
+  font-size: 20px !important;
+  line-height: 14px !important;
+  float: left !important;
+  margin-left: -2em !important;
+  padding-right: .2em !important;
+}
+
+.md-toast-success:before {
+  content: "\f058";
+}
+
+.md-toast-warning:before {
+  content: "\f06a";
+}
+
+.md-toast-info:before {
+  content: "\f05a";
+}
+
+.md-toast-error:before {
+  content: "\f071";
+}
+
+#toast-container>mdb-toast-component {
+  background-image: none !important;
+}
+
+.md-toast-progress {
+  background-color: #306eb5 !important;
+}
+
+/** FIN INPUTS VALIDATION **/
+
+/************* SELECT ************/
+.ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-selected {
+  color: #2BA1B9 !important;
+}
+
+.ng-select.ng-select-focused .ng-select-container:after {
   border-color: #2BA1B9 !important;
 }
 
 .ng-select.ng-select-focused .ng-select-container .ng-arrow-wrapper .ng-arrow,
-.ng-select.ng-select-focused .ng-select-container .ng-value-container .ng-placeholder{
+.ng-select.ng-select-focused .ng-select-container .ng-value-container .ng-placeholder {
   color: #2BA1B9 !important;
 }
 
-.selectWrapper.ng-select.validate-success.validate-error.ng-select-single.ng-select-searchable.ng-select-clearable.ng-dirty.ng-invalid.ng-touched.ng-select .ng-select-container:after{
+.selectWrapper.ng-select.validate-success.validate-error.ng-select-single.ng-select-searchable.ng-select-clearable.ng-dirty.ng-invalid.ng-touched.ng-select .ng-select-container:after {
   border-color: #e06e38 !important;
 }
 
-.navbar-toggler-icon{
+.navbar-toggler-icon {
   height: 25px !important;
-    width: 20px !important;
+  width: 20px !important;
 }
 
 /*
@@ -997,9 +1171,10 @@ input.form-control.validate-success.ng-valid.ng-dirty, input.form-control.valida
   color: gray;
 }
 
-.double-nav a{
+.double-nav a {
   color: #0275d8 !important;
 }
+
 /************************* FIN NG SELECT *******************/
 
 .w-b-a {
@@ -1025,7 +1200,7 @@ input.form-control.validate-success.ng-valid.ng-dirty, input.form-control.valida
   font-size: 1.3em;
 }
 
-.box-grey{
+.box-grey {
   border-radius: 1.5rem;
   background: #dedede;
   padding: 10px 20px;
@@ -1033,51 +1208,55 @@ input.form-control.validate-success.ng-valid.ng-dirty, input.form-control.valida
   color: #797979;
 }
 
-.box-transparent-border-orange{
+.box-transparent-border-orange {
   border-radius: 1.5rem;
   border: solid #f3ad27;
   padding: 10px 20px;
-  margin: 10px; text-align: center;
+  margin: 10px;
+  text-align: center;
 }
 
-.topnav label.icon{
+.topnav label.icon {
   cursor: pointer !important;
 }
 
-.cursor-p{
+.cursor-p {
   cursor: pointer;
 }
 
-.cursor-n-a{
+.cursor-n-a {
   cursor: not-allowed !important;
   pointer-events: none !important;
 }
 
-.dropdown-default.colorful-select .dropdown-content li.active span, .dropdown-default.colorful-select .dropdown-content li.selected span,
-.dropdown-default .dropdown-content li a, .dropdown-default .dropdown-content li span:hover, .dropdown-default .dropdown-content li.active {
-  background-color: #2ba1b9!important;
+.dropdown-default.colorful-select .dropdown-content li.active span,
+.dropdown-default.colorful-select .dropdown-content li.selected span,
+.dropdown-default .dropdown-content li a,
+.dropdown-default .dropdown-content li span:hover,
+.dropdown-default .dropdown-content li.active {
+  background-color: #2ba1b9 !important;
 }
 
 /*************FOR SELECT*****************/
 
-mdb-select>div>div.single{
+mdb-select>div>div.single {
   border-bottom: 0px !important;
 }
 
-.mdb-select-toggle{
+.mdb-select-toggle {
   margin-top: -0.3rem !important;
 }
 
-mdb-select>div>div.single>div.value{
+mdb-select>div>div.single>div.value {
   padding-top: .3rem !important;
 }
 
-mdb-select>div>div.single>div.placeholder{
+mdb-select>div>div.single>div.placeholder {
   padding: 0 !important;
   line-height: 1.5rem !important;
 }
 
-mdb-select>div>div.single>div.value{
+mdb-select>div>div.single>div.value {
   line-height: 1.1rem !important;
 }
 

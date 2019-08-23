@@ -39,7 +39,6 @@ export class MosaicsSupplyChangeComponent implements OnInit {
     selected: false,
     disabled: false
   }];
-  ;
   mosaicsInfo: any[];
   divisibility: number = 0;
   duration: string = '() 0 days';
@@ -77,22 +76,19 @@ export class MosaicsSupplyChangeComponent implements OnInit {
     this.configurationForm = this.sharedService.configurationForm;
     this.createForm();
     this.subscribe['block'] = await this.dataBridge.getBlock().subscribe(next => this.currentBlock = next);
-    const data = await this.mosaicService.searchMosaicsFromAccountStorage$();
+    const data = await this.mosaicService.filterMosaics();
     const mosaicsSelect = this.parentMosaic.slice(0);
-    // console.log(data);
     data.forEach(element => {
-      // console.log(element);
-
       let expired = false;
       let nameExpired = '';
       if (element.mosaicInfo) {
-        const nameMosaic = (element.mosaicNames.names.length > 0) ? element.mosaicNames.names[0] : this.proximaxProvider.getMosaicId(element.id).toHex();
+        const nameMosaic = (element.mosaicNames.names.length > 0) ? element.mosaicNames.names[0] : this.proximaxProvider.getMosaicId(element.idMosaic).toHex();
         const addressOwner = this.proximaxProvider.createAddressFromPublicKey(
           element.mosaicInfo.owner.publicKey,
           element.mosaicInfo.owner.address['networkType']
         );
 
-        const currentAccount  = Object.assign({}, this.walletService.getCurrentAccount());
+        const currentAccount = Object.assign({}, this.walletService.getCurrentAccount());
         const isOwner = (addressOwner.pretty() === this.proximaxProvider.createFromRawAddress(currentAccount.address).pretty()) ? true : false;
         const durationMosaic = new UInt64([
           element.mosaicInfo['properties']['duration']['lower'],
@@ -110,15 +106,10 @@ export class MosaicsSupplyChangeComponent implements OnInit {
             nameExpired = ' - Expired';
           }
         }
-        /* console.log(addressOwner.pretty());
-         console.log(this.walletService.address.pretty());
-         console.log(element.mosaicInfo['properties']['supplyMutable']);
-         console.log(isOwner);
-         console.log('-------------------------------------------\n');*/
 
         if (isOwner && element.mosaicInfo['properties']['supplyMutable']) {
           mosaicsSelect.push({
-            value: element.id,
+            value: element.idMosaic,
             label: `${nameMosaic}${nameExpired}`,
             selected: false,
             disabled: expired
@@ -150,15 +141,15 @@ export class MosaicsSupplyChangeComponent implements OnInit {
    * @memberof MosaicSupplyChange
    */
   clearForm() {
-    this.formMosaicSupplyChange.get('password').patchValue('');
-    this.formMosaicSupplyChange.get('deltaSupply').patchValue('');
-    this.formMosaicSupplyChange.get('parentMosaic').patchValue(MosaicSupplyType.Increase);
-    this.divisibility = 0;
-    this.duration = '0 days';
-    this.supply = '0';
-    this.levyMutable = false;
-    this.supplyMutable = false;
-    this.transferable = false;
+    this.formMosaicSupplyChange.reset({
+      parentMosaic: '',
+      mosaicSupplyType: MosaicSupplyType.Increase,
+      deltaSupply: '',
+      password: ''
+    },
+      {
+        emitEvent: false
+      });
   }
 
 
@@ -169,36 +160,28 @@ export class MosaicsSupplyChangeComponent implements OnInit {
    * @returns
    * @memberof MosaicsSupplyChangeComponent
    */
-  optionSelected(mosaic: any) {
+  async optionSelected(mosaic: any) {
     if (mosaic !== undefined) {
-      const mosaicsInfoSelected: MosaicsStorage = this.mosaicService.filterMosaic(this.proximaxProvider.getMosaicId(mosaic['value']));
+      const mosaicsInfoSelected: MosaicsStorage[] = await this.mosaicService.filterMosaics([this.proximaxProvider.getMosaicId(mosaic['value'])]);
       //  console.log(mosaicsInfoSelected);
       if (mosaicsInfoSelected !== null || mosaicsInfoSelected !== undefined) {
-        this.divisibility = mosaicsInfoSelected.mosaicInfo['properties'].divisibility;
-        this.levyMutable = mosaicsInfoSelected.mosaicInfo['properties'].levyMutable;
-        this.supplyMutable = mosaicsInfoSelected.mosaicInfo['properties'].supplyMutable;
-        this.transferable = mosaicsInfoSelected.mosaicInfo['properties'].transferable;
+        this.divisibility = mosaicsInfoSelected[0].mosaicInfo['properties'].divisibility;
+        this.levyMutable = mosaicsInfoSelected[0].mosaicInfo['properties'].levyMutable;
+        this.supplyMutable = mosaicsInfoSelected[0].mosaicInfo['properties'].supplyMutable;
+        this.transferable = mosaicsInfoSelected[0].mosaicInfo['properties'].transferable;
         this.supply = this.transactionService.amountFormatter(
           new UInt64([
-            mosaicsInfoSelected.mosaicInfo.supply['lower'],
-            mosaicsInfoSelected.mosaicInfo.supply['higher']
-          ]), mosaicsInfoSelected.mosaicInfo
+            mosaicsInfoSelected[0].mosaicInfo.supply['lower'],
+            mosaicsInfoSelected[0].mosaicInfo.supply['higher']
+          ]), mosaicsInfoSelected[0].mosaicInfo
         );
         const durationBlock = new UInt64([
-          mosaicsInfoSelected.mosaicInfo['properties']['duration']['lower'],
-          mosaicsInfoSelected.mosaicInfo['properties']['duration']['higher']
+          mosaicsInfoSelected[0].mosaicInfo['properties']['duration']['lower'],
+          mosaicsInfoSelected[0].mosaicInfo['properties']['duration']['higher']
         ]);
 
         const durationDays = this.transactionService.calculateDuration(durationBlock);
-
         this.duration = `(${durationBlock.compact()}) ${durationDays}`;
-
-        /*console.log('------------- this.supply ---------', this.supply);
-        console.log('------------- this.divisibility ---------', this.divisibility);
-        console.log('------------- this.duration ---------', this.duration);
-        console.log('------------- this.levyMutable ---------', this.levyMutable);
-        console.log('------------- this.supplyMutable ---------', this.supplyMutable);
-        console.log('------------- this.transferable ---------', this.transferable);*/
         return;
       }
     }
@@ -209,12 +192,6 @@ export class MosaicsSupplyChangeComponent implements OnInit {
     this.levyMutable = false;
     this.supplyMutable = false;
     this.transferable = false;
-    // console.log('------------- this.supply ---------', this.supply);
-    // console.log('------------- this.divisibility ---------', this.divisibility);
-    // console.log('------------- this.duration ---------', this.duration);
-    // console.log('------------- this.levyMutable ---------', this.levyMutable);
-    // console.log('------------- this.supplyMutable ---------', this.supplyMutable);
-    // console.log('------------- this.transferable ---------', this.transferable);
     return;
   }
 
@@ -233,32 +210,19 @@ export class MosaicsSupplyChangeComponent implements OnInit {
     }
   }
 
+  /**
+   *
+   *
+   * @readonly
+   * @memberof MosaicsSupplyChangeComponent
+   */
   get input() { return this.formMosaicSupplyChange.get('password'); }
 
-  /*getTransactionStatus2() {
-    // Get transaction status
-    this.subscriptions['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
-      statusTransaction => {
-        if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
-          for (let element of this.transactionSigned) {
-            const statusTransactionHash = (statusTransaction['type'] === 'error') ? statusTransaction['data'].hash : statusTransaction['data'].transactionInfo.hash;
-            const match = statusTransactionHash === element.hash;
-            if (statusTransaction['type'] === 'confirmed' && match) {
-              this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransactionHash);
-              this.sharedService.showSuccess('', 'Transaction confirmed');
-            } else if (statusTransaction['type'] === 'unconfirmed' && match) {
-              this.sharedService.showInfo('', 'Transaction unconfirmed');
-            } else if (match) {
-              this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransactionHash);
-              this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
-            }
-          }
-        }
-      }
-    );
-  }*/
-
-
+  /**
+   *
+   *
+   * @memberof MosaicsSupplyChangeComponent
+   */
   getTransactionStatus() {
     // Get transaction status
     this.subscriptions['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
@@ -285,30 +249,11 @@ export class MosaicsSupplyChangeComponent implements OnInit {
     );
   }
 
-  /*
-    getTransactionStatus() {
-      // Get transaction status
-      this.subscriptions['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
-        statusTransaction => {
-          if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
-            for (let element of this.transactionSigned) {
-              const statusTransactionHash = (statusTransaction['type'] === 'error') ? statusTransaction['data'].hash : statusTransaction['data'].transactionInfo.hash;
-              const match = statusTransactionHash === element.hash;
-              if (statusTransaction['type'] === 'confirmed' && match) {
-                this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransactionHash);
-                this.sharedService.showSuccess('', 'Transaction confirmed');
-              } else if (statusTransaction['type'] === 'unconfirmed' && match) {
-                this.sharedService.showInfo('', 'Transaction unconfirmed');
-              } else if (match) {
-                this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransactionHash);
-                this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
-              }
-            }
-          }
-        }
-      );
-    }*/
-
+  /**
+   *
+   *
+   * @memberof MosaicsSupplyChangeComponent
+   */
   send() {
     if (this.formMosaicSupplyChange.valid) {
       this.blockButton = true;
@@ -356,6 +301,12 @@ export class MosaicsSupplyChangeComponent implements OnInit {
     }
   }
 
+  /**
+   *
+   *
+   * @param {string} hash
+   * @memberof MosaicsSupplyChangeComponent
+   */
   setTimeOutValidate(hash: string) {
     setTimeout(() => {
       let exist = false;
@@ -369,6 +320,15 @@ export class MosaicsSupplyChangeComponent implements OnInit {
     }, 5000);
   }
 
+  /**
+   *
+   *
+   * @param {string} [nameInput='']
+   * @param {string} [nameControl='']
+   * @param {string} [nameValidation='']
+   * @returns
+   * @memberof MosaicsSupplyChangeComponent
+   */
   validateInput(nameInput: string = '', nameControl: string = '', nameValidation: string = '') {
     let validation: AbstractControl = null;
     if (nameInput !== '' && nameControl !== '') {

@@ -7,6 +7,8 @@ import { DashboardService } from '../../../../dashboard/services/dashboard.servi
 import { AuthService } from '../../../../auth/services/auth.service';
 import { WalletService } from '../../../../wallet/services/wallet.service';
 import { TransactionsService } from '../../../../transfer/services/transactions.service';
+import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
+import { Subscription, timer } from 'rxjs';
 
 @Component({
   selector: 'app-sidebar-main',
@@ -16,14 +18,14 @@ import { TransactionsService } from '../../../../transfer/services/transactions.
 
 export class SidebarMainComponent implements OnInit {
 
+
+  cacheBlock = 0;
+  colorStatus = 'color-red';
+  currentBlock = 0;
   itemsHeader: ItemsHeaderInterface;
   keyObject = Object.keys;
-  walletName = '';
-  subscriptions = [
-    'balance'
-  ];
-  vestedBalance: string = '0.000000';
-  version = '';
+  prorroga = false;
+  reconnecting = false;
   routesExcludedInServices = [
     AppConfig.routes.account,
     AppConfig.routes.auth,
@@ -34,26 +36,75 @@ export class SidebarMainComponent implements OnInit {
     AppConfig.routes.service
   ];
   searchBalance = false;
+  statusNode = false;
+  statusNodeName = 'Inactive';
+  subscription: Subscription[] = [];
+  vestedBalance: string = '0.000000';
+  version = '';
+  walletName = '';
+  reset = 0;
 
 
   constructor(
+    private dataBridge: DataBridgeService,
     private sharedService: SharedService,
     private route: Router,
     private authService: AuthService,
     private dashboardService: DashboardService,
     private transactionService: TransactionsService,
-    public walletService: WalletService
+    private walletService: WalletService
   ) {
     this.version = environment.version;
   }
 
   ngOnInit() {
-    this.destroySubscription();
-    this.readRoute();
+    this.statusNode = false;
     this.walletName = this.walletService.currentWallet.name;
-    // console.log(this.walletService.currentWallet);
+    this.readRoute();
+    this.getBlocks();
+    this.validate();
 
-    this.subscriptions['nameAccount'] = this.walletService.getAccountsInfo$().subscribe(next => {
+    this.getAccountInfo();
+    this.buildItemsHeader();
+
+
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.forEach(subscription => {
+      subscription.unsubscribe();
+    });
+  }
+
+  /**
+   *
+   *
+   * @memberof SidebarMainComponent
+   */
+  buildItemsHeader() {
+    this.itemsHeader = {
+      dashboard: this.sharedService.buildHeader(
+        'default', 'Dashboard', '', '', false, `/${AppConfig.routes.dashboard}`, true, {}, true
+      ),
+      transfer: this.sharedService.buildHeader(
+        'default', 'Transfer', '', '', false, `/${AppConfig.routes.createTransfer}`, true, {}, false
+      ),
+      account: this.sharedService.buildHeader(
+        'default', 'Account', '', '', false, `/${AppConfig.routes.account}`, true, {}, false
+      ),
+      services: this.sharedService.buildHeader(
+        'default', 'Services', '', '', false, `/${AppConfig.routes.service}`, true, {}, false
+      )
+    }
+  }
+
+  /**
+   *
+   *
+   * @memberof SidebarMainComponent
+   */
+  getAccountInfo() {
+    this.subscription.push(this.walletService.getAccountsInfo$().subscribe(next => {
       this.searchBalance = true;
       // NAME ACCOUNT
       let amountTotal = 0.000000;
@@ -81,51 +132,63 @@ export class SidebarMainComponent implements OnInit {
           this.searchBalance = false;
         }, 1000);
       }
-    });
-
-    // BALANCE
-    /* this.subscriptions['balance'] = this.transactionService.getBalance$().subscribe(next => {
-      if (next) {
-        this.vestedBalance = `Balance ${next} XPX`;
-      }
-    }, error => {
-      this.vestedBalance = `Balance 0.000000 XPX`;
-    });*/
-
-
-    this.itemsHeader = {
-      dashboard: this.sharedService.buildHeader(
-        'default', 'Dashboard', '', '', false, `/${AppConfig.routes.dashboard}`, true, {}, true
-      ),
-      transfer: this.sharedService.buildHeader(
-        'default', 'Transfer', '', '', false, `/${AppConfig.routes.createTransfer}`, true, {}, false
-      ),
-      account: this.sharedService.buildHeader(
-        'default', 'Account', '', '', false, `/${AppConfig.routes.account}`, true, {}, false
-      ),
-      services: this.sharedService.buildHeader(
-        'default', 'Services', '', '', false, `/${AppConfig.routes.service}`, true, {}, false
-      )
-    }
-  }
-
-  ngOnDestroy(): void {
-    this.destroySubscription();
+    }));
   }
 
   /**
    *
    *
-   * @memberof HeaderComponent
+   * @memberof SidebarMainComponent
    */
-  destroySubscription() {
-    this.subscriptions.forEach(element => {
-      if (this.subscriptions[element] !== undefined) {
-        this.subscriptions[element].unsubscribe();
+  getBlocks() {
+    this.subscription.push(this.dataBridge.getBlock().subscribe(
+      next => {
+        // console.log('Block', next);
+        if (next !== null) {
+          this.prorroga = false;
+          this.reconnecting = false;
+          this.statusNode = true;
+          this.currentBlock = next;
+          this.colorStatus = 'green-color';
+          this.statusNodeName = 'Active';
+        } else {
+          this.currentBlock = 0;
+          this.statusNode = false;
+          if (!this.reconnecting) {
+            this.colorStatus = 'color-red';
+            this.statusNodeName = 'Inactive';
+          }
+        }
       }
-    });
+    ));
   }
 
+  validate() {
+    //emit 0 after 1 second then complete, since no second argument is supplied
+    const source = timer(20000, 20000);
+    this.subscription.push(source.subscribe(val => {
+      console.log('-----RESETED-----------', this.reset);
+      console.log('-----CURRENT BLOCK-----', this.currentBlock);
+      console.log('-----CACHE BLOCK-------', this.cacheBlock, '\n\n\n');
+      if (this.currentBlock > this.cacheBlock) {
+        this.reconnecting = false;
+        this.cacheBlock = this.currentBlock;
+        this.prorroga = false;
+      } else if (this.prorroga) {
+        this.reset = this.reset + 1;
+        this.reconnecting = true;
+        this.statusNodeName = 'Reconnecting';
+        this.colorStatus = 'color-light-orange';
+        this.dataBridge.closeConenection(false);
+        this.dataBridge.connectnWs();
+      } else {
+        this.statusNodeName = 'Reconnecting';
+        this.colorStatus = 'color-light-orange';
+        this.reconnecting = true;
+        this.prorroga = true;
+      }
+    }));
+  }
 
   /**
    *
@@ -148,6 +211,7 @@ export class SidebarMainComponent implements OnInit {
    * @memberof HeaderComponent
    */
   logOut() {
+    this.currentBlock = 0;
     this.walletService.destroyAll();
     this.dashboardService.processComplete = false;
     this.authService.setLogged(false);

@@ -12,15 +12,31 @@
             <div class="col-12 col-sm-10 col-md-9 col-lg-10">
               <div class="d-flex flex-column justify-content-between">
                 <span class="fs-09rem color-blue-intermedio">
-                  <span style="color: #2a2e32 !important;">DEFAULT ACCOUNT <br>  </span>
-                  <a [routerLink]="[viewDetailsAccount+currentAccount.name]" class="cursor-p">{{currentAccount.name}}</a>
+                  <span style="color: #2a2e32 !important;">DEFAULT ACCOUNT <br> </span>
+                  <a [routerLink]="[viewDetailsAccount+currentAccount.name]"
+                    class="cursor-p">{{currentAccount.name}}</a>
                 </span>
+
                 <div class="row">
-                  <div class="col-11">
+                  <div class="col-2 col-md-2 col-lg-1">
                     <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
-                      width="20" alt=""><span class="fs-1rem">&nbsp;{{vestedBalance}} | USD 0.00</span>
+                      width="20" alt="">
+                  </div>
+
+                  <div class="col-10 col-md-10 col-lg-11">
+                    <span class="fs-1rem">&nbsp;{{vestedBalance}}</span>
                   </div>
                 </div>
+
+                <div class="row">
+                  <div class="col-2 col-md-2 col-lg-1">
+                  </div>
+
+                  <div class="col-10 col-md-10 col-lg-11">
+                    <span class="fs-1rem">&nbsp;USD 0.00</span>
+                  </div>
+                </div>
+
                 <div class="row d-flex align-items-center">
                   <div class="d-flex justify-content-between">
                     <div class="col-11">
@@ -70,7 +86,7 @@
       </div>
 
       <!-- Searching and icon reload -->
-      <div class="row mt-2rem">
+      <div class="row mt-2rem txt-a-right">
         <div class="col-11 col-sm-11 col-lg-10 mx-auto">
           <!-- Icon Reload -->
           <ng-container *ngIf="iconReloadDashboard && !searching">
@@ -82,7 +98,7 @@
         </div>
       </div>
 
-      <div class="row mt-2rem">
+      <div class="row mt-05rem">
         <div class="col-12 mx-auto">
           <div class="table-responsive table-hover">
             <table mdbTable #tableEl="mdbTable" id="mdbTable" striped="true" infiniteScroll [infiniteScrollDistance]="2"
@@ -102,7 +118,7 @@
               <!--Table body-->
               <tbody class="background-white">
                 <ng-container *ngFor="let el of transactions; let i = index">
-                  <tr class="mouse-pointer" (click)="dataSelected = el; basicModal.show();">
+                  <tr class="cursor-p" (click)="dataSelected = el; basicModal.show();">
                     <!-- Type transaction -->
                     <th class="th-sm fs-0-8-rem" scope="row description-dark-green">{{el.nameType}}</th>
 

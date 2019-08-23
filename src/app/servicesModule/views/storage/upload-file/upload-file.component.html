@@ -7,18 +7,18 @@
     </div>
 
     <div class="col-12 col-md-4 d-flex justify-content-start justify-content-md-end">
-        <a class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio" [routerLink]="[myFiles]">
-          <span>Files</span>
-        </a>
-        <div class="col-2 d-flex justify-content-center">
-          <div class="col-6">
-            <div class="line-separator h-100porcent"></div>
-          </div>
+      <a class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio" [routerLink]="[myFiles]">
+        <span>Files</span>
+      </a>
+      <div class="col-2 d-flex justify-content-center">
+        <div class="col-6">
+          <div class="line-separator h-100porcent"></div>
         </div>
-        <a class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio" [routerLink]="[goBack]">
-          <span>Back to Services</span>
-        </a>
       </div>
+      <a class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio" [routerLink]="[goBack]">
+        <span>Back to Services</span>
+      </a>
+    </div>
   </div>
   <div class="row">
     <div class="col-12">
@@ -35,7 +35,8 @@
             <input type="file" mdbFileSelect (uploadOutput)="onUploadOutput($event)" [uploadInput]="uploadInput" />
           </div>
           <div class="file-path-wrapper mt-2">
-            <input class="form-control form-control-sm input-border" [validateSuccess]="false" id="filePath" type="text" placeholder="Upload your file" [value]="showFiles()" mdbInputDirective>
+            <input class="form-control form-control-sm input-border" [validateSuccess]="false" id="filePath" type="text"
+              placeholder="Upload your file" [value]="showFiles()" mdbInputDirective>
           </div>
         </div>
       </div>
@@ -57,11 +58,12 @@
     <div class="row pt-05rem" *ngIf="showEncryptionPassword">
       <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto">
         <div class="md-form form-sm mt-1rem mb-0rem">
-          <input formControlName="encryptionPassword" required mdbInputDirective mdbValidate [validateSuccess]="true"
-            [validateError]="true" type="password" id="encryptionPassword"
-            class="form-control form-control-sm input-border" placeholder="Enter the file encryption password"
-            mdbPopover="At least 10 characters, must include UPPER CASE letters and numbers" placement="top"
-            triggers="focus" mdbPopoverHeader="Password suggestion">
+          <input [maxlength]="configurationForm.passwordWallet.maxLength"
+            [minlength]="configurationForm.passwordWallet.minLength" formControlName="encryptionPassword" required
+            mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password"
+            id="encryptionPassword" class="form-control form-control-sm input-border"
+            placeholder="Enter the file encryption password" mdbPopover="At least {{configurationForm.passwordWallet.minLength}} characters, must include UPPER CASE
+            letters and numbers" placement="top" triggers="focus" mdbPopoverHeader="Password suggestion">
 
           <!-- VALIDATION -->
           <mdb-error
@@ -75,9 +77,10 @@
     <div class="row pt-1rem">
       <div class=" col-11 col-sm-10 col-lg-8 mx-auto">
         <div class="md-form form-sm mt-1rem mb-0rem">
-          <input formControlName="walletPassword" required mdbInputDirective mdbValidate [validateSuccess]="true"
-            [validateError]="true" type="password" id="walletPassword" class="form-control form-control-sm input-border"
-            placeholder="Enter wallet password">
+          <input [maxlength]="configurationForm.passwordWallet.maxLength"
+            [minlength]="configurationForm.passwordWallet.minLength" formControlName="walletPassword" required
+            mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password"
+            id="walletPassword" class="form-control form-control-sm input-border" placeholder="Enter wallet password">
 
           <!-- VALIDATION -->
           <mdb-error
@@ -100,7 +103,8 @@
       <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
         <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
           size="md">
-          <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true" *ngIf="blockUpload"></span>
+          <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
+            *ngIf="blockUpload"></span>
           <span class="fs-1-2em color-white">UPLOAD</span>
         </button>
       </div>

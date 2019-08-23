@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, Validators, FormBuilder, AbstractControl } from '@angular/forms';
-import { AliasActionType, Address, NamespaceId } from 'tsjs-xpx-chain-sdk';
+import { AliasActionType, Address, NamespaceId, LinkAction } from 'tsjs-xpx-chain-sdk';
 import { Router } from '@angular/router';
 import { NgBlockUI, BlockUI } from 'ng-block-ui';
 import { AppConfig } from '../../../../config/app.config';
@@ -35,6 +35,17 @@ export class AliasAddressToNamespaceComponent implements OnInit {
   ];
   subscribe = ['transactionStatus'];
   transactionSigned: any;
+  typeAction: any = [{
+    value: AliasActionType.Link,
+    label: 'Link',
+    selected: true,
+    disabled: false
+  }, {
+    value: AliasActionType.Unlink,
+    label: 'Unlink',
+    selected: false,
+    disabled: false
+  }];
   subscription: Subscription[] = [];
 
   constructor(
@@ -64,18 +75,49 @@ export class AliasAddressToNamespaceComponent implements OnInit {
     });
   }
 
+  /**
+   *
+   *
+   * @memberof AliasAddressToNamespaceComponent
+   */
   createForm() {
     this.LinkToNamespaceForm = this.fb.group({
       namespace: ['', [Validators.required]],
-      address: ['', [Validators.required, Validators.minLength(40), Validators.maxLength(46)]],
-      password: ['', [Validators.required, Validators.minLength(this.configurationForm.passwordWallet.minLength),
-      Validators.maxLength(this.configurationForm.passwordWallet.maxLength)]]
+      typeAction: [
+        AliasActionType.Link,
+        [
+          Validators.required
+        ]
+      ],
+      address: ['', [
+        Validators.required,
+        Validators.minLength(this.configurationForm.address.minLength),
+        Validators.maxLength(this.configurationForm.address.maxLength)
+      ]],
+      password: ['', [
+        Validators.required,
+        Validators.minLength(this.configurationForm.passwordWallet.minLength),
+        Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
+      ]]
     });
   }
 
+  /**
+   *
+   *
+   * @memberof AliasAddressToNamespaceComponent
+   */
   clearForm() {
-    this.LinkToNamespaceForm.get('namespace').patchValue('1');
-    this.LinkToNamespaceForm.get('password').patchValue('');
+    const valueAddress = this.LinkToNamespaceForm.get('address').value;
+    this.LinkToNamespaceForm.reset({
+      namespace: '',
+      password: ''
+    }, {
+        emitEvent: false
+      }
+    );
+
+    this.LinkToNamespaceForm.get('address').setValue(valueAddress, { emitEvent: false });
   }
 
   /**
@@ -166,6 +208,11 @@ export class AliasAddressToNamespaceComponent implements OnInit {
     return validation;
   }
 
+  /**
+   *
+   *
+   * @memberof AliasAddressToNamespaceComponent
+   */
   getTransactionStatus() {
     this.subscribe['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
       statusTransaction => {
@@ -187,6 +234,11 @@ export class AliasAddressToNamespaceComponent implements OnInit {
     );
   }
 
+  /**
+   *
+   *
+   * @memberof AliasAddressToNamespaceComponent
+   */
   async send() {
     if (this.LinkToNamespaceForm.valid && !this.blockSend) {
       this.blockSend = true;
@@ -196,10 +248,11 @@ export class AliasAddressToNamespaceComponent implements OnInit {
       }
 
       if (this.walletService.decrypt(common)) {
+        const action = this.LinkToNamespaceForm.get('typeAction').value;
         const namespaceId = new NamespaceId(this.LinkToNamespaceForm.get('namespace').value);
         const address = Address.createFromRawAddress(this.LinkToNamespaceForm.get('address').value);
         const params: AddressAliasTransactionInterface = {
-          aliasActionType: AliasActionType.Link,
+          aliasActionType: action,
           namespaceId: namespaceId,
           address: address,
           common: common
@@ -209,7 +262,7 @@ export class AliasAddressToNamespaceComponent implements OnInit {
         this.proximaxProvider.announce(this.transactionSigned).subscribe(
           next => {
             this.blockSend = false;
-            this.resetForm();
+            this.clearForm();
             if (this.subscribe['transactionStatus'] === undefined || this.subscribe['transactionStatus'] === null) {
               this.getTransactionStatus();
             }
@@ -222,11 +275,4 @@ export class AliasAddressToNamespaceComponent implements OnInit {
       }
     }
   }
-
-  resetForm() {
-    this.LinkToNamespaceForm.get('namespace').patchValue('');
-    this.LinkToNamespaceForm.get('address').patchValue('');
-    this.LinkToNamespaceForm.get('password').patchValue('');
-  }
-
 }

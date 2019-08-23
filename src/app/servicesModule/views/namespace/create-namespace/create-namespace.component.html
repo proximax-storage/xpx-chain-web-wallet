@@ -24,9 +24,15 @@
       <div class="col-12 col-sm-7 col-md-8 mb-2rem">
 
         <div class="row mt-1rem">
+          <ng-container *ngIf="insufficientBalance && !insufficientBalanceDuration">
+            <div class="col-11 mx-auto d-flex justify-content-end">
+              <span class="fs-08rem fw-600 color-error-message">Insufficient balance</span>
+            </div>
+          </ng-container>
+
           <div class="col-11 mx-auto">
-            <div class="md-form form-sm">
-              <input mask="S{18}" [maxlength]="configurationForm.namespaceName.maxLength"
+            <div class="md-form form-sm mt-0">
+              <input [maxlength]="configurationForm.namespaceName.maxLength"
                 [minlength]="configurationForm.namespaceName.minLength" formControlName="name" required
                 mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text" id="name"
                 class="form-control form-control-sm input-border" placeholder="Enter name"
@@ -65,12 +71,16 @@
                 *ngIf="validateInput('duration', '').invalid && (validateInput('duration', '').dirty || validateInput('duration', '').touched)">
                 <span>Input invalid</span>
               </mdb-error>
+
+              <mdb-error *ngIf="validateInput('duration', '').valid && insufficientBalanceDuration">
+                <span class="fs-08rem fw-600 color-error-message">Insufficient balance</span>
+              </mdb-error>
             </div>
           </div>
         </div>
 
         <div class="row ml-01rem">
-          <div class="col-12 col-lg-6 mx-auto">
+          <div class="col-12 mx-auto">
             <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
               <div class="row">
                 <div class="col-12">
@@ -82,7 +92,7 @@
             </div>
           </div>
 
-          <div class="col-12 col-lg-6 mx-auto">
+          <div class="col-12 mx-auto">
             <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
               <div class="row">
                 <div class="col-12">
@@ -115,14 +125,15 @@
         <!-- BUTTONS -->
         <div class="row">
           <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-            <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
-              size="md" (click)="clearForm()">
+            <button [disabled]="insufficientBalance" mdbBtn type="button" rounded="true" mdbWavesEffect
+              class="f-w-600 background-btn pl-2rem pr-2rem" size="md" (click)="clearForm()">
               <span class="fs-1-2em color-white">CLEAR</span>
             </button>
           </div>
 
           <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-            <button mdbBtn type="submit" rounded="true" [disabled]="!namespaceForm.valid" mdbWavesEffect
+            <button mdbBtn type="submit" rounded="true"
+              [disabled]="namespaceForm.invalid || insufficientBalance || insufficientBalanceDuration" mdbWavesEffect
               class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
               <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
                 *ngIf="blockBtnSend"></span>
@@ -138,19 +149,12 @@
             Namespace can have 3 levels. Convention for addressing uses a dot to represent it, i.e.
             parent.child.grandchild.
           </p>
-
           <p>
             A namespace can have a maximum length of 16 alphanumerical characters, and a sub-namespace can have 64.
           </p>
-
           <p>
             Certain names are already reserved (i.e xpx; user; account; org; com; biz; net; edu; mil; gov; info).
           </p>
-          <!-- A namespace can have a maximium length of 16 alphanumerical characters while sub-namespaces can have a
-          maximium length of 64 alphanumerical characters. <br><br>
-          A namespace may consist of three parts, each separated by a full stop (i.e test1.test2.test3).
-          <br><br>
-          Certain phrases are already reserved (i.e xpx; user; account; org; com; biz; net; edu; mil; gov; info). -->
         </span>
       </div>
     </div>

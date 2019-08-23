@@ -17,8 +17,6 @@
 
                 </div>
             </div>
-
-
             <!-- Contacts -->
             <ng-container *ngIf="showContacts && listContact.length > 0">
                 <div class="row">
@@ -103,6 +101,9 @@
                             id="minApprovalDelta" class="form-control form-control-sm input-border" placeholder="Min approval"
                             onkeyup="javascript:this.value=this.value.toLowerCase();">
 
+                        <span *ngIf="isMultisig">Min Approva : {{accountInfo.multisigInfo.minApproval}}</span>
+
+
                         <!-- VALIDATION -->
                         <mdb-error *ngIf="validateInput('minApprovalDelta', '').invalid && (validateInput('minApprovalDelta', '').dirty || validateInput('minApprovalDelta', '').touched)">
                             <span>Input invalid</span>
@@ -119,6 +120,7 @@
                             id="minRemovalDelta" class="form-control form-control-sm input-border" placeholder="Min removal"
                             onkeyup="javascript:this.value=this.value.toLowerCase();">
 
+                        <span *ngIf="isMultisig">Min Removal : {{accountInfo.multisigInfo.minRemoval}}</span>
                         <!-- VALIDATION -->
                         <mdb-error *ngIf="validateInput('minRemovalDelta', '').invalid && (validateInput('minRemovalDelta', '').dirty || validateInput('minRemovalDelta', '').touched)">
                             <span>Input invalid</span>
@@ -131,11 +133,10 @@
             <div class="row">
                 <div class="col-11 mx-auto">
                     <div class="md-form form-sm">
-                        <input [maxlength]="configurationForm.passwordWallet.maxLength" [minlength]="configurationForm.passwordWallet.minLength"
+                        <input style="" [maxlength]="configurationForm.passwordWallet.maxLength" [minlength]="configurationForm.passwordWallet.minLength"
                             formControlName="password" required mdbInputDirective mdbValidate [validateSuccess]="true"
                             [validateError]="true" type="password" id="password" class="form-control form-control-sm input-border"
                             placeholder="Enter password">
-
                         <!-- VALIDATION -->
                         <mdb-error *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
                             <span>Input invalid</span>
@@ -146,32 +147,55 @@
         </div>
         <!-- TABLE COSIGNATORY LIST -->
         <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
+            <!-- BOX LIST ACCOUNT -->
+            <div class="row">
+                <ng-container *ngIf="showCurrentAccountToConvert">
+                    <div class="col-12 col-md-10 col-lg-9 col-xl-10 mx-auto box-list-account-gray fs-08rem pb-1rem"
+                        [ngClass]="{'isPrimary':currentAccountToConvert.default}">
+                        <div class="row">
+                            <div class="col-12 col-sm-10 col-md-9 col-lg-10 col-xl-10 pt-1rem w-b-a">
+                                Account: {{currentAccountToConvert.name}} <br>
+                                {{currentAccountToConvert.address}} <br>
 
-            <div *ngIf="showCurrentAccountToConvert" class="col-12 col-md-10 col-lg-9 col-xl-10 mx-auto box-list-account-gray fs-08rem pb-1rem"
-                [ngClass]="{'isPrimary':currentAccountToConvert.default}">
-                <div class="row">
-                    <div class="col-12 col-sm-10 col-md-9 col-lg-10 col-xl-10 pt-1rem w-b-a">
-                        Account: {{currentAccountToConvert.name}} <br>
-                        {{currentAccountToConvert.address}}
+                                <p *ngIf=" isMultisig"> Cosigner: {{consginerFirmName}}</p>
+
+                            </div>
+                            <div class="col-12 col-sm-2 col-md-3 col-lg-2 col-xl-2 d-flex align-items-center justify-content-start justify-content-sm-end justify-content-md-end justify-content-lg-end justify-content-xl-end pt-2rem">
+                                <img src="assets/images/img/icon-copy-clipboard-white.svg" class="cursor-p" alt="Copy"
+                                    width="20" (click)="copyMessage('Address')" ngxClipboard *ngIf="currentAccountToConvert.default"
+                                    [cbContent]="currentAccountToConvert.address" title="Copy Address">
+                                <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="cursor-p"
+                                    alt="Copy" width="20" (click)="copyMessage('Address')" ngxClipboard *ngIf="!currentAccountToConvert.default"
+                                    [cbContent]="currentAccountToConvert.address" title="Copy Address">&nbsp;
+                                <!-- View Details -->
+                                <img src="assets/images/img/icon-edit-white-proximax-sirius-wallet.svg" class="cursor-p"
+                                    *ngIf="currentAccountToConvert.default" width="20" [routerLink]="[routes.viewDetails+currentAccountToConvert.name]"
+                                    title="View details">
+                                <img src="assets/images/img/icon-edit-gray-proximax-sirius-wallet.svg" class="cursor-p"
+                                    *ngIf="!currentAccountToConvert.default" width="20" [routerLink]="[routes.viewDetails+currentAccountToConvert.name]"
+                                    title="View details">&nbsp;
+
+                                <img src="assets/images/img/icon-default-white-proximax-sirius-wallet.svg" class="cursor-p"
+                                    *ngIf="currentAccountToConvert.default" width="20" title="Account  default">
+
+                                <img src="assets/images/img/icon-multisign-white-proximax-sirius-wallet.svg" class="cursor-p"
+                                    *ngIf="currentAccountToConvert.default && isMultisig" width="20" title="Is Multisign">
+                                <img src="assets/images/img/icon-multisign-gray-proximax-sirius-wallet.svg" class="cursor-p"
+                                    *ngIf="!currentAccountToConvert.default && isMultisig" width="20" title="Is Multisign">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-12 col-sm-10 col-md-9 col-lg-10 col-xl-10 pt-05rem w-b-a fw-600">
+                                <img *ngIf="currentAccountToConvert.default" class="icono" src="assets/images/img/icon-proximax-white.svg"
+                                    width="20" alt="">
+                                <img *ngIf="!currentAccountToConvert.default" class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
+                                    width="20" alt="">
+                                &nbsp;Balance {{balance}} XPX
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-12 col-sm-2 col-md-3 col-lg-2 col-xl-2 d-flex align-items-center justify-content-start justify-content-sm-end justify-content-md-end justify-content-lg-end justify-content-xl-end pt-1rem">
-                        <!-- View Details -->
-                        <i class="fa fa-eye fs-1-2rem cursor-p" aria-hidden="true" title="View details" [routerLink]="[routes.viewDetails+currentAccountToConvert.name]"></i>
-                        <!-- Select account default -->
-                        <ng-container *ngIf="currentAccountToConvert.default">
-                            <i class="fa fa-star fs-1-2rem ml-10px cursor-p" aria-hidden="true"></i>
-                        </ng-container>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12 col-sm-10 col-md-9 col-lg-10 col-xl-10 pt-05rem w-b-a fw-600">
-                        <img *ngIf="currentAccountToConvert.default" class="icono" src="assets/images/img/icon-proximax-white.svg"
-                            width="20" alt="">
-                        <img *ngIf="!currentAccountToConvert.default" class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
-                            width="20" alt="">
-                        &nbsp;Balance {{balance}} XPX
-                    </div>
-                </div>
+                </ng-container>
             </div>
 
             <div class="row mt-2rem">
@@ -191,7 +215,14 @@
                                     <tr class="mouse-pointer" mdbTableCol>
                                         <td class="text-center">{{cosign.publicAccount.address.plain()}}</td>
                                         <td class="text-center">{{cosign.action}}</td>
-                                        <td class="text-center" style="cursor: pointer;" (click)="deleteCosignatory(cosign.id)">(X)</td>
+
+
+                                        <td  class="text-center" style="cursor: pointer;"
+                                            (click)="deleteCosignatory(cosign.id ,cosign.disableItem, cosign.type)">
+                                            <i [style.color]="getColor(cosign.type)" class="fa fa-times" aria-hidden="true"></i>
+                                        </td>
+
+
                                     </tr>
                                 </ng-container>
                                 <ng-container *ngIf="cosignatoryList.length === 0">
@@ -216,14 +247,13 @@
         </div>
         <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
             <!-- [disabled]="!createMultsignForm.valid" -->
-            <button [disabled]="btnBlock" mdbBtn type="submit"
-                rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
+            <button [disabled]="btnBlock" mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+                size="md">
                 <!---->
                 <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
                     *ngIf="blockSend"></span>
                 <span class="fs-1-2em color-white">Send</span>
             </button>
-
         </div>
     </div>
 </form>

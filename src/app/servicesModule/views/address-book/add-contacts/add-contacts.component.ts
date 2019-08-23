@@ -86,28 +86,32 @@ export class AddContactsComponent implements OnInit {
    */
   saveContact() {
     if (this.contactForm.valid) {
-      const isUpdate = this.activateRoute.snapshot.paramMap.get('name');
-      const paramsStorage: ContactsStorageInterface = {
-        name: this.contactForm.get('user').value,
-        address: this.contactForm.get('address').value,
-        walletContact: false,
-        nameItem: '',
-        update: (isUpdate) ? true : false,
-        dataComparate: (isUpdate) ? {
-          name: this.contact.label,
-          address: this.contact.value
-        } : null
+      console.log('Esta es una prueba', this.contactForm.get('address').value.length);
+      if (this.contactForm.get('address').value.length === 40 || this.contactForm.get('address').value.length === 46) {
+        const isUpdate = this.activateRoute.snapshot.paramMap.get('name');
+        const paramsStorage: ContactsStorageInterface = {
+          name: this.contactForm.get('user').value,
+          address: this.contactForm.get('address').value.split('-').join(''),
+          walletContact: false,
+          nameItem: '',
+          update: (isUpdate) ? true : false,
+          dataComparate: (isUpdate) ? {
+            name: this.contact.label,
+            address: this.contact.value
+          } : null
+        }  
+        const saved = this.serviceModuleService.saveContacts(paramsStorage);
+        if (saved) {
+          this.contactForm.reset();
+          this.sharedService.showSuccess('', `Successfully saved contact`);
+          this.router.navigate([`/${AppConfig.routes.addressBook}`]);
+          return;
+        }
+  
+        this.sharedService.showError('User repeated', `Address or name already exists`);
+      } else {
+        this.sharedService.showError('', 'Invalid address');
       }
-
-      const saved = this.serviceModuleService.saveContacts(paramsStorage);
-      if (saved) {
-        this.contactForm.reset();
-        this.sharedService.showSuccess('', `Successfully saved contact`);
-        this.router.navigate([`/${AppConfig.routes.addressBook}`]);
-        return;
-      }
-
-      this.sharedService.showError('User repeated', `Address or name already exists`);
     }
   }
 
@@ -136,11 +140,6 @@ export class AddContactsComponent implements OnInit {
     this.contactForm.get('address').valueChanges.subscribe(
       value => {
         const address = (value !== undefined && value !== null && value !== '') ? value.split('-').join('') : '';
-        // const accountSelected = (this.contactForm.get('contact').value) ? this.contactForm.get('contact').value.split('-').join('') : '';
-        // if ((accountSelected !== '') && (accountSelected !== address)) {
-        //   this.contactForm.get('contact').patchValue('');
-        // }
-
         if (address !== null && address !== undefined && address.length === 40) {
           const currentAccount = Object.assign({}, this.walletService.getCurrentAccount());
           if (!this.proximaxProvider.verifyNetworkAddressEqualsNetwork(
