@@ -61,7 +61,8 @@ export class AliasAddressToNamespaceComponent implements OnInit {
   ngOnInit() {
     this.configurationForm = this.sharedService.configurationForm;
     this.createForm();
-    this.getNameNamespace();
+    // this.getNameNamespace();
+    this.getNamespaces();
     const address = this.walletService.currentAccount.address;
     this.LinkToNamespaceForm.get('address').patchValue(address);
   }
@@ -118,6 +119,41 @@ export class AliasAddressToNamespaceComponent implements OnInit {
     );
 
     this.LinkToNamespaceForm.get('address').setValue(valueAddress, { emitEvent: false });
+  }
+
+
+  /**
+   *
+   *
+   * @memberof AliasAddressToNamespaceComponent
+   */
+  getNamespaces() {
+    this.namespaceService.getNamespaceChanged().subscribe(
+      async (arrayNamespaceStorage: NamespaceStorageInterface[]) => {
+        console.log('--arrayNamespaceStorage--', arrayNamespaceStorage);
+        const namespaceSelect = [];
+        if (arrayNamespaceStorage && arrayNamespaceStorage.length > 0) {
+          for (let namespaceStorage of arrayNamespaceStorage) {
+            if (namespaceStorage.namespaceInfo) {
+              console.log('INFO ---> ', namespaceStorage, '\n\n');
+              const name = await this.namespaceService.getNameParentNamespace(namespaceStorage);
+              const disabled = (namespaceStorage.namespaceInfo.alias.type === 0) ? false : true;
+              const linked = (disabled) ? ' - Linked' : '';
+              namespaceSelect.push({
+                label: `${name}${linked}`,
+                value: `${name}`,
+                selected: false,
+                disabled: false
+              });
+            }
+          };
+        }
+
+        this.namespaceSelect = namespaceSelect.sort(function (a: any, b: any) {
+          return a.label === b.label ? 0 : +(a.label > b.label) || -1;
+        });
+      }
+    );
   }
 
   /**
@@ -179,7 +215,10 @@ export class AliasAddressToNamespaceComponent implements OnInit {
           }
         }
 
-        this.namespaceSelect = namespaceSelect;
+        this.namespaceSelect = namespaceSelect.sort(function (a: any, b: any) {
+          return a.label === b.label ? 0 : +(a.label > b.label) || -1;
+        });
+        // this.namespaceSelect = namespaceSelect;
       }, error => {
         this.blockUI.stop();
         this.router.navigate([AppConfig.routes.home]);
@@ -251,6 +290,8 @@ export class AliasAddressToNamespaceComponent implements OnInit {
         const action = this.LinkToNamespaceForm.get('typeAction').value;
         const namespaceId = new NamespaceId(this.LinkToNamespaceForm.get('namespace').value);
         const address = Address.createFromRawAddress(this.LinkToNamespaceForm.get('address').value);
+        console.log('address', address);
+
         const params: AddressAliasTransactionInterface = {
           aliasActionType: action,
           namespaceId: namespaceId,

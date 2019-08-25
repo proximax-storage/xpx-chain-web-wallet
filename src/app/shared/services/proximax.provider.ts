@@ -322,6 +322,29 @@ export class ProximaxProvider {
   }
 
 
+  /**
+   *
+   *
+   * @param {NamespaceId} namespaceId
+   * @returns {Observable<Address>}
+   * @memberof ProximaxProvider
+   */
+  getLinkedAddress(namespaceId: NamespaceId): Observable<Address> {
+    return this.namespaceHttp.getLinkedAddress(namespaceId);
+  }
+
+  /**
+   *
+   *
+   * @param {NamespaceId} namespace
+   * @returns {Observable<MosaicId>}
+   * @memberof ProximaxProvider
+   */
+  getLinkedMosaicId(namespace: NamespaceId): Observable<MosaicId> {
+    return this.namespaceHttp.getLinkedMosaicId(namespace);
+  }
+
+
   /******************** FIN COW **********************/
 
 
@@ -501,16 +524,7 @@ export class ProximaxProvider {
     return this.namespaceHttp.getNamespace(namespace);
   }
 
-  /**
-   *
-   *
-   * @param {NamespaceId} namespace
-   * @returns {Observable<MosaicId>}
-   * @memberof ProximaxProvider
-   */
-  getLinkedMosaicId(namespace: NamespaceId): Observable<MosaicId> {
-    return this.namespaceHttp.getLinkedMosaicId(namespace);
-  }
+
 
 
   /**
