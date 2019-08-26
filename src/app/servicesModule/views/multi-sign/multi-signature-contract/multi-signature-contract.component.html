@@ -34,45 +34,41 @@
     <div class="row">
         <ng-container *ngIf="currentWallet?.accounts?.length > 0">
             <ng-container *ngFor="let currentAccount of currentWallet.accounts">
-                <ng-container *ngIf="currentAccount.isMultisign.isMultisig()">
+             <ng-container *ngIf="isMultisign(currentAccount)">  
+                    <!-- {{ currentAccount.isMultisign | json }}  -->
                     <div class="col-12 col-md-10 col-lg-9 col-xl-10 mx-auto box-list-account-gray fs-08rem pb-1rem"
                         [ngClass]="{'isPrimary':currentAccount.default}">
                         <div class="row">
                             <div class="col-12 col-sm-10 col-md-9 col-lg-10 col-xl-10 pt-1rem w-b-a">
                                 Account: {{currentAccount.name}} <br>
-                                {{currentAccount.address}}
+                                {{currentAccount.address}} <br>
+                                {{currentAccount.isMultisign.cosignatories.length}}
                             </div>
                             <div class="col-12 col-sm-2 col-md-3 col-lg-2 col-xl-2 d-flex align-items-center justify-content-start justify-content-sm-end justify-content-md-end justify-content-lg-end justify-content-xl-end pt-2rem">
-                        
 
-                                <!-- View Details -->
                                 <img src="assets/images/img/icon-edit-white-proximax-sirius-wallet.svg" class="cursor-p"
                                     *ngIf="currentAccount.default" width="20" [routerLink]="[routes.viewDetails+currentAccount.name]"
                                     title="edit">
                                 <img src="assets/images/img/icon-edit-gray-proximax-sirius-wallet.svg" class="cursor-p"
                                     *ngIf="!currentAccount.default" width="20" [routerLink]="[routes.viewDetails+currentAccount.name]"
                                     title="edit">&nbsp;
-
-
                             </div>
                         </div>
                     </div>
-
-                </ng-container>
-
+               </ng-container> 
             </ng-container>
         </ng-container>
     </div>
 
-      <!-- ADD MOSAICS -->
-      <div class="row mt-1rem">
-            <div class="col-12 d-flex justify-content-center" style="background-image: url(assets/images/img/horizontal-line-background.jpg);">
-                <button mdbBtn type="button" rounded="true" [disabled]="mdbBtnAddCosignatory" mdbWavesEffect class="background-btn-inverse pl-2rem pr-2rem"
-                    size="md"  [routerLink]="[routes.convertToAccount]">
-                    <span class="fs-1-2em color-blue-intermedio fw-700">(+) MULTISIGN ACCOUNT</span>
-                </button>
-            </div>
+    <!-- ADD MOSAICS -->
+    <div class="row mt-1rem">
+        <div class="col-12 d-flex justify-content-center" style="background-image: url(assets/images/img/horizontal-line-background.jpg);">
+            <button mdbBtn type="button" rounded="true" mdbWavesEffect class="background-btn-inverse pl-2rem pr-2rem"
+                size="md" [routerLink]="[routes.convertToAccount]">
+                <span class="fs-1-2em color-blue-intermedio fw-700">(+) MULTISIGN ACCOUNT</span>
+            </button>
         </div>
+    </div>
 
 
 

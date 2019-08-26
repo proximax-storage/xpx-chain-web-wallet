@@ -20,6 +20,7 @@ import { AccountCreatedComponent } from './views/account/account-created/account
 import { SelectionAccountTypeComponent } from './views/account/selection-account-creation-type/selection-account-creation-type.component';
 import { AddContactsComponent } from './views/address-book/add-contacts/add-contacts.component';
 import { CreateMultiSignatureComponent } from './views/multi-sign/components/create-multi-signature/create-multi-signature.component';
+import { ConvertAccountMultisignComponent } from './views/multi-sign/convert-account-multisign/convert-account-multisign.component';
 
 const routes: Routes = [
   {
@@ -215,7 +216,7 @@ const routes: Routes = [
     }
   }, {
     path: AppConfig.routes.convertToAccountMultisign,
-    component: CreateMultiSignatureComponent,
+    component: ConvertAccountMultisignComponent,
     data: {
       meta: {
         title: 'convertToAccountMultisign.title',
