@@ -59,6 +59,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   viewDetailsAccount = `/${AppConfig.routes.account}/`;
   windowScrolled: boolean;
   nameWallet = '';
+  p: number = 1;
 
   constructor(
     private cdRef: ChangeDetectorRef,
