@@ -81,44 +81,55 @@ export class AliasAddressToNamespaceComponent implements OnInit {
    * @memberof AliasAddressToNamespaceComponent
    */
   async buildSelectNamespace($event = null) {
-    console.log('--arrayNamespaceStorage--', this.arrayNamespaceStorage);
-    const namespaceSelect = [];
-    this.loading = true;
-    if (this.arrayNamespaceStorage && this.arrayNamespaceStorage.length > 0) {
-      for (let namespaceStorage of this.arrayNamespaceStorage) {
-        if (namespaceStorage.namespaceInfo) {
-          console.log('INFO ---> ', namespaceStorage, '\n\n');
-          let isLinked = false;
-          let disabled = false;
-          let name = await this.namespaceService.getNameParentNamespace(namespaceStorage);
-          const type = namespaceStorage.namespaceInfo.alias.type;
-          if (type === 2) {
-            isLinked = true;
-            disabled = (this.LinkToNamespaceForm.get('typeAction').value === 0) ? true : false;
-            name = `${name}- (Linked to address)`;
-          } else if (type === 1) {
-            isLinked = true;
-            disabled = true;
-            name = `${name}- (Linked to mosaic)`;
-          } else {
-            disabled = (this.LinkToNamespaceForm.get('typeAction').value === 1) ? true : false;
+    console.log($event);
+    if ($event !== null) {
+      this.LinkToNamespaceForm.get('address').enable();
+      this.LinkToNamespaceForm.get('namespace').enable();
+      this.LinkToNamespaceForm.get('password').enable();
+
+      console.log('--arrayNamespaceStorage--', this.arrayNamespaceStorage);
+      const namespaceSelect = [];
+      this.loading = true;
+      if (this.arrayNamespaceStorage && this.arrayNamespaceStorage.length > 0) {
+        for (let namespaceStorage of this.arrayNamespaceStorage) {
+          if (namespaceStorage.namespaceInfo) {
+            console.log('INFO ---> ', namespaceStorage, '\n\n');
+            let isLinked = false;
+            let disabled = false;
+            let name = await this.namespaceService.getNameParentNamespace(namespaceStorage);
+            const type = namespaceStorage.namespaceInfo.alias.type;
+            if (type === 2) {
+              isLinked = true;
+              disabled = (this.LinkToNamespaceForm.get('typeAction').value === 0) ? true : false;
+              name = `${name}- (Linked to address)`;
+            } else if (type === 1) {
+              isLinked = true;
+              disabled = true;
+              name = `${name}- (Linked to mosaic)`;
+            } else {
+              disabled = (this.LinkToNamespaceForm.get('typeAction').value === 1) ? true : false;
+            }
+
+            namespaceSelect.push({
+              label: `${name}`,
+              value: `${name}`,
+              selected: false,
+              disabled: disabled
+            });
           }
+        };
+      }
 
-          namespaceSelect.push({
-            label: `${name}`,
-            value: `${name}`,
-            selected: false,
-            disabled: disabled
-          });
-        }
-      };
+      this.namespaceSelect = namespaceSelect.sort(function (a: any, b: any) {
+        return a.label === b.label ? 0 : +(a.label > b.label) || -1;
+      });
+
+      this.loading = false;
+    } else {
+      this.LinkToNamespaceForm.get('address').disable();
+      this.LinkToNamespaceForm.get('namespace').disable();
+      this.LinkToNamespaceForm.get('password').disable();
     }
-
-    this.namespaceSelect = namespaceSelect.sort(function (a: any, b: any) {
-      return a.label === b.label ? 0 : +(a.label > b.label) || -1;
-    });
-
-    this.loading = false;
   }
 
 

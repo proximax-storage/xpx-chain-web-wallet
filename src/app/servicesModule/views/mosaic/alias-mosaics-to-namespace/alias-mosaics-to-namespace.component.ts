@@ -95,43 +95,54 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
 
   async buildSelectNamespace($event = null) {
     console.log('--arrayNamespaceStorage--', this.arrayNamespaceStorage);
-    const namespaceSelect = [];
-    this.loading = true;
-    if (this.arrayNamespaceStorage && this.arrayNamespaceStorage.length > 0) {
-      for (let namespaceStorage of this.arrayNamespaceStorage) {
-        if (namespaceStorage.namespaceInfo) {
-          console.log('INFO ---> ', namespaceStorage, '\n\n');
-          let isLinked = false;
-          let disabled = false;
-          let name = await this.namespaceService.getNameParentNamespace(namespaceStorage);
-          const type = namespaceStorage.namespaceInfo.alias.type;
-          if (type === 1) {
-            isLinked = true;
-            disabled = (this.linkingNamespaceToMosaic.get('typeAction').value === 0) ? true : false;
-            name = `${name}- (Linked to mosaic)`;
-          } else if (type === 2) {
-            isLinked = true;
-            disabled = true;
-            name = `${name}- (Linked to address)`;
-          } else {
-            disabled = (this.linkingNamespaceToMosaic.get('typeAction').value === 1) ? true : false;
+    if ($event !== null) {
+      this.linkingNamespaceToMosaic.get('mosaic').enable();
+      this.linkingNamespaceToMosaic.get('namespace').enable();
+      this.linkingNamespaceToMosaic.get('password').enable();
+
+      console.log('--arrayNamespaceStorage--', this.arrayNamespaceStorage);
+      const namespaceSelect = [];
+      this.loading = true;
+      if (this.arrayNamespaceStorage && this.arrayNamespaceStorage.length > 0) {
+        for (let namespaceStorage of this.arrayNamespaceStorage) {
+          if (namespaceStorage.namespaceInfo) {
+            console.log('INFO ---> ', namespaceStorage, '\n\n');
+            let isLinked = false;
+            let disabled = false;
+            let name = await this.namespaceService.getNameParentNamespace(namespaceStorage);
+            const type = namespaceStorage.namespaceInfo.alias.type;
+            if (type === 2) {
+              isLinked = true;
+              disabled = (this.linkingNamespaceToMosaic.get('typeAction').value === 0) ? true : false;
+              name = `${name}- (Linked to address)`;
+            } else if (type === 1) {
+              isLinked = true;
+              disabled = true;
+              name = `${name}- (Linked to mosaic)`;
+            } else {
+              disabled = (this.linkingNamespaceToMosaic.get('typeAction').value === 1) ? true : false;
+            }
+
+            namespaceSelect.push({
+              label: `${name}`,
+              value: `${name}`,
+              selected: false,
+              disabled: disabled
+            });
           }
+        };
+      }
 
-          namespaceSelect.push({
-            label: `${name}`,
-            value: `${name}`,
-            selected: false,
-            disabled: disabled
-          });
-        }
-      };
+      this.namespaceSelect = namespaceSelect.sort(function (a: any, b: any) {
+        return a.label === b.label ? 0 : +(a.label > b.label) || -1;
+      });
+
+      this.loading = false;
+    } else {
+      this.linkingNamespaceToMosaic.get('mosaic').disable();
+      this.linkingNamespaceToMosaic.get('namespace').disable();
+      this.linkingNamespaceToMosaic.get('password').disable();
     }
-
-    this.namespaceSelect = namespaceSelect.sort(function (a: any, b: any) {
-      return a.label === b.label ? 0 : +(a.label > b.label) || -1;
-    });
-
-    this.loading = false;
   }
 
   /**
@@ -142,12 +153,9 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
   createForm() {
     this.linkingNamespaceToMosaic = this.fb.group({
       namespace: ['', [Validators.required]],
-      typeAction: [
-        AliasActionType.Link,
-        [
-          Validators.required
-        ]
-      ],
+      typeAction: [AliasActionType.Link, [
+        Validators.required
+      ]],
       mosaic: ['', [Validators.required]],
       password: ['', [
         Validators.required,
