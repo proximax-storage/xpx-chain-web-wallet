@@ -20,7 +20,7 @@ import { Subscription } from 'rxjs';
 })
 export class AliasMosaicsToNamespaceComponent implements OnInit {
 
-  @BlockUI() blockUI: NgBlockUI;
+  arrayNamespaceStorage: NamespaceStorageInterface[] = [];
   currentBlock: number = 0;
   moduleName = 'Mosaics';
   componentName = 'LINK TO NAMESPACE';
@@ -28,6 +28,7 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
   configurationForm: ConfigurationForm = {};
   linkingNamespaceToMosaic: FormGroup;
   blockSend: boolean = false;
+  loading = false;
   mosaicSelect: Array<object> = [
     {
       value: '1',
@@ -76,7 +77,8 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
   ngOnInit() {
     this.configurationForm = this.sharedService.configurationForm;
     this.createForm();
-    this.getNameNamespace();
+    // this.getNameNamespace();
+    this.getNamespaces();
     this.getMosaic();
 
     this.subscription.push(this.dataBridge.getBlock().subscribe(next => {
@@ -88,6 +90,48 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
     this.subscription.forEach(subscription => {
       subscription.unsubscribe();
     });
+  }
+
+
+  async buildSelectNamespace($event = null) {
+    console.log('--arrayNamespaceStorage--', this.arrayNamespaceStorage);
+    const namespaceSelect = [];
+    this.loading = true;
+    if (this.arrayNamespaceStorage && this.arrayNamespaceStorage.length > 0) {
+      for (let namespaceStorage of this.arrayNamespaceStorage) {
+        if (namespaceStorage.namespaceInfo) {
+          console.log('INFO ---> ', namespaceStorage, '\n\n');
+          let isLinked = false;
+          let disabled = false;
+          let name = await this.namespaceService.getNameParentNamespace(namespaceStorage);
+          const type = namespaceStorage.namespaceInfo.alias.type;
+          if (type === 1) {
+            isLinked = true;
+            disabled = (this.linkingNamespaceToMosaic.get('typeAction').value === 0) ? true : false;
+            name = `${name}- (Linked to mosaic)`;
+          } else if (type === 2) {
+            isLinked = true;
+            disabled = true;
+            name = `${name}- (Linked to address)`;
+          } else {
+            disabled = (this.linkingNamespaceToMosaic.get('typeAction').value === 1) ? true : false;
+          }
+
+          namespaceSelect.push({
+            label: `${name}`,
+            value: `${name}`,
+            selected: false,
+            disabled: disabled
+          });
+        }
+      };
+    }
+
+    this.namespaceSelect = namespaceSelect.sort(function (a: any, b: any) {
+      return a.label === b.label ? 0 : +(a.label > b.label) || -1;
+    });
+
+    this.loading = false;
   }
 
   /**
@@ -124,6 +168,42 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
       {
         emitEvent: false
       });
+  }
+
+  /**
+   *
+   *
+   * @memberof AliasMosaicsToNamespaceComponent
+   */
+  getNamespaces() {
+    this.namespaceService.getNamespaceChanged().subscribe(
+      async (arrayNamespaceStorage: NamespaceStorageInterface[]) => {
+        this.arrayNamespaceStorage = arrayNamespaceStorage;
+        this.buildSelectNamespace();
+        /* console.log('--arrayNamespaceStorage--', arrayNamespaceStorage);
+         const namespaceSelect = [];
+         if (arrayNamespaceStorage && arrayNamespaceStorage.length > 0) {
+           for (let namespaceStorage of arrayNamespaceStorage) {
+             if (namespaceStorage.namespaceInfo) {
+               console.log('INFO ---> ', namespaceStorage, '\n\n');
+               const name = await this.namespaceService.getNameParentNamespace(namespaceStorage);
+               const disabled = (namespaceStorage.namespaceInfo.alias.type === 0) ? false : true;
+               const linked = (disabled) ? ' - Linked' : '';
+               namespaceSelect.push({
+                 label: `${name}${linked}`,
+                 value: `${name}`,
+                 selected: false,
+                 disabled: false
+               });
+             }
+           };
+         }
+
+         this.namespaceSelect = namespaceSelect.sort(function (a: any, b: any) {
+           return a.label === b.label ? 0 : +(a.label > b.label) || -1;
+         });*/
+      }
+    );
   }
 
   /**
@@ -187,7 +267,6 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
 
         this.namespaceSelect = namespaceSelect;
       }, error => {
-        this.blockUI.stop();
         this.router.navigate([AppConfig.routes.home]);
         this.sharedService.showError('', 'Please check your connection and try again');
       }));
@@ -341,7 +420,6 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
           x => {
             this.blockSend = false;
             this.clearForm();
-            this.blockUI.stop(); // Stop blocking
             // this.sharedService.showSuccess('success', 'Transaction sent');
             if (this.subscribe['transactionStatus'] === undefined || this.subscribe['transactionStatus'] === null) {
               this.getTransactionStatus();
@@ -350,7 +428,6 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
           err => {
             this.blockSend = false;
             this.clearForm();
-            this.blockUI.stop(); // Stop blocking
             this.sharedService.showError('', 'An unexpected error has occurred');
           });
       } else {

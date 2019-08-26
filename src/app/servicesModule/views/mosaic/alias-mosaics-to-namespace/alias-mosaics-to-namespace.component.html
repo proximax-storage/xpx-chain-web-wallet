@@ -19,14 +19,27 @@
   </div>
 
   <form [formGroup]="linkingNamespaceToMosaic" (ngSubmit)="sendTransaction()">
+
     <div class="row mt-1-5rem">
+      <div class="col-11 col-sm-10 col-lg-8 mx-auto">
+        <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" class="selectWrapper"
+          [items]="typeAction" formControlName="typeAction" bindLabel="label" bindValue="value"
+          placeholder="Select action" (change)="buildSelectNamespace($event)"></ng-select>
+        <mdb-error class="mt-1rem ml-1rem"
+          *ngIf="validateInput('typeAction').invalid && (validateInput('typeAction').dirty || validateInput('typeAction').touched)">
+          <span class="fs-08rem fw-600 color-error-message">Select action</span>
+        </mdb-error>
+      </div>
+    </div>
+
+    <div class="row pt-1rem">
       <div class="col-11 col-sm-10 col-lg-8 mx-auto">
         <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" class="selectWrapper"
           [items]="namespaceSelect" formControlName="namespace" bindLabel="label" bindValue="value"
           placeholder="Select namespace"></ng-select>
         <mdb-error class="mt-1rem ml-1rem"
           *ngIf="validateInput('namespace').invalid && (validateInput('namespace').dirty || validateInput('namespace').touched)">
-          <span>Select namespace</span>
+          <span class="fs-08rem fw-600 color-error-message">Select namespace</span>
         </mdb-error>
       </div>
     </div>
@@ -38,24 +51,10 @@
           placeholder="Select mosaic"></ng-select>
         <mdb-error class="mt-1rem ml-1rem"
           *ngIf="validateInput('mosaic').invalid && (validateInput('mosaic').dirty || validateInput('mosaic').touched)">
-          <span>Select mosaic</span>
+          <span class="fs-08rem fw-600 color-error-message">Select mosaic</span>
         </mdb-error>
       </div>
     </div>
-
-    <div class="row pt-1rem">
-      <div class="col-11 col-sm-10 col-lg-8 mx-auto">
-        <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" class="selectWrapper"
-          [items]="typeAction" formControlName="typeAction" bindLabel="label" bindValue="value"
-          placeholder="Select action"></ng-select>
-        <mdb-error class="mt-1rem ml-1rem"
-          *ngIf="validateInput('typeAction').invalid && (validateInput('typeAction').dirty || validateInput('typeAction').touched)">
-          <span>Select action</span>
-        </mdb-error>
-      </div>
-    </div>
-
-
 
     <div class="row  pt-1rem">
       <div class="col-11 col-sm-10 col-lg-8 mx-auto">
@@ -78,7 +77,7 @@
           <!-- VALIDATION -->
           <mdb-error
             *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
-            <span>Input invalid</span>
+            <span class="fs-08rem fw-600 color-error-message">Invalid input</span>
           </mdb-error>
         </div>
       </div>
