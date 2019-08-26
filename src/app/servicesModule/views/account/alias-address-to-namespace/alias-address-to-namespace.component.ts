@@ -83,9 +83,9 @@ export class AliasAddressToNamespaceComponent implements OnInit {
   async buildSelectNamespace($event = null) {
     console.log($event);
     if ($event !== null) {
-      this.LinkToNamespaceForm.get('address').enable();
+     /* this.LinkToNamespaceForm.get('address').enable();
       this.LinkToNamespaceForm.get('namespace').enable();
-      this.LinkToNamespaceForm.get('password').enable();
+      this.LinkToNamespaceForm.get('password').enable();*/
 
       console.log('--arrayNamespaceStorage--', this.arrayNamespaceStorage);
       const namespaceSelect = [];
@@ -126,9 +126,7 @@ export class AliasAddressToNamespaceComponent implements OnInit {
 
       this.loading = false;
     } else {
-      this.LinkToNamespaceForm.get('address').disable();
-      this.LinkToNamespaceForm.get('namespace').disable();
-      this.LinkToNamespaceForm.get('password').disable();
+      this.LinkToNamespaceForm.get('typeAction').setValue(AliasActionType.Link, { emitEvent: false });
     }
   }
 

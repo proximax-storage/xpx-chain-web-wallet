@@ -96,9 +96,9 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
   async buildSelectNamespace($event = null) {
     console.log('--arrayNamespaceStorage--', this.arrayNamespaceStorage);
     if ($event !== null) {
-      this.linkingNamespaceToMosaic.get('mosaic').enable();
+      /*this.linkingNamespaceToMosaic.get('mosaic').enable();
       this.linkingNamespaceToMosaic.get('namespace').enable();
-      this.linkingNamespaceToMosaic.get('password').enable();
+      this.linkingNamespaceToMosaic.get('password').enable();*/
 
       console.log('--arrayNamespaceStorage--', this.arrayNamespaceStorage);
       const namespaceSelect = [];
@@ -139,9 +139,7 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
 
       this.loading = false;
     } else {
-      this.linkingNamespaceToMosaic.get('mosaic').disable();
-      this.linkingNamespaceToMosaic.get('namespace').disable();
-      this.linkingNamespaceToMosaic.get('password').disable();
+      this.linkingNamespaceToMosaic.get('typeAction').setValue(AliasActionType.Link, { emitEvent: false });
     }
   }
 
