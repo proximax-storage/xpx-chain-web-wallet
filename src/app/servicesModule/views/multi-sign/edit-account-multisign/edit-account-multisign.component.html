@@ -35,7 +35,7 @@
                                     <img class="w-30px" src="assets/images/img/icon-account-green-60h-proximax-sirius-wallet.svg">
                                     <span class="fw-600"> {{currentAccountToConvert.name}}</span>
 
-                                    <span class="fw-600"> {{consginerFirmName}}</span>
+                                    <!-- <span class="fw-600"> {{consginerFirmName}}</span> -->
                                 </div>
                             </div>
                         </div>
@@ -59,7 +59,7 @@
                                                 id="minApprovalDelta" class="form-control form-control-sm input-border"
                                                 placeholder="Min approval" onkeyup="javascript:this.value=this.value.toLowerCase();">
                                             <!-- VALIDATION -->
-                                            <span style="font-size: 0.6rem !important;">Min Approva :
+                                            <span *ngIf="isMultisig" style="font-size: 0.6rem !important;">Min Approva :
                                                 {{accountInfo.multisigInfo.minApproval}}</span>
                                             <mdb-error *ngIf="validateInput('minApprovalDelta', '').invalid && (validateInput('minApprovalDelta', '').dirty || validateInput('minApprovalDelta', '').touched)">
                                                 <span>Input invalid</span>
@@ -81,7 +81,7 @@
                                                 mdbValidate [validateSuccess]="true" [validateError]="true" type="number"
                                                 id="minRemovalDelta" class="form-control form-control-sm input-border"
                                                 placeholder="Min removal" onkeyup="javascript:this.value=this.value.toLowerCase();">
-                                            <span  style="font-size: 0.6rem !important;" >Min Removal :
+                                            <span *ngIf="isMultisig"   style="font-size: 0.6rem !important;" >Min Removal :
                                                 {{accountInfo.multisigInfo.minRemoval}}</span>
 
                                             <!-- VALIDATION -->
@@ -107,7 +107,7 @@
                                 </span>
                             </div>
                             <ng-container *ngFor="let cosign of cosignatoryList">
-                                <div class="col-12 ">
+                                <div class="col-12" >
                                     <!-- 
                                         <td class="text-center" style="cursor: pointer;" (click)="deleteCosignatory(cosign.id ,cosign.disableItem, cosign.type)">
                                                 <i *ngIf="cosign.action =='Add'" [style.color]="getColor(cosign.type)"
@@ -117,7 +117,7 @@
                                             </td> -->
 
 
-                                    <span class="fs-07rem fw-600 txt-a-center "> <i [style.color]="getColor(cosign.type)"
+                                    <span class="fs-07rem fw-600 txt-a-center "> <i [class.disabled]="isDisabledList"  [style.color]="getColor(cosign.type)"
                                             (click)="deleteCosignatory(cosign.id ,cosign.disableItem, cosign.type)"
                                             style="cursor: pointer;" class="fa fa-trash fs-1rem" aria-hidden="true"></i>
                                         {{cosign.publicAccount.address.plain()}}

@@ -12,7 +12,7 @@ import { NodeService } from 'src/app/servicesModule/services/node.service';
 import { TransactionsService } from 'src/app/transfer/services/transactions.service';
 import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
 import { environment } from 'src/environments/environment';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-edit-account-multisign',
@@ -47,6 +47,7 @@ export class EditAccountMultisignComponent implements OnInit {
   isMultisig: boolean;
   searchContact: boolean;
   btnBlock: boolean;
+  isDisabledList: boolean;
   blockSend: boolean;
   ban: any;
   consginerFirmName: string;
@@ -64,6 +65,7 @@ export class EditAccountMultisignComponent implements OnInit {
     private nodeService: NodeService,
     private transactionService: TransactionsService,
     private dataBridge: DataBridgeService,
+    private router: Router,
   ) {
     this.configurationForm = this.sharedService.configurationForm;
     this.accountValid = false;
@@ -73,6 +75,7 @@ export class EditAccountMultisignComponent implements OnInit {
     this.isMultisig = false;
     this.ban = false;
     this.btnBlock = true;
+    this.isDisabledList = false;
     this.transactionHttp = new TransactionHttp(environment.protocol + "://" + `${this.nodeService.getNodeSelected()}`);
   }
 
@@ -86,7 +89,15 @@ export class EditAccountMultisignComponent implements OnInit {
 
 
   }
+  /**
+ *
+ *
+ * @memberof CreateTransferComponent
+ */
+  ngOnDestroy(): void {
+    this.subscribeAccount.unsubscribe();
 
+  }
 
   /**
  *
@@ -182,7 +193,7 @@ export class EditAccountMultisignComponent implements OnInit {
   selectAccount(name: string) {
     this.clearData();
     this.currentAccountToConvert = this.walletService.filterAccount(name)
-    this.mdbBtnAddCosignatory = true;
+
     this.subscribeAccount = this.walletService.getAccountsInfo$().subscribe(
       async accountInfo => {
         // this.accountInfo = this.walletService.filterAccountInfo(name);
@@ -192,22 +203,26 @@ export class EditAccountMultisignComponent implements OnInit {
   }
 
   validateAccount(name: string) {
+    this.mdbBtnAddCosignatory = true;
     this.accountInfo = this.walletService.filterAccountInfo(name);
     this.accountValid = (
       this.accountInfo !== null &&
       this.accountInfo !== undefined && this.accountInfo.accountInfo !== null);
-    if (this.subscribeAccount) {
-      this.subscribeAccount.unsubscribe();
-    }
+    // if (this.subscribeAccount) {
+    //   this.subscribeAccount.unsubscribe();
+    // }
     //Validate Account 
     if (!this.accountValid)
       return
 
     //Validate Multisign 
     this.isMultisig = (this.accountInfo.multisigInfo !== null && this.accountInfo.multisigInfo !== undefined && this.accountInfo.multisigInfo.isMultisig());
-    if (!this.isMultisig)
-      return this.sharedService.showError('Attention', 'not is Multisig');
-
+    if (!this.isMultisig) {
+      this.sharedService.showError('Attention', 'not is Multisig');
+      setTimeout(() => {
+        this.router.navigate([`/${AppConfig.routes.MultiSign}`]);
+      }, 3000);
+    }
     //Validate Balance
     if (!this.accountInfo.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id))
       return this.sharedService.showError('Attention', 'Insufficient balance');
@@ -221,6 +236,7 @@ export class EditAccountMultisignComponent implements OnInit {
       this.mdbBtnAddCosignatory = true;
       this.setValueForm('view', true, 3)
       this.editAccountMultsignForm.disable();
+      this.isDisabledList = true;
     }
   }
 
@@ -416,7 +432,7 @@ export class EditAccountMultisignComponent implements OnInit {
    */
   announceAggregateBonded(signedTransaction: SignedTransaction) {
     this.clearData();
-    this.clearForm();
+    // this.clearForm();
     this.transactionHttp.announceAggregateBonded(signedTransaction).subscribe(
       async () => {
         this.getTransactionStatus(signedTransaction)
@@ -671,7 +687,7 @@ export class EditAccountMultisignComponent implements OnInit {
    */
   validatorsMinApprovalDelta() {
     this.minApprovaMaxLength = (this.getCosignatoryListFilter(1, 3).length > 0) ? this.getCosignatoryListFilter(1, 3).length : 0;
-    const minLength = (this.getCosignatoryListFilter(1, 3).length > 0) ? 1: 0;
+    const minLength = (this.getCosignatoryListFilter(1, 3).length > 0) ? 1 : 0;
     const validators = [Validators.required,
     Validators.minLength(minLength),
     Validators.maxLength(this.minApprovaMaxLength)];
@@ -687,7 +703,7 @@ export class EditAccountMultisignComponent implements OnInit {
   */
   validatorsMinRemovalDelta() {
     this.minApprovaMaxLength = (this.getCosignatoryListFilter(1, 3).length > 0) ? this.getCosignatoryListFilter(1, 3).length : 0;
-    const minLength = (this.getCosignatoryListFilter(1, 3).length > 0) ? 1: 0;
+    const minLength = (this.getCosignatoryListFilter(1, 3).length > 0) ? 1 : 0;
     const validators = [Validators.required,
     Validators.minLength(minLength),
     Validators.maxLength(this.minApprovaMaxLength)]
