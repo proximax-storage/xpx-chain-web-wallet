@@ -18,7 +18,23 @@
     </div>
   </div>
 
-  <form [formGroup]="LinkToNamespaceForm" (ngSubmit)="send()">
+  <form [formGroup]="LinkToNamespaceForm" (ngSubmit)="sendTransaction()">
+    <div class="row mt-1-5rem">
+      <div class="col-11 col-sm-10 col-lg-8 mx-auto">
+        <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" class="selectWrapper"
+          [items]="typeAction" formControlName="typeAction" bindLabel="label" bindValue="value"
+          placeholder="Select action" (change)="buildSelectNamespace($event)"></ng-select>
+        <mdb-error class="mt-1rem ml-1rem"
+          *ngIf="validateInput('typeAction').invalid && (validateInput('typeAction').dirty || validateInput('typeAction').touched)">
+          <span class="fs-08rem fw-600 color-error-message">Select action</span>
+        </mdb-error>
+      </div>
+      <!-- <div class="col-1 col-sm-2 col-lg-2">
+        <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
+          *ngIf="loading"></span>
+      </div> -->
+    </div>
+
     <div class="row mt-1-5rem">
       <div class="col-11 col-sm-10 col-lg-8 mx-auto">
         <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" class="selectWrapper"
@@ -26,7 +42,7 @@
           placeholder="Select namespace"></ng-select>
         <mdb-error class="mt-1rem ml-1rem"
           *ngIf="validateInput('namespace').invalid && (validateInput('namespace').dirty || validateInput('namespace').touched)">
-          <span>Select namespace</span>
+          <span class="fs-08rem fw-600 color-error-message">Select namespace</span>
         </mdb-error>
       </div>
     </div>
@@ -34,7 +50,7 @@
     <div class="row">
       <div class="col-11 col-sm-10 col-lg-8 mx-auto">
         <div class="md-form form-sm">
-          <input formControlName="address" readonly required mdbInputDirective mdbValidate [validateSuccess]="true"
+          <input formControlName="address" required mdbInputDirective mdbValidate [validateSuccess]="true"
             [validateError]="true" type="text" id="address" class="form-control form-control-sm input-border"
             placeholder="Address" [maxlength]="configurationForm.address.maxLength"
             [minlength]="configurationForm.address.minLength">
@@ -42,11 +58,13 @@
           <!-- VALIDATION -->
           <mdb-error
             *ngIf="validateInput('address', '').invalid && (validateInput('address', '').dirty || validateInput('address', '').touched)">
-            <span>Input invalid</span>
+            <span class="fs-08rem fw-600 color-error-message">Invalid input</span>
           </mdb-error>
         </div>
       </div>
     </div>
+
+
 
     <div class="row">
       <div class="col-11 col-sm-10 col-lg-8 mx-auto">
@@ -69,7 +87,7 @@
           <!-- VALIDATION -->
           <mdb-error
             *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
-            <span>Input invalid</span>
+            <span class="fs-08rem fw-600 color-error-message">Invalid input</span>
           </mdb-error>
         </div>
       </div>

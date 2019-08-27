@@ -31,7 +31,7 @@
       <div class="col-11 col-sm-10 col-lg-8 mx-auto">
         <div class="md-form form-sm">
           <input formControlName="user" required mdbInputDirective mdbValidate [validateSuccess]="true"
-            [validateError]="true" type="text" id="user" class="form-control form-control-sm input-border"
+            [validateError]="true" type="text" id="user" maxlength="30" class="form-control form-control-sm input-border"
             placeholder="Name">
 
           <!-- VALIDATION -->
@@ -47,7 +47,7 @@
       <div class="col-11 col-sm-10 col-lg-8 mx-auto">
         <div class="md-form form-sm">
           <input formControlName="address" required mdbInputDirective mdbValidate [validateSuccess]="true"
-            [validateError]="true" type="text" id="address" class="form-control form-control-sm input-border"
+            [validateError]="true" type="text" id="address" maxlength="46" class="form-control form-control-sm input-border"
             placeholder="address">
 
           <!-- VALIDATION -->

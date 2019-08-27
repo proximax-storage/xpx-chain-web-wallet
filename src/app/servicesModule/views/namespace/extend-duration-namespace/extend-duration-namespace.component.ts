@@ -39,6 +39,7 @@ export class ExtendDurationNamespaceComponent implements OnInit {
   feeType: string = 'XPX';
   durationByBlock = '0';
   insufficientBalance = false;
+  insufficientBalanceDuration = false;
   namespaceChangeInfo: NamespaceStorageInterface = null;
   startHeight: number = 0;
   endHeight: number = 0;
@@ -131,13 +132,20 @@ export class ExtendDurationNamespaceComponent implements OnInit {
       namespaceRoot: '',
       duration: '',
       password: ''
-    },
-    {
-      emitEvent: false
-    });
-    // this.extendDurationNamespaceForm.get('namespaceRoot').patchValue('', { emitEvent: false });
-    // this.extendDurationNamespaceForm.get('duration').patchValue('', { emitEvent: false });
-    // this.extendDurationNamespaceForm.get('password').patchValue('', { emitEvent: false });
+    }, { emitEvent: false }
+    );
+
+
+    if (this.extendDurationNamespaceForm.disabled) {
+      this.extendDurationNamespaceForm.enable();
+    }
+
+    this.startHeight = 0;
+    this.endHeight = 0;
+    this.durationByBlock = '0';
+    this.calculateRentalFee = '0.000000';
+    this.insufficientBalance = false;
+    this.insufficientBalanceDuration = false;
   }
 
   /**
@@ -369,25 +377,35 @@ export class ExtendDurationNamespaceComponent implements OnInit {
           const invalidBalance = filtered.amount.compact() < amount;
           const mosaic = await this.mosaicServices.filterMosaics([filtered.id]);
           this.calculateRentalFee = this.transactionService.amountFormatter(amount, mosaic[0].mosaicInfo);
-          if (invalidBalance && !this.insufficientBalance) {
-            this.insufficientBalance = true;
-            this.extendDurationNamespaceForm.controls['password'].disable();
-          } else if (!invalidBalance && this.insufficientBalance) {
+          if (invalidBalance) {
             this.insufficientBalance = false;
-            this.extendDurationNamespaceForm.controls['password'].enable();
+            this.insufficientBalanceDuration = true;
+          } else {
+            this.insufficientBalance = false;
+            this.insufficientBalanceDuration = false;
           }
-        }/* else {
-          this.sharedService.showWarning('', 'You do not have enough balance in the default account');
-          this.router.navigate([`/${AppConfig.routes.service}`]);
-        }*/
+        } else {
+          if (this.extendDurationNamespaceForm.enabled) {
+            this.extendDurationNamespaceForm.disable();
+          }
+          this.insufficientBalanceDuration = false;
+          this.insufficientBalance = true;
+        }
       } else {
+        if (this.extendDurationNamespaceForm.enabled) {
+          this.extendDurationNamespaceForm.disable();
+        }
+        this.insufficientBalanceDuration = false;
         this.insufficientBalance = true;
         this.extendDurationNamespaceForm.controls['password'].disable();
       }
-    }/* else {
-      this.sharedService.showWarning('', 'You do not have enough balance in the default account');
-      this.router.navigate([`/${AppConfig.routes.service}`]);
-    }*/
+    } else {
+      if (this.extendDurationNamespaceForm.enabled) {
+        this.extendDurationNamespaceForm.disable();
+      }
+      this.insufficientBalanceDuration = false;
+      this.insufficientBalance = true;
+    }
   }
 
 }

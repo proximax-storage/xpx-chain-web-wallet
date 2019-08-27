@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, Validators, FormBuilder, AbstractControl } from '@angular/forms';
-import { AliasActionType, Address, NamespaceId } from 'tsjs-xpx-chain-sdk';
+import { AliasActionType, Address, NamespaceId, LinkAction } from 'tsjs-xpx-chain-sdk';
 import { Router } from '@angular/router';
 import { NgBlockUI, BlockUI } from 'ng-block-ui';
 import { AppConfig } from '../../../../config/app.config';
@@ -18,13 +18,14 @@ import { Subscription } from 'rxjs';
 })
 export class AliasAddressToNamespaceComponent implements OnInit {
 
-  @BlockUI() blockUI: NgBlockUI;
+  arrayNamespaceStorage: NamespaceStorageInterface[] = [];
   moduleName = 'Accounts';
   componentName = 'LINK TO NAMESPACE';
   backToService = `/${AppConfig.routes.service}`;
   configurationForm: ConfigurationForm = {};
   blockSend: boolean = false;
   LinkToNamespaceForm: FormGroup;
+  loading = false;
   namespaceSelect: Array<object> = [
     {
       value: '1',
@@ -35,6 +36,17 @@ export class AliasAddressToNamespaceComponent implements OnInit {
   ];
   subscribe = ['transactionStatus'];
   transactionSigned: any;
+  typeAction: any = [{
+    value: AliasActionType.Link,
+    label: 'Link',
+    selected: true,
+    disabled: false
+  }, {
+    value: AliasActionType.Unlink,
+    label: 'Unlink',
+    selected: false,
+    disabled: false
+  }];
   subscription: Subscription[] = [];
 
   constructor(
@@ -50,19 +62,76 @@ export class AliasAddressToNamespaceComponent implements OnInit {
   ngOnInit() {
     this.configurationForm = this.sharedService.configurationForm;
     this.createForm();
-    this.getNameNamespace();
+    // this.getNameNamespace();
+    this.getNamespaces();
     const address = this.walletService.currentAccount.address;
     this.LinkToNamespaceForm.get('address').patchValue(address);
   }
 
   ngOnDestroy(): void {
-    //Called once, before the instance is destroyed.
-    //Add 'implements OnDestroy' to the class.
     this.subscription.forEach(subscription => {
-      // console.log(subscription);
       subscription.unsubscribe();
     });
   }
+
+  /**
+   *
+   *
+   * @param {NamespaceStorageInterface[]} arrayNamespaceStorage
+   * @memberof AliasAddressToNamespaceComponent
+   */
+  async buildSelectNamespace($event = null) {
+    console.log($event);
+    if ($event !== null) {
+      /* this.LinkToNamespaceForm.get('address').enable();
+       this.LinkToNamespaceForm.get('namespace').enable();
+       this.LinkToNamespaceForm.get('password').enable();*/
+
+      console.log('--arrayNamespaceStorage--', this.arrayNamespaceStorage);
+      const namespaceSelect = [];
+      this.loading = true;
+      if (this.arrayNamespaceStorage && this.arrayNamespaceStorage.length > 0) {
+        for (let namespaceStorage of this.arrayNamespaceStorage) {
+          if (namespaceStorage.namespaceInfo) {
+            console.log('INFO ---> ', namespaceStorage, '\n\n');
+            let isLinked = false;
+            let disabled = false;
+            let label = await this.namespaceService.getNameParentNamespace(namespaceStorage);
+            const name = label;
+            const type = namespaceStorage.namespaceInfo.alias.type;
+            if (type === 2) {
+              isLinked = true;
+              disabled = (this.LinkToNamespaceForm.get('typeAction').value === 0) ? true : false;
+              label = `${label}- (Linked to address)`;
+            } else if (type === 1) {
+              isLinked = true;
+              disabled = true;
+              label = `${label}- (Linked to mosaic)`;
+            } else {
+              disabled = (this.LinkToNamespaceForm.get('typeAction').value === 1) ? true : false;
+            }
+
+            namespaceSelect.push({
+              label: `${label}`,
+              value: `${name}`,
+              selected: false,
+              disabled: disabled
+            });
+          }
+        };
+      }
+
+      this.namespaceSelect = namespaceSelect.sort(function (a: any, b: any) {
+        return a.label === b.label ? 0 : +(a.label > b.label) || -1;
+      });
+
+      this.loading = false;
+    } else {
+      this.LinkToNamespaceForm.get('typeAction').setValue(AliasActionType.Link);
+    }
+  }
+
+
 
   /**
    *
@@ -71,14 +140,20 @@ export class AliasAddressToNamespaceComponent implements OnInit {
    */
   createForm() {
     this.LinkToNamespaceForm = this.fb.group({
-      namespace: ['', [Validators.required]],
       address: ['', [
         Validators.required,
         Validators.minLength(this.configurationForm.address.minLength),
         Validators.maxLength(this.configurationForm.address.maxLength)
       ]],
-      password: ['', [Validators.required, Validators.minLength(this.configurationForm.passwordWallet.minLength),
-      Validators.maxLength(this.configurationForm.passwordWallet.maxLength)]]
+      namespace: ['', [Validators.required]],
+      password: ['', [
+        Validators.required,
+        Validators.minLength(this.configurationForm.passwordWallet.minLength),
+        Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
+      ]],
+      typeAction: [AliasActionType.Link, [
+        Validators.required
+      ]]
     });
   }
 
@@ -99,6 +174,22 @@ export class AliasAddressToNamespaceComponent implements OnInit {
 
     this.LinkToNamespaceForm.get('address').setValue(valueAddress, { emitEvent: false });
   }
+
+
+  /**
+   *
+   *
+   * @memberof AliasAddressToNamespaceComponent
+   */
+  getNamespaces() {
+    this.namespaceService.getNamespaceChanged().subscribe(
+      async (arrayNamespaceStorage: NamespaceStorageInterface[]) => {
+        this.arrayNamespaceStorage = arrayNamespaceStorage;
+        this.buildSelectNamespace(this.LinkToNamespaceForm.get('typeAction').value);
+      }
+    );
+  }
+
 
   /**
    *
@@ -159,9 +250,11 @@ export class AliasAddressToNamespaceComponent implements OnInit {
           }
         }
 
-        this.namespaceSelect = namespaceSelect;
+        this.namespaceSelect = namespaceSelect.sort(function (a: any, b: any) {
+          return a.label === b.label ? 0 : +(a.label > b.label) || -1;
+        });
+        // this.namespaceSelect = namespaceSelect;
       }, error => {
-        this.blockUI.stop();
         this.router.navigate([AppConfig.routes.home]);
         this.sharedService.showError('', 'Please check your connection and try again');
       }));
@@ -219,7 +312,7 @@ export class AliasAddressToNamespaceComponent implements OnInit {
    *
    * @memberof AliasAddressToNamespaceComponent
    */
-  async send() {
+  async sendTransaction() {
     if (this.LinkToNamespaceForm.valid && !this.blockSend) {
       this.blockSend = true;
       const common = {
@@ -228,10 +321,15 @@ export class AliasAddressToNamespaceComponent implements OnInit {
       }
 
       if (this.walletService.decrypt(common)) {
+        const action = this.LinkToNamespaceForm.get('typeAction').value;
+        console.log(this.LinkToNamespaceForm.get('namespace').value);
+
         const namespaceId = new NamespaceId(this.LinkToNamespaceForm.get('namespace').value);
         const address = Address.createFromRawAddress(this.LinkToNamespaceForm.get('address').value);
+        console.log('address', address);
+
         const params: AddressAliasTransactionInterface = {
-          aliasActionType: AliasActionType.Link,
+          aliasActionType: action,
           namespaceId: namespaceId,
           address: address,
           common: common

@@ -19,9 +19,18 @@
   </div>
 
   <form [formGroup]="extendDurationNamespaceForm" (ngSubmit)="extendDuration()">
-    <div class="row">
-      <div class="col-11 col-sm-11 col-md-11 col-lg-8 mb-2rem">
-        <div class="row mt-1rem">
+    <div class="row ">
+      <div class="col-11 col-sm-11 col-md-11 col-lg-8 mb-2rem mt-1rem">
+
+        <ng-container *ngIf="insufficientBalance">
+          <div class="row">
+            <div class="col-11 mx-auto d-flex justify-content-end">
+              <span class="fs-08rem fw-600 color-error-message">Insufficient balance</span>
+            </div>
+          </div>
+        </ng-container>
+
+        <div class="row">
           <div class="col-11 mx-auto">
             <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
               class="selectWrapper" [items]="arrayselect" formControlName="namespaceRoot" bindLabel="label"
@@ -45,12 +54,16 @@
                 *ngIf="validateInput('duration', '').invalid && (validateInput('duration', '').dirty || validateInput('duration', '').touched)">
                 <span>Input invalid</span>
               </mdb-error>
+
+              <mdb-error *ngIf="validateInput('duration', '').valid && insufficientBalanceDuration">
+                <span class="fs-08rem fw-600 color-error-message">Insufficient balance</span>
+              </mdb-error>
             </div>
           </div>
         </div>
 
         <div class="row ml-01rem">
-          <div class="col-12 col-lg-6 mx-auto">
+          <div class="col-12 mx-auto">
             <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
               <div class="row">
                 <div class="col-12">
@@ -62,7 +75,7 @@
             </div>
           </div>
 
-          <div class="col-12 col-lg-6 mx-auto">
+          <div class="col-12 mx-auto">
             <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
               <div class="row">
                 <div class="col-12">
@@ -95,15 +108,15 @@
         <!-- BUTTONS -->
         <div class="row">
           <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-            <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
-              size="md" (click)="clearForm()">
+            <button [disabled]="insufficientBalance" mdbBtn type="button" rounded="true" mdbWavesEffect
+              class="f-w-600 background-btn pl-2rem pr-2rem" size="md" (click)="clearForm()">
               <span class="fs-1-2em color-white">CLEAR</span>
             </button>
           </div>
 
           <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-            <button mdbBtn type="submit" rounded="true" [disabled]="!extendDurationNamespaceForm.valid" mdbWavesEffect
-              class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
+            <button mdbBtn type="submit" rounded="true" [disabled]="extendDurationNamespaceForm.invalid || insufficientBalance ||
+            insufficientBalanceDuration" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
               <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
                 *ngIf="blockBtnSend"></span>
               <span class="fs-1-2em color-white">CREATE</span>

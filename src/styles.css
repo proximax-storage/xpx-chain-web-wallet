@@ -155,6 +155,10 @@ body {
   margin-left: .3rem;
 }
 
+.ml-05rem {
+  margin-left: .5rem;
+}
+
 .ml-10px {
   margin-left: 10px !important;
 }
@@ -208,6 +212,11 @@ body {
 }
 
 /********************* PADDING -*******************************/
+
+
+.p-0 {
+  padding: 0 !important;
+}
 
 /** TOP **/
 .pt-05rem {
@@ -934,9 +943,14 @@ input.form-control.validate-success.ng-valid.ng-touched,
 
 #confirm-password-invalid,
 #password-invalid,
-#name-wallet-invalid {
+#name-wallet-invalid,
+#divisibility-invalid {
   box-shadow: none !important;
   border: 2px solid #e06e38 !important;
+}
+
+.input-amount {
+  padding: 8px 10px !important;
 }
 
 .error-message {
@@ -956,24 +970,95 @@ input.form-control.validate-success.ng-valid.ng-touched,
   left: 1rem !important;
 }
 
+/*************TOASTR**************/
 .toastInfo {
   opacity: 1.0 !important;
-  background-color: #2BA1B9 !important;
+  background-color: white !important;
+  border: 2px solid #2BA1B9 !important;
 }
 
 .toastSuccess {
   opacity: 1.0 !important;
-  background-color: #54b1aa !important;
+  background-color: white !important;
+  border: 2px solid #54b1aa !important;
 }
 
 .toastWarning {
   opacity: 1.0 !important;
-  background-color: #f2a91d !important;
+  background-color: white !important;
+  border: 2px solid #f2a91d !important;
 }
 
 .toastError {
   opacity: 1.0 !important;
-  background-color: #e06e38 !important;
+  background-color: white !important;
+  border: 2px solid #e06e38 !important;
+}
+
+button.md-toast-close-button {
+  padding-right: .5rem !important;
+  color: #505050 !important;
+}
+
+.messageClass {
+  font-family: sans-serif !important;
+  font-size: .9rem;
+  color: #505050 !important;
+  font-weight: 600;
+}
+
+.md-toast-success:before {
+  color: #54b1aa !important;
+}
+
+.md-toast-info:before {
+  color: #2BA1B9 !important;
+}
+
+.md-toast-warning:before {
+  color: #f2a91d !important;
+}
+
+.md-toast-error:before {
+  color: #e06e38 !important;
+}
+
+
+.md-toast-success:before,
+.md-toast-info:before,
+.md-toast-warning:before,
+.md-toast-error:before,
+#toast-container>mdb-toast-component {
+  font-family: FontAwesome !important;
+  font-size: 20px !important;
+  line-height: 14px !important;
+  float: left !important;
+  margin-left: -2em !important;
+  padding-right: .2em !important;
+}
+
+.md-toast-success:before {
+  content: "\f058";
+}
+
+.md-toast-warning:before {
+  content: "\f06a";
+}
+
+.md-toast-info:before {
+  content: "\f05a";
+}
+
+.md-toast-error:before {
+  content: "\f071";
+}
+
+#toast-container>mdb-toast-component {
+  background-image: none !important;
+}
+
+.md-toast-progress {
+  background-color: #306eb5 !important;
 }
 
 /** FIN INPUTS VALIDATION **/

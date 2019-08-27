@@ -62,9 +62,8 @@
             [minlength]="configurationForm.passwordWallet.minLength" formControlName="encryptionPassword" required
             mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password"
             id="encryptionPassword" class="form-control form-control-sm input-border"
-            placeholder="Enter the file encryption password"
-            mdbPopover="At least 10 characters, must include UPPER CASE letters and numbers" placement="top"
-            triggers="focus" mdbPopoverHeader="Password suggestion">
+            placeholder="Enter the file encryption password" mdbPopover="At least {{configurationForm.passwordWallet.minLength}} characters, must include UPPER CASE
+            letters and numbers" placement="top" triggers="focus" mdbPopoverHeader="Password suggestion">
 
           <!-- VALIDATION -->
           <mdb-error

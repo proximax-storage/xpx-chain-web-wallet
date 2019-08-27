@@ -24,20 +24,22 @@
 
         <div class="row mt-1rem">
 
-          <ng-container *ngIf="insuficienteBalance">
+          <ng-container *ngIf="insufficientBalance">
             <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto d-flex justify-content-end">
-              <span class="fs-08rem fw-600 color-error-message">Balance insuficiente</span>
+              <span class="fs-08rem fw-600 color-error-message">Insufficient balance</span>
             </div>
           </ng-container>
 
 
           <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto">
             <div class="md-form form-sm mt-0 mb-0rem">
-              <input formControlName="duration" mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
-                type="text" id="duration" class="form-control form-control-sm input-border" placeholder="Duration (number of days)">
+              <input formControlName="duration" mdbInputDirective mdbValidate [validateSuccess]="true"
+                [validateError]="true" type="text" id="duration" class="form-control form-control-sm input-border"
+                placeholder="Duration (number of days)">
 
               <!-- VALIDATION -->
-              <mdb-error *ngIf="validateInput('duration', '').invalid && (validateInput('duration', '').dirty || validateInput('duration', '').touched)">
+              <mdb-error
+                *ngIf="validateInput('duration', '').invalid && (validateInput('duration', '').dirty || validateInput('duration', '').touched)">
                 <span>Input invalid</span>
               </mdb-error>
             </div>
@@ -49,25 +51,26 @@
             <div class="row">
               <div class="col-12 col-md-6">
                 <div class="md-form form-sm mt-1rem mb-0rem">
-                  <input mask="comma_separator.0" formControlName="deltaSupply" mdbInputDirective mdbValidate
-                    [validateSuccess]="true" [validateError]="true" type="text" id="supply" class="form-control form-control-sm input-border"
-                    placeholder="Supply">
+                  <input formControlName="divisibility" mdbInputDirective mdbValidate [validateSuccess]="true"
+                    [validateError]="true" type="text" id="divisibility" maxlength="1" id="divisibility{{errorDivisibility}}"
+                    class="form-control form-control-sm input-border" placeholder="Divisibility">
 
                   <!-- VALIDATION -->
-                  <mdb-error *ngIf="validateInput('deltaSupply', '').invalid && (validateInput('deltaSupply', '').dirty || validateInput('deltaSupply', '').touched)">
+                  <mdb-error
+                    *ngIf="validateInput('divisibility', '').invalid && (validateInput('divisibility', '').dirty || validateInput('divisibility', '').touched) || invalidDivisibility">
                     <span>Input invalid</span>
                   </mdb-error>
                 </div>
               </div>
-
               <div class="col-12 col-md-6">
                 <div class="md-form form-sm mt-1rem mb-0rem">
-                  <input formControlName="divisibility" mdbInputDirective mdbValidate [validateSuccess]="true"
-                    [validateError]="true" type="text" id="divisibility" maxlength="1" class="form-control form-control-sm input-border"
-                    placeholder="Divisibility">
+                  <input formControlName="deltaSupply" mdbInputDirective mdbValidate currencyMask [options]="optionsSuply"
+                    [validateSuccess]="true" [validateError]="true" type="text" id="supply" maxlength="32"
+                    class="form-control form-control-sm input-border input-amount" placeholder="Supply">
 
                   <!-- VALIDATION -->
-                  <mdb-error *ngIf="validateInput('divisibility', '').invalid && (validateInput('divisibility', '').dirty || validateInput('divisibility', '').touched)">
+                  <mdb-error
+                    *ngIf="validateInput('deltaSupply', '').invalid && (validateInput('deltaSupply', '').dirty || validateInput('deltaSupply', '').touched)">
                     <span>Input invalid</span>
                   </mdb-error>
                 </div>
@@ -120,13 +123,14 @@
         <div class="row">
           <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto">
             <div class="md-form form-sm mt-1rem mb-0rem">
-              <input [maxlength]="configurationForm.passwordWallet.maxLength" [minlength]="configurationForm.passwordWallet.minLength"
-                formControlName="password" required mdbInputDirective mdbValidate [validateSuccess]="true"
-                [validateError]="true" type="password" id="password" class="form-control form-control-sm input-border"
-                placeholder="Enter password">
+              <input [maxlength]="configurationForm.passwordWallet.maxLength"
+                [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" required
+                mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password"
+                id="password" class="form-control form-control-sm input-border" placeholder="Enter password">
 
               <!-- VALIDATION -->
-              <mdb-error *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
+              <mdb-error
+                *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
                 <span>Input invalid</span>
               </mdb-error>
             </div>
@@ -136,16 +140,17 @@
         <!-- BUTTONS -->
         <div class="row">
           <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-            <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
-              size="md" (click)="clearForm()">
+            <button [disabled]="insufficientBalance" mdbBtn type="button" rounded="true" mdbWavesEffect
+              class="f-w-600 background-btn pl-2rem pr-2rem" size="md" (click)="clearForm()">
               <span class="fs-1-2em color-white">CLEAR</span>
             </button>
           </div>
 
           <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-            <button mdbBtn type="submit" rounded="true" [disabled]="!mosaicForm.valid" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
-              size="md">
-              <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true" *ngIf="blockSend"></span>
+            <button mdbBtn type="submit" rounded="true" [disabled]="!mosaicForm.valid || blockButton" mdbWavesEffect
+              class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
+              <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
+                *ngIf="blockSend"></span>
               <span class="fs-1-2em color-white">CREATE</span>
             </button>
           </div>

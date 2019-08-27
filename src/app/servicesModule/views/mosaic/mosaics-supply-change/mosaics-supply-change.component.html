@@ -52,9 +52,9 @@
         <div class="row mt-05rem">
           <div class="col-11 mx-auto">
             <div class="md-form form-sm mt-1rem mb-0rem">
-              <input mask="comma_separator.0" formControlName="deltaSupply" mdbInputDirective mdbValidate
-                [validateSuccess]="true" [validateError]="true" type="text" id="deltaSupply"
-                class="form-control form-control-sm input-border" placeholder="Quantity of increase/decrease">
+              <input formControlName="deltaSupply" currencyMask [options]="optionsSupply" mdbInputDirective mdbValidate
+                [validateSuccess]="true" [validateError]="true" type="text" id="deltaSupply" maxlength="32"
+                class="form-control form-control-sm input-border input-amount" placeholder="Quantity of increase/decrease">
 
               <mdb-error
                 *ngIf="validateInput('deltaSupply', '').invalid && (validateInput('deltaSupply', '').dirty || validateInput('deltaSupply', '').touched)">
@@ -67,7 +67,7 @@
 
         <!-- FEE -->
         <div class="row ml-01rem">
-          <div class="col-11 col-md-10 col-lg-8 mx-auto">
+          <div class="col-11 mx-auto">
             <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
               <div class="row">
                 <div class="col-12">
@@ -79,9 +79,9 @@
           </div>
         </div>
 
-        <!-- RENTAL FEE -->
+        <!-- RENTAL FEE
         <div class="row ml-01rem">
-          <div class="col-11 col-md-10 col-lg-8 mx-auto">
+          <div class="col-11 mx-auto">
             <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
               <div class="row">
                 <div class="col-12">
@@ -91,7 +91,7 @@
               </div>
             </div>
           </div>
-        </div>
+        </div>-->
 
         <!-- Password -->
         <div class="row">
@@ -143,7 +143,7 @@
                 <span class="description-information">Supply: </span>
               </div>
               <div class="col-6 col-sm-8 col-md-6 col-lg-5 col-xl-8">
-                <span class="description-information color-orange">{{supply}}</span>
+                <span class="description-information color-dark-green">{{supply}}</span>
               </div>
             </div>
           </div>
@@ -154,7 +154,7 @@
                 <span class="description-information">Duration: </span>
               </div>
               <div class="col-6 col-sm-8 col-md-6 col-lg-5 col-xl-8">
-                <span class="description-information color-orange">{{duration}}</span>
+                <span class="description-information color-dark-green">{{duration}}</span>
               </div>
             </div>
           </div>
@@ -165,7 +165,7 @@
                 <span class="description-information">Divisibility: </span>
               </div>
               <div class="col-6 col-sm-8 col-md-6 col-lg-5 col-xl-8">
-                <span class="description-information color-orange">{{divisibility}}</span>
+                <span class="description-information color-dark-green">{{divisibility}}</span>
               </div>
             </div>
           </div>

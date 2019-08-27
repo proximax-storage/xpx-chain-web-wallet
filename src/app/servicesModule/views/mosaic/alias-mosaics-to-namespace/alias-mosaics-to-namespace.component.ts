@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Validators, FormGroup, FormBuilder, AbstractControl } from '@angular/forms';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { Router } from '@angular/router';
-import { NamespaceId, MosaicId, UInt64 } from 'tsjs-xpx-chain-sdk';
+import { NamespaceId, MosaicId, UInt64, AliasActionType } from 'tsjs-xpx-chain-sdk';
 import { AppConfig } from '../../../../config/app.config';
 import { MosaicService } from '../../../../servicesModule/services/mosaic.service';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
@@ -20,7 +20,7 @@ import { Subscription } from 'rxjs';
 })
 export class AliasMosaicsToNamespaceComponent implements OnInit {
 
-  @BlockUI() blockUI: NgBlockUI;
+  arrayNamespaceStorage: NamespaceStorageInterface[] = [];
   currentBlock: number = 0;
   moduleName = 'Mosaics';
   componentName = 'LINK TO NAMESPACE';
@@ -28,6 +28,7 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
   configurationForm: ConfigurationForm = {};
   linkingNamespaceToMosaic: FormGroup;
   blockSend: boolean = false;
+  loading = false;
   mosaicSelect: Array<object> = [
     {
       value: '1',
@@ -44,6 +45,20 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
       disabled: true
     }
   ];
+
+  typeAction: any = [{
+    value: AliasActionType.Link,
+    label: 'Link',
+    selected: true,
+    disabled: false
+  }, {
+    value: AliasActionType.Unlink,
+    label: 'Unlink',
+    selected: false,
+    disabled: false
+  }];
+
+
   transactionSigned: any;
   subscribe = ['transactionStatus'];
   subscription: Subscription[] = [];
@@ -62,7 +77,8 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
   ngOnInit() {
     this.configurationForm = this.sharedService.configurationForm;
     this.createForm();
-    this.getNameNamespace();
+    // this.getNameNamespace();
+    this.getNamespaces();
     this.getMosaic();
 
     this.subscription.push(this.dataBridge.getBlock().subscribe(next => {
@@ -72,9 +88,60 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
 
   ngOnDestroy(): void {
     this.subscription.forEach(subscription => {
-      // console.log(subscription);
       subscription.unsubscribe();
     });
+  }
+
+
+  async buildSelectNamespace($event = null) {
+    console.log('--arrayNamespaceStorage--', this.arrayNamespaceStorage);
+    if ($event !== null) {
+      /*this.linkingNamespaceToMosaic.get('mosaic').enable();
+      this.linkingNamespaceToMosaic.get('namespace').enable();
+      this.linkingNamespaceToMosaic.get('password').enable();*/
+
+      console.log('--arrayNamespaceStorage--', this.arrayNamespaceStorage);
+      const namespaceSelect = [];
+      this.loading = true;
+      if (this.arrayNamespaceStorage && this.arrayNamespaceStorage.length > 0) {
+        for (let namespaceStorage of this.arrayNamespaceStorage) {
+          if (namespaceStorage.namespaceInfo) {
+            console.log('INFO ---> ', namespaceStorage, '\n\n');
+            let isLinked = false;
+            let disabled = false;
+            let label = await this.namespaceService.getNameParentNamespace(namespaceStorage);
+            const name = label;
+            const type = namespaceStorage.namespaceInfo.alias.type;
+            if (type === 2) {
+              isLinked = true;
+              disabled = (this.linkingNamespaceToMosaic.get('typeAction').value === 0) ? true : false;
+              label = `${label}- (Linked to address)`;
+            } else if (type === 1) {
+              isLinked = true;
+              disabled = true;
+              label = `${label}- (Linked to mosaic)`;
+            } else {
+              disabled = (this.linkingNamespaceToMosaic.get('typeAction').value === 1) ? true : false;
+            }
+
+            namespaceSelect.push({
+              label: `${label}`,
+              value: `${name}`,
+              selected: false,
+              disabled: disabled
+            });
+          }
+        };
+      }
+
+      this.namespaceSelect = namespaceSelect.sort(function (a: any, b: any) {
+        return a.label === b.label ? 0 : +(a.label > b.label) || -1;
+      });
+
+      this.loading = false;
+    } else {
+      this.linkingNamespaceToMosaic.get('typeAction').setValue(AliasActionType.Link);
+    }
   }
 
   /**
@@ -85,10 +152,19 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
   createForm() {
     this.linkingNamespaceToMosaic = this.fb.group({
       namespace: ['', [Validators.required]],
+      typeAction: [AliasActionType.Link, [
+        Validators.required
+      ]],
       mosaic: ['', [Validators.required]],
-      password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]]
+      password: ['', [
+        Validators.required,
+        Validators.minLength(this.configurationForm.passwordWallet.minLength),
+        Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
+      ]]
     });
   }
+
+
 
   clearForm() {
     this.linkingNamespaceToMosaic.reset({
@@ -96,12 +172,23 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
       mosaic: '',
       password: ''
     },
-    {
-      emitEvent: false
-    });
-    // this.linkingNamespaceToMosaic.get('namespace').patchValue('1');
-    // this.linkingNamespaceToMosaic.get('mosaic').patchValue('1');
-    // this.linkingNamespaceToMosaic.get('password').patchValue('');
+      {
+        emitEvent: false
+      });
+  }
+
+  /**
+   *
+   *
+   * @memberof AliasMosaicsToNamespaceComponent
+   */
+  getNamespaces() {
+    this.namespaceService.getNamespaceChanged().subscribe(
+      async (arrayNamespaceStorage: NamespaceStorageInterface[]) => {
+        this.arrayNamespaceStorage = arrayNamespaceStorage;
+        this.buildSelectNamespace(this.linkingNamespaceToMosaic.get('typeAction').value);
+      }
+    );
   }
 
   /**
@@ -165,7 +252,6 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
 
         this.namespaceSelect = namespaceSelect;
       }, error => {
-        this.blockUI.stop();
         this.router.navigate([AppConfig.routes.home]);
         this.sharedService.showError('', 'Please check your connection and try again');
       }));
@@ -177,15 +263,14 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
    * @memberof LinkingNamespaceToMosaicComponent
    */
   async getMosaic() {
-
-    this.mosaicService.getMosaicChanged().subscribe(
+    this.subscription.push(this.mosaicService.getMosaicChanged().subscribe(
       async next => {
         const data = await this.mosaicService.filterMosaics();
         console.log(data);
         //this.mosaicSelect.slice(0);
         const mosaicsSelect: any = [{
           value: '1',
-          label: 'Enter here',
+          label: 'Select',
           selected: true,
           disabled: true
         }];
@@ -237,7 +322,7 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
         }
         this.mosaicSelect = mosaicsSelect;
       }
-    );
+    ));
   }
 
   /**
@@ -246,7 +331,7 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
    * @memberof AliasMosaicsToNamespaceComponent
    */
   getTransactionStatus() {
-    this.subscribe['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
+    this.subscription.push(this.dataBridge.getTransactionStatus().subscribe(
       statusTransaction => {
         if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
           const statusTransactionHash = (statusTransaction['type'] === 'error') ? statusTransaction['data'].hash : statusTransaction['data'].transactionInfo.hash;
@@ -265,7 +350,7 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
           }
         }
       }
-    );
+    ));
   }
 
   /**
@@ -290,14 +375,12 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
   }
 
 
-  get input() { return this.linkingNamespaceToMosaic.get('password'); }
-
   /**
    *
    *
    * @memberof AliasMosaicsToNamespaceComponent
    */
-  send() {
+  sendTransaction() {
     if (this.linkingNamespaceToMosaic.valid && !this.blockSend) {
       this.blockSend = true;
       const common = {
@@ -306,17 +389,22 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
       }
 
       if (this.walletService.decrypt(common)) {
+        const action = this.linkingNamespaceToMosaic.get('typeAction').value;
         const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
         const namespaceId = new NamespaceId(this.linkingNamespaceToMosaic.get('namespace').value);
         const mosaicId = new MosaicId(this.linkingNamespaceToMosaic.get('mosaic').value);
-        const mosaicSupplyChangeTransaction = this.proximaxProvider.linkingNamespaceToMosaic(0, namespaceId, mosaicId, this.walletService.currentAccount.network);
+        const mosaicSupplyChangeTransaction = this.proximaxProvider.linkingNamespaceToMosaic(
+          action,
+          namespaceId,
+          mosaicId,
+          this.walletService.currentAccount.network
+        );
         const signedTransaction = account.sign(mosaicSupplyChangeTransaction);
         this.transactionSigned = signedTransaction;
         this.proximaxProvider.announce(signedTransaction).subscribe(
           x => {
             this.blockSend = false;
             this.clearForm();
-            this.blockUI.stop(); // Stop blocking
             // this.sharedService.showSuccess('success', 'Transaction sent');
             if (this.subscribe['transactionStatus'] === undefined || this.subscribe['transactionStatus'] === null) {
               this.getTransactionStatus();
@@ -325,7 +413,6 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
           err => {
             this.blockSend = false;
             this.clearForm();
-            this.blockUI.stop(); // Stop blocking
             this.sharedService.showError('', 'An unexpected error has occurred');
           });
       } else {

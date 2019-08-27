@@ -44,8 +44,18 @@ export class CreateMosaicComponent implements OnInit {
   rentalFee = '500000000';
   calculateRentalFee = '';
   currentAccount: AccountsInterface;
-  insuficienteBalance = true;
+  insufficientBalance = true;
   accountInfo: AccountsInfoInterface;
+  deltaSupply: number;
+  invalidDivisibility: boolean;
+  blockButton: boolean;
+  errorDivisibility: string;
+  optionsSuply = {
+    prefix: '',
+    thousands: ',',
+    decimal: '.',
+    precision: '0'
+  };
 
   constructor(
     private fb: FormBuilder,
@@ -68,6 +78,31 @@ export class CreateMosaicComponent implements OnInit {
     this.validateBalance();
     this.mosaicForm.get('duration').valueChanges.subscribe(next => {
       this.durationByBlock = this.transactionService.calculateDurationforDay(next).toString();
+    });
+    this.mosaicForm.get('divisibility').valueChanges.subscribe(next => {
+      if (next > 6) {
+        this.errorDivisibility = '-invalid';
+        this.invalidDivisibility = true;
+        this.blockButton = true;
+      } else {
+        this.optionsSuply = {
+          prefix: '',
+          thousands: ',',
+          decimal: '.',
+          precision: next
+        };
+        this.errorDivisibility = '';
+        this.blockButton = false;
+        this.invalidDivisibility = false;
+      }
+      this.mosaicForm.get('deltaSupply').setValue('');
+    });
+    this.mosaicForm.get('deltaSupply').valueChanges.subscribe(next => {
+      if (!this.mosaicForm.get('divisibility').value) {
+        this.deltaSupply = parseInt(next);
+      } else {
+        this.deltaSupply = parseInt(this.transactionService.addZeros(this.mosaicForm.get('divisibility').value, next));
+      }
     });
   }
 
@@ -113,9 +148,9 @@ export class CreateMosaicComponent implements OnInit {
       supplyMutable: false,
       levyMutable: false
     },
-    {
-      emitEvent: false
-    });
+      {
+        emitEvent: false
+      });
   }
 
   send() {
@@ -141,8 +176,8 @@ export class CreateMosaicComponent implements OnInit {
           parseFloat(this.durationByBlock),
           this.walletService.currentAccount.network
         );
-        const quatityZeros = this.transactionService.addZeros(this.mosaicForm.get('divisibility').value);
-        const mosaicSupply = parseInt(`${this.mosaicForm.get('deltaSupply').value}${quatityZeros}`);
+
+        const mosaicSupply = this.deltaSupply;
 
         const mosaicSupplyChangeTransaction = this.proximaxProvider.buildMosaicSupplyChange(
           mosaicDefinitionTransaction.mosaicId,
@@ -245,12 +280,12 @@ export class CreateMosaicComponent implements OnInit {
       const mosaicXPX = this.accountInfo.accountInfo.mosaics.find(x => x.id.toHex() === environment.mosaicXpxInfo.id);
       if (mosaicXPX) {
         if (mosaicXPX.amount.compact() >= Number(this.rentalFee)) {
-          this.insuficienteBalance = false;
+          this.insufficientBalance = false;
           this.mosaicForm.enable();
           return;
         }
       }
-      this.insuficienteBalance = true;
+      this.insufficientBalance = true;
     }
   }
 

@@ -1,6 +1,7 @@
 <div class="container-fluid">
   <div class="row">
     <div class="col-12 col-sm-11 mx-auto">
+      <!-- BALANCE & TRANSACTIONS -->
       <div class="row mt-1rem mb-2rem animated fadeIn">
         <div class="col-12 col-md-7 col-lg-7 mt-2rem d-flex align-items-center">
           <div class="row">
@@ -9,6 +10,8 @@
                 <img src="assets/images/img/icon-qr-code-proximax-sirius-wallet.svg" alt="" width="60">
               </figure>
             </div>
+
+            <!-- DEFAULT ACCOUNT & BALANCE -->
             <div class="col-12 col-sm-10 col-md-9 col-lg-10">
               <div class="d-flex flex-column justify-content-between">
                 <span class="fs-09rem color-blue-intermedio">
@@ -16,12 +19,30 @@
                   <a [routerLink]="[viewDetailsAccount+currentAccount.name]"
                     class="cursor-p">{{currentAccount.name}}</a>
                 </span>
+
+                <!-- BALANCE E ICONO XPX  -->
                 <div class="row">
-                  <div class="col-11">
+                  <div class="col-2 col-md-2 col-lg-1">
                     <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
-                      width="20" alt=""><span class="fs-1rem">&nbsp;{{vestedBalance}} | USD 0.00</span>
+                      width="20" alt="">
+                  </div>
+
+                  <div class="col-10 col-md-10 col-lg-11">
+                    <span class="fs-1rem">&nbsp;{{vestedBalance}}</span>
                   </div>
                 </div>
+
+                <!-- BALANCE USD  -->
+                <div class="row">
+                  <div class="col-2 col-md-2 col-lg-1">
+                  </div>
+
+                  <div class="col-10 col-md-10 col-lg-11">
+                    <span class="fs-1rem">&nbsp;USD 0.00</span>
+                  </div>
+                </div>
+
+                <!-- Current address -->
                 <div class="row d-flex align-items-center">
                   <div class="d-flex justify-content-between">
                     <div class="col-11">
@@ -38,6 +59,8 @@
             </div>
           </div>
         </div>
+
+        <!-- TRANSACTIONS CONFIRMED & UNCONFIRMED -->
         <div class="col-12 col-md-5 col-lg-5 mt-2rem">
           <div class="d-flex flex-column">
             <div class="d-flex justify-content-center">
@@ -62,6 +85,7 @@
         </div>
       </div>
 
+      <!-- FIELD SEARCH -->
       <div class="row">
         <div class="col-12 col-sm-10 mx-auto">
           <input [(ngModel)]="searchTransaction" type="text" autocomplete="off" id="searchTransaction"
@@ -83,14 +107,15 @@
         </div>
       </div>
 
+      <!-- TABLE -->
       <div class="row mt-05rem">
         <div class="col-12 mx-auto">
           <div class="table-responsive table-hover">
-            <table mdbTable #tableEl="mdbTable" id="mdbTable" striped="true" infiniteScroll [infiniteScrollDistance]="2"
-              (scrolled)="onScroll()" class="table table-hover table-bordered table-hover table-sm z-depth-0"
-              cellspacing="0" width="100%" borderless="true">
+            <table mdbTable #tableEl="mdbTable" id="mdbTable" striped="true"
+              class="table table-hover table-bordered table-hover table-sm z-depth-0" cellspacing="0" width="100%"
+              borderless="true">
 
-              <!--Table head-->
+              <!--TABLE HEAD-->
               <thead>
                 <tr class="header-backg">
                   <ng-container *ngFor="let head of headElements; let i = index">
@@ -98,11 +123,10 @@
                   </ng-container>
                 </tr>
               </thead>
-              <!--Table head-->
 
-              <!--Table body-->
+              <!--TABLE BODY-->
               <tbody class="background-white">
-                <ng-container *ngFor="let el of transactions; let i = index">
+                <ng-container *ngFor="let el of transactions | paginate: { itemsPerPage: 10, currentPage: p }">
                   <tr class="cursor-p" (click)="dataSelected = el; basicModal.show();">
                     <!-- Type transaction -->
                     <th class="th-sm fs-0-8-rem" scope="row description-dark-green">{{el.nameType}}</th>
@@ -139,6 +163,7 @@
                     </ng-template>
                   </tr>
                 </ng-container>
+
                 <ng-container *ngIf="transactions.length === 0 && !searching">
                   <tr>
                     <td colspan="6" class="txt-a-center">nothing to show</td>
@@ -147,6 +172,10 @@
               </tbody>
             </table>
           </div>
+        </div>
+
+        <div class="col-12 d-flex justify-content-center mx-auto">
+          <pagination-controls (pageChange)="p = $event"></pagination-controls>
         </div>
       </div>
 
