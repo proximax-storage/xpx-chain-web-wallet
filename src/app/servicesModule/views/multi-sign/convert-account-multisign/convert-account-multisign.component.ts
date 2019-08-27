@@ -246,9 +246,6 @@ export class ConvertAccountMultisignComponent implements OnInit {
       this.currentAccountToConvert = account.value;
       this.subscribeAccount = this.walletService.getAccountsInfo$().subscribe(
         async accountInfo => {
-          console.log('accountInfo')
-
-
           this.validateAccount(account.value.name)
         });
     }

@@ -22,7 +22,7 @@ export class MultiSignatureContractComponent implements OnInit {
   routes = {
     backToService: `/${AppConfig.routes.service}`,
     convertToAccount: `/${AppConfig.routes.convertToAccountMultisign}`,
-    viewDetails: `/${AppConfig.routes.account}/`
+    editAccount: `/${AppConfig.routes.editAccountMultisign}/`
   };
   subscription: Subscription[] = [];
   currentAccounts: AccountsInterface[] = []

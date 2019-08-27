@@ -9,7 +9,7 @@ export const AppConfig: Config = {
     apostille: 'apostille',
     audiApostille: 'audit-apostille',
     auth: 'auth',
-    convertToAccountMultisign:'convert-account-multisign',
+    convertToAccountMultisign: 'convert-account-multisign',
     aliasAddressToNamespace: 'alias-address-to-namespace',
     createMosaic: 'create-mosaic',
     createMultisignature: 'create-multisignature-contract',
@@ -19,6 +19,7 @@ export const AppConfig: Config = {
     createWallet: 'create-wallet',
     createAccount: 'create-account',
     dashboard: 'dashboard',
+    editAccountMultisign: 'edit-account-multisign',
     editMultisignatureContract: 'edit-multisignature-contract',
     explorer: 'explorer',
     extendNamespace: 'extend-namespace',
@@ -56,7 +57,7 @@ export interface Config {
     apostille: string;
     audiApostille: string;
     auth: string;
-    convertToAccountMultisign:string;
+    convertToAccountMultisign: string;
     aliasAddressToNamespace: string;
     createMosaic: string;
     createMultisignature: string;
@@ -66,6 +67,7 @@ export interface Config {
     createWallet: string;
     createAccount: string;
     dashboard: string;
+    editAccountMultisign: string;
     editMultisignatureContract: string;
     explorer: string;
     extendNamespace: string;
