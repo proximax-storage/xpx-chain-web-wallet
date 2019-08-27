@@ -19,6 +19,9 @@ import { ViewAllAccountsComponent } from './views/account/view-all-accounts/view
 import { AccountCreatedComponent } from './views/account/account-created/account-created.component';
 import { SelectionAccountTypeComponent } from './views/account/selection-account-creation-type/selection-account-creation-type.component';
 import { AddContactsComponent } from './views/address-book/add-contacts/add-contacts.component';
+import { CreateMultiSignatureComponent } from './views/multi-sign/components/create-multi-signature/create-multi-signature.component';
+import { ConvertAccountMultisignComponent } from './views/multi-sign/convert-account-multisign/convert-account-multisign.component';
+import { EditAccountMultisignComponent } from './views/multi-sign/edit-account-multisign/edit-account-multisign.component';
 
 const routes: Routes = [
   {
@@ -211,6 +214,26 @@ const routes: Routes = [
         description: 'multiSign.text',
         override: true,
       }
+    }
+  }, {
+    path: AppConfig.routes.convertToAccountMultisign,
+    component: ConvertAccountMultisignComponent,
+    data: {
+      meta: {
+        title: 'convertToAccountMultisign.title',
+        description: 'convertToAccountMultisign.text',
+        override: true,
+      }
+    }
+  },{
+    path: `${AppConfig.routes.editAccountMultisign}/:name`,
+    component: EditAccountMultisignComponent,
+    data: {
+      meta: {
+        title: 'editAccountMultisign.title',
+        description: 'editAccountMultisign.text',
+        override: true,
+      },
     }
   }, {
     path: AppConfig.routes.LinkingNamespaceMosaic,

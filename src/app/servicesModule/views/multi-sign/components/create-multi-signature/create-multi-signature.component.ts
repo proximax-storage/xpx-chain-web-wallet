@@ -84,7 +84,7 @@ export class CreateMultiSignatureComponent implements OnInit {
     private multiSignService: MultiSignService
 
   ) {
-    this.headElements = ['Address', 'Action', 'Remove'];
+    this.headElements = ['Address', 'Remove'];
     this.configurationForm = this.sharedService.configurationForm;
     this.blockSend = false;
     this.ban = false;
@@ -728,6 +728,10 @@ export class CreateMultiSignatureComponent implements OnInit {
       const cosignatoryList = this.cosignatoryList.filter(item => item.id.plain() !== id.plain())
       this.setCosignatoryList(cosignatoryList);
     } else {
+
+      this.cosignatoryList.filter(item => item.action === "edit").map((item: CosignatoryList) => {
+        item.type = 3;
+      });
       this.cosignatoryList.filter(item => item.id.plain() === id.plain()).map((item: CosignatoryList) => {
         item.type = (item.type === 3) ? 2 : 3
       });

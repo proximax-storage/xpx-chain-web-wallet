@@ -60,7 +60,8 @@ export class WalletService {
       iv: data.iv,
       name: data.nameAccount,
       network: data.network,
-      publicAccount: data.publicAccount
+      publicAccount: data.publicAccount,
+      isMultisign: null
     }
   }
 
@@ -114,6 +115,36 @@ export class WalletService {
     myAccounts.forEach(element => {
       if (element.name === oldName) {
         element.name = newName;
+      }
+    });
+
+    this.currentWallet.accounts = myAccounts;
+    othersWallet.push({
+      name: this.currentWallet.name,
+      accounts: myAccounts
+    });
+
+    localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(othersWallet));
+  }
+
+  /**
+*
+*
+* @param {string} name
+* @param {string} isMultisig
+* @memberof WalletService
+*/
+  changeIsMultiSign(name: string, isMultisig: MultisigAccountInfo) {
+    const myAccounts: AccountsInterface[] = Object.assign(this.currentWallet.accounts);
+    const othersWallet: CurrentWalletInterface[] = this.getWalletStorage().filter(
+      (element: any) => {
+        return element.name !== this.currentWallet.name;
+      }
+    );
+    myAccounts.forEach((element: AccountsInterface) => {
+      if (element.name === name) {
+        element.isMultisign = isMultisig
+        // this.setCurrentAccount$(element);
       }
     });
 
@@ -509,6 +540,7 @@ export interface AccountsInterface {
   name: string;
   network: number;
   publicAccount: PublicAccount;
+  isMultisign: MultisigAccountInfo;
 }
 
 
