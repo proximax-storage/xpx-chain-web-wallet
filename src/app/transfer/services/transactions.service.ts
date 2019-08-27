@@ -519,8 +519,7 @@ export class TransactionsService {
 
           this.walletService.setAccountsInfo(accountsInfo, true);
           counter = counter + 1;
-          if (accounts.length === counter) {
-            console.log('FIRE----------------> ', mosaicsIds);
+          if (accounts.length === counter && mosaicsIds.length > 0) {
             this.mosaicServices.searchInfoMosaics(mosaicsIds);
           }
         }, error => {

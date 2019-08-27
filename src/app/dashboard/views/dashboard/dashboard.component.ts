@@ -225,7 +225,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     // Confirmed transactions
     this.proximaxProvider.getTransactionsFromAccountId(account.publicAccount, id).pipe(first()).subscribe(
       transactions => {
-        console.log('ALL TRANSACTIONS --> ', transactions);
         if (transactions && transactions.length > 0) {
           transactions.forEach(element => {
             //Sets the data structure of the dashboard

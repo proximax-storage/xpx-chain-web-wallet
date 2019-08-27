@@ -109,22 +109,23 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
             console.log('INFO ---> ', namespaceStorage, '\n\n');
             let isLinked = false;
             let disabled = false;
-            let name = await this.namespaceService.getNameParentNamespace(namespaceStorage);
+            let label = await this.namespaceService.getNameParentNamespace(namespaceStorage);
+            const name = label;
             const type = namespaceStorage.namespaceInfo.alias.type;
             if (type === 2) {
               isLinked = true;
               disabled = (this.linkingNamespaceToMosaic.get('typeAction').value === 0) ? true : false;
-              name = `${name}- (Linked to address)`;
+              label = `${label}- (Linked to address)`;
             } else if (type === 1) {
               isLinked = true;
               disabled = true;
-              name = `${name}- (Linked to mosaic)`;
+              label = `${label}- (Linked to mosaic)`;
             } else {
               disabled = (this.linkingNamespaceToMosaic.get('typeAction').value === 1) ? true : false;
             }
 
             namespaceSelect.push({
-              label: `${name}`,
+              label: `${label}`,
               value: `${name}`,
               selected: false,
               disabled: disabled
@@ -139,7 +140,7 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
 
       this.loading = false;
     } else {
-      this.linkingNamespaceToMosaic.get('typeAction').setValue(AliasActionType.Link, { emitEvent: false });
+      this.linkingNamespaceToMosaic.get('typeAction').setValue(AliasActionType.Link);
     }
   }
 
@@ -185,29 +186,7 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
     this.namespaceService.getNamespaceChanged().subscribe(
       async (arrayNamespaceStorage: NamespaceStorageInterface[]) => {
         this.arrayNamespaceStorage = arrayNamespaceStorage;
-        this.buildSelectNamespace();
-        /* console.log('--arrayNamespaceStorage--', arrayNamespaceStorage);
-         const namespaceSelect = [];
-         if (arrayNamespaceStorage && arrayNamespaceStorage.length > 0) {
-           for (let namespaceStorage of arrayNamespaceStorage) {
-             if (namespaceStorage.namespaceInfo) {
-               console.log('INFO ---> ', namespaceStorage, '\n\n');
-               const name = await this.namespaceService.getNameParentNamespace(namespaceStorage);
-               const disabled = (namespaceStorage.namespaceInfo.alias.type === 0) ? false : true;
-               const linked = (disabled) ? ' - Linked' : '';
-               namespaceSelect.push({
-                 label: `${name}${linked}`,
-                 value: `${name}`,
-                 selected: false,
-                 disabled: false
-               });
-             }
-           };
-         }
-
-         this.namespaceSelect = namespaceSelect.sort(function (a: any, b: any) {
-           return a.label === b.label ? 0 : +(a.label > b.label) || -1;
-         });*/
+        this.buildSelectNamespace(this.linkingNamespaceToMosaic.get('typeAction').value);
       }
     );
   }

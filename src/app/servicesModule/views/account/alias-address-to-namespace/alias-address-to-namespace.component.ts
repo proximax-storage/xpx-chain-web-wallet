@@ -83,9 +83,9 @@ export class AliasAddressToNamespaceComponent implements OnInit {
   async buildSelectNamespace($event = null) {
     console.log($event);
     if ($event !== null) {
-     /* this.LinkToNamespaceForm.get('address').enable();
-      this.LinkToNamespaceForm.get('namespace').enable();
-      this.LinkToNamespaceForm.get('password').enable();*/
+      /* this.LinkToNamespaceForm.get('address').enable();
+       this.LinkToNamespaceForm.get('namespace').enable();
+       this.LinkToNamespaceForm.get('password').enable();*/
 
       console.log('--arrayNamespaceStorage--', this.arrayNamespaceStorage);
       const namespaceSelect = [];
@@ -96,22 +96,23 @@ export class AliasAddressToNamespaceComponent implements OnInit {
             console.log('INFO ---> ', namespaceStorage, '\n\n');
             let isLinked = false;
             let disabled = false;
-            let name = await this.namespaceService.getNameParentNamespace(namespaceStorage);
+            let label = await this.namespaceService.getNameParentNamespace(namespaceStorage);
+            const name = label;
             const type = namespaceStorage.namespaceInfo.alias.type;
             if (type === 2) {
               isLinked = true;
               disabled = (this.LinkToNamespaceForm.get('typeAction').value === 0) ? true : false;
-              name = `${name}- (Linked to address)`;
+              label = `${label}- (Linked to address)`;
             } else if (type === 1) {
               isLinked = true;
               disabled = true;
-              name = `${name}- (Linked to mosaic)`;
+              label = `${label}- (Linked to mosaic)`;
             } else {
               disabled = (this.LinkToNamespaceForm.get('typeAction').value === 1) ? true : false;
             }
 
             namespaceSelect.push({
-              label: `${name}`,
+              label: `${label}`,
               value: `${name}`,
               selected: false,
               disabled: disabled
@@ -126,7 +127,7 @@ export class AliasAddressToNamespaceComponent implements OnInit {
 
       this.loading = false;
     } else {
-      this.LinkToNamespaceForm.get('typeAction').setValue(AliasActionType.Link, { emitEvent: false });
+      this.LinkToNamespaceForm.get('typeAction').setValue(AliasActionType.Link);
     }
   }
 
@@ -184,7 +185,7 @@ export class AliasAddressToNamespaceComponent implements OnInit {
     this.namespaceService.getNamespaceChanged().subscribe(
       async (arrayNamespaceStorage: NamespaceStorageInterface[]) => {
         this.arrayNamespaceStorage = arrayNamespaceStorage;
-        this.buildSelectNamespace();
+        this.buildSelectNamespace(this.LinkToNamespaceForm.get('typeAction').value);
       }
     );
   }
@@ -321,6 +322,8 @@ export class AliasAddressToNamespaceComponent implements OnInit {
 
       if (this.walletService.decrypt(common)) {
         const action = this.LinkToNamespaceForm.get('typeAction').value;
+        console.log(this.LinkToNamespaceForm.get('namespace').value);
+
         const namespaceId = new NamespaceId(this.LinkToNamespaceForm.get('namespace').value);
         const address = Address.createFromRawAddress(this.LinkToNamespaceForm.get('address').value);
         console.log('address', address);
