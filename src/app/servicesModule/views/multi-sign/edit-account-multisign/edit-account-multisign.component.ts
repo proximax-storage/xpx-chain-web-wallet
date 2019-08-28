@@ -41,8 +41,8 @@ export class EditAccountMultisignComponent implements OnInit {
   accountValid: boolean;
   mdbBtnAddCosignatory: boolean;
   cosignatoryList: CosignatoryList[] = [];
-  transactionHttp: TransactionHttp
-  listContact: any = [];
+  transactionHttp: TransactionHttp;
+  listContact: ContactsListInterface[] = [];
   showContacts: boolean;
   isMultisig: boolean;
   searchContact: boolean;
@@ -52,6 +52,7 @@ export class EditAccountMultisignComponent implements OnInit {
   ban: any;
   consginerFirmName: string;
   consginerFirmAccount: any;
+  subscribeAccountContat: Subscription;
 
   constructor(
 
@@ -84,6 +85,7 @@ export class EditAccountMultisignComponent implements OnInit {
     this.booksAddress();
     this.subscribeValueChange();
     this.changeformStatus()
+    this.listContact = this.booksAddress();
     // this.validatorsCosignatory()
     this.selectAccount(this.activateRoute.snapshot.paramMap.get('name'));
 
@@ -96,6 +98,7 @@ export class EditAccountMultisignComponent implements OnInit {
  */
   ngOnDestroy(): void {
     this.subscribeAccount.unsubscribe();
+    
 
   }
 
@@ -167,20 +170,20 @@ export class EditAccountMultisignComponent implements OnInit {
     this.editAccountMultsignForm.controls['cosignatory'].updateValueAndValidity({ emitEvent: false });
   }
 
+
   /**
-*
-*
-* @memberof ConvertAccountMultisignComponent
-*/
-  booksAddress() {
-    const data = this.listContact.slice(0);
-    const bookAddress = this.serviceModuleService.getBooksAddress();
-    this.listContact = [];
+  *
+  *
+  * @memberof ConvertAccountMultisignComponent
+  */
+  booksAddress(): ContactsListInterface[] {
+    const data = []
+    const bookAddress: ContactsListInterface[] = this.serviceModuleService.getBooksAddress();
     if (bookAddress !== undefined && bookAddress !== null) {
       for (let x of bookAddress) {
         data.push(x);
       }
-      this.listContact = data;
+      return data;
     }
   }
 
@@ -192,8 +195,9 @@ export class EditAccountMultisignComponent implements OnInit {
 */
   selectAccount(name: string) {
     this.clearData();
+    this.listContact = this.booksAddress();
     this.currentAccountToConvert = this.walletService.filterAccount(name)
-
+    this.listContact = this.booksAddress().filter(item => item.label !== this.currentAccountToConvert.name)
     this.subscribeAccount = this.walletService.getAccountsInfo$().subscribe(
       async accountInfo => {
         // this.accountInfo = this.walletService.filterAccountInfo(name);
@@ -557,6 +561,13 @@ export class EditAccountMultisignComponent implements OnInit {
       this.btnBlock = false;
     }
   }
+
+  iswalletContact(label: string): boolean {
+    const value: boolean[] = this.listContact.filter(item => item.label === label).map((item: ContactsListInterface) => {
+      return item.walletContact
+    });
+    return value[0];
+  }
   /**
    *
    *
@@ -564,25 +575,64 @@ export class EditAccountMultisignComponent implements OnInit {
    * @memberof CreateMultiSignatureComponent
    */
   async selectContact(event: { label: string, value: string }) {
+    this.editAccountMultsignForm.get('cosignatory').patchValue('', { emitEvent: false, onlySelf: true });
+    // this.editAccountMultsignForm.get('contact').patchValue('', { emitEvent: false, onlySelf: true });
     if (event !== undefined && event.value !== '') {
-      this.searchContact = true;
-      this.editAccountMultsignForm.get('cosignatory').patchValue('', { emitEvent: false, onlySelf: true });
-      this.proximaxProvider.getAccountInfo(Address.createFromRawAddress(event.value)).subscribe((res: AccountInfo) => {
-        this.searchContact = false;
-        if (res.publicKeyHeight.toHex() === '0000000000000000') {
-          this.sharedService.showWarning('', 'you need a public key');
+      if (!this.iswalletContact(event.label)) {
+        this.searchContact = true;
+        this.editAccountMultsignForm.get('cosignatory').patchValue('', { emitEvent: false, onlySelf: true });
+        this.proximaxProvider.getAccountInfo(Address.createFromRawAddress(event.value)).subscribe((res: AccountInfo) => {
+          this.searchContact = false;
+          if (res.publicKeyHeight.toHex() === '0000000000000000') {
+            this.sharedService.showWarning('', 'you need a public key');
+        
+            this.editAccountMultsignForm.get('cosignatory').patchValue('', { emitEvent: false, onlySelf: true });
+            this.editAccountMultsignForm.get('contact').patchValue('', { emitEvent: false, onlySelf: true });
+            // this.showContacts = false;
+          } else {
+            this.editAccountMultsignForm.get('cosignatory').patchValue(res.publicKey, { emitEvent: true })
+            this.editAccountMultsignForm.get('contact').patchValue('', { emitEvent: false, onlySelf: true });
+          }
+        }, err => {
           this.editAccountMultsignForm.get('contact').patchValue('', { emitEvent: false, onlySelf: true });
-          this.editAccountMultsignForm.get('contact').patchValue('', { emitEvent: false, onlySelf: true });
-          // this.showContacts = false;
-        } else {
-          this.editAccountMultsignForm.get('cosignatory').patchValue(res.publicKey, { emitEvent: true })
-          this.editAccountMultsignForm.get('contact').patchValue('', { emitEvent: false, onlySelf: true });
-        }
-      }, err => {
-        this.editAccountMultsignForm.get('contact').patchValue('', { emitEvent: false, onlySelf: true });
-        this.searchContact = false;
-        this.sharedService.showWarning('', 'Address is not valid');
-      })
+          this.searchContact = false;
+          this.sharedService.showWarning('', 'Address is not valid');
+        })
+      } else { 
+        this.subscribeAccountContat = this.walletService.getAccountsInfo$().subscribe(
+          async accountInfo => {
+            if (accountInfo) {
+              const account = this.walletService.filterAccountInfo(event.label);
+              const accountValid = (
+                account !== null &&
+                account !== undefined &&
+                account.accountInfo &&
+                account.accountInfo.publicKey !== "0000000000000000000000000000000000000000000000000000000000000000"
+              );
+              if (this.subscribeAccountContat) {
+                this.subscribeAccountContat.unsubscribe();
+              }
+               if (accountValid){
+                this.editAccountMultsignForm.get('cosignatory').patchValue(account.accountInfo.publicKey, { emitEvent: true })
+                this.editAccountMultsignForm.get('contact').patchValue('', { emitEvent: false, onlySelf: true });
+               }else{
+                this.sharedService.showWarning('', 'you need a public key');
+                this.editAccountMultsignForm.get('contact').patchValue('', { emitEvent: false, onlySelf: true });
+               }
+                
+            } else {
+              this.editAccountMultsignForm.get('contact').patchValue('', { emitEvent: false, onlySelf: true });
+              this.sharedService.showWarning('', 'Address is not valid');
+
+            }
+          }
+        );
+
+
+
+
+
+      }
     }
   }
 
@@ -749,4 +799,10 @@ export interface CosignatoryList {
   type: number,
   disableItem: boolean;
   id: Address;
+}
+
+interface ContactsListInterface {
+  label: string;
+  value: string;
+  walletContact: boolean;
 }
