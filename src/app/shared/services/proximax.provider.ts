@@ -344,6 +344,16 @@ export class ProximaxProvider {
     return this.namespaceHttp.getLinkedMosaicId(namespace);
   }
 
+  /**
+   *
+   *
+   * @param {PublicAccount} publicAccount
+   * @returns
+   * @memberof ProximaxProvider
+   */
+  getAggregateBondedTransactions(publicAccount: PublicAccount) {
+    return this.accountHttp.aggregateBondedTransactions(publicAccount);
+  }
 
   /******************** FIN COW **********************/
 

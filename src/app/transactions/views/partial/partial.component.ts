@@ -1,6 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { AppConfig } from '../../../config/app.config';
 import { PaginationInstance } from 'ngx-pagination';
+import { WalletService, AccountsInfoInterface } from 'src/app/wallet/services/wallet.service';
+import { Subscription } from 'rxjs';
+import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
+import { PublicAccount } from 'tsjs-xpx-chain-sdk';
+import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'app-partial',
@@ -56,10 +61,66 @@ export class PartialComponent implements OnInit {
 
   headElements = ['Status', 'Deadline', 'Fee', 'Account linked to the transaction', 'Hash'];
   objectKeys = Object.keys;
+  subscription: Subscription[] = [];
 
-  constructor() { }
 
+  constructor(
+    private proximaxProvider: ProximaxProvider,
+    private walletService: WalletService
+  ) { }
+
+  /**
+   *
+   *
+   * @memberof PartialComponent
+   */
   ngOnInit() {
+    this.subscription.push(this.walletService.getAccountsInfo$().subscribe(
+      (next: AccountsInfoInterface[]) => {
+        console.log(next);
+        if (next) {
+          const publicsAccounts: PublicAccount[] = [];
+          next.forEach((element: AccountsInfoInterface) => {
+            if (element.multisigInfo && element.multisigInfo.multisigAccounts.length > 0) {
+              // console.log(element.multisigInfo);
+              element.multisigInfo.multisigAccounts.forEach(x => {
+                const publicAccount = this.proximaxProvider.createPublicAccount(x.publicKey, x.address.networkType);
+                publicsAccounts.push(publicAccount);
+              });
+            }
+          });
+
+          console.log('----publicsAccounts----', publicsAccounts);
+          this.getAggregateBondedTransactions(publicsAccounts);
+        }
+      }
+    ));
   }
 
+  /**
+   *
+   *
+   * @memberof PartialComponent
+   */
+  ngOnDestroy(): void {
+    this.subscription.forEach(subscription => {
+      subscription.unsubscribe();
+    });
+  }
+
+  /**
+   *
+   *
+   * @param {PublicAccount} publicAccount
+   * @memberof PartialComponent
+   */
+  getAggregateBondedTransactions(publicsAccounts: PublicAccount[]) {
+    publicsAccounts.forEach(publicAccount => {
+      this.proximaxProvider.getAggregateBondedTransactions(publicAccount).pipe(first()).subscribe(
+        next => {
+          console.log('Get aggregate bonded --->', next);
+        }
+      );
+    });
+  }
 }
