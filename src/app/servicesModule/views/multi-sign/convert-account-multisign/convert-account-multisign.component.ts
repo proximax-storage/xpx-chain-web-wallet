@@ -68,6 +68,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
   btnBlock: boolean;
   blockSend: boolean;
   ban: any;
+  notBalance: boolean;
   constructor(
     private fb: FormBuilder,
     private sharedService: SharedService,
@@ -86,7 +87,9 @@ export class ConvertAccountMultisignComponent implements OnInit {
     this.showContacts = false;
     this.cosignatoryList = [];
     this.isMultisig = false;
+    this.btnBlock = true;
     this.ban = false;
+    this.notBalance = false;
     this.transactionHttp = new TransactionHttp(environment.protocol + "://" + `${this.nodeService.getNodeSelected()}`);
   }
 
@@ -239,7 +242,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
 
   selectAccount($event: Event) {
     console.log("Event")
-    this.mdbBtnAddCosignatory = true;
+    
     this.clearData();
     const account: any = $event;
     if (account !== null && account !== undefined) {
@@ -251,6 +254,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
     }
   }
   validateAccount(name: string) {
+    this.mdbBtnAddCosignatory = true;
     this.accountInfo = this.walletService.filterAccountInfo(name);
     this.accountValid = (
       this.accountInfo !== null &&
@@ -270,8 +274,12 @@ export class ConvertAccountMultisignComponent implements OnInit {
       return this.sharedService.showError('Attention', 'Is Multisig');
 
     //Validate Balance
-    if (!this.accountInfo.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id))
+    if (!this.accountInfo.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id)) {
+      this.notBalance = true;
       return this.sharedService.showError('Attention', 'Insufficient balance');
+    } else {
+      this.notBalance = false;
+    }
     this.publicAccountToConvert = PublicAccount.createFromPublicKey(this.currentAccountToConvert.publicAccount.publicKey, this.currentAccountToConvert.network)
     this.mdbBtnAddCosignatory = false;
   }
@@ -298,8 +306,6 @@ export class ConvertAccountMultisignComponent implements OnInit {
           this.convertAccountMultsignForm.get('minRemovalDelta').value,
           this.multisigCosignatoryModification(this.getCosignatoryList()),
           this.currentAccountToConvert.network);
-        console.log('convertIntoMultisigTransaction', convertIntoMultisigTransaction)
-
         /**
          * Create Bonded
          */
@@ -309,9 +315,9 @@ export class ConvertAccountMultisignComponent implements OnInit {
           this.currentAccountToConvert.network);
         const signedTransaction = this.accountToConvertSign.sign(aggregateTransaction)
 
-        // /**
-        // * Create Hash lock transaction
-        // */
+        /**
+        * Create Hash lock transaction
+        */
         const hashLockTransaction = HashLockTransaction.create(
           Deadline.create(),
           new Mosaic(new MosaicId(environment.mosaicXpxInfo.id), UInt64.fromUint(Number(10000000))),
@@ -393,8 +399,10 @@ export class ConvertAccountMultisignComponent implements OnInit {
   *  @param {SignedTransaction} signedTransaction  - Signed transaction.
   */
   announceAggregateBonded(signedTransaction: SignedTransaction) {
+      
+    this.convertAccountMultsignForm.get('selectAccount').patchValue('', { emitEvent: false, onlySelf: true });
     this.clearData();
-    this.clearForm();
+    // this.clearForm();
     this.transactionHttp.announceAggregateBonded(signedTransaction).subscribe(
       async () => {
         this.getTransactionStatus(signedTransaction)
@@ -505,17 +513,18 @@ export class ConvertAccountMultisignComponent implements OnInit {
     this.showContacts = false;
     this.mdbBtnAddCosignatory = true;
     this.isMultisig = false;
+    this.notBalance = false;
     this.publicAccountToConvert = undefined;
     this.cosignatoryList = [];
     if (custom !== undefined) {
       if (formControl !== undefined) {
-        this.convertAccountMultsignForm.controls[formControl].get(custom).reset();
+        this.convertAccountMultsignForm.controls[formControl].get(custom).reset({ emitEvent: false, onlySelf: true });
         return;
       }
-      this.convertAccountMultsignForm.get(custom).reset();
+      this.convertAccountMultsignForm.get(custom).reset({ emitEvent: false, onlySelf: true });
       return;
     }
-    this.convertAccountMultsignForm.reset();
+    this.convertAccountMultsignForm.reset({ emitEvent: false, onlySelf: true });
     return;
   }
   /**
@@ -525,6 +534,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
 */
   clearData() {
     // this.createMultsignForm.get('selectAccount').patchValue('');
+
     this.convertAccountMultsignForm.get('cosignatory').patchValue('', { emitEvent: false, onlySelf: true });
     this.convertAccountMultsignForm.get('contact').patchValue('', { emitEvent: false, onlySelf: true });
     this.convertAccountMultsignForm.get('minApprovalDelta').patchValue(1, { emitEvent: false, onlySelf: true });
@@ -534,6 +544,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
     this.cosignatoryList = [];
     this.showContacts = false;
     this.mdbBtnAddCosignatory = true;
+    this.notBalance = false;
     this.minApprovaMaxLength = 1;
   }
 

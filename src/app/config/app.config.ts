@@ -12,7 +12,6 @@ export const AppConfig: Config = {
     convertToAccountMultisign: 'convert-account-multisign',
     aliasAddressToNamespace: 'alias-address-to-namespace',
     createMosaic: 'create-mosaic',
-    createMultisignature: 'create-multisignature-contract',
     createNamespace: 'create-namespace',
     createPoll: 'create-poll',
     createTransfer: 'create-transfer',
@@ -20,7 +19,6 @@ export const AppConfig: Config = {
     createAccount: 'create-account',
     dashboard: 'dashboard',
     editAccountMultisign: 'edit-account-multisign',
-    editMultisignatureContract: 'edit-multisignature-contract',
     explorer: 'explorer',
     extendNamespace: 'extend-namespace',
     service: 'services',
@@ -61,7 +59,6 @@ export interface Config {
     convertToAccountMultisign: string;
     aliasAddressToNamespace: string;
     createMosaic: string;
-    createMultisignature: string;
     createNamespace: string;
     createPoll: string;
     createTransfer: string;
@@ -69,7 +66,6 @@ export interface Config {
     createAccount: string;
     dashboard: string;
     editAccountMultisign: string;
-    editMultisignatureContract: string;
     explorer: string;
     extendNamespace: string;
     service: string;

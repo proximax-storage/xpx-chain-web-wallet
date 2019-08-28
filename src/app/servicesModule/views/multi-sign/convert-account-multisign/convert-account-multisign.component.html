@@ -29,20 +29,26 @@
 				<!-- SELECT ACCOUNT TO CONVERT-->
 				<div class="row mt-1rem">
 					<div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto">
-						<div class="md-form form-sm mt-0 mb-0rem">
-							<ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" class="selectWrapper"
-							 [items]="currentAccounts" formControlName="selectAccount" bindLabel="label" bindValue="value" placeholder="Select account to convert"
-							 (change)="selectAccount($event)">
-							</ng-select>
-							<!-- VALIDATION -->
-							<mdb-error class="mt-1rem ml-1rem" *ngIf="validateInput('selectAccount').invalid && (validateInput('selectAccount').dirty || validateInput('selectAccount').touched)">
-								<span>Input invalid</span>
-							</mdb-error>
-						</div>
+
+						<ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" class="selectWrapper"
+						 [items]="currentAccounts" formControlName="selectAccount" bindLabel="label" bindValue="value" placeholder="Select account to convert"
+						 (change)="selectAccount($event)">
+						</ng-select>
+						<!-- VALIDATION -->
+						<mdb-error class="mt-1rem ml-1rem">
+							<span  *ngIf="validateInput('selectAccount').invalid && (validateInput('selectAccount').dirty || validateInput('selectAccount').touched)" class="fs-08rem fw-600 color-error-message">Select account</span>
+
+							<!-- <span *ngIf="notBalance" class="fs-08rem fw-600 color-error-message">Insufficient balance</span> -->
+						</mdb-error>
+
+						<mdb-error class="mt-1rem ml-1rem">
+							
+						</mdb-error>
+
 					</div>
 				</div>
 				<!-- MIN APPROVA  AND  MIN REMOVE -->
-				<div class="row">
+				<div class="row mt-1rem">
 					<div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto">
 						<div class="row padding">
 							<!-- MIN APPROVA -->
@@ -146,7 +152,8 @@
 					<div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto">
 						<div class="row">
 							<!-- COSIGNATORY INPUT-->
-							<div class="col-7 col-sm-8 col-md-9">
+
+							<div class="col-7 col-sm-8 col-md-9  mt-1rem">
 								<div class="md-form form-sm mt-1rem mb-0rem">
 									<input [maxlength]="configurationForm.privateKey.maxLength" [minlength]="configurationForm.privateKey.minLength"
 									 formControlName="cosignatory" required mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
