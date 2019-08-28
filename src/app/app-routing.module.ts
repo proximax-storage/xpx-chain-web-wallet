@@ -36,13 +36,13 @@ const routes: Routes = [
       loadChildren: './dashboard/dashboard.module#DashboardModule'
     }, {
       path: '',
-      loadChildren: './transfer/transfer.module#TransferModule'
+      loadChildren: './transactions/transactions.module#TransactionsModule'
     },
     {
       path: '',
       loadChildren: './servicesModule/services-module.module#ServicesModule'
     },
-  ]
+    ]
   }, {
     path: '**',
     redirectTo: `/${AppConfig.routes.home}`

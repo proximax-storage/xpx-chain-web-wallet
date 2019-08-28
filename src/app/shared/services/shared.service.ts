@@ -39,40 +39,25 @@ export class SharedService {
     private toastrService: ToastService
   ) { }
 
+
   /**
    *
    *
-   * @param {string} typeParam
-   * @param {string} nameParam
-   * @param {string} classParam
-   * @param {string} iconParam
-   * @param {string} linkParam
-   * @param {boolean} viewParam
-   * @param {object} subMenuParam
-   * @returns
+   * @param {MenuInterface} params
+   * @returns {StructureHeader}
    * @memberof SharedService
    */
-  buildHeader(
-    typeParam: 'default' | 'dropdown',
-    nameParam: string,
-    classParam: string,
-    iconParam: string,
-    rolParam: boolean,
-    linkParam: string,
-    viewParam: boolean,
-    subMenuParam: object,
-    selectedParam: boolean
-  ): StructureHeader {
+  buildHeader(params: MenuInterface): StructureHeader {
     return {
-      type: typeParam,
-      name: nameParam,
-      class: classParam,
-      icon: iconParam,
-      rol: rolParam,
-      link: linkParam,
-      show: viewParam,
-      submenu: subMenuParam,
-      selected: selectedParam
+      type: params.type,
+      name: params.name,
+      class: params.class,
+      icon: params.icon,
+      rol: params.rol,
+      link: params.link,
+      show: params.view,
+      submenu: params.subMenu,
+      selected: params.selected
     }
   }
 
@@ -118,6 +103,17 @@ export class SharedService {
 }
 
 
+export interface MenuInterface {
+  type: 'default' | 'dropdown',
+  name: string,
+  class: string,
+  icon: string,
+  rol: boolean,
+  link: string,
+  view: boolean,
+  subMenu: object,
+  selected: boolean
+}
 
 export interface ConfigurationForm {
   address?: {

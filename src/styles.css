@@ -1,13 +1,16 @@
 /* You can add global styles to this file, and also import other style files */
-@import "~@ng-select/ng-select/themes/material.theme.css";
 
-html,
-body {
+@import "~@ng-select/ng-select/themes/material.theme.css";
+html, body {
   margin: 0;
   display: table;
   height: 100%;
   width: 100%;
   font-family: 'Open Sans' !important;
+}
+
+.white-space-pre {
+  white-space: pre;
 }
 
 .overflow-ellipsis-nowrap {
@@ -130,7 +133,6 @@ body {
   margin-bottom: 2rem;
 }
 
-
 .mt-3rem {
   margin-top: 3rem;
 }
@@ -211,14 +213,18 @@ body {
   margin-right: .6rem !important;
 }
 
-/********************* PADDING -*******************************/
+.mr-08rem {
+  margin-right: .8rem !important;
+}
 
+/********************* PADDING -*******************************/
 
 .p-0 {
   padding: 0 !important;
 }
 
 /** TOP **/
+
 .pt-05rem {
   padding-top: .5rem;
 }
@@ -256,6 +262,7 @@ body {
 }
 
 /** BOTTOM **/
+
 .pb-1rem {
   padding-bottom: 1rem;
 }
@@ -274,6 +281,10 @@ body {
 
 .pb-08rem {
   padding-bottom: .8rem;
+}
+
+.pb-3rem {
+  padding-bottom: 3rem;
 }
 
 /** LEFT **/
@@ -299,6 +310,7 @@ body {
 }
 
 /** RIGHT **/
+
 .pr-040rem {
   padding-right: .4rem;
 }
@@ -325,10 +337,14 @@ body {
   border-radius: 25px;
 }
 
-
 /************************* LINE HEIGHT *****************/
+
 .lh-1em {
   line-height: 1em
+}
+
+.lh-01em {
+  line-height: .1em
 }
 
 .line-h-07em {
@@ -356,6 +372,7 @@ body {
 }
 
 /************ HEIGHT *************************/
+
 .h-3em {
   height: 3em;
 }
@@ -380,7 +397,6 @@ body {
   height: 2.6em;
 }
 
-
 .h-2-8em {
   height: 2.8em;
 }
@@ -392,7 +408,6 @@ body {
 .h-4em {
   height: 4em;
 }
-
 
 .h-6em {
   height: 6em;
@@ -439,6 +454,7 @@ body {
 }
 
 /********************** WIDTH **********************/
+
 .w-30px {
   width: 30px !important;
 }
@@ -447,8 +463,8 @@ body {
   width: 100%;
 }
 
-
 /******************** FONT-WEIGHT ****************/
+
 .fw-bold {
   font-weight: bold;
 }
@@ -482,6 +498,7 @@ body {
 }
 
 /******************* FONT-SIZE *******************/
+
 .fs-05rem {
   font-size: 0.5rem !important;
 }
@@ -558,8 +575,8 @@ body {
   font-size: 34px;
 }
 
-
 /****************** TEXT-ALIGN ******************/
+
 .txt-a-center {
   text-align: center;
 }
@@ -573,6 +590,7 @@ body {
 }
 
 /**************************** COLOR *****************************/
+
 .color-dark-green {
   color: #023c42 !important;
 }
@@ -584,7 +602,6 @@ body {
 .green-color {
   color: #35af8d !important;
 }
-
 
 .color-red {
   color: #e90000 !important;
@@ -636,7 +653,6 @@ body {
 
 /**************************** BACKGROUND *****************************/
 
-
 .gray-color-transparent {
   background: #e4e4e473 !important;
 }
@@ -666,8 +682,8 @@ body {
   background: #efefef;
 }
 
-
 /**************************** THEME *****************************/
+
 .icono {
   width: 28px;
   padding-right: 10px;
@@ -675,8 +691,7 @@ body {
   line-height: 18px;
 }
 
-.box-list-account-gray,
-.box-list-account {
+.box-list-account-gray, .box-list-account {
   color: white;
   background: #2aa1b9;
   border-radius: 1rem;
@@ -700,7 +715,6 @@ body {
   overflow: auto;
   overflow-x: hidden;
 }
-
 
 .modal-dialog {
   max-height: 90vh !important;
@@ -745,7 +759,6 @@ body {
   font-style: italic;
 }
 
-
 .item-menu {
   font-size: .8rem !important;
 }
@@ -780,7 +793,6 @@ footer.page-footer .footer-copyright {
   }
 }
 
-
 @media (min-width: 576px) {
   .modal-dialog {
     max-width: 750px !important;
@@ -788,7 +800,6 @@ footer.page-footer .footer-copyright {
     padding-left: 1rem;
   }
 }
-
 
 @media (min-width: 768px) {
   .modal-dialog {
@@ -805,8 +816,8 @@ footer.page-footer .footer-copyright {
 }
 
 /************************* NG SELECT *******************/
-.navbar.navbar-dark .breadcrumb .nav-item .nav-link,
-.navbar.navbar-dark .navbar-nav .nav-item .nav-link {
+
+.navbar.navbar-dark .breadcrumb .nav-item .nav-link, .navbar.navbar-dark .navbar-nav .nav-item .nav-link {
   color: #306EB5 !important;
 }
 
@@ -819,119 +830,42 @@ button.navbar-toggler {
   color: #306EB5 !important;
 }
 
-
-.md-form input[type=text],
-.md-form input[type=password],
-.md-form input[type=email],
-.md-form input[type=url],
-.md-form input[type=time],
-.md-form input[type=date],
-.md-form input[type=datetime-local],
-.md-form input[type=tel],
-.md-form input[type=number],
-.md-form input[type=search-md],
-.md-form input[type=search],
-.md-form textarea.md-textarea,
-input[type=text] {
+.md-form input[type=text], .md-form input[type=password], .md-form input[type=email], .md-form input[type=url], .md-form input[type=time], .md-form input[type=date], .md-form input[type=datetime-local], .md-form input[type=tel], .md-form input[type=number], .md-form input[type=search-md], .md-form input[type=search], .md-form textarea.md-textarea, input[type=text] {
   border: 1px solid #ced4da;
   border-radius: 1.5rem !important;
   padding-left: 1rem;
 }
 
-.md-form input[type=text]:focus:not([readonly]),
-.md-form input[type=password]:focus:not([readonly]),
-.md-form input[type=email]:focus:not([readonly]),
-.md-form input[type=url]:focus:not([readonly]),
-.md-form input[type=time]:focus:not([readonly]),
-.md-form input[type=date]:focus:not([readonly]),
-.md-form input[type=datetime-local]:focus:not([readonly]),
-.md-form input[type=tel]:focus:not([readonly]),
-.md-form input[type=number]:focus:not([readonly]),
-.md-form input[type=search-md]:focus:not([readonly]),
-.md-form input[type=search]:focus:not([readonly]),
-.md-form textarea.md-textarea:focus:not([readonly]),
-.md-form input[type=text]:focus:not([readonly]),
-.md-form input[type=password]:focus:not([readonly]),
-.md-form input[type=email]:focus:not([readonly]),
-.md-form input[type=url]:focus:not([readonly]),
-.md-form input[type=time]:focus:not([readonly]),
-.md-form input[type=date]:focus:not([readonly]),
-.md-form input[type=datetime-local]:focus:not([readonly]),
-.md-form input[type=tel]:focus:not([readonly]),
-.md-form input[type=number]:focus:not([readonly]),
-.md-form input[type=search-md]:focus:not([readonly]),
-.md-form input[type=search]:focus:not([readonly]),
-.md-form textarea.md-textarea:focus:not([readonly]),
-.md-form input[type=text]:focus:not([readonly]),
-.md-form input[type=password]:focus:not([readonly]),
-.md-form input[type=email]:focus:not([readonly]),
-.md-form input[type=url]:focus:not([readonly]),
-.md-form input[type=time]:focus:not([readonly]),
-.md-form input[type=date]:focus:not([readonly]),
-.md-form input[type=datetime-local]:focus:not([readonly]),
-.md-form input[type=tel]:focus:not([readonly]),
-.md-form input[type=number]:focus:not([readonly]),
-.md-form input[type=search-md]:focus:not([readonly]),
-.md-form input[type=search]:focus:not([readonly]),
-.md-form textarea.md-textarea:focus:not([readonly]) {
+.md-form input[type=text]:focus:not([readonly]), .md-form input[type=password]:focus:not([readonly]), .md-form input[type=email]:focus:not([readonly]), .md-form input[type=url]:focus:not([readonly]), .md-form input[type=time]:focus:not([readonly]), .md-form input[type=date]:focus:not([readonly]), .md-form input[type=datetime-local]:focus:not([readonly]), .md-form input[type=tel]:focus:not([readonly]), .md-form input[type=number]:focus:not([readonly]), .md-form input[type=search-md]:focus:not([readonly]), .md-form input[type=search]:focus:not([readonly]), .md-form textarea.md-textarea:focus:not([readonly]), .md-form input[type=text]:focus:not([readonly]), .md-form input[type=password]:focus:not([readonly]), .md-form input[type=email]:focus:not([readonly]), .md-form input[type=url]:focus:not([readonly]), .md-form input[type=time]:focus:not([readonly]), .md-form input[type=date]:focus:not([readonly]), .md-form input[type=datetime-local]:focus:not([readonly]), .md-form input[type=tel]:focus:not([readonly]), .md-form input[type=number]:focus:not([readonly]), .md-form input[type=search-md]:focus:not([readonly]), .md-form input[type=search]:focus:not([readonly]), .md-form textarea.md-textarea:focus:not([readonly]), .md-form input[type=text]:focus:not([readonly]), .md-form input[type=password]:focus:not([readonly]), .md-form input[type=email]:focus:not([readonly]), .md-form input[type=url]:focus:not([readonly]), .md-form input[type=time]:focus:not([readonly]), .md-form input[type=date]:focus:not([readonly]), .md-form input[type=datetime-local]:focus:not([readonly]), .md-form input[type=tel]:focus:not([readonly]), .md-form input[type=number]:focus:not([readonly]), .md-form input[type=search-md]:focus:not([readonly]), .md-form input[type=search]:focus:not([readonly]), .md-form textarea.md-textarea:focus:not([readonly]) {
   box-shadow: none !important;
   border: 2px solid #2BA1B9 !important;
 }
 
-.md-form input[type=text]:focus:not([readonly]),
-.md-form input[type=password]:focus:not([readonly]),
-.md-form input[type=email]:focus:not([readonly]),
-.md-form input[type=url]:focus:not([readonly]),
-.md-form input[type=time]:focus:not([readonly]),
-.md-form input[type=date]:focus:not([readonly]),
-.md-form input[type=datetime-local]:focus:not([readonly]),
-.md-form input[type=tel]:focus:not([readonly]),
-.md-form input[type=number]:focus:not([readonly]),
-.md-form input[type=search-md]:focus:not([readonly]),
-.md-form input[type=search]:focus:not([readonly]),
-.md-form textarea.md-textarea:focus:not([readonly]) {
+.md-form input[type=text]:focus:not([readonly]), .md-form input[type=password]:focus:not([readonly]), .md-form input[type=email]:focus:not([readonly]), .md-form input[type=url]:focus:not([readonly]), .md-form input[type=time]:focus:not([readonly]), .md-form input[type=date]:focus:not([readonly]), .md-form input[type=datetime-local]:focus:not([readonly]), .md-form input[type=tel]:focus:not([readonly]), .md-form input[type=number]:focus:not([readonly]), .md-form input[type=search-md]:focus:not([readonly]), .md-form input[type=search]:focus:not([readonly]), .md-form textarea.md-textarea:focus:not([readonly]) {
   box-shadow: 0 1px 0 0 #2BA1B9;
   border-bottom: 1px solid #2BA1B9;
 }
 
-.md-form input[type=text]:focus:not([readonly])+label,
-.md-form input[type=password]:focus:not([readonly])+label,
-.md-form input[type=email]:focus:not([readonly])+label,
-.md-form input[type=url]:focus:not([readonly])+label,
-.md-form input[type=time]:focus:not([readonly])+label,
-.md-form input[type=date]:focus:not([readonly])+label,
-.md-form input[type=datetime-local]:focus:not([readonly])+label,
-.md-form input[type=tel]:focus:not([readonly])+label,
-.md-form input[type=number]:focus:not([readonly])+label,
-.md-form input[type=search-md]:focus:not([readonly])+label,
-.md-form input[type=search]:focus:not([readonly])+label,
-.md-form textarea.md-textarea:focus:not([readonly])+label {
+.md-form input[type=text]:focus:not([readonly])+label, .md-form input[type=password]:focus:not([readonly])+label, .md-form input[type=email]:focus:not([readonly])+label, .md-form input[type=url]:focus:not([readonly])+label, .md-form input[type=time]:focus:not([readonly])+label, .md-form input[type=date]:focus:not([readonly])+label, .md-form input[type=datetime-local]:focus:not([readonly])+label, .md-form input[type=tel]:focus:not([readonly])+label, .md-form input[type=number]:focus:not([readonly])+label, .md-form input[type=search-md]:focus:not([readonly])+label, .md-form input[type=search]:focus:not([readonly])+label, .md-form textarea.md-textarea:focus:not([readonly])+label {
   color: #2BA1B9 !important;
 }
 
-
-.dropdown-default .dropdown-content li a,
-.dropdown-default .dropdown-content li span:hover,
-.dropdown-default .dropdown-content li.active {
+.dropdown-default .dropdown-content li a, .dropdown-default .dropdown-content li span:hover, .dropdown-default .dropdown-content li.active {
   background-color: #609ca9 !important;
 }
 
-.dropdown-default.colorful-select .dropdown-content li.active span,
-.dropdown-default.colorful-select .dropdown-content li.selected span {
+.dropdown-default.colorful-select .dropdown-content li.active span, .dropdown-default.colorful-select .dropdown-content li.selected span {
   background-color: #2ba1b9 !important;
 }
 
 /** INPUTS VALIDATION **/
-input.form-control.validate-error.ng-invalid.ng-touched,
-input.form-control.validate-error.ng-invalid.ng-dirty,
-.form-submitted input.form-control.validate-error.ng-invalid {
+
+input.form-control.validate-error.ng-invalid.ng-touched, input.form-control.validate-error.ng-invalid.ng-dirty, .form-submitted input.form-control.validate-error.ng-invalid {
   box-shadow: none !important;
   border: 2px solid #e06e38 !important;
 }
 
-input.form-control.validate-success.ng-valid.ng-dirty,
-input.form-control.validate-success.ng-valid.ng-touched,
-.form-submitted input.form-control.validate-success.ng-valid {
+input.form-control.validate-success.ng-valid.ng-dirty, input.form-control.validate-success.ng-valid.ng-touched, .form-submitted input.form-control.validate-success.ng-valid {
   box-shadow: none !important;
   border: 2px solid #2BA1B9 !important;
 }
@@ -941,10 +875,7 @@ input.form-control.validate-success.ng-valid.ng-touched,
   box-shadow: none !important;
 }
 
-#confirm-password-invalid,
-#password-invalid,
-#name-wallet-invalid,
-#divisibility-invalid {
+#confirm-password-invalid, #password-invalid, #name-wallet-invalid, #divisibility-invalid {
   box-shadow: none !important;
   border: 2px solid #e06e38 !important;
 }
@@ -965,12 +896,12 @@ input.form-control.validate-success.ng-valid.ng-touched,
   color: #2BA1B9 !important;
 }
 
-.md-form.form-sm mdb-error,
-.md-form.form-sm mdb-success {
+.md-form.form-sm mdb-error, .md-form.form-sm mdb-success {
   left: 1rem !important;
 }
 
 /*************TOASTR**************/
+
 .toastInfo {
   opacity: 1.0 !important;
   background-color: white !important;
@@ -1023,12 +954,7 @@ button.md-toast-close-button {
   color: #e06e38 !important;
 }
 
-
-.md-toast-success:before,
-.md-toast-info:before,
-.md-toast-warning:before,
-.md-toast-error:before,
-#toast-container>mdb-toast-component {
+.md-toast-success:before, .md-toast-info:before, .md-toast-warning:before, .md-toast-error:before, #toast-container>mdb-toast-component {
   font-family: FontAwesome !important;
   font-size: 20px !important;
   line-height: 14px !important;
@@ -1064,6 +990,7 @@ button.md-toast-close-button {
 /** FIN INPUTS VALIDATION **/
 
 /************* SELECT ************/
+
 .ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-selected {
   color: #2BA1B9 !important;
 }
@@ -1072,8 +999,7 @@ button.md-toast-close-button {
   border-color: #2BA1B9 !important;
 }
 
-.ng-select.ng-select-focused .ng-select-container .ng-arrow-wrapper .ng-arrow,
-.ng-select.ng-select-focused .ng-select-container .ng-value-container .ng-placeholder {
+.ng-select.ng-select-focused .ng-select-container .ng-arrow-wrapper .ng-arrow, .ng-select.ng-select-focused .ng-select-container .ng-value-container .ng-placeholder {
   color: #2BA1B9 !important;
 }
 
@@ -1234,11 +1160,7 @@ button.md-toast-close-button {
   pointer-events: none !important;
 }
 
-.dropdown-default.colorful-select .dropdown-content li.active span,
-.dropdown-default.colorful-select .dropdown-content li.selected span,
-.dropdown-default .dropdown-content li a,
-.dropdown-default .dropdown-content li span:hover,
-.dropdown-default .dropdown-content li.active {
+.dropdown-default.colorful-select .dropdown-content li.active span, .dropdown-default.colorful-select .dropdown-content li.selected span, .dropdown-default .dropdown-content li a, .dropdown-default .dropdown-content li span:hover, .dropdown-default .dropdown-content li.active {
   background-color: #2ba1b9 !important;
 }
 
@@ -1265,7 +1187,6 @@ mdb-select>div>div.single>div.value {
   line-height: 1.1rem !important;
 }
 
-
 /****************************************/
 
 .title-modal-white {
@@ -1286,7 +1207,6 @@ body.modal-open {
   overflow-x: hidden;
 }
 
-
 .modal-dialog {
   max-height: 90vh !important;
 }
@@ -1302,7 +1222,6 @@ body.modal-open {
     padding-left: 1rem;
   }
 }
-
 
 @media (min-width: 768px) {
   .modal-dialog {

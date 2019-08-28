@@ -3,7 +3,7 @@ import { environment } from '../../../../../environments/environment';
 import { WalletService } from '../../../../wallet/services/wallet.service';
 import { AppConfig } from '../../../../config/app.config';
 import { SharedService } from '../../../../shared/services/shared.service';
-import { TransactionsService } from '../../../../transfer/services/transactions.service';
+import { TransactionsService } from '../../../../transactions/services/transactions.service';
 import { Subscription } from 'rxjs';
 import { NamespacesService } from 'src/app/servicesModule/services/namespaces.service';
 

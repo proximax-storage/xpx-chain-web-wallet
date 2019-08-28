@@ -3,7 +3,7 @@ import { MdbTableDirective } from 'ng-uikit-pro-standard';
 import { DOCUMENT } from '@angular/common';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 import { DashboardService } from '../../services/dashboard.service';
-import { TransactionsInterface, TransactionsService } from '../../../transfer/services/transactions.service';
+import { TransactionsInterface, TransactionsService } from '../../../transactions/services/transactions.service';
 import { WalletService, AccountsInterface } from '../../../wallet/services/wallet.service';
 import { SharedService } from '../../../shared/services/shared.service';
 import { environment } from '../../../../environments/environment';

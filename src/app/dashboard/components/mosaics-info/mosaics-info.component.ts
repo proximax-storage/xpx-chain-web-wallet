@@ -2,7 +2,7 @@ import { Component, OnInit, Input, SimpleChanges, Output, EventEmitter } from '@
 import { Mosaic, MosaicView, MosaicInfo, NamespaceId } from 'tsjs-xpx-chain-sdk';
 import { MosaicService, MosaicsStorage } from '../../../servicesModule/services/mosaic.service';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
-import { TransactionsService, TransactionsInterface } from '../../../transfer/services/transactions.service';
+import { TransactionsService, TransactionsInterface } from '../../../transactions/services/transactions.service';
 import { environment } from 'src/environments/environment.prod';
 
 @Component({

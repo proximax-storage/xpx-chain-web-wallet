@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
 import { NamespacesService, NamespaceStorageInterface } from '../../../servicesModule/services/namespaces.service';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
-import { TransactionsService } from '../../../transfer/services/transactions.service';
+import { TransactionsService } from '../../../transactions/services/transactions.service';
 
 @Component({
   selector: 'app-register-namespace-type',

@@ -6,7 +6,7 @@ import { ProximaxProvider } from '../../../../shared/services/proximax.provider'
 import { SharedService, ConfigurationForm } from '../../../../shared/services/shared.service';
 import { DataBridgeService } from '../../../../shared/services/data-bridge.service';
 import { WalletService, AccountsInterface, AccountsInfoInterface } from '../../../../wallet/services/wallet.service';
-import { TransactionsService } from '../../../../transfer/services/transactions.service';
+import { TransactionsService } from '../../../../transactions/services/transactions.service';
 import { AppConfig } from '../../../../config/app.config';
 import { environment } from 'src/environments/environment.prod';
 

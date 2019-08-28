@@ -7,7 +7,7 @@ import { SharedService, ConfigurationForm } from '../../../../shared/services/sh
 import { MosaicService, MosaicsStorage } from '../../../../servicesModule/services/mosaic.service';
 import { DataBridgeService } from '../../../../shared/services/data-bridge.service';
 import { WalletService } from '../../../../wallet/services/wallet.service';
-import { TransactionsService } from '../../../../transfer/services/transactions.service';
+import { TransactionsService } from '../../../../transactions/services/transactions.service';
 import { AppConfig } from '../../../../config/app.config';
 
 

@@ -11,7 +11,7 @@ import { WalletService, AccountsInterface } from '../../../../wallet/services/wa
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { SharedService, ConfigurationForm } from '../../../../shared/services/shared.service';
 import { NamespacesService, NamespaceStorageInterface } from '../../../../servicesModule/services/namespaces.service';
-import { TransactionsService } from '../../../../transfer/services/transactions.service';
+import { TransactionsService } from '../../../../transactions/services/transactions.service';
 import { Subscription } from 'rxjs';
 
 @Component({

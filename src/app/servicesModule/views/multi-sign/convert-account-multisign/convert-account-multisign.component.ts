@@ -31,7 +31,7 @@ import { ServicesModuleService } from 'src/app/servicesModule/services/services-
 import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
 import { NodeService } from 'src/app/servicesModule/services/node.service';
 import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
-import { TransactionsService } from 'src/app/transfer/services/transactions.service';
+import { TransactionsService } from 'src/app/transactions/services/transactions.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -259,12 +259,12 @@ export class ConvertAccountMultisignComponent implements OnInit {
       console.log("unsubscribe")
       this.subscribeAccount.unsubscribe();
     }
-    //Validate Account 
+    //Validate Account
     if (!this.accountValid)
       return this.sharedService.showError('Attention', 'Account to convert is not valid');
     console.log(this.accountInfo)
 
-    //Validate Multisign 
+    //Validate Multisign
     this.isMultisig = (this.accountInfo.multisigInfo !== null && this.accountInfo.multisigInfo !== undefined && this.accountInfo.multisigInfo.isMultisig());
     if (this.isMultisig)
       return this.sharedService.showError('Attention', 'Is Multisig');
@@ -325,7 +325,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
     }
   }
   /**
-     * Before sending an aggregate bonded transaction, the future 
+     * Before sending an aggregate bonded transaction, the future
      * multisig account needs to lock at least 10 cat.currency.
      * This transaction is required to prevent network spamming and ensure that the inner
      * transactions are cosigned. After the hash lock transaction has been confirmed,
@@ -600,7 +600,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
 
   }
   /**
-   * Get cosignatory list add and remove 
+   * Get cosignatory list add and remove
    * @memberof CreateMultiSignatureComponent
    * @return {CosignatoryList} list cosignatory
    */
@@ -654,7 +654,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
   *
   *
   * @memberof CreateNamespaceComponent
-  * 
+  *
   */
   subscribeValueChange() {
     // Cosignatory ValueChange

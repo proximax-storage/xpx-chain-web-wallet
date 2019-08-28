@@ -2,7 +2,7 @@ import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
 import { NamespaceId } from 'tsjs-xpx-chain-sdk';
 
 import { NamespacesService, NamespaceStorageInterface } from '../../../servicesModule/services/namespaces.service';
-import { TransactionsInterface } from '../../../transfer/services/transactions.service';
+import { TransactionsInterface } from '../../../transactions/services/transactions.service';
 
 @Component({
   selector: 'app-address-alias-type',

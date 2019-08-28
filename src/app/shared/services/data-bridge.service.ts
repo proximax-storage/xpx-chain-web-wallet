@@ -6,7 +6,7 @@ import { environment } from '../../../environments/environment';
 import { NodeService } from '../../servicesModule/services/node.service';
 import { SharedService } from './shared.service';
 import { WalletService } from '../../wallet/services/wallet.service';
-import { TransactionsInterface, TransactionsService } from '../../transfer/services/transactions.service';
+import { TransactionsInterface, TransactionsService } from '../../transactions/services/transactions.service';
 import { ProximaxProvider } from './proximax.provider';
 import { NamespacesService } from 'src/app/servicesModule/services/namespaces.service';
 
