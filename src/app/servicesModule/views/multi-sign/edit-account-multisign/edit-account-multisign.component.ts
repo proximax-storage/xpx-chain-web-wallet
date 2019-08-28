@@ -208,17 +208,10 @@ export class EditAccountMultisignComponent implements OnInit {
     this.accountValid = (
       this.accountInfo !== null &&
       this.accountInfo !== undefined && this.accountInfo.accountInfo !== null);
-<<<<<<< HEAD
-    if (this.subscribeAccount) {
-      this.subscribeAccount.unsubscribe();
-    }
-    //Validate Account
-=======
     // if (this.subscribeAccount) {
     //   this.subscribeAccount.unsubscribe();
     // }
-    //Validate Account 
->>>>>>> fe65de207ec8ae408ef7c59b963d384af861efe7
+    //Validate Account
     if (!this.accountValid)
       return
 
