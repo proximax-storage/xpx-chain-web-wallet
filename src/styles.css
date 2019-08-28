@@ -523,6 +523,10 @@ body {
   font-size: .6rem !important;
 }
 
+.fs-065rem {
+  font-size: .65rem !important;
+}
+
 .fs-07rem {
   font-size: 0.7rem !important;
 }
@@ -537,6 +541,10 @@ body {
 
 .fs-09rem {
   font-size: 0.9rem !important;
+}
+
+.fs-095rem {
+  font-size: 0.95rem !important;
 }
 
 .fs-1rem {
