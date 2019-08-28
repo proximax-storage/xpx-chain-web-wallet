@@ -32,7 +32,7 @@ export class CreateNamespaceComponent implements OnInit {
       value: '1',
       label: 'New root Namespace',
       selected: true,
-      disabled: true
+      disabled: false
     }
   ];
 
@@ -63,6 +63,7 @@ export class CreateNamespaceComponent implements OnInit {
   rentalFee = 100000;
   subscription: Subscription[] = [];
   transactionStatus: boolean = false;
+  lengthNamespace: number;
 
   constructor(
     private fb: FormBuilder,
@@ -80,6 +81,7 @@ export class CreateNamespaceComponent implements OnInit {
 
   ngOnInit() {
     this.configurationForm = this.sharedService.configurationForm;
+    this.lengthNamespace = this.configurationForm.namespaceName.maxLength;
     this.createForm();
     this.getNamespaces();
     this.fee = `0.000000 ${this.feeType}`;
@@ -167,10 +169,9 @@ export class CreateNamespaceComponent implements OnInit {
       name: ['', [
         Validators.required,
         Validators.minLength(this.configurationForm.namespaceName.minLength),
-        Validators.maxLength(this.configurationForm.namespaceName.maxLength)
       ]],
 
-      namespaceRoot: [''],
+      namespaceRoot: ['1'],
 
       duration: ['', [
         Validators.required
@@ -284,9 +285,12 @@ export class CreateNamespaceComponent implements OnInit {
             }
           }
 
-          this.arrayselect = this.namespace.sort(function (a: any, b: any) {
+          let arrayNamespaces = this.namespace.sort(function (a: any, b: any) {
             return a.label === b.label ? 0 : +(a.label > b.label) || -1;
           });
+
+          this.arrayselect = this.arrayselect.concat(arrayNamespaces);
+
         }
       },
       error => {
@@ -461,12 +465,14 @@ export class CreateNamespaceComponent implements OnInit {
       } else {
         // console.log('namespaceRoot', namespaceRoot);
         if (namespaceRoot === '' || namespaceRoot === '1') {
+          this.lengthNamespace = this.configurationForm.namespaceName.maxLength;
           this.namespaceForm.get('duration').setValidators([Validators.required]);
           this.showDuration = true;
           this.typetransfer = 1;
           this.durationByBlock = this.transactionService.calculateDurationforDay(this.namespaceForm.get('duration').value).toString();
           this.validateRentalFee(this.rentalFee * parseFloat(this.durationByBlock));
         } else {
+          this.lengthNamespace = this.configurationForm.subNamespaceName.maxLength;
           this.namespaceForm.get('duration').patchValue('');
           this.namespaceForm.get('duration').clearValidators();
           this.namespaceForm.get('duration').updateValueAndValidity();
@@ -480,9 +486,9 @@ export class CreateNamespaceComponent implements OnInit {
     });
 
     // NamespaceName ValueChange
-    this.namespaceForm.get('name').valueChanges.subscribe(name => {
-      if (!this.validateNamespace(name)) return this.sharedService.showError('', 'Name of namespace is invalid')
-    })
+    // this.namespaceForm.get('name').valueChanges.subscribe(name => {
+    //   if (!this.validateNamespace(name)) return this.sharedService.showError('', 'Name of namespace is invalid')
+    // })
   }
 
   /**
