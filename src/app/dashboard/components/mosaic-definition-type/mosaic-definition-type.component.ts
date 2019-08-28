@@ -2,7 +2,7 @@ import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
 import { MosaicId } from 'tsjs-xpx-chain-sdk';
 import * as cloneDeep from 'lodash/cloneDeep';
 import { MosaicService, MosaicsStorage } from '../../../servicesModule/services/mosaic.service';
-import { TransactionsService, TransactionsInterface } from '../../../transfer/services/transactions.service';
+import { TransactionsService, TransactionsInterface } from '../../../transactions/services/transactions.service';
 
 @Component({
   selector: 'app-mosaic-definition-type',

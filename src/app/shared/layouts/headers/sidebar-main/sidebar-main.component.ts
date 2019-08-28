@@ -1,12 +1,12 @@
 import { Router, NavigationEnd } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
-import { ItemsHeaderInterface, SharedService } from '../../../services/shared.service';
+import { ItemsHeaderInterface, SharedService, MenuInterface } from '../../../services/shared.service';
 import { AppConfig } from '../../../../config/app.config';
 import { environment } from '../../../../../environments/environment.prod';
 import { DashboardService } from '../../../../dashboard/services/dashboard.service';
 import { AuthService } from '../../../../auth/services/auth.service';
 import { WalletService } from '../../../../wallet/services/wallet.service';
-import { TransactionsService } from '../../../../transfer/services/transactions.service';
+import { TransactionsService } from '../../../../transactions/services/transactions.service';
 import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
 import { Subscription, timer } from 'rxjs';
 
@@ -26,6 +26,7 @@ export class SidebarMainComponent implements OnInit {
   keyObject = Object.keys;
   prorroga = false;
   reconnecting = false;
+  routePartial = `/${AppConfig.routes.partial}`
   routesExcludedInServices = [
     AppConfig.routes.account,
     AppConfig.routes.auth,
@@ -60,14 +61,11 @@ export class SidebarMainComponent implements OnInit {
   ngOnInit() {
     this.statusNode = false;
     this.walletName = this.walletService.currentWallet.name;
-    this.readRoute();
-    this.getBlocks();
-    this.validate();
-
-    this.getAccountInfo();
     this.buildItemsHeader();
-
-
+    this.getAccountInfo();
+    this.getBlocks();
+    this.readRoute();
+    this.validate();
   }
 
   ngOnDestroy(): void {
@@ -82,19 +80,59 @@ export class SidebarMainComponent implements OnInit {
    * @memberof SidebarMainComponent
    */
   buildItemsHeader() {
+    const paramsDashboard: MenuInterface = {
+      type: 'default',
+      name: 'Dashboard',
+      class: '',
+      icon: '',
+      rol: false,
+      link: `/${AppConfig.routes.dashboard}`,
+      view: true,
+      subMenu: {},
+      selected: true
+    }
+
+    const paramsTransfer: MenuInterface = {
+      type: 'default',
+      name: 'Transfer',
+      class: '',
+      icon: '',
+      rol: false,
+      link: `/${AppConfig.routes.createTransfer}`,
+      view: true,
+      subMenu: {},
+      selected: false
+    }
+
+    const paramsAccount: MenuInterface = {
+      type: 'default',
+      name: 'Account',
+      class: '',
+      icon: '',
+      rol: false,
+      link: `/${AppConfig.routes.account}`,
+      view: true,
+      subMenu: {},
+      selected: false
+    }
+
+    const paramsServices: MenuInterface = {
+      type: 'default',
+      name: 'Services',
+      class: '',
+      icon: '',
+      rol: false,
+      link: `/${AppConfig.routes.service}`,
+      view: true,
+      subMenu: {},
+      selected: false
+    }
+
     this.itemsHeader = {
-      dashboard: this.sharedService.buildHeader(
-        'default', 'Dashboard', '', '', false, `/${AppConfig.routes.dashboard}`, true, {}, true
-      ),
-      transfer: this.sharedService.buildHeader(
-        'default', 'Transfer', '', '', false, `/${AppConfig.routes.createTransfer}`, true, {}, false
-      ),
-      account: this.sharedService.buildHeader(
-        'default', 'Account', '', '', false, `/${AppConfig.routes.account}`, true, {}, false
-      ),
-      services: this.sharedService.buildHeader(
-        'default', 'Services', '', '', false, `/${AppConfig.routes.service}`, true, {}, false
-      )
+      dashboard: this.sharedService.buildHeader(paramsDashboard),
+      transfer: this.sharedService.buildHeader(paramsTransfer),
+      account: this.sharedService.buildHeader(paramsAccount),
+      services: this.sharedService.buildHeader(paramsServices)
     }
   }
 

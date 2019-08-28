@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { AppConfig } from 'src/app/config/app.config';
 import { Subscription } from 'rxjs';
-import { TransactionsService } from 'src/app/transfer/services/transactions.service';
+import { TransactionsService } from 'src/app/transactions/services/transactions.service';
 import { WalletService, CurrentWalletInterface, AccountsInterface } from 'src/app/wallet/services/wallet.service';
 import { SharedService } from 'src/app/shared/services/shared.service';
 import { environment } from 'src/environments/environment';
@@ -76,7 +76,7 @@ export class MultiSignatureContractComponent implements OnInit {
   }
 
   isMultisign(accounts: AccountsInterface): boolean {
-     return Boolean(accounts.isMultisign !== null && accounts.isMultisign !== undefined && this.isMultisigValidate(accounts.isMultisign.minRemoval ,accounts.isMultisign.minApproval));
+    return Boolean(accounts.isMultisign !== null && accounts.isMultisign !== undefined && this.isMultisigValidate(accounts.isMultisign.minRemoval, accounts.isMultisign.minApproval));
   }
   /**
      * Checks if the account is a multisig account.

@@ -1,0 +1,120 @@
+.table-wrapper-scroll-x {
+  display: block;
+  max-width: 100%;
+  margin: 0 auto;
+  overflow-x: auto;
+  -ms-overflow-style: -ms-autohiding-scrollbar;
+}
+
+.datatable-style {
+  overflow-x: auto;
+  display: block;
+}
+
+@media (min-width: 0px) and (max-width: 370px) {
+  .max-w-table {
+    max-width: 224px !important;
+  }
+}
+
+@media (min-width: 371px) and (max-width: 470px) {
+  .max-w-table {
+    max-width: 324px !important
+  }
+}
+
+@media (min-width: 471px) and (max-width: 570px) {
+  .max-w-table {
+    max-width: 424px !important
+  }
+}
+
+@media (min-width: 571px) and (max-width: 670px) {
+  .max-w-table {
+    max-width: 524px !important
+  }
+}
+
+@media (min-width: 671px) and (max-width: 770px) {
+  .max-w-table {
+    max-width: 624px !important
+  }
+}
+
+@media (min-width: 771px) and (max-width: 870px) {
+  .max-w-table {
+    max-width: 724px !important
+  }
+}
+
+
+@media (min-width: 871px) and (max-width: 970px) {
+  .max-w-table {
+    max-width: 824px !important
+  }
+}
+
+@media (min-width: 971px) and (max-width: 1070px) {
+  .max-w-table {
+    max-width: 924px !important
+  }
+}
+
+@media (min-width: 1071px) and (max-width: 1170px) {
+  .max-w-table {
+    max-width: 1024px !important
+  }
+}
+
+@media (min-width: 1171px) and (max-width: 1270px) {
+  .max-w-table {
+    max-width: 1124px !important
+  }
+}
+
+@media (min-width: 1271px) and (max-width: 1370px) {
+  .max-w-table {
+    max-width: 1224px !important
+  }
+}
+
+@media (min-width: 1371px) and (max-width: 1470px) {
+  .max-w-table {
+    max-width: 1324px !important
+  }
+}
+
+@media (min-width: 1471px) and (max-width: 1570px) {
+  .max-w-table {
+    max-width: 1424px !important
+  }
+}
+
+@media (min-width: 1571px) and (max-width: 1670px) {
+  .max-w-table {
+    max-width: 1524px !important
+  }
+}
+
+@media (min-width: 1671px) and (max-width: 1770px) {
+  .max-w-table {
+    max-width: 1624px !important
+  }
+}
+
+
+@media (min-width: 1771px) and (max-width: 1880px) {
+  .max-w-table {
+    max-width: 1724px !important
+  }
+}
+
+.background-pending {
+  background: #ffdfa0;
+}
+
+.scroll-accounts {
+  overflow-y: auto;
+  margin-bottom: 12px;
+  max-height: 235px;
+}

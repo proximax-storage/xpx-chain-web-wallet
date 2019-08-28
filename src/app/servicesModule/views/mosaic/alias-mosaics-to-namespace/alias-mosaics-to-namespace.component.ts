@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Validators, FormGroup, FormBuilder, AbstractControl } from '@angular/forms';
-import { BlockUI, NgBlockUI } from 'ng-block-ui';
+import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { NamespaceId, MosaicId, UInt64, AliasActionType } from 'tsjs-xpx-chain-sdk';
 import { AppConfig } from '../../../../config/app.config';
@@ -10,7 +10,6 @@ import { NamespacesService, NamespaceStorageInterface } from '../../../../servic
 import { DataBridgeService } from '../../../../shared/services/data-bridge.service';
 import { SharedService, ConfigurationForm } from '../../../../shared/services/shared.service';
 import { WalletService } from '../../../../wallet/services/wallet.service';
-import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -60,7 +59,6 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
 
 
   transactionSigned: any;
-  subscribe = ['transactionStatus'];
   subscription: Subscription[] = [];
 
   constructor(
@@ -183,12 +181,12 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
    * @memberof AliasMosaicsToNamespaceComponent
    */
   getNamespaces() {
-    this.namespaceService.getNamespaceChanged().subscribe(
+    this.subscription.push(this.namespaceService.getNamespaceChanged().subscribe(
       async (arrayNamespaceStorage: NamespaceStorageInterface[]) => {
         this.arrayNamespaceStorage = arrayNamespaceStorage;
         this.buildSelectNamespace(this.linkingNamespaceToMosaic.get('typeAction').value);
       }
-    );
+    ));
   }
 
   /**
@@ -331,7 +329,7 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
    * @memberof AliasMosaicsToNamespaceComponent
    */
   getTransactionStatus() {
-    this.subscription.push(this.dataBridge.getTransactionStatus().subscribe(
+    this.subscription['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
       statusTransaction => {
         if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
           const statusTransactionHash = (statusTransaction['type'] === 'error') ? statusTransaction['data'].hash : statusTransaction['data'].transactionInfo.hash;
@@ -350,7 +348,7 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
           }
         }
       }
-    ));
+    );
   }
 
   /**
@@ -406,7 +404,7 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
             this.blockSend = false;
             this.clearForm();
             // this.sharedService.showSuccess('success', 'Transaction sent');
-            if (this.subscribe['transactionStatus'] === undefined || this.subscribe['transactionStatus'] === null) {
+            if (this.subscription['transactionStatus'] === undefined || this.subscription['transactionStatus'] === null) {
               this.getTransactionStatus();
             }
           },

@@ -1,4 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
+
 @import "~@ng-select/ng-select/themes/material.theme.css";
 
 html,
@@ -8,6 +9,10 @@ body {
   height: 100%;
   width: 100%;
   font-family: 'Open Sans' !important;
+}
+
+.white-space-pre {
+  white-space: pre;
 }
 
 .overflow-ellipsis-nowrap {
@@ -130,7 +135,6 @@ body {
   margin-bottom: 2rem;
 }
 
-
 .mt-3rem {
   margin-top: 3rem;
 }
@@ -159,12 +163,20 @@ body {
   margin-left: .5rem;
 }
 
+.ml-08rem {
+  margin-left: .8rem;
+}
+
 .ml-10px {
   margin-left: 10px !important;
 }
 
 .ml-1rem {
   margin-left: 1rem !important;
+}
+
+.ml-2rem {
+  margin-left: 2rem !important;
 }
 
 .ml-3rem {
@@ -211,14 +223,22 @@ body {
   margin-right: .6rem !important;
 }
 
-/********************* PADDING -*******************************/
+.mr-08rem {
+  margin-right: .8rem !important;
+}
 
+/********************* PADDING -*******************************/
 
 .p-0 {
   padding: 0 !important;
 }
 
+.p-05rem {
+  padding: .5rem !important;
+}
+
 /** TOP **/
+
 .pt-05rem {
   padding-top: .5rem;
 }
@@ -256,6 +276,7 @@ body {
 }
 
 /** BOTTOM **/
+
 .pb-1rem {
   padding-bottom: 1rem;
 }
@@ -274,6 +295,10 @@ body {
 
 .pb-08rem {
   padding-bottom: .8rem;
+}
+
+.pb-3rem {
+  padding-bottom: 3rem;
 }
 
 /** LEFT **/
@@ -299,6 +324,7 @@ body {
 }
 
 /** RIGHT **/
+
 .pr-040rem {
   padding-right: .4rem;
 }
@@ -326,9 +352,15 @@ body {
 }
 
 
+
 /************************* LINE HEIGHT *****************/
+
 .lh-1em {
   line-height: 1em
+}
+
+.lh-01em {
+  line-height: .1em
 }
 
 .line-h-07em {
@@ -356,6 +388,7 @@ body {
 }
 
 /************ HEIGHT *************************/
+
 .h-3em {
   height: 3em;
 }
@@ -380,7 +413,6 @@ body {
   height: 2.6em;
 }
 
-
 .h-2-8em {
   height: 2.8em;
 }
@@ -392,7 +424,6 @@ body {
 .h-4em {
   height: 4em;
 }
-
 
 .h-6em {
   height: 6em;
@@ -439,6 +470,7 @@ body {
 }
 
 /********************** WIDTH **********************/
+
 .w-30px {
   width: 30px !important;
 }
@@ -447,8 +479,8 @@ body {
   width: 100%;
 }
 
-
 /******************** FONT-WEIGHT ****************/
+
 .fw-bold {
   font-weight: bold;
 }
@@ -482,12 +514,17 @@ body {
 }
 
 /******************* FONT-SIZE *******************/
+
 .fs-05rem {
   font-size: 0.5rem !important;
 }
 
 .fs-06rem {
   font-size: .6rem !important;
+}
+
+.fs-065rem {
+  font-size: .65rem !important;
 }
 
 .fs-07rem {
@@ -504,6 +541,10 @@ body {
 
 .fs-09rem {
   font-size: 0.9rem !important;
+}
+
+.fs-095rem {
+  font-size: 0.95rem !important;
 }
 
 .fs-1rem {
@@ -558,8 +599,8 @@ body {
   font-size: 34px;
 }
 
-
 /****************** TEXT-ALIGN ******************/
+
 .txt-a-center {
   text-align: center;
 }
@@ -573,18 +614,18 @@ body {
 }
 
 /**************************** COLOR *****************************/
+
 .color-dark-green {
   color: #023c42 !important;
 }
 
 .color-blue-light {
-  color: #0aabbb !important;
+  color: #27a2bb !important;
 }
 
 .green-color {
   color: #35af8d !important;
 }
-
 
 .color-red {
   color: #e90000 !important;
@@ -595,7 +636,7 @@ body {
 }
 
 .color-light-orange {
-  color: #FF9900 !important;
+  color: #f2a917 !important;
 }
 
 .color-orange {
@@ -636,7 +677,6 @@ body {
 
 /**************************** BACKGROUND *****************************/
 
-
 .gray-color-transparent {
   background: #e4e4e473 !important;
 }
@@ -662,12 +702,24 @@ body {
   background: #e4e4e4;
 }
 
+.box-modal-white {
+  background: #ffff;
+}
+
 .background-gray-icons {
   background: #efefef;
 }
 
+.background-orange {
+  background-color: #f2a917 !important;
+}
+
+.background-gray-light {
+  background-color: #e4e4e4;
+}
 
 /**************************** THEME *****************************/
+
 .icono {
   width: 28px;
   padding-right: 10px;
@@ -700,7 +752,6 @@ body {
   overflow: auto;
   overflow-x: hidden;
 }
-
 
 .modal-dialog {
   max-height: 90vh !important;
@@ -745,7 +796,6 @@ body {
   font-style: italic;
 }
 
-
 .item-menu {
   font-size: .8rem !important;
 }
@@ -780,7 +830,6 @@ footer.page-footer .footer-copyright {
   }
 }
 
-
 @media (min-width: 576px) {
   .modal-dialog {
     max-width: 750px !important;
@@ -788,7 +837,6 @@ footer.page-footer .footer-copyright {
     padding-left: 1rem;
   }
 }
-
 
 @media (min-width: 768px) {
   .modal-dialog {
@@ -805,6 +853,7 @@ footer.page-footer .footer-copyright {
 }
 
 /************************* NG SELECT *******************/
+
 .navbar.navbar-dark .breadcrumb .nav-item .nav-link,
 .navbar.navbar-dark .navbar-nav .nav-item .nav-link {
   color: #306EB5 !important;
@@ -818,7 +867,6 @@ button.navbar-toggler {
 .text-cl-m {
   color: #306EB5 !important;
 }
-
 
 .md-form input[type=text],
 .md-form input[type=password],
@@ -909,7 +957,6 @@ input[type=text] {
   color: #2BA1B9 !important;
 }
 
-
 .dropdown-default .dropdown-content li a,
 .dropdown-default .dropdown-content li span:hover,
 .dropdown-default .dropdown-content li.active {
@@ -922,6 +969,7 @@ input[type=text] {
 }
 
 /** INPUTS VALIDATION **/
+
 input.form-control.validate-error.ng-invalid.ng-touched,
 input.form-control.validate-error.ng-invalid.ng-dirty,
 .form-submitted input.form-control.validate-error.ng-invalid {
@@ -971,6 +1019,7 @@ input.form-control.validate-success.ng-valid.ng-touched,
 }
 
 /*************TOASTR**************/
+
 .toastInfo {
   opacity: 1.0 !important;
   background-color: white !important;
@@ -1023,7 +1072,6 @@ button.md-toast-close-button {
   color: #e06e38 !important;
 }
 
-
 .md-toast-success:before,
 .md-toast-info:before,
 .md-toast-warning:before,
@@ -1064,6 +1112,7 @@ button.md-toast-close-button {
 /** FIN INPUTS VALIDATION **/
 
 /************* SELECT ************/
+
 .ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-selected {
   color: #2BA1B9 !important;
 }
@@ -1084,6 +1133,10 @@ button.md-toast-close-button {
 .navbar-toggler-icon {
   height: 25px !important;
   width: 20px !important;
+}
+
+.modal-content {
+  border-radius: 1.5rem !important;
 }
 
 /*
@@ -1198,6 +1251,21 @@ button.md-toast-close-button {
   border-top-left-radius: .8rem !important;
 }
 
+.b-t-r-r-1-5rem {
+  border-top-right-radius: 1.5rem !important;
+}
+
+.b-t-l-r-1-5rem {
+  border-top-left-radius: 1.5rem !important;
+}
+
+.title-modal-blue {
+  color: #27a2bb !important;
+  text-align: center;
+  font-weight: 600;
+  font-size: 1.2rem;
+}
+
 .title-modal-grey {
   color: #999999 !important;
   text-align: center;
@@ -1265,7 +1333,6 @@ mdb-select>div>div.single>div.value {
   line-height: 1.1rem !important;
 }
 
-
 /****************************************/
 
 .title-modal-white {
@@ -1286,7 +1353,6 @@ body.modal-open {
   overflow-x: hidden;
 }
 
-
 .modal-dialog {
   max-height: 90vh !important;
 }
@@ -1303,11 +1369,14 @@ body.modal-open {
   }
 }
 
-
 @media (min-width: 768px) {
   .modal-dialog {
     max-width: 950px !important;
     padding-right: 1rem;
     padding-left: 1rem;
   }
+}
+
+.modal-header {
+  border-bottom: 1px solid #dee2e638;
 }

@@ -34,7 +34,6 @@ export class AliasAddressToNamespaceComponent implements OnInit {
       disabled: true
     }
   ];
-  subscribe = ['transactionStatus'];
   transactionSigned: any;
   typeAction: any = [{
     value: AliasActionType.Link,
@@ -62,7 +61,6 @@ export class AliasAddressToNamespaceComponent implements OnInit {
   ngOnInit() {
     this.configurationForm = this.sharedService.configurationForm;
     this.createForm();
-    // this.getNameNamespace();
     this.getNamespaces();
     const address = this.walletService.currentAccount.address;
     this.LinkToNamespaceForm.get('address').patchValue(address);
@@ -182,12 +180,12 @@ export class AliasAddressToNamespaceComponent implements OnInit {
    * @memberof AliasAddressToNamespaceComponent
    */
   getNamespaces() {
-    this.namespaceService.getNamespaceChanged().subscribe(
+    this.subscription.push(this.namespaceService.getNamespaceChanged().subscribe(
       async (arrayNamespaceStorage: NamespaceStorageInterface[]) => {
         this.arrayNamespaceStorage = arrayNamespaceStorage;
         this.buildSelectNamespace(this.LinkToNamespaceForm.get('typeAction').value);
       }
-    );
+    ));
   }
 
 
@@ -287,7 +285,7 @@ export class AliasAddressToNamespaceComponent implements OnInit {
    * @memberof AliasAddressToNamespaceComponent
    */
   getTransactionStatus() {
-    this.subscribe['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
+    this.subscription['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
       statusTransaction => {
         if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
           const statusTransactionHash = (statusTransaction['type'] === 'error') ? statusTransaction['data'].hash : statusTransaction['data'].transactionInfo.hash;
@@ -340,7 +338,7 @@ export class AliasAddressToNamespaceComponent implements OnInit {
           next => {
             this.blockSend = false;
             this.clearForm();
-            if (this.subscribe['transactionStatus'] === undefined || this.subscribe['transactionStatus'] === null) {
+            if (this.subscription['transactionStatus'] === undefined || this.subscription['transactionStatus'] === null) {
               this.getTransactionStatus();
             }
           }

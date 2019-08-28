@@ -10,7 +10,7 @@ import { ConfigurationForm, SharedService } from '../../../../shared/services/sh
 import { DataBridgeService } from '../../../../shared/services/data-bridge.service';
 import { DashboardService } from '../../../../dashboard/services/dashboard.service';
 import { NamespacesService } from '../../../services/namespaces.service';
-import { TransactionsService } from 'src/app/transfer/services/transactions.service';
+import { TransactionsService } from 'src/app/transactions/services/transactions.service';
 import { ServicesModuleService } from 'src/app/servicesModule/services/services-module.service';
 
 @Component({

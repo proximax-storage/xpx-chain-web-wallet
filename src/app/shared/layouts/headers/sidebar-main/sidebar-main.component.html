@@ -16,15 +16,24 @@
       <div class="row">
         <div class="col-12 d-flex justify-content-end mt-05rem">
 
-          <div class="d-none d-sm-block d-md-block d-lg-block d-xl-block">
+          <!-- PARTIAL ICON -->
+          <div class="lh-1em d-flex align-items-center justify-content-end mr-08rem cursor-p">
+            <a [routerLink]="routePartial"><i class="fa fa-bell" aria-hidden="true"></i></a>
+          </div>
+
+          <!-- NAME WALLET & VESTED BALANCE -->
+          <div class="d-none d-sm-block d-md-block d-lg-block d-xl-block lh-1em">
             <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
               *ngIf="searchBalance"></span>
-            <span class="fw-600 fs-09rem">{{ walletName }}
+            <span class="fw-600 fs-09rem">
+              <span>{{ walletName }}</span>
               <i class="fa fa-circle ml-05rem cursor-p {{colorStatus}}" aria-hidden="true"
-                title="{{statusNodeName}} node"></i></span><br>
+                title="{{statusNodeName}} node"></i>
+            </span><br>
             <span class="fs-08rem">{{ vestedBalance }}</span>
           </div>
 
+          <!-- LOGOUT -->
           <div class="d-flex align-items-center justify-content-end ml-1rem">
             <div class="nav-link waves-light p-0" mdbWavesEffect (click)="logOut()">
               <span class="fs-08rem cursor-p font-header mr-02rem color-main-wallet">
@@ -33,7 +42,7 @@
             </div>
           </div>
 
-
+          <!-- STATUS NODE -->
           <div
             class="d-flex align-items-center justify-content-end d-block d-sm-none d-md-none d-lg-none d-xl-none ml-05rem">
             <div class="nav-link waves-light p-0" mdbWavesEffect>

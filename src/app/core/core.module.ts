@@ -22,6 +22,7 @@ import { SecretProofComponent } from '../dashboard/components/secret-proof/secre
 import { MosaicsInfoComponent } from '../dashboard/components/mosaics-info/mosaics-info.component';
 import { MosaicAliasComponent } from '../dashboard/components/mosaic-alias/mosaic-alias.component';
 import { AddressAliasTypeComponent } from '../dashboard/components/address-alias-type/address-alias-type.component';
+import { StringFilterPipe } from '../shared/pipes/string-filter.pipe';
 
 const ngxUiLoaderConfig: NgxUiLoaderConfig = {
   bgsColor: '#306eb5',
@@ -63,7 +64,10 @@ const moduls = [
 
 
 @NgModule({
-  declarations: [components],
+  declarations: [
+    components,
+    StringFilterPipe
+  ],
   imports: [
     CommonModule,
     moduls,
@@ -76,7 +80,8 @@ const moduls = [
     NgxMaskModule,
     NgxUiLoaderModule,
     moduls,
-    components
+    components,
+    StringFilterPipe
   ]
 })
 export class CoreModule { }

@@ -9,7 +9,7 @@ import { MultiSignService } from 'src/app/servicesModule/services/multi-sign.ser
 import { ServicesModuleService } from 'src/app/servicesModule/services/services-module.service';
 import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
 import { NodeService } from 'src/app/servicesModule/services/node.service';
-import { TransactionsService } from 'src/app/transfer/services/transactions.service';
+import { TransactionsService } from 'src/app/transactions/services/transactions.service';
 import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
 import { environment } from 'src/environments/environment';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -211,11 +211,11 @@ export class EditAccountMultisignComponent implements OnInit {
     // if (this.subscribeAccount) {
     //   this.subscribeAccount.unsubscribe();
     // }
-    //Validate Account 
+    //Validate Account
     if (!this.accountValid)
       return
 
-    //Validate Multisign 
+    //Validate Multisign
     this.isMultisig = (this.accountInfo.multisigInfo !== null && this.accountInfo.multisigInfo !== undefined && this.accountInfo.multisigInfo.isMultisig());
     if (!this.isMultisig) {
       this.sharedService.showError('Attention', 'not is Multisig');
@@ -311,7 +311,7 @@ export class EditAccountMultisignComponent implements OnInit {
   // @param {LockFundsTransaction} lockFundsTransaction  - lock funds transaction.
 
   /**
-   * Before sending an aggregate bonded transaction, the future 
+   * Before sending an aggregate bonded transaction, the future
    * multisig account needs to lock at least 10 cat.currency.
    * This transaction is required to prevent network spamming and ensure that the inner
    * transactions are cosigned. After the hash lock transaction has been confirmed,
@@ -529,7 +529,7 @@ export class EditAccountMultisignComponent implements OnInit {
   *
   *
   * @memberof CreateNamespaceComponent
-  * 
+  *
   */
   subscribeValueChange() {
     // Cosignatory ValueChange
@@ -650,7 +650,7 @@ export class EditAccountMultisignComponent implements OnInit {
   }
 
   /**
-    * Get cosignatory list add and remove 
+    * Get cosignatory list add and remove
     * @memberof CreateMultiSignatureComponent
     * @return {CosignatoryList} list cosignatory
     */
@@ -671,7 +671,7 @@ export class EditAccountMultisignComponent implements OnInit {
 
   }
   /**
-   * Get cosignatory list add and remove 
+   * Get cosignatory list add and remove
    * @memberof CreateMultiSignatureComponent
    * @return {CosignatoryList} list cosignatory
    */

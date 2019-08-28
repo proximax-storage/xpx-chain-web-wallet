@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
 import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
 import { WalletService } from 'src/app/wallet/services/wallet.service';
 import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
-import { TransactionsService } from 'src/app/transfer/services/transactions.service';
+import { TransactionsService } from 'src/app/transactions/services/transactions.service';
 import { Uploader, PrivacyType, Uint8ArrayParameterData, UploadParameter, Protocol, ConnectionConfig, BlockchainNetworkConnection, IpfsConnection } from 'xpx2-ts-js-sdk';
 import { UploadInput, humanizeBytes, UploadOutput, UploadFile, FasDirective } from 'ng-uikit-pro-standard';
 import { environment } from 'src/environments/environment';

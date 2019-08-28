@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AppConfig } from '../config/app.config';
 import { CreateTransferComponent } from './views/create-transfer/create-transfer.component';
+import { PartialComponent } from './views/partial/partial.component';
 
 const routes: Routes = [
   {
@@ -14,6 +15,17 @@ const routes: Routes = [
         override: true,
       },
     }
+  },
+  {
+    path: AppConfig.routes.partial,
+    component: PartialComponent,
+    data: {
+      meta: {
+        title: 'partial.title',
+        description: 'partial.text',
+        override: true,
+      },
+    }
   }
 ];
 
@@ -21,4 +33,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class TransferRoutingModule { }
+export class TransactionRoutingModule { }

@@ -9,7 +9,7 @@ import { ProximaxProvider } from '../../../../shared/services/proximax.provider'
 import { MosaicService } from '../../../services/mosaic.service';
 import { SharedService, ConfigurationForm } from '../../../../shared/services/shared.service';
 import { WalletService } from '../../../../wallet/services/wallet.service';
-import { TransactionsService } from '../../../../transfer/services/transactions.service';
+import { TransactionsService } from '../../../../transactions/services/transactions.service';
 import { Subscription } from 'rxjs';
 
 @Component({
