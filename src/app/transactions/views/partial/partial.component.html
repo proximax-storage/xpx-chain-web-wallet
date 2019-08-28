@@ -57,7 +57,7 @@
   <div class="row">
     <div class="col-12 d-flex justify-content-center mx-auto">
       <div class="datatable-style max-w-table">
-        <table mdbTable mdbTableScroll scrollX="true">
+        <table mdbTable mdbTableScroll scrollX="true" striped="true">
           <thead>
             <tr class="header-backg">
               <th *ngFor="let head of headElements" scope="col" class="fs-08rem txt-a-center ">{{head}} </th>
@@ -66,7 +66,8 @@
 
           <tbody class="background-white">
             <ng-container *ngFor="let data of elements | stringFilter: filter | paginate: config">
-              <tr class="white-space-pre" mdbTableCol [ngClass]="!data.statusBoolean ? 'background-pending': ''">
+              <tr class="white-space-pre cursor-p" mdbTableCol
+                [ngClass]="!data.statusBoolean ? 'background-pending': ''" (click)="modalPartialTransaction.show();">
                 <td class="fs-075rem" [ngClass]="data.statusBoolean ? 'fw-600': ''">{{data.status}}</td>
                 <td class="fs-075rem">{{data.deadline}}</td>
                 <td class="fs-075rem">{{data.fee}}</td>
@@ -88,6 +89,280 @@
     <div class="col-12 pt-1rem pb-3rem d-flex justify-content-center mx-auto">
       <pagination-controls [responsive]="responsive" [id]="config.id" (pageChange)="config.currentPage = $event">
       </pagination-controls>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="d-flex align-items-center">
+  <div mdbModal #modalPartialTransaction="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+    aria-labelledby="modalPartialTransaction" aria-hidden="true">
+    <div class="modal-dialog modal-lg d-flex align-items-center" role="document">
+      <div class="modal-content form-elegant bord-rad-1-5rem">
+        <div class="modal-header text-center box-modal-white b-t-r-r-1-5rem b-t-l-r-1-5rem p-05rem">
+          <span class="modal-title w-100" id="myModalLabel">
+            <strong class="title-modal-blue">Partial Transaction - Information</strong>
+          </span>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+            (click)="modalPartialTransaction.hide()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <!--Body-->
+        <div class="modal-body">
+          <div class="row d-flex justify-content-center ">
+            <div class="col-11 col-md-7 col-lg-8 pb-2rem">
+              <div class="row">
+                <!-- Bonded & Deadline -->
+                <div class="col-12 lh-1em">
+                  <span class="fw-600 fs-1-2rem">Bonded</span> <br>
+                  <span class="fs-08rem">Deadline: Mon, 25 Feb 2019 - 19:14:31 GTM</span>
+                </div>
+
+                <!-- Fee -->
+                <div class="col-12 mt-2rem">
+                  <span class="fw-600 fs-1rem"> Fee: </span>
+                  <span class="fs-1rem fw-600 color-blue-light">100</span>
+                  <span class="fs-08rem fw-600 color-blue-light">.000000</span>
+                  <span class="fs-1rem fw-600 color-blue-light"> XPX </span>
+                  <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
+                </div>
+
+                <!-- Message -->
+                <div class="col-12">
+                  <span class="fw-600 fs-09rem"> Message: </span>
+                  <span class="fs-08rem">Payment for services</span>
+                </div>
+
+
+                <!-- Title transactions & Separator -->
+                <div class="col-12 mt-2rem">
+                  <span class="fw-600 fs-1rem">Transactions</span>
+                  <hr class="mt-0">
+                </div>
+
+                <!-- ACCOUNTS -->
+                <div class="col-12 ml-08rem scroll-accounts">
+                  <!-- FROM & ACCOUNT -->
+                  <ng-container>
+                    <div class="row">
+                      <div class="col-12 col-md-7 lh-1em">
+                        <span class="fw-600 fs-07rem">From: </span>
+                        <span class="fs-07rem">VDAE5R-ORTVTM-Y6M5EU-MLYQ5E-LQ7WWX-2AIFRO-Z3YN</span>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-12 col-md-7 lh-1em mt-05rem">
+                        <span class="fw-600 fs-07rem">To: </span>
+                        <span class="fs-07rem">VDAE5R-ORTVTM-Y6M5EU-MLYQ5E-LQ7WWX-2AIFRO-Z3YN</span>
+                      </div>
+
+                      <div class="col-12 col-md-5 lh-1em mt-05rem d-flex align-items-end">
+                        <div class="row">
+                          <div class="col-12">
+                            <span class="fw-600 fs-08rem">Amount: &nbsp;</span>
+                          </div>
+                          <div class="col-12">
+                            <span class="fs-08rem fw-600 color-blue-light">100</span>
+                            <span class="fs-07rem fw-600 color-blue-light">.000000</span>
+                            <span class="fs-08rem fw-600 color-blue-light">&nbsp;XPX </span>
+                            <img class="icono"
+                              src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-12">
+                        <hr class="mb-0rem">
+                      </div>
+                    </div>
+                  </ng-container>
+
+                  <!-- FROM & ACCOUNT -->
+                  <ng-container>
+                    <div class="row mt-1rem">
+                      <div class="col-12 col-md-7 lh-1em">
+                        <span class="fw-600 fs-07rem">From: </span>
+                        <span class="fs-07rem">VDAE5R-ORTVTM-Y6M5EU-MLYQ5E-LQ7WWX-2AIFRO-Z3YN</span>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-12 col-md-7 lh-1em mt-05rem">
+                        <span class="fw-600 fs-07rem">To: </span>
+                        <span class="fs-07rem">VDAE5R-ORTVTM-Y6M5EU-MLYQ5E-LQ7WWX-2AIFRO-Z3YN</span>
+                      </div>
+
+                      <div class="col-12 col-md-5 lh-1em mt-05rem d-flex align-items-end">
+                        <div class="row">
+                          <div class="col-12">
+                            <span class="fw-600 fs-08rem">Amount: &nbsp;</span>
+                          </div>
+                          <div class="col-12">
+                            <span class="fs-08rem fw-600 color-blue-light">100</span>
+                            <span class="fs-07rem fw-600 color-blue-light">.000000</span>
+                            <span class="fs-08rem fw-600 color-blue-light">&nbsp;XPX </span>
+                            <img class="icono"
+                              src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-12">
+                        <hr class="mb-0rem">
+                      </div>
+                    </div>
+                  </ng-container>
+
+                  <!-- FROM & ACCOUNT -->
+                  <ng-container>
+                    <div class="row mt-1rem">
+                      <div class="col-12 col-md-7 lh-1em">
+                        <span class="fw-600 fs-07rem">From: </span>
+                        <span class="fs-07rem">VDAE5R-ORTVTM-Y6M5EU-MLYQ5E-LQ7WWX-2AIFRO-Z3YN</span>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-12 col-md-7 lh-1em mt-05rem">
+                        <span class="fw-600 fs-07rem">To: </span>
+                        <span class="fs-07rem">VDAE5R-ORTVTM-Y6M5EU-MLYQ5E-LQ7WWX-2AIFRO-Z3YN</span>
+                      </div>
+
+                      <div class="col-12 col-md-5 lh-1em mt-05rem d-flex align-items-end">
+                        <div class="row">
+                          <div class="col-12">
+                            <span class="fw-600 fs-08rem">Amount: &nbsp;</span>
+                          </div>
+                          <div class="col-12">
+                            <span class="fs-08rem fw-600 color-blue-light">100</span>
+                            <span class="fs-07rem fw-600 color-blue-light">.000000</span>
+                            <span class="fs-08rem fw-600 color-blue-light">&nbsp;XPX </span>
+                            <img class="icono"
+                              src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-12">
+                        <hr class="mb-0rem">
+                      </div>
+                    </div>
+                  </ng-container>
+
+                  <!-- FROM & ACCOUNT -->
+                  <ng-container>
+                    <div class="row mt-1rem">
+                      <div class="col-12 col-md-7 lh-1em">
+                        <span class="fw-600 fs-07rem">From: </span>
+                        <span class="fs-07rem">VDAE5R-ORTVTM-Y6M5EU-MLYQ5E-LQ7WWX-2AIFRO-Z3YN</span>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-12 col-md-7 lh-1em mt-05rem">
+                        <span class="fw-600 fs-07rem">To: </span>
+                        <span class="fs-07rem">VDAE5R-ORTVTM-Y6M5EU-MLYQ5E-LQ7WWX-2AIFRO-Z3YN</span>
+                      </div>
+
+                      <div class="col-12 col-md-5 lh-1em mt-05rem d-flex align-items-end">
+                        <div class="row">
+                          <div class="col-12">
+                            <span class="fw-600 fs-08rem">Amount: &nbsp;</span>
+                          </div>
+                          <div class="col-12">
+                            <span class="fs-08rem fw-600 color-blue-light">100</span>
+                            <span class="fs-07rem fw-600 color-blue-light">.000000</span>
+                            <span class="fs-08rem fw-600 color-blue-light">&nbsp;XPX </span>
+                            <img class="icono"
+                              src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-12">
+                        <hr class="mb-0rem">
+                      </div>
+                    </div>
+                  </ng-container>
+                </div>
+              </div>
+            </div>
+
+            <!-- Action Required -->
+            <div class="col-11 col-md-4 col-lg-3 ml-2rem pt-1rem">
+              <div class="row">
+                <div
+                  class="col-12 background-orange h-100px d-flex align-items-center justify-content-center txt-a-center">
+                  <div class="row">
+                    <div class="col-12">
+                      <span class="fw-600 color-white">Action</span>
+                    </div>
+                    <div class="col-12">
+                      <span class="fw-600 color-white">Required</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-12 pt-2rem background-gray-light">
+                  <div class="row lh-1em">
+                    <div class="col-12">
+                      <span class="fw-600 fs-07rem">My cosignature account: </span>
+                    </div>
+                    <div class="col-12">
+                      <span class="fs-07rem">VDAE5R-ORTVTM-Y6M5EU-MLYQ5E-LQ7WWX-2AIFRO-Z3YN</span>
+                    </div>
+                  </div>
+
+                  <div class="row lh-1em mt-2rem">
+                    <div class="col-12">
+                      <span class="fw-600 fs-07rem">(12) Others cosignatories</span>
+                    </div>
+                  </div>
+
+                  <div class="row lh-1em mt-2rem mb-2rem">
+                    <div class="col-12">
+                      <span class="fw-600 fs-07rem">Hash: </span>
+                    </div>
+                    <div class="col-12">
+                      <span
+                        class="fs-07rem w-w-b-w ">F416F7FA16AB94878D135F7AFD815A5DAB664F0588FD90592A7DB082C28A438C</span>
+                    </div>
+                  </div>
+
+                  <div class="row lh-1em mt-2rem">
+                    <div class="col-12">
+                      <span class="fw-600 fs-07rem">Height: </span>
+                    </div>
+                    <div class="col-12">
+                      <span class="fs-07rem w-w-b-w ">506837</span>
+                    </div>
+                  </div>
+
+                  <div class="row lh-1em mt-1rem mb-2rem">
+                    <div class="col-12">
+                      <span class="fw-600 fs-07rem">Type: </span>
+                    </div>
+                    <div class="col-12">
+                      <span class="fs-07rem w-w-b-w ">4154</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
