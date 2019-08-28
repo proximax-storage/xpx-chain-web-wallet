@@ -540,7 +540,11 @@ export class CreateTransferComponent implements OnInit {
       } else {
         let x = false;
         this.boxOtherMosaics.forEach(element => {
-          if (element.id === '' || element.amount === '' || Number(element.amount) === 0) {
+          if (element.id === '') {
+            this.sharedService.showWarning('', 'You must select a mosaic and place the quantity');
+            x = true;
+          } else if (element.amount === '' || Number(element.amount) === 0) {
+            this.sharedService.showWarning('', 'The quantity of mosaics is missing');            
             x = true;
           }
         });

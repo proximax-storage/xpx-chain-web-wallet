@@ -23,6 +23,8 @@ import { SelectionAccountTypeComponent } from './views/account/selection-account
 import { AddContactsComponent } from './views/address-book/add-contacts/add-contacts.component';
 import { ConvertAccountMultisignComponent } from './views/multi-sign/convert-account-multisign/convert-account-multisign.component';
 import { EditAccountMultisignComponent } from './views/multi-sign/edit-account-multisign/edit-account-multisign.component';
+import { AccountsListComponent } from './views/swap/accounts-list/accounts-list.component';
+import { Nis1AccountsListComponent } from './views/swap/nis1-accounts-list/nis1-accounts-list.component';
 
 @NgModule({
   declarations: [
@@ -46,7 +48,9 @@ import { EditAccountMultisignComponent } from './views/multi-sign/edit-account-m
     SelectionAccountTypeComponent,
     AddContactsComponent,
     ConvertAccountMultisignComponent,
-    EditAccountMultisignComponent
+    EditAccountMultisignComponent,
+    AccountsListComponent,
+    Nis1AccountsListComponent
   ],
   imports: [
     CoreModule,

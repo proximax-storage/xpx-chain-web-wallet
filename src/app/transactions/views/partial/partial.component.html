@@ -1,13 +1,13 @@
 <div class="container mt-3rem mb-1rem animated fadeIn">
   <div class="row lh-01em">
     <div class="col-12 col-md-8">
-      <span class="fs-1rem txt-a-center line-h-1-2em color-grey">{{moduleName}}</span>
-      <span class="fs-1rem txt-a-center line-h-1-2em color-grey"> > </span>
-      <span class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">{{componentName}}</span>
+      <span class="fs-095rem txt-a-center line-h-1-2em color-grey">{{moduleName}}</span>
+      <span class="fs-095rem txt-a-center line-h-1-2em color-grey"> > </span>
+      <span class="fs-095rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">{{componentName}}</span>
     </div>
 
     <div class="col-12 col-md-4 d-flex justify-content-start justify-content-md-end">
-      <a class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio" [routerLink]="[goBack]">
+      <a class="fs-08rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio" [routerLink]="[goBack]">
         <span>Back to Services</span>
       </a>
     </div>
@@ -60,7 +60,7 @@
         <table mdbTable mdbTableScroll scrollX="true" striped="true">
           <thead>
             <tr class="header-backg">
-              <th *ngFor="let head of headElements" scope="col" class="fs-08rem txt-a-center ">{{head}} </th>
+              <th *ngFor="let head of headElements" scope="col" class="fs-075rem txt-a-center ">{{head}} </th>
             </tr>
           </thead>
 
@@ -68,11 +68,11 @@
             <ng-container *ngFor="let data of elements | stringFilter: filter | paginate: config">
               <tr class="white-space-pre cursor-p" mdbTableCol
                 [ngClass]="!data.statusBoolean ? 'background-pending': ''" (click)="modalPartialTransaction.show();">
-                <td class="fs-075rem" [ngClass]="data.statusBoolean ? 'fw-600': ''">{{data.status}}</td>
-                <td class="fs-075rem">{{data.deadline}}</td>
-                <td class="fs-075rem">{{data.fee}}</td>
-                <td class="fs-075rem">{{data.accountLinked}}</td>
-                <td class="fs-075rem">{{data.hash}}</td>
+                <td class="fs-07rem" [ngClass]="data.statusBoolean ? 'fw-600': ''">{{data.status}}</td>
+                <td class="fs-07rem">{{data.deadline}}</td>
+                <td class="fs-07rem">{{data.fee}}</td>
+                <td class="fs-07rem">{{data.accountLinked}}</td>
+                <td class="fs-07rem">{{data.hash}}</td>
               </tr>
             </ng-container>
 
@@ -111,63 +111,63 @@
 
         <!--Body-->
         <div class="modal-body">
-          <div class="row d-flex justify-content-center ">
-            <div class="col-11 col-md-7 col-lg-8 pb-2rem">
+          <div class="row d-flex justify-content-center">
+            <div class="col-11 col-md-7">
               <div class="row">
                 <!-- Bonded & Deadline -->
                 <div class="col-12 lh-1em">
                   <span class="fw-600 fs-1-2rem">Bonded</span> <br>
-                  <span class="fs-08rem">Deadline: Mon, 25 Feb 2019 - 19:14:31 GTM</span>
+                  <span class="fs-075rem">Deadline: Mon, 25 Feb 2019 - 19:14:31 GTM</span>
                 </div>
 
                 <!-- Fee -->
-                <div class="col-12 mt-2rem">
-                  <span class="fw-600 fs-1rem"> Fee: </span>
-                  <span class="fs-1rem fw-600 color-blue-light">100</span>
-                  <span class="fs-08rem fw-600 color-blue-light">.000000</span>
-                  <span class="fs-1rem fw-600 color-blue-light"> XPX </span>
+                <div class="col-12 mt-1-5rem">
+                  <span class="fw-600 fs-095rem"> Fee: </span>
+                  <span class="fs-095rem fw-600 color-blue-light">100</span>
+                  <span class="fs-075rem fw-600 color-blue-light">.000000</span>
+                  <span class="fs-095rem fw-600 color-blue-light"> XPX </span>
                   <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
                 </div>
 
                 <!-- Message -->
                 <div class="col-12">
-                  <span class="fw-600 fs-09rem"> Message: </span>
-                  <span class="fs-08rem">Payment for services</span>
+                  <span class="fw-600 fs-08rem"> Message: </span>
+                  <span class="fs-075rem">Payment for services</span>
                 </div>
 
 
                 <!-- Title transactions & Separator -->
-                <div class="col-12 mt-2rem">
-                  <span class="fw-600 fs-1rem">Transactions</span>
+                <div class="col-12 mt-1-5rem">
+                  <span class="fw-600 fs-095rem">Transactions</span>
                   <hr class="mt-0">
                 </div>
 
                 <!-- ACCOUNTS -->
-                <div class="col-12 ml-08rem scroll-accounts">
+                <div class="col-12 ml-08rem scroll-accounts mb-1rem">
                   <!-- FROM & ACCOUNT -->
                   <ng-container>
                     <div class="row">
                       <div class="col-12 col-md-7 lh-1em">
-                        <span class="fw-600 fs-07rem">From: </span>
-                        <span class="fs-07rem">VDAE5R-ORTVTM-Y6M5EU-MLYQ5E-LQ7WWX-2AIFRO-Z3YN</span>
+                        <span class="fw-600 fs-065rem">From: </span>
+                        <span class="fs-065rem">VDAE5R-ORTVTM-Y6M5EU-MLYQ5E-LQ7WWX-2AIFRO-Z3YN</span>
                       </div>
                     </div>
 
                     <div class="row">
                       <div class="col-12 col-md-7 lh-1em mt-05rem">
-                        <span class="fw-600 fs-07rem">To: </span>
-                        <span class="fs-07rem">VDAE5R-ORTVTM-Y6M5EU-MLYQ5E-LQ7WWX-2AIFRO-Z3YN</span>
+                        <span class="fw-600 fs-065rem">To: </span>
+                        <span class="fs-065rem">VDAE5R-ORTVTM-Y6M5EU-MLYQ5E-LQ7WWX-2AIFRO-Z3YN</span>
                       </div>
 
                       <div class="col-12 col-md-5 lh-1em mt-05rem d-flex align-items-end">
                         <div class="row">
                           <div class="col-12">
-                            <span class="fw-600 fs-08rem">Amount: &nbsp;</span>
+                            <span class="fw-600 fs-075rem">Amount: &nbsp;</span>
                           </div>
                           <div class="col-12">
-                            <span class="fs-08rem fw-600 color-blue-light">100</span>
-                            <span class="fs-07rem fw-600 color-blue-light">.000000</span>
-                            <span class="fs-08rem fw-600 color-blue-light">&nbsp;XPX </span>
+                            <span class="fs-075rem fw-600 color-blue-light">100</span>
+                            <span class="fs-065rem fw-600 color-blue-light">.000000</span>
+                            <span class="fs-075rem fw-600 color-blue-light">&nbsp;XPX </span>
                             <img class="icono"
                               src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
                           </div>
@@ -186,26 +186,26 @@
                   <ng-container>
                     <div class="row mt-1rem">
                       <div class="col-12 col-md-7 lh-1em">
-                        <span class="fw-600 fs-07rem">From: </span>
-                        <span class="fs-07rem">VDAE5R-ORTVTM-Y6M5EU-MLYQ5E-LQ7WWX-2AIFRO-Z3YN</span>
+                        <span class="fw-600 fs-065rem">From: </span>
+                        <span class="fs-065rem">VDAE5R-ORTVTM-Y6M5EU-MLYQ5E-LQ7WWX-2AIFRO-Z3YN</span>
                       </div>
                     </div>
 
                     <div class="row">
                       <div class="col-12 col-md-7 lh-1em mt-05rem">
-                        <span class="fw-600 fs-07rem">To: </span>
-                        <span class="fs-07rem">VDAE5R-ORTVTM-Y6M5EU-MLYQ5E-LQ7WWX-2AIFRO-Z3YN</span>
+                        <span class="fw-600 fs-065rem">To: </span>
+                        <span class="fs-065rem">VDAE5R-ORTVTM-Y6M5EU-MLYQ5E-LQ7WWX-2AIFRO-Z3YN</span>
                       </div>
 
                       <div class="col-12 col-md-5 lh-1em mt-05rem d-flex align-items-end">
                         <div class="row">
                           <div class="col-12">
-                            <span class="fw-600 fs-08rem">Amount: &nbsp;</span>
+                            <span class="fw-600 fs-075rem">Amount: &nbsp;</span>
                           </div>
                           <div class="col-12">
-                            <span class="fs-08rem fw-600 color-blue-light">100</span>
-                            <span class="fs-07rem fw-600 color-blue-light">.000000</span>
-                            <span class="fs-08rem fw-600 color-blue-light">&nbsp;XPX </span>
+                            <span class="fs-075rem fw-600 color-blue-light">100</span>
+                            <span class="fs-065rem fw-600 color-blue-light">.000000</span>
+                            <span class="fs-075rem fw-600 color-blue-light">&nbsp;XPX </span>
                             <img class="icono"
                               src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
                           </div>
@@ -224,26 +224,26 @@
                   <ng-container>
                     <div class="row mt-1rem">
                       <div class="col-12 col-md-7 lh-1em">
-                        <span class="fw-600 fs-07rem">From: </span>
-                        <span class="fs-07rem">VDAE5R-ORTVTM-Y6M5EU-MLYQ5E-LQ7WWX-2AIFRO-Z3YN</span>
+                        <span class="fw-600 fs-065rem">From: </span>
+                        <span class="fs-065rem">VDAE5R-ORTVTM-Y6M5EU-MLYQ5E-LQ7WWX-2AIFRO-Z3YN</span>
                       </div>
                     </div>
 
                     <div class="row">
                       <div class="col-12 col-md-7 lh-1em mt-05rem">
-                        <span class="fw-600 fs-07rem">To: </span>
-                        <span class="fs-07rem">VDAE5R-ORTVTM-Y6M5EU-MLYQ5E-LQ7WWX-2AIFRO-Z3YN</span>
+                        <span class="fw-600 fs-065rem">To: </span>
+                        <span class="fs-065rem">VDAE5R-ORTVTM-Y6M5EU-MLYQ5E-LQ7WWX-2AIFRO-Z3YN</span>
                       </div>
 
                       <div class="col-12 col-md-5 lh-1em mt-05rem d-flex align-items-end">
                         <div class="row">
                           <div class="col-12">
-                            <span class="fw-600 fs-08rem">Amount: &nbsp;</span>
+                            <span class="fw-600 fs-075rem">Amount: &nbsp;</span>
                           </div>
                           <div class="col-12">
-                            <span class="fs-08rem fw-600 color-blue-light">100</span>
-                            <span class="fs-07rem fw-600 color-blue-light">.000000</span>
-                            <span class="fs-08rem fw-600 color-blue-light">&nbsp;XPX </span>
+                            <span class="fs-075rem fw-600 color-blue-light">100</span>
+                            <span class="fs-065rem fw-600 color-blue-light">.000000</span>
+                            <span class="fs-075rem fw-600 color-blue-light">&nbsp;XPX </span>
                             <img class="icono"
                               src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
                           </div>
@@ -262,26 +262,26 @@
                   <ng-container>
                     <div class="row mt-1rem">
                       <div class="col-12 col-md-7 lh-1em">
-                        <span class="fw-600 fs-07rem">From: </span>
-                        <span class="fs-07rem">VDAE5R-ORTVTM-Y6M5EU-MLYQ5E-LQ7WWX-2AIFRO-Z3YN</span>
+                        <span class="fw-600 fs-065rem">From: </span>
+                        <span class="fs-065rem">VDAE5R-ORTVTM-Y6M5EU-MLYQ5E-LQ7WWX-2AIFRO-Z3YN</span>
                       </div>
                     </div>
 
                     <div class="row">
                       <div class="col-12 col-md-7 lh-1em mt-05rem">
-                        <span class="fw-600 fs-07rem">To: </span>
-                        <span class="fs-07rem">VDAE5R-ORTVTM-Y6M5EU-MLYQ5E-LQ7WWX-2AIFRO-Z3YN</span>
+                        <span class="fw-600 fs-065rem">To: </span>
+                        <span class="fs-065rem">VDAE5R-ORTVTM-Y6M5EU-MLYQ5E-LQ7WWX-2AIFRO-Z3YN</span>
                       </div>
 
                       <div class="col-12 col-md-5 lh-1em mt-05rem d-flex align-items-end">
                         <div class="row">
                           <div class="col-12">
-                            <span class="fw-600 fs-08rem">Amount: &nbsp;</span>
+                            <span class="fw-600 fs-075rem">Amount: &nbsp;</span>
                           </div>
                           <div class="col-12">
-                            <span class="fs-08rem fw-600 color-blue-light">100</span>
-                            <span class="fs-07rem fw-600 color-blue-light">.000000</span>
-                            <span class="fs-08rem fw-600 color-blue-light">&nbsp;XPX </span>
+                            <span class="fs-075rem fw-600 color-blue-light">100</span>
+                            <span class="fs-065rem fw-600 color-blue-light">.000000</span>
+                            <span class="fs-075rem fw-600 color-blue-light">&nbsp;XPX </span>
                             <img class="icono"
                               src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
                           </div>
@@ -300,7 +300,7 @@
             </div>
 
             <!-- Action Required -->
-            <div class="col-11 col-md-4 col-lg-3 ml-2rem pt-1rem">
+            <div class="col-11 col-md-4 ml-2rem">
               <div class="row">
                 <div
                   class="col-12 background-orange h-100px d-flex align-items-center justify-content-center txt-a-center">
@@ -314,47 +314,47 @@
                   </div>
                 </div>
 
-                <div class="col-12 pt-2rem background-gray-light">
+                <div class="col-12 pt-1rem background-gray-light">
                   <div class="row lh-1em">
                     <div class="col-12">
-                      <span class="fw-600 fs-07rem">My cosignature account: </span>
+                      <span class="fw-600 fs-065rem">My cosignature account: </span>
                     </div>
                     <div class="col-12">
-                      <span class="fs-07rem">VDAE5R-ORTVTM-Y6M5EU-MLYQ5E-LQ7WWX-2AIFRO-Z3YN</span>
-                    </div>
-                  </div>
-
-                  <div class="row lh-1em mt-2rem">
-                    <div class="col-12">
-                      <span class="fw-600 fs-07rem">(12) Others cosignatories</span>
+                      <span class="fs-065rem">VDAE5R-ORTVTM-Y6M5EU-MLYQ5E-LQ7WWX-2AIFRO-Z3YN</span>
                     </div>
                   </div>
 
-                  <div class="row lh-1em mt-2rem mb-2rem">
+                  <div class="row lh-1em mt-1rem">
                     <div class="col-12">
-                      <span class="fw-600 fs-07rem">Hash: </span>
+                      <span class="fw-600 fs-065rem">(12) Others cosignatories</span>
+                    </div>
+                  </div>
+
+                  <div class="row lh-1em mt-1rem">
+                    <div class="col-12">
+                      <span class="fw-600 fs-065rem">Hash: </span>
                     </div>
                     <div class="col-12">
                       <span
-                        class="fs-07rem w-w-b-w ">F416F7FA16AB94878D135F7AFD815A5DAB664F0588FD90592A7DB082C28A438C</span>
+                        class="fs-065rem w-w-b-w ">F416F7FA16AB94878D135F7AFD815A5DAB664F0588FD90592A7DB082C28A438C</span>
                     </div>
                   </div>
 
-                  <div class="row lh-1em mt-2rem">
+                  <div class="row lh-1em mt-1rem">
                     <div class="col-12">
-                      <span class="fw-600 fs-07rem">Height: </span>
+                      <span class="fw-600 fs-065rem">Height: </span>
                     </div>
                     <div class="col-12">
-                      <span class="fs-07rem w-w-b-w ">506837</span>
+                      <span class="fs-065rem w-w-b-w ">506837</span>
                     </div>
                   </div>
 
-                  <div class="row lh-1em mt-1rem mb-2rem">
+                  <div class="row lh-1em mt-01rem mb-1rem">
                     <div class="col-12">
-                      <span class="fw-600 fs-07rem">Type: </span>
+                      <span class="fw-600 fs-065rem">Type: </span>
                     </div>
                     <div class="col-12">
-                      <span class="fs-07rem w-w-b-w ">4154</span>
+                      <span class="fs-065rem w-w-b-w ">4154</span>
                     </div>
                   </div>
                 </div>

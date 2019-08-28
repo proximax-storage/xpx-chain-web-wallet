@@ -22,6 +22,7 @@ import { AddContactsComponent } from './views/address-book/add-contacts/add-cont
 import { CreateMultiSignatureComponent } from './views/multi-sign/components/create-multi-signature/create-multi-signature.component';
 import { ConvertAccountMultisignComponent } from './views/multi-sign/convert-account-multisign/convert-account-multisign.component';
 import { EditAccountMultisignComponent } from './views/multi-sign/edit-account-multisign/edit-account-multisign.component';
+import { Nis1AccountsListComponent } from './views/swap/nis1-accounts-list/nis1-accounts-list.component';
 
 const routes: Routes = [
   {
@@ -262,6 +263,16 @@ const routes: Routes = [
       meta: {
         title: 'viewAllAccount.title',
         description: 'viewAllAccount.text',
+        override: true,
+      }
+    }
+  }, {
+    path: AppConfig.routes.nis1AccountList,
+    component: Nis1AccountsListComponent,
+    data: {
+      meta: {
+        title: 'nis1AccountList.title',
+        description: 'nis1AccountList.text',
         override: true,
       }
     }

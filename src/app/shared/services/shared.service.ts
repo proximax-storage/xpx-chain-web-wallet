@@ -15,6 +15,9 @@ export class SharedService {
       minLength: 2, maxLength: 30
     },
     namespaceName: {
+      minLength: 3, maxLength: 16
+    },
+    subNamespaceName: {
       minLength: 3, maxLength: 64
     },
     privateKey: {
@@ -131,6 +134,10 @@ export interface ConfigurationForm {
     maxLength: number;
   };
   namespaceName?: {
+    minLength: number;
+    maxLength: number;
+  };
+  subNamespaceName?: {
     minLength: number;
     maxLength: number;
   };
