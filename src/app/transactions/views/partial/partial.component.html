@@ -65,14 +65,14 @@
           </thead>
 
           <tbody class="background-white">
-            <ng-container *ngFor="let data of elements | stringFilter: filter | paginate: config">
-              <tr class="white-space-pre cursor-p" mdbTableCol
-                [ngClass]="!data.statusBoolean ? 'background-pending': ''" (click)="modalPartialTransaction.show();">
-                <td class="fs-07rem" [ngClass]="data.statusBoolean ? 'fw-600': ''">{{data.status}}</td>
-                <td class="fs-07rem">{{data.deadline}}</td>
-                <td class="fs-07rem">{{data.fee}}</td>
-                <td class="fs-07rem">{{data.accountLinked}}</td>
-                <td class="fs-07rem">{{data.hash}}</td>
+            <ng-container *ngFor="let data of aggregateTransactions | stringFilter: filter | paginate: config">
+              <tr class="white-space-pre cursor-p" mdbTableCol [ngClass]="!data ? 'background-pending': ''"
+                (click)="modalPartialTransaction.show();">
+                <!-- <td class="fs-07rem" [ngClass]="data ? 'fw-600': ''">{{data.status}}</td> -->
+                <td class="fs-07rem">{{data.transactionInfo.hash}}</td>
+                <td class="fs-07rem">{{data.maxFee.compact()}}</td>
+                <td class="fs-07rem">{{data.signer.address.pretty()}}</td>
+                <td class="fs-07rem">{{data.transactionInfo.hash}}</td>
               </tr>
             </ng-container>
 
@@ -299,8 +299,15 @@
               </div>
             </div>
 
+
             <!-- Action Required -->
             <div class="col-11 col-md-4 ml-2rem">
+              <div class="row d-block d-md-none">
+                <div class="col-12">
+                  <hr>
+                </div>
+              </div>
+
               <div class="row">
                 <div
                   class="col-12 background-orange h-100px d-flex align-items-center justify-content-center txt-a-center">

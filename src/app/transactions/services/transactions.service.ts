@@ -176,7 +176,6 @@ export class TransactionsService {
       }
     }
 
-
     const keyType = this.getNameTypeTransaction(transaction.type);
     if (keyType !== undefined && isValid) {
       let recipientRentalFeeSink = '';

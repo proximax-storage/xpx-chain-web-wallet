@@ -4,8 +4,9 @@ import { PaginationInstance } from 'ngx-pagination';
 import { WalletService, AccountsInfoInterface } from 'src/app/wallet/services/wallet.service';
 import { Subscription } from 'rxjs';
 import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
-import { PublicAccount } from 'tsjs-xpx-chain-sdk';
+import { PublicAccount, AggregateTransaction } from 'tsjs-xpx-chain-sdk';
 import { first } from 'rxjs/operators';
+import { TransactionsInterface } from '../../services/transactions.service';
 
 @Component({
   selector: 'app-partial',
@@ -14,7 +15,7 @@ import { first } from 'rxjs/operators';
 })
 export class PartialComponent implements OnInit {
 
-
+  aggregateTransactions: TransactionsInterface[] = [];
   componentName = 'Partial';
   config: PaginationInstance = {
     id: 'advanced',
@@ -59,7 +60,7 @@ export class PartialComponent implements OnInit {
     },
   ];
 
-  headElements = ['Status', 'Deadline', 'Fee', 'Account linked to the transaction', 'Hash'];
+  headElements = ['Deadline', 'Fee', 'Account linked to the transaction', 'Hash'];
   objectKeys = Object.keys;
   subscription: Subscription[] = [];
 
@@ -77,7 +78,7 @@ export class PartialComponent implements OnInit {
   ngOnInit() {
     this.subscription.push(this.walletService.getAccountsInfo$().subscribe(
       (next: AccountsInfoInterface[]) => {
-        console.log(next);
+        console.log('getAccountsInfo ----> ', next);
         if (next) {
           const publicsAccounts: PublicAccount[] = [];
           next.forEach((element: AccountsInfoInterface) => {
@@ -117,8 +118,15 @@ export class PartialComponent implements OnInit {
   getAggregateBondedTransactions(publicsAccounts: PublicAccount[]) {
     publicsAccounts.forEach(publicAccount => {
       this.proximaxProvider.getAggregateBondedTransactions(publicAccount).pipe(first()).subscribe(
-        next => {
-          console.log('Get aggregate bonded --->', next);
+        aggregateTransaction => {
+          console.log('Get aggregate bonded --->', aggregateTransaction);
+          aggregateTransaction.forEach((a: AggregateTransaction) => {
+            const existTransction = this.aggregateTransactions.find(x => x.transactionInfo.hash === a.transactionInfo.hash);
+            console.log('----> existTransction <-----', existTransction);
+            if (!existTransction) {
+              this.aggregateTransactions.push(a);
+            }
+          });
         }
       );
     });
