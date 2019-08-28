@@ -451,6 +451,26 @@ export class ServicesBoxComponent implements OnInit {
         },
         true,
         'disable-module'
+      ),
+
+      // SUPERCONTRACTS
+      this.services.buildStructureService(
+        'Swap Process',
+        true,
+        'Transfer your xpx from your NIS wallet to catapult wallet',
+        'icon-supercontracts-green-60h-proximax-sirius-wallet.svg',
+        '',
+        {
+          transfer: this.services.buildStructureService(
+            'TRANSFER ASSETS',
+            false,
+            '',
+            '',
+            AppConfig.routes.nis1AccountList
+          ),
+        },
+        true,
+        'disable-module'
       )
     ];
   }

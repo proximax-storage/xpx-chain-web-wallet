@@ -42,6 +42,7 @@ export const AppConfig: Config = {
     signMultiSigTransactions: 'sign-multisignature-transactions',
     viewAllAccount: 'view-all-account',
     walletCreated: 'wallet-created',
+    nis1AccountList: 'nis1-account-list'
   }
 };
 
@@ -89,5 +90,6 @@ export interface Config {
     signMultiSigTransactions: string;
     viewAllAccount: string;
     walletCreated: string;
+    nis1AccountList: string;
   };
 }
