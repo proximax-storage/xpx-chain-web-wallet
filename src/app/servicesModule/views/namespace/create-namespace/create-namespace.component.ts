@@ -461,7 +461,7 @@ export class CreateNamespaceComponent implements OnInit {
     // namespaceRoot ValueChange
     this.namespaceForm.get('namespaceRoot').valueChanges.subscribe(namespaceRoot => {
       if (namespaceRoot === null || namespaceRoot === undefined) {
-        this.namespaceForm.get('namespaceRoot').setValue('');
+        this.namespaceForm.get('namespaceRoot').setValue('1');
       } else {
         // console.log('namespaceRoot', namespaceRoot);
         if (namespaceRoot === '' || namespaceRoot === '1') {

@@ -466,7 +466,7 @@ export class ServicesBoxComponent implements OnInit {
             false,
             '',
             '',
-            ''
+            AppConfig.routes.nis1AccountList
           ),
         },
         true,
