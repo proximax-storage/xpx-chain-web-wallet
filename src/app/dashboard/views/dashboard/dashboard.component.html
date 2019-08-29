@@ -1,80 +1,79 @@
 <div class="container-fluid">
   <div class="row">
-    <div class="col-12 col-sm-11 mx-auto">
+    <div class="col-12 col-md-8 mx-auto">
       <!-- BALANCE & TRANSACTIONS -->
-      <div class="row mt-1rem mb-2rem animated fadeIn">
-        <div class="col-12 col-md-7 col-lg-7 mt-2rem d-flex align-items-center">
-          <div class="row">
-            <div class="col-12 col-sm-2 col-md-3 col-lg-2 d-flex align-items-center ">
+      <div class="row mt-2rem">
+        <div class="col-12 col-sm-8 col-md-7 col-lg-7 col-xl-5 mx-auto pb-2rem">
+          <div class="row mx-auto">
+            <!-- CODE QR -->
+            <div class="col-3 col-sm-3 col-lg-3 d-flex align-items-center">
               <figure style="margin: 0">
                 <img src="assets/images/img/icon-qr-code-proximax-sirius-wallet.svg" alt="" width="60">
               </figure>
             </div>
 
             <!-- DEFAULT ACCOUNT & BALANCE -->
-            <div class="col-12 col-sm-10 col-md-9 col-lg-10">
-              <div class="d-flex flex-column justify-content-between">
-                <span class="fs-09rem color-blue-intermedio">
-                  <!-- <span style="color: #2a2e32 !important;">DEFAULT ACCOUNT <br> </span> -->
-                  <a [routerLink]="[viewDetailsAccount+currentAccount.name]"
-                    class="cursor-p">{{currentAccount.name}}</a>
-                </span>
+            <div class="col-9 col-sm-9 col-lg-9">
+              <div class="row">
+                <div class="col-12">
+                  <div>
+                    <span class="fs-09rem color-blue-intermedio">
+                      <a [routerLink]="[viewDetailsAccount+currentAccount.name]"
+                        class="cursor-p">{{currentAccount.name}}</a>
+                    </span>
+                  </div>
+                </div>
 
                 <!-- BALANCE E ICONO XPX  -->
-                <div class="row">
-                  <div class="col-2 col-md-2 col-lg-1">
+                <div class="col-12">
+                  <div>
                     <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
-                      width="20" alt="">
-                  </div>
-
-                  <div class="col-10 col-md-10 col-lg-11">
+                      width="20">
                     <span class="fs-1rem">&nbsp;{{vestedBalance}}</span>
                   </div>
                 </div>
 
                 <!-- BALANCE USD  -->
-                <div class="row">
-                  <div class="col-2 col-md-2 col-lg-1">
-                  </div>
-
-                  <div class="col-10 col-md-10 col-lg-11">
+                <div class="col-12">
+                  <div>
+                    <img class="icono" src="assets/images/img/icon-us-dollar-green-16h-proximax-sirius-wallet.svg"
+                      width="20" alt="">
                     <span class="fs-1rem">&nbsp;USD 0.00</span>
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
 
-                <!-- Current address -->
-                <div class="row d-flex align-items-center">
-                  <div class="d-flex justify-content-between">
-                    <div class="col-11">
-                      <span class="fs-07rem f-s-dashboard-transactions">{{currentAccount.address}}</span>
-                    </div>
-                    <div class="col-1">
-                      <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="cursor-p"
-                        alt="Copy" width="20" (click)="copyMessage('Address')" ngxClipboard
-                        [cbContent]="currentAccount.address">
-                    </div>
-                  </div>
-                </div>
+          <!-- ADDRESS  -->
+          <div class="row">
+            <div class="col-12">
+              <div>
+                <span class="fs-06rem f-s-dashboard-transactions">{{currentAccount.address}} &nbsp;</span>
+                <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="icono cursor-p"
+                  alt="Copy" width="20" (click)="copyMessage('Address')" ngxClipboard
+                  [cbContent]="currentAccount.address">
               </div>
             </div>
           </div>
         </div>
 
         <!-- TRANSACTIONS CONFIRMED & UNCONFIRMED -->
-        <div class="col-12 col-md-5 col-lg-5 mt-2rem">
+        <div class="col-12 col-sm-8 col-md-5 col-lg-5 col-xl-7 mx-auto pb-2rem">
           <div class="d-flex flex-column">
             <div class="d-flex justify-content-center">
               <span class="fs-1-3rem fw-600">{{cantConfirmed + cantUnconfirmed}} Transactions</span>
             </div>
           </div>
+
           <div class="row">
-            <div class="col-12 col-lg-6">
+            <div class="col-12 col-xl-6">
               <button mdbBtn type="button" rounded="true" mdbWavesEffect (click)="selectTransactions(1)"
                 class="f-w-600  w-100porcent background-btn pl-2rem pr-2rem" size="sm">
                 <span class="fs-1-2em color-white">CONFIRMED: <span class="fw-400">{{cantConfirmed}}</span></span>
               </button>
             </div>
-            <div class="col-12 col-lg-6">
+            <div class="col-12 col-xl-6">
               <button mdbBtn type="button" rounded="true" mdbWavesEffect
                 [disabled]="transactionsUnconfirmed.length === 0" (click)="selectTransactions(0)"
                 class="f-w-600  w-100porcent background-btn pl-2rem pr-2rem" size="sm">
@@ -84,121 +83,123 @@
           </div>
         </div>
       </div>
+    </div>
+  </div>
+</div>
 
-      <!-- FIELD SEARCH -->
-      <div class="row">
-        <div class="col-12 col-sm-10 mx-auto">
-          <input [(ngModel)]="searchTransaction" type="text" autocomplete="off" id="searchTransaction"
-            class="md-form form-control" mdbInputDirective [validateSuccess]="false" [validateError]="false"
-            placeholder="Search">
+<div class="container-fluid">
+  <!-- FIELD SEARCH -->
+  <div class="row">
+    <div class="col-12 col-sm-10 mx-auto">
+      <input [(ngModel)]="searchTransaction" type="text" autocomplete="off" id="searchTransaction"
+        class="md-form form-control" mdbInputDirective [validateSuccess]="false" [validateError]="false"
+        placeholder="Search">
+    </div>
+  </div>
+
+  <!-- Searching and icon reload -->
+  <div class="row mt-2rem txt-a-right">
+    <div class="col-11 col-sm-11 col-lg-10 mx-auto">
+      <!-- Icon Reload -->
+      <ng-container *ngIf="iconReloadDashboard && !searching">
+        <div class="col-12 t-a-r">
+          <i class="fa fa-repeat btn-reload cursor-pointer" aria-hidden="true" mdbTooltip="Reload" placement="bottom"
+            (click)="getRecentTransactions(true)"></i>
         </div>
-      </div>
+      </ng-container>
+    </div>
+  </div>
 
-      <!-- Searching and icon reload -->
-      <div class="row mt-2rem txt-a-right">
-        <div class="col-11 col-sm-11 col-lg-10 mx-auto">
-          <!-- Icon Reload -->
-          <ng-container *ngIf="iconReloadDashboard && !searching">
-            <div class="col-12 t-a-r">
-              <i class="fa fa-repeat btn-reload cursor-pointer" aria-hidden="true" mdbTooltip="Reload"
-                placement="bottom" (click)="getRecentTransactions(true)"></i>
-            </div>
-          </ng-container>
-        </div>
-      </div>
+  <!-- TABLE -->
+  <div class="row mt-05rem">
+    <div class="col-12 mx-auto">
+      <div class="table-responsive table-hover">
+        <table mdbTable #tableEl="mdbTable" id="mdbTable" striped="true"
+          class="table table-hover table-bordered table-hover table-sm z-depth-0" cellspacing="0" width="100%"
+          borderless="true">
 
-      <!-- TABLE -->
-      <div class="row mt-05rem">
-        <div class="col-12 mx-auto">
-          <div class="table-responsive table-hover">
-            <table mdbTable #tableEl="mdbTable" id="mdbTable" striped="true"
-              class="table table-hover table-bordered table-hover table-sm z-depth-0" cellspacing="0" width="100%"
-              borderless="true">
+          <!--TABLE HEAD-->
+          <thead>
+            <tr class="header-backg">
+              <ng-container *ngFor="let head of headElements; let i = index">
+                <th scope="col" class="text-center fw-400 th-sm">{{head}}</th>
+              </ng-container>
+            </tr>
+          </thead>
 
-              <!--TABLE HEAD-->
-              <thead>
-                <tr class="header-backg">
-                  <ng-container *ngFor="let head of headElements; let i = index">
-                    <th scope="col" class="text-center fw-400 th-sm">{{head}}</th>
-                  </ng-container>
-                </tr>
-              </thead>
+          <!--TABLE BODY-->
+          <tbody class="background-white">
+            <ng-container *ngFor="let el of transactions | paginate: { itemsPerPage: 10, currentPage: p }">
+              <tr class="cursor-p" (click)="dataSelected = el; modalDashboard.show();">
+                <!-- Type transaction -->
+                <th class="th-sm fs-0-8-rem" scope="row description-dark-green">{{el.nameType}}</th>
 
-              <!--TABLE BODY-->
-              <tbody class="background-white">
-                <ng-container *ngFor="let el of transactions | paginate: { itemsPerPage: 10, currentPage: p }">
-                  <tr class="cursor-p" (click)="dataSelected = el; modalDashboard.show();">
-                    <!-- Type transaction -->
-                    <th class="th-sm fs-0-8-rem" scope="row description-dark-green">{{el.nameType}}</th>
+                <!-- timestamp -->
+                <td class="th-sm description-dark-green fs-0-8-rem">{{el.timestamp}}</td>
 
-                    <!-- timestamp -->
-                    <td class="th-sm description-dark-green fs-0-8-rem">{{el.timestamp}}</td>
+                <!-- fee -->
+                <td class="text-center th-sm description-dark-green fs-0-8-rem">{{el.fee}}</td>
+                <!-- address -->
+                <td class="text-center th-md description-dark-green fs-0-8-rem">
+                  <img src="assets/images/img/arrow-transaction-receive-green-proximax-sirius-explorer.svg" alt=""
+                    width="25" *ngIf="el.receive">
+                  <img src="assets/images/img/arrow-transaction-sender-orange-proximax-sirius-explorer.svg" alt=""
+                    width="25" *ngIf="!el.receive">
+                </td>
+                <!-- address -->
+                <td class="th-md description-dark-green fs-0-8-rem">
+                  <span>{{el.senderAddress}}</span>
+                </td>
 
-                    <!-- fee -->
-                    <td class="text-center th-sm description-dark-green fs-0-8-rem">{{el.fee}}</td>
-                    <!-- address -->
-                    <td class="text-center th-md description-dark-green fs-0-8-rem">
-                      <img src="assets/images/img/arrow-transaction-receive-green-proximax-sirius-explorer.svg" alt=""
-                        width="25" *ngIf="el.receive">
-                      <img src="assets/images/img/arrow-transaction-sender-orange-proximax-sirius-explorer.svg" alt=""
-                        width="25" *ngIf="!el.receive">
-                    </td>
-                    <!-- address -->
-                    <td class="th-md description-dark-green fs-0-8-rem">
-                      <span>{{el.senderAddress}}</span>
-                    </td>
-
-                    <!-- recipíent -->
-                    <ng-container *ngIf="el?.recipientAddress !== null; else recipientRentalFee">
-                      <td class="th-md description-dark-green fs-0-8-rem">
-                        <span>{{el.recipientAddress}}</span>
-                      </td>
-                    </ng-container>
-
-                    <!-- recipient rental fee -->
-                    <ng-template #recipientRentalFee>
-                      <td class="th-sm description-dark-green fs-0-8-rem">
-                        <span>{{el.recipientRentalFeeSink}}</span>
-                      </td>
-                    </ng-template>
-                  </tr>
+                <!-- recipíent -->
+                <ng-container *ngIf="el?.recipientAddress !== null; else recipientRentalFee">
+                  <td class="th-md description-dark-green fs-0-8-rem">
+                    <span>{{el.recipientAddress}}</span>
+                  </td>
                 </ng-container>
 
-                <ng-container *ngIf="transactions.length === 0 && !searching">
-                  <tr>
-                    <td colspan="6" class="txt-a-center">nothing to show</td>
-                  </tr>
-                </ng-container>
-              </tbody>
-            </table>
-          </div>
-        </div>
+                <!-- recipient rental fee -->
+                <ng-template #recipientRentalFee>
+                  <td class="th-sm description-dark-green fs-0-8-rem">
+                    <span>{{el.recipientRentalFeeSink}}</span>
+                  </td>
+                </ng-template>
+              </tr>
+            </ng-container>
 
-        <div class="col-12 d-flex justify-content-center mx-auto">
-          <pagination-controls (pageChange)="p = $event"></pagination-controls>
-        </div>
-      </div>
-
-      <!-- Searching and icon reload -->
-      <div class="row mt-2rem">
-        <div class="col-11 col-sm-11 col-lg-10 mx-auto">
-          <!-- Searching -->
-          <ng-container *ngIf="searching">
-            <div class="col-12">
-              <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate">
-              </mdb-progress-bar>
-            </div>
-          </ng-container>
-        </div>
-      </div>
-
-
-      <div class="scroll-to-top" [ngClass]="{'show-scrollTop': windowScrolled}">
-        <a mdbBtn floating="true" size="md" mdbWavesEffect class="background-btn" (click)="scrollToTop()">
-          <i class="fa fa-angle-up" aria-hidden="true"></i>
-        </a>
+            <ng-container *ngIf="transactions.length === 0 && !searching">
+              <tr>
+                <td colspan="6" class="txt-a-center">nothing to show</td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
       </div>
     </div>
+
+    <div class="col-12 d-flex justify-content-center mx-auto">
+      <pagination-controls (pageChange)="p = $event"></pagination-controls>
+    </div>
+  </div>
+
+  <!-- Searching and icon reload -->
+  <div class="row mt-2rem">
+    <div class="col-11 col-sm-11 col-lg-10 mx-auto">
+      <!-- Searching -->
+      <ng-container *ngIf="searching">
+        <div class="col-12">
+          <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate">
+          </mdb-progress-bar>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+
+  <!-- Btn Top -->
+  <div class="scroll-to-top" [ngClass]="{'show-scrollTop': windowScrolled}">
+    <a mdbBtn floating="true" size="md" mdbWavesEffect class="background-btn" (click)="scrollToTop()">
+      <i class="fa fa-angle-up" aria-hidden="true"></i>
+    </a>
   </div>
 </div>
 
