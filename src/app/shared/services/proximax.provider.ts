@@ -40,7 +40,8 @@ import {
   AliasActionType,
   BlockchainHttp,
   NamespaceInfo,
-  MultisigAccountInfo
+  MultisigAccountInfo,
+  AggregateTransaction
 } from 'tsjs-xpx-chain-sdk';
 import { mergeMap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
@@ -344,6 +345,16 @@ export class ProximaxProvider {
     return this.namespaceHttp.getLinkedMosaicId(namespace);
   }
 
+  /**
+   *
+   *
+   * @param {PublicAccount} publicAccount
+   * @returns
+   * @memberof ProximaxProvider
+   */
+  getAggregateBondedTransactions(publicAccount: PublicAccount): Observable<AggregateTransaction[]> {
+    return this.accountHttp.aggregateBondedTransactions(publicAccount);
+  }
 
   /******************** FIN COW **********************/
 

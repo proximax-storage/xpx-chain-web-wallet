@@ -45,7 +45,7 @@ export class ServicesBoxComponent implements OnInit {
             AppConfig.routes.viewAllAccount,
           ), multiSign: this.services.buildStructureService(
             'MULTISIGN',
-            false,
+            true,
             '',
             '',
             AppConfig.routes.MultiSign,
@@ -458,7 +458,7 @@ export class ServicesBoxComponent implements OnInit {
         'Swap Process',
         true,
         'Transfer your xpx from your NIS wallet to catapult wallet',
-        'icon-supercontracts-green-60h-proximax-sirius-wallet.svg',
+        'icon-swap-process-green-60h-proximax-sirius-wallet.svg',
         '',
         {
           transfer: this.services.buildStructureService(

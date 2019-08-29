@@ -9,6 +9,7 @@
 .datatable-style {
   overflow-x: auto;
   display: block;
+  width: 100%;
 }
 
 @media (min-width: 0px) and (max-width: 370px) {

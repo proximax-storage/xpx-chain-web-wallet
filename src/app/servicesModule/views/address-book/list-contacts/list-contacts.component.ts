@@ -30,7 +30,7 @@ export class ListContactsComponent {
   searching = false;
   hideTable = false;
   labelRemove = '';
-
+  p = 1;
 
   constructor(
     private serviceModuleService: ServicesModuleService,
@@ -84,7 +84,7 @@ export class ListContactsComponent {
 
   /**
    * Method to delete contacts
-   * 
+   *
    * @memberof AddressBookComponent
    */
   deleteContact() {

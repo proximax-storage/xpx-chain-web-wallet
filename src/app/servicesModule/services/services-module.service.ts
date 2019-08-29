@@ -61,7 +61,7 @@ export class ServicesModuleService {
    */
   saveContacts(params: ContactsStorageInterface) {
     const dataStorage = (params.nameItem === '') ? this.getBooksAddress() : localStorage.getItem(`${environment.itemBooksAddress}-${params.nameItem}`);
-    const books = { label: params.name, value: params.address, walletContact: params.walletContact };
+    const books = { label: params.name, value: params.address.split('-').join(''), walletContact: params.walletContact };
     if (params.update) {
 
       const contactsFiltered = dataStorage.filter(element =>
