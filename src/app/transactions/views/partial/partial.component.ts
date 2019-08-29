@@ -22,12 +22,12 @@ export class PartialComponent implements OnInit {
     itemsPerPage: 10,
     currentPage: 1
   };
-
   configCustom: PaginationInstance = {
     id: 'custom',
     itemsPerPage: 1,
     currentPage: 1
   };
+
 
   dataSelected: TransactionsInterface = null;
   filter: string = '';
@@ -72,7 +72,7 @@ export class PartialComponent implements OnInit {
   headElements = ['Deadline', 'Fee', 'Account linked to the transaction', 'Hash'];
   objectKeys = Object.keys;
   subscription: Subscription[] = [];
-  p = 1;
+  typeTransactions: any;
 
   constructor(
     private proximaxProvider: ProximaxProvider,
@@ -86,6 +86,9 @@ export class PartialComponent implements OnInit {
    * @memberof PartialComponent
    */
   ngOnInit() {
+    this.typeTransactions = this.transactionService.getTypeTransactions();
+    console.log(this.typeTransactions);
+
     this.subscription.push(this.walletService.getAccountsInfo$().subscribe(
       (next: AccountsInfoInterface[]) => {
         console.log('getAccountsInfo ----> ', next);

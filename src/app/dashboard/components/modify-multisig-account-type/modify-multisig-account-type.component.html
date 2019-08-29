@@ -1,3 +1,122 @@
-<p>
-  modify-multisig-account-type works!
-</p>
+<div class="row">
+  <div class="col-12 lh-1em">
+    <span class="fw-600 fs-065rem">Deadline: </span>
+    <span class="fs-065rem w-w-b-w">{{transactionService.dateFormat(multisigAccount?.deadline)}}</span>
+  </div>
+</div>
+
+<div class="row mt-05rem">
+  <div class="col-12 lh-1em">
+    <span class="fw-600 fs-065rem">Type:
+    </span>
+    <span class="fs-065rem w-w-b-w">{{multisigAccount['type'].toString(16).toUpperCase()}}</span>
+  </div>
+</div>
+
+<div class="row mt-05rem">
+  <div class="col-12 lh-1em">
+    <span class="fw-600 fs-065rem">Height:
+    </span>
+    <span class="fs-065rem w-w-b-w">{{multisigAccount?.transactionInfo.height.compact()}}</span>
+  </div>
+</div>
+
+<div class="row mt-05rem">
+  <div class="col-12 lh-1em">
+    <span class="fw-600 fs-065rem">Aggregate id:
+    </span>
+    <span class="fs-065rem w-w-b-w">{{multisigAccount.transactionInfo.aggregateId}}</span>
+  </div>
+</div>
+
+<div class="row mt-05rem">
+  <div class="col-12 lh-1em">
+    <span class="fw-600 fs-065rem">Aggregate hash:
+    </span>
+    <span class="fs-065rem w-w-b-w">{{multisigAccount.transactionInfo.aggregateHash}}</span>
+  </div>
+</div>
+
+<div class="row mt-05rem">
+  <div class="col-12 lh-1em">
+    <span class="fw-600 fs-065rem">Signer Address: </span>
+    <span class="fs-065rem w-w-b-w">{{multisigAccount?.signer.address.pretty()}}</span>
+  </div>
+</div>
+
+<div class="row mt-05rem">
+  <div class="col-12 lh-1em">
+    <span class="fw-600 fs-065rem">Signer Public key: </span>
+    <span class="fs-065rem w-w-b-w">{{multisigAccount?.signer.publicKey}}</span>
+  </div>
+</div>
+
+<div class="row mt-05rem">
+  <div class="col-12 lh-1em">
+    <span class="fw-600 fs-065rem">Signature:
+    </span>
+    <span class="fs-065rem w-w-b-w">{{multisigAccount.signature}}</span>
+  </div>
+</div>
+
+<div class="row mt-05rem">
+  <div class="col-12 lh-1em">
+    <span class="fw-600 fs-065rem">Minimum approval delta:
+    </span>
+    <span class="fs-065rem w-w-b-w">{{multisigAccount.minApprovalDelta}}</span>
+  </div>
+</div>
+
+<div class="row mt-05rem">
+  <div class="col-12 lh-1em">
+    <span class="fw-600 fs-065rem">Minimum removal delta:
+    </span>
+    <span class="fs-065rem w-w-b-w">{{multisigAccount.minRemovalDelta}}</span>
+  </div>
+</div>
+
+<div class="row mt-1rem lh-1em">
+  <div class="col-12">
+    <span class="fw-600 fs-065rem">Multisig cosignatory modification:</span>
+  </div>
+
+  <ng-container *ngFor="let modification of multisigAccount.modifications; let b=index">
+    <div class="col-12 lh-1em pl-2rem mt-03rem">
+      <div class="row lh-1em">
+        <div class="col-12">
+          <span class="fw-600 fs-065rem">Type: &nbsp;</span>
+          <span class="w-w-b-w fs-065rem" *ngIf="modification.type === 0">Add</span>
+          <span class="w-w-b-w fs-065rem" *ngIf="modification.type === 1">Remove</span>
+        </div>
+      </div>
+
+      <div class="row lh-1em mt-03rem">
+        <div class="col-12">
+          <span class="fw-600 fs-065rem">Address:</span>
+        </div>
+
+        <div class="col-12">
+          <span class="w-w-b-w fs-065rem">{{modification.cosignatoryPublicAccount.address.pretty()}}</span>
+        </div>
+      </div>
+
+      <div class="row lh-1em mt-03rem">
+        <div class="col-12">
+          <span class="fw-600 fs-065rem">Public key:</span>
+        </div>
+
+        <div class="col-12">
+          <span class="w-w-b-w fs-065rem">{{modification.cosignatoryPublicAccount.publicKey}}</span>
+        </div>
+      </div>
+    </div>
+
+    <ng-container *ngIf="b+1 !== multisigAccount.modifications.length">
+      <div class="row">
+        <div class="col-12">
+          <hr class="mb-0rem">
+        </div>
+      </div>
+    </ng-container>
+  </ng-container>
+</div>
