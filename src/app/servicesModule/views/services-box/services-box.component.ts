@@ -463,7 +463,7 @@ export class ServicesBoxComponent implements OnInit {
         {
           transfer: this.services.buildStructureService(
             'TRANSFER ASSETS',
-            true,
+            false,
             '',
             '',
             AppConfig.routes.nis1AccountList
