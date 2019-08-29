@@ -65,7 +65,8 @@
           </thead>
 
           <tbody class="background-white">
-            <ng-container *ngFor="let transaction of aggregateTransactions | stringFilter: filter | paginate: config">
+            <ng-container
+              *ngFor="let transaction of aggregateTransactions | stringFilter: filter | paginate: configAdvance">
               <tr class="white-space-pre cursor-p" mdbTableCol [ngClass]="!transaction ? 'background-pending': ''"
                 (click)="dataSelected = transaction; modalPartialTransaction.show();">
                 <!-- <td class="fs-07rem" [ngClass]="transaction ? 'fw-600': ''">{{transaction.status}}</td> -->
@@ -87,7 +88,7 @@
     </div>
 
     <div class="col-12 pt-1rem pb-3rem d-flex justify-content-center mx-auto">
-      <pagination-controls [id]="config.id" (pageChange)="config.currentPage = $event">
+      <pagination-controls [id]="configAdvance.id" (pageChange)="configAdvance.currentPage = $event">
       </pagination-controls>
     </div>
   </div>
@@ -140,13 +141,152 @@
 
                 <!-- Title transactions & Separator -->
                 <div class="col-12 mt-1-5rem">
-                  <span class="fw-600 fs-095rem">Transactions</span>
+                  <div class="row">
+                    <div class="col-12 col-sm-4">
+                      <span class="fw-600 fs-095rem">Transactions</span>
+                    </div>
+                    <div class="col-12 col-sm-8 d-flex justify-content-start justify-content-sm-end">
+                      <pagination-controls [maxSize]="maxSize" [id]="configCustom.id"
+                        (pageChange)="configCustom.currentPage = $event">
+                      </pagination-controls>
+                    </div>
+                  </div>
                   <hr class="mt-0">
                 </div>
 
                 <!-- ACCOUNTS -->
                 <div class="col-12 ml-08rem scroll-accounts mb-1rem">
-                  <!-- FROM & ACCOUNT -->
+
+                  <!-- Inner transaction -->
+                  <ng-container
+                    *ngFor="let innerTransaction of dataSelected?.data.innerTransactions | paginate: configCustom">
+                    <div class="row">
+                      <div class="col-12 lh-1em">
+                        <span class="fw-600 fs-065rem">Deadline: </span>
+                        <span
+                          class="fs-065rem w-w-b-w">{{transactionService.dateFormat(innerTransaction?.deadline)}}</span>
+                      </div>
+                    </div>
+
+                    <div class="row mt-05rem">
+                      <div class="col-12 lh-1em">
+                        <span class="fw-600 fs-065rem">Type:
+                        </span>
+                        <span class="fs-065rem w-w-b-w">{{innerTransaction['type'].toString(16).toUpperCase()}}</span>
+                      </div>
+                    </div>
+
+                    <div class="row mt-05rem">
+                      <div class="col-12 lh-1em">
+                        <span class="fw-600 fs-065rem">Height:
+                        </span>
+                        <span class="fs-065rem w-w-b-w">{{innerTransaction?.transactionInfo.height.compact()}}</span>
+                      </div>
+                    </div>
+
+                    <div class="row mt-05rem">
+                      <div class="col-12 lh-1em">
+                        <span class="fw-600 fs-065rem">Aggregate id:
+                        </span>
+                        <span class="fs-065rem w-w-b-w">{{innerTransaction.transactionInfo.aggregateId}}</span>
+                      </div>
+                    </div>
+
+                    <div class="row mt-05rem">
+                      <div class="col-12 lh-1em">
+                        <span class="fw-600 fs-065rem">Aggregate hash:
+                        </span>
+                        <span class="fs-065rem w-w-b-w">{{innerTransaction.transactionInfo.aggregateHash}}</span>
+                      </div>
+                    </div>
+
+                    <div class="row mt-05rem">
+                      <div class="col-12 lh-1em">
+                        <span class="fw-600 fs-065rem">Signer Address: </span>
+                        <span class="fs-065rem w-w-b-w">{{innerTransaction?.signer.address.pretty()}}</span>
+                      </div>
+                    </div>
+
+                    <div class="row mt-05rem">
+                      <div class="col-12 lh-1em">
+                        <span class="fw-600 fs-065rem">Signer Public key: </span>
+                        <span class="fs-065rem w-w-b-w">{{innerTransaction?.signer.publicKey}}</span>
+                      </div>
+                    </div>
+
+                    <div class="row mt-05rem">
+                      <div class="col-12 lh-1em">
+                        <span class="fw-600 fs-065rem">Signature:
+                        </span>
+                        <span class="fs-065rem w-w-b-w">{{innerTransaction.signature}}</span>
+                      </div>
+                    </div>
+
+                    <div class="row mt-05rem">
+                      <div class="col-12 lh-1em">
+                        <span class="fw-600 fs-065rem">Minimum approval delta:
+                        </span>
+                        <span class="fs-065rem w-w-b-w">{{innerTransaction.minApprovalDelta}}</span>
+                      </div>
+                    </div>
+
+                    <div class="row mt-05rem">
+                      <div class="col-12 lh-1em">
+                        <span class="fw-600 fs-065rem">Minimum removal delta:
+                        </span>
+                        <span class="fs-065rem w-w-b-w">{{innerTransaction.minRemovalDelta}}</span>
+                      </div>
+                    </div>
+
+                    <div class="row mt-1rem lh-1em">
+                      <div class="col-12">
+                        <span class="fw-600 fs-065rem">Multisig cosignatory modification:</span>
+                      </div>
+
+                      <ng-container *ngFor="let modification of innerTransaction.modifications; let b=index">
+                        <div class="col-12 lh-1em pl-2rem mt-03rem">
+                          <div class="row lh-1em">
+                            <div class="col-12">
+                              <span class="fw-600 fs-065rem">Type: &nbsp;</span>
+                              <span class="w-w-b-w fs-065rem" *ngIf="modification.type === 0">Add</span>
+                              <span class="w-w-b-w fs-065rem" *ngIf="modification.type === 1">Remove</span>
+                            </div>
+                          </div>
+
+                          <div class="row lh-1em mt-03rem">
+                            <div class="col-12">
+                              <span class="fw-600 fs-065rem">Address:</span>
+                            </div>
+
+                            <div class="col-12">
+                              <span
+                                class="w-w-b-w fs-065rem">{{modification.cosignatoryPublicAccount.address.pretty()}}</span>
+                            </div>
+                          </div>
+
+                          <div class="row lh-1em mt-03rem">
+                            <div class="col-12">
+                              <span class="fw-600 fs-065rem">Public key:</span>
+                            </div>
+
+                            <div class="col-12">
+                              <span class="w-w-b-w fs-065rem">{{modification.cosignatoryPublicAccount.publicKey}}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </ng-container>
+                    </div>
+
+                    <ng-container *ngIf="i+1 !== dataSelected?.data.innerTransactions.length">
+                      <div class="row">
+                        <div class="col-12">
+                          <hr class="mb-0rem">
+                        </div>
+                      </div>
+                    </ng-container>
+                  </ng-container>
+
+                  <!-- FROM & ACCOUNT
                   <ng-container>
                     <div class="row">
                       <div class="col-12 col-md-7 lh-1em">
@@ -182,121 +322,8 @@
                         <hr class="mb-0rem">
                       </div>
                     </div>
-                  </ng-container>
+                  </ng-container> -->
 
-                  <!-- FROM & ACCOUNT -->
-                  <ng-container>
-                    <div class="row mt-1rem">
-                      <div class="col-12 col-md-7 lh-1em">
-                        <span class="fw-600 fs-065rem">From: </span>
-                        <span class="fs-065rem">VDAE5R-ORTVTM-Y6M5EU-MLYQ5E-LQ7WWX-2AIFRO-Z3YN</span>
-                      </div>
-                    </div>
-
-                    <div class="row">
-                      <div class="col-12 col-md-7 lh-1em mt-05rem">
-                        <span class="fw-600 fs-065rem">To: </span>
-                        <span class="fs-065rem">VDAE5R-ORTVTM-Y6M5EU-MLYQ5E-LQ7WWX-2AIFRO-Z3YN</span>
-                      </div>
-
-                      <div class="col-12 col-md-5 lh-1em mt-05rem d-flex align-items-end">
-                        <div class="row">
-                          <div class="col-12">
-                            <span class="fw-600 fs-075rem">Amount: &nbsp;</span>
-                          </div>
-                          <div class="col-12">
-                            <span class="fs-075rem fw-600 color-blue-light">100</span>
-                            <span class="fs-065rem fw-600 color-blue-light">.000000</span>
-                            <span class="fs-075rem fw-600 color-blue-light">&nbsp;XPX </span>
-                            <img class="icono"
-                              src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="row">
-                      <div class="col-12">
-                        <hr class="mb-0rem">
-                      </div>
-                    </div>
-                  </ng-container>
-
-                  <!-- FROM & ACCOUNT -->
-                  <ng-container>
-                    <div class="row mt-1rem">
-                      <div class="col-12 col-md-7 lh-1em">
-                        <span class="fw-600 fs-065rem">From: </span>
-                        <span class="fs-065rem">VDAE5R-ORTVTM-Y6M5EU-MLYQ5E-LQ7WWX-2AIFRO-Z3YN</span>
-                      </div>
-                    </div>
-
-                    <div class="row">
-                      <div class="col-12 col-md-7 lh-1em mt-05rem">
-                        <span class="fw-600 fs-065rem">To: </span>
-                        <span class="fs-065rem">VDAE5R-ORTVTM-Y6M5EU-MLYQ5E-LQ7WWX-2AIFRO-Z3YN</span>
-                      </div>
-
-                      <div class="col-12 col-md-5 lh-1em mt-05rem d-flex align-items-end">
-                        <div class="row">
-                          <div class="col-12">
-                            <span class="fw-600 fs-075rem">Amount: &nbsp;</span>
-                          </div>
-                          <div class="col-12">
-                            <span class="fs-075rem fw-600 color-blue-light">100</span>
-                            <span class="fs-065rem fw-600 color-blue-light">.000000</span>
-                            <span class="fs-075rem fw-600 color-blue-light">&nbsp;XPX </span>
-                            <img class="icono"
-                              src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="row">
-                      <div class="col-12">
-                        <hr class="mb-0rem">
-                      </div>
-                    </div>
-                  </ng-container>
-
-                  <!-- FROM & ACCOUNT -->
-                  <ng-container>
-                    <div class="row mt-1rem">
-                      <div class="col-12 col-md-7 lh-1em">
-                        <span class="fw-600 fs-065rem">From: </span>
-                        <span class="fs-065rem">VDAE5R-ORTVTM-Y6M5EU-MLYQ5E-LQ7WWX-2AIFRO-Z3YN</span>
-                      </div>
-                    </div>
-
-                    <div class="row">
-                      <div class="col-12 col-md-7 lh-1em mt-05rem">
-                        <span class="fw-600 fs-065rem">To: </span>
-                        <span class="fs-065rem">VDAE5R-ORTVTM-Y6M5EU-MLYQ5E-LQ7WWX-2AIFRO-Z3YN</span>
-                      </div>
-
-                      <div class="col-12 col-md-5 lh-1em mt-05rem d-flex align-items-end">
-                        <div class="row">
-                          <div class="col-12">
-                            <span class="fw-600 fs-075rem">Amount: &nbsp;</span>
-                          </div>
-                          <div class="col-12">
-                            <span class="fs-075rem fw-600 color-blue-light">100</span>
-                            <span class="fs-065rem fw-600 color-blue-light">.000000</span>
-                            <span class="fs-075rem fw-600 color-blue-light">&nbsp;XPX </span>
-                            <img class="icono"
-                              src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="row">
-                      <div class="col-12">
-                        <hr class="mb-0rem">
-                      </div>
-                    </div>
-                  </ng-container>
                 </div>
               </div>
             </div>
@@ -333,7 +360,8 @@
                     </div>
                   </div>
 
-                  <ng-container *ngIf="dataSelected?.data['cosignatures'].length > 0">
+                  <ng-container
+                    *ngIf="dataSelected?.data['cosignatures'] && dataSelected?.data['cosignatures'].length > 0">
                     <div class="row lh-1em mt-1rem">
                       <div class="col-12">
                         <span class="fw-600 fs-065rem">({{dataSelected?.data['cosignatures'].length}}) Others

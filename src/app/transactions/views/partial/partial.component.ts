@@ -17,14 +17,22 @@ export class PartialComponent implements OnInit {
 
   aggregateTransactions: TransactionsInterface[] = [];
   componentName = 'Partial';
-  config: PaginationInstance = {
+  configAdvance: PaginationInstance = {
     id: 'advanced',
     itemsPerPage: 10,
     currentPage: 1
   };
+
+  configCustom: PaginationInstance = {
+    id: 'custom',
+    itemsPerPage: 1,
+    currentPage: 1
+  };
+
   dataSelected: TransactionsInterface = null;
   filter: string = '';
   goBack = `/${AppConfig.routes.service}`;
+  maxSize = 0;
   moduleName = 'Transactions';
   elements: any = [
     {
@@ -64,11 +72,11 @@ export class PartialComponent implements OnInit {
   headElements = ['Deadline', 'Fee', 'Account linked to the transaction', 'Hash'];
   objectKeys = Object.keys;
   subscription: Subscription[] = [];
-
+  p = 1;
 
   constructor(
     private proximaxProvider: ProximaxProvider,
-    private transactionService: TransactionsService,
+    public transactionService: TransactionsService,
     private walletService: WalletService
   ) { }
 
