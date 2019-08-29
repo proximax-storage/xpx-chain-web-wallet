@@ -127,7 +127,7 @@
               <!--TABLE BODY-->
               <tbody class="background-white">
                 <ng-container *ngFor="let el of transactions | paginate: { itemsPerPage: 10, currentPage: p }">
-                  <tr class="cursor-p" (click)="dataSelected = el; basicModal.show();">
+                  <tr class="cursor-p" (click)="dataSelected = el; modalDashboard.show();">
                     <!-- Type transaction -->
                     <th class="th-sm fs-0-8-rem" scope="row description-dark-green">{{el.nameType}}</th>
 
@@ -192,81 +192,84 @@
         </div>
       </div>
 
-      <div>
-        <!-- MODAL -->
-        <div mdbModal #basicModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
-          aria-labelledby="myBasicModalLabel" aria-hidden="true">
-          <!-- <div class="d-flex align-items-center" style="height: 100%"> -->
-          <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content form-elegant b-r-08rem">
-              <div class="modal-header text-center box-modal-grey b-t-r-r-08rem b-t-l-r-08rem">
-                <h6 class="modal-title w-100 dark-grey-text" id="myModalLabel">
-                  <strong class="title-modal-grey">Transaction information</strong>
-                </h6>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="basicModal.hide()">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-
-              <!--Body-->
-              <div class="modal-body">
-                <ng-container *ngIf="dataSelected !== null">
-                  <!-- TYPE TRANSFER TRANSACTION -->
-                  <app-transfer-type [transferTransaction]="dataSelected"
-                    *ngIf="dataSelected.data.type === typeTransactions.transfer.id">
-                  </app-transfer-type>
-                  <!-- TYPE REGISTER NAMESPACE TRANSACTION -->
-                  <app-register-namespace-type [registerNamespaceTransaction]="dataSelected"
-                    *ngIf="dataSelected.data.type === typeTransactions.registerNameSpace.id">
-                  </app-register-namespace-type>
-                  <!-- TYPE MOSAIC DEFINITION TRANSACTION -->
-                  <app-mosaic-definition-type [mosaicDefinition]="dataSelected"
-                    *ngIf="dataSelected.data.type === typeTransactions.mosaicDefinition.id">
-                  </app-mosaic-definition-type>
-                  <!-- TYPE MOSAIC SUPPLY CHANGE TRANSACTION -->
-                  <app-mosaic-supply-change-type [mosaicSupplyChange]="dataSelected"
-                    *ngIf="dataSelected.data.type === typeTransactions.mosaicSupplyChange.id">
-                  </app-mosaic-supply-change-type>
-                  <!-- TYPE AGGREGATE COMPLETE TRANSACTION-->
-                  <app-aggregate-complete-type [aggregateComplete]="dataSelected"
-                    *ngIf="dataSelected.data.type === typeTransactions.aggregateComplete.id">
-                  </app-aggregate-complete-type>
-                  <!-- TYPE AGGREGATE BONDED -->
-                  <app-aggregate-bonded-type [aggregateBonded]="dataSelected"
-                    *ngIf="dataSelected.data.type === typeTransactions.aggregateBonded.id">
-                  </app-aggregate-bonded-type>
-                  <!-- MOSAIC ALIAS -->
-                  <app-mosaic-alias [mosaicAlias]="dataSelected"
-                    *ngIf="dataSelected.data.type === typeTransactions.mosaicAlias.id">
-                  </app-mosaic-alias>
-                  <!--  ADDRESS ALIAS-->
-                  <app-address-alias-type [addressAlias]="dataSelected"
-                    *ngIf="dataSelected.data.type === typeTransactions.addressAlias.id">
-                  </app-address-alias-type>
-
-                  <!-- TYPE MODIFY MULTISIG ACCOUNT TRANSACTION
-            <app-modify-multisig-account-type
-              *ngIf="dataSelected.data.type === typeTransactions.modifyMultisigAccount.id">
-            </app-modify-multisig-account-type>-->
-                  <!-- TYPE LOCK TRANSACTION
-            <app-lock-type *ngIf="dataSelected.data.type === typeTransactions.lock.id"></app-lock-type> -->
-                  <!-- TYPE SECRET LOCK TRANSACTION
-            <app-secret-lock-type *ngIf="dataSelected.data.type === typeTransactions.secretLock.id">
-            </app-secret-lock-type>-->
-                  <!-- TYPE SECRET PROOF TRANSACTION
-            <app-secret-proof *ngIf="dataSelected.data.type === typeTransactions.secretProof.id"></app-secret-proof>-->
-                </ng-container>
-              </div>
-            </div>
-          </div>
-          <!-- </div> -->
-        </div>
-      </div>
 
       <div class="scroll-to-top" [ngClass]="{'show-scrollTop': windowScrolled}">
         <a mdbBtn floating="true" size="md" mdbWavesEffect class="background-btn" (click)="scrollToTop()">
           <i class="fa fa-angle-up" aria-hidden="true"></i>
         </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="d-flex align-items-center">
+  <div mdbModal #modalDashboard="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+    aria-labelledby="modalDashboard" aria-hidden="true">
+    <div class="modal-dialog modal-lg d-flex align-items-center" role="document">
+      <div class="modal-content form-elegant bord-rad-1-5rem">
+        <div class="modal-header text-center box-modal-white b-t-r-r-1-5rem b-t-l-r-1-5rem p-05rem">
+          <span class="modal-title w-100" id="myModalLabel">
+            <strong class="title-modal-blue">Transaction Information</strong>
+          </span>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modalDashboard.hide()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <ng-container *ngIf="dataSelected">
+            <!-- <div class="row">
+              <div class="col-11 col-md-7">
+                <div class="row"> -->
+            <!-- TYPE TRANSFER TRANSACTION -->
+            <app-transfer-type [transferTransaction]="dataSelected"
+              *ngIf="dataSelected.data.type === typeTransactions.transfer.id">
+            </app-transfer-type>
+            <!-- TYPE REGISTER NAMESPACE TRANSACTION -->
+            <app-register-namespace-type [registerNamespaceTransaction]="dataSelected"
+              *ngIf="dataSelected.data.type === typeTransactions.registerNameSpace.id">
+            </app-register-namespace-type>
+            <!-- TYPE MOSAIC DEFINITION TRANSACTION -->
+            <app-mosaic-definition-type [mosaicDefinition]="dataSelected"
+              *ngIf="dataSelected.data.type === typeTransactions.mosaicDefinition.id">
+            </app-mosaic-definition-type>
+            <!-- TYPE MOSAIC SUPPLY CHANGE TRANSACTION -->
+            <app-mosaic-supply-change-type [mosaicSupplyChange]="dataSelected"
+              *ngIf="dataSelected.data.type === typeTransactions.mosaicSupplyChange.id">
+            </app-mosaic-supply-change-type>
+            <!-- TYPE AGGREGATE COMPLETE TRANSACTION-->
+            <app-aggregate-complete-type [aggregateComplete]="dataSelected"
+              *ngIf="dataSelected.data.type === typeTransactions.aggregateComplete.id">
+            </app-aggregate-complete-type>
+            <!-- TYPE AGGREGATE BONDED -->
+            <app-aggregate-bonded-type [aggregateBonded]="dataSelected"
+              *ngIf="dataSelected.data.type === typeTransactions.aggregateBonded.id">
+            </app-aggregate-bonded-type>
+            <!-- MOSAIC ALIAS -->
+            <app-mosaic-alias [mosaicAlias]="dataSelected"
+              *ngIf="dataSelected.data.type === typeTransactions.mosaicAlias.id">
+            </app-mosaic-alias>
+            <!--  ADDRESS ALIAS-->
+            <app-address-alias-type [addressAlias]="dataSelected"
+              *ngIf="dataSelected.data.type === typeTransactions.addressAlias.id">
+            </app-address-alias-type>
+
+            <!-- TYPE MODIFY MULTISIG ACCOUNT TRANSACTION
+                  <app-modify-multisig-account-type
+                    *ngIf="dataSelected.data.type === typeTransactions.modifyMultisigAccount.id">
+                  </app-modify-multisig-account-type>-->
+            <!-- TYPE LOCK TRANSACTION
+                  <app-lock-type *ngIf="dataSelected.data.type === typeTransactions.lock.id"></app-lock-type> -->
+            <!-- TYPE SECRET LOCK TRANSACTION
+                  <app-secret-lock-type *ngIf="dataSelected.data.type === typeTransactions.secretLock.id">
+                  </app-secret-lock-type>-->
+            <!-- TYPE SECRET PROOF TRANSACTION
+                  <app-secret-proof *ngIf="dataSelected.data.type === typeTransactions.secretProof.id"></app-secret-proof>-->
+            <!-- </div>
+              </div>
+            </div> -->
+          </ng-container>
+        </div>
       </div>
     </div>
   </div>
