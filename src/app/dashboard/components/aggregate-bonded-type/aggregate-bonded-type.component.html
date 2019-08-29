@@ -1,5 +1,5 @@
 <div class="row">
-  <div class="col-12 mt-04rem mr-2rem pl-2rem mb-2rem">
+  <div class="col-11 col-md-7 mt-04rem mr-2rem pl-2rem mb-2rem">
     <!-- Title -->
     <div class="row">
       <div class="col-12 line-h-1-5em">
@@ -19,39 +19,6 @@
         <span class="fs-075rem fw-600 color-blue-light">{{aggregateBonded?.feePart.part2}}</span>
         <span class="fs-095rem fw-600 color-blue-light"> XPX </span>
         <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
-      </div>
-    </div>
-
-    <!-- Signer -->
-    <div class="row mt-1rem">
-      <div class="col-12">
-        <span class="fs-09rem fw-600 color-dark-green"> Signer: </span>
-      </div>
-
-      <div class="col-12">
-        <span class="fs-07rem color-dark-green w-w-b-w">{{aggregateBonded?.data.signer.publicKey}}</span>
-      </div>
-    </div>
-
-    <!-- Signer -->
-    <div class="row mt-03rem">
-      <div class="col-12">
-        <span class="fs-09rem fw-600 color-dark-green"> Signature: </span>
-      </div>
-
-      <div class="col-12">
-        <span class="fs-07rem color-dark-green w-w-b-w">{{aggregateBonded?.data.signature}}</span>
-      </div>
-    </div>
-
-    <!-- Signer -->
-    <div class="row mt-03rem">
-      <div class="col-12">
-        <span class="fs-09rem fw-600 color-dark-green"> Hash: </span>
-      </div>
-
-      <div class="col-12">
-        <span class="fs-07rem color-dark-green w-w-b-w">{{aggregateBonded?.data.transactionInfo.hash}}</span>
       </div>
     </div>
 
@@ -75,7 +42,8 @@
     <!-- Inner transaction -->
     <div class="row d-flex justify-content-center">
       <div class="col-11 scroll-accounts mb-1rem">
-        <ng-container *ngFor="let innerTransaction of aggregateBonded?.data.innerTransactions | paginate: configCustom">
+        <ng-container
+          *ngFor="let innerTransaction of aggregateBonded?.data['innerTransactions'] | paginate: configCustom">
           <app-modify-multisig-account-type *ngIf="innerTransaction.type === typeTransactions.modifyMultisigAccount.id"
             [multisigAccount]="innerTransaction">
           </app-modify-multisig-account-type>
@@ -83,4 +51,77 @@
       </div>
     </div>
   </div>
+
+  <div class="col-11 col-md-5">
+    <!-- Box signer, signature, hash -->
+    <div class="row gray-color-transparent lh-1em mx-auto box-sign-hash">
+      <div class="col-12">
+        <div class="row">
+          <div class="col-12">
+            <span class="fs-08rem fw-bolder w-w-b-w"><b>Signer:</b></span>
+          </div>
+          <div class="col-12">
+            <span class="fs-07rem fw-bolder w-w-b-w">{{aggregateBonded?.data.signer.publicKey}}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 mt-3">
+        <div class="row">
+          <div class="col-12">
+            <span class="fs-08rem fw-bolder w-w-b-w"><b>Signature:</b></span>
+          </div>
+          <div class="col-12">
+            <span class="fs-07rem fw-bolder w-w-b-w">{{aggregateBonded?.data.signature}}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 mt-3">
+        <div class="row">
+          <div class="col-12">
+            <span class="fs-08rem fw-bolder w-w-b-w"><b>Hash:</b></span>
+          </div>
+          <div class="col-12">
+            <span class="fs-07rem fw-bolder w-w-b-w">{{aggregateBonded?.data.transactionInfo.hash}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- <div class="row mt-1rem">
+      <div class="col-12">
+        <span class="fs-09rem fw-600 color-dark-green"> Signer: </span>
+      </div>
+
+      <div class="col-12">
+        <span class="fs-07rem color-dark-green w-w-b-w">{{aggregateBonded?.data.signer.publicKey}}</span>
+      </div>
+    </div>
+
+
+    <div class="row mt-03rem">
+      <div class="col-12">
+        <span class="fs-09rem fw-600 color-dark-green"> Signature: </span>
+      </div>
+
+      <div class="col-12">
+        <span class="fs-07rem color-dark-green w-w-b-w">{{aggregateBonded?.data.signature}}</span>
+      </div>
+    </div>
+
+
+    <div class="row mt-03rem">
+      <div class="col-12">
+        <span class="fs-09rem fw-600 color-dark-green"> Hash: </span>
+      </div>
+
+      <div class="col-12">
+        <span class="fs-07rem color-dark-green w-w-b-w">{{aggregateBonded?.data.transactionInfo.hash}}</span>
+      </div>
+    </div> -->
+
+
 </div>
