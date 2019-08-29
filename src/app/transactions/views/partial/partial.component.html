@@ -87,7 +87,7 @@
     </div>
 
     <div class="col-12 pt-1rem pb-3rem d-flex justify-content-center mx-auto">
-      <pagination-controls [responsive]="responsive" [id]="config.id" (pageChange)="config.currentPage = $event">
+      <pagination-controls [id]="config.id" (pageChange)="config.currentPage = $event">
       </pagination-controls>
     </div>
   </div>
@@ -333,10 +333,10 @@
                     </div>
                   </div>
 
-                  <ng-container *ngIf="dataSelected?.data.cosignatures.length > 0">
+                  <ng-container *ngIf="dataSelected?.data['cosignatures'].length > 0">
                     <div class="row lh-1em mt-1rem">
                       <div class="col-12">
-                        <span class="fw-600 fs-065rem">({{dataSelected?.data.cosignatures.length}}) Others
+                        <span class="fw-600 fs-065rem">({{dataSelected?.data['cosignatures'].length}}) Others
                           cosignatories</span>
                       </div>
                     </div>
