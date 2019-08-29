@@ -6,7 +6,7 @@ import { Subscription } from 'rxjs';
 import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
 import { PublicAccount, AggregateTransaction } from 'tsjs-xpx-chain-sdk';
 import { first } from 'rxjs/operators';
-import { TransactionsInterface } from '../../services/transactions.service';
+import { TransactionsInterface, TransactionsService } from '../../services/transactions.service';
 
 @Component({
   selector: 'app-partial',
@@ -22,6 +22,7 @@ export class PartialComponent implements OnInit {
     itemsPerPage: 10,
     currentPage: 1
   };
+  dataSelected: TransactionsInterface = null;
   filter: string = '';
   goBack = `/${AppConfig.routes.service}`;
   moduleName = 'Transactions';
@@ -67,6 +68,7 @@ export class PartialComponent implements OnInit {
 
   constructor(
     private proximaxProvider: ProximaxProvider,
+    private transactionService: TransactionsService,
     private walletService: WalletService
   ) { }
 
@@ -121,10 +123,11 @@ export class PartialComponent implements OnInit {
         aggregateTransaction => {
           console.log('Get aggregate bonded --->', aggregateTransaction);
           aggregateTransaction.forEach((a: AggregateTransaction) => {
-            const existTransction = this.aggregateTransactions.find(x => x.transactionInfo.hash === a.transactionInfo.hash);
+            const existTransction = this.aggregateTransactions.find(x => x.data.transactionInfo.hash === a.transactionInfo.hash);
             console.log('----> existTransction <-----', existTransction);
             if (!existTransction) {
-              this.aggregateTransactions.push(a);
+              const data = this.transactionService.getStructureDashboard(a);
+              this.aggregateTransactions.push(data);
             }
           });
         }

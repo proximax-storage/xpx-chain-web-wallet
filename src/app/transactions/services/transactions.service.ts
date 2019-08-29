@@ -204,11 +204,13 @@ export class TransactionsService {
         }
       }
 
+      const feeFormatter = this.amountFormatterSimple(transaction.maxFee.compact());
       return {
         data: transaction,
         nameType: this.arraTypeTransaction[keyType].name,
         timestamp: this.dateFormat(transaction.deadline),
-        fee: this.amountFormatterSimple(transaction.maxFee.compact()),
+        fee: feeFormatter,
+        feePart: this.getDataPart(feeFormatter, 6),
         sender: transaction.signer,
         recipientRentalFeeSink: recipientRentalFeeSink,
         recipient: recipient,
@@ -229,6 +231,21 @@ export class TransactionsService {
    */
   getNameTypeTransaction(type: any) {
     return Object.keys(this.arraTypeTransaction).find(elm => this.arraTypeTransaction[elm].id === type);
+  }
+
+  /**
+   *
+   *
+   * @param {string} data
+   * @param {number} cantPart
+   * @returns
+   * @memberof TransactionsService
+   */
+  getDataPart(data: string, cantPart: number) {
+    return {
+      part1: data.slice(0, data.length - cantPart),
+      part2: data.slice(-cantPart)
+    }
   }
 
 
@@ -637,6 +654,10 @@ export interface TransactionsInterface {
   nameType: string;
   timestamp: string;
   fee: string;
+  feePart: {
+    part1: string;
+    part2: string;
+  }
   sender: PublicAccount;
   recipientRentalFeeSink: string;
   recipient: Address;
