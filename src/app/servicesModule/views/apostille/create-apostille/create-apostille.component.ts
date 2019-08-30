@@ -11,7 +11,7 @@ import { KeyPair, convert } from 'js-xpx-chain-library';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { Verifier } from '../services/audit-apistille-verifier';
 import { environment } from '../../../../../environments/environment';
-import { ConfigurationForm } from '../../../../shared/services/shared.service';
+import { ConfigurationForm, SharedService } from '../../../../shared/services/shared.service';
 import { ApostilleService } from '../services/apostille.service';
 import { WalletService } from '../../../../wallet/services/wallet.service';
 declare const Buffer: any;
@@ -25,6 +25,11 @@ export class CreateApostilleComponent implements OnInit {
 
   apostilleCreateForm: FormGroup;
   configurationForm: ConfigurationForm;
+  componentName = 'Create';
+  moduleName = 'Attestation';
+
+
+  /************************* */
 
   fileInputIsValidated = false;
   typeEncrypted: Array<object> = [
@@ -46,6 +51,7 @@ export class CreateApostilleComponent implements OnInit {
   storeInDfms = false;
 
   constructor(
+    private sharedService: SharedService,
     private fb: FormBuilder,
     private walletService: WalletService,
     private proximaxProvider: ProximaxProvider,
@@ -55,6 +61,7 @@ export class CreateApostilleComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.configurationForm = this.sharedService.configurationForm;
     this.createForm();
   }
 
@@ -122,6 +129,11 @@ export class CreateApostilleComponent implements OnInit {
     this.downloadSignedFiles();
   }
 
+  /**
+   *
+   *
+   * @memberof CreateApostilleComponent
+   */
   createForm() {
     this.apostilleCreateForm = this.fb.group({
       documentTitle: ['', [
@@ -159,6 +171,9 @@ export class CreateApostilleComponent implements OnInit {
         Validators.maxLength(this.configurationForm.documentTitle.maxLength)
       ]],
     });
+
+    console.log(this.apostilleCreateForm);
+
   }
 
   /**
@@ -247,6 +262,7 @@ export class CreateApostilleComponent implements OnInit {
    * @memberof ApostilleCreateComponent
    */
   fileReader(files: File[]) {
+    console.log(files);
     if (files.length > 0) {
       this.fileInputIsValidated = true;
       // Get name the file
@@ -260,6 +276,12 @@ export class CreateApostilleComponent implements OnInit {
         // Transform base64 into bytes
         this.rawFileContent = crypto.enc.Base64.parse((this.file.toString()).split(/,(.+)?/)[1]);
       };
+    } else {
+      this.apostilleCreateForm.get('file').setValue('');
+      this.fileInputIsValidated = false;
+      this.nameFile = 'Not file selected yet...';
+      this.file = '';
+      this.rawFileContent = '';
     }
   }
 

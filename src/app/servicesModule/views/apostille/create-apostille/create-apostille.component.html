@@ -20,140 +20,40 @@
 
   <div class="row">
     <div class="col-12 justify-content-center">
-      <form [formGroup]="configurationForm" (ngSubmit)="send()">
-
+      <form [formGroup]="apostilleCreateForm" (ngSubmit)="createApostille()">
         <div class="row mt-1rem">
+          <div class="col-11 d-flex justify-content-center">
+            <button (click)="openInput()" mdbBtn type="submit" rounded="true" mdbWavesEffect
+              class="background-btn-inverse pl-2rem pr-2rem" size="md">
+              <img class="mr-1rem h2em" src="assets/images/img/icon-upload-gray-28h-proximax-sirius-wallet.svg"
+                width="25">
+              <span class="fs-1-2em text-cl-m fw-700">UPLOAD FILE</span>
+            </button>
 
-          <ng-container *ngIf="insufficientBalance">
-            <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto d-flex justify-content-end">
-              <span class="fs-08rem fw-600 color-error-message">Insufficient balance</span>
-            </div>
-          </ng-container>
+            <input id="fileInput" [hidden]="true" type="file" (change)="fileReader($event.target.files)"
+              formControlName="file">
+          </div>
 
+          <div class="col-11 d-flex justify-content-center mt-08rem">
+            <span class="color-dark-green fw-600 fs-08rem t-a-c">
+              {{nameFile}}
+              <ng-container *ngIf="fileInputIsValidated">
+                &nbsp; <i class="fa fa-times-circle cursor-p" aria-hidden="true" (click)="fileReader([])"></i>
+              </ng-container>
+            </span>
+          </div>
+        </div>
 
-          <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto">
+        <!-- INPUTS -->
+        <div class="row mt-1rem">
+          <div class="col-12">
             <div class="md-form form-sm mt-0 mb-0rem">
-              <input formControlName="duration" mdbInputDirective mdbValidate [validateSuccess]="true"
-                [validateError]="true" type="text" id="duration" class="form-control form-control-sm input-border"
-                placeholder="Duration (number of days)">
-
-              <!-- VALIDATION -->
-              <mdb-error
-                *ngIf="validateInput('duration', '').invalid && (validateInput('duration', '').dirty || validateInput('duration', '').touched)">
-                <span>Input invalid</span>
-              </mdb-error>
+              <input [maxlength]="configurationForm.documentTitle.maxLength"
+                [minlength]="configurationForm.documentTitle.minLength" type="text" autocomplete="off"
+                formControlName="documentTitle" required id="documentTitle" mdbInputDirective mdbValidate
+                [validateSuccess]="true" [validateError]="true" class="form-control form-control-sm input-border"
+                placeholder="Document title">
             </div>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto">
-            <div class="row">
-              <div class="col-12 col-md-6">
-                <div class="md-form form-sm mt-1rem mb-0rem">
-                  <input formControlName="divisibility" mdbInputDirective mdbValidate [validateSuccess]="true"
-                    [validateError]="true" type="text" id="divisibility" maxlength="1"
-                    id="divisibility{{errorDivisibility}}" class="form-control form-control-sm input-border"
-                    placeholder="Divisibility">
-
-                  <!-- VALIDATION -->
-                  <mdb-error
-                    *ngIf="validateInput('divisibility', '').invalid && (validateInput('divisibility', '').dirty || validateInput('divisibility', '').touched) || invalidDivisibility">
-                    <span>Input invalid</span>
-                  </mdb-error>
-                </div>
-              </div>
-              <div class="col-12 col-md-6">
-                <div class="md-form form-sm mt-1rem mb-0rem">
-                  <input formControlName="deltaSupply" mdbInputDirective mdbValidate currencyMask
-                    [options]="optionsSuply" [validateSuccess]="true" [validateError]="true" type="text" id="supply"
-                    maxlength="32" class="form-control form-control-sm input-border input-amount" placeholder="Supply">
-
-                  <!-- VALIDATION -->
-                  <mdb-error
-                    *ngIf="validateInput('deltaSupply', '').invalid && (validateInput('deltaSupply', '').dirty || validateInput('deltaSupply', '').touched)">
-                    <span>Input invalid</span>
-                  </mdb-error>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- FEE -->
-        <div class="row ml-01rem">
-          <div class="col-11 col-md-10 col-lg-8 mx-auto">
-            <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
-              <div class="row">
-                <div class="col-12">
-                  <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" alt="">
-                  <span>Fee: 0.000000 XPX</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- RENTAL FEE -->
-        <div class="row ml-01rem">
-          <div class="col-11 col-md-10 col-lg-8 mx-auto">
-            <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
-              <div class="row">
-                <div class="col-12">
-                  <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" alt="">
-                  <span> Rental Fee: {{calculateRentalFee}} XPX</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="row ml-01rem ">
-          <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto box-grey d-flex justify-content-center">
-            <!-- Transferable -->
-            <mdb-checkbox formControlName="transferable" [inline]="true">Transferable</mdb-checkbox>
-
-            <!-- Supply Mutable -->
-            <mdb-checkbox formControlName="supplyMutable" [inline]="true">Supply Mutable</mdb-checkbox>
-
-            <!-- Levy Mutable -->
-            <mdb-checkbox formControlName="levyMutable" [inline]="true">Levy Mutable</mdb-checkbox>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto">
-            <div class="md-form form-sm mt-1rem mb-0rem">
-              <input [maxlength]="configurationForm.passwordWallet.maxLength"
-                [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" required
-                mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password"
-                id="password" class="form-control form-control-sm input-border" placeholder="Enter password">
-
-              <!-- VALIDATION -->
-              <mdb-error
-                *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
-                <span>Input invalid</span>
-              </mdb-error>
-            </div>
-          </div>
-        </div>
-
-        <!-- BUTTONS -->
-        <div class="row">
-          <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-            <button [disabled]="insufficientBalance" mdbBtn type="button" rounded="true" mdbWavesEffect
-              class="f-w-600 background-btn pl-2rem pr-2rem" size="md" (click)="clearForm()">
-              <span class="fs-1-2em color-white">CLEAR</span>
-            </button>
-          </div>
-
-          <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-            <button mdbBtn type="submit" rounded="true" [disabled]="!mosaicForm.valid || blockButton" mdbWavesEffect
-              class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
-              <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
-                *ngIf="blockSend"></span>
-              <span class="fs-1-2em color-white">CREATE</span>
-            </button>
           </div>
         </div>
       </form>
