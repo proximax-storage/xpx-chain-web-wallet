@@ -15,6 +15,10 @@ body {
   white-space: pre;
 }
 
+.word-break-all {
+  word-break: break-all;
+}
+
 .overflow-ellipsis-nowrap {
   white-space: nowrap;
   overflow: hidden;
@@ -987,7 +991,10 @@ input[type=text] {
 
 input.form-control.validate-error.ng-invalid.ng-touched,
 input.form-control.validate-error.ng-invalid.ng-dirty,
-.form-submitted input.form-control.validate-error.ng-invalid {
+.form-submitted input.form-control.validate-error.ng-invalid,
+.md-textarea.validate-error.ng-invalid.ng-touched,
+.md-textarea.validate-error.ng-invalid.ng-dirty,
+.form-submitted .md-textarea.validate-error.ng-invalid {
   box-shadow: none !important;
   border: 2px solid #e06e38 !important;
 }

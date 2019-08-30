@@ -11,6 +11,7 @@ import { TransactionsService } from 'src/app/transactions/services/transactions.
 import { Uploader, PrivacyType, Uint8ArrayParameterData, UploadParameter, Protocol, ConnectionConfig, BlockchainNetworkConnection, IpfsConnection } from 'xpx2-ts-js-sdk';
 import { UploadInput, humanizeBytes, UploadOutput, UploadFile, FasDirective } from 'ng-uikit-pro-standard';
 import { environment } from 'src/environments/environment';
+import { HeaderServicesInterface } from '../../../services/services-module.service';
 
 @Component({
   selector: 'app-upload-file',
@@ -20,10 +21,12 @@ import { environment } from 'src/environments/environment';
 export class UploadFileComponent implements OnInit, AfterViewInit {
 
   @BlockUI() blockUI: NgBlockUI;
-  moduleName = 'Storage';
-  componentName = 'Upload File';
-  backToService = `/${AppConfig.routes.service}`;
-  myFiles = `/${AppConfig.routes.myFile}`;
+  paramsHeader: HeaderServicesInterface = {
+    moduleName: 'Storage',
+    componentName: 'UPLOAD FILE',
+    extraButton: 'Files',
+    routerExtraButton: `/${AppConfig.routes.myFile}`
+  };
   configurationForm: ConfigurationForm = {};
   uploadForm: FormGroup;
   blockUpload: boolean = false;

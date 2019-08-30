@@ -10,6 +10,7 @@ import { NamespacesService, NamespaceStorageInterface } from '../../../../servic
 import { DataBridgeService } from '../../../../shared/services/data-bridge.service';
 import { SharedService, ConfigurationForm } from '../../../../shared/services/shared.service';
 import { WalletService } from '../../../../wallet/services/wallet.service';
+import { HeaderServicesInterface } from '../../../services/services-module.service';
 
 
 @Component({
@@ -19,11 +20,12 @@ import { WalletService } from '../../../../wallet/services/wallet.service';
 })
 export class AliasMosaicsToNamespaceComponent implements OnInit {
 
+  paramsHeader: HeaderServicesInterface = {
+    moduleName: 'Mosaics',
+    componentName: 'LINK TO NAMESPACE',
+  };
   arrayNamespaceStorage: NamespaceStorageInterface[] = [];
   currentBlock: number = 0;
-  moduleName = 'Mosaics';
-  componentName = 'LINK TO NAMESPACE';
-  backToService = `/${AppConfig.routes.service}`;
   configurationForm: ConfigurationForm = {};
   linkingNamespaceToMosaic: FormGroup;
   blockSend: boolean = false;
