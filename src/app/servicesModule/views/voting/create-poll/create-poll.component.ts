@@ -5,6 +5,7 @@ import { WalletService } from 'src/app/wallet/services/wallet.service';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { ConfigurationForm, SharedService } from 'src/app/shared/services/shared.service';
 import { AppConfig } from 'src/app/config/app.config';
+import { CreatePollStorageService } from 'src/app/servicesModule/services/create-poll-storage.service';
 @Component({
   selector: 'app-create-poll',
   templateUrl: './create-poll.component.html',
@@ -13,7 +14,7 @@ import { AppConfig } from 'src/app/config/app.config';
 export class CreatePollComponent implements OnInit {
   createPollForm: FormGroup;
   configurationForm: ConfigurationForm = {};
-  publicAccount: PublicAccount;
+  account: Account;
   btnBlock: boolean;
   Poll: PollInterface;
   option: optionsPoll[] = [];
@@ -23,7 +24,8 @@ export class CreatePollComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private sharedService: SharedService,
-    private walletService: WalletService
+    private walletService: WalletService,
+    private createPollStorageService: CreatePollStorageService
 
   ) {
     this.configurationForm = this.sharedService.configurationForm;
@@ -76,15 +78,15 @@ export class CreatePollComponent implements OnInit {
     }
     if (this.createPollForm.valid && !this.btnBlock) {
       if (this.walletService.decrypt(common)) {
-        this.preparepoll();
+        this.preparepoll(common);
       }
 
     }
   }
 
 
-  preparepoll() {
-    this.publicAccount = PublicAccount.createFromPublicKey(environment.pollsContent.public_key, this.walletService.currentAccount.network);
+  async preparepoll(common) {
+    this.account = Account.createFromPrivateKey(environment.pollsContent.private_key, this.walletService.currentAccount.network);
     this.Poll = {
       name: 'poll-1',
       desciption: 'test-1',
@@ -96,6 +98,24 @@ export class CreatePollComponent implements OnInit {
       createdDate: new Date(),
       quantityOption: this.option.length
     }
+    const nameFile = `voting-ProximaxSirius-${new Date()}`;
+    const fileObject: FileInterface = {
+      name: nameFile,
+      content: this.Poll,
+      type: 'application/json',
+      extension: 'json',
+    };
+    const descripcion = 'poll';
+
+    await this.createPollStorageService.sendFileStorage(
+      fileObject,
+      'poll',
+      this.account,
+      common.privateKey
+    ).then(resp => {
+      console.log('resp', resp)
+
+    });
 
 
   }
@@ -171,5 +191,11 @@ export interface PollInterface {
 export interface optionsPoll {
   name: string;
   publicAccount: PublicAccount
+}
+export interface FileInterface {
+  name: string;
+  content: any;
+  type: string;
+  extension: string;
 }
 
