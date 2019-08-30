@@ -263,12 +263,12 @@ export class ServicesBoxComponent implements OnInit {
         'icon-voting-green-60h.svg',
         '',
         {
-          poll: this.services.buildStructureService(
+          create: this.services.buildStructureService(
             'CREATE POLL',
-            false,
+            true,
             '',
             '',
-            ''
+            AppConfig.routes.createPoll
           ),
           view: this.services.buildStructureService(
             'VIEW RESULT',
@@ -276,10 +276,16 @@ export class ServicesBoxComponent implements OnInit {
             '',
             '',
             ''
+          ),
+          poll: this.services.buildStructureService(
+            'POLL',
+            false,
+            '',
+            '',
+            ''
           )
         },
-        true,
-        'disable-module'
+        true
       ),
 
       // Agregate transactions
