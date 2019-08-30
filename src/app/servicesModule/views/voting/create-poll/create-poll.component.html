@@ -1,1 +1,67 @@
-<p>create-poll works!</p>
+<div class="container mt-3rem mb-2rem animated fadeIn">
+    <div class="row">
+        <div class="col-12 col-md-8">
+            <span class="fs-1rem txt-a-center line-h-1-2em color-grey">Voting</span>
+            <span class="fs-1rem txt-a-center line-h-1-2em color-grey"> > </span>
+            <span class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">Create poll</span>
+        </div>
+
+        <div class="col-12 col-md-4 d-flex justify-content-start justify-content-md-end">
+            <a class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio" [routerLink]="[routes.backToService]">
+                <span>Back to Services</span>
+            </a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <hr class="mt-03rem mb-05rem">
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12 justify-content-center">
+            <form [formGroup]="createPollForm" (ngSubmit)="sendPoll()">
+
+
+                <div class="row">
+                    <div class="col-11 mx-auto">
+                        <div class="md-form form-sm">
+                            <input [maxlength]="configurationForm.passwordWallet.maxLength" [minlength]="configurationForm.passwordWallet.minLength"
+                                formControlName="password" required mdbInputDirective mdbValidate [validateSuccess]="true"
+                                [validateError]="true" type="password" id="password" class="form-control form-control-sm input-border"
+                                placeholder="Enter password">
+
+                            <!-- VALIDATION -->
+                            <mdb-error *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
+                                <span>Input invalid</span>
+                            </mdb-error>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- BUTTONS -->
+                <div class="row">
+                    <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
+                        <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+                            size="md" (click)="clearForm()">
+                            <span class="fs-1-2em color-white">CLEAR</span>
+                        </button>
+                    </div>
+
+                    <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
+                        <button mdbBtn type="submit" rounded="true" [disabled]="!createPollForm.valid || btnBlock"
+                            mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
+                            <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
+                                *ngIf="blockSend"></span>
+                            <span class="fs-1-2em color-white">CREATE</span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+
+</div>
