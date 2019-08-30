@@ -15,10 +15,7 @@ export class ServicesModuleService {
     private walletService: WalletService
   ) { }
 
-
   /**
-   *
-   *
    * @param {string} titleParam
    * @param {boolean} showParam
    * @param {string} descriptionParam
@@ -187,3 +184,11 @@ export interface ContactsStorageInterface {
     address: string;
   }
 };
+
+export interface HeaderServicesInterface {
+  moduleName: string,
+  componentName: string,
+  routerBack?: string,
+  extraButton?: string,
+  routerExtraButton?: string
+}
