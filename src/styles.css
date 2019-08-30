@@ -722,6 +722,15 @@ body {
   background-color: #e4e4e4;
 }
 
+
+/**************************** progress ***********************************/
+.barlistvoting .progress-bar {
+  height: 20px !important;
+}
+.barlistvoting .progress {
+  height: 20px !important;
+}
+
 /**************************** THEME *****************************/
 
 .icono {
@@ -738,6 +747,7 @@ body {
   border-radius: 1rem;
   margin-top: 1rem;
 }
+
 
 .box-list-account-gray {
   color: #424242 !important;

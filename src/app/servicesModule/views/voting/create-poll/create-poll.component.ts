@@ -88,10 +88,10 @@ export class CreatePollComponent implements OnInit {
   async preparepoll(common) {
     this.account = Account.createFromPrivateKey(environment.pollsContent.private_key, this.walletService.currentAccount.network);
     this.Poll = {
-      name: 'poll-1',
-      desciption: 'test-1',
-      id: 0,
-      type: 3,
+      name: 'poll-5',
+      desciption: 'test-3',
+      id: 5,
+      type: 0,
       options: this.option,
       startDate: new Date(),
       endDate: new Date(),
@@ -167,7 +167,7 @@ export class CreatePollComponent implements OnInit {
  * @param name - name poll
  * @param desciption - desciption poll
  * @param id - identifier
- * @param type - 0 = withe list , 1 = black list , 2 = public
+ * @param type - 0 = withe list , 1 = public, 
  * @param startDate - poll start date
  * @param endDate - poll end date
  * @param createdDate - poll creation date

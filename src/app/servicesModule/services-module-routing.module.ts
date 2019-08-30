@@ -28,6 +28,7 @@ import { CreatePollComponent } from './views/voting/create-poll/create-poll.comp
 import { CreateApostilleComponent } from './views/apostille/create-apostille/create-apostille.component';
 import { AuditApostilleComponent } from './views/apostille/audit-apostille/audit-apostille.component';
 import { PollsComponent } from './views/voting/polls/polls.component';
+import { VoteInPollComponent } from './views/voting/vote-in-poll/vote-in-poll.component';
 
 const routes: Routes = [
   {
@@ -158,6 +159,17 @@ const routes: Routes = [
       meta: {
         title: 'polls.title',
         description: 'polls.text',
+        override: true,
+      }
+    }
+  },
+  {
+    path:`${ AppConfig.routes.voteInPoll}/:id`,
+    component: VoteInPollComponent,
+    data: {
+      meta: {
+        title: 'voteInPoll.title',
+        description: 'voteInPoll.text',
         override: true,
       }
     }
