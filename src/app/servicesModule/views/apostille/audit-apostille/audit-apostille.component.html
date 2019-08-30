@@ -37,11 +37,11 @@
     <div class="row">
       <div class="col-xl-10 col-lg-10 col-md-10 col-sm-10 mx-auto">
         <div class="row">
-          <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 align-items-start">
-            <span class="font-title">Audit files</span>
-            <hr>
-            <!-- <br>
+          <div class="col-xs-11 col-sm-11 col-md-11 col-lg-11 align-items-start mx-auto">
+            <!-- <span class="font-title">Audit files</span>
+            <hr> -->
             <br>
+            <!-- <br>
             <br> -->
             <!-- <div class="box text-align-center ">
               <button (click)="openInput()" mdbBtn type="button" size="lg" color="default" outline="true"
@@ -51,27 +51,6 @@
               <input id="fileInput" [hidden]="true" type="file" (change)="fileChange($event.target.files,$event)">
             </div> -->
 
-            <div class="row">
-              <div class="bord-rad-25px background-btn-inverse mx-auto d-flex align-items-start justify-content-center" (click)="openInput()" mdbBtn type="button" size="lg" outline="true"
-                mdbWavesEffect>
-                <img src="assets/images/img/icon-file-green-16h-proximax-sirius-wallet.svg" alt="Audit File Input" width="40">
-              </div>
-              <input id="fileInput" [hidden]="true" type="file" (change)="fileChange($event.target.files,$event)">
-            </div>
-
-            <div class="box text-align-center">
-              <p class="box" id="nameFile"> {{nameFile}} </p>
-            </div>
-            <br>
-            <br>
-          </div>
-          <div class="col-xs-12 col-sm-8  col-md-8 col-lg-8">
-            <span class="font-title"> Apostille format example</span>
-            <hr>
-            <!-- <br>
-            <br>
-            <br> -->
-            <!-- <p><span ng-bind-html="'APOSTILLE_AUDIT_INFORMATION_1' | translate"></span><br> {{ 'APOSTILLE_AUDIT_INFORMATION_2' | translate }}</p> -->
             <div class="box-transparent-border-orange">
               <p class="mb-0">
                 <span class="font-title">EXAMPLE</span>
@@ -81,7 +60,39 @@
                 2016-09-12.pdf
               </span>
             </div>
+
+            <br>
+
+            <div class="d-flex col-12 justify-content-center mb-1rem">
+              <!-- <div class="bord-rad-25px background-btn-inverse mx-auto d-flex align-items-start justify-content-center" (click)="openInput()" mdbBtn type="button" size="lg" outline="true"
+                mdbWavesEffect>
+                <img src="assets/images/img/icon-file-green-16h-proximax-sirius-wallet.svg" alt="Audit File Input" width="40">
+              </div> -->
+
+              <button (click)="openInput()" mdbBtn type="submit" rounded="true" mdbWavesEffect
+                class="background-btn-inverse pl-2rem pr-2rem" size="md">
+                <img class="mr-1rem h2em" src="assets/images/img/icon-upload-gray-28h-proximax-sirius-wallet.svg" width="25">
+                <span class="fs-1-2em text-cl-m fw-700">UPLOAD FILE</span>
+              </button>
+
+              <input id="fileInput" [hidden]="true" type="file" (change)="fileChange($event.target.files,$event)">
+            </div>
+
+            <div class="box text-align-center">
+              <p class="box" id="nameFile"> {{nameFile}} </p>
+            </div>
+            <!-- <br>
+            <br> -->
           </div>
+          <!-- <div class="col-xs-12 col-sm-8  col-md-8 col-lg-8">
+            <span class="font-title"> Apostille format example</span>
+            <hr>
+            <br>
+            <br>
+            <br>
+            <p><span ng-bind-html="'APOSTILLE_AUDIT_INFORMATION_1' | translate"></span><br> {{ 'APOSTILLE_AUDIT_INFORMATION_2' | translate }}</p>
+
+          </div> -->
         </div>
         <div class="row">
           <div class="col-xs-12 col-sm-12  col-md-12 col-lg-12">
@@ -116,8 +127,8 @@
 
                 <tbody class="background-white">
                   <tr mdbTableCol *ngFor="let result of auditResults.slice().reverse() | paginate: { itemsPerPage: 5, currentPage: p }">
-                    <th style="width:25px; vertical-align: middle; " scope="row">{{result.filename}}</th>
-                    <td style="width:25px; vertical-align: middle;" scope="row">{{result.owner}}</td>
+                    <th style="width:25px;vertical-align: middle; " scope="row">{{result.filename}}</th>
+                    <td style="width:25px;vertical-align: middle;" scope="row">{{result.owner}}</td>
                     <td style="width:25px;vertical-align: middle;" scope="row">{{result.fileHash}}</td>
                     <td style="width:25px;vertical-align: middle;" scope="row">{{result.result}}</td>
                   </tr>
