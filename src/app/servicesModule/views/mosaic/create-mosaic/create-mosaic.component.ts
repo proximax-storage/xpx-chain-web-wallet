@@ -9,6 +9,7 @@ import { WalletService, AccountsInterface, AccountsInfoInterface } from '../../.
 import { TransactionsService } from '../../../../transactions/services/transactions.service';
 import { AppConfig } from '../../../../config/app.config';
 import { environment } from 'src/environments/environment.prod';
+import { HeaderServicesInterface } from '../../../services/services-module.service';
 
 @Component({
   selector: 'app-create-mosaic',
@@ -17,10 +18,11 @@ import { environment } from 'src/environments/environment.prod';
 })
 export class CreateMosaicComponent implements OnInit {
 
+  paramsHeader: HeaderServicesInterface = {
+    moduleName: 'Mosaics',
+    componentName: 'CREATE',
+  };
   @BlockUI() blockUI: NgBlockUI;
-  moduleName = 'Mosaics';
-  componentName = 'CREATE';
-  backToService = `/${AppConfig.routes.service}`;
   configurationForm: ConfigurationForm = {};
   isOwner = false;
   mosaicForm: FormGroup;

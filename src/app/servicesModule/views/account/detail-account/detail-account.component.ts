@@ -5,7 +5,7 @@ import { SharedService, ConfigurationForm } from "../../../../shared/services/sh
 import { AppConfig } from '../../../../config/app.config';
 import { ActivatedRoute } from '@angular/router';
 import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
-import { ServicesModuleService, ContactsStorageInterface } from 'src/app/servicesModule/services/services-module.service';
+import { ServicesModuleService, ContactsStorageInterface, HeaderServicesInterface } from '../../../services/services-module.service';
 
 @Component({
   selector: 'app-detail-account',
@@ -14,6 +14,12 @@ import { ServicesModuleService, ContactsStorageInterface } from 'src/app/service
 })
 export class DetailAccountComponent implements OnInit {
 
+  paramsHeader: HeaderServicesInterface = {
+    moduleName: 'Accounts',
+    componentName: 'DETAILS',
+    extraButton: 'View all accounts',
+    routerExtraButton: `/${AppConfig.routes.viewAllAccount}`
+  };
   address = '';
   accountName = '';
   accountInfo: AccountsInfoInterface = null;

@@ -13,6 +13,7 @@ import { SharedService, ConfigurationForm } from '../../../../shared/services/sh
 import { NamespacesService, NamespaceStorageInterface } from '../../../../servicesModule/services/namespaces.service';
 import { TransactionsService } from '../../../../transactions/services/transactions.service';
 import { Subscription } from 'rxjs';
+import { HeaderServicesInterface } from '../../../services/services-module.service';
 
 @Component({
   selector: 'app-create-namespace',
@@ -21,11 +22,11 @@ import { Subscription } from 'rxjs';
 })
 export class CreateNamespaceComponent implements OnInit {
   @BlockUI() blockUI: NgBlockUI;
-
+  paramsHeader: HeaderServicesInterface = {
+    moduleName: 'Namespaces & Sub-Namespaces',
+    componentName: 'REGISTER'
+  };
   configurationForm: ConfigurationForm = {};
-  moduleName = 'Namespaces & Sub-Namespaces';
-  componentName = 'REGISTER';
-  backToService = `/${AppConfig.routes.service}`;
   /*********************************** */
   arrayselect: Array<object> = [
     {

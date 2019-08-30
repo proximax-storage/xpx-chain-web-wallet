@@ -10,6 +10,7 @@ import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
 import { SharedService, ConfigurationForm } from 'src/app/shared/services/shared.service';
 import { WalletService } from 'src/app/wallet/services/wallet.service';
 import { Subscription } from 'rxjs';
+import { HeaderServicesInterface } from '../../../services/services-module.service';
 
 @Component({
   selector: 'app-alias-address-to-namespace',
@@ -17,7 +18,10 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./alias-address-to-namespace.component.css']
 })
 export class AliasAddressToNamespaceComponent implements OnInit {
-
+  paramsHeader: HeaderServicesInterface = {
+    moduleName: 'Accounts',
+    componentName: 'LINK TO NAMESPACE'
+  };
   arrayNamespaceStorage: NamespaceStorageInterface[] = [];
   moduleName = 'Accounts';
   componentName = 'LINK TO NAMESPACE';

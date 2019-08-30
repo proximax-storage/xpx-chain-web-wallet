@@ -1,144 +1,120 @@
 <div class="container mt-3rem mb-1rem animated fadeIn">
-  <div class="row">
-    <div class="col-12 col-md-8">
-      <span class="fs-1rem txt-a-center line-h-1-2em color-grey">{{moduleName}}</span>
-      <span class="fs-1rem txt-a-center line-h-1-2em color-grey"> > </span>
-      <span class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">{{componentName}}</span>
-    </div>
+  <app-header [params]="paramsHeader"></app-header>
 
-    <div class="col-12 col-md-4 d-flex justify-content-start justify-content-md-end">
-      <a class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio" [routerLink]="[addContacts]">
-        <span>Add new contact</span>
-      </a>
-      <div class="col-2 d-flex justify-content-center">
-        <div class="col-6">
-          <div class="line-separator h-100porcent"></div>
+  <!-- HEADER SEARCH -->
+  <div class="container-fluid background-header-grey pb-1rem pt-1rem">
+    <div class="row">
+      <div class="col-10 mx-auto">
+        <div class="row">
+          <!-- Keyword or number -->
+          <div class="col-12 col-lg-10 mx-auto d-flex align-items-center pt-05rem">
+            <input [(ngModel)]="searchContact" type="text" autocomplete="off" id="searchTransaction"
+              class="form-control" mdbInputDirective [validateSuccess]="false" [validateError]="false"
+              placeholder="Search">
+          </div>
         </div>
       </div>
-      <a class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio" [routerLink]="[goBack]">
-        <span>Back to Services</span>
-      </a>
     </div>
   </div>
+
+  <!-- Progress bar -->
   <div class="row">
     <div class="col-12">
-      <hr class="mt-03rem mb-05rem">
+      <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate" *ngIf="searching">
+      </mdb-progress-bar>
     </div>
   </div>
-</div>
 
-<!-- HEADER SEARCH -->
-<div class="container-fluid background-header-grey pb-1rem pt-1rem">
-  <div class="row">
-    <div class="col-10 mx-auto">
-      <div class="row">
-        <!-- Keyword or number -->
-        <div class="col-12 col-lg-10 mx-auto d-flex align-items-center pt-05rem">
-          <input [(ngModel)]="searchContact" type="text" autocomplete="off" id="searchTransaction" class="form-control"
-            mdbInputDirective [validateSuccess]="false" [validateError]="false" placeholder="Search">
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+  <div class="container">
+    <div class="row mt-2rem">
+      <div class="col-12 mx-auto">
+        <div class="table-responsive table-hover">
+          <table mdbTable #tableEl="mdbTable" id="mdbTable" striped="true"
+            class="table table-hover table-bordered table-hover table-sm z-depth-0" cellspacing="0" width="100%"
+            borderless="true">
 
-<!-- Progress bar -->
-<div class="row">
-  <div class="col-12">
-    <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate" *ngIf="searching">
-    </mdb-progress-bar>
-  </div>
-</div>
+            <!--Table head-->
+            <thead>
+              <tr class="header-backg">
+                <ng-container *ngFor="let head of headElements; let i = index">
+                  <th scope="col" class="text-center fw-400 th-sm">{{head}}</th>
+                </ng-container>
+              </tr>
+            </thead>
 
-<div class="container">
-  <div class="row mt-2rem">
-    <div class="col-12 mx-auto">
-      <div class="table-responsive table-hover">
-        <table mdbTable #tableEl="mdbTable" id="mdbTable" striped="true"
-          class="table table-hover table-bordered table-hover table-sm z-depth-0" cellspacing="0" width="100%"
-          borderless="true">
-
-          <!--Table head-->
-          <thead>
-            <tr class="header-backg">
-              <ng-container *ngFor="let head of headElements; let i = index">
-                <th scope="col" class="text-center fw-400 th-sm">{{head}}</th>
+            <!--Table body-->
+            <tbody class="background-white">
+              <ng-container *ngFor="let contact of contacts | paginate: { itemsPerPage: 5, currentPage: p }">
+                <tr class="mouse-pointer">
+                  <th class="th-sm text-center" scope="row description-dark-green">{{contact.label}}</th>
+                  <td class="text-center th-sm description-dark-green">
+                    {{contact.value}}</td>
+                  <td>
+                    <span class="table-remove text-center d-flex justify-content-center">
+                      <button *ngIf="!contact.walletContact" type="button" mdbBtn class="background-btn" title="Edit"
+                        rounded="true" size="sm" class="my-0" (click)="navigate(contact.label)"><i
+                          class="fa fa-edit"></i></button>
+                      <button *ngIf="!contact.walletContact" type="button" mdbBtn color="danger" rounded="true"
+                        title="Delete" size="sm" class="my-0" (click)="remove(contact.label)"><i
+                          class="fa fa-trash"></i></button>
+                      <span class="contact-not-edit" *ngIf="contact.walletContact">Contact belongs to your wallet</span>
+                    </span>
+                  </td>
+                </tr>
               </ng-container>
-            </tr>
-          </thead>
+              <ng-container *ngIf="contacts.length === 0 && !searching">
+                <tr>
+                  <td colspan="3" class="txt-a-center">nothing to show</td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
 
-          <!--Table body-->
-          <tbody class="background-white">
-            <ng-container *ngFor="let contact of contacts | paginate: { itemsPerPage: 5, currentPage: p }">
-              <tr class="mouse-pointer">
-                <th class="th-sm text-center" scope="row description-dark-green">{{contact.label}}</th>
-                <td class="text-center th-sm description-dark-green">
-                  {{contact.value}}</td>
-                <td>
-                  <span class="table-remove text-center d-flex justify-content-center">
-                    <button *ngIf="!contact.walletContact" type="button" mdbBtn class="background-btn" title="Edit"
-                      rounded="true" size="sm" class="my-0" (click)="navigate(contact.label)"><i
-                        class="fa fa-edit"></i></button>
-                    <button *ngIf="!contact.walletContact" type="button" mdbBtn color="danger" rounded="true"
-                      title="Delete" size="sm" class="my-0" (click)="remove(contact.label)"><i
-                        class="fa fa-trash"></i></button>
-                    <span class="contact-not-edit" *ngIf="contact.walletContact">Contact belongs to your wallet</span>
-                  </span>
-                </td>
-              </tr>
-            </ng-container>
-            <ng-container *ngIf="contacts.length === 0 && !searching">
-              <tr>
-                <td colspan="3" class="txt-a-center">nothing to show</td>
-              </tr>
-            </ng-container>
-          </tbody>
-        </table>
-      </div>
-
-      <div class="col-12 d-flex justify-content-center mx-auto">
-        <pagination-controls (pageChange)="p = $event"></pagination-controls>
+        <div class="col-12 d-flex justify-content-center mx-auto">
+          <pagination-controls (pageChange)="p = $event"></pagination-controls>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<!-- Modal -->
-<div mdbModal #basicModal="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myBasicModalLabel"
-  aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content form-elegant b-r-08rem">
-      <div class="modal-header text-center box-modal-grey b-t-r-r-08rem b-t-l-r-08rem">
-        <h6 class="modal-title w-100 dark-grey-text" id="myModalLabel">
-          <strong class="title-modal-grey">Delete contact</strong>
-        </h6>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="basicModal.hide()">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="row mt-1rem mb-1rem">
-        <div class="col-11 col-sm-12 col-md-11 mx-auto box-transparent-border-orange">
-          <div class="col-12 d-flex flex-column align-items-center">
-            <span class="font-small d-flex text-center">Are you sure you want to delete {{labelRemove}} contact??</span>
-          </div>
+  <!-- Modal -->
+  <div mdbModal #basicModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+    aria-labelledby="myBasicModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content form-elegant b-r-08rem">
+        <div class="modal-header text-center box-modal-grey b-t-r-r-08rem b-t-l-r-08rem">
+          <h6 class="modal-title w-100 dark-grey-text" id="myModalLabel">
+            <strong class="title-modal-grey">Delete contact</strong>
+          </h6>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="basicModal.hide()">
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
-        <!-- BUTTONS -->
-        <div class="row mx-auto">
-          <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-            <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
-              size="md" (click)="basicModal.hide()">
-              <span class="fs-1-2em color-white">NO</span>
-            </button>
+        <div class="row mt-1rem mb-1rem">
+          <div class="col-11 col-sm-12 col-md-11 mx-auto box-transparent-border-orange">
+            <div class="col-12 d-flex flex-column align-items-center">
+              <span class="font-small d-flex text-center">Are you sure you want to delete {{labelRemove}}
+                contact??</span>
+            </div>
           </div>
+          <!-- BUTTONS -->
+          <div class="row mx-auto">
+            <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
+              <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+                size="md" (click)="basicModal.hide()">
+                <span class="fs-1-2em color-white">NO</span>
+              </button>
+            </div>
 
-          <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-            <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
-              (click)="deleteContact()" size="md">
-              <span class="fs-1-2em color-white">YES</span>
-            </button>
+            <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
+              <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+                (click)="deleteContact()" size="md">
+                <span class="fs-1-2em color-white">YES</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>
