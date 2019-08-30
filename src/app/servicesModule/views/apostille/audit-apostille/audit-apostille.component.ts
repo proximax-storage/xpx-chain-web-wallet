@@ -25,6 +25,8 @@ export class AuditApostilleComponent implements OnInit {
   messa: Message;
   initialFileName: any;
   url: any;
+  p = 1;
+
   constructor(
     private proximaxProvider: ProximaxProvider,
     private sharedService: SharedService,

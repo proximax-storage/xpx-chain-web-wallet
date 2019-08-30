@@ -1,41 +1,84 @@
 <div class="mt-3rem mb-3rem animated fadeIn">
   <div class="container-fluid">
+
+    <!-- <div class="row">
+      <div class="col-12 col-md-8">
+        <span class="fs-1rem txt-a-center line-h-1-2em color-grey">{{moduleName}}</span>
+        <span class="fs-1rem txt-a-center line-h-1-2em color-grey"> > </span>
+        <span class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">{{componentName}}</span>
+      </div>
+
+      <div class="col-12 col-md-4 d-flex justify-content-start justify-content-md-end">
+        <a class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio" [routerLink]="[list]">
+          <span>List</span>
+        </a>
+        <div class="col-2 d-flex justify-content-center">
+          <div class="col-6">
+            <div class="line-separator h-100porcent"></div>
+          </div>
+        </div>
+        <a class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio" [routerLink]="[goBack]">
+          <span>Back to Services</span>
+        </a>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <hr class="mt-03rem mb-05rem">
+      </div>
+    </div> -->
+
+    <!-- <div class="col-12 d-flex justify-content-center pt-1rem pb-1rem">
+      <span class="fs-1-7rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">APOSTILLE</span>
+    </div> -->
+
     <div class="row">
       <div class="col-xl-10 col-lg-10 col-md-10 col-sm-10 mx-auto">
-
         <div class="row">
-          <div class="col-xs-12 col-sm-7  col-md-7 col-lg-7  align-self-center">
+          <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 align-items-start">
             <span class="font-title">Audit files</span>
             <hr>
+            <!-- <br>
             <br>
-            <br>
-            <div class="box text-align-center ">
+            <br> -->
+            <!-- <div class="box text-align-center ">
               <button (click)="openInput()" mdbBtn type="button" size="lg" color="default" outline="true"
                 mdbWavesEffect>
                 <mdb-icon icon="cloud-upload" size="5x" class="mr-1"></mdb-icon>
               </button>
               <input id="fileInput" [hidden]="true" type="file" (change)="fileChange($event.target.files,$event)">
+            </div> -->
+
+            <div class="row">
+              <div class="bord-rad-25px mx-auto d-flex align-items-start justify-content-center" (click)="openInput()" mdbBtn type="button" size="lg" color="default" outline="true"
+                mdbWavesEffect>
+                <img src="assets/images/img/icon-file-green-16h-proximax-sirius-wallet.svg" alt="Audit File Input" width="40">
+              </div>
+              <input id="fileInput" [hidden]="true" type="file" (change)="fileChange($event.target.files,$event)">
             </div>
-            <br>
-            <div class="box text-align-center ">
+
+            <div class="box text-align-center">
               <p class="box" id="nameFile"> {{nameFile}} </p>
             </div>
             <br>
             <br>
           </div>
-          <div class="col-xs-12 col-sm-5  col-md-5 col-lg-5  ">
+          <div class="col-xs-12 col-sm-8  col-md-8 col-lg-8">
             <span class="font-title"> Apostille format example</span>
             <hr>
+            <!-- <br>
             <br>
-            <br>
+            <br> -->
             <!-- <p><span ng-bind-html="'APOSTILLE_AUDIT_INFORMATION_1' | translate"></span><br> {{ 'APOSTILLE_AUDIT_INFORMATION_2' | translate }}</p> -->
-            <p>
-              <span class="font-title">EXAMPLE</span>
-              <br>
-              <small>MyProject2016 --
+            <div class="box-transparent-border-orange">
+              <p class="mb-0">
+                <span class="font-title">EXAMPLE</span>
+              </p>
+              <span class="fs-075rem w-b-a txt-a-left">MyProject2016 --
                 <b>Apostille</b> TX 0e94da29910ae64bb544e9de0e6a5c6440bd75e6bedafd81b5b4cfa729ca25ef -- Date
-                2016-09-12.pdf</small>
-            </p>
+                2016-09-12.pdf
+              </span>
+            </div>
           </div>
         </div>
         <div class="row">
@@ -46,7 +89,7 @@
           </div>
           <div class="col-xs-12 col-sm-12  col-md-12 col-lg-12">
             <div class="table-responsive">
-              <table mdbTable>
+              <!-- <table mdbTable>
                 <thead>
                   <tr>
                     <th *ngFor="let head of headElements" scope="col">{{head}} </th>
@@ -60,7 +103,34 @@
                     <td style="width:25px;vertical-align: middle;" scope="row">{{result.result}}</td>
                   </tr>
                 </tbody>
+              </table> -->
+
+              <table mdbTable mdbTableScroll scrollX="true" striped="true">
+                <thead>
+                  <tr class="header-backg">
+                    <th *ngFor="let head of headElements" scope="col" class="fs-075rem txt-a-center color-white">{{head}} </th>
+                  </tr>
+                </thead>
+
+                <tbody class="background-white">
+                  <tr mdbTableCol *ngFor="let result of auditResults.slice().reverse() | paginate: { itemsPerPage: 5, currentPage: p }">
+                    <th style="width:25px; vertical-align: middle; " scope="row">{{result.filename}}</th>
+                    <td style="width:25px; vertical-align: middle;" scope="row">{{result.owner}}</td>
+                    <td style="width:25px;vertical-align: middle;" scope="row">{{result.fileHash}}</td>
+                    <td style="width:25px;vertical-align: middle;" scope="row">{{result.result}}</td>
+                  </tr>
+
+                  <!-- <ng-container *ngIf="aggregateTransactions.length === 0">
+                    <tr>
+                      <td colspan="5" class="txt-a-center">nothing to show</td>
+                    </tr>
+                  </ng-container> -->
+                </tbody>
               </table>
+            </div>
+
+            <div class="col-12 d-flex justify-content-center mx-auto">
+              <pagination-controls (pageChange)="p = $event"></pagination-controls>
             </div>
           </div>
         </div>
