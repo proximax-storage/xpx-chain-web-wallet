@@ -5,6 +5,7 @@ import * as JSZip from 'jszip';
 import * as qrcode from 'qrcode-generator';
 // import { saveAs } from 'file-saver';
 import * as jsPDF from 'jspdf';
+import { saveAs } from 'file-saver';
 import { Account, UInt64 } from 'tsjs-xpx-chain-sdk';
 import { IpfsConnection, IpfsClient } from 'xpx2-ts-js-sdk';
 import { KeyPair, convert } from 'js-xpx-chain-library';
@@ -252,16 +253,16 @@ export class CreateApostilleComponent implements OnInit {
           );
           const ifpsClient = new IpfsClient(ipfConnection);
           ifpsClient.addStream(streamContent).subscribe(hash => {
-            // saveAs(content, `${hash}.zip`);
+            saveAs(content, `${hash}.zip`);
           });
           this.clearForm();
         } else {
           this.clearForm();
           const dateFull = `${date.getFullYear()}-${("00" + (date.getMonth() + 1)).slice(-2)}-${("00" + (date.getDate())).slice(-2)}`;
-          /*saveAs(
+          saveAs(
             content,
             `PROXIsigned -- Do not Edit --"${dateFull}".zip`
-          );*/
+          );
         }
       });
     }
@@ -527,17 +528,18 @@ export class CreateApostilleComponent implements OnInit {
    * @memberof preparePublicApostille
    */
   preparePublicApostille(common: any) {
-    //create a hash prefix (dice si es privado o publico0000)
+    //create a hash prefix (dice si es privado o publico)
     const apostilleHashPrefix = 'fe4e545903';
     //create an encrypted hash (contenido del archivo)
     const hash = this.encryptData(this.file.toString());
-    console.log('--- hash encrypted by byte----', hash);
-    console.log('--- hash encrypted ----', hash.toString());
+    console.log('--- Hash encrypted ----', hash.toString());
     //concatenates the hash prefix and the result gives the apostilleHash
     const apostilleHash = apostilleHashPrefix + hash.toString();
     console.log('--- apostilleHash ----', apostilleHash);
     //Generate an account to send the transaction with the apostilleHash
-    const sinkAddress = this.proximaxProvider.createFromRawAddress(this.proximaxProvider.generateNewAccount(this.walletService.currentAccount.network).address.plain());
+    const sinkAddress = this.proximaxProvider.createFromRawAddress(
+      this.proximaxProvider.generateNewAccount(this.walletService.currentAccount.network).address.plain()
+    );
     //Create an account from my private key
     const myAccount = Account.createFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
     //Arm the transaction type transfer
@@ -548,15 +550,18 @@ export class CreateApostilleComponent implements OnInit {
     const signedTransaction = myAccount.sign(transferTransaction);
     //announce the transaction
     console.log('-----signedTransaction----', signedTransaction);
-
-    /*this.proximaxProvider.announce(signedTransaction).subscribe(
+    this.proximaxProvider.announce(signedTransaction).subscribe(
       x => {
+        let tags = '';
+        if (this.apostilleCreateForm.get('tags').value !== '' && this.apostilleCreateForm.get('tags').value.length > 0) {
+          tags = this.apostilleCreateForm.get('tags').value.map(next => next.value);
+        }
         // Aqui falta validar si la transacción fue aceptada por el blockchain
         //Create arrangement to assemble the certificate
         const nty = {
           signedTransaction: signedTransaction,
           title: this.nameFile,
-          tags: [this.apostilleCreateForm.get('tags').value],
+          tags: tags,
           apostilleHash: apostilleHash,
           account: myAccount,
           sinkAddress: sinkAddress.plain(),
@@ -570,8 +575,7 @@ export class CreateApostilleComponent implements OnInit {
       err => {
         console.error(err)
         // this.downloadSignedFiles();
-      });*/
-
+      });
   }
 
 
