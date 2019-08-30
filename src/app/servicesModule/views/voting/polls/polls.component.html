@@ -1,9 +1,9 @@
 <div class="container mt-3rem mb-2rem animated fadeIn">
   <div class="row">
     <div class="col-12 col-md-8">
-      <span class="fs-1rem txt-a-center line-h-1-2em color-grey">Voting</span>
+      <span class="fs-1rem txt-a-center line-h-1-2em color-grey">Polls</span>
       <span class="fs-1rem txt-a-center line-h-1-2em color-grey"> > </span>
-      <span class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">Polls</span>
+      <span class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">View All</span>
     </div>
 
     <div class="col-12 col-md-4 d-flex justify-content-start justify-content-md-end">
@@ -72,12 +72,12 @@
 
           <tbody class="background-white">
             <ng-container *ngFor="let poll of pollResult | stringFilter: filter | paginate: configAdvance">
-              <tr class="white-space-pre cursor-p" mdbTableCol (click)="dataSelected = transaction; modalPartialTransaction.show();">
+              <tr class="white-space-pre cursor-p" mdbTableCol [routerLink]="[routes.voteInpoll+poll.id]">
                 <!-- <td class="fs-07rem" [ngClass]="transaction ? 'fw-600': ''">{{transaction.status}}</td> -->
                 <td class="fs-07rem txt-a-center">{{poll.name}}</td>
                 <td class="fs-07rem txt-a-center">{{filterType(poll.type)}}</td>
-                <td class="fs-07rem txt-a-center">{{poll.endDate}}</td>
-                <td class="fs-07rem txt-a-center">final</td>
+                <td class="fs-07rem txt-a-center">{{formtDate(poll.endDate)}}</td>
+                <td class="fs-07rem txt-a-center">{{statusPoll(poll.endDate ,poll.startDate)}}</td>
               </tr>
             </ng-container>
 

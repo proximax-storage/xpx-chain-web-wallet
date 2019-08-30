@@ -18,7 +18,8 @@ export class PollsComponent implements OnInit {
   resultLength = 0;
   progressBar: number = 0;
   routes = {
-    backToService: `/${AppConfig.routes.service}`
+    backToService: `/${AppConfig.routes.service}`,
+    voteInpoll : `/${AppConfig.routes.voteInPoll}/`
   };
   configAdvance: PaginationInstance = {
     id: 'advanced',
@@ -32,6 +33,7 @@ export class PollsComponent implements OnInit {
 
     private createPollStorageService: CreatePollStorageService,
     private walletService: WalletService,
+    
   ) {
     this.progressBar = 0
     this.showBarProgress = false;
@@ -86,17 +88,45 @@ export class PollsComponent implements OnInit {
       case 0:
         return 'witheList';
       case 1:
-        return 'blackList';
-      case 2:
         return 'Public';
     }
+  }
+
+  
+
+      /**
+    * validate status date poll 
+    *
+    * @param {any} obj
+    * @memberof PollsComponent
+    */
+  statusPoll(endDate: string | number | Date, starDate: string | number | Date) {
+    endDate = new Date(endDate).getTime();
+    starDate = new Date(starDate).getTime();
+    const now = new Date().getTime();
+    if (starDate <= now && endDate >= now) {
+      return 'Ongoing';
+    } else if (starDate > now) {
+      return 'Future';
+    } else {
+      return 'Ended';
+    }
+  }
+  formtDate(format: string | number | Date) {
+    const datefmt = new Date(format);
+    const day = (datefmt.getDate() < 10) ? `0${datefmt.getDate()}` : datefmt.getDate();
+    const month = (datefmt.getMonth() + 1 < 10) ? `0${datefmt.getMonth() + 1}` : datefmt.getMonth() + 1;
+    const hours = (datefmt.getHours() < 10) ? `0${datefmt.getHours()}` : datefmt.getHours();
+    const minutes = (datefmt.getMinutes() < 10) ? `0${datefmt.getMinutes()}` : datefmt.getMinutes();
+    const seconds = (datefmt.getSeconds() < 10) ? `0${datefmt.getSeconds()}` : datefmt.getSeconds();
+    return `${datefmt.getFullYear()}-${month}-${day}  ${hours}:${minutes}:${seconds}`;
   }
 
 }
 export interface PollInterface {
   name: string;
   desciption: string;
-  id: number;
+  id: string;
   type: number;
   options: optionsPoll[];
   witheList?: Object[];

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { PublicAccount, Account } from 'tsjs-xpx-chain-sdk';
+import { PublicAccount, Account, Address } from 'tsjs-xpx-chain-sdk';
 import { environment } from 'src/environments/environment';
 import { WalletService } from 'src/app/wallet/services/wallet.service';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
@@ -57,7 +57,7 @@ export class CreatePollComponent implements OnInit {
   }
   JSONOptions() {
 
-    const namesOptions = ["pizza", "hamburguesa", "pollo", "pasticho"];
+    const namesOptions = ["nike", "adidas", "converse", "timberlat"];
     this.Poll = null;
     for (let element of namesOptions) {
       this.generateOptios(element);
@@ -87,14 +87,29 @@ export class CreatePollComponent implements OnInit {
 
   async preparepoll(common) {
     this.account = Account.createFromPrivateKey(environment.pollsContent.private_key, this.walletService.currentAccount.network);
+
+    const direccionesAgregadas = [
+      'VCGPXB-2A7T4I-W5MQCX-FQY4UQ-W5JNU5-F55HGK-HBUN',
+      'VDG4WG-FS7EQJ-KFQKXM-4IUCQG-PXUW5H-DJVIJB-OXJG'
+    ]
+    const listaBlanca = []
+
+    for (let element of direccionesAgregadas) {
+      listaBlanca.push(Address.createFromRawAddress(element))
+    }
+
+
+    const endDate = new Date()
+    endDate.setHours(endDate.getHours() + 2)
     this.Poll = {
-      name: 'poll-5',
-      desciption: 'test-3',
-      id: 5,
+      name: 'marca zapatos',
+      desciption: 'Find out about the best brand by phone based on your experience. evaluate us and we will offer you better services',
+      id: '03',
       type: 0,
       options: this.option,
+      witheList: listaBlanca,
       startDate: new Date(),
-      endDate: new Date(),
+      endDate: endDate,
       createdDate: new Date(),
       quantityOption: this.option.length
     }
@@ -106,6 +121,8 @@ export class CreatePollComponent implements OnInit {
       extension: 'json',
     };
     const descripcion = 'poll';
+
+    console.log('this.Poll ', this.Poll)
 
     await this.createPollStorageService.sendFileStorage(
       fileObject,
@@ -177,7 +194,7 @@ export class CreatePollComponent implements OnInit {
 export interface PollInterface {
   name: string;
   desciption: string;
-  id: number;
+  id: string;
   type: number;
   options: optionsPoll[];
   witheList?: Object[];
