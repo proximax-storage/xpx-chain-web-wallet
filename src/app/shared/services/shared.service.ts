@@ -9,33 +9,51 @@ export class SharedService {
 
   configurationForm: ConfigurationForm = {
     address: {
-      minLength: 40, maxLength: 46
+      minLength: 40,
+      maxLength: 46
+    },
+    amount: {
+      maxLength: 20
+    },
+    content: {
+      minLength: 0,
+      maxLength: 240
+    },
+    documentTitle: {
+      minLength: 1,
+      maxLength: 64
     },
     nameWallet: {
-      minLength: 2, maxLength: 30
+      minLength: 2,
+      maxLength: 30
     },
     namespaceName: {
-      minLength: 3, maxLength: 16
+      minLength: 3,
+      maxLength: 16
     },
     subNamespaceName: {
-      minLength: 3, maxLength: 64
+      minLength: 3,
+      maxLength: 64
     },
     privateKey: {
-      minLength: 64, maxLength: 64
+      minLength: 64,
+      maxLength: 64
     },
     publicKey: {
-      minLength: 64, maxLength: 64
+      minLength: 64,
+      maxLength: 64
     },
     passwordWallet: {
       minLength: 8,
       maxLength: 30
     },
-    amount: {
-      maxLength: 20
-    },
     message: {
       maxLength: 1024
-    }
+    },
+    tags: {
+      minLength: 1,
+      maxLength: 240
+    },
   };
 
   constructor(
@@ -124,6 +142,18 @@ export interface ConfigurationForm {
     maxLength: number;
   };
   amount?: {
+    maxLength: number;
+  };
+  content?: {
+    minLength: number;
+    maxLength: number;
+  };
+  documentTitle?: {
+    minLength: number;
+    maxLength: number;
+  };
+  tags?: {
+    minLength: number;
     maxLength: number;
   };
   message?: {

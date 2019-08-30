@@ -30,6 +30,7 @@ import { CreatePollComponent } from './views/voting/create-poll/create-poll.comp
 import { PollsComponent } from './views/voting/polls/polls.component';
 import { ResultPollComponent } from './views/voting/result-poll/result-poll.component';
 import { CreateApostilleComponent } from './views/apostille/create-apostille/create-apostille.component';
+import { AuditApostilleComponent } from './views/apostille/audit-apostille/audit-apostille.component';
 
 @NgModule({
   declarations: [
@@ -60,7 +61,8 @@ import { CreateApostilleComponent } from './views/apostille/create-apostille/cre
     CreatePollComponent,
     PollsComponent,
     ResultPollComponent,
-    CreateApostilleComponent
+    CreateApostilleComponent,
+    AuditApostilleComponent
   ],
   imports: [
     CoreModule,

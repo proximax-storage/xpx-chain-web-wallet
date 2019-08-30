@@ -236,20 +236,20 @@ export class ServicesBoxComponent implements OnInit {
         'icon-notarization-green-60h.svg',
         '',
         {
-          notarize: this.services.buildStructureService(
+          audit: this.services.buildStructureService(
+            'AUDIT',
+            true,
+            '',
+            '',
+            AppConfig.routes.audiApostille
+          ),
+          create: this.services.buildStructureService(
             'CREATE',
             true,
             '',
             '',
             AppConfig.routes.createApostille
           ),
-          audit: this.services.buildStructureService(
-            'AUDIT',
-            false,
-            '',
-            '',
-            ''
-          )
         },
         true,
         ''
