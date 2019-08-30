@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { PublicAccount } from 'tsjs-xpx-chain-sdk';
+import { environment } from 'src/environments/environment';
+import { WalletService } from 'src/app/wallet/services/wallet.service';
 
 @Component({
   selector: 'app-create-poll',
@@ -6,10 +9,15 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./create-poll.component.css']
 })
 export class CreatePollComponent implements OnInit {
+  publicAccount: PublicAccount;
 
-  constructor() { }
+
+  constructor(
+    private walletService: WalletService, ) { }
 
   ngOnInit() {
+
+    this.publicAccount = PublicAccount.createFromPublicKey(environment.pollsContent.public_key, this.walletService.currentAccount.network);
   }
 
 }
