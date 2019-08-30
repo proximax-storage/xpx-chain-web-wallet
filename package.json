@@ -49,6 +49,7 @@
     "nem-library": "^2.0.0-RC4",
     "ng-block-ui": "^2.1.7",
     "ng-uikit-pro-standard": "git+https://oauth2:xds7fpVXkw8SnNJdDtUE@git.mdbootstrap.com/mdb/angular/ng-uikit-pro-standard.git",
+    "ngx-chips": "^2.0.2",
     "ngx-clipboard": "^12.2.0",
     "ngx-currency": "^2.0.0",
     "ngx-infinite-scroll": "^7.2.0",

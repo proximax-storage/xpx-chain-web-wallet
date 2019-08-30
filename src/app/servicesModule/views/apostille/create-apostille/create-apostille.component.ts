@@ -27,7 +27,7 @@ export class CreateApostilleComponent implements OnInit {
   configurationForm: ConfigurationForm;
   componentName = 'Create';
   moduleName = 'Attestation';
-
+  autocompleteItems = [];
 
   /************************* */
 
@@ -132,6 +132,36 @@ export class CreateApostilleComponent implements OnInit {
   /**
    *
    *
+   * @param {(string | (string | number)[])} [custom]
+   * @param {(string | number)} [formControl]
+   * @returns
+   * @memberof CreateApostilleComponent
+   */
+  clearForm(custom?: string | (string | number)[], formControl?: string | number) {
+    const file: HTMLElement = document.getElementById('fileInput');
+    file['value'] = '';
+    this.apostilleCreateForm.get('file').setValue('');
+    this.file = '';
+    this.fileInputIsValidated = false;
+    this.nameFile = 'Not file selected yet...';
+    this.rawFileContent = '';
+    this.zip = new JSZip();
+    if (custom !== undefined) {
+      if (formControl !== undefined) {
+        this.apostilleCreateForm.controls[formControl].get(custom).reset();
+        return;
+      }
+      this.apostilleCreateForm.get(custom).reset();
+      return;
+    }
+
+    this.apostilleCreateForm.reset();
+    return;
+  }
+
+  /**
+   *
+   *
    * @memberof CreateApostilleComponent
    */
   createForm() {
@@ -147,7 +177,7 @@ export class CreateApostilleComponent implements OnInit {
         Validators.maxLength(this.configurationForm.content.maxLength)
       ]],
 
-      file: [''],
+      file: ['', [Validators.required]],
 
       safeDFMS: [''],
 
@@ -182,7 +212,12 @@ export class CreateApostilleComponent implements OnInit {
    * @memberof ApostilleCreateComponent
    */
   createApostille() {
-    if (this.apostilleCreateForm.valid && this.fileInputIsValidated) {
+    if (!this.fileInputIsValidated) {
+      this.sharedService.showWarning('', 'Please upload or validate a file');
+      return;
+    }
+
+    if (this.apostilleCreateForm.valid) {
       const common = { password: this.apostilleCreateForm.get('password').value }
       //Decrypt the private key
       if (this.walletService.decrypt(common)) {
@@ -219,9 +254,9 @@ export class CreateApostilleComponent implements OnInit {
           ifpsClient.addStream(streamContent).subscribe(hash => {
             // saveAs(content, `${hash}.zip`);
           });
-          this.reset();
+          this.clearForm();
         } else {
-          this.reset();
+          this.clearForm();
           const dateFull = `${date.getFullYear()}-${("00" + (date.getMonth() + 1)).slice(-2)}-${("00" + (date.getDate())).slice(-2)}`;
           /*saveAs(
             content,
@@ -512,7 +547,9 @@ export class CreateApostilleComponent implements OnInit {
     //Sign the transaction
     const signedTransaction = myAccount.sign(transferTransaction);
     //announce the transaction
-    this.proximaxProvider.announce(signedTransaction).subscribe(
+    console.log('-----signedTransaction----', signedTransaction);
+
+    /*this.proximaxProvider.announce(signedTransaction).subscribe(
       x => {
         // Aqui falta validar si la transacción fue aceptada por el blockchain
         //Create arrangement to assemble the certificate
@@ -533,7 +570,7 @@ export class CreateApostilleComponent implements OnInit {
       err => {
         console.error(err)
         // this.downloadSignedFiles();
-      });
+      });*/
 
   }
 
@@ -549,7 +586,7 @@ export class CreateApostilleComponent implements OnInit {
     file['value'] = '';
     this.zip = new JSZip();
     this.nameFile = 'Not file selected yet...';
-    this.apostilleCreateForm.reset();
-    this.apostilleCreateForm.get('typeEncrypted').patchValue('');
+    // this.apostilleCreateForm.reset();
+    this.apostilleCreateForm.get('file').patchValue('');
   }
 }
