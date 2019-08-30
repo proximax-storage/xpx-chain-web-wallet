@@ -5,6 +5,7 @@ import * as JSZip from 'jszip';
 import * as qrcode from 'qrcode-generator';
 // import { saveAs } from 'file-saver';
 import * as jsPDF from 'jspdf';
+import { saveAs } from 'file-saver';
 import { Account, UInt64 } from 'tsjs-xpx-chain-sdk';
 import { IpfsConnection, IpfsClient } from 'xpx2-ts-js-sdk';
 import { KeyPair, convert } from 'js-xpx-chain-library';
@@ -27,7 +28,7 @@ export class CreateApostilleComponent implements OnInit {
   configurationForm: ConfigurationForm;
   componentName = 'Create';
   moduleName = 'Attestation';
-
+  autocompleteItems = [];
 
   /************************* */
 
@@ -132,6 +133,36 @@ export class CreateApostilleComponent implements OnInit {
   /**
    *
    *
+   * @param {(string | (string | number)[])} [custom]
+   * @param {(string | number)} [formControl]
+   * @returns
+   * @memberof CreateApostilleComponent
+   */
+  clearForm(custom?: string | (string | number)[], formControl?: string | number) {
+    const file: HTMLElement = document.getElementById('fileInput');
+    file['value'] = '';
+    this.apostilleCreateForm.get('file').setValue('');
+    this.file = '';
+    this.fileInputIsValidated = false;
+    this.nameFile = 'Not file selected yet...';
+    this.rawFileContent = '';
+    this.zip = new JSZip();
+    if (custom !== undefined) {
+      if (formControl !== undefined) {
+        this.apostilleCreateForm.controls[formControl].get(custom).reset();
+        return;
+      }
+      this.apostilleCreateForm.get(custom).reset();
+      return;
+    }
+
+    this.apostilleCreateForm.reset();
+    return;
+  }
+
+  /**
+   *
+   *
    * @memberof CreateApostilleComponent
    */
   createForm() {
@@ -147,7 +178,7 @@ export class CreateApostilleComponent implements OnInit {
         Validators.maxLength(this.configurationForm.content.maxLength)
       ]],
 
-      file: [''],
+      file: ['', [Validators.required]],
 
       safeDFMS: [''],
 
@@ -182,7 +213,12 @@ export class CreateApostilleComponent implements OnInit {
    * @memberof ApostilleCreateComponent
    */
   createApostille() {
-    if (this.apostilleCreateForm.valid && this.fileInputIsValidated) {
+    if (!this.fileInputIsValidated) {
+      this.sharedService.showWarning('', 'Please upload or validate a file');
+      return;
+    }
+
+    if (this.apostilleCreateForm.valid) {
       const common = { password: this.apostilleCreateForm.get('password').value }
       //Decrypt the private key
       if (this.walletService.decrypt(common)) {
@@ -217,16 +253,16 @@ export class CreateApostilleComponent implements OnInit {
           );
           const ifpsClient = new IpfsClient(ipfConnection);
           ifpsClient.addStream(streamContent).subscribe(hash => {
-            // saveAs(content, `${hash}.zip`);
+            saveAs(content, `${hash}.zip`);
           });
-          this.reset();
+          this.clearForm();
         } else {
-          this.reset();
+          this.clearForm();
           const dateFull = `${date.getFullYear()}-${("00" + (date.getMonth() + 1)).slice(-2)}-${("00" + (date.getDate())).slice(-2)}`;
-          /*saveAs(
+          saveAs(
             content,
             `PROXIsigned -- Do not Edit --"${dateFull}".zip`
-          );*/
+          );
         }
       });
     }
@@ -492,17 +528,18 @@ export class CreateApostilleComponent implements OnInit {
    * @memberof preparePublicApostille
    */
   preparePublicApostille(common: any) {
-    //create a hash prefix (dice si es privado o publico0000)
+    //create a hash prefix (dice si es privado o publico)
     const apostilleHashPrefix = 'fe4e545903';
     //create an encrypted hash (contenido del archivo)
     const hash = this.encryptData(this.file.toString());
-    console.log('--- hash encrypted by byte----', hash);
-    console.log('--- hash encrypted ----', hash.toString());
+    console.log('--- Hash encrypted ----', hash.toString());
     //concatenates the hash prefix and the result gives the apostilleHash
     const apostilleHash = apostilleHashPrefix + hash.toString();
     console.log('--- apostilleHash ----', apostilleHash);
     //Generate an account to send the transaction with the apostilleHash
-    const sinkAddress = this.proximaxProvider.createFromRawAddress(this.proximaxProvider.generateNewAccount(this.walletService.currentAccount.network).address.plain());
+    const sinkAddress = this.proximaxProvider.createFromRawAddress(
+      this.proximaxProvider.generateNewAccount(this.walletService.currentAccount.network).address.plain()
+    );
     //Create an account from my private key
     const myAccount = Account.createFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
     //Arm the transaction type transfer
@@ -512,14 +549,19 @@ export class CreateApostilleComponent implements OnInit {
     //Sign the transaction
     const signedTransaction = myAccount.sign(transferTransaction);
     //announce the transaction
+    console.log('-----signedTransaction----', signedTransaction);
     this.proximaxProvider.announce(signedTransaction).subscribe(
       x => {
+        let tags = '';
+        if (this.apostilleCreateForm.get('tags').value !== '' && this.apostilleCreateForm.get('tags').value.length > 0) {
+          tags = this.apostilleCreateForm.get('tags').value.map(next => next.value);
+        }
         // Aqui falta validar si la transacción fue aceptada por el blockchain
         //Create arrangement to assemble the certificate
         const nty = {
           signedTransaction: signedTransaction,
           title: this.nameFile,
-          tags: [this.apostilleCreateForm.get('tags').value],
+          tags: tags,
           apostilleHash: apostilleHash,
           account: myAccount,
           sinkAddress: sinkAddress.plain(),
@@ -534,7 +576,6 @@ export class CreateApostilleComponent implements OnInit {
         console.error(err)
         // this.downloadSignedFiles();
       });
-
   }
 
 
@@ -549,7 +590,7 @@ export class CreateApostilleComponent implements OnInit {
     file['value'] = '';
     this.zip = new JSZip();
     this.nameFile = 'Not file selected yet...';
-    this.apostilleCreateForm.reset();
-    this.apostilleCreateForm.get('typeEncrypted').patchValue('');
+    // this.apostilleCreateForm.reset();
+    this.apostilleCreateForm.get('file').patchValue('');
   }
 }

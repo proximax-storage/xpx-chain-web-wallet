@@ -19,11 +19,12 @@
   </div>
 
   <div class="row">
-    <div class="col-12 justify-content-center">
+    <div class="col-11 col-sm-10 col-md-9 mb-2rem mx-auto">
       <form [formGroup]="apostilleCreateForm" (ngSubmit)="createApostille()">
+        <!-- UPLOAD FILE -->
         <div class="row mt-1rem">
           <div class="col-11 d-flex justify-content-center">
-            <button (click)="openInput()" mdbBtn type="submit" rounded="true" mdbWavesEffect
+            <button (click)="openInput()" mdbBtn type="button" rounded="true" mdbWavesEffect
               class="background-btn-inverse pl-2rem pr-2rem" size="md">
               <img class="mr-1rem h2em" src="assets/images/img/icon-upload-gray-28h-proximax-sirius-wallet.svg"
                 width="25">
@@ -44,7 +45,7 @@
           </div>
         </div>
 
-        <!-- INPUTS -->
+        <!-- DOCUMENT TITLE -->
         <div class="row mt-1rem">
           <div class="col-12">
             <div class="md-form form-sm mt-0 mb-0rem">
@@ -54,6 +55,88 @@
                 [validateSuccess]="true" [validateError]="true" class="form-control form-control-sm input-border"
                 placeholder="Document title">
             </div>
+          </div>
+        </div>
+
+        <!-- CONTENT -->
+        <div class="row mt-1rem">
+          <div class="col-12">
+            <div class="md-form form-sm mt-0 mb-0rem">
+              <textarea mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
+                id="message" class="md-textarea form-control" mdbInput placeholder="Content" formControlName="content"
+                [maxlength]="configurationForm.content.maxLength" [minlength]="configurationForm.content.minLength"
+                autocomplete="off" required></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAGS -->
+        <div class="row mt-1rem">
+          <div class="col-12">
+            <tag-input formControlName="tags" [clearOnBlur]="true"></tag-input>
+          </div>
+        </div>
+
+        <!-- TYPE ENCRIPTED -->
+        <div class="row mt-2rem">
+          <div class="col-12">
+            <ng-select mdbInputDirective mdbValidate formControlName="typeEncrypted" class="selectWrapper"
+              [items]="typeEncrypted" bindLabel="label" bindValue="value" placeholder="Select type encrypted">
+            </ng-select>
+          </div>
+        </div>
+
+        <!-- PRIVATE & PUBLIC -->
+        <div class="row mt-1rem">
+          <div class="col-12 box-grey d-flex justify-content-center">
+            <div class="row">
+              <div class="col-6 fw-600 d-flex justify-content-start">
+                <div class="form-check form-check-inline">
+                  <input formControlName="typePrivatePublic" checked [value]="true" type="radio"
+                    class="form-check-input" id="public" name="typePrivatePublic" mdbInput>
+                  <label class="form-check-label" for="public">Public</label>
+                </div>
+              </div>
+
+              <div class="col-6 fw-600 d-flex justify-content-end">
+                <div class="form-check form-check-inline">
+                  <input formControlName="typePrivatePublic" [value]="false" type="radio" class="form-check-input"
+                    id="private" name="typePrivatePublic" mdbInput>
+                  <label class="form-check-label" for="private">Private</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TYPE ENCRIPTED -->
+        <div class="row mt-1rem">
+          <div class="col-12">
+            <div class="md-form form-sm">
+              <input [maxlength]="configurationForm.passwordWallet.maxLength"
+                [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" required
+                mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password"
+                id="password" class="form-control form-control-sm input-border" placeholder="Enter password">
+            </div>
+          </div>
+        </div>
+
+        <!-- BUTTONS -->
+        <div class="row mt-1rem">
+          <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
+            <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+              size="md" (click)="clearForm()">
+              <span class="fs-1-2em color-white">CLEAR</span>
+            </button>
+          </div>
+
+          <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
+            <button [disabled]="apostilleCreateForm.invalid" mdbBtn type="submit" rounded="true" mdbWavesEffect
+              class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
+              <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
+                *ngIf="blockButton"></span>
+              <span class="fs-1-2em color-white">CREATE</span>
+            </button>
           </div>
         </div>
       </form>
