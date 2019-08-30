@@ -16,6 +16,7 @@ import { RenovateNamespaceComponent } from './views/namespace/renovate-namespace
 import { LinkTheNamespaceToAndAddressComponent } from './views/namespace/link-the-namespace-to-and-address/link-the-namespace-to-and-address.component';
 import { ApostilleCreateComponent } from './views/apostille/apostille-create/apostille-create.component';
 import { StorageComponent } from './views/storage/storage.component';
+import { AuditApostilleComponent } from './views/apostille/audit-apostille/audit-apostille.component';
 
 
 @NgModule({
@@ -32,7 +33,7 @@ import { StorageComponent } from './views/storage/storage.component';
     //  CreatePollComponent,
     //  PollsComponent,
     //  CreateApostilleComponent,
-    //AuditApostilleComsponent,
+    AuditApostilleComponent,
     //  HighchartsChartComponent,
     ServicesComponent,
     AccountComponent,

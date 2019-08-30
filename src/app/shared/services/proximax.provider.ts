@@ -75,7 +75,7 @@ export class ProximaxProvider {
 
   /**
    * Method to return blockchain network type
-   * 
+   *
    * @param {NetworkType} network network type
    * @returns {BlockchainNetworkType} BlockchainNetworkType
    */
@@ -370,6 +370,17 @@ export class ProximaxProvider {
    */
   getTransactionsFromAccount(publicAccount: PublicAccount, queryParams?): Observable<Transaction[]> {
     return this.accountHttp.transactions(publicAccount, new QueryParams(100));
+  }
+
+  /**
+   *
+   *
+   * @param {string} transactionId
+   * @returns {*}
+   * @memberof ProximaxProvider
+   */
+  getTransaction(transactionId: string): any { //Observable<Transaction> {
+    return this.transactionHttp.getTransaction(transactionId);
   }
 
   /**
