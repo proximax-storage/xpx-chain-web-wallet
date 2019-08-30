@@ -1,1 +1,82 @@
-<p>nis1-accounts-list works!</p>
+<div class="container mt-3rem mb-2rem animated fadeIn">
+  <!-- <div class="row">
+    <div class="col-12 col-md-8">
+      <span class="fs-1rem txt-a-center line-h-1-2em color-grey">{{moduleName}}</span>
+      <span class="fs-1rem txt-a-center line-h-1-2em color-grey"> > </span>
+      <span class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">{{componentName}}</span>
+    </div>
+
+    <div class="col-12 col-md-4 d-flex justify-content-start justify-content-md-end">
+      <a class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio" [routerLink]="[list]">
+        <span>List</span>
+      </a>
+      <div class="col-2 d-flex justify-content-center">
+        <div class="col-6">
+          <div class="line-separator h-100porcent"></div>
+        </div>
+      </div>
+      <a class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio" [routerLink]="[goBack]">
+        <span>Back to Services</span>
+      </a>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <hr class="mt-03rem mb-05rem">
+    </div>
+  </div> -->
+
+  <!-- TITLE AND DESCRIPTION -->
+  <div class="row">
+    <div class="col-12 d-flex justify-content-center">
+      <span class="fs-1-7rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">Swap Process</span>
+    </div>
+    <div class="col-11 col-md-10 mx-auto">
+      <hr class="mt-05rem mb-06rem">
+    </div>
+    <div class="col-12 d-flex justify-content-center">
+      <span class="fs-08rem txt-a-center line-h-1-2em">This is a list with you imported NIS1 account(s), available in
+        this wallet</span>
+    </div>
+  </div>
+  <!-- END TITLE AND DESCRIPTION -->
+
+  <!-- ACCOUNTS LIST -->
+  <div class="row">
+    <div class="col-12 col-md-10 col-lg-9 col-xl-10 mx-auto">
+      <div class="col-12 d-flex justify-content-center pt-2rem pb-1rem">
+        <span class="fs-1-5rem fw-500 txt-a-center line-h-1-2em color-black">Please select a NIS1 account</span>
+      </div>
+      <div class="row" *ngFor="let item of list">
+        <div class="col-11 col-sm-12 col-md-12 mx-auto d-flex align-items-center box-grey">
+          <div class="col-10">
+            <span class="color-black">{{ item.name }}</span>
+            <span class="font-small d-flex color-black">{{ item.address }}</span>
+          </div>
+          <div class="col-2 text-center">
+            <!-- <i mdbWavesEffect (click)="copyMessage('Address')" ngxClipboard [cbContent]="address"
+                          class="fa fa-copy cursor-p"></i> -->
+            <!-- <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="cursor-p" alt="Copy"
+              width="20" (click)="copyMessage('Address')" ngxClipboard [cbContent]="address"> -->
+            <span class="color-blue-intermedio font-small">SELECT ></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- END ACCOUNT LIST -->
+
+  <!-- BUTTON -->
+  <div class="row">
+    <div class="col-12 col-md-10 col-lg-9 col-xl-10 mx-auto">
+      <div class="col-12 d-flex justify-content-center pt-2rem pb-1rem">
+        <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+          size="md">
+          <span class="fs-1-2em color-white">GO BACK</span>
+        </button>
+      </div>
+    </div>
+  </div>
+  <!-- END BUTTON -->
+
+</div>

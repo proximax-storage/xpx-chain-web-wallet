@@ -387,6 +387,10 @@ body {
   line-height: 1.4em;
 }
 
+.line-h-1-5em {
+  line-height: 1.5em;
+}
+
 /************ HEIGHT *************************/
 
 .h-3em {
@@ -846,11 +850,12 @@ footer.page-footer .footer-copyright {
   }
 }
 
+/*
 @media (max-width: 992px) {
   #boxHashSignerSignature {
     margin-top: 3rem !important;
   }
-}
+}*/
 
 /************************* NG SELECT *******************/
 
@@ -1379,4 +1384,10 @@ body.modal-open {
 
 .modal-header {
   border-bottom: 1px solid #dee2e638;
+}
+
+.scroll-accounts {
+  overflow-y: auto;
+  margin-bottom: 12px;
+  max-height: 215px;
 }

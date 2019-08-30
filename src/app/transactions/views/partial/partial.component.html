@@ -65,14 +65,15 @@
           </thead>
 
           <tbody class="background-white">
-            <ng-container *ngFor="let data of elements | stringFilter: filter | paginate: config">
-              <tr class="white-space-pre cursor-p" mdbTableCol
-                [ngClass]="!data.statusBoolean ? 'background-pending': ''" (click)="modalPartialTransaction.show();">
-                <td class="fs-07rem" [ngClass]="data.statusBoolean ? 'fw-600': ''">{{data.status}}</td>
-                <td class="fs-07rem">{{data.deadline}}</td>
-                <td class="fs-07rem">{{data.fee}}</td>
-                <td class="fs-07rem">{{data.accountLinked}}</td>
-                <td class="fs-07rem">{{data.hash}}</td>
+            <ng-container
+              *ngFor="let transaction of aggregateTransactions | stringFilter: filter | paginate: configAdvance">
+              <tr class="white-space-pre cursor-p" mdbTableCol [ngClass]="!transaction ? 'background-pending': ''"
+                (click)="dataSelected = transaction; modalPartialTransaction.show();">
+                <!-- <td class="fs-07rem" [ngClass]="transaction ? 'fw-600': ''">{{transaction.status}}</td> -->
+                <td class="fs-07rem">{{transaction.timestamp}}</td>
+                <td class="fs-07rem">{{transaction.fee}}</td>
+                <td class="fs-07rem">{{transaction.senderAddress}}</td>
+                <td class="fs-07rem">{{transaction.data.transactionInfo.hash}}</td>
               </tr>
             </ng-container>
 
@@ -87,7 +88,7 @@
     </div>
 
     <div class="col-12 pt-1rem pb-3rem d-flex justify-content-center mx-auto">
-      <pagination-controls [responsive]="responsive" [id]="config.id" (pageChange)="config.currentPage = $event">
+      <pagination-controls [id]="configAdvance.id" (pageChange)="configAdvance.currentPage = $event">
       </pagination-controls>
     </div>
   </div>
@@ -111,256 +112,134 @@
 
         <!--Body-->
         <div class="modal-body">
-          <div class="row d-flex justify-content-center">
-            <div class="col-11 col-md-7">
-              <div class="row">
-                <!-- Bonded & Deadline -->
-                <div class="col-12 lh-1em">
-                  <span class="fw-600 fs-1-2rem">Bonded</span> <br>
-                  <span class="fs-075rem">Deadline: Mon, 25 Feb 2019 - 19:14:31 GTM</span>
-                </div>
+          <ng-container *ngIf="dataSelected">
+            <div class="row d-flex justify-content-center">
+              <div class="col-11 col-md-7">
+                <div class="row">
+                  <!-- Bonded & Deadline -->
+                  <div class="col-12 lh-1em">
+                    <span class="fw-600 fs-1-2rem">Bonded</span> <br>
+                    <span class="fs-075rem">Deadline: {{dataSelected?.timestamp}}</span>
+                  </div>
 
-                <!-- Fee -->
-                <div class="col-12 mt-1-5rem">
-                  <span class="fw-600 fs-095rem"> Fee: </span>
-                  <span class="fs-095rem fw-600 color-blue-light">100</span>
-                  <span class="fs-075rem fw-600 color-blue-light">.000000</span>
-                  <span class="fs-095rem fw-600 color-blue-light"> XPX </span>
-                  <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
-                </div>
+                  <!-- Fee -->
+                  <div class="col-12 mt-1-5rem">
+                    <span class="fw-600 fs-095rem"> Fee: </span>
+                    <span class="fs-095rem fw-600 color-blue-light">{{dataSelected?.feePart.part1}}</span>
+                    <span class="fs-075rem fw-600 color-blue-light">{{dataSelected?.feePart.part2}}</span>
+                    <span class="fs-095rem fw-600 color-blue-light"> XPX </span>
+                    <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
+                  </div>
 
-                <!-- Message -->
-                <div class="col-12">
-                  <span class="fw-600 fs-08rem"> Message: </span>
-                  <span class="fs-075rem">Payment for services</span>
-                </div>
+                  <!-- Message
+                <ng-container *ngIf="dataSelected?.data['message'].payload !== ''">
+                  <div class="col-12">
+                    <span class="fw-600 fs-08rem"> Message: </span>
+                    <span class="fs-075rem">Payment for services</span>
+                  </div>
+                </ng-container>-->
 
-
-                <!-- Title transactions & Separator -->
-                <div class="col-12 mt-1-5rem">
-                  <span class="fw-600 fs-095rem">Transactions</span>
-                  <hr class="mt-0">
-                </div>
-
-                <!-- ACCOUNTS -->
-                <div class="col-12 ml-08rem scroll-accounts mb-1rem">
-                  <!-- FROM & ACCOUNT -->
-                  <ng-container>
+                  <div class="col-12 mt-1-5rem">
                     <div class="row">
-                      <div class="col-12 col-md-7 lh-1em">
-                        <span class="fw-600 fs-065rem">From: </span>
-                        <span class="fs-065rem">VDAE5R-ORTVTM-Y6M5EU-MLYQ5E-LQ7WWX-2AIFRO-Z3YN</span>
+                      <div class="col-12 col-sm-4">
+                        <span class="fw-600 fs-095rem">Transactions</span>
+                      </div>
+                      <div class="col-12 col-sm-8 d-flex justify-content-start justify-content-sm-end">
+                        <pagination-controls [maxSize]="maxSize" [id]="configCustom.id"
+                          (pageChange)="configCustom.currentPage = $event">
+                        </pagination-controls>
                       </div>
                     </div>
+                    <hr class="mt-0">
+                  </div>
 
-                    <div class="row">
-                      <div class="col-12 col-md-7 lh-1em mt-05rem">
-                        <span class="fw-600 fs-065rem">To: </span>
-                        <span class="fs-065rem">VDAE5R-ORTVTM-Y6M5EU-MLYQ5E-LQ7WWX-2AIFRO-Z3YN</span>
-                      </div>
-
-                      <div class="col-12 col-md-5 lh-1em mt-05rem d-flex align-items-end">
-                        <div class="row">
-                          <div class="col-12">
-                            <span class="fw-600 fs-075rem">Amount: &nbsp;</span>
-                          </div>
-                          <div class="col-12">
-                            <span class="fs-075rem fw-600 color-blue-light">100</span>
-                            <span class="fs-065rem fw-600 color-blue-light">.000000</span>
-                            <span class="fs-075rem fw-600 color-blue-light">&nbsp;XPX </span>
-                            <img class="icono"
-                              src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="row">
-                      <div class="col-12">
-                        <hr class="mb-0rem">
-                      </div>
-                    </div>
-                  </ng-container>
-
-                  <!-- FROM & ACCOUNT -->
-                  <ng-container>
-                    <div class="row mt-1rem">
-                      <div class="col-12 col-md-7 lh-1em">
-                        <span class="fw-600 fs-065rem">From: </span>
-                        <span class="fs-065rem">VDAE5R-ORTVTM-Y6M5EU-MLYQ5E-LQ7WWX-2AIFRO-Z3YN</span>
-                      </div>
-                    </div>
-
-                    <div class="row">
-                      <div class="col-12 col-md-7 lh-1em mt-05rem">
-                        <span class="fw-600 fs-065rem">To: </span>
-                        <span class="fs-065rem">VDAE5R-ORTVTM-Y6M5EU-MLYQ5E-LQ7WWX-2AIFRO-Z3YN</span>
-                      </div>
-
-                      <div class="col-12 col-md-5 lh-1em mt-05rem d-flex align-items-end">
-                        <div class="row">
-                          <div class="col-12">
-                            <span class="fw-600 fs-075rem">Amount: &nbsp;</span>
-                          </div>
-                          <div class="col-12">
-                            <span class="fs-075rem fw-600 color-blue-light">100</span>
-                            <span class="fs-065rem fw-600 color-blue-light">.000000</span>
-                            <span class="fs-075rem fw-600 color-blue-light">&nbsp;XPX </span>
-                            <img class="icono"
-                              src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="row">
-                      <div class="col-12">
-                        <hr class="mb-0rem">
-                      </div>
-                    </div>
-                  </ng-container>
-
-                  <!-- FROM & ACCOUNT -->
-                  <ng-container>
-                    <div class="row mt-1rem">
-                      <div class="col-12 col-md-7 lh-1em">
-                        <span class="fw-600 fs-065rem">From: </span>
-                        <span class="fs-065rem">VDAE5R-ORTVTM-Y6M5EU-MLYQ5E-LQ7WWX-2AIFRO-Z3YN</span>
-                      </div>
-                    </div>
-
-                    <div class="row">
-                      <div class="col-12 col-md-7 lh-1em mt-05rem">
-                        <span class="fw-600 fs-065rem">To: </span>
-                        <span class="fs-065rem">VDAE5R-ORTVTM-Y6M5EU-MLYQ5E-LQ7WWX-2AIFRO-Z3YN</span>
-                      </div>
-
-                      <div class="col-12 col-md-5 lh-1em mt-05rem d-flex align-items-end">
-                        <div class="row">
-                          <div class="col-12">
-                            <span class="fw-600 fs-075rem">Amount: &nbsp;</span>
-                          </div>
-                          <div class="col-12">
-                            <span class="fs-075rem fw-600 color-blue-light">100</span>
-                            <span class="fs-065rem fw-600 color-blue-light">.000000</span>
-                            <span class="fs-075rem fw-600 color-blue-light">&nbsp;XPX </span>
-                            <img class="icono"
-                              src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="row">
-                      <div class="col-12">
-                        <hr class="mb-0rem">
-                      </div>
-                    </div>
-                  </ng-container>
-
-                  <!-- FROM & ACCOUNT -->
-                  <ng-container>
-                    <div class="row mt-1rem">
-                      <div class="col-12 col-md-7 lh-1em">
-                        <span class="fw-600 fs-065rem">From: </span>
-                        <span class="fs-065rem">VDAE5R-ORTVTM-Y6M5EU-MLYQ5E-LQ7WWX-2AIFRO-Z3YN</span>
-                      </div>
-                    </div>
-
-                    <div class="row">
-                      <div class="col-12 col-md-7 lh-1em mt-05rem">
-                        <span class="fw-600 fs-065rem">To: </span>
-                        <span class="fs-065rem">VDAE5R-ORTVTM-Y6M5EU-MLYQ5E-LQ7WWX-2AIFRO-Z3YN</span>
-                      </div>
-
-                      <div class="col-12 col-md-5 lh-1em mt-05rem d-flex align-items-end">
-                        <div class="row">
-                          <div class="col-12">
-                            <span class="fw-600 fs-075rem">Amount: &nbsp;</span>
-                          </div>
-                          <div class="col-12">
-                            <span class="fs-075rem fw-600 color-blue-light">100</span>
-                            <span class="fs-065rem fw-600 color-blue-light">.000000</span>
-                            <span class="fs-075rem fw-600 color-blue-light">&nbsp;XPX </span>
-                            <img class="icono"
-                              src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="row">
-                      <div class="col-12">
-                        <hr class="mb-0rem">
-                      </div>
-                    </div>
-                  </ng-container>
+                  <!-- Inner transaction -->
+                  <div class="col-12 ml-08rem scroll-accounts mb-1rem">
+                    <ng-container
+                      *ngFor="let innerTransaction of dataSelected?.data.innerTransactions | paginate: configCustom">
+                      <app-modify-multisig-account-type
+                        *ngIf="innerTransaction.type === typeTransactions.modifyMultisigAccount.id"
+                        [multisigAccount]="innerTransaction">
+                      </app-modify-multisig-account-type>
+                    </ng-container>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <!-- Action Required -->
-            <div class="col-11 col-md-4 ml-2rem">
-              <div class="row">
-                <div
-                  class="col-12 background-orange h-100px d-flex align-items-center justify-content-center txt-a-center">
-                  <div class="row">
-                    <div class="col-12">
-                      <span class="fw-600 color-white">Action</span>
-                    </div>
-                    <div class="col-12">
-                      <span class="fw-600 color-white">Required</span>
-                    </div>
+
+              <!-- Action Required -->
+              <div class="col-11 col-md-4 ml-2rem">
+                <div class="row d-block d-md-none">
+                  <div class="col-12">
+                    <hr>
                   </div>
                 </div>
 
-                <div class="col-12 pt-1rem background-gray-light">
-                  <div class="row lh-1em">
-                    <div class="col-12">
-                      <span class="fw-600 fs-065rem">My cosignature account: </span>
-                    </div>
-                    <div class="col-12">
-                      <span class="fs-065rem">VDAE5R-ORTVTM-Y6M5EU-MLYQ5E-LQ7WWX-2AIFRO-Z3YN</span>
-                    </div>
-                  </div>
-
-                  <div class="row lh-1em mt-1rem">
-                    <div class="col-12">
-                      <span class="fw-600 fs-065rem">(12) Others cosignatories</span>
+                <div class="row">
+                  <div
+                    class="col-12 background-orange h-100px d-flex align-items-center justify-content-center txt-a-center">
+                    <div class="row">
+                      <div class="col-12">
+                        <span class="fw-600 color-white">Action</span>
+                      </div>
+                      <div class="col-12">
+                        <span class="fw-600 color-white">Required</span>
+                      </div>
                     </div>
                   </div>
 
-                  <div class="row lh-1em mt-1rem">
-                    <div class="col-12">
-                      <span class="fw-600 fs-065rem">Hash: </span>
+                  <div class="col-12 pt-1rem background-gray-light">
+                    <div class="row lh-1em">
+                      <div class="col-12">
+                        <span class="fw-600 fs-065rem">My cosignature account: </span>
+                      </div>
+                      <div class="col-12">
+                        <span class="fs-065rem">{{dataSelected?.senderAddress}}</span>
+                      </div>
                     </div>
-                    <div class="col-12">
-                      <span
-                        class="fs-065rem w-w-b-w ">F416F7FA16AB94878D135F7AFD815A5DAB664F0588FD90592A7DB082C28A438C</span>
-                    </div>
-                  </div>
 
-                  <div class="row lh-1em mt-1rem">
-                    <div class="col-12">
-                      <span class="fw-600 fs-065rem">Height: </span>
-                    </div>
-                    <div class="col-12">
-                      <span class="fs-065rem w-w-b-w ">506837</span>
-                    </div>
-                  </div>
+                    <ng-container
+                      *ngIf="dataSelected?.data['cosignatures'] && dataSelected?.data['cosignatures'].length > 0">
+                      <div class="row lh-1em mt-1rem">
+                        <div class="col-12">
+                          <span class="fw-600 fs-065rem">({{dataSelected?.data['cosignatures'].length}}) Others
+                            cosignatories</span>
+                        </div>
+                      </div>
+                    </ng-container>
 
-                  <div class="row lh-1em mt-01rem mb-1rem">
-                    <div class="col-12">
-                      <span class="fw-600 fs-065rem">Type: </span>
+                    <div class="row lh-1em mt-1rem">
+                      <div class="col-12">
+                        <span class="fw-600 fs-065rem">Hash: </span>
+                      </div>
+                      <div class="col-12">
+                        <span class="fs-065rem w-w-b-w ">{{dataSelected?.data.transactionInfo.hash}}</span>
+                      </div>
                     </div>
-                    <div class="col-12">
-                      <span class="fs-065rem w-w-b-w ">4154</span>
+
+                    <div class="row lh-1em mt-1rem">
+                      <div class="col-12">
+                        <span class="fw-600 fs-065rem">Height: </span>
+                      </div>
+                      <div class="col-12">
+                        <span class="fs-065rem w-w-b-w ">{{dataSelected?.data.transactionInfo.height.compact()}}</span>
+                      </div>
+                    </div>
+
+                    <div class="row lh-1em mt-01rem mb-1rem">
+                      <div class="col-12">
+                        <span class="fw-600 fs-065rem">Type: </span>
+                      </div>
+                      <div class="col-12">
+                        <span
+                          class="fs-065rem w-w-b-w ">{{dataSelected?.data['type'].toString(16).toUpperCase()}}</span>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+          </ng-container>
         </div>
       </div>
     </div>

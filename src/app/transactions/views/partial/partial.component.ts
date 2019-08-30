@@ -1,6 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { AppConfig } from '../../../config/app.config';
 import { PaginationInstance } from 'ngx-pagination';
+import { WalletService, AccountsInfoInterface } from 'src/app/wallet/services/wallet.service';
+import { Subscription } from 'rxjs';
+import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
+import { PublicAccount, AggregateTransaction } from 'tsjs-xpx-chain-sdk';
+import { first } from 'rxjs/operators';
+import { TransactionsInterface, TransactionsService } from '../../services/transactions.service';
 
 @Component({
   selector: 'app-partial',
@@ -9,15 +15,24 @@ import { PaginationInstance } from 'ngx-pagination';
 })
 export class PartialComponent implements OnInit {
 
-
+  aggregateTransactions: TransactionsInterface[] = [];
   componentName = 'Partial';
-  config: PaginationInstance = {
+  configAdvance: PaginationInstance = {
     id: 'advanced',
     itemsPerPage: 10,
     currentPage: 1
   };
+  configCustom: PaginationInstance = {
+    id: 'custom',
+    itemsPerPage: 1,
+    currentPage: 1
+  };
+
+
+  dataSelected: TransactionsInterface = null;
   filter: string = '';
   goBack = `/${AppConfig.routes.service}`;
+  maxSize = 0;
   moduleName = 'Transactions';
   elements: any = [
     {
@@ -54,12 +69,80 @@ export class PartialComponent implements OnInit {
     },
   ];
 
-  headElements = ['Status', 'Deadline', 'Fee', 'Account linked to the transaction', 'Hash'];
+  headElements = ['Deadline', 'Fee', 'Account linked to the transaction', 'Hash'];
   objectKeys = Object.keys;
+  subscription: Subscription[] = [];
+  typeTransactions: any;
 
-  constructor() { }
+  constructor(
+    private proximaxProvider: ProximaxProvider,
+    public transactionService: TransactionsService,
+    private walletService: WalletService
+  ) { }
 
+  /**
+   *
+   *
+   * @memberof PartialComponent
+   */
   ngOnInit() {
+    this.typeTransactions = this.transactionService.getTypeTransactions();
+    console.log(this.typeTransactions);
+
+    this.subscription.push(this.walletService.getAccountsInfo$().subscribe(
+      (next: AccountsInfoInterface[]) => {
+        console.log('getAccountsInfo ----> ', next);
+        if (next) {
+          const publicsAccounts: PublicAccount[] = [];
+          next.forEach((element: AccountsInfoInterface) => {
+            if (element.multisigInfo && element.multisigInfo.multisigAccounts.length > 0) {
+              // console.log(element.multisigInfo);
+              element.multisigInfo.multisigAccounts.forEach(x => {
+                const publicAccount = this.proximaxProvider.createPublicAccount(x.publicKey, x.address.networkType);
+                publicsAccounts.push(publicAccount);
+              });
+            }
+          });
+
+          console.log('----publicsAccounts----', publicsAccounts);
+          this.getAggregateBondedTransactions(publicsAccounts);
+        }
+      }
+    ));
   }
 
+  /**
+   *
+   *
+   * @memberof PartialComponent
+   */
+  ngOnDestroy(): void {
+    this.subscription.forEach(subscription => {
+      subscription.unsubscribe();
+    });
+  }
+
+  /**
+   *
+   *
+   * @param {PublicAccount} publicAccount
+   * @memberof PartialComponent
+   */
+  getAggregateBondedTransactions(publicsAccounts: PublicAccount[]) {
+    publicsAccounts.forEach(publicAccount => {
+      this.proximaxProvider.getAggregateBondedTransactions(publicAccount).pipe(first()).subscribe(
+        aggregateTransaction => {
+          console.log('Get aggregate bonded --->', aggregateTransaction);
+          aggregateTransaction.forEach((a: AggregateTransaction) => {
+            const existTransction = this.aggregateTransactions.find(x => x.data.transactionInfo.hash === a.transactionInfo.hash);
+            console.log('----> existTransction <-----', existTransction);
+            if (!existTransction) {
+              const data = this.transactionService.getStructureDashboard(a);
+              this.aggregateTransactions.push(data);
+            }
+          });
+        }
+      );
+    });
+  }
 }

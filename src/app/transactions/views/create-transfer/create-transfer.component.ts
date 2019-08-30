@@ -275,7 +275,17 @@ export class CreateTransferComponent implements OnInit {
    * @memberof CreateTransferComponent
    */
   async changeSender(accountToSend: AccountsInterface) {
+    /* if (accountToSend && accountToSend.isMultisign) {
+       if (accountToSend.isMultisign.minRemoval !== 0 && accountToSend.isMultisign.minApproval !== 0) {
+         this.formTransfer.disable();
+         return;
+       }
+     }*/
+
     if (accountToSend) {
+      if (this.formTransfer.disabled) {
+        this.formTransfer.enable();
+      }
       // console.log(accountToSend);
       this.clearForm();
       this.reset();

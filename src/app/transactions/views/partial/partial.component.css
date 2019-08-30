@@ -9,6 +9,7 @@
 .datatable-style {
   overflow-x: auto;
   display: block;
+  width: 100%;
 }
 
 @media (min-width: 0px) and (max-width: 370px) {
@@ -111,10 +112,4 @@
 
 .background-pending {
   background: #ffdfa0;
-}
-
-.scroll-accounts {
-  overflow-y: auto;
-  margin-bottom: 12px;
-  max-height: 215px;
 }

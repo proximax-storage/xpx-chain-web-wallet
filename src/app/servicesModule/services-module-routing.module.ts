@@ -23,6 +23,7 @@ import { CreateMultiSignatureComponent } from './views/multi-sign/components/cre
 import { ConvertAccountMultisignComponent } from './views/multi-sign/convert-account-multisign/convert-account-multisign.component';
 import { EditAccountMultisignComponent } from './views/multi-sign/edit-account-multisign/edit-account-multisign.component';
 import { Nis1AccountsListComponent } from './views/swap/nis1-accounts-list/nis1-accounts-list.component';
+import { AccountsListComponent } from './views/swap/accounts-list/accounts-list.component';
 
 const routes: Routes = [
   {
@@ -273,6 +274,16 @@ const routes: Routes = [
       meta: {
         title: 'nis1AccountList.title',
         description: 'nis1AccountList.text',
+        override: true,
+      }
+    }
+  }, {
+    path: AppConfig.routes.accountList,
+    component: AccountsListComponent,
+    data: {
+      meta: {
+        title: 'accountList.title',
+        description: 'accountList.text',
         override: true,
       }
     }

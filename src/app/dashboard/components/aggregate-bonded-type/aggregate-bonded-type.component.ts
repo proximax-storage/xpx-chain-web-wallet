@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
-import { TransactionsInterface } from '../../../transactions/services/transactions.service';
+import { PaginationInstance } from 'ngx-pagination';
+import { TransactionsInterface, TransactionsService } from '../../../transactions/services/transactions.service';
 
 @Component({
   selector: 'app-aggregate-bonded-type',
@@ -9,15 +10,25 @@ import { TransactionsInterface } from '../../../transactions/services/transactio
 export class AggregateBondedTypeComponent implements OnInit {
 
   @Input() aggregateBonded: TransactionsInterface;
-  headElements = ['Signer', 'Public Key', 'signature'];
+  configCustom: PaginationInstance = {
+    id: 'custom',
+    itemsPerPage: 1,
+    currentPage: 1
+  };
 
-  constructor() { }
+
+  headElements = ['Signer', 'Public Key', 'signature'];
+  maxSize = 0;
+  typeTransactions: any;
+
+  constructor(public transactionService: TransactionsService) { }
 
   ngOnInit() {
+    this.typeTransactions = this.transactionService.getTypeTransactions();
   }
 
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
-    // console.log(this.aggregateBonded);
+    console.log(this.aggregateBonded);
   }
 
 }
