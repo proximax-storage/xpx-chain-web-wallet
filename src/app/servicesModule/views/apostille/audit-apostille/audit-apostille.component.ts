@@ -128,7 +128,7 @@ export class AuditApostilleComponent implements OnInit {
       } else {
         this.auditResults.push({
           filename: this.nameFile,
-          owner: infTrans.recipient,
+          owner: this.proximaxProvider.createFromRawAddress(infTrans.recipient['address']).pretty(),
           fileHash: Verifier.Hash,
           result: 'Document apostille!',
           hash: ''
