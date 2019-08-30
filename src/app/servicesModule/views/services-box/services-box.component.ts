@@ -238,10 +238,10 @@ export class ServicesBoxComponent implements OnInit {
         {
           notarize: this.services.buildStructureService(
             'CREATE',
-            false,
+            true,
             '',
             '',
-            ''
+            AppConfig.routes.createApostille
           ),
           audit: this.services.buildStructureService(
             'AUDIT',
@@ -252,7 +252,7 @@ export class ServicesBoxComponent implements OnInit {
           )
         },
         true,
-        'disable-module'
+        ''
       ),
 
       // Voting
@@ -459,7 +459,7 @@ export class ServicesBoxComponent implements OnInit {
         'disable-module'
       ),
 
-      // SUPERCONTRACTS
+      // SWAP PROCESS
       this.services.buildStructureService(
         'Swap Process',
         true,

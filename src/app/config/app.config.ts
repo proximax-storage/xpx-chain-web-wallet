@@ -9,14 +9,15 @@ export const AppConfig: Config = {
     apostille: 'apostille',
     audiApostille: 'audit-apostille',
     auth: 'auth',
-    convertToAccountMultisign: 'convert-account-multisign',
     aliasAddressToNamespace: 'alias-address-to-namespace',
+    createAccount: 'create-account',
+    createApostille: 'create-apostille',
+    convertToAccountMultisign: 'convert-account-multisign',
     createMosaic: 'create-mosaic',
     createNamespace: 'create-namespace',
     createPoll: 'create-poll',
     createTransfer: 'create-transfer',
     createWallet: 'create-wallet',
-    createAccount: 'create-account',
     dashboard: 'dashboard',
     editAccountMultisign: 'edit-account-multisign',
     explorer: 'explorer',
@@ -53,6 +54,7 @@ export interface Config {
   routes: {
     account: string;
     accountCreated: string;
+    accountList: string;
     addressBook: string;
     addContacts: string;
     apostille: string;
@@ -66,6 +68,7 @@ export interface Config {
     createTransfer: string;
     createWallet: string;
     createAccount: string;
+    createApostille: string;
     dashboard: string;
     editAccountMultisign: string;
     explorer: string;
@@ -92,6 +95,5 @@ export interface Config {
     viewAllAccount: string;
     walletCreated: string;
     nis1AccountList: string;
-    accountList: string;
   };
 }
