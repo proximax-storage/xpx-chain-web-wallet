@@ -45,7 +45,7 @@
     "font-awesome": "^4.7.0",
     "hammerjs": "^2.0.8",
     "js-xpx-chain-library": "^0.3.0",
-    "nem-library": "^2.0.0-RC4",
+    "nem-library": "^1.0.9",
     "ng-block-ui": "^2.1.7",
     "ng-uikit-pro-standard": "git+https://oauth2:xds7fpVXkw8SnNJdDtUE@git.mdbootstrap.com/mdb/angular/ng-uikit-pro-standard.git",
     "ngx-clipboard": "^12.2.0",
