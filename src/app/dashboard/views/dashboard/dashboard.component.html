@@ -111,56 +111,53 @@
   </div>
 
   <!-- TABLE -->
-  <div class="row mt-05rem">
-    <div class="col-12 mx-auto">
-      <div class="table-responsive table-hover">
-        <table mdbTable #tableEl="mdbTable" id="mdbTable" striped="true"
-          class="table table-hover table-bordered table-hover table-sm z-depth-0" cellspacing="0" width="100%"
-          borderless="true">
-
-          <!--TABLE HEAD-->
+  <div class="row">
+    <div class="col-12 d-flex justify-content-center mx-auto">
+      <div class="datatable-style max-w-table">
+        <table mdbTable mdbTableScroll scrollX="true" striped="true">
           <thead>
             <tr class="header-backg">
-              <ng-container *ngFor="let head of headElements; let i = index">
-                <th scope="col" class="text-center fw-400 th-sm">{{head}}</th>
-              </ng-container>
+              <th *ngFor="let head of headElements" scope="col" class="fs-075rem txt-a-center ">{{head}} </th>
             </tr>
           </thead>
 
-          <!--TABLE BODY-->
           <tbody class="background-white">
             <ng-container *ngFor="let el of transactions | paginate: { itemsPerPage: 10, currentPage: p }">
-              <tr class="cursor-p" (click)="dataSelected = el; modalDashboard.show();">
+              <tr class="white-space-pre cursor-p" (click)="dataSelected = el; modalDashboard.show();">
+                <!-- <td class="fs-07rem">{{transaction.timestamp}}</td>
+                <td class="fs-07rem">{{transaction.fee}}</td>
+                <td class="fs-07rem">{{transaction.senderAddress}}</td>
+                <td class="fs-07rem">{{transaction.data.transactionInfo.hash}}</td> -->
                 <!-- Type transaction -->
-                <th class="th-sm fs-0-8-rem" scope="row description-dark-green">{{el.nameType}}</th>
+                <td class="th-sm fs-07rem" scope="row description-dark-green">{{el.nameType}}</td>
 
                 <!-- timestamp -->
-                <td class="th-sm description-dark-green fs-0-8-rem">{{el.timestamp}}</td>
+                <td class="th-sm description-dark-green fs-07rem">{{el.timestamp}}</td>
 
                 <!-- fee -->
-                <td class="text-center th-sm description-dark-green fs-0-8-rem">{{el.fee}}</td>
+                <td class="text-center th-sm description-dark-green fs-07rem">{{el.fee}}</td>
                 <!-- address -->
-                <td class="text-center th-md description-dark-green fs-0-8-rem">
+                <td class="text-center th-md description-dark-green fs-07rem">
                   <img src="assets/images/img/arrow-transaction-receive-green-proximax-sirius-explorer.svg" alt=""
                     width="25" *ngIf="el.receive">
                   <img src="assets/images/img/arrow-transaction-sender-orange-proximax-sirius-explorer.svg" alt=""
                     width="25" *ngIf="!el.receive">
                 </td>
                 <!-- address -->
-                <td class="th-md description-dark-green fs-0-8-rem">
+                <td class="th-md description-dark-green fs-07rem">
                   <span>{{el.senderAddress}}</span>
                 </td>
 
                 <!-- recipíent -->
                 <ng-container *ngIf="el?.recipientAddress !== null; else recipientRentalFee">
-                  <td class="th-md description-dark-green fs-0-8-rem">
+                  <td class="th-md description-dark-green fs-07rem">
                     <span>{{el.recipientAddress}}</span>
                   </td>
                 </ng-container>
 
                 <!-- recipient rental fee -->
                 <ng-template #recipientRentalFee>
-                  <td class="th-sm description-dark-green fs-0-8-rem">
+                  <td class="th-sm description-dark-green fs-07rem">
                     <span>{{el.recipientRentalFeeSink}}</span>
                   </td>
                 </ng-template>
@@ -177,7 +174,7 @@
       </div>
     </div>
 
-    <div class="col-12 d-flex justify-content-center mx-auto">
+    <div class="col-12 pt-1rem pb-3rem d-flex justify-content-center mx-auto">
       <pagination-controls (pageChange)="p = $event"></pagination-controls>
     </div>
   </div>

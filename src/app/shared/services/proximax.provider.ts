@@ -41,7 +41,8 @@ import {
   BlockchainHttp,
   NamespaceInfo,
   MultisigAccountInfo,
-  AggregateTransaction
+  AggregateTransaction,
+  CosignatureTransaction
 } from 'tsjs-xpx-chain-sdk';
 import { mergeMap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
@@ -300,6 +301,19 @@ export class ProximaxProvider {
     return Address.createFromPublicKey(publicKey, networkType)
   }
 
+  /**
+   *
+   *
+   * @param {*} transaction
+   * @param {*} account
+   * @memberof ProximaxProvider
+   */
+  cosignAggregateBondedTransaction(transaction: AggregateTransaction, account: Account): Observable<TransactionAnnounceResponse> {
+    const cosignatureTransaction = CosignatureTransaction.create(transaction);
+    return this.transactionHttp.announceAggregateBondedCosignature(
+      account.signCosignatureTransaction(cosignatureTransaction)
+    );
+  }
 
   /**
    * Create an Address from a given raw address.
