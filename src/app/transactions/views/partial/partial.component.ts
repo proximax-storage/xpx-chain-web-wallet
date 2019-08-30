@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { AppConfig } from '../../../config/app.config';
+import { PublicAccount, AggregateTransaction, Account } from 'tsjs-xpx-chain-sdk';
 import { PaginationInstance } from 'ngx-pagination';
-import { WalletService, AccountsInfoInterface } from 'src/app/wallet/services/wallet.service';
-import { Subscription } from 'rxjs';
-import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
-import { PublicAccount, AggregateTransaction } from 'tsjs-xpx-chain-sdk';
 import { first } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
+import { AppConfig } from '../../../config/app.config';
+import { WalletService, AccountsInfoInterface } from '../../../wallet/services/wallet.service';
+import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 import { TransactionsInterface, TransactionsService } from '../../services/transactions.service';
+import { SharedService, ConfigurationForm } from '../../../shared/services/shared.service';
 
 @Component({
   selector: 'app-partial',
@@ -22,12 +23,12 @@ export class PartialComponent implements OnInit {
     itemsPerPage: 10,
     currentPage: 1
   };
+
   configCustom: PaginationInstance = {
     id: 'custom',
     itemsPerPage: 1,
     currentPage: 1
   };
-
 
   dataSelected: TransactionsInterface = null;
   filter: string = '';
@@ -71,11 +72,14 @@ export class PartialComponent implements OnInit {
 
   headElements = ['Deadline', 'Fee', 'Account linked to the transaction', 'Hash'];
   objectKeys = Object.keys;
+  password: string = '';
   subscription: Subscription[] = [];
   typeTransactions: any;
+  configurationForm: ConfigurationForm;
 
   constructor(
     private proximaxProvider: ProximaxProvider,
+    private sharedService: SharedService,
     public transactionService: TransactionsService,
     private walletService: WalletService
   ) { }
@@ -86,12 +90,11 @@ export class PartialComponent implements OnInit {
    * @memberof PartialComponent
    */
   ngOnInit() {
+    this.configurationForm = this.sharedService.configurationForm;
     this.typeTransactions = this.transactionService.getTypeTransactions();
-    console.log(this.typeTransactions);
-
     this.subscription.push(this.walletService.getAccountsInfo$().subscribe(
       (next: AccountsInfoInterface[]) => {
-        console.log('getAccountsInfo ----> ', next);
+        // console.log('getAccountsInfo ----> ', next);
         if (next) {
           const publicsAccounts: PublicAccount[] = [];
           next.forEach((element: AccountsInfoInterface) => {
@@ -104,7 +107,6 @@ export class PartialComponent implements OnInit {
             }
           });
 
-          console.log('----publicsAccounts----', publicsAccounts);
           this.getAggregateBondedTransactions(publicsAccounts);
         }
       }
@@ -122,6 +124,21 @@ export class PartialComponent implements OnInit {
     });
   }
 
+
+  /**
+   *
+   *
+   * @param {AggregateTransaction} transaction
+   * @param {Account} account
+   * @memberof PartialComponent
+   */
+  cosignAggregateBondedTransaction(transaction: AggregateTransaction, account: Account) {
+    this.proximaxProvider.cosignAggregateBondedTransaction(transaction, account).subscribe(
+      announcedTransaction => console.log(announcedTransaction),
+      err => console.error(err)
+    );
+  }
+
   /**
    *
    *
@@ -132,17 +149,35 @@ export class PartialComponent implements OnInit {
     publicsAccounts.forEach(publicAccount => {
       this.proximaxProvider.getAggregateBondedTransactions(publicAccount).pipe(first()).subscribe(
         aggregateTransaction => {
-          console.log('Get aggregate bonded --->', aggregateTransaction);
+          // console.log('Get aggregate bonded --->', aggregateTransaction);
           aggregateTransaction.forEach((a: AggregateTransaction) => {
             const existTransction = this.aggregateTransactions.find(x => x.data.transactionInfo.hash === a.transactionInfo.hash);
-            console.log('----> existTransction <-----', existTransction);
             if (!existTransction) {
               const data = this.transactionService.getStructureDashboard(a);
+              console.log('----> existTransction <-----', data);
               this.aggregateTransactions.push(data);
             }
           });
         }
       );
     });
+  }
+
+  /**
+   *
+   *
+   * @memberof PartialComponent
+   */
+  sendTransaction() {
+    if (
+      this.password !== '' &&
+      this.password.length >= this.configurationForm.passwordWallet.minLength &&
+      this.password.length <= this.configurationForm.passwordWallet.maxLength) {
+
+    }
+    // account = sdk.Account.createFromPrivateKey(
+    //   "13A32F217D99FE2D2DA40772490C3F5CEB86D93B5530BF44FE0EFC542404F642",
+    //   168
+    // );
   }
 }

@@ -24,6 +24,7 @@ import { ConvertAccountMultisignComponent } from './views/multi-sign/convert-acc
 import { EditAccountMultisignComponent } from './views/multi-sign/edit-account-multisign/edit-account-multisign.component';
 import { Nis1AccountsListComponent } from './views/swap/nis1-accounts-list/nis1-accounts-list.component';
 import { AccountsListComponent } from './views/swap/accounts-list/accounts-list.component';
+import { CreatePollComponent } from './views/voting/create-poll/create-poll.component';
 
 const routes: Routes = [
   {
@@ -117,6 +118,16 @@ const routes: Routes = [
       }
     }
   }, {
+    path: AppConfig.routes.createPoll,
+    component: CreatePollComponent,
+    data: {
+      meta: {
+        title: 'createPoll.title',
+        description: 'createPoll.text',
+        override: true,
+      }
+    }
+  },{
     path: AppConfig.routes.uploadFile,
     component: UploadFileComponent,
     data: {

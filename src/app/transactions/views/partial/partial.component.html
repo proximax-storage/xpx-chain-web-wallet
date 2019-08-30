@@ -47,7 +47,7 @@
 <div class="container">
   <div class="row mt-2rem">
     <div class="col-11">
-      <span class="fw-600 d-flex justify-content-center">4 results found</span>
+      <span class="fw-600 d-flex justify-content-center">{{aggregateTransactions.length}} results found</span>
     </div>
   </div>
 </div>
@@ -77,7 +77,7 @@
               </tr>
             </ng-container>
 
-            <ng-container *ngIf="elements.length === 0">
+            <ng-container *ngIf="aggregateTransactions.length === 0">
               <tr>
                 <td colspan="5" class="txt-a-center">nothing to show</td>
               </tr>
@@ -131,16 +131,9 @@
                     <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
                   </div>
 
-                  <!-- Message
-                <ng-container *ngIf="dataSelected?.data['message'].payload !== ''">
-                  <div class="col-12">
-                    <span class="fw-600 fs-08rem"> Message: </span>
-                    <span class="fs-075rem">Payment for services</span>
-                  </div>
-                </ng-container>-->
-
+                  <!-- Transactions -->
                   <div class="col-12 mt-1-5rem">
-                    <div class="row">
+                    <div class="row d-flex align-items-center">
                       <div class="col-12 col-sm-4">
                         <span class="fw-600 fs-095rem">Transactions</span>
                       </div>
@@ -235,6 +228,26 @@
                           class="fs-065rem w-w-b-w ">{{dataSelected?.data['type'].toString(16).toUpperCase()}}</span>
                       </div>
                     </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-11 mt-1rem">
+                <div class="row d-flex justify-content-center">
+                  <div class="col-11 col-sm-6 col-md-8 d-flex justify-content-center">
+                    <input mdbInputDirective [validateSuccess]="false" [validateError]="false"
+                      class="w-100porcent form-control" type="password" placeholder="Enter password" autocomplete="off"
+                      [(ngModel)]="password" [maxlength]="configurationForm.passwordWallet.maxLength"
+                      [minlength]="configurationForm.passwordWallet.minLength">
+                  </div>
+
+                  <div class="col-11 col-sm-6 col-md-4 d-flex justify-content-center">
+                    <button (click)="sendTransaction()" autocomplete="false" [disabled]="password === '' ||
+                    password.length < this.configurationForm.passwordWallet.minLength ||
+                    password.length > this.configurationForm.passwordWallet.maxLength" mdbBtn type="button"
+                      rounded="true" mdbWavesEffect class="f-w-600 background-btn pt-1rem" size="sm">
+                      <span class="fs-1-2em color-white">APPROVE TO CONTINUE</span>
+                    </button>
                   </div>
                 </div>
               </div>
