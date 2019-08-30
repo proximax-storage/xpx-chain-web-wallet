@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Address } from 'tsjs-xpx-chain-sdk';
+import { Address, NamespaceId } from 'tsjs-xpx-chain-sdk';
 import { WalletService } from '../../wallet/services/wallet.service';
 import { environment } from 'src/environments/environment';
 
@@ -191,4 +191,13 @@ export interface HeaderServicesInterface {
   routerBack?: string,
   extraButton?: string,
   routerExtraButton?: string
+}
+
+export interface ResultAuditInterface {
+  filename: string,
+  owner: Address | NamespaceId | string,
+  fileHash: string,
+  result: string,
+  hash: string,
+  private?: boolean
 }

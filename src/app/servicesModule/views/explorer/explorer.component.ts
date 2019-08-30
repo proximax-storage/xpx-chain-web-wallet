@@ -8,6 +8,7 @@ import { NodeService } from "../../services/node.service";
 import { TransactionsInterface, TransactionsService } from '../../../transactions/services/transactions.service';
 import { WalletService } from '../../../wallet/services/wallet.service';
 import { SharedService } from '../../../shared/services/shared.service';
+import { HeaderServicesInterface } from '../../services/services-module.service';
 
 @Component({
   selector: 'app-explorer',
@@ -19,9 +20,10 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
   @ViewChild(MdbTablePaginationComponent, { static: true }) mdbTablePagination: MdbTablePaginationComponent;
   @ViewChild(MdbTableDirective, { static: true }) mdbTable: MdbTableDirective;
 
-  moduleName = 'Transaction explorer';
-  componentName = 'EXPLORE';
-  goBack = `/${AppConfig.routes.service}`;
+  paramsHeader: HeaderServicesInterface = {
+    moduleName: 'Transaction explorer',
+    componentName: 'EXPLORE'
+  };
   searching = false;
   objectKeys = Object.keys;
   firstItemIndex;

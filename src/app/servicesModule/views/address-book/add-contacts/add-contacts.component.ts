@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AppConfig } from 'src/app/config/app.config';
 import { FormGroup, Validators, FormBuilder, AbstractControl } from '@angular/forms';
-import { ServicesModuleService, ContactsStorageInterface } from 'src/app/servicesModule/services/services-module.service';
+import { ServicesModuleService, ContactsStorageInterface, HeaderServicesInterface } from '../../../services/services-module.service';
 import { SharedService } from 'src/app/shared/services/shared.service';
 import { WalletService } from 'src/app/wallet/services/wallet.service';
 import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
@@ -13,10 +13,12 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrls: ['./add-contacts.component.css']
 })
 export class AddContactsComponent implements OnInit {
-  moduleName = 'Address Book';
-  componentName = 'ADD CONTACTS';
-  list = `/${AppConfig.routes.addressBook}`;
-  goBack = `/${AppConfig.routes.service}`;
+  paramsHeader: HeaderServicesInterface = {
+    moduleName: 'Address Book',
+    componentName: 'ADD CONTACTS',
+    extraButton: 'List',
+    routerExtraButton: `/${AppConfig.routes.addressBook}`
+  };
 
   contactForm: FormGroup;
   blockSendButton: boolean;

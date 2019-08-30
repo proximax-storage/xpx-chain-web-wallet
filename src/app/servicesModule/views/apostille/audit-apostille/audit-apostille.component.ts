@@ -1,41 +1,51 @@
 import { Component, OnInit } from '@angular/core';
 import * as crypto from 'crypto-js'
 import { TransferTransaction, Message } from 'tsjs-xpx-chain-sdk';
-import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { NodeService } from '../../../services/node.service';
 import { SharedService } from 'src/app/shared/services/shared.service';
 import { Verifier } from './audit-apistille-verifier';
+import { ResultAuditInterface, HeaderServicesInterface } from '../../../services/services-module.service';
 
 @Component({
   selector: 'app-audit-apostille',
   templateUrl: './audit-apostille.component.html',
   styleUrls: ['./audit-apostille.component.css']
 })
+
 export class AuditApostilleComponent implements OnInit {
-  @BlockUI() blockUI: NgBlockUI;
+
+  paramsHeader: HeaderServicesInterface = {
+    moduleName: 'Attestation',
+    componentName: 'AUDIT'
+  };
   headElements = ['file name', 'Owner', 'Hash file', 'Result'];
   validatefileInput = false;
   ourFile: any;
   nameFile: string;
   file: any;
+  auditResults: ResultAuditInterface[] = [];
+  p = 1;
+
+
+  //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
   rawFileContent: any;
-  isProcessing = false;
-  auditResults = [];
+  // isProcessing = false;
   messa: Message;
   initialFileName: any;
   url: any;
+
   constructor(
     private proximaxProvider: ProximaxProvider,
     private sharedService: SharedService,
     private nodeService: NodeService
   ) {
     this.url = `https://${this.nodeService.getNodeSelected()}`;
-
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() { }
+
   /**
    * This is used to trigger the input
    *
@@ -46,6 +56,11 @@ export class AuditApostilleComponent implements OnInit {
     document.getElementById('fileInput').click();
   }
 
+  /**
+   * Method to take the selected file
+   * @param {File} files file array
+   * @param {Event} $event get the html element
+   */
   fileChange(files: File[], $event) {
     if (files.length > 0) {
       this.validatefileInput = true;
@@ -54,46 +69,37 @@ export class AuditApostilleComponent implements OnInit {
       const myReader: FileReader = new FileReader();
       myReader.onloadend = (e) => {
         this.file = myReader.result;
-        this.processFile();
-        // this.rawFileContent = crypto.enc.Base64.parse(this.file.split(/,(.+)?/)[1]);
+        this.verifyFile();
       };
       myReader.readAsDataURL(this.ourFile);
     }
   }
-  checkApostilleName() {
-    // Build an array out of the filename
-    let nameArray = this.nameFile.match(/\S+\s*/g);
-    // console.log('nameArray:', nameArray)
-    if (nameArray[nameArray.length - 6] === undefined || nameArray[nameArray.length - 5].replace(/^\s+|\s+$/, '') !== 'TX') return false;
-    let mark = nameArray[nameArray.length - 6].replace(/^\s+|\s+$/, '');
 
-    // console.log('mark:', mark)
-    if (mark === "Apostille" || mark === "ApostilleSigned") return true;
-    return false;
-  };
-
-  processFile() {
-    this.isProcessing = true;
+  /**
+   * 
+   */
+  verifyFile() {
+    // this.isProcessing = true;
     // Remove the meta part of $fileContent string (data:application/octet-stream;base64)
-    let cleanedDataContent = this.file.split(/,(.+)?/)[1];
+    // let cleanedDataContent = this.file.split(/,(.+)?/)[1];
     // Base 64 to word array
-    let parsedData = crypto.enc.Base64.parse(cleanedDataContent);
+    // let parsedData = crypto.enc.Base64.parse(cleanedDataContent);
     if (!this.checkApostilleName()) {
       this.auditResults.push({
-        'filename': this.nameFile,
-        'owner': '',
-        'fileHash': '',
-        'result': 'This file is not in apostille format!',
-        'hash': ''
+        filename: this.nameFile,
+        owner: '',
+        fileHash: '',
+        result: 'This file is not in apostille format!',
+        hash: ''
       });
-      this.showResult(this.auditResults);
-      this.isProcessing = false;
+      // this.showResult(this.auditResults);
+      // this.isProcessing = false;
       return;
     }
     // Build an array out of the filename
-    let nameArray = this.nameFile.match(/\S+\s*/g);
+    const nameArray = this.nameFile.match(/\S+\s*/g);
     // Recomposing the initial filename before apostille
-    let initialNameArray = nameArray.splice(0, nameArray.length - 7);
+    const initialNameArray = nameArray.splice(0, nameArray.length - 7);
     let initialFileName = "";
 
     for (let h = 0; h < initialNameArray.length; h++) {
@@ -102,48 +108,57 @@ export class AuditApostilleComponent implements OnInit {
     // Initial filename
     initialFileName = initialFileName.replace(/^\s+|\s+$/, '') + "." + this.nameFile.split('.').pop();
     // Hash of the apostille transaction
-    let apostilleTxHash = nameArray[nameArray.length - 4].replace(/^\s+|\s+$/, '');
-    // console.log("signedTransaction.hash:", apostilleTxHash);
-    this.blockUI.start('Loading...'); // Start blocking
+    const apostilleTxHash = nameArray[nameArray.length - 4].replace(/^\s+|\s+$/, '');
     this.proximaxProvider.getTransaction(apostilleTxHash).subscribe((infTrans: TransferTransaction) => {
-      const apostilleHashPrefix = 'fe4e545903';
+      // const apostilleHashPrefix = 'fe4e545903';
       const data = this.file
-      this.blockUI.stop(); // Stop blocking
 
       if (!this.verify(data, infTrans)) {
         this.auditResults
         this.auditResults.push({
-          'filename': this.nameFile,
-          'owner': '',
-          'fileHash': '',
-          'result': 'document not apostilled!',
-          'hash': ''
+          filename: this.nameFile,
+          owner: '',
+          fileHash: '',
+          result: 'document not apostilled!',
+          hash: ''
         });
-        this.showResult(this.auditResults);
-        this.isProcessing = false;
+        // this.showResult(this.auditResults);
+        // this.isProcessing = false;
         return;
       } else {
         this.auditResults.push({
-          'filename': this.nameFile,
-          'owner': infTrans.recipient,
-          'fileHash': Verifier.Hash,
-          'result': 'Document apostille!',
-          'hash': ''
+          filename: this.nameFile,
+          owner: infTrans.recipient,
+          fileHash: Verifier.Hash,
+          result: 'Document apostille!',
+          hash: ''
         });
-        this.showResult(this.auditResults);
-        this.isProcessing = true;
+        // this.showResult(this.auditResults);
+        // this.isProcessing = true;
         return;
 
       }
     },
       error => {
         this.sharedService.showError('Error', '¡unexpected error!');
-        this.blockUI.stop(); // Stop blocking
         console.error(error);
       }
     )
-
   }
+
+  checkApostilleName() {
+    // Build an array out of the filename
+    const nameArray = this.nameFile.match(/\S+\s*/g);
+    // console.log('nameArray:', nameArray)
+    if (nameArray[nameArray.length - 6] === undefined || nameArray[nameArray.length - 5].replace(/^\s+|\s+$/, '') !== 'TX') return false;
+    const mark = nameArray[nameArray.length - 6].replace(/^\s+|\s+$/, '');
+
+    // console.log('mark:', mark)
+    if (mark === "Apostille" || mark === "ApostilleSigned") return true;
+    return false;
+  };
+
+
   verify(data, infTrans): boolean {
 
     if (Verifier.isPublicApostille(infTrans.message.payload.replace(/['"]+/g, ''))) {
@@ -154,16 +169,16 @@ export class AuditApostilleComponent implements OnInit {
 
     }
   }
-  showResult(result) {
-  }
+  // showResult(result) {
+  // }
   createResultObject(initialFileName, apostilleSigner, checksum, dataHash, isPrivate, apostilleTxHash) {
     return {
-      'filename': initialFileName,
-      'owner': apostilleSigner,
-      'fileHash': checksum + dataHash,
-      'private': isPrivate,
-      'result': '',
-      'hash': apostilleTxHash
+      filename: initialFileName,
+      owner: apostilleSigner,
+      fileHash: checksum + dataHash,
+      result: '',
+      hash: apostilleTxHash,
+      private: isPrivate
     }
   }
 
