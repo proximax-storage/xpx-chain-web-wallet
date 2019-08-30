@@ -25,6 +25,7 @@ import { EditAccountMultisignComponent } from './views/multi-sign/edit-account-m
 import { Nis1AccountsListComponent } from './views/swap/nis1-accounts-list/nis1-accounts-list.component';
 import { AccountsListComponent } from './views/swap/accounts-list/accounts-list.component';
 import { CreatePollComponent } from './views/voting/create-poll/create-poll.component';
+import { CreateApostilleComponent } from './views/apostille/create-apostille/create-apostille.component';
 
 const routes: Routes = [
   {
@@ -127,7 +128,7 @@ const routes: Routes = [
         override: true,
       }
     }
-  },{
+  }, {
     path: AppConfig.routes.uploadFile,
     component: UploadFileComponent,
     data: {
@@ -238,7 +239,7 @@ const routes: Routes = [
         override: true,
       }
     }
-  },{
+  }, {
     path: `${AppConfig.routes.editAccountMultisign}/:name`,
     component: EditAccountMultisignComponent,
     data: {
@@ -295,6 +296,16 @@ const routes: Routes = [
       meta: {
         title: 'accountList.title',
         description: 'accountList.text',
+        override: true,
+      }
+    }
+  }, {
+    path: AppConfig.routes.createApostille,
+    component: CreateApostilleComponent,
+    data: {
+      meta: {
+        title: 'createApostille.title',
+        description: 'createApostille.text',
         override: true,
       }
     }

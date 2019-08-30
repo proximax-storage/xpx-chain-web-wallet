@@ -28,6 +28,7 @@ import { Nis1AccountsListComponent } from './views/swap/nis1-accounts-list/nis1-
 import { CreatePollComponent } from './views/voting/create-poll/create-poll.component';
 import { PollsComponent } from './views/voting/polls/polls.component';
 import { ResultPollComponent } from './views/voting/result-poll/result-poll.component';
+import { CreateApostilleComponent } from './views/apostille/create-apostille/create-apostille.component';
 
 @NgModule({
   declarations: [
@@ -56,7 +57,8 @@ import { ResultPollComponent } from './views/voting/result-poll/result-poll.comp
     Nis1AccountsListComponent,
     CreatePollComponent,
     PollsComponent,
-    ResultPollComponent
+    ResultPollComponent,
+    CreateApostilleComponent
   ],
   imports: [
     CoreModule,
