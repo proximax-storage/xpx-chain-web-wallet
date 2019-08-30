@@ -26,6 +26,7 @@ import { Nis1AccountsListComponent } from './views/swap/nis1-accounts-list/nis1-
 import { AccountsListComponent } from './views/swap/accounts-list/accounts-list.component';
 import { CreatePollComponent } from './views/voting/create-poll/create-poll.component';
 import { CreateApostilleComponent } from './views/apostille/create-apostille/create-apostille.component';
+import { AuditApostilleComponent } from './views/apostille/audit-apostille/audit-apostille.component';
 
 const routes: Routes = [
   {
@@ -296,6 +297,16 @@ const routes: Routes = [
       meta: {
         title: 'accountList.title',
         description: 'accountList.text',
+        override: true,
+      }
+    }
+  }, {
+    path: AppConfig.routes.audiApostille,
+    component: AuditApostilleComponent,
+    data: {
+      meta: {
+        title: 'audiApostille.title',
+        description: 'audiApostille.text',
         override: true,
       }
     }
