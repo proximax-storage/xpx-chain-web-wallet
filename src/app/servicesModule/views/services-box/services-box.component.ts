@@ -269,16 +269,17 @@ export class ServicesBoxComponent implements OnInit {
             '',
             '',
             AppConfig.routes.createPoll
+          )
+          ,
+          poll: this.services.buildStructureService(
+            'POLL',
+            true,
+            '',
+            '',
+            AppConfig.routes.polls
           ),
           view: this.services.buildStructureService(
             'VIEW RESULT',
-            false,
-            '',
-            '',
-            ''
-          ),
-          poll: this.services.buildStructureService(
-            'POLL',
             false,
             '',
             '',

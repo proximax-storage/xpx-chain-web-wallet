@@ -21,6 +21,7 @@ export class AuditApostilleComponent implements OnInit {
   nameFile: string;
   file: any;
   auditResults: ResultAuditInterface[] = [];
+  p = 1;
 
 
   //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
