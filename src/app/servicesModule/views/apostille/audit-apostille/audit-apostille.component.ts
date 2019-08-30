@@ -5,7 +5,7 @@ import { ProximaxProvider } from '../../../../shared/services/proximax.provider'
 import { NodeService } from '../../../services/node.service';
 import { SharedService } from 'src/app/shared/services/shared.service';
 import { Verifier } from './audit-apistille-verifier';
-import { ResultAuditInterface } from '../../../services/services-module.service';
+import { ResultAuditInterface, HeaderServicesInterface } from '../../../services/services-module.service';
 
 @Component({
   selector: 'app-audit-apostille',
@@ -15,6 +15,10 @@ import { ResultAuditInterface } from '../../../services/services-module.service'
 
 export class AuditApostilleComponent implements OnInit {
 
+  paramsHeader: HeaderServicesInterface = {
+    moduleName: 'Attestation',
+    componentName: 'AUDIT'
+  };
   headElements = ['file name', 'Owner', 'Hash file', 'Result'];
   validatefileInput = false;
   ourFile: any;
