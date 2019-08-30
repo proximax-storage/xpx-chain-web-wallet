@@ -27,6 +27,7 @@ import { AccountsListComponent } from './views/swap/accounts-list/accounts-list.
 import { CreatePollComponent } from './views/voting/create-poll/create-poll.component';
 import { CreateApostilleComponent } from './views/apostille/create-apostille/create-apostille.component';
 import { AuditApostilleComponent } from './views/apostille/audit-apostille/audit-apostille.component';
+import { PollsComponent } from './views/voting/polls/polls.component';
 
 const routes: Routes = [
   {
@@ -146,6 +147,17 @@ const routes: Routes = [
       meta: {
         title: 'myFile.title',
         description: 'myFile.text',
+        override: true,
+      }
+    }
+  },
+  {
+    path: AppConfig.routes.polls,
+    component: PollsComponent,
+    data: {
+      meta: {
+        title: 'polls.title',
+        description: 'polls.text',
         override: true,
       }
     }
