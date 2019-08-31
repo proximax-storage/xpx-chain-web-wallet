@@ -124,6 +124,7 @@ export class CreatePollStorageService {
 
   async loadTransactions(publicAccount: PublicAccount) {
     this.transactionResults = [];
+    this.pollResult = [];
     const promise = new Promise(async (resolve, reject) => {
       if (this.searcher) {
         const searchParam = SearchParameter.createForPublicKey(publicAccount.publicKey);
@@ -131,7 +132,6 @@ export class CreatePollStorageService {
         searchParam.withTransactionFilter(TransactionFilter.ALL);
         // searchParam.withResultSize(100);
         const searchResult = await this.searcher.search(searchParam.build());
-        console.log("searchResult", searchResult)
         if (searchResult.results.length > 0) {
           for (const resultItem of searchResult.results.reverse()) {
             const encrypted = resultItem.messagePayload.privacyType !== PrivacyType.PLAIN;
@@ -154,8 +154,7 @@ export class CreatePollStorageService {
               const downloableFile = new Blob([dataBuffer], { type: data.type });
               // resultData.push();
 
-              this.pollResult = this.ab2str(dataBuffer)
-              console.log('this.pollResult', this.pollResult)
+              this.pollResult.push(this.ab2str(dataBuffer)) ; 
               resolve({ result: this.ab2str(dataBuffer), size: searchResult.results.length });
 
               this.setPolls$({ result: this.ab2str(dataBuffer), size: searchResult.results.length });
@@ -186,13 +185,12 @@ export class CreatePollStorageService {
   /**
    *
    *
-   * @param {string} byName
-   * @param {boolean} [byDefault=null]
+   * @param {number} byId
    * @returns
    * @memberof WalletService
    */
-  filterPoll(byId: string): PollInterface {
-    return this.pollResult.id.find(elm => elm.id === byId);
+  filterPoll(byId: number): PollInterface {
+    return this.pollResult.find(elm => elm.id === byId);
   }
 }
 export interface FileInterface {
@@ -205,7 +203,7 @@ export interface FileInterface {
 export interface PollInterface {
   name: string;
   desciption: string;
-  id: number;
+  id: string;
   type: number;
   options: optionsPoll[];
   witheList?: Object[];
