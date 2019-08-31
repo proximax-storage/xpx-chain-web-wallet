@@ -1,45 +1,45 @@
-<div class="mt-3rem mb-3rem animated fadeIn">
-
+<div class="mt-3rem mb-3rem">
   <app-header [params]="paramsHeader"></app-header>
   <div class="container-fluid">
-
     <div class="row">
-      <div class="col-xl-10 col-lg-10 col-md-10 col-sm-10 mx-auto">
+      <div class="col-11 col-md-10 mx-auto">
         <div class="row">
-          <div class="col-xs-11 col-sm-11 col-md-11 col-lg-11 align-items-start mx-auto">
-            <!-- <span class="font-title">Audit files</span>
-            <hr> -->
-            <br>
-
+          <!-- EXAMPLE -->
+          <div class="col-11 align-items-start mx-auto">
             <div class="box-transparent-border-orange">
               <p class="mb-0">
-                <span class="font-title">EXAMPLE</span>
+                <span class="font-title fw-700 fs-09rem">EXAMPLE</span>
               </p>
-              <span class="fs-075rem w-b-a txt-a-left">MyProject2016 --
-                <b>Apostille</b> TX 0e94da29910ae64bb544e9de0e6a5c6440bd75e6bedafd81b5b4cfa729ca25ef -- Date
-                2016-09-12.pdf
+              <span class="fs-075rem w-b-a txt-a-left">
+                MyProject -- Apostille TX 0e94da29910ae64bb544e9de0e6a5c6440bd75e6bedafd81b5b4cfa729ca25ef -- Date
+                YYYY-MM-DD.pdf
               </span>
             </div>
+          </div>
 
-            <br>
+          <!-- UPLOAD FILE -->
+          <div class="col-11 d-flex justify-content-center mx-auto mb-1rem mt-1rem">
+            <button (click)="openInput()" mdbBtn type="submit" rounded="true" mdbWavesEffect
+              class="background-btn-inverse pl-2rem pr-2rem" size="md">
+              <img class="mr-1rem h2em" src="assets/images/img/icon-upload-gray-28h-proximax-sirius-wallet.svg"
+                width="25">
+              <span class="fs-1-2em text-cl-m fw-700">UPLOAD FILE</span>
+            </button>
 
-            <div class="d-flex col-12 justify-content-center mb-1rem">
+            <input id="fileInput" [hidden]="true" type="file" (change)="fileChange($event.target.files,$event)">
+          </div>
+        </div>
 
-              <button (click)="openInput()" mdbBtn type="submit" rounded="true" mdbWavesEffect
-                class="background-btn-inverse pl-2rem pr-2rem" size="md">
-                <img class="mr-1rem h2em" src="assets/images/img/icon-upload-gray-28h-proximax-sirius-wallet.svg"
-                  width="25">
-                <span class="fs-1-2em text-cl-m fw-700">UPLOAD FILE</span>
-              </button>
-
-              <input id="fileInput" [hidden]="true" type="file" (change)="fileChange($event.target.files,$event)">
-            </div>
-
-            <div class="box text-align-center word-break-all col-11">
-              <p class="box" id="nameFile"> {{nameFile}} </p>
-            </div>
-            <!-- <br>
-            <br> -->
+        <!-- Searching and icon reload -->
+        <div class="row mt-2rem mb-2rem" *ngIf="isProcessing">
+          <div class="col-11 col-sm-11 col-lg-10 mx-auto">
+            <!-- Searching -->
+            <ng-container>
+              <div class="col-12">
+                <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate">
+                </mdb-progress-bar>
+              </div>
+            </ng-container>
           </div>
         </div>
 
@@ -47,19 +47,30 @@
         <div class="row">
           <div class="col-11 mx-auto">
             <div class="datatable-style max-w-table">
-              <table mdbTable mdbTableScroll scrollX="true" striped="true">
+              <table mdbTable mdbTableScroll scrollX="true" striped="true" table-bordered>
                 <thead>
                   <tr class="header-backg">
-                    <th *ngFor="let head of headElements" scope="col" class="fs-075rem txt-a-center ">{{head}} </th>
+                    <th *ngFor="let head of headElements" scope="col" class="fs-075rem white-space-pre">{{head}} </th>
                   </tr>
                 </thead>
 
                 <tbody class="background-white">
-                  <ng-container *ngFor="let result of auditResults.slice().reverse() | paginate: { itemsPerPage: 5, currentPage: p }">
-                      <th class="th-md description-dark-green" scope="row"><span>{{result.filename}}</span></th>
-                      <td class="th-md description-dark-green white-space-pre" scope="row"><span>{{result.owner}}</span></td>
-                      <td class="th-md description-dark-green" scope="row"><span>{{result.fileHash}}</span></td>
-                      <td class="th-md description-dark-green" scope="row"><span>{{result.result}}</span></td>
+                  <ng-container
+                    *ngFor="let result of auditResults.slice().reverse() | paginate: { itemsPerPage: 5, currentPage: p }">
+                    <tr>
+                      <td class="description-dark-green white-space-pre">
+                        <span class="fs-075rem">{{result.filename}}</span>
+                      </td>
+                      <td class="description-dark-green white-space-pre">
+                        <span class="fs-075rem">{{result.owner}}</span>
+                      </td>
+                      <td class="description-dark-green white-space-pre">
+                        <span class="fs-075rem">{{result.fileHash}}</span>
+                      </td>
+                      <td class="description-dark-green white-space-pre">
+                        <span class="fs-075rem">{{result.result}}</span>
+                      </td>
+                    </tr>
                   </ng-container>
                 </tbody>
               </table>
@@ -70,7 +81,6 @@
             <pagination-controls (pageChange)="p = $event"></pagination-controls>
           </div>
         </div>
-
       </div>
     </div>
   </div>

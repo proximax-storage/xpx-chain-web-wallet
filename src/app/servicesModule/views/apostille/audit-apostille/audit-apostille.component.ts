@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import * as crypto from 'crypto-js'
 import { TransferTransaction, Message } from 'tsjs-xpx-chain-sdk';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { NodeService } from '../../../services/node.service';
-import { SharedService } from 'src/app/shared/services/shared.service';
+import { SharedService } from '../../../../shared/services/shared.service';
 import { Verifier } from './audit-apistille-verifier';
 import { ResultAuditInterface, HeaderServicesInterface } from '../../../services/services-module.service';
+import { AppConfig } from '../../../../config/app.config';
 
 @Component({
   selector: 'app-audit-apostille',
@@ -17,21 +17,25 @@ export class AuditApostilleComponent implements OnInit {
 
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Attestation',
-    componentName: 'AUDIT'
+    componentName: 'Audit',
+    extraButton: 'Create',
+    routerExtraButton: `/${AppConfig.routes.createApostille}`
   };
-  headElements = ['file name', 'Owner', 'Hash file', 'Result'];
+
+
+  headElements = ['File name', 'Owner', 'Hash file', 'Result'];
   validatefileInput = false;
   ourFile: any;
   nameFile: string;
   file: any;
   auditResults: ResultAuditInterface[] = [];
+  isProcessing = false;
   p = 1;
 
 
   //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
   rawFileContent: any;
-  // isProcessing = false;
   messa: Message;
   initialFileName: any;
   url: any;
@@ -76,10 +80,10 @@ export class AuditApostilleComponent implements OnInit {
   }
 
   /**
-   * 
+   *
    */
   verifyFile() {
-    // this.isProcessing = true;
+    this.isProcessing = true;
     // Remove the meta part of $fileContent string (data:application/octet-stream;base64)
     // let cleanedDataContent = this.file.split(/,(.+)?/)[1];
     // Base 64 to word array
@@ -89,11 +93,11 @@ export class AuditApostilleComponent implements OnInit {
         filename: this.nameFile,
         owner: '',
         fileHash: '',
-        result: 'This file is not in apostille format!',
+        result: 'This file is not in apostille format',
         hash: ''
       });
       // this.showResult(this.auditResults);
-      // this.isProcessing = false;
+      this.isProcessing = false;
       return;
     }
     // Build an array out of the filename
@@ -110,38 +114,52 @@ export class AuditApostilleComponent implements OnInit {
     // Hash of the apostille transaction
     const apostilleTxHash = nameArray[nameArray.length - 4].replace(/^\s+|\s+$/, '');
     this.proximaxProvider.getTransaction(apostilleTxHash).subscribe((infTrans: TransferTransaction) => {
-      // const apostilleHashPrefix = 'fe4e545903';
+      this.isProcessing = false;
+      console.log('\n\n\n\nValue of information transaction', infTrans, '\n\n\n\nEnd value\n\n');
       const data = this.file
 
       if (!this.verify(data, infTrans)) {
-        this.auditResults
         this.auditResults.push({
           filename: this.nameFile,
           owner: '',
           fileHash: '',
-          result: 'document not apostilled!',
+          result: 'Document not apostilled',
           hash: ''
         });
         // this.showResult(this.auditResults);
         // this.isProcessing = false;
         return;
       } else {
+        let arrayName = this.nameFile.split(' --Apostille ');
+        let arrayextention = this.nameFile.split('.');
+        let originalName = '';
+
+        if (arrayextention.length > 1) {
+          originalName = `${arrayName[0]}.${arrayextention[arrayextention.length - 1]}`;
+        } else {
+          originalName = arrayName[0];
+        }
+
         this.auditResults.push({
-          filename: this.nameFile,
+          filename: originalName,
           owner: this.proximaxProvider.createFromRawAddress(infTrans.recipient['address']).pretty(),
-          fileHash: Verifier.Hash,
-          result: 'Document apostille!',
+          fileHash: infTrans.message.payload.split('"').join(''),
+          result: 'Document apostille',
           hash: ''
         });
-        // this.showResult(this.auditResults);
-        // this.isProcessing = true;
         return;
-
       }
     },
       error => {
-        this.sharedService.showError('Error', '¡unexpected error!');
-        console.error(error);
+        this.auditResults.push({
+          filename: this.nameFile,
+          owner: '',
+          fileHash: '',
+          result: 'Document not apostilled',
+          hash: ''
+        });
+        this.isProcessing = false;
+        // this.sharedService.showError('', 'Apostille not found');
       }
     )
   }
@@ -149,12 +167,12 @@ export class AuditApostilleComponent implements OnInit {
   checkApostilleName() {
     // Build an array out of the filename
     const nameArray = this.nameFile.match(/\S+\s*/g);
-    // console.log('nameArray:', nameArray)
+    console.log('nameArray:', nameArray)
     if (nameArray[nameArray.length - 6] === undefined || nameArray[nameArray.length - 5].replace(/^\s+|\s+$/, '') !== 'TX') return false;
     const mark = nameArray[nameArray.length - 6].replace(/^\s+|\s+$/, '');
 
-    // console.log('mark:', mark)
-    if (mark === "Apostille" || mark === "ApostilleSigned") return true;
+    console.log('mark:', mark)
+    if (mark === "--Apostille" || mark === "--ApostilleSigned") return true;
     return false;
   };
 

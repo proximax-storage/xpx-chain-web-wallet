@@ -1,29 +1,12 @@
 <div class="container mt-3rem mb-2rem animated fadeIn">
-  <div class="row">
-    <div class="col-12 col-md-8">
-      <span class="fs-1rem txt-a-center line-h-1-2em color-grey">{{moduleName}}</span>
-      <span class="fs-1rem txt-a-center line-h-1-2em color-grey"> > </span>
-      <span class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">{{componentName}}</span>
-    </div>
-
-    <div class="col-12 col-md-4 d-flex justify-content-start justify-content-md-end">
-      <a class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio" [routerLink]="[backToService]">
-        <span>Back to Services</span>
-      </a>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-12">
-      <hr class="mt-03rem mb-05rem">
-    </div>
-  </div>
+  <app-header [params]="paramsHeader"></app-header>
 
   <div class="row">
     <div class="col-11 col-sm-10 col-md-9 mb-2rem mx-auto">
       <form [formGroup]="apostilleCreateForm" (ngSubmit)="createApostille()">
         <!-- UPLOAD FILE -->
         <div class="row mt-1rem">
-          <div class="col-11 d-flex justify-content-center">
+          <div class="col-11 d-flex justify-content-center mx-auto">
             <button (click)="openInput()" mdbBtn type="button" rounded="true" mdbWavesEffect
               class="background-btn-inverse pl-2rem pr-2rem" size="md">
               <img class="mr-1rem h2em" src="assets/images/img/icon-upload-gray-28h-proximax-sirius-wallet.svg"
@@ -35,7 +18,7 @@
               formControlName="file">
           </div>
 
-          <div class="col-11 d-flex justify-content-center mt-08rem">
+          <div class="col-11 d-flex justify-content-center mt-08rem txt-a-center mx-auto">
             <span class="color-dark-green fw-600 fs-08rem t-a-c">
               {{nameFile}}
               <ng-container *ngIf="fileInputIsValidated">
@@ -45,7 +28,7 @@
           </div>
         </div>
 
-        <!-- DOCUMENT TITLE -->
+        <!-- DOCUMENT TITLE
         <div class="row mt-1rem">
           <div class="col-12">
             <div class="md-form form-sm mt-0 mb-0rem">
@@ -56,9 +39,9 @@
                 placeholder="Document title">
             </div>
           </div>
-        </div>
+        </div>-->
 
-        <!-- CONTENT -->
+        <!-- CONTENT
         <div class="row mt-1rem">
           <div class="col-12">
             <div class="md-form form-sm mt-0 mb-0rem">
@@ -68,14 +51,24 @@
                 autocomplete="off" required></textarea>
             </div>
           </div>
-        </div>
+        </div> -->
 
         <!-- TAGS -->
         <div class="row mt-1rem">
           <div class="col-12">
-            <tag-input formControlName="tags" [clearOnBlur]="true"></tag-input>
+            <div class="md-form form-sm mt-0 mb-0rem">
+              <input [maxlength]="configurationForm.tags.maxLength" [minlength]="configurationForm.tags.minLength"
+                type="text" autocomplete="off" formControlName="tags" required id="tags" mdbInputDirective mdbValidate
+                [validateSuccess]="true" [validateError]="true" class="form-control form-control-sm input-border"
+                placeholder="Tags">
+            </div>
           </div>
         </div>
+        <!-- <div class="row mt-1rem">
+          <div class="col-12">
+            <tag-input formControlName="tags" [maxItems]='3' [clearOnBlur]="true" (onBlur)="onBlur($event)"></tag-input>
+          </div>
+        </div> -->
 
         <!-- TYPE ENCRIPTED -->
         <div class="row mt-2rem">

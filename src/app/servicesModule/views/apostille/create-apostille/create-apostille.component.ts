@@ -7,15 +7,18 @@ import * as qrcode from 'qrcode-generator';
 import * as jsPDF from 'jspdf';
 import { saveAs } from 'file-saver';
 import { Account, UInt64 } from 'tsjs-xpx-chain-sdk';
-import { IpfsConnection, IpfsClient } from 'xpx2-ts-js-sdk';
+import { IpfsConnection, IpfsClient, StreamHelper } from 'xpx2-ts-js-sdk';
 import { KeyPair, convert } from 'js-xpx-chain-library';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
-import { Verifier } from '../services/audit-apistille-verifier';
+import { Verifier } from '../services/audit-apostille-verifier';
 import { environment } from '../../../../../environments/environment';
 import { ConfigurationForm, SharedService } from '../../../../shared/services/shared.service';
 import { ApostilleService } from '../services/apostille.service';
 import { WalletService } from '../../../../wallet/services/wallet.service';
 declare const Buffer: any;
+import { HeaderServicesInterface } from '../../../services/services-module.service';
+import { AppConfig } from 'src/app/config/app.config';
+
 
 @Component({
   selector: 'app-create-apostille',
@@ -26,9 +29,14 @@ export class CreateApostilleComponent implements OnInit {
 
   apostilleCreateForm: FormGroup;
   configurationForm: ConfigurationForm;
-  componentName = 'Create';
-  moduleName = 'Attestation';
   autocompleteItems = [];
+  paramsHeader: HeaderServicesInterface = {
+    moduleName: 'Attestation',
+    componentName: 'Create',
+    extraButton: 'Audit',
+    routerExtraButton: `/${AppConfig.routes.audiApostille}`
+  };
+
 
   /************************* */
 
@@ -68,7 +76,7 @@ export class CreateApostilleComponent implements OnInit {
 
   /**Will move to util class **/
   async convertBlobToBuffer(blob: any) {
-    /*return new Promise<Buffer>(function (resolve, reject) {
+    return new Promise<Buffer>(function (resolve, reject) {
       const reader = new FileReader();
       reader.onloadend = () => {
         const fileContent = Buffer.from(reader.result as ArrayBuffer);
@@ -76,7 +84,7 @@ export class CreateApostilleComponent implements OnInit {
       };
       reader.onerror = event => reject(event);
       reader.readAsArrayBuffer(blob);
-    });*/
+    });
   }
 
   /**
@@ -87,30 +95,26 @@ export class CreateApostilleComponent implements OnInit {
    */
   buildApostille(nty: any) {
     const date = new Date();
-    const url = `${this.proximaxProvider.url}/transaction/${nty.signedTransaction.hash.toLowerCase()}`;
-    const title = (nty.title.slice(0, nty.title.lastIndexOf('.'))).slice(0, 15);
-    let qr = qrcode(10, 'H');
+    const url = `${environment.nodeExplorer}`;
+    const title = nty.title.slice(0, nty.title.lastIndexOf('.'));
+    const qr = qrcode(10, 'H');
     qr.addData(url);
     qr.make();
     this.ntyData = {
-      data: [
-        {
-          "filename": title,
-          "tags": nty.tags.join(' '),
-          "fileHash": nty.apostilleHash,
-          "owner": nty.account.address,
-          "fromMultisig": nty.account.address,
-          "dedicatedAccount": nty.sinkAddress,
-          "dedicatedPrivateKey": (this.apostilleCreateForm.get('typePrivatePublic').value == true) ? "None (public sink)" : nty.dedicatedPrivateKey,
-          "txHash": nty.signedTransaction.hash.toLowerCase(),
-          "txMultisigHash": "",
-          "timeStamp": date.toUTCString()
-        }
-      ]
+      "filename": title,
+      "tags": nty.tags,
+      "fileHash": nty.apostilleHash,
+      "owner": nty.account.address,
+      "fromMultisig": nty.account.address,
+      "dedicatedAccount": nty.sinkAddress,
+      "dedicatedPrivateKey": 'Not show',// (this.apostilleCreateForm.get('typePrivatePublic').value == true) ? "None (public sink)" : nty.dedicatedPrivateKey,
+      "txHash": nty.signedTransaction.hash.toLowerCase(),
+      "txMultisigHash": "",
+      "timeStamp": date.toUTCString()
     };
 
     // Add Certificate PDF to zip
-    const nameCertificate = `Certificate of ${title} -- Apostille TX ${nty.signedTransaction.hash.toLowerCase()} -- Date ${date.toUTCString()}.pdf`;
+    const nameCertificate = `Certificate of ${title} --Apostille TX ${nty.signedTransaction.hash.toLowerCase()} --Date ${date.toUTCString()}.pdf`;
     if (Verifier.isPrivateApostille(nty.apostilleHash)) {
       this.zip.file(nameCertificate, this.pdfcertificatePrivate(qr.createDataURL(), url, nty), {});
     } else if (Verifier.isPublicApostille(nty.apostilleHash)) {
@@ -120,8 +124,9 @@ export class CreateApostilleComponent implements OnInit {
     // Add Original File to zip
     const extensionFile = nty.title.slice(nty.title.lastIndexOf('.'));
     const dateFull = `${date.getFullYear()}-${("00" + (date.getMonth() + 1)).slice(-2)}-${("00" + (date.getDate())).slice(-2)}`;
+    const nameFile = `${title} --Apostille TX ${nty.signedTransaction.hash.toLowerCase()} --Date ${dateFull.toString()} ${extensionFile}`;
     this.zip.file(
-      `${title} -- Apostille TX ${nty.signedTransaction.hash.toLowerCase()} -- Date ${dateFull.toString()}${extensionFile}`,
+      `${nameFile}`,
       (crypto.enc.Base64.stringify(this.rawFileContent)),
       { base64: true }
     );
@@ -167,7 +172,7 @@ export class CreateApostilleComponent implements OnInit {
    */
   createForm() {
     this.apostilleCreateForm = this.fb.group({
-      documentTitle: ['', [
+      /*documentTitle: ['', [
         Validators.required,
         Validators.minLength(this.configurationForm.documentTitle.minLength),
         Validators.maxLength(this.configurationForm.documentTitle.maxLength)
@@ -176,7 +181,7 @@ export class CreateApostilleComponent implements OnInit {
       content: ['', [
         Validators.minLength(this.configurationForm.content.minLength),
         Validators.maxLength(this.configurationForm.content.maxLength)
-      ]],
+      ]],*/
 
       file: ['', [Validators.required]],
 
@@ -186,10 +191,10 @@ export class CreateApostilleComponent implements OnInit {
         Validators.required
       ]],
 
-      tags: ['', [
+      tags: [[], [
         Validators.required,
-        Validators.minLength(this.configurationForm.content.minLength),
-        Validators.maxLength(this.configurationForm.content.maxLength)
+        Validators.minLength(this.configurationForm.tags.minLength),
+        Validators.maxLength(this.configurationForm.tags.maxLength)
       ]],
 
       typeEncrypted: ['3', [
@@ -198,13 +203,10 @@ export class CreateApostilleComponent implements OnInit {
 
       password: ['', [
         Validators.required,
-        Validators.minLength(this.configurationForm.documentTitle.minLength),
-        Validators.maxLength(this.configurationForm.documentTitle.maxLength)
+        Validators.minLength(this.configurationForm.passwordWallet.minLength),
+        Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
       ]],
     });
-
-    console.log(this.apostilleCreateForm);
-
   }
 
   /**
@@ -226,6 +228,7 @@ export class CreateApostilleComponent implements OnInit {
         if (this.apostilleCreateForm.get('typePrivatePublic').value === true) {
           this.preparePublicApostille(common);
         } else {
+          console.log('--------PRIVATE-------');
           this.preparePrivateApostille(common);
         }
       }
@@ -245,7 +248,7 @@ export class CreateApostilleComponent implements OnInit {
       }).then(async (content: any) => {
         if (this.storeInDfms) {
           const bufferContent = await this.convertBlobToBuffer(content);
-          const streamContent = null; /*await StreamHelper.buffer2Stream(bufferContent);*/
+          const streamContent = await StreamHelper.buffer2Stream(bufferContent);
           const ipfConnection = new IpfsConnection(
             environment.storageConnection.host,
             environment.storageConnection.port,
@@ -276,7 +279,9 @@ export class CreateApostilleComponent implements OnInit {
    * @memberof ApostilleCreateComponent
    */
   encryptData(data: string) {
-    switch (this.apostilleCreateForm.get('typeEncrypted').value) {
+    // this.apostilleCreateForm.get('typeEncrypted').value
+    const a: any = "3";
+    switch (a) {
       case "1":
         return crypto.MD5(data);
       case "2":
@@ -298,7 +303,6 @@ export class CreateApostilleComponent implements OnInit {
    * @memberof ApostilleCreateComponent
    */
   fileReader(files: File[]) {
-    console.log(files);
     if (files.length > 0) {
       this.fileInputIsValidated = true;
       // Get name the file
@@ -360,7 +364,7 @@ export class CreateApostilleComponent implements OnInit {
     if (!proxinty) {
       localStorage.setItem('proxi-nty', JSON.stringify(nty))
     } else {
-      proxinty.data.push(nty.data)
+      proxinty.push(nty)
       localStorage.setItem('proxi-nty', JSON.stringify(proxinty))
     }
   }
@@ -387,6 +391,23 @@ export class CreateApostilleComponent implements OnInit {
   /**
    *
    *
+   * @param {*} item
+   * @memberof CreateApostilleComponent
+   */
+  onBlur(item: string) {
+    if (item !== '' && item !== undefined) {
+      const data = this.apostilleCreateForm.get('tags').value;
+      const x = this.apostilleCreateForm.get('tags').value.find((x: { display: string, value: string }) => x.value === item);
+      if (!x) {
+        data.push({ display: item, value: item });
+        this.apostilleCreateForm.get('tags').setValue(data);
+      }
+    }
+  }
+
+  /**
+   *
+   *
    * @param {*} base64ImageString
    * @param {*} url
    * @param {*} nty
@@ -406,7 +427,7 @@ export class CreateApostilleComponent implements OnInit {
     doc.text(80, 99, date.toUTCString());
     doc.setFontSize(13);
     doc.text(80, 109, nty.Owner);
-    doc.text(80, 120, nty.tags.join(' '));
+    doc.text(80, 120, nty.tags);
     doc.setFontSize(12);
 
     doc.text(42, 155, nty.sinkAddress);
@@ -441,7 +462,7 @@ export class CreateApostilleComponent implements OnInit {
     doc.text(80, 99, date.toUTCString());
     doc.setFontSize(13);
     doc.text(80, 109, nty.Owner);
-    doc.text(80, 120, nty.tags.join(' '));
+    doc.text(80, 120, nty.tags);
     doc.setFontSize(12);
 
     doc.text(42, 159, nty.sinkAddress);
@@ -473,7 +494,7 @@ export class CreateApostilleComponent implements OnInit {
     // FileHash is signed with ownerKeypair
     const contentHashSig = KeyPair.sign(ownerKeypair, fileHash);
     // create a prefix hash
-    const apostilleHashPrefix = 'fe4e545903';
+    const apostilleHashPrefix = 'fe4e545983';
     // Concatenates the hash prefix and the result gives the apostille hash
     const apostilleHash = apostilleHashPrefix + convert.uint8ToHex(contentHashSig).toLowerCase();
     // Encrypt the title
@@ -552,16 +573,17 @@ export class CreateApostilleComponent implements OnInit {
     console.log('-----signedTransaction----', signedTransaction);
     this.proximaxProvider.announce(signedTransaction).subscribe(
       x => {
-        let tags = '';
-        if (this.apostilleCreateForm.get('tags').value !== '' && this.apostilleCreateForm.get('tags').value.length > 0) {
-          tags = this.apostilleCreateForm.get('tags').value.map(next => next.value);
-        }
+        /* console.log(this.apostilleCreateForm.get('tags').value);
+         let tags = '';
+         if (this.apostilleCreateForm.get('tags').value !== '' && this.apostilleCreateForm.get('tags').value.length > 0) {
+           tags = this.apostilleCreateForm.get('tags').value.map(next => next.value);
+         }*/
         // Aqui falta validar si la transacción fue aceptada por el blockchain
         //Create arrangement to assemble the certificate
         const nty = {
           signedTransaction: signedTransaction,
           title: this.nameFile,
-          tags: tags,
+          tags: this.apostilleCreateForm.get('tags').value,
           apostilleHash: apostilleHash,
           account: myAccount,
           sinkAddress: sinkAddress.plain(),
