@@ -111,6 +111,7 @@ export class AuditApostilleComponent implements OnInit {
     const apostilleTxHash = nameArray[nameArray.length - 4].replace(/^\s+|\s+$/, '');
     this.proximaxProvider.getTransaction(apostilleTxHash).subscribe((infTrans: TransferTransaction) => {
       // const apostilleHashPrefix = 'fe4e545903';
+      console.log('\n\n\n\nValue of information transaction', infTrans, '\n\n\n\nEnd value\n\n');
       const data = this.file
 
       if (!this.verify(data, infTrans)) {
@@ -126,8 +127,12 @@ export class AuditApostilleComponent implements OnInit {
         // this.isProcessing = false;
         return;
       } else {
+        let arrayName = this.nameFile.split(' -- Apostille TX ');
+        let arrayextention = this.nameFile.split('.');
+
+        const originalName = `${arrayName[0]}.${arrayextention[arrayextention.length - 1]}`;
         this.auditResults.push({
-          filename: this.nameFile,
+          filename: originalName,
           owner: this.proximaxProvider.createFromRawAddress(infTrans.recipient['address']).pretty(),
           fileHash: Verifier.Hash,
           result: 'Document apostille!',
