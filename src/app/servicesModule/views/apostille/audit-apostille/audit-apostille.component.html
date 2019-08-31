@@ -29,10 +29,10 @@
             <input id="fileInput" [hidden]="true" type="file" (change)="fileChange($event.target.files,$event)">
           </div>
 
-          <!-- Name File -->
+          <!-- Name File
           <div class="col-11 box d-flex justify-content-center mx-auto mb-1rem txt-a-center">
             <span class="box fs-09rem fw-600" id="nameFile"> {{nameFile}} </span>
-          </div>
+          </div>-->
         </div>
 
         <!-- TABLE -->
@@ -42,7 +42,7 @@
               <table mdbTable mdbTableScroll scrollX="true" striped="true">
                 <thead>
                   <tr class="header-backg">
-                    <th *ngFor="let head of headElements" scope="col" class="fs-075rem txt-a-center ">{{head}} </th>
+                    <th *ngFor="let head of headElements" scope="col" class="fs-075rem">{{head}} </th>
                   </tr>
                 </thead>
 
@@ -50,16 +50,16 @@
                   <ng-container
                     *ngFor="let result of auditResults.slice().reverse() | paginate: { itemsPerPage: 5, currentPage: p }">
                     <tr>
-                      <td class="description-dark-green white-space-pre txt-a-center">
+                      <td class="description-dark-green white-space-pre">
                         <span class="fs-075rem">{{result.filename}}</span>
                       </td>
-                      <td class="description-dark-green white-space-pre txt-a-center">
+                      <td class="description-dark-green white-space-pre">
                         <span class="fs-075rem">{{result.owner}}</span>
                       </td>
-                      <td class="description-dark-green white-space-pre txt-a-center">
+                      <td class="description-dark-green white-space-pre">
                         <span class="fs-075rem">{{result.fileHash}}</span>
                       </td>
-                      <td class="description-dark-green white-space-pre txt-a-center">
+                      <td class="description-dark-green white-space-pre">
                         <span class="fs-075rem">{{result.result}}</span>
                       </td>
                     </tr>

@@ -91,7 +91,7 @@ export class CreateApostilleComponent implements OnInit {
   buildApostille(nty: any) {
     const date = new Date();
     const url = `${this.proximaxProvider.url}/transaction/${nty.signedTransaction.hash.toLowerCase()}`;
-    const title = nty.title;//(nty.title.slice(0, nty.title.lastIndexOf('.'))).slice(0, 15);
+    const title = nty.title.slice(0, nty.title.lastIndexOf('.'));
     const qr = qrcode(10, 'H');
     qr.addData(url);
     qr.make();
@@ -301,7 +301,6 @@ export class CreateApostilleComponent implements OnInit {
    * @memberof ApostilleCreateComponent
    */
   fileReader(files: File[]) {
-    console.log(files);
     if (files.length > 0) {
       this.fileInputIsValidated = true;
       // Get name the file
