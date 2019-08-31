@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import * as crypto from 'crypto-js'
 import { TransferTransaction, Message } from 'tsjs-xpx-chain-sdk';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { NodeService } from '../../../services/node.service';
-import { SharedService } from 'src/app/shared/services/shared.service';
+import { SharedService } from '../../../../shared/services/shared.service';
 import { Verifier } from './audit-apistille-verifier';
 import { ResultAuditInterface, HeaderServicesInterface } from '../../../services/services-module.service';
+import { AppConfig } from '../../../../config/app.config';
 
 @Component({
   selector: 'app-audit-apostille',
@@ -17,9 +17,13 @@ export class AuditApostilleComponent implements OnInit {
 
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Attestation',
-    componentName: 'AUDIT'
+    componentName: 'AUDIT',
+    extraButton: 'Create',
+    routerExtraButton: `/${AppConfig.routes.createApostille}`
   };
-  headElements = ['file name', 'Owner', 'Hash file', 'Result'];
+
+
+  headElements = ['File name', 'Owner', 'Hash file', 'Result'];
   validatefileInput = false;
   ourFile: any;
   nameFile: string;
@@ -89,7 +93,7 @@ export class AuditApostilleComponent implements OnInit {
         filename: this.nameFile,
         owner: '',
         fileHash: '',
-        result: 'This file is not in apostille format!',
+        result: 'This file is not in apostille format',
         hash: ''
       });
       // this.showResult(this.auditResults);
@@ -115,12 +119,11 @@ export class AuditApostilleComponent implements OnInit {
       const data = this.file
 
       if (!this.verify(data, infTrans)) {
-        this.auditResults
         this.auditResults.push({
           filename: this.nameFile,
           owner: '',
           fileHash: '',
-          result: 'document not apostilled!',
+          result: 'Document not apostilled',
           hash: ''
         });
         // this.showResult(this.auditResults);
@@ -141,19 +144,22 @@ export class AuditApostilleComponent implements OnInit {
           filename: originalName,
           owner: this.proximaxProvider.createFromRawAddress(infTrans.recipient['address']).pretty(),
           fileHash: infTrans.message.payload.split('"').join(''),
-          result: 'Document apostille!',
+          result: 'Document apostille',
           hash: ''
         });
-        // this.showResult(this.auditResults);
-        // this.isProcessing = true;
         return;
-
       }
     },
       error => {
+        this.auditResults.push({
+          filename: this.nameFile,
+          owner: '',
+          fileHash: '',
+          result: 'Document not apostilled',
+          hash: ''
+        });
         this.isProcessing = false;
-        this.sharedService.showError('Error', '¡unexpected error!');
-        console.error(error);
+        // this.sharedService.showError('', 'Apostille not found');
       }
     )
   }

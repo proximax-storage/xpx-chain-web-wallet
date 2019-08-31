@@ -17,6 +17,7 @@ import { ApostilleService } from '../services/apostille.service';
 import { WalletService } from '../../../../wallet/services/wallet.service';
 declare const Buffer: any;
 import { HeaderServicesInterface } from '../../../services/services-module.service';
+import { AppConfig } from 'src/app/config/app.config';
 
 
 @Component({
@@ -32,7 +33,11 @@ export class CreateApostilleComponent implements OnInit {
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Attestation',
     componentName: 'Create',
+    extraButton: 'Audit',
+    routerExtraButton: `/${AppConfig.routes.audiApostille}`
   };
+
+
   /************************* */
 
   fileInputIsValidated = false;
