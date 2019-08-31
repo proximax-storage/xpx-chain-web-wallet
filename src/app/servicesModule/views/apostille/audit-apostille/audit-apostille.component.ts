@@ -130,8 +130,14 @@ export class AuditApostilleComponent implements OnInit {
         const apostilleHashPrefix = 'fe4e545903';
         let arrayName = this.nameFile.split(' --Apostille ');
         let arrayextention = this.nameFile.split('.');
+        let originalName = '';
 
-        const originalName = `${arrayName[0]}.${arrayextention[arrayextention.length - 1]}`;
+        if (arrayextention.length > 1) {
+          originalName = `${arrayName[0]}.${arrayextention[arrayextention.length - 1]}`;
+        } else {
+          originalName = arrayName[0];
+        }
+
         this.auditResults.push({
           filename: originalName,
           owner: this.proximaxProvider.createFromRawAddress(infTrans.recipient['address']).pretty(),
