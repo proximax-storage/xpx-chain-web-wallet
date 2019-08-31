@@ -1531,3 +1531,8 @@ body.modal-open {
   padding: 2rem 1rem 1rem !important;
   box-shadow: 0 0px 0px 0 rgba(0,0,0,0), 0 0px 0px 0 rgba(0,0,0,0) !important;
 }
+
+.link {
+  color: #306EB5 !important;
+  font-weight: bold;
+}

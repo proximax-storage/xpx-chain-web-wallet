@@ -2,28 +2,41 @@ import { Component, OnInit } from '@angular/core';
 import { PublicAccount, Account, Address } from 'tsjs-xpx-chain-sdk';
 import { environment } from 'src/environments/environment';
 import { WalletService } from 'src/app/wallet/services/wallet.service';
-import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, AbstractControl, FormControl, } from '@angular/forms';
 import { ConfigurationForm, SharedService } from 'src/app/shared/services/shared.service';
 import { AppConfig } from 'src/app/config/app.config';
 import { CreatePollStorageService } from 'src/app/servicesModule/services/create-poll-storage.service';
+
 @Component({
   selector: 'app-create-poll',
   templateUrl: './create-poll.component.html',
   styleUrls: ['./create-poll.component.css']
 })
 export class CreatePollComponent implements OnInit {
+  endDate: any;
+  index: any;
+  desciption: any;
+  name: any;
+  validateformDateEnd: boolean;
+  form: FormGroup;
   showList: boolean;
-  account: string;
+  publicAddress: string;
   errorDateStart: string;
   errorDateEnd: string;
   minDate: Date;
   boxOtherAccount = [];
-  createPollForm: FormGroup;
+  // createPollForm: FormGroup;
+  firstFormGroup: FormGroup;
+  secondFormGroup: FormGroup;
+  thirdFormGroup: FormGroup;
+  quarterFormGroup: FormGroup;
   configurationForm: ConfigurationForm = {};
   account: Account;
   btnBlock: boolean;
   Poll: PollInterface;
   option: optionsPoll[] = [];
+  listaBlanca: any[] = [];
+
   routes = {
     backToService: `/${AppConfig.routes.service}`
   };
@@ -38,14 +51,6 @@ export class CreatePollComponent implements OnInit {
     selected: false,
   }];
 
-  listaBlanca: any = [{
-    value: 121213231241,
-    label: 'VAKYW5-55DSDQ-TGMNZA-ULW6ZA-5WCMBB-QTW5XN-PHGK',
-  }, {
-    value: 123123123123,
-    label: 'VOIJUY-55DSDQ-TGMNZA-ULW6ZA-QWEDFR-POLKJU-OPKJ',
-  }];
-
   constructor(
     private fb: FormBuilder,
     private sharedService: SharedService,
@@ -54,45 +59,52 @@ export class CreatePollComponent implements OnInit {
 
   ) {
     this.configurationForm = this.sharedService.configurationForm;
-    this.account = environment.pollsContent.address_public_test
+    this.publicAddress = environment.pollsContent.address_public_test
     this.btnBlock = false;
     this.showList = false;
   }
 
   ngOnInit() {
-    this.createForm();
-    this.JSONOptions();
-    
+    // this.JSONOptions();
+    this.createForms();
   }
 
-  /**
-   *
-   *
-   * @memberof CreatePollComponent
-   */
-  createForm() {
-    //Form create multisignature default
-    this.createPollForm = this.fb.group({
-      tittle: ['', [Validators.required]],
-      poll:[true],
-      message: ['', [Validators.required,Validators.maxLength(this.configurationForm.message.maxLength)]],
-      address: ['', [Validators.required]],
-      PollEndDate: [0, Validators.required],
-      option:['', [Validators.required]],
-      password: ['', [Validators.required, Validators.minLength(this.configurationForm.passwordWallet.minLength),
-        Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
-      ]],
-      voteType:[1, [ Validators.required]]
+  createForms(){
+    this.firstFormGroup = new FormGroup({
+      tittle: new FormControl('', [Validators.required]),
+      poll: new FormControl('', [Validators.required]),
+      message: new FormControl('', [Validators.required]),
+      PollEndDate: new FormControl('', [Validators.required])
     });
-    // this.validatorsCosignatory();
-    // this.changeformStatus()
-  }
 
+    this.secondFormGroup = new FormGroup({
+      option: new FormControl('')
+    });
+
+    this.thirdFormGroup = new FormGroup({
+      voteType: new FormControl(1),
+      address: new FormControl('')
+    });
+
+    this.quarterFormGroup = new FormGroup({
+      password: new FormControl('', Validators.required)
+    });
+  }
   initOptionsDate() {
 
     const today = new Date();
     this.minDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), today.getHours(), today.getMinutes());
   }
+
+  get1() {
+    this.name = this.firstFormGroup.get('tittle').value
+    this.desciption = this.firstFormGroup.get('message').value
+    this.index = this.firstFormGroup.get('poll').value
+    this.endDate = this.firstFormGroup.get('PollEndDate').value
+    // console.log('obtener form 1',  this.name)
+  }
+
+  
 
   copyMessage(message: string) {
     this.sharedService.showSuccess('', `${message} copied`);
@@ -101,117 +113,133 @@ export class CreatePollComponent implements OnInit {
   deleteOptions(item) {
     this.option = this.option.filter(option => option != item);
   }
-  
-  selectType($event: Event){
-    console.log('******************', $event)
+
+  deleteAccaunt(item) {
+    this.listaBlanca = this.listaBlanca.filter(white => white.address != item.address);
+  }
+
+  selectType($event: Event) {
     const type: any = $event;
-    console.log('******************', type)
     if (type !== null && type !== undefined) {
-      if(type.value === 2){
+      if (type.value === 2) {
         this.showList = true;
-      }else{
+      } else {
         this.showList = false;
+        this.listaBlanca = [];
       }
-      
+
     }
   }
 
-  confirmSelectedChangStart(event) {
-    const doe = event.value;
-    this.createPollForm.get('PollEndDate').reset();
-    const ISOMatch = new Date(doe);
-    if ((isNaN(new Date(doe).getTime()) || !ISOMatch)) {
-      this.errorDateStart = 'date not valid';
-      // this.validateformDateStart = true;
-    } else {
-      this.errorDateStart = '';
-      // this.validateformDateStart = false;
-      // this.createPollForm.controls.dateStart = ISOMatch;
-    }
-  }
+  // confirmSelectedChangStart(event) {
+  //   const doe = event.value;
+  //   this.createPollForm.get('PollEndDate').reset();
+  //   const ISOMatch = new Date(doe);
+  //   if ((isNaN(new Date(doe).getTime()) || !ISOMatch)) {
+  //     this.errorDateStart = 'date not valid';
+  //     // this.validateformDateStart = true;
+  //   } else {
+  //     this.errorDateStart = '';
+  //     // this.validateformDateStart = false;
+  //     // this.createPollForm.controls.dateStart = ISOMatch;
+  //   }
+  // }
 
   confirmSelectedChangEnd(event) {
     const doe = event.value;
     const ISOMatch = new Date(doe);
     if ((isNaN(new Date(doe).getTime()) || !ISOMatch)) {
       this.errorDateEnd = 'date not valid';
-      // this.validateformDateEnd = true;
-      this.createPollForm.get('PollEndDate').reset();
-    } else if ((new Date(this.createPollForm.get('PollStartDate').value).getTime()) >= new Date(doe).getTime()) {
+      this.validateformDateEnd = true;
+      this.firstFormGroup.get('PollEndDate').reset();
+    } else if ((new Date(this.firstFormGroup.get('PollStartDate').value).getTime()) >= new Date(doe).getTime()) {
       this.errorDateEnd = 'date does not validate, it has to be greater than the start date';
-      // this.validateformDateEnd = true;
-      this.createPollForm.get('PollEndDate').reset();
+      this.validateformDateEnd = true;
+      this.firstFormGroup.get('PollEndDate').reset();
     } else {
       this.errorDateEnd = '';
-      // this.validateformDateEnd = false;
+      this.validateformDateEnd = false;
       // this.formDate.dateEnd = new Date(doe);
     }
   }
 
   addOptions() {
-    if (this.createPollForm.get('option').valid && this.createPollForm.get('option').value != '') {
-      let options = this.createPollForm.get('option').value
+    if (this.secondFormGroup.get('option').valid && this.secondFormGroup.get('option').value != '') {
+      console.log()
+      let options = this.secondFormGroup.get('option').value
       this.generateOptios(options);
-      this.createPollForm.patchValue({
-        option:''
+      this.secondFormGroup.patchValue({
+        option: ''
       })
-      console.log('hahahahah', this.option)
     }
   }
 
   pushedOtherAccount() {
-      if (this.boxOtherAccount.length === 0) {
+    if (this.boxOtherAccount.length === 0) {
+      this.boxOtherAccount.push({
+        id: Math.floor(Math.random() * 1455654),
+        balance: '',
+      });
+    } else {
+      let x = false;
+      this.boxOtherAccount.forEach(element => {
+        if (element.id === '') {
+          this.sharedService.showWarning('', 'You must select a mosaic and place the quantity');
+          x = true;
+        } else if (element.amount === '' || Number(element.amount) === 0) {
+          this.sharedService.showWarning('', 'The quantity of mosaics is missing');
+          x = true;
+        }
+      });
+
+      if (!x) {
         this.boxOtherAccount.push({
           id: Math.floor(Math.random() * 1455654),
           balance: '',
         });
-      } else {
-        let x = false;
-        this.boxOtherAccount.forEach(element => {
-          if (element.id === '') {
-            this.sharedService.showWarning('', 'You must select a mosaic and place the quantity');
-            x = true;
-          } else if (element.amount === '' || Number(element.amount) === 0) {
-            this.sharedService.showWarning('', 'The quantity of mosaics is missing');            
-            x = true;
-          }
-        });
-
-        if (!x) {
-          this.boxOtherAccount.push({
-            id: Math.floor(Math.random() * 1455654),
-            balance: '',
-          });
-        }
       }
-
-  }
-
-addAddress(value) {
-    this.generateAccount(value)
-}
-
-JSONAccount() {
-  for (let element of this.listaBlanca) {
-    this.generateAccount(element)
-}
-}
-
-  JSONOptions() {
-
-    const namesOptions = ["nike", "adidas", "converse", "timberlat"];
-    this.Poll = null;
-    for (let element of namesOptions) {
-      this.generateOptios(element);
     }
-
-
   }
 
-  generateAccount(nameParam: string) {
-    this.listaBlanca.push(Address.createFromRawAddress(nameParam))
-
+  addAddress() {
+    if (this.thirdFormGroup.get('address').valid && this.thirdFormGroup.get('address').value != '') {
+      let address = this.thirdFormGroup.get('address').value
+      if (this.listaBlanca.length > 0) {
+        
+        const result = this.listaBlanca.find(element => Address.createFromRawAddress(element.address).plain() === address.split('-').join(''));
+        console.log('1',  this.listaBlanca)
+        console.log('2',  address.split('-').join(''))
+        console.log('1',  result)
+        if (result === undefined) {
+          this.listaBlanca.push(Address.createFromRawAddress(address))
+          this.thirdFormGroup.patchValue({
+            address: ''
+          })
+        } else {
+          this.sharedService.showError('', 'account exists');
+        }
+      }else {
+        this.listaBlanca.push(Address.createFromRawAddress(address))
+        this.thirdFormGroup.patchValue({
+          address: ''
+        })
+      }
+      
+      // 
+      console.log('adresss new add', this.listaBlanca)
+    }
   }
+
+  // JSONOptions() {
+
+  //   const namesOptions = ["nike", "adidas", "converse", "timberlat"];
+  //   this.Poll = null;
+  //   for (let element of namesOptions) {
+  //     this.generateOptios(element);
+  //   }
+
+
+  // }
 
   generateOptios(nameParam: string) {
     let publicAccountGenerate: PublicAccount = Account.generateNewAccount(this.walletService.currentAccount.network).publicAccount;
@@ -221,10 +249,10 @@ JSONAccount() {
 
   sendPoll() {
     const common = {
-      password: this.createPollForm.get('password').value,
+      password: this.quarterFormGroup.get('password').value,
       privateKey: ''
     }
-    if (this.createPollForm.valid && !this.btnBlock) {
+    if (this.quarterFormGroup.valid && !this.btnBlock) {
       if (this.walletService.decrypt(common)) {
         this.preparepoll(common);
       }
@@ -281,8 +309,6 @@ JSONAccount() {
       console.log('resp', resp)
 
     });
-
-
   }
   /**
  *
@@ -293,17 +319,27 @@ JSONAccount() {
  * @returns
  * @memberof CreateNamespaceComponent
  */
-  validateInput(nameInput: string = '', nameControl: string = '', nameValidation: string = '') {
+  validateInput(nameInput: string = '', form: string = '', nameControl: string = '', nameValidation: string = '') {
+    if (form == '1') {
+      this.form = this.firstFormGroup;
+    } else if (form == '2') {
+      this.form = this.secondFormGroup;
+    } else if (form == '3') {
+      this.form = this.thirdFormGroup;
+    } else if (form == '4') {
+      this.form = this.quarterFormGroup;
+    }
     let validation: AbstractControl = null;
     if (nameInput !== '' && nameControl !== '') {
-      validation = this.createPollForm.controls[nameControl].get(nameInput);
+      validation = this.form.controls[nameControl].get(nameInput);
     } else if (nameInput === '' && nameControl !== '' && nameValidation !== '') {
-      validation = this.createPollForm.controls[nameControl].getError(nameValidation);
+      validation = this.form.controls[nameControl].getError(nameValidation);
     } else if (nameInput !== '') {
-      validation = this.createPollForm.get(nameInput);
+      validation = this.form.get(nameInput);
     }
     return validation;
   }
+
   /**
    *
    *
@@ -312,18 +348,19 @@ JSONAccount() {
    * @returns
    * @memberof CreateTransferComponent
    */
-  clearForm(custom?: string | (string | number)[], formControl?: string | number) {
-    if (custom !== undefined) {
-      if (formControl !== undefined) {
-        this.createPollForm.controls[formControl].get(custom).reset({ emitEvent: false, onlySelf: true });
-        return;
-      }
-      this.createPollForm.get(custom).reset({ emitEvent: false, onlySelf: true });
-      return;
-    }
-    this.createPollForm.reset({ emitEvent: false, onlySelf: true });
-    return;
-  }
+  // clearForm(custom?: string | (string | number)[], formControl?: string | number) {
+  //   if (custom !== undefined) {
+  //     if (formControl !== undefined) {
+  //       this.createPollForm.controls[formControl].get(custom).reset({ emitEvent: false, onlySelf: true });
+  //       return;
+  //     }
+  //     this.createPollForm.get(custom).reset({ emitEvent: false, onlySelf: true });
+  //     return;
+  //   }
+  //   this.createPollForm.reset({ emitEvent: false, onlySelf: true });
+  //   return;
+  // }
+
 
 }
 
