@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { PublicAccount, Account } from 'tsjs-xpx-chain-sdk';
+import { PublicAccount, Account, Address } from 'tsjs-xpx-chain-sdk';
 import { environment } from 'src/environments/environment';
 import { WalletService } from 'src/app/wallet/services/wallet.service';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
@@ -11,6 +11,12 @@ import { AppConfig } from 'src/app/config/app.config';
   styleUrls: ['./create-poll.component.css']
 })
 export class CreatePollComponent implements OnInit {
+  showList: boolean;
+  account: string;
+  errorDateStart: string;
+  errorDateEnd: string;
+  minDate: Date;
+  boxOtherAccount = [];
   createPollForm: FormGroup;
   configurationForm: ConfigurationForm = {};
   publicAccount: PublicAccount;
@@ -20,6 +26,25 @@ export class CreatePollComponent implements OnInit {
   routes = {
     backToService: `/${AppConfig.routes.service}`
   };
+
+  voteType: any = [{
+    value: 1,
+    label: 'Public',
+    selected: true,
+  }, {
+    value: 2,
+    label: 'White list',
+    selected: false,
+  }];
+
+  listaBlanca: any = [{
+    value: 121213231241,
+    label: 'VAKYW5-55DSDQ-TGMNZA-ULW6ZA-5WCMBB-QTW5XN-PHGK',
+  }, {
+    value: 123123123123,
+    label: 'VOIJUY-55DSDQ-TGMNZA-ULW6ZA-QWEDFR-POLKJU-OPKJ',
+  }];
+
   constructor(
     private fb: FormBuilder,
     private sharedService: SharedService,
@@ -27,12 +52,15 @@ export class CreatePollComponent implements OnInit {
 
   ) {
     this.configurationForm = this.sharedService.configurationForm;
+    this.account = environment.pollsContent.address_public_test
     this.btnBlock = false;
+    this.showList = false;
   }
 
   ngOnInit() {
     this.createForm();
     this.JSONOptions();
+    
   }
 
   /**
@@ -43,16 +71,130 @@ export class CreatePollComponent implements OnInit {
   createForm() {
     //Form create multisignature default
     this.createPollForm = this.fb.group({
-      password: ['', [
-        Validators.required,
-        Validators.minLength(this.configurationForm.passwordWallet.minLength),
+      tittle: ['', [Validators.required]],
+      poll:[true],
+      message: ['', [Validators.required,Validators.maxLength(this.configurationForm.message.maxLength)]],
+      address: ['', [Validators.required]],
+      PollEndDate: [0, Validators.required],
+      option:['', [Validators.required]],
+      password: ['', [Validators.required, Validators.minLength(this.configurationForm.passwordWallet.minLength),
         Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
-      ]
-      ],
+      ]],
+      voteType:[1, [ Validators.required]]
     });
     // this.validatorsCosignatory();
     // this.changeformStatus()
   }
+
+  initOptionsDate() {
+
+    const today = new Date();
+    this.minDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), today.getHours(), today.getMinutes());
+  }
+
+  copyMessage(message: string) {
+    this.sharedService.showSuccess('', `${message} copied`);
+  }
+
+  deleteOptions(item) {
+    this.option = this.option.filter(option => option != item);
+  }
+  
+  selectType($event: Event){
+    console.log('******************', $event)
+    const type: any = $event;
+    console.log('******************', type)
+    if (type !== null && type !== undefined) {
+      if(type.value === 2){
+        this.showList = true;
+      }else{
+        this.showList = false;
+      }
+      
+    }
+  }
+
+  confirmSelectedChangStart(event) {
+    const doe = event.value;
+    this.createPollForm.get('PollEndDate').reset();
+    const ISOMatch = new Date(doe);
+    if ((isNaN(new Date(doe).getTime()) || !ISOMatch)) {
+      this.errorDateStart = 'date not valid';
+      // this.validateformDateStart = true;
+    } else {
+      this.errorDateStart = '';
+      // this.validateformDateStart = false;
+      // this.createPollForm.controls.dateStart = ISOMatch;
+    }
+  }
+
+  confirmSelectedChangEnd(event) {
+    const doe = event.value;
+    const ISOMatch = new Date(doe);
+    if ((isNaN(new Date(doe).getTime()) || !ISOMatch)) {
+      this.errorDateEnd = 'date not valid';
+      // this.validateformDateEnd = true;
+      this.createPollForm.get('PollEndDate').reset();
+    } else if ((new Date(this.createPollForm.get('PollStartDate').value).getTime()) >= new Date(doe).getTime()) {
+      this.errorDateEnd = 'date does not validate, it has to be greater than the start date';
+      // this.validateformDateEnd = true;
+      this.createPollForm.get('PollEndDate').reset();
+    } else {
+      this.errorDateEnd = '';
+      // this.validateformDateEnd = false;
+      // this.formDate.dateEnd = new Date(doe);
+    }
+  }
+
+  addOptions() {
+    if (this.createPollForm.get('option').valid && this.createPollForm.get('option').value != '') {
+      let options = this.createPollForm.get('option').value
+      this.generateOptios(options);
+      this.createPollForm.patchValue({
+        option:''
+      })
+      console.log('hahahahah', this.option)
+    }
+  }
+
+  pushedOtherAccount() {
+      if (this.boxOtherAccount.length === 0) {
+        this.boxOtherAccount.push({
+          id: Math.floor(Math.random() * 1455654),
+          balance: '',
+        });
+      } else {
+        let x = false;
+        this.boxOtherAccount.forEach(element => {
+          if (element.id === '') {
+            this.sharedService.showWarning('', 'You must select a mosaic and place the quantity');
+            x = true;
+          } else if (element.amount === '' || Number(element.amount) === 0) {
+            this.sharedService.showWarning('', 'The quantity of mosaics is missing');            
+            x = true;
+          }
+        });
+
+        if (!x) {
+          this.boxOtherAccount.push({
+            id: Math.floor(Math.random() * 1455654),
+            balance: '',
+          });
+        }
+      }
+
+  }
+
+addAddress(value) {
+    this.generateAccount(value)
+}
+
+JSONAccount() {
+  for (let element of this.listaBlanca) {
+    this.generateAccount(element)
+}
+}
+
   JSONOptions() {
 
     const namesOptions = ["pizza", "hamburguesa", "pollo", "pasticho"];
@@ -63,6 +205,12 @@ export class CreatePollComponent implements OnInit {
 
 
   }
+
+  generateAccount(nameParam: string) {
+    this.listaBlanca.push(Address.createFromRawAddress(nameParam))
+
+  }
+
   generateOptios(nameParam: string) {
     let publicAccountGenerate: PublicAccount = Account.generateNewAccount(this.walletService.currentAccount.network).publicAccount;
     this.option.push({ name: nameParam, publicAccount: publicAccountGenerate })
