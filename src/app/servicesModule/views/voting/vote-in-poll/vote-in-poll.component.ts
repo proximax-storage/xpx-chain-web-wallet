@@ -68,8 +68,6 @@ export class VoteInPollComponent implements OnInit {
 
     if (this.statusPoll(this.pollSelected.endDate, this.pollSelected.startDate) === 'Ongoing') {
     if (this.walletService.canVote) {
-      console.log("this.incrementOption ", this.incrementOption)
-      console.log("this.this.pollSelected.options.length ", this.pollSelected.options.length)
       if (this.incrementOption < this.pollSelected.options.length) {
 
         if (

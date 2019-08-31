@@ -83,7 +83,6 @@ export class PollsComponent implements OnInit {
   }
 
   filterType(type:number){
-    console.log('type',type)
     switch (type) {
       case 0:
         return 'witheList';

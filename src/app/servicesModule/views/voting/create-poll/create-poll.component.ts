@@ -102,9 +102,9 @@ export class CreatePollComponent implements OnInit {
     const endDate = new Date()
     endDate.setHours(endDate.getHours() + 2)
     this.Poll = {
-      name: 'marca zapatos',
+      name: 'marca zapatos nuevos',
       desciption: 'Find out about the best brand by phone based on your experience. evaluate us and we will offer you better services',
-      id: '03',
+      id: '06',
       type: 0,
       options: this.option,
       witheList: listaBlanca,
@@ -197,7 +197,7 @@ export interface PollInterface {
   id: string;
   type: number;
   options: optionsPoll[];
-  witheList?: Object[];
+  witheList: Object[];
   blacklist?: Object[];
   startDate: Date;
   endDate: Date;
