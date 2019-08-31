@@ -95,26 +95,22 @@ export class CreateApostilleComponent implements OnInit {
    */
   buildApostille(nty: any) {
     const date = new Date();
-    const url = `${this.proximaxProvider.url}/transaction/${nty.signedTransaction.hash.toLowerCase()}`;
+    const url = `${environment.nodeExplorer}`;
     const title = nty.title.slice(0, nty.title.lastIndexOf('.'));
     const qr = qrcode(10, 'H');
     qr.addData(url);
     qr.make();
     this.ntyData = {
-      data: [
-        {
-          "filename": title,
-          "tags": nty.tags,
-          "fileHash": nty.apostilleHash,
-          "owner": nty.account.address,
-          "fromMultisig": nty.account.address,
-          "dedicatedAccount": nty.sinkAddress,
-          "dedicatedPrivateKey": (this.apostilleCreateForm.get('typePrivatePublic').value == true) ? "None (public sink)" : nty.dedicatedPrivateKey,
-          "txHash": nty.signedTransaction.hash.toLowerCase(),
-          "txMultisigHash": "",
-          "timeStamp": date.toUTCString()
-        }
-      ]
+      "filename": title,
+      "tags": nty.tags,
+      "fileHash": nty.apostilleHash,
+      "owner": nty.account.address,
+      "fromMultisig": nty.account.address,
+      "dedicatedAccount": nty.sinkAddress,
+      "dedicatedPrivateKey": 'Not show',// (this.apostilleCreateForm.get('typePrivatePublic').value == true) ? "None (public sink)" : nty.dedicatedPrivateKey,
+      "txHash": nty.signedTransaction.hash.toLowerCase(),
+      "txMultisigHash": "",
+      "timeStamp": date.toUTCString()
     };
 
     // Add Certificate PDF to zip
@@ -368,7 +364,7 @@ export class CreateApostilleComponent implements OnInit {
     if (!proxinty) {
       localStorage.setItem('proxi-nty', JSON.stringify(nty))
     } else {
-      proxinty.data.push(nty.data)
+      proxinty.push(nty)
       localStorage.setItem('proxi-nty', JSON.stringify(proxinty))
     }
   }
