@@ -17,7 +17,7 @@ export class AuditApostilleComponent implements OnInit {
 
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Attestation',
-    componentName: 'AUDIT',
+    componentName: 'Audit',
     extraButton: 'Create',
     routerExtraButton: `/${AppConfig.routes.createApostille}`
   };
