@@ -127,14 +127,15 @@ export class AuditApostilleComponent implements OnInit {
         // this.isProcessing = false;
         return;
       } else {
-        let arrayName = this.nameFile.split(' -- Apostille TX ');
+        const apostilleHashPrefix = 'fe4e545903';
+        let arrayName = this.nameFile.split(' --Apostille ');
         let arrayextention = this.nameFile.split('.');
 
         const originalName = `${arrayName[0]}.${arrayextention[arrayextention.length - 1]}`;
         this.auditResults.push({
           filename: originalName,
           owner: this.proximaxProvider.createFromRawAddress(infTrans.recipient['address']).pretty(),
-          fileHash: Verifier.Hash,
+          fileHash: `${apostilleHashPrefix}${Verifier.Hash}`,
           result: 'Document apostille!',
           hash: ''
         });

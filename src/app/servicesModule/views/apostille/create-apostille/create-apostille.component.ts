@@ -113,7 +113,7 @@ export class CreateApostilleComponent implements OnInit {
     };
 
     // Add Certificate PDF to zip
-    const nameCertificate = `Certificate of ${title} -- Apostille TX ${nty.signedTransaction.hash.toLowerCase()} -- Date ${date.toUTCString()}.pdf`;
+    const nameCertificate = `Certificate of ${title} --Apostille TX ${nty.signedTransaction.hash.toLowerCase()} --Date ${date.toUTCString()}.pdf`;
     if (Verifier.isPrivateApostille(nty.apostilleHash)) {
       this.zip.file(nameCertificate, this.pdfcertificatePrivate(qr.createDataURL(), url, nty), {});
     } else if (Verifier.isPublicApostille(nty.apostilleHash)) {
