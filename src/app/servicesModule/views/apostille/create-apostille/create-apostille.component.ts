@@ -92,7 +92,7 @@ export class CreateApostilleComponent implements OnInit {
     const date = new Date();
     const url = `${this.proximaxProvider.url}/transaction/${nty.signedTransaction.hash.toLowerCase()}`;
     const title = nty.title;//(nty.title.slice(0, nty.title.lastIndexOf('.'))).slice(0, 15);
-    let qr = qrcode(10, 'H');
+    const qr = qrcode(10, 'H');
     qr.addData(url);
     qr.make();
     this.ntyData = {
