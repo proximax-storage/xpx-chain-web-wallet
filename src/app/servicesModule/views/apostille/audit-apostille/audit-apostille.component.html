@@ -56,10 +56,12 @@
 
                 <tbody class="background-white">
                   <ng-container *ngFor="let result of auditResults.slice().reverse() | paginate: { itemsPerPage: 5, currentPage: p }">
+                    <tr>
                       <th class="th-md description-dark-green" scope="row"><span>{{result.filename}}</span></th>
                       <td class="th-md description-dark-green white-space-pre" scope="row"><span>{{result.owner}}</span></td>
                       <td class="th-md description-dark-green" scope="row"><span>{{result.fileHash}}</span></td>
                       <td class="th-md description-dark-green" scope="row"><span>{{result.result}}</span></td>
+                    </tr>
                   </ng-container>
                 </tbody>
               </table>
