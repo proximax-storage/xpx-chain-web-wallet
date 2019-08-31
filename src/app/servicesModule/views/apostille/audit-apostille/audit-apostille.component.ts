@@ -76,7 +76,7 @@ export class AuditApostilleComponent implements OnInit {
   }
 
   /**
-   * 
+   *
    */
   verifyFile() {
     // this.isProcessing = true;
@@ -154,12 +154,12 @@ export class AuditApostilleComponent implements OnInit {
   checkApostilleName() {
     // Build an array out of the filename
     const nameArray = this.nameFile.match(/\S+\s*/g);
-    // console.log('nameArray:', nameArray)
+    console.log('nameArray:', nameArray)
     if (nameArray[nameArray.length - 6] === undefined || nameArray[nameArray.length - 5].replace(/^\s+|\s+$/, '') !== 'TX') return false;
     const mark = nameArray[nameArray.length - 6].replace(/^\s+|\s+$/, '');
 
-    // console.log('mark:', mark)
-    if (mark === "Apostille" || mark === "ApostilleSigned") return true;
+    console.log('mark:', mark)
+    if (mark === "--Apostille" || mark === "--ApostilleSigned") return true;
     return false;
   };
 

@@ -55,7 +55,8 @@
                 </thead>
 
                 <tbody class="background-white">
-                  <ng-container *ngFor="let result of auditResults.slice().reverse() | paginate: { itemsPerPage: 5, currentPage: p }">
+                  <ng-container
+                    *ngFor="let result of auditResults.slice().reverse() | paginate: { itemsPerPage: 5, currentPage: p }">
                     <tr>
                       <th class="th-md description-dark-green white-space-pre" scope="row"><span>{{result.filename}}</span></th>
                       <td class="th-md description-dark-green white-space-pre" scope="row"><span>{{result.owner}}</span></td>
