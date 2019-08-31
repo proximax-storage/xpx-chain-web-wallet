@@ -25,13 +25,13 @@ export class AuditApostilleComponent implements OnInit {
   nameFile: string;
   file: any;
   auditResults: ResultAuditInterface[] = [];
+  isProcessing = false;
   p = 1;
 
 
   //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
   rawFileContent: any;
-  // isProcessing = false;
   messa: Message;
   initialFileName: any;
   url: any;
@@ -79,7 +79,7 @@ export class AuditApostilleComponent implements OnInit {
    *
    */
   verifyFile() {
-    // this.isProcessing = true;
+    this.isProcessing = true;
     // Remove the meta part of $fileContent string (data:application/octet-stream;base64)
     // let cleanedDataContent = this.file.split(/,(.+)?/)[1];
     // Base 64 to word array
@@ -93,7 +93,7 @@ export class AuditApostilleComponent implements OnInit {
         hash: ''
       });
       // this.showResult(this.auditResults);
-      // this.isProcessing = false;
+      this.isProcessing = false;
       return;
     }
     // Build an array out of the filename
@@ -110,7 +110,7 @@ export class AuditApostilleComponent implements OnInit {
     // Hash of the apostille transaction
     const apostilleTxHash = nameArray[nameArray.length - 4].replace(/^\s+|\s+$/, '');
     this.proximaxProvider.getTransaction(apostilleTxHash).subscribe((infTrans: TransferTransaction) => {
-      // const apostilleHashPrefix = 'fe4e545903';
+      this.isProcessing = false;
       console.log('\n\n\n\nValue of information transaction', infTrans, '\n\n\n\nEnd value\n\n');
       const data = this.file
 
@@ -127,15 +127,20 @@ export class AuditApostilleComponent implements OnInit {
         // this.isProcessing = false;
         return;
       } else {
-        const apostilleHashPrefix = 'fe4e545903';
         let arrayName = this.nameFile.split(' --Apostille ');
         let arrayextention = this.nameFile.split('.');
+        let originalName = '';
 
-        const originalName = `${arrayName[0]}.${arrayextention[arrayextention.length - 1]}`;
+        if (arrayextention.length > 1) {
+          originalName = `${arrayName[0]}.${arrayextention[arrayextention.length - 1]}`;
+        } else {
+          originalName = arrayName[0];
+        }
+
         this.auditResults.push({
           filename: originalName,
           owner: this.proximaxProvider.createFromRawAddress(infTrans.recipient['address']).pretty(),
-          fileHash: `${apostilleHashPrefix}${Verifier.Hash}`,
+          fileHash: infTrans.message.payload.split('"').join(''),
           result: 'Document apostille!',
           hash: ''
         });
@@ -146,6 +151,7 @@ export class AuditApostilleComponent implements OnInit {
       }
     },
       error => {
+        this.isProcessing = false;
         this.sharedService.showError('Error', '¡unexpected error!');
         console.error(error);
       }

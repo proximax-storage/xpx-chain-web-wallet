@@ -35,6 +35,19 @@
           </div>-->
         </div>
 
+        <!-- Searching and icon reload -->
+        <div class="row mt-2rem mb-2rem" *ngIf="isProcessing">
+          <div class="col-11 col-sm-11 col-lg-10 mx-auto">
+            <!-- Searching -->
+            <ng-container>
+              <div class="col-12">
+                <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate">
+                </mdb-progress-bar>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+
         <!-- TABLE -->
         <div class="row">
           <div class="col-11 mx-auto">
