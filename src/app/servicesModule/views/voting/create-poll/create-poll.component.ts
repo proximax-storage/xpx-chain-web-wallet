@@ -5,6 +5,7 @@ import { WalletService } from 'src/app/wallet/services/wallet.service';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { ConfigurationForm, SharedService } from 'src/app/shared/services/shared.service';
 import { AppConfig } from 'src/app/config/app.config';
+import { CreatePollStorageService } from 'src/app/servicesModule/services/create-poll-storage.service';
 @Component({
   selector: 'app-create-poll',
   templateUrl: './create-poll.component.html',
@@ -19,7 +20,7 @@ export class CreatePollComponent implements OnInit {
   boxOtherAccount = [];
   createPollForm: FormGroup;
   configurationForm: ConfigurationForm = {};
-  publicAccount: PublicAccount;
+  account: Account;
   btnBlock: boolean;
   Poll: PollInterface;
   option: optionsPoll[] = [];
@@ -48,7 +49,8 @@ export class CreatePollComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private sharedService: SharedService,
-    private walletService: WalletService
+    private walletService: WalletService,
+    private createPollStorageService: CreatePollStorageService
 
   ) {
     this.configurationForm = this.sharedService.configurationForm;
@@ -197,7 +199,7 @@ JSONAccount() {
 
   JSONOptions() {
 
-    const namesOptions = ["pizza", "hamburguesa", "pollo", "pasticho"];
+    const namesOptions = ["nike", "adidas", "converse", "timberlat"];
     this.Poll = null;
     for (let element of namesOptions) {
       this.generateOptios(element);
@@ -224,26 +226,61 @@ JSONAccount() {
     }
     if (this.createPollForm.valid && !this.btnBlock) {
       if (this.walletService.decrypt(common)) {
-        this.preparepoll();
+        this.preparepoll(common);
       }
 
     }
   }
 
 
-  preparepoll() {
-    this.publicAccount = PublicAccount.createFromPublicKey(environment.pollsContent.public_key, this.walletService.currentAccount.network);
+  async preparepoll(common) {
+    this.account = Account.createFromPrivateKey(environment.pollsContent.private_key, this.walletService.currentAccount.network);
+
+    const direccionesAgregadas = [
+      'VCGPXB-2A7T4I-W5MQCX-FQY4UQ-W5JNU5-F55HGK-HBUN',
+      'VDG4WG-FS7EQJ-KFQKXM-4IUCQG-PXUW5H-DJVIJB-OXJG'
+    ]
+    const listaBlanca = []
+
+    for (let element of direccionesAgregadas) {
+      listaBlanca.push(Address.createFromRawAddress(element))
+    }
+
+
+    const endDate = new Date()
+    endDate.setHours(endDate.getHours() + 2)
     this.Poll = {
-      name: 'poll-1',
-      desciption: 'test-1',
-      id: 0,
-      type: 3,
+      name: 'marca zapatos nuevos',
+      desciption: 'Find out about the best brand by phone based on your experience. evaluate us and we will offer you better services',
+      id: '06',
+      type: 0,
       options: this.option,
+      witheList: listaBlanca,
       startDate: new Date(),
-      endDate: new Date(),
+      endDate: endDate,
       createdDate: new Date(),
       quantityOption: this.option.length
     }
+    const nameFile = `voting-ProximaxSirius-${new Date()}`;
+    const fileObject: FileInterface = {
+      name: nameFile,
+      content: this.Poll,
+      type: 'application/json',
+      extension: 'json',
+    };
+    const descripcion = 'poll';
+
+    console.log('this.Poll ', this.Poll)
+
+    await this.createPollStorageService.sendFileStorage(
+      fileObject,
+      'poll',
+      this.account,
+      common.privateKey
+    ).then(resp => {
+      console.log('resp', resp)
+
+    });
 
 
   }
@@ -295,7 +332,7 @@ JSONAccount() {
  * @param name - name poll
  * @param desciption - desciption poll
  * @param id - identifier
- * @param type - 0 = withe list , 1 = black list , 2 = public
+ * @param type - 0 = withe list , 1 = public, 
  * @param startDate - poll start date
  * @param endDate - poll end date
  * @param createdDate - poll creation date
@@ -305,10 +342,10 @@ JSONAccount() {
 export interface PollInterface {
   name: string;
   desciption: string;
-  id: number;
+  id: string;
   type: number;
   options: optionsPoll[];
-  witheList?: Object[];
+  witheList: Object[];
   blacklist?: Object[];
   startDate: Date;
   endDate: Date;
@@ -319,5 +356,11 @@ export interface PollInterface {
 export interface optionsPoll {
   name: string;
   publicAccount: PublicAccount
+}
+export interface FileInterface {
+  name: string;
+  content: any;
+  type: string;
+  extension: string;
 }
 

@@ -26,6 +26,9 @@ import { Nis1AccountsListComponent } from './views/swap/nis1-accounts-list/nis1-
 import { AccountsListComponent } from './views/swap/accounts-list/accounts-list.component';
 import { CreatePollComponent } from './views/voting/create-poll/create-poll.component';
 import { CreateApostilleComponent } from './views/apostille/create-apostille/create-apostille.component';
+import { AuditApostilleComponent } from './views/apostille/audit-apostille/audit-apostille.component';
+import { PollsComponent } from './views/voting/polls/polls.component';
+import { VoteInPollComponent } from './views/voting/vote-in-poll/vote-in-poll.component';
 
 const routes: Routes = [
   {
@@ -145,6 +148,28 @@ const routes: Routes = [
       meta: {
         title: 'myFile.title',
         description: 'myFile.text',
+        override: true,
+      }
+    }
+  },
+  {
+    path: AppConfig.routes.polls,
+    component: PollsComponent,
+    data: {
+      meta: {
+        title: 'polls.title',
+        description: 'polls.text',
+        override: true,
+      }
+    }
+  },
+  {
+    path:`${ AppConfig.routes.voteInPoll}/:id`,
+    component: VoteInPollComponent,
+    data: {
+      meta: {
+        title: 'voteInPoll.title',
+        description: 'voteInPoll.text',
         override: true,
       }
     }
@@ -296,6 +321,16 @@ const routes: Routes = [
       meta: {
         title: 'accountList.title',
         description: 'accountList.text',
+        override: true,
+      }
+    }
+  }, {
+    path: AppConfig.routes.audiApostille,
+    component: AuditApostilleComponent,
+    data: {
+      meta: {
+        title: 'audiApostille.title',
+        description: 'audiApostille.text',
         override: true,
       }
     }

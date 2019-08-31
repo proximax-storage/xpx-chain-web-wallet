@@ -21,6 +21,7 @@ import { ProximaxProvider } from '../../../../shared/services/proximax.provider'
 import { SharedService, ConfigurationForm } from '../../../../shared/services/shared.service';
 import { environment } from '../../../../../environments/environment';
 import { SearchResultInterface } from '../services/storage.service';
+import { HeaderServicesInterface } from 'src/app/servicesModule/services/services-module.service';
 
 
 @Component({
@@ -34,11 +35,13 @@ export class MyFileComponent implements OnInit, AfterViewInit {
   @ViewChild(MdbTableDirective, { static: true }) mdbTable: MdbTableDirective;
   @ViewChild(ModalDirective, { static: true }) basicModal: ModalDirective;
 
-  moduleName = 'Storage';
+  paramsHeader: HeaderServicesInterface = {
+    moduleName: 'Storage',
+    componentName: 'FILES',
+    extraButton: 'Upload a New File',
+    routerExtraButton: `/${AppConfig.routes.uploadFile}`
+  };
   configurationForm: ConfigurationForm = {};
-  componentName = 'My Files';
-  goBack = `/${AppConfig.routes.service}`;
-  uploadNew = `/${AppConfig.routes.uploadFile}`;
   downloadForm: FormGroup;
   searching = false;
   downloading = false;

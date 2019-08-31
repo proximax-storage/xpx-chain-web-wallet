@@ -11,6 +11,7 @@ import { SharedService, ConfigurationForm } from '../../../../shared/services/sh
 import { WalletService } from '../../../../wallet/services/wallet.service';
 import { TransactionsService } from '../../../../transactions/services/transactions.service';
 import { Subscription } from 'rxjs';
+import { HeaderServicesInterface } from '../../../services/services-module.service';
 
 @Component({
   selector: 'app-extend-duration-namespace',
@@ -18,10 +19,10 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./extend-duration-namespace.component.css']
 })
 export class ExtendDurationNamespaceComponent implements OnInit {
-
-  moduleName = 'Namespaces & Sub-Namespaces';
-  componentName = 'EXTEND DURATION';
-  backToService = `/${AppConfig.routes.service}`;
+  paramsHeader: HeaderServicesInterface = {
+    moduleName: 'Namespaces & Sub-Namespaces',
+    componentName: 'EXTEND DURATION'
+  };
   extendDurationNamespaceForm: FormGroup;
   configurationForm: ConfigurationForm = {};
   arrayselect: Array<object> = [

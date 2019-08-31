@@ -13,7 +13,7 @@ import { ProximaxProvider } from '../../shared/services/proximax.provider';
   providedIn: 'root'
 })
 export class WalletService {
-
+  canVote = true;
   accountWalletCreated: {
     data: any;
     dataAccount: AccountsInterface;

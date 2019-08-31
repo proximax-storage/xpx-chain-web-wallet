@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 
 import { ServicesModuleRoutingModule } from './services-module-routing.module';
 import { CreateAccountComponent } from './views/account/create-account/create-account.component';
@@ -30,6 +30,8 @@ import { CreatePollComponent } from './views/voting/create-poll/create-poll.comp
 import { PollsComponent } from './views/voting/polls/polls.component';
 import { ResultPollComponent } from './views/voting/result-poll/result-poll.component';
 import { CreateApostilleComponent } from './views/apostille/create-apostille/create-apostille.component';
+import { AuditApostilleComponent } from './views/apostille/audit-apostille/audit-apostille.component';
+import { VoteInPollComponent } from './views/voting/vote-in-poll/vote-in-poll.component';
 
 @NgModule({
   declarations: [
@@ -60,8 +62,11 @@ import { CreateApostilleComponent } from './views/apostille/create-apostille/cre
     CreatePollComponent,
     PollsComponent,
     ResultPollComponent,
-    CreateApostilleComponent
+    CreateApostilleComponent,
+    AuditApostilleComponent,
+    VoteInPollComponent
   ],
+  schemas: [ NO_ERRORS_SCHEMA ],
   imports: [
     CoreModule,
     ServicesModuleRoutingModule

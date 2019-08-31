@@ -1,1 +1,99 @@
-<p>polls works!</p>
+<div class="container mt-3rem mb-2rem animated fadeIn">
+  <div class="row">
+    <div class="col-12 col-md-8">
+      <span class="fs-1rem txt-a-center line-h-1-2em color-grey">Polls</span>
+      <span class="fs-1rem txt-a-center line-h-1-2em color-grey"> > </span>
+      <span class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">View All</span>
+    </div>
+
+    <div class="col-12 col-md-4 d-flex justify-content-start justify-content-md-end">
+      <a class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio" [routerLink]="[routes.backToService]">
+        <span>Back to Services</span>
+      </a>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <hr class="mt-03rem mb-05rem">
+    </div>
+  </div>
+
+</div>
+
+<div class="container-fluid background-header-grey pb-1rem pt-1rem">
+  <div class="row d-flex justify-content-center">
+    <div class="col-12">
+      <div class="row d-flex align-items-center">
+        <div class="col-2 col-md-1 d-flex justify-content-center"> > </div>
+        <div class="col-8 col-md-10">
+          <div class="row d-flex justify-content-center">
+            <div class="col-12 col-sm-8 d-flex justify-content-md-end justify-content-center">
+              <input mdbInputDirective [validateSuccess]="false" [validateError]="false" class="w-100porcent form-control"
+                type="text" placeholder="Enter search text" autocomplete="off" [(ngModel)]="filter">
+            </div>
+            <!-- <div class="col-12 col-sm-2 d-flex justify-content-md-start justify-content-center">
+                    <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn" size="sm">
+                      <span class="fs-1-2em color-white">SEARCH</span>
+                    </button>
+                  </div> -->
+          </div>
+        </div>
+        <div class="col-2 col-md-1 d-flex justify-content-center"> > </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container">
+
+
+  <div class="row mt-2rem">
+    <div class="col-11">
+
+      <mdb-progress *ngIf="showBarProgress" class="barlistvoting" value="{{resultLength}}" min="0" max="{{cantPolls}}"
+        aria-valuenow="{{resultLength}}" aria-valuemin="0" aria-valuemax="{{cantPolls}}">{{progressBar}}%</mdb-progress>
+    </div>
+  </div>
+  <div class="row mt-2rem">
+    <div class="col-11">
+      <span class="fw-600 d-flex justify-content-center">{{pollResult.length}} results found</span>
+    </div>
+  </div>
+</div>
+<div class="container-fluid mt-2rem">
+  <div class="row">
+    <div class="col-12 d-flex justify-content-center mx-auto">
+      <div class="datatable-style max-w-table">
+        <table mdbTable mdbTableScroll scrollX="true" striped="true">
+          <thead>
+            <tr class="header-backg">
+              <th *ngFor="let head of headElements" scope="col" class="fs-075rem txt-a-center ">{{head}} </th>
+            </tr>
+          </thead>
+
+          <tbody class="background-white">
+            <ng-container *ngFor="let poll of pollResult | stringFilter: filter | paginate: configAdvance">
+              <tr class="white-space-pre cursor-p" mdbTableCol [routerLink]="[routes.voteInpoll+poll.id]">
+                <!-- <td class="fs-07rem" [ngClass]="transaction ? 'fw-600': ''">{{transaction.status}}</td> -->
+                <td class="fs-07rem txt-a-center">{{poll.name}}</td>
+                <td class="fs-07rem txt-a-center">{{filterType(poll.type)}}</td>
+                <td class="fs-07rem txt-a-center">{{formtDate(poll.endDate)}}</td>
+                <td class="fs-07rem txt-a-center">{{statusPoll(poll.endDate ,poll.startDate)}}</td>
+              </tr>
+            </ng-container>
+
+            <ng-container *ngIf="pollResult.length === 0">
+              <tr>
+                <td colspan="5" class="txt-a-center">nothing to show</td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="col-12 pt-1rem pb-3rem d-flex justify-content-center mx-auto">
+      <pagination-controls [id]="configAdvance.id" (pageChange)="configAdvance.currentPage = $event">
+      </pagination-controls>
+    </div>
+  </div>
+</div>

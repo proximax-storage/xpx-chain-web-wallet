@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ChangeDetectorRef, HostListener } from '@angular/core';
 import { MdbTableDirective, ModalDirective } from 'ng-uikit-pro-standard';
-import { ServicesModuleService } from "../../../services/services-module.service";
+import { ServicesModuleService, HeaderServicesInterface } from "../../../services/services-module.service";
 import { AppConfig } from '../../../../config/app.config';
 import { Router } from '@angular/router';
 import { SharedService } from 'src/app/shared/services/shared.service';
@@ -13,10 +13,12 @@ import { SharedService } from 'src/app/shared/services/shared.service';
 export class ListContactsComponent {
 
   @ViewChild('basicModal', { static: true }) basicModal: ModalDirective;
-  moduleName = 'Address Book';
-  componentName = 'LIST';
-  goBack = `/${AppConfig.routes.service}`;
-  addContacts = `/${AppConfig.routes.addContacts}`;
+  paramsHeader: HeaderServicesInterface = {
+    moduleName: 'Address Book',
+    componentName: 'LIST',
+    extraButton: 'Add new contact',
+    routerExtraButton: `/${AppConfig.routes.addContacts}`
+  };
   //Pagination
   @ViewChild(MdbTableDirective, { static: true }) mdbTable: MdbTableDirective;
   @HostListener('input') oninput() {

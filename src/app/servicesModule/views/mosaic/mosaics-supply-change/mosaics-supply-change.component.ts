@@ -9,6 +9,7 @@ import { DataBridgeService } from '../../../../shared/services/data-bridge.servi
 import { WalletService } from '../../../../wallet/services/wallet.service';
 import { TransactionsService } from '../../../../transactions/services/transactions.service';
 import { AppConfig } from '../../../../config/app.config';
+import { HeaderServicesInterface } from '../../../services/services-module.service';
 
 
 @Component({
@@ -18,6 +19,10 @@ import { AppConfig } from '../../../../config/app.config';
 })
 export class MosaicsSupplyChangeComponent implements OnInit {
 
+  paramsHeader: HeaderServicesInterface = {
+    moduleName: 'Mosaics',
+    componentName: 'MODIFY SUPPLY',
+  };
   @BlockUI() blockUI: NgBlockUI;
   currentBlock: number = 0;
   formMosaicSupplyChange: FormGroup;
@@ -51,9 +56,6 @@ export class MosaicsSupplyChangeComponent implements OnInit {
   transactionReady: SignedTransaction[] = [];
   subscriptions = ['transactionStatus'];
   configurationForm: ConfigurationForm = {};
-  moduleName = 'Mosaics';
-  componentName = 'MODIFY SUPPLY';
-  backToService = `/${AppConfig.routes.service}`;
   subscribe = ['block'];
   optionsSupply = {
     prefix: '',

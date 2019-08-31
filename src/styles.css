@@ -16,6 +16,10 @@ body {
   white-space: pre;
 }
 
+.word-break-all {
+  word-break: break-all;
+}
+
 .overflow-ellipsis-nowrap {
   white-space: nowrap;
   overflow: hidden;
@@ -349,7 +353,7 @@ body {
 }
 
 .bord-rad-25px {
-  border-radius: 25px;
+  border-radius: 25px !important;
 }
 
 
@@ -723,6 +727,15 @@ body {
   background-color: #e4e4e4;
 }
 
+
+/**************************** progress ***********************************/
+.barlistvoting .progress-bar {
+  height: 20px !important;
+}
+.barlistvoting .progress {
+  height: 20px !important;
+}
+
 /**************************** THEME *****************************/
 
 .icono {
@@ -739,6 +752,7 @@ body {
   border-radius: 1rem;
   margin-top: 1rem;
 }
+
 
 .box-list-account-gray {
   color: #424242 !important;
@@ -978,7 +992,10 @@ input[type=text] {
 
 input.form-control.validate-error.ng-invalid.ng-touched,
 input.form-control.validate-error.ng-invalid.ng-dirty,
-.form-submitted input.form-control.validate-error.ng-invalid {
+.form-submitted input.form-control.validate-error.ng-invalid,
+.md-textarea.validate-error.ng-invalid.ng-touched,
+.md-textarea.validate-error.ng-invalid.ng-dirty,
+.form-submitted .md-textarea.validate-error.ng-invalid {
   box-shadow: none !important;
   border: 2px solid #e06e38 !important;
 }

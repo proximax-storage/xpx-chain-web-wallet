@@ -23,7 +23,7 @@ export const environment = {
   },
   blockchainConnection: {
     host: 'bctestnet1-cow.xpxsirius.io',
-    port: 3000,
+    port: 443,
     protocol: 'http',
     useSecureMessage: false
   },
@@ -43,9 +43,9 @@ export const environment = {
     address_public_test: 'VD6AXC-3QBCFT-SLKHT6-2UPGTN-V5Z63I-YZKJI3-YGMD'
   },
   pollsContent: {
-    private_key: 'DF60E433D16FE168C5ABF00BA09C0F441CF482A3674270B6450DD261E35100DF',
-    public_key: '62CFD0909A282494466F324E05F83D17FD363E9F027897BE6063742745DE8B82',
-    address_public_test: 'VAKYW5-55DSDQ-TGMNZA-ULW6ZA-5WCMBB-QTW5XN-PHGK'
+    private_key: 'AA44319BA1C9EA623F8B887194BC87774B03A1BADE8105B978DB102320565FDB',
+    public_key: '5FF1F4BAE45837D603440848265EDDDC05BD327F928F9C75AED9F00893605987',
+    address_public_test: 'VCLZOA-CAFE7M-J6JBCO-NQGHRC-KNDHFZ-AMMQAZ-56LV'
   }
 };
 
