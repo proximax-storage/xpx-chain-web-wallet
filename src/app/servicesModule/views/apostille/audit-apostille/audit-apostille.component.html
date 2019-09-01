@@ -1,6 +1,6 @@
 <div class="mt-3rem mb-3rem">
   <app-header [params]="paramsHeader"></app-header>
-  <div class="container-fluid">
+  <div class="container-fluid" *ngIf="currentView">
     <div class="row">
       <div class="col-11 col-md-10 mx-auto">
         <div class="row">
@@ -20,8 +20,8 @@
 
             <div class="row" >
               <div class="col-12 m-0 p-5px">
-                <div class="col-12 color-black fs-075rem d-flex" *ngFor="let result of ourFile.slice().reverse()">
-                  <i class="fa fa-trash p-5px" aria-hidden="true"></i>
+                <div class="col-12 color-black fs-075rem d-flex" *ngFor="let result of ourFile.slice(); let i = index">
+                  <i class="fa fa-trash p-5px" aria-hidden="true" (click)="ourFile.splice(i, 1);"></i>
                   <p class="mb-0 p-5px">{{result.name}}</p>
                 </div>
               </div>
@@ -67,11 +67,43 @@
                 </button>
 
                 <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
-                  (click)="sendPoll()">
+                  (click)="verifyFiles()" [disabled]="ourFile.length === 0">
                   <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
                     *ngIf="blockButton"></span>
                   <span class="fs-1-2em color-white">AUDIT</span>
                 </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-fluid" *ngIf="!currentView">
+    <div class="row">
+      <div class="col-11 col-md-10 mx-auto">
+        <div class="row d-flex justify-content-start mb-1rem">
+          <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4 mt-1rem audit-back" *ngFor="let item of testJAM">
+            <div class="audit-front d-flex audit-background">
+              <div class="col-8 p-05rem background-white">
+                <div>
+                  <p class="audit-title">{{ item.filename }}</p>
+                </div>
+                <div>
+                  <p class="audit-subtitle">File hash</p>
+                  <p class="audit-value">{{ item.fileHash }}</p>
+                </div>
+                <div>
+                  <p class="audit-subtitle">Date</p>
+                  <p class="audit-value">{{ item.filename }}</p>
+                </div>
+              </div>
+              <div class="col-4 audit-medal mx-auto">
+                <figure>
+                  <img src="assets/images/img/badge-silver-proximax-sirius-wallet.svg" alt="">
+                </figure>
+                <p class="color-white m-0 txt-a-center">Private</p>
               </div>
             </div>
           </div>
