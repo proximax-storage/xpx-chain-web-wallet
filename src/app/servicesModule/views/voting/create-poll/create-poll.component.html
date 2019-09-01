@@ -114,6 +114,11 @@
                                 <span>Input invalid</span>
                             </mdb-error>
                         </div>
+                        <!-- OPTIONS VALIDATE -->
+                        <div class="md-form" style="display: none;">
+                                <input formControlName="options" required mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
+                                id="options" >
+                            </div>
                         <!-- ADD OPTIONS -->
                         <div class="md-form">
                             <div class="col-12 d-flex justify-content-center">
