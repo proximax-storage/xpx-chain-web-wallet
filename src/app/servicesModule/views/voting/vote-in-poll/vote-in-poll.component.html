@@ -103,14 +103,14 @@
         <div class="col-9 col-md-8 col-lg-6  mx-auto" *ngSwitchCase="'viewCertificate'">
           <table style="width: 100%;">
             <tr>
-              <td>
-                <img class="w-130px" src="assets/images/img/icon-qr-code-proximax-sirius-wallet.svg">
+              <td [innerHTML]="qrImg">
+               
               </td>
               <td>
                 <div style="word-break:break-all;">
                   <span class="fs-09rem fw-600">
-                    transaction hast: 
-                    
+                    transaction hast:
+
                   </span>
                   <span class="fs-075rem">
                     {{hashCertificate}}
@@ -127,14 +127,40 @@
 
 
         <div class="col-9 col-md-8 col-lg-6  mx-auto" *ngSwitchCase="'voting'">
-          <ng-container *ngFor="let item of pollSelected?.options; let i = index">
-            <div class="d-flex  custom-control custom-checkbox custom-control-inline custom-control-right">
-              <!-- <div class="custom-control custom-checkbox custom-control-inline custom-control-right"> -->
-              <input ([ngModel])="item?.name" (change)="checkOptionPoll($event, item?.name)" type="checkbox" id="{{i}}"
-                value="" class="custom-control-input">
-              <label class="custom-control-label" for="{{i}}">{{item?.name}}</label>
-              <!-- </div> -->
-            </div>
+
+          <ng-container *ngIf="isMultipe">
+            <ng-container *ngFor="let item of pollSelected?.options; let i = index">
+              <div class="d-flex  custom-control custom-checkbox custom-control-inline custom-control-right">
+                <!-- <div class="custom-control custom-checkbox custom-control-inline custom-control-right"> -->
+                <input ([ngModel])="item?.name" (change)="checkOptionPoll($event, item?.name)" type="checkbox" id="{{i}}"
+                  value="" class="custom-control-input">
+                <label class="custom-control-label" for="{{i}}">{{item?.name}}</label>
+                <!-- </div> -->
+              </div>
+            </ng-container>
+
+          </ng-container>
+
+
+          <ng-container *ngIf="!isMultipe">
+
+            <ng-container *ngFor="let item of pollSelected?.options; let j = index">
+              <div class="col align-self-star">
+                <div class="form-check">
+                  <input type="radio" (change)="radioOptionPoll($event, item?.name)" class="form-check-input with-gap"
+                    id="{{j}}" name="groupOfRadioGap" mdbInput ([ngModel])="item?.name">
+                  <label class="form-check-label" for="{{j}}">{{item?.name}}</label>
+                </div>
+                <!-- <div class="elemento">
+                  <div class="p note note-danger">
+                    <ng-container *ngFor="let i of pollSelected['PollOptions'][j]['GroupMembers']; let t = index">
+                      <p>{{i}}</p>
+                    </ng-container>
+                  </div>
+                </div> -->
+              </div>
+            </ng-container>
+
           </ng-container>
 
         </div>
