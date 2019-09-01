@@ -47,8 +47,9 @@
                         <!-- DATE END  -->
                         <div class="md-form">
                             <input formControlName="PollEndDate" required mdbInputDirective mdbValidate type="text" [owlDateTimeTrigger]="dt" [owlDateTime]="dt"
-                                [min]="minDate" [dateTime]="invalidMoment" class="form-control form-control-sm input-border" placeholder="End date">
-                                <owl-date-time [pickerMode]="'dialog'" #dt></owl-date-time>
+                                [min]="minDate" [dateTime]="invalidMoment" class="form-control form-control-sm input-border"
+                                placeholder="End date">
+                            <owl-date-time [pickerMode]="'dialog'" #dt></owl-date-time>
                             <mdb-error *ngIf="validateformDateEnd">
                                 <span>{{ errorDateEnd }}</span>
                             </mdb-error>
@@ -89,8 +90,8 @@
                         </div>
                         <!-- IS multiple -->
                         <div class="md-form">
-                                <mdb-checkbox formControlName="isMultiple" [inline]="true">Allow multiple response</mdb-checkbox>
-                            </div>
+                            <mdb-checkbox formControlName="isMultiple" [inline]="true">Allow multiple response</mdb-checkbox>
+                        </div>
                         <!-- LIST OPTIONS -->
                         <div class="md-form" *ngIf='option.length > 0'>
                             <div class="col-12 align-items-center box-grey ">
@@ -113,6 +114,11 @@
                                 <span>Input invalid</span>
                             </mdb-error>
                         </div>
+                        <!-- OPTIONS VALIDATE -->
+                        <div class="md-form" style="display: none;">
+                                <input formControlName="options" required mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
+                                id="options" >
+                            </div>
                         <!-- ADD OPTIONS -->
                         <div class="md-form">
                             <div class="col-12 d-flex justify-content-center">
@@ -176,7 +182,7 @@
                                 <div class="row">
                                     <ng-container *ngFor="let el of listaBlanca">
                                         <div class="col-11">
-                                            <i style="cursor: pointer;" class="fa fa-trash fs-1rem text-right" aria-hidden="true" (click)="deleteOptions(el)"></i>
+                                            <i style="cursor: pointer;" class="fa fa-trash fs-1rem text-right" aria-hidden="true" (click)="deleteAccaunt(el)"></i>
                                             <span class="font-small "> {{el.address}} </span>
                                         </div>
                                     </ng-container>
@@ -192,7 +198,7 @@
                             </mdb-error>
                         </div>
                         <!-- ADD ACCOUNTS -->
-                        <div class="md-form">
+                        <div class="md-form" *ngIf='showList'>
                             <div class="col-12 d-flex justify-content-center">
                                 <button mdbBtn type="button" rounded="true" mdbWavesEffect class="background-btn-inverse pl-2rem pr-2rem" size="md" (click)="addAddress()">
                                     <span class="fs-1-2em color-blue-intermedio fw-700">(+) Add Account</span>
@@ -212,8 +218,14 @@
                         <div class="box-grey" *ngIf='option.length > 0'>
                             <span class="justify-content-center d-flex">Options List</span>
                             <div class="justify-content-center d-flex">
-                                <span class="link" data-toggle="modal" data-target="#basicExample" (click)="option; modalInfo.show();"> View all |</span>
-                                <span class="link" (click)="stepper.previous()"> Edit</span>
+                                <button class="transparent">
+                                    <span data-toggle="modal" data-target="#basicExample" (click)="option; modalInfo.show();">
+                                    View all |</span>
+                                </button>
+                                <button class="transparent">
+                                    <span (click)="stepper.previous()"> Edit</span>
+                                </button>
+
                             </div>
                         </div>
                     </div>
@@ -223,8 +235,7 @@
                         </button>
                     </div>
                     <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-                        <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
-                            (click)="stepper.next(); get3()">
+                        <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" (click)="stepper.next(); get3()">
                             <span class="fs-1-2em color-white">NEXT</span>
                         </button>
                     </div>
@@ -291,16 +302,27 @@
                         <div class="box-grey" *ngIf='option.length > 0'>
                             <span class="justify-content-center d-flex">Options List</span>
                             <div class="justify-content-center d-flex">
-                                <span class="link" data-toggle="modal" data-target="#basicExample" (click)="option; modalInfo.show();"> View all |</span>
-                                <span class="link" (click)="stepper.previous()"> Edit</span>
+                                <button class="transparent">
+                                    <span data-toggle="modal" data-target="#basicExample" (click)="option; modalInfo.show();">
+                                    View all |</span>
+                                </button>
+                                <button class="transparent">
+                                    <span (click)="stepper.setNewActiveStep(1)"> Edit</span>
+                                </button>
                             </div>
                         </div>
                         <!-- VIEW AND EDIT -->
                         <div class="box-grey" *ngIf='listaBlanca.length > 0'>
                             <span class="justify-content-center d-flex">Accounts List</span>
                             <div class="justify-content-center d-flex">
-                                <span class="link" data-toggle="modal" data-target="#basicExample" (click)="listaBlanca; modalInfoA.show();"> View all |</span>
-                                <span class="link" (click)="stepper.previous()"> Edit</span>
+                                <button class="transparent">
+                                    <span data-toggle="modal" data-target="#basicExample" (click)="listaBlanca; modalInfoA.show();">
+                                    View all |</span>
+                                </button>
+                                <button class="transparent">
+                                    <span (click)="stepper.previous()"> Edit</span>
+                                </button>
+
                             </div>
                         </div>
                     </div>
@@ -310,8 +332,9 @@
                         </button>
                     </div>
                     <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-                        <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" (click)="sendPoll()">
-                            <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true" *ngIf="blockButton"></span>
+                        <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" (click)="sendPoll()"
+                            [disabled]="!quarterFormGroup.valid">
+                            <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true" *ngIf="btnBlock"></span>
                             <span class="fs-1-2em color-white">CREATE</span>
                         </button>
                     </div>

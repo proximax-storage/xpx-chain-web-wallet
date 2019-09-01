@@ -33,47 +33,7 @@ export class AuditApostilleComponent implements OnInit {
   isProcessing = false;
   p = 1;
   url: any;
-  currentView: boolean = false;
-
-  /******************************************* */
-  testJAM = [
-    {
-      fileHash: "fe4e545903273aa70b7352093148f537fe537a6eb65a6507f03fde3fe92e415daf073515f9",
-      filename: "repuestos mitsubish",
-      hash: "B3BFF21E01F8459FDB5C5F1886B628F3F0DA0AAAE06BD517D6A8B749A1F82648",
-      owner: "VDJLEN-BVNSVE-YZATHG-GY47KM-OVIQJH-EMM5JT-XJ56",
-      result: "Document apostille"
-    },
-    {
-      fileHash: "fe4e545903273aa70b7352093148f537fe537a6eb65a6507f03fde3fe92e415daf073515f9",
-      filename: "repuestos mitsubish",
-      hash: "B3BFF21E01F8459FDB5C5F1886B628F3F0DA0AAAE06BD517D6A8B749A1F82648",
-      owner: "VDJLEN-BVNSVE-YZATHG-GY47KM-OVIQJH-EMM5JT-XJ56",
-      result: "Document apostille"
-    },
-    {
-      fileHash: "fe4e545903273aa70b7352093148f537fe537a6eb65a6507f03fde3fe92e415daf073515f9",
-      filename: "repuestos mitsubish",
-      hash: "B3BFF21E01F8459FDB5C5F1886B628F3F0DA0AAAE06BD517D6A8B749A1F82648",
-      owner: "VDJLEN-BVNSVE-YZATHG-GY47KM-OVIQJH-EMM5JT-XJ56",
-      result: "Document apostille"
-    },
-    {
-      fileHash: "fe4e545903273aa70b7352093148f537fe537a6eb65a6507f03fde3fe92e415daf073515f9",
-      filename: "repuestos mitsubish",
-      hash: "B3BFF21E01F8459FDB5C5F1886B628F3F0DA0AAAE06BD517D6A8B749A1F82648",
-      owner: "VDJLEN-BVNSVE-YZATHG-GY47KM-OVIQJH-EMM5JT-XJ56",
-      result: "Document apostille"
-    },
-    {
-      fileHash: "fe4e545903273aa70b7352093148f537fe537a6eb65a6507f03fde3fe92e415daf073515f9",
-      filename: "repuestos mitsubish",
-      hash: "B3BFF21E01F8459FDB5C5F1886B628F3F0DA0AAAE06BD517D6A8B749A1F82648",
-      owner: "VDJLEN-BVNSVE-YZATHG-GY47KM-OVIQJH-EMM5JT-XJ56",
-      result: "Document apostille"
-    }
-  ];
-  /******************************************* */
+  currentView: boolean = true;
 
   constructor(
     private proximaxProvider: ProximaxProvider,
@@ -171,7 +131,7 @@ export class AuditApostilleComponent implements OnInit {
               fileHash: findHash.message.payload.split('"').join(''),
               result: 'Document apostille',
               hash: findHash.transactionInfo.hash,
-              private: false,
+              method: 'Public',
               fee: this.transactionService.amountFormatterSimple(findHash.maxFee.compact()),
               height: findHash.transactionInfo.height.compact(),
               type: findHash.type,
