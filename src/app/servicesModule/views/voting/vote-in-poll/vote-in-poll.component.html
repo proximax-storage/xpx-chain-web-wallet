@@ -1,84 +1,208 @@
 <div class="container mt-3rem mb-2rem animated fadeIn">
-    <div class="row">
-        <div class="col-12 col-md-8">
-            <span class="fs-1rem txt-a-center line-h-1-2em color-grey">Polls</span>
-            <span class="fs-1rem txt-a-center line-h-1-2em color-grey"> > </span>
-            <span class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">Votes and Results</span>
-        </div>
-
-        <div class="col-12 col-md-4 d-flex justify-content-start justify-content-md-end">
-            <a class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio" [routerLink]="[routes.backToService]">
-                <span>Back to Services</span>
-            </a>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-12">
-            <hr class="mt-03rem mb-05rem">
-        </div>
+  <div class="row">
+    <div class="col-12 col-md-8">
+      <span class="fs-1rem txt-a-center line-h-1-2em color-grey">Polls</span>
+      <span class="fs-1rem txt-a-center line-h-1-2em color-grey"> > </span>
+      <span class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">Votes & Results</span>
     </div>
 
-    <div class="row">
+    <div class="col-12 col-md-4 d-flex justify-content-start justify-content-md-end">
+
+      <a class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio" [routerLink]="[routes.viewAll]">
+        <span>View All Poll</span>
+      </a>
+
+      <div class="ml-04rem mr-04rem">
+        <span class="line-separator-gray"></span>
+      </div>
+      <a class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio" [routerLink]="[routes.backToService]">
+        <span>Back to Services</span>
+      </a>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <hr class="mt-03rem mb-05rem">
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12 justify-content-center txt-a-center">
+      <!-- ACCOUNT EDIT -->
+      <div class="row ml-01rem" *ngIf="pollSelected">
+        <div class="col-11 col-md-10 col-lg-8 mx-auto">
+          <div class="d-flex flex-column">
+            <div class="d-flex justify-content-center"><span class="fs-2rem fw-600">{{pollSelected.name}}</span>
+            </div>
+          </div>
+          <div class="d-flex flex-column">
+            <div class="d-flex justify-content-center"><span class="fs-1rem">{{pollSelected.desciption}}</span>
+            </div>
+          </div>
+          <hr style="border-top: 3px solid rgba(0, 0, 0, 0.1)" class="mt-03rem mb-05rem">
+          <div class="d-flex flex-column">
+            <div class="d-flex justify-content-center">
+              <span class="fs-1rem fw-600"> {{statusPoll(pollSelected.endDate ,pollSelected.startDate)}} &nbsp;
+              </span>
+              <span class="fs-1rem ">> &nbsp; </span>
+              <span class="fs-1rem "> Finish &nbsp;</span>
+              <span class="fs-1rem "> > &nbsp;</span>
+              <span class="fs-1rem "> {{formtDate(pollSelected.endDate)}} &nbsp;</span>
+            </div>
+          </div>
+          <hr style="border-top: 3px solid rgba(0, 0, 0, 0.1)" class="mt-03rem mb-05rem">
+        </div>
+      </div>
+
+
+
+
+      <!-- Searching and icon reload -->
+      <div class="row mt-2rem">
+        <div class="col-11 col-sm-11 col-lg-10 mx-auto">
+          <!-- Searching -->
+          <ng-container *ngIf="searching">
+            <div class="col-12">
+              <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate">
+              </mdb-progress-bar>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+
+
+      <div class="row mt-2rem" [ngSwitch]="statusValidate">
+        <div class="col-9 col-md-8 col-lg-6  mx-auto" *ngSwitchCase="'finishedPoll'">
+          <div class="d-flex flex-column">
+            <div class="d-flex justify-content-center">
+              <span class="fs-2rem fw-600">You did not vote in this poll
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="col-9 col-md-8 col-lg-6  mx-auto" *ngSwitchCase="'noWitheList'">
+
+          <div class="d-flex flex-column">
+            <div class="d-flex justify-content-center">
+              <span class="fs-2rem fw-600">
+                you are not on the list
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="col-9 col-md-8 col-lg-6  mx-auto" *ngSwitchCase="'memberVoted'">
+          <div class="d-flex flex-column">
+            <div class="d-flex justify-content-center">
+              <span class="fs-2rem fw-600">
+                You have successfully voted on this poll
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-9 col-md-8 col-lg-6  mx-auto" *ngSwitchCase="'viewCertificate'">
+          <table style="width: 100%;">
+            <tr>
+              <td>
+                <img class="w-130px" src="assets/images/img/icon-qr-code-proximax-sirius-wallet.svg">
+              </td>
+              <td>
+                <div style="word-break:break-all;">
+                  <span class="fs-09rem fw-600">
+                    transaction hast: 
+                    
+                  </span>
+                  <span class="fs-075rem">
+                    {{hashCertificate}}
+                  </span>
+                </div>
+              </td>
+              <td class="color">
+
+                <img class="w-130px" src="assets/images/img/badge-silver-proximax-sirius-wallet.svg">
+              </td>
+            </tr>
+          </table>
+        </div>
+
+
+        <div class="col-9 col-md-8 col-lg-6  mx-auto" *ngSwitchCase="'voting'">
+          <ng-container *ngFor="let item of pollSelected?.options; let i = index">
+            <div class="d-flex  custom-control custom-checkbox custom-control-inline custom-control-right">
+              <!-- <div class="custom-control custom-checkbox custom-control-inline custom-control-right"> -->
+              <input ([ngModel])="item?.name" (change)="checkOptionPoll($event, item?.name)" type="checkbox" id="{{i}}"
+                value="" class="custom-control-input">
+              <label class="custom-control-label" for="{{i}}">{{item?.name}}</label>
+              <!-- </div> -->
+            </div>
+          </ng-container>
+
+        </div>
+
+      </div>
+
+      <div class="row">
         <div class="col-12 justify-content-center txt-a-center">
-            <!-- ACCOUNT EDIT -->
-            <div class="row ml-01rem" *ngIf="pollSelected">
-                <div class="col-11 col-md-10 col-lg-8 mx-auto">
-                    <div class="d-flex flex-column">
-                        <div class="d-flex justify-content-center"><span class="fs-2rem fw-600">{{pollSelected.name}}</span>
-                        </div>
+          <form action="" [formGroup]="votingInPoll" (ngSubmit)="sendForm()">
+            <!-- PASSWORD -->
+            <div class="row">
+              <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto">
+
+                <div class="row">'
+                  <div class="col-11 mx-auto">
+                    <div class="md-form form-sm">
+                      <input style="" [maxlength]="configurationForm.passwordWallet.maxLength" [minlength]="configurationForm.passwordWallet.minLength"
+                        formControlName="password" required mdbInputDirective mdbValidate [validateSuccess]="true"
+                        [validateError]="true" type="password" id="password" class="form-control form-control-sm input-border"
+                        placeholder="Enter password">
+                      <mdb-error *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
+                        <span>Input invalid</span>
+                      </mdb-error>
                     </div>
-                    <div class="d-flex flex-column">
-                        <div class="d-flex justify-content-center"><span class="fs-1rem">{{pollSelected.desciption}}</span>
-                        </div>
-                    </div>
-                    <hr style="border-top: 3px solid rgba(0, 0, 0, 0.1)" class="mt-03rem mb-05rem">
-                    <div class="d-flex flex-column">
-                        <div class="d-flex justify-content-center">
-                            <span class="fs-1rem fw-600"> {{statusPoll(pollSelected.endDate ,pollSelected.startDate)}} </span>
-                            <span class="fs-1rem "> > </span>
-                            <span class="fs-1rem "> Finish </span>
-                            <span class="fs-1rem "> > </span>
-                            <span class="fs-1rem "> {{formtDate(pollSelected.endDate)}} </span>
-                        </div>
-                    </div>
-                    <hr style="border-top: 3px solid rgba(0, 0, 0, 0.1)" class="mt-03rem mb-05rem">
+                  </div>
                 </div>
+
+              </div>
             </div>
+            <!-- BUTTON -->
+            <div class="row">
+              <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto">
 
+                <div class="row">
+                  <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
 
+                    <button [disabled]="btnBlock" mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+                      size="md">
+                      <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
+                        *ngIf="blockSend"></span>
+                      <span class="fs-1-2em color-white">VOTE</span>
+                    </button>
 
-
-            <!-- Searching and icon reload -->
-            <div class="row mt-2rem">
-                <div class="col-11 col-sm-11 col-lg-10 mx-auto">
-                    <!-- Searching -->
-                    <ng-container *ngIf="searching">
-                        <div class="col-12">
-                            <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate">
-                            </mdb-progress-bar>
-                        </div>
-                    </ng-container>
+                  </div>
+                  <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
+                    <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+                      size="md" [disabled]="btnResult" (click)="viewResult()">
+                      <span class="fs-1-2em color-white">RESULTS</span>
+                    </button>
+                  </div>
                 </div>
+              </div>
             </div>
-
-
-
-            <div class="row ml-01rem" *ngIf="viewOptions">
-                <div class="col-9 col-md-8 col-lg-6  mx-auto">
-                    <ng-container *ngFor="let item of pollSelected?.options; let i = index">
-                        <div class="d-flex  custom-control custom-checkbox custom-control-inline custom-control-right">
-                            <!-- <div class="custom-control custom-checkbox custom-control-inline custom-control-right"> -->
-                            <input ([ngModel])="item?.name" (change)="checkOptionPoll($event, item?.name)" type="checkbox"
-                                id="{{i}}" value="" class="custom-control-input">
-                            <label class="custom-control-label" for="{{i}}">{{item?.name}}</label>
-                            <!-- </div> -->
-                        </div>
-                    </ng-container>
-                </div>
-            </div>
-
-
+          </form>
         </div>
+      </div>
+
+
+
+
+      <!-- <div class="row ml-01rem" *ngIf="viewOptions">
+                <div class="col-9 col-md-8 col-lg-6  mx-auto">
+
+                </div>
+            </div> -->
+
+
     </div>
+  </div>
 
 </div>

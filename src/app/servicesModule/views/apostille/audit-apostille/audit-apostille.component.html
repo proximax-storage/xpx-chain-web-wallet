@@ -4,9 +4,33 @@
     <div class="row">
       <div class="col-11 col-md-10 mx-auto">
         <div class="row">
+          <!-- UPLOAD FILE -->
+          <div class="col-8 d-flex justify-content-center flex-column mx-auto mb-1rem mt-1rem box-grey">
+            <div class="row">
+              <div class="col-12 d-flex justify-content-center mx-auto mb-1rem mt-1rem">
+                <label class="d-flex justify-content-center mx-auto box-drop col-12" for="fileInput">
+                  <div class="row txt-a-center p-05rem">
+                    <img class="mr-1rem h2em" src="assets/images/img/icon-upload-gray-28h-proximax-sirius-wallet.svg" width="25">
+                    <span class="fs-1-2em color-grey fw-600">UPLOAD FILE</span>
+                  </div>
+                </label>
+                <input id="fileInput" multiple [hidden]="true" type="file" (change)="fileChange($event.target.files,$event)">
+              </div>
+            </div>
+
+            <div class="row" >
+              <div class="col-12 m-0 p-5px">
+                <div class="col-12 color-black fs-075rem d-flex" *ngFor="let result of ourFile.slice().reverse()">
+                  <i class="fa fa-trash p-5px" aria-hidden="true"></i>
+                  <p class="mb-0 p-5px">{{result.name}}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <!-- EXAMPLE -->
-          <div class="col-11 align-items-start mx-auto">
-            <div class="box-transparent-border-orange">
+          <div class="col-9 d-flex justify-content-center mx-auto mb-1rem mt-1rem p-0">
+            <div class="box-transparent-border-orange m-0">
               <p class="mb-0">
                 <span class="font-title fw-700 fs-09rem">EXAMPLE</span>
               </p>
@@ -15,18 +39,6 @@
                 YYYY-MM-DD.pdf
               </span>
             </div>
-          </div>
-
-          <!-- UPLOAD FILE -->
-          <div class="col-11 d-flex justify-content-center mx-auto mb-1rem mt-1rem">
-            <button (click)="openInput()" mdbBtn type="submit" rounded="true" mdbWavesEffect
-              class="background-btn-inverse pl-2rem pr-2rem" size="md">
-              <img class="mr-1rem h2em" src="assets/images/img/icon-upload-gray-28h-proximax-sirius-wallet.svg"
-                width="25">
-              <span class="fs-1-2em text-cl-m fw-700">UPLOAD FILE</span>
-            </button>
-
-            <input id="fileInput" multiple [hidden]="true" type="file" (change)="fileChange($event.target.files,$event)">
           </div>
         </div>
 
@@ -43,42 +55,25 @@
           </div>
         </div>
 
-        <!-- TABLE -->
         <div class="row">
-          <div class="col-11 mx-auto">
-            <div class="datatable-style max-w-table">
-              <table mdbTable mdbTableScroll scrollX="true" striped="true" table-bordered>
-                <thead>
-                  <tr class="header-backg">
-                    <th *ngFor="let head of headElements" scope="col" class="fs-075rem white-space-pre">{{head}} </th>
-                  </tr>
-                </thead>
+          <div class="col-11 col-sm-11 col-lg-10 mx-auto">
+            <div class="row">
+              <div class="col-6 col-sm-6 col-lg-10 d-flex justify-content-center mx-auto">
+                <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+                  (click)="sendPoll()">
+                  <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
+                    *ngIf="blockButton"></span>
+                  <span class="fs-1-2em color-white">CLEAR</span>
+                </button>
 
-                <tbody class="background-white">
-                  <ng-container
-                    *ngFor="let result of auditResults.slice().reverse() | paginate: { itemsPerPage: 5, currentPage: p }">
-                    <tr>
-                      <td class="description-dark-green white-space-pre">
-                        <span class="fs-075rem">{{result.filename}}</span>
-                      </td>
-                      <td class="description-dark-green white-space-pre">
-                        <span class="fs-075rem">{{result.owner}}</span>
-                      </td>
-                      <td class="description-dark-green white-space-pre">
-                        <span class="fs-075rem">{{result.fileHash}}</span>
-                      </td>
-                      <td class="description-dark-green white-space-pre">
-                        <span class="fs-075rem">{{result.result}}</span>
-                      </td>
-                    </tr>
-                  </ng-container>
-                </tbody>
-              </table>
+                <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+                  (click)="sendPoll()">
+                  <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
+                    *ngIf="blockButton"></span>
+                  <span class="fs-1-2em color-white">AUDIT</span>
+                </button>
+              </div>
             </div>
-          </div>
-
-          <div class="col-12 pt-1rem pb-3rem d-flex justify-content-center mx-auto">
-            <pagination-controls (pageChange)="p = $event"></pagination-controls>
           </div>
         </div>
       </div>

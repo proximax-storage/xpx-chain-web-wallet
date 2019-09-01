@@ -33,6 +33,18 @@ export class AuditApostilleComponent implements OnInit {
   p = 1;
   url: any;
 
+  /******************************************* */
+  testJAM = [
+    {
+      fileHash: "fe4e545903273aa70b7352093148f537fe537a6eb65a6507f03fde3fe92e415daf073515f9",
+      filename: "repuestos mitsubish",
+      hash: "B3BFF21E01F8459FDB5C5F1886B628F3F0DA0AAAE06BD517D6A8B749A1F82648",
+      owner: "VDJLEN-BVNSVE-YZATHG-GY47KM-OVIQJH-EMM5JT-XJ56",
+      result: "Document apostille"
+    }
+  ];
+  /******************************************* */
+
   constructor(
     private proximaxProvider: ProximaxProvider,
     private nodeService: NodeService
@@ -107,14 +119,11 @@ export class AuditApostilleComponent implements OnInit {
     this.transactionsSearch.forEach(element => {
       const arrayName = element.name.split(' --Apostille TX ');
       const arrayHash = arrayName[1].split(' --Date ');
-      console.log('\n\n\n\nValue of arrayHash', arrayHash, '\n\n\n\nEnd value\n\n');
       const findHash = transactions.find(el => arrayHash[0].toUpperCase() === el.transactionInfo.hash);
 
       if (findHash !== undefined) {
-        console.log('\n\n\n\nValue of findHash', findHash, '\n\n\n\nEnd value\n\n');
         const myReader: FileReader = new FileReader();
         myReader.onloadend = (e) => {
-          console.log('\n\n\n\nValue of myReader', arrayName, '\n\n\n\nEnd value\n\n');
 
           if (this.verify(myReader.result, findHash)) {
             let arrayExtention = arrayName[1].split('.');
@@ -153,6 +162,7 @@ export class AuditApostilleComponent implements OnInit {
         });
       }
     });
+    console.log('\n\n\n\nValue of this.auditResults', this.auditResults, '\n\n\n\nEnd value\n\n');
   }
 
   verify(data, infTrans): boolean {
@@ -265,7 +275,7 @@ export class AuditApostilleComponent implements OnInit {
   //   )
   // }
 
-  
+
 
   // checkApostilleName(nameFile) {
   //   // Build an array out of the filename

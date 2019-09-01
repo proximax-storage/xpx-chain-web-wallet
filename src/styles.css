@@ -280,6 +280,10 @@ body {
   padding: 12px;
 }
 
+.p-5px {
+  padding: 5px;
+}
+
 /** BOTTOM **/
 
 .pb-1rem {
@@ -624,6 +628,10 @@ body {
 
 /**************************** COLOR *****************************/
 
+.color-gray-strong {
+  color: #666666 !important;
+}
+
 .color-dark-green {
   color: #023c42 !important;
 }
@@ -732,6 +740,7 @@ body {
 .barlistvoting .progress-bar {
   height: 20px !important;
 }
+
 .barlistvoting .progress {
   height: 20px !important;
 }
@@ -1298,10 +1307,19 @@ button.md-toast-close-button {
 
 .box-grey {
   border-radius: 1.5rem;
-  background: #dedede;
+  background: #f4f4f4;
   padding: 10px 20px;
   margin: 10px;
   color: #797979;
+}
+
+.box-drop {
+  border-radius: 1rem;
+  background: white;
+  padding: 10px 20px;
+  margin: 10px;
+  color: black;
+  border: 2px dotted #316eb5
 }
 
 .box-transparent-border-orange {
@@ -1529,7 +1547,7 @@ body.modal-open {
 
 .tab-content {
   padding: 2rem 1rem 1rem !important;
-  box-shadow: 0 0px 0px 0 rgba(0,0,0,0), 0 0px 0px 0 rgba(0,0,0,0) !important;
+  box-shadow: 0 0px 0px 0 rgba(0, 0, 0, 0), 0 0px 0px 0 rgba(0, 0, 0, 0) !important;
 }
 
 .link {

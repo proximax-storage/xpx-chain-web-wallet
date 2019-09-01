@@ -5,7 +5,8 @@ import { PublicAccount } from 'tsjs-xpx-chain-sdk';
 import { WalletService } from 'src/app/wallet/services/wallet.service';
 import { AppConfig } from 'src/app/config/app.config';
 import { PaginationInstance } from 'ngx-pagination';
-
+import { Router } from '@angular/router';
+import { SharedService } from 'src/app/shared/services/shared.service';
 @Component({
   selector: 'app-polls',
   templateUrl: './polls.component.html',
@@ -14,12 +15,14 @@ import { PaginationInstance } from 'ngx-pagination';
 export class PollsComponent implements OnInit {
   subscription: any;
   showBarProgress: boolean;
+  showBarProgressone = false;
+  showRefresh = false;
   cantPolls = 0;
   resultLength = 0;
   progressBar: number = 0;
   routes = {
     backToService: `/${AppConfig.routes.service}`,
-    voteInpoll : `/${AppConfig.routes.voteInPoll}/`
+    voteInpoll: `/${AppConfig.routes.voteInPoll}/`
   };
   configAdvance: PaginationInstance = {
     id: 'advanced',
@@ -30,19 +33,21 @@ export class PollsComponent implements OnInit {
   pollResult: PollInterface[] = [];
   filter: string = '';
   constructor(
-
+    private router: Router,
     private createPollStorageService: CreatePollStorageService,
     private walletService: WalletService,
-    
+    private sharedService: SharedService,
+
   ) {
     this.progressBar = 0
     this.showBarProgress = false;
   }
 
   ngOnInit() {
-
+    this.showBarProgressone = true;
     const publicAccount = PublicAccount.createFromPublicKey(environment.pollsContent.public_key, this.walletService.currentAccount.network)
     this.createPollStorageService.loadTransactions(publicAccount).then(resp => {
+      this.showBarProgressone = false;
       this.getPollStorage();
     });
   }
@@ -51,6 +56,15 @@ export class PollsComponent implements OnInit {
     // this.sub.unsubscribe();
   }
 
+  routerRouterLink(link: string) {
+    console.log(this.walletService.canVote)
+    // Create Book logic
+    if (this.walletService.canVote) {
+      this.router.navigate([link]);
+    } else {
+      this.sharedService.showInfo('', `We are validating your vote, please wait a few seconds`);
+    }
+  }
 
 
   /**
@@ -60,11 +74,19 @@ export class PollsComponent implements OnInit {
  * @memberof PollsComponent
  */
   getPollStorage() {
+    this.showRefresh = false;
+    this.pollResult = []
     const resultData: PollInterface[] = [];
     this.subscription = this.createPollStorageService.getPolls$().subscribe(data => {
       resultData.push(data.result);
       if (resultData.length > 0) {
-        console.log("resultData", resultData)
+        resultData.map(elemt => {
+          return elemt.createdDate = new Date(elemt.createdDate)
+        });
+        resultData.sort((date1, date2) => {
+          return date2.createdDate.getTime() - date1.createdDate.getTime();
+        });
+        console.log(resultData)
         this.showBarProgress = true;
         this.resultLength = resultData.length;
         this.cantPolls = data.size;
@@ -72,6 +94,7 @@ export class PollsComponent implements OnInit {
         this.progressBar = Math.round(progress * 100) / 100;
         this.pollResult = resultData;
         if (resultData.length === this.cantPolls) {
+          this.showRefresh = true;
           this.showBarProgress = false;
         }
       } else {
@@ -82,7 +105,17 @@ export class PollsComponent implements OnInit {
     });
   }
 
-  filterType(type:number){
+  refreshData(event) {
+    if (this.showRefresh) {
+      this.showRefresh = false;
+      const publicAccount = PublicAccount.createFromPublicKey(environment.pollsContent.public_key, this.walletService.currentAccount.network)
+      this.createPollStorageService.loadTransactions(publicAccount).then(resp => {
+        this.showBarProgressone = false;
+        this.getPollStorage();
+      });
+    }
+  }
+  filterType(type: number) {
     switch (type) {
       case 0:
         return 'witheList';
@@ -91,14 +124,12 @@ export class PollsComponent implements OnInit {
     }
   }
 
-  
-
-      /**
-    * validate status date poll 
-    *
-    * @param {any} obj
-    * @memberof PollsComponent
-    */
+  /**
+* validate status date poll 
+*
+* @param {any} obj
+* @memberof PollsComponent
+*/
   statusPoll(endDate: string | number | Date, starDate: string | number | Date) {
     endDate = new Date(endDate).getTime();
     starDate = new Date(starDate).getTime();
@@ -127,8 +158,10 @@ export interface PollInterface {
   desciption: string;
   id: string;
   type: number;
+  isPrivate: boolean,
+  isMultiple: boolean,
   options: optionsPoll[];
-  witheList?: Object[];
+  witheList: Object[];
   blacklist?: Object[];
   startDate: Date;
   endDate: Date;
