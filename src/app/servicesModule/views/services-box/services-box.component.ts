@@ -236,13 +236,6 @@ export class ServicesBoxComponent implements OnInit {
         'icon-notarization-green-60h.svg',
         '',
         {
-          audit: this.services.buildStructureService(
-            'AUDIT',
-            true,
-            '',
-            '',
-            AppConfig.routes.audiApostille
-          ),
           create: this.services.buildStructureService(
             'CREATE',
             true,
@@ -250,6 +243,13 @@ export class ServicesBoxComponent implements OnInit {
             '',
             AppConfig.routes.createApostille
           ),
+          audit: this.services.buildStructureService(
+            'AUDIT',
+            true,
+            '',
+            '',
+            AppConfig.routes.audiApostille
+          )
         },
         true,
         ''

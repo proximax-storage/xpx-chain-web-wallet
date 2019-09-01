@@ -23,6 +23,7 @@
   "dependencies": {
     "@agm/core": "^1.0.0-beta.7",
     "@angular/animations": "~8.0.1",
+    "@angular/cdk": "^6.4.7",
     "@angular/common": "~8.0.1",
     "@angular/compiler": "~8.0.1",
     "@angular/core": "~8.0.1",
@@ -48,6 +49,7 @@
     "jspdf": "^1.5.3",
     "nem-library": "^2.0.0-RC4",
     "ng-block-ui": "^2.1.7",
+    "ng-pick-datetime": "^7.0.0",
     "ng-uikit-pro-standard": "git+https://oauth2:xds7fpVXkw8SnNJdDtUE@git.mdbootstrap.com/mdb/angular/ng-uikit-pro-standard.git",
     "ngx-chips": "^2.0.2",
     "ngx-clipboard": "^12.2.0",

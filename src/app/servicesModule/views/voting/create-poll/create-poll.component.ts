@@ -2,123 +2,251 @@ import { Component, OnInit } from '@angular/core';
 import { PublicAccount, Account, Address } from 'tsjs-xpx-chain-sdk';
 import { environment } from 'src/environments/environment';
 import { WalletService } from 'src/app/wallet/services/wallet.service';
-import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, AbstractControl, FormControl, } from '@angular/forms';
 import { ConfigurationForm, SharedService } from 'src/app/shared/services/shared.service';
 import { AppConfig } from 'src/app/config/app.config';
 import { CreatePollStorageService } from 'src/app/servicesModule/services/create-poll-storage.service';
+
 @Component({
   selector: 'app-create-poll',
   templateUrl: './create-poll.component.html',
   styleUrls: ['./create-poll.component.css']
 })
 export class CreatePollComponent implements OnInit {
-  createPollForm: FormGroup;
+  type: any;
+  invalidMoment: any;
+  isMultiple: any;
+  isPrivate: any;
+  endDate: any;
+  index: any;
+  desciption: any;
+  name: any;
+  validateformDateEnd: boolean;
+  form: FormGroup;
+  showList: boolean;
+  publicAddress: string;
+  errorDateStart: string;
+  errorDateEnd: string;
+  minDate: Date;
+  boxOtherAccount = [];
+  firstFormGroup: FormGroup;
+  secondFormGroup: FormGroup;
+  thirdFormGroup: FormGroup;
+  quarterFormGroup: FormGroup;
   configurationForm: ConfigurationForm = {};
   account: Account;
   btnBlock: boolean;
   Poll: PollInterface;
   option: optionsPoll[] = [];
+  listaBlanca: any[] = [];
+
   routes = {
     backToService: `/${AppConfig.routes.service}`
   };
+
+  voteType: any = [{
+    value: 0,
+    label: 'Public',
+    selected: true,
+  }, {
+    value: 1,
+    label: 'White list',
+    selected: false,
+  }];
+
   constructor(
     private fb: FormBuilder,
     private sharedService: SharedService,
     private walletService: WalletService,
     private createPollStorageService: CreatePollStorageService
-
   ) {
     this.configurationForm = this.sharedService.configurationForm;
     this.btnBlock = false;
+    this.showList = false;
   }
 
   ngOnInit() {
-    this.createForm();
-    this.JSONOptions();
+    const today = new Date();
+    this.minDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), today.getHours(), today.getMinutes());
+    this.invalidMoment =  this.minDate.setHours(this.minDate.getHours() + 24)
+    this.createForms();
   }
 
-  /**
-   *
-   *
-   * @memberof CreatePollComponent
-   */
-  createForm() {
-    //Form create multisignature default
-    this.createPollForm = this.fb.group({
-      password: ['', [
-        Validators.required,
-        Validators.minLength(this.configurationForm.passwordWallet.minLength),
-        Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
-      ]
-      ],
+  createForms(){
+    this.firstFormGroup = new FormGroup({
+      tittle: new FormControl('', [Validators.required]),
+      isPrivate: new FormControl(false),
+      message: new FormControl('', [Validators.required]),
+      PollEndDate: new FormControl('', [Validators.required])
     });
-    // this.validatorsCosignatory();
-    // this.changeformStatus()
-  }
-  JSONOptions() {
 
-    const namesOptions = ["Borussia Dortmund", "Bayer 04 Leverkusen II", "Bayern de Múnich"];
-    this.Poll = null;
-    for (let element of namesOptions) {
-      this.generateOptios(element);
+    this.secondFormGroup = new FormGroup({
+      isMultiple: new FormControl(false, [Validators.required]),
+      option: new FormControl('')
+    });
+
+    this.thirdFormGroup = new FormGroup({
+      voteType: new FormControl(0),
+      address: new FormControl('')
+    });
+
+    this.quarterFormGroup = new FormGroup({
+      password: new FormControl('', Validators.required)
+    });
+  }
+
+  initOptionsDate() {
+  }
+
+  get1() {
+    this.name = this.firstFormGroup.get('tittle').value
+    this.desciption = this.firstFormGroup.get('message').value
+    this.isPrivate = this.firstFormGroup.get('isPrivate').value
+    this.endDate = new Date(this.firstFormGroup.get('PollEndDate').value) 
+    this.account = (this.isPrivate) ? Account.generateNewAccount(this.walletService.currentAccount.network) :
+    Account.createFromPrivateKey(environment.pollsContent.private_key, this.walletService.currentAccount.network);
+    this.publicAddress = this.account.address.pretty();
+  }
+
+  get2() {
+    this.isMultiple = this.secondFormGroup.get('isMultiple').value
+  }
+
+  get3() {
+    this.type = this.thirdFormGroup.get('voteType').value
+  }
+
+  copyMessage(message: string) {
+    this.sharedService.showSuccess('', `${message} copied`);
+  }
+
+  deleteOptions(item) {
+    this.option = this.option.filter(option => option != item);
+  }
+
+  deleteAccaunt(item) {
+    this.listaBlanca = this.listaBlanca.filter(white => white.address != item.address);
+  }
+
+  selectType($event: Event) {
+    const type: any = $event;
+    if (type !== null && type !== undefined) {
+      if (type.value === 1) {
+        this.showList = true;
+      } else {
+        this.showList = false;
+        this.listaBlanca = [];
+      }
     }
-
-
   }
+
+  addOptions() {
+    if (this.secondFormGroup.get('option').valid && this.secondFormGroup.get('option').value != '') {
+      let options = this.secondFormGroup.get('option').value
+      this.generateOptios(options);
+      this.secondFormGroup.patchValue({
+        option: ''
+      })
+    }
+  }
+
+  // pushedOtherAccount() {
+  //   if (this.boxOtherAccount.length === 0) {
+  //     this.boxOtherAccount.push({
+  //       id: Math.floor(Math.random() * 1455654),
+  //       balance: '',
+  //     });
+  //   } else {
+  //     let x = false;
+  //     this.boxOtherAccount.forEach(element => {
+  //       if (element.id === '') {
+  //         this.sharedService.showWarning('', 'You must select a mosaic and place the quantity');
+  //         x = true;
+  //       } else if (element.amount === '' || Number(element.amount) === 0) {
+  //         this.sharedService.showWarning('', 'The quantity of mosaics is missing');
+  //         x = true;
+  //       }
+  //     });
+
+  //     if (!x) {
+  //       this.boxOtherAccount.push({
+  //         id: Math.floor(Math.random() * 1455654),
+  //         balance: '',
+  //       });
+  //     }
+  //   }
+  // }
+
+  addAddress() {
+    if (this.thirdFormGroup.get('address').valid && this.thirdFormGroup.get('address').value != '') {
+      let address = this.thirdFormGroup.get('address').value
+      if (this.listaBlanca.length > 0) {
+        const result = this.listaBlanca.find(element => Address.createFromRawAddress(element.address).plain() === address.split('-').join(''));
+        console.log('1',  this.listaBlanca)
+        console.log('2',  address.split('-').join(''))
+        console.log('1',  result)
+        if (result === undefined) {
+          this.listaBlanca.push(Address.createFromRawAddress(address))
+          this.thirdFormGroup.patchValue({
+            address: ''
+          })
+        } else {
+          this.sharedService.showError('', 'account exists');
+        }
+      }else {
+        this.listaBlanca.push(Address.createFromRawAddress(address))
+        this.thirdFormGroup.patchValue({
+          address: ''
+        })
+      }
+    }
+  }
+
   generateOptios(nameParam: string) {
     let publicAccountGenerate: PublicAccount = Account.generateNewAccount(this.walletService.currentAccount.network).publicAccount;
     this.option.push({ name: nameParam, publicAccount: publicAccountGenerate })
-
   }
 
   sendPoll() {
     const common = {
-      password: this.createPollForm.get('password').value,
+      password: this.quarterFormGroup.get('password').value,
       privateKey: ''
     }
-    if (this.createPollForm.valid && !this.btnBlock) {
+    if (this.quarterFormGroup.valid && !this.btnBlock) {
       if (this.walletService.decrypt(common)) {
         this.preparepoll(common);
       }
-
     }
   }
 
 
   async preparepoll(common) {
-    const isPrivaye = false;
-    this.account = (isPrivaye) ? Account.generateNewAccount(this.walletService.currentAccount.network) :
-      Account.createFromPrivateKey(environment.pollsContent.private_key, this.walletService.currentAccount.network);
-
-
     // this.account = Account.createFromPrivateKey(environment.pollsContent.private_key, this.walletService.currentAccount.network);
 
-    const direccionesAgregadas = [
-      'VCGPXB-2A7T4I-W5MQCX-FQY4UQ-W5JNU5-F55HGK-HBUN',
-      'VDG4WG-FS7EQJ-KFQKXM-4IUCQG-PXUW5H-DJVIJB-OXJG',
-      'VDGRLS-QE6Y6Z-52FDL6-KOJTKG-FFJVOY-GNSLFT-TN53'
-    ]
-    let listaBlanca = []
+    // const direccionesAgregadas = [
+    //   'VCGPXB-2A7T4I-W5MQCX-FQY4UQ-W5JNU5-F55HGK-HBUN',
+    //   'VDG4WG-FS7EQJ-KFQKXM-4IUCQG-PXUW5H-DJVIJB-OXJG'
+    // ]
+    // const listaBlanca = []
 
-    for (let element of direccionesAgregadas) {
-      listaBlanca.push(Address.createFromRawAddress(element))
-    }
-    // listaBlanca = []
+    // for (let element of direccionesAgregadas) {
+    //   listaBlanca.push(Address.createFromRawAddress(element))
+    // }
 
-    const endDate = new Date()
+
+    // const endDate = new Date()
     // endDate.setHours(endDate.getHours() + 2)
-    endDate.setMonth(endDate.getMonth() + 3)
     this.Poll = {
-      name: 'Liga alemania 02 -list (mejor equipo de futbol)',
-      desciption: 'Find out about the best brand by phone based on your experience. evaluate us and we will offer you better services',
-      id: '18',
-      type: 0,
-      isPrivate: true,
-      isMultiple: true,
+      name: this.name,
+      desciption: this.desciption,
+      id: Math.floor(Math.random() * 1455654).toString(),
+      type: this.type,
+      isPrivate: this.isPrivate,
+      isMultiple: this.isMultiple,
       options: this.option,
-      witheList: listaBlanca,
+      witheList: this.listaBlanca,
       startDate: new Date(),
-      endDate: endDate,
+      endDate: this.endDate,
       createdDate: new Date(),
       quantityOption: this.option.length
     }
@@ -130,7 +258,6 @@ export class CreatePollComponent implements OnInit {
       extension: 'json',
     };
     const descripcion = 'poll';
-
     console.log('this.Poll ', this.Poll)
 
     await this.createPollStorageService.sendFileStorage(
@@ -142,8 +269,6 @@ export class CreatePollComponent implements OnInit {
       console.log('resp', resp)
 
     });
-
-
   }
   /**
  *
@@ -154,17 +279,27 @@ export class CreatePollComponent implements OnInit {
  * @returns
  * @memberof CreateNamespaceComponent
  */
-  validateInput(nameInput: string = '', nameControl: string = '', nameValidation: string = '') {
+  validateInput(nameInput: string = '', form: string = '', nameControl: string = '', nameValidation: string = '') {
+    if (form == '1') {
+      this.form = this.firstFormGroup;
+    } else if (form == '2') {
+      this.form = this.secondFormGroup;
+    } else if (form == '3') {
+      this.form = this.thirdFormGroup;
+    } else if (form == '4') {
+      this.form = this.quarterFormGroup;
+    }
     let validation: AbstractControl = null;
     if (nameInput !== '' && nameControl !== '') {
-      validation = this.createPollForm.controls[nameControl].get(nameInput);
+      validation = this.form.controls[nameControl].get(nameInput);
     } else if (nameInput === '' && nameControl !== '' && nameValidation !== '') {
-      validation = this.createPollForm.controls[nameControl].getError(nameValidation);
+      validation = this.form.controls[nameControl].getError(nameValidation);
     } else if (nameInput !== '') {
-      validation = this.createPollForm.get(nameInput);
+      validation = this.form.get(nameInput);
     }
     return validation;
   }
+
   /**
    *
    *
@@ -173,18 +308,19 @@ export class CreatePollComponent implements OnInit {
    * @returns
    * @memberof CreateTransferComponent
    */
-  clearForm(custom?: string | (string | number)[], formControl?: string | number) {
-    if (custom !== undefined) {
-      if (formControl !== undefined) {
-        this.createPollForm.controls[formControl].get(custom).reset({ emitEvent: false, onlySelf: true });
-        return;
-      }
-      this.createPollForm.get(custom).reset({ emitEvent: false, onlySelf: true });
-      return;
-    }
-    this.createPollForm.reset({ emitEvent: false, onlySelf: true });
-    return;
-  }
+  // clearForm(custom?: string | (string | number)[], formControl?: string | number) {
+  //   if (custom !== undefined) {
+  //     if (formControl !== undefined) {
+  //       this.createPollForm.controls[formControl].get(custom).reset({ emitEvent: false, onlySelf: true });
+  //       return;
+  //     }
+  //     this.createPollForm.get(custom).reset({ emitEvent: false, onlySelf: true });
+  //     return;
+  //   }
+  //   this.createPollForm.reset({ emitEvent: false, onlySelf: true });
+  //   return;
+  // }
+
 
 }
 

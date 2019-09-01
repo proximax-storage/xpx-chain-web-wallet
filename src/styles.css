@@ -1,6 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 
 @import "~@ng-select/ng-select/themes/material.theme.css";
+@import "~ng-pick-datetime/assets/style/picker.min.css";
 
 html,
 body {
@@ -1523,4 +1524,15 @@ body.modal-open {
 
 .background-pending {
   background: #ffdfa0;
+}
+
+
+.tab-content {
+  padding: 2rem 1rem 1rem !important;
+  box-shadow: 0 0px 0px 0 rgba(0,0,0,0), 0 0px 0px 0 rgba(0,0,0,0) !important;
+}
+
+.link {
+  color: #306EB5 !important;
+  font-weight: bold;
 }
