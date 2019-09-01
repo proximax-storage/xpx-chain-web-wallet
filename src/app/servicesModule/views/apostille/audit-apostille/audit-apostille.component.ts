@@ -5,6 +5,7 @@ import { NodeService } from '../../../services/node.service';
 import { Verifier } from './audit-apistille-verifier';
 import { ResultAuditInterface, HeaderServicesInterface } from '../../../services/services-module.service';
 import { AppConfig } from '../../../../config/app.config';
+import { TransactionsService } from 'src/app/transactions/services/transactions.service';
 
 @Component({
   selector: 'app-audit-apostille',
@@ -47,7 +48,8 @@ export class AuditApostilleComponent implements OnInit {
 
   constructor(
     private proximaxProvider: ProximaxProvider,
-    private nodeService: NodeService
+    private nodeService: NodeService,
+    private transactionService: TransactionsService
   ) {
     this.url = `https://${this.nodeService.getNodeSelected()}`;
   }
@@ -89,7 +91,6 @@ export class AuditApostilleComponent implements OnInit {
    */
   verifyFiles() {
     const hasts = [];
-
     this.ourFile.forEach(el => {
       let arrayName = el.name.split(' --Apostille TX ');
       if (arrayName.length > 1) {
@@ -139,7 +140,14 @@ export class AuditApostilleComponent implements OnInit {
               owner: this.proximaxProvider.createFromRawAddress(findHash.recipient['address']).pretty(),
               fileHash: findHash.message.payload.split('"').join(''),
               result: 'Document apostille',
-              hash: findHash.transactionInfo.hash
+              hash: findHash.transactionInfo.hash,
+              private: false,
+              fee: this.transactionService.amountFormatterSimple(findHash.maxFee.compact()),
+              height: findHash.transactionInfo.height.compact(),
+              type: findHash.type,
+              signer: findHash.signer,
+              recipient: this.proximaxProvider.createFromRawAddress(findHash.recipient['address']),
+              signature: findHash.signature,
             }, findHash.transactionInfo.hash);
           } else {
             this.addAuditResult({
@@ -185,6 +193,13 @@ export class AuditApostilleComponent implements OnInit {
       this.auditResults.push(result);
     }
   }
+
+  // removeItem(index: number) {
+  //   console.log('\n\n\n\nValue of index', index, '\n\n\n\nEnd value\n\n');
+  //   console.log('\n\n\n\nValue of index', this.ourFile, '\n\n\n\nEnd value\n\n');
+  //   this.ourFile.filter((value, i) => i !== index);
+  //   this.ourFile.splice(index, 1);
+  // }
 
 
   //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Address, NamespaceId } from 'tsjs-xpx-chain-sdk';
+import { Address, NamespaceId, PublicAccount } from 'tsjs-xpx-chain-sdk';
 import { WalletService } from '../../wallet/services/wallet.service';
 import { environment } from 'src/environments/environment';
 
@@ -199,5 +199,11 @@ export interface ResultAuditInterface {
   fileHash: string,
   result: string,
   hash: string,
-  private?: boolean
+  private?: boolean,
+  fee?: string,
+  height?: number,
+  type?: number,
+  signer?: PublicAccount,
+  recipient?: Address,
+  signature?: string,
 }
