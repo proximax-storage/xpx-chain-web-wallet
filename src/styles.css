@@ -1380,7 +1380,11 @@ button.md-toast-close-button {
 }
 
 .audit-background {
-  background: -webkit-linear-gradient(right bottom, #b44703, #f89354 50%);
+  background: -webkit-linear-gradient(bottom, #b44703, #f89354);
+}
+
+.audit-background-err {
+  background: -webkit-linear-gradient(bottom, #9e0000, #f38b8b);
 }
 
 .audit-medal {
@@ -1393,18 +1397,19 @@ button.md-toast-close-button {
 
 .audit-title {
   font-weight: bold;
-  font-size: 18px;
+  font-size: 14px;
   margin: 0px 0px 2px 0px;
+  word-break: break-all;
 }
 
 .audit-subtitle {
   font-weight: bold;
-  font-size: 13px;
+  font-size: 12px;
   margin: 0px 0px 2px 0px;
 }
 
 .audit-value {
-  font-size: 13px;
+  font-size: 12px;
   word-break: break-all;
   margin: 0px 0px 2px 0px;
 }
