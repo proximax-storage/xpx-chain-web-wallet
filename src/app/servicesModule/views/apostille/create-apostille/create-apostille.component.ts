@@ -95,7 +95,7 @@ export class CreateApostilleComponent implements OnInit {
    */
   buildApostille(nty: any) {
     const date = new Date();
-    const url = `${environment.nodeExplorer}`;
+    const url = `${environment.nodeExplorer}/${nty.signedTransaction.hash.toLowerCase()}`;
     const title = nty.title.slice(0, nty.title.lastIndexOf('.'));
     const qr = qrcode(10, 'H');
     qr.addData(url);
@@ -362,7 +362,7 @@ export class CreateApostilleComponent implements OnInit {
   setAccountWalletStorage(nty: any) {
     let proxinty = JSON.parse(localStorage.getItem('proxi-nty'));
     if (!proxinty) {
-      localStorage.setItem('proxi-nty', JSON.stringify(nty))
+      localStorage.setItem('proxi-nty', JSON.stringify([nty]))
     } else {
       proxinty.push(nty)
       localStorage.setItem('proxi-nty', JSON.stringify(proxinty))

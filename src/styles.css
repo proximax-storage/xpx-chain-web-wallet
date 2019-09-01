@@ -624,6 +624,10 @@ body {
 
 /**************************** COLOR *****************************/
 
+.color-gray-strong {
+  color: #666666 !important;
+}
+
 .color-dark-green {
   color: #023c42 !important;
 }
@@ -732,6 +736,7 @@ body {
 .barlistvoting .progress-bar {
   height: 20px !important;
 }
+
 .barlistvoting .progress {
   height: 20px !important;
 }
@@ -1529,7 +1534,7 @@ body.modal-open {
 
 .tab-content {
   padding: 2rem 1rem 1rem !important;
-  box-shadow: 0 0px 0px 0 rgba(0,0,0,0), 0 0px 0px 0 rgba(0,0,0,0) !important;
+  box-shadow: 0 0px 0px 0 rgba(0, 0, 0, 0), 0 0px 0px 0 rgba(0, 0, 0, 0) !important;
 }
 
 .link {
