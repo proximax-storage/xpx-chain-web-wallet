@@ -7,6 +7,7 @@ import { ConfigurationForm, SharedService } from 'src/app/shared/services/shared
 import { AppConfig } from 'src/app/config/app.config';
 import { CreatePollStorageService } from 'src/app/servicesModule/services/create-poll-storage.service';
 import { stringify } from '@angular/compiler/src/util';
+import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 
 @Component({
   selector: 'app-create-poll',
@@ -47,21 +48,23 @@ export class CreatePollComponent implements OnInit {
 
   voteType: any = [
     {
+      value: 1,
+      label: 'Public',
+      selected: true,
+    },
+    {
       value: 0,
       label: 'White list',
       selected: false,
-    },
-    {
-    value: 1,
-    label: 'Public',
-    selected: true,
-    }];
+    }
+  ];
 
   constructor(
     private fb: FormBuilder,
     private sharedService: SharedService,
     private walletService: WalletService,
-    private createPollStorageService: CreatePollStorageService
+    private createPollStorageService: CreatePollStorageService,
+    private proximaxProvider: ProximaxProvider
   ) {
     this.configurationForm = this.sharedService.configurationForm;
     this.btnBlock = false;
@@ -71,11 +74,11 @@ export class CreatePollComponent implements OnInit {
   ngOnInit() {
     const today = new Date();
     this.minDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), today.getHours(), today.getMinutes());
-    this.invalidMoment =  this.minDate.setHours(this.minDate.getHours() + 24)
+    this.invalidMoment = this.minDate.setHours(this.minDate.getHours() + 24)
     this.createForms();
   }
 
-  createForms(){
+  createForms() {
     this.firstFormGroup = new FormGroup({
       tittle: new FormControl('', [Validators.required]),
       isPrivate: new FormControl(false),
@@ -105,9 +108,9 @@ export class CreatePollComponent implements OnInit {
     this.name = this.firstFormGroup.get('tittle').value
     this.desciption = this.firstFormGroup.get('message').value
     this.isPrivate = this.firstFormGroup.get('isPrivate').value
-    this.endDate = new Date(this.firstFormGroup.get('PollEndDate').value) 
+    this.endDate = new Date(this.firstFormGroup.get('PollEndDate').value)
     this.account = (this.isPrivate) ? Account.generateNewAccount(this.walletService.currentAccount.network) :
-    Account.createFromPrivateKey(environment.pollsContent.private_key, this.walletService.currentAccount.network);
+      Account.createFromPrivateKey(environment.pollsContent.private_key, this.walletService.currentAccount.network);
     this.publicAddress = this.account.address.pretty();
   }
 
@@ -134,10 +137,11 @@ export class CreatePollComponent implements OnInit {
   selectType($event: Event) {
     const type: any = $event;
     if (type !== null && type !== undefined) {
-      if (type.value === 1) {
+      if (type.value === 0) {
         this.showList = true;
       } else {
         this.showList = false;
+        this.cleanThirForm();
         this.listaBlanca = [];
       }
     }
@@ -182,32 +186,48 @@ export class CreatePollComponent implements OnInit {
 
   addAddress() {
     if (this.thirdFormGroup.get('address').valid && this.thirdFormGroup.get('address').value != '') {
-      let address = this.thirdFormGroup.get('address').value
-      if (this.listaBlanca.length > 0) {
-        const result = this.listaBlanca.find(element => Address.createFromRawAddress(element.address).plain() === address.split('-').join(''));
-        console.log('1',  this.listaBlanca)
-        console.log('2',  address.split('-').join(''))
-        console.log('1',  result)
-        if (result === undefined) {
-          this.listaBlanca.push(Address.createFromRawAddress(address))
-          this.thirdFormGroup.patchValue({
-            address: ''
-          })
+      let address = this.thirdFormGroup.get('address').value.toUpperCase()
+      const currentAccount = Object.assign({}, this.walletService.getCurrentAccount());
+
+      if (!this.proximaxProvider.verifyNetworkAddressEqualsNetwork(
+        this.proximaxProvider.createFromRawAddress(currentAccount.address).plain(), address)
+      ) {
+        this.sharedService.showError('', 'Recipient Address Network unsupported');
+
+      } else {
+
+        if (this.listaBlanca.length > 0) {
+          const existe = this.listaBlanca.find(list => list.plain().trim() === address.split('-').join('').trim());
+          if (existe != undefined) {
+            this.sharedService.showError('', 'account exists');
+            this.cleanThirForm();
+          } else {
+            this.listaBlanca.push(Address.createFromRawAddress(address))
+            this.cleanThirForm();
+          }
         } else {
-          this.sharedService.showError('', 'account exists');
+          this.listaBlanca.push(Address.createFromRawAddress(address))
+          this.cleanThirForm();
         }
-      }else {
-        this.listaBlanca.push(Address.createFromRawAddress(address))
-        this.thirdFormGroup.patchValue({
-          address: ''
-        })
       }
     }
   }
 
+  cleanThirForm() {
+    this.thirdFormGroup.patchValue({
+      address: ''
+    })
+  }
+
   generateOptios(nameParam: string) {
-    let publicAccountGenerate: PublicAccount = Account.generateNewAccount(this.walletService.currentAccount.network).publicAccount;
-    this.option.push({ name: nameParam, publicAccount: publicAccountGenerate })
+
+    const existe = this.option.find(option => option.name === nameParam);
+    if (existe === undefined) {
+      let publicAccountGenerate: PublicAccount = Account.generateNewAccount(this.walletService.currentAccount.network).publicAccount;
+      this.option.push({ name: nameParam, publicAccount: publicAccountGenerate })
+    } else {
+      this.sharedService.showError('', 'option exists');
+    }
   }
 
   sendPoll() {
@@ -263,7 +283,7 @@ export class CreatePollComponent implements OnInit {
       extension: 'json',
     };
     const descripcion = 'poll';
-    
+
 
     await this.createPollStorageService.sendFileStorage(
       fileObject,

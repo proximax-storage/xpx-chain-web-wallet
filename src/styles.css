@@ -1550,7 +1550,10 @@ body.modal-open {
   box-shadow: 0 0px 0px 0 rgba(0, 0, 0, 0), 0 0px 0px 0 rgba(0, 0, 0, 0) !important;
 }
 
-.link {
+.transparent {
+  background-color: transparent;
+  border: none;
   color: #306EB5 !important;
   font-weight: bold;
+  outline-color: #F4F4F4 !important;
 }
