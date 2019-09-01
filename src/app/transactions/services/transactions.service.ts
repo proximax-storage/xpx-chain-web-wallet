@@ -664,4 +664,7 @@ export interface TransactionsInterface {
   recipientAddress: string;
   receive: boolean;
   senderAddress: string;
+  fileName?: string;
+  dateFile?: string;
+  privateFile?: boolean;
 }
