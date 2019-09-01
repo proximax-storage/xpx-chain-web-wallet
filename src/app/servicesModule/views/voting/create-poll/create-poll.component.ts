@@ -57,7 +57,7 @@ export class CreatePollComponent implements OnInit {
   }
   JSONOptions() {
 
-    const namesOptions = ["nike", "adidas", "converse", "timberlat"];
+    const namesOptions = ["Borussia Dortmund", "Bayer 04 Leverkusen II", "Bayern de Múnich"];
     this.Poll = null;
     for (let element of namesOptions) {
       this.generateOptios(element);
@@ -86,26 +86,35 @@ export class CreatePollComponent implements OnInit {
 
 
   async preparepoll(common) {
-    this.account = Account.createFromPrivateKey(environment.pollsContent.private_key, this.walletService.currentAccount.network);
+    const isPrivaye = false;
+    this.account = (isPrivaye) ? Account.generateNewAccount(this.walletService.currentAccount.network) :
+      Account.createFromPrivateKey(environment.pollsContent.private_key, this.walletService.currentAccount.network);
+
+
+    // this.account = Account.createFromPrivateKey(environment.pollsContent.private_key, this.walletService.currentAccount.network);
 
     const direccionesAgregadas = [
       'VCGPXB-2A7T4I-W5MQCX-FQY4UQ-W5JNU5-F55HGK-HBUN',
-      'VDG4WG-FS7EQJ-KFQKXM-4IUCQG-PXUW5H-DJVIJB-OXJG'
+      'VDG4WG-FS7EQJ-KFQKXM-4IUCQG-PXUW5H-DJVIJB-OXJG',
+      'VDGRLS-QE6Y6Z-52FDL6-KOJTKG-FFJVOY-GNSLFT-TN53'
     ]
-    const listaBlanca = []
+    let listaBlanca = []
 
     for (let element of direccionesAgregadas) {
       listaBlanca.push(Address.createFromRawAddress(element))
     }
-
+    // listaBlanca = []
 
     const endDate = new Date()
-    endDate.setHours(endDate.getHours() + 2)
+    // endDate.setHours(endDate.getHours() + 2)
+    endDate.setMonth(endDate.getMonth() + 3)
     this.Poll = {
-      name: 'marca zapatos nuevos',
+      name: 'Liga alemania 02 -list (mejor equipo de futbol)',
       desciption: 'Find out about the best brand by phone based on your experience. evaluate us and we will offer you better services',
-      id: '06',
+      id: '18',
       type: 0,
+      isPrivate: true,
+      isMultiple: true,
       options: this.option,
       witheList: listaBlanca,
       startDate: new Date(),
@@ -196,6 +205,8 @@ export interface PollInterface {
   desciption: string;
   id: string;
   type: number;
+  isPrivate: boolean,
+  isMultiple: boolean,
   options: optionsPoll[];
   witheList: Object[];
   blacklist?: Object[];
