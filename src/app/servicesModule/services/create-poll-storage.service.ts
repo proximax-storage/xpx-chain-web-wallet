@@ -154,7 +154,7 @@ export class CreatePollStorageService {
               const downloableFile = new Blob([dataBuffer], { type: data.type });
               // resultData.push();
 
-              this.pollResult.push(this.ab2str(dataBuffer)) ; 
+              this.pollResult.push(this.ab2str(dataBuffer));
               resolve({ result: this.ab2str(dataBuffer), size: searchResult.results.length });
 
               this.setPolls$({ result: this.ab2str(dataBuffer), size: searchResult.results.length });
@@ -205,8 +205,10 @@ export interface PollInterface {
   desciption: string;
   id: string;
   type: number;
+  isPrivate: boolean,
+  isMultiple: boolean,
   options: optionsPoll[];
-  witheList?: Object[];
+  witheList: Object[];
   blacklist?: Object[];
   startDate: Date;
   endDate: Date;

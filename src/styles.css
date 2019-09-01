@@ -280,6 +280,10 @@ body {
   padding: 12px;
 }
 
+.p-5px {
+  padding: 5px;
+}
+
 /** BOTTOM **/
 
 .pb-1rem {
@@ -1303,10 +1307,19 @@ button.md-toast-close-button {
 
 .box-grey {
   border-radius: 1.5rem;
-  background: #dedede;
+  background: #f4f4f4;
   padding: 10px 20px;
   margin: 10px;
   color: #797979;
+}
+
+.box-drop {
+  border-radius: 1rem;
+  background: white;
+  padding: 10px 20px;
+  margin: 10px;
+  color: black;
+  border: 2px dotted #316eb5
 }
 
 .box-transparent-border-orange {
