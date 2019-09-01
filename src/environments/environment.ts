@@ -15,7 +15,7 @@ export const environment = {
   protocol: `https`,
   protocolWs: `wss`,
   nodeDefault: 'bctestnet1-cow.xpxsirius.io:443',
-  nodeExplorer: 'bctestnetexplorer.xpxsirius.io/#/searchResult/transactionHash',
+  nodeExplorer: 'https://bctestnetexplorer.xpxsirius.io/#/result/hash',
   mosaicXpxInfo: {
     name: 'prx.xpx',
     coin: 'XPX',

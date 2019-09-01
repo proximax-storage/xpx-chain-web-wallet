@@ -27,7 +27,9 @@ import { AppConfig } from 'src/app/config/app.config';
 })
 export class CreateApostilleComponent implements OnInit {
 
-  apostilleCreateForm: FormGroup;
+  apostilleCreateForm2: FormGroup;
+  apostilleFormOne: FormGroup;
+  apostilleFormTwo: FormGroup;
   configurationForm: ConfigurationForm;
   autocompleteItems = [];
   paramsHeader: HeaderServicesInterface = {
@@ -37,6 +39,7 @@ export class CreateApostilleComponent implements OnInit {
     routerExtraButton: `/${AppConfig.routes.audiApostille}`
   };
 
+  processComplete = false;
 
   /************************* */
 
@@ -58,6 +61,7 @@ export class CreateApostilleComponent implements OnInit {
   certificatePrivate: string;
   certificatePublic: string;
   storeInDfms = false;
+  base64ImageString: string;
 
   constructor(
     private sharedService: SharedService,
@@ -95,7 +99,7 @@ export class CreateApostilleComponent implements OnInit {
    */
   buildApostille(nty: any) {
     const date = new Date();
-    const url = `${environment.nodeExplorer}`;
+    const url = `${environment.nodeExplorer}/${nty.signedTransaction.hash.toLowerCase()}`;
     const title = nty.title.slice(0, nty.title.lastIndexOf('.'));
     const qr = qrcode(10, 'H');
     qr.addData(url);
@@ -131,6 +135,7 @@ export class CreateApostilleComponent implements OnInit {
       { base64: true }
     );
 
+    this.processComplete = true;
     this.setAccountWalletStorage(this.ntyData);
     this.downloadSignedFiles();
   }
@@ -143,25 +148,23 @@ export class CreateApostilleComponent implements OnInit {
    * @returns
    * @memberof CreateApostilleComponent
    */
-  clearForm(custom?: string | (string | number)[], formControl?: string | number) {
-    const file: HTMLElement = document.getElementById('fileInput');
-    file['value'] = '';
-    this.apostilleCreateForm.get('file').setValue('');
-    this.file = '';
-    this.fileInputIsValidated = false;
-    this.nameFile = 'Not file selected yet...';
-    this.rawFileContent = '';
-    this.zip = new JSZip();
-    if (custom !== undefined) {
-      if (formControl !== undefined) {
-        this.apostilleCreateForm.controls[formControl].get(custom).reset();
-        return;
+  clearForm(typeForm: number) {
+    if (typeForm === 1) {
+      const file: HTMLElement = document.getElementById('fileInput');
+      if (file) {
+        file['value'] = '';
       }
-      this.apostilleCreateForm.get(custom).reset();
-      return;
+      this.apostilleFormOne.get('file').setValue('');
+      this.file = '';
+      this.fileInputIsValidated = false;
+      this.nameFile = 'Not file selected yet...';
+      this.rawFileContent = '';
+      this.zip = new JSZip();
+      this.apostilleFormOne.reset();
+    } else {
+      this.apostilleFormTwo.reset();
     }
 
-    this.apostilleCreateForm.reset();
     return;
   }
 
@@ -171,20 +174,11 @@ export class CreateApostilleComponent implements OnInit {
    * @memberof CreateApostilleComponent
    */
   createForm() {
-    this.apostilleCreateForm = this.fb.group({
-      /*documentTitle: ['', [
-        Validators.required,
-        Validators.minLength(this.configurationForm.documentTitle.minLength),
-        Validators.maxLength(this.configurationForm.documentTitle.maxLength)
-      ]],
+    this.apostilleFormOne = this.fb.group({
+      file: ['', [Validators.required]]
+    });
 
-      content: ['', [
-        Validators.minLength(this.configurationForm.content.minLength),
-        Validators.maxLength(this.configurationForm.content.maxLength)
-      ]],*/
-
-      file: ['', [Validators.required]],
-
+    this.apostilleFormTwo = this.fb.group({
       safeDFMS: [''],
 
       typePrivatePublic: [true, [
@@ -205,7 +199,7 @@ export class CreateApostilleComponent implements OnInit {
         Validators.required,
         Validators.minLength(this.configurationForm.passwordWallet.minLength),
         Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
-      ]],
+      ]]
     });
   }
 
@@ -215,17 +209,12 @@ export class CreateApostilleComponent implements OnInit {
    * @memberof ApostilleCreateComponent
    */
   createApostille() {
-    if (!this.fileInputIsValidated) {
-      this.sharedService.showWarning('', 'Please upload or validate a file');
-      return;
-    }
-
-    if (this.apostilleCreateForm.valid) {
-      const common = { password: this.apostilleCreateForm.get('password').value }
+    if (this.apostilleFormOne.valid && this.apostilleFormTwo.valid) {
+      const common = { password: this.apostilleFormTwo.get('password').value }
       //Decrypt the private key
       if (this.walletService.decrypt(common)) {
         //Get the value of the type of apostille
-        if (this.apostilleCreateForm.get('typePrivatePublic').value === true) {
+        if (this.apostilleFormTwo.get('typePrivatePublic').value === true) {
           this.preparePublicApostille(common);
         } else {
           console.log('--------PRIVATE-------');
@@ -258,9 +247,11 @@ export class CreateApostilleComponent implements OnInit {
           ifpsClient.addStream(streamContent).subscribe(hash => {
             saveAs(content, `${hash}.zip`);
           });
-          this.clearForm();
+          this.clearForm(1);
+          this.clearForm(2);
         } else {
-          this.clearForm();
+          this.clearForm(1);
+          this.clearForm(2);
           const dateFull = `${date.getFullYear()}-${("00" + (date.getMonth() + 1)).slice(-2)}-${("00" + (date.getDate())).slice(-2)}`;
           saveAs(
             content,
@@ -317,7 +308,7 @@ export class CreateApostilleComponent implements OnInit {
         this.rawFileContent = crypto.enc.Base64.parse((this.file.toString()).split(/,(.+)?/)[1]);
       };
     } else {
-      this.apostilleCreateForm.get('file').setValue('');
+      this.apostilleFormOne.get('file').setValue('');
       this.fileInputIsValidated = false;
       this.nameFile = 'Not file selected yet...';
       this.file = '';
@@ -362,7 +353,7 @@ export class CreateApostilleComponent implements OnInit {
   setAccountWalletStorage(nty: any) {
     let proxinty = JSON.parse(localStorage.getItem('proxi-nty'));
     if (!proxinty) {
-      localStorage.setItem('proxi-nty', JSON.stringify(nty))
+      localStorage.setItem('proxi-nty', JSON.stringify([nty]))
     } else {
       proxinty.push(nty)
       localStorage.setItem('proxi-nty', JSON.stringify(proxinty))
@@ -396,11 +387,11 @@ export class CreateApostilleComponent implements OnInit {
    */
   onBlur(item: string) {
     if (item !== '' && item !== undefined) {
-      const data = this.apostilleCreateForm.get('tags').value;
-      const x = this.apostilleCreateForm.get('tags').value.find((x: { display: string, value: string }) => x.value === item);
+      const data = this.apostilleFormTwo.get('tags').value;
+      const x = this.apostilleFormTwo.get('tags').value.find((x: { display: string, value: string }) => x.value === item);
       if (!x) {
         data.push({ display: item, value: item });
-        this.apostilleCreateForm.get('tags').setValue(data);
+        this.apostilleFormTwo.get('tags').setValue(data);
       }
     }
   }
@@ -450,6 +441,8 @@ export class CreateApostilleComponent implements OnInit {
    * @memberof ApostilleCreateComponent
    */
   pdfcertificatePublic(base64ImageString: string, url: string, nty: any) {
+    console.log(base64ImageString);
+    this.base64ImageString = base64ImageString;
     let date = new Date();
     this.imageBase64();
     var doc = new jsPDF()
@@ -525,7 +518,7 @@ export class CreateApostilleComponent implements OnInit {
         const nty = {
           signedTransaction: signedTransaction,
           title: title,
-          tags: [this.apostilleCreateForm.get('tags').value],
+          tags: [this.apostilleFormTwo.get('tags').value],
           apostilleHash: apostilleHash,
           account: ownerAccount,
           sinkAddress: dedicatedAccount.address.plain(),
@@ -583,7 +576,7 @@ export class CreateApostilleComponent implements OnInit {
         const nty = {
           signedTransaction: signedTransaction,
           title: this.nameFile,
-          tags: this.apostilleCreateForm.get('tags').value,
+          tags: this.apostilleFormTwo.get('tags').value,
           apostilleHash: apostilleHash,
           account: myAccount,
           sinkAddress: sinkAddress.plain(),
@@ -612,7 +605,6 @@ export class CreateApostilleComponent implements OnInit {
     file['value'] = '';
     this.zip = new JSZip();
     this.nameFile = 'Not file selected yet...';
-    // this.apostilleCreateForm.reset();
-    this.apostilleCreateForm.get('file').patchValue('');
+    this.apostilleFormOne.get('file').patchValue('');
   }
 }
