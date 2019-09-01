@@ -83,8 +83,8 @@
   <div class="container-fluid" *ngIf="!currentView">
     <div class="row">
       <div class="col-11 col-md-10 mx-auto">
-        <div class="row d-flex justify-content-start mb-1rem">
-          <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4 mt-1rem audit-back" *ngFor="let item of testJAM">
+        <div class="row d-flex justify-content-start align-items-stretch mb-1rem">
+          <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4 d-flex mt-1rem audit-back" *ngFor="let item of testJAM">
             <div class="audit-front d-flex audit-background">
               <div class="col-8 p-05rem background-white">
                 <div>
@@ -96,7 +96,7 @@
                 </div>
                 <div>
                   <p class="audit-subtitle">Date</p>
-                  <p class="audit-value">{{ item.filename }}</p>
+                  <p class="audit-value">{{ item.date }}</p>
                 </div>
               </div>
               <div class="col-4 audit-medal mx-auto">

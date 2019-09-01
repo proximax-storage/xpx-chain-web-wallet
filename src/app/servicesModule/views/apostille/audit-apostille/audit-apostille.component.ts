@@ -42,35 +42,40 @@ export class AuditApostilleComponent implements OnInit {
       filename: "repuestos mitsubish",
       hash: "B3BFF21E01F8459FDB5C5F1886B628F3F0DA0AAAE06BD517D6A8B749A1F82648",
       owner: "VDJLEN-BVNSVE-YZATHG-GY47KM-OVIQJH-EMM5JT-XJ56",
-      result: "Document apostille"
+      result: "Document apostille",
+      date: new Date().toLocaleString()
+    },
+    {
+      fileHash: "fe4e545903273aa70b7352093148f537fe537a6eb65a6507f03fde3fe92e415daf073515f9",
+      filename: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Omnis molestiae obcaecati ratione nesciunt recusandae neque, adipisci, iste cumque dolores dolor nam officiis. Quia, expedita eum deserunt exercitationem necessitatibus similique laboriosam!",
+      hash: "B3BFF21E01F8459FDB5C5F1886B628F3F0DA0AAAE06BD517D6A8B749A1F82648",
+      owner: "VDJLEN-BVNSVE-YZATHG-GY47KM-OVIQJH-EMM5JT-XJ56",
+      result: "Document apostille",
+      date: new Date().toLocaleString()
     },
     {
       fileHash: "fe4e545903273aa70b7352093148f537fe537a6eb65a6507f03fde3fe92e415daf073515f9",
       filename: "repuestos mitsubish",
       hash: "B3BFF21E01F8459FDB5C5F1886B628F3F0DA0AAAE06BD517D6A8B749A1F82648",
       owner: "VDJLEN-BVNSVE-YZATHG-GY47KM-OVIQJH-EMM5JT-XJ56",
-      result: "Document apostille"
+      result: "Document apostille",
+      date: new Date().toLocaleString()
     },
     {
       fileHash: "fe4e545903273aa70b7352093148f537fe537a6eb65a6507f03fde3fe92e415daf073515f9",
       filename: "repuestos mitsubish",
       hash: "B3BFF21E01F8459FDB5C5F1886B628F3F0DA0AAAE06BD517D6A8B749A1F82648",
       owner: "VDJLEN-BVNSVE-YZATHG-GY47KM-OVIQJH-EMM5JT-XJ56",
-      result: "Document apostille"
+      result: "Document apostille",
+      date: new Date().toLocaleString()
     },
     {
       fileHash: "fe4e545903273aa70b7352093148f537fe537a6eb65a6507f03fde3fe92e415daf073515f9",
       filename: "repuestos mitsubish",
       hash: "B3BFF21E01F8459FDB5C5F1886B628F3F0DA0AAAE06BD517D6A8B749A1F82648",
       owner: "VDJLEN-BVNSVE-YZATHG-GY47KM-OVIQJH-EMM5JT-XJ56",
-      result: "Document apostille"
-    },
-    {
-      fileHash: "fe4e545903273aa70b7352093148f537fe537a6eb65a6507f03fde3fe92e415daf073515f9",
-      filename: "repuestos mitsubish",
-      hash: "B3BFF21E01F8459FDB5C5F1886B628F3F0DA0AAAE06BD517D6A8B749A1F82648",
-      owner: "VDJLEN-BVNSVE-YZATHG-GY47KM-OVIQJH-EMM5JT-XJ56",
-      result: "Document apostille"
+      result: "Document apostille",
+      date: new Date().toLocaleString()
     }
   ];
   /******************************************* */

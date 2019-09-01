@@ -1393,18 +1393,21 @@ button.md-toast-close-button {
 
 .audit-title {
   font-weight: bold;
-  font-size: 18px;
+  font-size: 14px;
   margin: 0px 0px 2px 0px;
+  word-break: ;
+  word-break: keep-all;
+  overflow: hidden;
 }
 
 .audit-subtitle {
   font-weight: bold;
-  font-size: 13px;
+  font-size: 12px;
   margin: 0px 0px 2px 0px;
 }
 
 .audit-value {
-  font-size: 13px;
+  font-size: 12px;
   word-break: break-all;
   margin: 0px 0px 2px 0px;
 }
