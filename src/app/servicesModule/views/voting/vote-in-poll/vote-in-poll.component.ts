@@ -27,6 +27,7 @@ export class VoteInPollComponent implements OnInit {
   pollSelected: PollInterface;
   optionsSelected: any = [];
   pollResultVoting: any = [];
+  headResults = ['Options', 'Total'];
   searching: boolean;
   incrementOption = 0;
   memberVoted: boolean;
@@ -36,6 +37,7 @@ export class VoteInPollComponent implements OnInit {
   blockSend: boolean;
   btnResult: boolean;
   transactionStatus: boolean = false;
+  showResult = false;
   votingInPoll: FormGroup;
   transactionHttp: TransactionHttp;
   subscribe: Subscription[] = [];
@@ -44,6 +46,7 @@ export class VoteInPollComponent implements OnInit {
   namePoll: string;
   isMultipe: boolean;
   qrImg: string;
+  chartOptions: object;
   transaction: Transaction;
 
 
@@ -203,8 +206,45 @@ export class VoteInPollComponent implements OnInit {
         this.sharedService.showError('', ` Option ${this.pollSelected.options[this.incrementOption].name} does not have a valid public key`);
       }
     } else {
+
+      this.showResult = true;
+      this.pollResultVoting.sort().sort((a, b) => b.y - a.y);
+       this.createcharts(this.pollResultVoting);
+      // this.modalResultPoll.show();
       // console.log('this.pollResultVoting', this.pollResultVoting)
     }
+  }
+  createcharts(data: any) {
+    this.chartOptions = {
+      chart: {
+        plotBackgroundColor: null,
+        plotBorderWidth: null,
+        plotShadow: false,
+        type: 'pie'
+      },
+      title: {
+        text: `Results`
+      },
+      tooltip: {
+        valueDecimals: 0,
+        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+      },
+      plotOptions: {
+        pie: {
+          allowPointSelect: true,
+          cursor: 'pointer',
+          dataLabels: {
+            enabled: true
+          },
+          showInLegend: true
+        }
+      },
+      series: [{
+        name: 'Brands',
+        colorByPoint: true,
+        data
+      }]
+    };
   }
 
   /**

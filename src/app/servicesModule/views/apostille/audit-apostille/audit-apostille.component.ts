@@ -119,6 +119,16 @@ export class AuditApostilleComponent implements OnInit {
           if (this.verify(myReader.result, findHash)) {
             let arrayExtention = arrayName[1].split('.');
             let originalName = '';
+            let method = '';
+            const apostillePrivatePrefix = 'fe4e545983';
+            const apostillePublicPrefix = 'fe4e545903';
+            const prefixHash = findHash.message.payload.split('"').join('').substr(0,10);
+
+            if (prefixHash === apostillePublicPrefix) {
+              method = 'PUBLIC';
+            } else if (prefixHash === apostillePrivatePrefix) {
+              method = 'PRIVATE';              
+            }
 
             if (arrayExtention.length > 1) {
               originalName = `${arrayName[0]}.${arrayExtention[arrayExtention.length - 1]}`;
@@ -131,7 +141,7 @@ export class AuditApostilleComponent implements OnInit {
               fileHash: findHash.message.payload.split('"').join(''),
               result: 'Document apostille',
               hash: findHash.transactionInfo.hash,
-              method: 'Public',
+              method: method,
               fee: this.transactionService.amountFormatterSimple(findHash.maxFee.compact()),
               height: findHash.transactionInfo.height.compact(),
               type: findHash.type,
