@@ -8,18 +8,18 @@
           <div class="col-8 d-flex justify-content-center flex-column mx-auto mb-1rem mt-1rem box-grey">
             <div class="row">
               <div class="col-12 d-flex justify-content-center mx-auto mb-1rem mt-1rem">
-                <!-- <label class="d-flex justify-content-center mx-auto box-drop" for="fileInput">
+                <label class="d-flex justify-content-center mx-auto box-drop" for="fileInput">
                   <div class="row txt-a-center p-05rem">
                     <img class="mr-1rem h2em" src="assets/images/img/icon-upload-gray-28h-proximax-sirius-wallet.svg" width="25">
                     <span class="fs-1-2em color-grey fw-600">UPLOAD FILE</span>
                   </div>
-                </label> -->
+                </label>
 
-                <button (click)="openInput()" mdbBtn type="submit" rounded="true" mdbWavesEffect
+                <!-- <button (click)="openInput()" mdbBtn type="submit" rounded="true" mdbWavesEffect
                   class="background-btn-inverse pl-2rem pr-2rem" size="md">
                   <img class="mr-1rem h2em" src="assets/images/img/icon-upload-gray-28h-proximax-sirius-wallet.svg" width="25">
                   <span class="fs-1-2em text-cl-m fw-700">UPLOAD FILE</span>
-                </button>
+                </button> -->
 
                 <input id="fileInput" [hidden]="true" type="file" (change)="fileChange($event.target.files,$event)">
               </div>
