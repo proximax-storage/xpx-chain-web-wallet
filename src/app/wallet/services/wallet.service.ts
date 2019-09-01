@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { SimpleWallet, PublicAccount, AccountInfo, MultisigAccountInfo } from 'tsjs-xpx-chain-sdk';
 import { crypto } from 'js-xpx-chain-library';
 import { AbstractControl } from '@angular/forms';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, timer } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
 import { SharedService } from '../../shared/services/shared.service';
@@ -14,6 +14,7 @@ import { ProximaxProvider } from '../../shared/services/proximax.provider';
 })
 export class WalletService {
   canVote = true;
+  subscribeLogged = undefined;
   accountWalletCreated: {
     data: any;
     dataAccount: AccountsInterface;
@@ -519,6 +520,20 @@ export class WalletService {
   setAccountInfo(accountInfo: AccountInfo) {
     // this.accountInfo = accountInfo
     // this.accountInfoSubject.next(accountInfo);
+  }
+
+  countTimeVote() {
+    this.canVote = false;
+    let t = timer(1, 1000);
+    this.subscribeLogged = t.subscribe(t => {
+      console.log(t)
+      if (t >= 20) {
+        this.canVote = true;
+        this.subscribeLogged.unsubscribe();
+      }else{
+        this.canVote = false;
+      }
+    });
   }
 
 }

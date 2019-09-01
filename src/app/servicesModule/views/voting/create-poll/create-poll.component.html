@@ -31,9 +31,9 @@
                                 <span>Input invalid</span>
                             </mdb-error>
                         </div>
-                        <!-- POLL -->
+                        <!-- IS PRIVATE -->
                         <div class="md-form">
-                            <mdb-checkbox formControlName="poll" [inline]="true">Send to public poll index</mdb-checkbox>
+                            <mdb-checkbox formControlName="isPrivate" [inline]="true">Send to private poll index</mdb-checkbox>
                         </div>
                         <!-- DESCRIPTION -->
                         <div class="md-form">
@@ -47,8 +47,8 @@
                         <!-- DATE END  -->
                         <div class="md-form">
                             <input formControlName="PollEndDate" required mdbInputDirective mdbValidate type="text" [owlDateTimeTrigger]="dt" [owlDateTime]="dt"
-                                [min]="minDate" class="form-control form-control-sm input-border" placeholder="End date" (dateTimeChange)="confirmSelectedChangEnd($event)">
-                            <owl-date-time #dt></owl-date-time>
+                                [min]="minDate" [dateTime]="invalidMoment" class="form-control form-control-sm input-border" placeholder="End date">
+                                <owl-date-time [pickerMode]="'dialog'" #dt></owl-date-time>
                             <mdb-error *ngIf="validateformDateEnd">
                                 <span>{{ errorDateEnd }}</span>
                             </mdb-error>
@@ -87,6 +87,10 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- IS multiple -->
+                        <div class="md-form">
+                                <mdb-checkbox formControlName="isMultiple" [inline]="true">Allow multiple response</mdb-checkbox>
+                            </div>
                         <!-- LIST OPTIONS -->
                         <div class="md-form" *ngIf='option.length > 0'>
                             <div class="col-12 align-items-center box-grey ">
@@ -134,7 +138,7 @@
                     </div>
                     <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
                         <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" [disabled]="option.length == 0"
-                            (click)="stepper.next()">
+                            (click)="stepper.next(); get2()">
                             <span class="fs-1-2em color-white">NEXT</span>
                         </button>
                     </div>
@@ -181,7 +185,7 @@
                         </div>
                         <!-- ACCOUNTS -->
                         <div class="md-form" *ngIf='showList'>
-                            <input formControlName="address" required mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
+                            <input formControlName="address" mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
                                 id="address" class="form-control form-control-sm input-border" placeholder="Account Address">
                             <mdb-error *ngIf="validateInput('address','3', '').invalid && (validateInput('address','3', '').dirty || validateInput('address','3', '').touched)">
                                 <span>Input invalid</span>
@@ -219,8 +223,8 @@
                         </button>
                     </div>
                     <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-                        <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" [disabled]="listaBlanca.length == 0"
-                            (click)="stepper.next()">
+                        <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+                            (click)="stepper.next(); get3()">
                             <span class="fs-1-2em color-white">NEXT</span>
                         </button>
                     </div>
@@ -306,7 +310,7 @@
                         </button>
                     </div>
                     <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-                        <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" (click)="onSubmit()">
+                        <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" (click)="sendPoll()">
                             <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true" *ngIf="blockButton"></span>
                             <span class="fs-1-2em color-white">CREATE</span>
                         </button>
@@ -335,7 +339,7 @@
                     <div class="row">
                         <ng-container *ngFor="let el of option">
                             <div class="col-4">
-                                <span class="font-small"> {{el.name}} </span>
+                                <span class="font-small mx-auto"> {{el.name}} </span>
                             </div>
                         </ng-container>
                     </div>

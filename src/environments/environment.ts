@@ -25,7 +25,7 @@ export const environment = {
   blockchainConnection: {
     host: 'bctestnet1-cow.xpxsirius.io',
     port: 443,
-    protocol: 'http',
+    protocol: 'https',
     useSecureMessage: false
   },
   storageConnection: {
