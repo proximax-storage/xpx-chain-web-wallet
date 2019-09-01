@@ -90,7 +90,8 @@ export class CreatePollComponent implements OnInit {
 
     this.secondFormGroup = new FormGroup({
       isMultiple: new FormControl(false, [Validators.required]),
-      option: new FormControl('')
+      option: new FormControl(''),
+      options: new FormControl('', [Validators.required])
     });
 
     this.thirdFormGroup = new FormGroup({
@@ -130,6 +131,11 @@ export class CreatePollComponent implements OnInit {
 
   deleteOptions(item) {
     this.option = this.option.filter(option => option != item);
+    if(this.option.length === 0){
+      this.secondFormGroup.patchValue({
+        options: ''
+      })
+    }
   }
 
   deleteAccaunt(item) {
@@ -156,6 +162,19 @@ export class CreatePollComponent implements OnInit {
       this.secondFormGroup.patchValue({
         option: ''
       })
+    }
+  }
+
+  generateOptios(nameParam: string) {
+    const existe = this.option.find(option => option.name === nameParam);
+    if (existe === undefined) {
+      let publicAccountGenerate: PublicAccount = Account.generateNewAccount(this.walletService.currentAccount.network).publicAccount;
+      this.option.push({ name: nameParam, publicAccount: publicAccountGenerate })
+      this.secondFormGroup.patchValue({
+        options: this.option
+      })
+    } else {
+      this.sharedService.showError('', 'option exists');
     }
   }
 
@@ -192,16 +211,6 @@ export class CreatePollComponent implements OnInit {
     this.thirdFormGroup.patchValue({
       address: ''
     })
-  }
-
-  generateOptios(nameParam: string) {
-    const existe = this.option.find(option => option.name === nameParam);
-    if (existe === undefined) {
-      let publicAccountGenerate: PublicAccount = Account.generateNewAccount(this.walletService.currentAccount.network).publicAccount;
-      this.option.push({ name: nameParam, publicAccount: publicAccountGenerate })
-    } else {
-      this.sharedService.showError('', 'option exists');
-    }
   }
 
   sendPoll() {
