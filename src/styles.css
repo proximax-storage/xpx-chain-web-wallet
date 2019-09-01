@@ -1380,7 +1380,11 @@ button.md-toast-close-button {
 }
 
 .audit-background {
-  background: -webkit-linear-gradient(right bottom, #b44703, #f89354 50%);
+  background: -webkit-linear-gradient(bottom, #b44703, #f89354);
+}
+
+.audit-background-err {
+  background: -webkit-linear-gradient(bottom, #9e0000, #f38b8b);
 }
 
 .audit-medal {
@@ -1395,9 +1399,7 @@ button.md-toast-close-button {
   font-weight: bold;
   font-size: 14px;
   margin: 0px 0px 2px 0px;
-  word-break: ;
-  word-break: keep-all;
-  overflow: hidden;
+  word-break: break-all;
 }
 
 .audit-subtitle {
@@ -1611,9 +1613,12 @@ body.modal-open {
   box-shadow: 0 0px 0px 0 rgba(0, 0, 0, 0), 0 0px 0px 0 rgba(0, 0, 0, 0) !important;
 }
 
-.link {
+.transparent {
+  background-color: transparent;
+  border: none;
   color: #306EB5 !important;
   font-weight: bold;
+  outline-color: #F4F4F4 !important;
 }
 
 

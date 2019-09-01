@@ -57,7 +57,6 @@ export class PollsComponent implements OnInit {
   }
 
   routerRouterLink(link: string) {
-    console.log(this.walletService.canVote)
     // Create Book logic
     if (this.walletService.canVote) {
       this.router.navigate([link]);
@@ -86,7 +85,6 @@ export class PollsComponent implements OnInit {
         resultData.sort((date1, date2) => {
           return date2.createdDate.getTime() - date1.createdDate.getTime();
         });
-        console.log(resultData)
         this.showBarProgress = true;
         this.resultLength = resultData.length;
         this.cantPolls = data.size;

@@ -4,13 +4,14 @@ import { ActivatedRoute } from '@angular/router';
 import { AppConfig } from 'src/app/config/app.config';
 import { WalletService } from 'src/app/wallet/services/wallet.service';
 import { SharedService, ConfigurationForm } from 'src/app/shared/services/shared.service';
-import { PublicAccount, Address, InnerTransaction, UInt64, Account, AggregateTransaction, Deadline, TransactionHttp, SignedTransaction } from 'tsjs-xpx-chain-sdk';
+import { PublicAccount, Address, InnerTransaction, UInt64, Account, AggregateTransaction, Deadline, TransactionHttp, SignedTransaction, Transaction } from 'tsjs-xpx-chain-sdk';
 import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { environment } from 'src/environments/environment';
 import { NodeService } from 'src/app/servicesModule/services/node.service';
 import { Subscription } from 'rxjs';
 import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
+import * as qrcode from 'qrcode-generator';
 
 @Component({
   selector: 'app-vote-in-poll',
@@ -41,6 +42,9 @@ export class VoteInPollComponent implements OnInit {
   incrementOptionV = 0;
   hashCertificate: string;
   namePoll: string;
+  isMultipe: boolean;
+  qrImg: string;
+  transaction: Transaction;
 
 
   constructor(
@@ -56,6 +60,7 @@ export class VoteInPollComponent implements OnInit {
   ) {
     this.transactionHttp = new TransactionHttp(environment.protocol + "://" + `${this.nodeService.getNodeSelected()}`);
     this.configurationForm = this.sharedService.configurationForm;
+    this.isMultipe = false;
     this.searching = false;
     this.viewOptions = false;
     this.btnBlock = false;
@@ -63,7 +68,7 @@ export class VoteInPollComponent implements OnInit {
     this.blockSend = false;
     this.createForm()
     this.getPoll(this.activateRoute.snapshot.paramMap.get('id'));
-    this.verifyVote();
+
 
   }
 
@@ -114,6 +119,15 @@ export class VoteInPollComponent implements OnInit {
     }
     return validation;
   }
+
+
+  /**
+   * Add and remove poll options
+   *
+   * @param {any} event
+   * @param {any} field
+   * @memberof VoteInPollComponent
+   */
   checkOptionPoll(event: any, field: any) {
     const optionPoll = this.optionsSelected.find(element => element.field === field);
     if (optionPoll === undefined) {
@@ -122,8 +136,25 @@ export class VoteInPollComponent implements OnInit {
       this.optionsSelected = this.optionsSelected.filter(e => e.field !== field)
     }
   }
+
+
+  /**
+  * Add and remove poll options
+  *
+  * @param {any} event
+  * @param {any} field
+  * @memberof PollsComponent
+  */
+  radioOptionPoll(event: any, field: any) {
+    this.optionsSelected = [];
+    this.optionsSelected.push({ field: field });
+  }
   getPoll(id) {
     this.pollSelected = this.createPollStorageService.filterPoll(id);
+    console.log('pollSelected', this.pollSelected)
+
+    this.isMultipe = this.pollSelected.isMultiple
+    this.verifyVote();
     this.getResult(this.pollSelected);
   }
 
@@ -172,7 +203,7 @@ export class VoteInPollComponent implements OnInit {
         this.sharedService.showError('', ` Option ${this.pollSelected.options[this.incrementOption].name} does not have a valid public key`);
       }
     } else {
-      console.log('this.pollResultVoting', this.pollResultVoting)
+      // console.log('this.pollResultVoting', this.pollResultVoting)
     }
   }
 
@@ -184,80 +215,91 @@ export class VoteInPollComponent implements OnInit {
    */
   verifyVote() {
     this.btnResult = true;
-    if (this.statusPoll(this.pollSelected.endDate, this.pollSelected.startDate) === 'Ongoing') {
-      if (this.validateWitheList(this.pollSelected.witheList, this.pollSelected.type)) {
-        if (this.walletService.canVote) {
-          if (this.incrementOption < this.pollSelected.options.length) {
-            if (
-              this.pollSelected.options[this.incrementOption].publicAccount.publicKey !== undefined &&
-              this.isPublicKey(this.pollSelected.options[this.incrementOption].publicAccount.publicKey).STATUS
-            ) {
-              this.searching = true;
-              const publicAccountOfSelectedOption = PublicAccount.createFromPublicKey(this.pollSelected.options[this.incrementOption].publicAccount.publicKey, this.walletService.currentAccount.network)
-              //Obtiene todas las transacciones del PollOption
-              this.proximaxProvider.getTransactionsFromAccount(publicAccountOfSelectedOption).subscribe(
-                next => {
+    // if (this.statusPoll(this.pollSelected.endDate, this.pollSelected.startDate) === 'Ongoing') {
+    if (this.validateWitheList(this.pollSelected.witheList, this.pollSelected.type)) {
+      if (this.walletService.canVote) {
+        if (this.incrementOption < this.pollSelected.options.length) {
+          if (
+            this.pollSelected.options[this.incrementOption].publicAccount.publicKey !== undefined &&
+            this.isPublicKey(this.pollSelected.options[this.incrementOption].publicAccount.publicKey).STATUS
+          ) {
+            this.searching = true;
+            const publicAccountOfSelectedOption = PublicAccount.createFromPublicKey(this.pollSelected.options[this.incrementOption].publicAccount.publicKey, this.walletService.currentAccount.network)
+            //Obtiene todas las transacciones del PollOption
+            this.transaction = undefined;
+            this.proximaxProvider.getTransactionsFromAccount(publicAccountOfSelectedOption).subscribe(
+              next => {
 
-                  console.log('next', next)
-                  //La cuenta del PollOption tiene transacciones
-                  if (next.length > 0) {
-                    for (var index = 0; index < next.length; index++) {
-                      const transaction = next[index];
-                      if (this.walletService.currentAccount.publicAccount.publicKey === transaction.signer.publicKey) {
-                        console.log('transaction', transaction)
-                        this.memberVoted = true;
-                        this.sharedService.showWarning('', `Sorry, you already voted in this poll`);
-                        this.searching = false;
-                        this.btnResult = false;
-                        this.viewCertificate(transaction.transactionInfo.hash, this.pollSelected.name)
-                        break;
-                      }
+                //  console.log('next', next)
+                //La cuenta del PollOption tiene transacciones
+                if (next.length > 0) {
+                  for (var index = 0; index < next.length; index++) {
+                    const transactionnext = next[index];
+                    if (this.walletService.currentAccount.publicAccount.publicKey === transactionnext.signer.publicKey) {
+                      console.log('transaction', transactionnext)
+
+                      this.transaction = transactionnext;
+                      this.memberVoted = true;
+                      this.sharedService.showWarning('', `Sorry, you already voted in this poll`);
+                      this.searching = false;
+                      this.btnResult = false;
+                      this.viewCertificate(this.transaction.transactionInfo.hash, this.pollSelected.name, 'memberVoted', this.transaction)
+                      break;
                     }
                   }
+                }
 
-                  if (!this.memberVoted) {
-                    this.incrementOption++;
-                    this.verifyVote();
-                  }
-                }, dataError => {
-                  if (dataError && dataError.error.message) {
-                    this.sharedService.showError('', dataError.error.message);
-                  } else if (dataError && dataError.message) {
-                    this.sharedService.showError('', dataError.message);
-                  } else {
-                    this.sharedService.showError('', `Sorry, an error has occurred with the connection`);
-                  }
-                  this.searching = false;
-                });
+                if (!this.memberVoted) {
+                  this.incrementOption++;
+                  this.verifyVote();
+                }
+              }, dataError => {
+                if (dataError && dataError.error.message) {
+                  this.sharedService.showError('', dataError.error.message);
+                } else if (dataError && dataError.message) {
+                  this.sharedService.showError('', dataError.message);
+                } else {
+                  this.sharedService.showError('', `Sorry, an error has occurred with the connection`);
+                }
+                this.searching = false;
+              });
 
-            } else {
-              this.searching = false;
-              this.sharedService.showError('', ` Option ${this.pollSelected.options[this.incrementOption].name} does not have a valid public key`);
-            }
           } else {
+            this.searching = false;
+            this.sharedService.showError('', ` Option ${this.pollSelected.options[this.incrementOption].name} does not have a valid public key`);
+          }
+        } else {
+
+          if (this.statusPoll(this.pollSelected.endDate, this.pollSelected.startDate) === 'Ongoing') {
             this.searching = false;
             this.viewOptions = true;
             this.statusValidate = 'voting'
             this.btnResult = true;
             this.votingInPoll.enable();
-          }
-        } else {
-          this.sharedService.showInfo('', `We are validating your vote, please wait a few seconds`);
-        }
+          } else if (this.statusPoll(this.pollSelected.endDate, this.pollSelected.startDate) === 'Ended') {
+            this.searching = false;
+            this.sharedService.showInfo('', `Finished poll`);
+            this.viewCertificate('', this.pollSelected.name, 'Ended', this.transaction)
 
+          }
+        }
       } else {
-        this.votingInPoll.disable()
-        this.statusValidate = 'noWitheList'
+        this.sharedService.showInfo('', `We are validating your vote, please wait a few seconds`);
       }
-    } else if (this.statusPoll(this.pollSelected.endDate, this.pollSelected.startDate) === 'Future') {
-      this.votingInPoll.disable()
-      this.sharedService.showInfo('', `To start poll}`);
+
     } else {
       this.votingInPoll.disable()
-      this.btnResult = false;
-      this.statusValidate = 'finishedPoll'
-      this.sharedService.showInfo('', `Finished poll`);
+      this.statusValidate = 'noWitheList'
     }
+    // } else if (this.statusPoll(this.pollSelected.endDate, this.pollSelected.startDate) === 'Future') {
+    //   this.votingInPoll.disable()
+    //   this.sharedService.showInfo('', `To start poll}`);
+    // } else {
+    //   this.votingInPoll.disable()
+    //   this.btnResult = false;
+    //   this.statusValidate = 'finishedPoll'
+    //   this.sharedService.showInfo('', `Finished poll`);
+    // }
     console.log("estado:", this.statusValidate)
   }
   /**
@@ -409,7 +451,7 @@ export class VoteInPollComponent implements OnInit {
             this.sharedService.showSuccess('', 'Transaction confirmed');
           } else if (statusTransaction['type'] === 'unconfirmed' && match) {
             this.blockSend = false;
-            this.viewCertificate(signedTransaction.hash, this.pollSelected.name)
+            this.viewCertificate(signedTransaction.hash, this.pollSelected.name, 'newVoting')
             this.walletService.countTimeVote();
             signedTransaction = null;
             this.sharedService.showInfo('', 'Transaction unconfirmed');
@@ -421,14 +463,44 @@ export class VoteInPollComponent implements OnInit {
       }
     );
   }
-  viewCertificate(hash: string, name: string) {
-    this.hashCertificate = hash;
-    this.namePoll = name;
-    this.statusValidate = 'viewCertificate'
+  viewCertificate(hash: string, name: string, path: string, transaction?: Transaction) {
     this.votingInPoll.disable();
     this.btnBlock = true;
     this.btnResult = false;
-    this.optionsSelected = []
+    this.optionsSelected = [];
+    if (path === 'memberVoted' || path === 'newVoting') {
+
+      this.hashCertificate = hash;
+      const url = `${environment.nodeExplorer}/${hash}`;
+      const qr = qrcode(0, 'H');
+      qr.addData(url);
+      qr.make();
+      this.qrImg = qr.createImgTag();
+      this.namePoll = name;
+      this.statusValidate = 'viewCertificate'
+
+
+
+    }
+
+    if (path == 'Ended') {
+      if (transaction) {
+
+        this.hashCertificate = hash;
+        const url = `${environment.nodeExplorer}/${hash}`;
+        const qr = qrcode(0, 'H');
+        qr.addData(url);
+        qr.make();
+        this.qrImg = qr.createImgTag();
+        this.namePoll = name;
+        this.statusValidate = 'viewCertificate'
+
+      } else {
+        this.statusValidate = 'finishedPoll'
+
+      }
+
+    }
 
 
   }
