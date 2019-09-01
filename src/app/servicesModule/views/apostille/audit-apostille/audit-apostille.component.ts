@@ -37,7 +37,7 @@ export class AuditApostilleComponent implements OnInit {
   currentView: boolean = true;
   modalInfo: TransactionsInterface = null;
 
-  @ViewChild('modalAudit', { static: true }) modalAudit: ModalDirective;
+  @ViewChild('basicModal', { static: true }) modalAudit: ModalDirective;
 
   constructor(
     private proximaxProvider: ProximaxProvider,
