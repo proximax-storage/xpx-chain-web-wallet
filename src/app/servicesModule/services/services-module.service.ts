@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Address, NamespaceId, PublicAccount } from 'tsjs-xpx-chain-sdk';
 import { WalletService } from '../../wallet/services/wallet.service';
 import { environment } from 'src/environments/environment';
+import { TransactionsInterface } from '../../transactions/services/transactions.service';
 
 @Injectable({
   providedIn: 'root'
@@ -199,11 +200,7 @@ export interface ResultAuditInterface {
   fileHash: string,
   result: string,
   hash: string,
+  date?: string,
   method?: string,
-  fee?: string,
-  height?: number,
-  type?: number,
-  signer?: PublicAccount,
-  recipient?: Address,
-  signature?: string,
+  transaction?: TransactionsInterface
 }

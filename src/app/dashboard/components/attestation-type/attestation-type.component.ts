@@ -8,7 +8,7 @@ import { TransactionsInterface, TransactionsService } from '../../../transaction
 })
 export class AttestationTypeComponent implements OnInit {
 
-  @Input() attestationInfo: TransactionsInterface;
+  @Input() transactionInfo: TransactionsInterface;
   searching = true;
   typeTransactionHex: string;
 
@@ -17,12 +17,12 @@ export class AttestationTypeComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    console.log(this.attestationInfo);
+    console.log('MODAL INFO', this.transactionInfo);
   }
 
   // ngOnChanges(changes: SimpleChanges): void {
   //   this.searching = true;
-  //   this.typeTransactionHex = `${this.attestationInfo.data['type'].toString(16).toUpperCase()}`;
+  //   this.typeTransactionHex = `${this.transactionInfo.data['type'].toString(16).toUpperCase()}`;
   //   // console.log(this.transferTransaction);
   // }
 
