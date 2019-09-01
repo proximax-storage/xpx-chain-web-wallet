@@ -20,7 +20,7 @@
     width: 200px;
     }
 
-    table {
+     .certificate {
         border: 17px solid #ddd;
     }
     th, td {
@@ -28,6 +28,19 @@
         padding: 8px;
       }
 
+
+      table.result td, table.result th {
+
+        padding-top: 0.3rem;
+        padding-bottom: 0.3rem;
+    
+    }
+
+    .result{
+        overflow:scroll;
+        height:50px;
+        /* width:500px; */
+   }
 
   /* table {
     border-collapse: collapse;
