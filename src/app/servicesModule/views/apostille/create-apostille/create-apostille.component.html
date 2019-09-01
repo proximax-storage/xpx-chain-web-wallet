@@ -1,67 +1,178 @@
 <div class="container mt-3rem mb-2rem animated fadeIn">
   <app-header [params]="paramsHeader"></app-header>
-  <div class="row">
-    <div class="col-11  mb-2rem mx-auto">
-      <form [formGroup]="apostilleCreateForm" (ngSubmit)="createApostille()">
+  <ng-container *ngIf="!processComplete; else processCompleteTemplate">
+    <div class="row">
+      <div class="col-11 col-md-9 col-xl-8 mb-2rem mx-auto">
+        <!-- UPLOAD APOSTILLE -->
         <mdb-stepper #stepper [linear]="true">
-          <mdb-step name="File(s) to process" [stepForm]="firstFormGroup" class="step1">
-            <!-- UPLOAD FILE -->
-            <div class="row">
-              <div class="col-12 box-grey" (click)="openInput()" mdbBtn mdbWavesEffect>
-                <div class="row">
-                  <div class="col-10 mx-auto txt-a-center upload-file background-white">
-                    <img class="mr-1rem h2em" src="assets/images/img/icon-upload-gray-28h-proximax-sirius-wallet.svg"
-                      width="25">
-                    <span class="fs-1-2em fw-700 color-gray-strong">Upload files</span>
-                  </div>
+          <mdb-step name="File(s) to process" [stepForm]="apostilleFormOne" class="step1" [completed]="false">
+            <form [formGroup]="apostilleFormOne">
+              <!-- UPLOAD FILE -->
+              <div class="row">
+                <div class="col-12 box-grey" (click)="openInput()" mdbBtn mdbWavesEffect>
+                  <div class="row">
+                    <div class="col-10 mx-auto txt-a-center upload-file box-drop">
+                      <img class="mr-1rem h2em" src="assets/images/img/icon-upload-gray-28h-proximax-sirius-wallet.svg"
+                        width="25">
+                      <span class="fs-1-2em fw-700 color-gray-strong">Upload files</span>
+                    </div>
 
-                  <div class="col-10 d-flex justify-content-start mx-auto">
-                    <span class="color-dark-green fw-600 fs-07rem t-a-c">
-                      {{nameFile}}
-                      <ng-container *ngIf="fileInputIsValidated">
-                        &nbsp; <i class="fa fa-times-circle cursor-p" aria-hidden="true" (click)="fileReader([])"></i>
-                      </ng-container>
-                    </span>
+                    <div class="col-10 d-flex justify-content-start mx-auto">
+                      <span class="color-dark-green fw-600 fs-07rem">
+                        {{nameFile}}
+                        <ng-container *ngIf="fileInputIsValidated">
+                          &nbsp; <i class="fa fa-times-circle cursor-p" aria-hidden="true" (click)="fileReader([])"></i>
+                        </ng-container>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <input id="fileInput" [hidden]="true" type="file" (change)="fileReader($event.target.files)"
+                  formControlName="file">
+              </div>
+
+              <!-- BUTTONS -->
+              <div class="row">
+                <div class="col-10 mx-auto">
+                  <div class="row">
+                    <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
+                      <button mdbBtn (click)="fileReader([])" rounded="true" mdbWavesEffect
+                        class="f-w-600 background-btn pl-2rem pr-2rem" size="sm">
+                        <span class="fs-1-2em color-white">CLEAR</span>
+                      </button>
+                    </div>
+
+                    <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
+                      <button [disabled]="apostilleFormOne.get('file').invalid" mdbBtn (click)="stepper.next()"
+                        rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="sm">
+                        <span class="fs-1-2em color-white">NEXT</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </mdb-step>
+          <mdb-step name="Attestation" [stepForm]="apostilleFormTwo" class="step2" [completed]="false">
+            <form [formGroup]="apostilleFormTwo" (ngSubmit)="createApostille()">
+
+              <!-- TAGS -->
+              <div class="row">
+                <div class="col-12">
+                  <div class="md-form form-sm mt-0 mb-0rem">
+                    <input [maxlength]="configurationForm.tags.maxLength" [minlength]="configurationForm.tags.minLength"
+                      type="text" autocomplete="off" formControlName="tags" required id="tags" mdbInputDirective
+                      mdbValidate [validateSuccess]="true" [validateError]="true"
+                      class="form-control form-control-sm input-border" placeholder="+Tags">
                   </div>
                 </div>
               </div>
 
-              <input id="fileInput" [hidden]="true" type="file" (change)="fileReader($event.target.files)"
-                formControlName="file">
-            </div>
+              <!-- TYPE ENCRIPTED -->
+              <div class="row mt-2rem">
+                <div class="col-12">
+                  <ng-select mdbInputDirective mdbValidate formControlName="typeEncrypted" class="selectWrapper"
+                    [items]="typeEncrypted" bindLabel="label" bindValue="value" placeholder="Select type encrypted">
+                  </ng-select>
+                </div>
+              </div>
 
-            <!-- BUTTONS -->
-            <div class="row">
-              <div class="col-10 mx-auto">
-                <div class="row">
-                  <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-                    <button mdbBtn (click)="fileReader([])" rounded="true" mdbWavesEffect
-                      class="f-w-600 background-btn pl-2rem pr-2rem" size="sm">
-                      <span class="fs-1-2em color-white">CLEAR</span>
-                    </button>
-                  </div>
+              <!-- PRIVATE & PUBLIC -->
+              <div class="row mt-1rem">
+                <div class="col-12 box-grey d-flex justify-content-center">
+                  <div class="row">
+                    <div class="col-6 fw-600 d-flex justify-content-start">
+                      <div class="form-check form-check-inline">
+                        <input formControlName="typePrivatePublic" checked [value]="true" type="radio"
+                          class="form-check-input" id="public" name="typePrivatePublic" mdbInput>
+                        <label class="form-check-label" for="public">Public</label>
+                      </div>
+                    </div>
 
-                  <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-                    <button [disabled]="apostilleCreateForm.get('file').invalid" mdbBtn (click)="stepper.next()"
-                      rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="sm">
-                      <span class="fs-1-2em color-white">NEXT</span>
-                    </button>
+                    <div class="col-6 fw-600 d-flex justify-content-end">
+                      <div class="form-check form-check-inline">
+                        <input formControlName="typePrivatePublic" [value]="false" type="radio" class="form-check-input"
+                          id="private" name="typePrivatePublic" mdbInput>
+                        <label class="form-check-label" for="private">Private</label>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </mdb-step>
-          <mdb-step name="Step 2" [stepForm]="secondFormGroup" class="step2">
-            CUALQUIER COSA 2
-            <button mdbBtn size="sm" color="primary" (click)="stepper.next()">CONTINUE</button>
-            <button mdbBtn size="sm" color="secondary" (click)="stepper.previous()">BACK</button>
-          </mdb-step>
-          <mdb-step name="Step 3" class="step3">
-            <p class="pl-2">Finish!</p>
-            CUALQUIER COSA 3
+
+              <!-- TYPE ENCRIPTED -->
+              <div class="row mt-1rem">
+                <div class="col-12">
+                  <div class="md-form form-sm">
+                    <input [maxlength]="configurationForm.passwordWallet.maxLength"
+                      [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" required
+                      mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password"
+                      id="password" class="form-control form-control-sm input-border" placeholder="Enter password">
+                  </div>
+                </div>
+              </div>
+
+              <!-- BUTTONS -->
+              <div class="row mt-1rem">
+                <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
+                  <button mdbBtn type="button" rounded="true" mdbWavesEffect
+                    class="f-w-600 background-btn pl-2rem pr-2rem" size="md" (click)="clearForm(2)">
+                    <span class="fs-1-2em color-white">CLEAR</span>
+                  </button>
+                </div>
+
+                <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
+                  <button [disabled]="apostilleFormTwo.invalid" mdbBtn type="submit" rounded="true" mdbWavesEffect
+                    class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
+                    <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
+                      *ngIf="blockButton"></span>
+                    <span class="fs-1-2em color-white">CREATE</span>
+                  </button>
+                </div>
+              </div>
+            </form>
           </mdb-step>
         </mdb-stepper>
-      </form>
+      </div>
     </div>
-  </div>
+  </ng-container>
+
+  <!-- CERTIFIED -->
+  <ng-template #processCompleteTemplate>
+    <div class="row">
+      <div class="col-12 txt-a-center">
+        <span class="color-blue-intermedio fw-600">Done!</span> <br>
+        <span>Your attestation are in process</span>
+      </div>
+
+      <div class="col-11 mx-auto mt-1rem box-grey br-0">
+        <div class="row mr-ml">
+          <div class="col-12 background-white">
+            <div class="row">
+              <div class="col-4">
+                <img [src]="base64ImageString" />
+              </div>
+              <div class="col-8">
+                <span>File hash</span> <br>
+                <span class="fs-07rem w-b-w">{{ntyData.fileHash}}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BUTTONS -->
+      <div class="col-10 mx-auto">
+        <div class="row">
+          <div class="col-12 col-sm-6 d-flex justify-content-center mx-auto">
+            <button mdbBtn (click)="processComplete = false" rounded="true" mdbWavesEffect
+              class="f-w-600 background-btn pl-2rem pr-2rem" size="sm">
+              <span class="fs-1-2em color-white">CONTINUE</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
 </div>

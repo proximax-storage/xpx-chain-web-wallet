@@ -121,6 +121,17 @@ export class ProximaxProvider {
   /**
    *
    *
+   * @param {Array} transactionId
+   * @returns {*}
+   * @memberof ProximaxProvider
+   */
+  getTransactions(transactionsId: Array<string>): any { //Observable<Transaction> {
+    return this.transactionHttp.getTransactions(transactionsId);
+  }
+
+  /**
+   *
+   *
    * @param {SignedTransaction} signedTransaction
    * @returns {Observable<TransactionAnnounceResponse>}
    * @memberof ProximaxProvider

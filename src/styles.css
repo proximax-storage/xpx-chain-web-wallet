@@ -32,6 +32,10 @@ body {
   margin: 0 !important;
 }
 
+.m-02rem {
+  margin: .2rem !important;
+}
+
 .mt-0 {
   margin-top: 0;
 }
@@ -238,6 +242,10 @@ body {
   padding: 0 !important;
 }
 
+.p-02rem {
+  padding: .2rem !important;
+}
+
 .p-05rem {
   padding: .5rem !important;
 }
@@ -358,6 +366,10 @@ body {
 
 .bord-rad-25px {
   border-radius: 25px !important;
+}
+
+.br-0 {
+  border-radius: 0 !important;
 }
 
 
@@ -1266,6 +1278,9 @@ button.md-toast-close-button {
 }
 
 /************************* FIN NG SELECT *******************/
+.w-b-w {
+  word-wrap: break-word
+}
 
 .w-b-a {
   word-break: break-all;
@@ -1316,10 +1331,10 @@ button.md-toast-close-button {
 .box-drop {
   border-radius: 1rem;
   background: white;
-  padding: 10px 20px;
+  padding: 2rem;
   margin: 10px;
   color: black;
-  border: 2px dotted #316eb5
+  border: 2px dotted #316eb5 !important;
 }
 
 .box-transparent-border-orange {
@@ -1349,6 +1364,49 @@ button.md-toast-close-button {
 .dropdown-default .dropdown-content li span:hover,
 .dropdown-default .dropdown-content li.active {
   background-color: #2ba1b9 !important;
+}
+
+/*************AUDIT CARD*****************/
+
+.audit-back {
+  background: white;
+  padding: 5px;
+}
+
+.audit-front {
+  background: white;
+  border: 5px solid #f4f4f4;
+  width: 100%;
+}
+
+.audit-background {
+  background: -webkit-linear-gradient(right bottom, #b44703, #f89354 50%);
+}
+
+.audit-medal {
+  padding: 10px;
+  position: relative;
+  top: 0;
+  right: 0;
+  height: 100%
+}
+
+.audit-title {
+  font-weight: bold;
+  font-size: 18px;
+  margin: 0px 0px 2px 0px;
+}
+
+.audit-subtitle {
+  font-weight: bold;
+  font-size: 13px;
+  margin: 0px 0px 2px 0px;
+}
+
+.audit-value {
+  font-size: 13px;
+  word-break: break-all;
+  margin: 0px 0px 2px 0px;
 }
 
 /*************FOR SELECT*****************/
@@ -1556,4 +1614,14 @@ body.modal-open {
   color: #306EB5 !important;
   font-weight: bold;
   outline-color: #F4F4F4 !important;
+}
+
+
+.card-body ul.stepper.horizontal .step.wrong .step-title:before {
+  content: '\f071' !important;
+}
+
+ul.stepper.horizontal .step.done .step-title:before,
+.card-body ul.stepper.horizontal .step.done .step-title:before {
+  content: '\f058' !important;
 }
