@@ -6,6 +6,7 @@ import { FormBuilder, FormGroup, Validators, AbstractControl, FormControl, } fro
 import { ConfigurationForm, SharedService } from 'src/app/shared/services/shared.service';
 import { AppConfig } from 'src/app/config/app.config';
 import { CreatePollStorageService } from 'src/app/servicesModule/services/create-poll-storage.service';
+import { stringify } from '@angular/compiler/src/util';
 
 @Component({
   selector: 'app-create-poll',
@@ -44,15 +45,17 @@ export class CreatePollComponent implements OnInit {
     backToService: `/${AppConfig.routes.service}`
   };
 
-  voteType: any = [{
-    value: 0,
+  voteType: any = [
+    {
+      value: 0,
+      label: 'White list',
+      selected: false,
+    },
+    {
+    value: 1,
     label: 'Public',
     selected: true,
-  }, {
-    value: 1,
-    label: 'White list',
-    selected: false,
-  }];
+    }];
 
   constructor(
     private fb: FormBuilder,
@@ -86,7 +89,7 @@ export class CreatePollComponent implements OnInit {
     });
 
     this.thirdFormGroup = new FormGroup({
-      voteType: new FormControl(0),
+      voteType: new FormControl(1),
       address: new FormControl('')
     });
 
@@ -250,6 +253,8 @@ export class CreatePollComponent implements OnInit {
       createdDate: new Date(),
       quantityOption: this.option.length
     }
+    // console.log('this.Poll ', JSON.stringify(this.Poll)  )
+
     const nameFile = `voting-ProximaxSirius-${new Date()}`;
     const fileObject: FileInterface = {
       name: nameFile,
@@ -258,7 +263,7 @@ export class CreatePollComponent implements OnInit {
       extension: 'json',
     };
     const descripcion = 'poll';
-    console.log('this.Poll ', this.Poll)
+    
 
     await this.createPollStorageService.sendFileStorage(
       fileObject,
