@@ -199,7 +199,7 @@ export interface ResultAuditInterface {
   fileHash: string,
   result: string,
   hash: string,
-  private?: boolean,
+  method?: string,
   fee?: string,
   height?: number,
   type?: number,
