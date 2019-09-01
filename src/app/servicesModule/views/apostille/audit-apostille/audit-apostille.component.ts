@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { TransferTransaction, Message } from 'tsjs-xpx-chain-sdk';
+import { TransferTransaction } from 'tsjs-xpx-chain-sdk';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { NodeService } from '../../../services/node.service';
-import { SharedService } from '../../../../shared/services/shared.service';
 import { Verifier } from './audit-apistille-verifier';
 import { ResultAuditInterface, HeaderServicesInterface } from '../../../services/services-module.service';
 import { AppConfig } from '../../../../config/app.config';
@@ -25,24 +24,17 @@ export class AuditApostilleComponent implements OnInit {
 
   headElements = ['File name', 'Owner', 'Hash file', 'Result'];
   validatefileInput = false;
-  ourFile: any;
+  ourFile: File[] = [];
   nameFile: string;
   file: any;
   auditResults: ResultAuditInterface[] = [];
+  transactionsSearch = [];
   isProcessing = false;
   p = 1;
-
-
-  //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-  rawFileContent: any;
-  messa: Message;
-  initialFileName: any;
   url: any;
 
   constructor(
     private proximaxProvider: ProximaxProvider,
-    private sharedService: SharedService,
     private nodeService: NodeService
   ) {
     this.url = `https://${this.nodeService.getNodeSelected()}`;
@@ -67,137 +59,246 @@ export class AuditApostilleComponent implements OnInit {
    */
   fileChange(files: File[], $event) {
     if (files.length > 0) {
-      this.validatefileInput = true;
-      this.ourFile = files[0];
-      this.nameFile = this.ourFile.name;
-      const myReader: FileReader = new FileReader();
-      myReader.onloadend = (e) => {
-        this.file = myReader.result;
-        this.verifyFile();
-      };
-      myReader.readAsDataURL(this.ourFile);
+      for (const element of files) {
+        // this.validatefileInput = true;
+        let find = this.ourFile.filter(el => el.name === element.name && el.size === element.size && el.type === element.type);
+
+        if (find.length === 0) {
+          this.ourFile.push(element);
+        }
+      }
+      this.verifyFiles();
     }
   }
+
 
   /**
-   *
+   * Method to files verify
    */
-  verifyFile() {
-    this.isProcessing = true;
-    // Remove the meta part of $fileContent string (data:application/octet-stream;base64)
-    // let cleanedDataContent = this.file.split(/,(.+)?/)[1];
-    // Base 64 to word array
-    // let parsedData = crypto.enc.Base64.parse(cleanedDataContent);
-    if (!this.checkApostilleName()) {
-      this.auditResults.push({
-        filename: this.nameFile,
-        owner: '',
-        fileHash: '',
-        result: 'This file is not in apostille format',
-        hash: ''
-      });
-      // this.showResult(this.auditResults);
-      this.isProcessing = false;
-      return;
-    }
-    // Build an array out of the filename
-    const nameArray = this.nameFile.match(/\S+\s*/g);
-    // Recomposing the initial filename before apostille
-    const initialNameArray = nameArray.splice(0, nameArray.length - 7);
-    let initialFileName = "";
+  verifyFiles() {
+    const hasts = [];
 
-    for (let h = 0; h < initialNameArray.length; h++) {
-      initialFileName += initialNameArray[h];
-    }
-    // Initial filename
-    initialFileName = initialFileName.replace(/^\s+|\s+$/, '') + "." + this.nameFile.split('.').pop();
-    // Hash of the apostille transaction
-    const apostilleTxHash = nameArray[nameArray.length - 4].replace(/^\s+|\s+$/, '');
-    this.proximaxProvider.getTransaction(apostilleTxHash).subscribe((infTrans: TransferTransaction) => {
-      this.isProcessing = false;
-      console.log('\n\n\n\nValue of information transaction', infTrans, '\n\n\n\nEnd value\n\n');
-      const data = this.file
+    this.ourFile.forEach(el => {
+      let arrayName = el.name.split(' --Apostille TX ');
+      if (arrayName.length > 1) {
+        let arrayDate = arrayName[1].split(' --Date ');
+        this.transactionsSearch.push(el);
+        hasts.push(arrayDate[0]);
 
-      if (!this.verify(data, infTrans)) {
-        this.auditResults.push({
-          filename: this.nameFile,
-          owner: '',
-          fileHash: '',
-          result: 'Document not apostilled',
-          hash: ''
-        });
-        // this.showResult(this.auditResults);
-        // this.isProcessing = false;
-        return;
       } else {
-        let arrayName = this.nameFile.split(' --Apostille ');
-        let arrayextention = this.nameFile.split('.');
-        let originalName = '';
-
-        if (arrayextention.length > 1) {
-          originalName = `${arrayName[0]}.${arrayextention[arrayextention.length - 1]}`;
-        } else {
-          originalName = arrayName[0];
-        }
-
-        this.auditResults.push({
-          filename: originalName,
-          owner: this.proximaxProvider.createFromRawAddress(infTrans.recipient['address']).pretty(),
-          fileHash: infTrans.message.payload.split('"').join(''),
-          result: 'Document apostille',
-          hash: ''
-        });
-        return;
-      }
-    },
-      error => {
-        this.auditResults.push({
-          filename: this.nameFile,
+        this.addAuditResult({
+          filename: el.name,
           owner: '',
           fileHash: '',
           result: 'Document not apostilled',
           hash: ''
-        });
-        this.isProcessing = false;
-        // this.sharedService.showError('', 'Apostille not found');
+        })
       }
-    )
+    });
+
+    if (hasts.length > 0) {
+      this.proximaxProvider.getTransactions(hasts).subscribe(element => {
+        this.verifyHast(element);
+      });
+    }
   }
 
-  checkApostilleName() {
-    // Build an array out of the filename
-    const nameArray = this.nameFile.match(/\S+\s*/g);
-    console.log('nameArray:', nameArray)
-    if (nameArray[nameArray.length - 6] === undefined || nameArray[nameArray.length - 5].replace(/^\s+|\s+$/, '') !== 'TX') return false;
-    const mark = nameArray[nameArray.length - 6].replace(/^\s+|\s+$/, '');
+  verifyHast(transactions: TransferTransaction[]) {
+    this.transactionsSearch.forEach(element => {
+      const arrayName = element.name.split(' --Apostille TX ');
+      const arrayHash = arrayName[1].split(' --Date ');
+      console.log('\n\n\n\nValue of arrayHash', arrayHash, '\n\n\n\nEnd value\n\n');
+      const findHash = transactions.find(el => arrayHash[0].toUpperCase() === el.transactionInfo.hash);
 
-    console.log('mark:', mark)
-    if (mark === "--Apostille" || mark === "--ApostilleSigned") return true;
-    return false;
-  };
+      if (findHash !== undefined) {
+        console.log('\n\n\n\nValue of findHash', findHash, '\n\n\n\nEnd value\n\n');
+        const myReader: FileReader = new FileReader();
+        myReader.onloadend = (e) => {
+          console.log('\n\n\n\nValue of myReader', arrayName, '\n\n\n\nEnd value\n\n');
 
+          if (this.verify(myReader.result, findHash)) {
+            let arrayExtention = arrayName[1].split('.');
+            let originalName = '';
+
+            if (arrayExtention.length > 1) {
+              originalName = `${arrayName[0]}.${arrayExtention[arrayExtention.length - 1]}`;
+            } else {
+              originalName = arrayName[0];
+            }
+            this.addAuditResult({
+              filename: originalName,
+              owner: this.proximaxProvider.createFromRawAddress(findHash.recipient['address']).pretty(),
+              fileHash: findHash.message.payload.split('"').join(''),
+              result: 'Document apostille',
+              hash: findHash.transactionInfo.hash
+            }, findHash.transactionInfo.hash);
+          } else {
+            this.addAuditResult({
+              filename: element.name,
+              owner: '',
+              fileHash: '',
+              result: 'Modified document',
+              hash: ''
+            });
+          }
+        };
+        myReader.readAsDataURL(element);
+      } else {
+        this.addAuditResult({
+          filename: element.name,
+          owner: '',
+          fileHash: '',
+          result: 'No result found',
+          hash: ''
+        });
+      }
+    });
+  }
 
   verify(data, infTrans): boolean {
-
     if (Verifier.isPublicApostille(infTrans.message.payload.replace(/['"]+/g, ''))) {
       return Verifier.verifyPublicApostille(data, infTrans.message.payload.replace(/['"]+/g, ''))
     }
     if (Verifier.isPrivateApostille(infTrans.message.payload.replace(/['"]+/g, ''))) {
       return Verifier.verifyPrivateApostille(infTrans.signer, data, infTrans.message.payload.replace(/['"]+/g, ''))
-
     }
   }
+
+  addAuditResult(result: ResultAuditInterface, hash?) {
+    let find = [];
+    if (hash) {
+      find = this.auditResults.filter(el => el.hash === result.hash);
+    } else {
+      find = this.auditResults.filter(el => el.filename === result.filename);
+    }
+    if (find.length === 0) {
+      this.auditResults.push(result);
+    }
+  }
+
+
+  //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+  // /**
+  //  *
+  //  */
+  // verifyFile(dataFile, nameFile) {
+  //   this.isProcessing = true;
+  //   // Remove the meta part of $fileContent string (data:application/octet-stream;base64)
+  //   // let cleanedDataContent = this.file.split(/,(.+)?/)[1];
+  //   // Base 64 to word array
+  //   // let parsedData = crypto.enc.Base64.parse(cleanedDataContent);
+  //   // if (!this.checkApostilleName(nameFile)) {
+  //   //   this.addAuditResult({
+  //   //     filename: nameFile,
+  //   //     owner: '',
+  //   //     fileHash: '',
+  //   //     result: 'This file is not in apostille format',
+  //   //     hash: ''
+  //   //   });
+  //   //   // this.showResult(this.auditResults);
+  //   //   this.isProcessing = false;
+  //   //   return;
+  //   // }
+  //   // Build an array out of the filename
+  //   const nameArray = nameFile.match(/\S+\s*/g);
+  //   // Recomposing the initial filename before apostille
+  //   const initialNameArray = nameArray.splice(0, nameArray.length - 7);
+  //   let initialFileName = "";
+
+  //   for (let h = 0; h < initialNameArray.length; h++) {
+  //     initialFileName += initialNameArray[h];
+  //   }
+  //   // Initial filename
+  //   initialFileName = initialFileName.replace(/^\s+|\s+$/, '') + "." + nameFile.split('.').pop();
+  //   // Hash of the apostille transaction
+  //   const apostilleTxHash = nameArray[nameArray.length - 4].replace(/^\s+|\s+$/, '');
+  //   this.proximaxProvider.getTransactions(apostilleTxHash).subscribe(
+  //     async (infTrans: TransferTransaction) => {
+  //       this.isProcessing = false;
+  //       const data = dataFile;
+  //       // console.log('\n\n\n\nValue of information transaction', infTrans, '\n\n\n\nEnd value\n\n');
+
+  //       if (await !this.verify(data, infTrans)) {
+  //         this.addAuditResult({
+  //           filename: nameFile,
+  //           owner: '',
+  //           fileHash: '',
+  //           result: 'Document not apostilled',
+  //           hash: ''
+  //         });
+  //         // this.showResult(this.auditResults);
+  //         // this.isProcessing = false;
+  //         return;
+  //       } else {
+  //         let arrayName = nameFile.split(' --Apostille ');
+  //         let arrayextention = nameFile.split('.');
+  //         let originalName = '';
+
+  //         if (arrayextention.length > 1) {
+  //           originalName = `${arrayName[0]}.${arrayextention[arrayextention.length - 1]}`;
+  //         } else {
+  //           originalName = arrayName[0];
+  //         }
+
+  //         this.addAuditResult({
+  //           filename: originalName,
+  //           owner: this.proximaxProvider.createFromRawAddress(infTrans.recipient['address']).pretty(),
+  //           fileHash: infTrans.message.payload.split('"').join(''),
+  //           result: 'Document apostille',
+  //           hash: ''
+  //         });
+  //         return;
+  //       }
+  //     },
+  //     error => {
+  //       this.addAuditResult({
+  //         filename: nameFile,
+  //         owner: '',
+  //         fileHash: '',
+  //         result: 'Document not apostilled',
+  //         hash: ''
+  //       });
+  //       this.isProcessing = false;
+  //       // this.sharedService.showError('', 'Apostille not found');
+  //     }
+  //   )
+  // }
+
+  
+
+  // checkApostilleName(nameFile) {
+  //   // Build an array out of the filename
+  //   const nameArray = nameFile.match(/\S+\s*/g);
+  //   // console.log('nameArray:', nameArray)
+  //   if (nameArray[nameArray.length - 6] === undefined || nameArray[nameArray.length - 5].replace(/^\s+|\s+$/, '') !== 'TX') return false;
+  //   const mark = nameArray[nameArray.length - 6].replace(/^\s+|\s+$/, '');
+
+  //   // console.log('mark:', mark)
+  //   if (mark === "--Apostille" || mark === "--ApostilleSigned") return true;
+  //   return false;
+  // };
+
+
+  // verify(data, infTrans): boolean {
+  //   if (Verifier.isPublicApostille(infTrans.message.payload.replace(/['"]+/g, ''))) {
+  //     return Verifier.verifyPublicApostille(data, infTrans.message.payload.replace(/['"]+/g, ''))
+  //   }
+  //   if (Verifier.isPrivateApostille(infTrans.message.payload.replace(/['"]+/g, ''))) {
+  //     return Verifier.verifyPrivateApostille(infTrans.signer, data, infTrans.message.payload.replace(/['"]+/g, ''))
+  //   }
+  // }
   // showResult(result) {
   // }
-  createResultObject(initialFileName, apostilleSigner, checksum, dataHash, isPrivate, apostilleTxHash) {
-    return {
-      filename: initialFileName,
-      owner: apostilleSigner,
-      fileHash: checksum + dataHash,
-      result: '',
-      hash: apostilleTxHash,
-      private: isPrivate
-    }
-  }
+  // createResultObject(initialFileName, apostilleSigner, checksum, dataHash, isPrivate, apostilleTxHash) {
+  //   return {
+  //     filename: initialFileName,
+  //     owner: apostilleSigner,
+  //     fileHash: checksum + dataHash,
+  //     result: '',
+  //     hash: apostilleTxHash,
+  //     private: isPrivate
+  //   }
+  // }
 
 }
