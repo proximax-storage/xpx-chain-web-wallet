@@ -32,6 +32,10 @@ body {
   margin: 0 !important;
 }
 
+.m-02rem {
+  margin: .2rem !important;
+}
+
 .mt-0 {
   margin-top: 0;
 }
@@ -238,6 +242,10 @@ body {
   padding: 0 !important;
 }
 
+.p-02rem {
+  padding: .2rem !important;
+}
+
 .p-05rem {
   padding: .5rem !important;
 }
@@ -358,6 +366,10 @@ body {
 
 .bord-rad-25px {
   border-radius: 25px !important;
+}
+
+.br-0 {
+  border-radius: 0 !important;
 }
 
 
@@ -1266,6 +1278,9 @@ button.md-toast-close-button {
 }
 
 /************************* FIN NG SELECT *******************/
+.w-b-w {
+  word-wrap: break-word
+}
 
 .w-b-a {
   word-break: break-all;
@@ -1316,10 +1331,10 @@ button.md-toast-close-button {
 .box-drop {
   border-radius: 1rem;
   background: white;
-  padding: 10px 20px;
+  padding: 2rem;
   margin: 10px;
   color: black;
-  border: 2px dotted #316eb5
+  border: 2px dotted #316eb5 !important;
 }
 
 .box-transparent-border-orange {
@@ -1553,4 +1568,14 @@ body.modal-open {
 .link {
   color: #306EB5 !important;
   font-weight: bold;
+}
+
+
+.card-body ul.stepper.horizontal .step.wrong .step-title:before {
+  content: '\f071' !important;
+}
+
+ul.stepper.horizontal .step.done .step-title:before,
+.card-body ul.stepper.horizontal .step.done .step-title:before {
+  content: '\f058' !important;
 }
