@@ -34,6 +34,7 @@ export class AuditApostilleComponent implements OnInit {
   p = 1;
   url: any;
   currentView: boolean = true;
+  modalInfo: any = undefined
 
   constructor(
     private proximaxProvider: ProximaxProvider,
@@ -127,7 +128,7 @@ export class AuditApostilleComponent implements OnInit {
             if (prefixHash === apostillePublicPrefix) {
               method = 'PUBLIC';
             } else if (prefixHash === apostillePrivatePrefix) {
-              method = 'PRIVATE';              
+              method = 'PRIVATE';
             }
 
             if (arrayExtention.length > 1) {

@@ -1,10 +1,38 @@
+<!-- MODAL -->
+<div class="d-flex align-items-center">
+  <div mdbModal #modalAudit="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+    aria-labelledby="modalAudit" aria-hidden="true">
+    <div class="modal-dialog modal-lg d-flex align-items-center" role="document">
+      <div class="modal-content form-elegant bord-rad-1-5rem">
+        <div class="modal-header text-center box-modal-white b-t-r-r-1-5rem b-t-l-r-1-5rem p-05rem">
+          <span class="modal-title w-100" id="myModalLabel">
+            <strong class="title-modal-blue">Attestated File</strong>
+          </span>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modalDashboard.hide()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <ng-container *ngIf="dataSelected">
+
+            <app-attestation-type [attestationInfo]="modalInfo"></app-attestation-type>
+
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- GENERAL CONTAINER -->
 <div class="mt-3rem mb-3rem">
   <app-header [params]="paramsHeader"></app-header>
+  <!-- MAIN VIEW< -->
   <div class="container-fluid" *ngIf="currentView">
     <div class="row">
       <div class="col-11 col-md-10 mx-auto">
         <div class="row">
-          <!-- UPLOAD FILE -->
           <div class="col-8 d-flex justify-content-center flex-column mx-auto mb-1rem mt-1rem box-grey">
             <div class="row">
               <div class="col-12 d-flex justify-content-center mx-auto mb-1rem mt-1rem">
@@ -55,6 +83,7 @@
           </div>
         </div>
 
+        <!-- BUTTONS -->
         <div class="row">
           <div class="col-11 col-sm-11 col-lg-10 mx-auto mb-2rem">
             <div class="row">
@@ -80,12 +109,13 @@
     </div>
   </div>
 
+  <!-- CARDS VIEW -->
   <div class="container-fluid mb-2rem" *ngIf="!currentView">
     <div class="row">
       <div class="col-11 col-md-10 mx-auto">
         <div class="row d-flex justify-content-start align-items-stretch mb-1rem">
           <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4 d-flex mt-1rem audit-back" *ngFor="let item of auditResults">
-            <div class="audit-front d-flex" [ngClass]="{'audit-background': item.fileHash !== '', 'audit-background-err': item.fileHash === ''}">
+            <div class="audit-front d-flex" [ngClass]="{'audit-background': item.fileHash !== '', 'audit-background-err': item.fileHash === ''}" (click)="modalAudit.show(); modalInfo === item">
               <div class="col-8 p-05rem background-white">
                 <div>
                   <p class="audit-title">{{ item.filename }}</p>
