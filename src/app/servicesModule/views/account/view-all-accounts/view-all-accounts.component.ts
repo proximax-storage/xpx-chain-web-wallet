@@ -3,9 +3,10 @@ import { environment } from '../../../../../environments/environment';
 import { WalletService } from '../../../../wallet/services/wallet.service';
 import { AppConfig } from '../../../../config/app.config';
 import { SharedService } from '../../../../shared/services/shared.service';
-import { TransactionsService } from '../../../../transfer/services/transactions.service';
+import { TransactionsService } from '../../../../transactions/services/transactions.service';
 import { Subscription } from 'rxjs';
 import { NamespacesService } from 'src/app/servicesModule/services/namespaces.service';
+import { HeaderServicesInterface } from '../../../services/services-module.service';
 
 @Component({
   selector: 'app-view-all-accounts',
@@ -14,10 +15,14 @@ import { NamespacesService } from 'src/app/servicesModule/services/namespaces.se
 })
 export class ViewAllAccountsComponent implements OnInit {
 
+  paramsHeader: HeaderServicesInterface = {
+    moduleName: 'Accounts',
+    componentName: 'VIEW ALL',
+    extraButton: 'Create New Account',
+    routerExtraButton: `/${AppConfig.routes.selectTypeCreationAccount}`
+  };
   accountChanged: boolean = false;
-  componentName = 'View all';
   currentWallet: any = [];
-  moduleName = 'Accounts';
   objectKeys = Object.keys;
   routes = {
     backToService: `/${AppConfig.routes.service}`,

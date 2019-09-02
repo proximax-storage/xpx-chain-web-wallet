@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { TransactionsService } from '../../../transactions/services/transactions.service';
+import { PaginationInstance } from 'ngx-pagination';
+import { ModifyMultisigAccountTransaction } from 'tsjs-xpx-chain-sdk';
 
 @Component({
   selector: 'app-modify-multisig-account-type',
@@ -7,7 +10,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ModifyMultisigAccountTypeComponent implements OnInit {
 
-  constructor() { }
+  @Input() multisigAccount: ModifyMultisigAccountTransaction = null;
+
+
+  constructor(
+    public transactionService: TransactionsService
+  ) { }
 
   ngOnInit() {
   }

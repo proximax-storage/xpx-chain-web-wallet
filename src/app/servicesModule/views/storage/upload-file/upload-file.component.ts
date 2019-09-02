@@ -7,10 +7,11 @@ import { Router } from '@angular/router';
 import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
 import { WalletService } from 'src/app/wallet/services/wallet.service';
 import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
-import { TransactionsService } from 'src/app/transfer/services/transactions.service';
+import { TransactionsService } from 'src/app/transactions/services/transactions.service';
 import { Uploader, PrivacyType, Uint8ArrayParameterData, UploadParameter, Protocol, ConnectionConfig, BlockchainNetworkConnection, IpfsConnection } from 'xpx2-ts-js-sdk';
 import { UploadInput, humanizeBytes, UploadOutput, UploadFile, FasDirective } from 'ng-uikit-pro-standard';
 import { environment } from 'src/environments/environment';
+import { HeaderServicesInterface } from '../../../services/services-module.service';
 
 @Component({
   selector: 'app-upload-file',
@@ -20,10 +21,12 @@ import { environment } from 'src/environments/environment';
 export class UploadFileComponent implements OnInit, AfterViewInit {
 
   @BlockUI() blockUI: NgBlockUI;
-  moduleName = 'Storage';
-  componentName = 'Upload File';
-  backToService = `/${AppConfig.routes.service}`;
-  myFiles = `/${AppConfig.routes.myFile}`;
+  paramsHeader: HeaderServicesInterface = {
+    moduleName: 'Storage',
+    componentName: 'UPLOAD FILE',
+    extraButton: 'Files',
+    routerExtraButton: `/${AppConfig.routes.myFile}`
+  };
   configurationForm: ConfigurationForm = {};
   uploadForm: FormGroup;
   blockUpload: boolean = false;
@@ -46,8 +49,7 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
     private route: Router,
     private walletService: WalletService,
     private proximaxProvider: ProximaxProvider,
-    private sharedService: SharedService,
-    private transactionsService: TransactionsService
+    private sharedService: SharedService
   ) {
     this.files = [];
     this.uploadInput = new EventEmitter<UploadInput>();
@@ -310,22 +312,23 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
 
         const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
         console.log(account);
+        console.log('0filee-----> ', this.files);
 
         try {
           const uploadedFile = this.files[0].nativeFile;
-          //console.log(uploadedFile);
+          console.log(uploadedFile);
           const uploadedFileType = uploadedFile.type;
-          //console.log(uploadedFileType);
+          console.log(uploadedFileType);
           const uploadedFileContent = await this.readFile(uploadedFile);
           const fileName = this.uploadForm.get('filePath').value;
-          // console.log(uploadedFile.name);
+          console.log(uploadedFile.name);
           // const optionalFileName =  fileName ===  undefined ? uploadedFile.name: fileName;
           //console.log(optionalFileName);
           const optionalFileName = uploadedFile.name;
           const metaParams = Uint8ArrayParameterData.create(uploadedFileContent, optionalFileName, '', uploadedFileType);
-
+          console.log('---metaParams---', metaParams);
           const uploadParams = UploadParameter.createForUint8ArrayUpload(metaParams, account.privateKey);
-
+          console.log('uploadParams -->', uploadParams);
           const encryptionMethod = this.uploadForm.get('encryptionMethod').value;
           console.log(encryptionMethod);
 

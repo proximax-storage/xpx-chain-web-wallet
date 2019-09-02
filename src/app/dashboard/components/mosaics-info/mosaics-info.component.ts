@@ -2,7 +2,7 @@ import { Component, OnInit, Input, SimpleChanges, Output, EventEmitter } from '@
 import { Mosaic, MosaicView, MosaicInfo, NamespaceId } from 'tsjs-xpx-chain-sdk';
 import { MosaicService, MosaicsStorage } from '../../../servicesModule/services/mosaic.service';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
-import { TransactionsService, TransactionsInterface } from '../../../transfer/services/transactions.service';
+import { TransactionsService, TransactionsInterface } from '../../../transactions/services/transactions.service';
 import { environment } from 'src/environments/environment.prod';
 
 @Component({
@@ -38,16 +38,16 @@ export class MosaicsInfoComponent implements OnInit {
     this.quantity = [];
     this.searching = true;
 
-    console.log('-----this.mosaicsArray----', this.mosaicsArray);
+    // console.log('-----this.mosaicsArray----', this.mosaicsArray);
     const mosaics: MosaicsStorage[] = await this.mosaicService.filterMosaics(this.mosaicsArray.map((mosaic: Mosaic) => { return mosaic.id }));
-    console.log('----mosaicos encontrados-----', mosaics);
+    // console.log('----mosaicos encontrados-----', mosaics);
     this.searching = false;
     if (mosaics.length > 0) {
       for (let mosaic of mosaics) {
         // Create MosaicId from mosaic and namespace string id (ex: nem:xem or domain.subdom.subdome:token)
         const mosaicId = this.proximaxProvider.getMosaicId(mosaic.idMosaic).toHex();
         const myMosaic = this.mosaicsArray.find(next => next.id.toHex() === mosaicId);
-        console.log('---myMosaic---', myMosaic);
+        // console.log('---myMosaic---', myMosaic);
         const amount = (mosaic.mosaicInfo !== null) ?
           this.transactionService.amountFormatter(myMosaic.amount, mosaic.mosaicInfo) :
           this.transactionService.amountFormatterSimple(myMosaic.amount.compact());
@@ -62,7 +62,7 @@ export class MosaicsInfoComponent implements OnInit {
             mosaicInfo: mosaic
           }
         } else {
-          console.log(mosaic.mosaicNames);
+          // console.log(mosaic.mosaicNames);
           const nameMosaic = (mosaic.mosaicNames && mosaic.mosaicNames.names.length > 0) ?
             mosaic.mosaicNames.names[0] : '';
 

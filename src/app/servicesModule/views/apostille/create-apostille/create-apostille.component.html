@@ -1,0 +1,303 @@
+<div class="container-fluid mt-3rem pb-3rem animated fadeIn">
+  <app-header [params]="paramsHeader"></app-header>
+  <ng-container *ngIf="!processComplete; else processCompleteTemplate">
+    <div class="row mb-2rem">
+      <div class="col-12 col-md-10 col-lg-9 col-xl-8 mb-2rem mx-auto">
+        <!-- UPLOAD APOSTILLE -->
+        <mdb-stepper #stepper [linear]="true">
+          <!-- FIRST FORM -->
+          <mdb-step name="File(s) to process" [stepForm]="apostilleFormOne" class="step1" [completed]="false">
+            <form [formGroup]="apostilleFormOne">
+              <!-- UPLOAD FILE -->
+              <div class="row">
+                <ng-container *ngIf="apostilleFormOne.get('typeFile').value">
+                  <div class="col-12 box-grey" (click)="openInput()" mdbBtn mdbWavesEffect>
+                    <div class="row">
+                      <div class="col-10 mx-auto txt-a-center upload-file box-drop">
+                        <img class="mr-1rem h2em"
+                          src="assets/images/img/icon-upload-gray-28h-proximax-sirius-wallet.svg" width="25">
+                        <span class="fs-1-2em fw-700 color-gray-strong">Upload files</span>
+                      </div>
+
+                      <div class="col-10 d-flex justify-content-start mx-auto">
+                        <span class="color-dark-green fw-600 fs-07rem">
+                          {{nameFile}}
+                          <ng-container *ngIf="fileInputIsValidated">
+                            &nbsp; <i class="fa fa-times-circle cursor-p" aria-hidden="true"
+                              (click)="fileReader([])"></i>
+                          </ng-container>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </ng-container>
+
+                <ng-container *ngIf="!apostilleFormOne.get('typeFile').value">
+                  <!-- CARDS VIEW -->
+                  <div class="container-fluid mb-2rem">
+                    <div class="row">
+                      <ng-container *ngIf="searching;">
+                        <div class="col-12 mx-auto">
+                          <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate">
+                          </mdb-progress-bar>
+                        </div>
+                      </ng-container>
+
+                      <div class="col-12 d-flex justify-content-end background-dark-green-plus pt-05rem">
+                        <button mdbBtn type="submit" rounded="true" mdbWavesEffect
+                          class="f-w-600 background-btn overflow-ellipsis-nowrap" size="sm" (click)="initForm(); ">
+                          <i class="fa fa-refresh color-white" aria-hidden="true"></i> &nbsp;
+                          <span class="fs-1em color-white">REFRESH</span>
+                        </button>
+                      </div>
+
+                      <!-- DATA -->
+                      <div class="col-12 col-md-12 mx-auto">
+                        <div class="row d-flex justify-content-start align-items-stretch mb-1rem">
+                          <div class="col-12 col-sm-6 d-flex mt-1rem audit-back"
+                            *ngFor="let item of filesStorage | paginate: configFileStorage">
+                            <div class=" audit-front storage-background-file cursor-p d-flex"
+                              [ngClass]="[item.selected ? 'border-selected' : '']"
+                              (click)="convertToFile(item, item.random);">
+                              <div class="col-8 p-05rem background-white">
+                                <div>
+                                  <p class="audit-title">{{ item.name }}</p>
+                                </div>
+                                <div>
+                                  <p class="audit-subtitle">Date</p>
+                                  <p class="audit-value">{{ item.timestamp }}</p>
+                                </div>
+                                <div>
+                                  <p class="audit-value">{{ item.result }}</p>
+                                </div>
+                              </div>
+                              <div class="col-4 audit-medal mx-auto d-flex justify-content-center align-items-center">
+                                <figure>
+                                  <img src="assets/images/img/icon-file-green-16h-proximax-sirius-wallet.svg"
+                                    width="40">
+                                </figure>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="col-12 pt-1rem pb-3rem d-flex justify-content-center mx-auto">
+                            <pagination-controls [id]="configFileStorage.id"
+                              (pageChange)="configFileStorage.currentPage = $event">
+                            </pagination-controls>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                </ng-container>
+
+                <input id="fileInput" [hidden]="true" type="file" (change)="fileReader($event.target.files)">
+              </div>
+
+              <!-- PRIVATE & PUBLIC -->
+              <div class="row mt-05rem">
+                <div class="col-12 box-grey d-flex justify-content-center">
+                  <div class="row">
+                    <div class="col-8 fw-600 d-flex justify-content-start">
+                      <div class="form-check form-check-inline">
+                        <input formControlName="typeFile" checked [value]="true" type="radio" class="form-check-input"
+                          id="myComputer" name="typeFile" mdbInput>
+                        <label class="form-check-label" for="myComputer">My computer</label>
+                      </div>
+                    </div>
+
+                    <div class="col-4 fw-600 d-flex justify-content-end">
+                      <div class="form-check form-check-inline">
+                        <input formControlName="typeFile" [value]="false" type="radio" class="form-check-input"
+                          id="DFMS" name="typeFile" mdbInput>
+                        <label class="form-check-label" for="DFMS">DFMS</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- BUTTONS -->
+              <div class="row mt-1rem">
+                <div class="col-10 mx-auto">
+                  <div class="row">
+                    <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
+                      <button mdbBtn (click)="fileReader([])" rounded="true" mdbWavesEffect
+                        class="f-w-600 background-btn pl-2rem pr-2rem" size="sm">
+                        <span class="fs-1-2em color-white">CLEAR</span>
+                      </button>
+                    </div>
+
+                    <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
+                      <button [disabled]="apostilleFormOne.get('file').invalid" mdbBtn (click)="stepper.next()"
+                        rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="sm">
+                        <span class="fs-1-2em color-white">NEXT</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </mdb-step>
+
+          <!-- SECOND FORM -->
+          <mdb-step name="Attestation" [stepForm]="apostilleFormTwo" class="step2" [completed]="false">
+            <form [formGroup]="apostilleFormTwo" (ngSubmit)="sendTransaction()">
+              <!-- TAGS -->
+              <div class="row">
+                <div class="col-12">
+                  <div class="md-form form-sm mt-0 mb-0rem">
+                    <input [maxlength]="configurationForm.tags.maxLength" [minlength]="configurationForm.tags.minLength"
+                      type="text" autocomplete="off" formControlName="tags" required id="tags" mdbInputDirective
+                      mdbValidate [validateSuccess]="true" [validateError]="true"
+                      class="form-control form-control-sm input-border" placeholder="+Tags">
+                  </div>
+                </div>
+              </div>
+
+              <!-- TYPE ENCRIPTED -->
+              <div class="row mt-2rem">
+                <div class="col-12">
+                  <ng-select mdbInputDirective mdbValidate formControlName="typeEncrypted" class="selectWrapper"
+                    [items]="typeEncrypted" bindLabel="label" bindValue="value" placeholder="Select type encrypted">
+                  </ng-select>
+                </div>
+              </div>
+
+              <!-- PRIVATE & PUBLIC -->
+              <div class="row mt-1rem">
+                <div class="col-12 box-grey d-flex justify-content-center">
+                  <div class="row">
+                    <div class="col-6 fw-600 d-flex justify-content-start">
+                      <div class="form-check form-check-inline">
+                        <input formControlName="typePrivatePublic" checked [value]="true" type="radio"
+                          class="form-check-input" id="public" name="typePrivatePublic" mdbInput>
+                        <label class="form-check-label" for="public">Public</label>
+                      </div>
+                    </div>
+
+                    <div class="col-6 fw-600 d-flex justify-content-end">
+                      <div class="form-check form-check-inline">
+                        <input formControlName="typePrivatePublic" [value]="false" type="radio" class="form-check-input"
+                          id="private" name="typePrivatePublic" mdbInput>
+                        <label class="form-check-label" for="private">Private</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- SAFE DFMS -->
+              <div class="row mt-1rem">
+                <div class="col-12 box-grey d-flex justify-content-center">
+                  <div class="row">
+                    <div class="col-12 fw-600 mx-auto">
+                      <div class="form-check form-check-inline">
+                        <mdb-checkbox formControlName="safeDFMS" [checked]="true" [default]="true"
+                          (change)="onSaveInDFMSChanged($event)">SAFE on DFMS
+                        </mdb-checkbox>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- TYPE ENCRIPTED -->
+              <div class="row mt-1rem">
+                <div class="col-12">
+                  <div class="md-form form-sm">
+                    <input [maxlength]="configurationForm.passwordWallet.maxLength"
+                      [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" required
+                      mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password"
+                      id="password" class="form-control form-control-sm input-border" placeholder="Enter password">
+                  </div>
+                </div>
+              </div>
+
+              <!-- BUTTONS -->
+              <div class="row mt-1rem">
+                <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
+                  <button mdbBtn type="button" rounded="true" mdbWavesEffect
+                    class="f-w-600 background-btn pl-2rem pr-2rem" size="md" (click)="clearForm(2)">
+                    <span class="fs-1-2em color-white">CLEAR</span>
+                  </button>
+                </div>
+
+                <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
+                  <button [disabled]="apostilleFormTwo.invalid || blockBtn" mdbBtn type="submit" rounded="true"
+                    mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
+                    <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
+                      *ngIf="blockBtn"></span>
+                    <span class="fs-1-2em color-white">CREATE</span>
+                  </button>
+                </div>
+              </div>
+            </form>
+          </mdb-step>
+        </mdb-stepper>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- CERTIFIED -->
+  <ng-template #processCompleteTemplate>
+    <!-- ONE -->
+    <div class="row">
+      <div class="col-12 txt-a-center">
+        <div>
+          <span class="color-blue-intermedio fw-600 fs-1-2rem">DONE!</span>
+        </div>
+        <div>
+          <span class="fs-09rem">Your attestation has been processed</span>
+        </div>
+      </div>
+    </div>
+    <!-- TWO -->
+    <div class="row">
+      <div class="col-12 col-md-10 col-lg-9 col-xl-8 mx-auto">
+        <div class="row mr-ml-mt-mb bordb-2px-solid-gray">
+          <!-- QR & FILE HASH -->
+          <div class="col-12 col-md-9 col-lg-8 p-1rem">
+            <div class="row">
+              <div class="col-12 col-sm-4 col-md-3 d-flex justify-content-start justify-content-sm-center">
+                <div class="mx-auto">
+                  <img [src]="base64ImageString" width="90">
+                </div>
+              </div>
+
+              <div class="col-12 col-sm-8 col-md-9 lh-1em pt-04rem">
+                <div>
+                  <span class="w-b-a fw-600">File hash</span>
+                </div>
+                <div>
+                  <span class="w-b-a fs-08rem mt-1rem">{{ntyData.fileHash}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CERTIFIED -->
+          <div class="col-12 col-md-3 col-lg-4 audit-background p-1rem">
+            <div class="row">
+              <div class="col-12 d-flex justify-content-center">
+                <div class="mx-auto">
+                  <img src="assets/images/img/badge-silver-proximax-sirius-wallet.svg" width="90">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- THREE -->
+    <div class="row">
+      <div class="col-12 col-md-10 col-lg-9 col-xl-8 mx-auto d-flex justify-content-center">
+        <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+          size="md" (click)="initForm();">
+          <span class="fs-1-2em color-white">CONTINUE</span>
+        </button>
+      </div>
+    </div>
+  </ng-template>
+</div>

@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 
 import { ServicesModuleRoutingModule } from './services-module-routing.module';
 import { CreateAccountComponent } from './views/account/create-account/create-account.component';
@@ -21,6 +21,19 @@ import { ViewAllAccountsComponent } from './views/account/view-all-accounts/view
 import { AccountCreatedComponent } from './views/account/account-created/account-created.component';
 import { SelectionAccountTypeComponent } from './views/account/selection-account-creation-type/selection-account-creation-type.component';
 import { AddContactsComponent } from './views/address-book/add-contacts/add-contacts.component';
+import { ConvertAccountMultisignComponent } from './views/multi-sign/convert-account-multisign/convert-account-multisign.component';
+import { EditAccountMultisignComponent } from './views/multi-sign/edit-account-multisign/edit-account-multisign.component';
+import { AccountsListComponent } from './views/swap/accounts-list/accounts-list.component';
+import { Nis1AccountsListComponent } from './views/swap/nis1-accounts-list/nis1-accounts-list.component';
+import { HeaderComponent } from './components/header/header.component';
+import { CreatePollComponent } from './views/voting/create-poll/create-poll.component';
+import { PollsComponent } from './views/voting/polls/polls.component';
+import { ResultPollComponent } from './views/voting/result-poll/result-poll.component';
+import { CreateApostilleComponent } from './views/apostille/create-apostille/create-apostille.component';
+import { AuditApostilleComponent } from './views/apostille/audit-apostille/audit-apostille.component';
+import { VoteInPollComponent } from './views/voting/vote-in-poll/vote-in-poll.component';
+import { HighchartsChartComponent } from './views/voting/vote-in-poll/highcharts-chart.component';
+
 
 @NgModule({
   declarations: [
@@ -42,8 +55,21 @@ import { AddContactsComponent } from './views/address-book/add-contacts/add-cont
     ViewAllAccountsComponent,
     AccountCreatedComponent,
     SelectionAccountTypeComponent,
-    AddContactsComponent
+    AddContactsComponent,
+    ConvertAccountMultisignComponent,
+    EditAccountMultisignComponent,
+    AccountsListComponent,
+    Nis1AccountsListComponent,
+    HeaderComponent,
+    CreatePollComponent,
+    PollsComponent,
+    ResultPollComponent,
+    CreateApostilleComponent,
+    AuditApostilleComponent,
+    VoteInPollComponent,
+    HighchartsChartComponent
   ],
+  schemas: [ NO_ERRORS_SCHEMA ],
   imports: [
     CoreModule,
     ServicesModuleRoutingModule

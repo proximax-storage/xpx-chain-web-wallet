@@ -1,5 +1,5 @@
 import { Component, OnInit, SimpleChanges, Input } from '@angular/core';
-import { TransactionsInterface, TransactionsService } from '../../../transfer/services/transactions.service';
+import { TransactionsInterface, TransactionsService } from '../../../transactions/services/transactions.service';
 
 @Component({
   selector: 'app-aggregate-complete-type',

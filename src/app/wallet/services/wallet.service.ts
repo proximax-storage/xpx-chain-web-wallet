@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { SimpleWallet, PublicAccount, AccountInfo, MultisigAccountInfo } from 'tsjs-xpx-chain-sdk';
 import { crypto } from 'js-xpx-chain-library';
 import { AbstractControl } from '@angular/forms';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, timer } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
 import { SharedService } from '../../shared/services/shared.service';
@@ -13,7 +13,8 @@ import { ProximaxProvider } from '../../shared/services/proximax.provider';
   providedIn: 'root'
 })
 export class WalletService {
-
+  canVote = true;
+  subscribeLogged = undefined;
   accountWalletCreated: {
     data: any;
     dataAccount: AccountsInterface;
@@ -60,7 +61,8 @@ export class WalletService {
       iv: data.iv,
       name: data.nameAccount,
       network: data.network,
-      publicAccount: data.publicAccount
+      publicAccount: data.publicAccount,
+      isMultisign: null
     }
   }
 
@@ -114,6 +116,36 @@ export class WalletService {
     myAccounts.forEach(element => {
       if (element.name === oldName) {
         element.name = newName;
+      }
+    });
+
+    this.currentWallet.accounts = myAccounts;
+    othersWallet.push({
+      name: this.currentWallet.name,
+      accounts: myAccounts
+    });
+
+    localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(othersWallet));
+  }
+
+  /**
+*
+*
+* @param {string} name
+* @param {string} isMultisig
+* @memberof WalletService
+*/
+  changeIsMultiSign(name: string, isMultisig: MultisigAccountInfo) {
+    const myAccounts: AccountsInterface[] = Object.assign(this.currentWallet.accounts);
+    const othersWallet: CurrentWalletInterface[] = this.getWalletStorage().filter(
+      (element: any) => {
+        return element.name !== this.currentWallet.name;
+      }
+    );
+    myAccounts.forEach((element: AccountsInterface) => {
+      if (element.name === name) {
+        element.isMultisign = isMultisig
+        // this.setCurrentAccount$(element);
       }
     });
 
@@ -490,6 +522,19 @@ export class WalletService {
     // this.accountInfoSubject.next(accountInfo);
   }
 
+  countTimeVote() {
+    this.canVote = false;
+    let t = timer(1, 1000);
+    this.subscribeLogged = t.subscribe(t => {
+      if (t >= 20) {
+        this.canVote = true;
+        this.subscribeLogged.unsubscribe();
+      }else{
+        this.canVote = false;
+      }
+    });
+  }
+
 }
 
 export interface CurrentWalletInterface {
@@ -509,6 +554,7 @@ export interface AccountsInterface {
   name: string;
   network: number;
   publicAccount: PublicAccount;
+  isMultisign: MultisigAccountInfo;
 }
 
 

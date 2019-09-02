@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   itemBooksAddress: 'sw-books',
-  version: '0.2.5+6',
+  version: '0.2.7',
   nameKeyNodeSelected: `sw-selected-node`,
   nameKeyMosaicNamespaceLinked: `sw-m-n-linked`,
   nameKeyWalletStorage: `sw-04`,
@@ -15,6 +15,7 @@ export const environment = {
   protocol: `https`,
   protocolWs: `wss`,
   nodeDefault: 'bctestnet1-cow.xpxsirius.io:443',
+  nodeExplorer: 'https://bctestnetexplorer.xpxsirius.io/#/result/hash',
   mosaicXpxInfo: {
     name: 'prx.xpx',
     coin: 'XPX',
@@ -41,6 +42,11 @@ export const environment = {
   mosaicRentalFeeSink: {
     public_key: '640A0DA89F6F57E43C526520AD05C59E185D19ADC95788D8611EBAEC94DEBBA1',
     address_public_test: 'VD6AXC-3QBCFT-SLKHT6-2UPGTN-V5Z63I-YZKJI3-YGMD'
+  },
+  pollsContent: {
+    private_key: '52681268C37552C6F88EA063EBDDAB0B4A88032DD93CF6696C5A57B00A24FD12',
+    public_key: 'B5575AE4511694DCD0F7A8D0FAC1B327C1743334523075617EACE4997468D09E',
+    address_public_test: 'VBBLJ4-PD73RT-PXBTJY-ZQX426-NU7ETW-O3AZ65-YMVM'
   }
 };
 

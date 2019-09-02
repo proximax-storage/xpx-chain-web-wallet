@@ -15,12 +15,13 @@ import {
 import { saveAs } from 'file-saver';
 import { FormGroup, Validators, FormBuilder, AbstractControl } from '@angular/forms';
 import { AppConfig } from '../../../../config/app.config';
-import { TransactionsService } from '../../../../transfer/services/transactions.service';
+import { TransactionsService } from '../../../../transactions/services/transactions.service';
 import { WalletService } from '../../../../wallet/services/wallet.service';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { SharedService, ConfigurationForm } from '../../../../shared/services/shared.service';
 import { environment } from '../../../../../environments/environment';
 import { SearchResultInterface } from '../services/storage.service';
+import { HeaderServicesInterface } from 'src/app/servicesModule/services/services-module.service';
 
 
 @Component({
@@ -32,13 +33,15 @@ export class MyFileComponent implements OnInit, AfterViewInit {
 
   @ViewChild(MdbTablePaginationComponent, { static: true }) mdbTablePagination: MdbTablePaginationComponent;
   @ViewChild(MdbTableDirective, { static: true }) mdbTable: MdbTableDirective;
-  @ViewChild(ModalDirective, {static : true})  basicModal: ModalDirective;
+  @ViewChild(ModalDirective, { static: true }) basicModal: ModalDirective;
 
-  moduleName = 'Storage';
+  paramsHeader: HeaderServicesInterface = {
+    moduleName: 'Storage',
+    componentName: 'FILES',
+    extraButton: 'Upload a New File',
+    routerExtraButton: `/${AppConfig.routes.uploadFile}`
+  };
   configurationForm: ConfigurationForm = {};
-  componentName = 'My Files';
-  goBack = `/${AppConfig.routes.service}`;
-  uploadNew =  `/${AppConfig.routes.uploadFile}`;
   downloadForm: FormGroup;
   searching = false;
   downloading = false;
@@ -54,16 +57,13 @@ export class MyFileComponent implements OnInit, AfterViewInit {
   elements: any = [];
   dataSelected: SearchResultInterface = null;
   headElements = ['Timestamp', 'Name', 'Action'];
-  optionTypeSearch = [
-    {
-      'value': 'name',
-      'label': 'File Name'
-    },
-    {
-      'value': 'dataHash',
-      'label': 'Data Hash'
-    }
-  ];
+  optionTypeSearch = [{
+    value: 'name',
+    label: 'File Name'
+  }, {
+    value: 'dataHash',
+    label: 'Data Hash'
+  }];
   searcher: Searcher;
   downloader: Downloader;
 
@@ -97,7 +97,7 @@ export class MyFileComponent implements OnInit, AfterViewInit {
 
   createForm() {
     this.downloadForm = this.fb.group({
-      encryptionPassword: ['',[
+      encryptionPassword: ['', [
         Validators.minLength(this.configurationForm.passwordWallet.minLength),
         Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
       ]],
@@ -131,7 +131,7 @@ export class MyFileComponent implements OnInit, AfterViewInit {
     return validation;
   }
 
-  onDownloadFormOpen(event:any) {
+  onDownloadFormOpen(event: any) {
     this.downloadForm.get('encryptionPassword').setValue('');
   }
 
@@ -155,7 +155,7 @@ export class MyFileComponent implements OnInit, AfterViewInit {
 
   async getFiles(dataHash?: string, title?: string) {
 
-    console.log(this.fromTransactionId);
+    // console.log(this.fromTransactionId);
 
     const param = SearchParameter.createForPublicKey(
       this.walletService.currentAccount.publicAccount.publicKey
@@ -237,18 +237,18 @@ export class MyFileComponent implements OnInit, AfterViewInit {
           const response = await this.getFiles(this.paramSearch);
           // console.log(response);
           this.searching = false;
-        }catch(err) {
+        } catch (err) {
           this.searching = false;
-          this.sharedService.showError("Warning",err);
+          this.sharedService.showError("Warning", err);
         }
       } else if (this.typeSearch === 'name') {
         try {
-          const response = await this.getFiles(undefined,this.paramSearch);
+          const response = await this.getFiles(undefined, this.paramSearch);
           //console.log(response);
           this.searching = false;
-        }catch(err) {
+        } catch (err) {
           this.searching = false;
-          this.sharedService.showError("Warning",err);
+          this.sharedService.showError("Warning", err);
         }
       }
     }
@@ -335,34 +335,34 @@ export class MyFileComponent implements OnInit, AfterViewInit {
   }
 
   async download(item: any) {
-    console.log(item);
-    console.log(this.downloadForm.valid);
+    // console.log(item);
+    // console.log(this.downloadForm.valid);
     // this.downloadForm.markAsDirty();
 
-    if(this.downloadForm.valid) {
+    if (this.downloadForm.valid) {
       this.downloading = true;
-      if(item.dataHash) {
+      if (item.dataHash) {
 
         try {
           const param = DirectDownloadParameter.createFromDataHash(item.dataHash);
-          if(item.encryptionType === PrivacyType.PASSWORD) {
+          if (item.encryptionType === PrivacyType.PASSWORD) {
             param.withPasswordPrivacy(this.downloadForm.get('encryptionPassword').value);
           } else if (item.encryptionType === PrivacyType.PLAIN) {
             param.withPlainPrivacy();
           }
-          console.log('Downloading ...');
+          // console.log('Downloading ...');
           const response = await this.downloader.directDownload(param.build());
-          console.log(response);
+          // console.log(response);
 
           const downloadBuffer = await StreamHelper.stream2Buffer(response);
-          const downloableFile = new Blob([downloadBuffer], {type: item.contentType});
+          const downloableFile = new Blob([downloadBuffer], { type: item.contentType });
           saveAs(downloableFile, item.name);
           this.downloading = false;
           this.basicModal.hide();
         } catch (err) {
           //console.log(err);
           this.downloading = false;
-          this.sharedService.showError("Unable to download",err);
+          this.sharedService.showError("Unable to download", err);
         }
       }
     }

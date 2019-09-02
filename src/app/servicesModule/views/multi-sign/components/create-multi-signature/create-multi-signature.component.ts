@@ -28,7 +28,7 @@ import { NodeService } from 'src/app/servicesModule/services/node.service';
 import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
 import { ServicesModuleService } from 'src/app/servicesModule/services/services-module.service';
 import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
-import { TransactionsService } from 'src/app/transfer/services/transactions.service';
+import { TransactionsService } from 'src/app/transactions/services/transactions.service';
 import { MultiSignService } from 'src/app/servicesModule/services/multi-sign.service';
 
 @Component({
@@ -84,7 +84,7 @@ export class CreateMultiSignatureComponent implements OnInit {
     private multiSignService: MultiSignService
 
   ) {
-    this.headElements = ['Address', 'Action', 'Remove'];
+    this.headElements = ['Address', 'Remove'];
     this.configurationForm = this.sharedService.configurationForm;
     this.blockSend = false;
     this.ban = false;
@@ -466,7 +466,7 @@ export class CreateMultiSignatureComponent implements OnInit {
   // @param {LockFundsTransaction} lockFundsTransaction  - lock funds transaction.
 
   /**
-   * Before sending an aggregate bonded transaction, the future 
+   * Before sending an aggregate bonded transaction, the future
    * multisig account needs to lock at least 10 cat.currency.
    * This transaction is required to prevent network spamming and ensure that the inner
    * transactions are cosigned. After the hash lock transaction has been confirmed,
@@ -614,7 +614,7 @@ export class CreateMultiSignatureComponent implements OnInit {
   *
   *
   * @memberof CreateNamespaceComponent
-  * 
+  *
   */
   subscribeValueChange() {
     // Cosignatory ValueChange
@@ -728,6 +728,10 @@ export class CreateMultiSignatureComponent implements OnInit {
       const cosignatoryList = this.cosignatoryList.filter(item => item.id.plain() !== id.plain())
       this.setCosignatoryList(cosignatoryList);
     } else {
+
+      this.cosignatoryList.filter(item => item.action === "edit").map((item: CosignatoryList) => {
+        item.type = 3;
+      });
       this.cosignatoryList.filter(item => item.id.plain() === id.plain()).map((item: CosignatoryList) => {
         item.type = (item.type === 3) ? 2 : 3
       });
@@ -762,7 +766,7 @@ export class CreateMultiSignatureComponent implements OnInit {
   }
 
   /**
-    * Get cosignatory list add and remove 
+    * Get cosignatory list add and remove
     * @memberof CreateMultiSignatureComponent
     * @return {CosignatoryList} list cosignatory
     */

@@ -10,6 +10,7 @@ import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
 import { SharedService, ConfigurationForm } from 'src/app/shared/services/shared.service';
 import { WalletService } from 'src/app/wallet/services/wallet.service';
 import { Subscription } from 'rxjs';
+import { HeaderServicesInterface } from '../../../services/services-module.service';
 
 @Component({
   selector: 'app-alias-address-to-namespace',
@@ -17,14 +18,18 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./alias-address-to-namespace.component.css']
 })
 export class AliasAddressToNamespaceComponent implements OnInit {
-
-  @BlockUI() blockUI: NgBlockUI;
+  paramsHeader: HeaderServicesInterface = {
+    moduleName: 'Accounts',
+    componentName: 'LINK TO NAMESPACE'
+  };
+  arrayNamespaceStorage: NamespaceStorageInterface[] = [];
   moduleName = 'Accounts';
   componentName = 'LINK TO NAMESPACE';
   backToService = `/${AppConfig.routes.service}`;
   configurationForm: ConfigurationForm = {};
   blockSend: boolean = false;
   LinkToNamespaceForm: FormGroup;
+  loading = false;
   namespaceSelect: Array<object> = [
     {
       value: '1',
@@ -33,7 +38,6 @@ export class AliasAddressToNamespaceComponent implements OnInit {
       disabled: true
     }
   ];
-  subscribe = ['transactionStatus'];
   transactionSigned: any;
   typeAction: any = [{
     value: AliasActionType.Link,
@@ -61,19 +65,75 @@ export class AliasAddressToNamespaceComponent implements OnInit {
   ngOnInit() {
     this.configurationForm = this.sharedService.configurationForm;
     this.createForm();
-    this.getNameNamespace();
+    this.getNamespaces();
     const address = this.walletService.currentAccount.address;
     this.LinkToNamespaceForm.get('address').patchValue(address);
   }
 
   ngOnDestroy(): void {
-    //Called once, before the instance is destroyed.
-    //Add 'implements OnDestroy' to the class.
     this.subscription.forEach(subscription => {
-      // console.log(subscription);
       subscription.unsubscribe();
     });
   }
+
+  /**
+   *
+   *
+   * @param {NamespaceStorageInterface[]} arrayNamespaceStorage
+   * @memberof AliasAddressToNamespaceComponent
+   */
+  async buildSelectNamespace($event = null) {
+    console.log($event);
+    if ($event !== null) {
+      /* this.LinkToNamespaceForm.get('address').enable();
+       this.LinkToNamespaceForm.get('namespace').enable();
+       this.LinkToNamespaceForm.get('password').enable();*/
+
+      console.log('--arrayNamespaceStorage--', this.arrayNamespaceStorage);
+      const namespaceSelect = [];
+      this.loading = true;
+      if (this.arrayNamespaceStorage && this.arrayNamespaceStorage.length > 0) {
+        for (let namespaceStorage of this.arrayNamespaceStorage) {
+          if (namespaceStorage.namespaceInfo) {
+            console.log('INFO ---> ', namespaceStorage, '\n\n');
+            let isLinked = false;
+            let disabled = false;
+            let label = await this.namespaceService.getNameParentNamespace(namespaceStorage);
+            const name = label;
+            const type = namespaceStorage.namespaceInfo.alias.type;
+            if (type === 2) {
+              isLinked = true;
+              disabled = (this.LinkToNamespaceForm.get('typeAction').value === 0) ? true : false;
+              label = `${label}- (Linked to address)`;
+            } else if (type === 1) {
+              isLinked = true;
+              disabled = true;
+              label = `${label}- (Linked to mosaic)`;
+            } else {
+              disabled = (this.LinkToNamespaceForm.get('typeAction').value === 1) ? true : false;
+            }
+
+            namespaceSelect.push({
+              label: `${label}`,
+              value: `${name}`,
+              selected: false,
+              disabled: disabled
+            });
+          }
+        };
+      }
+
+      this.namespaceSelect = namespaceSelect.sort(function (a: any, b: any) {
+        return a.label === b.label ? 0 : +(a.label > b.label) || -1;
+      });
+
+      this.loading = false;
+    } else {
+      this.LinkToNamespaceForm.get('typeAction').setValue(AliasActionType.Link);
+    }
+  }
+
+
 
   /**
    *
@@ -82,22 +142,19 @@ export class AliasAddressToNamespaceComponent implements OnInit {
    */
   createForm() {
     this.LinkToNamespaceForm = this.fb.group({
-      namespace: ['', [Validators.required]],
-      typeAction: [
-        AliasActionType.Link,
-        [
-          Validators.required
-        ]
-      ],
       address: ['', [
         Validators.required,
         Validators.minLength(this.configurationForm.address.minLength),
         Validators.maxLength(this.configurationForm.address.maxLength)
       ]],
+      namespace: ['', [Validators.required]],
       password: ['', [
         Validators.required,
         Validators.minLength(this.configurationForm.passwordWallet.minLength),
         Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
+      ]],
+      typeAction: [AliasActionType.Link, [
+        Validators.required
       ]]
     });
   }
@@ -119,6 +176,22 @@ export class AliasAddressToNamespaceComponent implements OnInit {
 
     this.LinkToNamespaceForm.get('address').setValue(valueAddress, { emitEvent: false });
   }
+
+
+  /**
+   *
+   *
+   * @memberof AliasAddressToNamespaceComponent
+   */
+  getNamespaces() {
+    this.subscription.push(this.namespaceService.getNamespaceChanged().subscribe(
+      async (arrayNamespaceStorage: NamespaceStorageInterface[]) => {
+        this.arrayNamespaceStorage = arrayNamespaceStorage;
+        this.buildSelectNamespace(this.LinkToNamespaceForm.get('typeAction').value);
+      }
+    ));
+  }
+
 
   /**
    *
@@ -179,9 +252,11 @@ export class AliasAddressToNamespaceComponent implements OnInit {
           }
         }
 
-        this.namespaceSelect = namespaceSelect;
+        this.namespaceSelect = namespaceSelect.sort(function (a: any, b: any) {
+          return a.label === b.label ? 0 : +(a.label > b.label) || -1;
+        });
+        // this.namespaceSelect = namespaceSelect;
       }, error => {
-        this.blockUI.stop();
         this.router.navigate([AppConfig.routes.home]);
         this.sharedService.showError('', 'Please check your connection and try again');
       }));
@@ -214,7 +289,7 @@ export class AliasAddressToNamespaceComponent implements OnInit {
    * @memberof AliasAddressToNamespaceComponent
    */
   getTransactionStatus() {
-    this.subscribe['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
+    this.subscription['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
       statusTransaction => {
         if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
           const statusTransactionHash = (statusTransaction['type'] === 'error') ? statusTransaction['data'].hash : statusTransaction['data'].transactionInfo.hash;
@@ -239,7 +314,7 @@ export class AliasAddressToNamespaceComponent implements OnInit {
    *
    * @memberof AliasAddressToNamespaceComponent
    */
-  async send() {
+  async sendTransaction() {
     if (this.LinkToNamespaceForm.valid && !this.blockSend) {
       this.blockSend = true;
       const common = {
@@ -249,8 +324,12 @@ export class AliasAddressToNamespaceComponent implements OnInit {
 
       if (this.walletService.decrypt(common)) {
         const action = this.LinkToNamespaceForm.get('typeAction').value;
+        console.log(this.LinkToNamespaceForm.get('namespace').value);
+
         const namespaceId = new NamespaceId(this.LinkToNamespaceForm.get('namespace').value);
         const address = Address.createFromRawAddress(this.LinkToNamespaceForm.get('address').value);
+        console.log('address', address);
+
         const params: AddressAliasTransactionInterface = {
           aliasActionType: action,
           namespaceId: namespaceId,
@@ -263,7 +342,7 @@ export class AliasAddressToNamespaceComponent implements OnInit {
           next => {
             this.blockSend = false;
             this.clearForm();
-            if (this.subscribe['transactionStatus'] === undefined || this.subscribe['transactionStatus'] === null) {
+            if (this.subscription['transactionStatus'] === undefined || this.subscription['transactionStatus'] === null) {
               this.getTransactionStatus();
             }
           }

@@ -10,7 +10,7 @@ import { DataBridgeService } from '../../shared/services/data-bridge.service';
 import { NodeService } from '../../servicesModule/services/node.service';
 import { MosaicService } from '../../servicesModule/services/mosaic.service';
 import { NamespacesService } from '../../servicesModule/services/namespaces.service';
-import { TransactionsService } from '../../transfer/services/transactions.service';
+import { TransactionsService } from '../../transactions/services/transactions.service';
 import { ServicesModuleService } from '../../servicesModule/services/services-module.service';
 import { SharedService } from '../../shared/services/shared.service';
 import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';

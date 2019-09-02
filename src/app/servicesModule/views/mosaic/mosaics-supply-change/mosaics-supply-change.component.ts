@@ -7,8 +7,9 @@ import { SharedService, ConfigurationForm } from '../../../../shared/services/sh
 import { MosaicService, MosaicsStorage } from '../../../../servicesModule/services/mosaic.service';
 import { DataBridgeService } from '../../../../shared/services/data-bridge.service';
 import { WalletService } from '../../../../wallet/services/wallet.service';
-import { TransactionsService } from '../../../../transfer/services/transactions.service';
+import { TransactionsService } from '../../../../transactions/services/transactions.service';
 import { AppConfig } from '../../../../config/app.config';
+import { HeaderServicesInterface } from '../../../services/services-module.service';
 
 
 @Component({
@@ -18,6 +19,10 @@ import { AppConfig } from '../../../../config/app.config';
 })
 export class MosaicsSupplyChangeComponent implements OnInit {
 
+  paramsHeader: HeaderServicesInterface = {
+    moduleName: 'Mosaics',
+    componentName: 'MODIFY SUPPLY',
+  };
   @BlockUI() blockUI: NgBlockUI;
   currentBlock: number = 0;
   formMosaicSupplyChange: FormGroup;
@@ -51,10 +56,14 @@ export class MosaicsSupplyChangeComponent implements OnInit {
   transactionReady: SignedTransaction[] = [];
   subscriptions = ['transactionStatus'];
   configurationForm: ConfigurationForm = {};
-  moduleName = 'Mosaics';
-  componentName = 'MODIFY SUPPLY';
-  backToService = `/${AppConfig.routes.service}`;
   subscribe = ['block'];
+  optionsSupply = {
+    prefix: '',
+    thousands: ',',
+    decimal: '.',
+    precision: '0'
+  };
+  deltaSupply: number;
 
   /**
    * Initialize dependencies and properties
@@ -115,6 +124,14 @@ export class MosaicsSupplyChangeComponent implements OnInit {
             disabled: expired
           });
         }
+      }
+    });
+
+    this.formMosaicSupplyChange.get('deltaSupply').valueChanges.subscribe(next => {
+      if (!this.divisibility) {
+        this.deltaSupply = parseInt(next);
+      } else {
+        this.deltaSupply = parseInt(this.transactionService.addZeros(this.divisibility, next));
       }
     });
 
@@ -179,6 +196,15 @@ export class MosaicsSupplyChangeComponent implements OnInit {
           mosaicsInfoSelected[0].mosaicInfo['properties']['duration']['lower'],
           mosaicsInfoSelected[0].mosaicInfo['properties']['duration']['higher']
         ]);
+
+        this.formMosaicSupplyChange.get('deltaSupply').setValue(0);
+
+        this.optionsSupply = {
+          prefix: '',
+          thousands: ',',
+          decimal: '.',
+          precision: this.divisibility.toString()
+        };
 
         const durationDays = this.transactionService.calculateDuration(durationBlock);
         this.duration = `(${durationBlock.compact()}) ${durationDays}`;
@@ -264,12 +290,9 @@ export class MosaicsSupplyChangeComponent implements OnInit {
       if (this.walletService.decrypt(common)) {
         const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
 
-        const quatityZeros = this.transactionService.addZeros(this.divisibility);
-        const mosaicSupply = parseInt(`${this.formMosaicSupplyChange.get('deltaSupply').value}${quatityZeros}`);
-
         const mosaicSupplyChangeTransaction = this.proximaxProvider.mosaicSupplyChangeTransaction(
           this.formMosaicSupplyChange.get('parentMosaic').value,
-          mosaicSupply,
+          this.deltaSupply,
           this.formMosaicSupplyChange.get('mosaicSupplyType').value,
           this.walletService.currentAccount.network
         )
@@ -280,7 +303,6 @@ export class MosaicsSupplyChangeComponent implements OnInit {
         console.log(this.transactionSigned);
         this.proximaxProvider.announce(signedTransaction).subscribe(
           x => {
-            console.log('Este no es ningun error', x);
             this.blockButton = false;
             this.clearForm()
             this.blockUI.stop();
@@ -291,7 +313,6 @@ export class MosaicsSupplyChangeComponent implements OnInit {
             this.setTimeOutValidate(signedTransaction.hash);
           },
           err => {
-            console.log('Este es un ERROR', err);
             this.blockButton = false;
             this.clearForm()
             this.blockUI.stop(); // Stop blocking

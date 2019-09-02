@@ -1,0 +1,382 @@
+<div class="container mt-3rem mb-2rem animated fadeIn">
+  <div class="row">
+    <div class="col-12 d-flex justify-content-center">
+      <span class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">{{title}}</span>
+    </div>
+    <div class="col-11 mx-auto">
+      <hr class="mt-05rem mb-06rem">
+    </div>
+  </div>
+
+  <form [formGroup]="formTransfer" (ngSubmit)="sendTransfer()">
+
+    <!-- Accounts -->
+    <ng-container *ngIf="accounts.length > 1">
+      <div class="row mt-1rem mb-2rem">
+        <div class="col-11 col-md-10 col-lg-8 mx-auto">
+          <span class="fs-1rem fw-600 line-h-1-2em color-blue-intermedio">Accounts</span>
+        </div>
+        <div class="col-11 col-md-10 col-lg-8 mx-auto">
+          <ul class="nav nav-tabs fs-09rem h-account" id="myTab" role="tablist">
+            <ng-container *ngFor="let account of accounts; let i=index">
+              <!-- <li class="nav-item cursor-p" (click)="init(account.value)"> -->
+              <li class="nav-item cursor-p" (click)="changeSender(account.value)">
+                <span [ngClass]="[account.active ? 'nav-link active isActive' : 'nav-link']">
+                  {{account.value.name}}
+                  <i *ngIf="account.value.default" class="fa fa-star fs-1rem ml-10px cursor-p" aria-hidden="true"
+                    title="Default account"></i>
+                </span>
+
+              </li>
+            </ng-container>
+          </ul>
+        </div>
+
+        <ng-container *ngIf="!searching; else searchTemplate">
+          <div class="col-11 col-md-10 col-lg-8 mx-auto d-none d-sm-block">
+            <span class="fs-08rem" style="color: #404040ad;">{{sender?.address}}</span>
+          </div>
+        </ng-container>
+
+
+        <!-- <ng-template #searchTemplate>
+          <div class="col-11 col-md-10 col-lg-8 mx-auto d-flex justify-content-center ">
+            <div class="col-12">
+              <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate">
+              </mdb-progress-bar>
+            </div>
+          </div>
+        </ng-template> -->
+      </div>
+    </ng-container>
+
+    <!-- Contacts -->
+    <ng-container *ngIf="showContacts && listContacts.length > 0">
+      <div class="row">
+        <div class="col-11 col-md-10 col-lg-8 mx-auto">
+          <ng-select mdbInputDirective mdbValidate formControlName="contact" class="selectWrapper"
+            [items]="listContacts" bindLabel="label" bindValue="value" placeholder="Contact"
+            (change)="selectContact($event)">
+          </ng-select>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- RECIPIENT -->
+    <div class="row">
+      <div class="col-11 col-md-10 col-lg-8 mx-auto">
+        <div class="row">
+          <div class="col-8 col-sm-9 col-md-10">
+            <div class="md-form form-sm mt-1rem mb-0rem">
+              <input mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
+                class="form-control form-control-sm input-border" style="border: 2px solid #2ba1b9;"
+                placeholder="Recipient" formControlName="accountRecipient" id="recipient-invalid-{{invalidRecipient}}"
+                [maxlength]="configurationForm.address.maxLength" [minlength]="configurationForm.address.minLength">
+              <mdb-error
+                *ngIf="validateInput('accountRecipient').invalid && (validateInput('accountRecipient').dirty || validateInput('accountRecipient').touched)">
+                <span class="fs-08rem fw-600 color-error-message">Invalid Recipient</span>
+              </mdb-error>
+
+              <mdb-error *ngIf="msgErrorUnsupported !== ''">
+                <span class="fs-08rem fw-600 color-error-message">{{msgErrorUnsupported}}</span>
+              </mdb-error>
+            </div>
+          </div>
+
+          <!-- Show Contacts -->
+          <ng-container>
+            <div class="col-4 col-sm-3 col-md-2 d-flex justify-content-center align-items-center pt-10px">
+              <div [disabled]="listContacts.length === 0" class="background-gray-icons p-12px bord-rad-25px cursor-p"
+                (click)="showContacts = (listContacts.length > 0) ? !showContacts : showContacts"
+                [title]="(!showContacts) ? 'Show contacts': 'Hide contacts'">
+                <img class=" w-30px" [src]="(!showContacts && listContacts.length === 0) ?
+                'assets/images/img/icon-address-book-gray-28h-proximax-sirius-wallet.svg' :
+                'assets/images/img/icon-address-green-book-16h-proximax-sirius-wallet.svg'
+                ">
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEPARED -->
+    <div class="row">
+      <div class="col-12 col-md-11 col-lg-9 mx-auto">
+        <hr>
+      </div>
+    </div>
+
+    <!-- ONLY XPX -->
+    <!-- MOSAIC XPX -->
+    <div class="row">
+      <div class="col-11 col-md-10 col-lg-8 mx-auto">
+        <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
+          <div class="row">
+            <div class="col-12">
+              <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" alt="">
+              <span>{{mosaicXpx.name | uppercase}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-11 col-md-10 col-lg-8 mx-auto txt-a-center">
+        <span class="fw-600">Balance: {{balanceXpx}} XPX</span>
+      </div>
+    </div>
+
+    <!-- AMOUNT & TO BE SENT -->
+    <div class="row">
+      <div class="col-11 col-md-10 col-lg-8 mx-auto">
+        <div class="row d-flex align-items-center">
+          <!-- Amount Input -->
+          <div class="col-12 mx-auto">
+            <div class="md-form form-sm mt-1rem mb-0rem">
+              <input pattern="^[+]?([0-9]*[.])?[0-9]+$" currencyMask [options]="optionsXPX" mdbInputDirective
+                mdbValidate [validateSuccess]="true" [maxlength]="configurationForm.amount.maxLength"
+                [validateError]="true" type="text" class="form-control form-control-sm input-border input-amount"
+                placeholder="Enter amount" formControlName="amountXpx">
+              <span class="label-i fw-600">SEND</span>
+
+              <mdb-error
+                *ngIf="validateInput('amountXpx').invalid && (validateInput('amountXpx').dirty || validateInput('amountXpx').touched)">
+                <span class="fs-08rem fw-600 color-error-message">Invalid amount</span>
+              </mdb-error>
+
+              <!-- Message Error Insufficient balance-->
+              <mdb-error *ngIf="insufficientBalance">
+                <span class="fs-08rem fw-600 color-error-message">Insufficient balance</span>
+              </mdb-error>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- FIN XPX -->
+
+    <!--  OTHER MOSAICS -->
+    <ng-container *ngIf="boxOtherMosaics.length > 0">
+      <ng-container *ngFor="let otherMosaic of boxOtherMosaics; let i = index">
+        <!-- SEPARED -->
+        <div class="row">
+          <!-- <div class="col-11 col-md-11 col-lg-9 mx-auto"> -->
+          <div class="col-11 col-md-10 col-lg-8 mx-auto">
+            <hr>
+          </div>
+          <!-- <div class="col-1 d-flex justify-content-start">
+            <span class="cursor-p" title="Delete" (click)="deleteMoreMosaic(i)">x</span>
+          </div> -->
+        </div>
+
+        <div class="row">
+          <!-- Select mosaic -->
+          <div class="col-11 col-md-10 col-lg-8 mx-auto">
+            <ng-select mdbInputDirective mdbValidate class="selectWrapper" [items]="otherMosaic.selectOtherMosaics"
+              bindLabel="label" bindValue="value" placeholder="Select mosaic" (change)="otherMosaicsChange($event, i)">
+            </ng-select>
+          </div>
+
+          <!-- Balance -->
+          <ng-container *ngIf="otherMosaic.balance !== ''">
+            <div class="col-11 col-md-10 col-lg-8 mx-auto txt-a-center">
+              <span class="fw-600">Balance: {{otherMosaic.balance}} </span>
+            </div>
+          </ng-container>
+        </div>
+
+        <ng-container *ngIf="otherMosaic.balance !== ''">
+          <div class="row">
+            <div class="col-11 col-md-10 col-lg-8 mx-auto">
+              <div class="row d-flex align-items-center">
+                <!-- Amount Input -->
+                <div class="col-12 mx-auto">
+                  <div class="md-form form-sm mt-1rem mb-0rem">
+                    <input currencyMask [options]="boxOtherMosaics[i].config" mdbInputDirective mdbValidate
+                      [maxlength]="configurationForm.amount.maxLength" type="text"
+                      class="form-control form-control-sm input-border input-amount"
+                      [(ngModel)]="boxOtherMosaics[i].amount" [ngModelOptions]="{standalone: true}"
+                      (ngModelChange)="amountOtherMosaicChanged($event, otherMosaic.id, i)"
+                      placeholder="Enter quantity">
+                    <span class="label-i fw-600">SEND</span>
+
+                    <!-- Message Error Insufficient balance-->
+                    <mdb-error *ngIf="otherMosaic.errorBalance">
+                      <span class="fs-08rem fw-600 color-error-message">Insufficient balance</span>
+                    </mdb-error>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </ng-container>
+    </ng-container>
+    <!--  FIN MOSAICS -->
+
+    <hr>
+
+
+    <!-- Add mosaics -->
+    <ng-container>
+      <div class="row mt-1rem">
+        <div class="col-12 d-flex justify-content-center">
+          <button [disabled]="currentBlock === 0 || disabledBtnAddMosaic || selectOtherMosaics.length === 0" mdbBtn
+            type="button" rounded="true" mdbWavesEffect class="background-btn-inverse pl-2rem pr-2rem" size="md"
+            (click)="pushedOtherMosaics()">
+            <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
+              *ngIf="currentBlock === 0 && !disabledBtnAddMosaic"></span>
+            <span class="fs-1-2em text-cl-m fw-700">(+) Add Mosaics </span>
+          </button>
+        </div>
+      </div>
+    </ng-container>
+
+
+    <!-- FEE -->
+    <div class="row ml-01rem">
+      <div class="col-11 col-md-10 col-lg-8 mx-auto">
+        <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
+          <div class="row">
+            <div class="col-12">
+              <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" alt="">
+              <span>Fee: 0.000000 XPX</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MESSAGE -->
+    <div class="row">
+      <div class="col-11 col-md-10 col-lg-8 mx-auto">
+        <div class="md-form form-sm mt-1rem mb-0rem">
+          <textarea mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
+            id="message" class="md-textarea form-control" mdbInput placeholder="Message" formControlName="message"
+            [maxlength]="configurationForm.message.maxLength"></textarea>
+          <span class="fs-08rem text-cl-m d-flex justify-content-end">{{ charRest }}</span>
+          <mdb-error
+            *ngIf="validateInput('message').invalid && (validateInput('message').dirty || validateInput('message').touched)">
+            <span>Invalid Recipient</span>
+          </mdb-error>
+        </div>
+      </div>
+    </div>
+
+    <!-- password -->
+    <div class="row">
+      <div class="col-11 col-md-10 col-lg-8 mx-auto">
+        <div class="md-form form-sm">
+          <input [maxlength]="configurationForm.passwordWallet.maxLength"
+            [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" required
+            mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password" id="password"
+            class="form-control form-control-sm input-border" placeholder="Enter password">
+
+          <!-- VALIDATION -->
+          <mdb-error
+            *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
+            <span>Input invalid</span>
+          </mdb-error>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- BUTTONS -->
+    <div class="row">
+      <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
+        <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+          size="md" (click)="clearForm()">
+          <span class="fs-1-2em color-white">CLEAR</span>
+        </button>
+      </div>
+
+      <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
+        <button [disabled]="blockSendButton || formTransfer.invalid || errorOtherMosaics" mdbBtn type="submit"
+          rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
+          <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
+            *ngIf="blockButton"></span>
+          <span class="fs-1-2em color-white">SEND</span>
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<!-- Modal -->
+<div mdbModal #basicModal="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myBasicModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content form-elegant b-r-08rem">
+      <div class="modal-header text-center box-modal-grey b-t-r-r-08rem b-t-l-r-08rem">
+        <h6 class="modal-title w-100 dark-grey-text" id="myModalLabel">
+          <strong class="title-modal-grey">Add contact</strong>
+        </h6>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="basicModal.hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="row mt-1rem mb-1rem" *ngIf="!saveContact">
+        <div class="col-11 col-sm-12 col-md-11 mx-auto box-transparent-border-orange">
+          <div class="col-12 d-flex flex-column align-items-center">
+            <span class="font-small d-flex text-center">Do you want to save the entered address?</span>
+          </div>
+        </div>
+        <!-- BUTTONS -->
+        <div class="row mx-auto">
+          <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
+            <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+              size="md" (click)="basicModal.hide()">
+              <span class="fs-1-2em color-white">NO</span>
+            </button>
+          </div>
+
+          <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
+            <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+              (click)="saveContact = true" size="md">
+              <span class="fs-1-2em color-white">YES</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="saveContact">
+        <form>
+          <div class="modal-body mx-4">
+
+            <div class="row">
+              <div class="col-11 col-sm-10 col-lg-8 mx-auto">
+                <div class="md-form form-sm">
+                  <input required mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
+                    type="text" id="user" [(ngModel)]="formContact.name" [ngModelOptions]="{standalone: true}"
+                    class="form-control form-control-sm input-border" placeholder="Name">
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-11 col-sm-10 col-lg-8 mx-auto">
+                <div class="md-form form-sm">
+                  <input required mdbInputDirective readonly mdbValidate [validateSuccess]="true" [validateError]="true"
+                    type="text" [(ngModel)]="formContact.address" [ngModelOptions]="{standalone: true}" id="address"
+                    class="form-control form-control-sm input-border" placeholder="address">
+                </div>
+              </div>
+            </div>
+
+            <div class="row mx-auto">
+              <div class="col-12 d-flex justify-content-center">
+                <button mdbBtn type="button" [disabled]="formContact.name === ''" rounded="true" mdbWavesEffect
+                  class="f-w-600 background-btn pl-2rem pr-2rem" size="md" (click)="saveContactNew()">
+                  <span class="fs-1-2em color-white">SAVE</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ngx-ui-loader>
+</ngx-ui-loader>

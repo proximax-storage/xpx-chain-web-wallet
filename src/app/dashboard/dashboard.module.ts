@@ -8,7 +8,7 @@ import { CoreModule } from '../core/core.module';
 
 @NgModule({
   declarations: [
-    DashboardComponent
+    DashboardComponent,
   ],
   imports: [
     CoreModule,

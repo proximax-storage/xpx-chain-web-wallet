@@ -6,19 +6,20 @@ export const AppConfig: Config = {
     accountCreated: 'account-created',
     addressBook: 'address-book',
     addContacts: 'add-contacts',
-    apostille: 'apostille',
-    audiApostille: 'audit-apostille',
+    apostille: 'attestation',
+    audiApostille: 'audit-attestation',
     auth: 'auth',
     aliasAddressToNamespace: 'alias-address-to-namespace',
+    createAccount: 'create-account',
+    createApostille: 'create-attestation',
+    convertToAccountMultisign: 'convert-account-multisign',
     createMosaic: 'create-mosaic',
-    createMultisignature: 'create-multisignature-contract',
     createNamespace: 'create-namespace',
     createPoll: 'create-poll',
     createTransfer: 'create-transfer',
     createWallet: 'create-wallet',
-    createAccount: 'create-account',
     dashboard: 'dashboard',
-    editMultisignatureContract: 'edit-multisignature-contract',
+    editAccountMultisign: 'edit-account-multisign',
     explorer: 'explorer',
     extendNamespace: 'extend-namespace',
     service: 'services',
@@ -32,6 +33,7 @@ export const AppConfig: Config = {
     linkTheNamespaceToAnAddress: 'alias-namespace-to-an-address',
     MosaicSupplyChange: 'mosaic-supply-change',
     MultiSign: 'multi-signatures',
+    partial: 'partial',
     polls: 'polls',
     renewNamespace: 'renew-namespace',
     renovateNamespace: 'renovate-namespace',
@@ -40,7 +42,10 @@ export const AppConfig: Config = {
     selectTypeCreationAccount: 'select-type-creation-account',
     signMultiSigTransactions: 'sign-multisignature-transactions',
     viewAllAccount: 'view-all-account',
+    voteInPoll: 'vote-poll',
     walletCreated: 'wallet-created',
+    nis1AccountList: 'nis1-account-list',
+    accountList: 'account-list'
   }
 };
 
@@ -50,21 +55,23 @@ export interface Config {
   routes: {
     account: string;
     accountCreated: string;
+    accountList: string;
     addressBook: string;
     addContacts: string;
     apostille: string;
     audiApostille: string;
     auth: string;
+    convertToAccountMultisign: string;
     aliasAddressToNamespace: string;
     createMosaic: string;
-    createMultisignature: string;
     createNamespace: string;
     createPoll: string;
     createTransfer: string;
     createWallet: string;
     createAccount: string;
+    createApostille: string;
     dashboard: string;
-    editMultisignatureContract: string;
+    editAccountMultisign: string;
     explorer: string;
     extendNamespace: string;
     service: string;
@@ -78,6 +85,7 @@ export interface Config {
     linkTheNamespaceToAnAddress: string;
     MosaicSupplyChange: string;
     MultiSign: string;
+    partial: string;
     polls: string;
     renewNamespace: string;
     renovateNamespace: string;
@@ -86,6 +94,8 @@ export interface Config {
     selectTypeCreationAccount: string;
     signMultiSigTransactions: string;
     viewAllAccount: string;
+    voteInPoll: string;
     walletCreated: string;
+    nis1AccountList: string;
   };
 }

@@ -1,32 +1,5 @@
 <div class="container mt-3rem mb-1rem animated fadeIn">
-  <div class="row">
-    <div class="col-12 col-md-8">
-      <span class="fs-1rem txt-a-center line-h-1-2em color-grey">{{
-        moduleName
-      }}</span>
-      <span class="fs-1rem txt-a-center line-h-1-2em color-grey"> > </span>
-      <span class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">{{ componentName }}</span>
-    </div>
-
-    <div class="col-12 col-md-4 d-flex justify-content-start justify-content-md-end">
-      <a class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio" [routerLink]="[uploadNew]">
-        <span>Upload a New File</span>
-      </a>
-      <div class="col-2 d-flex justify-content-center">
-        <div class="col-6">
-          <div class="line-separator h-100porcent"></div>
-        </div>
-      </div>
-      <a class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio" [routerLink]="[goBack]">
-        <span>Back to Services</span>
-      </a>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-12">
-      <hr class="mt-03rem mb-05rem" />
-    </div>
-  </div>
+  <app-header [params]="paramsHeader"></app-header>
 </div>
 
 <!-- HEADER SEARCH -->
@@ -35,14 +8,11 @@
     <div class="col-10 mx-auto">
       <div class="row">
         <!-- SELECT -->
-        <div class="col-12 col-sm-6 col-md-6 col-lg-3 mx-auto pt-07rem">
-          <div class="md-form mt-1rem mb-1rem caja-gris">
-
-            <mdb-select placeholder="Select type search" [(ngModel)]="typeSearch" [options]="optionTypeSearch" required
-              class="colorful-select dropdown-default" mdbInputDirective [validateSuccess]="false"
-              [validateError]="false">
-            </mdb-select>
-          </div>
+        <div class="col-12 col-sm-6 col-md-6 col-lg-3 mx-auto mt-1rem mb-1rem">
+          <ng-select mdbInputDirective mdbValidate [(ngModel)]="typeSearch" class="selectWrapper"
+            [items]="optionTypeSearch" bindLabel="label" bindValue="value" placeholder="Select type search"
+            (change)="selectContact($event)">
+          </ng-select>
         </div>
 
         <!-- Keyword or number -->
@@ -52,19 +22,20 @@
         </div>
 
         <div
-          class="col-12 col-md-12 col-lg-2 d-flex align-items-center justify-content-end background-dark-green-plus pt-05rem">
+          class="col-12 col-md-12 col-lg-2 d-flex align-items-center justify-content-center background-dark-green-plus pt-05rem">
           <button mdbBtn type="submit" rounded="true" mdbWavesEffect
-            class="f-w-600 background-btn overflow-ellipsis-nowrap" size="md" (click)="searchData()">
+            class="f-w-600 background-btn overflow-ellipsis-nowrap" size="sm" (click)="searchData()">
+            <i class="fa fa-search color-white" aria-hidden="true"></i> &nbsp;
             <span class="fs-1em color-white">SEARCH</span>
           </button>
         </div>
-        <div
+        <!-- <div
           class="col-12 col-md-12 col-lg-2 d-flex align-items-center justify-content-start background-dark-green-plus pt-05rem">
           <button mdbBtn type="submit" rounded="true" mdbWavesEffect
             class="f-w-600 background-btn overflow-ellipsis-nowrap" size="md" (click)="clearData()">
             <span class="fs-1em color-white">REFRESH</span>
           </button>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
@@ -80,6 +51,15 @@
 <!-- TABLE -->
 <div class="container">
   <div class="row mt-2rem">
+
+    <div class="col-12 d-flex justify-content-end background-dark-green-plus pt-05rem">
+      <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn overflow-ellipsis-nowrap"
+        size="sm" (click)="clearData()">
+        <i class="fa fa-refresh color-white" aria-hidden="true"></i> &nbsp;
+        <span class="fs-1em color-white">REFRESH</span>
+      </button>
+    </div>
+
     <div class="col-12 mx-auto">
       <div class="table-responsive table-hover">
         <table mdbTable #tableEl="mdbTable" id="mdbTable" striped="true"

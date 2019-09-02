@@ -7,6 +7,7 @@ import { NgxMaskModule } from 'ngx-mask';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { NgxCurrencyModule } from "ngx-currency";
 import { NgxUiLoaderModule, NgxUiLoaderConfig, POSITION, SPINNER, PB_DIRECTION } from 'ngx-ui-loader';
+import { TagInputModule } from 'ngx-chips';
 
 import { MdbModule } from '../shared/moduls/mdb/mdb.module';
 import { TransferTypeComponent } from '../dashboard/components/transfer-type/transfer-type.component';
@@ -22,6 +23,10 @@ import { SecretProofComponent } from '../dashboard/components/secret-proof/secre
 import { MosaicsInfoComponent } from '../dashboard/components/mosaics-info/mosaics-info.component';
 import { MosaicAliasComponent } from '../dashboard/components/mosaic-alias/mosaic-alias.component';
 import { AddressAliasTypeComponent } from '../dashboard/components/address-alias-type/address-alias-type.component';
+import { StringFilterPipe } from '../shared/pipes/string-filter.pipe';
+import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
+import { AttestationTypeComponent } from '../dashboard/components/attestation-type/attestation-type.component';
+import { VoteTypeComponent } from '../dashboard/components/vote-type/vote-type.component';
 
 const ngxUiLoaderConfig: NgxUiLoaderConfig = {
   bgsColor: '#306eb5',
@@ -49,10 +54,13 @@ const components = [
   SecretProofComponent,
   MosaicsInfoComponent,
   MosaicAliasComponent,
-  AddressAliasTypeComponent
+  AddressAliasTypeComponent,
+  AttestationTypeComponent,
+  VoteTypeComponent
 ]
 
 const moduls = [
+  TagInputModule,
   NgSelectModule,
   NgxPaginationModule,
   ReactiveFormsModule,
@@ -63,12 +71,17 @@ const moduls = [
 
 
 @NgModule({
-  declarations: [components],
+  declarations: [
+    components,
+    StringFilterPipe
+  ],
   imports: [
     CommonModule,
     moduls,
     NgxMaskModule.forRoot(),
     MdbModule.forRoot(),
+    OwlDateTimeModule, 
+    OwlNativeDateTimeModule,
     NgxUiLoaderModule.forRoot(ngxUiLoaderConfig)
   ],
   exports: [
@@ -76,7 +89,10 @@ const moduls = [
     NgxMaskModule,
     NgxUiLoaderModule,
     moduls,
-    components
+    OwlDateTimeModule, 
+    OwlNativeDateTimeModule,
+    components,
+    StringFilterPipe
   ]
 })
 export class CoreModule { }

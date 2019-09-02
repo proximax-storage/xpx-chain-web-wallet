@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
-import { TransactionsInterface, TransactionsService } from '../../../transfer/services/transactions.service';
+import { TransactionsInterface, TransactionsService } from '../../../transactions/services/transactions.service';
 
 @Component({
   selector: 'app-transfer-type',

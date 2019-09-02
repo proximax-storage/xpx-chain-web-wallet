@@ -8,6 +8,7 @@ import { NamespacesService } from '../../../servicesModule/services/namespaces.s
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 import { AppConfig } from '../../../config/app.config';
 import { ServicesModuleService } from '../../../servicesModule/services/services-module.service';
+// import { NemServiceService } from '../../../shared/services/nem-service.service';
 
 
 @Component({
@@ -35,8 +36,11 @@ export class ImportWalletComponent implements OnInit {
     private walletService: WalletService,
     private proximaxProvider: ProximaxProvider,
     private router: Router,
-    private serviceModuleService: ServicesModuleService
-  ) { }
+    private serviceModuleService: ServicesModuleService,
+    // private nemProvider: NemServiceService
+  ) {
+    // this.nemProvider.createWalletPrivateKey('498a540f5266ca7e9aa4af3c65c42464a72508723302e1217c92b5ed78c7a980', '1q2w3e4r')
+  }
 
   ngOnInit() {
     this.configurationForm = this.sharedService.configurationForm;
@@ -131,7 +135,8 @@ export class ImportWalletComponent implements OnInit {
             wallet.
               encryptedPrivateKey.encryptedKey,
             wallet.encryptedPrivateKey.iv
-          ).toUpperCase(), wallet.network)
+          ).toUpperCase(), wallet.network),
+          isMultisign: null
         });
 
         this.clearForm();

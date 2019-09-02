@@ -1,0 +1,61 @@
+.table-custonm {
+    border: 10px solid #9a9a9a;
+}
+
+/* badge-silver-proximax-sirius-wallet */
+
+.w-50px {
+    width: 50px !important;
+  }
+
+  .w-130px {
+    width: 130px !important;
+  }
+
+  .break-all{
+    word-break: break-all;
+    width: 145px;
+}
+  .celda{
+    height: auto;
+    width: 200px;
+    }
+
+     .certificate {
+        border: 17px solid #ddd;
+    }
+    th, td {
+        text-align: center;
+        padding: 8px;
+      }
+
+
+      table.result td, table.result th {
+
+        padding-top: 0.3rem;
+        padding-bottom: 0.3rem;
+    
+    }
+
+    .result{
+        overflow:scroll;
+        height:50px;
+        /* width:500px; */
+   }
+
+  /* table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+   border: 17px solid #ddd;
+  }
+  
+  th, td {
+    text-align: center;
+    padding: 8px;
+  }
+
+  .datatable-style-vote {
+    display: block;
+    width: 100%; */
+  /* } */

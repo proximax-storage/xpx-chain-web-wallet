@@ -9,70 +9,76 @@ export class SharedService {
 
   configurationForm: ConfigurationForm = {
     address: {
-      minLength: 40, maxLength: 46
+      minLength: 40,
+      maxLength: 46
+    },
+    amount: {
+      maxLength: 20
+    },
+    content: {
+      minLength: 0,
+      maxLength: 240
+    },
+    documentTitle: {
+      minLength: 1,
+      maxLength: 64
     },
     nameWallet: {
-      minLength: 2, maxLength: 30
+      minLength: 2,
+      maxLength: 30
     },
     namespaceName: {
-      minLength: 3, maxLength: 64
+      minLength: 3,
+      maxLength: 16
+    },
+    subNamespaceName: {
+      minLength: 3,
+      maxLength: 64
     },
     privateKey: {
-      minLength: 64, maxLength: 64
+      minLength: 64,
+      maxLength: 64
     },
     publicKey: {
-      minLength: 64, maxLength: 64
+      minLength: 64,
+      maxLength: 64
     },
     passwordWallet: {
       minLength: 8,
       maxLength: 30
     },
-    amount: {
-      maxLength: 20
-    },
     message: {
       maxLength: 1024
-    }
+    },
+    tags: {
+      minLength: 1,
+      maxLength: 240
+    },
   };
 
   constructor(
     private toastrService: ToastService
   ) { }
 
+
   /**
    *
    *
-   * @param {string} typeParam
-   * @param {string} nameParam
-   * @param {string} classParam
-   * @param {string} iconParam
-   * @param {string} linkParam
-   * @param {boolean} viewParam
-   * @param {object} subMenuParam
-   * @returns
+   * @param {MenuInterface} params
+   * @returns {StructureHeader}
    * @memberof SharedService
    */
-  buildHeader(
-    typeParam: 'default' | 'dropdown',
-    nameParam: string,
-    classParam: string,
-    iconParam: string,
-    rolParam: boolean,
-    linkParam: string,
-    viewParam: boolean,
-    subMenuParam: object,
-    selectedParam: boolean
-  ): StructureHeader {
+  buildHeader(params: MenuInterface): StructureHeader {
     return {
-      type: typeParam,
-      name: nameParam,
-      class: classParam,
-      icon: iconParam,
-      rol: rolParam,
-      link: linkParam,
-      show: viewParam,
-      submenu: subMenuParam,
-      selected: selectedParam
+      type: params.type,
+      name: params.name,
+      class: params.class,
+      icon: params.icon,
+      rol: params.rol,
+      link: params.link,
+      show: params.view,
+      submenu: params.subMenu,
+      selected: params.selected
     }
   }
 
@@ -118,6 +124,17 @@ export class SharedService {
 }
 
 
+export interface MenuInterface {
+  type: 'default' | 'dropdown',
+  name: string,
+  class: string,
+  icon: string,
+  rol: boolean,
+  link: string,
+  view: boolean,
+  subMenu: object,
+  selected: boolean
+}
 
 export interface ConfigurationForm {
   address?: {
@@ -125,6 +142,18 @@ export interface ConfigurationForm {
     maxLength: number;
   };
   amount?: {
+    maxLength: number;
+  };
+  content?: {
+    minLength: number;
+    maxLength: number;
+  };
+  documentTitle?: {
+    minLength: number;
+    maxLength: number;
+  };
+  tags?: {
+    minLength: number;
     maxLength: number;
   };
   message?: {
@@ -135,6 +164,10 @@ export interface ConfigurationForm {
     maxLength: number;
   };
   namespaceName?: {
+    minLength: number;
+    maxLength: number;
+  };
+  subNamespaceName?: {
     minLength: number;
     maxLength: number;
   };

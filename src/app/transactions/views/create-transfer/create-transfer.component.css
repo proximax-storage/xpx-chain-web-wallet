@@ -1,0 +1,96 @@
+.caja-gris {
+  padding: 0px 10px !important;
+  margin: 0 !important;
+  border: 1px solid #CCC;
+  border-radius: 20px;
+  display: flex;
+}
+
+.caja-gris input, .caja-gris textarea, .caja-gris ng-select  {
+  margin: 0 !important;
+  border: 0 !important;
+  width: 100%;
+  flex: 1;
+}
+
+.icono {
+  width: 35px;
+  padding-right:10px;
+  display: inline-block;
+  line-height:18px;
+}
+
+.ng-arrow-wrapper::after {
+  border:0;
+}
+
+.ng-select-container:after {
+  border:0;
+}
+
+
+#recipient-invalid-true{
+  box-shadow: none !important;
+  border: 2px solid #e06e38 !important;
+}
+
+.amountToBeSent{
+  text-align: center;
+  line-height: 1rem;
+  color: #171717;
+}
+
+.box-accounts{
+  color: #3370b6;
+  border: 1px solid #306eb5;
+  padding: 10px;
+  font-size: .7rem;
+  width: 100%;
+  text-align: center;
+  cursor: pointer;
+}
+
+.box-accounts-active{
+  background: #306eb5 !important;
+  color: white !important;
+}
+
+.label-i {
+  position: absolute;
+  margin-top: -50px;
+  padding: 12px;
+  color: #b5b5b5;
+  font-size: .8rem;
+  padding-top: .8rem;
+}
+
+.isActive{
+  background: #306eb5 !important;
+  color: white !important;
+}
+
+.h-account {
+  height: 50px;
+  overflow-x: auto;
+  display: -webkit-box;
+  overflow-y: hidden;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+}
+
+
+.btn.disabled, .btn:disabled{
+  background-color: #dedede !important;
+    border-color: #9a9a9a !important;
+}

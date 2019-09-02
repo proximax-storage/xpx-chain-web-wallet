@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ItemsHeaderInterface, SharedService } from '../../../services/shared.service';
+import { ItemsHeaderInterface, SharedService, MenuInterface } from '../../../services/shared.service';
 import { AppConfig } from '../../../../config/app.config';
 import { environment } from '../../../../../environments/environment';
 
@@ -20,13 +20,73 @@ export class SidebarAuthComponent implements OnInit {
   }
 
   ngOnInit() {
+    const paramsHome: MenuInterface = {
+      type: 'default',
+      name: 'Home',
+      class: '',
+      icon: '',
+      rol: false,
+      link: `/${AppConfig.routes.home}`,
+      view: true,
+      subMenu: {},
+      selected: false
+    }
+
+    const paramsSignIn: MenuInterface = {
+      type: 'default',
+      name: 'Sign In',
+      class: '',
+      icon: '',
+      rol: false,
+      link: `/${AppConfig.routes.auth}`,
+      view: true,
+      subMenu: {},
+      selected: false
+    }
+
+    const createWallet: MenuInterface = {
+      type: 'default',
+      name: 'Create',
+      class: '',
+      icon: '',
+      rol: false,
+      link: `/${AppConfig.routes.createWallet}`,
+      view: true,
+      subMenu: {},
+      selected: false
+    }
+
+    const importWallet: MenuInterface = {
+      type: 'default',
+      name: 'Import',
+      class: '',
+      icon: '',
+      rol: false,
+      link: `/${AppConfig.routes.importWallet}`,
+      view: true,
+      subMenu: {},
+      selected: false
+    }
+
+    const paramsWallet: MenuInterface = {
+      type: 'dropdown',
+      name: 'Wallet',
+      class: 'ml-m05rem',
+      icon: '',
+      rol: false,
+      link: ``,
+      view: false,
+      subMenu: {
+        createWallet,
+        importWallet
+      },
+      selected: false
+    }
+
     this.itemsHeader = {
-      home: this.sharedService.buildHeader('default', 'Home', '', '', false, `/${AppConfig.routes.home}`, true, {}, false),
-      auth: this.sharedService.buildHeader('default', 'Sign In', '', '', false, `/${AppConfig.routes.auth}`, true, {}, false),
-      wallet: this.sharedService.buildHeader('dropdown', 'Wallet', 'ml-m05rem', '', false, ``, false, {
-        create: this.sharedService.buildHeader('default', 'Create', '', '', false, `/${AppConfig.routes.createWallet}`, true, {}, false),
-        import: this.sharedService.buildHeader('default', 'Import', '', '', false, `/${AppConfig.routes.importWallet}`, true, {}, false)
-      }, false),
+      home: this.sharedService.buildHeader(paramsHome),
+      auth: this.sharedService.buildHeader(paramsSignIn),
+      wallet: this.sharedService.buildHeader(paramsWallet),
     }
   }
 }

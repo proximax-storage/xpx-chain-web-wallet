@@ -40,7 +40,9 @@ import {
   AliasActionType,
   BlockchainHttp,
   NamespaceInfo,
-  MultisigAccountInfo
+  MultisigAccountInfo,
+  AggregateTransaction,
+  CosignatureTransaction
 } from 'tsjs-xpx-chain-sdk';
 import { mergeMap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
@@ -105,7 +107,27 @@ export class ProximaxProvider {
   }
 
 
+  /**
+   *
+   *
+   * @param {string} transactionId
+   * @returns {*}
+   * @memberof ProximaxProvider
+   */
+  getTransaction(transactionId: string): any { //Observable<Transaction> {
+    return this.transactionHttp.getTransaction(transactionId);
+  }
 
+  /**
+   *
+   *
+   * @param {Array} transactionId
+   * @returns {*}
+   * @memberof ProximaxProvider
+   */
+  getTransactions(transactionsId: Array<string>): any { //Observable<Transaction> {
+    return this.transactionHttp.getTransactions(transactionsId);
+  }
 
   /**
    *
@@ -299,6 +321,19 @@ export class ProximaxProvider {
     return Address.createFromPublicKey(publicKey, networkType)
   }
 
+  /**
+   *
+   *
+   * @param {*} transaction
+   * @param {*} account
+   * @memberof ProximaxProvider
+   */
+  cosignAggregateBondedTransaction(transaction: AggregateTransaction, account: Account): Observable<TransactionAnnounceResponse> {
+    const cosignatureTransaction = CosignatureTransaction.create(transaction);
+    return this.transactionHttp.announceAggregateBondedCosignature(
+      account.signCosignatureTransaction(cosignatureTransaction)
+    );
+  }
 
   /**
    * Create an Address from a given raw address.
@@ -321,6 +356,39 @@ export class ProximaxProvider {
     return MosaicNonce.createRandom();
   }
 
+
+  /**
+   *
+   *
+   * @param {NamespaceId} namespaceId
+   * @returns {Observable<Address>}
+   * @memberof ProximaxProvider
+   */
+  getLinkedAddress(namespaceId: NamespaceId): Observable<Address> {
+    return this.namespaceHttp.getLinkedAddress(namespaceId);
+  }
+
+  /**
+   *
+   *
+   * @param {NamespaceId} namespace
+   * @returns {Observable<MosaicId>}
+   * @memberof ProximaxProvider
+   */
+  getLinkedMosaicId(namespace: NamespaceId): Observable<MosaicId> {
+    return this.namespaceHttp.getLinkedMosaicId(namespace);
+  }
+
+  /**
+   *
+   *
+   * @param {PublicAccount} publicAccount
+   * @returns
+   * @memberof ProximaxProvider
+   */
+  getAggregateBondedTransactions(publicAccount: PublicAccount): Observable<AggregateTransaction[]> {
+    return this.accountHttp.aggregateBondedTransactions(publicAccount);
+  }
 
   /******************** FIN COW **********************/
 
@@ -501,16 +569,7 @@ export class ProximaxProvider {
     return this.namespaceHttp.getNamespace(namespace);
   }
 
-  /**
-   *
-   *
-   * @param {NamespaceId} namespace
-   * @returns {Observable<MosaicId>}
-   * @memberof ProximaxProvider
-   */
-  getLinkedMosaicId(namespace: NamespaceId): Observable<MosaicId> {
-    return this.namespaceHttp.getLinkedMosaicId(namespace);
-  }
+
 
 
   /**

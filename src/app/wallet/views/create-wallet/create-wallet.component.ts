@@ -116,7 +116,8 @@ export class CreateWalletComponent implements OnInit {
             wallet.
               encryptedPrivateKey.encryptedKey,
             wallet.encryptedPrivateKey.iv
-          ).toUpperCase(), wallet.network)
+          ).toUpperCase(), wallet.network),
+          isMultisign: null
         });
 
 

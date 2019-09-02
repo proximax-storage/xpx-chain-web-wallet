@@ -1,10 +1,9 @@
 import { Component, OnInit, ViewChild, ChangeDetectorRef, HostListener } from '@angular/core';
-import { FormBuilder } from "@angular/forms";
-import { MdbTablePaginationComponent, MdbTableDirective } from 'ng-uikit-pro-standard';
-import { SharedService } from 'src/app/shared/services/shared.service';
-import { ServicesModuleService } from "../../../services/services-module.service";
+import { MdbTableDirective, ModalDirective } from 'ng-uikit-pro-standard';
+import { ServicesModuleService, HeaderServicesInterface } from "../../../services/services-module.service";
 import { AppConfig } from '../../../../config/app.config';
 import { Router } from '@angular/router';
+import { SharedService } from 'src/app/shared/services/shared.service';
 
 @Component({
   selector: 'app-list-contacts',
@@ -13,12 +12,14 @@ import { Router } from '@angular/router';
 })
 export class ListContactsComponent {
 
-  moduleName = 'Address Book';
-  componentName = 'LIST';
-  goBack = `/${AppConfig.routes.service}`;
-  addContacts = `/${AppConfig.routes.addContacts}`;
+  @ViewChild('basicModal', { static: true }) basicModal: ModalDirective;
+  paramsHeader: HeaderServicesInterface = {
+    moduleName: 'Address Book',
+    componentName: 'LIST',
+    extraButton: 'Add new contact',
+    routerExtraButton: `/${AppConfig.routes.addContacts}`
+  };
   //Pagination
-  @ViewChild(MdbTablePaginationComponent, { static: true }) mdbTablePagination: MdbTablePaginationComponent;
   @ViewChild(MdbTableDirective, { static: true }) mdbTable: MdbTableDirective;
   @HostListener('input') oninput() {
     this.searchItems();
@@ -30,12 +31,13 @@ export class ListContactsComponent {
   searchContact = '';
   searching = false;
   hideTable = false;
-
+  labelRemove = '';
+  p = 1;
 
   constructor(
-    private cdRef: ChangeDetectorRef,
     private serviceModuleService: ServicesModuleService,
-    private router: Router
+    private router: Router,
+    private sharedService: SharedService
   ) {
     this.hideTable = false;
   }
@@ -48,14 +50,6 @@ export class ListContactsComponent {
     this.contacts = this.mdbTable.getDataSource();
     this.previous = this.mdbTable.getDataSource();
   }
-
-  ngAfterViewInit() {
-    this.mdbTablePagination.setMaxVisibleItemsNumberTo(5);
-    this.mdbTablePagination.calculateFirstItemIndex();
-    this.mdbTablePagination.calculateLastItemIndex();
-    this.cdRef.detectChanges();
-  }
-
 
   navigate(name) {
     this.router.navigate([`${AppConfig.routes.addContacts}/${name}`]);
@@ -80,19 +74,26 @@ export class ListContactsComponent {
   }
 
   /**
-   * Remove contacts
+   * Method to open basic modal
    *
    * @param {string} label
    * @memberof AddressBookComponent
    */
   remove(label: string) {
-    const newContacts = [];
-    this.contacts.forEach(element => {
-      if (element.label !== label) {
-        newContacts.push(element);
-      }
-    });
+    this.basicModal.show();
+    this.labelRemove = label;
+  }
+
+  /**
+   * Method to delete contacts
+   *
+   * @memberof AddressBookComponent
+   */
+  deleteContact() {
+    const newContacts = this.contacts.filter(element => element.label !== this.labelRemove);
     this.serviceModuleService.setBookAddress(newContacts, '');
+    this.basicModal.hide();
+    this.sharedService.showSuccess('', 'The contact has been successfully deleted');
     this.contacts = newContacts;
     this.mdbTable.setDataSource(this.contacts);
     this.contacts = this.mdbTable.getDataSource();

@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
 import { NamespacesService, NamespaceStorageInterface } from '../../../servicesModule/services/namespaces.service';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
-import { TransactionsService } from '../../../transfer/services/transactions.service';
+import { TransactionsService } from '../../../transactions/services/transactions.service';
 
 @Component({
   selector: 'app-register-namespace-type',
@@ -30,16 +30,6 @@ export class RegisterNamespaceTypeComponent implements OnInit {
     this.nameNamespace = this.registerNamespaceTransaction.data.namespaceName;
     const namespaceName = await this.namespaceService.getNamespacesName([this.registerNamespaceTransaction.data.parentId]);
     console.log(namespaceName);
-    // switch (this.registerNamespaceTransaction.data.namespaceType) {
-    //   case 0:
-    //     name =
-    //     break;
-
-    //   default:
-    //     break;
-    // }
-
-
     if (this.registerNamespaceTransaction.data.namespaceType !== 0) {
       if (this.registerNamespaceTransaction.data.parentId !== undefined) {
         let level: NamespaceStorageInterface[] = await this.namespaceService.getNamespaceFromId([this.registerNamespaceTransaction.data.parentId]);

@@ -1,0 +1,172 @@
+<!-- GENERAL CONTAINER -->
+<div class="mt-3rem mb-3rem">
+  <app-header [params]="paramsHeader"></app-header>
+  <!-- MAIN VIEW< -->
+  <div class="container-fluid" *ngIf="currentView">
+    <div class="row">
+      <div class="col-11 col-md-10 mx-auto">
+        <div class="row">
+          <div class="col-8 d-flex justify-content-center flex-column mx-auto mb-1rem mt-1rem box-grey" mdbBtn mdbWavesEffect>
+            <div class="row">
+              <div class="col-12 d-flex justify-content-center mx-auto mb-1rem mt-1rem">
+                <label class="d-flex justify-content-center mx-auto box-drop col-12" for="fileInput">
+                  <div class="row txt-a-center p-05rem">
+                    <img class="mr-1rem h2em" src="assets/images/img/icon-upload-gray-28h-proximax-sirius-wallet.svg"
+                      width="25">
+                    <span class="fs-1-2em color-grey fw-600">UPLOAD FILE</span>
+                  </div>
+                </label>
+                <input id="fileInput" multiple [hidden]="true" type="file"
+                  (change)="fileChange($event.target.files,$event)">
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-12 m-0 p-5px">
+                <div class="col-12 color-black fs-075rem d-flex" *ngFor="let result of ourFile.slice(); let i = index">
+                  <i class="fa fa-trash p-5px" aria-hidden="true" (click)="ourFile.splice(i, 1);"></i>
+                  <p class="mb-0 p-5px word-break-all">{{result.name}}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- EXAMPLE -->
+          <div class="col-9 d-flex justify-content-center mx-auto mb-1rem mt-1rem p-0">
+            <div class="box-transparent-border-orange m-0">
+              <p><span class="fs-075rem w-b-a txt-a-center">
+                So that files can be audited they mush be in the attestation format.
+              </span></p>
+              <p class="mb-0">
+                <span class="font-title fw-700 fs-09rem">FOR EXAMPLE</span>
+              </p>
+              <span class="fs-075rem w-b-a txt-a-center">
+                MyProject -- Apostille TX 0e94da29910ae64bb544e9de0e6a5c6440bd75e6bedafd81b5b4cfa729ca25ef -- Date
+                YYYY-MM-DD.pdf
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Searching and icon reload -->
+        <div class="row mt-2rem mb-2rem" *ngIf="isProcessing">
+          <div class="col-11 col-sm-11 col-lg-10 mx-auto">
+            <!-- Searching -->
+            <ng-container>
+              <div class="col-12">
+                <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate">
+                </mdb-progress-bar>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+
+        <!-- BUTTONS -->
+        <div class="row">
+          <div class="col-11 col-sm-11 col-lg-10 mx-auto mb-2rem">
+            <div class="row">
+              <div class="col-6 col-sm-6 col-lg-10 d-flex justify-content-center mx-auto">
+                <button mdbBtn type="submit" rounded="true" mdbWavesEffect
+                  class="f-w-600 background-btn pl-2rem pr-2rem" (click)="sendPoll()">
+                  <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
+                    *ngIf="blockButton"></span>
+                  <span class="fs-1-2em color-white">CLEAR</span>
+                </button>
+
+                <button mdbBtn type="submit" rounded="true" mdbWavesEffect
+                  class="f-w-600 background-btn pl-2rem pr-2rem" (click)="verifyFiles()"
+                  [disabled]="ourFile.length === 0">
+                  <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
+                    *ngIf="blockButton"></span>
+                  <span class="fs-1-2em color-white">AUDIT</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARDS VIEW -->
+  <div class="container-fluid mb-2rem" *ngIf="!currentView">
+
+    <div class="row mt-2rem mb-2rem" *ngIf="searching">
+      <div class="col-11 col-sm-11 col-lg-10 mx-auto">
+        <!-- Searching -->
+        <ng-container>
+          <div class="col-12">
+            <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate">
+            </mdb-progress-bar>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-11 col-md-10 mx-auto">
+        <div class="row d-flex justify-content-start align-items-stretch mb-1rem">
+          <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4 d-flex mt-1rem audit-back"
+            *ngFor="let item of auditResults">
+            <div class="audit-front d-flex"
+              [ngClass]="{'audit-background cursor-p': item.fileHash !== '', 'audit-background-err': item.fileHash === ''}"
+              (click)="verifyModal(item.transaction)">
+              <div class="col-8 p-05rem background-white">
+                <div>
+                  <p class="audit-title">{{ item.filename }}</p>
+                </div>
+                <div *ngIf="item.fileHash !== ''">
+                  <p class="audit-subtitle">File hash</p>
+                  <p class="audit-value">{{ item.fileHash }}</p>
+                </div>
+                <div *ngIf="item.fileHash !== ''">
+                  <p class="audit-subtitle">Date</p>
+                  <p class="audit-value">{{ item.date }}</p>
+                </div>
+                <div *ngIf="item.fileHash === ''">
+                  <p class="audit-value">{{ item.result }}</p>
+                </div>
+              </div>
+              <div class="col-4 audit-medal mx-auto" [ngClass]="[(item.fileHash === '') ? 'd-flex justify-content-center align-items-center' : '']">
+                <figure *ngIf="item.fileHash !== ''" class="mt-05rem">
+                  <img src="assets/images/img/badge-silver-proximax-sirius-wallet.svg" alt="">
+                </figure>
+                <figure *ngIf="item.fileHash === ''" class="txt-a-center mt-0">
+                  <i class="fa fa-times fa-3x color-white"></i>
+                </figure>
+                <div *ngIf="item.transaction !== undefined" class="mb-05rem">
+                  <p class="color-white m-0 txt-a-center" *ngIf="item.transaction?.privateFile === true">PRIVATE</p>
+                  <p class="color-white m-0 txt-a-center" *ngIf="item.transaction?.privateFile === false">PUBLIC</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="d-flex align-items-center">
+  <div mdbModal #basicModal="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="basicModal"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg d-flex align-items-center" role="document">
+      <div class="modal-content form-elegant bord-rad-1-5rem">
+        <div class="modal-header text-center box-modal-white b-t-r-r-1-5rem b-t-l-r-1-5rem p-05rem">
+          <span class="modal-title w-100" id="myModalLabel">
+            <strong class="title-modal-blue">Attestated File</strong>
+          </span>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="basicModal.hide()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <ng-container *ngIf="modalInfo !== null">
+            <app-attestation-type [transactionInfo]="modalInfo"></app-attestation-type>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

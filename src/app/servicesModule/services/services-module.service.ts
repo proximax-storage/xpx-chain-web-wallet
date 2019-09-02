@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Address } from 'tsjs-xpx-chain-sdk';
+import { Address, NamespaceId, PublicAccount } from 'tsjs-xpx-chain-sdk';
 import { WalletService } from '../../wallet/services/wallet.service';
 import { environment } from 'src/environments/environment';
+import { TransactionsInterface } from '../../transactions/services/transactions.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,10 +16,7 @@ export class ServicesModuleService {
     private walletService: WalletService
   ) { }
 
-
   /**
-   *
-   *
    * @param {string} titleParam
    * @param {boolean} showParam
    * @param {string} descriptionParam
@@ -61,7 +59,7 @@ export class ServicesModuleService {
    */
   saveContacts(params: ContactsStorageInterface) {
     const dataStorage = (params.nameItem === '') ? this.getBooksAddress() : localStorage.getItem(`${environment.itemBooksAddress}-${params.nameItem}`);
-    const books = { label: params.name, value: params.address, walletContact: params.walletContact };
+    const books = { label: params.name, value: params.address.split('-').join(''), walletContact: params.walletContact };
     if (params.update) {
 
       const contactsFiltered = dataStorage.filter(element =>
@@ -158,6 +156,8 @@ export class ServicesModuleService {
    * @memberof ServiceModuleService
    */
   getBooksAddress() {
+    /*console.log('this.booksAddress',this.booksAddress)
+    console.log( JSON.parse(localStorage.getItem(this.booksAddress)))*/
     return JSON.parse(localStorage.getItem(this.booksAddress));
   }
 }
@@ -185,3 +185,22 @@ export interface ContactsStorageInterface {
     address: string;
   }
 };
+
+export interface HeaderServicesInterface {
+  moduleName: string,
+  componentName: string,
+  routerBack?: string,
+  extraButton?: string,
+  routerExtraButton?: string
+}
+
+export interface ResultAuditInterface {
+  filename: string,
+  owner: Address | NamespaceId | string,
+  fileHash: string,
+  result: string,
+  hash: string,
+  date?: string,
+  method?: string,
+  transaction?: TransactionsInterface
+}

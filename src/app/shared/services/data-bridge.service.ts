@@ -6,7 +6,7 @@ import { environment } from '../../../environments/environment';
 import { NodeService } from '../../servicesModule/services/node.service';
 import { SharedService } from './shared.service';
 import { WalletService } from '../../wallet/services/wallet.service';
-import { TransactionsInterface, TransactionsService } from '../../transfer/services/transactions.service';
+import { TransactionsInterface, TransactionsService } from '../../transactions/services/transactions.service';
 import { ProximaxProvider } from './proximax.provider';
 import { NamespacesService } from 'src/app/servicesModule/services/namespaces.service';
 
@@ -63,7 +63,7 @@ export class DataBridgeService {
     this.setblock(null);
     this.destroyConection = true;
     if (destroyTransactions) {
-      console.log('destroy transactions');
+      // console.log('destroy transactions');
       this.transactionsService.destroyAllTransactions();
     }
     if (this.connector !== undefined) {
@@ -160,10 +160,10 @@ export class DataBridgeService {
           'data': incomingTransaction
         });
 
-        console.log('incomingTransaction', incomingTransaction);
+        // console.log('incomingTransaction', incomingTransaction);
 
         this.transactionsService.getTransactionsConfirmed$().pipe(first()).subscribe(allTransactionConfirmed => {
-          console.log('allTransactionConfirmed', allTransactionConfirmed);
+          // console.log('allTransactionConfirmed', allTransactionConfirmed);
 
           const transactionPushed = allTransactionConfirmed.slice(0);
           const transactionFormatter = this.transactionsService.getStructureDashboard(incomingTransaction, transactionPushed);

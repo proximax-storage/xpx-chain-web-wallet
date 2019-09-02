@@ -11,8 +11,9 @@ import { WalletService, AccountsInterface } from '../../../../wallet/services/wa
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { SharedService, ConfigurationForm } from '../../../../shared/services/shared.service';
 import { NamespacesService, NamespaceStorageInterface } from '../../../../servicesModule/services/namespaces.service';
-import { TransactionsService } from '../../../../transfer/services/transactions.service';
+import { TransactionsService } from '../../../../transactions/services/transactions.service';
 import { Subscription } from 'rxjs';
+import { HeaderServicesInterface } from '../../../services/services-module.service';
 
 @Component({
   selector: 'app-create-namespace',
@@ -21,18 +22,18 @@ import { Subscription } from 'rxjs';
 })
 export class CreateNamespaceComponent implements OnInit {
   @BlockUI() blockUI: NgBlockUI;
-
+  paramsHeader: HeaderServicesInterface = {
+    moduleName: 'Namespaces & Sub-Namespaces',
+    componentName: 'REGISTER'
+  };
   configurationForm: ConfigurationForm = {};
-  moduleName = 'Namespaces & Sub-Namespaces';
-  componentName = 'REGISTER';
-  backToService = `/${AppConfig.routes.service}`;
   /*********************************** */
   arrayselect: Array<object> = [
     {
       value: '1',
       label: 'New root Namespace',
       selected: true,
-      disabled: true
+      disabled: false
     }
   ];
 
@@ -63,6 +64,7 @@ export class CreateNamespaceComponent implements OnInit {
   rentalFee = 100000;
   subscription: Subscription[] = [];
   transactionStatus: boolean = false;
+  lengthNamespace: number;
 
   constructor(
     private fb: FormBuilder,
@@ -80,6 +82,7 @@ export class CreateNamespaceComponent implements OnInit {
 
   ngOnInit() {
     this.configurationForm = this.sharedService.configurationForm;
+    this.lengthNamespace = this.configurationForm.namespaceName.maxLength;
     this.createForm();
     this.getNamespaces();
     this.fee = `0.000000 ${this.feeType}`;
@@ -167,10 +170,9 @@ export class CreateNamespaceComponent implements OnInit {
       name: ['', [
         Validators.required,
         Validators.minLength(this.configurationForm.namespaceName.minLength),
-        Validators.maxLength(this.configurationForm.namespaceName.maxLength)
       ]],
 
-      namespaceRoot: [''],
+      namespaceRoot: ['1'],
 
       duration: ['', [
         Validators.required
@@ -284,9 +286,12 @@ export class CreateNamespaceComponent implements OnInit {
             }
           }
 
-          this.arrayselect = this.namespace.sort(function (a: any, b: any) {
+          let arrayNamespaces = this.namespace.sort(function (a: any, b: any) {
             return a.label === b.label ? 0 : +(a.label > b.label) || -1;
           });
+
+          this.arrayselect = this.arrayselect.concat(arrayNamespaces);
+
         }
       },
       error => {
@@ -457,16 +462,18 @@ export class CreateNamespaceComponent implements OnInit {
     // namespaceRoot ValueChange
     this.namespaceForm.get('namespaceRoot').valueChanges.subscribe(namespaceRoot => {
       if (namespaceRoot === null || namespaceRoot === undefined) {
-        this.namespaceForm.get('namespaceRoot').setValue('');
+        this.namespaceForm.get('namespaceRoot').setValue('1');
       } else {
         // console.log('namespaceRoot', namespaceRoot);
         if (namespaceRoot === '' || namespaceRoot === '1') {
+          this.lengthNamespace = this.configurationForm.namespaceName.maxLength;
           this.namespaceForm.get('duration').setValidators([Validators.required]);
           this.showDuration = true;
           this.typetransfer = 1;
           this.durationByBlock = this.transactionService.calculateDurationforDay(this.namespaceForm.get('duration').value).toString();
           this.validateRentalFee(this.rentalFee * parseFloat(this.durationByBlock));
         } else {
+          this.lengthNamespace = this.configurationForm.subNamespaceName.maxLength;
           this.namespaceForm.get('duration').patchValue('');
           this.namespaceForm.get('duration').clearValidators();
           this.namespaceForm.get('duration').updateValueAndValidity();
@@ -480,9 +487,9 @@ export class CreateNamespaceComponent implements OnInit {
     });
 
     // NamespaceName ValueChange
-    this.namespaceForm.get('name').valueChanges.subscribe(name => {
-      if (!this.validateNamespace(name)) return this.sharedService.showError('', 'Name of namespace is invalid')
-    })
+    // this.namespaceForm.get('name').valueChanges.subscribe(name => {
+    //   if (!this.validateNamespace(name)) return this.sharedService.showError('', 'Name of namespace is invalid')
+    // })
   }
 
   /**

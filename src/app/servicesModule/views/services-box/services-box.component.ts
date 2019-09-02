@@ -45,7 +45,7 @@ export class ServicesBoxComponent implements OnInit {
             AppConfig.routes.viewAllAccount,
           ), multiSign: this.services.buildStructureService(
             'MULTISIGN',
-            false,
+            true,
             '',
             '',
             AppConfig.routes.MultiSign,
@@ -113,7 +113,7 @@ export class ServicesBoxComponent implements OnInit {
       this.services.buildStructureService(
         'Mosaics',
         true,
-        'Create digital assets with unique properties',
+        'Create digital representations with customized properties',
         'icon-mosaics-green-60h-proximax-sirius-wallet.svg',
         '',
         {
@@ -232,43 +232,51 @@ export class ServicesBoxComponent implements OnInit {
       this.services.buildStructureService(
         'Attestation',
         true,
-        'Proof of existence / proof of origination',
+        'Proof of existence and origination',
         'icon-notarization-green-60h.svg',
         '',
         {
-          notarize: this.services.buildStructureService(
-            'CREATE',
-            false,
+          create: this.services.buildStructureService(
+            'ATTEST',
+            true,
             '',
             '',
-            ''
+            AppConfig.routes.createApostille
           ),
           audit: this.services.buildStructureService(
             'AUDIT',
-            false,
+            true,
             '',
             '',
-            ''
+            AppConfig.routes.audiApostille
           )
         },
         true,
-        'disable-module'
+        ''
       ),
 
       // Voting
       this.services.buildStructureService(
         'Voting',
         true,
-        'Create polls and vew results',
+        'Create and vew polls',
         'icon-voting-green-60h.svg',
         '',
         {
-          poll: this.services.buildStructureService(
+          create: this.services.buildStructureService(
             'CREATE POLL',
-            false,
+            true,
             '',
             '',
-            ''
+            AppConfig.routes.createPoll
+          )
+          ,
+          poll: this.services.buildStructureService(
+            'POLL',
+            true,
+            '',
+            '',
+            AppConfig.routes.polls
           ),
           view: this.services.buildStructureService(
             'VIEW RESULT',
@@ -278,8 +286,7 @@ export class ServicesBoxComponent implements OnInit {
             ''
           )
         },
-        true,
-        'disable-module'
+        true
       ),
 
       // Agregate transactions
@@ -318,7 +325,14 @@ export class ServicesBoxComponent implements OnInit {
         '',
         {
           secretLock: this.services.buildStructureService(
-            'SWAP',
+            'SECRED LOCK',
+            false,
+            '',
+            '',
+            ''
+          ),
+          secretProof: this.services.buildStructureService(
+            'SECRED PROOF',
             false,
             '',
             '',
@@ -333,7 +347,7 @@ export class ServicesBoxComponent implements OnInit {
       this.services.buildStructureService(
         'Nodes',
         true,
-        'Add and edits nodes',
+        'Add and edit nodes',
         'icon-nodes-green-60h-proximax-sirius-wallet.svg',
         '',
         {
@@ -363,9 +377,9 @@ export class ServicesBoxComponent implements OnInit {
 
       // Message
       this.services.buildStructureService(
-        'Messaging',
+        'Chat',
         true,
-        'Send encrypted messages',
+        'Encrypted live chat',
         'icon-messenger-green-16h-proximax-sirius-wallet.svg',
         '',
         {
@@ -385,7 +399,7 @@ export class ServicesBoxComponent implements OnInit {
       this.services.buildStructureService(
         'Invoice',
         true,
-        'Create invoices',
+        'Create and manage invoices',
         'icon-invoice-green-60h.svg',
         '',
         {
@@ -405,18 +419,18 @@ export class ServicesBoxComponent implements OnInit {
       this.services.buildStructureService(
         'Video Conferencing',
         true,
-        'Encrypted face-to-face comunication',
+        'Encrypted live video streaming',
         'icon-streaming-green-60h-proximax-sirius-wallet.svg',
         '',
         {
-          schedule: this.services.buildStructureService(
-            'SCHEDULE',
+         start: this.services.buildStructureService(
+            'START',
             false,
             '',
             '',
             ''
-          ), start: this.services.buildStructureService(
-            'START',
+          ), schedule: this.services.buildStructureService(
+            'SCHEDULE',
             false,
             '',
             '',
@@ -431,7 +445,7 @@ export class ServicesBoxComponent implements OnInit {
       this.services.buildStructureService(
         'Supercontracts',
         true,
-        'Create supercontracts',
+        'Create and execute logical flow for digital contract obligations',
         'icon-supercontracts-green-60h-proximax-sirius-wallet.svg',
         '',
         {
@@ -448,6 +462,26 @@ export class ServicesBoxComponent implements OnInit {
             '',
             ''
           )
+        },
+        true,
+        'disable-module'
+      ),
+
+      // SWAP PROCESS
+      this.services.buildStructureService(
+        'Mainnet Swap',
+        true,
+        'Swap from NEM to Sirius',
+        'icon-swap-process-green-60h-proximax-sirius-wallet.svg',
+        '',
+        {
+          transfer: this.services.buildStructureService(
+            'TRANSFER ASSETS',
+            false,
+            '',
+            '',
+            AppConfig.routes.nis1AccountList
+          ),
         },
         true,
         'disable-module'

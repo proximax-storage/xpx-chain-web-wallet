@@ -34,7 +34,13 @@ export class NamespacesService {
   ) {
   }
 
-
+  /**
+   *
+   *
+   * @param {AddressAliasTransactionInterface} param
+   * @returns {SignedTransaction}
+   * @memberof NamespacesService
+   */
   addressAliasTransaction(param: AddressAliasTransactionInterface): SignedTransaction {
     const network = (param.network !== undefined) ? param.network : this.walletService.currentAccount.network;
     const addressAliasTransaction = AliasTransaction.createForAddress(
@@ -45,7 +51,11 @@ export class NamespacesService {
       network
     );
 
+    console.log('addressAliasTransaction', addressAliasTransaction);
+
     const account = this.proximaxProvider.getAccountFromPrivateKey(param.common.privateKey, this.walletService.currentAccount.network);
+    console.log('account', account);
+
     return account.sign(addressAliasTransaction);
   }
 
@@ -88,6 +98,24 @@ export class NamespacesService {
     }
 
     return dataFound;
+  }
+
+  /**
+   *
+   *
+   * @param {NamespaceId[]} namespaceIds
+   * @returns
+   * @memberof NamespacesService
+   */
+  async getNamespacesName(namespaceIds: NamespaceId[]) {
+    try {
+      //Gets array of NamespaceName for an account
+      const namespaceName = await this.proximaxProvider.namespaceHttp.getNamespacesName(namespaceIds).toPromise();
+      return namespaceName;
+    } catch (error) {
+      //Nothing!
+      return [];
+    }
   }
 
   /**
@@ -153,40 +181,13 @@ export class NamespacesService {
     this.fillNamespacesDefaultAccount();
   }
 
-
   /**
-   *
-   *
-   * @param {Address} address
-   * @returns
-   * @memberof NamespacesService
-   */
-  getNamespacesFromAccountStorage(address: Address) {
-    const namespacesStorage: NamespaceStorageInterface[] = this.getNamespacesStorage();
-    if (namespacesStorage.length > 0) {
-      return namespacesStorage.filter((next: NamespaceStorageInterface) =>
-        this.proximaxProvider.createFromRawAddress(next.namespaceInfo.owner.address['address']).pretty() === address.pretty()
-      );
-    }
-  }
-
-  /**
-   *
-   *
-   * @memberof NamespacesService
-   */
-  setNamespaceChanged(namespacesFound: NamespaceStorageInterface[]) {
-    this.namespacesChangedSubject.next(namespacesFound);
-  }
-
-  /**
-   *
-   *
-   * @returns {Observable<NamespaceStorageInterface[]>}
-   * @memberof NamespacesService
-   */
-  getNamespaceChanged(): Observable<NamespaceStorageInterface[]> {
-    return this.namespacesChanged$;
+ *
+ *
+ * @memberof NamespacesService
+ */
+  destroyDataNamespace() {
+    this.namespaceFromAccountSubject.next(null);
   }
 
 
@@ -211,19 +212,44 @@ export class NamespacesService {
   /**
    *
    *
-   * @param {NamespaceId[]} namespaceIds
+   * @param {NamespaceId} namespaceId
    * @returns
    * @memberof NamespacesService
    */
-  async getNamespacesName(namespaceIds: NamespaceId[]) {
-    try {
-      //Gets array of NamespaceName for an account
-      const namespaceName = await this.proximaxProvider.namespaceHttp.getNamespacesName(namespaceIds).toPromise();
-      return namespaceName;
-    } catch (error) {
-      //Nothing!
-      return [];
+  filterNamespaceFromId(namespaceId: NamespaceId): NamespaceStorageInterface {
+    const namespacesStorage: NamespaceStorageInterface[] = this.getNamespacesStorage();
+    if (namespacesStorage.length > 0) {
+      return namespacesStorage.find(x => x.idToHex === namespaceId.toHex());
     }
+
+    return null;
+  }
+
+
+  /**
+   *
+   *
+   * @param {Address} address
+   * @returns
+   * @memberof NamespacesService
+   */
+  getNamespacesFromAccountStorage(address: Address) {
+    const namespacesStorage: NamespaceStorageInterface[] = this.getNamespacesStorage();
+    if (namespacesStorage.length > 0) {
+      return namespacesStorage.filter((next: NamespaceStorageInterface) =>
+        this.proximaxProvider.createFromRawAddress(next.namespaceInfo.owner.address['address']).pretty() === address.pretty()
+      );
+    }
+  }
+
+  /**
+   *
+   *
+   * @returns {Observable<NamespaceStorageInterface[]>}
+   * @memberof NamespacesService
+   */
+  getNamespaceChanged(): Observable<NamespaceStorageInterface[]> {
+    return this.namespacesChanged$;
   }
 
   /**
@@ -248,180 +274,39 @@ export class NamespacesService {
     return (namespacesStorage !== null && namespacesStorage !== undefined) ? JSON.parse(namespacesStorage) : [];
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // ---------------------------------------------------------------------------------------------
-
-  /**
-   *************** REFACTORIZAR!
-   *
-   * @param {NamespaceId} namespaceId
-   * @returns {Promise<NamespaceStorageInterface>}
-   * @memberof NamespacesService
-   */
-  async getNamespaceFromId2(namespaceId: NamespaceId) {
-    /* const data = this.filterNamespace(namespaceId);
-     if (data !== null && data !== undefined) {
-       return data;
-     }
-
-     try {
-       const namespaceInfo = await this.proximaxProvider.getNamespace(namespaceId).toPromise();
-       if (namespaceInfo && Object.keys(namespaceInfo).length > 0) {
-         await this.setNamespaceStorage([namespaceInfo]);
-         return this.filterNamespace(namespaceId);
-       }
-     } catch (error) {
-       //Nothing!
-       return null;
-     }
-
-     return null;*/
-  }
-
-  /**
-    *************** REFACTORIZAR!
-   *
-   * @returns {Observable<any>}
-   * @memberof NamespacesService
-   */
-  async searchNamespaceFromAccountStorage$() {
-    /* const namespaceFound = [];
-     if (this.namespaceFromAccount !== null) {
-       for (let element of this.namespaceFromAccount) {
-         const data = this.filterNamespace(element.id);
-         if (data === null || data === undefined) {
-           const namespaceStorage = await this.getNamespaceFromId(element.id);
-           namespaceFound.push(namespaceStorage);
-         } else {
-           namespaceFound.push(data);
-         }
-       }
-     }
-     return namespaceFound;*/
-  }
-
   /**
    *
    *
-   * @param {*} namespaces
+   * @param {NamespaceId} parentNamespaceId
+   * @param {number} parent
    * @memberof NamespacesService
    */
-  async setNamespaceStorage(namespacesParam: NamespaceInfo[]) {
-    /*if (namespacesParam.length > 0) {
-      const idsToSearch = [];
-      //Get the storage namespace
-      const namespacesStorage = this.getNamespaceFromStorage();
-      // Map and get an array of ids from NamespaceInfo []
-      const namespacesId = namespacesParam.map(e => { return e.id; });
-      namespacesId.forEach(id => {
-        // Filter if the namespace id exists in the storage
-        const filterNamespace = this.filterNamespace(id);
-        if (filterNamespace === undefined || filterNamespace === null) {
-          idsToSearch.push(id);
-        }
-      });
+  async getNameParentNamespace(namespaceStorage: NamespaceStorageInterface) {
+    switch (namespaceStorage.namespaceInfo.depth) {
+      case 1:
+        return namespaceStorage.namespaceName.name;
+      case 2:
+        const nameParentTwo = namespaceStorage.namespaceName.name;
+        const parentOneNamespaceId = this.getNamespaceId([
+          namespaceStorage.namespaceInfo['parentId']['id'].lower,
+          namespaceStorage.namespaceInfo['parentId']['id'].higher
+        ]);
 
-      if (idsToSearch.length > 0) {
-        // Gets array of NamespaceName for different namespaceIds
-        const namespacesName = await this.getNamespacesNameAsync(idsToSearch);
-        if (namespacesName) {
-          namespacesParam.forEach(async element => {
-            // Check if the namespace id exists in storage
-            /* const existNamespace = namespacesStorage.find(k => this.proximaxProvider.getNamespaceId(k.id).toHex() === element.id.toHex());
-             // If existNamespace is undefined
-             if (existNamespace === undefined) {/****
-            // Filter by namespaceId the namespaceName from the array of namespacesName
-            const namespaceName = namespacesName.find(data => data.namespaceId.toHex() === element.id.toHex());
-            if (namespaceName) {
-              const data: NamespaceStorageInterface = {
-                id: [namespaceName.namespaceId.id.lower, namespaceName.namespaceId.id.higher],
-                idToHex: namespaceName.namespaceId.toHex(),
-                namespaceName: namespaceName,
-                namespaceInfo: element
-              };
-              namespacesStorage.push(data);
-            }
-            // }
+        const parentOne = await this.filterNamespaceFromId(parentOneNamespaceId);
+        return (parentOne) ? `${parentOne.namespaceName.name}.${nameParentTwo}` : nameParentTwo;
+      case 3:
+        const nameParentThree = namespaceStorage.namespaceName.name;
+        const parentTwoNamespaceId = this.getNamespaceId([
+          namespaceStorage.namespaceInfo['parentId']['id'].lower,
+          namespaceStorage.namespaceInfo['parentId']['id'].higher
+        ]);
 
-            //Build mosaics storage
-            //this.mosaicsService.buildMosaicsFromNamespace(element.id);
-          });
-
-          localStorage.setItem(environment.nameKeyNamespaces, JSON.stringify(namespacesStorage));
-          //console.log(namespacesStorage);
-          return namespacesStorage;
-        }
-      }
+        const parentTwo = await this.filterNamespaceFromId(parentTwoNamespaceId);
+        const nameTwo = await this.getNameParentNamespace(parentTwo);
+        return `${nameTwo}.${nameParentThree}`;
     }
-
-    return [];*/
   }
 
-  /**
-   *
-   *
-   * @memberof NamespacesService
-   */
-  destroyDataNamespace() {
-    this.namespaceFromAccountSubject.next(null);
-  }
-
-  /**
-   * Validate if a namespace is in the storage
-   *
-   * @param {NamespaceId} namespaceId
-   * @returns {NamespaceStorage}
-   * @memberof NamespacesService
-   */
-  filterNamespace(namespaceId: NamespaceId) {
-    /* if (namespaceId !== undefined) {
-       const namespaceStorage = this.getNamespaceFromStorage();
-       if (namespaceStorage !== null && namespaceStorage !== undefined) {
-         if (namespaceStorage.length > 0) {
-           const filtered = namespaceStorage.find(element => {
-             return this.getNamespaceId(element.id).id.toHex() === namespaceId.id.toHex();
-           });
-
-           return filtered;
-         }
-       }
-     }
-
-     return null;*/
-  }
-
-
-
-  /**
-   *
-   *
-   * @returns
-   * @memberof NamespacesService
-   */
-  getNamespaceFromStorage() {
-    /* const dataStorage = localStorage.getItem(environment.nameKeyNamespaces);
-     return (dataStorage !== null && dataStorage !== undefined) ? JSON.parse(dataStorage) : [];*/
-  }
 
   /**
    *
@@ -430,6 +315,16 @@ export class NamespacesService {
    */
   resetNamespaceStorage() {
     localStorage.removeItem(environment.nameKeyNamespaces);
+  }
+
+
+  /**
+   *
+   *
+   * @memberof NamespacesService
+   */
+  setNamespaceChanged(namespacesFound: NamespaceStorageInterface[]) {
+    this.namespacesChangedSubject.next(namespacesFound);
   }
 }
 
