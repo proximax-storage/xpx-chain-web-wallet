@@ -112,8 +112,9 @@
                 <figure *ngIf="item.fileHash === ''" class="txt-a-center mt-0">
                   <i class="fa fa-times fa-3x color-white"></i>
                 </figure>
-                <p class="color-white m-0 txt-a-center" *ngIf="item.transaction?.privateFile">PRIVATE</p>
-                <p class="color-white m-0 txt-a-center" *ngIf="!item.transaction?.privateFile">PUBLIC</p>
+                <p class="color-white m-0 txt-a-center" *ngIf="item.transaction === undefined">ERROR</p>
+                <p class="color-white m-0 txt-a-center" *ngIf="item.transaction?.privateFile === true">PRIVATE</p>
+                <p class="color-white m-0 txt-a-center" *ngIf="item.transaction?.privateFile === false">PUBLIC</p>
               </div>
             </div>
           </div>
