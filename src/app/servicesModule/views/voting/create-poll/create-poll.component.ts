@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { PublicAccount, Account, Address } from 'tsjs-xpx-chain-sdk';
 import { environment } from 'src/environments/environment';
 import { WalletService } from 'src/app/wallet/services/wallet.service';
@@ -8,6 +8,7 @@ import { AppConfig } from 'src/app/config/app.config';
 import { CreatePollStorageService } from 'src/app/servicesModule/services/create-poll-storage.service';
 import { stringify } from '@angular/compiler/src/util';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
+import { MdbStepperComponent } from 'ng-uikit-pro-standard';
 
 @Component({
   selector: 'app-create-poll',
@@ -15,6 +16,7 @@ import { ProximaxProvider } from '../../../../shared/services/proximax.provider'
   styleUrls: ['./create-poll.component.css']
 })
 export class CreatePollComponent implements OnInit {
+  @ViewChild('stepper', { static: true }) stepper: MdbStepperComponent
   type: any;
   invalidMoment: any;
   isMultiple: any;
@@ -74,7 +76,7 @@ export class CreatePollComponent implements OnInit {
   ngOnInit() {
     const today = new Date();
     this.minDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), today.getHours(), today.getMinutes());
-    this.invalidMoment = this.minDate.setHours(this.minDate.getHours() + 24)
+    this.invalidMoment = this.minDate.setHours(this.minDate.getHours() + 1)
     this.createForms();
   }
 
@@ -88,7 +90,8 @@ export class CreatePollComponent implements OnInit {
 
     this.secondFormGroup = new FormGroup({
       isMultiple: new FormControl(false, [Validators.required]),
-      option: new FormControl('')
+      option: new FormControl(''),
+      options: new FormControl('', [Validators.required])
     });
 
     this.thirdFormGroup = new FormGroup({
@@ -128,6 +131,11 @@ export class CreatePollComponent implements OnInit {
 
   deleteOptions(item) {
     this.option = this.option.filter(option => option != item);
+    if(this.option.length === 0){
+      this.secondFormGroup.patchValue({
+        options: ''
+      })
+    }
   }
 
   deleteAccaunt(item) {
@@ -157,32 +165,18 @@ export class CreatePollComponent implements OnInit {
     }
   }
 
-  // pushedOtherAccount() {
-  //   if (this.boxOtherAccount.length === 0) {
-  //     this.boxOtherAccount.push({
-  //       id: Math.floor(Math.random() * 1455654),
-  //       balance: '',
-  //     });
-  //   } else {
-  //     let x = false;
-  //     this.boxOtherAccount.forEach(element => {
-  //       if (element.id === '') {
-  //         this.sharedService.showWarning('', 'You must select a mosaic and place the quantity');
-  //         x = true;
-  //       } else if (element.amount === '' || Number(element.amount) === 0) {
-  //         this.sharedService.showWarning('', 'The quantity of mosaics is missing');
-  //         x = true;
-  //       }
-  //     });
-
-  //     if (!x) {
-  //       this.boxOtherAccount.push({
-  //         id: Math.floor(Math.random() * 1455654),
-  //         balance: '',
-  //       });
-  //     }
-  //   }
-  // }
+  generateOptios(nameParam: string) {
+    const existe = this.option.find(option => option.name === nameParam);
+    if (existe === undefined) {
+      let publicAccountGenerate: PublicAccount = Account.generateNewAccount(this.walletService.currentAccount.network).publicAccount;
+      this.option.push({ name: nameParam, publicAccount: publicAccountGenerate })
+      this.secondFormGroup.patchValue({
+        options: this.option
+      })
+    } else {
+      this.sharedService.showError('', 'option exists');
+    }
+  }
 
   addAddress() {
     if (this.thirdFormGroup.get('address').valid && this.thirdFormGroup.get('address').value != '') {
@@ -219,17 +213,6 @@ export class CreatePollComponent implements OnInit {
     })
   }
 
-  generateOptios(nameParam: string) {
-
-    const existe = this.option.find(option => option.name === nameParam);
-    if (existe === undefined) {
-      let publicAccountGenerate: PublicAccount = Account.generateNewAccount(this.walletService.currentAccount.network).publicAccount;
-      this.option.push({ name: nameParam, publicAccount: publicAccountGenerate })
-    } else {
-      this.sharedService.showError('', 'option exists');
-    }
-  }
-
   sendPoll() {
     const common = {
       password: this.quarterFormGroup.get('password').value,
@@ -239,26 +222,13 @@ export class CreatePollComponent implements OnInit {
       if (this.walletService.decrypt(common)) {
         this.preparepoll(common);
       }
+    } else {
+      this.btnBlock = false;
     }
   }
 
-
   async preparepoll(common) {
-    // this.account = Account.createFromPrivateKey(environment.pollsContent.private_key, this.walletService.currentAccount.network);
-
-    // const direccionesAgregadas = [
-    //   'VCGPXB-2A7T4I-W5MQCX-FQY4UQ-W5JNU5-F55HGK-HBUN',
-    //   'VDG4WG-FS7EQJ-KFQKXM-4IUCQG-PXUW5H-DJVIJB-OXJG'
-    // ]
-    // const listaBlanca = []
-
-    // for (let element of direccionesAgregadas) {
-    //   listaBlanca.push(Address.createFromRawAddress(element))
-    // }
-
-
-    // const endDate = new Date()
-    // endDate.setHours(endDate.getHours() + 2)
+    this.btnBlock = true;
     this.Poll = {
       name: this.name,
       desciption: this.desciption,
@@ -273,7 +243,6 @@ export class CreatePollComponent implements OnInit {
       createdDate: new Date(),
       quantityOption: this.option.length
     }
-    // console.log('this.Poll ', JSON.stringify(this.Poll)  )
 
     const nameFile = `voting-ProximaxSirius-${new Date()}`;
     const fileObject: FileInterface = {
@@ -284,15 +253,20 @@ export class CreatePollComponent implements OnInit {
     };
     const descripcion = 'poll';
 
-
     await this.createPollStorageService.sendFileStorage(
       fileObject,
       'poll',
       this.account,
       common.privateKey
     ).then(resp => {
-      console.log('resp', resp)
-
+      this.btnBlock = false;
+      this.stepper.resetAll()
+      this.firstFormGroup.reset();
+      this.secondFormGroup.reset();
+      this.thirdFormGroup.reset();
+      this.quarterFormGroup.reset();
+    }, error => {
+      this.btnBlock = false;
     });
   }
   /**

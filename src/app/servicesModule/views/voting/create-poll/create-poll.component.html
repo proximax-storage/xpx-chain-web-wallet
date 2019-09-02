@@ -114,6 +114,11 @@
                                 <span>Input invalid</span>
                             </mdb-error>
                         </div>
+                        <!-- OPTIONS VALIDATE -->
+                        <div class="md-form" style="display: none;">
+                                <input formControlName="options" required mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
+                                id="options" >
+                            </div>
                         <!-- ADD OPTIONS -->
                         <div class="md-form">
                             <div class="col-12 d-flex justify-content-center">
@@ -302,7 +307,7 @@
                                     View all |</span>
                                 </button>
                                 <button class="transparent">
-                                    <span (click)="stepper.setNewActiveStep(1)"> Edit</span>
+                                    <span (click)="stepper.previous(); stepper.previous()"> Edit</span>
                                 </button>
                             </div>
                         </div>
@@ -329,7 +334,7 @@
                     <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
                         <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" (click)="sendPoll()"
                             [disabled]="!quarterFormGroup.valid">
-                            <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true" *ngIf="blockButton"></span>
+                            <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true" *ngIf="btnBlock"></span>
                             <span class="fs-1-2em color-white">CREATE</span>
                         </button>
                     </div>

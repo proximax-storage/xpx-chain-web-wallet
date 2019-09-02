@@ -25,6 +25,8 @@ import { MosaicAliasComponent } from '../dashboard/components/mosaic-alias/mosai
 import { AddressAliasTypeComponent } from '../dashboard/components/address-alias-type/address-alias-type.component';
 import { StringFilterPipe } from '../shared/pipes/string-filter.pipe';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
+import { AttestationTypeComponent } from '../dashboard/components/attestation-type/attestation-type.component';
+
 const ngxUiLoaderConfig: NgxUiLoaderConfig = {
   bgsColor: '#306eb5',
   bgsPosition: POSITION.bottomCenter,
@@ -51,7 +53,8 @@ const components = [
   SecretProofComponent,
   MosaicsInfoComponent,
   MosaicAliasComponent,
-  AddressAliasTypeComponent
+  AddressAliasTypeComponent,
+  AttestationTypeComponent
 ]
 
 const moduls = [

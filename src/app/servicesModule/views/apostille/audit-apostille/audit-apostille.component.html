@@ -1,10 +1,11 @@
+<!-- GENERAL CONTAINER -->
 <div class="mt-3rem mb-3rem">
   <app-header [params]="paramsHeader"></app-header>
+  <!-- MAIN VIEW< -->
   <div class="container-fluid" *ngIf="currentView">
     <div class="row">
       <div class="col-11 col-md-10 mx-auto">
         <div class="row">
-          <!-- UPLOAD FILE -->
           <div class="col-8 d-flex justify-content-center flex-column mx-auto mb-1rem mt-1rem box-grey">
             <div class="row">
               <div class="col-12 d-flex justify-content-center mx-auto mb-1rem mt-1rem">
@@ -22,7 +23,7 @@
               <div class="col-12 m-0 p-5px">
                 <div class="col-12 color-black fs-075rem d-flex" *ngFor="let result of ourFile.slice(); let i = index">
                   <i class="fa fa-trash p-5px" aria-hidden="true" (click)="ourFile.splice(i, 1);"></i>
-                  <p class="mb-0 p-5px">{{result.name}}</p>
+                  <p class="mb-0 p-5px word-break-all">{{result.name}}</p>
                 </div>
               </div>
             </div>
@@ -55,8 +56,9 @@
           </div>
         </div>
 
+        <!-- BUTTONS -->
         <div class="row">
-          <div class="col-11 col-sm-11 col-lg-10 mx-auto">
+          <div class="col-11 col-sm-11 col-lg-10 mx-auto mb-2rem">
             <div class="row">
               <div class="col-6 col-sm-6 col-lg-10 d-flex justify-content-center mx-auto">
                 <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
@@ -80,33 +82,67 @@
     </div>
   </div>
 
-  <div class="container-fluid" *ngIf="!currentView">
+  <!-- CARDS VIEW -->
+  <div class="container-fluid mb-2rem" *ngIf="!currentView">
     <div class="row">
       <div class="col-11 col-md-10 mx-auto">
-        <div class="row d-flex justify-content-start mb-1rem">
-          <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4 mt-1rem audit-back" *ngFor="let item of testJAM">
-            <div class="audit-front d-flex audit-background">
+        <div class="row d-flex justify-content-start align-items-stretch mb-1rem">
+          <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4 d-flex mt-1rem audit-back" *ngFor="let item of auditResults">
+            <div class="audit-front d-flex" [ngClass]="{'audit-background': item.fileHash !== '', 'audit-background-err': item.fileHash === ''}" (click)="verifyModal(item.transaction)">
               <div class="col-8 p-05rem background-white">
                 <div>
                   <p class="audit-title">{{ item.filename }}</p>
                 </div>
-                <div>
+                <div *ngIf="item.fileHash !== ''">
                   <p class="audit-subtitle">File hash</p>
                   <p class="audit-value">{{ item.fileHash }}</p>
                 </div>
-                <div>
+                <div *ngIf="item.fileHash !== ''">
                   <p class="audit-subtitle">Date</p>
-                  <p class="audit-value">{{ item.filename }}</p>
+                  <p class="audit-value">{{ item.date }}</p>
+                </div>
+                <div *ngIf="item.fileHash === ''">
+                  <p class="audit-value">{{ item.result }}</p>
                 </div>
               </div>
               <div class="col-4 audit-medal mx-auto">
-                <figure>
+                <figure *ngIf="item.fileHash !== ''">
                   <img src="assets/images/img/badge-silver-proximax-sirius-wallet.svg" alt="">
                 </figure>
-                <p class="color-white m-0 txt-a-center">Private</p>
+                <figure *ngIf="item.fileHash === ''" class="txt-a-center mt-0">
+                  <i class="fa fa-times fa-3x color-white"></i>
+                </figure>
+                <p class="color-white m-0 txt-a-center" *ngIf="item.transaction === undefined">ERROR</p>
+                <p class="color-white m-0 txt-a-center" *ngIf="item.transaction?.privateFile === true">PRIVATE</p>
+                <p class="color-white m-0 txt-a-center" *ngIf="item.transaction?.privateFile === false">PUBLIC</p>
               </div>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="d-flex align-items-center">
+  <div mdbModal #basicModal="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="basicModal"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg d-flex align-items-center" role="document">
+      <div class="modal-content form-elegant bord-rad-1-5rem">
+        <div class="modal-header text-center box-modal-white b-t-r-r-1-5rem b-t-l-r-1-5rem p-05rem">
+          <span class="modal-title w-100" id="myModalLabel">
+            <strong class="title-modal-blue">Attestated File</strong>
+          </span>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="basicModal.hide()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <ng-container *ngIf="modalInfo !== null">
+            <app-attestation-type [transactionInfo]="modalInfo"></app-attestation-type>
+          </ng-container>
         </div>
       </div>
     </div>

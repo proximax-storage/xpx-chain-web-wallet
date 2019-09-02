@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CreatePollStorageService, PollInterface } from 'src/app/servicesModule/services/create-poll-storage.service';
 import { ActivatedRoute } from '@angular/router';
 import { AppConfig } from 'src/app/config/app.config';
@@ -12,6 +12,8 @@ import { NodeService } from 'src/app/servicesModule/services/node.service';
 import { Subscription } from 'rxjs';
 import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
 import * as qrcode from 'qrcode-generator';
+import { element } from 'protractor';
+import { ModalDirective } from 'ng-uikit-pro-standard';
 
 @Component({
   selector: 'app-vote-in-poll',
@@ -27,6 +29,7 @@ export class VoteInPollComponent implements OnInit {
   pollSelected: PollInterface;
   optionsSelected: any = [];
   pollResultVoting: any = [];
+  headResults = ['Options', 'Total'];
   searching: boolean;
   incrementOption = 0;
   memberVoted: boolean;
@@ -36,6 +39,7 @@ export class VoteInPollComponent implements OnInit {
   blockSend: boolean;
   btnResult: boolean;
   transactionStatus: boolean = false;
+  showResult = false;
   votingInPoll: FormGroup;
   transactionHttp: TransactionHttp;
   subscribe: Subscription[] = [];
@@ -44,7 +48,9 @@ export class VoteInPollComponent implements OnInit {
   namePoll: string;
   isMultipe: boolean;
   qrImg: string;
+  chartOptions: object;
   transaction: Transaction;
+  showResultProgress: boolean;
 
 
   constructor(
@@ -66,12 +72,13 @@ export class VoteInPollComponent implements OnInit {
     this.btnBlock = false;
     this.btnResult = true;
     this.blockSend = false;
+    this.showResultProgress = false;
     this.createForm()
     this.getPoll(this.activateRoute.snapshot.paramMap.get('id'));
 
 
   }
-
+  @ViewChild('modalInfo', { static: true }) modalInfo: ModalDirective;
   ngOnInit() {
 
 
@@ -155,13 +162,29 @@ export class VoteInPollComponent implements OnInit {
 
     this.isMultipe = this.pollSelected.isMultiple
     this.verifyVote();
-    this.getResult(this.pollSelected);
+    this.setResultprev(this.pollSelected);
   }
 
+  setResultprev(pollSelected: PollInterface) {
 
+    for (var index = 0; index < pollSelected.options.length; index++) {
+      // pollSelected.options.forEach(elem => {
+      this.pollResultVoting.push({ name: pollSelected.options[index].name, y: 0 });
+      // })
+    }
+    this.pollResultVoting.sort().sort((a, b) => b.y - a.y);
+    this.createcharts(this.pollResultVoting);
+  }
 
-  getResult(pollSelected: PollInterface) {
-    if (this.incrementOptionV < pollSelected.options.length) {
+  getResult(param: string) {
+
+    if (param === 'RESULTS') {
+      this.modalInfo.show()
+    } 
+console.log(param)
+   
+    if (this.incrementOptionV < this.pollSelected.options.length) {
+      this.showResultProgress = true;
       if (
         this.pollSelected.options[this.incrementOptionV].publicAccount.publicKey !== undefined &&
         this.isPublicKey(this.pollSelected.options[this.incrementOptionV].publicAccount.publicKey).STATUS
@@ -186,10 +209,13 @@ export class VoteInPollComponent implements OnInit {
               }
 
             }
+            this.pollResultVoting.filter(elem => elem.name === this.pollSelected.options[this.incrementOptionV].name).map(element => {
+              element.y = lengthVote
+            })
 
-            this.pollResultVoting.push({ name: pollSelected['options'][this.incrementOptionV].name, y: lengthVote });
+            // push({ name: this.pollSelected['options'][this.incrementOptionV].name, y: lengthVote });
             this.incrementOptionV++;
-            this.getResult(pollSelected);
+            this.getResult(param);
           }, dataError => {
             if (dataError && dataError.error.message) {
               this.sharedService.showError('', dataError.error.message);
@@ -203,8 +229,46 @@ export class VoteInPollComponent implements OnInit {
         this.sharedService.showError('', ` Option ${this.pollSelected.options[this.incrementOption].name} does not have a valid public key`);
       }
     } else {
-      // console.log('this.pollResultVoting', this.pollResultVoting)
+      // if (param === 'REFRESH') {
+        this.incrementOptionV = 0
+      // }
+      // this.showResult = true;
+      this.pollResultVoting.sort().sort((a, b) => b.y - a.y);
+      this.showResultProgress = false;
+      this.createcharts(this.pollResultVoting);
     }
+  }
+  createcharts(data: any) {
+    this.chartOptions = {
+      chart: {
+        plotBackgroundColor: null,
+        plotBorderWidth: null,
+        plotShadow: false,
+        type: 'pie'
+      },
+      title: {
+        text: `Results`
+      },
+      tooltip: {
+        valueDecimals: 0,
+        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+      },
+      plotOptions: {
+        pie: {
+          allowPointSelect: true,
+          cursor: 'pointer',
+          dataLabels: {
+            enabled: true
+          },
+          showInLegend: true
+        }
+      },
+      series: [{
+        name: 'Brands',
+        colorByPoint: true,
+        data
+      }]
+    };
   }
 
   /**

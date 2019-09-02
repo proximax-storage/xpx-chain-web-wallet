@@ -47,6 +47,7 @@ export class PollsComponent implements OnInit {
     this.showBarProgressone = true;
     const publicAccount = PublicAccount.createFromPublicKey(environment.pollsContent.public_key, this.walletService.currentAccount.network)
     this.createPollStorageService.loadTransactions(publicAccount).then(resp => {
+      
       this.showBarProgressone = false;
       this.getPollStorage();
     });

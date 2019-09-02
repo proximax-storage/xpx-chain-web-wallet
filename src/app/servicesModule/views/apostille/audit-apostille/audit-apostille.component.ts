@@ -1,11 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { TransferTransaction } from 'tsjs-xpx-chain-sdk';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { NodeService } from '../../../services/node.service';
 import { Verifier } from './audit-apistille-verifier';
 import { ResultAuditInterface, HeaderServicesInterface } from '../../../services/services-module.service';
 import { AppConfig } from '../../../../config/app.config';
-import { TransactionsService } from 'src/app/transactions/services/transactions.service';
+import { TransactionsService, TransactionsInterface } from 'src/app/transactions/services/transactions.service';
+import { ModalDirective } from 'ng-uikit-pro-standard';
+
 
 @Component({
   selector: 'app-audit-apostille',
@@ -22,7 +24,6 @@ export class AuditApostilleComponent implements OnInit {
     routerExtraButton: `/${AppConfig.routes.createApostille}`
   };
 
-
   headElements = ['File name', 'Owner', 'Hash file', 'Result'];
   validatefileInput = false;
   ourFile: File[] = [];
@@ -33,47 +34,10 @@ export class AuditApostilleComponent implements OnInit {
   isProcessing = false;
   p = 1;
   url: any;
-  currentView: boolean = false;
+  currentView: boolean = true;
+  modalInfo: TransactionsInterface = null;
 
-  /******************************************* */
-  testJAM = [
-    {
-      fileHash: "fe4e545903273aa70b7352093148f537fe537a6eb65a6507f03fde3fe92e415daf073515f9",
-      filename: "repuestos mitsubish",
-      hash: "B3BFF21E01F8459FDB5C5F1886B628F3F0DA0AAAE06BD517D6A8B749A1F82648",
-      owner: "VDJLEN-BVNSVE-YZATHG-GY47KM-OVIQJH-EMM5JT-XJ56",
-      result: "Document apostille"
-    },
-    {
-      fileHash: "fe4e545903273aa70b7352093148f537fe537a6eb65a6507f03fde3fe92e415daf073515f9",
-      filename: "repuestos mitsubish",
-      hash: "B3BFF21E01F8459FDB5C5F1886B628F3F0DA0AAAE06BD517D6A8B749A1F82648",
-      owner: "VDJLEN-BVNSVE-YZATHG-GY47KM-OVIQJH-EMM5JT-XJ56",
-      result: "Document apostille"
-    },
-    {
-      fileHash: "fe4e545903273aa70b7352093148f537fe537a6eb65a6507f03fde3fe92e415daf073515f9",
-      filename: "repuestos mitsubish",
-      hash: "B3BFF21E01F8459FDB5C5F1886B628F3F0DA0AAAE06BD517D6A8B749A1F82648",
-      owner: "VDJLEN-BVNSVE-YZATHG-GY47KM-OVIQJH-EMM5JT-XJ56",
-      result: "Document apostille"
-    },
-    {
-      fileHash: "fe4e545903273aa70b7352093148f537fe537a6eb65a6507f03fde3fe92e415daf073515f9",
-      filename: "repuestos mitsubish",
-      hash: "B3BFF21E01F8459FDB5C5F1886B628F3F0DA0AAAE06BD517D6A8B749A1F82648",
-      owner: "VDJLEN-BVNSVE-YZATHG-GY47KM-OVIQJH-EMM5JT-XJ56",
-      result: "Document apostille"
-    },
-    {
-      fileHash: "fe4e545903273aa70b7352093148f537fe537a6eb65a6507f03fde3fe92e415daf073515f9",
-      filename: "repuestos mitsubish",
-      hash: "B3BFF21E01F8459FDB5C5F1886B628F3F0DA0AAAE06BD517D6A8B749A1F82648",
-      owner: "VDJLEN-BVNSVE-YZATHG-GY47KM-OVIQJH-EMM5JT-XJ56",
-      result: "Document apostille"
-    }
-  ];
-  /******************************************* */
+  @ViewChild('basicModal', { static: true }) modalAudit: ModalDirective;
 
   constructor(
     private proximaxProvider: ProximaxProvider,
@@ -150,34 +114,46 @@ export class AuditApostilleComponent implements OnInit {
     this.transactionsSearch.forEach(element => {
       const arrayName = element.name.split(' --Apostille TX ');
       const arrayHash = arrayName[1].split(' --Date ');
+      const arrayDate = arrayHash[1].split(' ');
       const findHash = transactions.find(el => arrayHash[0].toUpperCase() === el.transactionInfo.hash);
 
       if (findHash !== undefined) {
         const myReader: FileReader = new FileReader();
         myReader.onloadend = (e) => {
-
           if (this.verify(myReader.result, findHash)) {
             let arrayExtention = arrayName[1].split('.');
             let originalName = '';
+            let method = '';
+            const apostillePrivatePrefix = 'fe4e545983';
+            const apostillePublicPrefix = 'fe4e545903';
+            const prefixHash = findHash.message.payload.split('"').join('').substr(0, 10);
 
             if (arrayExtention.length > 1) {
               originalName = `${arrayName[0]}.${arrayExtention[arrayExtention.length - 1]}`;
             } else {
               originalName = arrayName[0];
             }
+
+            let transaction = this.transactionService.getStructureDashboard(findHash);
+            transaction.dateFile = arrayDate[0];
+            transaction.fileName = originalName;
+
+            if (prefixHash === apostillePublicPrefix) {
+              transaction.privateFile = false;
+            } else if (prefixHash === apostillePrivatePrefix) {
+              transaction.privateFile = true;
+            }
+            console.log('\n\n\n\nValue of transaction', transaction, '\n\n\n\nEnd value\n\n');
+
             this.addAuditResult({
               filename: originalName,
               owner: this.proximaxProvider.createFromRawAddress(findHash.recipient['address']).pretty(),
               fileHash: findHash.message.payload.split('"').join(''),
               result: 'Document apostille',
               hash: findHash.transactionInfo.hash,
-              private: false,
-              fee: this.transactionService.amountFormatterSimple(findHash.maxFee.compact()),
-              height: findHash.transactionInfo.height.compact(),
-              type: findHash.type,
-              signer: findHash.signer,
-              recipient: this.proximaxProvider.createFromRawAddress(findHash.recipient['address']),
-              signature: findHash.signature,
+              date: arrayDate[0],
+              method: method,
+              transaction: transaction,
             }, findHash.transactionInfo.hash);
           } else {
             this.addAuditResult({
@@ -224,136 +200,12 @@ export class AuditApostilleComponent implements OnInit {
     }
   }
 
-  // removeItem(index: number) {
-  //   console.log('\n\n\n\nValue of index', index, '\n\n\n\nEnd value\n\n');
-  //   console.log('\n\n\n\nValue of index', this.ourFile, '\n\n\n\nEnd value\n\n');
-  //   this.ourFile.filter((value, i) => i !== index);
-  //   this.ourFile.splice(index, 1);
-  // }
-
-
-  //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-  // /**
-  //  *
-  //  */
-  // verifyFile(dataFile, nameFile) {
-  //   this.isProcessing = true;
-  //   // Remove the meta part of $fileContent string (data:application/octet-stream;base64)
-  //   // let cleanedDataContent = this.file.split(/,(.+)?/)[1];
-  //   // Base 64 to word array
-  //   // let parsedData = crypto.enc.Base64.parse(cleanedDataContent);
-  //   // if (!this.checkApostilleName(nameFile)) {
-  //   //   this.addAuditResult({
-  //   //     filename: nameFile,
-  //   //     owner: '',
-  //   //     fileHash: '',
-  //   //     result: 'This file is not in apostille format',
-  //   //     hash: ''
-  //   //   });
-  //   //   // this.showResult(this.auditResults);
-  //   //   this.isProcessing = false;
-  //   //   return;
-  //   // }
-  //   // Build an array out of the filename
-  //   const nameArray = nameFile.match(/\S+\s*/g);
-  //   // Recomposing the initial filename before apostille
-  //   const initialNameArray = nameArray.splice(0, nameArray.length - 7);
-  //   let initialFileName = "";
-
-  //   for (let h = 0; h < initialNameArray.length; h++) {
-  //     initialFileName += initialNameArray[h];
-  //   }
-  //   // Initial filename
-  //   initialFileName = initialFileName.replace(/^\s+|\s+$/, '') + "." + nameFile.split('.').pop();
-  //   // Hash of the apostille transaction
-  //   const apostilleTxHash = nameArray[nameArray.length - 4].replace(/^\s+|\s+$/, '');
-  //   this.proximaxProvider.getTransactions(apostilleTxHash).subscribe(
-  //     async (infTrans: TransferTransaction) => {
-  //       this.isProcessing = false;
-  //       const data = dataFile;
-  //       // console.log('\n\n\n\nValue of information transaction', infTrans, '\n\n\n\nEnd value\n\n');
-
-  //       if (await !this.verify(data, infTrans)) {
-  //         this.addAuditResult({
-  //           filename: nameFile,
-  //           owner: '',
-  //           fileHash: '',
-  //           result: 'Document not apostilled',
-  //           hash: ''
-  //         });
-  //         // this.showResult(this.auditResults);
-  //         // this.isProcessing = false;
-  //         return;
-  //       } else {
-  //         let arrayName = nameFile.split(' --Apostille ');
-  //         let arrayextention = nameFile.split('.');
-  //         let originalName = '';
-
-  //         if (arrayextention.length > 1) {
-  //           originalName = `${arrayName[0]}.${arrayextention[arrayextention.length - 1]}`;
-  //         } else {
-  //           originalName = arrayName[0];
-  //         }
-
-  //         this.addAuditResult({
-  //           filename: originalName,
-  //           owner: this.proximaxProvider.createFromRawAddress(infTrans.recipient['address']).pretty(),
-  //           fileHash: infTrans.message.payload.split('"').join(''),
-  //           result: 'Document apostille',
-  //           hash: ''
-  //         });
-  //         return;
-  //       }
-  //     },
-  //     error => {
-  //       this.addAuditResult({
-  //         filename: nameFile,
-  //         owner: '',
-  //         fileHash: '',
-  //         result: 'Document not apostilled',
-  //         hash: ''
-  //       });
-  //       this.isProcessing = false;
-  //       // this.sharedService.showError('', 'Apostille not found');
-  //     }
-  //   )
-  // }
-
-
-
-  // checkApostilleName(nameFile) {
-  //   // Build an array out of the filename
-  //   const nameArray = nameFile.match(/\S+\s*/g);
-  //   // console.log('nameArray:', nameArray)
-  //   if (nameArray[nameArray.length - 6] === undefined || nameArray[nameArray.length - 5].replace(/^\s+|\s+$/, '') !== 'TX') return false;
-  //   const mark = nameArray[nameArray.length - 6].replace(/^\s+|\s+$/, '');
-
-  //   // console.log('mark:', mark)
-  //   if (mark === "--Apostille" || mark === "--ApostilleSigned") return true;
-  //   return false;
-  // };
-
-
-  // verify(data, infTrans): boolean {
-  //   if (Verifier.isPublicApostille(infTrans.message.payload.replace(/['"]+/g, ''))) {
-  //     return Verifier.verifyPublicApostille(data, infTrans.message.payload.replace(/['"]+/g, ''))
-  //   }
-  //   if (Verifier.isPrivateApostille(infTrans.message.payload.replace(/['"]+/g, ''))) {
-  //     return Verifier.verifyPrivateApostille(infTrans.signer, data, infTrans.message.payload.replace(/['"]+/g, ''))
-  //   }
-  // }
-  // showResult(result) {
-  // }
-  // createResultObject(initialFileName, apostilleSigner, checksum, dataHash, isPrivate, apostilleTxHash) {
-  //   return {
-  //     filename: initialFileName,
-  //     owner: apostilleSigner,
-  //     fileHash: checksum + dataHash,
-  //     result: '',
-  //     hash: apostilleTxHash,
-  //     private: isPrivate
-  //   }
-  // }
-
+  verifyModal(transaction: TransactionsInterface) {
+    if (transaction) {
+      this.modalInfo = transaction;
+      this.modalAudit.show();
+    }
+  }
 }
+
+
