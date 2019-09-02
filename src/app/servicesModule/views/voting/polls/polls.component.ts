@@ -51,10 +51,15 @@ export class PollsComponent implements OnInit {
     this.showBarProgressone = true;
     const publicAccount = PublicAccount.createFromPublicKey(environment.pollsContent.public_key, this.walletService.currentAccount.network)
     this.promosePoadTransactions = this.createPollStorageService.loadTransactions(publicAccount).then(resp => {
-      console.log('resprespresprespresp')
+      console.log('resprespresprespresp', resp)
+
+
       this.showBarProgressone = false;
-      if (this.getPoll)
-        this.getPollStorage();
+      if (this.getPoll) {
+        if (resp) {
+          this.getPollStorage();
+        }
+      }
     });
 
 
@@ -110,7 +115,7 @@ export class PollsComponent implements OnInit {
         this.progressBar = Math.round(progress * 100) / 100;
         this.pollResult = resultData;
         if (resultData.length === this.cantPolls) {
-          this.subscription.unsubscribe();
+          // this.subscription.unsubscribe();
           this.showRefresh = true;
           this.showBarProgress = false;
         }
