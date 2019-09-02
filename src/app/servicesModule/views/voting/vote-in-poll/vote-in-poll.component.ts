@@ -14,6 +14,8 @@ import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
 import * as qrcode from 'qrcode-generator';
 import { element } from 'protractor';
 import { ModalDirective } from 'ng-uikit-pro-standard';
+import { TransactionsService, TransactionsInterface } from '../../../../transactions/services/transactions.service';
+import * as Highcharts from 'highcharts';
 
 @Component({
   selector: 'app-vote-in-poll',
@@ -21,6 +23,9 @@ import { ModalDirective } from 'ng-uikit-pro-standard';
   styleUrls: ['./vote-in-poll.component.css']
 })
 export class VoteInPollComponent implements OnInit {
+  activate: boolean;
+  dataTransaction: TransactionsInterface;
+  Highcharts = Highcharts;
   routes = {
     backToService: `/${AppConfig.routes.service}`,
     viewAll: `/${AppConfig.routes.polls}`
@@ -29,6 +34,7 @@ export class VoteInPollComponent implements OnInit {
   pollSelected: PollInterface;
   optionsSelected: any = [];
   pollResultVoting: any = [];
+  pollResultVotingChar : any = [];
   headResults = ['Options', 'Total'];
   searching: boolean;
   incrementOption = 0;
@@ -48,10 +54,10 @@ export class VoteInPollComponent implements OnInit {
   namePoll: string;
   isMultipe: boolean;
   qrImg: string;
-  chartOptions: object;
+  chartOptions: any
   transaction: Transaction;
   showResultProgress: boolean;
-
+  updateFlag = false;
 
   constructor(
     private nodeService: NodeService,
@@ -62,6 +68,7 @@ export class VoteInPollComponent implements OnInit {
     private fb: FormBuilder,
     private proximaxProvider: ProximaxProvider,
     private dataBridge: DataBridgeService,
+    private transactionService: TransactionsService
 
   ) {
     this.transactionHttp = new TransactionHttp(environment.protocol + "://" + `${this.nodeService.getNodeSelected()}`);
@@ -72,6 +79,7 @@ export class VoteInPollComponent implements OnInit {
     this.btnBlock = false;
     this.btnResult = true;
     this.blockSend = false;
+    this.activate = false;
     this.showResultProgress = false;
     this.createForm()
     this.getPoll(this.activateRoute.snapshot.paramMap.get('id'));
@@ -79,6 +87,7 @@ export class VoteInPollComponent implements OnInit {
 
   }
   @ViewChild('modalInfo', { static: true }) modalInfo: ModalDirective;
+  @ViewChild('certificationModal', { static: true }) certificationModal: ModalDirective;
   ngOnInit() {
 
 
@@ -158,7 +167,7 @@ export class VoteInPollComponent implements OnInit {
   }
   getPoll(id) {
     this.pollSelected = this.createPollStorageService.filterPoll(id);
-    console.log('pollSelected', this.pollSelected)
+    // console.log('pollSelected', this.pollSelected)
 
     this.isMultipe = this.pollSelected.isMultiple
     this.verifyVote();
@@ -170,19 +179,31 @@ export class VoteInPollComponent implements OnInit {
     for (var index = 0; index < pollSelected.options.length; index++) {
       // pollSelected.options.forEach(elem => {
       this.pollResultVoting.push({ name: pollSelected.options[index].name, y: 0 });
+
+      this.pollResultVotingChar.push({ name: pollSelected.options[index].name, y: 0 });
       // })
     }
-    this.pollResultVoting.sort().sort((a, b) => b.y - a.y);
-    this.createcharts(this.pollResultVoting);
+     this.pollResultVoting.sort().sort((a, b) => b.y - a.y);
+     this.setcreatecharts(this.pollResultVotingChar);
+  }
+
+  openCertificateModal(){
+    
+    if(this.activate){
+      this.dataTransaction;
+      // console.log('data a pintar modal', this.dataTransaction)
+      this.certificationModal.show();
+    } else {
+      this.sharedService.showInfo('', 'Transaction unconfirmed');
+    }
+    
   }
 
   getResult(param: string) {
 
     if (param === 'RESULTS') {
       this.modalInfo.show()
-    } 
-console.log(param)
-   
+    }
     if (this.incrementOptionV < this.pollSelected.options.length) {
       this.showResultProgress = true;
       if (
@@ -213,6 +234,13 @@ console.log(param)
               element.y = lengthVote
             })
 
+            this.pollResultVotingChar = this.pollResultVoting
+            this.setcreatecharts(this.pollResultVotingChar);
+
+            // this.chartOptions.series[0].data.filter(elem => elem.name === this.pollSelected.options[this.incrementOptionV].name).map(element => {
+            //   element.y = lengthVote
+            // })
+            // this.updateFlag = true;
             // push({ name: this.pollSelected['options'][this.incrementOptionV].name, y: lengthVote });
             this.incrementOptionV++;
             this.getResult(param);
@@ -229,17 +257,12 @@ console.log(param)
         this.sharedService.showError('', ` Option ${this.pollSelected.options[this.incrementOption].name} does not have a valid public key`);
       }
     } else {
-      // if (param === 'REFRESH') {
-        this.incrementOptionV = 0
-      // }
-      // this.showResult = true;
-      this.pollResultVoting.sort().sort((a, b) => b.y - a.y);
+      this.incrementOptionV = 0
       this.showResultProgress = false;
-      this.createcharts(this.pollResultVoting);
     }
   }
-  createcharts(data: any) {
-    this.chartOptions = {
+  setcreatecharts(data: any) {
+    const Options = {
       chart: {
         plotBackgroundColor: null,
         plotBorderWidth: null,
@@ -269,7 +292,12 @@ console.log(param)
         data
       }]
     };
+    this.chartOptions = Options;
+    // console.log("DateChart", this.chartOptions)
+    this.updateFlag = true;
   }
+
+
 
   /**
    * Validates if the voter already made a vote
@@ -300,8 +328,15 @@ console.log(param)
                   for (var index = 0; index < next.length; index++) {
                     const transactionnext = next[index];
                     if (this.walletService.currentAccount.publicAccount.publicKey === transactionnext.signer.publicKey) {
-                      console.log('transaction', transactionnext)
-
+                      // console.log('transaction', transactionnext)
+                      
+                      let transaction = this.transactionService.getStructureDashboard(transactionnext['innerTransactions'][0]);
+                      transaction.name = this.pollSelected.name;
+                      transaction.description = this.pollSelected.desciption;
+                      transaction.hash = transactionnext.transactionInfo.hash
+                      this.activate = true;
+                      this.dataTransaction = transaction;
+                      // console.log('transaction ---',  this.dataTransaction) 
                       this.transaction = transactionnext;
                       this.memberVoted = true;
                       this.sharedService.showWarning('', `Sorry, you already voted in this poll`);
@@ -364,7 +399,7 @@ console.log(param)
     //   this.statusValidate = 'finishedPoll'
     //   this.sharedService.showInfo('', `Finished poll`);
     // }
-    console.log("estado:", this.statusValidate)
+    // console.log("estado:", this.statusValidate)
   }
   /**
     * valida public key
@@ -434,7 +469,7 @@ console.log(param)
         }
         if (this.walletService.decrypt(common)) {
           if (!this.blockSend) {
-            console.log("votor en proceso")
+            // console.log("votor en proceso")
             this.sendTransaction(common)
           }
         }
@@ -469,11 +504,11 @@ console.log(param)
   transactionToAggregate(publicAccount: PublicAccount, message: PayloadInterface): InnerTransaction[] {
     let innerTransaction: InnerTransaction[] = []
 
-    console.log('field', this.optionsSelected)
-    console.log('field length', this.optionsSelected.length)
+    // console.log('field', this.optionsSelected)
+    // console.log('field length', this.optionsSelected.length)
     for (let i = 0; i < this.optionsSelected.length; i++) {
       const optionData = this.pollSelected.options.find(e => e.name === this.optionsSelected[i].field);
-      console.log('optionData', optionData)
+      // console.log('optionData', optionData)
       message.nameOption = optionData.name;
       const recipient = Address.createFromPublicKey(optionData.publicAccount.publicKey, optionData.publicAccount.address.networkType);
       let transferTransaction: any = this.proximaxProvider.buildTransferTransaction(this.walletService.currentAccount.network, recipient, JSON.stringify(message));
@@ -511,13 +546,22 @@ console.log(param)
           const statusTransactionHash = (statusTransaction['type'] === 'error') ? statusTransaction['data'].hash : statusTransaction['data'].transactionInfo.hash;
           const match = statusTransactionHash === signedTransaction.hash;
           if (statusTransaction['type'] === 'confirmed' && match) {
+            // console.log("transaction confirm",statusTransaction['data'])
+            let transaction = this.transactionService.getStructureDashboard(statusTransaction['data']['innerTransactions'][0]);
+            const poll = JSON.parse(statusTransaction['data']['innerTransactions'][0].message.payload);
+            transaction.name = poll.name;
+            transaction.hash = statusTransaction['data'].transactionInfo.hash;
+            // transaction.description = poll.desciption;
+            this.dataTransaction = transaction;
+            this.activate = true;
+
             signedTransaction = null;
             this.sharedService.showSuccess('', 'Transaction confirmed');
           } else if (statusTransaction['type'] === 'unconfirmed' && match) {
             this.blockSend = false;
             this.viewCertificate(signedTransaction.hash, this.pollSelected.name, 'newVoting')
             this.walletService.countTimeVote();
-            signedTransaction = null;
+            // signedTransaction = null;
             this.sharedService.showInfo('', 'Transaction unconfirmed');
           } else if (match) {
             signedTransaction = null;
@@ -565,18 +609,7 @@ console.log(param)
       }
 
     }
-
-
   }
-
-
-
-
-
-
-
-
-
 }
 
 export declare interface PayloadInterface {
@@ -585,4 +618,56 @@ export declare interface PayloadInterface {
   name: string;
   // AssociationId: number;
   nameOption?: string;
+}
+
+
+
+interface ChartInterface {
+  chart: Chart;
+  title: Title;
+  tooltip: Tooltip;
+  plotOptions: PlotOptions;
+  series: Series[];
+}
+
+interface Series {
+  name: string;
+  colorByPoint: boolean;
+  data: Datum[];
+}
+
+interface Datum {
+  name: string;
+  y: number;
+}
+
+interface PlotOptions {
+  pie: Pie;
+}
+
+interface Pie {
+  allowPointSelect: boolean;
+  cursor: string;
+  dataLabels: DataLabels;
+  showInLegend: boolean;
+}
+
+interface DataLabels {
+  enabled: boolean;
+}
+
+interface Tooltip {
+  valueDecimals: number;
+  pointFormat: string;
+}
+
+interface Title {
+  text: string;
+}
+
+interface Chart {
+  plotBackgroundColor?: any;
+  plotBorderWidth?: any;
+  plotShadow: boolean;
+  type: string;
 }

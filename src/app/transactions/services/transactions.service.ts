@@ -55,8 +55,6 @@ export class TransactionsService {
   private _transUnConfirm$: Observable<TransactionsInterface[]> = this._transUnConfirmSubject.asObservable();
 
 
-  namespaceRentalFeeSink = environment.namespaceRentalFeeSink;
-  mosaicRentalFeeSink = environment.mosaicRentalFeeSink;
   arraTypeTransaction = {
     transfer: {
       id: TransactionType.TRANSFER,
@@ -108,6 +106,9 @@ export class TransactionsService {
        name: "Secret proof"
      }*/
   };
+  namespaceRentalFeeSink = environment.namespaceRentalFeeSink;
+  mosaicRentalFeeSink = environment.mosaicRentalFeeSink;
+
 
   constructor(
     private proximaxProvider: ProximaxProvider,
@@ -667,4 +668,7 @@ export interface TransactionsInterface {
   fileName?: string;
   dateFile?: string;
   privateFile?: boolean;
+  description?: string;
+  name?: string;
+  hash?: string;
 }

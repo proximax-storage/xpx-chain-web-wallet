@@ -32,6 +32,8 @@ import { ResultPollComponent } from './views/voting/result-poll/result-poll.comp
 import { CreateApostilleComponent } from './views/apostille/create-apostille/create-apostille.component';
 import { AuditApostilleComponent } from './views/apostille/audit-apostille/audit-apostille.component';
 import { VoteInPollComponent } from './views/voting/vote-in-poll/vote-in-poll.component';
+import { HighchartsChartComponent } from './views/voting/vote-in-poll/highcharts-chart.component';
+
 
 @NgModule({
   declarations: [
@@ -64,7 +66,8 @@ import { VoteInPollComponent } from './views/voting/vote-in-poll/vote-in-poll.co
     ResultPollComponent,
     CreateApostilleComponent,
     AuditApostilleComponent,
-    VoteInPollComponent
+    VoteInPollComponent,
+    HighchartsChartComponent
   ],
   schemas: [ NO_ERRORS_SCHEMA ],
   imports: [

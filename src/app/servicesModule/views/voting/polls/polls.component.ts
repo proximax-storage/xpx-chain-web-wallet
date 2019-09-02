@@ -7,13 +7,14 @@ import { AppConfig } from 'src/app/config/app.config';
 import { PaginationInstance } from 'ngx-pagination';
 import { Router } from '@angular/router';
 import { SharedService } from 'src/app/shared/services/shared.service';
+import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-polls',
   templateUrl: './polls.component.html',
   styleUrls: ['./polls.component.css']
 })
 export class PollsComponent implements OnInit {
-  subscription: any;
+  getPoll = true;
   showBarProgress: boolean;
   showBarProgressone = false;
   showRefresh = false;
@@ -32,6 +33,9 @@ export class PollsComponent implements OnInit {
   headElements = ['Name', 'Poll type', 'Start date ', 'Status'];
   pollResult: PollInterface[] = [];
   filter: string = '';
+  promosePoadTransactions: Promise<void>;
+  subscription: Subscription
+
   constructor(
     private router: Router,
     private createPollStorageService: CreatePollStorageService,
@@ -46,14 +50,25 @@ export class PollsComponent implements OnInit {
   ngOnInit() {
     this.showBarProgressone = true;
     const publicAccount = PublicAccount.createFromPublicKey(environment.pollsContent.public_key, this.walletService.currentAccount.network)
-    this.createPollStorageService.loadTransactions(publicAccount).then(resp => {
-      
+    this.promosePoadTransactions = this.createPollStorageService.loadTransactions(publicAccount).then(resp => {
+      console.log('resprespresprespresp')
       this.showBarProgressone = false;
-      this.getPollStorage();
+      if (this.getPoll)
+        this.getPollStorage();
     });
+
+
+
   }
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+    this.getPoll = false;
+    console.log(this.subscription)
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
+
+
+    this.promosePoadTransactions.finally()
     // this.sub.unsubscribe();
   }
 
@@ -77,7 +92,9 @@ export class PollsComponent implements OnInit {
     this.showRefresh = false;
     this.pollResult = []
     const resultData: PollInterface[] = [];
+
     this.subscription = this.createPollStorageService.getPolls$().subscribe(data => {
+      console.log(data.size)
       resultData.push(data.result);
       if (resultData.length > 0) {
         resultData.map(elemt => {
@@ -93,6 +110,7 @@ export class PollsComponent implements OnInit {
         this.progressBar = Math.round(progress * 100) / 100;
         this.pollResult = resultData;
         if (resultData.length === this.cantPolls) {
+          this.subscription.unsubscribe();
           this.showRefresh = true;
           this.showBarProgress = false;
         }
@@ -102,6 +120,7 @@ export class PollsComponent implements OnInit {
       }
 
     });
+    console.log("me suscribi", this.subscription)
   }
 
   refreshData(event) {

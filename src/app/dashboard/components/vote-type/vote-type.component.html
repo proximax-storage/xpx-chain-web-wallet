@@ -1,0 +1,131 @@
+<div class="row mt-04rem mr-1rem ml-1rem">
+    <!-- Data -->
+    <div class="col-12 col-lg-7 d-flex align-items-start">
+        <div class="row">
+            <!-- Type transfer -->
+            <div class="col-12">
+                <span class="color-dark-green fw-bold fs-2rem">{{transactionInfo.nameType}}</span>
+                <img class="mr-1rem ml-1rem h-2em" src="assets/images/img/arrow-transaction-sender-orange-proximax-sirius-explorer.svg" alt="">
+
+                <!-- Income -->
+                <ng-container *ngIf="transferTransaction?.receive">
+                    <span class="color-blue-light fw-bold fs-2rem">Received</span>
+                </ng-container>
+
+                <!-- Outcome -->
+                <ng-container *ngIf="!transferTransaction?.receive">
+                    <span class="color-orange fw-bold fs-2rem">Send</span>
+                </ng-container>
+            </div>
+
+            <!-- Timestamp -->
+            <div class="col-12 mt-05rem">
+                <span class="color-dark-green fs-07rem fw-500 w-w-b-w">{{transactionInfo.timestamp}}</span>
+            </div>
+
+            <!-- Fee -->
+            <div class="col-12 mt-05rem">
+                <div class="row">
+                    <div class="col-3">
+                        <span class="color-dark-green fw-bold fs-1-3rem">Fee: </span>
+                    </div>
+                    <div class="col-9 d-flex">
+                        <div class="row">
+                            <div class="col-12">
+                                <img class="icono mb-03rem" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="16" alt="">&nbsp;
+                                <span class="color-dark-green fw-400 fs-1-3rem">{{transactionInfo.fee}} XPX</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- TITLE -->
+            <div class="col-12 mt-2rem">
+                <div class="row">
+                    <div class="col-3">
+                        <span class="color-dark-green fw-bold fs-08rem">Poll title: </span>
+                    </div>
+                    <div class="col-9">
+                        <span class="color-dark-green fw-400 fs-07rem">{{transactionInfo.name}}</span>
+                    </div>
+                </div>
+            </div>
+            <!-- DESCRIPTION -->
+            <!-- <div class="col-12 mt-2rem">
+                <div class="row">
+                    <div class="col-3">
+                        <span class="color-dark-green fw-bold fs-08rem">Description: </span>
+                    </div>
+                    <div class="col-9">
+                        <span class="color-dark-green fw-400 fs-07rem">{{transactionInfo.description}}</span>
+                    </div>
+                </div>
+            </div> -->
+
+
+            <!-- From -->
+            <div class="col-12 mt-2rem">
+                <div class="row">
+                    <div class="col-3">
+                        <span class="color-dark-green fw-bold fs-08rem">Recipient: </span>
+                    </div>
+                    <div class="col-9">
+                        <span class="color-dark-green fw-400 fs-07rem">{{transactionInfo.data.recipient.pretty()}}</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Box signer, signature, hash -->
+    <div class="col-12 col-lg-5" id="boxHashSignerSignature">
+        <div class="row gray-color-transparent lh-1em">
+            <div class="col-12 vote-background p-05rem">
+                <figure class="txt-a-center p-05rem m-0">
+                    <img src="assets/images/img/badge-silver-proximax-sirius-wallet.svg" alt="" width="80">
+                </figure>
+            </div>
+
+            <div class="col-12">
+                <div class="row">
+                    <div class="col-12">
+                        <span class="fs-08rem fw-bolder w-w-b-w">
+                            <b>Signer:</b>
+                        </span>
+                    </div>
+                    <div class="col-12">
+                        <span class="fs-07rem fw-bolder w-w-b-w">{{transactionInfo.data.signer.publicKey}}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 mt-3">
+                <div class="row">
+                    <div class="col-12">
+                        <span class="fs-08rem fw-bolder w-w-b-w">
+                            <b>Signature:</b>
+                        </span>
+                    </div>
+                    <div class="col-12">
+                        <span class="fs-07rem fw-bolder w-w-b-w">{{transactionInfo.data.signature}}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 mt-3">
+                <div class="row">
+                    <div class="col-12">
+                        <span class="fs-08rem fw-bolder w-w-b-w">
+                            <b>Hash:</b>
+                        </span>
+                    </div>
+                    <div class="col-12">
+                        <span class="fs-07rem fw-bolder w-w-b-w">{{transactionInfo.hash}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
