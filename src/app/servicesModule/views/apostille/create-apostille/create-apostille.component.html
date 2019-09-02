@@ -32,8 +32,31 @@
                   formControlName="file">
               </div>
 
+              <!-- PRIVATE & PUBLIC -->
+              <div class="row mt-05rem">
+                <div class="col-12 box-grey d-flex justify-content-center">
+                  <div class="row">
+                    <div class="col-8 fw-600 d-flex justify-content-start">
+                      <div class="form-check form-check-inline">
+                        <input formControlName="typeFile" checked [value]="true" type="radio" class="form-check-input"
+                          id="myComputer" name="typeFile" mdbInput>
+                        <label class="form-check-label" for="myComputer">My computer</label>
+                      </div>
+                    </div>
+
+                    <div class="col-4 fw-600 d-flex justify-content-end">
+                      <div class="form-check form-check-inline">
+                        <input formControlName="typeFile" [value]="false" type="radio" class="form-check-input"
+                          id="DFMS" name="typeFile" mdbInput>
+                        <label class="form-check-label" for="DFMS">DFMS</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <!-- BUTTONS -->
-              <div class="row">
+              <div class="row mt-1rem">
                 <div class="col-10 mx-auto">
                   <div class="row">
                     <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">

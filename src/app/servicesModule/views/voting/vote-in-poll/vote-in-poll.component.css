@@ -13,7 +13,7 @@
   }
 
   .color {
-      background-color: rgb(16, 98, 16);
+    background-image: linear-gradient(#7CBD74, #1F9062)
   }
   .celda{
     height: auto;

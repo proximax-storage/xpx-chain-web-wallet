@@ -2,9 +2,7 @@
 
 @import "~@ng-select/ng-select/themes/material.theme.css";
 @import "~ng-pick-datetime/assets/style/picker.min.css";
-
-html,
-body {
+html, body {
   margin: 0;
   display: table;
   height: 100%;
@@ -18,6 +16,18 @@ body {
 
 .word-break-all {
   word-break: break-all;
+}
+
+.w-b-w {
+  word-wrap: break-word
+}
+
+.w-b-a {
+  word-break: break-all;
+}
+
+.w-w-b-w {
+  word-wrap: break-word;
 }
 
 .overflow-ellipsis-nowrap {
@@ -757,8 +767,8 @@ body {
   background-color: #e4e4e4;
 }
 
-
 /**************************** progress ***********************************/
+
 .barlistvoting .progress-bar {
   height: 20px !important;
 }
@@ -776,14 +786,12 @@ body {
   line-height: 18px;
 }
 
-.box-list-account-gray,
-.box-list-account {
+.box-list-account-gray, .box-list-account {
   color: white;
   background: #2aa1b9;
   border-radius: 1rem;
   margin-top: 1rem;
 }
-
 
 .box-list-account-gray {
   color: #424242 !important;
@@ -905,8 +913,7 @@ footer.page-footer .footer-copyright {
 
 /************************* NG SELECT *******************/
 
-.navbar.navbar-dark .breadcrumb .nav-item .nav-link,
-.navbar.navbar-dark .navbar-nav .nav-item .nav-link {
+.navbar.navbar-dark .breadcrumb .nav-item .nav-link, .navbar.navbar-dark .navbar-nav .nav-item .nav-link {
   color: #306EB5 !important;
 }
 
@@ -919,121 +926,42 @@ button.navbar-toggler {
   color: #306EB5 !important;
 }
 
-.md-form input[type=text],
-.md-form input[type=password],
-.md-form input[type=email],
-.md-form input[type=url],
-.md-form input[type=time],
-.md-form input[type=date],
-.md-form input[type=datetime-local],
-.md-form input[type=tel],
-.md-form input[type=number],
-.md-form input[type=search-md],
-.md-form input[type=search],
-.md-form textarea.md-textarea,
-input[type=text] {
+.md-form input[type=text], .md-form input[type=password], .md-form input[type=email], .md-form input[type=url], .md-form input[type=time], .md-form input[type=date], .md-form input[type=datetime-local], .md-form input[type=tel], .md-form input[type=number], .md-form input[type=search-md], .md-form input[type=search], .md-form textarea.md-textarea, input[type=text] {
   border: 1px solid #ced4da;
   border-radius: 1.5rem !important;
   padding-left: 1rem;
 }
 
-.md-form input[type=text]:focus:not([readonly]),
-.md-form input[type=password]:focus:not([readonly]),
-.md-form input[type=email]:focus:not([readonly]),
-.md-form input[type=url]:focus:not([readonly]),
-.md-form input[type=time]:focus:not([readonly]),
-.md-form input[type=date]:focus:not([readonly]),
-.md-form input[type=datetime-local]:focus:not([readonly]),
-.md-form input[type=tel]:focus:not([readonly]),
-.md-form input[type=number]:focus:not([readonly]),
-.md-form input[type=search-md]:focus:not([readonly]),
-.md-form input[type=search]:focus:not([readonly]),
-.md-form textarea.md-textarea:focus:not([readonly]),
-.md-form input[type=text]:focus:not([readonly]),
-.md-form input[type=password]:focus:not([readonly]),
-.md-form input[type=email]:focus:not([readonly]),
-.md-form input[type=url]:focus:not([readonly]),
-.md-form input[type=time]:focus:not([readonly]),
-.md-form input[type=date]:focus:not([readonly]),
-.md-form input[type=datetime-local]:focus:not([readonly]),
-.md-form input[type=tel]:focus:not([readonly]),
-.md-form input[type=number]:focus:not([readonly]),
-.md-form input[type=search-md]:focus:not([readonly]),
-.md-form input[type=search]:focus:not([readonly]),
-.md-form textarea.md-textarea:focus:not([readonly]),
-.md-form input[type=text]:focus:not([readonly]),
-.md-form input[type=password]:focus:not([readonly]),
-.md-form input[type=email]:focus:not([readonly]),
-.md-form input[type=url]:focus:not([readonly]),
-.md-form input[type=time]:focus:not([readonly]),
-.md-form input[type=date]:focus:not([readonly]),
-.md-form input[type=datetime-local]:focus:not([readonly]),
-.md-form input[type=tel]:focus:not([readonly]),
-.md-form input[type=number]:focus:not([readonly]),
-.md-form input[type=search-md]:focus:not([readonly]),
-.md-form input[type=search]:focus:not([readonly]),
-.md-form textarea.md-textarea:focus:not([readonly]) {
+.md-form input[type=text]:focus:not([readonly]), .md-form input[type=password]:focus:not([readonly]), .md-form input[type=email]:focus:not([readonly]), .md-form input[type=url]:focus:not([readonly]), .md-form input[type=time]:focus:not([readonly]), .md-form input[type=date]:focus:not([readonly]), .md-form input[type=datetime-local]:focus:not([readonly]), .md-form input[type=tel]:focus:not([readonly]), .md-form input[type=number]:focus:not([readonly]), .md-form input[type=search-md]:focus:not([readonly]), .md-form input[type=search]:focus:not([readonly]), .md-form textarea.md-textarea:focus:not([readonly]), .md-form input[type=text]:focus:not([readonly]), .md-form input[type=password]:focus:not([readonly]), .md-form input[type=email]:focus:not([readonly]), .md-form input[type=url]:focus:not([readonly]), .md-form input[type=time]:focus:not([readonly]), .md-form input[type=date]:focus:not([readonly]), .md-form input[type=datetime-local]:focus:not([readonly]), .md-form input[type=tel]:focus:not([readonly]), .md-form input[type=number]:focus:not([readonly]), .md-form input[type=search-md]:focus:not([readonly]), .md-form input[type=search]:focus:not([readonly]), .md-form textarea.md-textarea:focus:not([readonly]), .md-form input[type=text]:focus:not([readonly]), .md-form input[type=password]:focus:not([readonly]), .md-form input[type=email]:focus:not([readonly]), .md-form input[type=url]:focus:not([readonly]), .md-form input[type=time]:focus:not([readonly]), .md-form input[type=date]:focus:not([readonly]), .md-form input[type=datetime-local]:focus:not([readonly]), .md-form input[type=tel]:focus:not([readonly]), .md-form input[type=number]:focus:not([readonly]), .md-form input[type=search-md]:focus:not([readonly]), .md-form input[type=search]:focus:not([readonly]), .md-form textarea.md-textarea:focus:not([readonly]) {
   box-shadow: none !important;
   border: 2px solid #2BA1B9 !important;
 }
 
-.md-form input[type=text]:focus:not([readonly]),
-.md-form input[type=password]:focus:not([readonly]),
-.md-form input[type=email]:focus:not([readonly]),
-.md-form input[type=url]:focus:not([readonly]),
-.md-form input[type=time]:focus:not([readonly]),
-.md-form input[type=date]:focus:not([readonly]),
-.md-form input[type=datetime-local]:focus:not([readonly]),
-.md-form input[type=tel]:focus:not([readonly]),
-.md-form input[type=number]:focus:not([readonly]),
-.md-form input[type=search-md]:focus:not([readonly]),
-.md-form input[type=search]:focus:not([readonly]),
-.md-form textarea.md-textarea:focus:not([readonly]) {
+.md-form input[type=text]:focus:not([readonly]), .md-form input[type=password]:focus:not([readonly]), .md-form input[type=email]:focus:not([readonly]), .md-form input[type=url]:focus:not([readonly]), .md-form input[type=time]:focus:not([readonly]), .md-form input[type=date]:focus:not([readonly]), .md-form input[type=datetime-local]:focus:not([readonly]), .md-form input[type=tel]:focus:not([readonly]), .md-form input[type=number]:focus:not([readonly]), .md-form input[type=search-md]:focus:not([readonly]), .md-form input[type=search]:focus:not([readonly]), .md-form textarea.md-textarea:focus:not([readonly]) {
   box-shadow: 0 1px 0 0 #2BA1B9;
   border-bottom: 1px solid #2BA1B9;
 }
 
-.md-form input[type=text]:focus:not([readonly])+label,
-.md-form input[type=password]:focus:not([readonly])+label,
-.md-form input[type=email]:focus:not([readonly])+label,
-.md-form input[type=url]:focus:not([readonly])+label,
-.md-form input[type=time]:focus:not([readonly])+label,
-.md-form input[type=date]:focus:not([readonly])+label,
-.md-form input[type=datetime-local]:focus:not([readonly])+label,
-.md-form input[type=tel]:focus:not([readonly])+label,
-.md-form input[type=number]:focus:not([readonly])+label,
-.md-form input[type=search-md]:focus:not([readonly])+label,
-.md-form input[type=search]:focus:not([readonly])+label,
-.md-form textarea.md-textarea:focus:not([readonly])+label {
+.md-form input[type=text]:focus:not([readonly])+label, .md-form input[type=password]:focus:not([readonly])+label, .md-form input[type=email]:focus:not([readonly])+label, .md-form input[type=url]:focus:not([readonly])+label, .md-form input[type=time]:focus:not([readonly])+label, .md-form input[type=date]:focus:not([readonly])+label, .md-form input[type=datetime-local]:focus:not([readonly])+label, .md-form input[type=tel]:focus:not([readonly])+label, .md-form input[type=number]:focus:not([readonly])+label, .md-form input[type=search-md]:focus:not([readonly])+label, .md-form input[type=search]:focus:not([readonly])+label, .md-form textarea.md-textarea:focus:not([readonly])+label {
   color: #2BA1B9 !important;
 }
 
-.dropdown-default .dropdown-content li a,
-.dropdown-default .dropdown-content li span:hover,
-.dropdown-default .dropdown-content li.active {
+.dropdown-default .dropdown-content li a, .dropdown-default .dropdown-content li span:hover, .dropdown-default .dropdown-content li.active {
   background-color: #609ca9 !important;
 }
 
-.dropdown-default.colorful-select .dropdown-content li.active span,
-.dropdown-default.colorful-select .dropdown-content li.selected span {
+.dropdown-default.colorful-select .dropdown-content li.active span, .dropdown-default.colorful-select .dropdown-content li.selected span {
   background-color: #2ba1b9 !important;
 }
 
 /** INPUTS VALIDATION **/
 
-input.form-control.validate-error.ng-invalid.ng-touched,
-input.form-control.validate-error.ng-invalid.ng-dirty,
-.form-submitted input.form-control.validate-error.ng-invalid,
-.md-textarea.validate-error.ng-invalid.ng-touched,
-.md-textarea.validate-error.ng-invalid.ng-dirty,
-.form-submitted .md-textarea.validate-error.ng-invalid {
+input.form-control.validate-error.ng-invalid.ng-touched, input.form-control.validate-error.ng-invalid.ng-dirty, .form-submitted input.form-control.validate-error.ng-invalid, .md-textarea.validate-error.ng-invalid.ng-touched, .md-textarea.validate-error.ng-invalid.ng-dirty, .form-submitted .md-textarea.validate-error.ng-invalid {
   box-shadow: none !important;
   border: 2px solid #e06e38 !important;
 }
 
-input.form-control.validate-success.ng-valid.ng-dirty,
-input.form-control.validate-success.ng-valid.ng-touched,
-.form-submitted input.form-control.validate-success.ng-valid {
+input.form-control.validate-success.ng-valid.ng-dirty, input.form-control.validate-success.ng-valid.ng-touched, .form-submitted input.form-control.validate-success.ng-valid {
   box-shadow: none !important;
   border: 2px solid #2BA1B9 !important;
 }
@@ -1043,10 +971,7 @@ input.form-control.validate-success.ng-valid.ng-touched,
   box-shadow: none !important;
 }
 
-#confirm-password-invalid,
-#password-invalid,
-#name-wallet-invalid,
-#divisibility-invalid {
+#confirm-password-invalid, #password-invalid, #name-wallet-invalid, #divisibility-invalid {
   box-shadow: none !important;
   border: 2px solid #e06e38 !important;
 }
@@ -1067,8 +992,7 @@ input.form-control.validate-success.ng-valid.ng-touched,
   color: #2BA1B9 !important;
 }
 
-.md-form.form-sm mdb-error,
-.md-form.form-sm mdb-success {
+.md-form.form-sm mdb-error, .md-form.form-sm mdb-success {
   left: 1rem !important;
 }
 
@@ -1126,11 +1050,7 @@ button.md-toast-close-button {
   color: #e06e38 !important;
 }
 
-.md-toast-success:before,
-.md-toast-info:before,
-.md-toast-warning:before,
-.md-toast-error:before,
-#toast-container>mdb-toast-component {
+.md-toast-success:before, .md-toast-info:before, .md-toast-warning:before, .md-toast-error:before, #toast-container>mdb-toast-component {
   font-family: FontAwesome !important;
   font-size: 20px !important;
   line-height: 14px !important;
@@ -1175,8 +1095,7 @@ button.md-toast-close-button {
   border-color: #2BA1B9 !important;
 }
 
-.ng-select.ng-select-focused .ng-select-container .ng-arrow-wrapper .ng-arrow,
-.ng-select.ng-select-focused .ng-select-container .ng-value-container .ng-placeholder {
+.ng-select.ng-select-focused .ng-select-container .ng-arrow-wrapper .ng-arrow, .ng-select.ng-select-focused .ng-select-container .ng-value-container .ng-placeholder {
   color: #2BA1B9 !important;
 }
 
@@ -1288,17 +1207,6 @@ button.md-toast-close-button {
 }
 
 /************************* FIN NG SELECT *******************/
-.w-b-w {
-  word-wrap: break-word
-}
-
-.w-b-a {
-  word-break: break-all;
-}
-
-.w-w-b-w {
-  word-wrap: break-word;
-}
 
 .b-t-r-r-08rem {
   border-top-right-radius: .8rem !important;
@@ -1368,11 +1276,7 @@ button.md-toast-close-button {
   pointer-events: none !important;
 }
 
-.dropdown-default.colorful-select .dropdown-content li.active span,
-.dropdown-default.colorful-select .dropdown-content li.selected span,
-.dropdown-default .dropdown-content li a,
-.dropdown-default .dropdown-content li span:hover,
-.dropdown-default .dropdown-content li.active {
+.dropdown-default.colorful-select .dropdown-content li.active span, .dropdown-default.colorful-select .dropdown-content li.selected span, .dropdown-default .dropdown-content li a, .dropdown-default .dropdown-content li span:hover, .dropdown-default .dropdown-content li.active {
   background-color: #2ba1b9 !important;
 }
 
@@ -1394,7 +1298,7 @@ button.md-toast-close-button {
 }
 
 .vote-background {
-  background: rgb(16, 98, 16);
+  background: -webkit-linear-gradient(bottom, #7CBD74, #1F9062);
 }
 
 .audit-background-err {
@@ -1555,7 +1459,6 @@ body.modal-open {
   }
 }
 
-
 @media (min-width: 871px) and (max-width: 970px) {
   .max-w-table {
     max-width: 824px !important
@@ -1610,7 +1513,6 @@ body.modal-open {
   }
 }
 
-
 @media (min-width: 1771px) and (max-width: 1880px) {
   .max-w-table {
     max-width: 1724px !important
@@ -1620,7 +1522,6 @@ body.modal-open {
 .background-pending {
   background: #ffdfa0;
 }
-
 
 .tab-content {
   padding: 2rem 1rem 1rem !important;
@@ -1635,12 +1536,10 @@ body.modal-open {
   outline-color: #F4F4F4 !important;
 }
 
-
 .card-body ul.stepper.horizontal .step.wrong .step-title:before {
   font-family: FontAwesome !important;
   content: '\f071' !important;
 }
-
 
 .card-body ul.stepper.horizontal .step.done .step-title:before {
   font-family: FontAwesome !important;

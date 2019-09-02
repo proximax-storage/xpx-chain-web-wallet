@@ -1,4 +1,4 @@
-import { PrivacyType, Uint8ArrayParameterData, UploadParameter, Protocol, ConnectionConfig, BlockchainNetworkConnection, IpfsConnection, Uploader, UploadResult } from 'xpx2-ts-js-sdk';
+import { PrivacyType, Uint8ArrayParameterData, UploadParameter, Protocol, ConnectionConfig, BlockchainNetworkConnection, IpfsConnection, Uploader, UploadResult, Searcher, SearchParameter } from 'xpx2-ts-js-sdk';
 import { Injectable } from '@angular/core';
 import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
 import { WalletService } from 'src/app/wallet/services/wallet.service';
@@ -11,6 +11,8 @@ export class StorageService {
 
   files: any[];
   uploader: Uploader;
+  searcher: Searcher;
+  resultSize: number = 20;
 
 
   constructor(
@@ -74,7 +76,7 @@ export class StorageService {
       new IpfsConnection(storageHost, storagePort, storageOptions)
     );
 
-
+    this.searcher = new Searcher(connectionConfig);
     this.uploader = new Uploader(connectionConfig);
   }
 
@@ -89,8 +91,39 @@ export class StorageService {
       reader.readAsArrayBuffer(file);
     });
   }
-
+  
+  async getFiles() {
+    const param = SearchParameter.createForPublicKey(
+      this.walletService.currentAccount.publicAccount.publicKey
+    );
+    param.withResultSize(this.resultSize);
+  
+    if (!this.searcher) {
+      this.initialiseStorage();
+    }
+    return await this.searcher.search(param.build());
+    // console.log(response);  
+    // console.log(this.fromTransactionId);
+    // this.elements = [];
+  
+    // response.results.forEach(el => {
+    //   const item = {
+    //     name: el.messagePayload.data.name === undefined ? el.messagePayload.data.dataHash : el.messagePayload.data.name,
+    //     contentType: el.messagePayload.data.contentType,
+    //     contentTypeIcon: this.getContentTypeIcon(el.messagePayload.data.contentType),
+    //     encryptionType: el.messagePayload.privacyType,
+    //     encryptionTypeIcon: this.getEncryptionMethodIcon(el.messagePayload.privacyType),
+    //     description: el.messagePayload.data.description,
+    //     timestamp: this.dateFormatLocal(el.messagePayload.data.timestamp),
+    //     dataHash: el.messagePayload.data.dataHash
+    //   }
+  
+    //   this.elements.push(item);
+    // });
+  
+  }
 }
+
 
 export interface SearchResultInterface {
   name: string;
