@@ -667,4 +667,6 @@ export interface TransactionsInterface {
   fileName?: string;
   dateFile?: string;
   privateFile?: boolean;
+  description?: string;
+  name?: string;
 }

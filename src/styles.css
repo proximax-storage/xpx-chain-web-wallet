@@ -1383,6 +1383,10 @@ button.md-toast-close-button {
   background: -webkit-linear-gradient(bottom, #b44703, #f89354);
 }
 
+.vote-background {
+  background: rgb(16, 98, 16);
+}
+
 .audit-background-err {
   background: -webkit-linear-gradient(bottom, #9e0000, #f38b8b);
 }
