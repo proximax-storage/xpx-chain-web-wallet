@@ -63,6 +63,8 @@ export class CreateApostilleComponent implements OnInit {
     this.configurationForm = this.sharedService.configurationForm;
     this.createForm();
     this.filesStorage = await this.storageService.getFiles();
+    console.log('aqui estoy', this.filesStorage);
+    this.convertToFile(this.filesStorage[0]);
     this.apostilleService.getTransactionStatus();
   }
 
@@ -83,7 +85,7 @@ export class CreateApostilleComponent implements OnInit {
 
 
     this.apostilleFormOne = this.fb.group({
-      file: ['', [Validators.required]],
+      file: ['', []],
       typeFile: [true, [Validators.required]]
     });
 
@@ -175,8 +177,16 @@ export class CreateApostilleComponent implements OnInit {
    *
    * @memberof CreateApostilleComponent
    */
-  async searchFiles() {
-    const myFiles = [];
+  async convertToFile(element: SearchResultInterface) {
+    const data = await this.storageService.convertToFile(element);
+    console.log('esta es la data', data);
+    const file = new File([data], element.name);
+
+    console.log('Este esl el archivo -------->', file);
+    this.fileReader([file]);
+
+
+
     /*if (this.filesStorage.length > 0) {
       this.filesStorage.forEach(element => {
         this.storageService.convertToFile(element);
