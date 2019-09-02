@@ -1,8 +1,8 @@
-<div class="container mt-3rem pb-3rem animated fadeIn">
+<div class="container-fluid mt-3rem pb-3rem animated fadeIn">
   <app-header [params]="paramsHeader"></app-header>
   <ng-container *ngIf="!processComplete; else processCompleteTemplate">
     <div class="row mb-2rem">
-      <div class="col-11 col-md-9 col-xl-8 mb-2rem mx-auto">
+      <div class="col-12 col-md-10 col-lg-9 col-xl-8 mb-2rem mx-auto">
         <!-- UPLOAD APOSTILLE -->
         <mdb-stepper #stepper [linear]="true">
           <mdb-step name="File(s) to process" [stepForm]="apostilleFormOne" class="step1" [completed]="false">
@@ -101,6 +101,20 @@
                 </div>
               </div>
 
+              <!-- SAFE DFMS -->
+              <div class="row mt-1rem">
+                <div class="col-12 box-grey d-flex justify-content-center">
+                  <div class="row">
+                    <div class="col-12 fw-600 mx-auto">
+                      <div class="form-check form-check-inline">
+                        <mdb-checkbox formControlName="safeDFMS" [checked]="true" [default]="true">SAFE on DFMS
+                        </mdb-checkbox>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <!-- TYPE ENCRIPTED -->
               <div class="row mt-1rem">
                 <div class="col-12">
@@ -126,7 +140,7 @@
                   <button [disabled]="apostilleFormTwo.invalid || blockBtn" mdbBtn type="submit" rounded="true"
                     mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
                     <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
-                      *ngIf="blockButton"></span>
+                      *ngIf="blockBtn"></span>
                     <span class="fs-1-2em color-white">CREATE</span>
                   </button>
                 </div>

@@ -1633,10 +1633,16 @@ body.modal-open {
 
 
 .card-body ul.stepper.horizontal .step.wrong .step-title:before {
+  font-family: FontAwesome !important;
   content: '\f071' !important;
 }
 
-ul.stepper.horizontal .step.done .step-title:before,
+
 .card-body ul.stepper.horizontal .step.done .step-title:before {
+  font-family: FontAwesome !important;
   content: '\f058' !important;
+}
+
+ul.stepper .step-new-content .row {
+  margin-bottom: 0 !important;
 }

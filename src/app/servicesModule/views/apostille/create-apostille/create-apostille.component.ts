@@ -412,7 +412,7 @@ export class CreateApostilleComponent implements OnInit {
     this.imageBase64();
     var doc = new jsPDF();
     doc.addImage(this.certificatePrivate, 'JPEG', 0, 0, 210, 298);
-    doc.addImage(base64ImageString, 'gif', 45, 244, 51, 50);
+    doc.addImage(base64ImageString, 'gif', 52, 244, 51, 50);
     doc.setFontType('normal');
     doc.setTextColor(0, 0, 0);
     doc.text(55, 89, (nty.title.slice(0, nty.title.lastIndexOf('.'))).slice(0, 40));
@@ -429,7 +429,12 @@ export class CreateApostilleComponent implements OnInit {
     doc.text(20, 195, nty.dedicatedPrivateKey);
     doc.text(20, 214, nty.signedTransaction.hash.toLowerCase());
     doc.setFontSize(7);
-    doc.text(20, 233, nty.apostilleHash);
+    if (nty.apostilleHash.length > 74) {
+      doc.text(20, 233, nty.apostilleHash.slice(0, 74));
+      doc.text(20, 236, nty.apostilleHash.slice(74));
+    } else {
+      doc.text(20, 233, nty.apostilleHash);
+    }
     return doc.output('blob');
   }
 
@@ -448,7 +453,7 @@ export class CreateApostilleComponent implements OnInit {
     this.imageBase64();
     var doc = new jsPDF()
     doc.addImage(this.certificatePublic, 'JPEG', 0, 0, 210, 298);
-    doc.addImage(base64ImageString, 'gif', 45, 244, 51, 50);
+    doc.addImage(base64ImageString, 'gif', 52, 244, 51, 50);
     doc.setFontType('normal');
     doc.setTextColor(0, 0, 0);
     doc.text(55, 89, (nty.title.slice(0, nty.title.lastIndexOf('.'))).slice(0, 40));
@@ -462,7 +467,12 @@ export class CreateApostilleComponent implements OnInit {
     doc.setFontSize(10.9);
     doc.text(20, 195, nty.signedTransaction.hash.toLowerCase());
     doc.setFontSize(7);
-    doc.text(20, 214, nty.apostilleHash);
+    if (nty.apostilleHash.length > 74) {
+      doc.text(20, 214, nty.apostilleHash.slice(0, 74));
+      doc.text(20, 217, nty.apostilleHash.slice(74));
+    } else {
+      doc.text(20, 214, nty.apostilleHash);
+    }
     return doc.output('blob');
   }
 
