@@ -106,7 +106,7 @@ export class AuditApostilleComponent implements OnInit {
 
     if (hasts.length > 0) {
       this.proximaxProvider.getTransactions(hasts).subscribe(element => {
-        this.verifyHast(element);
+        this.verifyHash(element);
       });
     } else {
       this.searching = false;
@@ -117,7 +117,7 @@ export class AuditApostilleComponent implements OnInit {
    * Method to verify hash of documents uploaded
    * @param transactions transactions found
    */
-  verifyHast(transactions: TransferTransaction[]) {
+  verifyHash(transactions: TransferTransaction[]) {
     this.searching = false;
     this.transactionsSearch.forEach(element => {
       const arrayName = element.name.split(' --Apostille TX ');

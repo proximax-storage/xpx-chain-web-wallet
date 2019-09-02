@@ -9,12 +9,12 @@
           src="assets/images/img/arrow-transaction-sender-orange-proximax-sirius-explorer.svg" alt="">
 
         <!-- Income -->
-        <ng-container *ngIf="transferTransaction?.receive">
+        <ng-container *ngIf="transactionInfo?.receive">
           <span class="color-blue-light fw-bold fs-2rem">Received</span>
         </ng-container>
 
         <!-- Outcome -->
-        <ng-container *ngIf="!transferTransaction?.receive">
+        <ng-container *ngIf="!transactionInfo?.receive">
           <span class="color-orange fw-bold fs-2rem">Send</span>
         </ng-container>
       </div>
@@ -69,7 +69,8 @@
             <span class="color-dark-green fw-bold fs-08rem">Height: </span>
           </div>
           <div class="col-9">
-            <span class="color-dark-green fw-400 fs-07rem">{{transactionInfo.data.transactionInfo.height.compact()}}</span>
+            <span
+              class="color-dark-green fw-400 fs-07rem">{{transactionInfo.data.transactionInfo.height.compact()}}</span>
           </div>
         </div>
 
@@ -99,7 +100,7 @@
             <span class="color-dark-green fw-bold fs-08rem">To: </span>
           </div>
           <div class="col-9">
-            <span class="color-dark-green fw-400 fs-07rem">{{transactionInfo.data.recipient.pretty()}}</span>
+            <span class="color-dark-green fw-400 fs-07rem">{{transactionInfo.data['recipient'].pretty()}}</span>
           </div>
         </div>
       </div>
