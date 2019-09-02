@@ -6,12 +6,12 @@ export const AppConfig: Config = {
     accountCreated: 'account-created',
     addressBook: 'address-book',
     addContacts: 'add-contacts',
-    apostille: 'apostille',
-    audiApostille: 'audit-apostille',
+    apostille: 'attestation',
+    audiApostille: 'audit-attestation',
     auth: 'auth',
     aliasAddressToNamespace: 'alias-address-to-namespace',
     createAccount: 'create-account',
-    createApostille: 'create-apostille',
+    createApostille: 'create-attestation',
     convertToAccountMultisign: 'convert-account-multisign',
     createMosaic: 'create-mosaic',
     createNamespace: 'create-namespace',
@@ -42,7 +42,7 @@ export const AppConfig: Config = {
     selectTypeCreationAccount: 'select-type-creation-account',
     signMultiSigTransactions: 'sign-multisignature-transactions',
     viewAllAccount: 'view-all-account',
-    voteInPoll:'vote-poll',
+    voteInPoll: 'vote-poll',
     walletCreated: 'wallet-created',
     nis1AccountList: 'nis1-account-list',
     accountList: 'account-list'
@@ -94,7 +94,7 @@ export interface Config {
     selectTypeCreationAccount: string;
     signMultiSigTransactions: string;
     viewAllAccount: string;
-    voteInPoll:string;
+    voteInPoll: string;
     walletCreated: string;
     nis1AccountList: string;
   };

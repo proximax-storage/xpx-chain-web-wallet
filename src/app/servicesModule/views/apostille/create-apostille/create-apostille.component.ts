@@ -26,6 +26,7 @@ export class CreateApostilleComponent implements OnInit {
   blockBtn: boolean;
   configurationForm: ConfigurationForm;
   file: string | ArrayBuffer | null;
+  filesStorage: any;
   fileInputIsValidated = false;
   nameFile = 'Not file selected yet...';
   ntyData: NtyDataInterface;
@@ -46,7 +47,6 @@ export class CreateApostilleComponent implements OnInit {
     { value: '4', label: 'SHA3' },
     { value: '5', label: 'SHA512' }
   ];
-  filesStorage: any;
 
   constructor(
     private apostilleService: ApostilleService,
@@ -58,11 +58,11 @@ export class CreateApostilleComponent implements OnInit {
   ) {
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.configurationForm = this.sharedService.configurationForm;
     this.createForm();
     this.apostilleService.getTransactionStatus();
-    this.filesStorage = this.storageService.getFiles();
+    this.filesStorage = await this.storageService.getFiles();
     console.log('\n\n\n\nValue of filesStorage', this.filesStorage, '\n\n\n\nEnd value\n\n');
   }
 
@@ -80,8 +80,11 @@ export class CreateApostilleComponent implements OnInit {
     this.fileInputIsValidated = false;
     this.nameFile = 'Not file selected yet...';
     this.rawFileContent = '';
+
+
     this.apostilleFormOne = this.fb.group({
-      file: ['', [Validators.required]]
+      file: ['', [Validators.required]],
+      typeFile: [true, [Validators.required]]
     });
 
     this.apostilleFormTwo = this.fb.group({
