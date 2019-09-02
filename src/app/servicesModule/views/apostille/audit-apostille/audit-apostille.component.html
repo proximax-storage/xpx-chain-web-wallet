@@ -105,7 +105,7 @@
           <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4 d-flex mt-1rem audit-back"
             *ngFor="let item of auditResults">
             <div class="audit-front d-flex"
-              [ngClass]="{'audit-background': item.fileHash !== '', 'audit-background-err': item.fileHash === ''}"
+              [ngClass]="{'audit-background cursor-p': item.fileHash !== '', 'audit-background-err': item.fileHash === ''}"
               (click)="verifyModal(item.transaction)">
               <div class="col-8 p-05rem background-white">
                 <div>
@@ -124,13 +124,13 @@
                 </div>
               </div>
               <div class="col-4 audit-medal mx-auto" [ngClass]="[(item.fileHash === '') ? 'd-flex justify-content-center align-items-center' : '']">
-                <figure *ngIf="item.fileHash !== ''">
+                <figure *ngIf="item.fileHash !== ''" class="mt-05rem">
                   <img src="assets/images/img/badge-silver-proximax-sirius-wallet.svg" alt="">
                 </figure>
                 <figure *ngIf="item.fileHash === ''" class="txt-a-center mt-0">
                   <i class="fa fa-times fa-3x color-white"></i>
                 </figure>
-                <div *ngIf="item.transaction !== undefined">
+                <div *ngIf="item.transaction !== undefined" class="mb-05rem">
                   <p class="color-white m-0 txt-a-center" *ngIf="item.transaction?.privateFile === true">PRIVATE</p>
                   <p class="color-white m-0 txt-a-center" *ngIf="item.transaction?.privateFile === false">PUBLIC</p>
                 </div>
