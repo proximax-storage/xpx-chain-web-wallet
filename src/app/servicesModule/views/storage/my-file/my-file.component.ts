@@ -57,16 +57,13 @@ export class MyFileComponent implements OnInit, AfterViewInit {
   elements: any = [];
   dataSelected: SearchResultInterface = null;
   headElements = ['Timestamp', 'Name', 'Action'];
-  optionTypeSearch = [
-    {
-      'value': 'name',
-      'label': 'File Name'
-    },
-    {
-      'value': 'dataHash',
-      'label': 'Data Hash'
-    }
-  ];
+  optionTypeSearch = [{
+    value: 'name',
+    label: 'File Name'
+  },{
+    value: 'dataHash',
+    label: 'Data Hash'
+  }];
   searcher: Searcher;
   downloader: Downloader;
 
