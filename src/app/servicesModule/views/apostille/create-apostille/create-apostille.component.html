@@ -1,7 +1,7 @@
-<div class="container mt-3rem mb-2rem animated fadeIn">
+<div class="container mt-3rem pb-3rem animated fadeIn">
   <app-header [params]="paramsHeader"></app-header>
   <ng-container *ngIf="!processComplete; else processCompleteTemplate">
-    <div class="row">
+    <div class="row mb-2rem">
       <div class="col-11 col-md-9 col-xl-8 mb-2rem mx-auto">
         <!-- UPLOAD APOSTILLE -->
         <mdb-stepper #stepper [linear]="true">
@@ -123,8 +123,8 @@
                 </div>
 
                 <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-                  <button [disabled]="apostilleFormTwo.invalid" mdbBtn type="submit" rounded="true" mdbWavesEffect
-                    class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
+                  <button [disabled]="apostilleFormTwo.invalid || blockBtn" mdbBtn type="submit" rounded="true"
+                    mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
                     <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
                       *ngIf="blockButton"></span>
                     <span class="fs-1-2em color-white">CREATE</span>
@@ -140,38 +140,61 @@
 
   <!-- CERTIFIED -->
   <ng-template #processCompleteTemplate>
+    <!-- ONE -->
     <div class="row">
       <div class="col-12 txt-a-center">
-        <span class="color-blue-intermedio fw-600">Done!</span> <br>
-        <span>Your attestation are in process</span>
+        <div>
+          <span class="color-blue-intermedio fw-600 fs-1-2rem">DONE!</span>
+        </div>
+        <div>
+          <span class="fs-09rem">Your attestation are in process</span>
+        </div>
       </div>
-
-      <div class="col-11 mx-auto mt-1rem box-grey br-0">
-        <div class="row mr-ml">
-          <div class="col-12 background-white">
+    </div>
+    <!-- TWO -->
+    <div class="row">
+      <div class="col-12 col-md-10 col-lg-9 col-xl-8 mx-auto">
+        <div class="row mr-ml-mt-mb bordb-2px-solid-gray">
+          <!-- QR & FILE HASH -->
+          <div class="col-12 col-md-9 col-lg-8 p-1rem">
             <div class="row">
-              <div class="col-4">
-                <img [src]="base64ImageString" />
+              <div class="col-12 col-sm-4 col-md-3 d-flex justify-content-start justify-content-sm-center">
+                <div class="mx-auto">
+                  <img [src]="base64ImageString" width="90">
+                </div>
               </div>
-              <div class="col-8">
-                <span>File hash</span> <br>
-                <span class="fs-07rem w-b-w">{{ntyData.fileHash}}</span>
+
+              <div class="col-12 col-sm-8 col-md-9 lh-1em pt-04rem">
+                <div>
+                  <span class="w-b-a fw-600">File hash</span>
+                </div>
+                <div>
+                  <span class="w-b-a fs-08rem mt-1rem">{{ntyData.fileHash}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CERTIFIED -->
+          <div class="col-12 col-md-3 col-lg-4 audit-background p-1rem">
+            <div class="row">
+              <div class="col-12 d-flex justify-content-center">
+                <div class="mx-auto">
+                  <img src="assets/images/img/badge-silver-proximax-sirius-wallet.svg" width="90">
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-
-      <!-- BUTTONS -->
-      <div class="col-10 mx-auto">
-        <div class="row">
-          <div class="col-12 col-sm-6 d-flex justify-content-center mx-auto">
-            <button mdbBtn (click)="processComplete = false" rounded="true" mdbWavesEffect
-              class="f-w-600 background-btn pl-2rem pr-2rem" size="sm">
-              <span class="fs-1-2em color-white">CONTINUE</span>
-            </button>
-          </div>
-        </div>
+    </div>
+    <!-- THREE -->
+    <div class="row">
+      <div class="col-12 col-md-10 col-lg-9 col-xl-8 mx-auto d-flex justify-content-center">
+        <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+          size="md" (click)="processComplete = false; blockBtn = false">
+          <span class="fs-1-2em color-white">CONTINUE</span>
+        </button>
       </div>
     </div>
   </ng-template>
