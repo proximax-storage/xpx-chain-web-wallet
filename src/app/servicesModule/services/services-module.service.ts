@@ -156,8 +156,8 @@ export class ServicesModuleService {
    * @memberof ServiceModuleService
    */
   getBooksAddress() {
-    console.log('this.booksAddress',this.booksAddress)
-    console.log( JSON.parse(localStorage.getItem(this.booksAddress)))
+    /*console.log('this.booksAddress',this.booksAddress)
+    console.log( JSON.parse(localStorage.getItem(this.booksAddress)))*/
     return JSON.parse(localStorage.getItem(this.booksAddress));
   }
 }

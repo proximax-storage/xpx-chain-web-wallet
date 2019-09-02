@@ -60,7 +60,7 @@ export class MyFileComponent implements OnInit, AfterViewInit {
   optionTypeSearch = [{
     value: 'name',
     label: 'File Name'
-  },{
+  }, {
     value: 'dataHash',
     label: 'Data Hash'
   }];
@@ -155,7 +155,7 @@ export class MyFileComponent implements OnInit, AfterViewInit {
 
   async getFiles(dataHash?: string, title?: string) {
 
-    console.log(this.fromTransactionId);
+    // console.log(this.fromTransactionId);
 
     const param = SearchParameter.createForPublicKey(
       this.walletService.currentAccount.publicAccount.publicKey
@@ -335,8 +335,8 @@ export class MyFileComponent implements OnInit, AfterViewInit {
   }
 
   async download(item: any) {
-    console.log(item);
-    console.log(this.downloadForm.valid);
+    // console.log(item);
+    // console.log(this.downloadForm.valid);
     // this.downloadForm.markAsDirty();
 
     if (this.downloadForm.valid) {
@@ -350,9 +350,9 @@ export class MyFileComponent implements OnInit, AfterViewInit {
           } else if (item.encryptionType === PrivacyType.PLAIN) {
             param.withPlainPrivacy();
           }
-          console.log('Downloading ...');
+          // console.log('Downloading ...');
           const response = await this.downloader.directDownload(param.build());
-          console.log(response);
+          // console.log(response);
 
           const downloadBuffer = await StreamHelper.stream2Buffer(response);
           const downloableFile = new Blob([downloadBuffer], { type: item.contentType });

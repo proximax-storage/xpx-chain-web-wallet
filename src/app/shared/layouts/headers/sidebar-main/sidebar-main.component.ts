@@ -205,9 +205,9 @@ export class SidebarMainComponent implements OnInit {
     //emit 0 after 1 second then complete, since no second argument is supplied
     const source = timer(20000, 20000);
     this.subscription.push(source.subscribe(val => {
-      console.log('-----RESETED-----------', this.reset);
-      console.log('-----CURRENT BLOCK-----', this.currentBlock);
-      console.log('-----CACHE BLOCK-------', this.cacheBlock, '\n\n\n');
+      /* console.log('-----RESETED-----------', this.reset);
+       console.log('-----CURRENT BLOCK-----', this.currentBlock);
+       console.log('-----CACHE BLOCK-------', this.cacheBlock, '\n\n\n');*/
       if (this.currentBlock > this.cacheBlock) {
         this.reconnecting = false;
         this.cacheBlock = this.currentBlock;

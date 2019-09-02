@@ -374,7 +374,7 @@ export class CreateApostilleComponent implements OnInit {
       timeStamp: date.toUTCString()
     };
 
-    console.log(this.ntyData);
+    // console.log(this.ntyData);
     const apostilleBuilder = this.apostilleService.buildApostille(this.ntyData, this.rawFileContent);
     this.base64ImageString = apostilleBuilder.qrCode;
     this.apostilleService.setWhiteList({

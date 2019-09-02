@@ -54,7 +54,7 @@ export class StorageService {
     }
 
     const result = await this.uploader.upload(uploadParams.build());
-    console.log(result);
+    // console.log(result);
     return result;
   }
 
@@ -73,13 +73,13 @@ export class StorageService {
       param.withPlainPrivacy();
     }
 
-    console.log('Downloading ...');
+    // console.log('Downloading ...');
     const response = await this.downloader.directDownload(param.build());
-    console.log(response);
+    // console.log(response);
 
     const downloadBuffer = await StreamHelper.stream2Buffer(response);
     const downloableFile = new Blob([downloadBuffer], { type: data.contentType });
-    console.log('---------> downloableFile ----------- \n', downloableFile);
+    // console.log('---------> downloableFile ----------- \n', downloableFile);
     // saveAs(downloableFile, data.name);
     return downloableFile;
   }
