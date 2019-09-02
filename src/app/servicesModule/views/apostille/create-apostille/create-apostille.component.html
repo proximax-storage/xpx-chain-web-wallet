@@ -5,31 +5,94 @@
       <div class="col-12 col-md-10 col-lg-9 col-xl-8 mb-2rem mx-auto">
         <!-- UPLOAD APOSTILLE -->
         <mdb-stepper #stepper [linear]="true">
+          <!-- FIRST FORM -->
           <mdb-step name="File(s) to process" [stepForm]="apostilleFormOne" class="step1" [completed]="false">
             <form [formGroup]="apostilleFormOne">
               <!-- UPLOAD FILE -->
               <div class="row">
-                <div class="col-12 box-grey" (click)="openInput()" mdbBtn mdbWavesEffect>
-                  <div class="row">
-                    <div class="col-10 mx-auto txt-a-center upload-file box-drop">
-                      <img class="mr-1rem h2em" src="assets/images/img/icon-upload-gray-28h-proximax-sirius-wallet.svg"
-                        width="25">
-                      <span class="fs-1-2em fw-700 color-gray-strong">Upload files</span>
-                    </div>
+                <ng-container *ngIf="apostilleFormOne.get('typeFile').value">
+                  <div class="col-12 box-grey" (click)="openInput()" mdbBtn mdbWavesEffect>
+                    <div class="row">
+                      <div class="col-10 mx-auto txt-a-center upload-file box-drop">
+                        <img class="mr-1rem h2em"
+                          src="assets/images/img/icon-upload-gray-28h-proximax-sirius-wallet.svg" width="25">
+                        <span class="fs-1-2em fw-700 color-gray-strong">Upload files</span>
+                      </div>
 
-                    <div class="col-10 d-flex justify-content-start mx-auto">
-                      <span class="color-dark-green fw-600 fs-07rem">
-                        {{nameFile}}
-                        <ng-container *ngIf="fileInputIsValidated">
-                          &nbsp; <i class="fa fa-times-circle cursor-p" aria-hidden="true" (click)="fileReader([])"></i>
-                        </ng-container>
-                      </span>
+                      <div class="col-10 d-flex justify-content-start mx-auto">
+                        <span class="color-dark-green fw-600 fs-07rem">
+                          {{nameFile}}
+                          <ng-container *ngIf="fileInputIsValidated">
+                            &nbsp; <i class="fa fa-times-circle cursor-p" aria-hidden="true"
+                              (click)="fileReader([])"></i>
+                          </ng-container>
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </div>
+                </ng-container>
 
-                <input id="fileInput" [hidden]="true" type="file" (change)="fileReader($event.target.files)"
-                  formControlName="file">
+                <ng-container *ngIf="!apostilleFormOne.get('typeFile').value">
+                  <!-- CARDS VIEW -->
+                  <div class="container-fluid mb-2rem">
+                    <div class="row">
+                      <ng-container *ngIf="searching;">
+                        <div class="col-12 mx-auto">
+                          <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate">
+                          </mdb-progress-bar>
+                        </div>
+                      </ng-container>
+
+                      <div class="col-12 d-flex justify-content-end background-dark-green-plus pt-05rem">
+                        <button mdbBtn type="submit" rounded="true" mdbWavesEffect
+                          class="f-w-600 background-btn overflow-ellipsis-nowrap" size="sm" (click)="initForm(); ">
+                          <i class="fa fa-refresh color-white" aria-hidden="true"></i> &nbsp;
+                          <span class="fs-1em color-white">REFRESH</span>
+                        </button>
+                      </div>
+
+                      <!-- DATA -->
+                      <div class="col-12 col-md-12 mx-auto">
+                        <div class="row d-flex justify-content-start align-items-stretch mb-1rem">
+                          <div class="col-12 col-sm-6 d-flex mt-1rem audit-back"
+                            *ngFor="let item of filesStorage | paginate: configFileStorage">
+                            <div class=" audit-front storage-background-file cursor-p d-flex"
+                              [ngClass]="[item.selected ? 'border-selected' : '']"
+                              (click)="convertToFile(item, item.random);">
+                              <div class="col-8 p-05rem background-white">
+                                <div>
+                                  <p class="audit-title">{{ item.name }}</p>
+                                </div>
+                                <div>
+                                  <p class="audit-subtitle">Date</p>
+                                  <p class="audit-value">{{ item.timestamp }}</p>
+                                </div>
+                                <div>
+                                  <p class="audit-value">{{ item.result }}</p>
+                                </div>
+                              </div>
+                              <div class="col-4 audit-medal mx-auto d-flex justify-content-center align-items-center">
+                                <figure>
+                                  <img src="assets/images/img/icon-file-green-16h-proximax-sirius-wallet.svg"
+                                    width="40">
+                                </figure>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="col-12 pt-1rem pb-3rem d-flex justify-content-center mx-auto">
+                            <pagination-controls [id]="configFileStorage.id"
+                              (pageChange)="configFileStorage.currentPage = $event">
+                            </pagination-controls>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                </ng-container>
+
+                <input id="fileInput" [hidden]="true" type="file" (change)="fileReader($event.target.files)">
               </div>
 
               <!-- PRIVATE & PUBLIC -->
@@ -77,9 +140,10 @@
               </div>
             </form>
           </mdb-step>
+
+          <!-- SECOND FORM -->
           <mdb-step name="Attestation" [stepForm]="apostilleFormTwo" class="step2" [completed]="false">
             <form [formGroup]="apostilleFormTwo" (ngSubmit)="sendTransaction()">
-
               <!-- TAGS -->
               <div class="row">
                 <div class="col-12">
@@ -185,7 +249,7 @@
           <span class="color-blue-intermedio fw-600 fs-1-2rem">DONE!</span>
         </div>
         <div>
-          <span class="fs-09rem">Your attestation are in process</span>
+          <span class="fs-09rem">Your attestation has been processed</span>
         </div>
       </div>
     </div>
@@ -230,7 +294,7 @@
     <div class="row">
       <div class="col-12 col-md-10 col-lg-9 col-xl-8 mx-auto d-flex justify-content-center">
         <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
-          size="md" (click)="processComplete = false; blockBtn = false">
+          size="md" (click)="initForm();">
           <span class="fs-1-2em color-white">CONTINUE</span>
         </button>
       </div>

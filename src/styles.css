@@ -1301,6 +1301,10 @@ button.md-toast-close-button {
   background: -webkit-linear-gradient(bottom, #7CBD74, #1F9062);
 }
 
+.storage-background-file {
+  background: -webkit-linear-gradient(bottom, #f1f7ff, #b8daff);
+}
+
 .audit-background-err {
   background: -webkit-linear-gradient(bottom, #9e0000, #f38b8b);
 }
