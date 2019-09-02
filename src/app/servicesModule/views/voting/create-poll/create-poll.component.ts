@@ -261,10 +261,9 @@ export class CreatePollComponent implements OnInit {
     ).then(resp => {
       this.btnBlock = false;
       this.stepper.resetAll()
-      this.firstFormGroup.reset();
-      this.secondFormGroup.reset();
-      this.thirdFormGroup.reset();
-      this.quarterFormGroup.reset();
+      this.listaBlanca = [];
+      this.option = [];
+      this.createForms();
     }, error => {
       this.btnBlock = false;
     });
