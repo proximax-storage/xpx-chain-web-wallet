@@ -28,25 +28,25 @@ export class HomeComponent implements OnInit {
         'Blockchain',
         true,
         'Multisg, aggregated tx, cross chain, metadata',
-        'icon-blockchain-gradient-80h-proximax-sirius-wallet.svg',
+        'icon-blockchain-full-color-80h-proximax-sirius-wallet.svg',
       ),
       this.services.buildStructureService(
         'Storage',
         true,
         'P2P decentralised storage for any type file',
-        'icon-storage-gradient-80h-proximax-sirius-wallet.svg',
+        'icon-storage-full-color-80h-proximax-sirius-wallet.svg',
       ),
         this.services.buildStructureService(
         'Streaming',
         true,
         'P2P decentralised streaming for video and chat',
-        'icon-streaming-gradient-80h-proximax-sirius-wallet.svg',
+        'icon-streaming-full-color-80h-proximax-sirius-wallet.svg',
       ),
       this.services.buildStructureService(
         'Supercontracts',
         true,
         'Easily modifiable digital contracts',
-        'icon-supercontracts-gradient-80h-proximax-sirius-wallet.svg',
+        'icon-supercontracts-full-color-80h-proximax-sirius-wallet.svg',
       )
     ];
   }
