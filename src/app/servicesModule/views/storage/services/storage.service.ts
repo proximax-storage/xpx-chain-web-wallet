@@ -1,5 +1,6 @@
-import { PrivacyType, Uint8ArrayParameterData, UploadParameter, Protocol, ConnectionConfig, BlockchainNetworkConnection, IpfsConnection, Uploader, UploadResult, Searcher, SearchParameter } from 'xpx2-ts-js-sdk';
+import { PrivacyType, Uint8ArrayParameterData, UploadParameter, Protocol, ConnectionConfig, BlockchainNetworkConnection, IpfsConnection, Uploader, UploadResult, Searcher, SearchParameter, DirectDownloadParameter, Downloader, StreamHelper, SearchResult } from 'xpx2-ts-js-sdk';
 import { Injectable } from '@angular/core';
+import { saveAs } from 'file-saver';
 import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
 import { WalletService } from 'src/app/wallet/services/wallet.service';
 import { environment } from 'src/environments/environment';
@@ -13,7 +14,7 @@ export class StorageService {
   uploader: Uploader;
   searcher: Searcher;
   resultSize: number = 20;
-
+  downloader: Downloader;
 
   constructor(
     private proximaxProvider: ProximaxProvider,
@@ -60,6 +61,166 @@ export class StorageService {
   /**
    *
    *
+   * @param {*} data
+   * @param {string} pwd
+   * @memberof StorageService
+   */
+  async convertToFile(data: any, pwd: string = ''): Promise<Blob> {
+    const param = DirectDownloadParameter.createFromDataHash(data.dataHash);
+    if (data.encryptionType === PrivacyType.PASSWORD) {
+      param.withPasswordPrivacy(pwd);
+    } else if (data.encryptionType === PrivacyType.PLAIN) {
+      param.withPlainPrivacy();
+    }
+
+    console.log('Downloading ...');
+    const response = await this.downloader.directDownload(param.build());
+    console.log(response);
+
+    const downloadBuffer = await StreamHelper.stream2Buffer(response);
+    const downloableFile = new Blob([downloadBuffer], { type: data.contentType });
+    console.log('---------> downloableFile ----------- \n', downloableFile);
+    // saveAs(downloableFile, data.name);
+    return downloableFile;
+  }
+
+  /**
+   *
+   *
+   * @returns
+   * @memberof StorageService
+   */
+  async getFiles(): Promise<SearchResultInterface[]> {
+    const elements: SearchResultInterface[] = [];
+    const param = SearchParameter.createForPublicKey(
+      this.walletService.currentAccount.publicAccount.publicKey
+    );
+
+    param.withResultSize(this.resultSize);
+    if (!this.searcher) {
+      this.initialiseStorage();
+    }
+
+    const response = await this.searcher.search(param.build());
+    response.results.forEach(el => {
+      const item = {
+        name: el.messagePayload.data.name === undefined ? el.messagePayload.data.dataHash : el.messagePayload.data.name,
+        contentType: el.messagePayload.data.contentType,
+        contentTypeIcon: this.getContentTypeIcon(el.messagePayload.data.contentType),
+        encryptionType: el.messagePayload.privacyType,
+        encryptionTypeIcon: this.getEncryptionMethodIcon(el.messagePayload.privacyType),
+        description: el.messagePayload.data.description,
+        timestamp: this.dateFormatLocal(el.messagePayload.data.timestamp),
+        dataHash: el.messagePayload.data.dataHash
+      }
+
+      elements.push(item);
+    });
+
+    return elements;
+  }
+
+  /**
+   *
+   *
+   * @param {number} timestamp
+   * @returns
+   * @memberof StorageService
+   */
+  dateFormatLocal(timestamp: number) {
+    return new Date(timestamp).toUTCString();
+  }
+
+  /**
+   *
+   *
+   * @param {string} contentType
+   * @returns
+   * @memberof StorageService
+   */
+  getContentTypeIcon(contentType: string) {
+    const baseAsset = 'assets/images/img/';
+    let iconUrl = baseAsset + 'icon-doc-type-unknown-16h-proximax-sirius-wallet.svg';
+    switch (contentType) {
+      case 'application/msword':
+        iconUrl = baseAsset + 'icon-doc-type-doc-16h-proximax-sirius-wallet.svg';
+        break;
+      case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+        iconUrl = baseAsset + 'icon-doc-type-docx-16h-proximax-sirius-wallet.svg';
+        break;
+      case 'application/vnd.ms-powerpoint':
+        iconUrl = baseAsset + 'icon-doc-type-ppt-16h-proximax-sirius-wallet.svg';
+        break;
+      case 'application/vnd.openxmlformats-officedocument.presentationml.presentation':
+        iconUrl = baseAsset + 'icon-doc-type-pptx-16h-proximax-sirius-wallet.svg';
+        break;
+      case 'application/vnd.ms-excel':
+        iconUrl = baseAsset + 'icon-doc-type-xlsx-16h-proximax-sirius-wallet.svg';
+        break;
+      case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
+        iconUrl = baseAsset + 'icon-doc-type-xlsx-16h-proximax-sirius-wallet.svg';
+        break;
+      case 'application/x-tar':
+        iconUrl = baseAsset + 'icon-doc-type-tar-16h-proximax-sirius-wallet.svg';
+        break;
+      case 'application/zip':
+        iconUrl = baseAsset + 'icon-doc-type-zip-16h-proximax-sirius-wallet.svg';
+        break;
+      case 'application/vnd.oasis.opendocument.text':
+        iconUrl = baseAsset + 'icon-doc-type-odt-16h-proximax-sirius-wallet.svg';
+        break;
+      case 'application/vnd.oasis.opendocument.spreadsheet':
+        iconUrl = baseAsset + 'icon-doc-type-ods-16h-proximax-sirius-wallet.svg';
+        break;
+      case 'application/vnd.oasis.opendocument.presentation':
+        iconUrl = baseAsset + 'icon-doc-type-ppt-16h-proximax-sirius-wallet.svg';
+        break;
+      case 'application/pdf':
+        iconUrl = baseAsset + 'icon-doc-type-pdf-16h-proximax-sirius-wallet.svg';
+        break;
+      case 'image/jpeg':
+        iconUrl = baseAsset + 'icon-doc-type-jpg-16h-proximax-sirius-wallet.svg';
+        break;
+      case 'image/gif':
+        iconUrl = baseAsset + 'icon-doc-type-gif-16h-proximax-sirius-wallet.svg';
+        break;
+      case 'image/png':
+        iconUrl = baseAsset + 'icon-doc-type-png-16h-proximax-sirius-wallet.svg';
+        break;
+      default:
+        iconUrl = iconUrl;
+
+    }
+    return iconUrl;
+  }
+
+  /**
+   *
+   *
+   * @param {PrivacyType} privacyType
+   * @returns
+   * @memberof StorageService
+   */
+  getEncryptionMethodIcon(privacyType: PrivacyType) {
+    const baseAsset = 'assets/images/img/';
+    let iconUrl = baseAsset + 'assets/images/img/';
+    switch (privacyType) {
+      case PrivacyType.PLAIN:
+        iconUrl = '';
+        break;
+      case PrivacyType.PASSWORD:
+        iconUrl = baseAsset + 'icon-encrypt-password-green-16h-proximax-sirius-wallet.svg';
+        break;
+      case PrivacyType.NEM_KEYS:
+        iconUrl = baseAsset + 'icon-private-key-green-16h-proximax-sirius-wallet.svg';
+        break;
+    }
+    return iconUrl;
+  }
+
+  /**
+   *
+   *
    * @memberof StorageService
    */
   initialiseStorage() {
@@ -78,8 +239,16 @@ export class StorageService {
 
     this.searcher = new Searcher(connectionConfig);
     this.uploader = new Uploader(connectionConfig);
+    this.downloader = new Downloader(connectionConfig);
   }
 
+  /**
+   *
+   *
+   * @param {Blob} file
+   * @returns
+   * @memberof StorageService
+   */
   readFile(file: Blob) {
     return new Promise<Uint8Array>(function (resolve, reject) {
       const reader = new FileReader();
@@ -90,37 +259,6 @@ export class StorageService {
       reader.onerror = event => reject(event);
       reader.readAsArrayBuffer(file);
     });
-  }
-  
-  async getFiles() {
-    const param = SearchParameter.createForPublicKey(
-      this.walletService.currentAccount.publicAccount.publicKey
-    );
-    param.withResultSize(this.resultSize);
-  
-    if (!this.searcher) {
-      this.initialiseStorage();
-    }
-    return await this.searcher.search(param.build());
-    // console.log(response);  
-    // console.log(this.fromTransactionId);
-    // this.elements = [];
-  
-    // response.results.forEach(el => {
-    //   const item = {
-    //     name: el.messagePayload.data.name === undefined ? el.messagePayload.data.dataHash : el.messagePayload.data.name,
-    //     contentType: el.messagePayload.data.contentType,
-    //     contentTypeIcon: this.getContentTypeIcon(el.messagePayload.data.contentType),
-    //     encryptionType: el.messagePayload.privacyType,
-    //     encryptionTypeIcon: this.getEncryptionMethodIcon(el.messagePayload.privacyType),
-    //     description: el.messagePayload.data.description,
-    //     timestamp: this.dateFormatLocal(el.messagePayload.data.timestamp),
-    //     dataHash: el.messagePayload.data.dataHash
-    //   }
-  
-    //   this.elements.push(item);
-    // });
-  
   }
 }
 

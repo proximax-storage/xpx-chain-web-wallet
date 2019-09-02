@@ -9,7 +9,8 @@ import { ApostilleService, NtyDataInterface } from '../services/apostille.servic
 import { WalletService } from '../../../../wallet/services/wallet.service';
 import { HeaderServicesInterface } from '../../../services/services-module.service';
 import { AppConfig } from '../../../../config/app.config';
-import { StorageService } from '../../storage/services/storage.service';
+import { StorageService, SearchResultInterface } from '../../storage/services/storage.service';
+import { SearchResult } from 'xpx2-ts-js-sdk';
 
 declare const Buffer: any;
 
@@ -26,7 +27,7 @@ export class CreateApostilleComponent implements OnInit {
   blockBtn: boolean;
   configurationForm: ConfigurationForm;
   file: string | ArrayBuffer | null;
-  filesStorage: any;
+  filesStorage: SearchResultInterface[];
   fileInputIsValidated = false;
   nameFile = 'Not file selected yet...';
   ntyData: NtyDataInterface;
@@ -61,9 +62,8 @@ export class CreateApostilleComponent implements OnInit {
   async ngOnInit() {
     this.configurationForm = this.sharedService.configurationForm;
     this.createForm();
-    this.apostilleService.getTransactionStatus();
     this.filesStorage = await this.storageService.getFiles();
-    console.log('\n\n\n\nValue of filesStorage', this.filesStorage, '\n\n\n\nEnd value\n\n');
+    this.apostilleService.getTransactionStatus();
   }
 
   /**
@@ -167,6 +167,21 @@ export class CreateApostilleComponent implements OnInit {
     } else {
       this.blockBtn = false;
     }
+  }
+
+
+  /**
+   *
+   *
+   * @memberof CreateApostilleComponent
+   */
+  async searchFiles() {
+    const myFiles = [];
+    /*if (this.filesStorage.length > 0) {
+      this.filesStorage.forEach(element => {
+        this.storageService.convertToFile(element);
+      });
+    }*/
   }
 
 
