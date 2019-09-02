@@ -670,4 +670,5 @@ export interface TransactionsInterface {
   privateFile?: boolean;
   description?: string;
   name?: string;
+  hash?: string;
 }

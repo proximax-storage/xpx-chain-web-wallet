@@ -23,6 +23,7 @@ import * as Highcharts from 'highcharts';
   styleUrls: ['./vote-in-poll.component.css']
 })
 export class VoteInPollComponent implements OnInit {
+  activate: boolean;
   dataTransaction: TransactionsInterface;
   Highcharts = Highcharts;
   routes = {
@@ -78,6 +79,7 @@ export class VoteInPollComponent implements OnInit {
     this.btnBlock = false;
     this.btnResult = true;
     this.blockSend = false;
+    this.activate = false;
     this.showResultProgress = false;
     this.createForm()
     this.getPoll(this.activateRoute.snapshot.paramMap.get('id'));
@@ -165,7 +167,7 @@ export class VoteInPollComponent implements OnInit {
   }
   getPoll(id) {
     this.pollSelected = this.createPollStorageService.filterPoll(id);
-    console.log('pollSelected', this.pollSelected)
+    // console.log('pollSelected', this.pollSelected)
 
     this.isMultipe = this.pollSelected.isMultiple
     this.verifyVote();
@@ -186,9 +188,15 @@ export class VoteInPollComponent implements OnInit {
   }
 
   openCertificateModal(){
-    this.dataTransaction;
-    console.log('data a pintar modal', this.dataTransaction)
-    this.certificationModal.show();
+    
+    if(this.activate){
+      this.dataTransaction;
+      // console.log('data a pintar modal', this.dataTransaction)
+      this.certificationModal.show();
+    } else {
+      this.sharedService.showInfo('', 'Transaction unconfirmed');
+    }
+    
   }
 
   getResult(param: string) {
@@ -285,7 +293,7 @@ export class VoteInPollComponent implements OnInit {
       }]
     };
     this.chartOptions = Options;
-    console.log("DateChart", this.chartOptions)
+    // console.log("DateChart", this.chartOptions)
     this.updateFlag = true;
   }
 
@@ -320,15 +328,15 @@ export class VoteInPollComponent implements OnInit {
                   for (var index = 0; index < next.length; index++) {
                     const transactionnext = next[index];
                     if (this.walletService.currentAccount.publicAccount.publicKey === transactionnext.signer.publicKey) {
-                      console.log('transaction', transactionnext)
+                      // console.log('transaction', transactionnext)
                       
                       let transaction = this.transactionService.getStructureDashboard(transactionnext['innerTransactions'][0]);
-                      
                       transaction.name = this.pollSelected.name;
                       transaction.description = this.pollSelected.desciption;
-                      // transaction.data = transactionnext;
+                      transaction.hash = transactionnext.transactionInfo.hash
+                      this.activate = true;
                       this.dataTransaction = transaction;
-                      console.log('transaction ---',  this.dataTransaction) 
+                      // console.log('transaction ---',  this.dataTransaction) 
                       this.transaction = transactionnext;
                       this.memberVoted = true;
                       this.sharedService.showWarning('', `Sorry, you already voted in this poll`);
@@ -391,7 +399,7 @@ export class VoteInPollComponent implements OnInit {
     //   this.statusValidate = 'finishedPoll'
     //   this.sharedService.showInfo('', `Finished poll`);
     // }
-    console.log("estado:", this.statusValidate)
+    // console.log("estado:", this.statusValidate)
   }
   /**
     * valida public key
@@ -461,7 +469,7 @@ export class VoteInPollComponent implements OnInit {
         }
         if (this.walletService.decrypt(common)) {
           if (!this.blockSend) {
-            console.log("votor en proceso")
+            // console.log("votor en proceso")
             this.sendTransaction(common)
           }
         }
@@ -496,11 +504,11 @@ export class VoteInPollComponent implements OnInit {
   transactionToAggregate(publicAccount: PublicAccount, message: PayloadInterface): InnerTransaction[] {
     let innerTransaction: InnerTransaction[] = []
 
-    console.log('field', this.optionsSelected)
-    console.log('field length', this.optionsSelected.length)
+    // console.log('field', this.optionsSelected)
+    // console.log('field length', this.optionsSelected.length)
     for (let i = 0; i < this.optionsSelected.length; i++) {
       const optionData = this.pollSelected.options.find(e => e.name === this.optionsSelected[i].field);
-      console.log('optionData', optionData)
+      // console.log('optionData', optionData)
       message.nameOption = optionData.name;
       const recipient = Address.createFromPublicKey(optionData.publicAccount.publicKey, optionData.publicAccount.address.networkType);
       let transferTransaction: any = this.proximaxProvider.buildTransferTransaction(this.walletService.currentAccount.network, recipient, JSON.stringify(message));
@@ -538,8 +546,15 @@ export class VoteInPollComponent implements OnInit {
           const statusTransactionHash = (statusTransaction['type'] === 'error') ? statusTransaction['data'].hash : statusTransaction['data'].transactionInfo.hash;
           const match = statusTransactionHash === signedTransaction.hash;
           if (statusTransaction['type'] === 'confirmed' && match) {
+            // console.log("transaction confirm",statusTransaction['data'])
+            let transaction = this.transactionService.getStructureDashboard(statusTransaction['data']['innerTransactions'][0]);
+            const poll = JSON.parse(statusTransaction['data']['innerTransactions'][0].message.payload);
+            transaction.name = poll.name;
+            transaction.hash = statusTransaction['data'].transactionInfo.hash;
+            // transaction.description = poll.desciption;
+            this.dataTransaction = transaction;
+            this.activate = true;
 
-            console.log("transaction confirm",statusTransaction['data'])
             signedTransaction = null;
             this.sharedService.showSuccess('', 'Transaction confirmed');
           } else if (statusTransaction['type'] === 'unconfirmed' && match) {
@@ -595,17 +610,6 @@ export class VoteInPollComponent implements OnInit {
 
     }
   }
-
-  openModal(){
-    console.log('open modal')
-  }
-
-
-
-
-
-
-
 }
 
 export declare interface PayloadInterface {
