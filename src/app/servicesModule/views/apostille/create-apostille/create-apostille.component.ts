@@ -1,16 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import * as crypto from 'crypto-js'
-import * as JSZip from 'jszip';
-import * as qrcode from 'qrcode-generator';
-import * as jsPDF from 'jspdf';
-import { saveAs } from 'file-saver';
 import { Account, UInt64, TransferTransaction } from 'tsjs-xpx-chain-sdk';
-import { IpfsConnection, IpfsClient, StreamHelper } from 'xpx2-ts-js-sdk';
 import { KeyPair, convert } from 'js-xpx-chain-library';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
-import { Verifier } from '../services/audit-apostille-verifier';
-import { environment } from '../../../../../environments/environment';
 import { ConfigurationForm, SharedService } from '../../../../shared/services/shared.service';
 import { ApostilleService, NtyDataInterface } from '../services/apostille.service';
 import { WalletService } from '../../../../wallet/services/wallet.service';
@@ -26,23 +19,24 @@ declare const Buffer: any;
 })
 export class CreateApostilleComponent implements OnInit {
 
-  apostilleCreateForm2: FormGroup;
   apostilleFormOne: FormGroup;
   apostilleFormTwo: FormGroup;
+  base64ImageString: string;
+  blockBtn: boolean;
   configurationForm: ConfigurationForm;
-  autocompleteItems = [];
+  file: string | ArrayBuffer | null;
+  fileInputIsValidated = false;
+  nameFile = 'Not file selected yet...';
+  ntyData: NtyDataInterface;
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Attestation',
     componentName: 'Create',
     extraButton: 'Audit',
     routerExtraButton: `/${AppConfig.routes.audiApostille}`
   };
-
   processComplete = false;
-
-  /************************* */
-
-  fileInputIsValidated = false;
+  rawFileContent: any;
+  storeInDfms = false;
   typeEncrypted: Array<object> = [
     { value: '1', label: 'MD5' },
     { value: '2', label: 'SHA1' },
@@ -50,17 +44,6 @@ export class CreateApostilleComponent implements OnInit {
     { value: '4', label: 'SHA3' },
     { value: '5', label: 'SHA512' }
   ];
-
-  // ---------- FILE ---------
-  nameFile = 'Not file selected yet...';
-  file: string | ArrayBuffer | null;
-  rawFileContent: any;
-  ntyData: NtyDataInterface;
-  certificatePrivate: string;
-  certificatePublic: string;
-  storeInDfms = false;
-  base64ImageString: string;
-  blockBtn: boolean;
 
   constructor(
     private apostilleService: ApostilleService,
@@ -74,7 +57,6 @@ export class CreateApostilleComponent implements OnInit {
   ngOnInit() {
     this.configurationForm = this.sharedService.configurationForm;
     this.createForm();
-    // this.apostilleService.destroySubscription();
     this.apostilleService.getTransactionStatus();
   }
 
@@ -122,34 +104,6 @@ export class CreateApostilleComponent implements OnInit {
   }
 
   /**
-   *
-   *
-   * @memberof ApostilleCreateComponent
-   */
-  sendTransaction() {
-    this.blockBtn = true;
-    if (this.apostilleFormOne.valid && this.apostilleFormTwo.valid) {
-      const common = { password: this.apostilleFormTwo.get('password').value }
-      if (this.walletService.decrypt(common)) {
-        if (this.apostilleFormTwo.get('typePrivatePublic').value === true) {
-          this.preparePublicApostille(common);
-          this.createForm();
-        } else {
-          this.preparePrivateApostille(common);
-          this.createForm();
-        }
-      } else {
-        this.blockBtn = false;
-      }
-    } else {
-      this.blockBtn = false;
-    }
-  }
-
-
-
-
-  /**
    * The FileReader object lets web applications asynchronously read the contents of files (or raw data buffers)
    * stored on the user's computer, using File or Blob objects to specify the file or data to read.
    *
@@ -182,18 +136,28 @@ export class CreateApostilleComponent implements OnInit {
   /**
    *
    *
-   * @param {*} nty
    * @memberof ApostilleCreateComponent
    */
-  setAccountWalletStorage(nty: any) {
-    let proxinty = JSON.parse(localStorage.getItem('proxi-nty'));
-    if (!proxinty) {
-      localStorage.setItem('proxi-nty', JSON.stringify([nty]))
+  sendTransaction() {
+    this.blockBtn = true;
+    if (this.apostilleFormOne.valid && this.apostilleFormTwo.valid) {
+      const common = { password: this.apostilleFormTwo.get('password').value }
+      if (this.walletService.decrypt(common)) {
+        if (this.apostilleFormTwo.get('typePrivatePublic').value === true) {
+          this.preparePublicApostille(common);
+          this.createForm();
+        } else {
+          this.preparePrivateApostille(common);
+          this.createForm();
+        }
+      } else {
+        this.blockBtn = false;
+      }
     } else {
-      proxinty.push(nty)
-      localStorage.setItem('proxi-nty', JSON.stringify(proxinty))
+      this.blockBtn = false;
     }
   }
+
 
   /**
    *
@@ -297,21 +261,6 @@ export class CreateApostilleComponent implements OnInit {
 
     this.proximaxProvider.announce(signedTransaction).subscribe(
       x => {
-        // Aqui falta validar si la transacción fue aceptada por el blockchain
-
-        //Create arrangement to assemble the certificate
-        /*const nty = {
-          signedTransaction: signedTransaction,
-          title: title,
-          tags: [this.apostilleFormTwo.get('tags').value],
-          apostilleHash: apostilleHash,
-          account: ownerAccount,
-          sinkAddress: dedicatedAccount.address.plain(),
-          dedicatedPrivateKey: dedicatedAccount.privateKey.toLowerCase(),
-          Owner: ownerAccount.address.plain(),
-        }
-        this.buildApostille(nty)*/
-
         // If everything went OK, build and build the certificate
         this.blockBtn = false;
         this.processComplete = true;
