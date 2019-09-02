@@ -242,6 +242,10 @@ body {
   padding: 0 !important;
 }
 
+.p-1rem {
+  padding: 1rem !important;
+}
+
 .p-02rem {
   padding: .2rem !important;
 }
@@ -251,6 +255,10 @@ body {
 }
 
 /** TOP **/
+
+.pt-04rem {
+  padding-top: .4rem;
+}
 
 .pt-05rem {
   padding-top: .5rem;
@@ -364,6 +372,10 @@ body {
   border-bottom: 2px solid #765544;
 }
 
+.bordb-2px-solid-gray {
+  border: 8px solid #cccccc;
+}
+
 .bord-rad-25px {
   border-radius: 25px !important;
 }
@@ -371,8 +383,6 @@ body {
 .br-0 {
   border-radius: 0 !important;
 }
-
-
 
 /************************* LINE HEIGHT *****************/
 
@@ -1383,7 +1393,7 @@ button.md-toast-close-button {
   background: -webkit-linear-gradient(right bottom, #b44703, #f89354 50%);
 }
 
-.audit-medal {
+.audit-modal {
   padding: 10px;
   position: relative;
   top: 0;
