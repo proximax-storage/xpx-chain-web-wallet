@@ -113,7 +113,7 @@ export class ServicesBoxComponent implements OnInit {
       this.services.buildStructureService(
         'Mosaics',
         true,
-        'Create digital assets with unique properties',
+        'Create digital representations with customized properties',
         'icon-mosaics-green-60h-proximax-sirius-wallet.svg',
         '',
         {
@@ -232,12 +232,12 @@ export class ServicesBoxComponent implements OnInit {
       this.services.buildStructureService(
         'Attestation',
         true,
-        'Proof of existence / proof of origination',
+        'Proof of existence and origination',
         'icon-notarization-green-60h.svg',
         '',
         {
           create: this.services.buildStructureService(
-            'CREATE',
+            'ATTEST',
             true,
             '',
             '',
@@ -259,7 +259,7 @@ export class ServicesBoxComponent implements OnInit {
       this.services.buildStructureService(
         'Voting',
         true,
-        'Create polls and vew results',
+        'Create and vew polls',
         'icon-voting-green-60h.svg',
         '',
         {
@@ -325,7 +325,14 @@ export class ServicesBoxComponent implements OnInit {
         '',
         {
           secretLock: this.services.buildStructureService(
-            'SWAP',
+            'SECRED LOCK',
+            false,
+            '',
+            '',
+            ''
+          ),
+          secretProof: this.services.buildStructureService(
+            'SECRED PROOF',
             false,
             '',
             '',
@@ -340,7 +347,7 @@ export class ServicesBoxComponent implements OnInit {
       this.services.buildStructureService(
         'Nodes',
         true,
-        'Add and edits nodes',
+        'Add and edit nodes',
         'icon-nodes-green-60h-proximax-sirius-wallet.svg',
         '',
         {
@@ -370,9 +377,9 @@ export class ServicesBoxComponent implements OnInit {
 
       // Message
       this.services.buildStructureService(
-        'Messaging',
+        'Chat',
         true,
-        'Send encrypted messages',
+        'Encrypted live chat',
         'icon-messenger-green-16h-proximax-sirius-wallet.svg',
         '',
         {
@@ -412,18 +419,18 @@ export class ServicesBoxComponent implements OnInit {
       this.services.buildStructureService(
         'Video Conferencing',
         true,
-        'Encrypted face-to-face comunication',
+        'Encrypted live video streaming',
         'icon-streaming-green-60h-proximax-sirius-wallet.svg',
         '',
         {
-          schedule: this.services.buildStructureService(
-            'SCHEDULE',
+         start: this.services.buildStructureService(
+            'START',
             false,
             '',
             '',
             ''
-          ), start: this.services.buildStructureService(
-            'START',
+          ), schedule: this.services.buildStructureService(
+            'SCHEDULE',
             false,
             '',
             '',
@@ -438,7 +445,7 @@ export class ServicesBoxComponent implements OnInit {
       this.services.buildStructureService(
         'Supercontracts',
         true,
-        'Create supercontracts',
+        'Create and execute logical flow for digital contract obligations',
         'icon-supercontracts-green-60h-proximax-sirius-wallet.svg',
         '',
         {
@@ -462,9 +469,9 @@ export class ServicesBoxComponent implements OnInit {
 
       // SWAP PROCESS
       this.services.buildStructureService(
-        'Swap Process',
+        'Mainnet Swap',
         true,
-        'Transfer your xpx from your NIS wallet to catapult wallet',
+        'Swap from NEM to Sirius',
         'icon-swap-process-green-60h-proximax-sirius-wallet.svg',
         '',
         {
