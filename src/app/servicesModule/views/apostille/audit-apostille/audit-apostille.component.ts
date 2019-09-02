@@ -36,6 +36,7 @@ export class AuditApostilleComponent implements OnInit {
   url: any;
   currentView: boolean = true;
   modalInfo: TransactionsInterface = null;
+  searching: boolean = false;
 
   @ViewChild('basicModal', { static: true }) modalAudit: ModalDirective;
 
@@ -84,6 +85,7 @@ export class AuditApostilleComponent implements OnInit {
    */
   verifyFiles() {
     this.currentView = !this.currentView
+    this.searching = true;
     const hasts = [];
     this.ourFile.forEach(el => {
       let arrayName = el.name.split(' --Apostille TX ');
@@ -107,10 +109,13 @@ export class AuditApostilleComponent implements OnInit {
       this.proximaxProvider.getTransactions(hasts).subscribe(element => {
         this.verifyHast(element);
       });
+    } else {
+      this.searching = false;
     }
   }
 
   verifyHast(transactions: TransferTransaction[]) {
+    this.searching = false;
     this.transactionsSearch.forEach(element => {
       const arrayName = element.name.split(' --Apostille TX ');
       const arrayHash = arrayName[1].split(' --Date ');
@@ -143,7 +148,6 @@ export class AuditApostilleComponent implements OnInit {
             } else if (prefixHash === apostillePrivatePrefix) {
               transaction.privateFile = true;
             }
-            console.log('\n\n\n\nValue of transaction', transaction, '\n\n\n\nEnd value\n\n');
 
             this.addAuditResult({
               filename: originalName,
@@ -176,7 +180,6 @@ export class AuditApostilleComponent implements OnInit {
         });
       }
     });
-    console.log('\n\n\n\nValue of this.auditResults', this.auditResults, '\n\n\n\nEnd value\n\n');
   }
 
   verify(data, infTrans): boolean {
