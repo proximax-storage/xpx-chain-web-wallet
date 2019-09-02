@@ -33,9 +33,49 @@
                 </ng-container>
 
                 <ng-container *ngIf="!apostilleFormOne.get('typeFile').value">
-                  <div class="col-12 box-grey" mdbBtn mdbWavesEffect>
+                  <!-- CARDS VIEW -->
+                  <div class="container-fluid mb-2rem">
                     <div class="row">
-                      <span>AQUI VA EL OTRO FORM</span>
+                      <div class="col-12 col-md-12 mx-auto">
+                        <div class="row d-flex justify-content-start align-items-stretch mb-1rem">
+                          <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4 d-flex mt-1rem audit-back"
+                            *ngFor="let item of filesStorage">
+                            <div class="audit-front d-flex"
+                              [ngClass]="{'storage-background-file cursor-p': item.name !== '', 'audit-background-err': item.name === ''}"
+                              (click)="verifyModal(item.transaction)">
+                              <div class="col-8 p-05rem background-white">
+                                <div>
+                                  <p class="audit-title">{{ item.name }}</p>
+                                </div>
+                                <div *ngIf="item.fileHash !== ''">
+                                  <p class="audit-subtitle">File hash</p>
+                                  <p class="audit-value">{{ item.fileHash }}</p>
+                                </div>
+                                <div *ngIf="item.fileHash !== ''">
+                                  <p class="audit-subtitle">Date</p>
+                                  <p class="audit-value">{{ item.timestamp }}</p>
+                                </div>
+                                <div *ngIf="item.fileHash === ''">
+                                  <p class="audit-value">{{ item.result }}</p>
+                                </div>
+                              </div>
+                              <div class="col-4 audit-medal mx-auto"
+                                [ngClass]="[(item.fileHash === '') ? 'd-flex justify-content-center align-items-center' : '']">
+                                <figure *ngIf="item.fileHash !== ''" class="mt-05rem">
+                                  <img src="assets/images/img/icon-file-green-16h-proximax-sirius-wallet.svg" alt="">
+                                </figure>
+                                <figure *ngIf="item.fileHash === ''" class="txt-a-center mt-0">
+                                  <i class="fa fa-times fa-3x color-white"></i>
+                                </figure>
+                                <div *ngIf="item.transaction !== undefined" class="mb-05rem">
+                                  <p class="color-white m-0 txt-a-center" *ngIf="item.transaction?.privateFile === true">PRIVATE</p>
+                                  <p class="color-white m-0 txt-a-center" *ngIf="item.transaction?.privateFile === false">PUBLIC</p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </ng-container>
