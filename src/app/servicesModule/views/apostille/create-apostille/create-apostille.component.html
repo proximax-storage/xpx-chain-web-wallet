@@ -36,53 +36,63 @@
                   <!-- CARDS VIEW -->
                   <div class="container-fluid mb-2rem">
                     <div class="row">
+                      <ng-container *ngIf="searching;">
+                        <div class="col-12 mx-auto">
+                          <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate">
+                          </mdb-progress-bar>
+                        </div>
+                      </ng-container>
+
+                      <div class="col-12 d-flex justify-content-end background-dark-green-plus pt-05rem">
+                        <button mdbBtn type="submit" rounded="true" mdbWavesEffect
+                          class="f-w-600 background-btn overflow-ellipsis-nowrap" size="sm" (click)="initForm(); ">
+                          <i class="fa fa-refresh color-white" aria-hidden="true"></i> &nbsp;
+                          <span class="fs-1em color-white">REFRESH</span>
+                        </button>
+                      </div>
+
+                      <!-- DATA -->
                       <div class="col-12 col-md-12 mx-auto">
                         <div class="row d-flex justify-content-start align-items-stretch mb-1rem">
-                          <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4 d-flex mt-1rem audit-back"
-                            *ngFor="let item of filesStorage">
-                            <div class="audit-front d-flex"
-                              [ngClass]="{'storage-background-file cursor-p': item.name !== '', 'audit-background-err': item.name === ''}"
-                              (click)="verifyModal(item.transaction)">
+                          <div class="col-12 col-sm-6 d-flex mt-1rem audit-back"
+                            *ngFor="let item of filesStorage | paginate: configFileStorage">
+                            <div class=" audit-front storage-background-file cursor-p d-flex"
+                              [ngClass]="[item.selected ? 'border-selected' : '']"
+                              (click)="convertToFile(item, item.random);">
                               <div class="col-8 p-05rem background-white">
                                 <div>
                                   <p class="audit-title">{{ item.name }}</p>
                                 </div>
-                                <div *ngIf="item.fileHash !== ''">
-                                  <p class="audit-subtitle">File hash</p>
-                                  <p class="audit-value">{{ item.fileHash }}</p>
-                                </div>
-                                <div *ngIf="item.fileHash !== ''">
+                                <div>
                                   <p class="audit-subtitle">Date</p>
                                   <p class="audit-value">{{ item.timestamp }}</p>
                                 </div>
-                                <div *ngIf="item.fileHash === ''">
+                                <div>
                                   <p class="audit-value">{{ item.result }}</p>
                                 </div>
                               </div>
-                              <div class="col-4 audit-medal mx-auto"
-                                [ngClass]="[(item.fileHash === '') ? 'd-flex justify-content-center align-items-center' : '']">
-                                <figure *ngIf="item.fileHash !== ''" class="mt-05rem">
-                                  <img src="assets/images/img/icon-file-green-16h-proximax-sirius-wallet.svg" alt="">
+                              <div class="col-4 audit-medal mx-auto d-flex justify-content-center align-items-center">
+                                <figure>
+                                  <img src="assets/images/img/icon-file-green-16h-proximax-sirius-wallet.svg"
+                                    width="40">
                                 </figure>
-                                <figure *ngIf="item.fileHash === ''" class="txt-a-center mt-0">
-                                  <i class="fa fa-times fa-3x color-white"></i>
-                                </figure>
-                                <div *ngIf="item.transaction !== undefined" class="mb-05rem">
-                                  <p class="color-white m-0 txt-a-center" *ngIf="item.transaction?.privateFile === true">PRIVATE</p>
-                                  <p class="color-white m-0 txt-a-center" *ngIf="item.transaction?.privateFile === false">PUBLIC</p>
-                                </div>
                               </div>
                             </div>
+                          </div>
+
+                          <div class="col-12 pt-1rem pb-3rem d-flex justify-content-center mx-auto">
+                            <pagination-controls [id]="configFileStorage.id"
+                              (pageChange)="configFileStorage.currentPage = $event">
+                            </pagination-controls>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
+
                 </ng-container>
 
-
-                <input id="fileInput" [hidden]="true" type="file" (change)="fileReader($event.target.files)"
-                  formControlName="file">
+                <input id="fileInput" [hidden]="true" type="file" (change)="fileReader($event.target.files)">
               </div>
 
               <!-- PRIVATE & PUBLIC -->
@@ -284,7 +294,7 @@
     <div class="row">
       <div class="col-12 col-md-10 col-lg-9 col-xl-8 mx-auto d-flex justify-content-center">
         <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
-          size="md" (click)="processComplete = false; blockBtn = false">
+          size="md" (click)="initForm();">
           <span class="fs-1-2em color-white">CONTINUE</span>
         </button>
       </div>
