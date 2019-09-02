@@ -9,6 +9,7 @@ import { ApostilleService, NtyDataInterface } from '../services/apostille.servic
 import { WalletService } from '../../../../wallet/services/wallet.service';
 import { HeaderServicesInterface } from '../../../services/services-module.service';
 import { AppConfig } from '../../../../config/app.config';
+import { StorageService } from '../../storage/services/storage.service';
 
 declare const Buffer: any;
 
@@ -45,9 +46,11 @@ export class CreateApostilleComponent implements OnInit {
     { value: '4', label: 'SHA3' },
     { value: '5', label: 'SHA512' }
   ];
+  filesStorage: any;
 
   constructor(
     private apostilleService: ApostilleService,
+    private storageService: StorageService,
     private fb: FormBuilder,
     private proximaxProvider: ProximaxProvider,
     private sharedService: SharedService,
@@ -59,6 +62,8 @@ export class CreateApostilleComponent implements OnInit {
     this.configurationForm = this.sharedService.configurationForm;
     this.createForm();
     this.apostilleService.getTransactionStatus();
+    this.filesStorage = this.storageService.getFiles();
+    console.log('\n\n\n\nValue of filesStorage', this.filesStorage, '\n\n\n\nEnd value\n\n');
   }
 
   /**
