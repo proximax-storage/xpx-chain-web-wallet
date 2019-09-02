@@ -3,22 +3,21 @@ import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import * as crypto from 'crypto-js'
 import * as JSZip from 'jszip';
 import * as qrcode from 'qrcode-generator';
-// import { saveAs } from 'file-saver';
 import * as jsPDF from 'jspdf';
 import { saveAs } from 'file-saver';
-import { Account, UInt64 } from 'tsjs-xpx-chain-sdk';
+import { Account, UInt64, TransferTransaction } from 'tsjs-xpx-chain-sdk';
 import { IpfsConnection, IpfsClient, StreamHelper } from 'xpx2-ts-js-sdk';
 import { KeyPair, convert } from 'js-xpx-chain-library';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { Verifier } from '../services/audit-apostille-verifier';
 import { environment } from '../../../../../environments/environment';
 import { ConfigurationForm, SharedService } from '../../../../shared/services/shared.service';
-import { ApostilleService } from '../services/apostille.service';
+import { ApostilleService, NtyDataInterface } from '../services/apostille.service';
 import { WalletService } from '../../../../wallet/services/wallet.service';
-declare const Buffer: any;
 import { HeaderServicesInterface } from '../../../services/services-module.service';
-import { AppConfig } from 'src/app/config/app.config';
+import { AppConfig } from '../../../../config/app.config';
 
+declare const Buffer: any;
 
 @Component({
   selector: 'app-create-apostille',
@@ -56,8 +55,7 @@ export class CreateApostilleComponent implements OnInit {
   nameFile = 'Not file selected yet...';
   file: string | ArrayBuffer | null;
   rawFileContent: any;
-  zip: JSZip;
-  ntyData: any;
+  ntyData: NtyDataInterface;
   certificatePrivate: string;
   certificatePublic: string;
   storeInDfms = false;
@@ -65,107 +63,19 @@ export class CreateApostilleComponent implements OnInit {
   blockBtn: boolean;
 
   constructor(
-    private sharedService: SharedService,
+    private apostilleService: ApostilleService,
     private fb: FormBuilder,
-    private walletService: WalletService,
     private proximaxProvider: ProximaxProvider,
-    private apostilleService: ApostilleService
+    private sharedService: SharedService,
+    private walletService: WalletService
   ) {
-    this.zip = new JSZip();
   }
 
   ngOnInit() {
     this.configurationForm = this.sharedService.configurationForm;
     this.createForm();
-  }
-
-  /**Will move to util class **/
-  async convertBlobToBuffer(blob: any) {
-    return new Promise<Buffer>(function (resolve, reject) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const fileContent = Buffer.from(reader.result as ArrayBuffer);
-        resolve(fileContent);
-      };
-      reader.onerror = event => reject(event);
-      reader.readAsArrayBuffer(blob);
-    });
-  }
-
-  /**
-   *
-   *
-   * @param {*} nty
-   * @memberof ApostilleCreateComponent
-   */
-  buildApostille(nty: any) {
-    const date = new Date();
-    const url = `${environment.nodeExplorer}/${nty.signedTransaction.hash.toLowerCase()}`;
-    const title = nty.title.slice(0, nty.title.lastIndexOf('.'));
-    const qr = qrcode(10, 'H');
-    qr.addData(url);
-    qr.make();
-    this.ntyData = {
-      "filename": title,
-      "tags": nty.tags,
-      "fileHash": nty.apostilleHash,
-      "owner": nty.account.address,
-      "fromMultisig": nty.account.address,
-      "dedicatedAccount": nty.sinkAddress,
-      "dedicatedPrivateKey": 'Not show',// (this.apostilleCreateForm.get('typePrivatePublic').value == true) ? "None (public sink)" : nty.dedicatedPrivateKey,
-      "txHash": nty.signedTransaction.hash.toLowerCase(),
-      "txMultisigHash": "",
-      "timeStamp": date.toUTCString()
-    };
-
-    // Add Certificate PDF to zip
-    const nameCertificate = `Certificate of ${title} --Apostille TX ${nty.signedTransaction.hash.toLowerCase()} --Date ${date.toUTCString()}.pdf`;
-    if (Verifier.isPrivateApostille(nty.apostilleHash)) {
-      this.zip.file(nameCertificate, this.pdfcertificatePrivate(qr.createDataURL(), url, nty), {});
-    } else if (Verifier.isPublicApostille(nty.apostilleHash)) {
-      this.zip.file(nameCertificate, this.pdfcertificatePublic(qr.createDataURL(), url, nty), {});
-    }
-
-    // Add Original File to zip
-    const extensionFile = nty.title.slice(nty.title.lastIndexOf('.'));
-    const dateFull = `${date.getFullYear()}-${("00" + (date.getMonth() + 1)).slice(-2)}-${("00" + (date.getDate())).slice(-2)}`;
-    const nameFile = `${title} --Apostille TX ${nty.signedTransaction.hash.toLowerCase()} --Date ${dateFull.toString()} ${extensionFile}`;
-    this.zip.file(
-      `${nameFile}`,
-      (crypto.enc.Base64.stringify(this.rawFileContent)),
-      { base64: true }
-    );
-
-    this.setAccountWalletStorage(this.ntyData);
-    this.downloadSignedFiles();
-  }
-
-  /**
-   *
-   *
-   * @param {(string | (string | number)[])} [custom]
-   * @param {(string | number)} [formControl]
-   * @returns
-   * @memberof CreateApostilleComponent
-   */
-  clearForm(typeForm: number) {
-    if (typeForm === 1) {
-      const file: HTMLElement = document.getElementById('fileInput');
-      if (file) {
-        file['value'] = '';
-      }
-      this.apostilleFormOne.get('file').setValue('');
-      this.file = '';
-      this.fileInputIsValidated = false;
-      this.nameFile = 'Not file selected yet...';
-      this.rawFileContent = '';
-      this.zip = new JSZip();
-      this.apostilleFormOne.reset();
-    } else {
-      this.apostilleFormTwo.reset();
-    }
-
-    return;
+    // this.apostilleService.destroySubscription();
+    this.apostilleService.getTransactionStatus();
   }
 
   /**
@@ -174,6 +84,14 @@ export class CreateApostilleComponent implements OnInit {
    * @memberof CreateApostilleComponent
    */
   createForm() {
+    const file: HTMLElement = document.getElementById('fileInput');
+    if (file) {
+      file['value'] = '';
+    }
+    this.file = '';
+    this.fileInputIsValidated = false;
+    this.nameFile = 'Not file selected yet...';
+    this.rawFileContent = '';
     this.apostilleFormOne = this.fb.group({
       file: ['', [Validators.required]]
     });
@@ -208,84 +126,28 @@ export class CreateApostilleComponent implements OnInit {
    *
    * @memberof ApostilleCreateComponent
    */
-  createApostille() {
+  sendTransaction() {
+    this.blockBtn = true;
     if (this.apostilleFormOne.valid && this.apostilleFormTwo.valid) {
-      this.blockBtn = true;
       const common = { password: this.apostilleFormTwo.get('password').value }
-      //Decrypt the private key
       if (this.walletService.decrypt(common)) {
-        //Get the value of the type of apostille
         if (this.apostilleFormTwo.get('typePrivatePublic').value === true) {
           this.preparePublicApostille(common);
+          this.createForm();
         } else {
-          console.log('--------PRIVATE-------');
           this.preparePrivateApostille(common);
+          this.createForm();
         }
+      } else {
+        this.blockBtn = false;
       }
-    }
-  }
-
-  /**
-   *
-   *
-   * @memberof ApostilleCreateComponent
-   */
-  downloadSignedFiles() {
-    const date = new Date();
-    if (Object.keys(this.zip.files).length > 1) {
-      this.zip.generateAsync({
-        type: "blob"
-      }).then(async (content: any) => {
-        if (this.storeInDfms) {
-          const bufferContent = await this.convertBlobToBuffer(content);
-          const streamContent = await StreamHelper.buffer2Stream(bufferContent);
-          const ipfConnection = new IpfsConnection(
-            environment.storageConnection.host,
-            environment.storageConnection.port,
-            environment.storageConnection.options
-          );
-          const ifpsClient = new IpfsClient(ipfConnection);
-          ifpsClient.addStream(streamContent).subscribe(hash => {
-            saveAs(content, `${hash}.zip`);
-          });
-          this.clearForm(1);
-          this.clearForm(2);
-        } else {
-          this.clearForm(1);
-          this.clearForm(2);
-          const dateFull = `${date.getFullYear()}-${("00" + (date.getMonth() + 1)).slice(-2)}-${("00" + (date.getDate())).slice(-2)}`;
-          saveAs(
-            content,
-            `PROXIsigned -- Do not Edit --"${dateFull}".zip`
-          );
-        }
-      });
+    } else {
+      this.blockBtn = false;
     }
   }
 
 
-  /**
-   *
-   *
-   * @returns
-   * @memberof ApostilleCreateComponent
-   */
-  encryptData(data: string) {
-    // this.apostilleCreateForm.get('typeEncrypted').value
-    const a: any = "3";
-    switch (a) {
-      case "1":
-        return crypto.MD5(data);
-      case "2":
-        return crypto.SHA1(data);
-      case "3":
-        return crypto.SHA256(data);
-      case "4":
-        return crypto.SHA3(data);
-      case "5":
-        return crypto.SHA512(data);
-    }
-  }
+
 
   /**
    * The FileReader object lets web applications asynchronously read the contents of files (or raw data buffers)
@@ -315,34 +177,6 @@ export class CreateApostilleComponent implements OnInit {
       this.file = '';
       this.rawFileContent = '';
     }
-  }
-
-  /**
-   *
-   *
-   * @param {*} str
-   * @returns
-   * @memberof ApostilleCreateComponent
-   */
-  hexStringToByte(data: string) {
-    if (!data) {
-      return new Uint8Array();
-    }
-    var a = [];
-    for (var i = 0, len = data.length; i < len; i += 2) {
-      a.push(parseInt(data.substr(i, 2), 16));
-    }
-    return new Uint8Array(a);
-  }
-
-  /**
-   *
-   *
-   * @memberof ApostilleCreateComponent
-   */
-  imageBase64() {
-    this.certificatePrivate = this.apostilleService.getCertificatePrivate();
-    this.certificatePublic = this.apostilleService.getCertificatePublic();
   }
 
   /**
@@ -400,97 +234,16 @@ export class CreateApostilleComponent implements OnInit {
   /**
    *
    *
-   * @param {*} base64ImageString
-   * @param {*} url
-   * @param {*} nty
-   * @returns
-   * @memberof ApostilleCreateComponent
-   */
-  pdfcertificatePrivate(base64ImageString: string, url: string, nty: any) {
-    this.base64ImageString = base64ImageString;
-    let date = new Date();
-    this.imageBase64();
-    var doc = new jsPDF();
-    doc.addImage(this.certificatePrivate, 'JPEG', 0, 0, 210, 298);
-    doc.addImage(base64ImageString, 'gif', 52, 244, 51, 50);
-    doc.setFontType('normal');
-    doc.setTextColor(0, 0, 0);
-    doc.text(55, 89, (nty.title.slice(0, nty.title.lastIndexOf('.'))).slice(0, 40));
-
-    doc.text(55, 99, date.toUTCString());
-    doc.setFontSize(13);
-    doc.text(55, 109, nty.Owner);
-    doc.text(55, 120, nty.tags);
-    doc.setFontSize(12);
-
-    doc.text(20, 155, nty.sinkAddress);
-    doc.text(20, 174, nty.account.address.plain());
-    doc.setFontSize(10.9);
-    doc.text(20, 195, nty.dedicatedPrivateKey);
-    doc.text(20, 214, nty.signedTransaction.hash.toLowerCase());
-    doc.setFontSize(7);
-    if (nty.apostilleHash.length > 74) {
-      doc.text(20, 233, nty.apostilleHash.slice(0, 74));
-      doc.text(20, 236, nty.apostilleHash.slice(74));
-    } else {
-      doc.text(20, 233, nty.apostilleHash);
-    }
-    return doc.output('blob');
-  }
-
-  /**
-   *
-   *
-   * @param {string} base64ImageString
-   * @param {string} url
-   * @param {*} nty
-   * @returns
-   * @memberof ApostilleCreateComponent
-   */
-  pdfcertificatePublic(base64ImageString: string, url: string, nty: any) {
-    this.base64ImageString = base64ImageString;
-    let date = new Date();
-    this.imageBase64();
-    var doc = new jsPDF()
-    doc.addImage(this.certificatePublic, 'JPEG', 0, 0, 210, 298);
-    doc.addImage(base64ImageString, 'gif', 52, 244, 51, 50);
-    doc.setFontType('normal');
-    doc.setTextColor(0, 0, 0);
-    doc.text(55, 89, (nty.title.slice(0, nty.title.lastIndexOf('.'))).slice(0, 40));
-    doc.text(55, 99, date.toUTCString());
-    doc.setFontSize(13);
-    doc.text(55, 109, nty.Owner);
-    doc.text(55, 120, nty.tags);
-    doc.setFontSize(12);
-    doc.text(20, 155, nty.sinkAddress);
-    doc.text(20, 174, nty.account.address.plain());
-    doc.setFontSize(10.9);
-    doc.text(20, 195, nty.signedTransaction.hash.toLowerCase());
-    doc.setFontSize(7);
-    if (nty.apostilleHash.length > 74) {
-      doc.text(20, 214, nty.apostilleHash.slice(0, 74));
-      doc.text(20, 217, nty.apostilleHash.slice(74));
-    } else {
-      doc.text(20, 214, nty.apostilleHash);
-    }
-    return doc.output('blob');
-  }
-
-  /**
-   *
-   *
    * @param {*} common
    * @memberof ApostilleCreateComponent
    */
   preparePrivateApostille(common: any) {
-    //Get the name of the file
-    const title = this.nameFile;
     //Create an account from my private key
     const ownerAccount = Account.createFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
     //create an encrypted hash
-    const hash = this.encryptData(this.file.toString());
+    const hash = this.apostilleService.encryptData(this.file.toString());
     // The string contentHash is converted to byte
-    const fileHash = this.hexStringToByte(hash.toString());
+    const fileHash = this.apostilleService.hexStringToByte(hash.toString());
     // Create pair of owner keys
     const ownerKeypair = KeyPair.createKeyPairFromPrivateKeyString(common.privateKey);
     // FileHash is signed with ownerKeypair
@@ -500,31 +253,54 @@ export class CreateApostilleComponent implements OnInit {
     // Concatenates the hash prefix and the result gives the apostille hash
     const apostilleHash = apostilleHashPrefix + convert.uint8ToHex(contentHashSig).toLowerCase();
     // Encrypt the title
-    const fileNameHash = this.encryptData(title);
+    const fileNameHash = this.apostilleService.encryptData(this.nameFile);
     // Sign the fileNameHash with the ownerKeypair
-    const fileNameHashSign = KeyPair.sign(ownerKeypair, this.hexStringToByte(fileNameHash.toString()));
+    const fileNameHashSign = KeyPair.sign(ownerKeypair, this.apostilleService.hexStringToByte(fileNameHash.toString()));
     // Take the first 32 UINT8 to get the private key
     const dedicatedPrivateKey = convert.uint8ToHex(fileNameHashSign.slice(0, 32));
     // Create an account from the dedicatedPrivateKey to send a transaction with apostilleHash message
     const dedicatedAccount = Account.createFromPrivateKey(dedicatedPrivateKey, this.walletService.currentAccount.network);
-    let transferTransaction: any;
     // Build the transfer type transaction
-    transferTransaction = this.proximaxProvider.buildTransferTransaction(
+    let transferTransaction: TransferTransaction = this.proximaxProvider.buildTransferTransaction(
       this.walletService.currentAccount.network,
       this.proximaxProvider.createFromRawAddress(dedicatedAccount.address.plain()),
       JSON.stringify(apostilleHash)
     );
     // Zero fee is added
-    transferTransaction.fee = UInt64.fromUint(0);
+    transferTransaction['fee'] = UInt64.fromUint(0);
     // Sign the transaction
     const signedTransaction = ownerAccount.sign(transferTransaction);
+    const date = new Date();
+    this.ntyData = {
+      fileName: this.nameFile.slice(0, this.nameFile.lastIndexOf('.')),
+      tags: this.apostilleFormTwo.get('tags').value,
+      fileHash: apostilleHash,
+      owner: ownerAccount.address,
+      fromMultisig: ownerAccount.address,
+      dedicatedAccount: dedicatedAccount.address.plain(),
+      dedicatedPrivateKey: 'Not show',// (this.apostilleCreateForm.get('typePrivatePublic').value == true) ? None (public sink) : nty.dedicatedPrivateKey,
+      txHash: signedTransaction.hash.toLowerCase(),
+      txMultisigHash: '',
+      timeStamp: date.toUTCString()
+    };
+
+    const apostilleBuilder = this.apostilleService.buildApostille(this.ntyData, this.rawFileContent);
+    this.base64ImageString = apostilleBuilder.qrCode;
     // announce the transaction
+    this.apostilleService.setWhiteList({
+      signedTransaction: signedTransaction,
+      storeInDfms: this.storeInDfms,
+      zip: apostilleBuilder.zipFile,
+      nty: this.ntyData
+    });
+
+
     this.proximaxProvider.announce(signedTransaction).subscribe(
       x => {
         // Aqui falta validar si la transacción fue aceptada por el blockchain
 
         //Create arrangement to assemble the certificate
-        const nty = {
+        /*const nty = {
           signedTransaction: signedTransaction,
           title: title,
           tags: [this.apostilleFormTwo.get('tags').value],
@@ -534,11 +310,11 @@ export class CreateApostilleComponent implements OnInit {
           dedicatedPrivateKey: dedicatedAccount.privateKey.toLowerCase(),
           Owner: ownerAccount.address.plain(),
         }
+        this.buildApostille(nty)*/
 
         // If everything went OK, build and build the certificate
         this.blockBtn = false;
         this.processComplete = true;
-        this.buildApostille(nty)
       },
       err => {
         console.error(err)
@@ -556,11 +332,9 @@ export class CreateApostilleComponent implements OnInit {
     //create a hash prefix (dice si es privado o publico)
     const apostilleHashPrefix = 'fe4e545903';
     //create an encrypted hash (contenido del archivo)
-    const hash = this.encryptData(this.file.toString());
-    console.log('--- Hash encrypted ----', hash.toString());
+    const hash = this.apostilleService.encryptData(this.file.toString());
     //concatenates the hash prefix and the result gives the apostilleHash
     const apostilleHash = apostilleHashPrefix + hash.toString();
-    console.log('--- apostilleHash ----', apostilleHash);
     //Generate an account to send the transaction with the apostilleHash
     const sinkAddress = this.proximaxProvider.createFromRawAddress(
       this.proximaxProvider.generateNewAccount(this.walletService.currentAccount.network).address.plain()
@@ -573,55 +347,43 @@ export class CreateApostilleComponent implements OnInit {
       sinkAddress,
       JSON.stringify(apostilleHash)
     );
+    // Zero fee is added
+    transferTransaction['fee'] = UInt64.fromUint(0);
 
-    //Zero fee is added
-    transferTransaction.fee = UInt64.fromUint(0);
-    //Sign the transaction
+    // Sign the transaction
     const signedTransaction = myAccount.sign(transferTransaction);
-    //announce the transaction
-    console.log('-----signedTransaction----', signedTransaction);
+    const date = new Date();
+    this.ntyData = {
+      fileName: this.nameFile.slice(0, this.nameFile.lastIndexOf('.')),
+      tags: this.apostilleFormTwo.get('tags').value,
+      fileHash: apostilleHash,
+      owner: myAccount.address,
+      fromMultisig: myAccount.address,
+      dedicatedAccount: sinkAddress.plain(),
+      dedicatedPrivateKey: 'Not show',
+      txHash: signedTransaction.hash.toLowerCase(),
+      txMultisigHash: '',
+      timeStamp: date.toUTCString()
+    };
+
+    console.log(this.ntyData);
+    const apostilleBuilder = this.apostilleService.buildApostille(this.ntyData, this.rawFileContent);
+    this.base64ImageString = apostilleBuilder.qrCode;
+    this.apostilleService.setWhiteList({
+      signedTransaction: signedTransaction,
+      storeInDfms: this.storeInDfms,
+      zip: apostilleBuilder.zipFile,
+      nty: this.ntyData
+    });
+
     this.proximaxProvider.announce(signedTransaction).subscribe(
       x => {
-        /* console.log(this.apostilleCreateForm.get('tags').value);
-         let tags = '';
-         if (this.apostilleCreateForm.get('tags').value !== '' && this.apostilleCreateForm.get('tags').value.length > 0) {
-           tags = this.apostilleCreateForm.get('tags').value.map(next => next.value);
-         }*/
-        // Aqui falta validar si la transacción fue aceptada por el blockchain
-        //Create arrangement to assemble the certificate
-        const nty = {
-          signedTransaction: signedTransaction,
-          title: this.nameFile,
-          tags: this.apostilleFormTwo.get('tags').value,
-          apostilleHash: apostilleHash,
-          account: myAccount,
-          sinkAddress: sinkAddress.plain(),
-          dedicatedPrivateKey: "",
-          Owner: myAccount.address.plain()
-        }
         this.blockBtn = false;
         this.processComplete = true;
-        // Si todo fue OK, construye y arma el certificado
-        this.buildApostille(nty)
       },
       err => {
         console.error(err)
         // this.downloadSignedFiles();
       });
-  }
-
-
-
-  /**
-   *
-   *
-   * @memberof ApostilleCreateComponent
-   */
-  reset() {
-    const file: HTMLElement = document.getElementById('fileInput');
-    file['value'] = '';
-    this.zip = new JSZip();
-    this.nameFile = 'Not file selected yet...';
-    this.apostilleFormOne.get('file').patchValue('');
   }
 }

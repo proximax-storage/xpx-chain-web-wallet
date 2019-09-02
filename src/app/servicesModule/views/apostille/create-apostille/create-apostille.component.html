@@ -55,7 +55,7 @@
             </form>
           </mdb-step>
           <mdb-step name="Attestation" [stepForm]="apostilleFormTwo" class="step2" [completed]="false">
-            <form [formGroup]="apostilleFormTwo" (ngSubmit)="createApostille()">
+            <form [formGroup]="apostilleFormTwo" (ngSubmit)="sendTransaction()">
 
               <!-- TAGS -->
               <div class="row">
