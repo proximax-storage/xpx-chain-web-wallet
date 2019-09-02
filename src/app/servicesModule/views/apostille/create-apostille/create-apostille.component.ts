@@ -28,6 +28,7 @@ export class CreateApostilleComponent implements OnInit {
   fileInputIsValidated = false;
   nameFile = 'Not file selected yet...';
   ntyData: NtyDataInterface;
+  originalFile: File;
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Attestation',
     componentName: 'Create',
@@ -112,6 +113,7 @@ export class CreateApostilleComponent implements OnInit {
    */
   fileReader(files: File[]) {
     if (files.length > 0) {
+      this.originalFile = files[0];
       this.fileInputIsValidated = true;
       // Get name the file
       this.nameFile = files[0].name;
@@ -141,13 +143,14 @@ export class CreateApostilleComponent implements OnInit {
   sendTransaction() {
     this.blockBtn = true;
     if (this.apostilleFormOne.valid && this.apostilleFormTwo.valid) {
-      const common = { password: this.apostilleFormTwo.get('password').value }
-      if (this.walletService.decrypt(common)) {
+      const pw: any = { password: this.apostilleFormTwo.get('password').value }
+      if (this.walletService.decrypt(pw)) {
+        this.apostilleService.loadFileStorage(this.originalFile, pw.privateKey);
         if (this.apostilleFormTwo.get('typePrivatePublic').value === true) {
-          this.preparePublicApostille(common);
+          this.preparePublicApostille(pw);
           this.createForm();
         } else {
-          this.preparePrivateApostille(common);
+          this.preparePrivateApostille(pw);
           this.createForm();
         }
       } else {

@@ -49,8 +49,7 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
     private route: Router,
     private walletService: WalletService,
     private proximaxProvider: ProximaxProvider,
-    private sharedService: SharedService,
-    private transactionsService: TransactionsService
+    private sharedService: SharedService
   ) {
     this.files = [];
     this.uploadInput = new EventEmitter<UploadInput>();
@@ -313,22 +312,23 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
 
         const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
         console.log(account);
+        console.log('0filee-----> ', this.files);
 
         try {
           const uploadedFile = this.files[0].nativeFile;
-          //console.log(uploadedFile);
+          console.log(uploadedFile);
           const uploadedFileType = uploadedFile.type;
-          //console.log(uploadedFileType);
+          console.log(uploadedFileType);
           const uploadedFileContent = await this.readFile(uploadedFile);
           const fileName = this.uploadForm.get('filePath').value;
-          // console.log(uploadedFile.name);
+          console.log(uploadedFile.name);
           // const optionalFileName =  fileName ===  undefined ? uploadedFile.name: fileName;
           //console.log(optionalFileName);
           const optionalFileName = uploadedFile.name;
           const metaParams = Uint8ArrayParameterData.create(uploadedFileContent, optionalFileName, '', uploadedFileType);
-
+          console.log('---metaParams---', metaParams);
           const uploadParams = UploadParameter.createForUint8ArrayUpload(metaParams, account.privateKey);
-
+          console.log('uploadParams -->', uploadParams);
           const encryptionMethod = this.uploadForm.get('encryptionMethod').value;
           console.log(encryptionMethod);
 

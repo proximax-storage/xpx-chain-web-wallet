@@ -75,7 +75,6 @@ export class AuditApostilleComponent implements OnInit {
           this.ourFile.push(element);
         }
       }
-      // this.verifyFiles();
     }
   }
 
@@ -114,6 +113,10 @@ export class AuditApostilleComponent implements OnInit {
     }
   }
 
+  /**
+   * Method to verify hash of documents uploaded
+   * @param transactions transactions found
+   */
   verifyHast(transactions: TransferTransaction[]) {
     this.searching = false;
     this.transactionsSearch.forEach(element => {
@@ -182,6 +185,11 @@ export class AuditApostilleComponent implements OnInit {
     });
   }
 
+  /**
+   * Method to verify transaction info
+   * @param data document data
+   * @param infTrans transaction info
+   */
   verify(data, infTrans): boolean {
     if (Verifier.isPublicApostille(infTrans.message.payload.replace(/['"]+/g, ''))) {
       return Verifier.verifyPublicApostille(data, infTrans.message.payload.replace(/['"]+/g, ''))
@@ -191,6 +199,11 @@ export class AuditApostilleComponent implements OnInit {
     }
   }
 
+  /**
+   * Method to load data on the card
+   * @param result data to load on the card
+   * @param hash transactions hash
+   */
   addAuditResult(result: ResultAuditInterface, hash?) {
     let find = [];
     if (hash) {
@@ -203,6 +216,10 @@ export class AuditApostilleComponent implements OnInit {
     }
   }
 
+  /**
+   * Method to modal show
+   * @param transaction transaction information
+   */
   verifyModal(transaction: TransactionsInterface) {
     if (transaction) {
       this.modalInfo = transaction;

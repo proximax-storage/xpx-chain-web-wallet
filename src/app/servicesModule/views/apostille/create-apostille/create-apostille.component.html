@@ -107,7 +107,8 @@
                   <div class="row">
                     <div class="col-12 fw-600 mx-auto">
                       <div class="form-check form-check-inline">
-                        <mdb-checkbox formControlName="safeDFMS" [checked]="true" [default]="true">SAFE on DFMS
+                        <mdb-checkbox formControlName="safeDFMS" [checked]="true" [default]="true"
+                          (change)="onSaveInDFMSChanged($event)">SAFE on DFMS
                         </mdb-checkbox>
                       </div>
                     </div>
