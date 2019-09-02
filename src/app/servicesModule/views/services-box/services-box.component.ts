@@ -399,7 +399,7 @@ export class ServicesBoxComponent implements OnInit {
       this.services.buildStructureService(
         'Invoice',
         true,
-        'Create invoices',
+        'Create and manage invoices',
         'icon-invoice-green-60h.svg',
         '',
         {
