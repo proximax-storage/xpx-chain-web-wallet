@@ -62,6 +62,7 @@ export class CreateApostilleComponent implements OnInit {
   certificatePublic: string;
   storeInDfms = false;
   base64ImageString: string;
+  blockBtn: boolean;
 
   constructor(
     private sharedService: SharedService,
@@ -135,7 +136,6 @@ export class CreateApostilleComponent implements OnInit {
       { base64: true }
     );
 
-    this.processComplete = true;
     this.setAccountWalletStorage(this.ntyData);
     this.downloadSignedFiles();
   }
@@ -210,6 +210,7 @@ export class CreateApostilleComponent implements OnInit {
    */
   createApostille() {
     if (this.apostilleFormOne.valid && this.apostilleFormTwo.valid) {
+      this.blockBtn = true;
       const common = { password: this.apostilleFormTwo.get('password').value }
       //Decrypt the private key
       if (this.walletService.decrypt(common)) {
@@ -406,28 +407,34 @@ export class CreateApostilleComponent implements OnInit {
    * @memberof ApostilleCreateComponent
    */
   pdfcertificatePrivate(base64ImageString: string, url: string, nty: any) {
+    this.base64ImageString = base64ImageString;
     let date = new Date();
     this.imageBase64();
     var doc = new jsPDF();
     doc.addImage(this.certificatePrivate, 'JPEG', 0, 0, 210, 298);
-    doc.addImage(base64ImageString, 'gif', 45, 244, 51, 50);
+    doc.addImage(base64ImageString, 'gif', 52, 244, 51, 50);
     doc.setFontType('normal');
     doc.setTextColor(0, 0, 0);
-    doc.text(80, 89, (nty.title.slice(0, nty.title.lastIndexOf('.'))).slice(0, 40));
+    doc.text(55, 89, (nty.title.slice(0, nty.title.lastIndexOf('.'))).slice(0, 40));
 
-    doc.text(80, 99, date.toUTCString());
+    doc.text(55, 99, date.toUTCString());
     doc.setFontSize(13);
-    doc.text(80, 109, nty.Owner);
-    doc.text(80, 120, nty.tags);
+    doc.text(55, 109, nty.Owner);
+    doc.text(55, 120, nty.tags);
     doc.setFontSize(12);
 
-    doc.text(42, 155, nty.sinkAddress);
-    doc.text(42, 173, nty.account.address.plain());
+    doc.text(20, 155, nty.sinkAddress);
+    doc.text(20, 174, nty.account.address.plain());
     doc.setFontSize(10.9);
-    doc.text(42, 193, nty.dedicatedPrivateKey);
-    doc.text(42, 212, nty.signedTransaction.hash.toLowerCase());
+    doc.text(20, 195, nty.dedicatedPrivateKey);
+    doc.text(20, 214, nty.signedTransaction.hash.toLowerCase());
     doc.setFontSize(7);
-    doc.text(42, 230, nty.apostilleHash);
+    if (nty.apostilleHash.length > 74) {
+      doc.text(20, 233, nty.apostilleHash.slice(0, 74));
+      doc.text(20, 236, nty.apostilleHash.slice(74));
+    } else {
+      doc.text(20, 233, nty.apostilleHash);
+    }
     return doc.output('blob');
   }
 
@@ -441,29 +448,31 @@ export class CreateApostilleComponent implements OnInit {
    * @memberof ApostilleCreateComponent
    */
   pdfcertificatePublic(base64ImageString: string, url: string, nty: any) {
-    console.log(base64ImageString);
     this.base64ImageString = base64ImageString;
     let date = new Date();
     this.imageBase64();
     var doc = new jsPDF()
     doc.addImage(this.certificatePublic, 'JPEG', 0, 0, 210, 298);
-    doc.addImage(base64ImageString, 'gif', 45, 244, 51, 50);
+    doc.addImage(base64ImageString, 'gif', 52, 244, 51, 50);
     doc.setFontType('normal');
     doc.setTextColor(0, 0, 0);
-    doc.text(80, 89, (nty.title.slice(0, nty.title.lastIndexOf('.'))).slice(0, 40));
-
-    doc.text(80, 99, date.toUTCString());
+    doc.text(55, 89, (nty.title.slice(0, nty.title.lastIndexOf('.'))).slice(0, 40));
+    doc.text(55, 99, date.toUTCString());
     doc.setFontSize(13);
-    doc.text(80, 109, nty.Owner);
-    doc.text(80, 120, nty.tags);
+    doc.text(55, 109, nty.Owner);
+    doc.text(55, 120, nty.tags);
     doc.setFontSize(12);
-
-    doc.text(42, 159, nty.sinkAddress);
-    doc.text(42, 181, nty.account.address.plain());
+    doc.text(20, 155, nty.sinkAddress);
+    doc.text(20, 174, nty.account.address.plain());
     doc.setFontSize(10.9);
-    doc.text(42, 204, nty.signedTransaction.hash.toLowerCase());
+    doc.text(20, 195, nty.signedTransaction.hash.toLowerCase());
     doc.setFontSize(7);
-    doc.text(42, 225, nty.apostilleHash);
+    if (nty.apostilleHash.length > 74) {
+      doc.text(20, 214, nty.apostilleHash.slice(0, 74));
+      doc.text(20, 217, nty.apostilleHash.slice(74));
+    } else {
+      doc.text(20, 214, nty.apostilleHash);
+    }
     return doc.output('blob');
   }
 
@@ -527,6 +536,8 @@ export class CreateApostilleComponent implements OnInit {
         }
 
         // If everything went OK, build and build the certificate
+        this.blockBtn = false;
+        this.processComplete = true;
         this.buildApostille(nty)
       },
       err => {
@@ -557,7 +568,12 @@ export class CreateApostilleComponent implements OnInit {
     //Create an account from my private key
     const myAccount = Account.createFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
     //Arm the transaction type transfer
-    let transferTransaction: any = this.proximaxProvider.buildTransferTransaction(this.walletService.currentAccount.network, sinkAddress, JSON.stringify(apostilleHash));
+    let transferTransaction: any = this.proximaxProvider.buildTransferTransaction(
+      this.walletService.currentAccount.network,
+      sinkAddress,
+      JSON.stringify(apostilleHash)
+    );
+
     //Zero fee is added
     transferTransaction.fee = UInt64.fromUint(0);
     //Sign the transaction
@@ -583,7 +599,8 @@ export class CreateApostilleComponent implements OnInit {
           dedicatedPrivateKey: "",
           Owner: myAccount.address.plain()
         }
-
+        this.blockBtn = false;
+        this.processComplete = true;
         // Si todo fue OK, construye y arma el certificado
         this.buildApostille(nty)
       },
