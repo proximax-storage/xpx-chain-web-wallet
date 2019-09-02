@@ -146,7 +146,7 @@
 
             <ng-container *ngFor="let item of pollSelected?.options; let j = index">
               <div class="col align-self-star">
-                <div class="form-check">
+                <div class="form-check" style="display: flex;">
                   <input type="radio" (change)="radioOptionPoll($event, item?.name)" class="form-check-input with-gap"
                     id="{{j}}" name="groupOfRadioGap" mdbInput ([ngModel])="item?.name">
                   <label class="form-check-label" for="{{j}}">{{item?.name}}</label>

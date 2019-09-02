@@ -521,13 +521,15 @@ export class VoteInPollComponent implements OnInit {
           const statusTransactionHash = (statusTransaction['type'] === 'error') ? statusTransaction['data'].hash : statusTransaction['data'].transactionInfo.hash;
           const match = statusTransactionHash === signedTransaction.hash;
           if (statusTransaction['type'] === 'confirmed' && match) {
+
+            console.log("transaction confirm",statusTransaction['data'])
             signedTransaction = null;
             this.sharedService.showSuccess('', 'Transaction confirmed');
           } else if (statusTransaction['type'] === 'unconfirmed' && match) {
             this.blockSend = false;
             this.viewCertificate(signedTransaction.hash, this.pollSelected.name, 'newVoting')
             this.walletService.countTimeVote();
-            signedTransaction = null;
+            // signedTransaction = null;
             this.sharedService.showInfo('', 'Transaction unconfirmed');
           } else if (match) {
             signedTransaction = null;

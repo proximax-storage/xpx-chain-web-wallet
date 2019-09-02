@@ -526,7 +526,6 @@ export class WalletService {
     this.canVote = false;
     let t = timer(1, 1000);
     this.subscribeLogged = t.subscribe(t => {
-      console.log(t)
       if (t >= 20) {
         this.canVote = true;
         this.subscribeLogged.unsubscribe();
