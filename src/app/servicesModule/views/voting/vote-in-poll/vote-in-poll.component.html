@@ -100,7 +100,7 @@
           </div>
         </div>
 
-        <div class="col-9 col-md-8 col-lg-6  mx-auto" *ngSwitchCase="'viewCertificate'">
+        <div class="col-9 col-md-8 col-lg-6  mx-auto cursor-p" *ngSwitchCase="'viewCertificate'" (click)="openCertificateModal()">
           <table class="certificate" style="width: 100%;">
             <tr>
               <td [innerHTML]="qrImg">
@@ -109,7 +109,7 @@
               <td>
                 <div style="word-break:break-all;">
                   <span class="fs-09rem fw-600">
-                    transaction hast:
+                    transaction hash:
 
                   </span>
                   <span class="fs-075rem">
@@ -118,8 +118,7 @@
                 </div>
               </td>
               <td class="color">
-
-                <img class="w-130px" src="assets/images/img/badge-silver-proximax-sirius-wallet.svg">
+                  <img class="w-130px" src="assets/images/img/badge-silver-proximax-sirius-wallet.svg">
               </td>
             </tr>
           </table>
@@ -268,8 +267,8 @@
           <div class="row mt-2rem">
 
 
-            <div   class="col-sm mx-auto">
-              <highcharts-chart [Highcharts]="Highcharts" [(update)]="updateFlag" [options]="chartOptions" style="width: 100%; height: 300px; display: block;"></highcharts-chart>
+            <div class="col-sm mx-auto">
+              <highcharts-chart [Highcharts]="Highcharts" [options]="chartOptions" style="width: 100%; height: 400px; display: block;"></highcharts-chart>
             </div>
             <div class="col-sm mx-auto">
               <div class="table-responsive"  style="margin-button: 20px; height: 200px; overflow: auto; ">
@@ -297,7 +296,7 @@
 
               <!-- Searching and icon reload -->
               <div class="row">
-                  <div class="col-12 d-flex justify-content-center">
+                  <div class="col-11 col-sm-11 col-lg-10 mx-auto">
 
                       <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
                       size="md" [disabled]="showResultProgress" (click)="getResult('REFRESH')">
@@ -312,3 +311,28 @@
     </div>
   </div>
 </div>
+
+
+<!-- MODAL -->
+<div class="d-flex align-items-center" >
+    <div mdbModal #certificationModal="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="certificationModal"
+      aria-hidden="true">
+      <div class="modal-dialog modal-lg d-flex align-items-center" role="document">
+        <div class="modal-content form-elegant bord-rad-1-5rem">
+          <div class="modal-header text-center box-modal-white b-t-r-r-1-5rem b-t-l-r-1-5rem p-05rem">
+            <span class="modal-title w-100" id="myModalLabel">
+              <strong class="title-modal-blue">Voting Certification</strong>
+            </span>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="certificationModal.hide()">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" >
+            <ng-container *ngIf="dataTransaction">
+              <app-vote-type [transactionInfo]="dataTransaction"></app-vote-type>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

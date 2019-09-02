@@ -14,6 +14,7 @@ import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
 import * as qrcode from 'qrcode-generator';
 import { element } from 'protractor';
 import { ModalDirective } from 'ng-uikit-pro-standard';
+import { TransactionsService, TransactionsInterface } from '../../../../transactions/services/transactions.service';
 import * as Highcharts from 'highcharts';
 
 @Component({
@@ -22,6 +23,7 @@ import * as Highcharts from 'highcharts';
   styleUrls: ['./vote-in-poll.component.css']
 })
 export class VoteInPollComponent implements OnInit {
+  dataTransaction: TransactionsInterface;
   Highcharts = Highcharts;
   routes = {
     backToService: `/${AppConfig.routes.service}`,
@@ -65,6 +67,7 @@ export class VoteInPollComponent implements OnInit {
     private fb: FormBuilder,
     private proximaxProvider: ProximaxProvider,
     private dataBridge: DataBridgeService,
+    private transactionService: TransactionsService
 
   ) {
     this.transactionHttp = new TransactionHttp(environment.protocol + "://" + `${this.nodeService.getNodeSelected()}`);
@@ -82,6 +85,7 @@ export class VoteInPollComponent implements OnInit {
 
   }
   @ViewChild('modalInfo', { static: true }) modalInfo: ModalDirective;
+  @ViewChild('certificationModal', { static: true }) certificationModal: ModalDirective;
   ngOnInit() {
 
 
@@ -179,6 +183,12 @@ export class VoteInPollComponent implements OnInit {
     }
      this.pollResultVoting.sort().sort((a, b) => b.y - a.y);
      this.setcreatecharts(this.pollResultVotingChar);
+  }
+
+  openCertificateModal(){
+    this.dataTransaction;
+    console.log('data a pintar modal', this.dataTransaction)
+    this.certificationModal.show();
   }
 
   getResult(param: string) {
@@ -311,7 +321,14 @@ export class VoteInPollComponent implements OnInit {
                     const transactionnext = next[index];
                     if (this.walletService.currentAccount.publicAccount.publicKey === transactionnext.signer.publicKey) {
                       console.log('transaction', transactionnext)
-
+                      
+                      let transaction = this.transactionService.getStructureDashboard(transactionnext['innerTransactions'][0]);
+                      
+                      transaction.name = this.pollSelected.name;
+                      transaction.description = this.pollSelected.desciption;
+                      // transaction.data = transactionnext;
+                      this.dataTransaction = transaction;
+                      console.log('transaction ---',  this.dataTransaction) 
                       this.transaction = transactionnext;
                       this.memberVoted = true;
                       this.sharedService.showWarning('', `Sorry, you already voted in this poll`);
@@ -577,11 +594,11 @@ export class VoteInPollComponent implements OnInit {
       }
 
     }
-
-
   }
 
-
+  openModal(){
+    console.log('open modal')
+  }
 
 
 
