@@ -23,7 +23,9 @@ export class PollsComponent implements OnInit {
   progressBar: number = 0;
   routes = {
     backToService: `/${AppConfig.routes.service}`,
-    voteInpoll: `/${AppConfig.routes.voteInPoll}/`
+    voteInpoll: `/${AppConfig.routes.voteInPoll}/`,
+    createpoll: `/${AppConfig.routes.createPoll}/`
+    
   };
   configAdvance: PaginationInstance = {
     id: 'advanced',
