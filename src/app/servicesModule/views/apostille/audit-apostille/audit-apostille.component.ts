@@ -7,6 +7,7 @@ import { ResultAuditInterface, HeaderServicesInterface } from '../../../services
 import { AppConfig } from '../../../../config/app.config';
 import { TransactionsService, TransactionsInterface } from 'src/app/transactions/services/transactions.service';
 import { ModalDirective } from 'ng-uikit-pro-standard';
+import { PaginationInstance } from 'ngx-pagination';
 
 
 @Component({
@@ -37,6 +38,11 @@ export class AuditApostilleComponent implements OnInit {
   currentView: boolean = true;
   modalInfo: TransactionsInterface = null;
   searching: boolean = false;
+  configFilesSelected: PaginationInstance = {
+    id: 'fileStorage',
+    itemsPerPage: 6,
+    currentPage: 1
+  };
 
   @ViewChild('basicModal', { static: true }) modalAudit: ModalDirective;
 
@@ -129,18 +135,19 @@ export class AuditApostilleComponent implements OnInit {
         const myReader: FileReader = new FileReader();
         myReader.onloadend = (e) => {
           if (this.verify(myReader.result, findHash)) {
-            let arrayExtention = arrayName[1].split('.');
             let originalName = '';
             let method = '';
-            const apostillePrivatePrefix = 'fe4e545983';
-            const apostillePublicPrefix = 'fe4e545903';
-            const prefixHash = findHash.message.payload.split('"').join('').substr(0, 10);
-
-            if (arrayExtention.length > 1) {
+            if (element.type !== '') {
+              let arrayExtention = arrayName[1].split('.');
               originalName = `${arrayName[0]}.${arrayExtention[arrayExtention.length - 1]}`;
             } else {
               originalName = arrayName[0];
             }
+            console.log('\n\n\n\nValue of element', element, '\n\n\n\nEnd value\n\n');
+            const apostillePrivatePrefix = 'fe4e545983';
+            const apostillePublicPrefix = 'fe4e545903';
+            const prefixHash = findHash.message.payload.split('"').join('').substr(0, 10);
+
 
             let transaction = this.transactionService.getStructureDashboard(findHash);
             transaction.dateFile = arrayDate[0];
