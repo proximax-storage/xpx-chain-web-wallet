@@ -585,7 +585,7 @@ export class VoteInPollComponent implements OnInit {
       const qr = qrcode(0, 'H');
       qr.addData(url);
       qr.make();
-      this.qrImg = qr.createImgTag();
+      this.qrImg = qr.createDataURL();
       this.namePoll = name;
       this.statusValidate = 'viewCertificate'
 
@@ -601,7 +601,7 @@ export class VoteInPollComponent implements OnInit {
         const qr = qrcode(0, 'H');
         qr.addData(url);
         qr.make();
-        this.qrImg = qr.createImgTag();
+        this.qrImg = qr.createDataURL()
         this.namePoll = name;
         this.statusValidate = 'viewCertificate'
 
