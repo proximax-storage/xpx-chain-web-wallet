@@ -97,26 +97,73 @@ export class SharedService {
     }
   }
 
+  /**
+   *
+   *
+   * @param {*} filename
+   * @returns
+   * @memberof SharedService
+   */
+  getFileExtension(filename: string) {
+    return (/[.]/.exec(filename)) ? /[^.]+$/.exec(filename)[0] : undefined;
+  }
+
+  /**
+   *
+   *
+   * @param {string} title
+   * @param {string} bodyMessage
+   * @memberof SharedService
+   */
   showSuccess(title: string, bodyMessage: string) {
     const options = { closeButton: true, tapToDismiss: false, toastClass: 'toastSuccess', timeOut: 4000, messageClass: 'messageClass' };
     this.toastrService.success(bodyMessage, '', options);
   }
 
+  /**
+   *
+   *
+   * @param {string} title
+   * @param {string} bodyMessage
+   * @param {number} timeout
+   * @memberof SharedService
+   */
   showSuccessTimeout(title: string, bodyMessage: string, timeout: number) {
     const options = { closeButton: true, tapToDismiss: false, toastClass: 'toastSuccess', timeOut: 4000, messageClass: 'messageClass' };
     this.toastrService.success(bodyMessage, '', options);
   }
 
+  /**
+   *
+   *
+   * @param {string} title
+   * @param {string} bodyMessage
+   * @memberof SharedService
+   */
   showError(title: string, bodyMessage: string) {
     const options = { closeButton: true, tapToDismiss: false, toastClass: 'toastError', timeOut: 4000, messageClass: 'messageClass' };
     this.toastrService.error(bodyMessage, '', options);
   }
 
+  /**
+   *
+   *
+   * @param {string} title
+   * @param {string} bodyMessage
+   * @memberof SharedService
+   */
   showWarning(title: string, bodyMessage: string) {
     const options = { closeButton: true, tapToDismiss: false, toastClass: 'toastWarning', timeOut: 4000, messageClass: 'messageClass' };
     this.toastrService.warning(bodyMessage, '', options);
   }
 
+  /**
+   *
+   *
+   * @param {string} title
+   * @param {string} bodyMessage
+   * @memberof SharedService
+   */
   showInfo(title: string, bodyMessage: string) {
     const options = { closeButton: true, tapToDismiss: false, toastClass: 'toastInfo', timeOut: 4000, messageClass: 'messageClass' };
     this.toastrService.info(bodyMessage, '', options);
