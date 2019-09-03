@@ -215,9 +215,9 @@ export class CreateNamespaceComponent implements OnInit {
    */
   createNamespace() {
     // console.log('this.namespaceForm.valid', this.namespaceForm.valid);
-    // console.log('validateForm', this.validateForm);
+    console.log('validateForm', this.validateForm);
     // console.log('this.blockBtnSend', this.blockBtnSend);
-    if (this.namespaceForm.valid && this.validateForm && !this.blockBtnSend) {
+    if (this.namespaceForm.valid && !this.blockBtnSend) {
       this.blockBtnSend = true;
       const common = {
         password: this.namespaceForm.get('password').value,
