@@ -290,7 +290,9 @@ export class VoteInPollComponent implements OnInit {
         name: 'Brands',
         colorByPoint: true,
         data
-      }]
+      }],credits: {
+        enabled: false
+      }
     };
     this.chartOptions = Options;
     // console.log("DateChart", this.chartOptions)

@@ -27,13 +27,13 @@ export class HomeComponent implements OnInit {
       this.services.buildStructureService(
         'Blockchain',
         true,
-        'Multisg, aggregated tx, cross chain, metadata',
+        'Multisig, aggregated tx, cross chain, metadata',
         'icon-blockchain-full-color-80h-proximax-sirius-wallet.svg',
       ),
       this.services.buildStructureService(
         'Storage',
         true,
-        'P2P decentralised storage for any type file',
+        'P2P decentralised storage for any type of file',
         'icon-storage-full-color-80h-proximax-sirius-wallet.svg',
       ),
         this.services.buildStructureService(
