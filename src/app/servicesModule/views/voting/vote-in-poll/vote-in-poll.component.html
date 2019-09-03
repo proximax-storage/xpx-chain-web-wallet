@@ -100,8 +100,8 @@
           </div>
         </div>
 
-        <div class="col-9 col-md-8 col-lg-6  mx-auto cursor-p" *ngSwitchCase="'viewCertificate'" (click)="openCertificateModal()">
-          <div class="d-flex flex-column">
+        <div class="col-12 col-md-12 col-lg-12  mx-auto cursor-p" *ngSwitchCase="'viewCertificate'" (click)="openCertificateModal()">
+          <!-- <div class="d-flex flex-column">
             <div class="d-flex justify-content-center">
               <table class="certificate" style="width: 100%;">
                 <tr>
@@ -125,7 +125,58 @@
                 </tr>
               </table>
             </div>
-          </div>
+          </div> -->
+
+
+
+          <div class="row">
+              <div class="col-12 col-md-10 col-lg-9 col-xl-8 mx-auto">
+                <div class="row mr-ml-mt-mb bordb-2px-solid-gray">
+                  <!-- QR & FILE HASH -->
+                  <div class="col-12 col-md-9 col-lg-8 p-1rem">
+                    <div class="row">
+                      <div class="col-12 col-sm-4 col-md-3 d-flex justify-content-start justify-content-sm-center">
+                        <div class="mx-auto"   >
+                          <img [src]="qrImg" width="90">
+
+                          
+                        </div>
+                      </div>
+        
+                      <div class="col-12 col-sm-8 col-md-9 lh-1em pt-04rem">
+                        <div>
+                          <span class="w-b-a fw-600">hash</span>
+                        </div>
+                        <div>
+                          <span class="w-b-a fs-08rem mt-1rem"> {{hashCertificate}}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+        
+                  <!-- CERTIFIED -->
+                  <div class="col-12 col-md-3 col-lg-4 vote-background p-1rem">
+                    <div class="row">
+                      <div class="col-12 d-flex justify-content-center">
+                        <div class="mx-auto">
+                          <img src="assets/images/img/badge-silver-proximax-sirius-wallet.svg" width="90">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+
+
+
+
+
+
+
+
         </div>
 
         <div class="col-9 col-md-8 col-lg-6  mx-auto" *ngSwitchCase="'voting'">
@@ -195,17 +246,14 @@
             <!-- BUTTON -->
             <div class="row">
               <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto">
-
                 <div class="row">
                   <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-
                     <button [disabled]="btnBlock" mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
                       size="md">
                       <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
                         *ngIf="blockSend"></span>
                       <span class="fs-1-2em color-white">VOTE</span>
                     </button>
-
                   </div>
                   <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
                     <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
@@ -219,22 +267,9 @@
           </form>
         </div>
       </div>
-
-
-
-
-      <!-- <div class="row ml-01rem" *ngIf="viewOptions">
-                <div class="col-9 col-md-8 col-lg-6  mx-auto">
-
-                </div>
-            </div> -->
-
-
     </div>
   </div>
-
 </div>
-
 
 <!-- MODAL  Optios-->
 <div class="d-flex align-items-center">
@@ -252,8 +287,6 @@
         </div>
         <div class="modal-body">
 
-
-
           <!-- Searching and icon reload -->
           <div class="row">
             <div class="col-11 col-sm-11 col-lg-10 mx-auto">
@@ -266,10 +299,7 @@
               </ng-container>
             </div>
           </div>
-
           <div class="row mt-2rem">
-
-
             <div class="col-sm mx-auto">
               <highcharts-chart [Highcharts]="Highcharts" [options]="chartOptions" style="width: 100%; height: 400px; display: block;"></highcharts-chart>
             </div>
@@ -279,9 +309,7 @@
                   <thead class="sticky-top">
                     <tr class="header-backg">
                       <th class="text-align-center" *ngFor="let head of headResults; let i = index" scope="col">
-
                         {{head}}
-
                       </th>
                     </tr>
                   </thead>
@@ -296,19 +324,15 @@
               </div>
             </div>
           </div>
-
           <!-- Searching and icon reload -->
           <div class="row">
             <div class="col-11 col-sm-11 col-lg-10 mx-auto d-flex justify-content-center">
-
               <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
                 size="md" [disabled]="showResultProgress" (click)="getResult('REFRESH')">
                 <span class="fs-1-2em color-white">REFRESH</span>
               </button>
-
             </div>
           </div>
-
         </div>
       </div>
     </div>
@@ -324,7 +348,7 @@
       <div class="modal-content form-elegant bord-rad-1-5rem">
         <div class="modal-header text-center box-modal-white b-t-r-r-1-5rem b-t-l-r-1-5rem p-05rem">
           <span class="modal-title w-100" id="myModalLabel">
-            <strong class="title-modal-blue">Voting Certification</strong>
+            <strong class="title-modal-blue">Voting Certificate</strong>
           </span>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="certificationModal.hide()">
             <span aria-hidden="true">&times;</span>

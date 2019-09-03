@@ -259,7 +259,7 @@ export class ServicesBoxComponent implements OnInit {
       this.services.buildStructureService(
         'Voting',
         true,
-        'Create and vew polls',
+        'Create, vote, and view results',
         'icon-voting-green-60h.svg',
         '',
         {
@@ -272,14 +272,14 @@ export class ServicesBoxComponent implements OnInit {
           )
           ,
           poll: this.services.buildStructureService(
-            'POLL',
+            'VOTE',
             true,
             '',
             '',
             AppConfig.routes.polls
           ),
           view: this.services.buildStructureService(
-            'VIEW RESULT',
+            'VIEW RESULTS',
             false,
             '',
             '',

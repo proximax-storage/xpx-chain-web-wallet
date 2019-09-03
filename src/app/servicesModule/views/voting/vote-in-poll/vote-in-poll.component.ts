@@ -290,7 +290,9 @@ export class VoteInPollComponent implements OnInit {
         name: 'Brands',
         colorByPoint: true,
         data
-      }]
+      }],credits: {
+        enabled: false
+      }
     };
     this.chartOptions = Options;
     // console.log("DateChart", this.chartOptions)
@@ -583,7 +585,7 @@ export class VoteInPollComponent implements OnInit {
       const qr = qrcode(0, 'H');
       qr.addData(url);
       qr.make();
-      this.qrImg = qr.createImgTag();
+      this.qrImg = qr.createDataURL();
       this.namePoll = name;
       this.statusValidate = 'viewCertificate'
 
@@ -599,7 +601,7 @@ export class VoteInPollComponent implements OnInit {
         const qr = qrcode(0, 'H');
         qr.addData(url);
         qr.make();
-        this.qrImg = qr.createImgTag();
+        this.qrImg = qr.createDataURL()
         this.namePoll = name;
         this.statusValidate = 'viewCertificate'
 
