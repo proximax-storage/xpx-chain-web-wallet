@@ -6,14 +6,17 @@
     <div class="row">
       <div class="col-11 col-md-10 mx-auto">
         <div class="row">
-          <div class="col-8 d-flex justify-content-center flex-column mx-auto mb-1rem mt-1rem box-grey" mdbBtn mdbWavesEffect>
+          <div class="col-8 d-flex justify-content-center flex-column mx-auto mb-1rem mt-1rem box-grey" mdbBtn
+            mdbWavesEffect>
             <div class="row">
               <div class="col-12 d-flex justify-content-center mx-auto mb-1rem mt-1rem">
                 <label class="d-flex justify-content-center mx-auto box-drop col-12" for="fileInput">
-                  <div class="row txt-a-center p-05rem">
-                    <img class="mr-1rem h2em" src="assets/images/img/icon-upload-gray-28h-proximax-sirius-wallet.svg"
-                      width="25">
-                    <span class="fs-1-2em color-grey fw-600">UPLOAD FILES</span>
+                  <div class="row txt-a-center p-05rem cursor-p">
+                    <div class="col-12">
+                      <img class="mr-1rem h2em" src="assets/images/img/icon-upload-gray-28h-proximax-sirius-wallet.svg"
+                        width="25">
+                      <span class="fs-1-2em color-grey fw-600">UPLOAD FILES</span>
+                    </div>
                   </div>
                 </label>
                 <input id="fileInput" multiple [hidden]="true" type="file"
@@ -35,8 +38,8 @@
           <div class="col-9 d-flex justify-content-center mx-auto mb-1rem mt-1rem p-0">
             <div class="box-transparent-border-orange m-0">
               <p><span class="fs-075rem w-b-a txt-a-center">
-                So that files can be audited they mush be in the attestation format.
-              </span></p>
+                  So that files can be audited they mush be in the attestation format.
+                </span></p>
               <p class="mb-0">
                 <span class="font-title fw-700 fs-09rem">FOR EXAMPLE</span>
               </p>
@@ -65,14 +68,7 @@
         <div class="row">
           <div class="col-11 col-sm-11 col-lg-10 mx-auto mb-2rem">
             <div class="row">
-              <div class="col-6 col-sm-6 col-lg-10 d-flex justify-content-center mx-auto">
-                <button mdbBtn type="submit" rounded="true" mdbWavesEffect
-                  class="f-w-600 background-btn pl-2rem pr-2rem" (click)="sendPoll()">
-                  <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
-                    *ngIf="blockButton"></span>
-                  <span class="fs-1-2em color-white">CLEAR</span>
-                </button>
-
+              <div class="col-12 d-flex justify-content-center mx-auto">
                 <button mdbBtn type="submit" rounded="true" mdbWavesEffect
                   class="f-w-600 background-btn pl-2rem pr-2rem" (click)="verifyFiles()"
                   [disabled]="ourFile.length === 0">
@@ -126,7 +122,8 @@
                   <p class="audit-value">{{ item.result }}</p>
                 </div>
               </div>
-              <div class="col-4 audit-medal mx-auto" [ngClass]="[(item.fileHash === '') ? 'd-flex justify-content-center align-items-center' : '']">
+              <div class="col-4 audit-medal mx-auto"
+                [ngClass]="[(item.fileHash === '') ? 'd-flex justify-content-center align-items-center' : '']">
                 <figure *ngIf="item.fileHash !== ''" class="mt-05rem">
                   <img src="assets/images/img/badge-silver-proximax-sirius-wallet.svg" alt="">
                 </figure>

@@ -161,7 +161,7 @@ export class CreatePollStorageService {
             }
           }
         } else {
-          resolve([]);
+          resolve(undefined);
         }
 
 

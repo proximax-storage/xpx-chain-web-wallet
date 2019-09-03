@@ -2,10 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { AppConfig } from 'src/app/config/app.config';
 import { Subscription } from 'rxjs';
-import { TransactionsService } from 'src/app/transactions/services/transactions.service';
-import { WalletService, CurrentWalletInterface, AccountsInterface } from 'src/app/wallet/services/wallet.service';
-import { SharedService } from 'src/app/shared/services/shared.service';
-import { environment } from 'src/environments/environment';
+import { WalletService, AccountsInterface } from 'src/app/wallet/services/wallet.service';
 
 @Component({
   selector: 'app-multi-signature-contract',
@@ -27,9 +24,8 @@ export class MultiSignatureContractComponent implements OnInit {
   subscription: Subscription[] = [];
   currentAccounts: AccountsInterface[] = []
   constructor(
-    private transactionService: TransactionsService,
-    private walletService: WalletService,
-    private sharedService: SharedService) { }
+    private walletService: WalletService
+  ) { }
 
   ngOnInit() {
     this.load();
@@ -95,7 +91,7 @@ export class MultiSignatureContractComponent implements OnInit {
     this.subscription.push(this.walletService.getAccountsInfo$().subscribe(
       next => {
 
-        console.log('----- ACCOUNT INFO -----', next);
+        // console.log('----- ACCOUNT INFO -----', next);
         this.build();
       }
     ));

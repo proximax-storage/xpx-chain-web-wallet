@@ -11,6 +11,7 @@ import { HeaderServicesInterface } from '../../../services/services-module.servi
 import { AppConfig } from '../../../../config/app.config';
 import { StorageService, SearchResultInterface } from '../../storage/services/storage.service';
 import { SearchResult } from 'xpx2-ts-js-sdk';
+import { PaginationInstance } from 'ngx-pagination';
 
 declare const Buffer: any;
 
@@ -25,6 +26,11 @@ export class CreateApostilleComponent implements OnInit {
   apostilleFormTwo: FormGroup;
   base64ImageString: string;
   blockBtn: boolean;
+  configFileStorage: PaginationInstance = {
+    id: 'fileStorage',
+    itemsPerPage: 6,
+    currentPage: 1
+  };
   configurationForm: ConfigurationForm;
   file: string | ArrayBuffer | null;
   filesStorage: SearchResultInterface[];
@@ -41,6 +47,7 @@ export class CreateApostilleComponent implements OnInit {
   processComplete = false;
   rawFileContent: any;
   storeInDfms = false;
+  searching: boolean = false;
   typeEncrypted: Array<object> = [
     { value: '1', label: 'MD5' },
     { value: '2', label: 'SHA1' },
@@ -62,10 +69,32 @@ export class CreateApostilleComponent implements OnInit {
   async ngOnInit() {
     this.configurationForm = this.sharedService.configurationForm;
     this.createForm();
-    this.filesStorage = await this.storageService.getFiles();
-    console.log('aqui estoy', this.filesStorage);
-    this.convertToFile(this.filesStorage[0]);
+    // this.filesStorage = await this.storageService.getFiles();
+    this.initForm();
+    // this.convertToFile(this.filesStorage[0]);
     this.apostilleService.getTransactionStatus();
+  }
+
+  /**
+   *
+   *
+   * @memberof CreateApostilleComponent
+   */
+  async convertToFile(element: SearchResultInterface, random: number) {
+    this.filesStorage.forEach(element => {
+      if (element.random === random) {
+        element.selected = true;
+      } else {
+        element.selected = false;
+      }
+    });
+    this.apostilleFormOne.get('file').setValue(element.name);
+    const data = await this.storageService.convertToFile(element);
+    // console.log('My data in blob ---> ', data);
+    const file = new File([data], element.name);
+    // this.apostilleFormOne.get('file').setValue();
+    // console.log('From blob to file -------->', file);
+    this.fileReader([file]);
   }
 
   /**
@@ -85,7 +114,7 @@ export class CreateApostilleComponent implements OnInit {
 
 
     this.apostilleFormOne = this.fb.group({
-      file: ['', []],
+      file: ['', [Validators.required]],
       typeFile: [true, [Validators.required]]
     });
 
@@ -123,6 +152,7 @@ export class CreateApostilleComponent implements OnInit {
    */
   fileReader(files: File[]) {
     if (files.length > 0) {
+      this.apostilleFormOne.get('file').setValue(files[0].name);
       this.originalFile = files[0];
       this.fileInputIsValidated = true;
       // Get name the file
@@ -137,12 +167,28 @@ export class CreateApostilleComponent implements OnInit {
         this.rawFileContent = crypto.enc.Base64.parse((this.file.toString()).split(/,(.+)?/)[1]);
       };
     } else {
+      this.filesStorage.forEach(element => {
+        element.selected = false;
+      });
       this.apostilleFormOne.get('file').setValue('');
       this.fileInputIsValidated = false;
       this.nameFile = 'Not file selected yet...';
       this.file = '';
       this.rawFileContent = '';
     }
+  }
+
+  /**
+   *
+   *
+   * @memberof CreateApostilleComponent
+   */
+  async initForm() {
+    this.searching = true;
+    this.processComplete = false;
+    this.blockBtn = false
+    this.filesStorage = await this.storageService.getFiles();
+    this.searching = false;
   }
 
   /**
@@ -169,29 +215,6 @@ export class CreateApostilleComponent implements OnInit {
     } else {
       this.blockBtn = false;
     }
-  }
-
-
-  /**
-   *
-   *
-   * @memberof CreateApostilleComponent
-   */
-  async convertToFile(element: SearchResultInterface) {
-    const data = await this.storageService.convertToFile(element);
-    console.log('esta es la data', data);
-    const file = new File([data], element.name);
-
-    console.log('Este esl el archivo -------->', file);
-    this.fileReader([file]);
-
-
-
-    /*if (this.filesStorage.length > 0) {
-      this.filesStorage.forEach(element => {
-        this.storageService.convertToFile(element);
-      });
-    }*/
   }
 
 
@@ -351,7 +374,7 @@ export class CreateApostilleComponent implements OnInit {
       timeStamp: date.toUTCString()
     };
 
-    console.log(this.ntyData);
+    // console.log(this.ntyData);
     const apostilleBuilder = this.apostilleService.buildApostille(this.ntyData, this.rawFileContent);
     this.base64ImageString = apostilleBuilder.qrCode;
     this.apostilleService.setWhiteList({

@@ -5,7 +5,7 @@
 export const environment = {
   production: true,
   itemBooksAddress: 'sw-books',
-  version: '0.2.6+3',
+  version: '0.2.6.8',
   nameKeyNodeSelected: `sw-selected-node`,
   nameKeyMosaicNamespaceLinked: `sw-m-n-linked`,
   nameKeyWalletStorage: `sw-04`,
@@ -44,9 +44,9 @@ export const environment = {
     address_public_test: 'VD6AXC-3QBCFT-SLKHT6-2UPGTN-V5Z63I-YZKJI3-YGMD'
   },
   pollsContent: {
-    private_key: 'AA44319BA1C9EA623F8B887194BC87774B03A1BADE8105B978DB102320565FDB',
-    public_key: '5FF1F4BAE45837D603440848265EDDDC05BD327F928F9C75AED9F00893605987',
-    address_public_test: 'VCLZOA-CAFE7M-J6JBCO-NQGHRC-KNDHFZ-AMMQAZ-56LV'
+    private_key: '52681268C37552C6F88EA063EBDDAB0B4A88032DD93CF6696C5A57B00A24FD12',
+    public_key: 'B5575AE4511694DCD0F7A8D0FAC1B327C1743334523075617EACE4997468D09E',
+    address_public_test: 'VBBLJ4-PD73RT-PXBTJY-ZQX426-NU7ETW-O3AZ65-YMVM'
   }
 };
 

@@ -54,7 +54,7 @@ export class StorageService {
     }
 
     const result = await this.uploader.upload(uploadParams.build());
-    console.log(result);
+    // console.log(result);
     return result;
   }
 
@@ -73,13 +73,13 @@ export class StorageService {
       param.withPlainPrivacy();
     }
 
-    console.log('Downloading ...');
+    // console.log('Downloading ...');
     const response = await this.downloader.directDownload(param.build());
-    console.log(response);
+    // console.log(response);
 
     const downloadBuffer = await StreamHelper.stream2Buffer(response);
     const downloableFile = new Blob([downloadBuffer], { type: data.contentType });
-    console.log('---------> downloableFile ----------- \n', downloableFile);
+    // console.log('---------> downloableFile ----------- \n', downloableFile);
     // saveAs(downloableFile, data.name);
     return downloableFile;
   }
@@ -103,7 +103,8 @@ export class StorageService {
 
     const response = await this.searcher.search(param.build());
     response.results.forEach(el => {
-      const item = {
+      const item: SearchResultInterface = {
+        random: Math.floor(Math.random() * 1455654),
         name: el.messagePayload.data.name === undefined ? el.messagePayload.data.dataHash : el.messagePayload.data.name,
         contentType: el.messagePayload.data.contentType,
         contentTypeIcon: this.getContentTypeIcon(el.messagePayload.data.contentType),
@@ -111,7 +112,8 @@ export class StorageService {
         encryptionTypeIcon: this.getEncryptionMethodIcon(el.messagePayload.privacyType),
         description: el.messagePayload.data.description,
         timestamp: this.dateFormatLocal(el.messagePayload.data.timestamp),
-        dataHash: el.messagePayload.data.dataHash
+        dataHash: el.messagePayload.data.dataHash,
+        selected: false
       }
 
       elements.push(item);
@@ -264,6 +266,7 @@ export class StorageService {
 
 
 export interface SearchResultInterface {
+  random?: number;
   name: string;
   contentType: string;
   contentTypeIcon: string;
@@ -272,4 +275,5 @@ export interface SearchResultInterface {
   description: string;
   timestamp: string;
   dataHash: string;
+  selected?: boolean;
 }

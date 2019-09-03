@@ -154,7 +154,7 @@ export class PartialComponent implements OnInit {
             const existTransction = this.aggregateTransactions.find(x => x.data.transactionInfo.hash === a.transactionInfo.hash);
             if (!existTransction) {
               const data = this.transactionService.getStructureDashboard(a);
-              console.log('----> existTransction <-----', data);
+              // console.log('----> existTransction <-----', data);
               this.aggregateTransactions.push(data);
             }
           });
