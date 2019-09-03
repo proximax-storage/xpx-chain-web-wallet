@@ -55,6 +55,7 @@ export class CreateApostilleComponent implements OnInit {
     { value: '4', label: 'SHA3' },
     { value: '5', label: 'SHA512' }
   ];
+  extensionFile: string = '';
 
   constructor(
     private apostilleService: ApostilleService,
@@ -112,12 +113,13 @@ export class CreateApostilleComponent implements OnInit {
     this.nameFile = 'Not file selected yet...';
     this.rawFileContent = '';
 
-
+    // FORM ONE
     this.apostilleFormOne = this.fb.group({
       file: ['', [Validators.required]],
       typeFile: [true, [Validators.required]]
     });
 
+    // FORM TWO
     this.apostilleFormTwo = this.fb.group({
       safeDFMS: [''],
 
@@ -144,6 +146,23 @@ export class CreateApostilleComponent implements OnInit {
   }
 
   /**
+   *
+   *
+   * @param {number} type
+   * @memberof CreateApostilleComponent
+   */
+  clearForm(type: number) {
+    if (type === 1) {
+      this.apostilleFormOne.reset();
+      this.apostilleFormOne.get('typeFile').setValue(true);
+    } else {
+      this.apostilleFormTwo.reset();
+      this.apostilleFormTwo.get('typePrivatePublic').setValue(true);
+      this.apostilleFormTwo.get('typeEncrypted').setValue('3');
+    }
+  }
+
+  /**
    * The FileReader object lets web applications asynchronously read the contents of files (or raw data buffers)
    * stored on the user's computer, using File or Blob objects to specify the file or data to read.
    *
@@ -152,11 +171,22 @@ export class CreateApostilleComponent implements OnInit {
    */
   fileReader(files: File[]) {
     if (files.length > 0) {
+      this.extensionFile = '';
+      this.nameFile = files[0].name;
+      if (files[0].type !== '') {
+        this.nameFile = files[0].name.slice(0, files[0].name.lastIndexOf('.'));
+        this.extensionFile = `.${this.sharedService.getFileExtension(files[0].name)}`;
+      }
+
+      console.log('----> this.extensionFile ', this.extensionFile);
+      console.log('----> this.nameFile ', this.nameFile);
+
+
       this.apostilleFormOne.get('file').setValue(files[0].name);
       this.originalFile = files[0];
       this.fileInputIsValidated = true;
       // Get name the file
-      this.nameFile = files[0].name;
+
       const myReader: FileReader = new FileReader();
       // Read and convert the file to base64
       myReader.readAsDataURL(files[0]);
@@ -295,7 +325,8 @@ export class CreateApostilleComponent implements OnInit {
     const signedTransaction = ownerAccount.sign(transferTransaction);
     const date = new Date();
     this.ntyData = {
-      fileName: this.nameFile.slice(0, this.nameFile.lastIndexOf('.')),
+      fileName: this.nameFile,
+      extensionFile: this.extensionFile,
       tags: this.apostilleFormTwo.get('tags').value,
       fileHash: apostilleHash,
       owner: ownerAccount.address,
@@ -337,6 +368,8 @@ export class CreateApostilleComponent implements OnInit {
    * @memberof preparePublicApostille
    */
   preparePublicApostille(common: any) {
+    console.log(this.nameFile);
+
     //create a hash prefix (dice si es privado o publico)
     const apostilleHashPrefix = 'fe4e545903';
     //create an encrypted hash (contenido del archivo)
@@ -362,7 +395,8 @@ export class CreateApostilleComponent implements OnInit {
     const signedTransaction = myAccount.sign(transferTransaction);
     const date = new Date();
     this.ntyData = {
-      fileName: this.nameFile.slice(0, this.nameFile.lastIndexOf('.')),
+      fileName: this.nameFile,
+      extensionFile: this.extensionFile,
       tags: this.apostilleFormTwo.get('tags').value,
       fileHash: apostilleHash,
       owner: myAccount.address,
