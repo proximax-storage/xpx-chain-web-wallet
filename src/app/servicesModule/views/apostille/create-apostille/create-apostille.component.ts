@@ -35,7 +35,7 @@ export class CreateApostilleComponent implements OnInit {
   file: string | ArrayBuffer | null;
   filesStorage: SearchResultInterface[];
   fileInputIsValidated = false;
-  nameFile = 'Not file selected yet...';
+  nameFile = 'No file selected yet...';
   ntyData: NtyDataInterface;
   originalFile: File;
   paramsHeader: HeaderServicesInterface = {
@@ -110,7 +110,7 @@ export class CreateApostilleComponent implements OnInit {
     }
     this.file = '';
     this.fileInputIsValidated = false;
-    this.nameFile = 'Not file selected yet...';
+    this.nameFile = 'No file selected yet...';
     this.rawFileContent = '';
 
     // FORM ONE
@@ -202,7 +202,7 @@ export class CreateApostilleComponent implements OnInit {
       });
       this.apostilleFormOne.get('file').setValue('');
       this.fileInputIsValidated = false;
-      this.nameFile = 'Not file selected yet...';
+      this.nameFile = 'No file selected yet...';
       this.file = '';
       this.rawFileContent = '';
     }
