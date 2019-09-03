@@ -264,7 +264,7 @@ export class ServicesBoxComponent implements OnInit {
         '',
         {
           create: this.services.buildStructureService(
-            'CREATE',
+            'CREATE POLL',
             true,
             '',
             '',

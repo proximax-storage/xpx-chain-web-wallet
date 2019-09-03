@@ -38,7 +38,7 @@
           <div class="col-9 d-flex justify-content-center mx-auto mb-1rem mt-1rem p-0">
             <div class="box-transparent-border-orange m-0">
               <p><span class="fs-075rem w-b-a txt-a-center">
-                  So that files can be audited they mush be in the attestation format.
+                  So that files can be audited they must be in the attestation format.
                 </span></p>
               <p class="mb-0">
                 <span class="font-title fw-700 fs-09rem">FOR EXAMPLE</span>
@@ -69,9 +69,8 @@
           <div class="col-11 col-sm-11 col-lg-10 mx-auto mb-2rem">
             <div class="row">
               <div class="col-12 d-flex justify-content-center mx-auto">
-                <button mdbBtn type="submit" rounded="true" mdbWavesEffect
-                  class="f-w-600 background-btn pl-2rem pr-2rem" (click)="verifyFiles()"
-                  [disabled]="ourFile.length === 0">
+                <button mdbBtn rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+                  (click)="verifyFiles()" [disabled]="ourFile.length === 0">
                   <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
                     *ngIf="blockButton"></span>
                   <span class="fs-1-2em color-white">AUDIT</span>
@@ -102,7 +101,7 @@
       <div class="col-11 col-md-10 mx-auto">
         <div class="row d-flex justify-content-start align-items-stretch mb-1rem">
           <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4 d-flex mt-1rem audit-back"
-            *ngFor="let item of auditResults">
+            *ngFor="let item of auditResults | paginate: configFilesSelected">
             <div class="audit-front d-flex"
               [ngClass]="{'audit-background cursor-p': item.fileHash !== '', 'audit-background-err': item.fileHash === ''}"
               (click)="verifyModal(item.transaction)">
@@ -136,6 +135,23 @@
                 </div>
               </div>
             </div>
+          </div>
+          <div class="col-12 pt-2rem pb-1rem d-flex justify-content-center mx-auto">
+            <pagination-controls [id]="configFilesSelected.id" (pageChange)="configFilesSelected.currentPage = $event">
+            </pagination-controls>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- BUTTONS -->
+    <div class="row">
+      <div class="col-11 col-sm-11 col-lg-10 mx-auto mb-2rem">
+        <div class="row">
+          <div class="col-12 d-flex justify-content-center mx-auto">
+            <button mdbBtn rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+              (click)="currentView = !currentView; ourFile = []; auditResults = []">
+              <span class="fs-1-2em color-white">FINISH</span>
+            </button>
           </div>
         </div>
       </div>
