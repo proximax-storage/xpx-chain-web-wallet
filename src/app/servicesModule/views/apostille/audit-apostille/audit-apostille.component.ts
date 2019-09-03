@@ -7,6 +7,7 @@ import { ResultAuditInterface, HeaderServicesInterface } from '../../../services
 import { AppConfig } from '../../../../config/app.config';
 import { TransactionsService, TransactionsInterface } from 'src/app/transactions/services/transactions.service';
 import { ModalDirective } from 'ng-uikit-pro-standard';
+import { PaginationInstance } from 'ngx-pagination';
 
 
 @Component({
@@ -37,6 +38,11 @@ export class AuditApostilleComponent implements OnInit {
   currentView: boolean = true;
   modalInfo: TransactionsInterface = null;
   searching: boolean = false;
+  configFilesSelected: PaginationInstance = {
+    id: 'fileStorage',
+    itemsPerPage: 6,
+    currentPage: 1
+  };
 
   @ViewChild('basicModal', { static: true }) modalAudit: ModalDirective;
 
