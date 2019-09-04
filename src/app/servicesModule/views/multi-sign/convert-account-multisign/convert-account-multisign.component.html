@@ -5,7 +5,7 @@
 			<span class="fs-1rem txt-a-center line-h-1-2em color-grey"> > </span>
 			<span class="fs-1rem txt-a-center line-h-1-2em color-grey">Multisign</span>
 			<span class="fs-1rem txt-a-center line-h-1-2em color-grey"> > </span>
-			<span class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">Convert to multisig accounts
+			<span class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">Convert to Multisig Account
 			</span>
 		</div>
 
@@ -31,12 +31,12 @@
 					<div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto">
 
 						<ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" class="selectWrapper"
-						 [items]="currentAccounts" formControlName="selectAccount" bindLabel="label" bindValue="value" placeholder="Select account to convert"
+						 [items]="currentAccounts" formControlName="selectAccount" bindLabel="label" bindValue="value" placeholder="Select an account"
 						 (change)="selectAccount($event)">
 						</ng-select>
 						<!-- VALIDATION -->
 						<mdb-error class="mt-1rem ml-1rem">
-							<span  *ngIf="validateInput('selectAccount').invalid && (validateInput('selectAccount').dirty || validateInput('selectAccount').touched)" class="fs-08rem fw-600 color-error-message">Select account</span>
+							<span  *ngIf="validateInput('selectAccount').invalid && (validateInput('selectAccount').dirty || validateInput('selectAccount').touched)" class="fs-08rem fw-600 color-error-message">Select an account</span>
 
 							<!-- <span *ngIf="notBalance" class="fs-08rem fw-600 color-error-message">Insufficient balance</span> -->
 						</mdb-error>
@@ -55,7 +55,7 @@
 							<div class="col-12 col-md-6">
 								<div class="row margin-rem0">
 									<div class="col-8">
-										Minimum Cosignatury to approval transaction
+										Minimum Cosignatories to approve transaction
 									</div>
 									<div class="col-3 col-padding-left-rem0">
 										<div class="md-form form-sm mt-1rem mb-0rem">
@@ -74,7 +74,7 @@
 							<div class="col-12 col-md-6">
 								<div class="row margin-rem0">
 									<div class="col-8">
-										Minimum Cosignatury to delete users
+										Minimum Cosignatories to delete users
 									</div>
 									<div class="col-3 col-padding-left-rem0">
 										<div class="md-form form-sm mt-1rem mb-0rem">
@@ -112,7 +112,7 @@
 							</ng-container>
 							<ng-container *ngIf="cosignatoryList.length === 0">
 								<div class="col-12">
-									<span class="fs-07rem fw-600 txt-a-center ">Not have any cosignatory
+									<span class="fs-07rem fw-600 txt-a-center ">None
 									</span>
 								</div>
 							</ng-container>
@@ -200,7 +200,7 @@
 								<div class="md-form form-sm">
 									<input style="" [maxlength]="configurationForm.passwordWallet.maxLength" [minlength]="configurationForm.passwordWallet.minLength"
 									 formControlName="password" required mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
-									 type="password" id="password" class="form-control form-control-sm input-border" placeholder="Enter password">
+									 type="password" id="password" class="form-control form-control-sm input-border" placeholder="Enter wallet password">
 									<mdb-error *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
 										<span>Input invalid</span>
 									</mdb-error>
