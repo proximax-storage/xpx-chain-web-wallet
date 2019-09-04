@@ -53,9 +53,7 @@ export class PollsComponent implements OnInit {
     this.showBarProgressone = true;
     const publicAccount = PublicAccount.createFromPublicKey(environment.pollsContent.public_key, this.walletService.currentAccount.network)
     this.promosePoadTransactions = this.createPollStorageService.loadTransactions(publicAccount).then(resp => {
-      console.log('resprespresprespresp', resp)
-
-
+    
       this.showBarProgressone = false;
       if (this.getPoll) {
         if (resp) {
@@ -69,7 +67,6 @@ export class PollsComponent implements OnInit {
   }
   ngOnDestroy() {
     this.getPoll = false;
-    console.log(this.subscription)
     if (this.subscription) {
       this.subscription.unsubscribe();
     }
@@ -101,7 +98,6 @@ export class PollsComponent implements OnInit {
     const resultData: PollInterface[] = [];
 
     this.subscription = this.createPollStorageService.getPolls$().subscribe(data => {
-      console.log(data.size)
       resultData.push(data.result);
       if (resultData.length > 0) {
         resultData.map(elemt => {
@@ -127,7 +123,6 @@ export class PollsComponent implements OnInit {
       }
 
     });
-    console.log("me suscribi", this.subscription)
   }
 
   refreshData(event) {
