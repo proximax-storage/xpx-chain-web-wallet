@@ -17,7 +17,7 @@ export class CreateWalletComponent implements OnInit {
 
   createWalletForm: FormGroup;
   configurationForm: ConfigurationForm = {};
-  description = 'This wallet makes it easy to access your crypto and interact with blockchain. ProximaX does not have access to your funds.';
+  description = '';
   errorMatchPassword: string;
   errorWalletExist: string;
   isValid: boolean = false;

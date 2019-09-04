@@ -480,6 +480,8 @@ export class VoteInPollComponent implements OnInit {
         this.sharedService.showError('', `Please select at least one option`);
 
       }
+    } else {
+      this.sharedService.showError('', `Enter wallet password`);
     }
   }
   sendTransaction(common: any) {

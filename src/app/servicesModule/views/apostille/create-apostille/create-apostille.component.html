@@ -6,7 +6,7 @@
         <!-- UPLOAD APOSTILLE -->
         <mdb-stepper #stepper [linear]="true">
           <!-- FIRST FORM -->
-          <mdb-step name="File(s) to process" [stepForm]="apostilleFormOne" class="step1" [completed]="false">
+          <mdb-step name="File for processing" [stepForm]="apostilleFormOne" class="step1" [completed]="false">
             <form [formGroup]="apostilleFormOne">
               <!-- UPLOAD FILE -->
               <div class="row">
@@ -16,7 +16,7 @@
                       <div class="col-10 mx-auto txt-a-center upload-file box-drop">
                         <img class="mr-1rem h2em"
                           src="assets/images/img/icon-upload-gray-28h-proximax-sirius-wallet.svg" width="25">
-                        <span class="fs-1-2em fw-700 color-gray-strong">Upload files</span>
+                        <span class="fs-1-2em fw-700 color-gray-strong">Upload file</span>
                       </div>
 
                       <div class="col-10 d-flex justify-content-start mx-auto">
@@ -97,9 +97,9 @@
 
               <!-- PRIVATE & PUBLIC -->
               <div class="row mt-05rem">
-                <div class="col-12 box-grey d-flex justify-content-center">
+                <div class="col-12 box-grey">
                   <div class="row">
-                    <div class="col-8 fw-600 d-flex justify-content-start">
+                    <div class="col-12 col-sm-6 fw-600 d-flex justify-content-center justify-content-sm-end">
                       <div class="form-check form-check-inline">
                         <input formControlName="typeFile" checked [value]="true" type="radio" class="form-check-input"
                           id="myComputer" name="typeFile" mdbInput>
@@ -107,11 +107,11 @@
                       </div>
                     </div>
 
-                    <div class="col-4 fw-600 d-flex justify-content-end">
+                    <div class="col-12 col-sm-6 fw-600 d-flex justify-content-center justify-content-sm-start">
                       <div class="form-check form-check-inline">
                         <input formControlName="typeFile" [value]="false" type="radio" class="form-check-input"
                           id="DFMS" name="typeFile" mdbInput>
-                        <label class="form-check-label" for="DFMS">DFMS</label>
+                        <label class="form-check-label" for="DFMS">Sirius Storage</label>
                       </div>
                     </div>
                   </div>
@@ -119,7 +119,7 @@
               </div>
 
               <!-- BUTTONS -->
-              <div class="row mt-1rem">
+              <div class="row">
                 <div class="col-10 mx-auto">
                   <div class="row">
                     <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
@@ -195,7 +195,7 @@
                     <div class="col-12 fw-600 mx-auto">
                       <div class="form-check form-check-inline">
                         <mdb-checkbox formControlName="safeDFMS" [checked]="true" [default]="true"
-                          (change)="onSaveInDFMSChanged($event)">SAFE on DFMS
+                          (change)="onSaveInDFMSChanged($event)">SAVE in Sirius Storage
                         </mdb-checkbox>
                       </div>
                     </div>
@@ -249,7 +249,7 @@
           <span class="color-blue-intermedio fw-600 fs-1-2rem">DONE!</span>
         </div>
         <div>
-          <span class="fs-09rem">Your attestation has been processed</span>
+          <span class="fs-09rem">Your attestation has been processed.</span>
         </div>
       </div>
     </div>
@@ -295,7 +295,7 @@
       <div class="col-12 col-md-10 col-lg-9 col-xl-8 mx-auto d-flex justify-content-center">
         <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
           size="md" (click)="initForm();">
-          <span class="fs-1-2em color-white">CONTINUE</span>
+          <span class="fs-1-2em color-white">FINISH</span>
         </button>
       </div>
     </div>

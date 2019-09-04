@@ -174,7 +174,7 @@ export class CreatePollComponent implements OnInit {
         options: this.option
       })
     } else {
-      this.sharedService.showError('', 'option exists');
+      this.sharedService.showError('', 'option already added');
     }
   }
 
@@ -186,14 +186,14 @@ export class CreatePollComponent implements OnInit {
       if (!this.proximaxProvider.verifyNetworkAddressEqualsNetwork(
         this.proximaxProvider.createFromRawAddress(currentAccount.address).plain(), address)
       ) {
-        this.sharedService.showError('', 'Recipient Address Network unsupported');
+        this.sharedService.showError('', 'Invalid account address');
 
       } else {
 
         if (this.listaBlanca.length > 0) {
           const existe = this.listaBlanca.find(list => list.plain().trim() === address.split('-').join('').trim());
           if (existe != undefined) {
-            this.sharedService.showError('', 'account exists');
+            this.sharedService.showError('', 'accounts already added');
             this.cleanThirForm();
           } else {
             this.listaBlanca.push(Address.createFromRawAddress(address))

@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   itemBooksAddress: 'sw-books',
-  version: '0.2.6.8',
+  version: '0.2.6.10',
   nameKeyNodeSelected: `sw-selected-node`,
   nameKeyMosaicNamespaceLinked: `sw-m-n-linked`,
   nameKeyWalletStorage: `sw-04`,

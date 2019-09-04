@@ -41,7 +41,7 @@
                                 class="md-textarea form-control" mdbInput placeholder="Write your description here" formControlName="message"
                                 [maxlength]="configurationForm.message.maxLength"></textarea>
                             <mdb-error *ngIf="validateInput('message', '1', '').invalid && (validateInput('message','1', '').dirty || validateInput('message', '1', '').touched)">
-                                <span>Invalid Recipient</span>
+                                <span>Invalid invalid</span>
                             </mdb-error>
                         </div>
                         <!-- DATE END  -->
@@ -109,7 +109,7 @@
                         <!-- OPTIONS -->
                         <div class="md-form">
                             <input formControlName="option" mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
-                                id="option" class="form-control form-control-sm input-border" placeholder="Options">
+                                id="option" class="form-control form-control-sm input-border" placeholder="Option">
                             <mdb-error *ngIf="validateInput('option', '2', '').invalid && (validateInput('option', '2', '').dirty || validateInput('option', '2', '').touched)">
                                 <span>Input invalid</span>
                             </mdb-error>
@@ -169,7 +169,7 @@
                         <!-- VOTE TYPE -->
                         <div class="">
                             <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" class="selectWrapper" [items]="voteType"
-                                formControlName="voteType" bindLabel="label" bindValue="value" placeholder="Increase or decrease"
+                                formControlName="voteType" bindLabel="label" bindValue="value" placeholder="Type of vote"
                                 (change)="selectType($event)"></ng-select>
                             <mdb-error class="mt-1rem ml-1rem" *ngIf="validateInput('voteType','3', '').invalid && (validateInput('voteType', '3', '').dirty || validateInput('voteType', '3', '').touched)">
                                 <span>Type</span>
@@ -267,7 +267,7 @@
                                 </div>
                                 <div class="col-2 text-right">
                                     <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="cursor-p" alt="Copy" width="20" (click)="copyMessage('Account')"
-                                        ngxClipboard [cbContent]="account">
+                                        ngxClipboard [cbContent]="publicAddress">
                                 </div>
                             </div>
                         </div>

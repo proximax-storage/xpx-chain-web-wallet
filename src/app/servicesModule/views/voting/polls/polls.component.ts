@@ -29,7 +29,7 @@ export class PollsComponent implements OnInit {
   };
   configAdvance: PaginationInstance = {
     id: 'advanced',
-    itemsPerPage: 5,
+    itemsPerPage: 10,
     currentPage: 1
   };
   headElements = ['Name', 'Poll type', 'Start date ', 'Status'];
