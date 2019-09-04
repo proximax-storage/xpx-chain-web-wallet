@@ -32,7 +32,7 @@ export class PollsComponent implements OnInit {
     itemsPerPage: 10,
     currentPage: 1
   };
-  headElements = ['Name', 'Poll type', 'Start date ', 'Status'];
+  headElements = ['Name', 'Poll type', 'End date', 'Status'];
   pollResult: PollInterface[] = [];
   filter: string = '';
   promosePoadTransactions: Promise<void>;
