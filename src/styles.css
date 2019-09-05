@@ -1466,7 +1466,7 @@ mdb-select>div>div.single>div.value {
   background: #f4f4f4 !important;
   border: 3px solid #316eb5 !important;
   color: #444 !important;
-  font-weight: 500 !important;
+  font-weight: normal !important;
   font-size: .8rem !important;
 }
 
