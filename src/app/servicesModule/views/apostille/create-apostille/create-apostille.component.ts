@@ -56,6 +56,7 @@ export class CreateApostilleComponent implements OnInit {
     { value: '5', label: 'SHA512' }
   ];
   extensionFile: string = '';
+  typeFile: string;
   files: File[] = [];
   maxFileSize = 5;
 
@@ -190,6 +191,7 @@ export class CreateApostilleComponent implements OnInit {
 
     if (files.length > 0) {
       this.extensionFile = '';
+      this.typeFile = files[0].type;
       this.nameFile = files[0].name;
       if (files[0].type !== '') {
         this.nameFile = files[0].name.slice(0, files[0].name.lastIndexOf('.'));
@@ -366,7 +368,8 @@ export class CreateApostilleComponent implements OnInit {
       dedicatedPrivateKey: 'Not show',// (this.apostilleCreateForm.get('typePrivatePublic').value == true) ? None (public sink) : nty.dedicatedPrivateKey,
       txHash: signedTransaction.hash.toLowerCase(),
       txMultisigHash: '',
-      timeStamp: date.toUTCString()
+      timeStamp: date.toUTCString(),
+      typeFile: this.typeFile
     };
 
     const apostilleBuilder = this.apostilleService.buildApostille(this.ntyData, this.rawFileContent);
@@ -436,7 +439,8 @@ export class CreateApostilleComponent implements OnInit {
       dedicatedPrivateKey: 'Not show',
       txHash: signedTransaction.hash.toLowerCase(),
       txMultisigHash: '',
-      timeStamp: date.toUTCString()
+      timeStamp: date.toUTCString(),
+      typeFile: this.typeFile
     };
 
     // console.log(this.ntyData);

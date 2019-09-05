@@ -1554,6 +1554,10 @@ ul.stepper .step-new-content .row {
   margin-bottom: 0 !important;
 }
 
+.height-92 {
+  height: 92%;
+}
+
 ngx-dropzone {
   justify-content: center !important;
 }
