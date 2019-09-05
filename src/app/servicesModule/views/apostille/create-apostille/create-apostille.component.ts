@@ -56,6 +56,8 @@ export class CreateApostilleComponent implements OnInit {
     { value: '5', label: 'SHA512' }
   ];
   extensionFile: string = '';
+  files: File[] = [];
+  maxFileSize = 5;
 
   constructor(
     private apostilleService: ApostilleService,
@@ -66,6 +68,25 @@ export class CreateApostilleComponent implements OnInit {
     private walletService: WalletService
   ) {
   }
+
+
+  onSelect(event: any) {
+    console.log(event);
+    if (event.addedFiles && event.addedFiles.length > 0) {
+      /*event.addedFiles.forEach((element: File) => {
+        this.files.push(element);
+      });*/
+      this.files = event.addedFiles;
+      this.fileReader(event.addedFiles);
+    }
+  }
+
+  onRemove(event: any) {
+    this.fileReader([]);
+    /*console.log(event);
+    this.files.splice(this.files.indexOf(event), 1);*/
+  }
+
 
   async ngOnInit() {
     this.configurationForm = this.sharedService.configurationForm;
@@ -82,6 +103,9 @@ export class CreateApostilleComponent implements OnInit {
    * @memberof CreateApostilleComponent
    */
   async convertToFile(element: SearchResultInterface, random: number) {
+    this.files = [];
+    this.apostilleFormOne.get('file').setValue('');
+    this.fileReader([]);
     this.filesStorage.forEach(element => {
       if (element.random === random) {
         element.selected = true;
@@ -200,6 +224,8 @@ export class CreateApostilleComponent implements OnInit {
       this.filesStorage.forEach(element => {
         element.selected = false;
       });
+
+      this.files = [];
       this.apostilleFormOne.get('file').setValue('');
       this.fileInputIsValidated = false;
       this.nameFile = 'No file selected yet...';
