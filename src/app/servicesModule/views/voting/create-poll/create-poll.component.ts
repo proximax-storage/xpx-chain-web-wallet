@@ -86,6 +86,7 @@ export class CreatePollComponent implements OnInit {
     this.createForms();
   }
 
+  
   booksAddress() {
     const data = this.listContacts.slice(0);
     const bookAddress = this.serviceModuleService.getBooksAddress();
@@ -275,7 +276,7 @@ export class CreatePollComponent implements OnInit {
       quantityOption: this.option.length
     }
 
-    const nameFile = `voting-ProximaxSirius-${new Date()}`;
+    const nameFile = `voting-ProximaxSirius-${this.formtDate(new Date())}`;
     const fileObject: FileInterface = {
       name: nameFile,
       content: this.Poll,
@@ -329,27 +330,15 @@ export class CreatePollComponent implements OnInit {
     return validation;
   }
 
-  /**
-   *
-   *
-   * @param {(string | (string | number)[])} [custom]
-   * @param {(string | number)} [formControl]
-   * @returns
-   * @memberof CreateTransferComponent
-   */
-  // clearForm(custom?: string | (string | number)[], formControl?: string | number) {
-  //   if (custom !== undefined) {
-  //     if (formControl !== undefined) {
-  //       this.createPollForm.controls[formControl].get(custom).reset({ emitEvent: false, onlySelf: true });
-  //       return;
-  //     }
-  //     this.createPollForm.get(custom).reset({ emitEvent: false, onlySelf: true });
-  //     return;
-  //   }
-  //   this.createPollForm.reset({ emitEvent: false, onlySelf: true });
-  //   return;
-  // }
-
+  formtDate(format: string | number | Date) {
+    const datefmt = new Date(format);
+    const day = (datefmt.getDate() < 10) ? `0${datefmt.getDate()}` : datefmt.getDate();
+    const month = (datefmt.getMonth() + 1 < 10) ? `0${datefmt.getMonth() + 1}` : datefmt.getMonth() + 1;
+    const hours = (datefmt.getHours() < 10) ? `0${datefmt.getHours()}` : datefmt.getHours();
+    const minutes = (datefmt.getMinutes() < 10) ? `0${datefmt.getMinutes()}` : datefmt.getMinutes();
+    const seconds = (datefmt.getSeconds() < 10) ? `0${datefmt.getSeconds()}` : datefmt.getSeconds();
+    return `${datefmt.getFullYear()}-${month}-${day}  ${hours}:${minutes}:${seconds}`;
+  }
 
 }
 
