@@ -1553,3 +1553,12 @@ body.modal-open {
 ul.stepper .step-new-content .row {
   margin-bottom: 0 !important;
 }
+
+ngx-dropzone {
+  justify-content: center !important;
+}
+
+ngx-dropzone-label {
+  font-size: .8rem;
+  font-weight: 600;
+}
