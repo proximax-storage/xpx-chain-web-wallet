@@ -69,26 +69,7 @@ export class CreateApostilleComponent implements OnInit {
   ) {
   }
 
-
-  onSelect(event: any) {
-    console.log(event);
-    if (event.addedFiles && event.addedFiles.length > 0) {
-      /*event.addedFiles.forEach((element: File) => {
-        this.files.push(element);
-      });*/
-      this.files = event.addedFiles;
-      this.fileReader(event.addedFiles);
-    }
-  }
-
-  onRemove(event: any) {
-    this.fileReader([]);
-    /*console.log(event);
-    this.files.splice(this.files.indexOf(event), 1);*/
-  }
-
-
-  async ngOnInit() {
+  ngOnInit() {
     this.configurationForm = this.sharedService.configurationForm;
     this.createForm();
     // this.filesStorage = await this.storageService.getFiles();
@@ -96,6 +77,7 @@ export class CreateApostilleComponent implements OnInit {
     // this.convertToFile(this.filesStorage[0]);
     this.apostilleService.getTransactionStatus();
   }
+
 
   /**
    *
@@ -107,11 +89,7 @@ export class CreateApostilleComponent implements OnInit {
     this.apostilleFormOne.get('file').setValue('');
     this.fileReader([]);
     this.filesStorage.forEach(element => {
-      if (element.random === random) {
-        element.selected = true;
-      } else {
-        element.selected = false;
-      }
+      element.selected = (element.random === random) ? true : false;
     });
     this.apostilleFormOne.get('file').setValue(element.name);
     const data = await this.storageService.convertToFile(element);
@@ -121,6 +99,20 @@ export class CreateApostilleComponent implements OnInit {
     // console.log('From blob to file -------->', file);
     this.fileReader([file]);
   }
+
+  /**
+   *
+   *
+   * @memberof CreateApostilleComponent
+   */
+  async initForm() {
+    this.searching = true;
+    this.processComplete = false;
+    this.blockBtn = false
+    this.filesStorage = await this.storageService.getFiles();
+    this.searching = false;
+  }
+
 
   /**
    *
@@ -194,6 +186,8 @@ export class CreateApostilleComponent implements OnInit {
    * @memberof ApostilleCreateComponent
    */
   fileReader(files: File[]) {
+    console.log('files ---> ', files);
+
     if (files.length > 0) {
       this.extensionFile = '';
       this.nameFile = files[0].name;
@@ -237,19 +231,6 @@ export class CreateApostilleComponent implements OnInit {
   /**
    *
    *
-   * @memberof CreateApostilleComponent
-   */
-  async initForm() {
-    this.searching = true;
-    this.processComplete = false;
-    this.blockBtn = false
-    this.filesStorage = await this.storageService.getFiles();
-    this.searching = false;
-  }
-
-  /**
-   *
-   *
    * @memberof ApostilleCreateComponent
    */
   sendTransaction() {
@@ -273,6 +254,30 @@ export class CreateApostilleComponent implements OnInit {
     }
   }
 
+
+  /**
+   *
+   *
+   * @param {*} event
+   * @memberof CreateApostilleComponent
+   */
+  onSelect(event: any) {
+    console.log(event);
+    if (event.addedFiles && event.addedFiles.length > 0) {
+      this.files = event.addedFiles;
+      this.fileReader(event.addedFiles);
+    }
+  }
+
+  /**
+   *
+   *
+   * @param {*} event
+   * @memberof CreateApostilleComponent
+   */
+  onRemove(event: any) {
+    this.fileReader([]);
+  }
 
   /**
    *
