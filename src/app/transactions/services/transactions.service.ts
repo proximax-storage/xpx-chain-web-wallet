@@ -189,7 +189,7 @@ export class TransactionsService {
         ) {
           recipientRentalFeeSink = this.mosaicRentalFeeSink.address_public_test;
         } else {
-          recipientRentalFeeSink = "XXXXX-XXXXX-XXXXXX";
+          recipientRentalFeeSink = "XXXXXX-XXXXXX-XXXXXX-XXXXXX-XXXXXX-XXXX";
         }
       }
 
