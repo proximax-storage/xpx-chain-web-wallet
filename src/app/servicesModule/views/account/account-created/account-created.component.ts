@@ -13,7 +13,7 @@ export class AccountCreatedComponent implements OnInit {
 
   address: any;
   algo: any;
-  componentName = 'New account created';
+  componentName = 'New Account Created';
   information = 'Make sure store your private key in a safe place. Access to your digital assets cannot be recovered without it.';
   moduleName = 'Accounts';
   routes = {
