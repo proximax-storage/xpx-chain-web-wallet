@@ -48,6 +48,7 @@
     "highcharts": "^7.1.3",
     "js-xpx-chain-library": "^0.3.0",
     "jspdf": "^1.5.3",
+    "jszip": "^3.2.2",
     "nem-library": "^2.0.0-RC4",
     "ng-block-ui": "^2.1.7",
     "ng-pick-datetime": "^7.0.0",
