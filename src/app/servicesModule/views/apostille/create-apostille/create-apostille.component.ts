@@ -57,6 +57,8 @@ export class CreateApostilleComponent implements OnInit {
   ];
   extensionFile: string = '';
   typeFile: string;
+  files: File[] = [];
+  maxFileSize = 5;
 
   constructor(
     private apostilleService: ApostilleService,
@@ -68,7 +70,7 @@ export class CreateApostilleComponent implements OnInit {
   ) {
   }
 
-  async ngOnInit() {
+  ngOnInit() {
     this.configurationForm = this.sharedService.configurationForm;
     this.createForm();
     // this.filesStorage = await this.storageService.getFiles();
@@ -77,18 +79,18 @@ export class CreateApostilleComponent implements OnInit {
     this.apostilleService.getTransactionStatus();
   }
 
+
   /**
    *
    *
    * @memberof CreateApostilleComponent
    */
   async convertToFile(element: SearchResultInterface, random: number) {
+    this.files = [];
+    this.apostilleFormOne.get('file').setValue('');
+    this.fileReader([]);
     this.filesStorage.forEach(element => {
-      if (element.random === random) {
-        element.selected = true;
-      } else {
-        element.selected = false;
-      }
+      element.selected = (element.random === random) ? true : false;
     });
     this.apostilleFormOne.get('file').setValue(element.name);
     const data = await this.storageService.convertToFile(element);
@@ -98,6 +100,20 @@ export class CreateApostilleComponent implements OnInit {
     // console.log('From blob to file -------->', file);
     this.fileReader([file]);
   }
+
+  /**
+   *
+   *
+   * @memberof CreateApostilleComponent
+   */
+  async initForm() {
+    this.searching = true;
+    this.processComplete = false;
+    this.blockBtn = false
+    this.filesStorage = await this.storageService.getFiles();
+    this.searching = false;
+  }
+
 
   /**
    *
@@ -171,6 +187,8 @@ export class CreateApostilleComponent implements OnInit {
    * @memberof ApostilleCreateComponent
    */
   fileReader(files: File[]) {
+    console.log('files ---> ', files);
+
     if (files.length > 0) {
       this.extensionFile = '';
       this.typeFile = files[0].type;
@@ -202,25 +220,14 @@ export class CreateApostilleComponent implements OnInit {
       this.filesStorage.forEach(element => {
         element.selected = false;
       });
+
+      this.files = [];
       this.apostilleFormOne.get('file').setValue('');
       this.fileInputIsValidated = false;
       this.nameFile = 'No file selected yet...';
       this.file = '';
       this.rawFileContent = '';
     }
-  }
-
-  /**
-   *
-   *
-   * @memberof CreateApostilleComponent
-   */
-  async initForm() {
-    this.searching = true;
-    this.processComplete = false;
-    this.blockBtn = false
-    this.filesStorage = await this.storageService.getFiles();
-    this.searching = false;
   }
 
   /**
@@ -249,6 +256,30 @@ export class CreateApostilleComponent implements OnInit {
     }
   }
 
+
+  /**
+   *
+   *
+   * @param {*} event
+   * @memberof CreateApostilleComponent
+   */
+  onSelect(event: any) {
+    console.log(event);
+    if (event.addedFiles && event.addedFiles.length > 0) {
+      this.files = event.addedFiles;
+      this.fileReader(event.addedFiles);
+    }
+  }
+
+  /**
+   *
+   *
+   * @param {*} event
+   * @memberof CreateApostilleComponent
+   */
+  onRemove(event: any) {
+    this.fileReader([]);
+  }
 
   /**
    *

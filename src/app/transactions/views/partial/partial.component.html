@@ -124,12 +124,33 @@
 
                   <!-- Fee -->
                   <div class="col-12 mt-1-5rem">
-                    <span class="fw-600 fs-095rem"> Fee: </span>
+                    <span class="fw-600 fs-095rem">Fee:&nbsp;&nbsp;</span>
                     <span class="fs-095rem fw-600 color-blue-light">{{dataSelected?.feePart.part1}}</span>
                     <span class="fs-075rem fw-600 color-blue-light">{{dataSelected?.feePart.part2}}</span>
                     <span class="fs-095rem fw-600 color-blue-light"> XPX </span>
                     <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
                   </div>
+
+                  <!-- Type -->
+                  <div class="col-12 mt-05rem">
+                    <span class="fw-600 fs-08rem">Type:&nbsp;&nbsp;</span>
+                    <span class="fs-065rem">{{dataSelected?.data['type'].toString(16).toUpperCase()}}</span>
+                  </div>
+
+                  <!-- Hash -->
+                  <div class="col-12 mt-05rem">
+                    <span class="fw-600 fs-08rem">Hash:&nbsp;&nbsp;</span>
+                    <span class="fs-065rem  w-w-b-w">{{dataSelected?.data.transactionInfo.hash}}</span>
+                  </div>
+
+                  <!-- Height -->
+                  <ng-container *ngIf="dataSelected?.data.transactionInfo.height.compact() > 0">
+                    <div class="col-12 mt-05rem">
+                      <span class="fw-600 fs-08rem">Height:&nbsp;&nbsp;</span>
+                      <span class="fs-065rem">{{dataSelected?.data.transactionInfo.height.compact()}}</span>
+                    </div>
+                  </ng-container>
+
 
                   <!-- Transactions -->
                   <div class="col-12 mt-1-5rem">
@@ -200,34 +221,6 @@
                         </div>
                       </div>
                     </ng-container>
-
-                    <div class="row lh-1em mt-1rem">
-                      <div class="col-12">
-                        <span class="fw-600 fs-065rem">Hash: </span>
-                      </div>
-                      <div class="col-12">
-                        <span class="fs-065rem w-w-b-w ">{{dataSelected?.data.transactionInfo.hash}}</span>
-                      </div>
-                    </div>
-
-                    <div class="row lh-1em mt-1rem">
-                      <div class="col-12">
-                        <span class="fw-600 fs-065rem">Height: </span>
-                      </div>
-                      <div class="col-12">
-                        <span class="fs-065rem w-w-b-w ">{{dataSelected?.data.transactionInfo.height.compact()}}</span>
-                      </div>
-                    </div>
-
-                    <div class="row lh-1em mt-01rem mb-1rem">
-                      <div class="col-12">
-                        <span class="fw-600 fs-065rem">Type: </span>
-                      </div>
-                      <div class="col-12">
-                        <span
-                          class="fs-065rem w-w-b-w ">{{dataSelected?.data['type'].toString(16).toUpperCase()}}</span>
-                      </div>
-                    </div>
                   </div>
                 </div>
               </div>

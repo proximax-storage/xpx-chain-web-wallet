@@ -8,6 +8,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { NgxCurrencyModule } from "ngx-currency";
 import { NgxUiLoaderModule, NgxUiLoaderConfig, POSITION, SPINNER, PB_DIRECTION } from 'ngx-ui-loader';
 import { TagInputModule } from 'ngx-chips';
+import { NgxDropzoneModule } from 'ngx-dropzone';
 
 import { MdbModule } from '../shared/moduls/mdb/mdb.module';
 import { TransferTypeComponent } from '../dashboard/components/transfer-type/transfer-type.component';
@@ -60,6 +61,7 @@ const components = [
 ]
 
 const moduls = [
+  NgxDropzoneModule,
   TagInputModule,
   NgSelectModule,
   NgxPaginationModule,
@@ -80,7 +82,7 @@ const moduls = [
     moduls,
     NgxMaskModule.forRoot(),
     MdbModule.forRoot(),
-    OwlDateTimeModule, 
+    OwlDateTimeModule,
     OwlNativeDateTimeModule,
     NgxUiLoaderModule.forRoot(ngxUiLoaderConfig)
   ],
@@ -89,7 +91,7 @@ const moduls = [
     NgxMaskModule,
     NgxUiLoaderModule,
     moduls,
-    OwlDateTimeModule, 
+    OwlDateTimeModule,
     OwlNativeDateTimeModule,
     components,
     StringFilterPipe

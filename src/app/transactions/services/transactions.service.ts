@@ -200,8 +200,10 @@ export class TransactionsService {
         recipient = transaction['recipient'];
         recipientPretty = transaction['recipient'].pretty();
         const currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
-        if (currentWallet.accounts.find(element => this.proximaxProvider.createFromRawAddress(element.address).pretty() === transaction["recipient"].pretty())) {
-          isReceive = true;
+        if (currentWallet.accounts) {
+          if (currentWallet.accounts.find(element => this.proximaxProvider.createFromRawAddress(element.address).pretty() === transaction["recipient"].pretty())) {
+            isReceive = true;
+          }
         }
       }
 

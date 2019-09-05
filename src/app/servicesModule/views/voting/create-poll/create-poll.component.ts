@@ -9,6 +9,7 @@ import { CreatePollStorageService } from 'src/app/servicesModule/services/create
 import { stringify } from '@angular/compiler/src/util';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { MdbStepperComponent } from 'ng-uikit-pro-standard';
+import { ServicesModuleService } from '../../../services/services-module.service';
 
 @Component({
   selector: 'app-create-poll',
@@ -43,6 +44,8 @@ export class CreatePollComponent implements OnInit {
   Poll: PollInterface;
   option: optionsPoll[] = [];
   listaBlanca: any[] = [];
+  listContacts: any = [];
+  showContacts = false;
 
   routes = {
     backToService: `/${AppConfig.routes.service}`
@@ -66,23 +69,50 @@ export class CreatePollComponent implements OnInit {
     private sharedService: SharedService,
     private walletService: WalletService,
     private createPollStorageService: CreatePollStorageService,
-    private proximaxProvider: ProximaxProvider
+    private proximaxProvider: ProximaxProvider,
+    private serviceModuleService: ServicesModuleService,
   ) {
     this.configurationForm = this.sharedService.configurationForm;
     this.btnBlock = false;
     this.showList = false;
+    
   }
 
   ngOnInit() {
     const today = new Date();
     this.minDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), today.getHours(), today.getMinutes());
     this.invalidMoment = this.minDate.setHours(this.minDate.getHours() + 1)
+    this.booksAddress();
     this.createForms();
   }
 
+  
+  booksAddress() {
+    const data = this.listContacts.slice(0);
+    const bookAddress = this.serviceModuleService.getBooksAddress();
+    this.listContacts = [];
+    if (bookAddress !== undefined && bookAddress !== null) {
+      for (let x of bookAddress) {
+        data.push(x);
+      }
+      this.listContacts = data;
+    }
+  }
+
+    /**
+   *
+   *
+   * @param {*} event
+   * @memberof CreateTransferComponent
+   */
+  selectContact(event: { label: string, value: string }) {
+    if (event !== undefined && event.value !== '') {
+      this.thirdFormGroup.get('address').patchValue(event.value);
+    }
+  }
   createForms() {
     this.firstFormGroup = new FormGroup({
-      tittle: new FormControl('', [Validators.required]),
+      title: new FormControl('', [Validators.required]),
       isPrivate: new FormControl(false),
       message: new FormControl('', [Validators.required]),
       PollEndDate: new FormControl('', [Validators.required])
@@ -96,6 +126,7 @@ export class CreatePollComponent implements OnInit {
 
     this.thirdFormGroup = new FormGroup({
       voteType: new FormControl(1),
+      contact:  new FormControl(''),
       address: new FormControl('')
     });
 
@@ -108,7 +139,7 @@ export class CreatePollComponent implements OnInit {
   }
 
   get1() {
-    this.name = this.firstFormGroup.get('tittle').value
+    this.name = this.firstFormGroup.get('title').value
     this.desciption = this.firstFormGroup.get('message').value
     this.isPrivate = this.firstFormGroup.get('isPrivate').value
     this.endDate = new Date(this.firstFormGroup.get('PollEndDate').value)
@@ -209,7 +240,8 @@ export class CreatePollComponent implements OnInit {
 
   cleanThirForm() {
     this.thirdFormGroup.patchValue({
-      address: ''
+      address: '',
+      contact: ''
     })
   }
 
@@ -244,7 +276,7 @@ export class CreatePollComponent implements OnInit {
       quantityOption: this.option.length
     }
 
-    const nameFile = `voting-ProximaxSirius-${new Date()}`;
+    const nameFile = `voting-ProximaxSirius-${this.formtDate(new Date())}`;
     const fileObject: FileInterface = {
       name: nameFile,
       content: this.Poll,
@@ -298,27 +330,15 @@ export class CreatePollComponent implements OnInit {
     return validation;
   }
 
-  /**
-   *
-   *
-   * @param {(string | (string | number)[])} [custom]
-   * @param {(string | number)} [formControl]
-   * @returns
-   * @memberof CreateTransferComponent
-   */
-  // clearForm(custom?: string | (string | number)[], formControl?: string | number) {
-  //   if (custom !== undefined) {
-  //     if (formControl !== undefined) {
-  //       this.createPollForm.controls[formControl].get(custom).reset({ emitEvent: false, onlySelf: true });
-  //       return;
-  //     }
-  //     this.createPollForm.get(custom).reset({ emitEvent: false, onlySelf: true });
-  //     return;
-  //   }
-  //   this.createPollForm.reset({ emitEvent: false, onlySelf: true });
-  //   return;
-  // }
-
+  formtDate(format: string | number | Date) {
+    const datefmt = new Date(format);
+    const day = (datefmt.getDate() < 10) ? `0${datefmt.getDate()}` : datefmt.getDate();
+    const month = (datefmt.getMonth() + 1 < 10) ? `0${datefmt.getMonth() + 1}` : datefmt.getMonth() + 1;
+    const hours = (datefmt.getHours() < 10) ? `0${datefmt.getHours()}` : datefmt.getHours();
+    const minutes = (datefmt.getMinutes() < 10) ? `0${datefmt.getMinutes()}` : datefmt.getMinutes();
+    const seconds = (datefmt.getSeconds() < 10) ? `0${datefmt.getSeconds()}` : datefmt.getSeconds();
+    return `${datefmt.getFullYear()}-${month}-${day}  ${hours}:${minutes}:${seconds}`;
+  }
 
 }
 

@@ -99,7 +99,7 @@ export class PartialComponent implements OnInit {
           const publicsAccounts: PublicAccount[] = [];
           next.forEach((element: AccountsInfoInterface) => {
             if (element.multisigInfo && element.multisigInfo.multisigAccounts.length > 0) {
-              // console.log(element.multisigInfo);
+              console.log(element.multisigInfo);
               element.multisigInfo.multisigAccounts.forEach(x => {
                 const publicAccount = this.proximaxProvider.createPublicAccount(x.publicKey, x.address.networkType);
                 publicsAccounts.push(publicAccount);
@@ -149,7 +149,7 @@ export class PartialComponent implements OnInit {
     publicsAccounts.forEach(publicAccount => {
       this.proximaxProvider.getAggregateBondedTransactions(publicAccount).pipe(first()).subscribe(
         aggregateTransaction => {
-          // console.log('Get aggregate bonded --->', aggregateTransaction);
+          console.log('Get aggregate bonded --->', aggregateTransaction);
           aggregateTransaction.forEach((a: AggregateTransaction) => {
             const existTransction = this.aggregateTransactions.find(x => x.data.transactionInfo.hash === a.transactionInfo.hash);
             if (!existTransction) {
