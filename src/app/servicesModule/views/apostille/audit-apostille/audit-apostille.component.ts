@@ -233,24 +233,6 @@ export class AuditApostilleComponent implements OnInit {
       this.modalAudit.show();
     }
   }
-
-  tooltipShow(e) {
-    let card = e.target;
-    let tool = card.querySelector('#tooltip');
-
-    if (tool !== null) {
-      tool.style = 'display: block';
-    }
-  }
-
-  tooltipHide(e) {
-    let card = e.target;
-    let tool = card.querySelector('#tooltip');
-
-    if (tool !== null) {
-      tool.style = 'display: none';
-    }
-  }
 }
 
 

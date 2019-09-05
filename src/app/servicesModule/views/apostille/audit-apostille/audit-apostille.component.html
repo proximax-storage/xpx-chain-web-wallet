@@ -104,7 +104,7 @@
             *ngFor="let item of auditResults | paginate: configFilesSelected">
             <div class="audit-front d-flex"
               [ngClass]="{'audit-background cursor-p': item.fileHash !== '', 'audit-background-err': item.fileHash === ''}"
-              (click)="verifyModal(item.transaction)" (mouseover)="tooltipShow($event)" (mouseleave)=tooltipHide($event)>
+              (click)="verifyModal(item.transaction)" mdbTooltip="Click to show transaction detail" placement="top">
               <div class="col-8 p-05rem background-white">
                 <div>
                   <p class="audit-title">{{ item.filename }}</p>

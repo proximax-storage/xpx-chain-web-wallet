@@ -1459,12 +1459,12 @@ mdb-select>div>div.single>div.value {
 .bs-tooltip-top .arrow::before,
 .bs-tooltip-auto[x-placement^=top] .arrow::before,
 .tooltip-top .arrow::before {
-  border-top-color: #84b5de !important;
+  border-top-color: #316eb5 !important;
 }
 
 .tooltip-inner {
-  background: white !important;
-  border: 3px solid #84b5de !important;
+  background: #f4f4f4 !important;
+  border: 3px solid #316eb5 !important;
   color: #444 !important;
   font-weight: 500 !important;
   font-size: .8rem !important;
