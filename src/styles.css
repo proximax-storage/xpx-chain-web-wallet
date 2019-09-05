@@ -1553,3 +1553,7 @@ body.modal-open {
 ul.stepper .step-new-content .row {
   margin-bottom: 0 !important;
 }
+
+.height-92 {
+  height: 92%;
+}
