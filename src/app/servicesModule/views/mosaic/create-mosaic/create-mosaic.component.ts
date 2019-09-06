@@ -50,8 +50,11 @@ export class CreateMosaicComponent implements OnInit {
   accountInfo: AccountsInfoInterface;
   deltaSupply: number;
   invalidDivisibility: boolean;
+  invalidSupply: boolean;
   blockButton: boolean;
   errorDivisibility: string;
+  errorSupply: string;
+  maxLengthSupply: number = 13;
   optionsSuply = {
     prefix: '',
     thousands: ',',
@@ -83,6 +86,7 @@ export class CreateMosaicComponent implements OnInit {
     });
     this.mosaicForm.get('divisibility').valueChanges.subscribe(next => {
       if (next > 6) {
+        this.maxLengthSupply = 13;
         this.errorDivisibility = '-invalid';
         this.invalidDivisibility = true;
         this.blockButton = true;
@@ -93,6 +97,7 @@ export class CreateMosaicComponent implements OnInit {
           decimal: '.',
           precision: next
         };
+        this.maxLengthSupply = 13 + parseFloat(next);
         this.errorDivisibility = '';
         this.blockButton = false;
         this.invalidDivisibility = false;
@@ -100,10 +105,20 @@ export class CreateMosaicComponent implements OnInit {
       this.mosaicForm.get('deltaSupply').setValue('');
     });
     this.mosaicForm.get('deltaSupply').valueChanges.subscribe(next => {
-      if (!this.mosaicForm.get('divisibility').value) {
-        this.deltaSupply = parseInt(next);
+      if (parseFloat(next) <= this.configurationForm.mosaicWallet.maxSupply) {
+        this.invalidSupply = false;
+        this.blockButton = false;
+        this.errorSupply = '';
+
+        if (!this.mosaicForm.get('divisibility').value) {
+          this.deltaSupply = parseInt(next);
+        } else {
+          this.deltaSupply = parseInt(this.transactionService.addZeros(this.mosaicForm.get('divisibility').value, next));
+        }
       } else {
-        this.deltaSupply = parseInt(this.transactionService.addZeros(this.mosaicForm.get('divisibility').value, next));
+        this.errorSupply = '-invalid';
+        this.blockButton = true;
+        this.invalidSupply = true;
       }
     });
   }
@@ -150,9 +165,9 @@ export class CreateMosaicComponent implements OnInit {
       supplyMutable: false,
       levyMutable: false
     },
-      {
-        emitEvent: false
-      });
+    {
+      emitEvent: false
+    });
   }
 
   send() {
@@ -166,7 +181,7 @@ export class CreateMosaicComponent implements OnInit {
         this.blockSend = true;
         const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
         const nonce = this.proximaxProvider.createNonceRandom();
-
+        console.log('\n\n\n\nValue of duration', this.durationByBlock, '\n\n\n\nEnd value\n\n');
         //BUILD TRANSACTION
         const mosaicDefinitionTransaction = this.proximaxProvider.buildMosaicDefinition(
           nonce,
@@ -175,16 +190,14 @@ export class CreateMosaicComponent implements OnInit {
           this.mosaicForm.get('transferable').value,
           this.mosaicForm.get('levyMutable').value,
           this.mosaicForm.get('divisibility').value,
-          parseFloat(this.durationByBlock),
+          parseInt(this.durationByBlock),
           this.walletService.currentAccount.network
         );
-
-        const mosaicSupply = this.deltaSupply;
 
         const mosaicSupplyChangeTransaction = this.proximaxProvider.buildMosaicSupplyChange(
           mosaicDefinitionTransaction.mosaicId,
           MosaicSupplyType.Increase,
-          UInt64.fromUint(mosaicSupply),
+          UInt64.fromUint(this.deltaSupply),
           this.walletService.currentAccount.network
         );
 
