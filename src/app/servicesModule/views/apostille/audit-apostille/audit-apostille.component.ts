@@ -304,6 +304,15 @@ export class AuditApostilleComponent implements OnInit {
       this.modalAudit.show();
     }
   }
+
+  tooltipAction(hash) {
+    let message
+    if (hash !== '') {
+      message = 'Click to show transaction detail'
+    } else {
+      message = 'This card has no information to show'
+    }
+
+    return message
+  }
 }
-
-

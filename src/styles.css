@@ -2,7 +2,9 @@
 
 @import "~@ng-select/ng-select/themes/material.theme.css";
 @import "~ng-pick-datetime/assets/style/picker.min.css";
-html, body {
+
+html,
+body {
   margin: 0;
   display: table;
   height: 100%;
@@ -786,7 +788,8 @@ html, body {
   line-height: 18px;
 }
 
-.box-list-account-gray, .box-list-account {
+.box-list-account-gray,
+.box-list-account {
   color: white;
   background: #2aa1b9;
   border-radius: 1rem;
@@ -913,7 +916,8 @@ footer.page-footer .footer-copyright {
 
 /************************* NG SELECT *******************/
 
-.navbar.navbar-dark .breadcrumb .nav-item .nav-link, .navbar.navbar-dark .navbar-nav .nav-item .nav-link {
+.navbar.navbar-dark .breadcrumb .nav-item .nav-link,
+.navbar.navbar-dark .navbar-nav .nav-item .nav-link {
   color: #306EB5 !important;
 }
 
@@ -926,42 +930,121 @@ button.navbar-toggler {
   color: #306EB5 !important;
 }
 
-.md-form input[type=text], .md-form input[type=password], .md-form input[type=email], .md-form input[type=url], .md-form input[type=time], .md-form input[type=date], .md-form input[type=datetime-local], .md-form input[type=tel], .md-form input[type=number], .md-form input[type=search-md], .md-form input[type=search], .md-form textarea.md-textarea, input[type=text] {
+.md-form input[type=text],
+.md-form input[type=password],
+.md-form input[type=email],
+.md-form input[type=url],
+.md-form input[type=time],
+.md-form input[type=date],
+.md-form input[type=datetime-local],
+.md-form input[type=tel],
+.md-form input[type=number],
+.md-form input[type=search-md],
+.md-form input[type=search],
+.md-form textarea.md-textarea,
+input[type=text] {
   border: 1px solid #ced4da;
   border-radius: 1.5rem !important;
   padding-left: 1rem;
 }
 
-.md-form input[type=text]:focus:not([readonly]), .md-form input[type=password]:focus:not([readonly]), .md-form input[type=email]:focus:not([readonly]), .md-form input[type=url]:focus:not([readonly]), .md-form input[type=time]:focus:not([readonly]), .md-form input[type=date]:focus:not([readonly]), .md-form input[type=datetime-local]:focus:not([readonly]), .md-form input[type=tel]:focus:not([readonly]), .md-form input[type=number]:focus:not([readonly]), .md-form input[type=search-md]:focus:not([readonly]), .md-form input[type=search]:focus:not([readonly]), .md-form textarea.md-textarea:focus:not([readonly]), .md-form input[type=text]:focus:not([readonly]), .md-form input[type=password]:focus:not([readonly]), .md-form input[type=email]:focus:not([readonly]), .md-form input[type=url]:focus:not([readonly]), .md-form input[type=time]:focus:not([readonly]), .md-form input[type=date]:focus:not([readonly]), .md-form input[type=datetime-local]:focus:not([readonly]), .md-form input[type=tel]:focus:not([readonly]), .md-form input[type=number]:focus:not([readonly]), .md-form input[type=search-md]:focus:not([readonly]), .md-form input[type=search]:focus:not([readonly]), .md-form textarea.md-textarea:focus:not([readonly]), .md-form input[type=text]:focus:not([readonly]), .md-form input[type=password]:focus:not([readonly]), .md-form input[type=email]:focus:not([readonly]), .md-form input[type=url]:focus:not([readonly]), .md-form input[type=time]:focus:not([readonly]), .md-form input[type=date]:focus:not([readonly]), .md-form input[type=datetime-local]:focus:not([readonly]), .md-form input[type=tel]:focus:not([readonly]), .md-form input[type=number]:focus:not([readonly]), .md-form input[type=search-md]:focus:not([readonly]), .md-form input[type=search]:focus:not([readonly]), .md-form textarea.md-textarea:focus:not([readonly]) {
+.md-form input[type=text]:focus:not([readonly]),
+.md-form input[type=password]:focus:not([readonly]),
+.md-form input[type=email]:focus:not([readonly]),
+.md-form input[type=url]:focus:not([readonly]),
+.md-form input[type=time]:focus:not([readonly]),
+.md-form input[type=date]:focus:not([readonly]),
+.md-form input[type=datetime-local]:focus:not([readonly]),
+.md-form input[type=tel]:focus:not([readonly]),
+.md-form input[type=number]:focus:not([readonly]),
+.md-form input[type=search-md]:focus:not([readonly]),
+.md-form input[type=search]:focus:not([readonly]),
+.md-form textarea.md-textarea:focus:not([readonly]),
+.md-form input[type=text]:focus:not([readonly]),
+.md-form input[type=password]:focus:not([readonly]),
+.md-form input[type=email]:focus:not([readonly]),
+.md-form input[type=url]:focus:not([readonly]),
+.md-form input[type=time]:focus:not([readonly]),
+.md-form input[type=date]:focus:not([readonly]),
+.md-form input[type=datetime-local]:focus:not([readonly]),
+.md-form input[type=tel]:focus:not([readonly]),
+.md-form input[type=number]:focus:not([readonly]),
+.md-form input[type=search-md]:focus:not([readonly]),
+.md-form input[type=search]:focus:not([readonly]),
+.md-form textarea.md-textarea:focus:not([readonly]),
+.md-form input[type=text]:focus:not([readonly]),
+.md-form input[type=password]:focus:not([readonly]),
+.md-form input[type=email]:focus:not([readonly]),
+.md-form input[type=url]:focus:not([readonly]),
+.md-form input[type=time]:focus:not([readonly]),
+.md-form input[type=date]:focus:not([readonly]),
+.md-form input[type=datetime-local]:focus:not([readonly]),
+.md-form input[type=tel]:focus:not([readonly]),
+.md-form input[type=number]:focus:not([readonly]),
+.md-form input[type=search-md]:focus:not([readonly]),
+.md-form input[type=search]:focus:not([readonly]),
+.md-form textarea.md-textarea:focus:not([readonly]) {
   box-shadow: none !important;
   border: 2px solid #2BA1B9 !important;
 }
 
-.md-form input[type=text]:focus:not([readonly]), .md-form input[type=password]:focus:not([readonly]), .md-form input[type=email]:focus:not([readonly]), .md-form input[type=url]:focus:not([readonly]), .md-form input[type=time]:focus:not([readonly]), .md-form input[type=date]:focus:not([readonly]), .md-form input[type=datetime-local]:focus:not([readonly]), .md-form input[type=tel]:focus:not([readonly]), .md-form input[type=number]:focus:not([readonly]), .md-form input[type=search-md]:focus:not([readonly]), .md-form input[type=search]:focus:not([readonly]), .md-form textarea.md-textarea:focus:not([readonly]) {
+.md-form input[type=text]:focus:not([readonly]),
+.md-form input[type=password]:focus:not([readonly]),
+.md-form input[type=email]:focus:not([readonly]),
+.md-form input[type=url]:focus:not([readonly]),
+.md-form input[type=time]:focus:not([readonly]),
+.md-form input[type=date]:focus:not([readonly]),
+.md-form input[type=datetime-local]:focus:not([readonly]),
+.md-form input[type=tel]:focus:not([readonly]),
+.md-form input[type=number]:focus:not([readonly]),
+.md-form input[type=search-md]:focus:not([readonly]),
+.md-form input[type=search]:focus:not([readonly]),
+.md-form textarea.md-textarea:focus:not([readonly]) {
   box-shadow: 0 1px 0 0 #2BA1B9;
   border-bottom: 1px solid #2BA1B9;
 }
 
-.md-form input[type=text]:focus:not([readonly])+label, .md-form input[type=password]:focus:not([readonly])+label, .md-form input[type=email]:focus:not([readonly])+label, .md-form input[type=url]:focus:not([readonly])+label, .md-form input[type=time]:focus:not([readonly])+label, .md-form input[type=date]:focus:not([readonly])+label, .md-form input[type=datetime-local]:focus:not([readonly])+label, .md-form input[type=tel]:focus:not([readonly])+label, .md-form input[type=number]:focus:not([readonly])+label, .md-form input[type=search-md]:focus:not([readonly])+label, .md-form input[type=search]:focus:not([readonly])+label, .md-form textarea.md-textarea:focus:not([readonly])+label {
+.md-form input[type=text]:focus:not([readonly])+label,
+.md-form input[type=password]:focus:not([readonly])+label,
+.md-form input[type=email]:focus:not([readonly])+label,
+.md-form input[type=url]:focus:not([readonly])+label,
+.md-form input[type=time]:focus:not([readonly])+label,
+.md-form input[type=date]:focus:not([readonly])+label,
+.md-form input[type=datetime-local]:focus:not([readonly])+label,
+.md-form input[type=tel]:focus:not([readonly])+label,
+.md-form input[type=number]:focus:not([readonly])+label,
+.md-form input[type=search-md]:focus:not([readonly])+label,
+.md-form input[type=search]:focus:not([readonly])+label,
+.md-form textarea.md-textarea:focus:not([readonly])+label {
   color: #2BA1B9 !important;
 }
 
-.dropdown-default .dropdown-content li a, .dropdown-default .dropdown-content li span:hover, .dropdown-default .dropdown-content li.active {
+.dropdown-default .dropdown-content li a,
+.dropdown-default .dropdown-content li span:hover,
+.dropdown-default .dropdown-content li.active {
   background-color: #609ca9 !important;
 }
 
-.dropdown-default.colorful-select .dropdown-content li.active span, .dropdown-default.colorful-select .dropdown-content li.selected span {
+.dropdown-default.colorful-select .dropdown-content li.active span,
+.dropdown-default.colorful-select .dropdown-content li.selected span {
   background-color: #2ba1b9 !important;
 }
 
 /** INPUTS VALIDATION **/
 
-input.form-control.validate-error.ng-invalid.ng-touched, input.form-control.validate-error.ng-invalid.ng-dirty, .form-submitted input.form-control.validate-error.ng-invalid, .md-textarea.validate-error.ng-invalid.ng-touched, .md-textarea.validate-error.ng-invalid.ng-dirty, .form-submitted .md-textarea.validate-error.ng-invalid {
+input.form-control.validate-error.ng-invalid.ng-touched,
+input.form-control.validate-error.ng-invalid.ng-dirty,
+.form-submitted input.form-control.validate-error.ng-invalid,
+.md-textarea.validate-error.ng-invalid.ng-touched,
+.md-textarea.validate-error.ng-invalid.ng-dirty,
+.form-submitted .md-textarea.validate-error.ng-invalid {
   box-shadow: none !important;
   border: 2px solid #e06e38 !important;
 }
 
-input.form-control.validate-success.ng-valid.ng-dirty, input.form-control.validate-success.ng-valid.ng-touched, .form-submitted input.form-control.validate-success.ng-valid {
+input.form-control.validate-success.ng-valid.ng-dirty,
+input.form-control.validate-success.ng-valid.ng-touched,
+.form-submitted input.form-control.validate-success.ng-valid {
   box-shadow: none !important;
   border: 2px solid #2BA1B9 !important;
 }
@@ -971,7 +1054,10 @@ input.form-control.validate-success.ng-valid.ng-dirty, input.form-control.valida
   box-shadow: none !important;
 }
 
-#confirm-password-invalid, #password-invalid, #name-wallet-invalid, #divisibility-invalid {
+#confirm-password-invalid,
+#password-invalid,
+#name-wallet-invalid,
+#divisibility-invalid {
   box-shadow: none !important;
   border: 2px solid #e06e38 !important;
 }
@@ -992,7 +1078,8 @@ input.form-control.validate-success.ng-valid.ng-dirty, input.form-control.valida
   color: #2BA1B9 !important;
 }
 
-.md-form.form-sm mdb-error, .md-form.form-sm mdb-success {
+.md-form.form-sm mdb-error,
+.md-form.form-sm mdb-success {
   left: 1rem !important;
 }
 
@@ -1050,7 +1137,11 @@ button.md-toast-close-button {
   color: #e06e38 !important;
 }
 
-.md-toast-success:before, .md-toast-info:before, .md-toast-warning:before, .md-toast-error:before, #toast-container>mdb-toast-component {
+.md-toast-success:before,
+.md-toast-info:before,
+.md-toast-warning:before,
+.md-toast-error:before,
+#toast-container>mdb-toast-component {
   font-family: FontAwesome !important;
   font-size: 20px !important;
   line-height: 14px !important;
@@ -1095,7 +1186,8 @@ button.md-toast-close-button {
   border-color: #2BA1B9 !important;
 }
 
-.ng-select.ng-select-focused .ng-select-container .ng-arrow-wrapper .ng-arrow, .ng-select.ng-select-focused .ng-select-container .ng-value-container .ng-placeholder {
+.ng-select.ng-select-focused .ng-select-container .ng-arrow-wrapper .ng-arrow,
+.ng-select.ng-select-focused .ng-select-container .ng-value-container .ng-placeholder {
   color: #2BA1B9 !important;
 }
 
@@ -1276,7 +1368,11 @@ button.md-toast-close-button {
   pointer-events: none !important;
 }
 
-.dropdown-default.colorful-select .dropdown-content li.active span, .dropdown-default.colorful-select .dropdown-content li.selected span, .dropdown-default .dropdown-content li a, .dropdown-default .dropdown-content li span:hover, .dropdown-default .dropdown-content li.active {
+.dropdown-default.colorful-select .dropdown-content li.active span,
+.dropdown-default.colorful-select .dropdown-content li.selected span,
+.dropdown-default .dropdown-content li a,
+.dropdown-default .dropdown-content li span:hover,
+.dropdown-default .dropdown-content li.active {
   background-color: #2ba1b9 !important;
 }
 
@@ -1359,6 +1455,21 @@ mdb-select>div>div.single>div.value {
   line-height: 1.1rem !important;
 }
 
+
+.bs-tooltip-top .arrow::before,
+.bs-tooltip-auto[x-placement^=top] .arrow::before,
+.tooltip-top .arrow::before {
+  border-top-color: #316eb5 !important;
+}
+
+.tooltip-inner {
+  background: #f4f4f4 !important;
+  border: 3px solid #316eb5 !important;
+  color: #444 !important;
+  font-weight: normal !important;
+  font-size: .8rem !important;
+}
+
 /****************************************/
 
 .title-modal-white {
@@ -1410,7 +1521,7 @@ body.modal-open {
 .scroll-accounts {
   overflow-y: auto;
   margin-bottom: 12px;
-  max-height: 215px;
+  max-height: 130px;
 }
 
 .table-wrapper-scroll-x {
@@ -1565,4 +1676,18 @@ ngx-dropzone {
 ngx-dropzone-label {
   font-size: .8rem;
   font-weight: 600;
+}
+
+.md-accordion .card .card-header a h5 {
+  font-size: .8rem !important;
+  font-weight: 600 !important;
+}
+
+.accordion .card .card-header {
+  padding: .5rem 0rem !important;
+  color: #2ba1b9 !important;
+}
+
+.mdb-accordion-indicator {
+  top: 7px !important;
 }
