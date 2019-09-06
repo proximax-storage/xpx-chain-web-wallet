@@ -100,40 +100,46 @@
     <div class="row">
       <div class="col-11 col-md-10 mx-auto">
         <div class="row d-flex justify-content-start align-items-stretch mb-1rem">
-          <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4 d-flex mt-1rem audit-back"
-            *ngFor="let item of auditResults | paginate: configFilesSelected">
-            <div class="audit-front d-flex"
-              [ngClass]="{'audit-background cursor-p': item.fileHash !== '', 'audit-background-err': item.fileHash === ''}"
-              (click)="verifyModal(item.transaction)">
-              <div class="col-8 p-05rem background-white">
-                <div>
-                  <p class="audit-title">{{ item.filename }}</p>
+          <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4 mt-1rem d-flex flex-column audit-back"
+            *ngFor="let item of auditResults | paginate: configFilesSelected"
+            [ngClass]="{'height-92': item.fileHash === ''}">
+            <div>
+              <div class="audit-front d-flex"
+                [ngClass]="{'audit-background cursor-p': item.fileHash !== '', 'audit-background-err': item.fileHash === ''}"
+                (click)="verifyModal(item.transaction)">
+                <div class="col-8 p-05rem background-white">
+                  <div>
+                    <p class="audit-title">{{ item.filename }}</p>
+                  </div>
+                  <div *ngIf="item.fileHash !== ''">
+                    <p class="audit-subtitle">File hash</p>
+                    <p class="audit-value">{{ item.fileHash }}</p>
+                  </div>
+                  <div *ngIf="item.fileHash !== ''">
+                    <p class="audit-subtitle">Date</p>
+                    <p class="audit-value">{{ item.date }}</p>
+                  </div>
+                  <div *ngIf="item.fileHash === ''">
+                    <p class="audit-value">{{ item.result }}</p>
+                  </div>
                 </div>
-                <div *ngIf="item.fileHash !== ''">
-                  <p class="audit-subtitle">File hash</p>
-                  <p class="audit-value">{{ item.fileHash }}</p>
-                </div>
-                <div *ngIf="item.fileHash !== ''">
-                  <p class="audit-subtitle">Date</p>
-                  <p class="audit-value">{{ item.date }}</p>
-                </div>
-                <div *ngIf="item.fileHash === ''">
-                  <p class="audit-value">{{ item.result }}</p>
+                <div class="col-4 audit-medal mx-auto"
+                  [ngClass]="[(item.fileHash === '') ? 'd-flex justify-content-center align-items-center' : '']">
+                  <figure *ngIf="item.fileHash !== ''" class="mt-05rem">
+                    <img src="assets/images/img/badge-silver-proximax-sirius-wallet.svg" alt="">
+                  </figure>
+                  <figure *ngIf="item.fileHash === ''" class="txt-a-center mt-0">
+                    <i class="fa fa-times fa-3x color-white"></i>
+                  </figure>
+                  <div *ngIf="item.transaction !== undefined" class="mb-05rem">
+                    <p class="color-white m-0 txt-a-center" *ngIf="item.transaction?.privateFile === true">PRIVATE</p>
+                    <p class="color-white m-0 txt-a-center" *ngIf="item.transaction?.privateFile === false">PUBLIC</p>
+                  </div>
                 </div>
               </div>
-              <div class="col-4 audit-medal mx-auto"
-                [ngClass]="[(item.fileHash === '') ? 'd-flex justify-content-center align-items-center' : '']">
-                <figure *ngIf="item.fileHash !== ''" class="mt-05rem">
-                  <img src="assets/images/img/badge-silver-proximax-sirius-wallet.svg" alt="">
-                </figure>
-                <figure *ngIf="item.fileHash === ''" class="txt-a-center mt-0">
-                  <i class="fa fa-times fa-3x color-white"></i>
-                </figure>
-                <div *ngIf="item.transaction !== undefined" class="mb-05rem">
-                  <p class="color-white m-0 txt-a-center" *ngIf="item.transaction?.privateFile === true">PRIVATE</p>
-                  <p class="color-white m-0 txt-a-center" *ngIf="item.transaction?.privateFile === false">PUBLIC</p>
-                </div>
-              </div>
+            </div>
+            <div *ngIf="item.fileHash !== ''" class="txt-a-center fs-075rem">
+              <span>Click to show transaction details</span>
             </div>
           </div>
           <div class="col-12 pt-2rem pb-1rem d-flex justify-content-center mx-auto">
@@ -167,7 +173,7 @@
       <div class="modal-content form-elegant bord-rad-1-5rem">
         <div class="modal-header text-center box-modal-white b-t-r-r-1-5rem b-t-l-r-1-5rem p-05rem">
           <span class="modal-title w-100" id="myModalLabel">
-            <strong class="title-modal-blue">Attestated File</strong>
+            <strong class="title-modal-blue">Attested File</strong>
           </span>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="basicModal.hide()">
             <span aria-hidden="true">&times;</span>
