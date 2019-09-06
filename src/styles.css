@@ -1174,6 +1174,10 @@ button.md-toast-close-button {
   background-color: #306eb5 !important;
 }
 
+.card .card-body {
+  padding: 0rem !important;
+}
+
 /** FIN INPUTS VALIDATION **/
 
 /************* SELECT ************/

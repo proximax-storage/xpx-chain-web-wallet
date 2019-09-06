@@ -186,13 +186,20 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.proximaxProvider.getUnconfirmedTransactions(account.publicAccount, id).pipe(first()).subscribe(
         transactionsUnconfirmed => {
           if (transactionsUnconfirmed && transactionsUnconfirmed.length > 0) {
+
+            //Sets the data structure of the dashboard
             transactionsUnconfirmed.forEach(element => {
-              //Sets the data structure of the dashboard
-              const builderTransactions = this.transactionService.getStructureDashboard(element);
+              const builderTransactions = this.transactionService.getStructureDashboard(element, this.transactionsUnconfirmed);
               if (builderTransactions !== null) {
                 transactionUnconfirmed.push(builderTransactions);
               }
             });
+            /*for (let element of transactionsUnconfirmed) {
+              const builderTransactions = this.transactionService.getStructureDashboard(element, this.transactionsUnconfirmed);
+              if (builderTransactions !== null) {
+                transactionUnconfirmed.push(builderTransactions);
+              }
+            }*/
 
             this.transactionsUnconfirmed = transactionUnconfirmed;
             this.cantUnconfirmed = this.transactionsUnconfirmed.length;
@@ -228,13 +235,20 @@ export class DashboardComponent implements OnInit, OnDestroy {
         console.log(transactions);
 
         if (transactions && transactions.length > 0) {
+          //Sets the data structure of the dashboard
           transactions.forEach(element => {
-            //Sets the data structure of the dashboard
-            const builderTransactions = this.transactionService.getStructureDashboard(element);
+            const builderTransactions = this.transactionService.getStructureDashboard(element, this.transactions);
             if (builderTransactions !== null) {
               this.transactions.push(builderTransactions);
             }
           });
+          /*for (let element of transactions) {
+            const builderTransactions = this.transactionService.getStructureDashboard(element, this.transactions);
+            if (builderTransactions !== null) {
+              this.transactions.push(builderTransactions);
+            }
+          }*/
+
 
           // this.transactions = this.transactions;
           this.cantConfirmed = this.transactions.length;

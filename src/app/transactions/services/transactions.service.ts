@@ -170,6 +170,9 @@ export class TransactionsService {
    */
   getStructureDashboard(transaction: Transaction, othersTransactions?: TransactionsInterface[]): TransactionsInterface {
     let isValid = true;
+    console.log('transaction ----> ', transaction);
+    console.log('othersTransactions ----> ', othersTransactions);
+
     if (othersTransactions && othersTransactions.length > 0) {
       const x = othersTransactions.filter(next => next.data.transactionInfo.hash === transaction.transactionInfo.hash);
       if (x && x.length > 0) {
@@ -178,6 +181,9 @@ export class TransactionsService {
     }
 
     const keyType = this.getNameTypeTransaction(transaction.type);
+    console.log('keyType --->', keyType);
+    console.log('isValid --->', isValid);
+
     if (keyType !== undefined && isValid) {
       let recipientRentalFeeSink = '';
       if (transaction["mosaics"] === undefined) {
