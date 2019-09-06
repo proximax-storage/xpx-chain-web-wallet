@@ -49,12 +49,12 @@
               <div class="col-12 mx-auto">
                 <div class="md-form form-sm mt-1rem mb-0rem">
                   <input formControlName="deltaSupply" mdbInputDirective mdbValidate currencyMask
-                    [options]="optionsSuply" [validateSuccess]="true" [validateError]="true" type="text" id="supply"
-                    maxlength="20" class="form-control form-control-sm input-border input-amount" placeholder="Supply">
+                    [options]="optionsSuply" [validateSuccess]="true" [validateError]="true" type="text" id="supply{{errorSupply}}"
+                    [maxlength]="maxLengthSupply" class="form-control form-control-sm input-border input-amount" placeholder="Supply">
 
                   <!-- VALIDATION -->
                   <mdb-error
-                    *ngIf="validateInput('deltaSupply', '').invalid && (validateInput('deltaSupply', '').dirty || validateInput('deltaSupply', '').touched)">
+                    *ngIf="validateInput('deltaSupply', '').invalid && (validateInput('deltaSupply', '').dirty || validateInput('deltaSupply', '').touched) || invalidSupply">
                     <span>Input invalid</span>
                   </mdb-error>
                 </div>

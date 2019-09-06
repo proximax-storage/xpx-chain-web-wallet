@@ -35,11 +35,11 @@
           <div class="col-11 mx-auto">
             <div class="md-form form-sm mt-1rem mb-0rem">
               <input formControlName="deltaSupply" currencyMask [options]="optionsSupply" mdbInputDirective mdbValidate
-                [validateSuccess]="true" [validateError]="true" type="text" id="deltaSupply" maxlength="32"
+                [validateSuccess]="true" [validateError]="true" type="text" id="supply{{errorSupply}}" [maxlength]="maxLengthSupply"
                 class="form-control form-control-sm input-border input-amount" placeholder="Quantity of increase/decrease">
 
               <mdb-error
-                *ngIf="validateInput('deltaSupply', '').invalid && (validateInput('deltaSupply', '').dirty || validateInput('deltaSupply', '').touched)">
+                *ngIf="validateInput('deltaSupply', '').invalid && (validateInput('deltaSupply', '').dirty || validateInput('deltaSupply', '').touched) || invalidSupply">
                 <span>Input invalid</span>
               </mdb-error>
             </div>
@@ -102,7 +102,7 @@
           </div>
 
           <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-            <button mdbBtn type="submit" rounded="true" [disabled]="!formMosaicSupplyChange.valid" mdbWavesEffect
+            <button mdbBtn type="submit" rounded="true" [disabled]="!formMosaicSupplyChange.valid || blockBtn" mdbWavesEffect
               class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
               <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
                 *ngIf="blockButton"></span>

@@ -1057,7 +1057,8 @@ input.form-control.validate-success.ng-valid.ng-touched,
 #confirm-password-invalid,
 #password-invalid,
 #name-wallet-invalid,
-#divisibility-invalid {
+#divisibility-invalid,
+#supply-invalid {
   box-shadow: none !important;
   border: 2px solid #e06e38 !important;
 }
