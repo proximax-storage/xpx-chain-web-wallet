@@ -1702,3 +1702,7 @@ ngx-dropzone-label {
 .mdb-accordion-indicator {
   top: 7px !important;
 }
+
+ul.stepper.horizontal .step-title {
+  max-width: 20rem !important;
+}
