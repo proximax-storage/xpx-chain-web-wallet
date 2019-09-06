@@ -1178,6 +1178,16 @@ button.md-toast-close-button {
 
 /************* SELECT ************/
 
+.ng-select .ng-select-container {
+  min-height: 40.5px !important;
+}
+
+.ng-dropdown-panel .ng-dropdown-panel-items .ng-option,
+.ng-select.ng-select-single .ng-select-container .ng-value-container,
+.ng-select.ng-select-single .ng-select-container .ng-value-container .ng-value {
+  font-size: .8rem !important;
+}
+
 .ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-selected {
   color: #2BA1B9 !important;
 }

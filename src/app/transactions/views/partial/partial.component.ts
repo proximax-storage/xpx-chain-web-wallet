@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { PublicAccount, AggregateTransaction, Account } from 'tsjs-xpx-chain-sdk';
+import { PublicAccount, AggregateTransaction, Account, MultisigAccountInfo, Address, Transaction } from 'tsjs-xpx-chain-sdk';
 import { PaginationInstance } from 'ngx-pagination';
 import { first } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { AppConfig } from '../../../config/app.config';
-import { WalletService, AccountsInfoInterface } from '../../../wallet/services/wallet.service';
+import { WalletService, AccountsInfoInterface, AccountsInterface } from '../../../wallet/services/wallet.service';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 import { TransactionsInterface, TransactionsService } from '../../services/transactions.service';
 import { SharedService, ConfigurationForm } from '../../../shared/services/shared.service';
@@ -16,6 +16,9 @@ import { SharedService, ConfigurationForm } from '../../../shared/services/share
 })
 export class PartialComponent implements OnInit {
 
+  account: AccountsInterface = null;
+  accountSelected = '';
+  arraySelect: Array<object> = [];
   aggregateTransactions: TransactionsInterface[] = [];
   componentName = 'Partial';
   configAdvance: PaginationInstance = {
@@ -35,6 +38,7 @@ export class PartialComponent implements OnInit {
   goBack = `/${AppConfig.routes.service}`;
   maxSize = 0;
   moduleName = 'Transactions';
+  multisigInfo: MultisigAccountInfo[] = [];
   elements: any = [
     {
       status: 'Action Required!',
@@ -75,6 +79,7 @@ export class PartialComponent implements OnInit {
   password: string = '';
   subscription: Subscription[] = [];
   typeTransactions: any;
+  validateAccount = false;
   configurationForm: ConfigurationForm;
 
   constructor(
@@ -92,25 +97,7 @@ export class PartialComponent implements OnInit {
   ngOnInit() {
     this.configurationForm = this.sharedService.configurationForm;
     this.typeTransactions = this.transactionService.getTypeTransactions();
-    this.subscription.push(this.walletService.getAccountsInfo$().subscribe(
-      (next: AccountsInfoInterface[]) => {
-        // console.log('getAccountsInfo ----> ', next);
-        if (next) {
-          const publicsAccounts: PublicAccount[] = [];
-          next.forEach((element: AccountsInfoInterface) => {
-            if (element.multisigInfo && element.multisigInfo.multisigAccounts.length > 0) {
-              console.log(element.multisigInfo);
-              element.multisigInfo.multisigAccounts.forEach(x => {
-                const publicAccount = this.proximaxProvider.createPublicAccount(x.publicKey, x.address.networkType);
-                publicsAccounts.push(publicAccount);
-              });
-            }
-          });
-
-          this.getAggregateBondedTransactions(publicsAccounts);
-        }
-      }
-    ));
+    this.getAccountsInfo();
   }
 
   /**
@@ -137,6 +124,72 @@ export class PartialComponent implements OnInit {
       announcedTransaction => console.log(announcedTransaction),
       err => console.error(err)
     );
+  }
+
+
+  /**
+   *
+   *
+   * @param {TransactionsInterface} transaction
+   * @memberof PartialComponent
+   */
+  find(transaction: TransactionsInterface) {
+    transaction.data['innerTransactions'].forEach(element => {
+      const nameType = Object.keys(this.typeTransactions).find(x => this.typeTransactions[x].id === element.type);
+      element['nameType'] = (nameType) ? this.typeTransactions[nameType].name : element.type.toString(16).toUpperCase();
+    });
+
+    this.dataSelected = transaction;
+    console.log(transaction.data['innerTransactions'][0].signer.address.pretty());
+    const otro = this.walletService.filterAccountInfo(transaction.data['innerTransactions'][0].signer.address.pretty(), true);
+    console.log(otro);
+    if (otro.multisigInfo.cosignatories && otro.multisigInfo.cosignatories.length > 0) {
+      otro.multisigInfo.cosignatories.forEach(element => {
+        const cosignatorie: AccountsInterface = this.walletService.filterAccount('', null, element.address.pretty());
+        console.log('COSIGNATORIE ----> ', cosignatorie);
+        if (cosignatorie) {
+          this.validateAccount = true;
+          this.arraySelect.push({
+            label: cosignatorie.name,
+            value: cosignatorie,
+            selected: true,
+            disabled: false
+          });
+        }
+      });
+    }
+  }
+
+  /**
+   *
+   *
+   * @memberof PartialComponent
+   */
+  getAccountsInfo() {
+    this.subscription.push(this.walletService.getAccountsInfo$().subscribe(
+      (next: AccountsInfoInterface[]) => {
+        if (next && next.length === this.walletService.currentWallet.accounts.length) {
+          const publicsAccounts: PublicAccount[] = [];
+          next.forEach((element: AccountsInfoInterface) => {
+            if (element.multisigInfo && element.multisigInfo.multisigAccounts.length > 0) {
+              element.multisigInfo.multisigAccounts.forEach(x => {
+                if (publicsAccounts.length > 0) {
+                  if (publicsAccounts.find(b => b.publicKey !== x.publicKey)) {
+                    const publicAccount = this.proximaxProvider.createPublicAccount(x.publicKey, x.address.networkType);
+                    publicsAccounts.push(publicAccount);
+                  }
+                } else {
+                  const publicAccount = this.proximaxProvider.createPublicAccount(x.publicKey, x.address.networkType);
+                  publicsAccounts.push(publicAccount);
+                }
+              });
+            }
+          });
+
+          this.getAggregateBondedTransactions(publicsAccounts);
+        }
+      }
+    ));
   }
 
   /**
@@ -170,14 +223,38 @@ export class PartialComponent implements OnInit {
    */
   sendTransaction() {
     if (
-      this.password !== '' &&
+      this.validateAccount === false && this.password !== '' &&
       this.password.length >= this.configurationForm.passwordWallet.minLength &&
-      this.password.length <= this.configurationForm.passwordWallet.maxLength) {
-
+      this.password.length <= this.configurationForm.passwordWallet.maxLength
+    ) {
+      let common: any = { password: this.password };
+      if (this.walletService.decrypt(common, this.account)) {
+        console.log(common);
+        const transaction: any = this.dataSelected.data;
+        const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
+        this.proximaxProvider.cosignAggregateBondedTransaction(transaction, account).subscribe(
+          next => {
+            console.log(next);
+          }
+        );
+      }
     }
-    // account = sdk.Account.createFromPrivateKey(
-    //   "13A32F217D99FE2D2DA40772490C3F5CEB86D93B5530BF44FE0EFC542404F642",
-    //   168
-    // );
+  }
+
+  /**
+   *
+   *
+   * @param {*} event
+   * @memberof PartialComponent
+   */
+  selectAccount(event: any) {
+    console.log(event);
+    if (event) {
+      this.validateAccount = false;
+      this.accountSelected = this.proximaxProvider.createFromRawAddress(event.value.address).pretty();
+    } else {
+      this.validateAccount = true;
+      this.accountSelected = '';
+    }
   }
 }

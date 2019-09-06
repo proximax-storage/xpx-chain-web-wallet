@@ -68,7 +68,7 @@
             <ng-container
               *ngFor="let transaction of aggregateTransactions | stringFilter: filter | paginate: configAdvance">
               <tr class="white-space-pre cursor-p" mdbTableCol [ngClass]="!transaction ? 'background-pending': ''"
-                (click)="dataSelected = transaction; modalPartialTransaction.show();">
+                (click)="find(transaction); modalPartialTransaction.show();">
                 <!-- <td class="fs-07rem" [ngClass]="transaction ? 'fw-600': ''">{{transaction.status}}</td> -->
                 <td class="fs-07rem">{{transaction.timestamp}}</td>
                 <td class="fs-07rem">{{transaction.fee}}</td>
@@ -113,134 +113,154 @@
         <!--Body-->
         <div class="modal-body">
           <ng-container *ngIf="dataSelected">
-            <div class="row d-flex justify-content-center">
-              <div class="col-11 col-md-7">
-                <div class="row">
-                  <!-- Bonded & Deadline -->
-                  <div class="col-12 lh-1em">
-                    <span class="fw-600 fs-1-2rem">Bonded</span> <br>
-                    <span class="fs-075rem">Deadline: {{dataSelected?.timestamp}}</span>
-                  </div>
-
-                  <!-- Fee -->
-                  <div class="col-12 mt-1-5rem">
-                    <span class="fw-600 fs-095rem">Fee:&nbsp;&nbsp;</span>
-                    <span class="fs-095rem fw-600 color-blue-light">{{dataSelected?.feePart.part1}}</span>
-                    <span class="fs-075rem fw-600 color-blue-light">{{dataSelected?.feePart.part2}}</span>
-                    <span class="fs-095rem fw-600 color-blue-light"> XPX </span>
-                    <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
-                  </div>
-
-                  <!-- Type -->
-                  <div class="col-12 mt-05rem">
-                    <span class="fw-600 fs-08rem">Type:&nbsp;&nbsp;</span>
-                    <span class="fs-065rem">{{dataSelected?.data['type'].toString(16).toUpperCase()}}</span>
-                  </div>
-
-                  <!-- Hash -->
-                  <div class="col-12 mt-05rem">
-                    <span class="fw-600 fs-08rem">Hash:&nbsp;&nbsp;</span>
-                    <span class="fs-065rem  w-w-b-w">{{dataSelected?.data.transactionInfo.hash}}</span>
-                  </div>
-
-                  <!-- Height -->
-                  <ng-container *ngIf="dataSelected?.data.transactionInfo.height.compact() > 0">
-                    <div class="col-12 mt-05rem">
-                      <span class="fw-600 fs-08rem">Height:&nbsp;&nbsp;</span>
-                      <span class="fs-065rem">{{dataSelected?.data.transactionInfo.height.compact()}}</span>
-                    </div>
-                  </ng-container>
-
-
-                  <!-- Transactions -->
-                  <div class="col-12 mt-1-5rem">
-                    <div class="row d-flex align-items-center">
-                      <div class="col-12 col-sm-4">
-                        <span class="fw-600 fs-095rem">Transactions</span>
-                      </div>
-                      <div class="col-12 col-sm-8 d-flex justify-content-start justify-content-sm-end">
-                        <pagination-controls [maxSize]="maxSize" [id]="configCustom.id"
-                          (pageChange)="configCustom.currentPage = $event">
-                        </pagination-controls>
-                      </div>
-                    </div>
-                    <hr class="mt-0">
-                  </div>
-
-                  <!-- Inner transaction -->
-                  <div class="col-12 ml-08rem scroll-accounts mb-1rem">
-                    <ng-container
-                      *ngFor="let innerTransaction of dataSelected?.data.innerTransactions | paginate: configCustom">
-                      <app-modify-multisig-account-type
-                        *ngIf="innerTransaction.type === typeTransactions.modifyMultisigAccount.id"
-                        [multisigAccount]="innerTransaction">
-                      </app-modify-multisig-account-type>
-                    </ng-container>
-                  </div>
-                </div>
-              </div>
-
-
-              <!-- Action Required -->
-              <div class="col-11 col-md-4 ml-2rem">
-                <div class="row d-block d-md-none">
-                  <div class="col-12">
-                    <hr>
-                  </div>
-                </div>
-
-                <div class="row">
-                  <div
-                    class="col-12 background-orange h-100px d-flex align-items-center justify-content-center txt-a-center">
+            <div class="row">
+              <div class="col-11 mx-auto">
+                <div class="row d-flex justify-content-center">
+                  <div class="col-12 col-md-6">
                     <div class="row">
-                      <div class="col-12">
-                        <span class="fw-600 color-white">Action</span>
+                      <!-- Bonded & Deadline -->
+                      <div class="col-12 lh-1em">
+                        <span class="fw-600 fs-1-2rem">Bonded</span> <br>
+                        <span class="fs-075rem">Deadline: {{dataSelected?.timestamp}}</span>
                       </div>
-                      <div class="col-12">
-                        <span class="fw-600 color-white">Required</span>
+
+                      <!-- Fee -->
+                      <div class="col-12 mt-1-5rem">
+                        <span class="fw-600 fs-095rem">Fee:&nbsp;&nbsp;</span>
+                        <span class="fs-095rem fw-600 color-blue-light">{{dataSelected?.feePart.part1}}</span>
+                        <span class="fs-075rem fw-600 color-blue-light">{{dataSelected?.feePart.part2}}</span>
+                        <span class="fs-095rem fw-600 color-blue-light"> XPX </span>
+                        <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
+                      </div>
+
+                      <!-- Type -->
+                      <div class="col-12 mt-05rem">
+                        <span class="fw-600 fs-08rem">Type:&nbsp;&nbsp;</span>
+                        <span class="fs-065rem">{{dataSelected?.data['type'].toString(16).toUpperCase()}}</span>
+                      </div>
+
+                      <!-- Height -->
+                      <ng-container *ngIf="dataSelected?.data.transactionInfo.height.compact() > 0">
+                        <div class="col-12 mt-05rem">
+                          <span class="fw-600 fs-08rem">Height:&nbsp;&nbsp;</span>
+                          <span class="fs-065rem">{{dataSelected?.data.transactionInfo.height.compact()}}</span>
+                        </div>
+                      </ng-container>
+
+                      <!-- Signer -->
+                      <div class="col-12 mt-05rem line-h-09em">
+                        <span class="fw-600 fs-08rem">Signer:</span> <br>
+                        <span class="fs-065rem w-w-b-w">{{dataSelected?.senderAddress}}</span>
+                      </div>
+
+                      <!-- Hash -->
+                      <div class="col-12 mt-05rem line-h-09em">
+                        <span class="fw-600 fs-08rem">Hash:</span> <br>
+                        <span class="fs-065rem w-w-b-w">{{dataSelected?.data.transactionInfo.hash}}</span>
+                      </div>
+
+                      <!-- Transactions -->
+                      <div class="col-12 mt-1-5rem">
+                        <div class="row d-flex align-items-center">
+                          <div class="col-12">
+                            <span class="fw-600 fs-095rem">Transactions</span>
+                          </div>
+                        </div>
+                        <hr class="mt-0">
+                      </div>
+
+                      <!-- Inner transaction -->
+                      <div class="col-12 mb-1rem">
+                        <mdb-accordion [multiple]="false" aria-multiselectable="true">
+                          <mdb-accordion-item [collapsed]="true"
+                            *ngFor="let innerTransaction of dataSelected?.data.innerTransactions">
+                            <mdb-accordion-item-head>{{innerTransaction['nameType']}}
+                            </mdb-accordion-item-head>
+                            <mdb-accordion-item-body class="scroll-accounts">
+                              <app-modify-multisig-account-type
+                                *ngIf="innerTransaction.type === typeTransactions.modifyMultisigAccount.id"
+                                [multisigAccount]="innerTransaction">
+                              </app-modify-multisig-account-type>
+                            </mdb-accordion-item-body>
+                          </mdb-accordion-item>
+                        </mdb-accordion>
                       </div>
                     </div>
                   </div>
 
-                  <div class="col-12 pt-1rem background-gray-light">
-                    <div class="row lh-1em">
-                      <div class="col-12">
-                        <span class="fw-600 fs-065rem">My cosignature account: </span>
-                      </div>
-                      <div class="col-12">
-                        <span class="fs-065rem">{{dataSelected?.senderAddress}}</span>
-                      </div>
-                    </div>
 
-                    <ng-container
-                      *ngIf="dataSelected?.data['cosignatures'] && dataSelected?.data['cosignatures'].length > 0">
-                      <div class="row lh-1em mt-1rem">
-                        <div class="col-12">
-                          <span class="fw-600 fs-065rem">({{dataSelected?.data['cosignatures'].length}}) Others
-                            cosignatories</span>
+                  <!-- Action Required -->
+                  <div class="col-12 col-md-6">
+                    <div class="row">
+                      <div
+                        class="col-12 background-orange h-100px d-flex align-items-center justify-content-center txt-a-center">
+                        <div class="row">
+                          <div class="col-12">
+                            <span class="fw-600 color-white">Action</span>
+                          </div>
+                          <div class="col-12">
+                            <span class="fw-600 color-white">Required</span>
+                          </div>
                         </div>
                       </div>
-                    </ng-container>
-                  </div>
-                </div>
-              </div>
 
-              <div class="col-11 mt-1rem">
-                <div class="row d-flex justify-content-center">
-                  <div class="col-11 col-sm-6 col-md-8 d-flex justify-content-center">
-                    <input mdbInputDirective [validateSuccess]="false" [validateError]="false"
-                      class="w-100porcent form-control" type="password" placeholder="Enter password" autocomplete="off"
-                      [(ngModel)]="password" [maxlength]="configurationForm.passwordWallet.maxLength"
-                      [minlength]="configurationForm.passwordWallet.minLength">
-                  </div>
+                      <div class="col-12 pt-1rem background-gray-light">
+                        <div class="row lh-1em">
+                          <div class="col-12">
+                            <span class="fw-600 fs-065rem">My cosignature account: </span>
+                          </div>
+                          <div class="col-12">
+                            <span class="fs-065rem">{{dataSelected?.senderAddress}}</span>
+                          </div>
+                        </div>
 
-                  <div class="col-11 col-sm-6 col-md-4 d-flex justify-content-center">
-                    <button (click)="sendTransaction()" autocomplete="false" [disabled]="password === '' ||
-                    password.length < this.configurationForm.passwordWallet.minLength ||
-                    password.length > this.configurationForm.passwordWallet.maxLength" mdbBtn type="button"
-                      rounded="true" mdbWavesEffect class="f-w-600 background-btn pt-1rem" size="sm">
-                      <span class="fs-1-2em color-white">APPROVE TO CONTINUE</span>
-                    </button>
+                        <ng-container
+                          *ngIf="dataSelected?.data['cosignatures'] && dataSelected?.data['cosignatures'].length > 0">
+                          <div class="row lh-1em mt-1rem">
+                            <div class="col-12">
+                              <span class="fw-600 fs-065rem">({{dataSelected?.data['cosignatures'].length}}) Others
+                                cosignatories</span>
+                            </div>
+                          </div>
+                        </ng-container>
+                      </div>
+
+                      <!-- PASSWORD -->
+                      <div class="col-12 mt-1rem">
+                        <ng-container *ngIf="arraySelect.length > 0">
+                          <div class="row">
+                            <div class="col-12">
+                              <ng-select class="selectWrapper" [(ngModel)]="account" [items]="arraySelect"
+                                bindLabel="label" bindValue="value" placeholder="Select account"
+                                [title]="accountSelected" (change)="selectAccount($event)">
+                              </ng-select>
+                            </div>
+                          </div>
+                        </ng-container>
+
+
+                        <div class="row d-flex justify-content-center">
+                          <div class="col-12">
+                            <div class="md-form form-sm">
+                              <input [maxlength]="configurationForm.passwordWallet.maxLength"
+                                [minlength]="configurationForm.passwordWallet.minLength" [(ngModel)]="password" required
+                                mdbInputDirective [validateSuccess]="false" [validateError]="false" type="password"
+                                id="password" class="form-control form-control-sm input-border"
+                                placeholder="Enter password">
+                            </div>
+                          </div>
+
+                          <div class="col-12 d-flex justify-content-center">
+                            <button (click)="sendTransaction()" autocomplete="false" [disabled]="validateAccount || password === '' || password.length <
+                                this.configurationForm.passwordWallet.minLength || password.length>
+                                this.configurationForm.passwordWallet.maxLength" mdbBtn type="button" rounded="true"
+                              mdbWavesEffect class="f-w-600 background-btn pt-1rem" size="sm">
+                              <span class="fs-1-2em color-white">APPROVE TO CONTINUE</span>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>

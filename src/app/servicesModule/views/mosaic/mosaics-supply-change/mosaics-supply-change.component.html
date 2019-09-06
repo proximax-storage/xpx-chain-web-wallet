@@ -10,7 +10,7 @@
             <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
               class="selectWrapper" [items]="parentMosaic" formControlName="parentMosaic" bindLabel="label"
               bindValue="value" placeholder="Select or write mosaic" (change)="optionSelected($event)"></ng-select>
-            <mdb-error class="mt-1rem ml-1rem"
+            <mdb-error class="ml-1rem"
               *ngIf="validateInput('parentMosaic').invalid && (validateInput('parentMosaic').dirty || validateInput('parentMosaic').touched)">
               <span>Select or write mosaic</span>
             </mdb-error>
@@ -23,7 +23,7 @@
             <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
               class="selectWrapper" [items]="mosaicSupplyType" formControlName="mosaicSupplyType" bindLabel="label"
               bindValue="value" placeholder="Increase or decrease"></ng-select>
-            <mdb-error class="mt-1rem ml-1rem"
+            <mdb-error class="ml-1rem"
               *ngIf="validateInput('mosaicSupplyType').invalid && (validateInput('mosaicSupplyType').dirty || validateInput('mosaicSupplyType').touched)">
               <span>Increase or decrease</span>
             </mdb-error>
@@ -36,7 +36,8 @@
             <div class="md-form form-sm mt-1rem mb-0rem">
               <input formControlName="deltaSupply" currencyMask [options]="optionsSupply" mdbInputDirective mdbValidate
                 [validateSuccess]="true" [validateError]="true" type="text" id="deltaSupply" maxlength="32"
-                class="form-control form-control-sm input-border input-amount" placeholder="Quantity of increase/decrease">
+                class="form-control form-control-sm input-border input-amount"
+                placeholder="Quantity of increase/decrease">
 
               <mdb-error
                 *ngIf="validateInput('deltaSupply', '').invalid && (validateInput('deltaSupply', '').dirty || validateInput('deltaSupply', '').touched)">
