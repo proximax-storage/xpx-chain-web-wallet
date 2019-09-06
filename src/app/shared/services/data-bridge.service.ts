@@ -101,6 +101,7 @@ export class DataBridgeService {
       this.connector.open().then(() => {
         const audio = new Audio('assets/audio/ding.ogg');
         const audio2 = new Audio('assets/audio/ding2.ogg');
+        this.getSocketTransactionsAggreateBonded(this.connector, audio2);
         this.getSocketTransactionsConfirmed(this.connector, audio2);
         this.getSocketTransactionsUnConfirmed(this.connector, audio);
         this.getSocketStatusError(this.connector, audio);
@@ -141,7 +142,56 @@ export class DataBridgeService {
     });
   }
 
+  /**
+   *
+   *
+   * @param {Listener} connector
+   * @param {HTMLAudioElement} audio
+   * @memberof DataBridgeService
+   */
+  getSocketTransactionsAggreateBondedRemoved(connector: Listener, audio: HTMLAudioElement) {
+    const currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
+    currentWallet.accounts.forEach(element => {
+      const address = this.proximaxProvider.createFromRawAddress(element.address);
+      console.log('TO CONNECT --> ', address);
+      connector.aggregateBondedRemoved(address).subscribe((aggregateBondedRemoved: string) => {
+        console.log('THE ADDRESS ---> ', address);
+        console.log('aggregateBondedRemoved--> ', aggregateBondedRemoved);
+        this.setTransactionStatus({
+          'type': 'aggregateBondedRemoved',
+          'data': aggregateBondedRemoved
+        });
+      }, err => {
+        // console.error(err)
+      });
+    });
+  }
 
+
+  /**
+   *
+   *
+   * @memberof DataBridgeService
+   */
+  getSocketTransactionsAggreateBonded(connector: Listener, audio: HTMLAudioElement) {
+    const currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
+    currentWallet.accounts.forEach(element => {
+      const address = this.proximaxProvider.createFromRawAddress(element.address);
+      console.log('TO CONNECT --> ', address);
+
+      connector.aggregateBondedAdded(address).subscribe((aggregateBondedAdded: Transaction) => {
+        console.log('THE ADDRESS ---> ', address);
+        console.log('aggregateBondedAdded--> ', aggregateBondedAdded);
+
+        this.setTransactionStatus({
+          'type': 'aggregateBondedAdded',
+          'data': aggregateBondedAdded
+        });
+      }, err => {
+        // console.error(err)
+      });
+    });
+  }
 
   /**
    * Get the confirmed transactions from the socket

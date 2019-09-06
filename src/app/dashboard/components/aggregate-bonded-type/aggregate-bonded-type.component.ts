@@ -19,7 +19,7 @@ export class AggregateBondedTypeComponent implements OnInit {
 
   headElements = ['Signer', 'Public Key', 'signature'];
   maxSize = 0;
-  typeTransactions: any;
+  typeTransactions = this.transactionService.getTypeTransactions();
 
   constructor(public transactionService: TransactionsService) { }
 
@@ -29,6 +29,14 @@ export class AggregateBondedTypeComponent implements OnInit {
 
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
     console.log(this.aggregateBonded);
+    console.log(this.typeTransactions);
+
+    this.aggregateBonded.data['innerTransactions'].forEach(element => {
+      console.log(element);
+
+      const nameType = Object.keys(this.typeTransactions).find(x => this.typeTransactions[x].id === element.type);
+      element['nameType'] = (nameType) ? this.typeTransactions[nameType].name : element.type.toString(16).toUpperCase();
+    });
   }
 
 }

@@ -22,7 +22,7 @@
         <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" class="selectWrapper"
           [items]="optionsEncryptionMethods" formControlName="encryptionMethod" bindLabel="name" bindValue="value"
           placeholder="Select encryption method" (change)="encryptionMethodSelect($event)"></ng-select>
-        <mdb-error class="mt-1rem ml-1rem"
+        <mdb-error class="ml-1rem"
           *ngIf="validateInput('encryptionMethod').invalid && (validateInput('encryptionMethod').dirty || validateInput('encryptionMethod').touched)">
           <span>Encrypt contents to secure data</span>
         </mdb-error>
@@ -45,6 +45,19 @@
             *ngIf="validateInput('encryptionPassword', '').invalid && (validateInput('encryptionPassword', '').dirty || validateInput('encryptionPassword', '').touched)">
             <span>Invalid encryption password</span>
           </mdb-error>
+        </div>
+      </div>
+    </div>
+
+    <div class="row pt-05rem">
+      <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto">
+        <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
+          <div class="row">
+            <div class="col-12">
+              <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" alt="">
+              <span>Fee: 0.000000 XPX</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>

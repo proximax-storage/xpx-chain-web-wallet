@@ -1,5 +1,5 @@
 <div class="container mt-3rem mb-2rem animated fadeIn">
-  <app-header [params]="paramsHeader" ></app-header>
+  <app-header [params]="paramsHeader"></app-header>
 
   <form [formGroup]="LinkToNamespaceForm" (ngSubmit)="sendTransaction()">
     <div class="row mt-1-5rem">
@@ -7,7 +7,7 @@
         <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" class="selectWrapper"
           [items]="typeAction" formControlName="typeAction" bindLabel="label" bindValue="value"
           placeholder="Select action" (change)="buildSelectNamespace($event)"></ng-select>
-        <mdb-error class="mt-1rem ml-1rem"
+        <mdb-error class="ml-1rem"
           *ngIf="validateInput('typeAction').invalid && (validateInput('typeAction').dirty || validateInput('typeAction').touched)">
           <span class="fs-08rem fw-600 color-error-message">Select action</span>
         </mdb-error>
@@ -23,7 +23,7 @@
         <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" class="selectWrapper"
           [items]="namespaceSelect" formControlName="namespace" bindLabel="label" bindValue="value"
           placeholder="Select namespace"></ng-select>
-        <mdb-error class="mt-1rem ml-1rem"
+        <mdb-error class="ml-1rem"
           *ngIf="validateInput('namespace').invalid && (validateInput('namespace').dirty || validateInput('namespace').touched)">
           <span class="fs-08rem fw-600 color-error-message">Select namespace</span>
         </mdb-error>

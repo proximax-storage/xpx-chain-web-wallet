@@ -98,7 +98,7 @@ export class EditAccountMultisignComponent implements OnInit {
  */
   ngOnDestroy(): void {
     this.subscribeAccount.unsubscribe();
-    
+
 
   }
 
@@ -466,14 +466,25 @@ export class EditAccountMultisignComponent implements OnInit {
         if (statusTransaction !== null && statusTransaction !== undefined && signedTransaction !== null) {
           const statusTransactionHash = (statusTransaction['type'] === 'error') ? statusTransaction['data'].hash : statusTransaction['data'].transactionInfo.hash;
           const match = statusTransactionHash === signedTransaction.hash;
+          // CONFIRMED
           if (statusTransaction['type'] === 'confirmed' && match) {
             signedTransaction = null;
             this.sharedService.showSuccess('', 'Transaction confirmed');
-          } else if (statusTransaction['type'] === 'unconfirmed' && match) {
+          }
+          // UNCONFIRMED
+          else if (statusTransaction['type'] === 'unconfirmed' && match) {
             this.transactionService.searchAccountsInfo([this.currentAccountToConvert])
             signedTransaction = null;
             this.sharedService.showInfo('', 'Transaction unconfirmed');
-          } else if (match) {
+          }
+          // AGGREGATE BONDED ADDED
+          else if (statusTransaction['type'] === 'aggregateBondedAdded' && match) {
+            this.transactionService.searchAccountsInfo([this.currentAccountToConvert])
+            signedTransaction = null;
+            this.sharedService.showInfo('', 'Transaction aggregate bonded added');
+          }
+          // MATCH
+          else if (match) {
             signedTransaction = null;
             this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
           }
@@ -585,7 +596,7 @@ export class EditAccountMultisignComponent implements OnInit {
           this.searchContact = false;
           if (res.publicKeyHeight.toHex() === '0000000000000000') {
             this.sharedService.showWarning('', 'you need a public key');
-        
+
             this.editAccountMultsignForm.get('cosignatory').patchValue('', { emitEvent: false, onlySelf: true });
             this.editAccountMultsignForm.get('contact').patchValue('', { emitEvent: false, onlySelf: true });
             // this.showContacts = false;
@@ -598,7 +609,7 @@ export class EditAccountMultisignComponent implements OnInit {
           this.searchContact = false;
           this.sharedService.showWarning('', 'Address is not valid');
         })
-      } else { 
+      } else {
         this.subscribeAccountContat = this.walletService.getAccountsInfo$().subscribe(
           async accountInfo => {
             if (accountInfo) {
@@ -612,14 +623,14 @@ export class EditAccountMultisignComponent implements OnInit {
               if (this.subscribeAccountContat) {
                 this.subscribeAccountContat.unsubscribe();
               }
-               if (accountValid){
+              if (accountValid) {
                 this.editAccountMultsignForm.get('cosignatory').patchValue(account.accountInfo.publicKey, { emitEvent: true })
                 this.editAccountMultsignForm.get('contact').patchValue('', { emitEvent: false, onlySelf: true });
-               }else{
+              } else {
                 this.sharedService.showWarning('', 'you need a public key');
                 this.editAccountMultsignForm.get('contact').patchValue('', { emitEvent: false, onlySelf: true });
-               }
-                
+              }
+
             } else {
               this.editAccountMultsignForm.get('contact').patchValue('', { emitEvent: false, onlySelf: true });
               this.sharedService.showWarning('', 'Address is not valid');

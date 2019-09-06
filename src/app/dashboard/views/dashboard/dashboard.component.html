@@ -239,10 +239,27 @@
             <app-aggregate-complete-type [aggregateComplete]="dataSelected"
               *ngIf="dataSelected.data.type === typeTransactions.aggregateComplete.id">
             </app-aggregate-complete-type>
+
             <!-- TYPE AGGREGATE BONDED -->
-            <app-aggregate-bonded-type [aggregateBonded]="dataSelected"
-              *ngIf="dataSelected.data.type === typeTransactions.aggregateBonded.id">
-            </app-aggregate-bonded-type>
+            <ng-container *ngIf="dataSelected.data.type === typeTransactions.aggregateBonded.id">
+              <div class="row">
+                <div class="col-11 mx-auto">
+                  <div class="row">
+                    <!-- AGGREGATE BONDED TYPE -->
+                    <div class="col-12 col-md-7">
+                      <app-aggregate-bonded-type [aggregateBonded]="dataSelected">
+                      </app-aggregate-bonded-type>
+                    </div>
+
+                    <!-- BOX DATA SIGNER HASH -->
+                    <div class="col-12 col-md-5">
+                      <app-box-data-signer-hash [dataSelected]="dataSelected"></app-box-data-signer-hash>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+
             <!-- MOSAIC ALIAS -->
             <app-mosaic-alias [mosaicAlias]="dataSelected"
               *ngIf="dataSelected.data.type === typeTransactions.mosaicAlias.id">

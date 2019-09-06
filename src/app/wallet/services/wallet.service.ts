@@ -69,6 +69,24 @@ export class WalletService {
   /**
    *
    *
+   * @memberof WalletService
+   */
+  countTimeVote() {
+    this.canVote = false;
+    let t = timer(1, 1000);
+    this.subscribeLogged = t.subscribe(t => {
+      if (t >= 20) {
+        this.canVote = true;
+        this.subscribeLogged.unsubscribe();
+      } else {
+        this.canVote = false;
+      }
+    });
+  }
+
+  /**
+   *
+   *
    * @param {string} name
    * @memberof WalletService
    */
@@ -129,12 +147,12 @@ export class WalletService {
   }
 
   /**
-*
-*
-* @param {string} name
-* @param {string} isMultisig
-* @memberof WalletService
-*/
+  *
+  *
+  * @param {string} name
+  * @param {string} isMultisig
+  * @memberof WalletService
+  */
   changeIsMultiSign(name: string, isMultisig: MultisigAccountInfo) {
     const myAccounts: AccountsInterface[] = Object.assign(this.currentWallet.accounts);
     const othersWallet: CurrentWalletInterface[] = this.getWalletStorage().filter(
@@ -219,11 +237,15 @@ export class WalletService {
    * @returns
    * @memberof WalletService
    */
-  filterAccountInfo(nameAccount?: string): AccountsInfoInterface {
+  filterAccountInfo(account?: string, byAddress?: boolean): AccountsInfoInterface {
+    if (byAddress) {
+      return this.accountsInfo.find(next => next.accountInfo.address.pretty() === account);
+    }
+
     if (this.accountsInfo && this.accountsInfo.length > 0) {
-      if (nameAccount) {
-        // console.log('---nameAccount---', nameAccount);
-        return this.accountsInfo.find(next => next.name === nameAccount);
+      if (account) {
+        // console.log('---account---', account);
+        return this.accountsInfo.find(next => next.name === account);
       } else {
         return this.accountsInfo.find(next => next.name === this.currentAccount.name);
       }
@@ -503,11 +525,13 @@ export class WalletService {
    * @returns
    * @memberof WalletService
    */
-  filterAccount(byName: string, byDefault: boolean = null): AccountsInterface {
+  filterAccount(byName: string = '', byDefault: boolean = null, byAddress = ''): AccountsInterface {
     if (byDefault !== null && byName === '') {
       return this.currentWallet.accounts.find(elm => elm.default === true);
-    } else {
+    } else if (byName !== '') {
       return this.currentWallet.accounts.find(elm => elm.name === byName);
+    } else {
+      return this.currentWallet.accounts.find(elm => this.proximaxProvider.createFromRawAddress(elm.address).pretty() === byAddress);
     }
   }
 
@@ -522,18 +546,7 @@ export class WalletService {
     // this.accountInfoSubject.next(accountInfo);
   }
 
-  countTimeVote() {
-    this.canVote = false;
-    let t = timer(1, 1000);
-    this.subscribeLogged = t.subscribe(t => {
-      if (t >= 20) {
-        this.canVote = true;
-        this.subscribeLogged.unsubscribe();
-      }else{
-        this.canVote = false;
-      }
-    });
-  }
+
 
 }
 
