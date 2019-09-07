@@ -47,6 +47,10 @@ export class SharedService {
       minLength: 8,
       maxLength: 30
     },
+    passwordEncriptionFile: {
+      minLength: 11,
+      maxLength: 30
+    },
     message: {
       maxLength: 1024
     },
@@ -230,6 +234,10 @@ export interface ConfigurationForm {
     maxLength: number;
   };
   passwordWallet?: {
+    minLength: number;
+    maxLength: number;
+  };
+  passwordEncriptionFile?: {
     minLength: number;
     maxLength: number;
   };
