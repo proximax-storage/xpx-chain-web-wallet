@@ -113,8 +113,7 @@ export class CreateWalletComponent implements OnInit {
           nameAccount: 'Primary',
           publicAccount: this.proximaxProvider.getPublicAccountFromPrivateKey(this.proximaxProvider.decryptPrivateKey(
             password,
-            wallet.
-              encryptedPrivateKey.encryptedKey,
+            wallet.encryptedPrivateKey.encryptedKey,
             wallet.encryptedPrivateKey.iv
           ).toUpperCase(), wallet.network),
           isMultisign: null

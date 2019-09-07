@@ -17,7 +17,8 @@ import {
   PublicAccount,
   Address,
   MultisigAccountInfo,
-  NamespaceId
+  NamespaceId,
+  AggregateTransaction
 } from "tsjs-xpx-chain-sdk";
 import { first } from "rxjs/operators";
 import { ProximaxProvider } from "../../shared/services/proximax.provider";
@@ -170,9 +171,6 @@ export class TransactionsService {
    */
   getStructureDashboard(transaction: Transaction, othersTransactions?: TransactionsInterface[]): TransactionsInterface {
     let isValid = true;
-    console.log('transaction ----> ', transaction);
-    console.log('othersTransactions ----> ', othersTransactions);
-
     if (othersTransactions && othersTransactions.length > 0) {
       const x = othersTransactions.filter(next => next.data.transactionInfo.hash === transaction.transactionInfo.hash);
       if (x && x.length > 0) {
@@ -181,9 +179,6 @@ export class TransactionsService {
     }
 
     const keyType = this.getNameTypeTransaction(transaction.type);
-    console.log('keyType --->', keyType);
-    console.log('isValid --->', isValid);
-
     if (keyType !== undefined && isValid) {
       let recipientRentalFeeSink = '';
       if (transaction["mosaics"] === undefined) {
@@ -541,6 +536,7 @@ export class TransactionsService {
             accountInfo: info,
             multisigInfo: isMultisig
           }];
+
           this.walletService.changeIsMultiSign(element.name, isMultisig)
           this.walletService.setAccountsInfo(accountsInfo, true);
           counter = counter + 1;
@@ -659,7 +655,10 @@ export class TransactionsService {
 
 
 export interface TransactionsInterface {
-  data: Transaction;
+  // data: Transaction;
+  data: any;
+  dateFile?: string;
+  description?: string;
   nameType: string;
   timestamp: string;
   fee: string;
@@ -674,9 +673,7 @@ export interface TransactionsInterface {
   receive: boolean;
   senderAddress: string;
   fileName?: string;
-  dateFile?: string;
   privateFile?: boolean;
-  description?: string;
   name?: string;
   hash?: string;
 }
