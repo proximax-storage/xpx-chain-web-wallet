@@ -22,29 +22,48 @@
         <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" class="selectWrapper"
           [items]="optionsEncryptionMethods" formControlName="encryptionMethod" bindLabel="name" bindValue="value"
           placeholder="Select encryption method" (change)="encryptionMethodSelect($event)"></ng-select>
-        <mdb-error class="ml-1rem"
-          *ngIf="validateInput('encryptionMethod').invalid && (validateInput('encryptionMethod').dirty || validateInput('encryptionMethod').touched)">
-          <span>Encrypt contents to secure data</span>
-        </mdb-error>
       </div>
     </div>
 
 
-    <div class="row pt-05rem" *ngIf="showEncryptionPassword">
+    <div class="row pt-05rem" *ngIf="showEncryptionPassword" formGroupName="encryptionPasswords">
       <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto">
         <div class="md-form form-sm mt-1rem mb-0rem">
-          <input [maxlength]="configurationForm.passwordWallet.maxLength"
-            [minlength]="configurationForm.passwordWallet.minLength" formControlName="encryptionPassword" required
+          <input [maxlength]="configurationForm.passwordEncriptionFile.maxLength"
+            [minlength]="configurationForm.passwordEncriptionFile.minLength" formControlName="password" required
             mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password"
-            id="encryptionPassword" class="form-control form-control-sm input-border"
-            placeholder="Enter the file encryption password" mdbPopover="At least {{configurationForm.passwordWallet.minLength}} characters, must include UPPER CASE
-            letters and numbers" placement="top" triggers="focus" mdbPopoverHeader="Password suggestion">
+            id="password{{errorMatchPassword}}" class="form-control form-control-sm input-border"
+            placeholder="Enter file encryption password" mdbPopover="At least {{configurationForm.passwordEncriptionFile.minLength}} characters, must include UPPER CASE
+              letters and numbers" placement="top" triggers="focus" mdbPopoverHeader="Password suggestion">
 
           <!-- VALIDATION -->
           <mdb-error
-            *ngIf="validateInput('encryptionPassword', '').invalid && (validateInput('encryptionPassword', '').dirty || validateInput('encryptionPassword', '').touched)">
+            *ngIf="validateInput('password', 'encryptionPasswords').invalid &&
+            (validateInput('password', 'encryptionPasswords').dirty || validateInput('password', 'encryptionPasswords').touched)">
             <span>Invalid encryption password</span>
           </mdb-error>
+        </div>
+      </div>
+
+      <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto">
+        <div class="md-form form-sm mt-1rem mb-0rem">
+          <input [maxlength]="configurationForm.passwordEncriptionFile.maxLength"
+            [minlength]="configurationForm.passwordEncriptionFile.minLength" formControlName="confirm_password" required
+            mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password"
+            id="confirm-password{{errorMatchPassword}}" class="form-control form-control-sm input-border"
+            placeholder="Confirm file encryption password" mdbPopover="At least {{configurationForm.passwordEncriptionFile.minLength}} characters, must include UPPER CASE
+                letters and numbers" placement="top" triggers="focus" mdbPopoverHeader="Password suggestion">
+
+          <!-- VALIDATION -->
+          <mdb-error
+          *ngIf="validateInput('confirm_password', 'encryptionPasswords').invalid &&
+          (validateInput('confirm_password', 'encryptionPasswords').dirty || validateInput('confirm_password', 'encryptionPasswords').touched)">
+            <span>Invalid encryption password</span>
+          </mdb-error>
+
+          <mdb-error *ngIf="validateMatchPassword()">
+              <span>Password doesn't match</span>
+            </mdb-error>
         </div>
       </div>
     </div>
@@ -90,7 +109,7 @@
 
       <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
         <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
-          size="md">
+          size="md" [disabled]="!uploadForm.valid">
           <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
             *ngIf="blockUpload"></span>
           <span class="fs-1-2em color-white">UPLOAD</span>

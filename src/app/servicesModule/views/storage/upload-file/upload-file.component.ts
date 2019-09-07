@@ -42,6 +42,7 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
   privacyType: any;
   uploader: Uploader;
   goBack = `/${AppConfig.routes.service}`;
+  errorMatchPassword: string;
 
   constructor(
     private cdRef: ChangeDetectorRef,
@@ -93,41 +94,61 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
     ];
 
     this.uploadForm = this.fb.group({
-      title: [''],
-      description: [''],
+      // title: [''],
+      // description: [''],
       filePath: [''],
-      recipientAddress: ['', [
-        Validators.minLength(this.configurationForm.address.minLength),
-        Validators.maxLength(this.configurationForm.address.maxLength)
-      ]],
+      // recipientAddress: ['', [
+      //   Validators.minLength(this.configurationForm.address.minLength),
+      //   Validators.maxLength(this.configurationForm.address.maxLength)
+      // ]],
       recipientPublicKey: ['', [
         Validators.minLength(this.configurationForm.publicKey.minLength),
         Validators.maxLength(this.configurationForm.publicKey.maxLength)
       ]],
-      secureMessage: [''],
-      usePasswordPrivacy: ['', [
-        Validators.minLength(this.configurationForm.passwordWallet.minLength),
-        Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
-      ]],
+      // secureMessage: [''],
+      // usePasswordPrivacy: ['', [
+      //   Validators.minLength(this.configurationForm.passwordWallet.minLength),
+      //   Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
+      // ]],
       walletPassword: ['', [
         Validators.minLength(this.configurationForm.passwordWallet.minLength),
         Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
       ]],
-      password: ['', [
-        Validators.minLength(this.configurationForm.passwordWallet.minLength),
-        Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
-      ]],
-      fileInput: [''],
+      // password: ['', [
+      //   Validators.minLength(this.configurationForm.passwordWallet.minLength),
+      //   Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
+      // ]],
+      // fileInput: [''],
       privateKey: ['', [
         Validators.minLength(this.configurationForm.privateKey.minLength),
         Validators.maxLength(this.configurationForm.privateKey.maxLength)
       ]],
-      useSecureMessage: [''],
+      // useSecureMessage: [''],
       encryptionMethod: [''],
-      encryptionPassword: ['', [
-        Validators.minLength(this.configurationForm.passwordWallet.minLength),
-        Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
-      ]],
+      // encryptionPassword: ['', [
+      //   Validators.minLength(this.configurationForm.passwordWallet.minLength),
+      //   Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
+      // ]],
+      encryptionPasswords: this.fb.group(
+        {
+          password: [
+            '', [
+              Validators.required,
+              Validators.minLength(this.configurationForm.passwordEncriptionFile.minLength),
+              Validators.maxLength(this.configurationForm.passwordEncriptionFile.maxLength)
+            ]
+          ],
+          confirm_password: [
+            '',
+            [
+              Validators.required,
+              Validators.minLength(this.configurationForm.passwordEncriptionFile.minLength),
+              Validators.maxLength(this.configurationForm.passwordEncriptionFile.maxLength)
+            ]
+          ],
+        }, {
+        validator: this.sharedService.equalsPassword
+      }),
       recipientPrivateKey: ['', [
         Validators.minLength(this.configurationForm.privateKey.minLength),
         Validators.maxLength(this.configurationForm.privateKey.maxLength)
@@ -161,6 +182,26 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
       validation = this.uploadForm.get(nameInput);
     }
     return validation;
+  }
+
+  /**
+   *
+   *
+   * @returns
+   * @memberof CreateWalletComponent
+   */
+  validateMatchPassword() {
+    if (this.validateInput('password', 'encryptionPasswords').valid &&
+      this.validateInput('confirm_password', 'encryptionPasswords').valid &&
+      this.validateInput('', 'encryptionPasswords', 'noMatch') &&
+      (this.validateInput('password', 'encryptionPasswords').dirty || this.validateInput('password', 'encryptionPasswords').touched) &&
+      (this.validateInput('password', 'encryptionPasswords').dirty || this.validateInput('password', 'encryptionPasswords').touched)) {
+      this.errorMatchPassword = '-invalid';
+      return true;
+    }
+
+    this.errorMatchPassword = '';
+    return false;
   }
 
   showFiles() {
@@ -203,7 +244,12 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
         this.showEncryptionPassword = true;
         this.showEncryptionKeyPair = false;
 
-        this.uploadForm.controls['encryptionPassword'].setValidators([
+        this.uploadForm.controls.encryptionPasswords.get('password').setValidators([
+          Validators.minLength(this.configurationForm.passwordWallet.minLength),
+          Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
+        ]);
+
+        this.uploadForm.controls.encryptionPasswords.get('confirm_password').setValidators([
           Validators.minLength(this.configurationForm.passwordWallet.minLength),
           Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
         ]);
@@ -274,7 +320,7 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
     } else {
       switch (encryptionMethod) {
         case PrivacyType.PASSWORD:
-          const encryptionPassword = this.uploadForm.get('encryptionPassword').value;
+          const encryptionPassword = this.uploadForm.controls.encryptionPasswords.get('password').value;
           if (encryptionPassword.length <= 0) {
             this.blockUpload = true;
             this.sharedService.showError('Attention', 'Please enter the encryption password');
@@ -337,7 +383,7 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
               uploadParams.withPlainPrivacy();
               break;
             case PrivacyType.PASSWORD:
-              const encryptionPassword = this.uploadForm.get('encryptionPassword').value;
+              const encryptionPassword = this.uploadForm.controls.encryptionPasswords.get('password').value;
               console.log(encryptionPassword);
               uploadParams.withPasswordPrivacy(encryptionPassword);
               break;
