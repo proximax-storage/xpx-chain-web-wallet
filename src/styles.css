@@ -338,6 +338,10 @@ body {
   padding-bottom: 3rem;
 }
 
+.pb-10px {
+  padding-bottom: 10px;
+}
+
 /** LEFT **/
 
 .pl-0px {
