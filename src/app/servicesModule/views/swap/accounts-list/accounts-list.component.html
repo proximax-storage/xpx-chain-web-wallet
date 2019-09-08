@@ -48,23 +48,105 @@
 
   <!-- ACCOUNTS LIST -->
   <div class="row">
-    <div class="col-12 col-md-10 col-lg-9 col-xl-10 mx-auto">
+    <div class="col-sm-12 col-md-10 col-lg-8 col-xl-8 mx-auto">
       <div class="col-12 d-flex justify-content-center pt-2rem">
-        <span class="fs-1rem fw-500 txt-a-center line-h-1-2em color-black">Please select a account</span>
+        <span class="fs-1rem fw-500 txt-a-center line-h-1-2em color-black">Account Selected</span>
       </div>
-      <div class="row" *ngFor="let item of list">
-        <div class="col-11 col-sm-12 col-md-12 mx-auto d-flex align-items-center box-grey">
+      <div class="row">
+        <div class="col-10 col-sm-12 col-md-12 mx-auto d-flex align-items-center box-grey">
           <div class="col-10">
-            <span class="color-black">{{ item.name }}</span>
-            <span class="font-small d-flex color-black">{{ item.address }}</span>
-            <span class="font-small d-flex color-black">Balance: <b>{{ item.balance }}</b> XPX</span>
+            <span class="color-black">{{ accountInfo.name }}</span>
+            <span class="font-small d-flex color-black">{{ accountInfo.address }}</span>
+            <span class="font-small d-flex color-black">Balance: <b>{{ accountInfo.balance }}</b> XPX</span>
           </div>
           <div class="col-2 text-center">
-            <!-- <i mdbWavesEffect (click)="copyMessage('Address')" ngxClipboard [cbContent]="address"
-                          class="fa fa-copy cursor-p"></i> -->
-            <!-- <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="cursor-p" alt="Copy"
-              width="20" (click)="copyMessage('Address')" ngxClipboard [cbContent]="address"> -->
             <span class="color-blue-intermedio font-small">SELECT ></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- INPUT AMOUNT TO SWAP -->
+    <div class="col-sm-12 col-md-10 col-lg-8 col-xl-8 mx-auto">
+      <div class="col-12 d-flex justify-content-center pt-1rem">
+        <span class="fs-1rem fw-500 txt-a-center line-h-1-2em color-black">Amount To Swap</span>
+      </div>
+      <div class="row">
+        <div class="col-10 col-sm-12 col-md-12 mx-auto">
+          <div class="md-form form-sm mt-1rem mb-0rem">
+            <input [maxlength]="configurationForm.passwordWallet.maxLength"
+              [minlength]="configurationForm.passwordWallet.minLength" formControlName="encryptionPassword" required
+              mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password"
+              id="encryptionPassword" class="form-control form-control-sm input-border"
+              placeholder="Enter the file encryption password" mdbPopover="At least {{configurationForm.passwordWallet.minLength}} characters, must include UPPER CASE
+                      letters and numbers" placement="top" triggers="focus" mdbPopoverHeader="Password suggestion">
+
+            <!-- VALIDATION -->
+            <mdb-error
+              *ngIf="validateInput('encryptionPassword', '').invalid && (validateInput('encryptionPassword', '').dirty || validateInput('encryptionPassword', '').touched)">
+              <span>Invalid encryption password</span>
+            </mdb-error>
+          </div>
+        </div>
+
+        <!-- ACCOUNT TO SWAP -->
+        <div class="col-10 col-sm-12 col-md-12 mx-auto">
+          <ng-select mdbInputDirective mdbValidate formControlName="contact" class="selectWrapper" [items]="listContacts"
+            bindLabel="label" bindValue="value" placeholder="Contact" (change)="selectContact($event)">
+          </ng-select>
+        </div>
+
+        <div class="col-10 col-sm-12 col-md-12 mx-auto">
+          <div class="md-form form-sm mt-1rem mb-0rem d-flex">
+            <input mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
+              class="form-control form-control-sm input-border" style="border: 2px solid #2ba1b9;" placeholder="Recipient"
+              formControlName="accountRecipient" id="recipient-invalid-{{invalidRecipient}}"
+              [maxlength]="configurationForm.address.maxLength" [minlength]="configurationForm.address.minLength">
+            <mdb-error
+              *ngIf="validateInput('accountRecipient').invalid && (validateInput('accountRecipient').dirty || validateInput('accountRecipient').touched)">
+              <span class="fs-08rem fw-600 color-error-message">Invalid Recipient</span>
+            </mdb-error>
+
+            <mdb-error *ngIf="msgErrorUnsupported !== ''">
+              <span class="fs-08rem fw-600 color-error-message">{{msgErrorUnsupported}}</span>
+            </mdb-error>
+
+            <ng-container>
+              <div class="col-4 col-sm-3 col-md-2 d-flex justify-content-center align-items-center pt-10px">
+                <div [disabled]="listContacts.length === 0" class="background-gray-icons p-12px bord-rad-25px cursor-p"
+                  (click)="showContacts = (listContacts.length > 0) ? !showContacts : showContacts"
+                  [title]="(!showContacts) ? 'Show contacts': 'Hide contacts'">
+                  <img class=" w-30px" [src]="(!showContacts && listContacts.length === 0) ?
+                            'assets/images/img/icon-address-book-gray-28h-proximax-sirius-wallet.svg' :
+                            'assets/images/img/icon-address-green-book-16h-proximax-sirius-wallet.svg'
+                            ">
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+
+        <!-- WALLET PASSWORD -->
+        <div class="col-10 col-sm-12 col-md-12 mx-auto">
+          <div class="md-form form-sm mt-1rem mb-0rem">
+            <input [maxlength]="configurationForm.passwordWallet.maxLength"
+              [minlength]="configurationForm.passwordWallet.minLength" formControlName="encryptionPassword" required
+              mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password"
+              id="encryptionPassword" class="form-control form-control-sm input-border"
+              placeholder="Enter the file encryption password" mdbPopover="At least {{configurationForm.passwordWallet.minLength}} characters, must include UPPER CASE
+                              letters and numbers" placement="top" triggers="focus" mdbPopoverHeader="Password suggestion">
+
+            <!-- VALIDATION -->
+            <mdb-error
+              *ngIf="validateInput('encryptionPassword', '').invalid && (validateInput('encryptionPassword', '').dirty || validateInput('encryptionPassword', '').touched)">
+              <span>Invalid encryption password</span>
+            </mdb-error>
+          </div>
+        </div>
+
+        <div class="col-10 col-sm-12 col-md-12 mx-auto box-transparent-border-orange">
+          <div class="col-sm-12 col-md-10 col-lg-8 col-xl-8 fs-06rem fw-bold mx-auto">
+            Warning! This process might take few hours. If you choose to proceed, you will receivea ticket with the transactionhashfor youreferenceand follow up.
           </div>
         </div>
       </div>
