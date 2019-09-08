@@ -58,7 +58,7 @@
                           class="fa fa-copy cursor-p"></i> -->
             <!-- <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="cursor-p" alt="Copy"
               width="20" (click)="copyMessage('Address')" ngxClipboard [cbContent]="address"> -->
-            <span class="color-blue-intermedio font-small">SELECT ></span>
+            <span class="color-blue-intermedio font-small" [routerLink]="[goList]">SELECT ></span>
           </div>
         </div>
       </div>
@@ -70,7 +70,7 @@
   <div class="row">
     <div class="col-12 col-md-10 col-lg-9 col-xl-10 mx-auto">
       <div class="col-12 d-flex justify-content-center pt-2rem pb-1rem">
-        <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+        <button mdbBtn type="button" rounded="true" mdbWavesEffect [routerLink]="[goBack]" class="f-w-600 background-btn pl-2rem pr-2rem"
           size="md">
           <span class="fs-1-2em color-white">GO BACK</span>
         </button>

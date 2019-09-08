@@ -484,7 +484,7 @@ export class ServicesBoxComponent implements OnInit {
           ),
         },
         true,
-        'disable-module'
+        ''
       )
     ];
   }
