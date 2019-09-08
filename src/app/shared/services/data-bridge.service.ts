@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { first } from "rxjs/operators";
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Listener, Transaction, TransactionStatus } from "tsjs-xpx-chain-sdk";
+import { Listener, Transaction, TransactionStatus, CosignatureSignedTransaction } from "tsjs-xpx-chain-sdk";
 import { environment } from '../../../environments/environment';
 import { NodeService } from '../../servicesModule/services/node.service';
 import { SharedService } from './shared.service';
@@ -194,6 +194,31 @@ export class DataBridgeService {
   }
 
   /**
+   *
+   *
+   * @param {Listener} connector
+   * @param {HTMLAudioElement} audio
+   * @memberof DataBridgeService
+   */
+  getSocketTransactionsCosignatureAdded(connector: Listener, audio: HTMLAudioElement) {
+    const currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
+    currentWallet.accounts.forEach(element => {
+      const address = this.proximaxProvider.createFromRawAddress(element.address);
+      connector.cosignatureAdded(address).subscribe((cosignatureSignedTransaction: CosignatureSignedTransaction) => {
+        console.log('THE ADDRESS ---> ', address);
+        console.log('CosignatureSignedTransaction--> ', cosignatureSignedTransaction);
+
+        this.setTransactionStatus({
+          'type': 'cosignatureSignedTransaction',
+          'data': cosignatureSignedTransaction
+        });
+      }, err => {
+        // console.error(err)
+      });
+    });
+  }
+
+  /**
    * Get the confirmed transactions from the socket
    *
    * @param {Listener} connector
@@ -210,7 +235,7 @@ export class DataBridgeService {
           'data': incomingTransaction
         });
 
-        // console.log('incomingTransaction', incomingTransaction);
+        console.log('incomingTransaction', incomingTransaction);
 
         this.transactionsService.getTransactionsConfirmed$().pipe(first()).subscribe(allTransactionConfirmed => {
           // console.log('allTransactionConfirmed', allTransactionConfirmed);
@@ -248,7 +273,7 @@ export class DataBridgeService {
       const address = this.proximaxProvider.createFromRawAddress(element.address);
       connector.unconfirmedAdded(address).subscribe(unconfirmedTransaction => {
         // console.log('----connector----', connector);
-        // console.log('----unconfirmedTransaction----', unconfirmedTransaction);
+        console.log('----unconfirmedTransaction----', unconfirmedTransaction);
 
         // aqui las que me llegan del WS
         this.setTransactionStatus({

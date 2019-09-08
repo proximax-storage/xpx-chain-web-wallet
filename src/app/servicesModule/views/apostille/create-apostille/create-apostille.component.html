@@ -170,8 +170,9 @@
               <!-- TYPE ENCRIPTED -->
               <div class="row mt-2rem">
                 <div class="col-12">
-                  <ng-select mdbInputDirective mdbValidate formControlName="typeEncrypted" class="selectWrapper"
-                    [items]="typeEncrypted" bindLabel="label" bindValue="value" placeholder="Select hashing algorithm">
+                  <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
+                    class="selectWrapper" [items]="typeEncrypted" formControlName="typeEncrypted" bindLabel="label" bindValue="value"
+                    placeholder="Select hashing algorithm">
                   </ng-select>
                 </div>
               </div>
@@ -221,7 +222,8 @@
                     <input [maxlength]="configurationForm.passwordWallet.maxLength"
                       [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" required
                       mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password"
-                      id="password" class="form-control form-control-sm input-border" placeholder="Enter wallet password">
+                      id="password" class="form-control form-control-sm input-border"
+                      placeholder="Enter wallet password">
                   </div>
                 </div>
               </div>

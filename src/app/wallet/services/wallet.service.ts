@@ -154,12 +154,20 @@ export class WalletService {
   * @memberof WalletService
   */
   changeIsMultiSign(name: string, isMultisig: MultisigAccountInfo) {
+    console.log('----isMultisig---', isMultisig);
+    if (isMultisig) {
+
+    }
+
+
+
     const myAccounts: AccountsInterface[] = Object.assign(this.currentWallet.accounts);
     const othersWallet: CurrentWalletInterface[] = this.getWalletStorage().filter(
       (element: any) => {
         return element.name !== this.currentWallet.name;
       }
     );
+
     myAccounts.forEach((element: AccountsInterface) => {
       if (element.name === name) {
         element.isMultisign = isMultisig
@@ -238,18 +246,19 @@ export class WalletService {
    * @memberof WalletService
    */
   filterAccountInfo(account?: string, byAddress?: boolean): AccountsInfoInterface {
-    if (byAddress) {
-      return this.accountsInfo.find(next => next.accountInfo.address.pretty() === account);
-    }
-
     if (this.accountsInfo && this.accountsInfo.length > 0) {
+      if (byAddress) {
+        return this.accountsInfo.find(next => next.accountInfo.address.pretty() === account);
+      }
+
       if (account) {
-        // console.log('---account---', account);
         return this.accountsInfo.find(next => next.name === account);
       } else {
         return this.accountsInfo.find(next => next.name === this.currentAccount.name);
       }
     }
+
+    return null;
   }
 
   /**

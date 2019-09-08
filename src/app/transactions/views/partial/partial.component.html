@@ -204,6 +204,7 @@
                         </div>
                       </div>
 
+                      <!-- Accounts -->
                       <div class="col-12 pt-1rem background-gray-light">
                         <div class="row lh-1em">
                           <div class="col-12">
@@ -225,9 +226,9 @@
                         </ng-container>
                       </div>
 
-                      <!-- PASSWORD -->
-                      <div class="col-12 mt-1rem">
-                        <ng-container *ngIf="arraySelect.length > 0">
+                      <ng-container *ngIf="arraySelect.length > 0">
+                        <div class="col-12 mt-1rem">
+                          <!-- SELECT ACCOUNT -->
                           <div class="row">
                             <div class="col-12">
                               <ng-select class="selectWrapper" [(ngModel)]="account" [items]="arraySelect"
@@ -236,30 +237,31 @@
                               </ng-select>
                             </div>
                           </div>
-                        </ng-container>
 
 
-                        <div class="row d-flex justify-content-center">
-                          <div class="col-12">
-                            <div class="md-form form-sm">
-                              <input [maxlength]="configurationForm.passwordWallet.maxLength"
-                                [minlength]="configurationForm.passwordWallet.minLength" [(ngModel)]="password" required
-                                mdbInputDirective [validateSuccess]="false" [validateError]="false" type="password"
-                                id="password" class="form-control form-control-sm input-border"
-                                placeholder="Enter password">
+                          <!-- PASSWORD -->
+                          <div class="row d-flex justify-content-center">
+                            <div class="col-12">
+                              <div class="md-form form-sm">
+                                <input [maxlength]="configurationForm.passwordWallet.maxLength"
+                                  [minlength]="configurationForm.passwordWallet.minLength" [(ngModel)]="password"
+                                  required mdbInputDirective [validateSuccess]="false" [validateError]="false"
+                                  type="password" id="password" class="form-control form-control-sm input-border"
+                                  placeholder="Enter password">
+                              </div>
                             </div>
-                          </div>
 
-                          <div class="col-12 d-flex justify-content-center">
-                            <button (click)="sendTransaction()" autocomplete="false" [disabled]="validateAccount || password === '' || password.length <
+                            <div class="col-12 d-flex justify-content-center">
+                              <button (click)="sendTransaction()" autocomplete="false" [disabled]="validateAccount || password === '' || password.length <
                                 this.configurationForm.passwordWallet.minLength || password.length>
                                 this.configurationForm.passwordWallet.maxLength" mdbBtn type="button" rounded="true"
-                              mdbWavesEffect class="f-w-600 background-btn pt-1rem" size="sm">
-                              <span class="fs-1-2em color-white">APPROVE TO CONTINUE</span>
-                            </button>
+                                mdbWavesEffect class="f-w-600 background-btn pt-1rem" size="sm">
+                                <span class="fs-1-2em color-white">APPROVE TO CONTINUE</span>
+                              </button>
+                            </div>
                           </div>
                         </div>
-                      </div>
+                      </ng-container>
                     </div>
                   </div>
                 </div>

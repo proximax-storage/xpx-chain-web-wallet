@@ -17,7 +17,8 @@ import {
   PublicAccount,
   Address,
   MultisigAccountInfo,
-  NamespaceId
+  NamespaceId,
+  AggregateTransaction
 } from "tsjs-xpx-chain-sdk";
 import { first } from "rxjs/operators";
 import { ProximaxProvider } from "../../shared/services/proximax.provider";
@@ -535,6 +536,7 @@ export class TransactionsService {
             accountInfo: info,
             multisigInfo: isMultisig
           }];
+
           this.walletService.changeIsMultiSign(element.name, isMultisig)
           this.walletService.setAccountsInfo(accountsInfo, true);
           counter = counter + 1;
@@ -653,7 +655,10 @@ export class TransactionsService {
 
 
 export interface TransactionsInterface {
-  data: Transaction;
+  // data: Transaction;
+  data: any;
+  dateFile?: string;
+  description?: string;
   nameType: string;
   timestamp: string;
   fee: string;
@@ -668,9 +673,7 @@ export interface TransactionsInterface {
   receive: boolean;
   senderAddress: string;
   fileName?: string;
-  dateFile?: string;
   privateFile?: boolean;
-  description?: string;
   name?: string;
   hash?: string;
 }

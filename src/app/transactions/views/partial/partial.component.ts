@@ -139,21 +139,22 @@ export class PartialComponent implements OnInit {
       element['nameType'] = (nameType) ? this.typeTransactions[nameType].name : element.type.toString(16).toUpperCase();
     });
 
+
     this.dataSelected = transaction;
-    console.log(transaction.data['innerTransactions'][0].signer.address.pretty());
-    const otro = this.walletService.filterAccountInfo(transaction.data['innerTransactions'][0].signer.address.pretty(), true);
-    console.log(otro);
-    if (otro.multisigInfo.cosignatories && otro.multisigInfo.cosignatories.length > 0) {
-      otro.multisigInfo.cosignatories.forEach(element => {
+    const accountMultisig = this.walletService.filterAccountInfo(transaction.data['innerTransactions'][0].signer.address.pretty(), true);
+    console.log(accountMultisig);
+    if (accountMultisig.multisigInfo.cosignatories && accountMultisig.multisigInfo.cosignatories.length > 0) {
+      accountMultisig.multisigInfo.cosignatories.forEach(element => {
         const cosignatorie: AccountsInterface = this.walletService.filterAccount('', null, element.address.pretty());
-        console.log('COSIGNATORIE ----> ', cosignatorie);
         if (cosignatorie) {
+          const publicAccount = this.proximaxProvider.createPublicAccount(cosignatorie.publicAccount.publicKey, cosignatorie.publicAccount.address.networkType);
+          const signedByAccount = transaction.data.signedByAccount(publicAccount);
           this.validateAccount = true;
           this.arraySelect.push({
-            label: cosignatorie.name,
+            label: (signedByAccount) ? `${cosignatorie.name} - Signed` : cosignatorie.name,
             value: cosignatorie,
             selected: true,
-            disabled: false
+            disabled: signedByAccount
           });
         }
       });

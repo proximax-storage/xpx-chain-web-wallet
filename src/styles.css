@@ -1175,6 +1175,10 @@ button.md-toast-close-button {
   background-color: #306eb5 !important;
 }
 
+.card .card-body {
+  padding: 0rem !important;
+}
+
 /** FIN INPUTS VALIDATION **/
 
 /************* SELECT ************/
@@ -1701,4 +1705,8 @@ ngx-dropzone-label {
 
 .mdb-accordion-indicator {
   top: 7px !important;
+}
+
+ul.stepper.horizontal .step-title {
+  max-width: 20rem !important;
 }
