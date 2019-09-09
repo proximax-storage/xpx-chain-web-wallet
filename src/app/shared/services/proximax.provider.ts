@@ -47,7 +47,6 @@ import {
 import { mergeMap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { walletInterface } from '../../wallet/services/wallet.service';
 import { BlockchainNetworkType } from 'xpx2-ts-js-sdk';
 
 @Injectable({
@@ -277,7 +276,7 @@ export class ProximaxProvider {
       privateKey: ''
     };
 
-    const wallet: walletInterface = {
+    const wallet: { encrypted: string; iv: string; } = {
       encrypted: encryptedKey,
       iv: iv,
     };

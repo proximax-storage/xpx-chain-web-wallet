@@ -10,8 +10,8 @@ import { ConfigurationForm, SharedService } from '../../../../shared/services/sh
 import { DataBridgeService } from '../../../../shared/services/data-bridge.service';
 import { DashboardService } from '../../../../dashboard/services/dashboard.service';
 import { NamespacesService } from '../../../services/namespaces.service';
-import { TransactionsService } from 'src/app/transactions/services/transactions.service';
-import { ServicesModuleService } from 'src/app/servicesModule/services/services-module.service';
+import { TransactionsService } from '../../../../transactions/services/transactions.service';
+import { ServicesModuleService } from '../../../../servicesModule/services/services-module.service';
 
 @Component({
   selector: 'app-create-account',
@@ -121,8 +121,7 @@ export class CreateAccountComponent implements OnInit {
           ).toUpperCase();
 
           this.namespaceService.searchNamespacesFromAccounts([newAccount.address]);
-
-          const accountBuilded = this.walletService.buildAccount({
+          const accountBuilded: AccountsInterface = this.walletService.buildAccount({
             address: newAccount.address['address'],
             byDefault: false,
             encrypted: newAccount.encryptedPrivateKey.encryptedKey,
@@ -146,7 +145,7 @@ export class CreateAccountComponent implements OnInit {
             network: newAccount.network,
             fromPrivateKey: this.fromPrivateKey
           }, accountBuilded, newAccount);
-          this.walletService.saveAccountStorage(nameAccount, accountBuilded);
+          this.walletService.saveAccountStorage(accountBuilded);
           this.serviceModuleService.saveContacts({ name: nameAccount, address: accountBuilded.address, walletContact: true, nameItem: '' });
           this.router.navigate([`/${AppConfig.routes.accountCreated}`]);
           this.dataBridgeService.closeConenection();

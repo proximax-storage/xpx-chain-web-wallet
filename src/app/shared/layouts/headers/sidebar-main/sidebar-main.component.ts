@@ -145,8 +145,8 @@ export class SidebarMainComponent implements OnInit {
     this.subscription.push(this.walletService.getAccountsInfo$().subscribe(next => {
       this.searchBalance = true;
       // NAME ACCOUNT
-      let amountTotal = 0.000000;
       if (next && next.length > 0) {
+        let amountTotal = 0.000000;
         for (let element of next) {
           if (element && element.accountInfo) {
             if (element.accountInfo.mosaics && element.accountInfo.mosaics.length > 0) {

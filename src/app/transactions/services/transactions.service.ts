@@ -492,31 +492,49 @@ export class TransactionsService {
 
   /**
    *
+   * @param accounts
+   * @param pushed
+   */
+  searchAccountsInfo(accounts: AccountsInterface[], pushed = false) {
+    this.walletService.searchAccountsInfo(accounts).then(
+      (mosaicsIds: MosaicId[]) => {
+        this.updateBalance();
+        if (mosaicsIds && mosaicsIds.length > 0) {
+          this.mosaicServices.searchInfoMosaics(mosaicsIds)
+        }
+      }
+    ).catch(error => console.log(error));
+  }
+
+
+  /**
+   *
    *
    * @param {AccountsInfoInterface[]} accounts
    * @returns {Promise<AccountInfo[]>}
    * @memberof TransactionsService
    */
-  async searchAccountsInfo(accounts: AccountsInterface[], pushed = false) {//: Promise<AccountsInfoInterface[]> {
+  async searchAccountsInfo2(accounts: AccountsInterface[], pushed = false) {//: Promise<AccountsInfoInterface[]> {
     const accountsInfo: AccountsInfoInterface[] = [];
     let counter = 0;
     accounts.forEach((element, i) => {
       //  console.log('paso esta cuenta...', element);
       this.proximaxProvider.getAccountInfo(this.proximaxProvider.createFromRawAddress(element.address)).pipe(first()).subscribe(
-        async info => {
+        async accountInfo => {
           const mosaicsIds: (NamespaceId | MosaicId)[] = [];
-          if (info) {
-            const mosaics = info.mosaics.slice(0);
-            if (element.default) {
-              const findXPX = mosaics.find(mosaic => mosaic.id.toHex() === environment.mosaicXpxInfo.id);
-              if (findXPX) {
-                this.setBalance$(findXPX.amount.compact());
-              } else {
-                this.setBalance$('0.000000');
-              }
-            }
+          if (accountInfo) {
 
-            info.mosaics.map(n => n.id).forEach(id => {
+            // if (element.default) {
+            //   const mosaics = accountInfo.mosaics.slice(0);
+            //   const findXPX = mosaics.find(mosaic => mosaic.id.toHex() === environment.mosaicXpxInfo.id);
+            //   if (findXPX) {
+            //     this.setBalance$(findXPX.amount.compact());
+            //   } else {
+            //     this.setBalance$('0.000000');
+            //   }
+            // }
+
+            accountInfo.mosaics.map(n => n.id).forEach(id => {
               const pushea = mosaicsIds.find(next => next.id.toHex() === id.toHex());
               if (!pushea) {
                 mosaicsIds.push(id);
@@ -533,11 +551,12 @@ export class TransactionsService {
           }
           const accountsInfo = [{
             name: element.name,
-            accountInfo: info,
+            accountInfo: accountInfo,
             multisigInfo: isMultisig
           }];
 
-          this.walletService.changeIsMultiSign(element.name, isMultisig)
+          const publicAccount = this.proximaxProvider.createPublicAccount(element.publicAccount.publicKey, element.publicAccount.address.networkType);
+          this.walletService.changeIsMultiSign(element.name, isMultisig, publicAccount)
           this.walletService.setAccountsInfo(accountsInfo, true);
           counter = counter + 1;
           if (accounts.length === counter && mosaicsIds.length > 0) {

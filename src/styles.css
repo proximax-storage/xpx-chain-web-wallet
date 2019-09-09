@@ -1474,6 +1474,9 @@ mdb-select>div>div.single>div.value {
   line-height: 1.1rem !important;
 }
 
+.ng-dropdown-panel{
+  margin-bottom: 1rem !important;
+}
 
 .bs-tooltip-top .arrow::before,
 .bs-tooltip-auto[x-placement^=top] .arrow::before,

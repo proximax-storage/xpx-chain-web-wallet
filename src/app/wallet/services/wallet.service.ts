@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { SimpleWallet, PublicAccount, AccountInfo, MultisigAccountInfo } from 'tsjs-xpx-chain-sdk';
+import { SimpleWallet, PublicAccount, AccountInfo, MultisigAccountInfo, NamespaceId, MosaicId } from 'tsjs-xpx-chain-sdk';
 import { crypto } from 'js-xpx-chain-library';
 import { AbstractControl } from '@angular/forms';
 import { BehaviorSubject, Observable, timer } from 'rxjs';
@@ -7,6 +7,8 @@ import { BehaviorSubject, Observable, timer } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { SharedService } from '../../shared/services/shared.service';
 import { ProximaxProvider } from '../../shared/services/proximax.provider';
+import { first } from 'rxjs/operators';
+import { resolve } from 'q';
 
 
 @Injectable({
@@ -153,10 +155,33 @@ export class WalletService {
   * @param {string} isMultisig
   * @memberof WalletService
   */
-  changeIsMultiSign(name: string, isMultisig: MultisigAccountInfo) {
-    console.log('----isMultisig---', isMultisig);
+  changeIsMultiSign(name: string, isMultisig: MultisigAccountInfo, publicAccount: PublicAccount) {
+    console.log(name, 'DATA MULTISIG \n\n', isMultisig);
     if (isMultisig) {
+      // si es multifirma, preguntar
+      if (isMultisig.multisigAccounts.length > 0) {
+        const myAccounts = this.currentWallet.accounts;
+        isMultisig.multisigAccounts.forEach(element => {
+          const exist = myAccounts.find(x => x.address === element.address.plain());
+          if (!exist) {
+            console.log('ESTA CUENTA NO EXISTE ===> ', element, '\n\n\n\n\n\n');
+            const accountBuilded: AccountsInterface = this.buildAccount({
+              address: element.address.plain(),
+              byDefault: false,
+              encrypted: '',
+              firstAccount: false,
+              isMultisign: isMultisig,
+              iv: '',
+              network: element.address.networkType,
+              nameAccount: `MULTIFIRMA-${element.address.plain().slice(36, 40)}`,
+              publicAccount: publicAccount,
+            });
 
+            console.log('\n\n---ACOUNT BUILDED---', accountBuilded);
+            this.saveAccountStorage(accountBuilded);
+          }
+        });
+      }
     }
 
 
@@ -171,7 +196,6 @@ export class WalletService {
     myAccounts.forEach((element: AccountsInterface) => {
       if (element.name === name) {
         element.isMultisign = isMultisig
-        // this.setCurrentAccount$(element);
       }
     });
 
@@ -248,7 +272,17 @@ export class WalletService {
   filterAccountInfo(account?: string, byAddress?: boolean): AccountsInfoInterface {
     if (this.accountsInfo && this.accountsInfo.length > 0) {
       if (byAddress) {
-        return this.accountsInfo.find(next => next.accountInfo.address.pretty() === account);
+        let found = null;
+        this.accountsInfo.forEach(element => {
+          if (element.accountInfo) {
+            if (element.accountInfo.address.pretty() === account) {
+              found = element;
+            }
+          }
+        });
+
+        return found;
+        // return this.accountsInfo.find(next => (next.accountInfo) ? next.accountInfo.address.pretty() === account : []);
       }
 
       if (account) {
@@ -347,7 +381,7 @@ export class WalletService {
    * @param {*} accountsParams
    * @memberof WalletService
    */
-  saveAccountStorage(nameWallet: string, accountsParams: any) {
+  saveAccountStorage(accountsParams: AccountsInterface) {
     const myAccounts = Object.assign(this.currentWallet.accounts);
     const othersWallet = this.getWalletStorage().filter(
       (element: any) => {
@@ -398,6 +432,78 @@ export class WalletService {
     });
 
     localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorage));
+  }
+
+
+  /**
+   *
+   * @param accounts
+   * @param pushed
+   */
+  async searchAccountsInfo(accounts: AccountsInterface[], pushed = false) {//: Promise<AccountsInfoInterface[]> {
+    let findXPX = null;
+    let counter = 0;
+    const mosaicsIds: (NamespaceId | MosaicId)[] = [];
+    const promise = new Promise(async (resolve, reject) => {
+      accounts.forEach((element, i) => {
+        this.proximaxProvider.getAccountInfo(this.proximaxProvider.createFromRawAddress(element.address)).pipe(first()).subscribe(
+          async accountInfo => {
+            if (accountInfo) {
+              /*if (element.default) {
+                const mosaics = accountInfo.mosaics.slice(0);
+                findXPX = mosaics.find(mosaic => mosaic.id.toHex() === environment.mosaicXpxInfo.id);
+              }*/
+
+              accountInfo.mosaics.map(n => n.id).forEach(id => {
+                const pushea = mosaicsIds.find(next => next.id.toHex() === id.toHex());
+                if (!pushea) {
+                  mosaicsIds.push(id);
+                }
+              });
+            }
+
+            // this.mosaicServices.searchMosaics(mosaicsIds);
+            let isMultisig: MultisigAccountInfo = null;
+            try {
+              isMultisig = await this.proximaxProvider.getMultisigAccountInfo(this.proximaxProvider.createFromRawAddress(element.address)).toPromise();
+            } catch (error) {
+              isMultisig = null
+            }
+            const accountsInfo = [{
+              name: element.name,
+              accountInfo: accountInfo,
+              multisigInfo: isMultisig
+            }];
+
+            const publicAccount = this.proximaxProvider.createPublicAccount(element.publicAccount.publicKey, element.publicAccount.address.networkType);
+            this.changeIsMultiSign(element.name, isMultisig, publicAccount)
+            this.setAccountsInfo(accountsInfo, true);
+            counter = counter + 1;
+            if (accounts.length === counter && mosaicsIds.length > 0) {
+              resolve(mosaicsIds);
+            }
+          }, error => {
+            // console.log('ERROR TO SEARCH ACCOUNT INFO ---> ', error);
+            const accountsInfo = [{
+              name: element.name,
+              accountInfo: null,
+              multisigInfo: null
+            }];
+
+            this.setAccountsInfo(accountsInfo, true);
+
+            counter = counter + 1;
+            if (accounts.length === counter && mosaicsIds.length > 0) {
+              resolve(mosaicsIds);
+            }
+
+
+          }
+        );
+      });
+    });
+
+    return await promise;
   }
 
   /**
@@ -579,7 +685,6 @@ export interface AccountsInterface {
   isMultisign: MultisigAccountInfo;
 }
 
-
 export interface AccountsInfoInterface {
   name: string;
   accountInfo: AccountInfo;
@@ -589,9 +694,4 @@ export interface AccountsInfoInterface {
 export interface WalletAccountInterface {
   name: string,
   accounts: AccountsInterface[];
-}
-
-export interface walletInterface {
-  encrypted;
-  iv;
 }
