@@ -39,7 +39,7 @@ export class ViewAllAccountsComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.load();
+    this.subscribeAccountInfoToBuildBalance();
   }
 
   ngOnDestroy(): void {
@@ -51,11 +51,11 @@ export class ViewAllAccountsComponent implements OnInit {
   }
 
   /**
-   *
+   * Add balance to all accounts
    *
    * @memberof ViewAllAccountsComponent
    */
-  build() {
+  buildBalance() {
     const currentWallet = Object.assign({}, this.walletService.currentWallet);
     if (currentWallet && Object.keys(currentWallet).length > 0) {
       for (let element of currentWallet.accounts) {
@@ -75,6 +75,10 @@ export class ViewAllAccountsComponent implements OnInit {
     }
   }
 
+  /**
+   *
+   * @param message
+   */
   copyMessage(message: string) {
     this.sharedService.showSuccess('', `${message} copied`);
   }
@@ -91,8 +95,8 @@ export class ViewAllAccountsComponent implements OnInit {
     this.walletService.changeAsPrimary(nameSelected);
     this.walletService.use(this.walletService.currentWallet);
     this.namespacesService.fillNamespacesDefaultAccount();
-    this.build();
-    this.transactionService.updateBalance();
+    // this.buildBalance();
+    // this.transactionService.updateBalance();
     setTimeout(() => {
       this.accountChanged = false;
     }, 2000);
@@ -103,12 +107,10 @@ export class ViewAllAccountsComponent implements OnInit {
    *
    * @memberof ViewAllAccountsComponent
    */
-  load() {
-    // console.log(this.walletService.accountsInfo);
+  subscribeAccountInfoToBuildBalance() {
     this.subscription.push(this.walletService.getAccountsInfo$().subscribe(
       next => {
-        // console.log('----- ACCOUNT INFO -----', next);
-        this.build();
+        this.buildBalance();
       }
     ));
   }

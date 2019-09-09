@@ -317,7 +317,6 @@ export class CreateMultiSignatureComponent implements OnInit {
       this.currentAccountToConvert = account.value;
       this.validatorsMinApprovalDelta();
       this.validatorsMinRemovalDelta();
-      // this.transactionService.searchAccountsInfo([this.currentAccountToConvert])
       this.subscribeAccount = this.walletService.getAccountsInfo$().subscribe(
         async accountInfo => {
           this.accountInfo = this.walletService.filterAccountInfo(account.value.name);

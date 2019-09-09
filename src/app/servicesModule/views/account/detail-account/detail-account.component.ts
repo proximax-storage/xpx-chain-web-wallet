@@ -56,7 +56,7 @@ export class DetailAccountComponent implements OnInit {
   ngOnInit() {
     this.configurationForm = this.sharedService.configurationForm;
     let param = this.activateRoute.snapshot.paramMap.get('name');
-    this.currenAccount = (param) ? this.currenAccount = this.walletService.filterAccount(param) : this.currenAccount = this.walletService.filterAccount('', true);
+    this.currenAccount = (param) ? this.walletService.filterAccount(param) : this.walletService.filterAccount('', true);
     this.buildData();
     this.createForm();
     this.subscribeAccount = this.walletService.getAccountsInfo$().subscribe(

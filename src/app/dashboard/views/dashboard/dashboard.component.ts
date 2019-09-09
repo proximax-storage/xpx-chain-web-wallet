@@ -107,12 +107,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
    */
   balance() {
     this.subscriptions['balance'] = this.transactionService.getBalance$().subscribe(
-      next => {
-        // console.log(next);
-        this.vestedBalance = `${next} XPX`;
-      }, () => {
-        this.vestedBalance = `0.000000 XPX`;
-      }
+      next => this.vestedBalance = `${next} XPX`,
+      error => this.vestedBalance = `0.000000 XPX`
     );
   }
 
@@ -203,7 +199,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
             this.searching = false;
             this.dashboardService.searchComplete = true;
           }
-
         }, error => {
           this.iconReloadDashboard = false;
           this.searching = false;
@@ -231,17 +226,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
           //Sets the data structure of the dashboard
           transactions.forEach(element => {
             const builderTransactions = this.transactionService.getStructureDashboard(element, this.transactions);
-            if (builderTransactions !== null) {
-              this.transactions.push(builderTransactions);
-            }
+            (builderTransactions !== null) ? this.transactions.push(builderTransactions) : '';
           });
 
-          // this.transactions = this.transactions;
-          this.cantConfirmed = this.transactions.length;
           this.transactionService.setTransactionsConfirmed$(this.transactions);
+          this.dashboardService.searchComplete = true;
           this.iconReloadDashboard = false;
           this.searching = false;
-          this.dashboardService.searchComplete = true;
           const lastTransactionId = (transactions.length > 0) ? transactions[transactions.length - 1].transactionInfo.id : null;
           this.getTransactionsConfirmed(account, lastTransactionId);
         } else {
