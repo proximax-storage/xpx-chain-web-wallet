@@ -9,18 +9,11 @@ export class AccountsListComponent implements OnInit {
 
   accountListVisible: boolean = false;
 
-  list: any = [
-    {
-      name: 'Elemento 1',
-      address: 'VDBTDK-B55BPX-VSDQR7-AX3WX7-WFUZC3-65CTGJ-X2I5',
-      balance: '50.000'
-    },
-    {
-      name: 'Elemento 2',
-      address: 'VDBTDK-B55BPX-VSDQR7-AX3WX7-WFUZC3-65CTGJ-X2I5',
-      balance: '10.000'
-    }
-  ];
+  element = {
+    name: 'Element',
+    address: 'VDBTDK-B55BPX-VSDQR7-AX3WX7-WFUZC3-65CTGJ-X2I5',
+    balance: '50.000'
+  };
 
   constructor() { }
 

@@ -8,6 +8,7 @@ import { NamespacesService } from '../../../servicesModule/services/namespaces.s
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 import { AppConfig } from '../../../config/app.config';
 import { ServicesModuleService } from '../../../servicesModule/services/services-module.service';
+import { NemServiceService } from 'src/app/shared/services/nem-service.service';
 
 
 @Component({
@@ -35,8 +36,14 @@ export class ImportWalletComponent implements OnInit {
     private walletService: WalletService,
     private proximaxProvider: ProximaxProvider,
     private router: Router,
-    private serviceModuleService: ServicesModuleService
+    private serviceModuleService: ServicesModuleService,
+    private nemProvider: NemServiceService
   ) {
+    const nis1Wallet = this.nemProvider.createPrivateKeyWallet('jam', '1q2w3e4r', '498a540f5266ca7e9aa4af3c65c42464a72508723302e1217c92b5ed78c7a980');
+    console.log('\n\n\n\nValue of nis1', nis1Wallet, '\n\n\n\nEnd value\n\n');
+    const mosaics = this.nemProvider.getOwnedMosaics(nis1Wallet.address);
+    console.log('\n\n\n\nValue of nis1', mosaics, '\n\n\n\nEnd value\n\n');
+
   }
 
   ngOnInit() {
@@ -115,8 +122,10 @@ export class ImportWalletComponent implements OnInit {
         const privateKey = this.importWalletForm.get('privateKey').value;
         const password = this.proximaxProvider.createPassword(this.importWalletForm.controls.passwords.get('password').value);
         const wallet = this.proximaxProvider.createAccountFromPrivateKey(nameWallet, password, privateKey, network);
+        const nis1Wallet = this.nemProvider.createPrivateKeyWallet(nameWallet, this.importWalletForm.controls.passwords.get('password').value, privateKey);
 
         console.log('this a wallet', wallet);
+        console.log('this a nis1Wallet', nis1Wallet);
 
 
         const accountBuilded = this.walletService.buildAccount({

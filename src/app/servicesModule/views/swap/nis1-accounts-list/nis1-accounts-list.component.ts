@@ -10,11 +10,11 @@ export class Nis1AccountsListComponent implements OnInit {
 
   list: object[] = [
     {
-      name: 'Elemento 1',
+      name: 'Element 1',
       address: 'VDBTDK-B55BPX-VSDQR7-AX3WX7-WFUZC3-65CTGJ-X2I5'
     },
     {
-      name: 'Elemento 2',
+      name: 'Element 2',
       address: 'VDBTDK-B55BPX-VSDQR7-AX3WX7-WFUZC3-65CTGJ-X2I5'
     }
   ];

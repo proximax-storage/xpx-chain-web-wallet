@@ -1,3 +1,4 @@
+import { ServerConfig, NetworkTypes } from 'nem-library';
 // This file can be replaced during build by using the `fileReplacements` array.
 // `ng build ---prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
@@ -47,6 +48,12 @@ export const environment = {
     private_key: '52681268C37552C6F88EA063EBDDAB0B4A88032DD93CF6696C5A57B00A24FD12',
     public_key: 'B5575AE4511694DCD0F7A8D0FAC1B327C1743334523075617EACE4997468D09E',
     address_public_test: 'VBBLJ4-PD73RT-PXBTJY-ZQX426-NU7ETW-O3AZ65-YMVM'
+  },
+  nis1: {
+    nodes: [
+      {protocol: "http", domain: "18.231.166.212", port: 7890} as ServerConfig
+    ],
+    networkType: NetworkTypes.TEST_NET
   }
 };
 
