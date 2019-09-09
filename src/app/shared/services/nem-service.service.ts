@@ -1,46 +1,51 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from "@angular/core";
+import { Observable } from "rxjs";
+import { environment } from 'src/environments/environment';
 import {
   NEMLibrary,
-  NetworkTypes,
   AccountHttp,
   Password,
-  SimpleWallet
-} from 'nem-library';
-
+  SimpleWallet,
+  Address,
+  AccountOwnedAssetService,
+  AssetHttp,
+  AssetTransferable,
+  ServerConfig,
+} from "nem-library";
 @Injectable({
   providedIn: 'root'
 })
 export class NemServiceService {
+  wallets: SimpleWallet[];
   accountHttp: AccountHttp;
-  networkType: NetworkTypes;
+  assetHttp: AssetHttp;
+  nodes: ServerConfig[];
 
   constructor() {
-    this.networkType = NetworkTypes.TEST_NET
-    NEMLibrary.bootstrap(this.networkType);
-    this.accountHttp = new AccountHttp();
-    console.log('------------This is node connection NIS-1---------', this.accountHttp);
+    NEMLibrary.bootstrap(environment.nis1.networkType);
+    this.nodes = environment.nis1.nodes;
+    this.accountHttp = new AccountHttp(this.nodes);
+    this.assetHttp = new AssetHttp(this.nodes);
   }
 
   /**
-   * Method to create a Simple Wallet from a private key
-   * 
-   * @param {string} privateKey
-   * @param {string} password
-   * @returns SimpleWallet
+   * Create Wallet from private key
+   * @param walletName wallet idenitifier for app
+   * @param password wallet's password
+   * @param privateKey account privateKey
+   * @param selected network
+   * @return Promise with wallet created
    */
-  createWalletPrivateKey(privateKey, password) {
-    const pass = new Password(password);
-    const simpleWallet = SimpleWallet.createWithPrivateKey("simple wallet", pass, privateKey);
-    console.log('this is a Simple wallet \n\n', simpleWallet);
+  public createPrivateKeyWallet(walletName: string, password: string, privateKey:string): SimpleWallet {
+    return SimpleWallet.createWithPrivateKey(
+      walletName,
+      new Password(password),
+      privateKey
+    );
+  }
 
-    this.accountHttp.getFromAddress(simpleWallet.address).subscribe(element => {
-      console.log('-----infoAccount----\n\n\n', element);
-
-    });
-
-    // let accountOwnedMosaics = new AccountOwnedMosaicsService(new AccountHttp(), new MosaicHttp());
-    // accountOwnedMosaics.fromAddress(address).subscribe(mosaics => {
-    //   console.log(mosaics);
-    // });
+  getOwnedMosaics(address: Address): Observable<AssetTransferable[]> {
+    let accountOwnedMosaics = new AccountOwnedAssetService(this.accountHttp, this.assetHttp);
+    return accountOwnedMosaics.fromAddress(address);
   }
 }
