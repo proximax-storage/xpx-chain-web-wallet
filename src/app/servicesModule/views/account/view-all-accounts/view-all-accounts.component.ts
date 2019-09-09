@@ -95,8 +95,8 @@ export class ViewAllAccountsComponent implements OnInit {
     this.walletService.changeAsPrimary(nameSelected);
     this.walletService.use(this.walletService.currentWallet);
     this.namespacesService.fillNamespacesDefaultAccount();
-    // this.buildBalance();
-    // this.transactionService.updateBalance();
+    this.buildBalance();
+    this.transactionService.updateBalance();
     setTimeout(() => {
       this.accountChanged = false;
     }, 2000);

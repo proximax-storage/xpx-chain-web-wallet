@@ -498,6 +498,7 @@ export class TransactionsService {
   searchAccountsInfo(accounts: AccountsInterface[], pushed = false) {
     this.walletService.searchAccountsInfo(accounts).then(
       (mosaicsIds: MosaicId[]) => {
+        this.updateBalance();
         if (mosaicsIds && mosaicsIds.length > 0) {
           this.mosaicServices.searchInfoMosaics(mosaicsIds)
         }
@@ -522,6 +523,17 @@ export class TransactionsService {
         async accountInfo => {
           const mosaicsIds: (NamespaceId | MosaicId)[] = [];
           if (accountInfo) {
+
+            // if (element.default) {
+            //   const mosaics = accountInfo.mosaics.slice(0);
+            //   const findXPX = mosaics.find(mosaic => mosaic.id.toHex() === environment.mosaicXpxInfo.id);
+            //   if (findXPX) {
+            //     this.setBalance$(findXPX.amount.compact());
+            //   } else {
+            //     this.setBalance$('0.000000');
+            //   }
+            // }
+
             accountInfo.mosaics.map(n => n.id).forEach(id => {
               const pushea = mosaicsIds.find(next => next.id.toHex() === id.toHex());
               if (!pushea) {

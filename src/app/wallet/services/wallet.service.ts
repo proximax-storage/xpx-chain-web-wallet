@@ -431,6 +431,7 @@ export class WalletService {
    * @param pushed
    */
   async searchAccountsInfo(accounts: AccountsInterface[], pushed = false) {//: Promise<AccountsInfoInterface[]> {
+    let findXPX = null;
     let counter = 0;
     const promise = new Promise(async (resolve, reject) => {
       accounts.forEach((element, i) => {
@@ -438,6 +439,11 @@ export class WalletService {
           async accountInfo => {
             const mosaicsIds: (NamespaceId | MosaicId)[] = [];
             if (accountInfo) {
+              /*if (element.default) {
+                const mosaics = accountInfo.mosaics.slice(0);
+                findXPX = mosaics.find(mosaic => mosaic.id.toHex() === environment.mosaicXpxInfo.id);
+              }*/
+
               accountInfo.mosaics.map(n => n.id).forEach(id => {
                 const pushea = mosaicsIds.find(next => next.id.toHex() === id.toHex());
                 if (!pushea) {
@@ -464,7 +470,11 @@ export class WalletService {
             this.setAccountsInfo(accountsInfo, true);
             counter = counter + 1;
             if (accounts.length === counter && mosaicsIds.length > 0) {
-              // this.mosaicServices.searchInfoMosaics(mosaicsIds);
+              /*resolve({
+                mosaicsIds: mosaicsIds,
+                amount: (findXPX) ? findXPX.amount.compact() : '0.000000'
+              });*/
+
               resolve(mosaicsIds);
             }
           }, error => {

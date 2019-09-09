@@ -100,10 +100,17 @@ export class DetailAccountComponent implements OnInit {
     this.publicKey = this.currenAccount.publicAccount.publicKey;
   }
 
+  /**
+   *
+   * @param message
+   */
   copyMessage(message: string) {
     this.sharedService.showSuccess('', `${message} copied`);
   }
 
+  /**
+   *
+   */
   createForm() {
     this.validatingForm = new FormGroup({
       password: new FormControl('', [
