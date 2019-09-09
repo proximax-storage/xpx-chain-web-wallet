@@ -272,7 +272,17 @@ export class WalletService {
   filterAccountInfo(account?: string, byAddress?: boolean): AccountsInfoInterface {
     if (this.accountsInfo && this.accountsInfo.length > 0) {
       if (byAddress) {
-        return this.accountsInfo.find(next => next.accountInfo.address.pretty() === account);
+        let found = null;
+        this.accountsInfo.forEach(element => {
+          if (element.accountInfo) {
+            if (element.accountInfo.address.pretty() === account) {
+              found = element;
+            }
+          }
+        });
+
+        return found;
+        // return this.accountsInfo.find(next => (next.accountInfo) ? next.accountInfo.address.pretty() === account : []);
       }
 
       if (account) {
@@ -433,11 +443,11 @@ export class WalletService {
   async searchAccountsInfo(accounts: AccountsInterface[], pushed = false) {//: Promise<AccountsInfoInterface[]> {
     let findXPX = null;
     let counter = 0;
+    const mosaicsIds: (NamespaceId | MosaicId)[] = [];
     const promise = new Promise(async (resolve, reject) => {
       accounts.forEach((element, i) => {
         this.proximaxProvider.getAccountInfo(this.proximaxProvider.createFromRawAddress(element.address)).pipe(first()).subscribe(
           async accountInfo => {
-            const mosaicsIds: (NamespaceId | MosaicId)[] = [];
             if (accountInfo) {
               /*if (element.default) {
                 const mosaics = accountInfo.mosaics.slice(0);
@@ -470,17 +480,24 @@ export class WalletService {
             this.setAccountsInfo(accountsInfo, true);
             counter = counter + 1;
             if (accounts.length === counter && mosaicsIds.length > 0) {
-              /*resolve({
-                mosaicsIds: mosaicsIds,
-                amount: (findXPX) ? findXPX.amount.compact() : '0.000000'
-              });*/
-
               resolve(mosaicsIds);
             }
           }, error => {
+            // console.log('ERROR TO SEARCH ACCOUNT INFO ---> ', error);
+            const accountsInfo = [{
+              name: element.name,
+              accountInfo: null,
+              multisigInfo: null
+            }];
+
+            this.setAccountsInfo(accountsInfo, true);
+
             counter = counter + 1;
-            if (accounts.length === i) {
+            if (accounts.length === counter && mosaicsIds.length > 0) {
+              resolve(mosaicsIds);
             }
+
+
           }
         );
       });

@@ -39,42 +39,9 @@ export class PartialComponent implements OnInit {
   maxSize = 0;
   moduleName = 'Transactions';
   multisigInfo: MultisigAccountInfo[] = [];
-  elements: any = [
-    {
-      status: 'Action Required!',
-      deadline: '2019-07-10 20:38:04',
-      fee: '0.000000',
-      accountLinked: 'VDAE5R-ORTVTM-Y6M5EU-MLYQ5E-LQ7WWX-2AIFRO-Z3YN',
-      hash: 'F416F7FA16AB94878D135F7AFD815A5DAB664F0588FD90592A7DB082C28A438C',
-      statusBoolean: true
-    },
-    {
-      status: 'Pending!',
-      deadline: '2019-08-10 20:38:04',
-      fee: '0.000000',
-      accountLinked: 'VDAE5R-ORTVTM-Y6M5EU-MLYQ5E-LQ7WWX-2AIFRO-Z3YN',
-      hash: 'F416F7FA16AB94878D135F7AFD815A5DAB664F0588FD90592A7DB082C28A438C',
-      statusBoolean: false
-    },
-    {
-      status: 'Action Required!',
-      deadline: '2019-09-10 20:38:04',
-      fee: '0.000000',
-      accountLinked: 'VDAE5R-ORTVTM-Y6M5EU-MLYQ5E-LQ7WWX-2AIFRO-Z3YN',
-      hash: 'F416F7FA16AB94878D135F7AFD815A5DAB664F0588FD90592A7DB082C28A438C',
-      statusBoolean: true
-    },
-    {
-      status: 'Action Required!',
-      deadline: '2019-10-10 20:38:04',
-      fee: '0.000000',
-      accountLinked: 'VDAE5R-ORTVTM-Y6M5EU-MLYQ5E-LQ7WWX-2AIFRO-Z3YN',
-      hash: 'F416F7FA16AB94878D135F7AFD815A5DAB664F0588FD90592A7DB082C28A438C',
-      statusBoolean: true
-    },
-  ];
-
+  elements: any = [];
   headElements = ['Deadline', 'Fee', 'Account linked to the transaction', 'Hash'];
+  hidePassword = false;
   objectKeys = Object.keys;
   password: string = '';
   subscription: Subscription[] = [];
@@ -134,6 +101,7 @@ export class PartialComponent implements OnInit {
    * @memberof PartialComponent
    */
   find(transaction: TransactionsInterface) {
+    console.log('----------TRANSACTION ', transaction);
     transaction.data['innerTransactions'].forEach(element => {
       const nameType = Object.keys(this.typeTransactions).find(x => this.typeTransactions[x].id === element.type);
       element['nameType'] = (nameType) ? this.typeTransactions[nameType].name : element.type.toString(16).toUpperCase();
@@ -143,7 +111,7 @@ export class PartialComponent implements OnInit {
     this.dataSelected = transaction;
     const accountMultisig = this.walletService.filterAccountInfo(transaction.data['innerTransactions'][0].signer.address.pretty(), true);
     console.log(accountMultisig);
-    if (accountMultisig.multisigInfo.cosignatories && accountMultisig.multisigInfo.cosignatories.length > 0) {
+    if (accountMultisig && accountMultisig.multisigInfo.cosignatories && accountMultisig.multisigInfo.cosignatories.length > 0) {
       accountMultisig.multisigInfo.cosignatories.forEach(element => {
         const cosignatorie: AccountsInterface = this.walletService.filterAccount('', null, element.address.pretty());
         if (cosignatorie) {
@@ -154,10 +122,16 @@ export class PartialComponent implements OnInit {
             label: (signedByAccount) ? `${cosignatorie.name} - Signed` : cosignatorie.name,
             value: cosignatorie,
             selected: true,
+            signed: signedByAccount,
             disabled: signedByAccount
           });
         }
       });
+
+      const cantSigned = this.arraySelect.filter((x: any) => x.signed === true);
+      if (cantSigned.length === this.arraySelect.length) {
+        this.hidePassword = true;
+      }
     }
   }
 
@@ -208,7 +182,6 @@ export class PartialComponent implements OnInit {
             const existTransction = this.aggregateTransactions.find(x => x.data.transactionInfo.hash === a.transactionInfo.hash);
             if (!existTransction) {
               const data = this.transactionService.getStructureDashboard(a);
-              // console.log('----> existTransction <-----', data);
               this.aggregateTransactions.push(data);
             }
           });
@@ -230,9 +203,9 @@ export class PartialComponent implements OnInit {
     ) {
       let common: any = { password: this.password };
       if (this.walletService.decrypt(common, this.account)) {
-        console.log(common);
         const transaction: any = this.dataSelected.data;
         const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
+        this.password = '';
         this.proximaxProvider.cosignAggregateBondedTransaction(transaction, account).subscribe(
           next => {
             console.log(next);
@@ -249,7 +222,6 @@ export class PartialComponent implements OnInit {
    * @memberof PartialComponent
    */
   selectAccount(event: any) {
-    console.log(event);
     if (event) {
       this.validateAccount = false;
       this.accountSelected = this.proximaxProvider.createFromRawAddress(event.value.address).pretty();
