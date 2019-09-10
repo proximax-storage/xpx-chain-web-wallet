@@ -11,6 +11,13 @@ import {
   AssetHttp,
   AssetTransferable,
   ServerConfig,
+  Account,
+  TransferTransaction,
+  TimeWindow,
+  XEM,
+  PlainMessage,
+  AssetId,
+  TransactionHttp,
 } from "nem-library";
 @Injectable({
   providedIn: 'root'
@@ -19,6 +26,7 @@ export class NemServiceService {
   wallets: SimpleWallet[];
   accountHttp: AccountHttp;
   assetHttp: AssetHttp;
+  transactionHttp: TransactionHttp;
   nodes: ServerConfig[];
 
   constructor() {
@@ -26,6 +34,10 @@ export class NemServiceService {
     this.nodes = environment.nis1.nodes;
     this.accountHttp = new AccountHttp(this.nodes);
     this.assetHttp = new AssetHttp(this.nodes);
+    this.transactionHttp = new TransactionHttp(this.nodes);
+    // this.accountHttp = new AccountHttp();
+    // this.assetHttp = new AssetHttp();
+    // this.transactionHttp = new TransactionHttp();
   }
 
   /**
@@ -36,7 +48,7 @@ export class NemServiceService {
    * @param selected network
    * @return Promise with wallet created
    */
-  public createPrivateKeyWallet(walletName: string, password: string, privateKey: string): SimpleWallet {
+  createPrivateKeyWallet(walletName: string, password: string, privateKey: string): SimpleWallet {
     return SimpleWallet.createWithPrivateKey(
       walletName,
       new Password(password),
@@ -47,5 +59,32 @@ export class NemServiceService {
   getOwnedMosaics(address: Address): Promise<AssetTransferable[]> {
     let accountOwnedMosaics = new AccountOwnedAssetService(this.accountHttp, this.assetHttp);
     return accountOwnedMosaics.fromAddress(address).toPromise();
+  }
+
+  async createTransaction(privateKey: string, message: PlainMessage, assetId: AssetId, quantity: number) {
+    // const privateKey: string = process.env.PRIVATE_KEY;
+    // const multisigAccountPublicKey: string = process.env.MULTISIG_PUBLIC_KEY;
+    const cosignerAccount = Account.createWithPrivateKey(privateKey);
+    console.log('\n\n\n\nValue cosignerAccount:\n', cosignerAccount, '\n\n\n\nEnd value\n\n');
+
+
+    const resultAssets = await this.assetHttp.getAssetTransferableWithRelativeAmount(assetId, quantity).toPromise();
+
+    console.log('\n\n\n\nValue resultAssets:\n', resultAssets, '\n\n\n\nEnd value\n\n');
+    const transferTransaction = TransferTransaction.createWithAssets(
+      TimeWindow.createWithDeadline(),
+      new Address(environment.nis1.address),
+      [resultAssets],
+      message
+    );
+
+    console.log('\n\n\n\nValue transferTransaction:\n', transferTransaction, '\n\n\n\nEnd value\n\n');
+
+    const signedTransaction = cosignerAccount.signTransaction(transferTransaction);
+    console.log('\n\n\n\nValue signedTransaction:\n', signedTransaction, '\n\n\n\nEnd value\n\n');
+
+    this.transactionHttp.announceTransaction(signedTransaction).subscribe(resp => {
+      console.log('\n\n\n\nValue resp:\n', resp, '\n\n\n\nEnd value\n\n');
+    });
   }
 }

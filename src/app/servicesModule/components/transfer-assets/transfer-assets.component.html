@@ -17,7 +17,7 @@
       </div>
     </div>
 
-    <form [formGroup]="formTransfer">
+    <form [formGroup]="formTransfer" (ngSubmit)="createTransaction()">
       <!-- INPUT AMOUNT TO SWAP -->
       <div class="col-sm-12 col-md-10 col-lg-8 col-xl-8 mx-auto">
         <div class="col-12 d-flex justify-content-center pt-1rem">

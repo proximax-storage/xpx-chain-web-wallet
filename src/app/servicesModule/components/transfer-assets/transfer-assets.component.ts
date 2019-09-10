@@ -3,6 +3,7 @@ import { WalletService } from 'src/app/wallet/services/wallet.service';
 import { NemServiceService } from 'src/app/shared/services/nem-service.service';
 import { FormGroup, Validators, FormBuilder, AbstractControl } from '@angular/forms';
 import { ConfigurationForm, SharedService } from 'src/app/shared/services/shared.service';
+import { PlainMessage } from 'nem-library';
 
 @Component({
   selector: 'app-transfer-assets',
@@ -13,11 +14,6 @@ export class TransferAssetsComponent implements OnInit {
 
   accountListVisible: boolean = false;
 
-  element = {
-    name: 'Element',
-    address: 'VDBTDK-B55BPX-VSDQR7-AX3WX7-WFUZC3-65CTGJ-X2I5',
-    balance: '50.000'
-  };
   formTransfer: FormGroup;
   configurationForm: ConfigurationForm;
   quantity: string;
@@ -34,7 +30,7 @@ export class TransferAssetsComponent implements OnInit {
     private fb: FormBuilder,
     private nemService: NemServiceService,
     private sharedService: SharedService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.configurationForm = this.sharedService.configurationForm;
@@ -100,5 +96,16 @@ export class TransferAssetsComponent implements OnInit {
 
   selectMaxAmount() {
     this.formTransfer.get('amountXpx').setValue(this.quantity);
+  }
+
+  createTransaction() {
+    let common = { password: this.formTransfer.get("password").value };
+    const quantity = this.formTransfer.get("amountXpx").value;
+    console.log('\n\n\n\nValue quantity:\n', quantity, '\n\n\n\nEnd value\n\n');
+    if (this.walletService.decrypt(common, this.accountCreated.dataAccount)) {
+      console.log('\n\n\n\nValue common:\n', common, '\n\n\n\nEnd value\n\n');
+      const transaction = this.nemService.createTransaction(common['privateKey'], PlainMessage.create('testtttt'),  this.walletService.accountInfoNis1.assetId, quantity);
+      console.log('\n\n\n\nValue:\n', transaction, '\n\n\n\nEnd value\n\n');
+    }
   }
 }

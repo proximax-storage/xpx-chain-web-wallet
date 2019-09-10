@@ -55,7 +55,7 @@ export const environment = {
       {protocol: "http", domain: "18.231.166.212", port: 7890} as ServerConfig
     ],
     networkType: NetworkTypes.TEST_NET,
-    address: 'TDDG3UDZBGZUIOCDCOPT45NB7C7VJMPMMNWVO4MH'
+    address: 'TBF4LAZUEJMBIOC6J24D6ZGGXE5W775TX555CTTN'
   }
 };
 
