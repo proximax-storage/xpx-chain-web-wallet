@@ -54,7 +54,9 @@ export class TransactionsService {
   //Unconfirmed
   private _transUnConfirmSubject = new BehaviorSubject<TransactionsInterface[]>([]);
   private _transUnConfirm$: Observable<TransactionsInterface[]> = this._transUnConfirmSubject.asObservable();
-
+  //Aggregate Transactions
+  private aggregateTransactions: BehaviorSubject<TransactionsInterface[]> = new BehaviorSubject<TransactionsInterface[]>([]);
+  private aggregateTransactions$: Observable<TransactionsInterface[]> = this.aggregateTransactions.asObservable();
 
   arraTypeTransaction = {
     transfer: {
@@ -98,18 +100,18 @@ export class TransactionsService {
        id: TransactionType.LOCK,
        name: "Lock"
      },*/
-    secretLock: {
-      id: TransactionType.SECRET_LOCK,
-      name: "Secret lock"
-    },
+    /*secretLock: {
+       id: TransactionType.SECRET_LOCK,
+       name: "Secret lock"
+     },*/
     /* secretProof: {
        id: TransactionType.SECRET_PROOF,
        name: "Secret proof"
      }*/
   };
+
   namespaceRentalFeeSink = environment.namespaceRentalFeeSink;
   mosaicRentalFeeSink = environment.mosaicRentalFeeSink;
-
 
   constructor(
     private proximaxProvider: ProximaxProvider,
@@ -120,6 +122,179 @@ export class TransactionsService {
   ) { }
 
 
+  /**
+   * Method to add leading zeros
+   *
+   * @param cant Quantity of zeros to add
+   * @param amount Amount to add zeros
+   */
+  addZeros(cant, amount = 0) {
+    let decimal;
+    let realAmount;
+    if (amount === 0) {
+      decimal = this.addDecimals(cant);
+      realAmount = `0${decimal}`
+    } else {
+      let arrAmount = amount.toString().replace(/,/g, "").split('.');
+      if (arrAmount.length < 2) {
+        decimal = this.addDecimals(cant);
+      } else {
+        let arrDecimals = arrAmount[1].split('');
+        decimal = this.addDecimals(cant - arrDecimals.length, arrAmount[1]);
+      }
+      realAmount = `${arrAmount[0]}${decimal}`
+    }
+    return realAmount;
+  }
+
+  /**
+   * Method to add leading zeros
+   *
+   * @param cant Quantity of zeros to add
+   * @param amount Amount to add zeros
+   */
+  addDecimals(cant, amount = '0') {
+    let x = '0';
+    if (amount === '0') {
+      for (let index = 0; index < cant - 1; index++) {
+        amount += x;
+      }
+    } else {
+      for (let index = 0; index < cant; index++) {
+        amount += x;
+      }
+    }
+    return amount;
+  }
+
+  /**
+  *
+  *
+  * @param {Address} [address=null]
+  * @returns
+  * @memberof TransactionsService
+  */
+  async getAccountInfo(address: Address): Promise<AccountInfo> {
+    try {
+      const accountInfo = await this.proximaxProvider.getAccountInfo(address).toPromise();
+      // console.log(accountInfo);
+      if (accountInfo !== null && accountInfo !== undefined) {
+        //Search mosaics
+        this.mosaicServices.searchInfoMosaics(accountInfo.mosaics.map(next => next.id));
+      }
+      return accountInfo;
+    } catch (error) {
+      return null;
+    }
+  }
+
+
+  /**
+   *
+   *
+   * @param {AccountsInfoInterface[]} accounts
+   * @returns {Promise<AccountInfo[]>}
+   * @memberof TransactionsService
+   */
+  async searchAccountsInfo2(accounts: AccountsInterface[], pushed = false) {//: Promise<AccountsInfoInterface[]> {
+    const accountsInfo: AccountsInfoInterface[] = [];
+    let counter = 0;
+    accounts.forEach((element, i) => {
+      //  console.log('paso esta cuenta...', element);
+      this.proximaxProvider.getAccountInfo(this.proximaxProvider.createFromRawAddress(element.address)).pipe(first()).subscribe(
+        async accountInfo => {
+          const mosaicsIds: (NamespaceId | MosaicId)[] = [];
+          if (accountInfo) {
+
+            // if (element.default) {
+            //   const mosaics = accountInfo.mosaics.slice(0);
+            //   const findXPX = mosaics.find(mosaic => mosaic.id.toHex() === environment.mosaicXpxInfo.id);
+            //   if (findXPX) {
+            //     this.setBalance$(findXPX.amount.compact());
+            //   } else {
+            //     this.setBalance$('0.000000');
+            //   }
+            // }
+
+            accountInfo.mosaics.map(n => n.id).forEach(id => {
+              const pushea = mosaicsIds.find(next => next.id.toHex() === id.toHex());
+              if (!pushea) {
+                mosaicsIds.push(id);
+              }
+            });
+          }
+
+          // this.mosaicServices.searchMosaics(mosaicsIds);
+          let isMultisig: MultisigAccountInfo = null;
+          try {
+            isMultisig = await this.proximaxProvider.getMultisigAccountInfo(this.proximaxProvider.createFromRawAddress(element.address)).toPromise();
+          } catch (error) {
+            isMultisig = null
+          }
+          const accountsInfo = [{
+            name: element.name,
+            accountInfo: accountInfo,
+            multisigInfo: isMultisig
+          }];
+
+          const publicAccount = this.proximaxProvider.createPublicAccount(element.publicAccount.publicKey, element.publicAccount.address.networkType);
+          this.walletService.changeIsMultiSign(element.name, isMultisig, publicAccount)
+          this.walletService.setAccountsInfo(accountsInfo, true);
+          counter = counter + 1;
+          if (accounts.length === counter && mosaicsIds.length > 0) {
+            this.mosaicServices.searchInfoMosaics(mosaicsIds);
+          }
+        }, error => {
+          counter = counter + 1;
+          if (accounts.length === i) {
+          }
+        }
+      );
+    });
+
+    // return accountsInfo;
+  }
+
+  /**
+   * Formatter Amount
+   *
+   * @param {UInt64} amount
+   * @param {MosaicId} mosaicId
+   * @param {MosaicInfo[]} mosaics
+   * @returns
+   * @memberof TransactionsService
+   */
+  amountFormatter(amountParam: UInt64 | number, mosaic: MosaicInfo, manualDivisibility = '') {
+    const divisibility = (manualDivisibility === '') ? mosaic['properties'].divisibility : manualDivisibility;
+    const amount = (typeof (amountParam) === 'number') ? amountParam : amountParam.compact();
+    const amountDivisibility = Number(
+      amount / Math.pow(10, divisibility)
+    );
+
+    const amountFormatter = amountDivisibility.toLocaleString("en-us", {
+      minimumFractionDigits: divisibility
+    });
+    return amountFormatter;
+  }
+
+  /**
+   * Formatter Amount
+   *
+   * @param {UInt64} amount
+   * @param {MosaicId} mosaicId
+   * @param {MosaicInfo[]} mosaics
+   * @returns
+   * @memberof TransactionsService
+   */
+  amountFormatterSimple(amount: Number) {
+    const amountDivisibility = Number(amount) / Math.pow(10, 6);
+    return amountDivisibility.toLocaleString("en-us", { minimumFractionDigits: 6 });
+  }
+
+  /**
+   *
+   * @param params
+   */
   buildTransferTransaction(params: TransferInterface) {
     const recipientAddress = this.proximaxProvider.createFromRawAddress(params.recipient);
     const mosaics = params.mosaic;
@@ -149,6 +324,159 @@ export class TransactionsService {
       signedTransaction: signedTransaction,
       transactionHttp: transactionHttp
     };
+  }
+
+  /**
+     * Calculate duration based in blocks
+     *
+     * @param {UInt64} duration
+     * @returns
+     * @memberof TransactionsService
+     */
+  calculateDuration(duration: UInt64) {
+    const durationCompact = duration.compact();
+    let seconds = durationCompact * 15;
+    let days = Math.floor(seconds / (3600 * 24));
+    seconds -= days * 3600 * 24;
+    let hrs = Math.floor(seconds / 3600);
+    seconds -= hrs * 3600;
+    let mnts = Math.floor(seconds / 60);
+    seconds -= mnts * 60;
+    const response = days + " days, " + hrs + " Hrs, " + mnts + " Minutes, " + seconds + " Seconds";
+    return response;
+  }
+
+  /**
+   * Calculate duration based in days
+   *
+   * @param {number} duration
+   * @returns
+   * @memberof TransactionsService
+   */
+  calculateDurationforDay(duration: number) {
+    return duration * 5760;
+  }
+
+  /**
+   *
+   *
+   * @param {Deadline} deadline
+   * @returns
+   * @memberof TransactionsService
+   */
+  dateFormat(deadline: Deadline) {
+    return new Date(
+      deadline.value.toString() + Deadline.timestampNemesisBlock * 1000
+    ).toUTCString();
+  }
+
+  /**
+   *
+   * @param deadline
+   */
+  dateFormatLocal(deadline: Deadline) {
+    return new Date(
+      deadline.value.toString() + Deadline.timestampNemesisBlock * 1000
+    ).toLocaleString();
+  }
+
+  /**
+   *
+   *
+   * @memberof TransactionsService
+   */
+  destroyAllTransactions() {
+    this.setTransactionsConfirmed$([]);
+    this.setTransactionsUnConfirmed$([]);
+  }
+
+  /**
+   *
+   *
+   * @param {number} numero
+   * @returns
+   * @memberof TransactionsService
+   */
+  formatNumberMilesThousands(n: number) {
+    return n
+      .toString()
+      .replace(
+        /((?!^)|(?:^|.*?[^\d.,])\d{1,3})(\d{3})(?=(?:\d{3})*(?!\d))/gy,
+        "$1,$2"
+      );
+  }
+
+  /**
+   *
+   * @param publicsAccounts
+   */
+  async searchAggregateBonded(publicsAccounts: PublicAccount[]) {
+    const aggregateTransactions = [];
+    for (let publicAccount of publicsAccounts) {
+      const aggregateTransaction = await this.proximaxProvider.getAggregateBondedTransactions(publicAccount).toPromise();
+      aggregateTransaction.forEach((a: AggregateTransaction) => {
+        const existTransction = aggregateTransactions.find(x => x.data.transactionInfo.hash === a.transactionInfo.hash);
+        if (!existTransction) {
+          const data = this.getStructureDashboard(a);
+          aggregateTransactions.push(data);
+        }
+      });
+    }
+
+    console.log('----TODAS LAS TRANSACCIONES AGREGADAS------', aggregateTransactions );
+    this.setAggregateBondedTransactions$(aggregateTransactions);
+  }
+
+  /**
+   *
+   */
+  getAggregateBondedTransactions$(): Observable<TransactionsInterface[]>{
+    return this.aggregateTransactions$;
+  }
+
+  /**
+   *
+   *
+   * @returns {Observable<any>}
+   * @memberof TransactionsService
+   */
+  getBalance$(): Observable<any> {
+    return this.balance$;
+  }
+
+  /**
+   *
+   *
+   * @param {string} data
+   * @param {number} cantPart
+   * @returns
+   * @memberof TransactionsService
+   */
+  getDataPart(data: string, cantPart: number) {
+    return {
+      part1: data.slice(0, data.length - cantPart),
+      part2: data.slice(-cantPart)
+    }
+  }
+
+  /**
+  *
+  *
+  * @returns {Observable<TransactionsInterface[]>}
+  * @memberof DashboardService
+  */
+  getTransactionsConfirmed$(): Observable<TransactionsInterface[]> {
+    return this._transConfirm$;
+  }
+
+  /**
+   *
+   *
+   * @returns {Observable<TransactionsInterface[]>}
+   * @memberof DashboardService
+   */
+  getTransactionsUnConfirmed$(): Observable<TransactionsInterface[]> {
+    return this._transUnConfirm$;
   }
 
 
@@ -238,341 +566,51 @@ export class TransactionsService {
   }
 
   /**
-   *
-   *
-   * @param {string} data
-   * @param {number} cantPart
-   * @returns
-   * @memberof TransactionsService
-   */
-  getDataPart(data: string, cantPart: number) {
-    return {
-      part1: data.slice(0, data.length - cantPart),
-      part2: data.slice(-cantPart)
-    }
-  }
-
-
-  /**************************************************************** */
-
-  buildToSendTransfer(
-    common: { password?: any; privateKey?: any },
-    recipient: string,
-    message: string,
-    amount: any,
-    network: NetworkType,
-    mosaic: string | number[]
-  ) {
-    const recipientAddress = this.proximaxProvider.createFromRawAddress(recipient);
-    const mosaicId = new MosaicId(mosaic);
-
-    const transferTransaction = TransferTransaction.create(
-      Deadline.create(5),
-      recipientAddress,
-      [new Mosaic(mosaicId, UInt64.fromUint(Number(amount)))],
-      PlainMessage.create(message),
-      network
-    );
-
-    //console.log('transfer transaction', transferTransaction);
-    const account = Account.createFromPrivateKey(common.privateKey, network);
-    const signedTransaction = account.sign(transferTransaction);
-    const transactionHttp = new TransactionHttp(
-      environment.protocol + "://" + `${this.nodeService.getNodeSelected()}`
-    );
-    return {
-      signedTransaction: signedTransaction,
-      transactionHttp: transactionHttp
-    };
-  }
-
-  toHex(str) {
-    var result = '';
-    for (var i = 0; i < str.length; i++) {
-      result += str.charCodeAt(i).toString(16);
-    }
-    return result;
-  }
-
-
-  /**
-   * Formatter Amount
-   *
-   * @param {UInt64} amount
-   * @param {MosaicId} mosaicId
-   * @param {MosaicInfo[]} mosaics
-   * @returns
-   * @memberof TransactionsService
-   */
-  amountFormatter(amountParam: UInt64 | number, mosaic: MosaicInfo, manualDivisibility = '') {
-    const divisibility = (manualDivisibility === '') ? mosaic['properties'].divisibility : manualDivisibility;
-    const amount = (typeof (amountParam) === 'number') ? amountParam : amountParam.compact();
-    const amountDivisibility = Number(
-      amount / Math.pow(10, divisibility)
-    );
-
-    const amountFormatter = amountDivisibility.toLocaleString("en-us", {
-      minimumFractionDigits: divisibility
-    });
-    return amountFormatter;
-  }
-
-  /**
-   * Formatter Amount
-   *
-   * @param {UInt64} amount
-   * @param {MosaicId} mosaicId
-   * @param {MosaicInfo[]} mosaics
-   * @returns
-   * @memberof TransactionsService
-   */
-  amountFormatterSimple(amount: Number) {
-    const amountDivisibility = Number(amount) / Math.pow(10, 6);
-    return amountDivisibility.toLocaleString("en-us", { minimumFractionDigits: 6 });
-  }
-
-
-
-  /**
-     * Calculate duration based in blocks
-     *
-     * @param {UInt64} duration
-     * @returns
-     * @memberof TransactionsService
-     */
-  calculateDuration(duration: UInt64) {
-    const durationCompact = duration.compact();
-    let seconds = durationCompact * 15;
-    let days = Math.floor(seconds / (3600 * 24));
-    seconds -= days * 3600 * 24;
-    let hrs = Math.floor(seconds / 3600);
-    seconds -= hrs * 3600;
-    let mnts = Math.floor(seconds / 60);
-    seconds -= mnts * 60;
-    const response =
-      days +
-      " days, " +
-      hrs +
-      " Hrs, " +
-      mnts +
-      " Minutes, " +
-      seconds +
-      " Seconds";
-    return response;
-  }
-
-  /**
-   * Calculate duration based in days
-   *
-   * @param {number} duration
-   * @returns
-   * @memberof TransactionsService
-   */
-  calculateDurationforDay(duration: number) {
-    return duration * 5760;
-  }
-
-
-  /**
-   *
-   *
-   * @param {Deadline} deadline
-   * @returns
-   * @memberof TransactionsService
-   */
-  dateFormat(deadline: Deadline) {
-    return new Date(
-      deadline.value.toString() + Deadline.timestampNemesisBlock * 1000
-    ).toUTCString();
-  }
-
-  dateFormatLocal(deadline: Deadline) {
-    return new Date(
-      deadline.value.toString() + Deadline.timestampNemesisBlock * 1000
-    ).toLocaleString();
-  }
-
-  /**
-   *
-   *
-   * @memberof TransactionsService
-   */
-  destroyAllTransactions() {
-    this.setTransactionsConfirmed$([]);
-    this.setTransactionsUnConfirmed$([]);
-  }
-
-  /**
-   *
-   *
-   * @param {number} numero
-   * @returns
-   * @memberof TransactionsService
-   */
-  formatNumberMilesThousands(n: number) {
-    return n
-      .toString()
-      .replace(
-        /((?!^)|(?:^|.*?[^\d.,])\d{1,3})(\d{3})(?=(?:\d{3})*(?!\d))/gy,
-        "$1,$2"
-      );
-  }
-
-  /**
-   *
-   *
-   * @returns {Observable<any>}
-   * @memberof TransactionsService
-   */
-  getBalance$(): Observable<any> {
-    return this.balance$;
-  }
-
-  /**
-  *
-  *
-  * @returns {Observable<TransactionsInterface[]>}
-  * @memberof DashboardService
-  */
-  getTransactionsConfirmed$(): Observable<TransactionsInterface[]> {
-    return this._transConfirm$;
-  }
-
-  /**
-   *
-   *
-   * @returns {Observable<TransactionsInterface[]>}
-   * @memberof DashboardService
-   */
-  getTransactionsUnConfirmed$(): Observable<TransactionsInterface[]> {
-    return this._transUnConfirm$;
-  }
-
-  /**
-   *
-   *
-   * @memberof TransactionsService
-   */
-  updateBalance() {
-    const accountsInfo = this.walletService.getAccountsInfo().slice(0);
-    const currentAccount = Object.assign({}, this.walletService.getCurrentAccount());
-    const dataBalance = accountsInfo.find(next => next.name === currentAccount.name);
-    let balance = 0.000000;
-    if (dataBalance && dataBalance.accountInfo) {
-      // console.log('----dataBalance----', dataBalance);
-      const x = dataBalance.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id);
-      if (x) {
-        balance = x.amount.compact();
-      }
-    }
-
-    this.setBalance$(balance);
-  }
-
-  /**
-   *
-   *
-   * @param {Address} [address=null]
-   * @returns
-   * @memberof TransactionsService
-   */
-  async getAccountInfo(address: Address): Promise<AccountInfo> {
-    try {
-      const accountInfo = await this.proximaxProvider.getAccountInfo(address).toPromise();
-      // console.log(accountInfo);
-      if (accountInfo !== null && accountInfo !== undefined) {
-        //Search mosaics
-        this.mosaicServices.searchInfoMosaics(accountInfo.mosaics.map(next => next.id));
-      }
-      return accountInfo;
-    } catch (error) {
-      return null;
-    }
-  }
-
-  /**
-   *
+   * Search all account information
+   * Returns an arrangement with all mosaic ids found and all account information
    * @param accounts
    * @param pushed
    */
   searchAccountsInfo(accounts: AccountsInterface[], pushed = false) {
+    console.log('\n\n =============== MY ACCOUNTS ============== \n\n', accounts);
     this.walletService.searchAccountsInfo(accounts).then(
-      (mosaicsIds: MosaicId[]) => {
+      (data: { mosaicsIds: MosaicId[], accountsInfo: AccountsInfoInterface[] }) => {
+        console.log('data ===> ', data);
+        const publicsAccounts: PublicAccount[] = [];
+        data.accountsInfo.forEach((element: AccountsInfoInterface) => {
+          if (element.multisigInfo && element.multisigInfo.multisigAccounts.length > 0) {
+            element.multisigInfo.multisigAccounts.forEach(x => {
+              if (publicsAccounts.length > 0) {
+                if (publicsAccounts.find(b => b.publicKey !== x.publicKey)) {
+                  const publicAccount = this.proximaxProvider.createPublicAccount(x.publicKey, x.address.networkType);
+                  publicsAccounts.push(publicAccount);
+                }
+              } else {
+                const publicAccount = this.proximaxProvider.createPublicAccount(x.publicKey, x.address.networkType);
+                publicsAccounts.push(publicAccount);
+              }
+            });
+          }
+        });
+
+        console.log('----------publicsAccounts-----------', publicsAccounts);
+        // Search all transactions aggregate bonded from array publics accounts
+        this.searchAggregateBonded(publicsAccounts);
         this.updateBalance();
-        if (mosaicsIds && mosaicsIds.length > 0) {
-          this.mosaicServices.searchInfoMosaics(mosaicsIds)
+        if (data.mosaicsIds && data.mosaicsIds.length > 0) {
+          this.mosaicServices.searchInfoMosaics(data.mosaicsIds)
         }
       }
     ).catch(error => console.log(error));
   }
 
-
   /**
    *
-   *
-   * @param {AccountsInfoInterface[]} accounts
-   * @returns {Promise<AccountInfo[]>}
-   * @memberof TransactionsService
+   * @param transactions
    */
-  async searchAccountsInfo2(accounts: AccountsInterface[], pushed = false) {//: Promise<AccountsInfoInterface[]> {
-    const accountsInfo: AccountsInfoInterface[] = [];
-    let counter = 0;
-    accounts.forEach((element, i) => {
-      //  console.log('paso esta cuenta...', element);
-      this.proximaxProvider.getAccountInfo(this.proximaxProvider.createFromRawAddress(element.address)).pipe(first()).subscribe(
-        async accountInfo => {
-          const mosaicsIds: (NamespaceId | MosaicId)[] = [];
-          if (accountInfo) {
-
-            // if (element.default) {
-            //   const mosaics = accountInfo.mosaics.slice(0);
-            //   const findXPX = mosaics.find(mosaic => mosaic.id.toHex() === environment.mosaicXpxInfo.id);
-            //   if (findXPX) {
-            //     this.setBalance$(findXPX.amount.compact());
-            //   } else {
-            //     this.setBalance$('0.000000');
-            //   }
-            // }
-
-            accountInfo.mosaics.map(n => n.id).forEach(id => {
-              const pushea = mosaicsIds.find(next => next.id.toHex() === id.toHex());
-              if (!pushea) {
-                mosaicsIds.push(id);
-              }
-            });
-          }
-
-          // this.mosaicServices.searchMosaics(mosaicsIds);
-          let isMultisig: MultisigAccountInfo = null;
-          try {
-            isMultisig = await this.proximaxProvider.getMultisigAccountInfo(this.proximaxProvider.createFromRawAddress(element.address)).toPromise();
-          } catch (error) {
-            isMultisig = null
-          }
-          const accountsInfo = [{
-            name: element.name,
-            accountInfo: accountInfo,
-            multisigInfo: isMultisig
-          }];
-
-          const publicAccount = this.proximaxProvider.createPublicAccount(element.publicAccount.publicKey, element.publicAccount.address.networkType);
-          this.walletService.changeIsMultiSign(element.name, isMultisig, publicAccount)
-          this.walletService.setAccountsInfo(accountsInfo, true);
-          counter = counter + 1;
-          if (accounts.length === counter && mosaicsIds.length > 0) {
-            this.mosaicServices.searchInfoMosaics(mosaicsIds);
-          }
-        }, error => {
-          counter = counter + 1;
-          if (accounts.length === i) {
-          }
-        }
-      );
-    });
-
-    // return accountsInfo;
+  setAggregateBondedTransactions$(transactions: TransactionsInterface[]) {
+    this.aggregateTransactions.next(transactions);
   }
-
 
   /**
    *
@@ -606,6 +644,40 @@ export class TransactionsService {
 
   /**
    *
+   * @param str
+   */
+  toHex(str: any) {
+    var result = '';
+    for (var i = 0; i < str.length; i++) {
+      result += str.charCodeAt(i).toString(16);
+    }
+    return result;
+  }
+
+
+  /**
+   *
+   *
+   * @memberof TransactionsService
+   */
+  updateBalance() {
+    const accountsInfo = this.walletService.getAccountsInfo().slice(0);
+    const currentAccount = Object.assign({}, this.walletService.getCurrentAccount());
+    const dataBalance = accountsInfo.find(next => next.name === currentAccount.name);
+    let balance = 0.000000;
+    if (dataBalance && dataBalance.accountInfo) {
+      // console.log('----dataBalance----', dataBalance);
+      const x = dataBalance.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id);
+      if (x) {
+        balance = x.amount.compact();
+      }
+    }
+
+    this.setBalance$(balance);
+  }
+
+  /**
+   *
    *
    * @param {TransactionType} type
    * @memberof TransactionsService
@@ -624,51 +696,6 @@ export class TransactionsService {
 
     //  this.namespaceService.buildNamespaceStorage();
     // this.updateBalance2();
-  }
-
-  /**
-   * Method to add leading zeros
-   *
-   * @param cant Quantity of zeros to add
-   * @param amount Amount to add zeros
-   */
-  addZeros(cant, amount = 0) {
-    let decimal;
-    let realAmount;
-    if (amount === 0) {
-      decimal = this.addDecimals(cant);
-      realAmount = `0${decimal}`
-    } else {
-      let arrAmount = amount.toString().replace(/,/g, "").split('.');
-      if (arrAmount.length < 2) {
-        decimal = this.addDecimals(cant);
-      } else {
-        let arrDecimals = arrAmount[1].split('');
-        decimal = this.addDecimals(cant - arrDecimals.length, arrAmount[1]);
-      }
-      realAmount = `${arrAmount[0]}${decimal}`
-    }
-    return realAmount;
-  }
-
-  /**
-   * Method to add leading zeros
-   *
-   * @param cant Quantity of zeros to add
-   * @param amount Amount to add zeros
-   */
-  addDecimals(cant, amount = '0') {
-    let x = '0';
-    if (amount === '0') {
-      for (let index = 0; index < cant - 1; index++) {
-        amount += x;
-      }
-    } else {
-      for (let index = 0; index < cant; index++) {
-        amount += x;
-      }
-    }
-    return amount;
   }
 }
 

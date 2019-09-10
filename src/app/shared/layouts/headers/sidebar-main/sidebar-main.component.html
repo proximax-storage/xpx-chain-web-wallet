@@ -17,9 +17,11 @@
         <div class="col-12 d-flex justify-content-end mt-05rem">
 
           <!-- PARTIAL ICON -->
-          <div class="lh-1em d-flex align-items-center justify-content-end mr-08rem cursor-p">
-            <a [routerLink]="routePartial"><i class="fa fa-bell" aria-hidden="true"></i></a>
-          </div>
+          <ng-container *ngIf="viewParcial">
+            <div class="lh-1em d-flex align-items-center justify-content-end mr-08rem cursor-p">
+              <a [routerLink]="routePartial"><i class="fa fa-bell" aria-hidden="true"></i></a>
+            </div>
+          </ng-container>
 
           <!-- NAME WALLET & VESTED BALANCE -->
           <div class="d-none d-sm-block d-md-block d-lg-block d-xl-block lh-1em">
