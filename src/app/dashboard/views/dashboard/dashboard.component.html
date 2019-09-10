@@ -97,6 +97,19 @@
     </div>
   </div>
 
+    <!-- Searching and icon reload -->
+    <div class="row mt-2rem">
+      <div class="col-11 col-sm-11 col-lg-10 mx-auto">
+        <!-- Searching -->
+        <ng-container *ngIf="searching">
+          <div class="col-12">
+            <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate">
+            </mdb-progress-bar>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+
   <!-- Searching and icon reload -->
   <div class="row mt-2rem txt-a-right">
     <div class="col-11 col-sm-11 col-lg-10 mx-auto">
@@ -176,19 +189,6 @@
 
     <div class="col-12 pt-1rem pb-3rem d-flex justify-content-center mx-auto">
       <pagination-controls (pageChange)="p = $event"></pagination-controls>
-    </div>
-  </div>
-
-  <!-- Searching and icon reload -->
-  <div class="row mt-2rem">
-    <div class="col-11 col-sm-11 col-lg-10 mx-auto">
-      <!-- Searching -->
-      <ng-container *ngIf="searching">
-        <div class="col-12">
-          <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate">
-          </mdb-progress-bar>
-        </div>
-      </ng-container>
     </div>
   </div>
 
