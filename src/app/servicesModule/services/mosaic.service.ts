@@ -44,7 +44,7 @@ export class MosaicService {
    * @memberof MosaicService
    */
   async getMosaicsName(mosaicsId: MosaicId[]): Promise<MosaicNames[]> {
-    return await this.proximaxProvider.mosaicHttp.getMosaicNames(mosaicsId).toPromise();
+    return await this.proximaxProvider.mosaicHttp.getMosaicsNames(mosaicsId).toPromise(); //Update-sdk-dragon
   }
 
   /**

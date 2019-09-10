@@ -399,7 +399,8 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
           mosaicId,
           this.walletService.currentAccount.network
         );
-        const signedTransaction = account.sign(mosaicSupplyChangeTransaction);
+        const generationHash = this.dataBridge.blockInfo.generationHash;
+        const signedTransaction = account.sign(mosaicSupplyChangeTransaction,generationHash); //Update-sdk-dragon
         this.transactionSigned = signedTransaction;
         this.proximaxProvider.announce(signedTransaction).subscribe(
           x => {

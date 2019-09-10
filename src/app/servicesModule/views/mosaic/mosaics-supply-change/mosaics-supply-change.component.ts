@@ -310,8 +310,8 @@ export class MosaicsSupplyChangeComponent implements OnInit {
           this.formMosaicSupplyChange.get('mosaicSupplyType').value,
           this.walletService.currentAccount.network
         )
-
-        const signedTransaction = account.sign(mosaicSupplyChangeTransaction);
+        const generationHash = this.dataBridge.blockInfo.generationHash;
+        const signedTransaction = account.sign(mosaicSupplyChangeTransaction, generationHash); //Update-sdk-dragon
         this.transactionSigned.push(signedTransaction);
         console.log(signedTransaction);
         console.log(this.transactionSigned);

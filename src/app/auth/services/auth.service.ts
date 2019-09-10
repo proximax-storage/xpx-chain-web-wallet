@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { NetworkType, UInt64, Address } from 'tsjs-xpx-chain-sdk';
+import { NetworkType, UInt64, Address, BlockInfo } from 'tsjs-xpx-chain-sdk';
 
 import { AppConfig } from '../../config/app.config';
 import { WalletService, CurrentWalletInterface } from '../../wallet/services/wallet.service';
@@ -106,8 +106,10 @@ export class AuthService {
 
     this.namespaces.searchNamespacesFromAccounts(address);
     this.transactionService.searchAccountsInfo(this.walletService.currentWallet.accounts);
-    const blockchainHeight: UInt64 = await this.proximaxProvider.getBlockchainHeight().toPromise();
+    const blockchainHeight: UInt64 = await this.proximaxProvider.getBlockchainHeight().toPromise(); 
+    const BlockInfo : BlockInfo = await this.proximaxProvider.getBlockInfo().toPromise(); //Update-sdk-dragon
     this.dataBridgeService.setblock(blockchainHeight.compact());
+    this.dataBridgeService.setblockInfo(BlockInfo); //Update-sdk-dragon
     return true;
   }
 

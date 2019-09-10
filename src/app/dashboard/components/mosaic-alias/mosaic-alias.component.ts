@@ -12,7 +12,7 @@ import { TransactionsInterface } from '../../../transactions/services/transactio
 export class MosaicAliasComponent implements OnInit {
 
   @Input() mosaicAlias: TransactionsInterface = null;
-  mosaicName: string = '';
+  mosaicName: any; //Update-sdk-dragon
   mosaicId: string = '';
   namespaceId: string = '';
   namespaceName: string = '';
@@ -39,6 +39,7 @@ export class MosaicAliasComponent implements OnInit {
     if (mosaicInfo !== null && mosaicInfo !== undefined && mosaicInfo.length > 0) {
       this.mosaicName = (mosaicInfo[0].mosaicNames.names.length > 0) ? mosaicInfo[0].mosaicNames.names[0] : '';
     }
+    console.log("name mosaic:",this.mosaicName)
 
     // NAMESPACE
     const namespaceId = new NamespaceId([this.mosaicAlias.data['namespaceId'].id.lower, this.mosaicAlias.data['namespaceId'].id.higher]);

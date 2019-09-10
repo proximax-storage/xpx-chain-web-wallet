@@ -408,7 +408,8 @@ export class CreateMultiSignatureComponent implements OnInit {
           Deadline.create(),
           [convertIntoMultisigTransaction.toAggregate(this.currentAccountToConvert.publicAccount)],
           this.currentAccountToConvert.network);
-        const signedTransaction = this.accountToConvertSign.sign(aggregateTransaction)
+        const generationHash = this.dataBridge.blockInfo.generationHash;
+        const signedTransaction = this.accountToConvertSign.sign(aggregateTransaction, generationHash) //Update-sdk-dragon
 
         // /**
         // * Create Hash lock transaction
@@ -419,7 +420,8 @@ export class CreateMultiSignatureComponent implements OnInit {
           UInt64.fromUint(480),
           signedTransaction,
           this.currentAccountToConvert.network);
-        this.hashLock(this.accountToConvertSign.sign(hashLockTransaction), signedTransaction)
+          
+        this.hashLock(this.accountToConvertSign.sign(hashLockTransaction ,generationHash), signedTransaction) //Update-sdk-dragon
       }
     } else {
       this.blockSend = false;

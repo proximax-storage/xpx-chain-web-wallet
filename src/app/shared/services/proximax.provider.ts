@@ -38,23 +38,25 @@ import {
   MosaicSupplyType,
   AliasTransaction,
   AliasActionType,
-  BlockchainHttp,
+  ChainHttp,
   NamespaceInfo,
   MultisigAccountInfo,
   AggregateTransaction,
-  CosignatureTransaction
+  CosignatureTransaction,
+  BlockHttp,
+  BlockInfo
 } from 'tsjs-xpx-chain-sdk';
 import { mergeMap } from 'rxjs/operators';
-import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { BlockchainNetworkType } from 'xpx2-ts-js-sdk';
+import { Observable } from 'rxjs/internal/Observable';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProximaxProvider {
 
-  blockchainHttp: BlockchainHttp;
+  blockchainHttp: ChainHttp; //Update-sdk-dragon
   url: any;
   infoMosaic: MosaicInfo;
   transactionHttp: TransactionHttp;
@@ -63,6 +65,7 @@ export class ProximaxProvider {
   accountHttp: AccountHttp;
   mosaicHttp: MosaicHttp;
   namespaceHttp: NamespaceHttp;
+  blockHttp: BlockHttp;
   mosaicService: MosaicService;
   namespaceService: NamespaceService;
   transactionStatusError: TransactionStatusError;
@@ -71,6 +74,7 @@ export class ProximaxProvider {
     mosaicId: '0dc67fbe1cad29e3',
     divisibility: 6
   };
+
 
   constructor() {
   }
@@ -83,13 +87,26 @@ export class ProximaxProvider {
    * @memberof ProximaxProvider
    */
   getBlockchainHeight(): Observable<UInt64> {
-    return this.blockchainHttp.getBlockchainHeight();
+    return this.blockchainHttp.getBlockchainHeight();//Update-sdk-dragon
+  }
+
+
+  /**
+     * Gets a BlockInfo for a given block height
+     *  @param height - Block height
+     * @returns {Observable<BlockInfo>}
+     * @memberof ProximaxProvider
+     */
+  getBlockInfo(height: number = 1): Observable<BlockInfo> {
+    return this.blockHttp.getBlockByHeight(height) //Update-sdk-dragon
   }
 
   /**
    * Method to return blockchain network type
    *
+   * @p   *
    * @param {NetworkType} network network type
+   * @retaram {NetworkType} network network type
    * @returns {BlockchainNetworkType} BlockchainNetworkType
    */
   getBlockchainNetworkType(network: NetworkType): BlockchainNetworkType {
@@ -217,7 +234,7 @@ export class ProximaxProvider {
       MosaicProperties.create({
         supplyMutable: supplyMutableParam,
         transferable: transferableParam,
-        levyMutable: levyMutableParam,
+        // levyMutable: levyMutableParam, //Update-sdk-dragon
         divisibility: divisibilityParam,
         duration: UInt64.fromUint(durationParam)
       }),
@@ -595,7 +612,9 @@ export class ProximaxProvider {
   */
   initInstances(url: string) {
     this.url = `${environment.protocol}://${url}`;
-    this.blockchainHttp = new BlockchainHttp(this.url);
+
+    this.blockHttp = new BlockHttp(this.url);
+    this.blockchainHttp = new ChainHttp(this.url);//Update-sdk-dragon
     this.accountHttp = new AccountHttp(this.url);
     this.mosaicHttp = new MosaicHttp(this.url);
     this.namespaceHttp = new NamespaceHttp(this.url);

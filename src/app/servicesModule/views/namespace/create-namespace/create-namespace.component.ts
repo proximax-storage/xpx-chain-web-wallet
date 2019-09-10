@@ -413,6 +413,7 @@ export class CreateNamespaceComponent implements OnInit {
     const namespaceName: string = this.namespaceForm.get('name').value;
     const duration: number = parseFloat(this.durationByBlock);
     // const duration: number = 20;
+    const generationHash = this.dataBridge.blockInfo.generationHash;
     if (this.typetransfer == 1) {
       const registerRootNamespaceTransaction = this.proximaxProvider.registerRootNamespaceTransaction(
         namespaceName,
@@ -421,7 +422,8 @@ export class CreateNamespaceComponent implements OnInit {
       )
 
       console.log('----namespaceName----', namespaceName);
-      const signedTransaction = account.sign(registerRootNamespaceTransaction);
+     
+      const signedTransaction = account.sign(registerRootNamespaceTransaction,generationHash); //Update-sdk-dragon
       return signedTransaction;
     } else if (this.typetransfer == 2) {
       const rootNamespaceName = this.namespaceForm.get('namespaceRoot').value;
@@ -434,7 +436,7 @@ export class CreateNamespaceComponent implements OnInit {
 
       console.log('----rootNamespaceName----', rootNamespaceName);
       console.log('----subnamespaceName----', subnamespaceName);
-      const signedTransaction = account.sign(registersubamespaceTransaction);
+      const signedTransaction = account.sign(registersubamespaceTransaction,generationHash); //Update-sdk-dragon
       return signedTransaction;
     }
   }

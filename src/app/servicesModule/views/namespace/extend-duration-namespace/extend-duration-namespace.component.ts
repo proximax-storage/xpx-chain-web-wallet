@@ -352,8 +352,9 @@ export class ExtendDurationNamespaceComponent implements OnInit {
     // const duration: number = parseFloat(this.durationByBlock);
     const duration: number = parseFloat(this.durationByBlock);
     const extendNamespaceRootTransaction = this.proximaxProvider.registerRootNamespaceTransaction(namespaceRootToExtend, this.walletService.currentAccount.network, duration);
-    const signedTransaction = account.sign(extendNamespaceRootTransaction);
-    return signedTransaction;
+    const generationHash = this.dataBridgeService.blockInfo.generationHash;
+    const signedTransaction = account.sign(extendNamespaceRootTransaction,generationHash);  //Update-sdk-dragon
+    return signedTransaction; 
   }
 
   /**

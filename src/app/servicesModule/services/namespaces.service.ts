@@ -14,12 +14,13 @@ import {
 import { ProximaxProvider } from "../../shared/services/proximax.provider";
 import { WalletService } from '../../wallet/services/wallet.service';
 import { environment } from '../../../environments/environment';
+// import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
 
 @Injectable({
   providedIn: "root"
 })
 export class NamespacesService {
-
+  generationHash:string;
   namespaceViewCache: NamespaceName[] = [];
   namespaceFromAccount: NamespaceInfo[] = null;
   private namespaceFromAccountSubject: BehaviorSubject<NamespaceInfo[]> = new BehaviorSubject<NamespaceInfo[]>(null);
@@ -30,7 +31,8 @@ export class NamespacesService {
 
   constructor(
     private proximaxProvider: ProximaxProvider,
-    private walletService: WalletService
+    private walletService: WalletService,
+    // private dataBridgeService: DataBridgeService
   ) {
   }
 
@@ -55,8 +57,7 @@ export class NamespacesService {
 
     const account = this.proximaxProvider.getAccountFromPrivateKey(param.common.privateKey, this.walletService.currentAccount.network);
     console.log('account', account);
-
-    return account.sign(addressAliasTransaction);
+    return account.sign(addressAliasTransaction, this.generationHash); //Update-sdk-dragon
   }
 
   /**

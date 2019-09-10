@@ -498,8 +498,9 @@ export class VoteInPollComponent implements OnInit {
       this.transactionToAggregate(publicAccount, message),
       publicAccount.address.networkType,
       []);
-    const generationHash = ''
-    const signedTransaction = accountsign.sign(aggregateTransaction);
+  
+    const generationHash = this.dataBridge.blockInfo.generationHash;
+    const signedTransaction = accountsign.sign(aggregateTransaction,generationHash); //Update-sdk-dragon
 
     this.announceTransaction(signedTransaction);
 

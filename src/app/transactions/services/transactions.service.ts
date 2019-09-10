@@ -27,6 +27,7 @@ import { environment } from "../../../environments/environment";
 import { MosaicService } from "../../servicesModule/services/mosaic.service";
 import { NamespacesService } from "../../servicesModule/services/namespaces.service";
 import { WalletService, AccountsInfoInterface, AccountsInterface } from '../../wallet/services/wallet.service';
+// import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
 
 
 
@@ -54,7 +55,7 @@ export class TransactionsService {
   //Unconfirmed
   private _transUnConfirmSubject = new BehaviorSubject<TransactionsInterface[]>([]);
   private _transUnConfirm$: Observable<TransactionsInterface[]> = this._transUnConfirmSubject.asObservable();
-
+  generationHash: string;
 
   arraTypeTransaction = {
     transfer: {
@@ -116,8 +117,11 @@ export class TransactionsService {
     private nodeService: NodeService,
     private walletService: WalletService,
     private mosaicServices: MosaicService,
-    private namespaceService: NamespacesService
-  ) { }
+    private namespaceService: NamespacesService,
+    // private dataBridge: DataBridgeService,
+  ) {
+
+   }
 
 
   buildTransferTransaction(params: TransferInterface) {
@@ -139,9 +143,10 @@ export class TransactionsService {
       PlainMessage.create(params.message),
       params.network
     );
-
+    // const generationHash = this.dataBridge.blockInfo.generationHash;
+    console.log('generationHash',this.generationHash)
     const account = Account.createFromPrivateKey(params.common.privateKey, params.network);
-    const signedTransaction = account.sign(transferTransaction);
+    const signedTransaction = account.sign(transferTransaction, this.generationHash);
     const transactionHttp = new TransactionHttp(
       environment.protocol + "://" + `${this.nodeService.getNodeSelected()}`
     );
@@ -276,7 +281,9 @@ export class TransactionsService {
 
     //console.log('transfer transaction', transferTransaction);
     const account = Account.createFromPrivateKey(common.privateKey, network);
-    const signedTransaction = account.sign(transferTransaction);
+    // const generationHash = this.dataBridge.blockInfo.generationHash;
+    const generationHash = ''
+    const signedTransaction = account.sign(transferTransaction, generationHash); //Update-sdk-dragon
     const transactionHttp = new TransactionHttp(
       environment.protocol + "://" + `${this.nodeService.getNodeSelected()}`
     );

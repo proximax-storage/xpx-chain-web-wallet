@@ -14,7 +14,7 @@ export const environment = {
   nameKeyMosaicStorage: `sw-mosaics-01`,
   protocol: `https`,
   protocolWs: `wss`,
-  nodeDefault: 'bctestnet1-cow.xpxsirius.io:443',
+  nodeDefault: 'bctestnet4.xpxsirius.io:443',
   nodeExplorer: 'https://bctestnetexplorer.xpxsirius.io/#/result/hash',
   mosaicXpxInfo: {
     name: 'prx.xpx',
@@ -23,7 +23,7 @@ export const environment = {
     divisibility: 6
   },
   blockchainConnection: {
-    host: 'bctestnet1-cow.xpxsirius.io',
+    host: 'bctestnet4.xpxsirius.io',
     port: 443,
     protocol: 'https',
     useSecureMessage: false
