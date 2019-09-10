@@ -37,7 +37,7 @@ export class MosaicAliasComponent implements OnInit {
     this.mosaicId = mosaicId.toHex();
     const mosaicInfo = await this.mosaicService.filterMosaics([mosaicId]);
     if (mosaicInfo !== null && mosaicInfo !== undefined && mosaicInfo.length > 0) {
-      this.mosaicName = (mosaicInfo[0].mosaicNames.names.length > 0) ? mosaicInfo[0].mosaicNames.names[0] : '';
+      this.mosaicName = (mosaicInfo[0].mosaicNames.names.length > 0) ? mosaicInfo[0].mosaicNames.names[0].name : '';
     }
     console.log("name mosaic:",this.mosaicName)
 

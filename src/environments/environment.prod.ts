@@ -19,7 +19,7 @@ export const environment = {
   mosaicXpxInfo: {
     name: 'prx.xpx',
     coin: 'XPX',
-    id: '0dc67fbe1cad29e3',
+    id: 'bffb42a19116bdf6',
     divisibility: 6
   },
   blockchainConnection: {

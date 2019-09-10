@@ -6,12 +6,12 @@ export const environment = {
   production: false,
   itemBooksAddress: 'sw-books',
   version: '0.2.6.10',
-  nameKeyNodeSelected: `sw-selected-node`,
+  nameKeyNodeSelected: `sw-selected-node-02`,
   nameKeyMosaicNamespaceLinked: `sw-m-n-linked`,
-  nameKeyWalletStorage: `sw-04`,
-  nameKeyNodeStorage: `sw-nodes-01`,
-  nameKeyNamespaces: `sw-namespaces-01`,
-  nameKeyMosaicStorage: `sw-mosaics-01`,
+  nameKeyWalletStorage: `sw-05`,
+  nameKeyNodeStorage: `sw-nodes-02`,
+  nameKeyNamespaces: `sw-namespaces-02`,
+  nameKeyMosaicStorage: `sw-mosaics-02`,
   protocol: `https`,
   protocolWs: `wss`,
   nodeDefault: 'bctestnet4.xpxsirius.io:443',
@@ -19,7 +19,7 @@ export const environment = {
   mosaicXpxInfo: {
     name: 'prx.xpx',
     coin: 'XPX',
-    id: '0dc67fbe1cad29e3',
+    id: 'bffb42a19116bdf6',
     divisibility: 6
   },
   blockchainConnection: {

@@ -95,7 +95,7 @@ export class MosaicsSupplyChangeComponent implements OnInit {
       let expired = false;
       let nameExpired = '';
       if (element.mosaicInfo) {
-        const nameMosaic = (element.mosaicNames.names.length > 0) ? element.mosaicNames.names[0] : this.proximaxProvider.getMosaicId(element.idMosaic).toHex();
+        const nameMosaic = (element.mosaicNames.names.length > 0) ? element.mosaicNames.names[0].name : this.proximaxProvider.getMosaicId(element.idMosaic).toHex();
         const addressOwner = this.proximaxProvider.createAddressFromPublicKey(
           element.mosaicInfo.owner.publicKey,
           element.mosaicInfo.owner.address['networkType']

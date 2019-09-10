@@ -449,6 +449,7 @@ export class WalletService {
         this.proximaxProvider.getAccountInfo(this.proximaxProvider.createFromRawAddress(element.address)).pipe(first()).subscribe(
           async accountInfo => {
             if (accountInfo) {
+              console.log('----accountInfo---', accountInfo);
               /*if (element.default) {
                 const mosaics = accountInfo.mosaics.slice(0);
                 findXPX = mosaics.find(mosaic => mosaic.id.toHex() === environment.mosaicXpxInfo.id);

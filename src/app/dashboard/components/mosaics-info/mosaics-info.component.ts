@@ -51,7 +51,6 @@ export class MosaicsInfoComponent implements OnInit {
         const amount = (mosaic.mosaicInfo !== null) ?
           this.transactionService.amountFormatter(myMosaic.amount, mosaic.mosaicInfo) :
           this.transactionService.amountFormatterSimple(myMosaic.amount.compact());
-
         // MOSAIC IS XPX
         if (mosaicId === environment.mosaicXpxInfo.id) {
           this.viewMosaicXpx = true;
@@ -64,7 +63,7 @@ export class MosaicsInfoComponent implements OnInit {
         } else {
           // console.log(mosaic.mosaicNames);
           const nameMosaic = (mosaic.mosaicNames && mosaic.mosaicNames.names.length > 0) ?
-            mosaic.mosaicNames.names[0] : '';
+            mosaic.mosaicNames.names[0].name : '';
 
           this.quantity.push({
             id: myMosaic.id.toHex(),
