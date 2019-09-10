@@ -22,7 +22,7 @@ export class AccountNis1FoundComponent implements OnInit {
   }
 
   goToRoute() {
-    this.router.navigate([`/${AppConfig.routes.accountList}`]);
+    this.router.navigate([`/${AppConfig.routes.transferXpx}`]);
   }
 
 }

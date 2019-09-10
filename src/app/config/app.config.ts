@@ -47,7 +47,8 @@ export const AppConfig: Config = {
     nis1AccountList: 'nis1-account-list',
     accountList: 'account-list',
     accountNis1Found: 'account-nis1-found',
-    nis1AccountDetails: 'nis1-account-details'
+    nis1AccountDetails: 'nis1-account-details',
+    transferXpx: 'transfer-xpx'
   }
 };
 
@@ -101,5 +102,6 @@ export interface Config {
     nis1AccountList: string;
     accountNis1Found: string;
     nis1AccountDetails: string;
+    transferXpx: string;
   };
 }
