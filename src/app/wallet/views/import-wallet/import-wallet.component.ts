@@ -29,6 +29,7 @@ export class ImportWalletComponent implements OnInit {
     value: NetworkType.TEST_NET,
     label: 'TEST NET'
   }];
+  nis1Account = null;
 
   constructor(
     private fb: FormBuilder,
@@ -38,13 +39,7 @@ export class ImportWalletComponent implements OnInit {
     private router: Router,
     private serviceModuleService: ServicesModuleService,
     private nemProvider: NemServiceService
-  ) {
-    const nis1Wallet = this.nemProvider.createPrivateKeyWallet('jam', '1q2w3e4r', '498a540f5266ca7e9aa4af3c65c42464a72508723302e1217c92b5ed78c7a980');
-    console.log('\n\n\n\nValue of nis1', nis1Wallet, '\n\n\n\nEnd value\n\n');
-    const mosaics = this.nemProvider.getOwnedMosaics(nis1Wallet.address);
-    console.log('\n\n\n\nValue of nis1', mosaics, '\n\n\n\nEnd value\n\n');
-
-  }
+  ) { }
 
   ngOnInit() {
     this.configurationForm = this.sharedService.configurationForm;
@@ -85,8 +80,8 @@ export class ImportWalletComponent implements OnInit {
             ]
           ],
         }, {
-          validator: this.sharedService.equalsPassword
-        }),
+        validator: this.sharedService.equalsPassword
+      }),
     });
   }
 
@@ -106,7 +101,7 @@ export class ImportWalletComponent implements OnInit {
     return;
   }
 
-  importSimpleWallet() {
+  async importSimpleWallet() {
     if (this.importWalletForm.valid && this.isValid) {
       //verify if name wallet isset
       const existWallet = this.walletService.getWalletStorage().find(
@@ -122,11 +117,23 @@ export class ImportWalletComponent implements OnInit {
         const privateKey = this.importWalletForm.get('privateKey').value;
         const password = this.proximaxProvider.createPassword(this.importWalletForm.controls.passwords.get('password').value);
         const wallet = this.proximaxProvider.createAccountFromPrivateKey(nameWallet, password, privateKey, network);
+        // const nis1Wallet = this.nemProvider.createPrivateKeyWallet(nameWallet, this.importWalletForm.controls.passwords.get('password').value, privateKey);
+
         const nis1Wallet = this.nemProvider.createPrivateKeyWallet(nameWallet, this.importWalletForm.controls.passwords.get('password').value, privateKey);
+        console.log('\n\n\n\nValue of nis1', nis1Wallet, '\n\n\n\nEnd value\n\n');
+        const mosaicNis1 = await this.nemProvider.getOwnedMosaics(nis1Wallet.address);
+        console.log('\n\n\n\nValue of mosaics', mosaicNis1, '\n\n\n\nEnd value\n\n');
+        if (mosaicNis1.length > 0) {
+          for (const el of mosaicNis1) {
+            if (el.assetId.namespaceId === 'proximax' && el.assetId.name === 'xpx') {
+              this.nis1Account = nis1Wallet;
+              console.log('\n\n\n\nValue of mosaicXPX', this.nis1Account, '\n\n\n\nEnd value\n\n');
+            }
+          }
+        }
 
         console.log('this a wallet', wallet);
-        console.log('this a nis1Wallet', nis1Wallet);
-
+        console.log('this a nis1Wallet', this.nis1Account);
 
         const accountBuilded = this.walletService.buildAccount({
           address: wallet.address['address'],
@@ -142,7 +149,8 @@ export class ImportWalletComponent implements OnInit {
               encryptedPrivateKey.encryptedKey,
             wallet.encryptedPrivateKey.iv
           ).toUpperCase(), wallet.network),
-          isMultisign: null
+          isMultisign: null,
+          nis1Account: this.nis1Account
         });
 
         this.clearForm();
@@ -158,9 +166,13 @@ export class ImportWalletComponent implements OnInit {
           walletContact: true,
           nameItem: nameWallet
         });
-
+        
         this.walletService.saveWalletStorage(nameWallet, accountBuilded);
-        this.router.navigate([`/${AppConfig.routes.walletCreated}`]);
+        if (this.nis1Account !== null) {
+          this.router.navigate([`/${AppConfig.routes.accountNis1Found}/${privateKey}`]);
+        } else {
+          this.router.navigate([`/${AppConfig.routes.walletCreated}`]);
+        }
       } else {
         //Error of repeated Wallet
         this.clearForm('nameWallet');

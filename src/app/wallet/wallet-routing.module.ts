@@ -6,6 +6,7 @@ import { ImportWalletComponent } from './views/import-wallet/import-wallet.compo
 import { WalletCreatedComponent } from './views/wallet-created/wallet-created.component';
 import { SelectionWalletCreationTypeComponent } from './views/selection-wallet-creation-type/selection-wallet-creation-type.component';
 import { AccountNis1FoundComponent } from './views/account-nis1-found/account-nis1-found.component';
+import { TransferXpxComponent } from './views/transfer-xpx/transfer-xpx.component';
 
 const routes: Routes = [
   {
@@ -53,12 +54,23 @@ const routes: Routes = [
     }
   },
   {
-    path: AppConfig.routes.accountNis1Found,
+    path: `${AppConfig.routes.accountNis1Found}/:privateKey`,
     component: AccountNis1FoundComponent,
     data: {
       meta: {
         title: 'accountNis1Found.title',
         description: 'accountNis1Found.text',
+        override: true,
+      },
+    }
+  },
+  {
+    path: AppConfig.routes.transferXpx,
+    component: TransferXpxComponent,
+    data: {
+      meta: {
+        title: 'transferXpx.title',
+        description: 'transferXpx.text',
         override: true,
       },
     }

@@ -44,8 +44,8 @@ export class NemServiceService {
     );
   }
 
-  getOwnedMosaics(address: Address): Observable<AssetTransferable[]> {
+  getOwnedMosaics(address: Address): Promise<AssetTransferable[]> {
     let accountOwnedMosaics = new AccountOwnedAssetService(this.accountHttp, this.assetHttp);
-    return accountOwnedMosaics.fromAddress(address);
+    return accountOwnedMosaics.fromAddress(address).toPromise();
   }
 }

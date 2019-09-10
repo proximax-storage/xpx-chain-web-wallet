@@ -34,6 +34,8 @@ import { AuditApostilleComponent } from './views/apostille/audit-apostille/audit
 import { VoteInPollComponent } from './views/voting/vote-in-poll/vote-in-poll.component';
 import { HighchartsChartComponent } from './views/voting/vote-in-poll/highcharts-chart.component';
 import { Nis1AccountDetailsComponent } from './views/swap/nis1-account-details/nis1-account-details.component';
+import { AccountListComponent } from './components/account-list/account-list.component';
+import { SwapCertificateComponent } from './components/swap-certificate/swap-certificate.component';
 
 
 @NgModule({
@@ -69,7 +71,9 @@ import { Nis1AccountDetailsComponent } from './views/swap/nis1-account-details/n
     AuditApostilleComponent,
     VoteInPollComponent,
     HighchartsChartComponent,
-    Nis1AccountDetailsComponent
+    Nis1AccountDetailsComponent,
+    AccountListComponent,
+    SwapCertificateComponent
   ],
   schemas: [ NO_ERRORS_SCHEMA ],
   imports: [

@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AppConfig } from '../../../config/app.config';
 
 @Component({
   selector: 'app-account-nis1-found',
@@ -7,9 +9,20 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AccountNis1FoundComponent implements OnInit {
 
-  constructor() { }
+  privateKey: string;
+  goSignIn: string = `/${AppConfig.routes.auth}`;
+  constructor(
+    private activateRoute: ActivatedRoute,
+    private router: Router
+  ) {
+    this.privateKey = this.activateRoute.snapshot.paramMap.get('privateKey').toUpperCase();
+  }
 
   ngOnInit() {
+  }
+
+  goToRoute() {
+    this.router.navigate([`/${AppConfig.routes.transferXpx}`]);
   }
 
 }
