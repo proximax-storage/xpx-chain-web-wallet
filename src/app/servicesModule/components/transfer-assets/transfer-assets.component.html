@@ -8,10 +8,13 @@
       <div class="row">
         <div class="col-10 col-sm-12 col-md-12 mx-auto d-flex align-items-center box-grey">
           <div class="col-10">
-            <span class="color-black">{{ accountCreated.wallet.name }}</span>
-            <span
-              class="font-small d-flex color-black">{{ accountCreated.dataAccount.nis1Account.address.pretty() }}</span>
-            <span class="font-small d-flex color-black">Balance: &nbsp;<b>{{ quantity }}</b> &nbsp;XPX</span>
+            <span class="color-black fw-bold">{{ accountCreated.wallet.name }}</span>
+            <span class="d-flex color-black">{{ accountCreated.dataAccount.nis1Account.address.pretty() }}</span>
+            <span class="d-flex color-black fw-bold">Balance: {{ quantity }} XPX</span>
+          </div>
+          <div class="col-2 text-center">
+            <button mdbBtn mdbWavesEffect
+              class="color-white f-w-600 bord-rad-25px font-small background-btn p-05rem">CHANGE</button>
           </div>
         </div>
       </div>
@@ -39,7 +42,7 @@
               bindValue="value" placeholder="Accounts" (change)="selectContact($event)">
             </ng-select>
           </div>
-    
+
           <div class="col-10 col-sm-12 col-md-12 mx-auto">
             <div class="md-form form-sm mt-1rem mb-0rem d-flex align-items-center">
               <input mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
@@ -48,11 +51,11 @@
               <mdb-error *ngIf="false">
                 <span class="fs-08rem fw-600 color-error-message">Invalid Recipient</span>
               </mdb-error>
-    
+
               <mdb-error *ngIf="false">
                 <span class="fs-08rem fw-600 color-error-message">Error Unsupported</span>
               </mdb-error>
-    
+
               <ng-container>
                 <div class="col-4 col-sm-3 col-md-2 d-flex justify-content-center align-items-center pb-10px">
                   <div class="background-gray-icons p-12px bord-rad-25px cursor-p" (click)="changeVisibility()">
@@ -64,7 +67,7 @@
           </div> -->
 
           <!-- WALLET PASSWORD -->
-          <div class="col-10 col-sm-12 col-md-12 mx-auto">
+          <div class="col-10 col-sm-12 col-md-12 mx-auto mb-2rem">
             <div class="md-form form-sm mt-1rem mb-0rem">
               <input [maxlength]="configurationForm.passwordWallet.maxLength"
                 [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" required
@@ -80,7 +83,7 @@
           </div>
 
           <div class="col-10 col-sm-12 col-md-12 mx-auto box-transparent-border-orange">
-            <div class="col-sm-12 col-md-10 col-lg-8 col-xl-8 fs-06rem fw-bold mx-auto">
+            <div class="col-sm-12 col-md-10 col-lg-8 col-xl-8 fs-075rem fw-bold mx-auto">
               Warning! This process might take few hours. If you choose to proceed, you will receivea ticket with the
               transactionhashfor youreferenceand follow up.
             </div>

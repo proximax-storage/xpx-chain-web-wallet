@@ -578,7 +578,7 @@ export class TransactionsService {
         console.log('data ===> ', data);
         const publicsAccounts: PublicAccount[] = [];
         data.accountsInfo.forEach((element: AccountsInfoInterface) => {
-          if (element.multisigInfo && element.multisigInfo.multisigAccounts.length > 0) {
+          if (element.multisigInfo && (element.multisigInfo.multisigAccounts.length > 0)) {
             element.multisigInfo.multisigAccounts.forEach(x => {
               if (publicsAccounts.length > 0) {
                 if (publicsAccounts.find(b => b.publicKey !== x.publicKey)) {
