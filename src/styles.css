@@ -1717,3 +1717,12 @@ ngx-dropzone-label {
 ul.stepper.horizontal .step-title {
   max-width: 20rem !important;
 }
+
+.label-i {
+  position: absolute;
+  margin-top: -50px;
+  padding: 12px;
+  color: #b5b5b5;
+  font-size: .8rem;
+  padding-top: .8rem;
+}

@@ -1,107 +1,111 @@
-<!-- ACCOUNTS LIST -->
-<div class="row">
-  <div class="col-sm-12 col-md-10 col-lg-8 col-xl-8 mx-auto">
-    <div class="col-12 d-flex justify-content-center pt-2rem">
-      <span class="fs-1rem fw-500 txt-a-center line-h-1-2em color-black">Account Selected</span>
-    </div>
-    <div class="row">
-      <div class="col-10 col-sm-12 col-md-12 mx-auto d-flex align-items-center box-grey">
-        <div class="col-10">
-          <span class="color-black">{{ accountCreated.wallet.name }}</span>
-          <span class="font-small d-flex color-black">{{ accountCreated.dataAccount.nis1Account.address.pretty() }}</span>
-          <span class="font-small d-flex color-black">Balance: <b>{{ quantity }}</b> &nbsp;XPX</span>
-        </div>
-        <div class="col-2 text-center">
-          <span class="color-blue-intermedio font-small">SELECT ></span>
-        </div>
+<div>
+  <!-- ACCOUNTS LIST -->
+  <div class="row">
+    <div class="col-sm-12 col-md-10 col-lg-8 col-xl-8 mx-auto">
+      <div class="col-12 d-flex justify-content-center pt-2rem">
+        <span class="fs-1rem fw-500 txt-a-center line-h-1-2em color-black">Account Selected</span>
       </div>
-    </div>
-  </div>
-
-  <!-- INPUT AMOUNT TO SWAP -->
-  <div class="col-sm-12 col-md-10 col-lg-8 col-xl-8 mx-auto">
-    <div class="col-12 d-flex justify-content-center pt-1rem">
-      <span class="fs-1rem fw-500 txt-a-center line-h-1-2em color-black">Amount To Swap</span>
-    </div>
-    <div class="row">
-      <div class="col-10 col-sm-12 col-md-12 mx-auto">
-        <div class="md-form form-sm mt-1rem mb-0rem">
-          <input required mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password"
-            class="form-control form-control-sm input-border" placeholder="Amount">
-
-          <!-- VALIDATION -->
-          <mdb-error *ngIf="false">
-            <span>Invalid encryption password</span>
-          </mdb-error>
+      <div class="row">
+        <div class="col-10 col-sm-12 col-md-12 mx-auto d-flex align-items-center box-grey">
+          <div class="col-10">
+            <span class="color-black">{{ accountCreated.wallet.name }}</span>
+            <span
+              class="font-small d-flex color-black">{{ accountCreated.dataAccount.nis1Account.address.pretty() }}</span>
+            <span class="font-small d-flex color-black">Balance: &nbsp;<b>{{ quantity }}</b> &nbsp;XPX</span>
+          </div>
         </div>
       </div>
+    </div>
 
-      <!-- ACCOUNT TO SWAP
-      <div class="col-10 col-sm-12 col-md-12 mx-auto" *ngIf="accountListVisible">
-        <ng-select mdbInputDirective mdbValidate class="selectWrapper" [items]="listContacts" bindLabel="label"
-          bindValue="value" placeholder="Accounts" (change)="selectContact($event)">
-        </ng-select>
-      </div>
-
-      <div class="col-10 col-sm-12 col-md-12 mx-auto">
-        <div class="md-form form-sm mt-1rem mb-0rem d-flex align-items-center">
-          <input mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
-            class="form-control form-control-sm input-border" style="border: 2px solid #2ba1b9;"
-            placeholder="Enter a account to transfer this assets">
-          <mdb-error *ngIf="false">
-            <span class="fs-08rem fw-600 color-error-message">Invalid Recipient</span>
-          </mdb-error>
-
-          <mdb-error *ngIf="false">
-            <span class="fs-08rem fw-600 color-error-message">Error Unsupported</span>
-          </mdb-error>
-
-          <ng-container>
-            <div class="col-4 col-sm-3 col-md-2 d-flex justify-content-center align-items-center pb-10px">
-              <div class="background-gray-icons p-12px bord-rad-25px cursor-p" (click)="changeVisibility()">
-                <img class="w-30px" src="assets/images/img/icon-list-green-16h-proximax-sirius-wallet.svg">
-              </div>
+    <form [formGroup]="formTransfer">
+      <!-- INPUT AMOUNT TO SWAP -->
+      <div class="col-sm-12 col-md-10 col-lg-8 col-xl-8 mx-auto">
+        <div class="col-12 d-flex justify-content-center pt-1rem">
+          <span class="fs-1rem fw-500 txt-a-center line-h-1-2em color-black">Amount To Swap</span>
+        </div>
+        <div class="row">
+          <div class="col-10 col-sm-12 col-md-12 mx-auto">
+            <div class="md-form form-sm mt-1rem mb-0rem">
+              <input currencyMask [options]="optionsXPX" mdbInputDirective mdbValidate [validateSuccess]="true"
+                [validateError]="true" type="text" class="form-control form-control-sm input-border input-amount"
+                formControlName="amountXpx">
+              <span class="label-i fw-600 text-cl-m cursor-p" (click)="selectMaxAmount()">USE MAX</span>
             </div>
-          </ng-container>
-        </div>
-      </div> -->
+          </div>
 
-      <!-- WALLET PASSWORD -->
-      <div class="col-10 col-sm-12 col-md-12 mx-auto">
-        <div class="md-form form-sm mt-1rem mb-0rem">
-          <input required mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password"
-            class="form-control form-control-sm input-border" placeholder="Wallet Password">
+          <!-- ACCOUNT TO SWAP
+          <div class="col-10 col-sm-12 col-md-12 mx-auto" *ngIf="accountListVisible">
+            <ng-select mdbInputDirective mdbValidate class="selectWrapper" [items]="listContacts" bindLabel="label"
+              bindValue="value" placeholder="Accounts" (change)="selectContact($event)">
+            </ng-select>
+          </div>
+    
+          <div class="col-10 col-sm-12 col-md-12 mx-auto">
+            <div class="md-form form-sm mt-1rem mb-0rem d-flex align-items-center">
+              <input mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
+                class="form-control form-control-sm input-border" style="border: 2px solid #2ba1b9;"
+                placeholder="Enter a account to transfer this assets">
+              <mdb-error *ngIf="false">
+                <span class="fs-08rem fw-600 color-error-message">Invalid Recipient</span>
+              </mdb-error>
+    
+              <mdb-error *ngIf="false">
+                <span class="fs-08rem fw-600 color-error-message">Error Unsupported</span>
+              </mdb-error>
+    
+              <ng-container>
+                <div class="col-4 col-sm-3 col-md-2 d-flex justify-content-center align-items-center pb-10px">
+                  <div class="background-gray-icons p-12px bord-rad-25px cursor-p" (click)="changeVisibility()">
+                    <img class="w-30px" src="assets/images/img/icon-list-green-16h-proximax-sirius-wallet.svg">
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+          </div> -->
 
-          <!-- VALIDATION -->
-          <mdb-error *ngIf="false">
-            <span>Invalid encryption password</span>
-          </mdb-error>
+          <!-- WALLET PASSWORD -->
+          <div class="col-10 col-sm-12 col-md-12 mx-auto">
+            <div class="md-form form-sm mt-1rem mb-0rem">
+              <input [maxlength]="configurationForm.passwordWallet.maxLength"
+                [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" required
+                mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password"
+                id="password" class="form-control form-control-sm input-border" placeholder="Wallet password">
+
+              <!-- VALIDATION -->
+              <mdb-error
+                *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
+                <span>Input invalid</span>
+              </mdb-error>
+            </div>
+          </div>
+
+          <div class="col-10 col-sm-12 col-md-12 mx-auto box-transparent-border-orange">
+            <div class="col-sm-12 col-md-10 col-lg-8 col-xl-8 fs-06rem fw-bold mx-auto">
+              Warning! This process might take few hours. If you choose to proceed, you will receivea ticket with the
+              transactionhashfor youreferenceand follow up.
+            </div>
+          </div>
         </div>
       </div>
+      <!-- END ACCOUNT LIST -->
 
-      <div class="col-10 col-sm-12 col-md-12 mx-auto box-transparent-border-orange">
-        <div class="col-sm-12 col-md-10 col-lg-8 col-xl-8 fs-06rem fw-bold mx-auto">
-          Warning! This process might take few hours. If you choose to proceed, you will receivea ticket with the
-          transactionhashfor youreferenceand follow up.
+      <!-- BUTTON -->
+      <div class="row mt-2rem">
+        <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
+          <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+            size="md">
+            <span class="fs-1-2em color-white">MAYBE LATER</span>
+          </button>
+        </div>
+
+        <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
+          <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+            size="md">
+            <span class="fs-1-2em color-white">YES, TRASFER</span>
+          </button>
         </div>
       </div>
-    </div>
+      <!-- END BUTTON -->
+    </form>
   </div>
 </div>
-<!-- END ACCOUNT LIST -->
-
-<!-- BUTTON -->
-<div class="row mt-2rem">
-  <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-    <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
-      <span class="fs-1-2em color-white">MAYBE LATER</span>
-    </button>
-  </div>
-
-  <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-    <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
-      <span class="fs-1-2em color-white">YES, TRASFER</span>
-    </button>
-  </div>
-</div>
-<!-- END BUTTON -->
