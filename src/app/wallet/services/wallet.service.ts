@@ -20,10 +20,8 @@ export class WalletService {
   accountWalletCreated: {
     data: any;
     dataAccount: AccountsInterface;
-    wallet: SimpleWallet;
+    wallet: SimpleWallet
   } = null;
-
-  accountInfoNis1: any = null;
 
   accountsInfo: AccountsInfoInterface[] = [];
   currentAccount: AccountsInterface = null;
