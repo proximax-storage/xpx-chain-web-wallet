@@ -53,7 +53,7 @@ const routes: Routes = [
     }
   },
   {
-    path: AppConfig.routes.accountNis1Found,
+    path: `${AppConfig.routes.accountNis1Found}/:privateKey`,
     component: AccountNis1FoundComponent,
     data: {
       meta: {

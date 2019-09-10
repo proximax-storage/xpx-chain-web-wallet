@@ -1,30 +1,4 @@
 <div class="container mt-3rem mb-2rem animated fadeIn">
-  <!-- <div class="row">
-    <div class="col-12 col-md-8">
-      <span class="fs-1rem txt-a-center line-h-1-2em color-grey">{{moduleName}}</span>
-      <span class="fs-1rem txt-a-center line-h-1-2em color-grey"> > </span>
-      <span class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">{{componentName}}</span>
-    </div>
-
-    <div class="col-12 col-md-4 d-flex justify-content-start justify-content-md-end">
-      <a class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio" [routerLink]="[list]">
-        <span>List</span>
-      </a>
-      <div class="col-2 d-flex justify-content-center">
-        <div class="col-6">
-          <div class="line-separator h-100porcent"></div>
-        </div>
-      </div>
-      <a class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio" [routerLink]="[goBack]">
-        <span>Back to Services</span>
-      </a>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-12">
-      <hr class="mt-03rem mb-05rem">
-    </div>
-  </div> -->
 
   <!-- TITLE AND DESCRIPTION -->
   <div class="row">
@@ -38,7 +12,7 @@
       <span class="fs-08rem txt-a-center line-h-1-2em">You recently imported Private Key</span>
     </div>
     <div class="col-12 d-flex justify-content-center">
-      <span class="fs-08rem txt-a-center line-h-1-2em">((( PUBLIC KEY )))</span>
+      <span class="fs-08rem txt-a-center line-h-1-2em">{{ privateKey }}</span>
     </div>
     <div class="col-12 d-flex justify-content-center">
       <span class="fs-08rem txt-a-center line-h-1-2em">Has some assets on the NIS1 Blockchain</span>
@@ -62,13 +36,13 @@
   <!-- BUTTON -->
   <div class="row mt-2rem">
     <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-      <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
+      <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" [routerLink]="[goSignIn]" size="md">
         <span class="fs-1-2em color-white">NO INTERESTED</span>
       </button>
     </div>
 
     <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-      <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
+      <button mdbBtn rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md" (click)="goToRoute()">
         <span class="fs-1-2em color-white">YES, PLEASE</span>
       </button>
     </div>

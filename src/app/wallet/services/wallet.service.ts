@@ -64,7 +64,8 @@ export class WalletService {
       name: data.nameAccount,
       network: data.network,
       publicAccount: data.publicAccount,
-      isMultisign: null
+      isMultisign: null,
+      nis1Account: data.nis1Account
     }
   }
 
@@ -683,6 +684,7 @@ export interface AccountsInterface {
   network: number;
   publicAccount: PublicAccount;
   isMultisign: MultisigAccountInfo;
+  nis1Account: any;
 }
 
 export interface AccountsInfoInterface {
