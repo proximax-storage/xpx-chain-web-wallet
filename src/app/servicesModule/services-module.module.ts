@@ -34,9 +34,7 @@ import { AuditApostilleComponent } from './views/apostille/audit-apostille/audit
 import { VoteInPollComponent } from './views/voting/vote-in-poll/vote-in-poll.component';
 import { HighchartsChartComponent } from './views/voting/vote-in-poll/highcharts-chart.component';
 import { Nis1AccountDetailsComponent } from './views/swap/nis1-account-details/nis1-account-details.component';
-import { TransferAssetsComponent } from './views/transfer-assets/transfer-assets.component';
 import { AccountListComponent } from './components/account-list/account-list.component';
-import { CertificateComponent } from './components/certificate/certificate.component';
 import { SwapCertificateComponent } from './components/swap-certificate/swap-certificate.component';
 
 
@@ -74,9 +72,7 @@ import { SwapCertificateComponent } from './components/swap-certificate/swap-cer
     VoteInPollComponent,
     HighchartsChartComponent,
     Nis1AccountDetailsComponent,
-    TransferAssetsComponent,
     AccountListComponent,
-    CertificateComponent,
     SwapCertificateComponent
   ],
   schemas: [ NO_ERRORS_SCHEMA ],
