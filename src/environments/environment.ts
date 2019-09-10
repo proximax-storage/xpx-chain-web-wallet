@@ -54,6 +54,7 @@ export const environment = {
     nodes: [
       {protocol: "http", domain: "18.231.166.212", port: 7890} as ServerConfig
     ],
+    url: 'http://18.231.166.212:7890',
     networkType: NetworkTypes.TEST_NET,
     address: 'TBF4LAZUEJMBIOC6J24D6ZGGXE5W775TX555CTTN'
   }

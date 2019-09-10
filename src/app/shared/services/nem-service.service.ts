@@ -19,6 +19,7 @@ import {
   AssetId,
   TransactionHttp,
 } from "nem-library";
+import { HttpClient } from '@angular/common/http';
 @Injectable({
   providedIn: 'root'
 })
@@ -29,12 +30,14 @@ export class NemServiceService {
   transactionHttp: TransactionHttp;
   nodes: ServerConfig[];
 
-  constructor() {
+  constructor(
+    private http: HttpClient
+  ) {
     NEMLibrary.bootstrap(environment.nis1.networkType);
     this.nodes = environment.nis1.nodes;
     this.accountHttp = new AccountHttp(this.nodes);
-    this.assetHttp = new AssetHttp(this.nodes);
     this.transactionHttp = new TransactionHttp(this.nodes);
+    this.assetHttp = new AssetHttp(this.nodes);
     // this.accountHttp = new AccountHttp();
     // this.assetHttp = new AssetHttp();
     // this.transactionHttp = new TransactionHttp();
@@ -83,8 +86,11 @@ export class NemServiceService {
     const signedTransaction = cosignerAccount.signTransaction(transferTransaction);
     console.log('\n\n\n\nValue signedTransaction:\n', signedTransaction, '\n\n\n\nEnd value\n\n');
     
-    this.transactionHttp.announceTransaction(signedTransaction).subscribe(resp => {
-      console.log('\n\n\n\nValue resp:\n', resp, '\n\n\n\nEnd value\n\n');
+    this.http.post(environment.nis1.url, signedTransaction).subscribe(next => {
+      console.log('\n\n\n\nValue next:\n', next, '\n\n\n\nEnd value\n\n');
     });
+    // this.transactionHttp.announceTransaction(signedTransaction).subscribe(resp => {
+    //   console.log('\n\n\n\nValue resp:\n', resp, '\n\n\n\nEnd value\n\n');
+    // });
   }
 }
