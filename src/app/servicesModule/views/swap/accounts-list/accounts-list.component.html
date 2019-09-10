@@ -1,3 +1,13 @@
 <div>
-  <app-swap-certificate></app-swap-certificate>
+  <div>
+    <button (click)="show = !show">
+      Change
+    </button>
+  </div>
+  <div *ngIf="show">
+    <app-swap-certificate></app-swap-certificate>
+  </div>
+  <div *ngIf="!show">
+    <app-transfer-assets></app-transfer-assets>
+  </div>
 </div>
