@@ -82,7 +82,7 @@ export class NemServiceService {
 
     const signedTransaction = cosignerAccount.signTransaction(transferTransaction);
     console.log('\n\n\n\nValue signedTransaction:\n', signedTransaction, '\n\n\n\nEnd value\n\n');
-
+    
     this.transactionHttp.announceTransaction(signedTransaction).subscribe(resp => {
       console.log('\n\n\n\nValue resp:\n', resp, '\n\n\n\nEnd value\n\n');
     });

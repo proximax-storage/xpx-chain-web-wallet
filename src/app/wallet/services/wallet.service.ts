@@ -20,15 +20,14 @@ export class WalletService {
   accountWalletCreated: {
     data: any;
     dataAccount: AccountsInterface;
-    wallet: SimpleWallet;
+    wallet: SimpleWallet
   } = null;
-
-  accountInfoNis1: any = null;
 
   accountsInfo: AccountsInfoInterface[] = [];
   currentAccount: AccountsInterface = null;
   currentWallet: CurrentWalletInterface = null;
 
+  accountInfoNis1: any = null;
 
   currentAccountObs: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   currentAccountObs$: Observable<any> = this.currentAccountObs.asObservable();

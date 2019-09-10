@@ -1,72 +1,72 @@
 <div class="container-fluid">
-  <div class="row">
-    <div class="col-6 col-sm-4 col-md-4 col-lg-6">
-      <mdb-navbar SideClass="navbar navbar-expand-sm navbar-dark background-header-inverse z-depth-0"
-        [containerInside]="false">
-        <mdb-navbar-brand class="d-flex align-items-end">
-          <a class="navbar-brand mr-05rem">
-            <img src="assets/images/img/logo-proximax-sirius-wallet.svg" height="33" class="d-inline-block align-top">
-          </a>
-          <span class="fs-08rem" style="color: #616161;">v{{version}}</span> <br>
-        </mdb-navbar-brand>
-      </mdb-navbar>
-      <!-- <span class="fs-08rem ml-1rem">Node: Active <i class="fa fa-circle green-color" aria-hidden="true"></i></span> -->
-    </div>
-    <div class="col-6 col-sm-8 col-md-8 col-lg-6 d-flex align-items-center justify-content-end ">
-      <div class="row">
-        <div class="col-12 d-flex justify-content-end mt-05rem">
+    <div class="row">
+      <div class="col-6 col-sm-4 col-md-4 col-lg-6">
+        <mdb-navbar SideClass="navbar navbar-expand-sm navbar-dark background-header-inverse z-depth-0"
+          [containerInside]="false">
+          <mdb-navbar-brand class="d-flex align-items-end">
+            <a class="navbar-brand mr-05rem">
+              <img src="assets/images/img/logo-proximax-sirius-wallet.svg" height="33" class="d-inline-block align-top">
+            </a>
+            <span class="fs-08rem" style="color: #616161;">v{{version}}</span> <br>
+          </mdb-navbar-brand>
+        </mdb-navbar>
+        <!-- <span class="fs-08rem ml-1rem">Node: Active <i class="fa fa-circle green-color" aria-hidden="true"></i></span> -->
+      </div>
+      <div class="col-6 col-sm-8 col-md-8 col-lg-6 d-flex align-items-center justify-content-end ">
+        <div class="row">
+          <div class="col-12 d-flex justify-content-end mt-05rem">
 
-          <!-- PARTIAL ICON -->
-          <ng-container *ngIf="viewParcial">
-            <div class="lh-1em d-flex align-items-center justify-content-end mr-08rem cursor-p">
-              <a [routerLink]="routePartial"><i class="fa fa-bell" aria-hidden="true"></i></a>
+            <!-- PARTIAL ICON -->
+            <ng-container *ngIf="viewParcial">
+              <div class="lh-1em d-flex align-items-center justify-content-end mr-08rem cursor-p">
+                <a [routerLink]="routePartial"><i class="fa fa-bell" aria-hidden="true"></i></a>
+              </div>
+            </ng-container>
+
+            <!-- NAME WALLET & VESTED BALANCE -->
+            <div class="d-none d-sm-block d-md-block d-lg-block d-xl-block lh-1em">
+              <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
+                *ngIf="searchBalance"></span>
+              <span class="fw-600 fs-09rem">
+                <span>{{ walletName }}</span>
+                <i class="fa fa-circle ml-05rem cursor-p {{colorStatus}}" aria-hidden="true"
+                  title="{{statusNodeName}} node"></i>
+              </span><br>
+              <span class="fs-08rem">{{ vestedBalance }}</span>
             </div>
-          </ng-container>
 
-          <!-- NAME WALLET & VESTED BALANCE -->
-          <div class="d-none d-sm-block d-md-block d-lg-block d-xl-block lh-1em">
-            <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
-              *ngIf="searchBalance"></span>
-            <span class="fw-600 fs-09rem">
-              <span>{{ walletName }}</span>
-              <i class="fa fa-circle ml-05rem cursor-p {{colorStatus}}" aria-hidden="true"
-                title="{{statusNodeName}} node"></i>
-            </span><br>
-            <span class="fs-08rem">{{ vestedBalance }}</span>
-          </div>
-
-          <!-- LOGOUT -->
-          <div class="d-flex align-items-center justify-content-end ml-1rem">
-            <div class="nav-link waves-light p-0" mdbWavesEffect (click)="logOut()">
-              <span class="fs-08rem cursor-p font-header mr-02rem color-main-wallet">
-                LOG OUT
-              </span>
+            <!-- LOGOUT -->
+            <div class="d-flex align-items-center justify-content-end ml-1rem">
+              <div class="nav-link waves-light p-0" mdbWavesEffect (click)="logOut()">
+                <span class="fs-08rem cursor-p font-header mr-02rem color-main-wallet">
+                  LOG OUT
+                </span>
+              </div>
             </div>
-          </div>
 
-          <!-- STATUS NODE -->
-          <div
-            class="d-flex align-items-center justify-content-end d-block d-sm-none d-md-none d-lg-none d-xl-none ml-05rem">
-            <div class="nav-link waves-light p-0" mdbWavesEffect>
-              <i class="fa fa-circle ml-05rem cursor-p {{colorStatus}}" aria-hidden="true"
-                title="{{statusNodeName}} node"></i>
+            <!-- STATUS NODE -->
+            <div
+              class="d-flex align-items-center justify-content-end d-block d-sm-none d-md-none d-lg-none d-xl-none ml-05rem">
+              <div class="nav-link waves-light p-0" mdbWavesEffect>
+                <i class="fa fa-circle ml-05rem cursor-p {{colorStatus}}" aria-hidden="true"
+                  title="{{statusNodeName}} node"></i>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>
 
-<div class="topnav" id="myTopnav">
-  <div class="d-flex flex-column flex-sm-column flex-md-row align-items-center justify-content-center">
-    <ng-container *ngFor="let key of keyObject(itemsHeader)">
-      <ng-container *ngIf="itemsHeader[key].show">
-        <a [ngClass]="{'active':itemsHeader[key].selected}"
-          [routerLink]="[itemsHeader[key].link]">{{ itemsHeader[key].name }}</a>
+  <div class="topnav" id="myTopnav">
+    <div class="d-flex flex-column flex-sm-column flex-md-row align-items-center justify-content-center">
+      <ng-container *ngFor="let key of keyObject(itemsHeader)">
+        <ng-container *ngIf="itemsHeader[key].show">
+          <a [ngClass]="{'active':itemsHeader[key].selected}"
+            [routerLink]="[itemsHeader[key].link]">{{ itemsHeader[key].name }}</a>
+        </ng-container>
       </ng-container>
-    </ng-container>
+    </div>
+    <input type="checkbox" class="menu-btn" id="menu-btn" (click)="myFunction()">
+    <label for="menu-btn" class="icon"><i class="fa fa-bars"></i></label>
   </div>
-  <input type="checkbox" class="menu-btn" id="menu-btn" (click)="myFunction()">
-  <label for="menu-btn" class="icon"><i class="fa fa-bars"></i></label>
-</div>
