@@ -66,7 +66,10 @@ export class PartialComponent implements OnInit {
   ngOnInit() {
     this.configurationForm = this.sharedService.configurationForm;
     this.typeTransactions = this.transactionService.getTypeTransactions();
-    this.getAccountsInfo();
+    this.transactionService.getAggregateBondedTransactions$().subscribe(
+      next => this.aggregateTransactions = next
+    );
+    // this.getAccountsInfo();
   }
 
   /**
@@ -163,7 +166,7 @@ export class PartialComponent implements OnInit {
             }
           });
 
-          this.getAggregateBondedTransactions(publicsAccounts);
+         // this.getAggregateBondedTransactions(publicsAccounts);
         }
       }
     ));
@@ -175,7 +178,7 @@ export class PartialComponent implements OnInit {
    * @param {PublicAccount} publicAccount
    * @memberof PartialComponent
    */
-  getAggregateBondedTransactions(publicsAccounts: PublicAccount[]) {
+  /*getAggregateBondedTransactions(publicsAccounts: PublicAccount[]) {
     publicsAccounts.forEach(publicAccount => {
       this.proximaxProvider.getAggregateBondedTransactions(publicAccount).pipe(first()).subscribe(
         aggregateTransaction => {
@@ -190,7 +193,7 @@ export class PartialComponent implements OnInit {
         }
       );
     });
-  }
+  }*/
 
   /**
    *

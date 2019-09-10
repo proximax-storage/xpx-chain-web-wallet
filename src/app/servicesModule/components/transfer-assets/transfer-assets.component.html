@@ -7,9 +7,9 @@
     <div class="row">
       <div class="col-10 col-sm-12 col-md-12 mx-auto d-flex align-items-center box-grey">
         <div class="col-10">
-          <span class="color-black">{{ element.name }}</span>
-          <span class="font-small d-flex color-black">{{ element.address }}</span>
-          <span class="font-small d-flex color-black">Balance: <b>{{ element.balance }}</b> XPX</span>
+          <span class="color-black">{{ accountCreated.wallet.name }}</span>
+          <span class="font-small d-flex color-black">{{ accountCreated.dataAccount.nis1Account.address.pretty() }}</span>
+          <span class="font-small d-flex color-black">Balance: <b>{{ quantity }}</b> &nbsp;XPX</span>
         </div>
         <div class="col-2 text-center">
           <span class="color-blue-intermedio font-small">SELECT ></span>
@@ -36,7 +36,7 @@
         </div>
       </div>
 
-      <!-- ACCOUNT TO SWAP -->
+      <!-- ACCOUNT TO SWAP
       <div class="col-10 col-sm-12 col-md-12 mx-auto" *ngIf="accountListVisible">
         <ng-select mdbInputDirective mdbValidate class="selectWrapper" [items]="listContacts" bindLabel="label"
           bindValue="value" placeholder="Accounts" (change)="selectContact($event)">
@@ -64,7 +64,7 @@
             </div>
           </ng-container>
         </div>
-      </div>
+      </div> -->
 
       <!-- WALLET PASSWORD -->
       <div class="col-10 col-sm-12 col-md-12 mx-auto">

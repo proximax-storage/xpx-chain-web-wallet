@@ -42,6 +42,7 @@ export class SidebarMainComponent implements OnInit {
   subscription: Subscription[] = [];
   vestedBalance: string = '0.000000';
   version = '';
+  viewParcial = false;
   walletName = '';
   reset = 0;
 
@@ -66,6 +67,9 @@ export class SidebarMainComponent implements OnInit {
     this.getBlocks();
     this.readRoute();
     this.validate();
+    this.subscription.push(this.transactionService.getAggregateBondedTransactions$().subscribe(
+      next => this.viewParcial = (next && next.length > 0) ? true : false
+    ));
   }
 
   ngOnDestroy(): void {

@@ -36,7 +36,7 @@ export class NemServiceService {
    * @param selected network
    * @return Promise with wallet created
    */
-  public createPrivateKeyWallet(walletName: string, password: string, privateKey:string): SimpleWallet {
+  public createPrivateKeyWallet(walletName: string, password: string, privateKey: string): SimpleWallet {
     return SimpleWallet.createWithPrivateKey(
       walletName,
       new Password(password),
