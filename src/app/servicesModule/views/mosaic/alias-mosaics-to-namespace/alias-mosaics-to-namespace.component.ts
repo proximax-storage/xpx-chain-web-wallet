@@ -110,11 +110,11 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
             const type = namespaceStorage.namespaceInfo.alias.type;
             if (type === 2) {
               isLinked = true;
-              disabled = (this.linkingNamespaceToMosaic.get('typeAction').value === 0) ? true : false;
+              disabled = true;
               label = `${label}- (Linked to address)`;
             } else if (type === 1) {
               isLinked = true;
-              disabled = true;
+              disabled = (this.linkingNamespaceToMosaic.get('typeAction').value === 0) ? true : false;
               label = `${label}- (Linked to mosaic)`;
             } else {
               disabled = (this.linkingNamespaceToMosaic.get('typeAction').value === 1) ? true : false;
