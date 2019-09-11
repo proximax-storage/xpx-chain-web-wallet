@@ -465,9 +465,14 @@ export class TransactionsService {
     const currentAccount = Object.assign({}, this.walletService.getCurrentAccount());
     const dataBalance = accountsInfo.find(next => next.name === currentAccount.name);
     let balance = 0.000000;
+    console.log('-----------DATA BALANCE -------------', dataBalance);
     if (dataBalance && dataBalance.accountInfo) {
       // console.log('----dataBalance----', dataBalance);
+      dataBalance.accountInfo.mosaics.forEach(element => {
+        console.log(element.id.toHex());
+      });
       const x = dataBalance.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id);
+      console.log('este señor', x);
       if (x) {
         balance = x.amount.compact();
       }
