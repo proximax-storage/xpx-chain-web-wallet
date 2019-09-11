@@ -96,20 +96,15 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
   async buildSelectNamespace($event = null) {
     console.log('--arrayNamespaceStorage--', this.arrayNamespaceStorage);
     if ($event !== null) {
-      /*this.linkingNamespaceToMosaic.get('mosaic').enable();
-      this.linkingNamespaceToMosaic.get('namespace').enable();
-      this.linkingNamespaceToMosaic.get('password').enable();*/
-
-      console.log('--arrayNamespaceStorage--', this.arrayNamespaceStorage);
       const namespaceSelect = [];
       this.loading = true;
       if (this.arrayNamespaceStorage && this.arrayNamespaceStorage.length > 0) {
         for (let namespaceStorage of this.arrayNamespaceStorage) {
           if (namespaceStorage.namespaceInfo) {
-            console.log('INFO ---> ', namespaceStorage, '\n\n');
             let isLinked = false;
             let disabled = false;
-            let label = await this.namespaceService.getNameParentNamespace(namespaceStorage);
+            // let label = await this.namespaceService.getNameParentNamespace(namespaceStorage);
+            let label = namespaceStorage.namespaceName.name
             const name = label;
             const type = namespaceStorage.namespaceInfo.alias.type;
             if (type === 2) {
@@ -201,52 +196,59 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
       async namespaceInfo => {
         const namespaceSelect = this.namespaceSelect.slice(0);
         if (namespaceInfo !== undefined && namespaceInfo.length > 0) {
+          console.log(namespaceInfo);
           for (let data of namespaceInfo) {
-            if (data.namespaceInfo.depth === 1) {
-              namespaceSelect.push({
-                value: `${data.namespaceName.name}`,
-                label: `${data.namespaceName.name}`,
-                selected: false,
-                disabled: false
-              });
-            } else {
-              let name = '';
-              if (data.namespaceInfo.depth === 2) {
-                //Assign level 2
-                const level2 = data.namespaceName.name;
-                //Search level 1
-                const level1: NamespaceStorageInterface[] = await this.namespaceService.getNamespaceFromId(
-                  [this.proximaxProvider.getNamespaceId([data.namespaceName.parentId.id.lower, data.namespaceName.parentId.id.higher])]
-                );
-
-                name = `${level1[0].namespaceName.name}.${level2}`;
+            namespaceSelect.push({
+              value: `${data.namespaceName.name}`,
+              label: `${data.namespaceName.name}`,
+              selected: false,
+              disabled: false
+            });
+            /*  if (data.namespaceInfo.depth === 1) {
                 namespaceSelect.push({
-                  value: `${name}`,
-                  label: `${name}`,
+                  value: `${data.namespaceName.name}`,
+                  label: `${data.namespaceName.name}`,
                   selected: false,
                   disabled: false
                 });
-              } else if (data.namespaceInfo.depth === 3) {
-                //Assign el level3
-                const level3 = data.namespaceName.name;
-                //search level 2
-                const level2: NamespaceStorageInterface[] = await this.namespaceService.getNamespaceFromId(
-                  [this.proximaxProvider.getNamespaceId([data.namespaceName.parentId.id.lower, data.namespaceName.parentId.id.higher])]
-                );
+              } else {
+                let name = '';
+                if (data.namespaceInfo.depth === 2) {
+                  //Assign level 2
+                  const level2 = data.namespaceName.name;
+                  //Search level 1
+                  const level1: NamespaceStorageInterface[] = await this.namespaceService.getNamespaceFromId(
+                    [this.proximaxProvider.getNamespaceId([data.namespaceName.parentId.id.lower, data.namespaceName.parentId.id.higher])]
+                  );
 
-                //search level 1
-                const level1: NamespaceStorageInterface[] = await this.namespaceService.getNamespaceFromId(
-                  [this.proximaxProvider.getNamespaceId([level2[0].namespaceName.parentId.id.lower, level2[0].namespaceName.parentId.id.higher])]
-                );
-                name = `${level1[0].namespaceName.name}.${level2[0].namespaceName.name}.${level3}`;
-                namespaceSelect.push({
-                  value: `${name}`,
-                  label: `${name}`,
-                  selected: false,
-                  disabled: false
-                });
-              }
-            }
+                  name = `${level1[0].namespaceName.name}.${level2}`;
+                  namespaceSelect.push({
+                    value: `${name}`,
+                    label: `${name}`,
+                    selected: false,
+                    disabled: false
+                  });
+                } else if (data.namespaceInfo.depth === 3) {
+                  //Assign el level3
+                  const level3 = data.namespaceName.name;
+                  //search level 2
+                  const level2: NamespaceStorageInterface[] = await this.namespaceService.getNamespaceFromId(
+                    [this.proximaxProvider.getNamespaceId([data.namespaceName.parentId.id.lower, data.namespaceName.parentId.id.higher])]
+                  );
+
+                  //search level 1
+                  const level1: NamespaceStorageInterface[] = await this.namespaceService.getNamespaceFromId(
+                    [this.proximaxProvider.getNamespaceId([level2[0].namespaceName.parentId.id.lower, level2[0].namespaceName.parentId.id.higher])]
+                  );
+                  name = `${level1[0].namespaceName.name}.${level2[0].namespaceName.name}.${level3}`;
+                  namespaceSelect.push({
+                    value: `${name}`,
+                    label: `${name}`,
+                    selected: false,
+                    disabled: false
+                  });
+                }
+              }*/
           }
         }
 
@@ -400,7 +402,7 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
           this.walletService.currentAccount.network
         );
         const generationHash = this.dataBridge.blockInfo.generationHash;
-        const signedTransaction = account.sign(mosaicSupplyChangeTransaction,generationHash); //Update-sdk-dragon
+        const signedTransaction = account.sign(mosaicSupplyChangeTransaction, generationHash); //Update-sdk-dragon
         this.transactionSigned = signedTransaction;
         this.proximaxProvider.announce(signedTransaction).subscribe(
           x => {

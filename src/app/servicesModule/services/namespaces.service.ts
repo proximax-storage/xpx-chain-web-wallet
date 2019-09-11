@@ -125,6 +125,39 @@ export class NamespacesService {
   /**
    *
    *
+   * @param {NamespaceId} parentNamespaceId
+   * @param {number} parent
+   * @memberof NamespacesService
+   */
+  async getNameParentNamespace(namespaceStorage: NamespaceStorageInterface) {
+    switch (namespaceStorage.namespaceInfo.depth) {
+      case 1:
+        return namespaceStorage.namespaceName.name;
+      case 2:
+        const nameParentTwo = namespaceStorage.namespaceName.name;
+        const parentOneNamespaceId = this.getNamespaceId([
+          namespaceStorage.namespaceInfo['parentId']['id'].lower,
+          namespaceStorage.namespaceInfo['parentId']['id'].higher
+        ]);
+
+        const parentOne = this.filterNamespaceFromId(parentOneNamespaceId);
+        return (parentOne) ? `${parentOne.namespaceName.name}.${nameParentTwo}` : nameParentTwo;
+      case 3:
+        const nameParentThree = namespaceStorage.namespaceName.name;
+        const parentTwoNamespaceId = this.getNamespaceId([
+          namespaceStorage.namespaceInfo['parentId']['id'].lower,
+          namespaceStorage.namespaceInfo['parentId']['id'].higher
+        ]);
+
+        const parentTwo = this.filterNamespaceFromId(parentTwoNamespaceId);
+        const nameTwo = await this.getNameParentNamespace(parentTwo);
+        return `${nameTwo}.${nameParentThree}`;
+    }
+  }
+
+  /**
+   *
+   *
    * @param {Address[]} allAddress
    * @returns
    * @memberof NamespacesService
@@ -280,36 +313,72 @@ export class NamespacesService {
 
   /**
    *
-   *
-   * @param {NamespaceId} parentNamespaceId
-   * @param {number} parent
-   * @memberof NamespacesService
+   * @param rootNamespace
+   * @param status
    */
-  async getNameParentNamespace(namespaceStorage: NamespaceStorageInterface) {
-    switch (namespaceStorage.namespaceInfo.depth) {
-      case 1:
-        return namespaceStorage.namespaceName.name;
-      case 2:
-        const nameParentTwo = namespaceStorage.namespaceName.name;
-        const parentOneNamespaceId = this.getNamespaceId([
-          namespaceStorage.namespaceInfo['parentId']['id'].lower,
-          namespaceStorage.namespaceInfo['parentId']['id'].higher
-        ]);
+  getRootNamespace(rootNamespace: any, status: boolean, currentNamespace: any, namespaceInfo: any): {currentNamespace: any, namespaceInfo: any} {
+    const sts = status ? false : true;
+    currentNamespace.push({
+      value: `${rootNamespace.namespaceName.name}`,
+      label: `${rootNamespace.namespaceName.name}`,
+      selected: sts,
+      disabled: false
+    });
 
-        const parentOne = await this.filterNamespaceFromId(parentOneNamespaceId);
-        return (parentOne) ? `${parentOne.namespaceName.name}.${nameParentTwo}` : nameParentTwo;
-      case 3:
-        const nameParentThree = namespaceStorage.namespaceName.name;
-        const parentTwoNamespaceId = this.getNamespaceId([
-          namespaceStorage.namespaceInfo['parentId']['id'].lower,
-          namespaceStorage.namespaceInfo['parentId']['id'].higher
-        ]);
+    namespaceInfo.push({
+      name: `${rootNamespace.namespaceName.name}`,
+      dataNamespace: rootNamespace
+    });
 
-        const parentTwo = await this.filterNamespaceFromId(parentTwoNamespaceId);
-        const nameTwo = await this.getNameParentNamespace(parentTwo);
-        return `${nameTwo}.${nameParentThree}`;
-    }
+    return {
+      currentNamespace: currentNamespace,
+      namespaceInfo: namespaceInfo
+    };
   }
+
+  /**
+   *
+   * @param subNamespace
+   * @param status
+   * @param depth
+   * @param currentNamespace
+   * @param namespaceInfo
+   */
+  getSubNivelNamespace(subNamespace: NamespaceStorageInterface, status: boolean, depth: number, currentNamespace: any, namespaceInfo: any): {currentNamespace: any, namespaceInfo: any} {
+    const sts = status ? false : true;
+    let disabled = false;
+    let name = '';
+    if (depth === 2) {
+      //Assign level 2
+      const level2 = subNamespace.namespaceName.name;
+      name = level2;
+    } else if (depth === 3) {
+      disabled = true;
+      //Assign el level3
+      const level3 = subNamespace.namespaceName.name;
+      name = level3;
+    }
+
+    currentNamespace.push({
+      value: name,
+      label: name,
+      selected: sts,
+      disabled: disabled
+    });
+
+    namespaceInfo.push({
+      name: name,
+      dataNamespace: subNamespace
+    });
+
+    console.log(currentNamespace);
+    return {
+      currentNamespace: currentNamespace,
+      namespaceInfo: namespaceInfo
+    };
+  }
+
+
 
 
   /**

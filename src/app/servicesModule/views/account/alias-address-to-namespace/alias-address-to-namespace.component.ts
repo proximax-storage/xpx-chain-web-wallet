@@ -98,7 +98,7 @@ export class AliasAddressToNamespaceComponent implements OnInit {
             console.log('INFO ---> ', namespaceStorage, '\n\n');
             let isLinked = false;
             let disabled = false;
-            let label = await this.namespaceService.getNameParentNamespace(namespaceStorage);
+            let label = namespaceStorage.namespaceName.name;//await this.namespaceService.getNameParentNamespace(namespaceStorage);
             const name = label;
             const type = namespaceStorage.namespaceInfo.alias.type;
             if (type === 2) {
