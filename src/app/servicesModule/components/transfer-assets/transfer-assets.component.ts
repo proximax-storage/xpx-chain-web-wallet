@@ -13,7 +13,7 @@ import { PlainMessage } from 'nem-library';
 export class TransferAssetsComponent implements OnInit {
 
   @Output() changeView = new EventEmitter();
-  
+
   accountListVisible: boolean = false;
   formTransfer: FormGroup;
   configurationForm: ConfigurationForm;
@@ -25,6 +25,7 @@ export class TransferAssetsComponent implements OnInit {
     decimal: '.',
     precision: '6'
   };
+  spinnerVisibility = false
 
   constructor(
     private walletService: WalletService,

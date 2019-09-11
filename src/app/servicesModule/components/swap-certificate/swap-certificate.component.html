@@ -10,16 +10,13 @@
             <div class="background-white col-sm-12 col-md-8 col-lg-8">
               <div class="row p-1rem">
                 <div class="col-12">
-                  <span class="word-break-all fs-08rem"><b class="fw-bold">Timestamp: </b>2019-9-10 01:39:00</span>
+                  <span class="word-break-all fs-08rem"><b class="fw-bold">Timestamp: </b>{{ timestamp }}</span>
                 </div>
                 <div class="col-12 mb-1rem">
-                  <span class="word-break-all fs-08rem"><b class="fw-bold">NIS1 Node: </b>192.168.0.1</span>
-                </div>
-                <div class="col-12 mb-1rem">
-                  <span class="word-break-all fs-08rem"><b class="fw-bold">NIS1 Public Key: </b>B5F6A9053E4899647641D878E5F9BC02F193F9F85DF999AEF10DD72950FEDFC0</span>
+                  <span class="word-break-all fs-08rem"><b class="fw-bold">NIS1 Public Key: </b>{{ publicKey }}</span>
                 </div>
                 <div class="col-12">
-                  <span class="word-break-all fs-08rem"><b class="fw-bold">Transation Hash: </b>B5F6A9053E4899647641D878E5F9BC02F193F9F85DF999AEF10DD72950FEDFC0</span>
+                  <span class="word-break-all fs-08rem"><b class="fw-bold">Transation Hash: </b>{{ transactionHash }}</span>
                 </div>
                 <div class="col-12 txt-a-center ">
                   <img [src]="qrSrc" alt="qrCode">
@@ -62,7 +59,7 @@
     </div>
 
     <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-      <button mdbBtn rounded="true" mdbWavesEffect
+      <button mdbBtn rounded="true" mdbWavesEffect (click)="navToRoute()"
         class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
         <span class="fs-1-2em color-white">CONTINUE</span>
       </button>

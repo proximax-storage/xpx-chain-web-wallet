@@ -23,6 +23,7 @@ export class TransferXpxComponent implements OnInit {
     this.showCertificate = !this.showCertificate;
     this.transactionSuccess = event;
     this.routeCertificate = `/${AppConfig.routes.auth}`;
+    console.log("this.transactionSuccess", this.transactionSuccess);
   }
 
 }

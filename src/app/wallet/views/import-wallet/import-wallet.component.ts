@@ -30,6 +30,7 @@ export class ImportWalletComponent implements OnInit {
     label: 'TEST NET'
   }];
   nis1Account = null;
+  spinnerVisibility = false;
 
   constructor(
     private fb: FormBuilder,
@@ -167,7 +168,7 @@ export class ImportWalletComponent implements OnInit {
           walletContact: true,
           nameItem: nameWallet
         });
-        
+
         this.walletService.saveWalletStorage(nameWallet, accountBuilded);
         if (this.nis1Account !== null) {
           this.router.navigate([`/${AppConfig.routes.accountNis1Found}/${privateKey}`]);
