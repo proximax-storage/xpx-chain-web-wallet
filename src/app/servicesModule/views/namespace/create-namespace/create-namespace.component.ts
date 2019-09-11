@@ -14,6 +14,7 @@ import { NamespacesService, NamespaceStorageInterface } from '../../../../servic
 import { TransactionsService } from '../../../../transactions/services/transactions.service';
 import { Subscription } from 'rxjs';
 import { HeaderServicesInterface } from '../../../services/services-module.service';
+import { environment } from 'src/environments/environment.prod';
 
 @Component({
   selector: 'app-create-namespace',
@@ -422,7 +423,7 @@ export class CreateNamespaceComponent implements OnInit {
       )
 
       console.log('----namespaceName----', namespaceName);
-     
+
       const signedTransaction = account.sign(registerRootNamespaceTransaction,generationHash); //Update-sdk-dragon
       return signedTransaction;
     } else if (this.typetransfer == 2) {
@@ -530,9 +531,10 @@ export class CreateNamespaceComponent implements OnInit {
     const accountInfo = this.walletService.filterAccountInfo();
     if (accountInfo && accountInfo.accountInfo && accountInfo.accountInfo.mosaics && accountInfo.accountInfo.mosaics.length > 0) {
       const xpxInBalance = accountInfo.accountInfo.mosaics.find(element => {
-        return element.id.toHex() === new MosaicId(this.proximaxProvider.mosaicXpx.mosaicId).toHex();
+        return element.id.toHex() === new MosaicId(environment.mosaicXpxInfo.id).toHex();
       });
 
+      console.log('xpxInBalance', xpxInBalance);
       if (xpxInBalance) {
         if (this.namespaceForm.get('namespaceRoot').value === '' || this.namespaceForm.get('namespaceRoot').value === '1') {
           const invalidBalance = xpxInBalance.amount.compact() < amount;

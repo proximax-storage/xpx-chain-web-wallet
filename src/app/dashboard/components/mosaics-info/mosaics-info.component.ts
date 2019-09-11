@@ -3,7 +3,7 @@ import { Mosaic, MosaicView, MosaicInfo, NamespaceId } from 'tsjs-xpx-chain-sdk'
 import { MosaicService, MosaicsStorage } from '../../../servicesModule/services/mosaic.service';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 import { TransactionsService, TransactionsInterface } from '../../../transactions/services/transactions.service';
-import { environment } from 'src/environments/environment.prod';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-mosaics-info',
@@ -46,11 +46,12 @@ export class MosaicsInfoComponent implements OnInit {
       for (let mosaic of mosaics) {
         console.log('me llega este mosaico', mosaic);
         const id = this.findMosaic(mosaic);
+        // me quedé validando que me retorne el mosaico id y no namespace id, ya que en mosaicInfo no muestra
         console.log('---My mosaic---', id);
         if (id) {
           const amount = this.getAmount(mosaic, id);
           // MOSAIC IS XPX
-          if (id.id.toHex() === environment.mosaicXpxInfo.id) {
+          if (this.proximaxProvider.getMosaicId(mosaic.idMosaic).toHex() === environment.mosaicXpxInfo.id) {
             this.viewMosaicXpx = true;
             this.mosaicXpx = {
               id: environment.mosaicXpxInfo.id,

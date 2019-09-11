@@ -69,12 +69,6 @@ export class ProximaxProvider {
   mosaicService: MosaicService;
   namespaceService: NamespaceService;
   transactionStatusError: TransactionStatusError;
-  mosaicXpx: { mosaic: string, mosaicId: string; divisibility: number } = {
-    mosaic: 'prx.xpx',
-    mosaicId: '0dc67fbe1cad29e3',
-    divisibility: 6
-  };
-
 
   constructor() {
   }
@@ -167,7 +161,7 @@ export class ProximaxProvider {
   * @memberof ProximaxProvider
   */
   buildTransferTransaction(network: NetworkType, address: Address, message?: string, amount: number = 0): TransferTransaction {
-    const mosaicId = new MosaicId(this.mosaicXpx.mosaicId);
+    const mosaicId = new MosaicId(environment.mosaicXpxInfo.id);
     return TransferTransaction.create(
       Deadline.create(5),
       address,

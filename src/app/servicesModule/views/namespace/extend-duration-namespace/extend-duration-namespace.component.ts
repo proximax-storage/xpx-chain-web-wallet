@@ -12,6 +12,7 @@ import { WalletService } from '../../../../wallet/services/wallet.service';
 import { TransactionsService } from '../../../../transactions/services/transactions.service';
 import { Subscription } from 'rxjs';
 import { HeaderServicesInterface } from '../../../services/services-module.service';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-extend-duration-namespace',
@@ -354,7 +355,7 @@ export class ExtendDurationNamespaceComponent implements OnInit {
     const extendNamespaceRootTransaction = this.proximaxProvider.registerRootNamespaceTransaction(namespaceRootToExtend, this.walletService.currentAccount.network, duration);
     const generationHash = this.dataBridgeService.blockInfo.generationHash;
     const signedTransaction = account.sign(extendNamespaceRootTransaction,generationHash);  //Update-sdk-dragon
-    return signedTransaction; 
+    return signedTransaction;
   }
 
   /**
@@ -372,7 +373,7 @@ export class ExtendDurationNamespaceComponent implements OnInit {
     ) {
       if (accountInfo.accountInfo.mosaics.length > 0) {
         const filtered = accountInfo.accountInfo.mosaics.find(element => {
-          return element.id.toHex() === new MosaicId(this.proximaxProvider.mosaicXpx.mosaicId).toHex();
+          return element.id.toHex() === new MosaicId(environment.mosaicXpxInfo.id).toHex();
         });
 
         if (filtered) {

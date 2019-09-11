@@ -8,7 +8,7 @@ import { DataBridgeService } from '../../../../shared/services/data-bridge.servi
 import { WalletService, AccountsInterface, AccountsInfoInterface } from '../../../../wallet/services/wallet.service';
 import { TransactionsService } from '../../../../transactions/services/transactions.service';
 import { AppConfig } from '../../../../config/app.config';
-import { environment } from 'src/environments/environment.prod';
+import { environment } from 'src/environments/environment';
 import { HeaderServicesInterface } from '../../../services/services-module.service';
 
 @Component({
