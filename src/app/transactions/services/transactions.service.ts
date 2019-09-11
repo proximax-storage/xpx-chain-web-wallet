@@ -467,10 +467,6 @@ export class TransactionsService {
     let balance = 0.000000;
     console.log('-----------DATA BALANCE -------------', dataBalance);
     if (dataBalance && dataBalance.accountInfo) {
-      // console.log('----dataBalance----', dataBalance);
-      dataBalance.accountInfo.mosaics.forEach(element => {
-        console.log(element.id.toHex());
-      });
       const x = dataBalance.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id);
       console.log('este señor', x);
       if (x) {
@@ -478,6 +474,7 @@ export class TransactionsService {
       }
     }
 
+    console.log('BALANCE -->', balance);
     this.setBalance$(balance);
   }
 
