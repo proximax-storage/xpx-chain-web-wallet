@@ -79,8 +79,11 @@ export class NamespacesService {
           missingId.push(id);
         }
       }
+    }else {
+      namespaceId.forEach(namespaceId => {
+        missingId.push(namespaceId)
+      });
     }
-
 
     if (missingId.length > 0 && recursive) {
       for (let id of missingId) {
@@ -95,7 +98,7 @@ export class NamespacesService {
         }
       }
 
-      this.getNamespaceFromId(namespaceId, false);
+      return this.getNamespaceFromId(namespaceId, false);
     }
 
     return dataFound;
@@ -152,10 +155,10 @@ export class NamespacesService {
    * @memberof NamespacesService
    */
   async saveNamespaceStorage(namespaceInfo: NamespaceInfo[]) {
-    // console.log('----namespaceInfo----', namespaceInfo);
+    console.log('----namespaceInfo----', namespaceInfo);
     const namespacesStorage: NamespaceStorageInterface[] = this.getNamespacesStorage();
     const names = await this.proximaxProvider.namespaceHttp.getNamespacesName(namespaceInfo.map(x => x.id)).toPromise();
-    // console.log('----names---', names);
+    console.log('----names---', names);
     const namespacesFound: NamespaceStorageInterface[] = [];
     for (let info of namespaceInfo) {
       namespacesFound.push({

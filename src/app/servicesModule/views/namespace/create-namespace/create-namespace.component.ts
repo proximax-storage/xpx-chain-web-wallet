@@ -110,52 +110,57 @@ export class CreateNamespaceComponent implements OnInit {
    * @memberof CreateNamespaceComponent
    */
   async getSubNivelNamespace(subNamespace: NamespaceStorageInterface, status: boolean, depth: number) {
+    console.log(subNamespace);
     const sts = status ? false : true;
     let disabled = false;
     let name = '';
-    if (subNamespace.namespaceName.parentId !== undefined) {
-      if (depth === 2) {
-        //Assign level 2
-        const level2 = subNamespace.namespaceName.name;
-        //Search level 1
-        const level1: NamespaceStorageInterface[] = await this.namespaceService.getNamespaceFromId([
-          this.namespaceService.getNamespaceId([
-            subNamespace.namespaceName.parentId.id.lower,
-            subNamespace.namespaceName.parentId.id.higher
-          ])
-        ]);
+    //if (subNamespace.namespaceName.parentId !== undefined) {
+    if (depth === 2) {
+      //Assign level 2
+      const level2 = subNamespace.namespaceName.name;
+      //Search level 1
+      /* const level1: NamespaceStorageInterface[] = await this.namespaceService.getNamespaceFromId([
+         this.namespaceService.getNamespaceId([
+           subNamespace.namespaceName.parentId.id.lower,
+           subNamespace.namespaceName.parentId.id.higher
+         ])
+       ]);
 
-        name = `${level1[0].namespaceName.name}.${level2}`;
-      } else if (depth === 3) {
-        disabled = true;
-        //Assign el level3
-        const level3 = subNamespace.namespaceName.name;
-        //search level 2
-        const level2: NamespaceStorageInterface[] = await this.namespaceService.getNamespaceFromId(
-          [this.proximaxProvider.getNamespaceId([subNamespace.namespaceName.parentId.id.lower, subNamespace.namespaceName.parentId.id.higher])]
-        );
+       name = `${level1[0].namespaceName.name}.${level2}`;*/
+      name = level2;
+    } else if (depth === 3) {
+      disabled = true;
+      //Assign el level3
+      const level3 = subNamespace.namespaceName.name;
+      //search level 2
+      /* const level2: NamespaceStorageInterface[] = await this.namespaceService.getNamespaceFromId(
+         [this.proximaxProvider.getNamespaceId([subNamespace.namespaceName.parentId.id.lower, subNamespace.namespaceName.parentId.id.higher])]
+       );
 
-        //search level 1
-        const level1: NamespaceStorageInterface[] = await this.namespaceService.getNamespaceFromId(
-          [this.proximaxProvider.getNamespaceId([level2[0].namespaceName.parentId.id.lower, level2[0].namespaceName.parentId.id.higher])]
-        );
-        name = `${level1[0].namespaceName.name}.${level2[0].namespaceName.name}.${level3}`;
-      }
-
-      this.namespace.push({
-        value: name,
-        label: name,
-        selected: sts,
-        disabled: disabled
-      });
-
-      this.namespaceInfo.push({
-        name: name,
-        dataNamespace: subNamespace
-      });
-
-      return;
+       //search level 1
+       const level1: NamespaceStorageInterface[] = await this.namespaceService.getNamespaceFromId(
+         [this.proximaxProvider.getNamespaceId([level2[0].namespaceName.parentId.id.lower, level2[0].namespaceName.parentId.id.higher])]
+       );
+       name = `${level1[0].namespaceName.name}.${level2[0].namespaceName.name}.${level3}`;*/
+      name = level3;
     }
+
+
+    this.namespace.push({
+      value: name,
+      label: name,
+      selected: sts,
+      disabled: disabled
+    });
+
+    this.namespaceInfo.push({
+      name: name,
+      dataNamespace: subNamespace
+    });
+
+    console.log(this.namespace);
+    return;
+    //}
 
     return;
   }
@@ -203,8 +208,8 @@ export class CreateNamespaceComponent implements OnInit {
       duration: '',
       password: ''
     }, {
-        emitEvent: false
-      }
+      emitEvent: false
+    }
     );
     this.statusButtonNamespace = true;
   }
@@ -277,9 +282,9 @@ export class CreateNamespaceComponent implements OnInit {
     this.subscription.push(this.namespaceService.getNamespaceChanged().subscribe(
       async namespaceInfo => {
         this.namespace = [];
-
         if (namespaceInfo !== null && namespaceInfo !== undefined) {
           for (let data of namespaceInfo) {
+            console.log('data---> ', data)
             if (data.namespaceInfo.depth === 1) {
               await this.getRootNamespace(data, data.namespaceInfo.active);
             } else {
@@ -424,7 +429,7 @@ export class CreateNamespaceComponent implements OnInit {
 
       console.log('----namespaceName----', namespaceName);
 
-      const signedTransaction = account.sign(registerRootNamespaceTransaction,generationHash); //Update-sdk-dragon
+      const signedTransaction = account.sign(registerRootNamespaceTransaction, generationHash); //Update-sdk-dragon
       return signedTransaction;
     } else if (this.typetransfer == 2) {
       const rootNamespaceName = this.namespaceForm.get('namespaceRoot').value;
@@ -437,7 +442,7 @@ export class CreateNamespaceComponent implements OnInit {
 
       console.log('----rootNamespaceName----', rootNamespaceName);
       console.log('----subnamespaceName----', subnamespaceName);
-      const signedTransaction = account.sign(registersubamespaceTransaction,generationHash); //Update-sdk-dragon
+      const signedTransaction = account.sign(registersubamespaceTransaction, generationHash); //Update-sdk-dragon
       return signedTransaction;
     }
   }
@@ -534,7 +539,6 @@ export class CreateNamespaceComponent implements OnInit {
         return element.id.toHex() === new MosaicId(environment.mosaicXpxInfo.id).toHex();
       });
 
-      console.log('xpxInBalance', xpxInBalance);
       if (xpxInBalance) {
         if (this.namespaceForm.get('namespaceRoot').value === '' || this.namespaceForm.get('namespaceRoot').value === '1') {
           const invalidBalance = xpxInBalance.amount.compact() < amount;
