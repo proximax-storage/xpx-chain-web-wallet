@@ -119,6 +119,7 @@ export class TransferAssetsComponent implements OnInit {
         })
         .catch(error => {
           this.sharedService.showError('Error', error.toString().split('_').join(' '));
+          this.spinnerVisibility = false
         });
     }
   }

@@ -50,10 +50,12 @@ export const environment = {
     address_public_test: 'VBBLJ4-PD73RT-PXBTJY-ZQX426-NU7ETW-O3AZ65-YMVM'
   },
   nis1: {
+    url: 'http://18.231.166.212:7890',
+    networkType: NetworkTypes.TEST_NET,
+    address: 'TBF4LAZUEJMBIOC6J24D6ZGGXE5W775TX555CTTN',
     nodes: [
-      {protocol: "http", domain: "18.231.166.212", port: 7890} as ServerConfig
+      { protocol: "http", domain: "18.231.166.212", port: 7890 } as ServerConfig
     ],
-    networkType: NetworkTypes.TEST_NET
   }
 };
 

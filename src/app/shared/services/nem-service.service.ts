@@ -1,5 +1,4 @@
-import { Injectable, OnInit } from "@angular/core";
-import { Observable } from "rxjs";
+import { Injectable } from "@angular/core";
 import { environment } from 'src/environments/environment';
 import {
   NEMLibrary,
@@ -80,11 +79,11 @@ export class NemServiceService {
       message
     );
   }
-  
+
   anounceTransaction(transferTransaction: TransferTransaction, cosignerAccount: Account) {
     const signedTransaction = cosignerAccount.signTransaction(transferTransaction);
     console.log('\n\n\n\nValue signedTransaction:\n', signedTransaction, '\n\n\n\nEnd value\n\n');
-  
+
     return this.transactionHttp.announceTransaction(signedTransaction).toPromise();
   }
 }
