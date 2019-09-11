@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { WalletService } from 'src/app/wallet/services/wallet.service';
 import { NemServiceService } from 'src/app/shared/services/nem-service.service';
 import { FormGroup, Validators, FormBuilder, AbstractControl } from '@angular/forms';
@@ -12,8 +12,9 @@ import { PlainMessage } from 'nem-library';
 })
 export class TransferAssetsComponent implements OnInit {
 
+  @Output() changeView = new EventEmitter();
+  
   accountListVisible: boolean = false;
-
   formTransfer: FormGroup;
   configurationForm: ConfigurationForm;
   quantity: string;
@@ -98,14 +99,26 @@ export class TransferAssetsComponent implements OnInit {
     this.formTransfer.get('amountXpx').setValue(this.quantity);
   }
 
-  createTransaction() {
+  async createTransaction() {
     let common = { password: this.formTransfer.get("password").value };
     const quantity = this.formTransfer.get("amountXpx").value;
     console.log('\n\n\n\nValue quantity:\n', quantity, '\n\n\n\nEnd value\n\n');
     if (this.walletService.decrypt(common, this.accountCreated.dataAccount)) {
       console.log('\n\n\n\nValue common:\n', common, '\n\n\n\nEnd value\n\n');
-      const transaction = this.nemService.createTransaction(common['privateKey'], PlainMessage.create('testtttt'),  this.walletService.accountInfoNis1.assetId, quantity);
-      console.log('\n\n\n\nValue:\n', transaction, '\n\n\n\nEnd value\n\n');
+      const account = this.nemService.createAccountPrivateKey(common['privateKey']);
+      const transaction = await this.nemService.createTransaction(PlainMessage.create('testtttt'),  this.walletService.accountInfoNis1.assetId, quantity);
+      this.nemService.anounceTransaction(transaction, account)
+        .then(resp => {
+          console.log('\n\n\n\nValue resp:\n', resp, '\n\n\n\nEnd value\n\n');
+          this.sharedService.showSuccess('Transaction', resp['message']);
+          this.changeView.emit({
+            transaction: transaction,
+            details: resp
+          });
+        })
+        .catch(error => {
+          this.sharedService.showError('Error', error.toString().split('_').join(' '));
+        });
     }
   }
 }

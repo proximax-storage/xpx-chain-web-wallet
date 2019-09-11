@@ -8,6 +8,7 @@ import { routing, appRoutingProviders } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CoreModule } from './core/core.module';
 import { SharedModule } from './shared/shared.module';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -19,6 +20,7 @@ import { SharedModule } from './shared/shared.module';
     routing,
     CoreModule,
     SharedModule.forRoot(),
+    HttpClientModule,
     ToastModule.forRoot({
       maxOpened: 1,
       newestOnTop: true,

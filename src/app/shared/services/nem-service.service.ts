@@ -20,6 +20,7 @@ import {
   TransactionHttp,
 } from "nem-library";
 import { HttpClient } from '@angular/common/http';
+import { SharedService } from './shared.service';
 @Injectable({
   providedIn: 'root'
 })
@@ -31,7 +32,7 @@ export class NemServiceService {
   nodes: ServerConfig[];
 
   constructor(
-    private http: HttpClient
+    private sharedService: SharedService
   ) {
     NEMLibrary.bootstrap(environment.nis1.networkType);
     this.nodes = environment.nis1.nodes;
@@ -64,33 +65,26 @@ export class NemServiceService {
     return accountOwnedMosaics.fromAddress(address).toPromise();
   }
 
-  async createTransaction(privateKey: string, message: PlainMessage, assetId: AssetId, quantity: number) {
-    // const privateKey: string = process.env.PRIVATE_KEY;
-    // const multisigAccountPublicKey: string = process.env.MULTISIG_PUBLIC_KEY;
-    const cosignerAccount = Account.createWithPrivateKey(privateKey);
-    console.log('\n\n\n\nValue cosignerAccount:\n', cosignerAccount, '\n\n\n\nEnd value\n\n');
+  createAccountPrivateKey(privateKey: string) {
+    return Account.createWithPrivateKey(privateKey);
+  }
 
-
+  async createTransaction(message: PlainMessage, assetId: AssetId, quantity: number) {
     const resultAssets = await this.assetHttp.getAssetTransferableWithRelativeAmount(assetId, quantity).toPromise();
 
     console.log('\n\n\n\nValue resultAssets:\n', resultAssets, '\n\n\n\nEnd value\n\n');
-    const transferTransaction = TransferTransaction.createWithAssets(
+    return TransferTransaction.createWithAssets(
       TimeWindow.createWithDeadline(),
       new Address(environment.nis1.address),
       [resultAssets],
       message
     );
-
-    console.log('\n\n\n\nValue transferTransaction:\n', transferTransaction, '\n\n\n\nEnd value\n\n');
-
+  }
+  
+  anounceTransaction(transferTransaction: TransferTransaction, cosignerAccount: Account) {
     const signedTransaction = cosignerAccount.signTransaction(transferTransaction);
     console.log('\n\n\n\nValue signedTransaction:\n', signedTransaction, '\n\n\n\nEnd value\n\n');
-    
-    this.http.post(environment.nis1.url, signedTransaction).subscribe(next => {
-      console.log('\n\n\n\nValue next:\n', next, '\n\n\n\nEnd value\n\n');
-    });
-    // this.transactionHttp.announceTransaction(signedTransaction).subscribe(resp => {
-    //   console.log('\n\n\n\nValue resp:\n', resp, '\n\n\n\nEnd value\n\n');
-    // });
+  
+    return this.transactionHttp.announceTransaction(signedTransaction).toPromise();
   }
 }

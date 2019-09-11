@@ -125,7 +125,7 @@ export class ImportWalletComponent implements OnInit {
         console.log('\n\n\n\nValue of mosaics', mosaicNis1, '\n\n\n\nEnd value\n\n');
         if (mosaicNis1.length > 0) {
           for (const el of mosaicNis1) {
-            if (el.assetId.namespaceId === 'proximax' && el.assetId.name === 'xpx') {
+            if (el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx') {
               this.nis1Account = nis1Wallet;
               this.walletService.accountInfoNis1 = el;
               console.log('\n\n\n\nValue of mosaicXPX', this.nis1Account, '\n\n\n\nEnd value\n\n');
