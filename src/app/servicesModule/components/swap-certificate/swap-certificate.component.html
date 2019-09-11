@@ -35,6 +35,9 @@
                 <div class="col-12">
                   <span class="word-break-all fs-08rem"><b class="fw-bold">Transation Hash: </b>B5F6A9053E4899647641D878E5F9BC02F193F9F85DF999AEF10DD72950FEDFC0</span>
                 </div>
+                <div class="col-12 txt-a-center">
+                  <img [src]="qrSrc" alt="qrCode">
+                </div>
               </div>
             </div>
             <div class="d-flex justify-content-center align-items-center background-blue-gradient col-sm-12 col-md-4 col-lg-4">
@@ -67,7 +70,7 @@
   <!-- BUTTON -->
   <div class="row mt-1rem">
     <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-      <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
+      <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md" (click)="printCertificate()">
         <span class="fs-1-2em color-white">PRINT</span>
       </button>
     </div>
