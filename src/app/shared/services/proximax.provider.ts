@@ -211,29 +211,20 @@ export class ProximaxProvider {
    * @returns {MosaicDefinitionTransaction}
    * @memberof ProximaxProvider
    */
-  buildMosaicDefinition(
-    nonce: MosaicNonce,
-    account: Account,
-    supplyMutableParam: boolean,
-    transferableParam: boolean,
-    levyMutableParam: boolean,
-    divisibilityParam: number,
-    durationParam: number,
-    network: NetworkType
-  ): MosaicDefinitionTransaction {
-    return MosaicDefinitionTransaction.create(
+  buildMosaicDefinition(params: any): MosaicDefinitionTransaction {
+    const mosaicDefinitionTransaction = MosaicDefinitionTransaction.create(
       Deadline.create(5),
-      nonce,
-      MosaicId.createFromNonce(nonce, account.publicAccount),
+      params.nonce,
+      MosaicId.createFromNonce(params.nonce, params.account.publicAccount),
       MosaicProperties.create({
-        supplyMutable: supplyMutableParam,
-        transferable: transferableParam,
-        // levyMutable: levyMutableParam, //Update-sdk-dragon
-        divisibility: divisibilityParam,
-        duration: UInt64.fromUint(durationParam)
+        supplyMutable: params.supplyMutable,
+        transferable: params.transferable,
+        divisibility: params.divisibility,
+        duration: UInt64.fromUint(params.durationByBlock)
       }),
-      network
+      params.network
     );
+    return mosaicDefinitionTransaction;
   }
 
 
