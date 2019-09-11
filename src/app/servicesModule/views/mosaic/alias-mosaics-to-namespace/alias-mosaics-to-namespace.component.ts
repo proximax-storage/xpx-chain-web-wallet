@@ -96,6 +96,7 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
   async buildSelectNamespace($event = null) {
     console.log('--arrayNamespaceStorage--', this.arrayNamespaceStorage);
     if ($event !== null) {
+      this.linkingNamespaceToMosaic.get('namespace').setValue('1');
       const namespaceSelect = [];
       this.loading = true;
       if (this.arrayNamespaceStorage && this.arrayNamespaceStorage.length > 0) {

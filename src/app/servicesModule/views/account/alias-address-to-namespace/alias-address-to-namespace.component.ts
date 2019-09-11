@@ -83,8 +83,8 @@ export class AliasAddressToNamespaceComponent implements OnInit {
    * @memberof AliasAddressToNamespaceComponent
    */
   async buildSelectNamespace($event = null) {
-    console.log($event);
     if ($event !== null) {
+      this.LinkToNamespaceForm.get('namespace').setValue('1');
       /* this.LinkToNamespaceForm.get('address').enable();
        this.LinkToNamespaceForm.get('namespace').enable();
        this.LinkToNamespaceForm.get('password').enable();*/
