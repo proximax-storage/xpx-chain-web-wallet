@@ -95,7 +95,7 @@ export class MosaicsSupplyChangeComponent implements OnInit {
       let expired = false;
       let nameExpired = '';
       if (element.mosaicInfo) {
-        const nameMosaic = (element.mosaicNames.names.length > 0) ? element.mosaicNames.names[0] : this.proximaxProvider.getMosaicId(element.idMosaic).toHex();
+        const nameMosaic = (element.mosaicNames.names.length > 0) ? element.mosaicNames.names[0].name : this.proximaxProvider.getMosaicId(element.idMosaic).toHex();
         const addressOwner = this.proximaxProvider.createAddressFromPublicKey(
           element.mosaicInfo.owner.publicKey,
           element.mosaicInfo.owner.address['networkType']
@@ -310,8 +310,8 @@ export class MosaicsSupplyChangeComponent implements OnInit {
           this.formMosaicSupplyChange.get('mosaicSupplyType').value,
           this.walletService.currentAccount.network
         )
-
-        const signedTransaction = account.sign(mosaicSupplyChangeTransaction);
+        const generationHash = this.dataBridge.blockInfo.generationHash;
+        const signedTransaction = account.sign(mosaicSupplyChangeTransaction, generationHash); //Update-sdk-dragon
         this.transactionSigned.push(signedTransaction);
         console.log(signedTransaction);
         console.log(this.transactionSigned);

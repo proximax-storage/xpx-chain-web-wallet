@@ -80,7 +80,7 @@ export class CreatePollStorageService {
       if (recipientPublicKey.length > 0) {
         param.withRecipientPublicKey(recipientPublicKey);
       }
-      param.withTransactionMosaics([new Mosaic(new MosaicId(environment.mosaicXpxInfo.id), UInt64.fromUint(0))]);
+      // param.withTransactionMosaics([new Mosaic(new MosaicId(environment.mosaicXpxInfo.id), UInt64.fromUint(0))]); //Update-sdk-dragon
       let recipientAddress = account.publicAccount.address.plain();
       if (recipientPublicKey.length > 0) {
         recipientAddress = Address.createFromPublicKey(recipientPublicKey, account.publicAccount.address.networkType).plain();

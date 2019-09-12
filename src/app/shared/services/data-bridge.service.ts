@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { first } from "rxjs/operators";
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Listener, Transaction, TransactionStatus, CosignatureSignedTransaction } from "tsjs-xpx-chain-sdk";
+import { Listener, Transaction, TransactionStatus, CosignatureSignedTransaction, BlockInfo } from "tsjs-xpx-chain-sdk";
 import { environment } from '../../../environments/environment';
 import { NodeService } from '../../servicesModule/services/node.service';
 import { SharedService } from './shared.service';
@@ -19,10 +19,14 @@ export class DataBridgeService {
   connector: Listener;
   destroyConection = false;
   blockSubject: BehaviorSubject<number> = new BehaviorSubject<number>(this.block);
+  blockInfo: BlockInfo;
+  blockInfoSubject: BehaviorSubject<BlockInfo> = new BehaviorSubject<BlockInfo>(this.blockInfo);
   block$: Observable<number> = this.blockSubject.asObservable();
+  blockInfo$: Observable<BlockInfo> = this.blockInfoSubject.asObservable();
   transactionSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   transaction$: Observable<any> = this.transactionSubject.asObservable();
   reconnectNode = 0;
+
 
   constructor(
     private walletService: WalletService,
@@ -356,7 +360,22 @@ export class DataBridgeService {
    */
   setblock(params: any) {
     this.block = params;
+
     this.blockSubject.next(this.block);
+  }
+
+  /**
+  * Set a BlockInfo for a given block height
+  *
+  * @param {BlockInfo} params
+  * @memberof DataBridgeService
+  */
+  setblockInfo(params: BlockInfo) { //Update-sdk-dragon
+    this.blockInfo = params;
+    console.log('this.blockInfo ',this.blockInfo )
+    this.transactionsService.generationHash = this.blockInfo.generationHash;
+    this.namespaces.generationHash = this.blockInfo.generationHash;
+    this.blockInfoSubject.next(this.blockInfo)
   }
 
   /**

@@ -75,7 +75,7 @@ export class CreatePollComponent implements OnInit {
     this.configurationForm = this.sharedService.configurationForm;
     this.btnBlock = false;
     this.showList = false;
-    
+
   }
 
   ngOnInit() {
@@ -86,7 +86,7 @@ export class CreatePollComponent implements OnInit {
     this.createForms();
   }
 
-  
+
   booksAddress() {
     const data = this.listContacts.slice(0);
     const bookAddress = this.serviceModuleService.getBooksAddress();
@@ -99,12 +99,12 @@ export class CreatePollComponent implements OnInit {
     }
   }
 
-    /**
-   *
-   *
-   * @param {*} event
-   * @memberof CreateTransferComponent
-   */
+  /**
+ *
+ *
+ * @param {*} event
+ * @memberof CreateTransferComponent
+ */
   selectContact(event: { label: string, value: string }) {
     if (event !== undefined && event.value !== '') {
       this.thirdFormGroup.get('address').patchValue(event.value);
@@ -126,7 +126,7 @@ export class CreatePollComponent implements OnInit {
 
     this.thirdFormGroup = new FormGroup({
       voteType: new FormControl(1),
-      contact:  new FormControl(''),
+      contact: new FormControl(''),
       address: new FormControl('')
     });
 
@@ -162,7 +162,7 @@ export class CreatePollComponent implements OnInit {
 
   deleteOptions(item) {
     this.option = this.option.filter(option => option != item);
-    if(this.option.length === 0){
+    if (this.option.length === 0) {
       this.secondFormGroup.patchValue({
         options: ''
       })
@@ -291,6 +291,7 @@ export class CreatePollComponent implements OnInit {
       this.account,
       common.privateKey
     ).then(resp => {
+      console.log("resp", resp)
       this.btnBlock = false;
       this.stepper.resetAll()
       this.listaBlanca = [];
