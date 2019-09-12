@@ -31,6 +31,8 @@ export class ImportWalletComponent implements OnInit {
   }];
   nis1Account = null;
   spinnerVisibility = false;
+  saveNis1: boolean = false;
+  foundXpx: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -120,20 +122,23 @@ export class ImportWalletComponent implements OnInit {
         const wallet = this.proximaxProvider.createAccountFromPrivateKey(nameWallet, password, privateKey, network);
         // const nis1Wallet = this.nemProvider.createPrivateKeyWallet(nameWallet, this.importWalletForm.controls.passwords.get('password').value, privateKey);
 
-        const nis1Wallet = this.nemProvider.createPrivateKeyWallet(nameWallet, this.importWalletForm.controls.passwords.get('password').value, privateKey);
-        console.log('\n\n\n\nValue of nis1', nis1Wallet, '\n\n\n\nEnd value\n\n');
-        const mosaicNis1 = await this.nemProvider.getOwnedMosaics(nis1Wallet.address);
-        console.log('\n\n\n\nValue of mosaics', mosaicNis1, '\n\n\n\nEnd value\n\n');
-        if (mosaicNis1.length > 0) {
-          for (const el of mosaicNis1) {
-            if (el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx') {
-              this.nis1Account = nis1Wallet;
-              this.walletService.accountInfoNis1 = el;
-              console.log('\n\n\n\nValue of mosaicXPX', this.nis1Account, '\n\n\n\nEnd value\n\n');
+        if (this.saveNis1) {
+          const nis1Wallet = this.nemProvider.createPrivateKeyWallet(nameWallet, this.importWalletForm.controls.passwords.get('password').value, privateKey);
+          this.nis1Account = nis1Wallet;
+          console.log('\n\n\n\nValue of nis1', nis1Wallet, '\n\n\n\nEnd value\n\n');
+          const mosaicNis1 = await this.nemProvider.getOwnedMosaics(nis1Wallet.address);
+          console.log('\n\n\n\nValue of mosaics', mosaicNis1, '\n\n\n\nEnd value\n\n');
+          if (mosaicNis1.length > 0) {
+            for (const el of mosaicNis1) {
+              if (el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx') {
+                this.foundXpx = true;
+                this.walletService.accountInfoNis1 = el;
+                console.log('\n\n\n\nValue of mosaicXPX', this.nis1Account, '\n\n\n\nEnd value\n\n');
+              }
             }
           }
         }
-
+          
         console.log('this a wallet', wallet);
         console.log('this a nis1Wallet', this.nis1Account);
 
@@ -170,7 +175,7 @@ export class ImportWalletComponent implements OnInit {
         });
 
         this.walletService.saveWalletStorage(nameWallet, accountBuilded);
-        if (this.nis1Account !== null) {
+        if (this.foundXpx) {
           this.router.navigate([`/${AppConfig.routes.accountNis1Found}/${privateKey}`]);
         } else {
           this.router.navigate([`/${AppConfig.routes.walletCreated}`]);
@@ -182,6 +187,11 @@ export class ImportWalletComponent implements OnInit {
       }
     }
   }
+
+  switchSaveNis1() {
+    this.saveNis1 = !this.saveNis1
+    console.log(this.saveNis1);    
+  }  
 
   validateInput(nameInput: string = '', nameControl: string = '', nameValidation: string = '') {
     let validation: AbstractControl = null;
