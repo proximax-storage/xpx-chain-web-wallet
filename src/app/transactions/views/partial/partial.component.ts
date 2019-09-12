@@ -106,13 +106,15 @@ export class PartialComponent implements OnInit {
    * @memberof PartialComponent
    */
   find(transaction: TransactionsInterface) {
-    console.log('----------TRANSACTIONS----------', transaction);
+    console.log('----------TransactionsInterface----------', transaction);
     this.dataSelected = transaction;
+    this.arraySelect = [];
     const accountMultisig = this.walletService.filterAccountInfo(transaction.data['innerTransactions'][0].signer.address.pretty(), true);
     console.log('ACCOUNT MULTISIG -----> ', accountMultisig);
     if (accountMultisig && accountMultisig.multisigInfo.cosignatories && accountMultisig.multisigInfo.cosignatories.length > 0) {
       accountMultisig.multisigInfo.cosignatories.forEach(element => {
         const cosignatorie: AccountsInterface = this.walletService.filterAccount('', null, element.address.pretty());
+        console.log('cosignatorie ---->', cosignatorie);
         if (cosignatorie) {
           const publicAccount = this.proximaxProvider.createPublicAccount(cosignatorie.publicAccount.publicKey, cosignatorie.publicAccount.address.networkType);
           const signedByAccount = transaction.data.signedByAccount(publicAccount);
@@ -142,8 +144,25 @@ export class PartialComponent implements OnInit {
         console.log('ModifyMultisigAccountTransaction.....', data);
         // aqui debo verificar si mi cuenta esta dentro de inner transaction para poder firmarla
         data.modifications.forEach(element => {
-          const findAddress = this.walletService.filterAccount('', null, element.cosignatoryPublicAccount.address.pretty());
-          console.log('findAddress ---> ', findAddress);
+          const possibleCosignatorie: AccountsInterface = this.walletService.filterAccount('', null, element.cosignatoryPublicAccount.address.pretty());
+          console.log('possibleCosignatorie ---->', possibleCosignatorie);
+          // Address encontrada
+          if (possibleCosignatorie) {
+            if (this.arraySelect.length > 0) {
+              console.log('ARRAY SELECT --->', this.arraySelect);
+            } else {
+              console.log('ARRAY SELECT --->', this.arraySelect);
+              const publicAccount = this.proximaxProvider.createPublicAccount(possibleCosignatorie.publicAccount.publicKey, this.walletService.currentAccount.network);
+              const signedByAccount = transaction.data.signedByAccount(publicAccount);
+              this.arraySelect.push({
+                label: possibleCosignatorie.name,
+                value: possibleCosignatorie,
+                selected: true,
+                signed: signedByAccount,
+                disabled: signedByAccount
+              });
+            }
+          }
         });
       }
     });
@@ -175,7 +194,7 @@ export class PartialComponent implements OnInit {
             }
           });
 
-         // this.getAggregateBondedTransactions(publicsAccounts);
+          // this.getAggregateBondedTransactions(publicsAccounts);
         }
       }
     ));
