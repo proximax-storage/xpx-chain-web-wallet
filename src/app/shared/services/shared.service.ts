@@ -47,6 +47,10 @@ export class SharedService {
       minLength: 8,
       maxLength: 30
     },
+    passwordEncriptionFile: {
+      minLength: 11,
+      maxLength: 30
+    },
     message: {
       maxLength: 1024
     },
@@ -54,6 +58,9 @@ export class SharedService {
       minLength: 1,
       maxLength: 240
     },
+    mosaicWallet: {
+      maxSupply: 9000000000
+    }
   };
 
   constructor(
@@ -229,6 +236,13 @@ export interface ConfigurationForm {
   passwordWallet?: {
     minLength: number;
     maxLength: number;
+  };
+  passwordEncriptionFile?: {
+    minLength: number;
+    maxLength: number;
+  };
+  mosaicWallet?: {
+    maxSupply: number;
   };
 }
 

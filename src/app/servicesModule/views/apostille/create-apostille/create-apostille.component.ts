@@ -12,6 +12,7 @@ import { AppConfig } from '../../../../config/app.config';
 import { StorageService, SearchResultInterface } from '../../storage/services/storage.service';
 import { SearchResult } from 'xpx2-ts-js-sdk';
 import { PaginationInstance } from 'ngx-pagination';
+import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
 
 declare const Buffer: any;
 
@@ -56,6 +57,9 @@ export class CreateApostilleComponent implements OnInit {
     { value: '5', label: 'SHA512' }
   ];
   extensionFile: string = '';
+  typeFile: string;
+  files: File[] = [];
+  maxFileSize = 5;
 
   constructor(
     private apostilleService: ApostilleService,
@@ -63,11 +67,12 @@ export class CreateApostilleComponent implements OnInit {
     private fb: FormBuilder,
     private proximaxProvider: ProximaxProvider,
     private sharedService: SharedService,
-    private walletService: WalletService
+    private walletService: WalletService,
+    private dataBridgeService: DataBridgeService
   ) {
   }
 
-  async ngOnInit() {
+  ngOnInit() {
     this.configurationForm = this.sharedService.configurationForm;
     this.createForm();
     // this.filesStorage = await this.storageService.getFiles();
@@ -76,18 +81,18 @@ export class CreateApostilleComponent implements OnInit {
     this.apostilleService.getTransactionStatus();
   }
 
+
   /**
    *
    *
    * @memberof CreateApostilleComponent
    */
   async convertToFile(element: SearchResultInterface, random: number) {
+    this.files = [];
+    this.apostilleFormOne.get('file').setValue('');
+    this.fileReader([]);
     this.filesStorage.forEach(element => {
-      if (element.random === random) {
-        element.selected = true;
-      } else {
-        element.selected = false;
-      }
+      element.selected = (element.random === random) ? true : false;
     });
     this.apostilleFormOne.get('file').setValue(element.name);
     const data = await this.storageService.convertToFile(element);
@@ -97,6 +102,20 @@ export class CreateApostilleComponent implements OnInit {
     // console.log('From blob to file -------->', file);
     this.fileReader([file]);
   }
+
+  /**
+   *
+   *
+   * @memberof CreateApostilleComponent
+   */
+  async initForm() {
+    this.searching = true;
+    this.processComplete = false;
+    this.blockBtn = false
+    this.filesStorage = await this.storageService.getFiles();
+    this.searching = false;
+  }
+
 
   /**
    *
@@ -170,8 +189,11 @@ export class CreateApostilleComponent implements OnInit {
    * @memberof ApostilleCreateComponent
    */
   fileReader(files: File[]) {
+    console.log('files ---> ', files);
+
     if (files.length > 0) {
       this.extensionFile = '';
+      this.typeFile = files[0].type;
       this.nameFile = files[0].name;
       if (files[0].type !== '') {
         this.nameFile = files[0].name.slice(0, files[0].name.lastIndexOf('.'));
@@ -200,25 +222,14 @@ export class CreateApostilleComponent implements OnInit {
       this.filesStorage.forEach(element => {
         element.selected = false;
       });
+
+      this.files = [];
       this.apostilleFormOne.get('file').setValue('');
       this.fileInputIsValidated = false;
       this.nameFile = 'No file selected yet...';
       this.file = '';
       this.rawFileContent = '';
     }
-  }
-
-  /**
-   *
-   *
-   * @memberof CreateApostilleComponent
-   */
-  async initForm() {
-    this.searching = true;
-    this.processComplete = false;
-    this.blockBtn = false
-    this.filesStorage = await this.storageService.getFiles();
-    this.searching = false;
   }
 
   /**
@@ -247,6 +258,30 @@ export class CreateApostilleComponent implements OnInit {
     }
   }
 
+
+  /**
+   *
+   *
+   * @param {*} event
+   * @memberof CreateApostilleComponent
+   */
+  onSelect(event: any) {
+    console.log(event);
+    if (event.addedFiles && event.addedFiles.length > 0) {
+      this.files = event.addedFiles;
+      this.fileReader(event.addedFiles);
+    }
+  }
+
+  /**
+   *
+   *
+   * @param {*} event
+   * @memberof CreateApostilleComponent
+   */
+  onRemove(event: any) {
+    this.fileReader([]);
+  }
 
   /**
    *
@@ -322,7 +357,8 @@ export class CreateApostilleComponent implements OnInit {
     // Zero fee is added
     transferTransaction['fee'] = UInt64.fromUint(0);
     // Sign the transaction
-    const signedTransaction = ownerAccount.sign(transferTransaction);
+    const generationHash = this.dataBridgeService.blockInfo.generationHash;
+    const signedTransaction = ownerAccount.sign(transferTransaction,generationHash);  //Update-sdk-dragon
     const date = new Date();
     this.ntyData = {
       fileName: this.nameFile,
@@ -335,7 +371,8 @@ export class CreateApostilleComponent implements OnInit {
       dedicatedPrivateKey: 'Not show',// (this.apostilleCreateForm.get('typePrivatePublic').value == true) ? None (public sink) : nty.dedicatedPrivateKey,
       txHash: signedTransaction.hash.toLowerCase(),
       txMultisigHash: '',
-      timeStamp: date.toUTCString()
+      timeStamp: date.toUTCString(),
+      typeFile: this.typeFile
     };
 
     const apostilleBuilder = this.apostilleService.buildApostille(this.ntyData, this.rawFileContent);
@@ -392,7 +429,8 @@ export class CreateApostilleComponent implements OnInit {
     transferTransaction['fee'] = UInt64.fromUint(0);
 
     // Sign the transaction
-    const signedTransaction = myAccount.sign(transferTransaction);
+    const generationHash = this.dataBridgeService.blockInfo.generationHash;
+    const signedTransaction = myAccount.sign(transferTransaction,generationHash); //Update-sdk-dragon
     const date = new Date();
     this.ntyData = {
       fileName: this.nameFile,
@@ -405,7 +443,8 @@ export class CreateApostilleComponent implements OnInit {
       dedicatedPrivateKey: 'Not show',
       txHash: signedTransaction.hash.toLowerCase(),
       txMultisigHash: '',
-      timeStamp: date.toUTCString()
+      timeStamp: date.toUTCString(),
+      typeFile: this.typeFile
     };
 
     // console.log(this.ntyData);

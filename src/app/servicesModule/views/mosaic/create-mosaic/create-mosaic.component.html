@@ -2,19 +2,19 @@
   <app-header [params]="paramsHeader"></app-header>
 
   <div class="row">
-    <div class="col-12 justify-content-center">
+    <div class="col-12 col-sm-12 col-md-8 justify-content-center">
       <form [formGroup]="mosaicForm" (ngSubmit)="send()">
 
         <div class="row mt-1rem">
 
           <ng-container *ngIf="insufficientBalance">
-            <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto d-flex justify-content-end">
+            <div class="col-11 mx-auto d-flex justify-content-end">
               <span class="fs-08rem fw-600 color-error-message">Insufficient balance</span>
             </div>
           </ng-container>
 
 
-          <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto">
+          <div class="col-11 mx-auto">
             <div class="md-form form-sm mt-0 mb-0rem">
               <input formControlName="duration" mdbInputDirective mdbValidate [validateSuccess]="true"
                 [validateError]="true" type="text" id="duration" class="form-control form-control-sm input-border"
@@ -30,13 +30,14 @@
         </div>
 
         <div class="row">
-          <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto">
+          <div class="col-11 mx-auto">
             <div class="row">
-              <div class="col-12 col-md-6">
+              <div class="col-12 mx-auto">
                 <div class="md-form form-sm mt-1rem mb-0rem">
                   <input formControlName="divisibility" mdbInputDirective mdbValidate [validateSuccess]="true"
-                    [validateError]="true" type="text" id="divisibility" maxlength="1" id="divisibility{{errorDivisibility}}"
-                    class="form-control form-control-sm input-border" placeholder="Divisibility">
+                    [validateError]="true" type="text" id="divisibility" maxlength="1"
+                    id="divisibility{{errorDivisibility}}" class="form-control form-control-sm input-border"
+                    placeholder="Divisibility">
 
                   <!-- VALIDATION -->
                   <mdb-error
@@ -45,15 +46,15 @@
                   </mdb-error>
                 </div>
               </div>
-              <div class="col-12 col-md-6">
+              <div class="col-12 mx-auto">
                 <div class="md-form form-sm mt-1rem mb-0rem">
-                  <input formControlName="deltaSupply" mdbInputDirective mdbValidate currencyMask [options]="optionsSuply"
-                    [validateSuccess]="true" [validateError]="true" type="text" id="supply" maxlength="32"
-                    class="form-control form-control-sm input-border input-amount" placeholder="Supply">
+                  <input formControlName="deltaSupply" mdbInputDirective mdbValidate currencyMask
+                    [options]="optionsSuply" [validateSuccess]="true" [validateError]="true" type="text" id="supply{{errorSupply}}"
+                    [maxlength]="maxLengthSupply" class="form-control form-control-sm input-border input-amount" placeholder="Supply">
 
                   <!-- VALIDATION -->
                   <mdb-error
-                    *ngIf="validateInput('deltaSupply', '').invalid && (validateInput('deltaSupply', '').dirty || validateInput('deltaSupply', '').touched)">
+                    *ngIf="validateInput('deltaSupply', '').invalid && (validateInput('deltaSupply', '').dirty || validateInput('deltaSupply', '').touched) || invalidSupply">
                     <span>Input invalid</span>
                   </mdb-error>
                 </div>
@@ -64,7 +65,7 @@
 
         <!-- FEE -->
         <div class="row ml-01rem">
-          <div class="col-11 col-md-10 col-lg-8 mx-auto">
+          <div class="col-11 mx-auto">
             <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
               <div class="row">
                 <div class="col-12">
@@ -78,7 +79,7 @@
 
         <!-- RENTAL FEE -->
         <div class="row ml-01rem">
-          <div class="col-11 col-md-10 col-lg-8 mx-auto">
+          <div class="col-11 mx-auto">
             <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
               <div class="row">
                 <div class="col-12">
@@ -91,7 +92,7 @@
         </div>
 
         <div class="row ml-01rem ">
-          <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto box-grey d-flex justify-content-center">
+          <div class="col-11 mx-auto box-grey d-flex justify-content-center">
             <!-- Transferable -->
             <mdb-checkbox formControlName="transferable" [inline]="true">Transferable</mdb-checkbox>
 
@@ -104,7 +105,7 @@
         </div>
 
         <div class="row">
-          <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto">
+          <div class="col-11 mx-auto">
             <div class="md-form form-sm mt-1rem mb-0rem">
               <input [maxlength]="configurationForm.passwordWallet.maxLength"
                 [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" required
@@ -139,6 +140,25 @@
           </div>
         </div>
       </form>
+    </div>
+    <div class="col-11 col-sm-11 col-md-4 description-p-module mt-1-5rem mb-2rem">
+      <span>
+        <p>
+          Maximun divisibility is 6 i.e: 0.000000.
+        </p>
+        <p>
+          Maximun supply is 9B i.e: 9,000,000,000.
+        </p>
+        <p>
+          If your tick "Transferable", Mosaic can be transferred.
+        </p>
+        <p>
+          If your tick "Supply Mutable", Supply can be changed.
+        </p>
+        <p>
+          If your tick "Levy Mutable", Levy can be added and changed.
+        </p>
+      </span>
     </div>
   </div>
 </div>

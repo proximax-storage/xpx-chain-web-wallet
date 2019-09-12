@@ -14,6 +14,7 @@ import { NamespacesService, NamespaceStorageInterface } from '../../../../servic
 import { TransactionsService } from '../../../../transactions/services/transactions.service';
 import { Subscription } from 'rxjs';
 import { HeaderServicesInterface } from '../../../services/services-module.service';
+import { environment } from 'src/environments/environment.prod';
 
 @Component({
   selector: 'app-create-namespace',
@@ -102,66 +103,6 @@ export class CreateNamespaceComponent implements OnInit {
   /**
    *
    *
-   * @param {*} subNamespace
-   * @param {boolean} status
-   * @param {number} depth
-   * @returns
-   * @memberof CreateNamespaceComponent
-   */
-  async getSubNivelNamespace(subNamespace: NamespaceStorageInterface, status: boolean, depth: number) {
-    const sts = status ? false : true;
-    let disabled = false;
-    let name = '';
-    if (subNamespace.namespaceName.parentId !== undefined) {
-      if (depth === 2) {
-        //Assign level 2
-        const level2 = subNamespace.namespaceName.name;
-        //Search level 1
-        const level1: NamespaceStorageInterface[] = await this.namespaceService.getNamespaceFromId([
-          this.namespaceService.getNamespaceId([
-            subNamespace.namespaceName.parentId.id.lower,
-            subNamespace.namespaceName.parentId.id.higher
-          ])
-        ]);
-
-        name = `${level1[0].namespaceName.name}.${level2}`;
-      } else if (depth === 3) {
-        disabled = true;
-        //Assign el level3
-        const level3 = subNamespace.namespaceName.name;
-        //search level 2
-        const level2: NamespaceStorageInterface[] = await this.namespaceService.getNamespaceFromId(
-          [this.proximaxProvider.getNamespaceId([subNamespace.namespaceName.parentId.id.lower, subNamespace.namespaceName.parentId.id.higher])]
-        );
-
-        //search level 1
-        const level1: NamespaceStorageInterface[] = await this.namespaceService.getNamespaceFromId(
-          [this.proximaxProvider.getNamespaceId([level2[0].namespaceName.parentId.id.lower, level2[0].namespaceName.parentId.id.higher])]
-        );
-        name = `${level1[0].namespaceName.name}.${level2[0].namespaceName.name}.${level3}`;
-      }
-
-      this.namespace.push({
-        value: name,
-        label: name,
-        selected: sts,
-        disabled: disabled
-      });
-
-      this.namespaceInfo.push({
-        name: name,
-        dataNamespace: subNamespace
-      });
-
-      return;
-    }
-
-    return;
-  }
-
-  /**
-   *
-   *
    * @memberof CreateNamespaceComponent
    */
   createForm() {
@@ -202,8 +143,8 @@ export class CreateNamespaceComponent implements OnInit {
       duration: '',
       password: ''
     }, {
-        emitEvent: false
-      }
+      emitEvent: false
+    }
     );
     this.statusButtonNamespace = true;
   }
@@ -276,22 +217,33 @@ export class CreateNamespaceComponent implements OnInit {
     this.subscription.push(this.namespaceService.getNamespaceChanged().subscribe(
       async namespaceInfo => {
         this.namespace = [];
-
+        this.namespaceInfo = [];
         if (namespaceInfo !== null && namespaceInfo !== undefined) {
           for (let data of namespaceInfo) {
+            console.log('data---> ', data)
+            let rootResponse = null;
             if (data.namespaceInfo.depth === 1) {
-              await this.getRootNamespace(data, data.namespaceInfo.active);
+              rootResponse = this.namespaceService.getRootNamespace(data, data.namespaceInfo.active, this.namespace, this.namespaceInfo);
             } else {
-              await this.getSubNivelNamespace(data, data.namespaceInfo.active, data.namespaceInfo.depth);
+              rootResponse = this.namespaceService.getSubNivelNamespace(data, data.namespaceInfo.active, data.namespaceInfo.depth, this.namespace, this.namespaceInfo);
             }
+
+            this.namespace = rootResponse.currentNamespace;
+            this.namespaceInfo = rootResponse.namespaceInfo;
           }
 
           let arrayNamespaces = this.namespace.sort(function (a: any, b: any) {
             return a.label === b.label ? 0 : +(a.label > b.label) || -1;
           });
 
-          this.arrayselect = this.arrayselect.concat(arrayNamespaces);
+          this.arrayselect = [{
+            value: '1',
+            label: 'New root Namespace',
+            selected: true,
+            disabled: false
+          }];
 
+          this.arrayselect = this.arrayselect.concat(arrayNamespaces);
         }
       },
       error => {
@@ -301,32 +253,6 @@ export class CreateNamespaceComponent implements OnInit {
         this.sharedService.showError('', 'Check your connection and try again');
       }
     ));
-  }
-
-
-  /**
-   *
-   *
-   * @param {*} rootNamespace
-   * @param {boolean} status
-   * @returns
-   * @memberof CreateNamespaceComponent
-   */
-  getRootNamespace(rootNamespace: any, status: boolean) {
-    const sts = status ? false : true;
-    this.namespace.push({
-      value: `${rootNamespace.namespaceName.name}`,
-      label: `${rootNamespace.namespaceName.name}`,
-      selected: sts,
-      disabled: false
-    });
-
-    this.namespaceInfo.push({
-      name: `${rootNamespace.namespaceName.name}`,
-      dataNamespace: rootNamespace
-    });
-
-    return;
   }
 
   /**
@@ -413,6 +339,7 @@ export class CreateNamespaceComponent implements OnInit {
     const namespaceName: string = this.namespaceForm.get('name').value;
     const duration: number = parseFloat(this.durationByBlock);
     // const duration: number = 20;
+    const generationHash = this.dataBridge.blockInfo.generationHash;
     if (this.typetransfer == 1) {
       const registerRootNamespaceTransaction = this.proximaxProvider.registerRootNamespaceTransaction(
         namespaceName,
@@ -421,7 +348,8 @@ export class CreateNamespaceComponent implements OnInit {
       )
 
       console.log('----namespaceName----', namespaceName);
-      const signedTransaction = account.sign(registerRootNamespaceTransaction);
+
+      const signedTransaction = account.sign(registerRootNamespaceTransaction, generationHash); //Update-sdk-dragon
       return signedTransaction;
     } else if (this.typetransfer == 2) {
       const rootNamespaceName = this.namespaceForm.get('namespaceRoot').value;
@@ -434,7 +362,7 @@ export class CreateNamespaceComponent implements OnInit {
 
       console.log('----rootNamespaceName----', rootNamespaceName);
       console.log('----subnamespaceName----', subnamespaceName);
-      const signedTransaction = account.sign(registersubamespaceTransaction);
+      const signedTransaction = account.sign(registersubamespaceTransaction, generationHash); //Update-sdk-dragon
       return signedTransaction;
     }
   }
@@ -528,7 +456,7 @@ export class CreateNamespaceComponent implements OnInit {
     const accountInfo = this.walletService.filterAccountInfo();
     if (accountInfo && accountInfo.accountInfo && accountInfo.accountInfo.mosaics && accountInfo.accountInfo.mosaics.length > 0) {
       const xpxInBalance = accountInfo.accountInfo.mosaics.find(element => {
-        return element.id.toHex() === new MosaicId(this.proximaxProvider.mosaicXpx.mosaicId).toHex();
+        return element.id.toHex() === new MosaicId(environment.mosaicXpxInfo.id).toHex();
       });
 
       if (xpxInBalance) {

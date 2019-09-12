@@ -44,7 +44,7 @@ export class MosaicService {
    * @memberof MosaicService
    */
   async getMosaicsName(mosaicsId: MosaicId[]): Promise<MosaicNames[]> {
-    return await this.proximaxProvider.mosaicHttp.getMosaicNames(mosaicsId).toPromise();
+    return await this.proximaxProvider.mosaicHttp.getMosaicsNames(mosaicsId).toPromise(); //Update-sdk-dragon
   }
 
   /**
@@ -59,21 +59,26 @@ export class MosaicService {
     if (findMosaicsByNamespace.length > 0) {
       const searchMosaicById: MosaicId[] = [];
       const savedLinked: NamespaceLinkedMosaic[] = [];
+      // recorro todos los mosaics id o namespaces id
       for (let id of findMosaicsByNamespace) {
+        // convierto ese mosaico id a nemespace id
         const namespaceId = this.proximaxProvider.getNamespaceId([id.id.lower, id.id.higher]);
+        // consulta si ese namespaceId esta linkeado a un mosaicId y retorna el mosaico Id
         const mosaicIdLinked = await this.proximaxProvider.getLinkedMosaicId(namespaceId).toPromise();
+        // si esta linkeado...
         if (mosaicIdLinked) {
+          //almacena que ese mosaic id esta linkeado a un namespace
           savedLinked.push({
             mosaicId: mosaicIdLinked,
             namespaceId: namespaceId
           });
+          // Busca los mosaics ids encontrados (linkeados)
           searchMosaicById.push(mosaicIdLinked);
         }
       }
 
       if (searchMosaicById.length > 0) {
         const otherMosaicsFound: MosaicInfo[] = await this.proximaxProvider.getMosaics(searchMosaicById).toPromise();
-        // const namespaceName: NamespaceName[] = await this.namespacesService.getNamespacesName(savedLinked.map(x => x.namespaceId));
         const mosaicsName: MosaicNames[] = await this.getMosaicsName(savedLinked.map(x => x.mosaicId));
         // console.log('---mosaicsName---', mosaicsName);
         otherMosaicsFound.forEach(infoMosaic => {
@@ -81,7 +86,8 @@ export class MosaicService {
           const mosaicIdFiltered = (dataFiltered) ? [dataFiltered.namespaceId.id.lower, dataFiltered.namespaceId.id.higher] : null;
           if (mosaicIdFiltered) {
             mosaicsTosaved.push({
-              idMosaic: mosaicIdFiltered,
+              idMosaic: [infoMosaic.mosaicId.id.lower, infoMosaic.mosaicId.id.higher],
+              isNamespace: mosaicIdFiltered,
               mosaicNames: (mosaicsName) ? mosaicsName.find(x => x.mosaicId.toHex() === dataFiltered.mosaicId.toHex()) : null,
               mosaicInfo: infoMosaic
             });
@@ -103,16 +109,21 @@ export class MosaicService {
     try {
       let findMosaicsByNamespace: (MosaicId | NamespaceId)[] = [];
       let mosaicsTosaved: MosaicsStorage[] = [];
+      // le paso todos los mosaicsIds a la consulta
       let mosaicsFound: MosaicInfo[] = await this.proximaxProvider.getMosaics(mosaicsId).toPromise();
-      console.log('MIS MOSAICOS ENCONTRADOS ---> ', mosaicsFound);
+      // Recorro los mosaics Ids
       mosaicsId.forEach(element => {
+        // Filtra si el mosaico id fue encontrado
         const existMosaic = mosaicsFound.find(x => x.mosaicId.id.toHex() === element.id.toHex());
         if (!existMosaic) {
+          // Si no fue encontrado, busca mosaicos por namespace
           findMosaicsByNamespace.push(element);
         }
       });
 
+      // Search mosaics by namespace Id
       if (findMosaicsByNamespace.length > 0) {
+        // busca los namespaceId de los mosaicos que no fueron encontrados
         const otherMosaics = await this.searchMosaicFromNamespace(findMosaicsByNamespace);
         otherMosaics.forEach(element => {
           mosaicsTosaved.push(element);
@@ -125,18 +136,16 @@ export class MosaicService {
         mosaicsFound.forEach(infoMosaic => {
           mosaicsTosaved.push({
             idMosaic: [infoMosaic.mosaicId.id.lower, infoMosaic.mosaicId.id.higher],
+            isNamespace: null,
             mosaicNames: (mosaicsName) ? mosaicsName.find(x => x.mosaicId.toHex() === infoMosaic.mosaicId.toHex()) : null,
             mosaicInfo: infoMosaic
           });
         });
       }
 
-      // console.log('MOSAICS TO SAVED ---> ', mosaicsTosaved);
       this.saveMosaicStorage(mosaicsTosaved);
       return mosaicsTosaved;
-    } catch (error) {
-      // console.log('---ERROR---');
-    }
+    } catch (error) { }
   }
 
 
@@ -148,17 +157,28 @@ export class MosaicService {
    */
   async saveMosaicStorage(mosaicsTosaved: MosaicsStorage[]) {
     let mosaicsStorage: MosaicsStorage[] = this.getMosaicsFromStorage();
-    mosaicsTosaved.forEach(element => {
+    for (let element of mosaicsTosaved) {
       if (mosaicsStorage.length > 0) {
-        mosaicsStorage = mosaicsStorage.filter(x =>
-          this.proximaxProvider.getMosaicId(x.idMosaic).toHex() !==
-          this.proximaxProvider.getMosaicId(element.idMosaic).toHex()
-        );
+        const mosaicIdToSaved = this.proximaxProvider.getMosaicId(element.idMosaic).toHex();
+        const a = mosaicsStorage.find(x => this.proximaxProvider.getMosaicId(x.idMosaic).toHex() === mosaicIdToSaved);
+        if (a) {
+          // Verifica si en cache tiene namespaceId y si en el nuevo no trajo namespaceId
+          if (a.isNamespace && !element.isNamespace) {
+            // Si en cache tiene namespace, verifica si todavía está linkeado a ese namespace
+            const mosaicIdLinked = await this.proximaxProvider.getLinkedMosaicId(this.proximaxProvider.getNamespaceId(a.isNamespace)).toPromise();
+            if (mosaicIdLinked && (mosaicIdLinked.toHex() === mosaicIdToSaved)) {
+              element.isNamespace = a.isNamespace;
+            }
+          }
+        }
+
+        // reemplazo la información del mosaico
+        mosaicsStorage = mosaicsStorage.filter(x => this.proximaxProvider.getMosaicId(x.idMosaic).toHex() !== mosaicIdToSaved);
         mosaicsStorage.push(element);
       } else {
         mosaicsStorage.push(element);
       }
-    });
+    }
 
     // console.log('mosaicsTosavedStorage', mosaicsTosaved);
     this.setMosaicChanged();
@@ -179,8 +199,16 @@ export class MosaicService {
         const dataReturn: MosaicsStorage[] = [];
         const toSearch: MosaicId[] = [];
         mosaicsId.forEach(element => {
-          const exist = mosaicsFromStorage.find(x => this.proximaxProvider.getMosaicId(x.idMosaic).toHex() === element.toHex());
-          (exist) ? dataReturn.push(exist) : toSearch.push(element);
+          const existMosaic = mosaicsFromStorage.find(x => this.proximaxProvider.getMosaicId(x.idMosaic).toHex() === element.toHex());
+          if (existMosaic) {
+            dataReturn.push(existMosaic)
+          } else {
+            const existMosaic = mosaicsFromStorage.find(x => (x.isNamespace) ?
+              this.proximaxProvider.getMosaicId(x.isNamespace).toHex() === element.toHex() :
+              undefined
+            );
+            (existMosaic) ? dataReturn.push(existMosaic) : toSearch.push(element);
+          }
         });
 
         if (toSearch.length > 0) {
@@ -257,42 +285,12 @@ export class MosaicService {
   setMosaicChanged() {
     this.mosaicChangedSubject.next(this.increment + 1);
   }
-
-
-  /**
-   *
-   *
-   * @param {NamespaceLinkedMosaic[]} data
-   * @memberof MosaicService
-   */
-  saveLinkedMosaic(data: NamespaceLinkedMosaic[]) {
-    const dataStorage = localStorage.getItem(environment.nameKeyMosaicNamespaceLinked);
-    const dataFormatter: NamespaceLinkedMosaic[] = (dataStorage !== null && dataStorage !== undefined) ? JSON.parse(dataStorage) : [];
-    if (dataFormatter.length > 0) {
-      data.forEach(element => {
-        const exist = dataFormatter.find(x =>
-          this.proximaxProvider.getNamespaceId([x.namespaceId.id.lower, x.namespaceId.id.higher]) ===
-          this.proximaxProvider.getMosaicId([x.mosaicId.id.lower, x.mosaicId.id.higher])
-        );
-
-        if (!exist) {
-          dataFormatter.push(element);
-        }
-      });
-    } else {
-      data.forEach(element => {
-        dataFormatter.push(element);
-      });
-    }
-
-    localStorage.setItem(environment.nameKeyMosaicNamespaceLinked, JSON.stringify(dataFormatter));
-  }
-
 }
 
 
 export interface MosaicsStorage {
   idMosaic: number[];
+  isNamespace: number[];
   mosaicNames: MosaicNames;
   mosaicInfo: MosaicInfo;
 }

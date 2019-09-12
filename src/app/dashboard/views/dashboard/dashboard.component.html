@@ -97,6 +97,19 @@
     </div>
   </div>
 
+    <!-- Searching and icon reload -->
+    <div class="row mt-2rem">
+      <div class="col-11 col-sm-11 col-lg-10 mx-auto">
+        <!-- Searching -->
+        <ng-container *ngIf="searching">
+          <div class="col-12">
+            <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate">
+            </mdb-progress-bar>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+
   <!-- Searching and icon reload -->
   <div class="row mt-2rem txt-a-right">
     <div class="col-11 col-sm-11 col-lg-10 mx-auto">
@@ -179,19 +192,6 @@
     </div>
   </div>
 
-  <!-- Searching and icon reload -->
-  <div class="row mt-2rem">
-    <div class="col-11 col-sm-11 col-lg-10 mx-auto">
-      <!-- Searching -->
-      <ng-container *ngIf="searching">
-        <div class="col-12">
-          <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate">
-          </mdb-progress-bar>
-        </div>
-      </ng-container>
-    </div>
-  </div>
-
   <!-- Btn Top -->
   <div class="scroll-to-top" [ngClass]="{'show-scrollTop': windowScrolled}">
     <a mdbBtn floating="true" size="md" mdbWavesEffect class="background-btn" (click)="scrollToTop()">
@@ -239,10 +239,27 @@
             <app-aggregate-complete-type [aggregateComplete]="dataSelected"
               *ngIf="dataSelected.data.type === typeTransactions.aggregateComplete.id">
             </app-aggregate-complete-type>
+
             <!-- TYPE AGGREGATE BONDED -->
-            <app-aggregate-bonded-type [aggregateBonded]="dataSelected"
-              *ngIf="dataSelected.data.type === typeTransactions.aggregateBonded.id">
-            </app-aggregate-bonded-type>
+            <ng-container *ngIf="dataSelected.data.type === typeTransactions.aggregateBonded.id">
+              <div class="row">
+                <div class="col-11 mx-auto">
+                  <div class="row">
+                    <!-- AGGREGATE BONDED TYPE -->
+                    <div class="col-12 col-md-7">
+                      <app-aggregate-bonded-type [aggregateBonded]="dataSelected">
+                      </app-aggregate-bonded-type>
+                    </div>
+
+                    <!-- BOX DATA SIGNER HASH -->
+                    <div class="col-12 col-md-5">
+                      <app-box-data-signer-hash [dataSelected]="dataSelected"></app-box-data-signer-hash>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+
             <!-- MOSAIC ALIAS -->
             <app-mosaic-alias [mosaicAlias]="dataSelected"
               *ngIf="dataSelected.data.type === typeTransactions.mosaicAlias.id">

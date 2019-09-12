@@ -64,6 +64,10 @@ export class MosaicsSupplyChangeComponent implements OnInit {
     precision: '0'
   };
   deltaSupply: number;
+  invalidSupply: boolean;
+  errorSupply: string;
+  blockBtn: boolean = false;
+  maxLengthSupply: number = 13;
 
   /**
    * Initialize dependencies and properties
@@ -91,7 +95,7 @@ export class MosaicsSupplyChangeComponent implements OnInit {
       let expired = false;
       let nameExpired = '';
       if (element.mosaicInfo) {
-        const nameMosaic = (element.mosaicNames.names.length > 0) ? element.mosaicNames.names[0] : this.proximaxProvider.getMosaicId(element.idMosaic).toHex();
+        const nameMosaic = (element.mosaicNames.names.length > 0) ? element.mosaicNames.names[0].name : this.proximaxProvider.getMosaicId(element.idMosaic).toHex();
         const addressOwner = this.proximaxProvider.createAddressFromPublicKey(
           element.mosaicInfo.owner.publicKey,
           element.mosaicInfo.owner.address['networkType']
@@ -128,10 +132,20 @@ export class MosaicsSupplyChangeComponent implements OnInit {
     });
 
     this.formMosaicSupplyChange.get('deltaSupply').valueChanges.subscribe(next => {
-      if (!this.divisibility) {
-        this.deltaSupply = parseInt(next);
+      if (parseFloat(next) <= this.configurationForm.mosaicWallet.maxSupply) {
+        this.invalidSupply = false;
+        this.blockBtn = false;
+        this.errorSupply = '';
+
+        if (!this.divisibility) {
+          this.deltaSupply = parseInt(next);
+        } else {
+          this.deltaSupply = parseInt(this.transactionService.addZeros(this.divisibility, next));
+        }
       } else {
-        this.deltaSupply = parseInt(this.transactionService.addZeros(this.divisibility, next));
+        this.errorSupply = '-invalid';
+        this.blockBtn = true;
+        this.invalidSupply = true;
       }
     });
 
@@ -198,7 +212,7 @@ export class MosaicsSupplyChangeComponent implements OnInit {
         ]);
 
         this.formMosaicSupplyChange.get('deltaSupply').setValue(0);
-
+        this.maxLengthSupply = 13 + this.divisibility;
         this.optionsSupply = {
           prefix: '',
           thousands: ',',
@@ -296,8 +310,8 @@ export class MosaicsSupplyChangeComponent implements OnInit {
           this.formMosaicSupplyChange.get('mosaicSupplyType').value,
           this.walletService.currentAccount.network
         )
-
-        const signedTransaction = account.sign(mosaicSupplyChangeTransaction);
+        const generationHash = this.dataBridge.blockInfo.generationHash;
+        const signedTransaction = account.sign(mosaicSupplyChangeTransaction, generationHash); //Update-sdk-dragon
         this.transactionSigned.push(signedTransaction);
         console.log(signedTransaction);
         console.log(this.transactionSigned);

@@ -45,7 +45,10 @@ export const AppConfig: Config = {
     voteInPoll: 'vote-poll',
     walletCreated: 'wallet-created',
     nis1AccountList: 'nis1-account-list',
-    accountList: 'account-list'
+    accountList: 'account-list',
+    accountNis1Found: 'account-nis1-found',
+    nis1AccountDetails: 'nis1-account-details',
+    transferXpx: 'transfer-xpx'
   }
 };
 
@@ -97,5 +100,8 @@ export interface Config {
     voteInPoll: string;
     walletCreated: string;
     nis1AccountList: string;
+    accountNis1Found: string;
+    nis1AccountDetails: string;
+    transferXpx: string;
   };
 }

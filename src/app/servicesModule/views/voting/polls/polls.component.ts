@@ -25,18 +25,22 @@ export class PollsComponent implements OnInit {
     backToService: `/${AppConfig.routes.service}`,
     voteInpoll: `/${AppConfig.routes.voteInPoll}/`,
     createpoll: `/${AppConfig.routes.createPoll}/`
-    
+
   };
   configAdvance: PaginationInstance = {
     id: 'advanced',
-    itemsPerPage: 5,
+    itemsPerPage: 10,
     currentPage: 1
   };
-  headElements = ['Name', 'Poll type', 'Start date ', 'Status'];
+  headElements = ['Name', 'Poll type', 'End date', 'Status'];
   pollResult: PollInterface[] = [];
+  pollResultEnd: PollInterface[] = [];
+  pollResultEng: PollInterface[] = [];
+
   filter: string = '';
   promosePoadTransactions: Promise<void>;
   subscription: Subscription
+  status: any = [{ value: 1, label: 'Ended', disabled: false }];
 
   constructor(
     private router: Router,
@@ -53,8 +57,6 @@ export class PollsComponent implements OnInit {
     this.showBarProgressone = true;
     const publicAccount = PublicAccount.createFromPublicKey(environment.pollsContent.public_key, this.walletService.currentAccount.network)
     this.promosePoadTransactions = this.createPollStorageService.loadTransactions(publicAccount).then(resp => {
-      console.log('resprespresprespresp', resp)
-
 
       this.showBarProgressone = false;
       if (this.getPoll) {
@@ -65,11 +67,9 @@ export class PollsComponent implements OnInit {
     });
 
 
-
   }
   ngOnDestroy() {
     this.getPoll = false;
-    console.log(this.subscription)
     if (this.subscription) {
       this.subscription.unsubscribe();
     }
@@ -98,10 +98,21 @@ export class PollsComponent implements OnInit {
   getPollStorage() {
     this.showRefresh = false;
     this.pollResult = []
+    this.pollResultEng = []
+    this.pollResultEnd = []
     const resultData: PollInterface[] = [];
+    const resultData1: PollInterface[] = [];
+    const resultData2: PollInterface[] = [];
 
     this.subscription = this.createPollStorageService.getPolls$().subscribe(data => {
-      console.log(data.size)
+      let endDate = new Date(data.result.endDate).getTime();
+      let starDate = new Date(data.result.startDate).getTime();
+      const now = new Date().getTime();
+      if (starDate <= now && endDate >= now) {
+        resultData1.push(data.result);
+      } else {
+        resultData2.push(data.result);
+      }
       resultData.push(data.result);
       if (resultData.length > 0) {
         resultData.map(elemt => {
@@ -115,7 +126,10 @@ export class PollsComponent implements OnInit {
         this.cantPolls = data.size;
         const progress = this.resultLength * 100 / this.cantPolls;
         this.progressBar = Math.round(progress * 100) / 100;
-        this.pollResult = resultData;
+        this.pollResultEng = resultData1
+        this.pollResultEnd = resultData2
+        this.pollResult = this.pollResultEng;
+
         if (resultData.length === this.cantPolls) {
           // this.subscription.unsubscribe();
           this.showRefresh = true;
@@ -125,9 +139,20 @@ export class PollsComponent implements OnInit {
 
 
       }
-
     });
-    console.log("me suscribi", this.subscription)
+  }
+
+  selected($event: Event) {
+    const status: any = $event;
+    if (status !== null && status !== undefined) {
+      if (status.value === 0) {
+        this.pollResult = this.pollResultEng;
+        this.status = [{ value: 1, label: 'Ended', disabled: false }];
+      } else {
+        this.pollResult = this.pollResultEnd;
+        this.status = [{ value: 0, label: 'Ongoing', disabled: false }];
+      }
+    }
   }
 
   refreshData(event) {
@@ -167,6 +192,7 @@ export class PollsComponent implements OnInit {
       return 'Ended';
     }
   }
+
   formtDate(format: string | number | Date) {
     const datefmt = new Date(format);
     const day = (datefmt.getDate() < 10) ? `0${datefmt.getDate()}` : datefmt.getDate();
@@ -176,7 +202,6 @@ export class PollsComponent implements OnInit {
     const seconds = (datefmt.getSeconds() < 10) ? `0${datefmt.getSeconds()}` : datefmt.getSeconds();
     return `${datefmt.getFullYear()}-${month}-${day}  ${hours}:${minutes}:${seconds}`;
   }
-
 }
 export interface PollInterface {
   name: string;

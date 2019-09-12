@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { first } from "rxjs/operators";
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Listener, Transaction, TransactionStatus } from "tsjs-xpx-chain-sdk";
+import { Listener, Transaction, TransactionStatus, CosignatureSignedTransaction, BlockInfo } from "tsjs-xpx-chain-sdk";
 import { environment } from '../../../environments/environment';
 import { NodeService } from '../../servicesModule/services/node.service';
 import { SharedService } from './shared.service';
@@ -19,10 +19,14 @@ export class DataBridgeService {
   connector: Listener;
   destroyConection = false;
   blockSubject: BehaviorSubject<number> = new BehaviorSubject<number>(this.block);
+  blockInfo: BlockInfo;
+  blockInfoSubject: BehaviorSubject<BlockInfo> = new BehaviorSubject<BlockInfo>(this.blockInfo);
   block$: Observable<number> = this.blockSubject.asObservable();
+  blockInfo$: Observable<BlockInfo> = this.blockInfoSubject.asObservable();
   transactionSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   transaction$: Observable<any> = this.transactionSubject.asObservable();
   reconnectNode = 0;
+
 
   constructor(
     private walletService: WalletService,
@@ -101,6 +105,7 @@ export class DataBridgeService {
       this.connector.open().then(() => {
         const audio = new Audio('assets/audio/ding.ogg');
         const audio2 = new Audio('assets/audio/ding2.ogg');
+        this.getSocketTransactionsAggreateBonded(this.connector, audio2);
         this.getSocketTransactionsConfirmed(this.connector, audio2);
         this.getSocketTransactionsUnConfirmed(this.connector, audio);
         this.getSocketStatusError(this.connector, audio);
@@ -141,7 +146,81 @@ export class DataBridgeService {
     });
   }
 
+  /**
+   *
+   *
+   * @param {Listener} connector
+   * @param {HTMLAudioElement} audio
+   * @memberof DataBridgeService
+   */
+  getSocketTransactionsAggreateBondedRemoved(connector: Listener, audio: HTMLAudioElement) {
+    const currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
+    currentWallet.accounts.forEach(element => {
+      const address = this.proximaxProvider.createFromRawAddress(element.address);
+      // console.log('TO CONNECT --> ', address);
+      connector.aggregateBondedRemoved(address).subscribe((aggregateBondedRemoved: string) => {
+        // console.log('THE ADDRESS ---> ', address);
+        // console.log('aggregateBondedRemoved--> ', aggregateBondedRemoved);
+        this.setTransactionStatus({
+          'type': 'aggregateBondedRemoved',
+          'data': aggregateBondedRemoved
+        });
+      }, err => {
+        // console.error(err)
+      });
+    });
+  }
 
+
+  /**
+   *
+   *
+   * @memberof DataBridgeService
+   */
+  getSocketTransactionsAggreateBonded(connector: Listener, audio: HTMLAudioElement) {
+    const currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
+    currentWallet.accounts.forEach(element => {
+      const address = this.proximaxProvider.createFromRawAddress(element.address);
+      // console.log('TO CONNECT --> ', address);
+
+      connector.aggregateBondedAdded(address).subscribe((aggregateBondedAdded: Transaction) => {
+        // console.log('THE ADDRESS ---> ', address);
+        // console.log('aggregateBondedAdded--> ', aggregateBondedAdded);
+
+        this.setTransactionStatus({
+          'type': 'aggregateBondedAdded',
+          'data': aggregateBondedAdded
+        });
+      }, err => {
+        // console.error(err)
+      });
+    });
+  }
+
+  /**
+   *
+   *
+   * @param {Listener} connector
+   * @param {HTMLAudioElement} audio
+   * @memberof DataBridgeService
+   */
+  getSocketTransactionsCosignatureAdded(connector: Listener, audio: HTMLAudioElement) {
+    const currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
+    currentWallet.accounts.forEach(element => {
+      const address = this.proximaxProvider.createFromRawAddress(element.address);
+      connector.cosignatureAdded(address).subscribe((cosignatureSignedTransaction: CosignatureSignedTransaction) => {
+        // console.log('THE ADDRESS ---> ', address);
+        // console.log('CosignatureSignedTransaction--> ', cosignatureSignedTransaction);
+
+        this.setTransactionStatus({
+          'type': 'cosignatureSignedTransaction',
+          'data': cosignatureSignedTransaction
+        });
+      }, err => {
+        // console.error(err)
+      });
+    });
+  }
 
   /**
    * Get the confirmed transactions from the socket
@@ -281,7 +360,22 @@ export class DataBridgeService {
    */
   setblock(params: any) {
     this.block = params;
+
     this.blockSubject.next(this.block);
+  }
+
+  /**
+  * Set a BlockInfo for a given block height
+  *
+  * @param {BlockInfo} params
+  * @memberof DataBridgeService
+  */
+  setblockInfo(params: BlockInfo) { //Update-sdk-dragon
+    this.blockInfo = params;
+    console.log('this.blockInfo ',this.blockInfo )
+    this.transactionsService.generationHash = this.blockInfo.generationHash;
+    this.namespaces.generationHash = this.blockInfo.generationHash;
+    this.blockInfoSubject.next(this.blockInfo)
   }
 
   /**

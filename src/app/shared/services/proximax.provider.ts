@@ -38,24 +38,25 @@ import {
   MosaicSupplyType,
   AliasTransaction,
   AliasActionType,
-  BlockchainHttp,
+  ChainHttp,
   NamespaceInfo,
   MultisigAccountInfo,
   AggregateTransaction,
-  CosignatureTransaction
+  CosignatureTransaction,
+  BlockHttp,
+  BlockInfo
 } from 'tsjs-xpx-chain-sdk';
 import { mergeMap } from 'rxjs/operators';
-import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { walletInterface } from '../../wallet/services/wallet.service';
 import { BlockchainNetworkType } from 'xpx2-ts-js-sdk';
+import { Observable } from 'rxjs/internal/Observable';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProximaxProvider {
 
-  blockchainHttp: BlockchainHttp;
+  blockchainHttp: ChainHttp; //Update-sdk-dragon
   url: any;
   infoMosaic: MosaicInfo;
   transactionHttp: TransactionHttp;
@@ -64,14 +65,10 @@ export class ProximaxProvider {
   accountHttp: AccountHttp;
   mosaicHttp: MosaicHttp;
   namespaceHttp: NamespaceHttp;
+  blockHttp: BlockHttp;
   mosaicService: MosaicService;
   namespaceService: NamespaceService;
   transactionStatusError: TransactionStatusError;
-  mosaicXpx: { mosaic: string, mosaicId: string; divisibility: number } = {
-    mosaic: 'prx.xpx',
-    mosaicId: '0dc67fbe1cad29e3',
-    divisibility: 6
-  };
 
   constructor() {
   }
@@ -84,13 +81,26 @@ export class ProximaxProvider {
    * @memberof ProximaxProvider
    */
   getBlockchainHeight(): Observable<UInt64> {
-    return this.blockchainHttp.getBlockchainHeight();
+    return this.blockchainHttp.getBlockchainHeight();//Update-sdk-dragon
+  }
+
+
+  /**
+     * Gets a BlockInfo for a given block height
+     *  @param height - Block height
+     * @returns {Observable<BlockInfo>}
+     * @memberof ProximaxProvider
+     */
+  getBlockInfo(height: number = 1): Observable<BlockInfo> {
+    return this.blockHttp.getBlockByHeight(height) //Update-sdk-dragon
   }
 
   /**
    * Method to return blockchain network type
    *
+   * @p   *
    * @param {NetworkType} network network type
+   * @retaram {NetworkType} network network type
    * @returns {BlockchainNetworkType} BlockchainNetworkType
    */
   getBlockchainNetworkType(network: NetworkType): BlockchainNetworkType {
@@ -151,7 +161,7 @@ export class ProximaxProvider {
   * @memberof ProximaxProvider
   */
   buildTransferTransaction(network: NetworkType, address: Address, message?: string, amount: number = 0): TransferTransaction {
-    const mosaicId = new MosaicId(this.mosaicXpx.mosaicId);
+    const mosaicId = new MosaicId(environment.mosaicXpxInfo.id);
     return TransferTransaction.create(
       Deadline.create(5),
       address,
@@ -201,29 +211,20 @@ export class ProximaxProvider {
    * @returns {MosaicDefinitionTransaction}
    * @memberof ProximaxProvider
    */
-  buildMosaicDefinition(
-    nonce: MosaicNonce,
-    account: Account,
-    supplyMutableParam: boolean,
-    transferableParam: boolean,
-    levyMutableParam: boolean,
-    divisibilityParam: number,
-    durationParam: number,
-    network: NetworkType
-  ): MosaicDefinitionTransaction {
-    return MosaicDefinitionTransaction.create(
+  buildMosaicDefinition(params: any): MosaicDefinitionTransaction {
+    const mosaicDefinitionTransaction = MosaicDefinitionTransaction.create(
       Deadline.create(5),
-      nonce,
-      MosaicId.createFromNonce(nonce, account.publicAccount),
+      params.nonce,
+      MosaicId.createFromNonce(params.nonce, params.account.publicAccount),
       MosaicProperties.create({
-        supplyMutable: supplyMutableParam,
-        transferable: transferableParam,
-        levyMutable: levyMutableParam,
-        divisibility: divisibilityParam,
-        duration: UInt64.fromUint(durationParam)
+        supplyMutable: params.supplyMutable,
+        transferable: params.transferable,
+        divisibility: params.divisibility,
+        duration: UInt64.fromUint(params.durationByBlock)
       }),
-      network
+      params.network
     );
+    return mosaicDefinitionTransaction;
   }
 
 
@@ -277,7 +278,7 @@ export class ProximaxProvider {
       privateKey: ''
     };
 
-    const wallet: walletInterface = {
+    const wallet: { encrypted: string; iv: string; } = {
       encrypted: encryptedKey,
       iv: iv,
     };
@@ -596,7 +597,9 @@ export class ProximaxProvider {
   */
   initInstances(url: string) {
     this.url = `${environment.protocol}://${url}`;
-    this.blockchainHttp = new BlockchainHttp(this.url);
+
+    this.blockHttp = new BlockHttp(this.url);
+    this.blockchainHttp = new ChainHttp(this.url);//Update-sdk-dragon
     this.accountHttp = new AccountHttp(this.url);
     this.mosaicHttp = new MosaicHttp(this.url);
     this.namespaceHttp = new NamespaceHttp(this.url);

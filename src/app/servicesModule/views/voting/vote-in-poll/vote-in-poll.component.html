@@ -28,7 +28,6 @@
 
   <div class="row">
     <div class="col-12 justify-content-center txt-a-center">
-      <!-- ACCOUNT EDIT -->
       <div class="row ml-01rem" *ngIf="pollSelected">
         <div class="col-11 col-md-10 col-lg-8 mx-auto">
           <div class="d-flex flex-column">
@@ -53,9 +52,6 @@
           <hr style="border-top: 3px solid rgba(0, 0, 0, 0.1)" class="mt-03rem mb-05rem">
         </div>
       </div>
-
-
-
 
       <!-- Searching and icon reload -->
       <div class="row mt-2rem">
@@ -127,8 +123,6 @@
             </div>
           </div> -->
 
-
-
           <div class="row">
               <div class="col-12 col-md-10 col-lg-9 col-xl-8 mx-auto">
                 <div class="row mr-ml-mt-mb bordb-2px-solid-gray">
@@ -167,16 +161,6 @@
                 </div>
               </div>
             </div>
-
-
-
-
-
-
-
-
-
-
         </div>
 
         <div class="col-9 col-md-8 col-lg-6  mx-auto" *ngSwitchCase="'voting'">
@@ -227,7 +211,7 @@
             <div class="row">
               <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto">
 
-                <div class="row">'
+                <div class="row">
                   <div class="col-11 mx-auto">
                     <div class="md-form form-sm">
                       <input style="" [maxlength]="configurationForm.passwordWallet.maxLength" [minlength]="configurationForm.passwordWallet.minLength"
@@ -271,7 +255,7 @@
   </div>
 </div>
 
-<!-- MODAL  Optios-->
+<!-- MODAL  RESULTS-->
 <div class="d-flex align-items-center">
   <div mdbModal #modalInfo="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalInfo"
     aria-hidden="true">
@@ -339,8 +323,7 @@
   </div>
 </div>
 
-
-<!-- MODAL -->
+<!-- MODAL CERTIFICATE -->
 <div class="d-flex align-items-center">
   <div mdbModal #certificationModal="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="certificationModal"
     aria-hidden="true">

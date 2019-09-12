@@ -23,11 +23,11 @@
             <form [formGroup]="firstFormGroup">
                 <div class="row mt-1rem">
                     <div class="col-7 col-md-8 col-xl-7 mb-2rem">
-                        <!-- TITTLE -->
+                        <!-- TITLE -->
                         <div class="md-form">
-                            <input formControlName="tittle" required mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
-                                id="tittle" class="form-control form-control-sm input-border" placeholder="Enter tittle">
-                            <mdb-error *ngIf="validateInput('tittle', '1', '').invalid && (validateInput('tittle', '1', '').dirty || validateInput('tittle', '1', '').touched)">
+                            <input formControlName="title" required mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
+                                id="title" class="form-control form-control-sm input-border" placeholder="Enter title">
+                            <mdb-error *ngIf="validateInput('title', '1', '').invalid && (validateInput('title', '1', '').dirty || validateInput('title', '1', '').touched)">
                                 <span>Input invalid</span>
                             </mdb-error>
                         </div>
@@ -78,7 +78,7 @@
             <form [formGroup]="secondFormGroup">
                 <div class="row mt-1rem">
                     <div class="col-7 col-md-8 col-xl-7 mb-2rem">
-                        <!-- TITTLE -->
+                        <!-- TITLE -->
                         <div class="md-form">
                             <div class="col-12 d-flex align-items-center box-grey">
                                 <div class="col-10">
@@ -116,9 +116,9 @@
                         </div>
                         <!-- OPTIONS VALIDATE -->
                         <div class="md-form" style="display: none;">
-                                <input formControlName="options" required mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
-                                id="options" >
-                            </div>
+                            <input formControlName="options" required mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
+                                id="options">
+                        </div>
                         <!-- ADD OPTIONS -->
                         <div class="md-form">
                             <div class="col-12 d-flex justify-content-center">
@@ -156,7 +156,7 @@
             <form [formGroup]="thirdFormGroup">
                 <div class="row mt-1rem">
                     <div class="col-7 col-md-8 col-xl-7 mb-2rem">
-                        <!-- TITTLE -->
+                        <!-- TITLE -->
                         <div class="md-form">
                             <div class="col-12 d-flex align-items-center box-grey">
                                 <div class="col-10">
@@ -169,9 +169,8 @@
                         <!-- VOTE TYPE -->
                         <div class="">
                             <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" class="selectWrapper" [items]="voteType"
-                                formControlName="voteType" bindLabel="label" bindValue="value" placeholder="Increase or decrease"
-                                (change)="selectType($event)"></ng-select>
-                            <mdb-error class="mt-1rem ml-1rem" *ngIf="validateInput('voteType','3', '').invalid && (validateInput('voteType', '3', '').dirty || validateInput('voteType', '3', '').touched)">
+                                formControlName="voteType" bindLabel="label" bindValue="value" placeholder="Type of vote" (change)="selectType($event)"></ng-select>
+                            <mdb-error class="ml-1rem" *ngIf="validateInput('voteType','3', '').invalid && (validateInput('voteType', '3', '').dirty || validateInput('voteType', '3', '').touched)">
                                 <span>Type</span>
                             </mdb-error>
                         </div>
@@ -189,14 +188,38 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- ACCOUNTS -->
-                        <div class="md-form" *ngIf='showList'>
-                            <input formControlName="address" mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
-                                id="address" class="form-control form-control-sm input-border" placeholder="Account Address">
-                            <mdb-error *ngIf="validateInput('address','3', '').invalid && (validateInput('address','3', '').dirty || validateInput('address','3', '').touched)">
-                                <span>Input invalid</span>
-                            </mdb-error>
+
+                        <!-- LIST CONTACS -->
+                        <div *ngIf="showContacts && listContacts.length > 0">
+                            <ng-select mdbInputDirective mdbValidate formControlName="contact" class="selectWrapper" [items]="listContacts" bindLabel="label"
+                                bindValue="value" placeholder="Contact" (change)="selectContact($event)">
+                            </ng-select>
                         </div>
+                        <!-- ACCOUNTS -->
+                        <div class="row" *ngIf='showList'>
+                            <div class="col-9 col-sm-9 col-md-10">
+                                <div class="md-form form-sm mt-1rem mb-0rem">
+                                    <input formControlName="address" mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
+                                        id="address" class="form-control form-control-sm input-border" placeholder="Account Address">
+                                    <mdb-error *ngIf="validateInput('address','3', '').invalid && (validateInput('address','3', '').dirty || validateInput('address','3', '').touched)">
+                                        <span>Input invalid</span>
+                                    </mdb-error>
+                                </div>
+                            </div>
+                            <!-- SHOW CONTACS -->
+                            <ng-container>
+                                <div class="col-3 col-sm-3 col-md-2 d-flex justify-content-center align-items-center pt-10px">
+                                    <div [disabled]="listContacts.length === 0" class="background-gray-icons p-12px bord-rad-25px cursor-p" (click)="showContacts = (listContacts.length > 0) ? !showContacts : showContacts"
+                                        [title]="(!showContacts) ? 'Show contacts': 'Hide contacts'">
+                                        <img class=" w-30px" [src]="(!showContacts && listContacts.length === 0) ?
+                                          'assets/images/img/icon-address-book-gray-28h-proximax-sirius-wallet.svg' :
+                                          'assets/images/img/icon-address-green-book-16h-proximax-sirius-wallet.svg'
+                                          ">
+                                    </div>
+                                </div>
+                            </ng-container>
+                        </div>
+
                         <!-- ADD ACCOUNTS -->
                         <div class="md-form" *ngIf='showList'>
                             <div class="col-12 d-flex justify-content-center">
@@ -220,7 +243,7 @@
                             <div class="justify-content-center d-flex">
                                 <button class="transparent">
                                     <span data-toggle="modal" data-target="#basicExample" (click)="option; modalInfo.show();">
-                                    View all |</span>
+                                        View all |</span>
                                 </button>
                                 <button class="transparent">
                                     <span (click)="stepper.previous()"> Edit</span>
@@ -247,7 +270,7 @@
             <form [formGroup]="quarterFormGroup">
                 <div class="row mt-1rem">
                     <div class="col-7 col-md-8 col-xl-7 mb-2rem">
-                        <!-- TITTLE -->
+                        <!-- TITLE -->
                         <div class="md-form">
                             <div class="col-12 d-flex align-items-center box-grey">
                                 <div class="col-10">
@@ -271,7 +294,7 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- TITTLE -->
+                        <!-- TITLE -->
                         <div class="md-form">
                             <div class="col-12 d-flex align-items-center box-grey">
                                 <div class="col-10">
@@ -304,7 +327,7 @@
                             <div class="justify-content-center d-flex">
                                 <button class="transparent">
                                     <span data-toggle="modal" data-target="#basicExample" (click)="option; modalInfo.show();">
-                                    View all |</span>
+                                        View all |</span>
                                 </button>
                                 <button class="transparent">
                                     <span (click)="stepper.previous(); stepper.previous()"> Edit</span>
@@ -317,7 +340,7 @@
                             <div class="justify-content-center d-flex">
                                 <button class="transparent">
                                     <span data-toggle="modal" data-target="#basicExample" (click)="listaBlanca; modalInfoA.show();">
-                                    View all |</span>
+                                        View all |</span>
                                 </button>
                                 <button class="transparent">
                                     <span (click)="stepper.previous()"> Edit</span>

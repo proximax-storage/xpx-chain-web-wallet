@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
 import { TransactionsService } from '../../../transactions/services/transactions.service';
 import { PaginationInstance } from 'ngx-pagination';
 import { ModifyMultisigAccountTransaction } from 'tsjs-xpx-chain-sdk';
@@ -18,6 +18,10 @@ export class ModifyMultisigAccountTypeComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+  }
+
+  async ngOnChanges(changes: SimpleChanges): Promise<void> {
+    console.log(this.multisigAccount);
   }
 
 }

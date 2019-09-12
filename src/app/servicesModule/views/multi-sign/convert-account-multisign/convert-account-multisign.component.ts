@@ -112,7 +112,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
     this.subscribe.forEach(subscription => {
       subscription.unsubscribe();
     });
-    
+
     // this.subscribe.forEach(element => {
     //   if (this.subscribe[element] !== undefined) {
     //     this.subscribe[element].unsubscribe();
@@ -309,7 +309,8 @@ export class ConvertAccountMultisignComponent implements OnInit {
           Deadline.create(),
           [convertIntoMultisigTransaction.toAggregate(this.currentAccountToConvert.publicAccount)],
           this.currentAccountToConvert.network);
-        const signedTransaction = this.accountToConvertSign.sign(aggregateTransaction)
+          const generationHash = this.dataBridge.blockInfo.generationHash;
+        const signedTransaction = this.accountToConvertSign.sign(aggregateTransaction, generationHash) //Update-sdk-dragon
 
         /**
         * Create Hash lock transaction
@@ -320,7 +321,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
           UInt64.fromUint(480),
           signedTransaction,
           this.currentAccountToConvert.network);
-        this.hashLock(this.accountToConvertSign.sign(hashLockTransaction), signedTransaction)
+        this.hashLock(this.accountToConvertSign.sign(hashLockTransaction, generationHash), signedTransaction) //Update-sdk-dragon
       }
     } else {
       this.blockSend = false;
@@ -518,14 +519,14 @@ export class ConvertAccountMultisignComponent implements OnInit {
               if (this.subscribeAccountContat) {
                 this.subscribeAccountContat.unsubscribe();
               }
-               if (accountValid){
+              if (accountValid) {
                 this.convertAccountMultsignForm.get('cosignatory').patchValue(account.accountInfo.publicKey, { emitEvent: true })
                 this.convertAccountMultsignForm.get('contact').patchValue('', { emitEvent: false, onlySelf: true });
-               }else{
+              } else {
                 this.sharedService.showWarning('', 'you need a public key');
                 this.convertAccountMultsignForm.get('contact').patchValue('', { emitEvent: false, onlySelf: true });
-               }
-                
+              }
+
             } else {
               this.convertAccountMultsignForm.get('contact').patchValue('', { emitEvent: false, onlySelf: true });
               this.sharedService.showWarning('', 'Address is not valid');

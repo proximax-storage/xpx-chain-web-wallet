@@ -2,7 +2,7 @@ import { Router, NavigationEnd } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { ItemsHeaderInterface, SharedService, MenuInterface } from '../../../services/shared.service';
 import { AppConfig } from '../../../../config/app.config';
-import { environment } from '../../../../../environments/environment.prod';
+import { environment } from '../../../../../environments/environment';
 import { DashboardService } from '../../../../dashboard/services/dashboard.service';
 import { AuthService } from '../../../../auth/services/auth.service';
 import { WalletService } from '../../../../wallet/services/wallet.service';
@@ -42,6 +42,7 @@ export class SidebarMainComponent implements OnInit {
   subscription: Subscription[] = [];
   vestedBalance: string = '0.000000';
   version = '';
+  viewParcial = false;
   walletName = '';
   reset = 0;
 
@@ -66,6 +67,9 @@ export class SidebarMainComponent implements OnInit {
     this.getBlocks();
     this.readRoute();
     this.validate();
+    this.subscription.push(this.transactionService.getAggregateBondedTransactions$().subscribe(
+      next => this.viewParcial = (next && next.length > 0) ? true : false
+    ));
   }
 
   ngOnDestroy(): void {
@@ -145,12 +149,14 @@ export class SidebarMainComponent implements OnInit {
     this.subscription.push(this.walletService.getAccountsInfo$().subscribe(next => {
       this.searchBalance = true;
       // NAME ACCOUNT
-      let amountTotal = 0.000000;
       if (next && next.length > 0) {
+        let amountTotal = 0.000000;
         for (let element of next) {
           if (element && element.accountInfo) {
+            console.log(element.accountInfo)
             if (element.accountInfo.mosaics && element.accountInfo.mosaics.length > 0) {
-              const mosaicXpx = element.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id);
+              const mosaicXpx = element.accountInfo.mosaics.find(mosaic => mosaic.id.toHex() === environment.mosaicXpxInfo.id);
+              console.log('mosaicXpx', mosaicXpx);
               if (mosaicXpx) {
                 amountTotal = amountTotal + mosaicXpx.amount.compact();
               }
@@ -201,6 +207,9 @@ export class SidebarMainComponent implements OnInit {
     ));
   }
 
+  /**
+   *
+   */
   validate() {
     //emit 0 after 1 second then complete, since no second argument is supplied
     const source = timer(20000, 20000);

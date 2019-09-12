@@ -63,7 +63,7 @@ export class CreateTransferComponent implements OnInit {
   selectOtherMosaics = [];
   showContacts = false;
   // subscribe = ['accountInfo', 'transactionStatus', 'char', 'block'];
-  title = 'Make a transfer';
+  title = 'Make a Transfer';
   transactionStatus: boolean = false;
   transactionSigned: SignedTransaction[] = [];
   transactionReady: SignedTransaction[] = [];
@@ -227,7 +227,8 @@ export class CreateTransferComponent implements OnInit {
 
             const x = this.proximaxProvider.getMosaicId(mosaic.idMosaic).id.toHex() !== environment.mosaicXpxInfo.id;
             if (x) {
-              const nameMosaic = (mosaic.mosaicNames.names.length > 0) ? mosaic.mosaicNames.names[0] : this.proximaxProvider.getMosaicId(mosaic.idMosaic).toHex();
+              console.log('EL MOSAICO ----> ', mosaic);
+              const nameMosaic = (mosaic.mosaicNames.names.length > 0) ? mosaic.mosaicNames.names[0].name : this.proximaxProvider.getMosaicId(mosaic.idMosaic).toHex();
               mosaicsSelect.push({
                 label: `${nameMosaic}${nameExpired}`,
                 value: mosaic.idMosaic,
@@ -554,7 +555,7 @@ export class CreateTransferComponent implements OnInit {
             this.sharedService.showWarning('', 'You must select a mosaic and place the quantity');
             x = true;
           } else if (element.amount === '' || Number(element.amount) === 0) {
-            this.sharedService.showWarning('', 'The quantity of mosaics is missing');            
+            this.sharedService.showWarning('', 'The quantity of mosaics is missing');
             x = true;
           }
         });

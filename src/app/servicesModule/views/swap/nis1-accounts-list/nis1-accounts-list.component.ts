@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AppConfig } from '../../../../config/app.config';
 
 @Component({
   selector: 'app-nis1-accounts-list',
@@ -9,14 +10,16 @@ export class Nis1AccountsListComponent implements OnInit {
 
   list: object[] = [
     {
-      name: 'Elemento 1',
+      name: 'Element 1',
       address: 'VDBTDK-B55BPX-VSDQR7-AX3WX7-WFUZC3-65CTGJ-X2I5'
     },
     {
-      name: 'Elemento 2',
+      name: 'Element 2',
       address: 'VDBTDK-B55BPX-VSDQR7-AX3WX7-WFUZC3-65CTGJ-X2I5'
     }
   ];
+  goBack: string = `/${AppConfig.routes.service}`;
+  goList: string = `/${AppConfig.routes.accountList}`;
 
   constructor() { }
 

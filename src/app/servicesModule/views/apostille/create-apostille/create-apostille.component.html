@@ -11,7 +11,7 @@
               <!-- UPLOAD FILE -->
               <div class="row">
                 <ng-container *ngIf="apostilleFormOne.get('typeFile').value">
-                  <div class="col-12 box-grey" (click)="openInput()" mdbBtn mdbWavesEffect>
+                  <!-- <div class="col-12 box-grey" (click)="openInput()" mdbBtn mdbWavesEffect>
                     <div class="row">
                       <div class="col-10 mx-auto txt-a-center upload-file box-drop">
                         <img class="mr-1rem h2em"
@@ -29,6 +29,18 @@
                         </span>
                       </div>
                     </div>
+                  </div> -->
+                  <div class="col-12 box-grey" mdbBtn mdbWavesEffect>
+                    <ngx-dropzone (change)="onSelect($event)" [multiple]="false">
+                      <ngx-dropzone-label>
+                        <img class="mr-1rem h2em"
+                          src="assets/images/img/icon-upload-gray-28h-proximax-sirius-wallet.svg" width="25">
+                        <span class="fs-1-2em fw-700 color-gray-strong">Upload file</span>
+                      </ngx-dropzone-label>
+                      <ngx-dropzone-preview *ngFor="let f of files" [removable]="true" (removed)="onRemove(f)">
+                        <ngx-dropzone-label>{{ f.name }} <br> ({{ f.type }})</ngx-dropzone-label>
+                      </ngx-dropzone-preview>
+                    </ngx-dropzone>
                   </div>
                 </ng-container>
 
@@ -89,10 +101,9 @@
                       </div>
                     </div>
                   </div>
-
                 </ng-container>
 
-                <input id="fileInput" [hidden]="true" type="file" (change)="fileReader($event.target.files)">
+                <!-- <input id="fileInput" [hidden]="true" type="file" (change)="fileReader($event.target.files)"> -->
               </div>
 
               <!-- PRIVATE & PUBLIC -->
@@ -159,8 +170,9 @@
               <!-- TYPE ENCRIPTED -->
               <div class="row mt-2rem">
                 <div class="col-12">
-                  <ng-select mdbInputDirective mdbValidate formControlName="typeEncrypted" class="selectWrapper"
-                    [items]="typeEncrypted" bindLabel="label" bindValue="value" placeholder="Select type encrypted">
+                  <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
+                    class="selectWrapper" [items]="typeEncrypted" formControlName="typeEncrypted" bindLabel="label" bindValue="value"
+                    placeholder="Select hashing algorithm">
                   </ng-select>
                 </div>
               </div>
@@ -210,7 +222,8 @@
                     <input [maxlength]="configurationForm.passwordWallet.maxLength"
                       [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" required
                       mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password"
-                      id="password" class="form-control form-control-sm input-border" placeholder="Enter password">
+                      id="password" class="form-control form-control-sm input-border"
+                      placeholder="Enter wallet password">
                   </div>
                 </div>
               </div>

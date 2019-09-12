@@ -33,7 +33,7 @@ export class ServicesBoxComponent implements OnInit {
       this.services.buildStructureService(
         'Accounts',
         true,
-        'Manage your accounts.',
+        'Manage your accounts',
         'icon-account-green-60h-proximax-sirius-wallet.svg',
         '',
         {
@@ -44,7 +44,7 @@ export class ServicesBoxComponent implements OnInit {
             '',
             AppConfig.routes.viewAllAccount,
           ), multiSign: this.services.buildStructureService(
-            'MULTISIGN',
+            'MULTISIG',
             true,
             '',
             '',
@@ -445,7 +445,7 @@ export class ServicesBoxComponent implements OnInit {
       this.services.buildStructureService(
         'Supercontracts',
         true,
-        'Create and execute logical flow for digital contract obligations',
+        'Create and execute logical flows for digital contract obligations',
         'icon-supercontracts-green-60h-proximax-sirius-wallet.svg',
         '',
         {
@@ -477,14 +477,14 @@ export class ServicesBoxComponent implements OnInit {
         {
           transfer: this.services.buildStructureService(
             'TRANSFER ASSETS',
-            false,
+            true,
             '',
             '',
             AppConfig.routes.nis1AccountList
           ),
         },
         true,
-        'disable-module'
+        ''
       )
     ];
   }

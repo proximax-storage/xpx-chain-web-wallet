@@ -1,14 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { NetworkType, UInt64, Address } from 'tsjs-xpx-chain-sdk';
-import { NgxUiLoaderService } from 'ngx-ui-loader';
+import { NetworkType, UInt64, Address, BlockInfo } from 'tsjs-xpx-chain-sdk';
 
 import { AppConfig } from '../../config/app.config';
 import { WalletService, CurrentWalletInterface } from '../../wallet/services/wallet.service';
 import { DataBridgeService } from '../../shared/services/data-bridge.service';
 import { NodeService } from '../../servicesModule/services/node.service';
-import { MosaicService } from '../../servicesModule/services/mosaic.service';
 import { NamespacesService } from '../../servicesModule/services/namespaces.service';
 import { TransactionsService } from '../../transactions/services/transactions.service';
 import { ServicesModuleService } from '../../servicesModule/services/services-module.service';
@@ -32,13 +30,11 @@ export class AuthService {
     private route: Router,
     private dataBridgeService: DataBridgeService,
     private nodeService: NodeService,
-    private mosaicService: MosaicService,
     private namespaces: NamespacesService,
     private transactionService: TransactionsService,
     private serviceModuleService: ServicesModuleService,
     private sharedService: SharedService,
-    private proximaxProvider: ProximaxProvider,
-    private ngxService: NgxUiLoaderService
+    private proximaxProvider: ProximaxProvider
   ) {
     this.setLogged(false);
   }
@@ -95,13 +91,14 @@ export class AuthService {
     this.setLogged(true);
     this.dataBridgeService.closeConenection();
     this.dataBridgeService.connectnWs();
+
+
     // load services and components
     this.route.navigate([`/${AppConfig.routes.dashboard}`]);
     this.serviceModuleService.changeBooksItem(
       this.proximaxProvider.createFromRawAddress(currentAccount.address)
     );
 
-    //this.namespaces.buildNamespaceStorage();
     const address: Address[] = [];
     for (let account of currentWallet.accounts) {
       address.push(this.proximaxProvider.createFromRawAddress(account.address));
@@ -109,8 +106,10 @@ export class AuthService {
 
     this.namespaces.searchNamespacesFromAccounts(address);
     this.transactionService.searchAccountsInfo(this.walletService.currentWallet.accounts);
-    const blockchainHeight: UInt64 = await this.proximaxProvider.getBlockchainHeight().toPromise();
+    const blockchainHeight: UInt64 = await this.proximaxProvider.getBlockchainHeight().toPromise(); 
+    const BlockInfo : BlockInfo = await this.proximaxProvider.getBlockInfo().toPromise(); //Update-sdk-dragon
     this.dataBridgeService.setblock(blockchainHeight.compact());
+    this.dataBridgeService.setblockInfo(BlockInfo); //Update-sdk-dragon
     return true;
   }
 

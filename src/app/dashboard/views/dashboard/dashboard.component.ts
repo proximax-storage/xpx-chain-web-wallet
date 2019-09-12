@@ -107,12 +107,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
    */
   balance() {
     this.subscriptions['balance'] = this.transactionService.getBalance$().subscribe(
-      next => {
-        // console.log(next);
-        this.vestedBalance = `${next} XPX`;
-      }, () => {
-        this.vestedBalance = `0.000000 XPX`;
-      }
+      next => this.vestedBalance = `${next} XPX`,
+      error => this.vestedBalance = `0.000000 XPX`
     );
   }
 
@@ -186,9 +182,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.proximaxProvider.getUnconfirmedTransactions(account.publicAccount, id).pipe(first()).subscribe(
         transactionsUnconfirmed => {
           if (transactionsUnconfirmed && transactionsUnconfirmed.length > 0) {
+
+            //Sets the data structure of the dashboard
             transactionsUnconfirmed.forEach(element => {
-              //Sets the data structure of the dashboard
-              const builderTransactions = this.transactionService.getStructureDashboard(element);
+              const builderTransactions = this.transactionService.getStructureDashboard(element, this.transactionsUnconfirmed);
               if (builderTransactions !== null) {
                 transactionUnconfirmed.push(builderTransactions);
               }
@@ -202,7 +199,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
             this.searching = false;
             this.dashboardService.searchComplete = true;
           }
-
         }, error => {
           this.iconReloadDashboard = false;
           this.searching = false;
@@ -225,21 +221,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
     // Confirmed transactions
     this.proximaxProvider.getTransactionsFromAccountId(account.publicAccount, id).pipe(first()).subscribe(
       transactions => {
+        // console.log(transactions);
         if (transactions && transactions.length > 0) {
+          //Sets the data structure of the dashboard
           transactions.forEach(element => {
-            //Sets the data structure of the dashboard
-            const builderTransactions = this.transactionService.getStructureDashboard(element);
-            if (builderTransactions !== null) {
-              this.transactions.push(builderTransactions);
-            }
+            const builderTransactions = this.transactionService.getStructureDashboard(element, this.transactions);
+            (builderTransactions !== null) ? this.transactions.push(builderTransactions) : '';
           });
 
-          // this.transactions = this.transactions;
-          this.cantConfirmed = this.transactions.length;
           this.transactionService.setTransactionsConfirmed$(this.transactions);
+          this.dashboardService.searchComplete = true;
           this.iconReloadDashboard = false;
           this.searching = false;
-          this.dashboardService.searchComplete = true;
           const lastTransactionId = (transactions.length > 0) ? transactions[transactions.length - 1].transactionInfo.id : null;
           this.getTransactionsConfirmed(account, lastTransactionId);
         } else {
