@@ -10,7 +10,7 @@
           <div class="col-10">
             <span class="color-black fw-bold">{{ accountCreated.wallet.name }}</span>
             <span class="d-flex color-black">{{ accountCreated.dataAccount.nis1Account.address.pretty() }}</span>
-            <span class="d-flex color-black fw-bold">Balance: {{ quantity }} XPX</span>
+            <span class="d-flex color-black fw-bold">Balance: {{ quantity }} XPX <img src="./assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" class="ml-1rem" width="20px" alt="logo"></span>
           </div>
           <!-- <div class="col-2 text-center">
             <button mdbBtn mdbWavesEffect
@@ -104,7 +104,7 @@
 
         <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
           <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
-            size="md" (click)="spinnerVisibility = true">
+            size="md" (click)="spinnerVisibility = true" [disabled]="!formTransfer.valid">
             <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
               *ngIf="spinnerVisibility"></span>
             <span class="fs-1-2em color-white">YES, TRASFER</span>

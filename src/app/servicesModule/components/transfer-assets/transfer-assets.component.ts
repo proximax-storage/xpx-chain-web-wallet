@@ -25,7 +25,8 @@ export class TransferAssetsComponent implements OnInit {
     decimal: '.',
     precision: '6'
   };
-  spinnerVisibility = false
+  spinnerVisibility = false;
+  availableContinue = false;
 
   constructor(
     private walletService: WalletService,
