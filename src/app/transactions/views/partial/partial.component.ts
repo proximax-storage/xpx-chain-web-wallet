@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { PublicAccount, AggregateTransaction, Account, MultisigAccountInfo, Address, Transaction } from 'tsjs-xpx-chain-sdk';
+import { PublicAccount, AggregateTransaction, Account, MultisigAccountInfo, Address, Transaction, MultisigCosignatoryModification, ModifyMultisigAccountTransaction } from 'tsjs-xpx-chain-sdk';
 import { PaginationInstance } from 'ngx-pagination';
 import { first } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
@@ -108,8 +108,20 @@ export class PartialComponent implements OnInit {
   find(transaction: TransactionsInterface) {
     console.log('----------TRANSACTION ', transaction);
     transaction.data['innerTransactions'].forEach(element => {
+      console.log(element);
       const nameType = Object.keys(this.typeTransactions).find(x => this.typeTransactions[x].id === element.type);
       element['nameType'] = (nameType) ? this.typeTransactions[nameType].name : element.type.toString(16).toUpperCase();
+
+      if (element.type === this.typeTransactions.modifyMultisigAccount.id) {
+        const data: ModifyMultisigAccountTransaction = element;
+        console.log('ModifyMultisigAccountTransaction.....', data);
+        // aqui debo verificar si mi cuenta esta dentro de inner transaction para poder firmarla
+        data.modifications.forEach(element => {
+          const findAddress = this.walletService.filterAccount('', null, element.cosignatoryPublicAccount.address.pretty());
+          console.log('findAddress ---> ', findAddress);
+
+        });
+      }
     });
 
 

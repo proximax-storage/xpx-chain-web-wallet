@@ -113,6 +113,8 @@ export class TransactionsService {
 
   namespaceRentalFeeSink = environment.namespaceRentalFeeSink;
   mosaicRentalFeeSink = environment.mosaicRentalFeeSink;
+  generationHash: string = '';
+
 
   constructor(
     private proximaxProvider: ProximaxProvider,
@@ -123,7 +125,7 @@ export class TransactionsService {
     // private dataBridge: DataBridgeService,
   ) {
 
-   }
+  }
 
 
   /**
@@ -295,10 +297,6 @@ export class TransactionsService {
     return amountDivisibility.toLocaleString("en-us", { minimumFractionDigits: 6 });
   }
 
-  /**
-   *
-   * @param params
-   */
   buildTransferTransaction(params: TransferInterface) {
     const recipientAddress = this.proximaxProvider.createFromRawAddress(params.recipient);
     const mosaics = params.mosaic;
@@ -318,9 +316,10 @@ export class TransactionsService {
       PlainMessage.create(params.message),
       params.network
     );
-
+    // const generationHash = this.dataBridge.blockInfo.generationHash;
+    console.log('generationHash', this.generationHash)
     const account = Account.createFromPrivateKey(params.common.privateKey, params.network);
-    const signedTransaction = account.sign(transferTransaction);
+    const signedTransaction = account.sign(transferTransaction, this.generationHash);
     const transactionHttp = new TransactionHttp(
       environment.protocol + "://" + `${this.nodeService.getNodeSelected()}`
     );
@@ -329,6 +328,7 @@ export class TransactionsService {
       transactionHttp: transactionHttp
     };
   }
+
 
   /**
      * Calculate duration based in blocks
@@ -427,14 +427,14 @@ export class TransactionsService {
       });
     }
 
-    console.log('----TODAS LAS TRANSACCIONES AGREGADAS------', aggregateTransactions );
+    console.log('----TODAS LAS TRANSACCIONES AGREGADAS------', aggregateTransactions);
     this.setAggregateBondedTransactions$(aggregateTransactions);
   }
 
   /**
    *
    */
-  getAggregateBondedTransactions$(): Observable<TransactionsInterface[]>{
+  getAggregateBondedTransactions$(): Observable<TransactionsInterface[]> {
     return this.aggregateTransactions$;
   }
 
@@ -582,7 +582,9 @@ export class TransactionsService {
         console.log('data ===> ', data);
         const publicsAccounts: PublicAccount[] = [];
         data.accountsInfo.forEach((element: AccountsInfoInterface) => {
-          if (element.multisigInfo && (element.multisigInfo.multisigAccounts.length > 0)) {
+          const publicAccount = this.proximaxProvider.createPublicAccount(element.accountInfo.publicKey, element.accountInfo.publicAccount.address.networkType);
+          publicsAccounts.push(publicAccount);
+          /*if (element.multisigInfo && (element.multisigInfo.multisigAccounts.length > 0)) {
             element.multisigInfo.multisigAccounts.forEach(x => {
               if (publicsAccounts.length > 0) {
                 if (publicsAccounts.find(b => b.publicKey !== x.publicKey)) {
@@ -594,12 +596,14 @@ export class TransactionsService {
                 publicsAccounts.push(publicAccount);
               }
             });
-          }
+          }*/
         });
 
         console.log('----------publicsAccounts-----------', publicsAccounts);
-        // Search all transactions aggregate bonded from array publics accounts
-        this.searchAggregateBonded(publicsAccounts);
+        if (publicsAccounts.length > 0) {
+          // Search all transactions aggregate bonded from array publics accounts
+          this.searchAggregateBonded(publicsAccounts);
+        }
         this.updateBalance();
         if (data.mosaicsIds && data.mosaicsIds.length > 0) {
           this.mosaicServices.searchInfoMosaics(data.mosaicsIds)
