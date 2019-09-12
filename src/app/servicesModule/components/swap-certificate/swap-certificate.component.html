@@ -9,14 +9,16 @@
           <div class="row audit-front d-flex flex-md-row justify-content-start mx-auto flex-sm-column">
             <div class="background-white col-sm-12 col-md-8 col-lg-8">
               <div class="row p-1rem">
-                <div class="col-12">
+                <div class="col-12 mb-1rem">
                   <span class="word-break-all fs-08rem"><b class="fw-bold">Timestamp: </b>{{ timestamp }}</span>
                 </div>
                 <div class="col-12 mb-1rem">
                   <span class="word-break-all fs-08rem"><b class="fw-bold">NIS1 Public Key: </b>{{ publicKey }}</span>
                 </div>
                 <div class="col-12">
-                  <span class="word-break-all fs-08rem"><b class="fw-bold">Transation Hash: </b>{{ transactionHash }}</span>
+                  <span class="word-break-all fs-08rem" (click)="goToNemExplorer()">
+                    <b class="fw-bold">Transation Hash: </b><span class="text-cl-m cursor-p">{{ transactionHash }}</span>
+                  </span>
                 </div>
                 <div class="col-12 txt-a-center ">
                   <img [src]="qrSrc" alt="qrCode">
