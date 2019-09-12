@@ -64,11 +64,11 @@
     "ngx-pagination": "^4.1.0",
     "ngx-ui-loader": "^8.0.0",
     "qrcode-generator": "^1.4.3",
-    "rxjs": "~6.4.0",
+    "rxjs": "^6.5.3",
     "screenfull": "^4.2.0",
-    "tsjs-xpx-chain-sdk": "^0.2.0",
+    "tsjs-xpx-chain-sdk": "^0.5.2",
     "tslib": "^1.9.0",
-    "xpx2-ts-js-sdk": "^0.0.51",
+    "xpx2-ts-js-sdk": "0.0.51",
     "zone.js": "~0.9.1"
   },
   "devDependencies": {

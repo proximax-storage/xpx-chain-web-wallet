@@ -15,25 +15,25 @@ export const environment = {
   nameKeyMosaicStorage: `sw-mosaics-01`,
   protocol: `https`,
   protocolWs: `wss`,
-  nodeDefault: 'bctestnet1-cow.xpxsirius.io:443',
+  nodeDefault: 'bctestnet4.xpxsirius.io:443',
   nodeExplorer: 'https://bctestnetexplorer.xpxsirius.io/#/result/hash',
   mosaicXpxInfo: {
     name: 'prx.xpx',
     coin: 'XPX',
-    id: '0dc67fbe1cad29e3',
+    id: '3c0f3de5298ced2d',
     divisibility: 6
   },
   blockchainConnection: {
-    host: 'bctestnet1-cow.xpxsirius.io',
+    host: 'bctestnet4.xpxsirius.io',
     port: 443,
     protocol: 'https',
     useSecureMessage: false
   },
   storageConnection: {
     host: 'ipfs1-dev.xpxsirius.io',
-    port: 5001,
+    port: 443,
     options: {
-      protocol: 'http'
+      protocol: 'https'
     }
   },
   namespaceRentalFeeSink: {

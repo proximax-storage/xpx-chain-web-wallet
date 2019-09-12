@@ -83,8 +83,8 @@ export class AliasAddressToNamespaceComponent implements OnInit {
    * @memberof AliasAddressToNamespaceComponent
    */
   async buildSelectNamespace($event = null) {
-    console.log($event);
     if ($event !== null) {
+      this.LinkToNamespaceForm.get('namespace').setValue('1');
       /* this.LinkToNamespaceForm.get('address').enable();
        this.LinkToNamespaceForm.get('namespace').enable();
        this.LinkToNamespaceForm.get('password').enable();*/
@@ -98,7 +98,7 @@ export class AliasAddressToNamespaceComponent implements OnInit {
             console.log('INFO ---> ', namespaceStorage, '\n\n');
             let isLinked = false;
             let disabled = false;
-            let label = await this.namespaceService.getNameParentNamespace(namespaceStorage);
+            let label = namespaceStorage.namespaceName.name;//await this.namespaceService.getNameParentNamespace(namespaceStorage);
             const name = label;
             const type = namespaceStorage.namespaceInfo.alias.type;
             if (type === 2) {
@@ -186,6 +186,7 @@ export class AliasAddressToNamespaceComponent implements OnInit {
   getNamespaces() {
     this.subscription.push(this.namespaceService.getNamespaceChanged().subscribe(
       async (arrayNamespaceStorage: NamespaceStorageInterface[]) => {
+        console.log('LO QUE ME LLEGA ---> ', arrayNamespaceStorage);
         this.arrayNamespaceStorage = arrayNamespaceStorage;
         this.buildSelectNamespace(this.LinkToNamespaceForm.get('typeAction').value);
       }

@@ -12,6 +12,7 @@ import { AppConfig } from '../../../../config/app.config';
 import { StorageService, SearchResultInterface } from '../../storage/services/storage.service';
 import { SearchResult } from 'xpx2-ts-js-sdk';
 import { PaginationInstance } from 'ngx-pagination';
+import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
 
 declare const Buffer: any;
 
@@ -66,7 +67,8 @@ export class CreateApostilleComponent implements OnInit {
     private fb: FormBuilder,
     private proximaxProvider: ProximaxProvider,
     private sharedService: SharedService,
-    private walletService: WalletService
+    private walletService: WalletService,
+    private dataBridgeService: DataBridgeService
   ) {
   }
 
@@ -355,7 +357,8 @@ export class CreateApostilleComponent implements OnInit {
     // Zero fee is added
     transferTransaction['fee'] = UInt64.fromUint(0);
     // Sign the transaction
-    const signedTransaction = ownerAccount.sign(transferTransaction);
+    const generationHash = this.dataBridgeService.blockInfo.generationHash;
+    const signedTransaction = ownerAccount.sign(transferTransaction,generationHash);  //Update-sdk-dragon
     const date = new Date();
     this.ntyData = {
       fileName: this.nameFile,
@@ -426,7 +429,8 @@ export class CreateApostilleComponent implements OnInit {
     transferTransaction['fee'] = UInt64.fromUint(0);
 
     // Sign the transaction
-    const signedTransaction = myAccount.sign(transferTransaction);
+    const generationHash = this.dataBridgeService.blockInfo.generationHash;
+    const signedTransaction = myAccount.sign(transferTransaction,generationHash); //Update-sdk-dragon
     const date = new Date();
     this.ntyData = {
       fileName: this.nameFile,

@@ -8,7 +8,7 @@ import { DataBridgeService } from '../../../../shared/services/data-bridge.servi
 import { WalletService, AccountsInterface, AccountsInfoInterface } from '../../../../wallet/services/wallet.service';
 import { TransactionsService } from '../../../../transactions/services/transactions.service';
 import { AppConfig } from '../../../../config/app.config';
-import { environment } from 'src/environments/environment.prod';
+import { environment } from 'src/environments/environment';
 import { HeaderServicesInterface } from '../../../services/services-module.service';
 
 @Component({
@@ -182,18 +182,20 @@ export class CreateMosaicComponent implements OnInit {
         const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
         const nonce = this.proximaxProvider.createNonceRandom();
         console.log('\n\n\n\nValue of duration', this.durationByBlock, '\n\n\n\nEnd value\n\n');
-        //BUILD TRANSACTION
-        const mosaicDefinitionTransaction = this.proximaxProvider.buildMosaicDefinition(
-          nonce,
-          account,
-          this.mosaicForm.get('supplyMutable').value,
-          this.mosaicForm.get('transferable').value,
-          this.mosaicForm.get('levyMutable').value,
-          this.mosaicForm.get('divisibility').value,
-          parseInt(this.durationByBlock),
-          this.walletService.currentAccount.network
-        );
 
+        const params = {
+          nonce: nonce,
+          account: account,
+          supplyMutable: this.mosaicForm.get('supplyMutable').value,
+          transferable: this.mosaicForm.get('transferable').value,
+          levyMutable: this.mosaicForm.get('levyMutable').value,
+          divisibility: this.mosaicForm.get('divisibility').value,
+          durationByBlock: parseInt(this.durationByBlock),
+          network: this.walletService.currentAccount.network
+        }
+
+        //BUILD TRANSACTION
+        const mosaicDefinitionTransaction = this.proximaxProvider.buildMosaicDefinition(params);
         const mosaicSupplyChangeTransaction = this.proximaxProvider.buildMosaicSupplyChange(
           mosaicDefinitionTransaction.mosaicId,
           MosaicSupplyType.Increase,
@@ -214,7 +216,8 @@ export class CreateMosaicComponent implements OnInit {
 
         this.dataBridge.setTransactionStatus(null);
         // I SIGN THE TRANSACTION
-        const signedTransaction = account.sign(aggregateTransaction);
+        const generationHash = this.dataBridge.blockInfo.generationHash
+        const signedTransaction = account.sign(aggregateTransaction,generationHash);  //Update-sdk-dragon
         this.transactionSigned.push(signedTransaction);
         //ANNOUNCEMENT THE TRANSACTION-
         this.proximaxProvider.announce(signedTransaction).subscribe(
