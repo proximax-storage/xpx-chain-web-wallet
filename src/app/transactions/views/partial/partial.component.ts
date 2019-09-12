@@ -111,7 +111,7 @@ export class PartialComponent implements OnInit {
     this.arraySelect = [];
     const accountMultisig = this.walletService.filterAccountInfo(transaction.data['innerTransactions'][0].signer.address.pretty(), true);
     console.log('ACCOUNT MULTISIG -----> ', accountMultisig);
-    if (accountMultisig && accountMultisig.multisigInfo.cosignatories && accountMultisig.multisigInfo.cosignatories.length > 0) {
+    if (accountMultisig && accountMultisig.multisigInfo && accountMultisig.multisigInfo.cosignatories && accountMultisig.multisigInfo.cosignatories.length > 0) {
       accountMultisig.multisigInfo.cosignatories.forEach(element => {
         const cosignatorie: AccountsInterface = this.walletService.filterAccount('', null, element.address.pretty());
         console.log('cosignatorie ---->', cosignatorie);
@@ -148,20 +148,16 @@ export class PartialComponent implements OnInit {
           console.log('possibleCosignatorie ---->', possibleCosignatorie);
           // Address encontrada
           if (possibleCosignatorie) {
-            if (this.arraySelect.length > 0) {
-              console.log('ARRAY SELECT --->', this.arraySelect);
-            } else {
-              console.log('ARRAY SELECT --->', this.arraySelect);
-              const publicAccount = this.proximaxProvider.createPublicAccount(possibleCosignatorie.publicAccount.publicKey, this.walletService.currentAccount.network);
-              const signedByAccount = transaction.data.signedByAccount(publicAccount);
-              this.arraySelect.push({
-                label: possibleCosignatorie.name,
-                value: possibleCosignatorie,
-                selected: true,
-                signed: signedByAccount,
-                disabled: signedByAccount
-              });
-            }
+            console.log('ARRAY SELECT --->', this.arraySelect);
+            const publicAccount = this.proximaxProvider.createPublicAccount(possibleCosignatorie.publicAccount.publicKey, this.walletService.currentAccount.network);
+            const signedByAccount = transaction.data.signedByAccount(publicAccount);
+            this.arraySelect.push({
+              label: possibleCosignatorie.name,
+              value: possibleCosignatorie,
+              selected: true,
+              signed: signedByAccount,
+              disabled: signedByAccount
+            });
           }
         });
       }

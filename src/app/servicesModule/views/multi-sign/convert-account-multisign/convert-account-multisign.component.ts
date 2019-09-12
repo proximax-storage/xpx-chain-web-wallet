@@ -309,7 +309,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
           Deadline.create(),
           [convertIntoMultisigTransaction.toAggregate(this.currentAccountToConvert.publicAccount)],
           this.currentAccountToConvert.network);
-          const generationHash = this.dataBridge.blockInfo.generationHash;
+        const generationHash = this.dataBridge.blockInfo.generationHash;
         const signedTransaction = this.accountToConvertSign.sign(aggregateTransaction, generationHash) //Update-sdk-dragon
 
         /**
@@ -354,7 +354,6 @@ export class ConvertAccountMultisignComponent implements OnInit {
           this.sharedService.showError('', err);
           // this.blockSend = false;
         });
-
   }
 
   /**

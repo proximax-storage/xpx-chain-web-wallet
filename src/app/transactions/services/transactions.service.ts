@@ -118,7 +118,7 @@ export class TransactionsService {
 
   constructor(
     private proximaxProvider: ProximaxProvider,
-    private nodeService: NodeService,
+    public nodeService: NodeService,
     private walletService: WalletService,
     private mosaicServices: MosaicService,
     private namespaceService: NamespacesService,
@@ -323,9 +323,11 @@ export class TransactionsService {
     const transactionHttp = new TransactionHttp(
       environment.protocol + "://" + `${this.nodeService.getNodeSelected()}`
     );
+
     return {
       signedTransaction: signedTransaction,
-      transactionHttp: transactionHttp
+      transactionHttp: transactionHttp,
+      transferTransaction: transferTransaction
     };
   }
 

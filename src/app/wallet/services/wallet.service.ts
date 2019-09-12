@@ -635,13 +635,17 @@ export class WalletService {
    * @memberof WalletService
    */
   filterAccount(byName: string = '', byDefault: boolean = null, byAddress = ''): AccountsInterface {
-    if (byDefault !== null && byName === '') {
-      return this.currentWallet.accounts.find(elm => elm.default === true);
-    } else if (byName !== '') {
-      return this.currentWallet.accounts.find(elm => elm.name === byName);
-    } else {
-      return this.currentWallet.accounts.find(elm => this.proximaxProvider.createFromRawAddress(elm.address).pretty() === byAddress);
+    if (this.currentWallet && this.currentWallet.accounts && this.currentWallet.accounts.length > 0){
+      if (byDefault !== null && byName === '') {
+        return this.currentWallet.accounts.find(elm => elm.default === true);
+      } else if (byName !== '') {
+        return this.currentWallet.accounts.find(elm => elm.name === byName);
+      } else {
+        return this.currentWallet.accounts.find(elm => this.proximaxProvider.createFromRawAddress(elm.address).pretty() === byAddress);
+      }
     }
+
+    return null;
   }
 
   /**
