@@ -28,7 +28,7 @@
 
         <!-- SELECT ACCOUNT TO CONVERT-->
         <div class="row mt-1rem">
-          <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto">
+          <div class="col-11 col-sm-12 col-md-12 col-lg-8 mx-auto">
 
             <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
               class="selectWrapper" [items]="currentAccounts" formControlName="selectAccount" bindLabel="label"
@@ -51,16 +51,26 @@
         </div>
         <!-- MIN APPROVA  AND  MIN REMOVE -->
         <div class="row mt-1rem">
-          <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto">
+          <div class="col-11 col-sm-12 col-md-12 col-lg-8 mx-auto">
             <div class="row padding">
               <!-- MIN APPROVA -->
-              <div class="col-12 col-md-6">
-                <div class="row margin-rem0">
-                  <div class="col-8">
-                    Minimum Cosignatories to approve transaction
+              <div class="col-6 col-md-4 col-sm-6">
+                  <div class="row margin-rem0">
+                      <div class="col-10">
+                          Minimum Cosignatories to...
+                      </div>
+
+                      <div class="col-2"><i class="fa fa-angle-right fs-3rem" aria-hidden="true"></i></div>
                   </div>
-                  <div class="col-3 col-padding-left-rem0">
-                    <div class="md-form form-sm mt-1rem mb-0rem">
+              </div>
+
+              <div class="col-12 col-md-4 col-sm-6">
+                <div class="row margin-rem0">
+                  <div class="col-6">
+                     approve transaction
+                  </div>
+                  <div class="col-6 col-padding-left-rem0">
+                      <div class="md-form form-sm mt-03rem mb-0rem">
                       <input max="{{minApprovaMaxLength}}" min="{{minApprovaMinLength}}"
                         formControlName="minApprovalDelta" required mdbInputDirective mdbValidate
                         [validateSuccess]="true" [validateError]="true" type="number" id="minApprovalDelta"
@@ -76,13 +86,13 @@
                 </div>
               </div>
               <!-- MIN REMOVE-->
-              <div class="col-12 col-md-6">
+              <div class="col-12 col-md-4 col-sm-6">
                 <div class="row margin-rem0">
-                  <div class="col-8">
-                    Minimum Cosignatories to delete users
+                  <div class="col-6">
+                     delete users
                   </div>
-                  <div class="col-3 col-padding-left-rem0">
-                    <div class="md-form form-sm mt-1rem mb-0rem">
+                  <div class="col-6 col-padding-left-rem0">
+                      <div class="md-form form-sm mt-03rem mb-0rem">
                       <input max="{{minApprovaMaxLength}}" min="{{minApprovaMinLength}}"
                         formControlName="minRemovalDelta" required mdbInputDirective mdbValidate
                         [validateSuccess]="true" [validateError]="true" type="number" id="minRemovalDelta"
