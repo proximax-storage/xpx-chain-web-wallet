@@ -14,7 +14,7 @@
   </div>
   <!-- END TITLE AND DESCRIPTION -->
   <div *ngIf="!showCertificate">
-    <app-transfer-assets (changeView)="viewCertificate($event)"></app-transfer-assets>
+    <app-transfer-assets (changeView)="viewCertificate($event)" [route]="routeCertificate"></app-transfer-assets>
   </div>
 
   <div *ngIf="showCertificate">

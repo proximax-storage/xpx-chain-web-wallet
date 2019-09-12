@@ -1,9 +1,12 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { WalletService } from 'src/app/wallet/services/wallet.service';
 import { NemServiceService } from 'src/app/shared/services/nem-service.service';
 import { FormGroup, Validators, FormBuilder, AbstractControl } from '@angular/forms';
 import { ConfigurationForm, SharedService } from 'src/app/shared/services/shared.service';
 import { PlainMessage } from 'nem-library';
+import { Router } from '@angular/router';
+import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
+import { AppConfig } from 'src/app/config/app.config';
 
 @Component({
   selector: 'app-transfer-assets',
@@ -13,6 +16,7 @@ import { PlainMessage } from 'nem-library';
 export class TransferAssetsComponent implements OnInit {
 
   @Output() changeView = new EventEmitter();
+  @Input() route: string;
 
   accountListVisible: boolean = false;
   formTransfer: FormGroup;
@@ -32,22 +36,28 @@ export class TransferAssetsComponent implements OnInit {
     private walletService: WalletService,
     private fb: FormBuilder,
     private nemService: NemServiceService,
-    private sharedService: SharedService
+    private sharedService: SharedService,
+    private router: Router,
+    private proximaxService: ProximaxProvider
   ) { }
 
-  ngOnInit() {
-    this.configurationForm = this.sharedService.configurationForm;
-    this.accountCreated = this.walletService.accountWalletCreated;
-    this.quantity = this.walletService.accountInfoNis1.quantity;
-    this.optionsXPX = {
-      prefix: '',
-      thousands: ',',
-      decimal: '.',
-      precision: this.walletService.accountInfoNis1.properties.divisibility
+  async ngOnInit() {
+    if (this.walletService.accountWalletCreated) {
+      this.configurationForm = this.sharedService.configurationForm;
+      this.accountCreated = this.walletService.accountWalletCreated;
+      this.quantity = this.walletService.accountInfoNis1.quantity;
+      this.optionsXPX = {
+        prefix: '',
+        thousands: ',',
+        decimal: '.',
+        precision: this.walletService.accountInfoNis1.properties.divisibility
+      }
+      this.createFormTransfer();
+      console.log('\n\n\n\nValue of this.walletService.accountInfoNis1', this.walletService.accountInfoNis1, '\n\n\n\nEnd value\n\n');
+      console.log('\n\n\n\nValue of this.accountCreated', this.accountCreated, '\n\n\n\nEnd value\n\n');
+    } else {
+      this.router.navigate([`/${AppConfig.routes.home}`]);
     }
-    console.log('\n\n\n\nValue of this.walletService.accountInfoNis1', this.walletService.accountInfoNis1, '\n\n\n\nEnd value\n\n');
-    console.log('\n\n\n\nValue of this.accountCreated', this.accountCreated, '\n\n\n\nEnd value\n\n');
-    this.createFormTransfer();
   }
 
   /**
@@ -107,8 +117,11 @@ export class TransferAssetsComponent implements OnInit {
     console.log('\n\n\n\nValue quantity:\n', quantity, '\n\n\n\nEnd value\n\n');
     if (this.walletService.decrypt(common, this.accountCreated.dataAccount)) {
       console.log('\n\n\n\nValue common:\n', common, '\n\n\n\nEnd value\n\n');
+      const catapultAccount = this.proximaxService.getPublicAccountFromPrivateKey(common['privateKey'], this.accountCreated.data.network);
+      console.log('\n\n\n\nValue catapultAccount:\n', catapultAccount, '\n\n\n\nEnd value\n\n');
+
       const account = this.nemService.createAccountPrivateKey(common['privateKey']);
-      const transaction = await this.nemService.createTransaction(PlainMessage.create('testtttt'),  this.walletService.accountInfoNis1.assetId, quantity);
+      const transaction = await this.nemService.createTransaction(PlainMessage.create(catapultAccount.publicKey), this.walletService.accountInfoNis1.assetId, quantity);
       this.nemService.anounceTransaction(transaction, account)
         .then(resp => {
           console.log('\n\n\n\nValue resp:\n', resp, '\n\n\n\nEnd value\n\n');
@@ -123,5 +136,9 @@ export class TransferAssetsComponent implements OnInit {
           this.spinnerVisibility = false
         });
     }
+  }
+
+  navToRoute() {
+    this.router.navigate([this.route]);
   }
 }

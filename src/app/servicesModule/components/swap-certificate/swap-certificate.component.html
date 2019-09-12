@@ -10,18 +10,26 @@
             <div class="background-white col-sm-12 col-md-8 col-lg-8">
               <div class="row p-1rem">
                 <div class="col-12 mb-1rem">
-                  <span class="word-break-all fs-08rem"><b class="fw-bold">Timestamp: </b>{{ timestamp }}</span>
+                  <span class="word-break-all fs-08rem"><b class="fw-bold">NIS1 Timestamp: </b>{{ timestamp }}</span>
                 </div>
                 <div class="col-12 mb-1rem">
-                  <span class="word-break-all fs-08rem"><b class="fw-bold">NIS1 Public Key: </b>{{ publicKey }}</span>
+                  <span class="w-b-w fs-08rem"><b class="fw-bold">Sirius Address: </b>{{ address }}</span>
+                </div>
+                <div class="col-12 mb-1rem">
+                  <span class="w-b-w fs-08rem"><b class="fw-bold">NIS1 Public Key: </b>{{ publicKey }}</span>
                 </div>
                 <div class="col-12">
-                  <span class="word-break-all fs-08rem" (click)="goToNemExplorer()">
-                    <b class="fw-bold">Transation Hash: </b><span class="text-cl-m cursor-p">{{ transactionHash }}</span>
+                  <span class="w-b-w fs-08rem" (click)="goToNemExplorer()">
+                    <b class="fw-bold">NIS1 Transation Hash: </b><span class="text-cl-m cursor-p">{{ transactionHash }}</span>
                   </span>
                 </div>
                 <div class="col-12 txt-a-center ">
                   <img [src]="qrSrc" alt="qrCode">
+                </div>
+                <div class="col-12">
+                  <span class="w-b-w fs-08rem" (click)="goToNemExplorer()">
+                    <b class="fw-bold">Note:</b><span> The swap process may take a few hours to complete.</span>
+                  </span>
                 </div>
               </div>
             </div>
