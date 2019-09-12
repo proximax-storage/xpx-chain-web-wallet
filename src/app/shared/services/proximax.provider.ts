@@ -31,7 +31,6 @@ import {
   RegisterNamespaceTransaction,
   AccountInfo,
   MosaicNonce,
-  MosaicDefinitionTransaction,
   MosaicProperties,
   TransactionStatus,
   TransactionAnnounceResponse,
@@ -46,6 +45,7 @@ import {
   BlockHttp,
   BlockInfo
 } from 'tsjs-xpx-chain-sdk';
+import { MosaicDefinitionTransaction } from 'tsjs-xpx-chain-sdk/dist/src/model/transaction/MosaicDefinitionTransaction';
 import { mergeMap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { BlockchainNetworkType } from 'xpx2-ts-js-sdk';
@@ -212,6 +212,7 @@ export class ProximaxProvider {
    * @memberof ProximaxProvider
    */
   buildMosaicDefinition(params: any): MosaicDefinitionTransaction {
+    console.log(MosaicDefinitionTransaction)
     const mosaicDefinitionTransaction = MosaicDefinitionTransaction.create(
       Deadline.create(5),
       params.nonce,
