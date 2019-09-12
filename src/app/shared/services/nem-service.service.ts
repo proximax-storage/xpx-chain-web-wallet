@@ -1,46 +1,89 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from "@angular/core";
+import { environment } from 'src/environments/environment';
 import {
   NEMLibrary,
-  NetworkTypes,
   AccountHttp,
   Password,
-  SimpleWallet
-} from 'nem-library';
-
+  SimpleWallet,
+  Address,
+  AccountOwnedAssetService,
+  AssetHttp,
+  AssetTransferable,
+  ServerConfig,
+  Account,
+  TransferTransaction,
+  TimeWindow,
+  XEM,
+  PlainMessage,
+  AssetId,
+  TransactionHttp,
+} from "nem-library";
+import { HttpClient } from '@angular/common/http';
+import { SharedService } from './shared.service';
 @Injectable({
   providedIn: 'root'
 })
 export class NemServiceService {
+  wallets: SimpleWallet[];
   accountHttp: AccountHttp;
-  networkType: NetworkTypes;
+  assetHttp: AssetHttp;
+  transactionHttp: TransactionHttp;
+  nodes: ServerConfig[];
 
-  constructor() {
-    this.networkType = NetworkTypes.TEST_NET
-    NEMLibrary.bootstrap(this.networkType);
-    this.accountHttp = new AccountHttp();
-    console.log('------------This is node connection NIS-1---------', this.accountHttp);
+  constructor(
+    private sharedService: SharedService
+  ) {
+    NEMLibrary.bootstrap(environment.nis1.networkType);
+    this.nodes = environment.nis1.nodes;
+    this.accountHttp = new AccountHttp(this.nodes);
+    this.transactionHttp = new TransactionHttp(this.nodes);
+    this.assetHttp = new AssetHttp(this.nodes);
+    // this.accountHttp = new AccountHttp();
+    // this.assetHttp = new AssetHttp();
+    // this.transactionHttp = new TransactionHttp();
   }
 
   /**
-   * Method to create a Simple Wallet from a private key
-   * 
-   * @param {string} privateKey
-   * @param {string} password
-   * @returns SimpleWallet
+   * Create Wallet from private key
+   * @param walletName wallet idenitifier for app
+   * @param password wallet's password
+   * @param privateKey account privateKey
+   * @param selected network
+   * @return Promise with wallet created
    */
-  createWalletPrivateKey(privateKey, password) {
-    const pass = new Password(password);
-    const simpleWallet = SimpleWallet.createWithPrivateKey("simple wallet", pass, privateKey);
-    console.log('this is a Simple wallet \n\n', simpleWallet);
+  createPrivateKeyWallet(walletName: string, password: string, privateKey: string): SimpleWallet {
+    return SimpleWallet.createWithPrivateKey(
+      walletName,
+      new Password(password),
+      privateKey
+    );
+  }
 
-    this.accountHttp.getFromAddress(simpleWallet.address).subscribe(element => {
-      console.log('-----infoAccount----\n\n\n', element);
+  getOwnedMosaics(address: Address): Promise<AssetTransferable[]> {
+    let accountOwnedMosaics = new AccountOwnedAssetService(this.accountHttp, this.assetHttp);
+    return accountOwnedMosaics.fromAddress(address).toPromise();
+  }
 
-    });
+  createAccountPrivateKey(privateKey: string) {
+    return Account.createWithPrivateKey(privateKey);
+  }
 
-    // let accountOwnedMosaics = new AccountOwnedMosaicsService(new AccountHttp(), new MosaicHttp());
-    // accountOwnedMosaics.fromAddress(address).subscribe(mosaics => {
-    //   console.log(mosaics);
-    // });
+  async createTransaction(message: PlainMessage, assetId: AssetId, quantity: number) {
+    const resultAssets = await this.assetHttp.getAssetTransferableWithRelativeAmount(assetId, quantity).toPromise();
+
+    console.log('\n\n\n\nValue resultAssets:\n', resultAssets, '\n\n\n\nEnd value\n\n');
+    return TransferTransaction.createWithAssets(
+      TimeWindow.createWithDeadline(),
+      new Address(environment.nis1.address),
+      [resultAssets],
+      message
+    );
+  }
+
+  anounceTransaction(transferTransaction: TransferTransaction, cosignerAccount: Account) {
+    const signedTransaction = cosignerAccount.signTransaction(transferTransaction);
+    console.log('\n\n\n\nValue signedTransaction:\n', signedTransaction, '\n\n\n\nEnd value\n\n');
+
+    return this.transactionHttp.announceTransaction(signedTransaction).toPromise();
   }
 }

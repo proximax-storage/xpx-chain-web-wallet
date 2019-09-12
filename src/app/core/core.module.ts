@@ -28,6 +28,8 @@ import { StringFilterPipe } from '../shared/pipes/string-filter.pipe';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 import { AttestationTypeComponent } from '../dashboard/components/attestation-type/attestation-type.component';
 import { VoteTypeComponent } from '../dashboard/components/vote-type/vote-type.component';
+import { TransferAssetsComponent } from '../servicesModule/components/transfer-assets/transfer-assets.component';
+import { SwapCertificateComponent } from '../servicesModule/components/swap-certificate/swap-certificate.component';
 
 const ngxUiLoaderConfig: NgxUiLoaderConfig = {
   bgsColor: '#306eb5',
@@ -57,7 +59,9 @@ const components = [
   MosaicAliasComponent,
   AddressAliasTypeComponent,
   AttestationTypeComponent,
-  VoteTypeComponent
+  VoteTypeComponent,
+  TransferAssetsComponent,
+  SwapCertificateComponent
 ]
 
 const moduls = [

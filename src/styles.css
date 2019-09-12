@@ -744,6 +744,10 @@ body {
   background: #306EB5 !important;
 }
 
+.background-blue-gradient {
+  background: -webkit-linear-gradient(top, #5aa6db, #306EB5)
+}
+
 .background-btn-inverse {
   background-color: white !important;
   border: 2px solid #306EB5 !important;
@@ -950,6 +954,8 @@ input[type=text] {
   border: 1px solid #ced4da;
   border-radius: 1.5rem !important;
   padding-left: 1rem;
+  padding-right: 1rem;
+  box-sizing: border-box;
 }
 
 .md-form input[type=text]:focus:not([readonly]),
@@ -1716,4 +1722,13 @@ ngx-dropzone-label {
 
 ul.stepper.horizontal .step-title {
   max-width: 20rem !important;
+}
+
+.label-i {
+  position: absolute;
+  margin-top: -50px;
+  padding: 12px;
+  color: #b5b5b5;
+  font-size: .8rem;
+  padding-top: .8rem;
 }

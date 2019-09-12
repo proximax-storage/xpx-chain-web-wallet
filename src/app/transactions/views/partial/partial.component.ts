@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { PublicAccount, AggregateTransaction, Account, MultisigAccountInfo, Address, Transaction } from 'tsjs-xpx-chain-sdk';
 import { PaginationInstance } from 'ngx-pagination';
 import { first } from 'rxjs/operators';
@@ -8,6 +8,7 @@ import { WalletService, AccountsInfoInterface, AccountsInterface } from '../../.
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 import { TransactionsInterface, TransactionsService } from '../../services/transactions.service';
 import { SharedService, ConfigurationForm } from '../../../shared/services/shared.service';
+import { ModalDirective } from 'ng-uikit-pro-standard';
 
 @Component({
   selector: 'app-partial',
@@ -16,6 +17,7 @@ import { SharedService, ConfigurationForm } from '../../../shared/services/share
 })
 export class PartialComponent implements OnInit {
 
+  @ViewChild('modalPartialTransaction', { static: true }) modalPartial: ModalDirective;
   account: AccountsInterface = null;
   accountSelected = '';
   arraySelect: Array<object> = [];
@@ -64,7 +66,10 @@ export class PartialComponent implements OnInit {
   ngOnInit() {
     this.configurationForm = this.sharedService.configurationForm;
     this.typeTransactions = this.transactionService.getTypeTransactions();
-    this.getAccountsInfo();
+    this.transactionService.getAggregateBondedTransactions$().subscribe(
+      next => this.aggregateTransactions = next
+    );
+    // this.getAccountsInfo();
   }
 
   /**
@@ -161,7 +166,7 @@ export class PartialComponent implements OnInit {
             }
           });
 
-          this.getAggregateBondedTransactions(publicsAccounts);
+         // this.getAggregateBondedTransactions(publicsAccounts);
         }
       }
     ));
@@ -173,7 +178,7 @@ export class PartialComponent implements OnInit {
    * @param {PublicAccount} publicAccount
    * @memberof PartialComponent
    */
-  getAggregateBondedTransactions(publicsAccounts: PublicAccount[]) {
+  /*getAggregateBondedTransactions(publicsAccounts: PublicAccount[]) {
     publicsAccounts.forEach(publicAccount => {
       this.proximaxProvider.getAggregateBondedTransactions(publicAccount).pipe(first()).subscribe(
         aggregateTransaction => {
@@ -188,7 +193,7 @@ export class PartialComponent implements OnInit {
         }
       );
     });
-  }
+  }*/
 
   /**
    *
@@ -206,6 +211,7 @@ export class PartialComponent implements OnInit {
         const transaction: any = this.dataSelected.data;
         const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
         this.password = '';
+        this.modalPartial.hide();
         this.proximaxProvider.cosignAggregateBondedTransaction(transaction, account).subscribe(
           next => {
             console.log(next);

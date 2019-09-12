@@ -8,6 +8,7 @@ import { NamespacesService } from '../../../servicesModule/services/namespaces.s
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 import { AppConfig } from '../../../config/app.config';
 import { ServicesModuleService } from '../../../servicesModule/services/services-module.service';
+import { NemServiceService } from 'src/app/shared/services/nem-service.service';
 
 
 @Component({
@@ -28,6 +29,8 @@ export class ImportWalletComponent implements OnInit {
     value: NetworkType.TEST_NET,
     label: 'TEST NET'
   }];
+  nis1Account = null;
+  spinnerVisibility = false;
 
   constructor(
     private fb: FormBuilder,
@@ -35,9 +38,9 @@ export class ImportWalletComponent implements OnInit {
     private walletService: WalletService,
     private proximaxProvider: ProximaxProvider,
     private router: Router,
-    private serviceModuleService: ServicesModuleService
-  ) {
-  }
+    private serviceModuleService: ServicesModuleService,
+    private nemProvider: NemServiceService
+  ) { }
 
   ngOnInit() {
     this.configurationForm = this.sharedService.configurationForm;
@@ -78,8 +81,8 @@ export class ImportWalletComponent implements OnInit {
             ]
           ],
         }, {
-          validator: this.sharedService.equalsPassword
-        }),
+        validator: this.sharedService.equalsPassword
+      }),
     });
   }
 
@@ -99,7 +102,7 @@ export class ImportWalletComponent implements OnInit {
     return;
   }
 
-  importSimpleWallet() {
+  async importSimpleWallet() {
     if (this.importWalletForm.valid && this.isValid) {
       //verify if name wallet isset
       const existWallet = this.walletService.getWalletStorage().find(
@@ -115,9 +118,24 @@ export class ImportWalletComponent implements OnInit {
         const privateKey = this.importWalletForm.get('privateKey').value;
         const password = this.proximaxProvider.createPassword(this.importWalletForm.controls.passwords.get('password').value);
         const wallet = this.proximaxProvider.createAccountFromPrivateKey(nameWallet, password, privateKey, network);
+        // const nis1Wallet = this.nemProvider.createPrivateKeyWallet(nameWallet, this.importWalletForm.controls.passwords.get('password').value, privateKey);
+
+        const nis1Wallet = this.nemProvider.createPrivateKeyWallet(nameWallet, this.importWalletForm.controls.passwords.get('password').value, privateKey);
+        console.log('\n\n\n\nValue of nis1', nis1Wallet, '\n\n\n\nEnd value\n\n');
+        const mosaicNis1 = await this.nemProvider.getOwnedMosaics(nis1Wallet.address);
+        console.log('\n\n\n\nValue of mosaics', mosaicNis1, '\n\n\n\nEnd value\n\n');
+        if (mosaicNis1.length > 0) {
+          for (const el of mosaicNis1) {
+            if (el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx') {
+              this.nis1Account = nis1Wallet;
+              this.walletService.accountInfoNis1 = el;
+              console.log('\n\n\n\nValue of mosaicXPX', this.nis1Account, '\n\n\n\nEnd value\n\n');
+            }
+          }
+        }
 
         console.log('this a wallet', wallet);
-
+        console.log('this a nis1Wallet', this.nis1Account);
 
         const accountBuilded = this.walletService.buildAccount({
           address: wallet.address['address'],
@@ -133,7 +151,8 @@ export class ImportWalletComponent implements OnInit {
               encryptedPrivateKey.encryptedKey,
             wallet.encryptedPrivateKey.iv
           ).toUpperCase(), wallet.network),
-          isMultisign: null
+          isMultisign: null,
+          nis1Account: this.nis1Account
         });
 
         this.clearForm();
@@ -151,7 +170,11 @@ export class ImportWalletComponent implements OnInit {
         });
 
         this.walletService.saveWalletStorage(nameWallet, accountBuilded);
-        this.router.navigate([`/${AppConfig.routes.walletCreated}`]);
+        if (this.nis1Account !== null) {
+          this.router.navigate([`/${AppConfig.routes.accountNis1Found}/${privateKey}`]);
+        } else {
+          this.router.navigate([`/${AppConfig.routes.walletCreated}`]);
+        }
       } else {
         //Error of repeated Wallet
         this.clearForm('nameWallet');

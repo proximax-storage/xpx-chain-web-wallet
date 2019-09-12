@@ -27,6 +27,7 @@ export class WalletService {
   currentAccount: AccountsInterface = null;
   currentWallet: CurrentWalletInterface = null;
 
+  accountInfoNis1: any = null;
 
   currentAccountObs: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   currentAccountObs$: Observable<any> = this.currentAccountObs.asObservable();
@@ -64,7 +65,8 @@ export class WalletService {
       name: data.nameAccount,
       network: data.network,
       publicAccount: data.publicAccount,
-      isMultisign: null
+      isMultisign: null,
+      nis1Account: data.nis1Account
     }
   }
 
@@ -156,7 +158,6 @@ export class WalletService {
   * @memberof WalletService
   */
   changeIsMultiSign(name: string, isMultisig: MultisigAccountInfo, publicAccount: PublicAccount) {
-    console.log(name, 'DATA MULTISIG \n\n', isMultisig);
     if (isMultisig) {
       // si es multifirma, preguntar
       if (isMultisig.multisigAccounts.length > 0) {
@@ -183,8 +184,6 @@ export class WalletService {
         });
       }
     }
-
-
 
     const myAccounts: AccountsInterface[] = Object.assign(this.currentWallet.accounts);
     const othersWallet: CurrentWalletInterface[] = this.getWalletStorage().filter(
@@ -441,20 +440,14 @@ export class WalletService {
    * @param pushed
    */
   async searchAccountsInfo(accounts: AccountsInterface[], pushed = false) {//: Promise<AccountsInfoInterface[]> {
-    let findXPX = null;
     let counter = 0;
     const mosaicsIds: (NamespaceId | MosaicId)[] = [];
+    const accountsInfo: AccountsInfoInterface[] = [];
     const promise = new Promise(async (resolve, reject) => {
       accounts.forEach((element, i) => {
         this.proximaxProvider.getAccountInfo(this.proximaxProvider.createFromRawAddress(element.address)).pipe(first()).subscribe(
           async accountInfo => {
             if (accountInfo) {
-              console.log('----accountInfo---', accountInfo);
-              /*if (element.default) {
-                const mosaics = accountInfo.mosaics.slice(0);
-                findXPX = mosaics.find(mosaic => mosaic.id.toHex() === environment.mosaicXpxInfo.id);
-              }*/
-
               accountInfo.mosaics.map(n => n.id).forEach(id => {
                 const pushea = mosaicsIds.find(next => next.id.toHex() === id.toHex());
                 if (!pushea) {
@@ -470,21 +463,24 @@ export class WalletService {
             } catch (error) {
               isMultisig = null
             }
-            const accountsInfo = [{
+            const accountInfoBuilded = {
               name: element.name,
               accountInfo: accountInfo,
               multisigInfo: isMultisig
-            }];
+            };
 
+            accountsInfo.push(accountInfoBuilded);
             const publicAccount = this.proximaxProvider.createPublicAccount(element.publicAccount.publicKey, element.publicAccount.address.networkType);
             this.changeIsMultiSign(element.name, isMultisig, publicAccount)
-            this.setAccountsInfo(accountsInfo, true);
+            this.setAccountsInfo([accountInfoBuilded], true);
             counter = counter + 1;
             if (accounts.length === counter && mosaicsIds.length > 0) {
-              resolve(mosaicsIds);
+              resolve({
+                mosaicsId: mosaicsIds,
+                accountsInfo: accountsInfo
+              });
             }
           }, error => {
-            // console.log('ERROR TO SEARCH ACCOUNT INFO ---> ', error);
             const accountsInfo = [{
               name: element.name,
               accountInfo: null,
@@ -497,8 +493,6 @@ export class WalletService {
             if (accounts.length === counter && mosaicsIds.length > 0) {
               resolve(mosaicsIds);
             }
-
-
           }
         );
       });
@@ -524,7 +518,6 @@ export class WalletService {
       this.accountsInfo = accountsInfo;
     }
 
-    // console.log('accountinfo', this.accountsInfo);
     this.accountsInfoSubject.next(this.accountsInfo);
   }
 
@@ -684,6 +677,7 @@ export interface AccountsInterface {
   network: number;
   publicAccount: PublicAccount;
   isMultisign: MultisigAccountInfo;
+  nis1Account: any;
 }
 
 export interface AccountsInfoInterface {

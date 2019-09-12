@@ -1,3 +1,5 @@
+import { ServerConfig, NetworkTypes } from 'nem-library';
+
 // This file can be replaced during build by using the `fileReplacements` array.
 // `ng build ---prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
@@ -5,8 +7,8 @@
 export const environment = {
   production: false,
   itemBooksAddress: 'sw-books',
-  version: '0.2.6.10',
-  nameKeyNodeSelected: `sw-selected-node-02`,
+  version: '0.2.6.12',
+  nameKeyNodeSelected: `sw-selected-node`,
   nameKeyMosaicNamespaceLinked: `sw-m-n-linked`,
   nameKeyWalletStorage: `sw-05`,
   nameKeyNodeStorage: `sw-nodes-02`,
@@ -47,6 +49,14 @@ export const environment = {
     private_key: '52681268C37552C6F88EA063EBDDAB0B4A88032DD93CF6696C5A57B00A24FD12',
     public_key: 'B5575AE4511694DCD0F7A8D0FAC1B327C1743334523075617EACE4997468D09E',
     address_public_test: 'VBBLJ4-PD73RT-PXBTJY-ZQX426-NU7ETW-O3AZ65-YMVM'
+  },
+  nis1: {
+    url: 'http://18.231.166.212:7890',
+    networkType: NetworkTypes.TEST_NET,
+    address: 'TBF4LAZUEJMBIOC6J24D6ZGGXE5W775TX555CTTN',
+    nodes: [
+      { protocol: "http", domain: "18.231.166.212", port: 7890 } as ServerConfig
+    ],
   }
 };
 

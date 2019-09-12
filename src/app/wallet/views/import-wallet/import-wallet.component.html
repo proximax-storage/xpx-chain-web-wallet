@@ -113,7 +113,9 @@
 
       <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
         <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
-          size="md">
+          size="md" (click)="spinnerVisibility = true">
+          <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
+            *ngIf="spinnerVisibility"></span>
           <span class="fs-1-2em color-white">CREATE</span>
         </button>
       </div>
