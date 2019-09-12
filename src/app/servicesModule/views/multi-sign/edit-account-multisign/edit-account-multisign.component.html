@@ -28,7 +28,7 @@
 
                 <!-- ACCOUNT EDIT -->
                 <div class="row ml-01rem">
-                    <div class="col-11 col-md-10 col-lg-8 mx-auto">
+                    <div class="col-11 col-md-12 col-lg-8 mx-auto">
                         <div class="box-grey pt-1rem pb-1rem d-flex">
                             <div class="row">
                                 <div class="col-12">
@@ -43,23 +43,37 @@
                 </div>
                 <!-- MIN APPROVA  AND  MIN REMOVE -->
                 <div class="row">
-                    <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto">
+                    <div class="col-11 col-sm-12 col-md-12 col-lg-8 mx-auto">
                         <div class="row padding">
                             <!-- MIN APPROVA -->
-                            <div class="col-12 col-md-6">
+                            <div class="col-6 col-md-4 col-sm-6">
                                 <div class="row margin-rem0">
-                                    <div class="col-8">
-                                            Minimum Cosignatories to approve transaction
+                                    <div class="col-10">
+                                        Minimum Cosignatories to...
                                     </div>
-                                    <div class="col-3 col-padding-left-rem0">
-                                        <div class="md-form form-sm mt-1rem mb-0rem">
+
+                                    <div class="col-2"><i class="fa fa-angle-right fs-3rem" aria-hidden="true"></i></div>
+                                </div>
+                            </div>
+
+                            
+
+
+                            <div class="col-12 col-md-4 col-sm-6">
+                                <div class="row margin-rem0">
+                                    <div class="col-6">
+                                        approve transaction
+                                    </div>
+                                    <div class="col-6 col-padding-left-rem0">
+                                        <div class="md-form form-sm mt-03rem mb-0rem">
                                             <input max="{{minApprovaMaxLength}}" min="{{minApprovaMinLength}}"
                                                 formControlName="minApprovalDelta" required mdbInputDirective
                                                 mdbValidate [validateSuccess]="true" [validateError]="true" type="number"
                                                 id="minApprovalDelta" class="form-control form-control-sm input-border"
                                                 placeholder="Min approval" onkeyup="javascript:this.value=this.value.toLowerCase();">
                                             <!-- VALIDATION -->
-                                            <span *ngIf="isMultisig" style="font-size: 0.6rem !important;">Min Approva :
+                                            <span *ngIf="isMultisig" style="font-size: 0.6rem !important;">Min Approva
+                                                :
                                                 {{accountInfo.multisigInfo.minApproval}}</span>
                                             <mdb-error *ngIf="validateInput('minApprovalDelta', '').invalid && (validateInput('minApprovalDelta', '').dirty || validateInput('minApprovalDelta', '').touched)">
                                                 <span>Input invalid</span>
@@ -69,19 +83,20 @@
                                 </div>
                             </div>
                             <!-- MIN REMOVE-->
-                            <div class="col-12 col-md-6">
+                            <div class="col-12 col-md-4 col-sm-6">
                                 <div class="row margin-rem0">
-                                    <div class="col-8">
-                                        Minimum Cosignatories to delete users
+                                    <div class="col-6">
+                                     delete users
                                     </div>
-                                    <div class="col-3 col-padding-left-rem0">
-                                        <div class="md-form form-sm mt-1rem mb-0rem">
+                                    <div class="col-6 col-padding-left-rem0">
+                                        <div class="md-form form-sm mt-03rem  mb-0rem">
                                             <input max="{{minApprovaMaxLength}}" min="{{minApprovaMinLength}}"
                                                 formControlName="minRemovalDelta" required mdbInputDirective
                                                 mdbValidate [validateSuccess]="true" [validateError]="true" type="number"
                                                 id="minRemovalDelta" class="form-control form-control-sm input-border"
                                                 placeholder="Min removal" onkeyup="javascript:this.value=this.value.toLowerCase();">
-                                            <span *ngIf="isMultisig"   style="font-size: 0.6rem !important;" >Min Removal :
+                                            <span *ngIf="isMultisig" style="font-size: 0.6rem !important;">Min Removal
+                                                :
                                                 {{accountInfo.multisigInfo.minRemoval}}</span>
 
                                             <!-- VALIDATION -->
@@ -102,11 +117,14 @@
                     <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto">
                         <div class="row">
                             <div class="col-12">
-                                <span class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">Approved Cosignatories
+
+                                <!-- <mdb-icon fas icon="angle-right"></mdb-icon> -->
+                                <span class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">Approved
+                                    Cosignatories
                                 </span>
                             </div>
                             <ng-container *ngFor="let cosign of cosignatoryList">
-                                <div class="col-12" >
+                                <div class="col-12">
                                     <!-- 
                                         <td class="text-center" style="cursor: pointer;" (click)="deleteCosignatory(cosign.id ,cosign.disableItem, cosign.type)">
                                                 <i *ngIf="cosign.action =='Add'" [style.color]="getColor(cosign.type)"
@@ -116,8 +134,8 @@
                                             </td> -->
 
 
-                                    <span class="fs-07rem fw-600 txt-a-center "> <i [class.disabled]="isDisabledList"  [style.color]="getColor(cosign.type)"
-                                            (click)="deleteCosignatory(cosign.id ,cosign.disableItem, cosign.type)"
+                                    <span class="fs-07rem fw-600 txt-a-center "> <i [class.disabled]="isDisabledList"
+                                            [style.color]="getColor(cosign.type)" (click)="deleteCosignatory(cosign.id ,cosign.disableItem, cosign.type)"
                                             style="cursor: pointer;" class="fa fa-trash fs-1rem" aria-hidden="true"></i>
                                         {{cosign.publicAccount.address.plain()}}
                                     </span>
@@ -181,11 +199,12 @@
                             </div>
                             <!--SHOW CONTACT-->
                             <ng-container>
+
                                 <div class="col-4 col-sm-3 col-md-2 d-flex justify-content-center align-items-center pt-10px">
-                                    <div [attr.disabled]="listContact.length === 0" class="background-gray-icons p-12px bord-rad-25px cursor-p"
-                                        (click)="showContacts = (listContact.length > 0) ? !showContacts : showContacts"
+                                    <div [attr.disabled]="listContact.length === 0 || (editAccountMultsignForm.status=='DISABLED')"
+                                        class="background-gray-icons p-12px bord-rad-25px cursor-p" (click)="showContacts = (listContact.length > 0 &&  (editAccountMultsignForm.status !== 'DISABLED')) ? !showContacts : showContacts"
                                         [title]="(!showContacts) ? 'Show contacts': 'Hide contacts'">
-                                        <img class=" w-30px" [src]="(!showContacts && listContact.length === 0) ?
+                                        <img class=" w-30px" [src]="(!showContacts && listContact.length === 0 || (editAccountMultsignForm.status=='DISABLED')) ?
 											'assets/images/img/icon-address-book-gray-28h-proximax-sirius-wallet.svg' :
 											'assets/images/img/icon-address-green-book-16h-proximax-sirius-wallet.svg'
 											">
@@ -249,8 +268,9 @@
 
                         <div class="row">
                             <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-                                <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
-                                    size="md" (click)="clearForm()">
+                                <button [disabled]="editAccountMultsignForm.status=='DISABLED'" mdbBtn type="button"
+                                    rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md"
+                                    (click)="clearForm()">
                                     <span class="fs-1-2em color-white">CLEAR</span>
                                 </button>
                             </div>
