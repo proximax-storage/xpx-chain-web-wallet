@@ -157,10 +157,9 @@ export class DataBridgeService {
     const currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
     currentWallet.accounts.forEach(element => {
       const address = this.proximaxProvider.createFromRawAddress(element.address);
-      // console.log('TO CONNECT --> ', address);
       connector.aggregateBondedRemoved(address).subscribe((aggregateBondedRemoved: string) => {
         // console.log('THE ADDRESS ---> ', address);
-        // console.log('aggregateBondedRemoved--> ', aggregateBondedRemoved);
+        console.log('aggregateBondedRemoved--> ', aggregateBondedRemoved);
         this.setTransactionStatus({
           'type': 'aggregateBondedRemoved',
           'data': aggregateBondedRemoved
@@ -185,8 +184,7 @@ export class DataBridgeService {
 
       connector.aggregateBondedAdded(address).subscribe((aggregateBondedAdded: Transaction) => {
         // console.log('THE ADDRESS ---> ', address);
-        // console.log('aggregateBondedAdded--> ', aggregateBondedAdded);
-
+        console.log('aggregateBondedAdded--> ', aggregateBondedAdded);
         this.setTransactionStatus({
           'type': 'aggregateBondedAdded',
           'data': aggregateBondedAdded
@@ -210,8 +208,7 @@ export class DataBridgeService {
       const address = this.proximaxProvider.createFromRawAddress(element.address);
       connector.cosignatureAdded(address).subscribe((cosignatureSignedTransaction: CosignatureSignedTransaction) => {
         // console.log('THE ADDRESS ---> ', address);
-        // console.log('CosignatureSignedTransaction--> ', cosignatureSignedTransaction);
-
+        console.log('CosignatureSignedTransaction--> ', cosignatureSignedTransaction);
         this.setTransactionStatus({
           'type': 'cosignatureSignedTransaction',
           'data': cosignatureSignedTransaction

@@ -106,28 +106,10 @@ export class PartialComponent implements OnInit {
    * @memberof PartialComponent
    */
   find(transaction: TransactionsInterface) {
-    console.log('----------TRANSACTION ', transaction);
-    transaction.data['innerTransactions'].forEach(element => {
-      console.log(element);
-      const nameType = Object.keys(this.typeTransactions).find(x => this.typeTransactions[x].id === element.type);
-      element['nameType'] = (nameType) ? this.typeTransactions[nameType].name : element.type.toString(16).toUpperCase();
-
-      if (element.type === this.typeTransactions.modifyMultisigAccount.id) {
-        const data: ModifyMultisigAccountTransaction = element;
-        console.log('ModifyMultisigAccountTransaction.....', data);
-        // aqui debo verificar si mi cuenta esta dentro de inner transaction para poder firmarla
-        data.modifications.forEach(element => {
-          const findAddress = this.walletService.filterAccount('', null, element.cosignatoryPublicAccount.address.pretty());
-          console.log('findAddress ---> ', findAddress);
-
-        });
-      }
-    });
-
-
+    console.log('----------TRANSACTIONS----------', transaction);
     this.dataSelected = transaction;
     const accountMultisig = this.walletService.filterAccountInfo(transaction.data['innerTransactions'][0].signer.address.pretty(), true);
-    console.log(accountMultisig);
+    console.log('ACCOUNT MULTISIG -----> ', accountMultisig);
     if (accountMultisig && accountMultisig.multisigInfo.cosignatories && accountMultisig.multisigInfo.cosignatories.length > 0) {
       accountMultisig.multisigInfo.cosignatories.forEach(element => {
         const cosignatorie: AccountsInterface = this.walletService.filterAccount('', null, element.address.pretty());
@@ -150,6 +132,21 @@ export class PartialComponent implements OnInit {
         this.hidePassword = true;
       }
     }
+
+    transaction.data['innerTransactions'].forEach((element: any) => {
+      console.log('INNER TRANSACTIONS --->', element);
+      const nameType = Object.keys(this.typeTransactions).find(x => this.typeTransactions[x].id === element.type);
+      element['nameType'] = (nameType) ? this.typeTransactions[nameType].name : element.type.toString(16).toUpperCase();
+      if (element.type === this.typeTransactions.modifyMultisigAccount.id) {
+        const data: ModifyMultisigAccountTransaction = element;
+        console.log('ModifyMultisigAccountTransaction.....', data);
+        // aqui debo verificar si mi cuenta esta dentro de inner transaction para poder firmarla
+        data.modifications.forEach(element => {
+          const findAddress = this.walletService.filterAccount('', null, element.cosignatoryPublicAccount.address.pretty());
+          console.log('findAddress ---> ', findAddress);
+        });
+      }
+    });
   }
 
   /**
