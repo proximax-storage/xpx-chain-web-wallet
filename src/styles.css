@@ -268,6 +268,10 @@ body {
 
 /** TOP **/
 
+.pt-01rem {
+  padding-top: .1rem;
+}
+
 .pt-04rem {
   padding-top: .4rem;
 }
@@ -452,6 +456,10 @@ body {
   height: .6em;
 }
 
+.h-1-4em {
+  height: 1.4em;
+}
+
 .h-1-5em {
   height: 1.5em;
 }
@@ -514,6 +522,10 @@ body {
 
 .h-70px {
   height: 70px;
+}
+
+.h-90px {
+  height: 90px;
 }
 
 .h-100px {
@@ -588,6 +600,10 @@ body {
 
 .fs-08rem {
   font-size: .8rem !important;
+}
+
+.fs-085rem {
+  font-size: 0.85rem !important;
 }
 
 .fs-09rem {
@@ -762,6 +778,10 @@ body {
 
 .box-modal-grey {
   background: #e4e4e4;
+}
+
+.box-modal-grey-dark {
+  background: #666666;
 }
 
 .box-modal-white {
