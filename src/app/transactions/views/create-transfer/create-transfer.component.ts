@@ -810,6 +810,11 @@ export class CreateTransferComponent implements OnInit {
    */
   selectCosignatorie($event) {
     console.log('COSIGNATORIE SELECTED ', $event);
+    if ($event) {
+      this.cosignatorie = $event.value;
+    }else {
+      this.cosignatorie = null;
+    }
   }
 
   /**

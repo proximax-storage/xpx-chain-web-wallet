@@ -22,7 +22,6 @@ export class TransferTypeComponent implements OnInit {
   ngOnChanges(changes: SimpleChanges): void {
     this.searching = true;
     this.typeTransactionHex = `${this.transferTransaction.data['type'].toString(16).toUpperCase()}`;
-    console.log(this.transferTransaction);
   }
 
 }
