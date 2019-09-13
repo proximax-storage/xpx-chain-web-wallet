@@ -264,9 +264,7 @@ export class CreateTransferComponent implements OnInit {
    * @memberof CreateTransferComponent
    */
   ngOnDestroy(): void {
-    // console.log('----ngOnDestroy---');
     this.subscription.forEach(subscription => {
-      // console.log(subscription);
       subscription.unsubscribe();
     });
   }
