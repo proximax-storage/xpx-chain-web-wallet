@@ -8,9 +8,10 @@
       <div class="row">
         <div class="col-10 col-sm-12 col-md-12 mx-auto d-flex align-items-center box-grey">
           <div class="col-10">
-            <span class="color-black fw-bold">{{ accountCreated.wallet.name }}</span>
-            <span class="d-flex color-black">{{ accountCreated.dataAccount.nis1Account.address.pretty() }}</span>
-            <span class="d-flex color-black fw-bold">Balance: {{ quantity }} XPX <img src="./assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" class="ml-1rem" width="20px" alt="logo"></span>
+            <span class="color-black fw-bold">{{ accountCreated.name }}</span>
+            <span class="d-flex color-black">{{ accountCreated.nis1Account.address.pretty() }}</span>
+            <span class="d-flex color-black fw-bold">Balance: <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
+              *ngIf="searchBalance"></span> {{ quantity }} XPX <img src="./assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" class="ml-1rem" width="20px" alt="logo"></span>
           </div>
           <!-- <div class="col-2 text-center">
             <button mdbBtn mdbWavesEffect
@@ -31,7 +32,7 @@
             <div class="md-form form-sm mt-1rem mb-0rem">
               <input currencyMask [options]="optionsXPX" mdbInputDirective mdbValidate [validateSuccess]="true"
                 [validateError]="true" type="text" class="form-control form-control-sm input-border input-amount"
-                formControlName="amountXpx">
+                formControlName="amountXpx" [disabled]="disabledForm">
               <span class="label-i fw-600 text-cl-m cursor-p" (click)="selectMaxAmount()">USE MAX</span>
             </div>
           </div>
@@ -71,7 +72,7 @@
             <div class="md-form form-sm mt-1rem mb-0rem">
               <input [maxlength]="configurationForm.passwordWallet.maxLength"
                 [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" required
-                mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password"
+                mdbInputDirective mdbValidate [validateSuccess]="true" [disabled]="disabledForm" [validateError]="true" type="password"
                 id="password" class="form-control form-control-sm input-border" placeholder="Wallet password">
 
               <!-- VALIDATION -->

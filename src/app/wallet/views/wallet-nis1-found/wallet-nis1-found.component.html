@@ -9,13 +9,10 @@
       <hr class="mt-05rem mb-06rem">
     </div>
     <div class="col-12 d-flex justify-content-center">
-      <span class="fs-08rem txt-a-center line-h-1-2em">You recently imported Private Key</span>
+      <span class="fs-08rem txt-a-center line-h-1-2em">The private key that you imported recently</span>
     </div>
     <div class="col-12 d-flex justify-content-center">
-      <span class="fs-08rem txt-a-center line-h-1-2em">{{ privateKey }}</span>
-    </div>
-    <div class="col-12 d-flex justify-content-center">
-      <span class="fs-08rem txt-a-center line-h-1-2em">Has some assets on the NIS1 Blockchain</span>
+      <span class="fs-08rem txt-a-center line-h-1-2em">has assets in the NIS1 Blockchain</span>
     </div>
   </div>
   <!-- END TITLE AND DESCRIPTION -->
@@ -36,7 +33,7 @@
   <!-- BUTTON -->
   <div class="row mt-2rem">
     <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-      <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" [routerLink]="[goSignIn]" size="md">
+      <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" (click)="goToBack()" size="md">
         <span class="fs-1-2em color-white">NO INTERESTED</span>
       </button>
     </div>

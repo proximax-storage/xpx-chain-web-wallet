@@ -20,6 +20,8 @@ import {
 } from "nem-library";
 import { HttpClient } from '@angular/common/http';
 import { SharedService } from './shared.service';
+import { Observable } from 'rxjs';
+import { timeout } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root'
 })
@@ -38,9 +40,6 @@ export class NemServiceService {
     this.accountHttp = new AccountHttp(this.nodes);
     this.transactionHttp = new TransactionHttp(this.nodes);
     this.assetHttp = new AssetHttp(this.nodes);
-    // this.accountHttp = new AccountHttp();
-    // this.assetHttp = new AssetHttp();
-    // this.transactionHttp = new TransactionHttp();
   }
 
   /**
@@ -59,9 +58,9 @@ export class NemServiceService {
     );
   }
 
-  getOwnedMosaics(address: Address): Promise<AssetTransferable[]> {
+  getOwnedMosaics(address: Address): Observable<AssetTransferable[]> {
     let accountOwnedMosaics = new AccountOwnedAssetService(this.accountHttp, this.assetHttp);
-    return accountOwnedMosaics.fromAddress(address).toPromise();
+    return accountOwnedMosaics.fromAddress(address).pipe(timeout(3000));
   }
 
   createAccountPrivateKey(privateKey: string) {
@@ -85,5 +84,9 @@ export class NemServiceService {
     console.log('\n\n\n\nValue signedTransaction:\n', signedTransaction, '\n\n\n\nEnd value\n\n');
 
     return this.transactionHttp.announceTransaction(signedTransaction).toPromise();
+  }
+
+  createAddressToString(address: string) {
+    return new Address(address);
   }
 }

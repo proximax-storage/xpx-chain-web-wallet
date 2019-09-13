@@ -38,6 +38,10 @@ body {
   text-overflow: ellipsis
 }
 
+.w-e-nowrap {
+  white-space: nowrap;
+}
+
 /************* MARGIN **************/
 
 .m-0 {
@@ -1731,4 +1735,10 @@ ul.stepper.horizontal .step-title {
   color: #b5b5b5;
   font-size: .8rem;
   padding-top: .8rem;
+}
+
+/*********************************************************************/
+
+.mar-1rem {
+  margin: 1rem !important;
 }

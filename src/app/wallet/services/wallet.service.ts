@@ -2,14 +2,12 @@ import { Injectable } from '@angular/core';
 import { SimpleWallet, PublicAccount, AccountInfo, MultisigAccountInfo, NamespaceId, MosaicId } from 'tsjs-xpx-chain-sdk';
 import { crypto } from 'js-xpx-chain-library';
 import { AbstractControl } from '@angular/forms';
-import { BehaviorSubject, Observable, timer } from 'rxjs';
+import { BehaviorSubject, Observable, timer, Subject } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
 import { SharedService } from '../../shared/services/shared.service';
 import { ProximaxProvider } from '../../shared/services/proximax.provider';
 import { first } from 'rxjs/operators';
-import { resolve } from 'q';
-
 
 @Injectable({
   providedIn: 'root'
@@ -28,6 +26,7 @@ export class WalletService {
   currentWallet: CurrentWalletInterface = null;
 
   accountInfoNis1: any = null;
+  accountMosaicsNis1: any = null;
 
   currentAccountObs: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   currentAccountObs$: Observable<any> = this.currentAccountObs.asObservable();
@@ -40,6 +39,38 @@ export class WalletService {
     private proximaxProvider: ProximaxProvider
   ) {
 
+  }
+
+  /**
+   * 
+   * @param data 
+   */
+  setAccountInfoNis1(account: AccountsInterface) {
+    this.accountInfoNis1 = account;
+  }
+
+  /**
+   * 
+   * @param data 
+   */
+  getAccountInfoNis1() {
+    return this.accountInfoNis1;
+  }
+
+  /**
+   * 
+   * @param data 
+   */
+  setAccountMosaicsNis1(moosaic: any) {
+    this.accountMosaicsNis1 = moosaic;
+  }
+
+  /**
+   * 
+   * @param data 
+   */
+  getAccountMosaicsNis1() {
+    return this.accountMosaicsNis1;
   }
 
 
@@ -356,7 +387,6 @@ export class WalletService {
   getNameAccount$(): Observable<any> {
     return this.currentAccountObs$;
   }
-
 
   /**
    *

@@ -30,6 +30,8 @@ import { AuditApostilleComponent } from './views/apostille/audit-apostille/audit
 import { PollsComponent } from './views/voting/polls/polls.component';
 import { VoteInPollComponent } from './views/voting/vote-in-poll/vote-in-poll.component';
 import { Nis1AccountDetailsComponent } from './views/swap/nis1-account-details/nis1-account-details.component';
+import { AccountNis1FoundComponent } from './views/account/account-nis1-found/account-nis1-found.component';
+import { AccountNis1TransferXpxComponent } from './views/account/account-nis1-transfer-xpx/account-nis1-transfer-xpx.component';
 
 const routes: Routes = [
   {
@@ -352,6 +354,26 @@ const routes: Routes = [
       meta: {
         title: 'nis1AccountDetails.title',
         description: 'nis1AccountDetails.text',
+        override: true,
+      }
+    }
+  }, {
+    path: AppConfig.routes.accountNis1Found,
+    component: AccountNis1FoundComponent,
+    data: {
+      meta: {
+        title: 'accountNis1Found.title',
+        description: 'accountNis1Found.text',
+        override: true,
+      }
+    }
+  }, {
+    path: AppConfig.routes.accountNis1TransferXpx,
+    component: AccountNis1TransferXpxComponent,
+    data: {
+      meta: {
+        title: 'accountNis1TransferXpx.title',
+        description: 'accountNis1TransferXpx.text',
         override: true,
       }
     }

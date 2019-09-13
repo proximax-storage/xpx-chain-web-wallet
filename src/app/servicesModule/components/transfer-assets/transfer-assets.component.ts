@@ -7,6 +7,7 @@ import { PlainMessage } from 'nem-library';
 import { Router } from '@angular/router';
 import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
 import { AppConfig } from 'src/app/config/app.config';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-transfer-assets',
@@ -31,6 +32,11 @@ export class TransferAssetsComponent implements OnInit {
   };
   spinnerVisibility = false;
   availableContinue = false;
+  mosaics: any = null;
+  divisivility: string;
+  routeEvent: string = `/${AppConfig.routes.viewAllAccount}`;
+  disabledForm: boolean = true;
+  searchBalance: boolean = true;
 
   constructor(
     private walletService: WalletService,
@@ -38,25 +44,47 @@ export class TransferAssetsComponent implements OnInit {
     private nemService: NemServiceService,
     private sharedService: SharedService,
     private router: Router,
-    private proximaxService: ProximaxProvider
+    private proximaxService: ProximaxProvider,
+    private nemProvider: NemServiceService
   ) { }
 
   async ngOnInit() {
-    if (this.walletService.accountWalletCreated) {
-      this.configurationForm = this.sharedService.configurationForm;
-      this.accountCreated = this.walletService.accountWalletCreated;
-      this.quantity = this.walletService.accountInfoNis1.quantity;
-      this.optionsXPX = {
-        prefix: '',
-        thousands: ',',
-        decimal: '.',
-        precision: this.walletService.accountInfoNis1.properties.divisibility
+    this.configurationForm = this.sharedService.configurationForm;
+    this.createFormTransfer();
+    this.accountCreated = this.walletService.getAccountInfoNis1();
+    this.mosaics = this.walletService.getAccountMosaicsNis1();
+    console.log('\n\n\n\nValue of this.walletService.accountMosaicsNis1', this.mosaics, '\n\n\n\nEnd value\n\n');
+    console.log('\n\n\n\nValue of this.accountCreated', this.accountCreated, '\n\n\n\nEnd value\n\n');
+    if (this.mosaics === null) {
+      this.routeEvent = `/${AppConfig.routes.nis1AccountList}`;
+      const mosaicNis1 = await this.nemProvider.getOwnedMosaics(this.accountCreated.nis1Account.address).toPromise();
+      if (mosaicNis1 && mosaicNis1.length > 0) {
+        for (const el of mosaicNis1) {
+          if (el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx') {
+            this.mosaics = el;
+            this.walletService.setAccountMosaicsNis1(el);
+            this.disabledForm = false;
+            this.searchBalance = false;
+          }
+        }
       }
-      this.createFormTransfer();
-      console.log('\n\n\n\nValue of this.walletService.accountInfoNis1', this.walletService.accountInfoNis1, '\n\n\n\nEnd value\n\n');
-      console.log('\n\n\n\nValue of this.accountCreated', this.accountCreated, '\n\n\n\nEnd value\n\n');
     } else {
-      this.router.navigate([`/${AppConfig.routes.home}`]);
+      this.disabledForm = false;
+      this.searchBalance = false;
+    }
+    if (this.mosaics === null) {
+      this.quantity = '0.000000';
+      this.divisivility = '6';
+    } else {
+      this.quantity = this.mosaics.quantity;
+      this.divisivility = this.mosaics.properties.divisibility.toString();
+    }
+    console.log('\n\n\n\nValue of this.accountCreated', this.accountCreated, '\n\n\n\nEnd value\n\n');
+    this.optionsXPX = {
+      prefix: '',
+      thousands: ',',
+      decimal: '.',
+      precision: this.divisivility
     }
   }
 
@@ -115,20 +143,22 @@ export class TransferAssetsComponent implements OnInit {
     let common = { password: this.formTransfer.get("password").value };
     const quantity = this.formTransfer.get("amountXpx").value;
     console.log('\n\n\n\nValue quantity:\n', quantity, '\n\n\n\nEnd value\n\n');
-    if (this.walletService.decrypt(common, this.accountCreated.dataAccount)) {
+    if (this.walletService.decrypt(common, this.accountCreated)) {
       console.log('\n\n\n\nValue common:\n', common, '\n\n\n\nEnd value\n\n');
-      const catapultAccount = this.proximaxService.getPublicAccountFromPrivateKey(common['privateKey'], this.accountCreated.data.network);
+      const catapultAccount = this.proximaxService.getPublicAccountFromPrivateKey(common['privateKey'], this.accountCreated.network);
       console.log('\n\n\n\nValue catapultAccount:\n', catapultAccount, '\n\n\n\nEnd value\n\n');
 
       const account = this.nemService.createAccountPrivateKey(common['privateKey']);
-      const transaction = await this.nemService.createTransaction(PlainMessage.create(catapultAccount.publicKey), this.walletService.accountInfoNis1.assetId, quantity);
+      const transaction = await this.nemService.createTransaction(PlainMessage.create(this.accountCreated.nis1Account.publicKey), this.walletService.accountMosaicsNis1.assetId, quantity);
       this.nemService.anounceTransaction(transaction, account)
         .then(resp => {
           console.log('\n\n\n\nValue resp:\n', resp, '\n\n\n\nEnd value\n\n');
           this.sharedService.showSuccess('Transaction', resp['message']);
           this.changeView.emit({
             transaction: transaction,
-            details: resp
+            details: resp,
+            catapultAccount: catapultAccount,
+            route: this.routeEvent
           });
         })
         .catch(error => {
@@ -139,6 +169,8 @@ export class TransferAssetsComponent implements OnInit {
   }
 
   navToRoute() {
+    this.walletService.setAccountInfoNis1(null);
+    this.walletService.setAccountMosaicsNis1(null);
     this.router.navigate([this.route]);
   }
 }
