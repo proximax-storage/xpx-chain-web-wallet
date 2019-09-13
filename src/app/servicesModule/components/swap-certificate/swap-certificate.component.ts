@@ -3,6 +3,7 @@ import * as qrcode from 'qrcode-generator';
 import * as jsPDF from 'jspdf';
 import { Router } from '@angular/router';
 import { WalletService } from 'src/app/wallet/services/wallet.service';
+import { AppConfig } from 'src/app/config/app.config';
 
 @Component({
   selector: 'app-swap-certificate',
@@ -42,6 +43,7 @@ export class SwapCertificateComponent implements OnInit {
   navToRoute() {
     this.walletService.setAccountInfoNis1(null);
     this.walletService.setAccountMosaicsNis1(null);
+    this.routeToContinue = `/${AppConfig.routes.dashboard}`
     this.router.navigate([this.routeToContinue]);
   }
 

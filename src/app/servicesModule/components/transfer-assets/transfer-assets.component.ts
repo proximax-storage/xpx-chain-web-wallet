@@ -149,7 +149,7 @@ export class TransferAssetsComponent implements OnInit {
       console.log('\n\n\n\nValue catapultAccount:\n', catapultAccount, '\n\n\n\nEnd value\n\n');
 
       const account = this.nemService.createAccountPrivateKey(common['privateKey']);
-      const transaction = await this.nemService.createTransaction(PlainMessage.create(this.accountCreated.nis1Account.publicKey), this.walletService.accountMosaicsNis1.assetId, quantity);
+      const transaction = await this.nemService.createTransaction(PlainMessage.create(catapultAccount.publicKey), this.walletService.accountMosaicsNis1.assetId, quantity);
       this.nemService.anounceTransaction(transaction, account)
         .then(resp => {
           console.log('\n\n\n\nValue resp:\n', resp, '\n\n\n\nEnd value\n\n');

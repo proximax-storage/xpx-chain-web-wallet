@@ -123,19 +123,15 @@ export class CreateAccountComponent implements OnInit {
                 address: nis1Wallet.address,
                 publicKey: nis1Wallet.publicKey
               };
-              console.log('\n\n\n\nValue of nis1', nis1Wallet, '\n\n\n\nEnd value\n\n');
               const mosaicNis1 = await this.nemProvider.getOwnedMosaics(this.nis1Account.address).toPromise();
               if (mosaicNis1 && mosaicNis1.length > 0) {
                 for (const el of mosaicNis1) {
                   if (el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx') {
                     this.foundXpx = true;
                     this.walletService.setAccountMosaicsNis1(el);
-                    // this.walletService.accountMosaicsNis1 = el;
-                    console.log('\n\n\n\nValue of mosaicXPX', this.nis1Account, '\n\n\n\nEnd value\n\n');
                   }
                 }
               }
-              console.log('this.foundXpx --------->', this.foundXpx);
             }
           } else {
             newAccount = this.proximaxProvider.createAccountSimple(nameAccount, password, network);

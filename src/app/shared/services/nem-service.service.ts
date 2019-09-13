@@ -58,18 +58,37 @@ export class NemServiceService {
     );
   }
 
-  getOwnedMosaics(address: Address): Observable<AssetTransferable[]> {
+  /**
+   * Method to search mosaics of address
+   * @param {Address} address address of the mosaics sought
+   * @memberof NemServiceService
+   * @returns Observable<AssetTransferable[]>
+   */
+  getOwnedMosaics(address: Address) : Observable<AssetTransferable[]> {
     let accountOwnedMosaics = new AccountOwnedAssetService(this.accountHttp, this.assetHttp);
     return accountOwnedMosaics.fromAddress(address).pipe(timeout(3000));
   }
 
-  createAccountPrivateKey(privateKey: string) {
+  /**
+   * Method to create an account from privatekey
+   * @param {string} privateKey account privateKey
+   * @memberof NemServiceService
+   * @returns Account
+   */
+  createAccountPrivateKey(privateKey: string) : Account {
     return Account.createWithPrivateKey(privateKey);
   }
 
+  /**
+   * Method to create transaction
+   * @param {PlainMessage} message Transfer transaction message
+   * @param {AssetId} assetId Mosaics transferable
+   * @param {number} quantity quantity of mosaics to transfer
+   * @memberof NemServiceService
+   * @returns TransferTransaction
+   */
   async createTransaction(message: PlainMessage, assetId: AssetId, quantity: number) {
     const resultAssets = await this.assetHttp.getAssetTransferableWithRelativeAmount(assetId, quantity).toPromise();
-
     console.log('\n\n\n\nValue resultAssets:\n', resultAssets, '\n\n\n\nEnd value\n\n');
     return TransferTransaction.createWithAssets(
       TimeWindow.createWithDeadline(),
@@ -79,14 +98,26 @@ export class NemServiceService {
     );
   }
 
+  /**
+   * Method to anounce transaction
+   * @param transferTransaction data of transfer transaction
+   * @param cosignerAccount account of consigner
+   * @memberof NemServiceService
+   * @returns Observable
+   */
   anounceTransaction(transferTransaction: TransferTransaction, cosignerAccount: Account) {
     const signedTransaction = cosignerAccount.signTransaction(transferTransaction);
     console.log('\n\n\n\nValue signedTransaction:\n', signedTransaction, '\n\n\n\nEnd value\n\n');
-
     return this.transactionHttp.announceTransaction(signedTransaction).toPromise();
   }
 
-  createAddressToString(address: string) {
+  /**
+   * Method to format Address
+   * @param {string} address address account
+   * @memberof NemServiceService
+   * @returns Address
+   */
+  createAddressToString(address: string) : Address {
     return new Address(address);
   }
 }

@@ -24,10 +24,10 @@
                 <img [src]="qrSrc" alt="qrCode">
               </div>
               <div class="col-12 col-md-8 w-w-b-w word-break-all d-flex flex-column">
-                <span class="w-b-w fs-08rem" (click)="goToNemExplorer()">
+                <span class="w-b-w fs-08rem">
                   <b class="fw-bold">NIS1 Transation Hash: </b>
                 </span>
-                <span class="text-cl-m cursor-p fs-09rem">{{ transactionHash }}</span>
+                <span class="text-cl-m cursor-p fs-09rem" (click)="goToNemExplorer()">{{ transactionHash }}</span>
               </div>
             </div>
             <!-- <div class="col-12">
