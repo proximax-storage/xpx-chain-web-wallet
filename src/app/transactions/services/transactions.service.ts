@@ -262,10 +262,10 @@ export class TransactionsService {
     // return accountsInfo;
   }
 
-   /**
-   *
-   * @param publicsAccounts
-   */
+  /**
+  *
+  * @param publicsAccounts
+  */
   async searchAggregateBonded(publicsAccounts: PublicAccount[]) {
     const aggregateTransactions = [];
     for (let publicAccount of publicsAccounts) {
@@ -512,6 +512,7 @@ export class TransactionsService {
    * @memberof TransactionsService
    */
   getStructureDashboard(transaction: Transaction, othersTransactions?: TransactionsInterface[]): TransactionsInterface {
+    console.log('LA TRANSACCI´ON ---->', transaction);
     let isValid = true;
     if (othersTransactions && othersTransactions.length > 0) {
       const x = othersTransactions.filter(next => next.data.transactionInfo.hash === transaction.transactionInfo.hash);
@@ -551,9 +552,22 @@ export class TransactionsService {
       }
 
       const feeFormatter = this.amountFormatterSimple(transaction.maxFee.compact());
+
+      let nameType = this.arraTypeTransaction[keyType].name;
+      try {
+        if (transaction['message'].payload !== '') {
+          const msg = JSON.parse(transaction['message'].payload);
+          if (transaction.signer.address.plain() === environment.swapAccount.address) {
+            if (msg && msg['type'] && msg['type'] === 'Swap') {
+              nameType = 'ProximaX Swap'
+            }
+          }
+        }
+      } catch (error) { }
+
       return {
         data: transaction,
-        nameType: this.arraTypeTransaction[keyType].name,
+        nameType: nameType,
         timestamp: this.dateFormat(transaction.deadline),
         fee: feeFormatter,
         feePart: this.getDataPart(feeFormatter, 6),
