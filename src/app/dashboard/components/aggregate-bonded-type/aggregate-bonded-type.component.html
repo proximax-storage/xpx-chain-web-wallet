@@ -1,61 +1,66 @@
 <div class="row">
-    <div class="col-12">
-      <div class="row">
-        <!-- Bonded & Deadline -->
-        <div class="col-12 lh-1em">
-          <span class="fw-600 fs-1-2rem">{{aggregateBonded.nameType}}</span> <br>
-          <span class="fs-075rem">Deadline: {{aggregateBonded?.timestamp}}</span>
-        </div>
+  <div class="col-12">
+    <div class="row">
+      <!-- Bonded & Deadline -->
+      <div class="col-12 lh-1em">
+        <span class="fw-600 fs-1-2rem">{{aggregateBonded.nameType}}</span> <br>
+        <span class="fs-075rem">Deadline: {{aggregateBonded?.timestamp}}</span>
+      </div>
 
-        <!-- Fee -->
-        <div class="col-12 mt-1-5rem">
-          <span class="fw-600 fs-095rem">Fee:&nbsp;&nbsp;</span>
-          <span class="fs-095rem fw-600 color-blue-light">{{aggregateBonded?.feePart.part1}}</span>
-          <span class="fs-075rem fw-600 color-blue-light">{{aggregateBonded?.feePart.part2}}</span>
-          <span class="fs-095rem fw-600 color-blue-light"> XPX </span>
-          <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
-        </div>
+      <!-- Fee -->
+      <div class="col-12 mt-1-5rem">
+        <span class="fw-600 fs-095rem">Fee:&nbsp;&nbsp;</span>
+        <span class="fs-095rem fw-600 color-blue-light">{{aggregateBonded?.feePart.part1}}</span>
+        <span class="fs-075rem fw-600 color-blue-light">{{aggregateBonded?.feePart.part2}}</span>
+        <span class="fs-095rem fw-600 color-blue-light"> XPX </span>
+        <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
+      </div>
 
-        <!-- Type -->
+      <!-- Type -->
+      <div class="col-12 mt-05rem">
+        <span class="fw-600 fs-08rem">Type:&nbsp;&nbsp;</span>
+        <span class="fs-065rem">{{aggregateBonded?.data['type'].toString(16).toUpperCase()}}</span>
+      </div>
+
+      <!-- Height -->
+      <ng-container *ngIf="aggregateBonded?.data.transactionInfo.height.compact() > 0">
         <div class="col-12 mt-05rem">
-          <span class="fw-600 fs-08rem">Type:&nbsp;&nbsp;</span>
-          <span class="fs-065rem">{{aggregateBonded?.data['type'].toString(16).toUpperCase()}}</span>
+          <span class="fw-600 fs-08rem">Height:&nbsp;&nbsp;</span>
+          <span class="fs-065rem">{{aggregateBonded?.data.transactionInfo.height.compact()}}</span>
         </div>
+      </ng-container>
 
-        <!-- Height -->
-        <ng-container *ngIf="aggregateBonded?.data.transactionInfo.height.compact() > 0">
-          <div class="col-12 mt-05rem">
-            <span class="fw-600 fs-08rem">Height:&nbsp;&nbsp;</span>
-            <span class="fs-065rem">{{aggregateBonded?.data.transactionInfo.height.compact()}}</span>
+      <!-- Transactions -->
+      <div class="col-12 mt-1rem">
+        <div class="row d-flex align-items-center">
+          <div class="col-12">
+            <span class="fw-600 fs-095rem">Transactions</span>
           </div>
-        </ng-container>
-
-        <!-- Transactions -->
-        <div class="col-12 mt-1rem">
-          <div class="row d-flex align-items-center">
-            <div class="col-12">
-              <span class="fw-600 fs-095rem">Transactions</span>
-            </div>
-          </div>
-          <hr class="mt-0">
         </div>
+        <hr class="mt-0">
+      </div>
 
-        <!-- Inner transaction -->
-        <div class="col-12 mb-1rem">
-          <mdb-accordion [multiple]="false" aria-multiselectable="true">
-            <mdb-accordion-item [collapsed]="true"
-              *ngFor="let innerTransaction of aggregateBonded?.data.innerTransactions">
-              <mdb-accordion-item-head>{{innerTransaction['nameType']}}
-              </mdb-accordion-item-head>
-              <mdb-accordion-item-body class="scroll-accounts">
-                <app-modify-multisig-account-type
-                  *ngIf="innerTransaction.type === typeTransactions.modifyMultisigAccount.id"
-                  [multisigAccount]="innerTransaction">
-                </app-modify-multisig-account-type>
-              </mdb-accordion-item-body>
-            </mdb-accordion-item>
-          </mdb-accordion>
-        </div>
+      <!-- Inner transaction -->
+      <div class="col-12 mb-1rem">
+        <mdb-accordion [multiple]="false" aria-multiselectable="true">
+          <mdb-accordion-item [collapsed]="true"
+            *ngFor="let innerTransaction of aggregateBonded?.data.innerTransactions">
+            <mdb-accordion-item-head>{{innerTransaction['nameType']}}
+            </mdb-accordion-item-head>
+            <mdb-accordion-item-body class="scroll-accounts">
+              <app-modify-multisig-account-type
+                *ngIf="innerTransaction.type === typeTransactions.modifyMultisigAccount.id"
+                [multisigAccount]="innerTransaction">
+              </app-modify-multisig-account-type>
+
+              <!-- TYPE TRANSFER TRANSACTION -->
+              <app-transfer-type-bonded [transferTransactionBonded]="innerTransaction"
+                *ngIf="innerTransaction.type === typeTransactions.transfer.id">
+              </app-transfer-type-bonded>
+            </mdb-accordion-item-body>
+          </mdb-accordion-item>
+        </mdb-accordion>
       </div>
     </div>
   </div>
+</div>

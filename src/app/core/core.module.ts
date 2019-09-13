@@ -30,6 +30,9 @@ import { AttestationTypeComponent } from '../dashboard/components/attestation-ty
 import { VoteTypeComponent } from '../dashboard/components/vote-type/vote-type.component';
 import { TransferAssetsComponent } from '../servicesModule/components/transfer-assets/transfer-assets.component';
 import { SwapCertificateComponent } from '../servicesModule/components/swap-certificate/swap-certificate.component';
+import { TransferTypeBondedComponent } from '../dashboard/components/transfer-type-bonded/transfer-type-bonded.component';
+
+
 
 const ngxUiLoaderConfig: NgxUiLoaderConfig = {
   bgsColor: '#306eb5',
@@ -61,7 +64,8 @@ const components = [
   AttestationTypeComponent,
   VoteTypeComponent,
   TransferAssetsComponent,
-  SwapCertificateComponent
+  SwapCertificateComponent,
+  TransferTypeBondedComponent
 ]
 
 const moduls = [

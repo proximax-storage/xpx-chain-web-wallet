@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Observable, BehaviorSubject } from "rxjs";
+import { Observable, BehaviorSubject, Subscription } from "rxjs";
 import {
   UInt64,
   TransferTransaction,
@@ -18,7 +18,8 @@ import {
   Address,
   MultisigAccountInfo,
   NamespaceId,
-  AggregateTransaction
+  AggregateTransaction,
+  SignedTransaction
 } from "tsjs-xpx-chain-sdk";
 import { first } from "rxjs/operators";
 import { ProximaxProvider } from "../../shared/services/proximax.provider";
@@ -113,17 +114,19 @@ export class TransactionsService {
 
   namespaceRentalFeeSink = environment.namespaceRentalFeeSink;
   mosaicRentalFeeSink = environment.mosaicRentalFeeSink;
+  generationHash: string = '';
+
+
 
   constructor(
     private proximaxProvider: ProximaxProvider,
-    private nodeService: NodeService,
+    public nodeService: NodeService,
     private walletService: WalletService,
     private mosaicServices: MosaicService,
-    private namespaceService: NamespacesService,
-    // private dataBridge: DataBridgeService,
+    private namespaceService: NamespacesService
   ) {
 
-   }
+  }
 
 
   /**
@@ -259,6 +262,28 @@ export class TransactionsService {
     // return accountsInfo;
   }
 
+   /**
+   *
+   * @param publicsAccounts
+   */
+  async searchAggregateBonded(publicsAccounts: PublicAccount[]) {
+    const aggregateTransactions = [];
+    for (let publicAccount of publicsAccounts) {
+      const aggregateTransaction = await this.proximaxProvider.getAggregateBondedTransactions(publicAccount).toPromise();
+      aggregateTransaction.forEach((a: AggregateTransaction) => {
+        const existTransction = aggregateTransactions.find(x => x.data.transactionInfo.hash === a.transactionInfo.hash);
+        if (!existTransction) {
+          const data = this.getStructureDashboard(a);
+          aggregateTransactions.push(data);
+        }
+      });
+    }
+
+    console.log('----TODAS LAS TRANSACCIONES AGREGADAS------', aggregateTransactions);
+    this.setAggregateBondedTransactions$(aggregateTransactions);
+  }
+
+
   /**
    * Formatter Amount
    *
@@ -318,17 +343,21 @@ export class TransactionsService {
       PlainMessage.create(params.message),
       params.network
     );
-
+    // const generationHash = this.dataBridge.blockInfo.generationHash;
+    console.log('generationHash', this.generationHash)
     const account = Account.createFromPrivateKey(params.common.privateKey, params.network);
-    const signedTransaction = account.sign(transferTransaction);
+    const signedTransaction = account.sign(transferTransaction, this.generationHash);
     const transactionHttp = new TransactionHttp(
       environment.protocol + "://" + `${this.nodeService.getNodeSelected()}`
     );
+
     return {
       signedTransaction: signedTransaction,
-      transactionHttp: transactionHttp
+      transactionHttp: transactionHttp,
+      transferTransaction: transferTransaction
     };
   }
+
 
   /**
      * Calculate duration based in blocks
@@ -392,6 +421,7 @@ export class TransactionsService {
   destroyAllTransactions() {
     this.setTransactionsConfirmed$([]);
     this.setTransactionsUnConfirmed$([]);
+    this.setAggregateBondedTransactions$([]);
   }
 
   /**
@@ -410,31 +440,11 @@ export class TransactionsService {
       );
   }
 
-  /**
-   *
-   * @param publicsAccounts
-   */
-  async searchAggregateBonded(publicsAccounts: PublicAccount[]) {
-    const aggregateTransactions = [];
-    for (let publicAccount of publicsAccounts) {
-      const aggregateTransaction = await this.proximaxProvider.getAggregateBondedTransactions(publicAccount).toPromise();
-      aggregateTransaction.forEach((a: AggregateTransaction) => {
-        const existTransction = aggregateTransactions.find(x => x.data.transactionInfo.hash === a.transactionInfo.hash);
-        if (!existTransction) {
-          const data = this.getStructureDashboard(a);
-          aggregateTransactions.push(data);
-        }
-      });
-    }
-
-    console.log('----TODAS LAS TRANSACCIONES AGREGADAS------', aggregateTransactions );
-    this.setAggregateBondedTransactions$(aggregateTransactions);
-  }
 
   /**
    *
    */
-  getAggregateBondedTransactions$(): Observable<TransactionsInterface[]>{
+  getAggregateBondedTransactions$(): Observable<TransactionsInterface[]> {
     return this.aggregateTransactions$;
   }
 
@@ -582,7 +592,9 @@ export class TransactionsService {
         console.log('data ===> ', data);
         const publicsAccounts: PublicAccount[] = [];
         data.accountsInfo.forEach((element: AccountsInfoInterface) => {
-          if (element.multisigInfo && (element.multisigInfo.multisigAccounts.length > 0)) {
+          const publicAccount = this.proximaxProvider.createPublicAccount(element.accountInfo.publicKey, element.accountInfo.publicAccount.address.networkType);
+          publicsAccounts.push(publicAccount);
+          /*if (element.multisigInfo && (element.multisigInfo.multisigAccounts.length > 0)) {
             element.multisigInfo.multisigAccounts.forEach(x => {
               if (publicsAccounts.length > 0) {
                 if (publicsAccounts.find(b => b.publicKey !== x.publicKey)) {
@@ -594,12 +606,14 @@ export class TransactionsService {
                 publicsAccounts.push(publicAccount);
               }
             });
-          }
+          }*/
         });
 
         console.log('----------publicsAccounts-----------', publicsAccounts);
-        // Search all transactions aggregate bonded from array publics accounts
-        this.searchAggregateBonded(publicsAccounts);
+        if (publicsAccounts.length > 0) {
+          // Search all transactions aggregate bonded from array publics accounts
+          this.searchAggregateBonded(publicsAccounts);
+        }
         this.updateBalance();
         if (data.mosaicsIds && data.mosaicsIds.length > 0) {
           this.mosaicServices.searchInfoMosaics(data.mosaicsIds)

@@ -10,7 +10,7 @@ import { BoxDataSignerHashComponent } from './components/box-data-signer-hash/bo
 @NgModule({
   declarations: [
     DashboardComponent,
-    BoxDataSignerHashComponent,
+    BoxDataSignerHashComponent
   ],
   imports: [
     CoreModule,

@@ -17,6 +17,7 @@ export class TransferXpxComponent implements OnInit {
 
   ngOnInit() {
   }
+  
   viewCertificate(event): void {
     this.title = 'Congratulations!';
     this.subtitle = 'The swap process has already started.';

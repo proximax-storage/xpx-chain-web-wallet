@@ -15,7 +15,11 @@ export class AccountNis1FoundComponent implements OnInit {
     private activateRoute: ActivatedRoute,
     private router: Router
   ) {
-    this.privateKey = this.activateRoute.snapshot.paramMap.get('privateKey').toUpperCase();
+    if (this.activateRoute.snapshot.paramMap.get('privateKey')) {
+      this.privateKey = this.activateRoute.snapshot.paramMap.get('privateKey').toUpperCase();
+    } else {
+      this.router.navigate([`/${AppConfig.routes.home}`]);
+    }
   }
 
   ngOnInit() {
