@@ -319,7 +319,7 @@ export class ServicesBoxComponent implements OnInit {
       // Cross-Chain Swaps
       this.services.buildStructureService(
         'Cross-Chain Swaps',
-        true,
+        false,
         'Atomic cross-chain swap between public and private networks',
         'icon-cross-chain-green-60h.svg',
         '',
