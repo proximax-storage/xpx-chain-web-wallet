@@ -483,8 +483,8 @@ export class ServicesBoxComponent implements OnInit {
             AppConfig.routes.nis1AccountList
           ),
         },
-        false,
-        ''
+        true,
+        'disable-module'
       )
     ];
   }
