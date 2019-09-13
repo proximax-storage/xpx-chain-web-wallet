@@ -71,6 +71,8 @@ export class DataBridgeService {
     this.destroyConection = true;
     if (destroyTransactions) {
       // console.log('destroy transactions');
+      this.transactionSigned = [];
+      this.setTransactionStatus([]);
       this.transactionsService.destroyAllTransactions();
     }
     if (this.connector !== undefined) {
@@ -137,10 +139,6 @@ export class DataBridgeService {
         this.getBlockSocket(this.connector);
       }, (error) => {
         this.sharedService.showWarning('', 'Error connecting to the node');
-        /* if (this.reconnectNode < 1) {
-           this.reconnectNode = this.reconnectNode + 1;
-           this.reconnect(this.connector);
-         }*/
       });
     }
   }
