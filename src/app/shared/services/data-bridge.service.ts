@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { first } from "rxjs/operators";
-import { BehaviorSubject, Observable } from 'rxjs';
-import { Listener, Transaction, TransactionStatus, CosignatureSignedTransaction, BlockInfo } from "tsjs-xpx-chain-sdk";
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { Listener, Transaction, TransactionStatus, CosignatureSignedTransaction, BlockInfo, SignedTransaction } from "tsjs-xpx-chain-sdk";
 import { environment } from '../../../environments/environment';
 import { NodeService } from '../../servicesModule/services/node.service';
 import { SharedService } from './shared.service';
@@ -26,6 +26,9 @@ export class DataBridgeService {
   transactionSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   transaction$: Observable<any> = this.transactionSubject.asObservable();
   reconnectNode = 0;
+  subscription: Subscription[] = [];
+  transactionSigned: SignedTransaction[] = [];
+  transactionReady: SignedTransaction[] = [];
 
 
   constructor(
@@ -83,6 +86,7 @@ export class DataBridgeService {
    * @memberof DataBridgeService
    */
   destroyUnconfirmedTransaction(element: TransactionsInterface) {
+    // Destroy unconfirmed transactions
     this.transactionsService.getTransactionsUnConfirmed$().pipe(first()).subscribe(
       response => {
         if (response.length > 0) {
@@ -90,7 +94,28 @@ export class DataBridgeService {
           let unconfirmed = allTransactionUnConfirmed.filter(elementUnconfirmed => elementUnconfirmed.data.transactionInfo.hash !== element.data.transactionInfo.hash);
           this.transactionsService.setTransactionsUnConfirmed$(unconfirmed);
         }
-      });
+      }
+    );
+
+    // Destroy aggregateTransactions transactions
+    this.transactionsService.getAggregateBondedTransactions$().pipe(first()).subscribe(
+      response => {
+        if (response.length > 0) {
+          let allAggregateTransactions = response.slice(0);
+          let aggregateBonded = allAggregateTransactions.filter(elmAggregate => elmAggregate.data.transactionInfo.hash !== element.data.transactionInfo.hash);
+          this.transactionsService.setAggregateBondedTransactions$(aggregateBonded);
+        }
+      }
+    );
+  }
+
+  /**
+   *
+   */
+  destroySubscriptions(){
+    this.subscription.forEach(subscription => {
+      subscription.unsubscribe();
+    });
   }
 
 
@@ -237,10 +262,7 @@ export class DataBridgeService {
         });
 
         // console.log('incomingTransaction', incomingTransaction);
-
         this.transactionsService.getTransactionsConfirmed$().pipe(first()).subscribe(allTransactionConfirmed => {
-          // console.log('allTransactionConfirmed', allTransactionConfirmed);
-
           const transactionPushed = allTransactionConfirmed.slice(0);
           const transactionFormatter = this.transactionsService.getStructureDashboard(incomingTransaction, transactionPushed);
           if (transactionFormatter !== null) {
@@ -369,10 +391,55 @@ export class DataBridgeService {
   */
   setblockInfo(params: BlockInfo) { //Update-sdk-dragon
     this.blockInfo = params;
-    console.log('this.blockInfo ',this.blockInfo )
+    console.log('this.blockInfo ', this.blockInfo)
     this.transactionsService.generationHash = this.blockInfo.generationHash;
     this.namespaces.generationHash = this.blockInfo.generationHash;
     this.blockInfoSubject.next(this.blockInfo)
+  }
+
+  /**
+   *
+   */
+  searchTransactionStatus() {
+    this.destroySubscriptions();
+    // Get transaction status
+    this.subscription.push(this.getTransactionStatus().subscribe(
+      statusTransaction => {
+        console.log('----statusTransaction---', statusTransaction);
+        if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
+          for (let element of this.transactionSigned) {
+            console.log('element ', element);
+            const statusTransactionHash = (statusTransaction['type'] === 'error') ? statusTransaction['data'].hash : statusTransaction['data'].transactionInfo.hash;
+            const match = statusTransactionHash === element.hash;
+            if (match) {
+              this.transactionReady.push(element);
+            }
+
+            if (statusTransaction['type'] === 'confirmed' && match) {
+              this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransactionHash);
+              this.sharedService.showSuccess('', 'Transaction confirmed');
+            } else if (statusTransaction['type'] === 'unconfirmed' && match) {
+              this.sharedService.showInfo('', 'Transaction unconfirmed');
+            } else if (match) {
+              this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransactionHash);
+              this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
+            }
+          }
+        }
+      }
+    ));
+  }
+
+  /**
+   *
+   */
+  setTransactionSigned(signedTransaction: SignedTransaction, add = true) {
+    console.log('signedTransaction----> ', signedTransaction);
+    if (add) {
+      this.transactionSigned.push(signedTransaction);
+    } else {
+      this.transactionSigned = this.transactionSigned.filter(x => x.hash !== signedTransaction.hash);
+    }
   }
 
   /**

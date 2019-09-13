@@ -104,9 +104,10 @@ export class AuthService {
       address.push(this.proximaxProvider.createFromRawAddress(account.address));
     }
 
+    this.dataBridgeService.searchTransactionStatus();
     this.namespaces.searchNamespacesFromAccounts(address);
     this.transactionService.searchAccountsInfo(this.walletService.currentWallet.accounts);
-    const blockchainHeight: UInt64 = await this.proximaxProvider.getBlockchainHeight().toPromise(); 
+    const blockchainHeight: UInt64 = await this.proximaxProvider.getBlockchainHeight().toPromise();
     const BlockInfo : BlockInfo = await this.proximaxProvider.getBlockInfo().toPromise(); //Update-sdk-dragon
     this.dataBridgeService.setblock(blockchainHeight.compact());
     this.dataBridgeService.setblockInfo(BlockInfo); //Update-sdk-dragon

@@ -1,14 +1,14 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { PublicAccount, AggregateTransaction, Account, MultisigAccountInfo, Address, Transaction, MultisigCosignatoryModification, ModifyMultisigAccountTransaction } from 'tsjs-xpx-chain-sdk';
 import { PaginationInstance } from 'ngx-pagination';
-import { first } from 'rxjs/operators';
+import { ModalDirective } from 'ng-uikit-pro-standard';
 import { Subscription } from 'rxjs';
 import { AppConfig } from '../../../config/app.config';
 import { WalletService, AccountsInfoInterface, AccountsInterface } from '../../../wallet/services/wallet.service';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 import { TransactionsInterface, TransactionsService } from '../../services/transactions.service';
 import { SharedService, ConfigurationForm } from '../../../shared/services/shared.service';
-import { ModalDirective } from 'ng-uikit-pro-standard';
+import { DataBridgeService } from '../../../shared/services/data-bridge.service';
 
 @Component({
   selector: 'app-partial',
@@ -52,6 +52,7 @@ export class PartialComponent implements OnInit {
   configurationForm: ConfigurationForm;
 
   constructor(
+    private dataBridge: DataBridgeService,
     private proximaxProvider: ProximaxProvider,
     private sharedService: SharedService,
     public transactionService: TransactionsService,
@@ -144,20 +145,28 @@ export class PartialComponent implements OnInit {
         console.log('ModifyMultisigAccountTransaction.....', data);
         // aqui debo verificar si mi cuenta esta dentro de inner transaction para poder firmarla
         data.modifications.forEach(element => {
-          const possibleCosignatorie: AccountsInterface = this.walletService.filterAccount('', null, element.cosignatoryPublicAccount.address.pretty());
-          console.log('possibleCosignatorie ---->', possibleCosignatorie);
-          // Address encontrada
-          if (possibleCosignatorie) {
-            console.log('ARRAY SELECT --->', this.arraySelect);
-            const publicAccount = this.proximaxProvider.createPublicAccount(possibleCosignatorie.publicAccount.publicKey, this.walletService.currentAccount.network);
-            const signedByAccount = transaction.data.signedByAccount(publicAccount);
-            this.arraySelect.push({
-              label: possibleCosignatorie.name,
-              value: possibleCosignatorie,
-              selected: true,
-              signed: signedByAccount,
-              disabled: signedByAccount
-            });
+          const exist = this.arraySelect.find((b: any) => b.value.address === element.cosignatoryPublicAccount.address.plain());
+          console.log('ARRAY SELECT --->', exist);
+          if (!exist) {
+            const possibleCosignatorie: AccountsInterface = this.walletService.filterAccount('', null, element.cosignatoryPublicAccount.address.pretty());
+            console.log('possibleCosignatorie ---->', possibleCosignatorie);
+            // Address encontrada
+            if (possibleCosignatorie) {
+
+              const publicAccount = this.proximaxProvider.createPublicAccount(
+                possibleCosignatorie.publicAccount.publicKey,
+                this.walletService.currentAccount.network
+              );
+
+              const signedByAccount = transaction.data.signedByAccount(publicAccount);
+              this.arraySelect.push({
+                label: possibleCosignatorie.name,
+                value: possibleCosignatorie,
+                selected: true,
+                signed: signedByAccount,
+                disabled: signedByAccount
+              });
+            }
           }
         });
       }
@@ -196,28 +205,6 @@ export class PartialComponent implements OnInit {
     ));
   }
 
-  /**
-   *
-   *
-   * @param {PublicAccount} publicAccount
-   * @memberof PartialComponent
-   */
-  /*getAggregateBondedTransactions(publicsAccounts: PublicAccount[]) {
-    publicsAccounts.forEach(publicAccount => {
-      this.proximaxProvider.getAggregateBondedTransactions(publicAccount).pipe(first()).subscribe(
-        aggregateTransaction => {
-          console.log('Get aggregate bonded --->', aggregateTransaction);
-          aggregateTransaction.forEach((a: AggregateTransaction) => {
-            const existTransction = this.aggregateTransactions.find(x => x.data.transactionInfo.hash === a.transactionInfo.hash);
-            if (!existTransction) {
-              const data = this.transactionService.getStructureDashboard(a);
-              this.aggregateTransactions.push(data);
-            }
-          });
-        }
-      );
-    });
-  }*/
 
   /**
    *
@@ -236,6 +223,7 @@ export class PartialComponent implements OnInit {
         const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
         this.password = '';
         this.modalPartial.hide();
+        this.dataBridge.setTransactionSigned(transaction);
         this.proximaxProvider.cosignAggregateBondedTransaction(transaction, account).subscribe(
           next => {
             console.log(next);

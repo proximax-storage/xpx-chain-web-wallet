@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Observable, BehaviorSubject } from "rxjs";
+import { Observable, BehaviorSubject, Subscription } from "rxjs";
 import {
   UInt64,
   TransferTransaction,
@@ -18,7 +18,8 @@ import {
   Address,
   MultisigAccountInfo,
   NamespaceId,
-  AggregateTransaction
+  AggregateTransaction,
+  SignedTransaction
 } from "tsjs-xpx-chain-sdk";
 import { first } from "rxjs/operators";
 import { ProximaxProvider } from "../../shared/services/proximax.provider";
@@ -116,13 +117,13 @@ export class TransactionsService {
   generationHash: string = '';
 
 
+
   constructor(
     private proximaxProvider: ProximaxProvider,
     public nodeService: NodeService,
     private walletService: WalletService,
     private mosaicServices: MosaicService,
-    private namespaceService: NamespacesService,
-    // private dataBridge: DataBridgeService,
+    private namespaceService: NamespacesService
   ) {
 
   }
@@ -261,6 +262,28 @@ export class TransactionsService {
     // return accountsInfo;
   }
 
+   /**
+   *
+   * @param publicsAccounts
+   */
+  async searchAggregateBonded(publicsAccounts: PublicAccount[]) {
+    const aggregateTransactions = [];
+    for (let publicAccount of publicsAccounts) {
+      const aggregateTransaction = await this.proximaxProvider.getAggregateBondedTransactions(publicAccount).toPromise();
+      aggregateTransaction.forEach((a: AggregateTransaction) => {
+        const existTransction = aggregateTransactions.find(x => x.data.transactionInfo.hash === a.transactionInfo.hash);
+        if (!existTransction) {
+          const data = this.getStructureDashboard(a);
+          aggregateTransactions.push(data);
+        }
+      });
+    }
+
+    console.log('----TODAS LAS TRANSACCIONES AGREGADAS------', aggregateTransactions);
+    this.setAggregateBondedTransactions$(aggregateTransactions);
+  }
+
+
   /**
    * Formatter Amount
    *
@@ -297,6 +320,10 @@ export class TransactionsService {
     return amountDivisibility.toLocaleString("en-us", { minimumFractionDigits: 6 });
   }
 
+  /**
+   *
+   * @param params
+   */
   buildTransferTransaction(params: TransferInterface) {
     const recipientAddress = this.proximaxProvider.createFromRawAddress(params.recipient);
     const mosaics = params.mosaic;
@@ -412,26 +439,6 @@ export class TransactionsService {
       );
   }
 
-  /**
-   *
-   * @param publicsAccounts
-   */
-  async searchAggregateBonded(publicsAccounts: PublicAccount[]) {
-    const aggregateTransactions = [];
-    for (let publicAccount of publicsAccounts) {
-      const aggregateTransaction = await this.proximaxProvider.getAggregateBondedTransactions(publicAccount).toPromise();
-      aggregateTransaction.forEach((a: AggregateTransaction) => {
-        const existTransction = aggregateTransactions.find(x => x.data.transactionInfo.hash === a.transactionInfo.hash);
-        if (!existTransction) {
-          const data = this.getStructureDashboard(a);
-          aggregateTransactions.push(data);
-        }
-      });
-    }
-
-    console.log('----TODAS LAS TRANSACCIONES AGREGADAS------', aggregateTransactions);
-    this.setAggregateBondedTransactions$(aggregateTransactions);
-  }
 
   /**
    *
