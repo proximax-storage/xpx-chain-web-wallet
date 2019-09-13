@@ -1,0 +1,47 @@
+<ng-container *ngIf="transferTransactionBonded">
+  <div class="row">
+    <div class="col-12 lh-1em">
+      <span class="fw-600 fs-065rem">Deadline: </span>
+      <span class="fs-065rem w-w-b-w">{{transactionService.dateFormat(transferTransactionBonded['deadline'])}}</span>
+    </div>
+  </div>
+
+  <div class="row mt-05rem">
+    <div class="col-12 lh-1em">
+      <span class="fw-600 fs-065rem">Type:
+      </span>
+      <span class="fs-065rem w-w-b-w">{{transferTransactionBonded['type'].toString(16).toUpperCase()}}</span>
+    </div>
+  </div>
+
+  <div class="row mt-05rem">
+    <div class="col-12 lh-1em">
+      <span class="fw-600 fs-065rem">Aggregate id:
+      </span>
+      <span class="fs-065rem w-w-b-w">{{transferTransactionBonded['transactionInfo']['aggregateId']}}</span>
+    </div>
+  </div>
+
+
+  <div class="row mt-05rem">
+    <div class="col-12 lh-1em">
+      <span class="fw-600 fs-065rem">Signer Address: </span>
+      <span class="fs-065rem w-w-b-w">{{transferTransactionBonded?.signer.address.pretty()}}</span>
+    </div>
+  </div>
+
+  <div class="row mt-05rem">
+    <div class="col-12 lh-1em">
+      <span class="fw-600 fs-065rem">Signer Public key: </span>
+      <span class="fs-065rem w-w-b-w">{{transferTransactionBonded?.signer.publicKey}}</span>
+    </div>
+  </div>
+
+  <div class="row mt-05rem">
+    <div class="col-12 lh-1em">
+      <span class="fw-600 fs-065rem">Signature:
+      </span>
+      <span class="fs-065rem w-w-b-w">{{transferTransactionBonded?.signature}}</span>
+    </div>
+  </div>
+</ng-container>

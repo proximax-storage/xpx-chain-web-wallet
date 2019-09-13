@@ -153,10 +153,8 @@ export class SidebarMainComponent implements OnInit {
         let amountTotal = 0.000000;
         for (let element of next) {
           if (element && element.accountInfo) {
-            console.log(element.accountInfo)
             if (element.accountInfo.mosaics && element.accountInfo.mosaics.length > 0) {
               const mosaicXpx = element.accountInfo.mosaics.find(mosaic => mosaic.id.toHex() === environment.mosaicXpxInfo.id);
-              console.log('mosaicXpx', mosaicXpx);
               if (mosaicXpx) {
                 amountTotal = amountTotal + mosaicXpx.amount.compact();
               }

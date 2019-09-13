@@ -319,7 +319,7 @@ export class ServicesBoxComponent implements OnInit {
       // Cross-Chain Swaps
       this.services.buildStructureService(
         'Cross-Chain Swaps',
-        true,
+        false,
         'Atomic cross-chain swap between public and private networks',
         'icon-cross-chain-green-60h.svg',
         '',
@@ -470,21 +470,21 @@ export class ServicesBoxComponent implements OnInit {
       // SWAP PROCESS
       this.services.buildStructureService(
         'Mainnet Swap',
-        true,
+        false,
         'Swap from NEM to Sirius',
         'icon-swap-process-green-60h-proximax-sirius-wallet.svg',
         '',
         {
           transfer: this.services.buildStructureService(
             'TRANSFER ASSETS',
-            true,
+            false,
             '',
             '',
             AppConfig.routes.nis1AccountList
           ),
         },
         true,
-        ''
+        'disable-module'
       )
     ];
   }

@@ -206,6 +206,10 @@ export class EditAccountMultisignComponent implements OnInit {
     // this.clearData();
   }
 
+  /**
+   *
+   * @param name
+   */
   validateAccount(name: string) {
     this.mdbBtnAddCosignatory = true;
     this.accountInfo = this.walletService.filterAccountInfo(name);

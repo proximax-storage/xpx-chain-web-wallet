@@ -4,7 +4,7 @@ import { NgBlockUI, BlockUI } from 'ng-block-ui';
 import { AppConfig } from 'src/app/config/app.config';
 import { SharedService, ConfigurationForm } from 'src/app/shared/services/shared.service';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
-import { WalletService, AccountsInfoInterface, AccountsInterface } from 'src/app/wallet/services/wallet.service';
+import { WalletService, AccountsInfoInterface, AccountsInterface, CurrentWalletInterface } from 'src/app/wallet/services/wallet.service';
 import {
   Account,
   PublicAccount,
@@ -31,7 +31,7 @@ import { ServicesModuleService } from 'src/app/servicesModule/services/services-
 import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
 import { NodeService } from 'src/app/servicesModule/services/node.service';
 import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
-import { TransactionsService } from 'src/app/transactions/services/transactions.service';
+import { TransactionsService, TransactionsInterface } from 'src/app/transactions/services/transactions.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -69,7 +69,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
   blockSend: boolean;
   ban: any;
   notBalance: boolean;
-  subscribeAccountContat: Subscription;
+  disable: boolean;
   constructor(
     private fb: FormBuilder,
     private sharedService: SharedService,
@@ -108,16 +108,12 @@ export class ConvertAccountMultisignComponent implements OnInit {
 * @memberof CreateTransferComponent
 */
   ngOnDestroy(): void {
-    // this.subscribeAccount.unsubscribe();
     this.subscribe.forEach(subscription => {
+      console.log('subscription', subscription)
       subscription.unsubscribe();
     });
 
-    // this.subscribe.forEach(element => {
-    //   if (this.subscribe[element] !== undefined) {
-    //     this.subscribe[element].unsubscribe();
-    //   }
-    // });
+
   }
   /**
  *
@@ -125,6 +121,9 @@ export class ConvertAccountMultisignComponent implements OnInit {
  * @memberof MultiSignatureContractComponent
  */
   load() {
+
+
+
     this.subscribe.push(this.walletService.getAccountsInfo$().subscribe(
       next => {
         this.getAccounts();
@@ -192,23 +191,52 @@ export class ConvertAccountMultisignComponent implements OnInit {
    * Get accounts wallet
    * @memberof ConvertAccountMultisignComponent
    */
-  getAccounts() {
-    this.currentAccounts = [];
+  getAccounts(transactionsParam: TransactionsInterface = undefined) {
     const currentWallet = Object.assign({}, this.walletService.currentWallet);
     if (currentWallet && Object.keys(currentWallet).length > 0) {
-      for (let element of currentWallet.accounts) {
-        const accountFiltered = this.walletService.filterAccountInfo(element.name);
-        if (accountFiltered && accountFiltered.accountInfo) {
-          if (!this.isMultisign(element)) {
-            this.currentAccounts.push({
-              label: element.name,
-              value: element
-            })
+      this.subscribe.push(this.transactionService.getAggregateBondedTransactions$().subscribe((transactions: TransactionsInterface[]) => {
+        this.currentAccounts = [];
+        this.disable = false;
+
+        if (transactionsParam) {
+          transactions.push(transactionsParam)
+        }
+        if (transactions.length > 0) {
+          for (let element of currentWallet.accounts) {
+            for (let index = 0; index < transactions.length; index++) {
+              if (transactions[index].data.type === 16961) {
+                this.disable = (transactions[index].data.signer.publicKey === element.publicAccount.publicKey);
+                if (this.disable)
+                  break
+              }
+            }
+            this.buildSelectAccount(element, this.disable)
+          }
+        } else {
+          for (let element of currentWallet.accounts) {
+            this.buildSelectAccount(element)
           }
         }
+      }))
+    }
+  }
+
+  buildSelectAccount(param: AccountsInterface, disable: boolean = false) {
+    const accountFiltered = this.walletService.filterAccountInfo(param.name);
+    if (accountFiltered && accountFiltered.accountInfo) {
+      if (!this.isMultisign(param)) {
+        this.currentAccounts.push({
+          label: param.name,
+          value: param,
+          disabled: disable
+        })
       }
     }
   }
+  /**
+     * Checks if the account is a multisig account.
+     * @returns {boolean}
+     */
   isMultisign(accounts: AccountsInterface): boolean {
     return Boolean(accounts.isMultisign !== null && accounts.isMultisign !== undefined && this.isMultisigValidate(accounts.isMultisign.minRemoval, accounts.isMultisign.minApproval));
   }
@@ -235,7 +263,6 @@ export class ConvertAccountMultisignComponent implements OnInit {
       return data;
     }
   }
-
 
 
   selectAccount($event: Event) {
@@ -309,7 +336,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
           Deadline.create(),
           [convertIntoMultisigTransaction.toAggregate(this.currentAccountToConvert.publicAccount)],
           this.currentAccountToConvert.network);
-          const generationHash = this.dataBridge.blockInfo.generationHash;
+        const generationHash = this.dataBridge.blockInfo.generationHash;
         const signedTransaction = this.accountToConvertSign.sign(aggregateTransaction, generationHash) //Update-sdk-dragon
 
         /**
@@ -354,7 +381,6 @@ export class ConvertAccountMultisignComponent implements OnInit {
           this.sharedService.showError('', err);
           // this.blockSend = false;
         });
-
   }
 
   /**
@@ -434,8 +460,13 @@ export class ConvertAccountMultisignComponent implements OnInit {
             this.sharedService.showSuccess('', 'Transaction confirmed');
           } else if (statusTransaction['type'] === 'unconfirmed' && match) {
             this.transactionService.searchAccountsInfo([this.currentAccountToConvert])
+         
             signedTransaction = null;
             this.sharedService.showInfo('', 'Transaction unconfirmed');
+
+          } else if (statusTransaction['type'] === 'aggregateBondedAdded' && match){
+            signedTransaction = null;
+            this.sharedService.showSuccess('', 'aggregate Bonded add');
           } else if (match) {
             signedTransaction = null;
             this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
@@ -488,7 +519,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
       this.convertAccountMultsignForm.get('cosignatory').patchValue('', { emitEvent: false, onlySelf: true });
       if (!this.iswalletContact(event.label)) {
         this.searchContact = true;
-        this.proximaxProvider.getAccountInfo(Address.createFromRawAddress(event.value)).subscribe((res: AccountInfo) => {
+        this.subscribe.push(this.proximaxProvider.getAccountInfo(Address.createFromRawAddress(event.value)).subscribe((res: AccountInfo) => {
           this.searchContact = false;
           if (res.publicKeyHeight.toHex() === '0000000000000000') {
             this.sharedService.showWarning('', 'you need a public key');
@@ -503,11 +534,13 @@ export class ConvertAccountMultisignComponent implements OnInit {
           this.convertAccountMultsignForm.get('contact').patchValue('', { emitEvent: false, onlySelf: true });
           this.searchContact = false;
           this.sharedService.showWarning('', 'Address is not valid');
-        })
+        }));
 
       } else {
-        this.subscribeAccountContat = this.walletService.getAccountsInfo$().subscribe(
-          async accountInfo => {
+
+        this.subscribe.push(this.walletService.getAccountsInfo$().subscribe(
+          accountInfo => {
+
             if (accountInfo) {
               const account = this.walletService.filterAccountInfo(event.label);
               const accountValid = (
@@ -516,14 +549,12 @@ export class ConvertAccountMultisignComponent implements OnInit {
                 account.accountInfo &&
                 account.accountInfo.publicKey !== "0000000000000000000000000000000000000000000000000000000000000000"
               );
-              if (this.subscribeAccountContat) {
-                this.subscribeAccountContat.unsubscribe();
-              }
+
               if (accountValid) {
                 this.convertAccountMultsignForm.get('cosignatory').patchValue(account.accountInfo.publicKey, { emitEvent: true })
                 this.convertAccountMultsignForm.get('contact').patchValue('', { emitEvent: false, onlySelf: true });
               } else {
-                this.sharedService.showWarning('', 'you need a public key');
+                this.sharedService.showWarning('', 'you need a public key ');
                 this.convertAccountMultsignForm.get('contact').patchValue('', { emitEvent: false, onlySelf: true });
               }
 
@@ -533,7 +564,8 @@ export class ConvertAccountMultisignComponent implements OnInit {
 
             }
           }
-        );
+        ));
+
       }
     }
   }
