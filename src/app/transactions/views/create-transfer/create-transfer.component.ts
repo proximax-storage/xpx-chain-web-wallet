@@ -17,6 +17,7 @@ import { environment } from '../../../../environments/environment';
 import { ServicesModuleService } from '../../../servicesModule/services/services-module.service';
 import { Subscription } from 'rxjs';
 import { ModalDirective } from 'ng-uikit-pro-standard';
+import { NodeService } from 'src/app/servicesModule/services/node.service';
 
 
 @Component({
@@ -66,6 +67,7 @@ export class CreateTransferComponent implements OnInit {
   showContacts = false;
   // subscribe = ['accountInfo', 'transactionStatus', 'char', 'block'];
   title = 'Make a Transfer';
+  transactionHttp: TransactionHttp = null;
   transactionStatus: boolean = false;
   transactionSigned: SignedTransaction[] = [];
   transactionReady: SignedTransaction[] = [];
@@ -82,6 +84,7 @@ export class CreateTransferComponent implements OnInit {
     private sharedService: SharedService,
     private transactionService: TransactionsService,
     private walletService: WalletService,
+    private nodeService: NodeService,
     private router: Router
   ) { }
 
@@ -97,7 +100,7 @@ export class CreateTransferComponent implements OnInit {
     this.subscribeValue();
     this.booksAddress();
     this.getAccountInfo();
-
+    this.transactionHttp = new TransactionHttp(environment.protocol + "://" + `${this.nodeService.getNodeSelected()}`); //change
     this.mosaicXpx = {
       id: environment.mosaicXpxInfo.id,
       name: environment.mosaicXpxInfo.name,
@@ -225,6 +228,7 @@ export class CreateTransferComponent implements OnInit {
   * @memberof CreateTransferComponent
   */
   async changeSender(accountToSend: AccountsInterface) {
+    console.log('changeSender', accountToSend);
     if (accountToSend) {
       this.findCosignatories(accountToSend);
       if (this.formTransfer.disabled) {
@@ -264,9 +268,7 @@ export class CreateTransferComponent implements OnInit {
    * @memberof CreateTransferComponent
    */
   ngOnDestroy(): void {
-    // console.log('----ngOnDestroy---');
     this.subscription.forEach(subscription => {
-      // console.log(subscription);
       subscription.unsubscribe();
     });
   }
@@ -314,6 +316,21 @@ export class CreateTransferComponent implements OnInit {
     });
 
     this.accounts = accounts;
+  }
+
+  /**
+   *
+   * @param signedTransaction
+   */
+  announceAggregateBonded(signedTransaction: SignedTransaction) { //change
+    this.transactionHttp.announceAggregateBonded(signedTransaction).subscribe(
+      async () => {
+        this.transactionSigned.push(signedTransaction)
+      },
+      err => {
+        this.sharedService.showError('', err);
+      });
+
   }
 
   /**
@@ -408,20 +425,32 @@ export class CreateTransferComponent implements OnInit {
    * @param element
    */
   findCosignatories(element: AccountsInterface) {
+    console.log(element);
+    this.cosignatorie = null;
     this.listCosignatorie = [];
     if (element.default) {
       if (element.isMultisign && element.isMultisign.cosignatories && element.isMultisign.cosignatories.length > 0) {
-        element.isMultisign.cosignatories.forEach(cosignatorie => {
-          const address = this.proximaxProvider.createFromRawAddress(cosignatorie.address['address']);
+        console.log('LENGTH ---->', element.isMultisign.cosignatories.length);
+        if (element.isMultisign.cosignatories.length === 1) {
+          const address = this.proximaxProvider.createFromRawAddress(element.isMultisign.cosignatories[0].address['address']);
           const cosignatorieAccount: AccountsInterface = this.walletService.filterAccount('', null, address.pretty());
           if (cosignatorieAccount) {
-            this.listCosignatorie.push({
-              label: cosignatorieAccount.name,
-              value: cosignatorieAccount,
-              selected: true
-            });
+            console.log('setvalue............', cosignatorieAccount);
+           this.cosignatorie = cosignatorieAccount;
           }
-        });
+        } else {
+          element.isMultisign.cosignatories.forEach(cosignatorie => {
+            const address = this.proximaxProvider.createFromRawAddress(cosignatorie.address['address']);
+            const cosignatorieAccount: AccountsInterface = this.walletService.filterAccount('', null, address.pretty());
+            if (cosignatorieAccount) {
+              this.listCosignatorie.push({
+                label: cosignatorieAccount.name,
+                value: cosignatorieAccount,
+                selected: true
+              });
+            }
+          });
+        }
       }
     }
   }
@@ -451,29 +480,31 @@ export class CreateTransferComponent implements OnInit {
    */
   getTransactionStatus() {
     // Get transaction status
-    this.subscription.push(this.dataBridge.getTransactionStatus().subscribe(
-      statusTransaction => {
-        if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
-          for (let element of this.transactionSigned) {
-            const statusTransactionHash = (statusTransaction['type'] === 'error') ? statusTransaction['data'].hash : statusTransaction['data'].transactionInfo.hash;
-            const match = statusTransactionHash === element.hash;
-            if (match) {
-              this.transactionReady.push(element);
-            }
+    if (!this.transactionStatus) {
+      this.subscription.push(this.dataBridge.getTransactionStatus().subscribe(
+        statusTransaction => {
+          if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
+            for (let element of this.transactionSigned) {
+              const statusTransactionHash = (statusTransaction['type'] === 'error') ? statusTransaction['data'].hash : statusTransaction['data'].transactionInfo.hash;
+              const match = statusTransactionHash === element.hash;
+              if (match) {
+                this.transactionReady.push(element);
+              }
 
-            if (statusTransaction['type'] === 'confirmed' && match) {
-              this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransactionHash);
-              this.sharedService.showSuccess('', 'Transaction confirmed');
-            } else if (statusTransaction['type'] === 'unconfirmed' && match) {
-              this.sharedService.showInfo('', 'Transaction unconfirmed');
-            } else if (match) {
-              this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransactionHash);
-              this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
+              if (statusTransaction['type'] === 'confirmed' && match) {
+                this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransactionHash);
+                this.sharedService.showSuccess('', 'Transaction confirmed');
+              } else if (statusTransaction['type'] === 'unconfirmed' && match) {
+                this.sharedService.showInfo('', 'Transaction unconfirmed');
+              } else if (match) {
+                this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransactionHash);
+                this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
+              }
             }
           }
         }
-      }
-    ));
+      ));
+    }
   }
 
   /**
@@ -485,12 +516,11 @@ export class CreateTransferComponent implements OnInit {
     // Get transaction status
     this.subscription['getTransactionStatushashLock'] = this.dataBridge.getTransactionStatus().subscribe(
       statusTransaction => {
-        // //  this.blockSend = false;
         if (statusTransaction !== null && statusTransaction !== undefined && signedTransactionHashLock !== null) {
           const statusTransactionHash = (statusTransaction['type'] === 'error') ? statusTransaction['data'].hash : statusTransaction['data'].transactionInfo.hash;
           const match = statusTransactionHash === signedTransactionHashLock.hash;
           if (statusTransaction['type'] === 'confirmed' && match) {
-            //this.announceAggregateBonded(signedTransactionBonded)
+            this.announceAggregateBonded(signedTransactionBonded)
             signedTransactionHashLock = null;
             this.sharedService.showSuccess('', 'Transaction confirmed hash Lock');
           } else if (statusTransaction['type'] === 'unconfirmed' && match) {
@@ -660,17 +690,18 @@ export class CreateTransferComponent implements OnInit {
    */
   sendTransfer() {
     if (this.formTransfer.valid && (!this.blockSendButton || !this.errorOtherMosaics)) {
-      const cosignatorieData: AccountsInterface = this.formTransfer.get('cosignatorie').value;
+      console.log('----> ', this.cosignatorie);
+      const cosignatorieData: AccountsInterface = this.cosignatorie;
       const mosaicsToSend = this.validateMosaicsToSend();
       this.blockButton = true;
       this.blockSendButton = true;
       let common = { password: this.formTransfer.get("password").value };
-
-
       let signer = this.sender;
       if (cosignatorieData && Object.keys(cosignatorieData).length > 0) {
         signer = cosignatorieData;
       }
+
+      console.log('signer---> ', signer);
 
       if (this.walletService.decrypt(common, signer)) {
         const params: TransferInterface = {
@@ -684,7 +715,6 @@ export class CreateTransferComponent implements OnInit {
         const transferBuilder = this.transactionService.buildTransferTransaction(params);
         if (cosignatorieData && Object.keys(cosignatorieData).length > 0) {
           console.log('cosignatorieData --> ', cosignatorieData);
-
           const aggregateTransaction = AggregateTransaction.createBonded(
             Deadline.create(),
             [transferBuilder.transferTransaction.toAggregate(this.sender.publicAccount)],
@@ -692,7 +722,6 @@ export class CreateTransferComponent implements OnInit {
           );
 
           const account = Account.createFromPrivateKey(params.common.privateKey, params.network);
-          console.log('-------aggregateTransaction----', aggregateTransaction);
           const generationHash = this.dataBridge.blockInfo.generationHash;
           const signedTransaction = account.sign(aggregateTransaction, generationHash)
           console.log('-----------signedTransaction----------', signedTransaction);
@@ -708,22 +737,34 @@ export class CreateTransferComponent implements OnInit {
             environment.protocol + "://" + `${this.transactionService.nodeService.getNodeSelected()}`
           );
 
+          // Saved to book address
+          this.getBooksAddress = this.serviceModuleService.getBooksAddress();
+          if (this.getBooksAddress) {
+            const contact = this.getBooksAddress.find(el => el.value === this.formTransfer.get("accountRecipient").value.split('-').join(''));
+            if (!contact) {
+              this.formContact.address = this.formTransfer.get("accountRecipient").value.split('-').join('');
+              this.saveContact = false;
+              this.basicModal.show();
+            }
+          } else {
+            this.formContact.address = this.formTransfer.get("accountRecipient").value.split('-').join('');
+            this.saveContact = false;
+            this.basicModal.show();
+          }
+
+          this.clearForm();
+
           transactionHttp
-          .announce(account.sign(hashLockTransaction, generationHash))
-          .subscribe(
-            async () => {
-              console.log('sent....');
-              this.getTransactionStatushashLock(account.sign(hashLockTransaction, generationHash), signedTransaction)
-              // this.blockSend = false;
-            },
-            err => {
-              console.log('ERROR ----> ', err);
-            });
-
-
+            .announce(account.sign(hashLockTransaction, generationHash))
+            .subscribe(
+              async () => {
+                this.getTransactionStatushashLock(account.sign(hashLockTransaction, generationHash), signedTransaction);
+              },
+              err => {
+                console.log('ERROR ----> ', err);
+              });
         } else {
           this.transactionSigned.push(transferBuilder.signedTransaction);
-
           // Saved to book address
           this.getBooksAddress = this.serviceModuleService.getBooksAddress();
           if (this.getBooksAddress) {
@@ -769,6 +810,11 @@ export class CreateTransferComponent implements OnInit {
    */
   selectCosignatorie($event) {
     console.log('COSIGNATORIE SELECTED ', $event);
+    if ($event) {
+      this.cosignatorie = $event.value;
+    }else {
+      this.cosignatorie = null;
+    }
   }
 
   /**
@@ -843,7 +889,7 @@ export class CreateTransferComponent implements OnInit {
         if (value !== null && value !== undefined) {
           const a = Number(value);
           let validateAmount = false;
-          // console.log('----sender----', this.sender);
+          console.log('----sender----', this.sender);
           if (this.sender) {
             let accountInfo = this.walletService.filterAccountInfo(this.sender.name);
             // console.log('Account INfo- ---->', accountInfo);
@@ -864,7 +910,7 @@ export class CreateTransferComponent implements OnInit {
                   decimal = this.addZeros(environment.mosaicXpxInfo.divisibility - arrDecimals.length, arrAmount[1]);
                 }
 
-                realAmount = `${arrAmount[0]}${decimal}`
+                realAmount = `${arrAmount[0]}${decimal}`;
 
                 if (filtered !== undefined && filtered !== null) {
                   const invalidBalance = filtered.amount.compact() < Number(realAmount);

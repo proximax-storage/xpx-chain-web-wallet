@@ -421,6 +421,7 @@ export class TransactionsService {
   destroyAllTransactions() {
     this.setTransactionsConfirmed$([]);
     this.setTransactionsUnConfirmed$([]);
+    this.setAggregateBondedTransactions$([]);
   }
 
   /**
