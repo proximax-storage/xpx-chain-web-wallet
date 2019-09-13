@@ -470,7 +470,7 @@ export class ServicesBoxComponent implements OnInit {
       // SWAP PROCESS
       this.services.buildStructureService(
         'Mainnet Swap',
-        true,
+        false,
         'Swap from NEM to Sirius',
         'icon-swap-process-green-60h-proximax-sirius-wallet.svg',
         '',
