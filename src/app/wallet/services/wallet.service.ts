@@ -42,32 +42,32 @@ export class WalletService {
   }
 
   /**
-   * 
-   * @param data 
+   *
+   * @param data
    */
   setAccountInfoNis1(account: AccountsInterface) {
     this.accountInfoNis1 = account;
   }
 
   /**
-   * 
-   * @param data 
+   *
+   * @param data
    */
   getAccountInfoNis1() {
     return this.accountInfoNis1;
   }
 
   /**
-   * 
-   * @param data 
+   *
+   * @param data
    */
   setAccountMosaicsNis1(moosaic: any) {
     this.accountMosaicsNis1 = moosaic;
   }
 
   /**
-   * 
-   * @param data 
+   *
+   * @param data
    */
   getAccountMosaicsNis1() {
     return this.accountMosaicsNis1;
@@ -188,7 +188,7 @@ export class WalletService {
   * @param {string} isMultisig
   * @memberof WalletService
   */
-  changeIsMultiSign(name: string, isMultisig: MultisigAccountInfo, publicAccount: PublicAccount) {
+  changeIsMultiSign(name: string, isMultisig: MultisigAccountInfo) {
     if (isMultisig) {
       // si es multifirma, preguntar
       if (isMultisig.multisigAccounts.length > 0) {
@@ -206,7 +206,7 @@ export class WalletService {
               iv: '',
               network: element.address.networkType,
               nameAccount: `MULTIFIRMA-${element.address.plain().slice(36, 40)}`,
-              publicAccount: publicAccount,
+              publicAccount: element,
             });
 
             console.log('\n\n---ACOUNT BUILDED---', accountBuilded);
@@ -500,8 +500,7 @@ export class WalletService {
             };
 
             accountsInfo.push(accountInfoBuilded);
-            const publicAccount = this.proximaxProvider.createPublicAccount(element.publicAccount.publicKey, element.publicAccount.address.networkType);
-            this.changeIsMultiSign(element.name, isMultisig, publicAccount)
+            this.changeIsMultiSign(element.name, isMultisig)
             this.setAccountsInfo([accountInfoBuilded], true);
             counter = counter + 1;
             if (accounts.length === counter && mosaicsIds.length > 0) {

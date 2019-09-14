@@ -19,7 +19,9 @@ import {
   MultisigAccountInfo,
   NamespaceId,
   AggregateTransaction,
-  SignedTransaction
+  SignedTransaction,
+  HashLockTransaction,
+  LockFundsTransaction
 } from "tsjs-xpx-chain-sdk";
 import { first } from "rxjs/operators";
 import { ProximaxProvider } from "../../shared/services/proximax.provider";
@@ -343,14 +345,10 @@ export class TransactionsService {
       PlainMessage.create(params.message),
       params.network
     );
-    // const generationHash = this.dataBridge.blockInfo.generationHash;
-    console.log('generationHash', this.generationHash)
+
     const account = Account.createFromPrivateKey(params.common.privateKey, params.network);
     const signedTransaction = account.sign(transferTransaction, this.generationHash);
-    const transactionHttp = new TransactionHttp(
-      environment.protocol + "://" + `${this.nodeService.getNodeSelected()}`
-    );
-
+    const transactionHttp = this.buildTransactionHttp();
     return {
       signedTransaction: signedTransaction,
       transactionHttp: transactionHttp,
@@ -358,6 +356,44 @@ export class TransactionsService {
     };
   }
 
+  /**
+   *
+   * @param signedTransaction
+   */
+  buildHashLockTransaction(signedTransaction: SignedTransaction): LockFundsTransaction {
+    return HashLockTransaction.create(
+      Deadline.create(),
+      new Mosaic(new MosaicId(environment.mosaicXpxInfo.id), UInt64.fromUint(Number(10000000))),
+      UInt64.fromUint(480),
+      signedTransaction,
+      this.walletService.currentAccount.network
+    );
+  }
+
+
+  /**
+   *
+   * @param sender
+   * @param transaction
+   */
+  buildAggregateTransaction(sender: PublicAccount, transaction: Transaction): AggregateTransaction {
+    console.log('sender --->', sender);
+    return AggregateTransaction.createBonded(
+      Deadline.create(),
+      [transaction.toAggregate(sender)],
+      this.walletService.currentAccount.network
+    );
+  }
+
+
+  /**
+   *
+   */
+  buildTransactionHttp(protocol = environment.protocol, node = this.nodeService.getNodeSelected()) {
+    return new TransactionHttp(
+      protocol + "://" + `${node}`
+    );
+  }
 
   /**
      * Calculate duration based in blocks
@@ -472,6 +508,8 @@ export class TransactionsService {
       part2: data.slice(-cantPart)
     }
   }
+
+
 
   /**
   *
