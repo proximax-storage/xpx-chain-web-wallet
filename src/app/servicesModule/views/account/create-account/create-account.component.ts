@@ -12,6 +12,8 @@ import { DashboardService } from '../../../../dashboard/services/dashboard.servi
 import { NamespacesService } from '../../../services/namespaces.service';
 import { TransactionsService } from '../../../../transactions/services/transactions.service';
 import { ServicesModuleService } from '../../../../servicesModule/services/services-module.service';
+import { NemServiceService } from 'src/app/shared/services/nem-service.service';
+import { timeout } from 'rxjs/internal/operators/timeout';
 
 @Component({
   selector: 'app-create-account',
@@ -34,7 +36,10 @@ export class CreateAccountComponent implements OnInit {
     back: `/${AppConfig.routes.selectTypeCreationAccount}`,
     backToService: `/${AppConfig.routes.service}`
   };
-
+  nis1Account: any = null;
+  saveNis1: boolean = false;
+  foundXpx: boolean = false;
+  spinnerButton: boolean = false;
 
   constructor(
     private activateRoute: ActivatedRoute,
@@ -47,7 +52,8 @@ export class CreateAccountComponent implements OnInit {
     private dashboardService: DashboardService,
     private transactionService: TransactionsService,
     private namespaceService: NamespacesService,
-    private serviceModuleService: ServicesModuleService
+    private serviceModuleService: ServicesModuleService,
+    private nemProvider: NemServiceService
   ) { }
 
   ngOnInit() {
@@ -96,7 +102,7 @@ export class CreateAccountComponent implements OnInit {
    *
    * @memberof CreateAccountComponent
    */
-  createAccount() {
+  async createAccount() {
     if (this.formCreateAccount.valid && this.isValid) {
       const allAccounts = this.walletService.currentWallet.accounts.slice(0);
       const nameAccount = this.formCreateAccount.get('nameWallet').value;
@@ -109,16 +115,27 @@ export class CreateAccountComponent implements OnInit {
           let newAccount: SimpleWallet = null;
           if (this.fromPrivateKey) {
             newAccount = this.proximaxProvider.createAccountFromPrivateKey(nameAccount, password, this.formCreateAccount.get('privateKey').value, network);
+
+            if (this.saveNis1) {
+              this.spinnerButton = true;
+              const nis1Wallet = this.nemProvider.createAccountPrivateKey(common['privateKey']);
+              this.nis1Account = {
+                address: nis1Wallet.address,
+                publicKey: nis1Wallet.publicKey
+              };
+              const mosaicNis1 = await this.nemProvider.getOwnedMosaics(this.nis1Account.address).toPromise();
+              if (mosaicNis1 && mosaicNis1.length > 0) {
+                for (const el of mosaicNis1) {
+                  if (el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx') {
+                    this.foundXpx = true;
+                    this.walletService.setAccountMosaicsNis1(el);
+                  }
+                }
+              }
+            }
           } else {
             newAccount = this.proximaxProvider.createAccountSimple(nameAccount, password, network);
           }
-
-          const pvk = this.proximaxProvider.decryptPrivateKey(
-            password,
-            newAccount.
-              encryptedPrivateKey.encryptedKey,
-            newAccount.encryptedPrivateKey.iv
-          ).toUpperCase();
 
           this.namespaceService.searchNamespacesFromAccounts([newAccount.address]);
           const accountBuilded: AccountsInterface = this.walletService.buildAccount({
@@ -135,8 +152,12 @@ export class CreateAccountComponent implements OnInit {
                 newAccount.encryptedPrivateKey.encryptedKey,
                 newAccount.encryptedPrivateKey.iv
               ).toUpperCase(), newAccount.network
-            )
+            ),
+            isMultisign: null,
+            nis1Account: this.nis1Account
           });
+
+          this.walletService.setAccountInfoNis1(accountBuilded);
 
           this.clearForm();
           this.walletService.saveDataWalletCreated({
@@ -147,12 +168,11 @@ export class CreateAccountComponent implements OnInit {
           }, accountBuilded, newAccount);
           this.walletService.saveAccountStorage(accountBuilded);
           this.serviceModuleService.saveContacts({ name: nameAccount, address: accountBuilded.address, walletContact: true, nameItem: '' });
-          this.router.navigate([`/${AppConfig.routes.accountCreated}`]);
           this.dataBridgeService.closeConenection();
           this.dataBridgeService.connectnWs();
           this.dashboardService.isIncrementViewDashboard = 0;
           this.transactionService.searchAccountsInfo(this.walletService.currentWallet.accounts);
-
+          this.router.navigate([`/${AppConfig.routes.accountCreated}`]);
         }
       }
     }
@@ -223,6 +243,15 @@ export class CreateAccountComponent implements OnInit {
         return false;
       }
     }
+  }
+
+  /**
+   * Method to save a NIS1 account or not
+   * 
+   * @memberof CreateAccountComponent
+   */
+  switchSaveNis1() {
+    this.saveNis1 = !this.saveNis1;
   }
 
 }

@@ -8,10 +8,11 @@ import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
 import { WalletService } from 'src/app/wallet/services/wallet.service';
 import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
 import { TransactionsService } from 'src/app/transactions/services/transactions.service';
-import { Uploader, PrivacyType, Uint8ArrayParameterData, UploadParameter, Protocol, ConnectionConfig, BlockchainNetworkConnection, IpfsConnection } from 'xpx2-ts-js-sdk';
+import { Uploader, PrivacyType, Uint8ArrayParameterData, UploadParameter, Protocol, ConnectionConfig, BlockchainNetworkConnection, IpfsConnection } from 'tsjs-chain-xipfs-sdk';
 import { UploadInput, humanizeBytes, UploadOutput, UploadFile, FasDirective } from 'ng-uikit-pro-standard';
 import { environment } from 'src/environments/environment';
 import { HeaderServicesInterface } from '../../../services/services-module.service';
+import { Mosaic, MosaicId, UInt64 } from 'tsjs-xpx-chain-sdk';
 
 @Component({
   selector: 'app-upload-file',
@@ -43,6 +44,7 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
   uploader: Uploader;
   goBack = `/${AppConfig.routes.service}`;
   errorMatchPassword: string;
+  mosaics: Mosaic[];
 
   constructor(
     private cdRef: ChangeDetectorRef,
@@ -78,7 +80,8 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
       new IpfsConnection(storageHost, storagePort, storageOptions)
     );
 
-
+    //set the default network mosaic
+    this.mosaics =[new Mosaic(new MosaicId(environment.mosaicXpxInfo.id), UInt64.fromUint(0))]
     this.uploader = new Uploader(connectionConfig);
   }
 
@@ -101,10 +104,11 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
       //   Validators.minLength(this.configurationForm.address.minLength),
       //   Validators.maxLength(this.configurationForm.address.maxLength)
       // ]],
-      recipientPublicKey: ['', [
+      recipientPublicKey: [''],
+     /* recipientPublicKey: ['', [
         Validators.minLength(this.configurationForm.publicKey.minLength),
         Validators.maxLength(this.configurationForm.publicKey.maxLength)
-      ]],
+      ]],*/
       // secureMessage: [''],
       // usePasswordPrivacy: ['', [
       //   Validators.minLength(this.configurationForm.passwordWallet.minLength),
@@ -119,17 +123,18 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
       //   Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
       // ]],
       // fileInput: [''],
-      privateKey: ['', [
+      privateKey: [''],
+     /* privateKey: ['', [
         Validators.minLength(this.configurationForm.privateKey.minLength),
         Validators.maxLength(this.configurationForm.privateKey.maxLength)
-      ]],
+      ]],*/
       // useSecureMessage: [''],
       encryptionMethod: [''],
       // encryptionPassword: ['', [
       //   Validators.minLength(this.configurationForm.passwordWallet.minLength),
       //   Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
       // ]],
-      encryptionPasswords: this.fb.group(
+      /*encryptionPasswords: this.fb.group(
         {
           password: [
             '', [
@@ -152,7 +157,16 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
       recipientPrivateKey: ['', [
         Validators.minLength(this.configurationForm.privateKey.minLength),
         Validators.maxLength(this.configurationForm.privateKey.maxLength)
-      ]]
+      ]]*/
+      encryptionPasswords: this.fb.group(
+        {
+          password: [''],
+          confirm_password: [''],
+         
+        }, {
+        validator: this.sharedService.equalsPassword
+      }),
+      recipientPrivateKey: ['']
     });
 
   }
@@ -245,11 +259,13 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
         this.showEncryptionKeyPair = false;
 
         this.uploadForm.controls.encryptionPasswords.get('password').setValidators([
+          Validators.required,
           Validators.minLength(this.configurationForm.passwordWallet.minLength),
           Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
         ]);
 
         this.uploadForm.controls.encryptionPasswords.get('confirm_password').setValidators([
+          Validators.required,
           Validators.minLength(this.configurationForm.passwordWallet.minLength),
           Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
         ]);
@@ -398,7 +414,7 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
               uploadParams.withRecipientPublicKey(publicKey);
               break;
           }
-
+          uploadParams.withTransactionMosaics(this.mosaics);
           const result = await this.uploader.upload(uploadParams.build());
           console.log(result);
           this.clearForm();

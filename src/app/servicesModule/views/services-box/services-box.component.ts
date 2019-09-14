@@ -152,23 +152,24 @@ export class ServicesBoxComponent implements OnInit {
         true
       ),
 
-      //Transactions Explorer
+      // SWAP PROCESS
       this.services.buildStructureService(
-        'Transactions Explorer',
+        'Mainnet Swap',
         true,
-        'Explore all transactions',
-        'icon-transactions-green-60h-proximax-sirius-wallet.svg',
+        'Swap from NEM to Sirius',
+        'icon-swap-process-green-60h-proximax-sirius-wallet.svg',
         '',
         {
-          explorer: this.services.buildStructureService(
-            'EXPLORE',
+          transfer: this.services.buildStructureService(
+            'TRANSFER ASSETS',
             true,
             '',
             '',
-            AppConfig.routes.explorer
-          )
+            AppConfig.routes.nis1AccountList
+          ),
         },
-        true
+        true,
+        ''
       ),
 
       // Storage
@@ -284,6 +285,25 @@ export class ServicesBoxComponent implements OnInit {
             '',
             '',
             ''
+          )
+        },
+        true
+      ),
+
+      //Transactions Explorer
+      this.services.buildStructureService(
+        'Transactions Explorer',
+        true,
+        'Explore all transactions',
+        'icon-transactions-green-60h-proximax-sirius-wallet.svg',
+        '',
+        {
+          explorer: this.services.buildStructureService(
+            'EXPLORE',
+            true,
+            '',
+            '',
+            AppConfig.routes.explorer
           )
         },
         true
@@ -462,26 +482,6 @@ export class ServicesBoxComponent implements OnInit {
             '',
             ''
           )
-        },
-        true,
-        'disable-module'
-      ),
-
-      // SWAP PROCESS
-      this.services.buildStructureService(
-        'Mainnet Swap',
-        false,
-        'Swap from NEM to Sirius',
-        'icon-swap-process-green-60h-proximax-sirius-wallet.svg',
-        '',
-        {
-          transfer: this.services.buildStructureService(
-            'TRANSFER ASSETS',
-            false,
-            '',
-            '',
-            AppConfig.routes.nis1AccountList
-          ),
         },
         true,
         'disable-module'

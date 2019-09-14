@@ -30,9 +30,9 @@ export class ImportWalletComponent implements OnInit {
     label: 'TEST NET'
   }];
   nis1Account = null;
-  spinnerVisibility = false;
   saveNis1: boolean = false;
   foundXpx: boolean = false;
+  spinnerButton: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -123,22 +123,25 @@ export class ImportWalletComponent implements OnInit {
         // const nis1Wallet = this.nemProvider.createPrivateKeyWallet(nameWallet, this.importWalletForm.controls.passwords.get('password').value, privateKey);
 
         if (this.saveNis1) {
-          const nis1Wallet = this.nemProvider.createPrivateKeyWallet(nameWallet, this.importWalletForm.controls.passwords.get('password').value, privateKey);
-          this.nis1Account = nis1Wallet;
+          this.spinnerButton = true;
+          const nis1Wallet = this.nemProvider.createAccountPrivateKey(privateKey);
+          this.nis1Account = {
+            address: nis1Wallet.address,
+            publicKey: nis1Wallet.publicKey
+          };
           console.log('\n\n\n\nValue of nis1', nis1Wallet, '\n\n\n\nEnd value\n\n');
-          const mosaicNis1 = await this.nemProvider.getOwnedMosaics(nis1Wallet.address);
-          console.log('\n\n\n\nValue of mosaics', mosaicNis1, '\n\n\n\nEnd value\n\n');
-          if (mosaicNis1.length > 0) {
+          const mosaicNis1 = await this.nemProvider.getOwnedMosaics(this.nis1Account.address).toPromise();
+          if (mosaicNis1 && mosaicNis1.length > 0) {
             for (const el of mosaicNis1) {
               if (el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx') {
                 this.foundXpx = true;
-                this.walletService.accountInfoNis1 = el;
+                this.walletService.setAccountMosaicsNis1(el);
                 console.log('\n\n\n\nValue of mosaicXPX', this.nis1Account, '\n\n\n\nEnd value\n\n');
               }
             }
           }
         }
-          
+
         console.log('this a wallet', wallet);
         console.log('this a nis1Wallet', this.nis1Account);
 
@@ -167,6 +170,8 @@ export class ImportWalletComponent implements OnInit {
           network: wallet.network
         }, accountBuilded, wallet);
 
+        this.walletService.accountInfoNis1 = accountBuilded;
+
         this.serviceModuleService.saveContacts({
           name: accountBuilded.name,
           address: accountBuilded.address,
@@ -175,11 +180,7 @@ export class ImportWalletComponent implements OnInit {
         });
 
         this.walletService.saveWalletStorage(nameWallet, accountBuilded);
-        if (this.foundXpx) {
-          this.router.navigate([`/${AppConfig.routes.accountNis1Found}/${privateKey}`]);
-        } else {
           this.router.navigate([`/${AppConfig.routes.walletCreated}`]);
-        }
       } else {
         //Error of repeated Wallet
         this.clearForm('nameWallet');
@@ -190,8 +191,8 @@ export class ImportWalletComponent implements OnInit {
 
   switchSaveNis1() {
     this.saveNis1 = !this.saveNis1
-    console.log(this.saveNis1);    
-  }  
+    console.log(this.saveNis1);
+  }
 
   validateInput(nameInput: string = '', nameControl: string = '', nameValidation: string = '') {
     let validation: AbstractControl = null;

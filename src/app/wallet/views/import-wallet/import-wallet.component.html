@@ -40,6 +40,13 @@
       </div>
     </div>
 
+    <div class="row mt-1rem">
+      <div class="col-11 col-sm-10 col-md-8 mx-auto txt-a-center">
+        <mdb-checkbox (click)="switchSaveNis1()">The private key provided belongs to an account in nem. <i
+            class="fa fa-info-circle color-gray-strong"></i></mdb-checkbox>
+      </div>
+    </div>
+
     <div class="row">
       <div class="col-11 col-sm-10 col-md-8 col-lg-6 mx-auto">
         <div class="md-form form-sm mt-1rem mb-0rem">
@@ -101,16 +108,6 @@
       </div>
     </div>
 
-    <!-- <div class="row mt-1rem">
-      <div class="col-11 col-sm-10 col-md-8 col-lg-6 mx-auto box-grey">
-        <mdb-checkbox (click)="switchSaveNis1()">The private key provided belongs to an account in nem.</mdb-checkbox>
-        <span class="fs-075rem">
-          <input type="checkbox">
-          The private key provided belongs to an account in nem.
-        </span>
-      </div>
-    </div>-->
-
     <div class="row mt-2rem">
       <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
         <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
@@ -121,9 +118,9 @@
 
       <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
         <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
-          size="md" (click)="spinnerVisibility = true">
+          size="md">
           <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
-            *ngIf="spinnerVisibility"></span>
+            *ngIf="spinnerButton"></span>
           <span class="fs-1-2em color-white">CREATE</span>
         </button>
       </div>

@@ -54,8 +54,8 @@
   <!-- buttons create and clear -->
   <div class="row mt-2rem d-flex justify-content-center">
     <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
-      size="md" [routerLink]="['/'+routeAuth]">
-      <span class="fs-1-2em color-white"><i class="fa fa-arrow-circle-left"></i> FINISH</span>
+      size="md" (click)="goToRoute()">
+      <span class="fs-1-2em color-white"><i class="fa fa-arrow-circle-left"></i> CONTINUE</span>
     </button>
     <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
       size="md" (click)="viewPrivateKey = !viewPrivateKey">

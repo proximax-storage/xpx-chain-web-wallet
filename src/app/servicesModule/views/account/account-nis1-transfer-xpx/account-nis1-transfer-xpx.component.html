@@ -1,0 +1,23 @@
+<div class="container mt-3rem mb-2rem animated fadeIn">
+
+  <!-- TITLE AND DESCRIPTION -->
+  <div class="row">
+    <div class="col-12 d-flex justify-content-center">
+      <span class="fs-1-7rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">{{ title }}</span>
+    </div>
+    <div class="col-12 d-flex justify-content-center" *ngIf="subtitle">
+      <span class="fs-09rem txt-a-center">The swap process has already started.</span>
+    </div>
+    <div class="col-11 col-md-10 mx-auto">
+      <hr class="mt-05rem mb-06rem">
+    </div>
+  </div>
+  <!-- END TITLE AND DESCRIPTION -->
+  <div *ngIf="!showCertificate">
+    <app-transfer-assets (changeView)="viewCertificate($event)" [route]="routeEvent"></app-transfer-assets>
+  </div>
+
+  <div *ngIf="showCertificate">
+    <app-swap-certificate [routeToContinue]="routeCertificate" [params]="transactionSuccess"></app-swap-certificate>
+  </div>
+</div>

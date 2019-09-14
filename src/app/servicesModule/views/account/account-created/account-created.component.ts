@@ -3,6 +3,7 @@ import { AppConfig } from '../../../../config/app.config';
 import { WalletService } from '../../../../wallet/services/wallet.service';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { SharedService } from '../../../../shared/services/shared.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-account-created',
@@ -23,14 +24,14 @@ export class AccountCreatedComponent implements OnInit {
   name: any;
   privateKey: any;
   publicKey: any;
-  router: any;
   viewPrivateKey = false;
   viewPublicKey = false;
 
   constructor(
     private walletService: WalletService,
     private proximaxProvider: ProximaxProvider,
-    private sharedService: SharedService
+    private sharedService: SharedService,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -56,6 +57,21 @@ export class AccountCreatedComponent implements OnInit {
    */
   copyMessage(message: string) {
     this.sharedService.showSuccess('', `${message} copied`);
+  }
+
+  /**
+   * 
+   */
+  goToRoute() {
+    // [routerLink]="[routes.backToService]"
+    const nis1Info = this.walletService.getAccountInfoNis1();
+    console.log('this a nis1 Info ------>', nis1Info);
+    console.log('this a nis1 Info ------>', AppConfig.routes.accountNis1Found);
+    if (nis1Info.nis1Account !== null) {
+      this.router.navigate([`/${AppConfig.routes.accountNis1Found}`]);
+    } else {
+      this.router.navigate([this.routes.backToService]);
+    }
   }
 
 }

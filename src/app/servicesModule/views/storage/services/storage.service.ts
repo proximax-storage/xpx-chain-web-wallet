@@ -1,4 +1,4 @@
-import { PrivacyType, Uint8ArrayParameterData, UploadParameter, Protocol, ConnectionConfig, BlockchainNetworkConnection, IpfsConnection, Uploader, UploadResult, Searcher, SearchParameter, DirectDownloadParameter, Downloader, StreamHelper, SearchResult } from 'xpx2-ts-js-sdk';
+import { PrivacyType, Uint8ArrayParameterData, UploadParameter, Protocol, ConnectionConfig, BlockchainNetworkConnection, IpfsConnection, Uploader, UploadResult, Searcher, SearchParameter, DirectDownloadParameter, Downloader, StreamHelper, SearchResult } from 'tsjs-chain-xipfs-sdk';
 import { Injectable } from '@angular/core';
 import { saveAs } from 'file-saver';
 import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';

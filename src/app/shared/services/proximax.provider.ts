@@ -48,7 +48,7 @@ import {
 import { MosaicDefinitionTransaction } from 'tsjs-xpx-chain-sdk/dist/src/model/transaction/MosaicDefinitionTransaction';
 import { mergeMap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-import { BlockchainNetworkType } from 'xpx2-ts-js-sdk';
+import { BlockchainNetworkType } from 'tsjs-chain-xipfs-sdk';
 import { Observable } from 'rxjs/internal/Observable';
 
 @Injectable({

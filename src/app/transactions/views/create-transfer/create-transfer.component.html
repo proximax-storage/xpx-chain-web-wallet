@@ -26,7 +26,6 @@
                   <i *ngIf="account.value.default" class="fa fa-star fs-1rem ml-10px cursor-p" aria-hidden="true"
                     title="Default account"></i>
                 </span>
-
               </li>
             </ng-container>
           </ul>
@@ -91,7 +90,7 @@
               <div [disabled]="listContacts.length === 0" class="background-gray-icons p-12px bord-rad-25px cursor-p"
                 (click)="showContacts = (listContacts.length > 0) ? !showContacts : showContacts"
                 [title]="(!showContacts) ? 'Show contacts': 'Hide contacts'">
-                <img class=" w-30px" [src]="(!showContacts && listContacts.length === 0) ?
+                <img class="w-30px" [src]="(!showContacts && listContacts.length === 0) ?
                 'assets/images/img/icon-address-book-gray-28h-proximax-sirius-wallet.svg' :
                 'assets/images/img/icon-address-green-book-16h-proximax-sirius-wallet.svg'
                 ">
