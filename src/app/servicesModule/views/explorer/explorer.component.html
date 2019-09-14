@@ -43,74 +43,83 @@
   </ng-container>
 
   <!-- TABLE -->
-  <div class="container">
-    <div class="row mt-2rem">
-      <div class="col-12 mx-auto">
-        <div class="table-responsive table-hover">
-          <table mdbTable #tableEl="mdbTable" id="mdbTable" striped="true"
+  <!-- TABLE -->
+  <div class="row">
+    <div class="col-12 d-flex justify-content-center mx-auto">
+      <div class="datatable-style max-w-table">
+        <table mdbTable #tableEl="mdbTable" mdbTableScroll scrollX="true" striped="true">
+          <!-- <table mdbTable #tableEl="mdbTable" id="mdbTable" striped="true"
             class="table table-hover table-bordered table-hover table-sm z-depth-0" cellspacing="0" width="100%"
-            borderless="true">
+            borderless="true"> -->
 
-            <!--Table head-->
-            <thead>
-              <tr class="header-backg">
-                <ng-container *ngFor="let head of headElements; let i = index">
-                  <th scope="col" class="text-center fw-400 th-sm">{{head}}</th>
-                </ng-container>
-              </tr>
-            </thead>
-            <!--Table head-->
+          <!--Table head-->
+          <thead>
+            <tr class="header-backg">
+              <th *ngFor="let head of headElements" scope="col" class="fs-075rem txt-a-center ">{{head}} </th>
+            </tr>
+          </thead>
+          <!--Table head-->
 
-            <!--Table body-->
-            <tbody class="background-white">
-              <ng-container *ngFor="let el of elements; let i = index">
-                <tr class="mouse-pointer" (click)="dataSelected = el; basicModal.show();">
-                  <!-- Type transaction -->
-                  <th class="th-sm fs-0-8-rem" scope="row description-dark-green">{{el.nameType}}</th>
-
-                  <!-- timestamp -->
-                  <td class="th-sm description-dark-green fs-0-8-rem">{{el.timestamp}}</td>
-
-                  <!-- fee -->
-                  <td class="text-center th-sm description-dark-green fs-0-8-rem">{{el.fee}}</td>
-
-                  <!-- address -->
-                  <td class="text-center th-md description-dark-green fs-0-8-rem"><i
-                      [ngStyle]="{'color': el.receive === true ? 'green' : 'red' }" style="padding-right: 10px;"
-                      class="fa fa-send" aria-hidden="true"></i>
-                    <span>{{el.senderAddress}}</span>
-                  </td>
-
-                  <!-- recipíent -->
-                  <ng-container *ngIf="el?.recipientAddress !== null; else recipientRentalFee">
-                    <td class="text-center th-md description-dark-green fs-0-8-rem">
-                      <span>{{el.recipientAddress}}</span>
-                    </td>
+          <!--Table body-->
+          <tbody class="background-white">
+            <ng-container *ngFor="let el of elements; let i = index">
+              <tr class="white-space-pre cursor-p" (click)="dataSelected = el; basicModal.show();">
+                <!-- Type transaction -->
+                <td class="th-sm fs-07rem" scope="row description-dark-green">
+                  <ng-container *ngIf="el.nameType === 'ProximaX Swap'; else elseSwap">
+                    <span style="color: #e6b219;">
+                      <i class="fa fa-star" aria-hidden="true"></i>
+                    </span>
                   </ng-container>
-
-                  <!-- recipient rental fee -->
-                  <ng-template #recipientRentalFee>
-                    <td class="text-center th-sm description-dark-green fs-0-8-rem">
-                      <span>{{el.recipientRentalFeeSink}}</span>
-                    </td>
+                  <ng-template #elseSwap>
+                    &nbsp;  &nbsp;
                   </ng-template>
-                </tr>
-              </ng-container>
-              <ng-container *ngIf="elements.length === 0 && !searching">
-                <tr>
-                  <td colspan="5" class="txt-a-center">nothing to show</td>
-                </tr>
-              </ng-container>
-            </tbody>
-            <tfoot class="lighten-5 w-100">
-              <tr>
-                <td colspan="5">
-                  <mdb-table-pagination [tableEl]="tableEl" [searchDataSource]="elements"></mdb-table-pagination>
+                  {{el.nameType}}
                 </td>
+
+
+                <!-- timestamp -->
+                <td class="th-sm description-dark-green fs-07rem">{{el.timestamp}}</td>
+
+                <!-- fee -->
+                <td class="text-center th-sm description-dark-green fs-07rem">{{el.fee}}</td>
+
+                <!-- address -->
+                <td class="text-center th-md description-dark-green fs-07rem"><i
+                    [ngStyle]="{'color': el.receive === true ? 'green' : 'red' }" style="padding-right: 10px;"
+                    class="fa fa-send" aria-hidden="true"></i>
+                  <span>{{el.senderAddress}}</span>
+                </td>
+
+                <!-- recipíent -->
+                <ng-container *ngIf="el?.recipientAddress !== null; else recipientRentalFee">
+                  <td class="text-center th-md description-dark-green fs-07rem">
+                    <span>{{el.recipientAddress}}</span>
+                  </td>
+                </ng-container>
+
+                <!-- recipient rental fee -->
+                <ng-template #recipientRentalFee>
+                  <td class="text-center th-sm description-dark-green fs-07rem">
+                    <span>{{el.recipientRentalFeeSink}}</span>
+                  </td>
+                </ng-template>
               </tr>
-            </tfoot>
-          </table>
-        </div>
+            </ng-container>
+            <ng-container *ngIf="elements.length === 0 && !searching">
+              <tr>
+                <td colspan="5" class="txt-a-center">nothing to show</td>
+              </tr>
+            </ng-container>
+          </tbody>
+          <tfoot class="lighten-5 w-100">
+            <tr>
+              <td colspan="5">
+                <mdb-table-pagination [tableEl]="tableEl" [searchDataSource]="elements"></mdb-table-pagination>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
       </div>
     </div>
   </div>

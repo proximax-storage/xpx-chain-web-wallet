@@ -11,7 +11,7 @@ import {
   Downloader,
   DirectDownloadParameter,
   StreamHelper
-} from 'xpx2-ts-js-sdk';
+} from 'tsjs-chain-xipfs-sdk';
 import { saveAs } from 'file-saver';
 import { FormGroup, Validators, FormBuilder, AbstractControl } from '@angular/forms';
 import { AppConfig } from '../../../../config/app.config';

@@ -5,9 +5,9 @@ import {
   Uploader, ConnectionConfig, BlockchainNetworkConnection, IpfsConnection,
   UploadParameter, ReadableStreamParameterData, StreamHelper,
   PrivacyType, SearchParameter, Searcher, Downloader, TransactionFilter, Protocol
-} from 'xpx2-ts-js-sdk';
+} from 'tsjs-chain-xipfs-sdk';
 import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
-import { DirectDownloadParameter } from 'xpx2-ts-js-sdk/build/main/src/lib/download/direct-download-parameter';
+import { DirectDownloadParameter } from 'tsjs-chain-xipfs-sdk/build/main/src/lib/download/direct-download-parameter';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { WalletService } from 'src/app/wallet/services/wallet.service';
@@ -80,7 +80,7 @@ export class CreatePollStorageService {
       if (recipientPublicKey.length > 0) {
         param.withRecipientPublicKey(recipientPublicKey);
       }
-      // param.withTransactionMosaics([new Mosaic(new MosaicId(environment.mosaicXpxInfo.id), UInt64.fromUint(0))]); //Update-sdk-dragon
+       param.withTransactionMosaics([new Mosaic(new MosaicId(environment.mosaicXpxInfo.id), UInt64.fromUint(0))]); //Update-sdk-dragon
       let recipientAddress = account.publicAccount.address.plain();
       if (recipientPublicKey.length > 0) {
         recipientAddress = Address.createFromPublicKey(recipientPublicKey, account.publicAccount.address.networkType).plain();

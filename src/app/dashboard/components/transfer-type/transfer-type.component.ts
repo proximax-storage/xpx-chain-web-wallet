@@ -35,27 +35,32 @@ export class TransferTypeComponent implements OnInit {
     this.typeTransactionHex = `${this.transferTransaction.data['type'].toString(16).toUpperCase()}`;
     if (this.transferTransaction.data['message'].payload !== '') {
       try {
-        const msg = JSON.parse(this.transferTransaction.data['message'].payload);
-        if (msg && msg['type'] === 'Swap'){
-          this.msg = msg['message'];
-          this.nis1hash = msg['nis1Hash'];
-          if (this.transferTransaction.data['mosaics'].length > 0) {
-            console.log(this.transferTransaction.data['mosaics'][0].amount.compact());
-            const amount = this.transactionService.amountFormatterSimple(this.transferTransaction.data['mosaics'][0].amount.compact());
-            this.amountTwoPart = this.transactionService.getDataPart(amount.toString(), 6);
-            console.log('----> ', this.amountTwoPart);
-            this.simple = false;
-          }else {
-            this.simple = false;
+        const simple = false;
+        if (this.transferTransaction.sender.address.plain() === environment.swapAccount.address) {
+          const msg = JSON.parse(this.transferTransaction.data['message'].payload);
+          if (msg && msg['type'] === 'Swap') {
+            this.msg = msg['message'];
+            this.nis1hash = msg['nis1Hash'];
+            if (this.transferTransaction.data['mosaics'].length > 0) {
+              console.log(this.transferTransaction.data['mosaics'][0].amount.compact());
+              const amount = this.transactionService.amountFormatterSimple(this.transferTransaction.data['mosaics'][0].amount.compact());
+              this.amountTwoPart = this.transactionService.getDataPart(amount.toString(), 6);
+              console.log('----> ', this.amountTwoPart);
+              this.simple = false;
+            } else {
+              this.simple = false;
+            }
+          } else {
+            this.simple = true;
           }
-        }else {
+        } else {
           this.simple = true;
         }
       } catch (error) {
         console.log(error);
         this.simple = true;
       }
-    }else {
+    } else {
       this.simple = true;
     }
   }

@@ -7,7 +7,7 @@ import { ServerConfig, NetworkTypes } from 'nem-library';
 export const environment = {
   production: false,
   itemBooksAddress: 'sw-books',
-  version: '0.3.0.2',
+  version: '0.3.1.4',
   nameKeyNodeSelected: `sw-selected-node-01`,
   nameKeyMosaicNamespaceLinked: `sw-m-n-linked`,
   nameKeyWalletStorage: `sw-05`,
@@ -57,6 +57,9 @@ export const environment = {
     nodes: [
       { protocol: "http", domain: "18.231.166.212", port: 7890 } as ServerConfig
     ],
+  },
+  swapAccount: {
+    address: 'VC3I3FSQ354JT2QNS2XJ2J3OROCOBIRK6JB3BCBH'
   }
 };
 
