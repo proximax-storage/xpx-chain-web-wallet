@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
-import { TransferTransaction } from 'nem-library';
-import { TransactionsService } from 'src/app/transactions/services/transactions.service';
+import { TransferTransaction } from 'tsjs-xpx-chain-sdk';
+import { TransactionsService, TransactionsInterface } from '../../../transactions/services/transactions.service';
 
 @Component({
   selector: 'app-transfer-type-bonded',
@@ -10,6 +10,8 @@ import { TransactionsService } from 'src/app/transactions/services/transactions.
 export class TransferTypeBondedComponent implements OnInit {
 
   @Input() transferTransactionBonded: TransferTransaction = null;
+  transactionBuilder: TransactionsInterface = null;
+
   constructor(
     public transactionService: TransactionsService
   ) { }
@@ -19,6 +21,8 @@ export class TransferTypeBondedComponent implements OnInit {
 
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
     console.log(this.transferTransactionBonded);
+    this.transactionBuilder = this.transactionService.getStructureDashboard(this.transferTransactionBonded);
+    console.log('----build---', this.transactionBuilder);
   }
 
 }

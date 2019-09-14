@@ -25,6 +25,12 @@
                   {{account.value.name}}
                   <i *ngIf="account.value.default" class="fa fa-star fs-1rem ml-10px cursor-p" aria-hidden="true"
                     title="Default account"></i>
+
+                  <i *ngIf="
+                  account.value.isMultisign &&
+                  account.value.isMultisign.cosignatories &&
+                  account.value.isMultisign.cosignatories.length > 0" class="fa fa-users fs-1rem ml-10px cursor-p"
+                    aria-hidden="true" title="Multi-signature account"></i>
                 </span>
               </li>
             </ng-container>
@@ -43,8 +49,8 @@
     <ng-container *ngIf="listCosignatorie.length > 0">
       <div class="row">
         <div class="col-11 col-md-10 col-lg-8 mx-auto">
-          <ng-select mdbInputDirective mdbValidate class="selectWrapper"
-            [items]="listCosignatorie" bindLabel="label" bindValue="value" placeholder="Cosignatories" formControlName="cosignatorie"
+          <ng-select mdbInputDirective mdbValidate class="selectWrapper" [items]="listCosignatorie" bindLabel="label"
+            bindValue="value" placeholder="Cosignatories" formControlName="cosignatorie"
             (change)="selectCosignatorie($event)">
           </ng-select>
         </div>
