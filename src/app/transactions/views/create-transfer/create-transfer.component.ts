@@ -425,7 +425,7 @@ export class CreateTransferComponent implements OnInit {
    * @param element
    */
   findCosignatories(element: AccountsInterface) {
-    console.log(element);
+    console.log('findCosignatories', element);
     this.cosignatorie = null;
     this.listCosignatorie = [];
     if (element.default) {
@@ -436,7 +436,7 @@ export class CreateTransferComponent implements OnInit {
           const cosignatorieAccount: AccountsInterface = this.walletService.filterAccount('', null, address.pretty());
           if (cosignatorieAccount) {
             console.log('setvalue............', cosignatorieAccount);
-           this.cosignatorie = cosignatorieAccount;
+            this.cosignatorie = cosignatorieAccount;
           }
         } else {
           element.isMultisign.cosignatories.forEach(cosignatorie => {
@@ -483,9 +483,14 @@ export class CreateTransferComponent implements OnInit {
     if (!this.transactionStatus) {
       this.subscription.push(this.dataBridge.getTransactionStatus().subscribe(
         statusTransaction => {
+          console.log('statusTransaction', statusTransaction);
           if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
             for (let element of this.transactionSigned) {
-              const statusTransactionHash = (statusTransaction['type'] === 'error') ? statusTransaction['data'].hash : statusTransaction['data'].transactionInfo.hash;
+              const statusTransactionHash =
+                (statusTransaction['type'] === 'error') ?
+                  statusTransaction['data'].hash :
+                  statusTransaction['data'].transactionInfo.hash;
+
               const match = statusTransactionHash === element.hash;
               if (match) {
                 this.transactionReady.push(element);
@@ -690,7 +695,7 @@ export class CreateTransferComponent implements OnInit {
    */
   sendTransfer() {
     if (this.formTransfer.valid && (!this.blockSendButton || !this.errorOtherMosaics)) {
-      console.log('----> ', this.cosignatorie);
+      console.log('cosignatorieData ----> ', this.cosignatorie);
       const cosignatorieData: AccountsInterface = this.cosignatorie;
       const mosaicsToSend = this.validateMosaicsToSend();
       this.blockButton = true;
@@ -812,7 +817,7 @@ export class CreateTransferComponent implements OnInit {
     console.log('COSIGNATORIE SELECTED ', $event);
     if ($event) {
       this.cosignatorie = $event.value;
-    }else {
+    } else {
       this.cosignatorie = null;
     }
   }
