@@ -104,6 +104,7 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
       //   Validators.minLength(this.configurationForm.address.minLength),
       //   Validators.maxLength(this.configurationForm.address.maxLength)
       // ]],
+      recipientPublicKey: [''],
      /* recipientPublicKey: ['', [
         Validators.minLength(this.configurationForm.publicKey.minLength),
         Validators.maxLength(this.configurationForm.publicKey.maxLength)
@@ -122,6 +123,7 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
       //   Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
       // ]],
       // fileInput: [''],
+      privateKey: [''],
      /* privateKey: ['', [
         Validators.minLength(this.configurationForm.privateKey.minLength),
         Validators.maxLength(this.configurationForm.privateKey.maxLength)
@@ -156,6 +158,15 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
         Validators.minLength(this.configurationForm.privateKey.minLength),
         Validators.maxLength(this.configurationForm.privateKey.maxLength)
       ]]*/
+      encryptionPasswords: this.fb.group(
+        {
+          password: [''],
+          confirm_password: [''],
+         
+        }, {
+        validator: this.sharedService.equalsPassword
+      }),
+      recipientPrivateKey: ['']
     });
 
   }
