@@ -28,6 +28,7 @@ export class WalletService {
   accountInfoNis1: any = null;
   accountMosaicsNis1: any = null;
   accountInfoConsignerNis1: any = null;
+  nis1AccountSeleted: any = null;
 
   currentAccountObs: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   currentAccountObs$: Observable<any> = this.currentAccountObs.asObservable();
@@ -79,8 +80,8 @@ export class WalletService {
    * 
    * @param data 
    */
-  setAccountMosaicsNis1(moosaic: any) {
-    this.accountMosaicsNis1 = moosaic;
+  setAccountMosaicsNis1(mosaic: any) {
+    this.accountMosaicsNis1 = mosaic;
   }
 
   /**
@@ -90,7 +91,22 @@ export class WalletService {
   getAccountMosaicsNis1() {
     return this.accountMosaicsNis1;
   }
+  
+  /**
+   * 
+   * @param data 
+   */
+  getNis1AccountSelected() {
+    return this.nis1AccountSeleted;
+  }
 
+  /**
+   * 
+   * @param data 
+   */
+  setNis1AccountSelected(account: any) {
+    this.nis1AccountSeleted = account;
+  }
 
   /**
    *
