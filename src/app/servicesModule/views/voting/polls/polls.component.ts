@@ -168,9 +168,9 @@ export class PollsComponent implements OnInit {
   filterType(type: number) {
     switch (type) {
       case 0:
-        return 'witheList';
+        return 'withe List';
       case 1:
-        return 'Public';
+        return 'Open';
     }
   }
 
