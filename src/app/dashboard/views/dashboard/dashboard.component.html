@@ -97,18 +97,18 @@
     </div>
   </div>
 
-    <!-- Searching and icon reload -->
-    <div class="row mt-2rem">
-      <div class="col-11 col-sm-11 col-lg-10 mx-auto">
-        <!-- Searching -->
-        <ng-container *ngIf="searching">
-          <div class="col-12">
-            <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate">
-            </mdb-progress-bar>
-          </div>
-        </ng-container>
-      </div>
+  <!-- Searching and icon reload -->
+  <div class="row mt-2rem">
+    <div class="col-11 col-sm-11 col-lg-10 mx-auto">
+      <!-- Searching -->
+      <ng-container *ngIf="searching">
+        <div class="col-12">
+          <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate">
+          </mdb-progress-bar>
+        </div>
+      </ng-container>
     </div>
+  </div>
 
   <!-- Searching and icon reload -->
   <div class="row mt-2rem txt-a-right">
@@ -142,7 +142,15 @@
                 <td class="fs-07rem">{{transaction.senderAddress}}</td>
                 <td class="fs-07rem">{{transaction.data.transactionInfo.hash}}</td> -->
                 <!-- Type transaction -->
-                <td class="th-sm fs-07rem" scope="row description-dark-green">{{el.nameType}}</td>
+                <td class="th-sm fs-07rem" scope="row description-dark-green">
+                  <ng-container *ngIf="el.nameType === 'ProximaX Swap';">
+                    <span style="color: #e6b219;">
+                      <i class="fa fa-star" aria-hidden="true"></i>
+                    </span>
+                  </ng-container>
+                  {{el.nameType}}
+                </td>
+
 
                 <!-- timestamp -->
                 <td class="th-sm description-dark-green fs-07rem">{{el.timestamp}}</td>

@@ -72,7 +72,7 @@ export class DataBridgeService {
     if (destroyTransactions) {
       // console.log('destroy transactions');
       this.transactionSigned = [];
-      this.setTransactionStatus([]);
+      this.setTransactionStatus(null);
       this.transactionsService.destroyAllTransactions();
     }
     if (this.connector !== undefined) {
