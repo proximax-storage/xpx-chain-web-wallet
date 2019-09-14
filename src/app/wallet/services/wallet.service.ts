@@ -27,6 +27,7 @@ export class WalletService {
 
   accountInfoNis1: any = null;
   accountMosaicsNis1: any = null;
+  accountInfoConsignerNis1: any = null;
 
   currentAccountObs: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   currentAccountObs$: Observable<any> = this.currentAccountObs.asObservable();
@@ -56,6 +57,23 @@ export class WalletService {
   getAccountInfoNis1() {
     return this.accountInfoNis1;
   }
+
+  /**
+   * 
+   * @param accounts 
+   */
+  setAccountInfoConsignerNis1(accounts: any) {
+    this.accountInfoConsignerNis1 = accounts;
+  }
+
+  /**
+   * 
+   * @param data 
+   */
+  getAccountInfoConsignerNis1() {
+    return this.accountInfoConsignerNis1;
+  }
+
 
   /**
    * 

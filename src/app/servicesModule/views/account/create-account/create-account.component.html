@@ -98,6 +98,12 @@
               </div>
             </div>
 
+            <div class="row mt-1rem mb-2rem txt-a-center" *ngIf="fromPrivateKey">
+              <div class="col-11 mx-auto">
+                <mdb-checkbox (click)="switchSaveNis1()">The private key belongs to an account in NIS1. <i class="fa fa-info-circle color-gray-strong"></i></mdb-checkbox>
+              </div>
+            </div>
+
             <div class="row">
               <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
                 <button mdbBtn type="button" rounded="true" mdbWavesEffect
