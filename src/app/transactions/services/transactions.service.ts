@@ -247,7 +247,7 @@ export class TransactionsService {
           }];
 
           const publicAccount = this.proximaxProvider.createPublicAccount(element.publicAccount.publicKey, element.publicAccount.address.networkType);
-          this.walletService.changeIsMultiSign(element.name, isMultisig, publicAccount)
+          this.walletService.changeIsMultiSign(element.name, isMultisig)
           this.walletService.setAccountsInfo(accountsInfo, true);
           counter = counter + 1;
           if (accounts.length === counter && mosaicsIds.length > 0) {

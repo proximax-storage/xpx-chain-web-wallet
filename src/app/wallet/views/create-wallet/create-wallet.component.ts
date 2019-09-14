@@ -116,8 +116,11 @@ export class CreateWalletComponent implements OnInit {
             wallet.encryptedPrivateKey.encryptedKey,
             wallet.encryptedPrivateKey.iv
           ).toUpperCase(), wallet.network),
-          isMultisign: null
+          isMultisign: null,
+          nis1Account: null
         });
+
+        this.walletService.setAccountInfoNis1(accountBuilded);
 
 
         this.clearForm();

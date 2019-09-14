@@ -33,9 +33,9 @@ import { CreateApostilleComponent } from './views/apostille/create-apostille/cre
 import { AuditApostilleComponent } from './views/apostille/audit-apostille/audit-apostille.component';
 import { VoteInPollComponent } from './views/voting/vote-in-poll/vote-in-poll.component';
 import { HighchartsChartComponent } from './views/voting/vote-in-poll/highcharts-chart.component';
-import { Nis1AccountDetailsComponent } from './views/swap/nis1-account-details/nis1-account-details.component';
 import { AccountNis1FoundComponent } from './views/account/account-nis1-found/account-nis1-found.component';
 import { AccountNis1TransferXpxComponent } from './views/account/account-nis1-transfer-xpx/account-nis1-transfer-xpx.component';
+import { Nis1AccountsConsignerComponent } from './views/swap/nis1-accounts-consigner/nis1-accounts-consigner.component';
 
 
 @NgModule({
@@ -71,9 +71,9 @@ import { AccountNis1TransferXpxComponent } from './views/account/account-nis1-tr
     AuditApostilleComponent,
     VoteInPollComponent,
     HighchartsChartComponent,
-    Nis1AccountDetailsComponent,
     AccountNis1FoundComponent,
     AccountNis1TransferXpxComponent,
+    Nis1AccountsConsignerComponent
   ],
   schemas: [ NO_ERRORS_SCHEMA ],
   imports: [
