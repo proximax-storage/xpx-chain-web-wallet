@@ -6,7 +6,7 @@ import {
   AbstractControl
 } from "@angular/forms";
 import { Router } from '@angular/router';
-import { MosaicId, SignedTransaction, UInt64, AccountInfo, HashLockTransaction, Deadline, Mosaic, AggregateTransaction, Account, TransactionHttp } from "tsjs-xpx-chain-sdk";
+import { MosaicId, SignedTransaction, UInt64, AccountInfo, HashLockTransaction, Deadline, Mosaic, AggregateTransaction, Account, TransactionHttp, LockFundsTransaction, TransferTransaction, PlainMessage } from "tsjs-xpx-chain-sdk";
 import { MosaicService, MosaicsStorage } from "../../../servicesModule/services/mosaic.service";
 import { ProximaxProvider } from "../../../shared/services/proximax.provider";
 import { DataBridgeService } from "../../../shared/services/data-bridge.service";
@@ -100,13 +100,17 @@ export class CreateTransferComponent implements OnInit {
     this.subscribeValue();
     this.booksAddress();
     this.getAccountInfo();
+    this.getTransactionStatus();
     this.transactionHttp = new TransactionHttp(environment.protocol + "://" + `${this.nodeService.getNodeSelected()}`); //change
+
+    // Mosaic by default
     this.mosaicXpx = {
       id: environment.mosaicXpxInfo.id,
       name: environment.mosaicXpxInfo.name,
       divisibility: environment.mosaicXpxInfo.divisibility
     };
 
+    // Build the accounts with which I will transfer
     this.walletService.currentWallet.accounts.forEach((element: AccountsInterface) => {
       this.accounts.push({
         label: element.name,
@@ -119,7 +123,7 @@ export class CreateTransferComponent implements OnInit {
       }
     });
 
-    //this.subscribe['block'] =
+    // Find Current Block
     this.subscription.push(this.dataBridge.getBlock().subscribe(next => {
       this.currentBlock = next;
     }));
@@ -228,8 +232,9 @@ export class CreateTransferComponent implements OnInit {
   * @memberof CreateTransferComponent
   */
   async changeSender(accountToSend: AccountsInterface) {
-    console.log('changeSender', accountToSend);
+    console.log('ACCOUNT SENDER', accountToSend);
     if (accountToSend) {
+      this.sender = accountToSend;
       this.findCosignatories(accountToSend);
       if (this.formTransfer.disabled) {
         this.formTransfer.enable();
@@ -237,7 +242,6 @@ export class CreateTransferComponent implements OnInit {
 
       this.clearForm();
       this.reset();
-      this.sender = accountToSend;
       this.accounts.forEach(element => {
         if (accountToSend.name === element.value.name) {
           element.active = true;
@@ -425,31 +429,39 @@ export class CreateTransferComponent implements OnInit {
    * @param element
    */
   findCosignatories(element: AccountsInterface) {
-    console.log('findCosignatories', element);
     this.cosignatorie = null;
     this.listCosignatorie = [];
     // if (element.default) {
     if (element.isMultisign && element.isMultisign.cosignatories && element.isMultisign.cosignatories.length > 0) {
-      console.log('LENGTH ---->', element.isMultisign.cosignatories.length);
       if (element.isMultisign.cosignatories.length === 1) {
         const address = this.proximaxProvider.createFromRawAddress(element.isMultisign.cosignatories[0].address['address']);
         const cosignatorieAccount: AccountsInterface = this.walletService.filterAccount('', null, address.pretty());
-        if (cosignatorieAccount) {
-          console.log('setvalue............', cosignatorieAccount);
-          this.cosignatorie = cosignatorieAccount;
-        }
+        this.cosignatorie = (cosignatorieAccount) ? cosignatorieAccount : null;
+        console.log('---> SET COSIGNATARIO BY DEFAULT (1)', this.cosignatorie);
+        return;
       } else {
+        const listCosignatorie = [];
         element.isMultisign.cosignatories.forEach(cosignatorie => {
           const address = this.proximaxProvider.createFromRawAddress(cosignatorie.address['address']);
           const cosignatorieAccount: AccountsInterface = this.walletService.filterAccount('', null, address.pretty());
           if (cosignatorieAccount) {
-            this.listCosignatorie.push({
+            listCosignatorie.push({
               label: cosignatorieAccount.name,
               value: cosignatorieAccount,
               selected: true
             });
           }
         });
+
+        if (listCosignatorie.length === 1) {
+          this.cosignatorie = listCosignatorie[0].value;
+          console.log('---> SENDER', this.sender);
+          console.log('---> SET COSIGNATARIO BY DEFAULT (1)', this.cosignatorie);
+          return;
+        }
+
+        this.listCosignatorie = listCosignatorie;
+        return;
       }
     }
     // }
@@ -480,10 +492,9 @@ export class CreateTransferComponent implements OnInit {
    */
   getTransactionStatus() {
     // Get transaction status
-    if (!this.transactionStatus) {
-      this.subscription.push(this.dataBridge.getTransactionStatus().subscribe(
+    if (!this.subscription['transactionStatus']) {
+      this.subscription['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
         statusTransaction => {
-          console.log('statusTransaction', statusTransaction);
           if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
             for (let element of this.transactionSigned) {
               const statusTransactionHash =
@@ -508,7 +519,7 @@ export class CreateTransferComponent implements OnInit {
             }
           }
         }
-      ));
+      );
     }
   }
 
@@ -517,7 +528,7 @@ export class CreateTransferComponent implements OnInit {
    * @param signedTransactionHashLock
    * @param signedTransactionBonded
    */
-  getTransactionStatushashLock(signedTransactionHashLock: SignedTransaction, signedTransactionBonded: SignedTransaction) {
+  getTransactionStatusHashLock(signedTransactionHashLock: SignedTransaction, signedTransactionBonded: SignedTransaction) {
     // Get transaction status
     this.subscription['getTransactionStatushashLock'] = this.dataBridge.getTransactionStatus().subscribe(
       statusTransaction => {
@@ -695,117 +706,130 @@ export class CreateTransferComponent implements OnInit {
    */
   sendTransfer() {
     if (this.formTransfer.valid && (!this.blockSendButton || !this.errorOtherMosaics)) {
-      console.log('cosignatorieData ----> ', this.cosignatorie);
-      const cosignatorieData: AccountsInterface = this.cosignatorie;
-      const mosaicsToSend = this.validateMosaicsToSend();
       this.blockButton = true;
       this.blockSendButton = true;
-      let common = { password: this.formTransfer.get("password").value };
-      let signer = this.sender;
-      if (cosignatorieData && Object.keys(cosignatorieData).length > 0) {
-        signer = cosignatorieData;
-      }
-
-      console.log('signer---> ', signer);
-
-      if (this.walletService.decrypt(common, signer)) {
-        const params: TransferInterface = {
-          common: common,
-          recipient: (this.formTransfer.get("accountRecipient").value),
-          message: (this.formTransfer.get("message").value === null) ? "" : this.formTransfer.get("message").value,
-          network: this.walletService.currentAccount.network,
-          mosaic: mosaicsToSend
-        };
-
-        const transferBuilder = this.transactionService.buildTransferTransaction(params);
-        if (cosignatorieData && Object.keys(cosignatorieData).length > 0) {
-          console.log('cosignatorieData --> ', cosignatorieData);
-          const aggregateTransaction = AggregateTransaction.createBonded(
-            Deadline.create(),
-            [transferBuilder.transferTransaction.toAggregate(this.sender.publicAccount)],
-            this.walletService.currentAccount.network
-          );
-
-          const account = Account.createFromPrivateKey(params.common.privateKey, params.network);
+      const common = { password: this.formTransfer.get("password").value };
+      const mosaicsToSend = this.validateMosaicsToSend();
+      const type = (this.cosignatorie) ? true : false;
+      switch (type) {
+        case true:
+          console.log('TRANSFIERE CON COSIGNATARIO');
+          console.log('ACCOUNT SENDER ----> ', this.sender);
+          console.log('COSIGNATARIO SELECCIONADO ----> ', this.cosignatorie);
           const generationHash = this.dataBridge.blockInfo.generationHash;
-          const signedTransaction = account.sign(aggregateTransaction, generationHash)
-          console.log('-----------signedTransaction----------', signedTransaction);
-          const hashLockTransaction = HashLockTransaction.create(
-            Deadline.create(),
-            new Mosaic(new MosaicId(environment.mosaicXpxInfo.id), UInt64.fromUint(Number(10000000))),
-            UInt64.fromUint(480),
-            signedTransaction,
-            this.walletService.currentAccount.network
-          );
+          if (this.walletService.decrypt(common, this.cosignatorie)) {
+            const params: TransferInterface = {
+              common: common,
+              recipient: (this.formTransfer.get("accountRecipient").value),
+              message: (this.formTransfer.get("message").value === null) ? "" : this.formTransfer.get("message").value,
+              network: this.walletService.currentAccount.network,
+              mosaic: mosaicsToSend
+            };
 
-          const transactionHttp = new TransactionHttp(
-            environment.protocol + "://" + `${this.transactionService.nodeService.getNodeSelected()}`
-          );
+            // Create account from private key
+            const account = Account.createFromPrivateKey(params.common.privateKey, params.network);
+            // Build transfer transaction
+            // const transferBuilder = this.transactionService.buildTransferTransaction(params);
+            //-----------------------------------------------------------------------
+            const recipientAddress = this.proximaxProvider.createFromRawAddress(params.recipient);
+            const mosaics = params.mosaic;
+            const allMosaics = [];
+            mosaics.forEach(element => {
+              allMosaics.push(new Mosaic(
+                new MosaicId(element.id),
+                UInt64.fromUint(Number(element.amount))
+              )
+              );
+            });
 
-          // Saved to book address
-          this.getBooksAddress = this.serviceModuleService.getBooksAddress();
-          if (this.getBooksAddress) {
-            const contact = this.getBooksAddress.find(el => el.value === this.formTransfer.get("accountRecipient").value.split('-').join(''));
-            if (!contact) {
-              this.formContact.address = this.formTransfer.get("accountRecipient").value.split('-').join('');
-              this.saveContact = false;
-              this.basicModal.show();
-            }
-          } else {
-            this.formContact.address = this.formTransfer.get("accountRecipient").value.split('-').join('');
-            this.saveContact = false;
-            this.basicModal.show();
-          }
+            const transferBuilder = TransferTransaction.create(
+              Deadline.create(5),
+              recipientAddress,
+              allMosaics,
+              PlainMessage.create(params.message),
+              params.network
+            );
 
-          this.clearForm();
-
-          transactionHttp
-            .announce(account.sign(hashLockTransaction, generationHash))
-            .subscribe(
-              async () => {
-                this.getTransactionStatushashLock(account.sign(hashLockTransaction, generationHash), signedTransaction);
-              },
-              err => {
-                console.log('ERROR ----> ', err);
-              });
-        } else {
-          this.transactionSigned.push(transferBuilder.signedTransaction);
-          // Saved to book address
-          this.getBooksAddress = this.serviceModuleService.getBooksAddress();
-          if (this.getBooksAddress) {
-            const contact = this.getBooksAddress.find(el => el.value === this.formTransfer.get("accountRecipient").value.split('-').join(''));
-            if (!contact) {
-              this.formContact.address = this.formTransfer.get("accountRecipient").value.split('-').join('');
-              this.saveContact = false;
-              this.basicModal.show();
-            }
-          } else {
-            this.formContact.address = this.formTransfer.get("accountRecipient").value.split('-').join('');
-            this.saveContact = false;
-            this.basicModal.show();
-          }
-
-          this.clearForm();
-          transferBuilder.transactionHttp.announce(transferBuilder.signedTransaction).subscribe(
-            async () => {
-              this.blockButton = false;
-              this.blockSendButton = false;
-              if (!this.transactionStatus) {
-                this.getTransactionStatus();
-              }
+            //-----------------------------------------------------------------------
+            // Build aggregate transaction
+            const aggregateTransaction = this.transactionService.buildAggregateTransaction(this.sender.publicAccount, transferBuilder);
+            console.log('aggregateTransaction ---------> ', aggregateTransaction);
+            // Sign transaction
+            const aggregateSigned = account.sign(aggregateTransaction, generationHash);
+            // Build hash lock transaction
+            const hashLockTransaction: LockFundsTransaction = this.transactionService.buildHashLockTransaction(aggregateSigned);
+            console.log('hashLockTransaction ---------> ', hashLockTransaction);
+            // Hash lock signed
+            const hashLockSigned = account.sign(hashLockTransaction, generationHash);
+            this.saveContactFn();
+            this.clearForm();
+            this.transactionService.buildTransactionHttp().announce(hashLockSigned).subscribe(async () => {
+              this.getTransactionStatusHashLock(hashLockSigned, aggregateSigned);
             }, err => {
-              this.blockButton = false;
-              this.blockSendButton = false;
-              this.clearForm();
-              this.sharedService.showError('', err);
-            }
-          );
-        }
-      } else {
-        this.formTransfer.get('password').setValue('');
-        this.blockSendButton = false;
-        this.blockButton = false;
+              console.log('ERROR ----> ', err);
+            });
+          } else {
+            this.formTransfer.get('password').setValue('');
+            this.blockSendButton = false;
+            this.blockButton = false;
+          }
+
+          break;
+        case false:
+          console.log('TRANSFIERE SIMPLE');
+          if (this.walletService.decrypt(common, this.sender)) {
+            const params: TransferInterface = {
+              common: common,
+              recipient: (this.formTransfer.get("accountRecipient").value),
+              message: (this.formTransfer.get("message").value === null) ? "" : this.formTransfer.get("message").value,
+              network: this.walletService.currentAccount.network,
+              mosaic: mosaicsToSend
+            };
+
+            const transferBuilder = this.transactionService.buildTransferTransaction(params);
+            this.transactionSigned.push(transferBuilder.signedTransaction);
+            this.saveContactFn();
+            this.clearForm();
+            this.transactionService.buildTransactionHttp().announce(transferBuilder.signedTransaction).subscribe(
+              async () => {
+                this.blockButton = false;
+                this.blockSendButton = false;
+                this.getTransactionStatus();
+              }, err => {
+                this.blockButton = false;
+                this.blockSendButton = false;
+                this.clearForm();
+                this.sharedService.showError('', err);
+              }
+            );
+          } else {
+            this.formTransfer.get('password').setValue('');
+            this.blockSendButton = false;
+            this.blockButton = false;
+          }
+          break;
       }
+
+
+    }
+  }
+
+  /**
+   *
+   */
+  saveContactFn() {
+    this.getBooksAddress = this.serviceModuleService.getBooksAddress();
+    if (this.getBooksAddress) {
+      const contact = this.getBooksAddress.find(el => el.value === this.formTransfer.get("accountRecipient").value.split('-').join(''));
+      if (!contact) {
+        this.formContact.address = this.formTransfer.get("accountRecipient").value.split('-').join('');
+        this.saveContact = false;
+        this.basicModal.show();
+      }
+    } else {
+      this.formContact.address = this.formTransfer.get("accountRecipient").value.split('-').join('');
+      this.saveContact = false;
+      this.basicModal.show();
     }
   }
 
@@ -887,14 +911,11 @@ export class CreateTransferComponent implements OnInit {
     }));
 
     //Amount XPX
-    // const mosaic = this.mosaicServices.filterMosaic(new MosaicId(this.mosaicXpx.id));
     this.formTransfer.get('amountXpx').valueChanges.subscribe(
       value => {
-        // console.log('----VALUE INPUT XPX-------', value);
         if (value !== null && value !== undefined) {
           const a = Number(value);
           let validateAmount = false;
-          console.log('----sender----', this.sender);
           if (this.sender) {
             let accountInfo = this.walletService.filterAccountInfo(this.sender.name);
             // console.log('Account INfo- ---->', accountInfo);
@@ -938,7 +959,6 @@ export class CreateTransferComponent implements OnInit {
           }
 
           if (validateAmount) {
-            // console.log('----validateAmount---', value);
             if (Number(value) > 0) {
               this.insufficientBalance = true;
               this.blockSendButton = true;

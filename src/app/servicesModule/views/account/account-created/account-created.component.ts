@@ -72,12 +72,8 @@ export class AccountCreatedComponent implements OnInit {
     const nis1Info = this.walletService.getAccountInfoNis1();
     console.log('this a nis1 Info ------>', nis1Info);
     console.log('this a nis1 Info ------>', );
-    if (nis1Info.nis1Account !== null) {
-      if (nis1Info.nis1Account.consignerOf) {
-        this.router.navigate([`/${AppConfig.routes.nis1AccountsConsigner}`]);
-      } else {
-        this.router.navigate([`/${AppConfig.routes.accountNis1Found}`]);
-      }
+    if (nis1Info.nis1Account && nis1Info.nis1Account !== null) {
+      this.router.navigate([`/${AppConfig.routes.accountNis1Found}`]);
     } else {
       this.router.navigate([this.routes.backToService]);
     }

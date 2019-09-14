@@ -84,8 +84,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     const qr = qrcode(10, 'H');
     qr.addData(this.currentAccount.address);
     qr.make();
-    console.log(qr);
-    console.log(qr.createDataURL());
     this.qr = qr.createDataURL();
     this.typeTransactions = this.transactionService.getTypeTransactions();
     this.vestedBalance = `0.000000 ${environment.mosaicXpxInfo.coin}`;
