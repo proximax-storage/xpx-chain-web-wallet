@@ -512,7 +512,6 @@ export class TransactionsService {
    * @memberof TransactionsService
    */
   getStructureDashboard(transaction: Transaction, othersTransactions?: TransactionsInterface[]): TransactionsInterface {
-    console.log('LA TRANSACCI´ON ---->', transaction);
     let isValid = true;
     if (othersTransactions && othersTransactions.length > 0) {
       const x = othersTransactions.filter(next => next.data.transactionInfo.hash === transaction.transactionInfo.hash);
@@ -552,7 +551,6 @@ export class TransactionsService {
       }
 
       const feeFormatter = this.amountFormatterSimple(transaction.maxFee.compact());
-
       let nameType = this.arraTypeTransaction[keyType].name;
       try {
         if (transaction['message'].payload !== '') {
