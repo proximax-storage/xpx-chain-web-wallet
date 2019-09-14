@@ -428,31 +428,31 @@ export class CreateTransferComponent implements OnInit {
     console.log('findCosignatories', element);
     this.cosignatorie = null;
     this.listCosignatorie = [];
-    if (element.default) {
-      if (element.isMultisign && element.isMultisign.cosignatories && element.isMultisign.cosignatories.length > 0) {
-        console.log('LENGTH ---->', element.isMultisign.cosignatories.length);
-        if (element.isMultisign.cosignatories.length === 1) {
-          const address = this.proximaxProvider.createFromRawAddress(element.isMultisign.cosignatories[0].address['address']);
+    // if (element.default) {
+    if (element.isMultisign && element.isMultisign.cosignatories && element.isMultisign.cosignatories.length > 0) {
+      console.log('LENGTH ---->', element.isMultisign.cosignatories.length);
+      if (element.isMultisign.cosignatories.length === 1) {
+        const address = this.proximaxProvider.createFromRawAddress(element.isMultisign.cosignatories[0].address['address']);
+        const cosignatorieAccount: AccountsInterface = this.walletService.filterAccount('', null, address.pretty());
+        if (cosignatorieAccount) {
+          console.log('setvalue............', cosignatorieAccount);
+          this.cosignatorie = cosignatorieAccount;
+        }
+      } else {
+        element.isMultisign.cosignatories.forEach(cosignatorie => {
+          const address = this.proximaxProvider.createFromRawAddress(cosignatorie.address['address']);
           const cosignatorieAccount: AccountsInterface = this.walletService.filterAccount('', null, address.pretty());
           if (cosignatorieAccount) {
-            console.log('setvalue............', cosignatorieAccount);
-            this.cosignatorie = cosignatorieAccount;
+            this.listCosignatorie.push({
+              label: cosignatorieAccount.name,
+              value: cosignatorieAccount,
+              selected: true
+            });
           }
-        } else {
-          element.isMultisign.cosignatories.forEach(cosignatorie => {
-            const address = this.proximaxProvider.createFromRawAddress(cosignatorie.address['address']);
-            const cosignatorieAccount: AccountsInterface = this.walletService.filterAccount('', null, address.pretty());
-            if (cosignatorieAccount) {
-              this.listCosignatorie.push({
-                label: cosignatorieAccount.name,
-                value: cosignatorieAccount,
-                selected: true
-              });
-            }
-          });
-        }
+        });
       }
     }
+    // }
   }
 
   /**

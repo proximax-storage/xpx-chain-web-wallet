@@ -66,13 +66,17 @@
               <tr class="white-space-pre cursor-p" (click)="dataSelected = el; basicModal.show();">
                 <!-- Type transaction -->
                 <td class="th-sm fs-07rem" scope="row description-dark-green">
-                  <ng-container *ngIf="el.nameType === 'ProximaX Swap';">
+                  <ng-container *ngIf="el.nameType === 'ProximaX Swap'; else elseSwap">
                     <span style="color: #e6b219;">
                       <i class="fa fa-star" aria-hidden="true"></i>
                     </span>
                   </ng-container>
+                  <ng-template #elseSwap>
+                    &nbsp;  &nbsp;
+                  </ng-template>
                   {{el.nameType}}
                 </td>
+
 
                 <!-- timestamp -->
                 <td class="th-sm description-dark-green fs-07rem">{{el.timestamp}}</td>

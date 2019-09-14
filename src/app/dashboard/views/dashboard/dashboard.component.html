@@ -143,13 +143,17 @@
                 <td class="fs-07rem">{{transaction.data.transactionInfo.hash}}</td> -->
                 <!-- Type transaction -->
                 <td class="th-sm fs-07rem" scope="row description-dark-green">
-                  <ng-container *ngIf="el.nameType === 'ProximaX Swap';">
+                  <ng-container *ngIf="el.nameType === 'ProximaX Swap'; else elseSwap">
                     <span style="color: #e6b219;">
                       <i class="fa fa-star" aria-hidden="true"></i>
                     </span>
                   </ng-container>
+                  <ng-template #elseSwap>
+                    &nbsp;  &nbsp;
+                  </ng-template>
                   {{el.nameType}}
                 </td>
+
 
 
                 <!-- timestamp -->
