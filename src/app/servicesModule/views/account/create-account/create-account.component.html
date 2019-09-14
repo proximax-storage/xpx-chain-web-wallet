@@ -91,7 +91,7 @@
               </div>
             </div>
 
-            <div class="row mt-1rem mb-2rem txt-a-center">
+            <div class="row mt-1rem mb-2rem txt-a-center" *ngIf="fromPrivateKey">
               <div class="col-11 mx-auto">
                 <mdb-checkbox (click)="switchSaveNis1()">The private key belongs to an account in NIS1. <i class="fa fa-info-circle color-gray-strong"></i></mdb-checkbox>
               </div>

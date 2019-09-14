@@ -13,7 +13,8 @@ import { NamespacesService } from '../../../services/namespaces.service';
 import { TransactionsService } from '../../../../transactions/services/transactions.service';
 import { ServicesModuleService } from '../../../../servicesModule/services/services-module.service';
 import { NemServiceService } from 'src/app/shared/services/nem-service.service';
-import { timeout } from 'rxjs/internal/operators/timeout';
+import { timeout } from 'rxjs/operators';
+import { Password } from 'nem-library';
 
 @Component({
   selector: 'app-create-account',
@@ -119,63 +120,103 @@ export class CreateAccountComponent implements OnInit {
             if (this.saveNis1) {
               this.spinnerButton = true;
               const nis1Wallet = this.nemProvider.createAccountPrivateKey(common['privateKey']);
-              this.nis1Account = {
-                address: nis1Wallet.address,
-                publicKey: nis1Wallet.publicKey
-              };
-              const mosaicNis1 = await this.nemProvider.getOwnedMosaics(this.nis1Account.address).toPromise();
-              if (mosaicNis1 && mosaicNis1.length > 0) {
-                for (const el of mosaicNis1) {
-                  if (el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx') {
-                    this.foundXpx = true;
-                    this.walletService.setAccountMosaicsNis1(el);
+              // const accountInfo = await this.nemProvider.getAccountInfo(nis1Wallet.address).toPromise();
+              
+              this.nemProvider.getAccountInfo(nis1Wallet.address).pipe(timeout(3000)).subscribe(
+                next => {
+                  console.log('This is a account Info --------------->', next.cosignatoryOf);
+                  let consigner: boolean = false;
+                  if (next.cosignatoryOf.length > 0) {
+                    consigner = true;
+                    this.walletService.setAccountInfoConsignerNis1(next.cosignatoryOf);
                   }
+
+                  this.nis1Account = {
+                    address: nis1Wallet.address,
+                    publicKey: nis1Wallet.publicKey,
+                    consignerOf: consigner
+                  };
+                  this.saveAccount(newAccount, nameAccount, password);
+                  // const mosaicNis1 = await this.nemProvider.getOwnedMosaics(this.nis1Account.address).toPromise();
+                  // if (mosaicNis1 && mosaicNis1.length > 0) {
+                  //   for (const el of mosaicNis1) {
+                  //     if (el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx') {
+                  //       this.foundXpx = true;
+                  //       this.walletService.setAccountMosaicsNis1(el);
+                  //     }
+                  //   }
+                  // }
+                },
+                error => {
+                  this.sharedService.showError('Error', error);
+                  this.nis1Account = {
+                    address: nis1Wallet.address,
+                    publicKey: nis1Wallet.publicKey,
+                    consignerOf: false
+                  };
+                  this.saveAccount(newAccount, nameAccount, password);
                 }
-              }
+              );
+
+
+              // this.nis1Account = {
+              //   address: nis1Wallet.address,
+              //   publicKey: nis1Wallet.publicKey
+              // };
             }
           } else {
             newAccount = this.proximaxProvider.createAccountSimple(nameAccount, password, network);
+            this.saveAccount(newAccount, nameAccount, password);
           }
-
-          this.namespaceService.searchNamespacesFromAccounts([newAccount.address]);
-          const accountBuilded: AccountsInterface = this.walletService.buildAccount({
-            address: newAccount.address['address'],
-            byDefault: false,
-            encrypted: newAccount.encryptedPrivateKey.encryptedKey,
-            firstAccount: false,
-            iv: newAccount.encryptedPrivateKey.iv,
-            network: newAccount.network,
-            nameAccount: nameAccount,
-            publicAccount: this.proximaxProvider.getPublicAccountFromPrivateKey(
-              this.proximaxProvider.decryptPrivateKey(
-                password,
-                newAccount.encryptedPrivateKey.encryptedKey,
-                newAccount.encryptedPrivateKey.iv
-              ).toUpperCase(), newAccount.network
-            ),
-            isMultisign: null,
-            nis1Account: this.nis1Account
-          });
-
-          this.walletService.setAccountInfoNis1(accountBuilded);
-
-          this.clearForm();
-          this.walletService.saveDataWalletCreated({
-            name: nameAccount,
-            algo: password,
-            network: newAccount.network,
-            fromPrivateKey: this.fromPrivateKey
-          }, accountBuilded, newAccount);
-          this.walletService.saveAccountStorage(accountBuilded);
-          this.serviceModuleService.saveContacts({ name: nameAccount, address: accountBuilded.address, walletContact: true, nameItem: '' });
-          this.dataBridgeService.closeConenection();
-          this.dataBridgeService.connectnWs();
-          this.dashboardService.isIncrementViewDashboard = 0;
-          this.transactionService.searchAccountsInfo(this.walletService.currentWallet.accounts);
-          this.router.navigate([`/${AppConfig.routes.accountCreated}`]);
         }
       }
     }
+  }
+
+  /**
+   * Method to save account in wallet
+   * @param {SimpleWallet} newAccount interface Simple Wallet
+   * @param {string} nameAccount account name
+   * @param {Password} password wallet password
+   * @memberof CreateAccountComponent
+   */
+  saveAccount(newAccount: SimpleWallet, nameAccount: string, password: Password) {
+    this.namespaceService.searchNamespacesFromAccounts([newAccount.address]);
+    const accountBuilded: AccountsInterface = this.walletService.buildAccount({
+      address: newAccount.address['address'],
+      byDefault: false,
+      encrypted: newAccount.encryptedPrivateKey.encryptedKey,
+      firstAccount: false,
+      iv: newAccount.encryptedPrivateKey.iv,
+      network: newAccount.network,
+      nameAccount: nameAccount,
+      publicAccount: this.proximaxProvider.getPublicAccountFromPrivateKey(
+        this.proximaxProvider.decryptPrivateKey(
+          password,
+          newAccount.encryptedPrivateKey.encryptedKey,
+          newAccount.encryptedPrivateKey.iv
+        ).toUpperCase(), newAccount.network
+      ),
+      isMultisign: null,
+      nis1Account: this.nis1Account
+    });
+
+    this.walletService.setAccountInfoNis1(accountBuilded);
+
+    this.clearForm();
+    this.walletService.saveDataWalletCreated({
+      name: nameAccount,
+      algo: password,
+      network: newAccount.network,
+      fromPrivateKey: this.fromPrivateKey
+    }, accountBuilded, newAccount);
+    this.walletService.saveAccountStorage(accountBuilded);
+    this.serviceModuleService.saveContacts({ name: nameAccount, address: accountBuilded.address, walletContact: true, nameItem: '' });
+    this.dataBridgeService.closeConenection();
+    this.dataBridgeService.connectnWs();
+    this.dashboardService.isIncrementViewDashboard = 0;
+    this.transactionService.searchAccountsInfo(this.walletService.currentWallet.accounts);
+    this.router.navigate([`/${AppConfig.routes.accountCreated}`]);
   }
 
 

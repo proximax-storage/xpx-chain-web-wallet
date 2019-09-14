@@ -28,12 +28,21 @@ export class AccountNis1FoundComponent implements OnInit {
   }
 
   goToRoute() {
-    this.router.navigate([`/${AppConfig.routes.accountNis1TransferXpx}`]);
+    const isConsigner = this.walletService.getAccountInfoNis1();
+    console.log('------------> account consigner?', isConsigner);
+    
+
+    if (isConsigner.consignerOf) {
+      this.router.navigate([`/${AppConfig.routes.accountNis1TransferXpx}`]);      
+    } else {
+      this.router.navigate([`/${AppConfig.routes.accountNis1TransferXpx}`]);
+    }
   }
 
   goToBack() {
     this.walletService.setAccountInfoNis1(null);
     this.walletService.setAccountMosaicsNis1(null);
+    this.walletService.setAccountInfoConsignerNis1(null);
     this.router.navigate([this.goAllAccounts]);
   }
 

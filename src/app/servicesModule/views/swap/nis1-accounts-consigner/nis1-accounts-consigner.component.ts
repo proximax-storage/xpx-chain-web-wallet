@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Balance } from 'nem-library';
-
 @Component({
-  selector: 'app-nis1-account-details',
-  templateUrl: './nis1-account-details.component.html',
-  styleUrls: ['./nis1-account-details.component.css']
+  selector: 'app-nis1-accounts-consigner',
+  templateUrl: './nis1-accounts-consigner.component.html',
+  styleUrls: ['./nis1-accounts-consigner.component.css']
 })
-export class Nis1AccountDetailsComponent implements OnInit {
+export class Nis1AccountsConsignerComponent implements OnInit {
 
   list: object[] = [
     {

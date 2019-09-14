@@ -37,6 +37,11 @@ export class AccountCreatedComponent implements OnInit {
   ngOnInit() {
     this.algo = this.walletService.accountWalletCreated;
     if (this.algo !== null) {
+      console.log('---------------------------------------account created ----------------------------');
+
+      const accountInfoNis1 = this.walletService.getAccountInfoNis1();
+      console.log('This account info nis1 ------->', accountInfoNis1);
+      
       this.name = this.algo.data.name;
       this.address = this.algo.wallet.address.pretty();
       this.privateKey = this.proximaxProvider.decryptPrivateKey(this.algo.data.algo, this.algo.dataAccount.encrypted, this.algo.dataAccount.iv).toUpperCase();
@@ -66,9 +71,13 @@ export class AccountCreatedComponent implements OnInit {
     // [routerLink]="[routes.backToService]"
     const nis1Info = this.walletService.getAccountInfoNis1();
     console.log('this a nis1 Info ------>', nis1Info);
-    console.log('this a nis1 Info ------>', AppConfig.routes.accountNis1Found);
+    console.log('this a nis1 Info ------>', );
     if (nis1Info.nis1Account !== null) {
-      this.router.navigate([`/${AppConfig.routes.accountNis1Found}`]);
+      if (nis1Info.nis1Account.consignerOf) {
+        this.router.navigate([`/${AppConfig.routes.nis1AccountsConsigner}`]);
+      } else {
+        this.router.navigate([`/${AppConfig.routes.accountNis1Found}`]);
+      }
     } else {
       this.router.navigate([this.routes.backToService]);
     }
