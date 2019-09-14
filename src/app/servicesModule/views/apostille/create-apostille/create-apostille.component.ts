@@ -10,7 +10,7 @@ import { WalletService } from '../../../../wallet/services/wallet.service';
 import { HeaderServicesInterface } from '../../../services/services-module.service';
 import { AppConfig } from '../../../../config/app.config';
 import { StorageService, SearchResultInterface } from '../../storage/services/storage.service';
-import { SearchResult } from 'xpx2-ts-js-sdk';
+import { SearchResult } from 'tsjs-chain-xipfs-sdk';
 import { PaginationInstance } from 'ngx-pagination';
 import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
 
