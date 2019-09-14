@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectorRef, HostListener, Inject } from '@angular/core';
 import { MdbTableDirective } from 'ng-uikit-pro-standard';
 import { DOCUMENT } from '@angular/common';
+import * as qrcode from 'qrcode-generator';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 import { DashboardService } from '../../services/dashboard.service';
 import { TransactionsInterface, TransactionsService } from '../../../transactions/services/transactions.service';
@@ -60,6 +61,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   windowScrolled: boolean;
   nameWallet = '';
   p: number = 1;
+  qr = '';
 
   constructor(
     private cdRef: ChangeDetectorRef,
@@ -79,6 +81,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.dashboardService.subscribeLogged();
     this.currentAccount = Object.assign({}, this.walletService.getCurrentAccount());
     this.currentAccount.address = this.proximaxProvider.createFromRawAddress(this.currentAccount.address).pretty();
+    const qr = qrcode(10, 'H');
+    qr.addData(this.currentAccount.address);
+    qr.make();
+    console.log(qr);
+    console.log(qr.createDataURL());
+    this.qr = qr.createDataURL();
     this.typeTransactions = this.transactionService.getTypeTransactions();
     this.vestedBalance = `0.000000 ${environment.mosaicXpxInfo.coin}`;
     this.balance();
