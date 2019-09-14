@@ -31,20 +31,29 @@
         <div class="col-2 col-md-1 d-flex justify-content-center"> > </div>
         <div class="col-8 col-md-10">
           <div class="row d-flex justify-content-center">
-            <div class="col-12 col-sm-8 d-flex justify-content-md-end justify-content-center">
-              <input mdbInputDirective [validateSuccess]="false" [validateError]="false" class="w-100porcent form-control" type="text"
-                placeholder="Enter search text" autocomplete="off" [(ngModel)]="filter">
+            <div class="col-12 col-sm-2" style="margin-top: -15px;">
+              <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" [items]="filterObjectSelect"
+                bindLabel="label" bindValue="value" placeholder="Select search type" (change)="filterSelected($event)"></ng-select>
+            </div>
+            <div class="col-12 col-sm-6 d-flex justify-content-md-end justify-content-center">
+              <input mdbInputDirective [validateSuccess]="false" [validateError]="false" class="w-100porcent form-control"
+                type="text" placeholder="Enter search text" autocomplete="off" (ngModelChange)="filterChange($event)"  [(ngModel)]="filter">
             </div>
 
             <div class="col-12 col-sm-2">
-              <button (click)="refreshData($event)" mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn" size="sm">
+              <button (click)="search($event)" mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn"
+                size="sm">
+                <span class="fs-1-2em color-white">SEARCH</span>
+              </button>
+            </div>
+
+            <div class="col-12 col-sm-2">
+              <button (click)="refreshData($event)" mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn"
+                size="sm">
                 <span class="fs-1-2em color-white">REFRESH</span>
               </button>
             </div>
-            <div class="col-12 col-sm-2" style="margin-top: -15px;">
-              <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" [items]="status" bindLabel="label"
-                bindValue="value" placeholder="Status" (change)="selected($event)"></ng-select>
-            </div>
+
           </div>
         </div>
         <div class="col-2 col-md-1 d-flex justify-content-center"> > </div>
@@ -60,8 +69,8 @@
       <mdb-progress-bar *ngIf="showBarProgressone" class="progress primary-color-dark" mode="indeterminate">
       </mdb-progress-bar>
 
-      <mdb-progress *ngIf="showBarProgress" class="barlistvoting" value="{{resultLength}}" min="0" max="{{cantPolls}}" aria-valuenow="{{resultLength}}"
-        aria-valuemin="0" aria-valuemax="{{cantPolls}}">{{progressBar}}%</mdb-progress>
+      <mdb-progress *ngIf="showBarProgress" class="barlistvoting" value="{{resultLength}}" min="0" max="{{cantPolls}}"
+        aria-valuenow="{{resultLength}}" aria-valuemin="0" aria-valuemax="{{cantPolls}}">{{progressBar}}%</mdb-progress>
     </div>
 
 
@@ -69,7 +78,7 @@
 
   <div class="row mt-2rem">
     <div class="col-12">
-      <span class="fw-600 d-flex justify-content-center">{{pollResult.length}} results found</span>
+      <span class="fw-600 d-flex justify-content-center">{{cantPolls}} results found</span>
     </div>
   </div>
 </div>
@@ -85,13 +94,13 @@
           </thead>
 
           <tbody class="background-white">
-            <ng-container *ngFor="let poll of pollResult | stringFilter: filter | paginate: configAdvance">
+            <ng-container *ngFor="let poll of pollResult | filterobject: objectValue | paginate: configAdvance">
               <tr class="white-space-pre cursor-p" mdbTableCol (click)="routerRouterLink(routes.voteInpoll+poll.id)">
                 <!-- <td class="fs-07rem" [ngClass]="transaction ? 'fw-600': ''">{{transaction.status}}</td> -->
                 <td class="fs-07rem txt-a-center">{{poll.name}}</td>
-                <td class="fs-07rem txt-a-center">{{filterType(poll.type)}}</td>
+                <td class="fs-07rem txt-a-center">{{poll.typeName}}</td>
                 <td class="fs-07rem txt-a-center">{{formtDate(poll.endDate)}}</td>
-                <td class="fs-07rem txt-a-center">{{statusPoll(poll.endDate ,poll.startDate)}}</td>
+                <td class="fs-07rem txt-a-center">{{poll.statusPoll}}</td>
               </tr>
             </ng-container>
 
