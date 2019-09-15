@@ -182,6 +182,7 @@ export class CreatePollComponent implements OnInit {
         this.showList = true;
       } else {
         this.showList = false;
+        this.showContacts= false;
         this.cleanThirForm();
         this.listaBlanca = [];
       }
