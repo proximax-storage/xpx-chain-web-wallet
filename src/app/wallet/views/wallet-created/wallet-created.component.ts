@@ -98,15 +98,15 @@ export class WalletCreatedComponent implements OnInit {
     let doc = new jsPDF({
       unit: 'px'
     });
-    doc.addImage(this.imgBackground, 'JPEG', 120, 60, 210, 120)
+    doc.addImage(this.imgBackground, 'JPEG', 120, 60, 210, 125)
 
     // QR Code Address
-    doc.addImage(this.qrConstruntion(this.privateKey, 1, 0), 153, 99)
+    doc.addImage(this.qrConstruntion(this.privateKey, 1, 0), 153, 102)
 
     // Addres number
     doc.setFontSize(8)
     doc.setTextColor('#000000')
-    doc.text(this.address, 147, 154, { maxWidth: 132 })
+    doc.text(this.address, 147, 159, { maxWidth: 132 })
 
     doc.save('Your_Paper_Wallet')
   }
