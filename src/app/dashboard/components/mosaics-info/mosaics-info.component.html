@@ -1,60 +1,88 @@
-<ng-container *ngIf="searching">
-  <div class="col-12">
-    <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate">
-    </mdb-progress-bar>
-  </div>
-</ng-container>
-
-<!-- MOSAIC XPX -->
-<ng-container *ngIf="viewMosaicXpx">
-  <div class="row">
-    <div class="col-3">
-      <span class="color-dark-green fw-bold fs-1-5rem">Amount: </span>
-    </div>
-    <div class="col-9">
-      <span [ngClass]="{
-         'color-blue-light': transferTransaction.receive,
-         'color-orange': !transferTransaction.receive
-        }" class="fw-bold fs-1-5rem">{{mosaicXpx.amountFormatter}} XPX</span>
-    </div>
-  </div>
-</ng-container>
-
-<!-- OTHER MOSAICS -->
-<ng-container *ngIf="viewOtherMosaics">
-  <div class="row">
+<ng-container *ngIf="simple === true">
+  <ng-container *ngIf="searching">
     <div class="col-12">
-      <span class="color-dark-green fw-bold fs-1-5rem">Other mosaics: </span>
+      <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate">
+      </mdb-progress-bar>
     </div>
-  </div>
+  </ng-container>
 
-  <div class="table-responsive table-striped ">
-    <table mdbTable id="tablePreview" class="table table-hover table-bordered table-striped table-sm z-depth-0">
-      <thead>
-        <tr>
-          <th *ngFor="let head of headElements" scope="col" [ngClass]="{
-            'color-blue-light': transferTransaction.receive,
-            'color-orange': !transferTransaction.receive
-          }" class="text-align-left fw-500">{{head}}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr mdbTableCol *ngFor="let element of quantity; let i = index">
-          <td class="font-size-08rem">
-            <a class="text-link mouse-pointer">{{element.id}}</a>
-          </td>
+  <!-- MOSAIC XPX -->
+  <ng-container *ngIf="viewMosaicXpx">
+    <div class="row">
+      <div class="col-3">
+        <span class="color-dark-green fw-bold fs-1-5rem">Amount: </span>
+      </div>
+      <div class="col-9">
+        <span [ngClass]="{
+               'color-blue-light': transferTransaction.receive,
+               'color-orange': !transferTransaction.receive
+              }" class="fw-bold fs-1-5rem">{{mosaicXpx.amountFormatter}} XPX</span>
+      </div>
+    </div>
+  </ng-container>
 
-          <ng-container *ngIf="!element.existMosaic || element.name === ''; else viewMosaicInfo">
-            <td class="font-size-08rem">Mosaic no longer exists</td>
-            <td class="font-size-08rem">{{element.amountFormatter}}</td>
-          </ng-container>
+  <!-- OTHER MOSAICS -->
+  <ng-container *ngIf="viewOtherMosaics">
+    <div class="row">
+      <div class="col-12">
+        <span class="color-dark-green fw-bold fs-1-5rem">Other mosaics: </span>
+      </div>
+    </div>
 
-          <ng-template #viewMosaicInfo>
-            <td class="font-size-08rem">{{element.name}}</td>
-            <td class="font-size-08rem">{{element.amountFormatter}}</td>
-          </ng-template>
-        </tr>
-      </tbody>
-    </table>
+    <div class="table-responsive table-striped ">
+      <table mdbTable id="tablePreview" class="table table-hover table-bordered table-striped table-sm z-depth-0">
+        <thead>
+          <tr>
+            <th *ngFor="let head of headElements" scope="col" [ngClass]="{
+                  'color-blue-light': transferTransaction.receive,
+                  'color-orange': !transferTransaction.receive
+                }" class="text-align-left fw-500">{{head}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr mdbTableCol *ngFor="let element of quantity; let i = index">
+            <td class="font-size-08rem">
+              <a class="text-link mouse-pointer">{{element.id}}</a>
+            </td>
+
+            <ng-container *ngIf="!element.existMosaic || element.name === ''; else viewMosaicInfo">
+              <td class="font-size-08rem">Mosaic no longer exists</td>
+              <td class="font-size-08rem">{{element.amountFormatter}}</td>
+            </ng-container>
+
+            <ng-template #viewMosaicInfo>
+              <td class="font-size-08rem">{{element.name}}</td>
+              <td class="font-size-08rem">{{element.amountFormatter}}</td>
+            </ng-template>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </ng-container>
+
+</ng-container>
+
+<!-- BONDED -->
+<ng-container *ngIf="simple === false">
+  <div class="row">
+    <ng-container *ngIf="searching">
+      <div class="col-12">
+        <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate">
+        </mdb-progress-bar>
+      </div>
+    </ng-container>
+
+    <!-- INFORMATION -->
+    <ng-container *ngIf="viewMosaicXpx">
+      <div class="col-12">
+        <!-- MOSAIC XPX -->
+        <span class="fw-600 fs-065rem">Amount: &nbsp;</span>
+        <span
+          [ngClass]="{'color-blue-light': transferTransaction.receive, 'color-orange': !transferTransaction.receive }"
+          class="fw-600 fs-065rem">
+          {{mosaicXpx.amountFormatter}} XPX
+        </span>
+      </div>
+    </ng-container>
   </div>
 </ng-container>
