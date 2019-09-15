@@ -148,7 +148,7 @@ export class ImportWalletComponent implements OnInit {
 
           this.nemProvider.getAccountInfo(nis1Wallet.address).pipe(timeout(3000)).subscribe(
             next => {
-              console.log('This is a account Info --------------->', next.cosignatoryOf);
+              // console.log('This is a account Info --------------->', next.cosignatoryOf);
               let consigner: boolean = false;
               if (next.cosignatoryOf.length > 0) {
                 consigner = true;

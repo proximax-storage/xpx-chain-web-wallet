@@ -1,8 +1,25 @@
-<ng-container *ngIf="transferTransactionBonded">
+<ng-container *ngIf="transactionBuilder.data">
   <div class="row">
     <div class="col-12 lh-1em">
+      <!-- RECIVE -->
+      <ng-container *ngIf="transactionBuilder.receive">
+        <!-- <span class="fw-600 fs-065rem">Transaction:&nbsp;</span> -->
+        <span class="fw-600 fs-065rem color-blue-light">Received&nbsp;</span>
+        <img src="assets/images/img/arrow-transaction-receive-green-proximax-sirius-explorer.svg" alt="" width="15">
+      </ng-container>
+      <!-- SEND -->
+      <ng-container *ngIf="!transactionBuilder.receive">
+        <!-- <span class="fw-600 fs-065rem">Transaction:&nbsp;</span> -->
+        <span class="fw-600 fs-065rem color-orange">Send&nbsp;</span>
+        <img src="assets/images/img/arrow-transaction-sender-orange-proximax-sirius-explorer.svg" alt="" width="15">
+      </ng-container>
+    </div>
+  </div>
+
+  <div class="row mt-05rem">
+    <div class="col-12 lh-1em">
       <span class="fw-600 fs-065rem">Deadline: </span>
-      <span class="fs-065rem w-w-b-w">{{transactionService.dateFormat(transferTransactionBonded['deadline'])}}</span>
+      <span class="fs-065rem w-w-b-w">{{transactionService.dateFormat(transactionBuilder.data['deadline'])}}</span>
     </div>
   </div>
 
@@ -10,16 +27,50 @@
     <div class="col-12 lh-1em">
       <span class="fw-600 fs-065rem">Type:
       </span>
-      <span class="fs-065rem w-w-b-w">{{transferTransactionBonded['type'].toString(16).toUpperCase()}}</span>
+      <span class="fs-065rem w-w-b-w">{{transactionBuilder.data['type'].toString(16).toUpperCase()}}</span>
     </div>
   </div>
 
-  <ng-container *ngIf="transferTransactionBonded['transactionInfo']">
+  <div class="row mt-05rem">
+    <div class="col-12 lh-1em">
+      <app-mosaics-info (changeSearch)="searching = false;" [mosaicsArray]="transactionBuilder.data['mosaics']"
+        [transferTransaction]="transactionBuilder.data" [simple]="false">
+      </app-mosaics-info>
+    </div>
+  </div>
+
+  <div class="row mt-05rem">
+    <div class="col-12 lh-1em">
+      <span class="fw-600 fs-065rem">From:
+      </span>
+      <span class="fs-065rem w-w-b-w">{{transactionBuilder.data.signer.address.pretty()}}</span>
+    </div>
+  </div>
+
+  <div class="row mt-05rem">
+    <div class="col-12 lh-1em">
+      <span class="fw-600 fs-065rem">To:
+      </span>
+      <span class="fs-065rem w-w-b-w">{{transactionBuilder.data.recipient.pretty()}}</span>
+    </div>
+  </div>
+
+  <ng-container *ngIf="transactionBuilder.data['message'] && transactionBuilder.data['message'].payload !== ''">
+    <div class="row mt-05rem">
+      <div class="col-12 lh-1em">
+        <span class="fw-600 fs-065rem">Message:
+        </span>
+        <span class="fs-065rem w-w-b-w">{{transactionBuilder.data['message'].payload}}</span>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="transactionBuilder.data['transactionInfo']">
     <div class="row mt-05rem">
       <div class="col-12 lh-1em">
         <span class="fw-600 fs-065rem">Aggregate id:
         </span>
-        <span class="fs-065rem w-w-b-w">{{transferTransactionBonded['transactionInfo']['aggregateId']}}</span>
+        <span class="fs-065rem w-w-b-w">{{transactionBuilder.data['transactionInfo']['aggregateId']}}</span>
       </div>
     </div>
   </ng-container>
@@ -27,14 +78,14 @@
   <div class="row mt-05rem">
     <div class="col-12 lh-1em">
       <span class="fw-600 fs-065rem">Signer Address: </span>
-      <span class="fs-065rem w-w-b-w">{{transferTransactionBonded?.signer.address.pretty()}}</span>
+      <span class="fs-065rem w-w-b-w">{{transactionBuilder.data?.signer.address.pretty()}}</span>
     </div>
   </div>
 
   <div class="row mt-05rem">
     <div class="col-12 lh-1em">
       <span class="fw-600 fs-065rem">Signer Public key: </span>
-      <span class="fs-065rem w-w-b-w">{{transferTransactionBonded?.signer.publicKey}}</span>
+      <span class="fs-065rem w-w-b-w">{{transactionBuilder.data?.signer.publicKey}}</span>
     </div>
   </div>
 
@@ -42,7 +93,7 @@
     <div class="col-12 lh-1em">
       <span class="fw-600 fs-065rem">Signature:
       </span>
-      <span class="fs-065rem w-w-b-w">{{transferTransactionBonded?.signature}}</span>
+      <span class="fs-065rem w-w-b-w">{{transactionBuilder.data?.signature}}</span>
     </div>
   </div>
 </ng-container>

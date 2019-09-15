@@ -168,10 +168,7 @@ export class PollsComponent implements OnInit {
 
   }
 
-  search() {
-
-
-  }
+ 
 
   routerRouterLink(link: string) {
     // Create Book logic
@@ -247,6 +244,25 @@ export class PollsComponent implements OnInit {
       });
     }
   }
+
+  /**
+   *
+   * @param format
+   */
+  formtDate(format: string | number | Date) {
+    const datefmt = new Date(format);
+    const day = (datefmt.getDate() < 10) ? `0${datefmt.getDate()}` : datefmt.getDate();
+    const month = (datefmt.getMonth() + 1 < 10) ? `0${datefmt.getMonth() + 1}` : datefmt.getMonth() + 1;
+    const hours = (datefmt.getHours() < 10) ? `0${datefmt.getHours()}` : datefmt.getHours();
+    const minutes = (datefmt.getMinutes() < 10) ? `0${datefmt.getMinutes()}` : datefmt.getMinutes();
+    const seconds = (datefmt.getSeconds() < 10) ? `0${datefmt.getSeconds()}` : datefmt.getSeconds();
+    return `${datefmt.getFullYear()}-${month}-${day}  ${hours}:${minutes}:${seconds}`;
+  }
+
+  /**
+   *
+   * @param type
+   */
   filterType(type: number) {
     switch (type) {
       case 0:
@@ -254,6 +270,10 @@ export class PollsComponent implements OnInit {
       case 1:
         return 'Open';
     }
+  }
+
+  search() {
+
   }
 
   /**
@@ -275,15 +295,7 @@ export class PollsComponent implements OnInit {
     }
   }
 
-  formtDate(format: string | number | Date) {
-    const datefmt = new Date(format);
-    const day = (datefmt.getDate() < 10) ? `0${datefmt.getDate()}` : datefmt.getDate();
-    const month = (datefmt.getMonth() + 1 < 10) ? `0${datefmt.getMonth() + 1}` : datefmt.getMonth() + 1;
-    const hours = (datefmt.getHours() < 10) ? `0${datefmt.getHours()}` : datefmt.getHours();
-    const minutes = (datefmt.getMinutes() < 10) ? `0${datefmt.getMinutes()}` : datefmt.getMinutes();
-    const seconds = (datefmt.getSeconds() < 10) ? `0${datefmt.getSeconds()}` : datefmt.getSeconds();
-    return `${datefmt.getFullYear()}-${month}-${day}  ${hours}:${minutes}:${seconds}`;
-  }
+
 }
 export interface PollInterface {
   name: string;

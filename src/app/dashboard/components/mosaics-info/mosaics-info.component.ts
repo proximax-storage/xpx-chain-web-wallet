@@ -12,6 +12,7 @@ import { environment } from 'src/environments/environment';
 export class MosaicsInfoComponent implements OnInit {
 
   @Input() mosaicsArray: Mosaic[] = [];
+  @Input() simple = true;
   @Input() transferTransaction: TransactionsInterface;
   @Output() changeSearch = new EventEmitter();
 
@@ -37,6 +38,13 @@ export class MosaicsInfoComponent implements OnInit {
     this.viewOtherMosaics = false;
     this.quantity = [];
     this.searching = true;
+    console.log(this.simple);
+    if (this.simple === false) {
+      this.transferTransaction = this.transferTransaction;
+    } else {
+      this.simple = true;
+      this.transferTransaction = this.transferTransaction.data;
+    }
 
     console.log('-----this.mosaicsArray----', this.mosaicsArray);
     const mosaics: MosaicsStorage[] = await this.mosaicService.filterMosaics(this.mosaicsArray.map((mosaic: Mosaic) => { return mosaic.id }));
@@ -80,7 +88,7 @@ export class MosaicsInfoComponent implements OnInit {
         }
       }
     } else {
-      this.transferTransaction.data['mosaics'].forEach((_element: Mosaic) => {
+      this.transferTransaction['mosaics'].forEach((_element: Mosaic) => {
         this.quantity.push({
           id: _element.id.toHex(),
           name: '',
