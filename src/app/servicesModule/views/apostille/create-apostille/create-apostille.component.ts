@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import * as crypto from 'crypto-js'
-import { Account, UInt64, TransferTransaction } from 'tsjs-xpx-chain-sdk';
-import { KeyPair, convert } from 'js-xpx-chain-library';
+import { Account, UInt64, TransferTransaction, KeyPair, Convert as convert} from 'tsjs-xpx-chain-sdk';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { ConfigurationForm, SharedService } from '../../../../shared/services/shared.service';
 import { ApostilleService, NtyDataInterface } from '../services/apostille.service';

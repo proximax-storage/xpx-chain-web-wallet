@@ -203,7 +203,8 @@ export class DataBridgeService {
    * @memberof DataBridgeService
    */
   getSocketTransactionsAggreateBonded(connector: Listener, audio: HTMLAudioElement) {
-    this.currentWallet.accounts.forEach(element => {
+    const currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
+    currentWallet.accounts.forEach(element => {
       const address = this.proximaxProvider.createFromRawAddress(element.address);
       connector.aggregateBondedAdded(address).subscribe((aggregateBondedAdded: Transaction) => {
         console.log('CONNECTED --> ', address);

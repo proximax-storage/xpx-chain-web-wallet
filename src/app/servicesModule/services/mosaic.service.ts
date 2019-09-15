@@ -10,7 +10,6 @@ import { ProximaxProvider } from "../../shared/services/proximax.provider";
 import { NamespacesService } from "./namespaces.service";
 import { WalletService } from '../../wallet/services/wallet.service';
 import { environment } from 'src/environments/environment';
-import { mosaicId } from 'js-xpx-chain-library';
 import { Observable, BehaviorSubject } from 'rxjs';
 
 export interface NamespaceLinkedMosaic {

@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { SimpleWallet, PublicAccount, AccountInfo, MultisigAccountInfo, NamespaceId, MosaicId } from 'tsjs-xpx-chain-sdk';
-import { crypto } from 'js-xpx-chain-library';
+import { SimpleWallet, PublicAccount, AccountInfo, MultisigAccountInfo, NamespaceId, MosaicId, Crypto, WalletAlgorithm } from 'tsjs-xpx-chain-sdk';
 import { AbstractControl } from '@angular/forms';
 import { BehaviorSubject, Observable, timer, Subject } from 'rxjs';
 
@@ -93,18 +92,18 @@ export class WalletService {
   getAccountMosaicsNis1() {
     return this.accountMosaicsNis1;
   }
-  
+
   /**
-   * 
-   * @param data 
+   *
+   * @param data
    */
   getNis1AccountSelected() {
     return this.nis1AccountSeleted;
   }
 
   /**
-   * 
-   * @param data 
+   *
+   * @param data
    */
   setNis1AccountSelected(account: any) {
     this.nis1AccountSeleted = account;
@@ -122,7 +121,7 @@ export class WalletService {
    */
   buildAccount(data: any): AccountsInterface {
     return {
-      algo: 'pass:bip32',
+      algo: WalletAlgorithm.Pass_bip32,
       address: data.address,
       brain: true,
       default: data.byDefault,
@@ -301,7 +300,7 @@ export class WalletService {
     const acct = (account) ? account : this.currentAccount;
     const net = (account) ? account.network : this.currentAccount.network;
     const alg = (account) ? account.algo : this.currentAccount.algo;
-    if (!crypto.passwordToPrivatekey(common, acct, alg)) {
+    if (!Crypto.passwordToPrivateKey(common, acct, alg)) {
       this.sharedService.showError('', 'Invalid password');
       return false;
     }
@@ -736,7 +735,7 @@ export interface CurrentWalletInterface {
 
 export interface AccountsInterface {
   address: any;
-  algo: string;
+  algo: WalletAlgorithm;
   brain: boolean;
   default: boolean;
   encrypted: string;

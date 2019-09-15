@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { crypto } from 'js-xpx-chain-library';
 import {
   Password,
   SimpleWallet,
@@ -43,7 +42,9 @@ import {
   AggregateTransaction,
   CosignatureTransaction,
   BlockHttp,
-  BlockInfo
+  BlockInfo,
+  Crypto,
+  WalletAlgorithm
 } from 'tsjs-xpx-chain-sdk';
 import { MosaicDefinitionTransaction } from 'tsjs-xpx-chain-sdk/dist/src/model/transaction/MosaicDefinitionTransaction';
 import { mergeMap } from 'rxjs/operators';
@@ -284,7 +285,7 @@ export class ProximaxProvider {
       iv: iv,
     };
 
-    crypto.passwordToPrivatekey(common, wallet, 'pass:bip32');
+    Crypto.passwordToPrivateKey(common, wallet, WalletAlgorithm.Pass_bip32);
     return common.privateKey;
   }
 

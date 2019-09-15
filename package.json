@@ -46,7 +46,6 @@
     "font-awesome": "^4.7.0",
     "hammerjs": "^2.0.8",
     "highcharts": "^7.1.3",
-    "js-xpx-chain-library": "^0.3.0",
     "jspdf": "^1.5.3",
     "jszip": "^3.2.2",
     "nem-library": "^2.0.0-RC4",

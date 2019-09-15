@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { NetworkType, UInt64, Address, BlockInfo } from 'tsjs-xpx-chain-sdk';
+import { NetworkType, UInt64, Address, BlockInfo, WalletAlgorithm } from 'tsjs-xpx-chain-sdk';
 
 import { AppConfig } from '../../config/app.config';
 import { WalletService, CurrentWalletInterface } from '../../wallet/services/wallet.service';
@@ -74,7 +74,7 @@ export class AuthService {
       } else if (!this.walletService.decrypt(common, currentAccount)) {
         // Decrypt / generate and check primary
         isValid = false;
-      } else if (currentAccount.network === NetworkType.MAIN_NET && currentAccount.algo === 'pass:6k' && common.password.length < 40) {
+      } else if (currentAccount.network === NetworkType.MAIN_NET && currentAccount.algo === WalletAlgorithm.Pass_6k && common.password.length < 40) {
         this.sharedService.showError('', 'Dear user, the wallet is missing');
       } else {
         isValid = true;
