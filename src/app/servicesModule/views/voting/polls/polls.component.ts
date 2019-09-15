@@ -119,7 +119,7 @@ export class PollsComponent implements OnInit {
   /**
  * get the storage poll
  *
- * 
+ *
  * @memberof PollsComponent
  */
   getPollStorage() {
@@ -137,9 +137,9 @@ export class PollsComponent implements OnInit {
       resultData.push(data.result);
       if (resultData.length > 0) {
         resultData.map(elemt => {
-           elemt.createdDate = new Date(elemt.createdDate);
-           elemt.typeName = this.filterType(elemt.type);
-           elemt.statusPoll= this.statusPoll(elemt.endDate ,elemt.startDate)
+          elemt.createdDate = new Date(elemt.createdDate);
+          elemt.typeName = this.filterType(elemt.type);
+          elemt.statusPoll = this.statusPoll(elemt.endDate, elemt.startDate)
         });
         resultData.sort((date1, date2) => {
           return date2.createdDate.getTime() - date1.createdDate.getTime();
@@ -172,6 +172,25 @@ export class PollsComponent implements OnInit {
       });
     }
   }
+
+  /**
+   *
+   * @param format
+   */
+  formtDate(format: string | number | Date) {
+    const datefmt = new Date(format);
+    const day = (datefmt.getDate() < 10) ? `0${datefmt.getDate()}` : datefmt.getDate();
+    const month = (datefmt.getMonth() + 1 < 10) ? `0${datefmt.getMonth() + 1}` : datefmt.getMonth() + 1;
+    const hours = (datefmt.getHours() < 10) ? `0${datefmt.getHours()}` : datefmt.getHours();
+    const minutes = (datefmt.getMinutes() < 10) ? `0${datefmt.getMinutes()}` : datefmt.getMinutes();
+    const seconds = (datefmt.getSeconds() < 10) ? `0${datefmt.getSeconds()}` : datefmt.getSeconds();
+    return `${datefmt.getFullYear()}-${month}-${day}  ${hours}:${minutes}:${seconds}`;
+  }
+
+  /**
+   *
+   * @param type
+   */
   filterType(type: number) {
     switch (type) {
       case 0:
@@ -181,12 +200,16 @@ export class PollsComponent implements OnInit {
     }
   }
 
+  search() {
+
+  }
+
   /**
-* validate status date poll 
-*
-* @param {any} obj
-* @memberof PollsComponent
-*/
+  * validate status date poll
+  *
+  * @param {any} obj
+  * @memberof PollsComponent
+  */
   statusPoll(endDate: string | number | Date, starDate: string | number | Date) {
     endDate = new Date(endDate).getTime();
     starDate = new Date(starDate).getTime();
@@ -200,15 +223,7 @@ export class PollsComponent implements OnInit {
     }
   }
 
-  formtDate(format: string | number | Date) {
-    const datefmt = new Date(format);
-    const day = (datefmt.getDate() < 10) ? `0${datefmt.getDate()}` : datefmt.getDate();
-    const month = (datefmt.getMonth() + 1 < 10) ? `0${datefmt.getMonth() + 1}` : datefmt.getMonth() + 1;
-    const hours = (datefmt.getHours() < 10) ? `0${datefmt.getHours()}` : datefmt.getHours();
-    const minutes = (datefmt.getMinutes() < 10) ? `0${datefmt.getMinutes()}` : datefmt.getMinutes();
-    const seconds = (datefmt.getSeconds() < 10) ? `0${datefmt.getSeconds()}` : datefmt.getSeconds();
-    return `${datefmt.getFullYear()}-${month}-${day}  ${hours}:${minutes}:${seconds}`;
-  }
+
 }
 export interface PollInterface {
   name: string;
@@ -225,7 +240,7 @@ export interface PollInterface {
   endDate: Date;
   createdDate: Date;
   quantityOption: number;
-  statusPoll :string
+  statusPoll: string
 }
 
 export interface optionsPoll {
