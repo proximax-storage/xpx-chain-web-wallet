@@ -37,6 +37,10 @@ export class NemServiceService {
     this.accountHttp = new AccountHttp(this.nodes);
     this.transactionHttp = new TransactionHttp(this.nodes);
     this.assetHttp = new AssetHttp(this.nodes);
+
+    console.log(this.accountHttp);
+    console.log(this.transactionHttp);
+    console.log(this.assetHttp);
   }
 
   /**
@@ -65,7 +69,7 @@ export class NemServiceService {
   getAccountInfo(address: Address): Observable<AccountInfoWithMetaData> {
     return this.accountHttp.getFromAddress(address);
   }
-  
+
   /**
    * Method to search mosaics of address
    * @param {Address} address address of the mosaics sought
