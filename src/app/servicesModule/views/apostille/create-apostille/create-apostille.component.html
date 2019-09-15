@@ -33,8 +33,8 @@
                   <div class="col-12 box-grey" mdbBtn mdbWavesEffect>
                     <ngx-dropzone (change)="onSelect($event)" [multiple]="false">
                       <ngx-dropzone-label>
-                        <img class="mr-1rem h2em"
-                          src="assets/images/img/icon-upload-gray-28h-proximax-sirius-wallet.svg" width="25">
+                        <img class="mr-1rem h2em" src="assets/images/img/icon-upload-gray-28h-proximax-sirius-wallet.svg"
+                          width="25">
                         <span class="fs-1-2em fw-700 color-gray-strong">Upload file</span>
                       </ngx-dropzone-label>
                       <ngx-dropzone-preview *ngFor="let f of files" [removable]="true" (removed)="onRemove(f)">
@@ -56,8 +56,8 @@
                       </ng-container>
 
                       <div class="col-12 d-flex justify-content-end background-dark-green-plus pt-05rem">
-                        <button mdbBtn type="submit" rounded="true" mdbWavesEffect
-                          class="f-w-600 background-btn overflow-ellipsis-nowrap" size="sm" (click)="initForm(); ">
+                        <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn overflow-ellipsis-nowrap"
+                          size="sm" (click)="initForm(); ">
                           <i class="fa fa-refresh color-white" aria-hidden="true"></i> &nbsp;
                           <span class="fs-1em color-white">REFRESH</span>
                         </button>
@@ -66,10 +66,8 @@
                       <!-- DATA -->
                       <div class="col-12 col-md-12 mx-auto">
                         <div class="row d-flex justify-content-start align-items-stretch mb-1rem">
-                          <div class="col-12 col-sm-6 d-flex mt-1rem audit-back"
-                            *ngFor="let item of filesStorage | paginate: configFileStorage">
-                            <div class=" audit-front storage-background-file cursor-p d-flex"
-                              [ngClass]="[item.selected ? 'border-selected' : '']"
+                          <div class="col-12 col-sm-6 d-flex mt-1rem audit-back" *ngFor="let item of filesStorage | paginate: configFileStorage">
+                            <div class=" audit-front storage-background-file cursor-p d-flex" [ngClass]="[item.selected ? 'border-selected' : '']"
                               (click)="convertToFile(item, item.random);">
                               <div class="col-8 p-05rem background-white">
                                 <div>
@@ -85,16 +83,14 @@
                               </div>
                               <div class="col-4 audit-medal mx-auto d-flex justify-content-center align-items-center">
                                 <figure>
-                                  <img src="assets/images/img/icon-file-green-16h-proximax-sirius-wallet.svg"
-                                    width="40">
+                                  <img src="assets/images/img/icon-file-green-16h-proximax-sirius-wallet.svg" width="40">
                                 </figure>
                               </div>
                             </div>
                           </div>
 
                           <div class="col-12 pt-1rem pb-3rem d-flex justify-content-center mx-auto">
-                            <pagination-controls [id]="configFileStorage.id"
-                              (pageChange)="configFileStorage.currentPage = $event">
+                            <pagination-controls [id]="configFileStorage.id" (pageChange)="configFileStorage.currentPage = $event">
                             </pagination-controls>
                           </div>
                         </div>
@@ -120,8 +116,8 @@
 
                     <div class="col-12 col-sm-6 fw-600 d-flex justify-content-center justify-content-sm-start">
                       <div class="form-check form-check-inline">
-                        <input formControlName="typeFile" [value]="false" type="radio" class="form-check-input"
-                          id="DFMS" name="typeFile" mdbInput>
+                        <input formControlName="typeFile" [value]="false" type="radio" class="form-check-input" id="DFMS"
+                          name="typeFile" mdbInput>
                         <label class="form-check-label" for="DFMS">Sirius Storage</label>
                       </div>
                     </div>
@@ -134,15 +130,15 @@
                 <div class="col-10 mx-auto">
                   <div class="row">
                     <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-                      <button mdbBtn (click)="fileReader([])" rounded="true" mdbWavesEffect
-                        class="f-w-600 background-btn pl-2rem pr-2rem" size="sm">
+                      <button mdbBtn (click)="fileReader([])" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+                        size="sm">
                         <span class="fs-1-2em color-white">CLEAR</span>
                       </button>
                     </div>
 
                     <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-                      <button [disabled]="apostilleFormOne.get('file').invalid" mdbBtn (click)="stepper.next()"
-                        rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="sm">
+                      <button [disabled]="apostilleFormOne.get('file').invalid" mdbBtn (click)="stepper.next()" rounded="true"
+                        mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="sm">
                         <span class="fs-1-2em color-white">NEXT</span>
                       </button>
                     </div>
@@ -155,14 +151,24 @@
           <!-- SECOND FORM -->
           <mdb-step name="Attestation" [stepForm]="apostilleFormTwo" class="step2" [completed]="false">
             <form [formGroup]="apostilleFormTwo" (ngSubmit)="sendTransaction()">
+
+
+              <!-- FILE NAME  -->
+              <div class="row mt-1rem">
+                <div class="col-12 d-flex box-grey">
+                    <span class="fw-600 d-flex">File:&nbsp;</span>
+                    <span class="fs-1rem d-flex">{{nameFile }}{{extensionFile}}</span>
+   
+                </div>
+              </div>
               <!-- TAGS -->
-              <div class="row">
+              <div class="row row mt-1rem">
                 <div class="col-12">
                   <div class="md-form form-sm mt-0 mb-0rem">
                     <input [maxlength]="configurationForm.tags.maxLength" [minlength]="configurationForm.tags.minLength"
                       type="text" autocomplete="off" formControlName="tags" required id="tags" mdbInputDirective
-                      mdbValidate [validateSuccess]="true" [validateError]="true"
-                      class="form-control form-control-sm input-border" placeholder="+Tags">
+                      mdbValidate [validateSuccess]="true" [validateError]="true" class="form-control form-control-sm input-border"
+                      placeholder="+Tags">
                   </div>
                 </div>
               </div>
@@ -170,8 +176,8 @@
               <!-- TYPE ENCRIPTED -->
               <div class="row mt-2rem">
                 <div class="col-12">
-                  <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
-                    class="selectWrapper" [items]="typeEncrypted" formControlName="typeEncrypted" bindLabel="label" bindValue="value"
+                  <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" class="selectWrapper"
+                    [items]="typeEncrypted" formControlName="typeEncrypted" bindLabel="label" bindValue="value"
                     placeholder="Select hashing algorithm">
                   </ng-select>
                 </div>
@@ -183,8 +189,8 @@
                   <div class="row">
                     <div class="col-6 fw-600 d-flex justify-content-start">
                       <div class="form-check form-check-inline">
-                        <input formControlName="typePrivatePublic" checked [value]="true" type="radio"
-                          class="form-check-input" id="public" name="typePrivatePublic" mdbInput>
+                        <input formControlName="typePrivatePublic" checked [value]="true" type="radio" class="form-check-input"
+                          id="public" name="typePrivatePublic" mdbInput>
                         <label class="form-check-label" for="public">Public</label>
                       </div>
                     </div>
@@ -206,8 +212,8 @@
                   <div class="row">
                     <div class="col-12 fw-600 mx-auto">
                       <div class="form-check form-check-inline">
-                        <mdb-checkbox formControlName="safeDFMS" [checked]="true" [default]="true"
-                          (change)="onSaveInDFMSChanged($event)">SAVE in Sirius Storage
+                        <mdb-checkbox formControlName="safeDFMS" [checked]="true" [default]="true" (change)="onSaveInDFMSChanged($event)">SAVE
+                          in Sirius Storage
                         </mdb-checkbox>
                       </div>
                     </div>
@@ -219,10 +225,9 @@
               <div class="row mt-1rem">
                 <div class="col-12">
                   <div class="md-form form-sm">
-                    <input [maxlength]="configurationForm.passwordWallet.maxLength"
-                      [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" required
-                      mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password"
-                      id="password" class="form-control form-control-sm input-border"
+                    <input [maxlength]="configurationForm.passwordWallet.maxLength" [minlength]="configurationForm.passwordWallet.minLength"
+                      formControlName="password" required mdbInputDirective mdbValidate [validateSuccess]="true"
+                      [validateError]="true" type="password" id="password" class="form-control form-control-sm input-border"
                       placeholder="Enter wallet password">
                   </div>
                 </div>
@@ -231,8 +236,8 @@
               <!-- BUTTONS -->
               <div class="row mt-1rem">
                 <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-                  <button mdbBtn type="button" rounded="true" mdbWavesEffect
-                    class="f-w-600 background-btn pl-2rem pr-2rem" size="md" (click)="clearForm(2)">
+                  <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+                    size="md" (click)="clearForm(2)">
                     <span class="fs-1-2em color-white">CLEAR</span>
                   </button>
                 </div>
@@ -306,8 +311,8 @@
     <!-- THREE -->
     <div class="row">
       <div class="col-12 col-md-10 col-lg-9 col-xl-8 mx-auto d-flex justify-content-center">
-        <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
-          size="md" (click)="initForm();">
+        <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md"
+          (click)="initForm();">
           <span class="fs-1-2em color-white">FINISH</span>
         </button>
       </div>
