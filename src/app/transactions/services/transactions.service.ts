@@ -53,14 +53,14 @@ export class TransactionsService {
   private balance$: Observable<any> = this.balance.asObservable();
 
   //Confirmed
-  private _transConfirmSubject = new BehaviorSubject<TransactionsInterface[]>([]);
-  private _transConfirm$: Observable<TransactionsInterface[]> = this._transConfirmSubject.asObservable();
+  private _confirmedTransactionsSubject = new BehaviorSubject<TransactionsInterface[]>([]);
+  private _confirmedTransactions$: Observable<TransactionsInterface[]> = this._confirmedTransactionsSubject.asObservable();
   //Unconfirmed
-  private _transUnConfirmSubject = new BehaviorSubject<TransactionsInterface[]>([]);
-  private _transUnConfirm$: Observable<TransactionsInterface[]> = this._transUnConfirmSubject.asObservable();
+  private _incomingTransactionsSubject = new BehaviorSubject<TransactionsInterface[]>([]);
+  private _incomingTransactions$: Observable<TransactionsInterface[]> = this._incomingTransactionsSubject.asObservable();
   //Aggregate Transactions
-  private aggregateTransactions: BehaviorSubject<TransactionsInterface[]> = new BehaviorSubject<TransactionsInterface[]>([]);
-  private aggregateTransactions$: Observable<TransactionsInterface[]> = this.aggregateTransactions.asObservable();
+  private _aggregateTransactionsSubject: BehaviorSubject<TransactionsInterface[]> = new BehaviorSubject<TransactionsInterface[]>([]);
+  private _aggregateTransactions$: Observable<TransactionsInterface[]> = this._aggregateTransactionsSubject.asObservable();
 
   arraTypeTransaction = {
     transfer: {
@@ -481,7 +481,7 @@ export class TransactionsService {
    *
    */
   getAggregateBondedTransactions$(): Observable<TransactionsInterface[]> {
-    return this.aggregateTransactions$;
+    return this._aggregateTransactions$;
   }
 
   /**
@@ -518,7 +518,7 @@ export class TransactionsService {
   * @memberof DashboardService
   */
   getTransactionsConfirmed$(): Observable<TransactionsInterface[]> {
-    return this._transConfirm$;
+    return this._confirmedTransactions$;
   }
 
   /**
@@ -527,8 +527,8 @@ export class TransactionsService {
    * @returns {Observable<TransactionsInterface[]>}
    * @memberof DashboardService
    */
-  getTransactionsUnConfirmed$(): Observable<TransactionsInterface[]> {
-    return this._transUnConfirm$;
+  getIncomingTransactions$(): Observable<TransactionsInterface[]> {
+    return this._incomingTransactions$;
   }
 
 
@@ -677,7 +677,7 @@ export class TransactionsService {
    * @param transactions
    */
   setAggregateBondedTransactions$(transactions: TransactionsInterface[]) {
-    this.aggregateTransactions.next(transactions);
+    this._aggregateTransactionsSubject.next(transactions);
   }
 
   /**
@@ -697,7 +697,7 @@ export class TransactionsService {
    * @memberof DashboardService
    */
   setTransactionsConfirmed$(transactions: TransactionsInterface[]) {
-    this._transConfirmSubject.next(transactions);
+    this._confirmedTransactionsSubject.next(transactions);
   }
 
   /**
@@ -707,7 +707,7 @@ export class TransactionsService {
    * @memberof DashboardService
    */
   setTransactionsUnConfirmed$(transactions: TransactionsInterface[]) {
-    this._transUnConfirmSubject.next(transactions);
+    this._incomingTransactionsSubject.next(transactions);
   }
 
   /**
