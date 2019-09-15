@@ -60,6 +60,7 @@ export class CreatePollStorageService {
 
 
   async sendFileStorage(fileObject: FileInterface, description: any, account: Account, privateKey: string) {
+    console.log('account',account)
     const promise = new Promise(async (resolve, reject) => {
       const fileContents = Buffer.from(JSON.stringify(fileObject.content));
       const strings: string = JSON.stringify(fileObject.content);
@@ -80,7 +81,7 @@ export class CreatePollStorageService {
       if (recipientPublicKey.length > 0) {
         param.withRecipientPublicKey(recipientPublicKey);
       }
-       param.withTransactionMosaics([new Mosaic(new MosaicId(environment.mosaicXpxInfo.id), UInt64.fromUint(0))]); //Update-sdk-dragon
+      param.withTransactionMosaics([new Mosaic(new MosaicId(environment.mosaicXpxInfo.id), UInt64.fromUint(0))]); //Update-sdk-dragon
       let recipientAddress = account.publicAccount.address.plain();
       if (recipientPublicKey.length > 0) {
         recipientAddress = Address.createFromPublicKey(recipientPublicKey, account.publicAccount.address.networkType).plain();
@@ -122,14 +123,22 @@ export class CreatePollStorageService {
   }
 
 
-  async loadTransactions(publicAccount: PublicAccount) {
+  async loadTransactions(publicAccount?: PublicAccount, address?: string) {
     this.transactionResults = [];
     this.pollResult = [];
     const promise = new Promise(async (resolve, reject) => {
+      let searchParam: any
       if (this.searcher) {
-        const searchParam = SearchParameter.createForPublicKey(publicAccount.publicKey);
-
-        searchParam.withTransactionFilter(TransactionFilter.ALL);
+        if (publicAccount) {
+          console.log("public Acount")
+          searchParam = SearchParameter.createForPublicKey(publicAccount.publicKey);
+        } else if (address) {
+         
+          searchParam = SearchParameter.createForAddress(address)
+       
+        }
+        searchParam.withTransactionFilter(TransactionFilter.INCOMING);
+        console.log('searchParam',searchParam)
         // searchParam.withResultSize(100);
         const searchResult = await this.searcher.search(searchParam.build());
         if (searchResult.results.length > 0) {
