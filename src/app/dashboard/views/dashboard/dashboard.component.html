@@ -1,9 +1,9 @@
 <div class="container-fluid">
   <div class="row">
-    <div class="col-12 col-md-8 mx-auto">
+    <div class="col-12 col-sm-11 col-md-10 col-lg-9 mx-auto">
       <!-- BALANCE & TRANSACTIONS -->
       <div class="row mt-2rem">
-        <div class="col-12 col-sm-8 col-md-7 col-lg-7 col-xl-5 mx-auto pb-2rem">
+        <div class="col-12 col-sm-8 col-md-8 col-lg-7 col-xl-5 mx-auto pb-2rem">
           <div class="row mx-auto">
             <!-- CODE QR -->
             <div class="col-4 d-flex align-items-center">
@@ -13,7 +13,7 @@
             </div>
 
             <!-- DEFAULT ACCOUNT & BALANCE -->
-            <div class="col-8">
+            <div class="col-8 d-flex align-items-center">
               <div class="row">
                 <div class="col-12">
                   <div>
@@ -29,7 +29,7 @@
                   <div>
                     <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
                       width="20">
-                    <span class="fs-1rem">&nbsp;{{vestedBalance}}</span>
+                    <span class="fs-08rem">&nbsp;{{vestedBalance}}</span>
                   </div>
                 </div>
 
@@ -38,7 +38,7 @@
                   <div>
                     <img class="icono" src="assets/images/img/icon-us-dollar-green-16h-proximax-sirius-wallet.svg"
                       width="20" alt="">
-                    <span class="fs-1rem">&nbsp;USD 0.00</span>
+                    <span class="fs-08rem">&nbsp;USD 0.00</span>
                   </div>
                 </div>
               </div>
@@ -59,25 +59,22 @@
         </div>
 
         <!-- TRANSACTIONS CONFIRMED & UNCONFIRMED -->
-        <div class="col-12 col-sm-8 col-md-5 col-lg-5 col-xl-7 mx-auto pb-2rem">
-          <div class="d-flex flex-column">
-            <div class="d-flex justify-content-center">
-              <span class="fs-1-3rem fw-600">{{cantConfirmed + cantUnconfirmed}} Transactions</span>
-            </div>
-          </div>
-
+        <div class="col-12 col-sm-8 col-md-4 col-lg-5 col-xl-7 mx-auto pb-2rem d-flex align-items-center">
           <div class="row">
+            <div class="col-12 d-flex justify-content-center mb-1rem">
+              <span class="fs-1-2rem fw-600">{{cantConfirmed + cantUnconfirmed}} Transactions</span>
+            </div>
             <div class="col-12 col-xl-6">
               <button mdbBtn type="button" rounded="true" mdbWavesEffect (click)="selectTransactions(1)"
                 class="f-w-600  w-100porcent background-btn pl-2rem pr-2rem" size="sm">
-                <span class="fs-1-2em color-white">CONFIRMED: <span class="fw-400">{{cantConfirmed}}</span></span>
+                <span class="fs-07rem color-white">CONFIRMED: <span class="fw-400">{{cantConfirmed}}</span></span>
               </button>
             </div>
             <div class="col-12 col-xl-6">
               <button mdbBtn type="button" rounded="true" mdbWavesEffect
                 [disabled]="transactionsUnconfirmed.length === 0" (click)="selectTransactions(0)"
                 class="f-w-600  w-100porcent background-btn pl-2rem pr-2rem" size="sm">
-                <span class="fs-1-2em color-white">UNCONFIRMED: <span class="fw-400">{{cantUnconfirmed}}</span></span>
+                <span class="fs-07rem color-white">UNCONFIRMED: <span class="fw-400">{{cantUnconfirmed}}</span></span>
               </button>
             </div>
           </div>
@@ -149,12 +146,10 @@
                     </span>
                   </ng-container>
                   <ng-template #elseSwap>
-                    &nbsp;  &nbsp;
+                    &nbsp; &nbsp;
                   </ng-template>
                   {{el.nameType}}
                 </td>
-
-
 
                 <!-- timestamp -->
                 <td class="th-sm description-dark-green fs-07rem">{{el.timestamp}}</td>

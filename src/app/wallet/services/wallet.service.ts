@@ -27,6 +27,8 @@ export class WalletService {
 
   accountInfoNis1: any = null;
   accountMosaicsNis1: any = null;
+  accountInfoConsignerNis1: any = null;
+  nis1AccountSeleted: any = null;
 
   currentAccountObs: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   currentAccountObs$: Observable<any> = this.currentAccountObs.asObservable();
@@ -42,37 +44,71 @@ export class WalletService {
   }
 
   /**
-   * 
-   * @param data 
+   *
+   * @param data
    */
   setAccountInfoNis1(account: AccountsInterface) {
     this.accountInfoNis1 = account;
   }
 
   /**
-   * 
-   * @param data 
+   *
+   * @param data
    */
   getAccountInfoNis1() {
     return this.accountInfoNis1;
   }
 
   /**
+   *
+   * @param data
+   *
+   * @param accounts
+   */
+  setAccountInfoConsignerNis1(accounts: any) {
+    this.accountInfoConsignerNis1 = accounts;
+  }
+
+  /**
+   *
+   * @param data
+   */
+  getAccountInfoConsignerNis1() {
+    return this.accountInfoConsignerNis1;
+  }
+
+
+  /**
+   *
+   * @param data
+   */
+  setAccountMosaicsNis1(mosaic: any) {
+    this.accountMosaicsNis1 = mosaic;
+  }
+
+  /**
+   *
+   * @param data
+   */
+  getAccountMosaicsNis1() {
+    return this.accountMosaicsNis1;
+  }
+  
+  /**
    * 
    * @param data 
    */
-  setAccountMosaicsNis1(moosaic: any) {
-    this.accountMosaicsNis1 = moosaic;
+  getNis1AccountSelected() {
+    return this.nis1AccountSeleted;
   }
 
   /**
    * 
    * @param data 
    */
-  getAccountMosaicsNis1() {
-    return this.accountMosaicsNis1;
+  setNis1AccountSelected(account: any) {
+    this.nis1AccountSeleted = account;
   }
-
 
   /**
    *
@@ -188,7 +224,7 @@ export class WalletService {
   * @param {string} isMultisig
   * @memberof WalletService
   */
-  changeIsMultiSign(name: string, isMultisig: MultisigAccountInfo, publicAccount: PublicAccount) {
+  changeIsMultiSign(name: string, isMultisig: MultisigAccountInfo) {
     if (isMultisig) {
       // si es multifirma, preguntar
       if (isMultisig.multisigAccounts.length > 0) {
@@ -206,7 +242,7 @@ export class WalletService {
               iv: '',
               network: element.address.networkType,
               nameAccount: `MULTIFIRMA-${element.address.plain().slice(36, 40)}`,
-              publicAccount: publicAccount,
+              publicAccount: element,
             });
 
             console.log('\n\n---ACOUNT BUILDED---', accountBuilded);
@@ -500,8 +536,7 @@ export class WalletService {
             };
 
             accountsInfo.push(accountInfoBuilded);
-            const publicAccount = this.proximaxProvider.createPublicAccount(element.publicAccount.publicKey, element.publicAccount.address.networkType);
-            this.changeIsMultiSign(element.name, isMultisig, publicAccount)
+            this.changeIsMultiSign(element.name, isMultisig)
             this.setAccountsInfo([accountInfoBuilded], true);
             counter = counter + 1;
             if (accounts.length === counter && mosaicsIds.length > 0) {

@@ -29,9 +29,9 @@ import { CreateApostilleComponent } from './views/apostille/create-apostille/cre
 import { AuditApostilleComponent } from './views/apostille/audit-apostille/audit-apostille.component';
 import { PollsComponent } from './views/voting/polls/polls.component';
 import { VoteInPollComponent } from './views/voting/vote-in-poll/vote-in-poll.component';
-import { Nis1AccountDetailsComponent } from './views/swap/nis1-account-details/nis1-account-details.component';
 import { AccountNis1FoundComponent } from './views/account/account-nis1-found/account-nis1-found.component';
 import { AccountNis1TransferXpxComponent } from './views/account/account-nis1-transfer-xpx/account-nis1-transfer-xpx.component';
+import { Nis1AccountsConsignerComponent } from './views/swap/nis1-accounts-consigner/nis1-accounts-consigner.component';
 
 const routes: Routes = [
   {
@@ -348,12 +348,12 @@ const routes: Routes = [
       }
     }
   }, {
-    path: AppConfig.routes.nis1AccountDetails,
-    component: Nis1AccountDetailsComponent,
+    path: AppConfig.routes.nis1AccountsConsigner,
+    component: Nis1AccountsConsignerComponent,
     data: {
       meta: {
-        title: 'nis1AccountDetails.title',
-        description: 'nis1AccountDetails.text',
+        title: 'nis1AccountsConsigner.title',
+        description: 'nis1AccountsConsigner.text',
         override: true,
       }
     }

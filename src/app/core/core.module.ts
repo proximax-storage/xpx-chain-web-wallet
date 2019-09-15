@@ -31,6 +31,7 @@ import { VoteTypeComponent } from '../dashboard/components/vote-type/vote-type.c
 import { TransferAssetsComponent } from '../servicesModule/components/transfer-assets/transfer-assets.component';
 import { SwapCertificateComponent } from '../servicesModule/components/swap-certificate/swap-certificate.component';
 import { TransferTypeBondedComponent } from '../dashboard/components/transfer-type-bonded/transfer-type-bonded.component';
+import { FilterObjectPipe } from '../shared/pipes/filter-object.pipe';
 
 
 
@@ -83,7 +84,8 @@ const moduls = [
 @NgModule({
   declarations: [
     components,
-    StringFilterPipe
+    StringFilterPipe,
+    FilterObjectPipe
   ],
   imports: [
     CommonModule,
@@ -102,7 +104,8 @@ const moduls = [
     OwlDateTimeModule,
     OwlNativeDateTimeModule,
     components,
-    StringFilterPipe
+    StringFilterPipe,
+    FilterObjectPipe
   ]
 })
 export class CoreModule { }

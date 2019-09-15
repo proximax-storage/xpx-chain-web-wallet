@@ -141,15 +141,11 @@
     </ng-container>
 
 
+    <!-- MOSAICS INFO-->
     <div class="col-12 mt-2rem">
-      <div class="row">
-        <div class="col-12">
-          <!-- MOSAICS INFO-->
-          <app-mosaics-info (changeSearch)="searching = false;" [mosaicsArray]="transferTransaction.data['mosaics']"
-            [transferTransaction]="transferTransaction">
-          </app-mosaics-info>
-        </div>
-      </div>
+      <app-mosaics-info (changeSearch)="searching = false;" [mosaicsArray]="transferTransaction.data['mosaics']"
+        [transferTransaction]="transferTransaction">
+      </app-mosaics-info>
     </div>
   </div>
 </ng-container>

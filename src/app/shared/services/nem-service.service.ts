@@ -17,9 +17,8 @@ import {
   PlainMessage,
   AssetId,
   TransactionHttp,
+  AccountInfoWithMetaData,
 } from "nem-library";
-import { HttpClient } from '@angular/common/http';
-import { SharedService } from './shared.service';
 import { Observable } from 'rxjs';
 import { timeout } from 'rxjs/operators';
 @Injectable({
@@ -32,14 +31,16 @@ export class NemServiceService {
   transactionHttp: TransactionHttp;
   nodes: ServerConfig[];
 
-  constructor(
-    private sharedService: SharedService
-  ) {
+  constructor() {
     NEMLibrary.bootstrap(environment.nis1.networkType);
     this.nodes = environment.nis1.nodes;
     this.accountHttp = new AccountHttp(this.nodes);
     this.transactionHttp = new TransactionHttp(this.nodes);
     this.assetHttp = new AssetHttp(this.nodes);
+
+    console.log(this.accountHttp);
+    console.log(this.transactionHttp);
+    console.log(this.assetHttp);
   }
 
   /**
@@ -48,6 +49,7 @@ export class NemServiceService {
    * @param password wallet's password
    * @param privateKey account privateKey
    * @param selected network
+   * @memberof NemServiceService
    * @return Promise with wallet created
    */
   createPrivateKeyWallet(walletName: string, password: string, privateKey: string): SimpleWallet {
@@ -59,12 +61,22 @@ export class NemServiceService {
   }
 
   /**
+   * Method to get Account Info Address
+   * @param address account address
+   * @memberof NemServiceService
+   * @return Observable<AccountInfoWithMetaData>
+   */
+  getAccountInfo(address: Address): Observable<AccountInfoWithMetaData> {
+    return this.accountHttp.getFromAddress(address);
+  }
+
+  /**
    * Method to search mosaics of address
    * @param {Address} address address of the mosaics sought
    * @memberof NemServiceService
    * @returns Observable<AssetTransferable[]>
    */
-  getOwnedMosaics(address: Address) : Observable<AssetTransferable[]> {
+  getOwnedMosaics(address: Address): Observable<AssetTransferable[]> {
     let accountOwnedMosaics = new AccountOwnedAssetService(this.accountHttp, this.assetHttp);
     return accountOwnedMosaics.fromAddress(address).pipe(timeout(3000));
   }
@@ -75,7 +87,7 @@ export class NemServiceService {
    * @memberof NemServiceService
    * @returns Account
    */
-  createAccountPrivateKey(privateKey: string) : Account {
+  createAccountPrivateKey(privateKey: string): Account {
     return Account.createWithPrivateKey(privateKey);
   }
 
@@ -117,7 +129,7 @@ export class NemServiceService {
    * @memberof NemServiceService
    * @returns Address
    */
-  createAddressToString(address: string) : Address {
+  createAddressToString(address: string): Address {
     return new Address(address);
   }
 }

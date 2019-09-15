@@ -1,278 +1,283 @@
 <div class="container mt-3rem mb-1rem animated fadeIn">
-    <div class="row lh-01em">
-      <div class="col-12 col-md-8">
-        <span class="fs-095rem txt-a-center line-h-1-2em color-grey">{{moduleName}}</span>
-        <span class="fs-095rem txt-a-center line-h-1-2em color-grey"> > </span>
-        <span class="fs-095rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">{{componentName}}</span>
-      </div>
-
-      <div class="col-12 col-md-4 d-flex justify-content-start justify-content-md-end">
-        <a class="fs-08rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio" [routerLink]="[goBack]">
-          <span>Back to Services</span>
-        </a>
-      </div>
+  <div class="row lh-01em">
+    <div class="col-12 col-md-8">
+      <span class="fs-095rem txt-a-center line-h-1-2em color-grey">{{moduleName}}</span>
+      <span class="fs-095rem txt-a-center line-h-1-2em color-grey"> > </span>
+      <span class="fs-095rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">{{componentName}}</span>
     </div>
-    <div class="row">
-      <div class="col-12">
-        <hr class="mt-03rem mb-05rem">
-      </div>
+
+    <div class="col-12 col-md-4 d-flex justify-content-start justify-content-md-end">
+      <a class="fs-08rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio" [routerLink]="[goBack]">
+        <span>Back to Services</span>
+      </a>
     </div>
   </div>
+  <div class="row">
+    <div class="col-12">
+      <hr class="mt-03rem mb-05rem">
+    </div>
+  </div>
+</div>
 
-  <div class="container-fluid background-header-grey pb-1rem pt-1rem">
-    <div class="row d-flex justify-content-center">
-      <div class="col-12">
-        <div class="row d-flex align-items-center">
-          <div class="col-2 col-md-1 d-flex justify-content-center"> > </div>
-          <div class="col-8 col-md-10">
-            <div class="row d-flex justify-content-center">
-              <div class="col-12 col-sm-8 d-flex justify-content-md-end justify-content-center">
-                <input mdbInputDirective [validateSuccess]="false" [validateError]="false"
-                  class="w-100porcent form-control" type="text" placeholder="Enter search text" autocomplete="off"
-                  [(ngModel)]="filter">
-              </div>
-              <!-- <div class="col-12 col-sm-2 d-flex justify-content-md-start justify-content-center">
+<div class="container-fluid background-header-grey pb-1rem pt-1rem">
+  <div class="row d-flex justify-content-center">
+    <div class="col-12">
+      <div class="row d-flex align-items-center">
+        <div class="col-2 col-md-1 d-flex justify-content-center"> > </div>
+        <div class="col-8 col-md-10">
+          <div class="row d-flex justify-content-center">
+            <div class="col-12 col-sm-8 d-flex justify-content-md-end justify-content-center">
+              <input mdbInputDirective [validateSuccess]="false" [validateError]="false"
+                class="w-100porcent form-control" type="text" placeholder="Enter search text" autocomplete="off"
+                [(ngModel)]="filter">
+            </div>
+            <!-- <div class="col-12 col-sm-2 d-flex justify-content-md-start justify-content-center">
                 <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn" size="sm">
                   <span class="fs-1-2em color-white">SEARCH</span>
                 </button>
               </div> -->
-            </div>
           </div>
-          <div class="col-2 col-md-1 d-flex justify-content-center"> > </div>
         </div>
+        <div class="col-2 col-md-1 d-flex justify-content-center"> > </div>
       </div>
     </div>
   </div>
+</div>
 
-  <div class="container">
-    <div class="row mt-2rem">
-      <div class="col-11">
-        <span class="fw-600 d-flex justify-content-center">{{aggregateTransactions.length}} results found</span>
-      </div>
+<div class="container">
+  <div class="row mt-2rem">
+    <div class="col-11">
+      <span class="fw-600 d-flex justify-content-center">{{aggregateTransactions.length}} results found</span>
     </div>
   </div>
+</div>
 
 
-  <div class="container-fluid mt-2rem">
-    <div class="row">
-      <div class="col-12 d-flex justify-content-center mx-auto">
-        <div class="datatable-style max-w-table">
-          <table mdbTable mdbTableScroll scrollX="true" striped="true">
-            <thead>
-              <tr class="header-backg">
-                <th *ngFor="let head of headElements" scope="col" class="fs-075rem txt-a-center ">{{head}} </th>
+<div class="container-fluid mt-2rem">
+  <div class="row">
+    <div class="col-12 d-flex justify-content-center mx-auto">
+      <div class="datatable-style max-w-table">
+        <table mdbTable mdbTableScroll scrollX="true" striped="true">
+          <thead>
+            <tr class="header-backg">
+              <th *ngFor="let head of headElements" scope="col" class="fs-075rem txt-a-center ">{{head}} </th>
+            </tr>
+          </thead>
+
+          <tbody class="background-white">
+            <ng-container
+              *ngFor="let transaction of aggregateTransactions | stringFilter: filter | paginate: configAdvance">
+              <tr class="white-space-pre cursor-p" mdbTableCol [ngClass]="!transaction ? 'background-pending': ''"
+                (click)="find(transaction); modalPartialTransaction.show();">
+                <!-- <td class="fs-07rem" [ngClass]="transaction ? 'fw-600': ''">{{transaction.status}}</td> -->
+                <td class="fs-07rem">{{transaction.timestamp}}</td>
+                <td class="fs-07rem">{{transaction.fee}}</td>
+                <td class="fs-07rem">{{transaction.senderAddress}}</td>
+                <td class="fs-07rem">{{transaction.data.transactionInfo.hash}}</td>
               </tr>
-            </thead>
+            </ng-container>
 
-            <tbody class="background-white">
-              <ng-container
-                *ngFor="let transaction of aggregateTransactions | stringFilter: filter | paginate: configAdvance">
-                <tr class="white-space-pre cursor-p" mdbTableCol [ngClass]="!transaction ? 'background-pending': ''"
-                  (click)="find(transaction); modalPartialTransaction.show();">
-                  <!-- <td class="fs-07rem" [ngClass]="transaction ? 'fw-600': ''">{{transaction.status}}</td> -->
-                  <td class="fs-07rem">{{transaction.timestamp}}</td>
-                  <td class="fs-07rem">{{transaction.fee}}</td>
-                  <td class="fs-07rem">{{transaction.senderAddress}}</td>
-                  <td class="fs-07rem">{{transaction.data.transactionInfo.hash}}</td>
-                </tr>
-              </ng-container>
-
-              <ng-container *ngIf="aggregateTransactions.length === 0">
-                <tr>
-                  <td colspan="5" class="txt-a-center">nothing to show</td>
-                </tr>
-              </ng-container>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="col-12 pt-1rem pb-3rem d-flex justify-content-center mx-auto">
-        <pagination-controls [id]="configAdvance.id" (pageChange)="configAdvance.currentPage = $event">
-        </pagination-controls>
+            <ng-container *ngIf="aggregateTransactions.length === 0">
+              <tr>
+                <td colspan="5" class="txt-a-center">nothing to show</td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
       </div>
     </div>
+
+    <div class="col-12 pt-1rem pb-3rem d-flex justify-content-center mx-auto">
+      <pagination-controls [id]="configAdvance.id" (pageChange)="configAdvance.currentPage = $event">
+      </pagination-controls>
+    </div>
   </div>
+</div>
 
-  <!-- MODAL -->
-  <div class="d-flex align-items-center">
-    <div mdbModal #modalPartialTransaction="mdbModal" class="modal fade" tabindex="-1" role="dialog"
-      aria-labelledby="modalPartialTransaction" aria-hidden="true">
-      <div class="modal-dialog modal-lg d-flex align-items-center" role="document">
-        <div class="modal-content form-elegant bord-rad-1-5rem">
-          <div class="modal-header text-center box-modal-white b-t-r-r-1-5rem b-t-l-r-1-5rem p-05rem">
-            <span class="modal-title w-100" id="myModalLabel">
-              <strong class="title-modal-blue">Partial Transaction - Information</strong>
-            </span>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"
-              (click)="modalPartialTransaction.hide()">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
+<!-- MODAL -->
+<div class="d-flex align-items-center">
+  <div mdbModal #modalPartialTransaction="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+    aria-labelledby="modalPartialTransaction" aria-hidden="true">
+    <div class="modal-dialog modal-lg d-flex align-items-center" role="document">
+      <div class="modal-content form-elegant bord-rad-1-5rem">
+        <div class="modal-header text-center box-modal-white b-t-r-r-1-5rem b-t-l-r-1-5rem p-05rem">
+          <span class="modal-title w-100" id="myModalLabel">
+            <strong class="title-modal-blue">Partial Transaction - Information</strong>
+          </span>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+            (click)="modalPartialTransaction.hide()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
 
-          <!--Body-->
-          <div class="modal-body">
-            <ng-container *ngIf="dataSelected">
-              <div class="row">
-                <div class="col-11 mx-auto">
-                  <div class="row d-flex justify-content-center">
-                    <div class="col-12 col-md-6">
-                      <div class="row">
-                        <!-- Bonded & Deadline -->
-                        <div class="col-12 lh-1em">
-                          <span class="fw-600 fs-1-2rem">Bonded</span> <br>
-                          <span class="fs-075rem">Deadline: {{dataSelected?.timestamp}}</span>
-                        </div>
+        <!--Body-->
+        <div class="modal-body">
+          <ng-container *ngIf="dataSelected">
+            <div class="row">
+              <div class="col-11 mx-auto">
+                <div class="row d-flex justify-content-center">
+                  <div class="col-12 col-md-6">
+                    <div class="row">
+                      <!-- Bonded & Deadline -->
+                      <div class="col-12 lh-1em">
+                        <span class="fw-600 fs-1-2rem">Bonded</span> <br>
+                        <span class="fs-075rem">Deadline: {{dataSelected?.timestamp}}</span>
+                      </div>
 
-                        <!-- Fee -->
-                        <div class="col-12 mt-1-5rem">
-                          <span class="fw-600 fs-095rem">Fee:&nbsp;&nbsp;</span>
-                          <span class="fs-095rem fw-600 color-blue-light">{{dataSelected?.feePart.part1}}</span>
-                          <span class="fs-075rem fw-600 color-blue-light">{{dataSelected?.feePart.part2}}</span>
-                          <span class="fs-095rem fw-600 color-blue-light"> XPX </span>
-                          <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
-                        </div>
+                      <!-- Fee -->
+                      <div class="col-12 mt-1-5rem">
+                        <span class="fw-600 fs-095rem">Fee:&nbsp;&nbsp;</span>
+                        <span class="fs-095rem fw-600 color-blue-light">{{dataSelected?.feePart.part1}}</span>
+                        <span class="fs-075rem fw-600 color-blue-light">{{dataSelected?.feePart.part2}}</span>
+                        <span class="fs-095rem fw-600 color-blue-light"> XPX </span>
+                        <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
+                      </div>
 
-                        <!-- Type -->
+                      <!-- Type -->
+                      <div class="col-12 mt-05rem">
+                        <span class="fw-600 fs-08rem">Type:&nbsp;&nbsp;</span>
+                        <span class="fs-065rem">{{dataSelected?.data['type'].toString(16).toUpperCase()}}</span>
+                      </div>
+
+                      <!-- Height -->
+                      <ng-container *ngIf="dataSelected?.data.transactionInfo.height.compact() > 0">
                         <div class="col-12 mt-05rem">
-                          <span class="fw-600 fs-08rem">Type:&nbsp;&nbsp;</span>
-                          <span class="fs-065rem">{{dataSelected?.data['type'].toString(16).toUpperCase()}}</span>
+                          <span class="fw-600 fs-08rem">Height:&nbsp;&nbsp;</span>
+                          <span class="fs-065rem">{{dataSelected?.data.transactionInfo.height.compact()}}</span>
                         </div>
+                      </ng-container>
 
-                        <!-- Height -->
-                        <ng-container *ngIf="dataSelected?.data.transactionInfo.height.compact() > 0">
-                          <div class="col-12 mt-05rem">
-                            <span class="fw-600 fs-08rem">Height:&nbsp;&nbsp;</span>
-                            <span class="fs-065rem">{{dataSelected?.data.transactionInfo.height.compact()}}</span>
+                      <!-- Signer -->
+                      <div class="col-12 mt-05rem line-h-09em">
+                        <span class="fw-600 fs-08rem">Signer:</span> <br>
+                        <span class="fs-065rem w-w-b-w">{{dataSelected?.senderAddress}}</span>
+                      </div>
+
+                      <!-- Hash -->
+                      <div class="col-12 mt-05rem line-h-09em">
+                        <span class="fw-600 fs-08rem">Hash:</span> <br>
+                        <span class="fs-065rem w-w-b-w">{{dataSelected?.data.transactionInfo.hash}}</span>
+                      </div>
+
+                      <!-- Transactions -->
+                      <div class="col-12 mt-1-5rem">
+                        <div class="row d-flex align-items-center">
+                          <div class="col-12">
+                            <span class="fw-600 fs-095rem">Transactions</span>
                           </div>
-                        </ng-container>
-
-                        <!-- Signer -->
-                        <div class="col-12 mt-05rem line-h-09em">
-                          <span class="fw-600 fs-08rem">Signer:</span> <br>
-                          <span class="fs-065rem w-w-b-w">{{dataSelected?.senderAddress}}</span>
                         </div>
+                        <hr class="mt-0">
+                      </div>
 
-                        <!-- Hash -->
-                        <div class="col-12 mt-05rem line-h-09em">
-                          <span class="fw-600 fs-08rem">Hash:</span> <br>
-                          <span class="fs-065rem w-w-b-w">{{dataSelected?.data.transactionInfo.hash}}</span>
-                        </div>
+                      <!-- Inner transaction -->
+                      <div class="col-12 mb-1rem">
+                        <mdb-accordion [multiple]="false" aria-multiselectable="true">
+                          <mdb-accordion-item [collapsed]="true"
+                            *ngFor="let innerTransaction of dataSelected?.data.innerTransactions">
+                            <mdb-accordion-item-head>{{innerTransaction['nameType']}}
+                            </mdb-accordion-item-head>
+                            <mdb-accordion-item-body class="scroll-accounts">
+                              <app-modify-multisig-account-type
+                                *ngIf="innerTransaction.type === typeTransactions.modifyMultisigAccount.id"
+                                [multisigAccount]="innerTransaction">
+                              </app-modify-multisig-account-type>
 
-                        <!-- Transactions -->
-                        <div class="col-12 mt-1-5rem">
-                          <div class="row d-flex align-items-center">
-                            <div class="col-12">
-                              <span class="fw-600 fs-095rem">Transactions</span>
-                            </div>
-                          </div>
-                          <hr class="mt-0">
-                        </div>
-
-                        <!-- Inner transaction -->
-                        <div class="col-12 mb-1rem">
-                          <mdb-accordion [multiple]="false" aria-multiselectable="true">
-                            <mdb-accordion-item [collapsed]="true"
-                              *ngFor="let innerTransaction of dataSelected?.data.innerTransactions">
-                              <mdb-accordion-item-head>{{innerTransaction['nameType']}}
-                              </mdb-accordion-item-head>
-                              <mdb-accordion-item-body class="scroll-accounts">
-                                <app-modify-multisig-account-type
-                                  *ngIf="innerTransaction.type === typeTransactions.modifyMultisigAccount.id"
-                                  [multisigAccount]="innerTransaction">
-                                </app-modify-multisig-account-type>
-                              </mdb-accordion-item-body>
-                            </mdb-accordion-item>
-                          </mdb-accordion>
-                        </div>
+                              <app-transfer-type-bonded
+                                *ngIf="innerTransaction.type === typeTransactions.transfer.id"
+                                [transferTransactionBonded]="innerTransaction">
+                              </app-transfer-type-bonded>
+                            </mdb-accordion-item-body>
+                          </mdb-accordion-item>
+                        </mdb-accordion>
                       </div>
                     </div>
+                  </div>
 
 
-                    <!-- Action Required -->
-                    <div class="col-12 col-md-6">
-                      <div class="row">
-                        <div
-                          class="col-12 background-orange h-100px d-flex align-items-center justify-content-center txt-a-center">
-                          <div class="row">
-                            <div class="col-12">
-                              <span class="fw-600 color-white">Action</span>
-                            </div>
-                            <div class="col-12">
-                              <span class="fw-600 color-white">Required</span>
-                            </div>
+                  <!-- Action Required -->
+                  <div class="col-12 col-md-6">
+                    <div class="row">
+                      <div
+                        class="col-12 background-orange h-100px d-flex align-items-center justify-content-center txt-a-center">
+                        <div class="row">
+                          <div class="col-12">
+                            <span class="fw-600 color-white">Action</span>
+                          </div>
+                          <div class="col-12">
+                            <span class="fw-600 color-white">Required</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Accounts -->
+                      <div class="col-12 pt-1rem background-gray-light">
+                        <div class="row lh-1em">
+                          <div class="col-12">
+                            <span class="fw-600 fs-065rem">My cosignature account: </span>
+                          </div>
+                          <div class="col-12">
+                            <span class="fs-065rem">{{dataSelected?.senderAddress}}</span>
                           </div>
                         </div>
 
-                        <!-- Accounts -->
-                        <div class="col-12 pt-1rem background-gray-light">
-                          <div class="row lh-1em">
+                        <ng-container
+                          *ngIf="dataSelected?.data['cosignatures'] && dataSelected?.data['cosignatures'].length > 0">
+                          <div class="row lh-1em mt-1rem">
                             <div class="col-12">
-                              <span class="fw-600 fs-065rem">My cosignature account: </span>
+                              <span class="fw-600 fs-065rem">({{dataSelected?.data['cosignatures'].length}}) Others
+                                cosignatories</span>
                             </div>
+                          </div>
+                        </ng-container>
+                      </div>
+
+                      <ng-container *ngIf="arraySelect.length > 0">
+                        <div class="col-12 mt-1rem">
+                          <!-- SELECT ACCOUNT -->
+                          <div class="row">
                             <div class="col-12">
-                              <span class="fs-065rem">{{dataSelected?.senderAddress}}</span>
+                              <ng-select class="selectWrapper" [(ngModel)]="account" [items]="arraySelect"
+                                bindLabel="label" bindValue="value" placeholder="Select account"
+                                [title]="accountSelected" (change)="selectAccount($event)">
+                              </ng-select>
                             </div>
                           </div>
 
-                          <ng-container
-                            *ngIf="dataSelected?.data['cosignatures'] && dataSelected?.data['cosignatures'].length > 0">
-                            <div class="row lh-1em mt-1rem">
+
+                          <!-- PASSWORD -->
+                          <ng-container *ngIf="!hidePassword">
+                            <div class="row d-flex justify-content-center">
                               <div class="col-12">
-                                <span class="fw-600 fs-065rem">({{dataSelected?.data['cosignatures'].length}}) Others
-                                  cosignatories</span>
+                                <div class="md-form form-sm">
+                                  <input [maxlength]="configurationForm.passwordWallet.maxLength"
+                                    [minlength]="configurationForm.passwordWallet.minLength" [(ngModel)]="password"
+                                    required mdbInputDirective [validateSuccess]="false" [validateError]="false"
+                                    type="password" id="password" class="form-control form-control-sm input-border"
+                                    placeholder="Enter password">
+                                </div>
                               </div>
+
+                              <div class="col-12 d-flex justify-content-center">
+                                <button (click)="sendTransaction()" autocomplete="false" [disabled]="validateAccount || password === '' || password.length <
+                                  this.configurationForm.passwordWallet.minLength || password.length>
+                                  this.configurationForm.passwordWallet.maxLength" mdbBtn type="button" rounded="true"
+                                  mdbWavesEffect class="f-w-600 background-btn pt-1rem" size="sm">
+                                  <span class="fs-1-2em color-white">APPROVE TO CONTINUE</span>
+                                </button>
+                              </div>
+
                             </div>
                           </ng-container>
                         </div>
-
-                        <ng-container *ngIf="arraySelect.length > 0">
-                          <div class="col-12 mt-1rem">
-                            <!-- SELECT ACCOUNT -->
-                            <div class="row">
-                              <div class="col-12">
-                                <ng-select class="selectWrapper" [(ngModel)]="account" [items]="arraySelect"
-                                  bindLabel="label" bindValue="value" placeholder="Select account"
-                                  [title]="accountSelected" (change)="selectAccount($event)">
-                                </ng-select>
-                              </div>
-                            </div>
-
-
-                            <!-- PASSWORD -->
-                            <ng-container *ngIf="!hidePassword">
-                              <div class="row d-flex justify-content-center">
-                                <div class="col-12">
-                                  <div class="md-form form-sm">
-                                    <input [maxlength]="configurationForm.passwordWallet.maxLength"
-                                      [minlength]="configurationForm.passwordWallet.minLength" [(ngModel)]="password"
-                                      required mdbInputDirective [validateSuccess]="false" [validateError]="false"
-                                      type="password" id="password" class="form-control form-control-sm input-border"
-                                      placeholder="Enter password">
-                                  </div>
-                                </div>
-
-                                <div class="col-12 d-flex justify-content-center">
-                                  <button (click)="sendTransaction()" autocomplete="false" [disabled]="validateAccount || password === '' || password.length <
-                                  this.configurationForm.passwordWallet.minLength || password.length>
-                                  this.configurationForm.passwordWallet.maxLength" mdbBtn type="button" rounded="true"
-                                    mdbWavesEffect class="f-w-600 background-btn pt-1rem" size="sm">
-                                    <span class="fs-1-2em color-white">APPROVE TO CONTINUE</span>
-                                  </button>
-                                </div>
-
-                              </div>
-                            </ng-container>
-                          </div>
-                        </ng-container>
-                      </div>
+                      </ng-container>
                     </div>
                   </div>
                 </div>
               </div>
-            </ng-container>
-          </div>
+            </div>
+          </ng-container>
         </div>
       </div>
     </div>
   </div>
+</div>

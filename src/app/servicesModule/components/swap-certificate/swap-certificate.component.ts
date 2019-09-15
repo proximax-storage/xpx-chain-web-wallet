@@ -74,7 +74,6 @@ export class SwapCertificateComponent implements OnInit {
     doc.line(30, 60, 300, 60, 'S');
 
     doc.setFontSize(14);
-    doc.setTextColor('#00000');
     doc.setFontType('bold');
     doc.text('Sirius Account:', 30, 90);
     doc.setFontType('normal');
@@ -94,7 +93,6 @@ export class SwapCertificateComponent implements OnInit {
 
     doc.addImage(this.qrCreate(), 'jpg', 30, 210, 100, 100);
 
-    doc.setTextColor('#000000');
     doc.setFontType('bold');
     doc.text('NIS1 Transaction Hash:', 140, 230);
     doc.setFontType('normal');

@@ -54,7 +54,7 @@ export class CreatePollComponent implements OnInit {
   voteType: any = [
     {
       value: 1,
-      label: 'Public',
+      label: 'Open',
       selected: true,
     },
     {

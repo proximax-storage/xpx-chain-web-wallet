@@ -66,9 +66,9 @@
     "qrcode-generator": "^1.4.3",
     "rxjs": "^6.5.3",
     "screenfull": "^4.2.0",
+    "tsjs-chain-xipfs-sdk": "^0.2.3",
     "tsjs-xpx-chain-sdk": "^0.5.3",
     "tslib": "^1.9.0",
-    "tsjs-chain-xipfs-sdk": "0.2.3",
     "zone.js": "~0.9.1"
   },
   "devDependencies": {

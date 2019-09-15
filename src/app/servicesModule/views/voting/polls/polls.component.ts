@@ -21,6 +21,8 @@ export class PollsComponent implements OnInit {
   cantPolls = 0;
   resultLength = 0;
   progressBar: number = 0;
+  objectValue: object;
+  keyObjectValue: string;
   routes = {
     backToService: `/${AppConfig.routes.service}`,
     voteInpoll: `/${AppConfig.routes.voteInPoll}/`,
@@ -34,13 +36,18 @@ export class PollsComponent implements OnInit {
   };
   headElements = ['Name', 'Poll type', 'End date', 'Status'];
   pollResult: PollInterface[] = [];
-  pollResultEnd: PollInterface[] = [];
-  pollResultEng: PollInterface[] = [];
+
 
   filter: string = '';
   promosePoadTransactions: Promise<void>;
   subscription: Subscription
-  status: any = [{ value: 1, label: 'Ended', disabled: false }];
+  filterObjectSelect: any = [
+    { value: '', label: 'All', disabled: false, selected: true },
+    { value: 'name', label: 'name', disabled: false },
+    { value: 'typeName', label: 'type', disabled: false },
+    { value: 'statusPoll', label: 'status', disabled: false }
+
+  ];
 
   constructor(
     private router: Router,
@@ -51,6 +58,7 @@ export class PollsComponent implements OnInit {
   ) {
     this.progressBar = 0
     this.showBarProgress = false;
+    this.objectValue = null
   }
 
   ngOnInit() {
@@ -79,6 +87,25 @@ export class PollsComponent implements OnInit {
     // this.sub.unsubscribe();
   }
 
+  filterSelected(event) {
+
+    this.keyObjectValue = event.value;
+
+
+
+  }
+  filterChange(event) {
+    this.objectValue = {}
+    console.log(event)
+    let key = this.keyObjectValue
+    if (event && this.keyObjectValue) {
+      this.objectValue[key] = event
+    } else {
+      this.objectValue['All'] = event
+    }
+
+  }
+
   routerRouterLink(link: string) {
     // Create Book logic
     if (this.walletService.canVote) {
@@ -98,25 +125,21 @@ export class PollsComponent implements OnInit {
   getPollStorage() {
     this.showRefresh = false;
     this.pollResult = []
-    this.pollResultEng = []
-    this.pollResultEnd = []
+
     const resultData: PollInterface[] = [];
-    const resultData1: PollInterface[] = [];
-    const resultData2: PollInterface[] = [];
+
 
     this.subscription = this.createPollStorageService.getPolls$().subscribe(data => {
-      let endDate = new Date(data.result.endDate).getTime();
-      let starDate = new Date(data.result.startDate).getTime();
-      const now = new Date().getTime();
-      if (starDate <= now && endDate >= now) {
-        resultData1.push(data.result);
-      } else {
-        resultData2.push(data.result);
-      }
+      // let endDate = new Date(data.result.endDate).getTime();
+      // let starDate = new Date(data.result.startDate).getTime();
+      // const now = new Date().getTime();
+
       resultData.push(data.result);
       if (resultData.length > 0) {
         resultData.map(elemt => {
-          return elemt.createdDate = new Date(elemt.createdDate)
+           elemt.createdDate = new Date(elemt.createdDate);
+           elemt.typeName = this.filterType(elemt.type);
+           elemt.statusPoll= this.statusPoll(elemt.endDate ,elemt.startDate)
         });
         resultData.sort((date1, date2) => {
           return date2.createdDate.getTime() - date1.createdDate.getTime();
@@ -126,34 +149,18 @@ export class PollsComponent implements OnInit {
         this.cantPolls = data.size;
         const progress = this.resultLength * 100 / this.cantPolls;
         this.progressBar = Math.round(progress * 100) / 100;
-        this.pollResultEng = resultData1
-        this.pollResultEnd = resultData2
-        this.pollResult = this.pollResultEng;
-
+        this.pollResult = resultData
+        console.log(this.pollResult)
         if (resultData.length === this.cantPolls) {
           // this.subscription.unsubscribe();
           this.showRefresh = true;
           this.showBarProgress = false;
         }
-      } else {
-
-
       }
     });
   }
 
-  selected($event: Event) {
-    const status: any = $event;
-    if (status !== null && status !== undefined) {
-      if (status.value === 0) {
-        this.pollResult = this.pollResultEng;
-        this.status = [{ value: 1, label: 'Ended', disabled: false }];
-      } else {
-        this.pollResult = this.pollResultEnd;
-        this.status = [{ value: 0, label: 'Ongoing', disabled: false }];
-      }
-    }
-  }
+
 
   refreshData(event) {
     if (this.showRefresh) {
@@ -170,7 +177,7 @@ export class PollsComponent implements OnInit {
       case 0:
         return 'witheList';
       case 1:
-        return 'Public';
+        return 'Open';
     }
   }
 
@@ -208,6 +215,7 @@ export interface PollInterface {
   desciption: string;
   id: string;
   type: number;
+  typeName: string;
   isPrivate: boolean,
   isMultiple: boolean,
   options: optionsPoll[];
@@ -217,6 +225,7 @@ export interface PollInterface {
   endDate: Date;
   createdDate: Date;
   quantityOption: number;
+  statusPoll :string
 }
 
 export interface optionsPoll {
