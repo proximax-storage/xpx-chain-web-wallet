@@ -284,13 +284,27 @@
                         <div class="md-form">
                             <div class="col-12  d-flex align-items-center box-grey">
                                 <div class="col-10">
-                                    <span>Public poll index address:</span>
+                                    <span>poll index address:</span>
                                     <br>
                                     <span class="font-small d-flex">{{ publicAddress }}</span>
                                 </div>
                                 <div class="col-2 text-right">
                                     <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="cursor-p" alt="Copy" width="20" (click)="copyMessage('Account')"
                                         ngxClipboard [cbContent]="publicAddress">
+                                </div>
+                            </div>
+                        </div>
+                           <!-- PRIVATE KEY-->
+                           <div *ngIf="isPrivate"  class="md-form">
+                            <div class="col-12  d-flex align-items-center box-grey">
+                                <div class="col-10">
+                                    <span> poll index private key:</span>
+                                    <br>
+                                    <span style="font-size: 0.8rem" class=" d-flex">{{ privateKeyAccount }}</span>
+                                </div>
+                                <div class="col-2 text-right">
+                                    <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="cursor-p" alt="Copy" width="20" (click)="copyMessage('Private key')"
+                                        ngxClipboard [cbContent]="privateKeyAccount">
                                 </div>
                             </div>
                         </div>
