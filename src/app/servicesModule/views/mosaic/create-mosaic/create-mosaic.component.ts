@@ -214,7 +214,7 @@ export class CreateMosaicComponent implements OnInit {
         );
 
 
-        this.dataBridge.setTransactionStatus(null);
+        // this.dataBridge.setTransactionStatus(null);
         // I SIGN THE TRANSACTION
         const generationHash = this.dataBridge.blockInfo.generationHash
         const signedTransaction = account.sign(aggregateTransaction,generationHash);  //Update-sdk-dragon

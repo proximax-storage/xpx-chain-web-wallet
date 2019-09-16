@@ -268,7 +268,7 @@ export class CreateAccountComponent implements OnInit {
 
   /**
    * Method to save a NIS1 account or not
-   * 
+   *
    * @memberof CreateAccountComponent
    */
   switchSaveNis1() {

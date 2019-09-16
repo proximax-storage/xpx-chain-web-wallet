@@ -3,7 +3,7 @@
     <div class="col-12 col-md-8">
       <span class="fs-1rem txt-a-center line-h-1-2em color-grey">Polls</span>
       <span class="fs-1rem txt-a-center line-h-1-2em color-grey"> > </span>
-      <span class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">View All</span>
+      <span class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">VIEW ALL</span>
     </div>
 
 
@@ -31,21 +31,22 @@
         <div class="col-2 col-md-1 d-flex justify-content-center"> > </div>
         <div class="col-8 col-md-10">
           <div class="row d-flex justify-content-center">
-            <div class="col-12 col-sm-2" style="margin-top: -15px;">
+            <div class="col-12 col-sm-3">
               <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" [items]="filterObjectSelect"
-                bindLabel="label" bindValue="value" placeholder="Select search type" (change)="filterSelected($event)"></ng-select>
+                bindLabel="label" bindValue="value" placeholder="Select search type" 
+                (change)="filterSelected($event)"  [(ngModel)]="selectedSearch"></ng-select>
             </div>
-            <div class="col-12 col-sm-6 d-flex justify-content-md-end justify-content-center">
+            <div class="col-12 col-sm-5 d-flex justify-content-md-end justify-content-center">
               <input mdbInputDirective [validateSuccess]="false" [validateError]="false" class="w-100porcent form-control"
-                type="text" placeholder="Enter search text" autocomplete="off" (ngModelChange)="filterChange($event)"  [(ngModel)]="filter">
+                type="text" [placeholder]="placeholderText" autocomplete="off" (ngModelChange)="filterChange($event)"  [(ngModel)]="filter">
             </div>
 
-            <div class="col-12 col-sm-2">
+            <!-- <div  *ngIf="showSearch"   class="col-12 col-sm-2">
               <button (click)="search($event)" mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn"
                 size="sm">
                 <span class="fs-1-2em color-white">SEARCH</span>
               </button>
-            </div>
+            </div> -->
 
             <div class="col-12 col-sm-2">
               <button (click)="refreshData($event)" mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn"

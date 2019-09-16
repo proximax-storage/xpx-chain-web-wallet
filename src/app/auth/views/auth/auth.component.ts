@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { environment } from '../../../../environments/environment';
-import { ConfigurationForm, SharedService } from 'src/app/shared/services/shared.service';
-import { NgxUiLoaderService } from 'ngx-ui-loader';
+import { ConfigurationForm, SharedService } from '../../../shared/services/shared.service';
+import { MosaicService } from '../../../servicesModule/services/mosaic.service';
+import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
 
 @Component({
   selector: 'app-auth',
@@ -21,7 +22,8 @@ export class AuthComponent implements OnInit {
     private authService: AuthService,
     private fb: FormBuilder,
     private sharedService: SharedService,
-    private ngxService: NgxUiLoaderService
+    private mosaicService: MosaicService,
+    private proximaxProvider: ProximaxProvider
   ) { }
 
   ngOnInit() {

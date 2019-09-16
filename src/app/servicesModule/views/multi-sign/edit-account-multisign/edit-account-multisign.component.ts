@@ -397,14 +397,14 @@ export class EditAccountMultisignComponent implements OnInit {
       modifications: this.multisigCosignatoryModification(this.getCosignatoryListFilter(1, 2)),
       networkType: this.currentAccountToConvert.network
     }
-    // console.log(modify)
 
     return ModifyMultisigAccountTransaction.create(
       modifyobject.deadline,
       modifyobject.minApprovalDelta,
       modifyobject.minRemovalDelta,
       modifyobject.modifications,
-      modifyobject.networkType);
+      modifyobject.networkType
+    );
   }
 
   /**
@@ -416,12 +416,10 @@ export class EditAccountMultisignComponent implements OnInit {
      */
   multisigCosignatoryModification(cosignatoryList: CosignatoryList[]): MultisigCosignatoryModification[] {
     const cosignatory = []
-    console.log(cosignatoryList)
     if (cosignatoryList.length > 0) {
       for (let index = 0; index < cosignatoryList.length; index++) {
         const element = cosignatoryList[index];
         const type: MultisigCosignatoryModificationType = (cosignatoryList[index].type === 1) ? MultisigCosignatoryModificationType.Add : MultisigCosignatoryModificationType.Remove;
-        console.log("type", type)
         cosignatory.push(
           new MultisigCosignatoryModification(
             type,
@@ -571,8 +569,6 @@ export class EditAccountMultisignComponent implements OnInit {
   }
   btnblckfun() {
     this.btnBlock = true;
-    console.log(this.editAccountMultsignForm.valid)
-    console.log(this.cosignatoryList.length)
     if (this.editAccountMultsignForm.valid && this.cosignatoryList.length > 0) {
       this.btnBlock = false;
     }
@@ -658,7 +654,6 @@ export class EditAccountMultisignComponent implements OnInit {
    * @param id  - Address in cosignatory.
    */
   deleteCosignatory(id: Address, disableItem: boolean, type: number) {
-    console.log(this.cosignatoryList)
     if (!disableItem) {
       const cosignatoryList = this.cosignatoryList.filter(item => item.id.plain() !== id.plain())
       this.setCosignatoryList(cosignatoryList);

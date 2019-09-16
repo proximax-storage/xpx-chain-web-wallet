@@ -63,6 +63,7 @@ export class CreatePollComponent implements OnInit {
       selected: false,
     }
   ];
+  privateKeyAccount: string;
 
   constructor(
     private fb: FormBuilder,
@@ -146,6 +147,7 @@ export class CreatePollComponent implements OnInit {
     this.account = (this.isPrivate) ? Account.generateNewAccount(this.walletService.currentAccount.network) :
       Account.createFromPrivateKey(environment.pollsContent.private_key, this.walletService.currentAccount.network);
     this.publicAddress = this.account.address.pretty();
+    this.privateKeyAccount = this.isPrivate?this.account.privateKey.toString():''
   }
 
   get2() {
@@ -180,6 +182,7 @@ export class CreatePollComponent implements OnInit {
         this.showList = true;
       } else {
         this.showList = false;
+        this.showContacts= false;
         this.cleanThirForm();
         this.listaBlanca = [];
       }
@@ -291,7 +294,6 @@ export class CreatePollComponent implements OnInit {
       this.account,
       common.privateKey
     ).then(resp => {
-      console.log("resp", resp)
       this.btnBlock = false;
       this.stepper.resetAll()
       this.listaBlanca = [];
