@@ -106,17 +106,12 @@ export class AuthService {
     for (let account of currentWallet.accounts) {
       address.push(this.proximaxProvider.createFromRawAddress(account.address));
     }
-    this.mosaicService.searchInfoMosaics([
-      this.proximaxProvider.getMosaicId(environment.mosaicXpxInfo.mosaicIdUint64),
-      this.proximaxProvider.getMosaicId(environment.mosaicXpxInfo.namespaceId)
-    ]);
+
+    this.mosaicService.getMosaicXPX();
     this.dataBridgeService.searchTransactionStatus();
     this.namespaces.searchNamespacesFromAccounts(address);
     this.transactionService.searchAccountsInfo(this.walletService.currentWallet.accounts);
-    const blockchainHeight: UInt64 = await this.proximaxProvider.getBlockchainHeight().toPromise();
-    const BlockInfo : BlockInfo = await this.proximaxProvider.getBlockInfo().toPromise(); //Update-sdk-dragon
-    this.dataBridgeService.setblock(blockchainHeight.compact());
-    this.dataBridgeService.setblockInfo(BlockInfo); //Update-sdk-dragon
+    this.dataBridgeService.searchBlockInfo();
     return true;
   }
 

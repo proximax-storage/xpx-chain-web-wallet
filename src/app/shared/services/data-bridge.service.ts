@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { first } from "rxjs/operators";
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
-import { Listener, Transaction, TransactionStatus, CosignatureSignedTransaction, BlockInfo, SignedTransaction } from "tsjs-xpx-chain-sdk";
+import { Listener, Transaction, TransactionStatus, CosignatureSignedTransaction, BlockInfo, SignedTransaction, UInt64 } from "tsjs-xpx-chain-sdk";
 import { environment } from '../../../environments/environment';
 import { NodeService } from '../../servicesModule/services/node.service';
 import { SharedService } from './shared.service';
@@ -365,6 +365,16 @@ export class DataBridgeService {
     connector.close();
     this.openConnection();
     return;
+  }
+
+  /**
+   *
+   */
+  async searchBlockInfo() {
+    const blockchainHeight: UInt64 = await this.proximaxProvider.getBlockchainHeight().toPromise();
+    const BlockInfo: BlockInfo = await this.proximaxProvider.getBlockInfo().toPromise(); //Update-sdk-dragon
+    this.setblock(blockchainHeight.compact());
+    this.setblockInfo(BlockInfo); //Update-sdk-dragon
   }
 
   /**
