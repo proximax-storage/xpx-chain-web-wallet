@@ -41,7 +41,7 @@ export class AccountCreatedComponent implements OnInit {
 
       const accountInfoNis1 = this.walletService.getAccountInfoNis1();
       console.log('This account info nis1 ------->', accountInfoNis1);
-      
+
       this.name = this.algo.data.name;
       this.address = this.algo.wallet.address.pretty();
       this.privateKey = this.proximaxProvider.decryptPrivateKey(this.algo.data.algo, this.algo.dataAccount.encrypted, this.algo.dataAccount.iv).toUpperCase();
@@ -49,7 +49,7 @@ export class AccountCreatedComponent implements OnInit {
       this.viewPublicKey = this.algo.data.fromPrivateKey;
       this.algo = null;
       this.walletService.accountWalletCreated = null;
-    }else {
+    } else {
       this.router.navigate([`/${AppConfig.routes.home}`]);
     }
   }
@@ -69,11 +69,16 @@ export class AccountCreatedComponent implements OnInit {
    */
   goToRoute() {
     // [routerLink]="[routes.backToService]"
-    const nis1Info = this.walletService.getAccountInfoNis1();
+    const nis1Info = this.walletService.getNis1AccounsWallet();
+    const nis1 = this.walletService.getAccountInfoNis1();
     console.log('this a nis1 Info ------>', nis1Info);
-    console.log('this a nis1 Info ------>', );
-    if (nis1Info.nis1Account && nis1Info.nis1Account !== null) {
-      this.router.navigate([`/${AppConfig.routes.accountNis1Found}`]);
+    console.log('this a nis1 ------>', nis1);
+    if (nis1Info.lengh > 0) {
+      if (nis1Info[0].mosaicXpx !== null) {
+        this.router.navigate([`/${AppConfig.routes.accountNis1Found}`]);
+      } else {
+        this.router.navigate([this.routes.backToService]);
+      }
     } else {
       this.router.navigate([this.routes.backToService]);
     }

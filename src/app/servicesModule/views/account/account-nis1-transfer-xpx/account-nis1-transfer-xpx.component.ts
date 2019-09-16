@@ -15,14 +15,15 @@ export class AccountNis1TransferXpxComponent implements OnInit {
   title: string = 'Swap Process';
   subtitle: string = null;
   routeEvent: string = `/${AppConfig.routes.viewAllAccount}`;
-  mosaics: any;
+  // mosaics: any;
   constructor(
     private walletService: WalletService
   ) { }
 
   ngOnInit() {
-    this.mosaics = this.walletService.getAccountMosaicsNis1();
-    if (this.mosaics === null) {
+    // this.mosaics = this.walletService.getAccountMosaicsNis1();
+    const account = this.walletService.getNis1AccountSelected();
+    if (account.mosaic === null) {
       this.routeEvent = `/${AppConfig.routes.nis1AccountList}`;
     }
   }

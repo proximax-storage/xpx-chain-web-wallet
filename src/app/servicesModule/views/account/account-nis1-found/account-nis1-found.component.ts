@@ -19,7 +19,6 @@ export class AccountNis1FoundComponent implements OnInit {
   goAllAccounts: string = `/${AppConfig.routes.viewAllAccount}`;
 
   constructor(
-    private activateRoute: ActivatedRoute,
     private router: Router,
     private walletService: WalletService
   ) {}
@@ -28,21 +27,25 @@ export class AccountNis1FoundComponent implements OnInit {
   }
 
   goToRoute() {
-    const isConsigner = this.walletService.getAccountInfoNis1();
-    console.log('------------> account consigner?', isConsigner);
-    
+    const nis1Info = this.walletService.getNis1AccounsWallet();
+    this.goAllAccounts = nis1Info[0].route;
 
-    if (isConsigner.consignerOf) {
-      this.router.navigate([`/${AppConfig.routes.accountNis1TransferXpx}`]);      
+    console.log('nis1Info ------> ', nis1Info);
+    
+    if (nis1Info[0].consignerOf) {
+      this.walletService.setAccountInfoNis1(nis1Info[0]);
+      this.router.navigate([`/${AppConfig.routes.nis1AccountsConsigner}`]);
     } else {
+      this.walletService.setNis1AccountSelected(nis1Info[0]);
       this.router.navigate([`/${AppConfig.routes.accountNis1TransferXpx}`]);
     }
   }
 
   goToBack() {
+    this.walletService.setNis1AccounsWallet(null);
     this.walletService.setAccountInfoNis1(null);
-    this.walletService.setAccountMosaicsNis1(null);
-    this.walletService.setAccountInfoConsignerNis1(null);
+    // this.walletService.setAccountMosaicsNis1(null);
+    // this.walletService.setAccountInfoConsignerNis1(null);
     this.router.navigate([this.goAllAccounts]);
   }
 

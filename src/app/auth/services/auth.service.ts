@@ -12,6 +12,7 @@ import { TransactionsService } from '../../transactions/services/transactions.se
 import { ServicesModuleService } from '../../servicesModule/services/services-module.service';
 import { SharedService } from '../../shared/services/shared.service';
 import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
+import { NemServiceService } from 'src/app/shared/services/nem-service.service';
 
 @Injectable({
   providedIn: 'root'
@@ -34,7 +35,8 @@ export class AuthService {
     private transactionService: TransactionsService,
     private serviceModuleService: ServicesModuleService,
     private sharedService: SharedService,
-    private proximaxProvider: ProximaxProvider
+    private proximaxProvider: ProximaxProvider,
+    private nemProvider: NemServiceService
   ) {
     this.setLogged(false);
   }
