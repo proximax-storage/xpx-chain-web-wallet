@@ -44,6 +44,16 @@ export class DataBridgeService {
 
 
   /**
+   *
+   */
+  async searchBlockInfo() {
+    const blockchainHeight: UInt64 = await this.proximaxProvider.getBlockchainHeight().toPromise();
+    const BlockInfo: BlockInfo = await this.proximaxProvider.getBlockInfo().toPromise(); //Update-sdk-dragon
+    this.setblock(blockchainHeight.compact());
+    this.setblockInfo(BlockInfo); //Update-sdk-dragon
+  }
+
+  /**
    * Connect to websocket
    *
    * @param {string} node
@@ -66,7 +76,7 @@ export class DataBridgeService {
    * @memberof DataBridgeService
    */
   closeConenection(destroyTransactions = true) {
-    // console.log("Destruye conexion con el websocket");
+    console.log("Destruye conexion con el websocket");
     this.setblock(null);
     this.destroyConection = true;
     if (destroyTransactions) {
@@ -367,15 +377,7 @@ export class DataBridgeService {
     return;
   }
 
-  /**
-   *
-   */
-  async searchBlockInfo() {
-    const blockchainHeight: UInt64 = await this.proximaxProvider.getBlockchainHeight().toPromise();
-    const BlockInfo: BlockInfo = await this.proximaxProvider.getBlockInfo().toPromise(); //Update-sdk-dragon
-    this.setblock(blockchainHeight.compact());
-    this.setblockInfo(BlockInfo); //Update-sdk-dragon
-  }
+
 
   /**
    * Allow to load the component in the routing
@@ -405,7 +407,7 @@ export class DataBridgeService {
    *
    */
   searchTransactionStatus() {
-    this.destroySubscriptions();
+    console.log(this.subscription);
     // Get transaction status
     this.subscription.push(this.getTransactionStatus().subscribe(
       statusTransaction => {
@@ -454,6 +456,7 @@ export class DataBridgeService {
    * @memberof DataBridgeService
    */
   setTransactionStatus(value: any) {
+    console.log('SET TRANSACTION STATUS');
     return this.transactionSubject.next(value);
   }
 }

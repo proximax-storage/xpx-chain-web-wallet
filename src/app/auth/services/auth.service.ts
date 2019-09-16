@@ -63,7 +63,7 @@ export class AuthService {
   * @memberof LoginService
   */
   async login(common: any, currentWallet: CurrentWalletInterface) {
-    this.walletService.destroyAll();
+    this.walletService.destroyDataWalletAccount();
     const currentAccount = Object.assign({}, currentWallet.accounts.find(elm => elm.default === true));
     let isValid = false;
     if (currentAccount) {
@@ -108,6 +108,7 @@ export class AuthService {
     }
 
     this.mosaicService.getMosaicXPX();
+    this.dataBridgeService.destroySubscriptions();
     this.dataBridgeService.searchTransactionStatus();
     this.namespaces.searchNamespacesFromAccounts(address);
     this.transactionService.searchAccountsInfo(this.walletService.currentWallet.accounts);
@@ -120,7 +121,7 @@ export class AuthService {
    *
    * @param {*} params
    * @memberof LoginService
-   */
+   **/
   setLogged(params: any) {
     this.logged = params;
     this.isLogged = params;

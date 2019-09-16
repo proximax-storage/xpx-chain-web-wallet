@@ -257,7 +257,7 @@ export class SidebarMainComponent implements OnInit {
    */
   logOut() {
     this.currentBlock = 0;
-    this.walletService.destroyAll();
+    this.walletService.destroyDataWalletAccount();
     this.dashboardService.processComplete = false;
     this.authService.setLogged(false);
     this.authService.destroyNodeSelected();

@@ -121,7 +121,7 @@ export class CreateAccountComponent implements OnInit {
               this.spinnerButton = true;
               const nis1Wallet = this.nemProvider.createAccountPrivateKey(common['privateKey']);
               // const accountInfo = await this.nemProvider.getAccountInfo(nis1Wallet.address).toPromise();
-              
+
               this.nemProvider.getAccountInfo(nis1Wallet.address).pipe(timeout(3000)).subscribe(
                 next => {
                   console.log('This is a account Info --------------->', next.cosignatoryOf);
@@ -288,7 +288,7 @@ export class CreateAccountComponent implements OnInit {
 
   /**
    * Method to save a NIS1 account or not
-   * 
+   *
    * @memberof CreateAccountComponent
    */
   switchSaveNis1() {
