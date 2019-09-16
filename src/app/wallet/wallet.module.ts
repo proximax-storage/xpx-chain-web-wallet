@@ -8,9 +8,10 @@ import { WalletCreatedComponent } from './views/wallet-created/wallet-created.co
 import { SelectionWalletCreationTypeComponent } from './views/selection-wallet-creation-type/selection-wallet-creation-type.component';
 import { WalletNis1FoundComponent } from './views/wallet-nis1-found/wallet-nis1-found.component';
 import { TransferXpxComponent } from './views/transfer-xpx/transfer-xpx.component';
+import { WalletNis1AccountsConsignerComponent } from './views/wallet-nis1-accounts-consigner/wallet-nis1-accounts-consigner.component';
 
 @NgModule({
-  declarations: [CreateWalletComponent, ImportWalletComponent, WalletCreatedComponent, SelectionWalletCreationTypeComponent, WalletNis1FoundComponent, TransferXpxComponent],
+  declarations: [CreateWalletComponent, ImportWalletComponent, WalletCreatedComponent, SelectionWalletCreationTypeComponent, WalletNis1FoundComponent, TransferXpxComponent, WalletNis1AccountsConsignerComponent],
   imports: [
     CoreModule,
     WalletRoutingModule

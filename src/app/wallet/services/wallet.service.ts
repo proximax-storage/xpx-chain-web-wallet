@@ -26,9 +26,10 @@ export class WalletService {
   currentWallet: CurrentWalletInterface = null;
 
   accountInfoNis1: any = null;
-  accountMosaicsNis1: any = null;
+  // accountMosaicsNis1: any = null;
   accountInfoConsignerNis1: any = null;
   nis1AccountSeleted: any = null;
+  nis1AccounsWallet: any = [];
 
   currentAccountObs: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   currentAccountObs$: Observable<any> = this.currentAccountObs.asObservable();
@@ -41,6 +42,28 @@ export class WalletService {
     private proximaxProvider: ProximaxProvider
   ) {
 
+  }
+
+  /**
+   *
+   * @param data
+   */
+  setNis1AccounsWallet(account) {
+    this.nis1AccounsWallet.push(account);
+  }
+
+  /**
+   *
+   */
+  getNis1AccounsWallet() {
+    return this.nis1AccounsWallet;
+  }
+
+  /**
+   *
+   */
+  clearNis1AccounsWallet() {
+    this.nis1AccounsWallet = [];
   }
 
   /**
@@ -440,14 +463,6 @@ export class WalletService {
    *
    * @param data
    */
-  getAccountMosaicsNis1() {
-    return this.accountMosaicsNis1;
-  }
-
-  /**
-   *
-   * @param data
-   */
   getNis1AccountSelected() {
     return this.nis1AccountSeleted;
   }
@@ -620,15 +635,7 @@ export class WalletService {
    *
    * @param data
    */
-  setAccountMosaicsNis1(mosaic: any) {
-    this.accountMosaicsNis1 = mosaic;
-  }
-
-  /**
-   *
-   * @param data
-   */
-  setAccountInfoNis1(account: AccountsInterface) {
+  setAccountInfoNis1(account: any) {
     this.accountInfoNis1 = account;
   }
 

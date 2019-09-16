@@ -7,73 +7,63 @@
       </div>
       <div class="row">
         <div class="col-10 col-sm-12 col-md-12 mx-auto d-flex align-items-center box-grey">
-          <div class="col-10">
-            <span class="color-black fw-bold">{{ accountCreated.name }}</span>
-            <span class="d-flex color-black">{{ accountCreated.nis1Account.address.pretty() }}</span>
-            <span class="d-flex color-black fw-bold">Balance: <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
-              *ngIf="searchBalance"></span> {{ quantity }} XPX <img src="./assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" class="ml-1rem" width="20px" alt="logo"></span>
+          <div class="col-8 col-md-10">
+            <span class="color-black fw-bold">{{ accountSelected.nameAccount }}</span>
+            <span class="d-flex color-black">{{ accountSelected.address.pretty() }}</span>
+            <span class="d-flex color-black fw-bold">Balance: <span
+                class="spinner-border spinner-border-sm text-light mr-sm-2 loading-blue" role="status" aria-hidden="true"
+                *ngIf="searchBalance"></span> {{ quantity }} XPX <img
+                src="./assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" class="ml-1rem" width="20px"
+                alt="logo"></span>
           </div>
-          <!-- <div class="col-2 text-center">
-            <button mdbBtn mdbWavesEffect
-              class="color-white f-w-600 bord-rad-25px font-small background-btn p-05rem">CHANGE</button>
-          </div> -->
+          <div class="col-4 col-md-2 text-center" *ngIf="changeAccount">
+            <button mdbBtn mdbWavesEffect (click)="goToList()"
+              class="color-white f-w-600 bord-rad-25px font-small background-btn p-05rem" >CHANGE</button>
+          </div>
         </div>
       </div>
     </div>
 
     <form [formGroup]="formTransfer" (ngSubmit)="createTransaction()">
-      <!-- INPUT AMOUNT TO SWAP -->
       <div class="col-sm-12 col-md-10 col-lg-8 col-xl-8 mx-auto">
         <div class="col-12 d-flex justify-content-center pt-1rem">
           <span class="fs-1rem fw-500 txt-a-center line-h-1-2em color-black">Amount To Swap</span>
         </div>
         <div class="row">
+          <!-- ACCOUNT TO SWAP -->
+          <div class="col-10 col-sm-12 col-md-12 mx-auto" *ngIf="accountSelected.multiSign">
+            <ng-select mdbInputDirective mdbValidate class="selectWrapper" [items]="listContacts" bindLabel="label"
+              bindValue="value" placeholder="Select an account to transfer" (change)="selectContact($event)">
+            </ng-select>
+          </div>
+
+          <div class="col-10 col-sm-12 col-md-12 mx-auto" *ngIf="accountSelected.multiSign">
+            <div class="md-form form-sm mt-1rem mb-0rem d-flex align-items-center">
+              <input mdbInputDirective mdbValidate [validateSuccess]="true" readonly [validateError]="true" type="text"
+                class="form-control form-control-sm input-border" style="border: 2px solid #2ba1b9;"
+                placeholder="Account selected" formControlName="accountRecipient">
+            </div>
+          </div>
+
+          <!-- INPUT AMOUNT TO SWAP -->
           <div class="col-10 col-sm-12 col-md-12 mx-auto">
             <div class="md-form form-sm mt-1rem mb-0rem">
-              <input currencyMask [options]="optionsXPX" mdbInputDirective mdbValidate [validateSuccess]="true"
+              <input currencyMask [options]="optionsXPX" [disabled]="quantity === '0.000000'" mdbInputDirective mdbValidate [validateSuccess]="true"
                 [validateError]="true" type="text" class="form-control form-control-sm input-border input-amount"
-                formControlName="amountXpx" [disabled]="disabledForm">
+                formControlName="amountXpx">
               <span class="label-i fw-600 text-cl-m cursor-p" (click)="selectMaxAmount()">USE MAX</span>
             </div>
           </div>
 
-          <!-- ACCOUNT TO SWAP
-          <div class="col-10 col-sm-12 col-md-12 mx-auto" *ngIf="accountListVisible">
-            <ng-select mdbInputDirective mdbValidate class="selectWrapper" [items]="listContacts" bindLabel="label"
-              bindValue="value" placeholder="Accounts" (change)="selectContact($event)">
-            </ng-select>
-          </div>
-
-          <div class="col-10 col-sm-12 col-md-12 mx-auto">
-            <div class="md-form form-sm mt-1rem mb-0rem d-flex align-items-center">
-              <input mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
-                class="form-control form-control-sm input-border" style="border: 2px solid #2ba1b9;"
-                placeholder="Enter a account to transfer this assets">
-              <mdb-error *ngIf="false">
-                <span class="fs-08rem fw-600 color-error-message">Invalid Recipient</span>
-              </mdb-error>
-
-              <mdb-error *ngIf="false">
-                <span class="fs-08rem fw-600 color-error-message">Error Unsupported</span>
-              </mdb-error>
-
-              <ng-container>
-                <div class="col-4 col-sm-3 col-md-2 d-flex justify-content-center align-items-center pb-10px">
-                  <div class="background-gray-icons p-12px bord-rad-25px cursor-p" (click)="changeVisibility()">
-                    <img class="w-30px" src="assets/images/img/icon-list-green-16h-proximax-sirius-wallet.svg">
-                  </div>
-                </div>
-              </ng-container>
-            </div>
-          </div> -->
 
           <!-- WALLET PASSWORD -->
           <div class="col-10 col-sm-12 col-md-12 mx-auto mb-2rem">
             <div class="md-form form-sm mt-1rem mb-0rem">
               <input [maxlength]="configurationForm.passwordWallet.maxLength"
                 [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" required
-                mdbInputDirective mdbValidate [validateSuccess]="true" [disabled]="disabledForm" [validateError]="true" type="password"
-                id="password" class="form-control form-control-sm input-border" placeholder="Wallet password">
+                mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
+                type="password" id="password" class="form-control form-control-sm input-border"
+                placeholder="Wallet password">
 
               <!-- VALIDATION -->
               <mdb-error

@@ -4,6 +4,7 @@ import { WalletService, AccountsInterface } from 'src/app/wallet/services/wallet
 import { HeaderServicesInterface } from 'src/app/servicesModule/services/services-module.service';
 import { Router } from '@angular/router';
 import { NemServiceService } from 'src/app/shared/services/nem-service.service';
+import { first, timeout } from 'rxjs/operators';
 
 @Component({
   selector: 'app-nis1-accounts-list',
@@ -16,32 +17,88 @@ export class Nis1AccountsListComponent implements OnInit {
     moduleName: 'Mainnet Swap',
     componentName: 'TRANSFER ASSETS'
   };
-  acountsNis1: AccountsInterface[];
+  accountsNis1: any;
   goBack: string = `/${AppConfig.routes.service}`;
   goList: string = `/${AppConfig.routes.accountNis1TransferXpx}`;
+  searchItem = [];
 
   constructor(
     private walletService: WalletService,
     private router: Router,
     private nemProvider: NemServiceService
-  ) { }
-
-  ngOnInit() {
+  ) {
     console.log('Test de acount ----> ', this.walletService.currentWallet.accounts);
-    this.acountsNis1 = this.walletService.currentWallet.accounts;
+    console.log('Test de AccountsWallets ----> ', this.walletService.getNis1AccounsWallet());
+    this.walletService.setAccountInfoNis1(null);
+    this.accountsNis1 = this.walletService.currentWallet.accounts;
+    for (let index = 0; index < this.accountsNis1.length; index++) {
+      this.searchItem.push(false);
+    }
   }
 
-  accountSelected(account: AccountsInterface) {
-    // this.walletService.accountInfoNis1 = account;
-    console.log('antes ------>', account);
+  ngOnInit() { }
+
+  accountSelected(account: any, index: number) {
+    console.log('Account Selected ------>', account);
+    console.log('index ------>', index);
+    this.searchItem[index] = true;
     const address = this.nemProvider.createAddressToString(account.nis1Account.address.value);
-    account.nis1Account.address = address
+    this.nemProvider.getAccountInfo(address).pipe(first()).pipe((timeout(3000))).subscribe(
+      next => {
+        this.searchItem[index] = false;
+        console.log('Account next ------>', next);
+        let consignerOf: boolean = false;
+        let consignerAccountsInfo: any = [];
 
-    console.log('despues ------>',account);
-
-    
-    this.walletService.setAccountInfoNis1(account);
-    this.router.navigate([`/${AppConfig.routes.accountNis1TransferXpx}`]);
+        if (next.cosignatoryOf.length > 0) {
+          consignerOf = true;
+          consignerAccountsInfo = next.cosignatoryOf;
+        }
+        const accountNis1 = {
+          nameAccount: account.name,
+          address: address,
+          publicKey: account.nis1Account.publicKey,
+          consignerOf: consignerOf,
+          consignerAccounts: consignerAccountsInfo,
+          multiSign: false,
+          mosaic: null,
+          route: `/${AppConfig.routes.nis1AccountList}`
+        }
+        
+        console.log('accountNis1------->>>>', accountNis1);
+        // this.walletService.setNis1AccounsWallet(accountNis1);
+        if (accountNis1.consignerOf) {
+          this.walletService.setAccountInfoNis1(accountNis1);
+          this.router.navigate([`/${AppConfig.routes.nis1AccountsConsigner}`]);
+        } else {
+          this.walletService.setNis1AccountSelected(accountNis1);
+          this.router.navigate([`/${AppConfig.routes.accountNis1TransferXpx}`]);
+        }
+      },
+      error => {
+        this.searchItem[index] = false;
+        console.log('this accounssssss error------->>>>', error);
+        const accountNis1 = {
+          nameAccount: account.name,
+          address: address,
+          publicKey: account.nis1Account.publicKey,
+          consignerOf: false,
+          consignerAccounts: [],
+          multiSign: false,
+          mosaic: null,
+          route: `/${AppConfig.routes.nis1AccountList}`
+        }
+        this.walletService.setAccountInfoNis1(accountNis1);
+        // this.walletService.setNis1AccounsWallet(accountNis1);
+        this.router.navigate([`/${AppConfig.routes.accountNis1TransferXpx}`]);
+      }
+    );
+    // this.walletService.setNis1AccountSelected(account);
+    // this.nemProvider.getAccountsInfoAccountNew(account.nis1Account, account.name);
+    // if (account.consignerOf) {
+    //   this.router.navigate([`/${AppConfig.routes.nis1AccountsConsigner}`]);
+    // } else {
+    //   this.router.navigate([`/${AppConfig.routes.accountNis1TransferXpx}`]);
+    // }
   }
-
 }

@@ -261,6 +261,7 @@ export class SidebarMainComponent implements OnInit {
     this.dashboardService.processComplete = false;
     this.authService.setLogged(false);
     this.authService.destroyNodeSelected();
+    this.walletService.clearNis1AccounsWallet();
     this.route.navigate([`/${AppConfig.routes.auth}`]);
   }
 

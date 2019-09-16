@@ -18,7 +18,7 @@
       <div class="col-12 d-flex justify-content-center pt-2rem pb-1rem">
         <span class="fs-1-5rem fw-500 txt-a-center line-h-1-2em color-black">Please select a NIS1 account</span>
       </div>
-      <ng-container *ngFor="let account of acountsNis1">
+      <ng-container *ngFor="let account of accountsNis1; let i = index">
         <div class="row" *ngIf="account.nis1Account !== null">
           <div class="col-11 col-md-12 mx-auto d-flex align-items-center box-grey">
             <div class="col-9 col-sm-10 word-break-all">
@@ -26,7 +26,9 @@
               <span class="font-small d-flex color-black">{{ account.nis1Account.publicKey }}</span>
             </div>
             <div class="col-3 col-sm-2 text-center w-e-nowrap">
-              <span class="color-blue-intermedio font-small cursor-p" (click)="accountSelected(account)">SELECT ></span>
+              <span class="color-blue-intermedio font-small cursor-p" (click)="accountSelected(account, i)"><span
+                class="spinner-border spinner-border-sm text-light mr-sm-2 loading-blue" role="status"
+                aria-hidden="true" *ngIf="searchItem[i]"></span>SELECT ></span>
             </div>
           </div>
         </div>
@@ -34,18 +36,5 @@
     </div>
   </div>
   <!-- END ACCOUNT LIST -->
-
-  <!-- BUTTON -->
-  <div class="row">
-    <div class="col-12 col-md-10 col-lg-9 col-xl-10 mx-auto">
-      <div class="col-12 d-flex justify-content-center pt-2rem pb-1rem">
-        <button mdbBtn type="button" rounded="true" mdbWavesEffect [routerLink]="[goBack]"
-          class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
-          <span class="fs-1-2em color-white">GO BACK</span>
-        </button>
-      </div>
-    </div>
-  </div>
-  <!-- END BUTTON -->
 
 </div>

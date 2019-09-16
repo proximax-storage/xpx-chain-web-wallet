@@ -13,7 +13,6 @@ import { ServicesModuleService } from '../../servicesModule/services/services-mo
 import { SharedService } from '../../shared/services/shared.service';
 import { ProximaxProvider } from '../../shared/services/proximax.provider';
 import { MosaicService } from '../../servicesModule/services/mosaic.service';
-import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'

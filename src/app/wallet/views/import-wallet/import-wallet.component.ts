@@ -124,63 +124,17 @@ export class ImportWalletComponent implements OnInit {
         // const nis1Wallet = this.nemProvider.createPrivateKeyWallet(nameWallet, this.importWalletForm.controls.passwords.get('password').value, privateKey);
 
         if (this.saveNis1) {
-          // this.spinnerButton = true;
-          // const nis1Wallet = this.nemProvider.createAccountPrivateKey(privateKey);
-          // this.nis1Account = {
-          //   address: nis1Wallet.address,
-          //   publicKey: nis1Wallet.publicKey
-          // };
-          // console.log('\n\n\n\nValue of nis1', nis1Wallet, '\n\n\n\nEnd value\n\n');
-          // const mosaicNis1 = await this.nemProvider.getOwnedMosaics(this.nis1Account.address).toPromise();
-          // if (mosaicNis1 && mosaicNis1.length > 0) {
-          //   for (const el of mosaicNis1) {
-          //     if (el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx') {
-          //       this.foundXpx = true;
-          //       this.walletService.setAccountMosaicsNis1(el);
-          //       console.log('\n\n\n\nValue of mosaicXPX', this.nis1Account, '\n\n\n\nEnd value\n\n');
-          //     }
-          //   }
-          // }
-
+          this.walletService.clearNis1AccounsWallet();
           this.spinnerButton = true;
-          const nis1Wallet = this.nemProvider.createAccountPrivateKey(privateKey);
+          const nis1Wallet = this.nemProvider.createAccountPrivateKey(this.importWalletForm.get('privateKey').value);
+          this.nis1Account = {
+            address: nis1Wallet.address,
+            publicKey: nis1Wallet.publicKey
+          };
           // const accountInfo = await this.nemProvider.getAccountInfo(nis1Wallet.address).toPromise();
-
-          this.nemProvider.getAccountInfo(nis1Wallet.address).pipe(timeout(3000)).subscribe(
-            next => {
-              // console.log('This is a account Info --------------->', next.cosignatoryOf);
-              let consigner: boolean = false;
-              if (next.cosignatoryOf.length > 0) {
-                consigner = true;
-                this.walletService.setAccountInfoConsignerNis1(next.cosignatoryOf);
-              }
-
-              this.nis1Account = {
-                address: nis1Wallet.address,
-                publicKey: nis1Wallet.publicKey,
-                consignerOf: consigner
-              };
-              this.saveAccount(wallet, nameWallet, password);
-              // const mosaicNis1 = await this.nemProvider.getOwnedMosaics(this.nis1Account.address).toPromise();
-              // if (mosaicNis1 && mosaicNis1.length > 0) {
-              //   for (const el of mosaicNis1) {
-              //     if (el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx') {
-              //       this.foundXpx = true;
-              //       this.walletService.setAccountMosaicsNis1(el);
-              //     }
-              //   }
-              // }
-            },
-            error => {
-              this.sharedService.showError('Error', error);
-              this.nis1Account = {
-                address: nis1Wallet.address,
-                publicKey: nis1Wallet.publicKey,
-                consignerOf: false
-              };
-              this.saveAccount(wallet, nameWallet, password);
-            }
-          );
+          console.log('this is a nis1 wallet ---------->', nis1Wallet);
+          this.saveAccount(wallet, nameWallet, password);
+          this.nemProvider.getAccountsInfoAccountNew(nis1Wallet, nameWallet);
         } else {
           this.saveAccount(wallet, nameWallet, password);
         }
@@ -218,8 +172,6 @@ export class ImportWalletComponent implements OnInit {
       algo: password,
       network: wallet.network
     }, accountBuilded, wallet);
-
-    this.walletService.setAccountInfoNis1(accountBuilded);
 
     this.serviceModuleService.saveContacts({
       name: accountBuilded.name,

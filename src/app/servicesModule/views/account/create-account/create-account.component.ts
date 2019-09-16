@@ -117,52 +117,31 @@ export class CreateAccountComponent implements OnInit {
           if (this.fromPrivateKey) {
             newAccount = this.proximaxProvider.createAccountFromPrivateKey(nameAccount, password, this.formCreateAccount.get('privateKey').value, network);
 
-            if (this.saveNis1) {
-              this.spinnerButton = true;
-              const nis1Wallet = this.nemProvider.createAccountPrivateKey(common['privateKey']);
-              // const accountInfo = await this.nemProvider.getAccountInfo(nis1Wallet.address).toPromise();
+            console.log('new Account----->', newAccount);
+            console.log('this curren accouns', this.walletService.getCurrentWallet().accounts);
 
-              this.nemProvider.getAccountInfo(nis1Wallet.address).pipe(timeout(3000)).subscribe(
-                next => {
-                  console.log('This is a account Info --------------->', next.cosignatoryOf);
-                  let consigner: boolean = false;
-                  if (next.cosignatoryOf.length > 0) {
-                    consigner = true;
-                    this.walletService.setAccountInfoConsignerNis1(next.cosignatoryOf);
-                  }
+            const accountEqual = this.walletService.getCurrentWallet().accounts.find(el => el.publicAccount.address['address'] === newAccount.address['address']);
+            console.log('accountEqual --------------->', accountEqual);
 
-                  this.nis1Account = {
-                    address: nis1Wallet.address,
-                    publicKey: nis1Wallet.publicKey,
-                    consignerOf: consigner
-                  };
-                  this.saveAccount(newAccount, nameAccount, password);
-                  // const mosaicNis1 = await this.nemProvider.getOwnedMosaics(this.nis1Account.address).toPromise();
-                  // if (mosaicNis1 && mosaicNis1.length > 0) {
-                  //   for (const el of mosaicNis1) {
-                  //     if (el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx') {
-                  //       this.foundXpx = true;
-                  //       this.walletService.setAccountMosaicsNis1(el);
-                  //     }
-                  //   }
-                  // }
-                },
-                error => {
-                  this.sharedService.showError('Error', error);
-                  this.nis1Account = {
-                    address: nis1Wallet.address,
-                    publicKey: nis1Wallet.publicKey,
-                    consignerOf: false
-                  };
-                  this.saveAccount(newAccount, nameAccount, password);
-                }
-              );
-
-
-              // this.nis1Account = {
-              //   address: nis1Wallet.address,
-              //   publicKey: nis1Wallet.publicKey
-              // };
+            if (accountEqual && accountEqual !== undefined) {
+              this.sharedService.showWarning('', 'This account already exists');
+            } else {
+              if (this.saveNis1) {
+                this.walletService.clearNis1AccounsWallet();
+                this.spinnerButton = true;
+                const nis1Wallet = this.nemProvider.createAccountPrivateKey(this.formCreateAccount.get('privateKey').value);
+                this.nis1Account = {
+                  address: nis1Wallet.address,
+                  publicKey: nis1Wallet.publicKey
+                };
+                // const accountInfo = await this.nemProvider.getAccountInfo(nis1Wallet.address).toPromise();
+                console.log('this is a nis1 wallet ---------->', nis1Wallet);
+                this.saveAccount(newAccount, nameAccount, password);
+                this.nemProvider.getAccountsInfoAccountNew(nis1Wallet, nameAccount);
+                // console.log('this is a nis1 accountInfo ---------->', accountInfo);
+              } else {
+                this.saveAccount(newAccount, nameAccount, password);
+              }
             }
           } else {
             newAccount = this.proximaxProvider.createAccountSimple(nameAccount, password, network);
@@ -201,7 +180,6 @@ export class CreateAccountComponent implements OnInit {
       nis1Account: this.nis1Account
     });
 
-    this.walletService.setAccountInfoNis1(accountBuilded);
 
     this.clearForm();
     this.walletService.saveDataWalletCreated({
@@ -216,6 +194,8 @@ export class CreateAccountComponent implements OnInit {
     this.dataBridgeService.connectnWs();
     this.dashboardService.isIncrementViewDashboard = 0;
     this.transactionService.searchAccountsInfo(this.walletService.currentWallet.accounts);
+    console.log('--------------------WalletService------------', this.walletService.currentWallet);
+    console.log('--------------------AccountInfo------------', this.walletService.currentAccount);
     this.router.navigate([`/${AppConfig.routes.accountCreated}`]);
   }
 
