@@ -288,7 +288,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       }
     );
 
-    this.subscriptions['transactionsUnconfirmed'] = this.transactionService.getTransactionsUnConfirmed$().subscribe(
+    this.subscriptions['transactionsUnconfirmed'] = this.transactionService.getIncomingTransactions$().subscribe(
       (next: TransactionsInterface[]) => {
         this.cantUnconfirmed = next.length;
         this.transactionsUnconfirmed = next;

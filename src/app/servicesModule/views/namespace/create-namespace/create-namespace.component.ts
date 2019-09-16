@@ -167,7 +167,7 @@ export class CreateNamespaceComponent implements OnInit {
       if (this.walletService.decrypt(common)) {
         const signedTransaction = this.signedTransaction(common);
         this.transactionSigned.push(signedTransaction);
-        this.dataBridge.setTransactionStatus(null);
+        // this.dataBridge.setTransactionStatus(null);
         this.proximaxProvider.announce(signedTransaction).subscribe(
           () => {
             if (!this.transactionStatus) {

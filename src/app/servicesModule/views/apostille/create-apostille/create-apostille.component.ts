@@ -189,7 +189,7 @@ export class CreateApostilleComponent implements OnInit {
    * @memberof ApostilleCreateComponent
    */
   fileReader(files: File[]) {
-    console.log('files ---> ', files);
+    // console.log('files ---> ', files);
 
     if (files.length > 0) {
       this.extensionFile = '';
@@ -200,8 +200,8 @@ export class CreateApostilleComponent implements OnInit {
         this.extensionFile = `.${this.sharedService.getFileExtension(files[0].name)}`;
       }
 
-      console.log('----> this.extensionFile ', this.extensionFile);
-      console.log('----> this.nameFile ', this.nameFile);
+      // console.log('----> this.extensionFile ', this.extensionFile);
+      // console.log('----> this.nameFile ', this.nameFile);
 
 
       this.apostilleFormOne.get('file').setValue(files[0].name);
@@ -266,7 +266,7 @@ export class CreateApostilleComponent implements OnInit {
    * @memberof CreateApostilleComponent
    */
   onSelect(event: any) {
-    console.log(event);
+    // console.log(event);
     if (event.addedFiles && event.addedFiles.length > 0) {
       this.files = event.addedFiles;
       this.fileReader(event.addedFiles);
@@ -405,7 +405,7 @@ export class CreateApostilleComponent implements OnInit {
    * @memberof preparePublicApostille
    */
   preparePublicApostille(common: any) {
-    console.log(this.nameFile);
+    // console.log(this.nameFile);
 
     //create a hash prefix (dice si es privado o publico)
     const apostilleHashPrefix = 'fe4e545903';

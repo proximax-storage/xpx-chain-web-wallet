@@ -142,11 +142,9 @@ export class PartialComponent implements OnInit {
       element['nameType'] = (nameType) ? this.typeTransactions[nameType].name : element.type.toString(16).toUpperCase();
       if (element.type === this.typeTransactions.modifyMultisigAccount.id) {
         const data: ModifyMultisigAccountTransaction = element;
-        console.log('ModifyMultisigAccountTransaction.....', data);
         // aqui debo verificar si mi cuenta esta dentro de inner transaction para poder firmarla
         data.modifications.forEach(element => {
           const exist = this.arraySelect.find((b: any) => b.value.address === element.cosignatoryPublicAccount.address.plain());
-          console.log('ARRAY SELECT --->', exist);
           if (!exist) {
             const possibleCosignatorie: AccountsInterface = this.walletService.filterAccount('', null, element.cosignatoryPublicAccount.address.pretty());
             console.log('possibleCosignatorie ---->', possibleCosignatorie);

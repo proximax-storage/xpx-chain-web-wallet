@@ -53,14 +53,14 @@ export class TransactionsService {
   private balance$: Observable<any> = this.balance.asObservable();
 
   //Confirmed
-  private _transConfirmSubject = new BehaviorSubject<TransactionsInterface[]>([]);
-  private _transConfirm$: Observable<TransactionsInterface[]> = this._transConfirmSubject.asObservable();
+  private _confirmedTransactionsSubject = new BehaviorSubject<TransactionsInterface[]>([]);
+  private _confirmedTransactions$: Observable<TransactionsInterface[]> = this._confirmedTransactionsSubject.asObservable();
   //Unconfirmed
-  private _transUnConfirmSubject = new BehaviorSubject<TransactionsInterface[]>([]);
-  private _transUnConfirm$: Observable<TransactionsInterface[]> = this._transUnConfirmSubject.asObservable();
+  private _incomingTransactionsSubject = new BehaviorSubject<TransactionsInterface[]>([]);
+  private _incomingTransactions$: Observable<TransactionsInterface[]> = this._incomingTransactionsSubject.asObservable();
   //Aggregate Transactions
-  private aggregateTransactions: BehaviorSubject<TransactionsInterface[]> = new BehaviorSubject<TransactionsInterface[]>([]);
-  private aggregateTransactions$: Observable<TransactionsInterface[]> = this.aggregateTransactions.asObservable();
+  private _aggregateTransactionsSubject: BehaviorSubject<TransactionsInterface[]> = new BehaviorSubject<TransactionsInterface[]>([]);
+  private _aggregateTransactions$: Observable<TransactionsInterface[]> = this._aggregateTransactionsSubject.asObservable();
 
   arraTypeTransaction = {
     transfer: {
@@ -199,72 +199,6 @@ export class TransactionsService {
 
 
   /**
-   *
-   *
-   * @param {AccountsInfoInterface[]} accounts
-   * @returns {Promise<AccountInfo[]>}
-   * @memberof TransactionsService
-   */
-  async searchAccountsInfo2(accounts: AccountsInterface[], pushed = false) {//: Promise<AccountsInfoInterface[]> {
-    const accountsInfo: AccountsInfoInterface[] = [];
-    let counter = 0;
-    accounts.forEach((element, i) => {
-      //  console.log('paso esta cuenta...', element);
-      this.proximaxProvider.getAccountInfo(this.proximaxProvider.createFromRawAddress(element.address)).pipe(first()).subscribe(
-        async accountInfo => {
-          const mosaicsIds: (NamespaceId | MosaicId)[] = [];
-          if (accountInfo) {
-
-            // if (element.default) {
-            //   const mosaics = accountInfo.mosaics.slice(0);
-            //   const findXPX = mosaics.find(mosaic => mosaic.id.toHex() === environment.mosaicXpxInfo.id);
-            //   if (findXPX) {
-            //     this.setBalance$(findXPX.amount.compact());
-            //   } else {
-            //     this.setBalance$('0.000000');
-            //   }
-            // }
-
-            accountInfo.mosaics.map(n => n.id).forEach(id => {
-              const pushea = mosaicsIds.find(next => next.id.toHex() === id.toHex());
-              if (!pushea) {
-                mosaicsIds.push(id);
-              }
-            });
-          }
-
-          // this.mosaicServices.searchMosaics(mosaicsIds);
-          let isMultisig: MultisigAccountInfo = null;
-          try {
-            isMultisig = await this.proximaxProvider.getMultisigAccountInfo(this.proximaxProvider.createFromRawAddress(element.address)).toPromise();
-          } catch (error) {
-            isMultisig = null
-          }
-          const accountsInfo = [{
-            name: element.name,
-            accountInfo: accountInfo,
-            multisigInfo: isMultisig
-          }];
-
-          const publicAccount = this.proximaxProvider.createPublicAccount(element.publicAccount.publicKey, element.publicAccount.address.networkType);
-          this.walletService.changeIsMultiSign(element.name, isMultisig)
-          this.walletService.setAccountsInfo(accountsInfo, true);
-          counter = counter + 1;
-          if (accounts.length === counter && mosaicsIds.length > 0) {
-            this.mosaicServices.searchInfoMosaics(mosaicsIds);
-          }
-        }, error => {
-          counter = counter + 1;
-          if (accounts.length === i) {
-          }
-        }
-      );
-    });
-
-    // return accountsInfo;
-  }
-
-  /**
   *
   * @param publicsAccounts
   */
@@ -281,7 +215,7 @@ export class TransactionsService {
       });
     }
 
-    console.log('----TODAS LAS TRANSACCIONES AGREGADAS------', aggregateTransactions);
+    console.log('TRANSACCIONES AGREGADAS ===>', aggregateTransactions);
     this.setAggregateBondedTransactions$(aggregateTransactions);
   }
 
@@ -296,15 +230,19 @@ export class TransactionsService {
    * @memberof TransactionsService
    */
   amountFormatter(amountParam: UInt64 | number, mosaic: MosaicInfo, manualDivisibility = '') {
-    const divisibility = (manualDivisibility === '') ? mosaic['properties'].divisibility : manualDivisibility;
-    const amount = (typeof (amountParam) === 'number') ? amountParam : amountParam.compact();
-    const amountDivisibility = Number(
-      amount / Math.pow(10, divisibility)
-    );
+    console.log('---mosaic---', mosaic);
+    let amountFormatter = '';
+    if (mosaic !== null && mosaic !== undefined) {
+      const divisibility = (manualDivisibility === '') ? mosaic['properties'].divisibility : manualDivisibility;
+      const amount = (typeof (amountParam) === 'number') ? amountParam : amountParam.compact();
+      const amountDivisibility = Number(
+        amount / Math.pow(10, divisibility)
+      );
 
-    const amountFormatter = amountDivisibility.toLocaleString("en-us", {
-      minimumFractionDigits: divisibility
-    });
+      amountFormatter = amountDivisibility.toLocaleString("en-us", {
+        minimumFractionDigits: divisibility
+      });
+    }
     return amountFormatter;
   }
 
@@ -481,7 +419,7 @@ export class TransactionsService {
    *
    */
   getAggregateBondedTransactions$(): Observable<TransactionsInterface[]> {
-    return this.aggregateTransactions$;
+    return this._aggregateTransactions$;
   }
 
   /**
@@ -518,7 +456,7 @@ export class TransactionsService {
   * @memberof DashboardService
   */
   getTransactionsConfirmed$(): Observable<TransactionsInterface[]> {
-    return this._transConfirm$;
+    return this._confirmedTransactions$;
   }
 
   /**
@@ -527,8 +465,8 @@ export class TransactionsService {
    * @returns {Observable<TransactionsInterface[]>}
    * @memberof DashboardService
    */
-  getTransactionsUnConfirmed$(): Observable<TransactionsInterface[]> {
-    return this._transUnConfirm$;
+  getIncomingTransactions$(): Observable<TransactionsInterface[]> {
+    return this._incomingTransactions$;
   }
 
 
@@ -636,34 +574,23 @@ export class TransactionsService {
    * @param pushed
    */
   searchAccountsInfo(accounts: AccountsInterface[], pushed = false) {
-    console.log('\n\n =============== MY ACCOUNTS ============== \n\n', accounts);
     this.walletService.searchAccountsInfo(accounts).then(
       (data: { mosaicsIds: MosaicId[], accountsInfo: AccountsInfoInterface[] }) => {
-        console.log('data ===> ', data);
+        console.log('AccountsInfoInterface ===> ', data);
         const publicsAccounts: PublicAccount[] = [];
         data.accountsInfo.forEach((element: AccountsInfoInterface) => {
-          const publicAccount = this.proximaxProvider.createPublicAccount(element.accountInfo.publicKey, element.accountInfo.publicAccount.address.networkType);
+          const publicAccount = this.proximaxProvider.createPublicAccount(
+            element.accountInfo.publicKey,
+            element.accountInfo.publicAccount.address.networkType
+          );
           publicsAccounts.push(publicAccount);
-          /*if (element.multisigInfo && (element.multisigInfo.multisigAccounts.length > 0)) {
-            element.multisigInfo.multisigAccounts.forEach(x => {
-              if (publicsAccounts.length > 0) {
-                if (publicsAccounts.find(b => b.publicKey !== x.publicKey)) {
-                  const publicAccount = this.proximaxProvider.createPublicAccount(x.publicKey, x.address.networkType);
-                  publicsAccounts.push(publicAccount);
-                }
-              } else {
-                const publicAccount = this.proximaxProvider.createPublicAccount(x.publicKey, x.address.networkType);
-                publicsAccounts.push(publicAccount);
-              }
-            });
-          }*/
         });
 
-        console.log('----------publicsAccounts-----------', publicsAccounts);
+        // Search all transactions aggregate bonded from array publics accounts
         if (publicsAccounts.length > 0) {
-          // Search all transactions aggregate bonded from array publics accounts
           this.searchAggregateBonded(publicsAccounts);
         }
+
         this.updateBalance();
         if (data.mosaicsIds && data.mosaicsIds.length > 0) {
           this.mosaicServices.searchInfoMosaics(data.mosaicsIds)
@@ -677,7 +604,7 @@ export class TransactionsService {
    * @param transactions
    */
   setAggregateBondedTransactions$(transactions: TransactionsInterface[]) {
-    this.aggregateTransactions.next(transactions);
+    this._aggregateTransactionsSubject.next(transactions);
   }
 
   /**
@@ -697,7 +624,7 @@ export class TransactionsService {
    * @memberof DashboardService
    */
   setTransactionsConfirmed$(transactions: TransactionsInterface[]) {
-    this._transConfirmSubject.next(transactions);
+    this._confirmedTransactionsSubject.next(transactions);
   }
 
   /**
@@ -707,7 +634,7 @@ export class TransactionsService {
    * @memberof DashboardService
    */
   setTransactionsUnConfirmed$(transactions: TransactionsInterface[]) {
-    this._transUnConfirmSubject.next(transactions);
+    this._incomingTransactionsSubject.next(transactions);
   }
 
   /**

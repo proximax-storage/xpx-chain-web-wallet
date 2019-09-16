@@ -11,7 +11,9 @@ import { NamespacesService } from '../../servicesModule/services/namespaces.serv
 import { TransactionsService } from '../../transactions/services/transactions.service';
 import { ServicesModuleService } from '../../servicesModule/services/services-module.service';
 import { SharedService } from '../../shared/services/shared.service';
-import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
+import { ProximaxProvider } from '../../shared/services/proximax.provider';
+import { MosaicService } from '../../servicesModule/services/mosaic.service';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -34,7 +36,8 @@ export class AuthService {
     private transactionService: TransactionsService,
     private serviceModuleService: ServicesModuleService,
     private sharedService: SharedService,
-    private proximaxProvider: ProximaxProvider
+    private proximaxProvider: ProximaxProvider,
+    private mosaicService: MosaicService
   ) {
     this.setLogged(false);
   }
@@ -60,7 +63,7 @@ export class AuthService {
   * @memberof LoginService
   */
   async login(common: any, currentWallet: CurrentWalletInterface) {
-    this.walletService.destroyAll();
+    this.walletService.destroyDataWalletAccount();
     const currentAccount = Object.assign({}, currentWallet.accounts.find(elm => elm.default === true));
     let isValid = false;
     if (currentAccount) {
@@ -104,13 +107,12 @@ export class AuthService {
       address.push(this.proximaxProvider.createFromRawAddress(account.address));
     }
 
+    this.mosaicService.getMosaicXPX();
+    this.dataBridgeService.destroySubscriptions();
     this.dataBridgeService.searchTransactionStatus();
     this.namespaces.searchNamespacesFromAccounts(address);
     this.transactionService.searchAccountsInfo(this.walletService.currentWallet.accounts);
-    const blockchainHeight: UInt64 = await this.proximaxProvider.getBlockchainHeight().toPromise();
-    const BlockInfo : BlockInfo = await this.proximaxProvider.getBlockInfo().toPromise(); //Update-sdk-dragon
-    this.dataBridgeService.setblock(blockchainHeight.compact());
-    this.dataBridgeService.setblockInfo(BlockInfo); //Update-sdk-dragon
+    this.dataBridgeService.searchBlockInfo();
     return true;
   }
 
@@ -119,7 +121,7 @@ export class AuthService {
    *
    * @param {*} params
    * @memberof LoginService
-   */
+   **/
   setLogged(params: any) {
     this.logged = params;
     this.isLogged = params;

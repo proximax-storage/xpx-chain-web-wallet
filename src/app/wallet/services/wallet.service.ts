@@ -93,18 +93,18 @@ export class WalletService {
   getAccountMosaicsNis1() {
     return this.accountMosaicsNis1;
   }
-  
+
   /**
-   * 
-   * @param data 
+   *
+   * @param data
    */
   getNis1AccountSelected() {
     return this.nis1AccountSeleted;
   }
 
   /**
-   * 
-   * @param data 
+   *
+   * @param data
    */
   setNis1AccountSelected(account: any) {
     this.nis1AccountSeleted = account;
@@ -279,8 +279,7 @@ export class WalletService {
    *
    * @memberof WalletService
    */
-  destroyAll() {
-    // console.log('desteoty all');
+  destroyDataWalletAccount() {
     this.currentWallet = null;
     this.setCurrentAccount$(null);
     this.setAccountsInfo(null);
