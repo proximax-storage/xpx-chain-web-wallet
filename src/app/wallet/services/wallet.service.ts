@@ -44,71 +44,75 @@ export class WalletService {
   }
 
   /**
-   *
-   * @param data
-   */
-  setAccountInfoNis1(account: AccountsInterface) {
-    this.accountInfoNis1 = account;
+  *
+  * @param accounts
+  * @param pushed
+  */
+  async searchAccountsInfo(accounts: AccountsInterface[], pushed = false) {//: Promise<AccountsInfoInterface[]> {
+    let counter = 0;
+    const mosaicsIds: (NamespaceId | MosaicId)[] = [];
+    const accountsInfo: AccountsInfoInterface[] = [];
+    const promise = new Promise(async (resolve, reject) => {
+      accounts.forEach((element, i) => {
+        this.proximaxProvider.getAccountInfo(this.proximaxProvider.createFromRawAddress(element.address)).pipe(first()).subscribe(
+          async accountInfo => {
+            if (accountInfo) {
+              accountInfo.mosaics.map(n => n.id).forEach(id => {
+                const pushea = mosaicsIds.find(next => next.id.toHex() === id.toHex());
+                if (!pushea) {
+                  mosaicsIds.push(id);
+                }
+              });
+            }
+
+            // this.mosaicServices.searchMosaics(mosaicsIds);
+            let isMultisig: MultisigAccountInfo = null;
+            try {
+              isMultisig = await this.proximaxProvider.getMultisigAccountInfo(this.proximaxProvider.createFromRawAddress(element.address)).toPromise();
+            } catch (error) {
+              isMultisig = null
+            }
+
+            const accountInfoBuilded = {
+              name: element.name,
+              accountInfo: accountInfo,
+              multisigInfo: isMultisig
+            };
+
+            accountsInfo.push(accountInfoBuilded);
+            this.changeIsMultiSign(element.name, isMultisig)
+            this.setAccountsInfo([accountInfoBuilded], true);
+            counter = counter + 1;
+            if (accounts.length === counter && mosaicsIds.length > 0) {
+              resolve({
+                mosaicsId: mosaicsIds,
+                accountsInfo: accountsInfo
+              });
+            }
+          }, error => {
+            const accountInfoBuilded = {
+              name: element.name,
+              accountInfo: null,
+              multisigInfo: null
+            };
+
+            accountsInfo.push(accountInfoBuilded);
+            this.setAccountsInfo([accountInfoBuilded], true);
+            counter = counter + 1;
+            if (accounts.length === counter && mosaicsIds.length > 0) {
+              resolve({
+                mosaicsId: mosaicsIds,
+                accountsInfo: accountsInfo
+              });
+            }
+          }
+        );
+      });
+    });
+
+    return await promise;
   }
 
-  /**
-   *
-   * @param data
-   */
-  getAccountInfoNis1() {
-    return this.accountInfoNis1;
-  }
-
-  /**
-   *
-   * @param data
-   *
-   * @param accounts
-   */
-  setAccountInfoConsignerNis1(accounts: any) {
-    this.accountInfoConsignerNis1 = accounts;
-  }
-
-  /**
-   *
-   * @param data
-   */
-  getAccountInfoConsignerNis1() {
-    return this.accountInfoConsignerNis1;
-  }
-
-
-  /**
-   *
-   * @param data
-   */
-  setAccountMosaicsNis1(mosaic: any) {
-    this.accountMosaicsNis1 = mosaic;
-  }
-
-  /**
-   *
-   * @param data
-   */
-  getAccountMosaicsNis1() {
-    return this.accountMosaicsNis1;
-  }
-
-  /**
-   *
-   * @param data
-   */
-  getNis1AccountSelected() {
-    return this.nis1AccountSeleted;
-  }
-
-  /**
-   *
-   * @param data
-   */
-  setNis1AccountSelected(account: any) {
-    this.nis1AccountSeleted = account;
-  }
 
   /**
    *
@@ -246,7 +250,7 @@ export class WalletService {
             });
 
             console.log('\n\n---ACOUNT BUILDED---', accountBuilded);
-            this.saveAccountStorage(accountBuilded);
+            this.saveAccountWalletStorage(accountBuilded);
           }
         });
       }
@@ -289,13 +293,10 @@ export class WalletService {
    *
    *
    * @param {*} common
-   * @param {*} [account='']
-   * @param {*} [algo='']
-   * @param {*} [network='']
+   * @param {AccountsInterface} [account=null]
    * @returns
    * @memberof WalletService
    */
-
   decrypt(common: any, account: AccountsInterface = null) {
     const acct = (account) ? account : this.currentAccount;
     const net = (account) ? account.network : this.currentAccount.network;
@@ -327,6 +328,7 @@ export class WalletService {
     // this.accountInfoSubject.next(null);
   }
 
+
   /**
    *
    *
@@ -346,14 +348,36 @@ export class WalletService {
           }
         });
 
-        return found;
         // return this.accountsInfo.find(next => (next.accountInfo) ? next.accountInfo.address.pretty() === account : []);
+        return found;
       }
 
       if (account) {
         return this.accountsInfo.find(next => next.name === account);
+      }
+
+      return this.accountsInfo.find(next => next.name === this.currentAccount.name);
+    }
+
+    return null;
+  }
+
+  /**
+   *
+   *
+   * @param {string} byName
+   * @param {boolean} [byDefault=null]
+   * @returns
+   * @memberof WalletService
+   */
+  filterAccountWallet(byName: string = '', byDefault: boolean = null, byAddress = ''): AccountsInterface {
+    if (this.currentWallet && this.currentWallet.accounts && this.currentWallet.accounts.length > 0) {
+      if (byDefault !== null && byName === '') {
+        return this.currentWallet.accounts.find(elm => elm.default === true);
+      } else if (byName !== '') {
+        return this.currentWallet.accounts.find(elm => elm.name === byName);
       } else {
-        return this.accountsInfo.find(next => next.name === this.currentAccount.name);
+        return this.currentWallet.accounts.find(elm => this.proximaxProvider.createFromRawAddress(elm.address).pretty() === byAddress);
       }
     }
 
@@ -396,6 +420,39 @@ export class WalletService {
   }
 
   /**
+   *
+   * @param data
+   */
+  getAccountInfoNis1() {
+    return this.accountInfoNis1;
+  }
+
+  /**
+   *
+   * @param data
+   */
+  getAccountInfoConsignerNis1() {
+    return this.accountInfoConsignerNis1;
+  }
+
+
+  /**
+   *
+   * @param data
+   */
+  getAccountMosaicsNis1() {
+    return this.accountMosaicsNis1;
+  }
+
+  /**
+   *
+   * @param data
+   */
+  getNis1AccountSelected() {
+    return this.nis1AccountSeleted;
+  }
+
+  /**
   *
   *
   * @returns {CurrentWalletInterface}
@@ -423,13 +480,14 @@ export class WalletService {
     return this.currentAccountObs$;
   }
 
+
   /**
    *
    *
    * @returns
    * @memberof WalletService
    */
-  getWalletStorage() {
+  getWalletStorage(): WalletAccountInterface[] {
     let walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
     if (walletsStorage === undefined || walletsStorage === null) {
       localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify([]));
@@ -441,27 +499,77 @@ export class WalletService {
   /**
    *
    *
+   * @param {any} privateKey
+   * @returns
+   * @memberof WalletService
+   */
+  isPrivateKeyValid(privateKey: any) {
+    if (privateKey.length !== 64 && privateKey.length !== 66) {
+      // console.error('Private key length must be 64 or 66 characters !');
+      return false;
+    } else if (!this.isHexadecimal(privateKey)) {
+      // console.error('Private key must be hexadecimal only !');
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  /**
+   * Verify if a string is hexadecimal
+   * by: roimerj_vzla
+   *
+   * @param {any} str
+   * @returns
+   * @memberof WalletService
+   */
+  isHexadecimal(str: { match: (arg0: string) => any; }) {
+    return str.match('^(0x|0X)?[a-fA-F0-9]+$') !== null;
+  }
+
+  /**
+   *
+   *
+   * @param {string} account
+   * @memberof WalletService
+   */
+  removeAccountWallet(account: string) {
+    const myAccounts: AccountsInterface[] = Object.assign(this.currentWallet.accounts);
+    // console.log('=== myAccounts ===', myAccounts);
+    const othersAccount = myAccounts.filter(x => this.proximaxProvider.createFromRawAddress(x.address).pretty() !== account);
+    // console.log('==== othersAccount ====', othersAccount);
+    this.currentWallet.accounts = othersAccount;
+    // console.log('==== currentWallet ====', this.currentWallet);
+    this.saveAccountWalletStorage(null, this.currentWallet);
+  }
+
+  /**
+   *
+   *
    * @param {string} nameWallet
    * @param {*} accountsParams
    * @memberof WalletService
    */
-  saveAccountStorage(accountsParams: AccountsInterface) {
-    const myAccounts = Object.assign(this.currentWallet.accounts);
-    const othersWallet = this.getWalletStorage().filter(
-      (element: any) => {
-        return element.name !== this.currentWallet.name;
-      }
-    );
-
-    myAccounts.push(accountsParams)
-    this.currentWallet.accounts = myAccounts;
-    othersWallet.push({
-      name: this.currentWallet.name,
-      accounts: myAccounts
+  saveAccountWalletStorage(accountsParams: AccountsInterface, replaceWallet?: WalletAccountInterface) {
+    const othersWallet = this.getWalletStorage().filter((element: WalletAccountInterface) => {
+      return element.name !== this.currentWallet.name;
     });
 
+    if (accountsParams) {
+      const myAccounts = Object.assign(this.currentWallet.accounts);
+      myAccounts.push(accountsParams)
+      this.currentWallet.accounts = myAccounts;
+      othersWallet.push({
+        name: this.currentWallet.name,
+        accounts: myAccounts
+      });
 
-    localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(othersWallet));
+      localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(othersWallet));
+    } else if (replaceWallet) {
+      othersWallet.push(replaceWallet);
+      // console.log('=== othersWallet === ', othersWallet);
+      localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(othersWallet));
+    }
   }
 
 
@@ -500,69 +608,38 @@ export class WalletService {
 
 
   /**
+    *
+    * @param data
+    */
+  setNis1AccountSelected(account: any) {
+    this.nis1AccountSeleted = account;
+  }
+
+
+  /**
+   *
+   * @param data
+   */
+  setAccountMosaicsNis1(mosaic: any) {
+    this.accountMosaicsNis1 = mosaic;
+  }
+
+  /**
+   *
+   * @param data
+   */
+  setAccountInfoNis1(account: AccountsInterface) {
+    this.accountInfoNis1 = account;
+  }
+
+  /**
+   *
+   * @param data
    *
    * @param accounts
-   * @param pushed
    */
-  async searchAccountsInfo(accounts: AccountsInterface[], pushed = false) {//: Promise<AccountsInfoInterface[]> {
-    let counter = 0;
-    const mosaicsIds: (NamespaceId | MosaicId)[] = [];
-    const accountsInfo: AccountsInfoInterface[] = [];
-    const promise = new Promise(async (resolve, reject) => {
-      accounts.forEach((element, i) => {
-        this.proximaxProvider.getAccountInfo(this.proximaxProvider.createFromRawAddress(element.address)).pipe(first()).subscribe(
-          async accountInfo => {
-            if (accountInfo) {
-              accountInfo.mosaics.map(n => n.id).forEach(id => {
-                const pushea = mosaicsIds.find(next => next.id.toHex() === id.toHex());
-                if (!pushea) {
-                  mosaicsIds.push(id);
-                }
-              });
-            }
-
-            // this.mosaicServices.searchMosaics(mosaicsIds);
-            let isMultisig: MultisigAccountInfo = null;
-            try {
-              isMultisig = await this.proximaxProvider.getMultisigAccountInfo(this.proximaxProvider.createFromRawAddress(element.address)).toPromise();
-            } catch (error) {
-              isMultisig = null
-            }
-            const accountInfoBuilded = {
-              name: element.name,
-              accountInfo: accountInfo,
-              multisigInfo: isMultisig
-            };
-
-            accountsInfo.push(accountInfoBuilded);
-            this.changeIsMultiSign(element.name, isMultisig)
-            this.setAccountsInfo([accountInfoBuilded], true);
-            counter = counter + 1;
-            if (accounts.length === counter && mosaicsIds.length > 0) {
-              resolve({
-                mosaicsId: mosaicsIds,
-                accountsInfo: accountsInfo
-              });
-            }
-          }, error => {
-            const accountsInfo = [{
-              name: element.name,
-              accountInfo: null,
-              multisigInfo: null
-            }];
-
-            this.setAccountsInfo(accountsInfo, true);
-
-            counter = counter + 1;
-            if (accounts.length === counter && mosaicsIds.length > 0) {
-              resolve(mosaicsIds);
-            }
-          }
-        );
-      });
-    });
-
-    return await promise;
+  setAccountInfoConsignerNis1(accounts: any) {
+    this.accountInfoConsignerNis1 = accounts;
   }
 
   /**
@@ -593,6 +670,25 @@ export class WalletService {
    */
   setCurrentAccount$(currentAccount: AccountsInterface) {
     this.currentAccountObs.next(currentAccount);
+  }
+
+  /**
+   *Set a wallet as current
+   *
+   * @param {*} wallet
+   * @returns
+   * @memberof WalletService
+   */
+  use(wallet: any) {
+    if (!wallet) {
+      this.sharedService.showError('', 'You can not set anything like the current wallet');
+      return false;
+    }
+
+    this.currentWallet = wallet;
+    this.currentAccount = this.getAccountDefault(wallet);
+    this.setCurrentAccount$(this.currentAccount);
+    return true;
   }
 
   /**
@@ -633,98 +729,42 @@ export class WalletService {
     }
   }
 
-
-  /**************************************************************************************************/
-
-
-  /**
-   *Set a wallet as current
-   *
-   * @param {*} wallet
-   * @returns
-   * @memberof WalletService
-   */
-  use(wallet: any) {
-    if (!wallet) {
-      this.sharedService.showError('', 'You can not set anything like the current wallet');
-      return false;
-    }
-
-    this.currentWallet = wallet;
-    this.currentAccount = this.getAccountDefault(wallet);
-    this.setCurrentAccount$(this.currentAccount);
-    return true;
-  }
-
-
-
   /**
    *
    *
-   * @param {any} privateKey
-   * @returns
+   * @param {AccountsInfoInterface[]} accountsInfo
+   * @param {AccountsInterface[]} accounts
    * @memberof WalletService
    */
-  isPrivateKeyValid(privateKey: any) {
-    if (privateKey.length !== 64 && privateKey.length !== 66) {
-      // console.error('Private key length must be 64 or 66 characters !');
-      return false;
-    } else if (!this.isHexadecimal(privateKey)) {
-      // console.error('Private key must be hexadecimal only !');
-      return false;
-    } else {
-      return true;
-    }
-  }
-
-  /**
-   * Verify if a string is hexadecimal
-   * by: roimerj_vzla
-   *
-   * @param {any} str
-   * @returns
-   * @memberof WalletService
-   */
-  isHexadecimal(str: { match: (arg0: string) => any; }) {
-    return str.match('^(0x|0X)?[a-fA-F0-9]+$') !== null;
-  }
-
-
-  /**
-   *
-   *
-   * @param {string} byName
-   * @param {boolean} [byDefault=null]
-   * @returns
-   * @memberof WalletService
-   */
-  filterAccount(byName: string = '', byDefault: boolean = null, byAddress = ''): AccountsInterface {
-    if (this.currentWallet && this.currentWallet.accounts && this.currentWallet.accounts.length > 0){
-      if (byDefault !== null && byName === '') {
-        return this.currentWallet.accounts.find(elm => elm.default === true);
-      } else if (byName !== '') {
-        return this.currentWallet.accounts.find(elm => elm.name === byName);
+  validateMultisigAccount(accounts: AccountsInterface[]) {
+    // console.log('----LA DATA QUE RECIBO-----> ', accounts);
+    accounts.forEach(account => {
+      let remove = true;
+      // console.log('====account====', account);
+      if (account.encrypted === '') {
+        // console.log('PROCESO DE VERIFICACION');
+        if (account.isMultisign !== null) {
+          if (account.isMultisign.cosignatories.length > 0) {
+            account.isMultisign.cosignatories.forEach(cosignatorie => {
+             // console.log('==== COSIGNATARIOS ====', cosignatorie);
+              const exist = this.filterAccountWallet('', null, cosignatorie.address.pretty());
+              // console.log('==== EXISTE? ====', exist);
+              if (exist) {
+                remove = false;
+              }
+            });
+          }
+        }
       } else {
-        return this.currentWallet.accounts.find(elm => this.proximaxProvider.createFromRawAddress(elm.address).pretty() === byAddress);
+        remove = false;
       }
-    }
 
-    return null;
+      if (remove) {
+        // console.log('==== REMOVER ====', account);
+        this.removeAccountWallet(this.proximaxProvider.createFromRawAddress(account.address).pretty());
+      }
+    });
   }
-
-  /**
-   * Set account info
-   *
-   * @param {AccountInfo} accountInfo
-   * @memberof WalletService
-   */
-  setAccountInfo(accountInfo: AccountInfo) {
-    // this.accountInfo = accountInfo
-    // this.accountInfoSubject.next(accountInfo);
-  }
-
-
-
 }
 
 export interface CurrentWalletInterface {

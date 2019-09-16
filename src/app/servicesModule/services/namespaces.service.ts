@@ -188,10 +188,10 @@ export class NamespacesService {
    * @memberof NamespacesService
    */
   async saveNamespaceStorage(namespaceInfo: NamespaceInfo[]) {
-    console.log('----namespaceInfo----', namespaceInfo);
+    // console.log('----namespaceInfo----', namespaceInfo);
     const namespacesStorage: NamespaceStorageInterface[] = this.getNamespacesStorage();
     const names = await this.proximaxProvider.namespaceHttp.getNamespacesName(namespaceInfo.map(x => x.id)).toPromise();
-    console.log('----names---', names);
+    // console.log('----names---', names);
     const namespacesFound: NamespaceStorageInterface[] = [];
     for (let info of namespaceInfo) {
       namespacesFound.push({

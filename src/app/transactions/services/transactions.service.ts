@@ -574,16 +574,19 @@ export class TransactionsService {
    * @param pushed
    */
   searchAccountsInfo(accounts: AccountsInterface[], pushed = false) {
+    console.log('ACCOUNTS INTERFACE ---> ', accounts);
     this.walletService.searchAccountsInfo(accounts).then(
       (data: { mosaicsIds: MosaicId[], accountsInfo: AccountsInfoInterface[] }) => {
-        console.log('AccountsInfoInterface ===> ', data);
+
+        this.walletService.validateMultisigAccount(accounts);
+
+
         const publicsAccounts: PublicAccount[] = [];
         data.accountsInfo.forEach((element: AccountsInfoInterface) => {
-          const publicAccount = this.proximaxProvider.createPublicAccount(
+          publicsAccounts.push(this.proximaxProvider.createPublicAccount(
             element.accountInfo.publicKey,
             element.accountInfo.publicAccount.address.networkType
-          );
-          publicsAccounts.push(publicAccount);
+          ));
         });
 
         // Search all transactions aggregate bonded from array publics accounts
@@ -595,9 +598,11 @@ export class TransactionsService {
         if (data.mosaicsIds && data.mosaicsIds.length > 0) {
           this.mosaicServices.searchInfoMosaics(data.mosaicsIds)
         }
+
       }
     ).catch(error => console.log(error));
   }
+
 
   /**
    *

@@ -43,14 +43,18 @@ export class DataBridgeService {
 
 
 
-  /**
-   *
-   */
+
   async searchBlockInfo() {
-    const blockchainHeight: UInt64 = await this.proximaxProvider.getBlockchainHeight().toPromise();
-    const BlockInfo: BlockInfo = await this.proximaxProvider.getBlockInfo().toPromise(); //Update-sdk-dragon
-    this.setblock(blockchainHeight.compact());
-    this.setblockInfo(BlockInfo); //Update-sdk-dragon
+    this.proximaxProvider.getBlockchainHeight().subscribe(
+      (blockchainHeight: UInt64) => {
+        this.proximaxProvider.getBlockInfo().subscribe(
+          (BlockInfo: BlockInfo) => {
+            this.setblock(blockchainHeight.compact());
+            this.setblockInfo(BlockInfo);
+          }
+        );
+      }
+    );
   }
 
   /**
@@ -456,7 +460,6 @@ export class DataBridgeService {
    * @memberof DataBridgeService
    */
   setTransactionStatus(value: any) {
-    console.log('SET TRANSACTION STATUS');
     return this.transactionSubject.next(value);
   }
 }

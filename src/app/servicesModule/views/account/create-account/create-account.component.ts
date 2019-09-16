@@ -210,7 +210,7 @@ export class CreateAccountComponent implements OnInit {
       network: newAccount.network,
       fromPrivateKey: this.fromPrivateKey
     }, accountBuilded, newAccount);
-    this.walletService.saveAccountStorage(accountBuilded);
+    this.walletService.saveAccountWalletStorage(accountBuilded);
     this.serviceModuleService.saveContacts({ name: nameAccount, address: accountBuilded.address, walletContact: true, nameItem: '' });
     this.dataBridgeService.closeConenection();
     this.dataBridgeService.connectnWs();
