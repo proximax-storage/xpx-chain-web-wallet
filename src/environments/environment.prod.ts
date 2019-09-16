@@ -20,6 +20,9 @@ export const environment = {
     name: 'prx.xpx',
     coin: 'XPX',
     id: '3c0f3de5298ced2d',
+    mosaicIdUint64: [697101613, 1007631845],
+    namespaceIdUint64: [2434186742, 3220914849],
+    namespaceId: 'bffb42a19116bdf6',
     divisibility: 6
   },
   blockchainConnection: {

@@ -3,7 +3,9 @@ import {
   MosaicInfo,
   MosaicId,
   MosaicView,
-  NamespaceId
+  NamespaceId,
+  NamespaceName,
+  UInt64
 } from "tsjs-xpx-chain-sdk";
 import { MosaicNames } from "tsjs-xpx-chain-sdk/dist/src/model/mosaic/MosaicNames";
 import { ProximaxProvider } from "../../shared/services/proximax.provider";
@@ -107,47 +109,75 @@ export class MosaicService {
    */
   async searchInfoMosaics(mosaicsId: MosaicId[]): Promise<MosaicsStorage[]> {
     try {
-      let findMosaicsByNamespace: (MosaicId | NamespaceId)[] = [];
       let mosaicsTosaved: MosaicsStorage[] = [];
-      // le paso todos los mosaicsIds a la consulta
-      let mosaicsFound: MosaicInfo[] = await this.proximaxProvider.getMosaics(mosaicsId).toPromise();
-      // Recorro los mosaics Ids
-      mosaicsId.forEach(element => {
-        // Filtra si el mosaico id fue encontrado
-        const existMosaic = mosaicsFound.find(x => x.mosaicId.id.toHex() === element.id.toHex());
-        if (!existMosaic) {
-          // Si no fue encontrado, busca mosaicos por namespace
-          findMosaicsByNamespace.push(element);
-        }
-      });
-
-      // Search mosaics by namespace Id
-      if (findMosaicsByNamespace.length > 0) {
-        // busca los namespaceId de los mosaicos que no fueron encontrados
-        const otherMosaics = await this.searchMosaicFromNamespace(findMosaicsByNamespace);
-        otherMosaics.forEach(element => {
-          mosaicsTosaved.push(element);
-        });
+      let mosaicXPX = mosaicsId.find(next => next.id.toHex() === environment.mosaicXpxInfo.id);
+      if (!mosaicXPX) {
+        mosaicXPX = mosaicsId.find(next => next.id.toHex() === environment.mosaicXpxInfo.namespaceId);
       }
 
+      /* if (mosaicXPX) {
+         mosaicsId = mosaicsId.filter(a => a.id.toHex() !== mosaicXPX.id.toHex());
+         mosaicsTosaved.push({
+           idMosaic: [697101613, 1007631845],
+           isNamespace: [2434186742, 3220914849],
+           mosaicNames: new MosaicNames(
+             this.proximaxProvider.getMosaicId([697101613, 1007631845]),
+             [new NamespaceName(
+               this.proximaxProvider.getNamespaceId([2434186742, 3220914849]),
+               'prx.xpx'
+             )]
+           ), mosaicInfo: new MosaicInfo(
+             metaId: "5D53D7848F336612752B5A79",
+             mosaicId: this.proximaxProvider.getMosaicId([697101613, 1007631845]),
+             supply: new UInt64([697101613, 1007631845]),
+             height: new UInt64([1,0]),
+             owner: this.proximaxProvider.createPublicAccount("FC0DB0BEA2C251459117EAF15067AA04AAA62D3F0A59BAE934FFBFCD35AEC87B", ),
 
-      if (mosaicsFound.length > 0) {
-        const mosaicsName: MosaicNames[] = await this.getMosaicsName(mosaicsId);
-        mosaicsFound.forEach(infoMosaic => {
-          mosaicsTosaved.push({
-            idMosaic: [infoMosaic.mosaicId.id.lower, infoMosaic.mosaicId.id.higher],
-            isNamespace: null,
-            mosaicNames: (mosaicsName) ? mosaicsName.find(x => x.mosaicId.toHex() === infoMosaic.mosaicId.toHex()) : null,
-            mosaicInfo: infoMosaic
-          });
+           )
+         });
+       }*/
+
+      if (mosaicsId.length > 0) {
+        let findMosaicsByNamespace: (MosaicId | NamespaceId)[] = [];
+        // le paso todos los mosaicsIds a la consulta
+        let mosaicsFound: MosaicInfo[] = await this.proximaxProvider.getMosaics(mosaicsId).toPromise();
+        // Recorro los mosaics Ids
+        mosaicsId.forEach(element => {
+          // Filtra si el mosaico id fue encontrado
+          const existMosaic = mosaicsFound.find(x => x.mosaicId.id.toHex() === element.id.toHex());
+          if (!existMosaic) {
+            // Si no fue encontrado, busca mosaicos por namespace
+            findMosaicsByNamespace.push(element);
+          }
         });
+
+        // Search mosaics by namespace Id
+        if (findMosaicsByNamespace.length > 0) {
+          // busca los namespaceId de los mosaicos que no fueron encontrados
+          const otherMosaics = await this.searchMosaicFromNamespace(findMosaicsByNamespace);
+          otherMosaics.forEach(element => {
+            mosaicsTosaved.push(element);
+          });
+        }
+
+
+        if (mosaicsFound.length > 0) {
+          const mosaicsName: MosaicNames[] = await this.getMosaicsName(mosaicsId);
+          mosaicsFound.forEach(infoMosaic => {
+            mosaicsTosaved.push({
+              idMosaic: [infoMosaic.mosaicId.id.lower, infoMosaic.mosaicId.id.higher],
+              isNamespace: null,
+              mosaicNames: (mosaicsName) ? mosaicsName.find(x => x.mosaicId.toHex() === infoMosaic.mosaicId.toHex()) : null,
+              mosaicInfo: infoMosaic
+            });
+          });
+        }
       }
 
       this.saveMosaicStorage(mosaicsTosaved);
       return mosaicsTosaved;
     } catch (error) { }
   }
-
 
   /**
    *

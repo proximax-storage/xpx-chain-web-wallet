@@ -5,7 +5,7 @@ import { Listener, Transaction, TransactionStatus, CosignatureSignedTransaction,
 import { environment } from '../../../environments/environment';
 import { NodeService } from '../../servicesModule/services/node.service';
 import { SharedService } from './shared.service';
-import { WalletService } from '../../wallet/services/wallet.service';
+import { WalletService, CurrentWalletInterface } from '../../wallet/services/wallet.service';
 import { TransactionsInterface, TransactionsService } from '../../transactions/services/transactions.service';
 import { ProximaxProvider } from './proximax.provider';
 import { NamespacesService } from 'src/app/servicesModule/services/namespaces.service';
@@ -17,7 +17,7 @@ export class DataBridgeService {
   block: number;
   url: any
   connector: Listener;
-  currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
+  currentWallet: CurrentWalletInterface = null;
   destroyConection = false;
   blockSubject: BehaviorSubject<number> = new BehaviorSubject<number>(this.block);
   blockInfo: BlockInfo;
@@ -53,6 +53,7 @@ export class DataBridgeService {
   connectnWs(node?: string) {
     const route = (node === undefined) ? this.nodeService.getNodeSelected() : node;
     this.url = `${environment.protocolWs}://${route}`;
+    this.currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
     this.connector = new Listener(this.url, WebSocket);
     this.destroyConection = false;
     this.openConnection();
@@ -136,8 +137,8 @@ export class DataBridgeService {
         const audio = new Audio('assets/audio/ding.ogg');
         const audio2 = new Audio('assets/audio/ding2.ogg');
         this.getSocketTransactionsAggreateBonded(this.connector, audio2);
-        //this.getSocketTransactionsConfirmed(this.connector, audio2);
-        //this.getSocketTransactionsUnConfirmed(this.connector, audio);
+        this.getSocketTransactionsConfirmed(this.connector, audio2);
+        this.getSocketTransactionsUnConfirmed(this.connector, audio);
         this.getSocketStatusError(this.connector, audio);
         this.getBlockSocket(this.connector);
       }, (error) => {
@@ -204,9 +205,9 @@ export class DataBridgeService {
    */
   getSocketTransactionsAggreateBonded(connector: Listener, audio: HTMLAudioElement) {
     this.currentWallet.accounts.forEach(element => {
-      const address = this.proximaxProvider.createFromRawAddress(element.address);
-      connector.aggregateBondedAdded(address).subscribe((aggregateBondedAdded: Transaction) => {
-        console.log('CONNECTED --> ', address);
+      console.log('\n\n CONECTAR A ---> ', element, '\n\n');
+      connector.aggregateBondedAdded(this.proximaxProvider.createFromRawAddress(element.address)).subscribe((aggregateBondedAdded: Transaction) => {
+        console.log('CONNECTED --> ', element.address);
         console.log('New transaction AggregateBondedAdded--> ', aggregateBondedAdded);
         this.setTransactionStatus({
           'type': 'aggregateBondedAdded',
