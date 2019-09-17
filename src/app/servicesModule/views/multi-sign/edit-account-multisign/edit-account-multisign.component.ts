@@ -9,7 +9,7 @@ import { MultiSignService } from 'src/app/servicesModule/services/multi-sign.ser
 import { ServicesModuleService } from 'src/app/servicesModule/services/services-module.service';
 import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
 import { NodeService } from 'src/app/servicesModule/services/node.service';
-import { TransactionsService } from 'src/app/transactions/services/transactions.service';
+import { TransactionsService, TransactionsInterface } from 'src/app/transactions/services/transactions.service';
 import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
 import { environment } from 'src/environments/environment';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -53,6 +53,7 @@ export class EditAccountMultisignComponent implements OnInit {
   consginerFirmName: string;
   consginerFirmAccount: any;
   subscribeAccountContat: Subscription;
+  disable: boolean;
 
   constructor(
 
@@ -200,8 +201,11 @@ export class EditAccountMultisignComponent implements OnInit {
     this.listContact = this.booksAddress().filter(item => item.label !== this.currentAccountToConvert.name)
     this.subscribeAccount = this.walletService.getAccountsInfo$().subscribe(
       async accountInfo => {
+
+
+        this.getAggregateBondedTransactionsValidate()
         // this.accountInfo = this.walletService.filterAccountInfo(name);
-        this.validateAccount(name)
+
       });
     // this.clearData();
   }
@@ -210,7 +214,7 @@ export class EditAccountMultisignComponent implements OnInit {
    *
    * @param name
    */
-  validateAccount(name: string) {
+  validateAccount(name: string, disable: boolean) {
     this.mdbBtnAddCosignatory = true;
     this.accountInfo = this.walletService.filterAccountInfo(name);
     this.accountValid = (
@@ -235,7 +239,9 @@ export class EditAccountMultisignComponent implements OnInit {
     if (!this.accountInfo.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id))
       return this.sharedService.showError('Attention', 'Insufficient balance');
 
-    if (this.hasCosigner()) {
+
+
+    if (this.hasCosigner() && !this.disable) {
       this.publicAccountToConvert = PublicAccount.createFromPublicKey(this.currentAccountToConvert.publicAccount.publicKey, this.currentAccountToConvert.network)
       // this.getCosignerFirm()
       this.mdbBtnAddCosignatory = false;
@@ -246,6 +252,34 @@ export class EditAccountMultisignComponent implements OnInit {
       this.editAccountMultsignForm.disable();
       this.isDisabledList = true;
     }
+
+
+
+
+  }
+  // TransactionType.MODIFY_MULTISIG_ACCOUNT
+
+  getAggregateBondedTransactionsValidate() {
+    this.disable = false
+    this.transactionService.getAggregateBondedTransactions$().subscribe((transactions: TransactionsInterface[]) => {
+      for (let index = 0; index < transactions.length; index++) {
+
+        for (let i = 0; i < transactions[index].data['innerTransactions'].length; i++) {
+          // if (transactions[index].data.type === 16961) {
+            console.log("punlib kley:",transactions[index].data['innerTransactions'][i].signer.publicKey)
+          this.disable = (transactions[index].data['innerTransactions'][i].signer.publicKey === this.currentAccountToConvert.publicAccount.publicKey);
+
+          console.log(this.disable)
+          if (this.disable)
+            break
+        }
+        if (this.disable)
+          break
+      }
+      // }
+      this.validateAccount(this.activateRoute.snapshot.paramMap.get('name'), this.disable)
+    });
+
   }
 
   hasCosigner(): boolean {
