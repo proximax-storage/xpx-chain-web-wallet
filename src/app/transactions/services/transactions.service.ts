@@ -121,11 +121,12 @@ export class TransactionsService {
 
 
   constructor(
-    private proximaxProvider: ProximaxProvider,
-    public nodeService: NodeService,
-    private walletService: WalletService,
     private mosaicServices: MosaicService,
-    private namespaceService: NamespacesService
+    private namespaceService: NamespacesService,
+    public nodeService: NodeService,
+    private proximaxProvider: ProximaxProvider,
+    private walletService: WalletService
+
   ) {
     this.monitorNewAccounts();
   }
@@ -215,7 +216,7 @@ export class TransactionsService {
       });
     }
 
-    console.log('TRANSACCIONES AGREGADAS ===>', aggregateTransactions);
+    console.log('=== TRANSACCIONES AGREGADAS ===', aggregateTransactions);
     this.setAggregateBondedTransactions$(aggregateTransactions);
   }
 

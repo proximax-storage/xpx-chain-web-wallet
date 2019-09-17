@@ -284,7 +284,7 @@ export class WalletService {
               isMultisign: null,
               iv: '',
               network: multisigAccount.address.networkType,
-              nameAccount: `MULTIFIRMA-${multisigAccount.address.plain().slice(36, 40)}`,
+              nameAccount: `MULTISIG-${multisigAccount.address.plain().slice(36, 40)}`,
               publicAccount: multisigAccount,
             });
 
