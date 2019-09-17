@@ -107,7 +107,6 @@ export class AuthService {
     }
 
     this.mosaicService.getMosaicXPX();
-    this.dataBridgeService.destroySubscriptions();
     this.dataBridgeService.searchTransactionStatus();
     this.namespaces.searchNamespacesFromAccounts(address);
     this.transactionService.searchAccountsInfo(this.walletService.currentWallet.accounts);

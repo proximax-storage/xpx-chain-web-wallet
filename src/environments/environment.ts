@@ -1,5 +1,4 @@
 import { ServerConfig, NetworkTypes } from 'nem-library';
-
 // This file can be replaced during build by using the `fileReplacements` array.
 // `ng build ---prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
@@ -13,6 +12,7 @@ export const environment = {
   nameKeyNodeStorage: `sw-nodes-03`,
   nameKeyNamespaces: `sw-namespaces-02`,
   nameKeyMosaicStorage: `sw-mosaics-02`,
+  nameKeyVersion: 'sw-version',
   protocol: `https`,
   protocolWs: `wss`,
   nodeDefault: 'bctestnet.xpxsirius.io:443',
