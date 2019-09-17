@@ -12,6 +12,7 @@ export const environment = {
   nameKeyNodeStorage: `sw-nodes-03`,
   nameKeyNamespaces: `sw-namespaces-01`,
   nameKeyMosaicStorage: `sw-mosaics-01`,
+  nameKeyVersion: 'sw-version',
   protocol: `https`,
   protocolWs: `wss`,
   nodeDefault: 'bctestnet.xpxsirius.io:443',

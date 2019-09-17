@@ -62,7 +62,7 @@ export class NodeService {
     };
     // validates if a selected node exists in the storage
     const constSelectedStorage = this.getNodeSelected();
-    const nodeSelected = (constSelectedStorage === null) ? this.listNodes[0] : constSelectedStorage;
+    const nodeSelected = (constSelectedStorage === null || constSelectedStorage === '') ? this.listNodes[0] : constSelectedStorage;
     // creates a new observable
     this.nodeObsSelected = new BehaviorSubject<any>(nodeSelected);
     // Start the subscription function to the selected node.
