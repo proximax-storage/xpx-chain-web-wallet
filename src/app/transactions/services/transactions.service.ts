@@ -121,12 +121,11 @@ export class TransactionsService {
 
 
   constructor(
-    private mosaicServices: MosaicService,
-    private namespaceService: NamespacesService,
-    public nodeService: NodeService,
     private proximaxProvider: ProximaxProvider,
-    private walletService: WalletService
-
+    public nodeService: NodeService,
+    private walletService: WalletService,
+    private mosaicServices: MosaicService,
+    private namespaceService: NamespacesService
   ) {
     this.monitorNewAccounts();
   }
@@ -216,7 +215,7 @@ export class TransactionsService {
       });
     }
 
-    console.log('=== TRANSACCIONES AGREGADAS ===', aggregateTransactions);
+    console.log('TRANSACCIONES AGREGADAS ===>', aggregateTransactions);
     this.setAggregateBondedTransactions$(aggregateTransactions);
   }
 
@@ -570,7 +569,6 @@ export class TransactionsService {
 
   /**
    *
-   *
    * @memberof TransactionsService
    */
   monitorNewAccounts() {
@@ -586,8 +584,6 @@ export class TransactionsService {
 
   /**
    * Search all account information
-   * Returns an arrangement with all mosaic ids found and all account information
-   * @param accounts
    * @param pushed
    */
   searchAccountsInfo(accounts: AccountsInterface[]) {
@@ -619,7 +615,6 @@ export class TransactionsService {
 
       }
     ).catch(error => console.log(error));
-
   }
 
 
@@ -634,8 +629,8 @@ export class TransactionsService {
         const pushTransactions = [];
         if (transactionsSaved.length > 0) {
           for (let element of transactions) {
-            const exist = transactionsSaved.find(x=> x.data['transactionInfo'].hash === element.data['transactionInfo'].hash);
-            if (!exist){
+            const exist = transactionsSaved.find(x => x.data['transactionInfo'].hash === element.data['transactionInfo'].hash);
+            if (!exist) {
               pushTransactions.push(element);
             }
           }

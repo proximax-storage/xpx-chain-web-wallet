@@ -34,7 +34,7 @@ export class EditAccountMultisignComponent implements OnInit {
   minApprovaMinLength: number = 1;
   currentAccount: any;
   currentAccountToConvert: AccountsInterface;
-  subscribeAccount = null;
+  subscribeAccount: Subscription[] = [];
   accountInfo: AccountsInfoInterface = null;
   accountEditSign: Account;
   accountToConvertSign: Account;
@@ -54,6 +54,7 @@ export class EditAccountMultisignComponent implements OnInit {
   consginerFirmAccount: any;
   subscribeAccountContat: Subscription;
   disable: boolean;
+  subscribeAggregateBonded: Subscription[] = [];;
 
   constructor(
 
@@ -98,9 +99,10 @@ export class EditAccountMultisignComponent implements OnInit {
  * @memberof CreateTransferComponent
  */
   ngOnDestroy(): void {
-    this.subscribeAccount.unsubscribe();
+    // this.subscribeAccount.unsubscribe();
 
-
+    this.unsubscribe(this.subscribeAggregateBonded);
+    this.unsubscribe(this.subscribeAccount);
   }
 
   /**
@@ -187,7 +189,13 @@ export class EditAccountMultisignComponent implements OnInit {
       return data;
     }
   }
-
+  unsubscribe(subscribe: Subscription[]) {
+    if (subscribe.length > 0) {
+      subscribe.forEach(subscription => {
+        subscription.unsubscribe();
+      });
+    }
+  }
 
   /**
 *
@@ -199,14 +207,15 @@ export class EditAccountMultisignComponent implements OnInit {
     this.listContact = this.booksAddress();
     this.currentAccountToConvert = this.walletService.filterAccountWallet(name)
     this.listContact = this.booksAddress().filter(item => item.label !== this.currentAccountToConvert.name)
-    this.subscribeAccount = this.walletService.getAccountsInfo$().subscribe(
+    this.subscribeAccount.push(this.walletService.getAccountsInfo$().subscribe(
       async accountInfo => {
+        console.log("respondio  accountInfo")
 
 
         this.getAggregateBondedTransactionsValidate()
         // this.accountInfo = this.walletService.filterAccountInfo(name);
 
-      });
+      }));
     // this.clearData();
   }
 
@@ -223,6 +232,7 @@ export class EditAccountMultisignComponent implements OnInit {
     // if (this.subscribeAccount) {
     //   this.subscribeAccount.unsubscribe();
     // }
+    this.unsubscribe(this.subscribeAccount);
     //Validate Account
     if (!this.accountValid)
       return
@@ -261,15 +271,12 @@ export class EditAccountMultisignComponent implements OnInit {
 
   getAggregateBondedTransactionsValidate() {
     this.disable = false
-    this.transactionService.getAggregateBondedTransactions$().subscribe((transactions: TransactionsInterface[]) => {
+    this.subscribeAggregateBonded.push(this.transactionService.getAggregateBondedTransactions$().subscribe((transactions: TransactionsInterface[]) => {
+  
       for (let index = 0; index < transactions.length; index++) {
-
         for (let i = 0; i < transactions[index].data['innerTransactions'].length; i++) {
-          // if (transactions[index].data.type === 16961) {
-            console.log("punlib kley:",transactions[index].data['innerTransactions'][i].signer.publicKey)
           this.disable = (transactions[index].data['innerTransactions'][i].signer.publicKey === this.currentAccountToConvert.publicAccount.publicKey);
 
-          console.log(this.disable)
           if (this.disable)
             break
         }
@@ -278,7 +285,7 @@ export class EditAccountMultisignComponent implements OnInit {
       }
       // }
       this.validateAccount(this.activateRoute.snapshot.paramMap.get('name'), this.disable)
-    });
+    }));
 
   }
 

@@ -70,6 +70,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
   ban: any;
   notBalance: boolean;
   disable: boolean;
+  subscribeContact: Subscription[] = [];
   constructor(
     private fb: FormBuilder,
     private sharedService: SharedService,
@@ -109,7 +110,6 @@ export class ConvertAccountMultisignComponent implements OnInit {
 */
   ngOnDestroy(): void {
     this.subscribe.forEach(subscription => {
-      console.log('subscription', subscription)
       subscription.unsubscribe();
     });
 
@@ -206,13 +206,11 @@ export class ConvertAccountMultisignComponent implements OnInit {
             for (let index = 0; index < transactions.length; index++) {
               // if (transactions[index].data.type === 16961) {
               for (let i = 0; i < transactions[index].data['innerTransactions'].length; i++) {
-
-                this.disable = (transactions[index].data['innerTransactions'][i].signer.publicKey  === element.publicAccount.publicKey);
-                console.log(this.disable)
+                this.disable = (transactions[index].data['innerTransactions'][i].signer.publicKey === element.publicAccount.publicKey);
                 if (this.disable)
                   break
               }
-              
+
               // this.disable = (transactions[index].data['innerTransactions'][i].signer.publicKey  === element.publicAccount.publicKey);
               if (this.disable)
                 break
@@ -283,7 +281,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
       this.subscribeAccount = this.walletService.getAccountsInfo$().subscribe(
         async accountInfo => {
           this.validateAccount(account.value.name)
-        });
+        }).unsubscribe();
     }
   }
   validateAccount(name: string) {
@@ -399,7 +397,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
  */
   getTransactionStatushashLock(signedTransactionHashLock: SignedTransaction, signedTransactionBonded: SignedTransaction) {
     // Get transaction status
-    this.subscribe['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
+     this.dataBridge.getTransactionStatus().subscribe(
       statusTransaction => {
         // //  this.blockSend = false;
         if (statusTransaction !== null && statusTransaction !== undefined && signedTransactionHashLock !== null) {
@@ -514,6 +512,14 @@ export class ConvertAccountMultisignComponent implements OnInit {
     });
     return value[0];
   }
+
+  unsubscribe(subscribe: Subscription[]) {
+    if (subscribe.length > 0) {
+      subscribe.forEach(subscription => {
+        subscription.unsubscribe();
+      });
+    }
+  }
   /**
   *
   *
@@ -521,13 +527,15 @@ export class ConvertAccountMultisignComponent implements OnInit {
   * @memberof CreateMultiSignatureComponent
   */
   async selectContact(event: { label: string, value: string }) {
+    this.unsubscribe(this.subscribeContact);
     this.convertAccountMultsignForm.get('cosignatory').patchValue('', { emitEvent: false, onlySelf: true });
+    this.searchContact = false;
     if (event !== undefined && event.value !== '') {
-
       this.convertAccountMultsignForm.get('cosignatory').patchValue('', { emitEvent: false, onlySelf: true });
       if (!this.iswalletContact(event.label)) {
         this.searchContact = true;
-        this.subscribe.push(this.proximaxProvider.getAccountInfo(Address.createFromRawAddress(event.value)).subscribe((res: AccountInfo) => {
+        this.subscribeContact.push(this.proximaxProvider.getAccountInfo(Address.createFromRawAddress(event.value)).subscribe((res: AccountInfo) => {
+          this.unsubscribe(this.subscribeContact);
           this.searchContact = false;
           if (res.publicKeyHeight.toHex() === '0000000000000000') {
             this.sharedService.showWarning('', 'you need a public key');
@@ -545,10 +553,8 @@ export class ConvertAccountMultisignComponent implements OnInit {
         }));
 
       } else {
-
-        this.subscribe.push(this.walletService.getAccountsInfo$().subscribe(
+        this.walletService.getAccountsInfo$().subscribe(
           accountInfo => {
-
             if (accountInfo) {
               const account = this.walletService.filterAccountInfo(event.label);
               const accountValid = (
@@ -562,17 +568,17 @@ export class ConvertAccountMultisignComponent implements OnInit {
                 this.convertAccountMultsignForm.get('cosignatory').patchValue(account.accountInfo.publicKey, { emitEvent: true })
                 this.convertAccountMultsignForm.get('contact').patchValue('', { emitEvent: false, onlySelf: true });
               } else {
-                this.sharedService.showWarning('', 'you need a public key ');
+                this.sharedService.showWarning('', 'you need a public key 2');
                 this.convertAccountMultsignForm.get('contact').patchValue('', { emitEvent: false, onlySelf: true });
               }
 
             } else {
               this.convertAccountMultsignForm.get('contact').patchValue('', { emitEvent: false, onlySelf: true });
-              this.sharedService.showWarning('', 'Address is not valid');
+              this.sharedService.showWarning('', 'Address is not valid 2');
 
             }
           }
-        ));
+        ).unsubscribe();
 
       }
     }
