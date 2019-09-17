@@ -289,12 +289,13 @@ export class DataBridgeService {
    * @param {HTMLAudioElement} audio
    * @memberof DataBridgeService
    */
-  getSocketTransactionsUnConfirmed(connector: Listener, audio: HTMLAudioElement) {
+  getSocketIncomingTransactions(connector: Listener, audio: HTMLAudioElement) {
     const currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
     currentWallet.accounts.forEach(element => {
       const address = this.proximaxProvider.createFromRawAddress(element.address);
       connector.unconfirmedAdded(address).subscribe(unconfirmedTransaction => {
         // Aqui las que tengo por confirmar en mi variable
+        console.log('=== INCOMING TRANSACTION ===', unconfirmedTransaction);
         this.validateTransactions(unconfirmedTransaction.transactionInfo.hash);
         this.transactionsService.getIncomingTransactions$().pipe(first()).subscribe(
           async transactionsUnconfirmed => {
@@ -363,7 +364,7 @@ export class DataBridgeService {
         this.getSocketTransactionsAggreateBonded(this.connector, audio2);
         this.getSocketTransactionsCosignatureAdded(this.connector, audio);
         this.getSocketTransactionsConfirmed(this.connector, audio2);
-        this.getSocketTransactionsUnConfirmed(this.connector, audio);
+        this.getSocketIncomingTransactions(this.connector, audio);
         this.getSocketStatusError(this.connector, audio);
         this.getBlockSocket(this.connector);
       }, (error) => {
@@ -471,6 +472,7 @@ export class DataBridgeService {
    * @memberof DataBridgeService
    */
   validateTransactions(hash: string) {
+    console.log('=== TENGO UNA LLAMADA A VALIDAR TRANSACCION ===');
     this.transactionsService.getAggregateBondedTransactions$().pipe(first()).subscribe(
       next => {
         console.log('=== TRANSACCIONES AGREGADAS ===', next);
