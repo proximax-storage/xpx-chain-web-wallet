@@ -257,17 +257,26 @@ export class EditAccountMultisignComponent implements OnInit {
 
 
   }
+  // TransactionType.MODIFY_MULTISIG_ACCOUNT
 
   getAggregateBondedTransactionsValidate() {
     this.disable = false
     this.transactionService.getAggregateBondedTransactions$().subscribe((transactions: TransactionsInterface[]) => {
       for (let index = 0; index < transactions.length; index++) {
-        if (transactions[index].data.type === 16961) {
-          this.disable = (transactions[index].data.signer.publicKey === this.currentAccountToConvert.publicAccount.publicKey);
+
+        for (let i = 0; i < transactions[index].data['innerTransactions'].length; i++) {
+          // if (transactions[index].data.type === 16961) {
+            console.log("punlib kley:",transactions[index].data['innerTransactions'][i].signer.publicKey)
+          this.disable = (transactions[index].data['innerTransactions'][i].signer.publicKey === this.currentAccountToConvert.publicAccount.publicKey);
+
+          console.log(this.disable)
           if (this.disable)
             break
         }
+        if (this.disable)
+          break
       }
+      // }
       this.validateAccount(this.activateRoute.snapshot.paramMap.get('name'), this.disable)
     });
 
