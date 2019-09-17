@@ -581,10 +581,12 @@ export class TransactionsService {
         this.walletService.validateMultisigAccount(accounts);
         const publicsAccounts: PublicAccount[] = [];
         data.accountsInfo.forEach((element: AccountsInfoInterface) => {
-          publicsAccounts.push(this.proximaxProvider.createPublicAccount(
-            element.accountInfo.publicKey,
-            element.accountInfo.publicAccount.address.networkType
-          ));
+          if (element.accountInfo) {
+            publicsAccounts.push(this.proximaxProvider.createPublicAccount(
+              element.accountInfo.publicKey,
+              element.accountInfo.publicAccount.address.networkType
+            ));
+          }
         });
 
         // console.log('==== publicsAccounts ====', publicsAccounts);
@@ -608,6 +610,7 @@ export class TransactionsService {
    * @param transactions
    */
   setAggregateBondedTransactions$(transactions: TransactionsInterface[]) {
+    console.log('=== SET AGGREGATE TRANSACTION ===', transactions);
     this._aggregateTransactionsSubject.next(transactions);
   }
 
