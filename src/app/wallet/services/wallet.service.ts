@@ -38,6 +38,9 @@ export class WalletService {
   accountsInfoSubject: BehaviorSubject<AccountsInfoInterface[]> = new BehaviorSubject<AccountsInfoInterface[]>(null);
   accountsInfo$: Observable<AccountsInfoInterface[]> = this.accountsInfoSubject.asObservable();
 
+  accountsPushedSubject: BehaviorSubject<AccountsInterface[]> = new BehaviorSubject<AccountsInterface[]>(null);
+  accountsPushedSubject$: Observable<AccountsInterface[]> = this.accountsPushedSubject.asObservable();
+
   constructor(
     private sharedService: SharedService,
     private proximaxProvider: ProximaxProvider
@@ -65,7 +68,7 @@ export class WalletService {
   * @param accounts
   * @param pushed
   */
-  async searchAccountsInfo(accounts: AccountsInterface[], pushed = false) {//: Promise<AccountsInfoInterface[]> {
+  async searchAccountsInfo(accounts: AccountsInterface[]) {//: Promise<AccountsInfoInterface[]> {
     let counter = 0;
     const mosaicsIds: (NamespaceId | MosaicId)[] = [];
     const accountsInfo: AccountsInfoInterface[] = [];
@@ -97,7 +100,16 @@ export class WalletService {
             };
 
             accountsInfo.push(accountInfoBuilded);
-            this.changeIsMultiSign(element.name, isMultisig)
+
+            const newAccounts = this.changeIsMultiSign(element.name, isMultisig);
+            if (newAccounts.length > 0) {
+              console.log('=== NEW ACCOUNTS TO SEARCH ===', newAccounts);
+              // Emite el cambios de las nuevas cuentas
+              this.setAccountsPushedSubject(newAccounts);
+              // Borra el cambio de las nuevas cuentas
+              this.setAccountsPushedSubject([]);
+            }
+
             this.setAccountsInfo([accountInfoBuilded], true);
             counter = counter + 1;
             if (accounts.length === counter) {
@@ -255,6 +267,7 @@ export class WalletService {
   * @memberof WalletService
   */
   changeIsMultiSign(name: string, isMultisig: MultisigAccountInfo) {
+    const newAccount = [];
     if (isMultisig) {
       // si es multifirma, preguntar
       if (isMultisig.multisigAccounts.length > 0) {
@@ -275,7 +288,10 @@ export class WalletService {
               publicAccount: multisigAccount,
             });
 
-            this.proximaxProvider.getAccountInfo(multisigAccount.address).pipe(first()).subscribe(async (accountInfo: AccountInfo) => {
+            console.log('\n\n---ACOUNT BUILDED---', accountBuilded);
+            newAccount.push(accountBuilded);
+            this.saveAccountWalletStorage(accountBuilded);
+            /*this.proximaxProvider.getAccountInfo(multisigAccount.address).pipe(first()).subscribe(async (accountInfo: AccountInfo) => {
               const mosaicsIds: (NamespaceId | MosaicId)[] = [];
               if (accountInfo) {
                 accountInfo.mosaics.map(n => n.id).forEach(id => {
@@ -301,7 +317,7 @@ export class WalletService {
             console.log('\n\n---ACOUNT BUILDED---', accountInfoBuilded);
               this.setAccountsInfo([accountInfoBuilded], true);
               this.saveAccountWalletStorage(accountBuilded);
-            });
+            });*/
           }
         });
       }
@@ -327,6 +343,7 @@ export class WalletService {
     });
 
     localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(othersWallet));
+    return newAccount;
   }
 
   /**
@@ -536,6 +553,16 @@ export class WalletService {
     return this.nis1AccounsWallet;
   }
 
+  /**
+   *
+   *
+   * @returns
+   * @memberof WalletService
+   */
+  getAccountsPushedSubject() {
+    return this.accountsPushedSubject$;
+  }
+
 
   /**
    *
@@ -680,15 +707,15 @@ export class WalletService {
     this.accountInfoNis1 = account;
   }
 
-  // /**
-  //  *
-  //  * @param data
-  //  *
-  //  * @param accounts
-  //  */
-  // setAccountInfoConsignerNis1(accounts: any) {
-  //   this.accountInfoConsignerNis1 = accounts;
-  // }
+  /**
+   *
+   *
+   * @returns
+   * @memberof WalletService
+   */
+  setAccountsPushedSubject(accountsInfo: AccountsInterface[]) {
+    return this.accountsPushedSubject.next(accountsInfo);
+  }
 
   /**
    *

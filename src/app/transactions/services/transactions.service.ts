@@ -127,7 +127,7 @@ export class TransactionsService {
     private mosaicServices: MosaicService,
     private namespaceService: NamespacesService
   ) {
-
+    this.monitorNewAccounts();
   }
 
 
@@ -568,12 +568,28 @@ export class TransactionsService {
   }
 
   /**
+   *
+   *
+   * @memberof TransactionsService
+   */
+  monitorNewAccounts(){
+    this.walletService.getAccountsPushedSubject().subscribe(
+      next => {
+        if (next && next.length > 0) {
+          console.log('=== YOU HAVE NEW ACCOUNT ===', next);
+          this.searchAccountsInfo(next);
+        }
+      }
+    );
+  }
+
+  /**
    * Search all account information
    * Returns an arrangement with all mosaic ids found and all account information
    * @param accounts
    * @param pushed
    */
-  searchAccountsInfo(accounts: AccountsInterface[], pushed = false) {
+  searchAccountsInfo(accounts: AccountsInterface[]) {
     // console.log('ACCOUNTS INTERFACE ---> ', accounts);
     this.walletService.searchAccountsInfo(accounts).then(
       (data: { mosaicsIds: MosaicId[], accountsInfo: AccountsInfoInterface[] }) => {
@@ -600,6 +616,7 @@ export class TransactionsService {
 
       }
     ).catch(error => console.log(error));
+
   }
 
 
