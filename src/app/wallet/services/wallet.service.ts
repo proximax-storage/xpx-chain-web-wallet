@@ -100,9 +100,6 @@ export class WalletService {
             this.changeIsMultiSign(element.name, isMultisig)
             this.setAccountsInfo([accountInfoBuilded], true);
             counter = counter + 1;
-           /* console.log('=== counter ===', counter);
-            console.log('=== accounts.length ===', accounts.length);
-            console.log('=== mosaicsIds.length  ===', mosaicsIds.length);*/
             if (accounts.length === counter) {
               resolve({
                 mosaicsId: mosaicsIds,
@@ -262,24 +259,49 @@ export class WalletService {
       // si es multifirma, preguntar
       if (isMultisig.multisigAccounts.length > 0) {
         const myAccounts = this.currentWallet.accounts;
-        isMultisig.multisigAccounts.forEach(element => {
-          const exist = myAccounts.find(x => x.address === element.address.plain());
+        isMultisig.multisigAccounts.forEach(multisigAccount => {
+          const exist = myAccounts.find(x => x.address === multisigAccount.address.plain());
           if (!exist) {
-            console.log('ESTA CUENTA NO EXISTE ===> ', element, '\n\n\n\n\n\n');
+            console.log('ESTA CUENTA NO EXISTE ===> ', multisigAccount, '\n\n\n\n\n\n');
             const accountBuilded: AccountsInterface = this.buildAccount({
-              address: element.address.plain(),
+              address: multisigAccount.address.plain(),
               byDefault: false,
               encrypted: '',
               firstAccount: false,
-              isMultisign: isMultisig,
+              isMultisign: null,
               iv: '',
-              network: element.address.networkType,
-              nameAccount: `MULTIFIRMA-${element.address.plain().slice(36, 40)}`,
-              publicAccount: element,
+              network: multisigAccount.address.networkType,
+              nameAccount: `MULTIFIRMA-${multisigAccount.address.plain().slice(36, 40)}`,
+              publicAccount: multisigAccount,
             });
 
-            console.log('\n\n---ACOUNT BUILDED---', accountBuilded);
-            this.saveAccountWalletStorage(accountBuilded);
+            this.proximaxProvider.getAccountInfo(multisigAccount.address).pipe(first()).subscribe(async (accountInfo: AccountInfo) => {
+              const mosaicsIds: (NamespaceId | MosaicId)[] = [];
+              if (accountInfo) {
+                accountInfo.mosaics.map(n => n.id).forEach(id => {
+                  const pushea = mosaicsIds.find(next => next.id.toHex() === id.toHex());
+                  if (!pushea) {
+                    mosaicsIds.push(id);
+                  }
+                });
+              }
+
+              try {
+                accountBuilded.isMultisign = await this.proximaxProvider.getMultisigAccountInfo(multisigAccount.address).toPromise();
+              } catch (error) {
+                accountBuilded.isMultisign = null
+              }
+
+              const accountInfoBuilded = {
+                name: accountBuilded.name,
+                accountInfo: accountInfo,
+                multisigInfo: accountBuilded.isMultisign
+              };
+
+            console.log('\n\n---ACOUNT BUILDED---', accountInfoBuilded);
+              this.setAccountsInfo([accountInfoBuilded], true);
+              this.saveAccountWalletStorage(accountBuilded);
+            });
           }
         });
       }

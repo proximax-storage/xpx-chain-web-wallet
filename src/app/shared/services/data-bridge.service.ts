@@ -81,6 +81,7 @@ export class DataBridgeService {
    */
   closeConection(destroyTransactions = true) {
     console.log("Destruye conexion con el websocket");
+    this.destroySubscriptions();
     this.destroyConection = true;
     if (destroyTransactions) {
       this.setblock(null);
