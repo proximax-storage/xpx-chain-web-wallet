@@ -75,13 +75,21 @@ export class WalletCreatedComponent implements OnInit {
    */
   goToRoute() {
     // [routerLink]="[routes.backToService]"
-    const nis1Info = this.walletService.getAccountInfoNis1();
-    console.log('this a nis1 Info ------>', nis1Info);
-    if (nis1Info.nis1Account && nis1Info.nis1Account !== null) {
-      this.router.navigate([`/${AppConfig.routes.walletNis1Found}`]);
+    const nis1Info = this.walletService.getNis1AccounsWallet();
+    if (nis1Info.length > 0) {
+      if (nis1Info[0].mosaic !== null) {
+        this.router.navigate([`/${AppConfig.routes.accountNis1Found}`]);
+      } else {
+        this.router.navigate([this.routeAuth]);
+      }
     } else {
       this.router.navigate([this.routeAuth]);
     }
+    // if (nis1Info.nis1Account && nis1Info.nis1Account !== null) {
+    //   this.router.navigate([`/${AppConfig.routes.walletNis1Found}`]);
+    // } else {
+    //   this.router.navigate([this.routeAuth]);
+    // }
   }
 
   qrConstruntion(url, size = 2, margin = 0) {

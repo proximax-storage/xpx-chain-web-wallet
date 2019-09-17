@@ -7,7 +7,7 @@ import { ServerConfig, NetworkTypes } from 'nem-library';
 export const environment = {
   production: false,
   itemBooksAddress: 'sw-books',
-  version: '0.3.1.5',
+  version: '0.3.1.7',
   nameKeyNodeSelected: `sw-selected-node-01`,
   nameKeyWalletStorage: `sw-05`,
   nameKeyNodeStorage: `sw-nodes-02`,

@@ -197,7 +197,7 @@ export class EditAccountMultisignComponent implements OnInit {
   selectAccount(name: string) {
     this.clearData();
     this.listContact = this.booksAddress();
-    this.currentAccountToConvert = this.walletService.filterAccount(name)
+    this.currentAccountToConvert = this.walletService.filterAccountWallet(name)
     this.listContact = this.booksAddress().filter(item => item.label !== this.currentAccountToConvert.name)
     this.subscribeAccount = this.walletService.getAccountsInfo$().subscribe(
       async accountInfo => {

@@ -13,7 +13,6 @@ import { ServicesModuleService } from '../../servicesModule/services/services-mo
 import { SharedService } from '../../shared/services/shared.service';
 import { ProximaxProvider } from '../../shared/services/proximax.provider';
 import { MosaicService } from '../../servicesModule/services/mosaic.service';
-import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -48,7 +47,7 @@ export class AuthService {
    * @memberof LoginService
    */
   destroyNodeSelected() {
-    this.dataBridgeService.closeConenection();
+    this.dataBridgeService.closeConection();
     if (this.subscription['nodeSelected'] !== undefined) {
       this.subscription['nodeSelected'].unsubscribe();
     }
@@ -92,7 +91,7 @@ export class AuthService {
     }
 
     this.setLogged(true);
-    this.dataBridgeService.closeConenection();
+    this.dataBridgeService.closeConection();
     this.dataBridgeService.connectnWs();
 
 
@@ -140,7 +139,7 @@ export class AuthService {
   subscribeNodeSelected() {
     this.subscription['nodeSelected'] = this.nodeService.getNodeObservable().subscribe(
       next => {
-        this.dataBridgeService.closeConenection();
+        this.dataBridgeService.closeConection();
         this.dataBridgeService.connectnWs(next);
       }
     );

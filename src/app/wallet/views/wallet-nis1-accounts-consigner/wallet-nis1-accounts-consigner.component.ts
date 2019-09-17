@@ -1,19 +1,19 @@
 import { Component, OnInit } from '@angular/core';
-import { WalletService } from 'src/app/wallet/services/wallet.service';
-import { PublicAccount } from 'nem-library';
+import { WalletService } from '../../services/wallet.service';
 import { SharedService } from 'src/app/shared/services/shared.service';
-import { timeout, first } from 'rxjs/operators';
 import { NemServiceService } from 'src/app/shared/services/nem-service.service';
+import { TransactionsService } from 'src/app/transactions/services/transactions.service';
 import { Router } from '@angular/router';
 import { AppConfig } from 'src/app/config/app.config';
-import { TransactionsService } from 'src/app/transactions/services/transactions.service';
+import { first, timeout } from 'rxjs/operators';
+
 @Component({
-  selector: 'app-nis1-accounts-consigner',
-  templateUrl: './nis1-accounts-consigner.component.html',
-  styleUrls: ['./nis1-accounts-consigner.component.css']
+  selector: 'app-wallet-nis1-accounts-consigner',
+  templateUrl: './wallet-nis1-accounts-consigner.component.html',
+  styleUrls: ['./wallet-nis1-accounts-consigner.component.css']
 })
-export class Nis1AccountsConsignerComponent implements OnInit {
-  
+export class WalletNis1AccountsConsignerComponent implements OnInit {
+
   listConsignerAccounts: any = null;
   mainAccount: any;
 
@@ -25,6 +25,7 @@ export class Nis1AccountsConsignerComponent implements OnInit {
     private router: Router
   ) {
     this.mainAccount = this.walletService.getAccountInfoNis1();
+    console.log('Esta es la info de la this.mainAccount ------------>', this.mainAccount);
 
     this.mainAccount.balance = null;
     this.mainAccount.mosaic = null;
@@ -40,9 +41,12 @@ export class Nis1AccountsConsignerComponent implements OnInit {
       element.publicAccount.nameAccount = this.mainAccount.nameAccount;
       this.searchBalance(element.publicAccount, index);
     });
+    console.log('Esta es la info de la this.mainAccount ------------>', this.mainAccount);
+    console.log('Esta es la info de la this.listConsignerAccounts ------------>', this.listConsignerAccounts);
   }
 
-  ngOnInit() { }
+  ngOnInit() {
+  }
 
   searchBalance(account, index = null) {
     this.nemProvider.getOwnedMosaics(account.address).pipe(first()).pipe(timeout(15000)).subscribe(
@@ -60,7 +64,7 @@ export class Nis1AccountsConsignerComponent implements OnInit {
               this.mainAccount.balance = realQuantity;
               this.mainAccount.multiSign = false;
             } else {
-              this.listConsignerAccounts[index].publicAccount.mosaic = el;  
+              this.listConsignerAccounts[index].publicAccount.mosaic = el;
               this.listConsignerAccounts[index].publicAccount.balance = realQuantity;
               this.listConsignerAccounts[index].publicAccount.multiSign = true;
             }
@@ -97,20 +101,26 @@ export class Nis1AccountsConsignerComponent implements OnInit {
     }
     this.walletService.setNis1AccountSelected(this.mainAccount);
     // this.walletService.setAccountMosaicsNis1(this.mainAccount.mosaic);
-    this.router.navigate([`/${AppConfig.routes.accountNis1TransferXpx}`]);
+    this.router.navigate([`/${AppConfig.routes.transferXpx}`]);
   }
 
   accountSelected(account: any) {
     if (account.balance === null || account.balance === '0.000000') {
       return this.sharedService.showWarning('', 'The selected account has no balance');
     }
-    
+    console.log('Account Selected --------------->', account);
+
     // this.walletService.setAccountMosaicsNis1(account.mosaic);
     this.walletService.setNis1AccountSelected(account);
-    this.router.navigate([`/${AppConfig.routes.accountNis1TransferXpx}`]);
+    this.router.navigate([`/${AppConfig.routes.transferXpx}`]);
   }
 
   goToBack() {
-    this.router.navigate([this.mainAccount.route]);
+    this.walletService.setAccountSelectedWalletNis1(null);
+    this.walletService.setAccountInfoNis1(null);
+    // this.walletService.setAccountMosaicsNis1(null);
+    this.walletService.setNis1AccountSelected(null);
+    this.router.navigate([`/${AppConfig.routes.auth}`]);
   }
+
 }

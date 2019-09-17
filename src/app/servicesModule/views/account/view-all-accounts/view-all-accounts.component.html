@@ -4,38 +4,38 @@
   <!-- BOX LIST ACCOUNT -->
   <div class="row">
     <ng-container *ngIf="currentWallet?.accounts?.length > 0">
-      <ng-container *ngFor="let currentAccount of currentWallet.accounts">
+      <ng-container *ngFor="let account of currentWallet.accounts">
         <div class="col-11 col-md-10 col-lg-9 col-xl-10 mx-auto box-list-account-gray fs-08rem pb-1rem"
-          [ngClass]="{'isPrimary':currentAccount.default}">
+          [ngClass]="{'isPrimary':account.default}">
           <div class="row">
             <div class="col-12 col-sm-10 col-md-9 col-lg-10 col-xl-10 text-center text-sm-left pt-1rem w-b-a">
-              Account: {{currentAccount.name}} <br>
-              {{currentAccount.address}}
+              Account: {{account.name}} <br>
+              {{account.address}}
             </div>
             <div
               class="col-12 col-sm-2 col-md-3 col-lg-2 col-xl-2 d-flex align-items-center justify-content-center justify-content-sm-end justify-content-md-end justify-content-lg-end justify-content-xl-end pt-2rem">
               <img src="assets/images/img/icon-copy-clipboard-white.svg" class="cursor-p" alt="Copy" width="20"
-                (click)="copyMessage('Address')" ngxClipboard *ngIf="currentAccount.default"
-                [cbContent]="currentAccount.address" title="Copy Address">
+                (click)="copyMessage('Address')" ngxClipboard *ngIf="account.default"
+                [cbContent]="account.address" title="Copy Address">
               <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="cursor-p"
-                alt="Copy" width="20" (click)="copyMessage('Address')" ngxClipboard *ngIf="!currentAccount.default"
-                [cbContent]="currentAccount.address" title="Copy Address">&nbsp;
+                alt="Copy" width="20" (click)="copyMessage('Address')" ngxClipboard *ngIf="!account.default"
+                [cbContent]="account.address" title="Copy Address">&nbsp;
               <!-- View Details -->
               <!-- <i class="fa fa-eye fs-1-2rem cursor-p" aria-hidden="true" title="View details"
-                    [routerLink]="[routes.viewDetails+currentAccount.name]"></i> -->
+                    [routerLink]="[routes.viewDetails+account.name]"></i> -->
               <img src="assets/images/img/icon-edit-white-proximax-sirius-wallet.svg" class="cursor-p"
-                *ngIf="currentAccount.default" width="20" [routerLink]="[routes.viewDetails+currentAccount.name]"
+                *ngIf="account.default" width="20" [routerLink]="[routes.viewDetails+account.name]"
                 title="View details">
               <img src="assets/images/img/icon-edit-gray-proximax-sirius-wallet.svg" class="cursor-p"
-                *ngIf="!currentAccount.default" width="20" [routerLink]="[routes.viewDetails+currentAccount.name]"
+                *ngIf="!account.default" width="20" [routerLink]="[routes.viewDetails+account.name]"
                 title="View details">&nbsp;
 
               <!-- Select account default -->
-              <ng-container>
+              <ng-container *ngIf="account.encrypted !== ''">
                 <img src="assets/images/img/icon-default-white-proximax-sirius-wallet.svg" class="cursor-p"
-                  *ngIf="currentAccount.default" width="20" title="Select account as default">
+                  *ngIf="account.default" width="20" title="Select account as default">
                 <img src="assets/images/img/icon-default-gray-proximax-sirius-wallet.svg" class="cursor-p"
-                  *ngIf="!currentAccount.default" width="20" (click)="changeAsPrimary(currentAccount.name)"
+                  *ngIf="!account.default" width="20" (click)="changeAsPrimary(account.name)"
                   title="Select account as default">
               </ng-container>
             </div>
@@ -43,11 +43,11 @@
 
           <div class="row">
             <div class="col-12 col-sm-10 col-md-9 col-lg-10 col-xl-10 text-center text-sm-left pt-05rem w-b-a fw-600">
-              <img *ngIf="currentAccount.default" class="icono" src="assets/images/img/icon-proximax-white.svg"
+              <img *ngIf="account.default" class="icono" src="assets/images/img/icon-proximax-white.svg"
                 width="20" alt="">
-              <img *ngIf="!currentAccount.default" class="icono"
+              <img *ngIf="!account.default" class="icono"
                 src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20" alt="">
-              &nbsp;Balance {{currentAccount.balance}} XPX
+              &nbsp;Balance {{account.balance}} XPX
             </div>
           </div>
         </div>
