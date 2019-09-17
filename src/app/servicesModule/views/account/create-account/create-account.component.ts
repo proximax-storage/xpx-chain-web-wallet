@@ -190,7 +190,7 @@ export class CreateAccountComponent implements OnInit {
     }, accountBuilded, newAccount);
     this.walletService.saveAccountWalletStorage(accountBuilded);
     this.serviceModuleService.saveContacts({ name: nameAccount, address: accountBuilded.address, walletContact: true, nameItem: '' });
-    this.dataBridgeService.closeConenection();
+    this.dataBridgeService.closeConection();
     this.dataBridgeService.connectnWs();
     this.dashboardService.isIncrementViewDashboard = 0;
     this.transactionService.searchAccountsInfo(this.walletService.currentWallet.accounts);

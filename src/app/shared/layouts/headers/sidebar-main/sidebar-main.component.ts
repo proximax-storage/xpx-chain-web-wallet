@@ -185,7 +185,7 @@ export class SidebarMainComponent implements OnInit {
   getBlocks() {
     this.subscription.push(this.dataBridge.getBlock().subscribe(
       next => {
-        // console.log('Block', next);
+        console.log('=== NEW BLOCK === ', next);
         if (next !== null) {
           this.prorroga = false;
           this.reconnecting = false;
@@ -210,11 +210,12 @@ export class SidebarMainComponent implements OnInit {
    */
   validate() {
     //emit 0 after 1 second then complete, since no second argument is supplied
-    const source = timer(20000, 20000);
+    const source = timer(25000, 35000);
     this.subscription.push(source.subscribe(val => {
-      /* console.log('-----RESETED-----------', this.reset);
-       console.log('-----CURRENT BLOCK-----', this.currentBlock);
-       console.log('-----CACHE BLOCK-------', this.cacheBlock, '\n\n\n');*/
+      console.log('=== RESETED ===', this.reset);
+      console.log('=== CURRENT BLOCK ===', this.currentBlock);
+      console.log('=== CACHE BLOCK ===', this.cacheBlock, '\n\n\n');
+
       if (this.currentBlock > this.cacheBlock) {
         this.reconnecting = false;
         this.cacheBlock = this.currentBlock;
@@ -224,7 +225,7 @@ export class SidebarMainComponent implements OnInit {
         this.reconnecting = true;
         this.statusNodeName = 'Reconnecting';
         this.colorStatus = 'color-light-orange';
-        this.dataBridge.closeConenection(false);
+        this.dataBridge.closeConection(false);
         this.dataBridge.connectnWs();
       } else {
         this.statusNodeName = 'Reconnecting';
