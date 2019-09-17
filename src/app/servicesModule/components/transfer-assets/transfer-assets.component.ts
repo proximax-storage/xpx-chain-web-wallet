@@ -281,6 +281,7 @@ export class TransferAssetsComponent implements OnInit {
 
   navToRoute() {
     console.log('this.route-------->', this.route);
+    const route = this.accountSelected.route
     this.walletService.setAccountSelectedWalletNis1(null);
     this.walletService.setNis1AccounsWallet(null);
     this.walletService.setAccountInfoNis1(null);
@@ -288,7 +289,7 @@ export class TransferAssetsComponent implements OnInit {
     if (this.router.url === `/${AppConfig.routes.transferXpx}`) {
       this.router.navigate([AppConfig.routes.auth]);
     } else {
-      this.router.navigate([this.accountSelected.route]);
+      this.router.navigate([route]);
     }
     // this.walletService.setAccountMosaicsNis1(null);
   }

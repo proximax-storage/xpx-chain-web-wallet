@@ -12,6 +12,12 @@
       <hr class="mt-05rem mb-06rem">
     </div>
   </div>
+
+  <div class="row" *ngIf="subtitle">
+    <div class="col-11 d-flex justify-content-center">
+      <span class="fs-08rem txt-a-center">This is your swap proccess receipt.</span>
+    </div>
+  </div>
   <!-- END TITLE AND DESCRIPTION -->
   <div *ngIf="!showCertificate">
     <app-transfer-assets (changeView)="viewCertificate($event)" [route]="routeCertificate"></app-transfer-assets>
