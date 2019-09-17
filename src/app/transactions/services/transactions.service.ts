@@ -624,23 +624,32 @@ export class TransactionsService {
    */
   setAggregateBondedTransactions$(transactions: TransactionsInterface[]) {
     console.log('=== SET AGGREGATE TRANSACTION ===', transactions);
-    this.getAggregateBondedTransactions$().pipe(first()).subscribe(
-      transactionsSaved => {
-        const pushTransactions = [];
-        if (transactionsSaved.length > 0) {
-          for (let element of transactions) {
-            const exist = transactionsSaved.find(x => x.data['transactionInfo'].hash === element.data['transactionInfo'].hash);
-            if (!exist) {
-              pushTransactions.push(element);
+    if (transactions.length > 0) {
+      this.getAggregateBondedTransactions$().pipe(first()).subscribe(
+        transactionsSaved => {
+          console.log('=== transactionsSaved ====', transactionsSaved);
+          const pushTransactions = [];
+          if (transactionsSaved.length > 0) {
+            for (let element of transactions) {
+              const exist = transactionsSaved.find(x => x.data['transactionInfo'].hash === element.data['transactionInfo'].hash);
+              if (!exist) {
+                pushTransactions.push(element);
+              }
             }
-          }
 
-          this._aggregateTransactionsSubject.next(pushTransactions);
-        } else {
-          this._aggregateTransactionsSubject.next(transactions);
+            if (pushTransactions.length > 0) {
+              console.log('GUARDAR ---> ', pushTransactions);
+              this._aggregateTransactionsSubject.next(pushTransactions);
+            }
+          } else {
+            console.log('GUARDAR 2---> ', transactions);
+            this._aggregateTransactionsSubject.next(transactions);
+          }
         }
-      }
-    );
+      );
+    }else {
+      this._aggregateTransactionsSubject.next([]);
+    }
   }
 
   /**
