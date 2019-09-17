@@ -10,8 +10,9 @@ import { WalletService } from '../../services/wallet.service';
 })
 export class WalletNis1FoundComponent implements OnInit {
 
-  privateKey: string;
   goSignIn: string = `/${AppConfig.routes.auth}`;
+  privateKey: string;
+
   constructor(
     private router: Router,
     private walletService: WalletService
@@ -23,9 +24,7 @@ export class WalletNis1FoundComponent implements OnInit {
 
   goToRoute() {
     const nis1Info = this.walletService.getNis1AccounsWallet();
-
     console.log('nis1Info ------> ', nis1Info);
-    
     if (nis1Info[0].consignerOf) {
       this.walletService.setAccountInfoNis1(nis1Info[0]);
       this.router.navigate([`/${AppConfig.routes.walletNis1AccountConsigner}`]);
@@ -37,6 +36,7 @@ export class WalletNis1FoundComponent implements OnInit {
 
   goToBack() {
     this.walletService.setAccountInfoNis1(null);
+    this.walletService.setAccountSelectedWalletNis1(null);
     // this.walletService.setAccountMosaicsNis1(null);
     this.walletService.setNis1AccountSelected(null);
     this.router.navigate([this.goSignIn]);

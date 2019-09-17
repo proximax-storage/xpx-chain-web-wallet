@@ -27,7 +27,8 @@ export class WalletService {
 
   accountInfoNis1: any = null;
   // accountMosaicsNis1: any = null;
-  accountInfoConsignerNis1: any = null;
+  // accountInfoConsignerNis1: any = null;
+  accountSelectedWalletNis1: any = null;
   nis1AccountSeleted: any = null;
   nis1AccounsWallet: any = [];
 
@@ -42,6 +43,21 @@ export class WalletService {
     private proximaxProvider: ProximaxProvider
   ) {
 
+  }
+
+  /**
+   *
+   * @param data
+   */
+  setAccountSelectedWalletNis1(account) {
+    this.accountSelectedWalletNis1 = account;
+  }
+
+  /**
+   *
+   */
+  getAccountSelectedWalletNis1() {
+    return this.accountSelectedWalletNis1;
   }
 
   /**
@@ -450,13 +466,13 @@ export class WalletService {
     return this.accountInfoNis1;
   }
 
-  /**
-   *
-   * @param data
-   */
-  getAccountInfoConsignerNis1() {
-    return this.accountInfoConsignerNis1;
-  }
+  // /**
+  //  *
+  //  * @param data
+  //  */
+  // getAccountInfoConsignerNis1() {
+  //   return this.accountInfoConsignerNis1;
+  // }
 
 
   /**
@@ -639,15 +655,15 @@ export class WalletService {
     this.accountInfoNis1 = account;
   }
 
-  /**
-   *
-   * @param data
-   *
-   * @param accounts
-   */
-  setAccountInfoConsignerNis1(accounts: any) {
-    this.accountInfoConsignerNis1 = accounts;
-  }
+  // /**
+  //  *
+  //  * @param data
+  //  *
+  //  * @param accounts
+  //  */
+  // setAccountInfoConsignerNis1(accounts: any) {
+  //   this.accountInfoConsignerNis1 = accounts;
+  // }
 
   /**
    *

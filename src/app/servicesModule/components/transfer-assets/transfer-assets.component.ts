@@ -67,6 +67,8 @@ export class TransferAssetsComponent implements OnInit {
       this.booksAddress();
       console.log('this.accountCreated------>', this.accountCreated);
       console.log('this.accountSelected------>', this.accountSelected);
+      console.log('curren Account------->', this.walletService.currentAccount);
+      
       if (this.accountSelected.consignerAccounts !== undefined) {
         this.changeAccount = this.accountSelected.consignerAccounts.length > 1;
       }
@@ -214,9 +216,11 @@ export class TransferAssetsComponent implements OnInit {
     let common = { password: this.formTransfer.get("password").value };
     const quantity = this.formTransfer.get("amountXpx").value;
     console.log('\n\n\n\nValue quantity:\n', quantity, '\n\n\n\nEnd value\n\n');
-    console.log('\n\n\n\nValue this.walletService.currentAccount:\n', this.walletService.currentAccount, '\n\n\n\nEnd value\n\n');
+    // console.log('\n\n\n\nValue this.walletService.currentAccount:\n', this.walletService.currentAccount, '\n\n\n\nEnd value\n\n');
+    console.log('Account Selecteddddd --------------->', this.walletService.getAccountSelectedWalletNis1());
+    
     console.log('\n\n\n\nValue this.accountCreated:\n', this.accountCreated, '\n\n\n\nEnd value\n\n');
-    const currentAccount = (this.walletService.currentAccount !== null) ? this.walletService.currentAccount : this.accountCreated;
+    const currentAccount = this.walletService.getAccountSelectedWalletNis1();
     if (this.walletService.decrypt(common, currentAccount)) {
       console.log('\n\n\n\nValue common:\n', common, '\n\n\n\nEnd value\n\n');
       const account = this.nemService.createAccountPrivateKey(common['privateKey']);
@@ -277,7 +281,7 @@ export class TransferAssetsComponent implements OnInit {
 
   navToRoute() {
     console.log('this.route-------->', this.route);
-
+    this.walletService.setAccountSelectedWalletNis1(null);
     this.walletService.setNis1AccounsWallet(null);
     this.walletService.setAccountInfoNis1(null);
     this.walletService.setNis1AccountSelected(null);

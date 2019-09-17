@@ -116,6 +116,7 @@ export class WalletNis1AccountsConsignerComponent implements OnInit {
   }
 
   goToBack() {
+    this.walletService.setAccountSelectedWalletNis1(null);
     this.walletService.setAccountInfoNis1(null);
     // this.walletService.setAccountMosaicsNis1(null);
     this.walletService.setNis1AccountSelected(null);
