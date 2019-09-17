@@ -121,14 +121,13 @@ export class TransactionsService {
 
 
   constructor(
-    private mosaicServices: MosaicService,
-    private namespaceService: NamespacesService,
-    public nodeService: NodeService,
     private proximaxProvider: ProximaxProvider,
-    private walletService: WalletService
-
+    public nodeService: NodeService,
+    private walletService: WalletService,
+    private mosaicServices: MosaicService,
+    private namespaceService: NamespacesService
   ) {
-    this.monitorNewAccounts();
+
   }
 
 
@@ -216,7 +215,7 @@ export class TransactionsService {
       });
     }
 
-    console.log('=== TRANSACCIONES AGREGADAS ===', aggregateTransactions);
+    console.log('TRANSACCIONES AGREGADAS ===>', aggregateTransactions);
     this.setAggregateBondedTransactions$(aggregateTransactions);
   }
 
@@ -569,28 +568,12 @@ export class TransactionsService {
   }
 
   /**
-   *
-   *
-   * @memberof TransactionsService
-   */
-  monitorNewAccounts(){
-    this.walletService.getAccountsPushedSubject().subscribe(
-      next => {
-        if (next && next.length > 0) {
-          console.log('=== YOU HAVE NEW ACCOUNT ===', next);
-          this.searchAccountsInfo(next);
-        }
-      }
-    );
-  }
-
-  /**
    * Search all account information
    * Returns an arrangement with all mosaic ids found and all account information
    * @param accounts
    * @param pushed
    */
-  searchAccountsInfo(accounts: AccountsInterface[]) {
+  searchAccountsInfo(accounts: AccountsInterface[], pushed = false) {
     // console.log('ACCOUNTS INTERFACE ---> ', accounts);
     this.walletService.searchAccountsInfo(accounts).then(
       (data: { mosaicsIds: MosaicId[], accountsInfo: AccountsInfoInterface[] }) => {
@@ -598,10 +581,12 @@ export class TransactionsService {
         this.walletService.validateMultisigAccount(accounts);
         const publicsAccounts: PublicAccount[] = [];
         data.accountsInfo.forEach((element: AccountsInfoInterface) => {
-          publicsAccounts.push(this.proximaxProvider.createPublicAccount(
-            element.accountInfo.publicKey,
-            element.accountInfo.publicAccount.address.networkType
-          ));
+          if (element.accountInfo) {
+            publicsAccounts.push(this.proximaxProvider.createPublicAccount(
+              element.accountInfo.publicKey,
+              element.accountInfo.publicAccount.address.networkType
+            ));
+          }
         });
 
         // console.log('==== publicsAccounts ====', publicsAccounts);
@@ -617,7 +602,6 @@ export class TransactionsService {
 
       }
     ).catch(error => console.log(error));
-
   }
 
 
@@ -626,6 +610,7 @@ export class TransactionsService {
    * @param transactions
    */
   setAggregateBondedTransactions$(transactions: TransactionsInterface[]) {
+    console.log('=== SET AGGREGATE TRANSACTION ===', transactions);
     this._aggregateTransactionsSubject.next(transactions);
   }
 
