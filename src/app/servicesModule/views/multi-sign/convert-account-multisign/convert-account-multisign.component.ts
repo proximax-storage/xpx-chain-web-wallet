@@ -204,11 +204,19 @@ export class ConvertAccountMultisignComponent implements OnInit {
         if (transactions.length > 0) {
           for (let element of currentWallet.accounts) {
             for (let index = 0; index < transactions.length; index++) {
-              if (transactions[index].data.type === 16961) {
-                this.disable = (transactions[index].data.signer.publicKey === element.publicAccount.publicKey);
+              // if (transactions[index].data.type === 16961) {
+              for (let i = 0; i < transactions[index].data['innerTransactions'].length; i++) {
+
+                this.disable = (transactions[index].data['innerTransactions'][i].signer.publicKey  === element.publicAccount.publicKey);
+                console.log(this.disable)
                 if (this.disable)
                   break
               }
+              
+              // this.disable = (transactions[index].data['innerTransactions'][i].signer.publicKey  === element.publicAccount.publicKey);
+              if (this.disable)
+                break
+              // }
             }
             this.buildSelectAccount(element, this.disable)
           }
@@ -460,11 +468,11 @@ export class ConvertAccountMultisignComponent implements OnInit {
             this.sharedService.showSuccess('', 'Transaction confirmed');
           } else if (statusTransaction['type'] === 'unconfirmed' && match) {
             this.transactionService.searchAccountsInfo([this.currentAccountToConvert])
-         
+
             signedTransaction = null;
             this.sharedService.showInfo('', 'Transaction unconfirmed');
 
-          } else if (statusTransaction['type'] === 'aggregateBondedAdded' && match){
+          } else if (statusTransaction['type'] === 'aggregateBondedAdded' && match) {
             signedTransaction = null;
             this.sharedService.showSuccess('', 'aggregate Bonded add');
           } else if (match) {

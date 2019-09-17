@@ -114,7 +114,7 @@ export class PartialComponent implements OnInit {
     console.log('ACCOUNT MULTISIG -----> ', accountMultisig);
     if (accountMultisig && accountMultisig.multisigInfo && accountMultisig.multisigInfo.cosignatories && accountMultisig.multisigInfo.cosignatories.length > 0) {
       accountMultisig.multisigInfo.cosignatories.forEach(element => {
-        const cosignatorie: AccountsInterface = this.walletService.filterAccount('', null, element.address.pretty());
+        const cosignatorie: AccountsInterface = this.walletService.filterAccountWallet('', null, element.address.pretty());
         console.log('cosignatorie ---->', cosignatorie);
         if (cosignatorie) {
           const publicAccount = this.proximaxProvider.createPublicAccount(cosignatorie.publicAccount.publicKey, cosignatorie.publicAccount.address.networkType);
@@ -146,7 +146,7 @@ export class PartialComponent implements OnInit {
         data.modifications.forEach(element => {
           const exist = this.arraySelect.find((b: any) => b.value.address === element.cosignatoryPublicAccount.address.plain());
           if (!exist) {
-            const possibleCosignatorie: AccountsInterface = this.walletService.filterAccount('', null, element.cosignatoryPublicAccount.address.pretty());
+            const possibleCosignatorie: AccountsInterface = this.walletService.filterAccountWallet('', null, element.cosignatoryPublicAccount.address.pretty());
             console.log('possibleCosignatorie ---->', possibleCosignatorie);
             // Address encontrada
             if (possibleCosignatorie) {

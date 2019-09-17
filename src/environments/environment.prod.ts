@@ -6,15 +6,16 @@ import { ServerConfig, NetworkTypes } from 'nem-library';
 export const environment = {
   production: true,
   itemBooksAddress: 'sw-books',
-  version: '0.3.1.5',
-  nameKeyNodeSelected: `sw-selected-node-01`,
+  version: '0.3.1.7',
+  nameKeyNodeSelected: `sw-selected-node-03`,
   nameKeyWalletStorage: `sw-04`,
-  nameKeyNodeStorage: `sw-nodes-01`,
+  nameKeyNodeStorage: `sw-nodes-03`,
   nameKeyNamespaces: `sw-namespaces-01`,
   nameKeyMosaicStorage: `sw-mosaics-01`,
+  nameKeyVersion: 'sw-version',
   protocol: `https`,
   protocolWs: `wss`,
-  nodeDefault: 'bctestnet4.xpxsirius.io:443',
+  nodeDefault: 'bctestnet.xpxsirius.io:443',
   nodeExplorer: 'https://bctestnetexplorer.xpxsirius.io/#/result/hash',
   mosaicXpxInfo: {
     name: 'prx.xpx',
@@ -26,7 +27,7 @@ export const environment = {
     divisibility: 6
   },
   blockchainConnection: {
-    host: 'bctestnet4.xpxsirius.io',
+    host: 'bctestnet.xpxsirius.io',
     port: 443,
     protocol: 'https',
     useSecureMessage: false

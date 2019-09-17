@@ -1765,3 +1765,8 @@ ul.stepper.horizontal .step-title {
 .mar-1rem {
   margin: 1rem !important;
 }
+
+.loading-blue {
+  margin: 5px !important;
+  color: #2369a8 !important;
+}

@@ -10,7 +10,7 @@ export class TransferXpxComponent implements OnInit {
 
   showCertificate: boolean = false;
   transactionSuccess: any;
-  routeCertificate: string;
+  routeCertificate: string = `/${AppConfig.routes.auth}`;
   title: string = 'Swap Process';
   subtitle: string = null;
   constructor() { }
@@ -23,7 +23,6 @@ export class TransferXpxComponent implements OnInit {
     this.subtitle = 'The swap process has already started.';
     this.showCertificate = !this.showCertificate;
     this.transactionSuccess = event;
-    this.routeCertificate = `/${AppConfig.routes.auth}`;
     console.log("this.transactionSuccess", this.transactionSuccess);
   }
 

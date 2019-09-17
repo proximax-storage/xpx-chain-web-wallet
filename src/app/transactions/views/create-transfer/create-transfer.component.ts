@@ -435,7 +435,7 @@ export class CreateTransferComponent implements OnInit {
     if (element.isMultisign && element.isMultisign.cosignatories && element.isMultisign.cosignatories.length > 0) {
       if (element.isMultisign.cosignatories.length === 1) {
         const address = this.proximaxProvider.createFromRawAddress(element.isMultisign.cosignatories[0].address['address']);
-        const cosignatorieAccount: AccountsInterface = this.walletService.filterAccount('', null, address.pretty());
+        const cosignatorieAccount: AccountsInterface = this.walletService.filterAccountWallet('', null, address.pretty());
         this.cosignatorie = (cosignatorieAccount) ? cosignatorieAccount : null;
         console.log('---> SET COSIGNATARIO BY DEFAULT (1)', this.cosignatorie);
         return;
@@ -443,7 +443,7 @@ export class CreateTransferComponent implements OnInit {
         const listCosignatorie = [];
         element.isMultisign.cosignatories.forEach(cosignatorie => {
           const address = this.proximaxProvider.createFromRawAddress(cosignatorie.address['address']);
-          const cosignatorieAccount: AccountsInterface = this.walletService.filterAccount('', null, address.pretty());
+          const cosignatorieAccount: AccountsInterface = this.walletService.filterAccountWallet('', null, address.pretty());
           if (cosignatorieAccount) {
             listCosignatorie.push({
               label: cosignatorieAccount.name,

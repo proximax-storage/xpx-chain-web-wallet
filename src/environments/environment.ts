@@ -1,5 +1,4 @@
 import { ServerConfig, NetworkTypes } from 'nem-library';
-
 // This file can be replaced during build by using the `fileReplacements` array.
 // `ng build ---prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
@@ -7,15 +6,16 @@ import { ServerConfig, NetworkTypes } from 'nem-library';
 export const environment = {
   production: false,
   itemBooksAddress: 'sw-books',
-  version: '0.3.1.5',
-  nameKeyNodeSelected: `sw-selected-node-01`,
+  version: '0.3.1.7',
+  nameKeyNodeSelected: `sw-selected-node-03`,
   nameKeyWalletStorage: `sw-05`,
-  nameKeyNodeStorage: `sw-nodes-02`,
+  nameKeyNodeStorage: `sw-nodes-03`,
   nameKeyNamespaces: `sw-namespaces-02`,
   nameKeyMosaicStorage: `sw-mosaics-02`,
+  nameKeyVersion: 'sw-version',
   protocol: `https`,
   protocolWs: `wss`,
-  nodeDefault: 'bctestnet4.xpxsirius.io:443',
+  nodeDefault: 'bctestnet.xpxsirius.io:443',
   nodeExplorer: 'https://bctestnetexplorer.xpxsirius.io/#/result/hash',
   mosaicXpxInfo: {
     name: 'prx.xpx',
@@ -27,7 +27,7 @@ export const environment = {
     divisibility: 6
   },
   blockchainConnection: {
-    host: 'bctestnet4.xpxsirius.io',
+    host: 'bctestnet.xpxsirius.io',
     port: 443,
     protocol: 'https',
     useSecureMessage: false

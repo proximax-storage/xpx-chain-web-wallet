@@ -36,6 +36,7 @@ import { HighchartsChartComponent } from './views/voting/vote-in-poll/highcharts
 import { AccountNis1FoundComponent } from './views/account/account-nis1-found/account-nis1-found.component';
 import { AccountNis1TransferXpxComponent } from './views/account/account-nis1-transfer-xpx/account-nis1-transfer-xpx.component';
 import { Nis1AccountsConsignerComponent } from './views/swap/nis1-accounts-consigner/nis1-accounts-consigner.component';
+import { TransferXpxNis1Component } from './views/swap/transfer-xpx-nis1/transfer-xpx-nis1.component';
 
 
 @NgModule({
@@ -73,7 +74,8 @@ import { Nis1AccountsConsignerComponent } from './views/swap/nis1-accounts-consi
     HighchartsChartComponent,
     AccountNis1FoundComponent,
     AccountNis1TransferXpxComponent,
-    Nis1AccountsConsignerComponent
+    Nis1AccountsConsignerComponent,
+    TransferXpxNis1Component
   ],
   schemas: [ NO_ERRORS_SCHEMA ],
   imports: [

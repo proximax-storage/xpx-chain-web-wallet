@@ -62,7 +62,7 @@ export class DashboardService {
             this.isIncrementViewDashboard = 0;
             this.destroySubscription();
             // this.subscriptions['isLogged'].unsubscribe();
-            this.dataBridgeService.closeConenection();
+            this.dataBridgeService.closeConection();
             this.walletService.destroyAccountInfo();
             this.namespaceService.destroyDataNamespace();
             return;

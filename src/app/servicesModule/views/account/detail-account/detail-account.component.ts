@@ -56,7 +56,7 @@ export class DetailAccountComponent implements OnInit {
   ngOnInit() {
     this.configurationForm = this.sharedService.configurationForm;
     let param = this.activateRoute.snapshot.paramMap.get('name');
-    this.currenAccount = (param) ? this.walletService.filterAccount(param) : this.walletService.filterAccount('', true);
+    this.currenAccount = (param) ? this.walletService.filterAccountWallet(param) : this.walletService.filterAccountWallet('', true);
     this.buildData();
     this.createForm();
     this.subscribeAccount = this.walletService.getAccountsInfo$().subscribe(
@@ -148,7 +148,7 @@ export class DetailAccountComponent implements OnInit {
         }
         this.walletService.changeName(this.accountName, this.newNameAccount);
         this.editNameAccount = !this.editNameAccount;
-        this.currenAccount = this.walletService.filterAccount(this.newNameAccount);
+        this.currenAccount = this.walletService.filterAccountWallet(this.newNameAccount);
         this.newNameAccount = '';
         this.buildData();
         this.sharedService.showSuccess('', 'Your account and contact name has been updated');
