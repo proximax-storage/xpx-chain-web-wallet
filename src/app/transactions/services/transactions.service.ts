@@ -573,7 +573,7 @@ export class TransactionsService {
    *
    * @memberof TransactionsService
    */
-  monitorNewAccounts(){
+  monitorNewAccounts() {
     this.walletService.getAccountsPushedSubject().subscribe(
       next => {
         if (next && next.length > 0) {
@@ -629,7 +629,23 @@ export class TransactionsService {
    */
   setAggregateBondedTransactions$(transactions: TransactionsInterface[]) {
     console.log('=== SET AGGREGATE TRANSACTION ===', transactions);
-    this._aggregateTransactionsSubject.next(transactions);
+    this.getAggregateBondedTransactions$().pipe(first()).subscribe(
+      transactionsSaved => {
+        const pushTransactions = [];
+        if (transactionsSaved.length > 0) {
+          for (let element of transactions) {
+            const exist = transactionsSaved.find(x=> x.data['transactionInfo'].hash === element.data['transactionInfo'].hash);
+            if (!exist){
+              pushTransactions.push(element);
+            }
+          }
+
+          this._aggregateTransactionsSubject.next(pushTransactions);
+        } else {
+          this._aggregateTransactionsSubject.next(transactions);
+        }
+      }
+    );
   }
 
   /**

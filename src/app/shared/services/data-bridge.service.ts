@@ -208,6 +208,8 @@ export class DataBridgeService {
       connector.aggregateBondedAdded(this.proximaxProvider.createFromRawAddress(element.address)).subscribe((aggregateBondedAdded: Transaction) => {
         console.log('CONNECTED --> ', element.address);
         console.log('New transaction AggregateBondedAdded--> ', aggregateBondedAdded);
+        const builded = this.transactionsService.getStructureDashboard(aggregateBondedAdded);
+        this.transactionsService.setAggregateBondedTransactions$([builded]);
         this.setTransactionStatus({
           'type': 'aggregateBondedAdded',
           'data': aggregateBondedAdded
@@ -416,9 +418,9 @@ export class DataBridgeService {
   searchTransactionStatus() {
     console.log(this.subscription);
     // Get transaction status
-    this.subscription.push(this.getTransactionStatus().subscribe(
+    this.subscription.push(this.getTransactionStatus().pipe(first()).subscribe(
       statusTransaction => {
-        console.log('----statusTransaction---', statusTransaction);
+        console.log('=== STATUS TRANSACTION ===', statusTransaction);
         if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
           for (let element of this.transactionSigned) {
             console.log('element ', element);
@@ -475,7 +477,6 @@ export class DataBridgeService {
     console.log('=== TENGO UNA LLAMADA A VALIDAR TRANSACCION ===');
     this.transactionsService.getAggregateBondedTransactions$().pipe(first()).subscribe(
       next => {
-        console.log('=== TRANSACCIONES AGREGADAS ===', next);
         next.forEach(element => {
           if (element.data['transactionInfo']) {
             console.log('=== HASH CACHE TRANSACTION ===', element.data['transactionInfo'].hash);

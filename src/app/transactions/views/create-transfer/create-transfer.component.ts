@@ -512,7 +512,11 @@ export class CreateTransferComponent implements OnInit {
                 this.sharedService.showSuccess('', 'Transaction confirmed');
               } else if (statusTransaction['type'] === 'unconfirmed' && match) {
                 this.sharedService.showInfo('', 'Transaction unconfirmed');
-              } else if (match) {
+              } else if (statusTransaction['type'] === 'aggregateBondedAdded' && match) {
+                this.sharedService.showInfo('', 'Transaction aggregate bonded added');
+              } else if (statusTransaction['type'] === 'cosignatureSignedTransaction' && match) {
+                this.sharedService.showInfo('', 'Transaction cosignature signed');
+              } else if (statusTransaction['type'] === 'error' && match) {
                 this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransactionHash);
                 this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
               }
