@@ -574,13 +574,11 @@ export class TransactionsService {
    * @param pushed
    */
   searchAccountsInfo(accounts: AccountsInterface[], pushed = false) {
-    console.log('ACCOUNTS INTERFACE ---> ', accounts);
+    // console.log('ACCOUNTS INTERFACE ---> ', accounts);
     this.walletService.searchAccountsInfo(accounts).then(
       (data: { mosaicsIds: MosaicId[], accountsInfo: AccountsInfoInterface[] }) => {
-
+        // console.log('=== DATA ===', data);
         this.walletService.validateMultisigAccount(accounts);
-
-
         const publicsAccounts: PublicAccount[] = [];
         data.accountsInfo.forEach((element: AccountsInfoInterface) => {
           publicsAccounts.push(this.proximaxProvider.createPublicAccount(
@@ -589,6 +587,7 @@ export class TransactionsService {
           ));
         });
 
+        // console.log('==== publicsAccounts ====', publicsAccounts);
         // Search all transactions aggregate bonded from array publics accounts
         if (publicsAccounts.length > 0) {
           this.searchAggregateBonded(publicsAccounts);

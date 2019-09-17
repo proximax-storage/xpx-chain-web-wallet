@@ -61,28 +61,6 @@ export class WalletService {
   }
 
   /**
-   *
-   * @param data
-   */
-  setNis1AccounsWallet(account) {
-    this.nis1AccounsWallet.push(account);
-  }
-
-  /**
-   *
-   */
-  getNis1AccounsWallet() {
-    return this.nis1AccounsWallet;
-  }
-
-  /**
-   *
-   */
-  clearNis1AccounsWallet() {
-    this.nis1AccounsWallet = [];
-  }
-
-  /**
   *
   * @param accounts
   * @param pushed
@@ -122,7 +100,10 @@ export class WalletService {
             this.changeIsMultiSign(element.name, isMultisig)
             this.setAccountsInfo([accountInfoBuilded], true);
             counter = counter + 1;
-            if (accounts.length === counter && mosaicsIds.length > 0) {
+           /* console.log('=== counter ===', counter);
+            console.log('=== accounts.length ===', accounts.length);
+            console.log('=== mosaicsIds.length  ===', mosaicsIds.length);*/
+            if (accounts.length === counter) {
               resolve({
                 mosaicsId: mosaicsIds,
                 accountsInfo: accountsInfo
@@ -138,7 +119,7 @@ export class WalletService {
             accountsInfo.push(accountInfoBuilded);
             this.setAccountsInfo([accountInfoBuilded], true);
             counter = counter + 1;
-            if (accounts.length === counter && mosaicsIds.length > 0) {
+            if (accounts.length === counter) {
               resolve({
                 mosaicsId: mosaicsIds,
                 accountsInfo: accountsInfo
@@ -151,7 +132,6 @@ export class WalletService {
 
     return await promise;
   }
-
 
   /**
    *
@@ -196,6 +176,16 @@ export class WalletService {
         this.canVote = false;
       }
     });
+  }
+
+
+  /**
+   *
+   *
+   * @memberof WalletService
+   */
+  clearNis1AccounsWallet() {
+    this.nis1AccounsWallet = [];
   }
 
   /**
@@ -506,9 +496,22 @@ export class WalletService {
 
   /**
    *
+   *
+   * @returns {Observable<any>}
+   * @memberof WalletService
    */
   getNameAccount$(): Observable<any> {
     return this.currentAccountObs$;
+  }
+
+  /**
+   *
+   *
+   * @returns
+   * @memberof WalletService
+   */
+  getNis1AccounsWallet() {
+    return this.nis1AccounsWallet;
   }
 
 
@@ -696,6 +699,14 @@ export class WalletService {
   }
 
   /**
+   *
+   * @param data
+   */
+  setNis1AccounsWallet(account) {
+    this.nis1AccounsWallet.push(account);
+  }
+
+  /**
    *Set a wallet as current
    *
    * @param {*} wallet
@@ -769,7 +780,7 @@ export class WalletService {
         if (account.isMultisign !== null) {
           if (account.isMultisign.cosignatories.length > 0) {
             account.isMultisign.cosignatories.forEach(cosignatorie => {
-             // console.log('==== COSIGNATARIOS ====', cosignatorie);
+              // console.log('==== COSIGNATARIOS ====', cosignatorie);
               const exist = this.filterAccountWallet('', null, cosignatorie.address.pretty());
               // console.log('==== EXISTE? ====', exist);
               if (exist) {

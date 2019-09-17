@@ -79,11 +79,11 @@ export class DataBridgeService {
    *
    * @memberof DataBridgeService
    */
-  closeConenection(destroyTransactions = true) {
+  closeConection(destroyTransactions = true) {
     console.log("Destruye conexion con el websocket");
-    this.setblock(null);
     this.destroyConection = true;
     if (destroyTransactions) {
+      this.setblock(null);
       this.transactionSigned = [];
       this.setTransactionStatus(null);
       this.transactionsService.destroyAllTransactions();
