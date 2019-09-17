@@ -87,7 +87,6 @@ export class NemServiceService {
    * @memberof NemServiceService
    */
   getAccountsInfo(accounts: any) {
-    console.log('this accounssssss NIS1------->>>>', accounts);
     for (const element of accounts) {
       if (element.nis1Account !== null) {
         const address = this.createAddressToString(element.nis1Account.address.value);
@@ -96,7 +95,6 @@ export class NemServiceService {
             let consignerOf: boolean = false;
             let consignerAccountsInfo: any = [];
 
-            console.log('this accounssssss Info next------->>>>', next);
             if (next.cosignatoryOf.length > 0) {
               consignerOf = true;
               consignerAccountsInfo = next.cosignatoryOf;
@@ -134,14 +132,12 @@ export class NemServiceService {
    * @memberof NemServiceService
    */
   getAccountsInfoAccountNew(account: any, name: string) {
-    console.log('this accounssssss NIS1------->>>>', account);
     const address = this.createAddressToString(account.address.value);
     this.getAccountInfo(address).pipe(first()).pipe((timeout(10000))).subscribe(
       next => {
         let consignerOf: boolean = false;
         let consignerAccountsInfo: any = [];
 
-        console.log('this accounssssss Info next------->>>>', next);
         if (next.cosignatoryOf.length > 0) {
           consignerOf = true;
           consignerAccountsInfo = next.cosignatoryOf;

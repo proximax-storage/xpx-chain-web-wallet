@@ -40,6 +40,8 @@ export class Nis1AccountsListComponent implements OnInit {
 
   accountSelected(account: any, index: number) {
     console.log('Account Selected ------>', account);
+    this.walletService.setAccountSelectedWalletNis1(account);
+
     console.log('index ------>', index);
     this.searchItem[index] = true;
     const address = this.nemProvider.createAddressToString(account.nis1Account.address.value);

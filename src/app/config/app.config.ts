@@ -2,6 +2,8 @@ import { InjectionToken } from '@angular/core';
 export const APP_CONFIG = new InjectionToken('app.config');
 export const AppConfig: Config = {
   routes: {
+    accountNis1Found: 'account-nis1-found',
+    accountList: 'account-list',
     account: 'details-account',
     accountCreated: 'account-created',
     addressBook: 'address-book',
@@ -45,9 +47,7 @@ export const AppConfig: Config = {
     voteInPoll: 'vote-poll',
     walletCreated: 'wallet-created',
     nis1AccountList: 'nis1-account-list',
-    accountList: 'account-list',
     walletNis1Found: 'wallet-nis1-found',
-    accountNis1Found: 'account-nis1-found',
     nis1AccountsConsigner: 'nis1-accounts-consigner',
     transferXpx: 'transfer-xpx',
     accountNis1TransferXpx: 'account-nis1-transfer-xpx',
@@ -63,6 +63,7 @@ export interface Config {
     account: string;
     accountCreated: string;
     accountList: string;
+    accountNis1Found: string;
     addressBook: string;
     addContacts: string;
     apostille: string;
@@ -105,7 +106,6 @@ export interface Config {
     walletCreated: string;
     nis1AccountList: string;
     walletNis1Found: string;
-    accountNis1Found: string;
     nis1AccountsConsigner: string;
     transferXpx: string;
     accountNis1TransferXpx: string;

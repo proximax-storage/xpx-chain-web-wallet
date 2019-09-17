@@ -59,8 +59,8 @@ const routes: Routes = [
     component: WalletNis1FoundComponent,
     data: {
       meta: {
-        title: 'accountNis1Found.title',
-        description: 'accountNis1Found.text',
+        title: 'walletNis1Found.title',
+        description: 'walletNis1Found.text',
         override: true,
       },
     }

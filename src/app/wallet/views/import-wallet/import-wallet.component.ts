@@ -181,6 +181,7 @@ export class ImportWalletComponent implements OnInit {
     });
 
     this.walletService.saveWalletStorage(nameWallet, accountBuilded);
+    this.walletService.setAccountSelectedWalletNis1(accountBuilded);
     this.router.navigate([`/${AppConfig.routes.walletCreated}`]);
   }
 
