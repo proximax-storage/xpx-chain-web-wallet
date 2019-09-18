@@ -32,6 +32,7 @@ export class Nis1AccountsListComponent implements OnInit {
     this.walletService.setAccountInfoNis1(null);
     this.accountsNis1 = this.walletService.currentWallet.accounts;
     for (let index = 0; index < this.accountsNis1.length; index++) {
+      this.accountsNis1[index].nis1Account.address = this.nemProvider.createAddressToString(this.accountsNis1[index].nis1Account.address.value);
       this.searchItem.push(false);
     }
   }

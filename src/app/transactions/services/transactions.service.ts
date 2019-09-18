@@ -569,10 +569,9 @@ export class TransactionsService {
 
   /**
    *
-   *
    * @memberof TransactionsService
    */
-  monitorNewAccounts(){
+  monitorNewAccounts() {
     this.walletService.getAccountsPushedSubject().subscribe(
       next => {
         if (next && next.length > 0) {
@@ -585,8 +584,6 @@ export class TransactionsService {
 
   /**
    * Search all account information
-   * Returns an arrangement with all mosaic ids found and all account information
-   * @param accounts
    * @param pushed
    */
   searchAccountsInfo(accounts: AccountsInterface[]) {
@@ -597,10 +594,12 @@ export class TransactionsService {
         this.walletService.validateMultisigAccount(accounts);
         const publicsAccounts: PublicAccount[] = [];
         data.accountsInfo.forEach((element: AccountsInfoInterface) => {
-          publicsAccounts.push(this.proximaxProvider.createPublicAccount(
-            element.accountInfo.publicKey,
-            element.accountInfo.publicAccount.address.networkType
-          ));
+          if (element.accountInfo) {
+            publicsAccounts.push(this.proximaxProvider.createPublicAccount(
+              element.accountInfo.publicKey,
+              element.accountInfo.publicAccount.address.networkType
+            ));
+          }
         });
 
         // console.log('==== publicsAccounts ====', publicsAccounts);
@@ -616,7 +615,6 @@ export class TransactionsService {
 
       }
     ).catch(error => console.log(error));
-
   }
 
 
@@ -625,7 +623,33 @@ export class TransactionsService {
    * @param transactions
    */
   setAggregateBondedTransactions$(transactions: TransactionsInterface[]) {
-    this._aggregateTransactionsSubject.next(transactions);
+    console.log('=== SET AGGREGATE TRANSACTION ===', transactions);
+    if (transactions.length > 0) {
+      this.getAggregateBondedTransactions$().pipe(first()).subscribe(
+        transactionsSaved => {
+          console.log('=== transactionsSaved ====', transactionsSaved);
+          const pushTransactions = [];
+          if (transactionsSaved.length > 0) {
+            for (let element of transactions) {
+              const exist = transactionsSaved.find(x => x.data['transactionInfo'].hash === element.data['transactionInfo'].hash);
+              if (!exist) {
+                pushTransactions.push(element);
+              }
+            }
+
+            if (pushTransactions.length > 0) {
+              console.log('GUARDAR ---> ', pushTransactions);
+              this._aggregateTransactionsSubject.next(pushTransactions);
+            }
+          } else {
+            console.log('GUARDAR 2---> ', transactions);
+            this._aggregateTransactionsSubject.next(transactions);
+          }
+        }
+      );
+    }else {
+      this._aggregateTransactionsSubject.next([]);
+    }
   }
 
   /**

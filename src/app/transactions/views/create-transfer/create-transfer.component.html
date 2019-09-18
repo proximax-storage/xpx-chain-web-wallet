@@ -75,6 +75,7 @@
         <div class="row">
           <div class="col-8 col-sm-9 col-md-10">
             <div class="md-form form-sm mt-1rem mb-0rem">
+              <img class="form-control-feedback" src="assets/images/img/icon-address-green-book-16h-proximax-sirius-wallet.svg" alt="" width="43" height="43">
               <input mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
                 class="form-control form-control-sm input-border" style="border: 2px solid #2ba1b9;"
                 placeholder="Recipient" formControlName="accountRecipient" id="recipient-invalid-{{invalidRecipient}}"
@@ -139,11 +140,12 @@
           <!-- Amount Input -->
           <div class="col-12 mx-auto">
             <div class="md-form form-sm mt-1rem mb-0rem">
+              <img class="form-control-feedback" src="assets/images/img/icon-amount-green-16h-proximax-sirius-wallet.svg" alt="">
               <input pattern="^[+]?([0-9]*[.])?[0-9]+$" currencyMask [options]="optionsXPX" mdbInputDirective
                 mdbValidate [validateSuccess]="true" [maxlength]="configurationForm.amount.maxLength"
                 [validateError]="true" type="text" class="form-control form-control-sm input-border input-amount"
                 placeholder="Enter amount" formControlName="amountXpx">
-              <span class="label-i fw-600">SEND</span>
+              <span class="label-i fw-600 pl-2rem">SEND</span>
 
               <mdb-error
                 *ngIf="validateInput('amountXpx').invalid && (validateInput('amountXpx').dirty || validateInput('amountXpx').touched)">
@@ -198,13 +200,14 @@
                 <!-- Amount Input -->
                 <div class="col-12 mx-auto">
                   <div class="md-form form-sm mt-1rem mb-0rem">
+                    <img class="form-control-feedback" src="assets/images/img/icon-amount-green-16h-proximax-sirius-wallet.svg" alt="">
                     <input currencyMask [options]="boxOtherMosaics[i].config" mdbInputDirective mdbValidate
                       [maxlength]="configurationForm.amount.maxLength" type="text"
                       class="form-control form-control-sm input-border input-amount"
                       [(ngModel)]="boxOtherMosaics[i].amount" [ngModelOptions]="{standalone: true}"
                       (ngModelChange)="amountOtherMosaicChanged($event, otherMosaic.id, i)"
                       placeholder="Enter quantity">
-                    <span class="label-i fw-600">SEND</span>
+                    <span class="label-i fw-600 pl-2rem">SEND</span>
 
                     <!-- Message Error Insufficient balance-->
                     <mdb-error *ngIf="otherMosaic.errorBalance">
@@ -257,6 +260,7 @@
     <div class="row">
       <div class="col-11 col-md-10 col-lg-8 mx-auto">
         <div class="md-form form-sm mt-1rem mb-0rem">
+          <img class="form-control-feedback" src="assets/images/img/icon-messenger-green-16h-proximax-sirius-wallet.svg" alt="" style="padding: 30px 10px !important">
           <textarea mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
             id="message" class="md-textarea form-control" mdbInput placeholder="Message" formControlName="message"
             [maxlength]="configurationForm.message.maxLength"></textarea>
@@ -273,6 +277,8 @@
     <div class="row">
       <div class="col-11 col-md-10 col-lg-8 mx-auto">
         <div class="md-form form-sm">
+          <img class="form-control-feedback" src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg"
+            alt="">
           <input [maxlength]="configurationForm.passwordWallet.maxLength"
             [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" required
             mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password" id="password"

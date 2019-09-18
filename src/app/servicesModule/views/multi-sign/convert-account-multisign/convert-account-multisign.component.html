@@ -27,6 +27,7 @@
       <form [formGroup]="convertAccountMultsignForm" (ngSubmit)="convertIntoMultisigTransaction()">
 
         <!-- SELECT ACCOUNT TO CONVERT-->
+
         <div class="row mt-1rem">
           <div class="col-11 col-sm-12 col-md-12 col-lg-8 mx-auto">
 
@@ -36,19 +37,20 @@
             </ng-select> -->
 
 
-            <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" class="selectWrapper"
-            [items]="currentAccounts" formControlName="selectAccount" bindLabel="label" bindValue="value" placeholder="Select an account"
-            (change)="selectAccount($event)">
+            <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
+              class="selectWrapper" [items]="currentAccounts" formControlName="selectAccount" bindLabel="label"
+              bindValue="value" placeholder="Select an account" (change)="selectAccount($event)">
               <ng-template ng-option-tmp let-item="item" let-index="index">
-                  <b> <i 
-                    [ngStyle]="{'color':item.disabled ? '#0056b3' : 'rgba(0,0,0,0.38)' }"
-                    class="fa fa-bell">  </i></b> &nbsp; 
+                <b> <i [ngStyle]="{'color':item.disabled ? '#0056b3' : 'rgba(0,0,0,0.38)' }" class="fa fa-bell">
+                  </i></b>
+                &nbsp;
                 <b>{{item.label}}</b>
               </ng-template>
             </ng-select>
             <!-- VALIDATION -->
             <mdb-error class="ml-1rem">
-              <span *ngIf="validateInput('selectAccount').invalid && (validateInput('selectAccount').dirty || validateInput('selectAccount').touched)"
+              <span
+                *ngIf="validateInput('selectAccount').invalid && (validateInput('selectAccount').dirty || validateInput('selectAccount').touched)"
                 class="fs-08rem fw-600 color-error-message">Select an account</span>
 
               <!-- <span *ngIf="notBalance" class="fs-08rem fw-600 color-error-message">Insufficient balance</span> -->
@@ -82,12 +84,14 @@
                   </div>
                   <div class="col-6 col-padding-left-rem0">
                     <div class="md-form form-sm mt-03rem mb-0rem">
-                      <input max="{{minApprovaMaxLength}}" min="{{minApprovaMinLength}}" formControlName="minApprovalDelta"
-                        required mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="number"
-                        id="minApprovalDelta" class="form-control form-control-sm input-border" placeholder="Min approval"
+                      <input max="{{minApprovaMaxLength}}" min="{{minApprovaMinLength}}"
+                        formControlName="minApprovalDelta" required mdbInputDirective mdbValidate
+                        [validateSuccess]="true" [validateError]="true" type="number" id="minApprovalDelta"
+                        class="form-control form-control-sm input-border" placeholder="Min approval"
                         onkeyup="javascript:this.value=this.value.toLowerCase();">
                       <!-- VALIDATION -->
-                      <mdb-error *ngIf="validateInput('minApprovalDelta', '').invalid && (validateInput('minApprovalDelta', '').dirty || validateInput('minApprovalDelta', '').touched)">
+                      <mdb-error
+                        *ngIf="validateInput('minApprovalDelta', '').invalid && (validateInput('minApprovalDelta', '').dirty || validateInput('minApprovalDelta', '').touched)">
                         <span>Input invalid</span>
                       </mdb-error>
                     </div>
@@ -102,12 +106,14 @@
                   </div>
                   <div class="col-6 col-padding-left-rem0">
                     <div class="md-form form-sm mt-03rem mb-0rem">
-                      <input max="{{minApprovaMaxLength}}" min="{{minApprovaMinLength}}" formControlName="minRemovalDelta"
-                        required mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="number"
-                        id="minRemovalDelta" class="form-control form-control-sm input-border" placeholder="Min removal"
+                      <input max="{{minApprovaMaxLength}}" min="{{minApprovaMinLength}}"
+                        formControlName="minRemovalDelta" required mdbInputDirective mdbValidate
+                        [validateSuccess]="true" [validateError]="true" type="number" id="minRemovalDelta"
+                        class="form-control form-control-sm input-border" placeholder="Min removal"
                         onkeyup="javascript:this.value=this.value.toLowerCase();">
                       <!-- VALIDATION -->
-                      <mdb-error *ngIf="validateInput('minRemovalDelta', '').invalid && (validateInput('minRemovalDelta', '').dirty || validateInput('minRemovalDelta', '').touched)">
+                      <mdb-error
+                        *ngIf="validateInput('minRemovalDelta', '').invalid && (validateInput('minRemovalDelta', '').dirty || validateInput('minRemovalDelta', '').touched)">
                         <span>Input invalid</span>
                       </mdb-error>
                     </div>
@@ -129,8 +135,9 @@
               </div>
               <ng-container *ngFor="let cosign of cosignatoryList">
                 <div class="col-12 ">
-                  <span class="fs-07rem fw-600 txt-a-center "> <i (click)="deleteCosignatory(cosign.id ,cosign.disableItem, cosign.type)"
-                      style="cursor: pointer;" class="fa fa-trash fs-1rem" aria-hidden="true"></i>
+                  <span class="fs-07rem fw-600 txt-a-center "> <i
+                      (click)="deleteCosignatory(cosign.id ,cosign.disableItem, cosign.type)" style="cursor: pointer;"
+                      class="fa fa-trash fs-1rem" aria-hidden="true"></i>
                     {{cosign.publicAccount.address.plain()}}
                   </span>
                 </div>
@@ -153,8 +160,9 @@
             <ng-container *ngIf="showContacts && listContact.length > 0">
               <div class="row">
                 <div class="col-11 col-md-10 col-lg-8 mx-auto">
-                  <ng-select mdbInputDirective mdbValidate formControlName="contact" class="selectWrapper" [items]="listContact"
-                    bindLabel="label" bindValue="value" placeholder="Contact" (change)="selectContact($event)">
+                  <ng-select mdbInputDirective mdbValidate formControlName="contact" class="selectWrapper"
+                    [items]="listContact" bindLabel="label" bindValue="value" placeholder="Contact"
+                    (change)="selectContact($event)">
                   </ng-select>
                 </div>
               </div>
@@ -180,12 +188,15 @@
 
               <div class="col-7 col-sm-8 col-md-9  mt-1rem">
                 <div class="md-form form-sm mt-1rem mb-0rem">
-                  <input [maxlength]="configurationForm.privateKey.maxLength" [minlength]="configurationForm.privateKey.minLength"
-                    formControlName="cosignatory" required mdbInputDirective mdbValidate [validateSuccess]="true"
-                    [validateError]="true" type="text" id="cosignatory" class="form-control form-control-sm input-border"
-                    placeholder="Cosignatory Account public key " onkeyup="javascript:this.value=this.value.toLowerCase();">
+                  <input [maxlength]="configurationForm.privateKey.maxLength"
+                    [minlength]="configurationForm.privateKey.minLength" formControlName="cosignatory" required
+                    mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
+                    id="cosignatory" class="form-control form-control-sm input-border"
+                    placeholder="Cosignatory Account public key "
+                    onkeyup="javascript:this.value=this.value.toLowerCase();">
                   <!-- VALIDATION -->
-                  <mdb-error *ngIf="validateInput('cosignatory', '').invalid && (validateInput('cosignatory', '').dirty || validateInput('cosignatory', '').touched)">
+                  <mdb-error
+                    *ngIf="validateInput('cosignatory', '').invalid && (validateInput('cosignatory', '').dirty || validateInput('cosignatory', '').touched)">
                     <span>Input invalid</span>
                   </mdb-error>
                 </div>
@@ -193,8 +204,10 @@
               <!--SHOW CONTACT-->
               <ng-container>
                 <div class="col-4 col-sm-3 col-md-2 d-flex justify-content-center align-items-center pt-10px">
-                  <div [attr.disabled]="listContact.length === 0" class="background-gray-icons p-12px bord-rad-25px cursor-p"
-                    (click)="showContacts = (listContact.length > 0) ? !showContacts : showContacts" [title]="(!showContacts) ? 'Show contacts': 'Hide contacts'">
+                  <div [attr.disabled]="listContact.length === 0"
+                    class="background-gray-icons p-12px bord-rad-25px cursor-p"
+                    (click)="showContacts = (listContact.length > 0) ? !showContacts : showContacts"
+                    [title]="(!showContacts) ? 'Show contacts': 'Hide contacts'">
                     <img class=" w-30px" [src]="(!showContacts && listContact.length === 0) ?
 											'assets/images/img/icon-address-book-gray-28h-proximax-sirius-wallet.svg' :
 											'assets/images/img/icon-address-green-book-16h-proximax-sirius-wallet.svg'
@@ -205,29 +218,44 @@
             </div>
           </div>
         </div>
+
         <div class="row">
           <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto">
             <div class="row mt-1rem">
-              <div class="col-12 d-flex justify-content-center" style="background-image: url(assets/images/img/horizontal-line-background.jpg);">
-                <button mdbBtn type="button" rounded="true" [disabled]="mdbBtnAddCosignatory" mdbWavesEffect class="background-btn-inverse pl-2rem pr-2rem"
-                  size="md" (click)="addCosignatory()">
+              <div class="col-12 d-flex justify-content-center"
+                style="background-image: url(assets/images/img/horizontal-line-background.jpg);">
+                <button mdbBtn type="button" rounded="true" [disabled]="mdbBtnAddCosignatory" mdbWavesEffect
+                  class="background-btn-inverse pl-2rem pr-2rem" size="md" (click)="addCosignatory()">
                   <span class="fs-1-2em color-blue-intermedio fw-700">(+) Add Cosignatory</span>
                 </button>
               </div>
             </div>
           </div>
         </div>
+        <div class="row">
+          <div class="col-11 d-flex justify-content-center mx-auto">
+            <div class="box-transparent-border-orange m-0">
+
+              <span class="fs-075rem w-b-a txt-a-center">Be sure to be part of the cosigner list. when you convert an
+                account into a multiple signature, you lose control of it</span>
+            </div>
+          </div>
+        </div>
+
 
         <div class="row">
           <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto">
             <div class="row">
               <div class="col-11 mx-auto">
                 <div class="md-form form-sm">
-                  <input style="" [maxlength]="configurationForm.passwordWallet.maxLength" [minlength]="configurationForm.passwordWallet.minLength"
-                    formControlName="password" required mdbInputDirective mdbValidate [validateSuccess]="true"
-                    [validateError]="true" type="password" id="password" class="form-control form-control-sm input-border"
-                    placeholder="Enter wallet password">
-                  <mdb-error *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
+                  <img class="form-control-feedback"
+                    src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg" alt="">
+                  <input [maxlength]="configurationForm.passwordWallet.maxLength"
+                    [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" required
+                    mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password"
+                    id="password" class="form-control form-control-sm input-border" placeholder="Enter wallet password">
+                  <mdb-error
+                    *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
                     <span>Input invalid</span>
                   </mdb-error>
                 </div>
@@ -242,14 +270,14 @@
 
             <div class="row">
               <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-                <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
-                  size="md" (click)="clearForm()">
+                <button mdbBtn type="button" rounded="true" mdbWavesEffect
+                  class="f-w-600 background-btn pl-2rem pr-2rem" size="md" (click)="clearForm()">
                   <span class="fs-1-2em color-white">CLEAR</span>
                 </button>
               </div>
               <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-                <button [disabled]="btnBlock" mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
-                  size="md">
+                <button [disabled]="btnBlock" mdbBtn type="submit" rounded="true" mdbWavesEffect
+                  class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
                   <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
                     *ngIf="blockSend"></span>
                   <span class="fs-1-2em color-white">Send</span>

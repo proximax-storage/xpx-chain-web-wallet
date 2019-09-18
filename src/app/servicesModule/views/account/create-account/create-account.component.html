@@ -56,7 +56,7 @@
 
               <div class="row mt-1rem mb-1rem txt-a-center">
                 <div class="col-11 mx-auto">
-                  <mdb-checkbox (click)="switchSaveNis1()">The private key belongs to an account in NIS1. <i
+                  <mdb-checkbox (click)="switchSaveNis1()"> Check this box if you wish to swap with this private key.<i
                       class="fa fa-info-circle color-gray-strong"></i></mdb-checkbox>
                 </div>
               </div>
@@ -84,6 +84,8 @@
             <div class="row">
               <div class="col-11 mx-auto">
                 <div class="md-form form-sm">
+                  <img class="form-control-feedback"
+                    src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg" alt="">
                   <input [maxlength]="configurationForm.passwordWallet.maxLength"
                     [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" required
                     mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password"

@@ -42,8 +42,11 @@ export class DataBridgeService {
   ) { }
 
 
-
-
+  /**
+   *
+   *
+   * @memberof DataBridgeService
+   */
   async searchBlockInfo() {
     this.proximaxProvider.getBlockchainHeight().subscribe(
       (blockchainHeight: UInt64) => {
@@ -102,7 +105,7 @@ export class DataBridgeService {
    * @param {*} element
    * @memberof DataBridgeService
    */
-  destroyUnconfirmedTransaction(element: TransactionsInterface) {
+  destroyUnconfirmedTransaction(incomingTransaction: TransactionsInterface) {
     // Destroy unconfirmed transactions
     this.transactionsService.getIncomingTransactions$().pipe(first()).subscribe(
       response => {
@@ -110,7 +113,7 @@ export class DataBridgeService {
           let allTransactionUnConfirmed = response.slice(0);
           let unconfirmed = allTransactionUnConfirmed.filter((elementUnconfirmed) =>
             elementUnconfirmed.data.transactionInfo.hash !==
-            element.data.transactionInfo.hash
+            incomingTransaction.data.transactionInfo.hash
           );
 
           this.transactionsService.setTransactionsUnConfirmed$(unconfirmed);
@@ -123,7 +126,11 @@ export class DataBridgeService {
       response => {
         if (response.length > 0) {
           let allAggregateTransactions = response.slice(0);
-          let aggregateBonded = allAggregateTransactions.filter(elmAggregate => elmAggregate.data.transactionInfo.hash !== element.data.transactionInfo.hash);
+          let aggregateBonded = allAggregateTransactions.filter((elmAggregate) =>
+            elmAggregate.data.transactionInfo.hash !==
+            incomingTransaction.data.transactionInfo.hash
+          );
+
           this.transactionsService.setAggregateBondedTransactions$(aggregateBonded);
         }
       }
@@ -137,29 +144,6 @@ export class DataBridgeService {
     this.subscription.forEach(subscription => {
       subscription.unsubscribe();
     });
-  }
-
-
-  /**
-   * Open websocket connection
-   *
-   * @param {*} connector
-   * @memberof DataBridgeService
-   */
-  openConnection() {
-    if (!this.destroyConection) {
-      this.connector.open().then(() => {
-        const audio = new Audio('assets/audio/ding.ogg');
-        const audio2 = new Audio('assets/audio/ding2.ogg');
-        this.getSocketTransactionsAggreateBonded(this.connector, audio2);
-        this.getSocketTransactionsConfirmed(this.connector, audio2);
-        this.getSocketTransactionsUnConfirmed(this.connector, audio);
-        this.getSocketStatusError(this.connector, audio);
-        this.getBlockSocket(this.connector);
-      }, (error) => {
-        this.sharedService.showWarning('', 'Error connecting to the node');
-      });
-    }
   }
 
 
@@ -224,6 +208,8 @@ export class DataBridgeService {
       connector.aggregateBondedAdded(this.proximaxProvider.createFromRawAddress(element.address)).subscribe((aggregateBondedAdded: Transaction) => {
         console.log('CONNECTED --> ', element.address);
         console.log('New transaction AggregateBondedAdded--> ', aggregateBondedAdded);
+        const builded = this.transactionsService.getStructureDashboard(aggregateBondedAdded);
+        this.transactionsService.setAggregateBondedTransactions$([builded]);
         this.setTransactionStatus({
           'type': 'aggregateBondedAdded',
           'data': aggregateBondedAdded
@@ -247,11 +233,12 @@ export class DataBridgeService {
       const address = this.proximaxProvider.createFromRawAddress(element.address);
       connector.cosignatureAdded(address).subscribe((cosignatureSignedTransaction: CosignatureSignedTransaction) => {
         // console.log('THE ADDRESS ---> ', address);
-        console.log('CosignatureSignedTransaction--> ', cosignatureSignedTransaction);
+        console.log('=== COSIGNATURE TRANSACTION === ', cosignatureSignedTransaction);
         this.setTransactionStatus({
           'type': 'cosignatureSignedTransaction',
           'data': cosignatureSignedTransaction
         });
+        audio.play();
       }, err => {
         // console.error(err)
       });
@@ -304,22 +291,14 @@ export class DataBridgeService {
    * @param {HTMLAudioElement} audio
    * @memberof DataBridgeService
    */
-  getSocketTransactionsUnConfirmed(connector: Listener, audio: HTMLAudioElement) {
+  getSocketIncomingTransactions(connector: Listener, audio: HTMLAudioElement) {
     const currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
     currentWallet.accounts.forEach(element => {
       const address = this.proximaxProvider.createFromRawAddress(element.address);
       connector.unconfirmedAdded(address).subscribe(unconfirmedTransaction => {
-        // console.log('----connector----', connector);
-        // console.log('----unconfirmedTransaction----', unconfirmedTransaction);
-
-        // aqui las que me llegan del WS
-        this.setTransactionStatus({
-          'type': 'unconfirmed',
-          'data': unconfirmedTransaction
-        });
-
-
         // Aqui las que tengo por confirmar en mi variable
+        console.log('=== INCOMING TRANSACTION ===', unconfirmedTransaction);
+        this.validateTransactions(unconfirmedTransaction.transactionInfo.hash);
         this.transactionsService.getIncomingTransactions$().pipe(first()).subscribe(
           async transactionsUnconfirmed => {
             const transactionPushed = transactionsUnconfirmed.slice(0);
@@ -328,6 +307,11 @@ export class DataBridgeService {
               transactionPushed.unshift(transactionFormatter);
               this.transactionsService.setTransactionsUnConfirmed$(transactionPushed);
               audio.play();
+              // aqui las que me llegan del WS
+              this.setTransactionStatus({
+                'type': 'unconfirmed',
+                'data': unconfirmedTransaction
+              });
             }
           }, err => {
             // console.error(err);
@@ -368,6 +352,28 @@ export class DataBridgeService {
     return this.transaction$;
   }
 
+  /**
+  * Open websocket connection
+  *
+  * @param {*} connector
+  * @memberof DataBridgeService
+  */
+  openConnection() {
+    if (!this.destroyConection) {
+      this.connector.open().then(() => {
+        const audio = new Audio('assets/audio/ding.ogg');
+        const audio2 = new Audio('assets/audio/ding2.ogg');
+        this.getSocketTransactionsAggreateBonded(this.connector, audio2);
+        this.getSocketTransactionsCosignatureAdded(this.connector, audio);
+        this.getSocketTransactionsConfirmed(this.connector, audio2);
+        this.getSocketIncomingTransactions(this.connector, audio);
+        this.getSocketStatusError(this.connector, audio);
+        this.getBlockSocket(this.connector);
+      }, (error) => {
+        this.sharedService.showWarning('', 'Error connecting to the node');
+      });
+    }
+  }
 
   /**
    * Reconnect
@@ -381,8 +387,6 @@ export class DataBridgeService {
     this.openConnection();
     return;
   }
-
-
 
   /**
    * Allow to load the component in the routing
@@ -414,9 +418,9 @@ export class DataBridgeService {
   searchTransactionStatus() {
     console.log(this.subscription);
     // Get transaction status
-    this.subscription.push(this.getTransactionStatus().subscribe(
+    this.subscription.push(this.getTransactionStatus().pipe(first()).subscribe(
       statusTransaction => {
-        console.log('----statusTransaction---', statusTransaction);
+        console.log('=== STATUS TRANSACTION ===', statusTransaction);
         if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
           for (let element of this.transactionSigned) {
             console.log('element ', element);
@@ -462,5 +466,29 @@ export class DataBridgeService {
    */
   setTransactionStatus(value: any) {
     return this.transactionSubject.next(value);
+  }
+
+  /**
+   *
+   *
+   * @memberof DataBridgeService
+   */
+  validateTransactions(hash: string) {
+    console.log('=== TENGO UNA LLAMADA A VALIDAR TRANSACCION ===');
+    this.transactionsService.getAggregateBondedTransactions$().pipe(first()).subscribe(
+      next => {
+        next.forEach(element => {
+          if (element.data['transactionInfo']) {
+            console.log('=== HASH CACHE TRANSACTION ===', element.data['transactionInfo'].hash);
+            console.log('=== HASH UNCONFIRMED TRANSACTION ===', hash);
+            if (hash === element.data['transactionInfo'].hash) {
+              console.log('=== SOME HASH === ', hash);
+              const newData = next.filter(x => x.data['transactionInfo'].hash !== hash);
+              this.transactionsService.setAggregateBondedTransactions$(newData);
+            }
+          }
+        })
+      }
+    );
   }
 }

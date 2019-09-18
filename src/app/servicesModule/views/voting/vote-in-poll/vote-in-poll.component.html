@@ -133,10 +133,10 @@
                         <div class="mx-auto"   >
                           <img [src]="qrImg" width="90">
 
-                          
+
                         </div>
                       </div>
-        
+
                       <div class="col-12 col-sm-8 col-md-9 lh-1em pt-04rem">
                         <div>
                           <span class="w-b-a fw-600">hash</span>
@@ -147,7 +147,7 @@
                       </div>
                     </div>
                   </div>
-        
+
                   <!-- CERTIFIED -->
                   <div class="col-12 col-md-3 col-lg-4 vote-background p-1rem">
                     <div class="row">
@@ -214,7 +214,9 @@
                 <div class="row">
                   <div class="col-11 mx-auto">
                     <div class="md-form form-sm">
-                      <input style="" [maxlength]="configurationForm.passwordWallet.maxLength" [minlength]="configurationForm.passwordWallet.minLength"
+                        <img class="form-control-feedback"
+                        src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg" alt="">
+                      <input [maxlength]="configurationForm.passwordWallet.maxLength" [minlength]="configurationForm.passwordWallet.minLength"
                         formControlName="password" required mdbInputDirective mdbValidate [validateSuccess]="true"
                         [validateError]="true" type="password" id="password" class="form-control form-control-sm input-border"
                         placeholder="Enter password">
