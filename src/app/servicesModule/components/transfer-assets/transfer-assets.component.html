@@ -59,6 +59,8 @@
           <!-- WALLET PASSWORD -->
           <div class="col-10 col-sm-12 col-md-12 mx-auto mb-2rem">
             <div class="md-form form-sm mt-1rem mb-0rem">
+                <img class="form-control-feedback"
+                src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg" alt="">
               <input [maxlength]="configurationForm.passwordWallet.maxLength"
                 [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" required
                 mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password"

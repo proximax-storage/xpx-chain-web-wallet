@@ -29,6 +29,8 @@
     <div class="row pt-05rem" *ngIf="showEncryptionPassword" formGroupName="encryptionPasswords">
       <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto">
         <div class="md-form form-sm mt-1rem mb-0rem">
+          <img class="form-control-feedback" src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg"
+            alt="">
           <input [maxlength]="configurationForm.passwordEncriptionFile.maxLength"
             [minlength]="configurationForm.passwordEncriptionFile.minLength" formControlName="password" required
             mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password"
@@ -56,14 +58,14 @@
 
           <!-- VALIDATION -->
           <mdb-error
-          *ngIf="validateInput('confirm_password', 'encryptionPasswords').invalid &&
+            *ngIf="validateInput('confirm_password', 'encryptionPasswords').invalid &&
           (validateInput('confirm_password', 'encryptionPasswords').dirty || validateInput('confirm_password', 'encryptionPasswords').touched)">
             <span>Invalid encryption password</span>
           </mdb-error>
 
           <mdb-error *ngIf="validateMatchPassword()">
-              <span>Password doesn't match</span>
-            </mdb-error>
+            <span>Password doesn't match</span>
+          </mdb-error>
         </div>
       </div>
     </div>

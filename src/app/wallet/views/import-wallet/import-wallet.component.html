@@ -30,7 +30,7 @@
       <div class="col-11 col-sm-10 col-md-8 col-lg-6 mx-auto">
         <div class="md-form form-sm mt-1rem mb-0rem">
           <input mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
-          [minlength]="configurationForm.privateKey.minLength" [maxlength]="configurationForm.privateKey.maxLength"
+            [minlength]="configurationForm.privateKey.minLength" [maxlength]="configurationForm.privateKey.maxLength"
             id="privateKey" class="form-control form-control-sm input-border" placeholder="Private key"
             formControlName="privateKey">
           <mdb-error
@@ -73,10 +73,13 @@
           <div class="row">
             <div class="col-12 col-md-6 col-lg-6 mx-auto">
               <div class="md-form form-sm mt-1rem mb-0rem">
+                <img class="form-control-feedback"
+                  src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg" alt="">
                 <input [maxlength]="configurationForm.passwordWallet.maxLength"
-                [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" mdbInputDirective mdbValidate [validateSuccess]="true"
-                  [validateError]="true" type="password" id="password{{errorMatchPassword}}"
-                  class="form-control form-control-sm input-border" placeholder="Password">
+                  [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" mdbInputDirective
+                  mdbValidate [validateSuccess]="true" [validateError]="true" type="password"
+                  id="password{{errorMatchPassword}}" class="form-control form-control-sm input-border"
+                  placeholder="Password">
 
                 <!-- VALIDATION -->
                 <mdb-error *ngIf="
@@ -89,9 +92,10 @@
             <div class="col-12 col-md-6 col-lg-6 mx-auto">
               <div class="md-form form-sm mt-1rem mb-0rem">
                 <input [maxlength]="configurationForm.passwordWallet.maxLength"
-                [minlength]="configurationForm.passwordWallet.minLength" formControlName="confirm_password" mdbInputDirective mdbValidate [validateSuccess]="true"
-                  [validateError]="true" type="password" id="confirm-password{{errorMatchPassword}}"
-                  class="form-control form-control-sm input-border" placeholder="Confirm password">
+                  [minlength]="configurationForm.passwordWallet.minLength" formControlName="confirm_password"
+                  mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password"
+                  id="confirm-password{{errorMatchPassword}}" class="form-control form-control-sm input-border"
+                  placeholder="Confirm password">
 
                 <!-- VALIDATION -->
                 <mdb-error
