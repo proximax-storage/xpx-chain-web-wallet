@@ -23,7 +23,7 @@
           <div class="col-11 col-md-12 mx-auto d-flex align-items-center box-grey">
             <div class="col-9 col-sm-10 word-break-all">
               <span class="color-black"><b>{{ account.name }}</b></span>
-              <span class="font-small d-flex color-black">{{ account.nis1Account.publicKey }}</span>
+              <span class="font-small d-flex color-black">{{ account.nis1Account.address.pretty() }}</span>
             </div>
             <div class="col-3 col-sm-2 text-center w-e-nowrap">
               <span class="color-blue-intermedio font-small cursor-p" (click)="accountSelected(account, i)"><span
