@@ -64,7 +64,7 @@
                   src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg" alt="">
                 <input formControlName="password" mdbInputDirective mdbValidate [validateSuccess]="true"
                   [validateError]="true" type="password" id="password{{errorMatchPassword}}"
-                  class="form-control form-control-sm input-border" placeholder="Password">
+                  class="form-control form-control-sm input-border" placeholder="Password" mdbTooltip="Min length 8, max length 30" placement="top">
 
                 <!-- VALIDATION -->
                 <mdb-error *ngIf="

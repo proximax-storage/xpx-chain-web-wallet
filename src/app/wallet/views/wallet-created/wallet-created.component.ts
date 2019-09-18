@@ -40,6 +40,7 @@ export class WalletCreatedComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.getImageBackground();
     this.walletData = this.walletService.accountWalletCreated;
     if (this.walletData !== null) {
       this.subtitle = this.walletData.data.name;

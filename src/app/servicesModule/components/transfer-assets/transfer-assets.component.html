@@ -48,10 +48,11 @@
           <!-- INPUT AMOUNT TO SWAP -->
           <div class="col-10 col-sm-12 col-md-12 mx-auto">
             <div class="md-form form-sm mt-1rem mb-0rem">
+              <img class="form-control-feedback" src="assets/images/img/icon-amount-green-16h-proximax-sirius-wallet.svg" alt="">
               <input currencyMask [options]="optionsXPX" [disabled]="quantity === '0.000000'" mdbInputDirective
                 mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
                 class="form-control form-control-sm input-border input-amount" formControlName="amountXpx">
-              <span class="label-i fw-600 text-cl-m cursor-p" (click)="selectMaxAmount()">USE MAX</span>
+              <span class="label-i fw-600 text-cl-m cursor-p pl-2rem" (click)="selectMaxAmount()">USE MAX</span>
             </div>
           </div>
 
