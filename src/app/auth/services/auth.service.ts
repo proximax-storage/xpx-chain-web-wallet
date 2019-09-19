@@ -76,9 +76,9 @@ export class AuthService {
       } else if (!this.walletService.decrypt(common, currentAccount)) {
         // Decrypt / generate and check primary
         isValid = false;
-      } else if (currentAccount.network === NetworkType.MAIN_NET && currentAccount.algo === 'pass:6k' && common.password.length < 40) {
+      } /*else if (currentAccount.network === NetworkType.MAIN_NET && currentAccount.algo === 'pass:6k' && common.password.length < 40) {
         this.sharedService.showError('', 'Dear user, the wallet is missing');
-      } else {
+      } */else {
         isValid = true;
         this.walletService.use(currentWallet);
       }

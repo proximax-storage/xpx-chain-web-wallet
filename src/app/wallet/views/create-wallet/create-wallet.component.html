@@ -64,18 +64,19 @@
                   src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg" alt="">
                 <input formControlName="password" mdbInputDirective mdbValidate [validateSuccess]="true"
                   [validateError]="true" type="password" id="password{{errorMatchPassword}}"
-                  class="form-control form-control-sm input-border" placeholder="Password" mdbTooltip="Min length 8, max length 30" placement="top">
+                  class="form-control form-control-sm input-border" placeholder="Password" [maxLength]="configurationForm.passwordWallet.maxLength">
 
                 <!-- VALIDATION -->
                 <mdb-error *ngIf="
                 validateInput('password', 'passwords').invalid &&
                 (validateInput('password', 'passwords').dirty || validateInput('password', 'passwords').touched)">
-                  <span>Input invalid</span>
+                  <!-- <span>Input invalid</span> -->
+                  <span>Min length {{configurationForm.passwordWallet.minLength}}, max length {{configurationForm.passwordWallet.maxLength}}</span>
                 </mdb-error>
 
-                <mdb-error *ngIf="validateMatchPassword()">
+                <!-- <mdb-error *ngIf="validateMatchPassword()">
                   <span>Password doesn't match</span>
-                </mdb-error>
+                </mdb-error> -->
               </div>
             </div>
             <div class="col-12 col-md-6 col-lg-6 mx-auto">
@@ -84,14 +85,14 @@
                   src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg" alt="">
                 <input formControlName="confirm_password" mdbInputDirective mdbValidate [validateSuccess]="true"
                   [validateError]="true" type="password" id="confirm-password{{errorMatchPassword}}"
-                  class="form-control form-control-sm input-border" placeholder="Confirm password">
+                  class="form-control form-control-sm input-border" placeholder="Confirm password" [maxLength]="configurationForm.passwordWallet.maxLength">
 
                 <!-- VALIDATION -->
                 <mdb-error
                   *ngIf="
                   validateInput('confirm_password', 'passwords').invalid &&
                   (validateInput('confirm_password', 'passwords').dirty || validateInput('confirm_password', 'passwords').touched)">
-                  <span>Input invalid</span>
+                  <span>Password doesn't match</span>
                 </mdb-error>
 
                 <mdb-error *ngIf="validateMatchPassword()">

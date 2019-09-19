@@ -1,4 +1,5 @@
 import { ServerConfig, NetworkTypes } from 'nem-library';
+import { NetworkType } from 'tsjs-xpx-chain-sdk';
 // This file can be replaced during build by using the `fileReplacements` array.
 // `ng build ---prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
@@ -6,16 +7,16 @@ import { ServerConfig, NetworkTypes } from 'nem-library';
 export const environment = {
   production: true,
   itemBooksAddress: 'sw-books',
-  version: '0.3.1.8',
+  // version: '0.3.1.8',
+  version: '1.0.0.2',
   nameKeyNodeSelected: `sw-selected-node-03`,
   nameKeyWalletStorage: `sw-04`,
   nameKeyNodeStorage: `sw-nodes-03`,
   nameKeyNamespaces: `sw-namespaces-01`,
   nameKeyMosaicStorage: `sw-mosaics-01`,
   nameKeyVersion: 'sw-version',
-  protocol: `https`,
-  protocolWs: `wss`,
-  nodeDefault: 'bctestnet.xpxsirius.io:443',
+  protocol: `http`,
+  protocolWs: `ws`,
   nodeExplorer: 'https://bctestnetexplorer.xpxsirius.io/#/result/hash',
   mosaicXpxInfo: {
     name: 'prx.xpx',
@@ -27,16 +28,16 @@ export const environment = {
     divisibility: 6
   },
   blockchainConnection: {
-    host: 'bctestnet.xpxsirius.io',
-    port: 443,
-    protocol: 'https',
+    host: 'bctestnet4.xpxsirius.io',
+    port: 3000,
+    protocol: 'http',
     useSecureMessage: false
   },
   storageConnection: {
     host: 'ipfs1-dev.xpxsirius.io',
-    port: 443,
+    port: 3000,
     options: {
-      protocol: 'https'
+      protocol: 'http'
     }
   },
   namespaceRentalFeeSink: {
@@ -62,6 +63,14 @@ export const environment = {
   },
   swapAccount: {
     address: 'VC3I3FSQ354JT2QNS2XJ2J3OROCOBIRK6JB3BCBH'
+  },
+ /* typeNetwork: {
+    value: NetworkType.MAIN_NET,
+    label: 'MAIN NET'
+  }*/
+  typeNetwork: {
+    value: NetworkType.TEST_NET,
+    label: 'TEST NET'
   }
 };
 

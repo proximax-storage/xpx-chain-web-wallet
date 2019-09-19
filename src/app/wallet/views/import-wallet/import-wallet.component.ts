@@ -4,12 +4,11 @@ import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/fo
 import { Router } from '@angular/router';
 import { SharedService, ConfigurationForm } from '../../../shared/services/shared.service';
 import { WalletService } from '../../services/wallet.service';
-import { NamespacesService } from '../../../servicesModule/services/namespaces.service';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 import { AppConfig } from '../../../config/app.config';
 import { ServicesModuleService } from '../../../servicesModule/services/services-module.service';
-import { NemServiceService } from 'src/app/shared/services/nem-service.service';
-import { timeout } from 'rxjs/operators';
+import { NemServiceService } from '../../../shared/services/nem-service.service';
+import { environment } from '../../../../environments/environment';
 
 
 @Component({
@@ -27,8 +26,8 @@ export class ImportWalletComponent implements OnInit {
   isValid: boolean = false;
   title = 'Create Wallet';
   typeNetwork = [{
-    value: NetworkType.TEST_NET,
-    label: 'TEST NET'
+    value: environment.typeNetwork.value,
+    label: environment.typeNetwork.label
   }];
   nis1Account = null;
   saveNis1: boolean = false;
@@ -64,7 +63,7 @@ export class ImportWalletComponent implements OnInit {
         Validators.pattern('^(0x|0X)?[a-fA-F0-9]+$')
       ]],
       network: [
-        NetworkType.TEST_NET, [Validators.required]
+        this.typeNetwork[0].value, [Validators.required]
       ],
       passwords: this.fb.group(
         {

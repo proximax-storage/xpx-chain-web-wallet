@@ -26,11 +26,10 @@ export class WalletService {
   currentWallet: CurrentWalletInterface = null;
 
   accountInfoNis1: any = null;
-  // accountMosaicsNis1: any = null;
-  // accountInfoConsignerNis1: any = null;
   accountSelectedWalletNis1: any = null;
   nis1AccountSeleted: any = null;
   nis1AccounsWallet: any = [];
+  unconfirmedTransactions: any = [];
 
   currentAccountObs: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   currentAccountObs$: Observable<any> = this.currentAccountObs.asObservable();
@@ -104,9 +103,9 @@ export class WalletService {
             const newAccounts = this.changeIsMultiSign(element.name, isMultisig);
             if (newAccounts.length > 0) {
               console.log('=== NEW ACCOUNTS TO SEARCH ===', newAccounts);
-              // Emite el cambios de las nuevas cuentas
+              // Issue changes to new accounts
               this.setAccountsPushedSubject(newAccounts);
-              // Borra el cambio de las nuevas cuentas
+              // Delete the change of the new accounts
               this.setAccountsPushedSubject([]);
             }
 
@@ -468,11 +467,11 @@ export class WalletService {
   }
 
   /**
- *
- *
- * @returns {AccountsInfoInterface[]}
- * @memberof WalletService
- */
+   *
+   *
+   * @returns {AccountsInfoInterface[]}
+   * @memberof WalletService
+   */
   getAccountsInfo(): AccountsInfoInterface[] {
     return this.accountsInfo;
   }
@@ -494,14 +493,6 @@ export class WalletService {
   getAccountInfoNis1() {
     return this.accountInfoNis1;
   }
-
-  // /**
-  //  *
-  //  * @param data
-  //  */
-  // getAccountInfoConsignerNis1() {
-  //   return this.accountInfoConsignerNis1;
-  // }
 
 
   /**
@@ -577,6 +568,13 @@ export class WalletService {
       walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
     }
     return walletsStorage;
+  }
+
+  /**
+   * 
+   */
+  getUnconfirmedTransaction() {
+    return this.unconfirmedTransactions;
   }
 
   /**
@@ -753,6 +751,14 @@ export class WalletService {
    */
   setNis1AccounsWallet(account) {
     this.nis1AccounsWallet.push(account);
+  }
+  
+  /**
+   * 
+   * @param transactions 
+   */
+  setUnconfirmedTransaction(transactions: any) {
+    this.unconfirmedTransactions = transactions;
   }
 
   /**

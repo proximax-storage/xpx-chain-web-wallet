@@ -7,6 +7,7 @@ import { WalletService } from '../../services/wallet.service';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 import { AppConfig } from '../../../config/app.config';
 import { ServicesModuleService } from '../../../servicesModule/services/services-module.service';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-create-wallet',
@@ -24,8 +25,8 @@ export class CreateWalletComponent implements OnInit {
   newName: string = '';
   title = 'Create Wallet';
   typeNetwork = [{
-    value: NetworkType.TEST_NET,
-    label: 'TEST NET'
+    value: environment.typeNetwork.value,
+    label: environment.typeNetwork.label
   }];
 
   constructor(
@@ -55,7 +56,7 @@ export class CreateWalletComponent implements OnInit {
         Validators.maxLength(this.configurationForm.nameWallet.maxLength)
       ]],
       network: [
-        NetworkType.TEST_NET, [Validators.required]
+        this.typeNetwork[0].value, [Validators.required]
       ],
       passwords: this.fb.group(
         {
