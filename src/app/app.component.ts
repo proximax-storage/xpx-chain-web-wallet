@@ -17,11 +17,14 @@ export class AppComponent {
         localStorage.setItem(environment.nameKeyVersion, environment.version);
         this.nodeService.setArrayNode([]);
         this.nodeService.setSelectedNodeStorage('');
+        this.nodeService.initNode();
+      }else {
+        this.nodeService.initNode();
       }
-    }else {
+    } else {
       localStorage.setItem(environment.nameKeyVersion, environment.version);
+      this.nodeService.initNode();
     }
 
-    this.nodeService.initNode();
   }
 }
