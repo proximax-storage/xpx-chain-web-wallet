@@ -64,14 +64,14 @@ export const environment = {
   swapAccount: {
     address: 'VC3I3FSQ354JT2QNS2XJ2J3OROCOBIRK6JB3BCBH'
   },
+ /* typeNetwork: {
+    value: NetworkType.MAIN_NET,
+    label: 'MAIN NET'
+  }*/
   typeNetwork: {
-    value: NetworkType.PRIVATE,
-    label: 'PRIVATE'
-  }
-  /*typeNetwork: {
     value: NetworkType.TEST_NET,
     label: 'TEST NET'
-  }*/
+  }
 };
 
 /*

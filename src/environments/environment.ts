@@ -8,7 +8,7 @@ export const environment = {
   production: false,
   itemBooksAddress: 'sw-books',
   //version: '0.3.1.8',
-  version: '1.0.0.2',
+  version: '1.0.0.4',
   nameKeyNodeSelected: `sw-selected-node-03`,
   nameKeyWalletStorage: `sw-05`,
   nameKeyNodeStorage: `sw-nodes-03`,
@@ -64,14 +64,14 @@ export const environment = {
   swapAccount: {
     address: 'VC3I3FSQ354JT2QNS2XJ2J3OROCOBIRK6JB3BCBH'
   },
-  typeNetwork: {
-    value: NetworkType.PRIVATE,
-    label: 'PRIVATE'
-  }
   /*typeNetwork: {
+    value: NetworkType.MAIN_NET,
+    label: 'MAIN NET'
+  }*/
+  typeNetwork: {
      value: NetworkType.TEST_NET,
      label: 'TEST NET'
-   }*/
+   }
 };
 
 /*

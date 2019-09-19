@@ -637,11 +637,11 @@ export class TransactionsService {
             }
 
             if (pushTransactions.length > 0) {
-              console.log('GUARDAR ---> ', pushTransactions);
+              console.log('SAVE ---> ', pushTransactions);
               this._aggregateTransactionsSubject.next(pushTransactions);
             }
           } else {
-            console.log('GUARDAR 2---> ', transactions);
+            console.log('SAVE THE SAME---> ', transactions);
             this._aggregateTransactionsSubject.next(transactions);
           }
         }

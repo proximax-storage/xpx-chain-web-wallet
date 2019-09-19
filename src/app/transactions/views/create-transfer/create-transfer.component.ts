@@ -776,7 +776,6 @@ export class CreateTransferComponent implements OnInit {
 
           break;
         case false:
-          console.log('TRANSFIERE SIMPLE');
           if (this.walletService.decrypt(common, this.sender)) {
             const params: TransferInterface = {
               common: common,
