@@ -25,6 +25,7 @@
                     <div class="col-7 col-md-8 col-xl-7 mb-2rem">
                         <!-- TITLE -->
                         <div class="md-form">
+                            <img class="form-control-feedback" src="assets/images/img/icon-voting-green-60h.svg" alt="" width="43" height="43">
                             <input formControlName="title" required mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
                                 id="title" class="form-control form-control-sm input-border" placeholder="Enter title">
                             <mdb-error *ngIf="validateInput('title', '1', '').invalid && (validateInput('title', '1', '').dirty || validateInput('title', '1', '').touched)">
@@ -37,6 +38,8 @@
                         </div>
                         <!-- DESCRIPTION -->
                         <div class="md-form">
+                            <img class="form-control-feedback" src="assets/images/img/icon-messenger-green-16h-proximax-sirius-wallet.svg" alt=""
+                                style="padding: 30px 10px !important">
                             <textarea mdbInputDirective mdbValidate required [validateSuccess]="true" [validateError]="true" type="text" id="message"
                                 class="md-textarea form-control" mdbInput placeholder="Write your description here" formControlName="message"
                                 [maxlength]="configurationForm.message.maxLength"></textarea>
@@ -46,6 +49,7 @@
                         </div>
                         <!-- DATE END  -->
                         <div class="md-form">
+                            <img class="form-control-feedback" src="assets/images/img/icon-duration-green-16h-proximax-sirius-wallet.svg" alt="">
                             <input formControlName="PollEndDate" required mdbInputDirective mdbValidate type="text" [owlDateTimeTrigger]="dt" [owlDateTime]="dt"
                                 [min]="minDate" [dateTime]="invalidMoment" class="form-control form-control-sm input-border"
                                 placeholder="End date">
@@ -108,6 +112,7 @@
                         </div>
                         <!-- OPTIONS -->
                         <div class="md-form">
+                            <img class="form-control-feedback" src="assets/images/img/icon-type-increase-decrease-green-16h-proximax-sirius-wallet.svg" alt="">
                             <input formControlName="option" mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
                                 id="option" class="form-control form-control-sm input-border" placeholder="Option">
                             <mdb-error *ngIf="validateInput('option', '2', '').invalid && (validateInput('option', '2', '').dirty || validateInput('option', '2', '').touched)">
