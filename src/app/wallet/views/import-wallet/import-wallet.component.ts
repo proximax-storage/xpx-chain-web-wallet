@@ -4,13 +4,10 @@ import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/fo
 import { Router } from '@angular/router';
 import { SharedService, ConfigurationForm } from '../../../shared/services/shared.service';
 import { WalletService } from '../../services/wallet.service';
-import { NamespacesService } from '../../../servicesModule/services/namespaces.service';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 import { AppConfig } from '../../../config/app.config';
 import { ServicesModuleService } from '../../../servicesModule/services/services-module.service';
 import { NemServiceService } from 'src/app/shared/services/nem-service.service';
-import { timeout } from 'rxjs/operators';
-
 
 @Component({
   selector: 'app-import-wallet',
