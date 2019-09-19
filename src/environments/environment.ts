@@ -7,7 +7,8 @@ import { NetworkType } from 'tsjs-xpx-chain-sdk';
 export const environment = {
   production: false,
   itemBooksAddress: 'sw-books',
-  version: '0.3.1.8',
+  //version: '0.3.1.8',
+  version: '1.0.0.2',
   nameKeyNodeSelected: `sw-selected-node-03`,
   nameKeyWalletStorage: `sw-05`,
   nameKeyNodeStorage: `sw-nodes-03`,
@@ -27,7 +28,7 @@ export const environment = {
     divisibility: 6
   },
   blockchainConnection: {
-    host: 'bcprivatenet.xpxsirius.io',
+    host: 'bctestnet4.xpxsirius.io',
     port: 3000,
     protocol: 'http',
     useSecureMessage: false
@@ -63,14 +64,14 @@ export const environment = {
   swapAccount: {
     address: 'VC3I3FSQ354JT2QNS2XJ2J3OROCOBIRK6JB3BCBH'
   },
-  // typeNetwork: {
-  //   value: NetworkType.PRIVATE,
-  //   label: 'PRIVATE'
-  // }
   typeNetwork: {
-    value: NetworkType.TEST_NET,
-    label: 'TEST NET'
+    value: NetworkType.PRIVATE,
+    label: 'PRIVATE'
   }
+  /*typeNetwork: {
+     value: NetworkType.TEST_NET,
+     label: 'TEST NET'
+   }*/
 };
 
 /*

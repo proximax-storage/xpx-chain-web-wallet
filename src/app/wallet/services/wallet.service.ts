@@ -104,9 +104,9 @@ export class WalletService {
             const newAccounts = this.changeIsMultiSign(element.name, isMultisig);
             if (newAccounts.length > 0) {
               console.log('=== NEW ACCOUNTS TO SEARCH ===', newAccounts);
-              // Emite el cambios de las nuevas cuentas
+              // Issue changes to new accounts
               this.setAccountsPushedSubject(newAccounts);
-              // Borra el cambio de las nuevas cuentas
+              // Delete the change of the new accounts
               this.setAccountsPushedSubject([]);
             }
 

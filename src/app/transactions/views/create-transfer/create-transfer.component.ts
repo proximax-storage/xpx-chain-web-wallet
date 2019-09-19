@@ -200,7 +200,6 @@ export class CreateTransferComponent implements OnInit {
 
             const x = this.proximaxProvider.getMosaicId(mosaic.idMosaic).id.toHex() !== environment.mosaicXpxInfo.id;
             if (x) {
-              console.log('EL MOSAICO ----> ', mosaic);
               const nameMosaic = (mosaic.mosaicNames.names.length > 0) ? mosaic.mosaicNames.names[0].name : this.proximaxProvider.getMosaicId(mosaic.idMosaic).toHex();
               mosaicsSelect.push({
                 label: `${nameMosaic}${nameExpired}`,
@@ -232,7 +231,6 @@ export class CreateTransferComponent implements OnInit {
   * @memberof CreateTransferComponent
   */
   async changeSender(accountToSend: AccountsInterface) {
-    console.log('ACCOUNT SENDER', accountToSend);
     if (accountToSend) {
       this.sender = accountToSend;
       this.findCosignatories(accountToSend);
@@ -455,8 +453,6 @@ export class CreateTransferComponent implements OnInit {
 
         if (listCosignatorie.length === 1) {
           this.cosignatorie = listCosignatorie[0].value;
-          console.log('---> SENDER', this.sender);
-          console.log('---> SET COSIGNATARIO BY DEFAULT (1)', this.cosignatorie);
           return;
         }
 
