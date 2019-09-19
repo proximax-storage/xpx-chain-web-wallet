@@ -713,9 +713,9 @@ export class CreateTransferComponent implements OnInit {
       const type = (this.cosignatorie) ? true : false;
       switch (type) {
         case true:
-          console.log('TRANSFIERE CON COSIGNATARIO');
+          /*console.log('TRANSFIERE CON COSIGNATARIO');
           console.log('ACCOUNT SENDER ----> ', this.sender);
-          console.log('COSIGNATARIO SELECCIONADO ----> ', this.cosignatorie);
+          console.log('COSIGNATARIO SELECCIONADO ----> ', this.cosignatorie);*/
           const generationHash = this.dataBridge.blockInfo.generationHash;
           if (this.walletService.decrypt(common, this.cosignatorie)) {
             const params: TransferInterface = {
@@ -753,12 +753,12 @@ export class CreateTransferComponent implements OnInit {
             //-----------------------------------------------------------------------
             // Build aggregate transaction
             const aggregateTransaction = this.transactionService.buildAggregateTransaction(this.sender.publicAccount, transferBuilder);
-            console.log('aggregateTransaction ---------> ', aggregateTransaction);
+            console.log('=== Build aggregate transaction ===', aggregateTransaction);
             // Sign transaction
             const aggregateSigned = account.sign(aggregateTransaction, generationHash);
             // Build hash lock transaction
             const hashLockTransaction: LockFundsTransaction = this.transactionService.buildHashLockTransaction(aggregateSigned);
-            console.log('hashLockTransaction ---------> ', hashLockTransaction);
+            console.log('=== Build hash lock transaction === ', hashLockTransaction);
             // Hash lock signed
             const hashLockSigned = account.sign(hashLockTransaction, generationHash);
             this.saveContactFn();
