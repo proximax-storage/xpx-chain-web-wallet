@@ -1,4 +1,5 @@
 import { ServerConfig, NetworkTypes } from 'nem-library';
+import { NetworkType } from 'tsjs-xpx-chain-sdk';
 // This file can be replaced during build by using the `fileReplacements` array.
 // `ng build ---prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
@@ -13,9 +14,8 @@ export const environment = {
   nameKeyNamespaces: `sw-namespaces-02`,
   nameKeyMosaicStorage: `sw-mosaics-02`,
   nameKeyVersion: 'sw-version',
-  protocol: `https`,
-  protocolWs: `wss`,
-  nodeDefault: 'bctestnet.xpxsirius.io:443',
+  protocol: `http`,
+  protocolWs: `ws`,
   nodeExplorer: 'https://bctestnetexplorer.xpxsirius.io/#/result/hash',
   mosaicXpxInfo: {
     name: 'prx.xpx',
@@ -27,16 +27,16 @@ export const environment = {
     divisibility: 6
   },
   blockchainConnection: {
-    host: 'bctestnet.xpxsirius.io',
-    port: 443,
-    protocol: 'https',
+    host: 'bcprivatenet.xpxsirius.io',
+    port: 3000,
+    protocol: 'http',
     useSecureMessage: false
   },
   storageConnection: {
     host: 'ipfs1-dev.xpxsirius.io',
-    port: 443,
+    port: 3000,
     options: {
-      protocol: 'https'
+      protocol: 'http'
     }
   },
   namespaceRentalFeeSink: {
@@ -62,6 +62,14 @@ export const environment = {
   },
   swapAccount: {
     address: 'VC3I3FSQ354JT2QNS2XJ2J3OROCOBIRK6JB3BCBH'
+  },
+  // typeNetwork: {
+  //   value: NetworkType.PRIVATE,
+  //   label: 'PRIVATE'
+  // }
+  typeNetwork: {
+    value: NetworkType.TEST_NET,
+    label: 'TEST NET'
   }
 };
 
