@@ -255,6 +255,16 @@ export class WalletService {
       accounts: myAccounts
     });
 
+    this.accountsInfo.forEach(element => {
+      if (element.name === oldName) {
+        element.name = newName;
+      }
+    });
+
+    if (this.currentAccount.name === oldName){
+      this.currentAccount.name = newName;
+    }
+
     localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(othersWallet));
   }
 
@@ -404,6 +414,7 @@ export class WalletService {
    * @memberof WalletService
    */
   filterAccountInfo(account?: string, byAddress?: boolean): AccountsInfoInterface {
+    console.log('=== ACCOUNTS INFO ===', this.accountsInfo);
     if (this.accountsInfo && this.accountsInfo.length > 0) {
       if (byAddress) {
         let found = null;
@@ -571,7 +582,7 @@ export class WalletService {
   }
 
   /**
-   * 
+   *
    */
   getUnconfirmedTransaction() {
     return this.unconfirmedTransactions;
@@ -752,10 +763,10 @@ export class WalletService {
   setNis1AccounsWallet(account) {
     this.nis1AccounsWallet.push(account);
   }
-  
+
   /**
-   * 
-   * @param transactions 
+   *
+   * @param transactions
    */
   setUnconfirmedTransaction(transactions: any) {
     this.unconfirmedTransactions = transactions;
