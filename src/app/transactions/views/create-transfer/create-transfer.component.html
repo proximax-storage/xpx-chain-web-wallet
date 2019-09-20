@@ -94,7 +94,7 @@
           <!-- Show Contacts -->
           <ng-container>
             <div class="col-4 col-sm-3 col-md-2 d-flex justify-content-center align-items-center pt-10px">
-              <div [disabled]="listContacts.length === 0" class="background-gray-icons p-12px bord-rad-25px cursor-p"
+              <div  [class.disabled]="listContacts.length === 0 || disabledAllField" class="background-gray-icons p-12px bord-rad-25px cursor-p"
                 (click)="showContacts = (listContacts.length > 0) ? !showContacts : showContacts"
                 [title]="(!showContacts) ? 'Show contacts': 'Hide contacts'">
                 <img class="w-30px" [src]="(!showContacts && listContacts.length === 0) ?

@@ -182,8 +182,9 @@ export class DataBridgeService {
   getSocketTransactionsAggreateBondedRemoved(connector: Listener, audio: HTMLAudioElement) {
     const currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
     currentWallet.accounts.forEach(element => {
-      const address = this.proximaxProvider.createFromRawAddress(element.address);
-      connector.aggregateBondedRemoved(address).subscribe((aggregateBondedRemoved: string) => {
+      connector.aggregateBondedRemoved(this.proximaxProvider.createFromRawAddress(element.address)).subscribe((aggregateBondedRemoved: string) => {
+        console.log('=== CONNECTOR ===', connector);
+        const address = this.proximaxProvider.createFromRawAddress(element.address);
         console.log('\n=== CONNECTED TO ===', address.plain().slice(36, 40));
         console.log('=== NEW TRANSACTION AGGREGATE_BONDED_REMOVED === ', aggregateBondedRemoved, '\n\n');
         this.setTransactionStatus({
@@ -204,9 +205,8 @@ export class DataBridgeService {
    */
   getSocketTransactionsAggreateBonded(connector: Listener, audio: HTMLAudioElement) {
     this.currentWallet.accounts.forEach(element => {
-      // console.log('\n\n CONECTARDO A ---> ', element, '\n\n');
-      const address = this.proximaxProvider.createFromRawAddress(element.address);
-      connector.aggregateBondedAdded(address).subscribe((aggregateBondedAdded: Transaction) => {
+      connector.aggregateBondedAdded(this.proximaxProvider.createFromRawAddress(element.address)).subscribe((aggregateBondedAdded: Transaction) => {
+        const address = this.proximaxProvider.createFromRawAddress(element.address);
         console.log('\n=== CONNECTED ===', address.plain().slice(36, 40));
         console.log('=== NEW TRANSACTION AGGREGATE_BONDED === ', aggregateBondedAdded, '\n\n');
         const builded = this.transactionsService.getStructureDashboard(aggregateBondedAdded);
@@ -231,8 +231,8 @@ export class DataBridgeService {
   getSocketTransactionsCosignatureAdded(connector: Listener, audio: HTMLAudioElement) {
     const currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
     currentWallet.accounts.forEach(element => {
-      const address = this.proximaxProvider.createFromRawAddress(element.address);
-      connector.cosignatureAdded(address).subscribe((cosignatureSignedTransaction: CosignatureSignedTransaction) => {
+      connector.cosignatureAdded(this.proximaxProvider.createFromRawAddress(element.address)).subscribe((cosignatureSignedTransaction: CosignatureSignedTransaction) => {
+        const address = this.proximaxProvider.createFromRawAddress(element.address);
         console.log('\n=== CONNECTED ===', address.plain().slice(36, 40));
         console.log('=== COSIGNATURE ADDED TRANSACTION === ', cosignatureSignedTransaction, '\n\n');
         this.setTransactionStatus({
@@ -256,15 +256,15 @@ export class DataBridgeService {
   getSocketTransactionsConfirmed(connector: Listener, audio: HTMLAudioElement) {
     const currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
     currentWallet.accounts.forEach(element => {
-      const address = this.proximaxProvider.createFromRawAddress(element.address);
-      connector.confirmed(address).subscribe((confirmed: Transaction) => {
+      connector.confirmed(this.proximaxProvider.createFromRawAddress(element.address)).subscribe((confirmed: Transaction) => {
         this.setTransactionStatus({
           'type': 'confirmed',
           'data': confirmed
         });
 
+        const address = this.proximaxProvider.createFromRawAddress(element.address);
         console.log('\n=== CONNECTED ===', address.plain().slice(36, 40));
-        console.log('=== INCOMING TRANSACTION === ', confirmed, '\n\n');
+        console.log('=== CONFIRMED TRANSACTION === ', confirmed, '\n\n');
 
         this.transactionsService.getTransactionsConfirmed$().pipe(first()).subscribe(allTransactionConfirmed => {
           const transactionPushed = allTransactionConfirmed.slice(0);
@@ -297,9 +297,9 @@ export class DataBridgeService {
   getSocketUnconfirmedTransactions(connector: Listener, audio: HTMLAudioElement) {
     const currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
     currentWallet.accounts.forEach(element => {
-      const address = this.proximaxProvider.createFromRawAddress(element.address);
-      connector.unconfirmedAdded(address).subscribe(unconfirmedTransaction => {
+      connector.unconfirmedAdded(this.proximaxProvider.createFromRawAddress(element.address)).subscribe(unconfirmedTransaction => {
         // Aqui las que tengo por confirmar en mi variable
+        const address = this.proximaxProvider.createFromRawAddress(element.address);
         console.log('\n=== CONNECTED ===', address.plain().slice(36, 40));
         console.log('=== UNCONFIRMED TRANSACTION === ', unconfirmedTransaction, '\n\n');
         this.validateTransactions(unconfirmedTransaction.transactionInfo.hash);
@@ -334,8 +334,8 @@ export class DataBridgeService {
   getSocketStatusError(connector: Listener, audio: HTMLAudioElement) {
     const currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
     currentWallet.accounts.forEach(element => {
-      const address = this.proximaxProvider.createFromRawAddress(element.address);
-      connector.status(address).subscribe(error => {
+      connector.status(this.proximaxProvider.createFromRawAddress(element.address)).subscribe(error => {
+        const address = this.proximaxProvider.createFromRawAddress(element.address);
         console.log('\n=== CONNECTED ===', address.plain().slice(36, 40));
         console.log('=== STATUS TRANSACTION === ', error, '\n\n');
         this.setTransactionStatus({

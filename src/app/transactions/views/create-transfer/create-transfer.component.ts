@@ -29,6 +29,7 @@ export class CreateTransferComponent implements OnInit {
 
   @ViewChild('basicModal', { static: true }) basicModal: ModalDirective;
   accounts: any = [];
+  disabledAllField = false;
   sender: AccountsInterface = null;
   allMosaics = [];
   balanceXpx = '0.000000';
@@ -234,7 +235,7 @@ export class CreateTransferComponent implements OnInit {
     if (accountToSend) {
       this.sender = accountToSend;
       this.findCosignatories(accountToSend);
-      if (this.formTransfer.disabled) {
+      if (this.formTransfer.disabled && !this.disabledAllField) {
         this.formTransfer.enable();
       }
 
@@ -257,7 +258,7 @@ export class CreateTransferComponent implements OnInit {
       if (!this.haveBalance) {
         this.insufficientBalance = true;
         this.formTransfer.controls['amountXpx'].disable();
-      } else {
+      } else if(!this.disabledAllField){
         this.insufficientBalance = false;
         this.formTransfer.controls['amountXpx'].enable();
       }
@@ -429,7 +430,7 @@ export class CreateTransferComponent implements OnInit {
   findCosignatories(element: AccountsInterface) {
     this.cosignatorie = null;
     this.listCosignatorie = [];
-    // if (element.default) {
+    this.disabledAllField = false;
     if (element.isMultisign && element.isMultisign.cosignatories && element.isMultisign.cosignatories.length > 0) {
       if (element.isMultisign.cosignatories.length === 1) {
         const address = this.proximaxProvider.createFromRawAddress(element.isMultisign.cosignatories[0].address['address']);
@@ -456,7 +457,14 @@ export class CreateTransferComponent implements OnInit {
           return;
         }
 
-        this.listCosignatorie = listCosignatorie;
+        console.log('---> SET COSIGNATARIO BY DEFAULT (2)', this.cosignatorie);
+        if (listCosignatorie && listCosignatorie.length > 0) {
+          this.listCosignatorie = listCosignatorie;
+        } else {
+          this.disabledAllField = true;
+          this.formTransfer.disable();
+        }
+
         return;
       }
     }

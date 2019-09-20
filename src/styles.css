@@ -1419,6 +1419,7 @@ button.md-toast-close-button {
   cursor: pointer;
 }
 
+.disabled,
 .cursor-n-a {
   cursor: not-allowed !important;
   pointer-events: none !important;
