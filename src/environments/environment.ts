@@ -9,6 +9,7 @@ export const environment = {
   itemBooksAddress: 'sw-books',
   //version: '0.3.1.8',
   version: '1.0.0.5',
+  cacheVersion: '2',
   nameKeyNodeSelected: `sw-selected-node-03`,
   nameKeyWalletStorage: `sw-05`,
   nameKeyNodeStorage: `sw-nodes-03`,
@@ -28,7 +29,7 @@ export const environment = {
     divisibility: 6
   },
   blockchainConnection: {
-    host: 'bctestnet4.xpxsirius.io',
+    host: '18.138.51.117',
     port: 3000,
     protocol: 'http',
     useSecureMessage: false

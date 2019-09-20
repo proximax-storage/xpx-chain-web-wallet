@@ -435,8 +435,12 @@ export class CreateTransferComponent implements OnInit {
       if (element.isMultisign.cosignatories.length === 1) {
         const address = this.proximaxProvider.createFromRawAddress(element.isMultisign.cosignatories[0].address['address']);
         const cosignatorieAccount: AccountsInterface = this.walletService.filterAccountWallet('', null, address.pretty());
-        this.cosignatorie = (cosignatorieAccount) ? cosignatorieAccount : null;
-        console.log('---> SET COSIGNATARIO BY DEFAULT (1)', this.cosignatorie);
+        if (cosignatorieAccount) {
+          this.cosignatorie = cosignatorieAccount;
+        }else {
+          this.disabledAllField = true;
+          this.formTransfer.disable();
+        }
         return;
       } else {
         const listCosignatorie = [];
@@ -457,7 +461,6 @@ export class CreateTransferComponent implements OnInit {
           return;
         }
 
-        console.log('---> SET COSIGNATARIO BY DEFAULT (2)', this.cosignatorie);
         if (listCosignatorie && listCosignatorie.length > 0) {
           this.listCosignatorie = listCosignatorie;
         } else {

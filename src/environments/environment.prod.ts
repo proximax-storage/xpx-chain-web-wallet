@@ -9,6 +9,7 @@ export const environment = {
   itemBooksAddress: 'sw-books',
   // version: '0.3.1.8',
   version: '1.0.0.5',
+  cacheVersion: '1',
   nameKeyNodeSelected: `sw-selected-node-03`,
   nameKeyWalletStorage: `sw-04`,
   nameKeyNodeStorage: `sw-nodes-03`,
