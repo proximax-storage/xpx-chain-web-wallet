@@ -284,7 +284,6 @@ export class WalletService {
         isMultisig.multisigAccounts.forEach(multisigAccount => {
           const exist = myAccounts.find(x => x.address === multisigAccount.address.plain());
           if (!exist) {
-            console.log('ESTA CUENTA NO EXISTE ===> ', multisigAccount, '\n\n\n\n\n\n');
             const accountBuilded: AccountsInterface = this.buildAccount({
               address: multisigAccount.address.plain(),
               byDefault: false,
@@ -297,7 +296,6 @@ export class WalletService {
               publicAccount: multisigAccount,
             });
 
-            console.log('\n\n---ACOUNT BUILDED---', accountBuilded);
             newAccount.push(accountBuilded);
             this.saveAccountWalletStorage(accountBuilded);
             /*this.proximaxProvider.getAccountInfo(multisigAccount.address).pipe(first()).subscribe(async (accountInfo: AccountInfo) => {
@@ -414,7 +412,6 @@ export class WalletService {
    * @memberof WalletService
    */
   filterAccountInfo(account?: string, byAddress?: boolean): AccountsInfoInterface {
-    console.log('=== ACCOUNTS INFO ===', this.accountsInfo);
     if (this.accountsInfo && this.accountsInfo.length > 0) {
       if (byAddress) {
         let found = null;

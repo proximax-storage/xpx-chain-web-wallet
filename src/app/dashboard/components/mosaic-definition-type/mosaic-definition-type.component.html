@@ -119,23 +119,29 @@
         </div>
 
         <!-- Duration -->
-        <ng-container *ngIf="mosaicDefinition['data']['duration'] !== undefined">
-          <div class="col-12 mt-04rem">
-            <div class="row">
-              <div class="col-4 overflow-ellipsis-nowrap">
-                <span class="color-dark-green fw-bold fs-08rem">Duration: </span>
-              </div>
-              <div class="col-8 overflow-ellipsis-nowrap">
+        <div class="col-12 mt-04rem">
+          <div class="row">
+            <div class="col-4 overflow-ellipsis-nowrap">
+              <span class="color-dark-green fw-bold fs-08rem">Duration: </span>
+            </div>
+            <div class="col-8 overflow-ellipsis-nowrap">
+              <ng-container *ngIf="mosaicDefinition['data']['duration'] !== undefined; else durationUndefined2">
                 <span class=" color-dark-green fw-400 fs-08rem">
                   <strong>
                     (Blocks: {{mosaicDefinition?.data['mosaicProperties'].duration.compact()}})
                   </strong> -
                   {{transactionService.calculateDuration(mosaicDefinition?.data['mosaicProperties'].duration)}}
                 </span>
-              </div>
+              </ng-container>
+
+              <ng-template #durationUndefined2>
+                <span class="color-dark-green fw-400 fs-08rem">
+                  <strong>Does not expire</strong>
+                </span>
+              </ng-template>
             </div>
           </div>
-        </ng-container>
+        </div>
 
         <!-- MOSAIC INFO -->
         <div class="col-12 mt-04rem">
@@ -351,12 +357,19 @@
           <span class="color-dark-green fw-bold fs-08rem">Duration: </span>
         </div>
         <div class="col-12 col-sm-8 col-md-9">
-          <span class="color-dark-green fw-400 fs-08rem">
-            <strong>
-              (Blocks: {{mosaicDefinition['mosaicProperties'].duration.compact()}})
-            </strong> -
-            {{transactionService.calculateDuration(mosaicDefinition['mosaicProperties'].duration)}}
-          </span>
+          <ng-container *ngIf="mosaicDefinition['mosaicProperties'].duration; else durationUndefined">
+            <span class="color-dark-green fw-400 fs-08rem">
+              <strong>
+                (Blocks: {{mosaicDefinition['mosaicProperties'].duration.compact()}})
+              </strong> -
+              {{transactionService.calculateDuration(mosaicDefinition['mosaicProperties'].duration)}}
+            </span>
+          </ng-container>
+          <ng-template #durationUndefined>
+            <span class="color-dark-green fw-400 fs-08rem">
+              <strong>Does not expire</strong>
+            </span>
+          </ng-template>
         </div>
       </div>
     </div>

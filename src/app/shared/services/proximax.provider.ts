@@ -220,7 +220,7 @@ export class ProximaxProvider {
         supplyMutable: params.supplyMutable,
         transferable: params.transferable,
         divisibility: params.divisibility,
-        duration: UInt64.fromUint(params.durationByBlock)
+        duration: (params.duration) ? UInt64.fromUint(params.duration) : undefined
       }),
       params.network
     );

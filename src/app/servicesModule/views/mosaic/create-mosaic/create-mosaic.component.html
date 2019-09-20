@@ -2,9 +2,9 @@
   <app-header [params]="paramsHeader"></app-header>
 
   <div class="row">
-    <div class="col-12 col-lg-9 mx-auto">
+    <div class="col-11 col-lg-9 mx-auto">
       <div class="row">
-        <div class="col-12 col-sm-12 col-md-8 justify-content-center">
+        <div class="col-12 col-md-8 justify-content-center">
           <form [formGroup]="mosaicForm" (ngSubmit)="send()">
             <div class="row mt-1rem">
               <ng-container *ngIf="insufficientBalance">
@@ -15,22 +15,30 @@
 
 
               <div class="col-12">
-                <div class="md-form form-sm mt-0 mb-0rem">
-                  <img class="form-control-feedback"
-                    src="assets/images/img/icon-duration-green-16h-proximax-sirius-wallet.svg" alt="">
-                  <input formControlName="duration" mdbInputDirective mdbValidate [validateSuccess]="true"
-                    [validateError]="true" type="text" id="duration" class="form-control form-control-sm input-border"
-                    placeholder="Duration (number of days)">
+                <div class="row d-flex align-items-center">
+                  <div class="col-6 col-md-7 col-lg-8 mx-auto pt-07rem">
+                    <div class="md-form form-sm mt-0 mb-0rem">
+                      <img class="form-control-feedback"
+                        src="assets/images/img/icon-duration-green-16h-proximax-sirius-wallet.svg" alt="">
+                      <input formControlName="duration" mdbInputDirective mdbValidate [validateSuccess]="true"
+                        [validateError]="true" type="text" id="duration"
+                        class="form-control form-control-sm input-border" placeholder="Duration (number of days)">
 
-                  <!-- VALIDATION -->
-                  <mdb-error
-                    *ngIf="validateInput('duration', '').invalid && (validateInput('duration', '').dirty || validateInput('duration', '').touched)">
-                    <span>Input invalid</span>
-                  </mdb-error>
+                      <!-- VALIDATION -->
+                      <mdb-error
+                        *ngIf="validateInput('duration', '').invalid && (validateInput('duration', '').dirty || validateInput('duration', '').touched)">
+                        <span>Input invalid</span>
+                      </mdb-error>
+                    </div>
+                  </div>
+
+                  <div class="col-6 col-md-5 col-lg-4 mx-auto notExpireBox">
+                    <mdb-checkbox formControlName="notExpire" [inline]="true" class="fs-08rem"
+                      (change)="changeNotExpire($event)">Not expire</mdb-checkbox>
+                  </div>
                 </div>
               </div>
             </div>
-
 
             <div class="row">
               <div class="col-12 mx-auto">
@@ -107,7 +115,6 @@
                 <!-- Supply Mutable -->
                 <mdb-checkbox formControlName="supplyMutable" [inline]="true" class="fs-08rem">Supply Mutable
                 </mdb-checkbox>
-
               </div>
             </div>
 
@@ -151,15 +158,15 @@
           </form>
         </div>
 
-        <div class="col-11 col-sm-11 col-md-4 description-p-module mt-1-5rem mb-2rem">
+        <div class="col-11 col-md-4 description-p-module mt-1-5rem mb-2rem">
           <div>
             <span class="fs-08rem">Maximun divisibility is 6. <br></span>
-            <span class="fw-600 fs-08rem">Example: 0.000000.</span>
+            <span class="fw-600 fs-08rem">Example: 0.000000</span>
           </div>
 
           <div class="mt-08rem">
             <span class="fs-08rem"> Maximun supply is 9B. <br></span>
-            <span class="fw-600 fs-08rem">Example: 9,000,000,000.</span>
+            <span class="fw-600 fs-08rem">Example: 9,000,000,000</span>
           </div>
 
           <div class="mt-08rem">
