@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { NodeService } from './servicesModule/services/node.service';
-import { environment } from 'src/environments/environment.prod';
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
