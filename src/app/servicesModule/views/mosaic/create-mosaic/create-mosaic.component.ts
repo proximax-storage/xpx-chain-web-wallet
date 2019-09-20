@@ -146,7 +146,6 @@ export class CreateMosaicComponent implements OnInit {
       divisibility: ['', [Validators.required]],
       transferable: [false],
       supplyMutable: [false],
-      levyMutable: [false]
     });
   }
 
@@ -163,7 +162,6 @@ export class CreateMosaicComponent implements OnInit {
       divisibility: '',
       transferable: false,
       supplyMutable: false,
-      levyMutable: false
     },
     {
       emitEvent: false
@@ -188,7 +186,6 @@ export class CreateMosaicComponent implements OnInit {
           account: account,
           supplyMutable: this.mosaicForm.get('supplyMutable').value,
           transferable: this.mosaicForm.get('transferable').value,
-          levyMutable: this.mosaicForm.get('levyMutable').value,
           divisibility: this.mosaicForm.get('divisibility').value,
           durationByBlock: parseInt(this.durationByBlock),
           network: this.walletService.currentAccount.network

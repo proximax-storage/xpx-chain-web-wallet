@@ -212,7 +212,6 @@ export class ProximaxProvider {
    * @memberof ProximaxProvider
    */
   buildMosaicDefinition(params: any): MosaicDefinitionTransaction {
-    console.log(MosaicDefinitionTransaction)
     const mosaicDefinitionTransaction = MosaicDefinitionTransaction.create(
       Deadline.create(5),
       params.nonce,
