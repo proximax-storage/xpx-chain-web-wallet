@@ -144,9 +144,9 @@ export class CreateMosaicComponent implements OnInit {
       password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]],
       duration: ['', [Validators.required]],
       divisibility: ['', [Validators.required]],
+      notExpire: [false],
       transferable: [false],
       supplyMutable: [false],
-      levyMutable: [false]
     });
   }
 
@@ -156,6 +156,12 @@ export class CreateMosaicComponent implements OnInit {
    * @memberof CreateMosaicComponent
    */
   clearForm() {
+    if (this.mosaicForm.get('duration').disabled) {
+      this.mosaicForm.get('duration').enable({
+        emitEvent: false
+      });
+    }
+
     this.mosaicForm.reset({
       deltaSupply: '',
       password: '',
@@ -163,13 +169,44 @@ export class CreateMosaicComponent implements OnInit {
       divisibility: '',
       transferable: false,
       supplyMutable: false,
-      levyMutable: false
+      notExpire: false,
     },
-    {
-      emitEvent: false
-    });
+      {
+        emitEvent: false
+      });
   }
 
+  /**
+   *
+   *
+   * @param {*} $event
+   * @memberof CreateMosaicComponent
+   */
+  changeNotExpire($event) {
+    console.log($event);
+    if (!$event.checked) {
+      if (this.mosaicForm.get('duration').disabled) {
+        this.mosaicForm.get('duration').enable({
+          emitEvent: false
+        });
+      }
+    } else {
+      if (this.mosaicForm.get('duration').enabled) {
+        this.mosaicForm.get('duration').setValue('', {
+          emitEvent: false
+        });
+        this.mosaicForm.get('duration').disable({
+          emitEvent: false
+        });
+      }
+    }
+  }
+
+  /**
+   *
+   *
+   * @memberof CreateMosaicComponent
+   */
   send() {
     if (this.mosaicForm.valid && !this.blockSend) {
       const common = {
@@ -181,16 +218,14 @@ export class CreateMosaicComponent implements OnInit {
         this.blockSend = true;
         const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
         const nonce = this.proximaxProvider.createNonceRandom();
-        console.log('\n\n\n\nValue of duration', this.durationByBlock, '\n\n\n\nEnd value\n\n');
-
+        const duration = (this.mosaicForm.get('duration').enabled) ? parseInt(this.durationByBlock) : undefined;
         const params = {
           nonce: nonce,
           account: account,
           supplyMutable: this.mosaicForm.get('supplyMutable').value,
           transferable: this.mosaicForm.get('transferable').value,
-          levyMutable: this.mosaicForm.get('levyMutable').value,
           divisibility: this.mosaicForm.get('divisibility').value,
-          durationByBlock: parseInt(this.durationByBlock),
+          duration: duration,
           network: this.walletService.currentAccount.network
         }
 
@@ -217,7 +252,7 @@ export class CreateMosaicComponent implements OnInit {
         // this.dataBridge.setTransactionStatus(null);
         // I SIGN THE TRANSACTION
         const generationHash = this.dataBridge.blockInfo.generationHash
-        const signedTransaction = account.sign(aggregateTransaction,generationHash);  //Update-sdk-dragon
+        const signedTransaction = account.sign(aggregateTransaction, generationHash);  //Update-sdk-dragon
         this.transactionSigned.push(signedTransaction);
         //ANNOUNCEMENT THE TRANSACTION-
         this.proximaxProvider.announce(signedTransaction).subscribe(
@@ -258,6 +293,11 @@ export class CreateMosaicComponent implements OnInit {
     }, 5000);
   }
 
+  /**
+   *
+   *
+   * @memberof CreateMosaicComponent
+   */
   getTransactionStatus() {
     // Get transaction status
     this.subscribe['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(

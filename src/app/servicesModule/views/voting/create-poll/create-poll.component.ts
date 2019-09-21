@@ -147,7 +147,7 @@ export class CreatePollComponent implements OnInit {
     this.account = (this.isPrivate) ? Account.generateNewAccount(this.walletService.currentAccount.network) :
       Account.createFromPrivateKey(environment.pollsContent.private_key, this.walletService.currentAccount.network);
     this.publicAddress = this.account.address.pretty();
-    this.privateKeyAccount = this.isPrivate?this.account.privateKey.toString():''
+    // this.privateKeyAccount = this.isPrivate?this.account.privateKey.toString():''
   }
 
   get2() {

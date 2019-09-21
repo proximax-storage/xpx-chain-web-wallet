@@ -6,18 +6,20 @@ import { NetworkType } from 'tsjs-xpx-chain-sdk';
 
 export const environment = {
   production: false,
-  itemBooksAddress: 'sw-books',
-  version: '0.3.1.8',
-  nameKeyNodeSelected: `sw-selected-node-03`,
-  nameKeyWalletStorage: `sw-05`,
-  nameKeyNodeStorage: `sw-nodes-03`,
-  nameKeyNamespaces: `sw-namespaces-02`,
-  nameKeyMosaicStorage: `sw-mosaics-02`,
-  nameKeyVersion: 'sw-version',
+  itemBooksAddress: 'sw-books-mainnet',
+  //version: '0.3.1.8',
+  version: '1.0.0.5',
+  cacheVersion: '4',
+  nameKeyNodeSelected: `sw-selected-node-mainnet`,
+  nameKeyWalletStorage: `sw-mainnet`,
+  nameKeyNodeStorage: `sw-nodes-mainnet`,
+  nameKeyNamespaces: `sw-namespaces-mainnet`,
+  nameKeyMosaicStorage: `sw-mosaics-mainnet`,
+  nameKeyVersion: 'sw-version-mainnet',
   protocol: `http`,
   protocolWs: `ws`,
   nodeExplorer: 'https://bctestnetexplorer.xpxsirius.io/#/result/hash',
-  mosaicXpxInfo: {
+ /* mosaicXpxInfo: {
     name: 'prx.xpx',
     coin: 'XPX',
     id: '3c0f3de5298ced2d',
@@ -25,9 +27,18 @@ export const environment = {
     namespaceIdUint64: [2434186742, 3220914849],
     namespaceId: 'bffb42a19116bdf6',
     divisibility: 6
+  },*/
+  mosaicXpxInfo: {
+    name: 'prx.xpx',
+    coin: 'XPX',
+    id: '1a804316c87d5cda',
+    mosaicIdUint64: [3363658970, 444613398],
+    namespaceIdUint64: [2434186742, 3220914849],
+    namespaceId: 'bffb42a19116bdf6',
+    divisibility: 6
   },
   blockchainConnection: {
-    host: 'bcprivatenet.xpxsirius.io',
+    host: '18.138.51.117',
     port: 3000,
     protocol: 'http',
     useSecureMessage: false
@@ -63,14 +74,14 @@ export const environment = {
   swapAccount: {
     address: 'VC3I3FSQ354JT2QNS2XJ2J3OROCOBIRK6JB3BCBH'
   },
-  // typeNetwork: {
-  //   value: NetworkType.PRIVATE,
-  //   label: 'PRIVATE'
-  // }
   typeNetwork: {
-    value: NetworkType.TEST_NET,
-    label: 'TEST NET'
+    value: NetworkType.MAIN_NET,
+    label: 'MAIN NET'
   }
+ /* typeNetwork: {
+     value: NetworkType.TEST_NET,
+     label: 'TEST NET'
+   }*/
 };
 
 /*

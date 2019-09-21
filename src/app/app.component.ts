@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { NodeService } from './servicesModule/services/node.service';
-import { environment } from 'src/environments/environment.prod';
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -13,8 +13,8 @@ export class AppComponent {
   constructor(private nodeService: NodeService) {
     const version = localStorage.getItem(environment.nameKeyVersion);
     if (version) {
-      if (version !== environment.version) {
-        localStorage.setItem(environment.nameKeyVersion, environment.version);
+      if (version !== environment.cacheVersion) {
+        localStorage.setItem(environment.nameKeyVersion, environment.cacheVersion);
         this.nodeService.setArrayNode([]);
         this.nodeService.setSelectedNodeStorage('');
         this.nodeService.initNode();
@@ -22,7 +22,7 @@ export class AppComponent {
         this.nodeService.initNode();
       }
     } else {
-      localStorage.setItem(environment.nameKeyVersion, environment.version);
+      localStorage.setItem(environment.nameKeyVersion, environment.cacheVersion);
       this.nodeService.initNode();
     }
 

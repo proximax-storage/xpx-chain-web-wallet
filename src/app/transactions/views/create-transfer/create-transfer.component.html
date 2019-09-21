@@ -45,6 +45,12 @@
       </div>
     </ng-container>
 
+    <ng-container *ngIf="disabledAllField">
+      <div class="col-11 col-md-10 col-lg-8 mx-auto d-flex justify-content-start">
+        <span class="fs-08rem fw-600 color-error-message">Account not allowed to transfer</span>
+      </div>
+    </ng-container>
+
     <!-- COSIGNATORIES -->
     <ng-container *ngIf="listCosignatorie.length > 0">
       <div class="row">
@@ -75,7 +81,9 @@
         <div class="row">
           <div class="col-8 col-sm-9 col-md-10">
             <div class="md-form form-sm mt-1rem mb-0rem">
-              <img class="form-control-feedback" src="assets/images/img/icon-address-green-book-16h-proximax-sirius-wallet.svg" alt="" width="43" height="43">
+              <img class="form-control-feedback"
+                src="assets/images/img/icon-address-green-book-16h-proximax-sirius-wallet.svg" alt="" width="43"
+                height="43">
               <input mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
                 class="form-control form-control-sm input-border" style="border: 2px solid #2ba1b9;"
                 placeholder="Recipient" formControlName="accountRecipient" id="recipient-invalid-{{invalidRecipient}}"
@@ -94,7 +102,8 @@
           <!-- Show Contacts -->
           <ng-container>
             <div class="col-4 col-sm-3 col-md-2 d-flex justify-content-center align-items-center pt-10px">
-              <div [disabled]="listContacts.length === 0" class="background-gray-icons p-12px bord-rad-25px cursor-p"
+              <div [class.disabled]="listContacts.length === 0 || disabledAllField"
+                class="background-gray-icons p-12px bord-rad-25px cursor-p"
                 (click)="showContacts = (listContacts.length > 0) ? !showContacts : showContacts"
                 [title]="(!showContacts) ? 'Show contacts': 'Hide contacts'">
                 <img class="w-30px" [src]="(!showContacts && listContacts.length === 0) ?
@@ -140,7 +149,8 @@
           <!-- Amount Input -->
           <div class="col-12 mx-auto">
             <div class="md-form form-sm mt-1rem mb-0rem">
-              <img class="form-control-feedback" src="assets/images/img/icon-amount-green-16h-proximax-sirius-wallet.svg" alt="">
+              <img class="form-control-feedback"
+                src="assets/images/img/icon-amount-green-16h-proximax-sirius-wallet.svg" alt="">
               <input pattern="^[+]?([0-9]*[.])?[0-9]+$" currencyMask [options]="optionsXPX" mdbInputDirective
                 mdbValidate [validateSuccess]="true" [maxlength]="configurationForm.amount.maxLength"
                 [validateError]="true" type="text" class="form-control form-control-sm input-border input-amount"
@@ -181,7 +191,8 @@
           <!-- Select mosaic -->
           <div class="col-11 col-md-10 col-lg-8 mx-auto">
             <ng-select mdbInputDirective mdbValidate class="selectWrapper" [items]="otherMosaic.selectOtherMosaics"
-              bindLabel="label" bindValue="value" placeholder="Select mosaic" (change)="otherMosaicsChange($event, i)">
+              bindLabel="label" bindValue="value" placeholder="Select mosaic" (change)="otherMosaicsChange($event, i)"
+              [disabled]="disabledAllField">
             </ng-select>
           </div>
 
@@ -200,13 +211,14 @@
                 <!-- Amount Input -->
                 <div class="col-12 mx-auto">
                   <div class="md-form form-sm mt-1rem mb-0rem">
-                    <img class="form-control-feedback" src="assets/images/img/icon-amount-green-16h-proximax-sirius-wallet.svg" alt="">
+                    <img class="form-control-feedback"
+                      src="assets/images/img/icon-amount-green-16h-proximax-sirius-wallet.svg" alt="">
                     <input currencyMask [options]="boxOtherMosaics[i].config" mdbInputDirective mdbValidate
                       [maxlength]="configurationForm.amount.maxLength" type="text"
                       class="form-control form-control-sm input-border input-amount"
                       [(ngModel)]="boxOtherMosaics[i].amount" [ngModelOptions]="{standalone: true}"
-                      (ngModelChange)="amountOtherMosaicChanged($event, otherMosaic.id, i)"
-                      placeholder="Enter quantity">
+                      (ngModelChange)="amountOtherMosaicChanged($event, otherMosaic.id, i)" placeholder="Enter quantity"
+                      [disabled]="disabledAllField">
                     <span class="label-i fw-600 pl-2rem">SEND</span>
 
                     <!-- Message Error Insufficient balance-->
@@ -230,8 +242,9 @@
     <ng-container>
       <div class="row mt-1rem">
         <div class="col-12 d-flex justify-content-center">
-          <button [disabled]="currentBlock === 0 || disabledBtnAddMosaic || selectOtherMosaics.length === 0" mdbBtn
-            type="button" rounded="true" mdbWavesEffect class="background-btn-inverse pl-2rem pr-2rem" size="md"
+          <button
+            [disabled]="currentBlock === 0 || disabledBtnAddMosaic || selectOtherMosaics.length === 0 || disabledAllField"
+            mdbBtn type="button" rounded="true" mdbWavesEffect class="background-btn-inverse pl-2rem pr-2rem" size="md"
             (click)="pushedOtherMosaics()">
             <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
               *ngIf="currentBlock === 0 && !disabledBtnAddMosaic"></span>
@@ -260,7 +273,8 @@
     <div class="row">
       <div class="col-11 col-md-10 col-lg-8 mx-auto">
         <div class="md-form form-sm mt-1rem mb-0rem">
-          <img class="form-control-feedback" src="assets/images/img/icon-messenger-green-16h-proximax-sirius-wallet.svg" alt="" style="padding: 30px 10px !important">
+          <img class="form-control-feedback" src="assets/images/img/icon-messenger-green-16h-proximax-sirius-wallet.svg"
+            alt="" style="padding: 30px 10px !important">
           <textarea mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
             id="message" class="md-textarea form-control" mdbInput placeholder="Message" formControlName="message"
             [maxlength]="configurationForm.message.maxLength"></textarea>
@@ -297,15 +311,15 @@
     <!-- BUTTONS -->
     <div class="row">
       <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-        <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
-          size="md" (click)="clearForm()">
+        <button [disabled]="disabledAllField" mdbBtn type="button" rounded="true" mdbWavesEffect
+          class="f-w-600 background-btn pl-2rem pr-2rem" size="md" (click)="clearForm()">
           <span class="fs-1-2em color-white">CLEAR</span>
         </button>
       </div>
 
       <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-        <button [disabled]="blockSendButton || formTransfer.invalid || errorOtherMosaics" mdbBtn type="submit"
-          rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
+        <button [disabled]="blockSendButton || formTransfer.invalid || errorOtherMosaics || disabledAllField" mdbBtn
+          type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
           <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
             *ngIf="blockButton"></span>
           <span class="fs-1-2em color-white">SEND</span>

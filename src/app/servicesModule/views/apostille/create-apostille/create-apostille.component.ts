@@ -349,6 +349,7 @@ export class CreateApostilleComponent implements OnInit {
     // Create an account from the dedicatedPrivateKey to send a transaction with apostilleHash message
     const dedicatedAccount = Account.createFromPrivateKey(dedicatedPrivateKey, this.walletService.currentAccount.network);
     // Build the transfer type transaction
+    console.log('MY NETWORK --->', this.walletService.currentAccount.network);
     let transferTransaction: TransferTransaction = this.proximaxProvider.buildTransferTransaction(
       this.walletService.currentAccount.network,
       this.proximaxProvider.createFromRawAddress(dedicatedAccount.address.plain()),
@@ -356,9 +357,11 @@ export class CreateApostilleComponent implements OnInit {
     );
     // Zero fee is added
     transferTransaction['fee'] = UInt64.fromUint(0);
+    console.log('TRANSACTION BUILDER ---> ', transferTransaction);
     // Sign the transaction
     const generationHash = this.dataBridgeService.blockInfo.generationHash;
     const signedTransaction = ownerAccount.sign(transferTransaction,generationHash);  //Update-sdk-dragon
+    console.log('TRANSACTION SIGNED ---> ', signedTransaction);
     const date = new Date();
     this.ntyData = {
       fileName: this.nameFile,
@@ -420,6 +423,7 @@ export class CreateApostilleComponent implements OnInit {
     //Create an account from my private key
     const myAccount = Account.createFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
     //Arm the transaction type transfer
+    console.log('MY NETWORK --->', this.walletService.currentAccount.network);
     let transferTransaction: any = this.proximaxProvider.buildTransferTransaction(
       this.walletService.currentAccount.network,
       sinkAddress,
@@ -427,10 +431,11 @@ export class CreateApostilleComponent implements OnInit {
     );
     // Zero fee is added
     transferTransaction['fee'] = UInt64.fromUint(0);
-
+    console.log('TRANSACTION BUILDED ---> ', transferTransaction);
     // Sign the transaction
     const generationHash = this.dataBridgeService.blockInfo.generationHash;
     const signedTransaction = myAccount.sign(transferTransaction,generationHash); //Update-sdk-dragon
+    console.log('TRANSACTION SIGNED ---> ', signedTransaction);
     const date = new Date();
     this.ntyData = {
       fileName: this.nameFile,

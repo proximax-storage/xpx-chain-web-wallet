@@ -29,6 +29,7 @@ export class CreateTransferComponent implements OnInit {
 
   @ViewChild('basicModal', { static: true }) basicModal: ModalDirective;
   accounts: any = [];
+  disabledAllField = false;
   sender: AccountsInterface = null;
   allMosaics = [];
   balanceXpx = '0.000000';
@@ -200,7 +201,6 @@ export class CreateTransferComponent implements OnInit {
 
             const x = this.proximaxProvider.getMosaicId(mosaic.idMosaic).id.toHex() !== environment.mosaicXpxInfo.id;
             if (x) {
-              console.log('EL MOSAICO ----> ', mosaic);
               const nameMosaic = (mosaic.mosaicNames.names.length > 0) ? mosaic.mosaicNames.names[0].name : this.proximaxProvider.getMosaicId(mosaic.idMosaic).toHex();
               mosaicsSelect.push({
                 label: `${nameMosaic}${nameExpired}`,
@@ -232,11 +232,10 @@ export class CreateTransferComponent implements OnInit {
   * @memberof CreateTransferComponent
   */
   async changeSender(accountToSend: AccountsInterface) {
-    console.log('ACCOUNT SENDER', accountToSend);
     if (accountToSend) {
       this.sender = accountToSend;
       this.findCosignatories(accountToSend);
-      if (this.formTransfer.disabled) {
+      if (this.formTransfer.disabled && !this.disabledAllField) {
         this.formTransfer.enable();
       }
 
@@ -259,7 +258,7 @@ export class CreateTransferComponent implements OnInit {
       if (!this.haveBalance) {
         this.insufficientBalance = true;
         this.formTransfer.controls['amountXpx'].disable();
-      } else {
+      } else if(!this.disabledAllField){
         this.insufficientBalance = false;
         this.formTransfer.controls['amountXpx'].enable();
       }
@@ -431,13 +430,17 @@ export class CreateTransferComponent implements OnInit {
   findCosignatories(element: AccountsInterface) {
     this.cosignatorie = null;
     this.listCosignatorie = [];
-    // if (element.default) {
+    this.disabledAllField = false;
     if (element.isMultisign && element.isMultisign.cosignatories && element.isMultisign.cosignatories.length > 0) {
       if (element.isMultisign.cosignatories.length === 1) {
         const address = this.proximaxProvider.createFromRawAddress(element.isMultisign.cosignatories[0].address['address']);
         const cosignatorieAccount: AccountsInterface = this.walletService.filterAccountWallet('', null, address.pretty());
-        this.cosignatorie = (cosignatorieAccount) ? cosignatorieAccount : null;
-        console.log('---> SET COSIGNATARIO BY DEFAULT (1)', this.cosignatorie);
+        if (cosignatorieAccount) {
+          this.cosignatorie = cosignatorieAccount;
+        }else {
+          this.disabledAllField = true;
+          this.formTransfer.disable();
+        }
         return;
       } else {
         const listCosignatorie = [];
@@ -455,12 +458,16 @@ export class CreateTransferComponent implements OnInit {
 
         if (listCosignatorie.length === 1) {
           this.cosignatorie = listCosignatorie[0].value;
-          console.log('---> SENDER', this.sender);
-          console.log('---> SET COSIGNATARIO BY DEFAULT (1)', this.cosignatorie);
           return;
         }
 
-        this.listCosignatorie = listCosignatorie;
+        if (listCosignatorie && listCosignatorie.length > 0) {
+          this.listCosignatorie = listCosignatorie;
+        } else {
+          this.disabledAllField = true;
+          this.formTransfer.disable();
+        }
+
         return;
       }
     }
@@ -717,9 +724,9 @@ export class CreateTransferComponent implements OnInit {
       const type = (this.cosignatorie) ? true : false;
       switch (type) {
         case true:
-          console.log('TRANSFIERE CON COSIGNATARIO');
+          /*console.log('TRANSFIERE CON COSIGNATARIO');
           console.log('ACCOUNT SENDER ----> ', this.sender);
-          console.log('COSIGNATARIO SELECCIONADO ----> ', this.cosignatorie);
+          console.log('COSIGNATARIO SELECCIONADO ----> ', this.cosignatorie);*/
           const generationHash = this.dataBridge.blockInfo.generationHash;
           if (this.walletService.decrypt(common, this.cosignatorie)) {
             const params: TransferInterface = {
@@ -757,12 +764,12 @@ export class CreateTransferComponent implements OnInit {
             //-----------------------------------------------------------------------
             // Build aggregate transaction
             const aggregateTransaction = this.transactionService.buildAggregateTransaction(this.sender.publicAccount, transferBuilder);
-            console.log('aggregateTransaction ---------> ', aggregateTransaction);
+            console.log('=== Build aggregate transaction ===', aggregateTransaction);
             // Sign transaction
             const aggregateSigned = account.sign(aggregateTransaction, generationHash);
             // Build hash lock transaction
             const hashLockTransaction: LockFundsTransaction = this.transactionService.buildHashLockTransaction(aggregateSigned);
-            console.log('hashLockTransaction ---------> ', hashLockTransaction);
+            console.log('=== Build hash lock transaction === ', hashLockTransaction);
             // Hash lock signed
             const hashLockSigned = account.sign(hashLockTransaction, generationHash);
             this.saveContactFn();
@@ -780,7 +787,6 @@ export class CreateTransferComponent implements OnInit {
 
           break;
         case false:
-          console.log('TRANSFIERE SIMPLE');
           if (this.walletService.decrypt(common, this.sender)) {
             const params: TransferInterface = {
               common: common,

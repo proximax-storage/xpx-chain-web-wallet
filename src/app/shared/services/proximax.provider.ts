@@ -212,7 +212,6 @@ export class ProximaxProvider {
    * @memberof ProximaxProvider
    */
   buildMosaicDefinition(params: any): MosaicDefinitionTransaction {
-    console.log(MosaicDefinitionTransaction)
     const mosaicDefinitionTransaction = MosaicDefinitionTransaction.create(
       Deadline.create(5),
       params.nonce,
@@ -221,7 +220,7 @@ export class ProximaxProvider {
         supplyMutable: params.supplyMutable,
         transferable: params.transferable,
         divisibility: params.divisibility,
-        duration: UInt64.fromUint(params.durationByBlock)
+        duration: (params.duration) ? UInt64.fromUint(params.duration) : undefined
       }),
       params.network
     );

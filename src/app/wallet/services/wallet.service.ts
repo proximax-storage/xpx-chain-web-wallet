@@ -101,9 +101,9 @@ export class WalletService {
             const newAccounts = this.changeIsMultiSign(element.name, isMultisig);
             if (newAccounts.length > 0) {
               console.log('=== NEW ACCOUNTS TO SEARCH ===', newAccounts);
-              // Emite el cambios de las nuevas cuentas
+              // Issue changes to new accounts
               this.setAccountsPushedSubject(newAccounts);
-              // Borra el cambio de las nuevas cuentas
+              // Delete the change of the new accounts
               this.setAccountsPushedSubject([]);
             }
 
@@ -253,6 +253,16 @@ export class WalletService {
       accounts: myAccounts
     });
 
+    this.accountsInfo.forEach(element => {
+      if (element.name === oldName) {
+        element.name = newName;
+      }
+    });
+
+    if (this.currentAccount.name === oldName){
+      this.currentAccount.name = newName;
+    }
+
     localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(othersWallet));
   }
 
@@ -272,7 +282,6 @@ export class WalletService {
         isMultisig.multisigAccounts.forEach(multisigAccount => {
           const exist = myAccounts.find(x => x.address === multisigAccount.address.plain());
           if (!exist) {
-            console.log('ESTA CUENTA NO EXISTE ===> ', multisigAccount, '\n\n\n\n\n\n');
             const accountBuilded: AccountsInterface = this.buildAccount({
               address: multisigAccount.address.plain(),
               byDefault: false,
@@ -285,7 +294,6 @@ export class WalletService {
               publicAccount: multisigAccount,
             });
 
-            console.log('\n\n---ACOUNT BUILDED---', accountBuilded);
             newAccount.push(accountBuilded);
             this.saveAccountWalletStorage(accountBuilded);
             /*this.proximaxProvider.getAccountInfo(multisigAccount.address).pipe(first()).subscribe(async (accountInfo: AccountInfo) => {
@@ -569,7 +577,7 @@ export class WalletService {
   }
 
   /**
-   * 
+   *
    */
   getUnconfirmedTransaction() {
     return this.unconfirmedTransactions;
@@ -750,10 +758,10 @@ export class WalletService {
   setNis1AccounsWallet(account) {
     this.nis1AccounsWallet.push(account);
   }
-  
+
   /**
-   * 
-   * @param transactions 
+   *
+   * @param transactions
    */
   setUnconfirmedTransaction(transactions: any) {
     this.unconfirmedTransactions = transactions;
