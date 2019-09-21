@@ -97,9 +97,7 @@ export class AuthService {
 
     // load services and components
     this.route.navigate([`/${AppConfig.routes.dashboard}`]);
-    this.serviceModuleService.changeBooksItem(
-      this.proximaxProvider.createFromRawAddress(currentAccount.address)
-    );
+    this.serviceModuleService.changeBooksItem();
 
     const address: Address[] = [];
     for (let account of currentWallet.accounts) {

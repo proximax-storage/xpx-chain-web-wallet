@@ -11,7 +11,7 @@ import { TransactionsInterface } from '../../transactions/services/transactions.
 
 export class ServicesModuleService {
 
-  booksAddress = ``;
+  itemBook = ``;
   constructor(
     private walletService: WalletService
   ) { }
@@ -58,6 +58,7 @@ export class ServicesModuleService {
    * @memberof ServicesModuleService
    */
   saveContacts(params: ContactsStorageInterface) {
+    // const booksStorage =
     const dataStorage = (params.nameItem === '') ? this.getBooksAddress() : localStorage.getItem(`${environment.itemBooksAddress}-${params.nameItem}`);
     const books = { label: params.name, value: params.address.split('-').join(''), walletContact: params.walletContact };
     if (params.update) {
@@ -105,8 +106,9 @@ export class ServicesModuleService {
    * @param {Address} address
    * @memberof ServicesModuleService
    */
-  changeBooksItem(address: Address) {
-    this.booksAddress = `${environment.itemBooksAddress}-${this.walletService.getCurrentWallet().name}`;
+  changeBooksItem() {
+    this.itemBook = `${environment.itemBooksAddress}-${this.walletService.getCurrentWallet().name}`;
+    console.log(this.itemBook);
   }
 
 
@@ -143,7 +145,7 @@ export class ServicesModuleService {
    */
   setBookAddress(contacts: any, nameItem: string) {
     if (nameItem === '') {
-      localStorage.setItem(this.booksAddress, JSON.stringify(contacts));
+      localStorage.setItem(this.itemBook, JSON.stringify(contacts));
     } else {
       localStorage.setItem(`${environment.itemBooksAddress}-${nameItem}`, JSON.stringify(contacts));
     }
@@ -156,9 +158,7 @@ export class ServicesModuleService {
    * @memberof ServiceModuleService
    */
   getBooksAddress() {
-    /*console.log('this.booksAddress',this.booksAddress)
-    console.log( JSON.parse(localStorage.getItem(this.booksAddress)))*/
-    return JSON.parse(localStorage.getItem(this.booksAddress));
+    return JSON.parse(localStorage.getItem(this.itemBook));
   }
 }
 
