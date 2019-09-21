@@ -197,7 +197,7 @@
                   <!-- VALIDATION -->
                   <mdb-error
                     *ngIf="validateInput('cosignatory', '').invalid && (validateInput('cosignatory', '').dirty || validateInput('cosignatory', '').touched)">
-                    <span>Input invalid</span>
+                    <span>Required field</span>
                   </mdb-error>
                 </div>
               </div>
@@ -256,7 +256,7 @@
                     id="password" class="form-control form-control-sm input-border" placeholder="Enter wallet password">
                   <mdb-error
                     *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
-                    <span>Input invalid</span>
+                    <span>Required field</span>
                   </mdb-error>
                 </div>
               </div>

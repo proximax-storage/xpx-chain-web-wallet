@@ -49,7 +49,7 @@
                       formControlName="privateKey">
                     <mdb-error
                       *ngIf="validateInput('privateKey').invalid && (validateInput('privateKey').dirty || validateInput('privateKey').touched)">
-                      <span>Input invalid</span>
+                      <span>Required field</span>
                     </mdb-error>
                   </div>
                 </div>
@@ -73,7 +73,7 @@
                     placeholder="Account name" formControlName="nameWallet">
                   <mdb-error
                     *ngIf="validateInput('nameWallet').invalid && (validateInput('nameWallet').dirty || validateInput('nameWallet').touched)">
-                    <span>Input invalid</span>
+                    <span>Required field</span>
                   </mdb-error>
 
                   <mdb-error *ngIf="validateInput('nameWallet').valid && validateNameAccount()">
@@ -96,7 +96,7 @@
                   <!-- VALIDATION -->
                   <mdb-error
                     *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
-                    <span>Input invalid</span>
+                    <span>Required field</span>
                   </mdb-error>
                 </div>
               </div>

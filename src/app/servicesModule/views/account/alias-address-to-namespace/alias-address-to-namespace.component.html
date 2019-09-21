@@ -33,6 +33,7 @@
     <div class="row">
       <div class="col-11 col-sm-10 col-lg-8 mx-auto">
         <div class="md-form form-sm">
+          <img class="form-control-feedback" src="assets/images/img/icon-address-green-book-16h-proximax-sirius-wallet.svg" alt="" width="43" height="43">
           <input formControlName="address" required mdbInputDirective mdbValidate [validateSuccess]="true"
             [validateError]="true" type="text" id="address" class="form-control form-control-sm input-border"
             placeholder="Address" [maxlength]="configurationForm.address.maxLength"
@@ -41,7 +42,7 @@
           <!-- VALIDATION -->
           <mdb-error
             *ngIf="validateInput('address', '').invalid && (validateInput('address', '').dirty || validateInput('address', '').touched)">
-            <span class="fs-08rem fw-600 color-error-message">Invalid input</span>
+            <span class="fs-08rem fw-600 color-error-message">Required field</span>
           </mdb-error>
         </div>
       </div>
@@ -72,7 +73,7 @@
           <!-- VALIDATION -->
           <mdb-error
             *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
-            <span class="fs-08rem fw-600 color-error-message">Invalid input</span>
+            <span class="fs-08rem fw-600 color-error-message">Required field</span>
           </mdb-error>
         </div>
       </div>

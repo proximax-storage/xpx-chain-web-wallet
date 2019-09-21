@@ -29,7 +29,7 @@
                             <input formControlName="title" required mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
                                 id="title" class="form-control form-control-sm input-border" placeholder="Enter title">
                             <mdb-error *ngIf="validateInput('title', '1', '').invalid && (validateInput('title', '1', '').dirty || validateInput('title', '1', '').touched)">
-                                <span>Input invalid</span>
+                                <span>Required field</span>
                             </mdb-error>
                         </div>
                         <!-- IS PRIVATE -->
@@ -116,7 +116,7 @@
                             <input formControlName="option" mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
                                 id="option" class="form-control form-control-sm input-border" placeholder="Option">
                             <mdb-error *ngIf="validateInput('option', '2', '').invalid && (validateInput('option', '2', '').dirty || validateInput('option', '2', '').touched)">
-                                <span>Input invalid</span>
+                                <span>Required field</span>
                             </mdb-error>
                         </div>
                         <!-- OPTIONS VALIDATE -->
@@ -207,7 +207,7 @@
                                     <input formControlName="address" mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
                                         id="address" class="form-control form-control-sm input-border" placeholder="Account Address">
                                     <mdb-error *ngIf="validateInput('address','3', '').invalid && (validateInput('address','3', '').dirty || validateInput('address','3', '').touched)">
-                                        <span>Input invalid</span>
+                                        <span>Required filed</span>
                                     </mdb-error>
                                 </div>
                             </div>
@@ -330,7 +330,7 @@
                             <input formControlName="password" required mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
                                 type="password" id="password" class="form-control form-control-sm input-border" placeholder="Enter wallet password">
                             <mdb-error *ngIf="validateInput('password','4', '').invalid && (validateInput('password','4', '').dirty || validateInput('password','', '').touched)">
-                                <span>Input invalid</span>
+                                <span>Required field</span>
                             </mdb-error>
                         </div>
                     </div>

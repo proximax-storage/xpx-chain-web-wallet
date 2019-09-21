@@ -23,7 +23,7 @@
               <!-- VALIDATION -->
               <mdb-error
                 *ngIf="validateInput('name', '').invalid && (validateInput('name', '').dirty || validateInput('name', '').touched)">
-                <span>Input invalid</span>
+                <span>Required field</span>
               </mdb-error>
             </div>
           </div>
@@ -52,7 +52,7 @@
               <!-- VALIDATION -->
               <mdb-error
                 *ngIf="validateInput('duration', '').invalid && (validateInput('duration', '').dirty || validateInput('duration', '').touched)">
-                <span>Input invalid</span>
+                <span>Required field</span>
               </mdb-error>
 
               <mdb-error *ngIf="validateInput('duration', '').valid && insufficientBalanceDuration">
@@ -101,7 +101,7 @@
               <!-- VALIDATION -->
               <mdb-error
                 *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
-                <span>Input invalid</span>
+                <span>Required field</span>
               </mdb-error>
             </div>
           </div>
