@@ -236,5 +236,4 @@ export class ImportWalletComponent implements OnInit {
       }
     }
   }
-
 }

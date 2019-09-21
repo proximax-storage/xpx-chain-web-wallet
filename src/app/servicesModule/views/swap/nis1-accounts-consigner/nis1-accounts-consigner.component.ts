@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import { AppConfig } from 'src/app/config/app.config';
 import { TransactionsService } from 'src/app/transactions/services/transactions.service';
 import { type } from 'os';
+import { join } from 'path';
 @Component({
   selector: 'app-nis1-accounts-consigner',
   templateUrl: './nis1-accounts-consigner.component.html',
@@ -48,7 +49,7 @@ export class Nis1AccountsConsignerComponent implements OnInit {
   searchBalance(account, index = null) {
     this.nemProvider.getOwnedMosaics(account.address).pipe(first()).pipe(timeout(15000)).subscribe(
       async next => {
-        console.log('response search ----->', next);
+        console.log('response search ----->', account);
         let foundXpx: boolean = false;
         for (const el of next) {
           if (el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx') {
@@ -58,55 +59,51 @@ export class Nis1AccountsConsignerComponent implements OnInit {
             realQuantity = this.nemProvider.amountFormatter(realQuantity, el, el.properties.divisibility);
             if (index === null) {
               this.mainAccount.mosaic = el;
-              this.mainAccount.balance = realQuantity;
               this.mainAccount.multiSign = false;
+              const transactions = await this.nemProvider.getUnconfirmedTransaction(account.address);
+
+              if (transactions.length > 0) {
+                let relativeAmount = realQuantity;
+                for (const item of transactions) {                  
+                  if (item.type === 257 && item['signer']['address']['value'] === this.mainAccount.address.value) {
+                    for (const mosaic of item['_assets']) {
+                      if (mosaic.assetId.namespaceId === 'prx' && mosaic.assetId.name === 'xpx') {
+                        const quantity = parseFloat(this.nemProvider.amountFormatter(mosaic.quantity, el, el.properties.divisibility));
+                        const quantitywhitoutFormat = relativeAmount.split(',').join('');
+                        const quantityFormat = this.nemProvider.amountFormatter(parseInt((quantitywhitoutFormat - quantity).toString().split('.').join('')), el, el.properties.divisibility);
+                        relativeAmount = quantityFormat;
+                      }
+                    }
+                  }
+                }
+                this.mainAccount.balance = relativeAmount;
+              } else {
+                this.mainAccount.balance = realQuantity;
+              }
             } else {
               this.listConsignerAccounts[index].publicAccount.mosaic = el;
-              this.listConsignerAccounts[index].publicAccount.balance = realQuantity;
               this.listConsignerAccounts[index].publicAccount.multiSign = true;
-              // const unconfirmedTransactions = await this.nemProvider.getUnconfirmedTransaction(account.address).pipe(first()).toPromise();
-              // console.log('unconfirmedTransactions ------>', unconfirmedTransactions);
-              // for (const iterator of unconfirmedTransactions) {
-              //   console.log('Testtttttttttttttttttttt---------------_>', iterator.signer.address.plain() === account.address.plain() && iterator.type === 4100);
-                
-              //   if ((iterator.signer.address.plain() === account.address.plain()) && (iterator.type === 4100)) {
-              //     console.log('Legggooooooooo');
-              //     if (iterator['otherTransaction']['type'] === 257) {
-              //       for (const mosaic of iterator['otherTransaction']['_assets']) {
-              //         if (mosaic.assetId.namespaceId === 'prx' && mosaic.assetId.name === 'xpx') {
-              //           let quantity = this.nemProvider.amountFormatter(mosaic.quantity, el, el.properties.divisibility);
-              //           console.log('Esta es la cantidad del mosaico transferido', quantity);
-              //           this.listConsignerAccounts[index].publicAccount.balance = this.listConsignerAccounts[index].publicAccount.balance - parseFloat(quantity);
-              //         }
-              //       }
-              //     }
-              //   }
-              // }
+              const transactions = await this.nemProvider.getUnconfirmedTransaction(account.address);
+
+              if (transactions.length > 0) {
+                let relativeAmount = realQuantity;
+                for (const item of transactions) {
+                  if (item.type === 4100 && item['otherTransaction']['signer']['address']['value'] === this.listConsignerAccounts[index].publicAccount.address.value) {
+                    for (const mosaic of item['otherTransaction']['_assets']) {
+                      if (mosaic.assetId.namespaceId === 'prx' && mosaic.assetId.name === 'xpx') {
+                        const quantity = parseFloat(this.nemProvider.amountFormatter(mosaic.quantity, el, el.properties.divisibility));
+                        const quantitywhitoutFormat = relativeAmount.split(',').join('');
+                        const quantityFormat = this.nemProvider.amountFormatter(parseInt((quantitywhitoutFormat - quantity).toString().split('.').join('')), el, el.properties.divisibility);
+                        relativeAmount = quantityFormat;
+                      }
+                    }
+                  }
+                }
+                this.listConsignerAccounts[index].publicAccount.balance = relativeAmount;
+              } else {
+                this.listConsignerAccounts[index].publicAccount.balance = realQuantity;
+              }
             }
-
-
-            // .pipe(timeout(15000)).subscribe(
-            //   next => {
-            //     console.log('Estas son las transacciones de una cuenta consignataria', next);
-            //     for (const iterator of next) {
-            //       if (iterator.signer.address.plain() === account.address.plain() && iterator.type === 4100) {
-            //         console.log('Legggooooooooo');
-            //         if (iterator['otherTransaction']['type'] === 257) {
-            //           for (const mosaic of iterator['otherTransaction']['_assets']) {
-            //             if (mosaic.assetId.namespaceId === 'prx' && mosaic.assetId.name === 'xpx') {
-            //               let quantity = this.nemProvider.amountFormatter(mosaic.quantity, el, el.properties.divisibility);
-            //               console.log('Esta es la cantidad del mosaico transferido', quantity);
-            //               this.listConsignerAccounts[index].publicAccount.balance = this.listConsignerAccounts[index].publicAccount.balance - parseFloat(quantity);
-            //             }
-            //           }
-            //         }
-            //       }
-            //     }
-
-            //   }, error => {
-            //     console.log('Eroor con cunrs consignataria', error);
-
-            //   })
           }
         }
         if (!foundXpx) {

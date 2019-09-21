@@ -265,12 +265,32 @@ export class NemServiceService {
         }
 
         this.getOwnedMosaics(address).pipe(first()).pipe((timeout(10000))).subscribe(
-          next => {
+          async next => {
             for (const el of next) {
               if (el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx') {
                 let realQuantity = null;
                 realQuantity = this.transactionService.addZeros(el.properties.divisibility, el.quantity);
                 realQuantity = this.amountFormatter(realQuantity, el, el.properties.divisibility);
+                const transactions = await this.getUnconfirmedTransaction(account.address);
+                let balance = 0;
+                if (transactions.length > 0) {
+                  let relativeAmount = realQuantity;
+                  for (const item of transactions) {
+                    if (item.type === 257 && item['signer']['address']['value'] === address['value']) {
+                      for (const mosaic of item['_assets']) {
+                        if (mosaic.assetId.namespaceId === 'prx' && mosaic.assetId.name === 'xpx') {
+                          const quantity = parseFloat(this.amountFormatter(mosaic.quantity, el, el.properties.divisibility));
+                          const quantitywhitoutFormat = relativeAmount.split(',').join('');
+                          const quantityFormat = this.amountFormatter(parseInt((quantitywhitoutFormat - quantity).toString().split('.').join('')), el, el.properties.divisibility);
+                          relativeAmount = quantityFormat;
+                        }
+                      }
+                    }
+                  }
+                  balance = relativeAmount;
+                } else {
+                  balance = realQuantity;
+                }
                 const accountNis1 = {
                   nameAccount: name,
                   address: account.address,
@@ -279,7 +299,7 @@ export class NemServiceService {
                   consignerAccounts: consignerAccountsInfo,
                   mosaic: el,
                   multiSign: false,
-                  balance: realQuantity,
+                  balance: balance,
                   route: `/${AppConfig.routes.viewAllAccount}`
                 }
                 this.walletService.setNis1AccounsWallet(accountNis1);
@@ -338,7 +358,7 @@ export class NemServiceService {
    * @memberof NemServiceService
    * @returns Observable<Transaction[]>
    */
-  getUnconfirmedTransaction(address: Address):Observable<Transaction[]> {
-    return this.accountHttp.unconfirmedTransactions(address);
+  getUnconfirmedTransaction(address: Address): Promise<Transaction[]> {
+    return this.accountHttp.unconfirmedTransactions(address).toPromise();
   }
 }

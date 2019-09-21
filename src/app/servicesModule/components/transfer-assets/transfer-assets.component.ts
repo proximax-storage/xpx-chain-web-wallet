@@ -65,34 +65,49 @@ export class TransferAssetsComponent implements OnInit {
     if (this.accountSelected) {
       this.createFormTransfer();
       this.booksAddress();
-      console.log('this.accountCreated------>', this.accountCreated);
-      console.log('this.accountSelected------>', this.accountSelected);
-      console.log('curren Account------->', this.walletService.currentAccount);
-      
+
       if (this.accountSelected.consignerAccounts !== undefined) {
         this.changeAccount = this.accountSelected.consignerAccounts.length > 1;
       }
-  
+
       if (this.accountSelected.multiSign) {
         this.changeAccount = true;
       }
-  
-  
+
+
       if (this.accountSelected.mosaic === null) {
         this.routeEvent = `/${AppConfig.routes.nis1AccountList}`;
         this.nemService.getOwnedMosaics(this.accountSelected.address).pipe(first()).pipe((timeout(10000))).subscribe(
-          next => {
-            console.log('next------------_>', next);
-  
+          async next => {
             for (const el of next) {
               if (el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx') {
                 let realQuantity = null;
                 realQuantity = this.transactionService.addZeros(el.properties.divisibility, el.quantity);
                 realQuantity = this.nemProvider.amountFormatter(realQuantity, el, el.properties.divisibility);
                 this.accountSelected.mosaic = el;
-                this.accountSelected.balance = realQuantity;
+                const transactions = await this.nemProvider.getUnconfirmedTransaction(this.accountSelected.address);
+                console.log('this.accountSelected', this.accountSelected);
+                console.log('Estas son las transacciones', transactions);
+                
+                if (transactions.length > 0) {
+                  let relativeAmount = realQuantity;
+                  for (const item of transactions) {
+                    if (item.type === 257 && item['signer']['address']['value'] === this.accountSelected.address.value) {
+                      for (const mosaic of item['_assets']) {
+                        if (mosaic.assetId.namespaceId === 'prx' && mosaic.assetId.name === 'xpx') {
+                          const quantity = parseFloat(this.nemProvider.amountFormatter(mosaic.quantity, el, el.properties.divisibility));
+                          const quantitywhitoutFormat = relativeAmount.split(',').join('');
+                          const quantityFormat = this.nemProvider.amountFormatter(parseInt((quantitywhitoutFormat - quantity).toString().split('.').join('')), el, el.properties.divisibility);
+                          relativeAmount = quantityFormat;
+                        }
+                      }
+                    }
+                  }
+                  this.accountSelected.balance = relativeAmount;
+                } else {
+                  this.accountSelected.balance = realQuantity;
+                }
                 this.searchBalance = false;
-                console.log('\n\n\n\nValue of this.accountCreated', this.accountCreated, '\n\n\n\nEnd value\n\n');
                 this.optionsXPX = {
                   prefix: '',
                   thousands: ',',
@@ -141,8 +156,6 @@ export class TransferAssetsComponent implements OnInit {
       }
       this.listContacts = data;
     }
-    console.log('this.listContacts _________________>>>>>', this.walletService.currentWallet);
-
   }
 
   /**
@@ -215,14 +228,9 @@ export class TransferAssetsComponent implements OnInit {
   async createTransaction() {
     let common = { password: this.formTransfer.get("password").value };
     const quantity = this.formTransfer.get("amountXpx").value;
-    console.log('\n\n\n\nValue quantity:\n', quantity, '\n\n\n\nEnd value\n\n');
-    // console.log('\n\n\n\nValue this.walletService.currentAccount:\n', this.walletService.currentAccount, '\n\n\n\nEnd value\n\n');
-    console.log('Account Selecteddddd --------------->', this.walletService.getAccountSelectedWalletNis1());
-    
-    console.log('\n\n\n\nValue this.accountCreated:\n', this.accountCreated, '\n\n\n\nEnd value\n\n');
+
     const currentAccount = this.walletService.getAccountSelectedWalletNis1();
     if (this.walletService.decrypt(common, currentAccount)) {
-      console.log('\n\n\n\nValue common:\n', common, '\n\n\n\nEnd value\n\n');
       const account = this.nemService.createAccountPrivateKey(common['privateKey']);
 
       if (this.accountSelected.multiSign) {
@@ -257,8 +265,6 @@ export class TransferAssetsComponent implements OnInit {
       } else {
         const catapultAccount = this.proximaxService.getPublicAccountFromPrivateKey(common['privateKey'], currentAccount.network);
         const transaction = await this.nemService.createTransaction(PlainMessage.create(catapultAccount.publicKey), this.accountSelected.mosaic.assetId, quantity);
-        console.log('\n\n\n\nValue transaction:\n', transaction, '\n\n\n\nEnd value\n\n');
-        console.log('\n\n\n\nValue catapultAccount:\n', catapultAccount, '\n\n\n\nEnd value\n\n');
 
         this.nemService.anounceTransaction(transaction, account).pipe(first()).pipe((timeout(15000)))
           .subscribe(next => {
@@ -280,7 +286,6 @@ export class TransferAssetsComponent implements OnInit {
   }
 
   navToRoute() {
-    console.log('this.route-------->', this.route);
     const route = this.accountSelected.route
     this.walletService.setAccountSelectedWalletNis1(null);
     this.walletService.setNis1AccounsWallet(null);
@@ -291,7 +296,6 @@ export class TransferAssetsComponent implements OnInit {
     } else {
       this.router.navigate([route]);
     }
-    // this.walletService.setAccountMosaicsNis1(null);
   }
 
   goToList() {

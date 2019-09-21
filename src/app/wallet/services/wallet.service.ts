@@ -43,9 +43,7 @@ export class WalletService {
   constructor(
     private sharedService: SharedService,
     private proximaxProvider: ProximaxProvider
-  ) {
-
-  }
+  ) {}
 
   /**
    *

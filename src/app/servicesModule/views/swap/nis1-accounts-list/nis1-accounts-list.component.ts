@@ -75,19 +75,6 @@ export class Nis1AccountsListComponent implements OnInit {
           this.walletService.setAccountInfoNis1(accountNis1);
           this.router.navigate([`/${AppConfig.routes.nis1AccountsConsigner}`]);
         } else {
-          console.log('accountNis1------->>>>', accountNis1);
-          this.nemProvider.getUnconfirmedTransaction(address).pipe(first()).pipe((timeout(5000))).subscribe(
-            next => {
-              console.log('Unconfirmed Transactions ---------->>>', next);
-              this.walletService.setUnconfirmedTransaction(next);
-              
-            },
-            error => {
-              console.log('Errrorrrrrrrr Unconfirmed Transactions ---------->>>', next);
-              this.walletService.setUnconfirmedTransaction([]);
-  
-            }
-          );
           this.walletService.setNis1AccountSelected(accountNis1);
           this.router.navigate([`/${AppConfig.routes.accountNis1TransferXpx}`]);
         }
@@ -110,12 +97,5 @@ export class Nis1AccountsListComponent implements OnInit {
         this.router.navigate([`/${AppConfig.routes.accountNis1TransferXpx}`]);
       }
     );
-    // this.walletService.setNis1AccountSelected(account);
-    // this.nemProvider.getAccountsInfoAccountNew(account.nis1Account, account.name);
-    // if (account.consignerOf) {
-    //   this.router.navigate([`/${AppConfig.routes.nis1AccountsConsigner}`]);
-    // } else {
-    //   this.router.navigate([`/${AppConfig.routes.accountNis1TransferXpx}`]);
-    // }
   }
 }

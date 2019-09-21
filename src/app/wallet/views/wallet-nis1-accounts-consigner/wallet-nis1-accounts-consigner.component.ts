@@ -50,7 +50,7 @@ export class WalletNis1AccountsConsignerComponent implements OnInit {
 
   searchBalance(account, index = null) {
     this.nemProvider.getOwnedMosaics(account.address).pipe(first()).pipe(timeout(15000)).subscribe(
-      next => {
+      async next => {
         console.log('response search ----->', next);
         let foundXpx: boolean = false;
         for (const el of next) {
@@ -61,12 +61,50 @@ export class WalletNis1AccountsConsignerComponent implements OnInit {
             realQuantity = this.nemProvider.amountFormatter(realQuantity, el, el.properties.divisibility);
             if (index === null) {
               this.mainAccount.mosaic = el;
-              this.mainAccount.balance = realQuantity;
               this.mainAccount.multiSign = false;
+              const transactions = await this.nemProvider.getUnconfirmedTransaction(account.address);
+
+              if (transactions.length > 0) {
+                let relativeAmount = realQuantity;
+                for (const item of transactions) {                  
+                  if (item.type === 257 && item['signer']['address']['value'] === this.mainAccount.address.value) {
+                    for (const mosaic of item['_assets']) {
+                      if (mosaic.assetId.namespaceId === 'prx' && mosaic.assetId.name === 'xpx') {
+                        const quantity = parseFloat(this.nemProvider.amountFormatter(mosaic.quantity, el, el.properties.divisibility));
+                        const quantitywhitoutFormat = relativeAmount.split(',').join('');
+                        const quantityFormat = this.nemProvider.amountFormatter(parseInt((quantitywhitoutFormat - quantity).toString().split('.').join('')), el, el.properties.divisibility);
+                        relativeAmount = quantityFormat;
+                      }
+                    }
+                  }
+                }
+                this.mainAccount.balance = relativeAmount;
+              } else {
+                this.mainAccount.balance = realQuantity;
+              }
             } else {
               this.listConsignerAccounts[index].publicAccount.mosaic = el;
-              this.listConsignerAccounts[index].publicAccount.balance = realQuantity;
               this.listConsignerAccounts[index].publicAccount.multiSign = true;
+              const transactions = await this.nemProvider.getUnconfirmedTransaction(account.address);
+
+              if (transactions.length > 0) {
+                let relativeAmount = realQuantity;
+                for (const item of transactions) {
+                  if (item.type === 4100 && item['otherTransaction']['signer']['address']['value'] === this.listConsignerAccounts[index].publicAccount.address.value) {
+                    for (const mosaic of item['otherTransaction']['_assets']) {
+                      if (mosaic.assetId.namespaceId === 'prx' && mosaic.assetId.name === 'xpx') {
+                        const quantity = parseFloat(this.nemProvider.amountFormatter(mosaic.quantity, el, el.properties.divisibility));
+                        const quantitywhitoutFormat = relativeAmount.split(',').join('');
+                        const quantityFormat = this.nemProvider.amountFormatter(parseInt((quantitywhitoutFormat - quantity).toString().split('.').join('')), el, el.properties.divisibility);
+                        relativeAmount = quantityFormat;
+                      }
+                    }
+                  }
+                }
+                this.listConsignerAccounts[index].publicAccount.balance = relativeAmount;
+              } else {
+                this.listConsignerAccounts[index].publicAccount.balance = realQuantity;
+              }
             }
           }
         }
