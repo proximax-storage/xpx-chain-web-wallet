@@ -683,11 +683,12 @@ export class WalletService {
    * @param {*} accounts
    * @memberof WalletService
    */
-  saveWalletStorage(nameWallet: string, accountsParams: any) {
+  saveWalletStorage(nameWallet: string, accountsParams: any, contacts?: any) {
     let walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
     walletsStorage.push({
       name: nameWallet,
-      accounts: [accountsParams]
+      accounts: [accountsParams],
+      book: contacts
     });
 
     localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorage));
