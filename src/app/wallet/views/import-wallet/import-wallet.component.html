@@ -36,7 +36,7 @@
             formControlName="privateKey">
           <mdb-error
             *ngIf="validateInput('privateKey').invalid && (validateInput('privateKey').dirty || validateInput('privateKey').touched)">
-            <span>Input invalid</span>
+            <span>Invalid private key</span>
           </mdb-error>
         </div>
       </div>
@@ -58,7 +58,7 @@
             placeholder="Wallet name" formControlName="nameWallet">
           <mdb-error
             *ngIf="validateInput('nameWallet').invalid && (validateInput('nameWallet').dirty || validateInput('nameWallet').touched)">
-            <span>Input invalid</span>
+            <span>Min length 2, max length 30</span>
           </mdb-error>
 
           <mdb-error *ngIf="validateInput('nameWallet').valid && validateNameWallet()">

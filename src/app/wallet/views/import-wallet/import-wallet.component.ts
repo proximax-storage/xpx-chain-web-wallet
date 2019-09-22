@@ -109,13 +109,17 @@ export class ImportWalletComponent implements OnInit {
       //verify if name wallet isset
       const existWallet = this.walletService.getWalletStorage().find(
         (element: any) => {
-          return element.name === this.importWalletForm.get('nameWallet').value;
+          let walletName = this.importWalletForm.get('nameWallet').value
+          walletName = (walletName.includes(' ') === true) ? walletName.split(' ').join('_') : walletName
+          return element.name === walletName;
         }
       );
 
       //Wallet does not exist
       if (existWallet === undefined) {
-        const nameWallet = this.importWalletForm.get('nameWallet').value;
+        let walletName = this.importWalletForm.get('nameWallet').value
+        walletName = (walletName.includes(' ') === true) ? walletName.split(' ').join('_') : walletName
+        const nameWallet = walletName;
         const network = this.importWalletForm.get('network').value;
         const privateKey = this.importWalletForm.get('privateKey').value;
         const password = this.proximaxProvider.createPassword(this.importWalletForm.controls.passwords.get('password').value);

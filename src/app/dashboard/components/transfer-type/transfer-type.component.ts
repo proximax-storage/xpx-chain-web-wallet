@@ -42,10 +42,10 @@ export class TransferTypeComponent implements OnInit {
             this.msg = msg['message'];
             this.nis1hash = msg['nis1Hash'];
             if (this.transferTransaction.data['mosaics'].length > 0) {
-              console.log(this.transferTransaction.data['mosaics'][0].amount.compact());
+              // console.log(this.transferTransaction.data['mosaics'][0].amount.compact());
               const amount = this.transactionService.amountFormatterSimple(this.transferTransaction.data['mosaics'][0].amount.compact());
               this.amountTwoPart = this.transactionService.getDataPart(amount.toString(), 6);
-              console.log('----> ', this.amountTwoPart);
+              // console.log('----> ', this.amountTwoPart);
               this.simple = false;
             } else {
               this.simple = false;
@@ -57,7 +57,7 @@ export class TransferTypeComponent implements OnInit {
           this.simple = true;
         }
       } catch (error) {
-        console.log(error);
+        // console.log(error);
         this.simple = true;
       }
     } else {
