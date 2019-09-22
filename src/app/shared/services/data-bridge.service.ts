@@ -370,6 +370,7 @@ export class DataBridgeService {
         const audio = new Audio('assets/audio/ding.ogg');
         const audio2 = new Audio('assets/audio/ding2.ogg');
         this.getSocketTransactionsAggreateBonded(this.connector, audio2);
+        this.getSocketTransactionsAggreateBondedRemoved(this.connector, audio);
         this.getSocketTransactionsCosignatureAdded(this.connector, audio);
         this.getSocketTransactionsConfirmed(this.connector, audio2);
         this.getSocketUnconfirmedTransactions(this.connector, audio);
