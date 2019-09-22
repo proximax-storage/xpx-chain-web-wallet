@@ -45,6 +45,10 @@
               [minlength]="configurationForm.address.minLength">
 
             <!-- VALIDATION -->
+            <mdb-error *ngIf="notValid">
+              <span class="fs-08rem fw-600 color-error-message">Address not valid in blockchain</span>
+            </mdb-error>
+
             <mdb-error
               *ngIf="validateInput('address', '').invalid && (validateInput('address', '').dirty || validateInput('address', '').touched)">
               <span class="fs-08rem fw-600 color-error-message">Required field</span>
@@ -93,7 +97,7 @@
 
         <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
           <button mdbBtn type="submit" rounded="true"
-            [disabled]="!LinkToNamespaceForm.valid || namespaceSelect.length === 0" mdbWavesEffect
+            [disabled]="!LinkToNamespaceForm.valid || namespaceSelect.length === 0 || notValid" mdbWavesEffect
             class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
             <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
               *ngIf="blockSend"></span>

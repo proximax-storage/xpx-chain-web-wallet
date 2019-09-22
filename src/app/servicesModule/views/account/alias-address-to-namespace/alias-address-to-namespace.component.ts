@@ -31,6 +31,7 @@ export class AliasAddressToNamespaceComponent implements OnInit {
   LinkToNamespaceForm: FormGroup;
   loading = false;
   namespaceSelect: Array<object> = [];
+  notValid = false;
   transactionSigned: any;
   typeAction: any = [{
     value: AliasActionType.Link,
@@ -59,6 +60,14 @@ export class AliasAddressToNamespaceComponent implements OnInit {
     this.configurationForm = this.sharedService.configurationForm;
     this.createForm();
     this.getNamespaces();
+    this.LinkToNamespaceForm.get('address').valueChanges.subscribe(
+      x => {
+        if(x) {
+          this.accountValidate(x);
+        }
+      }
+    );
+
     const address = this.walletService.currentAccount.address;
     this.LinkToNamespaceForm.get('address').patchValue(address);
   }
@@ -67,6 +76,33 @@ export class AliasAddressToNamespaceComponent implements OnInit {
     this.subscription.forEach(subscription => {
       subscription.unsubscribe();
     });
+  }
+
+
+  /**
+   *
+   *
+   * @param {string} address
+   * @returns
+   * @memberof AliasAddressToNamespaceComponent
+   */
+  accountValidate(address: string) {
+    if (address !== '') {
+      const addressTrimAndUpperCase = address.trim().toUpperCase().replace(/-/g, '');
+      if (addressTrimAndUpperCase.length === 40) {
+        const b = this.proximaxProvider.createFromRawAddress(address);
+        const filtered = this.walletService.filterAccountInfo(b.pretty(), true);
+        if (filtered) {
+          if (filtered.accountInfo.publicKey === '0000000000000000000000000000000000000000000000000000000000000000') {
+            this.notValid = true;
+            return;
+          }
+        }
+      }
+    }
+
+    this.notValid = false;
+    return;
   }
 
   /**
@@ -82,13 +118,13 @@ export class AliasAddressToNamespaceComponent implements OnInit {
        this.LinkToNamespaceForm.get('namespace').enable();
        this.LinkToNamespaceForm.get('password').enable();*/
 
-      console.log('--arrayNamespaceStorage--', this.arrayNamespaceStorage);
+      // console.log('--arrayNamespaceStorage--', this.arrayNamespaceStorage);
       const namespaceSelect = [];
       this.loading = true;
       if (this.arrayNamespaceStorage && this.arrayNamespaceStorage.length > 0) {
         for (let namespaceStorage of this.arrayNamespaceStorage) {
           if (namespaceStorage.namespaceInfo) {
-            console.log('INFO ---> ', namespaceStorage, '\n\n');
+            // console.log('INFO ---> ', namespaceStorage, '\n\n');
             let isLinked = false;
             let disabled = false;
             let label = namespaceStorage.namespaceName.name;//await this.namespaceService.getNameParentNamespace(namespaceStorage);
@@ -115,7 +151,6 @@ export class AliasAddressToNamespaceComponent implements OnInit {
           }
         };
       }
-      console.log('namespaceSelect', namespaceSelect);
 
       if (namespaceSelect.length > 0) {
         this.namespaceSelect = namespaceSelect.sort(function (a: any, b: any) {
