@@ -111,8 +111,6 @@ export class ImportWalletComponent implements OnInit {
         (element: any) => {
           let walletName = this.importWalletForm.get('nameWallet').value
           walletName = (walletName.includes(' ') === true) ? walletName.split(' ').join('_') : walletName
-          console.log(walletName);
-
           return element.name === walletName;
         }
       );
