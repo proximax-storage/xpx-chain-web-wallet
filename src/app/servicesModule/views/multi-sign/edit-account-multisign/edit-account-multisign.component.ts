@@ -57,7 +57,8 @@ export class EditAccountMultisignComponent implements OnInit {
   subscribeAccountContat: Subscription;
   disable: boolean;
   subscribeAggregateBonded: Subscription[] = [];;
-
+  feeTransaction: number = 0;
+  feeLockfund: number = 10000000;
   constructor(
 
     private activateRoute: ActivatedRoute,
@@ -269,6 +270,11 @@ export class EditAccountMultisignComponent implements OnInit {
 
 
 
+
+  }
+   validateBuildSelectAccountBalance(balanceAccount: number): boolean {
+    const totalFee = this.feeLockfund + this.feeTransaction;
+    return (balanceAccount >= totalFee)
 
   }
   // TransactionType.MODIFY_MULTISIG_ACCOUNT
@@ -579,7 +585,7 @@ export class EditAccountMultisignComponent implements OnInit {
   */
   clearData() {
     // this.createMultsignForm.get('selectAccount').patchValue('');
-    this.editAccountMultsignForm.get('password').reset('',{ emitEvent: false, onlySelf: true })
+    this.editAccountMultsignForm.get('password').reset('', { emitEvent: false, onlySelf: true })
     // this.editAccountMultsignForm.get('password').patchValue('', { emitEvent: false, onlySelf: true });
     this.editAccountMultsignForm.get('cosignatory').patchValue('', { emitEvent: false, onlySelf: true });
     this.editAccountMultsignForm.get('contact').patchValue('', { emitEvent: false, onlySelf: true });
@@ -608,7 +614,7 @@ export class EditAccountMultisignComponent implements OnInit {
     // this.isMultisig = false;
     this.editAccountMultsignForm.get('cosignatory').patchValue('', { emitEvent: false, onlySelf: true });
     this.editAccountMultsignForm.get('contact').patchValue('', { emitEvent: false, onlySelf: true });
-    this.editAccountMultsignForm.get('password').reset('',{ emitEvent: false, onlySelf: true })
+    this.editAccountMultsignForm.get('password').reset('', { emitEvent: false, onlySelf: true })
     this.editAccountMultsignForm.get('cosignatorieSign').patchValue('', { emitEvent: false, onlySelf: true });
     // this.publicAccountToConvert = undefined;
     // this.cosignatoryList = []; 
@@ -867,8 +873,11 @@ export class EditAccountMultisignComponent implements OnInit {
 
   }
 
-
+  amountFormatterSimple(amount): string {
+    return this.transactionService.amountFormatterSimple(amount)
+  }
 }
+
 /**
  * Create a modify multisig account transaction object
  * @param deadline - The deadline to include the transaction.

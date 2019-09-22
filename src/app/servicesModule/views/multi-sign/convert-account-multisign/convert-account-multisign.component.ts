@@ -198,7 +198,6 @@ export class ConvertAccountMultisignComponent implements OnInit {
    */
   getAccounts(transactionsParam: TransactionsInterface = undefined) {
     const currentWallet = Object.assign({}, this.walletService.currentWallet);
-    console.log('this.walletService.currentWallet', this.walletService.currentWallet)
     if (currentWallet && Object.keys(currentWallet).length > 0) {
       this.subscribe.push(this.transactionService.getAggregateBondedTransactions$().subscribe((transactions: TransactionsInterface[]) => {
         this.currentAccounts = [];
