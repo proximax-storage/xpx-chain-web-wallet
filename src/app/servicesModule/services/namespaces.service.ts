@@ -7,9 +7,9 @@ import {
   Address,
   AliasActionType,
   NetworkType,
-  AliasTransaction,
   Deadline,
-  SignedTransaction
+  SignedTransaction,
+  AddressAliasTransaction
 } from "tsjs-xpx-chain-sdk";
 import { ProximaxProvider } from "../../shared/services/proximax.provider";
 import { WalletService } from '../../wallet/services/wallet.service';
@@ -45,7 +45,7 @@ export class NamespacesService {
    */
   addressAliasTransaction(param: AddressAliasTransactionInterface): SignedTransaction {
     const network = (param.network !== undefined) ? param.network : this.walletService.currentAccount.network;
-    const addressAliasTransaction = AliasTransaction.createForAddress(
+    const addressAliasTransaction = AddressAliasTransaction.create(
       Deadline.create(),
       param.aliasActionType,
       param.namespaceId,

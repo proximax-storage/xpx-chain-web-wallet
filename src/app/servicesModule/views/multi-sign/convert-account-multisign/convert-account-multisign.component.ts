@@ -269,7 +269,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
 
     const mosaicXPX = accountFiltered.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id).amount.compact();
     if (!this.validateBuildSelectAccountBalance(mosaicXPX))
-      return { disabled: true, info: 'insufficient balance fee' }
+      return { disabled: true, info: 'insufficient balance' }
 
 
     return { disabled: false, info: '' }

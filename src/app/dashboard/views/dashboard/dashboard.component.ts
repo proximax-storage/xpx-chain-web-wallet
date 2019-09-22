@@ -1,18 +1,16 @@
 import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectorRef, HostListener, Inject } from '@angular/core';
 import { MdbTableDirective } from 'ng-uikit-pro-standard';
-import { DOCUMENT } from '@angular/common';
 import * as qrcode from 'qrcode-generator';
+import { first } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 import { DashboardService } from '../../services/dashboard.service';
 import { TransactionsInterface, TransactionsService } from '../../../transactions/services/transactions.service';
 import { WalletService, AccountsInterface } from '../../../wallet/services/wallet.service';
 import { SharedService } from '../../../shared/services/shared.service';
 import { environment } from '../../../../environments/environment';
-import { AppConfig } from 'src/app/config/app.config';
-import { UInt64 } from 'tsjs-xpx-chain-sdk';
-import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
-import { NamespacesService } from 'src/app/servicesModule/services/namespaces.service';
-import { first } from 'rxjs/operators';
+import { AppConfig } from '../../../config/app.config';
+
 
 @Component({
   selector: 'app-dashboard',
@@ -42,15 +40,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
   dataSelected: TransactionsInterface = null;
   headElements = ['Type', 'Deadline', 'Fee', '', 'Sender', 'Recipient'];
   iconReloadDashboard = false;
+  partialTransactions = 0;
   searching = true;
   searchTransactions = true;
-  subscriptions = [
-    'balance',
-    'transactionsConfirmed',
-    'transactionsUnconfirmed',
-    'getAllTransactions',
-    'transactionsConfirmed'
-  ];
+  subscription: Subscription[] = [];
   transactionsConfirmed: TransactionsInterface[] = [];
   transactionsUnconfirmed: TransactionsInterface[] = [];
   unconfirmedSelected = false;
@@ -58,6 +51,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   viewDashboard = true;
   transactions: TransactionsInterface[] = [];
   viewDetailsAccount = `/${AppConfig.routes.account}/`;
+  viewDetailsPartial = `/${AppConfig.routes.partial}`;
   windowScrolled: boolean;
   nameWallet = '';
   p: number = 1;
@@ -69,10 +63,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private walletService: WalletService,
     private transactionService: TransactionsService,
     private sharedService: SharedService,
-    private proximaxProvider: ProximaxProvider,
-    private dataBridgeService: DataBridgeService,
-    private namespacesService: NamespacesService,
-    @Inject(DOCUMENT) private document: Document
+    private proximaxProvider: ProximaxProvider
   ) { }
 
 
@@ -90,14 +81,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.balance();
     this.subscribeTransactionsConfirmedUnconfirmed();
     this.getRecentTransactions();
+    this.subscription.push(this.transactionService.getAggregateBondedTransactions$().subscribe(
+      next => {
+        this.partialTransactions = (next && next.length > 0) ? next.length : 0;
+        console.log(this.partialTransactions);
+      }
+    ));
   }
 
   ngOnDestroy(): void {
     // this.transactionService.setTransactionsConfirmed$([]);
-    this.subscriptions.forEach(element => {
-      if (this.subscriptions[element] !== undefined) {
-        this.subscriptions[element].unsubscribe();
-      }
+    this.subscription.forEach(subscription => {
+      subscription.unsubscribe();
     });
   }
 
@@ -112,10 +107,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
    * @memberof DashboardComponent
    */
   balance() {
-    this.subscriptions['balance'] = this.transactionService.getBalance$().subscribe(
+    this.subscription.push(this.transactionService.getBalance$().subscribe(
       next => this.vestedBalance = `${next} XPX`,
       error => this.vestedBalance = `0.000000 XPX`
-    );
+    ));
   }
 
   /**
@@ -275,7 +270,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
    * @memberof DashboardComponent
    */
   subscribeTransactionsConfirmedUnconfirmed() {
-    this.subscriptions['transactionsConfirmed'] = this.transactionService.getTransactionsConfirmed$().subscribe(
+    this.subscription.push(this.transactionService.getTransactionsConfirmed$().subscribe(
       (next: TransactionsInterface[]) => {
         this.cantConfirmed = next.length;
         this.transactionsConfirmed = next;
@@ -286,14 +281,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.transactions = this.mdbTable.getDataSource();
         this.previous = this.mdbTable.getDataSource();
       }
-    );
+    ));
 
-    this.subscriptions['transactionsUnconfirmed'] = this.transactionService.getUnconfirmedTransactions$().subscribe(
+    this.subscription.push(this.transactionService.getUnconfirmedTransactions$().subscribe(
       (next: TransactionsInterface[]) => {
         this.cantUnconfirmed = next.length;
         this.transactionsUnconfirmed = next;
       }
-    );
+    ));
   }
 
   /**
