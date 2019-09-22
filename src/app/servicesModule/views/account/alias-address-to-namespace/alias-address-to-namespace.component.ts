@@ -115,8 +115,9 @@ export class AliasAddressToNamespaceComponent implements OnInit {
           }
         };
       }
+      console.log('namespaceSelect', namespaceSelect);
 
-      if (this.namespaceSelect.length > 0) {
+      if (namespaceSelect.length > 0) {
         this.namespaceSelect = namespaceSelect.sort(function (a: any, b: any) {
           return a.label === b.label ? 0 : +(a.label > b.label) || -1;
         });
