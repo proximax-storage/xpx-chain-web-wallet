@@ -579,7 +579,8 @@ export class EditAccountMultisignComponent implements OnInit {
   */
   clearData() {
     // this.createMultsignForm.get('selectAccount').patchValue('');
-    this.editAccountMultsignForm.get('password').patchValue('', { emitEvent: false, onlySelf: true });
+    this.editAccountMultsignForm.get('password').reset('',{ emitEvent: false, onlySelf: true })
+    // this.editAccountMultsignForm.get('password').patchValue('', { emitEvent: false, onlySelf: true });
     this.editAccountMultsignForm.get('cosignatory').patchValue('', { emitEvent: false, onlySelf: true });
     this.editAccountMultsignForm.get('contact').patchValue('', { emitEvent: false, onlySelf: true });
     this.editAccountMultsignForm.get('minApprovalDelta').patchValue(1, { emitEvent: false, onlySelf: true });
@@ -607,7 +608,7 @@ export class EditAccountMultisignComponent implements OnInit {
     // this.isMultisig = false;
     this.editAccountMultsignForm.get('cosignatory').patchValue('', { emitEvent: false, onlySelf: true });
     this.editAccountMultsignForm.get('contact').patchValue('', { emitEvent: false, onlySelf: true });
-    this.editAccountMultsignForm.get('password').patchValue('', { emitEvent: false, onlySelf: true });
+    this.editAccountMultsignForm.get('password').reset('',{ emitEvent: false, onlySelf: true })
     this.editAccountMultsignForm.get('cosignatorieSign').patchValue('', { emitEvent: false, onlySelf: true });
     // this.publicAccountToConvert = undefined;
     // this.cosignatoryList = []; 
