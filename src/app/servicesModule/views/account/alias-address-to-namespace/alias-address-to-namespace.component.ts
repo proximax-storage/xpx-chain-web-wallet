@@ -30,14 +30,7 @@ export class AliasAddressToNamespaceComponent implements OnInit {
   blockSend: boolean = false;
   LinkToNamespaceForm: FormGroup;
   loading = false;
-  namespaceSelect: Array<object> = [
-    {
-      value: '1',
-      label: 'Select or enter namespace',
-      selected: true,
-      disabled: true
-    }
-  ];
+  namespaceSelect: Array<object> = [];
   transactionSigned: any;
   typeAction: any = [{
     value: AliasActionType.Link,
@@ -122,10 +115,18 @@ export class AliasAddressToNamespaceComponent implements OnInit {
           }
         };
       }
+      console.log('namespaceSelect', namespaceSelect);
 
-      this.namespaceSelect = namespaceSelect.sort(function (a: any, b: any) {
-        return a.label === b.label ? 0 : +(a.label > b.label) || -1;
-      });
+      if (namespaceSelect.length > 0) {
+        this.namespaceSelect = namespaceSelect.sort(function (a: any, b: any) {
+          return a.label === b.label ? 0 : +(a.label > b.label) || -1;
+        });
+      } else {
+        this.LinkToNamespaceForm.get('address').disable();
+        this.LinkToNamespaceForm.get('namespace').disable();
+        this.LinkToNamespaceForm.get('password').disable();
+      }
+
 
       this.loading = false;
     } else {
@@ -170,8 +171,8 @@ export class AliasAddressToNamespaceComponent implements OnInit {
       namespace: '',
       password: ''
     }, {
-        emitEvent: false
-      }
+      emitEvent: false
+    }
     );
 
     this.LinkToNamespaceForm.get('address').setValue(valueAddress, { emitEvent: false });

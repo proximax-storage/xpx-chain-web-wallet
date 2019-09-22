@@ -409,9 +409,8 @@ export class CreateApostilleComponent implements OnInit {
    */
   preparePublicApostille(common: any) {
     // console.log(this.nameFile);
-
     //create a hash prefix (dice si es privado o publico)
-    const apostilleHashPrefix = 'fe4e545903';
+    const apostilleHashPrefix = 'fe4e545903'; //checkSum
     //create an encrypted hash (contenido del archivo)
     const hash = this.apostilleService.encryptData(this.file.toString());
     //concatenates the hash prefix and the result gives the apostilleHash
