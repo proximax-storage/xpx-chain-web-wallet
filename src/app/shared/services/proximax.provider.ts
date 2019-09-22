@@ -43,7 +43,8 @@ import {
   CosignatureTransaction,
   BlockHttp,
   BlockInfo,
-  MosaicAliasTransaction
+  MosaicAliasTransaction,
+  Convert
 } from 'tsjs-xpx-chain-sdk';
 import { MosaicDefinitionTransaction } from 'tsjs-xpx-chain-sdk/dist/src/model/transaction/MosaicDefinitionTransaction';
 import { mergeMap } from 'rxjs/operators';
@@ -586,6 +587,17 @@ export class ProximaxProvider {
       .pipe(mergeMap((_) => _))
       .subscribe(mosaic => console.log('You have', mosaic.relativeAmount(), mosaic.fullName()),
         err => console.error(err));
+  }
+
+  /**
+   *
+   *
+   * @param {string} data
+   * @returns {boolean}
+   * @memberof ProximaxProvider
+   */
+  isHexString(data: string): boolean {
+    return Convert.isHexString(data);
   }
 
 

@@ -1,19 +1,16 @@
 import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectorRef, HostListener, Inject } from '@angular/core';
 import { MdbTableDirective } from 'ng-uikit-pro-standard';
-import { DOCUMENT } from '@angular/common';
 import * as qrcode from 'qrcode-generator';
+import { first } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 import { DashboardService } from '../../services/dashboard.service';
 import { TransactionsInterface, TransactionsService } from '../../../transactions/services/transactions.service';
 import { WalletService, AccountsInterface } from '../../../wallet/services/wallet.service';
 import { SharedService } from '../../../shared/services/shared.service';
 import { environment } from '../../../../environments/environment';
-import { AppConfig } from 'src/app/config/app.config';
-import { UInt64 } from 'tsjs-xpx-chain-sdk';
-import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
-import { NamespacesService } from 'src/app/servicesModule/services/namespaces.service';
-import { first } from 'rxjs/operators';
-import { Subscription } from 'rxjs';
+import { AppConfig } from '../../../config/app.config';
+
 
 @Component({
   selector: 'app-dashboard',
@@ -46,13 +43,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   partialTransactions = 0;
   searching = true;
   searchTransactions = true;
-  /*subscriptions = [
-    'balance',
-    'transactionsConfirmed',
-    'transactionsUnconfirmed',
-    'getAllTransactions',
-    'transactionsConfirmed'
-  ];*/
   subscription: Subscription[] = [];
   transactionsConfirmed: TransactionsInterface[] = [];
   transactionsUnconfirmed: TransactionsInterface[] = [];
