@@ -35,7 +35,6 @@ import {
   TransactionStatus,
   TransactionAnnounceResponse,
   MosaicSupplyType,
-  AliasTransaction,
   AliasActionType,
   ChainHttp,
   NamespaceInfo,
@@ -43,7 +42,8 @@ import {
   AggregateTransaction,
   CosignatureTransaction,
   BlockHttp,
-  BlockInfo
+  BlockInfo,
+  MosaicAliasTransaction
 } from 'tsjs-xpx-chain-sdk';
 import { MosaicDefinitionTransaction } from 'tsjs-xpx-chain-sdk/dist/src/model/transaction/MosaicDefinitionTransaction';
 import { mergeMap } from 'rxjs/operators';
@@ -619,7 +619,7 @@ export class ProximaxProvider {
    * @memberof ProximaxProvider
    */
   linkingNamespaceToMosaic(aliasActionType: AliasActionType, namespaceId: NamespaceId, mosaicId: MosaicId, network: NetworkType) {
-    return AliasTransaction.createForMosaic(
+    return MosaicAliasTransaction.create(
       Deadline.create(),
       aliasActionType,
       namespaceId,
