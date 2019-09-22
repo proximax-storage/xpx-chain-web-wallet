@@ -183,10 +183,10 @@ export class DataBridgeService {
     const currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
     currentWallet.accounts.forEach(element => {
       connector.aggregateBondedRemoved(this.proximaxProvider.createFromRawAddress(element.address)).subscribe((aggregateBondedRemoved: string) => {
-        console.log('=== CONNECTOR ===', connector);
         const address = this.proximaxProvider.createFromRawAddress(element.address);
         console.log('\n=== CONNECTED TO ===', address.plain().slice(36, 40));
         console.log('=== NEW TRANSACTION AGGREGATE_BONDED_REMOVED === ', aggregateBondedRemoved, '\n\n');
+        this.validateTransactions(aggregateBondedRemoved);
         this.setTransactionStatus({
           'type': 'aggregateBondedRemoved',
           'data': aggregateBondedRemoved
@@ -302,7 +302,6 @@ export class DataBridgeService {
         const address = this.proximaxProvider.createFromRawAddress(element.address);
         console.log('\n=== CONNECTED ===', address.plain().slice(36, 40));
         console.log('=== UNCONFIRMED TRANSACTION === ', unconfirmedTransaction, '\n\n');
-        this.validateTransactions(unconfirmedTransaction.transactionInfo.hash);
         this.transactionsService.getUnconfirmedTransactions$().pipe(first()).subscribe(
           async transactionsUnconfirmed => {
             const transactionPushed = transactionsUnconfirmed.slice(0);
@@ -481,13 +480,12 @@ export class DataBridgeService {
    * @memberof DataBridgeService
    */
   validateTransactions(hash: string) {
-    console.log('=== TENGO UNA LLAMADA A VALIDAR TRANSACCION ===');
     this.transactionsService.getAggregateBondedTransactions$().pipe(first()).subscribe(
       next => {
         next.forEach(element => {
           if (element.data['transactionInfo']) {
             console.log('=== HASH CACHE TRANSACTION ===', element.data['transactionInfo'].hash);
-            console.log('=== HASH UNCONFIRMED TRANSACTION ===', hash);
+            console.log('=== HASH BONDED REMOVE TRANSACTION ===', hash);
             if (hash === element.data['transactionInfo'].hash) {
               console.log('=== SOME HASH === ', hash);
               const newData = next.filter(x => x.data['transactionInfo'].hash !== hash);
