@@ -146,10 +146,13 @@ export class ConvertAccountMultisignComponent implements OnInit {
     //Form create multisignature default
     this.convertAccountMultsignForm = this.fb.group({
       selectAccount: ['', [
-        Validators.required
-      ]
+          Validators.required
+        ]
       ],
-      cosignatory: [''],
+      cosignatory: ['', [
+          Validators.pattern('^(0x|0X)?[a-fA-F0-9]+$')
+        ]
+      ],
       contact: [''],
       minApprovalDelta: [1, [
         Validators.required, Validators.minLength(1),
