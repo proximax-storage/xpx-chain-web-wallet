@@ -10,6 +10,7 @@ import { AppConfig } from 'src/app/config/app.config';
 import { first, timeout } from 'rxjs/operators';
 import { TransactionsService } from 'src/app/transactions/services/transactions.service';
 import { ServicesModuleService } from '../../services/services-module.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-transfer-assets',
@@ -156,6 +157,10 @@ export class TransferAssetsComponent implements OnInit {
       }
       this.listContacts = data;
     }
+    if (this.listContacts.length === 0) {
+      const contacts = `${environment.itemBooksAddress}-${this.walletService.accountWalletCreated.wallet.name}`;
+      this.listContacts = JSON.parse(localStorage.getItem(contacts));
+    }
   }
 
   /**
@@ -245,6 +250,7 @@ export class TransferAssetsComponent implements OnInit {
               .subscribe(next => {
                 console.log('\n\n\n\nValue resp:\n', next, '\n\n\n\nEnd value\n\n');
                 this.sharedService.showSuccess('Transaction', next['message']);
+                this.walletService.accountWalletCreated = null;
                 this.changeView.emit({
                   transaction: transaction,
                   details: next,
@@ -291,6 +297,8 @@ export class TransferAssetsComponent implements OnInit {
     this.walletService.setNis1AccounsWallet(null);
     this.walletService.setAccountInfoNis1(null);
     this.walletService.setNis1AccountSelected(null);
+    this.walletService.setNis1AccountSelected(null);
+    this.walletService.accountWalletCreated = null;
     if (this.router.url === `/${AppConfig.routes.transferXpx}`) {
       this.router.navigate([AppConfig.routes.auth]);
     } else {
