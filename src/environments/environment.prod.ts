@@ -9,7 +9,7 @@ export const environment = {
   itemBooksAddress: 'sw-books-testnet',
   //version: '0.3.1.8',
   version: '0.3.1.10',
-  cacheVersion: '7',
+  cacheVersion: '1',
   nameKeyNodeSelected: `sw-selected-node-testnet`,
   nameKeyWalletStorage: `sw-testnet`,
   nameKeyNodeStorage: `sw-nodes-testnet`,
@@ -80,7 +80,7 @@ export const environment = {
   }*/
   typeNetwork: {
     value: NetworkType.TEST_NET,
-    label: 'TEST NET'
+    label: 'PUBLIC TEST'
   }
 };
 
