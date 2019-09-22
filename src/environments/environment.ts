@@ -38,16 +38,16 @@ export const environment = {
     divisibility: 6
   },*/
   blockchainConnection: {
-    host: '18.138.51.117',
+    host: 'bctestnet5.xpxsirius.io',
     port: 3000,
     protocol: 'http',
     useSecureMessage: false
   },
   storageConnection: {
     host: 'ipfs1-dev.xpxsirius.io',
-    port: 3000,
+    port: 443,
     options: {
-      protocol: 'http'
+      protocol: 'https'
     }
   },
   namespaceRentalFeeSink: {
