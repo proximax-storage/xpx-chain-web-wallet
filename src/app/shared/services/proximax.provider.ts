@@ -35,7 +35,6 @@ import {
   TransactionStatus,
   TransactionAnnounceResponse,
   MosaicSupplyType,
-  AliasTransaction,
   AliasActionType,
   ChainHttp,
   NamespaceInfo,
@@ -43,7 +42,9 @@ import {
   AggregateTransaction,
   CosignatureTransaction,
   BlockHttp,
-  BlockInfo
+  BlockInfo,
+  MosaicAliasTransaction,
+  Convert
 } from 'tsjs-xpx-chain-sdk';
 import { MosaicDefinitionTransaction } from 'tsjs-xpx-chain-sdk/dist/src/model/transaction/MosaicDefinitionTransaction';
 import { mergeMap } from 'rxjs/operators';
@@ -588,6 +589,17 @@ export class ProximaxProvider {
         err => console.error(err));
   }
 
+  /**
+   *
+   *
+   * @param {string} data
+   * @returns {boolean}
+   * @memberof ProximaxProvider
+   */
+  isHexString(data: string): boolean {
+    return Convert.isHexString(data);
+  }
+
 
   /**
   *
@@ -619,7 +631,7 @@ export class ProximaxProvider {
    * @memberof ProximaxProvider
    */
   linkingNamespaceToMosaic(aliasActionType: AliasActionType, namespaceId: NamespaceId, mosaicId: MosaicId, network: NetworkType) {
-    return AliasTransaction.createForMosaic(
+    return MosaicAliasTransaction.create(
       Deadline.create(),
       aliasActionType,
       namespaceId,
@@ -683,6 +695,21 @@ export class ProximaxProvider {
       rootNamespace,
       network
     );
+  }
+
+  /**
+   *
+   *
+   * @param {string} data
+   * @returns
+   * @memberof ProximaxProvider
+   */
+  isValidKeyPublicPrivate(data: string) {
+    if (data !== null && data.length === 64) {
+      return this.isHexString(data);
+    }else{
+      return false;
+    }
   }
 
   verifyNetworkAddressEqualsNetwork(value: string, value2: string) {

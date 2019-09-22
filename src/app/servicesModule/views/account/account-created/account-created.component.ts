@@ -77,12 +77,8 @@ export class AccountCreatedComponent implements OnInit {
   goToRoute() {
     // [routerLink]="[routes.backToService]"
     const nis1Info = this.walletService.getNis1AccounsWallet();
-    console.log('this a nis1Info[0].mosaic ------>', nis1Info[0].mosaic);
-    console.log('this nis1Info ------>', nis1Info);
     if (nis1Info.length > 0) {
-      console.log('nis1Info.lengh ------>', nis1Info.length);
       if (nis1Info[0].mosaic && Object.keys(nis1Info[0].mosaic).length > 0) {
-        console.log('REDIRECCIONAME A ACCOUNT NIS1 FOUND');
         this.router.navigate([this.routes.accountNis1Found]);
       } else {
         this.router.navigate([this.routes.backToService]);

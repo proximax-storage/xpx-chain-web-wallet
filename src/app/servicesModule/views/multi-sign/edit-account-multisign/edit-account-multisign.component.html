@@ -35,7 +35,8 @@
                                     <img class="w-30px" src="assets/images/img/icon-account-green-60h-proximax-sirius-wallet.svg">
                                     <span class="fw-600"> {{currentAccountToConvert.name}}</span>
 
-                                    <span *ngIf="disable"> &nbsp;  <i title="On partial" style="color:#0056b3" class="fa fa-bell"> </i> </span>
+                                    <span *ngIf="disable"> &nbsp; <i title="On partial" style="color:#0056b3" class="fa fa-bell">
+                                        </i> </span>
 
                                     <!-- <span class="fw-600"> {{consginerFirmName}}</span> -->
                                 </div>
@@ -219,7 +220,7 @@
                 <div class="row">
                     <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto">
                         <div class="row mt-1rem">
-                            <div class="col-12 d-flex justify-content-center" style="background-image: url(assets/images/img/horizontal-line-background.jpg);">
+                            <div class="col-12 d-flex justify-content-center">
                                 <button mdbBtn type="button" rounded="true" [disabled]="mdbBtnAddCosignatory"
                                     mdbWavesEffect class="background-btn-inverse pl-2rem pr-2rem" size="md" (click)="addCosignatory()">
                                     <span class="fs-1-2em color-blue-intermedio fw-700">(+) Add Cosignatory</span>
@@ -228,6 +229,18 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- COSIGNATORIES -->
+                <ng-container *ngIf="consginerFirmList.length > 1  && showConsginerFirmList">
+                    <div class="row">
+                        <div class="col-11 col-md-10 col-lg-8 mx-auto">
+                            <ng-select mdbInputDirective mdbValidate [clearable]="false" class="selectWrapper" [items]="consginerFirmList"
+                                bindLabel="label" labelForId="cosignatorieSign"  bindValue="value" placeholder="Cosignatorie sign" formControlName="cosignatorieSign"
+                                (change)="selectCosignatorieSign($event)">
+                            </ng-select>
+                        </div>
+                    </div>
+                </ng-container>
 
 
                 <!-- FEE -->
