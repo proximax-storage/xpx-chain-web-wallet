@@ -697,6 +697,21 @@ export class ProximaxProvider {
     );
   }
 
+  /**
+   *
+   *
+   * @param {string} data
+   * @returns
+   * @memberof ProximaxProvider
+   */
+  isValidKeyPublicPrivate(data: string) {
+    if (data !== null && data.length === 64) {
+      return this.isHexString(data);
+    }else{
+      return false;
+    }
+  }
+
   verifyNetworkAddressEqualsNetwork(value: string, value2: string) {
     if ((value.length === 40 || value.length === 46) && (value2.length === 40 || value2.length === 46)) {
       if (value.charAt(0) === 'S' && value2.charAt(0) === 'S') {
