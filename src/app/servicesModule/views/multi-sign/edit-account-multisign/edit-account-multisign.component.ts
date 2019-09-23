@@ -214,6 +214,7 @@ export class EditAccountMultisignComponent implements OnInit {
     this.listContact = this.booksAddress().filter(item => item.label !== this.currentAccountToConvert.name)
     this.subscribeAccount.push(this.walletService.getAccountsInfo$().subscribe(
       async accountInfo => {
+
         console.log("respondio  accountInfo")
 
 
@@ -229,27 +230,33 @@ export class EditAccountMultisignComponent implements OnInit {
    * @param name
    */
   validateAccount(name: string, disable: boolean) {
+    this.isMultisig = false;
     this.mdbBtnAddCosignatory = true;
     this.accountInfo = this.walletService.filterAccountInfo(name);
+
+
+    console.log('this.accountInfo', this.accountInfo)
+    // console.log('this.accountInfo.multisigInfo', this.accountInfo.multisigInfo)
     this.accountValid = (
       this.accountInfo !== null &&
       this.accountInfo !== undefined && this.accountInfo.accountInfo !== null);
     // if (this.subscribeAccount) {
     //   this.subscribeAccount.unsubscribe();
     // }
+
+    console.log('accountValid', this.accountValid)
     this.unsubscribe(this.subscribeAccount);
     //Validate Account
-    if (!this.accountValid)
+    if (!this.accountValid) {
+      console.log("caigo aqui")
+      this.validateInfoisMultisig(this.accountValid)
       return
+    }
 
+    
     //Validate Multisign
     this.isMultisig = (this.accountInfo.multisigInfo !== null && this.accountInfo.multisigInfo !== undefined && this.accountInfo.multisigInfo.isMultisig());
-    if (!this.isMultisig) {
-      this.sharedService.showError('Attention', 'not is Multisig');
-      setTimeout(() => {
-        this.router.navigate([`/${AppConfig.routes.MultiSign}`]);
-      }, 3000);
-    }
+    this.validateInfoisMultisig(this.isMultisig)
     //Validate Balance
     if (!this.accountInfo.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id))
       return this.sharedService.showError('Attention', 'Insufficient balance');
@@ -272,7 +279,18 @@ export class EditAccountMultisignComponent implements OnInit {
 
 
   }
-   validateBuildSelectAccountBalance(balanceAccount: number): boolean {
+
+  validateInfoisMultisig(isMultisig: boolean) {
+    if (!isMultisig) {
+      this.sharedService.showError('Attention', 'not is Multisig');
+      setTimeout(() => {
+        this.router.navigate([`/${AppConfig.routes.MultiSign}`]);
+      }, 3000);
+    }
+
+
+  }
+  validateBuildSelectAccountBalance(balanceAccount: number): boolean {
     const totalFee = this.feeLockfund + this.feeTransaction;
     return (balanceAccount >= totalFee)
 
@@ -282,7 +300,7 @@ export class EditAccountMultisignComponent implements OnInit {
   getAggregateBondedTransactionsValidate() {
     this.disable = false
     this.subscribeAggregateBonded.push(this.transactionService.getAggregateBondedTransactions$().subscribe((transactions: TransactionsInterface[]) => {
-
+      console.log("aquii")
       for (let index = 0; index < transactions.length; index++) {
         for (let i = 0; i < transactions[index].data['innerTransactions'].length; i++) {
           this.disable = (transactions[index].data['innerTransactions'][i].signer.publicKey === this.currentAccountToConvert.publicAccount.publicKey);
