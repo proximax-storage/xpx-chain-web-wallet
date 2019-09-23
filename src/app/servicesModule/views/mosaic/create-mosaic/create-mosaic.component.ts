@@ -368,11 +368,28 @@ export class CreateMosaicComponent implements OnInit {
     return validation;
   }
 
+  limitDuration(e) {
+    console.log();
+    if (isNaN(parseInt(e.target.value))) {
+      e.target.value = ''
+    } else {
+    if (parseInt(e.target.value) > 365) {
+        e.target.value = ''
+      } else if (parseInt(e.target.value) < 1) {
+        e.target.value = ''
+      }
+    }
+  }
+
   limitLength(e) {
-    if (parseInt(e.target.value) > 6) {
+    if (isNaN(parseInt(e.target.value))) {
       e.target.value = ''
-    } else if (parseInt(e.target.value) < 0) {
-      e.target.value = ''
+    } else {
+      if (parseInt(e.target.value) > 6) {
+        e.target.value = ''
+      } else if (parseInt(e.target.value) < 0) {
+        e.target.value = ''
+      }
     }
   }
 }
