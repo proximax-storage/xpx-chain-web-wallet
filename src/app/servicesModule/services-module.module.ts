@@ -37,6 +37,7 @@ import { AccountNis1FoundComponent } from './views/account/account-nis1-found/ac
 import { AccountNis1TransferXpxComponent } from './views/account/account-nis1-transfer-xpx/account-nis1-transfer-xpx.component';
 import { Nis1AccountsConsignerComponent } from './views/swap/nis1-accounts-consigner/nis1-accounts-consigner.component';
 import { TransferXpxNis1Component } from './views/swap/transfer-xpx-nis1/transfer-xpx-nis1.component';
+import { AccountDeleteComponent } from './views/account/account-delete/account-delete/account-delete.component';
 
 
 @NgModule({
@@ -75,7 +76,8 @@ import { TransferXpxNis1Component } from './views/swap/transfer-xpx-nis1/transfe
     AccountNis1FoundComponent,
     AccountNis1TransferXpxComponent,
     Nis1AccountsConsignerComponent,
-    TransferXpxNis1Component
+    TransferXpxNis1Component,
+    AccountDeleteComponent
   ],
   schemas: [ NO_ERRORS_SCHEMA ],
   imports: [

@@ -20,6 +20,12 @@
               <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="cursor-p"
                 alt="Copy" width="20" (click)="copyMessage('Address')" ngxClipboard *ngIf="!account.default"
                 [cbContent]="account.address" title="Copy Address">&nbsp;
+
+                <i style="color:#898989" class="fa fa-trash cursor-p fs-1-5rem pt-01rem"  *ngIf="!account.default" 
+                
+
+                 [routerLink]="[routes.deleteAccount+account.name]"
+                 title="Delete"></i>
               <!-- View Details -->
               <!-- <i class="fa fa-eye fs-1-2rem cursor-p" aria-hidden="true" title="View details"
                     [routerLink]="[routes.viewDetails+account.name]"></i> -->

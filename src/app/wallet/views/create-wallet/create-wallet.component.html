@@ -34,7 +34,7 @@
           <img class="form-control-feedback"
             src="assets/images/img/icon-wallet-name-green-16h-proximax-sirius-wallet.svg" alt="">
           <input mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
-            id="name-wallet{{errorWalletExist}}" class="form-control form-control-sm input-border pl-input"
+            id="name-wallet{{errorWalletExist}}" [minlength]="configurationForm.nameWallet.minLength" [maxlength]="configurationForm.nameWallet.maxLength" class="form-control form-control-sm input-border pl-input"
             placeholder="Wallet name" formControlName="nameWallet">
           <!--
             <span class="label-i fw-600">
