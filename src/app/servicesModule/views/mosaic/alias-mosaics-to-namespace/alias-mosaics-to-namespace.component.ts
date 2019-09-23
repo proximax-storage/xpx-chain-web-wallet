@@ -11,6 +11,8 @@ import { DataBridgeService } from '../../../../shared/services/data-bridge.servi
 import { SharedService, ConfigurationForm } from '../../../../shared/services/shared.service';
 import { WalletService } from '../../../../wallet/services/wallet.service';
 import { HeaderServicesInterface } from '../../../services/services-module.service';
+import { TransactionsService } from 'src/app/transactions/services/transactions.service';
+import { environment } from 'src/environments/environment';
 
 
 @Component({
@@ -62,6 +64,12 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
 
   transactionSigned: any;
   subscription: Subscription[] = [];
+  mosaicId: any;
+  namespaceId: any;
+  action: any;
+  mosaicSupplyChangeTransaction: any;
+  fee: any ;
+  amountAccount: number;
 
   constructor(
     private fb: FormBuilder,
@@ -71,19 +79,20 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
     private mosaicService: MosaicService,
     private proximaxProvider: ProximaxProvider,
     private walletService: WalletService,
-    private dataBridge: DataBridgeService
+    private dataBridge: DataBridgeService,
+    private transactionService: TransactionsService
   ) { }
 
   ngOnInit() {
     this.configurationForm = this.sharedService.configurationForm;
     this.createForm();
-    // this.getNameNamespace();
     this.getNamespaces();
     this.getMosaic();
 
     this.subscription.push(this.dataBridge.getBlock().subscribe(next => {
       this.currentBlock = next;
     }));
+    this.construir();
   }
 
   ngOnDestroy(): void {
@@ -92,7 +101,42 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
     });
   }
 
+  captureAction() {
+     const action = this.linkingNamespaceToMosaic.get('typeAction').value;
+     this.action = action;
+     this.construir();
+  }
 
+  captureNamespace() {
+    const namespaceId = new NamespaceId(this.linkingNamespaceToMosaic.get('namespace').value);
+    this.namespaceId = namespaceId;
+    this.construir();
+    this.getAmountAccount();
+  }
+
+  captureMmosaic() {
+    const mosaicId = new MosaicId(this.linkingNamespaceToMosaic.get('mosaic').value);
+    this.mosaicId = mosaicId;
+    this.construir()
+  }
+
+  construir(){
+    this.mosaicSupplyChangeTransaction = this.proximaxProvider.linkingNamespaceToMosaic(
+      this.action,
+      this.namespaceId,
+      this.mosaicId,
+      this.walletService.currentAccount.network
+    );
+    this.fee = Number(this.transactionService.amountFormatterSimple(this.mosaicSupplyChangeTransaction.maxFee.compact()));
+  }
+
+  getAmountAccount () {
+    const account = this.walletService.filterAccountInfo(this.proximaxProvider.createFromRawAddress(this.walletService.currentAccount.address).pretty(), true);
+    let mosaics = account.accountInfo.mosaics;
+    let amoutMosaic = mosaics.filter(mosaic => mosaic.id.toHex() == environment.mosaicXpxInfo.id);
+    this.amountAccount = amoutMosaic[0].amount.compact()
+    
+  }
   async buildSelectNamespace($event = null) {
     console.log('--arrayNamespaceStorage--', this.arrayNamespaceStorage);
     if ($event !== null) {
@@ -385,6 +429,8 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
    */
   sendTransaction() {
     if (this.linkingNamespaceToMosaic.valid && !this.blockSend) {
+      const validateAmount = this.transactionService.validateBuildSelectAccountBalance(this.amountAccount, this.fee, 0)
+      if (validateAmount) {
       this.blockSend = true;
       const common = {
         password: this.linkingNamespaceToMosaic.get('password').value,
@@ -392,18 +438,18 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
       }
 
       if (this.walletService.decrypt(common)) {
-        const action = this.linkingNamespaceToMosaic.get('typeAction').value;
+        // const action = this.linkingNamespaceToMosaic.get('typeAction').value;
         const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
-        const namespaceId = new NamespaceId(this.linkingNamespaceToMosaic.get('namespace').value);
-        const mosaicId = new MosaicId(this.linkingNamespaceToMosaic.get('mosaic').value);
-        const mosaicSupplyChangeTransaction = this.proximaxProvider.linkingNamespaceToMosaic(
-          action,
-          namespaceId,
-          mosaicId,
-          this.walletService.currentAccount.network
-        );
+        // const namespaceId = new NamespaceId(this.linkingNamespaceToMosaic.get('namespace').value);
+        // const mosaicId = new MosaicId(this.linkingNamespaceToMosaic.get('mosaic').value);
+        // const mosaicSupplyChangeTransaction = this.proximaxProvider.linkingNamespaceToMosaic(
+        //   action,
+        //   namespaceId,
+        //   mosaicId,
+        //   this.walletService.currentAccount.network
+        // );
         const generationHash = this.dataBridge.blockInfo.generationHash;
-        const signedTransaction = account.sign(mosaicSupplyChangeTransaction, generationHash); //Update-sdk-dragon
+        const signedTransaction = account.sign(this.mosaicSupplyChangeTransaction, generationHash); //Update-sdk-dragon
         this.transactionSigned = signedTransaction;
         this.proximaxProvider.announce(signedTransaction).subscribe(
           x => {
@@ -422,7 +468,11 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
       } else {
         this.blockSend = false;
       }
+    } else {
+      this.sharedService.showError('', 'insufficient balance');
     }
+    }
+    
   }
 
 }
