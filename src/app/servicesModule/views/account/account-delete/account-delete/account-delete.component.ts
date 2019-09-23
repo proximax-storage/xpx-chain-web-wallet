@@ -197,16 +197,17 @@ export class AccountDeleteComponent implements OnInit {
    */
 
   deleteAccount() {
+
     if (this.validatingForm.get('password').value !== '') {
       const common = { password: this.validatingForm.get('password').value };
       if (this.walletService.decrypt(common, this.currenAccount)) {
 
-        const publicAccount: PublicAccount = PublicAccount.createFromPublicKey(this.currenAccount.publicAccount.publicKey, this.currenAccount.network)
-        this.walletService.removeAccountWallet(publicAccount.address.pretty());
-        this.router.navigate([`/${AppConfig.routes.viewAllAccount}`]);
-        // this.buildBalance();
-        this.transactionService.updateBalance();
+        const publicAccount: PublicAccount = PublicAccount.createFromPublicKey(this.currenAccount.publicAccount.publicKey, this.currenAccount.network);
 
+        const revalidateMultisig = true;
+        this.walletService.removeAccountWallet(this.accountName, revalidateMultisig);
+        this.transactionService.updateBalance();
+        this.router.navigate([`/${AppConfig.routes.viewAllAccount}`]);
       }
       this.validatingForm.get('password').patchValue('', { emitEvent: false, onlySelf: true });
     } else {
