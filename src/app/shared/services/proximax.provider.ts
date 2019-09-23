@@ -44,13 +44,15 @@ import {
   BlockHttp,
   BlockInfo,
   MosaicAliasTransaction,
-  Convert
+  Convert,
+  RawAddress
 } from 'tsjs-xpx-chain-sdk';
 import { MosaicDefinitionTransaction } from 'tsjs-xpx-chain-sdk/dist/src/model/transaction/MosaicDefinitionTransaction';
 import { mergeMap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { BlockchainNetworkType } from 'tsjs-chain-xipfs-sdk';
 import { Observable } from 'rxjs/internal/Observable';
+import { NamespaceStorageInterface } from 'src/app/servicesModule/services/namespaces.service';
 
 @Injectable({
   providedIn: 'root'
@@ -226,6 +228,10 @@ export class ProximaxProvider {
       params.network
     );
     return mosaicDefinitionTransaction;
+  }
+
+  createAddressFromEncode(address: any) {
+    return Address.createFromRawAddress(RawAddress.addressToString(Convert.hexToUint8(address)));
   }
 
 

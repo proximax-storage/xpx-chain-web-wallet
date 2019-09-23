@@ -622,13 +622,15 @@ export class WalletService {
    * @param {string} account
    * @memberof WalletService
    */
-  removeAccountWallet(account: string) {
+  removeAccountWallet(addressPretty: string) {
     const myAccounts: AccountsInterface[] = Object.assign(this.currentWallet.accounts);
     // console.log('=== myAccounts ===', myAccounts);
-    const othersAccount = myAccounts.filter(x => this.proximaxProvider.createFromRawAddress(x.address).pretty() !== account);
+    const othersAccount = myAccounts.filter(x => this.proximaxProvider.createFromRawAddress(x.address).pretty() !== addressPretty);
     // console.log('==== othersAccount ====', othersAccount);
     this.currentWallet.accounts = othersAccount;
     // console.log('==== currentWallet ====', this.currentWallet);
+    const accountsInfo = this.accountsInfo.filter(x => x.accountInfo.publicAccount.address.pretty() !== addressPretty);
+    this.setAccountsInfo(accountsInfo);
     this.saveAccountWalletStorage(null, this.currentWallet);
   }
 

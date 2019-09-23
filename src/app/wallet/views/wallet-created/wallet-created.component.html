@@ -54,19 +54,19 @@
   <!-- buttons create and clear -->
   <div class="row mt-2rem d-flex justify-content-center">
     <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
-      size="md" (click)="goToRoute()">
-      <span class="fs-1-2em color-white"><i class="fa fa-arrow-circle-left"></i> CONTINUE</span>
-    </button>
-
-    <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
       size="md" (click)="viewPrivateKey = !viewPrivateKey">
-      <span class="fs-1-2em color-white" *ngIf="viewPrivateKey"><i class="fa fa-magic mr-1"></i> HIDE PRIVATE KEY</span>
-      <span class="fs-1-2em color-white" *ngIf="!viewPrivateKey"><i class="fa fa-magic mr-1"></i> SHOW PRIVATE KEY</span>
+      <span class="fs-1-2em color-white" *ngIf="viewPrivateKey"><i class="fa fa-eye-slash"></i> HIDE PRIVATE KEY</span>
+      <span class="fs-1-2em color-white" *ngIf="!viewPrivateKey"><i class="fa fa-eye"></i> SHOW PRIVATE KEY</span>
     </button>
 
     <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md"
       (click)="printAccountInfo()">
-      <span class="fs-1-2em color-white"><i class=""></i> PRINT PAPER WALLET</span>
+      <span class="fs-1-2em color-white"><i class="fa fa-file"></i> PRINT PAPER WALLET</span>
+    </button>
+
+    <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md"
+      (click)="goToRoute()">
+      <span class="fs-1-2em color-white"><i class="fa fa-chevron-circle-right"></i> CONTINUE</span>
     </button>
   </div>
 </div>

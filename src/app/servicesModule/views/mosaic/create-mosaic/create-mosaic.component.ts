@@ -367,4 +367,12 @@ export class CreateMosaicComponent implements OnInit {
     }
     return validation;
   }
+
+  limitLength(e) {
+    if (parseInt(e.target.value) > 6) {
+      e.target.value = ''
+    } else if (parseInt(e.target.value) < 0) {
+      e.target.value = ''
+    }
+  }
 }

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, Validators, FormBuilder, AbstractControl } from '@angular/forms';
-import { AliasActionType, Address, NamespaceId, LinkAction } from 'tsjs-xpx-chain-sdk';
+import { AliasActionType, Address, NamespaceId, LinkAction, RawAddress, Convert } from 'tsjs-xpx-chain-sdk';
 import { Router } from '@angular/router';
 import { NgBlockUI, BlockUI } from 'ng-block-ui';
 import { AppConfig } from '../../../../config/app.config';
@@ -23,11 +23,10 @@ export class AliasAddressToNamespaceComponent implements OnInit {
     componentName: 'LINK TO NAMESPACE'
   };
   arrayNamespaceStorage: NamespaceStorageInterface[] = [];
-  moduleName = 'Accounts';
-  componentName = 'LINK TO NAMESPACE';
   backToService = `/${AppConfig.routes.service}`;
-  configurationForm: ConfigurationForm = {};
   blockSend: boolean = false;
+  configurationForm: ConfigurationForm = {};
+  disabledAddressBook: boolean = false;
   LinkToNamespaceForm: FormGroup;
   loading = false;
   namespaceSelect: Array<object> = [];
@@ -66,11 +65,26 @@ export class AliasAddressToNamespaceComponent implements OnInit {
     this.booksAddress();
     this.LinkToNamespaceForm.get('address').valueChanges.subscribe(
       x => {
-        if(x) {
+        if (x) {
           this.accountValidate(x);
         }
       }
     );
+
+    this.LinkToNamespaceForm.get('typeAction').valueChanges.subscribe(el => {
+      console.log(el);
+
+      this.disabledAddressBook = (el === 1);
+      this.showContacts = (el === 1) ? false : this.showContacts;
+    });
+
+    this.LinkToNamespaceForm.get('namespace').valueChanges.subscribe(next => {
+      if (this.disabledAddressBook) {
+        const namespaceUnlink = this.namespaceSelect.find(el => el['value'] === next);
+        this.LinkToNamespaceForm.get('address').setValue(namespaceUnlink['address']);
+      }
+
+    });
 
     const address = this.walletService.currentAccount.address;
     this.LinkToNamespaceForm.get('address').patchValue(address);
@@ -134,7 +148,7 @@ export class AliasAddressToNamespaceComponent implements OnInit {
    */
   async buildSelectNamespace($event = null) {
     if ($event !== null) {
-      this.LinkToNamespaceForm.get('namespace').setValue('1');
+      // this.LinkToNamespaceForm.get('namespace').setValue('1');
       /* this.LinkToNamespaceForm.get('address').enable();
        this.LinkToNamespaceForm.get('namespace').enable();
        this.LinkToNamespaceForm.get('password').enable();*/
@@ -146,6 +160,7 @@ export class AliasAddressToNamespaceComponent implements OnInit {
         for (let namespaceStorage of this.arrayNamespaceStorage) {
           if (namespaceStorage.namespaceInfo) {
             // console.log('INFO ---> ', namespaceStorage, '\n\n');
+            let address: string = '';
             let isLinked = false;
             let disabled = false;
             let label = namespaceStorage.namespaceName.name;//await this.namespaceService.getNameParentNamespace(namespaceStorage);
@@ -154,11 +169,12 @@ export class AliasAddressToNamespaceComponent implements OnInit {
             if (type === 2) {
               isLinked = true;
               disabled = (this.LinkToNamespaceForm.get('typeAction').value === 0) ? true : false;
-              label = `${label}- (Linked to address)`;
+              label = `${label} - (Linked to address)`;
+              address = this.proximaxProvider.createAddressFromEncode(namespaceStorage.namespaceInfo.alias.address).plain();
             } else if (type === 1) {
               isLinked = true;
               disabled = true;
-              label = `${label}- (Linked to mosaic)`;
+              label = `${label} - (Linked to mosaic)`;
             } else {
               disabled = (this.LinkToNamespaceForm.get('typeAction').value === 1) ? true : false;
             }
@@ -167,7 +183,8 @@ export class AliasAddressToNamespaceComponent implements OnInit {
               label: `${label}`,
               value: `${name}`,
               selected: false,
-              disabled: disabled
+              disabled: disabled,
+              address: address
             });
           }
         };
