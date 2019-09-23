@@ -30,7 +30,6 @@ import { environment } from "../../../environments/environment";
 import { MosaicService } from "../../servicesModule/services/mosaic.service";
 import { NamespacesService } from "../../servicesModule/services/namespaces.service";
 import { WalletService, AccountsInfoInterface, AccountsInterface } from '../../wallet/services/wallet.service';
-import * as FeeCalculationStrategy from 'tsjs-xpx-chain-sdk/dist/src/model/transaction/FeeCalculationStrategy';
 // import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
 
 
@@ -285,10 +284,6 @@ export class TransactionsService {
       params.network
     );
 
-    const x = TransferTransaction.calculateSize(PlainMessage.create(params.message).size(), allMosaics.length);
-    const b = FeeCalculationStrategy.calculateFee(x);
-    console.log(b);
-
     const account = Account.createFromPrivateKey(params.common.privateKey, params.network);
     const signedTransaction = account.sign(transferTransaction, this.generationHash);
     const transactionHttp = this.buildTransactionHttp();
@@ -419,6 +414,14 @@ export class TransactionsService {
       );
   }
 
+
+  validateBuildSelectAccountBalance(balanceAccount: number, feeTransaction: number, rental: number): boolean {
+    const totalFee = feeTransaction + rental;
+    console.log('balanceAccount', balanceAccount)
+    console.log('totalFee', totalFee)
+    return (balanceAccount >= totalFee)
+
+  }
 
   /**
    *
