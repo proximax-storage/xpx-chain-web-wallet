@@ -93,7 +93,7 @@ export class AddContactsComponent implements OnInit {
         const isUpdate = this.activateRoute.snapshot.paramMap.get('name');
         const paramsStorage: ContactsStorageInterface = {
           name: this.contactForm.get('user').value,
-          address: this.contactForm.get('address').value.split('-').join(''),
+          address: this.contactForm.get('address').value.split('-').join('').toUpperCase(),
           walletContact: false,
           nameItem: '',
           update: (isUpdate) ? true : false,

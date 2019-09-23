@@ -403,6 +403,7 @@ export class CreateTransferComponent implements OnInit {
         this.fee = '0.037250'
         return;
       }
+
       this.formTransfer.get(custom).reset();
       this.fee = '0.037250'
       return;
@@ -726,14 +727,10 @@ export class CreateTransferComponent implements OnInit {
     if (this.formTransfer.valid && (!this.blockSendButton || !this.errorOtherMosaics)) {
       this.blockButton = true;
       this.blockSendButton = true;
-
-      const x = this.transactionService.validateBuildSelectAccountBalance(Number(this.balanceXpx.split(',').join('')), this.fee, 0)
-      if (x) {
-
+      if (this.transactionService.validateBuildSelectAccountBalance(Number(this.balanceXpx.split(',').join('')), this.fee, 0)) {
         const common = { password: this.formTransfer.get("password").value };
         const mosaicsToSend = this.validateMosaicsToSend();
         const type = (this.cosignatorie) ? true : false;
-
         switch (type) {
           case true:
             /*console.log('TRANSFIERE CON COSIGNATARIO');
@@ -832,9 +829,10 @@ export class CreateTransferComponent implements OnInit {
             break;
         }
       } else {
-        this.sharedService.showError('', 'insufficient balance');
+        this.blockButton = false;
+        this.blockSendButton = false;
+        this.sharedService.showError('', 'Insufficient balance');
       }
-
     }
   }
 
