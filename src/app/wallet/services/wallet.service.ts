@@ -621,7 +621,7 @@ export class WalletService {
    * @param {string} account
    * @memberof WalletService
    */
-  removeAccountWallet(name: string) {
+  removeAccountWallet(name: string, moduleRemove: boolean = false) {
     const myAccounts: AccountsInterface[] = Object.assign(this.currentWallet.accounts);
     // console.log('=== myAccounts ===', myAccounts);
     const othersAccount = myAccounts.filter(x => x.name !== name);
@@ -632,6 +632,9 @@ export class WalletService {
     this.accountsInfo.filter(x => x.name !== name);
     this.setAccountsInfo(accountsInfo);
     this.saveAccountWalletStorage(null, this.currentWallet);
+    if (moduleRemove) {
+      this.validateMultisigAccount(this.currentWallet.accounts);
+    }
   }
 
   /**
@@ -838,10 +841,11 @@ export class WalletService {
    */
   validateMultisigAccount(accounts: AccountsInterface[]) {
     // console.log('----LA DATA QUE RECIBO-----> ', accounts);
-    accounts.forEach(account => {
-      let remove = true;
-      // console.log('====account====', account);
-      if (account.encrypted === '') {
+    const dataExist = accounts.filter(x => x.encrypted === '');
+    if (dataExist) {
+      dataExist.forEach(account => {
+        let remove = true;
+        // console.log('====account====', account);
         // console.log('PROCESO DE VERIFICACION');
         if (account.isMultisign !== null) {
           if (account.isMultisign.cosignatories.length > 0) {
@@ -855,15 +859,13 @@ export class WalletService {
             });
           }
         }
-      } else {
-        remove = false;
-      }
 
-      if (remove) {
-        // console.log('==== REMOVER ====', account);
-        this.removeAccountWallet(account.name);
-      }
-    });
+        if (remove) {
+          // console.log('==== REMOVER ====', account);
+          this.removeAccountWallet(account.name);
+        }
+      });
+    }
   }
 }
 
