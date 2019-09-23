@@ -156,7 +156,7 @@ export class CreateNamespaceComponent implements OnInit {
    */
   createNamespace() {
     // console.log('this.namespaceForm.valid', this.namespaceForm.valid);
-    console.log('validateForm', this.validateForm);
+    // console.log('validateForm', this.validateForm);
     // console.log('this.blockBtnSend', this.blockBtnSend);
     if (this.namespaceForm.valid && !this.blockBtnSend) {
       this.blockBtnSend = true;
@@ -173,17 +173,17 @@ export class CreateNamespaceComponent implements OnInit {
             if (!this.transactionStatus) {
               this.getTransactionStatus();
             }
-            this.blockBtnSend = false;
-            this.clearForm();
+            
+           
             this.setTimeOutValidate(signedTransaction.hash);
           }, () => {
-            this.blockBtnSend = false;
+             this.blockBtnSend = false;
             this.clearForm()
             this.sharedService.showError('', 'Error connecting to the node');
           }
         );
       } else {
-        this.blockBtnSend = false;
+         this.blockBtnSend = false;
       }
     }
   }
@@ -220,7 +220,7 @@ export class CreateNamespaceComponent implements OnInit {
         this.namespaceInfo = [];
         if (namespaceInfo !== null && namespaceInfo !== undefined) {
           for (let data of namespaceInfo) {
-            console.log('data---> ', data)
+            // console.log('data---> ', data)
             let rootResponse = null;
             if (data.namespaceInfo.depth === 1) {
               rootResponse = this.namespaceService.getRootNamespace(data, data.namespaceInfo.active, this.namespace, this.namespaceInfo);
@@ -305,15 +305,19 @@ export class CreateNamespaceComponent implements OnInit {
     // Get transaction status
     this.subscription.push(this.dataBridge.getTransactionStatus().subscribe(
       statusTransaction => {
+        // this.blockBtnSend = false;
         if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
           for (let element of this.transactionSigned) {
             const statusTransactionHash = (statusTransaction['type'] === 'error') ? statusTransaction['data'].hash : statusTransaction['data'].transactionInfo.hash;
             const match = statusTransactionHash === element.hash;
             if (match) {
               this.transactionReady.push(element);
+              this.clearForm();
+              this.blockBtnSend = false;
             }
             if (statusTransaction['type'] === 'confirmed' && match) {
               this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransactionHash);
+              
               this.sharedService.showSuccess('', 'Transaction confirmed');
             } else if (statusTransaction['type'] === 'unconfirmed' && match) {
               this.sharedService.showInfo('', 'Transaction unconfirmed');
@@ -347,7 +351,7 @@ export class CreateNamespaceComponent implements OnInit {
         duration
       )
 
-      console.log('----namespaceName----', namespaceName);
+      // console.log('----namespaceName----', namespaceName);
 
       const signedTransaction = account.sign(registerRootNamespaceTransaction, generationHash); //Update-sdk-dragon
       return signedTransaction;
@@ -360,8 +364,8 @@ export class CreateNamespaceComponent implements OnInit {
         this.walletService.currentAccount.network
       );
 
-      console.log('----rootNamespaceName----', rootNamespaceName);
-      console.log('----subnamespaceName----', subnamespaceName);
+      // console.log('----rootNamespaceName----', rootNamespaceName);
+      // console.log('----subnamespaceName----', subnamespaceName);
       const signedTransaction = account.sign(registersubamespaceTransaction, generationHash); //Update-sdk-dragon
       return signedTransaction;
     }
