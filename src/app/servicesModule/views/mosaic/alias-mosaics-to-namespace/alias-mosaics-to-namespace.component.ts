@@ -127,7 +127,7 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
       this.mosaicId,
       this.walletService.currentAccount.network
     );
-    this.fee = Number(this.transactionService.amountFormatterSimple(this.mosaicSupplyChangeTransaction.maxFee.compact()));
+    this.fee = this.transactionService.amountFormatterSimple(this.mosaicSupplyChangeTransaction.maxFee.compact());
   }
 
   getAmountAccount () {
@@ -429,7 +429,7 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
    */
   sendTransaction() {
     if (this.linkingNamespaceToMosaic.valid && !this.blockSend) {
-      const validateAmount = this.transactionService.validateBuildSelectAccountBalance(this.amountAccount, this.fee, 0)
+      const validateAmount = this.transactionService.validateBuildSelectAccountBalance(this.amountAccount, Number(this.fee), 0)
       if (validateAmount) {
       this.blockSend = true;
       const common = {
