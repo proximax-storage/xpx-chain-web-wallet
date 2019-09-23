@@ -36,7 +36,7 @@
               <!-- VALIDATION -->
               <mdb-error
                 *ngIf="validateInput('duration', '').invalid && (validateInput('duration', '').dirty || validateInput('duration', '').touched)">
-                <span>Input invalid</span>
+                <span>Required field - Only numbers</span>
               </mdb-error>
 
               <mdb-error *ngIf="validateInput('duration', '').valid && insufficientBalanceDuration">
@@ -80,12 +80,12 @@
               <input [maxlength]="configurationForm.passwordWallet.maxLength"
                 [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" required
                 mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password"
-                id="password" class="form-control form-control-sm input-border" placeholder="Enter password">
+                id="password" class="form-control form-control-sm input-border" placeholder="Enter wallet password">
 
               <!-- VALIDATION -->
               <mdb-error
                 *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
-                <span>Input invalid</span>
+                <span>Password required</span>
               </mdb-error>
             </div>
           </div>
