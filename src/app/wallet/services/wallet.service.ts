@@ -43,7 +43,7 @@ export class WalletService {
   constructor(
     private sharedService: SharedService,
     private proximaxProvider: ProximaxProvider
-  ) {}
+  ) { }
 
   /**
    *
@@ -259,7 +259,7 @@ export class WalletService {
       }
     });
 
-    if (this.currentAccount.name === oldName){
+    if (this.currentAccount.name === oldName) {
       this.currentAccount.name = newName;
     }
 
@@ -629,7 +629,19 @@ export class WalletService {
     // console.log('==== othersAccount ====', othersAccount);
     this.currentWallet.accounts = othersAccount;
     // console.log('==== currentWallet ====', this.currentWallet);
-    const accountsInfo = this.accountsInfo.filter(x => x.accountInfo.publicAccount.address.pretty() !== addressPretty);
+    const accountsInfo = [];
+    if (this.accountsInfo.length > 0) {
+      this.accountsInfo.forEach(x => {
+        //this.accountsInfo.filter(x => x.accountInfo.publicAccount.address.pretty() !== addressPretty);
+        if(x.accountInfo) {
+          if(x.accountInfo.publicAccount.address.pretty() !== addressPretty) {
+            accountsInfo.push(x);
+          }
+        }
+      });
+    }
+
+
     this.setAccountsInfo(accountsInfo);
     this.saveAccountWalletStorage(null, this.currentWallet);
   }
