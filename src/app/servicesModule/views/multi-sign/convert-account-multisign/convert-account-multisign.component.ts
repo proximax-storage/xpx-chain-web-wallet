@@ -146,10 +146,13 @@ export class ConvertAccountMultisignComponent implements OnInit {
     //Form create multisignature default
     this.convertAccountMultsignForm = this.fb.group({
       selectAccount: ['', [
-        Validators.required
-      ]
+          Validators.required
+        ]
       ],
-      cosignatory: [''],
+      cosignatory: ['', [
+          Validators.pattern('^(0x|0X)?[a-fA-F0-9]+$')
+        ]
+      ],
       contact: [''],
       minApprovalDelta: [1, [
         Validators.required, Validators.minLength(1),
@@ -198,7 +201,6 @@ export class ConvertAccountMultisignComponent implements OnInit {
    */
   getAccounts(transactionsParam: TransactionsInterface = undefined) {
     const currentWallet = Object.assign({}, this.walletService.currentWallet);
-    console.log('this.walletService.currentWallet', this.walletService.currentWallet)
     if (currentWallet && Object.keys(currentWallet).length > 0) {
       this.subscribe.push(this.transactionService.getAggregateBondedTransactions$().subscribe((transactions: TransactionsInterface[]) => {
         this.currentAccounts = [];

@@ -1581,7 +1581,7 @@ body.modal-open {
 .scroll-accounts {
   overflow-y: auto;
   margin-bottom: 12px;
-  max-height: 130px;
+  max-height: 220px;
 }
 
 .table-wrapper-scroll-x {
