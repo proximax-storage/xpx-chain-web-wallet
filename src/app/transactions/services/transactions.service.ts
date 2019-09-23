@@ -610,7 +610,7 @@ export class TransactionsService {
           }
         });
 
-        // console.log('==== publicsAccounts ====', publicsAccounts);
+        console.log('==== publicsAccounts ====', publicsAccounts);
         // Search all transactions aggregate bonded from array publics accounts
         if (publicsAccounts.length > 0) {
           this.searchAggregateBonded(publicsAccounts);
