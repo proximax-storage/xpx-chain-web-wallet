@@ -58,6 +58,7 @@ export class ViewAllAccountsComponent implements OnInit {
    * @memberof ViewAllAccountsComponent
    */
   buildBalance() {
+    console.log('build',this.walletService.currentWallet)
     const currentWallet = Object.assign({}, this.walletService.currentWallet);
     if (currentWallet && Object.keys(currentWallet).length > 0) {
       for (let element of currentWallet.accounts) {

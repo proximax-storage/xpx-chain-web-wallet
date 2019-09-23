@@ -228,11 +228,11 @@ export class CreateMosaicComponent implements OnInit {
         params.nonce = this.proximaxProvider.createNonceRandom();
         this.buildMosaicDefinition(account, params)
       });
-    this.calculateFee();
+    this.getAmountAccount();
 
   }
 
-  calculateFee() {
+  getAmountAccount () {
     const account = this.walletService.filterAccountInfo(this.proximaxProvider.createFromRawAddress(this.walletService.currentAccount.address).pretty(), true);
     let mosaics = account.accountInfo.mosaics;
     let amoutMosaic = mosaics.filter(mosaic => mosaic.id.toHex() == environment.mosaicXpxInfo.id);
