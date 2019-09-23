@@ -43,7 +43,7 @@
 
           <mdb-error
             *ngIf="validateInput('nameWallet').invalid && (validateInput('nameWallet').dirty || validateInput('nameWallet').touched)">
-            <span>Input invalid</span>
+            <span>Name required</span>
           </mdb-error>
 
           <mdb-error *ngIf="validateInput('nameWallet').valid && validateNameWallet()">
@@ -70,7 +70,6 @@
                 <mdb-error *ngIf="
                 validateInput('password', 'passwords').invalid &&
                 (validateInput('password', 'passwords').dirty || validateInput('password', 'passwords').touched)">
-                  <!-- <span>Input invalid</span> -->
                   <span>Min length {{configurationForm.passwordWallet.minLength}}, max length {{configurationForm.passwordWallet.maxLength}}</span>
                 </mdb-error>
 
