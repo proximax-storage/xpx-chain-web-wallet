@@ -66,7 +66,7 @@ export class CreateMosaicComponent implements OnInit {
   transferable: any;
   divisibility: any;
   aggregateTransaction: AggregateTransaction;
-  fee: number;
+  fee: any;
   amountAccount: number;
 
   constructor(
@@ -228,11 +228,11 @@ export class CreateMosaicComponent implements OnInit {
         params.nonce = this.proximaxProvider.createNonceRandom();
         this.buildMosaicDefinition(account, params)
       });
-    this.calculateFee();
+    this.getAmountAccount();
 
   }
 
-  calculateFee() {
+  getAmountAccount () {
     const account = this.walletService.filterAccountInfo(this.proximaxProvider.createFromRawAddress(this.walletService.currentAccount.address).pretty(), true);
     let mosaics = account.accountInfo.mosaics;
     let amoutMosaic = mosaics.filter(mosaic => mosaic.id.toHex() == environment.mosaicXpxInfo.id);
@@ -257,7 +257,9 @@ export class CreateMosaicComponent implements OnInit {
       this.walletService.currentAccount.network,
       []
     );
-    this.fee = Number(this.transactionService.amountFormatterSimple(this.aggregateTransaction.maxFee.compact()))
+    this.fee = this.transactionService.amountFormatterSimple(this.aggregateTransaction.maxFee.compact());
+
+    console.log('this.fee', this.fee)
   }
   /**
    *
@@ -292,7 +294,7 @@ export class CreateMosaicComponent implements OnInit {
    */
   send() {
     if (this.mosaicForm.valid && !this.blockSend) {
-      const validateAmount = this.transactionService.validateBuildSelectAccountBalance(this.amountAccount, this.fee, Number(this.calculateRentalFee))
+      const validateAmount = this.transactionService.validateBuildSelectAccountBalance(this.amountAccount, Number(this.fee), Number(this.calculateRentalFee))
       if (validateAmount) {
         const common = {
           password: this.mosaicForm.get('password').value,

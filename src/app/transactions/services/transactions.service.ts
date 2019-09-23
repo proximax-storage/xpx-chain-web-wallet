@@ -257,6 +257,7 @@ export class TransactionsService {
    */
   amountFormatterSimple(amount: Number) {
     const amountDivisibility = Number(amount) / Math.pow(10, 6);
+    console.log('amountDivisibility', amountDivisibility)
     return amountDivisibility.toLocaleString("en-us", { minimumFractionDigits: 6 });
   }
 
