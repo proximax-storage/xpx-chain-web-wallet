@@ -272,6 +272,8 @@ export class MosaicsSupplyChangeComponent implements OnInit {
             const statusTransactionHash = (statusTransaction['type'] === 'error') ? statusTransaction['data'].hash : statusTransaction['data'].transactionInfo.hash;
             const match = statusTransactionHash === element.hash;
             if (match) {
+              this.blockButton = false;
+              this.clearForm()
               this.transactionReady.push(element);
             }
             if (statusTransaction['type'] === 'confirmed' && match) {
@@ -317,8 +319,7 @@ export class MosaicsSupplyChangeComponent implements OnInit {
         console.log(this.transactionSigned);
         this.proximaxProvider.announce(signedTransaction).subscribe(
           x => {
-            this.blockButton = false;
-            this.clearForm()
+           
             this.blockUI.stop();
             if (this.subscriptions['transactionStatus'] === undefined || this.subscriptions['transactionStatus'] === null) {
               this.getTransactionStatus();
