@@ -839,32 +839,35 @@ export class WalletService {
    */
   validateMultisigAccount(accounts: AccountsInterface[]) {
     // console.log('----LA DATA QUE RECIBO-----> ', accounts);
-    accounts.forEach(account => {
-      let remove = true;
-      // console.log('====account====', account);
-      if (account.encrypted === '') {
-        // console.log('PROCESO DE VERIFICACION');
-        if (account.isMultisign !== null) {
-          if (account.isMultisign.cosignatories.length > 0) {
-            account.isMultisign.cosignatories.forEach(cosignatorie => {
-              // console.log('==== COSIGNATARIOS ====', cosignatorie);
-              const exist = this.filterAccountWallet('', null, cosignatorie.address.pretty());
-              // console.log('==== EXISTE? ====', exist);
-              if (exist) {
-                remove = false;
-              }
-            });
+    const exist = accounts.filter(x => x.encrypted === '');
+    if (exist) {
+      exist.forEach(account => {
+        let remove = true;
+        // console.log('====account====', account);
+        if (account.encrypted === '') {
+          // console.log('PROCESO DE VERIFICACION');
+          if (account.isMultisign !== null) {
+            if (account.isMultisign.cosignatories.length > 0) {
+              account.isMultisign.cosignatories.forEach(cosignatorie => {
+                // console.log('==== COSIGNATARIOS ====', cosignatorie);
+                const exist = this.filterAccountWallet('', null, cosignatorie.address.pretty());
+                // console.log('==== EXISTE? ====', exist);
+                if (exist) {
+                  remove = false;
+                }
+              });
+            }
           }
+        } else {
+          remove = false;
         }
-      } else {
-        remove = false;
-      }
 
-      if (remove) {
-        // console.log('==== REMOVER ====', account);
-        this.removeAccountWallet(account.name);
-      }
-    });
+        if (remove) {
+          // console.log('==== REMOVER ====', account);
+          this.removeAccountWallet(account.name);
+        }
+      });
+    }
   }
 }
 
