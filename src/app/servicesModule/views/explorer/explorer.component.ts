@@ -142,30 +142,40 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
 
       } else if (this.typeSearch === 'publickey') {
         //From publickey
-        const publicAccount = this.proximaxProvider.createPublicAccount(this.paramSearch, this.walletService.currentAccount.network);
-        this.proximaxProvider.getTransactionsFromAccount(publicAccount, this.nodeService.getNodeSelected()).subscribe(
-          resp => {
-            this.searching = false;
-            this.buildTransaction(resp);
-          },
-          error => {
-            this.searching = false;
-            // console.log(error);
-          }
-        );
-      } else {
+        if (this.paramSearch.length === 64) {
+          const publicAccount = this.proximaxProvider.createPublicAccount(this.paramSearch, this.walletService.currentAccount.network);
+          this.proximaxProvider.getTransactionsFromAccount(publicAccount, this.nodeService.getNodeSelected()).subscribe(
+            resp => {
+              this.searching = false;
+              this.buildTransaction(resp);
+            },
+            error => {
+              this.searching = false;
+              // console.log(error);
+            }
+          );
+        } else {
+          this.paramSearch = '';
+          this.searching = false;
+        }
+      } else if (this.typeSearch === 'hash') {
         //From hash
-        this.proximaxProvider.getTransactionInformation(this.paramSearch, this.nodeService.getNodeSelected()).subscribe(
-          resp => {
-            // console.log('with hash info', resp);
-            this.searching = false;
-            this.buildTransaction([resp]);
-          },
-          error => {
-            this.searching = false;
-            // console.log(error);
-          }
-        );
+        if (this.paramSearch.length === 64) {
+          this.proximaxProvider.getTransactionInformation(this.paramSearch, this.nodeService.getNodeSelected()).subscribe(
+            resp => {
+              console.log('with hash info', resp);
+              this.searching = false;
+              this.buildTransaction([resp]);
+            },
+            error => {
+              this.searching = false;
+              console.log(error);
+            }
+          );
+        } else {
+          this.paramSearch = '';
+          this.searching = false;
+        }
       }
     }
 
