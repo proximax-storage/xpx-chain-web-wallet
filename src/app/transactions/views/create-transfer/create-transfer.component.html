@@ -295,12 +295,12 @@
           <input [maxlength]="configurationForm.passwordWallet.maxLength"
             [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" required
             mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password" id="password"
-            class="form-control form-control-sm input-border" placeholder="Enter password">
+            class="form-control form-control-sm input-border" placeholder="Enter wallet password">
 
           <!-- VALIDATION -->
           <mdb-error
             *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
-            <span>Input invalid</span>
+            <span>Password required</span>
           </mdb-error>
         </div>
       </div>
