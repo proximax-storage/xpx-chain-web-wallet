@@ -13,7 +13,7 @@
         <div class="col-11 col-sm-10 col-lg-8 mx-auto">
           <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" class="selectWrapper"
             [items]="typeAction" formControlName="typeAction" bindLabel="label" bindValue="value"
-            placeholder="Select action" (change)="buildSelectNamespace($event)"></ng-select>
+            placeholder="Select action" (change)="buildSelectNamespace($event); captureAction()"></ng-select>
           <mdb-error class="ml-1rem"
             *ngIf="validateInput('typeAction').invalid && (validateInput('typeAction').dirty || validateInput('typeAction').touched)">
             <span class="fs-08rem fw-600 color-error-message">Select action</span>
@@ -25,7 +25,7 @@
         <div class="col-11 col-sm-10 col-lg-8 mx-auto">
           <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" class="selectWrapper"
             [items]="namespaceSelect" formControlName="namespace" bindLabel="label" bindValue="value"
-            placeholder="Select namespace"></ng-select>
+            placeholder="Select namespace" (change)="captureNamespace()"></ng-select>
           <mdb-error class="ml-1rem"
             *ngIf="validateInput('namespace').invalid && (validateInput('namespace').dirty || validateInput('namespace').touched)">
             <span class="fs-08rem fw-600 color-error-message">Select namespace</span>
@@ -56,7 +56,7 @@
                 <input formControlName="address" required mdbInputDirective mdbValidate [validateSuccess]="true"
                   [validateError]="true" [readonly]="disabledAddressBook" type="text" id="address" class="form-control form-control-sm input-border"
                   placeholder="Address" [maxlength]="configurationForm.address.maxLength"
-                  [minlength]="configurationForm.address.minLength">
+                  [minlength]="configurationForm.address.minLength" (change)="captureaddress($event)">
 
                 <!-- VALIDATION -->
                 <mdb-error *ngIf="notValid">
@@ -92,7 +92,7 @@
           <div class="box-grey txt-a-center">
             <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20"
               alt="">&nbsp;
-            <span>Fee: 0.000000 XPX</span>
+            <span>Fee: {{ fee }} XPX</span>
           </div>
         </div>
       </div>
