@@ -33,26 +33,56 @@
         </div>
       </div>
 
+      <!-- Contacts -->
+      <ng-container *ngIf="showContacts && listContacts.length > 0">
+        <div class="row">
+          <div class="col-11 col-md-10 col-lg-8 mx-auto">
+            <ng-select mdbInputDirective mdbValidate class="selectWrapper"
+              [items]="listContacts" bindLabel="label" bindValue="value" placeholder="Contact"
+              (change)="selectContact($event)">
+            </ng-select>
+          </div>
+        </div>
+      </ng-container>
+
       <div class="row">
         <div class="col-11 col-sm-10 col-lg-8 mx-auto">
-          <div class="md-form form-sm">
-            <img class="form-control-feedback"
-              src="assets/images/img/icon-address-green-book-16h-proximax-sirius-wallet.svg" alt="" width="43"
-              height="43">
-            <input formControlName="address" required mdbInputDirective mdbValidate [validateSuccess]="true"
-              [validateError]="true" type="text" id="address" class="form-control form-control-sm input-border"
-              placeholder="Address" [maxlength]="configurationForm.address.maxLength"
-              [minlength]="configurationForm.address.minLength">
+          <div class="row">
+            <div class="col-8 col-sm-9 col-md-10">
+              <div class="md-form form-sm mt-1rem mb-0rem">
+                <img class="form-control-feedback"
+                  src="assets/images/img/icon-address-green-book-16h-proximax-sirius-wallet.svg" alt="" width="43"
+                  height="43">
+                <input formControlName="address" required mdbInputDirective mdbValidate [validateSuccess]="true"
+                  [validateError]="true" type="text" id="address" class="form-control form-control-sm input-border"
+                  placeholder="Address" [maxlength]="configurationForm.address.maxLength"
+                  [minlength]="configurationForm.address.minLength">
 
-            <!-- VALIDATION -->
-            <mdb-error *ngIf="notValid">
-              <span class="fs-08rem fw-600 color-error-message">Address not valid in blockchain</span>
-            </mdb-error>
+                <!-- VALIDATION -->
+                <mdb-error *ngIf="notValid">
+                  <span class="fs-08rem fw-600 color-error-message">Address not valid in blockchain</span>
+                </mdb-error>
 
-            <mdb-error
-              *ngIf="validateInput('address', '').invalid && (validateInput('address', '').dirty || validateInput('address', '').touched)">
-              <span class="fs-08rem fw-600 color-error-message">Required field</span>
-            </mdb-error>
+                <mdb-error
+                  *ngIf="validateInput('address', '').invalid && (validateInput('address', '').dirty || validateInput('address', '').touched)">
+                  <span class="fs-08rem fw-600 color-error-message">Required field</span>
+                </mdb-error>
+              </div>
+            </div>
+            <!-- Show Contacts -->
+            <ng-container>
+              <div class="col-4 col-sm-3 col-md-2 d-flex justify-content-center align-items-center pt-10px">
+                <div [class.disabled]="listContacts.length === 0 || disabledAllField"
+                  class="background-gray-icons p-12px bord-rad-25px cursor-p"
+                  (click)="showContacts = (listContacts.length > 0) ? !showContacts : showContacts"
+                  [title]="(!showContacts) ? 'Show contacts': 'Hide contacts'">
+                  <img class="w-30px" [src]="(!showContacts && listContacts.length === 0) ?
+                  'assets/images/img/icon-address-book-gray-28h-proximax-sirius-wallet.svg' :
+                  'assets/images/img/icon-address-green-book-16h-proximax-sirius-wallet.svg'
+                  ">
+                </div>
+              </div>
+            </ng-container>
           </div>
         </div>
       </div>

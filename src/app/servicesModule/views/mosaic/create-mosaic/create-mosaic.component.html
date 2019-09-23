@@ -21,13 +21,13 @@
                       <img class="form-control-feedback"
                         src="assets/images/img/icon-duration-green-16h-proximax-sirius-wallet.svg" alt="">
                       <input formControlName="duration" mdbInputDirective mdbValidate [validateSuccess]="true"
-                        [validateError]="true" type="text" id="duration"
+                        [validateError]="true" type="number" id="duration"
                         class="form-control form-control-sm input-border" placeholder="Duration (number of days)">
 
                       <!-- VALIDATION -->
                       <mdb-error
                         *ngIf="validateInput('duration', '').invalid && (validateInput('duration', '').dirty || validateInput('duration', '').touched)">
-                        <span>Input invalid</span>
+                        <span>Required field - Only numbers</span>
                       </mdb-error>
                     </div>
                   </div>
@@ -46,14 +46,14 @@
                   <img class="form-control-feedback"
                     src="assets/images/img/icon-namespaces-green-16h-proximax-sirius-wallet.svg" alt="">
                   <input formControlName="divisibility" mdbInputDirective mdbValidate [validateSuccess]="true"
-                    [validateError]="true" type="text" id="divisibility" maxlength="1"
+                    [validateError]="true" type="text" id="divisibility" minlength="0" maxlength="1"
                     id="divisibility{{errorDivisibility}}" class="form-control form-control-sm input-border"
-                    placeholder="Divisibility">
+                    placeholder="Divisibility" (keyup)="limitLength($event)">
 
                   <!-- VALIDATION -->
                   <mdb-error
                     *ngIf="validateInput('divisibility', '').invalid && (validateInput('divisibility', '').dirty || validateInput('divisibility', '').touched) || invalidDivisibility">
-                    <span>Input invalid</span>
+                    <span>Required field - Only numbers (0 - 6)</span>
                   </mdb-error>
                 </div>
               </div>
@@ -69,7 +69,7 @@
                   <!-- VALIDATION -->
                   <mdb-error
                     *ngIf="validateInput('deltaSupply', '').invalid && (validateInput('deltaSupply', '').dirty || validateInput('deltaSupply', '').touched) || invalidSupply">
-                    <span>Input invalid</span>
+                    <span>Required field</span>
                   </mdb-error>
                 </div>
               </div>

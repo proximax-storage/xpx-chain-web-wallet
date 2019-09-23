@@ -235,8 +235,8 @@
                     <div class="row">
                         <div class="col-11 col-md-10 col-lg-8 mx-auto">
                             <ng-select mdbInputDirective mdbValidate [clearable]="false" class="selectWrapper" [items]="consginerFirmList"
-                                bindLabel="label" labelForId="cosignatorieSign"  bindValue="value" placeholder="Cosignatorie sign" formControlName="cosignatorieSign"
-                                (change)="selectCosignatorieSign($event)">
+                                bindLabel="label" labelForId="cosignatorieSign" bindValue="value" placeholder="Cosignatorie sign"
+                                formControlName="cosignatorieSign" (change)="selectCosignatorieSign($event)">
                             </ng-select>
                         </div>
                     </div>
@@ -246,12 +246,17 @@
                 <!-- FEE -->
                 <div class="row ml-01rem">
                     <div class="col-11 col-md-10 col-lg-8 mx-auto">
-                        <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
+                        <div class="box-grey pt-1rem pb-1rem ">
                             <div class="row">
-                                <div class="col-12">
+                                <div class=" col-sm-12 col-md-10 col-lg-6   d-flex justify-content-center">
                                     <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
                                         alt="">
-                                    <span>Fee: 0.000000 XPX</span>
+                                    <span>Fee: {{amountFormatterSimple(feeTransaction)}} XPX </span>
+                                </div>
+                                <div class=" col-sm-12 col-md-10 col-lg-6   d-flex justify-content-center">
+                                    <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
+                                        alt="">
+                                    <span>Lock fund fee: {{amountFormatterSimple(feeLockfund)}} XPX </span>
                                 </div>
                             </div>
                         </div>

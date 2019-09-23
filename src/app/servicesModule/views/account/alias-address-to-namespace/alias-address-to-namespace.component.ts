@@ -10,7 +10,7 @@ import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
 import { SharedService, ConfigurationForm } from 'src/app/shared/services/shared.service';
 import { WalletService } from 'src/app/wallet/services/wallet.service';
 import { Subscription } from 'rxjs';
-import { HeaderServicesInterface } from '../../../services/services-module.service';
+import { HeaderServicesInterface, ServicesModuleService } from '../../../services/services-module.service';
 
 @Component({
   selector: 'app-alias-address-to-namespace',
@@ -45,6 +45,8 @@ export class AliasAddressToNamespaceComponent implements OnInit {
     disabled: false
   }];
   subscription: Subscription[] = [];
+  showContacts = false;
+  listContacts: any = [];
 
   constructor(
     private fb: FormBuilder,
@@ -53,13 +55,15 @@ export class AliasAddressToNamespaceComponent implements OnInit {
     private namespaceService: NamespacesService,
     private walletService: WalletService,
     private proximaxProvider: ProximaxProvider,
-    private dataBridge: DataBridgeService
+    private dataBridge: DataBridgeService,
+    private serviceModuleService: ServicesModuleService
   ) { }
 
   ngOnInit() {
     this.configurationForm = this.sharedService.configurationForm;
     this.createForm();
     this.getNamespaces();
+    this.booksAddress();
     this.LinkToNamespaceForm.get('address').valueChanges.subscribe(
       x => {
         if(x) {
@@ -103,6 +107,23 @@ export class AliasAddressToNamespaceComponent implements OnInit {
 
     this.notValid = false;
     return;
+  }
+
+  /**
+   *
+   *
+   * @memberof CreateTransferComponent
+   */
+  booksAddress() {
+    const data = this.listContacts.slice(0);
+    const bookAddress = this.serviceModuleService.getBooksAddress();
+    this.listContacts = [];
+    if (bookAddress !== undefined && bookAddress !== null) {
+      for (let x of bookAddress) {
+        data.push(x);
+      }
+      this.listContacts = data;
+    }
   }
 
   /**
@@ -389,6 +410,18 @@ export class AliasAddressToNamespaceComponent implements OnInit {
         this.LinkToNamespaceForm.get('password').patchValue('');
         this.blockSend = false;
       }
+    }
+  }
+
+  /**
+   *
+   *
+   * @param {*} event
+   * @memberof CreateTransferComponent
+   */
+  selectContact(event: { label: string, value: string }) {
+    if (event !== undefined && event.value !== '') {
+      this.LinkToNamespaceForm.get('address').patchValue(event.value);
     }
   }
 }
