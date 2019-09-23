@@ -4,6 +4,7 @@ import { ServicesModuleService, HeaderServicesInterface } from "../../../service
 import { AppConfig } from '../../../../config/app.config';
 import { Router } from '@angular/router';
 import { SharedService } from 'src/app/shared/services/shared.service';
+import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
 
 @Component({
   selector: 'app-list-contacts',
@@ -37,7 +38,8 @@ export class ListContactsComponent {
   constructor(
     private serviceModuleService: ServicesModuleService,
     private router: Router,
-    private sharedService: SharedService
+    private sharedService: SharedService,
+    private proximaxProvider: ProximaxProvider
   ) {
     this.hideTable = false;
   }
@@ -45,6 +47,10 @@ export class ListContactsComponent {
   ngOnInit() {
     this.hideTable = false;
     const contacts = this.serviceModuleService.getBooksAddress();
+    console.log(contacts);
+    for (let index = 0; index < contacts.length; index++) {
+      contacts[index].value = this.proximaxProvider.createFromRawAddress(contacts[index].value).pretty();
+    }    
     this.contacts = (contacts !== null && contacts !== undefined) ? contacts : [];
     this.mdbTable.setDataSource(this.contacts);
     this.contacts = this.mdbTable.getDataSource();
