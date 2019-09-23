@@ -621,7 +621,7 @@ export class WalletService {
    * @param {string} account
    * @memberof WalletService
    */
-  removeAccountWallet(name: string) {
+  removeAccountWallet(name: string, moduleRemove: boolean = false) {
     const myAccounts: AccountsInterface[] = Object.assign(this.currentWallet.accounts);
     // console.log('=== myAccounts ===', myAccounts);
     const othersAccount = myAccounts.filter(x => x.name !== name);
@@ -632,7 +632,9 @@ export class WalletService {
     this.accountsInfo.filter(x => x.name !== name);
     this.setAccountsInfo(accountsInfo);
     this.saveAccountWalletStorage(null, this.currentWallet);
-    this.validateMultisigAccount(this.currentWallet.accounts);
+    if (moduleRemove) {
+      this.validateMultisigAccount(this.currentWallet.accounts);
+    }
   }
 
   /**
