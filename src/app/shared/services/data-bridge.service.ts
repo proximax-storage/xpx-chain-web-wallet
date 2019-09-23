@@ -217,7 +217,7 @@ export class DataBridgeService {
           'data': aggregateBondedAdded
         });
       }, err => {
-        // console.error(err)
+        console.error(err)
       });
     });
   }

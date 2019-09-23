@@ -262,12 +262,19 @@ body {
   padding: 1rem !important;
 }
 
+.p-01rem {
+  padding: .1rem;
+}
+
 .p-02rem {
   padding: .2rem !important;
 }
 
 .p-05rem {
   padding: .5rem !important;
+}
+.p-1-5rem {
+  padding: 1.5rem;
 }
 
 /** TOP **/

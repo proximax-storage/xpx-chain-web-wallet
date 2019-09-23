@@ -43,7 +43,7 @@ export class WalletService {
   constructor(
     private sharedService: SharedService,
     private proximaxProvider: ProximaxProvider
-  ) {}
+  ) { }
 
   /**
    *
@@ -259,7 +259,7 @@ export class WalletService {
       }
     });
 
-    if (this.currentAccount.name === oldName){
+    if (this.currentAccount.name === oldName) {
       this.currentAccount.name = newName;
     }
 
@@ -621,14 +621,15 @@ export class WalletService {
    * @param {string} account
    * @memberof WalletService
    */
-  removeAccountWallet(addressPretty: string) {
+  removeAccountWallet(name: string) {
     const myAccounts: AccountsInterface[] = Object.assign(this.currentWallet.accounts);
     // console.log('=== myAccounts ===', myAccounts);
-    const othersAccount = myAccounts.filter(x => this.proximaxProvider.createFromRawAddress(x.address).pretty() !== addressPretty);
+    const othersAccount = myAccounts.filter(x => x.name !== name);
     // console.log('==== othersAccount ====', othersAccount);
     this.currentWallet.accounts = othersAccount;
     // console.log('==== currentWallet ====', this.currentWallet);
-    const accountsInfo = this.accountsInfo.filter(x => x.accountInfo.publicAccount.address.pretty() !== addressPretty);
+    const accountsInfo = [];
+    this.accountsInfo.filter(x => x.name !== name);
     this.setAccountsInfo(accountsInfo);
     this.saveAccountWalletStorage(null, this.currentWallet);
   }
@@ -860,7 +861,7 @@ export class WalletService {
 
       if (remove) {
         // console.log('==== REMOVER ====', account);
-        this.removeAccountWallet(this.proximaxProvider.createFromRawAddress(account.address).pretty());
+        this.removeAccountWallet(account.name);
       }
     });
   }

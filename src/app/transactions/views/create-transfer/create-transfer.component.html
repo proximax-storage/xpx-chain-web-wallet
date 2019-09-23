@@ -295,12 +295,12 @@
           <input [maxlength]="configurationForm.passwordWallet.maxLength"
             [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" required
             mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password" id="password"
-            class="form-control form-control-sm input-border" placeholder="Enter password">
+            class="form-control form-control-sm input-border" placeholder="Enter wallet password">
 
           <!-- VALIDATION -->
           <mdb-error
             *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
-            <span>Input invalid</span>
+            <span>Password required</span>
           </mdb-error>
         </div>
       </div>
@@ -317,7 +317,7 @@
       </div>
 
       <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-        <button [disabled]="blockSendButton || formTransfer.invalid || errorOtherMosaics || disabledAllField" mdbBtn
+        <button [disabled]="blockSendButton || formTransfer.invalid || errorOtherMosaics || disabledAllField || insufficientBalance" mdbBtn
           type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
           <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
             *ngIf="blockButton"></span>

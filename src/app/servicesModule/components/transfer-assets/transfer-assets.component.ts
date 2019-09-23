@@ -25,7 +25,7 @@ export class TransferAssetsComponent implements OnInit {
   accountListVisible: boolean = false;
   formTransfer: FormGroup;
   configurationForm: ConfigurationForm;
-  quantity: string;
+  quantity: string = '0.000000';
   accountCreated: any;
   optionsXPX = {
     prefix: '',
@@ -60,85 +60,99 @@ export class TransferAssetsComponent implements OnInit {
   async ngOnInit() {
     this.configurationForm = this.sharedService.configurationForm;
     this.accountCreated = this.walletService.getAccountInfoNis1();
-    // this.mosaics = this.walletService.getAccountMosaicsNis1();
     this.accountSelected = this.walletService.getNis1AccountSelected();
 
     if (this.accountSelected) {
-      this.createFormTransfer();
-      this.booksAddress();
+      this.initComponent();
+    } else {
+      this.router.navigate([AppConfig.routes.auth]);
+    }
+  }
 
-      if (this.accountSelected.consignerAccounts !== undefined) {
-        this.changeAccount = this.accountSelected.consignerAccounts.length > 1;
-      }
+  initComponent() {
+    this.createFormTransfer();
+    this.booksAddress();
 
-      if (this.accountSelected.multiSign) {
-        this.changeAccount = true;
-      }
+    if (this.accountSelected.consignerAccounts !== undefined) {
+      this.changeAccount = this.accountSelected.consignerAccounts.length > 1;
+    }
 
+    if (this.accountSelected.multiSign) {
+      this.changeAccount = true;
+    }
 
-      if (this.accountSelected.mosaic === null) {
-        this.routeEvent = `/${AppConfig.routes.nis1AccountList}`;
-        this.nemService.getOwnedMosaics(this.accountSelected.address).pipe(first()).pipe((timeout(10000))).subscribe(
-          async next => {
-            for (const el of next) {
-              if (el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx') {
-                let realQuantity = null;
-                realQuantity = this.transactionService.addZeros(el.properties.divisibility, el.quantity);
-                realQuantity = this.nemProvider.amountFormatter(realQuantity, el, el.properties.divisibility);
-                this.accountSelected.mosaic = el;
-                const transactions = await this.nemProvider.getUnconfirmedTransaction(this.accountSelected.address);
-                console.log('this.accountSelected', this.accountSelected);
-                console.log('Estas son las transacciones', transactions);
-                
-                if (transactions.length > 0) {
-                  let relativeAmount = realQuantity;
-                  for (const item of transactions) {
-                    if (item.type === 257 && item['signer']['address']['value'] === this.accountSelected.address.value) {
-                      for (const mosaic of item['_assets']) {
-                        if (mosaic.assetId.namespaceId === 'prx' && mosaic.assetId.name === 'xpx') {
-                          const quantity = parseFloat(this.nemProvider.amountFormatter(mosaic.quantity, el, el.properties.divisibility));
-                          const quantitywhitoutFormat = relativeAmount.split(',').join('');
-                          const quantityFormat = this.nemProvider.amountFormatter(parseInt((quantitywhitoutFormat - quantity).toString().split('.').join('')), el, el.properties.divisibility);
-                          relativeAmount = quantityFormat;
-                        }
+    if (this.accountSelected.mosaic === null) {
+      this.routeEvent = `/${AppConfig.routes.nis1AccountList}`;
+      this.nemService.getOwnedMosaics(this.accountSelected.address).pipe(first()).pipe((timeout(10000))).subscribe(
+        async next => {
+          for (const el of next) {
+            if (el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx') {
+              let realQuantity = null;
+              realQuantity = this.transactionService.addZeros(el.properties.divisibility, el.quantity);
+              realQuantity = this.nemProvider.amountFormatter(realQuantity, el, el.properties.divisibility);
+              this.accountSelected.mosaic = el;
+              const transactions = await this.nemProvider.getUnconfirmedTransaction(this.accountSelected.address);
+              console.log('this.accountSelected', this.accountSelected);
+              console.log('Estas son las transacciones', transactions);
+
+              if (transactions.length > 0) {
+                let relativeAmount = realQuantity;
+                for (const item of transactions) {
+                  if (item.type === 257 && item['signer']['address']['value'] === this.accountSelected.address.value) {
+                    for (const mosaic of item['_assets']) {
+                      if (mosaic.assetId.namespaceId === 'prx' && mosaic.assetId.name === 'xpx') {
+                        const quantity = parseFloat(this.nemProvider.amountFormatter(mosaic.quantity, el, el.properties.divisibility));
+                        const quantitywhitoutFormat = relativeAmount.split(',').join('');
+                        const quantityFormat = this.nemProvider.amountFormatter(parseInt((quantitywhitoutFormat - quantity).toString().split('.').join('')), el, el.properties.divisibility);
+                        relativeAmount = quantityFormat;
                       }
                     }
                   }
-                  this.accountSelected.balance = relativeAmount;
-                } else {
-                  this.accountSelected.balance = realQuantity;
                 }
-                this.searchBalance = false;
-                this.optionsXPX = {
-                  prefix: '',
-                  thousands: ',',
-                  decimal: '.',
-                  precision: el.properties.divisibility.toString()
-                }
+                this.accountSelected.balance = relativeAmount;
+              } else {
+                this.accountSelected.balance = realQuantity;
+              }
+              this.searchBalance = false;
+              this.optionsXPX = {
+                prefix: '',
+                thousands: ',',
+                decimal: '.',
+                precision: el.properties.divisibility.toString()
               }
             }
-            if (this.accountSelected.mosaic === null) {
-              this.searchBalance = false;
-              this.quantity = '0.000000';
-              this.divisivility = '6';
-            } else {
-              this.searchBalance = false;
-              this.quantity = this.accountSelected.balance;
-              this.divisivility = this.accountSelected.mosaic.properties.divisibility.toString();
-            }
-          },
-          error => {
-            this.accountSelected.mosaic = null;
-            this.accountSelected.balance = '0.000000';
-            this.searchBalance = false;
           }
-        );
-      } else {
-        this.quantity = this.accountSelected.balance;
-        this.searchBalance = false;
-      }
+          if (this.accountSelected.mosaic === null) {
+            this.searchBalance = false;
+            this.quantity = '0.000000';
+            this.formTransfer.get('amountXpx').disable();
+            this.divisivility = '6';
+          } else {
+            this.searchBalance = false;
+            this.quantity = this.accountSelected.balance;
+            if (this.quantity === '0.000000') {
+              this.formTransfer.get('amountXpx').disable();
+            } else {
+              this.formTransfer.get('amountXpx').enable();
+            }
+            this.divisivility = this.accountSelected.mosaic.properties.divisibility.toString();
+          }
+        },
+        error => {
+          this.accountSelected.mosaic = null;
+          this.accountSelected.balance = '0.000000';
+          this.formTransfer.get('amountXpx').disable();
+          this.searchBalance = false;
+        }
+      );
     } else {
-      this.router.navigate([AppConfig.routes.auth]);
+      this.quantity = this.accountSelected.balance;
+      if (this.quantity === '0.000000') {
+        this.formTransfer.get('amountXpx').disable();
+      } else {
+        this.formTransfer.get('amountXpx').enable();
+      }
+      this.searchBalance = false;
     }
   }
 
