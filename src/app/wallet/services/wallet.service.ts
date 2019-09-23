@@ -839,9 +839,9 @@ export class WalletService {
    */
   validateMultisigAccount(accounts: AccountsInterface[]) {
     // console.log('----LA DATA QUE RECIBO-----> ', accounts);
-    const exist = accounts.filter(x => x.encrypted === '');
-    if (exist) {
-      exist.forEach(account => {
+    const dataExist = accounts.filter(x => x.encrypted === '');
+    if (dataExist) {
+      dataExist.forEach(account => {
         let remove = true;
         // console.log('====account====', account);
         // console.log('PROCESO DE VERIFICACION');
