@@ -361,7 +361,8 @@ export class ProximaxProvider {
    * @memberof ProximaxProvider
    */
   createNonceRandom() {
-    return MosaicNonce.createRandom();
+    const nonce = MosaicNonce.createRandom();
+    return nonce;
   }
 
 
