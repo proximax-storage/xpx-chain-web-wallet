@@ -109,13 +109,13 @@
                                 <input [maxlength]="configurationForm.passwordWallet.maxLength" [minlength]="configurationForm.passwordWallet.minLength"
                                     formControlName="password" mdbInputDirective mdbValidate [validateSuccess]="true"
                                     [validateError]="true" type="password" id="password" class="form-control form-control-sm input-border"
-                                    placeholder="Enter password">
+                                    placeholder="Enter wallet password">
 
                                 <!-- VALIDATION -->
                                 <mdb-error *ngIf="
                                     validateInput('password', '').invalid &&
                                     (validateInput('password', '').dirty || validateInput('password', '').touched)">
-                                    <span>Input invalid</span>
+                                    <span>Required to enable options</span>
                                 </mdb-error>
                             </div>
                         </div>
@@ -128,11 +128,6 @@
 
             <div class="row mt-2rem d-flex justify-content-center">
 
-                <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
-                    size="md" (click)="goToRoute()">
-                    <span class="fs-1-2em color-white"><i class="fa fa-arrow-circle-left"></i> CONTINUE</span>
-                </button>
-
                 <button mdbBtn type="button" rounded="true" [disabled]="!validatingForm.valid" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
                     size="md" (click)="deleteAccount()">
                     <span class="fs-1-2em color-white"><i class="fa fa-trash"></i> DELETE</span>
@@ -141,15 +136,21 @@
                     (click)="decryptWallet()" *ngIf="showPassword">
                     <!-- <span class="fs-1-2em color-white" *ngIf="viewPrivateKey"><i class="fa fa-magic mr-1"></i> HIDE PRIVATE KEY</span> -->
                     <span class="fs-1-2em color-white">
-                        <i class="fa fa-magic mr-1"></i> SHOW PRIVATE KEY</span>
+                        <i class="fa fa-eye"></i> SHOW PRIVATE KEY</span>
                 </button>
 
                 <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
                     (click)="hidePrivateKey()" *ngIf="!showPassword">
                     <span class="fs-1-2em color-white">
-                        <i class="fa fa-magic mr-1"></i> HIDE PRIVATE KEY</span>
+                        <i class="fa fa-eye-slash"></i> HIDE PRIVATE KEY</span>
                     <!-- <span class="fs-1-2em color-white" *ngIf="!viewPrivateKey"><i class="fa fa-magic mr-1"></i> SHOW PRIVATE KEY</span> -->
                 </button>
+
+                <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md"
+                    (click)="goToRoute()">
+                    <span class="fs-1-2em color-white"><i class="fa fa-arrow-circle-left"></i> CONTINUE</span>
+                </button>
+
             </div>
 
         </ng-container>
