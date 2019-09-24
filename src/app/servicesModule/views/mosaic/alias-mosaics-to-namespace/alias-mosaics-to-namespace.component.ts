@@ -92,7 +92,7 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
     this.subscription.push(this.dataBridge.getBlock().subscribe(next => {
       this.currentBlock = next;
     }));
-    this.construir();
+    this.builder();
   }
 
   ngOnDestroy(): void {
@@ -102,25 +102,25 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
   }
 
   captureAction() {
-    const action = this.linkingNamespaceToMosaic.get('typeAction').value;
-    this.action = action;
-    this.construir();
+     const action = this.linkingNamespaceToMosaic.get('typeAction').value;
+     this.action = action;
+     this.builder();
   }
 
   captureNamespace() {
     const namespaceId = new NamespaceId(this.linkingNamespaceToMosaic.get('namespace').value);
     this.namespaceId = namespaceId;
-    this.construir();
+    this.builder();
     this.getAmountAccount();
   }
 
   captureMmosaic() {
     const mosaicId = new MosaicId(this.linkingNamespaceToMosaic.get('mosaic').value);
     this.mosaicId = mosaicId;
-    this.construir()
+    this.builder()
   }
 
-  construir() {
+  builder(){
     this.mosaicSupplyChangeTransaction = this.proximaxProvider.linkingNamespaceToMosaic(
       this.action,
       this.namespaceId,
@@ -137,6 +137,7 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
     this.amountAccount = amoutMosaic[0].amount.compact()
 
   }
+
   async buildSelectNamespace($event = null) {
     console.log('--arrayNamespaceStorage--', this.arrayNamespaceStorage);
     if ($event !== null) {

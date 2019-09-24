@@ -50,11 +50,11 @@ export class CreateApostilleComponent implements OnInit {
   storeInDfms = false;
   searching: boolean = false;
   typeEncrypted: Array<object> = [
-    { value: '1', label: 'MD5' },
-    { value: '2', label: 'SHA1' },
+    { value: '1', label: 'MD5', disabled: true },
+    { value: '2', label: 'SHA1', disabled: true, },
     { value: '3', label: 'SHA256' },
-    { value: '4', label: 'SHA3' },
-    { value: '5', label: 'SHA512' }
+    { value: '4', label: 'SHA3', disabled: true, },
+    { value: '5', label: 'SHA512', disabled: true, }
   ];
   extensionFile: string = '';
   typeFile: string;
@@ -114,6 +114,7 @@ export class CreateApostilleComponent implements OnInit {
     this.blockBtn = false
     this.filesStorage = await this.storageService.getFiles();
     this.searching = false;
+    this.fileReader([]);
   }
 
 

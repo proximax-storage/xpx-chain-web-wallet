@@ -210,8 +210,10 @@ export class SidebarMainComponent implements OnInit {
    */
   validate() {
     //emit 0 after 1 second then complete, since no second argument is supplied
-    const source = timer(25000, 50000);
+    const source = timer(30000, 50000);
     this.subscription.push(source.subscribe(val => {
+      // console.log('CURRENT_BLOCK =>', this.currentBlock);
+      // console.log('CACHE_BLOCK =>', this.cacheBlock);
       /*console.log('=== RESETED ===', this.reset);
       console.log('=== CURRENT BLOCK ===', this.currentBlock);
       console.log('=== CACHE BLOCK ===', this.cacheBlock, '\n\n\n');*/

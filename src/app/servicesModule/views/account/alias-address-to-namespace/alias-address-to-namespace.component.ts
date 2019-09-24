@@ -11,6 +11,8 @@ import { SharedService, ConfigurationForm } from 'src/app/shared/services/shared
 import { WalletService } from 'src/app/wallet/services/wallet.service';
 import { Subscription } from 'rxjs';
 import { HeaderServicesInterface, ServicesModuleService } from '../../../services/services-module.service';
+import { TransactionsService } from 'src/app/transactions/services/transactions.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-alias-address-to-namespace',
@@ -46,6 +48,12 @@ export class AliasAddressToNamespaceComponent implements OnInit {
   subscription: Subscription[] = [];
   showContacts = false;
   listContacts: any = [];
+  action: any;
+  namespaceId: NamespaceId;
+  address: any;
+  addressAliasTransaction: any;
+  fee: string;
+  amountAccount: number;
 
   constructor(
     private fb: FormBuilder,
@@ -55,7 +63,8 @@ export class AliasAddressToNamespaceComponent implements OnInit {
     private walletService: WalletService,
     private proximaxProvider: ProximaxProvider,
     private dataBridge: DataBridgeService,
-    private serviceModuleService: ServicesModuleService
+    private serviceModuleService: ServicesModuleService,
+    private transactionService: TransactionsService
   ) { }
 
   ngOnInit() {
@@ -72,7 +81,7 @@ export class AliasAddressToNamespaceComponent implements OnInit {
     );
 
     this.LinkToNamespaceForm.get('typeAction').valueChanges.subscribe(el => {
-      console.log(el);
+      // console.log(el);
 
       this.disabledAddressBook = (el === 1);
       this.showContacts = (el === 1) ? false : this.showContacts;
@@ -88,6 +97,8 @@ export class AliasAddressToNamespaceComponent implements OnInit {
 
     const address = this.walletService.currentAccount.address;
     this.LinkToNamespaceForm.get('address').patchValue(address);
+    this.address =  Address.createFromRawAddress(address);
+    this.builder();
   }
 
   ngOnDestroy(): void {
@@ -233,6 +244,45 @@ export class AliasAddressToNamespaceComponent implements OnInit {
     });
   }
 
+  captureaddress($event) {
+    this.LinkToNamespaceForm.get('address').valueChanges.subscribe(
+      value => {
+        this.address = Address.createFromRawAddress(value);
+        this.builder();
+      });
+  }
+  captureAction() {
+    const action = this.LinkToNamespaceForm.get('typeAction').value;
+    this.action = action;
+    this.builder();
+  }
+
+  captureNamespace() {
+    const namespaceId = new NamespaceId(this.LinkToNamespaceForm.get('namespace').value);
+    this.namespaceId = namespaceId;
+    this.builder();
+    this.getAmountAccount();
+  }
+
+  builder() {
+    const params: AddressAliasTransactionInterface = {
+      aliasActionType: this.action,
+      namespaceId: this.namespaceId,
+      address: this.address
+    };
+
+    this.addressAliasTransaction = this.namespaceService.addressAliasTransaction(params);
+    this.fee = this.transactionService.amountFormatterSimple(this.addressAliasTransaction.maxFee.compact());
+
+
+  }
+
+  getAmountAccount () {
+    const account = this.walletService.filterAccountInfo(this.proximaxProvider.createFromRawAddress(this.walletService.currentAccount.address).pretty(), true);
+    let mosaics = account.accountInfo.mosaics;
+    let amoutMosaic = mosaics.filter(mosaic => mosaic.id.toHex() == environment.mosaicXpxInfo.id);
+    this.amountAccount = amoutMosaic[0].amount.compact();
+  }
   /**
    *
    *
@@ -391,41 +441,49 @@ export class AliasAddressToNamespaceComponent implements OnInit {
    */
   async sendTransaction() {
     if (this.LinkToNamespaceForm.valid && !this.blockSend) {
-      this.blockSend = true;
-      const common = {
-        password: this.LinkToNamespaceForm.get('password').value,
-        privateKey: ''
-      }
+      const validateAmount = this.transactionService.validateBuildSelectAccountBalance(this.amountAccount, Number(this.fee), 0)
+      if (validateAmount) {
+        this.blockSend = true;
+        const common = {
+          password: this.LinkToNamespaceForm.get('password').value,
+          privateKey: ''
+        }
 
-      if (this.walletService.decrypt(common)) {
-        const action = this.LinkToNamespaceForm.get('typeAction').value;
-        console.log(this.LinkToNamespaceForm.get('namespace').value);
+        if (this.walletService.decrypt(common)) {
+          // const action = this.LinkToNamespaceForm.get('typeAction').value;
+          // console.log(this.LinkToNamespaceForm.get('namespace').value);
 
-        const namespaceId = new NamespaceId(this.LinkToNamespaceForm.get('namespace').value);
-        const address = Address.createFromRawAddress(this.LinkToNamespaceForm.get('address').value);
-        console.log('address', address);
+          // const namespaceId = new NamespaceId(this.LinkToNamespaceForm.get('namespace').value);
+          // const address = Address.createFromRawAddress(this.LinkToNamespaceForm.get('address').value);
+          // console.log('address', address);
 
-        const params: AddressAliasTransactionInterface = {
-          aliasActionType: action,
-          namespaceId: namespaceId,
-          address: address,
-          common: common
-        };
+          // const params: AddressAliasTransactionInterface = {
+          //   aliasActionType: action,
+          //   namespaceId: namespaceId,
+          //   address: address,
+          //   common: common
+          // };
 
-        this.transactionSigned = this.namespaceService.addressAliasTransaction(params);
-        this.proximaxProvider.announce(this.transactionSigned).subscribe(
-          next => {
-            this.blockSend = false;
-            this.clearForm();
-            if (this.subscription['transactionStatus'] === undefined || this.subscription['transactionStatus'] === null) {
-              this.getTransactionStatus();
+          //this.transactionSigned = this.namespaceService.addressAliasTransaction(params);
+          const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
+          const generationHash = this.dataBridge.blockInfo.generationHash;
+          this.transactionSigned = account.sign(this.addressAliasTransaction, generationHash); //Update-sdk-dragon
+          this.proximaxProvider.announce(this.transactionSigned).subscribe(
+            next => {
+              this.blockSend = false;
+              this.clearForm();
+              if (this.subscription['transactionStatus'] === undefined || this.subscription['transactionStatus'] === null) {
+                this.getTransactionStatus();
+              }
             }
-          }
-        );
+          );
 
+        } else {
+          this.LinkToNamespaceForm.get('password').patchValue('');
+          this.blockSend = false;
+        }
       } else {
-        this.LinkToNamespaceForm.get('password').patchValue('');
-        this.blockSend = false;
+        this.sharedService.showError('', 'insufficient balance');
       }
     }
   }
@@ -439,6 +497,7 @@ export class AliasAddressToNamespaceComponent implements OnInit {
   selectContact(event: { label: string, value: string }) {
     if (event !== undefined && event.value !== '') {
       this.LinkToNamespaceForm.get('address').patchValue(event.value);
+      this.address =  Address.createFromRawAddress(event.value); 
     }
   }
 }
