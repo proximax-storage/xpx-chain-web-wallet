@@ -79,7 +79,7 @@
                                                 :
                                                 {{accountInfo.multisigInfo.minApproval}}</span>
                                             <mdb-error *ngIf="validateInput('minApprovalDelta', '').invalid && (validateInput('minApprovalDelta', '').dirty || validateInput('minApprovalDelta', '').touched)">
-                                                <span>Input invalid</span>
+                                                <span>Invalid Value</span>
                                             </mdb-error>
                                         </div>
                                     </div>
@@ -104,7 +104,7 @@
 
                                             <!-- VALIDATION -->
                                             <mdb-error *ngIf="validateInput('minRemovalDelta', '').invalid && (validateInput('minRemovalDelta', '').dirty || validateInput('minRemovalDelta', '').touched)">
-                                                <span>Input invalid</span>
+                                                <span>Invalid value</span>
                                             </mdb-error>
                                         </div>
                                     </div>
@@ -196,7 +196,7 @@
                                         onkeyup="javascript:this.value=this.value.toLowerCase();">
                                     <!-- VALIDATION -->
                                     <mdb-error *ngIf="validateInput('cosignatory', '').invalid && (validateInput('cosignatory', '').dirty || validateInput('cosignatory', '').touched)">
-                                        <span>Input invalid</span>
+                                        <span>Public key required</span>
                                     </mdb-error>
                                 </div>
                             </div>
@@ -283,7 +283,7 @@
                                         type="password" id="password" class="form-control form-control-sm input-border"
                                         placeholder="Enter wallet password">
                                     <mdb-error *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
-                                        <span>Input invalid</span>
+                                        <span>Password required</span>
                                     </mdb-error>
                                 </div>
                             </div>
