@@ -32,8 +32,10 @@ export class Nis1AccountsListComponent implements OnInit {
     this.walletService.setAccountInfoNis1(null);
     this.accountsNis1 = this.walletService.currentWallet.accounts;
     for (let index = 0; index < this.accountsNis1.length; index++) {
-      this.accountsNis1[index].nis1Account.address = this.nemProvider.createAddressToString(this.accountsNis1[index].nis1Account.address.value);
-      this.searchItem.push(false);
+      if (this.accountsNis1[index].nis1Account !== null) {
+        this.accountsNis1[index].nis1Account.address = this.nemProvider.createAddressToString(this.accountsNis1[index].nis1Account.address.value);
+        this.searchItem.push(false);
+      }
     }
   }
 
@@ -46,7 +48,7 @@ export class Nis1AccountsListComponent implements OnInit {
     console.log('index ------>', index);
     this.searchItem[index] = true;
     const address = this.nemProvider.createAddressToString(account.nis1Account.address.value);
-    this.nemProvider.getAccountInfo(address).pipe(first()).pipe((timeout(3000))).subscribe(
+    this.nemProvider.getAccountInfo(address).pipe(first()).pipe((timeout(5000))).subscribe(
       next => {
         this.searchItem[index] = false;
         console.log('Account next ------>', next);
@@ -68,7 +70,6 @@ export class Nis1AccountsListComponent implements OnInit {
           route: `/${AppConfig.routes.nis1AccountList}`
         }
         
-        console.log('accountNis1------->>>>', accountNis1);
         // this.walletService.setNis1AccounsWallet(accountNis1);
         if (accountNis1.consignerOf) {
           this.walletService.setAccountInfoNis1(accountNis1);
@@ -96,12 +97,5 @@ export class Nis1AccountsListComponent implements OnInit {
         this.router.navigate([`/${AppConfig.routes.accountNis1TransferXpx}`]);
       }
     );
-    // this.walletService.setNis1AccountSelected(account);
-    // this.nemProvider.getAccountsInfoAccountNew(account.nis1Account, account.name);
-    // if (account.consignerOf) {
-    //   this.router.navigate([`/${AppConfig.routes.nis1AccountsConsigner}`]);
-    // } else {
-    //   this.router.navigate([`/${AppConfig.routes.accountNis1TransferXpx}`]);
-    // }
   }
 }

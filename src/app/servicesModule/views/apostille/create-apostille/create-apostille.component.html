@@ -120,7 +120,7 @@
 
                     <div class="col-12 col-sm-6 fw-600 d-flex justify-content-center justify-content-sm-start">
                       <div class="form-check form-check-inline">
-                        <input formControlName="typeFile" [value]="false" type="radio" class="form-check-input"
+                        <input formControlName="typeFile" disabled [value]="false" type="radio" class="form-check-input"
                           id="DFMS" name="typeFile" mdbInput>
                         <label class="form-check-label" for="DFMS">Sirius Storage</label>
                       </div>
@@ -216,7 +216,7 @@
                   <div class="row">
                     <div class="col-12 fw-600 mx-auto">
                       <div class="form-check form-check-inline">
-                        <mdb-checkbox formControlName="safeDFMS" [checked]="true" [default]="true"
+                        <mdb-checkbox formControlName="safeDFMS" [checked]="true" [disabled]="true" [default]="true"
                           (change)="onSaveInDFMSChanged($event)">SAVE
                           in Sirius Storage
                         </mdb-checkbox>

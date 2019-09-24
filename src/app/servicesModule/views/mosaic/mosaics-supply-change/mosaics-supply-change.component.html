@@ -34,6 +34,7 @@
         <div class="row mt-05rem">
           <div class="col-11 mx-auto">
             <div class="md-form form-sm mt-1rem mb-0rem">
+              <img class="form-control-feedback" src="assets/images/img/icon-amount-green-16h-proximax-sirius-wallet.svg" alt="">
               <input formControlName="deltaSupply" currencyMask [options]="optionsSupply" mdbInputDirective mdbValidate
                 [validateSuccess]="true" [validateError]="true" type="text" id="supply{{errorSupply}}"
                 [maxlength]="maxLengthSupply" class="form-control form-control-sm input-border input-amount"
@@ -41,7 +42,7 @@
 
               <mdb-error
                 *ngIf="validateInput('deltaSupply', '').invalid && (validateInput('deltaSupply', '').dirty || validateInput('deltaSupply', '').touched) || invalidSupply">
-                <span>Input invalid</span>
+                <span>Invalid supply</span>
               </mdb-error>
             </div>
           </div>
@@ -85,11 +86,11 @@
               <input [maxlength]="configurationForm.passwordWallet.maxLength"
                 [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" required
                 mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password"
-                id="password" class="form-control form-control-sm input-border" placeholder="Enter password">
+                id="password" class="form-control form-control-sm input-border" placeholder="Enter wallet password">
 
               <mdb-error
                 *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
-                <span>Input invalid</span>
+                <span>Password required</span>
               </mdb-error>
             </div>
           </div>

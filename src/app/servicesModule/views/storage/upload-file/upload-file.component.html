@@ -10,6 +10,7 @@
             <input type="file" mdbFileSelect (uploadOutput)="onUploadOutput($event)" [uploadInput]="uploadInput" />
           </div>
           <div class="file-path-wrapper mt-2">
+            <img class="form-control-feedback" src="assets/images/img/icon-storage-green-16h-proximax-sirius-wallet.svg" alt="">
             <input class="form-control form-control-sm input-border" [validateSuccess]="false" id="filePath" type="text"
               placeholder="Upload your file" [value]="showFiles()" mdbInputDirective>
           </div>
@@ -49,6 +50,7 @@
 
       <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto">
         <div class="md-form form-sm mt-1rem mb-0rem">
+          <img class="form-control-feedback" src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg" alt="">
           <input [maxlength]="configurationForm.passwordEncriptionFile.maxLength"
             [minlength]="configurationForm.passwordEncriptionFile.minLength" formControlName="confirm_password" required
             mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password"
@@ -86,6 +88,7 @@
     <div class="row pt-1rem">
       <div class=" col-11 col-sm-10 col-lg-8 mx-auto">
         <div class="md-form form-sm mt-1rem mb-0rem">
+          <img class="form-control-feedback" src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg" alt="">
           <input [maxlength]="configurationForm.passwordWallet.maxLength"
             [minlength]="configurationForm.passwordWallet.minLength" formControlName="walletPassword" required
             mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password"
@@ -94,7 +97,7 @@
           <!-- VALIDATION -->
           <mdb-error
             *ngIf="validateInput('walletPassword', '').invalid && (validateInput('walletPassword', '').dirty || validateInput('walletPassword', '').touched)">
-            <span>Invalid wallet password</span>
+            <span>Required field</span>
           </mdb-error>
         </div>
       </div>

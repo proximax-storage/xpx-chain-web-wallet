@@ -262,12 +262,19 @@ body {
   padding: 1rem !important;
 }
 
+.p-01rem {
+  padding: .1rem;
+}
+
 .p-02rem {
   padding: .2rem !important;
 }
 
 .p-05rem {
   padding: .5rem !important;
+}
+.p-1-5rem {
+  padding: 1.5rem;
 }
 
 /** TOP **/
@@ -1419,6 +1426,7 @@ button.md-toast-close-button {
   cursor: pointer;
 }
 
+.disabled,
 .cursor-n-a {
   cursor: not-allowed !important;
   pointer-events: none !important;
@@ -1580,7 +1588,7 @@ body.modal-open {
 .scroll-accounts {
   overflow-y: auto;
   margin-bottom: 12px;
-  max-height: 130px;
+  max-height: 220px;
 }
 
 .table-wrapper-scroll-x {

@@ -1,0 +1,129 @@
+<div class="container mt-3rem mb-2rem animated fadeIn">
+  <app-header [params]="paramsHeader"></app-header>
+  <div class="col-11 col-lg-10 mx-auto">
+
+    <!-- name -->
+    <div class="row">
+      <div class="col-12 mx-auto d-flex align-items-center box-grey">
+        <div class="col-12">
+          <span> Name: </span>
+          <br>
+          <span class="font-small d-flex">{{accountName}}</span>
+        </div>
+
+      </div>
+    </div>
+    <!-- address -->
+    <div class="row">
+      <div class="col-12 mx-auto d-flex align-items-center box-grey">
+        <div class="col-10">
+          <span> Address: </span>
+          <br>
+          <span class="font-small d-flex">{{address}}</span>
+        </div>
+        <div class="col-2 text-right">
+          <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="cursor-p" alt="Copy"
+            width="20" (click)="copyMessage('Address')" ngxClipboard [cbContent]="address">
+        </div>
+      </div>
+    </div>
+
+    <!-- public key -->
+    <ng-container *ngIf="accountValid">
+      <div class="row">
+        <div class="col-12 mx-auto d-flex align-items-center box-grey">
+          <div class="col-10">
+            <span> Public key: </span>
+            <br>
+            <span class="font-small d-flex ">{{ publicKey }}</span>
+          </div>
+          <div class="col-2 text-right">
+            <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="cursor-p" alt="Copy"
+              width="20" (click)="copyMessage('Public key')" ngxClipboard [cbContent]="publicKey">
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="currenAccount.encrypted !== ''">
+      <!-- Information -->
+      <div class="row">
+        <div class="col-11 col-sm-12 col-md-11 mx-auto box-transparent-border-orange">
+          <div>
+            <span class="fw-600">{{ descriptionPrivateKey }}</span>
+            <br>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- private key -->
+      <ng-container *ngIf="!showPassword">
+        <div class="row animated fadeIn">
+          <div class="col-12 mx-auto d-flex align-items-center box-grey">
+            <div class="col-10">
+              <span> Private key: </span>
+              <br>
+              <span class="font-small d-flex">{{ privateKey }}</span>
+            </div>
+            <div class="col-2 text-right">
+              <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="cursor-p"
+                alt="Copy" width="20" (click)="copyMessage('Private key')" ngxClipboard [cbContent]="privateKey">
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+
+      <!-- password -->
+      <ng-container *ngIf="showPassword">
+        <form [formGroup]="validatingForm">
+          <div class="row">
+            <div class="col-11 col-sm-10 col-md-10 mx-auto">
+              <div class="md-form form-sm mt-1rem mb-0rem">
+                <img class="form-control-feedback"
+                  src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg" alt="">
+                <input [maxlength]="configurationForm.passwordWallet.maxLength"
+                  [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" mdbInputDirective
+                  mdbValidate [validateSuccess]="true" [validateError]="true" type="password" id="password"
+                  class="form-control form-control-sm input-border" placeholder="Enter wallet password">
+
+                <!-- VALIDATION -->
+                <mdb-error
+                  *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
+                  <span>Required to enable options</span>
+                </mdb-error>
+              </div>
+            </div>
+          </div>
+        </form>
+      </ng-container>
+
+
+      <!-- buttons create and clear -->
+      <div class="row mt-2rem d-flex justify-content-center">
+        <!-- DELETE -->
+        <button mdbBtn type="button" rounded="true" [disabled]="!validatingForm.valid" mdbWavesEffect
+          class="f-w-600 background-btn pl-2rem pr-2rem" size="sm" (click)="deleteAccount()">
+          <span class="fs-1-2em color-white"><i class="fa fa-trash"></i> DELETE</span>
+        </button>
+        <!-- SHOW PRIVATE KEY -->
+        <button mdbBtn type="button" rounded="true" [disabled]="!validatingForm.valid" mdbWavesEffect
+          class="f-w-600 background-btn pl-2rem pr-2rem" (click)="decryptWallet()" size="sm" *ngIf="showPassword">
+          <span class="fs-1-2em color-white">
+            <i class="fa fa-eye"></i> SHOW PRIVATE KEY</span>
+        </button>
+        <!-- HIDE PRIVATE KEY -->
+        <button mdbBtn type="button" size="sm" rounded="true" mdbWavesEffect
+          class="f-w-600 background-btn pl-2rem pr-2rem" (click)="hidePrivateKey()" *ngIf="!showPassword">
+          <span class="fs-1-2em color-white">
+            <i class="fa fa-eye-slash"></i> HIDE PRIVATE KEY</span>
+        </button>
+        <!-- CONTINUE -->
+        <button mdbBtn type="button" size="sm" rounded="true" mdbWavesEffect
+          class="f-w-600 background-btn pl-2rem pr-2rem" (click)="goToRoute()">
+          <span class="fs-1-2em color-white"><i class="fa fa-arrow-circle-left"></i> CONTINUE</span>
+        </button>
+      </div>
+    </ng-container>
+  </div>

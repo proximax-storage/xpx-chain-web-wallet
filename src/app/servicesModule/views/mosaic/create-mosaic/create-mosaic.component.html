@@ -1,53 +1,66 @@
-<div class="container mt-3rem mb-2rem animated fadeIn">
+<div class="container-fluid mt-3rem mb-2rem animated fadeIn">
   <app-header [params]="paramsHeader"></app-header>
 
   <div class="row">
-    <div class="col-12 col-sm-12 col-md-8 justify-content-center">
-      <form [formGroup]="mosaicForm" (ngSubmit)="send()">
+    <div class="col-11 col-lg-9 mx-auto">
+      <div class="row">
+        <div class="col-12 col-md-8 justify-content-center">
+          <form [formGroup]="mosaicForm" (ngSubmit)="send()">
+            <div class="row mt-1rem">
+              <ng-container *ngIf="insufficientBalance">
+                <div class="col-12 d-flex justify-content-end">
+                  <span class="fs-08rem fw-600 color-error-message">Insufficient balance</span>
+                </div>
+              </ng-container>
 
-        <div class="row mt-1rem">
 
-          <ng-container *ngIf="insufficientBalance">
-            <div class="col-11 mx-auto d-flex justify-content-end">
-              <span class="fs-08rem fw-600 color-error-message">Insufficient balance</span>
+              <div class="col-12">
+                <div class="row d-flex align-items-center">
+                  <div class="col-6 col-md-7 col-lg-8 mx-auto pt-07rem">
+                    <div class="md-form form-sm mt-0 mb-0rem">
+                      <img class="form-control-feedback"
+                        src="assets/images/img/icon-duration-green-16h-proximax-sirius-wallet.svg" alt="">
+                      <input formControlName="duration" mdbInputDirective mdbValidate [validateSuccess]="true"
+                        [validateError]="true" type="number" id="duration" min="1" max="365"
+                        class="form-control form-control-sm input-border" placeholder="Duration (number of days)" (keyup)="limitDuration($event)">
+
+                      <!-- VALIDATION -->
+                      <mdb-error
+                        *ngIf="validateInput('duration', '').invalid && (validateInput('duration', '').dirty || validateInput('duration', '').touched)">
+                        <span>Required field - Only numbers</span>
+                      </mdb-error>
+                    </div>
+                  </div>
+
+                  <div class="col-6 col-md-5 col-lg-4 mx-auto notExpireBox">
+                    <mdb-checkbox formControlName="notExpire" [inline]="true" class="fs-08rem"
+                      (change)="changeNotExpire($event)">Not expire</mdb-checkbox>
+                  </div>
+                </div>
+              </div>
             </div>
-          </ng-container>
 
-
-          <div class="col-11 mx-auto">
-            <div class="md-form form-sm mt-0 mb-0rem">
-              <input formControlName="duration" mdbInputDirective mdbValidate [validateSuccess]="true"
-                [validateError]="true" type="text" id="duration" class="form-control form-control-sm input-border"
-                placeholder="Duration (number of days)">
-
-              <!-- VALIDATION -->
-              <mdb-error
-                *ngIf="validateInput('duration', '').invalid && (validateInput('duration', '').dirty || validateInput('duration', '').touched)">
-                <span>Input invalid</span>
-              </mdb-error>
-            </div>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-11 mx-auto">
             <div class="row">
               <div class="col-12 mx-auto">
                 <div class="md-form form-sm mt-1rem mb-0rem">
+                  <img class="form-control-feedback"
+                    src="assets/images/img/icon-namespaces-green-16h-proximax-sirius-wallet.svg" alt="">
                   <input formControlName="divisibility" mdbInputDirective mdbValidate [validateSuccess]="true"
-                    [validateError]="true" type="text" id="divisibility" maxlength="1"
+                    [validateError]="true" type="text" id="divisibility" minlength="0" maxlength="1"
                     id="divisibility{{errorDivisibility}}" class="form-control form-control-sm input-border"
-                    placeholder="Divisibility">
+                    placeholder="Divisibility" (keyup)="limitLength($event)">
 
                   <!-- VALIDATION -->
                   <mdb-error
                     *ngIf="validateInput('divisibility', '').invalid && (validateInput('divisibility', '').dirty || validateInput('divisibility', '').touched) || invalidDivisibility">
-                    <span>Input invalid</span>
+                    <span>Required field - Only numbers (0 - 6)</span>
                   </mdb-error>
                 </div>
               </div>
               <div class="col-12 mx-auto">
                 <div class="md-form form-sm mt-1rem mb-0rem">
+                  <img class="form-control-feedback"
+                    src="assets/images/img/icon-amount-green-16h-proximax-sirius-wallet.svg" alt="">
                   <input formControlName="deltaSupply" mdbInputDirective mdbValidate currencyMask
                     [options]="optionsSuply" [validateSuccess]="true" [validateError]="true" type="text"
                     id="supply{{errorSupply}}" [maxlength]="maxLengthSupply"
@@ -56,112 +69,119 @@
                   <!-- VALIDATION -->
                   <mdb-error
                     *ngIf="validateInput('deltaSupply', '').invalid && (validateInput('deltaSupply', '').dirty || validateInput('deltaSupply', '').touched) || invalidSupply">
-                    <span>Input invalid</span>
+                    <span>Required field</span>
                   </mdb-error>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
 
-        <!-- FEE -->
-        <div class="row ml-01rem">
-          <div class="col-11 mx-auto">
-            <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
-              <div class="row">
-                <div class="col-12">
-                  <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" alt="">
-                  <span>Fee: 0.000000 XPX</span>
+
+            <!-- FEE -->
+            <div class="row ml-01rem">
+              <div class="col-12 mx-auto">
+                <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
+                  <div class="row">
+                    <div class="col-12">
+                      <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
+                        alt="">
+                      <span>Fee: {{ fee }} XPX</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
 
-        <!-- RENTAL FEE -->
-        <div class="row ml-01rem">
-          <div class="col-11 mx-auto">
-            <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
-              <div class="row">
-                <div class="col-12">
-                  <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" alt="">
-                  <span> Rental Fee: {{calculateRentalFee}} XPX</span>
+            <!-- RENTAL FEE -->
+            <div class="row ml-01rem">
+              <div class="col-12 mx-auto">
+                <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
+                  <div class="row">
+                    <div class="col-12">
+                      <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
+                        alt="">
+                      <span> Rental Fee: {{calculateRentalFee}} XPX</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
 
-        <div class="row ml-01rem ">
-          <div class="col-11 mx-auto box-grey d-flex justify-content-center">
-            <!-- Transferable -->
-            <mdb-checkbox formControlName="transferable" [inline]="true">Transferable</mdb-checkbox>
+            <div class="row ml-01rem ">
+              <div class="col-12 mx-auto box-grey d-flex justify-content-center">
+                <!-- Transferable -->
+                <mdb-checkbox formControlName="transferable" [inline]="true" class="fs-08rem">Transferable
+                </mdb-checkbox>
 
-            <!-- Supply Mutable -->
-            <mdb-checkbox formControlName="supplyMutable" [inline]="true">Supply Mutable</mdb-checkbox>
-
-            <!-- Levy Mutable -->
-            <mdb-checkbox formControlName="levyMutable" [inline]="true">Levy Mutable</mdb-checkbox>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-11 mx-auto">
-            <div class="md-form form-sm mt-1rem mb-0rem">
-              <img class="form-control-feedback"
-                src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg" alt="">
-              <input [maxlength]="configurationForm.passwordWallet.maxLength"
-                [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" required
-                mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password"
-                id="password" class="form-control form-control-sm input-border" placeholder="Enter password">
-
-              <!-- VALIDATION -->
-              <mdb-error
-                *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
-                <span>Input invalid</span>
-              </mdb-error>
+                <!-- Supply Mutable -->
+                <mdb-checkbox formControlName="supplyMutable" [inline]="true" class="fs-08rem">Supply Mutable
+                </mdb-checkbox>
+              </div>
             </div>
-          </div>
+
+            <div class="row">
+              <div class="col-12 mx-auto">
+                <div class="md-form form-sm mt-1rem mb-0rem">
+                  <img class="form-control-feedback"
+                    src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg" alt="">
+                  <input [maxlength]="configurationForm.passwordWallet.maxLength"
+                    [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" required
+                    mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password"
+                    id="password" class="form-control form-control-sm input-border" placeholder="Enter wallet password">
+
+                  <!-- VALIDATION -->
+                  <mdb-error
+                    *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
+                    <span>Password required</span>
+                  </mdb-error>
+                </div>
+              </div>
+            </div>
+
+            <!-- BUTTONS -->
+            <div class="row">
+              <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
+                <button [disabled]="insufficientBalance" mdbBtn type="button" rounded="true" mdbWavesEffect
+                  class="f-w-600 background-btn pl-2rem pr-2rem" size="md" (click)="clearForm()">
+                  <span class="fs-1-2em color-white">CLEAR</span>
+                </button>
+              </div>
+
+              <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
+                <button mdbBtn type="submit" rounded="true" [disabled]="!mosaicForm.valid || blockButton" mdbWavesEffect
+                  class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
+                  <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
+                    *ngIf="blockSend"></span>
+                  <span class="fs-1-2em color-white">CREATE</span>
+                </button>
+              </div>
+            </div>
+          </form>
         </div>
 
-        <!-- BUTTONS -->
-        <div class="row">
-          <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-            <button [disabled]="insufficientBalance" mdbBtn type="button" rounded="true" mdbWavesEffect
-              class="f-w-600 background-btn pl-2rem pr-2rem" size="md" (click)="clearForm()">
-              <span class="fs-1-2em color-white">CLEAR</span>
-            </button>
+        <div class="col-11 col-md-4 description-p-module mt-1-5rem mb-2rem">
+          <div>
+            <span class="fs-08rem">Maximun divisibility is 6. <br></span>
+            <span class="fw-600 fs-08rem">Example: 0.000000</span>
           </div>
 
-          <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-            <button mdbBtn type="submit" rounded="true" [disabled]="!mosaicForm.valid || blockButton" mdbWavesEffect
-              class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
-              <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
-                *ngIf="blockSend"></span>
-              <span class="fs-1-2em color-white">CREATE</span>
-            </button>
+          <div class="mt-08rem">
+            <span class="fs-08rem"> Maximun supply is 9B. <br></span>
+            <span class="fw-600 fs-08rem">Example: 9,000,000,000</span>
+          </div>
+
+          <div class="mt-08rem">
+            <span class="fs-08rem"> If your tick "Transferable", Mosaic can be transferred.</span>
+          </div>
+
+          <div class="mt-08rem">
+            <span class="fs-08rem"> If your tick "Supply Mutable", Supply can be changed.</span>
+          </div>
+
+          <div class="mt-08rem">
+            <span class="fs-08rem">If your tick "Levy Mutable", Levy can be added and changed.</span>
           </div>
         </div>
-      </form>
-    </div>
-    <div class="col-11 col-sm-11 col-md-4 description-p-module mt-1-5rem mb-2rem">
-      <span>
-        <p>
-          Maximun divisibility is 6 i.e: 0.000000.
-        </p>
-        <p>
-          Maximun supply is 9B i.e: 9,000,000,000.
-        </p>
-        <p>
-          If your tick "Transferable", Mosaic can be transferred.
-        </p>
-        <p>
-          If your tick "Supply Mutable", Supply can be changed.
-        </p>
-        <p>
-          If your tick "Levy Mutable", Levy can be added and changed.
-        </p>
-      </span>
+      </div>
     </div>
   </div>
 </div>

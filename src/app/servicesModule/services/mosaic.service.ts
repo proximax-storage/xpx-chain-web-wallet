@@ -3,16 +3,12 @@ import {
   MosaicInfo,
   MosaicId,
   MosaicView,
-  NamespaceId,
-  NamespaceName,
-  UInt64
+  NamespaceId
 } from "tsjs-xpx-chain-sdk";
 import { MosaicNames } from "tsjs-xpx-chain-sdk/dist/src/model/mosaic/MosaicNames";
 import { ProximaxProvider } from "../../shared/services/proximax.provider";
-import { NamespacesService } from "./namespaces.service";
 import { WalletService } from '../../wallet/services/wallet.service';
 import { environment } from 'src/environments/environment';
-import { mosaicId } from 'js-xpx-chain-library';
 import { Observable, BehaviorSubject } from 'rxjs';
 
 export interface NamespaceLinkedMosaic {
@@ -109,36 +105,6 @@ export class MosaicService {
   async searchInfoMosaics(mosaicsId: MosaicId[]): Promise<MosaicsStorage[]> {
     try {
       let mosaicsTosaved: MosaicsStorage[] = [];
-
-      /* // Filtra por mosaic id
-       let mosaicXPX = mosaicsId.find(next => next.id.toHex() === environment.mosaicXpxInfo.id);
-       if (!mosaicXPX) {
-         // Filtra por namespace id
-         mosaicXPX = mosaicsId.find(next => next.id.toHex() === environment.mosaicXpxInfo.namespaceId);
-       }
-
-       if (mosaicXPX) {
-          mosaicsId = mosaicsId.filter(a => a.id.toHex() !== mosaicXPX.id.toHex());
-          mosaicsTosaved.push({
-            idMosaic: [697101613, 1007631845],
-            isNamespace: [2434186742, 3220914849],
-            mosaicNames: new MosaicNames(
-              this.proximaxProvider.getMosaicId([697101613, 1007631845]),
-              [new NamespaceName(
-                this.proximaxProvider.getNamespaceId([2434186742, 3220914849]),
-                'prx.xpx'
-              )]
-            ), mosaicInfo: new MosaicInfo(
-              metaId: "5D53D7848F336612752B5A79",
-              mosaicId: this.proximaxProvider.getMosaicId([697101613, 1007631845]),
-              supply: new UInt64([697101613, 1007631845]),
-              height: new UInt64([1,0]),
-              owner: this.proximaxProvider.createPublicAccount("FC0DB0BEA2C251459117EAF15067AA04AAA62D3F0A59BAE934FFBFCD35AEC87B", ),
-
-            )
-          });
-        }*/
-
       if (mosaicsId.length > 0) {
         let findMosaicsByNamespace: (MosaicId | NamespaceId)[] = [];
         // le paso todos los mosaicsIds a la consulta
@@ -245,7 +211,7 @@ export class MosaicService {
 
         if (toSearch.length > 0) {
           const mosaicsSearched = await this.searchInfoMosaics(toSearch);
-          if (mosaicsSearched.length > 0) {
+          if(mosaicsSearched && mosaicsSearched.length > 0) {
             mosaicsSearched.forEach(element => {
               dataReturn.push(element);
             });
@@ -258,7 +224,7 @@ export class MosaicService {
         return infoMosaics;
       }
     } else {
-      const accountInfo = await this.walletService.filterAccountInfo(this.walletService.currentAccount.name);
+      const accountInfo = this.walletService.filterAccountInfo(this.walletService.currentAccount.name);
       if (accountInfo && accountInfo.accountInfo && accountInfo.accountInfo.mosaics && accountInfo.accountInfo.mosaics.length > 0) {
         const mosaicsId = accountInfo.accountInfo.mosaics.map(x => x.id);
         return this.filterMosaics(mosaicsId);

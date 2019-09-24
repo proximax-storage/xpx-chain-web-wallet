@@ -7,9 +7,9 @@ import {
   Address,
   AliasActionType,
   NetworkType,
-  AliasTransaction,
   Deadline,
-  SignedTransaction
+  SignedTransaction,
+  AddressAliasTransaction
 } from "tsjs-xpx-chain-sdk";
 import { ProximaxProvider } from "../../shared/services/proximax.provider";
 import { WalletService } from '../../wallet/services/wallet.service';
@@ -43,9 +43,9 @@ export class NamespacesService {
    * @returns {SignedTransaction}
    * @memberof NamespacesService
    */
-  addressAliasTransaction(param: AddressAliasTransactionInterface): SignedTransaction {
+  addressAliasTransaction(param: AddressAliasTransactionInterface): AddressAliasTransaction {
     const network = (param.network !== undefined) ? param.network : this.walletService.currentAccount.network;
-    const addressAliasTransaction = AliasTransaction.createForAddress(
+    const addressAliasTransaction = AddressAliasTransaction.create(
       Deadline.create(),
       param.aliasActionType,
       param.namespaceId,
@@ -53,11 +53,10 @@ export class NamespacesService {
       network
     );
 
-    console.log('addressAliasTransaction', addressAliasTransaction);
-
-    const account = this.proximaxProvider.getAccountFromPrivateKey(param.common.privateKey, this.walletService.currentAccount.network);
+    /*const account = this.proximaxProvider.getAccountFromPrivateKey(param.common.privateKey, this.walletService.currentAccount.network);
     console.log('account', account);
-    return account.sign(addressAliasTransaction, this.generationHash); //Update-sdk-dragon
+    return account.sign(addressAliasTransaction, this.generationHash); //Update-sdk-dragon*/
+    return addressAliasTransaction;
   }
 
   /**
@@ -371,7 +370,7 @@ export class NamespacesService {
       dataNamespace: subNamespace
     });
 
-    console.log(currentNamespace);
+    // console.log(currentNamespace);
     return {
       currentNamespace: currentNamespace,
       namespaceInfo: namespaceInfo
@@ -405,7 +404,7 @@ export interface AddressAliasTransactionInterface {
   aliasActionType: AliasActionType;
   namespaceId: NamespaceId;
   address: Address;
-  common: any;
+  common?: any;
   network?: NetworkType;
 }
 

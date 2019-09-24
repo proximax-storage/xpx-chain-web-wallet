@@ -35,7 +35,8 @@
                                     <img class="w-30px" src="assets/images/img/icon-account-green-60h-proximax-sirius-wallet.svg">
                                     <span class="fw-600"> {{currentAccountToConvert.name}}</span>
 
-                                    <span *ngIf="disable"> &nbsp;  <i title="On partial" style="color:#0056b3" class="fa fa-bell"> </i> </span>
+                                    <span *ngIf="disable"> &nbsp; <i title="On partial" style="color:#0056b3" class="fa fa-bell">
+                                        </i> </span>
 
                                     <!-- <span class="fw-600"> {{consginerFirmName}}</span> -->
                                 </div>
@@ -78,7 +79,7 @@
                                                 :
                                                 {{accountInfo.multisigInfo.minApproval}}</span>
                                             <mdb-error *ngIf="validateInput('minApprovalDelta', '').invalid && (validateInput('minApprovalDelta', '').dirty || validateInput('minApprovalDelta', '').touched)">
-                                                <span>Input invalid</span>
+                                                <span>Invalid Value</span>
                                             </mdb-error>
                                         </div>
                                     </div>
@@ -103,7 +104,7 @@
 
                                             <!-- VALIDATION -->
                                             <mdb-error *ngIf="validateInput('minRemovalDelta', '').invalid && (validateInput('minRemovalDelta', '').dirty || validateInput('minRemovalDelta', '').touched)">
-                                                <span>Input invalid</span>
+                                                <span>Invalid value</span>
                                             </mdb-error>
                                         </div>
                                     </div>
@@ -195,7 +196,7 @@
                                         onkeyup="javascript:this.value=this.value.toLowerCase();">
                                     <!-- VALIDATION -->
                                     <mdb-error *ngIf="validateInput('cosignatory', '').invalid && (validateInput('cosignatory', '').dirty || validateInput('cosignatory', '').touched)">
-                                        <span>Input invalid</span>
+                                        <span>Public key required</span>
                                     </mdb-error>
                                 </div>
                             </div>
@@ -219,7 +220,7 @@
                 <div class="row">
                     <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto">
                         <div class="row mt-1rem">
-                            <div class="col-12 d-flex justify-content-center" style="background-image: url(assets/images/img/horizontal-line-background.jpg);">
+                            <div class="col-12 d-flex justify-content-center">
                                 <button mdbBtn type="button" rounded="true" [disabled]="mdbBtnAddCosignatory"
                                     mdbWavesEffect class="background-btn-inverse pl-2rem pr-2rem" size="md" (click)="addCosignatory()">
                                     <span class="fs-1-2em color-blue-intermedio fw-700">(+) Add Cosignatory</span>
@@ -229,6 +230,17 @@
                     </div>
                 </div>
 
+                <!-- COSIGNATORIES -->
+                <ng-container *ngIf="consginerFirmList.length > 1  && showConsginerFirmList">
+                    <div class="row">
+                        <div class="col-11 col-md-10 col-lg-8 mx-auto">
+                            <ng-select mdbInputDirective mdbValidate [clearable]="false" class="selectWrapper" [items]="consginerFirmList"
+                                bindLabel="label" labelForId="cosignatorieSign" bindValue="value" placeholder="Cosignatorie sign"
+                                formControlName="cosignatorieSign" (change)="selectCosignatorieSign($event)">
+                            </ng-select>
+                        </div>
+                    </div>
+                </ng-container>
 
                 <!-- FEE -->
                 <div class="row ml-01rem">
@@ -238,12 +250,27 @@
                                 <div class="col-12">
                                     <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
                                         alt="">
-                                    <span>Fee: 0.000000 XPX</span>
+                                    <span>Fee: {{amountFormatterSimple(feeTransaction)}} XPX </span>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                <!-- FEE Lock fund   -->
+                <div class="row ml-01rem">
+                    <div class="col-11 col-md-10 col-lg-8 mx-auto">
+                        <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
+                            <div class="row">
+                                <div class="col-12">
+                                    <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
+                                        alt="">
+                                    <span>Lock fund fee: {{amountFormatterSimple(feeLockfund)}} XPX </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- PASSWORD -->
                 <div class="row">
                     <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto">
@@ -256,7 +283,7 @@
                                         type="password" id="password" class="form-control form-control-sm input-border"
                                         placeholder="Enter wallet password">
                                     <mdb-error *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
-                                        <span>Input invalid</span>
+                                        <span>Password required</span>
                                     </mdb-error>
                                 </div>
                             </div>

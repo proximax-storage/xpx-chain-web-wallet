@@ -56,8 +56,8 @@ export class TransactionsService {
   private _confirmedTransactionsSubject = new BehaviorSubject<TransactionsInterface[]>([]);
   private _confirmedTransactions$: Observable<TransactionsInterface[]> = this._confirmedTransactionsSubject.asObservable();
   //Unconfirmed
-  private _incomingTransactionsSubject = new BehaviorSubject<TransactionsInterface[]>([]);
-  private _incomingTransactions$: Observable<TransactionsInterface[]> = this._incomingTransactionsSubject.asObservable();
+  private unconfirmedTransactionsSubject = new BehaviorSubject<TransactionsInterface[]>([]);
+  private unconfirmedTransactions$: Observable<TransactionsInterface[]> = this.unconfirmedTransactionsSubject.asObservable();
   //Aggregate Transactions
   private _aggregateTransactionsSubject: BehaviorSubject<TransactionsInterface[]> = new BehaviorSubject<TransactionsInterface[]>([]);
   private _aggregateTransactions$: Observable<TransactionsInterface[]> = this._aggregateTransactionsSubject.asObservable();
@@ -203,6 +203,7 @@ export class TransactionsService {
   * @param publicsAccounts
   */
   async searchAggregateBonded(publicsAccounts: PublicAccount[]) {
+    // console.log('\n=== SEARCH AGGREGATE BONDED ===', publicsAccounts, '\n');
     const aggregateTransactions = [];
     for (let publicAccount of publicsAccounts) {
       const aggregateTransaction = await this.proximaxProvider.getAggregateBondedTransactions(publicAccount).toPromise();
@@ -215,7 +216,7 @@ export class TransactionsService {
       });
     }
 
-    console.log('TRANSACCIONES AGREGADAS ===>', aggregateTransactions);
+    // console.log('=== RESULT AGGREGATE BONDED TRANSACTIONS ===', aggregateTransactions);
     this.setAggregateBondedTransactions$(aggregateTransactions);
   }
 
@@ -230,7 +231,6 @@ export class TransactionsService {
    * @memberof TransactionsService
    */
   amountFormatter(amountParam: UInt64 | number, mosaic: MosaicInfo, manualDivisibility = '') {
-    console.log('---mosaic---', mosaic);
     let amountFormatter = '';
     if (mosaic !== null && mosaic !== undefined) {
       const divisibility = (manualDivisibility === '') ? mosaic['properties'].divisibility : manualDivisibility;
@@ -315,7 +315,7 @@ export class TransactionsService {
    * @param transaction
    */
   buildAggregateTransaction(sender: PublicAccount, transaction: Transaction): AggregateTransaction {
-    console.log('sender --->', sender);
+    // console.log('sender --->', sender);
     return AggregateTransaction.createBonded(
       Deadline.create(),
       [transaction.toAggregate(sender)],
@@ -415,6 +415,14 @@ export class TransactionsService {
   }
 
 
+  validateBuildSelectAccountBalance(balanceAccount: number, feeTransaction: number, rental: number): boolean {
+    const totalFee = feeTransaction + rental;
+    // console.log('balanceAccount', balanceAccount)
+    // console.log('totalFee', totalFee)
+    return (balanceAccount >= totalFee)
+
+  }
+
   /**
    *
    */
@@ -465,8 +473,8 @@ export class TransactionsService {
    * @returns {Observable<TransactionsInterface[]>}
    * @memberof DashboardService
    */
-  getIncomingTransactions$(): Observable<TransactionsInterface[]> {
-    return this._incomingTransactions$;
+  getUnconfirmedTransactions$(): Observable<TransactionsInterface[]> {
+    return this.unconfirmedTransactions$;
   }
 
 
@@ -575,7 +583,7 @@ export class TransactionsService {
     this.walletService.getAccountsPushedSubject().subscribe(
       next => {
         if (next && next.length > 0) {
-          console.log('=== YOU HAVE NEW ACCOUNT ===', next);
+          // console.log('=== YOU HAVE NEW ACCOUNT ===', next);
           this.searchAccountsInfo(next);
         }
       }
@@ -623,11 +631,10 @@ export class TransactionsService {
    * @param transactions
    */
   setAggregateBondedTransactions$(transactions: TransactionsInterface[]) {
-    console.log('=== SET AGGREGATE TRANSACTION ===', transactions);
+    // console.log('\n=== SET AGGREGATE TRANSACTION ===', transactions);
     if (transactions.length > 0) {
       this.getAggregateBondedTransactions$().pipe(first()).subscribe(
         transactionsSaved => {
-          console.log('=== transactionsSaved ====', transactionsSaved);
           const pushTransactions = [];
           if (transactionsSaved.length > 0) {
             for (let element of transactions) {
@@ -638,16 +645,16 @@ export class TransactionsService {
             }
 
             if (pushTransactions.length > 0) {
-              console.log('GUARDAR ---> ', pushTransactions);
+              // console.log('SAVE ---> ', pushTransactions);
               this._aggregateTransactionsSubject.next(pushTransactions);
             }
           } else {
-            console.log('GUARDAR 2---> ', transactions);
+            // console.log('SAVE THE SAME---> ', transactions);
             this._aggregateTransactionsSubject.next(transactions);
           }
         }
       );
-    }else {
+    } else {
       this._aggregateTransactionsSubject.next([]);
     }
   }
@@ -679,7 +686,7 @@ export class TransactionsService {
    * @memberof DashboardService
    */
   setTransactionsUnConfirmed$(transactions: TransactionsInterface[]) {
-    this._incomingTransactionsSubject.next(transactions);
+    this.unconfirmedTransactionsSubject.next(transactions);
   }
 
   /**

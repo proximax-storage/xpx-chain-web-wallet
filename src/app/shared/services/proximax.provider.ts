@@ -35,7 +35,6 @@ import {
   TransactionStatus,
   TransactionAnnounceResponse,
   MosaicSupplyType,
-  AliasTransaction,
   AliasActionType,
   ChainHttp,
   NamespaceInfo,
@@ -43,13 +42,17 @@ import {
   AggregateTransaction,
   CosignatureTransaction,
   BlockHttp,
-  BlockInfo
+  BlockInfo,
+  MosaicAliasTransaction,
+  Convert,
+  RawAddress
 } from 'tsjs-xpx-chain-sdk';
 import { MosaicDefinitionTransaction } from 'tsjs-xpx-chain-sdk/dist/src/model/transaction/MosaicDefinitionTransaction';
 import { mergeMap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { BlockchainNetworkType } from 'tsjs-chain-xipfs-sdk';
 import { Observable } from 'rxjs/internal/Observable';
+import { NamespaceStorageInterface } from 'src/app/servicesModule/services/namespaces.service';
 
 @Injectable({
   providedIn: 'root'
@@ -212,7 +215,6 @@ export class ProximaxProvider {
    * @memberof ProximaxProvider
    */
   buildMosaicDefinition(params: any): MosaicDefinitionTransaction {
-    console.log(MosaicDefinitionTransaction)
     const mosaicDefinitionTransaction = MosaicDefinitionTransaction.create(
       Deadline.create(5),
       params.nonce,
@@ -221,11 +223,15 @@ export class ProximaxProvider {
         supplyMutable: params.supplyMutable,
         transferable: params.transferable,
         divisibility: params.divisibility,
-        duration: UInt64.fromUint(params.durationByBlock)
+        duration: (params.duration) ? UInt64.fromUint(params.duration) : undefined
       }),
       params.network
     );
     return mosaicDefinitionTransaction;
+  }
+
+  createAddressFromEncode(address: any) {
+    return Address.createFromRawAddress(RawAddress.addressToString(Convert.hexToUint8(address)));
   }
 
 
@@ -355,7 +361,8 @@ export class ProximaxProvider {
    * @memberof ProximaxProvider
    */
   createNonceRandom() {
-    return MosaicNonce.createRandom();
+    const nonce = MosaicNonce.createRandom();
+    return nonce;
   }
 
 
@@ -589,6 +596,17 @@ export class ProximaxProvider {
         err => console.error(err));
   }
 
+  /**
+   *
+   *
+   * @param {string} data
+   * @returns {boolean}
+   * @memberof ProximaxProvider
+   */
+  isHexString(data: string): boolean {
+    return Convert.isHexString(data);
+  }
+
 
   /**
   *
@@ -620,7 +638,7 @@ export class ProximaxProvider {
    * @memberof ProximaxProvider
    */
   linkingNamespaceToMosaic(aliasActionType: AliasActionType, namespaceId: NamespaceId, mosaicId: MosaicId, network: NetworkType) {
-    return AliasTransaction.createForMosaic(
+    return MosaicAliasTransaction.create(
       Deadline.create(),
       aliasActionType,
       namespaceId,
@@ -684,6 +702,21 @@ export class ProximaxProvider {
       rootNamespace,
       network
     );
+  }
+
+  /**
+   *
+   *
+   * @param {string} data
+   * @returns
+   * @memberof ProximaxProvider
+   */
+  isValidKeyPublicPrivate(data: string) {
+    if (data !== null && data.length === 64) {
+      return this.isHexString(data);
+    }else{
+      return false;
+    }
   }
 
   verifyNetworkAddressEqualsNetwork(value: string, value2: string) {

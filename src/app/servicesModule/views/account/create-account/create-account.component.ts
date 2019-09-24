@@ -106,7 +106,9 @@ export class CreateAccountComponent implements OnInit {
   async createAccount() {
     if (this.formCreateAccount.valid && this.isValid) {
       const allAccounts = this.walletService.currentWallet.accounts.slice(0);
-      const nameAccount = this.formCreateAccount.get('nameWallet').value;
+      let walletName = this.formCreateAccount.get('nameWallet').value
+      walletName = (walletName.includes(' ') === true) ? walletName.split(' ').join('_') : walletName;
+      const nameAccount = walletName;
       if (Object.keys(allAccounts).find(elm => allAccounts[elm].name !== nameAccount)) {
         const password = this.proximaxProvider.createPassword(this.formCreateAccount.get('password').value);
         let common = { password: this.formCreateAccount.get('password').value };

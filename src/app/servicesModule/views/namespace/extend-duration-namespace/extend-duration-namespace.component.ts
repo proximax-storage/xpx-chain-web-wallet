@@ -178,8 +178,7 @@ export class ExtendDurationNamespaceComponent implements OnInit {
         this.transactionSigned.push(signedTransaction);
         this.proximaxProvider.announce(signedTransaction).subscribe(
           () => {
-            this.blockBtnSend = false;
-            this.clearForm();
+
             this.startHeight = 0;
             this.endHeight = 0;
             if (this.statusTransaction === false) {
@@ -221,6 +220,8 @@ export class ExtendDurationNamespaceComponent implements OnInit {
 
             const match = statusTransactionHash === element.hash;
             if (match) {
+              this.blockBtnSend = false;
+              this.clearForm();
               this.transactionReady.push(element);
             }
 
@@ -354,7 +355,7 @@ export class ExtendDurationNamespaceComponent implements OnInit {
     const duration: number = parseFloat(this.durationByBlock);
     const extendNamespaceRootTransaction = this.proximaxProvider.registerRootNamespaceTransaction(namespaceRootToExtend, this.walletService.currentAccount.network, duration);
     const generationHash = this.dataBridgeService.blockInfo.generationHash;
-    const signedTransaction = account.sign(extendNamespaceRootTransaction,generationHash);  //Update-sdk-dragon
+    const signedTransaction = account.sign(extendNamespaceRootTransaction, generationHash);  //Update-sdk-dragon
     return signedTransaction;
   }
 

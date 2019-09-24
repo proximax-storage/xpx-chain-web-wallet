@@ -50,7 +50,6 @@ export class WalletCreatedComponent implements OnInit {
       ).toUpperCase();
       this.publicKey = this.proximaxProvider.getPublicAccountFromPrivateKey(this.privateKey, this.walletData.data.network).publicKey;
       this.walletData = null;
-      this.walletService.accountWalletCreated = null;
     }else {
       this.router.navigate([`/${AppConfig.routes.home}`]);
     }
@@ -58,7 +57,6 @@ export class WalletCreatedComponent implements OnInit {
 
   ngOnDestroy(): void {
     this.walletData = null;
-    this.walletService.accountWalletCreated = null;
   }
 
   /**
@@ -93,9 +91,11 @@ export class WalletCreatedComponent implements OnInit {
         console.log('REDIRECCIONAME A ACCOUNT NIS1 FOUND');
         this.router.navigate([`/${AppConfig.routes.walletNis1Found}`]);
       } else {
+        this.walletService.accountWalletCreated = null;
         this.router.navigate([this.routeAuth]);
       }
     } else {
+      this.walletService.accountWalletCreated = null;
       this.router.navigate([this.routeAuth]);
     }
   }

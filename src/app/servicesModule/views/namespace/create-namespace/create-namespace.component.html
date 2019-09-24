@@ -14,6 +14,7 @@
 
           <div class="col-11 mx-auto">
             <div class="md-form form-sm mt-0">
+              <img class="form-control-feedback" src="assets/images/img/icon-namespaces-green-16h-proximax-sirius-wallet.svg" alt="">
               <input [maxlength]="lengthNamespace" [minlength]="configurationForm.namespaceName.minLength"
                 formControlName="name" required mdbInputDirective mdbValidate [validateSuccess]="true"
                 [validateError]="true" type="text" id="name" class="form-control form-control-sm input-border"
@@ -22,7 +23,7 @@
               <!-- VALIDATION -->
               <mdb-error
                 *ngIf="validateInput('name', '').invalid && (validateInput('name', '').dirty || validateInput('name', '').touched)">
-                <span>Input invalid</span>
+                <span>Required field</span>
               </mdb-error>
             </div>
           </div>
@@ -43,6 +44,7 @@
         <div class="row" *ngIf="showDuration">
           <div class="col-11 mx-auto">
             <div class="md-form form-sm">
+              <img class="form-control-feedback" src="assets/images/img/icon-namespaces-green-16h-proximax-sirius-wallet.svg" alt="">
               <input mask="0*" formControlName="duration" required mdbInputDirective mdbValidate
                 [validateSuccess]="true" [validateError]="true" type="text" id="duration"
                 class="form-control form-control-sm input-border" placeholder="Duration (number of days)">
@@ -50,7 +52,7 @@
               <!-- VALIDATION -->
               <mdb-error
                 *ngIf="validateInput('duration', '').invalid && (validateInput('duration', '').dirty || validateInput('duration', '').touched)">
-                <span>Input invalid</span>
+                <span>Required field</span>
               </mdb-error>
 
               <mdb-error *ngIf="validateInput('duration', '').valid && insufficientBalanceDuration">
@@ -99,7 +101,7 @@
               <!-- VALIDATION -->
               <mdb-error
                 *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
-                <span>Input invalid</span>
+                <span>Required field</span>
               </mdb-error>
             </div>
           </div>

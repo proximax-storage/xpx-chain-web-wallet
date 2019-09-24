@@ -2,98 +2,138 @@
   <app-header [params]="paramsHeader"></app-header>
 
   <form [formGroup]="LinkToNamespaceForm" (ngSubmit)="sendTransaction()">
-    <div class="row mt-1-5rem">
-      <div class="col-11 col-sm-10 col-lg-8 mx-auto">
-        <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" class="selectWrapper"
-          [items]="typeAction" formControlName="typeAction" bindLabel="label" bindValue="value"
-          placeholder="Select action" (change)="buildSelectNamespace($event)"></ng-select>
-        <mdb-error class="ml-1rem"
-          *ngIf="validateInput('typeAction').invalid && (validateInput('typeAction').dirty || validateInput('typeAction').touched)">
-          <span class="fs-08rem fw-600 color-error-message">Select action</span>
-        </mdb-error>
-      </div>
-      <!-- <div class="col-1 col-sm-2 col-lg-2">
-        <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
-          *ngIf="loading"></span>
-      </div> -->
-    </div>
+    <div [class.disabled]="namespaceSelect.length === 0">
+      <div class="row mt-1-5rem">
+        <ng-container *ngIf="namespaceSelect.length === 0">
+          <div class="col-11 col-sm-10 col-lg-8 mx-auto d-flex justify-content-end mb-1rem">
+            <span class="fs-08rem fw-600 color-error-message">You do not have namespace</span>
+          </div>
+        </ng-container>
 
-    <div class="row mt-1-5rem">
-      <div class="col-11 col-sm-10 col-lg-8 mx-auto">
-        <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" class="selectWrapper"
-          [items]="namespaceSelect" formControlName="namespace" bindLabel="label" bindValue="value"
-          placeholder="Select namespace"></ng-select>
-        <mdb-error class="ml-1rem"
-          *ngIf="validateInput('namespace').invalid && (validateInput('namespace').dirty || validateInput('namespace').touched)">
-          <span class="fs-08rem fw-600 color-error-message">Select namespace</span>
-        </mdb-error>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-11 col-sm-10 col-lg-8 mx-auto">
-        <div class="md-form form-sm">
-          <input formControlName="address" required mdbInputDirective mdbValidate [validateSuccess]="true"
-            [validateError]="true" type="text" id="address" class="form-control form-control-sm input-border"
-            placeholder="Address" [maxlength]="configurationForm.address.maxLength"
-            [minlength]="configurationForm.address.minLength">
-
-          <!-- VALIDATION -->
-          <mdb-error
-            *ngIf="validateInput('address', '').invalid && (validateInput('address', '').dirty || validateInput('address', '').touched)">
-            <span class="fs-08rem fw-600 color-error-message">Invalid input</span>
+        <div class="col-11 col-sm-10 col-lg-8 mx-auto">
+          <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" class="selectWrapper"
+            [items]="typeAction" formControlName="typeAction" bindLabel="label" bindValue="value"
+            placeholder="Select action" (change)="buildSelectNamespace($event); captureAction()"></ng-select>
+          <mdb-error class="ml-1rem"
+            *ngIf="validateInput('typeAction').invalid && (validateInput('typeAction').dirty || validateInput('typeAction').touched)">
+            <span class="fs-08rem fw-600 color-error-message">Select action</span>
           </mdb-error>
         </div>
       </div>
-    </div>
 
-
-
-    <div class="row">
-      <div class="col-11 col-sm-10 col-lg-8 mx-auto">
-        <div class="box-grey txt-a-center">
-          <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20"
-            alt="">&nbsp;
-          <span>Fee: 0.000000 XPX</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-11 col-sm-10 col-lg-8 mx-auto">
-        <div class="md-form form-sm">
-          <img class="form-control-feedback" src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg"
-            alt="">
-          <input [maxlength]="configurationForm.passwordWallet.maxLength"
-            [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" required
-            mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password" id="password"
-            class="form-control form-control-sm input-border" placeholder="Enter password">
-
-          <!-- VALIDATION -->
-          <mdb-error
-            *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
-            <span class="fs-08rem fw-600 color-error-message">Invalid input</span>
+      <div class="row mt-1-5rem">
+        <div class="col-11 col-sm-10 col-lg-8 mx-auto">
+          <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" class="selectWrapper"
+            [items]="namespaceSelect" formControlName="namespace" bindLabel="label" bindValue="value"
+            placeholder="Select namespace" (change)="captureNamespace()"></ng-select>
+          <mdb-error class="ml-1rem"
+            *ngIf="validateInput('namespace').invalid && (validateInput('namespace').dirty || validateInput('namespace').touched)">
+            <span class="fs-08rem fw-600 color-error-message">Select namespace</span>
           </mdb-error>
         </div>
       </div>
-    </div>
 
-    <!-- BUTTONS -->
-    <div class="row mt-2rem">
-      <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-        <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
-          size="md" (click)="clearForm()">
-          <span class="fs-1-2em color-white">CLEAR</span>
-        </button>
+      <!-- Contacts -->
+      <ng-container *ngIf="showContacts && listContacts.length > 0">
+        <div class="row">
+          <div class="col-11 col-md-10 col-lg-8 mx-auto">
+            <ng-select mdbInputDirective mdbValidate class="selectWrapper"
+              [items]="listContacts" bindLabel="label" bindValue="value" placeholder="Contact"
+              (change)="selectContact($event)">
+            </ng-select>
+          </div>
+        </div>
+      </ng-container>
+
+      <div class="row">
+        <div class="col-11 col-sm-10 col-lg-8 mx-auto">
+          <div class="row">
+            <div class="col-8 col-sm-9 col-md-10">
+              <div class="md-form form-sm mt-1rem mb-0rem">
+                <img class="form-control-feedback"
+                  src="assets/images/img/icon-address-green-book-16h-proximax-sirius-wallet.svg" alt="" width="43"
+                  height="43">
+                <input formControlName="address" required mdbInputDirective mdbValidate [validateSuccess]="true"
+                  [validateError]="true" [readonly]="disabledAddressBook" type="text" id="address" class="form-control form-control-sm input-border"
+                  placeholder="Address" [maxlength]="configurationForm.address.maxLength"
+                  [minlength]="configurationForm.address.minLength" (change)="captureaddress($event)">
+
+                <!-- VALIDATION -->
+                <mdb-error *ngIf="notValid">
+                  <span class="fs-08rem fw-600 color-error-message">Address not valid in blockchain</span>
+                </mdb-error>
+
+                <mdb-error
+                  *ngIf="validateInput('address', '').invalid && (validateInput('address', '').dirty || validateInput('address', '').touched)">
+                  <span class="fs-08rem fw-600 color-error-message">Required field</span>
+                </mdb-error>
+              </div>
+            </div>
+            <!-- Show Contacts -->
+            <ng-container>
+              <div class="col-4 col-sm-3 col-md-2 d-flex justify-content-center align-items-center pt-10px">
+                <div [class.disabled]="listContacts.length === 0"
+                  class="background-gray-icons p-12px bord-rad-25px cursor-p"
+                  (click)="showContacts = (!disabledAddressBook) ? !showContacts : showContacts"
+                  [title]="(!showContacts) ? 'Show contacts': 'Hide contacts'">
+                  <img class="w-30px" [src]="(disabledAddressBook) ?
+                  'assets/images/img/icon-address-book-gray-28h-proximax-sirius-wallet.svg' :
+                  'assets/images/img/icon-address-green-book-16h-proximax-sirius-wallet.svg'
+                  ">
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
       </div>
 
-      <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-        <button mdbBtn type="submit" rounded="true" [disabled]="!LinkToNamespaceForm.valid" mdbWavesEffect
-          class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
-          <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
-            *ngIf="blockSend"></span>
-          <span class="fs-1-2em color-white">CREATE</span>
-        </button>
+      <div class="row">
+        <div class="col-11 col-sm-10 col-lg-8 mx-auto">
+          <div class="box-grey txt-a-center">
+            <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20"
+              alt="">&nbsp;
+            <span>Fee: {{ fee }} XPX</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-11 col-sm-10 col-lg-8 mx-auto">
+          <div class="md-form form-sm">
+            <img class="form-control-feedback"
+              src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg" alt="">
+            <input [maxlength]="configurationForm.passwordWallet.maxLength"
+              [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" required
+              mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password"
+              id="password" class="form-control form-control-sm input-border" placeholder="Enter password">
+
+            <!-- VALIDATION -->
+            <mdb-error
+              *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
+              <span class="fs-08rem fw-600 color-error-message">Required field</span>
+            </mdb-error>
+          </div>
+        </div>
+      </div>
+
+      <!-- BUTTONS -->
+      <div class="row mt-2rem">
+        <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
+          <button [disabled]="namespaceSelect.length === 0" mdbBtn type="button" rounded="true" mdbWavesEffect
+            class="f-w-600 background-btn pl-2rem pr-2rem" size="md" (click)="clearForm()">
+            <span class="fs-1-2em color-white">CLEAR</span>
+          </button>
+        </div>
+
+        <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
+          <button mdbBtn type="submit" rounded="true"
+            [disabled]="!LinkToNamespaceForm.valid || namespaceSelect.length === 0 || notValid" mdbWavesEffect
+            class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
+            <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
+              *ngIf="blockSend"></span>
+            <span class="fs-1-2em color-white">CREATE</span>
+          </button>
+        </div>
       </div>
     </div>
   </form>

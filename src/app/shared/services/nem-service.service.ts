@@ -13,20 +13,20 @@ import {
   Account,
   TransferTransaction,
   TimeWindow,
-  XEM,
   PlainMessage,
   AssetId,
   TransactionHttp,
   AccountInfoWithMetaData,
   MultisigTransaction,
-  PublicAccount
+  PublicAccount,
+  Transaction
 } from "nem-library";
 import { Observable } from 'rxjs';
 import { timeout, first } from 'rxjs/operators';
-import { error } from '@angular/compiler/src/util';
 import { WalletService } from 'src/app/wallet/services/wallet.service';
 import { TransactionsService } from 'src/app/transactions/services/transactions.service';
 import { AppConfig } from 'src/app/config/app.config';
+import * as js_joda_1 from 'js-joda';
 @Injectable({
   providedIn: 'root'
 })
@@ -40,6 +40,11 @@ export class NemServiceService {
   transactionHt: TransactionHttp;
   nodes: ServerConfig[];
 
+  /**
+   * Start the connection to the NEM nodes
+   * @param walletService 
+   * @param transactionService 
+   */
   constructor(
     private walletService: WalletService,
     private transactionService: TransactionsService
@@ -49,9 +54,59 @@ export class NemServiceService {
     this.accountHttp = new AccountHttp(this.nodes);
     this.transactionHttp = new TransactionHttp(this.nodes);
     this.assetHttp = new AssetHttp(this.nodes);
-    // this.accountHt = new AccountHttp();
-    // this.transactionHt = new TransactionHttp();
-    // this.assetHt = new AssetHttp();
+  }
+
+  /**
+   * Formatter Amount
+   * @param {number} amount
+   * @param {AssetId} mosaic
+   * @param manualDivisibility
+   * @returns amountFormatter
+   * @memberof NemServiceService
+   */
+  amountFormatter(amountParam: number, mosaic: AssetTransferable, manualDivisibility = 0) {
+    const divisibility = (manualDivisibility === 0) ? manualDivisibility : mosaic.properties.divisibility;
+    const amountDivisibility = Number(
+      amountParam / Math.pow(10, divisibility)
+    );
+
+    const amountFormatter = amountDivisibility.toLocaleString("en-us", {
+      minimumFractionDigits: divisibility
+    });
+    return amountFormatter;
+  }
+
+  /**
+   * Method to anounce transaction
+   * @param transferTransaction data of transfer transaction
+   * @param cosignerAccount account of consigner
+   * @memberof NemServiceService
+   * @returns Observable
+   */
+  anounceTransaction(transferTransaction: TransferTransaction | MultisigTransaction, cosignerAccount: Account) {
+    const signedTransaction = cosignerAccount.signTransaction(transferTransaction);
+    console.log('\n\n\n\nValue signedTransaction:\n', signedTransaction, '\n\n\n\nEnd value\n\n');
+    return this.transactionHttp.announceTransaction(signedTransaction);
+  }
+
+  /**
+   * Method to create an account from privatekey
+   * @param {string} privateKey account privateKey
+   * @memberof NemServiceService
+   * @returns Account
+   */
+  createAccountPrivateKey(privateKey: string): Account {
+    return Account.createWithPrivateKey(privateKey);
+  }
+
+  /**
+   * Method to format Address
+   * @param {string} address address account
+   * @memberof NemServiceService
+   * @returns Address
+   */
+  createAddressToString(address: string): Address {
+    return new Address(address);
   }
 
   /**
@@ -69,6 +124,72 @@ export class NemServiceService {
       new Password(password),
       privateKey
     );
+  }
+
+  /**
+   * Method to create public account
+   * @param {string} publicKey
+   * @memberof NemServiceService
+   * @returns PublicAccount
+   */
+  createPublicAccount(publicKey: string): PublicAccount {
+    return PublicAccount.createWithPublicKey(publicKey);
+  }
+
+
+  /**
+   * Method to create transaction
+   * @param {PlainMessage} message Transfer transaction message
+   * @param {AssetId} assetId Mosaics transferable
+   * @param {number} quantity quantity of mosaics to transfer
+   * @memberof NemServiceService
+   * @returns TransferTransaction
+   */
+  async createTransaction(message: PlainMessage, assetId: AssetId, quantity: number) {
+    const resultAssets = await this.assetHttp.getAssetTransferableWithRelativeAmount(assetId, quantity).toPromise();
+    console.log('\n\n\n\nValue resultAssets:\n', resultAssets, '\n\n\n\nEnd value\n\n');
+    return TransferTransaction.createWithAssets(
+      this.createWithDeadline(),
+      new Address(environment.nis1.address),
+      [resultAssets],
+      message
+    );
+  }
+
+  /**
+   * Method to anounce transaction
+   * @param transaction data of transfer transaction
+   * @param publicAccounMulti account of consigner
+   * @param cosignerAccount account of consigner
+   * @memberof NemServiceService
+   * @returns Observable
+   */
+  async createTransactionMultisign(transaction: TransferTransaction, publicAccounMulti: PublicAccount) {
+    return MultisigTransaction.create(
+      this.createWithDeadline(),
+      transaction,
+      publicAccounMulti
+    );
+  }
+
+  /**
+   * Method to calculate the deadline
+   * @param deadline
+   * @param chronoUnit
+   * @memberof NemServiceService
+   * @returns TimeWindow
+   */
+  createWithDeadline(deadline = 2, chronoUnit = js_joda_1.ChronoUnit.HOURS): TimeWindow {
+    const currentTimeStamp = (new Date()).getTime() - 600000;
+    const timeStampDateTime = js_joda_1.LocalDateTime.ofInstant(js_joda_1.Instant.ofEpochMilli(currentTimeStamp), js_joda_1.ZoneId.SYSTEM);
+    const deadlineDateTime = timeStampDateTime.plus(deadline, chronoUnit);
+    if (deadline <= 0) {
+      throw new Error("deadline should be greater than 0");
+    }
+    else if (timeStampDateTime.plus(24, js_joda_1.ChronoUnit.HOURS).compareTo(deadlineDateTime) != 1) {
+      throw new Error("deadline should be less than 24 hours");
+    }
+    return new TimeWindow(timeStampDateTime, deadlineDateTime);
   }
 
   /**
@@ -110,7 +231,7 @@ export class NemServiceService {
             this.walletService.setNis1AccounsWallet(accountNis1);
           },
           error => {
-            console.log('this accounssssss error------->>>>', error);
+            console.log('Error ------->', error);
             const accountNis1 = {
               nameAccount: element.name,
               address: address,
@@ -144,12 +265,32 @@ export class NemServiceService {
         }
 
         this.getOwnedMosaics(address).pipe(first()).pipe((timeout(10000))).subscribe(
-          next => {
+          async next => {
             for (const el of next) {
               if (el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx') {
                 let realQuantity = null;
                 realQuantity = this.transactionService.addZeros(el.properties.divisibility, el.quantity);
                 realQuantity = this.amountFormatter(realQuantity, el, el.properties.divisibility);
+                const transactions = await this.getUnconfirmedTransaction(account.address);
+                let balance = 0;
+                if (transactions.length > 0) {
+                  let relativeAmount = realQuantity;
+                  for (const item of transactions) {
+                    if (item.type === 257 && item['signer']['address']['value'] === address['value']) {
+                      for (const mosaic of item['_assets']) {
+                        if (mosaic.assetId.namespaceId === 'prx' && mosaic.assetId.name === 'xpx') {
+                          const quantity = parseFloat(this.amountFormatter(mosaic.quantity, el, el.properties.divisibility));
+                          const quantitywhitoutFormat = relativeAmount.split(',').join('');
+                          const quantityFormat = this.amountFormatter(parseInt((quantitywhitoutFormat - quantity).toString().split('.').join('')), el, el.properties.divisibility);
+                          relativeAmount = quantityFormat;
+                        }
+                      }
+                    }
+                  }
+                  balance = relativeAmount;
+                } else {
+                  balance = realQuantity;
+                }
                 const accountNis1 = {
                   nameAccount: name,
                   address: account.address,
@@ -158,7 +299,7 @@ export class NemServiceService {
                   consignerAccounts: consignerAccountsInfo,
                   mosaic: el,
                   multiSign: false,
-                  balance: realQuantity,
+                  balance: balance,
                   route: `/${AppConfig.routes.viewAllAccount}`
                 }
                 this.walletService.setNis1AccounsWallet(accountNis1);
@@ -182,7 +323,7 @@ export class NemServiceService {
         )
       },
       error => {
-        console.log('this accounssssss error------->>>>', error);
+        console.log('this accounssssss error------->', error);
         const accountNis1 = {
           nameAccount: name,
           address: account.address,
@@ -198,7 +339,6 @@ export class NemServiceService {
         this.walletService.setNis1AccounsWallet(accountNis1);
       }
     )
-
   }
 
   /**
@@ -213,94 +353,12 @@ export class NemServiceService {
   }
 
   /**
-   * Method to create an account from privatekey
-   * @param {string} privateKey account privateKey
+   * Method to get Unconfirmed transactions of an account
+   * @param address 
    * @memberof NemServiceService
-   * @returns Account
+   * @returns Observable<Transaction[]>
    */
-  createAccountPrivateKey(privateKey: string): Account {
-    return Account.createWithPrivateKey(privateKey);
-  }
-
-  /**
-   * Method to create transaction
-   * @param {PlainMessage} message Transfer transaction message
-   * @param {AssetId} assetId Mosaics transferable
-   * @param {number} quantity quantity of mosaics to transfer
-   * @memberof NemServiceService
-   * @returns TransferTransaction
-   */
-  async createTransaction(message: PlainMessage, assetId: AssetId, quantity: number) {
-    const resultAssets = await this.assetHttp.getAssetTransferableWithRelativeAmount(assetId, quantity).toPromise();
-    console.log('\n\n\n\nValue resultAssets:\n', resultAssets, '\n\n\n\nEnd value\n\n');
-    return TransferTransaction.createWithAssets(
-      TimeWindow.createWithDeadline(),
-      new Address(environment.nis1.address),
-      [resultAssets],
-      message
-    );
-  }
-
-  /**
-   * Method to anounce transaction
-   * @param transaction data of transfer transaction
-   * @param publicAccounMulti account of consigner
-   * @param cosignerAccount account of consigner
-   * @memberof NemServiceService
-   * @returns Observable
-   */
-  async createTransactionMultisign(transaction: TransferTransaction, publicAccounMulti: PublicAccount) {
-    return MultisigTransaction.create(
-      TimeWindow.createWithDeadline(),
-      transaction,
-      publicAccounMulti
-    );
-  }
-
-  /**
-   * Method to anounce transaction
-   * @param transferTransaction data of transfer transaction
-   * @param cosignerAccount account of consigner
-   * @memberof NemServiceService
-   * @returns Observable
-   */
-  anounceTransaction(transferTransaction: TransferTransaction | MultisigTransaction, cosignerAccount: Account) {
-    const signedTransaction = cosignerAccount.signTransaction(transferTransaction);
-    console.log('\n\n\n\nValue signedTransaction:\n', signedTransaction, '\n\n\n\nEnd value\n\n');
-    return this.transactionHttp.announceTransaction(signedTransaction);
-  }
-
-  /**
-   * Method to format Address
-   * @param {string} address address account
-   * @memberof NemServiceService
-   * @returns Address
-   */
-  createAddressToString(address: string): Address {
-    return new Address(address);
-  }
-
-  createPublicAccount(publicKey: string): PublicAccount {
-    return PublicAccount.createWithPublicKey(publicKey);
-  }
-
-  /**
-   * Formatter Amount
-   * @param {number} amount
-   * @param {AssetId} mosaic
-   * @param manualDivisibility
-   * @returns amountFormatter
-   * @memberof NemServiceService
-   */
-  amountFormatter(amountParam: number, mosaic: AssetTransferable, manualDivisibility = 0) {
-    const divisibility = (manualDivisibility === 0) ? manualDivisibility : mosaic.properties.divisibility;
-    const amountDivisibility = Number(
-      amountParam / Math.pow(10, divisibility)
-    );
-
-    const amountFormatter = amountDivisibility.toLocaleString("en-us", {
-      minimumFractionDigits: divisibility
-    });
-    return amountFormatter;
+  getUnconfirmedTransaction(address: Address): Promise<Transaction[]> {
+    return this.accountHttp.unconfirmedTransactions(address).toPromise();
   }
 }

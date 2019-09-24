@@ -31,11 +31,6 @@
                 class="w-100porcent form-control" type="text" placeholder="Enter search text" autocomplete="off"
                 [(ngModel)]="filter">
             </div>
-            <!-- <div class="col-12 col-sm-2 d-flex justify-content-md-start justify-content-center">
-                <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn" size="sm">
-                  <span class="fs-1-2em color-white">SEARCH</span>
-                </button>
-              </div> -->
           </div>
         </div>
         <div class="col-2 col-md-1 d-flex justify-content-center"> > </div>
@@ -182,8 +177,7 @@
                                 [multisigAccount]="innerTransaction">
                               </app-modify-multisig-account-type>
 
-                              <app-transfer-type-bonded
-                                *ngIf="innerTransaction.type === typeTransactions.transfer.id"
+                              <app-transfer-type-bonded *ngIf="innerTransaction.type === typeTransactions.transfer.id"
                                 [transferTransactionBonded]="innerTransaction">
                               </app-transfer-type-bonded>
                             </mdb-accordion-item-body>
@@ -222,11 +216,17 @@
 
                         <ng-container
                           *ngIf="dataSelected?.data['cosignatures'] && dataSelected?.data['cosignatures'].length > 0">
-                          <div class="row lh-1em mt-1rem">
+                          <div class="row lh-1em mt-1rem mb-1rem">
                             <div class="col-12">
-                              <span class="fw-600 fs-065rem">({{dataSelected?.data['cosignatures'].length}}) Others
-                                cosignatories</span>
+                              <span class="fw-600 fs-065rem">Others cosignatories</span>
                             </div>
+                            <ng-container *ngFor="let dataSigner of dataSelected.data['cosignatures']">
+                              <div class="col-12 mb-03rem">
+                                <!-- <span class="fw-600 fs-065rem">({{dataSelected?.data['cosignatures'].length}}) Others
+                                  cosignatories</span> -->
+                                <span class="fs-065rem w-w-b-w" [title]="'Public key: '+dataSigner.signer.publicKey">{{dataSigner.signer.address.pretty()}}</span>
+                              </div>
+                            </ng-container>
                           </div>
                         </ng-container>
                       </div>

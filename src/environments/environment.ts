@@ -1,21 +1,23 @@
 import { ServerConfig, NetworkTypes } from 'nem-library';
+import { NetworkType } from 'tsjs-xpx-chain-sdk';
 // This file can be replaced during build by using the `fileReplacements` array.
 // `ng build ---prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
   production: false,
-  itemBooksAddress: 'sw-books',
-  version: '0.3.1.8',
-  nameKeyNodeSelected: `sw-selected-node-03`,
-  nameKeyWalletStorage: `sw-05`,
-  nameKeyNodeStorage: `sw-nodes-03`,
-  nameKeyNamespaces: `sw-namespaces-02`,
-  nameKeyMosaicStorage: `sw-mosaics-02`,
-  nameKeyVersion: 'sw-version',
+  itemBooksAddress: 'sw-books-testnet',
+  //version: '0.3.1.8',
+  version: '0.3.1.11',
+  cacheVersion: '1',
+  nameKeyNodeSelected: `sw-selected-node-testnet`,
+  nameKeyWalletStorage: `sw-testnet`,
+  nameKeyNodeStorage: `sw-nodes-testnet`,
+  nameKeyNamespaces: `sw-namespaces-testnet`,
+  nameKeyMosaicStorage: `sw-mosaics-testnet`,
+  nameKeyVersion: 'sw-version-testnet',
   protocol: `https`,
   protocolWs: `wss`,
-  nodeDefault: 'bctestnet.xpxsirius.io:443',
   nodeExplorer: 'https://bctestnetexplorer.xpxsirius.io/#/result/hash',
   mosaicXpxInfo: {
     name: 'prx.xpx',
@@ -26,10 +28,19 @@ export const environment = {
     namespaceId: 'bffb42a19116bdf6',
     divisibility: 6
   },
+  /*mosaicXpxInfo: {
+    name: 'prx.xpx',
+    coin: 'XPX',
+    id: '1a804316c87d5cda',
+    mosaicIdUint64: [3363658970, 444613398],
+    namespaceIdUint64: [2434186742, 3220914849],
+    namespaceId: 'bffb42a19116bdf6',
+    divisibility: 6
+  },*/
   blockchainConnection: {
-    host: 'bctestnet.xpxsirius.io',
-    port: 443,
-    protocol: 'https',
+    host: 'bctestnet5.xpxsirius.io',
+    port: 3000,
+    protocol: 'http',
     useSecureMessage: false
   },
   storageConnection: {
@@ -62,6 +73,14 @@ export const environment = {
   },
   swapAccount: {
     address: 'VC3I3FSQ354JT2QNS2XJ2J3OROCOBIRK6JB3BCBH'
+  },
+  /*typeNetwork: {
+    value: NetworkType.MAIN_NET,
+    label: 'MAIN NET'
+  }*/
+  typeNetwork: {
+    value: NetworkType.TEST_NET,
+    label: 'PUBLIC TEST'
   }
 };
 

@@ -64,17 +64,32 @@
             <div class="col-12 d-flex justify-content-center mb-1rem">
               <span class="fs-1-2rem fw-600">{{cantConfirmed + cantUnconfirmed}} Transactions</span>
             </div>
+
+            <!-- CONFIRMED TRANSACTION -->
             <div class="col-12 col-xl-6">
               <button mdbBtn type="button" rounded="true" mdbWavesEffect (click)="selectTransactions(1)"
                 class="f-w-600  w-100porcent background-btn pl-2rem pr-2rem" size="sm">
                 <span class="fs-07rem color-white">CONFIRMED: <span class="fw-400">{{cantConfirmed}}</span></span>
               </button>
             </div>
+
+            <!-- UNCONFIRMED TRANSACTION -->
             <div class="col-12 col-xl-6">
               <button mdbBtn type="button" rounded="true" mdbWavesEffect
                 [disabled]="transactionsUnconfirmed.length === 0" (click)="selectTransactions(0)"
                 class="f-w-600  w-100porcent background-btn pl-2rem pr-2rem" size="sm">
                 <span class="fs-07rem color-white">UNCONFIRMED: <span class="fw-400">{{cantUnconfirmed}}</span></span>
+              </button>
+            </div>
+
+            <!-- PARTIAL TRANSACTION -->
+            <div class="col-12 col-xl-6">
+              <button mdbBtn type="button" rounded="true" mdbWavesEffect
+                [disabled]="partialTransactions === 0" [routerLink]="[viewDetailsPartial]"
+                class="f-w-600  w-100porcent background-btn pl-2rem pr-2rem" size="sm">
+                <span class="fs-07rem color-white">PARTIAL:
+                  <a class="cursor-p fw-400">{{partialTransactions}}</a>
+                </span>
               </button>
             </div>
           </div>
@@ -99,9 +114,10 @@
     <div class="col-11 col-sm-11 col-lg-10 mx-auto">
       <!-- Searching -->
       <ng-container *ngIf="searching">
-        <div class="col-12">
-          <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate">
-          </mdb-progress-bar>
+        <div class="col-12 txt-a-center">
+          <!-- <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate">
+          </mdb-progress-bar> -->
+          <mdb-spinner spinnerType="small" spinnerColor="blue"></mdb-spinner>
         </div>
       </ng-container>
     </div>

@@ -154,7 +154,7 @@
                       [minlength]="configurationForm.passwordWallet.minLength" formControlName="encryptionPassword"
                       mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password"
                       id="encryptionPassword" class="form-control form-control-sm input-border"
-                      placeholder="Enter password" />
+                      placeholder="Enter wallet password" />
 
                     <!-- VALIDATION -->
                     <mdb-error *ngIf="
@@ -165,7 +165,7 @@
                             validateInput('encryptionPassword')
                               .touched)
                         ">
-                      <span>Input invalid</span>
+                      <span>Password required</span>
                     </mdb-error>
                   </div>
                 </div>

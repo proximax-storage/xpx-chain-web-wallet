@@ -12,6 +12,7 @@ import * as JSZip from 'jszip';
 import { async } from '@angular/core/testing';
 import { StorageService } from '../../storage/services/storage.service';
 import * as cloneDeep from 'lodash/cloneDeep';
+import { environment } from 'src/environments/environment.prod';
 
 @Component({
   selector: 'app-audit-apostille',
@@ -58,7 +59,7 @@ export class AuditApostilleComponent implements OnInit {
     private transactionService: TransactionsService,
     private storageService: StorageService
   ) {
-    this.url = `https://${this.nodeService.getNodeSelected()}`;
+    this.url = `${environment.protocol}://${this.nodeService.getNodeSelected()}`;
   }
 
   ngOnInit() { }
@@ -240,7 +241,7 @@ export class AuditApostilleComponent implements OnInit {
             }, findHash.transactionInfo.hash);
           } else {
             console.log('element name ---> ', element);
-            
+
             this.addAuditResult({
               filename: element.name,
               owner: '',

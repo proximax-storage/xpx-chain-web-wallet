@@ -25,10 +25,11 @@
                     <div class="col-7 col-md-8 col-xl-7 mb-2rem">
                         <!-- TITLE -->
                         <div class="md-form">
+                            <img class="form-control-feedback" src="assets/images/img/icon-voting-green-60h.svg" alt="" width="43" height="43">
                             <input formControlName="title" required mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
                                 id="title" class="form-control form-control-sm input-border" placeholder="Enter title">
                             <mdb-error *ngIf="validateInput('title', '1', '').invalid && (validateInput('title', '1', '').dirty || validateInput('title', '1', '').touched)">
-                                <span>Input invalid</span>
+                                <span>Required field</span>
                             </mdb-error>
                         </div>
                         <!-- IS PRIVATE -->
@@ -37,6 +38,8 @@
                         </div>
                         <!-- DESCRIPTION -->
                         <div class="md-form">
+                            <img class="form-control-feedback" src="assets/images/img/icon-messenger-green-16h-proximax-sirius-wallet.svg" alt=""
+                                style="padding: 30px 10px !important">
                             <textarea mdbInputDirective mdbValidate required [validateSuccess]="true" [validateError]="true" type="text" id="message"
                                 class="md-textarea form-control" mdbInput placeholder="Write your description here" formControlName="message"
                                 [maxlength]="configurationForm.message.maxLength"></textarea>
@@ -46,6 +49,7 @@
                         </div>
                         <!-- DATE END  -->
                         <div class="md-form">
+                            <img class="form-control-feedback" src="assets/images/img/icon-duration-green-16h-proximax-sirius-wallet.svg" alt="">
                             <input formControlName="PollEndDate" required mdbInputDirective mdbValidate type="text" [owlDateTimeTrigger]="dt" [owlDateTime]="dt"
                                 [min]="minDate" [dateTime]="invalidMoment" class="form-control form-control-sm input-border"
                                 placeholder="End date">
@@ -108,10 +112,11 @@
                         </div>
                         <!-- OPTIONS -->
                         <div class="md-form">
+                            <img class="form-control-feedback" src="assets/images/img/icon-type-increase-decrease-green-16h-proximax-sirius-wallet.svg" alt="">
                             <input formControlName="option" mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
                                 id="option" class="form-control form-control-sm input-border" placeholder="Option">
                             <mdb-error *ngIf="validateInput('option', '2', '').invalid && (validateInput('option', '2', '').dirty || validateInput('option', '2', '').touched)">
-                                <span>Input invalid</span>
+                                <span>Required field</span>
                             </mdb-error>
                         </div>
                         <!-- OPTIONS VALIDATE -->
@@ -202,7 +207,7 @@
                                     <input formControlName="address" mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
                                         id="address" class="form-control form-control-sm input-border" placeholder="Account Address">
                                     <mdb-error *ngIf="validateInput('address','3', '').invalid && (validateInput('address','3', '').dirty || validateInput('address','3', '').touched)">
-                                        <span>Input invalid</span>
+                                        <span>Required filed</span>
                                     </mdb-error>
                                 </div>
                             </div>
@@ -295,7 +300,7 @@
                             </div>
                         </div>
                            <!-- PRIVATE KEY-->
-                           <div *ngIf="isPrivate"  class="md-form">
+                           <!-- <div *ngIf="isPrivate"  class="md-form">
                             <div class="col-12  d-flex align-items-center box-grey">
                                 <div class="col-10">
                                     <span> poll index private key:</span>
@@ -307,7 +312,7 @@
                                         ngxClipboard [cbContent]="privateKeyAccount">
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                         <!-- TITLE -->
                         <div class="md-form">
                             <div class="col-12 d-flex align-items-center box-grey">
@@ -325,7 +330,7 @@
                             <input formControlName="password" required mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
                                 type="password" id="password" class="form-control form-control-sm input-border" placeholder="Enter wallet password">
                             <mdb-error *ngIf="validateInput('password','4', '').invalid && (validateInput('password','4', '').dirty || validateInput('password','', '').touched)">
-                                <span>Input invalid</span>
+                                <span>Required field</span>
                             </mdb-error>
                         </div>
                     </div>

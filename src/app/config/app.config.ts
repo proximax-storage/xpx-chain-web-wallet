@@ -21,6 +21,7 @@ export const AppConfig: Config = {
     createTransfer: 'create-transfer',
     createWallet: 'create-wallet',
     dashboard: 'dashboard',
+    deleteteAccount:'delete-account',
     editAccountMultisign: 'edit-account-multisign',
     explorer: 'explorer',
     extendNamespace: 'extend-namespace',
@@ -79,6 +80,7 @@ export interface Config {
     createAccount: string;
     createApostille: string;
     dashboard: string;
+    deleteteAccount:string
     editAccountMultisign: string;
     explorer: string;
     extendNamespace: string;

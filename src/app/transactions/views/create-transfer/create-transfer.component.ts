@@ -18,6 +18,7 @@ import { ServicesModuleService } from '../../../servicesModule/services/services
 import { Subscription } from 'rxjs';
 import { ModalDirective } from 'ng-uikit-pro-standard';
 import { NodeService } from 'src/app/servicesModule/services/node.service';
+import * as FeeCalculationStrategy from 'tsjs-xpx-chain-sdk/dist/src/model/transaction/FeeCalculationStrategy';
 
 
 @Component({
@@ -29,6 +30,7 @@ export class CreateTransferComponent implements OnInit {
 
   @ViewChild('basicModal', { static: true }) basicModal: ModalDirective;
   accounts: any = [];
+  disabledAllField = false;
   sender: AccountsInterface = null;
   allMosaics = [];
   balanceXpx = '0.000000';
@@ -55,6 +57,7 @@ export class CreateTransferComponent implements OnInit {
   mosaicXpx: { id: string, name: string; divisibility: number } = null;
   listContacts: any = [];
   listCosignatorie: any = [];
+  fee: any = '0.037250'
   optionsXPX = {
     prefix: '',
     thousands: ',',
@@ -74,6 +77,7 @@ export class CreateTransferComponent implements OnInit {
   subscription: Subscription[] = [];
   getBooksAddress: any;
   haveBalance = false;
+  mosaicsToSend: any[];
 
   constructor(
     private dataBridge: DataBridgeService,
@@ -200,7 +204,6 @@ export class CreateTransferComponent implements OnInit {
 
             const x = this.proximaxProvider.getMosaicId(mosaic.idMosaic).id.toHex() !== environment.mosaicXpxInfo.id;
             if (x) {
-              console.log('EL MOSAICO ----> ', mosaic);
               const nameMosaic = (mosaic.mosaicNames.names.length > 0) ? mosaic.mosaicNames.names[0].name : this.proximaxProvider.getMosaicId(mosaic.idMosaic).toHex();
               mosaicsSelect.push({
                 label: `${nameMosaic}${nameExpired}`,
@@ -232,11 +235,10 @@ export class CreateTransferComponent implements OnInit {
   * @memberof CreateTransferComponent
   */
   async changeSender(accountToSend: AccountsInterface) {
-    console.log('ACCOUNT SENDER', accountToSend);
     if (accountToSend) {
       this.sender = accountToSend;
       this.findCosignatories(accountToSend);
-      if (this.formTransfer.disabled) {
+      if (this.formTransfer.disabled && !this.disabledAllField) {
         this.formTransfer.enable();
       }
 
@@ -259,7 +261,7 @@ export class CreateTransferComponent implements OnInit {
       if (!this.haveBalance) {
         this.insufficientBalance = true;
         this.formTransfer.controls['amountXpx'].disable();
-      } else {
+      } else if (!this.disabledAllField) {
         this.insufficientBalance = false;
         this.formTransfer.controls['amountXpx'].enable();
       }
@@ -398,13 +400,17 @@ export class CreateTransferComponent implements OnInit {
     if (custom !== undefined) {
       if (formControl !== undefined) {
         this.formTransfer.controls[formControl].get(custom).reset();
+        this.fee = '0.037250'
         return;
       }
+
       this.formTransfer.get(custom).reset();
+      this.fee = '0.037250'
       return;
     }
 
     this.formTransfer.reset();
+    this.fee = '0.037250'
     return;
   }
 
@@ -431,13 +437,17 @@ export class CreateTransferComponent implements OnInit {
   findCosignatories(element: AccountsInterface) {
     this.cosignatorie = null;
     this.listCosignatorie = [];
-    // if (element.default) {
+    this.disabledAllField = false;
     if (element.isMultisign && element.isMultisign.cosignatories && element.isMultisign.cosignatories.length > 0) {
       if (element.isMultisign.cosignatories.length === 1) {
         const address = this.proximaxProvider.createFromRawAddress(element.isMultisign.cosignatories[0].address['address']);
         const cosignatorieAccount: AccountsInterface = this.walletService.filterAccountWallet('', null, address.pretty());
-        this.cosignatorie = (cosignatorieAccount) ? cosignatorieAccount : null;
-        console.log('---> SET COSIGNATARIO BY DEFAULT (1)', this.cosignatorie);
+        if (cosignatorieAccount) {
+          this.cosignatorie = cosignatorieAccount;
+        } else {
+          this.disabledAllField = true;
+          this.formTransfer.disable();
+        }
         return;
       } else {
         const listCosignatorie = [];
@@ -455,12 +465,16 @@ export class CreateTransferComponent implements OnInit {
 
         if (listCosignatorie.length === 1) {
           this.cosignatorie = listCosignatorie[0].value;
-          console.log('---> SENDER', this.sender);
-          console.log('---> SET COSIGNATARIO BY DEFAULT (1)', this.cosignatorie);
           return;
         }
 
-        this.listCosignatorie = listCosignatorie;
+        if (listCosignatorie && listCosignatorie.length > 0) {
+          this.listCosignatorie = listCosignatorie;
+        } else {
+          this.disabledAllField = true;
+          this.formTransfer.disable();
+        }
+
         return;
       }
     }
@@ -495,6 +509,7 @@ export class CreateTransferComponent implements OnInit {
     if (!this.subscription['transactionStatus']) {
       this.subscription['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
         statusTransaction => {
+          // console.log('statusTransaction', statusTransaction);
           if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
             for (let element of this.transactionSigned) {
               const statusTransactionHash =
@@ -712,109 +727,112 @@ export class CreateTransferComponent implements OnInit {
     if (this.formTransfer.valid && (!this.blockSendButton || !this.errorOtherMosaics)) {
       this.blockButton = true;
       this.blockSendButton = true;
-      const common = { password: this.formTransfer.get("password").value };
-      const mosaicsToSend = this.validateMosaicsToSend();
-      const type = (this.cosignatorie) ? true : false;
-      switch (type) {
-        case true:
-          console.log('TRANSFIERE CON COSIGNATARIO');
-          console.log('ACCOUNT SENDER ----> ', this.sender);
-          console.log('COSIGNATARIO SELECCIONADO ----> ', this.cosignatorie);
-          const generationHash = this.dataBridge.blockInfo.generationHash;
-          if (this.walletService.decrypt(common, this.cosignatorie)) {
-            const params: TransferInterface = {
-              common: common,
-              recipient: (this.formTransfer.get("accountRecipient").value),
-              message: (this.formTransfer.get("message").value === null) ? "" : this.formTransfer.get("message").value,
-              network: this.walletService.currentAccount.network,
-              mosaic: mosaicsToSend
-            };
+      if (this.transactionService.validateBuildSelectAccountBalance(Number(this.balanceXpx.split(',').join('')), this.fee, 0)) {
+        const common = { password: this.formTransfer.get("password").value };
+        const mosaicsToSend = this.validateMosaicsToSend();
+        const type = (this.cosignatorie) ? true : false;
+        switch (type) {
+          case true:
+            /*console.log('TRANSFIERE CON COSIGNATARIO');
+            // console.log('ACCOUNT SENDER ----> ', this.sender);
+            // console.log('COSIGNATARIO SELECCIONADO ----> ', this.cosignatorie);*/
+            const generationHash = this.dataBridge.blockInfo.generationHash;
+            if (this.walletService.decrypt(common, this.cosignatorie)) {
+              const params: TransferInterface = {
+                common: common,
+                recipient: (this.formTransfer.get("accountRecipient").value),
+                message: (this.formTransfer.get("message").value === null) ? "" : this.formTransfer.get("message").value,
+                network: this.walletService.currentAccount.network,
+                mosaic: mosaicsToSend
+              };
 
-            // Create account from private key
-            const account = Account.createFromPrivateKey(params.common.privateKey, params.network);
-            // Build transfer transaction
-            // const transferBuilder = this.transactionService.buildTransferTransaction(params);
-            //-----------------------------------------------------------------------
-            const recipientAddress = this.proximaxProvider.createFromRawAddress(params.recipient);
-            const mosaics = params.mosaic;
-            const allMosaics = [];
-            mosaics.forEach(element => {
-              allMosaics.push(new Mosaic(
-                new MosaicId(element.id),
-                UInt64.fromUint(Number(element.amount))
-              )
+              // Create account from private key
+              const account = Account.createFromPrivateKey(params.common.privateKey, params.network);
+              // Build transfer transaction
+              // const transferBuilder = this.transactionService.buildTransferTransaction(params);
+              //-----------------------------------------------------------------------
+              const recipientAddress = this.proximaxProvider.createFromRawAddress(params.recipient);
+              const mosaics = params.mosaic;
+              const allMosaics = [];
+              mosaics.forEach(element => {
+                allMosaics.push(new Mosaic(
+                  new MosaicId(element.id),
+                  UInt64.fromUint(Number(element.amount))
+                )
+                );
+              });
+
+              const transferBuilder = TransferTransaction.create(
+                Deadline.create(5),
+                recipientAddress,
+                allMosaics,
+                PlainMessage.create(params.message),
+                params.network
               );
-            });
 
-            const transferBuilder = TransferTransaction.create(
-              Deadline.create(5),
-              recipientAddress,
-              allMosaics,
-              PlainMessage.create(params.message),
-              params.network
-            );
-
-            //-----------------------------------------------------------------------
-            // Build aggregate transaction
-            const aggregateTransaction = this.transactionService.buildAggregateTransaction(this.sender.publicAccount, transferBuilder);
-            console.log('aggregateTransaction ---------> ', aggregateTransaction);
-            // Sign transaction
-            const aggregateSigned = account.sign(aggregateTransaction, generationHash);
-            // Build hash lock transaction
-            const hashLockTransaction: LockFundsTransaction = this.transactionService.buildHashLockTransaction(aggregateSigned);
-            console.log('hashLockTransaction ---------> ', hashLockTransaction);
-            // Hash lock signed
-            const hashLockSigned = account.sign(hashLockTransaction, generationHash);
-            this.saveContactFn();
-            this.clearForm();
-            this.transactionService.buildTransactionHttp().announce(hashLockSigned).subscribe(async () => {
-              this.getTransactionStatusHashLock(hashLockSigned, aggregateSigned);
-            }, err => {
-              console.log('ERROR ----> ', err);
-            });
-          } else {
-            this.formTransfer.get('password').setValue('');
-            this.blockSendButton = false;
-            this.blockButton = false;
-          }
-
-          break;
-        case false:
-          console.log('TRANSFIERE SIMPLE');
-          if (this.walletService.decrypt(common, this.sender)) {
-            const params: TransferInterface = {
-              common: common,
-              recipient: (this.formTransfer.get("accountRecipient").value),
-              message: (this.formTransfer.get("message").value === null) ? "" : this.formTransfer.get("message").value,
-              network: this.walletService.currentAccount.network,
-              mosaic: mosaicsToSend
-            };
-
-            const transferBuilder = this.transactionService.buildTransferTransaction(params);
-            this.transactionSigned.push(transferBuilder.signedTransaction);
-            this.saveContactFn();
-            this.clearForm();
-            this.transactionService.buildTransactionHttp().announce(transferBuilder.signedTransaction).subscribe(
-              async () => {
-                this.blockButton = false;
-                this.blockSendButton = false;
-                this.getTransactionStatus();
+              //-----------------------------------------------------------------------
+              // Build aggregate transaction
+              const aggregateTransaction = this.transactionService.buildAggregateTransaction(this.sender.publicAccount, transferBuilder);
+              // console.log('=== Build aggregate transaction ===', aggregateTransaction);
+              // Sign transaction
+              const aggregateSigned = account.sign(aggregateTransaction, generationHash);
+              // Build hash lock transaction
+              const hashLockTransaction: LockFundsTransaction = this.transactionService.buildHashLockTransaction(aggregateSigned);
+              // console.log('=== Build hash lock transaction === ', hashLockTransaction);
+              // Hash lock signed
+              const hashLockSigned = account.sign(hashLockTransaction, generationHash);
+              this.saveContactFn();
+              this.clearForm();
+              this.transactionService.buildTransactionHttp().announce(hashLockSigned).subscribe(async () => {
+                this.getTransactionStatusHashLock(hashLockSigned, aggregateSigned);
               }, err => {
-                this.blockButton = false;
-                this.blockSendButton = false;
-                this.clearForm();
-                this.sharedService.showError('', err);
-              }
-            );
-          } else {
-            this.formTransfer.get('password').setValue('');
-            this.blockSendButton = false;
-            this.blockButton = false;
-          }
-          break;
+                // console.log('ERROR ----> ', err);
+              });
+            } else {
+              this.formTransfer.get('password').setValue('');
+              this.blockSendButton = false;
+              this.blockButton = false;
+            }
+
+            break;
+          case false:
+            if (this.walletService.decrypt(common, this.sender)) {
+              const params: TransferInterface = {
+                common: common,
+                recipient: (this.formTransfer.get("accountRecipient").value),
+                message: (this.formTransfer.get("message").value === null) ? "" : this.formTransfer.get("message").value,
+                network: this.walletService.currentAccount.network,
+                mosaic: mosaicsToSend
+              };
+
+              const transferBuilder = this.transactionService.buildTransferTransaction(params);
+              this.transactionSigned.push(transferBuilder.signedTransaction);
+              this.saveContactFn();
+              this.clearForm();
+              this.transactionService.buildTransactionHttp().announce(transferBuilder.signedTransaction).subscribe(
+                async () => {
+                  this.blockButton = false;
+                  this.blockSendButton = false;
+                  this.getTransactionStatus();
+                }, err => {
+                  this.blockButton = false;
+                  this.blockSendButton = false;
+                  this.clearForm();
+                  this.sharedService.showError('', err);
+                }
+              );
+            } else {
+              this.formTransfer.get('password').setValue('');
+              this.blockSendButton = false;
+              this.blockButton = false;
+            }
+            break;
+        }
+      } else {
+        this.blockButton = false;
+        this.blockSendButton = false;
+        this.sharedService.showError('', 'Insufficient balance');
       }
-
-
     }
   }
 
@@ -842,7 +860,7 @@ export class CreateTransferComponent implements OnInit {
    * @param $event
    */
   selectCosignatorie($event) {
-    console.log('COSIGNATORIE SELECTED ', $event);
+    // console.log('COSIGNATORIE SELECTED ', $event);
     if ($event) {
       this.cosignatorie = $event.value;
     } else {
@@ -911,6 +929,10 @@ export class CreateTransferComponent implements OnInit {
     this.subscription.push(this.formTransfer.get('message').valueChanges.subscribe(val => {
       if (val) {
         this.charRest = this.configurationForm.message.maxLength - val.length;
+
+        this.calculateFee(val.length);
+      } else {
+        this.calculateFee(0);
       }
     }));
 
@@ -975,6 +997,17 @@ export class CreateTransferComponent implements OnInit {
     );
   }
 
+
+  calculateFee(message: number) {
+    this.mosaicsToSend = this.validateMosaicsToSend();
+    const x = TransferTransaction.calculateSize(PlainMessage.create(this.formTransfer.get("message").value).size(), this.mosaicsToSend.length);
+    const b = FeeCalculationStrategy.calculateFee(x);
+    if (message > 0) {
+      this.fee = this.transactionService.amountFormatterSimple(b.compact())
+    } else if (message === 0 && this.mosaicsToSend.length === 0) {
+      this.fee = '0.037250'
+    }
+  }
 
   /**
    *
@@ -1048,7 +1081,7 @@ export class CreateTransferComponent implements OnInit {
     const mosaics = [];
     const amountXpx = this.formTransfer.get("amountXpx").value;
 
-    if (amountXpx !== '' && amountXpx !== null) {
+    if (amountXpx !== '' && amountXpx !== null && Number(amountXpx) !== 0) {
       // console.log(amountXpx);
       let arrAmount = amountXpx.toString().replace(/,/g, "").split('.');
       let decimal;
@@ -1060,7 +1093,7 @@ export class CreateTransferComponent implements OnInit {
         let arrDecimals = arrAmount[1].split('');
         decimal = this.addZeros(environment.mosaicXpxInfo.divisibility - arrDecimals.length, arrAmount[1]);
       }
-      realAmount = `${arrAmount[0]}${decimal}`
+      realAmount = `${arrAmount[0]}${decimal}`;
       mosaics.push({
         id: this.mosaicXpx.id,
         amount: realAmount
@@ -1068,7 +1101,7 @@ export class CreateTransferComponent implements OnInit {
     }
 
     this.boxOtherMosaics.forEach(element => {
-      if (element.id !== '' && element.amount !== '') {
+      if (element.id !== '' && element.amount !== '' && Number(element.amount) !== 0) {
         let arrAmount = element.amount.toString().replace(/,/g, "").split('.');
         let decimal;
         let realAmount;
@@ -1091,6 +1124,8 @@ export class CreateTransferComponent implements OnInit {
         });
       }
     });
+
+    // console.log(mosaics);
 
     return mosaics;
   }

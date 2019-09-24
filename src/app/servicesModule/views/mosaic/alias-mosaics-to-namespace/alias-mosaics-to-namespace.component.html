@@ -7,7 +7,7 @@
       <div class="col-11 col-sm-10 col-lg-8 mx-auto">
         <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" class="selectWrapper"
           [items]="typeAction" formControlName="typeAction" bindLabel="label" bindValue="value"
-          placeholder="Select action" (change)="buildSelectNamespace($event)"></ng-select>
+          placeholder="Select action" (change)="buildSelectNamespace($event); captureAction()"></ng-select>
         <mdb-error class="ml-1rem"
           *ngIf="validateInput('typeAction').invalid && (validateInput('typeAction').dirty || validateInput('typeAction').touched)">
           <span class="fs-08rem fw-600 color-error-message">Select action</span>
@@ -19,7 +19,7 @@
       <div class="col-11 col-sm-10 col-lg-8 mx-auto">
         <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" class="selectWrapper"
           [items]="namespaceSelect" formControlName="namespace" bindLabel="label" bindValue="value"
-          placeholder="Select namespace"></ng-select>
+          placeholder="Select namespace" (change)="captureNamespace()"></ng-select>
         <mdb-error class="ml-1rem"
           *ngIf="validateInput('namespace').invalid && (validateInput('namespace').dirty || validateInput('namespace').touched)">
           <span class="fs-08rem fw-600 color-error-message">Select namespace</span>
@@ -31,7 +31,7 @@
       <div class="col-11 col-sm-10 col-lg-8 mx-auto">
         <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" class="selectWrapper"
           [items]="mosaicSelect" formControlName="mosaic" bindLabel="label" bindValue="value"
-          placeholder="Select mosaic"></ng-select>
+          placeholder="Select mosaic" (change)="captureMmosaic()"></ng-select>
         <mdb-error class="ml-1rem"
           *ngIf="validateInput('mosaic').invalid && (validateInput('mosaic').dirty || validateInput('mosaic').touched)">
           <span class="fs-08rem fw-600 color-error-message">Select mosaic</span>
@@ -44,7 +44,7 @@
         <div class="box-grey txt-a-center">
           <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20"
             alt="">&nbsp;
-          <span>Fee: 0.000000 XPX</span>
+          <span>Fee: {{ fee }} XPX</span>
         </div>
       </div>
     </div>
@@ -62,7 +62,7 @@
           <!-- VALIDATION -->
           <mdb-error
             *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
-            <span class="fs-08rem fw-600 color-error-message">Invalid input</span>
+            <span class="fs-08rem fw-600 color-error-message">Required field</span>
           </mdb-error>
         </div>
       </div>

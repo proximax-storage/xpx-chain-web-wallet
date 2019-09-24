@@ -20,6 +20,7 @@ export class ViewAllAccountsComponent implements OnInit {
     componentName: 'VIEW ALL',
     extraButton: 'Create New Account',
     routerExtraButton: `/${AppConfig.routes.selectTypeCreationAccount}`
+    
   };
   accountChanged: boolean = false;
   currentWallet: any = [];
@@ -27,7 +28,8 @@ export class ViewAllAccountsComponent implements OnInit {
   routes = {
     backToService: `/${AppConfig.routes.service}`,
     createNewAccount: `/${AppConfig.routes.selectTypeCreationAccount}`,
-    viewDetails: `/${AppConfig.routes.account}/`
+    viewDetails: `/${AppConfig.routes.account}/`,
+    deleteAccount: `/${AppConfig.routes.deleteteAccount}/`,
   };
   subscription: Subscription[] = [];
 
@@ -56,6 +58,7 @@ export class ViewAllAccountsComponent implements OnInit {
    * @memberof ViewAllAccountsComponent
    */
   buildBalance() {
+    console.log('build',this.walletService.currentWallet)
     const currentWallet = Object.assign({}, this.walletService.currentWallet);
     if (currentWallet && Object.keys(currentWallet).length > 0) {
       for (let element of currentWallet.accounts) {

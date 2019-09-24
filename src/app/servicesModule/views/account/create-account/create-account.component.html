@@ -43,12 +43,13 @@
               <div class="row">
                 <div class="col-11 mx-auto">
                   <div class="md-form form-sm mt-1rem mb-0rem">
+                    <img class="form-control-feedback" src="assets/images/img/icon-private-key-green-16h-proximax-sirius-wallet.svg" alt="">
                     <input mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
                       id="privateKey" class="form-control form-control-sm input-border" placeholder="Enter private key"
                       formControlName="privateKey">
                     <mdb-error
                       *ngIf="validateInput('privateKey').invalid && (validateInput('privateKey').dirty || validateInput('privateKey').touched)">
-                      <span>Input invalid</span>
+                      <span>Required field</span>
                     </mdb-error>
                   </div>
                 </div>
@@ -66,12 +67,13 @@
             <div class="row">
               <div class="col-11 mx-auto">
                 <div class="md-form form-sm mt-1rem mb-0rem">
+                  <img class="form-control-feedback" src="assets/images/img/icon-wallet-name-green-16h-proximax-sirius-wallet.svg" alt="">
                   <input mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
                     id="name-wallet{{errorWalletExist}}" class="form-control form-control-sm input-border"
                     placeholder="Account name" formControlName="nameWallet">
                   <mdb-error
                     *ngIf="validateInput('nameWallet').invalid && (validateInput('nameWallet').dirty || validateInput('nameWallet').touched)">
-                    <span>Input invalid</span>
+                    <span>Required field</span>
                   </mdb-error>
 
                   <mdb-error *ngIf="validateInput('nameWallet').valid && validateNameAccount()">
@@ -89,12 +91,12 @@
                   <input [maxlength]="configurationForm.passwordWallet.maxLength"
                     [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" required
                     mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password"
-                    id="password" class="form-control form-control-sm input-border" placeholder="Enter password">
+                    id="password" class="form-control form-control-sm input-border" placeholder="Enter wallet password">
 
                   <!-- VALIDATION -->
                   <mdb-error
                     *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
-                    <span>Input invalid</span>
+                    <span>Required field</span>
                   </mdb-error>
                 </div>
               </div>

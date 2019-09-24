@@ -50,11 +50,11 @@ export class CreateApostilleComponent implements OnInit {
   storeInDfms = false;
   searching: boolean = false;
   typeEncrypted: Array<object> = [
-    { value: '1', label: 'MD5' },
-    { value: '2', label: 'SHA1' },
+    { value: '1', label: 'MD5', disabled: true },
+    { value: '2', label: 'SHA1', disabled: true, },
     { value: '3', label: 'SHA256' },
-    { value: '4', label: 'SHA3' },
-    { value: '5', label: 'SHA512' }
+    { value: '4', label: 'SHA3', disabled: true, },
+    { value: '5', label: 'SHA512', disabled: true, }
   ];
   extensionFile: string = '';
   typeFile: string;
@@ -114,6 +114,7 @@ export class CreateApostilleComponent implements OnInit {
     this.blockBtn = false
     this.filesStorage = await this.storageService.getFiles();
     this.searching = false;
+    this.fileReader([]);
   }
 
 
@@ -349,6 +350,7 @@ export class CreateApostilleComponent implements OnInit {
     // Create an account from the dedicatedPrivateKey to send a transaction with apostilleHash message
     const dedicatedAccount = Account.createFromPrivateKey(dedicatedPrivateKey, this.walletService.currentAccount.network);
     // Build the transfer type transaction
+    console.log('MY NETWORK --->', this.walletService.currentAccount.network);
     let transferTransaction: TransferTransaction = this.proximaxProvider.buildTransferTransaction(
       this.walletService.currentAccount.network,
       this.proximaxProvider.createFromRawAddress(dedicatedAccount.address.plain()),
@@ -356,9 +358,11 @@ export class CreateApostilleComponent implements OnInit {
     );
     // Zero fee is added
     transferTransaction['fee'] = UInt64.fromUint(0);
+    console.log('TRANSACTION BUILDER ---> ', transferTransaction);
     // Sign the transaction
     const generationHash = this.dataBridgeService.blockInfo.generationHash;
     const signedTransaction = ownerAccount.sign(transferTransaction,generationHash);  //Update-sdk-dragon
+    console.log('TRANSACTION SIGNED ---> ', signedTransaction);
     const date = new Date();
     this.ntyData = {
       fileName: this.nameFile,
@@ -406,9 +410,8 @@ export class CreateApostilleComponent implements OnInit {
    */
   preparePublicApostille(common: any) {
     // console.log(this.nameFile);
-
     //create a hash prefix (dice si es privado o publico)
-    const apostilleHashPrefix = 'fe4e545903';
+    const apostilleHashPrefix = 'fe4e545903'; //checkSum
     //create an encrypted hash (contenido del archivo)
     const hash = this.apostilleService.encryptData(this.file.toString());
     //concatenates the hash prefix and the result gives the apostilleHash
@@ -420,6 +423,7 @@ export class CreateApostilleComponent implements OnInit {
     //Create an account from my private key
     const myAccount = Account.createFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
     //Arm the transaction type transfer
+    console.log('MY NETWORK --->', this.walletService.currentAccount.network);
     let transferTransaction: any = this.proximaxProvider.buildTransferTransaction(
       this.walletService.currentAccount.network,
       sinkAddress,
@@ -427,10 +431,11 @@ export class CreateApostilleComponent implements OnInit {
     );
     // Zero fee is added
     transferTransaction['fee'] = UInt64.fromUint(0);
-
+    console.log('TRANSACTION BUILDED ---> ', transferTransaction);
     // Sign the transaction
     const generationHash = this.dataBridgeService.blockInfo.generationHash;
     const signedTransaction = myAccount.sign(transferTransaction,generationHash); //Update-sdk-dragon
+    console.log('TRANSACTION SIGNED ---> ', signedTransaction);
     const date = new Date();
     this.ntyData = {
       fileName: this.nameFile,

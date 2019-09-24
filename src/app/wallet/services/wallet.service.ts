@@ -26,11 +26,10 @@ export class WalletService {
   currentWallet: CurrentWalletInterface = null;
 
   accountInfoNis1: any = null;
-  // accountMosaicsNis1: any = null;
-  // accountInfoConsignerNis1: any = null;
   accountSelectedWalletNis1: any = null;
   nis1AccountSeleted: any = null;
   nis1AccounsWallet: any = [];
+  unconfirmedTransactions: any = [];
 
   currentAccountObs: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   currentAccountObs$: Observable<any> = this.currentAccountObs.asObservable();
@@ -44,9 +43,7 @@ export class WalletService {
   constructor(
     private sharedService: SharedService,
     private proximaxProvider: ProximaxProvider
-  ) {
-
-  }
+  ) { }
 
   /**
    *
@@ -104,9 +101,9 @@ export class WalletService {
             const newAccounts = this.changeIsMultiSign(element.name, isMultisig);
             if (newAccounts.length > 0) {
               console.log('=== NEW ACCOUNTS TO SEARCH ===', newAccounts);
-              // Emite el cambios de las nuevas cuentas
+              // Issue changes to new accounts
               this.setAccountsPushedSubject(newAccounts);
-              // Borra el cambio de las nuevas cuentas
+              // Delete the change of the new accounts
               this.setAccountsPushedSubject([]);
             }
 
@@ -256,6 +253,16 @@ export class WalletService {
       accounts: myAccounts
     });
 
+    this.accountsInfo.forEach(element => {
+      if (element.name === oldName) {
+        element.name = newName;
+      }
+    });
+
+    if (this.currentAccount.name === oldName) {
+      this.currentAccount.name = newName;
+    }
+
     localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(othersWallet));
   }
 
@@ -275,7 +282,6 @@ export class WalletService {
         isMultisig.multisigAccounts.forEach(multisigAccount => {
           const exist = myAccounts.find(x => x.address === multisigAccount.address.plain());
           if (!exist) {
-            console.log('ESTA CUENTA NO EXISTE ===> ', multisigAccount, '\n\n\n\n\n\n');
             const accountBuilded: AccountsInterface = this.buildAccount({
               address: multisigAccount.address.plain(),
               byDefault: false,
@@ -288,7 +294,6 @@ export class WalletService {
               publicAccount: multisigAccount,
             });
 
-            console.log('\n\n---ACOUNT BUILDED---', accountBuilded);
             newAccount.push(accountBuilded);
             this.saveAccountWalletStorage(accountBuilded);
             /*this.proximaxProvider.getAccountInfo(multisigAccount.address).pipe(first()).subscribe(async (accountInfo: AccountInfo) => {
@@ -409,6 +414,7 @@ export class WalletService {
       if (byAddress) {
         let found = null;
         this.accountsInfo.forEach(element => {
+
           if (element.accountInfo) {
             if (element.accountInfo.address.pretty() === account) {
               found = element;
@@ -468,11 +474,11 @@ export class WalletService {
   }
 
   /**
- *
- *
- * @returns {AccountsInfoInterface[]}
- * @memberof WalletService
- */
+   *
+   *
+   * @returns {AccountsInfoInterface[]}
+   * @memberof WalletService
+   */
   getAccountsInfo(): AccountsInfoInterface[] {
     return this.accountsInfo;
   }
@@ -494,14 +500,6 @@ export class WalletService {
   getAccountInfoNis1() {
     return this.accountInfoNis1;
   }
-
-  // /**
-  //  *
-  //  * @param data
-  //  */
-  // getAccountInfoConsignerNis1() {
-  //   return this.accountInfoConsignerNis1;
-  // }
 
 
   /**
@@ -581,6 +579,13 @@ export class WalletService {
 
   /**
    *
+   */
+  getUnconfirmedTransaction() {
+    return this.unconfirmedTransactions;
+  }
+
+  /**
+   *
    *
    * @param {any} privateKey
    * @returns
@@ -616,14 +621,21 @@ export class WalletService {
    * @param {string} account
    * @memberof WalletService
    */
-  removeAccountWallet(account: string) {
+  removeAccountWallet(name: string, moduleRemove: boolean = false) {
     const myAccounts: AccountsInterface[] = Object.assign(this.currentWallet.accounts);
     // console.log('=== myAccounts ===', myAccounts);
-    const othersAccount = myAccounts.filter(x => this.proximaxProvider.createFromRawAddress(x.address).pretty() !== account);
+    const othersAccount = myAccounts.filter(x => x.name !== name);
     // console.log('==== othersAccount ====', othersAccount);
     this.currentWallet.accounts = othersAccount;
     // console.log('==== currentWallet ====', this.currentWallet);
+    const accountsInfo = [];
+    this.accountsInfo.filter(x => x.name !== name);
+    this.setAccountsInfo(accountsInfo);
     this.saveAccountWalletStorage(null, this.currentWallet);
+    this.setAccountsPushedSubject(this.currentWallet.accounts);
+    if (moduleRemove) {
+      this.validateMultisigAccount(this.currentWallet.accounts);
+    }
   }
 
   /**
@@ -679,11 +691,12 @@ export class WalletService {
    * @param {*} accounts
    * @memberof WalletService
    */
-  saveWalletStorage(nameWallet: string, accountsParams: any) {
+  saveWalletStorage(nameWallet: string, accountsParams: any, contacts?: any) {
     let walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
     walletsStorage.push({
       name: nameWallet,
-      accounts: [accountsParams]
+      accounts: [accountsParams],
+      book: contacts
     });
 
     localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorage));
@@ -756,6 +769,14 @@ export class WalletService {
   }
 
   /**
+   *
+   * @param transactions
+   */
+  setUnconfirmedTransaction(transactions: any) {
+    this.unconfirmedTransactions = transactions;
+  }
+
+  /**
    *Set a wallet as current
    *
    * @param {*} wallet
@@ -821,10 +842,11 @@ export class WalletService {
    */
   validateMultisigAccount(accounts: AccountsInterface[]) {
     // console.log('----LA DATA QUE RECIBO-----> ', accounts);
-    accounts.forEach(account => {
-      let remove = true;
-      // console.log('====account====', account);
-      if (account.encrypted === '') {
+    const dataExist = accounts.filter(x => x.encrypted === '');
+    if (dataExist) {
+      dataExist.forEach(account => {
+        let remove = true;
+        // console.log('====account====', account);
         // console.log('PROCESO DE VERIFICACION');
         if (account.isMultisign !== null) {
           if (account.isMultisign.cosignatories.length > 0) {
@@ -838,15 +860,13 @@ export class WalletService {
             });
           }
         }
-      } else {
-        remove = false;
-      }
 
-      if (remove) {
-        // console.log('==== REMOVER ====', account);
-        this.removeAccountWallet(this.proximaxProvider.createFromRawAddress(account.address).pretty());
-      }
-    });
+        if (remove) {
+          // console.log('==== REMOVER ====', account);
+          this.removeAccountWallet(account.name);
+        }
+      });
+    }
   }
 }
 

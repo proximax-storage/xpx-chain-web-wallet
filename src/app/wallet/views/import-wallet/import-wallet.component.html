@@ -36,7 +36,7 @@
             formControlName="privateKey">
           <mdb-error
             *ngIf="validateInput('privateKey').invalid && (validateInput('privateKey').dirty || validateInput('privateKey').touched)">
-            <span>Input invalid</span>
+            <span>Invalid private key</span>
           </mdb-error>
         </div>
       </div>
@@ -58,7 +58,7 @@
             placeholder="Wallet name" formControlName="nameWallet">
           <mdb-error
             *ngIf="validateInput('nameWallet').invalid && (validateInput('nameWallet').dirty || validateInput('nameWallet').touched)">
-            <span>Input invalid</span>
+            <span>Min length 2, max length 30</span>
           </mdb-error>
 
           <mdb-error *ngIf="validateInput('nameWallet').valid && validateNameWallet()">
@@ -87,7 +87,7 @@
                 <mdb-error *ngIf="
                 validateInput('password', 'passwords').invalid &&
                 (validateInput('password', 'passwords').dirty || validateInput('password', 'passwords').touched)">
-                  <span>Input invalid</span>
+                  <span>Min length {{configurationForm.passwordWallet.minLength}}, max length {{configurationForm.passwordWallet.maxLength}}</span>
                 </mdb-error>
               </div>
             </div>
@@ -105,7 +105,7 @@
                   *ngIf="
                   validateInput('confirm_password', 'passwords').invalid &&
                   (validateInput('confirm_password', 'passwords').dirty || validateInput('confirm_password', 'passwords').touched)">
-                  <span>Input invalid</span>
+                  <span>Password doesn't match</span>
                 </mdb-error>
 
                 <mdb-error *ngIf="validateMatchPassword()">
