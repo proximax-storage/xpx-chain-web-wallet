@@ -203,7 +203,7 @@ export class TransactionsService {
   * @param publicsAccounts
   */
   async searchAggregateBonded(publicsAccounts: PublicAccount[]) {
-    console.log('\n=== SEARCH AGGREGATE BONDED ===', publicsAccounts, '\n');
+    // console.log('\n=== SEARCH AGGREGATE BONDED ===', publicsAccounts, '\n');
     const aggregateTransactions = [];
     for (let publicAccount of publicsAccounts) {
       const aggregateTransaction = await this.proximaxProvider.getAggregateBondedTransactions(publicAccount).toPromise();
@@ -216,7 +216,7 @@ export class TransactionsService {
       });
     }
 
-    console.log('=== RESULT AGGREGATE BONDED TRANSACTIONS ===', aggregateTransactions);
+    // console.log('=== RESULT AGGREGATE BONDED TRANSACTIONS ===', aggregateTransactions);
     this.setAggregateBondedTransactions$(aggregateTransactions);
   }
 
@@ -315,7 +315,7 @@ export class TransactionsService {
    * @param transaction
    */
   buildAggregateTransaction(sender: PublicAccount, transaction: Transaction): AggregateTransaction {
-    console.log('sender --->', sender);
+    // console.log('sender --->', sender);
     return AggregateTransaction.createBonded(
       Deadline.create(),
       [transaction.toAggregate(sender)],
@@ -417,8 +417,8 @@ export class TransactionsService {
 
   validateBuildSelectAccountBalance(balanceAccount: number, feeTransaction: number, rental: number): boolean {
     const totalFee = feeTransaction + rental;
-    console.log('balanceAccount', balanceAccount)
-    console.log('totalFee', totalFee)
+    // console.log('balanceAccount', balanceAccount)
+    // console.log('totalFee', totalFee)
     return (balanceAccount >= totalFee)
 
   }
@@ -583,7 +583,7 @@ export class TransactionsService {
     this.walletService.getAccountsPushedSubject().subscribe(
       next => {
         if (next && next.length > 0) {
-          console.log('=== YOU HAVE NEW ACCOUNT ===', next);
+          // console.log('=== YOU HAVE NEW ACCOUNT ===', next);
           this.searchAccountsInfo(next);
         }
       }
@@ -610,7 +610,7 @@ export class TransactionsService {
           }
         });
 
-        console.log('==== publicsAccounts ====', publicsAccounts);
+        // console.log('==== publicsAccounts ====', publicsAccounts);
         // Search all transactions aggregate bonded from array publics accounts
         if (publicsAccounts.length > 0) {
           this.searchAggregateBonded(publicsAccounts);
@@ -631,7 +631,7 @@ export class TransactionsService {
    * @param transactions
    */
   setAggregateBondedTransactions$(transactions: TransactionsInterface[]) {
-    console.log('\n=== SET AGGREGATE TRANSACTION ===', transactions);
+    // console.log('\n=== SET AGGREGATE TRANSACTION ===', transactions);
     if (transactions.length > 0) {
       this.getAggregateBondedTransactions$().pipe(first()).subscribe(
         transactionsSaved => {
@@ -645,11 +645,11 @@ export class TransactionsService {
             }
 
             if (pushTransactions.length > 0) {
-              console.log('SAVE ---> ', pushTransactions);
+              // console.log('SAVE ---> ', pushTransactions);
               this._aggregateTransactionsSubject.next(pushTransactions);
             }
           } else {
-            console.log('SAVE THE SAME---> ', transactions);
+            // console.log('SAVE THE SAME---> ', transactions);
             this._aggregateTransactionsSubject.next(transactions);
           }
         }
