@@ -84,7 +84,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.subscription.push(this.transactionService.getAggregateBondedTransactions$().subscribe(
       next => {
         this.partialTransactions = (next && next.length > 0) ? next.length : 0;
-        console.log(this.partialTransactions);
       }
     ));
   }

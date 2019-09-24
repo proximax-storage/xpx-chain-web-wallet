@@ -31,7 +31,7 @@ export class AccountDeleteComponent implements OnInit {
   viewPublicKey = false;
   showPassword: boolean = true;
   title = 'Delete Account';
-  descriptionPrivateKey = `Warning! Before proceeding, make sure store your private key in a safe place. Access to 
+  descriptionPrivateKey = `Warning! Before proceeding, make sure store your private key in a safe place. Access to
   your digital assets cannot be recovered without it.`;
   titleDescription = '';
   description = 'Warning! Before proceeding, make sure store your private key in a safe place. Access to your digital assets cannot be recovered without it.';
@@ -197,16 +197,13 @@ export class AccountDeleteComponent implements OnInit {
    */
 
   deleteAccount() {
-
     if (this.validatingForm.get('password').value !== '') {
       const common = { password: this.validatingForm.get('password').value };
       if (this.walletService.decrypt(common, this.currenAccount)) {
-
-        const publicAccount: PublicAccount = PublicAccount.createFromPublicKey(this.currenAccount.publicAccount.publicKey, this.currenAccount.network);
-
         const revalidateMultisig = true;
         this.walletService.removeAccountWallet(this.accountName, revalidateMultisig);
         this.transactionService.updateBalance();
+        this.sharedService.showInfo('', 'Your account has be deleted');
         this.router.navigate([`/${AppConfig.routes.viewAllAccount}`]);
       }
       this.validatingForm.get('password').patchValue('', { emitEvent: false, onlySelf: true });
