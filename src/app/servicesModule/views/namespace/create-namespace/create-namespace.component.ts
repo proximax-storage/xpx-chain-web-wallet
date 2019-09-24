@@ -429,7 +429,7 @@ export class CreateNamespaceComponent implements OnInit {
     this.namespaceForm.get('duration').valueChanges.subscribe(
       next => {
         console.log(next);
-        if(next < 365) {
+        if(next <= 365) {
        
         if (next !== null && next !== undefined && String(next) !== '0' && next !== '') {
           
@@ -441,6 +441,8 @@ export class CreateNamespaceComponent implements OnInit {
           this.calculateRentalFee = '0.000000';
         }
       } else {
+        this.durationByBlock = this.transactionService.calculateDurationforDay(365).toString();
+            this.validateRentalFee(this.rentalFee * parseFloat(this.durationByBlock));
         console.log('fake');
         
       }

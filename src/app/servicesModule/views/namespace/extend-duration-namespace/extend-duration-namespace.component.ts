@@ -83,6 +83,7 @@ export class ExtendDurationNamespaceComponent implements OnInit {
 
     this.validateRentalFee(this.rentalFee * duration);
     this.extendDurationNamespaceForm.get('duration').valueChanges.subscribe(next => {
+      if(next <= 365){
       if (next !== null && next !== undefined && String(next) !== '0') {
         this.durationByBlock = this.transactionService.calculateDurationforDay(next).toString();
         this.validateRentalFee(this.rentalFee * parseFloat(this.durationByBlock));
@@ -92,6 +93,11 @@ export class ExtendDurationNamespaceComponent implements OnInit {
         this.durationByBlock = '0';
         this.extendDurationNamespaceForm.get('duration').patchValue('');
       }
+    } else {
+      this.durationByBlock = this.transactionService.calculateDurationforDay(365).toString();
+        this.validateRentalFee(this.rentalFee * parseFloat(this.durationByBlock));
+        this.builder();
+    }
     });
 
     // namespaceRoot ValueChange
@@ -305,6 +311,19 @@ export class ExtendDurationNamespaceComponent implements OnInit {
       }
     ));
 
+  }
+
+  limitDuration(e) {
+    console.log();
+    if (isNaN(parseInt(e.target.value))) {
+      e.target.value = ''
+    } else {
+      if (parseInt(e.target.value) > 365) {
+        e.target.value = '365'
+      } else if (parseInt(e.target.value) < 1) {
+        e.target.value = ''
+      }
+    }
   }
 
   /**
