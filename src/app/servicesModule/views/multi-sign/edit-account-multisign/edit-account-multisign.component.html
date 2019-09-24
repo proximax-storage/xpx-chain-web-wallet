@@ -69,6 +69,7 @@
                                     </div>
                                     <div class="col-6 col-padding-left-rem0">
                                         <div class="md-form form-sm mt-03rem mb-0rem">
+                                            <!-- {{minApprovaMaxLength}} -->
                                             <input max="{{minApprovaMaxLength}}" min="{{minApprovaMinLength}}"
                                                 formControlName="minApprovalDelta" required mdbInputDirective
                                                 mdbValidate [validateSuccess]="true" [validateError]="true" type="number"
@@ -93,7 +94,7 @@
                                     </div>
                                     <div class="col-6 col-padding-left-rem0">
                                         <div class="md-form form-sm mt-03rem  mb-0rem">
-                                            <input max="{{minApprovaMaxLength}}" min="{{minApprovaMinLength}}"
+                                            <input max="{{minRemoveMaxLength}}" min="{{minRemoveMinLength}}"
                                                 formControlName="minRemovalDelta" required mdbInputDirective
                                                 mdbValidate [validateSuccess]="true" [validateError]="true" type="number"
                                                 id="minRemovalDelta" class="form-control form-control-sm input-border"
@@ -304,7 +305,7 @@
                                 </button>
                             </div>
                             <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-                                <button [disabled]="btnBlock" mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+                                <button [disabled]="editAccountMultsignForm.invalid || cosignatoryList.length == 0" mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
                                     size="md">
                                     <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status"
                                         aria-hidden="true" *ngIf="blockSend"></span>
