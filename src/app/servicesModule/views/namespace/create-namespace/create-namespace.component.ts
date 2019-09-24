@@ -108,6 +108,28 @@ export class CreateNamespaceComponent implements OnInit {
     });
   }
 
+  builder(){
+    if(this.namespaceName === undefined || this.namespaceName === '' ){
+      this.namespaceName = 'p'
+    }
+    if(this.typetransfer == 1 ){
+      this.registerRootNamespaceTransaction = this.proximaxProvider.registerRootNamespaceTransaction(
+        this.namespaceName,
+        this.walletService.currentAccount.network,
+        this.duration
+      )
+      this.fee = this.transactionService.amountFormatterSimple(this.registerRootNamespaceTransaction.maxFee.compact())
+    } else if(this.typetransfer == 2){
+      const rootNamespaceName = this.namespaceForm.get('namespaceRoot').value;
+      this.registersubamespaceTransaction = this.proximaxProvider.registersubNamespaceTransaction(
+        rootNamespaceName,
+        this.namespaceName,
+        this.walletService.currentAccount.network
+      );
+      this.fee = this.transactionService.amountFormatterSimple(this.registersubamespaceTransaction.maxFee.compact())
+    }
+  }
+
   /**
    *
    *
@@ -432,8 +454,6 @@ export class CreateNamespaceComponent implements OnInit {
           this.calculateRentalFee = '10.000000';
           this.validateRentalFee(parseFloat(this.calculateRentalFee));
         }
-    
-        console.log('this.typetransfer', this.typetransfer)
         this.builder()
       }
     });
@@ -442,36 +462,7 @@ export class CreateNamespaceComponent implements OnInit {
     this.namespaceForm.get('name').valueChanges.subscribe(name => {
       this.namespaceName = name;
       this.builder()
-      console.log('this.namespaceName ', this.namespaceName );
     })
-  }
-
-  builder(){
-
-    if(this.typetransfer == 1){
-      console.log('this.build root namespace ' );
-      this.registerRootNamespaceTransaction = this.proximaxProvider.registerRootNamespaceTransaction(
-        this.namespaceName,
-        this.walletService.currentAccount.network,
-        this.duration
-      )
-      console.log('registerRootNamespaceTransaction ', this.registerRootNamespaceTransaction );
-      this.fee = this.transactionService.amountFormatterSimple(this.registerRootNamespaceTransaction.maxFee.compact())
-    } else if(this.typetransfer == 2){
-      console.log('this.build sub namespace ' );
-      const rootNamespaceName = this.namespaceForm.get('namespaceRoot').value;
-      console.log('rootNamespaceName ', rootNamespaceName );
-      const subnamespaceName = this.namespaceName
-      this.registersubamespaceTransaction = this.proximaxProvider.registersubNamespaceTransaction(
-        rootNamespaceName,
-        subnamespaceName,
-        this.walletService.currentAccount.network
-      );
-      console.log('registersubamespaceTransaction ', this.registersubamespaceTransaction );
-      this.fee = this.transactionService.amountFormatterSimple(this.registersubamespaceTransaction.maxFee.compact())
-    
-    }
-
   }
 
   /**
