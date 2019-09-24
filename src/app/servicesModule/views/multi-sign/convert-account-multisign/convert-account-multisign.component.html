@@ -290,7 +290,7 @@
                 </button>
               </div>
               <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-                <button [disabled]="btnBlock" mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+                <button [disabled]="convertAccountMultsignForm.invalid || cosignatoryList.length == 0" mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
                   size="md">
                   <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
                     *ngIf="blockSend"></span>
