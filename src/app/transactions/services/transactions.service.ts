@@ -597,8 +597,8 @@ export class TransactionsService {
   searchAccountsInfo(accounts: AccountsInterface[]) {
     // console.log('ACCOUNTS INTERFACE ---> ', accounts);
     this.walletService.searchAccountsInfo(accounts).then(
-      (data: { mosaicsIds: MosaicId[], accountsInfo: AccountsInfoInterface[] }) => {
-        // console.log('=== DATA ===', data);
+      (data: { mosaicsId: MosaicId[], accountsInfo: AccountsInfoInterface[] }) => {
+        console.log('=== DATA ===', data);
         this.walletService.validateMultisigAccount(accounts);
         const publicsAccounts: PublicAccount[] = [];
         data.accountsInfo.forEach((element: AccountsInfoInterface) => {
@@ -617,8 +617,8 @@ export class TransactionsService {
         }
 
         this.updateBalance();
-        if (data.mosaicsIds && data.mosaicsIds.length > 0) {
-          this.mosaicServices.searchInfoMosaics(data.mosaicsIds)
+        if (data.mosaicsId && data.mosaicsId.length > 0) {
+          this.mosaicServices.searchInfoMosaics(data.mosaicsId)
         }
 
       }
