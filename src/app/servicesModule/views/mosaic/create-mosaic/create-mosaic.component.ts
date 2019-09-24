@@ -232,7 +232,7 @@ export class CreateMosaicComponent implements OnInit {
 
   }
 
-  getAmountAccount () {
+  getAmountAccount() {
     const account = this.walletService.filterAccountInfo(this.proximaxProvider.createFromRawAddress(this.walletService.currentAccount.address).pretty(), true);
     let mosaics = account.accountInfo.mosaics;
     let amoutMosaic = mosaics.filter(mosaic => mosaic.id.toHex() == environment.mosaicXpxInfo.id);
@@ -346,9 +346,7 @@ export class CreateMosaicComponent implements OnInit {
           //ANNOUNCEMENT THE TRANSACTION-
           this.proximaxProvider.announce(signedTransaction).subscribe(
             async x => {
-              this.blockSend = false;
-              this.clearForm();
-              this.cleanCheck();
+
               if (this.subscribe['transactionStatus'] === undefined || this.subscribe['transactionStatus'] === null) {
                 this.getTransactionStatus();
               }
@@ -406,6 +404,9 @@ export class CreateMosaicComponent implements OnInit {
             const match = statusTransactionHash === element.hash;
             if (match) {
               this.transactionReady.push(element);
+              this.blockSend = false;
+              this.clearForm();
+              this.cleanCheck();
             }
 
             if (statusTransaction['type'] === 'confirmed' && match) {
@@ -471,7 +472,7 @@ export class CreateMosaicComponent implements OnInit {
     if (isNaN(parseInt(e.target.value))) {
       e.target.value = ''
     } else {
-    if (parseInt(e.target.value) > 365) {
+      if (parseInt(e.target.value) > 365) {
         e.target.value = ''
       } else if (parseInt(e.target.value) < 1) {
         e.target.value = ''

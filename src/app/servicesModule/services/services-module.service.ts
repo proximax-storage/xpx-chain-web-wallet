@@ -108,7 +108,7 @@ export class ServicesModuleService {
    */
   changeBooksItem() {
     this.itemBook = `${environment.itemBooksAddress}-${this.walletService.getCurrentWallet().name}`;
-    console.log(this.itemBook);
+    // console.log(this.itemBook);
   }
 
 

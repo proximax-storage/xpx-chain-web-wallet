@@ -641,6 +641,7 @@ export class WalletService {
     this.accountsInfo.filter(x => x.name !== name);
     this.setAccountsInfo(accountsInfo);
     this.saveAccountWalletStorage(null, this.currentWallet);
+    this.setAccountsPushedSubject(this.currentWallet.accounts);
     if (moduleRemove) {
       this.validateMultisigAccount(this.currentWallet.accounts);
     }

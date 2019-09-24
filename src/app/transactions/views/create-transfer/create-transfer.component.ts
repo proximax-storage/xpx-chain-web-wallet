@@ -509,7 +509,7 @@ export class CreateTransferComponent implements OnInit {
     if (!this.subscription['transactionStatus']) {
       this.subscription['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
         statusTransaction => {
-          console.log('statusTransaction', statusTransaction);
+          // console.log('statusTransaction', statusTransaction);
           if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
             for (let element of this.transactionSigned) {
               const statusTransactionHash =
@@ -734,8 +734,8 @@ export class CreateTransferComponent implements OnInit {
         switch (type) {
           case true:
             /*console.log('TRANSFIERE CON COSIGNATARIO');
-            console.log('ACCOUNT SENDER ----> ', this.sender);
-            console.log('COSIGNATARIO SELECCIONADO ----> ', this.cosignatorie);*/
+            // console.log('ACCOUNT SENDER ----> ', this.sender);
+            // console.log('COSIGNATARIO SELECCIONADO ----> ', this.cosignatorie);*/
             const generationHash = this.dataBridge.blockInfo.generationHash;
             if (this.walletService.decrypt(common, this.cosignatorie)) {
               const params: TransferInterface = {
@@ -773,12 +773,12 @@ export class CreateTransferComponent implements OnInit {
               //-----------------------------------------------------------------------
               // Build aggregate transaction
               const aggregateTransaction = this.transactionService.buildAggregateTransaction(this.sender.publicAccount, transferBuilder);
-              console.log('=== Build aggregate transaction ===', aggregateTransaction);
+              // console.log('=== Build aggregate transaction ===', aggregateTransaction);
               // Sign transaction
               const aggregateSigned = account.sign(aggregateTransaction, generationHash);
               // Build hash lock transaction
               const hashLockTransaction: LockFundsTransaction = this.transactionService.buildHashLockTransaction(aggregateSigned);
-              console.log('=== Build hash lock transaction === ', hashLockTransaction);
+              // console.log('=== Build hash lock transaction === ', hashLockTransaction);
               // Hash lock signed
               const hashLockSigned = account.sign(hashLockTransaction, generationHash);
               this.saveContactFn();
@@ -786,7 +786,7 @@ export class CreateTransferComponent implements OnInit {
               this.transactionService.buildTransactionHttp().announce(hashLockSigned).subscribe(async () => {
                 this.getTransactionStatusHashLock(hashLockSigned, aggregateSigned);
               }, err => {
-                console.log('ERROR ----> ', err);
+                // console.log('ERROR ----> ', err);
               });
             } else {
               this.formTransfer.get('password').setValue('');
@@ -860,7 +860,7 @@ export class CreateTransferComponent implements OnInit {
    * @param $event
    */
   selectCosignatorie($event) {
-    console.log('COSIGNATORIE SELECTED ', $event);
+    // console.log('COSIGNATORIE SELECTED ', $event);
     if ($event) {
       this.cosignatorie = $event.value;
     } else {
@@ -1082,7 +1082,7 @@ export class CreateTransferComponent implements OnInit {
     const amountXpx = this.formTransfer.get("amountXpx").value;
 
     if (amountXpx !== '' && amountXpx !== null && Number(amountXpx) !== 0) {
-      console.log(amountXpx);
+      // console.log(amountXpx);
       let arrAmount = amountXpx.toString().replace(/,/g, "").split('.');
       let decimal;
       let realAmount;
@@ -1125,7 +1125,7 @@ export class CreateTransferComponent implements OnInit {
       }
     });
 
-    console.log(mosaics);
+    // console.log(mosaics);
 
     return mosaics;
   }

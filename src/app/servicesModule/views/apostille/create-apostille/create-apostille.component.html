@@ -120,7 +120,7 @@
 
                     <div class="col-12 col-sm-6 fw-600 d-flex justify-content-center justify-content-sm-start">
                       <div class="form-check form-check-inline">
-                        <input formControlName="typeFile" [value]="false" type="radio" class="form-check-input"
+                        <input formControlName="typeFile" disabled [value]="false" type="radio" class="form-check-input"
                           id="DFMS" name="typeFile" mdbInput>
                         <label class="form-check-label" for="DFMS">Sirius Storage</label>
                       </div>
@@ -187,9 +187,9 @@
                 </div>
               </div>
 
-              <!-- PRIVATE & PUBLIC -->
-              <div class="row mt-1rem">
-                <div class="col-12 box-grey d-flex justify-content-center">
+              <div class="row mt-1rem mx-auto">
+                <!-- PRIVATE & PUBLIC -->
+                <div class="col-11 col-md-6 box-grey d-flex justify-content-center">
                   <div class="row">
                     <div class="col-6 fw-600 d-flex justify-content-start">
                       <div class="form-check form-check-inline">
@@ -208,15 +208,13 @@
                     </div>
                   </div>
                 </div>
-              </div>
 
-              <!-- SAFE DFMS -->
-              <div class="row mt-1rem">
-                <div class="col-12 box-grey d-flex justify-content-center">
+                <!-- SAFE DFMS -->
+                <div class="col-11 col-md-5 box-grey d-flex justify-content-center">
                   <div class="row">
                     <div class="col-12 fw-600 mx-auto">
                       <div class="form-check form-check-inline">
-                        <mdb-checkbox formControlName="safeDFMS" [checked]="true" [default]="true"
+                        <mdb-checkbox formControlName="safeDFMS" [checked]="true" [disabled]="true" [default]="true"
                           (change)="onSaveInDFMSChanged($event)">SAVE
                           in Sirius Storage
                         </mdb-checkbox>
@@ -225,6 +223,7 @@
                   </div>
                 </div>
               </div>
+
 
               <!-- TYPE ENCRIPTED -->
               <div class="row mt-1rem">
@@ -297,7 +296,7 @@
                   <span class="w-b-a fw-600">File hash</span>
                 </div>
                 <div>
-                  <span class="w-b-a fs-08rem mt-1rem">{{ntyData.fileHash}}</span>
+                  <span class="w-b-a w-w-b-w fs-08rem mt-1rem">{{ntyData.fileHash}}</span>
                 </div>
               </div>
             </div>
