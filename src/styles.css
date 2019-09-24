@@ -1772,6 +1772,15 @@ ul.stepper.horizontal .step-title {
   padding-top: .8rem;
 }
 
+.label-i-icon {
+  position: absolute;
+  margin-top: -50px;
+  padding: 12px;
+  color: #6f6f6f;
+  font-size: .8rem;
+  padding-top: .8rem;
+}
+
 /*********************************************************************/
 
 .mar-1rem {
