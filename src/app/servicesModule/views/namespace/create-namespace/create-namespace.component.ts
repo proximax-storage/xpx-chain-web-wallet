@@ -42,7 +42,6 @@ export class CreateNamespaceComponent implements OnInit {
   durationByBlock = '5760';
   endHeight: number;
   fee: string;
-  feeType: string = 'XPX';
   insufficientBalance = false;
   insufficientBalanceDuration = false;
   labelNamespace: string = '';
@@ -66,6 +65,12 @@ export class CreateNamespaceComponent implements OnInit {
   subscription: Subscription[] = [];
   transactionStatus: boolean = false;
   lengthNamespace: number;
+  namespaceName: any;
+  duration: any;
+  namespaceRoot: any;
+  registerRootNamespaceTransaction: any;
+  registersubamespaceTransaction: any;
+  amountAccount: number;
 
   constructor(
     private fb: FormBuilder,
@@ -86,7 +91,10 @@ export class CreateNamespaceComponent implements OnInit {
     this.lengthNamespace = this.configurationForm.namespaceName.maxLength;
     this.createForm();
     this.getNamespaces();
-    this.fee = `0.000000 ${this.feeType}`;
+    this.amountAccount = this.walletService.getAmountAccount();
+    console.log(this.amountAccount);
+    
+    this.fee = '0.000000';
     this.durationByBlock = this.transactionService.calculateDurationforDay(this.namespaceForm.get('duration').value).toString();
     this.validateRentalFee(this.rentalFee * parseFloat(this.durationByBlock));
     this.subscribeValueChange();
@@ -159,6 +167,8 @@ export class CreateNamespaceComponent implements OnInit {
     // console.log('validateForm', this.validateForm);
     // console.log('this.blockBtnSend', this.blockBtnSend);
     if (this.namespaceForm.valid && !this.blockBtnSend) {
+      const validateAmount = this.transactionService.validateBuildSelectAccountBalance(this.amountAccount, Number(this.fee), Number(this.calculateRentalFee))
+      if (validateAmount) {
       this.blockBtnSend = true;
       const common = {
         password: this.namespaceForm.get('password').value,
@@ -178,13 +188,17 @@ export class CreateNamespaceComponent implements OnInit {
             this.setTimeOutValidate(signedTransaction.hash);
           }, () => {
              this.blockBtnSend = false;
-            this.clearForm()
+            this.clearForm();
+            this.fee = '0.000000'
             this.sharedService.showError('', 'Error connecting to the node');
           }
         );
       } else {
          this.blockBtnSend = false;
       }
+    } else {
+      this.sharedService.showError('', 'insufficient balance');
+    }
     }
   }
 
@@ -340,33 +354,33 @@ export class CreateNamespaceComponent implements OnInit {
    */
   signedTransaction(common: any): SignedTransaction {
     const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
-    const namespaceName: string = this.namespaceForm.get('name').value;
-    const duration: number = parseFloat(this.durationByBlock);
+    // const namespaceName: string = this.namespaceForm.get('name').value;
+    // const duration: number = parseFloat(this.durationByBlock);
     // const duration: number = 20;
     const generationHash = this.dataBridge.blockInfo.generationHash;
     if (this.typetransfer == 1) {
-      const registerRootNamespaceTransaction = this.proximaxProvider.registerRootNamespaceTransaction(
-        namespaceName,
-        this.walletService.currentAccount.network,
-        duration
-      )
+      // const registerRootNamespaceTransaction = this.proximaxProvider.registerRootNamespaceTransaction(
+      //   namespaceName,
+      //   this.walletService.currentAccount.network,
+      //   duration
+      // )
 
-      // console.log('----namespaceName----', namespaceName);
+      // console.log('----registerRootNamespaceTransaction----', registerRootNamespaceTransaction);
 
-      const signedTransaction = account.sign(registerRootNamespaceTransaction, generationHash); //Update-sdk-dragon
+      const signedTransaction = account.sign(this.registerRootNamespaceTransaction, generationHash); //Update-sdk-dragon
       return signedTransaction;
     } else if (this.typetransfer == 2) {
-      const rootNamespaceName = this.namespaceForm.get('namespaceRoot').value;
-      const subnamespaceName = this.namespaceForm.get('name').value;
-      const registersubamespaceTransaction = this.proximaxProvider.registersubNamespaceTransaction(
-        rootNamespaceName,
-        subnamespaceName,
-        this.walletService.currentAccount.network
-      );
+      // const rootNamespaceName = this.namespaceForm.get('namespaceRoot').value;
+      // const subnamespaceName = this.namespaceForm.get('name').value;
+      // const registersubamespaceTransaction = this.proximaxProvider.registersubNamespaceTransaction(
+      //   rootNamespaceName,
+      //   subnamespaceName,
+      //   this.walletService.currentAccount.network
+      // );
 
-      // console.log('----rootNamespaceName----', rootNamespaceName);
+      // console.log('----registersubamespaceTransaction----', this.registersubamespaceTransaction);
       // console.log('----subnamespaceName----', subnamespaceName);
-      const signedTransaction = account.sign(registersubamespaceTransaction, generationHash); //Update-sdk-dragon
+      const signedTransaction = account.sign(this.registersubamespaceTransaction, generationHash); //Update-sdk-dragon
       return signedTransaction;
     }
   }
@@ -388,6 +402,9 @@ export class CreateNamespaceComponent implements OnInit {
         } else {
           this.calculateRentalFee = '0.000000';
         }
+        this.duration = parseFloat(this.durationByBlock);
+        console.log('duration',  this.duration)
+        this.builder()
       }
     );
 
@@ -415,13 +432,46 @@ export class CreateNamespaceComponent implements OnInit {
           this.calculateRentalFee = '10.000000';
           this.validateRentalFee(parseFloat(this.calculateRentalFee));
         }
+    
+        console.log('this.typetransfer', this.typetransfer)
+        this.builder()
       }
     });
 
     // NamespaceName ValueChange
-    // this.namespaceForm.get('name').valueChanges.subscribe(name => {
-    //   if (!this.validateNamespace(name)) return this.sharedService.showError('', 'Name of namespace is invalid')
-    // })
+    this.namespaceForm.get('name').valueChanges.subscribe(name => {
+      this.namespaceName = name;
+      this.builder()
+      console.log('this.namespaceName ', this.namespaceName );
+    })
+  }
+
+  builder(){
+
+    if(this.typetransfer == 1){
+      console.log('this.build root namespace ' );
+      this.registerRootNamespaceTransaction = this.proximaxProvider.registerRootNamespaceTransaction(
+        this.namespaceName,
+        this.walletService.currentAccount.network,
+        this.duration
+      )
+      console.log('registerRootNamespaceTransaction ', this.registerRootNamespaceTransaction );
+      this.fee = this.transactionService.amountFormatterSimple(this.registerRootNamespaceTransaction.maxFee.compact())
+    } else if(this.typetransfer == 2){
+      console.log('this.build sub namespace ' );
+      const rootNamespaceName = this.namespaceForm.get('namespaceRoot').value;
+      console.log('rootNamespaceName ', rootNamespaceName );
+      const subnamespaceName = this.namespaceName
+      this.registersubamespaceTransaction = this.proximaxProvider.registersubNamespaceTransaction(
+        rootNamespaceName,
+        subnamespaceName,
+        this.walletService.currentAccount.network
+      );
+      console.log('registersubamespaceTransaction ', this.registersubamespaceTransaction );
+      this.fee = this.transactionService.amountFormatterSimple(this.registersubamespaceTransaction.maxFee.compact())
+    
+    }
+
   }
 
   /**
