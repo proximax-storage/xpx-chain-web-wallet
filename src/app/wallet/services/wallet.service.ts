@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { SimpleWallet, PublicAccount, AccountInfo, MultisigAccountInfo, NamespaceId, MosaicId } from 'tsjs-xpx-chain-sdk';
+import { SimpleWallet, PublicAccount, AccountInfo, MultisigAccountInfo, NamespaceId, MosaicId, Address } from 'tsjs-xpx-chain-sdk';
 import { crypto } from 'js-xpx-chain-library';
 import { AbstractControl } from '@angular/forms';
 import { BehaviorSubject, Observable, timer, Subject } from 'rxjs';
@@ -192,6 +192,15 @@ export class WalletService {
    */
   clearNis1AccounsWallet() {
     this.nis1AccounsWallet = [];
+  }
+
+
+  getAmountAccount () {
+    const account = this.filterAccountInfo(this.proximaxProvider.createFromRawAddress(this.currentAccount.address).pretty(), true);
+    let mosaics = account.accountInfo.mosaics;
+    let amoutMosaic = mosaics.filter(mosaic => mosaic.id.toHex() == environment.mosaicXpxInfo.id);
+    return amoutMosaic[0].amount.compact();
+    
   }
 
   /**
