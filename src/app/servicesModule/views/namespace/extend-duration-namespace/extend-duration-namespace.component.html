@@ -31,7 +31,7 @@
               <img class="form-control-feedback" src="assets/images/img/icon-duration-green-16h-proximax-sirius-wallet.svg" alt="">
               <input mask="0*" formControlName="duration" required mdbInputDirective mdbValidate
                 [validateSuccess]="true" [validateError]="true" type="text" id="duration"
-                class="form-control form-control-sm input-border" placeholder="Duration (number of days)">
+                class="form-control form-control-sm input-border" placeholder="Duration (number of days)" (keyup)="limitDuration($event)">
 
               <!-- VALIDATION -->
               <mdb-error

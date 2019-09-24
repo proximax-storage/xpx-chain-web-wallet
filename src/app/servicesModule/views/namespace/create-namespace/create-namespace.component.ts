@@ -110,7 +110,7 @@ export class CreateNamespaceComponent implements OnInit {
 
   builder(){
     if(this.namespaceName === undefined || this.namespaceName === '' ){
-      this.namespaceName = 'p'
+      this.namespaceName = 'p';
     }
     if(this.typetransfer == 1 ){
       this.registerRootNamespaceTransaction = this.proximaxProvider.registerRootNamespaceTransaction(
@@ -367,6 +367,18 @@ export class CreateNamespaceComponent implements OnInit {
     ));
   }
 
+  limitDuration(e) {
+    console.log();
+    if (isNaN(parseInt(e.target.value))) {
+      e.target.value = ''
+    } else {
+      if (parseInt(e.target.value) > 365) {
+        e.target.value = '365'
+      } else if (parseInt(e.target.value) < 1) {
+        e.target.value = ''
+      }
+    }
+  }
   /**
    *
    *
@@ -416,7 +428,11 @@ export class CreateNamespaceComponent implements OnInit {
     // Duration ValueChange
     this.namespaceForm.get('duration').valueChanges.subscribe(
       next => {
+        console.log(next);
+        if(next <= 365) {
+       
         if (next !== null && next !== undefined && String(next) !== '0' && next !== '') {
+          
           if (this.showDuration) {
             this.durationByBlock = this.transactionService.calculateDurationforDay(next).toString();
             this.validateRentalFee(this.rentalFee * parseFloat(this.durationByBlock));
@@ -424,6 +440,12 @@ export class CreateNamespaceComponent implements OnInit {
         } else {
           this.calculateRentalFee = '0.000000';
         }
+      } else {
+        this.durationByBlock = this.transactionService.calculateDurationforDay(365).toString();
+            this.validateRentalFee(this.rentalFee * parseFloat(this.durationByBlock));
+        console.log('fake');
+        
+      }
         this.duration = parseFloat(this.durationByBlock);
         console.log('duration',  this.duration)
         this.builder()
