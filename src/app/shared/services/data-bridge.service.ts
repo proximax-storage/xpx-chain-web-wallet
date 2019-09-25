@@ -82,7 +82,6 @@ export class DataBridgeService {
    * @memberof DataBridgeService
    */
   closeConection(destroyTransactions = true) {
-    // console.log("Destruye conexion con el websocket");
     this.destroySubscriptions();
     this.destroyConection = true;
     if (destroyTransactions) {
@@ -91,8 +90,10 @@ export class DataBridgeService {
       this.transactionsService.destroyAllTransactions();
     }
 
-    if (this.connector !== undefined) {
+    if (this.connector && this.connector.isOpen()) {
+      console.log("Destruye conexion con el websocket");
       this.connector.close();
+      this.connector.terminate();
     }
   }
 
@@ -205,7 +206,7 @@ export class DataBridgeService {
     const currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
     currentWallet.accounts.forEach(element => {
       // ----------------------------------COSIGNATURE_ADDED--------------------------------------------//
-      connector.cosignatureAdded(this.proximaxProvider.createFromRawAddress(element.address)).subscribe(cosignatureAdded => {
+      connector.cosignatureAdded(this.proximaxProvider.createFromRawAddress(element.address)).subscribe(async cosignatureAdded => {
         console.log("\n\n-----------------------COSIGNATURE_ADDED--------------------------")
         console.log(cosignatureAdded)
         console.log("------------------------------------------------------------------\n\n")
@@ -213,6 +214,25 @@ export class DataBridgeService {
           'type': 'cosignatureAdded',
           'hash': cosignatureAdded.parentHash
         });
+
+        /*const aggregateBondedCache = await this.transactionsService.getAggregateBondedTransactions$().pipe(first()).toPromise();
+        console.log('aggregateBondedCache --> ', aggregateBondedCache);
+        if (aggregateBondedCache && aggregateBondedCache.length > 0) {
+          const transactionFiltered = aggregateBondedCache.find(d => d.data.transactionInfo.hash === cosignatureAdded.parentHash);
+          console.log('filtered', transactionFiltered);
+        }*/
+
+          /*if (filtered && filtered.data && filtered.data.cosignatures.length > 0) {
+            const d = filtered.data.cosignatures.find(x => x.signature === cosignatureAdded.signature);
+            if (!d) {
+              console.log('filtered', d);
+              const otherTransactions = aggregateBondedCache.filter(d => d.data.transactionInfo.hash !== cosignatureAdded.parentHash);
+              filtered.data.cosignatures.push(cosignatureAdded.signature);
+              otherTransactions.push(filtered);
+              console.log('LO QUE VOY AGREGAR --> ', otherTransactions);
+              this.transactionsService.setTransactionsAggregateBonded$(otherTransactions);
+            }
+          }*/
       });
     });
   }
