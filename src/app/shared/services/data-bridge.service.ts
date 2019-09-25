@@ -122,7 +122,7 @@ export class DataBridgeService {
     );
 
     // Destroy aggregateTransactions transactions
-    this.transactionsService.getAggregateBondedTransactions$().pipe(first()).subscribe(
+    /*this.transactionsService.getAggregateBondedTransactions$().pipe(first()).subscribe(
       response => {
         if (response.length > 0) {
           let allAggregateTransactions = response.slice(0);
@@ -134,7 +134,7 @@ export class DataBridgeService {
           this.transactionsService.setAggregateBondedTransactions$(aggregateBonded);
         }
       }
-    );
+    );*/
   }
 
   /**
@@ -183,10 +183,18 @@ export class DataBridgeService {
     const currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
     currentWallet.accounts.forEach(element => {
       // ----------------------------------AGGREGATE_BONDED_ADDED--------------------------------------------//
-      connector.aggregateBondedAdded(this.proximaxProvider.createFromRawAddress(element.address)).subscribe(aggregateBondedAdded => {
+      connector.aggregateBondedAdded(this.proximaxProvider.createFromRawAddress(element.address)).subscribe(async aggregateBondedAdded => {
         console.log("\n\n--------------------AGGREGATE_BONDED_ADDED------------------------")
         console.log(aggregateBondedAdded.transactionInfo.hash)
         console.log("------------------------------------------------------------------\n\n")
+        const aggregateBondedCache = await this.transactionsService.getAggregateBondedTransactions$().pipe(first()).toPromise();
+        const transactionPushed = aggregateBondedCache.slice(0);
+        const transactionFormatter = this.transactionsService.getStructureDashboard(aggregateBondedAdded, transactionPushed);
+        if (transactionFormatter !== null) {
+          audio.play();
+          transactionPushed.unshift(transactionFormatter);
+          this.transactionsService.setTransactionsAggregateBonded$(transactionPushed);
+        }
       });
     });
   }
@@ -249,6 +257,11 @@ export class DataBridgeService {
         const transactionPushed = confirmedCache.slice(0);
         const transactionFormatter = this.transactionsService.getStructureDashboard(confirmedTransaction, transactionPushed);
         if (transactionFormatter !== null) {
+          this.setTransactionStatus({
+            'type': 'confirmed',
+            'data': confirmedTransaction
+          });
+
           audio.play();
           this.sharedService.showInfo('', 'Transaction confirmed');
           transactionPushed.unshift(transactionFormatter);
@@ -303,6 +316,10 @@ export class DataBridgeService {
           audio.play();
           transactionPushed.unshift(transactionFormatter);
           this.transactionsService.setTransactionsUnConfirmed$(transactionPushed);
+          this.setTransactionStatus({
+            'type': 'unconfirmed',
+            'data': unconfirmedAdded
+          });
         }
       });
     });
@@ -325,9 +342,12 @@ export class DataBridgeService {
         console.log("------------------------------------------------------------------\n\n")
         const unconfirmedCache = await this.transactionsService.getUnconfirmedTransactions$().pipe(first()).toPromise();
         if (unconfirmedCache && unconfirmedCache.length > 0) {
-          // audio.play();
           const unconfirmedFiltered = unconfirmedCache.filter(next => next.data.transactionInfo.hash !== unconfirmedRemoved);
           this.transactionsService.setTransactionsUnConfirmed$(unconfirmedFiltered);
+          this.setTransactionStatus({
+            'type': 'removedTransaction',
+            'data': unconfirmedRemoved
+          });
         }
       });
     });
@@ -348,7 +368,7 @@ export class DataBridgeService {
       // ----------------------------------UNCONFIRMED_REMOVED--------------------------------------------//
       connector.aggregateBondedRemoved(this.proximaxProvider.createFromRawAddress(element.address)).subscribe((aggregateBondedRemoved: string) => {
         console.log('=== NEW TRANSACTION AGGREGATE_BONDED_REMOVED === ', aggregateBondedRemoved, '\n\n');
-        this.validateTransactions(aggregateBondedRemoved);
+        //this.validateTransactions(aggregateBondedRemoved);
         this.setTransactionStatus({
           'type': 'aggregateBondedRemoved',
           'data': aggregateBondedRemoved
@@ -373,7 +393,7 @@ export class DataBridgeService {
         // console.log('\n=== CONNECTED ===', address.plain().slice(36, 40));
         console.log('=== NEW TRANSACTION AGGREGATE_BONDED === ', aggregateBondedAdded.transactionInfo.hash, '\n\n');
         const builded = this.transactionsService.getStructureDashboard(aggregateBondedAdded);
-        this.transactionsService.setAggregateBondedTransactions$([builded]);
+//        this.transactionsService.setAggregateBondedTransactions$([builded]);
         this.setTransactionStatus({
           'type': 'aggregateBondedAdded',
           'data': aggregateBondedAdded
@@ -590,7 +610,7 @@ export class DataBridgeService {
   /**
    *
    */
-  searchTransactionStatus() {
+ /* searchTransactionStatus() {
     // console.log(this.subscription);
     // Get transaction status
     this.subscription.push(this.getTransactionStatus().pipe(first()).subscribe(
@@ -618,7 +638,7 @@ export class DataBridgeService {
         }
       }
     ));
-  }
+  }*/
 
   /**
    *
@@ -647,7 +667,7 @@ export class DataBridgeService {
    *
    * @memberof DataBridgeService
    */
-  validateTransactions(hash: string) {
+  /*validateTransactions(hash: string) {
     this.transactionsService.getAggregateBondedTransactions$().pipe(first()).subscribe(
       next => {
         next.forEach(element => {
@@ -663,5 +683,5 @@ export class DataBridgeService {
         })
       }
     );
-  }
+  }*/
 }

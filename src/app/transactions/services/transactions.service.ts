@@ -217,7 +217,7 @@ export class TransactionsService {
     }
 
     // console.log('=== RESULT AGGREGATE BONDED TRANSACTIONS ===', aggregateTransactions);
-    this.setAggregateBondedTransactions$(aggregateTransactions);
+    //this.setAggregateBondedTransactions$(aggregateTransactions);
   }
 
 
@@ -395,7 +395,7 @@ export class TransactionsService {
   destroyAllTransactions() {
     this.setTransactionsConfirmed$([]);
     this.setTransactionsUnConfirmed$([]);
-    this.setAggregateBondedTransactions$([]);
+    //this.setAggregateBondedTransactions$([]);
   }
 
   /**
@@ -631,34 +631,31 @@ export class TransactionsService {
    *
    * @param transactions
    */
-  setAggregateBondedTransactions$(transactions: TransactionsInterface[]) {
-    // console.log('\n=== SET AGGREGATE TRANSACTION ===', transactions);
-    if (transactions.length > 0) {
-      this.getAggregateBondedTransactions$().pipe(first()).subscribe(
-        transactionsSaved => {
-          const pushTransactions = [];
-          if (transactionsSaved.length > 0) {
-            for (let element of transactions) {
-              const exist = transactionsSaved.find(x => x.data['transactionInfo'].hash === element.data['transactionInfo'].hash);
-              if (!exist) {
-                pushTransactions.push(element);
-              }
-            }
+  /* async setAggregateBondedTransactions$(transactions: TransactionsInterface[]) {
+     // console.log('\n=== SET AGGREGATE TRANSACTION ===', transactions);
+     if (transactions.length > 0) {
+       const pushTransactions = [];
+       const transactionsSaved: TransactionsInterface[] = await this.getAggregateBondedTransactions$().pipe(first()).toPromise();
+       if (transactionsSaved.length > 0) {
+         for (let element of transactions) {
+           const exist = transactionsSaved.find(x => x.data['transactionInfo'].hash === element.data['transactionInfo'].hash);
+           if (!exist) {
+             pushTransactions.push(element);
+           }
+         }
 
-            if (pushTransactions.length > 0) {
-              // console.log('SAVE ---> ', pushTransactions);
-              this._aggregateTransactionsSubject.next(pushTransactions);
-            }
-          } else {
-            // console.log('SAVE THE SAME---> ', transactions);
-            this._aggregateTransactionsSubject.next(transactions);
-          }
-        }
-      );
-    } else {
-      this._aggregateTransactionsSubject.next([]);
-    }
-  }
+         if (pushTransactions.length > 0) {
+           // console.log('SAVE ---> ', pushTransactions);
+           this._aggregateTransactionsSubject.next(pushTransactions);
+         }
+       } else {
+         // console.log('SAVE THE SAME---> ', transactions);
+         this._aggregateTransactionsSubject.next(transactions);
+       }
+     } else {
+       this._aggregateTransactionsSubject.next([]);
+     }
+   }*/
 
   /**
    *
@@ -668,6 +665,16 @@ export class TransactionsService {
    */
   setBalance$(amount: any): void {
     this.balance.next(this.amountFormatterSimple(amount));
+  }
+
+  /**
+   *
+   *
+   * @param {TransactionsInterface[]} transactions
+   * @memberof TransactionsService
+   */
+  setTransactionsAggregateBonded$(transactions: TransactionsInterface[]) {
+    this._aggregateTransactionsSubject.next(transactions);
   }
 
   /**
@@ -687,7 +694,6 @@ export class TransactionsService {
    * @memberof DashboardService
    */
   setTransactionsUnConfirmed$(transactions: TransactionsInterface[]) {
-    console.log('unconfirmedTransactionsSubject --> ', transactions);
     this.unconfirmedTransactionsSubject.next(transactions);
   }
 
