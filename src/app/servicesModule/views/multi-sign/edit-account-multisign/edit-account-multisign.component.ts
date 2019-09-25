@@ -217,9 +217,6 @@ export class EditAccountMultisignComponent implements OnInit {
     this.subscribeAccount.push(this.walletService.getAccountsInfo$().subscribe(
       async accountInfo => {
 
-        console.log("respondio  accountInfo")
-
-
         this.getAggregateBondedTransactionsValidate()
         // this.accountInfo = this.walletService.filterAccountInfo(name);
 
@@ -235,9 +232,6 @@ export class EditAccountMultisignComponent implements OnInit {
     this.isMultisig = false;
     this.mdbBtnAddCosignatory = true;
     this.accountInfo = this.walletService.filterAccountInfo(name);
-
-
-    console.log('this.accountInfo', this.accountInfo)
     // console.log('this.accountInfo.multisigInfo', this.accountInfo.multisigInfo)
     this.accountValid = (
       this.accountInfo !== null &&
@@ -245,12 +239,9 @@ export class EditAccountMultisignComponent implements OnInit {
     // if (this.subscribeAccount) {
     //   this.subscribeAccount.unsubscribe();
     // }
-
-    console.log('accountValid', this.accountValid)
     this.unsubscribe(this.subscribeAccount);
     //Validate Account
     if (!this.accountValid) {
-      console.log("caigo aqui")
       this.validateInfoisMultisig(this.accountValid)
       return
     }
@@ -270,6 +261,8 @@ export class EditAccountMultisignComponent implements OnInit {
       // this.getCosignerFirm()
       this.mdbBtnAddCosignatory = false;
       this.setValueForm('edit', true, 3);
+      this.editAccountMultsignForm.enable();
+      this.isDisabledList = false;
     } else {
       this.mdbBtnAddCosignatory = true;
       this.setValueForm('view', true, 3)
@@ -300,9 +293,9 @@ export class EditAccountMultisignComponent implements OnInit {
   // TransactionType.MODIFY_MULTISIG_ACCOUNT
 
   getAggregateBondedTransactionsValidate() {
-    this.disable = false
+
     this.subscribeAggregateBonded.push(this.transactionService.getAggregateBondedTransactions$().subscribe((transactions: TransactionsInterface[]) => {
-      console.log("aquii")
+      this.disable = false;
       for (let index = 0; index < transactions.length; index++) {
         for (let i = 0; i < transactions[index].data['innerTransactions'].length; i++) {
           this.disable = (transactions[index].data['innerTransactions'][i].signer.publicKey === this.currentAccountToConvert.publicAccount.publicKey);
@@ -846,9 +839,6 @@ export class EditAccountMultisignComponent implements OnInit {
     while (this.editAccountMultsignForm.get('minApprovalDelta').value > this.minApprovaMaxLength) {
       this.editAccountMultsignForm.get('minApprovalDelta').patchValue(this.editAccountMultsignForm.get('minApprovalDelta').value - 1, { emitEvent: false, onlySelf: true });
     }
-
-    console.log('minApprovaMinLength', this.minApprovaMinLength)
-    console.log('minApprovaMaxLength', this.minApprovaMaxLength)
     this.editAccountMultsignForm.controls['minApprovalDelta'].setValidators(validators);
     this.editAccountMultsignForm.controls['minApprovalDelta'].updateValueAndValidity({ emitEvent: false, onlySelf: true });
   }
@@ -865,15 +855,9 @@ export class EditAccountMultisignComponent implements OnInit {
     Validators.minLength(this.minRemoveMinLength),
     Validators.maxLength(this.minRemoveMaxLength)];
 
-
-
     while (this.editAccountMultsignForm.get('minRemovalDelta').value > this.minRemoveMaxLength) {
       this.editAccountMultsignForm.get('minRemovalDelta').patchValue(this.editAccountMultsignForm.get('minRemovalDelta').value - 1, { emitEvent: false, onlySelf: true });
     }
-
-
-    console.log('minRemoveMinLength', this.minRemoveMinLength)
-    console.log('minRemoveMaxLength', this.minRemoveMaxLength)
 
     this.editAccountMultsignForm.controls['minRemovalDelta'].setValidators(validators);
     this.editAccountMultsignForm.controls['minRemovalDelta'].updateValueAndValidity({ emitEvent: false, onlySelf: true });

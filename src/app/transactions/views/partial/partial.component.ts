@@ -129,11 +129,6 @@ export class PartialComponent implements OnInit {
           });
         }
       });
-
-      const cantSigned = this.arraySelect.filter((x: any) => x.signed === true);
-      if (cantSigned.length === this.arraySelect.length) {
-        this.hidePassword = true;
-      }
     }
 
     transaction.data['innerTransactions'].forEach((element: any) => {
@@ -169,7 +164,13 @@ export class PartialComponent implements OnInit {
         });
       }
     });
+
+    const cantSigned = this.arraySelect.filter((x: any) => x.signed === true);
+    if (cantSigned.length === this.arraySelect.length) {
+      this.hidePassword = true;
+    }
   }
+
 
   /**
    *
