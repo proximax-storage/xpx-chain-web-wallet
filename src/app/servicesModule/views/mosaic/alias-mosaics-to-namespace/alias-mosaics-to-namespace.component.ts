@@ -88,7 +88,7 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
     this.createForm();
     this.getNamespaces();
     this.getMosaic();
-
+    this.amountAccount = this.walletService.getAmountAccount();
     this.subscription.push(this.dataBridge.getBlock().subscribe(next => {
       this.currentBlock = next;
     }));
@@ -111,7 +111,6 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
     const namespaceId = new NamespaceId(this.linkingNamespaceToMosaic.get('namespace').value);
     this.namespaceId = namespaceId;
     this.builder();
-    this.getAmountAccount();
   }
 
   captureMmosaic() {
@@ -128,14 +127,6 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
       this.walletService.currentAccount.network
     );
     this.fee = this.transactionService.amountFormatterSimple(this.mosaicSupplyChangeTransaction.maxFee.compact());
-  }
-
-  getAmountAccount() {
-    const account = this.walletService.filterAccountInfo(this.proximaxProvider.createFromRawAddress(this.walletService.currentAccount.address).pretty(), true);
-    let mosaics = account.accountInfo.mosaics;
-    let amoutMosaic = mosaics.filter(mosaic => mosaic.id.toHex() == environment.mosaicXpxInfo.id);
-    this.amountAccount = amoutMosaic[0].amount.compact()
-
   }
 
   async buildSelectNamespace($event = null) {
