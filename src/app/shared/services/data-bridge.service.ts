@@ -187,6 +187,11 @@ export class DataBridgeService {
         console.log("\n\n--------------------AGGREGATE_BONDED_ADDED------------------------")
         console.log(aggregateBondedAdded.transactionInfo.hash)
         console.log("------------------------------------------------------------------\n\n")
+        this.setTransactionStatus({
+          'type': 'aggregateBondedAdded',
+          'hash': aggregateBondedAdded.transactionInfo.hash
+        });
+
         const aggregateBondedCache = await this.transactionsService.getAggregateBondedTransactions$().pipe(first()).toPromise();
         const transactionPushed = aggregateBondedCache.slice(0);
         const transactionFormatter = this.transactionsService.getStructureDashboard(aggregateBondedAdded, transactionPushed);
@@ -210,10 +215,20 @@ export class DataBridgeService {
     const currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
     currentWallet.accounts.forEach(element => {
       // ----------------------------------AGGREGATE_BONDED_REMOVED--------------------------------------------//
-      connector.aggregateBondedRemoved(this.proximaxProvider.createFromRawAddress(element.address)).subscribe(getAggregateBondedRemoved => {
+      connector.aggregateBondedRemoved(this.proximaxProvider.createFromRawAddress(element.address)).subscribe(async aggregateBondedRemoved => {
         console.log("\n\n-----------------------AGGREGATE_BONDED_REMOVED--------------------------")
-        console.log(getAggregateBondedRemoved)
+        console.log(aggregateBondedRemoved)
         console.log("------------------------------------------------------------------\n\n")
+        this.setTransactionStatus({
+          'type': 'aggregateBondedRemoved',
+          'hash': aggregateBondedRemoved
+        });
+
+        const agregateBondedTransactions = await this.transactionsService.getAggregateBondedTransactions$().pipe(first()).toPromise();
+        if (agregateBondedTransactions && agregateBondedTransactions.length > 0) {
+          const filtered = agregateBondedTransactions.filter(next => next.data.transactionInfo.hash !== aggregateBondedRemoved);
+          this.transactionsService.setTransactionsAggregateBonded$(filtered);
+        }
       });
     });
   }
@@ -233,6 +248,10 @@ export class DataBridgeService {
         console.log("\n\n-----------------------COSIGNATURE_ADDED--------------------------")
         console.log(cosignatureAdded)
         console.log("------------------------------------------------------------------\n\n")
+        this.setTransactionStatus({
+          'type': 'cosignatureAdded',
+          'hash': cosignatureAdded.parentHash
+        });
       });
     });
   }
@@ -252,16 +271,15 @@ export class DataBridgeService {
         console.log("\n\n -----------------------CONFIRMED---------------------------------")
         console.log(confirmedTransaction.transactionInfo.hash)
         console.log("------------------------------------------------------------------ \n\n")
+        this.setTransactionStatus({
+          'type': 'confirmed',
+          'hash': confirmedTransaction.transactionInfo.hash
+        });
 
         const confirmedCache = await this.transactionsService.getConfirmedTransactions$().pipe(first()).toPromise();
         const transactionPushed = confirmedCache.slice(0);
         const transactionFormatter = this.transactionsService.getStructureDashboard(confirmedTransaction, transactionPushed);
         if (transactionFormatter !== null) {
-          this.setTransactionStatus({
-            'type': 'confirmed',
-            'data': transactionFormatter
-          });
-
           audio.play();
           this.sharedService.showInfo('', 'Transaction confirmed');
           transactionPushed.unshift(transactionFormatter);
@@ -289,6 +307,10 @@ export class DataBridgeService {
         console.log(status.hash)
         console.log("------------------------------------------------------------------\n\n")
         this.sharedService.showWarning('', status.status.split('_').join(' '));
+        this.setTransactionStatus({
+          'type': 'status',
+          'hash': status.hash
+        });
       });
     });
   }
@@ -308,6 +330,10 @@ export class DataBridgeService {
         console.log("\n\n-----------------------UNCONFIRMED_ADDED--------------------------");
         console.log(unconfirmedAdded.transactionInfo.hash)
         console.log("------------------------------------------------------------------\n\n");
+        this.setTransactionStatus({
+          'type': 'unconfirmed',
+          'hash': unconfirmedAdded.transactionInfo.hash
+        });
 
         const unconfirmedCache = await this.transactionsService.getUnconfirmedTransactions$().pipe(first()).toPromise();
         const transactionPushed = unconfirmedCache.slice(0);
@@ -316,10 +342,6 @@ export class DataBridgeService {
           audio.play();
           transactionPushed.unshift(transactionFormatter);
           this.transactionsService.setTransactionsUnConfirmed$(transactionPushed);
-          this.setTransactionStatus({
-            'type': 'unconfirmed',
-            'data': transactionFormatter
-          });
         }
       });
     });
@@ -340,14 +362,15 @@ export class DataBridgeService {
         console.log("\n\n-----------------------UNCONFIRMED_REMOVED--------------------------")
         console.log(unconfirmedRemoved)
         console.log("------------------------------------------------------------------\n\n")
+        this.setTransactionStatus({
+          'type': 'removedTransaction',
+          'hash': unconfirmedRemoved
+        });
+
         const unconfirmedCache = await this.transactionsService.getUnconfirmedTransactions$().pipe(first()).toPromise();
         if (unconfirmedCache && unconfirmedCache.length > 0) {
           const unconfirmedFiltered = unconfirmedCache.filter(next => next.data.transactionInfo.hash !== unconfirmedRemoved);
           this.transactionsService.setTransactionsUnConfirmed$(unconfirmedFiltered);
-          this.setTransactionStatus({
-            'type': 'removedTransaction',
-            'data': unconfirmedRemoved
-          });
         }
       });
     });
@@ -371,7 +394,7 @@ export class DataBridgeService {
         //this.validateTransactions(aggregateBondedRemoved);
         this.setTransactionStatus({
           'type': 'aggregateBondedRemoved',
-          'data': aggregateBondedRemoved
+          'hash': aggregateBondedRemoved
         });
       }, err => {
         // console.error(err)
@@ -393,10 +416,10 @@ export class DataBridgeService {
         // console.log('\n=== CONNECTED ===', address.plain().slice(36, 40));
         console.log('=== NEW TRANSACTION AGGREGATE_BONDED === ', aggregateBondedAdded.transactionInfo.hash, '\n\n');
         const builded = this.transactionsService.getStructureDashboard(aggregateBondedAdded);
-//        this.transactionsService.setAggregateBondedTransactions$([builded]);
+        //        this.transactionsService.setAggregateBondedTransactions$([builded]);
         this.setTransactionStatus({
           'type': 'aggregateBondedAdded',
-          'data': aggregateBondedAdded
+          'hash': aggregateBondedAdded
         });
       }, err => {
         // console.error(err)
@@ -421,7 +444,7 @@ export class DataBridgeService {
         console.log('=== COSIGNATURE ADDED TRANSACTION === ', cosignatureSignedTransaction.parentHash, '\n\n');
         this.setTransactionStatus({
           'type': 'cosignatureSignedTransaction',
-          'data': cosignatureSignedTransaction
+          'hash': cosignatureSignedTransaction
         });
         audio.play();
       }, err => {
@@ -444,7 +467,7 @@ export class DataBridgeService {
       connector.confirmed(this.proximaxProvider.createFromRawAddress(element.address)).subscribe((confirmed: Transaction) => {
         this.setTransactionStatus({
           'type': 'confirmed',
-          'data': confirmed
+          'hash': confirmed
         });
 
         console.log('=== CONFIRMED TRANSACTION === ', confirmed.transactionInfo.hash, '\n\n');
@@ -494,7 +517,7 @@ export class DataBridgeService {
               // aqui las que me llegan del WS
               this.setTransactionStatus({
                 'type': 'unconfirmed',
-                'data': unconfirmedTransaction
+                'hash': unconfirmedTransaction
               });
             }
           }, err => {
@@ -521,7 +544,7 @@ export class DataBridgeService {
         console.log('=== STATUS TRANSACTION === ', error.hash, '\n\n');
         this.setTransactionStatus({
           'type': 'error',
-          'data': error
+          'hash': error
         });
       }, err => {
         this.sharedService.showError('', err);
@@ -606,39 +629,6 @@ export class DataBridgeService {
     this.namespaces.generationHash = this.blockInfo.generationHash;
     this.blockInfoSubject.next(this.blockInfo)
   }
-
-  /**
-   *
-   */
- /* searchTransactionStatus() {
-    // console.log(this.subscription);
-    // Get transaction status
-    this.subscription.push(this.getTransactionStatus().pipe(first()).subscribe(
-      statusTransaction => {
-        // console.log('=== STATUS TRANSACTION ===', statusTransaction);
-        if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
-          for (let element of this.transactionSigned) {
-            // console.log('element ', element);
-            const statusTransactionHash = (statusTransaction['type'] === 'error') ? statusTransaction['data'].hash : statusTransaction['data'].transactionInfo.hash;
-            const match = statusTransactionHash === element.hash;
-            if (match) {
-              this.transactionReady.push(element);
-            }
-
-            if (statusTransaction['type'] === 'confirmed' && match) {
-              this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransactionHash);
-              this.sharedService.showSuccess('', 'Transaction confirmed');
-            } else if (statusTransaction['type'] === 'unconfirmed' && match) {
-              this.sharedService.showInfo('', 'Transaction unconfirmed');
-            } else if (match) {
-              this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransactionHash);
-              this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
-            }
-          }
-        }
-      }
-    ));
-  }*/
 
   /**
    *

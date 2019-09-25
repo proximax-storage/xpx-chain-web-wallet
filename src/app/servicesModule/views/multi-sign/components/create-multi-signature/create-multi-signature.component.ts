@@ -533,6 +533,7 @@ export class CreateMultiSignatureComponent implements OnInit {
     // Get transaction status
     this.subscribe['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
       statusTransaction => {
+        console.log('EL MMG statusTransaction', statusTransaction);
         // this.blockSend = false;
         if (statusTransaction !== null && statusTransaction !== undefined && signedTransaction !== null) {
           const match = statusTransaction['hash'] === signedTransaction.hash;
@@ -561,6 +562,7 @@ export class CreateMultiSignatureComponent implements OnInit {
     // Get transaction status
     this.subscribe['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
       statusTransaction => {
+        console.log('EL MMG statusTransaction', statusTransaction);
         // //  this.blockSend = false;
         if (statusTransaction !== null && statusTransaction !== undefined && signedTransactionHashLock !== null) {
           const match = statusTransaction['hash'] === signedTransactionHashLock.hash;
