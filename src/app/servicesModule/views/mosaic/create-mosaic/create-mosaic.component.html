@@ -22,7 +22,7 @@
                         src="assets/images/img/icon-duration-green-16h-proximax-sirius-wallet.svg" alt="">
                       <input formControlName="duration" mdbInputDirective mdbValidate [validateSuccess]="true"
                         [validateError]="true" type="number" id="duration" min="1" max="365"
-                        class="form-control form-control-sm input-border" placeholder="Duration (number of days)"
+                        class="form-control form-control-sm input-border txt-a-right" placeholder="Duration (number of days)"
                         (keyup)="limitDuration($event)">
 
                       <!-- VALIDATION -->
@@ -48,8 +48,9 @@
                     src="assets/images/img/icon-namespaces-green-16h-proximax-sirius-wallet.svg" alt="">
                   <input formControlName="divisibility" mdbInputDirective mdbValidate [validateSuccess]="true"
                     [validateError]="true" type="text" id="divisibility" minlength="0" maxlength="1"
-                    id="divisibility{{errorDivisibility}}" class="form-control form-control-sm input-border"
-                    placeholder="Divisibility" (keyup)="limitLength($event)">
+                    id="divisibility{{errorDivisibility}}" class="form-control form-control-sm input-border txt-a-right"
+                    placeholder="" (keyup)="limitLength($event)">
+                    <span class="label-i-icon pl-2rem">Divisibility</span>
 
                   <!-- VALIDATION -->
                   <mdb-error

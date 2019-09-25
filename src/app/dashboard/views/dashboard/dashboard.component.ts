@@ -52,6 +52,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   transactions: TransactionsInterface[] = [];
   viewDetailsAccount = `/${AppConfig.routes.account}/`;
   viewDetailsPartial = `/${AppConfig.routes.partial}`;
+  viewSwapTransactions = `/${AppConfig.routes.swapTransactions}`;
+  swapTransactions: number = 0;
   windowScrolled: boolean;
   nameWallet = '';
   p: number = 1;
@@ -81,6 +83,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.balance();
     this.subscribeTransactionsConfirmedUnconfirmed();
     this.getRecentTransactions();
+    const walletNis1 = this.walletService.getWalletTransNisStorage().find(el => el.name === this.walletService.getCurrentWallet().name);
+    console.log('findddddd------>', walletNis1);
+
+    if (walletNis1 !== undefined && walletNis1 !== null) {
+      this.swapTransactions = walletNis1.transactions.length;
+    }
     this.subscription.push(this.transactionService.getAggregateBondedTransactions$().subscribe(
       next => {
         this.partialTransactions = (next && next.length > 0) ? next.length : 0;

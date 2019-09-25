@@ -1,0 +1,57 @@
+<div class="container mt-3rem mb-2rem animated fadeIn">
+        <div class="row">
+            <div class="col-12 d-flex justify-content-center">
+                <span class="fs-1-7rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">{{title}}</span>
+            </div>
+            <div class="col-11 col-md-10 mx-auto">
+                <hr class="mt-05rem mb-06rem">
+            </div>
+            <div class="col-12 d-flex justify-content-center">
+                <span class="fs-08rem txt-a-center line-h-1-2em">{{description}}</span>
+            </div>
+        </div>
+    
+    
+    
+        <div class="row">
+            <div class="col-12 ">
+    
+    
+    
+    
+                <!-- BOX LIST WALLETS -->
+                <div class="row">
+                    <ng-container *ngFor="let wallet of wallets">
+                        <div class="col-11 col-md-10 col-lg-9 col-xl-10 mx-auto box-list-account-gray fs-08rem pb-1rem">
+                            <div class="row">
+    
+                                <!-- {{wallet}} -->
+                                <div class="col-12 col-sm-10 col-md-9 col-lg-10 col-xl-10 text-center text-sm-left pt-1rem w-b-a">
+                                    Name: {{wallet.label}}<br>
+                                    Accounts :{{wallet.value.accounts.length}}
+                                </div>
+                                <div class="col-12 col-sm-2 col-md-3 col-lg-2 col-xl-2 d-flex align-items-center
+                             justify-content-center
+                              justify-content-sm-end
+                              justify-content-md-end 
+                            justify-content-lg-end
+                             justify-content-xl-end pt-2rem">
+    
+                                    <!-- Delete-->
+                                    <img src="assets/images/img/icon-trash-can-gray-16h-proximax-sirius-wallet.svg" class="cursor-p"
+                                        width="20" title=" Delete">
+    
+                                </div>
+    
+                            </div>
+                        </div>
+    
+                    </ng-container>
+    
+                </div>
+    
+    
+            </div>
+    
+    
+        </div>
