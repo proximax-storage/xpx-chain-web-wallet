@@ -67,6 +67,9 @@ export class MosaicsSupplyChangeComponent implements OnInit {
   errorSupply: string;
   blockBtn: boolean = false;
   maxLengthSupply: number = 13;
+  mosaicSupplyChangeTransaction: any;
+  fee: string = '0.000000';
+  amountAccount: number;
 
   /**
    * Initialize dependencies and properties
@@ -87,6 +90,7 @@ export class MosaicsSupplyChangeComponent implements OnInit {
   async ngOnInit() {
     this.configurationForm = this.sharedService.configurationForm;
     this.createForm();
+    this.amountAccount = this.walletService.getAmountAccount();
     this.subscribe['block'] = await this.dataBridge.getBlock().subscribe(next => this.currentBlock = next);
     const data = await this.mosaicService.filterMosaics();
     const mosaicsSelect = this.parentMosaic.slice(0);
@@ -146,9 +150,27 @@ export class MosaicsSupplyChangeComponent implements OnInit {
         this.blockBtn = true;
         this.invalidSupply = true;
       }
+      this.builder();
     });
-
     this.parentMosaic = mosaicsSelect;
+  }
+
+  /**
+   * Create form namespace
+   *
+   * @memberof CreateMosaicComponent
+   */
+  builder(){
+    const x = this.formMosaicSupplyChange.get('parentMosaic').value;
+    if(x !== ''){
+      this.mosaicSupplyChangeTransaction = this.proximaxProvider.mosaicSupplyChangeTransaction(
+        this.formMosaicSupplyChange.get('parentMosaic').value,
+        this.deltaSupply,
+        this.formMosaicSupplyChange.get('mosaicSupplyType').value,
+        this.walletService.currentAccount.network
+      );
+      this.fee = this.transactionService.amountFormatterSimple(this.mosaicSupplyChangeTransaction.maxFee.compact());
+    }
   }
 
   /**
@@ -171,6 +193,7 @@ export class MosaicsSupplyChangeComponent implements OnInit {
    * @memberof MosaicSupplyChange
    */
   clearForm() {
+    this.fee = '0.000000';
     this.formMosaicSupplyChange.reset({
       parentMosaic: '',
       mosaicSupplyType: MosaicSupplyType.Increase,
@@ -193,7 +216,7 @@ export class MosaicsSupplyChangeComponent implements OnInit {
   async optionSelected(mosaic: any) {
     if (mosaic !== undefined) {
       const mosaicsInfoSelected: MosaicsStorage[] = await this.mosaicService.filterMosaics([this.proximaxProvider.getMosaicId(mosaic['value'])]);
-      //  console.log(mosaicsInfoSelected);
+      this.builder()
       if (mosaicsInfoSelected !== null || mosaicsInfoSelected !== undefined) {
         this.divisibility = mosaicsInfoSelected[0].mosaicInfo['properties'].divisibility;
         this.supplyMutable = mosaicsInfoSelected[0].mosaicInfo['properties'].supplyMutable;
@@ -294,6 +317,8 @@ export class MosaicsSupplyChangeComponent implements OnInit {
    */
   send() {
     if (this.formMosaicSupplyChange.valid) {
+      const validateAmount = this.transactionService.validateBuildSelectAccountBalance(this.amountAccount, Number(this.fee), 0)
+      if (validateAmount) {
       this.blockButton = true;
       const common = {
         password: this.formMosaicSupplyChange.get('password').value,
@@ -302,17 +327,15 @@ export class MosaicsSupplyChangeComponent implements OnInit {
       if (this.walletService.decrypt(common)) {
         const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
 
-        const mosaicSupplyChangeTransaction = this.proximaxProvider.mosaicSupplyChangeTransaction(
-          this.formMosaicSupplyChange.get('parentMosaic').value,
-          this.deltaSupply,
-          this.formMosaicSupplyChange.get('mosaicSupplyType').value,
-          this.walletService.currentAccount.network
-        )
+        // const mosaicSupplyChangeTransaction = this.proximaxProvider.mosaicSupplyChangeTransaction(
+        //   this.formMosaicSupplyChange.get('parentMosaic').value,
+        //   this.deltaSupply,
+        //   this.formMosaicSupplyChange.get('mosaicSupplyType').value,
+        //   this.walletService.currentAccount.network
+        // )
         const generationHash = this.dataBridge.blockInfo.generationHash;
-        const signedTransaction = account.sign(mosaicSupplyChangeTransaction, generationHash); //Update-sdk-dragon
+        const signedTransaction = account.sign(this.mosaicSupplyChangeTransaction, generationHash); //Update-sdk-dragon
         this.transactionSigned.push(signedTransaction);
-        console.log(signedTransaction);
-        console.log(this.transactionSigned);
         this.proximaxProvider.announce(signedTransaction).subscribe(
           x => {
 
@@ -329,7 +352,12 @@ export class MosaicsSupplyChangeComponent implements OnInit {
             this.blockUI.stop(); // Stop blocking
             // this.sharedService.showError('', 'An unexpected error has occurred');
           });
+      }else {
+        this.blockButton = false;
       }
+    } else {
+      this.sharedService.showError('', 'insufficient balance');
+    }
     }
   }
 
