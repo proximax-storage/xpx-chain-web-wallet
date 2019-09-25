@@ -10,9 +10,10 @@ import { WalletNis1FoundComponent } from './views/wallet-nis1-found/wallet-nis1-
 import { TransferXpxComponent } from './views/transfer-xpx/transfer-xpx.component';
 import { WalletNis1AccountsConsignerComponent } from './views/wallet-nis1-accounts-consigner/wallet-nis1-accounts-consigner.component';
 import { DeleteWalletComponent } from './views/delete-wallet/delete-wallet.component';
+import { ViewAllWalletsComponent } from './views/view-all-wallets/view-all-wallets.component';
 
 @NgModule({
-  declarations: [CreateWalletComponent, ImportWalletComponent, WalletCreatedComponent, SelectionWalletCreationTypeComponent, WalletNis1FoundComponent, TransferXpxComponent, WalletNis1AccountsConsignerComponent, DeleteWalletComponent],
+  declarations: [CreateWalletComponent, ImportWalletComponent, WalletCreatedComponent, SelectionWalletCreationTypeComponent, WalletNis1FoundComponent, TransferXpxComponent, WalletNis1AccountsConsignerComponent, DeleteWalletComponent, ViewAllWalletsComponent],
   imports: [
     CoreModule,
     WalletRoutingModule

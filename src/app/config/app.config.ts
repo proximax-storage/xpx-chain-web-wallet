@@ -46,6 +46,7 @@ export const AppConfig: Config = {
     selectTypeCreationAccount: 'select-type-creation-account',
     signMultiSigTransactions: 'sign-multisignature-transactions',
     viewAllAccount: 'view-all-account',
+    viewAllWallets:'view-all-wallets',
     voteInPoll: 'vote-poll',
     walletCreated: 'wallet-created',
     nis1AccountList: 'nis1-account-list',
@@ -106,6 +107,7 @@ export interface Config {
     selectTypeCreationAccount: string;
     signMultiSigTransactions: string;
     viewAllAccount: string;
+    viewAllWallets: string;
     voteInPoll: string;
     walletCreated: string;
     nis1AccountList: string;

@@ -9,6 +9,7 @@ import { WalletNis1FoundComponent } from './views/wallet-nis1-found/wallet-nis1-
 import { TransferXpxComponent } from './views/transfer-xpx/transfer-xpx.component';
 import { WalletNis1AccountsConsignerComponent } from './views/wallet-nis1-accounts-consigner/wallet-nis1-accounts-consigner.component';
 import { DeleteWalletComponent } from './views/delete-wallet/delete-wallet.component';
+import { ViewAllWalletsComponent } from './views/view-all-wallets/view-all-wallets.component';
 
 const routes: Routes = [
   {
@@ -24,7 +25,7 @@ const routes: Routes = [
   },
   {
     path: AppConfig.routes.deleteWallet,
-    component: DeleteWalletComponent,
+    component: ViewAllWalletsComponent,
     data: {
       meta: {
         title: 'deleteWallet.title',
@@ -33,8 +34,6 @@ const routes: Routes = [
       },
     }
   },
-
-  // DeleteWalletComponent
   {
     path: AppConfig.routes.importWallet,
     component: ImportWalletComponent,
@@ -42,6 +41,17 @@ const routes: Routes = [
       meta: {
         title: 'importWallet.title',
         description: 'importWallet.text',
+        override: true,
+      },
+    }
+  },
+  {
+    path: AppConfig.routes.viewAllWallets,
+    component: ViewAllWalletsComponent,
+    data: {
+      meta: {
+        title: 'viewAllWallets.title',
+        description: 'viewAllWallets.text',
         override: true,
       },
     }
