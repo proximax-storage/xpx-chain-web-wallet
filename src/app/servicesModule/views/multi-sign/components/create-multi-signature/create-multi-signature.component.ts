@@ -420,7 +420,7 @@ export class CreateMultiSignatureComponent implements OnInit {
           UInt64.fromUint(480),
           signedTransaction,
           this.currentAccountToConvert.network);
-          
+
         this.hashLock(this.accountToConvertSign.sign(hashLockTransaction ,generationHash), signedTransaction) //Update-sdk-dragon
       }
     } else {
@@ -533,20 +533,20 @@ export class CreateMultiSignatureComponent implements OnInit {
     // Get transaction status
     this.subscribe['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
       statusTransaction => {
+        console.log('EL MMG statusTransaction', statusTransaction);
         // this.blockSend = false;
         if (statusTransaction !== null && statusTransaction !== undefined && signedTransaction !== null) {
-          const statusTransactionHash = (statusTransaction['type'] === 'error') ? statusTransaction['data'].hash : statusTransaction['data'].transactionInfo.hash;
-          const match = statusTransactionHash === signedTransaction.hash;
+          const match = statusTransaction['hash'] === signedTransaction.hash;
           if (statusTransaction['type'] === 'confirmed' && match) {
             signedTransaction = null;
-            this.sharedService.showSuccess('', 'Transaction confirmed');
+            // this.sharedService.showSuccess('', 'Transaction confirmed');
           } else if (statusTransaction['type'] === 'unconfirmed' && match) {
             this.transactionService.searchAccountsInfo([this.currentAccountToConvert])
             signedTransaction = null;
-            this.sharedService.showInfo('', 'Transaction unconfirmed');
+            // this.sharedService.showInfo('', 'Transaction unconfirmed');
           } else if (match) {
             signedTransaction = null;
-            this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
+            // this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
           }
         }
       }
@@ -562,10 +562,10 @@ export class CreateMultiSignatureComponent implements OnInit {
     // Get transaction status
     this.subscribe['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
       statusTransaction => {
+        console.log('EL MMG statusTransaction', statusTransaction);
         // //  this.blockSend = false;
         if (statusTransaction !== null && statusTransaction !== undefined && signedTransactionHashLock !== null) {
-          const statusTransactionHash = (statusTransaction['type'] === 'error') ? statusTransaction['data'].hash : statusTransaction['data'].transactionInfo.hash;
-          const match = statusTransactionHash === signedTransactionHashLock.hash;
+          const match = statusTransaction['hash'] === signedTransactionHashLock.hash;
           if (statusTransaction['type'] === 'confirmed' && match) {
             this.announceAggregateBonded(signedTransactionBonded)
             signedTransactionHashLock = null;

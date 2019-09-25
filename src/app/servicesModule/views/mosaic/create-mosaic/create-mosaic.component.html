@@ -22,7 +22,8 @@
                         src="assets/images/img/icon-duration-green-16h-proximax-sirius-wallet.svg" alt="">
                       <input formControlName="duration" mdbInputDirective mdbValidate [validateSuccess]="true"
                         [validateError]="true" type="number" id="duration" min="1" max="365"
-                        class="form-control form-control-sm input-border" placeholder="Duration (number of days)" (keyup)="limitDuration($event)">
+                        class="form-control form-control-sm input-border" placeholder="Duration (number of days)"
+                        (keyup)="limitDuration($event)">
 
                       <!-- VALIDATION -->
                       <mdb-error
@@ -65,6 +66,7 @@
                     [options]="optionsSuply" [validateSuccess]="true" [validateError]="true" type="text"
                     id="supply{{errorSupply}}" [maxlength]="maxLengthSupply"
                     class="form-control form-control-sm input-border input-amount" placeholder="Supply">
+                  <span class="label-i-icon pl-2rem">Supply</span>
 
                   <!-- VALIDATION -->
                   <mdb-error
@@ -161,7 +163,7 @@
         <div class="col-11 col-md-4 description-p-module mt-1-5rem mb-2rem">
           <div>
             <span class="fs-08rem">Maximun divisibility is 6. <br></span>
-            <span class="fw-600 fs-08rem">Example: 0.000000</span>
+            <span class="fw-600 fs-08rem">Example: 6</span>
           </div>
 
           <div class="mt-08rem">
@@ -175,10 +177,6 @@
 
           <div class="mt-08rem">
             <span class="fs-08rem"> If your tick "Supply Mutable", Supply can be changed.</span>
-          </div>
-
-          <div class="mt-08rem">
-            <span class="fs-08rem">If your tick "Levy Mutable", Levy can be added and changed.</span>
           </div>
         </div>
       </div>

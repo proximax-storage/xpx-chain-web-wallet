@@ -372,7 +372,7 @@ export class CreateApostilleComponent implements OnInit {
       owner: ownerAccount.address,
       fromMultisig: ownerAccount.address,
       dedicatedAccount: dedicatedAccount.address.plain(),
-      dedicatedPrivateKey: 'Not show',// (this.apostilleCreateForm.get('typePrivatePublic').value == true) ? None (public sink) : nty.dedicatedPrivateKey,
+      dedicatedPrivateKey: dedicatedPrivateKey,// (this.apostilleCreateForm.get('typePrivatePublic').value == true) ? None (public sink) : nty.dedicatedPrivateKey,
       txHash: signedTransaction.hash.toLowerCase(),
       txMultisigHash: '',
       timeStamp: date.toUTCString(),

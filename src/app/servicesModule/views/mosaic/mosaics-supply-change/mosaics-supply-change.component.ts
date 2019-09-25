@@ -49,7 +49,6 @@ export class MosaicsSupplyChangeComponent implements OnInit {
   duration: string = '() 0 days';
   supply: string = '0';
   blockButton: boolean = false;
-  levyMutable: boolean = false;
   supplyMutable: boolean = false;
   transferable: boolean = false;
   transactionSigned: SignedTransaction[] = [];
@@ -197,7 +196,6 @@ export class MosaicsSupplyChangeComponent implements OnInit {
       //  console.log(mosaicsInfoSelected);
       if (mosaicsInfoSelected !== null || mosaicsInfoSelected !== undefined) {
         this.divisibility = mosaicsInfoSelected[0].mosaicInfo['properties'].divisibility;
-        this.levyMutable = mosaicsInfoSelected[0].mosaicInfo['properties'].levyMutable;
         this.supplyMutable = mosaicsInfoSelected[0].mosaicInfo['properties'].supplyMutable;
         this.transferable = mosaicsInfoSelected[0].mosaicInfo['properties'].transferable;
         this.supply = this.transactionService.amountFormatter(
@@ -229,7 +227,6 @@ export class MosaicsSupplyChangeComponent implements OnInit {
     this.divisibility = 0;
     this.duration = '0 days';
     this.supply = '0';
-    this.levyMutable = false;
     this.supplyMutable = false;
     this.transferable = false;
     return;
@@ -269,19 +266,20 @@ export class MosaicsSupplyChangeComponent implements OnInit {
       statusTransaction => {
         if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
           for (let element of this.transactionSigned) {
-            const statusTransactionHash = (statusTransaction['type'] === 'error') ? statusTransaction['data'].hash : statusTransaction['data'].transactionInfo.hash;
-            const match = statusTransactionHash === element.hash;
+            const match = statusTransaction['hash'] === element.hash;
             if (match) {
+              this.blockButton = false;
+              this.clearForm()
               this.transactionReady.push(element);
             }
             if (statusTransaction['type'] === 'confirmed' && match) {
-              this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransactionHash);
-              this.sharedService.showSuccess('', 'Transaction confirmed');
+              this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['hash']);
+              // this.sharedService.showSuccess('', 'Transaction confirmed');
             } else if (statusTransaction['type'] === 'unconfirmed' && match) {
-              this.sharedService.showInfo('', 'Transaction unconfirmed');
+              // this.sharedService.showInfo('', 'Transaction unconfirmed');
             } else if (match) {
-              this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransactionHash);
-              this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
+              this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['hash']);
+              // this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
             }
           }
         }
@@ -317,8 +315,7 @@ export class MosaicsSupplyChangeComponent implements OnInit {
         console.log(this.transactionSigned);
         this.proximaxProvider.announce(signedTransaction).subscribe(
           x => {
-            this.blockButton = false;
-            this.clearForm()
+
             this.blockUI.stop();
             if (this.subscriptions['transactionStatus'] === undefined || this.subscriptions['transactionStatus'] === null) {
               this.getTransactionStatus();

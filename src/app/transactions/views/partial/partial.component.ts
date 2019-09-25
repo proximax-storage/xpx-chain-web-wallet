@@ -129,11 +129,6 @@ export class PartialComponent implements OnInit {
           });
         }
       });
-
-      const cantSigned = this.arraySelect.filter((x: any) => x.signed === true);
-      if (cantSigned.length === this.arraySelect.length) {
-        this.hidePassword = true;
-      }
     }
 
     transaction.data['innerTransactions'].forEach((element: any) => {
@@ -169,7 +164,13 @@ export class PartialComponent implements OnInit {
         });
       }
     });
+
+    const cantSigned = this.arraySelect.filter((x: any) => x.signed === true);
+    if (cantSigned.length === this.arraySelect.length) {
+      this.hidePassword = true;
+    }
   }
+
 
   /**
    *
@@ -196,8 +197,6 @@ export class PartialComponent implements OnInit {
               });
             }
           });
-
-          // this.getAggregateBondedTransactions(publicsAccounts);
         }
       }
     ));
@@ -221,7 +220,6 @@ export class PartialComponent implements OnInit {
         const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
         this.password = '';
         this.modalPartial.hide();
-        this.dataBridge.setTransactionSigned(transaction);
         this.proximaxProvider.cosignAggregateBondedTransaction(transaction, account).subscribe(
           next => {
             console.log(next);

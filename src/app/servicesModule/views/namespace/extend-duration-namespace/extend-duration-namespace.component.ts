@@ -38,7 +38,6 @@ export class ExtendDurationNamespaceComponent implements OnInit {
   namespaceSelect: Array<object> = [];
   calculateRentalFee: any = '0.000000';
   rentalFee = 100000;
-  feeType: string = 'XPX';
   durationByBlock = '0';
   insufficientBalance = false;
   insufficientBalanceDuration = false;
@@ -54,6 +53,9 @@ export class ExtendDurationNamespaceComponent implements OnInit {
   subscription: Subscription[] = [];
   namespaceInfo: NamespaceStorageInterface[] = [];
   statusTransaction: boolean = false;
+  extendNamespaceRootTransaction: any;
+  amountAccount: number;
+  namespaceRootToExtend: any;
 
   constructor(
     private router: Router,
@@ -69,9 +71,10 @@ export class ExtendDurationNamespaceComponent implements OnInit {
 
   ngOnInit() {
     this.configurationForm = this.sharedService.configurationForm;
-    this.fee = `0.000000 ${this.feeType}`;
+    this.fee = '0.000000';
     this.createForm();
     this.getNamespaces();
+    this.amountAccount = this.walletService.getAmountAccount();
     const duration = this.extendDurationNamespaceForm.get('duration').value;
     this.durationByBlock = this.transactionService.calculateDurationforDay(duration).toString();
     this.subscription.push(this.dataBridgeService.getBlock().subscribe(
@@ -80,14 +83,21 @@ export class ExtendDurationNamespaceComponent implements OnInit {
 
     this.validateRentalFee(this.rentalFee * duration);
     this.extendDurationNamespaceForm.get('duration').valueChanges.subscribe(next => {
+      if(next <= 365){
       if (next !== null && next !== undefined && String(next) !== '0') {
         this.durationByBlock = this.transactionService.calculateDurationforDay(next).toString();
         this.validateRentalFee(this.rentalFee * parseFloat(this.durationByBlock));
+        this.builder();
       } else {
         this.calculateRentalFee = '0.000000';
         this.durationByBlock = '0';
         this.extendDurationNamespaceForm.get('duration').patchValue('');
       }
+    } else {
+      this.durationByBlock = this.transactionService.calculateDurationforDay(365).toString();
+        this.validateRentalFee(this.rentalFee * parseFloat(this.durationByBlock));
+        this.builder();
+    }
     });
 
     // namespaceRoot ValueChange
@@ -102,8 +112,27 @@ export class ExtendDurationNamespaceComponent implements OnInit {
     });
   }
 
+
+
   ngOnDestroy(): void {
     this.destroySubscription();
+  }
+
+  /**
+   *
+   *
+   * @memberof ExtendDurationNamespaceComponent
+   */
+  builder() {
+    const namespaceRootToExtend: string = this.extendDurationNamespaceForm.get('namespaceRoot').value;
+    const duration: number = parseFloat(this.durationByBlock);
+    if(namespaceRootToExtend === undefined || namespaceRootToExtend === '' ){
+      this.namespaceRootToExtend = 'p';
+    } else {
+      this.namespaceRootToExtend = this.extendDurationNamespaceForm.get('namespaceRoot').value;
+    }
+    this.extendNamespaceRootTransaction = this.proximaxProvider.registerRootNamespaceTransaction(this.namespaceRootToExtend, this.walletService.currentAccount.network, duration);
+    this.fee = this.transactionService.amountFormatterSimple(this.extendNamespaceRootTransaction.maxFee.compact())
   }
 
   /**
@@ -146,6 +175,7 @@ export class ExtendDurationNamespaceComponent implements OnInit {
     this.endHeight = 0;
     this.durationByBlock = '0';
     this.calculateRentalFee = '0.000000';
+    this.fee = '0.000000';
     this.insufficientBalance = false;
     this.insufficientBalanceDuration = false;
   }
@@ -168,32 +198,37 @@ export class ExtendDurationNamespaceComponent implements OnInit {
    */
   extendDuration() {
     if (this.extendDurationNamespaceForm.valid && !this.blockBtnSend) {
-      this.blockBtnSend = true;
-      const common = {
-        password: this.extendDurationNamespaceForm.get('password').value,
-        privateKey: ''
-      }
-      if (this.walletService.decrypt(common)) {
-        const signedTransaction = this.signedTransaction(common);
-        this.transactionSigned.push(signedTransaction);
-        this.proximaxProvider.announce(signedTransaction).subscribe(
-          () => {
+      const validateAmount = this.transactionService.validateBuildSelectAccountBalance(this.amountAccount, Number(this.fee), Number(this.calculateRentalFee))
+      if (validateAmount) {
+        this.blockBtnSend = true;
+        const common = {
+          password: this.extendDurationNamespaceForm.get('password').value,
+          privateKey: ''
+        }
+        if (this.walletService.decrypt(common)) {
+          const signedTransaction = this.signedTransaction(common);
+          this.transactionSigned.push(signedTransaction);
+          this.proximaxProvider.announce(signedTransaction).subscribe(
+            () => {
 
-            this.startHeight = 0;
-            this.endHeight = 0;
-            if (this.statusTransaction === false) {
-              this.statusTransaction = true;
-              this.getTransactionStatus();
+              this.startHeight = 0;
+              this.endHeight = 0;
+              if (this.statusTransaction === false) {
+                this.statusTransaction = true;
+                this.getTransactionStatus();
+              }
+
+              this.setTimeOutValidate(signedTransaction.hash);
+            }, () => {
+              this.blockBtnSend = false;
+              this.clearForm();
             }
-
-            this.setTimeOutValidate(signedTransaction.hash);
-          }, () => {
-            this.blockBtnSend = false;
-            this.clearForm();
-          }
-        );
+          );
+        } else {
+          this.blockBtnSend = false;
+        }
       } else {
-        this.blockBtnSend = false;
+        this.sharedService.showError('', 'insufficient balance');
       }
     }
   }
@@ -279,6 +314,19 @@ export class ExtendDurationNamespaceComponent implements OnInit {
 
   }
 
+  limitDuration(e) {
+    console.log();
+    if (isNaN(parseInt(e.target.value))) {
+      e.target.value = ''
+    } else {
+      if (parseInt(e.target.value) > 365) {
+        e.target.value = '365'
+      } else if (parseInt(e.target.value) < 1) {
+        e.target.value = ''
+      }
+    }
+  }
+
   /**
    *
    *
@@ -295,6 +343,7 @@ export class ExtendDurationNamespaceComponent implements OnInit {
         this.startHeight = this.namespaceChangeInfo.namespaceInfo.startHeight.lower;
         this.endHeight = this.namespaceChangeInfo.namespaceInfo.endHeight.lower;
       }
+      this.builder();
     } else {
       this.startHeight = 0;
       this.endHeight = 0;
@@ -350,12 +399,12 @@ export class ExtendDurationNamespaceComponent implements OnInit {
    */
   signedTransaction(common: any): SignedTransaction {
     const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
-    const namespaceRootToExtend: string = this.extendDurationNamespaceForm.get('namespaceRoot').value;
+    // const namespaceRootToExtend: string = this.extendDurationNamespaceForm.get('namespaceRoot').value;
     // const duration: number = parseFloat(this.durationByBlock);
-    const duration: number = parseFloat(this.durationByBlock);
-    const extendNamespaceRootTransaction = this.proximaxProvider.registerRootNamespaceTransaction(namespaceRootToExtend, this.walletService.currentAccount.network, duration);
+    // const duration: number = parseFloat(this.durationByBlock);
+    // const extendNamespaceRootTransaction = this.proximaxProvider.registerRootNamespaceTransaction(namespaceRootToExtend, this.walletService.currentAccount.network, duration);
     const generationHash = this.dataBridgeService.blockInfo.generationHash;
-    const signedTransaction = account.sign(extendNamespaceRootTransaction, generationHash);  //Update-sdk-dragon
+    const signedTransaction = account.sign(this.extendNamespaceRootTransaction, generationHash);  //Update-sdk-dragon
     return signedTransaction;
   }
 

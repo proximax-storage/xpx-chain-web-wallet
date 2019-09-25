@@ -88,20 +88,6 @@
           </div>
         </div>
 
-        <!-- Levy Mutable -->
-        <div class="col-12 mt-04rem">
-          <div class="row">
-            <div class="col-4 overflow-ellipsis-nowrap">
-              <span class="color-dark-green fw-bold fs-08rem">Levy Mutable: </span>
-            </div>
-            <div class="col-8 overflow-ellipsis-nowrap">
-              <span *ngIf="mosaicDefinition?.data['mosaicProperties'].levyMutable === true"><i
-                  class="fa fa-check-circle green-c" aria-hidden="true"></i></span>
-              <span *ngIf="mosaicDefinition?.data['mosaicProperties'].levyMutable !== true"><i
-                  class="fa fa-minus-circle color-red" aria-hidden="true"></i></span>
-            </div>
-          </div>
-        </div>
 
         <!-- Transferable -->
         <div class="col-12 mt-04rem">
@@ -389,20 +375,6 @@
       </div>
     </div>
 
-    <!-- Levy Mutable -->
-    <div class="col-12">
-      <div class="row">
-        <div class="col-12 col-sm-4 col-md-3 overflow-ellipsis-nowrap">
-          <span class="color-dark-green fw-bold fs-08rem">Levy Mutable: </span>
-        </div>
-        <div class="col-12 col-sm-8 col-md-9">
-          <span *ngIf="mosaicDefinition['mosaicProperties'].levyMutable === true"><i class="fa fa-check-circle green-c"
-              aria-hidden="true"></i></span>
-          <span *ngIf="mosaicDefinition['mosaicProperties'].levyMutable !== true"><i
-              class="fa fa-minus-circle color-red" aria-hidden="true"></i></span>
-        </div>
-      </div>
-    </div>
 
     <!-- Transferable -->
     <div class="col-12">

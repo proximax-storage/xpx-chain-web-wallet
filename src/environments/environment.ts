@@ -6,20 +6,29 @@ import { NetworkType } from 'tsjs-xpx-chain-sdk';
 
 export const environment = {
   production: false,
-  itemBooksAddress: 'sw-books-testnet',
+  itemBooksAddress: 'sw-books-testnet-01',
   //version: '0.3.1.8',
-  version: '0.3.1.11',
-  cacheVersion: '1',
-  nameKeyNodeSelected: `sw-selected-node-testnet`,
-  nameKeyWalletStorage: `sw-testnet`,
-  nameKeyNodeStorage: `sw-nodes-testnet`,
-  nameKeyNamespaces: `sw-namespaces-testnet`,
-  nameKeyMosaicStorage: `sw-mosaics-testnet`,
-  nameKeyVersion: 'sw-version-testnet',
-  protocol: `https`,
-  protocolWs: `wss`,
+  version: '0.3.2',
+  cacheVersion: '6',
+  nameKeyNodeSelected: `sw-selected-node-testnet-01`,
+  nameKeyWalletStorage: `sw-testnet-01`,
+  nameKeyNodeStorage: `sw-nodes-testnet-01`,
+  nameKeyNamespaces: `sw-namespaces-testnet-01`,
+  nameKeyMosaicStorage: `sw-mosaics-testnet-01`,
+  nameKeyVersion: 'sw-version-testnet-01',
+  protocol: `http`,
+  protocolWs: `ws`,
   nodeExplorer: 'https://bctestnetexplorer.xpxsirius.io/#/result/hash',
   mosaicXpxInfo: {
+    name: 'prx.xpx',
+    coin: 'XPX',
+    id: '13bfc518e40549d7',
+    mosaicIdUint64: [3825551831, 331334936],
+    namespaceIdUint64: [2434186742, 3220914849],
+    namespaceId: 'bffb42a19116bdf6',
+    divisibility: 6
+  },
+  /*mosaicXpxInfo: {
     name: 'prx.xpx',
     coin: 'XPX',
     id: '3c0f3de5298ced2d',
@@ -27,7 +36,7 @@ export const environment = {
     namespaceIdUint64: [2434186742, 3220914849],
     namespaceId: 'bffb42a19116bdf6',
     divisibility: 6
-  },
+  },*/
   /*mosaicXpxInfo: {
     name: 'prx.xpx',
     coin: 'XPX',
@@ -38,7 +47,7 @@ export const environment = {
     divisibility: 6
   },*/
   blockchainConnection: {
-    host: 'bctestnet5.xpxsirius.io',
+    host: '18.138.51.117',
     port: 3000,
     protocol: 'http',
     useSecureMessage: false

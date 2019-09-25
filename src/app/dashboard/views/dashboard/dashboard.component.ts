@@ -151,20 +151,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
   }
 
-  /**
-   *
-   *
-   * @memberof DashboardComponent
-   */
-  @HostListener("window:scroll", [])
-  onWindowScroll() {
-    if (window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop > 100) {
-      this.windowScrolled = true;
-    }
-    else if (this.windowScrolled && window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop < 10) {
-      this.windowScrolled = false;
-    }
-  }
 
   /**
    * Method to load transactions by public account.
@@ -182,7 +168,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.proximaxProvider.getUnconfirmedTransactions(account.publicAccount, id).pipe(first()).subscribe(
         transactionsUnconfirmed => {
           if (transactionsUnconfirmed && transactionsUnconfirmed.length > 0) {
-
             //Sets the data structure of the dashboard
             transactionsUnconfirmed.forEach(element => {
               const builderTransactions = this.transactionService.getStructureDashboard(element, this.transactionsUnconfirmed);
@@ -268,25 +253,21 @@ export class DashboardComponent implements OnInit, OnDestroy {
    * @memberof DashboardComponent
    */
   subscribeTransactionsConfirmedUnconfirmed() {
-    this.subscription.push(this.transactionService.getTransactionsConfirmed$().subscribe(
-      (next: TransactionsInterface[]) => {
-        this.cantConfirmed = next.length;
-        this.transactionsConfirmed = next;
-        this.transactions = next;
+    this.subscription.push(this.transactionService.getConfirmedTransactions$().subscribe((next: TransactionsInterface[]) => {
+      this.cantConfirmed = next.length;
+      this.transactionsConfirmed = next;
+      this.transactions = next;
 
-        // Datatable
-        this.mdbTable.setDataSource(this.transactionsConfirmed);
-        this.transactions = this.mdbTable.getDataSource();
-        this.previous = this.mdbTable.getDataSource();
-      }
-    ));
+      // Datatable
+      this.mdbTable.setDataSource(this.transactionsConfirmed);
+      this.transactions = this.mdbTable.getDataSource();
+      this.previous = this.mdbTable.getDataSource();
+    }));
 
-    this.subscription.push(this.transactionService.getUnconfirmedTransactions$().subscribe(
-      (next: TransactionsInterface[]) => {
-        this.cantUnconfirmed = next.length;
-        this.transactionsUnconfirmed = next;
-      }
-    ));
+    this.subscription.push(this.transactionService.getUnconfirmedTransactions$().subscribe((next: TransactionsInterface[]) => {
+      this.cantUnconfirmed = next.length;
+      this.transactionsUnconfirmed = next;
+    }));
   }
 
   /**
