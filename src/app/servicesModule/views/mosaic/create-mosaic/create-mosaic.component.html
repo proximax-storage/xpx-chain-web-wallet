@@ -48,8 +48,9 @@
                     src="assets/images/img/icon-namespaces-green-16h-proximax-sirius-wallet.svg" alt="">
                   <input formControlName="divisibility" mdbInputDirective mdbValidate [validateSuccess]="true"
                     [validateError]="true" type="text" id="divisibility" minlength="0" maxlength="1"
-                    id="divisibility{{errorDivisibility}}" class="form-control form-control-sm input-border"
-                    placeholder="Divisibility" (keyup)="limitLength($event)">
+                    id="divisibility{{errorDivisibility}}" class="form-control form-control-sm input-border txt-a-right"
+                    placeholder="" (keyup)="limitLength($event)">
+                    <span class="label-i-icon pl-2rem">Divisibility</span>
 
                   <!-- VALIDATION -->
                   <mdb-error

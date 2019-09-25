@@ -284,7 +284,7 @@ export class CreateMosaicComponent implements OnInit {
    */
   send() {
     if (this.mosaicForm.valid && !this.blockSend) {
-      const validateAmount = this.transactionService.validateBuildSelectAccountBalance(this.amountAccount, Number(this.fee), Number(this.calculateRentalFee))
+      const validateAmount = this.transactionService.validateBuildSelectAccountBalance(0, Number(this.fee), Number(this.calculateRentalFee))
       if (validateAmount) {
         const common = {
           password: this.mosaicForm.get('password').value,
