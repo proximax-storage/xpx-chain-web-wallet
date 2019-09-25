@@ -72,6 +72,7 @@ export class AliasAddressToNamespaceComponent implements OnInit {
     this.createForm();
     this.getNamespaces();
     this.booksAddress();
+    this.amountAccount = this.walletService.getAmountAccount();
     this.LinkToNamespaceForm.get('address').valueChanges.subscribe(
       x => {
         if (x) {
@@ -261,7 +262,6 @@ export class AliasAddressToNamespaceComponent implements OnInit {
     const namespaceId = new NamespaceId(this.LinkToNamespaceForm.get('namespace').value);
     this.namespaceId = namespaceId;
     this.builder();
-    this.getAmountAccount();
   }
 
   builder() {
@@ -277,12 +277,6 @@ export class AliasAddressToNamespaceComponent implements OnInit {
 
   }
 
-  getAmountAccount () {
-    const account = this.walletService.filterAccountInfo(this.proximaxProvider.createFromRawAddress(this.walletService.currentAccount.address).pretty(), true);
-    let mosaics = account.accountInfo.mosaics;
-    let amoutMosaic = mosaics.filter(mosaic => mosaic.id.toHex() == environment.mosaicXpxInfo.id);
-    this.amountAccount = amoutMosaic[0].amount.compact();
-  }
   /**
    *
    *
@@ -417,17 +411,16 @@ export class AliasAddressToNamespaceComponent implements OnInit {
     this.subscription['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
       statusTransaction => {
         if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
-          const statusTransactionHash = (statusTransaction['type'] === 'error') ? statusTransaction['data'].hash : statusTransaction['data'].transactionInfo.hash;
-          const match = statusTransactionHash === this.transactionSigned.hash;
+          const match = statusTransaction['hash'] === this.transactionSigned.hash;
           if (statusTransaction['type'] === 'confirmed' && match) {
             this.transactionSigned = null;
-            this.sharedService.showSuccess('', 'Transaction confirmed');
+            //this.sharedService.showSuccess('', 'Transaction confirmed');
           } else if (statusTransaction['type'] === 'unconfirmed' && match) {
             this.transactionSigned = null;
-            this.sharedService.showInfo('', 'Transaction unconfirmed');
+            //this.sharedService.showInfo('', 'Transaction unconfirmed');
           } else if (match) {
             this.transactionSigned = null;
-            this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
+            //this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
           }
         }
       }
@@ -472,9 +465,9 @@ export class AliasAddressToNamespaceComponent implements OnInit {
             next => {
               this.blockSend = false;
               this.clearForm();
-              if (this.subscription['transactionStatus'] === undefined || this.subscription['transactionStatus'] === null) {
+              /*if (this.subscription['transactionStatus'] === undefined || this.subscription['transactionStatus'] === null) {
                 this.getTransactionStatus();
-              }
+              }*/
             }
           );
 
@@ -497,7 +490,7 @@ export class AliasAddressToNamespaceComponent implements OnInit {
   selectContact(event: { label: string, value: string }) {
     if (event !== undefined && event.value !== '') {
       this.LinkToNamespaceForm.get('address').patchValue(event.value);
-      this.address =  Address.createFromRawAddress(event.value); 
+      this.address =  Address.createFromRawAddress(event.value);
     }
   }
 }

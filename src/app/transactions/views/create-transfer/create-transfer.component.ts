@@ -104,7 +104,7 @@ export class CreateTransferComponent implements OnInit {
     this.subscribeValue();
     this.booksAddress();
     this.getAccountInfo();
-    this.getTransactionStatus();
+    //this.getTransactionStatus();
     this.transactionHttp = new TransactionHttp(environment.protocol + "://" + `${this.nodeService.getNodeSelected()}`); //change
 
     // Mosaic by default
@@ -512,18 +512,13 @@ export class CreateTransferComponent implements OnInit {
           // console.log('statusTransaction', statusTransaction);
           if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
             for (let element of this.transactionSigned) {
-              const statusTransactionHash =
-                (statusTransaction['type'] === 'error') ?
-                  statusTransaction['data'].hash :
-                  statusTransaction['data'].transactionInfo.hash;
-
-              const match = statusTransactionHash === element.hash;
+              const match = statusTransaction['hash'] === element.hash;
               if (match) {
                 this.transactionReady.push(element);
               }
 
               if (statusTransaction['type'] === 'confirmed' && match) {
-                this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransactionHash);
+                this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['hash']);
                 this.sharedService.showSuccess('', 'Transaction confirmed');
               } else if (statusTransaction['type'] === 'unconfirmed' && match) {
                 this.sharedService.showInfo('', 'Transaction unconfirmed');
@@ -532,8 +527,8 @@ export class CreateTransferComponent implements OnInit {
               } else if (statusTransaction['type'] === 'cosignatureSignedTransaction' && match) {
                 this.sharedService.showInfo('', 'Transaction cosignature signed');
               } else if (statusTransaction['type'] === 'error' && match) {
-                this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransactionHash);
-                this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
+                this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['hash']);
+                // this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
               }
             }
           }
@@ -552,8 +547,8 @@ export class CreateTransferComponent implements OnInit {
     this.subscription['getTransactionStatushashLock'] = this.dataBridge.getTransactionStatus().subscribe(
       statusTransaction => {
         if (statusTransaction !== null && statusTransaction !== undefined && signedTransactionHashLock !== null) {
-          const statusTransactionHash = (statusTransaction['type'] === 'error') ? statusTransaction['data'].hash : statusTransaction['data'].transactionInfo.hash;
-          const match = statusTransactionHash === signedTransactionHashLock.hash;
+          // const statusTransactionHash = (statusTransaction['type'] === 'error') ? statusTransaction['data'].hash : statusTransaction['data'].transactionInfo.hash;
+          const match = statusTransaction['hash'] === signedTransactionHashLock.hash;
           if (statusTransaction['type'] === 'confirmed' && match) {
             this.announceAggregateBonded(signedTransactionBonded)
             signedTransactionHashLock = null;
@@ -563,7 +558,7 @@ export class CreateTransferComponent implements OnInit {
             this.sharedService.showInfo('', 'Transaction unconfirmed hash Lock');
           } else if (match) {
             signedTransactionHashLock = null;
-            this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
+            // this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
           }
         }
       }
@@ -705,7 +700,7 @@ export class CreateTransferComponent implements OnInit {
    * @param {string} hash
    * @memberof CreateTransferComponent
    */
-  setTimeOutValidate(hash: string) {
+ /* setTimeOutValidate(hash: string) {
     setTimeout(() => {
       let exist = false;
       for (let element of this.transactionReady) {
@@ -716,7 +711,7 @@ export class CreateTransferComponent implements OnInit {
 
       (exist) ? '' : this.sharedService.showWarning('', 'An error has occurred');
     }, 5000);
-  }
+  }*/
 
   /**
    *
@@ -813,7 +808,7 @@ export class CreateTransferComponent implements OnInit {
                 async () => {
                   this.blockButton = false;
                   this.blockSendButton = false;
-                  this.getTransactionStatus();
+                  // this.getTransactionStatus();
                 }, err => {
                   this.blockButton = false;
                   this.blockSendButton = false;

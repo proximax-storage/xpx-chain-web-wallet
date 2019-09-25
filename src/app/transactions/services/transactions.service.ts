@@ -217,7 +217,7 @@ export class TransactionsService {
     }
 
     // console.log('=== RESULT AGGREGATE BONDED TRANSACTIONS ===', aggregateTransactions);
-    this.setAggregateBondedTransactions$(aggregateTransactions);
+    this.setTransactionsAggregateBonded$(aggregateTransactions);
   }
 
 
@@ -395,7 +395,7 @@ export class TransactionsService {
   destroyAllTransactions() {
     this.setTransactionsConfirmed$([]);
     this.setTransactionsUnConfirmed$([]);
-    this.setAggregateBondedTransactions$([]);
+    this.setTransactionsAggregateBonded$([]);
   }
 
   /**
@@ -463,7 +463,7 @@ export class TransactionsService {
   * @returns {Observable<TransactionsInterface[]>}
   * @memberof DashboardService
   */
-  getTransactionsConfirmed$(): Observable<TransactionsInterface[]> {
+  getConfirmedTransactions$(): Observable<TransactionsInterface[]> {
     return this._confirmedTransactions$;
   }
 
@@ -496,16 +496,15 @@ export class TransactionsService {
    * @memberof TransactionsService
    */
   getStructureDashboard(transaction: Transaction, othersTransactions?: TransactionsInterface[]): TransactionsInterface {
-    let isValid = true;
     if (othersTransactions && othersTransactions.length > 0) {
       const x = othersTransactions.filter(next => next.data.transactionInfo.hash === transaction.transactionInfo.hash);
       if (x && x.length > 0) {
-        isValid = false;
+        return null;
       }
     }
 
     const keyType = this.getNameTypeTransaction(transaction.type);
-    if (keyType !== undefined && isValid) {
+    if (keyType !== undefined) {
       let recipientRentalFeeSink = '';
       if (transaction["mosaics"] === undefined) {
         if (transaction.type === this.arraTypeTransaction.registerNameSpace.id) {
@@ -558,9 +557,11 @@ export class TransactionsService {
         recipient: recipient,
         recipientAddress: recipientPretty,
         receive: isReceive,
-        senderAddress: transaction['signer'].address.pretty()
+        senderAddress: transaction['signer'].address.pretty(),
+        hash: transaction.transactionInfo.hash
       }
     }
+
     return null;
   }
 
@@ -597,8 +598,8 @@ export class TransactionsService {
   searchAccountsInfo(accounts: AccountsInterface[]) {
     // console.log('ACCOUNTS INTERFACE ---> ', accounts);
     this.walletService.searchAccountsInfo(accounts).then(
-      (data: { mosaicsIds: MosaicId[], accountsInfo: AccountsInfoInterface[] }) => {
-        // console.log('=== DATA ===', data);
+      (data: { mosaicsId: MosaicId[], accountsInfo: AccountsInfoInterface[] }) => {
+        console.log('=== DATA ===', data);
         this.walletService.validateMultisigAccount(accounts);
         const publicsAccounts: PublicAccount[] = [];
         data.accountsInfo.forEach((element: AccountsInfoInterface) => {
@@ -617,8 +618,8 @@ export class TransactionsService {
         }
 
         this.updateBalance();
-        if (data.mosaicsIds && data.mosaicsIds.length > 0) {
-          this.mosaicServices.searchInfoMosaics(data.mosaicsIds)
+        if (data.mosaicsId && data.mosaicsId.length > 0) {
+          this.mosaicServices.searchInfoMosaics(data.mosaicsId)
         }
 
       }
@@ -628,45 +629,22 @@ export class TransactionsService {
 
   /**
    *
-   * @param transactions
-   */
-  setAggregateBondedTransactions$(transactions: TransactionsInterface[]) {
-    // console.log('\n=== SET AGGREGATE TRANSACTION ===', transactions);
-    if (transactions.length > 0) {
-      this.getAggregateBondedTransactions$().pipe(first()).subscribe(
-        transactionsSaved => {
-          const pushTransactions = [];
-          if (transactionsSaved.length > 0) {
-            for (let element of transactions) {
-              const exist = transactionsSaved.find(x => x.data['transactionInfo'].hash === element.data['transactionInfo'].hash);
-              if (!exist) {
-                pushTransactions.push(element);
-              }
-            }
-
-            if (pushTransactions.length > 0) {
-              // console.log('SAVE ---> ', pushTransactions);
-              this._aggregateTransactionsSubject.next(pushTransactions);
-            }
-          } else {
-            // console.log('SAVE THE SAME---> ', transactions);
-            this._aggregateTransactionsSubject.next(transactions);
-          }
-        }
-      );
-    } else {
-      this._aggregateTransactionsSubject.next([]);
-    }
-  }
-
-  /**
-   *
    *
    * @param {*} amount
    * @memberof TransactionsService
    */
   setBalance$(amount: any): void {
     this.balance.next(this.amountFormatterSimple(amount));
+  }
+
+  /**
+   *
+   *
+   * @param {TransactionsInterface[]} transactions
+   * @memberof TransactionsService
+   */
+  setTransactionsAggregateBonded$(transactions: TransactionsInterface[]) {
+    this._aggregateTransactionsSubject.next(transactions);
   }
 
   /**
