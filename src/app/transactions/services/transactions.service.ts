@@ -536,7 +536,7 @@ export class TransactionsService {
       const feeFormatter = this.amountFormatterSimple(transaction.maxFee.compact());
       let nameType = this.arraTypeTransaction[keyType].name;
       try {
-        if (transaction['message'].payload !== '') {
+        if (transaction['message'] && transaction['message'].payload !== '') {
           const msg = JSON.parse(transaction['message'].payload);
           if (transaction.signer.address.plain() === environment.swapAccount.address) {
             if (msg && msg['type'] && msg['type'] === 'Swap') {
@@ -544,7 +544,9 @@ export class TransactionsService {
             }
           }
         }
-      } catch (error) { }
+      } catch (error) {
+        // console.log(error);
+      }
 
       return {
         data: transaction,
@@ -557,11 +559,9 @@ export class TransactionsService {
         recipient: recipient,
         recipientAddress: recipientPretty,
         receive: isReceive,
-        senderAddress: transaction['signer'].address.pretty(),
-        hash: transaction.transactionInfo.hash
+        senderAddress: transaction['signer'].address.pretty()
       }
     }
-
     return null;
   }
 
