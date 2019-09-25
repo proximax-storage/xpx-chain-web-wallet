@@ -92,7 +92,6 @@ export class CreateNamespaceComponent implements OnInit {
     this.createForm();
     this.getNamespaces();
     this.amountAccount = this.walletService.getAmountAccount();
-    console.log(this.amountAccount);
     
     this.fee = '0.000000';
     this.durationByBlock = this.transactionService.calculateDurationforDay(this.namespaceForm.get('duration').value).toString();
@@ -117,7 +116,7 @@ export class CreateNamespaceComponent implements OnInit {
         this.namespaceName,
         this.walletService.currentAccount.network,
         this.duration
-      )
+      );
       this.fee = this.transactionService.amountFormatterSimple(this.registerRootNamespaceTransaction.maxFee.compact())
     } else if(this.typetransfer == 2){
       const rootNamespaceName = this.namespaceForm.get('namespaceRoot').value;
@@ -428,7 +427,6 @@ export class CreateNamespaceComponent implements OnInit {
     // Duration ValueChange
     this.namespaceForm.get('duration').valueChanges.subscribe(
       next => {
-        console.log(next);
         if(next <= 365) {
        
         if (next !== null && next !== undefined && String(next) !== '0' && next !== '') {
@@ -443,11 +441,9 @@ export class CreateNamespaceComponent implements OnInit {
       } else {
         this.durationByBlock = this.transactionService.calculateDurationforDay(365).toString();
             this.validateRentalFee(this.rentalFee * parseFloat(this.durationByBlock));
-        console.log('fake');
         
       }
         this.duration = parseFloat(this.durationByBlock);
-        console.log('duration',  this.duration)
         this.builder()
       }
     );

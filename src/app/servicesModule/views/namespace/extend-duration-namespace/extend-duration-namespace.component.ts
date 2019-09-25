@@ -55,6 +55,7 @@ export class ExtendDurationNamespaceComponent implements OnInit {
   statusTransaction: boolean = false;
   extendNamespaceRootTransaction: any;
   amountAccount: number;
+  namespaceRootToExtend: any;
 
   constructor(
     private router: Router,
@@ -74,7 +75,6 @@ export class ExtendDurationNamespaceComponent implements OnInit {
     this.createForm();
     this.getNamespaces();
     this.amountAccount = this.walletService.getAmountAccount();
-    console.log('monto', this.amountAccount)
     const duration = this.extendDurationNamespaceForm.get('duration').value;
     this.durationByBlock = this.transactionService.calculateDurationforDay(duration).toString();
     this.subscription.push(this.dataBridgeService.getBlock().subscribe(
@@ -124,13 +124,14 @@ export class ExtendDurationNamespaceComponent implements OnInit {
    * @memberof ExtendDurationNamespaceComponent
    */
   builder() {
-    console.log('monto', this.amountAccount)
     const namespaceRootToExtend: string = this.extendDurationNamespaceForm.get('namespaceRoot').value;
     const duration: number = parseFloat(this.durationByBlock);
-    console.log('namespaceRootToExtend', namespaceRootToExtend);
-    console.log('duration', duration);
-    this.extendNamespaceRootTransaction = this.proximaxProvider.registerRootNamespaceTransaction(namespaceRootToExtend, this.walletService.currentAccount.network, duration);
-    console.log('extendNamespaceRootTransaction', this.extendNamespaceRootTransaction);
+    if(namespaceRootToExtend === undefined || namespaceRootToExtend === '' ){
+      this.namespaceRootToExtend = 'p';
+    } else {
+      this.namespaceRootToExtend = this.extendDurationNamespaceForm.get('namespaceRoot').value;
+    }
+    this.extendNamespaceRootTransaction = this.proximaxProvider.registerRootNamespaceTransaction(this.namespaceRootToExtend, this.walletService.currentAccount.network, duration);
     this.fee = this.transactionService.amountFormatterSimple(this.extendNamespaceRootTransaction.maxFee.compact())
   }
 
