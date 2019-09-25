@@ -41,6 +41,7 @@ export const AppConfig: Config = {
     polls: 'polls',
     renewNamespace: 'renew-namespace',
     renovateNamespace: 'renovate-namespace',
+    swapTransactions: 'swap-transactions',
     selectNode: 'select-node',
     selectTypeCreationWallet: 'select-type-creation-wallet',
     selectTypeCreationAccount: 'select-type-creation-account',
@@ -102,6 +103,7 @@ export interface Config {
     polls: string;
     renewNamespace: string;
     renovateNamespace: string;
+    swapTransactions: string;
     selectNode: string;
     selectTypeCreationWallet: string;
     selectTypeCreationAccount: string;

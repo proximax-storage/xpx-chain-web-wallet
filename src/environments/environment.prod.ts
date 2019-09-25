@@ -74,6 +74,7 @@ export const environment = {
   },
   nis1: {
     url: 'http://18.231.166.212:7890',
+    urlExplorer: 'http://testnet-explorer.nemtool.com/#/s_tx?hash=',
     networkType: NetworkTypes.TEST_NET,
     address: 'TBF4LAZUEJMBIOC6J24D6ZGGXE5W775TX555CTTN',
     nodes: [
