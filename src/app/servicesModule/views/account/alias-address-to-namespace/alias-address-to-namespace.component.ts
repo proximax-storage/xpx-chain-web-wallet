@@ -413,7 +413,7 @@ export class AliasAddressToNamespaceComponent implements OnInit {
    *
    * @memberof AliasAddressToNamespaceComponent
    */
-  getTransactionStatus() {
+  /*getTransactionStatus() {
     this.subscription['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
       statusTransaction => {
         if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
@@ -432,7 +432,7 @@ export class AliasAddressToNamespaceComponent implements OnInit {
         }
       }
     );
-  }
+  }*/
 
   /**
    *
@@ -472,9 +472,9 @@ export class AliasAddressToNamespaceComponent implements OnInit {
             next => {
               this.blockSend = false;
               this.clearForm();
-              if (this.subscription['transactionStatus'] === undefined || this.subscription['transactionStatus'] === null) {
+              /*if (this.subscription['transactionStatus'] === undefined || this.subscription['transactionStatus'] === null) {
                 this.getTransactionStatus();
-              }
+              }*/
             }
           );
 
@@ -497,7 +497,7 @@ export class AliasAddressToNamespaceComponent implements OnInit {
   selectContact(event: { label: string, value: string }) {
     if (event !== undefined && event.value !== '') {
       this.LinkToNamespaceForm.get('address').patchValue(event.value);
-      this.address =  Address.createFromRawAddress(event.value); 
+      this.address =  Address.createFromRawAddress(event.value);
     }
   }
 }

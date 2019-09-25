@@ -463,7 +463,7 @@ export class TransactionsService {
   * @returns {Observable<TransactionsInterface[]>}
   * @memberof DashboardService
   */
-  getTransactionsConfirmed$(): Observable<TransactionsInterface[]> {
+  getConfirmedTransactions$(): Observable<TransactionsInterface[]> {
     return this._confirmedTransactions$;
   }
 
@@ -496,16 +496,15 @@ export class TransactionsService {
    * @memberof TransactionsService
    */
   getStructureDashboard(transaction: Transaction, othersTransactions?: TransactionsInterface[]): TransactionsInterface {
-    let isValid = true;
     if (othersTransactions && othersTransactions.length > 0) {
       const x = othersTransactions.filter(next => next.data.transactionInfo.hash === transaction.transactionInfo.hash);
       if (x && x.length > 0) {
-        isValid = false;
+        return null;
       }
     }
 
     const keyType = this.getNameTypeTransaction(transaction.type);
-    if (keyType !== undefined && isValid) {
+    if (keyType !== undefined) {
       let recipientRentalFeeSink = '';
       if (transaction["mosaics"] === undefined) {
         if (transaction.type === this.arraTypeTransaction.registerNameSpace.id) {
@@ -558,9 +557,11 @@ export class TransactionsService {
         recipient: recipient,
         recipientAddress: recipientPretty,
         receive: isReceive,
-        senderAddress: transaction['signer'].address.pretty()
+        senderAddress: transaction['signer'].address.pretty(),
+        hash: transaction.transactionInfo.hash
       }
     }
+
     return null;
   }
 
@@ -686,6 +687,7 @@ export class TransactionsService {
    * @memberof DashboardService
    */
   setTransactionsUnConfirmed$(transactions: TransactionsInterface[]) {
+    console.log('unconfirmedTransactionsSubject --> ', transactions);
     this.unconfirmedTransactionsSubject.next(transactions);
   }
 

@@ -207,7 +207,6 @@ export class ProximaxProvider {
    * @param {Account} account
    * @param {boolean} supplyMutableParam
    * @param {boolean} transferableParam
-   * @param {boolean} levyMutableParam
    * @param {number} divisibilityParam
    * @param {number} durationParam
    * @param {NetworkType} network

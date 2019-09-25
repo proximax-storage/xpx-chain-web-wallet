@@ -104,7 +104,7 @@ export class CreateTransferComponent implements OnInit {
     this.subscribeValue();
     this.booksAddress();
     this.getAccountInfo();
-    this.getTransactionStatus();
+    //this.getTransactionStatus();
     this.transactionHttp = new TransactionHttp(environment.protocol + "://" + `${this.nodeService.getNodeSelected()}`); //change
 
     // Mosaic by default
@@ -504,7 +504,7 @@ export class CreateTransferComponent implements OnInit {
    *
    * @memberof CreateTransferComponent
    */
-  getTransactionStatus() {
+  /*getTransactionStatus() {
     // Get transaction status
     if (!this.subscription['transactionStatus']) {
       this.subscription['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
@@ -540,7 +540,7 @@ export class CreateTransferComponent implements OnInit {
         }
       );
     }
-  }
+  }*/
 
   /**
    *
@@ -705,7 +705,7 @@ export class CreateTransferComponent implements OnInit {
    * @param {string} hash
    * @memberof CreateTransferComponent
    */
-  setTimeOutValidate(hash: string) {
+ /* setTimeOutValidate(hash: string) {
     setTimeout(() => {
       let exist = false;
       for (let element of this.transactionReady) {
@@ -716,7 +716,7 @@ export class CreateTransferComponent implements OnInit {
 
       (exist) ? '' : this.sharedService.showWarning('', 'An error has occurred');
     }, 5000);
-  }
+  }*/
 
   /**
    *
@@ -813,7 +813,7 @@ export class CreateTransferComponent implements OnInit {
                 async () => {
                   this.blockButton = false;
                   this.blockSendButton = false;
-                  this.getTransactionStatus();
+                  // this.getTransactionStatus();
                 }, err => {
                   this.blockButton = false;
                   this.blockSendButton = false;

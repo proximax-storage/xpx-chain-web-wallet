@@ -8,8 +8,8 @@ export const environment = {
   production: true,
   itemBooksAddress: 'sw-books-testnet',
   //version: '0.3.1.8',
-  version: '0.3.1.11',
-  cacheVersion: '1',
+  version: '0.3.2',
+  cacheVersion: '2',
   nameKeyNodeSelected: `sw-selected-node-testnet`,
   nameKeyWalletStorage: `sw-testnet`,
   nameKeyNodeStorage: `sw-nodes-testnet`,
@@ -22,8 +22,8 @@ export const environment = {
   mosaicXpxInfo: {
     name: 'prx.xpx',
     coin: 'XPX',
-    id: '3c0f3de5298ced2d',
-    mosaicIdUint64: [697101613, 1007631845],
+    id: 'bffb42a19116bdf6',
+    mosaicIdUint64: [3825551831, 331334936],
     namespaceIdUint64: [2434186742, 3220914849],
     namespaceId: 'bffb42a19116bdf6',
     divisibility: 6
@@ -38,7 +38,7 @@ export const environment = {
     divisibility: 6
   },*/
   blockchainConnection: {
-    host: 'bctestnet5.xpxsirius.io',
+    host: '18.138.51.117',
     port: 3000,
     protocol: 'http',
     useSecureMessage: false

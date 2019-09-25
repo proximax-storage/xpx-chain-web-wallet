@@ -49,7 +49,6 @@ export class MosaicsSupplyChangeComponent implements OnInit {
   duration: string = '() 0 days';
   supply: string = '0';
   blockButton: boolean = false;
-  levyMutable: boolean = false;
   supplyMutable: boolean = false;
   transferable: boolean = false;
   transactionSigned: SignedTransaction[] = [];
@@ -197,7 +196,6 @@ export class MosaicsSupplyChangeComponent implements OnInit {
       //  console.log(mosaicsInfoSelected);
       if (mosaicsInfoSelected !== null || mosaicsInfoSelected !== undefined) {
         this.divisibility = mosaicsInfoSelected[0].mosaicInfo['properties'].divisibility;
-        this.levyMutable = mosaicsInfoSelected[0].mosaicInfo['properties'].levyMutable;
         this.supplyMutable = mosaicsInfoSelected[0].mosaicInfo['properties'].supplyMutable;
         this.transferable = mosaicsInfoSelected[0].mosaicInfo['properties'].transferable;
         this.supply = this.transactionService.amountFormatter(
@@ -229,7 +227,6 @@ export class MosaicsSupplyChangeComponent implements OnInit {
     this.divisibility = 0;
     this.duration = '0 days';
     this.supply = '0';
-    this.levyMutable = false;
     this.supplyMutable = false;
     this.transferable = false;
     return;
@@ -319,7 +316,7 @@ export class MosaicsSupplyChangeComponent implements OnInit {
         console.log(this.transactionSigned);
         this.proximaxProvider.announce(signedTransaction).subscribe(
           x => {
-           
+
             this.blockUI.stop();
             if (this.subscriptions['transactionStatus'] === undefined || this.subscriptions['transactionStatus'] === null) {
               this.getTransactionStatus();
