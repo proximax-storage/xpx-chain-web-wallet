@@ -51,7 +51,7 @@ export class SidebarAuthComponent implements OnInit {
       icon: '',
       rol: false,
       link: `/${AppConfig.routes.createWallet}`,
-      view: true,
+      view: false,
       subMenu: {},
       selected: false
     }
@@ -63,7 +63,20 @@ export class SidebarAuthComponent implements OnInit {
       icon: '',
       rol: false,
       link: `/${AppConfig.routes.importWallet}`,
-      view: true,
+      view: false,
+      subMenu: {},
+      selected: false
+    }
+
+
+    const deleteWallet: MenuInterface = {
+      type: 'default',
+      name: 'Delete',
+      class: '',
+      icon: '',
+      rol: false,
+      link: `/${AppConfig.routes.deleteWallet}`,
+      view: false,
       subMenu: {},
       selected: false
     }
@@ -75,10 +88,11 @@ export class SidebarAuthComponent implements OnInit {
       icon: '',
       rol: false,
       link: ``,
-      view: false,
+      view: true,
       subMenu: {
         createWallet,
-        importWallet
+        importWallet,
+        deleteWallet
       },
       selected: false
     }
