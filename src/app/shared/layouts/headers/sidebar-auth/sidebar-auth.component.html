@@ -28,7 +28,6 @@
               <div *dropdownMenu class="dropdown-menu dropdown dropdown-primary {{itemsHeader[key]['class']}}" role="menu">
                 <ng-container *ngFor="let k of keyObject(itemsHeader[key]['submenu'])">
                   <ng-container *ngIf="itemsHeader[key]['submenu'][k]['view']">
-                    {{itemsHeader[key]['submenu'][k]['view']}}
                     <a class="dropdown-item waves-light" mdbWavesEffect [routerLink]="[itemsHeader[key]['submenu'][k]['link']]">
                       {{itemsHeader[key]['submenu'][k]['name']}}
                     </a>
