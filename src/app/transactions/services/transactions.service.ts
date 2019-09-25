@@ -217,7 +217,7 @@ export class TransactionsService {
     }
 
     // console.log('=== RESULT AGGREGATE BONDED TRANSACTIONS ===', aggregateTransactions);
-    //this.setAggregateBondedTransactions$(aggregateTransactions);
+    this.setTransactionsAggregateBonded$(aggregateTransactions);
   }
 
 
@@ -395,7 +395,7 @@ export class TransactionsService {
   destroyAllTransactions() {
     this.setTransactionsConfirmed$([]);
     this.setTransactionsUnConfirmed$([]);
-    //this.setAggregateBondedTransactions$([]);
+    this.setTransactionsAggregateBonded$([]);
   }
 
   /**
@@ -626,36 +626,6 @@ export class TransactionsService {
     ).catch(error => console.log(error));
   }
 
-
-  /**
-   *
-   * @param transactions
-   */
-  /* async setAggregateBondedTransactions$(transactions: TransactionsInterface[]) {
-     // console.log('\n=== SET AGGREGATE TRANSACTION ===', transactions);
-     if (transactions.length > 0) {
-       const pushTransactions = [];
-       const transactionsSaved: TransactionsInterface[] = await this.getAggregateBondedTransactions$().pipe(first()).toPromise();
-       if (transactionsSaved.length > 0) {
-         for (let element of transactions) {
-           const exist = transactionsSaved.find(x => x.data['transactionInfo'].hash === element.data['transactionInfo'].hash);
-           if (!exist) {
-             pushTransactions.push(element);
-           }
-         }
-
-         if (pushTransactions.length > 0) {
-           // console.log('SAVE ---> ', pushTransactions);
-           this._aggregateTransactionsSubject.next(pushTransactions);
-         }
-       } else {
-         // console.log('SAVE THE SAME---> ', transactions);
-         this._aggregateTransactionsSubject.next(transactions);
-       }
-     } else {
-       this._aggregateTransactionsSubject.next([]);
-     }
-   }*/
 
   /**
    *

@@ -28,8 +28,6 @@ export class DataBridgeService {
   transaction$: Observable<any> = this.transactionSubject.asObservable();
   reconnectNode = 0;
   subscription: Subscription[] = [];
-  transactionSigned: SignedTransaction[] = [];
-  transactionReady: SignedTransaction[] = [];
 
 
   constructor(
@@ -88,7 +86,6 @@ export class DataBridgeService {
     this.destroyConection = true;
     if (destroyTransactions) {
       this.setblock(null);
-      this.transactionSigned = [];
       this.setTransactionStatus(null);
       this.transactionsService.destroyAllTransactions();
     }
@@ -98,44 +95,6 @@ export class DataBridgeService {
     }
   }
 
-
-  /**
-   * Destroy unconfirmed transaction
-   *
-   * @param {*} element
-   * @memberof DataBridgeService
-   */
-  destroyUnconfirmedTransaction(incomingTransaction: TransactionsInterface) {
-    // Destroy unconfirmed transactions
-    this.transactionsService.getUnconfirmedTransactions$().pipe(first()).subscribe(
-      response => {
-        if (response.length > 0) {
-          let allTransactionUnConfirmed = response.slice(0);
-          let unconfirmed = allTransactionUnConfirmed.filter((elementUnconfirmed) =>
-            elementUnconfirmed.data.transactionInfo.hash !==
-            incomingTransaction.data.transactionInfo.hash
-          );
-
-          this.transactionsService.setTransactionsUnConfirmed$(unconfirmed);
-        }
-      }
-    );
-
-    // Destroy aggregateTransactions transactions
-    /*this.transactionsService.getAggregateBondedTransactions$().pipe(first()).subscribe(
-      response => {
-        if (response.length > 0) {
-          let allAggregateTransactions = response.slice(0);
-          let aggregateBonded = allAggregateTransactions.filter((elmAggregate) =>
-            elmAggregate.data.transactionInfo.hash !==
-            incomingTransaction.data.transactionInfo.hash
-          );
-
-          this.transactionsService.setAggregateBondedTransactions$(aggregateBonded);
-        }
-      }
-    );*/
-  }
 
   /**
    *
@@ -378,179 +337,6 @@ export class DataBridgeService {
 
 
 
-  /**
-   *
-   *
-   * @param {Listener} connector
-   * @param {HTMLAudioElement} audio
-   * @memberof DataBridgeService
-   */
-  getSocketTransactionsAggreateBondedRemoved(connector: Listener, audio: HTMLAudioElement) {
-    const currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
-    currentWallet.accounts.forEach(element => {
-      // ----------------------------------UNCONFIRMED_REMOVED--------------------------------------------//
-      connector.aggregateBondedRemoved(this.proximaxProvider.createFromRawAddress(element.address)).subscribe((aggregateBondedRemoved: string) => {
-        console.log('=== NEW TRANSACTION AGGREGATE_BONDED_REMOVED === ', aggregateBondedRemoved, '\n\n');
-        //this.validateTransactions(aggregateBondedRemoved);
-        this.setTransactionStatus({
-          'type': 'aggregateBondedRemoved',
-          'hash': aggregateBondedRemoved
-        });
-      }, err => {
-        // console.error(err)
-      });
-    });
-  }
-
-
-  /**
-   *
-   *
-   * @memberof DataBridgeService
-   */
-  getSocketTransactionsAggreateBonded(connector: Listener, audio: HTMLAudioElement) {
-    this.currentWallet.accounts.forEach(element => {
-      // console.log('\n=== CONNECTION_AGGREGATE_BONDED ===', this.proximaxProvider.createFromRawAddress(element.address));
-      connector.aggregateBondedAdded(this.proximaxProvider.createFromRawAddress(element.address)).subscribe((aggregateBondedAdded: AggregateTransaction) => {
-        const address = this.proximaxProvider.createFromRawAddress(element.address);
-        // console.log('\n=== CONNECTED ===', address.plain().slice(36, 40));
-        console.log('=== NEW TRANSACTION AGGREGATE_BONDED === ', aggregateBondedAdded.transactionInfo.hash, '\n\n');
-        const builded = this.transactionsService.getStructureDashboard(aggregateBondedAdded);
-        //        this.transactionsService.setAggregateBondedTransactions$([builded]);
-        this.setTransactionStatus({
-          'type': 'aggregateBondedAdded',
-          'hash': aggregateBondedAdded
-        });
-      }, err => {
-        // console.error(err)
-      });
-    });
-  }
-
-  /**
-   *
-   *
-   * @param {Listener} connector
-   * @param {HTMLAudioElement} audio
-   * @memberof DataBridgeService
-   */
-  getSocketTransactionsCosignatureAdded(connector: Listener, audio: HTMLAudioElement) {
-    const currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
-    currentWallet.accounts.forEach(element => {
-      // console.log('\n=== CONNECTION_COSIGNATURE_ADDED ===', this.proximaxProvider.createFromRawAddress(element.address));
-      connector.cosignatureAdded(this.proximaxProvider.createFromRawAddress(element.address)).subscribe((cosignatureSignedTransaction: CosignatureSignedTransaction) => {
-        const address = this.proximaxProvider.createFromRawAddress(element.address);
-        // console.log('\n=== CONNECTED ===', address.plain().slice(36, 40));
-        console.log('=== COSIGNATURE ADDED TRANSACTION === ', cosignatureSignedTransaction.parentHash, '\n\n');
-        this.setTransactionStatus({
-          'type': 'cosignatureSignedTransaction',
-          'hash': cosignatureSignedTransaction
-        });
-        audio.play();
-      }, err => {
-        // console.error(err)
-      });
-    });
-  }
-
-  /**
-   * Get the confirmed transactions from the socket
-   *
-   * @param {Listener} connector
-   * @param {HTMLAudioElement} audio
-   * @memberof DataBridgeService
-   */
-  getSocketTransactionsConfirmed(connector: Listener, audio: HTMLAudioElement) {
-    const currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
-    currentWallet.accounts.forEach(element => {
-      // console.log('\n=== CONNECTION_CONFIRMED ===', this.proximaxProvider.createFromRawAddress(element.address));
-      connector.confirmed(this.proximaxProvider.createFromRawAddress(element.address)).subscribe((confirmed: Transaction) => {
-        this.setTransactionStatus({
-          'type': 'confirmed',
-          'hash': confirmed
-        });
-
-        console.log('=== CONFIRMED TRANSACTION === ', confirmed.transactionInfo.hash, '\n\n');
-        this.transactionsService.getConfirmedTransactions$().pipe(first()).subscribe(allTransactionConfirmed => {
-          const transactionPushed = allTransactionConfirmed.slice(0);
-          const transactionFormatter = this.transactionsService.getStructureDashboard(confirmed, transactionPushed);
-          if (transactionFormatter !== null) {
-            transactionPushed.unshift(transactionFormatter);
-            this.destroyUnconfirmedTransaction(transactionFormatter);
-            this.transactionsService.setTransactionsConfirmed$(transactionPushed);
-            audio.play();
-            this.transactionsService.searchAccountsInfo(this.walletService.currentWallet.accounts);
-            this.namespaces.searchNamespacesFromAccounts([this.proximaxProvider.createFromRawAddress(this.walletService.getCurrentAccount().address)]);
-            // this.transactionsService.validateTypeTransaction(confirmed.type);
-            // this.namespaceService.buildNamespaceStorage();
-            // this.transactionsService.updateBalance();
-          }
-        });
-      }, err => {
-        // console.error(err)
-      });
-    });
-  }
-
-  /**
-   * Get the unconfirmed transactions from the socket
-   *
-   * @param {Listener} connector
-   * @param {HTMLAudioElement} audio
-   * @memberof DataBridgeService
-   */
-  getSocketUnconfirmedTransactions(connector: Listener, audio: HTMLAudioElement) {
-    const currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
-    currentWallet.accounts.forEach(element => {
-      // console.log('\n=== CONNECTION_UNCONFIRMED_ADDED ===', this.proximaxProvider.createFromRawAddress(element.address));
-      connector.unconfirmedAdded(this.proximaxProvider.createFromRawAddress(element.address)).subscribe(unconfirmedTransaction => {
-        // Aqui las que tengo por confirmar en mi variable
-        console.log('=== UNCONFIRMED TRANSACTION === ', unconfirmedTransaction.transactionInfo.hash, '\n\n');
-        this.transactionsService.getUnconfirmedTransactions$().pipe(first()).subscribe(
-          async transactionsUnconfirmed => {
-            const transactionPushed = transactionsUnconfirmed.slice(0);
-            const transactionFormatter = this.transactionsService.getStructureDashboard(unconfirmedTransaction, transactionPushed);
-            if (transactionFormatter !== null) {
-              transactionPushed.unshift(transactionFormatter);
-              this.transactionsService.setTransactionsUnConfirmed$(transactionPushed);
-              audio.play();
-              // aqui las que me llegan del WS
-              this.setTransactionStatus({
-                'type': 'unconfirmed',
-                'hash': unconfirmedTransaction
-              });
-            }
-          }, err => {
-            // console.error(err);
-          });
-      });
-    });
-  }
-
-  /**
-   * Get the status from the socket
-   *
-   * @param {Listener} connector
-   * @param {HTMLAudioElement} audio
-   * @memberof DataBridgeService
-   */
-  getSocketStatusError(connector: Listener, audio: HTMLAudioElement) {
-    const currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
-    currentWallet.accounts.forEach(element => {
-      // console.log('\n=== CONNECTION_STATUS ===', this.proximaxProvider.createFromRawAddress(element.address));
-      connector.status(this.proximaxProvider.createFromRawAddress(element.address)).subscribe(error => {
-        const address = this.proximaxProvider.createFromRawAddress(element.address);
-        // console.log('\n=== CONNECTED ===', address.plain().slice(36, 40));
-        console.log('=== STATUS TRANSACTION === ', error.hash, '\n\n');
-        this.setTransactionStatus({
-          'type': 'error',
-          'hash': error
-        });
-      }, err => {
-        this.sharedService.showError('', err);
-      });
-    });
-  }
 
   /**
    *
@@ -573,12 +359,6 @@ export class DataBridgeService {
       this.connector.open().then(() => {
         const audio = new Audio('assets/audio/ding.ogg');
         const audio2 = new Audio('assets/audio/ding2.ogg');
-        /*this.getSocketTransactionsAggreateBonded(this.connector, audio2);
-        this.getSocketTransactionsAggreateBondedRemoved(this.connector, audio);
-        this.getSocketTransactionsCosignatureAdded(this.connector, audio);
-        this.getSocketTransactionsConfirmed(this.connector, audio2);
-        this.getSocketUnconfirmedTransactions(this.connector, audio);
-        this.getSocketStatusError(this.connector, audio);*/
         this.getAggregateBondedAddedSocket(this.connector, audio);
         this.getAggregateBondedRemovedSocket(this.connector, audio2);
         this.getBlockSocket(this.connector);
@@ -632,17 +412,6 @@ export class DataBridgeService {
 
   /**
    *
-   */
-  setTransactionSigned(signedTransaction: SignedTransaction, add = true) {
-    if (add) {
-      this.transactionSigned.push(signedTransaction);
-    } else {
-      this.transactionSigned = this.transactionSigned.filter(x => x.hash !== signedTransaction.hash);
-    }
-  }
-
-  /**
-   *
    *
    * @param {*} value
    * @returns
@@ -651,27 +420,4 @@ export class DataBridgeService {
   setTransactionStatus(value: any) {
     return this.transactionSubject.next(value);
   }
-
-  /**
-   *
-   *
-   * @memberof DataBridgeService
-   */
-  /*validateTransactions(hash: string) {
-    this.transactionsService.getAggregateBondedTransactions$().pipe(first()).subscribe(
-      next => {
-        next.forEach(element => {
-          if (element.data['transactionInfo']) {
-            // console.log('=== HASH CACHE TRANSACTION ===', element.data['transactionInfo'].hash);
-            // console.log('=== HASH BONDED REMOVE TRANSACTION ===', hash);
-            if (hash === element.data['transactionInfo'].hash) {
-              // console.log('=== SOME HASH === ', hash);
-              const newData = next.filter(x => x.data['transactionInfo'].hash !== hash);
-              this.transactionsService.setAggregateBondedTransactions$(newData);
-            }
-          }
-        })
-      }
-    );
-  }*/
 }

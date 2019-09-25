@@ -197,8 +197,6 @@ export class PartialComponent implements OnInit {
               });
             }
           });
-
-          // this.getAggregateBondedTransactions(publicsAccounts);
         }
       }
     ));
@@ -222,7 +220,6 @@ export class PartialComponent implements OnInit {
         const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
         this.password = '';
         this.modalPartial.hide();
-        this.dataBridge.setTransactionSigned(transaction);
         this.proximaxProvider.cosignAggregateBondedTransaction(transaction, account).subscribe(
           next => {
             console.log(next);
