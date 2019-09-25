@@ -6,7 +6,7 @@ import { environment } from '../../../environments/environment';
 import { NodeService } from '../../servicesModule/services/node.service';
 import { SharedService } from './shared.service';
 import { WalletService, CurrentWalletInterface } from '../../wallet/services/wallet.service';
-import { TransactionsInterface, TransactionsService } from '../../transactions/services/transactions.service';
+import { TransactionsService } from '../../transactions/services/transactions.service';
 import { ProximaxProvider } from './proximax.provider';
 import { NamespacesService } from 'src/app/servicesModule/services/namespaces.service';
 
@@ -28,6 +28,7 @@ export class DataBridgeService {
   transaction$: Observable<any> = this.transactionSubject.asObservable();
   reconnectNode = 0;
   subscription: Subscription[] = [];
+
 
 
   constructor(
@@ -156,6 +157,7 @@ export class DataBridgeService {
         const transactionFormatter = this.transactionsService.getStructureDashboard(aggregateBondedAdded, transactionPushed);
         if (transactionFormatter !== null) {
           audio.play();
+          this.sharedService.showInfo('', 'Transaction aggregate bonded added');
           transactionPushed.unshift(transactionFormatter);
           this.transactionsService.setTransactionsAggregateBonded$(transactionPushed);
         }
@@ -299,6 +301,7 @@ export class DataBridgeService {
         const transactionFormatter = this.transactionsService.getStructureDashboard(unconfirmedAdded, transactionPushed);
         if (transactionFormatter !== null) {
           audio.play();
+          this.sharedService.showInfo('', 'Transaction unconfirmed');
           transactionPushed.unshift(transactionFormatter);
           this.transactionsService.setTransactionsUnConfirmed$(transactionPushed);
         }
