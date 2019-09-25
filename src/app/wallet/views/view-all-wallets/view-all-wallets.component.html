@@ -23,8 +23,8 @@
 
                             <!-- {{wallet}} -->
                             <div class="col-12 col-sm-10 col-md-9 col-lg-10 col-xl-10 text-center text-sm-left pt-1rem w-b-a">
-                                Name: {{wallet.label}}<br>
-                                Accounts :{{wallet.value.accounts.length}}
+                                Name: {{wallet.name}}<br>
+                                Accounts :{{wallet.accounts.length}}
                             </div>
                             <div class="col-12 col-sm-2 col-md-3 col-lg-2 col-xl-2 d-flex align-items-center
                              justify-content-center
@@ -35,7 +35,7 @@
 
                                 <!-- Delete-->
                                 <img src="assets/images/img/icon-trash-can-gray-16h-proximax-sirius-wallet.svg" class="cursor-p"
-                                    width="20" title=" Delete" [routerLink]="[routes.deleteWallet+wallet.label]">
+                                    width="20" title=" Delete" [routerLink]="[routes.deleteWallet+wallet.name]">
 
                             </div>
 
