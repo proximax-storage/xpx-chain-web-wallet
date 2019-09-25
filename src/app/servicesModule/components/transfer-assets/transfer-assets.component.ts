@@ -42,6 +42,7 @@ export class TransferAssetsComponent implements OnInit {
   accountSelected: any = null;
   listContacts: any = [];
   changeAccount: boolean = false;
+  blockButton: boolean;
   // goToList: string = 
 
   constructor(
@@ -72,6 +73,7 @@ export class TransferAssetsComponent implements OnInit {
   initComponent() {
     this.createFormTransfer();
     this.booksAddress();
+    this.suscribeChanges();
 
     if (this.accountSelected.consignerAccounts !== undefined) {
       this.changeAccount = this.accountSelected.consignerAccounts.length > 1;
@@ -94,6 +96,7 @@ export class TransferAssetsComponent implements OnInit {
               const transactions = await this.nemProvider.getUnconfirmedTransaction(this.accountSelected.address);
               console.log('this.accountSelected', this.accountSelected);
               console.log('Estas son las transacciones', transactions);
+              console.log('this is a wallet', this.walletService.getCurrentWallet());
 
               if (transactions.length > 0) {
                 let relativeAmount = realQuantity;
@@ -126,14 +129,22 @@ export class TransferAssetsComponent implements OnInit {
             this.searchBalance = false;
             this.quantity = '0.000000';
             this.formTransfer.get('amountXpx').disable();
+            this.formTransfer.get('password').disable();
+            this.blockButton = true;
             this.divisivility = '6';
           } else {
             this.searchBalance = false;
             this.quantity = this.accountSelected.balance;
             if (this.quantity === '0.000000') {
               this.formTransfer.get('amountXpx').disable();
+              this.formTransfer.get('password').disable();
+              this.blockButton = true;
+
             } else {
               this.formTransfer.get('amountXpx').enable();
+              this.formTransfer.get('password').enable();
+              this.blockButton = false;
+
             }
             this.divisivility = this.accountSelected.mosaic.properties.divisibility.toString();
           }
@@ -141,7 +152,9 @@ export class TransferAssetsComponent implements OnInit {
         error => {
           this.accountSelected.mosaic = null;
           this.accountSelected.balance = '0.000000';
-          this.formTransfer.get('amountXpx').disable();
+          this.formTransfer.get('amountXpx').disable(); this.formTransfer.invalid
+          this.formTransfer.get('password').disable();
+          this.blockButton = true;
           this.searchBalance = false;
         }
       );
@@ -149,8 +162,12 @@ export class TransferAssetsComponent implements OnInit {
       this.quantity = this.accountSelected.balance;
       if (this.quantity === '0.000000') {
         this.formTransfer.get('amountXpx').disable();
+        this.formTransfer.get('password').disable();
+        this.blockButton = true;
       } else {
         this.formTransfer.get('amountXpx').enable();
+        this.formTransfer.get('password').enable();
+        this.blockButton = false;
       }
       this.searchBalance = false;
     }
@@ -262,7 +279,29 @@ export class TransferAssetsComponent implements OnInit {
           .then(next => {
             this.nemService.anounceTransaction(next, account).pipe(first()).pipe((timeout(15000)))
               .subscribe(next => {
-                console.log('\n\n\n\nValue resp:\n', next, '\n\n\n\nEnd value\n\n');
+                let wallet = this.walletService.getWalletTransNisStorage().find(el => el.name === this.walletService.getCurrentWallet().name);
+                console.log('findddddd------>', wallet);
+
+                if (wallet !== undefined && wallet !== null) {
+                  wallet.transactions.push({
+                    siriusAddres: catapultAccount.address.pretty(),
+                    nis1Timestamp: `${transaction.timeWindow.timeStamp['_date']['_year']}-${transaction.timeWindow.timeStamp['_date']['_month']}-${transaction.timeWindow.timeStamp['_date']['_day']} ${transaction.timeWindow.timeStamp['_time']['_hour']}:${transaction.timeWindow.timeStamp['_time']['_minute']}:${transaction.timeWindow.timeStamp['_time']['_second']}`,
+                    nis1PublicKey: transaction.signer.publicKey,
+                    nis1TransactionHast: next.transactionHash.data
+                  });
+                } else {
+                  wallet = {
+                    name: this.walletService.currentWallet.name,
+                    transactions: [{
+                      siriusAddres: catapultAccount.address.pretty(),
+                      nis1Timestamp: `${transaction.timeWindow.timeStamp['_date']['_year']}-${transaction.timeWindow.timeStamp['_date']['_month']}-${transaction.timeWindow.timeStamp['_date']['_day']} ${transaction.timeWindow.timeStamp['_time']['_hour']}:${transaction.timeWindow.timeStamp['_time']['_minute']}:${transaction.timeWindow.timeStamp['_time']['_second']}`,
+                      nis1PublicKey: transaction.signer.publicKey,
+                      nis1TransactionHast: next.transactionHash.data
+                    }]
+                  };
+                }
+                console.log('\n\n\n\nValue resp:\n', wallet, '\n\n\n\nEnd value\n\n');
+                this.walletService.saveAccountWalletTransNisStorage(wallet);
                 this.sharedService.showSuccess('Transaction', next['message']);
                 this.walletService.accountWalletCreated = null;
                 this.changeView.emit({
@@ -288,7 +327,29 @@ export class TransferAssetsComponent implements OnInit {
 
         this.nemService.anounceTransaction(transaction, account).pipe(first()).pipe((timeout(15000)))
           .subscribe(next => {
-            console.log('\n\n\n\nValue resp:\n', next, '\n\n\n\nEnd value\n\n');
+            let wallet = this.walletService.getWalletTransNisStorage().find(el => el.name === this.walletService.getCurrentWallet().name);
+            console.log('findddddd------>', wallet);
+
+            if (wallet !== undefined && wallet !== null) {
+              wallet.transactions.push({
+                siriusAddres: catapultAccount.address.pretty(),
+                nis1Timestamp: `${transaction.timeWindow.timeStamp['_date']['_year']}-${transaction.timeWindow.timeStamp['_date']['_month']}-${transaction.timeWindow.timeStamp['_date']['_day']} ${transaction.timeWindow.timeStamp['_time']['_hour']}:${transaction.timeWindow.timeStamp['_time']['_minute']}:${transaction.timeWindow.timeStamp['_time']['_second']}`,
+                nis1PublicKey: transaction.signer.publicKey,
+                nis1TransactionHast: next.transactionHash.data
+              });
+            } else {
+              wallet = {
+                name: this.walletService.currentWallet.name,
+                transactions: [{
+                  siriusAddres: catapultAccount.address.pretty(),
+                  nis1Timestamp: `${transaction.timeWindow.timeStamp['_date']['_year']}-${transaction.timeWindow.timeStamp['_date']['_month']}-${transaction.timeWindow.timeStamp['_date']['_day']} ${transaction.timeWindow.timeStamp['_time']['_hour']}:${transaction.timeWindow.timeStamp['_time']['_minute']}:${transaction.timeWindow.timeStamp['_time']['_second']}`,
+                  nis1PublicKey: transaction.signer.publicKey,
+                  nis1TransactionHast: next.transactionHash.data
+                }]
+              };
+            }
+            console.log('\n\n\n\nValue resp:\n', wallet, '\n\n\n\nEnd value\n\n');
+            this.walletService.saveAccountWalletTransNisStorage(wallet);
             this.sharedService.showSuccess('Transaction', next['message']);
             this.changeView.emit({
               transaction: transaction,
@@ -311,13 +372,18 @@ export class TransferAssetsComponent implements OnInit {
     this.walletService.setNis1AccounsWallet(null);
     this.walletService.setAccountInfoNis1(null);
     this.walletService.setNis1AccountSelected(null);
-    this.walletService.setNis1AccountSelected(null);
     this.walletService.accountWalletCreated = null;
     if (this.router.url === `/${AppConfig.routes.transferXpx}`) {
       this.router.navigate([AppConfig.routes.auth]);
     } else {
       this.router.navigate([route]);
     }
+  }
+
+  suscribeChanges() {
+    this.formTransfer.get('amountXpx').valueChanges.subscribe(val => {
+      this.blockButton = (val > 0) ? false : true;
+    });
   }
 
   goToList() {

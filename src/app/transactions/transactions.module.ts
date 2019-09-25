@@ -4,9 +4,10 @@ import { CreateTransferComponent } from './views/create-transfer/create-transfer
 import { CoreModule } from '../core/core.module';
 import { TransactionRoutingModule } from './transaction-routing.module';
 import { PartialComponent } from './views/partial/partial.component';
+import { SwapTransactionsComponent } from './views/swap-transactions/swap-transactions.component';
 
 @NgModule({
-  declarations: [CreateTransferComponent, PartialComponent],
+  declarations: [CreateTransferComponent, PartialComponent, SwapTransactionsComponent],
   imports: [
     CoreModule,
     TransactionRoutingModule,

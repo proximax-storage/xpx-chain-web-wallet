@@ -13,7 +13,6 @@ import { NamespacesService } from '../../../services/namespaces.service';
 import { TransactionsService } from '../../../../transactions/services/transactions.service';
 import { ServicesModuleService } from '../../../../servicesModule/services/services-module.service';
 import { NemServiceService } from 'src/app/shared/services/nem-service.service';
-import { timeout } from 'rxjs/operators';
 import { Password } from 'nem-library';
 
 @Component({
@@ -64,6 +63,10 @@ export class CreateAccountComponent implements OnInit {
     this.configurationForm = this.sharedService.configurationForm;
     const walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
     this.othersAccounts = walletsStorage.filter(elm => elm.name !== this.walletService.currentWallet.name);
+    this.walletService.setNis1AccounsWallet(null);
+    this.walletService.setAccountInfoNis1(null);
+    this.walletService.setNis1AccountSelected(null);
+    this.walletService.setAccountSelectedWalletNis1(null);
     this.createForm(param);
     this.createAccount();
   }
