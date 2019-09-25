@@ -82,6 +82,7 @@ export class CreateMosaicComponent implements OnInit {
   ngOnInit() {
     this.createForm();
     this.subscribeValue();
+    this.amountAccount = this.walletService.getAmountAccount();
     this.walletService.getAccountsInfo$().subscribe(
       x => this.validateBalance()
     );
@@ -228,15 +229,6 @@ export class CreateMosaicComponent implements OnInit {
         params.nonce = this.proximaxProvider.createNonceRandom();
         this.buildMosaicDefinition(account, params)
       });
-    this.getAmountAccount();
-
-  }
-
-  getAmountAccount() {
-    const account = this.walletService.filterAccountInfo(this.proximaxProvider.createFromRawAddress(this.walletService.currentAccount.address).pretty(), true);
-    let mosaics = account.accountInfo.mosaics;
-    let amoutMosaic = mosaics.filter(mosaic => mosaic.id.toHex() == environment.mosaicXpxInfo.id);
-    this.amountAccount = amoutMosaic[0].amount.compact()
   }
 
   buildMosaicDefinition(account, params) {
@@ -258,8 +250,6 @@ export class CreateMosaicComponent implements OnInit {
       []
     );
     this.fee = this.transactionService.amountFormatterSimple(this.aggregateTransaction.maxFee.compact());
-
-    console.log('this.fee', this.fee)
   }
   /**
    *
@@ -472,7 +462,7 @@ export class CreateMosaicComponent implements OnInit {
     if (isNaN(parseInt(e.target.value))) {
       e.target.value = ''
     } else {
-      if (parseInt(e.target.value) > 365) {
+      if (parseInt(e.target.value) > 365000) {
         e.target.value = ''
       } else if (parseInt(e.target.value) < 1) {
         e.target.value = ''

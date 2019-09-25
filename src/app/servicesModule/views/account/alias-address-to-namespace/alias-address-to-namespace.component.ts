@@ -72,6 +72,7 @@ export class AliasAddressToNamespaceComponent implements OnInit {
     this.createForm();
     this.getNamespaces();
     this.booksAddress();
+    this.amountAccount = this.walletService.getAmountAccount();
     this.LinkToNamespaceForm.get('address').valueChanges.subscribe(
       x => {
         if (x) {
@@ -261,7 +262,6 @@ export class AliasAddressToNamespaceComponent implements OnInit {
     const namespaceId = new NamespaceId(this.LinkToNamespaceForm.get('namespace').value);
     this.namespaceId = namespaceId;
     this.builder();
-    this.getAmountAccount();
   }
 
   builder() {
@@ -277,12 +277,6 @@ export class AliasAddressToNamespaceComponent implements OnInit {
 
   }
 
-  getAmountAccount () {
-    const account = this.walletService.filterAccountInfo(this.proximaxProvider.createFromRawAddress(this.walletService.currentAccount.address).pretty(), true);
-    let mosaics = account.accountInfo.mosaics;
-    let amoutMosaic = mosaics.filter(mosaic => mosaic.id.toHex() == environment.mosaicXpxInfo.id);
-    this.amountAccount = amoutMosaic[0].amount.compact();
-  }
   /**
    *
    *
