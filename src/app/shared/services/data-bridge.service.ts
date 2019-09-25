@@ -259,7 +259,7 @@ export class DataBridgeService {
         if (transactionFormatter !== null) {
           this.setTransactionStatus({
             'type': 'confirmed',
-            'data': confirmedTransaction
+            'data': transactionFormatter
           });
 
           audio.play();
@@ -318,7 +318,7 @@ export class DataBridgeService {
           this.transactionsService.setTransactionsUnConfirmed$(transactionPushed);
           this.setTransactionStatus({
             'type': 'unconfirmed',
-            'data': unconfirmedAdded
+            'data': transactionFormatter
           });
         }
       });

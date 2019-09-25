@@ -407,26 +407,25 @@ export class AliasAddressToNamespaceComponent implements OnInit {
    *
    * @memberof AliasAddressToNamespaceComponent
    */
-  /*getTransactionStatus() {
+  getTransactionStatus() {
     this.subscription['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
       statusTransaction => {
         if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
-          const statusTransactionHash = (statusTransaction['type'] === 'error') ? statusTransaction['data'].hash : statusTransaction['data'].transactionInfo.hash;
-          const match = statusTransactionHash === this.transactionSigned.hash;
+          const match = statusTransaction['hash'] === this.transactionSigned.hash;
           if (statusTransaction['type'] === 'confirmed' && match) {
             this.transactionSigned = null;
-            this.sharedService.showSuccess('', 'Transaction confirmed');
+            //this.sharedService.showSuccess('', 'Transaction confirmed');
           } else if (statusTransaction['type'] === 'unconfirmed' && match) {
             this.transactionSigned = null;
-            this.sharedService.showInfo('', 'Transaction unconfirmed');
+            //this.sharedService.showInfo('', 'Transaction unconfirmed');
           } else if (match) {
             this.transactionSigned = null;
-            this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
+            //this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
           }
         }
       }
     );
-  }*/
+  }
 
   /**
    *

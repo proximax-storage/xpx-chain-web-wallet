@@ -92,7 +92,7 @@ export class CreateNamespaceComponent implements OnInit {
     this.createForm();
     this.getNamespaces();
     this.amountAccount = this.walletService.getAmountAccount();
-    
+
     this.fee = '0.000000';
     this.durationByBlock = this.transactionService.calculateDurationforDay(this.namespaceForm.get('duration').value).toString();
     this.validateRentalFee(this.rentalFee * parseFloat(this.durationByBlock));
@@ -204,8 +204,8 @@ export class CreateNamespaceComponent implements OnInit {
             if (!this.transactionStatus) {
               this.getTransactionStatus();
             }
-            
-           
+
+
             this.setTimeOutValidate(signedTransaction.hash);
           }, () => {
              this.blockBtnSend = false;
@@ -343,22 +343,21 @@ export class CreateNamespaceComponent implements OnInit {
         // this.blockBtnSend = false;
         if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
           for (let element of this.transactionSigned) {
-            const statusTransactionHash = (statusTransaction['type'] === 'error') ? statusTransaction['data'].hash : statusTransaction['data'].transactionInfo.hash;
-            const match = statusTransactionHash === element.hash;
+            const match = statusTransaction['hash'] === element.hash;
             if (match) {
               this.transactionReady.push(element);
               this.clearForm();
               this.blockBtnSend = false;
             }
             if (statusTransaction['type'] === 'confirmed' && match) {
-              this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransactionHash);
-              
+              this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['hash']);
+
               this.sharedService.showSuccess('', 'Transaction confirmed');
             } else if (statusTransaction['type'] === 'unconfirmed' && match) {
               this.sharedService.showInfo('', 'Transaction unconfirmed');
             } else if (match) {
-              this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransactionHash);
-              this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
+              this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['hash']);
+              // this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
             }
           }
         }
@@ -428,9 +427,9 @@ export class CreateNamespaceComponent implements OnInit {
     this.namespaceForm.get('duration').valueChanges.subscribe(
       next => {
         if(next <= 365) {
-       
+
         if (next !== null && next !== undefined && String(next) !== '0' && next !== '') {
-          
+
           if (this.showDuration) {
             this.durationByBlock = this.transactionService.calculateDurationforDay(next).toString();
             this.validateRentalFee(this.rentalFee * parseFloat(this.durationByBlock));
@@ -441,7 +440,7 @@ export class CreateNamespaceComponent implements OnInit {
       } else {
         this.durationByBlock = this.transactionService.calculateDurationforDay(365).toString();
             this.validateRentalFee(this.rentalFee * parseFloat(this.durationByBlock));
-        
+
       }
         this.duration = parseFloat(this.durationByBlock);
         this.builder()

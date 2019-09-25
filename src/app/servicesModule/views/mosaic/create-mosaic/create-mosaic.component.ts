@@ -390,8 +390,7 @@ export class CreateMosaicComponent implements OnInit {
       statusTransaction => {
         if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
           for (let element of this.transactionSigned) {
-            const statusTransactionHash = (statusTransaction['type'] === 'error') ? statusTransaction['data'].hash : statusTransaction['data'].transactionInfo.hash;
-            const match = statusTransactionHash === element.hash;
+            const match = statusTransaction['hash'] === element.hash;
             if (match) {
               this.transactionReady.push(element);
               this.blockSend = false;
@@ -400,13 +399,13 @@ export class CreateMosaicComponent implements OnInit {
             }
 
             if (statusTransaction['type'] === 'confirmed' && match) {
-              this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransactionHash);
-              this.sharedService.showSuccess('', 'Transaction confirmed');
+              this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['hash']);
+              // this.sharedService.showSuccess('', 'Transaction confirmed');
             } else if (statusTransaction['type'] === 'unconfirmed' && match) {
-              this.sharedService.showInfo('', 'Transaction unconfirmed');
+              // this.sharedService.showInfo('', 'Transaction unconfirmed');
             } else if (match) {
-              this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransactionHash);
-              this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
+              this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['hash']);
+              // this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
             }
           }
         }

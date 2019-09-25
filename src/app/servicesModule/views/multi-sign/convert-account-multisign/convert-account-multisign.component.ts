@@ -384,7 +384,9 @@ export class ConvertAccountMultisignComponent implements OnInit {
           new Mosaic(new MosaicId(environment.mosaicXpxInfo.id), UInt64.fromUint(Number(10000000))),
           UInt64.fromUint(480),
           signedTransaction,
-          this.currentAccountToConvert.network);
+          this.currentAccountToConvert.network
+        );
+
         this.hashLock(this.accountToConvertSign.sign(hashLockTransaction, generationHash), signedTransaction)
 
       } else {
@@ -392,31 +394,26 @@ export class ConvertAccountMultisignComponent implements OnInit {
       }
     }
   }
+
   /**
-     * Before sending an aggregate bonded transaction, the future
-     * multisig account needs to lock at least 10 cat.currency.
-     * This transaction is required to prevent network spamming and ensure that the inner
-     * transactions are cosigned. After the hash lock transaction has been confirmed,
-     * announce the aggregate transaction.
-     *
-     * @memberof CreateMultiSignatureComponent
-     * @param {SignedTransaction} hashLockTransactionSigned  - Hash lock funds transaction.
-     * @param {SignedTransaction} signedTransaction  - Signed transaction of Bonded.
-     */
-
+   * Before sending an aggregate bonded transaction, the future
+   * multisig account needs to lock at least 10 cat.currency.
+   * This transaction is required to prevent network spamming and ensure that the inner
+   * transactions are cosigned. After the hash lock transaction has been confirmed,
+   * announce the aggregate transaction.
+   *
+   * @memberof CreateMultiSignatureComponent
+   * @param {SignedTransaction} hashLockTransactionSigned  - Hash lock funds transaction.
+   * @param {SignedTransaction} signedTransaction  - Signed transaction of Bonded.
+   */
   hashLock(hashLockTransactionSigned: SignedTransaction, signedTransaction: SignedTransaction) {
-    this.transactionHttp
-      .announce(hashLockTransactionSigned)
-      .subscribe(
-        async () => {
-          this.getTransactionStatushashLock(hashLockTransactionSigned, signedTransaction)
-        },
-        err => {
-          this.clearForm();
-          this.blockSend = false;
-          this.sharedService.showError('', err);
-
-        });
+    this.transactionHttp.announce(hashLockTransactionSigned).subscribe(async () => {
+      this.getTransactionStatushashLock(hashLockTransactionSigned, signedTransaction)
+    }, err => {
+      this.clearForm();
+      this.blockSend = false;
+      this.sharedService.showError('', err);
+    });
   }
 
   /**
@@ -429,9 +426,9 @@ export class ConvertAccountMultisignComponent implements OnInit {
     // Get transaction status
     this.dataBridge.getTransactionStatus().subscribe(
       statusTransaction => {
+        console.log('statusTransaction', statusTransaction);
         if (statusTransaction !== null && statusTransaction !== undefined && signedTransactionHashLock !== null) {
-          const statusTransactionHash = (statusTransaction['type'] === 'error') ? statusTransaction['data'].hash : statusTransaction['data'].transactionInfo.hash;
-          const match = statusTransactionHash === signedTransactionHashLock.hash;
+          const match = statusTransaction['hash'] === signedTransactionHashLock.hash;
           if (statusTransaction['type'] === 'confirmed' && match) {
             this.announceAggregateBonded(signedTransactionBonded)
             signedTransactionHashLock = null;
@@ -443,7 +440,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
             this.clearForm()
             this.blockSend = false;
             signedTransactionHashLock = null;
-            this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
+            // this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
           }
         }
       }
@@ -479,8 +476,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
     this.subscribe['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
       statusTransaction => {
         if (statusTransaction !== null && statusTransaction !== undefined && signedTransaction !== null) {
-          const statusTransactionHash = (statusTransaction['type'] === 'error') ? statusTransaction['data'].hash : statusTransaction['data'].transactionInfo.hash;
-          const match = statusTransactionHash === signedTransaction.hash;
+          const match = statusTransaction['hash'] === signedTransaction.hash;
           if (match) {
             this.clearForm();
             this.blockSend = false;
@@ -490,10 +486,8 @@ export class ConvertAccountMultisignComponent implements OnInit {
             this.sharedService.showSuccess('', 'Transaction confirmed');
           } else if (statusTransaction['type'] === 'unconfirmed' && match) {
             this.transactionService.searchAccountsInfo([this.currentAccountToConvert])
-
             signedTransaction = null;
             this.sharedService.showInfo('', 'Transaction unconfirmed');
-
           } else if (statusTransaction['type'] === 'aggregateBondedAdded' && match) {
             signedTransaction = null;
             this.sharedService.showSuccess('', 'aggregate Bonded add');
@@ -501,7 +495,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
             this.clearForm();
             this.blockSend = false;
             signedTransaction = null;
-            this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
+            //this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
           }
         }
       }
@@ -625,8 +619,8 @@ export class ConvertAccountMultisignComponent implements OnInit {
       minRemovalDelta: 1,
       password: ''
     }, {
-        emitEvent: false
-      }
+      emitEvent: false
+    }
     );
   }
 

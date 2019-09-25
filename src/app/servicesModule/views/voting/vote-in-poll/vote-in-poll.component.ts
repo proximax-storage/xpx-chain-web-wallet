@@ -306,7 +306,7 @@ export class VoteInPollComponent implements OnInit {
   /**
    * Validates if the voter already made a vote
    *
-   * 
+   *
    * @memberof PollsComponent
    */
   verifyVote() {
@@ -433,7 +433,7 @@ export class VoteInPollComponent implements OnInit {
   }
 
   /**
-    * validate status date poll 
+    * validate status date poll
     *
     * @param {any} obj
     * @memberof PollsComponent
@@ -498,7 +498,7 @@ export class VoteInPollComponent implements OnInit {
       this.transactionToAggregate(publicAccount, message),
       publicAccount.address.networkType,
       []);
-  
+
     const generationHash = this.dataBridge.blockInfo.generationHash;
     const signedTransaction = accountsign.sign(aggregateTransaction,generationHash); //Update-sdk-dragon
 
@@ -544,8 +544,7 @@ export class VoteInPollComponent implements OnInit {
       statusTransaction => {
         this.transactionStatus = true;
         if (statusTransaction !== null && statusTransaction !== undefined && signedTransaction !== null) {
-          const statusTransactionHash = (statusTransaction['type'] === 'error') ? statusTransaction['data'].hash : statusTransaction['data'].transactionInfo.hash;
-          const match = statusTransactionHash === signedTransaction.hash;
+          const match = statusTransaction['hash'] === signedTransaction.hash;
           if (statusTransaction['type'] === 'confirmed' && match) {
             let transaction = this.transactionService.getStructureDashboard(statusTransaction['data']['innerTransactions'][0]);
             const poll = JSON.parse(statusTransaction['data']['innerTransactions'][0].message.payload);
@@ -565,7 +564,7 @@ export class VoteInPollComponent implements OnInit {
             this.sharedService.showInfo('', 'Transaction unconfirmed');
           } else if (match) {
             signedTransaction = null;
-            this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
+            // this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
           }
         }
       }

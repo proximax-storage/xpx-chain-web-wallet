@@ -462,8 +462,7 @@ export class EditAccountMultisignComponent implements OnInit {
     this.subscribe['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
       statusTransaction => {
         if (statusTransaction !== null && statusTransaction !== undefined && signedTransactionHashLock !== null) {
-          const statusTransactionHash = (statusTransaction['type'] === 'error') ? statusTransaction['data'].hash : statusTransaction['data'].transactionInfo.hash;
-          const match = statusTransactionHash === signedTransactionHashLock.hash;
+           const match = statusTransaction['hash'] === signedTransactionHashLock.hash;
           if (statusTransaction['type'] === 'confirmed' && match) {
             this.announceAggregateBonded(signedTransactionBonded)
             signedTransactionHashLock = null;
@@ -475,7 +474,7 @@ export class EditAccountMultisignComponent implements OnInit {
             this.clearForm()
             this.blockSend = false;
             signedTransactionHashLock = null;
-            this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
+            // this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
           }
         }
       }
@@ -563,9 +562,7 @@ export class EditAccountMultisignComponent implements OnInit {
       statusTransaction => {
         // this.blockSend = false;
         if (statusTransaction !== null && statusTransaction !== undefined && signedTransaction !== null) {
-          const statusTransactionHash = (statusTransaction['type'] === 'error') ? statusTransaction['data'].hash : statusTransaction['data'].transactionInfo.hash;
-          const match = statusTransactionHash === signedTransaction.hash;
-
+          const match = statusTransaction['hash'] === signedTransaction.hash;
           if (match) {
             this.clearForm(true);
             this.blockSend = false;
@@ -592,7 +589,7 @@ export class EditAccountMultisignComponent implements OnInit {
             this.clearForm();
             this.blockSend = false;
             signedTransaction = null;
-            this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
+            // this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
           }
         }
       }
