@@ -884,6 +884,17 @@ export interface CurrentWalletInterface {
   accounts: AccountsInterface[],
 }
 
+export interface CurrentWalletTransNis {
+  name: string;
+  accounts: TransactionsNis1Interface[],
+}
+
+export interface TransactionsNis1Interface {
+  siriusAddres: string;
+  nis1Timestamp: string;
+  nis1PublicKey: string;
+  nis1TransactionHast: string;
+}
 
 export interface AccountsInterface {
   address: any;
