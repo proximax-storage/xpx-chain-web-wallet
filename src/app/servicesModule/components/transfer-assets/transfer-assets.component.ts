@@ -279,8 +279,12 @@ export class TransferAssetsComponent implements OnInit {
           .then(next => {
             this.nemService.anounceTransaction(next, account).pipe(first()).pipe((timeout(15000)))
               .subscribe(next => {
-                let wallet = this.walletService.getWalletTransNisStorage().find(el => el.name === this.walletService.getCurrentWallet().name);
-                console.log('findddddd------>', wallet);
+                let wallet;
+                if (this.walletService.getCurrentWallet()) {
+                  wallet = this.walletService.getWalletTransNisStorage().find(el => el.name === this.walletService.getCurrentWallet().name);
+                } else {
+                  wallet = this.walletService.getWalletTransNisStorage().find(el => el.name === this.walletService.accountWalletCreated.wallet.name);
+                }
 
                 if (wallet !== undefined && wallet !== null) {
                   wallet.transactions.push({
@@ -291,7 +295,7 @@ export class TransferAssetsComponent implements OnInit {
                   });
                 } else {
                   wallet = {
-                    name: this.walletService.currentWallet.name,
+                    name: (this.walletService.getCurrentWallet()) ? this.walletService.currentWallet.name : this.walletService.accountWalletCreated.wallet.name,
                     transactions: [{
                       siriusAddres: catapultAccount.address.pretty(),
                       nis1Timestamp: `${transaction.timeWindow.timeStamp['_date']['_year']}-${transaction.timeWindow.timeStamp['_date']['_month']}-${transaction.timeWindow.timeStamp['_date']['_day']} ${transaction.timeWindow.timeStamp['_time']['_hour']}:${transaction.timeWindow.timeStamp['_time']['_minute']}:${transaction.timeWindow.timeStamp['_time']['_second']}`,
@@ -301,6 +305,7 @@ export class TransferAssetsComponent implements OnInit {
                   };
                 }
                 console.log('\n\n\n\nValue resp:\n', wallet, '\n\n\n\nEnd value\n\n');
+                this.walletService.setSwapTransactions$(wallet.transactions);
                 this.walletService.saveAccountWalletTransNisStorage(wallet);
                 this.sharedService.showSuccess('Transaction', next['message']);
                 this.walletService.accountWalletCreated = null;
@@ -327,8 +332,12 @@ export class TransferAssetsComponent implements OnInit {
 
         this.nemService.anounceTransaction(transaction, account).pipe(first()).pipe((timeout(15000)))
           .subscribe(next => {
-            let wallet = this.walletService.getWalletTransNisStorage().find(el => el.name === this.walletService.getCurrentWallet().name);
-            console.log('findddddd------>', wallet);
+            let wallet;
+            if (this.walletService.getCurrentWallet()) {
+              wallet = this.walletService.getWalletTransNisStorage().find(el => el.name === this.walletService.getCurrentWallet().name);
+            } else {
+              wallet = this.walletService.getWalletTransNisStorage().find(el => el.name === this.walletService.accountWalletCreated.wallet.name);
+            }
 
             if (wallet !== undefined && wallet !== null) {
               wallet.transactions.push({
@@ -339,7 +348,7 @@ export class TransferAssetsComponent implements OnInit {
               });
             } else {
               wallet = {
-                name: this.walletService.currentWallet.name,
+                name: (this.walletService.getCurrentWallet()) ? this.walletService.currentWallet.name : this.walletService.accountWalletCreated.wallet.name,
                 transactions: [{
                   siriusAddres: catapultAccount.address.pretty(),
                   nis1Timestamp: `${transaction.timeWindow.timeStamp['_date']['_year']}-${transaction.timeWindow.timeStamp['_date']['_month']}-${transaction.timeWindow.timeStamp['_date']['_day']} ${transaction.timeWindow.timeStamp['_time']['_hour']}:${transaction.timeWindow.timeStamp['_time']['_minute']}:${transaction.timeWindow.timeStamp['_time']['_second']}`,
@@ -349,6 +358,7 @@ export class TransferAssetsComponent implements OnInit {
               };
             }
             console.log('\n\n\n\nValue resp:\n', wallet, '\n\n\n\nEnd value\n\n');
+            this.walletService.setSwapTransactions$(wallet.transactions);
             this.walletService.saveAccountWalletTransNisStorage(wallet);
             this.sharedService.showSuccess('Transaction', next['message']);
             this.changeView.emit({

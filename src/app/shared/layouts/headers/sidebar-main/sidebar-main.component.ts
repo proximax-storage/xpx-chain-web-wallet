@@ -268,6 +268,7 @@ export class SidebarMainComponent implements OnInit {
     this.walletService.setAccountSelectedWalletNis1(null);
     this.walletService.setAccountInfoNis1(null);
     this.walletService.setNis1AccountSelected(null);
+    this.walletService.setSwapTransactions$([]);
     this.route.navigate([`/${AppConfig.routes.auth}`]);
   }
 

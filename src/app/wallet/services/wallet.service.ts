@@ -31,6 +31,9 @@ export class WalletService {
   nis1AccounsWallet: any = [];
   unconfirmedTransactions: any = [];
 
+  swapTransactions: Subject<any> = new Subject<any>();
+  swapTransactions$: Observable<any> = this.swapTransactions.asObservable();
+
   currentAccountObs: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   currentAccountObs$: Observable<any> = this.currentAccountObs.asObservable();
 
@@ -551,6 +554,16 @@ export class WalletService {
   }
 
   /**
+     *
+     *
+     * @returns {Observable<any>}
+     * @memberof WalletService
+     */
+  getSwapTransactions$(): Observable<any> {
+    return this.swapTransactions$;
+  }
+  
+  /**
    *
    *
    * @returns
@@ -771,6 +784,16 @@ export class WalletService {
 
   /**
    *
+   *
+   * @param {*} currentAccount
+   * @memberof WalletService
+   */
+  setSwapTransactions$(transactions: TransactionsNis1Interface[]) {
+    this.swapTransactions.next(transactions);
+  }
+
+  /**
+   *
    * @param data
    */
   setNis1AccounsWallet(account) {
@@ -900,7 +923,8 @@ export class WalletService {
    */
   saveAccountWalletTransNisStorage(account) {
     const othersWallet = this.getWalletTransNisStorage().filter((element: CurrentWalletTransNis) => {
-      return element.name !== this.currentWallet.name;
+      const walletName = (this.getCurrentWallet()) ? this.currentWallet.name : this.accountWalletCreated.wallet.name
+      return element.name !== walletName;
     });
 
     othersWallet.push(account);
