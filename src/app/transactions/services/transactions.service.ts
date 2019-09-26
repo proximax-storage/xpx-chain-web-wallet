@@ -548,9 +548,6 @@ export class TransactionsService {
                 this.walletService.setSwapTransactions$(walletTransactionsNis.transactions);
                 this.walletService.saveAccountWalletTransNisStorage(walletTransactionsNis);
               }
-
-              console.log('msg ---------------------->', msg);
-              
             }
           }
         }

@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { HeaderServicesInterface } from 'src/app/servicesModule/services/services-module.service';
+import { HeaderServicesInterface, ServicesModuleService } from 'src/app/servicesModule/services/services-module.service';
 import { WalletService, WalletAccountInterface } from '../../services/wallet.service';
 import { ConfigurationForm, SharedService } from 'src/app/shared/services/shared.service';
 import { FormGroup, FormControl, Validators, AbstractControl, FormBuilder } from '@angular/forms';
 import { AppConfig } from 'src/app/config/app.config';
+import { environment } from 'src/environments/environment.prod';
 
 @Component({
   selector: 'app-delete-wallet-confirm',
@@ -21,21 +22,23 @@ export class DeleteWalletConfirmComponent implements OnInit {
     viewAllWallets: `/${AppConfig.routes.viewAllWallets}`,
   };
   wallet: WalletAccountInterface;
-  tittle1 = 'will be delete from your device.'
-  tittle2 = `it's very important do you make  a backup for  this wallet to segure all you assets.`;
-  tittle3 = `if already have a backop or you don't need recover any  assets of this wallet in the future, please complete
-  this action with your wallet password.`;
-  Information = `This action cannot be undone. Please, be sure of take this action.`
+  tittle = 'will be deleted from your device.';
+
+
+  
+  Information = `Warning! This action will delete this wallet. It cannot be undone. if you have not saved your
+  private keys, access to the accounts contained is this wallet will be permanently lost.`
   configurationForm: ConfigurationForm;
   validatingForm: FormGroup;
   ban: boolean = false;
-  texAlert= 'This Action cannot be undone. Please, be sure of take this action.'
+  texAlert = 'I have read the warning, understand the consequences, and wish to proceed'
 
   constructor(private activateRoute: ActivatedRoute,
     private sharedService: SharedService,
     private walletService: WalletService,
     private fb: FormBuilder,
-    private router: Router, ) {
+    private router: Router,
+    private servicesModuleService: ServicesModuleService) {
 
     this.configurationForm = this.sharedService.configurationForm;
     this.createForm();
@@ -96,8 +99,8 @@ export class DeleteWalletConfirmComponent implements OnInit {
 
       password: ''
     }, {
-      emitEvent: false
-    }
+        emitEvent: false
+      }
     );
   }
   /**
@@ -113,6 +116,7 @@ export class DeleteWalletConfirmComponent implements OnInit {
       if (this.walletService.decrypt(common, accountDecrypt)) {
         const value = this.walletService.removeWallet(this.wallet.name);
         if (value) {
+          this.servicesModuleService.removeItemStorage(environment.itemBooksAddress, this.wallet.name)
           this.sharedService.showSuccess('', 'Wallet removed');
           this.clearForm();
           this.router.navigate([`/${AppConfig.routes.viewAllWallets}`]);
