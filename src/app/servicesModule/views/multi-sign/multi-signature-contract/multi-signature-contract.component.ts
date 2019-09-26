@@ -13,7 +13,7 @@ export class MultiSignatureContractComponent implements OnInit {
 
   @BlockUI() blockUI: NgBlockUI;
   moduleName = 'Accounts';
-  componentName = 'MULTISIG';
+  componentName = 'Multisig';
   objectKeys = Object.keys;
   currentWallet: any = [];
   routes = {

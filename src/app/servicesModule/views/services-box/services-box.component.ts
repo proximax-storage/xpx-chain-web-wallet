@@ -175,20 +175,20 @@ export class ServicesBoxComponent implements OnInit {
       // Storage
       this.services.buildStructureService(
         'Storage',
-        true,
+        false,
         'Upload and download your files and encrypt them',
         'icon-storage-full-color-80h-proximax-sirius-wallet.svg',
         '',
         {
           myFiles: this.services.buildStructureService(
             'FILES',
-            true,
+            false,
             '',
             '',
             AppConfig.routes.myFile,
           ), upload: this.services.buildStructureService(
             'UPLOAD FILE',
-            true,
+            false,
             '',
             '',
             AppConfig.routes.uploadFile
@@ -226,7 +226,8 @@ export class ServicesBoxComponent implements OnInit {
             AppConfig.routes.addContacts
           )
         },
-        true
+        true,
+        'disable-module'
       ),
 
       // Notarization

@@ -3,7 +3,7 @@
     <div class="col-12 col-md-8">
       <span class="fs-1rem txt-a-center line-h-1-2em color-grey">Polls</span>
       <span class="fs-1rem txt-a-center line-h-1-2em color-grey"> > </span>
-      <span class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">VIEW ALL</span>
+      <span class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">View all</span>
     </div>
 
 
@@ -33,7 +33,7 @@
           <div class="row d-flex justify-content-center">
             <div class="col-12 col-sm-3">
               <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [searchable]="false" [validateError]="true" [items]="filterObjectSelect"
-                bindLabel="label" bindValue="value" placeholder="Select search type" 
+                bindLabel="label" bindValue="value" placeholder="Select search type"
                 (change)="filterSelected($event)"  [(ngModel)]="selectedSearch"></ng-select>
             </div>
             <div class="col-12 col-sm-5 d-flex justify-content-md-end justify-content-center">
