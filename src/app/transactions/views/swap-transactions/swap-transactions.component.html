@@ -1,0 +1,79 @@
+<div class="container mt-3rem mb-1rem animated fadeIn">
+  <div class="row lh-01em">
+    <div class="col-12 col-md-8">
+      <span class="fs-095rem txt-a-center line-h-1-2em color-grey">Dashboard</span>
+      <span class="fs-095rem txt-a-center line-h-1-2em color-grey"> > </span>
+      <span class="fs-095rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">SWAP</span>
+    </div>
+
+    <div class="col-12 col-md-4 d-flex justify-content-start justify-content-md-end">
+      <a class="fs-08rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio" [routerLink]="[goBack]">
+        <span>Back to Dashboard</span>
+      </a>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <hr class="mt-03rem mb-05rem">
+    </div>
+  </div>
+</div>
+
+<div class="container-fluid background-header-grey pb-1rem pt-1rem">
+  <div class="row d-flex justify-content-center">
+    <div class="col-12">
+      <div class="row d-flex align-items-center">
+        <div class="col-2 col-md-1 d-flex justify-content-center"> > </div>
+        <div class="col-8 col-md-10">
+          <div class="row d-flex justify-content-center">
+            <div class="col-12 col-sm-8 d-flex justify-content-md-end justify-content-center">
+              <input mdbInputDirective [validateSuccess]="false" [validateError]="false"
+                class="w-100porcent form-control" type="text" placeholder="Enter search text" autocomplete="off"
+                [(ngModel)]="filter">
+            </div>
+          </div>
+        </div>
+        <div class="col-2 col-md-1 d-flex justify-content-center"> > </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-11 col-md-10 mx-auto">
+    <div class="row d-flex justify-content-start align-items-stretch mb-1rem">
+      <div class="col-12 col-md-6 col-xl-4 d-flex mt-1rem audit-back"
+        *ngFor="let item of transactions |  stringFilter: filter | paginate: configFilesSelected ">
+        <div class="audit-front d-flex" placement="top">
+          <div class="col-8 p-05rem background-white">
+            <div>
+              <p class="audit-title">{{ item.siriusAddres }}</p>
+            </div>
+            <div>
+              <p class="audit-subtitle">Nis1 Transacction hash</p>
+              <p class="audit-value text-cl-m cursor-p" (click)="goToNemExplorer(item.nis1TransactionHast)">{{ item.nis1TransactionHast }}</p>
+            </div>
+            <div>
+              <p class="audit-subtitle">Nis1 Timestamp</p>
+              <p class="audit-value">{{ item.nis1Timestamp }}</p>
+            </div>
+          </div>
+          <div
+            class="col-4 audit-medal mx-auto background-blue-gradient d-flex flex-column justify-content-center align-items-center cursor-p"
+            (click)="printCertificate(item)" mdbTooltip="Click to download certificate">
+            <figure class="mt-05rem">
+              <img src="assets/images/img/badge-silver-proximax-sirius-wallet.svg" alt="" width="100">
+            </figure>
+            <div class="mb-05rem">
+              <p class="color-white m-0 txt-a-center fs-07rem">UNCONFIRMED</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 pt-2rem pb-1rem d-flex justify-content-center mx-auto">
+        <pagination-controls [id]="configFilesSelected.id" (pageChange)="configFilesSelected.currentPage = $event">
+        </pagination-controls>
+      </div>
+    </div>
+  </div>
+</div>

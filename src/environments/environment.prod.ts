@@ -16,6 +16,7 @@ export const environment = {
   nameKeyNamespaces: `sw-namespaces-testnet-01`,
   nameKeyMosaicStorage: `sw-mosaics-testnet-01`,
   nameKeyVersion: 'sw-version-testnet-01',
+  nameKeyWalletTransactionsNis: 'sw-transactions-nis-01',
   protocol: `http`,
   protocolWs: `ws`,
   nodeExplorer: 'https://bctestnetexplorer.xpxsirius.io/#/result/hash',
@@ -74,6 +75,7 @@ export const environment = {
   },
   nis1: {
     url: 'http://18.231.166.212:7890',
+    urlExplorer: 'http://testnet-explorer.nemtool.com/#/s_tx?hash=',
     networkType: NetworkTypes.TEST_NET,
     address: 'TBF4LAZUEJMBIOC6J24D6ZGGXE5W775TX555CTTN',
     nodes: [

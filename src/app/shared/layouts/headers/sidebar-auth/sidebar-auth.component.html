@@ -1,9 +1,7 @@
-<mdb-navbar SideClass="navbar navbar-expand-sm navbar-dark background-header-inverse z-depth-0"
-  [containerInside]="false">
+<mdb-navbar SideClass="navbar navbar-expand-sm navbar-dark background-header-inverse z-depth-0" [containerInside]="false">
   <mdb-navbar-brand class="d-flex align-items-end">
     <a class="navbar-brand mr-05rem">
-      <img src="assets/images/img/logo-proximax-sirius-wallet-beta.svg" height="33"
-        class="d-inline-block align-top">
+      <img src="assets/images/img/logo-proximax-sirius-wallet-beta.svg" height="33" class="d-inline-block align-top">
     </a>
     <span class="fs-08rem" style="color: #616161;">v{{version}}</span>
   </mdb-navbar-brand>
@@ -27,13 +25,13 @@
                 <span class="caret"></span>
               </a>
 
-              <div *dropdownMenu class="dropdown-menu dropdown dropdown-primary {{itemsHeader[key]['class']}}"
-                role="menu">
+              <div *dropdownMenu class="dropdown-menu dropdown dropdown-primary {{itemsHeader[key]['class']}}" role="menu">
                 <ng-container *ngFor="let k of keyObject(itemsHeader[key]['submenu'])">
-                  <a class="dropdown-item waves-light" mdbWavesEffect
-                    [routerLink]="[itemsHeader[key]['submenu'][k]['link']]">
-                    {{itemsHeader[key]['submenu'][k]['name']}}
-                  </a>
+                  <ng-container *ngIf="itemsHeader[key]['submenu'][k]['view']">
+                    <a class="dropdown-item waves-light" mdbWavesEffect [routerLink]="[itemsHeader[key]['submenu'][k]['link']]">
+                      {{itemsHeader[key]['submenu'][k]['name']}}
+                    </a>
+                  </ng-container>
                 </ng-container>
               </div>
             </li>

@@ -1,0 +1,70 @@
+<div class="container mt-3rem mb-2rem animated fadeIn">
+
+
+  <div class="row">
+    <div class="col-12 col-md-8">
+      <span class="fs-1rem txt-a-center line-h-1-2em color-grey">{{paramsHeader.moduleName}}</span>
+      <span class="fs-1rem txt-a-center line-h-1-2em color-grey"> > </span>
+      <span class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">{{paramsHeader.componentName}}</span>
+    </div>
+
+
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <hr class="mt-03rem mb-05rem">
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12 d-flex justify-content-center mt-05rem mb-05rem">
+      <span class="fs-1-7rem fw-600 txt-a-center line-h-1-2em">{{wallet.name}}</span>
+    </div>
+    <div class="col-12 d-flex justify-content-center mb-1rem">
+      <span class="fs-08rem txt-a-center line-h-1-2em  mb-06rem">{{description}}</span>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-6 d-flex justify-content-center mx-auto">
+      <!-- BOX LIST ACCOUNTS -->
+      <div class="table-responsive" style="margin-button: 20px; height: 200px; overflow: auto; ">
+        <table mdbTable hover="true" striped="true" class="z-depth-0 result">
+          <tbody #tableResult>
+            <tr mdbTableCol *ngFor="let account of wallet.accounts; let i = index">
+              <td>
+                <span class="fs-08rem txt-a-center line-h-1-2em fw-600  mb-06rem">{{account.name}}</span>
+                <br>
+                <span class="fs-08rem txt-a-center line-h-1-2em  mb-06rem">{{
+                  createFromRawAddress(account.address)}}</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+
+
+
+    </div>
+  </div>
+
+
+  <div class="row mt-2-5rem">
+    <div class="col-6 d-flex justify-content-center mb-1rem mx-auto">
+      <span class="fs-1-5rem txt-a-center line-h-1-2em  mb-06rem">{{texAlert}}</span>
+    </div>
+  </div>
+
+  <div class="row mt-2rem d-flex justify-content-center">
+    <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="mx"
+      (click)="printAccountInfo()">
+      <span class="fs-1-2em color-white"> <i class="fa fa-chevron-circle-right"></i> GO BACK</span>
+    </button>
+
+    <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="mx"
+      (click)="goToRoute()">
+      <span class="fs-1-2em color-white"><i class="fa fa-chevron-circle-right"></i> YES,PROCEED</span>
+    </button>
+  </div>
+</div>

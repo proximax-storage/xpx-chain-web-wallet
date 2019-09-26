@@ -4,6 +4,7 @@ import * as jsPDF from 'jspdf';
 import { Router } from '@angular/router';
 import { WalletService } from 'src/app/wallet/services/wallet.service';
 import { AppConfig } from 'src/app/config/app.config';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-swap-certificate',
@@ -33,7 +34,7 @@ export class SwapCertificateComponent implements OnInit {
 
     this.publicKey = this.params.transaction.signer.publicKey;
     this.transactionHash = this.params.details.transactionHash.data;
-    this.explorerUrl = `http://bob.nem.ninja:8765/#/transfer/${this.params.details.transactionHash.data}`;
+    this.explorerUrl = `${environment.nis1.urlExplorer}${this.params.details.transactionHash.data}`;
     console.log('////// EXPLORER', this.params);
     this.timestamp = `${this.params.transaction.timeWindow.timeStamp._date._year}-${this.params.transaction.timeWindow.timeStamp._date._month}-${this.params.transaction.timeWindow.timeStamp._date._day} ${this.params.transaction.timeWindow.timeStamp._time._hour}:${this.params.transaction.timeWindow.timeStamp._time._minute}:${this.params.transaction.timeWindow.timeStamp._time._second}`;
     console.log('\n\n\n\nValue route:\n', this.routeToContinue, '\n\n\n\nEnd value\n\n');

@@ -29,7 +29,7 @@ export class ViewAllAccountsComponent implements OnInit {
     backToService: `/${AppConfig.routes.service}`,
     createNewAccount: `/${AppConfig.routes.selectTypeCreationAccount}`,
     viewDetails: `/${AppConfig.routes.account}/`,
-    deleteAccount: `/${AppConfig.routes.deleteteAccount}/`,
+    deleteAccount: `/${AppConfig.routes.deleteAccount}/`,
   };
   subscription: Subscription[] = [];
 

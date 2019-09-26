@@ -9,7 +9,7 @@ export const environment = {
   itemBooksAddress: 'sw-books-testnet-01',
   //version: '0.3.1.8',
   version: '0.3.2',
-  cacheVersion: '6',
+  cacheVersion: '3',
   nameKeyNodeSelected: `sw-selected-node-testnet-01`,
   nameKeyWalletStorage: `sw-testnet-01`,
   nameKeyNodeStorage: `sw-nodes-testnet-01`,
@@ -75,6 +75,7 @@ export const environment = {
   },
   nis1: {
     url: 'http://18.231.166.212:7890',
+    urlExplorer: 'http://testnet-explorer.nemtool.com/#/s_tx?hash=',
     networkType: NetworkTypes.TEST_NET,
     address: 'TBF4LAZUEJMBIOC6J24D6ZGGXE5W775TX555CTTN',
     nodes: [

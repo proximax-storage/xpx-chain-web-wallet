@@ -21,7 +21,8 @@ export const AppConfig: Config = {
     createTransfer: 'create-transfer',
     createWallet: 'create-wallet',
     dashboard: 'dashboard',
-    deleteteAccount:'delete-account',
+    deleteAccount:'delete-account',
+    deleteWallet:'delete-wallet',
     editAccountMultisign: 'edit-account-multisign',
     explorer: 'explorer',
     extendNamespace: 'extend-namespace',
@@ -40,11 +41,13 @@ export const AppConfig: Config = {
     polls: 'polls',
     renewNamespace: 'renew-namespace',
     renovateNamespace: 'renovate-namespace',
+    swapTransactions: 'swap-transactions',
     selectNode: 'select-node',
     selectTypeCreationWallet: 'select-type-creation-wallet',
     selectTypeCreationAccount: 'select-type-creation-account',
     signMultiSigTransactions: 'sign-multisignature-transactions',
     viewAllAccount: 'view-all-account',
+    viewAllWallets:'view-all-wallets',
     voteInPoll: 'vote-poll',
     walletCreated: 'wallet-created',
     nis1AccountList: 'nis1-account-list',
@@ -80,7 +83,8 @@ export interface Config {
     createAccount: string;
     createApostille: string;
     dashboard: string;
-    deleteteAccount:string
+    deleteAccount:string;
+    deleteWallet: string;
     editAccountMultisign: string;
     explorer: string;
     extendNamespace: string;
@@ -99,11 +103,13 @@ export interface Config {
     polls: string;
     renewNamespace: string;
     renovateNamespace: string;
+    swapTransactions: string;
     selectNode: string;
     selectTypeCreationWallet: string;
     selectTypeCreationAccount: string;
     signMultiSigTransactions: string;
     viewAllAccount: string;
+    viewAllWallets: string;
     voteInPoll: string;
     walletCreated: string;
     nis1AccountList: string;

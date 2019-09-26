@@ -17,9 +17,22 @@
           <div class="col-12 d-flex justify-content-end mt-05rem">
 
             <!-- PARTIAL ICON -->
-            <ng-container *ngIf="viewParcial">
-              <div class="lh-1em d-flex align-items-center justify-content-end mr-08rem cursor-p">
-                <a [routerLink]="routePartial"><i class="fa fa-bell" aria-hidden="true"></i></a>
+            <ng-container>
+              <div class="lh-1em d-flex align-items-center justify-content-end mr-08rem cursor-p" style="border-right: 1px solid #c0c0c0">
+                <img class="mr-1rem" [routerLink]="routePartial" *ngIf="viewParcial === false" src="assets/images/img/icon-copy-notification-off-gray.svg" width="20px">
+                <img class="mr-1rem" [routerLink]="routePartial" *ngIf="viewParcial === true" src="assets/images/img/icon-copy-notification-on-gray.svg" width="20px">
+                <!-- <a [routerLink]="routePartial"><i class="fa fa-bell" aria-hidden="true"></i></a> -->
+              </div>
+            </ng-container>
+
+            <ng-container>
+              <div class="lh-1em d-flex align-items-center justify-content-end mr-08rem cursor-p pr-04rem"  style="border-right: 1px solid #c0c0c0">
+                <img *ngIf="colorStatus === 'green-color'" src="assets/images/img/icon-nodes-green-30h.svg" alt="" width="30px">
+                <img *ngIf="colorStatus === 'color-light-orange'" src="assets/images/img/icon-nodes-yellow-30h.svg" alt="" width="30px">
+                <img *ngIf="colorStatus === 'color-red'" src="assets/images/img/icon-nodes-red-30h.svg" alt="" width="30px">
+                <h1 class="fs-1rem fw-bold p-05rem m-0" *ngIf="netType === 184">Mainnet</h1>
+                <h1 class="fs-1rem fw-bold p-05rem m-0" *ngIf="netType === 168">Testnet</h1>
+                <h1 class="fs-1rem fw-bold p-05rem m-0" *ngIf="netType === 200">Private</h1>
               </div>
             </ng-container>
 
@@ -29,8 +42,8 @@
                 *ngIf="searchBalance"></span>
               <span class="fw-600 fs-09rem">
                 <span>{{ walletName }}</span>
-                <i class="fa fa-circle ml-05rem cursor-p {{colorStatus}}" aria-hidden="true"
-                  title="{{statusNodeName}} node"></i>
+                <!-- <i class="fa fa-circle ml-05rem cursor-p {{colorStatus}}" aria-hidden="true"
+                  title="{{statusNodeName}} node"></i> -->
               </span><br>
               <span class="fs-08rem">{{ vestedBalance }}</span>
             </div>

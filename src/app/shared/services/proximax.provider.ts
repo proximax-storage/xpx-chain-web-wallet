@@ -64,7 +64,6 @@ export class ProximaxProvider {
   infoMosaic: MosaicInfo;
   transactionHttp: TransactionHttp;
   websocketIsOpen = false;
-  connectionWs: Listener;
   accountHttp: AccountHttp;
   mosaicHttp: MosaicHttp;
   namespaceHttp: NamespaceHttp;
@@ -615,7 +614,6 @@ export class ProximaxProvider {
   */
   initInstances(url: string) {
     this.url = `${environment.protocol}://${url}`;
-
     this.blockHttp = new BlockHttp(this.url);
     this.blockchainHttp = new ChainHttp(this.url);//Update-sdk-dragon
     this.accountHttp = new AccountHttp(this.url);
