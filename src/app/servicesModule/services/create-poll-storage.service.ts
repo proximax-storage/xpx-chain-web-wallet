@@ -11,7 +11,7 @@ import { DirectDownloadParameter } from 'tsjs-chain-xipfs-sdk/build/main/src/lib
 import { Observable, BehaviorSubject } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { WalletService } from 'src/app/wallet/services/wallet.service';
-import { PublicAccount, Address, Mosaic, MosaicId, UInt64, Account } from 'tsjs-xpx-chain-sdk';
+import { PublicAccount, Address, Mosaic, MosaicId, UInt64, Account, NamespaceId } from 'tsjs-xpx-chain-sdk';
 import { SharedService } from 'src/app/shared/services/shared.service';
 @Injectable({
   providedIn: 'root'
@@ -81,7 +81,9 @@ export class CreatePollStorageService {
       if (recipientPublicKey.length > 0) {
         param.withRecipientPublicKey(recipientPublicKey);
       }
-      param.withTransactionMosaics([new Mosaic(new MosaicId(environment.mosaicXpxInfo.id), UInt64.fromUint(0))]); //Update-sdk-dragon
+
+      const mosaic: any = [new Mosaic(new MosaicId(environment.mosaicXpxInfo.id), UInt64.fromUint(0))];
+      param.withTransactionMosaics(mosaic); //Update-sdk-dragon
       let recipientAddress = account.publicAccount.address.plain();
       if (recipientPublicKey.length > 0) {
         recipientAddress = Address.createFromPublicKey(recipientPublicKey, account.publicAccount.address.networkType).plain();
@@ -133,9 +135,9 @@ export class CreatePollStorageService {
           console.log("public Acount")
           searchParam = SearchParameter.createForPublicKey(publicAccount.publicKey);
         } else if (address) {
-         
+
           searchParam = SearchParameter.createForAddress(address)
-       
+
         }
         searchParam.withTransactionFilter(TransactionFilter.INCOMING);
         console.log('searchParam',searchParam)

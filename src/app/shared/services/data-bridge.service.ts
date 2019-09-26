@@ -273,8 +273,6 @@ export class DataBridgeService {
   getConfirmedSocket(connector: Listener, audio: HTMLAudioElement, address: Address) {
     /*const currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
     currentWallet.accounts.forEach(element => {*/
-    console.log('address', address);
-
     // ----------------------------------CONFIRMED--------------------------------------------//
     connector.confirmed(address).subscribe(async confirmedTransaction => {
       console.log("\n\n -----------------------CONFIRMED---------------------------------")
