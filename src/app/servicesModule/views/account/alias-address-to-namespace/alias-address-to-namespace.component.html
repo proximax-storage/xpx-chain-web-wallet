@@ -11,7 +11,7 @@
         </ng-container>
 
         <div class="col-11 col-sm-10 col-lg-8 mx-auto">
-          <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" class="selectWrapper"
+          <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" [searchable]="false" class="selectWrapper"
             [items]="typeAction" formControlName="typeAction" bindLabel="label" bindValue="value"
             placeholder="Select action" (change)="buildSelectNamespace($event); captureAction()"></ng-select>
           <mdb-error class="ml-1rem"
@@ -23,7 +23,7 @@
 
       <div class="row mt-1-5rem">
         <div class="col-11 col-sm-10 col-lg-8 mx-auto">
-          <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" class="selectWrapper"
+          <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" [searchable]="false" class="selectWrapper"
             [items]="namespaceSelect" formControlName="namespace" bindLabel="label" bindValue="value"
             placeholder="Select namespace" (change)="captureNamespace()"></ng-select>
           <mdb-error class="ml-1rem"
@@ -37,7 +37,7 @@
       <ng-container *ngIf="showContacts && listContacts.length > 0">
         <div class="row">
           <div class="col-11 col-md-10 col-lg-8 mx-auto">
-            <ng-select mdbInputDirective mdbValidate class="selectWrapper"
+            <ng-select mdbInputDirective mdbValidate class="selectWrapper" [searchable]="false"
               [items]="listContacts" bindLabel="label" bindValue="value" placeholder="Contact"
               (change)="selectContact($event)">
             </ng-select>
