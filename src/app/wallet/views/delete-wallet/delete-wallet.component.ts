@@ -16,7 +16,7 @@ export class DeleteWalletComponent implements OnInit {
 
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Wallet',
-    componentName: 'Delete Request'
+    componentName: 'DELETE REQUEST'
   };
 
   routes = {

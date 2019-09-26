@@ -14,7 +14,7 @@ import { AppConfig } from 'src/app/config/app.config';
 export class DeleteWalletConfirmComponent implements OnInit {
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Wallet',
-    componentName: 'Confirm delete'
+    componentName: 'CONFIRM DELETE'
   };
 
   routes = {
