@@ -18,10 +18,10 @@ export class ViewAllAccountsComponent implements OnInit {
 
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Accounts',
-    componentName: 'VIEW ALL',
-    extraButton: 'Create New Account',
+    componentName: 'View all',
+    extraButton: 'Create new account',
     routerExtraButton: `/${AppConfig.routes.selectTypeCreationAccount}`
-    
+
   };
   accountChanged: boolean = false;
   currentWallet: any = [];

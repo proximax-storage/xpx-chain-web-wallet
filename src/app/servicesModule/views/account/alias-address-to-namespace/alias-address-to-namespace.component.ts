@@ -22,7 +22,7 @@ import { environment } from 'src/environments/environment';
 export class AliasAddressToNamespaceComponent implements OnInit {
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Accounts',
-    componentName: 'LINK TO NAMESPACE'
+    componentName: 'Link to namespace'
   };
   arrayNamespaceStorage: NamespaceStorageInterface[] = [];
   backToService = `/${AppConfig.routes.service}`;
