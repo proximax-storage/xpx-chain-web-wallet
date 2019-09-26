@@ -6,6 +6,8 @@ import { AppConfig } from '../../../../config/app.config';
 import { ActivatedRoute } from '@angular/router';
 import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
 import { ServicesModuleService, ContactsStorageInterface, HeaderServicesInterface } from '../../../services/services-module.service';
+import { NemServiceService } from 'src/app/shared/services/nem-service.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-detail-account',
@@ -26,6 +28,7 @@ export class DetailAccountComponent implements OnInit {
   accountValid: boolean = false;
   configurationForm: ConfigurationForm;
   currenAccount: AccountsInterface = null;
+  checked: boolean = false;
   descriptionPrivateKey = `Make sure you store your private key in a safe place.
   Access to your digital assets cannot be recovered without it.`;
   editNameAccount = false;
@@ -42,6 +45,8 @@ export class DetailAccountComponent implements OnInit {
   titlePrivateKey = 'Private Key:';
   titlePublickey = 'Public Key:';
   validatingForm: FormGroup;
+  showPrivateKey: boolean = false;
+  saveNis1Account: any;
 
 
   constructor(
@@ -49,7 +54,8 @@ export class DetailAccountComponent implements OnInit {
     private proximaxProvider: ProximaxProvider,
     private sharedService: SharedService,
     private walletService: WalletService,
-    private serviceModuleService: ServicesModuleService
+    private serviceModuleService: ServicesModuleService,
+    private nemProvider: NemServiceService
   ) {
   }
 
@@ -59,6 +65,7 @@ export class DetailAccountComponent implements OnInit {
     this.currenAccount = (param) ? this.walletService.filterAccountWallet(param) : this.walletService.filterAccountWallet('', true);
     this.buildData();
     this.createForm();
+    this.checked = this.walletService.currentAccount.nis1Account !== null;
     this.subscribeAccount = this.walletService.getAccountsInfo$().subscribe(
       async accountInfo => {
         if (accountInfo && !this.accountInfo) {
@@ -212,5 +219,63 @@ export class DetailAccountComponent implements OnInit {
       validation = this.validatingForm.get(nameInput);
     }
     return validation;
+  }
+
+  switchShowPrivateKey() {
+    this.showPrivateKey = !this.showPrivateKey;
+  }
+
+  switchSaveNis1() {
+    this.checked = !this.checked;
+  }
+
+  /**
+   * 
+   */
+  aceptChanges() {
+    if (!this.checked) {
+      if (this.walletService.currentAccount.nis1Account !== null) {
+        this.sharedService.showSuccess('', 'Nis1 account remove');
+      }
+      this.walletService.currentAccount.nis1Account = null;
+
+      const accounts = this.walletService.getCurrentWallet().accounts.filter(el => el.address !== this.address.split('-').join(''));
+      accounts.push(this.walletService.currentAccount);
+      this.walletService.currentWallet.accounts = accounts;
+
+      let allWallets = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
+      const walletsStorage = allWallets.filter(el => el.name !== this.walletService.currentWallet.name);
+      walletsStorage.push(this.walletService.currentWallet);
+      localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorage));
+    } else {
+      if (this.walletService.currentAccount.nis1Account === null) {
+        this.sharedService.showSuccess('', 'Nis1 account added');
+      }
+      const nis1Wallet = this.nemProvider.createAccountPrivateKey(this.privateKey);
+      this.walletService.currentAccount.nis1Account = {
+        address: nis1Wallet.address,
+        publicKey: nis1Wallet.publicKey
+      };
+
+      const accounts = this.walletService.getCurrentWallet().accounts.filter(el => el.address !== this.address.split('-').join(''));
+      accounts.push(this.walletService.currentAccount);
+      this.walletService.currentWallet.accounts = accounts;
+
+      let allWallets = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
+      const walletsStorage = allWallets.filter(el => el.name !== this.walletService.currentWallet.name);
+      walletsStorage.push(this.walletService.currentWallet);
+      localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorage));
+    }
+
+    if (this.showPrivateKey) {
+      this.decryptWallet();
+    }
+    
+    this.privateKey = '';
+    this.validatingForm.reset({
+      password: ''
+    }, {
+      emitEvent: false
+    });
   }
 }

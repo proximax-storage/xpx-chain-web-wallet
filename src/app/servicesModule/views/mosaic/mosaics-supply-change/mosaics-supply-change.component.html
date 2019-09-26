@@ -7,7 +7,7 @@
         <!-- Parent Mosaic -->
         <div class="row">
           <div class="col-11 mx-auto">
-            <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
+            <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" [searchable]="false"
               class="selectWrapper" [items]="parentMosaic" formControlName="parentMosaic" bindLabel="label"
               bindValue="value" placeholder="Select or write mosaic" (change)="optionSelected($event)"></ng-select>
             <mdb-error class="ml-1rem"
@@ -20,7 +20,7 @@
         <!-- mosaicSupplyType -->
         <div class="row mt-05rem">
           <div class="col-11 mx-auto">
-            <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
+            <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" [searchable]="false"
               class="selectWrapper" [items]="mosaicSupplyType" formControlName="mosaicSupplyType" bindLabel="label"
               bindValue="value" placeholder="Increase or decrease"></ng-select>
             <mdb-error class="ml-1rem"
