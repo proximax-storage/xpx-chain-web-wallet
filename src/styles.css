@@ -367,6 +367,10 @@ body {
   padding-left: 0px;
 }
 
+.pl-05rem {
+  padding-left: .5rem;
+}
+
 .pl-1rem {
   padding-left: 1rem;
 }
@@ -387,6 +391,10 @@ body {
 
 .pr-040rem {
   padding-right: .4rem;
+}
+
+.pr-05rem{
+  padding-right: .5rem !important;
 }
 
 .pr-1rem {
@@ -876,6 +884,11 @@ body {
 .line-separator {
   border-right: .5px solid #d6d6d6;
 }
+
+.line-separator-right-01px {
+  border-right: 1px solid #c0c0c0;
+}
+
 
 .header-backg {
   background: #303030;
