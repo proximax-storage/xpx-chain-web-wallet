@@ -236,10 +236,10 @@
                         </ng-container>
                       </div>
 
-                      <ng-container *ngIf="arraySelect.length > 0 && !hideSign">
+                      <ng-container *ngIf="arraySelect.length > 0 && !hideSign || onlySigner">
                         <div class="col-12 mt-1rem">
                           <!-- SELECT ACCOUNT -->
-                          <div class="row">
+                          <div class="row" *ngIf="!onlySigner">
                             <div class="col-12">
                               <ng-select class="selectWrapper" [(ngModel)]="account" [items]="arraySelect"
                                 bindLabel="label" bindValue="value" placeholder="Select account"
