@@ -21,7 +21,7 @@ export class CreateMosaicComponent implements OnInit {
 
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Mosaics',
-    componentName: 'CREATE',
+    componentName: 'Create',
   };
   @BlockUI() blockUI: NgBlockUI;
   configurationForm: ConfigurationForm = {};

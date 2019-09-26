@@ -69,7 +69,7 @@ export class Nis1AccountsListComponent implements OnInit {
           mosaic: null,
           route: `/${AppConfig.routes.nis1AccountList}`
         }
-        
+
         // this.walletService.setNis1AccounsWallet(accountNis1);
         if (accountNis1.consignerOf) {
           this.walletService.setAccountInfoNis1(accountNis1);

@@ -45,6 +45,7 @@ export class PartialComponent implements OnInit {
   headElements = ['Deadline', 'Fee', 'Account linked to the transaction', 'Hash'];
   hideSign = false;
   objectKeys = Object.keys;
+  onlySigner = false;
   password: string = '';
   subscription: Subscription[] = [];
   typeTransactions: any;
@@ -111,6 +112,7 @@ export class PartialComponent implements OnInit {
     console.log('----------TransactionsInterface----------', transaction);
     this.dataSelected = transaction;
     this.arraySelect = [];
+    const arraySelect = [];
     const accountMultisig = this.walletService.filterAccountInfo(transaction.data['innerTransactions'][0].signer.address.pretty(), true);
     // console.log('=== ACCOUNT MULTISIG ===', accountMultisig);
     if (accountMultisig && accountMultisig.multisigInfo && accountMultisig.multisigInfo.cosignatories && accountMultisig.multisigInfo.cosignatories.length > 0) {
@@ -121,8 +123,8 @@ export class PartialComponent implements OnInit {
           const publicAccount = this.proximaxProvider.createPublicAccount(cosignatorie.publicAccount.publicKey, cosignatorie.publicAccount.address.networkType);
           const signedByAccount = transaction.data.signedByAccount(publicAccount);
           // console.log('\n\n === TRANSACTION SIGNED? ===', signedByAccount);
-          this.validateAccount = true;
-          this.arraySelect.push({
+          // this.validateAccount = true;
+          arraySelect.push({
             label: (signedByAccount) ? `${cosignatorie.name} - Signed` : cosignatorie.name,
             value: cosignatorie,
             selected: true,
@@ -141,7 +143,7 @@ export class PartialComponent implements OnInit {
         const data: ModifyMultisigAccountTransaction = element;
         // aqui debo verificar si mi cuenta esta dentro de inner transaction para poder firmarla
         data.modifications.forEach(element => {
-          const exist = this.arraySelect.find((b: any) => b.value.address === element.cosignatoryPublicAccount.address.plain());
+          const exist = arraySelect.find((b: any) => b.value.address === element.cosignatoryPublicAccount.address.plain());
           if (!exist) {
             const possibleCosignatorie: AccountsInterface = this.walletService.filterAccountWallet('', null, element.cosignatoryPublicAccount.address.pretty());
             // console.log('possibleCosignatorie ---->', possibleCosignatorie);
@@ -153,7 +155,7 @@ export class PartialComponent implements OnInit {
               );
 
               const signedByAccount = transaction.data.signedByAccount(publicAccount);
-              this.arraySelect.push({
+              arraySelect.push({
                 label: possibleCosignatorie.name,
                 value: possibleCosignatorie,
                 selected: true,
@@ -166,8 +168,21 @@ export class PartialComponent implements OnInit {
       }
     });
 
-    const cantSigned = this.arraySelect.filter((x: any) => x.signed === true);
-    this.hideSign = (cantSigned.length === this.arraySelect.length) ? true: false;
+    this.onlySigner = false;
+    const cantSigned = arraySelect.filter((x: any) => x.signed === true);
+    this.hideSign = (cantSigned.length === arraySelect.length) ? true: false;
+    if (!this.hideSign){
+      if(arraySelect.length === 1) {
+        this.onlySigner = true;
+        this.selectAccount(arraySelect[0]);
+      }else {
+        this.arraySelect = arraySelect;
+      }
+    }else {
+      this.arraySelect = arraySelect;
+    }
+
+
    }
 
 
