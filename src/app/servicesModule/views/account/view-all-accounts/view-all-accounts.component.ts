@@ -7,6 +7,7 @@ import { TransactionsService } from '../../../../transactions/services/transacti
 import { Subscription } from 'rxjs';
 import { NamespacesService } from 'src/app/servicesModule/services/namespaces.service';
 import { HeaderServicesInterface } from '../../../services/services-module.service';
+import * as CryptoJS from 'crypto-js';
 
 @Component({
   selector: 'app-view-all-accounts',
@@ -103,6 +104,28 @@ export class ViewAllAccountsComponent implements OnInit {
     setTimeout(() => {
       this.accountChanged = false;
     }, 2000);
+  }
+
+  exportWallet() {
+    let wordArray = CryptoJS.enc.Utf8.parse(JSON.stringify(this.walletService.currentWallet));
+    let file = CryptoJS.enc.Base64.stringify(wordArray);
+    // Word array to base64
+
+
+    // let other = CryptoJS.enc.Base64.parse(file);
+    // // Word array to JSON string
+    // console.log('This is resp descryp---------------------------->', JSON.parse(other.toString(CryptoJS.enc.Utf8)));
+
+    const blob = new Blob([file], { type: '' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    a.href = url;
+    // the filename you want
+    a.download = `${this.currentWallet.name}.wlt`;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
   }
 
   /**
