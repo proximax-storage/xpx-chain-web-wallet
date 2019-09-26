@@ -67,9 +67,17 @@ export class PartialComponent implements OnInit {
   ngOnInit() {
     this.configurationForm = this.sharedService.configurationForm;
     this.typeTransactions = this.transactionService.getTypeTransactions();
-    this.transactionService.getAggregateBondedTransactions$().subscribe(
-      next => this.aggregateTransactions = next
-    );
+    this.subscription.push(this.transactionService.getAggregateBondedTransactions$().subscribe(
+      next => {
+        console.log('next', next);
+        this.aggregateTransactions = next;
+       /* if (next) {
+          this.aggregateTransactions = next;
+        }else {
+          this.aggregateTransactions = [];
+        }*/
+      }
+    ));
     // this.getAccountsInfo();
   }
 

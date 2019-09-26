@@ -94,7 +94,13 @@ export class AuthService {
     this.dataBridgeService.closeConection();
     this.dataBridgeService.connectnWs();
 
+    let wallet = this.walletService.getWalletTransNisStorage().find(el => el.name === this.walletService.getCurrentWallet().name);
 
+    if (wallet !== undefined && wallet !== null) {
+      this.walletService.setSwapTransactions$(wallet.transactions);
+    } else {
+      this.walletService.setSwapTransactions$([]);
+    }
     // load services and components
     this.route.navigate([`/${AppConfig.routes.dashboard}`]);
     this.serviceModuleService.changeBooksItem();
@@ -105,7 +111,7 @@ export class AuthService {
     }
 
     this.mosaicService.getMosaicXPX();
-   // this.dataBridgeService.searchTransactionStatus();
+    // this.dataBridgeService.searchTransactionStatus();
     this.namespaces.searchNamespacesFromAccounts(address);
     this.transactionService.searchAccountsInfo(this.walletService.currentWallet.accounts);
     this.dataBridgeService.searchBlockInfo();

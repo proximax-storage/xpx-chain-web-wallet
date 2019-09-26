@@ -31,6 +31,9 @@ export class WalletService {
   nis1AccounsWallet: any = [];
   unconfirmedTransactions: any = [];
 
+  swapTransactions: Subject<any> = new Subject<any>();
+  swapTransactions$: Observable<any> = this.swapTransactions.asObservable();
+
   currentAccountObs: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   currentAccountObs$: Observable<any> = this.currentAccountObs.asObservable();
 
@@ -195,12 +198,12 @@ export class WalletService {
   }
 
 
-  getAmountAccount () {
+  getAmountAccount() {
     const account = this.filterAccountInfo(this.proximaxProvider.createFromRawAddress(this.currentAccount.address).pretty(), true);
     let mosaics = account.accountInfo.mosaics;
     let amoutMosaic = mosaics.filter(mosaic => mosaic.id.toHex() == environment.mosaicXpxInfo.id);
     return amoutMosaic[0].amount.compact();
-    
+
   }
 
   /**
@@ -551,6 +554,16 @@ export class WalletService {
   }
 
   /**
+     *
+     *
+     * @returns {Observable<any>}
+     * @memberof WalletService
+     */
+  getSwapTransactions$(): Observable<any> {
+    return this.swapTransactions$;
+  }
+
+  /**
    *
    *
    * @returns
@@ -571,6 +584,27 @@ export class WalletService {
   }
 
 
+
+
+  /**
+     *
+     *@param {string} name
+     * @returns
+     * @memberof WalletService
+     */
+  getWalletStorageName(name: string): WalletAccountInterface[] {
+    let walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
+    if (walletsStorage === undefined || walletsStorage === null) {
+      localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify([]));
+      walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
+    }
+    console.log(walletsStorage)
+    return walletsStorage.filter(
+      (element: any) => {
+        return element.name === name;
+      })
+  }
+
   /**
    *
    *
@@ -585,6 +619,8 @@ export class WalletService {
     }
     return walletsStorage;
   }
+
+  
 
   /**
    *
@@ -645,6 +681,30 @@ export class WalletService {
     if (moduleRemove) {
       this.validateMultisigAccount(this.currentWallet.accounts);
     }
+  }
+   /**
+  *
+  *
+  * @param {string} name
+  * @memberof WalletService
+  */
+  removeWallet(name: string): boolean {
+    let value: boolean = false;
+    let walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
+    if (walletsStorage === undefined || walletsStorage === null) {
+      localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify([]));
+      walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
+    } else {
+      value = walletsStorage.find(x => x.name === name)
+      if (value) {
+        const walletsStorageNew = walletsStorage.filter(
+          (element: any) => {
+            return element.name !== name;
+          })
+         localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorageNew));
+      }
+    }
+    return value
   }
 
   /**
@@ -757,6 +817,16 @@ export class WalletService {
     }
 
     this.accountsInfoSubject.next(this.accountsInfo);
+  }
+
+  /**
+ *
+ *
+ * @param {*} currentAccount
+ * @memberof WalletService
+ */
+  setSwapTransactions$(transactions: TransactionsNis1Interface[]) {
+    this.swapTransactions.next(transactions);
   }
 
   /**
@@ -877,6 +947,37 @@ export class WalletService {
       });
     }
   }
+
+  /**
+   *
+   *
+   * @returns
+   * @memberof WalletService
+   */
+  getWalletTransNisStorage(): CurrentWalletTransNis[] {
+    let walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletTransactionsNis));
+    if (walletsStorage === undefined || walletsStorage === null) {
+      localStorage.setItem(environment.nameKeyWalletTransactionsNis, JSON.stringify([]));
+      walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletTransactionsNis));
+    }
+    return walletsStorage;
+  }
+
+  /**
+   *
+   *
+   * @memberof WalletService
+   */
+  saveAccountWalletTransNisStorage(account) {
+    const othersWallet = this.getWalletTransNisStorage().filter((element: CurrentWalletTransNis) => {
+      const walletName = (this.getCurrentWallet()) ? this.currentWallet.name : this.accountWalletCreated.wallet.name
+      return element.name !== walletName;
+    });
+
+    othersWallet.push(account);
+    console.log('=== othersWallet === ', othersWallet);
+    localStorage.setItem(environment.nameKeyWalletTransactionsNis, JSON.stringify(othersWallet));
+  }
 }
 
 export interface CurrentWalletInterface {
@@ -884,6 +985,17 @@ export interface CurrentWalletInterface {
   accounts: AccountsInterface[],
 }
 
+export interface CurrentWalletTransNis {
+  name: string;
+  transactions: TransactionsNis1Interface[],
+}
+
+export interface TransactionsNis1Interface {
+  siriusAddres: string;
+  nis1Timestamp: string;
+  nis1PublicKey: string;
+  nis1TransactionHast: string;
+}
 
 export interface AccountsInterface {
   address: any;

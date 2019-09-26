@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { first } from "rxjs/operators";
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
-import { Listener, Transaction, TransactionStatus, CosignatureSignedTransaction, BlockInfo, SignedTransaction, UInt64, AggregateTransaction } from "tsjs-xpx-chain-sdk";
+import { Listener, Transaction, TransactionStatus, CosignatureSignedTransaction, BlockInfo, SignedTransaction, UInt64, AggregateTransaction, Address } from "tsjs-xpx-chain-sdk";
 import { environment } from '../../../environments/environment';
 import { NodeService } from '../../servicesModule/services/node.service';
 import { SharedService } from './shared.service';
 import { WalletService, CurrentWalletInterface } from '../../wallet/services/wallet.service';
-import { TransactionsInterface, TransactionsService } from '../../transactions/services/transactions.service';
+import { TransactionsService } from '../../transactions/services/transactions.service';
 import { ProximaxProvider } from './proximax.provider';
 import { NamespacesService } from 'src/app/servicesModule/services/namespaces.service';
 
@@ -16,7 +16,7 @@ import { NamespacesService } from 'src/app/servicesModule/services/namespaces.se
 export class DataBridgeService {
   block: number;
   url: any
-  connector: Listener;
+  connector: Listener[] = [];
   currentWallet: CurrentWalletInterface = null;
   destroyConection = false;
   blockSubject: BehaviorSubject<number> = new BehaviorSubject<number>(this.block);
@@ -28,6 +28,7 @@ export class DataBridgeService {
   transaction$: Observable<any> = this.transactionSubject.asObservable();
   reconnectNode = 0;
   subscription: Subscription[] = [];
+
 
 
   constructor(
@@ -66,12 +67,29 @@ export class DataBridgeService {
    * @memberof DataBridgeService
    */
   connectnWs(node?: string) {
+    this.connector = [];
     const route = (node === undefined) ? this.nodeService.getNodeSelected() : node;
     this.url = `${environment.protocolWs}://${route}`;
     this.currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
-    this.connector = new Listener(this.url, WebSocket);
-    this.destroyConection = false;
-    this.openConnection();
+    this.currentWallet.accounts.forEach(element => {
+      const ad = this.proximaxProvider.createFromRawAddress(element.address);
+      const b = new Listener(this.url, WebSocket);
+      this.connector.push(b);
+      b.open().then(() => {
+        const audio = new Audio('assets/audio/ding.ogg');
+        const audio2 = new Audio('assets/audio/ding2.ogg');
+        this.getBlockSocket(b);
+        this.getAggregateBondedAddedSocket(b, audio, ad);
+        this.getAggregateBondedRemovedSocket(b, audio2, ad);
+        this.getCosignatureAddedSocket(b, audio, ad);
+        this.getConfirmedSocket(b, audio, ad);
+        this.getStatusSocket(b, audio2, ad);
+        this.getUnConfirmedAddedSocket(b, audio2, ad);
+        this.getUnConfirmedRemovedSocket(b, audio2, ad);
+      }, (error) => {
+        this.sharedService.showWarning('', 'Error connecting to the node');
+      });
+    });
     return;
   }
 
@@ -81,7 +99,6 @@ export class DataBridgeService {
    * @memberof DataBridgeService
    */
   closeConection(destroyTransactions = true) {
-    // console.log("Destruye conexion con el websocket");
     this.destroySubscriptions();
     this.destroyConection = true;
     if (destroyTransactions) {
@@ -90,8 +107,12 @@ export class DataBridgeService {
       this.transactionsService.destroyAllTransactions();
     }
 
-    if (this.connector !== undefined) {
-      this.connector.close();
+    if (this.connector.length > 0) {
+      console.log("Destruye conexion con el websocket");
+      this.connector.forEach(element => {
+        element.close();
+        element.terminate();
+      });
     }
   }
 
@@ -138,11 +159,11 @@ export class DataBridgeService {
    * @param {HTMLAudioElement} audio
    * @memberof DataBridgeService
    */
-  getAggregateBondedAddedSocket(connector: Listener, audio: HTMLAudioElement) {
-    const currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
-    currentWallet.accounts.forEach(element => {
+  getAggregateBondedAddedSocket(connector: Listener, audio: HTMLAudioElement, address: Address) {
+   /* const currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
+    currentWallet.accounts.forEach(element => {*/
       // ----------------------------------AGGREGATE_BONDED_ADDED--------------------------------------------//
-      connector.aggregateBondedAdded(this.proximaxProvider.createFromRawAddress(element.address)).subscribe(async aggregateBondedAdded => {
+      connector.aggregateBondedAdded(address).subscribe(async aggregateBondedAdded => {
         console.log("\n\n--------------------AGGREGATE_BONDED_ADDED------------------------")
         console.log(aggregateBondedAdded.transactionInfo.hash)
         console.log("------------------------------------------------------------------\n\n")
@@ -156,11 +177,12 @@ export class DataBridgeService {
         const transactionFormatter = this.transactionsService.getStructureDashboard(aggregateBondedAdded, transactionPushed);
         if (transactionFormatter !== null) {
           audio.play();
+          this.sharedService.showInfo('', 'Transaction aggregate bonded added');
           transactionPushed.unshift(transactionFormatter);
           this.transactionsService.setTransactionsAggregateBonded$(transactionPushed);
         }
       });
-    });
+   // });
   }
 
   /**
@@ -170,11 +192,11 @@ export class DataBridgeService {
    * @param {HTMLAudioElement} audio
    * @memberof DataBridgeService
    */
-  getAggregateBondedRemovedSocket(connector: Listener, audio: HTMLAudioElement) {
-    const currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
-    currentWallet.accounts.forEach(element => {
+  getAggregateBondedRemovedSocket(connector: Listener, audio: HTMLAudioElement, address: Address) {
+    /*const currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
+    currentWallet.accounts.forEach(element => {*/
       // ----------------------------------AGGREGATE_BONDED_REMOVED--------------------------------------------//
-      connector.aggregateBondedRemoved(this.proximaxProvider.createFromRawAddress(element.address)).subscribe(async aggregateBondedRemoved => {
+      connector.aggregateBondedRemoved(address).subscribe(async aggregateBondedRemoved => {
         console.log("\n\n-----------------------AGGREGATE_BONDED_REMOVED--------------------------")
         console.log(aggregateBondedRemoved)
         console.log("------------------------------------------------------------------\n\n")
@@ -189,7 +211,7 @@ export class DataBridgeService {
           this.transactionsService.setTransactionsAggregateBonded$(filtered);
         }
       });
-    });
+    //});
   }
 
   /**
@@ -199,11 +221,11 @@ export class DataBridgeService {
    * @param {HTMLAudioElement} audio
    * @memberof DataBridgeService
    */
-  getCosignatureAddedSocket(connector: Listener, audio: HTMLAudioElement) {
-    const currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
-    currentWallet.accounts.forEach(element => {
+  getCosignatureAddedSocket(connector: Listener, audio: HTMLAudioElement, address: Address) {
+    /*const currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
+    currentWallet.accounts.forEach(element => {*/
       // ----------------------------------COSIGNATURE_ADDED--------------------------------------------//
-      connector.cosignatureAdded(this.proximaxProvider.createFromRawAddress(element.address)).subscribe(cosignatureAdded => {
+      connector.cosignatureAdded(address).subscribe(async cosignatureAdded => {
         console.log("\n\n-----------------------COSIGNATURE_ADDED--------------------------")
         console.log(cosignatureAdded)
         console.log("------------------------------------------------------------------\n\n")
@@ -211,8 +233,27 @@ export class DataBridgeService {
           'type': 'cosignatureAdded',
           'hash': cosignatureAdded.parentHash
         });
+
+        /*const aggregateBondedCache = await this.transactionsService.getAggregateBondedTransactions$().pipe(first()).toPromise();
+        console.log('aggregateBondedCache --> ', aggregateBondedCache);
+        if (aggregateBondedCache && aggregateBondedCache.length > 0) {
+          const transactionFiltered = aggregateBondedCache.find(d => d.data.transactionInfo.hash === cosignatureAdded.parentHash);
+          console.log('filtered', transactionFiltered);
+        }*/
+
+        /*if (filtered && filtered.data && filtered.data.cosignatures.length > 0) {
+          const d = filtered.data.cosignatures.find(x => x.signature === cosignatureAdded.signature);
+          if (!d) {
+            console.log('filtered', d);
+            const otherTransactions = aggregateBondedCache.filter(d => d.data.transactionInfo.hash !== cosignatureAdded.parentHash);
+            filtered.data.cosignatures.push(cosignatureAdded.signature);
+            otherTransactions.push(filtered);
+            console.log('LO QUE VOY AGREGAR --> ', otherTransactions);
+            this.transactionsService.setTransactionsAggregateBonded$(otherTransactions);
+          }
+        }*/
       });
-    });
+    //});
   }
 
   /**
@@ -222,32 +263,34 @@ export class DataBridgeService {
    * @param {HTMLAudioElement} audio
    * @memberof DataBridgeService
    */
-  getConfirmedSocket(connector: Listener, audio: HTMLAudioElement) {
-    const currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
-    currentWallet.accounts.forEach(element => {
-      // ----------------------------------CONFIRMED--------------------------------------------//
-      connector.confirmed(this.proximaxProvider.createFromRawAddress(element.address)).subscribe(async confirmedTransaction => {
-        console.log("\n\n -----------------------CONFIRMED---------------------------------")
-        console.log(confirmedTransaction.transactionInfo.hash)
-        console.log("------------------------------------------------------------------ \n\n")
-        this.setTransactionStatus({
-          'type': 'confirmed',
-          'hash': confirmedTransaction.transactionInfo.hash
-        });
+  getConfirmedSocket(connector: Listener, audio: HTMLAudioElement, address: Address) {
+    /*const currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
+    currentWallet.accounts.forEach(element => {*/
+    console.log('address', address);
 
-        const confirmedCache = await this.transactionsService.getConfirmedTransactions$().pipe(first()).toPromise();
-        const transactionPushed = confirmedCache.slice(0);
-        const transactionFormatter = this.transactionsService.getStructureDashboard(confirmedTransaction, transactionPushed);
-        if (transactionFormatter !== null) {
-          audio.play();
-          this.sharedService.showInfo('', 'Transaction confirmed');
-          transactionPushed.unshift(transactionFormatter);
-          this.transactionsService.setTransactionsConfirmed$(transactionPushed);
-          this.transactionsService.searchAccountsInfo(this.walletService.currentWallet.accounts);
-          this.namespaces.searchNamespacesFromAccounts([this.proximaxProvider.createFromRawAddress(this.walletService.getCurrentAccount().address)]);
-        }
+    // ----------------------------------CONFIRMED--------------------------------------------//
+    connector.confirmed(address).subscribe(async confirmedTransaction => {
+      console.log("\n\n -----------------------CONFIRMED---------------------------------")
+      console.log(confirmedTransaction.transactionInfo.hash)
+      console.log("------------------------------------------------------------------ \n\n")
+      this.setTransactionStatus({
+        'type': 'confirmed',
+        'hash': confirmedTransaction.transactionInfo.hash
       });
+
+      const confirmedCache = await this.transactionsService.getConfirmedTransactions$().pipe(first()).toPromise();
+      const transactionPushed = confirmedCache.slice(0);
+      const transactionFormatter = this.transactionsService.getStructureDashboard(confirmedTransaction, transactionPushed);
+      if (transactionFormatter !== null) {
+        audio.play();
+        this.sharedService.showInfo('', 'Transaction confirmed');
+        transactionPushed.unshift(transactionFormatter);
+        this.transactionsService.setTransactionsConfirmed$(transactionPushed);
+        this.transactionsService.searchAccountsInfo(this.walletService.currentWallet.accounts);
+        this.namespaces.searchNamespacesFromAccounts([this.proximaxProvider.createFromRawAddress(this.walletService.getCurrentAccount().address)]);
+      }
     });
+    //});
   }
 
   /**
@@ -257,11 +300,11 @@ export class DataBridgeService {
    * @param {HTMLAudioElement} audio
    * @memberof DataBridgeService
    */
-  getStatusSocket(connector: Listener, audio: HTMLAudioElement) {
-    const currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
-    currentWallet.accounts.forEach(element => {
+  getStatusSocket(connector: Listener, audio: HTMLAudioElement, address: Address) {
+    /*const currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
+    currentWallet.accounts.forEach(element => {*/
       // ----------------------------------STATUS--------------------------------------------//
-      connector.status(this.proximaxProvider.createFromRawAddress(element.address)).subscribe(status => {
+      connector.status(address).subscribe(status => {
         console.log("\n\n-----------------------STATUS--------------------------")
         console.log(status.hash)
         console.log("------------------------------------------------------------------\n\n")
@@ -271,7 +314,7 @@ export class DataBridgeService {
           'hash': status.hash
         });
       });
-    });
+    //});
   }
 
   /**
@@ -281,11 +324,11 @@ export class DataBridgeService {
    * @param {HTMLAudioElement} audio
    * @memberof DataBridgeService
    */
-  getUnConfirmedAddedSocket(connector: Listener, audio: HTMLAudioElement) {
-    const currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
-    currentWallet.accounts.forEach(element => {
+  getUnConfirmedAddedSocket(connector: Listener, audio: HTMLAudioElement, address: Address) {
+    /*const currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
+    currentWallet.accounts.forEach(element => {*/
       // ----------------------------------UNCONFIRMED_ADDED--------------------------------------------//
-      connector.unconfirmedAdded(this.proximaxProvider.createFromRawAddress(element.address)).subscribe(async unconfirmedAdded => {
+      connector.unconfirmedAdded(address).subscribe(async unconfirmedAdded => {
         console.log("\n\n-----------------------UNCONFIRMED_ADDED--------------------------");
         console.log(unconfirmedAdded.transactionInfo.hash)
         console.log("------------------------------------------------------------------\n\n");
@@ -299,11 +342,12 @@ export class DataBridgeService {
         const transactionFormatter = this.transactionsService.getStructureDashboard(unconfirmedAdded, transactionPushed);
         if (transactionFormatter !== null) {
           audio.play();
+          this.sharedService.showInfo('', 'Transaction unconfirmed');
           transactionPushed.unshift(transactionFormatter);
           this.transactionsService.setTransactionsUnConfirmed$(transactionPushed);
         }
       });
-    });
+   // });
   }
 
   /**
@@ -313,11 +357,11 @@ export class DataBridgeService {
    * @param {HTMLAudioElement} audio
    * @memberof DataBridgeService
    */
-  getUnConfirmedRemovedSocket(connector: Listener, audio: HTMLAudioElement) {
-    const currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
-    currentWallet.accounts.forEach(element => {
+  getUnConfirmedRemovedSocket(connector: Listener, audio: HTMLAudioElement, address: Address) {
+    /*const currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
+    address: Addressnt => {*/
       // ----------------------------------UNCONFIRMED_REMOVED--------------------------------------------//
-      connector.unconfirmedRemoved(this.proximaxProvider.createFromRawAddress(element.address)).subscribe(async unconfirmedRemoved => {
+      connector.unconfirmedRemoved(address).subscribe(async unconfirmedRemoved => {
         console.log("\n\n-----------------------UNCONFIRMED_REMOVED--------------------------")
         console.log(unconfirmedRemoved)
         console.log("------------------------------------------------------------------\n\n")
@@ -332,7 +376,7 @@ export class DataBridgeService {
           this.transactionsService.setTransactionsUnConfirmed$(unconfirmedFiltered);
         }
       });
-    });
+    // });
   }
 
 
@@ -348,30 +392,6 @@ export class DataBridgeService {
     return this.transaction$;
   }
 
-  /**
-  * Open websocket connection
-  *
-  * @param {*} connector
-  * @memberof DataBridgeService
-  */
-  openConnection() {
-    if (!this.destroyConection) {
-      this.connector.open().then(() => {
-        const audio = new Audio('assets/audio/ding.ogg');
-        const audio2 = new Audio('assets/audio/ding2.ogg');
-        this.getAggregateBondedAddedSocket(this.connector, audio);
-        this.getAggregateBondedRemovedSocket(this.connector, audio2);
-        this.getBlockSocket(this.connector);
-        this.getCosignatureAddedSocket(this.connector, audio);
-        this.getConfirmedSocket(this.connector, audio);
-        this.getStatusSocket(this.connector, audio2);
-        this.getUnConfirmedAddedSocket(this.connector, audio2);
-        this.getUnConfirmedRemovedSocket(this.connector, audio2);
-      }, (error) => {
-        this.sharedService.showWarning('', 'Error connecting to the node');
-      });
-    }
-  }
 
   /**
    * Reconnect
@@ -380,9 +400,16 @@ export class DataBridgeService {
    * @returns
    * @memberof DataBridgeService
    */
-  reconnect(connector: Listener) {
-    connector.close();
-    this.openConnection();
+  reconnect() {
+    if (this.connector) {
+      console.log("Destruye conexion con el websocket");
+      this.connector.forEach(element => {
+        element.close();
+        element.terminate();
+      });
+    }
+
+    this.connectnWs();
     return;
   }
 

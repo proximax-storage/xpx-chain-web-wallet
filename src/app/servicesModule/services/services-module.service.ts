@@ -86,10 +86,16 @@ export class ServicesModuleService {
         return true;
       }
 
-      const issetData = dataStorage.find(element =>
-        element.label === params.name ||
-        element.value === params.address
-      );
+      let issetData = undefined;
+      try {
+        issetData = dataStorage.find(element =>
+          element.label === params.name ||
+          element.value === params.address
+        );
+      } catch (error) {
+
+      }
+
       if (issetData === undefined) {
         dataStorage.push(books);
         this.setBookAddress(dataStorage, params.nameItem);

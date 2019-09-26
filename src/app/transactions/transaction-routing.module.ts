@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { AppConfig } from '../config/app.config';
 import { CreateTransferComponent } from './views/create-transfer/create-transfer.component';
 import { PartialComponent } from './views/partial/partial.component';
+import { SwapTransactionsComponent } from './views/swap-transactions/swap-transactions.component';
 
 const routes: Routes = [
   {
@@ -23,6 +24,17 @@ const routes: Routes = [
       meta: {
         title: 'partial.title',
         description: 'partial.text',
+        override: true,
+      },
+    }
+  },
+  {
+    path: AppConfig.routes.swapTransactions,
+    component: SwapTransactionsComponent,
+    data: {
+      meta: {
+        title: 'swapTransactions.title',
+        description: 'swapTransactions.text',
         override: true,
       },
     }

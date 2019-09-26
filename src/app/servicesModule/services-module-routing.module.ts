@@ -76,12 +76,12 @@ const routes: Routes = [
       },
     }
   },  {
-    path: `${AppConfig.routes.deleteteAccount}/:name`,
+    path: `${AppConfig.routes.deleteAccount}/:name`,
     component: AccountDeleteComponent,
     data: {
       meta: {
-        title: 'deleteteAccount.title',
-        description: 'deleteteAccount.text',
+        title: 'deleteAccount.title',
+        description: 'deleteAccount.text',
         override: true,
       },
     }
