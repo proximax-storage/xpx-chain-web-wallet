@@ -94,9 +94,8 @@
             </div>
 
             <!-- SWAP TRANSACTION -->
-            <div class="col-12 col-xl-6">
-              <button mdbBtn type="button" rounded="true" mdbWavesEffect
-                [disabled]="swapTransactions === 0" [routerLink]="[viewSwapTransactions]"
+            <div class="col-12 col-xl-6" *ngIf="swapTransactions > 0">
+              <button mdbBtn type="button" rounded="true" mdbWavesEffect [routerLink]="[viewSwapTransactions]"
                 class="f-w-600  w-100porcent background-orange pl-2rem pr-2rem" size="sm">
                 <span class="fs-07rem color-white">SWAP:
                   <a class="cursor-p fw-400">{{swapTransactions}}</a>

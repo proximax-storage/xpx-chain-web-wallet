@@ -32,7 +32,6 @@ export class SwapTransactionsComponent implements OnInit {
   ngOnInit() {
     this.transactions = this.walletService.getWalletTransNisStorage().find(el => el.name === this.walletService.getCurrentWallet().name).transactions;
     this.explorerUrl = environment.nis1.urlExplorer;
-    console.log('findddddd------>', this.transactions);
   }
 
   qrCreate(hash) {
@@ -42,6 +41,10 @@ export class SwapTransactionsComponent implements OnInit {
     qr.make();
 
     return qr.createDataURL();
+  }
+
+  goToNemExplorer(hash) {
+    window.open(`${environment.nis1.urlExplorer}${hash}`);
   }
 
   printCertificate(transaction) {
