@@ -172,37 +172,6 @@ export class ServicesBoxComponent implements OnInit {
         ''
       ),
 
-      // Storage
-      this.services.buildStructureService(
-        'Storage',
-        false,
-        'Upload and download your files and encrypt them',
-        'icon-storage-full-color-80h-proximax-sirius-wallet.svg',
-        '',
-        {
-          myFiles: this.services.buildStructureService(
-            'FILES',
-            false,
-            '',
-            '',
-            AppConfig.routes.myFile,
-          ), upload: this.services.buildStructureService(
-            'UPLOAD FILE',
-            false,
-            '',
-            '',
-            AppConfig.routes.uploadFile
-          ), shareFile: this.services.buildStructureService(
-            'SEND/SHARE',
-            false,
-            '',
-            '',
-            ''
-          )
-        },
-        true
-      ),
-
       // Address Book
       this.services.buildStructureService(
         'Address Book',
@@ -226,8 +195,7 @@ export class ServicesBoxComponent implements OnInit {
             AppConfig.routes.addContacts
           )
         },
-        true,
-        'disable-module'
+        true
       ),
 
       // Notarization
@@ -308,6 +276,38 @@ export class ServicesBoxComponent implements OnInit {
           )
         },
         true
+      ),
+
+      //STORAGE
+      this.services.buildStructureService(
+        'Storage',
+        false,
+        'Upload and download your files and encrypt them',
+        'icon-storage-full-color-80h-proximax-sirius-wallet.svg',
+        '',
+        {
+          myFiles: this.services.buildStructureService(
+            'FILES',
+            false,
+            '',
+            '',
+            AppConfig.routes.myFile,
+          ), upload: this.services.buildStructureService(
+            'UPLOAD FILE',
+            false,
+            '',
+            '',
+            AppConfig.routes.uploadFile
+          ), shareFile: this.services.buildStructureService(
+            'SEND/SHARE',
+            false,
+            '',
+            '',
+            ''
+          )
+        },
+        true,
+        'disable-module'
       ),
 
       // Agregate transactions
