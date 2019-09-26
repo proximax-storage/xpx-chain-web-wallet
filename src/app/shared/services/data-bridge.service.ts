@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { first } from "rxjs/operators";
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
-import { Listener, Transaction, TransactionStatus, CosignatureSignedTransaction, BlockInfo, SignedTransaction, UInt64, AggregateTransaction, Address } from "tsjs-xpx-chain-sdk";
+import { Listener, Transaction, TransactionStatus, CosignatureSignedTransaction, BlockInfo, SignedTransaction, UInt64, AggregateTransaction, Address, AggregateTransactionCosignature } from "tsjs-xpx-chain-sdk";
 import { environment } from '../../../environments/environment';
 import { NodeService } from '../../servicesModule/services/node.service';
 import { SharedService } from './shared.service';
@@ -160,29 +160,29 @@ export class DataBridgeService {
    * @memberof DataBridgeService
    */
   getAggregateBondedAddedSocket(connector: Listener, audio: HTMLAudioElement, address: Address) {
-   /* const currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
-    currentWallet.accounts.forEach(element => {*/
-      // ----------------------------------AGGREGATE_BONDED_ADDED--------------------------------------------//
-      connector.aggregateBondedAdded(address).subscribe(async aggregateBondedAdded => {
-        console.log("\n\n--------------------AGGREGATE_BONDED_ADDED------------------------")
-        console.log(aggregateBondedAdded.transactionInfo.hash)
-        console.log("------------------------------------------------------------------\n\n")
-        this.setTransactionStatus({
-          'type': 'aggregateBondedAdded',
-          'hash': aggregateBondedAdded.transactionInfo.hash
-        });
-
-        const aggregateBondedCache = await this.transactionsService.getAggregateBondedTransactions$().pipe(first()).toPromise();
-        const transactionPushed = aggregateBondedCache.slice(0);
-        const transactionFormatter = this.transactionsService.getStructureDashboard(aggregateBondedAdded, transactionPushed);
-        if (transactionFormatter !== null) {
-          audio.play();
-          this.sharedService.showInfo('', 'Transaction aggregate bonded added');
-          transactionPushed.unshift(transactionFormatter);
-          this.transactionsService.setTransactionsAggregateBonded$(transactionPushed);
-        }
+    /* const currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
+     currentWallet.accounts.forEach(element => {*/
+    // ----------------------------------AGGREGATE_BONDED_ADDED--------------------------------------------//
+    connector.aggregateBondedAdded(address).subscribe(async aggregateBondedAdded => {
+      console.log("\n\n--------------------AGGREGATE_BONDED_ADDED------------------------")
+      console.log(aggregateBondedAdded.transactionInfo.hash)
+      console.log("------------------------------------------------------------------\n\n")
+      this.setTransactionStatus({
+        'type': 'aggregateBondedAdded',
+        'hash': aggregateBondedAdded.transactionInfo.hash
       });
-   // });
+
+      const aggregateBondedSubject = await this.transactionsService.getAggregateBondedTransactions$().pipe(first()).toPromise();
+      const transactionPushed = aggregateBondedSubject.slice(0);
+      const transactionFormatter = this.transactionsService.getStructureDashboard(aggregateBondedAdded, transactionPushed);
+      if (transactionFormatter !== null) {
+        audio.play();
+        this.sharedService.showInfo('', 'Transaction aggregate bonded added');
+        transactionPushed.unshift(transactionFormatter);
+        this.transactionsService.setTransactionsAggregateBonded$(transactionPushed);
+      }
+    });
+    // });
   }
 
   /**
@@ -195,22 +195,22 @@ export class DataBridgeService {
   getAggregateBondedRemovedSocket(connector: Listener, audio: HTMLAudioElement, address: Address) {
     /*const currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
     currentWallet.accounts.forEach(element => {*/
-      // ----------------------------------AGGREGATE_BONDED_REMOVED--------------------------------------------//
-      connector.aggregateBondedRemoved(address).subscribe(async aggregateBondedRemoved => {
-        console.log("\n\n-----------------------AGGREGATE_BONDED_REMOVED--------------------------")
-        console.log(aggregateBondedRemoved)
-        console.log("------------------------------------------------------------------\n\n")
-        this.setTransactionStatus({
-          'type': 'aggregateBondedRemoved',
-          'hash': aggregateBondedRemoved
-        });
-
-        const agregateBondedTransactions = await this.transactionsService.getAggregateBondedTransactions$().pipe(first()).toPromise();
-        if (agregateBondedTransactions && agregateBondedTransactions.length > 0) {
-          const filtered = agregateBondedTransactions.filter(next => next.data.transactionInfo.hash !== aggregateBondedRemoved);
-          this.transactionsService.setTransactionsAggregateBonded$(filtered);
-        }
+    // ----------------------------------AGGREGATE_BONDED_REMOVED--------------------------------------------//
+    connector.aggregateBondedRemoved(address).subscribe(async aggregateBondedRemoved => {
+      console.log("\n\n-----------------------AGGREGATE_BONDED_REMOVED--------------------------")
+      console.log(aggregateBondedRemoved)
+      console.log("------------------------------------------------------------------\n\n")
+      this.setTransactionStatus({
+        'type': 'aggregateBondedRemoved',
+        'hash': aggregateBondedRemoved
       });
+
+      const agregateBondedTransactions = await this.transactionsService.getAggregateBondedTransactions$().pipe(first()).toPromise();
+      if (agregateBondedTransactions && agregateBondedTransactions.length > 0) {
+        const filtered = agregateBondedTransactions.filter(next => next.data.transactionInfo.hash !== aggregateBondedRemoved);
+        this.transactionsService.setTransactionsAggregateBonded$(filtered);
+      }
+    });
     //});
   }
 
@@ -224,36 +224,43 @@ export class DataBridgeService {
   getCosignatureAddedSocket(connector: Listener, audio: HTMLAudioElement, address: Address) {
     /*const currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
     currentWallet.accounts.forEach(element => {*/
-      // ----------------------------------COSIGNATURE_ADDED--------------------------------------------//
-      connector.cosignatureAdded(address).subscribe(async cosignatureAdded => {
-        console.log("\n\n-----------------------COSIGNATURE_ADDED--------------------------")
-        console.log(cosignatureAdded)
-        console.log("------------------------------------------------------------------\n\n")
-        this.setTransactionStatus({
-          'type': 'cosignatureAdded',
-          'hash': cosignatureAdded.parentHash
-        });
-
-        /*const aggregateBondedCache = await this.transactionsService.getAggregateBondedTransactions$().pipe(first()).toPromise();
-        console.log('aggregateBondedCache --> ', aggregateBondedCache);
-        if (aggregateBondedCache && aggregateBondedCache.length > 0) {
-          const transactionFiltered = aggregateBondedCache.find(d => d.data.transactionInfo.hash === cosignatureAdded.parentHash);
-          console.log('filtered', transactionFiltered);
-        }*/
-
-        /*if (filtered && filtered.data && filtered.data.cosignatures.length > 0) {
-          const d = filtered.data.cosignatures.find(x => x.signature === cosignatureAdded.signature);
-          if (!d) {
-            console.log('filtered', d);
-            const otherTransactions = aggregateBondedCache.filter(d => d.data.transactionInfo.hash !== cosignatureAdded.parentHash);
-            filtered.data.cosignatures.push(cosignatureAdded.signature);
-            otherTransactions.push(filtered);
-            console.log('LO QUE VOY AGREGAR --> ', otherTransactions);
-            this.transactionsService.setTransactionsAggregateBonded$(otherTransactions);
-          }
-        }*/
+    // ----------------------------------COSIGNATURE_ADDED--------------------------------------------//
+    connector.cosignatureAdded(address).subscribe(async cosignatureAdded => {
+      console.log("\n\n-----------------------COSIGNATURE_ADDED--------------------------")
+      console.log(cosignatureAdded)
+      console.log("------------------------------------------------------------------\n\n")
+      this.setTransactionStatus({
+        'type': 'cosignatureAdded',
+        'hash': cosignatureAdded.parentHash
       });
-    //});
+
+      const allAggregateBondedSubject = await this.transactionsService.getAggregateBondedTransactions$().pipe(first()).toPromise();
+      // const allAggregateBondedSubject = data.slice(0);
+      if (allAggregateBondedSubject && allAggregateBondedSubject.length > 0) {
+        const currentTransaction = allAggregateBondedSubject.find(d => d.data.transactionInfo.hash === cosignatureAdded.parentHash);
+        console.log('currentTransaction --> ', currentTransaction);
+        if (currentTransaction) {
+          if (currentTransaction.data.cosignatures.length > 0) {
+            const exist = currentTransaction.data.cosignatures.find(d => d.signature === cosignatureAdded.signature);
+            if(!exist){
+              currentTransaction.data.cosignatures.push(
+                new AggregateTransactionCosignature(
+                  cosignatureAdded.signature,
+                  this.proximaxProvider.createPublicAccount(cosignatureAdded.signer, this.walletService.currentAccount.network)
+                )
+              );
+            }
+          } else {
+            currentTransaction.data.cosignatures.push(
+              new AggregateTransactionCosignature(
+                cosignatureAdded.signature,
+                this.proximaxProvider.createPublicAccount(cosignatureAdded.signer, this.walletService.currentAccount.network)
+              )
+            );
+          }
+        }
+      }
+    });
   }
 
   /**
@@ -278,8 +285,8 @@ export class DataBridgeService {
         'hash': confirmedTransaction.transactionInfo.hash
       });
 
-      const confirmedCache = await this.transactionsService.getConfirmedTransactions$().pipe(first()).toPromise();
-      const transactionPushed = confirmedCache.slice(0);
+      const confirmedSubject = await this.transactionsService.getConfirmedTransactions$().pipe(first()).toPromise();
+      const transactionPushed = confirmedSubject.slice(0);
       const transactionFormatter = this.transactionsService.getStructureDashboard(confirmedTransaction, transactionPushed);
       if (transactionFormatter !== null) {
         audio.play();
@@ -303,17 +310,17 @@ export class DataBridgeService {
   getStatusSocket(connector: Listener, audio: HTMLAudioElement, address: Address) {
     /*const currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
     currentWallet.accounts.forEach(element => {*/
-      // ----------------------------------STATUS--------------------------------------------//
-      connector.status(address).subscribe(status => {
-        console.log("\n\n-----------------------STATUS--------------------------")
-        console.log(status.hash)
-        console.log("------------------------------------------------------------------\n\n")
-        this.sharedService.showWarning('', status.status.split('_').join(' '));
-        this.setTransactionStatus({
-          'type': 'status',
-          'hash': status.hash
-        });
+    // ----------------------------------STATUS--------------------------------------------//
+    connector.status(address).subscribe(status => {
+      console.log("\n\n-----------------------STATUS--------------------------")
+      console.log(status.hash)
+      console.log("------------------------------------------------------------------\n\n")
+      this.sharedService.showWarning('', status.status.split('_').join(' '));
+      this.setTransactionStatus({
+        'type': 'status',
+        'hash': status.hash
       });
+    });
     //});
   }
 
@@ -327,27 +334,27 @@ export class DataBridgeService {
   getUnConfirmedAddedSocket(connector: Listener, audio: HTMLAudioElement, address: Address) {
     /*const currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
     currentWallet.accounts.forEach(element => {*/
-      // ----------------------------------UNCONFIRMED_ADDED--------------------------------------------//
-      connector.unconfirmedAdded(address).subscribe(async unconfirmedAdded => {
-        console.log("\n\n-----------------------UNCONFIRMED_ADDED--------------------------");
-        console.log(unconfirmedAdded.transactionInfo.hash)
-        console.log("------------------------------------------------------------------\n\n");
-        this.setTransactionStatus({
-          'type': 'unconfirmed',
-          'hash': unconfirmedAdded.transactionInfo.hash
-        });
-
-        const unconfirmedCache = await this.transactionsService.getUnconfirmedTransactions$().pipe(first()).toPromise();
-        const transactionPushed = unconfirmedCache.slice(0);
-        const transactionFormatter = this.transactionsService.getStructureDashboard(unconfirmedAdded, transactionPushed);
-        if (transactionFormatter !== null) {
-          audio.play();
-          this.sharedService.showInfo('', 'Transaction unconfirmed');
-          transactionPushed.unshift(transactionFormatter);
-          this.transactionsService.setTransactionsUnConfirmed$(transactionPushed);
-        }
+    // ----------------------------------UNCONFIRMED_ADDED--------------------------------------------//
+    connector.unconfirmedAdded(address).subscribe(async unconfirmedAdded => {
+      console.log("\n\n-----------------------UNCONFIRMED_ADDED--------------------------");
+      console.log(unconfirmedAdded.transactionInfo.hash)
+      console.log("------------------------------------------------------------------\n\n");
+      this.setTransactionStatus({
+        'type': 'unconfirmed',
+        'hash': unconfirmedAdded.transactionInfo.hash
       });
-   // });
+
+      const unconfirmedSubject = await this.transactionsService.getUnconfirmedTransactions$().pipe(first()).toPromise();
+      const transactionPushed = unconfirmedSubject.slice(0);
+      const transactionFormatter = this.transactionsService.getStructureDashboard(unconfirmedAdded, transactionPushed);
+      if (transactionFormatter !== null) {
+        audio.play();
+        this.sharedService.showInfo('', 'Transaction unconfirmed');
+        transactionPushed.unshift(transactionFormatter);
+        this.transactionsService.setTransactionsUnConfirmed$(transactionPushed);
+      }
+    });
+    // });
   }
 
   /**
@@ -360,22 +367,22 @@ export class DataBridgeService {
   getUnConfirmedRemovedSocket(connector: Listener, audio: HTMLAudioElement, address: Address) {
     /*const currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
     address: Addressnt => {*/
-      // ----------------------------------UNCONFIRMED_REMOVED--------------------------------------------//
-      connector.unconfirmedRemoved(address).subscribe(async unconfirmedRemoved => {
-        console.log("\n\n-----------------------UNCONFIRMED_REMOVED--------------------------")
-        console.log(unconfirmedRemoved)
-        console.log("------------------------------------------------------------------\n\n")
-        this.setTransactionStatus({
-          'type': 'removedTransaction',
-          'hash': unconfirmedRemoved
-        });
-
-        const unconfirmedCache = await this.transactionsService.getUnconfirmedTransactions$().pipe(first()).toPromise();
-        if (unconfirmedCache && unconfirmedCache.length > 0) {
-          const unconfirmedFiltered = unconfirmedCache.filter(next => next.data.transactionInfo.hash !== unconfirmedRemoved);
-          this.transactionsService.setTransactionsUnConfirmed$(unconfirmedFiltered);
-        }
+    // ----------------------------------UNCONFIRMED_REMOVED--------------------------------------------//
+    connector.unconfirmedRemoved(address).subscribe(async unconfirmedRemoved => {
+      console.log("\n\n-----------------------UNCONFIRMED_REMOVED--------------------------")
+      console.log(unconfirmedRemoved)
+      console.log("------------------------------------------------------------------\n\n")
+      this.setTransactionStatus({
+        'type': 'removedTransaction',
+        'hash': unconfirmedRemoved
       });
+
+      const unconfirmedSubject = await this.transactionsService.getUnconfirmedTransactions$().pipe(first()).toPromise();
+      if (unconfirmedSubject && unconfirmedSubject.length > 0) {
+        const unconfirmedFiltered = unconfirmedSubject.filter(next => next.data.transactionInfo.hash !== unconfirmedRemoved);
+        this.transactionsService.setTransactionsUnConfirmed$(unconfirmedFiltered);
+      }
+    });
     // });
   }
 
