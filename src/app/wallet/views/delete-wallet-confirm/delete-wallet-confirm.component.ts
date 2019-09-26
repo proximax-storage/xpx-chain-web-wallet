@@ -13,9 +13,10 @@ import { AppConfig } from 'src/app/config/app.config';
 })
 export class DeleteWalletConfirmComponent implements OnInit {
   paramsHeader: HeaderServicesInterface = {
-    moduleName: 'Wallets',
-    componentName: 'DELETE CONFIRMATION'
+    moduleName: 'Wallet',
+    componentName: 'Confirm delete'
   };
+
   routes = {
     viewAllWallets: `/${AppConfig.routes.viewAllWallets}`,
   };
@@ -94,8 +95,8 @@ export class DeleteWalletConfirmComponent implements OnInit {
 
       password: ''
     }, {
-        emitEvent: false
-      }
+      emitEvent: false
+    }
     );
   }
   /**

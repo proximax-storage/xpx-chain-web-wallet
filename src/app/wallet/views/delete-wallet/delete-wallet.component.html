@@ -11,7 +11,8 @@
       <hr class="mt-03rem mb-05rem">
     </div>
   </div>
- <!--TITLLES -->
+
+  <!--TITLES -->
   <div class="row">
     <div class="col-12 d-flex justify-content-center mt-05rem mb-05rem">
       <span class="fs-1-7rem fw-600 txt-a-center line-h-1-2em">{{wallet.name}}</span>
@@ -23,8 +24,8 @@
 
   <!-- TABLE LIST ACCOUNTS -->
   <div class="row">
-    <div class="col-6 d-flex justify-content-center mx-auto">
-      <div class="table-responsive" style="margin-button: 20px; height: 200px; overflow: auto; ">
+    <div class="col-11 col-md-10 col-lg-9 col-xl-8 d-flex justify-content-center mx-auto">
+      <div class="table-responsive" style="max-height: 200px; overflow: auto; ">
         <table mdbTable hover="true" striped="true" class="z-depth-0 result">
           <tbody #tableResult>
             <tr mdbTableCol *ngFor="let account of wallet.accounts; let i = index">
@@ -40,21 +41,23 @@
       </div>
     </div>
   </div>
-  <!-- TEXT ALET -->
+
+  <!-- TEXT ALERT -->
   <div class="row mt-2-5rem">
-    <div class="col-6 d-flex justify-content-center mb-1rem mx-auto">
+    <div class="col-11 col-md-10 col-lg-9 col-xl-8 d-flex justify-content-center mb-1rem mx-auto">
       <span class="fs-1-5rem txt-a-center line-h-1-2em  mb-06rem">{{texAlert}}</span>
     </div>
   </div>
+
   <!--BUTTONS -->
   <div class="row mt-2rem d-flex justify-content-center">
-    <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="mx"
-    [routerLink]="[routes.viewAllWallets]">
+    <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md"
+      [routerLink]="[routes.viewAllWallets]">
       <span class="fs-1-2em color-white"> <i class="fa fa-chevron-circle-right"></i> GO BACK</span>
     </button>
 
-    <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="mx"
-    [routerLink]="[routes.deleteWalletConfirm+wallet.name]">
+    <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md"
+      [routerLink]="[routes.deleteWalletConfirm+wallet.name]">
       <span class="fs-1-2em color-white"><i class="fa fa-chevron-circle-right"></i> YES, PROCEED</span>
     </button>
   </div>

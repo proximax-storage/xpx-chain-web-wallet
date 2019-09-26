@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from 'src/app/auth/services/auth.service';
-import { environment } from 'src/environments/environment';
-import { AppConfig } from 'src/app/config/app.config';
-import { HeaderServicesInterface } from 'src/app/servicesModule/services/services-module.service';
-import { WalletService, WalletAccountInterface } from '../../services/wallet.service';
 import { ActivatedRoute } from '@angular/router';
 import { Address } from 'tsjs-xpx-chain-sdk';
+import { AuthService } from '../../../auth/services/auth.service';
+import { AppConfig } from '../../../config/app.config';
+import { HeaderServicesInterface } from '../../../servicesModule/services/services-module.service';
+import { WalletService, WalletAccountInterface } from '../../services/wallet.service';
+
 
 @Component({
   selector: 'app-delete-wallet',
@@ -15,16 +15,17 @@ import { Address } from 'tsjs-xpx-chain-sdk';
 export class DeleteWalletComponent implements OnInit {
 
   paramsHeader: HeaderServicesInterface = {
-    moduleName: 'Wallets',
-    componentName: 'DELETE REQUEST'
+    moduleName: 'Wallet',
+    componentName: 'Delete Request'
   };
-  routes = {
-    viewAllWallets : `/${AppConfig.routes.viewAllWallets}`,
-    deleteWalletConfirm: `/${AppConfig.routes.deleteWalletConfirm}/`,
 
+  routes = {
+    viewAllWallets: `/${AppConfig.routes.viewAllWallets}`,
+    deleteWalletConfirm: `/${AppConfig.routes.deleteWalletConfirm}/`,
   };
+
   description = 'Accounts that are associated with this device';
-  texAlert= 'Would you like to delete permanently this Sirius Wallet?'
+  texAlert = 'Would you like to delete permanently this Sirius Wallet?'
   wallet: WalletAccountInterface;
   nameWallet: string;
   constructor(
