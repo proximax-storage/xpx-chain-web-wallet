@@ -44,22 +44,23 @@
     <div class="row d-flex justify-content-start align-items-stretch mb-1rem">
       <div class="col-12 col-md-6 col-xl-4 d-flex mt-1rem audit-back"
         *ngFor="let item of transactions |  stringFilter: filter | paginate: configFilesSelected ">
-        <div class="audit-front d-flex" (click)="printCertificate(item)"
-          mdbTooltip="Click to download certificate" placement="top">
+        <div class="audit-front d-flex" placement="top">
           <div class="col-8 p-05rem background-white">
             <div>
               <p class="audit-title">{{ item.siriusAddres }}</p>
             </div>
             <div>
               <p class="audit-subtitle">Nis1 Transacction hash</p>
-              <p class="audit-value">{{ item.nis1TransactionHast }}</p>
+              <p class="audit-value text-cl-m cursor-p" (click)="goToNemExplorer(item.nis1TransactionHast)">{{ item.nis1TransactionHast }}</p>
             </div>
             <div>
               <p class="audit-subtitle">Nis1 Timestamp</p>
               <p class="audit-value">{{ item.nis1Timestamp }}</p>
             </div>
           </div>
-          <div class="col-4 audit-medal mx-auto background-blue-gradient d-flex flex-column justify-content-center align-items-center">
+          <div
+            class="col-4 audit-medal mx-auto background-blue-gradient d-flex flex-column justify-content-center align-items-center cursor-p"
+            (click)="printCertificate(item)" mdbTooltip="Click to download certificate">
             <figure class="mt-05rem">
               <img src="assets/images/img/badge-silver-proximax-sirius-wallet.svg" alt="" width="100">
             </figure>

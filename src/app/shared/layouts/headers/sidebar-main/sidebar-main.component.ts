@@ -45,6 +45,7 @@ export class SidebarMainComponent implements OnInit {
   viewParcial = false;
   walletName = '';
   reset = 0;
+  netType;
 
 
   constructor(
@@ -56,10 +57,13 @@ export class SidebarMainComponent implements OnInit {
     private transactionService: TransactionsService,
     private walletService: WalletService
   ) {
-    this.version = environment.version;
+    this.version = environment.version
+    this.netType = environment.typeNetwork.value;
   }
 
   ngOnInit() {
+    console.log(this.colorStatus);
+
     this.statusNode = false;
     this.walletName = this.walletService.currentWallet.name;
     this.buildItemsHeader();
@@ -268,6 +272,7 @@ export class SidebarMainComponent implements OnInit {
     this.walletService.setAccountSelectedWalletNis1(null);
     this.walletService.setAccountInfoNis1(null);
     this.walletService.setNis1AccountSelected(null);
+    this.walletService.setSwapTransactions$([]);
     this.route.navigate([`/${AppConfig.routes.auth}`]);
   }
 

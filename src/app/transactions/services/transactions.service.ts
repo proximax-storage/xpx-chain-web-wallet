@@ -540,7 +540,17 @@ export class TransactionsService {
           const msg = JSON.parse(transaction['message'].payload);
           if (transaction.signer.address.plain() === environment.swapAccount.address) {
             if (msg && msg['type'] && msg['type'] === 'Swap') {
-              nameType = 'ProximaX Swap'
+              nameType = 'ProximaX Swap';
+              let walletTransactionsNis = this.walletService.getWalletTransNisStorage().find(el => el.name === this.walletService.getCurrentWallet().name);
+              if (walletTransactionsNis !== undefined && walletTransactionsNis !== null) {
+                const transactions = walletTransactionsNis.transactions.filter(el => el.nis1TransactionHast !== msg['nis1Hash']);
+                walletTransactionsNis.transactions = transactions;
+                this.walletService.setSwapTransactions$(walletTransactionsNis.transactions);
+                this.walletService.saveAccountWalletTransNisStorage(walletTransactionsNis);
+              }
+
+              console.log('msg ---------------------->', msg);
+              
             }
           }
         }
