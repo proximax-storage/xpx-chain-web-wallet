@@ -32,7 +32,7 @@
         <div class="col-8 col-md-10">
           <div class="row d-flex justify-content-center">
             <div class="col-12 col-sm-3">
-              <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" [items]="filterObjectSelect"
+              <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [searchable]="false" [validateError]="true" [items]="filterObjectSelect"
                 bindLabel="label" bindValue="value" placeholder="Select search type" 
                 (change)="filterSelected($event)"  [(ngModel)]="selectedSearch"></ng-select>
             </div>

@@ -173,7 +173,7 @@
                         </div>
                         <!-- VOTE TYPE -->
                         <div class="">
-                            <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" class="selectWrapper" [items]="voteType"
+                            <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" [searchable]="false" class="selectWrapper" [items]="voteType"
                                 formControlName="voteType" bindLabel="label" bindValue="value" placeholder="Type of vote" (change)="selectType($event)"></ng-select>
                             <mdb-error class="ml-1rem" *ngIf="validateInput('voteType','3', '').invalid && (validateInput('voteType', '3', '').dirty || validateInput('voteType', '3', '').touched)">
                                 <span>Type</span>
@@ -196,7 +196,7 @@
 
                         <!-- LIST CONTACS -->
                         <div *ngIf="showContacts && listContacts.length > 0">
-                            <ng-select mdbInputDirective mdbValidate formControlName="contact" class="selectWrapper" [items]="listContacts" bindLabel="label"
+                            <ng-select mdbInputDirective mdbValidate formControlName="contact" class="selectWrapper" [items]="listContacts" [searchable]="false" bindLabel="label"
                                 bindValue="value" placeholder="Contact" (change)="selectContact($event)">
                             </ng-select>
                         </div>

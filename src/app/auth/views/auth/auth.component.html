@@ -9,7 +9,7 @@
     <!-- wallet name -->
     <div class="row mt-2rem">
       <div class="col-11 col-sm-10 col-md-8 col-lg-6 mx-auto">
-        <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" class="selectWrapper"
+        <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [searchable]="false" [validateError]="true" class="selectWrapper"
           [items]="wallets" formControlName="wallet" bindLabel="label" bindValue="value" placeholder="Select a wallet">
         </ng-select>
         <mdb-error class="ml-1rem"

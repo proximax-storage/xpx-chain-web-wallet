@@ -197,15 +197,6 @@ export class WalletService {
     this.nis1AccounsWallet = [];
   }
 
-
-  getAmountAccount() {
-    const account = this.filterAccountInfo(this.proximaxProvider.createFromRawAddress(this.currentAccount.address).pretty(), true);
-    let mosaics = account.accountInfo.mosaics;
-    let amoutMosaic = mosaics.filter(mosaic => mosaic.id.toHex() == environment.mosaicXpxInfo.id);
-    return amoutMosaic[0].amount.compact();
-
-  }
-
   /**
    *
    *
@@ -471,6 +462,23 @@ export class WalletService {
   }
 
   /**
+   *
+   *
+   * @returns
+   * @memberof WalletService
+   */
+  getAmountAccount() {
+    const account = this.filterAccountInfo(this.proximaxProvider.createFromRawAddress(this.currentAccount.address).pretty(), true);
+    if (account && account.accountInfo){
+      let mosaics = account.accountInfo.mosaics.slice(0);
+      let amoutMosaic = mosaics.find(mosaic => mosaic.id.toHex() == environment.mosaicXpxInfo.id);
+      return (amoutMosaic) ? amoutMosaic.amount.compact() : 0;
+    }
+
+    return 0;
+  }
+
+  /**
   *
   *
   * @param {*} wallet
@@ -620,7 +628,7 @@ export class WalletService {
     return walletsStorage;
   }
 
-  
+
 
   /**
    *
