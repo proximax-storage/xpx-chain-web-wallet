@@ -102,11 +102,6 @@
 
       <!-- buttons create and clear -->
       <div class="row mt-2rem d-flex justify-content-center">
-        <!-- DELETE -->
-        <button mdbBtn type="button" rounded="true" [disabled]="!validatingForm.valid" mdbWavesEffect
-          class="f-w-600 background-btn pl-2rem pr-2rem" size="sm" (click)="deleteAccount()">
-          <span class="fs-1-2em color-white"><i class="fa fa-trash"></i> DELETE</span>
-        </button>
         <!-- SHOW PRIVATE KEY -->
         <button mdbBtn type="button" rounded="true" [disabled]="!validatingForm.valid" mdbWavesEffect
           class="f-w-600 background-btn pl-2rem pr-2rem" (click)="decryptWallet()" size="sm" *ngIf="showPassword">
@@ -122,7 +117,12 @@
         <!-- CONTINUE -->
         <button mdbBtn type="button" size="sm" rounded="true" mdbWavesEffect
           class="f-w-600 background-btn pl-2rem pr-2rem" (click)="goToRoute()">
-          <span class="fs-1-2em color-white"><i class="fa fa-arrow-circle-left"></i> CONTINUE</span>
+          <span class="fs-1-2em color-white"><i class="fa fa-arrow-circle-left"></i> CANCEL</span>
+        </button>
+        <!-- DELETE -->
+        <button mdbBtn type="button" rounded="true" [disabled]="!validatingForm.valid" mdbWavesEffect
+          class="f-w-600 background-btn pl-2rem pr-2rem" size="sm" (click)="deleteAccount()">
+          <span class="fs-1-2em color-white"><i class="fa fa-trash"></i> DELETE</span>
         </button>
       </div>
     </ng-container>
