@@ -10,6 +10,7 @@ import { TransferXpxComponent } from './views/transfer-xpx/transfer-xpx.componen
 import { WalletNis1AccountsConsignerComponent } from './views/wallet-nis1-accounts-consigner/wallet-nis1-accounts-consigner.component';
 import { DeleteWalletComponent } from './views/delete-wallet/delete-wallet.component';
 import { ViewAllWalletsComponent } from './views/view-all-wallets/view-all-wallets.component';
+import { DeleteWalletConfirmComponent } from './views/delete-wallet-confirm/delete-wallet-confirm.component';
 
 const routes: Routes = [
   {
@@ -30,6 +31,17 @@ const routes: Routes = [
       meta: {
         title: 'deleteWallet.title',
         description: 'deleteWallet.text',
+        override: true,
+      },
+    }
+  },
+  {
+    path: `${AppConfig.routes.deleteWalletConfirm}/:name`,
+    component: DeleteWalletConfirmComponent,
+    data: {
+      meta: {
+        title: 'deleteWalletConfirm.title',
+        description: 'deleteWalletConfirm.text',
         override: true,
       },
     }

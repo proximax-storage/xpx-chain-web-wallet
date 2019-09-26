@@ -620,6 +620,8 @@ export class WalletService {
     return walletsStorage;
   }
 
+  
+
   /**
    *
    */
@@ -679,6 +681,30 @@ export class WalletService {
     if (moduleRemove) {
       this.validateMultisigAccount(this.currentWallet.accounts);
     }
+  }
+   /**
+  *
+  *
+  * @param {string} name
+  * @memberof WalletService
+  */
+  removeWallet(name: string): boolean {
+    let value: boolean = false;
+    let walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
+    if (walletsStorage === undefined || walletsStorage === null) {
+      localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify([]));
+      walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
+    } else {
+      value = walletsStorage.find(x => x.name === name)
+      if (value) {
+        const walletsStorageNew = walletsStorage.filter(
+          (element: any) => {
+            return element.name !== name;
+          })
+         localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorageNew));
+      }
+    }
+    return value
   }
 
   /**
