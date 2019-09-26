@@ -18,13 +18,13 @@
 
             <!-- PARTIAL ICON -->
             <div class="lh-1em d-flex align-items-center justify-content-end mr-08rem pr-04rem line-separator-right-01px">
-              <img class="mr-1rem" *ngIf="viewParcial === false" src="assets/images/img/icon-copy-notification-off-gray.svg" width="17px">
-              <img class="mr-1rem cursor-p" [routerLink]="routePartial" *ngIf="viewParcial === true" src="assets/images/img/icon-copy-notification-on-gray.svg" width="17px">
+              <img class="mr-1rem" *ngIf="viewParcial === false" src="assets/images/img/icon-copy-notification-off-gray.svg" width="20px">
+              <img class="mr-1rem cursor-p" [routerLink]="routePartial" *ngIf="viewParcial === true" src="assets/images/img/icon-copy-notification-on-gray.svg" width="20px">
               <!-- <a [routerLink]="routePartial"><i class="fa fa-bell" aria-hidden="true"></i></a> -->
             </div>
 
             <ng-container>
-              <div class="lh-1em d-flex align-items-center justify-content-end mr-08rem pr-05rem line-separator-right-01px">
+              <div class="lh-1em d-flex align-items-center justify-content-end mr-08rem pr-05rem line-separator-right-01px" title="{{statusNodeName}} node">
                 <img *ngIf="colorStatus === 'green-color'" src="assets/images/img/icon-nodes-green-30h.svg" alt="" width="25px">
                 <img *ngIf="colorStatus === 'color-light-orange'" src="assets/images/img/icon-nodes-yellow-30h.svg" alt="" width="25px">
                 <img *ngIf="colorStatus === 'color-red'" src="assets/images/img/icon-nodes-red-30h.svg" alt="" width="25px">

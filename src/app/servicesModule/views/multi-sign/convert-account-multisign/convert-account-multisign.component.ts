@@ -1,9 +1,5 @@
 
 import { Component, OnInit } from '@angular/core';
-import { AppConfig } from 'src/app/config/app.config';
-import { SharedService, ConfigurationForm } from 'src/app/shared/services/shared.service';
-import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
-import { WalletService, AccountsInfoInterface, AccountsInterface } from 'src/app/wallet/services/wallet.service';
 import {
   Account,
   PublicAccount,
@@ -11,11 +7,9 @@ import {
   Deadline,
   MultisigCosignatoryModification,
   UInt64,
-  NetworkType,
   Address,
   MultisigCosignatoryModificationType,
   HashLockTransaction,
-  LockFundsTransaction,
   TransactionHttp,
   SignedTransaction,
   AggregateTransaction,
@@ -23,14 +17,17 @@ import {
   Mosaic,
   MosaicId
 } from 'tsjs-xpx-chain-sdk';
-import { environment } from 'src/environments/environment';
-import { MultiSignService } from 'src/app/servicesModule/services/multi-sign.service';
-import { ServicesModuleService, HeaderServicesInterface } from 'src/app/servicesModule/services/services-module.service';
-import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
-import { NodeService } from 'src/app/servicesModule/services/node.service';
-import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
-import { TransactionsService, TransactionsInterface } from 'src/app/transactions/services/transactions.service';
 import { Subscription } from 'rxjs';
+import { AppConfig } from '../../../../config/app.config';
+import { SharedService, ConfigurationForm } from '../../../../shared/services/shared.service';
+import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
+import { WalletService, AccountsInfoInterface, AccountsInterface } from '../../../../wallet/services/wallet.service';
+import { environment } from '../../../../../environments/environment';
+import { ServicesModuleService, HeaderServicesInterface } from '../../../../servicesModule/services/services-module.service';
+import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
+import { NodeService } from '../../../../servicesModule/services/node.service';
+import { DataBridgeService } from '../../../../shared/services/data-bridge.service';
+import { TransactionsService, TransactionsInterface } from '../../../../transactions/services/transactions.service';
 
 
 @Component({
@@ -72,7 +69,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
   blockBtnSend: boolean = false;
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Accounts > Multisign',
-    componentName: 'Convert to multisig account'
+    componentName: 'CONVERT TO MULTISIG ACCOUNT'
   };
   subscribeContact: Subscription[] = [];
   convertIntoMultisig: ModifyMultisigAccountTransaction;
