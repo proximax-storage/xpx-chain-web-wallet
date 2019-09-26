@@ -269,9 +269,7 @@ export class DetailAccountComponent implements OnInit {
 
     if (this.showPrivateKey) {
       this.decryptWallet();
-    }
-    
-    this.privateKey = '';
+    } 
     this.validatingForm.reset({
       password: ''
     }, {
