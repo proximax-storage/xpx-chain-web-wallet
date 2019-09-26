@@ -77,13 +77,16 @@ export class AccountCreatedComponent implements OnInit {
   goToRoute() {
     // [routerLink]="[routes.backToService]"
     const nis1Info = this.walletService.getNis1AccounsWallet();
-    if (nis1Info.length > 0) {
-      if (nis1Info[0].mosaic && Object.keys(nis1Info[0].mosaic).length > 0) {
-        this.router.navigate([this.routes.accountNis1Found]);
-      } else {
-        this.router.navigate([this.routes.backToService]);
+    
+    try {
+      if (nis1Info.length > 0) {
+        if (nis1Info[0].mosaic && Object.keys(nis1Info[0].mosaic).length > 0) {
+          this.router.navigate([this.routes.accountNis1Found]);
+        } else {
+          this.router.navigate([this.routes.backToService]);
+        }
       }
-    } else {
+    } catch (error) {
       this.router.navigate([this.routes.backToService]);
     }
   }
