@@ -121,7 +121,7 @@ export class PartialComponent implements OnInit {
           const publicAccount = this.proximaxProvider.createPublicAccount(cosignatorie.publicAccount.publicKey, cosignatorie.publicAccount.address.networkType);
           const signedByAccount = transaction.data.signedByAccount(publicAccount);
           // console.log('\n\n === TRANSACTION SIGNED? ===', signedByAccount);
-          this.validateAccount = true;
+          // this.validateAccount = true;
           this.arraySelect.push({
             label: (signedByAccount) ? `${cosignatorie.name} - Signed` : cosignatorie.name,
             value: cosignatorie,
