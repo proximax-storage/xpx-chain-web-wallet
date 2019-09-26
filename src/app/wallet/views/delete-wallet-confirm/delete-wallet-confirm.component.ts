@@ -29,6 +29,7 @@ export class DeleteWalletConfirmComponent implements OnInit {
   configurationForm: ConfigurationForm;
   validatingForm: FormGroup;
   ban: boolean = false;
+  texAlert= 'This Action cannot be undone. Please, be sure of take this action.'
 
   constructor(private activateRoute: ActivatedRoute,
     private sharedService: SharedService,

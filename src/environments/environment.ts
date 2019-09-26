@@ -8,8 +8,8 @@ export const environment = {
   production: false,
   itemBooksAddress: 'sw-books-testnet-01',
   //version: '0.3.1.8',
-  version: '0.3.2',
-  cacheVersion: '3',
+  version: '0.3.3',
+  cacheVersion: '4',
   nameKeyNodeSelected: `sw-selected-node-testnet-01`,
   nameKeyWalletStorage: `sw-testnet-01`,
   nameKeyNodeStorage: `sw-nodes-testnet-01`,
@@ -94,7 +94,6 @@ export const environment = {
     label: 'PUBLIC TEST'
   }
 };
-
 /*
  * In development mode, to ignore zone related error stack frames such as
  * `zone.run`, `zoneDelegate.invokeTask` for easier debugging, you can
