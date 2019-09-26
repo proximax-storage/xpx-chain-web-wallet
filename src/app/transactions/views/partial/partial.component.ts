@@ -43,7 +43,7 @@ export class PartialComponent implements OnInit {
   multisigInfo: MultisigAccountInfo[] = [];
   elements: any = [];
   headElements = ['Deadline', 'Fee', 'Account linked to the transaction', 'Hash'];
-  hidePassword = false;
+  hideSign = false;
   objectKeys = Object.keys;
   password: string = '';
   subscription: Subscription[] = [];
@@ -52,7 +52,6 @@ export class PartialComponent implements OnInit {
   configurationForm: ConfigurationForm;
 
   constructor(
-    private dataBridge: DataBridgeService,
     private proximaxProvider: ProximaxProvider,
     private sharedService: SharedService,
     public transactionService: TransactionsService,
@@ -71,14 +70,8 @@ export class PartialComponent implements OnInit {
       next => {
         console.log('next', next);
         this.aggregateTransactions = next;
-       /* if (next) {
-          this.aggregateTransactions = next;
-        }else {
-          this.aggregateTransactions = [];
-        }*/
       }
     ));
-    // this.getAccountsInfo();
   }
 
   /**
@@ -119,14 +112,15 @@ export class PartialComponent implements OnInit {
     this.dataSelected = transaction;
     this.arraySelect = [];
     const accountMultisig = this.walletService.filterAccountInfo(transaction.data['innerTransactions'][0].signer.address.pretty(), true);
-    console.log('ACCOUNT MULTISIG -----> ', accountMultisig);
+    // console.log('=== ACCOUNT MULTISIG ===', accountMultisig);
     if (accountMultisig && accountMultisig.multisigInfo && accountMultisig.multisigInfo.cosignatories && accountMultisig.multisigInfo.cosignatories.length > 0) {
       accountMultisig.multisigInfo.cosignatories.forEach(element => {
         const cosignatorie: AccountsInterface = this.walletService.filterAccountWallet('', null, element.address.pretty());
-        console.log('cosignatorie ---->', cosignatorie);
+        // console.log('\n\n === EXIST COSIGNATORIE? ===', cosignatorie);
         if (cosignatorie) {
           const publicAccount = this.proximaxProvider.createPublicAccount(cosignatorie.publicAccount.publicKey, cosignatorie.publicAccount.address.networkType);
           const signedByAccount = transaction.data.signedByAccount(publicAccount);
+          // console.log('\n\n === TRANSACTION SIGNED? ===', signedByAccount);
           this.validateAccount = true;
           this.arraySelect.push({
             label: (signedByAccount) ? `${cosignatorie.name} - Signed` : cosignatorie.name,
@@ -140,7 +134,7 @@ export class PartialComponent implements OnInit {
     }
 
     transaction.data['innerTransactions'].forEach((element: any) => {
-      console.log('INNER TRANSACTIONS --->', element);
+      // console.log('INNER TRANSACTIONS --->', element);
       const nameType = Object.keys(this.typeTransactions).find(x => this.typeTransactions[x].id === element.type);
       element['nameType'] = (nameType) ? this.typeTransactions[nameType].name : element.type.toString(16).toUpperCase();
       if (element.type === this.typeTransactions.modifyMultisigAccount.id) {
@@ -150,10 +144,9 @@ export class PartialComponent implements OnInit {
           const exist = this.arraySelect.find((b: any) => b.value.address === element.cosignatoryPublicAccount.address.plain());
           if (!exist) {
             const possibleCosignatorie: AccountsInterface = this.walletService.filterAccountWallet('', null, element.cosignatoryPublicAccount.address.pretty());
-            console.log('possibleCosignatorie ---->', possibleCosignatorie);
+            // console.log('possibleCosignatorie ---->', possibleCosignatorie);
             // Address encontrada
             if (possibleCosignatorie) {
-
               const publicAccount = this.proximaxProvider.createPublicAccount(
                 possibleCosignatorie.publicAccount.publicKey,
                 this.walletService.currentAccount.network
@@ -174,10 +167,8 @@ export class PartialComponent implements OnInit {
     });
 
     const cantSigned = this.arraySelect.filter((x: any) => x.signed === true);
-    if (cantSigned.length === this.arraySelect.length) {
-      this.hidePassword = true;
-    }
-  }
+    this.hideSign = (cantSigned.length === this.arraySelect.length) ? true: false;
+   }
 
 
   /**

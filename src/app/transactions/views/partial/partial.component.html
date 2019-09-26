@@ -224,14 +224,15 @@
                               <div class="col-12 mb-03rem">
                                 <!-- <span class="fw-600 fs-065rem">({{dataSelected?.data['cosignatures'].length}}) Others
                                   cosignatories</span> -->
-                                <span class="fs-065rem w-w-b-w" [title]="'Public key: '+dataSigner.signer.publicKey">{{dataSigner.signer.address.pretty()}}</span>
+                                <span class="fs-065rem w-w-b-w"
+                                  [title]="'Public key: '+dataSigner.signer.publicKey">{{dataSigner.signer.address.pretty()}}</span>
                               </div>
                             </ng-container>
                           </div>
                         </ng-container>
                       </div>
 
-                      <ng-container *ngIf="arraySelect.length > 0">
+                      <ng-container *ngIf="arraySelect.length > 0 && !hideSign">
                         <div class="col-12 mt-1rem">
                           <!-- SELECT ACCOUNT -->
                           <div class="row">
@@ -243,31 +244,28 @@
                             </div>
                           </div>
 
-
                           <!-- PASSWORD -->
-                          <ng-container *ngIf="!hidePassword">
-                            <div class="row d-flex justify-content-center">
-                              <div class="col-12">
-                                <div class="md-form form-sm">
-                                  <input [maxlength]="configurationForm.passwordWallet.maxLength"
-                                    [minlength]="configurationForm.passwordWallet.minLength" [(ngModel)]="password"
-                                    required mdbInputDirective [validateSuccess]="false" [validateError]="false"
-                                    type="password" id="password" class="form-control form-control-sm input-border"
-                                    placeholder="Enter password">
-                                </div>
+                          <div class="row d-flex justify-content-center">
+                            <div class="col-12">
+                              <div class="md-form form-sm">
+                                <input [maxlength]="configurationForm.passwordWallet.maxLength"
+                                  [minlength]="configurationForm.passwordWallet.minLength" [(ngModel)]="password"
+                                  required mdbInputDirective [validateSuccess]="false" [validateError]="false"
+                                  type="password" id="password" class="form-control form-control-sm input-border"
+                                  placeholder="Enter password">
                               </div>
+                            </div>
 
-                              <div class="col-12 d-flex justify-content-center">
-                                <button (click)="sendTransaction()" autocomplete="false" [disabled]="validateAccount || password === '' || password.length <
+                            <div class="col-12 d-flex justify-content-center">
+                              <button (click)="sendTransaction()" autocomplete="false" [disabled]="validateAccount || password === '' || password.length <
                                   this.configurationForm.passwordWallet.minLength || password.length>
                                   this.configurationForm.passwordWallet.maxLength" mdbBtn type="button" rounded="true"
-                                  mdbWavesEffect class="f-w-600 background-btn pt-1rem" size="sm">
-                                  <span class="fs-1-2em color-white">APPROVE TO CONTINUE</span>
-                                </button>
-                              </div>
-
+                                mdbWavesEffect class="f-w-600 background-btn pt-1rem" size="sm">
+                                <span class="fs-1-2em color-white">APPROVE TO CONTINUE</span>
+                              </button>
                             </div>
-                          </ng-container>
+
+                          </div>
                         </div>
                       </ng-container>
                     </div>
