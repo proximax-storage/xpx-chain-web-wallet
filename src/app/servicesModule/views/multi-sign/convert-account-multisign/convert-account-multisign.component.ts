@@ -25,7 +25,7 @@ import {
 } from 'tsjs-xpx-chain-sdk';
 import { environment } from 'src/environments/environment';
 import { MultiSignService } from 'src/app/servicesModule/services/multi-sign.service';
-import { ServicesModuleService } from 'src/app/servicesModule/services/services-module.service';
+import { ServicesModuleService, HeaderServicesInterface } from 'src/app/servicesModule/services/services-module.service';
 import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
 import { NodeService } from 'src/app/servicesModule/services/node.service';
 import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
@@ -69,10 +69,14 @@ export class ConvertAccountMultisignComponent implements OnInit {
   disable: boolean;
   feeTransaction: number = 102750;
   feeLockfund: number = 10000000;
-
-
   blockBtnSend: boolean = false;
+  paramsHeader: HeaderServicesInterface = {
+    moduleName: 'Accounts > Multisign',
+    componentName: 'Convert to multisig account'
+  };
   subscribeContact: Subscription[] = [];
+
+
   constructor(
     private fb: FormBuilder,
     private sharedService: SharedService,
@@ -95,6 +99,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
     this.notBalance = false;
     this.transactionHttp = new TransactionHttp(environment.protocol + "://" + `${this.nodeService.getNodeSelected()}`);
   }
+
   ngOnInit() {
     this.createForm();
     this.getAccounts();
@@ -102,21 +107,24 @@ export class ConvertAccountMultisignComponent implements OnInit {
     this.subscribeValueChange();
     this.load();
   }
+
   /**
-*
-*
-* @memberof CreateTransferComponent
-*/
+   *
+   *
+   * @memberof ConvertAccountMultisignComponent
+   */
   ngOnDestroy(): void {
     this.subscribe.forEach(subscription => {
       subscription.unsubscribe();
     });
   }
+
+
   /**
- *
- *
- * @memberof MultiSignatureContractComponent
- */
+   *
+   *
+   * @memberof ConvertAccountMultisignComponent
+   */
   load() {
     this.subscribe.push(this.walletService.getAccountsInfo$().subscribe(
       next => {
@@ -136,27 +144,25 @@ export class ConvertAccountMultisignComponent implements OnInit {
     this.convertAccountMultsignForm = this.fb.group({
       selectAccount: ['', [
         Validators.required
-      ]
-      ],
+      ]],
       cosignatory: ['', [
         Validators.pattern('^(0x|0X)?[a-fA-F0-9]+$')
-      ]
-      ],
+      ]],
       contact: [''],
       minApprovalDelta: [1, [
         Validators.required, Validators.minLength(1),
-        Validators.maxLength(1)]],
+        Validators.maxLength(1)]
+      ],
       minRemovalDelta: [1, [
         Validators.required, Validators.minLength(1),
-        Validators.maxLength(1)]],
+        Validators.maxLength(1)]
+      ],
       password: ['', [
         Validators.required,
         Validators.minLength(this.configurationForm.passwordWallet.minLength),
         Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
-      ]
-      ],
+      ]],
     });
-    // this.validatorsCosignatory();
   }
   /**
  *
