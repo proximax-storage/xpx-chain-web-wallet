@@ -18,6 +18,11 @@ export class DeleteWalletComponent implements OnInit {
     moduleName: 'Wallets',
     componentName: 'DELETE REQUEST'
   };
+  routes = {
+    viewAllWallets : `/${AppConfig.routes.viewAllWallets}`,
+    deleteWalletConfirm: `/${AppConfig.routes.deleteWalletConfirm}/`,
+
+  };
   description = 'Accounts that are associated with this device';
   texAlert= 'Would you like to delete permanently this Sirius Wallet?'
   wallet: WalletAccountInterface;

@@ -579,356 +579,382 @@ export class WalletService {
      * @returns
      * @memberof WalletService
      */
-  getWalletStorageName(name:string): WalletAccountInterface[] {
+  getWalletStorageName(name: string): WalletAccountInterface[] {
     let walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
-      if (walletsStorage === undefined || walletsStorage === null) {
-        localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify([]));
-        walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
-      }
-      console.log(walletsStorage)
-      return walletsStorage.filter(
-        (element: any) => {
-          return element.name === name;
-        })
+    if (walletsStorage === undefined || walletsStorage === null) {
+      localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify([]));
+      walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
     }
+    return walletsStorage.filter(
+      (element: any) => {
+        return element.name === name;
+      })
+  }
 
-    /**
-     *
-     *
-     * @returns
-     * @memberof WalletService
-     */
-    getWalletStorage(): WalletAccountInterface[] {
-      let walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
-      if (walletsStorage === undefined || walletsStorage === null) {
-        localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify([]));
-        walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
-      }
-      return walletsStorage;
+  /**
+   *
+   *
+   * @returns
+   * @memberof WalletService
+   */
+  getWalletStorage(): WalletAccountInterface[] {
+    let walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
+    if (walletsStorage === undefined || walletsStorage === null) {
+      localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify([]));
+      walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
     }
+    return walletsStorage;
+  }
 
-    /**
-     *
-     */
-    getUnconfirmedTransaction() {
-      return this.unconfirmedTransactions;
-    }
+  /**
+   *
+   */
+  getUnconfirmedTransaction() {
+    return this.unconfirmedTransactions;
+  }
 
-    /**
-     *
-     *
-     * @param {any} privateKey
-     * @returns
-     * @memberof WalletService
-     */
-    isPrivateKeyValid(privateKey: any) {
-      if (privateKey.length !== 64 && privateKey.length !== 66) {
-        // console.error('Private key length must be 64 or 66 characters !');
-        return false;
-      } else if (!this.isHexadecimal(privateKey)) {
-        // console.error('Private key must be hexadecimal only !');
-        return false;
-      } else {
-        return true;
-      }
-    }
-
-    /**
-     * Verify if a string is hexadecimal
-     * by: roimerj_vzla
-     *
-     * @param {any} str
-     * @returns
-     * @memberof WalletService
-     */
-    isHexadecimal(str: { match: (arg0: string) => any; }) {
-      return str.match('^(0x|0X)?[a-fA-F0-9]+$') !== null;
-    }
-
-    /**
-     *
-     *
-     * @param {string} account
-     * @memberof WalletService
-     */
-    removeAccountWallet(name: string, moduleRemove: boolean = false) {
-      const myAccounts: AccountsInterface[] = Object.assign(this.currentWallet.accounts);
-      // console.log('=== myAccounts ===', myAccounts);
-      const othersAccount = myAccounts.filter(x => x.name !== name);
-      // console.log('==== othersAccount ====', othersAccount);
-      this.currentWallet.accounts = othersAccount;
-      // console.log('==== currentWallet ====', this.currentWallet);
-      const accountsInfo = [];
-      this.accountsInfo.filter(x => x.name !== name);
-      this.setAccountsInfo(accountsInfo);
-      this.saveAccountWalletStorage(null, this.currentWallet);
-      this.setAccountsPushedSubject(this.currentWallet.accounts);
-      if (moduleRemove) {
-        this.validateMultisigAccount(this.currentWallet.accounts);
-      }
-    }
-
-    /**
-     *
-     *
-     * @param {string} nameWallet
-     * @param {*} accountsParams
-     * @memberof WalletService
-     */
-    saveAccountWalletStorage(accountsParams: AccountsInterface, replaceWallet ?: WalletAccountInterface) {
-      const othersWallet = this.getWalletStorage().filter((element: WalletAccountInterface) => {
-        return element.name !== this.currentWallet.name;
-      });
-
-      if (accountsParams) {
-        const myAccounts = Object.assign(this.currentWallet.accounts);
-        myAccounts.push(accountsParams)
-        this.currentWallet.accounts = myAccounts;
-        othersWallet.push({
-          name: this.currentWallet.name,
-          accounts: myAccounts
-        });
-
-        localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(othersWallet));
-      } else if (replaceWallet) {
-        othersWallet.push(replaceWallet);
-        // console.log('=== othersWallet === ', othersWallet);
-        localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(othersWallet));
-      }
-    }
-
-
-    /**
-     *
-     *
-     * @param {string} nameWallet
-     * @param {AccountsInterface} dataAccount
-     * @param {SimpleWallet} wallet
-     * @memberof WalletService
-     */
-    saveDataWalletCreated(data: any, dataAccount: AccountsInterface, wallet: SimpleWallet) {
-      this.accountWalletCreated = {
-        data: data,
-        dataAccount: dataAccount,
-        wallet: wallet
-      }
-    }
-
-    /**
-     *
-     *
-     * @param {string} user
-     * @param {*} accounts
-     * @memberof WalletService
-     */
-    saveWalletStorage(nameWallet: string, accountsParams: any, contacts ?: any) {
-      let walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
-      walletsStorage.push({
-        name: nameWallet,
-        accounts: [accountsParams],
-        book: contacts
-      });
-
-      localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorage));
-    }
-
-
-    /**
-      *
-      * @param data
-      */
-    setNis1AccountSelected(account: any) {
-      this.nis1AccountSeleted = account;
-    }
-
-
-    /**
-     *
-     * @param data
-     */
-    setAccountInfoNis1(account: any) {
-      this.accountInfoNis1 = account;
-    }
-
-    /**
-     *
-     *
-     * @returns
-     * @memberof WalletService
-     */
-    setAccountsPushedSubject(accountsInfo: AccountsInterface[]) {
-      return this.accountsPushedSubject.next(accountsInfo);
-    }
-
-    /**
-     *
-     *
-     * @memberof WalletService
-     */
-    setAccountsInfo(accountsInfo: AccountsInfoInterface[], pushed = false) {
-      let accounts = (this.accountsInfo && this.accountsInfo.length > 0) ? this.accountsInfo.slice(0) : [];
-      if (pushed) {
-        for (let element of accountsInfo) {
-          accounts = accounts.filter(x => x.name !== element.name);
-          accounts.push(element);
-        }
-        this.accountsInfo = accounts;
-      } else {
-        this.accountsInfo = accountsInfo;
-      }
-
-      this.accountsInfoSubject.next(this.accountsInfo);
-    }
-
-    /**
-     *
-     *
-     * @param {*} currentAccount
-     * @memberof WalletService
-     */
-    setCurrentAccount$(currentAccount: AccountsInterface) {
-      this.currentAccountObs.next(currentAccount);
-    }
-
-    /**
-     *
-     * @param data
-     */
-    setNis1AccounsWallet(account) {
-      this.nis1AccounsWallet.push(account);
-    }
-
-    /**
-     *
-     * @param transactions
-     */
-    setUnconfirmedTransaction(transactions: any) {
-      this.unconfirmedTransactions = transactions;
-    }
-
-    /**
-     *Set a wallet as current
-     *
-     * @param {*} wallet
-     * @returns
-     * @memberof WalletService
-     */
-    use(wallet: any) {
-      if (!wallet) {
-        this.sharedService.showError('', 'You can not set anything like the current wallet');
-        return false;
-      }
-
-      this.currentWallet = wallet;
-      this.currentAccount = this.getAccountDefault(wallet);
-      this.setCurrentAccount$(this.currentAccount);
+  /**
+   *
+   *
+   * @param {any} privateKey
+   * @returns
+   * @memberof WalletService
+   */
+  isPrivateKeyValid(privateKey: any) {
+    if (privateKey.length !== 64 && privateKey.length !== 66) {
+      // console.error('Private key length must be 64 or 66 characters !');
+      return false;
+    } else if (!this.isHexadecimal(privateKey)) {
+      // console.error('Private key must be hexadecimal only !');
+      return false;
+    } else {
       return true;
     }
+  }
 
-    /**
-     *
-     *
-     * @returns
-     * @memberof WalletService
-     */
-    validateNameAccount(nameWallet: string) {
-      const nameAccount = nameWallet;
-      const existAccount = Object.keys(this.currentWallet.accounts).find(elm => this.currentWallet.accounts[elm].name === nameAccount);
-      if (existAccount !== undefined) {
-        return true;
-      } else {
-        return false;
-      }
-    }
+  /**
+   * Verify if a string is hexadecimal
+   * by: roimerj_vzla
+   *
+   * @param {any} str
+   * @returns
+   * @memberof WalletService
+   */
+  isHexadecimal(str: { match: (arg0: string) => any; }) {
+    return str.match('^(0x|0X)?[a-fA-F0-9]+$') !== null;
+  }
 
-
-    /**
-     *
-     *
-     * @param {AbstractControl} abstractControl
-     * @returns
-     * @memberof WalletService
-     */
-    validateNameWallet(abstractControl: AbstractControl) {
-      const existWallet = this.getWalletStorage().find(
-        (element: any) => {
-          return element.name === abstractControl.get('nameWallet').value;
-        }
-      );
-
-      if (existWallet !== undefined) {
-        return {
-          invalidNameWallet: true
-        };
-      }
-    }
-
-    /**
-     *
-     *
-     * @param {AccountsInfoInterface[]} accountsInfo
-     * @param {AccountsInterface[]} accounts
-     * @memberof WalletService
-     */
-    validateMultisigAccount(accounts: AccountsInterface[]) {
-      // console.log('----LA DATA QUE RECIBO-----> ', accounts);
-      const dataExist = accounts.filter(x => x.encrypted === '');
-      if (dataExist) {
-        dataExist.forEach(account => {
-          let remove = true;
-          // console.log('====account====', account);
-          // console.log('PROCESO DE VERIFICACION');
-          if (account.isMultisign !== null) {
-            if (account.isMultisign.cosignatories.length > 0) {
-              account.isMultisign.cosignatories.forEach(cosignatorie => {
-                // console.log('==== COSIGNATARIOS ====', cosignatorie);
-                const exist = this.filterAccountWallet('', null, cosignatorie.address.pretty());
-                // console.log('==== EXISTE? ====', exist);
-                if (exist) {
-                  remove = false;
-                }
-              });
-            }
-          }
-
-          if (remove) {
-            // console.log('==== REMOVER ====', account);
-            this.removeAccountWallet(account.name);
-          }
-        });
-      }
-    }
-
-    /**
-     *
-     *
-     * @returns
-     * @memberof WalletService
-     */
-    getWalletTransNisStorage(): CurrentWalletTransNis[] {
-      let walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletTransactionsNis));
-      if (walletsStorage === undefined || walletsStorage === null) {
-        localStorage.setItem(environment.nameKeyWalletTransactionsNis, JSON.stringify([]));
-        walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletTransactionsNis));
-      }
-      return walletsStorage;
-    }
-
-    /**
-     *
-     *
-     * @memberof WalletService
-     */
-    saveAccountWalletTransNisStorage(account) {
-      const othersWallet = this.getWalletTransNisStorage().filter((element: CurrentWalletTransNis) => {
-        return element.name !== this.currentWallet.name;
-      });
-
-      othersWallet.push(account);
-      console.log('=== othersWallet === ', othersWallet);
-      localStorage.setItem(environment.nameKeyWalletTransactionsNis, JSON.stringify(othersWallet));
+  /**
+   *
+   *
+   * @param {string} account
+   * @memberof WalletService
+   */
+  removeAccountWallet(name: string, moduleRemove: boolean = false) {
+    const myAccounts: AccountsInterface[] = Object.assign(this.currentWallet.accounts);
+    // console.log('=== myAccounts ===', myAccounts);
+    const othersAccount = myAccounts.filter(x => x.name !== name);
+    // console.log('==== othersAccount ====', othersAccount);
+    this.currentWallet.accounts = othersAccount;
+    // console.log('==== currentWallet ====', this.currentWallet);
+    const accountsInfo = [];
+    this.accountsInfo.filter(x => x.name !== name);
+    this.setAccountsInfo(accountsInfo);
+    this.saveAccountWalletStorage(null, this.currentWallet);
+    this.setAccountsPushedSubject(this.currentWallet.accounts);
+    if (moduleRemove) {
+      this.validateMultisigAccount(this.currentWallet.accounts);
     }
   }
+
+  /**
+  *
+  *
+  * @param {string} name
+  * @memberof WalletService
+  */
+  removeWallet(name: string): boolean {
+    let value: boolean = false;
+    let walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
+    if (walletsStorage === undefined || walletsStorage === null) {
+      localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify([]));
+      walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
+    } else {
+      value = walletsStorage.find(x => x.name === name)
+      if (value) {
+        const walletsStorageNew = walletsStorage.filter(
+          (element: any) => {
+            return element.name !== name;
+          })
+         localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorageNew));
+      }
+    }
+
+    return value;
+  }
+
+
+  /**
+   *
+   *
+   * @param {string} nameWallet
+   * @param {*} accountsParams
+   * @memberof WalletService
+   */
+  saveAccountWalletStorage(accountsParams: AccountsInterface, replaceWallet?: WalletAccountInterface) {
+    const othersWallet = this.getWalletStorage().filter((element: WalletAccountInterface) => {
+      return element.name !== this.currentWallet.name;
+    });
+
+    if (accountsParams) {
+      const myAccounts = Object.assign(this.currentWallet.accounts);
+      myAccounts.push(accountsParams)
+      this.currentWallet.accounts = myAccounts;
+      othersWallet.push({
+        name: this.currentWallet.name,
+        accounts: myAccounts
+      });
+
+      localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(othersWallet));
+    } else if (replaceWallet) {
+      othersWallet.push(replaceWallet);
+      // console.log('=== othersWallet === ', othersWallet);
+      localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(othersWallet));
+    }
+  }
+
+
+  /**
+   *
+   *
+   * @param {string} nameWallet
+   * @param {AccountsInterface} dataAccount
+   * @param {SimpleWallet} wallet
+   * @memberof WalletService
+   */
+  saveDataWalletCreated(data: any, dataAccount: AccountsInterface, wallet: SimpleWallet) {
+    this.accountWalletCreated = {
+      data: data,
+      dataAccount: dataAccount,
+      wallet: wallet
+    }
+  }
+
+  /**
+   *
+   *
+   * @param {string} user
+   * @param {*} accounts
+   * @memberof WalletService
+   */
+  saveWalletStorage(nameWallet: string, accountsParams: any, contacts?: any) {
+    let walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
+    walletsStorage.push({
+      name: nameWallet,
+      accounts: [accountsParams],
+      book: contacts
+    });
+
+    localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorage));
+  }
+
+
+  /**
+    *
+    * @param data
+    */
+  setNis1AccountSelected(account: any) {
+    this.nis1AccountSeleted = account;
+  }
+
+
+  /**
+   *
+   * @param data
+   */
+  setAccountInfoNis1(account: any) {
+    this.accountInfoNis1 = account;
+  }
+
+  /**
+   *
+   *
+   * @returns
+   * @memberof WalletService
+   */
+  setAccountsPushedSubject(accountsInfo: AccountsInterface[]) {
+    return this.accountsPushedSubject.next(accountsInfo);
+  }
+
+  /**
+   *
+   *
+   * @memberof WalletService
+   */
+  setAccountsInfo(accountsInfo: AccountsInfoInterface[], pushed = false) {
+    let accounts = (this.accountsInfo && this.accountsInfo.length > 0) ? this.accountsInfo.slice(0) : [];
+    if (pushed) {
+      for (let element of accountsInfo) {
+        accounts = accounts.filter(x => x.name !== element.name);
+        accounts.push(element);
+      }
+      this.accountsInfo = accounts;
+    } else {
+      this.accountsInfo = accountsInfo;
+    }
+
+    this.accountsInfoSubject.next(this.accountsInfo);
+  }
+
+  /**
+   *
+   *
+   * @param {*} currentAccount
+   * @memberof WalletService
+   */
+  setCurrentAccount$(currentAccount: AccountsInterface) {
+    this.currentAccountObs.next(currentAccount);
+  }
+
+  /**
+   *
+   * @param data
+   */
+  setNis1AccounsWallet(account) {
+    this.nis1AccounsWallet.push(account);
+  }
+
+  /**
+   *
+   * @param transactions
+   */
+  setUnconfirmedTransaction(transactions: any) {
+    this.unconfirmedTransactions = transactions;
+  }
+
+  /**
+   *Set a wallet as current
+   *
+   * @param {*} wallet
+   * @returns
+   * @memberof WalletService
+   */
+  use(wallet: any) {
+    if (!wallet) {
+      this.sharedService.showError('', 'You can not set anything like the current wallet');
+      return false;
+    }
+
+    this.currentWallet = wallet;
+    this.currentAccount = this.getAccountDefault(wallet);
+    this.setCurrentAccount$(this.currentAccount);
+    return true;
+  }
+
+  /**
+   *
+   *
+   * @returns
+   * @memberof WalletService
+   */
+  validateNameAccount(nameWallet: string) {
+    const nameAccount = nameWallet;
+    const existAccount = Object.keys(this.currentWallet.accounts).find(elm => this.currentWallet.accounts[elm].name === nameAccount);
+    if (existAccount !== undefined) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+
+  /**
+   *
+   *
+   * @param {AbstractControl} abstractControl
+   * @returns
+   * @memberof WalletService
+   */
+  validateNameWallet(abstractControl: AbstractControl) {
+    const existWallet = this.getWalletStorage().find(
+      (element: any) => {
+        return element.name === abstractControl.get('nameWallet').value;
+      }
+    );
+
+    if (existWallet !== undefined) {
+      return {
+        invalidNameWallet: true
+      };
+    }
+  }
+
+  /**
+   *
+   *
+   * @param {AccountsInfoInterface[]} accountsInfo
+   * @param {AccountsInterface[]} accounts
+   * @memberof WalletService
+   */
+  validateMultisigAccount(accounts: AccountsInterface[]) {
+    // console.log('----LA DATA QUE RECIBO-----> ', accounts);
+    const dataExist = accounts.filter(x => x.encrypted === '');
+    if (dataExist) {
+      dataExist.forEach(account => {
+        let remove = true;
+        // console.log('====account====', account);
+        // console.log('PROCESO DE VERIFICACION');
+        if (account.isMultisign !== null) {
+          if (account.isMultisign.cosignatories.length > 0) {
+            account.isMultisign.cosignatories.forEach(cosignatorie => {
+              // console.log('==== COSIGNATARIOS ====', cosignatorie);
+              const exist = this.filterAccountWallet('', null, cosignatorie.address.pretty());
+              // console.log('==== EXISTE? ====', exist);
+              if (exist) {
+                remove = false;
+              }
+            });
+          }
+        }
+
+        if (remove) {
+          // console.log('==== REMOVER ====', account);
+          this.removeAccountWallet(account.name);
+        }
+      });
+    }
+  }
+
+  /**
+   *
+   *
+   * @returns
+   * @memberof WalletService
+   */
+  getWalletTransNisStorage(): CurrentWalletTransNis[] {
+    let walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletTransactionsNis));
+    if (walletsStorage === undefined || walletsStorage === null) {
+      localStorage.setItem(environment.nameKeyWalletTransactionsNis, JSON.stringify([]));
+      walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletTransactionsNis));
+    }
+    return walletsStorage;
+  }
+
+  /**
+   *
+   *
+   * @memberof WalletService
+   */
+  saveAccountWalletTransNisStorage(account) {
+    const othersWallet = this.getWalletTransNisStorage().filter((element: CurrentWalletTransNis) => {
+      return element.name !== this.currentWallet.name;
+    });
+
+    othersWallet.push(account);
+    console.log('=== othersWallet === ', othersWallet);
+    localStorage.setItem(environment.nameKeyWalletTransactionsNis, JSON.stringify(othersWallet));
+  }
+}
 
 export interface CurrentWalletInterface {
   name: string;
