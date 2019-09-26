@@ -76,7 +76,7 @@
                     id="name-wallet{{errorWalletExist}}" class="form-control form-control-sm input-border"
                     placeholder="Account name" formControlName="nameWallet"
                     [maxLength]="configurationForm.nameWallet.maxLength"
-                    [minlength]="configurationForm.nameWallet.minlength">
+                    [minlength]="configurationForm.nameWallet.minLength">
                   <mdb-error
                     *ngIf="validateInput('nameWallet').invalid && (validateInput('nameWallet').dirty || validateInput('nameWallet').touched)">
                     <span>Required field</span>

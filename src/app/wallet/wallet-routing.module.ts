@@ -24,8 +24,8 @@ const routes: Routes = [
     }
   },
   {
-    path: AppConfig.routes.deleteWallet,
-    component: ViewAllWalletsComponent,
+    path: `${AppConfig.routes.deleteWallet}/:name`,
+    component: DeleteWalletComponent,
     data: {
       meta: {
         title: 'deleteWallet.title',

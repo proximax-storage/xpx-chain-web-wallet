@@ -43,6 +43,10 @@ export class SwapTransactionsComponent implements OnInit {
     return qr.createDataURL();
   }
 
+  goToNemExplorer(hash) {
+    window.open(`${environment.nis1.urlExplorer}${hash}`);
+  }
+
   printCertificate(transaction) {
     let doc = new jsPDF({
       orientation: 'landscape',

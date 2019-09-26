@@ -562,7 +562,7 @@ export class WalletService {
   getSwapTransactions$(): Observable<any> {
     return this.swapTransactions$;
   }
-  
+
   /**
    *
    *
@@ -583,6 +583,27 @@ export class WalletService {
     return this.accountsPushedSubject$;
   }
 
+
+
+
+  /**
+     *
+     *@param {string} name
+     * @returns
+     * @memberof WalletService
+     */
+  getWalletStorageName(name: string): WalletAccountInterface[] {
+    let walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
+    if (walletsStorage === undefined || walletsStorage === null) {
+      localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify([]));
+      walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
+    }
+    console.log(walletsStorage)
+    return walletsStorage.filter(
+      (element: any) => {
+        return element.name === name;
+      })
+  }
 
   /**
    *
@@ -773,13 +794,13 @@ export class WalletService {
   }
 
   /**
-   *
-   *
-   * @param {*} currentAccount
-   * @memberof WalletService
-   */
-  setCurrentAccount$(currentAccount: AccountsInterface) {
-    this.currentAccountObs.next(currentAccount);
+ *
+ *
+ * @param {*} currentAccount
+ * @memberof WalletService
+ */
+  setSwapTransactions$(transactions: TransactionsNis1Interface[]) {
+    this.swapTransactions.next(transactions);
   }
 
   /**
@@ -788,8 +809,8 @@ export class WalletService {
    * @param {*} currentAccount
    * @memberof WalletService
    */
-  setSwapTransactions$(transactions: TransactionsNis1Interface[]) {
-    this.swapTransactions.next(transactions);
+  setCurrentAccount$(currentAccount: AccountsInterface) {
+    this.currentAccountObs.next(currentAccount);
   }
 
   /**
