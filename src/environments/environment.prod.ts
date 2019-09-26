@@ -16,6 +16,7 @@ export const environment = {
   nameKeyNamespaces: `sw-namespaces-testnet-01`,
   nameKeyMosaicStorage: `sw-mosaics-testnet-01`,
   nameKeyVersion: 'sw-version-testnet-01',
+  nameKeyWalletTransactionsNis: 'sw-transactions-nis-01',
   protocol: `http`,
   protocolWs: `ws`,
   nodeExplorer: 'https://bctestnetexplorer.xpxsirius.io/#/result/hash',
