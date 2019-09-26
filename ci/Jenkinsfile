@@ -34,8 +34,8 @@ pipeline {
           sh 'sed -i "/node:/c\\\\node: { crypto: true, stream: true, fs: \\\'empty\\\', net: \\\'empty\\\', tls: \\\'empty\\\'}" ./node_modules/@angular-devkit/build-angular/src/angular-cli-files/models/webpack-configs/browser.js'
 
           echo 'Copy Listener.js'
-          sh 'cp Listener.json node_modules/tsjs-xpx-chain-sdk/dist/src/infrastructure/Listener.js'
-          
+          sh 'cp patch/Listener.js node_modules/tsjs-xpx-chain-sdk/dist/src/infrastructure/Listener.js'
+
           // TODO: Build production version in the future
           echo 'Building'
           sh './node_modules/@angular/cli/bin/ng build --aot --prod --build-optimizer=true --vendor-chunk=true'
