@@ -107,25 +107,25 @@ export class CreateNamespaceComponent implements OnInit {
     });
   }
 
+
   builder(){
-    if(this.namespaceName === undefined || this.namespaceName === '' ){
-      this.namespaceName = 'p';
-    }
-    if(this.typetransfer == 1 ){
-      this.registerRootNamespaceTransaction = this.proximaxProvider.registerRootNamespaceTransaction(
-        this.namespaceName,
-        this.walletService.currentAccount.network,
-        this.duration
-      );
-      this.fee = this.transactionService.amountFormatterSimple(this.registerRootNamespaceTransaction.maxFee.compact())
-    } else if(this.typetransfer == 2){
-      const rootNamespaceName = this.namespaceForm.get('namespaceRoot').value;
-      this.registersubamespaceTransaction = this.proximaxProvider.registersubNamespaceTransaction(
-        rootNamespaceName,
-        this.namespaceName,
-        this.walletService.currentAccount.network
-      );
-      this.fee = this.transactionService.amountFormatterSimple(this.registersubamespaceTransaction.maxFee.compact())
+    if(this.namespaceName !== undefined && this.namespaceName !== '' ){
+      if(this.typetransfer == 1 ){
+        this.registerRootNamespaceTransaction = this.proximaxProvider.registerRootNamespaceTransaction(
+          this.namespaceName,
+          this.walletService.currentAccount.network,
+          this.duration
+        );
+        this.fee = this.transactionService.amountFormatterSimple(this.registerRootNamespaceTransaction.maxFee.compact())
+      } else if(this.typetransfer == 2){
+        const rootNamespaceName = this.namespaceForm.get('namespaceRoot').value;
+        this.registersubamespaceTransaction = this.proximaxProvider.registersubNamespaceTransaction(
+          rootNamespaceName,
+          this.namespaceName,
+          this.walletService.currentAccount.network
+        );
+        this.fee = this.transactionService.amountFormatterSimple(this.registersubamespaceTransaction.maxFee.compact())
+      }
     }
   }
 
@@ -184,9 +184,6 @@ export class CreateNamespaceComponent implements OnInit {
    * @memberof CreateNamespaceComponent
    */
   createNamespace() {
-    // console.log('this.namespaceForm.valid', this.namespaceForm.valid);
-    // console.log('validateForm', this.validateForm);
-    // console.log('this.blockBtnSend', this.blockBtnSend);
     if (this.namespaceForm.valid && !this.blockBtnSend) {
       const validateAmount = this.transactionService.validateBuildSelectAccountBalance(this.amountAccount, Number(this.fee), Number(this.calculateRentalFee))
       if (validateAmount) {
@@ -198,7 +195,6 @@ export class CreateNamespaceComponent implements OnInit {
       if (this.walletService.decrypt(common)) {
         const signedTransaction = this.signedTransaction(common);
         this.transactionSigned.push(signedTransaction);
-        // this.dataBridge.setTransactionStatus(null);
         this.proximaxProvider.announce(signedTransaction).subscribe(
           () => {
             if (!this.transactionStatus) {
@@ -351,13 +347,9 @@ export class CreateNamespaceComponent implements OnInit {
             }
             if (statusTransaction['type'] === 'confirmed' && match) {
               this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['hash']);
-
-              this.sharedService.showSuccess('', 'Transaction confirmed');
             } else if (statusTransaction['type'] === 'unconfirmed' && match) {
-              this.sharedService.showInfo('', 'Transaction unconfirmed');
             } else if (match) {
               this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['hash']);
-              // this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
             }
           }
         }
@@ -386,6 +378,8 @@ export class CreateNamespaceComponent implements OnInit {
    */
   signedTransaction(common: any): SignedTransaction {
     const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
+    console.log('accountaccountaccount', account);
+    
     // const namespaceName: string = this.namespaceForm.get('name').value;
     // const duration: number = parseFloat(this.durationByBlock);
     // const duration: number = 20;
@@ -397,7 +391,7 @@ export class CreateNamespaceComponent implements OnInit {
       //   duration
       // )
 
-      // console.log('----registerRootNamespaceTransaction----', registerRootNamespaceTransaction);
+      console.log('----registerRootNamespaceTransaction----', this.registerRootNamespaceTransaction);
 
       const signedTransaction = account.sign(this.registerRootNamespaceTransaction, generationHash); //Update-sdk-dragon
       return signedTransaction;
@@ -410,7 +404,7 @@ export class CreateNamespaceComponent implements OnInit {
       //   this.walletService.currentAccount.network
       // );
 
-      // console.log('----registersubamespaceTransaction----', this.registersubamespaceTransaction);
+      console.log('----registersubamespaceTransaction----', this.registersubamespaceTransaction);
       // console.log('----subnamespaceName----', subnamespaceName);
       const signedTransaction = account.sign(this.registersubamespaceTransaction, generationHash); //Update-sdk-dragon
       return signedTransaction;

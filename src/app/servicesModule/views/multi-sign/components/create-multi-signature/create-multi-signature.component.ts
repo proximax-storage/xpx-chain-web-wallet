@@ -539,14 +539,11 @@ export class CreateMultiSignatureComponent implements OnInit {
           const match = statusTransaction['hash'] === signedTransaction.hash;
           if (statusTransaction['type'] === 'confirmed' && match) {
             signedTransaction = null;
-            // this.sharedService.showSuccess('', 'Transaction confirmed');
           } else if (statusTransaction['type'] === 'unconfirmed' && match) {
             this.transactionService.searchAccountsInfo([this.currentAccountToConvert])
             signedTransaction = null;
-            // this.sharedService.showInfo('', 'Transaction unconfirmed');
           } else if (match) {
             signedTransaction = null;
-            // this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
           }
         }
       }
@@ -569,16 +566,13 @@ export class CreateMultiSignatureComponent implements OnInit {
           if (statusTransaction['type'] === 'confirmed' && match) {
             this.announceAggregateBonded(signedTransactionBonded)
             signedTransactionHashLock = null;
-            this.sharedService.showSuccess('', 'Transaction confirmed hash Lock');
           } else if (statusTransaction['type'] === 'unconfirmed' && match) {
             // signedTransactionHashLock = null;
-            this.sharedService.showInfo('', 'Transaction unconfirmed hash Lock');
           } else if (match) {
             this.blockSend = false;
             this.ban = false;
             this.btnBlock = true;
             signedTransactionHashLock = null;
-            this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
           }
         }
       }

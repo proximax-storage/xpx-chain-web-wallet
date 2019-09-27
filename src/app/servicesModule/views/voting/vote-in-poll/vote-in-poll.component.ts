@@ -187,7 +187,6 @@ export class VoteInPollComponent implements OnInit {
   }
 
   openCertificateModal() {
-
     if (this.activate) {
       this.dataTransaction;
       this.certificationModal.show();
@@ -553,18 +552,14 @@ export class VoteInPollComponent implements OnInit {
             // transaction.description = poll.desciption;
             this.dataTransaction = transaction;
             this.activate = true;
-
             signedTransaction = null;
-            this.sharedService.showSuccess('', 'Transaction confirmed');
           } else if (statusTransaction['type'] === 'unconfirmed' && match) {
             this.blockSend = false;
             this.viewCertificate(signedTransaction.hash, this.pollSelected.name, 'newVoting')
             this.walletService.countTimeVote();
             // signedTransaction = null;
-            this.sharedService.showInfo('', 'Transaction unconfirmed');
           } else if (match) {
             signedTransaction = null;
-            // this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
           }
         }
       }

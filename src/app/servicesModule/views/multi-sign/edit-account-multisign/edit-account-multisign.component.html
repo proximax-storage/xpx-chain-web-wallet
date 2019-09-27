@@ -9,7 +9,7 @@
         <div class="box-grey pt-1rem pb-1rem d-flex">
           <div class="row">
             <div class="col-12">
-              <img class="w-30px" src="assets/images/img/icon-account-green-60h-proximax-sirius-wallet.svg">
+              <img class="w-30px" src="assets/images/img/icon-account-green-16h-proximax-sirius-wallet.svg">
               <span class="fw-600"> {{currentAccountToConvert.name}}</span>
               <span *ngIf="disable">
                 &nbsp; <i title="On partial" style="color:#0056b3" class="fa fa-bell"></i>
@@ -49,10 +49,10 @@
                     id="minApprovalDelta" class="form-control form-control-sm input-border text-center"
                     placeholder="Min approval" onkeyup="javascript:this.value=this.value.toLowerCase();">
 
-                  <ng-container *ngIf="isMultisig">
+                  <!-- <ng-container *ngIf="isMultisig">
                     <span class="fs-06rem fw-600 pl-1rem">Min Approv: &nbsp;</span>
                     <span class="fs-06rem">{{accountInfo.multisigInfo.minApproval}}</span>
-                  </ng-container>
+                  </ng-container> -->
 
                   <!-- VALIDATION -->
                   <mdb-error
@@ -74,10 +74,10 @@
                     required mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="number"
                     id="minRemovalDelta" class="form-control form-control-sm input-border text-center"
                     placeholder="Min removal" onkeyup="javascript:this.value=this.value.toLowerCase();">
-                  <ng-container *ngIf="isMultisig">
+                  <!-- <ng-container *ngIf="isMultisig">
                     <span class="fs-06rem fw-600 pl-1rem">Min Removal: &nbsp;</span>
                     <span class="fs-06rem">{{accountInfo.multisigInfo.minRemoval}}</span>
-                  </ng-container>
+                  </ng-container> -->
                   <!-- VALIDATION -->
                   <mdb-error
                     *ngIf="validateInput('minRemovalDelta', '').invalid && (validateInput('minRemovalDelta', '').dirty || validateInput('minRemovalDelta', '').touched)">
@@ -292,7 +292,7 @@
             </button>
           </div>
           <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-            <button [disabled]="editAccountMultsignForm.invalid || cosignatoryList.length == 0" mdbBtn type="submit"
+            <button [disabled]="editAccountMultsignForm.invalid || cosignatoryList.length == 0 || editAccountMultsignForm.status=='DISABLED'" mdbBtn type="submit"
               rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
               <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
                 *ngIf="blockSend"></span>

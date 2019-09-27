@@ -110,8 +110,11 @@ export class PartialComponent implements OnInit {
    */
   find(transaction: TransactionsInterface) {
     console.log('----------TransactionsInterface----------', transaction);
+    this.arraySelect = this.arraySelect.slice(0);
     this.dataSelected = transaction;
     this.arraySelect = [];
+    this.account = null;
+    this.password = '';
     const arraySelect = [];
     const accountMultisig = this.walletService.filterAccountInfo(transaction.data['innerTransactions'][0].signer.address.pretty(), true);
     // console.log('=== ACCOUNT MULTISIG ===', accountMultisig);

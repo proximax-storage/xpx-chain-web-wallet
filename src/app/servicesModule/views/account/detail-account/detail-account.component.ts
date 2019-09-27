@@ -8,6 +8,8 @@ import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
 import { ServicesModuleService, ContactsStorageInterface, HeaderServicesInterface } from '../../../services/services-module.service';
 import { NemServiceService } from 'src/app/shared/services/nem-service.service';
 import { environment } from 'src/environments/environment';
+import * as qrcode from 'qrcode-generator';
+import * as jsPDF from 'jspdf';
 
 @Component({
   selector: 'app-detail-account',
@@ -18,7 +20,7 @@ export class DetailAccountComponent implements OnInit {
 
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Accounts',
-    componentName: 'DETAILS',
+    componentName: 'Details',
     extraButton: 'View all accounts',
     routerExtraButton: `/${AppConfig.routes.viewAllAccount}`
   };
@@ -49,6 +51,7 @@ export class DetailAccountComponent implements OnInit {
   valueInitShow: boolean = false;
   showPrivateKey: boolean = false;
   saveNis1Account: any;
+  imgBackground: string = '';
 
 
   constructor(
@@ -62,6 +65,7 @@ export class DetailAccountComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.imgBackground = this.sharedService.walletCreatedCertified();
     this.configurationForm = this.sharedService.configurationForm;
     let param = this.activateRoute.snapshot.paramMap.get('name');
     this.currenAccount = (param) ? this.walletService.filterAccountWallet(param) : this.walletService.filterAccountWallet('', true);
@@ -233,7 +237,7 @@ export class DetailAccountComponent implements OnInit {
   }
 
   /**
-   * 
+   *
    */
   aceptChanges() {
     if (!this.checked) {
@@ -272,11 +276,40 @@ export class DetailAccountComponent implements OnInit {
 
     if (this.showPrivateKey) {
       this.decryptWallet();
-    } 
+    }
     this.validatingForm.reset({
       password: ''
     }, {
       emitEvent: false
     });
+  }
+
+  qrConstruntion(url, size = 2, margin = 0) {
+    let qr = qrcode(10, 'H');
+    qr.addData(url);
+    qr.make();
+    return qr.createDataURL(size, margin);
+  }
+
+  printAccountInfo() {
+    console.log('Run PDF');
+
+    console.log(this.privateKey);
+    console.log(this.address);
+
+    let doc = new jsPDF({
+      unit: 'px'
+    });
+    doc.addImage(this.imgBackground, 'JPEG', 120, 60, 205, 132);
+
+    // QR Code Address
+    doc.addImage(this.qrConstruntion(this.privateKey, 1, 0), 151.5, 105);
+
+    // Addres number
+    doc.setFontSize(8);
+    doc.setTextColor('#000000');
+    doc.text(this.address, 146, 164, { maxWidth: 132 });
+
+    doc.save('Your_Paper_Wallet');
   }
 }

@@ -322,17 +322,17 @@ export class ConvertAccountMultisignComponent implements OnInit {
     }
     //Validate Account
     if (!this.accountValid)
-      return this.sharedService.showError('Attention', 'Account to convert is not valid');
+      return this.sharedService.showError('', 'Account to convert is not valid');
 
     //Validate Multisign
     this.isMultisig = (this.accountInfo.multisigInfo !== null && this.accountInfo.multisigInfo !== undefined && this.accountInfo.multisigInfo.isMultisig());
     if (this.isMultisig)
-      return this.sharedService.showError('Attention', 'Is Multisig');
+      return this.sharedService.showError('', 'Is Multisig');
 
     //Validate Balance
     if (!this.accountInfo.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id)) {
       this.notBalance = true;
-      return this.sharedService.showError('Attention', 'Insufficient balance');
+      return this.sharedService.showError('', 'Insufficient balance');
     } else {
       this.notBalance = false;
     }
@@ -360,8 +360,8 @@ export class ConvertAccountMultisignComponent implements OnInit {
           Deadline.create(),
           [convertIntoMultisigTransaction.toAggregate(this.currentAccountToConvert.publicAccount)],
           this.currentAccountToConvert.network);
-          console.log('this.convertIntoMultisig', convertIntoMultisigTransaction)
-          console.log('aggregateTransaction', this.aggregateTransaction)
+          // console.log('this.convertIntoMultisig', convertIntoMultisigTransaction)
+          // console.log('aggregateTransaction', this.aggregateTransaction)
           let feeAgregate = Number(this.transactionService.amountFormatterSimple(this.aggregateTransaction.maxFee.compact()));
           let feeLockfund = 0.044500;
           let totalFee = feeAgregate + feeLockfund;
@@ -385,31 +385,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
       accountDecrypt = this.currentAccountToConvert
       let common: any = { password: this.convertAccountMultsignForm.get("password").value };
       if (this.walletService.decrypt(common, accountDecrypt)) {
-        console.info('send....')
-        // setTimeout(() => {
-        //   this.clearForm()
-        //   this.blockSend = false;
-        //   this.sharedService.showInfo('', 'Transaction unconfirmed');
-
-        // }, 8000);
-
-
         this.accountToConvertSign = Account.createFromPrivateKey(common.privateKey, accountDecrypt.network)
-        // let convertIntoMultisigTransaction: ModifyMultisigAccountTransaction;
-        // convertIntoMultisigTransaction = ModifyMultisigAccountTransaction.create(
-        //   Deadline.create(),
-        //   this.convertAccountMultsignForm.get('minApprovalDelta').value,
-        //   this.convertAccountMultsignForm.get('minRemovalDelta').value,
-        //   this.multisigCosignatoryModification(this.getCosignatoryList()),
-        //   this.currentAccountToConvert.network);
-        /**
-         * Create Bonded
-         */
-        // const aggregateTransaction = AggregateTransaction.createBonded(
-        //   Deadline.create(),
-        //   [convertIntoMultisigTransaction.toAggregate(this.currentAccountToConvert.publicAccount)],
-        //   this.currentAccountToConvert.network);
-
         const generationHash = this.dataBridge.blockInfo.generationHash;
         const signedTransaction = this.accountToConvertSign.sign(this.aggregateTransaction, generationHash)
 
@@ -449,7 +425,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
     }, err => {
       this.clearForm();
       this.blockSend = false;
-      this.sharedService.showError('', err);
+      // this.sharedService.showError('', err);
     });
   }
 
@@ -463,21 +439,18 @@ export class ConvertAccountMultisignComponent implements OnInit {
     // Get transaction status
     this.dataBridge.getTransactionStatus().subscribe(
       statusTransaction => {
-        console.log('statusTransaction', statusTransaction);
+        // console.log('statusTransaction', statusTransaction);
         if (statusTransaction !== null && statusTransaction !== undefined && signedTransactionHashLock !== null) {
           const match = statusTransaction['hash'] === signedTransactionHashLock.hash;
           if (statusTransaction['type'] === 'confirmed' && match) {
             this.announceAggregateBonded(signedTransactionBonded)
             signedTransactionHashLock = null;
-            this.sharedService.showSuccess('', 'Transaction confirmed hash Lock');
           } else if (statusTransaction['type'] === 'unconfirmed' && match) {
             // signedTransactionHashLock = null;
-            this.sharedService.showInfo('', 'Transaction unconfirmed hash Lock');
           } else if (match) {
             this.clearForm()
             this.blockSend = false;
             signedTransactionHashLock = null;
-            // this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
           }
         }
       }
@@ -520,19 +493,15 @@ export class ConvertAccountMultisignComponent implements OnInit {
           }
           if (statusTransaction['type'] === 'confirmed' && match) {
             signedTransaction = null;
-            this.sharedService.showSuccess('', 'Transaction confirmed');
           } else if (statusTransaction['type'] === 'unconfirmed' && match) {
             this.transactionService.searchAccountsInfo([this.currentAccountToConvert])
             signedTransaction = null;
-            this.sharedService.showInfo('', 'Transaction unconfirmed');
           } else if (statusTransaction['type'] === 'aggregateBondedAdded' && match) {
             signedTransaction = null;
-            this.sharedService.showSuccess('', 'aggregate Bonded add');
           } else if (match) {
             this.clearForm();
             this.blockSend = false;
             signedTransaction = null;
-            //this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
           }
         }
       }
@@ -673,7 +642,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
 
       // Multisig cannot be cosignatory
       if (this.publicAccountToConvert.address.plain() === cosignatory.address.plain())
-        return this.sharedService.showError('Attention', 'A multisig account cannot be set as cosignatory');
+        return this.sharedService.showError('', 'A multisig account cannot be set as cosignatory');
       // Check presence in cosignatory List array
       if (!Boolean(this.cosignatoryList.find(item => { return item.publicAccount.address.plain() === cosignatory.address.plain() }))) {
         this.cosignatoryList.push({ publicAccount: cosignatory, action: 'Add', type: 1, disableItem: false, id: cosignatory.address });
@@ -681,7 +650,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
         this.convertAccountMultsignForm.get('cosignatory').patchValue('');
         this.builder();
       } else {
-        this.sharedService.showError('Attention', 'Cosignatory is already present in modification list');
+        this.sharedService.showError('', 'Cosignatory is already present in modification list');
       }
     }
   }
@@ -777,7 +746,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
     this.convertAccountMultsignForm.get('minApprovalDelta').valueChanges.subscribe(
       minApproval => {
         this.builder();
-        console.log('.minApproval', minApproval);
+        // console.log('.minApproval', minApproval);
 
       }
     );
@@ -786,7 +755,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
     this.convertAccountMultsignForm.get('minRemovalDelta').valueChanges.subscribe(
       minRemoval => {
         this.builder();
-        console.log('minRemoval', minRemoval);
+        // console.log('minRemoval', minRemoval);
 
       }
     );

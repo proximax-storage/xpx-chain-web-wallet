@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, SimpleChanges, Input } from '@angular/core';
+import { TransactionsInterface } from '../../../transactions/services/transactions.service';
 
 @Component({
   selector: 'app-lock-type',
@@ -7,9 +8,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LockTypeComponent implements OnInit {
 
+  @Input() transactionLock: TransactionsInterface = null;
+  searching = true;
+
   constructor() { }
 
   ngOnInit() {
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    // console.log(this.transactionLock);
   }
 
 }

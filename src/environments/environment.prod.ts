@@ -8,7 +8,7 @@ export const environment = {
   production: true,
   itemBooksAddress: 'sw-books-testnet-01',
   //version: '0.3.1.8',
-  version: '0.3.4.2',
+  version: '0.3.4',
   cacheVersion: '7',
   nameKeyNodeSelected: `sw-selected-node-testnet-01`,
   nameKeyWalletStorage: `sw-testnet-01`,
