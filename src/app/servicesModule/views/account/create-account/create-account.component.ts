@@ -122,17 +122,12 @@ export class CreateAccountComponent implements OnInit {
           if (this.fromPrivateKey) {
             newAccount = this.proximaxProvider.createAccountFromPrivateKey(nameAccount, password, this.formCreateAccount.get('privateKey').value, network);
 
-            console.log('new Account----->', newAccount);
-            console.log('this curren accouns', this.walletService.getCurrentWallet().accounts);
-
             const accountEqual = this.walletService.getCurrentWallet().accounts.find(el => el.publicAccount.address['address'] === newAccount.address['address']);
-            console.log('accountEqual --------------->', accountEqual);
-
+            this.walletService.clearNis1AccounsWallet();
             if (accountEqual && accountEqual !== undefined) {
               this.sharedService.showWarning('', 'This account already exists');
             } else {
               if (this.saveNis1) {
-                this.walletService.clearNis1AccounsWallet();
                 this.spinnerButton = true;
                 const nis1Wallet = this.nemProvider.createAccountPrivateKey(this.formCreateAccount.get('privateKey').value);
                 this.nis1Account = {
@@ -140,7 +135,6 @@ export class CreateAccountComponent implements OnInit {
                   publicKey: nis1Wallet.publicKey
                 };
                 // const accountInfo = await this.nemProvider.getAccountInfo(nis1Wallet.address).toPromise();
-                console.log('this is a nis1 wallet ---------->', nis1Wallet);
                 this.saveAccount(newAccount, nameAccount, password);
                 this.nemProvider.getAccountsInfoAccountNew(nis1Wallet, nameAccount);
                 // console.log('this is a nis1 accountInfo ---------->', accountInfo);
@@ -149,6 +143,7 @@ export class CreateAccountComponent implements OnInit {
               }
             }
           } else {
+            this.walletService.clearNis1AccounsWallet();
             newAccount = this.proximaxProvider.createAccountSimple(nameAccount, password, network);
             this.saveAccount(newAccount, nameAccount, password);
           }

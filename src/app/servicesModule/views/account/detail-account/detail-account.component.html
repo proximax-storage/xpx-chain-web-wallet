@@ -161,7 +161,7 @@
       <!-- buttons create and clear -->
       <div class="row mt-2rem">
         <div class="col-11 col-sm-6 d-flex justify-content-center mx-auto">
-          <button mdbBtn type="button" rounded="true" [disabled]="!validatingForm.valid" mdbWavesEffect
+          <button mdbBtn type="button" rounded="true" [disabled]="!validatingForm.valid || checked === valueInitNis && showPrivateKey === valueInitShow" mdbWavesEffect
             class="f-w-600 background-btn pl-2rem pr-2rem" size="md" (click)="aceptChanges()" *ngIf="showPassword">
             <!-- <span class="fs-1-2em color-white" *ngIf="viewPrivateKey"><i class="fa fa-magic mr-1"></i> HIDE PRIVATE KEY</span> -->
             <span class="fs-1-2em color-white">
