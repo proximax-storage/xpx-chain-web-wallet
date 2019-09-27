@@ -45,6 +45,8 @@ export class DetailAccountComponent implements OnInit {
   titlePrivateKey = 'Private Key:';
   titlePublickey = 'Public Key:';
   validatingForm: FormGroup;
+  valueInitNis: boolean;
+  valueInitShow: boolean = false;
   showPrivateKey: boolean = false;
   saveNis1Account: any;
 
@@ -66,6 +68,7 @@ export class DetailAccountComponent implements OnInit {
     this.buildData();
     this.createForm();
     this.checked = this.walletService.currentAccount.nis1Account !== null;
+    this.valueInitNis = this.walletService.currentAccount.nis1Account !== null;
     this.subscribeAccount = this.walletService.getAccountsInfo$().subscribe(
       async accountInfo => {
         if (accountInfo && !this.accountInfo) {

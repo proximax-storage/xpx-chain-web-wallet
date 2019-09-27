@@ -77,6 +77,9 @@ export class AccountCreatedComponent implements OnInit {
   goToRoute() {
     // [routerLink]="[routes.backToService]"
     const nis1Info = this.walletService.getNis1AccounsWallet();
+
+    console.log('nis1Info -------->', nis1Info);
+    
     
     try {
       if (nis1Info.length > 0) {
@@ -85,6 +88,8 @@ export class AccountCreatedComponent implements OnInit {
         } else {
           this.router.navigate([this.routes.backToService]);
         }
+      } else {
+        this.router.navigate([this.routes.backToService]);
       }
     } catch (error) {
       this.router.navigate([this.routes.backToService]);
