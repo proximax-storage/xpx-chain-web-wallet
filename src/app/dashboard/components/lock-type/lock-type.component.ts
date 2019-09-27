@@ -9,6 +9,7 @@ import { TransactionsInterface } from '../../../transactions/services/transactio
 export class LockTypeComponent implements OnInit {
 
   @Input() transactionLock: TransactionsInterface = null;
+  searching = true;
 
   constructor() { }
 
