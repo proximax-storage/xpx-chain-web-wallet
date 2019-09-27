@@ -322,17 +322,17 @@ export class ConvertAccountMultisignComponent implements OnInit {
     }
     //Validate Account
     if (!this.accountValid)
-      return this.sharedService.showError('Attention', 'Account to convert is not valid');
+      return this.sharedService.showError('', 'Account to convert is not valid');
 
     //Validate Multisign
     this.isMultisig = (this.accountInfo.multisigInfo !== null && this.accountInfo.multisigInfo !== undefined && this.accountInfo.multisigInfo.isMultisig());
     if (this.isMultisig)
-      return this.sharedService.showError('Attention', 'Is Multisig');
+      return this.sharedService.showError('', 'Is Multisig');
 
     //Validate Balance
     if (!this.accountInfo.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id)) {
       this.notBalance = true;
-      return this.sharedService.showError('Attention', 'Insufficient balance');
+      return this.sharedService.showError('', 'Insufficient balance');
     } else {
       this.notBalance = false;
     }
@@ -425,7 +425,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
     }, err => {
       this.clearForm();
       this.blockSend = false;
-      this.sharedService.showError('', err);
+      // this.sharedService.showError('', err);
     });
   }
 
@@ -445,10 +445,10 @@ export class ConvertAccountMultisignComponent implements OnInit {
           if (statusTransaction['type'] === 'confirmed' && match) {
             this.announceAggregateBonded(signedTransactionBonded)
             signedTransactionHashLock = null;
-            this.sharedService.showSuccess('', 'Transaction confirmed hash Lock');
+            // this.sharedService.showSuccess('', 'Transaction confirmed hash Lock');
           } else if (statusTransaction['type'] === 'unconfirmed' && match) {
             // signedTransactionHashLock = null;
-            this.sharedService.showInfo('', 'Transaction unconfirmed hash Lock');
+            // this.sharedService.showInfo('', 'Transaction unconfirmed hash Lock');
           } else if (match) {
             this.clearForm()
             this.blockSend = false;
@@ -496,14 +496,14 @@ export class ConvertAccountMultisignComponent implements OnInit {
           }
           if (statusTransaction['type'] === 'confirmed' && match) {
             signedTransaction = null;
-            this.sharedService.showSuccess('', 'Transaction confirmed');
+            // this.sharedService.showSuccess('', 'Transaction confirmed');
           } else if (statusTransaction['type'] === 'unconfirmed' && match) {
             this.transactionService.searchAccountsInfo([this.currentAccountToConvert])
             signedTransaction = null;
-            this.sharedService.showInfo('', 'Transaction unconfirmed');
+            // this.sharedService.showInfo('', 'Transaction unconfirmed');
           } else if (statusTransaction['type'] === 'aggregateBondedAdded' && match) {
             signedTransaction = null;
-            this.sharedService.showSuccess('', 'aggregate Bonded add');
+            // this.sharedService.showSuccess('', 'aggregate Bonded add');
           } else if (match) {
             this.clearForm();
             this.blockSend = false;
@@ -649,7 +649,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
 
       // Multisig cannot be cosignatory
       if (this.publicAccountToConvert.address.plain() === cosignatory.address.plain())
-        return this.sharedService.showError('Attention', 'A multisig account cannot be set as cosignatory');
+        return this.sharedService.showError('', 'A multisig account cannot be set as cosignatory');
       // Check presence in cosignatory List array
       if (!Boolean(this.cosignatoryList.find(item => { return item.publicAccount.address.plain() === cosignatory.address.plain() }))) {
         this.cosignatoryList.push({ publicAccount: cosignatory, action: 'Add', type: 1, disableItem: false, id: cosignatory.address });
@@ -657,7 +657,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
         this.convertAccountMultsignForm.get('cosignatory').patchValue('');
         this.builder();
       } else {
-        this.sharedService.showError('Attention', 'Cosignatory is already present in modification list');
+        this.sharedService.showError('', 'Cosignatory is already present in modification list');
       }
     }
   }
