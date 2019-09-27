@@ -113,6 +113,8 @@ export class PartialComponent implements OnInit {
     this.dataSelected = transaction;
     this.arraySelect = [];
     const arraySelect = [];
+    this.account = null;
+    this.password = '';
     const accountMultisig = this.walletService.filterAccountInfo(transaction.data['innerTransactions'][0].signer.address.pretty(), true);
     // console.log('=== ACCOUNT MULTISIG ===', accountMultisig);
     if (accountMultisig && accountMultisig.multisigInfo && accountMultisig.multisigInfo.cosignatories && accountMultisig.multisigInfo.cosignatories.length > 0) {

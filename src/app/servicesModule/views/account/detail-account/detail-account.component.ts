@@ -18,7 +18,7 @@ export class DetailAccountComponent implements OnInit {
 
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Accounts',
-    componentName: 'DETAILS',
+    componentName: 'Details',
     extraButton: 'View all accounts',
     routerExtraButton: `/${AppConfig.routes.viewAllAccount}`
   };
@@ -233,7 +233,7 @@ export class DetailAccountComponent implements OnInit {
   }
 
   /**
-   * 
+   *
    */
   aceptChanges() {
     if (!this.checked) {
@@ -272,7 +272,7 @@ export class DetailAccountComponent implements OnInit {
 
     if (this.showPrivateKey) {
       this.decryptWallet();
-    } 
+    }
     this.validatingForm.reset({
       password: ''
     }, {
