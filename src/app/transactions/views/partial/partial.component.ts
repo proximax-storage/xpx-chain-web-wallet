@@ -127,7 +127,7 @@ export class PartialComponent implements OnInit {
           arraySelect.push({
             label: (signedByAccount) ? `${cosignatorie.name} - Signed` : cosignatorie.name,
             value: cosignatorie,
-            selected: true,
+            selected: false,
             signed: signedByAccount,
             disabled: signedByAccount
           });
@@ -158,7 +158,7 @@ export class PartialComponent implements OnInit {
               arraySelect.push({
                 label: possibleCosignatorie.name,
                 value: possibleCosignatorie,
-                selected: true,
+                selected: false,
                 signed: signedByAccount,
                 disabled: signedByAccount
               });
@@ -181,8 +181,6 @@ export class PartialComponent implements OnInit {
     }else {
       this.arraySelect = arraySelect;
     }
-
-
    }
 
 
