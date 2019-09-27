@@ -31,7 +31,7 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
   @BlockUI() blockUI: NgBlockUI;
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Storage',
-    componentName: 'UPLOAD FILE',
+    componentName: 'Upload file',
     extraButton: 'Files',
     routerExtraButton: `/${AppConfig.routes.myFile}`
   };

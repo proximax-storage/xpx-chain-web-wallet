@@ -7,7 +7,7 @@
     <!-- SELECT ACCOUNT TO CONVERT-->
     <div class="row mt-2rem">
       <div class="col-11 col-md-10 col-lg-9 col-xl-8 mx-auto">
-        <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [clearable]="false" [validateError]="true"
+        <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [searchable]="false" [clearable]="false" [validateError]="true"
           class="selectWrapper" [items]="currentAccounts" formControlName="selectAccount" bindLabel="label"
           bindValue="value" placeholder="Select an account" (change)="selectAccount($event)">
 
@@ -91,7 +91,7 @@
 
     <!-- COSIGNATORY LIST  -->
     <div class="row gray-color-transparent pt-1rem pb-1rem">
-      <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto">
+      <div class="col-11 col-md-10 col-lg-8 mx-auto">
         <div class="row">
           <div class="col-12">
             <span class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">Approved Cosignatories
@@ -121,7 +121,7 @@
     <ng-container *ngIf="showContacts && listContact.length > 0">
       <div class="row mt-1-5rem">
         <div class="col-11 col-md-10 col-lg-9 col-xl-8 mx-auto">
-          <ng-select mdbInputDirective mdbValidate formControlName="contact" class="selectWrapper" [items]="listContact"
+          <ng-select mdbInputDirective mdbValidate formControlName="contact" class="selectWrapper" [searchable]="false" [items]="listContact"
             bindLabel="label" bindValue="value" placeholder="Contact" (change)="selectContact($event)">
           </ng-select>
         </div>
@@ -218,7 +218,7 @@
             <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
               <div class="row">
                 <div class="col-12 text-center">
-                  <span>Lock fund: <br> </span>
+                  <span>Lockfund: <br> </span>
                   <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" alt="">
                   <span class="fs-09rem">{{amountFormatterSimple(feeLockfund)}} XPX</span>
                 </div>

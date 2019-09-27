@@ -24,7 +24,7 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
 
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Mosaics',
-    componentName: 'LINK TO NAMESPACE',
+    componentName: 'Link to namespace',
   };
   arrayNamespaceStorage: NamespaceStorageInterface[] = [];
   currentBlock: number = 0;

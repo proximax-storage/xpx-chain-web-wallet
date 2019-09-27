@@ -15,7 +15,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class AddContactsComponent implements OnInit {
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Address Book',
-    componentName: 'ADD CONTACTS',
+    componentName: 'Add contacts',
     extraButton: 'List',
     routerExtraButton: `/${AppConfig.routes.addressBook}`
   };
@@ -48,7 +48,7 @@ export class AddContactsComponent implements OnInit {
         this.contactForm.get('user').setValue(this.contact.label);
         this.contactForm.get('address').setValue(this.contact.value);
       }
-    }    
+    }
   }
 
   createFormContact() {
@@ -101,7 +101,7 @@ export class AddContactsComponent implements OnInit {
             name: this.contact.label,
             address: this.contact.value
           } : null
-        }  
+        }
         const saved = this.serviceModuleService.saveContacts(paramsStorage);
         if (saved) {
           this.contactForm.reset();
@@ -109,7 +109,7 @@ export class AddContactsComponent implements OnInit {
           this.router.navigate([`/${AppConfig.routes.addressBook}`]);
           return;
         }
-  
+
         this.sharedService.showError('User repeated', `Address or name already exists`);
       } else {
         this.sharedService.showError('', 'Invalid address');

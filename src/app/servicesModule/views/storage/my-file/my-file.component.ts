@@ -37,7 +37,7 @@ export class MyFileComponent implements OnInit, AfterViewInit {
 
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Storage',
-    componentName: 'FILES',
+    componentName: 'Files',
     extraButton: 'Upload a New File',
     routerExtraButton: `/${AppConfig.routes.uploadFile}`
   };

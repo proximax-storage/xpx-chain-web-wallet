@@ -32,7 +32,7 @@ export class Nis1AccountsListComponent implements OnInit {
     this.walletService.setAccountInfoNis1(null);
     this.accountsNis1 = this.walletService.currentWallet.accounts;
     for (let index = 0; index < this.accountsNis1.length; index++) {
-      if (this.accountsNis1[index].nis1Account !== null) {
+      if (this.accountsNis1[index].nis1Account !== null && this.accountsNis1[index].nis1Account !== undefined) {
         this.accountsNis1[index].nis1Account.address = this.nemProvider.createAddressToString(this.accountsNis1[index].nis1Account.address.value);
         this.searchItem.push(false);
       }
@@ -69,7 +69,7 @@ export class Nis1AccountsListComponent implements OnInit {
           mosaic: null,
           route: `/${AppConfig.routes.nis1AccountList}`
         }
-        
+
         // this.walletService.setNis1AccounsWallet(accountNis1);
         if (accountNis1.consignerOf) {
           this.walletService.setAccountInfoNis1(accountNis1);

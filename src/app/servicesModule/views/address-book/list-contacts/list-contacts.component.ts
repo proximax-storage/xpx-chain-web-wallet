@@ -16,7 +16,7 @@ export class ListContactsComponent {
   @ViewChild('basicModal', { static: true }) basicModal: ModalDirective;
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Address Book',
-    componentName: 'LIST',
+    componentName: 'List',
     extraButton: 'Add new contact',
     routerExtraButton: `/${AppConfig.routes.addContacts}`
   };
@@ -50,7 +50,7 @@ export class ListContactsComponent {
     console.log(contacts);
     for (let index = 0; index < contacts.length; index++) {
       contacts[index].value = this.proximaxProvider.createFromRawAddress(contacts[index].value).pretty();
-    }    
+    }
     this.contacts = (contacts !== null && contacts !== undefined) ? contacts : [];
     this.mdbTable.setDataSource(this.contacts);
     this.contacts = this.mdbTable.getDataSource();

@@ -22,7 +22,7 @@ import { environment } from '../../../../../environments/environment';
 export class ExtendDurationNamespaceComponent implements OnInit {
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Namespaces & Sub-Namespaces',
-    componentName: 'EXTEND DURATION'
+    componentName: 'Extend duration'
   };
   extendDurationNamespaceForm: FormGroup;
   configurationForm: ConfigurationForm = {};
