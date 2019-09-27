@@ -360,8 +360,8 @@ export class ConvertAccountMultisignComponent implements OnInit {
           Deadline.create(),
           [convertIntoMultisigTransaction.toAggregate(this.currentAccountToConvert.publicAccount)],
           this.currentAccountToConvert.network);
-          console.log('this.convertIntoMultisig', convertIntoMultisigTransaction)
-          console.log('aggregateTransaction', this.aggregateTransaction)
+          // console.log('this.convertIntoMultisig', convertIntoMultisigTransaction)
+          // console.log('aggregateTransaction', this.aggregateTransaction)
           let feeAgregate = Number(this.transactionService.amountFormatterSimple(this.aggregateTransaction.maxFee.compact()));
           let feeLockfund = 0.044500;
           let totalFee = feeAgregate + feeLockfund;
@@ -385,31 +385,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
       accountDecrypt = this.currentAccountToConvert
       let common: any = { password: this.convertAccountMultsignForm.get("password").value };
       if (this.walletService.decrypt(common, accountDecrypt)) {
-        console.info('send....')
-        // setTimeout(() => {
-        //   this.clearForm()
-        //   this.blockSend = false;
-        //   this.sharedService.showInfo('', 'Transaction unconfirmed');
-
-        // }, 8000);
-
-
         this.accountToConvertSign = Account.createFromPrivateKey(common.privateKey, accountDecrypt.network)
-        // let convertIntoMultisigTransaction: ModifyMultisigAccountTransaction;
-        // convertIntoMultisigTransaction = ModifyMultisigAccountTransaction.create(
-        //   Deadline.create(),
-        //   this.convertAccountMultsignForm.get('minApprovalDelta').value,
-        //   this.convertAccountMultsignForm.get('minRemovalDelta').value,
-        //   this.multisigCosignatoryModification(this.getCosignatoryList()),
-        //   this.currentAccountToConvert.network);
-        /**
-         * Create Bonded
-         */
-        // const aggregateTransaction = AggregateTransaction.createBonded(
-        //   Deadline.create(),
-        //   [convertIntoMultisigTransaction.toAggregate(this.currentAccountToConvert.publicAccount)],
-        //   this.currentAccountToConvert.network);
-
         const generationHash = this.dataBridge.blockInfo.generationHash;
         const signedTransaction = this.accountToConvertSign.sign(this.aggregateTransaction, generationHash)
 
@@ -463,7 +439,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
     // Get transaction status
     this.dataBridge.getTransactionStatus().subscribe(
       statusTransaction => {
-        console.log('statusTransaction', statusTransaction);
+        // console.log('statusTransaction', statusTransaction);
         if (statusTransaction !== null && statusTransaction !== undefined && signedTransactionHashLock !== null) {
           const match = statusTransaction['hash'] === signedTransactionHashLock.hash;
           if (statusTransaction['type'] === 'confirmed' && match) {
@@ -777,7 +753,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
     this.convertAccountMultsignForm.get('minApprovalDelta').valueChanges.subscribe(
       minApproval => {
         this.builder();
-        console.log('.minApproval', minApproval);
+        // console.log('.minApproval', minApproval);
 
       }
     );
@@ -786,7 +762,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
     this.convertAccountMultsignForm.get('minRemovalDelta').valueChanges.subscribe(
       minRemoval => {
         this.builder();
-        console.log('minRemoval', minRemoval);
+        // console.log('minRemoval', minRemoval);
 
       }
     );
