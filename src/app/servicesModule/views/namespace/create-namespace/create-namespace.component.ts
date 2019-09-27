@@ -347,13 +347,9 @@ export class CreateNamespaceComponent implements OnInit {
             }
             if (statusTransaction['type'] === 'confirmed' && match) {
               this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['hash']);
-
-              this.sharedService.showSuccess('', 'Transaction confirmed');
             } else if (statusTransaction['type'] === 'unconfirmed' && match) {
-              this.sharedService.showInfo('', 'Transaction unconfirmed');
             } else if (match) {
               this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['hash']);
-              // this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
             }
           }
         }
@@ -395,7 +391,7 @@ export class CreateNamespaceComponent implements OnInit {
       //   duration
       // )
 
-      // console.log('----registerRootNamespaceTransaction----', registerRootNamespaceTransaction);
+      console.log('----registerRootNamespaceTransaction----', this.registerRootNamespaceTransaction);
 
       const signedTransaction = account.sign(this.registerRootNamespaceTransaction, generationHash); //Update-sdk-dragon
       return signedTransaction;
@@ -408,7 +404,7 @@ export class CreateNamespaceComponent implements OnInit {
       //   this.walletService.currentAccount.network
       // );
 
-      // console.log('----registersubamespaceTransaction----', this.registersubamespaceTransaction);
+      console.log('----registersubamespaceTransaction----', this.registersubamespaceTransaction);
       // console.log('----subnamespaceName----', subnamespaceName);
       const signedTransaction = account.sign(this.registersubamespaceTransaction, generationHash); //Update-sdk-dragon
       return signedTransaction;

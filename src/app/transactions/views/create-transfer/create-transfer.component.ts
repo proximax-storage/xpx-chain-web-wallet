@@ -518,16 +518,11 @@ export class CreateTransferComponent implements OnInit {
 
               if (statusTransaction['type'] === 'confirmed' && match) {
                 this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['hash']);
-                // this.sharedService.showSuccess('', 'Transaction confirmed');
               } else if (statusTransaction['type'] === 'unconfirmed' && match) {
-                // this.sharedService.showInfo('', 'Transaction unconfirmed');
               } else if (statusTransaction['type'] === 'aggregateBondedAdded' && match) {
-                // this.sharedService.showInfo('', 'Transaction aggregate bonded added');
               } else if (statusTransaction['type'] === 'cosignatureSignedTransaction' && match) {
-                // this.sharedService.showInfo('', 'Transaction cosignature signed');
               } else if (statusTransaction['type'] === 'error' && match) {
                 this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['hash']);
-                // this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
               }
             }
           }
@@ -546,18 +541,13 @@ export class CreateTransferComponent implements OnInit {
     this.subscription['getTransactionStatushashLock'] = this.dataBridge.getTransactionStatus().subscribe(
       statusTransaction => {
         if (statusTransaction !== null && statusTransaction !== undefined && signedTransactionHashLock !== null) {
-          // const statusTransactionHash = (statusTransaction['type'] === 'error') ? statusTransaction['data'].hash : statusTransaction['data'].transactionInfo.hash;
           const match = statusTransaction['hash'] === signedTransactionHashLock.hash;
           if (statusTransaction['type'] === 'confirmed' && match) {
             this.announceAggregateBonded(signedTransactionBonded)
             signedTransactionHashLock = null;
-            // this.sharedService.showSuccess('', 'Transaction confirmed hash Lock');
           } else if (statusTransaction['type'] === 'unconfirmed' && match) {
-            // signedTransactionHashLock = null;
-            // this.sharedService.showInfo('', 'Transaction unconfirmed hash Lock');
           } else if (match) {
             signedTransactionHashLock = null;
-            // this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
           }
         }
       }

@@ -249,7 +249,7 @@ export class ExtendDurationNamespaceComponent implements OnInit {
 
         if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
           for (let element of this.transactionSigned) {
-            const statusTransactionHash = (statusTransaction['type'] === 'error') ? statusTransaction['data'].hash : statusTransaction['data'].transactionInfo.hash;
+            const statusTransactionHash = statusTransaction['data'].hash;
             // console.log('---statusTransactionHash---', statusTransactionHash);
             // console.log('----element----', element);
 
@@ -262,12 +262,9 @@ export class ExtendDurationNamespaceComponent implements OnInit {
 
             if (statusTransaction['type'] === 'confirmed' && match) {
               this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransactionHash);
-              this.sharedService.showSuccess('', 'Transaction confirmed');
             } else if (statusTransaction['type'] === 'unconfirmed' && match) {
-              this.sharedService.showInfo('', 'Transaction unconfirmed');
             } else if (match) {
               this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransactionHash);
-              this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
             }
           }
         }

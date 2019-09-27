@@ -400,12 +400,9 @@ export class CreateMosaicComponent implements OnInit {
 
             if (statusTransaction['type'] === 'confirmed' && match) {
               this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['hash']);
-              // this.sharedService.showSuccess('', 'Transaction confirmed');
             } else if (statusTransaction['type'] === 'unconfirmed' && match) {
-              // this.sharedService.showInfo('', 'Transaction unconfirmed');
             } else if (match) {
               this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['hash']);
-              // this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
             }
           }
         }

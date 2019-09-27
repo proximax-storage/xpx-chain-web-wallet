@@ -459,15 +459,11 @@ export class EditAccountMultisignComponent implements OnInit {
           if (statusTransaction['type'] === 'confirmed' && match) {
             this.announceAggregateBonded(signedTransactionBonded)
             signedTransactionHashLock = null;
-            // this.sharedService.showSuccess('', 'Transaction confirmed hash Lock');
           } else if (statusTransaction['type'] === 'unconfirmed' && match) {
-            // signedTransactionHashLock = null;
-            // this.sharedService.showInfo('', 'Transaction unconfirmed hash Lock');
           } else if (match) {
             this.clearForm()
             this.blockSend = false;
             signedTransactionHashLock = null;
-            // this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
           }
         }
       }
@@ -563,26 +559,22 @@ export class EditAccountMultisignComponent implements OnInit {
           // CONFIRMED
           if (statusTransaction['type'] === 'confirmed' && match) {
             signedTransaction = null;
-            // this.sharedService.showSuccess('', 'Transaction confirmed');
           }
           // UNCONFIRMED
           else if (statusTransaction['type'] === 'unconfirmed' && match) {
             this.transactionService.searchAccountsInfo([this.currentAccountToConvert])
             signedTransaction = null;
-            // this.sharedService.showInfo('', 'Transaction unconfirmed');
           }
           // AGGREGATE BONDED ADDED
           else if (statusTransaction['type'] === 'aggregateBondedAdded' && match) {
             this.transactionService.searchAccountsInfo([this.currentAccountToConvert])
             signedTransaction = null;
-            // this.sharedService.showInfo('', 'Transaction aggregate bonded added');
           }
           // MATCH
           else if (match) {
             this.clearForm();
             this.blockSend = false;
             signedTransaction = null;
-            // this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
           }
         }
       }

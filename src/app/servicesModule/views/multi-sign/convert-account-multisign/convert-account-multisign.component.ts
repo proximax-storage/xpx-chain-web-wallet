@@ -445,15 +445,12 @@ export class ConvertAccountMultisignComponent implements OnInit {
           if (statusTransaction['type'] === 'confirmed' && match) {
             this.announceAggregateBonded(signedTransactionBonded)
             signedTransactionHashLock = null;
-            // this.sharedService.showSuccess('', 'Transaction confirmed hash Lock');
           } else if (statusTransaction['type'] === 'unconfirmed' && match) {
             // signedTransactionHashLock = null;
-            // this.sharedService.showInfo('', 'Transaction unconfirmed hash Lock');
           } else if (match) {
             this.clearForm()
             this.blockSend = false;
             signedTransactionHashLock = null;
-            // this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
           }
         }
       }
@@ -496,19 +493,15 @@ export class ConvertAccountMultisignComponent implements OnInit {
           }
           if (statusTransaction['type'] === 'confirmed' && match) {
             signedTransaction = null;
-            // this.sharedService.showSuccess('', 'Transaction confirmed');
           } else if (statusTransaction['type'] === 'unconfirmed' && match) {
             this.transactionService.searchAccountsInfo([this.currentAccountToConvert])
             signedTransaction = null;
-            // this.sharedService.showInfo('', 'Transaction unconfirmed');
           } else if (statusTransaction['type'] === 'aggregateBondedAdded' && match) {
             signedTransaction = null;
-            // this.sharedService.showSuccess('', 'aggregate Bonded add');
           } else if (match) {
             this.clearForm();
             this.blockSend = false;
             signedTransaction = null;
-            //this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
           }
         }
       }
