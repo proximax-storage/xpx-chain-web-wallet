@@ -342,7 +342,7 @@ export class DataBridgeService {
     // ----------------------------------UNCONFIRMED_ADDED--------------------------------------------//
     connector.unconfirmedAdded(address).subscribe(async unconfirmedAdded => {
       console.log("\n\n-----------------------UNCONFIRMED_ADDED--------------------------");
-      console.log(unconfirmedAdded.transactionInfo.hash)
+      console.log(unconfirmedAdded)
       console.log("------------------------------------------------------------------\n\n");
       this.setTransactionStatus({
         'type': 'unconfirmed',
