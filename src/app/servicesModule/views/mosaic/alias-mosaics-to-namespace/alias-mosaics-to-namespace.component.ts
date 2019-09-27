@@ -380,15 +380,12 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
           }
           if (statusTransaction['type'] === 'confirmed' && match) {
             this.transactionSigned = null;
-            // this.sharedService.showSuccess('', 'Transaction confirmed');
             this.mosaicService.resetMosaicsStorage();
             this.namespaceService.resetNamespaceStorage();
           } else if (statusTransaction['type'] === 'unconfirmed' && match) {
             this.transactionSigned = null;
-            // this.sharedService.showInfo('', 'Transaction unconfirmed');
           } else if (match) {
             this.transactionSigned = null;
-            // this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
           }
         }
       }

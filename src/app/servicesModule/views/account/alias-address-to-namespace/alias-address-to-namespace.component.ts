@@ -414,13 +414,10 @@ export class AliasAddressToNamespaceComponent implements OnInit {
           const match = statusTransaction['hash'] === this.transactionSigned.hash;
           if (statusTransaction['type'] === 'confirmed' && match) {
             this.transactionSigned = null;
-            //this.sharedService.showSuccess('', 'Transaction confirmed');
           } else if (statusTransaction['type'] === 'unconfirmed' && match) {
             this.transactionSigned = null;
-            //this.sharedService.showInfo('', 'Transaction unconfirmed');
           } else if (match) {
             this.transactionSigned = null;
-            //this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
           }
         }
       }

@@ -16,21 +16,17 @@ import {
   AccountInfo,
   PublicAccount,
   Address,
-  MultisigAccountInfo,
-  NamespaceId,
   AggregateTransaction,
   SignedTransaction,
   HashLockTransaction,
   LockFundsTransaction
 } from "tsjs-xpx-chain-sdk";
-import { first } from "rxjs/operators";
 import { ProximaxProvider } from "../../shared/services/proximax.provider";
 import { NodeService } from "../../servicesModule/services/node.service";
 import { environment } from "../../../environments/environment";
 import { MosaicService } from "../../servicesModule/services/mosaic.service";
 import { NamespacesService } from "../../servicesModule/services/namespaces.service";
 import { WalletService, AccountsInfoInterface, AccountsInterface } from '../../wallet/services/wallet.service';
-// import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
 
 
 
@@ -99,11 +95,10 @@ export class TransactionsService {
       id: TransactionType.ADDRESS_ALIAS,
       name: "Address Alias"
     },
-
-    /* lock: {
-       id: TransactionType.LOCK,
-       name: "Lock"
-     },*/
+    lock: {
+      id: TransactionType.LOCK,
+      name: "Lockfund"
+    },
     /*secretLock: {
        id: TransactionType.SECRET_LOCK,
        name: "Secret lock"
@@ -272,8 +267,7 @@ export class TransactionsService {
       allMosaics.push(new Mosaic(
         new MosaicId(element.id),
         UInt64.fromUint(Number(element.amount))
-      )
-      );
+      ));
     });
 
     const transferTransaction = TransferTransaction.create(
@@ -606,7 +600,7 @@ export class TransactionsService {
     // console.log('ACCOUNTS INTERFACE ---> ', accounts);
     this.walletService.searchAccountsInfo(accounts).then(
       (data: { mosaicsId: MosaicId[], accountsInfo: AccountsInfoInterface[] }) => {
-        console.log('=== DATA ===', data);
+        // console.log('=== DATA ===', data);
         this.walletService.validateMultisigAccount(accounts);
         const publicsAccounts: PublicAccount[] = [];
         data.accountsInfo.forEach((element: AccountsInfoInterface) => {

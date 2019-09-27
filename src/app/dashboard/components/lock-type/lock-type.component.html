@@ -1,3 +1,45 @@
-<p>
-  lock-type works!
-</p>
+<div class="row">
+  <div class="col-12">
+    <div class="row">
+      <!-- Bonded & Deadline -->
+      <div class="col-12 lh-1em">
+        <span class="fw-600 fs-1-2rem">{{transactionLock.nameType}}</span> <br>
+        <span class="fs-075rem">Deadline: {{transactionLock?.timestamp}}</span>
+      </div>
+
+      <!-- Fee -->
+      <div class="col-12 mt-1rem">
+        <span class="fw-600 fs-095rem">Fee:&nbsp;&nbsp;</span>
+        <span class="fs-095rem fw-600 color-blue-light">{{transactionLock?.feePart.part1}}</span>
+        <span class="fs-075rem fw-600 color-blue-light">{{transactionLock?.feePart.part2}}</span>
+        <span class="fs-095rem fw-600 color-blue-light"> XPX </span>
+        <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
+      </div>
+
+      <!-- Type -->
+      <div class="col-12 mt-03rem">
+        <span class="fw-600 fs-08rem">Type:&nbsp;&nbsp;</span>
+        <span class="fs-065rem">{{transactionLock?.data['type'].toString(16).toUpperCase()}}</span>
+      </div>
+
+      <!-- duration -->
+      <div class="col-12 mt-03rem">
+        <span class="fw-600 fs-08rem">Duration:&nbsp;&nbsp;</span>
+        <span class="fs-065rem">{{transactionLock?.data['duration'].compact()}} blocks</span>
+      </div>
+
+      <!-- duration -->
+      <div class="col-12 mt-05rem line-h-1em">
+        <span class="fw-600 fs-08rem">Hash lock transaction: <br></span>
+        <span class="fs-065rem">{{transactionLock?.data['hash']}}</span>
+      </div>
+
+      <!-- MOSAICS INFO-->
+      <div class="col-12 mt-1rem mb-1rem">
+        <app-mosaics-info (changeSearch)="searching = false;" [mosaicsArray]="[transactionLock.data['mosaic']]"
+          [transferTransaction]="transactionLock">
+        </app-mosaics-info>
+      </div>
+    </div>
+  </div>
+</div>

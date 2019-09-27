@@ -49,7 +49,8 @@
           <div class="row">
             <div class="col-12">
               <div>
-                <span class="fs-06rem f-s-dashboard-transactions">{{currentAccount.address}} &nbsp;</span>
+                <span class="fs-06rem f-s-dashboard-transactions">{{currentAccount.address}}
+                  &nbsp;</span>
                 <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="icono cursor-p"
                   alt="Copy" width="20" (click)="copyMessage('Address')" ngxClipboard
                   [cbContent]="currentAccount.address">
@@ -84,9 +85,9 @@
 
             <!-- PARTIAL TRANSACTION -->
             <div class="col-12 col-xl-6">
-              <button mdbBtn type="button" rounded="true" mdbWavesEffect
-                [disabled]="partialTransactions === 0" [routerLink]="[viewDetailsPartial]"
-                class="f-w-600  w-100porcent background-btn pl-2rem pr-2rem" size="sm">
+              <button mdbBtn type="button" rounded="true" mdbWavesEffect [disabled]="partialTransactions === 0"
+                [routerLink]="[viewDetailsPartial]" class="f-w-600  w-100porcent background-btn pl-2rem pr-2rem"
+                size="sm">
                 <span class="fs-07rem color-white">PARTIAL:
                   <a class="cursor-p fw-400">{{partialTransactions}}</a>
                 </span>
@@ -125,8 +126,6 @@
       <!-- Searching -->
       <ng-container *ngIf="searching">
         <div class="col-12 txt-a-center">
-          <!-- <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate">
-          </mdb-progress-bar> -->
           <mdb-spinner spinnerType="small" spinnerColor="blue"></mdb-spinner>
         </div>
       </ng-container>
@@ -153,23 +152,17 @@
         <table mdbTable mdbTableScroll scrollX="true" striped="true">
           <thead>
             <tr class="header-backg">
-              <th *ngFor="let head of headElements" scope="col" class="fs-075rem txt-a-center ">{{head}} </th>
+              <th *ngFor="let head of headElements" scope="col" class="fs-075rem txt-a-center ">{{head}}
+              </th>
             </tr>
           </thead>
 
           <tbody class="background-white">
             <ng-container *ngFor="let el of transactions | paginate: { itemsPerPage: 10, currentPage: p }">
               <tr class="white-space-pre cursor-p" (click)="dataSelected = el; modalDashboard.show();">
-                <!-- <td class="fs-07rem">{{transaction.timestamp}}</td>
-                <td class="fs-07rem">{{transaction.fee}}</td>
-                <td class="fs-07rem">{{transaction.senderAddress}}</td>
-                <td class="fs-07rem">{{transaction.data.transactionInfo.hash}}</td> -->
-                <!-- Type transaction -->
                 <td class="th-sm fs-07rem" scope="row description-dark-green">
                   <ng-container *ngIf="el.nameType === 'ProximaX Swap'; else elseSwap">
-                    <span style="color: #e6b219;">
-                      <i class="fa fa-star" aria-hidden="true"></i>
-                    </span>
+                    <span style="color: #e6b219;"><i class="fa fa-star" aria-hidden="true"></i></span>
                   </ng-container>
                   <ng-template #elseSwap>
                     &nbsp; &nbsp;
@@ -249,9 +242,6 @@
 
         <div class="modal-body">
           <ng-container *ngIf="dataSelected">
-            <!-- <div class="row">
-              <div class="col-11 col-md-7">
-                <div class="row"> -->
             <!-- TYPE TRANSFER TRANSACTION -->
             <app-transfer-type [transferTransaction]="dataSelected"
               *ngIf="dataSelected.data.type === typeTransactions.transfer.id">
@@ -286,7 +276,8 @@
 
                     <!-- BOX DATA SIGNER HASH -->
                     <div class="col-12 col-md-5">
-                      <app-box-data-signer-hash [dataSelected]="dataSelected"></app-box-data-signer-hash>
+                      <app-box-data-signer-hash [dataSelected]="dataSelected">
+                      </app-box-data-signer-hash>
                     </div>
                   </div>
                 </div>
@@ -294,28 +285,82 @@
             </ng-container>
 
             <!-- MOSAIC ALIAS -->
-            <app-mosaic-alias [mosaicAlias]="dataSelected"
-              *ngIf="dataSelected.data.type === typeTransactions.mosaicAlias.id">
-            </app-mosaic-alias>
+            <ng-container *ngIf="dataSelected.data.type === typeTransactions.mosaicAlias.id">
+              <div class="row">
+                <div class="col-11 mx-auto">
+                  <div class="row">
+                    <!-- TYPE LOCK -->
+                    <div class="col-12 col-md-7">
+                      <app-mosaic-alias [mosaicAlias]="dataSelected"></app-mosaic-alias>
+                    </div>
+
+                    <!-- BOX DATA SIGNER HASH -->
+                    <div class="col-12 col-md-5">
+                      <app-box-data-signer-hash [dataSelected]="dataSelected">
+                      </app-box-data-signer-hash>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+
+
             <!--  ADDRESS ALIAS-->
-            <app-address-alias-type [addressAlias]="dataSelected"
-              *ngIf="dataSelected.data.type === typeTransactions.addressAlias.id">
-            </app-address-alias-type>
+            <ng-container *ngIf="dataSelected.data.type === typeTransactions.addressAlias.id">
+              <div class="row">
+                <div class="col-11 mx-auto">
+                  <div class="row">
+                    <!-- TYPE LOCK -->
+                    <div class="col-12 col-md-7">
+                      <app-address-alias-type [addressAlias]="dataSelected"></app-address-alias-type>
+                    </div>
+
+                    <!-- BOX DATA SIGNER HASH -->
+                    <div class="col-12 col-md-5">
+                      <app-box-data-signer-hash [dataSelected]="dataSelected">
+                      </app-box-data-signer-hash>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+
+
+            <!-- TYPE LOCK -->
+            <ng-container *ngIf="dataSelected.data.type === typeTransactions.lock.id">
+              <div class="row">
+                <div class="col-11 mx-auto">
+                  <div class="row">
+                    <!-- TYPE LOCK -->
+                    <div class="col-12 col-md-7">
+                      <app-lock-type [transactionLock]="dataSelected"
+                        *ngIf="dataSelected.data.type === typeTransactions.lock.id"></app-lock-type>
+
+                    </div>
+
+                    <!-- BOX DATA SIGNER HASH -->
+                    <div class="col-12 col-md-5">
+                      <app-box-data-signer-hash [dataSelected]="dataSelected">
+                      </app-box-data-signer-hash>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
 
             <!-- TYPE MODIFY MULTISIG ACCOUNT TRANSACTION
-                  <app-modify-multisig-account-type
-                    *ngIf="dataSelected.data.type === typeTransactions.modifyMultisigAccount.id">
-                  </app-modify-multisig-account-type>-->
-            <!-- TYPE LOCK TRANSACTION
-                  <app-lock-type *ngIf="dataSelected.data.type === typeTransactions.lock.id"></app-lock-type> -->
+                        <app-modify-multisig-account-type
+                            *ngIf="dataSelected.data.type === typeTransactions.modifyMultisigAccount.id">
+                        </app-modify-multisig-account-type>-->
+
             <!-- TYPE SECRET LOCK TRANSACTION
-                  <app-secret-lock-type *ngIf="dataSelected.data.type === typeTransactions.secretLock.id">
-                  </app-secret-lock-type>-->
+                        <app-secret-lock-type *ngIf="dataSelected.data.type === typeTransactions.secretLock.id">
+                        </app-secret-lock-type>-->
             <!-- TYPE SECRET PROOF TRANSACTION
-                  <app-secret-proof *ngIf="dataSelected.data.type === typeTransactions.secretProof.id"></app-secret-proof>-->
+                        <app-secret-proof *ngIf="dataSelected.data.type === typeTransactions.secretProof.id"></app-secret-proof>-->
             <!-- </div>
-              </div>
-            </div> -->
+                    </div>
+                    </div> -->
           </ng-container>
         </div>
       </div>

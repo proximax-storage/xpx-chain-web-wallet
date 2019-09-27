@@ -38,7 +38,7 @@ export class MosaicsInfoComponent implements OnInit {
     this.viewOtherMosaics = false;
     this.quantity = [];
     this.searching = true;
-    console.log(this.simple);
+    // console.log(this.simple);
     if (this.simple === false) {
       this.transferTransaction = this.transferTransaction;
     } else {
@@ -46,16 +46,16 @@ export class MosaicsInfoComponent implements OnInit {
       this.transferTransaction = this.transferTransaction.data;
     }
 
-    console.log('-----this.mosaicsArray----', this.mosaicsArray);
+    // console.log('-----this.mosaicsArray----', this.mosaicsArray);
     const mosaics: MosaicsStorage[] = await this.mosaicService.filterMosaics(this.mosaicsArray.map((mosaic: Mosaic) => { return mosaic.id }));
-    // console.log('----mosaicos encontrados-----', mosaics);
+    // // console.log('----mosaicos encontrados-----', mosaics);
     this.searching = false;
     if (mosaics.length > 0) {
       for (let mosaic of mosaics) {
-        console.log('me llega este mosaico', mosaic);
+        // console.log('me llega este mosaico', mosaic);
         const id = this.findMosaic(mosaic);
         // me quedé validando que me retorne el mosaico id y no namespace id, ya que en mosaicInfo no muestra
-        console.log('---My mosaic---', id);
+        // console.log('---My mosaic---', id);
         if (id) {
           const amount = this.getAmount(mosaic, id);
           // MOSAIC IS XPX

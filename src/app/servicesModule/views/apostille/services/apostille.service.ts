@@ -211,7 +211,6 @@ export class ApostilleService {
               if (statusTransaction['type'] === 'confirmed' && match) {
                 const whiteList = this.whiteListTransaction.filter(el => el.signedTransaction.hash !== statusTransaction['hash']);
                 this.whiteListTransaction = (whiteList) ? whiteList : [];
-                this.sharedService.showSuccess('', 'Transaction confirmed');
                 if (!element.downloaded) {
                   console.log('descargala....');
                   this.downloadSignedFiles(element);
@@ -219,16 +218,13 @@ export class ApostilleService {
               }
               // TRANSACTION UNCONFIRMED
               else if (statusTransaction['type'] === 'unconfirmed' && match) {
-                // console.log('descargala....');
                 this.downloadSignedFiles(element);
                 element.downloaded = true;
-                this.sharedService.showInfo('', 'Transaction unconfirmed');
               }
               // MATCH
               else if (match) {
                 const whiteList = this.whiteListTransaction.filter(el => el.signedTransaction.hash !== statusTransaction['hash']);
                 this.whiteListTransaction = (whiteList) ? whiteList : [];
-                //this.sharedService.showWarning('', statusTransaction['data'].status.split('_').join(' '));
               }
             }
           }

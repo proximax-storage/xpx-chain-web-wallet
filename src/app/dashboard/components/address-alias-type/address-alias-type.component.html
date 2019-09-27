@@ -1,136 +1,66 @@
-<div class="row mt-04rem mr-1rem ml-1rem">
-  <!-- Data -->
-  <div class="col-12 col-lg-7 d-flex align-items-start">
+<div class="row">
+  <div class="col-12">
     <div class="row">
-      <!-- Type transfer -->
-      <div class="col-12 overflow-ellipsis-nowrap">
-        <span class="color-dark-green fw-bold fs-2rem">{{addressAlias.nameType}}</span>
-      </div>
 
-      <!-- Timestamp -->
-      <div class="col-12 mt-05rem overflow-ellipsis-nowrap">
-        <span class="color-dark-green fs-07rem fw-500">{{addressAlias?.timestamp}}</span>
+      <div class="col-12 lh-1em mt-05rem">
+        <span class="fw-600 fs-1-2rem">{{addressAlias.nameType}}</span> <br>
+        <span class="fs-075rem">Deadline: {{addressAlias?.timestamp}}</span>
       </div>
 
       <!-- Fee -->
-      <div class="col-12">
-        <div class="row">
-          <div class="col-5 overflow-ellipsis-nowrap">
-            <span class="color-dark-green fw-bold fs-1-3rem">Fee: </span>
-          </div>
-          <div class="col-7 d-flex">
-            <div class="row">
-              <div class="col-12">
-                <img class="icono mb-03rem" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
-                  width="16" alt="">&nbsp;
-                <span class="color-dark-green fw-400 fs-1-3rem">{{addressAlias.fee}} XPX</span>
-              </div>
-            </div>
-          </div>
-        </div>
+      <div class="col-12 mt-1rem">
+        <span class="fw-600 fs-095rem">Fee:&nbsp;&nbsp;</span>
+        <span class="fs-095rem fw-600 color-blue-light">{{addressAlias?.feePart.part1}}</span>
+        <span class="fs-075rem fw-600 color-blue-light">{{addressAlias?.feePart.part2}}</span>
+        <span class="fs-095rem fw-600 color-blue-light"> XPX </span>
+        <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
       </div>
 
-
-      <!-- Type Hex -->
-      <div class="col-12 mt-2rem">
-        <div class="row">
-          <div class="col-5">
-            <span class="color-dark-green fw-bold fs-08rem">Height: </span>
-          </div>
-          <div class="col-7">
-            <span
-              class="color-dark-green fw-400 fs-07rem">{{addressAlias?.data.transactionInfo.height.compact()}}</span>
-          </div>
+      <!-- Height -->
+      <ng-container *ngIf="addressAlias?.data.transactionInfo.height">
+        <div class="col-12 mt-04rem">
+          <span class="fw-600 fs-08rem">Height:&nbsp;&nbsp;</span>
+          <span class="fs-07  5rem">{{addressAlias?.data.transactionInfo.height.compact()}}</span>
         </div>
+      </ng-container>
 
-        <div class="row">
-          <div class="col-5 overflow-ellipsis-nowrap">
-            <span class="color-dark-green fw-bold fs-08rem">Type: </span>
-          </div>
-          <div class="col-7 overflow-ellipsis-nowrap">
-            <span class="color-dark-green fw-400
-              fs-08rem">{{typeTransactionHex}}</span>
-          </div>
-        </div>
+      <!-- Type -->
+      <div class="col-12 mt-04rem">
+        <span class="fw-600 fs-08rem">Type:&nbsp;&nbsp;</span>
+        <span class="fs-065rem">{{addressAlias?.data['type'].toString(16).toUpperCase()}}</span>
+      </div>
+
+      <!-- Action -->
+      <div class="col-12 mt-04rem">
+        <span class="fw-600 fs-08rem">Action:&nbsp;&nbsp;</span>
+        <ng-container *ngIf="addressAlias?.data['actionType'] === undefined">
+          <span class="fs-075rem green-c">Link</span>
+        </ng-container>
+
+        <ng-container *ngIf="addressAlias?.data['actionType'] !== undefined">
+          <span class="fs-075rem color-red">Unlink</span>
+        </ng-container>
       </div>
 
       <!-- Address -->
       <div class="col-12 mt-04rem">
-        <div class="row">
-          <div class="col-5 overflow-ellipsis-nowrap">
-            <span class=" color-dark-green fw-bold fs-08rem">Address: </span>
-          </div>
-          <div class="col-7 overflow-ellipsis-nowrap">
-            <span class=" color-dark-green fw-400 fs-08rem">
-              {{addressAlias?.data['address'].pretty()}}</span>
-          </div>
-        </div>
+        <span class="fw-600 fs-08rem">Address:&nbsp;&nbsp;</span>
+        <span class="fs-065rem">{{addressAlias?.data['address'].pretty()}}</span>
       </div>
 
       <!-- Namespace Id -->
-      <div class="col-12">
-        <div class="row">
-          <div class="col-5 overflow-ellipsis-nowrap">
-            <span class=" color-dark-green fw-bold fs-08rem">NamespaceId: </span>
-          </div>
-          <div class="col-7 overflow-ellipsis-nowrap">
-            <span class=" color-dark-green fw-400 fs-08rem">
-              {{namespaceId}}</span>
-          </div>
-        </div>
+      <div class="col-12 mt-04rem">
+        <span class="fw-600 fs-08rem">Namespace Id:&nbsp;&nbsp;</span>
+        <span class="fs-075rem">{{namespaceId}}</span>
       </div>
 
-      <!-- Namespace Name -->
+      <!-- Namespace Id -->
       <ng-container *ngIf="namespaceName !== ''">
-        <div class="col-12">
-          <div class="row">
-            <div class="col-5 overflow-ellipsis-nowrap">
-              <span class=" color-dark-green fw-bold fs-08rem">NamespaceName: </span>
-            </div>
-            <div class="col-7 overflow-ellipsis-nowrap">
-              <span class=" color-dark-green fw-400 fs-08rem">
-                {{namespaceName}}</span>
-            </div>
-          </div>
+        <div class="col-12 mt-04rem">
+          <span class="fw-600 fs-08rem">Namespace name:&nbsp;&nbsp;</span>
+          <span class="fs-075rem">{{namespaceName}}</span>
         </div>
       </ng-container>
-    </div>
-  </div>
-  <!-- Box signer, signature, hash -->
-  <div class="col-12 col-lg-5" id="boxHashSignerSignature">
-    <div class="row gray-color-transparent lh-1em">
-      <div class="col-12">
-        <div class="row">
-          <div class="col-12">
-            <span class="fs-08rem fw-bolder w-w-b-w"><b>Signer:</b></span>
-          </div>
-          <div class="col-12">
-            <span class="fs-07rem fw-bolder w-w-b-w">{{addressAlias?.data.signer.publicKey}}</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-12 mt-3">
-        <div class="row">
-          <div class="col-12">
-            <span class="fs-08rem fw-bolder w-w-b-w"><b>Signature:</b></span>
-          </div>
-          <div class="col-12">
-            <span class="fs-07rem fw-bolder w-w-b-w">{{addressAlias?.data.signature}}</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-12 mt-3">
-        <div class="row">
-          <div class="col-12">
-            <span class="fs-08rem fw-bolder w-w-b-w"><b>Hash:</b></span>
-          </div>
-          <div class="col-12">
-            <span class="fs-07rem fw-bolder w-w-b-w">{{addressAlias?.data.transactionInfo.hash}}</span>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 </div>
