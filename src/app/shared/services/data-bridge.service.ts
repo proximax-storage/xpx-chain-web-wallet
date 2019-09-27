@@ -227,7 +227,7 @@ export class DataBridgeService {
     // ----------------------------------COSIGNATURE_ADDED--------------------------------------------//
     connector.cosignatureAdded(address).subscribe(async cosignatureAdded => {
       console.log("\n\n-----------------------COSIGNATURE_ADDED--------------------------")
-      console.log(cosignatureAdded)
+      console.log(cosignatureAdded.parentHash)
       console.log("------------------------------------------------------------------\n\n")
       this.setTransactionStatus({
         'type': 'cosignatureAdded',
@@ -238,11 +238,12 @@ export class DataBridgeService {
       // const allAggregateBondedSubject = data.slice(0);
       if (allAggregateBondedSubject && allAggregateBondedSubject.length > 0) {
         const currentTransaction = allAggregateBondedSubject.find(d => d.data.transactionInfo.hash === cosignatureAdded.parentHash);
-        console.log('currentTransaction --> ', currentTransaction);
         if (currentTransaction) {
           if (currentTransaction.data.cosignatures.length > 0) {
             const exist = currentTransaction.data.cosignatures.find(d => d.signature === cosignatureAdded.signature);
-            if(!exist){
+            if (!exist) {
+              audio.play();
+              this.sharedService.showInfo('', 'Cosignature added');
               currentTransaction.data.cosignatures.push(
                 new AggregateTransactionCosignature(
                   cosignatureAdded.signature,
@@ -251,6 +252,8 @@ export class DataBridgeService {
               );
             }
           } else {
+            audio.play();
+            this.sharedService.showInfo('', 'Cosignature added');
             currentTransaction.data.cosignatures.push(
               new AggregateTransactionCosignature(
                 cosignatureAdded.signature,
@@ -259,6 +262,9 @@ export class DataBridgeService {
             );
           }
         }
+      } else {
+        audio.play();
+        this.sharedService.showInfo('', 'Cosignature added');
       }
     });
   }
@@ -312,6 +318,7 @@ export class DataBridgeService {
     connector.status(address).subscribe(status => {
       console.log("\n\n-----------------------STATUS--------------------------")
       console.log(status.hash)
+      // console.log(status)
       console.log("------------------------------------------------------------------\n\n")
       this.sharedService.showWarning('', status.status.split('_').join(' '));
       this.setTransactionStatus({

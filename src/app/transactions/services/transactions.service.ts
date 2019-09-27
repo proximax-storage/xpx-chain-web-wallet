@@ -272,8 +272,7 @@ export class TransactionsService {
       allMosaics.push(new Mosaic(
         new MosaicId(element.id),
         UInt64.fromUint(Number(element.amount))
-      )
-      );
+      ));
     });
 
     const transferTransaction = TransferTransaction.create(
