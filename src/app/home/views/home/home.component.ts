@@ -1,11 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ServicesModuleService, StructureService } from '../../../servicesModule/services/services-module.service';
 import { AppConfig } from '../../../config/app.config';
-import * as CryptoJS from 'crypto-js';
 import { SharedService } from 'src/app/shared/services/shared.service';
 import { WalletService } from 'src/app/wallet/services/wallet.service';
 import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
+import { NetworkTypes } from 'nem-library';
+import { NetworkType } from 'tsjs-xpx-chain-sdk';
+import { NemServiceService } from 'src/app/shared/services/nem-service.service';
+import { ModalDirective } from 'ng-uikit-pro-standard';
+import * as CryptoJS from 'crypto-js';
+// import * as nem from 'nem-sdk';
+import nem from "nem-sdk";
+import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
 
 @Component({
   selector: 'app-home',
@@ -19,15 +26,21 @@ export class HomeComponent implements OnInit {
     importWallet: AppConfig.routes.importWallet,
     selectTypeCreationWallet: AppConfig.routes.selectTypeCreationWallet
   };
+  @ViewChild('basicModal', { static: true }) basicModal: ModalDirective;
+  @ViewChild('file', { static: true }) myInputVariable: ElementRef;
   objectKeys = Object.keys;
   servicesList: StructureService[] = [];
-
+  password: string = '';
+  walletDecryp: any;
 
   constructor(
     private services: ServicesModuleService,
     private sharedService: SharedService,
     private walletService: WalletService,
-    private router: Router
+    private proximaxProvider: ProximaxProvider,
+    private router: Router,
+    private nemProvider: NemServiceService,
+    private serviceModuleService: ServicesModuleService
   ) { }
 
   ngOnInit() {
@@ -65,8 +78,6 @@ export class HomeComponent implements OnInit {
    * @param {Event} $event get the html element
    */
   fileChange(files: File[], $event) {
-    console.log('This is a probe ----------------->', files);
-
     if (files.length > 0) {
       const myReader: FileReader = new FileReader();
       myReader.onloadend = (e) => {
@@ -82,35 +93,24 @@ export class HomeComponent implements OnInit {
               return element.name === walletName;
             }
           );
-
           //Wallet does not exist
           if (existWallet === undefined) {
             let walletName = dataDecryp.name;
             walletName = (walletName.includes(' ') === true) ? walletName.split(' ').join('_') : walletName
             const accounts = [];
-
-            for (const element of dataDecryp.accounts) {
-              if ('publicAccount' in element) {
+            const contacs = [];
+            if (dataDecryp.accounts.length !== undefined) {
+              for (const element of dataDecryp.accounts) {
                 accounts.push(element);
+                console.log('Esta es una pruebaaaa------------->', element);
+                contacs.push({ label: element.name, value: element.address.split('-').join(''), walletContact: true });
               }
-              // else {
-              //   accounts.push({
-              //     address: element,
-              //     byDefault: true,
-              //     encrypted: wallet.encryptedPrivateKey.encryptedKey,
-              //     firstAccount: true,
-              //     iv: wallet.encryptedPrivateKey.iv,
-              //     network: wallet.network,
-              //     nameAccount: 'Primary',
-              //     publicAccount: this.proximaxProvider.getPublicAccountFromPrivateKey(this.proximaxProvider.decryptPrivateKey(
-              //       password,
-              //       wallet.encryptedPrivateKey.encryptedKey,
-              //       wallet.encryptedPrivateKey.iv
-              //     ).toUpperCase(), wallet.network),
-              //     isMultisign: null,
-              //     nis1Account: null
-              //   });
-              // }
+              this.serviceModuleService.setBookAddress(contacs, walletName);
+            } else {
+              this.walletDecryp = dataDecryp;
+              this.password = '';
+              this.basicModal.show();
+              return;
             }
 
             const wallet = {
@@ -119,13 +119,14 @@ export class HomeComponent implements OnInit {
               book: []
             }
 
+            console.log('this a wallet created----->', wallet);
+
             let walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
             walletsStorage.push(wallet);
 
             localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorage));
             this.sharedService.showSuccess('', 'Wallet imported correctly');
             this.router.navigate([`/${AppConfig.routes.auth}`]);
-
           } else {
             this.sharedService.showWarning('', 'The wallet already exists');
           }
@@ -138,4 +139,77 @@ export class HomeComponent implements OnInit {
     }
   }
 
+  createStructNis() {
+    const common = nem.model.objects.create("common")(this.password);
+    // Get the wallet account to decrypt
+    const walletAccount = this.walletDecryp.accounts[0];
+    // Decrypt account private key 
+    nem.crypto.helpers.passwordToPrivatekey(common, walletAccount, walletAccount.algo);
+    // The common object now has a private key
+    console.log(common)
+
+    if (common.privateKey !== '') {
+      let walletName = this.walletDecryp.name;
+      walletName = (walletName.includes(' ') === true) ? walletName.split(' ').join('_') : walletName;
+      const nameWallet = walletName;
+      const network = (this.walletDecryp.accounts[0].network === NetworkTypes.MAIN_NET) ? NetworkType.MAIN_NET : NetworkType.TEST_NET;
+      const password = this.proximaxProvider.createPassword(this.password);
+      const algo = this.walletDecryp.accounts[0].algo;
+      const accounts = [];
+      const contacts = [];
+      for (let index = 0; index < Object.keys(this.walletDecryp.accounts).length; index++) {
+        const walletAccount = this.walletDecryp.accounts[index];
+        nem.crypto.helpers.passwordToPrivatekey(common, walletAccount, algo);
+        const privateKey = common.privateKey;
+        const wallet = this.proximaxProvider.createAccountFromPrivateKey(nameWallet, password, privateKey, network);
+        const nis1Wallet = this.nemProvider.createAccountPrivateKey(privateKey);
+        const nisPublicAccount = {
+          address: nis1Wallet.address,
+          publicKey: nis1Wallet.publicKey
+        };
+        accounts.push({
+          address: wallet.address.plain(),
+          algo: "pass:bip32",
+          brain: true,
+          default: (index === 0),
+          encrypted: wallet.encryptedPrivateKey.encryptedKey,
+          firstAccount: (index === 0),
+          iv: wallet.encryptedPrivateKey.iv,
+          name: this.walletDecryp.accounts[index].label,
+          network: network,
+          publicAccount: this.proximaxProvider.getPublicAccountFromPrivateKey(this.proximaxProvider.decryptPrivateKey(
+            password,
+            wallet.encryptedPrivateKey.encryptedKey,
+            wallet.encryptedPrivateKey.iv
+          ).toUpperCase(), wallet.network),
+          isMultisign: null,
+          nis1Account: nisPublicAccount
+        });
+        contacts.push({ label: this.walletDecryp.accounts[index].label, value: wallet.address.plain(), walletContact: true });
+      }
+      this.serviceModuleService.setBookAddress(contacts, nameWallet);
+      const walletStorage = {
+        name: nameWallet,
+        accounts: accounts,
+        book: []
+      }
+
+      console.log('this a wallet created----->', walletStorage);
+
+      let walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
+      walletsStorage.push(walletStorage);
+      localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorage));
+
+      this.sharedService.showSuccess('', 'Wallet imported correctly');
+      this.router.navigate([`/${AppConfig.routes.auth}`]);
+    } else {
+      this.sharedService.showError('', 'Password Invalid');
+    }
+  }
+
+  clearForm() {
+    this.myInputVariable.nativeElement.value = "";
+    this.password = '';
+    this.walletDecryp = null
+  }
 }
