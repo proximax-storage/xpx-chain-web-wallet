@@ -49,7 +49,62 @@
           alt="">
         <span class="fs-1-2em color-white">IMPORT</span>
       </button>
-      <input #file [hidden]="true" type="file" (change)="fileChange($event.target.files,$event)">
+      <input #file [hidden]="true" type="file" (change)="fileChange($event.target.files,$event)" id="inputFile">
+    </div>
+  </div>
+</div>
+
+<!-- MODAL  Optios-->
+<div class="d-flex align-items-center">
+  <div mdbModal #basicModal="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalInfo"
+    aria-hidden="true">
+    <div class="modal-dialog d-flex align-items-center" role="document">
+      <div class="modal-content form-elegant bord-rad-1-5rem">
+        <div class="modal-header text-center box-modal-white b-t-r-r-1-5rem b-t-l-r-1-5rem p-05rem">
+          <span class="modal-title w-100" id="myModalLabel">
+            <strong class="title-modal-blue">Enter password wallet NIS1</strong>
+          </span>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="basicModal.hide()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-11 col-sm-10 col-md-8 col-lg-6 mx-auto">
+              <div class="md-form form-sm mt-1rem mb-0rem">
+                <img class="form-control-feedback"
+                  src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg" alt="">
+                <input maxlength="30" minlength="8" mdbInputDirective mdbValidate [validateSuccess]="true" [(ngModel)]="password"
+                  [validateError]="true" type="password" id="password" class="form-control form-control-sm input-border"
+                  placeholder="Enter password">
+
+                <!-- VALIDATION -->
+                <!-- <mdb-error *ngIf="
+                    validateInput('password', 'common').invalid &&
+                    (validateInput('password', 'common').dirty || validateInput('password', 'common').touched)">
+                  <span>Required field</span>
+                </mdb-error> -->
+              </div>
+            </div>
+          </div>
+          <!-- buttons create and clear -->
+          <div class="row mt-2rem">
+            <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
+              <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+                size="md" (click)="clearForm();basicModal.hide()">
+                <span class="fs-1-2em color-white">CANCEL</span>
+              </button>
+            </div>
+
+            <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
+              <button mdbBtn type="submit" (click)="createStructNis()" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+                size="md">
+                <span class="fs-1-2em color-white">ACEPT</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
