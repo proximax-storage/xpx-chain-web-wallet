@@ -285,9 +285,25 @@
             </ng-container>
 
             <!-- MOSAIC ALIAS -->
-            <app-mosaic-alias [mosaicAlias]="dataSelected"
-              *ngIf="dataSelected.data.type === typeTransactions.mosaicAlias.id">
-            </app-mosaic-alias>
+            <ng-container *ngIf="dataSelected.data.type === typeTransactions.mosaicAlias.id">
+              <div class="row">
+                <div class="col-11 mx-auto">
+                  <div class="row">
+                    <!-- TYPE LOCK -->
+                    <div class="col-12 col-md-7">
+                      <app-mosaic-alias [mosaicAlias]="dataSelected"></app-mosaic-alias>
+                    </div>
+
+                    <!-- BOX DATA SIGNER HASH -->
+                    <div class="col-12 col-md-5">
+                      <app-box-data-signer-hash [dataSelected]="dataSelected">
+                      </app-box-data-signer-hash>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+
 
             <!--  ADDRESS ALIAS-->
             <ng-container *ngIf="dataSelected.data.type === typeTransactions.addressAlias.id">
@@ -308,7 +324,6 @@
                 </div>
               </div>
             </ng-container>
-
 
 
             <!-- TYPE LOCK -->
