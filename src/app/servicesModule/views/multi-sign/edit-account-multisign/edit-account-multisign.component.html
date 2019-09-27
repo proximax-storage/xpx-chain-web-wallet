@@ -1,324 +1,306 @@
-<div class="container mt-3rem mb-2rem animated fadeIn">
-    <div class="row">
-        <div class="col-12 col-md-8">
-            <span class="fs-1rem txt-a-center line-h-1-2em color-grey">Accounts</span>
-            <span class="fs-1rem txt-a-center line-h-1-2em color-grey"> > </span>
-            <span class="fs-1rem txt-a-center line-h-1-2em color-grey">Multisign</span>
-            <span class="fs-1rem txt-a-center line-h-1-2em color-grey"> > </span>
-            <span class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">EDIT MULTISIG ACCOUNT
-            </span>
-        </div>
+<app-header [params]="paramsHeader"></app-header>
 
-        <div class="col-12 col-md-4 d-flex justify-content-start justify-content-md-end">
-            <a class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio" [routerLink]="[routes.backToService]">
-                <span>Back to Services</span>
-            </a>
+<div class="container-fluid mb-2rem animated fadeIn">
+  <form [formGroup]="editAccountMultsignForm" (ngSubmit)="editIntoMultisigTransaction()">
+
+    <!-- ACCOUNT EDIT -->
+    <div class="row mt-2rem">
+      <div class="col-11 col-md-10 col-lg-9 col-xl-8 mx-auto">
+        <div class="box-grey pt-1rem pb-1rem d-flex">
+          <div class="row">
+            <div class="col-12">
+              <img class="w-30px" src="assets/images/img/icon-account-green-60h-proximax-sirius-wallet.svg">
+              <span class="fw-600"> {{currentAccountToConvert.name}}</span>
+              <span *ngIf="disable">
+                &nbsp; <i title="On partial" style="color:#0056b3" class="fa fa-bell"></i>
+              </span>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
-    <div class="row">
-        <div class="col-12">
-            <hr class="mt-03rem mb-05rem">
+
+    <!-- MIN APPROVA  AND  MIN REMOVE -->
+    <div class="row mt-1-5rem">
+      <div class="col-11 col-md-10 col-lg-9 col-xl-8 mx-auto">
+        <div class="row">
+          <!-- MIN APPROVA -->
+          <div class="col-12 col-md-4 mb-1-5rem d-flex justify-content-center">
+            <div class="row">
+              <div class="col-12 col-md-8 d-flex align-items-center">
+                Minimum Cosignatories to:
+              </div>
+              <div class="d-none d-sm-none d-md-block">
+                <div class="col-md-4 d-flex align-items-center">
+                  <i class="fa fa-angle-right fs-3rem" aria-hidden="true"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- MIN APROVE -->
+          <div class="col-6 col-md-4 mb-1-5rem d-flex align-items-end justify-content-center">
+            <div class="row">
+              <div class="col-12 text-center">Approve transaction</div>
+              <div class="col-12">
+                <div class="md-form form-sm mt-03rem mb-0rem">
+                  <input max="{{minApprovaMaxLength}}" min="{{minApprovaMinLength}}" formControlName="minApprovalDelta"
+                    required mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="number"
+                    id="minApprovalDelta" class="form-control form-control-sm input-border text-center"
+                    placeholder="Min approval" onkeyup="javascript:this.value=this.value.toLowerCase();">
+
+                  <ng-container *ngIf="isMultisig">
+                    <span class="fs-06rem fw-600 pl-1rem">Min Approv: &nbsp;</span>
+                    <span class="fs-06rem">{{accountInfo.multisigInfo.minApproval}}</span>
+                  </ng-container>
+
+                  <!-- VALIDATION -->
+                  <mdb-error
+                    *ngIf="validateInput('minApprovalDelta', '').invalid && (validateInput('minApprovalDelta', '').dirty || validateInput('minApprovalDelta', '').touched)">
+                    <span>Invalid value</span>
+                  </mdb-error>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- MIN REMOVE-->
+          <div class="col-6 col-md-4 mb-1-5rem d-flex align-items-end justify-content-center">
+            <div class="row margin-rem0">
+              <div class="col-12 text-center">Delete users</div>
+              <div class="col-12">
+                <div class="md-form form-sm mt-03rem mb-0rem">
+                  <input max="{{minApprovaMaxLength}}" min="{{minApprovaMinLength}}" formControlName="minRemovalDelta"
+                    required mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="number"
+                    id="minRemovalDelta" class="form-control form-control-sm input-border text-center"
+                    placeholder="Min removal" onkeyup="javascript:this.value=this.value.toLowerCase();">
+                  <ng-container *ngIf="isMultisig">
+                    <span class="fs-06rem fw-600 pl-1rem">Min Removal: &nbsp;</span>
+                    <span class="fs-06rem">{{accountInfo.multisigInfo.minRemoval}}</span>
+                  </ng-container>
+                  <!-- VALIDATION -->
+                  <mdb-error
+                    *ngIf="validateInput('minRemovalDelta', '').invalid && (validateInput('minRemovalDelta', '').dirty || validateInput('minRemovalDelta', '').touched)">
+                    <span>Invalid value</span>
+                  </mdb-error>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
 
 
-    <div class="row">
-        <div class="col-12 justify-content-center">
-            <form [formGroup]="editAccountMultsignForm" (ngSubmit)="editIntoMultisigTransaction()">
+    <!-- COSIGNATORY LIST  -->
+    <div class="row gray-color-transparent pt-1rem pb-1rem">
+      <div class="col-11 col-md-10 col-lg-8 mx-auto">
+        <div class="row">
+          <div class="col-12">
+            <span class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">Approved Cosignatories</span>
+          </div>
+          <ng-container *ngFor="let cosign of cosignatoryList">
+            <div class="col-12 ">
+              <span class="fs-07rem fw-600 txt-a-center ">
+                <i [class.disabled]="isDisabledList" [style.color]="getColor(cosign.type)"
+                  (click)="deleteCosignatory(cosign.id ,cosign.disableItem, cosign.type)" style="cursor: pointer;"
+                  class="fa fa-trash fs-1rem" aria-hidden="true"></i>
+                {{cosign.publicAccount.address.plain()}}
+              </span>
 
-                <!-- ACCOUNT EDIT -->
-                <div class="row ml-01rem">
-                    <div class="col-11 col-md-12 col-lg-8 mx-auto">
-                        <div class="box-grey pt-1rem pb-1rem d-flex">
-                            <div class="row">
-                                <div class="col-12">
-                                    <img class="w-30px" src="assets/images/img/icon-account-green-60h-proximax-sirius-wallet.svg">
-                                    <span class="fw-600"> {{currentAccountToConvert.name}}</span>
-
-                                    <span *ngIf="disable"> &nbsp; <i title="On partial" style="color:#0056b3" class="fa fa-bell">
-                                        </i> </span>
-
-                                    <!-- <span class="fw-600"> {{consginerFirmName}}</span> -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- MIN APPROVA  AND  MIN REMOVE -->
-                <div class="row">
-                    <div class="col-11 col-sm-12 col-md-12 col-lg-8 mx-auto">
-                        <div class="row padding">
-                            <!-- MIN APPROVA -->
-                            <div class="col-6 col-md-4 col-sm-6">
-                                <div class="row margin-rem0">
-                                    <div class="col-10">
-                                        Minimum Cosignatories to...
-                                    </div>
-
-                                    <div class="col-2"><i class="fa fa-angle-right fs-3rem" aria-hidden="true"></i></div>
-                                </div>
-                            </div>
-
-
-
-
-                            <div class="col-12 col-md-4 col-sm-6">
-                                <div class="row margin-rem0">
-                                    <div class="col-6">
-                                        approve transaction
-                                    </div>
-                                    <div class="col-6 col-padding-left-rem0">
-                                        <div class="md-form form-sm mt-03rem mb-0rem">
-                                            <!-- {{minApprovaMaxLength}} -->
-                                            <input max="{{minApprovaMaxLength}}" min="{{minApprovaMinLength}}"
-                                                formControlName="minApprovalDelta" required mdbInputDirective
-                                                mdbValidate [validateSuccess]="true" [validateError]="true" type="number"
-                                                id="minApprovalDelta" class="form-control form-control-sm input-border"
-                                                placeholder="Min approval" onkeyup="javascript:this.value=this.value.toLowerCase();">
-                                            <!-- VALIDATION -->
-                                            <span *ngIf="isMultisig" style="font-size: 0.6rem !important;">Min Approva
-                                                :
-                                                {{accountInfo.multisigInfo.minApproval}}</span>
-                                            <mdb-error *ngIf="validateInput('minApprovalDelta', '').invalid && (validateInput('minApprovalDelta', '').dirty || validateInput('minApprovalDelta', '').touched)">
-                                                <span>Invalid Value</span>
-                                            </mdb-error>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- MIN REMOVE-->
-                            <div class="col-12 col-md-4 col-sm-6">
-                                <div class="row margin-rem0">
-                                    <div class="col-6">
-                                        delete users
-                                    </div>
-                                    <div class="col-6 col-padding-left-rem0">
-                                        <div class="md-form form-sm mt-03rem  mb-0rem">
-                                            <input max="{{minRemoveMaxLength}}" min="{{minRemoveMinLength}}"
-                                                formControlName="minRemovalDelta" required mdbInputDirective
-                                                mdbValidate [validateSuccess]="true" [validateError]="true" type="number"
-                                                id="minRemovalDelta" class="form-control form-control-sm input-border"
-                                                placeholder="Min removal" onkeyup="javascript:this.value=this.value.toLowerCase();">
-                                            <span *ngIf="isMultisig" style="font-size: 0.6rem !important;">Min Removal
-                                                :
-                                                {{accountInfo.multisigInfo.minRemoval}}</span>
-
-                                            <!-- VALIDATION -->
-                                            <mdb-error *ngIf="validateInput('minRemovalDelta', '').invalid && (validateInput('minRemovalDelta', '').dirty || validateInput('minRemovalDelta', '').touched)">
-                                                <span>Invalid value</span>
-                                            </mdb-error>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-
-                        </div>
-                    </div>
-                </div>
-                <!-- COSIGNATORY LIST  -->
-                <div class="row gray-color-transparent  mt-1rem">
-                    <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto">
-                        <div class="row">
-                            <div class="col-12">
-
-                                <!-- <mdb-icon fas icon="angle-right"></mdb-icon> -->
-                                <span class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">Approved
-                                    Cosignatories
-                                </span>
-                            </div>
-                            <ng-container *ngFor="let cosign of cosignatoryList">
-                                <div class="col-12">
-                                    <!--
-                                        <td class="text-center" style="cursor: pointer;" (click)="deleteCosignatory(cosign.id ,cosign.disableItem, cosign.type)">
-                                                <i *ngIf="cosign.action =='Add'" [style.color]="getColor(cosign.type)"
-                                                    class="fa fa-plus" aria-hidden="true"></i>
-                                                    <i *ngIf="cosign.action =='edit'" [style.color]="getColor(cosign.type)"
-                                                    class="fa fa-minus" aria-hidden="true"></i>
-                                            </td> -->
-
-
-                                    <span class="fs-07rem fw-600 txt-a-center "> <i [class.disabled]="isDisabledList"
-                                            [style.color]="getColor(cosign.type)" (click)="deleteCosignatory(cosign.id ,cosign.disableItem, cosign.type)"
-                                            style="cursor: pointer;" class="fa fa-trash fs-1rem" aria-hidden="true"></i>
-                                        {{cosign.publicAccount.address.plain()}}
-                                    </span>
-                                </div>
-                            </ng-container>
-                            <ng-container *ngIf="cosignatoryList.length === 0">
-                                <div class="col-12">
-                                    <span class="fs-07rem fw-600 txt-a-center ">None
-                                    </span>
-                                </div>
-                            </ng-container>
-
-                        </div>
-                    </div>
-                </div>
-
-
-                <!-- Contacts -->
-                <div class="row">
-                    <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto">
-                        <ng-container *ngIf="showContacts && listContact.length > 0">
-                            <div class="row">
-                                <div class="col-11 col-md-10 col-lg-8 mx-auto">
-                                    <ng-select mdbInputDirective mdbValidate formControlName="contact" class="selectWrapper"
-                                        [items]="listContact" bindLabel="label" bindValue="value" placeholder="Contact"
-                                        (change)="selectContact($event)">
-                                    </ng-select>
-                                </div>
-                            </div>
-                        </ng-container>
-                        <div class="row">
-                            <div class="col-11 col-sm-11 col-lg-10 mx-auto">
-                                <ng-container *ngIf="searchContact">
-                                    <div class="col-12">
-                                        <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate">
-                                        </mdb-progress-bar>
-                                    </div>
-                                </ng-container>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- COSIGNATORY -->
-                <div class="row">
-                    <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto">
-                        <div class="row">
-                            <!-- COSIGNATORY INPUT-->
-                            <div class="col-7 col-sm-8 col-md-9">
-                                <div class="md-form form-sm mt-1rem mb-0rem">
-                                    <input [maxlength]="configurationForm.privateKey.maxLength" [minlength]="configurationForm.privateKey.minLength"
-                                        formControlName="cosignatory" required mdbInputDirective mdbValidate
-                                        [validateSuccess]="true" [validateError]="true" type="text" id="cosignatory"
-                                        class="form-control form-control-sm input-border" placeholder="Cosignatory Account public key "
-                                        onkeyup="javascript:this.value=this.value.toLowerCase();">
-                                    <!-- VALIDATION -->
-                                    <mdb-error *ngIf="validateInput('cosignatory', '').invalid && (validateInput('cosignatory', '').dirty || validateInput('cosignatory', '').touched)">
-                                        <span>Public key required</span>
-                                    </mdb-error>
-                                </div>
-                            </div>
-                            <!--SHOW CONTACT-->
-                            <ng-container>
-
-                                <div class="col-4 col-sm-3 col-md-2 d-flex justify-content-center align-items-center pt-10px">
-                                    <div [attr.disabled]="listContact.length === 0 || (editAccountMultsignForm.status=='DISABLED')"
-                                        class="background-gray-icons p-12px bord-rad-25px cursor-p" (click)="showContacts = (listContact.length > 0 &&  (editAccountMultsignForm.status !== 'DISABLED')) ? !showContacts : showContacts"
-                                        [title]="(!showContacts) ? 'Show contacts': 'Hide contacts'">
-                                        <img class=" w-30px" [src]="(!showContacts && listContact.length === 0 || (editAccountMultsignForm.status=='DISABLED')) ?
-											'assets/images/img/icon-address-book-gray-28h-proximax-sirius-wallet.svg' :
-											'assets/images/img/icon-address-green-book-16h-proximax-sirius-wallet.svg'
-											">
-                                    </div>
-                                </div>
-                            </ng-container>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto">
-                        <div class="row mt-1rem">
-                            <div class="col-12 d-flex justify-content-center">
-                                <button mdbBtn type="button" rounded="true" [disabled]="mdbBtnAddCosignatory"
-                                    mdbWavesEffect class="background-btn-inverse pl-2rem pr-2rem" size="md" (click)="addCosignatory()">
-                                    <span class="fs-1-2em color-blue-intermedio fw-700">(+) Add Cosignatory</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- COSIGNATORIES -->
-                <ng-container *ngIf="consginerFirmList.length > 1  && showConsginerFirmList">
-                    <div class="row">
-                        <div class="col-11 col-md-10 col-lg-8 mx-auto">
-                            <ng-select mdbInputDirective mdbValidate [clearable]="false" class="selectWrapper" [items]="consginerFirmList"
-                                bindLabel="label" labelForId="cosignatorieSign" bindValue="value" placeholder="Cosignatorie sign"
-                                formControlName="cosignatorieSign" (change)="selectCosignatorieSign($event)">
-                            </ng-select>
-                        </div>
-                    </div>
-                </ng-container>
-
-                <!-- FEE -->
-                <div class="row ml-01rem">
-                    <div class="col-11 col-md-10 col-lg-8 mx-auto">
-                        <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
-                            <div class="row">
-                                <div class="col-12">
-                                    <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
-                                        alt="">
-                                    <span>Fee: {{amountFormatterSimple(feeTransaction)}} XPX </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- FEE Lock fund   -->
-                <div class="row ml-01rem">
-                    <div class="col-11 col-md-10 col-lg-8 mx-auto">
-                        <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
-                            <div class="row">
-                                <div class="col-12">
-                                    <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
-                                        alt="">
-                                    <span>Lock fund fee: {{amountFormatterSimple(feeLockfund)}} XPX </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- PASSWORD -->
-                <div class="row">
-                    <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto">
-                        <div class="row">
-                            <div class="col-11 mx-auto">
-                                <div class="md-form form-sm">
-                                    <input style="" [maxlength]="configurationForm.passwordWallet.maxLength"
-                                        [minlength]="configurationForm.passwordWallet.minLength" formControlName="password"
-                                        required mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
-                                        type="password" id="password" class="form-control form-control-sm input-border"
-                                        placeholder="Enter wallet password">
-                                    <mdb-error *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
-                                        <span>Password required</span>
-                                    </mdb-error>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto">
-
-                        <div class="row">
-                            <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-                                <button [disabled]="editAccountMultsignForm.status=='DISABLED'" mdbBtn type="button"
-                                    rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md"
-                                    (click)="clearForm()">
-                                    <span class="fs-1-2em color-white">CLEAR</span>
-                                </button>
-                            </div>
-                            <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-                                <button [disabled]="editAccountMultsignForm.invalid || cosignatoryList.length == 0" mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
-                                    size="md">
-                                    <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status"
-                                        aria-hidden="true" *ngIf="blockSend"></span>
-                                    <span class="fs-1-2em color-white">Send</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </form>
-
-
+              <!-- <span class="fs-07rem fw-600 txt-a-center "> <i
+                  (click)="deleteCosignatory(cosign.id ,cosign.disableItem, cosign.type)" style="cursor: pointer;"
+                  class="fa fa-trash fs-1rem" aria-hidden="true"></i>
+                {{cosign.publicAccount.address.plain()}}
+              </span> -->
+            </div>
+          </ng-container>
+          <ng-container *ngIf="cosignatoryList.length === 0">
+            <div class="col-12">
+              <span class="fs-07rem fw-600 txt-a-center">None</span>
+            </div>
+          </ng-container>
         </div>
+      </div>
     </div>
+
+    <!-- CONTACTS -->
+    <ng-container *ngIf="showContacts && listContact.length > 0">
+      <div class="row mt-1-5rem">
+        <div class="col-11 col-md-10 col-lg-9 col-xl-8 mx-auto">
+          <ng-select mdbInputDirective mdbValidate formControlName="contact" class="selectWrapper" [searchable]="false"
+            [items]="listContact" bindLabel="label" bindValue="value" placeholder="Contact"
+            (change)="selectContact($event)">
+          </ng-select>
+        </div>
+
+        <!-- Progress -->
+        <div class="col-11 col-md-10 col-lg-9 col-xl-8 mx-auto">
+          <ng-container *ngIf="searchContact">
+            <div class="col-12">
+              <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate">
+              </mdb-progress-bar>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- COSIGNATORY -->
+    <div class="row mt-1-5rem">
+      <div class="col-11 col-md-10 col-lg-9 col-xl-8 mx-auto">
+        <div class="row">
+          <!-- COSIGNATORY INPUT-->
+          <div class="col-9 col-sm-10 col-lg-11">
+            <div class="md-form form-sm mt-1rem mb-0rem">
+              <img class="form-control-feedback"
+                src="assets/images/img/icon-public-key-green-16h-proximax-sirius-wallet.svg" alt="" width="43"
+                height="43">
+              <input [maxlength]="configurationForm.privateKey.maxLength"
+                [minlength]="configurationForm.privateKey.minLength" formControlName="cosignatory" required
+                mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
+                id="cosignatory" class="form-control form-control-sm input-border"
+                placeholder="Cosignatory Account public key " onkeyup="javascript:this.value=this.value.toLowerCase();">
+              <!-- VALIDATION -->
+              <mdb-error
+                *ngIf="validateInput('cosignatory', '').invalid && (validateInput('cosignatory', '').dirty || validateInput('cosignatory', '').touched)">
+                <span>Required field</span>
+              </mdb-error>
+            </div>
+          </div>
+          <!--SHOW CONTACT-->
+          <ng-container>
+            <div class="col-3 col-sm-2 col-lg-1 d-flex justify-content-center align-items-center pt-12px">
+              <div [attr.disabled]="listContact.length === 0"
+                class="background-gray-icons p-12px bord-rad-25px cursor-p"
+                (click)="showContacts = (listContact.length > 0) ? !showContacts : showContacts"
+                [title]="(!showContacts) ? 'Show contacts': 'Hide contacts'">
+                <img class=" w-30px" [src]="(!showContacts && listContact.length === 0) ?
+                        'assets/images/img/icon-address-book-gray-28h-proximax-sirius-wallet.svg' :
+                        'assets/images/img/icon-address-green-book-16h-proximax-sirius-wallet.svg'
+                        ">
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add cosignatory -->
+    <div class="row mt-1-5rem">
+      <div class="col-11 col-md-10 col-lg-9 col-xl-8 mx-auto d-flex justify-content-center">
+        <button mdbBtn type="button" rounded="true" [disabled]="mdbBtnAddCosignatory" mdbWavesEffect
+          class="background-btn-inverse pl-2rem pr-2rem" size="md" (click)="addCosignatory()">
+          <span class="fs-1-2em color-blue-intermedio fw-700">(+) Add Cosignatory</span>
+        </button>
+      </div>
+    </div>
+
+
+
+    <!-- COSIGNATORIES -->
+    <ng-container *ngIf="consginerFirmList.length > 1  && showConsginerFirmList">
+      <div class="row mt-1-5rem">
+        <div class="col-11 col-md-10 col-lg-9 col-xl-8 mx-auto">
+          <ng-select mdbInputDirective mdbValidate [clearable]="false" class="selectWrapper" [items]="consginerFirmList"
+            bindLabel="label" labelForId="cosignatorieSign" bindValue="value" placeholder="Cosignatorie sign"
+            formControlName="cosignatorieSign" (change)="selectCosignatorieSign($event)">
+          </ng-select>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- FEE -->
+    <div class="row mt-1-5rem">
+      <div class="col-11 col-md-10 col-lg-9 col-xl-8 mx-auto">
+        <div class="row">
+          <div class="col-12 col-sm-6">
+            <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
+              <div class="row">
+                <div class="col-12 text-center">
+                  <span>Fee: <br></span>
+                  <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" alt="">
+                  <span class="fs-09rem">{{amountFormatterSimple(feeTransaction)}} XPX </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12 col-sm-6">
+            <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
+              <div class="row">
+                <div class="col-12 text-center">
+                  <span>Lockfund: <br> </span>
+                  <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" alt="">
+                  <span class="fs-09rem">{{amountFormatterSimple(feeLockfund)}} XPX</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PASSWORD -->
+    <div class="row mt-1-5rem">
+      <div class="col-11 col-md-10 col-lg-9 col-xl-8 mx-auto">
+        <div class="md-form form-sm">
+          <img class="form-control-feedback" src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg"
+            alt="">
+          <input [maxlength]="configurationForm.passwordWallet.maxLength"
+            [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" required
+            mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password" id="password"
+            class="form-control form-control-sm input-border" placeholder="Enter wallet password">
+          <mdb-error
+            *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
+            <span>Required field</span>
+          </mdb-error>
+        </div>
+      </div>
+    </div>
+
+    <!-- <div class="row">
+      <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto">
+
+        <div class="row">
+          <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
+            <button [disabled]="editAccountMultsignForm.status=='DISABLED'" mdbBtn type="button" rounded="true"
+              mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md" (click)="clearForm()">
+              <span class="fs-1-2em color-white">CLEAR</span>
+            </button>
+          </div>
+          <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
+            <button [disabled]="editAccountMultsignForm.invalid || cosignatoryList.length == 0" mdbBtn type="submit"
+              rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
+              <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
+                *ngIf="blockSend"></span>
+              <span class="fs-1-2em color-white">Send</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div> -->
+
+    <!-- Buttons -->
+    <div class="row mt-1-5rem">
+      <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto">
+        <div class="row">
+          <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
+            <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+              size="md" [disabled]="editAccountMultsignForm.status=='DISABLED'" (click)="clearForm()">
+              <span class="fs-1-2em color-white">Clear</span>
+            </button>
+          </div>
+          <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
+            <button [disabled]="editAccountMultsignForm.invalid || cosignatoryList.length == 0 || editAccountMultsignForm.status=='DISABLED'" mdbBtn type="submit"
+              rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
+              <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
+                *ngIf="blockSend"></span>
+              <span class="fs-1-2em color-white">Send</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
 </div>

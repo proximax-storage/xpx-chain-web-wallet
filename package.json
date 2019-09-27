@@ -67,7 +67,7 @@
     "rxjs": "^6.5.3",
     "screenfull": "^4.2.0",
     "tsjs-chain-xipfs-sdk": "^0.2.3",
-    "tsjs-xpx-chain-sdk": "^0.5.5",
+    "tsjs-xpx-chain-sdk": "^0.6.0",
     "tslib": "^1.9.0",
     "zone.js": "~0.9.1"
   },

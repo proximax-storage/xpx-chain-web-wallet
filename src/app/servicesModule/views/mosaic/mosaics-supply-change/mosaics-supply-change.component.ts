@@ -21,7 +21,7 @@ export class MosaicsSupplyChangeComponent implements OnInit {
 
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Mosaics',
-    componentName: 'MODIFY SUPPLY',
+    componentName: 'Modify supply',
   };
   @BlockUI() blockUI: NgBlockUI;
   currentBlock: number = 0;
@@ -91,7 +91,9 @@ export class MosaicsSupplyChangeComponent implements OnInit {
     this.configurationForm = this.sharedService.configurationForm;
     this.createForm();
     this.amountAccount = this.walletService.getAmountAccount();
-    this.subscribe['block'] = await this.dataBridge.getBlock().subscribe(next => this.currentBlock = next);
+    console.log(this.amountAccount);
+
+    this.subscribe['block'] = this.dataBridge.getBlock().subscribe(next => this.currentBlock = next);
     const data = await this.mosaicService.filterMosaics();
     const mosaicsSelect = this.parentMosaic.slice(0);
     data.forEach(element => {

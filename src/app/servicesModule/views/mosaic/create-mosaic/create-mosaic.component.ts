@@ -21,7 +21,7 @@ export class CreateMosaicComponent implements OnInit {
 
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Mosaics',
-    componentName: 'CREATE',
+    componentName: 'Create',
   };
   @BlockUI() blockUI: NgBlockUI;
   configurationForm: ConfigurationForm = {};
@@ -422,7 +422,7 @@ export class CreateMosaicComponent implements OnInit {
     this.mosaicForm.disable();
     this.currentAccount = this.walletService.currentAccount;
     this.accountInfo = this.walletService.filterAccountInfo(this.currentAccount.name);
-    if (this.accountInfo && this.accountInfo.accountInfo.mosaics && this.accountInfo.accountInfo.mosaics.length > 0) {
+    if (this.accountInfo && this.accountInfo.accountInfo && this.accountInfo.accountInfo.mosaics && this.accountInfo.accountInfo.mosaics.length > 0) {
       const mosaicXPX = this.accountInfo.accountInfo.mosaics.find(x => x.id.toHex() === environment.mosaicXpxInfo.id);
       if (mosaicXPX) {
         if (mosaicXPX.amount.compact() >= Number(this.rentalFee)) {
@@ -431,8 +431,10 @@ export class CreateMosaicComponent implements OnInit {
           return;
         }
       }
-      this.insufficientBalance = true;
     }
+
+    this.insufficientBalance = true;
+    return;
   }
 
   /**

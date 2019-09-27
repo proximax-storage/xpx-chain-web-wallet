@@ -15,26 +15,25 @@ import { PublicAccount } from 'tsjs-xpx-chain-sdk';
   styleUrls: ['./account-delete.component.css']
 })
 export class AccountDeleteComponent implements OnInit {
-  validatingForm: FormGroup;
+  // validatingForm: FormGroup;
   currenAccount: AccountsInterface = null;
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Accounts',
     componentName: 'DELETE',
     extraButton: 'View all accounts',
     routerExtraButton: `/${AppConfig.routes.viewAllAccount}`
-
   };
-  privateKey = '';
+  routes = {
+    viewAllAccount: `/${AppConfig.routes.viewAllAccount}`,
+    deleteAccountConfirm: `/${AppConfig.routes.deleteAccountConfirm}/`,
+  };
   accountInfo: AccountsInfoInterface = null;
   subscribeAccount = null;
   accountValid: boolean = false;
   viewPublicKey = false;
   showPassword: boolean = true;
-  title = 'Delete Account';
-  descriptionPrivateKey = `Warning! Before proceeding, make sure store your private key in a safe place. Access to
-  your digital assets cannot be recovered without it.`;
-  titleDescription = '';
-  description = 'Warning! Before proceeding, make sure store your private key in a safe place. Access to your digital assets cannot be recovered without it.';
+  title = 'Accounts that are associated with this device';
+  texAlert = 'Would you like to delete permanently this account?'
   accountName: string;
   address: any;
   publicKey: string;
@@ -43,13 +42,8 @@ export class AccountDeleteComponent implements OnInit {
     private activateRoute: ActivatedRoute,
     private sharedService: SharedService,
     private walletService: WalletService,
-    private serviceModuleService: ServicesModuleService,
-    private proximaxProvider: ProximaxProvider,
-    private router: Router,
-    private transactionService: TransactionsService,
+    private proximaxProvider: ProximaxProvider
   ) {
-    this.configurationForm = this.sharedService.configurationForm;
-    this.createForm();
   }
 
 
@@ -108,109 +102,109 @@ export class AccountDeleteComponent implements OnInit {
   copyMessage(message: string) {
     this.sharedService.showSuccess('', `${message} copied`);
   }
-  /**
-   *
-   */
-  createForm() {
-    this.validatingForm = new FormGroup({
-      password: new FormControl('', [
-        Validators.required,
-        Validators.minLength(this.configurationForm.passwordWallet.minLength),
-        Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
-      ])
-    });
-  }
+  // /**
+  //  *
+  //  */
+  // createForm() {
+  //   this.validatingForm = new FormGroup({
+  //     password: new FormControl('', [
+  //       Validators.required,
+  //       Validators.minLength(this.configurationForm.passwordWallet.minLength),
+  //       Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
+  //     ])
+  //   });
+  // }
 
-  /**
-   *
-   *
-   * @returns
-   * @memberof AccountDeleteComponent
-   */
-  decryptWallet() {
-    console.log('decryptWallet');
-    if (this.validatingForm.get('password').value !== '') {
-      const common = { password: this.validatingForm.get('password').value };
-      if (this.walletService.decrypt(common, this.currenAccount)) {
-        this.privateKey = common['privateKey'].toUpperCase();
-        this.validatingForm.get('password').patchValue('', { emitEvent: false, onlySelf: true });
-        this.showPassword = false;
-        return;
-      }
-      this.validatingForm.get('password').patchValue('', { emitEvent: false, onlySelf: true });;
-      this.privateKey = '';
-      return;
-    } else {
-      this.sharedService.showError('', 'Please, enter a password');
-    }
-  }
+  // /**
+  //  *
+  //  *
+  //  * @returns
+  //  * @memberof AccountDeleteComponent
+  //  */
+  // decryptWallet() {
+  //   console.log('decryptWallet');
+  //   if (this.validatingForm.get('password').value !== '') {
+  //     const common = { password: this.validatingForm.get('password').value };
+  //     if (this.walletService.decrypt(common, this.currenAccount)) {
+  //       // this.privateKey = common['privateKey'].toUpperCase();
+  //       this.validatingForm.get('password').patchValue('', { emitEvent: false, onlySelf: true });
+  //       this.showPassword = false;
+  //       return;
+  //     }
+  //     this.validatingForm.get('password').patchValue('', { emitEvent: false, onlySelf: true });;
+  //     // this.privateKey = '';
+  //     return;
+  //   } else {
+  //     this.sharedService.showError('', 'Please, enter a password');
+  //   }
+  // }
 
-  get input() { return this.validatingForm.get('password'); }
+  // get input() { return this.validatingForm.get('password'); }
 
-  /**
-   *
-   *
-   * @memberof AccountDeleteComponent
-   */
-  hidePrivateKey() {
-    console.log('hidePrivateKey');
-    this.privateKey = '';
-    this.showPassword = true;
-  }
+  // /**
+  //  *
+  //  *
+  //  * @memberof AccountDeleteComponent
+  //  */
+  // hidePrivateKey() {
+  //   console.log('hidePrivateKey');
+  //   this.privateKey = '';
+  //   this.showPassword = true;
+  // }
 
-  /**
-  *
-  *
-  * @param {string} [nameInput='']
-  * @param {string} [nameControl='']
-  * @param {string} [nameValidation='']
-  * @returns
-  * @memberof AuthComponent
-  */
-  validateInput(nameInput: string = '', nameControl: string = '', nameValidation: string = '') {
-    let validation: AbstractControl = null;
-    if (nameInput !== '' && nameControl !== '') {
-      validation = this.validatingForm.controls[nameControl].get(nameInput);
-    } else if (nameInput === '' && nameControl !== '' && nameValidation !== '') {
-      validation = this.validatingForm.controls[nameControl].getError(nameValidation);
-    } else if (nameInput !== '') {
-      validation = this.validatingForm.get(nameInput);
-    }
-    return validation;
-  }
-  /**
-     *
-     *
-     * @memberof AccountDeleteComponent
-     */
+  // /**
+  // *
+  // *
+  // * @param {string} [nameInput='']
+  // * @param {string} [nameControl='']
+  // * @param {string} [nameValidation='']
+  // * @returns
+  // * @memberof AuthComponent
+  // */
+  // validateInput(nameInput: string = '', nameControl: string = '', nameValidation: string = '') {
+  //   let validation: AbstractControl = null;
+  //   if (nameInput !== '' && nameControl !== '') {
+  //     validation = this.validatingForm.controls[nameControl].get(nameInput);
+  //   } else if (nameInput === '' && nameControl !== '' && nameValidation !== '') {
+  //     validation = this.validatingForm.controls[nameControl].getError(nameValidation);
+  //   } else if (nameInput !== '') {
+  //     validation = this.validatingForm.get(nameInput);
+  //   }
+  //   return validation;
+  // }
+  // /**
+  //    *
+  //    *
+  //    * @memberof AccountDeleteComponent
+  //    */
 
-  goToRoute() {
+  // goToRoute() {
 
-    this.router.navigate([`/${AppConfig.routes.viewAllAccount}`]);
-  }
+  //   this.router.navigate([`/${AppConfig.routes.viewAllAccount}`]);
+  // }
 
 
-  /**
-   *
-   *
-   * @memberof AccountDeleteComponent
-   */
+  // /**
+  //  *
+  //  *
+  //  * @memberof AccountDeleteComponent
+  //  */
 
-  deleteAccount() {
-    if (this.validatingForm.get('password').value !== '') {
-      const common = { password: this.validatingForm.get('password').value };
-      if (this.walletService.decrypt(common, this.currenAccount)) {
-        const revalidateMultisig = true;
-        this.walletService.removeAccountWallet(this.accountName, revalidateMultisig);
-        this.transactionService.updateBalance();
-        this.sharedService.showInfo('', 'Your account has be deleted');
-        this.router.navigate([`/${AppConfig.routes.viewAllAccount}`]);
-      }
-      this.validatingForm.get('password').patchValue('', { emitEvent: false, onlySelf: true });
-    } else {
-      this.sharedService.showError('', 'Please, enter a password');
-    }
+  // deleteAccount() {
+  //   if (this.validatingForm.get('password').value !== '') {
+  //     const common = { password: this.validatingForm.get('password').value };
+  //     if (this.walletService.decrypt(common, this.currenAccount)) {
+  //       const revalidateMultisig = true;
+  //       this.walletService.removeAccountWallet(this.accountName, revalidateMultisig);
+  //       this.transactionService.updateBalance();
+  //       this.sharedService.showInfo('', 'Your account has be deleted');
+  //       this.router.navigate([`/${AppConfig.routes.viewAllAccount}`]);
+  //     }
+  //     this.validatingForm.get('password').patchValue('', { emitEvent: false, onlySelf: true });
+  //   } else {
+  //     this.sharedService.showError('', 'Please, enter a password');
+  //   }
 
-  }
+  // }
 
 }

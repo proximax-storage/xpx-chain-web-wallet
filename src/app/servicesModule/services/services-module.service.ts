@@ -117,6 +117,18 @@ export class ServicesModuleService {
     // console.log(this.itemBook);
   }
 
+  /**
+     *
+     *
+     * 
+     * @param {string} itemEnvironment
+     * @param {string} nameWallet
+     * @memberof ServicesModuleService
+     */
+  removeItemStorage(itemEnvironment: string, nameWallet: string) {
+    localStorage.removeItem(`${itemEnvironment}-${nameWallet}`);
+  }
+
 
   /******************************************************/
 

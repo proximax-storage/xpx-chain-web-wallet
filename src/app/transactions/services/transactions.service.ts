@@ -515,7 +515,7 @@ export class TransactionsService {
         ) {
           recipientRentalFeeSink = this.mosaicRentalFeeSink.address_public_test;
         } else {
-          recipientRentalFeeSink = "XXXXXX-XXXXXX-XXXXXX-XXXXXX-XXXXXX-XXXX";
+          recipientRentalFeeSink = "-";
         }
       }
 
@@ -548,9 +548,6 @@ export class TransactionsService {
                 this.walletService.setSwapTransactions$(walletTransactionsNis.transactions);
                 this.walletService.saveAccountWalletTransNisStorage(walletTransactionsNis);
               }
-
-              console.log('msg ---------------------->', msg);
-              
             }
           }
         }

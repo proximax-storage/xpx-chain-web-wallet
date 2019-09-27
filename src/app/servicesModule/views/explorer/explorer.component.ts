@@ -22,7 +22,7 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
 
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Transaction explorer',
-    componentName: 'EXPLORE'
+    componentName: 'Explore'
   };
   searching = false;
   objectKeys = Object.keys;

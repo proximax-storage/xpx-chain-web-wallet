@@ -1,33 +1,32 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HeaderServicesInterface, ServicesModuleService } from 'src/app/servicesModule/services/services-module.service';
-import { WalletService, WalletAccountInterface } from '../../services/wallet.service';
 import { ConfigurationForm, SharedService } from 'src/app/shared/services/shared.service';
 import { FormGroup, FormControl, Validators, AbstractControl, FormBuilder } from '@angular/forms';
 import { AppConfig } from 'src/app/config/app.config';
-import { environment } from 'src/environments/environment.prod';
+import { WalletService, AccountsInterface } from 'src/app/wallet/services/wallet.service';
+import { TransactionsService } from 'src/app/transactions/services/transactions.service';
 
 @Component({
-  selector: 'app-delete-wallet-confirm',
-  templateUrl: './delete-wallet-confirm.component.html',
-  styleUrls: ['./delete-wallet-confirm.component.css']
+  selector: 'app-account-delete-confirm',
+  templateUrl: './account-delete-confirm.component.html',
+  styleUrls: ['./account-delete-confirm.component.css']
 })
-export class DeleteWalletConfirmComponent implements OnInit {
+export class AccountDeleteConfirmComponent implements OnInit {
   paramsHeader: HeaderServicesInterface = {
-    moduleName: 'Wallet',
-    componentName: 'CONFIRM DELETE'
-  };
+    moduleName: 'Accounts',
+    componentName: 'CONFIRM DELETE',
+    extraButton: 'View all accounts',
+    routerExtraButton: `/${AppConfig.routes.viewAllAccount}`
 
+  };
   routes = {
-    viewAllWallets: `/${AppConfig.routes.viewAllWallets}`,
+    viewAllAccount: `/${AppConfig.routes.viewAllAccount}`,
   };
-  wallet: WalletAccountInterface;
   tittle = 'will be deleted from your device.';
-
-
-  
-  Information = `Warning! This action will delete this wallet. It cannot be undone. if you have not saved your
-  private keys, access to the accounts contained is this wallet will be permanently lost.`
+  currenAccount: AccountsInterface = null;
+  Information = `Warning! This action will delete this account. It cannot be undone.  If you have not
+   saved your private keys, access to the account and contained will be permanently lost.`
   configurationForm: ConfigurationForm;
   validatingForm: FormGroup;
   ban: boolean = false;
@@ -38,24 +37,33 @@ export class DeleteWalletConfirmComponent implements OnInit {
     private walletService: WalletService,
     private fb: FormBuilder,
     private router: Router,
-    private servicesModuleService: ServicesModuleService) {
-
+    private transactionsService: TransactionsService) {
     this.configurationForm = this.sharedService.configurationForm;
     this.createForm();
-  }
 
+  }
   ngOnInit() {
     let name = this.activateRoute.snapshot.paramMap.get('name');
-    this.wallet = this.walletService.getWalletStorageName(name)[0];
-    if (this.wallet == undefined)
-      this.router.navigate([`/${AppConfig.routes.viewAllWallets}`]);
+    this.currenAccount = this.walletService.filterAccountWallet(name);
   }
-
   /**
- *
- *
- * @memberof DeleteWalletConfirmComponent
- */
+   * @memberof AccountDeleteConfirmComponent
+   */
+  clearForm() {
+    this.ban = false;
+    this.validatingForm.reset({
+      checked: false,
+      password: ''
+    }, {
+        emitEvent: false
+      }
+    );
+  }
+/**
+*
+*
+* @memberof AccountDeleteConfirmComponent
+*/
   createForm() {
     this.validatingForm = this.fb.group({
       password: ['', [
@@ -67,16 +75,15 @@ export class DeleteWalletConfirmComponent implements OnInit {
     });
   }
 
-
-  /**
- *
- *
- * @param {string} [nameInput='']
- * @param {string} [nameControl='']
- * @param {string} [nameValidation='']
- * @returns
- * @memberof AuthComponent
- */
+/**
+*
+*
+* @param {string} [nameInput='']
+* @param {string} [nameControl='']
+* @param {string} [nameValidation='']
+* @returns
+* @memberof AccountDeleteConfirmComponent
+*/
   validateInput(nameInput: string = '', nameControl: string = '', nameValidation: string = '') {
     let validation: AbstractControl = null;
     if (nameInput !== '' && nameControl !== '') {
@@ -90,37 +97,22 @@ export class DeleteWalletConfirmComponent implements OnInit {
   }
 
   /**
-  * @memberof DeleteWalletConfirmComponent
-  */
-  clearForm() {
-    this.ban = false;
-    this.validatingForm.reset({
-      checked: false,
-
-      password: ''
-    }, {
-        emitEvent: false
-      }
-    );
-  }
-  /**
- *
- *
- * @memberof DeleteWalletConfirmComponent
- */
-  deleteWallet() {
+*
+*
+* @memberof AccountDeleteConfirmComponent
+*/
+  deleteAccount() {
     if (this.validatingForm.valid && !this.ban) {
       this.ban = true;
-      const accountDecrypt = this.wallet.accounts[0]
+      const accountDecrypt = this.currenAccount
       let common: any = { password: this.validatingForm.get("password").value };
       if (this.walletService.decrypt(common, accountDecrypt)) {
-        const value = this.walletService.removeWallet(this.wallet.name);
-        if (value) {
-          this.servicesModuleService.removeItemStorage(environment.itemBooksAddress, this.wallet.name)
-          this.sharedService.showSuccess('', 'Wallet removed');
-          this.clearForm();
-          this.router.navigate([`/${AppConfig.routes.viewAllWallets}`]);
-        }
+        const revalidateMultisig = true;
+        this.walletService.removeAccountWallet(this.currenAccount.name, revalidateMultisig);
+        this.transactionsService.updateBalance();
+        this.clearForm();
+        this.sharedService.showInfo('', 'Your account has be deleted');
+        this.router.navigate([`/${AppConfig.routes.viewAllAccount}`]);
       } else {
         this.ban = false;
       }

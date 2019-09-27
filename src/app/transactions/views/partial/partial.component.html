@@ -23,7 +23,9 @@
   <div class="row d-flex justify-content-center">
     <div class="col-12">
       <div class="row d-flex align-items-center">
-        <div class="col-2 col-md-1 d-flex justify-content-center"> > </div>
+        <div class="col-2 col-md-1 d-flex justify-content-center">
+          <i class="fa fa-angle-right fs-2rem color-gray-strong" aria-hidden="true"></i>
+        </div>
         <div class="col-8 col-md-10">
           <div class="row d-flex justify-content-center">
             <div class="col-12 col-sm-8 d-flex justify-content-md-end justify-content-center">
@@ -33,7 +35,9 @@
             </div>
           </div>
         </div>
-        <div class="col-2 col-md-1 d-flex justify-content-center"> > </div>
+        <div class="col-2 col-md-1 d-flex justify-content-center">
+          <i class="fa fa-angle-left fs-2rem color-gray-strong" aria-hidden="true"></i>
+        </div>
       </div>
     </div>
   </div>
@@ -41,7 +45,7 @@
 
 <div class="container">
   <div class="row mt-2rem">
-    <div class="col-11">
+    <div class="col-11 mx-auto">
       <span class="fw-600 d-flex justify-content-center">{{aggregateTransactions.length}} results found</span>
     </div>
   </div>
@@ -207,7 +211,7 @@
                       <div class="col-12 pt-1rem background-gray-light">
                         <div class="row lh-1em">
                           <div class="col-12">
-                            <span class="fw-600 fs-065rem">My cosignature account: </span>
+                            <span class="fw-600 fs-065rem">Signer cosignatorie account: </span>
                           </div>
                           <div class="col-12">
                             <span class="fs-065rem">{{dataSelected?.senderAddress}}</span>
@@ -218,23 +222,24 @@
                           *ngIf="dataSelected?.data['cosignatures'] && dataSelected?.data['cosignatures'].length > 0">
                           <div class="row lh-1em mt-1rem mb-1rem">
                             <div class="col-12">
-                              <span class="fw-600 fs-065rem">Others cosignatories</span>
+                              <span class="fw-600 fs-065rem">Others cosignatories:</span>
                             </div>
                             <ng-container *ngFor="let dataSigner of dataSelected.data['cosignatures']">
                               <div class="col-12 mb-03rem">
                                 <!-- <span class="fw-600 fs-065rem">({{dataSelected?.data['cosignatures'].length}}) Others
                                   cosignatories</span> -->
-                                <span class="fs-065rem w-w-b-w" [title]="'Public key: '+dataSigner.signer.publicKey">{{dataSigner.signer.address.pretty()}}</span>
+                                <span class="fs-065rem w-w-b-w"
+                                  [title]="'Public key: '+dataSigner.signer.publicKey">{{dataSigner.signer.address.pretty()}}</span>
                               </div>
                             </ng-container>
                           </div>
                         </ng-container>
                       </div>
 
-                      <ng-container *ngIf="arraySelect.length > 0">
+                      <ng-container *ngIf="arraySelect.length > 0 && !hideSign || onlySigner">
                         <div class="col-12 mt-1rem">
                           <!-- SELECT ACCOUNT -->
-                          <div class="row">
+                          <div class="row" *ngIf="!onlySigner">
                             <div class="col-12">
                               <ng-select class="selectWrapper" [(ngModel)]="account" [items]="arraySelect"
                                 bindLabel="label" bindValue="value" placeholder="Select account"
@@ -243,31 +248,28 @@
                             </div>
                           </div>
 
-
                           <!-- PASSWORD -->
-                          <ng-container *ngIf="!hidePassword">
-                            <div class="row d-flex justify-content-center">
-                              <div class="col-12">
-                                <div class="md-form form-sm">
-                                  <input [maxlength]="configurationForm.passwordWallet.maxLength"
-                                    [minlength]="configurationForm.passwordWallet.minLength" [(ngModel)]="password"
-                                    required mdbInputDirective [validateSuccess]="false" [validateError]="false"
-                                    type="password" id="password" class="form-control form-control-sm input-border"
-                                    placeholder="Enter password">
-                                </div>
+                          <div class="row d-flex justify-content-center">
+                            <div class="col-12">
+                              <div class="md-form form-sm">
+                                <input [maxlength]="configurationForm.passwordWallet.maxLength"
+                                  [minlength]="configurationForm.passwordWallet.minLength" [(ngModel)]="password"
+                                  required mdbInputDirective [validateSuccess]="false" [validateError]="false"
+                                  type="password" id="password" class="form-control form-control-sm input-border"
+                                  placeholder="Enter password">
                               </div>
+                            </div>
 
-                              <div class="col-12 d-flex justify-content-center">
-                                <button (click)="sendTransaction()" autocomplete="false" [disabled]="validateAccount || password === '' || password.length <
+                            <div class="col-12 d-flex justify-content-center">
+                              <button (click)="sendTransaction()" autocomplete="false" [disabled]="validateAccount || password === '' || password.length <
                                   this.configurationForm.passwordWallet.minLength || password.length>
                                   this.configurationForm.passwordWallet.maxLength" mdbBtn type="button" rounded="true"
-                                  mdbWavesEffect class="f-w-600 background-btn pt-1rem" size="sm">
-                                  <span class="fs-1-2em color-white">APPROVE TO CONTINUE</span>
-                                </button>
-                              </div>
-
+                                mdbWavesEffect class="f-w-600 background-btn pt-1rem" size="sm">
+                                <span class="fs-1-2em color-white">APPROVE TO CONTINUE</span>
+                              </button>
                             </div>
-                          </ng-container>
+
+                          </div>
                         </div>
                       </ng-container>
                     </div>

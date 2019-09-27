@@ -34,7 +34,7 @@ export class ServicesBoxComponent implements OnInit {
         'Accounts',
         true,
         'Manage your accounts',
-        'icon-account-green-60h-proximax-sirius-wallet.svg',
+        'icon-accounts-full-color-80h-proximax-sirius-wallet.svg',
         '',
         {
           details: this.services.buildStructureService(
@@ -83,7 +83,7 @@ export class ServicesBoxComponent implements OnInit {
         'Namespaces',
         true,
         'Create namespaces and sub-namespaces',
-        'icon-namespaces-green-60h-proximax-sirius-wallet.svg',
+        'icon-namespace-full-color-80h-proximax-sirius-wallet.svg',
         '',
         {
           create: this.services.buildStructureService(
@@ -114,7 +114,7 @@ export class ServicesBoxComponent implements OnInit {
         'Mosaics',
         true,
         'Create digital representations with customized properties',
-        'icon-mosaics-green-60h-proximax-sirius-wallet.svg',
+        'icon-mosaics-full-color-80h-proximax-sirius-wallet.svg',
         '',
         {
           create: this.services.buildStructureService(
@@ -157,7 +157,7 @@ export class ServicesBoxComponent implements OnInit {
         'Mainnet Swap',
         true,
         'Swap from NEM to Sirius',
-        'icon-swap-process-green-60h-proximax-sirius-wallet.svg',
+        'icon-swap-process-color-80h-proximax-sirius-wallet.svg',
         '',
         {
           transfer: this.services.buildStructureService(
@@ -172,43 +172,12 @@ export class ServicesBoxComponent implements OnInit {
         ''
       ),
 
-      // Storage
-      this.services.buildStructureService(
-        'Storage',
-        true,
-        'Upload and download your files and encrypt them',
-        'icon-storage-green-60h-proximax-sirius-wallet.svg',
-        '',
-        {
-          myFiles: this.services.buildStructureService(
-            'FILES',
-            true,
-            '',
-            '',
-            AppConfig.routes.myFile,
-          ), upload: this.services.buildStructureService(
-            'UPLOAD FILE',
-            true,
-            '',
-            '',
-            AppConfig.routes.uploadFile
-          ), shareFile: this.services.buildStructureService(
-            'SEND/SHARE',
-            false,
-            '',
-            '',
-            ''
-          )
-        },
-        true
-      ),
-
       // Address Book
       this.services.buildStructureService(
         'Address Book',
         true,
         'Assign labels to addresses',
-        'icon-address-green-book-60h-proximax-sirius-wallet.svg',
+        'icon-address-book-full-color-80h-proximax-sirius-wallet.svg',
         '',
         {
           list: this.services.buildStructureService(
@@ -234,7 +203,7 @@ export class ServicesBoxComponent implements OnInit {
         'Attestation',
         true,
         'Proof of existence and origination',
-        'icon-notarization-green-60h.svg',
+        'icon-attestation-full-color-80h-proximax-sirius-wallet.svg',
         '',
         {
           create: this.services.buildStructureService(
@@ -261,7 +230,7 @@ export class ServicesBoxComponent implements OnInit {
         'Voting',
         true,
         'Create, vote, and view results',
-        'icon-voting-green-60h.svg',
+        'icon-voting-full-color-80h-proximax-sirius-wallet.svg',
         '',
         {
           create: this.services.buildStructureService(
@@ -295,7 +264,7 @@ export class ServicesBoxComponent implements OnInit {
         'Transactions Explorer',
         true,
         'Explore all transactions',
-        'icon-transactions-green-60h-proximax-sirius-wallet.svg',
+        'icon-transaction-explorer-full-color-80h-proximax-sirius-wallet.svg',
         '',
         {
           explorer: this.services.buildStructureService(
@@ -309,12 +278,44 @@ export class ServicesBoxComponent implements OnInit {
         true
       ),
 
+      //STORAGE
+      this.services.buildStructureService(
+        'Storage',
+        false,
+        'Upload and download your files and encrypt them',
+        'icon-storage-full-color-80h-proximax-sirius-wallet.svg',
+        '',
+        {
+          myFiles: this.services.buildStructureService(
+            'FILES',
+            false,
+            '',
+            '',
+            AppConfig.routes.myFile,
+          ), upload: this.services.buildStructureService(
+            'UPLOAD FILE',
+            false,
+            '',
+            '',
+            AppConfig.routes.uploadFile
+          ), shareFile: this.services.buildStructureService(
+            'SEND/SHARE',
+            false,
+            '',
+            '',
+            ''
+          )
+        },
+        true,
+        'disable-module'
+      ),
+
       // Agregate transactions
       this.services.buildStructureService(
         'Aggregate Transactions',
         true,
         'Merge multiple transactions into one',
-        'icon-aggregated-transactions-green-60h.svg',
+        'icon-aggregate-transactions-disabled-80h-proximax-sirius-wallet.svg',
         '',
         {
           complete: this.services.buildStructureService(
@@ -341,7 +342,7 @@ export class ServicesBoxComponent implements OnInit {
         'Cross-Chain Swaps',
         false,
         'Atomic cross-chain swap between public and private networks',
-        'icon-cross-chain-green-60h.svg',
+        'icon-cross-chain-swap-disabled-80h-proximax-sirius-wallet.svg',
         '',
         {
           secretLock: this.services.buildStructureService(
@@ -368,7 +369,7 @@ export class ServicesBoxComponent implements OnInit {
         'Nodes',
         true,
         'Add and edit nodes',
-        'icon-nodes-green-60h-proximax-sirius-wallet.svg',
+        'icon-nodes-full-color-80h-proximax-sirius-wallet.svg',
         '',
         {
           blockchain: this.services.buildStructureService(
@@ -440,7 +441,7 @@ export class ServicesBoxComponent implements OnInit {
         'Video Conferencing',
         true,
         'Encrypted live video streaming',
-        'icon-streaming-green-60h-proximax-sirius-wallet.svg',
+        'icon-streaming-full-color-80h-proximax-sirius-wallet.svg',
         '',
         {
          start: this.services.buildStructureService(
@@ -466,7 +467,7 @@ export class ServicesBoxComponent implements OnInit {
         'Supercontracts',
         true,
         'Create and execute logical flows for digital contract obligations',
-        'icon-supercontracts-green-60h-proximax-sirius-wallet.svg',
+        'icon-supercontracts-full-color-80h-proximax-sirius-wallet.svg',
         '',
         {
           create: this.services.buildStructureService(

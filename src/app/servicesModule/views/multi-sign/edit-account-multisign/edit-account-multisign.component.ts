@@ -6,7 +6,7 @@ import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/fo
 import { Subscription } from 'rxjs';
 import { AccountsInterface, AccountsInfoInterface, WalletService } from 'src/app/wallet/services/wallet.service';
 import { MultiSignService } from 'src/app/servicesModule/services/multi-sign.service';
-import { ServicesModuleService } from 'src/app/servicesModule/services/services-module.service';
+import { ServicesModuleService, HeaderServicesInterface } from 'src/app/servicesModule/services/services-module.service';
 import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
 import { NodeService } from 'src/app/servicesModule/services/node.service';
 import { TransactionsService, TransactionsInterface } from 'src/app/transactions/services/transactions.service';
@@ -58,10 +58,14 @@ export class EditAccountMultisignComponent implements OnInit {
   subscribeAccountContat: Subscription;
   disable: boolean;
   subscribeAggregateBonded: Subscription[] = [];
-  // minApprovaMaxLengthApprova: number;
-  ;
+  paramsHeader: HeaderServicesInterface = {
+    moduleName: 'Accounts > Multisign',
+    componentName: 'Edit account Multisig'
+  };
   feeTransaction: number = 0;
   feeLockfund: number = 10000000;
+
+
   constructor(
 
     private activateRoute: ActivatedRoute,

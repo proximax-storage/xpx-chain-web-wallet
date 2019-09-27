@@ -39,6 +39,7 @@ export class CreateWalletComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.walletService.accountWalletCreated = null;
     this.configurationForm = this.sharedService.configurationForm;
     this.createForm();
   }

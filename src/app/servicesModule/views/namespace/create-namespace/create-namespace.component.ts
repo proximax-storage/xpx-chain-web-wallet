@@ -25,7 +25,7 @@ export class CreateNamespaceComponent implements OnInit {
   @BlockUI() blockUI: NgBlockUI;
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Namespaces & Sub-Namespaces',
-    componentName: 'REGISTER'
+    componentName: 'Register'
   };
   configurationForm: ConfigurationForm = {};
   /*********************************** */

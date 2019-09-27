@@ -22,6 +22,7 @@ export const AppConfig: Config = {
     createWallet: 'create-wallet',
     dashboard: 'dashboard',
     deleteAccount:'delete-account',
+    deleteAccountConfirm:'delete-account-confirm',
     deleteWallet:'delete-wallet',
     deleteWalletConfirm:'delete-wallet-confirm',
     editAccountMultisign: 'edit-account-multisign',
@@ -85,6 +86,7 @@ export interface Config {
     createApostille: string;
     dashboard: string;
     deleteAccount:string;
+    deleteAccountConfirm:string;
     deleteWallet: string;
     deleteWalletConfirm:string;
     editAccountMultisign: string;
