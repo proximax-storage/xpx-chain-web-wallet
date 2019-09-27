@@ -33,6 +33,7 @@ import { AccountNis1FoundComponent } from './views/account/account-nis1-found/ac
 import { AccountNis1TransferXpxComponent } from './views/account/account-nis1-transfer-xpx/account-nis1-transfer-xpx.component';
 import { Nis1AccountsConsignerComponent } from './views/swap/nis1-accounts-consigner/nis1-accounts-consigner.component';
 import { AccountDeleteComponent } from './views/account/account-delete/account-delete/account-delete.component';
+import { AccountDeleteConfirmComponent } from './views/account/account-delete-confirm/account-delete-confirm.component';
 
 const routes: Routes = [
   {
@@ -75,7 +76,7 @@ const routes: Routes = [
         override: true,
       },
     }
-  },  {
+  }, {
     path: `${AppConfig.routes.deleteAccount}/:name`,
     component: AccountDeleteComponent,
     data: {
@@ -85,8 +86,18 @@ const routes: Routes = [
         override: true,
       },
     }
+  },{
+    path: `${AppConfig.routes.deleteAccountConfirm}/:name`,
+    component: AccountDeleteConfirmComponent,
+    data: {
+      meta: {
+        title: 'deleteAccountconfirm.title',
+        description: 'deleteAccountconfirm.text',
+        override: true,
+      },
+    }
   },
-  
+
   {
     path: `${AppConfig.routes.importAccount}/:id`,
     component: CreateAccountComponent,
@@ -180,7 +191,7 @@ const routes: Routes = [
     }
   },
   {
-    path:`${ AppConfig.routes.voteInPoll}/:id`,
+    path: `${AppConfig.routes.voteInPoll}/:id`,
     component: VoteInPollComponent,
     data: {
       meta: {
