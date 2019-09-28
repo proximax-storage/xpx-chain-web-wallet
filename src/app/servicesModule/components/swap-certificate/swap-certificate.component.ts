@@ -106,7 +106,7 @@ export class SwapCertificateComponent implements OnInit {
     doc.setFontType('normal');
     doc.text(this.transactionHash, 140, 245, { maxWidth: 280 });
 
-    doc.text('Note: the swap process may take a few hours to complete.', 30, 330);
+    doc.text('Note: the swap process may take a several hours to complete.', 30, 330);
 
     doc.save('Swap_Certificate.pdf');
   }

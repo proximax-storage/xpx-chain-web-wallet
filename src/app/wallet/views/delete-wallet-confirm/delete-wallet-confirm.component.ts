@@ -23,9 +23,6 @@ export class DeleteWalletConfirmComponent implements OnInit {
   };
   wallet: WalletAccountInterface;
   tittle = 'will be deleted from your device.';
-
-
-  
   Information = `Warning! This action will delete this wallet. It cannot be undone. if you have not saved your
   private keys, access to the accounts contained is this wallet will be permanently lost.`
   configurationForm: ConfigurationForm;
