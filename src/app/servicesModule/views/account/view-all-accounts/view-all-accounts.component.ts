@@ -18,8 +18,8 @@ export class ViewAllAccountsComponent implements OnInit {
 
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Accounts',
-    componentName: 'View all',
-    extraButton: 'Create new account',
+    componentName: 'View All',
+    extraButton: 'Create a New Account',
     routerExtraButton: `/${AppConfig.routes.selectTypeCreationAccount}`
 
   };

@@ -17,7 +17,7 @@ export class ListContactsComponent {
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Address Book',
     componentName: 'List',
-    extraButton: 'Add new contact',
+    extraButton: 'Add New Contact',
     routerExtraButton: `/${AppConfig.routes.addContacts}`
   };
   //Pagination

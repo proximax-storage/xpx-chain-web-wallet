@@ -21,7 +21,7 @@ export class DetailAccountComponent implements OnInit {
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Accounts',
     componentName: 'Details',
-    extraButton: 'View all accounts',
+    extraButton: 'View All Accounts',
     routerExtraButton: `/${AppConfig.routes.viewAllAccount}`
   };
   address = '';

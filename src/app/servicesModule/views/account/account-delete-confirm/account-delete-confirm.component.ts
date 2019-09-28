@@ -16,7 +16,7 @@ export class AccountDeleteConfirmComponent implements OnInit {
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Accounts',
     componentName: 'CONFIRM DELETE',
-    extraButton: 'View all accounts',
+    extraButton: 'View All Accounts',
     routerExtraButton: `/${AppConfig.routes.viewAllAccount}`
 
   };

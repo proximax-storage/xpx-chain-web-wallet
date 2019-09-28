@@ -20,7 +20,7 @@ export class AccountDeleteComponent implements OnInit {
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Accounts',
     componentName: 'DELETE',
-    extraButton: 'View all accounts',
+    extraButton: 'View All Accounts',
     routerExtraButton: `/${AppConfig.routes.viewAllAccount}`
   };
   routes = {

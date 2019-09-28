@@ -21,7 +21,7 @@ export class MosaicsSupplyChangeComponent implements OnInit {
 
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Mosaics',
-    componentName: 'Modify supply',
+    componentName: 'Modify Supply',
   };
   @BlockUI() blockUI: NgBlockUI;
   currentBlock: number = 0;
