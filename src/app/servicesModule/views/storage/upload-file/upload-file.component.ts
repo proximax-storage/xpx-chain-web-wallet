@@ -136,7 +136,7 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
           const result = await this.uploader.upload(uploadParams.build());
           console.log(result);
           this.clearForm();
-          this.sharedService.showSuccessTimeout('Upload', 'Upload successfully.', 8000);
+          this.sharedService.showSuccessTimeout('Upload', 'Upload successful.', 8000);
           this.blockUpload = false;
         } catch (error) {
           this.blockUpload = false;

@@ -105,7 +105,7 @@ body {
 }
 
 .mt-2rem {
-    margin-top: 2rem;
+    margin-top: 2rem !important;
 }
 
 .mt-2-5rem {
