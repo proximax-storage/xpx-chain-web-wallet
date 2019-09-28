@@ -71,7 +71,7 @@ export class SidebarAuthComponent implements OnInit {
 
     const deleteWallet: MenuInterface = {
       type: 'default',
-      name: 'Available',
+      name: 'in local cache',
       class: '',
       icon: '',
       rol: false,
@@ -83,7 +83,7 @@ export class SidebarAuthComponent implements OnInit {
 
     const paramsWallet: MenuInterface = {
       type: 'dropdown',
-      name: 'Wallet',
+      name: 'Wallets',
       class: 'ml-m05rem',
       icon: '',
       rol: false,

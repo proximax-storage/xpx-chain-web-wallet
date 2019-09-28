@@ -27,8 +27,8 @@ export class ViewAllWalletsComponent implements OnInit {
   ngOnInit(
 
   ) {
-    this.title = 'Wallets available';
-    this.description = 'This are Proximax Sirius Wallet available on your device'
+    this.title = 'Wallets';
+    this.description = 'These are the Sirius Wallet available in the local cache of your device'
     this.wallets = this.walletService.getWalletStorage();
   }
 
