@@ -363,7 +363,6 @@ export class ServicesBoxComponent implements OnInit {
         true,
         'disable-module'
       ),
-
       // Nodes
       this.services.buildStructureService(
         'Nodes',
