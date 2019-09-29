@@ -9,10 +9,8 @@ import { TransactionsService, TransactionsInterface } from 'src/app/transactions
 import { ModalDirective } from 'ng-uikit-pro-standard';
 import { PaginationInstance } from 'ngx-pagination';
 import * as JSZip from 'jszip';
-import { async } from '@angular/core/testing';
 import { StorageService } from '../../storage/services/storage.service';
-import * as cloneDeep from 'lodash/cloneDeep';
-import { environment } from 'src/environments/environment.prod';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-audit-apostille',
