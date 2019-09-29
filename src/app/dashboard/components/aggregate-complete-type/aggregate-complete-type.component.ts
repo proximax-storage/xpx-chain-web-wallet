@@ -23,10 +23,12 @@ export class AggregateCompleteTypeComponent implements OnInit {
   }
 
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
+    // console.log('aggregateComplete', this.aggregateComplete);
+
     this.typeTransactionHex = `${this.aggregateComplete.data['type'].toString(16).toUpperCase()}`;
     this.aggregateComplete.data['innerTransactions'].forEach((element: any) => {
-      const keyType = this.transactionService.getNameTypeTransaction(element.type);
-      element['nameType'] = this.transactionService.arraTypeTransaction[keyType].name;
+      element['feePart'] = this.transactionService.getDataPart(this.transactionService.amountFormatterSimple(element.maxFee.compact()), 6);
+      element['nameType'] = this.transactionService.arraTypeTransaction[this.transactionService.getNameTypeTransaction(element.type)].name;
       element['typeTransactionHex'] = `${element.type.toString(16).toUpperCase()}`;
     });
   }

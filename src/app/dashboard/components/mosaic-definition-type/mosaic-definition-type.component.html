@@ -15,7 +15,14 @@
         </div>
 
         <!-- Fee -->
-        <div class="col-12 mb-1rem">
+        <div class="col-12 mb-2rem">
+          <span class="fw-600 fs-095rem">Fee:&nbsp;&nbsp;</span>
+          <span class="fs-095rem fw-600 color-blue-light">{{mosaicDefinition?.feePart.part1}}</span>
+          <span class="fs-075rem fw-600 color-blue-light">{{mosaicDefinition?.feePart.part2}}</span>
+          <span class="fs-095rem fw-600 color-blue-light"> XPX </span>
+          <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
+        </div>
+        <!-- <div class="col-12 mb-1rem">
           <div class="row">
             <div class="col-3 overflow-ellipsis-nowrap">
               <span class="color-dark-green fw-bold fs-1-3rem">Fee: </span>
@@ -30,7 +37,7 @@
               </div>
             </div>
           </div>
-        </div>
+        </div> -->
 
         <!-- Namespace Id -->
         <ng-container *ngIf="viewNamespaceId">
@@ -221,13 +228,15 @@
         <div class="col-12 col-sm-4 col-md-3 overflow-ellipsis-nowrap">
           <span class="color-dark-green fw-bold fs-08rem">Fee: </span>
         </div>
-        <div class="col-12 col-sm-8 col-md-9">
-          <img class="icono mb-03rem" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
-            width="16" alt="">&nbsp;
-          <span class="color-dark-green fw-400 fs-08rem">{{mosaicDefinition.fee}} XPX</span>
+        <div class="col-12 col-sm-8 col-md-9 overflow-ellipsis-nowrap">
+          <span class="fs-08rem fw-400 color-dark-green">{{mosaicDefinition?.feePart.part1}}</span>
+          <span class="fs-075rem fw-400 color-dark-green">{{mosaicDefinition?.feePart.part2}}</span>
+          <span class="fs-08rem fw-400 color-dark-green"> XPX </span>
+          <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
         </div>
       </div>
     </div>
+
 
     <!-- Type Hex -->
     <div class="col-12 mt-2rem">
@@ -267,20 +276,7 @@
       </div>
     </div>
 
-    <!-- Namespace Id-->
-    <!-- <ng-container *ngIf="viewNamespaceId">
-      <div class="col-12">
-        <div class="row">
-          <div class="col-12 col-sm-4 col-md-3 overflow-ellipsis-nowrap">
-            <span class="color-dark-green fw-bold fs-08rem">Namespace Id: </span>
-          </div>
-          <div class="col-12 col-sm-8 col-md-9 overflow-ellipsis-nowrap">
-            <span class="color-dark-green fw-400 fs-08rem">{{mosaicDefinition['parentId'].id.toHex()}}</span>
-          </div>
-        </div>
-      </div>
-    </ng-container> -->
-
+    <!-- Mosaic name -->
     <ng-container *ngIf="
                 mosaicDefinition['mosaicsStorage'] !== null &&
                 mosaicDefinition['mosaicsStorage']['mosaicNames']['names'].lenght > 0;">
