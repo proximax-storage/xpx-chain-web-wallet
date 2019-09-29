@@ -9,10 +9,8 @@ import { TransactionsService, TransactionsInterface } from 'src/app/transactions
 import { ModalDirective } from 'ng-uikit-pro-standard';
 import { PaginationInstance } from 'ngx-pagination';
 import * as JSZip from 'jszip';
-import { async } from '@angular/core/testing';
 import { StorageService } from '../../storage/services/storage.service';
-import * as cloneDeep from 'lodash/cloneDeep';
-import { environment } from 'src/environments/environment.prod';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-audit-apostille',
@@ -100,7 +98,7 @@ export class AuditApostilleComponent implements OnInit {
     this.currentView = !this.currentView
     this.searching = true;
     const hash = await this.fileTour();
-    console.log('------> hashs');
+    // console.log('------> hashs');
     if (hash.length > 0) {
       this.proximaxProvider.getTransactions(hash).subscribe(element => {
         this.verifyHash(element);
@@ -113,32 +111,32 @@ export class AuditApostilleComponent implements OnInit {
   async fileTour() {
     const hash = [];
     for (let index = 0; index < this.ourFile.length; index++) {
-      console.log('bucle #', index);
+      // console.log('bucle #', index);
       const el = this.ourFile[index];
       if (el.type === 'application/zip') {
         const jszip = new JSZip();
         await jszip.loadAsync(el).then(async (zip) => {
-          console.log('\n\n\n\nValue of zip', zip, '\n\n\n\nEnd value\n\n');
+          // console.log('\n\n\n\nValue of zip', zip, '\n\n\n\nEnd value\n\n');
           if (Object.keys(zip.files).length >= 2) {
-            console.log('cero');
+            // console.log('cero');
             for (let filename of Object.keys(zip.files)) {
               await zip.files[filename].async('blob').then(async (blobFile) => {
                 const blobClone = Object.assign({}, blobFile);
-                console.log('uno aqui', blobClone);
+                // console.log('uno aqui', blobClone);
                 blobClone.type = await zip.files[filename].comment;
-                console.log('dos aqui', blobClone.type);
+                // console.log('dos aqui', blobClone.type);
                 // Do something with the blob file
                 const file = await new File([blobClone], zip.files[filename].name, { type: zip.files[filename].comment});
-                console.log('my file --> ', file);
+                // console.log('my file --> ', file);
 
                 let verifiName = file.name.substr(0, 15);
                 if (verifiName !== 'Certificate of ' && file.name.length > 100) {
-                  console.log('3 aqui');
+                  // console.log('3 aqui');
                   let arrayName = file.name.split(' --Apostille TX ');
                   if (arrayName.length > 1) {
-                    console.log('4 aqui');
+                    // console.log('4 aqui');
                     this.ourFile[index] = file;
-                    console.log('\n\n\n\nValue of this.ourFile', this.ourFile, '\n\n\n\nEnd value\n\n');
+                    // console.log('\n\n\n\nValue of this.ourFile', this.ourFile, '\n\n\n\nEnd value\n\n');
                     let arrayDate = arrayName[1].split(' --Date ');
                     this.transactionsSearch.push(file);
                     hash.push(arrayDate[0]);
@@ -183,7 +181,7 @@ export class AuditApostilleComponent implements OnInit {
       }
     }
 
-    console.log('aqui retornó');
+    // console.log('aqui retornó');
 
     return hash;
   }
@@ -193,7 +191,7 @@ export class AuditApostilleComponent implements OnInit {
    * @param transactions transactions found
    */
   verifyHash(transactions: TransferTransaction[]) {
-    console.log('\n\n\n\nValue of trasaction', transactions, '\n\n\n\nEnd value\n\n');
+    // console.log('\n\n\n\nValue of trasaction', transactions, '\n\n\n\nEnd value\n\n');
     this.searching = false;
     this.transactionsSearch.forEach(element => {
       const arrayName = element.name.split(' --Apostille TX ');
@@ -213,7 +211,7 @@ export class AuditApostilleComponent implements OnInit {
             } else {
               originalName = arrayName[0];
             }
-            console.log('\n\n\n\nValue of element', element, '\n\n\n\nEnd value\n\n');
+            // console.log('\n\n\n\nValue of element', element, '\n\n\n\nEnd value\n\n');
             const apostillePrivatePrefix = 'fe4e545983';
             const apostillePublicPrefix = 'fe4e545903';
             const prefixHash = findHash.message.payload.replace(/['"]+/g, '').substr(0, 10);
@@ -240,7 +238,7 @@ export class AuditApostilleComponent implements OnInit {
               transaction: transaction,
             }, findHash.transactionInfo.hash);
           } else {
-            console.log('element name ---> ', element);
+            // console.log('element name ---> ', element);
 
             this.addAuditResult({
               filename: element.name,

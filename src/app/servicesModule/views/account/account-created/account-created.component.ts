@@ -42,10 +42,10 @@ export class AccountCreatedComponent implements OnInit {
     this.setImgBackground();
     this.algo = this.walletService.accountWalletCreated;
     if (this.algo !== null) {
-      console.log('---------------------------------------account created ----------------------------');
+      // console.log('---------------------------------------account created ----------------------------');
 
       const accountInfoNis1 = this.walletService.getAccountInfoNis1();
-      console.log('This account info nis1 ------->', accountInfoNis1);
+      // console.log('This account info nis1 ------->', accountInfoNis1);
 
       this.name = this.algo.data.name;
       this.address = this.algo.wallet.address.pretty();
@@ -78,9 +78,9 @@ export class AccountCreatedComponent implements OnInit {
     // [routerLink]="[routes.backToService]"
     const nis1Info = this.walletService.getNis1AccounsWallet();
 
-    console.log('nis1Info -------->', nis1Info);
-    
-    
+    // console.log('nis1Info -------->', nis1Info);
+
+
     try {
       if (nis1Info.length > 0) {
         if (nis1Info[0].mosaic && Object.keys(nis1Info[0].mosaic).length > 0) {
@@ -110,8 +110,8 @@ export class AccountCreatedComponent implements OnInit {
   }
 
   printAccountInfo() {
-    console.log(this.privateKey);
-    console.log(this.address);
+    // console.log(this.privateKey);
+    // console.log(this.address);
 
     let doc = new jsPDF({
       unit: 'px'

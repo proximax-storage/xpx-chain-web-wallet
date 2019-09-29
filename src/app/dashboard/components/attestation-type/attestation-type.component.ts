@@ -17,7 +17,7 @@ export class AttestationTypeComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    console.log('MODAL INFO', this.transactionInfo);
+    // console.log('MODAL INFO', this.transactionInfo);
   }
 
   // ngOnChanges(changes: SimpleChanges): void {

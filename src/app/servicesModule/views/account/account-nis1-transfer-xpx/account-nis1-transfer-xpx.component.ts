@@ -27,14 +27,14 @@ export class AccountNis1TransferXpxComponent implements OnInit {
       this.routeEvent = `/${AppConfig.routes.nis1AccountList}`;
     }
   }
-  
+
   viewCertificate(event): void {
     this.title = 'Congratulations!';
     this.subtitle = 'The swap process has already started.';
     this.showCertificate = !this.showCertificate;
     this.transactionSuccess = event;
     this.routeCertificate = event.route;
-    console.log("this.transactionSuccess", this.transactionSuccess);
+    // console.log("this.transactionSuccess", this.transactionSuccess);
   }
 
 }

@@ -88,7 +88,7 @@ export class AddContactsComponent implements OnInit {
    */
   saveContact() {
     if (this.contactForm.valid) {
-      console.log('Esta es una prueba', this.contactForm.get('address').value.length);
+      // console.log('Esta es una prueba', this.contactForm.get('address').value.length);
       if (this.contactForm.get('address').value.length === 40 || this.contactForm.get('address').value.length === 46) {
         const isUpdate = this.activateRoute.snapshot.paramMap.get('name');
         const paramsStorage: ContactsStorageInterface = {

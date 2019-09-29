@@ -25,7 +25,7 @@ export class WalletNis1AccountsConsignerComponent implements OnInit {
     private router: Router
   ) {
     this.mainAccount = this.walletService.getAccountInfoNis1();
-    console.log('Esta es la info de la this.mainAccount ------------>', this.mainAccount);
+    // console.log('Esta es la info de la this.mainAccount ------------>', this.mainAccount);
 
     this.mainAccount.balance = null;
     this.mainAccount.mosaic = null;
@@ -41,8 +41,8 @@ export class WalletNis1AccountsConsignerComponent implements OnInit {
       element.publicAccount.nameAccount = this.mainAccount.nameAccount;
       this.searchBalance(element.publicAccount, index);
     });
-    console.log('Esta es la info de la this.mainAccount ------------>', this.mainAccount);
-    console.log('Esta es la info de la this.listConsignerAccounts ------------>', this.listConsignerAccounts);
+    // console.log('Esta es la info de la this.mainAccount ------------>', this.mainAccount);
+    // console.log('Esta es la info de la this.listConsignerAccounts ------------>', this.listConsignerAccounts);
   }
 
   ngOnInit() {
@@ -51,7 +51,7 @@ export class WalletNis1AccountsConsignerComponent implements OnInit {
   searchBalance(account, index = null) {
     this.nemProvider.getOwnedMosaics(account.address).pipe(first()).pipe(timeout(15000)).subscribe(
       async next => {
-        console.log('response search ----->', next);
+        // console.log('response search ----->', next);
         let foundXpx: boolean = false;
         for (const el of next) {
           if (el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx') {
@@ -66,7 +66,7 @@ export class WalletNis1AccountsConsignerComponent implements OnInit {
 
               if (transactions.length > 0) {
                 let relativeAmount = realQuantity;
-                for (const item of transactions) {                  
+                for (const item of transactions) {
                   if (item.type === 257 && item['signer']['address']['value'] === this.mainAccount.address.value) {
                     for (const mosaic of item['_assets']) {
                       if (mosaic.assetId.namespaceId === 'prx' && mosaic.assetId.name === 'xpx') {
@@ -118,7 +118,7 @@ export class WalletNis1AccountsConsignerComponent implements OnInit {
       },
       error => {
         this.sharedService.showWarning('', error);
-        console.log('this errorr -------->', error);
+        // console.log('this errorr -------->', error);
 
         if (index === null) {
           this.mainAccount.balance = '0.000000';
@@ -146,7 +146,7 @@ export class WalletNis1AccountsConsignerComponent implements OnInit {
     if (account.balance === null || account.balance === '0.000000') {
       return this.sharedService.showWarning('', 'The selected account has no balance');
     }
-    console.log('Account Selected --------------->', account);
+    // console.log('Account Selected --------------->', account);
 
     // this.walletService.setAccountMosaicsNis1(account.mosaic);
     this.walletService.setNis1AccountSelected(account);

@@ -39,7 +39,7 @@ export class MosaicAliasComponent implements OnInit {
     if (mosaicInfo !== null && mosaicInfo !== undefined && mosaicInfo.length > 0) {
       this.mosaicName = (mosaicInfo[0].mosaicNames.names.length > 0) ? mosaicInfo[0].mosaicNames.names[0].name : '';
     }
-    console.log("name mosaic:",this.mosaicName)
+    // console.log("name mosaic:",this.mosaicName)
 
     // NAMESPACE
     const namespaceId = new NamespaceId([this.mosaicAlias.data['namespaceId'].id.lower, this.mosaicAlias.data['namespaceId'].id.higher]);

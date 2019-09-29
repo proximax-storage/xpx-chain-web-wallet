@@ -37,10 +37,8 @@ export class DeleteWalletComponent implements OnInit {
 
   ) {
     let name = this.activateRoute.snapshot.paramMap.get('name');
-
-
     this.wallet = this.walletService.getWalletStorageName(name)[0];
-    console.log(this.wallet.name)
+    // console.log(this.wallet.name)
   }
 
 

@@ -24,7 +24,7 @@ export class AddressAliasTypeComponent implements OnInit {
   }
 
   async ngOnChanges(changes: SimpleChanges) {
-    console.log('addressAlias', this.addressAlias);
+    // console.log('addressAlias', this.addressAlias);
     // NAMESPACE
     this.namespaceId = '';
     this.namespaceName = '';

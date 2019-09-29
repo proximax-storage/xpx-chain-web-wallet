@@ -399,7 +399,7 @@ export class CreateMultiSignatureComponent implements OnInit {
         // common = '';
         let convertIntoMultisigTransaction: ModifyMultisigAccountTransaction;
         convertIntoMultisigTransaction = this.modifyMultisigAccountTransaction()
-        console.log('convertIntoMultisigTransaction', convertIntoMultisigTransaction)
+        // console.log('convertIntoMultisigTransaction', convertIntoMultisigTransaction)
 
         /**
          * Create Bonded
@@ -533,7 +533,7 @@ export class CreateMultiSignatureComponent implements OnInit {
     // Get transaction status
     this.subscribe['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
       statusTransaction => {
-        console.log('EL MMG statusTransaction', statusTransaction);
+        // console.log('EL MMG statusTransaction', statusTransaction);
         // this.blockSend = false;
         if (statusTransaction !== null && statusTransaction !== undefined && signedTransaction !== null) {
           const match = statusTransaction['hash'] === signedTransaction.hash;
@@ -559,7 +559,7 @@ export class CreateMultiSignatureComponent implements OnInit {
     // Get transaction status
     this.subscribe['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
       statusTransaction => {
-        console.log('EL MMG statusTransaction', statusTransaction);
+        // console.log('EL MMG statusTransaction', statusTransaction);
         // //  this.blockSend = false;
         if (statusTransaction !== null && statusTransaction !== undefined && signedTransactionHashLock !== null) {
           const match = statusTransaction['hash'] === signedTransactionHashLock.hash;
@@ -588,12 +588,12 @@ export class CreateMultiSignatureComponent implements OnInit {
    */
   multisigCosignatoryModification(cosignatoryList: CosignatoryList[]): MultisigCosignatoryModification[] {
     const cosignatory = []
-    console.log(cosignatoryList)
+    // console.log(cosignatoryList)
     if (cosignatoryList.length > 0) {
       for (let index = 0; index < cosignatoryList.length; index++) {
         const element = cosignatoryList[index];
         const type: MultisigCosignatoryModificationType = (cosignatoryList[index].type === 1) ? MultisigCosignatoryModificationType.Add : MultisigCosignatoryModificationType.Remove;
-        console.log("type", type)
+        // console.log("type", type)
         cosignatory.push(
           new MultisigCosignatoryModification(
             type,

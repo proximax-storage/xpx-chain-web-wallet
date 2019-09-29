@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { HeaderServicesInterface, ServicesModuleService } from 'src/app/servicesModule/services/services-module.service';
+import { FormGroup, Validators, AbstractControl, FormBuilder } from '@angular/forms';
+import { HeaderServicesInterface, ServicesModuleService } from '../../../servicesModule/services/services-module.service';
 import { WalletService, WalletAccountInterface } from '../../services/wallet.service';
-import { ConfigurationForm, SharedService } from 'src/app/shared/services/shared.service';
-import { FormGroup, FormControl, Validators, AbstractControl, FormBuilder } from '@angular/forms';
-import { AppConfig } from 'src/app/config/app.config';
-import { environment } from 'src/environments/environment.prod';
+import { ConfigurationForm, SharedService } from '../../../shared/services/shared.service';
+import { AppConfig } from '../../../config/app.config';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-delete-wallet-confirm',
@@ -23,9 +23,6 @@ export class DeleteWalletConfirmComponent implements OnInit {
   };
   wallet: WalletAccountInterface;
   tittle = 'will be deleted from your device.';
-
-
-  
   Information = `Warning! This action will delete this wallet. It cannot be undone. if you have not saved your
   private keys, access to the accounts contained is this wallet will be permanently lost.`
   configurationForm: ConfigurationForm;

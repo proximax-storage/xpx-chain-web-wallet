@@ -103,7 +103,7 @@ export class WalletService {
 
             const newAccounts = this.changeIsMultiSign(element.name, isMultisig);
             if (newAccounts.length > 0) {
-              console.log('=== NEW ACCOUNTS TO SEARCH ===', newAccounts);
+              // console.log('=== NEW ACCOUNTS TO SEARCH ===', newAccounts);
               // Issue changes to new accounts
               this.setAccountsPushedSubject(newAccounts);
               // Delete the change of the new accounts
@@ -322,7 +322,7 @@ export class WalletService {
                 multisigInfo: accountBuilded.isMultisign
               };
 
-            console.log('\n\n---ACOUNT BUILDED---', accountInfoBuilded);
+            // console.log('\n\n---ACOUNT BUILDED---', accountInfoBuilded);
               this.setAccountsInfo([accountInfoBuilded], true);
               this.saveAccountWalletStorage(accountBuilded);
             });*/
@@ -606,7 +606,7 @@ export class WalletService {
       localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify([]));
       walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
     }
-    console.log(walletsStorage)
+    // console.log(walletsStorage)
     return walletsStorage.filter(
       (element: any) => {
         return element.name === name;
@@ -983,7 +983,7 @@ export class WalletService {
     });
 
     othersWallet.push(account);
-    console.log('=== othersWallet === ', othersWallet);
+    // console.log('=== othersWallet === ', othersWallet);
     localStorage.setItem(environment.nameKeyWalletTransactionsNis, JSON.stringify(othersWallet));
   }
 }

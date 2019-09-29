@@ -81,13 +81,13 @@ export class ServicesModuleService {
 
       return false;
     } else {
-      console.log('Aquiiii lleggfaaaaaa', books);
-      console.log('Aquiiii dataStorage', dataStorage);
+      // console.log('Aquiiii lleggfaaaaaa', books);
+      // console.log('Aquiiii dataStorage', dataStorage);
 
-      
+
       if (dataStorage === null) {
-        console.log('Aquiiii lleggfaaaaaa', books);
-      console.log('Aquiiii dataStorage', dataStorage);
+        // console.log('Aquiiii lleggfaaaaaa', books);
+      // console.log('Aquiiii dataStorage', dataStorage);
         this.setBookAddress([books], params.nameItem);
         return true;
       }
@@ -126,7 +126,7 @@ export class ServicesModuleService {
   /**
      *
      *
-     * 
+     *
      * @param {string} itemEnvironment
      * @param {string} nameWallet
      * @memberof ServicesModuleService

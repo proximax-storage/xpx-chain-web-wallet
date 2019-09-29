@@ -60,7 +60,7 @@ export class CreatePollStorageService {
 
 
   async sendFileStorage(fileObject: FileInterface, description: any, account: Account, privateKey: string) {
-    console.log('account',account)
+    // console.log('account',account)
     const promise = new Promise(async (resolve, reject) => {
       const fileContents = Buffer.from(JSON.stringify(fileObject.content));
       const strings: string = JSON.stringify(fileObject.content);
@@ -132,7 +132,7 @@ export class CreatePollStorageService {
       let searchParam: any
       if (this.searcher) {
         if (publicAccount) {
-          console.log("public Acount")
+          // console.log("public Acount")
           searchParam = SearchParameter.createForPublicKey(publicAccount.publicKey);
         } else if (address) {
 
@@ -140,7 +140,7 @@ export class CreatePollStorageService {
 
         }
         searchParam.withTransactionFilter(TransactionFilter.INCOMING);
-        console.log('searchParam',searchParam)
+        // console.log('searchParam',searchParam)
         // searchParam.withResultSize(100);
         const searchResult = await this.searcher.search(searchParam.build());
         if (searchResult.results.length > 0) {

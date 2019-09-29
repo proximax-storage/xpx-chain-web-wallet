@@ -69,7 +69,6 @@ export class PartialComponent implements OnInit {
     this.typeTransactions = this.transactionService.getTypeTransactions();
     this.subscription.push(this.transactionService.getAggregateBondedTransactions$().subscribe(
       next => {
-        console.log('next', next);
         this.aggregateTransactions = next;
       }
     ));
@@ -109,7 +108,6 @@ export class PartialComponent implements OnInit {
    * @memberof PartialComponent
    */
   find(transaction: TransactionsInterface) {
-    console.log('----------TransactionsInterface----------', transaction);
     this.arraySelect = this.arraySelect.slice(0);
     this.dataSelected = transaction;
     this.arraySelect = [];
@@ -237,7 +235,6 @@ export class PartialComponent implements OnInit {
         this.modalPartial.hide();
         this.proximaxProvider.cosignAggregateBondedTransaction(transaction, account).subscribe(
           next => {
-            console.log(next);
           }
         );
       }

@@ -2,7 +2,7 @@ import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
 import { TransactionsInterface, TransactionsService } from '../../../transactions/services/transactions.service';
 import { MosaicService, MosaicsStorage } from 'src/app/servicesModule/services/mosaic.service';
 import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
-import { environment } from 'src/environments/environment.prod';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-transfer-type',
@@ -30,7 +30,7 @@ export class TransferTypeComponent implements OnInit {
   }
 
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
-    console.log(this.transferTransaction);
+    // console.log(this.transferTransaction);
     this.searching = true;
     this.typeTransactionHex = `${this.transferTransaction.data['type'].toString(16).toUpperCase()}`;
     if (this.transferTransaction.data['message'].payload !== '') {

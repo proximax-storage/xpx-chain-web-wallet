@@ -18,8 +18,8 @@ export class ViewAllAccountsComponent implements OnInit {
 
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Accounts',
-    componentName: 'View all',
-    extraButton: 'Create new account',
+    componentName: 'View All',
+    extraButton: 'Create a New Account',
     routerExtraButton: `/${AppConfig.routes.selectTypeCreationAccount}`
 
   };
@@ -59,7 +59,7 @@ export class ViewAllAccountsComponent implements OnInit {
    * @memberof ViewAllAccountsComponent
    */
   buildBalance() {
-    console.log('build',this.walletService.currentWallet)
+    // console.log('build',this.walletService.currentWallet)
     const currentWallet = Object.assign({}, this.walletService.currentWallet);
     if (currentWallet && Object.keys(currentWallet).length > 0) {
       for (let element of currentWallet.accounts) {

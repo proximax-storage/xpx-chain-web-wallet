@@ -45,7 +45,7 @@ export class MosaicDefinitionTypeComponent implements OnInit {
     this.mosaicDefinition['mosaicsStorage'] = null;
     const mosaics: MosaicsStorage[] = await this.mosaicService.filterMosaics(mosaicsId);
     if (mosaics !== undefined && mosaics !== null) {
-      console.log(mosaics);
+      // console.log(mosaics);
 
       if (mosaics.length > 0) {
         this.viewNamespaceId = false;

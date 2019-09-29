@@ -34,9 +34,9 @@ export class SwapCertificateComponent implements OnInit {
     this.publicKey = this.params.transaction.signer.publicKey;
     this.transactionHash = this.params.details.transactionHash.data;
     this.explorerUrl = `${environment.nis1.urlExplorer}${this.params.details.transactionHash.data}`;
-    console.log('////// EXPLORER', this.params);
+    // console.log('////// EXPLORER', this.params);
     this.timestamp = `${this.params.transaction.timeWindow.timeStamp._date._year}-${this.params.transaction.timeWindow.timeStamp._date._month}-${this.params.transaction.timeWindow.timeStamp._date._day} ${this.params.transaction.timeWindow.timeStamp._time._hour}:${this.params.transaction.timeWindow.timeStamp._time._minute}:${this.params.transaction.timeWindow.timeStamp._time._second}`;
-    console.log('\n\n\n\nValue route:\n', this.routeToContinue, '\n\n\n\nEnd value\n\n');
+    // console.log('\n\n\n\nValue route:\n', this.routeToContinue, '\n\n\n\nEnd value\n\n');
     this.qrSrc = this.qrCreate();
     this.address = (this.params.catapultAccount.address) ? this.params.catapultAccount.address.pretty() : this.params.catapultAccount;
   }
@@ -106,7 +106,7 @@ export class SwapCertificateComponent implements OnInit {
     doc.setFontType('normal');
     doc.text(this.transactionHash, 140, 245, { maxWidth: 280 });
 
-    doc.text('Note: the swap process may take a few hours to complete.', 30, 330);
+    doc.text('Note: the swap process may take a several hours to complete.', 30, 330);
 
     doc.save('Swap_Certificate.pdf');
   }

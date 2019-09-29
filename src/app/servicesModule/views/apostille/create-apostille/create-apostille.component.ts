@@ -397,7 +397,7 @@ export class CreateApostilleComponent implements OnInit {
         this.processComplete = true;
       },
       err => {
-        console.error(err)
+        // console.error(err)
         // this.downloadSignedFiles();
       });
   }
@@ -468,7 +468,7 @@ export class CreateApostilleComponent implements OnInit {
         this.processComplete = true;
       },
       err => {
-        console.error(err)
+        // console.error(err)
         // this.downloadSignedFiles();
       });
   }

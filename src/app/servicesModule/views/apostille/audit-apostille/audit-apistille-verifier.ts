@@ -119,19 +119,19 @@ class Verifier {
     const hashingVersionBytes = checksum.substring(8);
     // Hash depending of version byte
     if (hashingVersionBytes === '01' || hashingVersionBytes === '81') {
-      console.log("MD5")
+      // console.log("MD5")
       return CryptoJS.MD5(data).toString(CryptoJS.enc.Hex);
     } else if (hashingVersionBytes === '02' || hashingVersionBytes === '82') {
-      console.log("SHA1")
+      // console.log("SHA1")
       return CryptoJS.SHA1(data).toString(CryptoJS.enc.Hex);
     } else if (hashingVersionBytes === '03' || hashingVersionBytes === '83') {
-      console.log("SHA256")
+      // console.log("SHA256")
       return CryptoJS.SHA256(data).toString(CryptoJS.enc.Hex);
     } else if (hashingVersionBytes === '08' || hashingVersionBytes === '88') {
-      console.log("SHA3")
+      // console.log("SHA3")
       return CryptoJS.SHA3(data, { outputLength: 256 }).toString(CryptoJS.enc.Hex);
     } else {
-      console.log("SHA3")
+      // console.log("SHA3")
       return CryptoJS.SHA3(data, { outputLength: 512 }).toString(CryptoJS.enc.Hex);
     }
   }

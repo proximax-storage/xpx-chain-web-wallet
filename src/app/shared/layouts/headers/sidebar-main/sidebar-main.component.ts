@@ -62,8 +62,6 @@ export class SidebarMainComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log(this.colorStatus);
-
     this.statusNode = false;
     this.walletName = this.walletService.currentWallet.name;
     this.buildItemsHeader();

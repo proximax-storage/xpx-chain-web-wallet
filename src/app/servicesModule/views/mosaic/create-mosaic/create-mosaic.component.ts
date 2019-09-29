@@ -94,7 +94,7 @@ export class CreateMosaicComponent implements OnInit {
       this.durationByBlock = this.transactionService.calculateDurationforDay(next).toString();
     });
     this.mosaicForm.get('divisibility').valueChanges.subscribe(next => {
-      console.log('next', next)
+      // console.log('next', next)
       if (next > 6) {
         this.maxLengthSupply = 13;
         this.errorDivisibility = '-invalid';
@@ -258,7 +258,7 @@ export class CreateMosaicComponent implements OnInit {
    * @memberof CreateMosaicComponent
    */
   changeNotExpire($event) {
-    console.log($event);
+    // console.log($event);
     if (!$event.checked) {
       if (this.mosaicForm.get('duration').disabled) {
         this.mosaicForm.get('duration').enable({
@@ -456,7 +456,7 @@ export class CreateMosaicComponent implements OnInit {
   }
 
   limitDuration(e) {
-    console.log();
+    // console.log();
     if (isNaN(parseInt(e.target.value))) {
       e.target.value = ''
     } else {

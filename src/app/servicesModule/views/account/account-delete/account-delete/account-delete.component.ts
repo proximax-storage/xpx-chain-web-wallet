@@ -19,8 +19,8 @@ export class AccountDeleteComponent implements OnInit {
   currenAccount: AccountsInterface = null;
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Accounts',
-    componentName: 'DELETE',
-    extraButton: 'View all accounts',
+    componentName: 'Delete',
+    extraButton: 'View All Accounts',
     routerExtraButton: `/${AppConfig.routes.viewAllAccount}`
   };
   routes = {
@@ -102,109 +102,4 @@ export class AccountDeleteComponent implements OnInit {
   copyMessage(message: string) {
     this.sharedService.showSuccess('', `${message} copied`);
   }
-  // /**
-  //  *
-  //  */
-  // createForm() {
-  //   this.validatingForm = new FormGroup({
-  //     password: new FormControl('', [
-  //       Validators.required,
-  //       Validators.minLength(this.configurationForm.passwordWallet.minLength),
-  //       Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
-  //     ])
-  //   });
-  // }
-
-  // /**
-  //  *
-  //  *
-  //  * @returns
-  //  * @memberof AccountDeleteComponent
-  //  */
-  // decryptWallet() {
-  //   console.log('decryptWallet');
-  //   if (this.validatingForm.get('password').value !== '') {
-  //     const common = { password: this.validatingForm.get('password').value };
-  //     if (this.walletService.decrypt(common, this.currenAccount)) {
-  //       // this.privateKey = common['privateKey'].toUpperCase();
-  //       this.validatingForm.get('password').patchValue('', { emitEvent: false, onlySelf: true });
-  //       this.showPassword = false;
-  //       return;
-  //     }
-  //     this.validatingForm.get('password').patchValue('', { emitEvent: false, onlySelf: true });;
-  //     // this.privateKey = '';
-  //     return;
-  //   } else {
-  //     this.sharedService.showError('', 'Please, enter a password');
-  //   }
-  // }
-
-  // get input() { return this.validatingForm.get('password'); }
-
-  // /**
-  //  *
-  //  *
-  //  * @memberof AccountDeleteComponent
-  //  */
-  // hidePrivateKey() {
-  //   console.log('hidePrivateKey');
-  //   this.privateKey = '';
-  //   this.showPassword = true;
-  // }
-
-  // /**
-  // *
-  // *
-  // * @param {string} [nameInput='']
-  // * @param {string} [nameControl='']
-  // * @param {string} [nameValidation='']
-  // * @returns
-  // * @memberof AuthComponent
-  // */
-  // validateInput(nameInput: string = '', nameControl: string = '', nameValidation: string = '') {
-  //   let validation: AbstractControl = null;
-  //   if (nameInput !== '' && nameControl !== '') {
-  //     validation = this.validatingForm.controls[nameControl].get(nameInput);
-  //   } else if (nameInput === '' && nameControl !== '' && nameValidation !== '') {
-  //     validation = this.validatingForm.controls[nameControl].getError(nameValidation);
-  //   } else if (nameInput !== '') {
-  //     validation = this.validatingForm.get(nameInput);
-  //   }
-  //   return validation;
-  // }
-  // /**
-  //    *
-  //    *
-  //    * @memberof AccountDeleteComponent
-  //    */
-
-  // goToRoute() {
-
-  //   this.router.navigate([`/${AppConfig.routes.viewAllAccount}`]);
-  // }
-
-
-  // /**
-  //  *
-  //  *
-  //  * @memberof AccountDeleteComponent
-  //  */
-
-  // deleteAccount() {
-  //   if (this.validatingForm.get('password').value !== '') {
-  //     const common = { password: this.validatingForm.get('password').value };
-  //     if (this.walletService.decrypt(common, this.currenAccount)) {
-  //       const revalidateMultisig = true;
-  //       this.walletService.removeAccountWallet(this.accountName, revalidateMultisig);
-  //       this.transactionService.updateBalance();
-  //       this.sharedService.showInfo('', 'Your account has be deleted');
-  //       this.router.navigate([`/${AppConfig.routes.viewAllAccount}`]);
-  //     }
-  //     this.validatingForm.get('password').patchValue('', { emitEvent: false, onlySelf: true });
-  //   } else {
-  //     this.sharedService.showError('', 'Please, enter a password');
-  //   }
-
-  // }
-
 }

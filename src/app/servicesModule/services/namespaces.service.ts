@@ -53,9 +53,6 @@ export class NamespacesService {
       network
     );
 
-    /*const account = this.proximaxProvider.getAccountFromPrivateKey(param.common.privateKey, this.walletService.currentAccount.network);
-    console.log('account', account);
-    return account.sign(addressAliasTransaction, this.generationHash); //Update-sdk-dragon*/
     return addressAliasTransaction;
   }
 

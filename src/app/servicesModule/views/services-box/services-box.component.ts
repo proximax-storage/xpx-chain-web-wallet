@@ -315,7 +315,7 @@ export class ServicesBoxComponent implements OnInit {
         'Aggregate Transactions',
         true,
         'Merge multiple transactions into one',
-        'icon-aggregate-transactions-disabled-80h-proximax-sirius-wallet.svg',
+        'icon-aggregate-transactions-full-color-80h-proximax-sirius-wallet.svg',
         '',
         {
           complete: this.services.buildStructureService(
@@ -342,7 +342,7 @@ export class ServicesBoxComponent implements OnInit {
         'Cross-Chain Swaps',
         false,
         'Atomic cross-chain swap between public and private networks',
-        'icon-cross-chain-swap-disabled-80h-proximax-sirius-wallet.svg',
+        'icon-cross-chain-swap-full-color-80h-proximax-sirius-wallet.svg',
         '',
         {
           secretLock: this.services.buildStructureService(
@@ -363,7 +363,6 @@ export class ServicesBoxComponent implements OnInit {
         true,
         'disable-module'
       ),
-
       // Nodes
       this.services.buildStructureService(
         'Nodes',
@@ -401,7 +400,7 @@ export class ServicesBoxComponent implements OnInit {
         'Chat',
         true,
         'Encrypted live chat',
-        'icon-messenger-green-16h-proximax-sirius-wallet.svg',
+        'icon-chat-full-color-80h-proximax-sirius-wallet.svg',
         '',
         {
           send: this.services.buildStructureService(
@@ -421,7 +420,7 @@ export class ServicesBoxComponent implements OnInit {
         'Invoice',
         true,
         'Create and manage invoices',
-        'icon-invoice-green-60h.svg',
+        'icon-invoice-full-color-80h-proximax-sirius-wallet.svg',
         '',
         {
           create: this.services.buildStructureService(

@@ -84,11 +84,11 @@ export class WalletCreatedComponent implements OnInit {
   goToRoute() {
     // [routerLink]="[routes.backToService]"
     const nis1Info = this.walletService.getNis1AccounsWallet();
-    console.log('nnis1Info ------>', nis1Info);
+    // console.log('nnis1Info ------>', nis1Info);
     if (nis1Info.length > 0) {
-      console.log('nis1Info.lengh ------>', nis1Info.length);
+      // console.log('nis1Info.lengh ------>', nis1Info.length);
       if (nis1Info[0].mosaic && Object.keys(nis1Info[0].mosaic).length > 0) {
-        console.log('REDIRECCIONAME A ACCOUNT NIS1 FOUND');
+        // console.log('REDIRECCIONAME A ACCOUNT NIS1 FOUND');
         this.router.navigate([`/${AppConfig.routes.walletNis1Found}`]);
       } else {
         this.walletService.accountWalletCreated = null;
@@ -108,8 +108,8 @@ export class WalletCreatedComponent implements OnInit {
   }
 
   printAccountInfo() {
-    console.log(this.privateKey);
-    console.log(this.address);
+    // console.log(this.privateKey);
+    // console.log(this.address);
 
     let doc = new jsPDF({
       unit: 'px'

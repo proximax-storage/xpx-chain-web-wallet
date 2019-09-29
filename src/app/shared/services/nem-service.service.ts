@@ -42,8 +42,8 @@ export class NemServiceService {
 
   /**
    * Start the connection to the NEM nodes
-   * @param walletService 
-   * @param transactionService 
+   * @param walletService
+   * @param transactionService
    */
   constructor(
     private walletService: WalletService,
@@ -85,7 +85,6 @@ export class NemServiceService {
    */
   anounceTransaction(transferTransaction: TransferTransaction | MultisigTransaction, cosignerAccount: Account) {
     const signedTransaction = cosignerAccount.signTransaction(transferTransaction);
-    console.log('\n\n\n\nValue signedTransaction:\n', signedTransaction, '\n\n\n\nEnd value\n\n');
     return this.transactionHttp.announceTransaction(signedTransaction);
   }
 
@@ -147,7 +146,6 @@ export class NemServiceService {
    */
   async createTransaction(message: PlainMessage, assetId: AssetId, quantity: number) {
     const resultAssets = await this.assetHttp.getAssetTransferableWithRelativeAmount(assetId, quantity).toPromise();
-    console.log('\n\n\n\nValue resultAssets:\n', resultAssets, '\n\n\n\nEnd value\n\n');
     return TransferTransaction.createWithAssets(
       this.createWithDeadline(),
       new Address(environment.nis1.address),
@@ -231,7 +229,6 @@ export class NemServiceService {
             this.walletService.setNis1AccounsWallet(accountNis1);
           },
           error => {
-            console.log('Error ------->', error);
             const accountNis1 = {
               nameAccount: element.name,
               address: address,
@@ -323,7 +320,6 @@ export class NemServiceService {
         )
       },
       error => {
-        console.log('this accounssssss error------->', error);
         const accountNis1 = {
           nameAccount: name,
           address: account.address,
@@ -354,7 +350,7 @@ export class NemServiceService {
 
   /**
    * Method to get Unconfirmed transactions of an account
-   * @param address 
+   * @param address
    * @memberof NemServiceService
    * @returns Observable<Transaction[]>
    */
