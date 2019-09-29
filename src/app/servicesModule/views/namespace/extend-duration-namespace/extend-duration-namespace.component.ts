@@ -245,14 +245,11 @@ export class ExtendDurationNamespaceComponent implements OnInit {
     // Get transaction status
     this.subscription.push(this.dataBridgeService.getTransactionStatus().subscribe(
       statusTransaction => {
-        // console.log(statusTransaction);
-
         if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
           for (let element of this.transactionSigned) {
-            const statusTransactionHash = statusTransaction['data'].hash;
+            const statusTransactionHash = statusTransaction.hash;
             // console.log('---statusTransactionHash---', statusTransactionHash);
             // console.log('----element----', element);
-
             const match = statusTransactionHash === element.hash;
             if (match) {
               this.blockBtnSend = false;

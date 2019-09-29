@@ -107,16 +107,16 @@ export class CreateNamespaceComponent implements OnInit {
   }
 
 
-  builder(){
-    if(this.namespaceName !== undefined && this.namespaceName !== '' ){
-      if(this.typetransfer == 1 ){
+  builder() {
+    if (this.namespaceName !== undefined && this.namespaceName !== '') {
+      if (this.typetransfer == 1) {
         this.registerRootNamespaceTransaction = this.proximaxProvider.registerRootNamespaceTransaction(
           this.namespaceName,
           this.walletService.currentAccount.network,
           this.duration
         );
         this.fee = this.transactionService.amountFormatterSimple(this.registerRootNamespaceTransaction.maxFee.compact())
-      } else if(this.typetransfer == 2){
+      } else if (this.typetransfer == 2) {
         const rootNamespaceName = this.namespaceForm.get('namespaceRoot').value;
         this.registersubamespaceTransaction = this.proximaxProvider.registersubNamespaceTransaction(
           rootNamespaceName,
@@ -186,35 +186,35 @@ export class CreateNamespaceComponent implements OnInit {
     if (this.namespaceForm.valid && !this.blockBtnSend) {
       const validateAmount = this.transactionService.validateBuildSelectAccountBalance(this.amountAccount, Number(this.fee), Number(this.calculateRentalFee))
       if (validateAmount) {
-      this.blockBtnSend = true;
-      const common = {
-        password: this.namespaceForm.get('password').value,
-        privateKey: ''
-      }
-      if (this.walletService.decrypt(common)) {
-        const signedTransaction = this.signedTransaction(common);
-        this.transactionSigned.push(signedTransaction);
-        this.proximaxProvider.announce(signedTransaction).subscribe(
-          () => {
-            if (!this.transactionStatus) {
-              this.getTransactionStatus();
+        this.blockBtnSend = true;
+        const common = {
+          password: this.namespaceForm.get('password').value,
+          privateKey: ''
+        }
+        if (this.walletService.decrypt(common)) {
+          const signedTransaction = this.signedTransaction(common);
+          this.transactionSigned.push(signedTransaction);
+          this.proximaxProvider.announce(signedTransaction).subscribe(
+            () => {
+              if (!this.transactionStatus) {
+                this.getTransactionStatus();
+              }
+
+
+              this.setTimeOutValidate(signedTransaction.hash);
+            }, () => {
+              this.blockBtnSend = false;
+              this.clearForm();
+              this.fee = '0.000000'
+              this.sharedService.showError('', 'Error connecting to the node');
             }
-
-
-            this.setTimeOutValidate(signedTransaction.hash);
-          }, () => {
-             this.blockBtnSend = false;
-            this.clearForm();
-            this.fee = '0.000000'
-            this.sharedService.showError('', 'Error connecting to the node');
-          }
-        );
+          );
+        } else {
+          this.blockBtnSend = false;
+        }
       } else {
-         this.blockBtnSend = false;
+        this.sharedService.showError('', 'insufficient balance');
       }
-    } else {
-      this.sharedService.showError('', 'insufficient balance');
-    }
     }
   }
 
@@ -419,22 +419,22 @@ export class CreateNamespaceComponent implements OnInit {
     // Duration ValueChange
     this.namespaceForm.get('duration').valueChanges.subscribe(
       next => {
-        if(next <= 365) {
+        if (next <= 365) {
 
-        if (next !== null && next !== undefined && String(next) !== '0' && next !== '') {
+          if (next !== null && next !== undefined && String(next) !== '0' && next !== '') {
 
-          if (this.showDuration) {
-            this.durationByBlock = this.transactionService.calculateDurationforDay(next).toString();
-            this.validateRentalFee(this.rentalFee * parseFloat(this.durationByBlock));
+            if (this.showDuration) {
+              this.durationByBlock = this.transactionService.calculateDurationforDay(next).toString();
+              this.validateRentalFee(this.rentalFee * parseFloat(this.durationByBlock));
+            }
+          } else {
+            this.calculateRentalFee = '0.000000';
           }
         } else {
-          this.calculateRentalFee = '0.000000';
-        }
-      } else {
-        this.durationByBlock = this.transactionService.calculateDurationforDay(365).toString();
-            this.validateRentalFee(this.rentalFee * parseFloat(this.durationByBlock));
+          this.durationByBlock = this.transactionService.calculateDurationforDay(365).toString();
+          this.validateRentalFee(this.rentalFee * parseFloat(this.durationByBlock));
 
-      }
+        }
         this.duration = parseFloat(this.durationByBlock);
         this.builder()
       }
