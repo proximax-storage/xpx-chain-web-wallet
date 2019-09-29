@@ -145,7 +145,7 @@ export class MosaicService {
       this.saveMosaicStorage(mosaicsTosaved);
       return mosaicsTosaved;
     } catch (error) {
-      console.log('Has ocurred a error with search mosaics');
+      // console.log('Has ocurred a error with search mosaics');
     }
   }
 

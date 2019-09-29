@@ -1,20 +1,19 @@
 import { Component, OnInit } from '@angular/core';
+import { SignedTransaction, MosaicId } from 'tsjs-xpx-chain-sdk';
 import { FormGroup, FormBuilder, Validators, AbstractControl } from "@angular/forms";
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { Router } from '@angular/router';
-import { SignedTransaction, MosaicId } from 'tsjs-xpx-chain-sdk';
-
+import { Subscription } from 'rxjs';
 import { AppConfig } from '../../../../config/app.config';
 import { DataBridgeService } from '../../../../shared/services/data-bridge.service';
 import { MosaicService } from '../../../../servicesModule/services/mosaic.service';
-import { WalletService, AccountsInterface } from '../../../../wallet/services/wallet.service';
+import { WalletService } from '../../../../wallet/services/wallet.service';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { SharedService, ConfigurationForm } from '../../../../shared/services/shared.service';
-import { NamespacesService, NamespaceStorageInterface } from '../../../../servicesModule/services/namespaces.service';
+import { NamespacesService } from '../../../../servicesModule/services/namespaces.service';
 import { TransactionsService } from '../../../../transactions/services/transactions.service';
-import { Subscription } from 'rxjs';
 import { HeaderServicesInterface } from '../../../services/services-module.service';
-import { environment } from 'src/environments/environment.prod';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-create-namespace',
@@ -358,7 +357,7 @@ export class CreateNamespaceComponent implements OnInit {
   }
 
   limitDuration(e) {
-    console.log();
+    // console.log();
     if (isNaN(parseInt(e.target.value))) {
       e.target.value = ''
     } else {
@@ -378,8 +377,8 @@ export class CreateNamespaceComponent implements OnInit {
    */
   signedTransaction(common: any): SignedTransaction {
     const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
-    console.log('accountaccountaccount', account);
-    
+    // console.log('accountaccountaccount', account);
+
     // const namespaceName: string = this.namespaceForm.get('name').value;
     // const duration: number = parseFloat(this.durationByBlock);
     // const duration: number = 20;
@@ -391,7 +390,7 @@ export class CreateNamespaceComponent implements OnInit {
       //   duration
       // )
 
-      console.log('----registerRootNamespaceTransaction----', this.registerRootNamespaceTransaction);
+      // console.log('----registerRootNamespaceTransaction----', this.registerRootNamespaceTransaction);
 
       const signedTransaction = account.sign(this.registerRootNamespaceTransaction, generationHash); //Update-sdk-dragon
       return signedTransaction;
@@ -404,7 +403,7 @@ export class CreateNamespaceComponent implements OnInit {
       //   this.walletService.currentAccount.network
       // );
 
-      console.log('----registersubamespaceTransaction----', this.registersubamespaceTransaction);
+      // console.log('----registersubamespaceTransaction----', this.registersubamespaceTransaction);
       // console.log('----subnamespaceName----', subnamespaceName);
       const signedTransaction = account.sign(this.registersubamespaceTransaction, generationHash); //Update-sdk-dragon
       return signedTransaction;
@@ -523,6 +522,7 @@ export class CreateNamespaceComponent implements OnInit {
             this.calculateRentalFee = this.transactionService.amountFormatter(amount, mosaic[0].mosaicInfo);
           } else {
             // **********INSUFFICIENT BALANCE*************
+            // console.log('AQUI FUE');
             this.insufficientBalance = true;
             if (this.namespaceForm.enabled) {
               this.namespaceForm.disable();
@@ -545,6 +545,7 @@ export class CreateNamespaceComponent implements OnInit {
           const invalidBalance = xpxInBalance.amount.compact() < 10000000;
           if (invalidBalance) {
             // **********DURATION INSUFFICIENT BALANCE*************
+            // console.log('AQUI FUE 1');
             this.insufficientBalance = true;
             this.insufficientBalanceDuration = false;
           } else {
@@ -558,6 +559,7 @@ export class CreateNamespaceComponent implements OnInit {
         }
       } else {
         // **********INSUFFICIENT BALANCE*************
+        // console.log('AQUI FUE 2');
         this.insufficientBalance = true;
         if (this.namespaceForm.enabled) {
           this.namespaceForm.disable();
@@ -565,6 +567,7 @@ export class CreateNamespaceComponent implements OnInit {
       }
     } else {
       // **********INSUFFICIENT BALANCE*************
+      // console.log('AQUI FUE 3');
       this.insufficientBalance = true;
       if (this.namespaceForm.enabled) {
         this.namespaceForm.disable();

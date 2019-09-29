@@ -84,7 +84,7 @@ export class HomeComponent implements OnInit {
         const file = CryptoJS.enc.Base64.parse(myReader.result);
         try {
           const dataDecryp = JSON.parse(file.toString(CryptoJS.enc.Utf8));
-          console.log('This a decryp-------->', dataDecryp);
+          // console.log('This a decryp-------->', dataDecryp);
 
           const existWallet = this.walletService.getWalletStorage().find(
             (element: any) => {
@@ -102,7 +102,7 @@ export class HomeComponent implements OnInit {
             if (dataDecryp.accounts.length !== undefined) {
               for (const element of dataDecryp.accounts) {
                 accounts.push(element);
-                console.log('Esta es una pruebaaaa------------->', element);
+                // console.log('Esta es una pruebaaaa------------->', element);
                 contacs.push({ label: element.name, value: element.address.split('-').join(''), walletContact: true });
               }
               this.serviceModuleService.setBookAddress(contacs, walletName);
@@ -119,7 +119,7 @@ export class HomeComponent implements OnInit {
               book: []
             }
 
-            console.log('this a wallet created----->', wallet);
+            // console.log('this a wallet created----->', wallet);
 
             let walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
             walletsStorage.push(wallet);
@@ -143,10 +143,10 @@ export class HomeComponent implements OnInit {
     const common = nem.model.objects.create("common")(this.password);
     // Get the wallet account to decrypt
     const walletAccount = this.walletDecryp.accounts[0];
-    // Decrypt account private key 
+    // Decrypt account private key
     nem.crypto.helpers.passwordToPrivatekey(common, walletAccount, walletAccount.algo);
     // The common object now has a private key
-    console.log(common)
+    // console.log(common)
 
     if (common.privateKey !== '') {
       let walletName = this.walletDecryp.name;
@@ -194,7 +194,7 @@ export class HomeComponent implements OnInit {
         book: []
       }
 
-      console.log('this a wallet created----->', walletStorage);
+      // console.log('this a wallet created----->', walletStorage);
 
       let walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
       walletsStorage.push(walletStorage);

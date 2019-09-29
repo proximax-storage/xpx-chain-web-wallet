@@ -167,7 +167,6 @@ export class VoteInPollComponent implements OnInit {
   }
   getPoll(id) {
     this.pollSelected = this.createPollStorageService.filterPoll(id);
-    console.log(' this.pollSelected ', this.pollSelected)
     this.isMultipe = this.pollSelected.isMultiple
     this.verifyVote();
     this.setResultprev(this.pollSelected);

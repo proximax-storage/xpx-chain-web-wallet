@@ -49,7 +49,6 @@ export class Nis1AccountsConsignerComponent implements OnInit {
   searchBalance(account, index = null) {
     this.nemProvider.getOwnedMosaics(account.address).pipe(first()).pipe(timeout(15000)).subscribe(
       async next => {
-        console.log('response search ----->', account);
         let foundXpx: boolean = false;
         for (const el of next) {
           if (el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx') {
@@ -64,7 +63,7 @@ export class Nis1AccountsConsignerComponent implements OnInit {
 
               if (transactions.length > 0) {
                 let relativeAmount = realQuantity;
-                for (const item of transactions) {                  
+                for (const item of transactions) {
                   if (item.type === 257 && item['signer']['address']['value'] === this.mainAccount.address.value) {
                     for (const mosaic of item['_assets']) {
                       if (mosaic.assetId.namespaceId === 'prx' && mosaic.assetId.name === 'xpx') {
@@ -116,8 +115,6 @@ export class Nis1AccountsConsignerComponent implements OnInit {
       },
       error => {
         this.sharedService.showWarning('', error);
-        console.log('this errorr -------->', error);
-
         if (index === null) {
           this.mainAccount.balance = '0.000000';
           this.mainAccount.mosaic = null;

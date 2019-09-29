@@ -21,7 +21,7 @@ export class ModifyMultisigAccountTypeComponent implements OnInit {
   }
 
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
-    console.log(this.multisigAccount);
+    // console.log(this.multisigAccount);
   }
 
 }

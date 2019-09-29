@@ -27,8 +27,6 @@ export class Nis1AccountsListComponent implements OnInit {
     private router: Router,
     private nemProvider: NemServiceService
   ) {
-    console.log('Test de acount ----> ', this.walletService.currentWallet.accounts);
-    console.log('Test de AccountsWallets ----> ', this.walletService.getNis1AccounsWallet());
     this.walletService.setAccountInfoNis1(null);
     this.accountsNis1 = this.walletService.currentWallet.accounts;
     for (let index = 0; index < this.accountsNis1.length; index++) {
@@ -42,16 +40,12 @@ export class Nis1AccountsListComponent implements OnInit {
   ngOnInit() { }
 
   accountSelected(account: any, index: number) {
-    console.log('Account Selected ------>', account);
     this.walletService.setAccountSelectedWalletNis1(account);
-
-    console.log('index ------>', index);
     this.searchItem[index] = true;
     const address = this.nemProvider.createAddressToString(account.nis1Account.address.value);
     this.nemProvider.getAccountInfo(address).pipe(first()).pipe((timeout(5000))).subscribe(
       next => {
         this.searchItem[index] = false;
-        console.log('Account next ------>', next);
         let consignerOf: boolean = false;
         let consignerAccountsInfo: any = [];
 
@@ -81,7 +75,6 @@ export class Nis1AccountsListComponent implements OnInit {
       },
       error => {
         this.searchItem[index] = false;
-        console.log('this accounssssss error------->>>>', error);
         const accountNis1 = {
           nameAccount: account.name,
           address: address,

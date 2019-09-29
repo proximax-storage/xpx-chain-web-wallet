@@ -135,7 +135,7 @@ export class ImportWalletComponent implements OnInit {
             publicKey: nis1Wallet.publicKey
           };
           // const accountInfo = await this.nemProvider.getAccountInfo(nis1Wallet.address).toPromise();
-          console.log('this is a nis1 wallet ---------->', nis1Wallet);
+          // console.log('this is a nis1 wallet ---------->', nis1Wallet);
           this.saveAccount(wallet, nameWallet, password);
           this.nemProvider.getAccountsInfoAccountNew(nis1Wallet, nameWallet);
         } else {
@@ -190,7 +190,7 @@ export class ImportWalletComponent implements OnInit {
 
   switchSaveNis1() {
     this.saveNis1 = !this.saveNis1
-    console.log(this.saveNis1);
+    // console.log(this.saveNis1);
   }
 
   validateInput(nameInput: string = '', nameControl: string = '', nameValidation: string = '') {

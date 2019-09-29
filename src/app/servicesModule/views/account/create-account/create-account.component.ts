@@ -195,8 +195,8 @@ export class CreateAccountComponent implements OnInit {
     this.dataBridgeService.connectnWs();
     this.dashboardService.isIncrementViewDashboard = 0;
     this.transactionService.searchAccountsInfo(this.walletService.currentWallet.accounts);
-    console.log('--------------------WalletService------------', this.walletService.currentWallet);
-    console.log('--------------------AccountInfo------------', this.walletService.currentAccount);
+    // console.log('--------------------WalletService------------', this.walletService.currentWallet);
+    // console.log('--------------------AccountInfo------------', this.walletService.currentAccount);
     this.router.navigate([`/${AppConfig.routes.accountCreated}`]);
   }
 

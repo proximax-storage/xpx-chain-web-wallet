@@ -304,7 +304,7 @@ export class AliasAddressToNamespaceComponent implements OnInit {
   getNamespaces() {
     this.subscription.push(this.namespaceService.getNamespaceChanged().subscribe(
       async (arrayNamespaceStorage: NamespaceStorageInterface[]) => {
-        console.log('LO QUE ME LLEGA ---> ', arrayNamespaceStorage);
+        // console.log('LO QUE ME LLEGA ---> ', arrayNamespaceStorage);
         this.arrayNamespaceStorage = arrayNamespaceStorage;
         this.buildSelectNamespace(this.LinkToNamespaceForm.get('typeAction').value);
       }

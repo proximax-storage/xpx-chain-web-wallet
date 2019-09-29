@@ -312,7 +312,6 @@ export class ExtendDurationNamespaceComponent implements OnInit {
   }
 
   limitDuration(e) {
-    console.log();
     if (isNaN(parseInt(e.target.value))) {
       e.target.value = ''
     } else {

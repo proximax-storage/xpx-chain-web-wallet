@@ -299,10 +299,10 @@ export class DataBridgeService {
    */
   getStatusSocket(connector: Listener, audio: HTMLAudioElement, address: Address) {
     connector.status(address).subscribe(status => {
-     console.log("\n\n-----------------------STATUS--------------------------")
+     /*console.log("\n\n-----------------------STATUS--------------------------")
       // console.log(status.hash)
       console.log(status)
-      console.log("------------------------------------------------------------------\n\n")
+      console.log("------------------------------------------------------------------\n\n")*/
       this.sharedService.showWarning('', status.status.split('_').join(' '));
       this.setTransactionStatus({
         'type': 'status',

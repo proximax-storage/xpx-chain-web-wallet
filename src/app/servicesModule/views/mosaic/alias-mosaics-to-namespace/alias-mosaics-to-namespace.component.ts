@@ -130,7 +130,7 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
   }
 
   async buildSelectNamespace($event = null) {
-    console.log('--arrayNamespaceStorage--', this.arrayNamespaceStorage);
+    // console.log('--arrayNamespaceStorage--', this.arrayNamespaceStorage);
     if ($event !== null) {
       this.linkingNamespaceToMosaic.get('namespace').setValue('1');
       const namespaceSelect = [];
@@ -233,7 +233,7 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
       async namespaceInfo => {
         const namespaceSelect = this.namespaceSelect.slice(0);
         if (namespaceInfo !== undefined && namespaceInfo.length > 0) {
-          console.log(namespaceInfo);
+          // console.log(namespaceInfo);
           for (let data of namespaceInfo) {
             namespaceSelect.push({
               value: `${data.namespaceName.name}`,
@@ -305,7 +305,7 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
     this.subscription.push(this.mosaicService.getMosaicChanged().subscribe(
       async next => {
         const data = await this.mosaicService.filterMosaics();
-        console.log(data);
+        // console.log(data);
         //this.mosaicSelect.slice(0);
         const mosaicsSelect: any = [{
           value: '1',

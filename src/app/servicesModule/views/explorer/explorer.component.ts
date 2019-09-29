@@ -163,13 +163,13 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
         if (this.paramSearch.length === 64) {
           this.proximaxProvider.getTransactionInformation(this.paramSearch, this.nodeService.getNodeSelected()).subscribe(
             resp => {
-              console.log('with hash info', resp);
+              // console.log('with hash info', resp);
               this.searching = false;
               this.buildTransaction([resp]);
             },
             error => {
               this.searching = false;
-              console.log(error);
+              // console.log(error);
             }
           );
         } else {

@@ -95,8 +95,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     ));
     this.subscription.push(this.walletService.getSwapTransactions$().subscribe(
       next => {
-        console.log('esta es la respuesta', next);
-        
+        // console.log('esta es la respuesta', next);
+
         this.swapTransactions = next.length;
       }
     ));

@@ -91,7 +91,7 @@ export class MosaicsSupplyChangeComponent implements OnInit {
     this.configurationForm = this.sharedService.configurationForm;
     this.createForm();
     this.amountAccount = this.walletService.getAmountAccount();
-    console.log(this.amountAccount);
+    // console.log(this.amountAccount);
 
     this.subscribe['block'] = this.dataBridge.getBlock().subscribe(next => this.currentBlock = next);
     const data = await this.mosaicService.filterMosaics();

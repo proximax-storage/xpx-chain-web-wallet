@@ -100,9 +100,9 @@ export class ApostilleService {
       data.zip.generateAsync({
         type: "blob"
       }).then(async (content: any) => {
-        console.log('content', content);
+        // console.log('content', content);
         if (data.storeInDfms) {
-          console.log(this.file);
+          // console.log(this.file);
           const dateFull = `${date.getFullYear()}-${("00" + (date.getMonth() + 1)).slice(-2)}-${("00" + (date.getDate())).slice(-2)}`;
           const fileName = `PROXIsigned -- Do not Edit --"${dateFull}".zip`;
 
@@ -122,7 +122,7 @@ export class ApostilleService {
           );
           const ifpsClient = new IpfsClient(ipfConnection);
           ifpsClient.addStream(streamContent).subscribe(hash => {
-            console.log('---STORAGE HASH---', hash);
+            // console.log('---STORAGE HASH---', hash);
             saveAs(content, `${hash}.zip`);
           });*/
         } else {
@@ -212,7 +212,7 @@ export class ApostilleService {
                 const whiteList = this.whiteListTransaction.filter(el => el.signedTransaction.hash !== statusTransaction['hash']);
                 this.whiteListTransaction = (whiteList) ? whiteList : [];
                 if (!element.downloaded) {
-                  console.log('descargala....');
+                  // console.log('descargala....');
                   this.downloadSignedFiles(element);
                 }
               }
@@ -262,7 +262,7 @@ export class ApostilleService {
   * @memberof ApostilleCreateComponent
   */
   pdfcertificatePrivate(base64ImageString: string, ntyData: NtyDataInterface) {
-    console.log('ntyData-----> ', ntyData);
+    // console.log('ntyData-----> ', ntyData);
 
     let date = new Date();
     var doc = new jsPDF();

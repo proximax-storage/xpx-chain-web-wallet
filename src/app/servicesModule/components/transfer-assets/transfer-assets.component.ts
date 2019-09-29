@@ -43,7 +43,7 @@ export class TransferAssetsComponent implements OnInit {
   listContacts: any = [];
   changeAccount: boolean = false;
   blockButton: boolean;
-  // goToList: string = 
+  // goToList: string =
 
   constructor(
     private walletService: WalletService,
@@ -94,9 +94,9 @@ export class TransferAssetsComponent implements OnInit {
               realQuantity = this.nemProvider.amountFormatter(realQuantity, el, el.properties.divisibility);
               this.accountSelected.mosaic = el;
               const transactions = await this.nemProvider.getUnconfirmedTransaction(this.accountSelected.address);
-              console.log('this.accountSelected', this.accountSelected);
-              console.log('Estas son las transacciones', transactions);
-              console.log('this is a wallet', this.walletService.getCurrentWallet());
+              // console.log('this.accountSelected', this.accountSelected);
+              // console.log('Estas son las transacciones', transactions);
+              // console.log('this is a wallet', this.walletService.getCurrentWallet());
 
               if (transactions.length > 0) {
                 let relativeAmount = realQuantity;
@@ -304,7 +304,7 @@ export class TransferAssetsComponent implements OnInit {
                     }]
                   };
                 }
-                console.log('\n\n\n\nValue resp:\n', wallet, '\n\n\n\nEnd value\n\n');
+                // console.log('\n\n\n\nValue resp:\n', wallet, '\n\n\n\nEnd value\n\n');
                 this.walletService.setSwapTransactions$(wallet.transactions);
                 this.walletService.saveAccountWalletTransNisStorage(wallet);
                 this.sharedService.showSuccess('Transaction', next['message']);
@@ -322,7 +322,7 @@ export class TransferAssetsComponent implements OnInit {
                 });
           })
           .catch(error => {
-            console.log('Esrror', error);
+            // console.log('Esrror', error);
             this.sharedService.showError('Error', error.toString().split('_').join(' '));
             this.spinnerVisibility = false
           });
@@ -357,7 +357,7 @@ export class TransferAssetsComponent implements OnInit {
                 }]
               };
             }
-            console.log('\n\n\n\nValue resp:\n', wallet, '\n\n\n\nEnd value\n\n');
+            // console.log('\n\n\n\nValue resp:\n', wallet, '\n\n\n\nEnd value\n\n');
             this.walletService.setSwapTransactions$(wallet.transactions);
             this.walletService.saveAccountWalletTransNisStorage(wallet);
             this.sharedService.showSuccess('Transaction', next['message']);

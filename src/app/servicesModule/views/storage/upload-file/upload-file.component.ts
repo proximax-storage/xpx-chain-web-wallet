@@ -92,25 +92,15 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
       if (this.walletService.decrypt(common)) {
         this.blockUpload = true;
         const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
-        console.log(account);
-        console.log('0filee-----> ', this.files);
         try {
           const uploadedFile = this.files[0].nativeFile;
-          console.log(uploadedFile);
           const uploadedFileType = uploadedFile.type;
-          console.log(uploadedFileType);
           const uploadedFileContent = await this.readFile(uploadedFile);
           const fileName = this.uploadForm.get('filePath').value;
-          console.log(uploadedFile.name);
-          // const optionalFileName =  fileName ===  undefined ? uploadedFile.name: fileName;
-          //console.log(optionalFileName);
           const optionalFileName = uploadedFile.name;
           const metaParams = Uint8ArrayParameterData.create(uploadedFileContent, optionalFileName, '', uploadedFileType);
-          console.log('---metaParams---', metaParams);
           const uploadParams = UploadParameter.createForUint8ArrayUpload(metaParams, account.privateKey);
-          console.log('uploadParams -->', uploadParams);
           const encryptionMethod = this.uploadForm.get('encryptionMethod').value;
-          console.log(encryptionMethod);
 
           switch (encryptionMethod) {
             case PrivacyType.PLAIN:
@@ -118,23 +108,17 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
               break;
             case PrivacyType.PASSWORD:
               const encryptionPassword = this.uploadForm.controls.encryptionPasswords.get('password').value;
-              console.log(encryptionPassword);
               uploadParams.withPasswordPrivacy(encryptionPassword);
               break;
             case PrivacyType.NEM_KEYS:
               const publicKey = this.uploadForm.get('recipientPublicKey').value;
               const privateKey = this.uploadForm.get('recipientPrivateKey').value;
-              // const recipientAccount = this.proximaxProvider.getAccountFromPrivateKey(privateKey, this.walletService.currentAccount.network);
-              // console.log(publicKey);
-              // console.log(privateKey);
-              // console.log(recipientAccount);
               uploadParams.withNemKeysPrivacy(privateKey, publicKey);
               uploadParams.withRecipientPublicKey(publicKey);
               break;
           }
           uploadParams.withTransactionMosaics(this.mosaics);
           const result = await this.uploader.upload(uploadParams.build());
-          console.log(result);
           this.clearForm();
           this.sharedService.showSuccessTimeout('Upload', 'Upload successful.', 8000);
           this.blockUpload = false;
@@ -271,23 +255,22 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
     this.blockUpload = false;
     const encryptionMethod = this.uploadForm.get('encryptionMethod').value;
     const walletPassword = this.uploadForm.get('walletPassword').value;
-    console.log(encryptionMethod);
     if (walletPassword.length <= 0) {
       this.blockUpload = true;
-      this.sharedService.showError('Attention', 'Please enter the wallet password');
+      this.sharedService.showError('', 'Please enter the wallet password');
     } else if (this.files.length <= 0) {
       this.blockUpload = true;
-      this.sharedService.showError('Attention', 'Please choose file to upload');
+      this.sharedService.showError('', 'Please choose file to upload');
     } else if (encryptionMethod.length <= 0) {
       this.blockUpload = true;
-      this.sharedService.showError('Attention', 'Please choose the encryption method');
+      this.sharedService.showError('', 'Please choose the encryption method');
     } else {
       switch (encryptionMethod) {
         case PrivacyType.PASSWORD:
           const encryptionPassword = this.uploadForm.controls.encryptionPasswords.get('password').value;
           if (encryptionPassword.length <= 0) {
             this.blockUpload = true;
-            this.sharedService.showError('Attention', 'Please enter the encryption password');
+            this.sharedService.showError('', 'Please enter the encryption password');
           }
           break;
         case PrivacyType.NEM_KEYS:
@@ -295,10 +278,10 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
           const privateKey = this.uploadForm.get('recipientPrivateKey').value;
           if (publicKey.length <= 0) {
             this.blockUpload = true;
-            this.sharedService.showError('Attention', 'Please enter the encryption public key');
+            this.sharedService.showError('', 'Please enter the encryption public key');
           } else if (privateKey.length <= 0) {
             this.blockUpload = true;
-            this.sharedService.showError('Attention', 'Please enter the encryption private key');
+            this.sharedService.showError('', 'Please enter the encryption private key');
           }
           break;
       };

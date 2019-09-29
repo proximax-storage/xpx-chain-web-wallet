@@ -47,7 +47,7 @@ export class ListContactsComponent {
   ngOnInit() {
     this.hideTable = false;
     const contacts = this.serviceModuleService.getBooksAddress();
-    console.log(contacts);
+    // console.log(contacts);
     for (let index = 0; index < contacts.length; index++) {
       contacts[index].value = this.proximaxProvider.createFromRawAddress(contacts[index].value).pretty();
     }
