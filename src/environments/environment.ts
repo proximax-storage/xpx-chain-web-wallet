@@ -8,8 +8,8 @@ export const environment = {
   production: false,
   itemBooksAddress: 'sw-books-testnet-01',
   //version: '0.3.1.8',
-  version: '0.3.5',
-  cacheVersion: '1',
+  version: '0.3.6',
+  cacheVersion: '2',
   nameKeyNodeSelected: `sw-selected-node-testnet-01`,
   nameKeyWalletStorage: `sw-testnet-01`,
   nameKeyNodeStorage: `sw-nodes-testnet-01`,
@@ -20,7 +20,7 @@ export const environment = {
   protocol: `http`,
   protocolWs: `ws`,
   nodeExplorer: 'https://bctestnetexplorer.xpxsirius.io/#/result/hash',
- /* mosaicXpxInfo: {
+  mosaicXpxInfo: {
     name: 'prx.xpx',
     coin: 'XPX',
     id: '13bfc518e40549d7',
@@ -28,8 +28,8 @@ export const environment = {
     namespaceIdUint64: [2434186742, 3220914849],
     namespaceId: 'bffb42a19116bdf6',
     divisibility: 6
-  },*/
-  mosaicXpxInfo: {
+  },
+  /*mosaicXpxInfo: {
     name: 'prx.xpx',
     coin: 'XPX',
     id: '3c0f3de5298ced2d',
@@ -37,7 +37,7 @@ export const environment = {
     namespaceIdUint64: [2434186742, 3220914849],
     namespaceId: 'bffb42a19116bdf6',
     divisibility: 6
-  },
+  },*/
   /*mosaicXpxInfo: {
     name: 'prx.xpx',
     coin: 'XPX',

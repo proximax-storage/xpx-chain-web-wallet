@@ -8,8 +8,8 @@ export const environment = {
   production: true,
   itemBooksAddress: 'sw-books-testnet-01',
   //version: '0.3.1.8',
-  version: '0.3.5',
-  cacheVersion: '1',
+  version: '0.3.6',
+  cacheVersion: '2',
   nameKeyNodeSelected: `sw-selected-node-testnet-01`,
   nameKeyWalletStorage: `sw-testnet-01`,
   nameKeyNodeStorage: `sw-nodes-testnet-01`,
@@ -81,6 +81,20 @@ export const environment = {
     nodes: [
       { protocol: "http", domain: "18.231.166.212", port: 7890 } as ServerConfig
     ],
+    // url: 'https://bctestnetswap.xpxsirius.io',
+    // urlExplorer: 'http://testnet-explorer.nemtool.com/#/s_tx?hash=',
+    // networkType: NetworkTypes.TEST_NET,
+    // address: 'TBF4LAZUEJMBIOC6J24D6ZGGXE5W775TX555CTTN',
+    // nodes: [
+    //   { protocol: "https", domain: "bctestnetswap.xpxsirius.io", port: 443 } as ServerConfig
+    // ],
+    // url: 'http://192.168.2.141:7890',
+    // urlExplorer: 'http://testnet-explorer.nemtool.com/#/s_tx?hash=',
+    // networkType: NetworkTypes.TEST_NET,
+    // address: 'TBF4LAZUEJMBIOC6J24D6ZGGXE5W775TX555CTTN',
+    // nodes: [
+    //   { protocol: "http", domain: "192.168.2.141", port: 7890 } as ServerConfig
+    // ],
   },
   swapAccount: {
     address: 'VC3I3FSQ354JT2QNS2XJ2J3OROCOBIRK6JB3BCBH'
@@ -94,7 +108,6 @@ export const environment = {
     label: 'PUBLIC TEST'
   }
 };
-
 /*
  * In development mode, to ignore zone related error stack frames such as
  * `zone.run`, `zoneDelegate.invokeTask` for easier debugging, you can
