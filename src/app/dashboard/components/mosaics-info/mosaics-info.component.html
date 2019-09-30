@@ -78,9 +78,10 @@
       <div class="col-12">
         <!-- MOSAIC XPX -->
         <span class="fw-600 fs-065rem">Amount: &nbsp;</span>
+        <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
         <span
-          [ngClass]="{'color-blue-light': transferTransaction.receive, 'color-orange': !transferTransaction.receive }"
-          class="fw-600 fs-065rem">
+          [ngClass]="{'color-blue-light': receive, 'color-orange': !receive }"
+          class="fw-600 fs-065rem" style="width: 12px; padding-right: 2px;">
           {{mosaicXpx.amountFormatter}} XPX
         </span>
       </div>
