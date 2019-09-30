@@ -207,16 +207,16 @@
           <span class="color-dark-green fw-bold fs-08rem">Fee: </span>
         </div>
         <div class="col-12 col-sm-8 col-md-9 overflow-ellipsis-nowrap">
+            <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
           <span class="fs-08rem fw-400 color-dark-green">{{mosaicSupplyChange?.feePart.part1}}</span>
-          <span class="fs-075rem fw-400 color-dark-green">{{mosaicSupplyChange?.feePart.part2}}</span>
+          <span class="fs-07rem fw-400 color-dark-green">{{mosaicSupplyChange?.feePart.part2}}</span>
           <span class="fs-08rem fw-400 color-dark-green"> XPX </span>
-          <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
         </div>
       </div>
     </div>
 
     <!-- Mosaic Id-->
-    <div class="col-12">
+    <div class="col-12 mt-1rem">
       <div class="row">
         <div class="col-12 col-sm-4 col-md-3 overflow-ellipsis-nowrap">
           <span class="color-dark-green fw-bold fs-08rem">Mosaic Id: </span>
@@ -227,10 +227,7 @@
       </div>
     </div>
 
-    <ng-container *ngIf="
-                mosaicSupplyChange['mosaicsStorage'] !== null &&
-                mosaicSupplyChange['mosaicsStorage']['mosaicNames']['names'].lenght > 0;
-                else viewId">
+    <ng-container *ngIf="mosaicSupplyChange['mosaicsStorage'] !== null && mosaicSupplyChange['mosaicsStorage']['mosaicNames']['names'].lenght > 0; else viewId">
       <!-- Mosaic Name-->
       <div class="col-12">
         <div class="row">

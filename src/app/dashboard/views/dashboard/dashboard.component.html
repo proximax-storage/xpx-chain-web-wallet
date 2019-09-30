@@ -260,9 +260,30 @@
             </app-mosaic-supply-change-type>
 
             <!-- TYPE AGGREGATE COMPLETE TRANSACTION-->
-            <app-aggregate-complete-type [aggregateComplete]="dataSelected"
+            <!-- <app-aggregate-complete-type [aggregateComplete]="dataSelected"
               *ngIf="dataSelected.data.type === typeTransactions.aggregateComplete.id">
-            </app-aggregate-complete-type>
+            </app-aggregate-complete-type> -->
+
+            <!-- TYPE AGGREGATE COMPLETE TRANSACTION-->
+            <ng-container *ngIf="dataSelected.data.type === typeTransactions.aggregateComplete.id">
+              <div class="row">
+                <div class="col-11 mx-auto">
+                  <div class="row">
+                    <!-- AGGREGATE BONDED TYPE -->
+                    <div class="col-12  ">
+                      <app-aggregate-complete-type [aggregateComplete]="dataSelected">
+                      </app-aggregate-complete-type>
+                    </div>
+
+                    <!-- BOX DATA SIGNER HASH -->
+                    <div class="col-12  ">
+                      <app-box-data-signer-hash [dataSelected]="dataSelected">
+                      </app-box-data-signer-hash>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
 
             <!-- TYPE AGGREGATE BONDED -->
             <ng-container *ngIf="dataSelected.data.type === typeTransactions.aggregateBonded.id">
