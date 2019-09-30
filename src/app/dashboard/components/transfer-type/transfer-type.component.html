@@ -1,7 +1,7 @@
 <ng-container *ngIf="simple">
   <div class="row mt-04rem mr-1rem ml-1rem">
     <!-- Data -->
-    <div class="col-12 col-lg-7">
+    <div class="col-12">
       <div class="row">
         <!-- Type transfer -->
         <div class="col-12">
@@ -90,7 +90,7 @@
     </div>
 
     <!-- Box signer, signature, hash -->
-    <div class="col-12 col-lg-5" id="boxHashSignerSignature">
+    <!-- <div class="col-12 col-lg-5" id="boxHashSignerSignature">
       <div class="row gray-color-transparent lh-1em">
         <div class="col-12">
           <div class="row">
@@ -125,7 +125,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
 
     <!-- Message -->
     <ng-container *ngIf="transferTransaction?.data['message'].payload !== ''">
@@ -140,6 +140,7 @@
         </div>
       </div>
     </ng-container>
+
     <!-- MOSAICS INFO-->
     <div class="col-12 mt-2rem">
       <app-mosaics-info (changeSearch)="searching = false;" [mosaicsArray]="transferTransaction.data['mosaics']"
@@ -179,7 +180,7 @@
           <span class="fw-600 fs-095rem color-blue-light">{{amountTwoPart?.part1}}</span>
           <span class="fw-600 fs-075rem color-blue-light">{{amountTwoPart?.part2}}</span>
           <span class="fw-600 fs-095rem color-blue-light"> XPX </span>
-          
+
         </div>
 
         <!-- Fee -->
@@ -189,7 +190,7 @@
           <span class="fw-600 fs-095rem color-blue-light">{{transferTransaction?.feePart.part1}}</span>
           <span class="fw-600 fs-075rem color-blue-light">{{transferTransaction?.feePart.part2}}</span>
           <span class="fw-600 fs-095rem color-blue-light"> XPX </span>
-          
+
         </div>
 
         <!-- Message -->

@@ -242,14 +242,8 @@
 
         <div class="modal-body">
           <ng-container *ngIf="dataSelected">
-            <!-- TYPE TRANSFER TRANSACTION -->
-            <app-transfer-type [transferTransaction]="dataSelected"
-              *ngIf="dataSelected.data.type === typeTransactions.transfer.id">
-            </app-transfer-type>
-            <!-- TYPE REGISTER NAMESPACE TRANSACTION -->
-            <app-register-namespace-type [registerNamespaceTransaction]="dataSelected"
-              *ngIf="dataSelected.data.type === typeTransactions.registerNameSpace.id">
-            </app-register-namespace-type>
+
+
             <!-- TYPE MOSAIC DEFINITION TRANSACTION -->
             <app-mosaic-definition-type [mosaicDefinition]="dataSelected"
               *ngIf="dataSelected.data.type === typeTransactions.mosaicDefinition.id">
@@ -264,19 +258,63 @@
               *ngIf="dataSelected.data.type === typeTransactions.aggregateComplete.id">
             </app-aggregate-complete-type> -->
 
+            <!-- TRANSFER -->
+            <ng-container *ngIf="dataSelected.data.type === typeTransactions.transfer.id">
+              <div class="row">
+                <div class="col-11 mx-auto">
+                  <div class="row">
+                    <!-- TYPE TRANSFER TRANSACTION -->
+                    <div class="col-12 col-md-7">
+                      <app-transfer-type [transferTransaction]="dataSelected">
+                      </app-transfer-type>
+                    </div>
+
+                    <!-- BOX DATA SIGNER HASH -->
+                    <div class="col-12 col-md-5">
+                      <app-box-data-signer-hash [dataSelected]="dataSelected">
+                      </app-box-data-signer-hash>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+
+
+            <!-- TYPE REGISTER NAMESPACE TRANSACTION -->
+            <ng-container *ngIf="dataSelected.data.type === typeTransactions.registerNameSpace.id">
+              <div class="row">
+                <div class="col-11 mx-auto">
+                  <div class="row">
+                    <!-- TYPE REGISTER NAMESPACE TRANSACTION -->
+                    <div class="col-12 col-md-7">
+                      <app-register-namespace-type [registerNamespaceTransaction]="dataSelected">
+                      </app-register-namespace-type>
+                    </div>
+
+                    <!-- BOX DATA SIGNER HASH -->
+                    <div class="col-12 col-md-5">
+                      <app-box-data-signer-hash [dataSelected]="dataSelected">
+                      </app-box-data-signer-hash>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+
+
             <!-- TYPE AGGREGATE COMPLETE TRANSACTION-->
             <ng-container *ngIf="dataSelected.data.type === typeTransactions.aggregateComplete.id">
               <div class="row">
                 <div class="col-11 mx-auto">
                   <div class="row">
                     <!-- AGGREGATE BONDED TYPE -->
-                    <div class="col-12  ">
+                    <div class="col-12">
                       <app-aggregate-complete-type [aggregateComplete]="dataSelected">
                       </app-aggregate-complete-type>
                     </div>
 
                     <!-- BOX DATA SIGNER HASH -->
-                    <div class="col-12  ">
+                    <div class="col-12">
                       <app-box-data-signer-hash [dataSelected]="dataSelected">
                       </app-box-data-signer-hash>
                     </div>
