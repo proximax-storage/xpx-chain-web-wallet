@@ -87,7 +87,9 @@ export class DataBridgeService {
         this.getUnConfirmedAddedSocket(b, audio2, ad);
         this.getUnConfirmedRemovedSocket(b, audio2, ad);
       }, (error) => {
-        this.sharedService.showWarning('', 'Error connecting to the node');
+        setTimeout(() => {
+          this.sharedService.showWarning('', 'Error connecting to the node');
+        }, 500);
       });
     });
     return;
