@@ -29,21 +29,22 @@
         <div class="col-12 mt-05rem">
           <div class="row">
             <div class="col-3">
-              <span class="color-dark-green fw-bold fs-1-3rem">Fee: </span>
+              <span class="color-dark-green fw-bold fs-095rem">Fee:&nbsp;&nbsp;</span>
             </div>
             <div class="col-9 d-flex">
               <div class="row">
                 <div class="col-12">
-                  <img class="icono mb-03rem" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
-                    width="16" alt="">&nbsp;
-                  <span class="color-dark-green fw-400 fs-1-3rem">{{transferTransaction.fee}} XPX</span>
+                    <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
+                    <span class="fs-095rem fw-600 color-blue-light">{{transferTransaction?.feePart.part1}}</span>
+                    <span class="fs-075rem fw-600 color-blue-light">{{transferTransaction?.feePart.part2}}</span>
+                    <span class="fs-095rem fw-600 color-blue-light"> XPX </span>
                 </div>
               </div>
             </div>
           </div>
         </div>
         <!-- Type Hex -->
-        <div class="col-12 mt-2rem">
+        <div class="col-12">
           <div class="row">
             <div class="col-3">
               <span class="color-dark-green fw-bold fs-08rem">Height: </span>
@@ -139,12 +140,10 @@
         </div>
       </div>
     </ng-container>
-
-
     <!-- MOSAICS INFO-->
     <div class="col-12 mt-2rem">
       <app-mosaics-info (changeSearch)="searching = false;" [mosaicsArray]="transferTransaction.data['mosaics']"
-        [transferTransaction]="transferTransaction">
+        [transferTransaction]="transferTransaction" [receive]="transferTransaction?.receive">
       </app-mosaics-info>
     </div>
   </div>

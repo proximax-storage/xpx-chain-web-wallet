@@ -14,6 +14,7 @@ export class MosaicsInfoComponent implements OnInit {
   @Input() mosaicsArray: Mosaic[] = [];
   @Input() simple = true;
   @Input() transferTransaction: TransactionsInterface;
+  @Input() receive = true;
   @Output() changeSearch = new EventEmitter();
 
   headElements = ['Id', 'Name', 'Quantity'];
@@ -22,6 +23,7 @@ export class MosaicsInfoComponent implements OnInit {
   viewOtherMosaics = false;
   viewMosaicXpx = false;
   searching = true;
+
 
   constructor(
     private mosaicService: MosaicService,
@@ -41,9 +43,11 @@ export class MosaicsInfoComponent implements OnInit {
     // console.log(this.simple);
     if (this.simple === false) {
       this.transferTransaction = this.transferTransaction;
+      this.receive = this.receive;
     } else {
       this.simple = true;
       this.transferTransaction = this.transferTransaction.data;
+      this.receive = this.receive;
     }
 
     // console.log('-----this.mosaicsArray----', this.mosaicsArray);
