@@ -37,9 +37,9 @@
                 <div class="col-3" *ngIf="currentWallet.accounts.length > 1">
                   <div>
 
-                    <button  mdbBtn color="transparent" class="dropdown-toggle waves-light style "
-                      type="button" mdbWavesEffect style="padding: 5px; box-shadow: 0px 0px transparent"
-                      data-toggle="modal"  (click)="currentWallet; modalAccount.show();">
+                    <button mdbBtn color="transparent" class="dropdown-toggle waves-light style " type="button"
+                      mdbWavesEffect style="padding: 5px; box-shadow: 0px 0px transparent" data-toggle="modal"
+                      (click)="currentWallet; modalAccount.show();">
                     </button>
 
                   </div>
@@ -226,7 +226,8 @@
     </div>
 
     <div class="col-12 pt-1rem pb-3rem d-flex justify-content-center mx-auto">
-      <pagination-controls [id]="configFilesDashboard.id" (pageChange)="configFilesDashboard.currentPage = $event"></pagination-controls>
+      <pagination-controls [id]="configFilesDashboard.id" (pageChange)="configFilesDashboard.currentPage = $event">
+      </pagination-controls>
     </div>
   </div>
 
@@ -254,7 +255,6 @@
 
         <div class="modal-body">
           <ng-container *ngIf="dataSelected">
-
 
             <!-- TYPE MOSAIC DEFINITION TRANSACTION -->
             <app-mosaic-definition-type [mosaicDefinition]="dataSelected"
@@ -291,7 +291,6 @@
               </div>
             </ng-container>
 
-
             <!-- TYPE REGISTER NAMESPACE TRANSACTION -->
             <ng-container *ngIf="dataSelected.data.type === typeTransactions.registerNameSpace.id">
               <div class="row">
@@ -312,7 +311,6 @@
                 </div>
               </div>
             </ng-container>
-
 
             <!-- TYPE AGGREGATE COMPLETE TRANSACTION-->
             <ng-container *ngIf="dataSelected.data.type === typeTransactions.aggregateComplete.id">
@@ -376,7 +374,6 @@
               </div>
             </ng-container>
 
-
             <!--  ADDRESS ALIAS-->
             <ng-container *ngIf="dataSelected.data.type === typeTransactions.addressAlias.id">
               <div class="row">
@@ -397,7 +394,6 @@
               </div>
             </ng-container>
 
-
             <!-- TYPE LOCK -->
             <ng-container *ngIf="dataSelected.data.type === typeTransactions.lock.id">
               <div class="row">
@@ -407,9 +403,7 @@
                     <div class="col-12 col-md-7">
                       <app-lock-type [transactionLock]="dataSelected"
                         *ngIf="dataSelected.data.type === typeTransactions.lock.id"></app-lock-type>
-
                     </div>
-
                     <!-- BOX DATA SIGNER HASH -->
                     <div class="col-12 col-md-5">
                       <app-box-data-signer-hash [dataSelected]="dataSelected">
@@ -419,7 +413,6 @@
                 </div>
               </div>
             </ng-container>
-
             <!-- TYPE MODIFY MULTISIG ACCOUNT TRANSACTION
                         <app-modify-multisig-account-type
                             *ngIf="dataSelected.data.type === typeTransactions.modifyMultisigAccount.id">
@@ -440,88 +433,86 @@
   </div>
 </div>
 
-
 <!-- MODAL  Optios-->
 <div class="d-flex align-items-center">
-    <div mdbModal #modalAccount="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalAccount"
-      aria-hidden="true">
-      <div class="modal-dialog modal-md d-flex align-items-center"  role="document">
-        <div class="modal-content form-elegant bord-rad-1-5rem">
-          <div class="modal-header text-center box-modal-white b-t-r-r-1-5rem b-t-l-r-1-5rem p-05rem">
-            <span class="modal-title w-100" id="myModalLabel">
-              <strong class="title-modal-blue">Change Default Accounts</strong>
-            </span>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modalAccount.hide()">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <div class="row">
-              <ng-container *ngIf="currentWallet?.accounts?.length > 1">
-                  <ng-container *ngFor="let account of currentWallet.accounts | paginate: configFilesAccounts">
-                      <div class="col-11 col-md-10 col-lg-9 col-xl-10 mx-auto box-list-account-gray fs-08rem pb-1rem"
-                        [ngClass]="{'isPrimary':account.default}">
-                        <div class="row">
-                          <div class="col-12 col-sm-10 col-md-9 col-lg-10 col-xl-10 text-center text-sm-left pt-1rem w-b-a">
-                            Account: {{account.name}} <br>
-                            {{account.address}}
-                          </div>
-                          <div
-                            class="col-12 col-sm-2 col-md-3 col-lg-2 col-xl-2 d-flex align-items-center justify-content-center justify-content-sm-end justify-content-md-end justify-content-lg-end justify-content-xl-end pt-2rem">
-                            <img src="assets/images/img/icon-copy-clipboard-white.svg" class="cursor-p" alt="Copy" width="20"
-                              (click)="copyMessage('Address')" ngxClipboard *ngIf="account.default" [cbContent]="account.address"
-                              title="Copy Address">
-                            <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="cursor-p"
-                              alt="Copy" width="20" (click)="copyMessage('Address')" ngxClipboard *ngIf="!account.default"
-                              [cbContent]="account.address" title="Copy Address">&nbsp;
-              
-              
-                        
-                            <img src="assets/images/img/icon-edit-white-proximax-sirius-wallet.svg" class="cursor-p"
-                              *ngIf="account.default" width="20" [routerLink]="[routes.viewDetails+account.name]"
-                              title="View details">
-                            <img src="assets/images/img/icon-edit-gray-proximax-sirius-wallet.svg" class="cursor-p"
-                              *ngIf="!account.default" width="20" [routerLink]="[routes.viewDetails+account.name]"
-                              title="View details">&nbsp;
-              
-                            <!-- Delete-->
-                            <img src="assets/images/img/icon-trash-can-gray-16h-proximax-sirius-wallet.svg" class="cursor-p"
-                              *ngIf="!account.default && account.encrypted !== ''" width="20"
-                              [routerLink]="[routes.deleteAccount+account.name]" title="Delete">
-              
-                            <!-- Select account default -->
-                            <ng-container *ngIf="account.encrypted !== ''">
-                              <img src="assets/images/img/icon-default-white-proximax-sirius-wallet.svg" class="cursor-p"
-                                *ngIf="account.default" width="20" title="Select account as default">
-                              <img src="assets/images/img/icon-default-gray-proximax-sirius-wallet.svg" class="cursor-p"
-                                *ngIf="!account.default" width="20" (click)="changeAsPrimary(account.name)"
-                                title="Select account as default">
-                            </ng-container>
-                          </div>
-                        </div>
-              
-                        <div class="row">
-                          <div class="col-12 col-sm-10 col-md-9 col-lg-10 col-xl-10 text-center text-sm-left pt-05rem w-b-a fw-600">
-                            <img *ngIf="account.default" class="icono" src="assets/images/img/icon-proximax-white.svg" width="20"
-                              alt="">
-                            <img *ngIf="!account.default" class="icono"
-                              src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20" alt="">
-                            &nbsp;Balance {{account.balance}} XPX
-                          </div>
-                        </div>
-                      </div>
-                    </ng-container>
+  <div mdbModal #modalAccount="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalAccount"
+    aria-hidden="true">
+    <div class="modal-dialog modal-md d-flex align-items-center" role="document">
+      <div class="modal-content form-elegant bord-rad-1-5rem">
+        <div class="modal-header text-center box-modal-white b-t-r-r-1-5rem b-t-l-r-1-5rem p-05rem">
+          <span class="modal-title w-100" id="myModalLabel">
+            <strong class="title-modal-blue">Change Default Accounts</strong>
+          </span>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modalAccount.hide()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <ng-container *ngIf="currentWallet?.accounts?.length > 1">
+              <ng-container *ngFor="let account of currentWallet.accounts | paginate: configFilesAccounts">
+                <div class="col-11 col-md-10 col-lg-9 col-xl-10 mx-auto box-list-account-gray fs-08rem pb-1rem"
+                  [ngClass]="{'isPrimary':account.default}">
+                  <div class="row">
+                    <div class="col-12 col-sm-10 col-md-9 col-lg-10 col-xl-10 text-center text-sm-left pt-1rem w-b-a">
+                      Account: {{account.name}} <br>
+                      {{account.address}}
+                    </div>
+                    <div
+                      class="col-12 col-sm-2 col-md-3 col-lg-2 col-xl-2 d-flex align-items-center justify-content-center justify-content-sm-end justify-content-md-end justify-content-lg-end justify-content-xl-end pt-2rem">
+                      <img src="assets/images/img/icon-copy-clipboard-white.svg" class="cursor-p" alt="Copy" width="20"
+                        (click)="copyMessage('Address')" ngxClipboard *ngIf="account.default"
+                        [cbContent]="account.address" title="Copy Address">
+                      <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="cursor-p"
+                        alt="Copy" width="20" (click)="copyMessage('Address')" ngxClipboard *ngIf="!account.default"
+                        [cbContent]="account.address" title="Copy Address">&nbsp;
 
-                    <div class="col-12 pt-2rem pb-1rem d-flex justify-content-center mx-auto">
-                        <pagination-controls [id]="configFilesAccounts.id" (pageChange)="configFilesAccounts.currentPage = $event">
-                        </pagination-controls>
-                      </div>
-              
-                
+
+
+                      <img src="assets/images/img/icon-edit-white-proximax-sirius-wallet.svg" class="cursor-p"
+                        *ngIf="account.default" width="20" [routerLink]="[routes.viewDetails+account.name]"
+                        title="View details">
+                      <img src="assets/images/img/icon-edit-gray-proximax-sirius-wallet.svg" class="cursor-p"
+                        *ngIf="!account.default" width="20" [routerLink]="[routes.viewDetails+account.name]"
+                        title="View details">&nbsp;
+
+                      <!-- Delete-->
+                      <img src="assets/images/img/icon-trash-can-gray-16h-proximax-sirius-wallet.svg" class="cursor-p"
+                        *ngIf="!account.default && account.encrypted !== ''" width="20"
+                        [routerLink]="[routes.deleteAccount+account.name]" title="Delete">
+
+                      <!-- Select account default -->
+                      <ng-container *ngIf="account.encrypted !== ''">
+                        <img src="assets/images/img/icon-default-white-proximax-sirius-wallet.svg" class="cursor-p"
+                          *ngIf="account.default" width="20" title="Select account as default">
+                        <img src="assets/images/img/icon-default-gray-proximax-sirius-wallet.svg" class="cursor-p"
+                          *ngIf="!account.default" width="20" (click)="changeAsPrimary(account.name)"
+                          title="Select account as default">
+                      </ng-container>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div
+                      class="col-12 col-sm-10 col-md-9 col-lg-10 col-xl-10 text-center text-sm-left pt-05rem w-b-a fw-600">
+                      <img *ngIf="account.default" class="icono" src="assets/images/img/icon-proximax-white.svg"
+                        width="20" alt="">
+                      <img *ngIf="!account.default" class="icono"
+                        src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20" alt="">
+                      &nbsp;Balance {{account.balance}} XPX
+                    </div>
+                  </div>
+                </div>
               </ng-container>
-            </div>
+              <div class="col-12 pt-2rem pb-1rem d-flex justify-content-center mx-auto">
+                <pagination-controls [id]="configFilesAccounts.id"
+                  (pageChange)="configFilesAccounts.currentPage = $event">
+                </pagination-controls>
+              </div>
+            </ng-container>
           </div>
         </div>
       </div>
     </div>
   </div>
+</div>
