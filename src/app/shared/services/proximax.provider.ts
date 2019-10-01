@@ -5,7 +5,6 @@ import {
   SimpleWallet,
   MosaicInfo,
   TransactionHttp,
-  Listener,
   AccountHttp,
   MosaicHttp,
   NamespaceHttp,
@@ -25,7 +24,6 @@ import {
   UInt64,
   PlainMessage,
   Address,
-  MosaicAmountView,
   Transaction,
   MosaicSupplyChangeTransaction,
   RegisterNamespaceTransaction,
@@ -47,12 +45,11 @@ import {
   Convert,
   RawAddress
 } from 'tsjs-xpx-chain-sdk';
-import { MosaicDefinitionTransaction } from 'tsjs-xpx-chain-sdk/dist/src/model/transaction/MosaicDefinitionTransaction';
-import { mergeMap } from 'rxjs/operators';
-import { environment } from '../../../environments/environment';
 import { BlockchainNetworkType } from 'tsjs-chain-xipfs-sdk';
 import { Observable } from 'rxjs/internal/Observable';
-import { NamespaceStorageInterface } from 'src/app/servicesModule/services/namespaces.service';
+import { mergeMap } from 'rxjs/operators';
+import { MosaicDefinitionTransaction } from 'tsjs-xpx-chain-sdk/dist/src/model/transaction/MosaicDefinitionTransaction';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -721,6 +718,49 @@ export class ProximaxProvider {
     }
   }
 
+  /**
+   *
+   *
+   * @param {string} address
+   * @returns
+   * @memberof ProximaxProvider
+   */
+  validateAddress(address: string) {
+    if (address !== '') {
+      const addressTrimAndUpperCase = address.trim().toUpperCase().replace(/-/g, '');
+      if (addressTrimAndUpperCase.length === 40) {
+        if (address.charAt(0) === 'S') {
+          return true;
+        }
+        else if (address.charAt(0) === 'M') {
+          return true;
+        }
+        else if (address.charAt(0) === 'V') {
+          return true;
+        }
+        else if (address.charAt(0) === 'X') {
+          return true;
+        }
+        else if (address.charAt(0) === 'W') {
+          return true;
+        }
+        else if (address.charAt(0) === 'Z') {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   *
+   *
+   * @param {string} value
+   * @param {string} value2
+   * @returns
+   * @memberof ProximaxProvider
+   */
   verifyNetworkAddressEqualsNetwork(value: string, value2: string) {
     if ((value.length === 40 || value.length === 46) && (value2.length === 40 || value2.length === 46)) {
       if (value.charAt(0) === 'S' && value2.charAt(0) === 'S') {

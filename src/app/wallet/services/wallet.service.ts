@@ -417,7 +417,6 @@ export class WalletService {
       if (byAddress) {
         let found = null;
         this.accountsInfo.forEach(element => {
-
           if (element.accountInfo) {
             if (element.accountInfo.address.pretty() === account) {
               found = element;
