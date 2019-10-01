@@ -6,7 +6,7 @@ import { Subscription } from 'rxjs';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 import { DashboardService } from '../../services/dashboard.service';
 import { TransactionsInterface, TransactionsService } from '../../../transactions/services/transactions.service';
-import { WalletService, AccountsInterface } from '../../../wallet/services/wallet.service';
+import { WalletService, AccountsInterface, CurrentWalletInterface } from '../../../wallet/services/wallet.service';
 import { SharedService } from '../../../shared/services/shared.service';
 import { environment } from '../../../../environments/environment';
 import { AppConfig } from '../../../config/app.config';
@@ -31,7 +31,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   // --------------------------------------------------------------------------
   @ViewChild(MdbTableDirective, { static: true }) mdbTable: MdbTableDirective;
-  currentWallet: import("/home/luis/proximax/wallet/xpx-chain-web-wallet/src/app/wallet/services/wallet.service").CurrentWalletInterface;
+  currentWallet: CurrentWalletInterface;
   @HostListener('input') oninput() {
     this.searchItems();
   }
