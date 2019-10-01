@@ -1,5 +1,6 @@
 import { ServerConfig, NetworkTypes } from 'nem-library';
 import { NetworkType } from 'tsjs-xpx-chain-sdk';
+import { ChronoUnit } from 'js-joda';
 // This file can be replaced during build by using the `fileReplacements` array.
 // `ng build ---prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
@@ -28,6 +29,10 @@ export const environment = {
     namespaceIdUint64: [2434186742, 3220914849],
     namespaceId: 'bffb42a19116bdf6',
     divisibility: 6
+  },
+  deadlineTransfer: {
+    deadline: 1439,
+    chronoUnit: ChronoUnit.MINUTES
   },
   /*mosaicXpxInfo: {
     name: 'prx.xpx',
