@@ -748,7 +748,7 @@ export class CreateTransferComponent implements OnInit {
               console.log("mosaicos",allMosaics)
 
               const transferBuilder = TransferTransaction.create(
-                Deadline.create(5),
+                Deadline.create(environment.deadlineTransfer.deadline,environment.deadlineTransfer.chronoUnit),
                 recipientAddress,
                 allMosaics,
                 PlainMessage.create(params.message),
