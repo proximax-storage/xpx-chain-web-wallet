@@ -48,7 +48,7 @@ export const environment = {
     divisibility: 6
   },*/
   blockchainConnection: {
-    host: '18.138.51.117',
+    host: 'bctestnet1.brimstone.xpxsirius.io',
     port: 3000,
     protocol: 'http',
     useSecureMessage: false

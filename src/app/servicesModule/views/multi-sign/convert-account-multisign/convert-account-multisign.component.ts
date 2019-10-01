@@ -181,6 +181,14 @@ export class ConvertAccountMultisignComponent implements OnInit {
     }
     return validation;
   }
+
+  preventNumbers(e) {
+
+    if (e.keyCode >= 48 && e.keyCode <= 57) {
+      // we have a number
+      return false;
+    }
+  }
   /**
    *
    * Get accounts wallet
@@ -346,7 +354,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
 *
 * @memberof CreateMultiSignatureComponent
 */
-  builder(){
+  builder() {
     let convertIntoMultisigTransaction: ModifyMultisigAccountTransaction;
     if (this.currentAccountToConvert !== undefined && this.currentAccountToConvert !== null) {
       convertIntoMultisigTransaction = ModifyMultisigAccountTransaction.create(
@@ -356,16 +364,16 @@ export class ConvertAccountMultisignComponent implements OnInit {
         this.multisigCosignatoryModification(this.getCosignatoryList()),
         this.currentAccountToConvert.network);
 
-        this.aggregateTransaction = AggregateTransaction.createBonded(
-          Deadline.create(),
-          [convertIntoMultisigTransaction.toAggregate(this.currentAccountToConvert.publicAccount)],
-          this.currentAccountToConvert.network);
-          // console.log('this.convertIntoMultisig', convertIntoMultisigTransaction)
-          // console.log('aggregateTransaction', this.aggregateTransaction)
-          let feeAgregate = Number(this.transactionService.amountFormatterSimple(this.aggregateTransaction.maxFee.compact()));
-          let feeLockfund = 0.044500;
-          let totalFee = feeAgregate + feeLockfund;
-          this.fee = totalFee.toFixed(6);
+      this.aggregateTransaction = AggregateTransaction.createBonded(
+        Deadline.create(),
+        [convertIntoMultisigTransaction.toAggregate(this.currentAccountToConvert.publicAccount)],
+        this.currentAccountToConvert.network);
+      // console.log('this.convertIntoMultisig', convertIntoMultisigTransaction)
+      // console.log('aggregateTransaction', this.aggregateTransaction)
+      let feeAgregate = Number(this.transactionService.amountFormatterSimple(this.aggregateTransaction.maxFee.compact()));
+      let feeLockfund = 0.044500;
+      let totalFee = feeAgregate + feeLockfund;
+      this.fee = totalFee.toFixed(6);
     }
   }
 
@@ -625,8 +633,8 @@ export class ConvertAccountMultisignComponent implements OnInit {
       minRemovalDelta: 1,
       password: ''
     }, {
-      emitEvent: false
-    }
+        emitEvent: false
+      }
     );
   }
 
