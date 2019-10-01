@@ -60,6 +60,10 @@ body {
     margin-right: 1rem !important;
 }
 
+.mr-2rem {
+    margin-right: 2rem !important;
+}
+
 .mt-01rem {
     margin-top: .1rem;
 }
@@ -1108,6 +1112,10 @@ input[type=text] {
 .dropdown-default.colorful-select .dropdown-content li.active span,
 .dropdown-default.colorful-select .dropdown-content li.selected span {
     background-color: #2ba1b9 !important;
+}
+
+.dropdown-item {
+  padding: 2px !important;
 }
 
 
