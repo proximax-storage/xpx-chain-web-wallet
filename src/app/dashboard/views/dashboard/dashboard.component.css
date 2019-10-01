@@ -8,29 +8,22 @@
     background-color: #306eb5;
 }
 
-/* @media (min-width: 968px) {
-    .modal-dialog {
-        max-width: 1300px !important;
-        padding-right: 1rem;
-        padding-left: 1rem;
-    }
-} */
 @media (min-width: 590px) {
-    .modal-dialog {
+    #changeAccount  {
       width: 570px;
       padding-right: 1rem;
         padding-left: 1rem;
     }
   }
   @media (min-width: 992px) {
-    .modal-dialog {
+    #changeAccount {
       width: 750px;
       padding-right: 1rem;
         padding-left: 1rem;
     }
   }
   @media (min-width: 1200px) {
-    .modal-dialog {
+    #changeAccount {
        width: 650px;
        padding-right: 1rem;
         padding-left: 1rem;
