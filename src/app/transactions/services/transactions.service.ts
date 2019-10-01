@@ -355,7 +355,7 @@ export class TransactionsService {
    * @memberof TransactionsService
    */
   calculateDurationforDay(duration: number) {
-    return duration * 5760;
+    return duration * 49460;
   }
 
   /**

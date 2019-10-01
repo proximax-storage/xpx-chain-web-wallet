@@ -38,7 +38,7 @@ export class CreateNamespaceComponent implements OnInit {
   ];
 
   block: number = null;
-  durationByBlock = '5760';
+  durationByBlock = '49460';
   endHeight: number;
   fee: string;
   insufficientBalance = false;
