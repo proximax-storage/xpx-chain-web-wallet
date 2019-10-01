@@ -44,7 +44,8 @@
               <div class="col-12 text-center">Approve transaction</div>
               <div class="col-12">
                 <div class="md-form form-sm mt-03rem mb-0rem">
-                  <input max="{{minApprovaMaxLength}}" min="{{minApprovaMinLength}}" formControlName="minApprovalDelta"
+                  <input  (keypress)="preventNumbers($event)"
+                   max="{{minApprovaMaxLength}}" min="{{minApprovaMinLength}}" formControlName="minApprovalDelta"
                     required mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="number"
                     id="minApprovalDelta" class="form-control form-control-sm input-border text-center"
                     placeholder="Min approval" onkeyup="javascript:this.value=this.value.toLowerCase();">
@@ -70,7 +71,8 @@
               <div class="col-12 text-center">Delete users</div>
               <div class="col-12">
                 <div class="md-form form-sm mt-03rem mb-0rem">
-                  <input max="{{minApprovaMaxLength}}" min="{{minApprovaMinLength}}" formControlName="minRemovalDelta"
+                  <input  (keypress)="preventNumbers($event)"
+                   max="{{minApprovaMaxLength}}" min="{{minApprovaMinLength}}" formControlName="minRemovalDelta"
                     required mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="number"
                     id="minRemovalDelta" class="form-control form-control-sm input-border text-center"
                     placeholder="Min removal" onkeyup="javascript:this.value=this.value.toLowerCase();">
@@ -156,7 +158,8 @@
               <img class="form-control-feedback"
                 src="assets/images/img/icon-public-key-green-16h-proximax-sirius-wallet.svg" alt="" width="43"
                 height="43">
-              <input [maxlength]="configurationForm.privateKey.maxLength"
+              <input 
+               [maxlength]="configurationForm.privateKey.maxLength"
                 [minlength]="configurationForm.privateKey.minLength" formControlName="cosignatory" required
                 mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
                 id="cosignatory" class="form-control form-control-sm input-border"

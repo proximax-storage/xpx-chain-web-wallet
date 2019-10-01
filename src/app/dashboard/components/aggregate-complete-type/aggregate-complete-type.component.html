@@ -1,199 +1,79 @@
-<div class="row mt-04rem mr-1rem ml-1rem">
-  <!-- Data -->
-  <div class="col-12 col-md-7 d-flex align-items-start">
+<div class="row">
+  <div class="col-12">
     <div class="row">
-      <!-- Type transfer -->
-      <div class="col-12">
-        <span class="color-dark-green fw-bold fs-2rem">{{aggregateComplete.nameType}}</span>
-      </div>
-
-      <!-- Timestamp -->
-      <div class="col-12 mt-05rem">
-        <span class="color-dark-green fs-07rem fw-500 w-w-b-w">{{aggregateComplete?.timestamp}}</span>
+      <!-- Bonded & Deadline -->
+      <div class="col-12 lh-1em">
+        <span class="fw-600 fs-1-2rem">{{aggregateComplete.nameType}}</span> <br>
+        <span class="fs-075rem">Deadline: {{aggregateComplete?.timestamp}}</span>
       </div>
 
       <!-- Fee -->
-      <div class="col-12 mb-2rem">
+      <div class="col-12 mt-1-5rem">
         <span class="fw-600 fs-095rem">Fee:&nbsp;&nbsp;</span>
+        <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
         <span class="fs-095rem fw-600 color-blue-light">{{aggregateComplete?.feePart.part1}}</span>
         <span class="fs-075rem fw-600 color-blue-light">{{aggregateComplete?.feePart.part2}}</span>
         <span class="fs-095rem fw-600 color-blue-light"> XPX </span>
-        <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
+
       </div>
 
-
-      <!-- Type Hex -->
-      <div class="col-12 mt-04rem">
-        <div class="row">
-          <div class="col-4">
-            <span class="color-dark-green fw-bold fs-08rem">Height: </span>
-          </div>
-          <div class="col-8">
-            <span class="color-dark-green fw-400
-                  fs-08rem">{{aggregateComplete?.data.transactionInfo.height.compact()}}</span>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-4 overflow-ellipsis-nowrap">
-            <span class="color-dark-green fw-bold fs-08rem">Type: </span>
-          </div>
-          <div class="col-8 overflow-ellipsis-nowrap">
-            <span class="color-dark-green fw-400
-              fs-08rem">{{typeTransactionHex}}</span>
-          </div>
-        </div>
+      <!-- Type -->
+      <div class="col-12 mt-05rem">
+        <span class="fw-600 fs-08rem">Type:&nbsp;&nbsp;</span>
+        <span class="fs-065rem">{{aggregateComplete?.data['type'].toString(16).toUpperCase()}}</span>
       </div>
 
-      <!-- recipientRentalFeeSink -->
-      <div class="col-12 mt-04rem">
-        <div class="row">
-          <div class="col-4 overflow-ellipsis-nowrap">
-            <span class="color-dark-green fw-bold fs-08rem">Recipient Rental Fee Sink: </span>
-          </div>
-          <div class="col-8 overflow-ellipsis-nowrap">
-            <span class="color-dark-green fw-400
-              fs-08rem">{{aggregateComplete?.recipientRentalFeeSink}}</span>
-          </div>
+      <!-- Height -->
+      <ng-container *ngIf="aggregateComplete?.data.transactionInfo.height.compact() > 0">
+        <div class="col-12 mt-05rem">
+          <span class="fw-600 fs-08rem">Height:&nbsp;&nbsp;</span>
+          <span class="fs-065rem">{{aggregateComplete?.data.transactionInfo.height.compact()}}</span>
         </div>
-      </div>
+      </ng-container>
 
-      <!-- sender -->
-      <div class="col-12 mt-04rem">
-        <div class="row">
-          <div class="col-4 overflow-ellipsis-nowrap">
-            <span class="color-dark-green fw-bold fs-08rem">Sender: </span>
-          </div>
-          <div class="col-8 overflow-ellipsis-nowrap">
-            <span class="color-dark-green fw-400
-              fs-08rem">{{aggregateComplete?.sender['address'].pretty()}}</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Box signer, signature, hash -->
-  <div class="col-12 col-md-5" id="boxHashSignerSignature">
-    <div class="row gray-color-transparent lh-1em">
-      <div class="col-12">
-        <div class="row">
+      <!-- Transactions -->
+      <div class="col-12 mt-1rem">
+        <div class="row d-flex align-items-center">
           <div class="col-12">
-            <span class="fs-08rem fw-bolder w-w-b-w"><b>Signer:</b></span>
-          </div>
-          <div class="col-12">
-            <span class="fs-07rem fw-bolder w-w-b-w">{{aggregateComplete?.data.signer.publicKey}}</span>
+            <span class="fw-600 fs-095rem">Transactions</span>
           </div>
         </div>
+        <hr class="mt-0">
       </div>
 
-      <div class="col-12 mt-3">
-        <div class="row">
-          <div class="col-12">
-            <span class="fs-08rem fw-bolder w-w-b-w"><b>Signature:</b></span>
-          </div>
-          <div class="col-12">
-            <span class="fs-07rem fw-bolder w-w-b-w">{{aggregateComplete?.data.signature}}</span>
-          </div>
-        </div>
-      </div>
+      <!-- Inner transaction -->
+      <div class="col-12 mb-1rem">
+        <mdb-accordion [multiple]="false" aria-multiselectable="true">
+          <mdb-accordion-item [collapsed]="true"
+            *ngFor="let innerTransaction of aggregateComplete?.data.innerTransactions">
+            <mdb-accordion-item-head>{{innerTransaction['nameType']}}
+            </mdb-accordion-item-head>
+            <mdb-accordion-item-body class="scroll-accounts">
+              <app-modify-multisig-account-type
+                *ngIf="innerTransaction.type === typeTransactions.modifyMultisigAccount.id"
+                [multisigAccount]="innerTransaction">
+              </app-modify-multisig-account-type>
 
-      <div class="col-12 mt-3">
-        <div class="row">
-          <div class="col-12">
-            <span class="fs-08rem fw-bolder w-w-b-w"><b>Hash:</b></span>
-          </div>
-          <div class="col-12">
-            <span class="fs-07rem fw-bolder w-w-b-w">{{aggregateComplete?.data.transactionInfo.hash}}</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+              <!-- TYPE TRANSFER TRANSACTION -->
+              <app-transfer-type-bonded [transferTransactionBonded]="innerTransaction"
+                *ngIf="innerTransaction.type === typeTransactions.transfer.id">
+              </app-transfer-type-bonded>
 
-<div class="row mr-1rem ml-1rem mt-3rem">
-  <!-- Inner Transaction -->
-  <div class="col-12">
-    <div class="row">
-      <div class="col-12">
-        <div class="row">
-          <div class="col-6 overflow-ellipsis-nowrap">
-            <span class="color-dark-green fw-bold fs-08rem">Inner Transactions: </span>
-          </div>
-
-          <div class="col-6">
-            <div class="col-12 d-flex justify-content-center">
-              <pagination-controls (pageChange)="p = $event"></pagination-controls>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-12 mt-04rem">
-        <ng-container
-          *ngFor="let el of aggregateComplete?.data['innerTransactions'] | paginate:  { itemsPerPage: 1, currentPage: p }">
-          <div class="row mb-2rem boxInnerTransaction">
-
-            <div class="col-12">
-              <div class="row">
-                <div class="col-12 col-sm-4 col-md-3 overflow-ellipsis-nowrap">
-                  <span class="color-dark-green fw-bold fs-08rem">Type: </span>
-                </div>
-                <div class="col-12 col-sm-8 col-md-9 col-md-9 overflow-ellipsis-nowrap">
-                  <span class="color-dark-green fw-400 fs-08rem">{{el.nameType}}</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-12">
-              <div class="row">
-                <div class="col-12 col-sm-4 col-md-3 overflow-ellipsis-nowrap">
-                  <span class="color-dark-green fw-bold fs-08rem">Address: </span>
-                </div>
-                <div class="col-12 col-sm-8 col-md-9 overflow-ellipsis-nowrap">
-                  <span class="color-dark-green fw-400 fs-08rem">{{el.signer.address.pretty()}}</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-12">
-              <div class="row">
-                <div class="col-12 col-sm-4 col-md-3 overflow-ellipsis-nowrap">
-                  <span class="color-dark-green fw-bold fs-08rem">Public Key: </span>
-                </div>
-                <div class="col-12 col-sm-8 col-md-9 overflow-ellipsis-nowrap">
-                  <span class="color-dark-green fw-400 fs-08rem">{{el.signer.publicKey}}</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-12">
-              <div class="row">
-                <div class="col-12 col-sm-4 col-md-3 overflow-ellipsis-nowrap">
-                  <span class="color-dark-green fw-bold fs-08rem">Signature: </span>
-                </div>
-                <div class="col-12 col-sm-8 col-md-9 overflow-ellipsis-nowrap">
-                  <span class="color-dark-green fw-400 fs-08rem">{{el.signature}}</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-12">
               <!-- TYPE MOSAIC DEFINITION TRANSACTION -->
-              <app-mosaic-definition-type [mosaicDefinition]="el" [viewBox]=false
-                *ngIf="el.type === typeTransactions.mosaicDefinition.id">
+              <app-mosaic-definition-type [mosaicDefinition]="innerTransaction" [viewBox]=false
+                *ngIf="innerTransaction.type === typeTransactions.mosaicDefinition.id">
               </app-mosaic-definition-type>
 
               <!-- TYPE MOSAIC SUPPLY CHANGE TRANSACTION -->
-              <app-mosaic-supply-change-type [mosaicSupplyChange]="el" [viewBox]=false
-                *ngIf="el.type === typeTransactions.mosaicSupplyChange.id">
+              <app-mosaic-supply-change-type [mosaicSupplyChange]="innerTransaction" [viewBox]=false
+                *ngIf="innerTransaction.type === typeTransactions.mosaicSupplyChange.id">
               </app-mosaic-supply-change-type>
-
-            </div>
-          </div>
-        </ng-container>
+            </mdb-accordion-item-body>
+          </mdb-accordion-item>
+        </mdb-accordion>
       </div>
     </div>
   </div>
 </div>
+
+

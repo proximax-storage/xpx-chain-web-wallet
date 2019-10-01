@@ -8,7 +8,7 @@ export const environment = {
   production: false,
   itemBooksAddress: 'sw-books-testnet-01',
   //version: '0.3.1.8',
-  version: '0.3.7',
+  version: '0.3.8',
   cacheVersion: '3',
   nameKeyNodeSelected: `sw-selected-node-testnet-01`,
   nameKeyWalletStorage: `sw-testnet-01`,
@@ -48,7 +48,7 @@ export const environment = {
     divisibility: 6
   },*/
   blockchainConnection: {
-    host: '18.138.51.117',
+    host: 'bctestnet1.brimstone.xpxsirius.io',
     port: 3000,
     protocol: 'http',
     useSecureMessage: false

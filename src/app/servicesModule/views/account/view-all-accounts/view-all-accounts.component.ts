@@ -43,6 +43,8 @@ export class ViewAllAccountsComponent implements OnInit {
 
   ngOnInit() {
     this.subscribeAccountInfoToBuildBalance();
+    console.log(this.currentWallet);
+
   }
 
   ngOnDestroy(): void {
@@ -65,6 +67,8 @@ export class ViewAllAccountsComponent implements OnInit {
       for (let element of currentWallet.accounts) {
         const accountFiltered = this.walletService.filterAccountInfo(element.name);
         if (accountFiltered && accountFiltered.accountInfo) {
+          const mosaicsNoXpx = accountFiltered.accountInfo.mosaics.filter(next => next.id.toHex() !== environment.mosaicXpxInfo.id);
+          element['mosaics'] = mosaicsNoXpx.length;
           const mosaicXPX = accountFiltered.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id);
           if (mosaicXPX) {
             element['balance'] = this.transactionService.amountFormatterSimple(mosaicXPX.amount.compact());

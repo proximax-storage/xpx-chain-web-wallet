@@ -10,6 +10,8 @@ import { WalletService, AccountsInterface } from '../../../wallet/services/walle
 import { SharedService } from '../../../shared/services/shared.service';
 import { environment } from '../../../../environments/environment';
 import { AppConfig } from '../../../config/app.config';
+import { NamespacesService } from 'src/app/servicesModule/services/namespaces.service';
+import { PaginationInstance } from 'ngx-pagination';
 
 
 @Component({
@@ -29,17 +31,30 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   // --------------------------------------------------------------------------
   @ViewChild(MdbTableDirective, { static: true }) mdbTable: MdbTableDirective;
+  currentWallet: import("/home/luis/proximax/wallet/xpx-chain-web-wallet/src/app/wallet/services/wallet.service").CurrentWalletInterface;
   @HostListener('input') oninput() {
     this.searchItems();
   }
   previous: any = [];
   // myAddress: Address = null;
+  accountChanged: boolean = false;
   cantConfirmed = 0;
   cantUnconfirmed = 0;
   confirmedSelected = true;
+  configFilesDashboard: PaginationInstance = {
+    id: 'fileDashboard',
+    itemsPerPage: 10,
+    currentPage: 1
+  };
+  configFilesAccounts: PaginationInstance = {
+    id: 'fileAccounts',
+    itemsPerPage: 4,
+    currentPage: 1
+  };
   dataSelected: TransactionsInterface = null;
   headElements = ['Type', 'Deadline', 'Fee', '', 'Sender', 'Recipient'];
   iconReloadDashboard = false;
+  objectKeys = Object.keys;
   partialTransactions = 0;
   searching = true;
   searchTransactions = true;
@@ -58,6 +73,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
   nameWallet = '';
   p: number = 1;
   qr = '';
+  routes = {
+    backToService: `/${AppConfig.routes.service}`,
+    createNewAccount: `/${AppConfig.routes.selectTypeCreationAccount}`,
+    viewDetails: `/${AppConfig.routes.account}/`,
+    deleteAccount: `/${AppConfig.routes.deleteAccount}/`,
+  };
 
   constructor(
     private cdRef: ChangeDetectorRef,
@@ -65,7 +86,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private walletService: WalletService,
     private transactionService: TransactionsService,
     private sharedService: SharedService,
-    private proximaxProvider: ProximaxProvider
+    private proximaxProvider: ProximaxProvider,
+    private namespacesService: NamespacesService
   ) { }
 
 
@@ -83,23 +105,22 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.balance();
     this.subscribeTransactionsConfirmedUnconfirmed();
     this.getRecentTransactions();
-    const walletNis1 = this.walletService.getWalletTransNisStorage().find(el => el.name === this.walletService.getCurrentWallet().name);
 
+    const walletNis1 = this.walletService.getWalletTransNisStorage().find(el => el.name === this.walletService.getCurrentWallet().name);
     if (walletNis1 !== undefined && walletNis1 !== null) {
       this.swapTransactions = walletNis1.transactions.length;
     }
-    this.subscription.push(this.transactionService.getAggregateBondedTransactions$().subscribe(
-      next => {
-        this.partialTransactions = (next && next.length > 0) ? next.length : 0;
-      }
-    ));
-    this.subscription.push(this.walletService.getSwapTransactions$().subscribe(
-      next => {
-        // console.log('esta es la respuesta', next);
 
-        this.swapTransactions = next.length;
-      }
+    this.subscription.push(this.transactionService.getAggregateBondedTransactions$().subscribe(
+      next => this.partialTransactions = (next && next.length > 0) ? next.length : 0
     ));
+
+    this.subscription.push(this.walletService.getSwapTransactions$().subscribe(
+      next => this.swapTransactions = next.length
+    ));
+
+    this.currentWallet = Object.assign({}, this.walletService.currentWallet);
+    console.log(this.currentWallet);
   }
 
   ngOnDestroy(): void {
@@ -126,6 +147,39 @@ export class DashboardComponent implements OnInit, OnDestroy {
     ));
   }
 
+  buildBalance() {
+    // console.log('build',this.walletService.currentWallet)
+    const currentWallet = Object.assign({}, this.walletService.currentWallet);
+    if (currentWallet && Object.keys(currentWallet).length > 0) {
+      for (let element of currentWallet.accounts) {
+        const accountFiltered = this.walletService.filterAccountInfo(element.name);
+        if (accountFiltered && accountFiltered.accountInfo) {
+          const mosaicXPX = accountFiltered.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id);
+          if (mosaicXPX) {
+            element['balance'] = this.transactionService.amountFormatterSimple(mosaicXPX.amount.compact());
+          } else {
+            element['balance'] = '0.000000';
+          }
+        } else {
+          element['balance'] = '0.000000';
+        }
+      }
+      this.currentWallet = currentWallet;
+    }
+  }
+
+  changeAsPrimary(nameSelected: string) {
+    // this.sharedService.showSuccess('', 'Account changed to default');
+    this.accountChanged = true;
+    this.walletService.changeAsPrimary(nameSelected);
+    this.walletService.use(this.walletService.currentWallet);
+    this.namespacesService.fillNamespacesDefaultAccount();
+    this.buildBalance();
+    this.transactionService.updateBalance();
+    setTimeout(() => {
+      this.accountChanged = false;
+    }, 2000);
+  }
   /**
    *
    *

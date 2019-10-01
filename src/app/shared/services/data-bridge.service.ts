@@ -87,7 +87,9 @@ export class DataBridgeService {
         this.getUnConfirmedAddedSocket(b, audio2, ad);
         this.getUnConfirmedRemovedSocket(b, audio2, ad);
       }, (error) => {
-        this.sharedService.showWarning('', 'Error connecting to the node');
+        setTimeout(() => {
+          this.sharedService.showWarning('', 'Error connecting to the node');
+        }, 500);
       });
     });
     return;
@@ -190,9 +192,9 @@ export class DataBridgeService {
    */
   getAggregateBondedRemovedSocket(connector: Listener, audio: HTMLAudioElement, address: Address) {
     connector.aggregateBondedRemoved(address).subscribe(async aggregateBondedRemoved => {
-     /* console.log("\n\n-----------------------AGGREGATE_BONDED_REMOVED--------------------------")
-      console.log(aggregateBondedRemoved)
-      console.log("------------------------------------------------------------------\n\n")*/
+      /* console.log("\n\n-----------------------AGGREGATE_BONDED_REMOVED--------------------------")
+       console.log(aggregateBondedRemoved)
+       console.log("------------------------------------------------------------------\n\n")*/
       this.setTransactionStatus({
         'type': 'aggregateBondedRemoved',
         'hash': aggregateBondedRemoved
@@ -299,10 +301,10 @@ export class DataBridgeService {
    */
   getStatusSocket(connector: Listener, audio: HTMLAudioElement, address: Address) {
     connector.status(address).subscribe(status => {
-     /*console.log("\n\n-----------------------STATUS--------------------------")
-      // console.log(status.hash)
-      console.log(status)
-      console.log("------------------------------------------------------------------\n\n")*/
+      /*console.log("\n\n-----------------------STATUS--------------------------")
+       // console.log(status.hash)
+       console.log(status)
+       console.log("------------------------------------------------------------------\n\n")*/
       this.sharedService.showWarning('', status.status.split('_').join(' '));
       this.setTransactionStatus({
         'type': 'status',
@@ -322,7 +324,7 @@ export class DataBridgeService {
   getUnConfirmedAddedSocket(connector: Listener, audio: HTMLAudioElement, address: Address) {
     // ----------------------------------UNCONFIRMED_ADDED--------------------------------------------//
     connector.unconfirmedAdded(address).subscribe(async unconfirmedAdded => {
-     /* console.log("\n\n-----------------------UNCONFIRMED_ADDED--------------------------");
+      /*console.log("\n\n-----------------------UNCONFIRMED_ADDED--------------------------");
       console.log(unconfirmedAdded)
       console.log("------------------------------------------------------------------\n\n");*/
       this.setTransactionStatus({

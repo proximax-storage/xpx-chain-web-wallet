@@ -228,6 +228,14 @@ export class EditAccountMultisignComponent implements OnInit {
     // this.clearData();
   }
 
+  preventNumbers(e) {
+
+    if (e.keyCode >= 48 && e.keyCode <= 57) {
+      // we have a number
+      return false;
+    }
+  }
+
   /**
    *
    * @param name
