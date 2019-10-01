@@ -1,0 +1,38 @@
+.dropdown-toggle:empty::after {
+    margin-left: 0;
+    color: white !important;
+}
+
+.style {
+    border-radius: 1rem;
+    background-color: #306eb5;
+}
+
+/* @media (min-width: 968px) {
+    .modal-dialog {
+        max-width: 1300px !important;
+        padding-right: 1rem;
+        padding-left: 1rem;
+    }
+} */
+@media (min-width: 590px) {
+    .modal-dialog {
+      width: 570px;
+      padding-right: 1rem;
+        padding-left: 1rem;
+    }
+  }
+  @media (min-width: 992px) {
+    .modal-dialog {
+      width: 750px;
+      padding-right: 1rem;
+        padding-left: 1rem;
+    }
+  }
+  @media (min-width: 1200px) {
+    .modal-dialog {
+       width: 650px;
+       padding-right: 1rem;
+        padding-left: 1rem;
+    }
+  }

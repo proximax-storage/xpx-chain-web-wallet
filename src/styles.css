@@ -60,6 +60,10 @@ body {
     margin-right: 1rem !important;
 }
 
+.mr-2rem {
+    margin-right: 2rem !important;
+}
+
 .mt-01rem {
     margin-top: .1rem;
 }
@@ -1110,6 +1114,10 @@ input[type=text] {
     background-color: #2ba1b9 !important;
 }
 
+.dropdown-item {
+  padding: 2px !important;
+}
+
 
 /** INPUTS VALIDATION **/
 
@@ -1855,3 +1863,22 @@ ul.stepper.horizontal .step-title {
 .form-control {
     padding-left: 33px!important;
 }
+
+
+.isPrimary{
+    color: white !important;
+    background-color: #2aa1b9 !important;
+  }
+  
+  .msgSuccess {
+    font-size: .8rem;
+    font-weight: 700;
+    color: #2ba1b9;
+  }
+  
+  .iconInactive{
+    -webkit-filter: grayscale(100%) opacity(50%);
+      filter: grayscale(100%) opacity(50%);
+      color: gray;
+  }
+  
