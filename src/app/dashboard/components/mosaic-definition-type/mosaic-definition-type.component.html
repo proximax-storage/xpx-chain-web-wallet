@@ -206,23 +206,20 @@
 
 <ng-template #viewInnerTransaction>
   <div class="row">
-    <!-- Fee -->
+    <!-- Type-->
     <div class="col-12">
       <div class="row">
         <div class="col-12 col-sm-4 col-md-3 overflow-ellipsis-nowrap">
-          <span class="color-dark-green fw-bold fs-08rem">Fee: </span>
+          <span class="color-dark-green fw-bold fs-08rem">Type: </span>
         </div>
         <div class="col-12 col-sm-8 col-md-9 overflow-ellipsis-nowrap">
-          <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
-          <span class="fs-08rem fw-400 color-dark-green">{{mosaicDefinition?.feePart.part1}}</span>
-          <span class="fs-07rem fw-400 color-dark-green">{{mosaicDefinition?.feePart.part2}}</span>
-          <span class="fs-08rem fw-400 color-dark-green"> XPX </span>
+          <span class="color-dark-green fw-400 fs-08rem">{{ typeTransactionHex }}</span>
         </div>
       </div>
     </div>
 
     <!-- Mosaic Id-->
-    <div class="col-12 mt-1rem">
+    <div class="col-12">
       <div class="row">
         <div class="col-12 col-sm-4 col-md-3 overflow-ellipsis-nowrap">
           <span class="color-dark-green fw-bold fs-08rem">Mosaic Id: </span>

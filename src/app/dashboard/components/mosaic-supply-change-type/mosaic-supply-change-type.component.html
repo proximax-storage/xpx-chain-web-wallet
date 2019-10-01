@@ -21,24 +21,32 @@
             </div>
             <div class="col-8">
               <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
-          <span class="fs-095rem fw-600 color-blue-light">{{mosaicSupplyChange?.feePart.part1}}</span>
-          <span class="fs-075rem fw-600 color-blue-light">{{mosaicSupplyChange?.feePart.part2}}</span>
-          <span class="fs-095rem fw-600 color-blue-light"> XPX </span>
+              <span class="fs-095rem fw-600 color-blue-light">{{mosaicSupplyChange?.feePart.part1}}</span>
+              <span class="fs-075rem fw-600 color-blue-light">{{mosaicSupplyChange?.feePart.part2}}</span>
+              <span class="fs-095rem fw-600 color-blue-light"> XPX </span>
             </div>
           </div>
         </div>
 
-        <!-- Type Hex -->
+        <!-- Height -->
         <div class="col-12 mt-04rem">
           <div class="row">
             <div class="col-4">
-              <span class="color-dark-green fw-bold fs-08rem">Height: </span>
+              <span class="color-dark-green fw-bold fs-08rem">Height:&nbsp;&nbsp;</span>
             </div>
             <div class="col-8">
-              <span class="color-dark-green fw-400
-                  fs-07rem">{{mosaicSupplyChange?.data.transactionInfo.height.compact()}}</span>
+              <ng-container
+                *ngIf="mosaicSupplyChange?.data.transactionInfo.height.compact() === '4294967295,4294967295'; else heightTemplate">
+                <span class="color-dark-green fw-400 fs-07rem">0</span>
+              </ng-container>
+
+              <ng-template #heightTemplate>
+                <span class="color-dark-green fw-400
+                fs-07rem">{{mosaicSupplyChange?.data.transactionInfo.height.compact()}}</span>
+              </ng-template>
             </div>
           </div>
+
 
           <div class="row">
             <div class="col-4 overflow-ellipsis-nowrap">
@@ -137,18 +145,17 @@
           </div>
         </div>
 
-        <!-- Block Height -->
-        <div class="col-12 mt-04rem">
-          <div class="row">
-            <div class="col-4 overflow-ellipsis-nowrap">
-              <span class="color-dark-green fw-bold fs-08rem">Block Height: </span>
+        <!-- <ng-container *ngIf="aggregateComplete?.recipientRentalFeeSink !== '-'">
+            <div class="col-12 mt-04rem">
+              <div class="row">
+                <div class="col-12">
+                  <span class="color-dark-green fw-bold fs-08rem">Recipient Rental Fee Sink:&nbsp;&nbsp;</span>
+                  <span
+                    class="color-dark-green fw-400 fs-08rem mt-02rem">{{aggregateComplete?.recipientRentalFeeSink}}</span>
+                </div>
+              </div>
             </div>
-            <div class="col-8 overflow-ellipsis-nowrap">
-              <span
-                class="color-dark-green fw-400 fs-08rem">{{mosaicSupplyChange?.data.transactionInfo.height.compact()}}</span>
-            </div>
-          </div>
-        </div>
+          </ng-container> -->
       </div>
     </div>
 
@@ -200,23 +207,22 @@
 
 <ng-template #viewInnerTransaction>
   <div class="row">
-    <!-- Fee -->
+
+    <!-- Type-->
     <div class="col-12">
       <div class="row">
         <div class="col-12 col-sm-4 col-md-3 overflow-ellipsis-nowrap">
-          <span class="color-dark-green fw-bold fs-08rem">Fee: </span>
+          <span class="color-dark-green fw-bold fs-08rem">Type: </span>
         </div>
         <div class="col-12 col-sm-8 col-md-9 overflow-ellipsis-nowrap">
-            <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
-          <span class="fs-08rem fw-400 color-dark-green">{{mosaicSupplyChange?.feePart.part1}}</span>
-          <span class="fs-07rem fw-400 color-dark-green">{{mosaicSupplyChange?.feePart.part2}}</span>
-          <span class="fs-08rem fw-400 color-dark-green"> XPX </span>
+          <span class="color-dark-green fw-400 fs-08rem">{{ typeTransactionHex }}</span>
         </div>
       </div>
     </div>
 
+
     <!-- Mosaic Id-->
-    <div class="col-12 mt-1rem">
+    <div class="col-12">
       <div class="row">
         <div class="col-12 col-sm-4 col-md-3 overflow-ellipsis-nowrap">
           <span class="color-dark-green fw-bold fs-08rem">Mosaic Id: </span>
@@ -227,7 +233,8 @@
       </div>
     </div>
 
-    <ng-container *ngIf="mosaicSupplyChange['mosaicsStorage'] !== null && mosaicSupplyChange['mosaicsStorage']['mosaicNames']['names'].lenght > 0; else viewId">
+    <ng-container
+      *ngIf="mosaicSupplyChange['mosaicsStorage'] !== null && mosaicSupplyChange['mosaicsStorage']['mosaicNames']['names'].lenght > 0; else viewId">
       <!-- Mosaic Name-->
       <div class="col-12">
         <div class="row">
