@@ -345,6 +345,7 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
    * @memberof UploadFileComponent
    */
   initialiseStorage() {
+    
     const blockChainNetworkType = this.proximaxProvider.getBlockchainNetworkType(this.walletService.currentAccount.network);
     const blockChainHost = environment.blockchainConnection.host;
     const blockChainPort = environment.blockchainConnection.port;
@@ -359,7 +360,7 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
     );
 
     //set the default network mosaic
-    this.mosaics = [new Mosaic(new MosaicId(environment.mosaicXpxInfo.id), UInt64.fromUint(0))];
+    this.mosaics = [];
     this.uploader = new Uploader(connectionConfig);
   }
 

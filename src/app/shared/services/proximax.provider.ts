@@ -160,11 +160,16 @@ export class ProximaxProvider {
   * @memberof ProximaxProvider
   */
   buildTransferTransaction(network: NetworkType, address: Address, message?: string, amount: number = 0): TransferTransaction {
-    const mosaicId = new MosaicId(environment.mosaicXpxInfo.id);
+    let mosaics: any = [];
+    if (amount > 0) {
+      mosaics = new Mosaic(new MosaicId(environment.mosaicXpxInfo.id), UInt64.fromUint(Number(amount)))
+    } else {
+      mosaics = []
+    }
     return TransferTransaction.create(
       Deadline.create(5),
       address,
-      [new Mosaic(mosaicId, UInt64.fromUint(Number(amount)))],
+      mosaics,
       PlainMessage.create(message),
       network
     );

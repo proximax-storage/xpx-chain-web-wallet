@@ -281,33 +281,33 @@ export class ServicesBoxComponent implements OnInit {
       //STORAGE
       this.services.buildStructureService(
         'Storage',
-        false,
+        true,
         'Upload and download your files and encrypt them',
         'icon-storage-full-color-80h-proximax-sirius-wallet.svg',
         '',
         {
           myFiles: this.services.buildStructureService(
             'FILES',
-            false,
+            true,
             '',
             '',
             AppConfig.routes.myFile,
           ), upload: this.services.buildStructureService(
             'UPLOAD FILE',
-            false,
+            true,
             '',
             '',
             AppConfig.routes.uploadFile
           ), shareFile: this.services.buildStructureService(
             'SEND/SHARE',
-            false,
+            true,
             '',
             '',
             ''
           )
         },
         true,
-        'disable-module'
+        // 'disable-module'
       ),
 
       // Agregate transactions

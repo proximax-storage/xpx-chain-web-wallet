@@ -745,6 +745,7 @@ export class CreateTransferComponent implements OnInit {
                 )
                 );
               });
+              console.log("mosaicos",allMosaics)
 
               const transferBuilder = TransferTransaction.create(
                 Deadline.create(5),
@@ -984,6 +985,7 @@ export class CreateTransferComponent implements OnInit {
 
   calculateFee(message: number) {
     this.mosaicsToSend = this.validateMosaicsToSend();
+    console.log("this.mosaicsToSend",this.mosaicsToSend)
     const x = TransferTransaction.calculateSize(PlainMessage.create(this.formTransfer.get("message").value).size(), this.mosaicsToSend.length);
     const b = FeeCalculationStrategy.calculateFee(x);
     if (message > 0) {
