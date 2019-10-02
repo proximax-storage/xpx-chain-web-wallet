@@ -66,26 +66,32 @@ export class PollsComponent implements OnInit {
 
   ngOnInit() {
     this.showBarProgressone = true;
-    const publicAccount = PublicAccount.createFromPublicKey(environment.pollsContent.public_key, this.walletService.currentAccount.network)
-    if(publicAccount.publicKey === this.publicKeyNotFound) {
-      console.log('load transaction by address');
-      const address = environment.pollsContent.address_public_test;
-      this.loadTransactionsStorage(null, address);
-    } else {
-      console.log('load transaction by public account');
-      console.log(publicAccount);
-      this.loadTransactionsStorage(publicAccount, '')
-    }
+    // const publicAccount = PublicAccount.createFromPublicKey(environment.pollsContent.public_key, this.walletService.currentAccount.network)
+    // if(publicAccount.publicKey === this.publicKeyNotFound) {
+    //   console.log('load transaction by address');
+    const address = environment.pollsContent.address_public_test;
+    this.loadTransactionsStorage(null, this.proximaxProvider.createFromRawAddress(address).pretty());
+    // } else {
+    //   console.log('load transaction by public account');
+    //   console.log(publicAccount);
+    //   this.loadTransactionsStorage(publicAccount, '')
+    // }
 
   }
 
   loadTransactionsStorage(publicAccount?: PublicAccount, address?: string) {
     this.promosePoadTransactions = this.createPollStorageService.loadTransactions(publicAccount, address).then(resp => {
-
+      console.log("respondio aqui", resp)
       this.showBarProgressone = false;
       if (this.getPoll) {
         if (resp) {
+          console.log("respondio resprespresp", resp)
           this.getPollStorage();
+        }else{
+
+          this.pollResult =[];
+
+          this.cantPolls = 0;
         }
       }
     });
@@ -145,7 +151,7 @@ export class PollsComponent implements OnInit {
       .replace(/-/g, '');
     if (!address)
       return
-  
+
     if (new String(addressTrimAndUpperCase).length < 40 || new String(addressTrimAndUpperCase).length > 40)
       return this.sharedService.showError('', 'Address has to be 40 characters long');
     const currentAccount = Object.assign({}, this.walletService.getCurrentAccount());
@@ -154,28 +160,28 @@ export class PollsComponent implements OnInit {
     )
       return this.sharedService.showError('', 'Invalid  address');
     this.showBarProgressone = true;
-    return this.proximaxProvider.getAccountInfo(this.proximaxProvider.createFromRawAddress(address)).subscribe(
-      accountInfo => {
-        this.showBarProgressone = false;
-        this.filter = ''
-        if (accountInfo.publicKey === this.publicKeyNotFound) {
-          return this.sharedService.showError('', `Address ${this.proximaxProvider.createFromRawAddress(address).plain()} has no public key yet on blockchain`);
-          // this.proximaxProvider.
-        } else {
-          const publicAccount: PublicAccount = PublicAccount.createFromPublicKey(accountInfo.publicKey, accountInfo.address.networkType)
-          this.loadTransactionsStorage(publicAccount, '')
-        }
+    // return this.proximaxProvider.getAccountInfo(this.proximaxProvider.createFromRawAddress(address)).subscribe(
+    //   accountInfo => {
 
-      }, erro => {
-        this.showBarProgressone = false;
-        this.filter = ''
-        return this.sharedService.showError('', 'Invalid account address');
-      });
+    this.filter = ''
+    //   if (accountInfo.publicKey === this.publicKeyNotFound) {
+    //     return this.sharedService.showError('', `Address ${this.proximaxProvider.createFromRawAddress(address).plain()} has no public key yet on blockchain`);
+    //     // this.proximaxProvider.
+    //   } else {
+    //     const publicAccount: PublicAccount = PublicAccount.createFromPublicKey(accountInfo.publicKey, accountInfo.address.networkType)
+    this.loadTransactionsStorage(null, this.proximaxProvider.createFromRawAddress(address).pretty())
+    //   }
+
+    // }, erro => {
+    //   this.showBarProgressone = false;
+    //   this.filter = ''
+    //   return this.sharedService.showError('', 'Invalid account address');
+    // });
 
 
   }
 
- 
+
 
   routerRouterLink(link: string) {
     // Create Book logic
@@ -204,7 +210,7 @@ export class PollsComponent implements OnInit {
       // let endDate = new Date(data.result.endDate).getTime();
       // let starDate = new Date(data.result.startDate).getTime();
       // const now = new Date().getTime();
-
+      console.log("data result:", data)
       resultData.push(data.result);
       if (resultData.length > 0) {
         resultData.map(elemt => {
@@ -244,8 +250,9 @@ export class PollsComponent implements OnInit {
     // this.setSelectFilter()
     if (this.showRefresh) {
       this.showRefresh = false;
-      const publicAccount = PublicAccount.createFromPublicKey(environment.pollsContent.public_key, this.walletService.currentAccount.network)
-      this.createPollStorageService.loadTransactions(publicAccount).then(resp => {
+      const address = environment.pollsContent.address_public_test
+      // const publicAccount = PublicAccount.createFromPublicKey(environment.pollsContent.public_key, this.walletService.currentAccount.network)
+      this.createPollStorageService.loadTransactions(null, this.proximaxProvider.createFromRawAddress(address).pretty()).then(resp => {
         this.showBarProgressone = false;
         this.getPollStorage();
       });
