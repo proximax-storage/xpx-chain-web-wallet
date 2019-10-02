@@ -22,55 +22,50 @@ import { environment } from '../../../../../environments/environment';
 })
 export class CreateNamespaceComponent implements OnInit {
   @BlockUI() blockUI: NgBlockUI;
-  paramsHeader: HeaderServicesInterface = {
-    moduleName: 'Namespaces & Sub-Namespaces',
-    componentName: 'Register'
-  };
-  configurationForm: ConfigurationForm = {};
-  /*********************************** */
-  arrayselect: Array<object> = [
-    {
-      value: '1',
-      label: 'New root Namespace',
-      selected: true,
-      disabled: false
-    }
-  ];
+  arrayselect: Array<object> = [{
+    value: '1',
+    label: 'New root Namespace',
+    selected: true,
+    disabled: false
+  }];
 
+  amountAccount: number;
   block: number = null;
+  blockBtnSend: boolean = false;
+  calculateRentalFee: any = '0.000000';
+  configurationForm: ConfigurationForm = {};
+  duration: any;
   durationByBlock = '5760';
   endHeight: number;
   fee: string;
   insufficientBalance = false;
   insufficientBalanceDuration = false;
-  labelNamespace: string = '';
   namespaceChangeInfo: any;
   namespaceInfo: Array<object> = [];
   namespaceForm: FormGroup;
   namespace: Array<object> = [];
+  namespaceName: any;
+  namespaceRoot: any;
+  labelNamespace: string = '';
+  lengthNamespace: number;
+  paramsHeader: HeaderServicesInterface = {
+    moduleName: 'Namespaces & Sub-Namespaces',
+    componentName: 'Register'
+  };
 
+  registerRootNamespaceTransaction: any;
+  registersubamespaceTransaction: any;
+  rentalFee = 4576;
   status: boolean = true;
   startHeight: number;
   statusButtonNamespace: boolean = true;
   showDuration: boolean = true;
-
+  subscription: Subscription[] = [];
   transactionSigned: SignedTransaction[] = [];
   transactionReady: SignedTransaction[] = [];
+  transactionStatus: boolean = false;
   typetransfer: number = 1;
   validateForm: boolean = false;
-  blockBtnSend: boolean = false;
-  calculateRentalFee: any = '0.000000';
-  rentalFee = 4576;
-  subscription: Subscription[] = [];
-  transactionStatus: boolean = false;
-  lengthNamespace: number;
-  namespaceName: any;
-  duration: any;
-  namespaceRoot: any;
-  registerRootNamespaceTransaction: any;
-  registersubamespaceTransaction: any;
-  amountAccount: number;
-
 
   constructor(
     private fb: FormBuilder,
@@ -87,16 +82,14 @@ export class CreateNamespaceComponent implements OnInit {
 
 
   ngOnInit() {
+    this.fee = '0.000000';
     this.configurationForm = this.sharedService.configurationForm;
     this.lengthNamespace = this.configurationForm.namespaceName.maxLength;
     this.createForm();
-    this.getNamespaces();
     this.amountAccount = this.walletService.getAmountAccount();
-
-    this.fee = '0.000000';
     this.durationByBlock = this.transactionService.calculateDurationforDay(this.namespaceForm.get('duration').value).toString();
-    // console.log('DURATION BY BLOCK -->', this.durationByBlock);
     this.validateRentalFee(this.rentalFee * parseFloat(this.durationByBlock));
+    this.getNamespaces();
     this.subscribeValueChange();
   }
 
@@ -106,6 +99,81 @@ export class CreateNamespaceComponent implements OnInit {
       // console.log(subscription);
       subscription.unsubscribe();
     });
+  }
+
+  /**
+  *
+  *
+  * @param {*} amount
+  * @param {MosaicsStorage} mosaic
+  * @memberof CreateNamespaceComponent
+  */
+  async validateRentalFee(amount: number) {
+    const accountInfo = this.walletService.filterAccountInfo();
+    if (accountInfo && accountInfo.accountInfo && accountInfo.accountInfo.mosaics && accountInfo.accountInfo.mosaics.length > 0) {
+      const xpxInBalance = accountInfo.accountInfo.mosaics.find(element => {
+        return element.id.toHex() === new MosaicId(environment.mosaicXpxInfo.id).toHex();
+      });
+
+      if (xpxInBalance) {
+        if (this.namespaceForm.get('namespaceRoot').value === '' || this.namespaceForm.get('namespaceRoot').value === '1') {
+          const invalidBalance = xpxInBalance.amount.compact() < amount;
+          const mosaic = await this.mosaicServices.filterMosaics([xpxInBalance.id]);
+          if (mosaic && mosaic[0].mosaicInfo) {
+            this.calculateRentalFee = this.transactionService.amountFormatterSimple(amount);
+          } else {
+            // **********INSUFFICIENT BALANCE*************
+            // console.log('AQUI FUE');
+            this.insufficientBalance = true;
+            if (this.namespaceForm.enabled) {
+              this.namespaceForm.disable();
+            }
+          }
+
+          if (invalidBalance) {
+            // **********DURATION INSUFFICIENT BALANCE*************
+            this.insufficientBalance = false;
+            this.insufficientBalanceDuration = true;
+          } else if (!invalidBalance) {
+            this.insufficientBalance = false;
+            this.insufficientBalanceDuration = false;
+            if (this.namespaceForm.disabled) {
+              this.namespaceForm.enable();
+            }
+          }
+        } else {
+          // **********SUBNAMESPACE*************
+          const invalidBalance = xpxInBalance.amount.compact() < 10000000;
+          if (invalidBalance) {
+            // **********DURATION INSUFFICIENT BALANCE*************
+            // console.log('AQUI FUE 1');
+            this.insufficientBalance = true;
+            this.insufficientBalanceDuration = false;
+          } else {
+            this.calculateRentalFee = '10.000000';
+            this.insufficientBalance = false;
+            this.insufficientBalanceDuration = false;
+            if (this.namespaceForm.disabled) {
+              this.namespaceForm.enable();
+            }
+          }
+        }
+      } else {
+        // **********INSUFFICIENT BALANCE*************
+        // console.log('AQUI FUE 2');
+        this.insufficientBalance = true;
+        if (this.namespaceForm.enabled) {
+          this.namespaceForm.disable();
+        }
+      }
+    } else {
+      // **********INSUFFICIENT BALANCE*************
+      // console.log('AQUI FUE 3');
+      this.insufficientBalance = true;
+      if (this.namespaceForm.enabled) {
+        this.namespaceForm.disable();
+      }
+    }
   }
 
 
@@ -193,6 +261,8 @@ export class CreateNamespaceComponent implements OnInit {
     if (this.namespaceForm.valid && !this.blockBtnSend) {
       // console.log('this.calculateRentalFee', this.calculateRentalFee);
       const validateAmount = this.transactionService.validateBuildSelectAccountBalance(this.amountAccount, Number(this.fee), Number(this.calculateRentalFee.replace(',', '')));
+      console.log('validateAmount', validateAmount);
+
       if (validateAmount) {
         this.blockBtnSend = true;
         const common = {
@@ -221,7 +291,7 @@ export class CreateNamespaceComponent implements OnInit {
           this.blockBtnSend = false;
         }
       } else {
-        this.sharedService.showError('', 'insufficient balance');
+        this.sharedService.showError('', 'Insufficient balance');
       }
     }
   }
@@ -491,78 +561,5 @@ export class CreateNamespaceComponent implements OnInit {
     }
   }
 
-  /**
-   *
-   *
-   * @param {*} amount
-   * @param {MosaicsStorage} mosaic
-   * @memberof CreateNamespaceComponent
-   */
-  async validateRentalFee(amount: number) {
-    const accountInfo = this.walletService.filterAccountInfo();
-    if (accountInfo && accountInfo.accountInfo && accountInfo.accountInfo.mosaics && accountInfo.accountInfo.mosaics.length > 0) {
-      const xpxInBalance = accountInfo.accountInfo.mosaics.find(element => {
-        return element.id.toHex() === new MosaicId(environment.mosaicXpxInfo.id).toHex();
-      });
 
-      if (xpxInBalance) {
-        if (this.namespaceForm.get('namespaceRoot').value === '' || this.namespaceForm.get('namespaceRoot').value === '1') {
-          const invalidBalance = xpxInBalance.amount.compact() < amount;
-          const mosaic = await this.mosaicServices.filterMosaics([xpxInBalance.id]);
-          if (mosaic && mosaic[0].mosaicInfo) {
-            this.calculateRentalFee = this.transactionService.amountFormatterSimple(amount);
-          } else {
-            // **********INSUFFICIENT BALANCE*************
-            // console.log('AQUI FUE');
-            this.insufficientBalance = true;
-            if (this.namespaceForm.enabled) {
-              this.namespaceForm.disable();
-            }
-          }
-
-          if (invalidBalance) {
-            // **********DURATION INSUFFICIENT BALANCE*************
-            this.insufficientBalance = false;
-            this.insufficientBalanceDuration = true;
-          } else if (!invalidBalance) {
-            this.insufficientBalance = false;
-            this.insufficientBalanceDuration = false;
-            if (this.namespaceForm.disabled) {
-              this.namespaceForm.enable();
-            }
-          }
-        } else {
-          // **********SUBNAMESPACE*************
-          const invalidBalance = xpxInBalance.amount.compact() < 10000000;
-          if (invalidBalance) {
-            // **********DURATION INSUFFICIENT BALANCE*************
-            // console.log('AQUI FUE 1');
-            this.insufficientBalance = true;
-            this.insufficientBalanceDuration = false;
-          } else {
-            this.calculateRentalFee = '10.000000';
-            this.insufficientBalance = false;
-            this.insufficientBalanceDuration = false;
-            if (this.namespaceForm.disabled) {
-              this.namespaceForm.enable();
-            }
-          }
-        }
-      } else {
-        // **********INSUFFICIENT BALANCE*************
-        // console.log('AQUI FUE 2');
-        this.insufficientBalance = true;
-        if (this.namespaceForm.enabled) {
-          this.namespaceForm.disable();
-        }
-      }
-    } else {
-      // **********INSUFFICIENT BALANCE*************
-      // console.log('AQUI FUE 3');
-      this.insufficientBalance = true;
-      if (this.namespaceForm.enabled) {
-        this.namespaceForm.disable();
-      }
-    }
-  }
 }
