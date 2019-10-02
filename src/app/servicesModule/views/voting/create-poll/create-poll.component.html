@@ -36,8 +36,8 @@
               </mdb-error>
             </div>
             <!-- IS PRIVATE -->
-            <div class="md-form">
-              <mdb-checkbox formControlName="isPrivate" [inline]="true">Send to private poll index</mdb-checkbox>
+            <div  class="form-check form-check-inline">
+              <mdb-checkbox [disabled]="true"  [default]="true" formControlName="isPrivate">Send to private poll index</mdb-checkbox>
             </div>
             <!-- DESCRIPTION -->
             <div class="md-form">
@@ -67,13 +67,28 @@
             </div>
           </div>
           <div class="col-5 col-md-4 col-xl-5 mb-2rem">
+
+              <!-- FEE -->
+              <div class="row mt-1rem">
+                  <div class="col-12 mx-auto">
+                    <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
+                      <div class="row">
+                        <div class="col-12">
+                          <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
+                            alt="">
+                          <span>Fee: 0.000000  XPX</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
             <!-- FEE  -->
-            <div class="md-form">
+            <!-- <div class="md-form">
               <div style="margin-top: 0;" class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
                 <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" alt="">
                 <span>Fee: 0.000000 XPX</span>
               </div>
-            </div>
+            </div> -->
           </div>
           <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
             <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
@@ -146,13 +161,20 @@
             </div>
           </div>
           <div class="col-5 col-md-4 col-xl-5 mb-2rem">
-            <!-- FEE  -->
-            <div class="md-form">
-              <div style="margin-top: 0;" class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
-                <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" alt="">
-                <span>Fee: 0.000000 XPX</span>
+             <!-- FEE -->
+             <div class="row mt-1rem">
+                <div class="col-12 mx-auto">
+                  <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
+                    <div class="row">
+                      <div class="col-12">
+                        <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
+                          alt="">
+                        <span>Fee: 0.000000  XPX</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
           </div>
           <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
             <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
@@ -257,14 +279,21 @@
               </div>
             </div>
           </div>
-          <div class="col-5 col-md-4 col-xl-5 mb-2rem">
-            <!-- FEE  -->
-            <div class="md-form">
-              <div style="margin-top: 0;" class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
-                <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" alt="">
-                <span>Fee: 0.000000 XPX</span>
+          <div class="col-5 col-md-4 col-xl-5 mt-1rem">
+             <!-- FEE -->
+             <div class="row mt-1rem">
+                <div class="col-12 mx-auto">
+                  <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
+                    <div class="row">
+                      <div class="col-12">
+                        <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
+                          alt="">
+                        <span>Fee: 0.000000  XPX</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
             <!-- VIEW AND EDIT -->
             <div class="box-grey" *ngIf='option.length > 0'>
               <span class="justify-content-center d-flex">Options List</span>
@@ -362,13 +391,20 @@
             </div>
           </div>
           <div class="col-5 col-md-4 col-xl-5 mb-2rem">
-            <!-- FEE  -->
-            <div class="md-form">
-              <div style="margin-top: 0;" class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
-                <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" alt="">
-                <span>Fee: 0.000000 XPX</span>
+            <!-- FEE -->
+            <div class="row mt-1rem">
+                <div class="col-12 mx-auto">
+                  <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
+                    <div class="row">
+                      <div class="col-12">
+                        <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
+                          alt="">
+                        <span>Fee: 0.000000  XPX</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
             <!-- VIEW AND EDIT -->
             <div class="box-grey" *ngIf='option.length > 0'>
               <span class="justify-content-center d-flex">Options List</span>
