@@ -60,7 +60,7 @@ export class CreateNamespaceComponent implements OnInit {
   validateForm: boolean = false;
   blockBtnSend: boolean = false;
   calculateRentalFee: any = '0.000000';
-  rentalFee = 100000;
+  rentalFee = 4576;
   subscription: Subscription[] = [];
   transactionStatus: boolean = false;
   lengthNamespace: number;
@@ -94,6 +94,7 @@ export class CreateNamespaceComponent implements OnInit {
 
     this.fee = '0.000000';
     this.durationByBlock = this.transactionService.calculateDurationforDay(this.namespaceForm.get('duration').value).toString();
+    // console.log('DURATION BY BLOCK -->', this.durationByBlock);
     this.validateRentalFee(this.rentalFee * parseFloat(this.durationByBlock));
     this.subscribeValueChange();
   }
@@ -184,7 +185,8 @@ export class CreateNamespaceComponent implements OnInit {
    */
   createNamespace() {
     if (this.namespaceForm.valid && !this.blockBtnSend) {
-      const validateAmount = this.transactionService.validateBuildSelectAccountBalance(this.amountAccount, Number(this.fee), Number(this.calculateRentalFee))
+      // console.log('this.calculateRentalFee', this.calculateRentalFee);
+      const validateAmount = this.transactionService.validateBuildSelectAccountBalance(this.amountAccount, Number(this.fee), Number(this.calculateRentalFee.replace(',', '')));
       if (validateAmount) {
         this.blockBtnSend = true;
         const common = {
@@ -200,7 +202,7 @@ export class CreateNamespaceComponent implements OnInit {
                 this.getTransactionStatus();
               }
 
-
+              this.clearForm();
               this.setTimeOutValidate(signedTransaction.hash);
             }, () => {
               this.blockBtnSend = false;
@@ -341,7 +343,6 @@ export class CreateNamespaceComponent implements OnInit {
             const match = statusTransaction['hash'] === element.hash;
             if (match) {
               this.transactionReady.push(element);
-              this.clearForm();
               this.blockBtnSend = false;
             }
             if (statusTransaction['type'] === 'confirmed' && match) {
@@ -420,12 +421,11 @@ export class CreateNamespaceComponent implements OnInit {
     this.namespaceForm.get('duration').valueChanges.subscribe(
       next => {
         if (next <= 365) {
-
           if (next !== null && next !== undefined && String(next) !== '0' && next !== '') {
-
             if (this.showDuration) {
               this.durationByBlock = this.transactionService.calculateDurationforDay(next).toString();
               this.validateRentalFee(this.rentalFee * parseFloat(this.durationByBlock));
+              // console.log(this.durationByBlock);
             }
           } else {
             this.calculateRentalFee = '0.000000';
@@ -433,10 +433,11 @@ export class CreateNamespaceComponent implements OnInit {
         } else {
           this.durationByBlock = this.transactionService.calculateDurationforDay(365).toString();
           this.validateRentalFee(this.rentalFee * parseFloat(this.durationByBlock));
-
         }
+
         this.duration = parseFloat(this.durationByBlock);
-        this.builder()
+        // console.log(this.duration);
+        this.builder();
       }
     );
 
@@ -519,7 +520,7 @@ export class CreateNamespaceComponent implements OnInit {
           const invalidBalance = xpxInBalance.amount.compact() < amount;
           const mosaic = await this.mosaicServices.filterMosaics([xpxInBalance.id]);
           if (mosaic && mosaic[0].mosaicInfo) {
-            this.calculateRentalFee = this.transactionService.amountFormatter(amount, mosaic[0].mosaicInfo);
+            this.calculateRentalFee = this.transactionService.amountFormatterSimple(amount);
           } else {
             // **********INSUFFICIENT BALANCE*************
             // console.log('AQUI FUE');

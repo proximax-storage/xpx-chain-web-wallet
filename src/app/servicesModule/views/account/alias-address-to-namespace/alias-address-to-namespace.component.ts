@@ -83,18 +83,18 @@ export class AliasAddressToNamespaceComponent implements OnInit {
               this.isValidBlockchain = false;
               return;
             } else {
-              if (!this.validateLinkeadAccount(address)) {
-                this.address = Address.createFromRawAddress(address);
-                this.isValidBlockchain = true;
-                this.builder();
-              }
-            }
-          } else {
-            if (!this.validateLinkeadAccount(address)) {
+              // if (!this.validateLinkeadAccount(address)) {
               this.address = Address.createFromRawAddress(address);
               this.isValidBlockchain = true;
               this.builder();
+              // }
             }
+          } else {
+            // if (!this.validateLinkeadAccount(address)) {
+            this.address = Address.createFromRawAddress(address);
+            this.isValidBlockchain = true;
+            this.builder();
+            // }
           }
         } else {
           this.isValidBlockchain = false;
