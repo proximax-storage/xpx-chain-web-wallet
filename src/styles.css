@@ -831,6 +831,15 @@ body {
     background: #ffff;
 }
 
+.box-tag-account {
+    background: white;
+    border-radius: 20px;
+    padding: 1px 4px !important;
+    width: 80px !important;
+    text-align: center;
+    line-height: 1rem;
+}
+
 .background-gray-icons {
     background: #efefef;
 }
