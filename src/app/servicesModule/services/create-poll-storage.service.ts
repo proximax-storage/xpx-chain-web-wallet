@@ -82,7 +82,7 @@ export class CreatePollStorageService {
         param.withRecipientPublicKey(recipientPublicKey);
       }
 
-      const mosaic: any = [new Mosaic(new MosaicId(environment.mosaicXpxInfo.id), UInt64.fromUint(0))];
+      const mosaic: any = [];
       param.withTransactionMosaics(mosaic); //Update-sdk-dragon
       let recipientAddress = account.publicAccount.address.plain();
       if (recipientPublicKey.length > 0) {

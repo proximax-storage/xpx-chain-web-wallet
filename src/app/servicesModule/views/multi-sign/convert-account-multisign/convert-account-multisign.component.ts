@@ -358,14 +358,14 @@ export class ConvertAccountMultisignComponent implements OnInit {
     let convertIntoMultisigTransaction: ModifyMultisigAccountTransaction;
     if (this.currentAccountToConvert !== undefined && this.currentAccountToConvert !== null) {
       convertIntoMultisigTransaction = ModifyMultisigAccountTransaction.create(
-        Deadline.create(),
+        Deadline.create(environment.deadlineTransfer.deadline,environment.deadlineTransfer.chronoUnit),
         this.convertAccountMultsignForm.get('minApprovalDelta').value,
         this.convertAccountMultsignForm.get('minRemovalDelta').value,
         this.multisigCosignatoryModification(this.getCosignatoryList()),
         this.currentAccountToConvert.network);
 
       this.aggregateTransaction = AggregateTransaction.createBonded(
-        Deadline.create(),
+        Deadline.create(environment.deadlineTransfer.deadline,environment.deadlineTransfer.chronoUnit),
         [convertIntoMultisigTransaction.toAggregate(this.currentAccountToConvert.publicAccount)],
         this.currentAccountToConvert.network);
       // console.log('this.convertIntoMultisig', convertIntoMultisigTransaction)
@@ -401,7 +401,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
         * Create Hash lock transaction
         */
         const hashLockTransaction = HashLockTransaction.create(
-          Deadline.create(),
+          Deadline.create(environment.deadlineTransfer.deadline,environment.deadlineTransfer.chronoUnit),
           new Mosaic(new MosaicId(environment.mosaicXpxInfo.id), UInt64.fromUint(Number(10000000))),
           UInt64.fromUint(480),
           signedTransaction,

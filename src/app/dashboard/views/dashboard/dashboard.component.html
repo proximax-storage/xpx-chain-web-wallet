@@ -1,3 +1,4 @@
+<!-- BALANCE & BUTTONS -->
 <div class="container-fluid">
   <div class="row">
     <div class="col-12 col-sm-11 col-md-10 col-lg-9 mx-auto">
@@ -33,17 +34,30 @@
                   </div>
 
                 </div>
+                
 
-                <div class="col-3" *ngIf="currentWallet.accounts.length > 1">
+                <div class="dropdown" mdbDropdown>
+                    <button  mdbDropdownToggle mdbBtn color="transparent" class="dropdown-toggle waves-light" type="button"
+                    mdbWavesEffect style="padding: 5px; box-shadow: 0px 0px transparent" data-toggle="modal">
+                    </button>
+
+                    <div class="dropdown-menu dropdown-menu-right">
+                      <a class="dropdown-item fs-075rem" *ngFor="let account of currentWallet.accounts"
+                        (click)="changeAsPrimary(account.name)"> {{ account.name }}</a>
+                    </div>
+                  </div>
+
+
+                <!-- <div class="dropdown" mdbDropdown class="col-3" *ngIf="currentWallet.accounts.length > 1">
                   <div>
 
-                    <button mdbBtn color="transparent" class="dropdown-toggle waves-light style " type="button"
+                    <button mdbDropdownToggle mdbBtn color="transparent" class="dropdown-toggle waves-light style " type="button"
                       mdbWavesEffect style="padding: 5px; box-shadow: 0px 0px transparent" data-toggle="modal"
                       (click)="currentWallet; modalAccount.show();">
                     </button>
 
                   </div>
-                </div>
+                </div> -->
 
                 <!-- BALANCE USD  -->
                 <div class="col-12">
@@ -122,6 +136,7 @@
   </div>
 </div>
 
+<!-- TABLE -->
 <div class="container-fluid">
   <!-- FIELD SEARCH -->
   <div class="row">
@@ -239,6 +254,7 @@
   </div>
 </div>
 
+<!-- TRANSACTION INFORMATION DETAILS -->
 <div class="d-flex align-items-center">
   <div mdbModal #modalDashboard="mdbModal" class="modal fade" tabindex="-1" role="dialog"
     aria-labelledby="modalDashboard" aria-hidden="true">
@@ -434,7 +450,7 @@
 </div>
 
 <!-- MODAL  Optios-->
-<div class="d-flex align-items-center">
+<!-- <div class="d-flex align-items-center">
   <div mdbModal #modalAccount="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalAccount"
     aria-hidden="true">
     <div class="modal-dialog modal-md d-flex align-items-center" id="changeAccount" role="document">
@@ -467,8 +483,6 @@
                         alt="Copy" width="20" (click)="copyMessage('Address')" ngxClipboard *ngIf="!account.default"
                         [cbContent]="account.address" title="Copy Address">&nbsp;
 
-
-
                       <img src="assets/images/img/icon-edit-white-proximax-sirius-wallet.svg" class="cursor-p"
                         *ngIf="account.default" width="20" [routerLink]="[routes.viewDetails+account.name]"
                         title="View details">
@@ -476,12 +490,10 @@
                         *ngIf="!account.default" width="20" [routerLink]="[routes.viewDetails+account.name]"
                         title="View details">&nbsp;
 
-                      <!-- Delete-->
                       <img src="assets/images/img/icon-trash-can-gray-16h-proximax-sirius-wallet.svg" class="cursor-p"
                         *ngIf="!account.default && account.encrypted !== ''" width="20"
                         [routerLink]="[routes.deleteAccount+account.name]" title="Delete">
 
-                      <!-- Select account default -->
                       <ng-container *ngIf="account.encrypted !== ''">
                         <img src="assets/images/img/icon-default-white-proximax-sirius-wallet.svg" class="cursor-p"
                           *ngIf="account.default" width="20" title="Select account as default">
@@ -515,4 +527,4 @@
       </div>
     </div>
   </div>
-</div>
+</div> -->

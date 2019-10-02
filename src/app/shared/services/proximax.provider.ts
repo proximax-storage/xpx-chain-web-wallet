@@ -160,11 +160,16 @@ export class ProximaxProvider {
   * @memberof ProximaxProvider
   */
   buildTransferTransaction(network: NetworkType, address: Address, message?: string, amount: number = 0): TransferTransaction {
-    const mosaicId = new MosaicId(environment.mosaicXpxInfo.id);
+    let mosaics: any = [];
+    if (amount > 0) {
+      mosaics = new Mosaic(new MosaicId(environment.mosaicXpxInfo.id), UInt64.fromUint(Number(amount)))
+    } else {
+      mosaics = []
+    }
     return TransferTransaction.create(
-      Deadline.create(5),
+      Deadline.create(environment.deadlineTransfer.deadline,environment.deadlineTransfer.chronoUnit),
       address,
-      [new Mosaic(mosaicId, UInt64.fromUint(Number(amount)))],
+      mosaics,
       PlainMessage.create(message),
       network
     );
@@ -187,7 +192,7 @@ export class ProximaxProvider {
     network: NetworkType
   ): MosaicSupplyChangeTransaction {
     return MosaicSupplyChangeTransaction.create(
-      Deadline.create(5),
+      Deadline.create(environment.deadlineTransfer.deadline,environment.deadlineTransfer.chronoUnit),
       mosaicId,
       mosaicSupplyType,
       delta,
@@ -211,7 +216,7 @@ export class ProximaxProvider {
    */
   buildMosaicDefinition(params: any): MosaicDefinitionTransaction {
     const mosaicDefinitionTransaction = MosaicDefinitionTransaction.create(
-      Deadline.create(5),
+      Deadline.create(environment.deadlineTransfer.deadline,environment.deadlineTransfer.chronoUnit),
       params.nonce,
       MosaicId.createFromNonce(params.nonce, params.account.publicAccount),
       MosaicProperties.create({
@@ -633,7 +638,7 @@ export class ProximaxProvider {
    */
   linkingNamespaceToMosaic(aliasActionType: AliasActionType, namespaceId: NamespaceId, mosaicId: MosaicId, network: NetworkType) {
     return MosaicAliasTransaction.create(
-      Deadline.create(),
+      Deadline.create(environment.deadlineTransfer.deadline,environment.deadlineTransfer.chronoUnit),
       aliasActionType,
       namespaceId,
       mosaicId,
@@ -653,7 +658,7 @@ export class ProximaxProvider {
    */
   mosaicSupplyChangeTransaction(mosaicId: string, supply: number, mosaicSupplyType: number, network: NetworkType): MosaicSupplyChangeTransaction {
     return MosaicSupplyChangeTransaction.create(
-      Deadline.create(),
+      Deadline.create(environment.deadlineTransfer.deadline,environment.deadlineTransfer.chronoUnit),
       new MosaicId(mosaicId),
       mosaicSupplyType,
       UInt64.fromUint(supply),
@@ -672,7 +677,7 @@ export class ProximaxProvider {
    */
   registerRootNamespaceTransaction(name: string, network: NetworkType, duration: number = 100): RegisterNamespaceTransaction {
     return RegisterNamespaceTransaction.createRootNamespace(
-      Deadline.create(23),
+      Deadline.create(environment.deadlineTransfer.deadline,environment.deadlineTransfer.chronoUnit),
       name,
       UInt64.fromUint(duration),
       network
@@ -691,7 +696,7 @@ export class ProximaxProvider {
   registersubNamespaceTransaction(rootNamespace: string, subnamespaceName: string, network: NetworkType): RegisterNamespaceTransaction {
     // Crear namespace transaction
     return RegisterNamespaceTransaction.createSubNamespace(
-      Deadline.create(23),
+      Deadline.create(environment.deadlineTransfer.deadline,environment.deadlineTransfer.chronoUnit),
       subnamespaceName,
       rootNamespace,
       network

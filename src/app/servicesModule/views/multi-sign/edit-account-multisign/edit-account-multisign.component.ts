@@ -402,14 +402,14 @@ export class EditAccountMultisignComponent implements OnInit {
         let convertIntoMultisigTransaction: ModifyMultisigAccountTransaction;
         convertIntoMultisigTransaction = this.modifyMultisigAccountTransaction()
         const aggregateTransaction = AggregateTransaction.createBonded(
-          Deadline.create(),
+          Deadline.create(environment.deadlineTransfer.deadline,environment.deadlineTransfer.chronoUnit),
           [convertIntoMultisigTransaction.toAggregate(this.currentAccountToConvert.publicAccount)],
           this.currentAccountToConvert.network
         );
         const generationHash = this.dataBridge.blockInfo.generationHash;
         const signedTransaction = this.accountToConvertSign.sign(aggregateTransaction, generationHash)
         const hashLockTransaction = HashLockTransaction.create(
-          Deadline.create(),
+          Deadline.create(environment.deadlineTransfer.deadline,environment.deadlineTransfer.chronoUnit),
           new Mosaic(new MosaicId(environment.mosaicXpxInfo.id), UInt64.fromUint(Number(10000000))),
           UInt64.fromUint(480),
           signedTransaction,
@@ -487,7 +487,7 @@ export class EditAccountMultisignComponent implements OnInit {
       this.editAccountMultsignForm.get('minRemovalDelta').value
     )
     modifyobject = {
-      deadline: Deadline.create(),
+      deadline:Deadline.create(environment.deadlineTransfer.deadline,environment.deadlineTransfer.chronoUnit),
       minApprovalDelta: valor['minApprovalDelta'],
       minRemovalDelta: valor['minRemovalDelta'],
       modifications: this.multisigCosignatoryModification(this.getCosignatoryListFilter(1, 2)),

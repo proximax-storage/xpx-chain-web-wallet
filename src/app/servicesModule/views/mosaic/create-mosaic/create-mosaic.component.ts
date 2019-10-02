@@ -240,8 +240,10 @@ export class CreateMosaicComponent implements OnInit {
       UInt64.fromUint(this.deltaSupply),
       this.walletService.currentAccount.network
     );
+    // console.log('mosaicSupplyChangeTransaction', mosaicSupplyChangeTransaction);
+    
     this.aggregateTransaction = AggregateTransaction.createComplete(
-      Deadline.create(),
+      Deadline.create(environment.deadlineTransfer.deadline,environment.deadlineTransfer.chronoUnit),
       [
         mosaicDefinitionTransaction.toAggregate(account.publicAccount),
         mosaicSupplyChangeTransaction.toAggregate(account.publicAccount)
@@ -295,44 +297,44 @@ export class CreateMosaicComponent implements OnInit {
         if (this.walletService.decrypt(common)) {
           this.blockSend = true;
           const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
-          // const nonce = this.proximaxProvider.createNonceRandom();
-          // const duration = (this.mosaicForm.get('duration').enabled) ? parseInt(this.durationByBlock) : undefined;
-          // const params = {
-          //   nonce: nonce,
-          //   account: account,
-          //   supplyMutable: this.mosaicForm.get('supplyMutable').value,
-          //   transferable: this.mosaicForm.get('transferable').value,
-          //   divisibility: this.mosaicForm.get('divisibility').value,
-          //   duration: duration,
-          //   network: this.walletService.currentAccount.network
-          // }
+          const nonce = this.proximaxProvider.createNonceRandom();
+          const duration = (this.mosaicForm.get('duration').enabled) ? parseInt(this.durationByBlock) : undefined;
+          const params = {
+            nonce: nonce,
+            account: account,
+            supplyMutable: this.mosaicForm.get('supplyMutable').value,
+            transferable: this.mosaicForm.get('transferable').value,
+            divisibility: this.mosaicForm.get('divisibility').value,
+            duration: duration,
+            network: this.walletService.currentAccount.network
+          }
 
-          // //BUILD TRANSACTION
-          //  const mosaicDefinitionTransaction = this.proximaxProvider.buildMosaicDefinition(params);
+          //BUILD TRANSACTION
+           const mosaicDefinitionTransaction = this.proximaxProvider.buildMosaicDefinition(params);
           //  console.log('-------- mosaicDefinitionTransaction sed', mosaicDefinitionTransaction);
           //  console.log('-------- mosaicDefinitionTransaction sed', mosaicDefinitionTransaction.maxFee.compact());
-          // const mosaicSupplyChangeTransaction = this.proximaxProvider.buildMosaicSupplyChange(
-          //   mosaicDefinitionTransaction.mosaicId,
-          //   MosaicSupplyType.Increase,
-          //   UInt64.fromUint(this.deltaSupply),
-          //   this.walletService.currentAccount.network
-          // );
+          const mosaicSupplyChangeTransaction = this.proximaxProvider.buildMosaicSupplyChange(
+            mosaicDefinitionTransaction.mosaicId,
+            MosaicSupplyType.Increase,
+            UInt64.fromUint(this.deltaSupply),
+            this.walletService.currentAccount.network
+          );
 
-          // const aggregateTransaction = AggregateTransaction.createComplete(
-          //   Deadline.create(),
-          //   [
-          //     mosaicDefinitionTransaction.toAggregate(account.publicAccount),
-          //     mosaicSupplyChangeTransaction.toAggregate(account.publicAccount)
-          //   ],
-          //   this.walletService.currentAccount.network,
-          //   []
-          // );
+          const aggregateTransaction = AggregateTransaction.createComplete(
+            Deadline.create(),
+            [
+              mosaicDefinitionTransaction.toAggregate(account.publicAccount),
+              mosaicSupplyChangeTransaction.toAggregate(account.publicAccount)
+            ],
+            this.walletService.currentAccount.network,
+            []
+          );
 
 
           // this.dataBridge.setTransactionStatus(null);
           // I SIGN THE TRANSACTION
           const generationHash = this.dataBridge.blockInfo.generationHash
-          const signedTransaction = account.sign(this.aggregateTransaction, generationHash);  //Update-sdk-dragon
+          const signedTransaction = account.sign(aggregateTransaction, generationHash);  //Update-sdk-dragon
           this.transactionSigned.push(signedTransaction);
           //ANNOUNCEMENT THE TRANSACTION-
           this.proximaxProvider.announce(signedTransaction).subscribe(

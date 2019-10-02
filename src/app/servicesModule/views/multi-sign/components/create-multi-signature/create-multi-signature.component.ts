@@ -405,7 +405,7 @@ export class CreateMultiSignatureComponent implements OnInit {
          * Create Bonded
          */
         const aggregateTransaction = AggregateTransaction.createBonded(
-          Deadline.create(),
+          Deadline.create(environment.deadlineTransfer.deadline,environment.deadlineTransfer.chronoUnit),
           [convertIntoMultisigTransaction.toAggregate(this.currentAccountToConvert.publicAccount)],
           this.currentAccountToConvert.network);
         const generationHash = this.dataBridge.blockInfo.generationHash;
@@ -415,7 +415,7 @@ export class CreateMultiSignatureComponent implements OnInit {
         // * Create Hash lock transaction
         // */
         const hashLockTransaction = HashLockTransaction.create(
-          Deadline.create(),
+          Deadline.create(environment.deadlineTransfer.deadline,environment.deadlineTransfer.chronoUnit),
           new Mosaic(new MosaicId(environment.mosaicXpxInfo.id), UInt64.fromUint(Number(10000000))),
           UInt64.fromUint(480),
           signedTransaction,
@@ -439,7 +439,7 @@ export class CreateMultiSignatureComponent implements OnInit {
         this.createMultsignForm.get('minRemovalDelta').value
       )
       modifyobject = {
-        deadline: Deadline.create(),
+        deadline: Deadline.create(environment.deadlineTransfer.deadline,environment.deadlineTransfer.chronoUnit),
         minApprovalDelta: valor['minApprovalDelta'],
         minRemovalDelta: valor['minRemovalDelta'],
         modifications: this.multisigCosignatoryModification(this.getCosignatoryListFilter(1, 2)),
@@ -448,7 +448,7 @@ export class CreateMultiSignatureComponent implements OnInit {
       // console.log(modify)
     } else {
       modifyobject = {
-        deadline: Deadline.create(),
+        deadline: Deadline.create(environment.deadlineTransfer.deadline,environment.deadlineTransfer.chronoUnit),
         minApprovalDelta: this.createMultsignForm.get('minApprovalDelta').value,
         minRemovalDelta: this.createMultsignForm.get('minRemovalDelta').value,
         modifications: this.multisigCosignatoryModification(this.getCosignatoryListFilter(1, 1)),

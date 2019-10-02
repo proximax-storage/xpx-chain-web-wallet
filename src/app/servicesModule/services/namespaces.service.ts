@@ -46,7 +46,7 @@ export class NamespacesService {
   addressAliasTransaction(param: AddressAliasTransactionInterface): AddressAliasTransaction {
     const network = (param.network !== undefined) ? param.network : this.walletService.currentAccount.network;
     const addressAliasTransaction = AddressAliasTransaction.create(
-      Deadline.create(),
+      Deadline.create(environment.deadlineTransfer.deadline,environment.deadlineTransfer.chronoUnit),
       param.aliasActionType,
       param.namespaceId,
       param.address,

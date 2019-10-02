@@ -21,9 +21,7 @@ export class TransferTypeComponent implements OnInit {
   // E7620BC08F46B1B56A9DF29541513318FD51965229D4A4B3B3DAAFE82819DE46
 
   constructor(
-    public transactionService: TransactionsService,
-    private mosaicService: MosaicService,
-    private proximaxProvider: ProximaxProvider
+    public transactionService: TransactionsService
   ) { }
 
   ngOnInit() {
@@ -33,6 +31,8 @@ export class TransferTypeComponent implements OnInit {
     // console.log(this.transferTransaction);
     this.searching = true;
     this.typeTransactionHex = `${this.transferTransaction.data['type'].toString(16).toUpperCase()}`;
+    const height = this.transferTransaction.data.transactionInfo.height.compact();
+    console.log(typeof(height));
     if (this.transferTransaction.data['message'].payload !== '') {
       try {
         const simple = false;

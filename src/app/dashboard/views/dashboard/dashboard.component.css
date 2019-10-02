@@ -1,31 +1,16 @@
-.dropdown-toggle:empty::after {
-    margin-left: 0;
-    color: white !important;
-}
 
 .style {
     border-radius: 1rem;
     background-color: #306eb5;
 }
 
-@media (min-width: 590px) {
-    #changeAccount  {
-      width: 570px;
-      padding-right: 1rem;
-        padding-left: 1rem;
-    }
+.dropdown-toggle:empty::after {
+  margin-left: 0!important;
+}
+
+ @media (max-width: 575px) {
+  .dropup, .dropright, .dropdown, .dropleft {
+    position: static !important;
   }
-  @media (min-width: 992px) {
-    #changeAccount {
-      width: 750px;
-      padding-right: 1rem;
-        padding-left: 1rem;
-    }
-  }
-  @media (min-width: 1200px) {
-    #changeAccount {
-       width: 650px;
-       padding-right: 1rem;
-        padding-left: 1rem;
-    }
+  
   }
