@@ -32,6 +32,7 @@ import { TransferAssetsComponent } from '../servicesModule/components/transfer-a
 import { SwapCertificateComponent } from '../servicesModule/components/swap-certificate/swap-certificate.component';
 import { TransferTypeBondedComponent } from '../dashboard/components/transfer-type-bonded/transfer-type-bonded.component';
 import { FilterObjectPipe } from '../shared/pipes/filter-object.pipe';
+import { BoxDataSignerHashComponent } from '../dashboard/components/box-data-signer-hash/box-data-signer-hash.component';
 
 
 
@@ -66,7 +67,8 @@ const components = [
   VoteTypeComponent,
   TransferAssetsComponent,
   SwapCertificateComponent,
-  TransferTypeBondedComponent
+  TransferTypeBondedComponent,
+  BoxDataSignerHashComponent
 ]
 
 const moduls = [
