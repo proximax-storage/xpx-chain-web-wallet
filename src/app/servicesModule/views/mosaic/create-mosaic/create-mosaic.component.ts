@@ -243,7 +243,7 @@ export class CreateMosaicComponent implements OnInit {
     // console.log('mosaicSupplyChangeTransaction', mosaicSupplyChangeTransaction);
     
     this.aggregateTransaction = AggregateTransaction.createComplete(
-      Deadline.create(),
+      Deadline.create(environment.deadlineTransfer.deadline,environment.deadlineTransfer.chronoUnit),
       [
         mosaicDefinitionTransaction.toAggregate(account.publicAccount),
         mosaicSupplyChangeTransaction.toAggregate(account.publicAccount)

@@ -1825,20 +1825,24 @@ ul.stepper.horizontal .step-title {
 
 .label-i {
     position: absolute;
-    margin-top: -50px;
+    margin-top: -48px;
     padding: 12px;
     color: #b5b5b5;
-    font-size: .8rem;
+    font-size: .7rem;
     padding-top: .8rem;
 }
 
 .label-i-icon {
     position: absolute;
-    margin-top: -50px;
+    margin-top: -48px;
     padding: 12px;
     color: #6f6f6f;
-    font-size: .8rem;
+    font-size: .7rem;
     padding-top: .8rem;
+}
+
+.form-control-sm{
+  font-size: 0.75rem !important;
 }
 
 
@@ -1869,16 +1873,15 @@ ul.stepper.horizontal .step-title {
     color: white !important;
     background-color: #2aa1b9 !important;
   }
-  
+
   .msgSuccess {
     font-size: .8rem;
     font-weight: 700;
     color: #2ba1b9;
   }
-  
+
   .iconInactive{
     -webkit-filter: grayscale(100%) opacity(50%);
       filter: grayscale(100%) opacity(50%);
       color: gray;
   }
-  

@@ -271,7 +271,7 @@ export class TransactionsService {
     });
 
     const transferTransaction = TransferTransaction.create(
-      Deadline.create(5),
+      Deadline.create(environment.deadlineTransfer.deadline,environment.deadlineTransfer.chronoUnit),
       recipientAddress,
       allMosaics,
       PlainMessage.create(params.message),
@@ -294,7 +294,7 @@ export class TransactionsService {
    */
   buildHashLockTransaction(signedTransaction: SignedTransaction): LockFundsTransaction {
     return HashLockTransaction.create(
-      Deadline.create(),
+      Deadline.create(environment.deadlineTransfer.deadline,environment.deadlineTransfer.chronoUnit),
       new Mosaic(new MosaicId(environment.mosaicXpxInfo.id), UInt64.fromUint(Number(10000000))),
       UInt64.fromUint(480),
       signedTransaction,
@@ -311,7 +311,7 @@ export class TransactionsService {
   buildAggregateTransaction(sender: PublicAccount, transaction: Transaction): AggregateTransaction {
     // console.log('sender --->', sender);
     return AggregateTransaction.createBonded(
-      Deadline.create(),
+      Deadline.create(environment.deadlineTransfer.deadline,environment.deadlineTransfer.chronoUnit),
       [transaction.toAggregate(sender)],
       this.walletService.currentAccount.network
     );
@@ -411,9 +411,11 @@ export class TransactionsService {
 
   validateBuildSelectAccountBalance(balanceAccount: number, feeTransaction: number, rental: number): boolean {
     const totalFee = feeTransaction + rental;
-    // console.log('balanceAccount', balanceAccount)
-    // console.log('totalFee', totalFee)
-    return (balanceAccount >= totalFee)
+    /*console.log(balanceAccount);
+    console.log(feeTransaction);
+    console.log(rental);
+    console.log(totalFee);*/
+    return (balanceAccount >= totalFee);
 
   }
 

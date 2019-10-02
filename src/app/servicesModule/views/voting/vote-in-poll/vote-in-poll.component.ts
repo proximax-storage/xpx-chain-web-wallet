@@ -492,7 +492,7 @@ export class VoteInPollComponent implements OnInit {
       name: this.pollSelected.name
     }
     const aggregateTransaction = AggregateTransaction.createComplete(
-      Deadline.create(10),
+      Deadline.create(environment.deadlineTransfer.deadline,environment.deadlineTransfer.chronoUnit),
       this.transactionToAggregate(publicAccount, message),
       publicAccount.address.networkType,
       []);
