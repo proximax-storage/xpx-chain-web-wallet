@@ -43,8 +43,6 @@ export class ViewAllAccountsComponent implements OnInit {
 
   ngOnInit() {
     this.subscribeAccountInfoToBuildBalance();
-    console.log(this.currentWallet);
-
   }
 
   ngOnDestroy(): void {
@@ -78,9 +76,6 @@ export class ViewAllAccountsComponent implements OnInit {
         } else {
           element['balance'] = '0.000000';
         }
-
-        console.log(element);
-
       }
       this.currentWallet = currentWallet;
     }

@@ -16,7 +16,7 @@
                         <div class="col-12 text-center text-sm-left pt-1rem w-b-a d-flex">
                           Account: {{account.name}}
                           <div *ngIf="account.default" class="ml-1rem box-tag-account color-blue-intermedio fs-065rem">Default</div>
-                          <div *ngIf="account.isMultisign !== null" class="ml-1rem fs-065rem color-blue-intermedio box-tag-account">Multisig</div>
+                          <div *ngIf="account.isMultisign === true" class="ml-1rem fs-065rem color-blue-intermedio box-tag-account">Multisig</div>
                         </div>
                         <div class="col-12 text-center text-sm-left pt-04rem w-b-a">
                           {{account.address}}
