@@ -54,8 +54,8 @@ export const environment = {
   },*/
   blockchainConnection: {
     host: 'bctestnet1.brimstone.xpxsirius.io',
-    port: 3000,
-    protocol: 'http',
+    port: 443,
+    protocol: 'https',
     useSecureMessage: false
   },
   storageConnection: {

@@ -67,8 +67,15 @@ export class PollsComponent implements OnInit {
   ngOnInit() {
     this.showBarProgressone = true;
     const publicAccount = PublicAccount.createFromPublicKey(environment.pollsContent.public_key, this.walletService.currentAccount.network)
-
-    this.loadTransactionsStorage(publicAccount, '')
+    if(publicAccount.publicKey === this.publicKeyNotFound) {
+      console.log('load transaction by address');
+      const address = environment.pollsContent.address_public_test;
+      this.loadTransactionsStorage(null, address);
+    } else {
+      console.log('load transaction by public account');
+      console.log(publicAccount);
+      this.loadTransactionsStorage(publicAccount, '')
+    }
 
   }
 
