@@ -241,6 +241,7 @@ export class DetailAccountComponent implements OnInit {
    */
   aceptChanges() {
     if (!this.checked) {
+      console.log('a1')
       if (this.walletService.currentAccount.nis1Account !== null) {
         this.sharedService.showSuccess('', 'Nis1 account remove');
       }
@@ -255,6 +256,7 @@ export class DetailAccountComponent implements OnInit {
       walletsStorage.push(this.walletService.currentWallet);
       localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorage));
     } else {
+      console.log('a2')
       if (this.walletService.currentAccount.nis1Account === null) {
         this.sharedService.showSuccess('', 'Nis1 account added');
       }
