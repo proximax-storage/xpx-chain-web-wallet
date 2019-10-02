@@ -233,29 +233,31 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.getTransactionsConfirmed(account, id);
 
       // Unconfirmed transactions
-      this.proximaxProvider.getUnconfirmedTransactions(account.publicAccount, id).pipe(first()).subscribe(transactionsUnconfirmed => {
-        if (transactionsUnconfirmed && transactionsUnconfirmed.length > 0) {
-          //Sets the data structure of the dashboard
-          transactionsUnconfirmed.forEach(element => {
-            const builderTransactions = this.transactionService.getStructureDashboard(element, this.transactionsUnconfirmed);
-            if (builderTransactions !== null) {
-              transactionUnconfirmed.push(builderTransactions);
-            }
-          });
+      this.proximaxProvider.getUnconfirmedTransactions(account.publicAccount, id).pipe(first()).subscribe(
+        transactionsUnconfirmed => {
+          if (transactionsUnconfirmed && transactionsUnconfirmed.length > 0) {
+            //Sets the data structure of the dashboard
+            transactionsUnconfirmed.forEach(element => {
+              const builderTransactions = this.transactionService.getStructureDashboard(element, this.transactionsUnconfirmed);
+              if (builderTransactions !== null) {
+                transactionUnconfirmed.push(builderTransactions);
+              }
+            });
 
-          this.transactionsUnconfirmed = transactionUnconfirmed;
-          this.cantUnconfirmed = this.transactionsUnconfirmed.length;
-          this.transactionService.setTransactionsUnConfirmed$(this.transactionsUnconfirmed);
-        } else {
+            this.transactionsUnconfirmed = transactionUnconfirmed;
+            this.cantUnconfirmed = this.transactionsUnconfirmed.length;
+            this.transactionService.setTransactionsUnConfirmed$(this.transactionsUnconfirmed);
+          } else {
+            this.iconReloadDashboard = false;
+            this.searching = false;
+            this.dashboardService.searchComplete = true;
+          }
+        }, error => {
           this.iconReloadDashboard = false;
           this.searching = false;
           this.dashboardService.searchComplete = true;
         }
-      }, error => {
-        this.iconReloadDashboard = false;
-        this.searching = false;
-        this.dashboardService.searchComplete = true;
-      });
+      );
     });
   }
 
@@ -322,7 +324,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.subscription.push(this.transactionService.getConfirmedTransactions$().subscribe((next: TransactionsInterface[]) => {
       this.cantConfirmed = next.length;
       this.transactionsConfirmed = next;
-      this.selectTransactions(1);
+      this.transactions = next;
+
+      // Datatable
+      this.mdbTable.setDataSource(this.transactionsConfirmed);
+      this.transactions = this.mdbTable.getDataSource();
+      this.previous = this.mdbTable.getDataSource();
     }));
 
     this.subscription.push(this.transactionService.getUnconfirmedTransactions$().subscribe((next: TransactionsInterface[]) => {
@@ -369,16 +376,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
   selectTransactions(type: number) {
     if (type === 1) {
       // Confirmed
-      this.mdbTable.setDataSource(this.transactionsConfirmed.slice(0));
+      this.mdbTable.setDataSource(this.transactionsConfirmed);
       this.transactions = this.mdbTable.getDataSource();
       this.previous = this.mdbTable.getDataSource();
     } else {
-      // console.log(this.transactionsUnconfirmed);
       // Unconfirmed
-      this.mdbTable.setDataSource(this.transactionsUnconfirmed.slice(0));
+      this.mdbTable.setDataSource(this.transactionsUnconfirmed);
       this.transactions = this.mdbTable.getDataSource();
       this.previous = this.mdbTable.getDataSource();
-      // this.previous = this.mdbTable.getDataSource();
     }
   }
 }
