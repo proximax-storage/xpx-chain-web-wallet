@@ -355,7 +355,7 @@ export class TransactionsService {
    * @memberof TransactionsService
    */
   calculateDurationforDay(duration: number) {
-    return duration * 49460;
+    return duration * 5760;
   }
 
   /**
@@ -411,9 +411,11 @@ export class TransactionsService {
 
   validateBuildSelectAccountBalance(balanceAccount: number, feeTransaction: number, rental: number): boolean {
     const totalFee = feeTransaction + rental;
-    // console.log('balanceAccount', balanceAccount)
-    // console.log('totalFee', totalFee)
-    return (balanceAccount >= totalFee)
+    /*console.log(balanceAccount);
+    console.log(feeTransaction);
+    console.log(rental);
+    console.log(totalFee);*/
+    return (balanceAccount >= totalFee);
 
   }
 
