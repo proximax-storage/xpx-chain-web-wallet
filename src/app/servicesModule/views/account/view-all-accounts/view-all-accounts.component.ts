@@ -76,6 +76,8 @@ export class ViewAllAccountsComponent implements OnInit {
         } else {
           element['balance'] = '0.000000';
         }
+        console.log(element);
+
       }
       this.currentWallet = currentWallet;
     }
