@@ -24,13 +24,20 @@
               <!-- VALIDATION -->
               <mdb-error
                 *ngIf="validateInput('name', '').invalid && (validateInput('name', '').dirty || validateInput('name', '').touched)">
-                <span>Required field</span>
+                <span *ngIf="showDuration">
+                  Required field, minlength {{configurationForm.namespaceName.minLength}}, max length 16. Alphanumeric
+                  characters.
+                </span>
+                <span *ngIf="!showDuration">
+                  Required field, minlength {{configurationForm.namespaceName.minLength}}, max length 64. Alphanumeric
+                  characters.
+                </span>
               </mdb-error>
             </div>
           </div>
         </div>
 
-        <div class="row">
+        <div class="row mt-1rem">
           <div class="col-11 mx-auto">
             <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [searchable]="false"
               [validateError]="true" class="selectWrapper" [items]="arrayselect" formControlName="namespaceRoot"
@@ -51,7 +58,7 @@
                 [validateSuccess]="true" [validateError]="true" type="text" id="duration"
                 class="form-control form-control-sm input-border txt-a-right" placeholder=""
                 (keyup)="limitDuration($event)">
-                <span class="label-i-icon pl-2rem">Duration (number of days)</span>
+              <span class="label-i-icon pl-2rem">Duration (number of days)</span>
 
               <!-- VALIDATION -->
               <mdb-error
