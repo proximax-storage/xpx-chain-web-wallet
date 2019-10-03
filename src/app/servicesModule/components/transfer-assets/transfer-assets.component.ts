@@ -280,7 +280,7 @@ export class TransferAssetsComponent implements OnInit {
             this.anounceTransaction(next, account, catapultAccount, transaction);
           })
           .catch(error => {
-            console.log('Esrror', error);
+            // console.log('Esrror', error);
             this.sharedService.showError('Error', error.toString().split('_').join(' '));
             this.spinnerVisibility = false;
           });

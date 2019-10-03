@@ -9,12 +9,12 @@ import { Pipe } from "@angular/core";
 export class StringFilterPipe {
 
   transform(value: [], q: string) {
-    console.log(value);
+    // console.log(value);
     if (!q || q === '') {
       return value;
     }
 
-    
+
     // console.log(q);
     const x = [];
     value.forEach(element => {

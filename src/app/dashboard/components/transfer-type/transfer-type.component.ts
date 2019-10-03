@@ -32,7 +32,7 @@ export class TransferTypeComponent implements OnInit {
     this.searching = true;
     this.typeTransactionHex = `${this.transferTransaction.data['type'].toString(16).toUpperCase()}`;
     const height = this.transferTransaction.data.transactionInfo.height.compact();
-    console.log(typeof(height));
+    // console.log(typeof(height));
     if (this.transferTransaction.data['message'].payload !== '') {
       try {
         const simple = false;

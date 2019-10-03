@@ -220,7 +220,7 @@ export class CreateApostilleComponent implements OnInit {
         this.rawFileContent = crypto.enc.Base64.parse((this.file.toString()).split(/,(.+)?/)[1]);
       };
     } else {
-      console.log(this.filesStorage);
+      // console.log(this.filesStorage);
       if (this.filesStorage !== undefined && this.filesStorage !== null) {
         this.filesStorage.forEach(element => {
           element.selected = false;
@@ -397,7 +397,7 @@ export class CreateApostilleComponent implements OnInit {
       x => {
         this.dataBridgeService.getTransactionStatus().subscribe(
           next => {
-            console.log('this is response status---------->', next);
+            // console.log('this is response status---------->', next);
 
             // if (statusTransaction['type'] === 'confirmed' && match) {
             //   this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['hash']);
@@ -409,7 +409,7 @@ export class CreateApostilleComponent implements OnInit {
             // }
           },
           error => {
-            console.log('this is response error---------->', error);
+            // console.log('this is response error---------->', error);
           }
         )
         // If everything went OK, build and build the certificate
@@ -417,7 +417,7 @@ export class CreateApostilleComponent implements OnInit {
         // this.processComplete = true;
       },
       err => {
-        console.error('This is an error', err);
+        // console.error('This is an error', err);
         // console.error(err)
         // this.downloadSignedFiles();
       });
@@ -485,10 +485,10 @@ export class CreateApostilleComponent implements OnInit {
 
     this.proximaxProvider.announce(signedTransaction).subscribe(
       x => {
-        console.log('this is a repsonse', x);
+        // console.log('this is a repsonse', x);
         this.dataBridgeService.getTransactionStatus().subscribe(
           next => {
-            console.log('this is response status---------->', next);
+            // console.log('this is response status---------->', next);
 
             // if (statusTransaction['type'] === 'confirmed' && match) {
             //   this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['hash']);
@@ -500,7 +500,7 @@ export class CreateApostilleComponent implements OnInit {
             // }
           },
           error => {
-            console.log('this is response error---------->', error);
+            // console.log('this is response error---------->', error);
           }
         )
 
@@ -508,7 +508,7 @@ export class CreateApostilleComponent implements OnInit {
         // this.processComplete = true;
       },
       err => {
-        console.error('This is an error', err);
+        // console.error('This is an error', err);
         // this.downloadSignedFiles();
       });
   }

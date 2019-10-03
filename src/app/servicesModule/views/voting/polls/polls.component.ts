@@ -72,8 +72,8 @@ export class PollsComponent implements OnInit {
     const address = environment.pollsContent.address_public_test;
     this.loadTransactionsStorage(null, this.proximaxProvider.createFromRawAddress(address).pretty());
     // } else {
-    //   console.log('load transaction by public account');
-    //   console.log(publicAccount);
+    ////   console.log('load transaction by public account');
+    ////   console.log(publicAccount);
     //   this.loadTransactionsStorage(publicAccount, '')
     // }
 
@@ -81,15 +81,15 @@ export class PollsComponent implements OnInit {
 
   loadTransactionsStorage(publicAccount?: PublicAccount, address?: string) {
     this.promosePoadTransactions = this.createPollStorageService.loadTransactions(publicAccount, address).then(resp => {
-      console.log("respondio aqui", resp)
+      // console.log("respondio aqui", resp)
       this.showBarProgressone = false;
       if (this.getPoll) {
         if (resp) {
-          console.log("respondio resprespresp", resp)
+          //          console.log("respondio resprespresp", resp)
           this.getPollStorage();
-        }else{
+        } else {
 
-          this.pollResult =[];
+          this.pollResult = [];
 
           this.cantPolls = 0;
         }
@@ -196,7 +196,7 @@ export class PollsComponent implements OnInit {
   /**
   * get the storage poll
   *
-  * 
+  *
   * @memberof PollsComponent
   */
   getPollStorage() {
@@ -210,7 +210,7 @@ export class PollsComponent implements OnInit {
       // let endDate = new Date(data.result.endDate).getTime();
       // let starDate = new Date(data.result.startDate).getTime();
       // const now = new Date().getTime();
-      console.log("data result:", data)
+      //      console.log("data result:", data)
       resultData.push(data.result);
       if (resultData.length > 0) {
         resultData.map(elemt => {
@@ -291,7 +291,7 @@ export class PollsComponent implements OnInit {
   }
 
   /**
-  * validate status date poll 
+  * validate status date poll
   *
   * @param {any} obj
   * @memberof PollsComponent

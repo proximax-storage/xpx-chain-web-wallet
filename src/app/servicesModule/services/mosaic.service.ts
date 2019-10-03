@@ -176,12 +176,11 @@ export class MosaicService {
           // reemplazo la información del mosaico
           mosaicsStorage = mosaicsStorage.filter(x => this.proximaxProvider.getMosaicId(x.idMosaic).toHex() !== mosaicIdToSaved);
         }
-
         mosaicsStorage.push(element);
       }
 
-      this.setMosaicChanged();
       localStorage.setItem(this.getItemMosaicStorage(), JSON.stringify(mosaicsStorage));
+      this.setMosaicChanged();
     }
   }
 
@@ -219,7 +218,6 @@ export class MosaicService {
             });
           }
         }
-
         return dataReturn;
       } else {
         const infoMosaics: MosaicsStorage[] = await this.searchInfoMosaics(mosaicsId);

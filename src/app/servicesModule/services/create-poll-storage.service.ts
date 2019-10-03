@@ -132,10 +132,10 @@ export class CreatePollStorageService {
       let searchParam: any
       if (this.searcher) {
         if (publicAccount) {
-          console.log("search by public Acount")
+          // console.log("search by public Acount")
           searchParam = SearchParameter.createForPublicKey(publicAccount.publicKey);
         } else if (address) {
-          console.log("search by address")
+          // console.log("search by address")
           searchParam = SearchParameter.createForAddress(address)
         }
         searchParam.withTransactionFilter(TransactionFilter.INCOMING);
