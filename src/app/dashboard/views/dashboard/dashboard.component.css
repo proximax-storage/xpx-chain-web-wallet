@@ -1,16 +1,21 @@
-
 .style {
-    border-radius: 1rem;
-    background-color: #306eb5;
+  border-radius: 1rem;
+  background-color: #306eb5;
 }
 
 .dropdown-toggle:empty::after {
   margin-left: 0!important;
 }
 
- @media (max-width: 575px) {
+@media (max-width: 575px) {
   .dropup, .dropright, .dropdown, .dropleft {
     position: static !important;
   }
-  
-  }
+}
+
+.box-tag-account {
+  background: #3490df;
+  color: white !important;
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+}

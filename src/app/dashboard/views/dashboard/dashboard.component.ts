@@ -27,7 +27,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   currentAccount: AccountsInterface = null;
   nameAccount = '';
   typeTransactions: any;
-  vestedBalance = '';
+  vestedBalance = null;
 
   // --------------------------------------------------------------------------
   @ViewChild(MdbTableDirective, { static: true }) mdbTable: MdbTableDirective;
@@ -46,13 +46,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     itemsPerPage: 10,
     currentPage: 1
   };
-  configFilesAccounts: PaginationInstance = {
-    id: 'fileAccounts',
-    itemsPerPage: 4,
-    currentPage: 1
-  };
   dataSelected: TransactionsInterface = null;
-  headElements = ['Type', 'Deadline', 'Fee', '', 'Sender', 'Recipient'];
+  headElements = ['Type', 'Fee', '', 'Sender', 'Recipient'];
   iconReloadDashboard = false;
   objectKeys = Object.keys;
   partialTransactions = 0;
@@ -96,12 +91,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.dashboardService.subscribeLogged();
     this.currentAccount = Object.assign({}, this.walletService.getCurrentAccount());
     this.currentAccount.address = this.proximaxProvider.createFromRawAddress(this.currentAccount.address).pretty();
+    this.currentAccount.name = (this.currentAccount.name === 'Primary') ? `${this.currentAccount.name}_Account` : this.currentAccount.name;
     const qr = qrcode(10, 'H');
     qr.addData(this.currentAccount.address);
     qr.make();
     this.qr = qr.createDataURL();
     this.typeTransactions = this.transactionService.getTypeTransactions();
-    this.vestedBalance = `0.000000 ${environment.mosaicXpxInfo.coin}`;
+    this.vestedBalance = {
+      part1: '0',
+      part2: '000000'
+    }
+
     this.balance();
     this.subscribeTransactionsConfirmedUnconfirmed();
     this.getRecentTransactions();
@@ -142,8 +142,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
    */
   balance() {
     this.subscription.push(this.transactionService.getBalance$().subscribe(
-      next => this.vestedBalance = `${next} XPX`,
-      error => this.vestedBalance = `0.000000 XPX`
+      next => this.vestedBalance = this.transactionService.getDataPart(next, 6),
+      error => this.vestedBalance = {
+        part1: '0',
+        part2: '000000'
+      }
     ));
   }
 

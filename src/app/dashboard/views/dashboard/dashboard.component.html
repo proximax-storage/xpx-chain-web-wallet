@@ -1,135 +1,54 @@
 <!-- BALANCE & BUTTONS -->
 <div class="container-fluid">
-  <div class="row">
-    <div class="col-12 col-sm-11 col-md-10 col-lg-9 mx-auto">
-      <!-- BALANCE & TRANSACTIONS -->
-      <div class="row mt-2rem">
-        <div class="col-12 col-sm-8 col-md-8 col-lg-7 col-xl-5 mx-auto pb-2rem box-grey">
-          <div class="row mx-auto">
-            <!-- CODE QR -->
-            <div class="col-4 d-flex align-items-center">
-              <figure style="margin: 0; border: 2px solid #45acc199;">
-                <img [src]="qr" alt="" width="100">
-              </figure>
+  <div class="row mt-2rem">
+    <div class="col-12 col-sm-11 mx-auto">
+      <div class="row">
+        <div class="col-12 col-md-5">
+          <div class="row lh-1em">
+
+            <!-- NAME ACCOUNT -->
+            <div class="col-12 d-flex justify-content-center justify-content-sm-start align-items-center">
+              <span class="fs-09rem fw-600">
+                <a [routerLink]="[viewDetailsAccount+currentAccount.name]"
+                  class="cursor-p color-black">{{currentAccount.name}}</a>
+              </span>
+              <span class="ml-1rem box-tag-account color-blue-intermedio fs-065rem">Default</span>
             </div>
 
-            <!-- DEFAULT ACCOUNT & BALANCE -->
-            <div class="col-8 d-flex align-items-center" style="padding-left: 30PX;">
-              <div class="row">
-                <div class="col-12">
-                  <div>
-                    <span class="fs-09rem color-blue-intermedio">
-                      <a [routerLink]="[viewDetailsAccount+currentAccount.name]"
-                        class="cursor-p">{{currentAccount.name}}</a>
-                    </span>
-                  </div>
-                </div>
-
-                <!-- BALANCE E ICONO XPX  -->
-                <div class="col-9">
-                  <div>
-                    <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
-                      width="20">
-                    <span class="fs-08rem">&nbsp;{{vestedBalance}}</span>
-                  </div>
-
-                </div>
-
-
-                <div class="dropdown" mdbDropdown>
-                    <button  mdbDropdownToggle mdbBtn color="transparent" class="dropdown-toggle waves-light" type="button"
-                    mdbWavesEffect style="padding: 5px; box-shadow: 0px 0px transparent" data-toggle="modal">
-                    </button>
-
-                    <div class="dropdown-menu dropdown-menu-right">
-                      <a class="dropdown-item fs-075rem" *ngFor="let account of currentWallet.accounts"
-                        (click)="changeAsPrimary(account.name)"> {{ account.name }}</a>
-                    </div>
-                  </div>
-
-
-                <!-- <div class="dropdown" mdbDropdown class="col-3" *ngIf="currentWallet.accounts.length > 1">
-                  <div>
-
-                    <button mdbDropdownToggle mdbBtn color="transparent" class="dropdown-toggle waves-light style " type="button"
-                      mdbWavesEffect style="padding: 5px; box-shadow: 0px 0px transparent" data-toggle="modal"
-                      (click)="currentWallet; modalAccount.show();">
-                    </button>
-
-                  </div>
-                </div> -->
-
-                <!-- BALANCE USD  -->
-                <div class="col-12">
-                  <div>
-                    <img class="icono" src="assets/images/img/icon-us-dollar-green-16h-proximax-sirius-wallet.svg"
-                      width="20" alt="">
-                    <span class="fs-08rem">&nbsp;USD 0.00</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- ADDRESS  -->
-          <div class="row">
-            <div class="col-12">
-              <div>
-                <span class="fs-06rem f-s-dashboard-transactions">{{currentAccount.address}}
-                  &nbsp;</span>
+            <!-- ADDRESS -->
+            <div class="col-12 d-flex justify-content-center justify-content-sm-start align-items-center mt-02rem">
+              <span class="fs-06rem f-s-dashboard-transactions fw-600">{{currentAccount.address}} &nbsp;
                 <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="icono cursor-p"
                   alt="Copy" width="20" (click)="copyMessage('Address')" ngxClipboard
                   [cbContent]="currentAccount.address">
+                  <img src="assets/images/img/icon-qr-code-proximax-sirius-wallet.svg" class="icono cursor-p"
+                  alt="Address QR" width="20"></span>
+            </div>
+
+            <!-- BALANCE -->
+            <div class="col-12 mt-02rem d-flex justify-content-center justify-content-sm-start">
+              <div>
+                <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20">
+                <span class="fs-085rem fw-600 color-black">{{vestedBalance?.part1}}</span>
+                <span class="fs-075rem fw-600 color-black">{{vestedBalance?.part2}}</span>
+                <span class="fs-085rem fw-600 color-black">&nbsp;XPX</span>
+                &nbsp; &nbsp;
+                <img class="icono" src="assets/images/img/icon-us-dollar-green-16h-proximax-sirius-wallet.svg"
+                  width="20">
+                <span class="fs-085rem fw-600 color-black">USD 0.</span>
+                <span class="fs-075rem fw-600 color-black">00</span>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- TRANSACTIONS CONFIRMED & UNCONFIRMED -->
-        <div class="col-12 col-sm-8 col-md-4 col-lg-5 col-xl-7 mx-auto pb-2rem d-flex align-items-center">
-          <div class="row">
-            <div class="col-12 d-flex justify-content-center mb-1rem">
-              <span class="fs-1-2rem fw-600">{{cantConfirmed + cantUnconfirmed}} Transactions</span>
-            </div>
+        <div class="col-2 d-none d-flex justify-content-center">
+          <div style="border: .5px solid; height: 100%; color: #8d8c8c;"></div>
+        </div>
 
-            <!-- CONFIRMED TRANSACTION -->
-            <div class="col-12 col-xl-6">
-              <button mdbBtn type="button" rounded="true" mdbWavesEffect (click)="selectTransactions(1)"
-                class="f-w-600  w-100porcent background-btn pl-2rem pr-2rem" size="sm">
-                <span class="fs-07rem color-white">CONFIRMED: <span class="fw-400">{{cantConfirmed}}</span></span>
-              </button>
-            </div>
-
-            <!-- UNCONFIRMED TRANSACTION -->
-            <div class="col-12 col-xl-6">
-              <button mdbBtn type="button" rounded="true" mdbWavesEffect
-                [disabled]="transactionsUnconfirmed.length === 0" (click)="selectTransactions(0)"
-                class="f-w-600  w-100porcent background-btn pl-2rem pr-2rem" size="sm">
-                <span class="fs-07rem color-white">UNCONFIRMED: <span class="fw-400">{{cantUnconfirmed}}</span></span>
-              </button>
-            </div>
-
-            <!-- PARTIAL TRANSACTION -->
-            <div class="col-12 col-xl-6">
-              <button mdbBtn type="button" rounded="true" mdbWavesEffect [disabled]="partialTransactions === 0"
-                [routerLink]="[viewDetailsPartial]" class="f-w-600  w-100porcent background-btn pl-2rem pr-2rem"
-                size="sm">
-                <span class="fs-07rem color-white">PARTIAL:
-                  <a class="cursor-p fw-400">{{partialTransactions}}</a>
-                </span>
-              </button>
-            </div>
-
-            <!-- SWAP TRANSACTION -->
-            <div class="col-12 col-xl-6" *ngIf="swapTransactions > 0">
-              <button mdbBtn type="button" rounded="true" mdbWavesEffect [routerLink]="[viewSwapTransactions]"
-                class="f-w-600  w-100porcent background-orange pl-2rem pr-2rem" size="sm">
-                <span class="fs-07rem color-white">SWAP:
-                  <a class="cursor-p fw-400">{{swapTransactions}}</a>
-                </span>
-              </button>
-            </div>
-          </div>
+        <!-- SEGUNDA PARTE -->
+        <div class="col-12 col-md-5">
+          segunda parte
         </div>
       </div>
     </div>
@@ -140,7 +59,7 @@
 <div class="container-fluid">
   <!-- FIELD SEARCH -->
   <div class="row">
-    <div class="col-12 col-sm-10 mx-auto">
+    <div class="col-12 col-sm-11 mx-auto">
       <input [(ngModel)]="searchTransaction" type="text" autocomplete="off" id="searchTransaction"
         class="md-form form-control" mdbInputDirective [validateSuccess]="false" [validateError]="false"
         placeholder="Search">
@@ -196,9 +115,6 @@
                   </ng-template>
                   {{el.nameType}}
                 </td>
-
-                <!-- timestamp -->
-                <td class="th-sm description-dark-green fs-07rem">{{el.timestamp}}</td>
 
                 <!-- fee -->
                 <td class="text-center th-sm description-dark-green fs-07rem">{{el.fee}}</td>
@@ -288,8 +204,8 @@
 
             <!-- TRANSFER -->
             <ng-container *ngIf="dataSelected.data.type === typeTransactions.transfer.id">
-                <app-transfer-type [transferTransaction]="dataSelected">
-                  </app-transfer-type>
+              <app-transfer-type [transferTransaction]="dataSelected">
+              </app-transfer-type>
             </ng-container>
 
             <!-- TYPE REGISTER NAMESPACE TRANSACTION -->
@@ -433,83 +349,3 @@
     </div>
   </div>
 </div>
-
-<!-- MODAL  Optios-->
-<!-- <div class="d-flex align-items-center">
-  <div mdbModal #modalAccount="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalAccount"
-    aria-hidden="true">
-    <div class="modal-dialog modal-md d-flex align-items-center" id="changeAccount" role="document">
-      <div class="modal-content form-elegant bord-rad-1-5rem">
-        <div class="modal-header text-center box-modal-white b-t-r-r-1-5rem b-t-l-r-1-5rem p-05rem">
-          <span class="modal-title w-100" id="myModalLabel">
-            <strong class="title-modal-blue">Change Default Accounts</strong>
-          </span>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modalAccount.hide()">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <div class="row">
-            <ng-container *ngIf="currentWallet?.accounts?.length > 1">
-              <ng-container *ngFor="let account of currentWallet.accounts | paginate: configFilesAccounts">
-                <div class="col-11 col-md-10 col-lg-9 col-xl-10 mx-auto box-list-account-gray fs-08rem pb-1rem"
-                  [ngClass]="{'isPrimary':account.default}">
-                  <div class="row">
-                    <div class="col-12 col-sm-10 col-md-9 col-lg-10 col-xl-10 text-center text-sm-left pt-1rem w-b-a">
-                      Account: {{account.name}} <br>
-                      {{account.address}}
-                    </div>
-                    <div
-                      class="col-12 col-sm-2 col-md-3 col-lg-2 col-xl-2 d-flex align-items-center justify-content-center justify-content-sm-end justify-content-md-end justify-content-lg-end justify-content-xl-end pt-2rem">
-                      <img src="assets/images/img/icon-copy-clipboard-white.svg" class="cursor-p" alt="Copy" width="20"
-                        (click)="copyMessage('Address')" ngxClipboard *ngIf="account.default"
-                        [cbContent]="account.address" title="Copy Address">
-                      <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="cursor-p"
-                        alt="Copy" width="20" (click)="copyMessage('Address')" ngxClipboard *ngIf="!account.default"
-                        [cbContent]="account.address" title="Copy Address">&nbsp;
-
-                      <img src="assets/images/img/icon-edit-white-proximax-sirius-wallet.svg" class="cursor-p"
-                        *ngIf="account.default" width="20" [routerLink]="[routes.viewDetails+account.name]"
-                        title="View details">
-                      <img src="assets/images/img/icon-edit-gray-proximax-sirius-wallet.svg" class="cursor-p"
-                        *ngIf="!account.default" width="20" [routerLink]="[routes.viewDetails+account.name]"
-                        title="View details">&nbsp;
-
-                      <img src="assets/images/img/icon-trash-can-gray-16h-proximax-sirius-wallet.svg" class="cursor-p"
-                        *ngIf="!account.default && account.encrypted !== ''" width="20"
-                        [routerLink]="[routes.deleteAccount+account.name]" title="Delete">
-
-                      <ng-container *ngIf="account.encrypted !== ''">
-                        <img src="assets/images/img/icon-default-white-proximax-sirius-wallet.svg" class="cursor-p"
-                          *ngIf="account.default" width="20" title="Select account as default">
-                        <img src="assets/images/img/icon-default-gray-proximax-sirius-wallet.svg" class="cursor-p"
-                          *ngIf="!account.default" width="20" (click)="changeAsPrimary(account.name)"
-                          title="Select account as default">
-                      </ng-container>
-                    </div>
-                  </div>
-
-                  <div class="row">
-                    <div
-                      class="col-12 col-sm-10 col-md-9 col-lg-10 col-xl-10 text-center text-sm-left pt-05rem w-b-a fw-600">
-                      <img *ngIf="account.default" class="icono" src="assets/images/img/icon-proximax-white.svg"
-                        width="20" alt="">
-                      <img *ngIf="!account.default" class="icono"
-                        src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20" alt="">
-                      &nbsp;Balance {{account.balance}} XPX
-                    </div>
-                  </div>
-                </div>
-              </ng-container>
-              <div class="col-12 pt-2rem pb-1rem d-flex justify-content-center mx-auto">
-                <pagination-controls [id]="configFilesAccounts.id"
-                  (pageChange)="configFilesAccounts.currentPage = $event">
-                </pagination-controls>
-              </div>
-            </ng-container>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div> -->
