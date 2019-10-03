@@ -33,6 +33,7 @@ export class AccountDeleteConfirmComponent implements OnInit {
   texAlert = 'I have read the warning, understand the consequences, and wish to proceed'
 
   constructor(private activateRoute: ActivatedRoute,
+    private serviceModuleService: ServicesModuleService,
     private sharedService: SharedService,
     private walletService: WalletService,
     private fb: FormBuilder,
@@ -113,6 +114,11 @@ export class AccountDeleteConfirmComponent implements OnInit {
         this.clearForm();
         this.sharedService.showInfo('', 'Your account has be deleted');
         this.router.navigate([`/${AppConfig.routes.viewAllAccount}`]);
+
+        // Delete contact of current account
+        let contacts = this.serviceModuleService.getBooksAddress();
+        let newContacts = contacts.filter(element => element.value !== this.currenAccount.address);
+        this.serviceModuleService.setBookAddress(newContacts, '');
       } else {
         this.ban = false;
       }

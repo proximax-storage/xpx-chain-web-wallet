@@ -17,6 +17,8 @@
                           Account: {{account.name}}
                           <div *ngIf="account.default" class="ml-1rem box-tag-account color-blue-intermedio fs-065rem">Default</div>
                           <div *ngIf="account.isMultisign !== null && account.isMultisign.cosignatories.length > 1" class="ml-1rem fs-065rem color-blue-intermedio box-tag-account">Multisig</div>
+                          <div *ngIf="account.nis1Account !== null"
+                            class="ml-1rem fs-065rem color-blue-intermedio box-tag-account">Swap</div>
                         </div>
                         <div class="col-12 text-center text-sm-left pt-04rem w-b-a">
                           {{account.address}}
@@ -86,7 +88,7 @@
                                 (click)="changeAsPrimary(account.name)">Make Default</a>
                               <a class="dropdown-item fs-075rem text-black-50" *ngIf="account.default === true">Make
                                 Default</a>
-                              <a class="dropdown-item fs-075rem">Export</a>
+                              <!-- <a class="dropdown-item fs-075rem">Export</a> -->
                               <a class="dropdown-item fs-075rem" *ngIf="!account.default && account.encrypted !== ''"
                                 [routerLink]="[routes.deleteAccount+account.name]">Delete</a>
                               <a class="dropdown-item fs-075rem text-black-50" *ngIf="account.default">Delete</a>
