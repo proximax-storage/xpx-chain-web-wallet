@@ -32,14 +32,13 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
   linkingNamespaceToMosaic: FormGroup;
   blockSend: boolean = false;
   loading = false;
-  mosaicSelect: Array<object> = [
-    {
-      value: '1',
-      label: 'Select mosaic',
-      selected: true,
-      disabled: true
-    }
-  ];
+  linked = null;
+  mosaicSelect: Array<object> = [{
+    value: '1',
+    label: 'Select mosaic',
+    selected: true,
+    disabled: true
+  }];
   namespaceSelect: Array<object> = [
     {
       value: '1',
@@ -70,6 +69,8 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
   mosaicSupplyChangeTransaction: any;
   fee: any;
   amountAccount: number;
+  mosaicstoHex: MosaicId;
+  viewLinked = false;
 
   constructor(
     private fb: FormBuilder,
@@ -87,11 +88,16 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
     this.configurationForm = this.sharedService.configurationForm;
     this.createForm();
     this.getNamespaces();
-    this.getMosaic();
-    this.amountAccount = this.walletService.getAmountAccount();
+    this.linkingNamespaceToMosaic.get('mosaic').disable();
+
     this.subscription.push(this.dataBridge.getBlock().subscribe(next => {
       this.currentBlock = next;
     }));
+    this.subscription.push(this.mosaicService.getMosaicChanged().subscribe(
+      async next => {
+        this.getMosaic();
+        this.amountAccount = this.walletService.getAmountAccount();
+      }));
     this.builder();
   }
 
@@ -102,12 +108,25 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
   }
 
   captureAction() {
-     const action = this.linkingNamespaceToMosaic.get('typeAction').value;
-     this.action = action;
-     this.builder();
+    this.viewLinked = (this.linkingNamespaceToMosaic.get('typeAction').value === AliasActionType.Unlink) ? true : false;
+    const action = this.linkingNamespaceToMosaic.get('typeAction').value;
+    this.action = action;
+    this.linked = null;
+    this.builder();
   }
 
-  captureNamespace() {
+  captureNamespace(event) {
+    if (this.linkingNamespaceToMosaic.get('typeAction').value === AliasActionType.Unlink) {
+      this.linked = this.mosaicSelect.find((x: any) => event.value === x.label);
+
+      this.mosaicId = new MosaicId(this.linked.value);
+
+      this.linkingNamespaceToMosaic.get('mosaic').disable();
+    } else {
+      this.linked = null;
+      this.linkingNamespaceToMosaic.get('mosaic').enable();
+    }
+
     const namespaceId = new NamespaceId(this.linkingNamespaceToMosaic.get('namespace').value);
     this.namespaceId = namespaceId;
     this.builder();
@@ -119,9 +138,9 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
     this.builder()
   }
 
-  builder(){
+  builder() {
     this.mosaicSupplyChangeTransaction = this.proximaxProvider.linkingNamespaceToMosaic(
-      this.action,
+      this.action = this.linkingNamespaceToMosaic.get('typeAction').value,
       this.namespaceId,
       this.mosaicId,
       this.walletService.currentAccount.network
@@ -130,9 +149,11 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
   }
 
   async buildSelectNamespace($event = null) {
+    this.linkingNamespaceToMosaic.get('mosaic').disable();
+    this.linkingNamespaceToMosaic.get('mosaic').setValue('');
     // console.log('--arrayNamespaceStorage--', this.arrayNamespaceStorage);
     if ($event !== null) {
-      this.linkingNamespaceToMosaic.get('namespace').setValue('1');
+      this.linkingNamespaceToMosaic.get('namespace').setValue($event);
       const namespaceSelect = [];
       this.loading = true;
       if (this.arrayNamespaceStorage && this.arrayNamespaceStorage.length > 0) {
@@ -142,6 +163,10 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
             let disabled = false;
             // let label = await this.namespaceService.getNameParentNamespace(namespaceStorage);
             let label = namespaceStorage.namespaceName.name
+            if (namespaceStorage.namespaceInfo.alias.type === 1) {
+              this.mosaicstoHex = new MosaicId([namespaceStorage.namespaceInfo.alias.mosaicId[0], namespaceStorage.namespaceInfo.alias.mosaicId[1]]);
+
+            }
             const name = label;
             const type = namespaceStorage.namespaceInfo.alias.type;
             if (type === 2) {
@@ -151,7 +176,7 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
             } else if (type === 1) {
               isLinked = true;
               disabled = (this.linkingNamespaceToMosaic.get('typeAction').value === 0) ? true : false;
-              label = `${label}- (Linked to mosaic)`;
+              label = `${label}- (Linked to mosaic) - ${this.mosaicstoHex.toHex()}`;
             } else {
               disabled = (this.linkingNamespaceToMosaic.get('typeAction').value === 1) ? true : false;
             }
@@ -199,8 +224,11 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
 
 
   clearForm() {
+    this.linked = null;
+    this.viewLinked = false;
     this.linkingNamespaceToMosaic.reset({
       namespace: '',
+      typeAction: AliasActionType.Link,
       mosaic: '',
       password: ''
     },
@@ -218,6 +246,8 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
     this.subscription.push(this.namespaceService.getNamespaceChanged().subscribe(
       async (arrayNamespaceStorage: NamespaceStorageInterface[]) => {
         this.arrayNamespaceStorage = arrayNamespaceStorage;
+        // console.log('llega al event');
+        // console.log('llega ', this.linkingNamespaceToMosaic.get('typeAction').value);
         this.buildSelectNamespace(this.linkingNamespaceToMosaic.get('typeAction').value);
       }
     ));
@@ -302,66 +332,63 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
    * @memberof LinkingNamespaceToMosaicComponent
    */
   async getMosaic() {
-    this.subscription.push(this.mosaicService.getMosaicChanged().subscribe(
-      async next => {
-        const data = await this.mosaicService.filterMosaics();
-        // console.log(data);
-        //this.mosaicSelect.slice(0);
-        const mosaicsSelect: any = [{
-          value: '1',
-          label: 'Select',
-          selected: true,
-          disabled: true
-        }];
+    const data = await this.mosaicService.filterMosaics();
+    // console.log('data', data);
+    const mosaicSelect: any = [{
+      value: '1',
+      label: 'Select',
+      selected: true,
+      disabled: true
+    }];
 
-        if (data) {
-          data.forEach(element => {
-            const nameMosaic = (element.mosaicNames.names.length > 0) ? element.mosaicNames.names[0].name : this.proximaxProvider.getMosaicId(element.idMosaic).toHex();
-            const addressOwner = this.proximaxProvider.createAddressFromPublicKey(
-              element.mosaicInfo.owner.publicKey,
-              element.mosaicInfo.owner.address['networkType']
-            );
+    if (data) {
+      data.forEach(element => {
+        const nameMosaic = (element.mosaicNames.names.length > 0) ? element.mosaicNames.names[0].name : this.proximaxProvider.getMosaicId(element.idMosaic).toHex();
+        const addressOwner = this.proximaxProvider.createAddressFromPublicKey(
+          element.mosaicInfo.owner.publicKey,
+          element.mosaicInfo.owner.address['networkType']
+        );
 
-            let expired = false;
-            let nameExpired = '';
+        let expired = false;
+        let nameExpired = '';
 
-            const durationMosaic = new UInt64([
-              element.mosaicInfo['properties']['duration']['lower'],
-              element.mosaicInfo['properties']['duration']['higher']
-            ]);
+        const durationMosaic = new UInt64([
+          element.mosaicInfo['properties']['duration']['lower'],
+          element.mosaicInfo['properties']['duration']['higher']
+        ]);
 
-            const createdBlock = new UInt64([
-              element.mosaicInfo.height.lower,
-              element.mosaicInfo.height.higher
-            ]);
+        const createdBlock = new UInt64([
+          element.mosaicInfo.height.lower,
+          element.mosaicInfo.height.higher
+        ]);
 
 
-            if (durationMosaic.compact() > 0) {
-              if (this.currentBlock >= durationMosaic.compact() + createdBlock.compact()) {
-                expired = true;
-                nameExpired = ' - Expired';
-              }
-            }
+        if (durationMosaic.compact() > 0) {
+          if (this.currentBlock >= durationMosaic.compact() + createdBlock.compact()) {
+            expired = true;
+            nameExpired = ' - Expired';
+          }
+        }
 
-            const currentAccount = Object.assign({}, this.walletService.getCurrentAccount());
-            const isOwner = (
-              addressOwner.pretty() ===
-              this.proximaxProvider.createFromRawAddress(currentAccount.address).pretty()
-            ) ? true : false;
+        const currentAccount = Object.assign({}, this.walletService.getCurrentAccount());
+        const isOwner = (
+          addressOwner.pretty() ===
+          this.proximaxProvider.createFromRawAddress(currentAccount.address).pretty()
+        ) ? true : false;
 
-            if (isOwner) {
-              mosaicsSelect.push({
-                value: element.idMosaic,
-                label: `${nameMosaic}${nameExpired}`,
-                selected: false,
-                disabled: expired
-              });
-            }
+        if (isOwner) {
+          mosaicSelect.push({
+            value: element.idMosaic,
+            label: `${nameMosaic}${nameExpired}`,
+            selected: false,
+            disabled: expired
           });
         }
-        this.mosaicSelect = mosaicsSelect;
-      }
-    ));
+      });
+    }
+
+    this.mosaicSelect = mosaicSelect;
+    // console.log('-------------------', this.mosaicSelect)
   }
 
   /**
@@ -454,6 +481,7 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
             err => {
               this.blockSend = false;
               this.clearForm();
+
               this.sharedService.showError('', 'An unexpected error has occurred');
             });
         } else {

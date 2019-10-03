@@ -1,54 +1,110 @@
 <!-- BALANCE & BUTTONS -->
 <div class="container-fluid">
-  <div class="row mt-2rem">
-    <div class="col-12 col-sm-11 mx-auto">
+  <div class="row">
+    <div class="col-11 col-sm-11 col-md-10 col-lg-9 mx-auto">
       <div class="row">
-        <div class="col-12 col-md-5">
-          <div class="row lh-1em">
+        <div class="col-12 col-md-5 mt-2rem">
+          <div class="row">
+
+
 
             <!-- NAME ACCOUNT -->
-            <div class="col-12 d-flex justify-content-center justify-content-sm-start align-items-center">
-              <span class="fs-09rem fw-600">
-                <a [routerLink]="[viewDetailsAccount+currentAccount.name]"
-                  class="cursor-p color-black">{{currentAccount.name}}</a>
+            <div class="col-12 d-flex justify-content-center justify-content-md-start align-items-center">
+              <div class="dropdown" mdbDropdown>
+                <button mdbDropdownToggle mdbBtn color="transparent" class="dropdown-toggle waves-light" type="button"
+                  mdbWavesEffect style="padding: 5px; box-shadow: 0px 0px transparent" data-toggle="modal">
+                </button>
+
+                <div class="dropdown-menu dropdown-menu-right">
+                  <a class="dropdown-item fs-075rem" *ngFor="let account of currentWallet.accounts"
+                    (click)="changeAsPrimary(account.name)"> {{ account.name }}</a>
+                </div>
+              </div>
+
+              <span class="fs-09rem fw-600 color-black"> {{currentAccount.name}}
+                <!-- <a [routerLink]="[viewDetailsAccount+currentAccount.name]"
+                  class="cursor-p color-black">{{currentAccount.name}}</a> -->
               </span>
               <span class="ml-1rem box-tag-account color-blue-intermedio fs-065rem">Default</span>
             </div>
 
             <!-- ADDRESS -->
-            <div class="col-12 d-flex justify-content-center justify-content-sm-start align-items-center mt-02rem">
+            <div class="col-12 d-flex justify-content-center justify-content-md-start align-items-center mt-02rem">
               <span class="fs-06rem f-s-dashboard-transactions fw-600">{{currentAccount.address}} &nbsp;
                 <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="icono cursor-p"
                   alt="Copy" width="20" (click)="copyMessage('Address')" ngxClipboard
                   [cbContent]="currentAccount.address">
-                  <img src="assets/images/img/icon-qr-code-proximax-sirius-wallet.svg" class="icono cursor-p"
+                <img src="assets/images/img/icon-qr-code-proximax-sirius-wallet.svg" class="icono cursor-p"
                   alt="Address QR" width="20"></span>
             </div>
 
             <!-- BALANCE -->
-            <div class="col-12 mt-02rem d-flex justify-content-center justify-content-sm-start">
+            <div class="col-12 mt-02rem d-flex justify-content-center justify-content-md-start">
               <div>
-                <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20">
+                <img class="icono" src="assets/images/img/icon-prx-xpx-blue.svg" width="20">
                 <span class="fs-085rem fw-600 color-black">{{vestedBalance?.part1}}</span>
                 <span class="fs-075rem fw-600 color-black">{{vestedBalance?.part2}}</span>
                 <span class="fs-085rem fw-600 color-black">&nbsp;XPX</span>
                 &nbsp; &nbsp;
-                <img class="icono" src="assets/images/img/icon-us-dollar-green-16h-proximax-sirius-wallet.svg"
+                <img class="icono" src="assets/images/img/icon-usd-blue.svg"
                   width="20">
-                <span class="fs-085rem fw-600 color-black">USD 0.</span>
-                <span class="fs-075rem fw-600 color-black">00</span>
+                <span class="fs-085rem fw-600 color-black">USD 0.00</span>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="col-2 d-none d-flex justify-content-center">
+        <div class="col-1 mt-2rem d-none d-flex justify-content-center">
           <div style="border: .5px solid; height: 100%; color: #8d8c8c;"></div>
         </div>
 
         <!-- SEGUNDA PARTE -->
-        <div class="col-12 col-md-5">
-          segunda parte
+        <div class="col-12 col-md-6 mt-2rem d-flex justify-content-center align-items-center">
+          <div class="row">
+            <div class="col-12 d-flex justify-content-center">
+              <span class="fs-1-2rem fw-600">{{cantConfirmed + cantUnconfirmed}} Transactions</span>
+            </div>
+
+            <div class="col-12  d-flex justify-content-center">
+              <div class="row">
+                <div class="innerBtn" (click)="selectTransactions(1)" title="Transactions confirmed">
+                  <div class="btn-confirmed">
+                    <img class="icono" src="assets/images/img/icon-transaction-confirmed-white.svg" width="20">
+                    <span class="txt-btn-dashboard">{{cantConfirmed}}</span>
+                  </div>
+                </div>
+
+                <div class="innerBtn" (click)="selectTransactions(0)" title="Transactions unconfirmed"
+                  [ngClass]="{'cursor-n-a': transactionsUnconfirmed.length === 0}">
+                  <div class="btn-unconfirmed">
+                    <img class="icono" src="assets/images/img/icon-transaction-unconfirmed-white.svg" width="20">
+                    <span class="txt-btn-dashboard">{{cantUnconfirmed}}</span>
+                  </div>
+                </div>
+
+                <div class="innerBtn" title="Transactions partials"
+                  [ngClass]="{'cursor-n-a': partialTransactions === 0}">
+                  <a [routerLink]="[viewDetailsPartial]" title="Transactions partials">
+                    <div class="btn-partial">
+                      <img class="icono" src="assets/images/img/icon-transaction-partial-white.svg" width="20">
+                      <span class="txt-btn-dashboard">{{partialTransactions}}</span>
+                    </div>
+                  </a>
+                </div>
+
+                <ng-container *ngIf="swapTransactions > 0">
+                  <div class="innerBtn" [ngClass]="{'cursor-n-a': viewSwapTransactions}">
+                    <a [routerLink]="[viewSwapTransactions]" title="Transactions swap">
+                      <div class="btn-swap">
+                        <img class="icono" src="assets/images/img/icon-transaction-swap-process-white.svg" width="20">
+                        <span class="txt-btn-dashboard">{{swapTransactions}}</span>
+                      </div>
+                    </a>
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -59,7 +115,7 @@
 <div class="container-fluid">
   <!-- FIELD SEARCH -->
   <div class="row">
-    <div class="col-12 col-sm-11 mx-auto">
+    <div class="col-12 col-sm-11 col-md-10 col-lg-9 mx-auto">
       <input [(ngModel)]="searchTransaction" type="text" autocomplete="off" id="searchTransaction"
         class="md-form form-control" mdbInputDirective [validateSuccess]="false" [validateError]="false"
         placeholder="Search">
@@ -68,7 +124,7 @@
 
   <!-- Searching and icon reload -->
   <div class="row mt-2rem">
-    <div class="col-11 col-sm-11 col-lg-10 mx-auto">
+    <div class="col-12 col-sm-11 col-md-10 col-lg-9 mx-auto">
       <!-- Searching -->
       <ng-container *ngIf="searching">
         <div class="col-12 txt-a-center">
@@ -80,7 +136,7 @@
 
   <!-- Searching and icon reload -->
   <div class="row mt-2rem txt-a-right">
-    <div class="col-11 col-sm-11 col-lg-10 mx-auto">
+    <div class="col-12 col-sm-11 col-md-10 col-lg-9 mx-auto">
       <!-- Icon Reload -->
       <ng-container *ngIf="iconReloadDashboard && !searching">
         <div class="col-12 t-a-r">
@@ -93,7 +149,7 @@
 
   <!-- TABLE -->
   <div class="row">
-    <div class="col-12 d-flex justify-content-center mx-auto">
+    <div class="col-12 col-sm-11 col-md-10 col-lg-9 mx-auto d-flex justify-content-center">
       <div class="datatable-style max-w-table">
         <table mdbTable mdbTableScroll scrollX="true" striped="true">
           <thead>

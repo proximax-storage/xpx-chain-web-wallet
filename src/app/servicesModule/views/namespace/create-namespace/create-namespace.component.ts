@@ -261,7 +261,7 @@ export class CreateNamespaceComponent implements OnInit {
     if (this.namespaceForm.valid && !this.blockBtnSend) {
       // console.log('this.calculateRentalFee', this.calculateRentalFee);
       const validateAmount = this.transactionService.validateBuildSelectAccountBalance(this.amountAccount, Number(this.fee), Number(this.calculateRentalFee.replace(',', '')));
-      console.log('validateAmount', validateAmount);
+      // console.log('validateAmount', validateAmount);
 
       if (validateAmount) {
         this.blockBtnSend = true;
