@@ -101,7 +101,7 @@
           <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4 d-flex mt-1rem audit-back"
             *ngFor="let item of auditResults | paginate: configFilesSelected">
             <div class="audit-front d-flex"
-              [ngClass]="{'audit-background cursor-p': item.fileHash !== '', 'audit-background-err': item.fileHash === ''}"
+              [ngClass]="{'vote-background cursor-p': item.fileHash !== '', 'audit-background-err': item.fileHash === ''}"
               (click)="verifyModal(item.transaction)" [mdbTooltip]="tooltipAction(item.fileHash)" placement="top">
               <div class="col-8 p-05rem background-white">
                 <div>
