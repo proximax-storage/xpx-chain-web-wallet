@@ -1379,6 +1379,18 @@ button.md-toast-close-button {
   font-weight: 600;
   font-size: 1.2rem;
 }
+.title-modal-blue-1-7 {
+  color: #27a2bb !important;
+  text-align: center;
+  font-weight: 600;
+  font-size: 1.7rem;
+}
+
+
+.title-tab-blue {
+  color: #27a2bb !important;
+  font-size: 1rem;
+}
 
 .title-modal-grey {
   color: #999999 !important;
