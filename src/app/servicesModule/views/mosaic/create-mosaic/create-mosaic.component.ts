@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
-import { UInt64, Deadline, AggregateTransaction, NetworkType, MosaicSupplyType, AliasActionType, SignedTransaction, MosaicDefinitionTransaction, Account } from 'tsjs-xpx-chain-sdk';
+import { UInt64, Deadline, AggregateTransaction, NetworkType, MosaicSupplyType, AliasActionType, SignedTransaction, MosaicDefinitionTransaction, Account, MosaicId } from 'tsjs-xpx-chain-sdk';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { SharedService, ConfigurationForm } from '../../../../shared/services/shared.service';
 import { DataBridgeService } from '../../../../shared/services/data-bridge.service';
@@ -10,6 +10,7 @@ import { TransactionsService } from '../../../../transactions/services/transacti
 import { AppConfig } from '../../../../config/app.config';
 import { environment } from 'src/environments/environment';
 import { HeaderServicesInterface } from '../../../services/services-module.service';
+import { MosaicService } from 'src/app/servicesModule/services/mosaic.service';
 
 
 @Component({
@@ -44,8 +45,8 @@ export class CreateMosaicComponent implements OnInit {
   transactionSigned: SignedTransaction[] = [];
   transactionReady: SignedTransaction[] = [];
   subscribe = ['transactionStatus'];
-  rentalFee = '500000000';
-  calculateRentalFee = '';
+  rentalFee = 4576;
+  calculateRentalFee: any = '0.000000';
   currentAccount: AccountsInterface;
   insufficientBalance = true;
   accountInfo: AccountsInfoInterface;
@@ -68,6 +69,8 @@ export class CreateMosaicComponent implements OnInit {
   aggregateTransaction: AggregateTransaction;
   fee: any;
   amountAccount: number;
+  insufficientBalanceDuration: boolean;
+  notExpire: any;
 
   constructor(
     private fb: FormBuilder,
@@ -75,7 +78,8 @@ export class CreateMosaicComponent implements OnInit {
     private walletService: WalletService,
     private dataBridge: DataBridgeService,
     private sharedService: SharedService,
-    private transactionService: TransactionsService
+    private transactionService: TransactionsService,
+    private mosaicServices: MosaicService,
   ) {
   }
 
@@ -86,12 +90,13 @@ export class CreateMosaicComponent implements OnInit {
     this.walletService.getAccountsInfo$().subscribe(
       x => this.validateBalance()
     );
-    this.calculateRentalFee = this.transactionService.amountFormatterSimple(Number(this.rentalFee));
+    // this.calculateRentalFee = this.transactionService.amountFormatterSimple(Number(this.rentalFee));
     this.configurationForm = this.sharedService.configurationForm;
     this.mosaicForm.disable();
     this.validateBalance();
     this.mosaicForm.get('duration').valueChanges.subscribe(next => {
       this.durationByBlock = this.transactionService.calculateDurationforDay(next).toString();
+      this.validateRentalFee(this.rentalFee * parseFloat(this.durationByBlock));
     });
     this.mosaicForm.get('divisibility').valueChanges.subscribe(next => {
       // console.log('next', next)
@@ -262,12 +267,14 @@ export class CreateMosaicComponent implements OnInit {
   changeNotExpire($event) {
     // console.log($event);
     if (!$event.checked) {
+      this.calculateRentalFee = '0.000000'
       if (this.mosaicForm.get('duration').disabled) {
         this.mosaicForm.get('duration').enable({
           emitEvent: false
         });
       }
     } else {
+      this.noExpite();
       if (this.mosaicForm.get('duration').enabled) {
         this.mosaicForm.get('duration').setValue('', {
           emitEvent: false
@@ -482,4 +489,89 @@ export class CreateMosaicComponent implements OnInit {
       }
     }
   }
+
+  async validateRentalFee(amount: number) {
+
+    console.log('--------------------------amount', amount)
+    const accountInfo = this.walletService.filterAccountInfo();
+    if (accountInfo && accountInfo.accountInfo && accountInfo.accountInfo.mosaics && accountInfo.accountInfo.mosaics.length > 0) {
+      const xpxInBalance = accountInfo.accountInfo.mosaics.find(element => {
+        return element.id.toHex() === new MosaicId(environment.mosaicXpxInfo.id).toHex();
+      });
+
+      if (xpxInBalance) {
+
+          const invalidBalance = xpxInBalance.amount.compact() < amount;
+          const mosaic = await this.mosaicServices.filterMosaics([xpxInBalance.id]);
+          if (mosaic && mosaic[0].mosaicInfo) {
+            this.calculateRentalFee = this.transactionService.amountFormatterSimple(amount);
+          } else {
+            // **********INSUFFICIENT BALANCE*************
+            // console.log('AQUI FUE');
+            this.insufficientBalance = true;
+            // if (this.namespaceForm.enabled) {
+            //   this.namespaceForm.disable();
+            // }
+          }
+
+          if (invalidBalance) {
+            // **********DURATION INSUFFICIENT BALANCE*************
+            this.insufficientBalance = false;
+            this.insufficientBalanceDuration = true;
+          } else if (!invalidBalance) {
+            this.insufficientBalance = false;
+            this.insufficientBalanceDuration = false;
+            // if (this.namespaceForm.disabled) {
+            //   this.namespaceForm.enable();
+            // }
+          }
+     
+        console.log('-------------', this.calculateRentalFee );
+        
+      } else {
+        // **********INSUFFICIENT BALANCE*************
+        // console.log('AQUI FUE 2');
+        this.insufficientBalance = true;
+        // if (this.namespaceForm.enabled) {
+        //   this.namespaceForm.disable();
+        // }
+      }
+
+
+
+    } else {
+      // **********INSUFFICIENT BALANCE*************
+      // console.log('AQUI FUE 3');
+      this.insufficientBalance = true;
+      // if (this.namespaceForm.enabled) {
+      //   this.namespaceForm.disable();
+      // }
+    }
+  }
+
+
+  noExpite(){
+    const accountInfo = this.walletService.filterAccountInfo();
+    if (accountInfo && accountInfo.accountInfo && accountInfo.accountInfo.mosaics && accountInfo.accountInfo.mosaics.length > 0) {
+      const xpxInBalance = accountInfo.accountInfo.mosaics.find(element => {
+        return element.id.toHex() === new MosaicId(environment.mosaicXpxInfo.id).toHex();
+      });
+
+    const invalidBalance = xpxInBalance.amount.compact() < 10000000;
+    if (invalidBalance) {
+      // **********DURATION INSUFFICIENT BALANCE*************
+      // console.log('AQUI FUE 1');
+      this.insufficientBalance = true;
+      this.insufficientBalanceDuration = false;
+    } else {
+      this.calculateRentalFee = '10.000000';
+      this.insufficientBalance = false;
+      this.insufficientBalanceDuration = false;
+      // if (this.namespaceForm.disabled) {
+      //   this.namespaceForm.enable();
+      // }
+    }
+  }
+}
+
 }

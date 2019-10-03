@@ -19,3 +19,15 @@
   padding-left: 1rem !important;
   padding-right: 1rem !important;
 }
+
+
+
+
+table.table td, table.table th {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+tr td:last-child{
+  /* width:1%; */
+  white-space:nowrap;
+}
