@@ -23,6 +23,7 @@ export class SwapCertificateComponent implements OnInit {
   qrSrc: any;
   address: string;
   img = '';
+  checked: boolean = false;
 
   constructor(
     private router: Router,

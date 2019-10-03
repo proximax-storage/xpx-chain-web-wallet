@@ -264,8 +264,8 @@ export class TransferAssetsComponent implements OnInit {
   async createTransaction() {
     let common = { password: this.formTransfer.get("password").value };
     const quantity = this.formTransfer.get("amountXpx").value;
-
     const currentAccount = this.walletService.getAccountSelectedWalletNis1();
+
     if (this.walletService.decrypt(common, currentAccount)) {
       const account = this.nemService.createAccountPrivateKey(common['privateKey']);
 
@@ -277,130 +277,80 @@ export class TransferAssetsComponent implements OnInit {
 
         this.nemService.createTransactionMultisign(transaction, this.nemService.createPublicAccount(this.accountSelected.publicKey))
           .then(next => {
-            this.nemService.anounceTransaction(next, account).pipe(first()).pipe((timeout(15000)))
-              .subscribe(next => {
-                let wallet;
-                if (this.walletService.getCurrentWallet()) {
-                  wallet = this.walletService.getWalletTransNisStorage().find(el => el.name === this.walletService.getCurrentWallet().name);
-                } else {
-                  wallet = this.walletService.getWalletTransNisStorage().find(el => el.name === this.walletService.accountWalletCreated.wallet.name);
-                }
-
-                if (wallet !== undefined && wallet !== null) {
-                  wallet.transactions.push({
-                    siriusAddres: catapultAccount.address.pretty(),
-                    nis1Timestamp: `${transaction.timeWindow.timeStamp['_date']['_year']}-${transaction.timeWindow.timeStamp['_date']['_month']}-${transaction.timeWindow.timeStamp['_date']['_day']} ${transaction.timeWindow.timeStamp['_time']['_hour']}:${transaction.timeWindow.timeStamp['_time']['_minute']}:${transaction.timeWindow.timeStamp['_time']['_second']}`,
-                    nis1PublicKey: transaction.signer.publicKey,
-                    nis1TransactionHast: next['transactionHash'].data
-                  });
-                } else {
-                  wallet = {
-                    name: (this.walletService.getCurrentWallet()) ? this.walletService.currentWallet.name : this.walletService.accountWalletCreated.wallet.name,
-                    transactions: [{
-                      siriusAddres: catapultAccount.address.pretty(),
-                      nis1Timestamp: `${transaction.timeWindow.timeStamp['_date']['_year']}-${transaction.timeWindow.timeStamp['_date']['_month']}-${transaction.timeWindow.timeStamp['_date']['_day']} ${transaction.timeWindow.timeStamp['_time']['_hour']}:${transaction.timeWindow.timeStamp['_time']['_minute']}:${transaction.timeWindow.timeStamp['_time']['_second']}`,
-                      nis1PublicKey: transaction.signer.publicKey,
-                      nis1TransactionHast: next['transactionHash'].data
-                    }]
-                  };
-                }
-                // console.log('\n\n\n\nValue resp:\n', wallet, '\n\n\n\nEnd value\n\n');
-                this.walletService.setSwapTransactions$(wallet.transactions);
-                this.walletService.saveAccountWalletTransNisStorage(wallet);
-                this.sharedService.showSuccess('Transaction', next['message']);
-                this.walletService.accountWalletCreated = null;
-                this.changeView.emit({
-                  transaction: transaction,
-                  details: next,
-                  catapultAccount: catapultAccount,
-                  route: this.routeEvent
-                });
-              },
-                error => {
-                  if (error.error.message) {
-                    switch (error.error.code) {
-                      case 2 || 18:
-                        this.sharedService.showError('Error', error.error.message.toString().split('_').join(' '));
-                        break;
-
-                      default:
-                        this.sharedService.showError('Error', 'Error! try again later');
-                        break;
-                    }
-                  } else {
-                    console.log('esta es la repuesta2', error);
-                    this.sharedService.showError('Error', error.toString().split('_').join(' '));
-                  }
-                  this.spinnerVisibility = false
-                });
+            this.anounceTransaction(next, account, catapultAccount, transaction);
           })
           .catch(error => {
             console.log('Esrror', error);
             this.sharedService.showError('Error', error.toString().split('_').join(' '));
-            this.spinnerVisibility = false
+            this.spinnerVisibility = false;
           });
       } else {
         const catapultAccount = this.proximaxService.getPublicAccountFromPrivateKey(common['privateKey'], currentAccount.network);
         const transaction = await this.nemService.createTransaction(PlainMessage.create(catapultAccount.publicKey), this.accountSelected.mosaic.assetId, quantity);
-
-        this.nemService.anounceTransaction(transaction, account).pipe(first()).pipe((timeout(15000)))
-          .subscribe(next => {
-            console.log(next);
-            let wallet;
-            if (this.walletService.getCurrentWallet()) {
-              wallet = this.walletService.getWalletTransNisStorage().find(el => el.name === this.walletService.getCurrentWallet().name);
-            } else {
-              wallet = this.walletService.getWalletTransNisStorage().find(el => el.name === this.walletService.accountWalletCreated.wallet.name);
-            }
-
-            if (wallet !== undefined && wallet !== null) {
-              wallet.transactions.push({
-                siriusAddres: catapultAccount.address.pretty(),
-                nis1Timestamp: `${transaction.timeWindow.timeStamp['_date']['_year']}-${transaction.timeWindow.timeStamp['_date']['_month']}-${transaction.timeWindow.timeStamp['_date']['_day']} ${transaction.timeWindow.timeStamp['_time']['_hour']}:${transaction.timeWindow.timeStamp['_time']['_minute']}:${transaction.timeWindow.timeStamp['_time']['_second']}`,
-                nis1PublicKey: transaction.signer.publicKey,
-                nis1TransactionHast: next['transactionHash'].data
-              });
-            } else {
-              wallet = {
-                name: (this.walletService.getCurrentWallet()) ? this.walletService.currentWallet.name : this.walletService.accountWalletCreated.wallet.name,
-                transactions: [{
-                  siriusAddres: catapultAccount.address.pretty(),
-                  nis1Timestamp: `${transaction.timeWindow.timeStamp['_date']['_year']}-${transaction.timeWindow.timeStamp['_date']['_month']}-${transaction.timeWindow.timeStamp['_date']['_day']} ${transaction.timeWindow.timeStamp['_time']['_hour']}:${transaction.timeWindow.timeStamp['_time']['_minute']}:${transaction.timeWindow.timeStamp['_time']['_second']}`,
-                  nis1PublicKey: transaction.signer.publicKey,
-                  nis1TransactionHast: next['transactionHash'].data
-                }]
-              };
-            }
-            // console.log('\n\n\n\nValue resp:\n', wallet, '\n\n\n\nEnd value\n\n');
-            this.walletService.setSwapTransactions$(wallet.transactions);
-            this.walletService.saveAccountWalletTransNisStorage(wallet);
-            this.sharedService.showSuccess('Transaction', next['message']);
-            this.changeView.emit({
-              transaction: transaction,
-              details: next,
-              catapultAccount: catapultAccount,
-              route: this.routeEvent
-            });
-          },
-            error => {
-              if (error.error.message) {
-                switch (error.error.code) {
-                  case 2 || 18:
-                    this.sharedService.showError('Error', error.error.message.toString().split('_').join(' '));
-                    break;
-
-                  default:
-                    this.sharedService.showError('Error', 'Error! try again later');
-                    break;
-                }
-              } else {
-                console.log('esta es la repuesta2', error);
-                this.sharedService.showError('Error', error.toString().split('_').join(' '));
-              }
-              this.spinnerVisibility = false
-            });
+        this.anounceTransaction(transaction, account, catapultAccount, transaction);
       }
+    } else {
+      this.spinnerVisibility = false;
     }
+  }
+
+  anounceTransaction(signed, account, catapultAccount, transaction) {
+    this.nemService.anounceTransaction(signed, account).pipe(first()).pipe((timeout(15000)))
+      .subscribe(next => {
+        let wallet;
+        if (this.walletService.getCurrentWallet()) {
+          wallet = this.walletService.getWalletTransNisStorage().find(el => el.name === this.walletService.getCurrentWallet().name);
+        } else {
+          wallet = this.walletService.getWalletTransNisStorage().find(el => el.name === this.walletService.accountWalletCreated.wallet.name);
+        }
+
+        if (wallet !== undefined && wallet !== null) {
+          wallet.transactions.push({
+            siriusAddres: catapultAccount.address.pretty(),
+            nis1Timestamp: `${transaction.timeWindow.timeStamp['_date']['_year']}-${transaction.timeWindow.timeStamp['_date']['_month']}-${transaction.timeWindow.timeStamp['_date']['_day']} ${transaction.timeWindow.timeStamp['_time']['_hour']}:${transaction.timeWindow.timeStamp['_time']['_minute']}:${transaction.timeWindow.timeStamp['_time']['_second']}`,
+            nis1PublicKey: transaction.signer.publicKey,
+            nis1TransactionHast: next['transactionHash'].data
+          });
+        } else {
+          wallet = {
+            name: (this.walletService.getCurrentWallet()) ? this.walletService.currentWallet.name : this.walletService.accountWalletCreated.wallet.name,
+            transactions: [{
+              siriusAddres: catapultAccount.address.pretty(),
+              nis1Timestamp: `${transaction.timeWindow.timeStamp['_date']['_year']}-${transaction.timeWindow.timeStamp['_date']['_month']}-${transaction.timeWindow.timeStamp['_date']['_day']} ${transaction.timeWindow.timeStamp['_time']['_hour']}:${transaction.timeWindow.timeStamp['_time']['_minute']}:${transaction.timeWindow.timeStamp['_time']['_second']}`,
+              nis1PublicKey: transaction.signer.publicKey,
+              nis1TransactionHast: next['transactionHash'].data
+            }]
+          };
+        }
+        // console.log('\n\n\n\nValue resp:\n', wallet, '\n\n\n\nEnd value\n\n');
+        this.walletService.setSwapTransactions$(wallet.transactions);
+        this.walletService.saveAccountWalletTransNisStorage(wallet);
+        this.sharedService.showSuccess('Transaction', next['message']);
+        this.walletService.accountWalletCreated = null;
+        this.changeView.emit({
+          transaction: transaction,
+          details: next,
+          catapultAccount: catapultAccount,
+          route: this.routeEvent
+        });
+      },
+        error => {
+          if (error.error.message) {
+            switch (error.error.code) {
+              case 2 || 18:
+                this.sharedService.showError('Error', error.error.message.toString().split('_').join(' '));
+                break;
+
+              default:
+                this.sharedService.showError('Error', 'Error! try again later');
+                break;
+            }
+          } else {
+            console.log('esta es la repuesta2', error);
+            this.sharedService.showError('Error', error.toString().split('_').join(' '));
+          }
+          this.spinnerVisibility = false
+        });
   }
 
   navToRoute() {
