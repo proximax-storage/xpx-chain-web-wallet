@@ -176,7 +176,7 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
             } else if (type === 1) {
               isLinked = true;
               disabled = (this.linkingNamespaceToMosaic.get('typeAction').value === 0) ? true : false;
-              label = `${label}- (Linked to mosaic) - ${this.mosaicstoHex.toHex()}`;
+              label = `${label}- (Linked to mosaicId) - ${this.mosaicstoHex.toHex()}`;
             } else {
               disabled = (this.linkingNamespaceToMosaic.get('typeAction').value === 1) ? true : false;
             }

@@ -98,13 +98,14 @@ export class ServicesBoxComponent implements OnInit {
             '',
             '',
             AppConfig.routes.extendNamespace
-          ), renew: this.services.buildStructureService(
-            'RENEW',
-            false,
-            '',
-            '',
-            AppConfig.routes.renewNamespace
           )
+          // , renew: this.services.buildStructureService(
+          //   'RENEW',
+          //   false,
+          //   '',
+          //   '',
+          //   AppConfig.routes.renewNamespace
+          // )
         },
         true
       ),
@@ -141,13 +142,14 @@ export class ServicesBoxComponent implements OnInit {
             '',
             '',
             ''
-          ), renew: this.services.buildStructureService(
-            'RENEW',
-            false,
-            '',
-            '',
-            ''
           )
+          // , renew: this.services.buildStructureService(
+          //   'RENEW',
+          //   false,
+          //   '',
+          //   '',
+          //   ''
+          // )
         },
         true
       ),

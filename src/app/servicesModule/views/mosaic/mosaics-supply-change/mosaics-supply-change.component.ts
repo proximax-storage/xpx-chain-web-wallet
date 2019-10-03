@@ -167,7 +167,7 @@ export class MosaicsSupplyChangeComponent implements OnInit {
   }
 
   calculate(val?){
-    let value = Number(this.supply) + val; 
+    let value = Number(this.supply.replace(",", "")) + val; 
   
     this.totalSupply = this.transactionService.amountFormatter(
         parseFloat(this.transactionService.addZeros(this.divisibility, value)),
