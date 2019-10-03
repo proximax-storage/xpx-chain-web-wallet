@@ -17,7 +17,7 @@
                           Account: {{account.name}}
                           <div *ngIf="account.default" class="ml-1rem box-tag-account color-blue-intermedio fs-065rem">Default</div>
                           <div *ngIf="account.isMultisign !== null && account.isMultisign.cosignatories.length > 1" class="ml-1rem fs-065rem color-blue-intermedio box-tag-account">Multisig</div>
-                          <div *ngIf="account.nis1Account !== null"
+                          <div *ngIf="[undefined, null].includes(account.nis1Account) === false"
                             class="ml-1rem fs-065rem color-blue-intermedio box-tag-account">Swap</div>
                         </div>
                         <div class="col-12 text-center text-sm-left pt-04rem w-b-a">
