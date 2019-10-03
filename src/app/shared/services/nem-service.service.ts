@@ -26,6 +26,7 @@ import { timeout, first } from 'rxjs/operators';
 import { WalletService } from 'src/app/wallet/services/wallet.service';
 import { TransactionsService } from 'src/app/transactions/services/transactions.service';
 import { AppConfig } from 'src/app/config/app.config';
+import { HttpClient } from '@angular/common/http';
 import * as js_joda_1 from 'js-joda';
 @Injectable({
   providedIn: 'root'
@@ -47,7 +48,8 @@ export class NemServiceService {
    */
   constructor(
     private walletService: WalletService,
-    private transactionService: TransactionsService
+    private transactionService: TransactionsService,
+    private http: HttpClient
   ) {
     NEMLibrary.bootstrap(environment.nis1.networkType);
     this.nodes = environment.nis1.nodes;
@@ -75,17 +77,17 @@ export class NemServiceService {
     });
     return amountFormatter;
   }
-
+  
   /**
    * Method to anounce transaction
-   * @param transferTransaction data of transfer transaction
-   * @param cosignerAccount account of consigner
+   * @param {TransferTransaction | MultisigTransaction} transferTransaction data of transfer transaction
+   * @param {Account} cosignerAccount account of consigner
    * @memberof NemServiceService
    * @returns Observable
    */
-  anounceTransaction(transferTransaction: TransferTransaction | MultisigTransaction, cosignerAccount: Account) {
-    const signedTransaction = cosignerAccount.signTransaction(transferTransaction);
-    return this.transactionHttp.announceTransaction(signedTransaction);
+  anounceTransaction(transaction: TransferTransaction | MultisigTransaction, cosignerAccount: Account) {
+    const signedTransaction = cosignerAccount.signTransaction(transaction);
+    return this.http.post(`${environment.nis1.url}/transaction/announce`, signedTransaction);
   }
 
   /**

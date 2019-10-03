@@ -291,7 +291,7 @@ export class TransferAssetsComponent implements OnInit {
                     siriusAddres: catapultAccount.address.pretty(),
                     nis1Timestamp: `${transaction.timeWindow.timeStamp['_date']['_year']}-${transaction.timeWindow.timeStamp['_date']['_month']}-${transaction.timeWindow.timeStamp['_date']['_day']} ${transaction.timeWindow.timeStamp['_time']['_hour']}:${transaction.timeWindow.timeStamp['_time']['_minute']}:${transaction.timeWindow.timeStamp['_time']['_second']}`,
                     nis1PublicKey: transaction.signer.publicKey,
-                    nis1TransactionHast: next.transactionHash.data
+                    nis1TransactionHast: next['transactionHash'].data
                   });
                 } else {
                   wallet = {
@@ -300,7 +300,7 @@ export class TransferAssetsComponent implements OnInit {
                       siriusAddres: catapultAccount.address.pretty(),
                       nis1Timestamp: `${transaction.timeWindow.timeStamp['_date']['_year']}-${transaction.timeWindow.timeStamp['_date']['_month']}-${transaction.timeWindow.timeStamp['_date']['_day']} ${transaction.timeWindow.timeStamp['_time']['_hour']}:${transaction.timeWindow.timeStamp['_time']['_minute']}:${transaction.timeWindow.timeStamp['_time']['_second']}`,
                       nis1PublicKey: transaction.signer.publicKey,
-                      nis1TransactionHast: next.transactionHash.data
+                      nis1TransactionHast: next['transactionHash'].data
                     }]
                   };
                 }
@@ -317,12 +317,25 @@ export class TransferAssetsComponent implements OnInit {
                 });
               },
                 error => {
-                  this.sharedService.showError('Error', error.toString().split('_').join(' '));
+                  if (error.error.message) {
+                    switch (error.error.code) {
+                      case 2 || 18:
+                        this.sharedService.showError('Error', error.error.message.toString().split('_').join(' '));
+                        break;
+
+                      default:
+                        this.sharedService.showError('Error', 'Error! try again later');
+                        break;
+                    }
+                  } else {
+                    console.log('esta es la repuesta2', error);
+                    this.sharedService.showError('Error', error.toString().split('_').join(' '));
+                  }
                   this.spinnerVisibility = false
                 });
           })
           .catch(error => {
-            // console.log('Esrror', error);
+            console.log('Esrror', error);
             this.sharedService.showError('Error', error.toString().split('_').join(' '));
             this.spinnerVisibility = false
           });
@@ -332,6 +345,7 @@ export class TransferAssetsComponent implements OnInit {
 
         this.nemService.anounceTransaction(transaction, account).pipe(first()).pipe((timeout(15000)))
           .subscribe(next => {
+            console.log(next);
             let wallet;
             if (this.walletService.getCurrentWallet()) {
               wallet = this.walletService.getWalletTransNisStorage().find(el => el.name === this.walletService.getCurrentWallet().name);
@@ -344,7 +358,7 @@ export class TransferAssetsComponent implements OnInit {
                 siriusAddres: catapultAccount.address.pretty(),
                 nis1Timestamp: `${transaction.timeWindow.timeStamp['_date']['_year']}-${transaction.timeWindow.timeStamp['_date']['_month']}-${transaction.timeWindow.timeStamp['_date']['_day']} ${transaction.timeWindow.timeStamp['_time']['_hour']}:${transaction.timeWindow.timeStamp['_time']['_minute']}:${transaction.timeWindow.timeStamp['_time']['_second']}`,
                 nis1PublicKey: transaction.signer.publicKey,
-                nis1TransactionHast: next.transactionHash.data
+                nis1TransactionHast: next['transactionHash'].data
               });
             } else {
               wallet = {
@@ -353,7 +367,7 @@ export class TransferAssetsComponent implements OnInit {
                   siriusAddres: catapultAccount.address.pretty(),
                   nis1Timestamp: `${transaction.timeWindow.timeStamp['_date']['_year']}-${transaction.timeWindow.timeStamp['_date']['_month']}-${transaction.timeWindow.timeStamp['_date']['_day']} ${transaction.timeWindow.timeStamp['_time']['_hour']}:${transaction.timeWindow.timeStamp['_time']['_minute']}:${transaction.timeWindow.timeStamp['_time']['_second']}`,
                   nis1PublicKey: transaction.signer.publicKey,
-                  nis1TransactionHast: next.transactionHash.data
+                  nis1TransactionHast: next['transactionHash'].data
                 }]
               };
             }
@@ -369,7 +383,20 @@ export class TransferAssetsComponent implements OnInit {
             });
           },
             error => {
-              this.sharedService.showError('Error', error.toString().split('_').join(' '));
+              if (error.error.message) {
+                switch (error.error.code) {
+                  case 2 || 18:
+                    this.sharedService.showError('Error', error.error.message.toString().split('_').join(' '));
+                    break;
+
+                  default:
+                    this.sharedService.showError('Error', 'Error! try again later');
+                    break;
+                }
+              } else {
+                console.log('esta es la repuesta2', error);
+                this.sharedService.showError('Error', error.toString().split('_').join(' '));
+              }
               this.spinnerVisibility = false
             });
       }

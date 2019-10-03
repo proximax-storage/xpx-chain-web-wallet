@@ -50,7 +50,7 @@ export class WalletCreatedComponent implements OnInit {
       ).toUpperCase();
       this.publicKey = this.proximaxProvider.getPublicAccountFromPrivateKey(this.privateKey, this.walletData.data.network).publicKey;
       this.walletData = null;
-    }else {
+    } else {
       this.router.navigate([`/${AppConfig.routes.home}`]);
     }
   }
@@ -74,7 +74,7 @@ export class WalletCreatedComponent implements OnInit {
    *
    * @memberof WalletCreatedComponent
    */
-  getImageBackground(){
+  getImageBackground() {
     this.imgBackground = this.sharedService.walletCreatedCertified();
   }
 
@@ -85,16 +85,21 @@ export class WalletCreatedComponent implements OnInit {
     // [routerLink]="[routes.backToService]"
     const nis1Info = this.walletService.getNis1AccounsWallet();
     // console.log('nnis1Info ------>', nis1Info);
-    if (nis1Info.length > 0) {
-      // console.log('nis1Info.lengh ------>', nis1Info.length);
-      if (nis1Info[0].mosaic && Object.keys(nis1Info[0].mosaic).length > 0) {
-        // console.log('REDIRECCIONAME A ACCOUNT NIS1 FOUND');
-        this.router.navigate([`/${AppConfig.routes.walletNis1Found}`]);
+    try {
+      if (nis1Info.length > 0) {
+        // console.log('nis1Info.lengh ------>', nis1Info.length);
+        if (nis1Info[0].mosaic && Object.keys(nis1Info[0].mosaic).length > 0) {
+          // console.log('REDIRECCIONAME A ACCOUNT NIS1 FOUND');
+          this.router.navigate([`/${AppConfig.routes.walletNis1Found}`]);
+        } else {
+          this.walletService.accountWalletCreated = null;
+          this.router.navigate([this.routeAuth]);
+        }
       } else {
         this.walletService.accountWalletCreated = null;
         this.router.navigate([this.routeAuth]);
       }
-    } else {
+    } catch (error) {
       this.walletService.accountWalletCreated = null;
       this.router.navigate([this.routeAuth]);
     }

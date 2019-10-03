@@ -43,7 +43,7 @@ export class Nis1AccountsListComponent implements OnInit {
     this.walletService.setAccountSelectedWalletNis1(account);
     this.searchItem[index] = true;
     const address = this.nemProvider.createAddressToString(account.nis1Account.address.value);
-    this.nemProvider.getAccountInfo(address).pipe(first()).pipe((timeout(5000))).subscribe(
+    this.nemProvider.getAccountInfo(address).pipe(first()).pipe((timeout(15000))).subscribe(
       next => {
         this.searchItem[index] = false;
         let consignerOf: boolean = false;
@@ -87,7 +87,7 @@ export class Nis1AccountsListComponent implements OnInit {
         }
         this.walletService.setAccountInfoNis1(accountNis1);
         // this.walletService.setNis1AccounsWallet(accountNis1);
-        this.router.navigate([`/${AppConfig.routes.accountNis1TransferXpx}`]);
+        this.router.navigate([`/${AppConfig.routes.dashboard}`]);
       }
     );
   }

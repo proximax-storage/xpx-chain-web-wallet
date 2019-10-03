@@ -30,7 +30,7 @@ export class DetailAccountComponent implements OnInit {
   accountValid: boolean = false;
   configurationForm: ConfigurationForm;
   currenAccount: AccountsInterface = null;
-  checked: boolean = false;
+  checked: boolean;
   descriptionPrivateKey = `Make sure you store your private key in a safe place.
   Access to your digital assets cannot be recovered without it.`;
   editNameAccount = false;
@@ -48,7 +48,7 @@ export class DetailAccountComponent implements OnInit {
   titlePublickey = 'Public Key:';
   validatingForm: FormGroup;
   valueInitNis: boolean;
-  valueInitShow: boolean = false;
+  valueInitShow: boolean;
   showPrivateKey: boolean = false;
   saveNis1Account: any;
   imgBackground: string = '';
@@ -62,17 +62,17 @@ export class DetailAccountComponent implements OnInit {
     private serviceModuleService: ServicesModuleService,
     private nemProvider: NemServiceService
   ) {
-  }
-
-  ngOnInit() {
     this.imgBackground = this.sharedService.walletCreatedCertified();
     this.configurationForm = this.sharedService.configurationForm;
     let param = this.activateRoute.snapshot.paramMap.get('name');
     this.currenAccount = (param) ? this.walletService.filterAccountWallet(param) : this.walletService.filterAccountWallet('', true);
+    this.checked = (this.currenAccount.nis1Account !== null);
+    this.valueInitNis = (this.currenAccount.nis1Account !== null);
+  }
+
+  ngOnInit() {
     this.buildData();
     this.createForm();
-    this.checked = this.walletService.currentAccount.nis1Account !== null;
-    this.valueInitNis = this.walletService.currentAccount.nis1Account !== null;
     this.subscribeAccount = this.walletService.getAccountsInfo$().subscribe(
       async accountInfo => {
         if (accountInfo && !this.accountInfo) {
@@ -228,20 +228,11 @@ export class DetailAccountComponent implements OnInit {
     return validation;
   }
 
-  switchShowPrivateKey() {
-    this.showPrivateKey = !this.showPrivateKey;
-  }
-
-  switchSaveNis1() {
-    this.checked = !this.checked;
-  }
-
   /**
    *
    */
   aceptChanges() {
-    if (!this.checked) {
-      console.log('a1')
+    if (!this.checked && this.valueInitNis !== this.checked) {
       if (this.walletService.currentAccount.nis1Account !== null) {
         this.sharedService.showSuccess('', 'Nis1 account remove');
       }
@@ -255,25 +246,39 @@ export class DetailAccountComponent implements OnInit {
       const walletsStorage = allWallets.filter(el => el.name !== this.walletService.currentWallet.name);
       walletsStorage.push(this.walletService.currentWallet);
       localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorage));
-    } else {
-      console.log('a2')
-      if (this.walletService.currentAccount.nis1Account === null) {
-        this.sharedService.showSuccess('', 'Nis1 account added');
+    } else if (this.checked && this.valueInitNis !== this.checked) {
+      if (this.validatingForm.get('password').value !== '') {
+        const common = { password: this.validatingForm.get('password').value };
+        if (this.walletService.decrypt(common, this.currenAccount)) {
+
+          if (this.walletService.currentAccount.nis1Account === null) {
+            this.sharedService.showSuccess('', 'Nis1 account added');
+          }
+          const nis1Wallet = this.nemProvider.createAccountPrivateKey(common['privateKey'].toUpperCase());
+
+          this.walletService.currentAccount.nis1Account = {
+            address: nis1Wallet.address,
+            publicKey: nis1Wallet.publicKey
+          };
+
+          const accounts = this.walletService.getCurrentWallet().accounts.filter(el => el.address !== this.address.split('-').join(''));
+          accounts.push(this.walletService.currentAccount);
+          this.walletService.currentWallet.accounts = accounts;
+
+          let allWallets = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
+          const walletsStorage = allWallets.filter(el => el.name !== this.walletService.currentWallet.name);
+          walletsStorage.push(this.walletService.currentWallet);
+          localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorage));
+          this.validatingForm.reset({
+            password: ''
+          }, {
+            emitEvent: false
+          });
+        }
+        return;
+      } else {
+        this.sharedService.showError('', 'Please, enter a password');
       }
-      const nis1Wallet = this.nemProvider.createAccountPrivateKey(this.privateKey);
-      this.walletService.currentAccount.nis1Account = {
-        address: nis1Wallet.address,
-        publicKey: nis1Wallet.publicKey
-      };
-
-      const accounts = this.walletService.getCurrentWallet().accounts.filter(el => el.address !== this.address.split('-').join(''));
-      accounts.push(this.walletService.currentAccount);
-      this.walletService.currentWallet.accounts = accounts;
-
-      let allWallets = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
-      const walletsStorage = allWallets.filter(el => el.name !== this.walletService.currentWallet.name);
-      walletsStorage.push(this.walletService.currentWallet);
-      localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorage));
     }
 
     if (this.showPrivateKey) {
