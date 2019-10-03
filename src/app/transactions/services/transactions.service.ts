@@ -278,6 +278,7 @@ export class TransactionsService {
       params.network
     );
 
+    console.log(this.generationHash);
     const account = Account.createFromPrivateKey(params.common.privateKey, params.network);
     const signedTransaction = account.sign(transferTransaction, this.generationHash);
     const transactionHttp = this.buildTransactionHttp();
@@ -732,6 +733,7 @@ export interface TransactionsInterface {
   data: any;
   dateFile?: string;
   description?: string;
+  effectiveFee?: number;
   nameType: string;
   timestamp: string;
   fee: string;

@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectorRef, HostListener, Inject } from '@angular/core';
-import { MdbTableDirective } from 'ng-uikit-pro-standard';
+import { MdbTableDirective, ModalDirective } from 'ng-uikit-pro-standard';
 import * as qrcode from 'qrcode-generator';
 import { first } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
@@ -31,6 +31,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   // --------------------------------------------------------------------------
   @ViewChild(MdbTableDirective, { static: true }) mdbTable: MdbTableDirective;
+  @ViewChild('modalDashboard', { static: true }) modalDashboard: ModalDirective;
   currentWallet: CurrentWalletInterface;
   @HostListener('input') oninput() {
     this.searchItems();
@@ -386,6 +387,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   *
+   *
+   * @param {number} type
+   * @memberof DashboardComponent
+   */
   selectTransactions(type: number) {
     if (type === 1) {
       // Confirmed
@@ -398,5 +405,24 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.transactions = this.mdbTable.getDataSource();
       this.previous = this.mdbTable.getDataSource();
     }
+  }
+
+  /**
+   *
+   *
+   * @param {TransactionsInterface} transaction
+   * @memberof DashboardComponent
+   */
+  openModal(transaction: TransactionsInterface) {
+    const height = transaction.data['transactionInfo'].height.compact();
+    console.log(typeof(height));
+    if (typeof(height) === 'number'){
+      transaction.effectiveFee = height;
+    }else {
+      transaction.effectiveFee = 0;
+    }
+
+    this.dataSelected = transaction;
+    this.modalDashboard.show();
   }
 }

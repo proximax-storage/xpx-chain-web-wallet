@@ -502,6 +502,28 @@ export class ProximaxProvider {
   /**
    *
    *
+   * @param {string} transactionId
+   * @memberof ProximaxProvider
+   */
+  getTransactionEffectiveFee(transactionId: string) {
+    /*return rxjs_1.from(this.transactionRoutesApi.getTransaction(transactionId)).pipe(operators_1.mergeMap((transactionDTO) => {
+      // parse transaction to take advantage of `size` getter overload
+      const transaction = CreateTransactionFromDTO_1.CreateTransactionFromDTO(transactionDTO);
+      const uintHeight = transaction.transactionInfo.height;
+      // now read block details
+      return rxjs_1.from(this.blockRoutesApi.getBlockByHeight(uintHeight.compact())).pipe(operators_1.map((blockDTO) => {
+        // @see https://nemtech.github.io/concepts/transaction.html#fees
+        // effective_fee = feeMultiplier x transaction::size
+        return blockDTO.block.feeMultiplier * transaction.size;
+      }));
+    }), operators_1.catchError((err) => {
+      return rxjs_1.throwError(err);
+    }));*/
+  };
+
+  /**
+   *
+   *
    * @param {PublicAccount} publicAccount
    * @param {*} [id=null]
    * @param {number} [queryParams=100]
