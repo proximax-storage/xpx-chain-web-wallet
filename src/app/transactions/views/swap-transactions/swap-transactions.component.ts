@@ -36,15 +36,15 @@ export class SwapTransactionsComponent implements OnInit {
 
   qrCreate(hash) {
     let qr = qrcode(10, 'H')
-    let url = `${this.explorerUrl}${hash}`;
+    let url = `${this.explorerUrl}`;
     qr.addData(url);
     qr.make();
 
     return qr.createDataURL();
   }
 
-  goToNemExplorer(hash) {
-    window.open(`${environment.nis1.urlExplorer}${hash}`);
+  goToNemExplorer() {
+    window.open(`${environment.nis1.urlExplorer}`);
   }
 
   printCertificate(transaction) {

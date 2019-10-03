@@ -23,6 +23,8 @@ export class AccountNis1TransferXpxComponent implements OnInit {
   ngOnInit() {
     // this.mosaics = this.walletService.getAccountMosaicsNis1();
     const account = this.walletService.getNis1AccountSelected();
+    console.log(account);
+    
     if (account.mosaic === null) {
       this.routeEvent = `/${AppConfig.routes.nis1AccountList}`;
     }
