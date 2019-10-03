@@ -20,6 +20,13 @@
                         </div>
                         <div class="col-12 text-center text-sm-left pt-04rem w-b-a">
                           {{account.address}}
+
+                          <img src="assets/images/img/icon-copy-clipboard-white.svg" class="cursor-p" alt="Copy" width="20"
+                            (click)="copyMessage('Address')" ngxClipboard *ngIf="account.default" [cbContent]="account.address"
+                            title="Copy Address">
+                          <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="cursor-p" alt="Copy" width="20"
+                            (click)="copyMessage('Address')" ngxClipboard *ngIf="!account.default" [cbContent]="account.address"
+                            title="Copy Address">
                         </div>
                       </div>
 
