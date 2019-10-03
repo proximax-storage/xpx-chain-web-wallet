@@ -827,13 +827,13 @@ html, body {
   background: #ffff;
 }
 
-.box-tag-account {
-  background: white;
+.tag-account {
+  background: transparent;
   border-radius: 20px;
   padding: 1px 4px !important;
-  width: 80px !important;
   text-align: center;
   line-height: 1rem;
+  font-style: italic !important;
 }
 
 .background-gray-icons {
@@ -1824,8 +1824,9 @@ ul.stepper.horizontal .step-title {
 }
 
 .isPrimary {
-  color: white !important;
-  background-color: #2aa1b9 !important;
+  color: black !important;
+  background-color: white !important;
+  border: 2px solid #f4f4f4;
 }
 
 .msgSuccess {
