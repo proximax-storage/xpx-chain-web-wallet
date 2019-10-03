@@ -13,11 +13,20 @@
                   <div class="row p-1rem">
                     <div class="col-12 box-list-account-gray fs-08rem pb-04rem m-0" [ngClass]="{'isPrimary':account.default}">
                       <div class="row">
-                        <div class="col-12 text-center text-sm-left pt-1rem w-b-a">
+                        <div class="col-12 text-center text-sm-left pt-1rem w-b-a d-flex">
                           Account: {{account.name}}
+                          <div *ngIf="account.default" class="ml-1rem box-tag-account color-blue-intermedio fs-065rem">Default</div>
+                          <div *ngIf="account.isMultisign !== null && account.isMultisign.cosignatories.length > 1" class="ml-1rem fs-065rem color-blue-intermedio box-tag-account">Multisig</div>
                         </div>
                         <div class="col-12 text-center text-sm-left pt-04rem w-b-a">
                           {{account.address}}
+
+                          <img src="assets/images/img/icon-copy-clipboard-white.svg" class="cursor-p" alt="Copy" width="20"
+                            (click)="copyMessage('Address')" ngxClipboard *ngIf="account.default" [cbContent]="account.address"
+                            title="Copy Address">
+                          <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="cursor-p" alt="Copy" width="20"
+                            (click)="copyMessage('Address')" ngxClipboard *ngIf="!account.default" [cbContent]="account.address"
+                            title="Copy Address">
                         </div>
                       </div>
 

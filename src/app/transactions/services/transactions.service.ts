@@ -408,17 +408,6 @@ export class TransactionsService {
       );
   }
 
-
-  validateBuildSelectAccountBalance(balanceAccount: number, feeTransaction: number, rental: number): boolean {
-    const totalFee = feeTransaction + rental;
-    /*console.log(balanceAccount);
-    console.log(feeTransaction);
-    console.log(rental);
-    console.log(totalFee);*/
-    return (balanceAccount >= totalFee);
-
-  }
-
   /**
    *
    */
@@ -724,6 +713,16 @@ export class TransactionsService {
 
     //  this.namespaceService.buildNamespaceStorage();
     // this.updateBalance2();
+  }
+
+  validateBuildSelectAccountBalance(balanceAccount: number, feeTransaction: number, rental: number): boolean {
+    const totalFee = feeTransaction + rental;
+    /*console.log(balanceAccount);
+    console.log(feeTransaction);
+    console.log(rental);
+    console.log(totalFee);*/
+    return (balanceAccount >= totalFee);
+
   }
 }
 

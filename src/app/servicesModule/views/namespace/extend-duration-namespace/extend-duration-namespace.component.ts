@@ -20,42 +20,42 @@ import { environment } from '../../../../../environments/environment';
   styleUrls: ['./extend-duration-namespace.component.css']
 })
 export class ExtendDurationNamespaceComponent implements OnInit {
+
+  arrayselect: Array<object> = [{
+    value: '1',
+    label: 'New root Namespace',
+    selected: true,
+    disabled: false
+  }];
+
+  amountAccount: number;
+  block: number = 0;
+  blockBtnSend: boolean = false;
+  calculateRentalFee: string = '0.000000';
+  configurationForm: ConfigurationForm = {};
+  durationByBlock = '5760';
+  endHeight: number = 0;
+  extendNamespaceRootTransaction: any;
+  extendDurationNamespaceForm: FormGroup;
+  fee = '';
+  insufficientBalance = false;
+  insufficientBalanceDuration = false;
+  namespaceChangeInfo: NamespaceStorageInterface = null;
+  namespaceInfo: NamespaceStorageInterface[] = [];
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Namespaces & Sub-Namespaces',
     componentName: 'Extend Duration'
   };
-  extendDurationNamespaceForm: FormGroup;
-  configurationForm: ConfigurationForm = {};
-  arrayselect: Array<object> = [
-    {
-      id: null,
-      value: '1',
-      label: 'New root Namespace',
-      selected: true,
-      disabled: true
-    }
-  ];
-  namespaceSelect: Array<object> = [];
-  calculateRentalFee: any = '0.000000';
-  rentalFee = 100000;
-  durationByBlock = '0';
-  insufficientBalance = false;
-  insufficientBalanceDuration = false;
-  namespaceChangeInfo: NamespaceStorageInterface = null;
+
+  rentalFee = 4576;
+  status: boolean = true;
   startHeight: number = 0;
-  endHeight: number = 0;
-  block: number = 0;
-  blockBtnSend: boolean = false;
-  fee = '';
-  titleInformation = 'Namespace Information';
+  statusTransaction: boolean = false;
+  subscription: Subscription[] = [];
   transactionSigned: SignedTransaction[] = [];
   transactionReady: SignedTransaction[] = [];
-  subscription: Subscription[] = [];
-  namespaceInfo: NamespaceStorageInterface[] = [];
-  statusTransaction: boolean = false;
-  extendNamespaceRootTransaction: any;
-  amountAccount: number;
-  namespaceRootToExtend: any;
+  transactionStatus: boolean = false;
+
 
   constructor(
     private router: Router,
@@ -75,29 +75,28 @@ export class ExtendDurationNamespaceComponent implements OnInit {
     this.createForm();
     this.getNamespaces();
     this.amountAccount = this.walletService.getAmountAccount();
-    const duration = this.extendDurationNamespaceForm.get('duration').value;
-    this.durationByBlock = this.transactionService.calculateDurationforDay(duration).toString();
+    this.durationByBlock = this.transactionService.calculateDurationforDay(this.extendDurationNamespaceForm.get('duration').value).toString();
     this.subscription.push(this.dataBridgeService.getBlock().subscribe(
       next => this.block = next
     ));
 
-    this.validateRentalFee(this.rentalFee * duration);
+    this.validateRentalFee(this.rentalFee * this.extendDurationNamespaceForm.get('duration').value);
     this.extendDurationNamespaceForm.get('duration').valueChanges.subscribe(next => {
-      if(next <= 365){
-      if (next !== null && next !== undefined && String(next) !== '0') {
-        this.durationByBlock = this.transactionService.calculateDurationforDay(next).toString();
-        this.validateRentalFee(this.rentalFee * parseFloat(this.durationByBlock));
-        this.builder();
+      if (next <= 365) {
+        if (next !== null && next !== undefined && String(next) !== '0') {
+          this.durationByBlock = this.transactionService.calculateDurationforDay(next).toString();
+          this.validateRentalFee(this.rentalFee * parseFloat(this.durationByBlock));
+          this.builder();
+        } else {
+          this.calculateRentalFee = '0.000000';
+          this.durationByBlock = '0';
+          this.extendDurationNamespaceForm.get('duration').patchValue('');
+        }
       } else {
-        this.calculateRentalFee = '0.000000';
-        this.durationByBlock = '0';
-        this.extendDurationNamespaceForm.get('duration').patchValue('');
-      }
-    } else {
-      this.durationByBlock = this.transactionService.calculateDurationforDay(365).toString();
+        this.durationByBlock = this.transactionService.calculateDurationforDay(365).toString();
         this.validateRentalFee(this.rentalFee * parseFloat(this.durationByBlock));
         this.builder();
-    }
+      }
     });
 
     // namespaceRoot ValueChange
@@ -124,15 +123,15 @@ export class ExtendDurationNamespaceComponent implements OnInit {
    * @memberof ExtendDurationNamespaceComponent
    */
   builder() {
-    const namespaceRootToExtend: string = this.extendDurationNamespaceForm.get('namespaceRoot').value;
-    const duration: number = parseFloat(this.durationByBlock);
-    if(namespaceRootToExtend === undefined || namespaceRootToExtend === '' ){
-      this.namespaceRootToExtend = 'p';
-    } else {
-      this.namespaceRootToExtend = this.extendDurationNamespaceForm.get('namespaceRoot').value;
+    if (this.extendDurationNamespaceForm.get('namespaceRoot').value !== undefined && this.extendDurationNamespaceForm.get('namespaceRoot').value !== '') {
+      this.extendNamespaceRootTransaction = this.proximaxProvider.registerRootNamespaceTransaction(
+        this.extendDurationNamespaceForm.get('namespaceRoot').value,
+        this.walletService.currentAccount.network,
+        parseFloat(this.durationByBlock)
+      );
+
+      this.fee = this.transactionService.amountFormatterSimple(this.extendNamespaceRootTransaction.maxFee.compact());
     }
-    this.extendNamespaceRootTransaction = this.proximaxProvider.registerRootNamespaceTransaction(this.namespaceRootToExtend, this.walletService.currentAccount.network, duration);
-    this.fee = this.transactionService.amountFormatterSimple(this.extendNamespaceRootTransaction.maxFee.compact())
   }
 
   /**
@@ -198,7 +197,7 @@ export class ExtendDurationNamespaceComponent implements OnInit {
    */
   extendDuration() {
     if (this.extendDurationNamespaceForm.valid && !this.blockBtnSend) {
-      const validateAmount = this.transactionService.validateBuildSelectAccountBalance(this.amountAccount, Number(this.fee), Number(this.calculateRentalFee))
+      const validateAmount = this.transactionService.validateBuildSelectAccountBalance(this.amountAccount, Number(this.fee), Number(this.calculateRentalFee.replace(',', '')));
       if (validateAmount) {
         this.blockBtnSend = true;
         const common = {
@@ -210,7 +209,6 @@ export class ExtendDurationNamespaceComponent implements OnInit {
           this.transactionSigned.push(signedTransaction);
           this.proximaxProvider.announce(signedTransaction).subscribe(
             () => {
-
               this.startHeight = 0;
               this.endHeight = 0;
               if (this.statusTransaction === false) {
@@ -228,7 +226,7 @@ export class ExtendDurationNamespaceComponent implements OnInit {
           this.blockBtnSend = false;
         }
       } else {
-        this.sharedService.showError('', 'insufficient balance');
+        this.sharedService.showError('', 'Insufficient balance');
       }
     }
   }
@@ -240,16 +238,11 @@ export class ExtendDurationNamespaceComponent implements OnInit {
    * @memberof ExtendDurationNamespaceComponent
    */
   getTransactionStatus() {
-    // console.log('--getTransactionStatus---');
-
-    // Get transaction status
     this.subscription.push(this.dataBridgeService.getTransactionStatus().subscribe(
       statusTransaction => {
         if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
           for (let element of this.transactionSigned) {
             const statusTransactionHash = statusTransaction.hash;
-            // console.log('---statusTransactionHash---', statusTransactionHash);
-            // console.log('----element----', element);
             const match = statusTransactionHash === element.hash;
             if (match) {
               this.blockBtnSend = false;
@@ -392,10 +385,6 @@ export class ExtendDurationNamespaceComponent implements OnInit {
    */
   signedTransaction(common: any): SignedTransaction {
     const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
-    // const namespaceRootToExtend: string = this.extendDurationNamespaceForm.get('namespaceRoot').value;
-    // const duration: number = parseFloat(this.durationByBlock);
-    // const duration: number = parseFloat(this.durationByBlock);
-    // const extendNamespaceRootTransaction = this.proximaxProvider.registerRootNamespaceTransaction(namespaceRootToExtend, this.walletService.currentAccount.network, duration);
     const generationHash = this.dataBridgeService.blockInfo.generationHash;
     const signedTransaction = account.sign(this.extendNamespaceRootTransaction, generationHash);  //Update-sdk-dragon
     return signedTransaction;
