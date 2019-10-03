@@ -21,7 +21,7 @@
                       <img class="form-control-feedback"
                         src="assets/images/img/icon-duration-green-16h-proximax-sirius-wallet.svg" alt="">
                       <input formControlName="duration" mdbInputDirective mdbValidate [validateSuccess]="true"
-                        [validateError]="true" type="number" id="duration" min="1" max="365"
+                        [validateError]="true" type="text" id="duration" min="1" max="365"
                         class="form-control form-control-sm input-border txt-a-right" placeholder=""
                         (keyup)="limitDuration($event)">
                         <span class="label-i-icon pl-2rem">Duration (number of days)</span>
@@ -48,7 +48,7 @@
                   <img class="form-control-feedback"
                     src="assets/images/img/icon-namespaces-green-16h-proximax-sirius-wallet.svg" alt="">
                   <input formControlName="divisibility" mdbInputDirective mdbValidate [validateSuccess]="true"
-                    [validateError]="true" type="number" id="divisibility" minlength="0" maxlength="1"
+                    [validateError]="true" type="text" id="divisibility" minlength="0" maxlength="1"
                     id="divisibility{{errorDivisibility}}" class="form-control form-control-sm input-border txt-a-right"
                     placeholder="" (keyup)="limitLength($event)">
                     <span class="label-i-icon pl-2rem">Divisibility</span>
@@ -72,9 +72,12 @@
 
                   <!-- VALIDATION -->
                   <mdb-error
-                    *ngIf="validateInput('deltaSupply', '').invalid && (validateInput('deltaSupply', '').dirty || validateInput('deltaSupply', '').touched) || invalidSupply">
+                    *ngIf="validateInput('deltaSupply', '').invalid && (validateInput('deltaSupply', '').dirty || validateInput('deltaSupply', '').touched)">
                     <span>Required field</span>
                   </mdb-error>
+                  <mdb-error *ngIf=" invalidSupply">
+                  <span>Supply exceeded</span>
+                </mdb-error>
                 </div>
               </div>
             </div>
