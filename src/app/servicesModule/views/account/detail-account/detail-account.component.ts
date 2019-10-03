@@ -233,14 +233,19 @@ export class DetailAccountComponent implements OnInit {
    */
   aceptChanges() {
     if (!this.checked && this.valueInitNis !== this.checked) {
-      if (this.walletService.currentAccount.nis1Account !== null) {
+      if (this.currenAccount.nis1Account !== null) {
         this.sharedService.showSuccess('', 'Nis1 account remove');
       }
-      this.walletService.currentAccount.nis1Account = null;
+      this.currenAccount.nis1Account = null;
 
-      const accounts = this.walletService.getCurrentWallet().accounts.filter(el => el.address !== this.address.split('-').join(''));
-      accounts.push(this.walletService.currentAccount);
+      console.log('this a remove account', this.currenAccount);
+
+      const accounts = this.walletService.getCurrentWallet().accounts.filter(el => el.address !== this.currenAccount.address.split('-').join(''));
+      console.log('accounts', accounts);
+      accounts.push(this.currenAccount);
       this.walletService.currentWallet.accounts = accounts;
+      console.log('this.walletService.currentWallet', this.walletService.currentWallet);
+
 
       let allWallets = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
       const walletsStorage = allWallets.filter(el => el.name !== this.walletService.currentWallet.name);
@@ -251,18 +256,18 @@ export class DetailAccountComponent implements OnInit {
         const common = { password: this.validatingForm.get('password').value };
         if (this.walletService.decrypt(common, this.currenAccount)) {
 
-          if (this.walletService.currentAccount.nis1Account === null) {
+          if (this.currenAccount.nis1Account === null) {
             this.sharedService.showSuccess('', 'Nis1 account added');
           }
           const nis1Wallet = this.nemProvider.createAccountPrivateKey(common['privateKey'].toUpperCase());
 
-          this.walletService.currentAccount.nis1Account = {
+          this.currenAccount.nis1Account = {
             address: nis1Wallet.address,
             publicKey: nis1Wallet.publicKey
           };
 
           const accounts = this.walletService.getCurrentWallet().accounts.filter(el => el.address !== this.address.split('-').join(''));
-          accounts.push(this.walletService.currentAccount);
+          accounts.push(this.currenAccount);
           this.walletService.currentWallet.accounts = accounts;
 
           let allWallets = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
