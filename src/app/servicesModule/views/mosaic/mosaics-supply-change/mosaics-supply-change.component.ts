@@ -62,14 +62,18 @@ export class MosaicsSupplyChangeComponent implements OnInit {
     decimal: '.',
     precision: '0'
   };
-  deltaSupply: number;
+  deltaSupply: number = 0;
+  totalSupply: string = '0';
   invalidSupply: boolean;
   errorSupply: string;
   blockBtn: boolean = false;
   maxLengthSupply: number = 13;
   mosaicSupplyChangeTransaction: any;
-  fee: string = '0.000000';
+  fee: string = ' 0.034750';
   amountAccount: number;
+  showTotal: boolean = false;
+  errSupply: boolean = false;
+  mosaicsInfoSelected: MosaicsStorage[];
 
   /**
    * Initialize dependencies and properties
@@ -90,6 +94,8 @@ export class MosaicsSupplyChangeComponent implements OnInit {
   async ngOnInit() {
     this.configurationForm = this.sharedService.configurationForm;
     this.createForm();
+    this.formMosaicSupplyChange.get('deltaSupply').disable();
+    this.formMosaicSupplyChange.get('mosaicSupplyType').disable();
     this.amountAccount = this.walletService.getAmountAccount();
     // console.log(this.amountAccount);
 
@@ -135,8 +141,8 @@ export class MosaicsSupplyChangeComponent implements OnInit {
         }
       }
     });
-
     this.formMosaicSupplyChange.get('deltaSupply').valueChanges.subscribe(next => {
+      
       if (parseFloat(next) <= this.configurationForm.mosaicWallet.maxSupply) {
         this.invalidSupply = false;
         this.blockBtn = false;
@@ -146,6 +152,7 @@ export class MosaicsSupplyChangeComponent implements OnInit {
           this.deltaSupply = parseInt(next);
         } else {
           this.deltaSupply = parseInt(this.transactionService.addZeros(this.divisibility, next));
+        this.calculate(next);
         }
       } else {
         this.errorSupply = '-invalid';
@@ -154,9 +161,24 @@ export class MosaicsSupplyChangeComponent implements OnInit {
       }
       this.builder();
     });
+    
+    
     this.parentMosaic = mosaicsSelect;
   }
 
+  calculate(val?){
+    let value = Number(this.supply) + val; 
+  
+    this.totalSupply = this.transactionService.amountFormatter(
+        parseFloat(this.transactionService.addZeros(this.divisibility, value)),
+        this.mosaicsInfoSelected[0].mosaicInfo
+    );
+    if (Number(this.supply) + val > 9000000000){
+      this.errSupply = true;
+    } else {
+      this.errSupply = false;
+    }
+  }
   /**
    * Create form namespace
    *
@@ -195,7 +217,9 @@ export class MosaicsSupplyChangeComponent implements OnInit {
    * @memberof MosaicSupplyChange
    */
   clearForm() {
-    this.fee = '0.000000';
+    // this.fee = '0.000000';
+    this.showTotal = false;
+    this.errSupply= false;
     this.formMosaicSupplyChange.reset({
       parentMosaic: '',
       mosaicSupplyType: MosaicSupplyType.Increase,
@@ -217,7 +241,11 @@ export class MosaicsSupplyChangeComponent implements OnInit {
    */
   async optionSelected(mosaic: any) {
     if (mosaic !== undefined) {
+      this.showTotal = true;
+      this.formMosaicSupplyChange.get('deltaSupply').enable();
+      this.formMosaicSupplyChange.get('mosaicSupplyType').enable();
       const mosaicsInfoSelected: MosaicsStorage[] = await this.mosaicService.filterMosaics([this.proximaxProvider.getMosaicId(mosaic['value'])]);
+      this.mosaicsInfoSelected = mosaicsInfoSelected
       this.builder()
       if (mosaicsInfoSelected !== null || mosaicsInfoSelected !== undefined) {
         this.divisibility = mosaicsInfoSelected[0].mosaicInfo['properties'].divisibility;
@@ -229,6 +257,7 @@ export class MosaicsSupplyChangeComponent implements OnInit {
             mosaicsInfoSelected[0].mosaicInfo.supply['higher']
           ]), mosaicsInfoSelected[0].mosaicInfo
         );
+        this.calculate();
         const durationBlock = new UInt64([
           mosaicsInfoSelected[0].mosaicInfo['properties']['duration']['lower'],
           mosaicsInfoSelected[0].mosaicInfo['properties']['duration']['higher']
@@ -378,6 +407,15 @@ export class MosaicsSupplyChangeComponent implements OnInit {
       (exist) ? '' : this.sharedService.showWarning('', 'An error has occurred');
     }, 5000);
   }
+
+
+  // suscribe(){
+  //   this.formMosaicSupplyChange.get('deltaSupply').valueChanges.subscribe(
+  //     deltaSupply => {
+  //       this.deltaSupply = deltaSupply;
+       
+  //     });
+  // }
 
   /**
    *

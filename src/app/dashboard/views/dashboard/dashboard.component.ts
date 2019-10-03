@@ -27,7 +27,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   currentAccount: AccountsInterface = null;
   nameAccount = '';
   typeTransactions: any;
-  vestedBalance = '';
+  vestedBalance = null;
 
   // --------------------------------------------------------------------------
   @ViewChild(MdbTableDirective, { static: true }) mdbTable: MdbTableDirective;
@@ -46,13 +46,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     itemsPerPage: 10,
     currentPage: 1
   };
-  configFilesAccounts: PaginationInstance = {
-    id: 'fileAccounts',
-    itemsPerPage: 4,
-    currentPage: 1
-  };
   dataSelected: TransactionsInterface = null;
-  headElements = ['Type', 'Deadline', 'Fee', '', 'Sender', 'Recipient'];
+  headElements = ['Type', 'Fee', '', 'Sender', 'Recipient'];
   iconReloadDashboard = false;
   objectKeys = Object.keys;
   partialTransactions = 0;
@@ -96,12 +91,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.dashboardService.subscribeLogged();
     this.currentAccount = Object.assign({}, this.walletService.getCurrentAccount());
     this.currentAccount.address = this.proximaxProvider.createFromRawAddress(this.currentAccount.address).pretty();
+    this.currentAccount.name = (this.currentAccount.name === 'Primary') ? `${this.currentAccount.name}_Account` : this.currentAccount.name;
     const qr = qrcode(10, 'H');
     qr.addData(this.currentAccount.address);
     qr.make();
     this.qr = qr.createDataURL();
     this.typeTransactions = this.transactionService.getTypeTransactions();
-    this.vestedBalance = `0.000000 ${environment.mosaicXpxInfo.coin}`;
+    this.vestedBalance = {
+      part1: '0',
+      part2: '000000'
+    }
+
     this.balance();
     this.subscribeTransactionsConfirmedUnconfirmed();
     this.getRecentTransactions();
@@ -120,7 +120,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     ));
 
     this.currentWallet = Object.assign({}, this.walletService.currentWallet);
-    console.log(this.currentWallet);
   }
 
   ngOnDestroy(): void {
@@ -136,65 +135,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
 
   /**
-   * Get balance from account
-   *
-   * @memberof DashboardComponent
-   */
-  balance() {
-    this.subscription.push(this.transactionService.getBalance$().subscribe(
-      next => this.vestedBalance = `${next} XPX`,
-      error => this.vestedBalance = `0.000000 XPX`
-    ));
-  }
-
-  buildBalance() {
-    // console.log('build',this.walletService.currentWallet)
-    const currentWallet = Object.assign({}, this.walletService.currentWallet);
-    if (currentWallet && Object.keys(currentWallet).length > 0) {
-      for (let element of currentWallet.accounts) {
-        const accountFiltered = this.walletService.filterAccountInfo(element.name);
-        if (accountFiltered && accountFiltered.accountInfo) {
-          const mosaicXPX = accountFiltered.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id);
-          if (mosaicXPX) {
-            element['balance'] = this.transactionService.amountFormatterSimple(mosaicXPX.amount.compact());
-          } else {
-            element['balance'] = '0.000000';
-          }
-        } else {
-          element['balance'] = '0.000000';
-        }
-      }
-      this.currentWallet = currentWallet;
-    }
-  }
-
-  changeAsPrimary(nameSelected: string) {
-    // this.sharedService.showSuccess('', 'Account changed to default');
-    this.accountChanged = true;
-    this.walletService.changeAsPrimary(nameSelected);
-    this.walletService.use(this.walletService.currentWallet);
-    this.namespacesService.fillNamespacesDefaultAccount();
-    this.buildBalance();
-    this.transactionService.updateBalance();
-    setTimeout(() => {
-      this.accountChanged = false;
-    }, 2000);
-  }
-  /**
-   *
-   *
-   * @param {string} message
-   * @memberof DashboardComponent
-   */
-  copyMessage(message: string) {
-    this.sharedService.showSuccess('', `${message} copied`);
-  }
-
-  /**
-   * Get the recent transactions of an account
-   *
-   * @memberof DashboardComponent
-   */
+  * Get the recent transactions of an account
+  *
+  * @memberof DashboardComponent
+  */
   async getRecentTransactions(reload = false) {
     this.iconReloadDashboard = true;
     // Validate if it is the first time the dashboard is loaded or if you click on the reload button
@@ -209,23 +153,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Method to get more transactions when scrolling in the screen
-   */
-  onScroll() {
-    if (this.searchTransactions && !this.searching) {
-      this.searching = true;
-      const lastTransactionId = (this.transactions.length > 0) ? this.transactions[this.transactions.length - 1].data.transactionInfo.id : null;
-      this.loadTransactions(lastTransactionId);
-    }
-  }
-
-
-  /**
    * Method to load transactions by public account.
    * @param {string} id Id of the transaction to start the next search.
    */
   async loadTransactions(id: any = null) {
-    // this.transactions = (id) ? this.transactions.slice(0) : [];
     const data = this.transactions.slice(0);
     const transactionUnconfirmed = this.transactionsUnconfirmed.slice(0);
     this.walletService.currentWallet.accounts.forEach(account => {
@@ -259,6 +190,88 @@ export class DashboardComponent implements OnInit, OnDestroy {
         }
       );
     });
+  }
+
+
+  /**
+   * Get balance from account
+   *
+   * @memberof DashboardComponent
+   */
+  balance() {
+    this.subscription.push(this.transactionService.getBalance$().subscribe(
+      next => this.vestedBalance = this.transactionService.getDataPart(next, 6),
+      error => this.vestedBalance = {
+        part1: '0',
+        part2: '000000'
+      }
+    ));
+  }
+
+  /**
+   *
+   *
+   * @memberof DashboardComponent
+   */
+  buildBalance() {
+    // console.log('build',this.walletService.currentWallet)
+    const currentWallet = Object.assign({}, this.walletService.currentWallet);
+    if (currentWallet && Object.keys(currentWallet).length > 0) {
+      for (let element of currentWallet.accounts) {
+        const accountFiltered = this.walletService.filterAccountInfo(element.name);
+        if (accountFiltered && accountFiltered.accountInfo) {
+          const mosaicXPX = accountFiltered.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id);
+          if (mosaicXPX) {
+            element['balance'] = this.transactionService.amountFormatterSimple(mosaicXPX.amount.compact());
+          } else {
+            element['balance'] = '0.000000';
+          }
+        } else {
+          element['balance'] = '0.000000';
+        }
+      }
+      this.currentWallet = currentWallet;
+    }
+  }
+
+  /**
+   *
+   *
+   * @param {string} nameSelected
+   * @memberof DashboardComponent
+   */
+  changeAsPrimary(nameSelected: string) {
+    this.walletService.changeAsPrimary(nameSelected);
+    this.walletService.use(this.walletService.currentWallet);
+    this.namespacesService.fillNamespacesDefaultAccount();
+    this.buildBalance();
+    this.transactionService.updateBalance();
+    this.currentWallet = Object.assign({}, this.walletService.currentWallet);
+    this.currentAccount = Object.assign({}, this.walletService.getCurrentAccount());
+    this.currentAccount.address = this.proximaxProvider.createFromRawAddress(this.currentAccount.address).pretty();
+    this.currentAccount.name = (this.currentAccount.name === 'Primary') ? `${this.currentAccount.name}_Account` : this.currentAccount.name;
+  }
+
+  /**
+   *
+   *
+   * @param {string} message
+   * @memberof DashboardComponent
+   */
+  copyMessage(message: string) {
+    this.sharedService.showSuccess('', `${message} copied`);
+  }
+
+
+  /**
+   * Method to get more transactions when scrolling in the screen
+   */
+  onScroll() {
+    if (this.searchTransactions && !this.searching) {
+      this.searching = true;
+      const lastTransactionId = (this.transactions.length > 0) ? this.transactions[this.transactions.length - 1].data.transactionInfo.id : null;
+      this.loadTransactions(lastTransactionId);
+    }
   }
 
 

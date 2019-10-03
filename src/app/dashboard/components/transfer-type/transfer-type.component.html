@@ -1,154 +1,134 @@
-<ng-container *ngIf="simple">
-  <div class="row mt-04rem mr-1rem ml-1rem">
-    <!-- Data -->
-    <div class="col-12">
+<ng-container *ngIf="simple === true">
+  <div class="row">
+    <div class="col-11 mx-auto">
       <div class="row">
-        <!-- Type transfer -->
-        <div class="col-12">
-          <span class="color-dark-green fw-bold fs-2rem">{{transferTransaction.nameType}}</span>
-          <img class="mr-1rem ml-1rem h-2em"
-            src="assets/images/img/icon-transactions-green-16h-proximax-sirius-wallet.svg" alt="">
-
-          <!-- Income -->
-          <ng-container *ngIf="transferTransaction?.receive">
-            <span class="color-blue-light fw-bold fs-2rem">Received</span>
-          </ng-container>
-
-          <!-- Outcome -->
-          <ng-container *ngIf="!transferTransaction?.receive">
-            <span class="color-orange fw-bold fs-2rem">Send</span>
-          </ng-container>
-        </div>
-
-        <!-- Timestamp -->
-        <div class="col-12 mt-05rem">
-          <span class="color-dark-green fs-07rem fw-500 w-w-b-w">{{transferTransaction?.timestamp}}</span>
-        </div>
-
-        <!-- Fee -->
-        <div class="col-12 mt-05rem">
-          <div class="row">
-            <div class="col-3">
-              <span class="color-dark-green fw-bold fs-095rem">Fee:&nbsp;&nbsp;</span>
-            </div>
-            <div class="col-9 d-flex">
+        <!-- TYPE TRANSFER TRANSACTION -->
+        <div class="col-12 col-md-7">
+          <div class="row mt-04rem mr-1rem ml-1rem">
+            <!-- Data -->
+            <div class="col-12">
               <div class="row">
+                <!-- Type transfer -->
                 <div class="col-12">
-                    <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
-                    <span class="fs-095rem fw-600 color-blue-light">{{transferTransaction?.feePart.part1}}</span>
-                    <span class="fs-075rem fw-600 color-blue-light">{{transferTransaction?.feePart.part2}}</span>
-                    <span class="fs-095rem fw-600 color-blue-light"> XPX </span>
+                  <span class="color-dark-green fw-bold fs-2rem">{{transferTransaction.nameType}}</span>
+                  <img class="mr-1rem ml-1rem h-2em"
+                    src="assets/images/img/icon-transactions-green-16h-proximax-sirius-wallet.svg" alt="">
+
+                  <!-- Income -->
+                  <ng-container *ngIf="transferTransaction?.receive">
+                    <span class="color-blue-light fw-bold fs-2rem">Received</span>
+                  </ng-container>
+
+                  <!-- Outcome -->
+                  <ng-container *ngIf="!transferTransaction?.receive">
+                    <span class="color-orange fw-bold fs-2rem">Send</span>
+                  </ng-container>
+                </div>
+
+                <!-- Timestamp -->
+                <div class="col-12 mt-05rem">
+                  <span class="color-dark-green fs-07rem fw-500 w-w-b-w">{{transferTransaction?.timestamp}}</span>
+                </div>
+
+                <!-- Fee -->
+                <div class="col-12 mt-05rem">
+                  <div class="row">
+                    <div class="col-3">
+                      <span class="color-dark-green fw-bold fs-095rem">Fee:&nbsp;&nbsp;</span>
+                    </div>
+                    <div class="col-9 d-flex">
+                      <div class="row">
+                        <div class="col-12">
+                          <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
+                          <span class="fs-095rem fw-600 color-blue-light">{{transferTransaction?.feePart.part1}}</span>
+                          <span class="fs-075rem fw-600 color-blue-light">{{transferTransaction?.feePart.part2}}</span>
+                          <span class="fs-095rem fw-600 color-blue-light"> XPX </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- Type Hex -->
+                <div class="col-12">
+                  <div class="row">
+                    <div class="col-3">
+                      <span class="color-dark-green fw-bold fs-08rem">Height: </span>
+                    </div>
+                    <div class="col-9">
+                      <span
+                        class="color-dark-green fw-400 fs-07rem">{{transferTransaction?.data.transactionInfo.height.compact()}}</span>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-3 overflow-ellipsis-nowrap">
+                      <span class="color-dark-green fw-bold fs-08rem">Type: </span>
+                    </div>
+                    <div class="col-9 overflow-ellipsis-nowrap">
+                      <span class="color-dark-green fw-400
+                              fs-08rem">{{typeTransactionHex}}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- From -->
+                <div class="col-12">
+                  <div class="row">
+                    <div class="col-3">
+                      <span class="color-dark-green fw-bold fs-08rem">From: </span>
+                    </div>
+                    <div class="col-9">
+                      <span class="color-dark-green fw-400 fs-07rem">{{transferTransaction?.senderAddress}}</span>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-3">
+                      <span class="color-dark-green fw-bold fs-08rem">To: </span>
+                    </div>
+                    <div class="col-9">
+                      <span class="color-dark-green fw-400 fs-07rem">{{transferTransaction?.recipientAddress}}</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
+
+
+            <!-- Message -->
+            <ng-container *ngIf="transferTransaction?.data['message'].payload !== ''">
+              <div class="col-12 mt-1rem">
+                <div class="row">
+                  <div class="col-12">
+                    <span class="color-dark-green fw-bold fs-07rem">Message: </span>
+                  </div>
+                  <div class="col-12 word-break-all">
+                    <span
+                      class="color-dark-green fw-400 fs-08remc">{{transferTransaction?.data['message'].payload}}</span>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+
+            <!-- MOSAICS INFO-->
+            <div class="col-12 mt-2rem">
+              <app-mosaics-info (changeSearch)="searching = false;" [mosaicsArray]="transferTransaction.data['mosaics']"
+                [transferTransaction]="transferTransaction" [receive]="transferTransaction?.receive">
+              </app-mosaics-info>
+            </div>
           </div>
         </div>
-        <!-- Type Hex -->
-        <div class="col-12">
-          <div class="row">
-            <div class="col-3">
-              <span class="color-dark-green fw-bold fs-08rem">Height: </span>
-            </div>
-            <div class="col-9">
-              <span
-                class="color-dark-green fw-400 fs-07rem">{{transferTransaction?.data.transactionInfo.height.compact()}}</span>
-            </div>
-          </div>
 
-          <div class="row">
-            <div class="col-3 overflow-ellipsis-nowrap">
-              <span class="color-dark-green fw-bold fs-08rem">Type: </span>
-            </div>
-            <div class="col-9 overflow-ellipsis-nowrap">
-              <span class="color-dark-green fw-400
-                fs-08rem">{{typeTransactionHex}}</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- From -->
-        <div class="col-12">
-          <div class="row">
-            <div class="col-3">
-              <span class="color-dark-green fw-bold fs-08rem">From: </span>
-            </div>
-            <div class="col-9">
-              <span class="color-dark-green fw-400 fs-07rem">{{transferTransaction?.senderAddress}}</span>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-3">
-              <span class="color-dark-green fw-bold fs-08rem">To: </span>
-            </div>
-            <div class="col-9">
-              <span class="color-dark-green fw-400 fs-07rem">{{transferTransaction?.recipientAddress}}</span>
-            </div>
-          </div>
+        <!-- BOX DATA SIGNER HASH -->
+        <div class="col-12 col-md-5">
+          <app-box-data-signer-hash [dataSelected]="transferTransaction">
+          </app-box-data-signer-hash>
         </div>
       </div>
-    </div>
-
-    <!-- Box signer, signature, hash -->
-    <!-- <div class="col-12 col-lg-5" id="boxHashSignerSignature">
-      <div class="row gray-color-transparent lh-1em">
-        <div class="col-12">
-          <div class="row">
-            <div class="col-12">
-              <span class="fs-08rem fw-bolder w-w-b-w"><b>Signer:</b></span>
-            </div>
-            <div class="col-12">
-              <span class="fs-07rem fw-bolder w-w-b-w">{{transferTransaction?.data.signer.publicKey}}</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-12 mt-3">
-          <div class="row">
-            <div class="col-12">
-              <span class="fs-08rem fw-bolder w-w-b-w"><b>Signature:</b></span>
-            </div>
-            <div class="col-12">
-              <span class="fs-07rem fw-bolder w-w-b-w">{{transferTransaction?.data.signature}}</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-12 mt-3">
-          <div class="row">
-            <div class="col-12">
-              <span class="fs-08rem fw-bolder w-w-b-w"><b>Hash:</b></span>
-            </div>
-            <div class="col-12">
-              <span class="fs-07rem fw-bolder w-w-b-w">{{transferTransaction?.data.transactionInfo.hash}}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div> -->
-
-    <!-- Message -->
-    <ng-container *ngIf="transferTransaction?.data['message'].payload !== ''">
-      <div class="col-12 mt-1rem">
-        <div class="row">
-          <div class="col-12">
-            <span class="color-dark-green fw-bold fs-07rem">Message: </span>
-          </div>
-          <div class="col-12 word-break-all">
-            <span class="color-dark-green fw-400 fs-08remc">{{transferTransaction?.data['message'].payload}}</span>
-          </div>
-        </div>
-      </div>
-    </ng-container>
-
-    <!-- MOSAICS INFO-->
-    <div class="col-12 mt-2rem">
-      <app-mosaics-info (changeSearch)="searching = false;" [mosaicsArray]="transferTransaction.data['mosaics']"
-        [transferTransaction]="transferTransaction" [receive]="transferTransaction?.receive">
-      </app-mosaics-info>
     </div>
   </div>
 </ng-container>
+
 
 <ng-container *ngIf="simple === false">
   <div class="row mt-04rem mr-1rem ml-1rem">

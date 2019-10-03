@@ -9,7 +9,7 @@ export const environment = {
   production: false,
   itemBooksAddress: 'sw-books-testnet-01',
   //version: '0.3.1.8',
-  version: '0.3.9',
+  version: '0.3.10',
   cacheVersion: '3',
   nameKeyNodeSelected: `sw-selected-node-testnet-01`,
   nameKeyWalletStorage: `sw-testnet-01`,
@@ -54,8 +54,8 @@ export const environment = {
   },*/
   blockchainConnection: {
     host: 'bctestnet1.brimstone.xpxsirius.io',
-    port: 3000,
-    protocol: 'http',
+    port: 443,
+    protocol: 'https',
     useSecureMessage: false
   },
   storageConnection: {
@@ -74,27 +74,27 @@ export const environment = {
     address_public_test: 'VD6AXC-3QBCFT-SLKHT6-2UPGTN-V5Z63I-YZKJI3-YGMD'
   },
   pollsContent: {
-    private_key: '52681268C37552C6F88EA063EBDDAB0B4A88032DD93CF6696C5A57B00A24FD12',
-    public_key: 'B5575AE4511694DCD0F7A8D0FAC1B327C1743334523075617EACE4997468D09E',
-    address_public_test: 'VBBLJ4-PD73RT-PXBTJY-ZQX426-NU7ETW-O3AZ65-YMVM'
+    private_key: '687452458B69602A4E43E7C86AB038C2178794BD5FB816C1792A319015DB7190',
+    public_key: '0000000000000000000000000000000000000000000000000000000000000000',
+    address_public_test: 'VBPCBA-VFP7OG-REVIGD-TGRIKJ-PXSM4E-K446VF-SMFJ'
   },
   nis1: {
     url: 'http://18.231.166.212:7890',
-    urlExplorer: 'http://testnet-explorer.nemtool.com/#/s_tx?hash=',
+    urlExplorer: 'http://testnet-explorer.nemtool.com/#/unconfirmedtxlist',
     networkType: NetworkTypes.TEST_NET,
     address: 'TBF4LAZUEJMBIOC6J24D6ZGGXE5W775TX555CTTN',
     nodes: [
       { protocol: "http", domain: "18.231.166.212", port: 7890 } as ServerConfig
     ],
     // url: 'https://bctestnetswap.xpxsirius.io',
-    // urlExplorer: 'http://testnet-explorer.nemtool.com/#/s_tx?hash=',
+    // urlExplorer: 'http://testnet-explorer.nemtool.com/#/unconfirmedtxlist',
     // networkType: NetworkTypes.TEST_NET,
     // address: 'TBF4LAZUEJMBIOC6J24D6ZGGXE5W775TX555CTTN',
     // nodes: [
     //   { protocol: "https", domain: "bctestnetswap.xpxsirius.io", port: 443 } as ServerConfig
     // ],
     // url: 'http://192.168.2.141:7890',
-    // urlExplorer: 'http://testnet-explorer.nemtool.com/#/s_tx?hash=',
+    // urlExplorer: 'http://testnet-explorer.nemtool.com/#/unconfirmedtxlist',
     // networkType: NetworkTypes.TEST_NET,
     // address: 'TBF4LAZUEJMBIOC6J24D6ZGGXE5W775TX555CTTN',
     // nodes: [

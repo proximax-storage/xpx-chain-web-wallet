@@ -17,24 +17,20 @@
           <span class="fs-1rem fw-600 line-h-1-2em color-blue-intermedio">Accounts</span>
         </div>
         <div class="col-11 col-md-10 col-lg-8 mx-auto">
-          <ul class="nav nav-tabs fs-09rem h-account" id="myTab" role="tablist">
+          <div class="h-account">
             <ng-container *ngFor="let account of accounts; let i=index">
-              <!-- <li class="nav-item cursor-p" (click)="init(account.value)"> -->
-              <li class="nav-item cursor-p" (click)="changeSender(account.value)">
-                <span [ngClass]="[account.active ? 'nav-link active isActive' : 'nav-link']">
-                  {{account.value.name}}
-                  <i *ngIf="account.value.default" class="fa fa-star fs-1rem ml-10px cursor-p" aria-hidden="true"
-                    title="Default account"></i>
+              <span [ngClass]="[account.active ? 'nav-link active isActive' : 'nav-link']" class="cursor-p" (click)="changeSender(account.value)">
+                {{account.value.name}}
+                <i *ngIf="account.value.default" class="fa fa-star fs-1rem ml-10px cursor-p" aria-hidden="true"
+                  title="Default account"></i>
 
-                  <i *ngIf="
-                  account.value.isMultisign &&
-                  account.value.isMultisign.cosignatories &&
-                  account.value.isMultisign.cosignatories.length > 0" class="fa fa-users fs-1rem ml-10px cursor-p"
-                    aria-hidden="true" title="Multi-signature account"></i>
-                </span>
-              </li>
+                <i *ngIf=" account.value.isMultisign &&
+                        account.value.isMultisign.cosignatories &&
+                        account.value.isMultisign.cosignatories.length > 0"
+                  class="fa fa-users fs-1rem ml-10px cursor-p" aria-hidden="true" title="Multi-signature account"></i>
+              </span>
             </ng-container>
-          </ul>
+          </div>
         </div>
 
         <ng-container *ngIf="!searching; else searchTemplate">
@@ -317,8 +313,9 @@
       </div>
 
       <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-        <button [disabled]="blockSendButton || formTransfer.invalid || errorOtherMosaics || disabledAllField || insufficientBalance" mdbBtn
-          type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
+        <button
+          [disabled]="blockSendButton || formTransfer.invalid || errorOtherMosaics || disabledAllField || insufficientBalance"
+          mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
           <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
             *ngIf="blockButton"></span>
           <span class="fs-1-2em color-white">SEND</span>

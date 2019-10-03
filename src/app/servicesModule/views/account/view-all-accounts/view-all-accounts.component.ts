@@ -43,8 +43,6 @@ export class ViewAllAccountsComponent implements OnInit {
 
   ngOnInit() {
     this.subscribeAccountInfoToBuildBalance();
-    console.log(this.currentWallet);
-
   }
 
   ngOnDestroy(): void {

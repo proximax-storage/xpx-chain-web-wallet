@@ -22,7 +22,7 @@
           <div class="col-11 mx-auto">
             <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" [searchable]="false"
               class="selectWrapper" [items]="mosaicSupplyType" formControlName="mosaicSupplyType" bindLabel="label"
-              bindValue="value" placeholder="Increase or decrease"></ng-select>
+              bindValue="value" placeholder="Increase or decrease" ></ng-select>
             <mdb-error class="ml-1rem"
               *ngIf="validateInput('mosaicSupplyType').invalid && (validateInput('mosaicSupplyType').dirty || validateInput('mosaicSupplyType').touched)">
               <span>Increase or decrease</span>
@@ -38,16 +38,36 @@
               <input formControlName="deltaSupply" currencyMask [options]="optionsSupply" mdbInputDirective mdbValidate
                 [validateSuccess]="true" [validateError]="true" type="text" id="supply{{errorSupply}}"
                 [maxlength]="maxLengthSupply" class="form-control form-control-sm input-border input-amount"
-                placeholder="Quantity of increase/decrease">
+                placeholder="Quantity of increase/decrease" >
 
               <mdb-error
                 *ngIf="validateInput('deltaSupply', '').invalid && (validateInput('deltaSupply', '').dirty || validateInput('deltaSupply', '').touched) || invalidSupply">
                 <span>Invalid supply</span>
               </mdb-error>
+              <mdb-error *ngIf="errSupply">
+                <span>Supply exceeded</span>
+              </mdb-error>
+              <br>
             </div>
           </div>
         </div>
 
+        
+        
+
+    <!-- CALCULATE SUPPLY -->
+    <div class="row ml-01rem" *ngIf='showTotal'>
+        <div class="col-11 mx-auto">
+          <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
+            <div class="row">
+              <div class="col-12">
+                <img class="icono" src="assets/images/img/icon-amount-green-16h-proximax-sirius-wallet.svg" alt="">
+                <span style="font-size: 12px;" >Total Supply: {{ totalSupply }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
         <!-- FEE -->
         <div class="row ml-01rem">

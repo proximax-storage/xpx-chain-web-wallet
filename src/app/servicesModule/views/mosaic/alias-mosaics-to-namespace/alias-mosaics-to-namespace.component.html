@@ -5,8 +5,8 @@
 
     <div class="row mt-1-5rem">
       <div class="col-11 col-sm-10 col-lg-8 mx-auto">
-        <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" [searchable]="false" class="selectWrapper"
-          [items]="typeAction" formControlName="typeAction" bindLabel="label" bindValue="value"
+        <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" [searchable]="false"
+          class="selectWrapper" [items]="typeAction" formControlName="typeAction" bindLabel="label" bindValue="value"
           placeholder="Select action" (change)="buildSelectNamespace($event); captureAction()"></ng-select>
         <mdb-error class="ml-1rem"
           *ngIf="validateInput('typeAction').invalid && (validateInput('typeAction').dirty || validateInput('typeAction').touched)">
@@ -17,9 +17,9 @@
 
     <div class="row pt-1rem">
       <div class="col-11 col-sm-10 col-lg-8 mx-auto">
-        <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" [searchable]="false" class="selectWrapper"
-          [items]="namespaceSelect" formControlName="namespace" bindLabel="label" bindValue="value"
-          placeholder="Select namespace" (change)="captureNamespace()"></ng-select>
+        <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" [searchable]="false"
+          class="selectWrapper" [items]="namespaceSelect" formControlName="namespace" bindLabel="label"
+          bindValue="value" placeholder="Select namespace" (change)="captureNamespace($event)"></ng-select>
         <mdb-error class="ml-1rem"
           *ngIf="validateInput('namespace').invalid && (validateInput('namespace').dirty || validateInput('namespace').touched)">
           <span class="fs-08rem fw-600 color-error-message">Select namespace</span>
@@ -27,17 +27,31 @@
       </div>
     </div>
 
-    <div class="row pt-1rem">
-      <div class="col-11 col-sm-10 col-lg-8 mx-auto">
-        <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" [searchable]="false" class="selectWrapper"
-          [items]="mosaicSelect" formControlName="mosaic" bindLabel="label" bindValue="value"
-          placeholder="Select mosaic" (change)="captureMmosaic()"></ng-select>
-        <mdb-error class="ml-1rem"
-          *ngIf="validateInput('mosaic').invalid && (validateInput('mosaic').dirty || validateInput('mosaic').touched)">
-          <span class="fs-08rem fw-600 color-error-message">Select mosaic</span>
-        </mdb-error>
+    <ng-container *ngIf="!viewLinked; else viewLinkeded">
+      <div class="row pt-1rem">
+        <div class="col-11 col-sm-10 col-lg-8 mx-auto">
+          <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" [searchable]="false"
+            class="selectWrapper" [items]="mosaicSelect" formControlName="mosaic" bindLabel="label" bindValue="value"
+            placeholder="Select mosaic" (change)="captureMmosaic()"></ng-select>
+          <mdb-error class="ml-1rem"
+            *ngIf="validateInput('mosaic').invalid && (validateInput('mosaic').dirty || validateInput('mosaic').touched)">
+            <span class="fs-08rem fw-600 color-error-message">Select mosaic</span>
+          </mdb-error>
+        </div>
       </div>
-    </div>
+    </ng-container>
+
+    <ng-template #viewLinkeded>
+      <ng-container *ngIf="linked !== null">
+        <div class="row pt-1rem">
+          <div class="col-11 col-sm-10 col-lg-8 mx-auto">
+            Linked to: {{linked.label}}
+          </div>
+        </div>
+      </ng-container>
+    </ng-template>
+
+
 
     <div class="row  pt-1rem">
       <div class="col-11 col-sm-10 col-lg-8 mx-auto">
