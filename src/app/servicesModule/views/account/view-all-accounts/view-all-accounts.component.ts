@@ -76,8 +76,6 @@ export class ViewAllAccountsComponent implements OnInit {
         } else {
           element['balance'] = '0.000000';
         }
-        console.log(element, [undefined, null].includes(element.nis1Account));
-
       }
       this.currentWallet = currentWallet;
     }
