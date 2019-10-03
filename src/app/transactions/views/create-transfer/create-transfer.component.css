@@ -6,7 +6,7 @@
   display: flex;
 }
 
-.caja-gris input, .caja-gris textarea, .caja-gris ng-select  {
+.caja-gris input, .caja-gris textarea, .caja-gris ng-select {
   margin: 0 !important;
   border: 0 !important;
   width: 100%;
@@ -15,32 +15,31 @@
 
 .icono {
   width: 35px;
-  padding-right:10px;
+  padding-right: 10px;
   display: inline-block;
-  line-height:18px;
+  line-height: 18px;
 }
 
 .ng-arrow-wrapper::after {
-  border:0;
+  border: 0;
 }
 
 .ng-select-container:after {
-  border:0;
+  border: 0;
 }
 
-
-#recipient-invalid-true{
+#recipient-invalid-true {
   box-shadow: none !important;
   border: 2px solid #e06e38 !important;
 }
 
-.amountToBeSent{
+.amountToBeSent {
   text-align: center;
   line-height: 1rem;
   color: #171717;
 }
 
-.box-accounts{
+.box-accounts {
   color: #3370b6;
   border: 1px solid #306eb5;
   padding: 10px;
@@ -50,38 +49,44 @@
   cursor: pointer;
 }
 
-.box-accounts-active{
+.box-accounts-active {
   background: #306eb5 !important;
   color: white !important;
 }
 
-.isActive{
+.isActive {
   background: #306eb5 !important;
   color: white !important;
+  height: 40px;
 }
 
 .h-account {
-  height: 50px;
+  height: 60px;
   overflow-x: auto;
   display: -webkit-box;
   overflow-y: hidden;
 }
 
-::-webkit-scrollbar {
-  width: 5px;
-  height: 10px;
+.btn.disabled, .btn:disabled {
+  background-color: #dedede !important;
+  border-color: #9a9a9a !important;
 }
+
+/* Scrollbar styles */
+/*
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
 ::-webkit-scrollbar-track {
-  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+  box-shadow: inset 0 0 10px olivedrab;
   border-radius: 10px;
 }
+
 ::-webkit-scrollbar-thumb {
   border-radius: 10px;
-  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+  background: yellowgreen;
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
 }
-
-
-.btn.disabled, .btn:disabled{
-  background-color: #dedede !important;
-    border-color: #9a9a9a !important;
-}
+*/
