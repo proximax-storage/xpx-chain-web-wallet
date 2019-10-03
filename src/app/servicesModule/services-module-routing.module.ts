@@ -34,6 +34,7 @@ import { AccountNis1TransferXpxComponent } from './views/account/account-nis1-tr
 import { Nis1AccountsConsignerComponent } from './views/swap/nis1-accounts-consigner/nis1-accounts-consigner.component';
 import { AccountDeleteComponent } from './views/account/account-delete/account-delete/account-delete.component';
 import { AccountDeleteConfirmComponent } from './views/account/account-delete-confirm/account-delete-confirm.component';
+import { ExportWalletComponent } from "./views/wallet/export-wallet/export-wallet.component";
 
 const routes: Routes = [
   {
@@ -398,6 +399,16 @@ const routes: Routes = [
       meta: {
         title: 'accountNis1TransferXpx.title',
         description: 'accountNis1TransferXpx.text',
+        override: true,
+      }
+    }
+  }, {
+    path: AppConfig.routes.exportWallet,
+    component: ExportWalletComponent,
+    data: {
+      meta: {
+        title: 'exportWallet.title',
+        description: 'exportWallet.text',
         override: true,
       }
     }

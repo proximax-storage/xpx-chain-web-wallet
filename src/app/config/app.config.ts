@@ -58,7 +58,8 @@ export const AppConfig: Config = {
     transferXpx: 'transfer-xpx',
     accountNis1TransferXpx: 'account-nis1-transfer-xpx',
     transferXpxNis1: 'transfer-xpx-nis1',
-    walletNis1AccountConsigner: 'wallet-nis1-account-consigner'
+    walletNis1AccountConsigner: 'wallet-nis1-account-consigner',
+    exportWallet: 'export-wallet'
   }
 };
 
@@ -123,5 +124,6 @@ export interface Config {
     accountNis1TransferXpx: string;
     transferXpxNis1: string;
     walletNis1AccountConsigner: string;
+    exportWallet: string;
   };
 }
