@@ -238,14 +238,9 @@ export class DetailAccountComponent implements OnInit {
       }
       this.currenAccount.nis1Account = null;
 
-      console.log('this a remove account', this.currenAccount);
-
       const accounts = this.walletService.getCurrentWallet().accounts.filter(el => el.address !== this.currenAccount.address.split('-').join(''));
-      console.log('accounts', accounts);
       accounts.push(this.currenAccount);
       this.walletService.currentWallet.accounts = accounts;
-      console.log('this.walletService.currentWallet', this.walletService.currentWallet);
-
 
       let allWallets = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
       const walletsStorage = allWallets.filter(el => el.name !== this.walletService.currentWallet.name);
