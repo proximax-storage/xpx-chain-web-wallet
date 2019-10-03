@@ -33,7 +33,7 @@ export class SwapCertificateComponent implements OnInit {
     this.img = this.imgBase64();
     this.publicKey = this.params.transaction.signer.publicKey;
     this.transactionHash = this.params.details.transactionHash.data;
-    this.explorerUrl = `${environment.nis1.urlExplorer}${this.params.details.transactionHash.data}`;
+    this.explorerUrl = `${environment.nis1.urlExplorer}`;
     // console.log('////// EXPLORER', this.params);
     this.timestamp = `${this.params.transaction.timeWindow.timeStamp._date._year}-${this.params.transaction.timeWindow.timeStamp._date._month}-${this.params.transaction.timeWindow.timeStamp._date._day} ${this.params.transaction.timeWindow.timeStamp._time._hour}:${this.params.transaction.timeWindow.timeStamp._time._minute}:${this.params.transaction.timeWindow.timeStamp._time._second}`;
     // console.log('\n\n\n\nValue route:\n', this.routeToContinue, '\n\n\n\nEnd value\n\n');

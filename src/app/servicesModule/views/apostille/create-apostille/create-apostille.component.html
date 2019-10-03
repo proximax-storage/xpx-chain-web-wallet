@@ -37,8 +37,8 @@
                           src="assets/images/img/icon-upload-gray-28h-proximax-sirius-wallet.svg" width="25">
                         <span class="fs-1-2em fw-700 color-gray-strong">Upload file</span>
                       </ngx-dropzone-label>
-                      <ngx-dropzone-preview *ngFor="let f of files" [removable]="true" (removed)="onRemove(f)">
-                        <ngx-dropzone-label>{{ f.name }} <br> ({{ f.type }})</ngx-dropzone-label>
+                      <ngx-dropzone-preview *ngFor="let f of files" class="h-100porcent" [removable]="true" (removed)="onRemove(f)">
+                        <ngx-dropzone-label class="w-100porcent">{{ f.name }} <br> ({{ f.type }})</ngx-dropzone-label>
                       </ngx-dropzone-preview>
                     </ngx-dropzone>
                   </div>
@@ -159,7 +159,7 @@
 
               <!-- FILE NAME  -->
               <div class="row mt-1rem">
-                <div class="col-12 d-flex box-grey">
+                <div class="col-12 d-flex box-grey flex-column w-b-w w-b-a">
                   <span class="fw-600 d-flex">File:&nbsp;</span>
                   <span class="fs-1rem d-flex">{{nameFile }}{{extensionFile}}</span>
 

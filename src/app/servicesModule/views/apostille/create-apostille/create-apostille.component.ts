@@ -220,9 +220,12 @@ export class CreateApostilleComponent implements OnInit {
         this.rawFileContent = crypto.enc.Base64.parse((this.file.toString()).split(/,(.+)?/)[1]);
       };
     } else {
-      this.filesStorage.forEach(element => {
-        element.selected = false;
-      });
+      console.log(this.filesStorage);
+      if (this.filesStorage !== undefined && this.filesStorage !== null) {
+        this.filesStorage.forEach(element => {
+          element.selected = false;
+        });
+      }
 
       this.files = [];
       this.apostilleFormOne.get('file').setValue('');
@@ -361,7 +364,7 @@ export class CreateApostilleComponent implements OnInit {
     // console.log('TRANSACTION BUILDER ---> ', transferTransaction);
     // Sign the transaction
     const generationHash = this.dataBridgeService.blockInfo.generationHash;
-    const signedTransaction = ownerAccount.sign(transferTransaction,generationHash);  //Update-sdk-dragon
+    const signedTransaction = ownerAccount.sign(transferTransaction, generationHash);  //Update-sdk-dragon
     // console.log('TRANSACTION SIGNED ---> ', signedTransaction);
     const date = new Date();
     this.ntyData = {
@@ -392,11 +395,29 @@ export class CreateApostilleComponent implements OnInit {
 
     this.proximaxProvider.announce(signedTransaction).subscribe(
       x => {
+        this.dataBridgeService.getTransactionStatus().subscribe(
+          next => {
+            console.log('this is response status---------->', next);
+
+            // if (statusTransaction['type'] === 'confirmed' && match) {
+            //   this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['hash']);
+            // } else if (statusTransaction['type'] === 'unconfirmed' && match) {
+            // } else if (statusTransaction['type'] === 'aggregateBondedAdded' && match) {
+            // } else if (statusTransaction['type'] === 'cosignatureSignedTransaction' && match) {
+            // } else if (statusTransaction['type'] === 'error' && match) {
+            //   this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['hash']);
+            // }
+          },
+          error => {
+            console.log('this is response error---------->', error);
+          }
+        )
         // If everything went OK, build and build the certificate
-        this.blockBtn = false;
-        this.processComplete = true;
+        // this.blockBtn = false;
+        // this.processComplete = true;
       },
       err => {
+        console.error('This is an error', err);
         // console.error(err)
         // this.downloadSignedFiles();
       });
@@ -434,7 +455,7 @@ export class CreateApostilleComponent implements OnInit {
     // console.log('TRANSACTION BUILDED ---> ', transferTransaction);
     // Sign the transaction
     const generationHash = this.dataBridgeService.blockInfo.generationHash;
-    const signedTransaction = myAccount.sign(transferTransaction,generationHash); //Update-sdk-dragon
+    const signedTransaction = myAccount.sign(transferTransaction, generationHash); //Update-sdk-dragon
     // console.log('TRANSACTION SIGNED ---> ', signedTransaction);
     const date = new Date();
     this.ntyData = {
@@ -464,11 +485,30 @@ export class CreateApostilleComponent implements OnInit {
 
     this.proximaxProvider.announce(signedTransaction).subscribe(
       x => {
-        this.blockBtn = false;
-        this.processComplete = true;
+        console.log('this is a repsonse', x);
+        this.dataBridgeService.getTransactionStatus().subscribe(
+          next => {
+            console.log('this is response status---------->', next);
+
+            // if (statusTransaction['type'] === 'confirmed' && match) {
+            //   this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['hash']);
+            // } else if (statusTransaction['type'] === 'unconfirmed' && match) {
+            // } else if (statusTransaction['type'] === 'aggregateBondedAdded' && match) {
+            // } else if (statusTransaction['type'] === 'cosignatureSignedTransaction' && match) {
+            // } else if (statusTransaction['type'] === 'error' && match) {
+            //   this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['hash']);
+            // }
+          },
+          error => {
+            console.log('this is response error---------->', error);
+          }
+        )
+
+        // this.blockBtn = false;
+        // this.processComplete = true;
       },
       err => {
-        // console.error(err)
+        console.error('This is an error', err);
         // this.downloadSignedFiles();
       });
   }
