@@ -861,7 +861,7 @@ html, body {
 }
 
 .btn-swap {
-  background: #bb8441;
+  background: linear-gradient(#FFCD00 ,#976630);
 }
 
 .btn-confirmed, .btn-partial, .btn-swap, .btn-unconfirmed {
