@@ -421,13 +421,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
     if (typeof (height) === 'number') {
       const existBlock = this.dataBridge.filterBlockStorage(height);
       if (existBlock) {
-        console.log(existBlock);
+        console.log('In cache', existBlock);
         transaction.timestamp = this.transactionService.dateFormatUTC(new UInt64([existBlock.timestamp.lower, existBlock.timestamp.higher]));
         transaction.effectiveFee = existBlock.feeMultiplier * transaction.data.size;
       }else {
         this.proximaxProvider.getBlockInfo(height).subscribe(
           next => {
-            console.log(next);
+            console.log('Http', next);
             this.dataBridge.validateBlock(next);
             transaction.timestamp = this.transactionService.dateFormatUTC(next.timestamp);
             transaction.effectiveFee = next.feeMultiplier * transaction.data.size;
