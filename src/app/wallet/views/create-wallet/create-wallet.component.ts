@@ -23,7 +23,7 @@ export class CreateWalletComponent implements OnInit {
   errorWalletExist: string;
   isValid: boolean = false;
   newName: string = '';
-  title = 'Create Wallet';
+  title = 'Create wallet';
   typeNetwork = [{
     value: environment.typeNetwork.value,
     label: environment.typeNetwork.label

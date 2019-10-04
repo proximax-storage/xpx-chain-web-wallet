@@ -15,7 +15,7 @@ import { environment } from '../../../../environments/environment';
 export class DeleteWalletConfirmComponent implements OnInit {
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Wallet',
-    componentName: 'CONFIRM DELETE'
+    componentName: 'Confirm delete'
   };
 
   routes = {
@@ -23,12 +23,12 @@ export class DeleteWalletConfirmComponent implements OnInit {
   };
   wallet: WalletAccountInterface;
   tittle = 'will be deleted from your device.';
-  Information = `Warning! This action will delete this wallet. It cannot be undone. if you have not saved your
+  Information = `Warning! This action will delete this wallet. It cannot be undone. If you have not saved your
   private keys, access to the accounts contained is this wallet will be permanently lost.`
   configurationForm: ConfigurationForm;
   validatingForm: FormGroup;
   ban: boolean = false;
-  texAlert = 'I have read the warning, understand the consequences, and wish to proceed'
+  texAlert = 'I have read the warning, understand the consequences, and wish to proceed.'
 
   constructor(private activateRoute: ActivatedRoute,
     private sharedService: SharedService,
