@@ -271,7 +271,7 @@ export class TransactionsService {
     });
 
     const transferTransaction = TransferTransaction.create(
-      Deadline.create(environment.deadlineTransfer.deadline,environment.deadlineTransfer.chronoUnit),
+      Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
       recipientAddress,
       allMosaics,
       PlainMessage.create(params.message),
@@ -295,7 +295,7 @@ export class TransactionsService {
    */
   buildHashLockTransaction(signedTransaction: SignedTransaction): LockFundsTransaction {
     return HashLockTransaction.create(
-      Deadline.create(environment.deadlineTransfer.deadline,environment.deadlineTransfer.chronoUnit),
+      Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
       new Mosaic(new MosaicId(environment.mosaicXpxInfo.id), UInt64.fromUint(Number(10000000))),
       UInt64.fromUint(480),
       signedTransaction,
@@ -312,7 +312,7 @@ export class TransactionsService {
   buildAggregateTransaction(sender: PublicAccount, transaction: Transaction): AggregateTransaction {
     // console.log('sender --->', sender);
     return AggregateTransaction.createBonded(
-      Deadline.create(environment.deadlineTransfer.deadline,environment.deadlineTransfer.chronoUnit),
+      Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
       [transaction.toAggregate(sender)],
       this.walletService.currentAccount.network
     );
@@ -735,8 +735,37 @@ export class TransactionsService {
     return (balanceAccount >= totalFee);
 
   }
-}
 
+  /**
+   *  
+   * Validate balance cosignatory 
+   *
+   * @param {AccountsInfoInterface} accountInfo
+   * @param {Number} feeTotal
+   * @memberof DashboardService
+   */
+  validateBalanceCosignatorie(accountInfo: AccountsInfoInterface, feeTotal: number): BalanceCosignatorieValidate {
+    let value: BalanceCosignatorieValidate = { infValidate: [{ disabled: false, info: '' }] }
+    const disabled: boolean = (
+      accountInfo !== null &&
+      accountInfo !== undefined && accountInfo.accountInfo !== null)
+    // Validate account info
+    if (!disabled)
+      return { infValidate: [{ disabled: true, info: 'not valid' }] }
+    // Validate mosaics
+    if (!accountInfo.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id))
+      return { infValidate: [{ disabled: true, info: 'insufficient balance' }] }
+    // Validate balance account
+    const balanceAccount = accountInfo.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id).amount.compact();
+    if (!(balanceAccount >= feeTotal))
+      return { infValidate: [{ disabled: true, info: 'insufficient balance' }] }
+
+    return { infValidate: [{ disabled: false, info: '' }] }
+  }
+}
+export interface BalanceCosignatorieValidate {
+  infValidate: [{ disabled: boolean, info: string }]
+}
 
 export interface TransactionsInterface {
   // data: Transaction;
