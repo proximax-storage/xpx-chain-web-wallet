@@ -1,0 +1,174 @@
+<div class="container mt-3rem mb-2rem animated fadeIn">
+        <app-header [params]="paramsHeader"></app-header>
+      
+        <form [formGroup]="extendDurationMosaicsForm" (ngSubmit)="extendDuration()">
+          <div class="row ">
+            <div class="col-11 col-sm-11 col-md-11 col-lg-8 mb-2rem mt-1rem">
+      
+              <ng-container *ngIf="insufficientBalance">
+                <div class="row">
+                  <div class="col-11 mx-auto d-flex justify-content-end">
+                    <span class="fs-08rem fw-600 color-error-message">Insufficient balance</span>
+                  </div>
+                </div>
+              </ng-container>
+      
+              <div class="row">
+                <div class="col-11 mx-auto">
+                  <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [searchable]="false" [validateError]="true"
+                    class="selectWrapper" [items]="arrayselect" formControlName="mosaics" bindLabel="label"
+                    bindValue="value" placeholder="Select mosaic" (change)="optionSelected($event)"></ng-select>
+                  <mdb-error class="ml-1rem"
+                    *ngIf="validateInput('mosaics').invalid && (validateInput('mosaics').dirty || validateInput('mosaics').touched)">
+                    <span>Select mosaic</span>
+                  </mdb-error>
+                </div>
+              </div>
+      
+              <div class="row">
+                <div class="col-11 mx-auto">
+                  <div class="md-form form-sm">
+                    <img class="form-control-feedback" src="assets/images/img/icon-duration-green-16h-proximax-sirius-wallet.svg" alt="">
+                    <input mask="0*" formControlName="duration" required mdbInputDirective mdbValidate autocomplete="off"
+                      [validateSuccess]="true" [validateError]="true" type="text" id="duration"
+                      class="form-control form-control-sm input-border txt-a-right" placeholder="" (keyup)="limitDuration($event)">
+                      <span class="label-i-icon pl-2rem">Duration (number of days)</span>
+                    <!-- VALIDATION -->
+                    <mdb-error
+                      *ngIf="validateInput('duration', '').invalid && (validateInput('duration', '').dirty || validateInput('duration', '').touched)">
+                      <span>Required field - Only numbers</span>
+                    </mdb-error>
+                    <mdb-error
+                      *ngIf="excedDuration">
+                      <span>Duration exceeded</span>
+                    </mdb-error>
+      
+                    <mdb-error *ngIf="validateInput('duration', '').valid && insufficientBalanceDuration">
+                      <span class="fs-08rem fw-600 color-error-message">Insufficient balance</span>
+                    </mdb-error>
+                  </div>
+                </div>
+              </div>
+      
+              <div class="row ml-01rem">
+                <div class="col-11 col-sm-11 col-md-6 col-lg-6">
+                  <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
+                    <div class="row">
+                      <div class="">
+                        <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
+                          width="20" alt="">&nbsp;
+                        <span>Fee: {{ fee }} XPX</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+      
+                <div class="col-11 col-sm-11 col-md-6 col-lg-6">
+                  <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
+                    <div class="row">
+                      <div class="">
+                        <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
+                          width="20" alt="">&nbsp;
+                        <span>Rental Fee: {{calculateRentalFee}} XPX</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+      
+              <div class="row">
+                <div class="col-11 mx-auto">
+                  <div class="md-form form-sm">
+                    <img class="form-control-feedback"
+                      src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg" alt="">
+                    <input [maxlength]="configurationForm.passwordWallet.maxLength"
+                      [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" required
+                      mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password"
+                      id="password" class="form-control form-control-sm input-border" placeholder="Enter wallet password">
+      
+                    <!-- VALIDATION -->
+                    <mdb-error
+                      *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
+                      <span>Password required</span>
+                    </mdb-error>
+                  </div>
+                </div>
+              </div>
+      
+              <!-- BUTTONS -->
+              <div class="row">
+                <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
+                  <button [disabled]="insufficientBalance" mdbBtn type="button" rounded="true" mdbWavesEffect
+                    class="f-w-600 background-btn pl-2rem pr-2rem" size="md" (click)="clearForm()">
+                    <span class="fs-1-2em color-white">CLEAR</span>
+                  </button>
+                </div>
+      
+                <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
+                  <button mdbBtn type="submit" rounded="true" [disabled]="extendDurationMosaicsForm.invalid || insufficientBalance ||
+                  insufficientBalanceDuration" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
+                    <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
+                      *ngIf="blockBtnSend"></span>
+                    <span class="fs-1-2em color-white">CREATE</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+      
+            <div class="col-11 col-sm-11 col-md-11 col-lg-4 description-p-module mt-1-5rem mb-2rem">
+              <div class="row">
+      
+                <!-- Start block  -->
+                <div class="col-4">
+                  <div class="row">
+                    <div class="col-12 d-flex justify-content-center">
+                        <img class="form-control-feedback"
+                        src="assets/images/img/icon-namespace-mosaic-duration-01.svg" alt="" style="width: 80px;">
+                    </div>
+           
+                    <div class="col-12 d-flex justify-content-center overflow-ellipsis-nowrap" style="padding-top: 70px;">
+                      <span class="description-information">Start block:</span>
+                    </div>
+                    <div class="col-12 d-flex justify-content-center">
+                      <span class="description-information">{{startHeight}}</span>
+                    </div>
+                  </div>
+                </div>
+      
+                <!-- Current Block -->
+                <div class="col-4">
+                  <div class="row">
+                    <div class="col-12 d-flex justify-content-center">
+                        <img class="form-control-feedback"
+                        src="assets/images/img/icon-namespace-mosaic-duration-02.svg" alt="" style="width: 80px">
+                    </div>
+                    <div class="col-12 d-flex justify-content-center overflow-ellipsis-nowrap" style="padding-top: 70px;">
+                      <span class="description-information">Current block:</span>
+                    </div>
+                    <div class="col-12 d-flex justify-content-center">
+                      <span class="description-information">{{block}}</span>
+                    </div>
+                  </div>
+                </div>
+      
+                <!-- End block  -->
+                <div class="col-4">
+                  <div class="row">
+                    <div class="col-12 d-flex justify-content-center">
+                        <img class="form-control-feedback"
+                        src="assets/images/img/icon-namespace-mosaic-duration-03.svg" alt="" style="width: 80px">
+                    </div>
+                    <div class="col-12 d-flex justify-content-center overflow-ellipsis-nowrap" style="padding-top: 70px;">
+                      <span class="description-information">End block:</span>
+                    </div>
+                    <div class="col-12 d-flex justify-content-center">
+                      <span class="description-information">{{endHeight}}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      

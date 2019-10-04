@@ -27,6 +27,7 @@ export const AppConfig: Config = {
     deleteWalletConfirm:'delete-wallet-confirm',
     editAccountMultisign: 'edit-account-multisign',
     explorer: 'explorer',
+    extendMosaics: 'extend-mosaics',
     extendNamespace: 'extend-namespace',
     service: 'services',
     storage: 'storage',
@@ -92,6 +93,7 @@ export interface Config {
     deleteWalletConfirm:string;
     editAccountMultisign: string;
     explorer: string;
+    extendMosaics: string;
     extendNamespace: string;
     service: string;
     storage: string;

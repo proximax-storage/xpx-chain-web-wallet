@@ -590,6 +590,10 @@ html, body {
   font-weight: bold;
 }
 
+.fw-normal {
+  font-weight: normal !important;
+}
+
 .fw-bolder {
   font-weight: bolder;
 }
@@ -1103,7 +1107,7 @@ input.form-control.validate-success.ng-valid.ng-dirty, input.form-control.valida
   box-shadow: none !important;
 }
 
-#confirm-password-invalid, #password-invalid, #name-wallet-invalid, #divisibility-invalid, #supply-invalid {
+#confirm-password-invalid, #password-invalid, #name-wallet-invalid, #divisibility-invalid, #supply-invalid, #amount-invalid {
   box-shadow: none !important;
   border: 2px solid #e06e38 !important;
 }
