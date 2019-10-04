@@ -33,6 +33,7 @@ import { SwapCertificateComponent } from '../servicesModule/components/swap-cert
 import { TransferTypeBondedComponent } from '../dashboard/components/transfer-type-bonded/transfer-type-bonded.component';
 import { FilterObjectPipe } from '../shared/pipes/filter-object.pipe';
 import { BoxDataSignerHashComponent } from '../dashboard/components/box-data-signer-hash/box-data-signer-hash.component';
+import { AuthComponent } from '../auth/views/auth/auth.component';
 
 
 
@@ -50,6 +51,7 @@ const ngxUiLoaderConfig: NgxUiLoaderConfig = {
 };
 
 const components = [
+  AuthComponent,
   TransferTypeComponent,
   RegisterNamespaceTypeComponent,
   MosaicDefinitionTypeComponent,

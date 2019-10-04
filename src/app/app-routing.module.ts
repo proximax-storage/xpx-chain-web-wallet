@@ -19,9 +19,6 @@ const routes: Routes = [
     canActivate: [NotLoggedGuard],
     children: [{
       path: '',
-      loadChildren: './auth/auth.module#AuthModule'
-    }, {
-      path: '',
       loadChildren: './home/home.module#HomeModule'
     }, {
       path: '',

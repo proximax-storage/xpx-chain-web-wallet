@@ -8,6 +8,14 @@
   </mdb-navbar-brand>
   <links>
     <ul class="navbar-nav ml-auto">
+
+      <li class="nav-item color-item-menu active" (click)="showModal()">
+        <a class="nav-link waves-light" mdbWavesEffect>
+          <span class="item-menu">Auth</span>
+        </a>
+      </li>
+
+
       <ng-container *ngFor="let key of keyObject(itemsHeader)">
         <ng-container *ngIf="!itemsHeader[key]['rol']">
           <ng-container *ngIf="itemsHeader[key]['type'] === 'default' && itemsHeader[key]['show']">
@@ -49,12 +57,24 @@
 <div class="d-flex align-items-center">
   <div mdbModal #modalAuth="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalAuth"
     aria-hidden="true">
-    <div class="modal-dialog modal-lg d-flex align-items-center" role="document">
+    <div class="modal-dialog modal-md d-flex align-items-center" role="document">
       <div class="modal-content form-elegant bord-rad-1-5rem">
         <div class="modal-header text-center box-modal-white b-t-r-r-1-5rem b-t-l-r-1-5rem p-05rem">
           <span class="modal-title w-100" id="myModalLabel">
             <strong class="title-modal-blue">Auth</strong>
           </span>
+        </div>
+
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-12 col-md-6">
+              <app-auth></app-auth>
+            </div>
+
+            <div class="col-12 col-md-6">
+             asdasdasd
+            </div>
+          </div>
         </div>
       </div>
     </div>
