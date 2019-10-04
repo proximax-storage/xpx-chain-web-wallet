@@ -200,6 +200,37 @@ export class ServicesBoxComponent implements OnInit {
         true
       ),
 
+      // Export Wallet
+      this.services.buildStructureService(
+        'Wallets',
+        true,
+        'Manage your wallets',
+        'icon-wallet-full-color-80h.svg',
+        '',
+        {
+          changePassword: this.services.buildStructureService(
+            'CHANGE PASSWORD',
+            false,
+            '',
+            '',
+            ''
+          ), export: this.services.buildStructureService(
+            'EXPORT',
+            true,
+            '',
+            '',
+            AppConfig.routes.exportWallet
+          ), delete: this.services.buildStructureService(
+            'DELETE',
+            true,
+            '',
+            '',
+            AppConfig.routes.deleteWallet
+          )
+        },
+        true
+      ),
+
       // Notarization
       this.services.buildStructureService(
         'Attestation',
@@ -487,37 +518,6 @@ export class ServicesBoxComponent implements OnInit {
         },
         true,
         'disable-module'
-      ),
-
-      // Export Wallet
-      this.services.buildStructureService(
-        'Wallets',
-        true,
-        'Manage your wallets',
-        'icon-wallet-full-color-80h.svg',
-        '',
-        {
-          changePassword: this.services.buildStructureService(
-            'CHANGE PASSWORD',
-            false,
-            '',
-            '',
-            ''
-          ), export: this.services.buildStructureService(
-            'EXPORT',
-            true,
-            '',
-            '',
-            AppConfig.routes.exportWallet
-          ), delete: this.services.buildStructureService(
-            'DELETE',
-            false,
-            '',
-            '',
-            ''
-          )
-        },
-        true
       )
     ];
   }
