@@ -136,13 +136,14 @@ export class ServicesBoxComponent implements OnInit {
             '',
             '',
             AppConfig.routes.LinkingNamespaceMosaic
-          ), extend: this.services.buildStructureService(
-            'EXTEND DURATION',
-            false,
-            '',
-            '',
-            ''
           )
+          // , extend: this.services.buildStructureService(
+          //   'EXTEND DURATION',
+          //   true,
+          //   '',
+          //   '',
+          //   AppConfig.routes.extendMosaics
+          // )
           // , renew: this.services.buildStructureService(
           //   'RENEW',
           //   false,

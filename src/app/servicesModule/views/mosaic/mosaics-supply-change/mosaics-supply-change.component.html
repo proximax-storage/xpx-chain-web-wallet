@@ -12,7 +12,7 @@
               bindValue="value" placeholder="Select or write mosaic" (change)="optionSelected($event)"></ng-select>
             <mdb-error class="ml-1rem"
               *ngIf="validateInput('parentMosaic').invalid && (validateInput('parentMosaic').dirty || validateInput('parentMosaic').touched)">
-              <span>Select or write mosaic</span>
+              <span>Select mosaic</span>
             </mdb-error>
           </div>
         </div>

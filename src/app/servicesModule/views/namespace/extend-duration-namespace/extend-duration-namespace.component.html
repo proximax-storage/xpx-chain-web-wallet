@@ -29,7 +29,7 @@
           <div class="col-11 mx-auto">
             <div class="md-form form-sm">
               <img class="form-control-feedback" src="assets/images/img/icon-duration-green-16h-proximax-sirius-wallet.svg" alt="">
-              <input mask="0*" formControlName="duration" required mdbInputDirective mdbValidate
+              <input mask="0*" formControlName="duration" required mdbInputDirective mdbValidate autocomplete="off"
                 [validateSuccess]="true" [validateError]="true" type="text" id="duration"
                 class="form-control form-control-sm input-border txt-a-right" placeholder="" (keyup)="limitDuration($event)">
                 <span class="label-i-icon pl-2rem">Duration (number of days)</span>
@@ -37,6 +37,10 @@
               <mdb-error
                 *ngIf="validateInput('duration', '').invalid && (validateInput('duration', '').dirty || validateInput('duration', '').touched)">
                 <span>Required field - Only numbers</span>
+              </mdb-error>
+              <mdb-error
+                *ngIf="excedDuration">
+                <span>Duration exceeded</span>
               </mdb-error>
 
               <mdb-error *ngIf="validateInput('duration', '').valid && insufficientBalanceDuration">
@@ -47,10 +51,10 @@
         </div>
 
         <div class="row ml-01rem">
-          <div class="col-12 mx-auto">
+          <div class="col-11 col-sm-11 col-md-6 col-lg-6">
             <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
               <div class="row">
-                <div class="col-12">
+                <div class="">
                   <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
                     width="20" alt="">&nbsp;
                   <span>Fee: {{ fee }} XPX</span>
@@ -59,10 +63,10 @@
             </div>
           </div>
 
-          <div class="col-12 mx-auto">
+          <div class="col-11 col-sm-11 col-md-6 col-lg-6">
             <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
               <div class="row">
-                <div class="col-12">
+                <div class="">
                   <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
                     width="20" alt="">&nbsp;
                   <span>Rental Fee: {{calculateRentalFee}} XPX</span>
@@ -118,9 +122,11 @@
           <div class="col-4">
             <div class="row">
               <div class="col-12 d-flex justify-content-center">
-                <i class="fa fa-hourglass-start text-gris fa-3x"></i>
+                  <img class="form-control-feedback"
+                  src="assets/images/img/icon-namespace-mosaic-duration-01.svg" alt="" style="width: 80px;">
               </div>
-              <div class="col-12 d-flex justify-content-center overflow-ellipsis-nowrap">
+     
+              <div class="col-12 d-flex justify-content-center overflow-ellipsis-nowrap" style="padding-top: 70px;">
                 <span class="description-information">Start block:</span>
               </div>
               <div class="col-12 d-flex justify-content-center">
@@ -133,9 +139,10 @@
           <div class="col-4">
             <div class="row">
               <div class="col-12 d-flex justify-content-center">
-                <i class="fa fa-hourglass-start text-gris fa-3x"></i>
+                  <img class="form-control-feedback"
+                  src="assets/images/img/icon-namespace-mosaic-duration-02.svg" alt="" style="width: 80px">
               </div>
-              <div class="col-12 d-flex justify-content-center overflow-ellipsis-nowrap">
+              <div class="col-12 d-flex justify-content-center overflow-ellipsis-nowrap" style="padding-top: 70px;">
                 <span class="description-information">Current block:</span>
               </div>
               <div class="col-12 d-flex justify-content-center">
@@ -148,9 +155,10 @@
           <div class="col-4">
             <div class="row">
               <div class="col-12 d-flex justify-content-center">
-                <i class="fa fa-hourglass-start text-gris fa-3x"></i>
+                  <img class="form-control-feedback"
+                  src="assets/images/img/icon-namespace-mosaic-duration-03.svg" alt="" style="width: 80px">
               </div>
-              <div class="col-12 d-flex justify-content-center overflow-ellipsis-nowrap">
+              <div class="col-12 d-flex justify-content-center overflow-ellipsis-nowrap" style="padding-top: 70px;">
                 <span class="description-information">End block:</span>
               </div>
               <div class="col-12 d-flex justify-content-center">

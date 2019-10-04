@@ -14,7 +14,7 @@
               </ng-container>
 
 
-              <div class="col-12">
+              <!-- <div class="col-12">
                 <div class="row d-flex align-items-center">
                   <div class="col-6 col-md-7 col-lg-8 mx-auto pt-07rem">
                     <div class="md-form form-sm mt-0 mb-0rem">
@@ -24,9 +24,9 @@
                         [validateError]="true" type="text" id="duration" min="1" max="365"
                         class="form-control form-control-sm input-border txt-a-right" placeholder=""
                         (keyup)="limitDuration($event)">
-                        <span class="label-i-icon pl-2rem">Duration (number of days)</span>
+                      <span class="label-i-icon pl-2rem">Duration (number of days)</span>
 
-                      <!-- VALIDATION -->
+                     
                       <mdb-error
                         *ngIf="validateInput('duration', '').invalid && (validateInput('duration', '').dirty || validateInput('duration', '').touched)">
                         <span>Required field - Only numbers</span>
@@ -39,7 +39,7 @@
                       (change)="changeNotExpire($event)">Not expire</mdb-checkbox>
                   </div>
                 </div>
-              </div>
+              </div> -->
             </div>
 
             <div class="row">
@@ -51,7 +51,7 @@
                     [validateError]="true" type="text" id="divisibility" minlength="0" maxlength="1"
                     id="divisibility{{errorDivisibility}}" class="form-control form-control-sm input-border txt-a-right"
                     placeholder="" (keyup)="limitLength($event)">
-                    <span class="label-i-icon pl-2rem">Divisibility</span>
+                  <span class="label-i-icon pl-2rem">Divisibility</span>
 
                   <!-- VALIDATION -->
                   <mdb-error
@@ -76,8 +76,8 @@
                     <span>Required field</span>
                   </mdb-error>
                   <mdb-error *ngIf=" invalidSupply">
-                  <span>Supply exceeded</span>
-                </mdb-error>
+                    <span>Supply exceeded</span>
+                  </mdb-error>
                 </div>
               </div>
             </div>
@@ -113,17 +113,35 @@
               </div>
             </div>
 
-            <div class="row ml-01rem ">
+            <div class="row ml-01rem">
+              <div class="col-12 mx-auto">
+                <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
+                  <div class="row">
+                    <div class="col-12">
+                      <!-- Transferable -->
+                      <mdb-checkbox formControlName="transferable" [inline]="true" class="fs-08rem">Transferable
+                      </mdb-checkbox>
+
+                      <!-- Supply Mutable -->
+                      <mdb-checkbox formControlName="supplyMutable" [inline]="true" class="fs-08rem">Supply Mutable
+                      </mdb-checkbox>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- <div class="row ml-01rem ">
               <div class="col-12 mx-auto box-grey d-flex justify-content-center">
-                <!-- Transferable -->
+               
                 <mdb-checkbox formControlName="transferable" [inline]="true" class="fs-08rem">Transferable
                 </mdb-checkbox>
 
-                <!-- Supply Mutable -->
+                
                 <mdb-checkbox formControlName="supplyMutable" [inline]="true" class="fs-08rem">Supply Mutable
                 </mdb-checkbox>
               </div>
-            </div>
+            </div> -->
 
             <div class="row">
               <div class="col-12 mx-auto">

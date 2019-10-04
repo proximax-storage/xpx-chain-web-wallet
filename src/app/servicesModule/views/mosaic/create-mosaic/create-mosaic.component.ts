@@ -46,7 +46,7 @@ export class CreateMosaicComponent implements OnInit {
   transactionReady: SignedTransaction[] = [];
   subscribe = ['transactionStatus'];
   rentalFee = 4576;
-  calculateRentalFee: any = '0.000000';
+  calculateRentalFee: any = '10.000000';
   currentAccount: AccountsInterface;
   insufficientBalance = true;
   accountInfo: AccountsInfoInterface;
@@ -157,9 +157,9 @@ export class CreateMosaicComponent implements OnInit {
     this.mosaicForm = this.fb.group({
       deltaSupply: ['', [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(30)]],
-      duration: ['', [Validators.required]],
+      duration: [''],
       divisibility: ['', [Validators.required]],
-      notExpire: [false],
+      notExpire: [true],
       transferable: [false],
       supplyMutable: [false],
     });
@@ -176,7 +176,7 @@ export class CreateMosaicComponent implements OnInit {
         emitEvent: false
       });
     }
-
+    this.calculateRentalFee = '10.000000';
     this.optionsSuply = {
       prefix: '',
       thousands: ',',
@@ -191,7 +191,7 @@ export class CreateMosaicComponent implements OnInit {
       divisibility: '',
       transferable: false,
       supplyMutable: false,
-      notExpire: false,
+      notExpire: true,
     },
       {
         emitEvent: false
@@ -293,7 +293,11 @@ export class CreateMosaicComponent implements OnInit {
    */
   send() {
     if (this.mosaicForm.valid && !this.blockSend) {
-      const validateAmount = this.transactionService.validateBuildSelectAccountBalance(this.amountAccount, Number(this.fee), Number(this.calculateRentalFee));
+      console.log('this.amountAccount', this.amountAccount);
+      console.log('Number(this.fee)', Number(this.fee));
+      console.log('Number(this.calculateRentalFee)', Number(this.calculateRentalFee.replace(",", "")));
+      
+      const validateAmount = this.transactionService.validateBuildSelectAccountBalance(this.amountAccount, Number(this.fee), Number(this.calculateRentalFee.replace(",", "")));
       // console.log(validateAmount);
       if (validateAmount) {
         const common = {
@@ -305,7 +309,7 @@ export class CreateMosaicComponent implements OnInit {
           this.blockSend = true;
           const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
           const nonce = this.proximaxProvider.createNonceRandom();
-          const duration = (this.mosaicForm.get('duration').enabled) ? parseInt(this.durationByBlock) : undefined;
+          const duration =  undefined;
           const params = {
             nonce: nonce,
             account: account,
@@ -315,6 +319,9 @@ export class CreateMosaicComponent implements OnInit {
             duration: duration,
             network: this.walletService.currentAccount.network
           }
+
+          console.log('-----------params', params);
+          
 
           //BUILD TRANSACTION
            const mosaicDefinitionTransaction = this.proximaxProvider.buildMosaicDefinition(params);
@@ -505,6 +512,7 @@ export class CreateMosaicComponent implements OnInit {
           const mosaic = await this.mosaicServices.filterMosaics([xpxInBalance.id]);
           if (mosaic && mosaic[0].mosaicInfo) {
             this.calculateRentalFee = this.transactionService.amountFormatterSimple(amount);
+            console.log('this.calculateRentalFee', this.calculateRentalFee);
           } else {
             // **********INSUFFICIENT BALANCE*************
             // console.log('AQUI FUE');

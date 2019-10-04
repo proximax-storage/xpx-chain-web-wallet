@@ -278,6 +278,7 @@ export class TransactionsService {
       params.network
     );
 
+    console.log(this.generationHash);
     const account = Account.createFromPrivateKey(params.common.privateKey, params.network);
     const signedTransaction = account.sign(transferTransaction, this.generationHash);
     const transactionHttp = this.buildTransactionHttp();
@@ -369,6 +370,17 @@ export class TransactionsService {
     return new Date(
       deadline.value.toString() + Deadline.timestampNemesisBlock * 1000
     ).toUTCString();
+  }
+
+  /**
+   *
+   *
+   * @param {UInt64} date
+   * @returns
+   * @memberof TransactionsService
+   */
+  dateFormatUTC(date: UInt64) {
+    return new Date(date.compact() + Deadline.timestampNemesisBlock * 1000).toUTCString();
   }
 
   /**
@@ -543,7 +555,6 @@ export class TransactionsService {
       return {
         data: transaction,
         nameType: nameType,
-        timestamp: this.dateFormat(transaction.deadline),
         fee: feeFormatter,
         feePart: this.getDataPart(feeFormatter, 6),
         sender: transaction.signer,
@@ -761,8 +772,9 @@ export interface TransactionsInterface {
   data: any;
   dateFile?: string;
   description?: string;
+  effectiveFee?: number;
   nameType: string;
-  timestamp: string;
+  timestamp?: string;
   fee: string;
   feePart: {
     part1: string;

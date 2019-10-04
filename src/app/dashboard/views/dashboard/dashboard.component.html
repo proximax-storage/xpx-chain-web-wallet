@@ -6,8 +6,6 @@
         <div class="col-12 col-md-5 mt-2rem">
           <div class="row">
 
-
-
             <!-- NAME ACCOUNT -->
             <div class="col-12 d-flex justify-content-center justify-content-md-start align-items-center">
               <div class="dropdown" mdbDropdown>
@@ -200,7 +198,7 @@
 
           <tbody class="background-white">
             <ng-container *ngFor="let el of transactions | paginate: configFilesDashboard">
-              <tr class="white-space-pre cursor-p" (click)="dataSelected = el; modalDashboard.show();">
+              <tr class="white-space-pre cursor-p" (click)="openModal(el);">
                 <td class="th-sm fs-07rem" scope="row description-dark-green">
                   <ng-container *ngIf="el.nameType === 'ProximaX Swap'; else elseSwap">
                     <span style="color: #e6b219;"><i class="fa fa-star" aria-hidden="true"></i></span>
@@ -479,14 +477,11 @@
             <strong class="title-modal-blue-1-7">Accounts</strong> -->
 
           <div class="d-flex w-100">
-
             <div class="flex-column justify-content-center w-100">
               <div class="modal-title fw-600"><strong class="title-modal-blue-1-7">Accounts</strong></div>
               <div class="modal-title"><strong class="title-modal ">Account available in wallet:</strong></div>
             </div>
           </div>
-
-
 
           <!-- </span> -->
           <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modalAccounts.hide()">

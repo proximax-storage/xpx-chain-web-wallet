@@ -11,6 +11,7 @@ export const environment = {
   //version: '0.3.1.8',
   version: '0.3.10',
   cacheVersion: '3',
+  nameKeyBlockStorage: `sw-blocks`,
   nameKeyNodeSelected: `sw-selected-node-testnet-01`,
   nameKeyWalletStorage: `sw-testnet-01`,
   nameKeyNodeStorage: `sw-nodes-testnet-01`,
