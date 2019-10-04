@@ -117,7 +117,7 @@ export class ViewAllAccountsComponent implements OnInit {
       accounts: accounts
     }
 
-    wallet.accounts[0].name = 'Primary';
+    wallet.accounts[0].name = 'Primary_Account';
     wallet.accounts[0].firstAccount = true;
     wallet.accounts[0].default = true;
 
