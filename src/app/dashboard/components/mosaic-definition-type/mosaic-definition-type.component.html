@@ -10,18 +10,20 @@
         </div>
 
         <!-- Timestamp -->
-        <div class="col-12 mt-05rem overflow-ellipsis-nowrap">
-          <span class="color-dark-green fs-07rem fw-500">{{mosaicDefinition?.timestamp}}</span>
+        <div class="col-12" *ngIf="mosaicDefinition?.timestamp">
+          <span class="color-dark-green fs-07rem fw-500 w-w-b-w">{{mosaicDefinition?.timestamp}}</span>
         </div>
 
         <!-- Fee -->
-        <div class="col-12 mb-2rem">
-          <span class="fw-600 fs-095rem">Fee:&nbsp;&nbsp;</span>
-          <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
-          <span class="fs-095rem fw-600 color-blue-light">{{mosaicDefinition?.feePart.part1}}</span>
-          <span class="fs-075rem fw-600 color-blue-light">{{mosaicDefinition?.feePart.part2}}</span>
-          <span class="fs-095rem fw-600 color-blue-light"> XPX </span>
-        </div>
+        <ng-container *ngIf="mosaicDefinition?.effectiveFee">
+          <div class="col-12 mt-03rem">
+            <span class="fw-600 fs-095rem">Fee:&nbsp;&nbsp;</span>
+            <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
+            <span class="fw-600 fs-095rem color-blue-light">{{mosaicDefinition?.effectiveFee.part1}}</span>
+            <span class="fw-600 fs-075rem color-blue-light">{{mosaicDefinition?.effectiveFee.part2}}</span>
+            <span class="fw-600 fs-095rem color-blue-light"> XPX </span>
+          </div>
+        </ng-container>
 
         <!-- Namespace Id -->
         <ng-container *ngIf="viewNamespaceId">
