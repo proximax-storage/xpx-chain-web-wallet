@@ -19,6 +19,7 @@ import { PaginationInstance } from 'ngx-pagination';
 })
 export class ExplorerComponent implements OnInit, AfterViewInit {
 
+
   @ViewChild(MdbTablePaginationComponent, { static: true }) mdbTablePagination: MdbTablePaginationComponent;
   @ViewChild(MdbTableDirective, { static: true }) mdbTable: MdbTableDirective;
   @ViewChild('modalExplorer', { static: true }) modalExplorer: ModalDirective;
@@ -73,6 +74,9 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.typeTransactions = this.transactionService.arraTypeTransaction;
+  }
+
+  ngAfterViewInit(): void {
   }
 
   searchData() {
