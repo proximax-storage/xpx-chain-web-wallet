@@ -407,10 +407,10 @@ export class ServicesBoxComponent implements OnInit {
         {
           blockchain: this.services.buildStructureService(
             'BLOCKCHAIN',
-            false,
+            true,
             '',
             '',
-            ''
+            AppConfig.routes.blockchain
           ), storage: this.services.buildStructureService(
             'STORAGE',
             false,
@@ -426,7 +426,7 @@ export class ServicesBoxComponent implements OnInit {
           )
         },
         true,
-        'disable-module'
+        // 'disable-module'
       ),
 
       // Message
