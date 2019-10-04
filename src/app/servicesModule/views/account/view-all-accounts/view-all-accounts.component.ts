@@ -108,6 +108,28 @@ export class ViewAllAccountsComponent implements OnInit {
     }, 2000);
   }
 
+  /**
+   * Method to object clone
+   * @param obj Object to clone
+   * @memberof ViewAllAccountsComponent
+   * @returns temp
+   */
+  clone(obj) {
+    if (obj === null || typeof obj !== 'object') {
+      return obj;
+    }
+    const temp = obj.constructor();
+    for (const key in obj) {
+      temp[key] = this.clone(obj[key]);
+    }
+    return temp;
+  }
+
+  /**
+   * Method to export account
+   * @param {any} account
+   * @memberof ViewAllAccountsComponent
+   */
   exportAccount(account: any) {
     let acc = this.clone(account);
     const accounts = [];
@@ -135,17 +157,6 @@ export class ViewAllAccountsComponent implements OnInit {
     document.body.appendChild(a);
     a.click();
     window.URL.revokeObjectURL(url);
-  }
-
-  clone(obj) {
-    if (obj === null || typeof obj !== 'object') {
-      return obj;
-    }
-    const temp = obj.constructor();
-    for (const key in obj) {
-      temp[key] = this.clone(obj[key]);
-    }
-    return temp;
   }
 
   /**
