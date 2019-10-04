@@ -264,6 +264,10 @@ html, body {
   padding: 1rem !important;
 }
 
+.p-2rem {
+  padding: 2rem !important;
+}
+
 .p-01rem {
   padding: .1rem;
 }
@@ -558,6 +562,10 @@ html, body {
   height: 98%;
 }
 
+.h-50px {
+  height: 50px;
+}
+
 .h-60px {
   height: 60px;
 }
@@ -781,7 +789,7 @@ html, body {
 }
 
 .color-blue-intermedio {
-  color: #2BA1B9 !important;
+  color: #0098EA !important;
 }
 
 .color-white {
