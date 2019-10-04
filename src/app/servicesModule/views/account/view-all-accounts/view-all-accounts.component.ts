@@ -108,13 +108,18 @@ export class ViewAllAccountsComponent implements OnInit {
     }, 2000);
   }
 
-  exportAccount(account: AccountsInterface) {
-    const accounts = []
-    accounts.push(account);
+  exportAccount(account: any) {
+    let acc = this.clone(account);
+    const accounts = [];
+    accounts.push(acc);
     const wallet = {
-      name: account.name,
+      name: acc.name,
       accounts: accounts
     }
+
+    wallet.accounts[0].name = 'Primary';
+    wallet.accounts[0].firstAccount = true;
+    wallet.accounts[0].default = true;
 
     let wordArray = CryptoJS.enc.Utf8.parse(JSON.stringify(wallet));
     let file = CryptoJS.enc.Base64.stringify(wordArray);
@@ -130,6 +135,17 @@ export class ViewAllAccountsComponent implements OnInit {
     document.body.appendChild(a);
     a.click();
     window.URL.revokeObjectURL(url);
+  }
+
+  clone(obj) {
+    if (obj === null || typeof obj !== 'object') {
+      return obj;
+    }
+    const temp = obj.constructor();
+    for (const key in obj) {
+      temp[key] = this.clone(obj[key]);
+    }
+    return temp;
   }
 
   /**
