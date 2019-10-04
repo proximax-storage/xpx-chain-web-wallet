@@ -39,6 +39,8 @@ import { TransferXpxNis1Component } from './views/swap/transfer-xpx-nis1/transfe
 import { AccountDeleteComponent } from './views/account/account-delete/account-delete/account-delete.component';
 import { AccountDeleteConfirmComponent } from './views/account/account-delete-confirm/account-delete-confirm.component';
 import { ExportWalletComponent } from './views/wallet/export-wallet/export-wallet.component';
+import { BlockchainComponent } from './views/nodes/blockchain/blockchain.component';
+import { DeleteWalletComponent } from './views/wallet/delete-wallet/delete-wallet.component';
 
 
 @NgModule({
@@ -80,7 +82,10 @@ import { ExportWalletComponent } from './views/wallet/export-wallet/export-walle
     TransferXpxNis1Component,
     AccountDeleteComponent,
     AccountDeleteConfirmComponent,
-    ExportWalletComponent
+    ExportWalletComponent,
+    BlockchainComponent,
+    ExportWalletComponent,
+    DeleteWalletComponent
   ],
   schemas: [ NO_ERRORS_SCHEMA ],
   imports: [

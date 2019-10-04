@@ -81,7 +81,7 @@
                                 (click)="changeAsPrimary(account.name)">Make Default</a>
                               <a class="dropdown-item fs-075rem text-black-50" *ngIf="account.default === true">Make
                                 Default</a>
-                              <a class="dropdown-item fs-075rem text-black-50">Export</a>
+                              <a class="dropdown-item fs-075rem" *ngIf="account.encrypted !== ''" (click)="exportAccount(account)">Export</a>
                               <a class="dropdown-item fs-075rem" *ngIf="!account.default && account.encrypted !== ''"
                                 [routerLink]="[routes.deleteAccount+account.name]">Delete</a>
                               <a class="dropdown-item fs-075rem text-black-50" *ngIf="account.default">Delete</a>
