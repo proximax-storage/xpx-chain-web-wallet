@@ -74,7 +74,7 @@
     <div class="d-flex flex-column flex-sm-column flex-md-row align-items-center justify-content-center">
       <ng-container *ngFor="let key of keyObject(itemsHeader)">
         <ng-container *ngIf="itemsHeader[key].show">
-          <a [ngClass]="{'active':itemsHeader[key].selected}"
+          <a class="fw-bold" [ngClass]="{'active':itemsHeader[key].selected}"
             [routerLink]="[itemsHeader[key].link]">{{ itemsHeader[key].name }}</a>
         </ng-container>
       </ng-container>

@@ -23,7 +23,7 @@ export class WalletCreatedComponent implements OnInit {
   publicKey = '';
   privateKey = '';
   title = 'Congratulations';
-  titleDescription = 'Your wallet has been successfully created';
+  titleDescription = 'Your wallet has been successfully created.';
   subtitle = '';
   viewPrivateKey = false;
   routeAuth = `/${AppConfig.routes.auth}`;

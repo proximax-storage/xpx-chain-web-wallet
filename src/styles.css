@@ -7,7 +7,7 @@ html, body {
   display: table;
   height: 100%;
   width: 100%;
-  font-family: 'Open Sans' !important;
+  font-family: 'Lato', 'Arial', 'Helvetica', 'sans-serif' !important;
 }
 
 .white-space-pre {
@@ -672,6 +672,10 @@ html, body {
   font-size: 1rem !important;
 }
 
+.fs-1-1rem {
+  font-size: 1.1rem;
+}
+
 .fs-1-2rem {
   font-size: 1.2rem;
 }
@@ -856,6 +860,12 @@ html, body {
   background: #efefef;
 }
 
+.btn {
+  text-transform: none !important;
+  font-size: 16px !important;
+  font-weight: bold !important;
+}
+
 .background-orange {
   background-color: #f2a917 !important;
 }
@@ -924,7 +934,6 @@ html, body {
   color: white;
   background: #2aa1b9;
   border-radius: 1rem;
-  margin-top: 1rem;
 }
 
 .box-list-account-gray {
@@ -1074,16 +1083,16 @@ button.navbar-toggler {
 
 .md-form input[type=text]:focus:not([readonly]), .md-form input[type=password]:focus:not([readonly]), .md-form input[type=email]:focus:not([readonly]), .md-form input[type=url]:focus:not([readonly]), .md-form input[type=time]:focus:not([readonly]), .md-form input[type=date]:focus:not([readonly]), .md-form input[type=datetime-local]:focus:not([readonly]), .md-form input[type=tel]:focus:not([readonly]), .md-form input[type=number]:focus:not([readonly]), .md-form input[type=search-md]:focus:not([readonly]), .md-form input[type=search]:focus:not([readonly]), .md-form textarea.md-textarea:focus:not([readonly]), .md-form input[type=text]:focus:not([readonly]), .md-form input[type=password]:focus:not([readonly]), .md-form input[type=email]:focus:not([readonly]), .md-form input[type=url]:focus:not([readonly]), .md-form input[type=time]:focus:not([readonly]), .md-form input[type=date]:focus:not([readonly]), .md-form input[type=datetime-local]:focus:not([readonly]), .md-form input[type=tel]:focus:not([readonly]), .md-form input[type=number]:focus:not([readonly]), .md-form input[type=search-md]:focus:not([readonly]), .md-form input[type=search]:focus:not([readonly]), .md-form textarea.md-textarea:focus:not([readonly]), .md-form input[type=text]:focus:not([readonly]), .md-form input[type=password]:focus:not([readonly]), .md-form input[type=email]:focus:not([readonly]), .md-form input[type=url]:focus:not([readonly]), .md-form input[type=time]:focus:not([readonly]), .md-form input[type=date]:focus:not([readonly]), .md-form input[type=datetime-local]:focus:not([readonly]), .md-form input[type=tel]:focus:not([readonly]), .md-form input[type=number]:focus:not([readonly]), .md-form input[type=search-md]:focus:not([readonly]), .md-form input[type=search]:focus:not([readonly]), .md-form textarea.md-textarea:focus:not([readonly]) {
   box-shadow: none !important;
-  border: 2px solid #2BA1B9 !important;
+  border: 2px solid #0098EA !important;
 }
 
 .md-form input[type=text]:focus:not([readonly]), .md-form input[type=password]:focus:not([readonly]), .md-form input[type=email]:focus:not([readonly]), .md-form input[type=url]:focus:not([readonly]), .md-form input[type=time]:focus:not([readonly]), .md-form input[type=date]:focus:not([readonly]), .md-form input[type=datetime-local]:focus:not([readonly]), .md-form input[type=tel]:focus:not([readonly]), .md-form input[type=number]:focus:not([readonly]), .md-form input[type=search-md]:focus:not([readonly]), .md-form input[type=search]:focus:not([readonly]), .md-form textarea.md-textarea:focus:not([readonly]) {
-  box-shadow: 0 1px 0 0 #2BA1B9;
-  border-bottom: 1px solid #2BA1B9;
+  box-shadow: 0 1px 0 0 #0098EA;
+  border-bottom: 1px solid #0098EA;
 }
 
 .md-form input[type=text]:focus:not([readonly])+label, .md-form input[type=password]:focus:not([readonly])+label, .md-form input[type=email]:focus:not([readonly])+label, .md-form input[type=url]:focus:not([readonly])+label, .md-form input[type=time]:focus:not([readonly])+label, .md-form input[type=date]:focus:not([readonly])+label, .md-form input[type=datetime-local]:focus:not([readonly])+label, .md-form input[type=tel]:focus:not([readonly])+label, .md-form input[type=number]:focus:not([readonly])+label, .md-form input[type=search-md]:focus:not([readonly])+label, .md-form input[type=search]:focus:not([readonly])+label, .md-form textarea.md-textarea:focus:not([readonly])+label {
-  color: #2BA1B9 !important;
+  color: #0098EA !important;
 }
 
 .dropdown-default .dropdown-content li a, .dropdown-default .dropdown-content li span:hover, .dropdown-default .dropdown-content li.active {
@@ -1107,11 +1116,11 @@ input.form-control.validate-error.ng-invalid.ng-touched, input.form-control.vali
 
 input.form-control.validate-success.ng-valid.ng-dirty, input.form-control.validate-success.ng-valid.ng-touched, .form-submitted input.form-control.validate-success.ng-valid {
   box-shadow: none !important;
-  border: 2px solid #2BA1B9 !important;
+  border: 2px solid #0098EA !important;
 }
 
 .md-textarea.validate-success.ng-valid {
-  border: 2px solid #2BA1B9 !important;
+  border: 2px solid #0098EA !important;
   box-shadow: none !important;
 }
 
@@ -1133,7 +1142,7 @@ input.form-control.validate-success.ng-valid.ng-dirty, input.form-control.valida
 }
 
 .success-message {
-  color: #2BA1B9 !important;
+  color: #0098EA !important;
 }
 
 .md-form.form-sm mdb-error, .md-form.form-sm mdb-success {
@@ -1154,7 +1163,7 @@ input.form-control.validate-success.ng-valid.ng-dirty, input.form-control.valida
 .toastInfo {
   opacity: 1.0 !important;
   background-color: white !important;
-  border: 2px solid #2BA1B9 !important;
+  border: 2px solid #0098EA !important;
 }
 
 .toastSuccess {
@@ -1192,7 +1201,7 @@ button.md-toast-close-button {
 }
 
 .md-toast-info:before {
-  color: #2BA1B9 !important;
+  color: #0098EA !important;
 }
 
 .md-toast-warning:before {
@@ -1253,15 +1262,15 @@ button.md-toast-close-button {
 }
 
 .ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-selected {
-  color: #2BA1B9 !important;
+  color: #0098EA !important;
 }
 
 .ng-select.ng-select-focused .ng-select-container:after {
-  border-color: #2BA1B9 !important;
+  border-color: #0098EA !important;
 }
 
 .ng-select.ng-select-focused .ng-select-container .ng-arrow-wrapper .ng-arrow, .ng-select.ng-select-focused .ng-select-container .ng-value-container .ng-placeholder {
-  color: #2BA1B9 !important;
+  color: #0098EA !important;
 }
 
 .selectWrapper.ng-select.validate-success.validate-error.ng-select-single.ng-select-searchable.ng-select-clearable.ng-dirty.ng-invalid.ng-touched.ng-select .ng-select-container:after {
@@ -1279,24 +1288,24 @@ button.md-toast-close-button {
 
 /*
 .ng-select.ng-select-focused .ng-select-container .ng-value-container .ng-placeholder{
-  color: #2BA1B9 !important;
+  color: #0098EA !important;
 }
 
 .ng-select.ng-select-focused .ng-select-container:after{
-  border-color: #2BA1B9 !important;
+  border-color: #0098EA !important;
 }
 
 .ng-select.ng-select-focused .ng-select-container:after{
-  border-color: #2BA1B9 !important;
-  border-bottom: thin solid #2BA1B9 !important;
+  border-color: #0098EA !important;
+  border-bottom: thin solid #0098EA !important;
 }
 
 .ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-selected{
-  color: #2BA1B9 !important;
+  color: #0098EA !important;
 }
 
 .ng-select .ng-select-container {
-  color: #2BA1B9 !important;
+  color: #0098EA !important;
 }
 
 .selectWrapper{
@@ -1420,7 +1429,7 @@ button.md-toast-close-button {
   background: #f4f4f4;
   padding: 10px 20px;
   margin: 10px;
-  color: #797979;
+  color: #333333;
 }
 
 .box-drop {

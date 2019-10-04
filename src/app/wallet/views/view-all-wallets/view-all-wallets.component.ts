@@ -28,7 +28,7 @@ export class ViewAllWalletsComponent implements OnInit {
 
   ) {
     this.title = 'Wallets';
-    this.description = 'These are the Sirius Wallet available in the local cache of your device'
+    this.description = 'These are the Sirius Wallet available in the local cache of your device.'
     this.wallets = this.walletService.getWalletStorage();
   }
 

@@ -1,5 +1,6 @@
 {
   "nodes": [
-    "bctestnet1.brimstone.xpxsirius.io:3000"
+    "bctestnet1.brimstone.xpxsirius.io:3000",
+    "bctestnet2.brimstone.xpxsirius.io:3000"
   ]
 }
