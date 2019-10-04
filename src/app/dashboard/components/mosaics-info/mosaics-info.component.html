@@ -9,22 +9,18 @@
   <!-- MOSAIC XPX -->
   <ng-container *ngIf="viewMosaicXpx">
     <div class="row">
-      <div class="col-3">
-        <span class="color-dark-green fw-bold fs-1rem">Amount: </span>
-      </div>
-      <div class="col-9">
+      <div class="col-12 mt-03rem">
+        <span class="fw-600 fs-1rem color-dark-green">Amount:&nbsp;&nbsp;</span>
         <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
-        <span [ngClass]="{
-               'color-blue-light':receive,
-               'color-orange': !receive
-              }" class="fw-bold fs-1rem">{{mosaicXpx.amountFormatter}} XPX</span>
+        <span [ngClass]="{'color-blue-light':receive, 'color-orange': !receive }"
+          class="fw-bold fs-1rem">{{mosaicXpx.amountFormatter}} XPX</span>
       </div>
     </div>
   </ng-container>
 
   <!-- OTHER MOSAICS -->
   <ng-container *ngIf="viewOtherMosaics">
-    <div class="row mt-1rem">
+    <div class="row mt-05rem">
       <div class="col-12">
         <span class="color-dark-green fw-bold fs-1rem">Other mosaics: </span>
       </div>
@@ -37,24 +33,24 @@
             <th *ngFor="let head of headElements" scope="col" [ngClass]="{
                   'color-blue-light': receive,
                   'color-orange': !receive
-                }" class="text-align-left fw-500">{{head}}</th>
+                }" class="text-align-left fw-600">{{head}}</th>
           </tr>
         </thead>
         <tbody>
           <tr mdbTableCol *ngFor="let element of quantity; let i = index">
-            <td class="font-size-08rem">
+            <td class="fs-07rem">
               <a class="text-link mouse-pointer">{{element.id}}</a>
             </td>
 
             <ng-container *ngIf="!element.existMosaic || element.name === ''; else viewMosaicInfo">
-              <td class="font-size-08rem">Name does not exist</td>
-              <td class="font-size-08rem">{{element.amountFormatter}}</td>
+              <td class="fs-07rem">Does not have</td>
             </ng-container>
 
             <ng-template #viewMosaicInfo>
-              <td class="font-size-08rem">{{element.name}}</td>
-              <td class="font-size-08rem">{{element.amountFormatter}}</td>
+              <td class="fs-07rem">{{element.name}}</td>
             </ng-template>
+
+            <td class="fs-07rem txt-a-right">{{element.amountFormatter}}</td>
           </tr>
         </tbody>
       </table>
@@ -78,10 +74,9 @@
       <div class="col-12">
         <!-- MOSAIC XPX -->
         <span class="fw-600 fs-065rem">Amount: &nbsp;</span>
-        <img class="icono" style="width: 12px; padding-right: 2px;" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
-        <span
-          [ngClass]="{'color-blue-light': receive, 'color-orange': !receive }"
-          class="fw-600 fs-065rem">
+        <img class="icono" style="width: 12px; padding-right: 2px;"
+          src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
+        <span [ngClass]="{'color-blue-light': receive, 'color-orange': !receive }" class="fw-600 fs-065rem">
           {{mosaicXpx.amountFormatter}} XPX
         </span>
       </div>

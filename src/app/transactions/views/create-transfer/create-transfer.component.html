@@ -47,13 +47,17 @@
       </div>
     </ng-container>
 
-    <!-- COSIGNATORIES -->
+    <!-- COSIGNATORIES --> 
     <ng-container *ngIf="listCosignatorie.length > 0">
       <div class="row">
         <div class="col-11 col-md-10 col-lg-8 mx-auto">
-          <ng-select mdbInputDirective mdbValidate class="selectWrapper" [items]="listCosignatorie" bindLabel="label"
-            bindValue="value" placeholder="Cosignatories" formControlName="cosignatorie"
-            (change)="selectCosignatorie($event)">
+
+            <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [searchable]="false" [clearable]="false"
+            [validateError]="true" class="selectWrapper" [items]="listCosignatorie" formControlName="cosignatorie"
+            bindLabel="label" bindValue="value" placeholder="Cosignatories" (change)="selectCosignatorie($event)">
+            <ng-template ng-option-tmp let-item="item" let-index="index">
+                <b>{{item.label}}</b> &nbsp;<b style="color:brown">{{item.info}}</b>
+              </ng-template>
           </ng-select>
         </div>
       </div>

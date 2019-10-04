@@ -494,6 +494,10 @@ html, body {
   height: .6em;
 }
 
+.h-1em {
+  height: 1em;
+}
+
 .h-1-4em {
   height: 1.4em;
 }
@@ -757,7 +761,7 @@ html, body {
 }
 
 .color-orange {
-  color: #EA6002 !important;
+  color: #ee6723 !important;
 }
 
 .color-grey {

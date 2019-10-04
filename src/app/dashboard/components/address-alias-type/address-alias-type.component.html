@@ -2,9 +2,14 @@
   <div class="col-12">
     <div class="row">
 
-      <div class="col-12 lh-1em mt-05rem">
-        <span class="fw-600 fs-1-2rem">{{addressAlias.nameType}}</span> <br>
-        <span class="fs-075rem">Deadline: {{addressAlias?.timestamp}}</span>
+      <!-- Bonded -->
+      <div class="col-12">
+        <span class="fw-600 fs-1-2rem">{{addressAlias.nameType}}</span>
+      </div>
+
+      <!-- Timestamp -->
+      <div class="col-12" *ngIf="addressAlias?.timestamp">
+        <span class="color-dark-green fs-07rem fw-500 w-w-b-w">{{addressAlias?.timestamp}}</span>
       </div>
 
       <!-- Fee -->
@@ -20,45 +25,45 @@
       <ng-container *ngIf="addressAlias?.data.transactionInfo.height">
         <div class="col-12 mt-04rem">
           <span class="fw-600 fs-08rem">Height:&nbsp;&nbsp;</span>
-          <span class="fs-065rem">{{addressAlias?.data.transactionInfo.height.compact()}}</span>
+          <span class="fs-07rem">{{addressAlias?.data.transactionInfo.height.compact()}}</span>
         </div>
       </ng-container>
 
       <!-- Type -->
       <div class="col-12 mt-04rem">
         <span class="fw-600 fs-08rem">Type:&nbsp;&nbsp;</span>
-        <span class="fs-065rem">{{addressAlias?.data['type'].toString(16).toUpperCase()}}</span>
+        <span class="fs-07rem">{{addressAlias?.data['type'].toString(16).toUpperCase()}}</span>
       </div>
 
       <!-- Action -->
       <div class="col-12 mt-04rem">
         <span class="fw-600 fs-08rem">Action:&nbsp;&nbsp;</span>
         <ng-container *ngIf="addressAlias?.data['actionType'] === undefined">
-          <span class="fs-075rem green-c">Link</span>
+          <span class="fs-07rem green-c">Link</span>
         </ng-container>
 
         <ng-container *ngIf="addressAlias?.data['actionType'] !== undefined">
-          <span class="fs-075rem color-red">Unlink</span>
+          <span class="fs-07rem color-red">Unlink</span>
         </ng-container>
       </div>
 
       <!-- Address -->
       <div class="col-12 mt-04rem">
         <span class="fw-600 fs-08rem">Address:&nbsp;&nbsp;</span>
-        <span class="fs-065rem">{{addressAlias?.data['address'].pretty()}}</span>
+        <span class="fs-07rem">{{addressAlias?.data['address'].pretty()}}</span>
       </div>
 
       <!-- Namespace Id -->
       <div class="col-12 mt-04rem">
         <span class="fw-600 fs-08rem">Namespace Id:&nbsp;&nbsp;</span>
-        <span class="fs-075rem">{{namespaceId}}</span>
+        <span class="fs-07rem">{{namespaceId}}</span>
       </div>
 
       <!-- Namespace Id -->
       <ng-container *ngIf="namespaceName !== ''">
         <div class="col-12 mt-04rem">
           <span class="fw-600 fs-08rem">Namespace name:&nbsp;&nbsp;</span>
-          <span class="fs-075rem">{{namespaceName}}</span>
+          <span class="fs-07rem">{{namespaceName}}</span>
         </div>
       </ng-container>
     </div>

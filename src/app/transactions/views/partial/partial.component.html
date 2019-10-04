@@ -14,7 +14,7 @@
   </div>
   <div class="row">
     <div class="col-12">
-      <hr class="mt-03rem mb-05rem">
+      <hr class="mt-03rem mb-03rem">
     </div>
   </div>
 </div>
@@ -67,9 +67,7 @@
             <ng-container
               *ngFor="let transaction of aggregateTransactions | stringFilter: filter | paginate: configAdvance">
               <tr class="white-space-pre cursor-p" mdbTableCol [ngClass]="!transaction ? 'background-pending': ''"
-                (click)="find(transaction); modalPartialTransaction.show();">
-                <!-- <td class="fs-07rem" [ngClass]="transaction ? 'fw-600': ''">{{transaction.status}}</td> -->
-                <td class="fs-07rem">{{transaction.timestamp}}</td>
+                (click)="find(transaction)">
                 <td class="fs-07rem">{{transaction.fee}}</td>
                 <td class="fs-07rem">{{transaction.senderAddress}}</td>
                 <td class="fs-07rem">{{transaction.data.transactionInfo.hash}}</td>
@@ -99,7 +97,7 @@
     aria-labelledby="modalPartialTransaction" aria-hidden="true">
     <div class="modal-dialog modal-lg d-flex align-items-center" role="document">
       <div class="modal-content form-elegant bord-rad-1-5rem">
-        <div class="modal-header text-center box-modal-white b-t-r-r-1-5rem b-t-l-r-1-5rem p-05rem">
+        <div class="modal-header text-center box-modal-white b-t-r-r-1-5rem b-t-l-r-1-5rem p-03rem">
           <span class="modal-title w-100" id="myModalLabel">
             <strong class="title-modal-blue">Partial Transaction - Information</strong>
           </span>
@@ -117,10 +115,14 @@
                 <div class="row d-flex justify-content-center">
                   <div class="col-12 col-md-6">
                     <div class="row">
-                      <!-- Bonded & Deadline -->
-                      <div class="col-12 lh-1em">
-                        <span class="fw-600 fs-1-2rem">Bonded</span> <br>
-                        <span class="fs-075rem">Deadline: {{dataSelected?.timestamp}}</span>
+                      <!-- Partial -->
+                      <div class="col-12">
+                        <span class="fw-600 fs-1-2rem">Bonded</span>
+                      </div>
+
+                      <!-- Timestamp -->
+                      <div class="col-12" *ngIf="dataSelected?.timestamp">
+                        <span class="color-dark-green fs-07rem fw-500 w-w-b-w">{{dataSelected?.timestamp}}</span>
                       </div>
 
                       <!-- Fee -->
@@ -133,27 +135,27 @@
                       </div>
 
                       <!-- Type -->
-                      <div class="col-12 mt-05rem">
+                      <div class="col-12 mt-03rem">
                         <span class="fw-600 fs-08rem">Type:&nbsp;&nbsp;</span>
                         <span class="fs-065rem">{{dataSelected?.data['type'].toString(16).toUpperCase()}}</span>
                       </div>
 
                       <!-- Height -->
                       <ng-container *ngIf="dataSelected?.data.transactionInfo.height.compact() > 0">
-                        <div class="col-12 mt-05rem">
+                        <div class="col-12 mt-03rem">
                           <span class="fw-600 fs-08rem">Height:&nbsp;&nbsp;</span>
                           <span class="fs-065rem">{{dataSelected?.data.transactionInfo.height.compact()}}</span>
                         </div>
                       </ng-container>
 
                       <!-- Signer -->
-                      <div class="col-12 mt-05rem line-h-09em">
+                      <div class="col-12 mt-03rem line-h-09em">
                         <span class="fw-600 fs-08rem">Signer:</span> <br>
                         <span class="fs-065rem w-w-b-w">{{dataSelected?.senderAddress}}</span>
                       </div>
 
                       <!-- Hash -->
-                      <div class="col-12 mt-05rem line-h-09em">
+                      <div class="col-12 mt-03rem line-h-09em">
                         <span class="fw-600 fs-08rem">Hash:</span> <br>
                         <span class="fs-065rem w-w-b-w">{{dataSelected?.data.transactionInfo.hash}}</span>
                       </div>
@@ -209,7 +211,7 @@
 
                       <!-- Accounts -->
                       <div class="col-12 pt-1rem background-gray-light">
-                        <div class="row lh-1em mb-05rem">
+                        <div class="row lh-1em mb-03rem">
                           <div class="col-12">
                             <span class="fw-600 fs-065rem">Signer cosignatory account: </span>
                           </div>
@@ -220,7 +222,7 @@
 
                         <ng-container
                           *ngIf="dataSelected?.data['cosignatures'] && dataSelected?.data['cosignatures'].length > 0">
-                          <div class="row lh-1em mt-05rem mb-1rem">
+                          <div class="row lh-1em mt-03rem mb-1rem">
                             <div class="col-12">
                               <span class="fw-600 fs-065rem">Others cosignatories:</span>
                             </div>
