@@ -18,18 +18,17 @@
         <span class="fs-095rem fw-600 color-blue-light">{{aggregateComplete?.feePart.part1}}</span>
         <span class="fs-075rem fw-600 color-blue-light">{{aggregateComplete?.feePart.part2}}</span>
         <span class="fs-095rem fw-600 color-blue-light"> XPX </span>
-
       </div>
 
       <!-- Type -->
-      <div class="col-12 mt-05rem">
+      <div class="col-12 mt-03rem">
         <span class="fw-600 fs-08rem">Type:&nbsp;&nbsp;</span>
         <span class="fs-07rem">{{aggregateComplete?.data['type'].toString(16).toUpperCase()}}</span>
       </div>
 
       <!-- Height -->
       <ng-container *ngIf="aggregateComplete?.data.transactionInfo.height.compact() > 0">
-        <div class="col-12 mt-05rem">
+        <div class="col-12 mt-03rem">
           <span class="fw-600 fs-08rem">Height:&nbsp;&nbsp;</span>
           <span class="fs-07rem">{{aggregateComplete?.data.transactionInfo.height.compact()}}</span>
         </div>

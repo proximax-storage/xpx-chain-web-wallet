@@ -47,7 +47,7 @@ export class ExtendDurationMosaicComponent implements OnInit {
 
     console.log('block', this.subscribe['block']);
     console.log('data', data);
-    
+
   }
 
 
@@ -80,7 +80,7 @@ export class ExtendDurationMosaicComponent implements OnInit {
       }
     }
   }
-  
+
   /**
    *
    *

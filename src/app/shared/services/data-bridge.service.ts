@@ -51,7 +51,7 @@ export class DataBridgeService {
    *
    * @memberof DataBridgeService
    */
-  async searchBlockInfo(byHeight: TypeNumber) {
+  async searchBlockInfo() {
     this.proximaxProvider.getBlockchainHeight().subscribe(
       (blockchainHeight: UInt64) => {
         this.proximaxProvider.getBlockInfo().subscribe(
