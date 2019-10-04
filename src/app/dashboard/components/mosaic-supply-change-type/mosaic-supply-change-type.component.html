@@ -5,7 +5,7 @@
       <div class="row">
         <!-- Type transfer -->
         <div class="col-12 overflow-ellipsis-nowrap">
-          <span class="color-dark-green fw-bold fs-2rem">{{mosaicSupplyChange.nameType}}</span>
+          <span class="color-dark-green fw-bold fs-1-2rem">{{mosaicSupplyChange.nameType}}</span>
         </div>
 
         <!-- Timestamp -->
@@ -16,7 +16,7 @@
         <!-- Fee -->
         <ng-container *ngIf="mosaicSupplyChange?.effectiveFee">
           <div class="col-12 mt-03rem">
-            <span class="fw-600 fs-095rem">Fee:&nbsp;&nbsp;</span>
+            <span class="fw-600 fs-095rem color-dark-green">Fee:&nbsp;&nbsp;</span>
             <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
             <span class="fw-600 fs-095rem color-blue-light">{{mosaicSupplyChange?.effectiveFee.part1}}</span>
             <span class="fw-600 fs-075rem color-blue-light">{{mosaicSupplyChange?.effectiveFee.part2}}</span>
@@ -24,186 +24,83 @@
           </div>
         </ng-container>
 
-        <!-- Height -->
-        <div class="col-12 mt-04rem">
-          <div class="row">
-            <div class="col-4">
-              <span class="color-dark-green fw-bold fs-08rem">Height:&nbsp;&nbsp;</span>
-            </div>
-            <div class="col-8">
-              <ng-container
-                *ngIf="mosaicSupplyChange?.data.transactionInfo.height.compact() === '4294967295,4294967295'; else heightTemplate">
-                <span class="color-dark-green fw-400 fs-07rem">0</span>
-              </ng-container>
-
-              <ng-template #heightTemplate>
-                <span class="color-dark-green fw-400
-                fs-07rem">{{mosaicSupplyChange?.data.transactionInfo.height.compact()}}</span>
-              </ng-template>
-            </div>
+        <!-- HEIGHT -->
+        <ng-container *ngIf="mosaicSupplyChange?.data.transactionInfo.height.compact() > 0">
+          <div class="col-12 mt-03rem">
+            <span class="fw-600 fs-08rem color-dark-green">Height:&nbsp;&nbsp;</span>
+            <span
+              class="fs-07rem fw-400 color-dark-green">{{mosaicSupplyChange?.data.transactionInfo.height.compact()}}</span>
           </div>
+        </ng-container>
 
-
-          <div class="row">
-            <div class="col-4 overflow-ellipsis-nowrap">
-              <span class="color-dark-green fw-bold fs-08rem">Type: </span>
-            </div>
-            <div class="col-8 overflow-ellipsis-nowrap">
-              <span class="color-dark-green fw-400
-              fs-08rem">{{typeTransactionHex}}</span>
-            </div>
-          </div>
+        <!-- TYPE -->
+        <div class="col-12 mt-03rem">
+          <span class="fw-600 fs-08rem color-dark-green">Type:&nbsp;&nbsp;</span>
+          <span class="fs-07rem fw-400 color-dark-green">{{typeTransactionHex}}</span>
         </div>
 
         <!-- Mosaic Id -->
         <ng-container *ngIf="mosaicSupplyChange['mosaicsStorage'] !== null">
-          <div class="col-12 mt-04rem">
-            <div class="row">
-              <div class="col-4 overflow-ellipsis-nowrap">
-                <span class="color-dark-green fw-bold fs-08rem">Divisibility: </span>
-              </div>
-              <div class="col-8 overflow-ellipsis-nowrap">
-                <span class="color-dark-green fw-400
-                fs-08rem">{{mosaicSupplyChange['mosaicsStorage'].mosaicInfo.properties.divisibility}}</span>
-              </div>
-            </div>
+          <div class="col-12 mt-03rem">
+            <span class="fw-600 fs-08rem color-dark-green">Divisibility:&nbsp;&nbsp;</span>
+            <span
+              class="fs-07rem fw-400 color-dark-green">{{mosaicSupplyChange['mosaicsStorage'].mosaicInfo.properties.divisibility}}</span>
           </div>
         </ng-container>
 
         <!-- Increase -->
         <ng-container *ngIf="mosaicSupplyChange.data['direction'] === 1 && mosaicSupplyChange['mosaicsStorage'];">
-          <div class="col-12 mt-04rem">
-            <div class="row">
-              <div class="col-4 overflow-ellipsis-nowrap">
-                <span class="color-dark-green fw-bold fs-08rem">Increase: </span>
-              </div>
-              <div class="col-8 overflow-ellipsis-nowrap">
-                <span class="color-dark-green fw-bolder fs-08rem green-c">+
-                  {{transactionService.amountFormatter(mosaicSupplyChange.data.delta.compact(), mosaicSupplyChange['mosaicsStorage']['mosaicInfo'])}}
-                </span>
-              </div>
-            </div>
+          <div class="col-12 mt-03rem">
+            <span class="fw-600 fs-08rem color-dark-green">Increase:&nbsp;&nbsp;</span>
+            <span
+              class="fs-07rem fw-400 green-c"> + {{transactionService.amountFormatter(mosaicSupplyChange.data.delta.compact(), mosaicSupplyChange['mosaicsStorage']['mosaicInfo'])}}</span>
           </div>
         </ng-container>
 
         <!-- Decrease -->
         <ng-container *ngIf="mosaicSupplyChange.data['direction'] !== 1 && mosaicSupplyChange['mosaicsStorage'];">
-          <div class="col-12 mt-04rem">
-            <div class="row">
-              <div class="col-4 overflow-ellipsis-nowrap">
-                <span class="color-dark-green fw-bold fs-08rem">Decrease: </span>
-              </div>
-              <div class="col-8 overflow-ellipsis-nowrap">
-                <span class="fw-bolder fs-08rem color-red">-
-                  {{transactionService.amountFormatter(mosaicSupplyChange.data.delta.compact(), mosaicSupplyChange['mosaicsStorage']['mosaicInfo'])}}
-                </span>
-              </div>
-            </div>
+          <div class="col-12 mt-03rem">
+            <span class="fw-600 fs-08rem color-dark-green">Decrease:&nbsp;&nbsp;</span>
+            <span
+              class="fs-07rem fw-400 color-red"> - {{transactionService.amountFormatter(mosaicSupplyChange.data.delta.compact(), mosaicSupplyChange['mosaicsStorage']['mosaicInfo'])}}</span>
           </div>
         </ng-container>
 
         <!-- Mosaic Name -->
         <ng-container *ngIf="viewMosaicName">
-          <div class="col-12 mt-04rem">
-            <div class="row">
-              <div class="col-4 overflow-ellipsis-nowrap">
-                <span class="color-dark-green fw-bold fs-08rem">Mosaic: </span>
-              </div>
-              <div class="col-8 overflow-ellipsis-nowrap">
-                <span class="color-dark-green fw-400 fs-08rem">
-                  <!-- Mosaic Name -->
-                  <ng-container *ngIf="
-                mosaicSupplyChange['mosaicsStorage'] !== null &&
-                mosaicSupplyChange['mosaicsStorage']['mosaicNames']['names'].lenght > 0;
-                else viewId">
-                    {{ mosaicSupplyChange.mosaicsStorage['mosaicNames']['names'][0] }}
-                  </ng-container>
+          <div class="col-12 mt-03rem">
+            <span class="fw-600 fs-08rem color-dark-green">Mosaic:&nbsp;&nbsp;</span>
+            <span class="fs-07rem fw-400 color-dark-green">
+              <!-- Mosaic Name -->
+              <ng-container
+                *ngIf="mosaicSupplyChange['mosaicsStorage'] !== null && mosaicSupplyChange['mosaicsStorage']['mosaicNames']['names'].lenght > 0; else viewId">
+                {{ mosaicSupplyChange.mosaicsStorage['mosaicNames']['names'][0] }}
+              </ng-container>
 
-                  <!-- Mosaic Id -->
-                  <ng-template #viewId>
-                    {{ mosaicId }}
-                  </ng-template>
-                </span>
-              </div>
-            </div>
+              <!-- Mosaic Id -->
+              <ng-template #viewId>
+                {{ mosaicId }}
+              </ng-template>
+            </span>
           </div>
         </ng-container>
 
         <!-- Recipient Rental Fee Sink -->
-        <div class="col-12 mt-04rem">
-          <div class="row">
-            <div class="col-4 overflow-ellipsis-nowrap">
-              <span class="color-dark-green fw-bold fs-08rem">Recipient Rental Fee Sink: </span>
-            </div>
-            <div class="col-8 overflow-ellipsis-nowrap">
-              <span class="color-dark-green fw-400 fs-08rem">{{mosaicSupplyChange?.recipientRentalFeeSink}}</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- <ng-container *ngIf="aggregateComplete?.recipientRentalFeeSink !== '-'">
-            <div class="col-12 mt-04rem">
-              <div class="row">
-                <div class="col-12">
-                  <span class="color-dark-green fw-bold fs-08rem">Recipient Rental Fee Sink:&nbsp;&nbsp;</span>
-                  <span
-                    class="color-dark-green fw-400 fs-08rem mt-02rem">{{aggregateComplete?.recipientRentalFeeSink}}</span>
-                </div>
-              </div>
-            </div>
-          </ng-container> -->
-      </div>
-    </div>
-
-    <!-- Box signer, signature, hash -->
-    <div class="col-12 col-lg-5" id="boxHashSignerSignature">
-      <div class="row gray-color-transparent lh-1em">
-        <div class="col-12">
-          <div class="row">
-            <div class="col-12">
-              <span class="fs-08rem fw-bolder w-w-b-w"><b>Signer:</b></span>
-            </div>
-            <div class="col-12">
-              <span class="fs-07rem fw-bolder w-w-b-w">{{mosaicSupplyChange?.data.signer.publicKey}}</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-12 mt-3">
-          <div class="row">
-            <div class="col-12">
-              <span class="fs-08rem fw-bolder w-w-b-w"><b>Signature:</b></span>
-            </div>
-            <div class="col-12">
-              <span class="fs-07rem fw-bolder w-w-b-w">{{mosaicSupplyChange?.data.signature}}</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-12 mt-3">
-          <div class="row">
-            <div class="col-12">
-              <span class="fs-08rem fw-bolder w-w-b-w"><b>Hash:</b></span>
-            </div>
-            <div class="col-12">
-              <span class="fs-07rem fw-bolder w-w-b-w">{{mosaicSupplyChange?.data.transactionInfo.hash}}</span>
-            </div>
-          </div>
+        <div class="col-12 mt-03rem">
+          <span class="fw-600 fs-08rem color-dark-green">Recipient Rental Fee Sink: <br></span>
+          <span class="fs-07rem fw-400 color-dark-green">{{mosaicSupplyChange?.recipientRentalFeeSink}}</span>
         </div>
       </div>
     </div>
   </div>
-
 
   <div class="col-12 mt-4" *ngIf="searching">
     <mdb-progress-bar class="progress primary-color-dark" mode="indeterminate" *ngIf="searching"></mdb-progress-bar>
   </div>
-
 </ng-container>
 
 <ng-template #viewInnerTransaction>
   <div class="row">
-
     <!-- Type-->
     <div class="col-12">
       <div class="row">
