@@ -147,13 +147,18 @@ export class ViewAllAccountsComponent implements OnInit {
     let file = CryptoJS.enc.Base64.stringify(wordArray);
     // Word array to base64
 
+    const date = new Date(Date.now());
+    const year = date.getFullYear();
+    const month = ((date.getMonth() + 1) < 10) ? `0${(date.getMonth() + 1)}` : date.getMonth() + 1;
+    const day = (date.getDate() < 10) ? `0${date.getDate()}` : date.getDate();
+
     const blob = new Blob([file], { type: '' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.style.display = 'none';
     a.href = url;
     // the filename you want
-    a.download = `${wallet.name}.wlt`;
+    a.download = `${wallet.name}_${year}-${month}-${day}.wlt`;
     document.body.appendChild(a);
     a.click();
     window.URL.revokeObjectURL(url);
