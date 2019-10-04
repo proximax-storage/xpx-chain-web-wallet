@@ -380,7 +380,7 @@ export class TransactionsService {
    * @memberof TransactionsService
    */
   dateFormatUTC(date: UInt64) {
-    return new Date(date.compact() + Deadline.timestampNemesisBlock * 1000).toUTCString();
+    return new Date(date.compact() + 1459468800 * 1000).toLocaleString();
   }
 
   /**
@@ -737,8 +737,8 @@ export class TransactionsService {
   }
 
   /**
-   *  
-   * Validate balance cosignatory 
+   *
+   * Validate balance cosignatory
    *
    * @param {AccountsInfoInterface} accountInfo
    * @param {Number} feeTotal
@@ -772,7 +772,7 @@ export interface TransactionsInterface {
   data: any;
   dateFile?: string;
   description?: string;
-  effectiveFee?: number;
+  effectiveFee?: {};
   nameType: string;
   timestamp?: string;
   fee: string;

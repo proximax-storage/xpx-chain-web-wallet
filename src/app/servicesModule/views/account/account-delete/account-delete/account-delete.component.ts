@@ -32,7 +32,7 @@ export class AccountDeleteComponent implements OnInit {
   accountValid: boolean = false;
   viewPublicKey = false;
   showPassword: boolean = true;
-  title = 'Accounts that are associated with this device';
+  title = 'Accounts that are associated with this device.';
   texAlert = 'Would you like to delete permanently this account?'
   accountName: string;
   address: any;

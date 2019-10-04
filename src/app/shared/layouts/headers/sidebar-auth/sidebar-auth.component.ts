@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ItemsHeaderInterface, SharedService, MenuInterface } from '../../../services/shared.service';
 import { AppConfig } from '../../../../config/app.config';
 import { environment } from '../../../../../environments/environment';
+import { ModalDirective } from 'ng-uikit-pro-standard';
 
 @Component({
   selector: 'app-sidebar-auth',
@@ -10,6 +11,7 @@ import { environment } from '../../../../../environments/environment';
 })
 export class SidebarAuthComponent implements OnInit {
 
+  @ViewChild('modalAuth', { static: true }) modalAuth: ModalDirective;
   itemsHeader: ItemsHeaderInterface;
   keyObject = Object.keys;
   version = '';
@@ -71,7 +73,7 @@ export class SidebarAuthComponent implements OnInit {
 
     const deleteWallet: MenuInterface = {
       type: 'default',
-      name: 'in local cache',
+      name: 'In local cache',
       class: '',
       icon: '',
       rol: false,

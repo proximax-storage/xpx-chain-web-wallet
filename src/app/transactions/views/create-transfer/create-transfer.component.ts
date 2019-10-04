@@ -176,6 +176,7 @@ export class CreateTransferComponent implements OnInit {
             let amount = '';
             let expired = false;
             let nameExpired = '';
+            console.log(mosaic)
             if ('mosaicInfo' in mosaic) {
               amount = this.transactionService.amountFormatter(currentMosaic.amount, mosaic.mosaicInfo);
               const durationMosaic = new UInt64([
@@ -191,10 +192,14 @@ export class CreateTransferComponent implements OnInit {
               ]);
 
               if (durationMosaic.compact() > 0) {
+                console.log(durationMosaic.compact());
                 if (this.currentBlock >= durationMosaic.compact() + createdBlock.compact()) {
                   expired = true;
                   nameExpired = ' - Expired';
                 }
+              } else {
+                expired = true;
+                nameExpired = ' - Expired';
               }
             } else {
               amount = this.transactionService.amountFormatterSimple(currentMosaic.amount.compact());
@@ -454,11 +459,9 @@ export class CreateTransferComponent implements OnInit {
         element.isMultisign.cosignatories.forEach(cosignatorie => {
           const address = this.proximaxProvider.createFromRawAddress(cosignatorie.address['address']);
           const cosignatorieAccount: AccountsInterface = this.walletService.filterAccountWallet('', null, address.pretty());
-          console.log(cosignatorieAccount);
           if (cosignatorieAccount) {
             const accountFiltered: AccountsInfoInterface = this.walletService.filterAccountInfo(cosignatorieAccount.name);
             const infValidate = this.transactionService.validateBalanceCosignatorie(accountFiltered, Number(this.feeCosignatory)).infValidate;
-
             listCosignatorie.push({
               label: cosignatorieAccount.name,
               value: cosignatorieAccount,

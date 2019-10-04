@@ -50,7 +50,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     currentPage: 1
   };
   dataSelected: TransactionsInterface = null;
-  headElements = ['Type', 'Fee', '', 'Sender', 'Recipient'];
+  headElements = ['Type', '', 'Sender', 'Recipient'];
   iconReloadDashboard = false;
   objectKeys = Object.keys;
   partialTransactions = 0;
@@ -94,8 +94,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.dashboardService.incrementViewDashboard();
     this.dashboardService.subscribeLogged();
     this.currentAccount = Object.assign({}, this.walletService.getCurrentAccount());
-    console.log('this current Account', this.currentAccount);
-    
+
     this.currentAccount.address = this.proximaxProvider.createFromRawAddress(this.currentAccount.address).pretty();
     this.currentAccount.name = (this.currentAccount.name === 'Primary') ? `${this.currentAccount.name}_Account` : this.currentAccount.name;
     const qr = qrcode(10, 'H');
@@ -425,19 +424,24 @@ export class DashboardComponent implements OnInit, OnDestroy {
       if (existBlock) {
         console.log('In cache', existBlock);
         transaction.timestamp = this.transactionService.dateFormatUTC(new UInt64([existBlock.timestamp.lower, existBlock.timestamp.higher]));
-        transaction.effectiveFee = existBlock.feeMultiplier * transaction.data.size;
+        const calculateEffectiveFee = this.transactionService.amountFormatterSimple(existBlock.feeMultiplier * transaction.data.size)
+        transaction.effectiveFee = this.transactionService.getDataPart(calculateEffectiveFee, 6);
+        console.log('Effective fee ---> ', transaction.effectiveFee);
       }else {
         this.proximaxProvider.getBlockInfo(height).subscribe(
           next => {
             console.log('Http', next);
             this.dataBridge.validateBlock(next);
             transaction.timestamp = this.transactionService.dateFormatUTC(next.timestamp);
-            transaction.effectiveFee = next.feeMultiplier * transaction.data.size;
+            const calculateEffectiveFee = this.transactionService.amountFormatterSimple(next.feeMultiplier * transaction.data.size);
+            transaction.effectiveFee = this.transactionService.getDataPart(calculateEffectiveFee, 6);
+            console.log('Effective fee ---> ', transaction.effectiveFee);
           }
         );
       }
     } else {
-      transaction.effectiveFee = 0;
+      transaction.effectiveFee = this.transactionService.getDataPart('0.00000', 6);
+      console.log('Effective fee ---> ', transaction.effectiveFee);
     }
 
     this.dataSelected = transaction;

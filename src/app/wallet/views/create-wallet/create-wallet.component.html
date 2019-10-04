@@ -7,10 +7,9 @@
       <hr class="mt-05rem mb-06rem">
     </div>
     <div class="col-12 d-flex justify-content-center">
-      <span class="fs-08rem txt-a-center line-h-1-2em">{{description}}</span>
+      <span class="fs-1rem txt-a-center line-h-1-2em">{{description}}</span>
     </div>
   </div>
-
 
   <form [formGroup]="createWalletForm" (ngSubmit)="createSimpleWallet()">
     <div class="row mt-1-5rem">
@@ -110,14 +109,14 @@
       <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
         <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
           size="md" (click)="clearForm()">
-          <span class="fs-1-2em color-white">CLEAR</span>
+          <span class="fs-1-2em color-white">Clear</span>
         </button>
       </div>
 
       <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
         <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
           size="md">
-          <span class="fs-1-2em color-white">CREATE</span>
+          <span class="fs-1-2em color-white">Create</span>
         </button>
       </div>
     </div>

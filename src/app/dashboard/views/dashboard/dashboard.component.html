@@ -30,9 +30,10 @@
             <div class="col-12 d-flex justify-content-center justify-content-md-start align-items-center mt-02rem">
               <span class="fs-06rem f-s-dashboard-transactions fw-600">{{currentAccount.address}} &nbsp;
                 <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="icono cursor-p"
-                  alt="Copy" width="20" (click)="copyMessage('Address')" ngxClipboard [cbContent]="currentAccount.address">
-                <img src="assets/images/img/icon-qr-code-proximax-sirius-wallet.svg" class="icono cursor-p" alt="Address QR"
-                  width="20" (click)="modalQR.show()"></span>
+                  alt="Copy" width="20" (click)="copyMessage('Address')" ngxClipboard
+                  [cbContent]="currentAccount.address">
+                <img src="assets/images/img/icon-qr-code-proximax-sirius-wallet.svg" class="icono cursor-p"
+                  alt="Address QR" width="20" (click)="modalQR.show()"></span>
             </div>
 
             <!-- BALANCE -->
@@ -73,7 +74,8 @@
 
                     <div class="d-flex flex-row justify-content-around">
                       <div>
-                        <img class="icono" src="assets/images/img/icon-transaction-confirmed-white.svg" width="20"></div>
+                        <img class="icono" src="assets/images/img/icon-transaction-confirmed-white.svg" width="20">
+                      </div>
                       <div>
                         <span class="txt-btn-dashboard">
                           {{cantConfirmed}}</span>
@@ -129,7 +131,8 @@
                         <div class="btn-swap">
                           <div class="d-flex flex-row justify-content-around">
                             <div>
-                              <img class="icono" src="assets/images/img/icon-transaction-swap-process-white.svg" width="20">
+                              <img class="icono" src="assets/images/img/icon-transaction-swap-process-white.svg"
+                                width="20">
                             </div>
                             <div>
                               <span class="txt-btn-dashboard">{{swapTransactions}}</span>
@@ -154,8 +157,9 @@
   <!-- FIELD SEARCH -->
   <div class="row">
     <div class="col-12 col-sm-11 col-md-10 col-lg-9 mx-auto">
-      <input [(ngModel)]="searchTransaction" type="text" autocomplete="off" id="searchTransaction" class="md-form form-control"
-        mdbInputDirective [validateSuccess]="false" [validateError]="false" placeholder="Search">
+      <input [(ngModel)]="searchTransaction" type="text" autocomplete="off" id="searchTransaction"
+        class="md-form form-control" mdbInputDirective [validateSuccess]="false" [validateError]="false"
+        placeholder="Search">
     </div>
   </div>
 
@@ -209,15 +213,14 @@
                   {{el.nameType}}
                 </td>
 
-                <!-- fee -->
-                <td class="text-center th-sm description-dark-green fs-07rem">{{el.fee}}</td>
-                <!-- address -->
+                  <!-- address -->
                 <td class="text-center th-md description-dark-green fs-07rem">
                   <img src="assets/images/img/arrow-transaction-receive-green-proximax-sirius-explorer.svg" alt=""
                     width="25" *ngIf="el.receive">
                   <img src="assets/images/img/arrow-transaction-sender-orange-proximax-sirius-explorer.svg" alt=""
                     width="25" *ngIf="!el.receive">
                 </td>
+
                 <!-- address -->
                 <td class="th-md description-dark-green fs-07rem">
                   <span>{{el.senderAddress}}</span>
@@ -265,8 +268,8 @@
 
 <!-- TRANSACTION INFORMATION DETAILS -->
 <div class="d-flex align-items-center">
-  <div mdbModal #modalDashboard="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalDashboard"
-    aria-hidden="true">
+  <div mdbModal #modalDashboard="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+    aria-labelledby="modalDashboard" aria-hidden="true">
     <div class="modal-dialog modal-lg d-flex align-items-center" role="document">
       <div class="modal-content form-elegant bord-rad-1-5rem">
         <div class="modal-header text-center box-modal-white b-t-r-r-1-5rem b-t-l-r-1-5rem p-05rem">
@@ -282,16 +285,10 @@
           <ng-container *ngIf="dataSelected">
 
             <!-- TYPE MOSAIC DEFINITION TRANSACTION -->
-            <app-mosaic-definition-type [mosaicDefinition]="dataSelected" *ngIf="dataSelected.data.type === typeTransactions.mosaicDefinition.id">
-            </app-mosaic-definition-type>
-            <!-- TYPE MOSAIC SUPPLY CHANGE TRANSACTION -->
-            <app-mosaic-supply-change-type [mosaicSupplyChange]="dataSelected" *ngIf="dataSelected.data.type === typeTransactions.mosaicSupplyChange.id">
-            </app-mosaic-supply-change-type>
+            <!-- <app-mosaic-definition-type [mosaicDefinition]="dataSelected"
+              *ngIf="dataSelected.data.type === typeTransactions.mosaicDefinition.id">
+            </app-mosaic-definition-type> -->
 
-            <!-- TYPE AGGREGATE COMPLETE TRANSACTION-->
-            <!-- <app-aggregate-complete-type [aggregateComplete]="dataSelected"
-              *ngIf="dataSelected.data.type === typeTransactions.aggregateComplete.id">
-            </app-aggregate-complete-type> -->
 
             <!-- TRANSFER -->
             <ng-container *ngIf="dataSelected.data.type === typeTransactions.transfer.id">
@@ -314,6 +311,25 @@
                     <div class="col-12 col-md-5">
                       <app-box-data-signer-hash [dataSelected]="dataSelected">
                       </app-box-data-signer-hash>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+
+
+            <!-- TYPE MOSAIC SUPPLY CHANGE TRANSACTION -->
+            <ng-container *ngIf="dataSelected.data.type === typeTransactions.mosaicSupplyChange.id">
+              <div class="row">
+                <div class="col-11 mx-auto">
+                  <div class="row">
+                    <!-- TYPE REGISTER NAMESPACE TRANSACTION -->
+                    <div class="col-12 col-md-7">
+                      <app-mosaic-supply-change-type [mosaicSupplyChange]="dataSelected"></app-mosaic-supply-change-type>
+                    </div>
+                    <!-- BOX DATA SIGNER HASH -->
+                    <div class="col-12 col-md-5">
+                      <app-box-data-signer-hash [dataSelected]="dataSelected"></app-box-data-signer-hash>
                     </div>
                   </div>
                 </div>
@@ -409,7 +425,8 @@
                   <div class="row">
                     <!-- TYPE LOCK -->
                     <div class="col-12 col-md-7">
-                      <app-lock-type [transactionLock]="dataSelected" *ngIf="dataSelected.data.type === typeTransactions.lock.id"></app-lock-type>
+                      <app-lock-type [transactionLock]="dataSelected"
+                        *ngIf="dataSelected.data.type === typeTransactions.lock.id"></app-lock-type>
                     </div>
                     <!-- BOX DATA SIGNER HASH -->
                     <div class="col-12 col-md-5">

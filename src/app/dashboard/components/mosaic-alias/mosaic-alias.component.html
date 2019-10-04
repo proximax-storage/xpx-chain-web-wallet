@@ -13,13 +13,15 @@
       </div>
 
       <!-- Fee -->
-      <div class="col-12 mt-1rem">
-        <span class="fw-600 fs-095rem">Fee:&nbsp;&nbsp;</span>
-        <span class="fs-095rem fw-600 color-blue-light">{{mosaicAlias?.feePart.part1}}</span>
-        <span class="fs-075rem fw-600 color-blue-light">{{mosaicAlias?.feePart.part2}}</span>
-        <span class="fs-095rem fw-600 color-blue-light"> XPX </span>
-        <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
-      </div>
+      <ng-container *ngIf="mosaicAlias?.effectiveFee">
+        <div class="col-12 mt-03rem">
+          <span class="fw-600 fs-095rem color-dark-green">Fee:&nbsp;&nbsp;</span>
+          <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
+          <span class="fw-600 fs-095rem color-blue-light">{{mosaicAlias?.effectiveFee.part1}}</span>
+          <span class="fw-600 fs-075rem color-blue-light">{{mosaicAlias?.effectiveFee.part2}}</span>
+          <span class="fw-600 fs-095rem color-blue-light"> XPX </span>
+        </div>
+      </ng-container>
 
       <!-- Height -->
       <ng-container *ngIf="mosaicAlias?.data.transactionInfo.height">
