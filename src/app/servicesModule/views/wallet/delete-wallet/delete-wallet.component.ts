@@ -27,6 +27,13 @@ export class DeleteWalletComponent implements OnInit {
   validatingForm: FormGroup;
   wallets: Array<any>;
 
+  paramsHeader: HeaderServicesInterface = {
+    moduleName: 'Wallet',
+    componentName: 'Delete Wallet',
+    extraButton: 'Export wallet',
+    routerExtraButton: `/${AppConfig.routes.exportWallet}`
+  };
+
   constructor(
     private walletService: WalletService,
     private sharedService: SharedService,

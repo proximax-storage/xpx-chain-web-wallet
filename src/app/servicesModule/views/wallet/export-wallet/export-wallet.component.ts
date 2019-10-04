@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { WalletService } from '../../../../wallet/services/wallet.service';
+import { HeaderServicesInterface, ServicesModuleService } from '../../../../servicesModule/services/services-module.service';
+import { AppConfig } from '../../../../config/app.config';
 import * as CryptoJS from 'crypto-js';
 
 @Component({
@@ -12,6 +14,13 @@ export class ExportWalletComponent implements OnInit {
   title: string;
   description: string;
   wallets: Array<any>;
+
+  paramsHeader: HeaderServicesInterface = {
+    moduleName: 'Wallet',
+    componentName: 'Export Wallet',
+    extraButton: 'Delete wallet',
+    routerExtraButton: `/${AppConfig.routes.deleteWallet}`
+  };
 
   constructor(
     private walletService: WalletService

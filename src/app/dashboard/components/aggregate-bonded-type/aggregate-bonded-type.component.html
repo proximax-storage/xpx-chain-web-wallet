@@ -24,14 +24,14 @@
 
       <!-- Type -->
       <div class="col-12 mt-03rem">
-        <span class="fw-600 fs-08rem">Type:&nbsp;&nbsp;</span>
+        <span class="fw-600 fs-08rem color-dark-green">Type:&nbsp;&nbsp;</span>
         <span class="fs-07rem">{{aggregateBonded?.data['type'].toString(16).toUpperCase()}}</span>
       </div>
 
       <!-- Height -->
       <ng-container *ngIf="aggregateBonded?.data.transactionInfo.height.compact() > 0">
         <div class="col-12 mt-03rem">
-          <span class="fw-600 fs-08rem">Height:&nbsp;&nbsp;</span>
+          <span class="fw-600 fs-08rem color-dark-green">Height:&nbsp;&nbsp;</span>
           <span class="fs-07rem">{{aggregateBonded?.data.transactionInfo.height.compact()}}</span>
         </div>
       </ng-container>
@@ -40,7 +40,7 @@
       <div class="col-12 mt-1rem">
         <div class="row d-flex align-items-center">
           <div class="col-12">
-            <span class="fw-600 fs-095rem">Transactions</span>
+            <span class="fw-600 fs-095rem color-dark-green">Transactions</span>
           </div>
         </div>
         <hr class="mt-0">
