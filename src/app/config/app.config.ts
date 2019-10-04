@@ -12,6 +12,7 @@ export const AppConfig: Config = {
     audiApostille: 'audit-attestation',
     auth: 'auth',
     aliasAddressToNamespace: 'alias-address-to-namespace',
+    blockchain: 'nodes',
     createAccount: 'create-account',
     createApostille: 'create-attestation',
     convertToAccountMultisign: 'convert-account-multisign',
@@ -77,6 +78,7 @@ export interface Config {
     apostille: string;
     audiApostille: string;
     auth: string;
+    blockchain: string,
     convertToAccountMultisign: string;
     aliasAddressToNamespace: string;
     createMosaic: string;

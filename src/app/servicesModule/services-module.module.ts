@@ -41,6 +41,7 @@ import { AccountDeleteComponent } from './views/account/account-delete/account-d
 import { AccountDeleteConfirmComponent } from './views/account/account-delete-confirm/account-delete-confirm.component';
 import { ExtendDurationMosaicComponent } from './views/mosaic/extend-duration-mosaic/extend-duration-mosaic.component';
 import { ExportWalletComponent } from './views/wallet/export-wallet/export-wallet.component';
+import { BlockchainComponent } from './views/nodes/blockchain/blockchain.component';
 
 
 @NgModule({
@@ -83,7 +84,8 @@ import { ExportWalletComponent } from './views/wallet/export-wallet/export-walle
     AccountDeleteComponent,
     AccountDeleteConfirmComponent,
     ExtendDurationMosaicComponent,
-    ExportWalletComponent
+    ExportWalletComponent,
+    BlockchainComponent
   ],
   schemas: [ NO_ERRORS_SCHEMA ],
   imports: [

@@ -36,6 +36,7 @@ import { AccountDeleteComponent } from './views/account/account-delete/account-d
 import { AccountDeleteConfirmComponent } from './views/account/account-delete-confirm/account-delete-confirm.component';
 import { ExtendDurationMosaicComponent } from './views/mosaic/extend-duration-mosaic/extend-duration-mosaic.component';
 import { ExportWalletComponent } from "./views/wallet/export-wallet/export-wallet.component";
+import { BlockchainComponent } from './views/nodes/blockchain/blockchain.component';
 
 const routes: Routes = [
   {
@@ -295,7 +296,19 @@ const routes: Routes = [
         override: true,
       }
     }
-  }, {
+  }, 
+  {
+    path: AppConfig.routes.blockchain,
+    component: BlockchainComponent,
+    data: {
+      meta: {
+        title: 'blockchain.title',
+        description: 'blockchain.text',
+        override: true,
+      }
+    }
+  },
+  {
     path: AppConfig.routes.convertToAccountMultisign,
     component: ConvertAccountMultisignComponent,
     data: {
