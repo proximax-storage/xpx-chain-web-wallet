@@ -586,6 +586,10 @@ html, body {
   font-weight: bold;
 }
 
+.fw-normal {
+  font-weight: normal !important;
+}
+
 .fw-bolder {
   font-weight: bolder;
 }
@@ -827,13 +831,13 @@ html, body {
   background: #ffff;
 }
 
-.box-tag-account {
-  background: white;
+.tag-account {
+  background: transparent;
   border-radius: 20px;
   padding: 1px 4px !important;
-  width: 80px !important;
   text-align: center;
   line-height: 1rem;
+  font-style: italic !important;
 }
 
 .background-gray-icons {
@@ -861,7 +865,7 @@ html, body {
 }
 
 .btn-swap {
-  background: #bb8441;
+  background: linear-gradient(#FFCD00 ,#976630);
 }
 
 .btn-confirmed, .btn-partial, .btn-swap, .btn-unconfirmed {
@@ -1099,7 +1103,7 @@ input.form-control.validate-success.ng-valid.ng-dirty, input.form-control.valida
   box-shadow: none !important;
 }
 
-#confirm-password-invalid, #password-invalid, #name-wallet-invalid, #divisibility-invalid, #supply-invalid {
+#confirm-password-invalid, #password-invalid, #name-wallet-invalid, #divisibility-invalid, #supply-invalid, #amount-invalid {
   box-shadow: none !important;
   border: 2px solid #e06e38 !important;
 }
@@ -1824,8 +1828,9 @@ ul.stepper.horizontal .step-title {
 }
 
 .isPrimary {
-  color: white !important;
-  background-color: #2aa1b9 !important;
+  color: black !important;
+  background-color: white !important;
+  border: 2px solid #f4f4f4;
 }
 
 .msgSuccess {

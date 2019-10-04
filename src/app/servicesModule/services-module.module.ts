@@ -40,6 +40,7 @@ import { TransferXpxNis1Component } from './views/swap/transfer-xpx-nis1/transfe
 import { AccountDeleteComponent } from './views/account/account-delete/account-delete/account-delete.component';
 import { AccountDeleteConfirmComponent } from './views/account/account-delete-confirm/account-delete-confirm.component';
 import { ExtendDurationMosaicComponent } from './views/mosaic/extend-duration-mosaic/extend-duration-mosaic.component';
+import { ExportWalletComponent } from './views/wallet/export-wallet/export-wallet.component';
 
 
 @NgModule({
@@ -81,7 +82,8 @@ import { ExtendDurationMosaicComponent } from './views/mosaic/extend-duration-mo
     TransferXpxNis1Component,
     AccountDeleteComponent,
     AccountDeleteConfirmComponent,
-    ExtendDurationMosaicComponent
+    ExtendDurationMosaicComponent,
+    ExportWalletComponent
   ],
   schemas: [ NO_ERRORS_SCHEMA ],
   imports: [

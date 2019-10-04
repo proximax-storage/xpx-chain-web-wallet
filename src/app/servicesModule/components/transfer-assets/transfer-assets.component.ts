@@ -11,6 +11,7 @@ import { first, timeout } from 'rxjs/operators';
 import { TransactionsService } from 'src/app/transactions/services/transactions.service';
 import { ServicesModuleService } from '../../services/services-module.service';
 import { environment } from 'src/environments/environment';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-transfer-assets',
@@ -22,27 +23,29 @@ export class TransferAssetsComponent implements OnInit {
   @Output() changeView = new EventEmitter();
   @Input() route: string;
 
-  accountListVisible: boolean = false;
-  formTransfer: FormGroup;
-  configurationForm: ConfigurationForm;
-  quantity: string = '0.000000';
   accountCreated: any;
+  accountListVisible: boolean = false;
+  accountSelected: any = null;
+  availableContinue = false;
+  blockButton: boolean;
+  changeAccount: boolean = false;
+  configurationForm: ConfigurationForm;
+  divisivility: string = '6';
+  errorAmount: string;
+  formTransfer: FormGroup;
+  listContacts: any = [];
+  mosaics: any = null;
   optionsXPX = {
     prefix: '',
     thousands: ',',
     decimal: '.',
     precision: '6'
   };
-  spinnerVisibility = false;
-  availableContinue = false;
-  mosaics: any = null;
-  divisivility: string = '6';
+  quantity: string = '0.000000';
   routeEvent: string = `/${AppConfig.routes.viewAllAccount}`;
   searchBalance: boolean = true;
-  accountSelected: any = null;
-  listContacts: any = [];
-  changeAccount: boolean = false;
-  blockButton: boolean;
+  spinnerVisibility = false;
+  subscription: Subscription[] = [];
   // goToList: string =
 
   constructor(
@@ -143,6 +146,7 @@ export class TransferAssetsComponent implements OnInit {
             } else {
               this.formTransfer.get('amountXpx').enable();
               this.formTransfer.get('password').enable();
+              this.suscribe();
               this.blockButton = false;
 
             }
@@ -171,6 +175,32 @@ export class TransferAssetsComponent implements OnInit {
       }
       this.searchBalance = false;
     }
+  }
+
+  suscribe() {
+    this.subscription.push(
+      this.formTransfer.get('amountXpx').valueChanges.subscribe(
+        next => {
+          console.log('this is the amount', next);
+          console.log(parseFloat(this.quantity.split(',').join('')));
+          console.log(next >= parseFloat(this.quantity.split(',').join('')));
+          if (next > parseFloat(this.quantity.split(',').join(''))) {
+            this.blockButton = true;
+            this.errorAmount = '-invalid';
+          } else {
+            this.blockButton = false;
+            this.errorAmount = '';
+          }
+        }
+      )
+    );
+  }
+
+  ngOnDestroy(): void {
+    // this.transactionService.setTransactionsConfirmed$([]);
+    this.subscription.forEach(subscription => {
+      subscription.unsubscribe();
+    });
   }
 
   /**
@@ -357,6 +387,7 @@ export class TransferAssetsComponent implements OnInit {
     const route = this.accountSelected.route
     this.walletService.setAccountSelectedWalletNis1(null);
     this.walletService.setNis1AccounsWallet(null);
+    this.walletService.setNis1AccountsWallet$([]);
     this.walletService.setAccountInfoNis1(null);
     this.walletService.setNis1AccountSelected(null);
     this.walletService.accountWalletCreated = null;
