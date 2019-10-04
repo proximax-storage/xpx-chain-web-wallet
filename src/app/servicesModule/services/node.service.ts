@@ -83,6 +83,7 @@ export class NodeService {
   subscribeNodeSelected() {
     this.nodeObsSelected.subscribe(
       next => {
+        console.log("aqui papa",next)
         this.setSelectedNodeStorage(next);
         this.proximaxProvider.initInstances(next);
         // this.dataBridge.closeConenection();
@@ -101,10 +102,12 @@ export class NodeService {
    * @returns
    * @memberof NodeService
    */
-  validateToAddNode(node: any, showMsg: boolean = false, msgNodeCreated: string = '') {
+  validateToAddNode(node: any, showMsg: boolean = false, msgNodeCreated: string = '',defaultNode : boolean = true) {
     // check if there are nodes created in the storagr
     const dataStorage = this.getAllNodes();
-    const data = { value: node, label: node };
+
+    
+    const data = { value: node, label: node, isDefault: defaultNode };
 
     // const arrayNode = Object.keys(dataStorage).filter(item => dataStorage[item].value === node);
     // if there is no data in the storage, proceed to create a new node array in the storage

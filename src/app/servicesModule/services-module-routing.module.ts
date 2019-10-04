@@ -35,6 +35,7 @@ import { Nis1AccountsConsignerComponent } from './views/swap/nis1-accounts-consi
 import { AccountDeleteComponent } from './views/account/account-delete/account-delete/account-delete.component';
 import { AccountDeleteConfirmComponent } from './views/account/account-delete-confirm/account-delete-confirm.component';
 import { ExportWalletComponent } from "./views/wallet/export-wallet/export-wallet.component";
+import { BlockchainComponent } from './views/nodes/blockchain/blockchain.component';
 import { DeleteWalletComponent } from "./views/wallet/delete-wallet/delete-wallet.component";
 
 const routes: Routes = [
@@ -284,7 +285,19 @@ const routes: Routes = [
         override: true,
       }
     }
-  }, {
+  }, 
+  {
+    path: AppConfig.routes.blockchain,
+    component: BlockchainComponent,
+    data: {
+      meta: {
+        title: 'blockchain.title',
+        description: 'blockchain.text',
+        override: true,
+      }
+    }
+  },
+  {
     path: AppConfig.routes.convertToAccountMultisign,
     component: ConvertAccountMultisignComponent,
     data: {

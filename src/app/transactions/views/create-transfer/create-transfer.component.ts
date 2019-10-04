@@ -454,11 +454,9 @@ export class CreateTransferComponent implements OnInit {
         element.isMultisign.cosignatories.forEach(cosignatorie => {
           const address = this.proximaxProvider.createFromRawAddress(cosignatorie.address['address']);
           const cosignatorieAccount: AccountsInterface = this.walletService.filterAccountWallet('', null, address.pretty());
-          console.log(cosignatorieAccount);
           if (cosignatorieAccount) {
             const accountFiltered: AccountsInfoInterface = this.walletService.filterAccountInfo(cosignatorieAccount.name);
-            const infValidate = this.transactionService.validateBalanceCosignatorie(accountFiltered, Number(this.feeCosignatory)).infValidate;
-
+          const infValidate = this.transactionService.validateBalanceCosignatorie(accountFiltered, Number(this.feeCosignatory)).infValidate;
             listCosignatorie.push({
               label: cosignatorieAccount.name,
               value: cosignatorieAccount,
