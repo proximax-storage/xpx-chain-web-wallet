@@ -1,5 +1,4 @@
 import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
-
 import { ServicesModuleRoutingModule } from './services-module-routing.module';
 import { CreateAccountComponent } from './views/account/create-account/create-account.component';
 import { ServicesBoxComponent } from './views/services-box/services-box.component';
@@ -39,7 +38,6 @@ import { Nis1AccountsConsignerComponent } from './views/swap/nis1-accounts-consi
 import { TransferXpxNis1Component } from './views/swap/transfer-xpx-nis1/transfer-xpx-nis1.component';
 import { AccountDeleteComponent } from './views/account/account-delete/account-delete/account-delete.component';
 import { AccountDeleteConfirmComponent } from './views/account/account-delete-confirm/account-delete-confirm.component';
-import { ExtendDurationMosaicComponent } from './views/mosaic/extend-duration-mosaic/extend-duration-mosaic.component';
 import { ExportWalletComponent } from './views/wallet/export-wallet/export-wallet.component';
 
 
@@ -82,7 +80,6 @@ import { ExportWalletComponent } from './views/wallet/export-wallet/export-walle
     TransferXpxNis1Component,
     AccountDeleteComponent,
     AccountDeleteConfirmComponent,
-    ExtendDurationMosaicComponent,
     ExportWalletComponent
   ],
   schemas: [ NO_ERRORS_SCHEMA ],
