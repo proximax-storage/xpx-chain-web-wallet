@@ -34,8 +34,8 @@ import { AccountNis1TransferXpxComponent } from './views/account/account-nis1-tr
 import { Nis1AccountsConsignerComponent } from './views/swap/nis1-accounts-consigner/nis1-accounts-consigner.component';
 import { AccountDeleteComponent } from './views/account/account-delete/account-delete/account-delete.component';
 import { AccountDeleteConfirmComponent } from './views/account/account-delete-confirm/account-delete-confirm.component';
-import { ExtendDurationMosaicComponent } from './views/mosaic/extend-duration-mosaic/extend-duration-mosaic.component';
 import { ExportWalletComponent } from "./views/wallet/export-wallet/export-wallet.component";
+import { DeleteWalletComponent } from "./views/wallet/delete-wallet/delete-wallet.component";
 
 const routes: Routes = [
   {
@@ -219,17 +219,6 @@ const routes: Routes = [
       meta: {
         title: 'extendNamespace.title',
         description: 'extendNamespace.text',
-        override: true,
-      }
-    }
-  }, 
-  {
-    path: AppConfig.routes.extendMosaics,
-    component: ExtendDurationMosaicComponent,
-    data: {
-      meta: {
-        title: 'extendMosaics.title',
-        description: 'extendMosaics.text',
         override: true,
       }
     }
@@ -422,6 +411,16 @@ const routes: Routes = [
       meta: {
         title: 'exportWallet.title',
         description: 'exportWallet.text',
+        override: true,
+      }
+    }
+  }, {
+    path: AppConfig.routes.deleteWallet,
+    component: DeleteWalletComponent,
+    data: {
+      meta: {
+        title: 'deleteWallet.title',
+        description: 'deleteWallet.text',
         override: true,
       }
     }

@@ -16,17 +16,13 @@
     </div>
   </div>
 
-  <div class="row mt-05rem">
-    <div class="col-12 lh-1em">
-      <span class="fw-600 fs-065rem">Deadline: </span>
-      <span class="fs-065rem w-w-b-w">{{transactionService.dateFormat(transactionBuilder.data['deadline'])}}</span>
-    </div>
+  <div class="col-12 mt-05rem" *ngIf="mosaicAlias?.timestamp">
+    <span class="color-dark-green fs-065rem fw-500 w-w-b-w">{{mosaicAlias?.timestamp}}</span>
   </div>
 
   <div class="row mt-05rem">
     <div class="col-12 lh-1em">
-      <span class="fw-600 fs-065rem">Type:
-      </span>
+      <span class="fw-600 fs-065rem">Type: &nbsp;</span>
       <span class="fs-065rem w-w-b-w">{{transactionBuilder.data['type'].toString(16).toUpperCase()}}</span>
     </div>
   </div>
@@ -41,16 +37,14 @@
 
   <div class="row mt-05rem">
     <div class="col-12 lh-1em">
-      <span class="fw-600 fs-065rem">From:
-      </span>
+      <span class="fw-600 fs-065rem">From:&nbsp;</span>
       <span class="fs-065rem w-w-b-w">{{transactionBuilder.data.signer.address.pretty()}}</span>
     </div>
   </div>
 
   <div class="row mt-05rem">
     <div class="col-12 lh-1em">
-      <span class="fw-600 fs-065rem">To:
-      </span>
+      <span class="fw-600 fs-065rem">To:&nbsp;</span>
       <span class="fs-065rem w-w-b-w">{{transactionBuilder.data.recipient.pretty()}}</span>
     </div>
   </div>
@@ -58,8 +52,7 @@
   <ng-container *ngIf="transactionBuilder.data['message'] && transactionBuilder.data['message'].payload !== ''">
     <div class="row mt-05rem">
       <div class="col-12 lh-1em">
-        <span class="fw-600 fs-065rem">Message:
-        </span>
+        <span class="fw-600 fs-065rem">Message:&nbsp;</span>
         <span class="fs-065rem w-w-b-w">{{transactionBuilder.data['message'].payload}}</span>
       </div>
     </div>
@@ -68,8 +61,7 @@
   <ng-container *ngIf="transactionBuilder.data['transactionInfo']">
     <div class="row mt-05rem">
       <div class="col-12 lh-1em">
-        <span class="fw-600 fs-065rem">Aggregate id:
-        </span>
+        <span class="fw-600 fs-065rem">Aggregate id:&nbsp;</span>
         <span class="fs-065rem w-w-b-w">{{transactionBuilder.data['transactionInfo']['aggregateId']}}</span>
       </div>
     </div>
@@ -77,22 +69,21 @@
 
   <div class="row mt-05rem">
     <div class="col-12 lh-1em">
-      <span class="fw-600 fs-065rem">Signer Address: </span>
+      <span class="fw-600 fs-065rem">Signer Address:&nbsp;</span>
       <span class="fs-065rem w-w-b-w">{{transactionBuilder.data?.signer.address.pretty()}}</span>
     </div>
   </div>
 
   <div class="row mt-05rem">
     <div class="col-12 lh-1em">
-      <span class="fw-600 fs-065rem">Signer Public key: </span>
+      <span class="fw-600 fs-065rem">Signer Public key: <br></span>
       <span class="fs-065rem w-w-b-w">{{transactionBuilder.data?.signer.publicKey}}</span>
     </div>
   </div>
 
   <div class="row mt-05rem">
     <div class="col-12 lh-1em">
-      <span class="fw-600 fs-065rem">Signature:
-      </span>
+      <span class="fw-600 fs-065rem">Signature: <br></span>
       <span class="fs-065rem w-w-b-w">{{transactionBuilder.data?.signature}}</span>
     </div>
   </div>
