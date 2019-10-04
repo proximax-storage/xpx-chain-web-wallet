@@ -11,6 +11,7 @@ import { AppConfig } from '../../../../config/app.config';
 import { environment } from 'src/environments/environment';
 import { HeaderServicesInterface } from '../../../services/services-module.service';
 import { MosaicService } from 'src/app/servicesModule/services/mosaic.service';
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -46,7 +47,7 @@ export class CreateMosaicComponent implements OnInit {
   transactionReady: SignedTransaction[] = [];
   subscribe = ['transactionStatus'];
   rentalFee = 4576;
-  calculateRentalFee: any = '10.000000';
+  calculateRentalFee: any = '10,000.000000';
   currentAccount: AccountsInterface;
   insufficientBalance = true;
   accountInfo: AccountsInfoInterface;
@@ -67,10 +68,12 @@ export class CreateMosaicComponent implements OnInit {
   transferable: any;
   divisibility: any;
   aggregateTransaction: AggregateTransaction;
-  fee: any;
+  fee: any = '0.102608';
   amountAccount: number;
   insufficientBalanceDuration: boolean;
   notExpire: any;
+  subscription: Subscription[] = [];
+  vestedBalance: { part1: string; part2: string; };
 
   constructor(
     private fb: FormBuilder,
@@ -86,7 +89,8 @@ export class CreateMosaicComponent implements OnInit {
   ngOnInit() {
     this.createForm();
     this.subscribeValue();
-    this.amountAccount = this.walletService.getAmountAccount();
+    // this.amountAccount = this.walletService.getAmountAccount();
+    this.balance();
     this.walletService.getAccountsInfo$().subscribe(
       x => this.validateBalance()
     );
@@ -147,6 +151,18 @@ export class CreateMosaicComponent implements OnInit {
   }
 
 
+  balance() {
+    this.subscription.push(this.transactionService.getBalance$().subscribe(
+      next => this.vestedBalance = this.transactionService.getDataPart(next, 6),
+      error => this.vestedBalance = {
+        part1: '0',
+        part2: '000000'
+      }  
+    ));
+    let vestedBalance = this.vestedBalance.part1.concat(this.vestedBalance.part2).replace(",", "");
+    this.amountAccount = Number(vestedBalance)
+    // console.log(this.amountAccount);
+  }
 
   /**
    * Create form namespace
@@ -176,7 +192,7 @@ export class CreateMosaicComponent implements OnInit {
         emitEvent: false
       });
     }
-    this.calculateRentalFee = '10.000000';
+    this.calculateRentalFee = '10,000.000000';
     this.optionsSuply = {
       prefix: '',
       thousands: ',',
@@ -256,7 +272,7 @@ export class CreateMosaicComponent implements OnInit {
       this.walletService.currentAccount.network,
       []
     );
-    this.fee = this.transactionService.amountFormatterSimple(this.aggregateTransaction.maxFee.compact());
+    // this.fee = this.transactionService.amountFormatterSimple(this.aggregateTransaction.maxFee.compact());
   }
   /**
    *
@@ -293,9 +309,9 @@ export class CreateMosaicComponent implements OnInit {
    */
   send() {
     if (this.mosaicForm.valid && !this.blockSend) {
-      console.log('this.amountAccount', this.amountAccount);
-      console.log('Number(this.fee)', Number(this.fee));
-      console.log('Number(this.calculateRentalFee)', Number(this.calculateRentalFee.replace(",", "")));
+      // console.log('this.amountAccount', this.amountAccount);
+      // console.log('Number(this.fee)', Number(this.fee));
+      // console.log('Number(this.calculateRentalFee)', Number(this.calculateRentalFee.replace(",", "")));
       
       const validateAmount = this.transactionService.validateBuildSelectAccountBalance(this.amountAccount, Number(this.fee), Number(this.calculateRentalFee.replace(",", "")));
       // console.log(validateAmount);
@@ -320,7 +336,7 @@ export class CreateMosaicComponent implements OnInit {
             network: this.walletService.currentAccount.network
           }
 
-          console.log('-----------params', params);
+          // console.log('-----------params', params);
           
 
           //BUILD TRANSACTION
@@ -499,7 +515,6 @@ export class CreateMosaicComponent implements OnInit {
 
   async validateRentalFee(amount: number) {
 
-    console.log('--------------------------amount', amount)
     const accountInfo = this.walletService.filterAccountInfo();
     if (accountInfo && accountInfo.accountInfo && accountInfo.accountInfo.mosaics && accountInfo.accountInfo.mosaics.length > 0) {
       const xpxInBalance = accountInfo.accountInfo.mosaics.find(element => {
@@ -512,7 +527,6 @@ export class CreateMosaicComponent implements OnInit {
           const mosaic = await this.mosaicServices.filterMosaics([xpxInBalance.id]);
           if (mosaic && mosaic[0].mosaicInfo) {
             this.calculateRentalFee = this.transactionService.amountFormatterSimple(amount);
-            console.log('this.calculateRentalFee', this.calculateRentalFee);
           } else {
             // **********INSUFFICIENT BALANCE*************
             // console.log('AQUI FUE');
@@ -534,7 +548,6 @@ export class CreateMosaicComponent implements OnInit {
             // }
           }
      
-        console.log('-------------', this.calculateRentalFee );
         
       } else {
         // **********INSUFFICIENT BALANCE*************
