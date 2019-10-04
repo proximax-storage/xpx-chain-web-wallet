@@ -71,7 +71,7 @@ export class SidebarAuthComponent implements OnInit {
 
     const deleteWallet: MenuInterface = {
       type: 'default',
-      name: 'in local cache',
+      name: 'In local cache',
       class: '',
       icon: '',
       rol: false,

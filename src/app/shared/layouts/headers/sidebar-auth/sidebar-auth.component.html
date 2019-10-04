@@ -12,7 +12,7 @@
           <ng-container *ngIf="itemsHeader[key]['type'] === 'default' && itemsHeader[key]['show']">
             <li class="nav-item color-item-menu active">
               <a [routerLink]="[itemsHeader[key]['link']]" class="nav-link waves-light" mdbWavesEffect>
-                <span class="item-menu">{{itemsHeader[key]['name'] | uppercase}}</span>
+                <span class="item-menu">{{itemsHeader[key]['name']}}</span>
               </a>
             </li>
           </ng-container>
@@ -21,7 +21,7 @@
             <li class="nav-item dropdown" dropdown>
               <a dropdownToggle mdbWavesEffect type="button" class="nav-link dropdown-toggle waves-light"
                 mdbWavesEffect>
-                <span class="item-menu">{{itemsHeader[key]['name'] | uppercase}}</span>
+                <span class="item-menu">{{itemsHeader[key]['name']}}</span>
                 <span class="caret"></span>
               </a>
 

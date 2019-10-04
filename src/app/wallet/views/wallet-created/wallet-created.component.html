@@ -1,15 +1,15 @@
 <div class="container mt-3rem mb-2rem animated fadeIn">
   <div class="row">
-    <div class="col-11 d-flex justify-content-center">
+    <div class="col-11 mx-auto txt-a-center">
       <span class="fs-1-7rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">{{title}}</span>
     </div>
-    <div class="col-11 d-flex justify-content-center">
-      <span class="txt-a-center line-h-1-2em">{{titleDescription}}</span>
+    <div class="col-11 mx-auto txt-a-center">
+      <span class="txt-a-center fs-1rem line-h-1-2em">{{titleDescription}}</span>
     </div>
     <div class="col-11 col-md-10 mx-auto">
       <hr class="mt-05rem mb-06rem">
     </div>
-    <div class="col-11 d-flex justify-content-center mt-05rem mb-05rem">
+    <div class="col-11 mx-auto txt-a-center mt-05rem mb-05rem">
       <span class="fs-1-7rem txt-a-center line-h-1-2em">{{subtitle}}</span>
     </div>
   </div>
@@ -17,7 +17,7 @@
   <div class="row">
     <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto d-flex align-items-center box-grey">
       <div class="col-10">
-        <span>Address: </span><br>
+        <span class="fw-bold">Address: </span><br>
         <span class="font-small d-flex">{{address}}</span>
       </div>
       <div class="col-2 text-right">
@@ -55,20 +55,20 @@
   <div class="row mt-2rem d-flex justify-content-center">
     <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md"
       (click)="viewPrivateKey = !viewPrivateKey">
-      <span class="fs-1-2em color-white" *ngIf="viewPrivateKey"><i class="fa fa-eye-slash"></i> HIDE PRIVATE KEY</span>
-      <span class="fs-1-2em color-white" *ngIf="!viewPrivateKey"><i class="fa fa-eye"></i> SHOW PRIVATE KEY</span>
+      <span class="fs-1-2em color-white" *ngIf="viewPrivateKey">Hide private key</span>
+      <span class="fs-1-2em color-white" *ngIf="!viewPrivateKey">Show private key</span>
     </button>
 
     <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md"
       (click)="printAccountInfo()">
-      <span class="fs-1-2em color-white"><i class="fa fa-file"></i> SAVE PAPER WALLET</span>
+      <span class="fs-1-2em color-white">Save paper wallet</span>
     </button>
 
     <button mdbBtn type="button" rounded="true" mdbWavesEffect [disabled]="disabledContinue"
       class="f-w-600 background-btn pl-2rem pr-2rem" size="md" (click)="goToRoute()">
       <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
         *ngIf="disabledContinue"></span>
-      <span class="fs-1-2em color-white"><i class="fa fa-chevron-circle-right"></i> CONTINUE</span>
+      <span class="fs-1-2em color-white">Continue</span>
     </button>
   </div>
 </div>

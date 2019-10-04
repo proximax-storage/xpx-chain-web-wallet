@@ -24,7 +24,7 @@ export class ImportWalletComponent implements OnInit {
   errorMatchPassword: string;
   errorWalletExist: string;
   isValid: boolean = false;
-  title = 'Create Wallet';
+  title = 'Create wallet';
   typeNetwork = [{
     value: environment.typeNetwork.value,
     label: environment.typeNetwork.label
