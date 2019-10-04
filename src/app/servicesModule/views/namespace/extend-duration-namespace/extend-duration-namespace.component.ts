@@ -55,7 +55,10 @@ export class ExtendDurationNamespaceComponent implements OnInit {
   transactionSigned: SignedTransaction[] = [];
   transactionReady: SignedTransaction[] = [];
   transactionStatus: boolean = false;
-
+  subtractionHeight: any;
+  totalBlock: any;
+  excedDuration: boolean = false;
+  
 
   constructor(
     private router: Router,
@@ -74,17 +77,28 @@ export class ExtendDurationNamespaceComponent implements OnInit {
     this.fee = '0.000000';
     this.createForm();
     this.getNamespaces();
+    this.extendDurationNamespaceForm.get('duration').disable();
     this.amountAccount = this.walletService.getAmountAccount();
     this.durationByBlock = this.transactionService.calculateDurationforDay(this.extendDurationNamespaceForm.get('duration').value).toString();
-    this.subscription.push(this.dataBridgeService.getBlock().subscribe(
-      next => this.block = next
-    ));
+    this.subscription.push(this.dataBridgeService.getBlock().subscribe( next => {
+      this.block = next;
+      this.calculateSubtractionHeight();
+    }));
 
+    
     this.validateRentalFee(this.rentalFee * this.extendDurationNamespaceForm.get('duration').value);
     this.extendDurationNamespaceForm.get('duration').valueChanges.subscribe(next => {
       if (next <= 365) {
         if (next !== null && next !== undefined && String(next) !== '0') {
           this.durationByBlock = this.transactionService.calculateDurationforDay(next).toString();
+          this.totalBlock = this.subtractionHeight + Number(this.durationByBlock);
+          if( this.totalBlock <= 2102400 ){
+            this.totalBlock;
+            this.excedDuration = false;
+          } else {
+            this.excedDuration = true;
+          }
+          
           this.validateRentalFee(this.rentalFee * parseFloat(this.durationByBlock));
           this.builder();
         } else {
@@ -110,8 +124,6 @@ export class ExtendDurationNamespaceComponent implements OnInit {
       }
     });
   }
-
-
 
   ngOnDestroy(): void {
     this.destroySubscription();
@@ -179,6 +191,11 @@ export class ExtendDurationNamespaceComponent implements OnInit {
     this.insufficientBalanceDuration = false;
   }
 
+  calculateSubtractionHeight(){
+    this.subtractionHeight = this.endHeight - this.block;
+    this.totalBlock = this.subtractionHeight + Number(this.durationByBlock);
+
+  }
   /**
    *
    *
@@ -230,7 +247,6 @@ export class ExtendDurationNamespaceComponent implements OnInit {
       }
     }
   }
-
 
   /**
    *
@@ -306,7 +322,8 @@ export class ExtendDurationNamespaceComponent implements OnInit {
       e.target.value = ''
     } else {
       if (parseInt(e.target.value) > 365) {
-        e.target.value = '365'
+        // e.target.value = '365'
+        this.excedDuration = true;
       } else if (parseInt(e.target.value) < 1) {
         e.target.value = ''
       }
@@ -321,6 +338,7 @@ export class ExtendDurationNamespaceComponent implements OnInit {
    */
   optionSelected($event: any) {
     if ($event && $event.value !== '1') {
+      this.extendDurationNamespaceForm.get('duration').enable();
       this.namespaceChangeInfo = this.namespaceInfo.find(book =>
         this.proximaxProvider.getNamespaceId(book.id).toHex() ===
         $event.id
@@ -328,9 +346,12 @@ export class ExtendDurationNamespaceComponent implements OnInit {
       if (this.namespaceChangeInfo) {
         this.startHeight = this.namespaceChangeInfo.namespaceInfo.startHeight.lower;
         this.endHeight = this.namespaceChangeInfo.namespaceInfo.endHeight.lower;
+        this.calculateSubtractionHeight();
       }
       this.builder();
     } else {
+      this.extendDurationNamespaceForm.get('duration').disable();
+      this.extendDurationNamespaceForm.get('duration').patchValue('');
       this.startHeight = 0;
       this.endHeight = 0;
     }

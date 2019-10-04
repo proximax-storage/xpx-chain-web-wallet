@@ -34,6 +34,7 @@ import { AccountNis1TransferXpxComponent } from './views/account/account-nis1-tr
 import { Nis1AccountsConsignerComponent } from './views/swap/nis1-accounts-consigner/nis1-accounts-consigner.component';
 import { AccountDeleteComponent } from './views/account/account-delete/account-delete/account-delete.component';
 import { AccountDeleteConfirmComponent } from './views/account/account-delete-confirm/account-delete-confirm.component';
+import { ExtendDurationMosaicComponent } from './views/mosaic/extend-duration-mosaic/extend-duration-mosaic.component';
 
 const routes: Routes = [
   {
@@ -220,7 +221,18 @@ const routes: Routes = [
         override: true,
       }
     }
-  }, {
+  }, 
+  {
+    path: AppConfig.routes.extendMosaics,
+    component: ExtendDurationMosaicComponent,
+    data: {
+      meta: {
+        title: 'extendMosaics.title',
+        description: 'extendMosaics.text',
+        override: true,
+      }
+    }
+  },{
     path: AppConfig.routes.addressBook,
     component: ListContactsComponent,
     data: {
