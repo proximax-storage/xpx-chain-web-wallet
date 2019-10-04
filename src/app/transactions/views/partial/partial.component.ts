@@ -109,7 +109,7 @@ export class PartialComponent implements OnInit {
    * @memberof PartialComponent
    */
   find(transaction: TransactionsInterface) {
-    const height = transaction.data['transactionInfo'].height.compact();
+   /* const height = transaction.data['transactionInfo'].height.compact();
     if (typeof (height) === 'number') {
       const existBlock = this.dataBridge.filterBlockStorage(height);
       if (existBlock) {
@@ -128,7 +128,7 @@ export class PartialComponent implements OnInit {
       }
     } else {
       transaction.effectiveFee = 0;
-    }
+    }*/
 
     this.modalPartial.show();
     this.dataSelected = transaction;
