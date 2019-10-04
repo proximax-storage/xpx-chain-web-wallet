@@ -108,35 +108,12 @@ export class ViewAllAccountsComponent implements OnInit {
     }, 2000);
   }
 
-  exportAccount(account: any) {
-    let acc = this.clone(account);
-    const accounts = [];
-    accounts.push(acc);
-    const wallet = {
-      name: acc.name,
-      accounts: accounts
-    }
-
-    wallet.accounts[0].name = 'Primary';
-    wallet.accounts[0].firstAccount = true;
-    wallet.accounts[0].default = true;
-
-    let wordArray = CryptoJS.enc.Utf8.parse(JSON.stringify(wallet));
-    let file = CryptoJS.enc.Base64.stringify(wordArray);
-    // Word array to base64
-
-    const blob = new Blob([file], { type: '' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.style.display = 'none';
-    a.href = url;
-    // the filename you want
-    a.download = `${wallet.name}.wlt`;
-    document.body.appendChild(a);
-    a.click();
-    window.URL.revokeObjectURL(url);
-  }
-
+  /**
+   * Method to object clone
+   * @param obj Object to clone
+   * @memberof ViewAllAccountsComponent
+   * @returns temp
+   */
   clone(obj) {
     if (obj === null || typeof obj !== 'object') {
       return obj;
@@ -146,6 +123,45 @@ export class ViewAllAccountsComponent implements OnInit {
       temp[key] = this.clone(obj[key]);
     }
     return temp;
+  }
+
+  /**
+   * Method to export account
+   * @param {any} account
+   * @memberof ViewAllAccountsComponent
+   */
+  exportAccount(account: any) {
+    let acc = this.clone(account);
+    const accounts = [];
+    accounts.push(acc);
+    const wallet = {
+      name: acc.name,
+      accounts: accounts
+    }
+
+    wallet.accounts[0].name = 'Primary_Account';
+    wallet.accounts[0].firstAccount = true;
+    wallet.accounts[0].default = true;
+
+    let wordArray = CryptoJS.enc.Utf8.parse(JSON.stringify(wallet));
+    let file = CryptoJS.enc.Base64.stringify(wordArray);
+    // Word array to base64
+
+    const date = new Date(Date.now());
+    const year = date.getFullYear();
+    const month = ((date.getMonth() + 1) < 10) ? `0${(date.getMonth() + 1)}` : date.getMonth() + 1;
+    const day = (date.getDate() < 10) ? `0${date.getDate()}` : date.getDate();
+
+    const blob = new Blob([file], { type: '' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    a.href = url;
+    // the filename you want
+    a.download = `${wallet.name}_${year}-${month}-${day}.wlt`;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
   }
 
   /**

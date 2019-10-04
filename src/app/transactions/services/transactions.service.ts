@@ -380,7 +380,7 @@ export class TransactionsService {
    * @memberof TransactionsService
    */
   dateFormatUTC(date: UInt64) {
-    return new Date(date.compact() + Deadline.timestampNemesisBlock * 1000).toUTCString();
+    return new Date(date.compact() + 1459468800 * 1000).toLocaleString();
   }
 
   /**
