@@ -50,7 +50,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     currentPage: 1
   };
   dataSelected: TransactionsInterface = null;
-  headElements = ['Type', 'Fee', '', 'Sender', 'Recipient'];
+  headElements = ['Type', '', 'Sender', 'Recipient'];
   iconReloadDashboard = false;
   objectKeys = Object.keys;
   partialTransactions = 0;
@@ -94,7 +94,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.dashboardService.incrementViewDashboard();
     this.dashboardService.subscribeLogged();
     this.currentAccount = Object.assign({}, this.walletService.getCurrentAccount());
-    
+
     this.currentAccount.address = this.proximaxProvider.createFromRawAddress(this.currentAccount.address).pretty();
     this.currentAccount.name = (this.currentAccount.name === 'Primary') ? `${this.currentAccount.name}_Account` : this.currentAccount.name;
     const qr = qrcode(10, 'H');
