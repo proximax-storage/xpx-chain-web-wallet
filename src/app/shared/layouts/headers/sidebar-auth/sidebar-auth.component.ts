@@ -34,7 +34,7 @@ export class SidebarAuthComponent implements OnInit {
       selected: false
     }
 
-    const paramsSignIn: MenuInterface = {
+   /* const paramsSignIn: MenuInterface = {
       type: 'default',
       name: 'Sign In',
       class: '',
@@ -44,7 +44,7 @@ export class SidebarAuthComponent implements OnInit {
       view: true,
       subMenu: {},
       selected: false
-    }
+    }*/
 
     const createWallet: MenuInterface = {
       type: 'default',
@@ -69,7 +69,6 @@ export class SidebarAuthComponent implements OnInit {
       subMenu: {},
       selected: false
     }
-
 
     const deleteWallet: MenuInterface = {
       type: 'default',
@@ -101,8 +100,12 @@ export class SidebarAuthComponent implements OnInit {
 
     this.itemsHeader = {
       home: this.sharedService.buildHeader(paramsHome),
-      auth: this.sharedService.buildHeader(paramsSignIn),
+      // auth: this.sharedService.buildHeader(paramsSignIn),
       wallet: this.sharedService.buildHeader(paramsWallet),
     }
+  }
+
+  showModal() {
+    this.modalAuth.show();
   }
 }

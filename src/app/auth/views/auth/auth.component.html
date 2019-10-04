@@ -1,4 +1,4 @@
-<div class="container mt-7rem mb-2rem animated fadeIn">
+<div class="container mt-1rem mb-2rem animated fadeIn">
   <div class="row">
     <div class="col-12 d-flex justify-content-center">
       <span class="fs-1-7rem fw-500 txt-a-center line-h-1-2em">{{title}}</span>
@@ -13,9 +13,9 @@
           class="selectWrapper" [items]="wallets" formControlName="wallet" bindLabel="label" bindValue="value"
           placeholder="Select a wallet">
         </ng-select>
-        <mdb-error class="ml-1rem"
+        <mdb-error class="mt-03rem ml-1rem"
           *ngIf="validateInput('wallet').invalid && (validateInput('wallet').dirty || validateInput('wallet').touched)">
-          <span>Select a wallet</span>
+          <span class="fw-600">Select a wallet</span>
         </mdb-error>
       </div>
     </div>
@@ -29,14 +29,14 @@
               src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg" alt="">
             <input [maxlength]="configurationForm.passwordWallet.maxLength"
               [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" mdbInputDirective
-              mdbValidate [validateSuccess]="true" [validateError]="true" type="password" id="password"
+              mdbValidate [validateSuccess]="true" [validateError]="true" type="password" id="passwordAuth"
               class="form-control form-control-sm input-border" placeholder="Enter password">
 
             <!-- VALIDATION -->
             <mdb-error *ngIf="
                   validateInput('password', 'common').invalid &&
                   (validateInput('password', 'common').dirty || validateInput('password', 'common').touched)">
-              <span>Required field</span>
+              <span class="fw-600">Required field</span>
             </mdb-error>
           </div>
         </div>
@@ -47,14 +47,14 @@
     <div class="row mt-2rem">
       <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
         <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
-          size="md" (click)="clearForm()">
+          size="sm" (click)="clearForm()">
           <span class="fs-1-2em color-white">Clear</span>
         </button>
       </div>
 
       <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
         <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
-          size="md">
+          size="sm">
           <span class="fs-1-2em color-white">Sign in</span>
         </button>
       </div>
