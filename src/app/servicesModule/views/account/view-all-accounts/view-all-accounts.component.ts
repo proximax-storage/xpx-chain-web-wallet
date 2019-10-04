@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { environment } from '../../../../../environments/environment';
-import { WalletService } from '../../../../wallet/services/wallet.service';
+import { WalletService, AccountsInterface } from '../../../../wallet/services/wallet.service';
 import { AppConfig } from '../../../../config/app.config';
 import { SharedService } from '../../../../shared/services/shared.service';
 import { TransactionsService } from '../../../../transactions/services/transactions.service';
@@ -108,15 +108,17 @@ export class ViewAllAccountsComponent implements OnInit {
     }, 2000);
   }
 
-  exportWallet() {
-    let wordArray = CryptoJS.enc.Utf8.parse(JSON.stringify(this.walletService.currentWallet));
+  exportAccount(account: AccountsInterface) {
+    const accounts = []
+    accounts.push(account);
+    const wallet = {
+      name: account.name,
+      accounts: accounts
+    }
+
+    let wordArray = CryptoJS.enc.Utf8.parse(JSON.stringify(wallet));
     let file = CryptoJS.enc.Base64.stringify(wordArray);
     // Word array to base64
-
-
-    // let other = CryptoJS.enc.Base64.parse(file);
-    // // Word array to JSON string
-    // console.log('This is resp descryp---------------------------->', JSON.parse(other.toString(CryptoJS.enc.Utf8)));
 
     const blob = new Blob([file], { type: '' });
     const url = window.URL.createObjectURL(blob);
@@ -124,7 +126,7 @@ export class ViewAllAccountsComponent implements OnInit {
     a.style.display = 'none';
     a.href = url;
     // the filename you want
-    a.download = `${this.currentWallet.name}.wlt`;
+    a.download = `${wallet.name}.wlt`;
     document.body.appendChild(a);
     a.click();
     window.URL.revokeObjectURL(url);
