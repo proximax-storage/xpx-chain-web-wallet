@@ -440,7 +440,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         );
       }
     } else {
-      transaction.effectiveFee = this.transactionService.getDataPart('000000', 6);
+      transaction.effectiveFee = this.transactionService.getDataPart('0.00000', 6);
       console.log('Effective fee ---> ', transaction.effectiveFee);
     }
 
