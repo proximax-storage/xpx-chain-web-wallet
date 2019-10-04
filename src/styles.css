@@ -494,6 +494,10 @@ html, body {
   height: .6em;
 }
 
+.h-1em {
+  height: 1em;
+}
+
 .h-1-4em {
   height: 1.4em;
 }
@@ -584,6 +588,10 @@ html, body {
 
 .fw-bold {
   font-weight: bold;
+}
+
+.fw-normal {
+  font-weight: normal !important;
 }
 
 .fw-bolder {
@@ -753,7 +761,7 @@ html, body {
 }
 
 .color-orange {
-  color: #EA6002 !important;
+  color: #ee6723 !important;
 }
 
 .color-grey {
@@ -861,7 +869,7 @@ html, body {
 }
 
 .btn-swap {
-  background: #bb8441;
+  background: linear-gradient(#FFCD00 ,#976630);
 }
 
 .btn-confirmed, .btn-partial, .btn-swap, .btn-unconfirmed {
@@ -1099,7 +1107,7 @@ input.form-control.validate-success.ng-valid.ng-dirty, input.form-control.valida
   box-shadow: none !important;
 }
 
-#confirm-password-invalid, #password-invalid, #name-wallet-invalid, #divisibility-invalid, #supply-invalid {
+#confirm-password-invalid, #password-invalid, #name-wallet-invalid, #divisibility-invalid, #supply-invalid, #amount-invalid {
   box-shadow: none !important;
   border: 2px solid #e06e38 !important;
 }

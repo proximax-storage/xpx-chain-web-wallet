@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { PublicAccount, AggregateTransaction, Account, MultisigAccountInfo, Address, Transaction, MultisigCosignatoryModification, ModifyMultisigAccountTransaction } from 'tsjs-xpx-chain-sdk';
+import { PublicAccount, AggregateTransaction, Account, MultisigAccountInfo, Address, Transaction, MultisigCosignatoryModification, ModifyMultisigAccountTransaction, UInt64 } from 'tsjs-xpx-chain-sdk';
 import { PaginationInstance } from 'ngx-pagination';
 import { ModalDirective } from 'ng-uikit-pro-standard';
 import { Subscription } from 'rxjs';
@@ -42,7 +42,7 @@ export class PartialComponent implements OnInit {
   moduleName = 'Transactions';
   multisigInfo: MultisigAccountInfo[] = [];
   elements: any = [];
-  headElements = ['Deadline', 'Fee', 'Account linked to the transaction', 'Hash'];
+  headElements = ['Fee', 'Account linked to the transaction', 'Hash'];
   hideSign = false;
   objectKeys = Object.keys;
   onlySigner = false;
@@ -53,6 +53,7 @@ export class PartialComponent implements OnInit {
   configurationForm: ConfigurationForm;
 
   constructor(
+    private dataBridge: DataBridgeService,
     private proximaxProvider: ProximaxProvider,
     private sharedService: SharedService,
     public transactionService: TransactionsService,
@@ -108,8 +109,30 @@ export class PartialComponent implements OnInit {
    * @memberof PartialComponent
    */
   find(transaction: TransactionsInterface) {
-    this.arraySelect = this.arraySelect.slice(0);
+    const height = transaction.data['transactionInfo'].height.compact();
+    if (typeof (height) === 'number') {
+      const existBlock = this.dataBridge.filterBlockStorage(height);
+      if (existBlock) {
+        console.log('In cache', existBlock);
+        transaction.timestamp = this.transactionService.dateFormatUTC(new UInt64([existBlock.timestamp.lower, existBlock.timestamp.higher]));
+        transaction.effectiveFee = existBlock.feeMultiplier * transaction.data.size;
+      }else {
+        this.proximaxProvider.getBlockInfo(height).subscribe(
+          next => {
+            console.log('Http', next);
+            this.dataBridge.validateBlock(next);
+            transaction.timestamp = this.transactionService.dateFormatUTC(next.timestamp);
+            transaction.effectiveFee = next.feeMultiplier * transaction.data.size;
+          }
+        );
+      }
+    } else {
+      transaction.effectiveFee = 0;
+    }
+
+    this.modalPartial.show();
     this.dataSelected = transaction;
+    this.arraySelect = this.arraySelect.slice(0);
     this.arraySelect = [];
     this.account = null;
     this.password = '';

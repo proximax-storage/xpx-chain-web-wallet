@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { first } from "rxjs/operators";
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
-import { Listener, Transaction, TransactionStatus, CosignatureSignedTransaction, BlockInfo, SignedTransaction, UInt64, AggregateTransaction, Address, AggregateTransactionCosignature } from "tsjs-xpx-chain-sdk";
+import { Listener, TransactionStatus, BlockInfo, UInt64, Address, AggregateTransactionCosignature } from "tsjs-xpx-chain-sdk";
 import { environment } from '../../../environments/environment';
 import { NodeService } from '../../servicesModule/services/node.service';
 import { SharedService } from './shared.service';
 import { WalletService, CurrentWalletInterface } from '../../wallet/services/wallet.service';
 import { TransactionsService } from '../../transactions/services/transactions.service';
 import { ProximaxProvider } from './proximax.provider';
-import { NamespacesService } from 'src/app/servicesModule/services/namespaces.service';
+import { NamespacesService } from '../../servicesModule/services/namespaces.service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,13 +19,18 @@ export class DataBridgeService {
   connector: Listener[] = [];
   currentWallet: CurrentWalletInterface = null;
   destroyConection = false;
-  blockSubject: BehaviorSubject<number> = new BehaviorSubject<number>(this.block);
+
   blockInfo: BlockInfo;
-  blockInfoSubject: BehaviorSubject<BlockInfo> = new BehaviorSubject<BlockInfo>(this.blockInfo);
+
+  blockSubject: BehaviorSubject<number> = new BehaviorSubject<number>(this.block);
   block$: Observable<number> = this.blockSubject.asObservable();
+
+  blockInfoSubject: BehaviorSubject<BlockInfo> = new BehaviorSubject<BlockInfo>(this.blockInfo);
   blockInfo$: Observable<BlockInfo> = this.blockInfoSubject.asObservable();
+
   transactionSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   transaction$: Observable<any> = this.transactionSubject.asObservable();
+
   reconnectNode = 0;
   subscription: Subscription[] = [];
 
@@ -50,9 +55,10 @@ export class DataBridgeService {
     this.proximaxProvider.getBlockchainHeight().subscribe(
       (blockchainHeight: UInt64) => {
         this.proximaxProvider.getBlockInfo().subscribe(
-          (BlockInfo: BlockInfo) => {
-            this.setblock(blockchainHeight.compact());
-            this.setblockInfo(BlockInfo);
+          (blockInfo: BlockInfo) => {
+            console.log(blockInfo.numTransactions);
+            this.setblockInfo(blockInfo);
+            this.saveBlockInfo(blockInfo);
           }
         );
       }
@@ -104,7 +110,7 @@ export class DataBridgeService {
     this.destroySubscriptions();
     this.destroyConection = true;
     if (destroyTransactions) {
-      this.setblock(null);
+      this.saveBlockInfo(null);
       this.setTransactionStatus(null);
       this.transactionsService.destroyAllTransactions();
     }
@@ -130,6 +136,25 @@ export class DataBridgeService {
 
 
   /**
+   *
+   *
+   * @param {string} height
+   * @returns {BlockInfo}
+   * @memberof DataBridgeService
+   */
+  filterBlockStorage(height: number): BlockInfo {
+    const blocksStorage = localStorage.getItem(environment.nameKeyBlockStorage);
+    if (blocksStorage) {
+      // console.log('blocksStorage', blocksStorage);
+      const parsedData: BlockInfo[] = JSON.parse(blocksStorage);
+      return parsedData.find(x => new UInt64([x.height.lower, x.height.higher]).compact() === height);
+    }
+
+    return null;
+  }
+
+
+  /**
   *
   * @returns
   * @memberof DataBridgeService
@@ -146,8 +171,10 @@ export class DataBridgeService {
   * @memberof DataBridgeService
   */
   getBlockSocket(connector: Listener) {
-    connector.newBlock().subscribe(res => {
-      this.setblock(res.height.compact())
+    connector.newBlock().subscribe((blockInfo: BlockInfo) => {
+      /*console.log('new block -->', blockInfo.numTransactions);
+      console.log('new block -->', blockInfo.height.compact());*/
+      this.saveBlockInfo(blockInfo);
     }, err => {
       this.sharedService.showError('Error', err);
     });
@@ -370,8 +397,6 @@ export class DataBridgeService {
   }
 
 
-
-
   /**
    *
    *
@@ -403,16 +428,6 @@ export class DataBridgeService {
     return;
   }
 
-  /**
-   * Allow to load the component in the routing
-   *
-   * @param {*} params
-   * @memberof DataBridgeService
-   */
-  setblock(params: any) {
-    this.block = params;
-    this.blockSubject.next(this.block);
-  }
 
   /**
   * Set a BlockInfo for a given block height
@@ -420,8 +435,26 @@ export class DataBridgeService {
   * @param {BlockInfo} params
   * @memberof DataBridgeService
   */
-  setblockInfo(params: BlockInfo) { //Update-sdk-dragon
-    this.blockInfo = params;
+  saveBlockInfo(blockInfo: BlockInfo) { //Update-sdk-dragon
+    if (blockInfo !== null) {
+      this.block = blockInfo.height.compact();
+      this.blockSubject.next(this.block);
+      this.validateBlock(blockInfo);
+      return;
+    }
+
+    this.block = null;
+    return;
+  }
+
+  /**
+   *
+   *
+   * @param {BlockInfo} params
+   * @memberof DataBridgeService
+   */
+  setblockInfo(blockInfo: BlockInfo) {
+    this.blockInfo = blockInfo;
     this.transactionsService.generationHash = this.blockInfo.generationHash;
     this.namespaces.generationHash = this.blockInfo.generationHash;
     this.blockInfoSubject.next(this.blockInfo)
@@ -436,5 +469,24 @@ export class DataBridgeService {
    */
   setTransactionStatus(value: any) {
     return this.transactionSubject.next(value);
+  }
+
+  /**
+   *
+   *
+   * @param {BlockInfo} blockInfo
+   * @memberof DataBridgeService
+   */
+  validateBlock(blockInfo: BlockInfo) {
+    if (blockInfo.numTransactions && blockInfo.numTransactions >= 1) {
+      const blocksStorage = localStorage.getItem(environment.nameKeyBlockStorage);
+      if (blocksStorage) {
+        const parsedData = JSON.parse(blocksStorage);
+        parsedData.unshift(blockInfo);
+        localStorage.setItem(environment.nameKeyBlockStorage, JSON.stringify(parsedData.slice(0, 100)));
+      } else {
+        localStorage.setItem(environment.nameKeyBlockStorage, JSON.stringify([blockInfo]));
+      }
+    }
   }
 }

@@ -1,5 +1,4 @@
 import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
-
 import { ServicesModuleRoutingModule } from './services-module-routing.module';
 import { CreateAccountComponent } from './views/account/create-account/create-account.component';
 import { ServicesBoxComponent } from './views/services-box/services-box.component';

@@ -50,6 +50,7 @@ import { Observable } from 'rxjs/internal/Observable';
 import { mergeMap } from 'rxjs/operators';
 import { MosaicDefinitionTransaction } from 'tsjs-xpx-chain-sdk/dist/src/model/transaction/MosaicDefinitionTransaction';
 import { environment } from '../../../environments/environment';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -167,7 +168,7 @@ export class ProximaxProvider {
       mosaics = []
     }
     return TransferTransaction.create(
-      Deadline.create(environment.deadlineTransfer.deadline,environment.deadlineTransfer.chronoUnit),
+      Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
       address,
       mosaics,
       PlainMessage.create(message),
@@ -192,7 +193,7 @@ export class ProximaxProvider {
     network: NetworkType
   ): MosaicSupplyChangeTransaction {
     return MosaicSupplyChangeTransaction.create(
-      Deadline.create(environment.deadlineTransfer.deadline,environment.deadlineTransfer.chronoUnit),
+      Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
       mosaicId,
       mosaicSupplyType,
       delta,
@@ -216,7 +217,7 @@ export class ProximaxProvider {
    */
   buildMosaicDefinition(params: any): MosaicDefinitionTransaction {
     const mosaicDefinitionTransaction = MosaicDefinitionTransaction.create(
-      Deadline.create(environment.deadlineTransfer.deadline,environment.deadlineTransfer.chronoUnit),
+      Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
       params.nonce,
       MosaicId.createFromNonce(params.nonce, params.account.publicAccount),
       MosaicProperties.create({
@@ -638,7 +639,7 @@ export class ProximaxProvider {
    */
   linkingNamespaceToMosaic(aliasActionType: AliasActionType, namespaceId: NamespaceId, mosaicId: MosaicId, network: NetworkType) {
     return MosaicAliasTransaction.create(
-      Deadline.create(environment.deadlineTransfer.deadline,environment.deadlineTransfer.chronoUnit),
+      Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
       aliasActionType,
       namespaceId,
       mosaicId,
@@ -658,7 +659,7 @@ export class ProximaxProvider {
    */
   mosaicSupplyChangeTransaction(mosaicId: string, supply: number, mosaicSupplyType: number, network: NetworkType): MosaicSupplyChangeTransaction {
     return MosaicSupplyChangeTransaction.create(
-      Deadline.create(environment.deadlineTransfer.deadline,environment.deadlineTransfer.chronoUnit),
+      Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
       new MosaicId(mosaicId),
       mosaicSupplyType,
       UInt64.fromUint(supply),
@@ -677,7 +678,7 @@ export class ProximaxProvider {
    */
   registerRootNamespaceTransaction(name: string, network: NetworkType, duration: number = 100): RegisterNamespaceTransaction {
     return RegisterNamespaceTransaction.createRootNamespace(
-      Deadline.create(environment.deadlineTransfer.deadline,environment.deadlineTransfer.chronoUnit),
+      Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
       name,
       UInt64.fromUint(duration),
       network
@@ -696,7 +697,7 @@ export class ProximaxProvider {
   registersubNamespaceTransaction(rootNamespace: string, subnamespaceName: string, network: NetworkType): RegisterNamespaceTransaction {
     // Crear namespace transaction
     return RegisterNamespaceTransaction.createSubNamespace(
-      Deadline.create(environment.deadlineTransfer.deadline,environment.deadlineTransfer.chronoUnit),
+      Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
       subnamespaceName,
       rootNamespace,
       network

@@ -10,7 +10,7 @@ import { MosaicId, SignedTransaction, UInt64, AccountInfo, HashLockTransaction, 
 import { MosaicService, MosaicsStorage } from "../../../servicesModule/services/mosaic.service";
 import { ProximaxProvider } from "../../../shared/services/proximax.provider";
 import { DataBridgeService } from "../../../shared/services/data-bridge.service";
-import { WalletService, AccountsInterface } from '../../../wallet/services/wallet.service';
+import { WalletService, AccountsInterface, AccountsInfoInterface } from '../../../wallet/services/wallet.service';
 import { SharedService, ConfigurationForm } from '../../../shared/services/shared.service';
 import { TransactionsService, TransferInterface } from '../../services/transactions.service';
 import { environment } from '../../../../environments/environment';
@@ -58,6 +58,7 @@ export class CreateTransferComponent implements OnInit {
   listContacts: any = [];
   listCosignatorie: any = [];
   fee: any = '0.037250'
+  feeCosignatory: any = 10044500;
   optionsXPX = {
     prefix: '',
     thousands: ',',
@@ -453,11 +454,17 @@ export class CreateTransferComponent implements OnInit {
         element.isMultisign.cosignatories.forEach(cosignatorie => {
           const address = this.proximaxProvider.createFromRawAddress(cosignatorie.address['address']);
           const cosignatorieAccount: AccountsInterface = this.walletService.filterAccountWallet('', null, address.pretty());
+          console.log(cosignatorieAccount);
           if (cosignatorieAccount) {
+            const accountFiltered: AccountsInfoInterface = this.walletService.filterAccountInfo(cosignatorieAccount.name);
+            const infValidate = this.transactionService.validateBalanceCosignatorie(accountFiltered, Number(this.feeCosignatory)).infValidate;
+
             listCosignatorie.push({
               label: cosignatorieAccount.name,
               value: cosignatorieAccount,
-              selected: true
+              selected: true,
+              disabled: infValidate[0].disabled,
+              info: infValidate[0].info
             });
           }
         });
@@ -689,18 +696,18 @@ export class CreateTransferComponent implements OnInit {
    * @param {string} hash
    * @memberof CreateTransferComponent
    */
- /* setTimeOutValidate(hash: string) {
-    setTimeout(() => {
-      let exist = false;
-      for (let element of this.transactionReady) {
-        if (hash === element.hash) {
-          exist = true;
-        }
-      }
+  /* setTimeOutValidate(hash: string) {
+     setTimeout(() => {
+       let exist = false;
+       for (let element of this.transactionReady) {
+         if (hash === element.hash) {
+           exist = true;
+         }
+       }
 
-      (exist) ? '' : this.sharedService.showWarning('', 'An error has occurred');
-    }, 5000);
-  }*/
+       (exist) ? '' : this.sharedService.showWarning('', 'An error has occurred');
+     }, 5000);
+   }*/
 
   /**
    *
@@ -745,10 +752,10 @@ export class CreateTransferComponent implements OnInit {
                 )
                 );
               });
-              console.log("mosaicos",allMosaics)
+              console.log("mosaicos", allMosaics)
 
               const transferBuilder = TransferTransaction.create(
-                Deadline.create(environment.deadlineTransfer.deadline,environment.deadlineTransfer.chronoUnit),
+                Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
                 recipientAddress,
                 allMosaics,
                 PlainMessage.create(params.message),
@@ -985,7 +992,7 @@ export class CreateTransferComponent implements OnInit {
 
   calculateFee(message: number) {
     this.mosaicsToSend = this.validateMosaicsToSend();
-    console.log("this.mosaicsToSend",this.mosaicsToSend)
+    console.log("this.mosaicsToSend", this.mosaicsToSend)
     const x = TransferTransaction.calculateSize(PlainMessage.create(this.formTransfer.get("message").value).size(), this.mosaicsToSend.length);
     const b = FeeCalculationStrategy.calculateFee(x);
     if (message > 0) {

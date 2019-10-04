@@ -222,7 +222,8 @@ const routes: Routes = [
         override: true,
       }
     }
-  }, {
+  }
+  ,{
     path: AppConfig.routes.addressBook,
     component: ListContactsComponent,
     data: {
