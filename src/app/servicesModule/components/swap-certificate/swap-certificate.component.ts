@@ -45,6 +45,7 @@ export class SwapCertificateComponent implements OnInit {
   navToRoute() {
     this.walletService.setAccountSelectedWalletNis1(null);
     this.walletService.setNis1AccounsWallet(null);
+    this.walletService.setNis1AccountsWallet$([]);
     this.walletService.setAccountInfoNis1(null);
     this.walletService.setNis1AccountSelected(null);
     // this.walletService.setAccountMosaicsNis1(null);

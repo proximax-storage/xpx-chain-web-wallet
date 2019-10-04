@@ -12,6 +12,8 @@ import { environment } from '../../../../environments/environment';
 import { AppConfig } from '../../../config/app.config';
 import { NamespacesService } from 'src/app/servicesModule/services/namespaces.service';
 import { PaginationInstance } from 'ngx-pagination';
+import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
+import { UInt64 } from 'tsjs-xpx-chain-sdk';
 
 
 @Component({
@@ -77,6 +79,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   };
 
   constructor(
+    private dataBridge: DataBridgeService,
     private cdRef: ChangeDetectorRef,
     private dashboardService: DashboardService,
     private walletService: WalletService,
@@ -415,10 +418,23 @@ export class DashboardComponent implements OnInit, OnDestroy {
    */
   openModal(transaction: TransactionsInterface) {
     const height = transaction.data['transactionInfo'].height.compact();
-    console.log(typeof(height));
-    if (typeof(height) === 'number'){
-      transaction.effectiveFee = height;
-    }else {
+    if (typeof (height) === 'number') {
+      const existBlock = this.dataBridge.filterBlockStorage(height);
+      if (existBlock) {
+        console.log(existBlock);
+        transaction.timestamp = this.transactionService.dateFormatUTC(new UInt64([existBlock.timestamp.lower, existBlock.timestamp.higher]));
+        transaction.effectiveFee = existBlock.feeMultiplier * transaction.data.size;
+      }else {
+        this.proximaxProvider.getBlockInfo(height).subscribe(
+          next => {
+            console.log(next);
+            this.dataBridge.validateBlock(next);
+            transaction.timestamp = this.transactionService.dateFormatUTC(next.timestamp);
+            transaction.effectiveFee = next.feeMultiplier * transaction.data.size;
+          }
+        );
+      }
+    } else {
       transaction.effectiveFee = 0;
     }
 

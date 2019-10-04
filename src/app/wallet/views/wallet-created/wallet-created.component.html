@@ -53,8 +53,8 @@
 
   <!-- buttons create and clear -->
   <div class="row mt-2rem d-flex justify-content-center">
-    <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
-      size="md" (click)="viewPrivateKey = !viewPrivateKey">
+    <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md"
+      (click)="viewPrivateKey = !viewPrivateKey">
       <span class="fs-1-2em color-white" *ngIf="viewPrivateKey"><i class="fa fa-eye-slash"></i> HIDE PRIVATE KEY</span>
       <span class="fs-1-2em color-white" *ngIf="!viewPrivateKey"><i class="fa fa-eye"></i> SHOW PRIVATE KEY</span>
     </button>
@@ -64,8 +64,10 @@
       <span class="fs-1-2em color-white"><i class="fa fa-file"></i> SAVE PAPER WALLET</span>
     </button>
 
-    <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md"
-      (click)="goToRoute()">
+    <button mdbBtn type="button" rounded="true" mdbWavesEffect [disabled]="disabledContinue"
+      class="f-w-600 background-btn pl-2rem pr-2rem" size="md" (click)="goToRoute()">
+      <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
+        *ngIf="disabledContinue"></span>
       <span class="fs-1-2em color-white"><i class="fa fa-chevron-circle-right"></i> CONTINUE</span>
     </button>
   </div>

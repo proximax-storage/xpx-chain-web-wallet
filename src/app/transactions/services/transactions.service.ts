@@ -374,6 +374,17 @@ export class TransactionsService {
 
   /**
    *
+   *
+   * @param {UInt64} date
+   * @returns
+   * @memberof TransactionsService
+   */
+  dateFormatUTC(date: UInt64) {
+    return new Date(date.compact() + Deadline.timestampNemesisBlock * 1000).toUTCString();
+  }
+
+  /**
+   *
    * @param deadline
    */
   dateFormatLocal(deadline: Deadline) {
@@ -544,7 +555,6 @@ export class TransactionsService {
       return {
         data: transaction,
         nameType: nameType,
-        timestamp: this.dateFormat(transaction.deadline),
         fee: feeFormatter,
         feePart: this.getDataPart(feeFormatter, 6),
         sender: transaction.signer,
@@ -735,7 +745,7 @@ export interface TransactionsInterface {
   description?: string;
   effectiveFee?: number;
   nameType: string;
-  timestamp: string;
+  timestamp?: string;
   fee: string;
   feePart: {
     part1: string;

@@ -31,6 +31,9 @@ export class WalletService {
   nis1AccounsWallet: any = [];
   unconfirmedTransactions: any = [];
 
+  nis1AccountsWallet: Subject<any> = new Subject<any>();
+  nis1AccountsWallet$: Observable<any> = this.nis1AccountsWallet.asObservable();
+
   swapTransactions: Subject<any> = new Subject<any>();
   swapTransactions$: Observable<any> = this.swapTransactions.asObservable();
 
@@ -468,7 +471,7 @@ export class WalletService {
    */
   getAmountAccount() {
     const account = this.filterAccountInfo(this.proximaxProvider.createFromRawAddress(this.currentAccount.address).pretty(), true);
-    if (account && account.accountInfo){
+    if (account && account.accountInfo) {
       let mosaics = account.accountInfo.mosaics.slice(0);
       let amoutMosaic = mosaics.find(mosaic => mosaic.id.toHex() == environment.mosaicXpxInfo.id);
       return (amoutMosaic) ? amoutMosaic.amount.compact() : 0;
@@ -568,6 +571,16 @@ export class WalletService {
      */
   getSwapTransactions$(): Observable<any> {
     return this.swapTransactions$;
+  }
+
+  /**
+   *
+   *
+   * @returns {Observable<any>}
+   * @memberof WalletService
+   */
+  getNis1AccountsWallet$(): Observable<any> {
+    return this.nis1AccountsWallet$;
   }
 
   /**
@@ -689,12 +702,12 @@ export class WalletService {
       this.validateMultisigAccount(this.currentWallet.accounts);
     }
   }
-   /**
-  *
-  *
-  * @param {string} name
-  * @memberof WalletService
-  */
+  /**
+ *
+ *
+ * @param {string} name
+ * @memberof WalletService
+ */
   removeWallet(name: string): boolean {
     let value: boolean = false;
     let walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
@@ -708,7 +721,7 @@ export class WalletService {
           (element: any) => {
             return element.name !== name;
           })
-         localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorageNew));
+        localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorageNew));
       }
     }
     return value
@@ -834,6 +847,16 @@ export class WalletService {
  */
   setSwapTransactions$(transactions: TransactionsNis1Interface[]) {
     this.swapTransactions.next(transactions);
+  }
+
+  /**
+   *
+   *
+   * @param {*} currentAccount
+   * @memberof WalletService
+   */
+  setNis1AccountsWallet$(accounts: any) {
+    this.nis1AccountsWallet.next(accounts);
   }
 
   /**

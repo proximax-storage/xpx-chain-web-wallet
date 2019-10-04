@@ -51,11 +51,12 @@ export class DataBridgeService {
    *
    * @memberof DataBridgeService
    */
-  async searchBlockInfo() {
+  async searchBlockInfo(byHeight: TypeNumber) {
     this.proximaxProvider.getBlockchainHeight().subscribe(
       (blockchainHeight: UInt64) => {
         this.proximaxProvider.getBlockInfo().subscribe(
           (blockInfo: BlockInfo) => {
+            console.log(blockInfo.numTransactions);
             this.setblockInfo(blockInfo);
             this.saveBlockInfo(blockInfo);
           }
@@ -171,7 +172,8 @@ export class DataBridgeService {
   */
   getBlockSocket(connector: Listener) {
     connector.newBlock().subscribe((blockInfo: BlockInfo) => {
-      // console.log('new block -->', blockInfo);
+      /*console.log('new block -->', blockInfo.numTransactions);
+      console.log('new block -->', blockInfo.height.compact());*/
       this.saveBlockInfo(blockInfo);
     }, err => {
       this.sharedService.showError('Error', err);
@@ -476,13 +478,15 @@ export class DataBridgeService {
    * @memberof DataBridgeService
    */
   validateBlock(blockInfo: BlockInfo) {
-    const blocksStorage = localStorage.getItem(environment.nameKeyBlockStorage);
-    if (blocksStorage) {
-      const parsedData = JSON.parse(blocksStorage);
-      parsedData.unshift(blockInfo);
-      localStorage.setItem(environment.nameKeyBlockStorage, JSON.stringify(parsedData.slice(0, 100)));
-    } else {
-      localStorage.setItem(environment.nameKeyBlockStorage, JSON.stringify([blockInfo]));
+    if (blockInfo.numTransactions && blockInfo.numTransactions >= 1) {
+      const blocksStorage = localStorage.getItem(environment.nameKeyBlockStorage);
+      if (blocksStorage) {
+        const parsedData = JSON.parse(blocksStorage);
+        parsedData.unshift(blockInfo);
+        localStorage.setItem(environment.nameKeyBlockStorage, JSON.stringify(parsedData.slice(0, 100)));
+      } else {
+        localStorage.setItem(environment.nameKeyBlockStorage, JSON.stringify([blockInfo]));
+      }
     }
   }
 }

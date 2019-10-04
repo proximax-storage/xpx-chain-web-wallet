@@ -21,7 +21,7 @@ import {
   PublicAccount,
   Transaction
 } from "nem-library";
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { timeout, first } from 'rxjs/operators';
 import { WalletService } from 'src/app/wallet/services/wallet.service';
 import { TransactionsService } from 'src/app/transactions/services/transactions.service';
@@ -40,6 +40,7 @@ export class NemServiceService {
   assetHt: AssetHttp;
   transactionHt: TransactionHttp;
   nodes: ServerConfig[];
+  subscription: Subscription[] = [];
 
   /**
    * Start the connection to the NEM nodes
@@ -56,6 +57,12 @@ export class NemServiceService {
     this.accountHttp = new AccountHttp(this.nodes);
     this.transactionHttp = new TransactionHttp(this.nodes);
     this.assetHttp = new AssetHttp(this.nodes);
+  }
+
+  unsuscribe() {
+    this.subscription.forEach(subscription => {
+      subscription.unsubscribe();
+    });
   }
 
   /**
@@ -77,7 +84,7 @@ export class NemServiceService {
     });
     return amountFormatter;
   }
-  
+
   /**
    * Method to anounce transaction
    * @param {TransferTransaction | MultisigTransaction} transferTransaction data of transfer transaction
@@ -212,7 +219,7 @@ export class NemServiceService {
       if (element.nis1Account !== null) {
         const address = this.createAddressToString(element.nis1Account.address.value);
         this.getAccountInfo(address).pipe(first()).pipe((timeout(15000))).subscribe(
-          next => {
+          async next => {
             let consignerOf: boolean = false;
             let consignerAccountsInfo: any = [];
 
@@ -228,9 +235,12 @@ export class NemServiceService {
               consignerAccounts: consignerAccountsInfo
             }
 
+            const accounts = this.walletService.getNis1AccounsWallet();
+            accounts.push(accountNis1);
+            this.walletService.setNis1AccountsWallet$(accounts);
             this.walletService.setNis1AccounsWallet(accountNis1);
           },
-          error => {
+          async error => {
             const accountNis1 = {
               nameAccount: element.name,
               address: address,
@@ -239,6 +249,9 @@ export class NemServiceService {
               consignerAccounts: []
             }
 
+            const accounts = this.walletService.getNis1AccounsWallet();
+            accounts.push(accountNis1);
+            this.walletService.setNis1AccountsWallet$(accounts);
             this.walletService.setNis1AccounsWallet(accountNis1);
           }
         );
@@ -301,11 +314,14 @@ export class NemServiceService {
                   balance: balance,
                   route: `/${AppConfig.routes.viewAllAccount}`
                 }
+                const accounts = this.walletService.getNis1AccounsWallet();
+                accounts.push(accountNis1);
+                this.walletService.setNis1AccountsWallet$(accounts);
                 this.walletService.setNis1AccounsWallet(accountNis1);
               }
             }
           },
-          error => {
+          async error => {
             const accountNis1 = {
               nameAccount: name,
               address: account.address,
@@ -316,12 +332,15 @@ export class NemServiceService {
               multiSign: false,
               balance: '0.000000',
               route: `/${AppConfig.routes.viewAllAccount}`
-            }
+            };
+            const accounts = this.walletService.getNis1AccounsWallet();
+            accounts.push(accountNis1);
+            this.walletService.setNis1AccountsWallet$(accounts);
             this.walletService.setNis1AccounsWallet(accountNis1);
           }
         )
       },
-      error => {
+      async error => {
         const accountNis1 = {
           nameAccount: name,
           address: account.address,
@@ -333,7 +352,9 @@ export class NemServiceService {
           balance: '0.000000',
           route: `/${AppConfig.routes.viewAllAccount}`
         }
-
+        const accounts = this.walletService.getNis1AccounsWallet();
+        accounts.push(accountNis1);
+        this.walletService.setNis1AccountsWallet$(accounts);
         this.walletService.setNis1AccounsWallet(accountNis1);
       }
     )
