@@ -15,13 +15,13 @@ export class ViewAllWalletsComponent implements OnInit {
   wallets: Array<any>;
 
   routes = {
-    selectTypeCreationWallet: AppConfig.routes.selectTypeCreationWallet,
+    home: AppConfig.routes.home,
     deleteWallet: `/${AppConfig.routes.deleteWallet}/`,
 
   };
   constructor(private authService: AuthService,
     private walletService :WalletService
-    
+
     ) { }
 
   ngOnInit(
