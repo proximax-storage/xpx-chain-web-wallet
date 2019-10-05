@@ -200,14 +200,14 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
     if (typeof (height) === 'number') {
       const existBlock = this.dataBridge.filterBlockStorage(height);
       if (existBlock) {
-        transaction.timestamp = this.transactionService.dateFormatUTC(new UInt64([existBlock.timestamp.lower, existBlock.timestamp.higher]));
+        transaction.timestamp = `${this.transactionService.dateFormatUTC(new UInt64([existBlock.timestamp.lower, existBlock.timestamp.higher]))} - UTC`;
         const calculateEffectiveFee = this.transactionService.amountFormatterSimple(existBlock.feeMultiplier * transaction.data.size)
         transaction.effectiveFee = this.transactionService.getDataPart(calculateEffectiveFee, 6);
       }else {
         this.proximaxProvider.getBlockInfo(height).subscribe(
           next => {
             this.dataBridge.validateBlock(next);
-            transaction.timestamp = this.transactionService.dateFormatUTC(next.timestamp);
+            transaction.timestamp = `${this.transactionService.dateFormatUTC(next.timestamp)} - UTC`;
             const calculateEffectiveFee = this.transactionService.amountFormatterSimple(next.feeMultiplier * transaction.data.size);
             transaction.effectiveFee = this.transactionService.getDataPart(calculateEffectiveFee, 6);
           }

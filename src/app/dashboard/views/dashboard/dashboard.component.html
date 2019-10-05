@@ -12,14 +12,9 @@
                 <button mdbBtn color="transparent" class="dropdown-toggle waves-light" type="button" mdbWavesEffect
                   style="padding: 5px; box-shadow: 0px 0px transparent" (click)="modalAccounts.show()">
                 </button>
-
               </div>
 
-              <span class="fs-09rem fw-600 color-black"> {{currentAccount.name}}
-                <!-- <a [routerLink]="[viewDetailsAccount+currentAccount.name]"
-                  class="cursor-p color-black">{{currentAccount.name}}</a> -->
-              </span>
-
+              <span class="fs-09rem fw-600 color-black"> {{currentAccount.name}}</span>
               <span class="ml-05rem  title-tab-blue fs-09rem">
                 <i>- Current default </i>
               </span>
@@ -56,16 +51,13 @@
         </div>
 
         <!-- SEGUNDA PARTE -->
-        <div class="col-12 col-md-5 mt-2rem d-flex ">
-          <!-- justify-content-center align-items-center -->
+        <div class="col-12 col-md-5 mt-2rem">
           <div class="row">
-            <div class="col-12 d-flex ">
-              <div class="row">
-                <!-- justify-content-center -->
-                <span class="fs-1-2rem ">Transactions:<span class="fs-085rem fw-600 color-black"> {{cantConfirmed +
-                    cantUnconfirmed}}</span> </span>
-              </div>
+            <div class="col-12 col-12 d-flex justify-content-center">
+              <span class="fs-1-2rem ">Transactions: &nbsp;</span>
+              <span class="fs-085rem fw-600 color-black"> {{cantConfirmed + cantUnconfirmed}}</span>
             </div>
+
             <div class="col-12 d-flex">
               <!-- justify-content-center -->
               <div class="row">
@@ -213,7 +205,7 @@
                   {{el.nameType}}
                 </td>
 
-                  <!-- address -->
+                <!-- address -->
                 <td class="text-center th-md description-dark-green fs-07rem">
                   <img src="assets/images/img/arrow-transaction-receive-green-proximax-sirius-explorer.svg" alt=""
                     width="25" *ngIf="el.receive">
@@ -325,7 +317,8 @@
                   <div class="row">
                     <!-- TYPE REGISTER NAMESPACE TRANSACTION -->
                     <div class="col-12 col-md-7">
-                      <app-mosaic-supply-change-type [mosaicSupplyChange]="dataSelected"></app-mosaic-supply-change-type>
+                      <app-mosaic-supply-change-type [mosaicSupplyChange]="dataSelected">
+                      </app-mosaic-supply-change-type>
                     </div>
                     <!-- BOX DATA SIGNER HASH -->
                     <div class="col-12 col-md-5">
@@ -482,7 +475,6 @@
   </div>
 </div>
 
-
 <!-- MODAL ACCOUNT -->
 <div class="d-flex align-items-center">
   <div mdbModal #modalAccounts="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalAccounts"
@@ -552,6 +544,7 @@
     </div>
   </div>
 </div>
+
 <!-- MODAL QR -->
 <div class="d-flex align-items-center">
   <div mdbModal #modalQR="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalQR"

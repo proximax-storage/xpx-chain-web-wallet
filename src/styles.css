@@ -1869,3 +1869,8 @@ ul.stepper.horizontal .step-title {
   filter: grayscale(100%) opacity(50%);
   color: gray;
 }
+
+.modal-backdrop {
+  background-color: rgb(50,110,180) !important;
+}
+

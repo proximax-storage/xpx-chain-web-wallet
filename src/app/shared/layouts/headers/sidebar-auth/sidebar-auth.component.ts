@@ -72,7 +72,7 @@ export class SidebarAuthComponent implements OnInit {
 
     const deleteWallet: MenuInterface = {
       type: 'default',
-      name: 'In local cache',
+      name: 'Wallet',
       class: '',
       icon: '',
       rol: false,
@@ -100,8 +100,9 @@ export class SidebarAuthComponent implements OnInit {
 
     this.itemsHeader = {
       home: this.sharedService.buildHeader(paramsHome),
+      wallet: this.sharedService.buildHeader(deleteWallet)
       // auth: this.sharedService.buildHeader(paramsSignIn),
-      wallet: this.sharedService.buildHeader(paramsWallet),
+      // wallet: this.sharedService.buildHeader(paramsWallet),
     }
   }
 
