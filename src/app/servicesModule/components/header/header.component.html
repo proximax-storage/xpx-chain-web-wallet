@@ -1,13 +1,13 @@
 <div class="container mt-3rem mb-1rem animated fadeIn">
   <div class="row">
-    <div class="col-12 col-md-8">
+    <div class="col-12 col-md-8 d-flex align-items-end">
       <span class="fs-1rem txt-a-center line-h-1-2em color-grey">{{params.moduleName}}</span>
       <span class="fs-1rem txt-a-center line-h-1-2em color-grey"> > </span>
       <span class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">{{params.componentName}}</span>
     </div>
 
     <div class="col-12 col-md-4 d-flex justify-content-start justify-content-md-end">
-      <a class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio" [routerLink]="[params.routerExtraButton]" *ngIf="params.extraButton">
+      <a class="fs-09rem fw-600 line-h-1-2em color-blue-intermedio" [routerLink]="[params.routerExtraButton]" *ngIf="params.extraButton">
         <span>{{params.extraButton}}</span>
       </a>
       <div class="col-2 d-flex justify-content-center" *ngIf="params.extraButton">
@@ -15,7 +15,7 @@
           <div class="line-separator h-100porcent"></div>
         </div>
       </div>
-      <a class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio" [routerLink]="[goBack]">
+      <a class="fs-09rem fw-600 line-h-1-2em color-blue-intermedio" [routerLink]="[goBack]">
         <span>Back to Services</span>
       </a>
     </div>
