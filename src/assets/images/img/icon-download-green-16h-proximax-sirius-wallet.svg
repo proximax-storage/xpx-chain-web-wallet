@@ -1,1 +1,21 @@
-<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60"><defs><style>.cls-1{fill:#0098ea;}</style></defs><title>icon-download-green-16h-proximax-sirius-wallet</title><path class="cls-1" d="M30,0A30,30,0,1,0,60,30,30,30,0,0,0,30,0Zm0,58.12A28.12,28.12,0,1,1,58.13,30,28.15,28.15,0,0,1,30,58.12Z"/><path class="cls-1" d="M38.65,28a1.09,1.09,0,0,0-1-.64H33.28V13.09A1.09,1.09,0,0,0,32.19,12H27.81a1.09,1.09,0,0,0-1.09,1.09V27.31H22.34a1.09,1.09,0,0,0-1,.64,1.11,1.11,0,0,0,.17,1.18l7.66,8.75a1.09,1.09,0,0,0,1.64,0l7.66-8.75A1.11,1.11,0,0,0,38.65,28Z"/><path class="cls-1" d="M42,36.06v6.56H18V36.06H13.59v8.75A2.19,2.19,0,0,0,15.78,47H44.22a2.19,2.19,0,0,0,2.19-2.19V36.06Z"/></svg>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 23.1.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 60 60" style="enable-background:new 0 0 60 60;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#306EB3;}
+</style>
+<title>icon-download-green-16h-proximax-sirius-wallet</title>
+<g>
+	<path class="st0" d="M30,0C13.4,0,0,13.4,0,30s13.4,30,30,30s30-13.4,30-30S46.6,0,30,0z M30,58.1C14.5,58.1,1.9,45.5,1.9,30
+		S14.5,1.9,30,1.9c15.5,0,28.1,12.6,28.1,28.1C58.1,45.5,45.5,58.1,30,58.1z"/>
+</g>
+<g>
+	<path class="st0" d="M38.7,28c-0.2-0.4-0.6-0.6-1-0.6h-4.4V13.1c0-0.6-0.5-1.1-1.1-1.1l0,0h-4.4c-0.6,0-1.1,0.5-1.1,1.1l0,0v14.2
+		h-4.4c-0.4,0-0.8,0.2-1,0.6c-0.2,0.4-0.1,0.9,0.2,1.2l7.7,8.7c0.4,0.5,1.1,0.5,1.5,0.1c0,0,0.1-0.1,0.1-0.1l7.7-8.8
+		C38.7,28.8,38.8,28.4,38.7,28z"/>
+</g>
+<g>
+	<path class="st0" d="M42,36.1v6.6H18v-6.6h-4.4v8.8c0,1.2,1,2.2,2.2,2.2h28.4c1.2,0,2.2-1,2.2-2.2v-8.8H42z"/>
+</g>
+</svg>
