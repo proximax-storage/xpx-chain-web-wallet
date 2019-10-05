@@ -1,4 +1,5 @@
 <div class="container mt-3rem mb-2rem animated fadeIn">
+  <!-- Header title & Description -->
   <div class="row">
     <div class="col-12 d-flex justify-content-center">
       <span class="fs-1-7rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">{{title}}</span>
@@ -11,40 +12,37 @@
     </div>
   </div>
 
-  <!-- <div class="row">
-    <div class="col-8 d-flex justify-content-center mx-auto"> -->
   <!-- BOX LIST WALLETS -->
   <div class="row">
-    <ng-container *ngFor="let wallet of wallets">
-      <div class="col-11 col-sm-10 col-md-9 col-lg-8 mx-auto box-list-account-gray fs-08rem pb-1rem mb-1rem">
-        <div class="row">
-          <!-- {{wallet}} -->
-          <div class="col-12 col-sm-10 col-md-9 col-lg-10 col-xl-10 text-center text-sm-left pt-1rem w-b-a">
-            <span class="fw-bold fs-1-2rem">{{wallet.name}}</span><br>
-            Accounts :{{wallet.accounts.length}}
-          </div>
-          <div class="col-12 col-sm-2 col-md-3 col-lg-2 col-xl-2 d-flex align-items-center
-                             justify-content-center
-                              justify-content-sm-end
-                              justify-content-md-end
-                            justify-content-lg-end
-                             justify-content-xl-end pt-1rem">
-            <!-- Delete-->
-            <img src="assets/images/img/icon-trash-can-gray-16h-proximax-sirius-wallet.svg" class="cursor-p" width="20"
-              title=" Delete" [routerLink]="[routes.deleteWallet+wallet.name]">
+    <div class="col-10 mx-auto">
+      <div class="row">
+        <div *ngFor="let wallet of wallets" class="col-sm-12 col-md-12 col-lg-6 col-xl-6 fs-08rem">
+          <div class="row p-1rem">
+            <div class="col-12">
+              <div class="row box-list-account-gray">
+                <div class="col-12 col-sm-10 col-md-9 col-lg-10 col-xl-10 text-center text-sm-left p-1rem w-b-a">
+                  Name: <span class="fw-bold">{{wallet.name}}</span><br>
+                  Accounts: <span class="fw-bold">{{wallet.accounts.length}}</span>
+                </div>
+                <div class="col-12 col-sm-2 col-md-3 col-lg-2 col-xl-2 d-flex align-items-center justify-content-center justify-content-sm-end p-1rem">
+                  <img src="assets/images/img/icon-trash-can-gray-16h-proximax-sirius-wallet.svg" class="cursor-p"
+                    width="25" title=" Delete" [routerLink]="[routes.deleteWallet+wallet.name]">
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </ng-container>
+    </div>
   </div>
-  <!-- </div>
-  </div> -->
-  <!-- BUTTON -->
-  <div class="row mt-2rem">
-    <div class="col-8 d-flex justify-content-center mx-auto">
+
+  <!-- Button Home -->
+  <div class="row mt-03rem">
+    <div class="col-12 d-flex justify-content-center p-0">
       <button [routerLink]="['/'+routes.home]" mdbBtn type="button" rounded="true" mdbWavesEffect
         class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
         <span class="fs-1-2em color-white">Home</span>
       </button>
     </div>
   </div>
+</div>
