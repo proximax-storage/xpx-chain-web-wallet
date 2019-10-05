@@ -1897,3 +1897,7 @@ ul.stepper.horizontal .step-title {
   opacity: .9 !important;
   background-color: rgb(50, 110, 180) !important;
 }
+
+.ng-dropdown-panel .ng-dropdown-panel-items{
+  max-height: 200px !important;
+}
