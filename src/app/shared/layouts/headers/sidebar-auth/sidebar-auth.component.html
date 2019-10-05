@@ -8,20 +8,12 @@
   </mdb-navbar-brand>
   <links>
     <ul class="navbar-nav ml-auto">
-
-      <li class="nav-item color-item-menu active" (click)="showModal()">
-        <a class="nav-link waves-light" mdbWavesEffect>
-          <span class="item-menu">Auth</span>
-        </a>
-      </li>
-
-
       <ng-container *ngFor="let key of keyObject(itemsHeader)">
         <ng-container *ngIf="!itemsHeader[key]['rol']">
           <ng-container *ngIf="itemsHeader[key]['type'] === 'default' && itemsHeader[key]['show']">
             <li class="nav-item color-item-menu active">
               <a [routerLink]="[itemsHeader[key]['link']]" class="nav-link waves-light" mdbWavesEffect>
-                <span class="item-menu">{{itemsHeader[key]['name']}}</span>
+                <span class="item-menu fw-600">{{itemsHeader[key]['name'] | uppercase}}</span>
               </a>
             </li>
           </ng-container>
@@ -30,7 +22,7 @@
             <li class="nav-item dropdown" dropdown>
               <a dropdownToggle mdbWavesEffect type="button" class="nav-link dropdown-toggle waves-light"
                 mdbWavesEffect>
-                <span class="item-menu">{{itemsHeader[key]['name']}}</span>
+                <span class="item-menu fw-600">{{itemsHeader[key]['name'] | uppercase}}</span>
                 <span class="caret"></span>
               </a>
 
@@ -40,7 +32,7 @@
                   <ng-container *ngIf="itemsHeader[key]['submenu'][k]['view']">
                     <a class="dropdown-item waves-light" mdbWavesEffect
                       [routerLink]="[itemsHeader[key]['submenu'][k]['link']]">
-                      {{itemsHeader[key]['submenu'][k]['name']}}
+                      {{itemsHeader[key]['submenu'][k]['name'] | uppercase}}
                     </a>
                   </ng-container>
                 </ng-container>
@@ -49,6 +41,12 @@
           </ng-container>
         </ng-container>
       </ng-container>
+
+      <li class="nav-item color-item-menu active" (click)="showModal()">
+        <a class="nav-link waves-light" mdbWavesEffect>
+          <span class="item-menu fw-600">SIGN IN</span>
+        </a>
+      </li>
     </ul>
   </links>
 </mdb-navbar>
@@ -71,20 +69,24 @@
               <app-auth></app-auth>
             </div>
 
-            <div class="col-12 col-sm-6 col-md-4 d-flex align-items-center background-header-grey">
+            <div class="col-12 col-sm-6 col-md-4 d-flex align-items-center mx-auto">
               <div class="row">
-                <div class="col-12 d-flex justify-content-center">
-                  <img src="assets/images/img/icon-wallet-name-green-16h-proximax-sirius-wallet.svg" height="50">
-                </div>
-                <div class="col-12 d-flex justify-content-center mt-03rem">
-                  <span class="fw-600">Create Wallet</span>
-                </div>
-                <div class="col-12 d-flex justify-content-center mt-1-3rem">
-                  <span>Remember, your wallet always be in your local storage.</span>
-                </div>
+                <div class="col-11 background-header-grey pt-1rem pb-1rem mx-auto">
+                  <div class="row">
+                    <div class="col-12 d-flex justify-content-center">
+                      <img src="assets/images/img/icon-wallet-name-green-16h-proximax-sirius-wallet.svg" height="50">
+                    </div>
+                    <div class="col-12 d-flex justify-content-center mt-03rem">
+                      <span class="fw-600">Create Wallet</span>
+                    </div>
+                    <div class="col-12 d-flex justify-content-center mt-1-3rem">
+                      <span>Remember, your wallet always be in your local storage.</span>
+                    </div>
 
-                <div class="col-12 d-flex justify-content-center mt-05rem">
-                  <span>If you need access to other wallet please create a new one or import it.</span>
+                    <div class="col-12 d-flex justify-content-center mt-05rem">
+                      <span>If you need access to other wallet please create a new one or import it.</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

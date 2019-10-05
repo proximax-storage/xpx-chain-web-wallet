@@ -1025,13 +1025,13 @@ footer {
   display: table-row;
   height: 1px;
 }
-
+/*
 body {
   position: relative;
-}
+}*/
 
 footer {
-  position: absolute;
+  /* position: absolute; */
   bottom: 0;
   width: 100%;
   /* height: 74px; */
@@ -1877,3 +1877,9 @@ ul.stepper.horizontal .step-title {
   filter: grayscale(100%) opacity(50%);
   color: gray;
 }
+
+.modal-backdrop {
+  opacity: .9 !important;
+  background-color: rgb(50,110,180) !important;
+}
+
