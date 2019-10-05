@@ -1,4 +1,5 @@
-<mdb-navbar SideClass="navbar navbar-expand-sm navbar-dark background-header-inverse z-depth-0" [containerInside]="false">
+<mdb-navbar SideClass="navbar navbar-expand-sm navbar-dark background-header-inverse z-depth-0"
+  [containerInside]="false">
   <mdb-navbar-brand class="d-flex align-items-end">
     <a class="navbar-brand mr-05rem">
       <img src="assets/images/img/logo-proximax-sirius-wallet-beta.svg" height="33" class="d-inline-block align-top">
@@ -12,7 +13,7 @@
           <ng-container *ngIf="itemsHeader[key]['type'] === 'default' && itemsHeader[key]['show']">
             <li class="nav-item color-item-menu active">
               <a [routerLink]="[itemsHeader[key]['link']]" class="nav-link waves-light" mdbWavesEffect>
-                <span class="item-menu">{{itemsHeader[key]['name'] | uppercase}}</span>
+                <span class="item-menu fw-600">{{itemsHeader[key]['name']}}</span>
               </a>
             </li>
           </ng-container>
@@ -21,14 +22,16 @@
             <li class="nav-item dropdown" dropdown>
               <a dropdownToggle mdbWavesEffect type="button" class="nav-link dropdown-toggle waves-light"
                 mdbWavesEffect>
-                <span class="item-menu">{{itemsHeader[key]['name'] | uppercase}}</span>
+                <span class="item-menu fw-600">{{itemsHeader[key]['name']}}</span>
                 <span class="caret"></span>
               </a>
 
-              <div *dropdownMenu class="dropdown-menu dropdown dropdown-primary {{itemsHeader[key]['class']}}" role="menu">
+              <div *dropdownMenu class="dropdown-menu dropdown dropdown-primary {{itemsHeader[key]['class']}}"
+                role="menu">
                 <ng-container *ngFor="let k of keyObject(itemsHeader[key]['submenu'])">
                   <ng-container *ngIf="itemsHeader[key]['submenu'][k]['view']">
-                    <a class="dropdown-item waves-light" mdbWavesEffect [routerLink]="[itemsHeader[key]['submenu'][k]['link']]">
+                    <a class="dropdown-item waves-light" mdbWavesEffect
+                      [routerLink]="[itemsHeader[key]['submenu'][k]['link']]">
                       {{itemsHeader[key]['submenu'][k]['name']}}
                     </a>
                   </ng-container>
@@ -38,6 +41,60 @@
           </ng-container>
         </ng-container>
       </ng-container>
+
+      <li class="nav-item color-item-menu active" (click)="showModal()">
+        <a class="nav-link waves-light" mdbWavesEffect>
+          <span class="item-menu fw-600">Sign In</span>
+        </a>
+      </li>
     </ul>
   </links>
 </mdb-navbar>
+
+
+<div class="d-flex align-items-center">
+  <div mdbModal #modalAuth="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalAuth"
+    aria-hidden="true">
+    <div class="modal-dialog modal-md d-flex align-items-center" role="document">
+      <div class="modal-content form-elegant bord-rad-1-5rem">
+        <div class="row">
+          <div class="col-12">
+            <div class="col-12">
+              <span class="cursor-p d-flex justify-content-end fw-600 fs-1rem pt-04rem" (click)="modalAuth.hide()">x</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-12 col-sm-6 col-md-8">
+              <app-auth [eventNumber]="eventNumber"></app-auth>
+            </div>
+
+            <div class="col-12 col-sm-6 col-md-4 d-flex align-items-center mx-auto">
+              <div class="row">
+                <div class="col-11 background-header-grey pt-1rem pb-1rem mx-auto">
+                  <div class="row">
+                    <div class="col-12 d-flex justify-content-center">
+                      <img src="assets/images/img/icon-wallet-name-green-16h-proximax-sirius-wallet.svg" height="50">
+                    </div>
+                    <div class="col-12 d-flex justify-content-center mt-03rem">
+                      <span class="fw-600">Create Wallet</span>
+                    </div>
+                    <div class="col-12 d-flex justify-content-center mt-1-3rem">
+                      <span>Remember, your wallet always be in your local storage.</span>
+                    </div>
+
+                    <div class="col-12 d-flex justify-content-center mt-05rem">
+                      <span>If you need access to other wallet please create a new one or import it.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

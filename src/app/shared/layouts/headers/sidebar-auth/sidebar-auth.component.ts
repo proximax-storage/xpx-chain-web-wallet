@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ItemsHeaderInterface, SharedService, MenuInterface } from '../../../services/shared.service';
 import { AppConfig } from '../../../../config/app.config';
 import { environment } from '../../../../../environments/environment';
+import { ModalDirective } from 'ng-uikit-pro-standard';
 
 @Component({
   selector: 'app-sidebar-auth',
@@ -10,9 +11,12 @@ import { environment } from '../../../../../environments/environment';
 })
 export class SidebarAuthComponent implements OnInit {
 
+  @ViewChild('modalAuth', { static: true }) modalAuth: ModalDirective;
   itemsHeader: ItemsHeaderInterface;
   keyObject = Object.keys;
   version = '';
+  eventNumber: number = 0;
+
   constructor(
     private sharedService: SharedService
   ) {
@@ -27,18 +31,6 @@ export class SidebarAuthComponent implements OnInit {
       icon: '',
       rol: false,
       link: `/${AppConfig.routes.home}`,
-      view: true,
-      subMenu: {},
-      selected: false
-    }
-
-    const paramsSignIn: MenuInterface = {
-      type: 'default',
-      name: 'Sign In',
-      class: '',
-      icon: '',
-      rol: false,
-      link: `/${AppConfig.routes.auth}`,
       view: true,
       subMenu: {},
       selected: false
@@ -68,10 +60,9 @@ export class SidebarAuthComponent implements OnInit {
       selected: false
     }
 
-
     const deleteWallet: MenuInterface = {
       type: 'default',
-      name: 'in local cache',
+      name: 'Wallet',
       class: '',
       icon: '',
       rol: false,
@@ -99,8 +90,19 @@ export class SidebarAuthComponent implements OnInit {
 
     this.itemsHeader = {
       home: this.sharedService.buildHeader(paramsHome),
-      auth: this.sharedService.buildHeader(paramsSignIn),
-      wallet: this.sharedService.buildHeader(paramsWallet),
+      wallet: this.sharedService.buildHeader(deleteWallet)
+      // auth: this.sharedService.buildHeader(paramsSignIn),
+      // wallet: this.sharedService.buildHeader(paramsWallet),
     }
+  }
+
+  /**
+   *
+   *
+   * @memberof SidebarAuthComponent
+   */
+  showModal() {
+    this.eventNumber = this.eventNumber+1;
+    this.modalAuth.show();
   }
 }

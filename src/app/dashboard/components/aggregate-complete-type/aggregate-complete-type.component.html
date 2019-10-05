@@ -1,33 +1,38 @@
 <div class="row">
   <div class="col-12">
     <div class="row">
-      <!-- Bonded & Deadline -->
-      <div class="col-12 lh-1em">
-        <span class="fw-600 fs-1-2rem">{{aggregateComplete.nameType}}</span> <br>
-        <span class="fs-075rem">Deadline: {{aggregateComplete?.timestamp}}</span>
+      <!-- Bonded -->
+      <div class="col-12">
+        <span class="fw-600 fs-1-2rem">{{aggregateComplete.nameType}}</span>
+      </div>
+
+      <!-- Timestamp -->
+      <div class="col-12" *ngIf="aggregateComplete?.timestamp">
+        <span class="color-dark-green fs-07rem fw-500 w-w-b-w">{{aggregateComplete?.timestamp}}</span>
       </div>
 
       <!-- Fee -->
-      <div class="col-12 mt-1-5rem">
-        <span class="fw-600 fs-095rem">Fee:&nbsp;&nbsp;</span>
-        <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
-        <span class="fs-095rem fw-600 color-blue-light">{{aggregateComplete?.feePart.part1}}</span>
-        <span class="fs-075rem fw-600 color-blue-light">{{aggregateComplete?.feePart.part2}}</span>
-        <span class="fs-095rem fw-600 color-blue-light"> XPX </span>
-
-      </div>
+      <ng-container *ngIf="aggregateComplete?.effectiveFee">
+        <div class="col-12 mt-03rem">
+          <span class="fw-600 fs-095rem color-dark-green">Fee:&nbsp;&nbsp;</span>
+          <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
+          <span class="fw-600 fs-095rem color-blue-light">{{aggregateComplete?.effectiveFee.part1}}</span>
+          <span class="fw-600 fs-075rem color-blue-light">{{aggregateComplete?.effectiveFee.part2}}</span>
+          <span class="fw-600 fs-095rem color-blue-light"> XPX </span>
+        </div>
+      </ng-container>
 
       <!-- Type -->
-      <div class="col-12 mt-05rem">
+      <div class="col-12 mt-03rem">
         <span class="fw-600 fs-08rem">Type:&nbsp;&nbsp;</span>
-        <span class="fs-065rem">{{aggregateComplete?.data['type'].toString(16).toUpperCase()}}</span>
+        <span class="fs-07rem">{{aggregateComplete?.data['type'].toString(16).toUpperCase()}}</span>
       </div>
 
       <!-- Height -->
       <ng-container *ngIf="aggregateComplete?.data.transactionInfo.height.compact() > 0">
-        <div class="col-12 mt-05rem">
+        <div class="col-12 mt-03rem">
           <span class="fw-600 fs-08rem">Height:&nbsp;&nbsp;</span>
-          <span class="fs-065rem">{{aggregateComplete?.data.transactionInfo.height.compact()}}</span>
+          <span class="fs-07rem">{{aggregateComplete?.data.transactionInfo.height.compact()}}</span>
         </div>
       </ng-container>
 
@@ -75,5 +80,3 @@
     </div>
   </div>
 </div>
-
-

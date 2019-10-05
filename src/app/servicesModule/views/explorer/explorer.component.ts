@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, HostListener, AfterViewInit, ChangeDetectorRef } from '@angular/core';
-import { MdbTablePaginationComponent, MdbTableService, MdbTableDirective } from 'ng-uikit-pro-standard';
-import { Address } from 'tsjs-xpx-chain-sdk';
+import { MdbTablePaginationComponent, MdbTableService, MdbTableDirective, ModalDirective } from 'ng-uikit-pro-standard';
+import { Address, UInt64 } from 'tsjs-xpx-chain-sdk';
 import { first } from "rxjs/operators";
 import { AppConfig } from '../../../config/app.config';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
@@ -9,6 +9,8 @@ import { TransactionsInterface, TransactionsService } from '../../../transaction
 import { WalletService } from '../../../wallet/services/wallet.service';
 import { SharedService } from '../../../shared/services/shared.service';
 import { HeaderServicesInterface } from '../../services/services-module.service';
+import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
+import { PaginationInstance } from 'ngx-pagination';
 
 @Component({
   selector: 'app-explorer',
@@ -17,9 +19,16 @@ import { HeaderServicesInterface } from '../../services/services-module.service'
 })
 export class ExplorerComponent implements OnInit, AfterViewInit {
 
+
   @ViewChild(MdbTablePaginationComponent, { static: true }) mdbTablePagination: MdbTablePaginationComponent;
   @ViewChild(MdbTableDirective, { static: true }) mdbTable: MdbTableDirective;
+  @ViewChild('modalExplorer', { static: true }) modalExplorer: ModalDirective;
 
+  configExplorer: PaginationInstance = {
+    id: 'explorer',
+    itemsPerPage: 10,
+    currentPage: 1
+  };
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Transaction explorer',
     componentName: 'Explore'
@@ -36,7 +45,7 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
   searchText: string = '';
   elements: any = [];
   dataSelected: TransactionsInterface = null;
-  headElements = ['Type', 'Timestamp', 'Fee', 'Sender', 'Recipient'];
+  headElements = ['Type', '', 'Sender', 'Recipient'];
   optionTypeSearch = [
     {
       'value': 'address',
@@ -59,43 +68,20 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
     private proximaxProvider: ProximaxProvider,
     private nodeService: NodeService,
     private sharedService: SharedService,
-    private transactionsService: TransactionsService
+    private transactionService: TransactionsService,
+    private dataBridge: DataBridgeService
   ) { }
 
-  @HostListener('input') oninput() {
-    // this.searchItems();
-    this.mdbTablePagination.searchText = this.searchText;
-  }
-
   ngOnInit() {
-    this.typeTransactions = this.transactionsService.arraTypeTransaction;
+    this.typeTransactions = this.transactionService.arraTypeTransaction;
   }
 
-  ngAfterViewInit() {
-    this.mdbTablePagination.setMaxVisibleItemsNumberTo(5);
-    this.firstItemIndex = this.mdbTablePagination.firstItemIndex;
-    this.lastItemIndex = this.mdbTablePagination.lastItemIndex;
-
-    this.mdbTablePagination.calculateFirstItemIndex();
-    this.mdbTablePagination.calculateLastItemIndex();
-    this.cdRef.detectChanges();
-  }
-
-  onNextPageClick(data: any) {
-    this.firstItemIndex = data.first;
-    this.lastItemIndex = data.last;
-  }
-
-  onPreviousPageClick(data: any) {
-    this.firstItemIndex = data.first;
-    this.lastItemIndex = data.last;
+  ngAfterViewInit(): void {
   }
 
   searchData() {
     if (!this.searching) {
-
       this.elements = [];
-
       if (this.typeSearch === '') {
         this.sharedService.showError('', 'Please, select a type search');
         return;
@@ -115,7 +101,6 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
 
       this.mdbTable.setDataSource(this.elements);
       this.elements = this.mdbTable.getDataSource();
-      this.previous = this.mdbTable.getDataSource();
       this.searching = true;
       if (this.typeSearch === 'address') {
         //from address
@@ -185,7 +170,7 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
   buildTransaction(param) {
     const data = [];
     param.forEach(element => {
-      const builderTransactions = this.transactionsService.getStructureDashboard(element);
+      const builderTransactions = this.transactionService.getStructureDashboard(element);
       if (builderTransactions !== null) {
         data.push(builderTransactions);
       }
@@ -193,7 +178,6 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
       this.elements = data;
       this.mdbTable.setDataSource(data);
       this.elements = this.mdbTable.getDataSource();
-      this.previous = this.mdbTable.getDataSource();
     });
   }
 
@@ -208,5 +192,32 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
       this.elements = this.mdbTable.searchLocalDataBy(this.searchText);
       this.mdbTable.setDataSource(prev);
     }
+  }
+
+
+  openModal(transaction: TransactionsInterface) {
+    const height = transaction.data['transactionInfo'].height.compact();
+    if (typeof (height) === 'number') {
+      const existBlock = this.dataBridge.filterBlockStorage(height);
+      if (existBlock) {
+        transaction.timestamp = `${this.transactionService.dateFormatUTC(new UInt64([existBlock.timestamp.lower, existBlock.timestamp.higher]))} - UTC`;
+        const calculateEffectiveFee = this.transactionService.amountFormatterSimple(existBlock.feeMultiplier * transaction.data.size)
+        transaction.effectiveFee = this.transactionService.getDataPart(calculateEffectiveFee, 6);
+      }else {
+        this.proximaxProvider.getBlockInfo(height).subscribe(
+          next => {
+            this.dataBridge.validateBlock(next);
+            transaction.timestamp = `${this.transactionService.dateFormatUTC(next.timestamp)} - UTC`;
+            const calculateEffectiveFee = this.transactionService.amountFormatterSimple(next.feeMultiplier * transaction.data.size);
+            transaction.effectiveFee = this.transactionService.getDataPart(calculateEffectiveFee, 6);
+          }
+        );
+      }
+    } else {
+      transaction.effectiveFee = this.transactionService.getDataPart('0.00000', 6);
+    }
+
+    this.dataSelected = transaction;
+    this.modalExplorer.show();
   }
 }

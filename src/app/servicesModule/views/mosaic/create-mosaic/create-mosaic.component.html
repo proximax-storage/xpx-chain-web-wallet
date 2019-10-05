@@ -14,19 +14,19 @@
               </ng-container>
 
 
-              <div class="col-12">
+              <!-- <div class="col-12">
                 <div class="row d-flex align-items-center">
                   <div class="col-6 col-md-7 col-lg-8 mx-auto pt-07rem">
                     <div class="md-form form-sm mt-0 mb-0rem">
                       <img class="form-control-feedback"
                         src="assets/images/img/icon-duration-green-16h-proximax-sirius-wallet.svg" alt="">
                       <input formControlName="duration" mdbInputDirective mdbValidate [validateSuccess]="true"
-                        [validateError]="true" type="number" id="duration" min="1" max="365"
+                        [validateError]="true" type="text" id="duration" min="1" max="365"
                         class="form-control form-control-sm input-border txt-a-right" placeholder=""
                         (keyup)="limitDuration($event)">
-                        <span class="label-i-icon pl-2rem">Duration (number of days)</span>
+                      <span class="label-i-icon pl-2rem">Duration (number of days)</span>
 
-                      <!-- VALIDATION -->
+                     
                       <mdb-error
                         *ngIf="validateInput('duration', '').invalid && (validateInput('duration', '').dirty || validateInput('duration', '').touched)">
                         <span>Required field - Only numbers</span>
@@ -39,7 +39,7 @@
                       (change)="changeNotExpire($event)">Not expire</mdb-checkbox>
                   </div>
                 </div>
-              </div>
+              </div> -->
             </div>
 
             <div class="row">
@@ -48,10 +48,10 @@
                   <img class="form-control-feedback"
                     src="assets/images/img/icon-namespaces-green-16h-proximax-sirius-wallet.svg" alt="">
                   <input formControlName="divisibility" mdbInputDirective mdbValidate [validateSuccess]="true"
-                    [validateError]="true" type="number" id="divisibility" minlength="0" maxlength="1"
+                    [validateError]="true" type="text" id="divisibility" minlength="0" maxlength="1"
                     id="divisibility{{errorDivisibility}}" class="form-control form-control-sm input-border txt-a-right"
                     placeholder="" (keyup)="limitLength($event)">
-                    <span class="label-i-icon pl-2rem">Divisibility</span>
+                  <span class="label-i-icon pl-2rem">Divisibility</span>
 
                   <!-- VALIDATION -->
                   <mdb-error
@@ -72,8 +72,11 @@
 
                   <!-- VALIDATION -->
                   <mdb-error
-                    *ngIf="validateInput('deltaSupply', '').invalid && (validateInput('deltaSupply', '').dirty || validateInput('deltaSupply', '').touched) || invalidSupply">
+                    *ngIf="validateInput('deltaSupply', '').invalid && (validateInput('deltaSupply', '').dirty || validateInput('deltaSupply', '').touched)">
                     <span>Required field</span>
+                  </mdb-error>
+                  <mdb-error *ngIf=" invalidSupply">
+                    <span>Supply exceeded</span>
                   </mdb-error>
                 </div>
               </div>
@@ -110,17 +113,35 @@
               </div>
             </div>
 
-            <div class="row ml-01rem ">
+            <div class="row ml-01rem">
+              <div class="col-12 mx-auto">
+                <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
+                  <div class="row">
+                    <div class="col-12">
+                      <!-- Transferable -->
+                      <mdb-checkbox formControlName="transferable" [inline]="true" class="fs-08rem">Transferable
+                      </mdb-checkbox>
+
+                      <!-- Supply Mutable -->
+                      <mdb-checkbox formControlName="supplyMutable" [inline]="true" class="fs-08rem">Supply Mutable
+                      </mdb-checkbox>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- <div class="row ml-01rem ">
               <div class="col-12 mx-auto box-grey d-flex justify-content-center">
-                <!-- Transferable -->
+               
                 <mdb-checkbox formControlName="transferable" [inline]="true" class="fs-08rem">Transferable
                 </mdb-checkbox>
 
-                <!-- Supply Mutable -->
+                
                 <mdb-checkbox formControlName="supplyMutable" [inline]="true" class="fs-08rem">Supply Mutable
                 </mdb-checkbox>
               </div>
-            </div>
+            </div> -->
 
             <div class="row">
               <div class="col-12 mx-auto">
@@ -146,7 +167,7 @@
               <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
                 <button [disabled]="insufficientBalance" mdbBtn type="button" rounded="true" mdbWavesEffect
                   class="f-w-600 background-btn pl-2rem pr-2rem" size="md" (click)="clearForm()">
-                  <span class="fs-1-2em color-white">CLEAR</span>
+                  <span class="fs-1-2em color-white">Clear</span>
                 </button>
               </div>
 
@@ -155,7 +176,7 @@
                   class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
                   <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
                     *ngIf="blockSend"></span>
-                  <span class="fs-1-2em color-white">CREATE</span>
+                  <span class="fs-1-2em color-white">Create</span>
                 </button>
               </div>
             </div>

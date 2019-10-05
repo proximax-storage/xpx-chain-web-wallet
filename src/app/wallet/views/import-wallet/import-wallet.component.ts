@@ -24,7 +24,7 @@ export class ImportWalletComponent implements OnInit {
   errorMatchPassword: string;
   errorWalletExist: string;
   isValid: boolean = false;
-  title = 'Create Wallet';
+  title = 'Create wallet';
   typeNetwork = [{
     value: environment.typeNetwork.value,
     label: environment.typeNetwork.label
@@ -47,6 +47,11 @@ export class ImportWalletComponent implements OnInit {
   ngOnInit() {
     this.configurationForm = this.sharedService.configurationForm;
     this.createFormImportWallet();
+    this.walletService.setNis1AccounsWallet(null);
+    this.walletService.setNis1AccountsWallet$([]);
+    this.walletService.setAccountInfoNis1(null);
+    this.walletService.setNis1AccountSelected(null);
+    this.walletService.setAccountSelectedWalletNis1(null);
   }
 
   createFormImportWallet() {

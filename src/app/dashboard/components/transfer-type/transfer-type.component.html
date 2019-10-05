@@ -9,87 +9,64 @@
             <div class="col-12">
               <div class="row">
                 <!-- Type transfer -->
-                <div class="col-12">
-                  <span class="color-dark-green fw-bold fs-2rem">{{transferTransaction.nameType}}</span>
-                  <img class="mr-1rem ml-1rem h-2em"
-                    src="assets/images/img/icon-transactions-green-16h-proximax-sirius-wallet.svg" alt="">
+                <div class="col-12 d-flex align-items-center">
+                  <span class="color-dark-green fw-600 fs-1-2rem">{{transferTransaction.nameType}}</span>
 
                   <!-- Income -->
                   <ng-container *ngIf="transferTransaction?.receive">
-                    <span class="color-blue-light fw-bold fs-2rem">Received</span>
+                    <img class="mr-1rem ml-1rem h-1em"
+                      src="assets/images/img/arrow-transaction-receive-green-proximax-sirius-explorer.svg" alt="">
+                    <span class="color-dark-green  fw-600 fs-1-2rem">Received</span>
                   </ng-container>
 
                   <!-- Outcome -->
                   <ng-container *ngIf="!transferTransaction?.receive">
-                    <span class="color-orange fw-bold fs-2rem">Send</span>
+                    <img class="mr-1rem ml-1rem h-1em"
+                      src="assets/images/img/arrow-transaction-sender-orange-proximax-sirius-explorer.svg" alt="">
+                    <span class="color-dark-green  fw-600 fs-1-2rem" *ngIf="!transferTransaction?.receive">Send</span>
                   </ng-container>
                 </div>
 
                 <!-- Timestamp -->
-                <div class="col-12 mt-05rem">
+                <div class="col-12" *ngIf="transferTransaction?.timestamp">
                   <span class="color-dark-green fs-07rem fw-500 w-w-b-w">{{transferTransaction?.timestamp}}</span>
                 </div>
 
                 <!-- Fee -->
-                <div class="col-12 mt-05rem">
-                  <div class="row">
-                    <div class="col-3">
-                      <span class="color-dark-green fw-bold fs-095rem">Fee:&nbsp;&nbsp;</span>
-                    </div>
-                    <div class="col-9 d-flex">
-                      <div class="row">
-                        <div class="col-12">
-                          <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
-                          <span class="fs-095rem fw-600 color-blue-light">{{transferTransaction?.feePart.part1}}</span>
-                          <span class="fs-075rem fw-600 color-blue-light">{{transferTransaction?.feePart.part2}}</span>
-                          <span class="fs-095rem fw-600 color-blue-light"> XPX </span>
-                        </div>
-                      </div>
-                    </div>
+                <ng-container *ngIf="transferTransaction?.effectiveFee">
+                  <div class="col-12 mt-03rem">
+                    <span class="fw-600 fs-095rem color-dark-green">Fee:&nbsp;&nbsp;</span>
+                    <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
+                    <span class="fw-600 fs-095rem color-blue-light">{{transferTransaction?.effectiveFee.part1}}</span>
+                    <span class="fw-600 fs-075rem color-blue-light">{{transferTransaction?.effectiveFee.part2}}</span>
+                    <span class="fw-600 fs-095rem color-blue-light"> XPX </span>
                   </div>
-                </div>
-                <!-- Type Hex -->
-                <div class="col-12">
-                  <div class="row">
-                    <div class="col-3">
-                      <span class="color-dark-green fw-bold fs-08rem">Height: </span>
-                    </div>
-                    <div class="col-9">
-                      <span
-                        class="color-dark-green fw-400 fs-07rem">{{transferTransaction?.data.transactionInfo.height.compact()}}</span>
-                    </div>
-                  </div>
+                </ng-container>
 
-                  <div class="row">
-                    <div class="col-3 overflow-ellipsis-nowrap">
-                      <span class="color-dark-green fw-bold fs-08rem">Type: </span>
-                    </div>
-                    <div class="col-9 overflow-ellipsis-nowrap">
-                      <span class="color-dark-green fw-400
-                              fs-08rem">{{typeTransactionHex}}</span>
-                    </div>
+                <!-- HEIGHT -->
+                <ng-container *ngIf="transferTransaction?.data.transactionInfo.height.compact() > 0">
+                  <div class="col-12 mt-03rem">
+                    <span class="fw-600 fs-08rem color-dark-green">Height:&nbsp;&nbsp;</span>
+                    <span
+                      class="fs-07rem fw-400 color-dark-green">{{transferTransaction?.data.transactionInfo.height.compact()}}</span>
                   </div>
+                </ng-container>
+
+                <!-- TYPE -->
+                <div class="col-12 mt-03rem">
+                  <span class="fw-600 fs-08rem color-dark-green">Type:&nbsp;&nbsp;</span>
+                  <span class="fs-07rem fw-400 color-dark-green">{{typeTransactionHex}}</span>
                 </div>
 
-                <!-- From -->
-                <div class="col-12">
-                  <div class="row">
-                    <div class="col-3">
-                      <span class="color-dark-green fw-bold fs-08rem">From: </span>
-                    </div>
-                    <div class="col-9">
-                      <span class="color-dark-green fw-400 fs-07rem">{{transferTransaction?.senderAddress}}</span>
-                    </div>
-                  </div>
+                <!-- TYPE -->
+                <div class="col-12 mt-03rem">
+                  <span class="fw-600 fs-08rem color-dark-green">From:&nbsp;&nbsp;</span>
+                  <span class="fs-07rem fw-400 color-dark-green">{{transferTransaction?.senderAddress}}</span>
+                </div>
 
-                  <div class="row">
-                    <div class="col-3">
-                      <span class="color-dark-green fw-bold fs-08rem">To: </span>
-                    </div>
-                    <div class="col-9">
-                      <span class="color-dark-green fw-400 fs-07rem">{{transferTransaction?.recipientAddress}}</span>
-                    </div>
-                  </div>
+                <div class="col-12 mt-03rem">
+                  <span class="fw-600 fs-08rem color-dark-green">To:&nbsp;&nbsp;</span>
+                  <span class="fs-07rem fw-400 color-dark-green">{{transferTransaction?.recipientAddress}}</span>
                 </div>
               </div>
             </div>
@@ -111,7 +88,7 @@
             </ng-container>
 
             <!-- MOSAICS INFO-->
-            <div class="col-12 mt-2rem">
+            <div class="col-12 mt-1rem">
               <app-mosaics-info (changeSearch)="searching = false;" [mosaicsArray]="transferTransaction.data['mosaics']"
                 [transferTransaction]="transferTransaction" [receive]="transferTransaction?.receive">
               </app-mosaics-info>
@@ -167,10 +144,10 @@
         <div class="col-12 mt-03rem">
           <span class="fw-600 fs-095rem">Fee:&nbsp;&nbsp;</span>
           <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
-          <span class="fw-600 fs-095rem color-blue-light">{{transferTransaction?.feePart.part1}}</span>
-          <span class="fw-600 fs-075rem color-blue-light">{{transferTransaction?.feePart.part2}}</span>
+          <span class="fw-600 fs-095rem color-blue-light">{{transferTransaction?.effectiveFee.part1}}</span>
+          <span class="fw-600 fs-075rem color-blue-light">{{transferTransaction?.effectiveFee.part2}}</span>
+          <!-- <span class="fw-600 fs-095rem color-blue-light">{{transferTransaction?.feePart.part1}}</span> -->
           <span class="fw-600 fs-095rem color-blue-light"> XPX </span>
-
         </div>
 
         <!-- Message -->

@@ -7,6 +7,8 @@ import { AppConfig } from '../../../config/app.config';
 import { SharedService } from '../../../shared/services/shared.service';
 import * as qrcode from 'qrcode-generator';
 import * as jsPDF from 'jspdf';
+import { Subscription } from 'rxjs';
+import { timeout } from 'rxjs/operators';
 
 @Component({
   selector: 'app-wallet-created',
@@ -21,7 +23,7 @@ export class WalletCreatedComponent implements OnInit {
   publicKey = '';
   privateKey = '';
   title = 'Congratulations';
-  titleDescription = 'Your wallet has been successfully created';
+  titleDescription = 'Your wallet has been successfully created.';
   subtitle = '';
   viewPrivateKey = false;
   routeAuth = `/${AppConfig.routes.auth}`;
@@ -30,7 +32,8 @@ export class WalletCreatedComponent implements OnInit {
     dataAccount: AccountsInterface;
     wallet: SimpleWallet
   } = null;
-
+  disabledContinue: boolean = true;
+  subscription: Subscription[] = [];
 
   constructor(
     private walletService: WalletService,
@@ -49,6 +52,18 @@ export class WalletCreatedComponent implements OnInit {
         this.walletData.data.algo, this.walletData.dataAccount.encrypted, this.walletData.dataAccount.iv
       ).toUpperCase();
       this.publicKey = this.proximaxProvider.getPublicAccountFromPrivateKey(this.privateKey, this.walletData.data.network).publicKey;
+      if (this.walletData.dataAccount.nis1Account !== null) {
+        this.subscription.push(this.walletService.getNis1AccountsWallet$().pipe(timeout(10000)).subscribe(
+          next => {
+            this.disabledContinue = false;
+          },
+          error => {
+            this.disabledContinue = false;
+          }
+        ));
+      } else {
+        this.disabledContinue = false;
+      }
       this.walletData = null;
     } else {
       this.router.navigate([`/${AppConfig.routes.home}`]);
@@ -57,6 +72,9 @@ export class WalletCreatedComponent implements OnInit {
 
   ngOnDestroy(): void {
     this.walletData = null;
+    this.subscription.forEach(subscription => {
+      subscription.unsubscribe();
+    });
   }
 
   /**
@@ -82,9 +100,11 @@ export class WalletCreatedComponent implements OnInit {
    *
    */
   goToRoute() {
+    let nis1Info = [];
     // [routerLink]="[routes.backToService]"
-    const nis1Info = this.walletService.getNis1AccounsWallet();
-    // console.log('nnis1Info ------>', nis1Info);
+    if (this.walletService.accountWalletCreated.dataAccount.nis1Account !== null) {
+      nis1Info = this.walletService.getNis1AccounsWallet();
+    }
     try {
       if (nis1Info.length > 0) {
         // console.log('nis1Info.lengh ------>', nis1Info.length);

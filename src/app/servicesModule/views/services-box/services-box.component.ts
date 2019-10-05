@@ -98,13 +98,14 @@ export class ServicesBoxComponent implements OnInit {
             '',
             '',
             AppConfig.routes.extendNamespace
-          ), renew: this.services.buildStructureService(
-            'RENEW',
-            false,
-            '',
-            '',
-            AppConfig.routes.renewNamespace
           )
+          // , renew: this.services.buildStructureService(
+          //   'RENEW',
+          //   false,
+          //   '',
+          //   '',
+          //   AppConfig.routes.renewNamespace
+          // )
         },
         true
       ),
@@ -135,19 +136,21 @@ export class ServicesBoxComponent implements OnInit {
             '',
             '',
             AppConfig.routes.LinkingNamespaceMosaic
-          ), extend: this.services.buildStructureService(
-            'EXTEND DURATION',
-            false,
-            '',
-            '',
-            ''
-          ), renew: this.services.buildStructureService(
-            'RENEW',
-            false,
-            '',
-            '',
-            ''
           )
+          // , extend: this.services.buildStructureService(
+          //   'EXTEND DURATION',
+          //   true,
+          //   '',
+          //   '',
+          //   AppConfig.routes.extendMosaics
+          // )
+          // , renew: this.services.buildStructureService(
+          //   'RENEW',
+          //   false,
+          //   '',
+          //   '',
+          //   ''
+          // )
         },
         true
       ),
@@ -193,6 +196,37 @@ export class ServicesBoxComponent implements OnInit {
             '',
             '',
             AppConfig.routes.addContacts
+          )
+        },
+        true
+      ),
+
+      // Export Wallet
+      this.services.buildStructureService(
+        'Wallets',
+        true,
+        'Manage your wallets',
+        'icon-wallet-full-color-80h.svg',
+        '',
+        {
+          changePassword: this.services.buildStructureService(
+            'CHANGE PASSWORD',
+            false,
+            '',
+            '',
+            ''
+          ), export: this.services.buildStructureService(
+            'EXPORT',
+            true,
+            '',
+            '',
+            AppConfig.routes.exportWallet
+          ), delete: this.services.buildStructureService(
+            'DELETE',
+            true,
+            '',
+            '',
+            AppConfig.routes.deleteWallet
           )
         },
         true
@@ -373,10 +407,10 @@ export class ServicesBoxComponent implements OnInit {
         {
           blockchain: this.services.buildStructureService(
             'BLOCKCHAIN',
-            false,
+            true,
             '',
             '',
-            ''
+            AppConfig.routes.blockchain
           ), storage: this.services.buildStructureService(
             'STORAGE',
             false,
@@ -392,7 +426,7 @@ export class ServicesBoxComponent implements OnInit {
           )
         },
         true,
-        'disable-module'
+        // 'disable-module'
       ),
 
       // Message

@@ -6,6 +6,8 @@ import { AppConfig } from '../../../../config/app.config';
 import { WalletService } from '../../../../wallet/services/wallet.service';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { SharedService } from '../../../../shared/services/shared.service';
+import { Subscription } from 'rxjs';
+import { timeout } from 'rxjs/operators';
 
 @Component({
   selector: 'app-account-created',
@@ -30,6 +32,8 @@ export class AccountCreatedComponent implements OnInit {
   publicKey: any;
   viewPrivateKey = false;
   viewPublicKey = false;
+  disabledContinue: boolean = true;
+  subscription: Subscription[] = [];
 
   constructor(
     private walletService: WalletService,
@@ -41,25 +45,38 @@ export class AccountCreatedComponent implements OnInit {
   ngOnInit() {
     this.setImgBackground();
     this.algo = this.walletService.accountWalletCreated;
+    
     if (this.algo !== null) {
-      // console.log('---------------------------------------account created ----------------------------');
-
-      const accountInfoNis1 = this.walletService.getAccountInfoNis1();
-      // console.log('This account info nis1 ------->', accountInfoNis1);
+      // console.log('---------------------------------------account created ------
 
       this.name = this.algo.data.name;
       this.address = this.algo.wallet.address.pretty();
       this.privateKey = this.proximaxProvider.decryptPrivateKey(this.algo.data.algo, this.algo.dataAccount.encrypted, this.algo.dataAccount.iv).toUpperCase();
       this.publicKey = this.proximaxProvider.getPublicAccountFromPrivateKey(this.privateKey, this.algo.data.network).publicKey;
+      if (this.algo.dataAccount.nis1Account !== null) {
+        this.subscription.push(this.walletService.getNis1AccountsWallet$().pipe(timeout(10000)).subscribe(
+          next => {
+            this.disabledContinue = false;
+          },
+          error => {
+            this.disabledContinue = false;
+          }
+        ));
+      } else {
+        this.disabledContinue = false;
+      }
       this.viewPublicKey = this.algo.data.fromPrivateKey;
       this.algo = null;
-      this.walletService.accountWalletCreated = null;
     } else {
       this.router.navigate([`/${AppConfig.routes.home}`]);
     }
   }
 
-
+  ngOnDestroy(): void {
+    this.subscription.forEach(subscription => {
+      subscription.unsubscribe();
+    });
+  }
 
   /**
    *
@@ -75,11 +92,12 @@ export class AccountCreatedComponent implements OnInit {
    *
    */
   goToRoute() {
+    let nis1Info = [];
     // [routerLink]="[routes.backToService]"
-    const nis1Info = this.walletService.getNis1AccounsWallet();
-
-    // console.log('nis1Info -------->', nis1Info);
-
+    if (this.walletService.accountWalletCreated.dataAccount.nis1Account !== null) {
+      nis1Info = this.walletService.getNis1AccounsWallet();
+      this.walletService.accountWalletCreated = null;
+    }
 
     try {
       if (nis1Info.length > 0) {

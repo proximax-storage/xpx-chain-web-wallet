@@ -1,5 +1,4 @@
 import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
-
 import { ServicesModuleRoutingModule } from './services-module-routing.module';
 import { CreateAccountComponent } from './views/account/create-account/create-account.component';
 import { ServicesBoxComponent } from './views/services-box/services-box.component';
@@ -39,6 +38,9 @@ import { Nis1AccountsConsignerComponent } from './views/swap/nis1-accounts-consi
 import { TransferXpxNis1Component } from './views/swap/transfer-xpx-nis1/transfer-xpx-nis1.component';
 import { AccountDeleteComponent } from './views/account/account-delete/account-delete/account-delete.component';
 import { AccountDeleteConfirmComponent } from './views/account/account-delete-confirm/account-delete-confirm.component';
+import { ExportWalletComponent } from './views/wallet/export-wallet/export-wallet.component';
+import { BlockchainComponent } from './views/nodes/blockchain/blockchain.component';
+import { DeleteWalletComponent } from './views/wallet/delete-wallet/delete-wallet.component';
 
 
 @NgModule({
@@ -79,7 +81,11 @@ import { AccountDeleteConfirmComponent } from './views/account/account-delete-co
     Nis1AccountsConsignerComponent,
     TransferXpxNis1Component,
     AccountDeleteComponent,
-    AccountDeleteConfirmComponent
+    AccountDeleteConfirmComponent,
+    ExportWalletComponent,
+    BlockchainComponent,
+    ExportWalletComponent,
+    DeleteWalletComponent
   ],
   schemas: [ NO_ERRORS_SCHEMA ],
   imports: [

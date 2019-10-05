@@ -55,12 +55,19 @@
     <div class="col-md-10 col-lg-8 col-xl-8 mx-auto">
       <div class="row box-transparent-border-orange">
         <div class="col-11 mx-auto">
-          <span class="fs-075rem fw-bold">Save a copy of the above certificate for your records.</span>
+          <span class="fs-075rem fw-bold">Save a copy of your certificate. It is needed in the event of an error.</span>
         </div>
       </div>
     </div>
   </div>
   <!-- END WARNING -->
+
+  <div class="row mt-1rem">
+    <div class="col-11 col-sm-10 col-lg-9 col-xl-8 mx-auto txt-a-center">
+      <mdb-checkbox [(ngModel)]="checked" [checked]="checked"> I confirm that I have saved a copy of my certificate.
+      </mdb-checkbox>
+    </div>
+  </div>
 
   <!-- BUTTON -->
   <div class="row mt-1rem">
@@ -72,7 +79,7 @@
     </div>
 
     <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-      <button mdbBtn rounded="true" mdbWavesEffect (click)="navToRoute()" class="f-w-600 background-btn pl-2rem pr-2rem"
+      <button mdbBtn rounded="true" mdbWavesEffect (click)="navToRoute()" [disabled]="!checked" class="f-w-600 background-btn pl-2rem pr-2rem"
         size="md">
         <span class="fs-1-2em color-white">CONTINUE</span>
       </button>

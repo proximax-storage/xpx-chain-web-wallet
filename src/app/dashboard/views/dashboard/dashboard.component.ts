@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectorRef, HostListener, Inject } from '@angular/core';
-import { MdbTableDirective } from 'ng-uikit-pro-standard';
+import { MdbTableDirective, ModalDirective } from 'ng-uikit-pro-standard';
 import * as qrcode from 'qrcode-generator';
 import { first } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
@@ -12,6 +12,8 @@ import { environment } from '../../../../environments/environment';
 import { AppConfig } from '../../../config/app.config';
 import { NamespacesService } from 'src/app/servicesModule/services/namespaces.service';
 import { PaginationInstance } from 'ngx-pagination';
+import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
+import { UInt64 } from 'tsjs-xpx-chain-sdk';
 
 
 @Component({
@@ -31,6 +33,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   // --------------------------------------------------------------------------
   @ViewChild(MdbTableDirective, { static: true }) mdbTable: MdbTableDirective;
+  @ViewChild('modalDashboard', { static: true }) modalDashboard: ModalDirective;
   currentWallet: CurrentWalletInterface;
   @HostListener('input') oninput() {
     this.searchItems();
@@ -47,7 +50,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     currentPage: 1
   };
   dataSelected: TransactionsInterface = null;
-  headElements = ['Type', 'Fee', '', 'Sender', 'Recipient'];
+  headElements = ['Type', '', 'Sender', 'Recipient'];
   iconReloadDashboard = false;
   objectKeys = Object.keys;
   partialTransactions = 0;
@@ -76,6 +79,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   };
 
   constructor(
+    private dataBridge: DataBridgeService,
     private cdRef: ChangeDetectorRef,
     private dashboardService: DashboardService,
     private walletService: WalletService,
@@ -90,6 +94,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.dashboardService.incrementViewDashboard();
     this.dashboardService.subscribeLogged();
     this.currentAccount = Object.assign({}, this.walletService.getCurrentAccount());
+
     this.currentAccount.address = this.proximaxProvider.createFromRawAddress(this.currentAccount.address).pretty();
     this.currentAccount.name = (this.currentAccount.name === 'Primary') ? `${this.currentAccount.name}_Account` : this.currentAccount.name;
     const qr = qrcode(10, 'H');
@@ -386,6 +391,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   *
+   *
+   * @param {number} type
+   * @memberof DashboardComponent
+   */
   selectTransactions(type: number) {
     if (type === 1) {
       // Confirmed
@@ -398,5 +409,42 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.transactions = this.mdbTable.getDataSource();
       this.previous = this.mdbTable.getDataSource();
     }
+  }
+
+  /**
+   *
+   *
+   * @param {TransactionsInterface} transaction
+   * @memberof DashboardComponent
+   */
+  openModal(transaction: TransactionsInterface) {
+    const height = transaction.data['transactionInfo'].height.compact();
+    if (typeof (height) === 'number') {
+      const existBlock = this.dataBridge.filterBlockStorage(height);
+      if (existBlock) {
+        // console.log('In cache', existBlock);
+        transaction.timestamp = `${this.transactionService.dateFormatUTC(new UInt64([existBlock.timestamp.lower, existBlock.timestamp.higher]))} - UTC`;
+        const calculateEffectiveFee = this.transactionService.amountFormatterSimple(existBlock.feeMultiplier * transaction.data.size)
+        transaction.effectiveFee = this.transactionService.getDataPart(calculateEffectiveFee, 6);
+        // console.log('Effective fee ---> ', transaction.effectiveFee);
+      }else {
+        this.proximaxProvider.getBlockInfo(height).subscribe(
+          next => {
+            // console.log('Http', next);
+            this.dataBridge.validateBlock(next);
+            transaction.timestamp = `${this.transactionService.dateFormatUTC(next.timestamp)} - UTC`;
+            const calculateEffectiveFee = this.transactionService.amountFormatterSimple(next.feeMultiplier * transaction.data.size);
+            transaction.effectiveFee = this.transactionService.getDataPart(calculateEffectiveFee, 6);
+            // console.log('Effective fee ---> ', transaction.effectiveFee);
+          }
+        );
+      }
+    } else {
+      transaction.effectiveFee = this.transactionService.getDataPart('0.00000', 6);
+      // console.log('Effective fee ---> ', transaction.effectiveFee);
+    }
+
+    this.dataSelected = transaction;
+    this.modalDashboard.show();
   }
 }

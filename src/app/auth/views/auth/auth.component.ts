@@ -1,11 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { environment } from '../../../../environments/environment';
 import { ConfigurationForm, SharedService } from '../../../shared/services/shared.service';
-import { MosaicService } from '../../../servicesModule/services/mosaic.service';
-import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
-
 @Component({
   selector: 'app-auth',
   templateUrl: './auth.component.html',
@@ -13,6 +10,7 @@ import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
 })
 export class AuthComponent implements OnInit {
 
+  @Input() eventNumber: number;
   authForm: FormGroup;
   configurationForm: ConfigurationForm = {};
   title = 'Sign in to your Wallet';
@@ -21,15 +19,25 @@ export class AuthComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private fb: FormBuilder,
-    private sharedService: SharedService,
-    private mosaicService: MosaicService,
-    private proximaxProvider: ProximaxProvider
+    private sharedService: SharedService
   ) { }
 
   ngOnInit() {
     this.configurationForm = this.sharedService.configurationForm;
-    this.wallets = this.authService.walletsOption(JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage)));
     this.createForm();
+  }
+
+  /**
+   *
+   *
+   * @param {SimpleChanges} changes
+   * @memberof AuthComponent
+   */
+  ngOnChanges(changes: SimpleChanges){
+    if(this.authForm) {
+      this.clearForm();
+    }
+    this.wallets = this.authService.walletsOption(JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage)));
   }
 
   /**

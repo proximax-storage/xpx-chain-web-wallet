@@ -1,0 +1,151 @@
+<app-header [params]="paramsHeader"></app-header>
+
+<div *ngIf="currentView === 0" class="container mt-3rem mb-2rem animated fadeIn">
+  <div class="row">
+    <div class="col-12 d-flex justify-content-center">
+      <span class="fs-1-7rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">{{title}}</span>
+    </div>
+    <div class="col-11 col-md-10 mx-auto">
+      <hr class="mt-05rem mb-1rem">
+    </div>
+    <div class="col-12 d-flex justify-content-center mb-1rem">
+      <span class="fs-08rem txt-a-center line-h-1-2em ">{{description}}</span>
+    </div>
+  </div>
+
+  <!-- <div class="row">
+    <div class="col-8 d-flex justify-content-center mx-auto"> -->
+  <!-- BOX LIST WALLETS -->
+  <div class="row">
+    <div class="col-10 mx-auto">
+      <div class="row">
+        <div *ngFor="let wallet of wallets" class="col-sm-12 col-md-12 col-lg-6 col-xl-6 fs-08rem">
+          <div class="row p-1rem">
+            <div class="col-12">
+              <div class="row box-list-account-gray">
+                <!-- {{wallet}} -->
+                <div class="col-12 col-sm-10 col-md-9 col-lg-10 col-xl-10 text-center text-sm-left p-1rem w-b-a">
+                  Name: <span class="fw-bold">{{wallet.name}}</span><br>
+                  Accounts: <span class="fw-bold">{{wallet.accounts.length}}</span>
+                </div>
+                <div class="col-12 col-sm-2 col-md-3 col-lg-2 col-xl-2 d-flex align-items-center
+                                            justify-content-center
+                                              justify-content-sm-end
+                                              justify-content-md-end
+                                            justify-content-lg-end
+                                            justify-content-xl-end p-1rem">
+                  <!-- Delete-->
+                  <img src="assets/images/img/icon-trash-can-gray-16h-proximax-sirius-wallet.svg" class="cursor-p" width="25"
+                    title=" Delete" (click)="confirmAction(wallet)">
+                  <!-- <img src="assets/images/img/icon-wallet-export-blue.svg" class="cursor-p" width="40" title=" Export" -->
+                  <!-- (click)="confirmAction(wallet)"> -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="currentView === 1" class="container mt-3rem mb-2rem animated fadeIn">
+  <div class="col-11 col-lg-10 mx-auto">
+    <!-- name -->
+    <div class="row">
+      <div class="col-12 mx-auto box-grey">
+        <div class="col-12">
+          <span> Name: <b class="font-small fw-bold">{{selectedWallet.name}}</b></span>
+        </div>
+
+        <div class="col-10">
+          <span> Accounts: <b class="font-small fw-bold">{{selectedWallet.accounts.length}}</b></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TEXT ALERT -->
+    <div class="row mt-2-5rem">
+      <div class="col-11 col-md-10 col-lg-9 col-xl-8 d-flex justify-content-center mb-1rem mx-auto">
+        <span class="fs-1-5rem txt-a-center line-h-1-2em  mb-06rem">{{textAlert}}</span>
+      </div>
+    </div>
+
+    <!--BUTTONS -->
+    <div class="row mt-2rem d-flex justify-content-center">
+      <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+        size="md" (click)="changeView()">
+        <span class="fs-1-2em color-white"> <i class="fa fa-chevron-circle-left"></i> GO BACK</span>
+      </button>
+
+      <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+        size="md" (click)="changeView(2)">
+        <span class="fs-1-2em color-white"><i class="fa fa-chevron-circle-right"></i> YES, PROCEED</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="currentView === 2" class="container mt-3rem mb-2rem animated fadeIn">
+  <!--TITLLES -->
+  <div class="row mt-1-5rem">
+    <div class="col-8 d-flex justify-content-center mt-05rem mb-05rem mx-auto">
+      <span class="fs-1-7rem fw-600 txt-a-center line-h-1-2em">
+        {{ selectedWallet.name }}
+      </span>
+    </div>
+    <div class="col-8 d-flex justify-content-center mb-1rem mx-auto">
+      <span class="fs-1-7rem txt-a-center line-h-1-2em  mb-06rem ">{{ description }}</span>
+    </div>
+
+    <!-- Information -->
+    <div class="col-8 d-flex justify-content-center mb-1rem mx-auto box-transparent-border-orange">
+      <span class="fs-08rem txt-a-center line-h-1-2em  mb-06rem fw-600">{{ textAlert }}</span>
+    </div>
+
+  </div>
+
+
+
+  <form [formGroup]="validatingForm">
+    <!--PASSWORD -->
+    <div class="row">
+      <div class="col-8  mx-auto">
+        <div class="md-form form-sm">
+          <img class="form-control-feedback" src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg"
+            alt="">
+          <input formControlName="password" [maxlength]="configurationForm.passwordWallet.maxLength"
+            [minlength]="configurationForm.passwordWallet.minLength" mdbInputDirective
+            mdbValidate [validateSuccess]="true" [validateError]="true" type="password" id="password"
+            class="form-control form-control-sm input-border" placeholder="Enter wallet password">
+          <!-- VALIDATION -->
+          <mdb-error
+            *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
+            <span>Required to enable options</span>
+          </mdb-error>
+        </div>
+
+      </div>
+    </div>
+    <!-- CHECKBOX-->
+    <div class="row">
+      <div class="col-7 d-flex justify-content-center mt-05rem mb-05rem mx-auto">
+        <mdb-checkbox formControlName="checked">
+          <span class="fs-08rem txt-a-center line-h-1-2em  mb-06rem">{{ checkAlert }}</span>
+        </mdb-checkbox>
+      </div>
+    </div>
+
+  </form>
+
+  <!--BUTTONS -->
+  <div class="row d-flex justify-content-center">
+    <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md" (click)="changeView()">
+      <span class="fs-1-2em color-white">Cancel</span>
+    </button>
+    <button mdbBtn type="button" [disabled]="validatingForm.invalid" rounded="true" mdbWavesEffect
+      class="f-w-600 background-btn pl-2rem pr-2rem" size="md" (click)="deleteWallet()">
+      <span class="fs-1-2em color-white">Delete now</span>
+    </button>
+  </div>
+</div>

@@ -63,7 +63,9 @@ export class AuthService {
   */
   async login(common: any, currentWallet: CurrentWalletInterface) {
     this.walletService.destroyDataWalletAccount();
-    const currentAccount = Object.assign({}, currentWallet.accounts.find(elm => elm.default === true));
+    // console.log('This current Wallet------------------------->', currentWallet);
+    
+    const currentAccount = Object.assign({}, currentWallet.accounts.find(elm => elm.firstAccount === true));
     let isValid = false;
     if (currentAccount) {
       if (!currentWallet) {

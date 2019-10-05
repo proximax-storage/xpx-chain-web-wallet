@@ -271,13 +271,14 @@ export class TransactionsService {
     });
 
     const transferTransaction = TransferTransaction.create(
-      Deadline.create(environment.deadlineTransfer.deadline,environment.deadlineTransfer.chronoUnit),
+      Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
       recipientAddress,
       allMosaics,
       PlainMessage.create(params.message),
       params.network
     );
 
+    console.log(this.generationHash);
     const account = Account.createFromPrivateKey(params.common.privateKey, params.network);
     const signedTransaction = account.sign(transferTransaction, this.generationHash);
     const transactionHttp = this.buildTransactionHttp();
@@ -294,7 +295,7 @@ export class TransactionsService {
    */
   buildHashLockTransaction(signedTransaction: SignedTransaction): LockFundsTransaction {
     return HashLockTransaction.create(
-      Deadline.create(environment.deadlineTransfer.deadline,environment.deadlineTransfer.chronoUnit),
+      Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
       new Mosaic(new MosaicId(environment.mosaicXpxInfo.id), UInt64.fromUint(Number(10000000))),
       UInt64.fromUint(480),
       signedTransaction,
@@ -311,7 +312,7 @@ export class TransactionsService {
   buildAggregateTransaction(sender: PublicAccount, transaction: Transaction): AggregateTransaction {
     // console.log('sender --->', sender);
     return AggregateTransaction.createBonded(
-      Deadline.create(environment.deadlineTransfer.deadline,environment.deadlineTransfer.chronoUnit),
+      Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
       [transaction.toAggregate(sender)],
       this.walletService.currentAccount.network
     );
@@ -369,6 +370,17 @@ export class TransactionsService {
     return new Date(
       deadline.value.toString() + Deadline.timestampNemesisBlock * 1000
     ).toUTCString();
+  }
+
+  /**
+   *
+   *
+   * @param {UInt64} date
+   * @returns
+   * @memberof TransactionsService
+   */
+  dateFormatUTC(date: UInt64) {
+    return new Date(date.compact() + 1459468800 * 1000).toLocaleString();
   }
 
   /**
@@ -543,7 +555,6 @@ export class TransactionsService {
       return {
         data: transaction,
         nameType: nameType,
-        timestamp: this.dateFormat(transaction.deadline),
         fee: feeFormatter,
         feePart: this.getDataPart(feeFormatter, 6),
         sender: transaction.signer,
@@ -724,16 +735,46 @@ export class TransactionsService {
     return (balanceAccount >= totalFee);
 
   }
-}
 
+  /**
+   *
+   * Validate balance cosignatory
+   *
+   * @param {AccountsInfoInterface} accountInfo
+   * @param {Number} feeTotal
+   * @memberof DashboardService
+   */
+  validateBalanceCosignatorie(accountInfo: AccountsInfoInterface, feeTotal: number): BalanceCosignatorieValidate {
+    let value: BalanceCosignatorieValidate = { infValidate: [{ disabled: false, info: '' }] }
+    const disabled: boolean = (
+      accountInfo !== null &&
+      accountInfo !== undefined && accountInfo.accountInfo !== null)
+    // Validate account info
+    if (!disabled)
+      return { infValidate: [{ disabled: true, info: 'not valid' }] }
+    // Validate mosaics
+    if (!accountInfo.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id))
+      return { infValidate: [{ disabled: true, info: 'insufficient balance' }] }
+    // Validate balance account
+    const balanceAccount = accountInfo.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id).amount.compact();
+    if (!(balanceAccount >= feeTotal))
+      return { infValidate: [{ disabled: true, info: 'insufficient balance' }] }
+
+    return { infValidate: [{ disabled: false, info: '' }] }
+  }
+}
+export interface BalanceCosignatorieValidate {
+  infValidate: [{ disabled: boolean, info: string }]
+}
 
 export interface TransactionsInterface {
   // data: Transaction;
   data: any;
   dateFile?: string;
   description?: string;
+  effectiveFee?: {};
   nameType: string;
-  timestamp: string;
+  timestamp?: string;
   fee: string;
   feePart: {
     part1: string;

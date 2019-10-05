@@ -9,8 +9,9 @@ export const environment = {
   production: true,
   itemBooksAddress: 'sw-books-testnet-01',
   //version: '0.3.1.8',
-  version: '0.3.10',
+  version: '0.3.11',
   cacheVersion: '3',
+  nameKeyBlockStorage: `sw-blocks`,
   nameKeyNodeSelected: `sw-selected-node-testnet-01`,
   nameKeyWalletStorage: `sw-testnet-01`,
   nameKeyNodeStorage: `sw-nodes-testnet-01`,
@@ -80,21 +81,21 @@ export const environment = {
   },
   nis1: {
     url: 'http://18.231.166.212:7890',
-    urlExplorer: 'http://testnet-explorer.nemtool.com/#/s_tx?hash=',
+    urlExplorer: 'http://testnet-explorer.nemtool.com/#/unconfirmedtxlist',
     networkType: NetworkTypes.TEST_NET,
     address: 'TBF4LAZUEJMBIOC6J24D6ZGGXE5W775TX555CTTN',
     nodes: [
       { protocol: "http", domain: "18.231.166.212", port: 7890 } as ServerConfig
     ],
     // url: 'https://bctestnetswap.xpxsirius.io',
-    // urlExplorer: 'http://testnet-explorer.nemtool.com/#/s_tx?hash=',
+    // urlExplorer: 'http://testnet-explorer.nemtool.com/#/unconfirmedtxlist',
     // networkType: NetworkTypes.TEST_NET,
     // address: 'TBF4LAZUEJMBIOC6J24D6ZGGXE5W775TX555CTTN',
     // nodes: [
     //   { protocol: "https", domain: "bctestnetswap.xpxsirius.io", port: 443 } as ServerConfig
     // ],
     // url: 'http://192.168.2.141:7890',
-    // urlExplorer: 'http://testnet-explorer.nemtool.com/#/s_tx?hash=',
+    // urlExplorer: 'http://testnet-explorer.nemtool.com/#/unconfirmedtxlist',
     // networkType: NetworkTypes.TEST_NET,
     // address: 'TBF4LAZUEJMBIOC6J24D6ZGGXE5W775TX555CTTN',
     // nodes: [

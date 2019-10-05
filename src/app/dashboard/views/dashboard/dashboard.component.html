@@ -1,105 +1,120 @@
 <!-- BALANCE & BUTTONS -->
 <div class="container-fluid">
   <div class="row">
-    <div class="col-11 col-sm-11 col-md-10 col-lg-9 mx-auto">
-      <div class="row">
-        <div class="col-12 col-md-5 mt-2rem">
+    <div class="col-11 col-lg-10 mx-auto">
+      <div class="row d-center">
+        <!-- FIRST PART -->
+        <div class="col-12 col-md-6 mt-2rem border-right-1px max-w100porcent">
           <div class="row">
-
-
-
             <!-- NAME ACCOUNT -->
-            <div class="col-12 d-flex justify-content-center justify-content-md-start align-items-center">
-              <div class="dropdown" mdbDropdown>
-                <button mdbDropdownToggle mdbBtn color="transparent" class="dropdown-toggle waves-light" type="button"
-                  mdbWavesEffect style="padding: 5px; box-shadow: 0px 0px transparent" data-toggle="modal">
-                </button>
-
-                <div class="dropdown-menu dropdown-menu-right">
-                  <a class="dropdown-item fs-075rem" *ngFor="let account of currentWallet.accounts"
-                    (click)="changeAsPrimary(account.name)"> {{ account.name }}</a>
-                </div>
-              </div>
-
-              <span class="fs-09rem fw-600 color-black"> {{currentAccount.name}}
-                <!-- <a [routerLink]="[viewDetailsAccount+currentAccount.name]"
-                  class="cursor-p color-black">{{currentAccount.name}}</a> -->
+            <div class="col-12 d-flex align-items-start d-center">
+              <i class="fa fa-sort-desc cursor-p pr-03rem" aria-hidden="true" (click)="modalAccounts.show()"></i>
+              <span class="fw-600 color-black cursor-p" (click)="modalAccounts.show()"> {{currentAccount.name}}</span>
+              <span class="ml-05rem  title-tab-blue pt-03rem">
+                <i>- Current default </i>
               </span>
-              <span class="ml-1rem box-tag-account color-blue-intermedio fs-065rem">Default</span>
             </div>
 
             <!-- ADDRESS -->
-            <div class="col-12 d-flex justify-content-center justify-content-md-start align-items-center mt-02rem">
-              <span class="fs-06rem f-s-dashboard-transactions fw-600">{{currentAccount.address}} &nbsp;
-                <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="icono cursor-p"
-                  alt="Copy" width="20" (click)="copyMessage('Address')" ngxClipboard
-                  [cbContent]="currentAccount.address">
-                <img src="assets/images/img/icon-qr-code-proximax-sirius-wallet.svg" class="icono cursor-p"
-                  alt="Address QR" width="20"></span>
+            <div class="col-12 d-flex align-items-center mt-02rem d-center">
+              <span class="fs-06rem f-s-dashboard-transactions fw-600"
+                style="white-space:nowrap;">{{currentAccount.address}} &nbsp; </span>
+              <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="icono cursor-p"
+                alt="Copy" width="20" (click)="copyMessage('Address')" ngxClipboard
+                [cbContent]="currentAccount.address">
+              <img src="assets/images/img/icon-qr-code.svg" class="icono cursor-p" alt="Address QR" width="20"
+                (click)="modalQR.show()">
             </div>
 
             <!-- BALANCE -->
-            <div class="col-12 mt-02rem d-flex justify-content-center justify-content-md-start">
-              <div>
-                <img class="icono" src="assets/images/img/icon-prx-xpx-blue.svg" width="20">
-                <span class="fs-085rem fw-600 color-black">{{vestedBalance?.part1}}</span>
-                <span class="fs-075rem fw-600 color-black">{{vestedBalance?.part2}}</span>
-                <span class="fs-085rem fw-600 color-black">&nbsp;XPX</span>
-                &nbsp; &nbsp;
-                <img class="icono" src="assets/images/img/icon-usd-blue.svg"
-                  width="20">
-                <span class="fs-085rem fw-600 color-black">USD 0.00</span>
-              </div>
+            <div class="col-12 mt-02rem a-center">
+              <img class="icono" src="assets/images/img/icon-prx-xpx-blue.svg" width="20">
+              <span class="fs-085rem fw-600 color-black">{{vestedBalance?.part1}}</span>
+              <span class="fs-075rem fw-600 color-black">{{vestedBalance?.part2}}</span>
+              <span class="fs-085rem fw-600 color-black">&nbsp;XPX</span>
+              &nbsp; &nbsp;
+              <img class="icono" src="assets/images/img/icon-usd-blue.svg" width="20">
+              <span class="fs-085rem fw-600 color-black">USD 0.00</span>
             </div>
           </div>
         </div>
 
-        <div class="col-1 mt-2rem d-none d-flex justify-content-center">
-          <div style="border: .5px solid; height: 100%; color: #8d8c8c;"></div>
-        </div>
-
         <!-- SEGUNDA PARTE -->
-        <div class="col-12 col-md-6 mt-2rem d-flex justify-content-center align-items-center">
+        <div class="col-12 col-md-6 mt-2rem max-w100porcent">
           <div class="row">
-            <div class="col-12 d-flex justify-content-center">
-              <span class="fs-1-2rem fw-600">{{cantConfirmed + cantUnconfirmed}} Transactions</span>
+            <div class="col-12 d-flex align-items-center d-center">
+              <span class="fs-1-2rem">Transactions: &nbsp;</span>
+              <span class="fs-09rem fw-600 color-black"> {{cantConfirmed + cantUnconfirmed}}</span>
             </div>
 
-            <div class="col-12  d-flex justify-content-center">
-              <div class="row">
-                <div class="innerBtn" (click)="selectTransactions(1)" title="Transactions confirmed">
+            <div class="col-12 d-center">
+              <div class="row pl-15px">
+                <div class="innerBtn" (click)="selectTransactions(1)" title="Confirmed">
                   <div class="btn-confirmed">
-                    <img class="icono" src="assets/images/img/icon-transaction-confirmed-white.svg" width="20">
-                    <span class="txt-btn-dashboard">{{cantConfirmed}}</span>
-                  </div>
-                </div>
-
-                <div class="innerBtn" (click)="selectTransactions(0)" title="Transactions unconfirmed"
-                  [ngClass]="{'cursor-n-a': transactionsUnconfirmed.length === 0}">
-                  <div class="btn-unconfirmed">
-                    <img class="icono" src="assets/images/img/icon-transaction-unconfirmed-white.svg" width="20">
-                    <span class="txt-btn-dashboard">{{cantUnconfirmed}}</span>
-                  </div>
-                </div>
-
-                <div class="innerBtn" title="Transactions partials"
-                  [ngClass]="{'cursor-n-a': partialTransactions === 0}">
-                  <a [routerLink]="[viewDetailsPartial]" title="Transactions partials">
-                    <div class="btn-partial">
-                      <img class="icono" src="assets/images/img/icon-transaction-partial-white.svg" width="20">
-                      <span class="txt-btn-dashboard">{{partialTransactions}}</span>
+                    <div class="d-flex flex-row justify-content-around">
+                      <div>
+                        <img class="icono" src="assets/images/img/icon-transaction-confirmed-white.svg" width="20">
+                      </div>
+                      <div>
+                        <span class="txt-btn-dashboard">
+                          {{cantConfirmed}}</span>
+                      </div>
                     </div>
-                  </a>
+                  </div>
+                </div>
+
+                <div class="innerBtn" title="Unconfirmed">
+                  <div (click)="selectTransactions(0)" [ngClass]="{'cursor-n-a': transactionsUnconfirmed.length === 0}">
+                    <div class="btn-unconfirmed">
+                      <div class="d-flex flex-row justify-content-around">
+                        <div>
+                          <img class="icono" src="assets/images/img/icon-transaction-unconfirmed-white.svg" width="20">
+                        </div>
+                        <div>
+                          <span class="txt-btn-dashboard">{{cantUnconfirmed}}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="innerBtn" title="Partials">
+                  <div [ngClass]="{'cursor-n-a': partialTransactions === 0}">
+                    <a [routerLink]="[viewDetailsPartial]">
+                      <div class="btn-partial">
+
+                        <div class="d-flex flex-row justify-content-around">
+                          <div>
+                            <img class="icono" src="assets/images/img/icon-transaction-partial-white.svg" width="20">
+                          </div>
+                          <div>
+                            <span class="txt-btn-dashboard">
+                              {{partialTransactions}}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </a>
+                  </div>
                 </div>
 
                 <ng-container *ngIf="swapTransactions > 0">
-                  <div class="innerBtn" [ngClass]="{'cursor-n-a': viewSwapTransactions}">
-                    <a [routerLink]="[viewSwapTransactions]" title="Transactions swap">
-                      <div class="btn-swap">
-                        <img class="icono" src="assets/images/img/icon-transaction-swap-process-white.svg" width="20">
-                        <span class="txt-btn-dashboard">{{swapTransactions}}</span>
-                      </div>
-                    </a>
+                  <div class="innerBtn" title="Swap">
+                    <div [ngClass]="{'cursor-n-a': swapTransactions === 0}">
+                      <a [routerLink]="[viewSwapTransactions]">
+                        <div class="btn-swap">
+                          <div class="d-flex flex-row justify-content-around">
+                            <div>
+                              <img class="icono" src="assets/images/img/icon-transaction-swap-process-white.svg"
+                                width="20">
+                            </div>
+                            <div>
+                              <span class="txt-btn-dashboard">{{swapTransactions}}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </a>
+                    </div>
                   </div>
                 </ng-container>
               </div>
@@ -115,7 +130,7 @@
 <div class="container-fluid">
   <!-- FIELD SEARCH -->
   <div class="row">
-    <div class="col-12 col-sm-11 col-md-10 col-lg-9 mx-auto">
+    <div class="col-11 col-lg-10 mx-auto">
       <input [(ngModel)]="searchTransaction" type="text" autocomplete="off" id="searchTransaction"
         class="md-form form-control" mdbInputDirective [validateSuccess]="false" [validateError]="false"
         placeholder="Search">
@@ -124,7 +139,7 @@
 
   <!-- Searching and icon reload -->
   <div class="row mt-2rem">
-    <div class="col-12 col-sm-11 col-md-10 col-lg-9 mx-auto">
+    <div class="col-11 col-lg-10 mx-auto">
       <!-- Searching -->
       <ng-container *ngIf="searching">
         <div class="col-12 txt-a-center">
@@ -136,7 +151,7 @@
 
   <!-- Searching and icon reload -->
   <div class="row mt-2rem txt-a-right">
-    <div class="col-12 col-sm-11 col-md-10 col-lg-9 mx-auto">
+    <div class="col-11 col-lg-10 mx-auto">
       <!-- Icon Reload -->
       <ng-container *ngIf="iconReloadDashboard && !searching">
         <div class="col-12 t-a-r">
@@ -149,7 +164,7 @@
 
   <!-- TABLE -->
   <div class="row">
-    <div class="col-12 col-sm-11 col-md-10 col-lg-9 mx-auto d-flex justify-content-center">
+    <div class="col-11 col-lg-10 mx-auto d-flex justify-content-center">
       <div class="datatable-style max-w-table">
         <table mdbTable mdbTableScroll scrollX="true" striped="true">
           <thead>
@@ -161,7 +176,7 @@
 
           <tbody class="background-white">
             <ng-container *ngFor="let el of transactions | paginate: configFilesDashboard">
-              <tr class="white-space-pre cursor-p" (click)="dataSelected = el; modalDashboard.show();">
+              <tr class="white-space-pre cursor-p" (click)="openModal(el);">
                 <td class="th-sm fs-07rem" scope="row description-dark-green">
                   <ng-container *ngIf="el.nameType === 'ProximaX Swap'; else elseSwap">
                     <span style="color: #e6b219;"><i class="fa fa-star" aria-hidden="true"></i></span>
@@ -172,8 +187,6 @@
                   {{el.nameType}}
                 </td>
 
-                <!-- fee -->
-                <td class="text-center th-sm description-dark-green fs-07rem">{{el.fee}}</td>
                 <!-- address -->
                 <td class="text-center th-md description-dark-green fs-07rem">
                   <img src="assets/images/img/arrow-transaction-receive-green-proximax-sirius-explorer.svg" alt=""
@@ -181,6 +194,7 @@
                   <img src="assets/images/img/arrow-transaction-sender-orange-proximax-sirius-explorer.svg" alt=""
                     width="25" *ngIf="!el.receive">
                 </td>
+
                 <!-- address -->
                 <td class="th-md description-dark-green fs-07rem">
                   <span>{{el.senderAddress}}</span>
@@ -245,18 +259,10 @@
           <ng-container *ngIf="dataSelected">
 
             <!-- TYPE MOSAIC DEFINITION TRANSACTION -->
-            <app-mosaic-definition-type [mosaicDefinition]="dataSelected"
+            <!-- <app-mosaic-definition-type [mosaicDefinition]="dataSelected"
               *ngIf="dataSelected.data.type === typeTransactions.mosaicDefinition.id">
-            </app-mosaic-definition-type>
-            <!-- TYPE MOSAIC SUPPLY CHANGE TRANSACTION -->
-            <app-mosaic-supply-change-type [mosaicSupplyChange]="dataSelected"
-              *ngIf="dataSelected.data.type === typeTransactions.mosaicSupplyChange.id">
-            </app-mosaic-supply-change-type>
+            </app-mosaic-definition-type> -->
 
-            <!-- TYPE AGGREGATE COMPLETE TRANSACTION-->
-            <!-- <app-aggregate-complete-type [aggregateComplete]="dataSelected"
-              *ngIf="dataSelected.data.type === typeTransactions.aggregateComplete.id">
-            </app-aggregate-complete-type> -->
 
             <!-- TRANSFER -->
             <ng-container *ngIf="dataSelected.data.type === typeTransactions.transfer.id">
@@ -279,6 +285,26 @@
                     <div class="col-12 col-md-5">
                       <app-box-data-signer-hash [dataSelected]="dataSelected">
                       </app-box-data-signer-hash>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+
+
+            <!-- TYPE MOSAIC SUPPLY CHANGE TRANSACTION -->
+            <ng-container *ngIf="dataSelected.data.type === typeTransactions.mosaicSupplyChange.id">
+              <div class="row">
+                <div class="col-11 mx-auto">
+                  <div class="row">
+                    <!-- TYPE REGISTER NAMESPACE TRANSACTION -->
+                    <div class="col-12 col-md-7">
+                      <app-mosaic-supply-change-type [mosaicSupplyChange]="dataSelected">
+                      </app-mosaic-supply-change-type>
+                    </div>
+                    <!-- BOX DATA SIGNER HASH -->
+                    <div class="col-12 col-md-5">
+                      <app-box-data-signer-hash [dataSelected]="dataSelected"></app-box-data-signer-hash>
                     </div>
                   </div>
                 </div>
@@ -400,6 +426,127 @@
                     </div>
                     </div> -->
           </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- MODAL CERTIFICATE -->
+<div class="d-flex align-items-center">
+  <div mdbModal #modalAccounts="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalAccounts"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg d-flex align-items-center" role="document">
+      <div class="modal-content form-elegant bord-rad-1-5rem">
+        <div class="modal-header text-center box-modal-white b-t-r-r-1-5rem b-t-l-r-1-5rem p-05rem">
+          <span class="modal-title w-100" id="myModalLabel">
+            <strong class="title-modal-blue">Voting Certificate</strong>
+          </span>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modalAccounts.hide()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <!-- <div class="modal-body">
+            <ng-container *ngIf="dataTransaction">
+              <app-vote-type [transactionInfo]="dataTransaction"></app-vote-type>
+            </ng-container>
+          </div> -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL ACCOUNT -->
+<div class="d-flex align-items-center">
+  <div mdbModal #modalAccounts="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalAccounts"
+    aria-hidden="true">
+    <div class="modal-dialog  align-items-center" role="document">
+      <div class="modal-content form-elegant bord-rad-1-5rem">
+        <div class="modal-header text-center box-modal-white b-t-r-r-1-5rem b-t-l-r-1-5rem p-1-5rem">
+          <!-- <span class="modal-title w-100 fw-600" id="myModalLabel">
+            <strong class="title-modal-blue-1-7">Accounts</strong> -->
+
+          <div class="d-flex w-100">
+            <div class="flex-column justify-content-center w-100">
+              <div class="modal-title fw-600"><strong class="title-modal-blue-1-7">Accounts</strong></div>
+              <div class="modal-title"><strong class="title-modal ">Account available in wallet:</strong></div>
+            </div>
+          </div>
+
+          <!-- </span> -->
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modalAccounts.hide()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <!-- TABLE LIST ACCOUNTS -->
+          <div class="row">
+            <div class="col-10 d-flex justify-content-center mx-auto">
+              <div class="table-responsive" style="max-height: 400px; overflow: auto; ">
+                <table mdbTable hover="true" striped="true" class="z-depth-0 result">
+                  <tbody #tableResult>
+                    <ng-container *ngFor="let account of currentWallet.accounts; let i = index">
+                      <tr mdbTableCol class="white-space-pre cursor-p" (click)="changeAsPrimary(account.name)">
+                        <td style="width:1%">
+                          <span class="fs-08rem txt-a-center line-h-1-2em fw-600  mb-06rem">{{account.name}}</span>
+                          <br>
+                          <span class="fs-08rem txt-a-center line-h-1-2em  mb-06rem">{{
+                            account.address}}</span>
+                        </td>
+                        <td>
+                          <div class="d-flex flex-row mt-05rem">
+                            <div *ngIf="account.default" class="p-2">
+                              <span class="title-tab-blue">
+                                <i>-Current default </i>
+                              </span>
+                            </div>
+                            <div *ngIf="account.isMultisign !== null && account.isMultisign.cosignatories.length > 1"
+                              class="p-2">
+                              <span class="title-tab-blue ">
+                                <i>-Multisig </i>
+                              </span>
+                            </div>
+                            <div *ngIf="[undefined, null].includes(account.nis1Account) === false" class="p-2">
+                              <span class="title-tab-blue ">
+                                <i>-Swap </i>
+                              </span>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    </ng-container>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL QR -->
+<div class="d-flex align-items-center">
+  <div mdbModal #modalQR="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalQR"
+    aria-hidden="true">
+    <div class="modal-dialog modal-sm   align-items-center" role="document">
+      <div class="modal-content form-elegant bord-rad-1-5rem">
+        <div class="modal-header text-center box-modal-white b-t-r-r-1-5rem b-t-l-r-1-5rem p-05rem">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modalQR.hide()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <!-- TABLE LIST ACCOUNTS -->
+          <div class="row mb-1-5rem">
+            <div class="col-10 d-flex justify-content-center mx-auto">
+              <div class="mx-auto">
+                <img [src]="qr" width="250">
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

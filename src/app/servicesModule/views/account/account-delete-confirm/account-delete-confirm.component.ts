@@ -15,7 +15,7 @@ import { TransactionsService } from 'src/app/transactions/services/transactions.
 export class AccountDeleteConfirmComponent implements OnInit {
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Accounts',
-    componentName: 'CONFIRM DELETE',
+    componentName: 'Confirm delete',
     extraButton: 'View All Accounts',
     routerExtraButton: `/${AppConfig.routes.viewAllAccount}`
 

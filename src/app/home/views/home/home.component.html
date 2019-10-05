@@ -1,14 +1,11 @@
 <div class="container mt-3rem mb-2rem animated fadeIn">
   <div class="row">
     <div class="col-12 d-flex justify-content-center">
-      <span class="fs-1-7rem fw-600 txt-a-center line-h-1-2em">ProximaX Sirius Wallet</span>
+      <span class="fs-1-7rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">ProximaX Sirius Wallet</span>
     </div>
     <div class="col-12 d-flex justify-content-center">
-      <span class="fs-08rem txt-a-center line-h-1-2em">The secure interface that connects to the Proximax Sirius
+      <span class="fs-1rem txt-a-center line-h-1-2em">The secure interface that connects to the Proximax Sirius
         platform.</span>
-    </div>
-    <div class="col-11 col-md-10 mx-auto">
-      <hr class="mt-07rem">
     </div>
   </div>
 
@@ -20,17 +17,62 @@
             <img class="h-70px" src="assets/images/img/{{servicesList[item].image}}" alt="">
           </div>
           <div class="col-12 txt-a-center mt-04rem">
-            <span class="fs-1rem fw-600">{{servicesList[item].title}}</span>
+            <span class="fs-1-1rem fw-600">{{servicesList[item].title}}</span>
           </div>
           <div class="col-12 txt-a-center line-h-1em">
-            <span class="fs-08rem">{{servicesList[item].description}}</span>
+            <span class="fs-09rem">{{servicesList[item].description}}</span>
           </div>
         </div>
       </div>
     </ng-container>
   </div>
 
-  <div class="row pt-3rem pb-2rem">
+  <div class="row pl-2rem pr-2rem pb-02rem">
+    <div class="col-11 col-md-10 mx-auto">
+      <hr class="mt-07rem">
+    </div>
+    <ng-container>
+      <div class="col-12 d-flex justify-content-center mt-1rem">
+        <span class="fs-1-7rem txt-a-center line-h-1-2em color-blue-intermedio">Create a new wallet...</span>
+      </div>
+      <div class="col-12 col-sm-6 col-md-6 col-lg-4 mt-1rem">
+        <div class="row box-grey cursor-p" [routerLink]="['/'+link.createWallet]">
+          <div class="col-12 d-flex justify-content-center">
+            <img class="h-40px" src="assets/images/img/icon-add-new-blue.svg" alt="">
+          </div>
+          <div class="col-12 txt-a-center mt-04rem">
+            <span class="fs-1rem fw-600 color-black">Simple</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-sm-6 col-md-6 col-lg-4 mt-1rem">
+        <div class="row box-grey cursor-p" [routerLink]="['/'+link.importWallet]">
+          <div class="col-12 d-flex justify-content-center">
+            <img class="h-40px" src="assets/images/img/icon-private-key-blue.svg" alt="">
+          </div>
+          <div class="col-12 txt-a-center mt-04rem">
+            <span class="fs-1rem fw-600 color-black">From a private key</span>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="col-12 col-sm-6 col-md-6 col-lg-4 mt-1rem">
+        <div class="row box-grey cursor-p" (click)="file.click()">
+          <div class="col-12 d-flex justify-content-center">
+            <img class="h-40px" src="assets/images/img/icon-wallet-import-blue.svg" alt="">
+          </div>
+          <div class="col-12 txt-a-center mt-04rem">
+            <span class="fs-1rem fw-600 color-black">From a .wlt file</span>
+          </div>
+          <input #file [hidden]="true" type="file" (change)="fileChange($event.target.files,$event)" id="inputFile">
+        </div>
+      </div>
+    </ng-container>
+  </div>
+
+  <!-- <div class="row pt-3rem pb-2rem">
     <div class="col-11 col-md-10 mx-auto">
       <hr class="mt-07rem">
     </div>
@@ -39,7 +81,7 @@
         class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
         <img class="mr-1rem h-2em pr-05rem" src="assets/images/img/icon-wallet-create-white-proximax-sirius-wallet.svg"
           alt="">
-        <span class="fs-1-2em color-white">CREATE</span>
+        <span class="fs-1-2em color-white">Create</span>
       </button>
     </div>
     <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
@@ -51,7 +93,7 @@
       </button>
       <input #file [hidden]="true" type="file" (change)="fileChange($event.target.files,$event)" id="inputFile">
     </div>
-  </div>
+  </div> -->
 </div>
 
 <!-- MODAL  Optios-->
@@ -92,7 +134,7 @@
             <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
               <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
                 size="md" (click)="clearForm();basicModal.hide()">
-                <span class="fs-1-2em color-white">CANCEL</span>
+                <span class="fs-1-2em color-white">Cancel</span>
               </button>
             </div>
 

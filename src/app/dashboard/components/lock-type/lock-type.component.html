@@ -1,10 +1,14 @@
 <div class="row">
   <div class="col-12">
     <div class="row">
-      <!-- Bonded & Deadline -->
-      <div class="col-12 lh-1em">
-        <span class="fw-600 fs-1-2rem">{{transactionLock.nameType}}</span> <br>
-        <span class="fs-075rem">Deadline: {{transactionLock?.timestamp}}</span>
+      <!-- Lock name -->
+      <div class="col-12">
+        <span class="fw-600 fs-1-2rem">{{transactionLock.nameType}}</span>
+      </div>
+
+      <!-- Timestamp -->
+      <div class="col-12" *ngIf="transactionLock?.timestamp">
+        <span class="color-dark-green fs-07rem fw-500 w-w-b-w">{{transactionLock?.timestamp}}</span>
       </div>
 
       <!-- Fee -->
@@ -19,19 +23,19 @@
       <!-- Type -->
       <div class="col-12 mt-03rem">
         <span class="fw-600 fs-08rem">Type:&nbsp;&nbsp;</span>
-        <span class="fs-065rem">{{transactionLock?.data['type'].toString(16).toUpperCase()}}</span>
+        <span class="fs-07rem">{{transactionLock?.data['type'].toString(16).toUpperCase()}}</span>
       </div>
 
       <!-- duration -->
       <div class="col-12 mt-03rem">
         <span class="fw-600 fs-08rem">Duration:&nbsp;&nbsp;</span>
-        <span class="fs-065rem">{{transactionLock?.data['duration'].compact()}} blocks</span>
+        <span class="fs-07rem">{{transactionLock?.data['duration'].compact()}} blocks</span>
       </div>
 
       <!-- Hash lock transaction -->
       <div class="col-12 mt-05rem line-h-1em">
         <span class="fw-600 fs-08rem">Hash lock transaction: <br></span>
-        <span class="fs-065rem">{{transactionLock?.data['hash']}}</span>
+        <span class="fs-07rem">{{transactionLock?.data['hash']}}</span>
       </div>
 
       <!-- MOSAICS INFO-->

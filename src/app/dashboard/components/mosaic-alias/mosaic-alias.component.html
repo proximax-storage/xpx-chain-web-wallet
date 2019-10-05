@@ -2,71 +2,78 @@
   <div class="col-12">
     <div class="row">
 
-      <div class="col-12 lh-1em mt-05rem">
-        <span class="fw-600 fs-1-2rem">{{mosaicAlias.nameType}}</span> <br>
-        <span class="fs-075rem">Deadline: {{mosaicAlias?.timestamp}}</span>
+      <!-- Mosaic alias name -->
+      <div class="col-12">
+        <span class="fw-600 fs-1-2rem">{{mosaicAlias.nameType}}</span>
+      </div>
+
+      <!-- Timestamp -->
+      <div class="col-12" *ngIf="mosaicAlias?.timestamp">
+        <span class="color-dark-green fs-07rem fw-500 w-w-b-w">{{mosaicAlias?.timestamp}}</span>
       </div>
 
       <!-- Fee -->
-      <div class="col-12 mt-1rem">
-        <span class="fw-600 fs-095rem">Fee:&nbsp;&nbsp;</span>
-        <span class="fs-095rem fw-600 color-blue-light">{{mosaicAlias?.feePart.part1}}</span>
-        <span class="fs-075rem fw-600 color-blue-light">{{mosaicAlias?.feePart.part2}}</span>
-        <span class="fs-095rem fw-600 color-blue-light"> XPX </span>
-        <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
-      </div>
+      <ng-container *ngIf="mosaicAlias?.effectiveFee">
+        <div class="col-12 mt-03rem">
+          <span class="fw-600 fs-095rem color-dark-green">Fee:&nbsp;&nbsp;</span>
+          <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
+          <span class="fw-600 fs-095rem color-blue-light">{{mosaicAlias?.effectiveFee.part1}}</span>
+          <span class="fw-600 fs-075rem color-blue-light">{{mosaicAlias?.effectiveFee.part2}}</span>
+          <span class="fw-600 fs-095rem color-blue-light"> XPX </span>
+        </div>
+      </ng-container>
 
       <!-- Height -->
       <ng-container *ngIf="mosaicAlias?.data.transactionInfo.height">
         <div class="col-12 mt-04rem">
           <span class="fw-600 fs-08rem">Height:&nbsp;&nbsp;</span>
-          <span class="fs-07  5rem">{{mosaicAlias?.data.transactionInfo.height.compact()}}</span>
+          <span class="fs-07rem">{{mosaicAlias?.data.transactionInfo.height.compact()}}</span>
         </div>
       </ng-container>
 
       <!-- Type -->
       <div class="col-12 mt-04rem">
         <span class="fw-600 fs-08rem">Type:&nbsp;&nbsp;</span>
-        <span class="fs-065rem">{{mosaicAlias?.data['type'].toString(16).toUpperCase()}}</span>
+        <span class="fs-07rem">{{mosaicAlias?.data['type'].toString(16).toUpperCase()}}</span>
       </div>
 
       <!-- Action -->
       <div class="col-12 mt-04rem">
         <span class="fw-600 fs-08rem">Action:&nbsp;&nbsp;</span>
         <ng-container *ngIf="mosaicAlias?.data['actionType'] === undefined">
-          <span class="fs-075rem green-c">Link</span>
+          <span class="fs-07rem green-c">Link</span>
         </ng-container>
 
         <ng-container *ngIf="mosaicAlias?.data['actionType'] !== undefined">
-          <span class="fs-075rem color-red">Unlink</span>
+          <span class="fs-07rem color-red">Unlink</span>
         </ng-container>
       </div>
 
       <!-- Namespace Id -->
       <div class="col-12 mt-04rem">
         <span class="fw-600 fs-08rem">Namespace Id:&nbsp;&nbsp;</span>
-        <span class="fs-075rem">{{namespaceId}}</span>
+        <span class="fs-07rem">{{namespaceId}}</span>
       </div>
 
       <!-- Namespace Id -->
       <ng-container *ngIf="namespaceName !== ''">
         <div class="col-12 mt-04rem">
           <span class="fw-600 fs-08rem">Namespace name:&nbsp;&nbsp;</span>
-          <span class="fs-075rem">{{namespaceName}}</span>
+          <span class="fs-07rem">{{namespaceName}}</span>
         </div>
       </ng-container>
 
       <!-- Mosaic Id -->
       <div class="col-12 mt-04rem">
         <span class="fw-600 fs-08rem">MosaicAlias ID:&nbsp;&nbsp;</span>
-        <span class="fs-075rem">{{mosaicId}}</span>
+        <span class="fs-07rem">{{mosaicId}}</span>
       </div>
 
       <!-- Mosaic Name -->
       <ng-container *ngIf="mosaicName !== ''">
         <div class="col-12 mt-04rem">
           <span class="fw-600 fs-08rem">MosaicAlias Name:&nbsp;&nbsp;</span>
-          <span class="fs-075rem">{{mosaicName}}</span>
+          <span class="fs-07rem">{{mosaicName}}</span>
         </div>
       </ng-container>
     </div>
