@@ -7,16 +7,18 @@
         <div class="col-12 col-md-6 mt-2rem border-right-1px max-w100porcent">
           <div class="row">
             <!-- NAME ACCOUNT -->
-            <div class="col-12 d-flex align-items-center d-center">
+            <div class="col-12 d-flex align-items-start d-center">
+              <i class="fa fa-sort-desc cursor-p pr-03rem" aria-hidden="true" (click)="modalAccounts.show()"></i>
               <span class="fw-600 color-black cursor-p" (click)="modalAccounts.show()"> {{currentAccount.name}}</span>
-              <span class="ml-05rem  title-tab-blue">
+              <span class="ml-05rem  title-tab-blue pt-03rem">
                 <i>- Current default </i>
               </span>
             </div>
 
             <!-- ADDRESS -->
             <div class="col-12 d-flex align-items-center mt-02rem d-center">
-              <span class="fs-06rem f-s-dashboard-transactions fw-600" style="white-space:nowrap;">{{currentAccount.address}} &nbsp; </span>
+              <span class="fs-06rem f-s-dashboard-transactions fw-600"
+                style="white-space:nowrap;">{{currentAccount.address}} &nbsp; </span>
               <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="icono cursor-p"
                 alt="Copy" width="20" (click)="copyMessage('Address')" ngxClipboard
                 [cbContent]="currentAccount.address">

@@ -298,6 +298,10 @@ html, body {
   padding-top: .2rem;
 }
 
+.pt-03rem {
+  padding-top: .3rem;
+}
+
 .pt-04rem {
   padding-top: .4rem;
 }
@@ -411,6 +415,10 @@ html, body {
 }
 
 /** RIGHT **/
+
+.pr-03rem {
+  padding-right: .3rem;
+}
 
 .pr-040rem {
   padding-right: .4rem;
