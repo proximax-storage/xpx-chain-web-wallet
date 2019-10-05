@@ -13,7 +13,7 @@
           <ng-container *ngIf="itemsHeader[key]['type'] === 'default' && itemsHeader[key]['show']">
             <li class="nav-item color-item-menu active">
               <a [routerLink]="[itemsHeader[key]['link']]" class="nav-link waves-light" mdbWavesEffect>
-                <span class="item-menu fw-600">{{itemsHeader[key]['name'] | uppercase}}</span>
+                <span class="item-menu fw-600">{{itemsHeader[key]['name']}}</span>
               </a>
             </li>
           </ng-container>
@@ -22,7 +22,7 @@
             <li class="nav-item dropdown" dropdown>
               <a dropdownToggle mdbWavesEffect type="button" class="nav-link dropdown-toggle waves-light"
                 mdbWavesEffect>
-                <span class="item-menu fw-600">{{itemsHeader[key]['name'] | uppercase}}</span>
+                <span class="item-menu fw-600">{{itemsHeader[key]['name']}}</span>
                 <span class="caret"></span>
               </a>
 
@@ -32,7 +32,7 @@
                   <ng-container *ngIf="itemsHeader[key]['submenu'][k]['view']">
                     <a class="dropdown-item waves-light" mdbWavesEffect
                       [routerLink]="[itemsHeader[key]['submenu'][k]['link']]">
-                      {{itemsHeader[key]['submenu'][k]['name'] | uppercase}}
+                      {{itemsHeader[key]['submenu'][k]['name']}}
                     </a>
                   </ng-container>
                 </ng-container>
@@ -44,7 +44,7 @@
 
       <li class="nav-item color-item-menu active" (click)="showModal()">
         <a class="nav-link waves-light" mdbWavesEffect>
-          <span class="item-menu fw-600">SIGN IN</span>
+          <span class="item-menu fw-600">Sign In</span>
         </a>
       </li>
     </ul>
@@ -57,16 +57,18 @@
     aria-hidden="true">
     <div class="modal-dialog modal-md d-flex align-items-center" role="document">
       <div class="modal-content form-elegant bord-rad-1-5rem">
-        <!-- <div class="modal-header text-center box-modal-white b-t-r-r-1-5rem b-t-l-r-1-5rem p-05rem">
-          <span class="modal-title w-100" id="myModalLabel">
-            <strong class="title-modal-blue">Auth</strong>
-          </span>
-        </div> -->
+        <div class="row">
+          <div class="col-12">
+            <div class="col-12">
+              <span class="cursor-p d-flex justify-content-end fw-600 fs-1rem pt-04rem" (click)="modalAuth.hide()">x</span>
+            </div>
+          </div>
+        </div>
 
         <div class="modal-body">
           <div class="row">
             <div class="col-12 col-sm-6 col-md-8">
-              <app-auth></app-auth>
+              <app-auth [eventNumber]="eventNumber"></app-auth>
             </div>
 
             <div class="col-12 col-sm-6 col-md-4 d-flex align-items-center mx-auto">

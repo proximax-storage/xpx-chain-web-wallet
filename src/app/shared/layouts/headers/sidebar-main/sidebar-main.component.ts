@@ -166,12 +166,12 @@ export class SidebarMainComponent implements OnInit {
 
 
         const amountFormatter = this.transactionService.amountFormatterSimple(amountTotal);
-        this.vestedBalance = `Total Balance ${amountFormatter} XPX`;
+        this.vestedBalance = `Total balance ${amountFormatter} XPX`;
         setTimeout(() => {
           this.searchBalance = false;
         }, 1000);
       } else {
-        this.vestedBalance = `Total Balance 0.000000 XPX`;
+        this.vestedBalance = `Total balance 0.000000 XPX`;
         setTimeout(() => {
           this.searchBalance = false;
         }, 1000);

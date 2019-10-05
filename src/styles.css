@@ -406,6 +406,10 @@ html, body {
   padding-left: 3rem;
 }
 
+.pl-15px {
+  padding-left: 15px;
+}
+
 /** RIGHT **/
 
 .pr-040rem {
@@ -891,7 +895,7 @@ html, body {
 }
 
 .btn-swap {
-  background: linear-gradient(#FFCD00 ,#976630);
+  background: linear-gradient(#FFCD00, #976630);
 }
 
 .btn-confirmed, .btn-partial, .btn-swap, .btn-unconfirmed {
@@ -905,14 +909,15 @@ html, body {
 
 .txt-btn-dashboard {
   padding-left: 3px;
-  font-size: .8rem;
+  font-size: .6rem;
+  font-weight: 600;
 }
 
 .innerBtn {
   cursor: pointer;
-  width: 90px;
+  width: 80px;
   margin-right: .5rem;
-  margin-top: 1rem;
+  margin-top: .3rem;
 }
 
 /**************************** progress ***********************************/
@@ -1017,6 +1022,7 @@ footer {
   display: table-row;
   height: 1px;
 }
+
 /*
 body {
   position: relative;
@@ -1408,17 +1414,18 @@ button.md-toast-close-button {
   font-weight: 600;
   font-size: 1.2rem;
 }
+
 .title-modal-blue-1-7 {
   color: #27a2bb !important;
   text-align: center;
   font-weight: 600;
-  font-size: 1.7rem;
+  font-size: 1.7rem !important;
 }
 
-
 .title-tab-blue {
-  color: #27a2bb !important;
-  font-size: 1rem;
+  color: #0098EA !important;
+  font-weight: 600;
+  font-size: .7rem;
 }
 
 .title-modal-grey {
@@ -1872,6 +1879,5 @@ ul.stepper.horizontal .step-title {
 
 .modal-backdrop {
   opacity: .9 !important;
-  background-color: rgb(50,110,180) !important;
+  background-color: rgb(50, 110, 180) !important;
 }
-

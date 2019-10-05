@@ -1,69 +1,60 @@
 <!-- BALANCE & BUTTONS -->
 <div class="container-fluid">
   <div class="row">
-    <div class="col-11 col-sm-11 col-md-10 col-lg-9 mx-auto">
-      <div class="row">
-        <div class="col-12 col-md-5 mt-2rem">
+    <div class="col-11 col-lg-10 mx-auto">
+      <div class="row d-center">
+        <!-- FIRST PART -->
+        <div class="col-12 col-md-6 mt-2rem border-right-1px max-w100porcent">
           <div class="row">
-
             <!-- NAME ACCOUNT -->
-            <div class="col-12 d-flex justify-content-center justify-content-md-start align-items-center">
-              <div class="dropdown" mdbDropdown>
+            <div class="col-12 d-flex align-items-center d-center">
+              <!-- <div class="dropdown" mdbDropdown>
                 <button mdbBtn color="transparent" class="dropdown-toggle waves-light" type="button" mdbWavesEffect
                   style="padding: 5px; box-shadow: 0px 0px transparent" (click)="modalAccounts.show()">
                 </button>
-              </div>
+              </div> -->
 
               <span class="fs-09rem fw-600 color-black"> {{currentAccount.name}}</span>
               <span class="ml-05rem  title-tab-blue fs-09rem">
                 <i>- Current default </i>
               </span>
-              <!-- <span class="ml-1rem box-tag-account color-blue-intermedio fs-065rem">Current default</span> -->
             </div>
 
             <!-- ADDRESS -->
-            <div class="col-12 d-flex justify-content-center justify-content-md-start align-items-center mt-02rem">
-              <span class="fs-06rem f-s-dashboard-transactions fw-600">{{currentAccount.address}} &nbsp;
-                <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="icono cursor-p"
-                  alt="Copy" width="20" (click)="copyMessage('Address')" ngxClipboard
-                  [cbContent]="currentAccount.address">
-                <img src="assets/images/img/icon-qr-code-proximax-sirius-wallet.svg" class="icono cursor-p"
-                  alt="Address QR" width="20" (click)="modalQR.show()"></span>
+            <div class="col-12 d-flex align-items-center mt-02rem d-center">
+              <span class="fs-06rem f-s-dashboard-transactions fw-600" style="white-space:nowrap;">{{currentAccount.address}} &nbsp; </span>
+              <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="icono cursor-p"
+                alt="Copy" width="20" (click)="copyMessage('Address')" ngxClipboard
+                [cbContent]="currentAccount.address">
+              <img src="assets/images/img/icon-qr-code.svg" class="icono cursor-p" alt="Address QR" width="20"
+                (click)="modalQR.show()">
             </div>
 
             <!-- BALANCE -->
-            <div class="col-12 mt-02rem d-flex justify-content-center justify-content-md-start">
-              <div>
-                <img class="icono" src="assets/images/img/icon-prx-xpx-blue.svg" width="20">
-                <span class="fs-085rem fw-600 color-black">{{vestedBalance?.part1}}</span>
-                <span class="fs-075rem fw-600 color-black">{{vestedBalance?.part2}}</span>
-                <span class="fs-085rem fw-600 color-black">&nbsp;XPX</span>
-                &nbsp; &nbsp;
-                <img class="icono" src="assets/images/img/icon-usd-blue.svg" width="20">
-                <span class="fs-085rem fw-600 color-black">USD 0.00</span>
-              </div>
+            <div class="col-12 mt-02rem a-center">
+              <img class="icono" src="assets/images/img/icon-prx-xpx-blue.svg" width="20">
+              <span class="fs-085rem fw-600 color-black">{{vestedBalance?.part1}}</span>
+              <span class="fs-075rem fw-600 color-black">{{vestedBalance?.part2}}</span>
+              <span class="fs-085rem fw-600 color-black">&nbsp;XPX</span>
+              &nbsp; &nbsp;
+              <img class="icono" src="assets/images/img/icon-usd-blue.svg" width="20">
+              <span class="fs-085rem fw-600 color-black">USD 0.00</span>
             </div>
           </div>
         </div>
 
-        <div class="col-2 mt-2rem d-none d-flex justify-content-center">
-          <div style="border: .5px solid; height: 100%; color: #8d8c8c;"></div>
-        </div>
-
         <!-- SEGUNDA PARTE -->
-        <div class="col-12 col-md-5 mt-2rem">
+        <div class="col-12 col-md-6 mt-2rem max-w100porcent">
           <div class="row">
-            <div class="col-12 col-12 d-flex justify-content-center">
-              <span class="fs-1-2rem ">Transactions: &nbsp;</span>
-              <span class="fs-085rem fw-600 color-black"> {{cantConfirmed + cantUnconfirmed}}</span>
+            <div class="col-12 d-flex align-items-center d-center">
+              <span class="fs-1-2rem">Transactions: &nbsp;</span>
+              <span class="fs-09rem fw-600 color-black"> {{cantConfirmed + cantUnconfirmed}}</span>
             </div>
 
-            <div class="col-12 d-flex">
-              <!-- justify-content-center -->
-              <div class="row">
+            <div class="col-12 d-center">
+              <div class="row pl-15px">
                 <div class="innerBtn" (click)="selectTransactions(1)" title="Confirmed">
                   <div class="btn-confirmed">
-
                     <div class="d-flex flex-row justify-content-around">
                       <div>
                         <img class="icono" src="assets/images/img/icon-transaction-confirmed-white.svg" width="20">
@@ -73,17 +64,12 @@
                           {{cantConfirmed}}</span>
                       </div>
                     </div>
-
-                    <!-- <img class="icono" src="assets/images/img/icon-transaction-confirmed-white.svg" width="20">
-                    <span class="txt-btn-dashboard">
-                      {{cantConfirmed}}</span> -->
                   </div>
                 </div>
 
                 <div class="innerBtn" title="Unconfirmed">
                   <div (click)="selectTransactions(0)" [ngClass]="{'cursor-n-a': transactionsUnconfirmed.length === 0}">
                     <div class="btn-unconfirmed">
-
                       <div class="d-flex flex-row justify-content-around">
                         <div>
                           <img class="icono" src="assets/images/img/icon-transaction-unconfirmed-white.svg" width="20">
@@ -148,7 +134,7 @@
 <div class="container-fluid">
   <!-- FIELD SEARCH -->
   <div class="row">
-    <div class="col-12 col-sm-11 col-md-10 col-lg-9 mx-auto">
+    <div class="col-11 col-lg-10 mx-auto">
       <input [(ngModel)]="searchTransaction" type="text" autocomplete="off" id="searchTransaction"
         class="md-form form-control" mdbInputDirective [validateSuccess]="false" [validateError]="false"
         placeholder="Search">
@@ -157,7 +143,7 @@
 
   <!-- Searching and icon reload -->
   <div class="row mt-2rem">
-    <div class="col-12 col-sm-11 col-md-10 col-lg-9 mx-auto">
+    <div class="col-11 col-lg-10 mx-auto">
       <!-- Searching -->
       <ng-container *ngIf="searching">
         <div class="col-12 txt-a-center">
@@ -169,7 +155,7 @@
 
   <!-- Searching and icon reload -->
   <div class="row mt-2rem txt-a-right">
-    <div class="col-12 col-sm-11 col-md-10 col-lg-9 mx-auto">
+    <div class="col-11 col-lg-10 mx-auto">
       <!-- Icon Reload -->
       <ng-container *ngIf="iconReloadDashboard && !searching">
         <div class="col-12 t-a-r">
@@ -182,7 +168,7 @@
 
   <!-- TABLE -->
   <div class="row">
-    <div class="col-12 col-sm-11 col-md-10 col-lg-9 mx-auto d-flex justify-content-center">
+    <div class="col-11 col-lg-10 mx-auto d-flex justify-content-center">
       <div class="datatable-style max-w-table">
         <table mdbTable mdbTableScroll scrollX="true" striped="true">
           <thead>
@@ -562,11 +548,7 @@
             <div class="col-10 d-flex justify-content-center mx-auto">
               <div class="mx-auto">
                 <img [src]="qr" width="250">
-
-
               </div>
-
-
             </div>
           </div>
         </div>

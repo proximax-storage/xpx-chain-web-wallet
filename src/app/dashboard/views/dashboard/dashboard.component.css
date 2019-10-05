@@ -31,3 +31,34 @@ tr td:last-child{
   /* width:1%; */
   white-space:nowrap;
 }
+
+
+.border-right-1px{
+  border-right: 1px solid;
+}
+
+.max-w100porcent{
+  max-width: auto;
+}
+
+
+
+
+@media (max-width: 830px) {
+  .border-right-1px{
+    border-right: 0px solid;
+  }
+
+  .max-w100porcent{
+    max-width: 100%;
+  }
+
+  .d-center{
+    display: flex !important;
+    justify-content: center !important;
+  }
+
+  .a-center{
+    text-align: center !important;
+  }
+}

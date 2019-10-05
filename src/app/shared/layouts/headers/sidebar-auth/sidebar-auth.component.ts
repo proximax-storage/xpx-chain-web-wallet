@@ -15,6 +15,8 @@ export class SidebarAuthComponent implements OnInit {
   itemsHeader: ItemsHeaderInterface;
   keyObject = Object.keys;
   version = '';
+  eventNumber: number = 0;
+
   constructor(
     private sharedService: SharedService
   ) {
@@ -33,18 +35,6 @@ export class SidebarAuthComponent implements OnInit {
       subMenu: {},
       selected: false
     }
-
-   /* const paramsSignIn: MenuInterface = {
-      type: 'default',
-      name: 'Sign In',
-      class: '',
-      icon: '',
-      rol: false,
-      link: `/${AppConfig.routes.auth}`,
-      view: true,
-      subMenu: {},
-      selected: false
-    }*/
 
     const createWallet: MenuInterface = {
       type: 'default',
@@ -106,7 +96,13 @@ export class SidebarAuthComponent implements OnInit {
     }
   }
 
+  /**
+   *
+   *
+   * @memberof SidebarAuthComponent
+   */
   showModal() {
+    this.eventNumber = this.eventNumber+1;
     this.modalAuth.show();
   }
 }
