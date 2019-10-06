@@ -268,6 +268,11 @@ html, body {
   padding: 1rem !important;
 }
 
+.p-1-5rem {
+  padding: 1.5rem !important;
+}
+
+
 .p-2rem {
   padding: 2rem !important;
 }
@@ -357,11 +362,15 @@ html, body {
 }
 
 .pb-03rem {
-  padding-bottom: 0.3rem;
+  padding-bottom: .3rem;
 }
 
 .pb-04rem {
-  padding-bottom: 0.4rem;
+  padding-bottom: .4rem;
+}
+
+.pb-07rem {
+  padding-bottom: .7rem;
 }
 
 .pb-2rem {
@@ -1899,7 +1908,7 @@ ul.stepper.horizontal .step-title {
 }
 
 .ng-dropdown-panel .ng-dropdown-panel-items{
-  max-height: 200px !important;
+  max-height: 170px !important;
 }
 
 .dropdown-menu{

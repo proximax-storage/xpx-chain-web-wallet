@@ -30,6 +30,7 @@ export class HomeComponent implements OnInit {
   @ViewChild('file', { static: true }) myInputVariable: ElementRef;
   objectKeys = Object.keys;
   servicesList: StructureService[] = [];
+  boxCreateWallet: StructureService[] = [];
   password: string = '';
   walletDecryp: any;
 
@@ -70,73 +71,28 @@ export class HomeComponent implements OnInit {
         'icon-supercontracts-full-color-80h-proximax-sirius-wallet.svg',
       )
     ];
-  }
 
-  /**
-   * Method to take the selected file
-   * @param {File} files file array
-   * @param {Event} $event get the html element
-   */
-  fileChange(files: File[], $event) {
-    if (files.length > 0) {
-      const myReader: FileReader = new FileReader();
-      myReader.onloadend = (e) => {
-        const file = CryptoJS.enc.Base64.parse(myReader.result);
-        try {
-          const dataDecryp = JSON.parse(file.toString(CryptoJS.enc.Utf8));
-          console.log('This a decryp-------->', dataDecryp);
-
-          const existWallet = this.walletService.getWalletStorage().find(
-            (element: any) => {
-              let walletName = dataDecryp.name;
-              walletName = (walletName.includes('_') === true) ? walletName.split('_').join(' ') : walletName
-              return element.name === walletName;
-            }
-          );
-          //Wallet does not exist
-          if (existWallet === undefined) {
-            let walletName = dataDecryp.name;
-            walletName = (walletName.includes(' ') === true) ? walletName.split(' ').join('_') : walletName
-            const accounts = [];
-            const contacs = [];
-            if (dataDecryp.accounts.length !== undefined) {
-              for (const element of dataDecryp.accounts) {
-                accounts.push(element);
-                // console.log('Esta es una pruebaaaa------------->', element);
-                contacs.push({ label: element.name, value: element.address.split('-').join(''), walletContact: true });
-              }
-              this.serviceModuleService.setBookAddress(contacs, walletName);
-            } else {
-              this.walletDecryp = dataDecryp;
-              this.password = '';
-              this.basicModal.show();
-              return;
-            }
-
-            const wallet = {
-              name: walletName,
-              accounts: accounts
-            }
-
-            console.log('this a wallet created----->', wallet);
-            console.log('this a wallet contacs----->', contacs);
-
-            let walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
-            walletsStorage.push(wallet);
-
-            localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorage));
-            this.sharedService.showSuccess('', 'Wallet imported correctly');
-            this.router.navigate([`/${AppConfig.routes.auth}`]);
-          } else {
-            this.sharedService.showWarning('', 'The wallet already exists');
-          }
-        } catch (error) {
-          this.sharedService.showError('', 'Invalid document format');
-        }
-      };
-
-      myReader.readAsText(files[0]);
-    }
+    this.boxCreateWallet = [
+      this.services.buildStructureService(
+        'New',
+        true,
+        '',
+        'icon-add-new-blue.svg',
+        `/${this.link.createWallet}`
+      ), this.services.buildStructureService(
+        'From a private key',
+        true,
+        '',
+        'icon-private-key-blue.svg',
+        `/${this.link.importWallet}`
+      ), this.services.buildStructureService(
+        'From a wallet backup',
+        true,
+        '',
+        'icon-wallet-import-blue.svg',
+        `openBackup`
+      )
+    ]
   }
 
   createStructNis() {
@@ -211,5 +167,72 @@ export class HomeComponent implements OnInit {
     this.myInputVariable.nativeElement.value = "";
     this.password = '';
     this.walletDecryp = null
+  }
+
+  /**
+   * Method to take the selected file
+   * @param {File} files file array
+   * @param {Event} $event get the html element
+   */
+  fileChange(files: File[], $event) {
+    if (files.length > 0) {
+      const myReader: FileReader = new FileReader();
+      myReader.onloadend = (e) => {
+        const file = CryptoJS.enc.Base64.parse(myReader.result);
+        try {
+          const dataDecryp = JSON.parse(file.toString(CryptoJS.enc.Utf8));
+          console.log('This a decryp-------->', dataDecryp);
+
+          const existWallet = this.walletService.getWalletStorage().find(
+            (element: any) => {
+              let walletName = dataDecryp.name;
+              walletName = (walletName.includes('_') === true) ? walletName.split('_').join(' ') : walletName
+              return element.name === walletName;
+            }
+          );
+          //Wallet does not exist
+          if (existWallet === undefined) {
+            let walletName = dataDecryp.name;
+            walletName = (walletName.includes(' ') === true) ? walletName.split(' ').join('_') : walletName
+            const accounts = [];
+            const contacs = [];
+            if (dataDecryp.accounts.length !== undefined) {
+              for (const element of dataDecryp.accounts) {
+                accounts.push(element);
+                // console.log('Esta es una pruebaaaa------------->', element);
+                contacs.push({ label: element.name, value: element.address.split('-').join(''), walletContact: true });
+              }
+              this.serviceModuleService.setBookAddress(contacs, walletName);
+            } else {
+              this.walletDecryp = dataDecryp;
+              this.password = '';
+              this.basicModal.show();
+              return;
+            }
+
+            const wallet = {
+              name: walletName,
+              accounts: accounts
+            }
+
+            console.log('this a wallet created----->', wallet);
+            console.log('this a wallet contacs----->', contacs);
+
+            let walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
+            walletsStorage.push(wallet);
+
+            localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorage));
+            this.sharedService.showSuccess('', 'Wallet imported correctly');
+            this.router.navigate([`/${AppConfig.routes.auth}`]);
+          } else {
+            this.sharedService.showWarning('', 'The wallet already exists');
+          }
+        } catch (error) {
+          this.sharedService.showError('', 'Invalid document format');
+        }
+      };
+
+      myReader.readAsText(files[0]);
+    }
   }
 }
