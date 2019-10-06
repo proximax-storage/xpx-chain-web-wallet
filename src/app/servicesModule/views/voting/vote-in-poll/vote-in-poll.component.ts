@@ -288,7 +288,7 @@ export class VoteInPollComponent implements OnInit {
         }
       },
       series: [{
-        name: 'Brands',
+        name: 'percentage',
         colorByPoint: true,
         data
       }], credits: {
@@ -540,6 +540,7 @@ export class VoteInPollComponent implements OnInit {
     // Get transaction status
     this.subscribe['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
       statusTransaction => {
+       
         this.transactionStatus = true;
         if (statusTransaction !== null && statusTransaction !== undefined && signedTransaction !== null) {
           const match = statusTransaction['hash'] === signedTransaction.hash;
@@ -558,6 +559,8 @@ export class VoteInPollComponent implements OnInit {
             this.walletService.countTimeVote();
             // signedTransaction = null;
           } else if (match) {
+            this.btnBlock = true;
+            this.blockSend = false;
             signedTransaction = null;
           }
         }

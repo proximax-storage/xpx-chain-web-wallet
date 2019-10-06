@@ -58,7 +58,17 @@
             <ng-template ng-option-tmp let-item="item" let-index="index">
                 <b>{{item.label}}</b> &nbsp;<b style="color:brown">{{item.info}}</b>
               </ng-template>
+              <ng-template ng-footer-tmp>
+                  <span class="fs-08rem">
+                    Cosignatorie with top balance {{amountFormatterSimple(feeCosignatory)}} XPX will be
+                    available to cover the Lockfund rate
+    
+                  </span>
+    
+                </ng-template>
+              
           </ng-select>
+          
         </div>
       </div>
     </ng-container>
