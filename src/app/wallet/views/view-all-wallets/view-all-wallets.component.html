@@ -19,12 +19,12 @@
         <ng-container *ngFor="let wallet of wallets">
           <div class="col-12 col-sm-6 fs-08rem separate-box">
             <div class="row box-list-account-gray pt-07rem pb-07rem">
-              <div class="col-12 col-sm-10 col-md-9 col-lg-10 text-center text-sm-left w-b-a">
+              <div class="col-9 col-lg-10 text-sm-left w-b-a">
                 <span class="fw-bold">{{wallet.name}}</span> <br>
                 Accounts: <span class="fw-bold">{{wallet.accounts.length}}</span>
               </div>
               <div
-                class="col-12 col-sm-2 col-md-3 col-lg-2 col-xl-2 d-flex align-items-center justify-content-center justify-content-sm-end">
+                class="col-3 col-lg-2 d-flex align-items-center justify-content-end">
                 <img src="assets/images/img/icon-trash-can-gray-16h-proximax-sirius-wallet.svg" class="cursor-p"
                   width="25" title=" Delete" [routerLink]="[routes.deleteWallet+wallet.name]">
               </div>
