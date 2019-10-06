@@ -48,7 +48,7 @@ export class DetailAccountComponent implements OnInit {
   titlePublickey = 'Public Key:';
   validatingForm: FormGroup;
   valueInitNis: boolean;
-  valueInitShow: boolean;
+  valueInitShow: boolean = false;
   showPrivateKey: boolean = false;
   saveNis1Account: any;
   imgBackground: string = '';
