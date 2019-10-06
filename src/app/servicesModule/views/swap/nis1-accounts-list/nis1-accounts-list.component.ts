@@ -15,7 +15,7 @@ export class Nis1AccountsListComponent implements OnInit {
 
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Mainnet Swap',
-    componentName: 'TRANSFER ASSETS'
+    componentName: 'Transfer Assets'
   };
   accountsNis1: any;
   goBack: string = `/${AppConfig.routes.service}`;

@@ -64,7 +64,7 @@ export class EditAccountMultisignComponent implements OnInit {
   };
   feeTransaction: number = 0;
   feeLockfund: number = 10000000;
-
+  totalFee: number = 0;
 
   constructor(
 
@@ -80,6 +80,7 @@ export class EditAccountMultisignComponent implements OnInit {
     private dataBridge: DataBridgeService,
     private router: Router,
   ) {
+    this.totalFee = this.feeTransaction + this.feeLockfund;
     this.showConsginerFirmList = false
     this.configurationForm = this.sharedService.configurationForm;
     this.accountValid = false;
@@ -385,9 +386,16 @@ export class EditAccountMultisignComponent implements OnInit {
       if (this.accountInfo.multisigInfo.hasCosigner(publicAccount)) {
         // this.consginerFirmName = '';
         this.consginerFirmAccount = this.walletService.currentWallet.accounts[index];
+
+        const accountFiltered: AccountsInfoInterface = this.walletService.filterAccountInfo(this.walletService.currentWallet.accounts[index].name);
+        const infValidate = this.transactionService.validateBalanceCosignatorie(accountFiltered, Number(this.totalFee)).infValidate;
+
+
         this.consginerFirmList.push({
           label: this.walletService.currentWallet.accounts[index].name,
-          value: this.walletService.currentWallet.accounts[index]
+          value: this.walletService.currentWallet.accounts[index],
+          disabled: infValidate[0].disabled,
+          info: infValidate[0].info
         })
 
         isCosigner = this.accountInfo.multisigInfo.hasCosigner(publicAccount)

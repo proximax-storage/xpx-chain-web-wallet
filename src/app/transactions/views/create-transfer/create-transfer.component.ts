@@ -152,6 +152,16 @@ export class CreateTransferComponent implements OnInit {
     }
   }
 
+    /**
+  *
+  *
+  * @param {string} amount
+  * @memberof CreateTransferComponent
+  */
+  amountFormatterSimple(amount): string {
+    return this.transactionService.amountFormatterSimple(amount)
+  }
+
   /**
    * Build with mosaics
    *

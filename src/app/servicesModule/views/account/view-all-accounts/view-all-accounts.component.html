@@ -75,7 +75,7 @@
                               mdbWavesEffect style="padding: 5px; box-shadow: 0px 0px transparent">
                             </button>
 
-                            <div class="dropdown-menu dropdown-menu-right">
+                            <div class="dropdown-menu" style="position: absolute; left: -60px">
                               <a class="dropdown-item fs-075rem" [routerLink]="[routes.viewDetails+account.name]">Edit</a>
                               <a class="dropdown-item fs-075rem" *ngIf="account.default !== true"
                                 (click)="changeAsPrimary(account.name)">Make Default</a>

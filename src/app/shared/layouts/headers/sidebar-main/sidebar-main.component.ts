@@ -9,6 +9,7 @@ import { WalletService } from '../../../../wallet/services/wallet.service';
 import { TransactionsService } from '../../../../transactions/services/transactions.service';
 import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
 import { Subscription, timer } from 'rxjs';
+import { NodeService } from 'src/app/servicesModule/services/node.service';
 
 @Component({
   selector: 'app-sidebar-main',
@@ -46,6 +47,7 @@ export class SidebarMainComponent implements OnInit {
   walletName = '';
   reset = 0;
   netType;
+  nodeSelected:string;
 
 
   constructor(
@@ -55,7 +57,8 @@ export class SidebarMainComponent implements OnInit {
     private authService: AuthService,
     private dashboardService: DashboardService,
     private transactionService: TransactionsService,
-    private walletService: WalletService
+    private walletService: WalletService,
+     private nodeService : NodeService
   ) {
     this.version = environment.version
     this.netType = environment.typeNetwork.value;
@@ -67,6 +70,7 @@ export class SidebarMainComponent implements OnInit {
     this.buildItemsHeader();
     this.getAccountInfo();
     this.getBlocks();
+    this.getNodeSeletcd();
     this.readRoute();
     this.validate();
     this.subscription.push(this.transactionService.getAggregateBondedTransactions$().subscribe(
@@ -206,6 +210,19 @@ export class SidebarMainComponent implements OnInit {
       }
     ));
   }
+
+  /**
+   *
+   *
+   * @memberof SidebarMainComponent
+   */
+  getNodeSeletcd() {
+    this.subscription.push( this.nodeService.nodeObsSelected.subscribe(node =>{
+      this.nodeSelected = `${environment.protocol}://${node}`;
+    }))
+  }
+
+
 
   /**
    *

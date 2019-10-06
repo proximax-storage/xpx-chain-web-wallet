@@ -1,7 +1,7 @@
 <div class="container mt-3rem mb-2rem animated fadeIn">
   <div class="row">
     <div class="col-12 d-flex justify-content-center">
-      <span class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">{{title}}</span>
+      <span class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">Make a Transfer</span>
     </div>
     <div class="col-11 mx-auto">
       <hr class="mt-05rem mb-06rem">
@@ -47,7 +47,7 @@
       </div>
     </ng-container>
 
-    <!-- COSIGNATORIES --> 
+    <!-- COSIGNATORIES -->
     <ng-container *ngIf="listCosignatorie.length > 0">
       <div class="row">
         <div class="col-11 col-md-10 col-lg-8 mx-auto">
@@ -58,7 +58,17 @@
             <ng-template ng-option-tmp let-item="item" let-index="index">
                 <b>{{item.label}}</b> &nbsp;<b style="color:brown">{{item.info}}</b>
               </ng-template>
+              <ng-template ng-footer-tmp>
+                  <span class="fs-08rem">
+                    Cosignatorie with top balance {{amountFormatterSimple(feeCosignatory)}} XPX will be
+                    available to cover the Lockfund rate
+
+                  </span>
+
+                </ng-template>
+
           </ng-select>
+
         </div>
       </div>
     </ng-container>
@@ -85,7 +95,7 @@
                 src="assets/images/img/icon-address-green-book-16h-proximax-sirius-wallet.svg" alt="" width="43"
                 height="43">
               <input mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
-                class="form-control form-control-sm input-border" style="border: 2px solid #2ba1b9;"
+                class="form-control form-control-sm input-border" style="border: 2px solid #306EB5;"
                 placeholder="Recipient" formControlName="accountRecipient" id="recipient-invalid-{{invalidRecipient}}"
                 [maxlength]="configurationForm.address.maxLength" [minlength]="configurationForm.address.minLength">
               <mdb-error

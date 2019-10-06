@@ -13,7 +13,7 @@
           <ng-container *ngIf="itemsHeader[key]['type'] === 'default' && itemsHeader[key]['show']">
             <li class="nav-item color-item-menu active">
               <a [routerLink]="[itemsHeader[key]['link']]" class="nav-link waves-light" mdbWavesEffect>
-                <span class="item-menu fw-600">{{itemsHeader[key]['name']}}</span>
+                <span class="item-menu">{{itemsHeader[key]['name']}}</span>
               </a>
             </li>
           </ng-container>
@@ -22,7 +22,7 @@
             <li class="nav-item dropdown" dropdown>
               <a dropdownToggle mdbWavesEffect type="button" class="nav-link dropdown-toggle waves-light"
                 mdbWavesEffect>
-                <span class="item-menu fw-600">{{itemsHeader[key]['name']}}</span>
+                <span class="item-menu">{{itemsHeader[key]['name']}}</span>
                 <span class="caret"></span>
               </a>
 
@@ -44,7 +44,7 @@
 
       <li class="nav-item color-item-menu active" (click)="showModal()">
         <a class="nav-link waves-light" mdbWavesEffect>
-          <span class="item-menu fw-600">Sign In</span>
+          <span class="item-menu">Sign In</span>
         </a>
       </li>
     </ul>
@@ -67,11 +67,11 @@
 
         <div class="modal-body">
           <div class="row">
-            <div class="col-12 col-sm-6 col-md-8">
+            <div class="col-12 col-md-10 mx-auto">
               <app-auth [eventNumber]="eventNumber"></app-auth>
             </div>
 
-            <div class="col-12 col-sm-6 col-md-4 d-flex align-items-center mx-auto">
+            <!-- <div class="col-12 col-sm-6 col-md-4 d-flex align-items-center mx-auto">
               <div class="row">
                 <div class="col-11 background-header-grey pt-1rem pb-1rem mx-auto">
                   <div class="row">
@@ -91,7 +91,7 @@
                   </div>
                 </div>
               </div>
-            </div>
+            </div> -->
           </div>
         </div>
       </div>

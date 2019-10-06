@@ -1,17 +1,13 @@
-.isPrimary{
-    color: white !important;
-    background-color: #2aa1b9 !important;
-  }
-  
+
+
   .msgSuccess {
     font-size: .8rem;
     font-weight: 700;
-    color: #2ba1b9;
+    color: #306EB5;
   }
-  
+
   .iconInactive{
     -webkit-filter: grayscale(100%) opacity(50%);
       filter: grayscale(100%) opacity(50%);
       color: gray;
   }
-  
