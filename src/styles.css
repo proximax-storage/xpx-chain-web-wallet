@@ -810,7 +810,7 @@ html, body {
 }
 
 .color-main-wallet {
-  color: #427dbe;
+  color: #306EB5;
 }
 
 .color-item-menu {
@@ -904,7 +904,7 @@ html, body {
 }
 
 .btn-confirmed {
-  background: #3697dc;
+  background: #306EB5;
 }
 
 .btn-unconfirmed {
@@ -1812,4 +1812,8 @@ ul.stepper.horizontal .step-title {
 
 .dropdown .dropdown-menu, .dropleft .dropdown-menu, .dropright .dropdown-menu, .dropup-material .dropdown-menu{
   padding: .2rem !important;
+}
+
+.ngx-pagination .current{
+  background: #306EB5 !important;
 }
