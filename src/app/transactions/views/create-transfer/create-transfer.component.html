@@ -328,10 +328,10 @@
 
       <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
         <button
-          [disabled]="blockSendButton || formTransfer.invalid || errorOtherMosaics || disabledAllField || insufficientBalance"
+          [disabled]="(formTransfer.invalid || errorOtherMosaics || disabledAllField || insufficientBalance) && !reloadBtn"
           mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
           <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
-            *ngIf="blockButton"></span>
+            *ngIf="reloadBtn"></span>
           <span class="fs-1-2em color-white">SEND</span>
         </button>
       </div>

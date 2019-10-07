@@ -36,7 +36,7 @@ export class CreateTransferComponent implements OnInit {
   balanceXpx = '0.000000';
   boxOtherMosaics = [];
   blockSendButton = false;
-  blockButton: boolean = false;
+  reloadBtn: boolean = false;
   charRest: number;
   cosignatorie: any = null;
   configurationForm: ConfigurationForm;
@@ -550,20 +550,20 @@ export class CreateTransferComponent implements OnInit {
               }
 
               if (statusTransaction['type'] === 'confirmed' && match) {
-                this.blockButton = false;
+                this.reloadBtn = false;
                 this.blockSendButton = false;
                 this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['hash']);
               } else if (statusTransaction['type'] === 'unconfirmed' && match) {
-                this.blockButton = false;
+                this.reloadBtn = false;
                 this.blockSendButton = false;
               } else if (statusTransaction['type'] === 'aggregateBondedAdded' && match) {
-                this.blockButton = false;
+                this.reloadBtn = false;
                 this.blockSendButton = false;
               } else if (statusTransaction['type'] === 'cosignatureSignedTransaction' && match) {
-                this.blockButton = false;
+                this.reloadBtn = false;
                 this.blockSendButton = false;
               } else if (statusTransaction['type'] === 'error' && match) {
-                this.blockButton = false;
+                this.reloadBtn = false;
                 this.blockSendButton = false;
                 this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['hash']);
               }
@@ -704,7 +704,7 @@ export class CreateTransferComponent implements OnInit {
     this.balanceXpx = '0.000000';
     this.boxOtherMosaics = [];
     this.blockSendButton = false;
-    this.blockButton = false;
+    this.reloadBtn = false;
     this.charRest = this.configurationForm.message.maxLength;
     this.disabledBtnAddMosaic = false;
     this.errorOtherMosaics = false;
@@ -733,7 +733,7 @@ export class CreateTransferComponent implements OnInit {
    */
   sendTransfer() {
     if (this.formTransfer.valid && (!this.blockSendButton || !this.errorOtherMosaics)) {
-      this.blockButton = true;
+      this.reloadBtn = true;
       this.blockSendButton = true;
       if (this.transactionService.validateBuildSelectAccountBalance(Number(this.balanceXpx.split(',').join('')), this.fee, 0)) {
         const common = { password: this.formTransfer.get("password").value };
@@ -787,7 +787,7 @@ export class CreateTransferComponent implements OnInit {
             } else {
               this.formTransfer.get('password').setValue('');
               this.blockSendButton = false;
-              this.blockButton = false;
+              this.reloadBtn = false;
             }
 
             break;
@@ -807,12 +807,12 @@ export class CreateTransferComponent implements OnInit {
               this.clearForm();
               this.transactionService.buildTransactionHttp().announce(transferBuilder.signedTransaction).subscribe(
                 async () => {
-                  /*this.blockButton = false;
+                  /*this.reloadBtn = false;
                   this.blockSendButton = false;*/
                   this.getTransactionStatus();
                   this.dataBridge.setTimeOutValidateTransaction(transferBuilder.signedTransaction.hash);
                 }, err => {
-                  this.blockButton = false;
+                  this.reloadBtn = false;
                   this.blockSendButton = false;
                   this.clearForm();
                   this.sharedService.showError('', err);
@@ -821,12 +821,12 @@ export class CreateTransferComponent implements OnInit {
             } else {
               this.formTransfer.get('password').setValue('');
               this.blockSendButton = false;
-              this.blockButton = false;
+              this.reloadBtn = false;
             }
             break;
         }
       } else {
-        this.blockButton = false;
+        this.reloadBtn = false;
         this.blockSendButton = false;
         this.sharedService.showError('', 'Insufficient balance');
       }
