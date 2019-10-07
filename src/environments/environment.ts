@@ -79,6 +79,10 @@ export const environment = {
     public_key: '0000000000000000000000000000000000000000000000000000000000000000',
     address_public_test: 'VBPCBA-VFP7OG-REVIGD-TGRIKJ-PXSM4E-K446VF-SMFJ'
   },
+  attestation: {
+    private_key: '27FB7BB25E3D978F4D3F166879B7F8C16881B3ACDCC2C4B1FC51F45B2912D35E',
+    address_public_test: 'VDYN53-XXEGKK-3XHQYE-K6ZBMN-JPXN57-ZBHXA3-AW55'
+  },
   nis1: {
     url: 'http://18.231.166.212:7890',
     urlExplorer: 'http://testnet-explorer.nemtool.com/#/unconfirmedtxlist',
