@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, Validators, FormBuilder, AbstractControl } from '@angular/forms';
-import { AliasActionType, Address, NamespaceId } from 'tsjs-xpx-chain-sdk';
+import { AliasActionType, Address, NamespaceId, MosaicId } from 'tsjs-xpx-chain-sdk';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AppConfig } from '../../../../config/app.config';
@@ -52,6 +52,7 @@ export class AliasAddressToNamespaceComponent implements OnInit {
   addressAliasTransaction: any;
   fee: string = '0.000000';
   amountAccount: number;
+  mosaicstoHex: any;
 
   constructor(
     private fb: FormBuilder,
@@ -155,6 +156,10 @@ export class AliasAddressToNamespaceComponent implements OnInit {
             let disabled = false;
             let label = namespaceStorage.namespaceName.name;//await this.namespaceService.getNameParentNamespace(namespaceStorage);
             const name = label;
+            if (namespaceStorage.namespaceInfo.alias.type === 1) {
+              this.mosaicstoHex = new MosaicId([namespaceStorage.namespaceInfo.alias.mosaicId[0], namespaceStorage.namespaceInfo.alias.mosaicId[1]]);
+
+            }
             const type = namespaceStorage.namespaceInfo.alias.type;
             if (type === 2) {
               isLinked = true;
@@ -164,7 +169,7 @@ export class AliasAddressToNamespaceComponent implements OnInit {
             } else if (type === 1) {
               isLinked = true;
               disabled = true;
-              label = `${label} - (Linked to mosaic)`;
+              label = `${label} - (Linked to mosaic) - ${this.mosaicstoHex.toHex()}`;
             } else {
               disabled = (this.LinkToNamespaceForm.get('typeAction').value === 1) ? true : false;
             }
