@@ -21,8 +21,7 @@
             <ng-container *ngFor="let account of accounts; let i=index">
               <span [ngClass]="[account.active ? 'nav-link active isActive' : 'nav-link']" class="cursor-p" (click)="changeSender(account.value)">
                 {{account.value.name}}
-                <i *ngIf="account.value.default" class="fa fa-star fs-1rem ml-10px cursor-p" aria-hidden="true"
-                  title="Default account"></i>
+                <i *ngIf="account.value.default" class="fa fa-star fs-1rem ml-10px cursor-p" aria-hidden="true" title="Default account"></i>
 
                 <i *ngIf=" account.value.isMultisign &&
                         account.value.isMultisign.cosignatories &&
@@ -52,20 +51,21 @@
       <div class="row">
         <div class="col-11 col-md-10 col-lg-8 mx-auto">
 
-            <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [searchable]="false" [clearable]="false"
+          <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [searchable]="false" [clearable]="false"
             [validateError]="true" class="selectWrapper" [items]="listCosignatorie" formControlName="cosignatorie"
             bindLabel="label" bindValue="value" placeholder="Cosignatories" (change)="selectCosignatorie($event)">
             <ng-template ng-option-tmp let-item="item" let-index="index">
-                <b>{{item.label}}</b> &nbsp;<b style="color:brown">{{item.info}}</b>
-              </ng-template>
-              <ng-template ng-footer-tmp>
-                  <span class="fs-08rem">
-                    Cosignatorie with top balance {{amountFormatterSimple(feeCosignatory)}} XPX will be
-                    available to cover the Lockfund rate
+              <b>{{item.label}}</b> &nbsp;<b style="color:brown">{{item.info}}</b>
+            </ng-template>
+            <ng-template ng-footer-tmp>
+              <span class="fs-08rem">
 
-                  </span>
+                Cosignatory has sufficient balance ({{amountFormatterSimple(feeCosignatory)}} XPX) to cover lockfund
+                fee
 
-                </ng-template>
+              </span>
+
+            </ng-template>
 
           </ng-select>
 
@@ -77,9 +77,8 @@
     <ng-container *ngIf="showContacts && listContacts.length > 0">
       <div class="row">
         <div class="col-11 col-md-10 col-lg-8 mx-auto">
-          <ng-select mdbInputDirective mdbValidate formControlName="contact" class="selectWrapper"
-            [items]="listContacts" bindLabel="label" bindValue="value" placeholder="Contact"
-            (change)="selectContact($event)">
+          <ng-select mdbInputDirective mdbValidate formControlName="contact" class="selectWrapper" [items]="listContacts"
+            bindLabel="label" bindValue="value" placeholder="Contact" (change)="selectContact($event)">
           </ng-select>
         </div>
       </div>
@@ -91,15 +90,12 @@
         <div class="row">
           <div class="col-8 col-sm-9 col-md-10">
             <div class="md-form form-sm mt-1rem mb-0rem">
-              <img class="form-control-feedback"
-                src="assets/images/img/icon-address-green-book-16h-proximax-sirius-wallet.svg" alt="" width="43"
-                height="43">
-              <input mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
-                class="form-control form-control-sm input-border" style="border: 2px solid #306EB5;"
-                placeholder="Recipient" formControlName="accountRecipient" id="recipient-invalid-{{invalidRecipient}}"
+              <img class="form-control-feedback" src="assets/images/img/icon-address-green-book-16h-proximax-sirius-wallet.svg"
+                alt="" width="43" height="43">
+              <input mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text" class="form-control form-control-sm input-border"
+                style="border: 2px solid #306EB5;" placeholder="Recipient" formControlName="accountRecipient" id="recipient-invalid-{{invalidRecipient}}"
                 [maxlength]="configurationForm.address.maxLength" [minlength]="configurationForm.address.minLength">
-              <mdb-error
-                *ngIf="validateInput('accountRecipient').invalid && (validateInput('accountRecipient').dirty || validateInput('accountRecipient').touched)">
+              <mdb-error *ngIf="validateInput('accountRecipient').invalid && (validateInput('accountRecipient').dirty || validateInput('accountRecipient').touched)">
                 <span class="fs-08rem fw-600 color-error-message">Invalid Recipient</span>
               </mdb-error>
 
@@ -112,8 +108,7 @@
           <!-- Show Contacts -->
           <ng-container>
             <div class="col-4 col-sm-3 col-md-2 d-flex justify-content-center align-items-center pt-10px">
-              <div class="background-gray-icons p-12px bord-rad-25px cursor-p"
-                (click)="showContacts = (listContacts.length > 0) ? !showContacts : showContacts"
+              <div class="background-gray-icons p-12px bord-rad-25px cursor-p" (click)="showContacts = (listContacts.length > 0) ? !showContacts : showContacts"
                 [title]="(!showContacts) ? 'Show contacts': 'Hide contacts'">
                 <img class="w-30px" [src]="(!showContacts && listContacts.length === 0) ?
                 'assets/images/img/icon-address-book-gray-28h-proximax-sirius-wallet.svg' :
@@ -158,16 +153,15 @@
           <!-- Amount Input -->
           <div class="col-12 mx-auto">
             <div class="md-form form-sm mt-1rem mb-0rem">
-              <img class="form-control-feedback"
-                src="assets/images/img/icon-amount-green-16h-proximax-sirius-wallet.svg" alt="">
+              <img class="form-control-feedback" src="assets/images/img/icon-amount-green-16h-proximax-sirius-wallet.svg"
+                alt="">
               <input pattern="^[+]?([0-9]*[.])?[0-9]+$" currencyMask [options]="optionsXPX" mdbInputDirective
-                mdbValidate [validateSuccess]="true" [maxlength]="configurationForm.amount.maxLength"
-                [validateError]="true" type="text" class="form-control form-control-sm input-border input-amount"
-                placeholder="Enter amount" formControlName="amountXpx">
+                mdbValidate [validateSuccess]="true" [maxlength]="configurationForm.amount.maxLength" [validateError]="true"
+                type="text" class="form-control form-control-sm input-border input-amount" placeholder="Enter amount"
+                formControlName="amountXpx">
               <span class="label-i fw-600 pl-2rem">SEND</span>
 
-              <mdb-error
-                *ngIf="validateInput('amountXpx').invalid && (validateInput('amountXpx').dirty || validateInput('amountXpx').touched)">
+              <mdb-error *ngIf="validateInput('amountXpx').invalid && (validateInput('amountXpx').dirty || validateInput('amountXpx').touched)">
                 <span class="fs-08rem fw-600 color-error-message">Invalid amount</span>
               </mdb-error>
 
@@ -220,14 +214,12 @@
                 <!-- Amount Input -->
                 <div class="col-12 mx-auto">
                   <div class="md-form form-sm mt-1rem mb-0rem">
-                    <img class="form-control-feedback"
-                      src="assets/images/img/icon-amount-green-16h-proximax-sirius-wallet.svg" alt="">
-                    <input currencyMask [options]="boxOtherMosaics[i].config" mdbInputDirective mdbValidate
-                      [maxlength]="configurationForm.amount.maxLength" type="text"
-                      class="form-control form-control-sm input-border input-amount"
-                      [(ngModel)]="boxOtherMosaics[i].amount" [ngModelOptions]="{standalone: true}"
-                      (ngModelChange)="amountOtherMosaicChanged($event, otherMosaic.id, i)" placeholder="Enter quantity"
-                      [disabled]="disabledAllField">
+                    <img class="form-control-feedback" src="assets/images/img/icon-amount-green-16h-proximax-sirius-wallet.svg"
+                      alt="">
+                    <input currencyMask [options]="boxOtherMosaics[i].config" mdbInputDirective mdbValidate [maxlength]="configurationForm.amount.maxLength"
+                      type="text" class="form-control form-control-sm input-border input-amount" [(ngModel)]="boxOtherMosaics[i].amount"
+                      [ngModelOptions]="{standalone: true}" (ngModelChange)="amountOtherMosaicChanged($event, otherMosaic.id, i)"
+                      placeholder="Enter quantity" [disabled]="disabledAllField">
                     <span class="label-i fw-600 pl-2rem">SEND</span>
 
                     <!-- Message Error Insufficient balance-->
@@ -251,12 +243,10 @@
     <ng-container>
       <div class="row mt-1rem">
         <div class="col-12 d-flex justify-content-center">
-          <button
-            [disabled]="currentBlock === 0 || disabledBtnAddMosaic || selectOtherMosaics.length === 0 || disabledAllField"
+          <button [disabled]="currentBlock === 0 || disabledBtnAddMosaic || selectOtherMosaics.length === 0 || disabledAllField"
             mdbBtn type="button" rounded="true" mdbWavesEffect class="background-btn-inverse pl-2rem pr-2rem" size="md"
             (click)="pushedOtherMosaics()">
-            <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
-              *ngIf="currentBlock === 0 && !disabledBtnAddMosaic"></span>
+            <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true" *ngIf="currentBlock === 0 && !disabledBtnAddMosaic"></span>
             <span class="fs-1-2em text-cl-m fw-700">(+) Add Mosaics </span>
           </button>
         </div>
@@ -284,12 +274,10 @@
         <div class="md-form form-sm mt-1rem mb-0rem">
           <img class="form-control-feedback" src="assets/images/img/icon-messenger-green-16h-proximax-sirius-wallet.svg"
             alt="" style="padding: 30px 10px !important">
-          <textarea mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
-            id="message" class="md-textarea form-control" mdbInput placeholder="Message" formControlName="message"
-            [maxlength]="configurationForm.message.maxLength"></textarea>
+          <textarea mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text" id="message"
+            class="md-textarea form-control" mdbInput placeholder="Message" formControlName="message" [maxlength]="configurationForm.message.maxLength"></textarea>
           <span class="fs-08rem text-cl-m d-flex justify-content-end">{{ charRest }}</span>
-          <mdb-error
-            *ngIf="validateInput('message').invalid && (validateInput('message').dirty || validateInput('message').touched)">
+          <mdb-error *ngIf="validateInput('message').invalid && (validateInput('message').dirty || validateInput('message').touched)">
             <span>Invalid Recipient</span>
           </mdb-error>
         </div>
@@ -302,14 +290,12 @@
         <div class="md-form form-sm">
           <img class="form-control-feedback" src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg"
             alt="">
-          <input [maxlength]="configurationForm.passwordWallet.maxLength"
-            [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" required
-            mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password" id="password"
-            class="form-control form-control-sm input-border" placeholder="Enter wallet password">
+          <input [maxlength]="configurationForm.passwordWallet.maxLength" [minlength]="configurationForm.passwordWallet.minLength"
+            formControlName="password" required mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
+            type="password" id="password" class="form-control form-control-sm input-border" placeholder="Enter wallet password">
 
           <!-- VALIDATION -->
-          <mdb-error
-            *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
+          <mdb-error *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
             <span>Password required</span>
           </mdb-error>
         </div>
@@ -320,18 +306,16 @@
     <!-- BUTTONS -->
     <div class="row">
       <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-        <button [disabled]="disabledAllField" mdbBtn type="button" rounded="true" mdbWavesEffect
-          class="f-w-600 background-btn pl-2rem pr-2rem" size="md" (click)="clearForm()">
+        <button [disabled]="disabledAllField" mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+          size="md" (click)="clearForm()">
           <span class="fs-1-2em color-white">Clear</span>
         </button>
       </div>
 
       <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-        <button
-          [disabled]="(formTransfer.invalid || errorOtherMosaics || disabledAllField || insufficientBalance) && !reloadBtn"
+        <button [disabled]="(formTransfer.invalid || errorOtherMosaics || disabledAllField || insufficientBalance) && !reloadBtn"
           mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
-          <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
-            *ngIf="reloadBtn"></span>
+          <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true" *ngIf="reloadBtn"></span>
           <span class="fs-1-2em color-white">SEND</span>
         </button>
       </div>
@@ -382,9 +366,9 @@
             <div class="row">
               <div class="col-11 col-sm-10 col-lg-8 mx-auto">
                 <div class="md-form form-sm">
-                  <input required mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
-                    type="text" id="user" [(ngModel)]="formContact.name" [ngModelOptions]="{standalone: true}"
-                    class="form-control form-control-sm input-border" placeholder="Name">
+                  <input required mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
+                    id="user" [(ngModel)]="formContact.name" [ngModelOptions]="{standalone: true}" class="form-control form-control-sm input-border"
+                    placeholder="Name">
                 </div>
               </div>
             </div>
@@ -401,8 +385,8 @@
 
             <div class="row mx-auto">
               <div class="col-12 d-flex justify-content-center">
-                <button mdbBtn type="button" [disabled]="formContact.name === ''" rounded="true" mdbWavesEffect
-                  class="f-w-600 background-btn pl-2rem pr-2rem" size="md" (click)="saveContactNew()">
+                <button mdbBtn type="button" [disabled]="formContact.name === ''" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+                  size="md" (click)="saveContactNew()">
                   <span class="fs-1-2em color-white">SAVE</span>
                 </button>
               </div>
