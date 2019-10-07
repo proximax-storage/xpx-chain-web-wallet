@@ -1225,6 +1225,7 @@ button.md-toast-close-button {
   font-size: .9rem;
   color: #505050 !important;
   font-weight: 600;
+  text-transform: capitalize !important;
 }
 
 .md-toast-success:before {

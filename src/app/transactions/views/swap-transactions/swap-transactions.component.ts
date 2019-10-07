@@ -14,7 +14,7 @@ import { environment } from 'src/environments/environment';
 export class SwapTransactionsComponent implements OnInit {
 
   moduleName: 'Transactions';
-  componentName: 'SWAP';
+  componentName: 'Swap';
   goBack = `/${AppConfig.routes.dashboard}`;
   filter: string = '';
   transactions:any = [];

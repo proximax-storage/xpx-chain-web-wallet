@@ -20,8 +20,7 @@
                     width="20px" alt="logo"></span>
               </div>
               <div class="col-12 col-md-2 text-center" *ngIf="changeAccount">
-                <button mdbBtn mdbWavesEffect (click)="goToList()"
-                  class="color-white f-w-600 bord-rad-25px font-small background-btn p-05rem">CHANGE</button>
+                <button mdbBtn mdbWavesEffect (click)="goToList()" class="color-white f-w-600 bord-rad-25px font-small background-btn p-05rem">Change</button>
               </div>
             </div>
           </div>
@@ -60,7 +59,7 @@
                 mdbValidate [validateSuccess]="true" [maxlength]="maxAmount"  id="amount{{errorAmount}}"
                 [validateError]="true" type="text" class="form-control form-control-sm input-border input-amount"
                 placeholder="Enter amount" formControlName="amountXpx">
-              <span class="label-i fw-600 text-cl-m cursor-p pl-2rem" (click)="selectMaxAmount()">USE MAX</span>
+              <span class="label-i fw-600 text-cl-m cursor-p pl-2rem" (click)="selectMaxAmount()">Use Max</span>
             </div>
             <mdb-error *ngIf="insufficientBalance">
               <div class="errorText">
@@ -110,9 +109,8 @@
         <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
           <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
             size="md" (click)="spinnerVisibility = true" [disabled]="blockButton || !formTransfer.valid">
-            <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
-              *ngIf="spinnerVisibility"></span>
-            <span class="fs-1-2em color-white">Yes,Swap</span>
+            <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true" *ngIf="spinnerVisibility"></span>
+            <span class="fs-1-2em color-white">Yes, Swap</span>
           </button>
         </div>
       </div>

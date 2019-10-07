@@ -196,6 +196,8 @@ export class TransferAssetsComponent implements OnInit {
               this.blockButton = true;
               this.errorAmount = '-invalid';
               this.insufficientBalance = true;
+            } else if (next === 0) {
+              this.blockButton = true;
             } else {
               this.blockButton = false;
               this.insufficientBalance = false;
