@@ -19,7 +19,8 @@
         <div class="col-11 col-md-10 col-lg-8 mx-auto">
           <div class="h-account">
             <ng-container *ngFor="let account of accounts; let i=index">
-              <span [ngClass]="[account.active ? 'nav-link active isActive' : 'nav-link']" class="cursor-p" (click)="changeSender(account.value)">
+              <span [ngClass]="[account.active ? 'nav-link active isActive' : 'nav-link']" class="cursor-p"
+                (click)="changeSender(account.value)">
                 {{account.value.name}}
                 <i *ngIf="account.value.default" class="fa fa-star fs-1rem ml-10px cursor-p" aria-hidden="true"
                   title="Default account"></i>
@@ -51,24 +52,17 @@
     <ng-container *ngIf="listCosignatorie.length > 0">
       <div class="row">
         <div class="col-11 col-md-10 col-lg-8 mx-auto">
-
-            <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [searchable]="false" [clearable]="false"
+          <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [searchable]="false" [clearable]="false"
             [validateError]="true" class="selectWrapper" [items]="listCosignatorie" formControlName="cosignatorie"
             bindLabel="label" bindValue="value" placeholder="Cosignatories" (change)="selectCosignatorie($event)">
             <ng-template ng-option-tmp let-item="item" let-index="index">
-                <b>{{item.label}}</b> &nbsp;<b style="color:brown">{{item.info}}</b>
-              </ng-template>
-              <ng-template ng-footer-tmp>
-                  <span class="fs-08rem">
-                    Cosignatorie with top balance {{amountFormatterSimple(feeCosignatory)}} XPX will be
-                    available to cover the Lockfund rate
-
-                  </span>
-
-                </ng-template>
-
+              <b>{{item.label}}</b>
+              <b class="color-error-red"> - {{item.info}}</b>
+            </ng-template>
+            <ng-template ng-footer-tmp>
+              <span class="fs-08rem color-error-red fw-600">{{msgLockfungCosignatorie}}</span>
+            </ng-template>
           </ng-select>
-
         </div>
       </div>
     </ng-container>

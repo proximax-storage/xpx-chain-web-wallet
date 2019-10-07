@@ -1168,6 +1168,11 @@ input.form-control.validate-success.ng-valid.ng-dirty, input.form-control.valida
   color: #e06e38 !important;
 }
 
+
+.color-error-red{
+  color: brown;
+}
+
 .color-error-message {
   color: #e06e38 !important;
 }

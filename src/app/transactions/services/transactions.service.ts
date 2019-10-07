@@ -899,15 +899,13 @@ export class TransactionsService {
       )
     )
       return {
-        infValidate: [{ disabled: true, info: "insufficient balance" }]
+        infValidate: [{ disabled: true, info: "Insufficient balance" }]
       };
     // Validate balance account
-    const balanceAccount = accountInfo.accountInfo.mosaics
-      .find(next => next.id.toHex() === environment.mosaicXpxInfo.id)
-      .amount.compact();
+    const balanceAccount = accountInfo.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id).amount.compact();
     if (!(balanceAccount >= feeTotal))
       return {
-        infValidate: [{ disabled: true, info: "insufficient balance" }]
+        infValidate: [{ disabled: true, info: "Insufficient balance" }]
       };
 
     return { infValidate: [{ disabled: false, info: "" }] };
