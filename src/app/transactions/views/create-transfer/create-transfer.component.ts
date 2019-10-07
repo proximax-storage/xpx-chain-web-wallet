@@ -104,7 +104,6 @@ export class CreateTransferComponent implements OnInit {
     this.subscribeValue();
     this.booksAddress();
     this.getAccountInfo();
-    //this.getTransactionStatus();
     this.transactionHttp = new TransactionHttp(environment.protocol + "://" + `${this.nodeService.getNodeSelected()}`); //change
 
     // Mosaic by default
@@ -368,6 +367,23 @@ export class CreateTransferComponent implements OnInit {
     }
   }
 
+  /**
+   *
+   *
+   * @param {number} message
+   * @memberof CreateTransferComponent
+   */
+  calculateFee(message: number) {
+    this.mosaicsToSend = this.validateMosaicsToSend();
+    const x = TransferTransaction.calculateSize(PlainMessage.create(this.formTransfer.get("message").value).size(), this.mosaicsToSend.length);
+    const b = FeeCalculationStrategy.calculateFee(x);
+    if (message > 0) {
+      this.fee = this.transactionService.amountFormatterSimple(b.compact())
+    } else if (message === 0 && this.mosaicsToSend.length === 0) {
+      this.fee = '0.037250'
+    }
+  }
+
 
   /**
    *
@@ -534,11 +550,21 @@ export class CreateTransferComponent implements OnInit {
               }
 
               if (statusTransaction['type'] === 'confirmed' && match) {
+                this.blockButton = false;
+                this.blockSendButton = false;
                 this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['hash']);
               } else if (statusTransaction['type'] === 'unconfirmed' && match) {
+                this.blockButton = false;
+                this.blockSendButton = false;
               } else if (statusTransaction['type'] === 'aggregateBondedAdded' && match) {
+                this.blockButton = false;
+                this.blockSendButton = false;
               } else if (statusTransaction['type'] === 'cosignatureSignedTransaction' && match) {
+                this.blockButton = false;
+                this.blockSendButton = false;
               } else if (statusTransaction['type'] === 'error' && match) {
+                this.blockButton = false;
+                this.blockSendButton = false;
                 this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['hash']);
               }
             }
@@ -703,25 +729,6 @@ export class CreateTransferComponent implements OnInit {
   /**
    *
    *
-   * @param {string} hash
-   * @memberof CreateTransferComponent
-   */
-  /* setTimeOutValidate(hash: string) {
-     setTimeout(() => {
-       let exist = false;
-       for (let element of this.transactionReady) {
-         if (hash === element.hash) {
-           exist = true;
-         }
-       }
-
-       (exist) ? '' : this.sharedService.showWarning('', 'An error has occurred');
-     }, 5000);
-   }*/
-
-  /**
-   *
-   *
    * @memberof CreateTransferComponent
    */
   sendTransfer() {
@@ -747,22 +754,17 @@ export class CreateTransferComponent implements OnInit {
                 mosaic: mosaicsToSend
               };
 
-              // Create account from private key
               const account = Account.createFromPrivateKey(params.common.privateKey, params.network);
-              // Build transfer transaction
-              // const transferBuilder = this.transactionService.buildTransferTransaction(params);
-              //-----------------------------------------------------------------------
               const recipientAddress = this.proximaxProvider.createFromRawAddress(params.recipient);
               const mosaics = params.mosaic;
               const allMosaics = [];
-              mosaics.forEach(element => {
+              mosaics.forEach((element: any) => {
                 allMosaics.push(new Mosaic(
                   new MosaicId(element.id),
                   UInt64.fromUint(Number(element.amount))
                 )
                 );
               });
-              // console.log("mosaicos", allMosaics)
 
               const transferBuilder = TransferTransaction.create(
                 Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
@@ -773,23 +775,15 @@ export class CreateTransferComponent implements OnInit {
               );
 
               //-----------------------------------------------------------------------
-              // Build aggregate transaction
               const aggregateTransaction = this.transactionService.buildAggregateTransaction(this.sender.publicAccount, transferBuilder);
-              // console.log('=== Build aggregate transaction ===', aggregateTransaction);
-              // Sign transaction
               const aggregateSigned = account.sign(aggregateTransaction, generationHash);
-              // Build hash lock transaction
               const hashLockTransaction: LockFundsTransaction = this.transactionService.buildHashLockTransaction(aggregateSigned);
-              // console.log('=== Build hash lock transaction === ', hashLockTransaction);
-              // Hash lock signed
               const hashLockSigned = account.sign(hashLockTransaction, generationHash);
               this.saveContactFn();
               this.clearForm();
               this.transactionService.buildTransactionHttp().announce(hashLockSigned).subscribe(async () => {
                 this.getTransactionStatusHashLock(hashLockSigned, aggregateSigned);
-              }, err => {
-                // console.log('ERROR ----> ', err);
-              });
+              }, err => {});
             } else {
               this.formTransfer.get('password').setValue('');
               this.blockSendButton = false;
@@ -813,9 +807,10 @@ export class CreateTransferComponent implements OnInit {
               this.clearForm();
               this.transactionService.buildTransactionHttp().announce(transferBuilder.signedTransaction).subscribe(
                 async () => {
-                  this.blockButton = false;
-                  this.blockSendButton = false;
-                  // this.getTransactionStatus();
+                  /*this.blockButton = false;
+                  this.blockSendButton = false;*/
+                  this.getTransactionStatus();
+                  this.dataBridge.setTimeOutValidateTransaction(transferBuilder.signedTransaction.hash);
                 }, err => {
                   this.blockButton = false;
                   this.blockSendButton = false;
@@ -888,9 +883,7 @@ export class CreateTransferComponent implements OnInit {
    * @memberof CreateTransferComponent
    */
   subscribeValue() {
-    // Account recipient
-    this.formTransfer.get('accountRecipient').valueChanges.subscribe(
-      value => {
+    this.formTransfer.get('accountRecipient').valueChanges.subscribe(value => {
         let valueWithoutSpaces = '';
         if (value) {
           valueWithoutSpaces = value.trim();
@@ -925,8 +918,7 @@ export class CreateTransferComponent implements OnInit {
           this.blockSendButton = false;
           this.msgErrorUnsupported = '';
         }
-      }
-    );
+    });
 
     this.subscription.push(this.formTransfer.get('message').valueChanges.subscribe(val => {
       if (val) {
@@ -938,9 +930,7 @@ export class CreateTransferComponent implements OnInit {
       }
     }));
 
-    //Amount XPX
-    this.formTransfer.get('amountXpx').valueChanges.subscribe(
-      value => {
+    this.formTransfer.get('amountXpx').valueChanges.subscribe(value => {
         if (value !== null && value !== undefined) {
           const a = Number(value);
           let validateAmount = false;
@@ -995,21 +985,7 @@ export class CreateTransferComponent implements OnInit {
             }
           }
         }
-      }
-    );
-  }
-
-
-  calculateFee(message: number) {
-    this.mosaicsToSend = this.validateMosaicsToSend();
-    // console.log("this.mosaicsToSend", this.mosaicsToSend)
-    const x = TransferTransaction.calculateSize(PlainMessage.create(this.formTransfer.get("message").value).size(), this.mosaicsToSend.length);
-    const b = FeeCalculationStrategy.calculateFee(x);
-    if (message > 0) {
-      this.fee = this.transactionService.amountFormatterSimple(b.compact())
-    } else if (message === 0 && this.mosaicsToSend.length === 0) {
-      this.fee = '0.037250'
-    }
+    });
   }
 
   /**
