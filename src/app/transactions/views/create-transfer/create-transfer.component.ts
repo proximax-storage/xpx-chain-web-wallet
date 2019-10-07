@@ -923,9 +923,9 @@ export class CreateTransferComponent implements OnInit {
     this.subscription.push(this.formTransfer.get('message').valueChanges.subscribe(val => {
       if (val) {
         this.charRest = this.configurationForm.message.maxLength - val.length;
-
         this.calculateFee(val.length);
       } else {
+        this.charRest = this.configurationForm.message.maxLength;
         this.calculateFee(0);
       }
     }));
