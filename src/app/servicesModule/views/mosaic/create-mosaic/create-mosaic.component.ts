@@ -53,7 +53,7 @@ export class CreateMosaicComponent implements OnInit {
   accountInfo: AccountsInfoInterface;
   deltaSupply: number;
   invalidDivisibility: boolean;
-  invalidSupply: boolean;
+  // invalidSupply: boolean;
   blockButton: boolean;
   errorDivisibility: string;
   errorSupply: string;
@@ -68,7 +68,7 @@ export class CreateMosaicComponent implements OnInit {
   transferable: any;
   divisibility: any;
   aggregateTransaction: AggregateTransaction;
-  fee: any = '0.102608';
+  fee: any = '0.000000';
   amountAccount: number;
   insufficientBalanceDuration: boolean;
   notExpire: any;
@@ -121,11 +121,12 @@ export class CreateMosaicComponent implements OnInit {
         this.blockButton = false;
         this.invalidDivisibility = false;
       }
-      this.mosaicForm.get('deltaSupply').setValue('');
+      // this.mosaicForm.get('deltaSupply').setValue('');
     });
+
     this.mosaicForm.get('deltaSupply').valueChanges.subscribe(next => {
       if (parseFloat(next) <= this.configurationForm.mosaicWallet.maxSupply) {
-        this.invalidSupply = false;
+        // this.invalidSupply = false;
         this.blockButton = false;
         this.errorSupply = '';
 
@@ -137,7 +138,7 @@ export class CreateMosaicComponent implements OnInit {
       } else {
         this.errorSupply = '-invalid';
         this.blockButton = true;
-        this.invalidSupply = true;
+        // this.invalidSupply = true;
       }
     });
   }
@@ -272,7 +273,7 @@ export class CreateMosaicComponent implements OnInit {
       this.walletService.currentAccount.network,
       []
     );
-    // this.fee = this.transactionService.amountFormatterSimple(this.aggregateTransaction.maxFee.compact());
+    this.fee = this.transactionService.amountFormatterSimple(this.aggregateTransaction.maxFee.compact());
   }
   /**
    *
