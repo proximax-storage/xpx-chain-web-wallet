@@ -1734,13 +1734,18 @@ ul.stepper.horizontal .step-title {
   max-width: 20rem !important;
 }
 
+.errorText {
+  margin-top: 15px;
+  margin-left: 25px;
+}
+
 .label-i {
   position: absolute;
   margin-top: -48px;
   padding: 12px;
   color: #b5b5b5;
   font-size: .7rem;
-  padding-top: .8rem;
+  padding-top: 1rem;
 }
 
 .label-i-icon {

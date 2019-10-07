@@ -13,12 +13,15 @@
                 <span class="color-black fw-bold">{{ accountSelected.nameAccount }}&nbsp;</span>
                 <span class="d-flex color-black fw-bold">NIS1 Address: </span><span>{{ accountSelected.address.pretty()
                   }}</span>
-                <span class=" color-black fw-bold">NIS1 Balance: <span class="spinner-border spinner-border-sm text-light mr-sm-2 loading-blue"
-                    role="status" aria-hidden="true" *ngIf="searchBalance"></span> {{ quantity }} XPX <img src="./assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
-                    class="ml-1rem" width="20px" alt="logo"></span>
+                <span class=" color-black fw-bold">NIS1 Balance: <span
+                    class="spinner-border spinner-border-sm text-light mr-sm-2 loading-blue" role="status"
+                    aria-hidden="true" *ngIf="searchBalance"></span> {{ quantity }} XPX <img
+                    src="./assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" class="ml-1rem"
+                    width="20px" alt="logo"></span>
               </div>
               <div class="col-12 col-md-2 text-center" *ngIf="changeAccount">
-                <button mdbBtn mdbWavesEffect (click)="goToList()" class="color-white f-w-600 bord-rad-25px font-small background-btn p-05rem">CHANGE</button>
+                <button mdbBtn mdbWavesEffect (click)="goToList()"
+                  class="color-white f-w-600 bord-rad-25px font-small background-btn p-05rem">CHANGE</button>
               </div>
             </div>
           </div>
@@ -35,7 +38,8 @@
           <!-- ACCOUNT TO SWAP -->
           <div class="col-10 col-sm-12 col-md-12 mx-auto" *ngIf="accountSelected.multiSign">
             <ng-select mdbInputDirective mdbValidate class="selectWrapper" [items]="listContacts" bindLabel="label"
-              bindValue="value" placeholder="Select an account to transfer this assets" (change)="selectContact($event)">
+              bindValue="value" placeholder="Select an account to transfer this assets"
+              (change)="selectContact($event)">
             </ng-select>
           </div>
 
@@ -50,28 +54,35 @@
           <!-- INPUT AMOUNT TO SWAP -->
           <div class="col-10 col-sm-12 col-md-12 mx-auto">
             <div class="md-form form-sm mt-1rem mb-0rem">
-              <img class="form-control-feedback" src="assets/images/img/icon-amount-green-16h-proximax-sirius-wallet.svg"
-                alt="">
-              <input currencyMask [options]="optionsXPX" mdbInputDirective mdbValidate [validateSuccess]="true"
-                [validateError]="true" type="text" [maxlength]="quantity.length" id="amount{{errorAmount}}" class="form-control form-control-sm input-border input-amount"
-                formControlName="amountXpx">
+              <img class="form-control-feedback"
+                src="assets/images/img/icon-amount-green-16h-proximax-sirius-wallet.svg" alt="">
+              <input pattern="^[+]?([0-9]*[.])?[0-9]+$" currencyMask [options]="optionsXPX" mdbInputDirective
+                mdbValidate [validateSuccess]="true" [maxlength]="maxAmount"  id="amount{{errorAmount}}"
+                [validateError]="true" type="text" class="form-control form-control-sm input-border input-amount"
+                placeholder="Enter amount" formControlName="amountXpx">
               <span class="label-i fw-600 text-cl-m cursor-p pl-2rem" (click)="selectMaxAmount()">USE MAX</span>
             </div>
+            <mdb-error *ngIf="insufficientBalance">
+              <div class="errorText">
+                <span class="fs-08rem color-error-message">Insufficient balance</span>
+              </div>
+            </mdb-error>
           </div>
 
 
           <!-- WALLET PASSWORD -->
           <div class="col-10 col-sm-12 col-md-12 mx-auto mb-2rem">
             <div class="md-form form-sm mt-1rem mb-0rem">
-              <img class="form-control-feedback" src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg"
-                alt="">
-              <input [maxlength]="configurationForm.passwordWallet.maxLength" [minlength]="configurationForm.passwordWallet.minLength"
-                formControlName="password" required mdbInputDirective mdbValidate [validateSuccess]="true"
-                [validateError]="true" type="password" id="password" class="form-control form-control-sm input-border"
-                placeholder="Enter wallet password">
+              <img class="form-control-feedback"
+                src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg" alt="">
+              <input [maxlength]="configurationForm.passwordWallet.maxLength"
+                [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" required
+                mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password"
+                id="password" class="form-control form-control-sm input-border" placeholder="Enter wallet password">
 
               <!-- VALIDATION -->
-              <mdb-error *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
+              <mdb-error
+                *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
                 <span>Password required</span>
               </mdb-error>
             </div>
@@ -99,7 +110,8 @@
         <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
           <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
             size="md" (click)="spinnerVisibility = true" [disabled]="blockButton || !formTransfer.valid">
-            <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true" *ngIf="spinnerVisibility"></span>
+            <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
+              *ngIf="spinnerVisibility"></span>
             <span class="fs-1-2em color-white">Yes,Swap</span>
           </button>
         </div>

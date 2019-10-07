@@ -33,8 +33,10 @@ export class TransferAssetsComponent implements OnInit {
   divisivility: string = '6';
   errorAmount: string;
   formTransfer: FormGroup;
+  insufficientBalance = false;
   listContacts: any = [];
   mosaics: any = null;
+  maxAmount: number;
   optionsXPX = {
     prefix: '',
     thousands: ',',
@@ -65,7 +67,6 @@ export class TransferAssetsComponent implements OnInit {
     this.configurationForm = this.sharedService.configurationForm;
     this.accountCreated = this.walletService.getAccountInfoNis1();
     this.accountSelected = this.walletService.getNis1AccountSelected();
-
     if (this.accountSelected) {
       this.initComponent();
     } else {
@@ -75,8 +76,8 @@ export class TransferAssetsComponent implements OnInit {
 
   initComponent() {
     this.createFormTransfer();
+    this.formTransfer.get('amountXpx').reset();
     this.booksAddress();
-    this.suscribeChanges();
 
     if (this.accountSelected.consignerAccounts !== undefined) {
       this.changeAccount = this.accountSelected.consignerAccounts.length > 1;
@@ -99,7 +100,7 @@ export class TransferAssetsComponent implements OnInit {
               realQuantity = this.nemProvider.amountFormatter(realQuantity, el, el.properties.divisibility);
 
               console.log(realQuantity);
-              
+
               this.accountSelected.mosaic = el;
               const transactions = await this.nemProvider.getUnconfirmedTransaction(this.accountSelected.address);
               // console.log('this.accountSelected', this.accountSelected);
@@ -158,10 +159,12 @@ export class TransferAssetsComponent implements OnInit {
             }
             this.divisivility = this.accountSelected.mosaic.properties.divisibility.toString();
           }
+          this.maxAmount = this.quantity.length;
         },
         error => {
           this.accountSelected.mosaic = null;
           this.accountSelected.balance = '0.000000';
+          this.maxAmount = this.quantity.length;
           this.formTransfer.get('amountXpx').disable(); this.formTransfer.invalid
           this.formTransfer.get('password').disable();
           this.blockButton = true;
@@ -180,6 +183,7 @@ export class TransferAssetsComponent implements OnInit {
         this.blockButton = false;
       }
       this.searchBalance = false;
+      this.maxAmount = this.quantity.length;
     }
   }
 
@@ -187,15 +191,16 @@ export class TransferAssetsComponent implements OnInit {
     this.subscription.push(
       this.formTransfer.get('amountXpx').valueChanges.subscribe(
         next => {
-          console.log('this is the amount', next);
-          console.log(parseFloat(this.quantity.split(',').join('')));
-          console.log(next >= parseFloat(this.quantity.split(',').join('')));
-          if (next > parseFloat(this.quantity.split(',').join(''))) {
-            this.blockButton = true;
-            this.errorAmount = '-invalid';
-          } else {
-            this.blockButton = false;
-            this.errorAmount = '';
+          if (next !== null && next !== undefined) {
+            if (next > parseFloat(this.quantity.split(',').join(''))) {
+              this.blockButton = true;
+              this.errorAmount = '-invalid';
+              this.insufficientBalance = true;
+            } else {
+              this.blockButton = false;
+              this.insufficientBalance = false;
+              this.errorAmount = '';
+            }
           }
         }
       )
@@ -402,12 +407,6 @@ export class TransferAssetsComponent implements OnInit {
     } else {
       this.router.navigate([route]);
     }
-  }
-
-  suscribeChanges() {
-    this.formTransfer.get('amountXpx').valueChanges.subscribe(val => {
-      this.blockButton = (val > 0) ? false : true;
-    });
   }
 
   goToList() {
