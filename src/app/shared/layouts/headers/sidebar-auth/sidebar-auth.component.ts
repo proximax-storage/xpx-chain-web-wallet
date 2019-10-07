@@ -1,8 +1,10 @@
-  import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { ModalDirective } from 'ng-uikit-pro-standard';
 import { ItemsHeaderInterface, SharedService, MenuInterface } from '../../../services/shared.service';
 import { AppConfig } from '../../../../config/app.config';
 import { environment } from '../../../../../environments/environment';
-import { ModalDirective } from 'ng-uikit-pro-standard';
+import { AuthService } from '../../../../auth/services/auth.service';
 
 @Component({
   selector: 'app-sidebar-auth',
@@ -12,12 +14,14 @@ import { ModalDirective } from 'ng-uikit-pro-standard';
 export class SidebarAuthComponent implements OnInit {
 
   @ViewChild('modalAuth', { static: true }) modalAuth: ModalDirective;
+  eventNumber: number = 0;
   itemsHeader: ItemsHeaderInterface;
   keyObject = Object.keys;
+  subscription: Subscription[] = [];
   version = '';
-  eventNumber: number = 0;
 
   constructor(
+    private authService: AuthService,
     private sharedService: SharedService
   ) {
     this.version = environment.version;
@@ -94,7 +98,21 @@ export class SidebarAuthComponent implements OnInit {
       // auth: this.sharedService.buildHeader(paramsSignIn),
       // wallet: this.sharedService.buildHeader(paramsWallet),
     }
+
+    this.receiveEventShowModal();
   }
+
+
+  receiveEventShowModal() {
+    this.subscription.push(this.authService.getEventShowModal().subscribe(
+      next => {
+        if (next !== 0) {
+          this.showModal();
+        }
+      }
+    ));
+  }
+
 
   /**
    *
@@ -102,7 +120,7 @@ export class SidebarAuthComponent implements OnInit {
    * @memberof SidebarAuthComponent
    */
   showModal() {
-    this.eventNumber = this.eventNumber+1;
+    this.eventNumber = this.eventNumber + 1;
     this.modalAuth.show();
   }
 }

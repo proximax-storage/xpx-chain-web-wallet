@@ -93,8 +93,13 @@ export class TransferAssetsComponent implements OnInit {
           for (const el of next) {
             if (el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx') {
               let realQuantity = null;
+              console.log(el.quantity);
+
               realQuantity = this.transactionService.addZeros(el.properties.divisibility, el.quantity);
               realQuantity = this.nemProvider.amountFormatter(realQuantity, el, el.properties.divisibility);
+
+              console.log(realQuantity);
+              
               this.accountSelected.mosaic = el;
               const transactions = await this.nemProvider.getUnconfirmedTransaction(this.accountSelected.address);
               // console.log('this.accountSelected', this.accountSelected);
@@ -107,9 +112,10 @@ export class TransferAssetsComponent implements OnInit {
                   if (item.type === 257 && item['signer']['address']['value'] === this.accountSelected.address.value) {
                     for (const mosaic of item['_assets']) {
                       if (mosaic.assetId.namespaceId === 'prx' && mosaic.assetId.name === 'xpx') {
-                        const quantity = parseFloat(this.nemProvider.amountFormatter(mosaic.quantity, el, el.properties.divisibility));
-                        const quantitywhitoutFormat = relativeAmount.split(',').join('');
-                        const quantityFormat = this.nemProvider.amountFormatter(parseInt((quantitywhitoutFormat - quantity).toString().split('.').join('')), el, el.properties.divisibility);
+                        const quantity = parseFloat(this.nemProvider.amountFormatter(mosaic.quantity, el, 6));
+                        const quantitywhitoutFormat = parseFloat(relativeAmount.split(',').join(''));
+                        const restQuantity = (quantitywhitoutFormat - quantity).toFixed(el.properties.divisibility);
+                        const quantityFormat = this.nemProvider.amountFormatter(Number(restQuantity.toString().split('.').join('')), el, 6);
                         relativeAmount = quantityFormat;
                       }
                     }
