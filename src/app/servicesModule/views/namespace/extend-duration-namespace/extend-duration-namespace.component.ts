@@ -170,6 +170,7 @@ export class ExtendDurationNamespaceComponent implements OnInit {
    * @memberof ExtendDurationNamespaceComponent
    */
   clearForm() {
+    this.excedDuration = false;
     this.extendDurationNamespaceForm.reset({
       namespaceRoot: '',
       duration: '',

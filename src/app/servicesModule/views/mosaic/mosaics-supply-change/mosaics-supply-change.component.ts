@@ -70,7 +70,7 @@ export class MosaicsSupplyChangeComponent implements OnInit {
   blockBtn: boolean = false;
   maxLengthSupply: number = 13;
   mosaicSupplyChangeTransaction: any;
-  fee: string = ' 0.034750';
+  fee: string = ' 0.000000';
   amountAccount: number;
   showTotal: boolean = false;
   errSupply: boolean = false;
@@ -260,9 +260,11 @@ export class MosaicsSupplyChangeComponent implements OnInit {
    * @memberof MosaicSupplyChange
    */
   clearForm() {
-    // this.fee = '0.000000';
+    this.fee = '0.000000';
+    this.formMosaicSupplyChange.get('mosaicSupplyType').disable();
     this.showTotal = false;
     this.errSupply = false;
+    this.errSupplyMin = false;
     this.formMosaicSupplyChange.reset({
       parentMosaic: '',
       mosaicSupplyType: MosaicSupplyType.Increase,
@@ -283,6 +285,8 @@ export class MosaicsSupplyChangeComponent implements OnInit {
    * @memberof MosaicsSupplyChangeComponent
    */
   async optionSelected(mosaic: any) {
+    this.errSupplyMin = false;
+    this.errSupply = false;
     if (mosaic !== undefined) {
       this.showTotal = true;
       this.formMosaicSupplyChange.get('deltaSupply').enable();
@@ -301,10 +305,10 @@ export class MosaicsSupplyChangeComponent implements OnInit {
           ]), mosaicsInfoSelected[0].mosaicInfo
         );
         this.calculate();
-        const durationBlock = new UInt64([
-          mosaicsInfoSelected[0].mosaicInfo['properties']['duration']['lower'],
-          mosaicsInfoSelected[0].mosaicInfo['properties']['duration']['higher']
-        ]);
+        // const durationBlock = new UInt64([
+        //   mosaicsInfoSelected[0].mosaicInfo['properties']['duration']['lower'],
+        //   mosaicsInfoSelected[0].mosaicInfo['properties']['duration']['higher']
+        // ]);
 
         this.formMosaicSupplyChange.get('deltaSupply').setValue(0);
         this.maxLengthSupply = 13 + this.divisibility;
@@ -315,8 +319,9 @@ export class MosaicsSupplyChangeComponent implements OnInit {
           precision: this.divisibility.toString()
         };
 
-        const durationDays = this.transactionService.calculateDuration(durationBlock);
-        this.duration = `(${durationBlock.compact()}) ${durationDays}`;
+        // const durationDays = this.transactionService.calculateDuration(durationBlock);
+        // this.duration = `(${durationBlock.compact()}) ${durationDays}`;
+        this.duration = 'Does not expire';
         return;
       }
     }
@@ -330,6 +335,13 @@ export class MosaicsSupplyChangeComponent implements OnInit {
   }
 
   type(event) {
+    this.formMosaicSupplyChange.get('deltaSupply').setValue(0);
+    this.optionsSupply = {
+      prefix: '',
+      thousands: ',',
+      decimal: '.',
+      precision: this.divisibility.toString()
+    };
     if (event.value === 1) {
       this.increase = true;
     } else {
