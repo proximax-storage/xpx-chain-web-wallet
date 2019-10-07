@@ -495,8 +495,9 @@ export class DataBridgeService {
         );
       }
 
-      this.proximaxProvider.getTransactionStatus(hash).subscribe(
+      /*this.proximaxProvider.getTransactionStatus(hash).subscribe(
         async next => {
+          console.log('---->', next);
           if (next) {
             switch (next.group) {
               case 'unconfirmed':
@@ -505,34 +506,14 @@ export class DataBridgeService {
                   'hash': hash
                 });
 
-                this.proximaxProvider.getTransaction(hash).subscribe(
-                  async unconfirmedAdded => {
-                    console.log(unconfirmedAdded);
-                    const unconfirmedSubject = await this.transactionsService.getUnconfirmedTransactions$().pipe(first()).toPromise();
-                    const transactionPushed = unconfirmedSubject.slice(0);
-                    const transactionFormatter = this.transactionsService.getStructureDashboard(unconfirmedAdded, transactionPushed);
-                    if (transactionFormatter !== null) {
-                      this.audio.play();
-                      this.sharedService.showInfo('', 'Transaction unconfirmed');
-                      transactionPushed.unshift(transactionFormatter);
-                      this.transactionsService.setTransactionReady(unconfirmedAdded.transactionInfo.hash);
-                      this.transactionsService.setTransactionsUnConfirmed$(transactionPushed);
-                    }
-                  }
-                );
-                /*const unconfirmedSubject = await this.transactionsService.getUnconfirmedTransactions$().pipe(first()).toPromise();
-                const transactionPushed = unconfirmedSubject.slice(0);
-                const transactionFormatter = this.transactionsService.getStructureDashboard(unconfirmedAdded, transactionPushed);
-                if (transactionFormatter !== null) {
-                  this.audio.play();
-                  this.sharedService.showInfo('', 'Transaction unconfirmed');
-                  transactionPushed.unshift(transactionFormatter);
-                  this.transactionsService.setTransactionReady(unconfirmedAdded.transactionInfo.hash);
-                  this.transactionsService.setTransactionsUnConfirmed$(transactionPushed);
-                }*/
                 break;
 
-              default:
+              case 'confirmed':
+                this.setTransactionStatus({
+                  'type': 'confirmed',
+                  'hash': hash
+                });
+
                 break;
             }
           }
@@ -540,7 +521,7 @@ export class DataBridgeService {
           console.log('error');
           this.sharedService.showWarning("", "An error has occurred with your transaction");
         }
-      );
+      );*/
     }, 10000);
   }
 

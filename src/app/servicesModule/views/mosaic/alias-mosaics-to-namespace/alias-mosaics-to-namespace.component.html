@@ -35,7 +35,7 @@
             placeholder="Select mosaic" (change)="captureMmosaic()"></ng-select>
           <mdb-error class="ml-1rem"
             *ngIf="validateInput('mosaic').invalid && (validateInput('mosaic').dirty || validateInput('mosaic').touched)">
-            <span class="fs-08rem fw-600 color-error-message">Select mosaic</span>
+            <span class="fs-08rem fw-600 color-error-message">Select mosaicId</span>
           </mdb-error>
         </div>
       </div>
@@ -45,7 +45,7 @@
       <ng-container *ngIf="linked !== null">
         <div class="row pt-1rem">
           <div class="col-11 col-sm-10 col-lg-8 mx-auto">
-            Linked to: {{linked.label}}
+            Linked to namespace: {{linked.label}}
           </div>
         </div>
       </ng-container>
