@@ -22,7 +22,7 @@ export class WalletCreatedComponent implements OnInit {
   imgBackground = '';
   publicKey = '';
   privateKey = '';
-  title = 'Congratulations';
+  title = 'Congratulations!';
   titleDescription = 'Your wallet has been successfully created.';
   subtitle = '';
   viewPrivateKey = false;
