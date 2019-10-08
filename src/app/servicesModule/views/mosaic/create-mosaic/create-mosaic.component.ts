@@ -256,13 +256,15 @@ export class CreateMosaicComponent implements OnInit {
   buildMosaicDefinition(account, params) {
     const mosaicDefinitionTransaction = this.proximaxProvider.buildMosaicDefinition(params);
 
+    console.log('mosaicDefinitionTransaction', mosaicDefinitionTransaction.size);
+    
     const mosaicSupplyChangeTransaction = this.proximaxProvider.buildMosaicSupplyChange(
       mosaicDefinitionTransaction.mosaicId,
       MosaicSupplyType.Increase,
       UInt64.fromUint(this.deltaSupply),
       this.walletService.currentAccount.network
     );
-    // console.log('mosaicSupplyChangeTransaction', mosaicSupplyChangeTransaction);
+    console.log('mosaicSupplyChangeTransaction', mosaicSupplyChangeTransaction.size);
     
     this.aggregateTransaction = AggregateTransaction.createComplete(
       Deadline.create(environment.deadlineTransfer.deadline,environment.deadlineTransfer.chronoUnit),
@@ -273,6 +275,7 @@ export class CreateMosaicComponent implements OnInit {
       this.walletService.currentAccount.network,
       []
     );
+    console.log('this.aggregateTransaction', this.aggregateTransaction.size);
     this.fee = this.transactionService.amountFormatterSimple(this.aggregateTransaction.maxFee.compact());
   }
   /**
