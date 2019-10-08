@@ -1312,6 +1312,14 @@ button.md-toast-close-button {
 
 /** FIN INPUTS VALIDATION **/
 
+.ng-placeholder {
+  font-size: 1rem !important;
+}
+
+.ng-select .ng-select-container .ng-value-container {
+  padding: 1em 0 !important;
+}
+
 /************* SELECT ************/
 
 .ng-select .ng-select-container {
