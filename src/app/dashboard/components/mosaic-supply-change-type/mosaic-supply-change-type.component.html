@@ -5,53 +5,53 @@
       <div class="row">
         <!-- Type transfer -->
         <div class="col-12 overflow-ellipsis-nowrap">
-          <span class="color-dark-green fw-bold fs-1-2rem">{{mosaicSupplyChange.nameType}}</span>
+          <span class="color-black fw-bold fs-1-2rem">{{mosaicSupplyChange.nameType}}</span>
         </div>
 
         <!-- Timestamp -->
         <div class="col-12" *ngIf="mosaicSupplyChange?.timestamp">
-          <span class="color-dark-green fs-07rem fw-500 w-w-b-w">{{mosaicSupplyChange?.timestamp}}</span>
+          <span class="color-black fs-07rem fw-500 w-w-b-w">{{mosaicSupplyChange?.timestamp}}</span>
         </div>
 
         <!-- Fee -->
         <ng-container *ngIf="mosaicSupplyChange?.effectiveFee">
           <div class="col-12 mt-03rem">
-            <span class="fw-600 fs-095rem color-dark-green">Fee:&nbsp;&nbsp;</span>
+            <span class="fw-600 fs-095rem color-black">Fee:&nbsp;&nbsp;</span>
             <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
-            <span class="fw-600 fs-095rem color-blue-light">{{mosaicSupplyChange?.effectiveFee.part1}}</span>
-            <span class="fw-600 fs-075rem color-blue-light">{{mosaicSupplyChange?.effectiveFee.part2}}</span>
-            <span class="fw-600 fs-095rem color-blue-light"> XPX </span>
+            <span class="fw-600 fs-095rem color-black">{{mosaicSupplyChange?.effectiveFee.part1}}</span>
+            <span class="fw-600 fs-075rem color-black">{{mosaicSupplyChange?.effectiveFee.part2}}</span>
+            <span class="fw-600 fs-095rem color-black"> XPX </span>
           </div>
         </ng-container>
 
         <!-- HEIGHT -->
         <ng-container *ngIf="mosaicSupplyChange?.data.transactionInfo.height.compact() > 0">
           <div class="col-12 mt-03rem">
-            <span class="fw-600 fs-08rem color-dark-green">Height:&nbsp;&nbsp;</span>
+            <span class="fw-600 fs-08rem color-black">Height:&nbsp;&nbsp;</span>
             <span
-              class="fs-07rem fw-400 color-dark-green">{{mosaicSupplyChange?.data.transactionInfo.height.compact()}}</span>
+              class="fs-07rem fw-400 color-black">{{mosaicSupplyChange?.data.transactionInfo.height.compact()}}</span>
           </div>
         </ng-container>
 
         <!-- TYPE -->
         <div class="col-12 mt-03rem">
-          <span class="fw-600 fs-08rem color-dark-green">Type:&nbsp;&nbsp;</span>
-          <span class="fs-07rem fw-400 color-dark-green">{{typeTransactionHex}}</span>
+          <span class="fw-600 fs-08rem color-black">Type:&nbsp;&nbsp;</span>
+          <span class="fs-07rem fw-400 color-black">{{typeTransactionHex}}</span>
         </div>
 
         <!-- Mosaic Id -->
         <ng-container *ngIf="mosaicSupplyChange['mosaicsStorage'] !== null">
           <div class="col-12 mt-03rem">
-            <span class="fw-600 fs-08rem color-dark-green">Divisibility:&nbsp;&nbsp;</span>
+            <span class="fw-600 fs-08rem color-black">Divisibility:&nbsp;&nbsp;</span>
             <span
-              class="fs-07rem fw-400 color-dark-green">{{mosaicSupplyChange['mosaicsStorage'].mosaicInfo.properties.divisibility}}</span>
+              class="fs-07rem fw-400 color-black">{{mosaicSupplyChange['mosaicsStorage'].mosaicInfo.properties.divisibility}}</span>
           </div>
         </ng-container>
 
         <!-- Increase -->
         <ng-container *ngIf="mosaicSupplyChange.data['direction'] === 1 && mosaicSupplyChange['mosaicsStorage'];">
           <div class="col-12 mt-03rem">
-            <span class="fw-600 fs-08rem color-dark-green">Increase:&nbsp;&nbsp;</span>
+            <span class="fw-600 fs-08rem color-black">Increase:&nbsp;&nbsp;</span>
             <span
               class="fs-07rem fw-400 green-c"> + {{transactionService.amountFormatter(mosaicSupplyChange.data.delta.compact(), mosaicSupplyChange['mosaicsStorage']['mosaicInfo'])}}</span>
           </div>
@@ -60,7 +60,7 @@
         <!-- Decrease -->
         <ng-container *ngIf="mosaicSupplyChange.data['direction'] !== 1 && mosaicSupplyChange['mosaicsStorage'];">
           <div class="col-12 mt-03rem">
-            <span class="fw-600 fs-08rem color-dark-green">Decrease:&nbsp;&nbsp;</span>
+            <span class="fw-600 fs-08rem color-black">Decrease:&nbsp;&nbsp;</span>
             <span
               class="fs-07rem fw-400 color-red"> - {{transactionService.amountFormatter(mosaicSupplyChange.data.delta.compact(), mosaicSupplyChange['mosaicsStorage']['mosaicInfo'])}}</span>
           </div>
@@ -69,8 +69,8 @@
         <!-- Mosaic Name -->
         <ng-container *ngIf="viewMosaicName">
           <div class="col-12 mt-03rem">
-            <span class="fw-600 fs-08rem color-dark-green">Mosaic:&nbsp;&nbsp;</span>
-            <span class="fs-07rem fw-400 color-dark-green">
+            <span class="fw-600 fs-08rem color-black">Mosaic:&nbsp;&nbsp;</span>
+            <span class="fs-07rem fw-400 color-black">
               <!-- Mosaic Name -->
               <ng-container
                 *ngIf="mosaicSupplyChange['mosaicsStorage'] !== null && mosaicSupplyChange['mosaicsStorage']['mosaicNames']['names'].lenght > 0; else viewId">
@@ -84,12 +84,6 @@
             </span>
           </div>
         </ng-container>
-
-        <!-- Recipient Rental Fee Sink -->
-        <div class="col-12 mt-03rem">
-          <span class="fw-600 fs-08rem color-dark-green">Recipient Rental Fee Sink: <br></span>
-          <span class="fs-07rem fw-400 color-dark-green">{{mosaicSupplyChange?.recipientRentalFeeSink}}</span>
-        </div>
       </div>
     </div>
   </div>
@@ -105,10 +99,10 @@
     <div class="col-12">
       <div class="row">
         <div class="col-12 col-sm-4 col-md-3 overflow-ellipsis-nowrap">
-          <span class="color-dark-green fw-bold fs-08rem">Type: </span>
+          <span class="color-black fw-bold fs-08rem">Type: </span>
         </div>
         <div class="col-12 col-sm-8 col-md-9 overflow-ellipsis-nowrap">
-          <span class="color-dark-green fw-400 fs-08rem">{{ typeTransactionHex }}</span>
+          <span class="color-black fw-400 fs-08rem">{{ typeTransactionHex }}</span>
         </div>
       </div>
     </div>
@@ -118,10 +112,10 @@
     <div class="col-12">
       <div class="row">
         <div class="col-12 col-sm-4 col-md-3 overflow-ellipsis-nowrap">
-          <span class="color-dark-green fw-bold fs-08rem">Mosaic Id: </span>
+          <span class="color-black fw-bold fs-08rem">Mosaic Id: </span>
         </div>
         <div class="col-12 col-sm-8 col-md-9 overflow-ellipsis-nowrap">
-          <span class="color-dark-green fw-400 fs-08rem">{{ mosaicId }}</span>
+          <span class="color-black fw-400 fs-08rem">{{ mosaicId }}</span>
         </div>
       </div>
     </div>
@@ -132,10 +126,10 @@
       <div class="col-12">
         <div class="row">
           <div class="col-12 col-sm-4 col-md-3 overflow-ellipsis-nowrap">
-            <span class="color-dark-green fw-bold fs-08rem">Mosaic: </span>
+            <span class="color-black fw-bold fs-08rem">Mosaic: </span>
           </div>
           <div class="col-12 col-sm-8 col-md-9 overflow-ellipsis-nowrap">
-            <span class="color-dark-green fw-400 fs-08rem">
+            <span class="color-black fw-400 fs-08rem">
               {{ mosaicSupplyChange.mosaicsStorage['mosaicNames']['names'][0] }}
             </span>
           </div>
@@ -148,10 +142,10 @@
       <div class="col-12">
         <div class="row">
           <div class="col-12 col-sm-4 col-md-3 overflow-ellipsis-nowrap">
-            <span class="color-dark-green fw-bold fs-08rem">Increase: </span>
+            <span class="color-black fw-bold fs-08rem">Increase: </span>
           </div>
           <div class="col-12 col-sm-8 col-md-9 overflow-ellipsis-nowrap">
-            <span class="color-dark-green fw-400 fs-08rem green-c">+
+            <span class="color-black fw-400 fs-08rem green-c">+
               {{transactionService.amountFormatter(mosaicSupplyChange.delta.compact(), mosaicSupplyChange['mosaicsStorage']['mosaicInfo'])}}</span>
           </div>
         </div>
@@ -163,10 +157,10 @@
       <div class="col-12">
         <div class="row">
           <div class="col-12 col-sm-4 col-md-3 overflow-ellipsis-nowrap">
-            <span class="color-dark-green fw-bold fs-08rem">Increase: </span>
+            <span class="color-black fw-bold fs-08rem">Increase: </span>
           </div>
           <div class="col-12 col-sm-8 col-md-9 overflow-ellipsis-nowrap">
-            <span class="color-dark-green fw-400 fs-08rem color-red">-
+            <span class="color-black fw-400 fs-08rem color-red">-
               {{transactionService.amountFormatter(mosaicSupplyChange.delta.compact(), mosaicSupplyChange['mosaicsStorage']['mosaicInfo'])}}</span>
           </div>
         </div>

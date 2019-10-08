@@ -8,30 +8,30 @@
 
       <!-- Timestamp -->
       <div class="col-12" *ngIf="aggregateBonded?.timestamp">
-        <span class="color-dark-green fs-07rem fw-500 w-w-b-w">{{aggregateBonded?.timestamp}}</span>
+        <span class="color-black fs-07rem fw-500 w-w-b-w">{{aggregateBonded?.timestamp}}</span>
       </div>
 
       <!-- Fee -->
       <ng-container *ngIf="aggregateBonded?.effectiveFee">
         <div class="col-12 mt-03rem">
-          <span class="fw-600 fs-095rem color-dark-green">Fee:&nbsp;&nbsp;</span>
+          <span class="fw-600 fs-095rem color-black">Fee:&nbsp;&nbsp;</span>
           <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
-          <span class="fw-600 fs-095rem color-blue-light">{{aggregateBonded?.effectiveFee.part1}}</span>
-          <span class="fw-600 fs-075rem color-blue-light">{{aggregateBonded?.effectiveFee.part2}}</span>
-          <span class="fw-600 fs-095rem color-blue-light"> XPX </span>
+          <span class="fw-600 fs-095rem color-black">{{aggregateBonded?.effectiveFee.part1}}</span>
+          <span class="fw-600 fs-075rem color-black">{{aggregateBonded?.effectiveFee.part2}}</span>
+          <span class="fw-600 fs-095rem color-black"> XPX </span>
         </div>
       </ng-container>
 
       <!-- Type -->
       <div class="col-12 mt-03rem">
-        <span class="fw-600 fs-08rem color-dark-green">Type:&nbsp;&nbsp;</span>
+        <span class="fw-600 fs-08rem color-black">Type:&nbsp;&nbsp;</span>
         <span class="fs-07rem">{{aggregateBonded?.data['type'].toString(16).toUpperCase()}}</span>
       </div>
 
       <!-- Height -->
       <ng-container *ngIf="aggregateBonded?.data.transactionInfo.height.compact() > 0">
         <div class="col-12 mt-03rem">
-          <span class="fw-600 fs-08rem color-dark-green">Height:&nbsp;&nbsp;</span>
+          <span class="fw-600 fs-08rem color-black">Height:&nbsp;&nbsp;</span>
           <span class="fs-07rem">{{aggregateBonded?.data.transactionInfo.height.compact()}}</span>
         </div>
       </ng-container>
@@ -40,7 +40,7 @@
       <div class="col-12 mt-1rem">
         <div class="row d-flex align-items-center">
           <div class="col-12">
-            <span class="fw-600 fs-095rem color-dark-green">Transactions</span>
+            <span class="fw-600 fs-095rem color-black">Transactions</span>
           </div>
         </div>
         <hr class="mt-0">

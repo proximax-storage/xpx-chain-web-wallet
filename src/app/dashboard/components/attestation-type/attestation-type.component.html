@@ -4,7 +4,7 @@
     <div class="row">
       <!-- Type transfer -->
       <div class="col-12">
-        <span class="color-dark-green fw-bold fs-2rem">{{transactionInfo.nameType}}</span>
+        <span class="color-black fw-bold fs-2rem">{{transactionInfo.nameType}}</span>
         <img class="mr-1rem ml-1rem h-2em"
           src="assets/images/img/arrow-transaction-sender-orange-proximax-sirius-explorer.svg" alt="">
 
@@ -21,21 +21,21 @@
 
       <!-- Timestamp -->
       <div class="col-12 mt-05rem">
-        <span class="color-dark-green fs-07rem fw-500 w-w-b-w">{{transactionInfo.timestamp}}</span>
+        <span class="color-black fs-07rem fw-500 w-w-b-w">{{transactionInfo.timestamp}}</span>
       </div>
 
       <!-- Fee -->
       <div class="col-12 mt-05rem">
         <div class="row">
           <div class="col-3">
-            <span class="color-dark-green fw-bold fs-1-3rem">Fee: </span>
+            <span class="color-black fw-bold fs-1-3rem">Fee: </span>
           </div>
           <div class="col-9 d-flex">
             <div class="row">
               <div class="col-12">
                 <img class="icono mb-03rem" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
                   width="16" alt="">&nbsp;
-                <span class="color-dark-green fw-400 fs-1-3rem">{{transactionInfo.fee}} XPX</span>
+                <span class="color-black fw-400 fs-1-3rem">{{transactionInfo.fee}} XPX</span>
               </div>
             </div>
           </div>
@@ -45,19 +45,19 @@
       <div class="col-12 mt-2rem">
         <div class="row">
           <div class="col-3">
-            <span class="color-dark-green fw-bold fs-08rem">File Name: </span>
+            <span class="color-black fw-bold fs-08rem">File Name: </span>
           </div>
           <div class="col-9">
-            <span class="color-dark-green fw-400 fs-07rem">{{transactionInfo.fileName}}</span>
+            <span class="color-black fw-400 fs-07rem">{{transactionInfo.fileName}}</span>
           </div>
         </div>
 
         <div class="row">
           <div class="col-3">
-            <span class="color-dark-green fw-bold fs-08rem">Private: </span>
+            <span class="color-black fw-bold fs-08rem">Private: </span>
           </div>
           <div class="col-9">
-            <span class="color-dark-green fw-400 fs-07rem">{{ (transactionInfo.privateFile) ? 'Yes' : 'No' }}</span>
+            <span class="color-black fw-400 fs-07rem">{{ (transactionInfo.privateFile) ? 'Yes' : 'No' }}</span>
           </div>
         </div>
       </div>
@@ -66,20 +66,20 @@
       <div class="col-12 mt-2rem">
         <div class="row">
           <div class="col-3">
-            <span class="color-dark-green fw-bold fs-08rem">Height: </span>
+            <span class="color-black fw-bold fs-08rem">Height: </span>
           </div>
           <div class="col-9">
             <span
-              class="color-dark-green fw-400 fs-07rem">{{transactionInfo.data.transactionInfo.height.compact()}}</span>
+              class="color-black fw-400 fs-07rem">{{transactionInfo.data.transactionInfo.height.compact()}}</span>
           </div>
         </div>
 
         <div class="row">
           <div class="col-3 overflow-ellipsis-nowrap">
-            <span class="color-dark-green fw-bold fs-08rem">Type: </span>
+            <span class="color-black fw-bold fs-08rem">Type: </span>
           </div>
           <div class="col-9 overflow-ellipsis-nowrap">
-            <span class="color-dark-green fw-400 fs-08rem">{{ transactionInfo.data.type.toString(16) }}</span>
+            <span class="color-black fw-400 fs-08rem">{{ transactionInfo.data.type.toString(16) }}</span>
           </div>
         </div>
       </div>
@@ -88,19 +88,19 @@
       <div class="col-12">
         <div class="row">
           <div class="col-3">
-            <span class="color-dark-green fw-bold fs-08rem">From: </span>
+            <span class="color-black fw-bold fs-08rem">From: </span>
           </div>
           <div class="col-9">
-            <span class="color-dark-green fw-400 fs-07rem">{{transactionInfo.data.signer.address.pretty()}}</span>
+            <span class="color-black fw-400 fs-07rem">{{transactionInfo.data.signer.address.pretty()}}</span>
           </div>
         </div>
 
         <div class="row">
           <div class="col-3">
-            <span class="color-dark-green fw-bold fs-08rem">To: </span>
+            <span class="color-black fw-bold fs-08rem">To: </span>
           </div>
           <div class="col-9">
-            <span class="color-dark-green fw-400 fs-07rem">{{transactionInfo.data['recipient'].pretty()}}</span>
+            <span class="color-black fw-400 fs-07rem">{{transactionInfo.data['recipient'].pretty()}}</span>
           </div>
         </div>
       </div>
@@ -156,10 +156,10 @@
     <div class="col-12 mt-1rem">
       <div class="row">
         <div class="col-12">
-          <span class="color-dark-green fw-bold fs-07rem">Message: </span>
+          <span class="color-black fw-bold fs-07rem">Message: </span>
         </div>
         <div class="col-12">
-          <span class="color-dark-green fw-400 fs-08rem">{{transactionInfo?.data['message'].payload}}</span>
+          <span class="color-black fw-400 fs-08rem">{{transactionInfo?.data['message'].payload}}</span>
         </div>
       </div>
     </div>
