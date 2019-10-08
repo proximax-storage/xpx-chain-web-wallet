@@ -20,7 +20,7 @@ export class ImportWalletComponent implements OnInit {
 
   importWalletForm: FormGroup;
   configurationForm: ConfigurationForm = {};
-  description = 'Restore your existing ProximaX Sirius Wallet, import a private key from another service, or create a new wallet right now!';
+  description = 'Restore your existing ProximaX Sirius Wallet, import a private key from another service or create a new wallet right now!';
   errorMatchPassword: string;
   errorWalletExist: string;
   isValid: boolean = false;

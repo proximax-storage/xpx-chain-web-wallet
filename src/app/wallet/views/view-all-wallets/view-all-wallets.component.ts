@@ -14,7 +14,7 @@ export class ViewAllWalletsComponent implements OnInit {
   description: string;
   routes = {
     home: AppConfig.routes.home,
-    deleteWallet: `/${AppConfig.routes.deleteWallet}/`
+    deleteWallet: `/${AppConfig.routes.deleteWallet}/`,
   };
 
   title: string;
@@ -28,7 +28,7 @@ export class ViewAllWalletsComponent implements OnInit {
   ngOnInit() {
     this.title = "Wallets";
     this.description =
-      "These are the Sirius Wallets available in the local cache of your device.";
+      "These are the Sirius Wallets available in the local storage of your device.";
     this.wallets = this.walletService.getWalletStorage();
   }
 }

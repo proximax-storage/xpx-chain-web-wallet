@@ -15,7 +15,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class AddContactsComponent implements OnInit {
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Address Book',
-    componentName: 'Add contacts',
+    componentName: 'Add Contacts',
     extraButton: 'List',
     routerExtraButton: `/${AppConfig.routes.addressBook}`
   };

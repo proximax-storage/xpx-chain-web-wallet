@@ -289,6 +289,10 @@ html, body {
   padding: .5rem !important;
 }
 
+.p-08rem {
+  padding: .8rem !important;
+}
+
 .p-1-5rem {
   padding: 1.5rem;
 }
@@ -320,7 +324,7 @@ html, body {
 }
 
 .pt-08rem {
-  padding-top: .8rem;
+  padding-top: .8rem !important ;
 }
 
 .pt-09rem {
@@ -357,8 +361,16 @@ html, body {
 
 /** BOTTOM **/
 
+.pb-10px {
+  padding-bottom: 10px;
+}
+
 .pb-02rem {
   padding-bottom: .2rem;
+}
+
+.pb-08rem {
+  padding-bottom: .8rem;
 }
 
 .pb-1rem {
@@ -382,7 +394,7 @@ html, body {
 }
 
 .pb-08rem {
-  padding-bottom: .8rem;
+  padding-bottom: .8rem !important;
 }
 
 .pb-09rem {
@@ -655,6 +667,10 @@ html, body {
   font-weight: 400;
 }
 
+.fw-500 {
+  font-weight: 500;
+}
+
 .fw-600 {
   font-weight: 600;
 }
@@ -799,10 +815,6 @@ html, body {
 
 .color-red {
   color: #e90000 !important;
-}
-
-.color-dark-green {
-  color: #023c42 !important;
 }
 
 .color-light-orange {
@@ -1146,6 +1158,10 @@ button.navbar-toggler {
   padding: 2px !important;
 }
 
+.md-form .form-control{
+  padding-bottom: .6rem !important;
+}
+
 /** INPUTS VALIDATION **/
 
 input.form-control.validate-error.ng-invalid.ng-touched, input.form-control.validate-error.ng-invalid.ng-dirty, .form-submitted input.form-control.validate-error.ng-invalid, .md-textarea.validate-error.ng-invalid.ng-touched, .md-textarea.validate-error.ng-invalid.ng-dirty, .form-submitted .md-textarea.validate-error.ng-invalid {
@@ -1296,6 +1312,14 @@ button.md-toast-close-button {
 
 /** FIN INPUTS VALIDATION **/
 
+.ng-placeholder {
+  font-size: 1rem !important;
+}
+
+.ng-select .ng-select-container .ng-value-container {
+  padding: 1em 0 !important;
+}
+
 /************* SELECT ************/
 
 .ng-select .ng-select-container {
@@ -1388,9 +1412,12 @@ button.md-toast-close-button {
 .box-grey {
   border-radius: 1.5rem;
   background: #f4f4f4;
-  padding: 10px 20px;
-  margin: 10px;
+  /* padding: 10px 20px;
+  margin: 10px; */
+  padding: .5rem 1rem .5rem 1rem;
   color: #333333;
+  font-size: .9rem !important;
+  margin: .4rem 0rem .4rem 0rem;
 }
 
 .box-drop {
@@ -1835,4 +1862,15 @@ ul.stepper.horizontal .step-title {
 
 .ngx-pagination .current{
   background: #306EB5 !important;
+}
+
+/*************BUTTONS*****************/
+
+.btn-proximax {
+  min-width: 120px !important;
+  padding: 8px 30px !important;
+  font-weight: bold !important;
+  font-size: 16px !important;
+  text-align: center !important;
+  background: #306eb5 !important;
 }
