@@ -361,8 +361,16 @@ html, body {
 
 /** BOTTOM **/
 
+.pb-10px {
+  padding-bottom: 10px;
+}
+
 .pb-02rem {
   padding-bottom: .2rem;
+}
+
+.pb-08rem {
+  padding-bottom: .8rem;
 }
 
 .pb-1rem {
@@ -1841,4 +1849,15 @@ ul.stepper.horizontal .step-title {
 
 .ngx-pagination .current{
   background: #306EB5 !important;
+}
+
+/*************BUTTONS*****************/
+
+.btn-proximax {
+  min-width: 120px !important;
+  padding: 8px 30px !important;
+  font-weight: bold !important;
+  font-size: 16px !important;
+  text-align: center !important;
+  background: #306eb5 !important;
 }
