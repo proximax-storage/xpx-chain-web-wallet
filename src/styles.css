@@ -289,6 +289,10 @@ html, body {
   padding: .5rem !important;
 }
 
+.p-08rem {
+  padding: .8rem !important;
+}
+
 .p-1-5rem {
   padding: 1.5rem;
 }
@@ -653,6 +657,10 @@ html, body {
 
 .fw-400 {
   font-weight: 400;
+}
+
+.fw-500 {
+  font-weight: 500;
 }
 
 .fw-600 {
@@ -1384,9 +1392,11 @@ button.md-toast-close-button {
 .box-grey {
   border-radius: 1.5rem;
   background: #f4f4f4;
-  padding: 10px 20px;
-  margin: 10px;
+  /* padding: 10px 20px;
+  margin: 10px; */
+  padding: .5rem 1rem .5rem 1rem;
   color: #333333;
+  font-size: .9rem !important;
 }
 
 .box-drop {
