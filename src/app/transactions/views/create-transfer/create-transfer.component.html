@@ -25,7 +25,7 @@
                 <i *ngIf="account.value.default" class="fa fa-star fs-1rem ml-10px cursor-p" aria-hidden="true"
                   title="Default account"></i>
 
-                <i *ngIf=" account.value.isMultisign &&
+                <i *ngIf="account.value.isMultisign &&
                         account.value.isMultisign.cosignatories &&
                         account.value.isMultisign.cosignatories.length > 0"
                   class="fa fa-users fs-1rem ml-10px cursor-p" aria-hidden="true" title="Multi-signature account"></i>
@@ -58,7 +58,7 @@
             bindLabel="label" bindValue="value" placeholder="Cosignatories" (change)="selectCosignatorie($event)">
             <ng-template ng-option-tmp let-item="item" let-index="index">
               <b>{{item.label}}</b>
-              <b class="color-error-red"> - {{item.info}}</b>
+              <b class="color-error-red" *ngIf="item.info !== ''"> - {{item.info}}</b>
             </ng-template>
             <ng-template ng-footer-tmp>
               <span class="fs-08rem color-error-red fw-600">{{msgLockfungCosignatorie}}</span>
@@ -73,8 +73,13 @@
       <div class="row">
         <div class="col-11 col-md-10 col-lg-8 mx-auto">
           <ng-select mdbInputDirective mdbValidate formControlName="contact" class="selectWrapper"
-            [items]="listContacts" bindLabel="label" bindValue="value" placeholder="Contact"
+            [items]="listContacts" placeholder="Contact"
             (change)="selectContact($event)">
+            <ng-template ng-option-tmp let-item="item" let-index="index">
+              {{item.label}}
+              <b *ngIf="item.walletContact"> - Owner account</b>
+              <b *ngIf="!item.walletContact"> - Contact</b>
+            </ng-template>
           </ng-select>
         </div>
       </div>
@@ -257,7 +262,8 @@
     </div>
 
     <!-- FEE + LOCKFUND -->
-    <ng-container *ngIf="sender?.isMultisign && sender?.isMultisign.cosignatories && sender?.isMultisign.cosignatories.length > 0; else showOnlyFee">
+    <ng-container
+      *ngIf="sender?.isMultisign && sender?.isMultisign.cosignatories && sender?.isMultisign.cosignatories.length > 0; else showOnlyFee">
       <div class="row">
         <div class="col-11 col-md-10 col-lg-8 mx-auto">
           <div class="row">
@@ -358,7 +364,15 @@
 
       <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
         <button
-          [disabled]="(formTransfer.invalid || errorOtherMosaics || disabledAllField || insufficientBalance) && !reloadBtn"
+          [disabled]="
+          (formTransfer.invalid ||
+          errorOtherMosaics ||
+          disabledAllField ||
+          insufficientBalance) ||
+          (sender.isMultisign &&
+          sender.isMultisign.cosignatories &&
+          sender.isMultisign.cosignatories.length > 0 &&
+          !cosignatorie) && !reloadBtn"
           mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
           <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
             *ngIf="reloadBtn"></span>
