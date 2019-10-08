@@ -105,7 +105,10 @@ export class CreateTransferComponent implements OnInit {
     this.subscribeValue();
     this.booksAddress();
     this.getAccountInfo();
-    this.msgLockfungCosignatorie = `Cosignatorie with top balance ${this.amountFormatterSimple(this.feeCosignatory)} XPX will be available to cover the Lockfund rate`;
+
+
+    this.msgLockfungCosignatorie = ` Cosignatory has sufficient balance (${this.amountFormatterSimple(this.feeCosignatory)} XPX) to cover lockfund
+                fee`
     this.transactionHttp = new TransactionHttp(environment.protocol + "://" + `${this.nodeService.getNodeSelected()}`); //change
 
     // Mosaic by default
@@ -358,9 +361,9 @@ export class CreateTransferComponent implements OnInit {
    * @memberof CreateTransferComponent
    */
   booksAddress() {
+    this.listContacts = [];
     const data = this.listContacts.slice(0);
     const bookAddress = this.serviceModuleService.getBooksAddress();
-    this.listContacts = [];
     if (bookAddress !== undefined && bookAddress !== null) {
       for (let x of bookAddress) {
         data.push(x);
@@ -427,6 +430,7 @@ export class CreateTransferComponent implements OnInit {
    * @memberof CreateTransferComponent
    */
   clearForm(custom?: string | (string | number)[], formControl?: string | number) {
+    this.cosignatorie = null;
     if (custom !== undefined) {
       if (formControl !== undefined) {
         this.formTransfer.controls[formControl].get(custom).reset();
@@ -521,14 +525,10 @@ export class CreateTransferComponent implements OnInit {
    * @memberof CreateTransferComponent
    */
   getAccountInfo() {
-    //this.subscribe['accountsInfo'] =
     this.subscription.push(this.walletService.getAccountsInfo$().subscribe(
       next => {
-        // console.log(next);
-        // if (next && next.length > 0) {
         this.searching = false;
         this.changeSender(this.walletService.currentAccount);
-        // }
       }
     ));
   }
@@ -729,6 +729,25 @@ export class CreateTransferComponent implements OnInit {
 
 
   /**
+  *
+  */
+  saveContactFn() {
+    this.getBooksAddress = this.serviceModuleService.getBooksAddress();
+    if (this.getBooksAddress) {
+      const contact = this.getBooksAddress.find(el => el.value === this.formTransfer.get("accountRecipient").value.split('-').join(''));
+      if (!contact) {
+        this.formContact.address = this.formTransfer.get("accountRecipient").value.split('-').join('');
+        this.saveContact = false;
+        this.basicModal.show();
+      }
+    } else {
+      this.formContact.address = this.formTransfer.get("accountRecipient").value.split('-').join('');
+      this.saveContact = false;
+      this.basicModal.show();
+    }
+  }
+
+  /**
    *
    *
    * @memberof CreateTransferComponent
@@ -835,24 +854,7 @@ export class CreateTransferComponent implements OnInit {
     }
   }
 
-  /**
-   *
-   */
-  saveContactFn() {
-    this.getBooksAddress = this.serviceModuleService.getBooksAddress();
-    if (this.getBooksAddress) {
-      const contact = this.getBooksAddress.find(el => el.value === this.formTransfer.get("accountRecipient").value.split('-').join(''));
-      if (!contact) {
-        this.formContact.address = this.formTransfer.get("accountRecipient").value.split('-').join('');
-        this.saveContact = false;
-        this.basicModal.show();
-      }
-    } else {
-      this.formContact.address = this.formTransfer.get("accountRecipient").value.split('-').join('');
-      this.saveContact = false;
-      this.basicModal.show();
-    }
-  }
+
 
   /**
    *
@@ -890,12 +892,14 @@ export class CreateTransferComponent implements OnInit {
       if (value) {
         valueWithoutSpaces = value.trim();
       }
+
       const accountRecipient = (valueWithoutSpaces !== undefined && valueWithoutSpaces !== null && valueWithoutSpaces !== '') ? valueWithoutSpaces.split('-').join('') : '';
-      const accountSelected = (this.formTransfer.get('contact').value) ? this.formTransfer.get('contact').value.split('-').join('') : '';
+      //  const accountSelected = (value) ? value.split('-').join('') : '';
+      const contact = this.formTransfer.get('contact').value;
+      const accountSelected = (contact !== undefined && contact !== null && contact !== '') ? contact.value.split('-').join('') : '';
       if ((accountSelected !== '') && (accountSelected !== accountRecipient)) {
         this.formTransfer.get('contact').patchValue('');
       }
-
       if (accountRecipient !== null && accountRecipient !== undefined && accountRecipient.length === 40) {
         const currentAccount = Object.assign({}, this.walletService.getCurrentAccount());
         if (!this.proximaxProvider.verifyNetworkAddressEqualsNetwork(

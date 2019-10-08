@@ -323,6 +323,10 @@ html, body {
   padding-top: .8rem;
 }
 
+.pt-09rem {
+  padding-top: .9rem !important;
+}
+
 .pt-1rem {
   padding-top: 1rem;
 }
@@ -379,6 +383,10 @@ html, body {
 
 .pb-08rem {
   padding-bottom: .8rem;
+}
+
+.pb-09rem {
+  padding-bottom: .9rem !important;
 }
 
 .pb-3rem {
