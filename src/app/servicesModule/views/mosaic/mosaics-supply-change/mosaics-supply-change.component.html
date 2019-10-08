@@ -12,7 +12,7 @@
               bindValue="value" placeholder="Select or write mosaic" (change)="optionSelected($event)"></ng-select>
             <mdb-error class="ml-1rem"
               *ngIf="validateInput('parentMosaic').invalid && (validateInput('parentMosaic').dirty || validateInput('parentMosaic').touched)">
-              <span>Select mosaic</span>
+              <span>Select mosaicId</span>
             </mdb-error>
           </div>
         </div>
@@ -45,18 +45,18 @@
                 <span>Invalid supply</span>
               </mdb-error>
               <mdb-error *ngIf="errSupply">
-                <span>Supply exceeded</span>
+                <span>Supply maximum increase 9,000,000,000</span>
               </mdb-error>
               <mdb-error *ngIf="errSupplyMin">
-                  <span>Supply min 0.0000001</span>
+                  <span> Supply maximum decrease {{supply}}</span>
                 </mdb-error>
               <br>
             </div>
           </div>
         </div>
 
-        
-        
+
+
 
     <!-- CALCULATE SUPPLY -->
     <div class="row ml-01rem" *ngIf='showTotal'>
@@ -65,7 +65,7 @@
             <div class="row">
               <div class="col-12">
                 <img class="icono" src="assets/images/img/icon-amount-green-16h-proximax-sirius-wallet.svg" alt="">
-                <span style="font-size: 12px;" >Total Supply: {{ totalSupply }}</span>
+                <span>Total Supply: {{ totalSupply }}</span>
               </div>
             </div>
           </div>
@@ -129,7 +129,7 @@
           </div>
 
           <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-            <button mdbBtn type="submit" rounded="true" [disabled]="!formMosaicSupplyChange.valid || blockBtn"
+            <button mdbBtn type="submit" rounded="true" [disabled]="!formMosaicSupplyChange.valid || blockBtn || deltaSupply === 0"
               mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
               <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
                 *ngIf="blockButton"></span>

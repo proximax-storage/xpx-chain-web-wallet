@@ -33,8 +33,8 @@ export class DataBridgeService {
 
   reconnectNode = 0;
   subscription: Subscription[] = [];
-
-
+  audio: HTMLAudioElement;
+  audio2: HTMLAudioElement;
 
   constructor(
     private walletService: WalletService,
@@ -56,7 +56,6 @@ export class DataBridgeService {
       (blockchainHeight: UInt64) => {
         this.proximaxProvider.getBlockInfo().subscribe(
           (blockInfo: BlockInfo) => {
-            console.log(blockInfo.numTransactions);
             this.setblockInfo(blockInfo);
             this.saveBlockInfo(blockInfo);
           }
@@ -82,16 +81,16 @@ export class DataBridgeService {
       const b = new Listener(this.url, WebSocket);
       this.connector.push(b);
       b.open().then(() => {
-        const audio = new Audio('assets/audio/ding.ogg');
-        const audio2 = new Audio('assets/audio/ding2.ogg');
+        this.audio = new Audio('assets/audio/ding.ogg');
+        this.audio2 = new Audio('assets/audio/ding2.ogg');
         this.getBlockSocket(b);
-        this.getAggregateBondedAddedSocket(b, audio, ad);
-        this.getAggregateBondedRemovedSocket(b, audio2, ad);
-        this.getCosignatureAddedSocket(b, audio, ad);
-        this.getConfirmedSocket(b, audio, ad);
-        this.getStatusSocket(b, audio2, ad);
-        this.getUnConfirmedAddedSocket(b, audio2, ad);
-        this.getUnConfirmedRemovedSocket(b, audio2, ad);
+        this.getAggregateBondedAddedSocket(b, this.audio, ad);
+        this.getAggregateBondedRemovedSocket(b, this.audio2, ad);
+        this.getCosignatureAddedSocket(b, this.audio, ad);
+        this.getConfirmedSocket(b, this.audio, ad);
+        this.getStatusSocket(b, this.audio2, ad);
+        this.getUnConfirmedAddedSocket(b, this.audio2, ad);
+        this.getUnConfirmedRemovedSocket(b, this.audio2, ad);
       }, (error) => {
         setTimeout(() => {
           this.sharedService.showWarning('', 'Error connecting to the node');
@@ -203,6 +202,7 @@ export class DataBridgeService {
       const transactionFormatter = this.transactionsService.getStructureDashboard(aggregateBondedAdded, transactionPushed);
       if (transactionFormatter !== null) {
         audio.play();
+        this.transactionsService.setTransactionReady(aggregateBondedAdded.transactionInfo.hash);
         this.sharedService.showInfo('', 'Transaction aggregate bonded added');
         transactionPushed.unshift(transactionFormatter);
         this.transactionsService.setTransactionsAggregateBonded$(transactionPushed);
@@ -229,6 +229,7 @@ export class DataBridgeService {
 
       const agregateBondedTransactions = await this.transactionsService.getAggregateBondedTransactions$().pipe(first()).toPromise();
       if (agregateBondedTransactions && agregateBondedTransactions.length > 0) {
+        this.transactionsService.setTransactionReady(aggregateBondedRemoved);
         const filtered = agregateBondedTransactions.filter(next => next.data.transactionInfo.hash !== aggregateBondedRemoved);
         this.transactionsService.setTransactionsAggregateBonded$(filtered);
       }
@@ -258,6 +259,7 @@ export class DataBridgeService {
       if (allAggregateBondedSubject && allAggregateBondedSubject.length > 0) {
         const currentTransaction = allAggregateBondedSubject.find(d => d.data.transactionInfo.hash === cosignatureAdded.parentHash);
         if (currentTransaction) {
+          this.transactionsService.setTransactionReady(cosignatureAdded.parentHash);
           if (currentTransaction.data.cosignatures.length > 0) {
             const exist = currentTransaction.data.cosignatures.find(d => d.signature === cosignatureAdded.signature);
             if (!exist) {
@@ -312,6 +314,7 @@ export class DataBridgeService {
         audio.play();
         this.sharedService.showInfo('', 'Transaction confirmed');
         transactionPushed.unshift(transactionFormatter);
+        this.transactionsService.setTransactionReady(confirmedTransaction.transactionInfo.hash);
         this.transactionsService.setTransactionsConfirmed$(transactionPushed);
         this.transactionsService.searchAccountsInfo(this.walletService.currentWallet.accounts);
         this.namespaces.searchNamespacesFromAccounts([this.proximaxProvider.createFromRawAddress(this.walletService.getCurrentAccount().address)]);
@@ -337,6 +340,8 @@ export class DataBridgeService {
         'type': 'status',
         'hash': status.hash
       });
+
+      this.transactionsService.setTransactionReady(status.hash);
     });
     //});
   }
@@ -366,6 +371,7 @@ export class DataBridgeService {
         audio.play();
         this.sharedService.showInfo('', 'Transaction unconfirmed');
         transactionPushed.unshift(transactionFormatter);
+        this.transactionsService.setTransactionReady(unconfirmedAdded.transactionInfo.hash);
         this.transactionsService.setTransactionsUnConfirmed$(transactionPushed);
       }
     });
@@ -391,6 +397,7 @@ export class DataBridgeService {
       const unconfirmedSubject = await this.transactionsService.getUnconfirmedTransactions$().pipe(first()).toPromise();
       if (unconfirmedSubject && unconfirmedSubject.length > 0) {
         const unconfirmedFiltered = unconfirmedSubject.filter(next => next.data.transactionInfo.hash !== unconfirmedRemoved);
+        this.transactionsService.setTransactionReady(unconfirmedRemoved);
         this.transactionsService.setTransactionsUnConfirmed$(unconfirmedFiltered);
       }
     });
@@ -469,6 +476,53 @@ export class DataBridgeService {
    */
   setTransactionStatus(value: any) {
     return this.transactionSubject.next(value);
+  }
+
+  /**
+   *
+   *
+   * @param {string} hash
+   * @memberof DataBridgeService
+   */
+  setTimeOutValidateTransaction(hash: string): void {
+    setTimeout(async () => {
+      const exist = (this.transactionsService.transactionsReady.find(x => x === hash)) ? true: false;
+      console.log(exist);
+      if (!exist) {
+        this.sharedService.showWarning(
+          "",
+          "An error has occurred with your transaction"
+        );
+      }
+
+      /*this.proximaxProvider.getTransactionStatus(hash).subscribe(
+        async next => {
+          console.log('---->', next);
+          if (next) {
+            switch (next.group) {
+              case 'unconfirmed':
+                this.setTransactionStatus({
+                  'type': 'unconfirmed',
+                  'hash': hash
+                });
+
+                break;
+
+              case 'confirmed':
+                this.setTransactionStatus({
+                  'type': 'confirmed',
+                  'hash': hash
+                });
+
+                break;
+            }
+          }
+        }, error => {
+          console.log('error');
+          this.sharedService.showWarning("", "An error has occurred with your transaction");
+        }
+      );*/
+    }, 10000);
   }
 
   /**

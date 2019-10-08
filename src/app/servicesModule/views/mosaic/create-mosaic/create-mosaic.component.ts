@@ -53,7 +53,7 @@ export class CreateMosaicComponent implements OnInit {
   accountInfo: AccountsInfoInterface;
   deltaSupply: number;
   invalidDivisibility: boolean;
-  invalidSupply: boolean;
+  // invalidSupply: boolean;
   blockButton: boolean;
   errorDivisibility: string;
   errorSupply: string;
@@ -68,7 +68,7 @@ export class CreateMosaicComponent implements OnInit {
   transferable: any;
   divisibility: any;
   aggregateTransaction: AggregateTransaction;
-  fee: any = '0.102608';
+  fee: any = '0.000000';
   amountAccount: number;
   insufficientBalanceDuration: boolean;
   notExpire: any;
@@ -121,11 +121,12 @@ export class CreateMosaicComponent implements OnInit {
         this.blockButton = false;
         this.invalidDivisibility = false;
       }
-      this.mosaicForm.get('deltaSupply').setValue('');
+      // this.mosaicForm.get('deltaSupply').setValue('');
     });
+
     this.mosaicForm.get('deltaSupply').valueChanges.subscribe(next => {
       if (parseFloat(next) <= this.configurationForm.mosaicWallet.maxSupply) {
-        this.invalidSupply = false;
+        // this.invalidSupply = false;
         this.blockButton = false;
         this.errorSupply = '';
 
@@ -137,7 +138,7 @@ export class CreateMosaicComponent implements OnInit {
       } else {
         this.errorSupply = '-invalid';
         this.blockButton = true;
-        this.invalidSupply = true;
+        // this.invalidSupply = true;
       }
     });
   }
@@ -157,7 +158,7 @@ export class CreateMosaicComponent implements OnInit {
       error => this.vestedBalance = {
         part1: '0',
         part2: '000000'
-      }  
+      }
     ));
     let vestedBalance = this.vestedBalance.part1.concat(this.vestedBalance.part2).replace(",", "");
     this.amountAccount = Number(vestedBalance)
@@ -262,7 +263,7 @@ export class CreateMosaicComponent implements OnInit {
       this.walletService.currentAccount.network
     );
     // console.log('mosaicSupplyChangeTransaction', mosaicSupplyChangeTransaction);
-    
+
     this.aggregateTransaction = AggregateTransaction.createComplete(
       Deadline.create(environment.deadlineTransfer.deadline,environment.deadlineTransfer.chronoUnit),
       [
@@ -272,7 +273,8 @@ export class CreateMosaicComponent implements OnInit {
       this.walletService.currentAccount.network,
       []
     );
-    // this.fee = this.transactionService.amountFormatterSimple(this.aggregateTransaction.maxFee.compact());
+    // console.log('this.aggregateTransaction', this.aggregateTransaction.size);
+    this.fee = this.transactionService.amountFormatterSimple(this.aggregateTransaction.maxFee.compact());
   }
   /**
    *
@@ -312,7 +314,7 @@ export class CreateMosaicComponent implements OnInit {
       // console.log('this.amountAccount', this.amountAccount);
       // console.log('Number(this.fee)', Number(this.fee));
       // console.log('Number(this.calculateRentalFee)', Number(this.calculateRentalFee.replace(",", "")));
-      
+
       const validateAmount = this.transactionService.validateBuildSelectAccountBalance(this.amountAccount, Number(this.fee), Number(this.calculateRentalFee.replace(",", "")));
       // console.log(validateAmount);
       if (validateAmount) {
@@ -337,7 +339,7 @@ export class CreateMosaicComponent implements OnInit {
           }
 
           // console.log('-----------params', params);
-          
+
 
           //BUILD TRANSACTION
            const mosaicDefinitionTransaction = this.proximaxProvider.buildMosaicDefinition(params);
@@ -547,8 +549,8 @@ export class CreateMosaicComponent implements OnInit {
             //   this.namespaceForm.enable();
             // }
           }
-     
-        
+
+
       } else {
         // **********INSUFFICIENT BALANCE*************
         // console.log('AQUI FUE 2');

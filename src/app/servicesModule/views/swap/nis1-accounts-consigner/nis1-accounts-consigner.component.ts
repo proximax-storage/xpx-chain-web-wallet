@@ -68,8 +68,9 @@ export class Nis1AccountsConsignerComponent implements OnInit {
                     for (const mosaic of item['_assets']) {
                       if (mosaic.assetId.namespaceId === 'prx' && mosaic.assetId.name === 'xpx') {
                         const quantity = parseFloat(this.nemProvider.amountFormatter(mosaic.quantity, el, el.properties.divisibility));
-                        const quantitywhitoutFormat = relativeAmount.split(',').join('');
-                        const quantityFormat = this.nemProvider.amountFormatter(parseInt((quantitywhitoutFormat - quantity).toString().split('.').join('')), el, el.properties.divisibility);
+                        const quantitywhitoutFormat = parseFloat(relativeAmount.split(',').join(''));
+                        const restQuantity = (quantitywhitoutFormat - quantity).toString().split('.').join('');
+                        const quantityFormat = this.nemProvider.amountFormatter(Number(restQuantity), el, el.properties.divisibility);
                         relativeAmount = quantityFormat;
                       }
                     }

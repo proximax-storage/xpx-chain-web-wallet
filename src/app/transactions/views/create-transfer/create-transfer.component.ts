@@ -36,7 +36,7 @@ export class CreateTransferComponent implements OnInit {
   balanceXpx = '0.000000';
   boxOtherMosaics = [];
   blockSendButton = false;
-  blockButton: boolean = false;
+  reloadBtn: boolean = false;
   charRest: number;
   cosignatorie: any = null;
   configurationForm: ConfigurationForm;
@@ -52,6 +52,7 @@ export class CreateTransferComponent implements OnInit {
   incrementMosaics = 0;
   invalidRecipient = false;
   insufficientBalance = false;
+  msgLockfungCosignatorie = '';
   msgErrorUnsupported = '';
   msgErrorUnsupportedContact = '';
   mosaicXpx: { id: string, name: string; divisibility: number } = null;
@@ -104,7 +105,10 @@ export class CreateTransferComponent implements OnInit {
     this.subscribeValue();
     this.booksAddress();
     this.getAccountInfo();
-    //this.getTransactionStatus();
+
+
+    this.msgLockfungCosignatorie = ` Cosignatory has sufficient balance (${this.amountFormatterSimple(this.feeCosignatory)} XPX) to cover lockfund
+                fee`
     this.transactionHttp = new TransactionHttp(environment.protocol + "://" + `${this.nodeService.getNodeSelected()}`); //change
 
     // Mosaic by default
@@ -152,14 +156,14 @@ export class CreateTransferComponent implements OnInit {
     }
   }
 
-    /**
-  *
-  *
-  * @param {string} amount
-  * @memberof CreateTransferComponent
-  */
+  /**
+*
+*
+* @param {string} amount
+* @memberof CreateTransferComponent
+*/
   amountFormatterSimple(amount): string {
-    return this.transactionService.amountFormatterSimple(amount)
+    return this.transactionService.amountFormatterSimple(amount);
   }
 
   /**
@@ -357,14 +361,31 @@ export class CreateTransferComponent implements OnInit {
    * @memberof CreateTransferComponent
    */
   booksAddress() {
+    this.listContacts = [];
     const data = this.listContacts.slice(0);
     const bookAddress = this.serviceModuleService.getBooksAddress();
-    this.listContacts = [];
     if (bookAddress !== undefined && bookAddress !== null) {
       for (let x of bookAddress) {
         data.push(x);
       }
       this.listContacts = data;
+    }
+  }
+
+  /**
+   *
+   *
+   * @param {number} message
+   * @memberof CreateTransferComponent
+   */
+  calculateFee(message: number) {
+    this.mosaicsToSend = this.validateMosaicsToSend();
+    const x = TransferTransaction.calculateSize(PlainMessage.create(this.formTransfer.get("message").value).size(), this.mosaicsToSend.length);
+    const b = FeeCalculationStrategy.calculateFee(x);
+    if (message > 0) {
+      this.fee = this.transactionService.amountFormatterSimple(b.compact())
+    } else if (message === 0 && this.mosaicsToSend.length === 0) {
+      this.fee = '0.037250'
     }
   }
 
@@ -409,6 +430,7 @@ export class CreateTransferComponent implements OnInit {
    * @memberof CreateTransferComponent
    */
   clearForm(custom?: string | (string | number)[], formControl?: string | number) {
+    this.cosignatorie = null;
     if (custom !== undefined) {
       if (formControl !== undefined) {
         this.formTransfer.controls[formControl].get(custom).reset();
@@ -503,14 +525,10 @@ export class CreateTransferComponent implements OnInit {
    * @memberof CreateTransferComponent
    */
   getAccountInfo() {
-    //this.subscribe['accountsInfo'] =
     this.subscription.push(this.walletService.getAccountsInfo$().subscribe(
       next => {
-        // console.log(next);
-        // if (next && next.length > 0) {
         this.searching = false;
         this.changeSender(this.walletService.currentAccount);
-        // }
       }
     ));
   }
@@ -534,11 +552,21 @@ export class CreateTransferComponent implements OnInit {
               }
 
               if (statusTransaction['type'] === 'confirmed' && match) {
+                this.reloadBtn = false;
+                this.blockSendButton = false;
                 this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['hash']);
               } else if (statusTransaction['type'] === 'unconfirmed' && match) {
+                this.reloadBtn = false;
+                this.blockSendButton = false;
               } else if (statusTransaction['type'] === 'aggregateBondedAdded' && match) {
+                this.reloadBtn = false;
+                this.blockSendButton = false;
               } else if (statusTransaction['type'] === 'cosignatureSignedTransaction' && match) {
+                this.reloadBtn = false;
+                this.blockSendButton = false;
               } else if (statusTransaction['type'] === 'error' && match) {
+                this.reloadBtn = false;
+                this.blockSendButton = false;
                 this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['hash']);
               }
             }
@@ -678,7 +706,7 @@ export class CreateTransferComponent implements OnInit {
     this.balanceXpx = '0.000000';
     this.boxOtherMosaics = [];
     this.blockSendButton = false;
-    this.blockButton = false;
+    this.reloadBtn = false;
     this.charRest = this.configurationForm.message.maxLength;
     this.disabledBtnAddMosaic = false;
     this.errorOtherMosaics = false;
@@ -701,23 +729,23 @@ export class CreateTransferComponent implements OnInit {
 
 
   /**
-   *
-   *
-   * @param {string} hash
-   * @memberof CreateTransferComponent
-   */
-  /* setTimeOutValidate(hash: string) {
-     setTimeout(() => {
-       let exist = false;
-       for (let element of this.transactionReady) {
-         if (hash === element.hash) {
-           exist = true;
-         }
-       }
-
-       (exist) ? '' : this.sharedService.showWarning('', 'An error has occurred');
-     }, 5000);
-   }*/
+  *
+  */
+  saveContactFn() {
+    this.getBooksAddress = this.serviceModuleService.getBooksAddress();
+    if (this.getBooksAddress) {
+      const contact = this.getBooksAddress.find(el => el.value === this.formTransfer.get("accountRecipient").value.split('-').join(''));
+      if (!contact) {
+        this.formContact.address = this.formTransfer.get("accountRecipient").value.split('-').join('');
+        this.saveContact = false;
+        this.basicModal.show();
+      }
+    } else {
+      this.formContact.address = this.formTransfer.get("accountRecipient").value.split('-').join('');
+      this.saveContact = false;
+      this.basicModal.show();
+    }
+  }
 
   /**
    *
@@ -726,7 +754,7 @@ export class CreateTransferComponent implements OnInit {
    */
   sendTransfer() {
     if (this.formTransfer.valid && (!this.blockSendButton || !this.errorOtherMosaics)) {
-      this.blockButton = true;
+      this.reloadBtn = true;
       this.blockSendButton = true;
       if (this.transactionService.validateBuildSelectAccountBalance(Number(this.balanceXpx.split(',').join('')), this.fee, 0)) {
         const common = { password: this.formTransfer.get("password").value };
@@ -747,22 +775,17 @@ export class CreateTransferComponent implements OnInit {
                 mosaic: mosaicsToSend
               };
 
-              // Create account from private key
               const account = Account.createFromPrivateKey(params.common.privateKey, params.network);
-              // Build transfer transaction
-              // const transferBuilder = this.transactionService.buildTransferTransaction(params);
-              //-----------------------------------------------------------------------
               const recipientAddress = this.proximaxProvider.createFromRawAddress(params.recipient);
               const mosaics = params.mosaic;
               const allMosaics = [];
-              mosaics.forEach(element => {
+              mosaics.forEach((element: any) => {
                 allMosaics.push(new Mosaic(
                   new MosaicId(element.id),
                   UInt64.fromUint(Number(element.amount))
                 )
                 );
               });
-              // console.log("mosaicos", allMosaics)
 
               const transferBuilder = TransferTransaction.create(
                 Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
@@ -773,27 +796,19 @@ export class CreateTransferComponent implements OnInit {
               );
 
               //-----------------------------------------------------------------------
-              // Build aggregate transaction
               const aggregateTransaction = this.transactionService.buildAggregateTransaction(this.sender.publicAccount, transferBuilder);
-              // console.log('=== Build aggregate transaction ===', aggregateTransaction);
-              // Sign transaction
               const aggregateSigned = account.sign(aggregateTransaction, generationHash);
-              // Build hash lock transaction
               const hashLockTransaction: LockFundsTransaction = this.transactionService.buildHashLockTransaction(aggregateSigned);
-              // console.log('=== Build hash lock transaction === ', hashLockTransaction);
-              // Hash lock signed
               const hashLockSigned = account.sign(hashLockTransaction, generationHash);
               this.saveContactFn();
               this.clearForm();
               this.transactionService.buildTransactionHttp().announce(hashLockSigned).subscribe(async () => {
                 this.getTransactionStatusHashLock(hashLockSigned, aggregateSigned);
-              }, err => {
-                // console.log('ERROR ----> ', err);
-              });
+              }, err => { });
             } else {
               this.formTransfer.get('password').setValue('');
               this.blockSendButton = false;
-              this.blockButton = false;
+              this.reloadBtn = false;
             }
 
             break;
@@ -813,11 +828,12 @@ export class CreateTransferComponent implements OnInit {
               this.clearForm();
               this.transactionService.buildTransactionHttp().announce(transferBuilder.signedTransaction).subscribe(
                 async () => {
-                  this.blockButton = false;
-                  this.blockSendButton = false;
-                  // this.getTransactionStatus();
+                  /*this.reloadBtn = false;
+                  this.blockSendButton = false;*/
+                  this.getTransactionStatus();
+                  this.dataBridge.setTimeOutValidateTransaction(transferBuilder.signedTransaction.hash);
                 }, err => {
-                  this.blockButton = false;
+                  this.reloadBtn = false;
                   this.blockSendButton = false;
                   this.clearForm();
                   this.sharedService.showError('', err);
@@ -826,36 +842,19 @@ export class CreateTransferComponent implements OnInit {
             } else {
               this.formTransfer.get('password').setValue('');
               this.blockSendButton = false;
-              this.blockButton = false;
+              this.reloadBtn = false;
             }
             break;
         }
       } else {
-        this.blockButton = false;
+        this.reloadBtn = false;
         this.blockSendButton = false;
         this.sharedService.showError('', 'Insufficient balance');
       }
     }
   }
 
-  /**
-   *
-   */
-  saveContactFn() {
-    this.getBooksAddress = this.serviceModuleService.getBooksAddress();
-    if (this.getBooksAddress) {
-      const contact = this.getBooksAddress.find(el => el.value === this.formTransfer.get("accountRecipient").value.split('-').join(''));
-      if (!contact) {
-        this.formContact.address = this.formTransfer.get("accountRecipient").value.split('-').join('');
-        this.saveContact = false;
-        this.basicModal.show();
-      }
-    } else {
-      this.formContact.address = this.formTransfer.get("accountRecipient").value.split('-').join('');
-      this.saveContact = false;
-      this.basicModal.show();
-    }
-  }
+
 
   /**
    *
@@ -888,95 +887,89 @@ export class CreateTransferComponent implements OnInit {
    * @memberof CreateTransferComponent
    */
   subscribeValue() {
-    // Account recipient
-    this.formTransfer.get('accountRecipient').valueChanges.subscribe(
-      value => {
-        let valueWithoutSpaces = '';
-        if (value) {
-          valueWithoutSpaces = value.trim();
-        }
-        const accountRecipient = (valueWithoutSpaces !== undefined && valueWithoutSpaces !== null && valueWithoutSpaces !== '') ? valueWithoutSpaces.split('-').join('') : '';
-        const accountSelected = (this.formTransfer.get('contact').value) ? this.formTransfer.get('contact').value.split('-').join('') : '';
-        if ((accountSelected !== '') && (accountSelected !== accountRecipient)) {
-          this.formTransfer.get('contact').patchValue('');
-        }
+    this.formTransfer.get('accountRecipient').valueChanges.subscribe(value => {
+      let valueWithoutSpaces = '';
+      if (value) {
+        valueWithoutSpaces = value.trim();
+      }
 
-        if (accountRecipient !== null && accountRecipient !== undefined && accountRecipient.length === 40) {
-          const currentAccount = Object.assign({}, this.walletService.getCurrentAccount());
-          if (!this.proximaxProvider.verifyNetworkAddressEqualsNetwork(
-            this.proximaxProvider.createFromRawAddress(currentAccount.address).plain(), accountRecipient)
-          ) {
-            if (valueWithoutSpaces !== value) {
-              this.formTransfer.get('accountRecipient').setValue(valueWithoutSpaces);
-            }
-            this.blockSendButton = true;
-            this.msgErrorUnsupported = 'Recipient Address Network unsupported';
-          } else {
-            this.blockSendButton = false;
-            this.msgErrorUnsupported = '';
-          }
-        } else if (!this.formTransfer.get('accountRecipient').getError("required") && this.formTransfer.get('accountRecipient').valid) {
-          this.blockSendButton = true;
-          this.msgErrorUnsupported = 'Recipient Address Network unsupported';
-        } else {
+      const accountRecipient = (valueWithoutSpaces !== undefined && valueWithoutSpaces !== null && valueWithoutSpaces !== '') ? valueWithoutSpaces.split('-').join('') : '';
+      //  const accountSelected = (value) ? value.split('-').join('') : '';
+      const contact = this.formTransfer.get('contact').value;
+      const accountSelected = (contact !== undefined && contact !== null && contact !== '') ? contact.value.split('-').join('') : '';
+      if ((accountSelected !== '') && (accountSelected !== accountRecipient)) {
+        this.formTransfer.get('contact').patchValue('');
+      }
+      if (accountRecipient !== null && accountRecipient !== undefined && accountRecipient.length === 40) {
+        const currentAccount = Object.assign({}, this.walletService.getCurrentAccount());
+        if (!this.proximaxProvider.verifyNetworkAddressEqualsNetwork(
+          this.proximaxProvider.createFromRawAddress(currentAccount.address).plain(), accountRecipient)
+        ) {
           if (valueWithoutSpaces !== value) {
             this.formTransfer.get('accountRecipient').setValue(valueWithoutSpaces);
           }
+          this.blockSendButton = true;
+          this.msgErrorUnsupported = 'Recipient Address Network unsupported';
+        } else {
           this.blockSendButton = false;
           this.msgErrorUnsupported = '';
         }
+      } else if (!this.formTransfer.get('accountRecipient').getError("required") && this.formTransfer.get('accountRecipient').valid) {
+        this.blockSendButton = true;
+        this.msgErrorUnsupported = 'Recipient Address Network unsupported';
+      } else {
+        if (valueWithoutSpaces !== value) {
+          this.formTransfer.get('accountRecipient').setValue(valueWithoutSpaces);
+        }
+        this.blockSendButton = false;
+        this.msgErrorUnsupported = '';
       }
-    );
+    });
 
     this.subscription.push(this.formTransfer.get('message').valueChanges.subscribe(val => {
       if (val) {
         this.charRest = this.configurationForm.message.maxLength - val.length;
-
         this.calculateFee(val.length);
       } else {
+        this.charRest = this.configurationForm.message.maxLength;
         this.calculateFee(0);
       }
     }));
 
-    //Amount XPX
-    this.formTransfer.get('amountXpx').valueChanges.subscribe(
-      value => {
-        if (value !== null && value !== undefined) {
-          const a = Number(value);
-          let validateAmount = false;
-          if (this.sender) {
-            let accountInfo = this.walletService.filterAccountInfo(this.sender.name);
-            // console.log('Account INfo- ---->', accountInfo);
-            if (accountInfo !== undefined && accountInfo !== null && Object.keys(accountInfo).length > 0) {
-              if (accountInfo.accountInfo.mosaics.length > 0) {
-                const filtered = accountInfo.accountInfo.mosaics.find(element => {
-                  return element.id.toHex() === new MosaicId(environment.mosaicXpxInfo.id).toHex();
-                });
+    this.formTransfer.get('amountXpx').valueChanges.subscribe(value => {
+      if (value !== null && value !== undefined) {
+        const a = Number(value);
+        let validateAmount = false;
+        if (this.sender) {
+          let accountInfo = this.walletService.filterAccountInfo(this.sender.name);
+          // console.log('Account INfo- ---->', accountInfo);
+          if (accountInfo !== undefined && accountInfo !== null && Object.keys(accountInfo).length > 0) {
+            if (accountInfo.accountInfo.mosaics.length > 0) {
+              const filtered = accountInfo.accountInfo.mosaics.find(element => {
+                return element.id.toHex() === new MosaicId(environment.mosaicXpxInfo.id).toHex();
+              });
 
-                let arrAmount = value.toString().replace(/,/g, "").split('.');
-                let decimal;
-                let realAmount;
+              let arrAmount = value.toString().replace(/,/g, "").split('.');
+              let decimal;
+              let realAmount;
 
-                if (arrAmount.length < 2) {
-                  decimal = this.addZeros(environment.mosaicXpxInfo.divisibility);
-                } else {
-                  let arrDecimals = arrAmount[1].split('');
-                  decimal = this.addZeros(environment.mosaicXpxInfo.divisibility - arrDecimals.length, arrAmount[1]);
-                }
+              if (arrAmount.length < 2) {
+                decimal = this.addZeros(environment.mosaicXpxInfo.divisibility);
+              } else {
+                let arrDecimals = arrAmount[1].split('');
+                decimal = this.addZeros(environment.mosaicXpxInfo.divisibility - arrDecimals.length, arrAmount[1]);
+              }
 
-                realAmount = `${arrAmount[0]}${decimal}`;
+              realAmount = `${arrAmount[0]}${decimal}`;
 
-                if (filtered !== undefined && filtered !== null) {
-                  const invalidBalance = filtered.amount.compact() < Number(realAmount);
-                  if (invalidBalance && !this.insufficientBalance) {
-                    this.insufficientBalance = true;
-                    this.blockSendButton = true;
-                  } else if (!invalidBalance && this.insufficientBalance) {
-                    this.insufficientBalance = false;
-                    this.blockSendButton = false;
-                  }
-                } else {
-                  validateAmount = true;
+              if (filtered !== undefined && filtered !== null) {
+                const invalidBalance = filtered.amount.compact() < Number(realAmount);
+                if (invalidBalance && !this.insufficientBalance) {
+                  this.insufficientBalance = true;
+                  this.blockSendButton = true;
+                } else if (!invalidBalance && this.insufficientBalance) {
+                  this.insufficientBalance = false;
+                  this.blockSendButton = false;
                 }
               } else {
                 validateAmount = true;
@@ -984,32 +977,21 @@ export class CreateTransferComponent implements OnInit {
             } else {
               validateAmount = true;
             }
+          } else {
+            validateAmount = true;
           }
+        }
 
-          if (validateAmount) {
-            if (Number(value) > 0) {
-              this.insufficientBalance = true;
-              this.blockSendButton = true;
-            } else if ((Number(value) === 0 || value === '') && this.insufficientBalance) {
-              this.insufficientBalance = false;
-            }
+        if (validateAmount) {
+          if (Number(value) > 0) {
+            this.insufficientBalance = true;
+            this.blockSendButton = true;
+          } else if ((Number(value) === 0 || value === '') && this.insufficientBalance) {
+            this.insufficientBalance = false;
           }
         }
       }
-    );
-  }
-
-
-  calculateFee(message: number) {
-    this.mosaicsToSend = this.validateMosaicsToSend();
-    // console.log("this.mosaicsToSend", this.mosaicsToSend)
-    const x = TransferTransaction.calculateSize(PlainMessage.create(this.formTransfer.get("message").value).size(), this.mosaicsToSend.length);
-    const b = FeeCalculationStrategy.calculateFee(x);
-    if (message > 0) {
-      this.fee = this.transactionService.amountFormatterSimple(b.compact())
-    } else if (message === 0 && this.mosaicsToSend.length === 0) {
-      this.fee = '0.037250'
-    }
+    });
   }
 
   /**

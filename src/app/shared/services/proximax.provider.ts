@@ -73,72 +73,6 @@ export class ProximaxProvider {
   constructor() {
   }
 
-
-  /**
-   *
-   *
-   * @returns {Observable<UInt64>}
-   * @memberof ProximaxProvider
-   */
-  getBlockchainHeight(): Observable<UInt64> {
-    return this.blockchainHttp.getBlockchainHeight();//Update-sdk-dragon
-  }
-
-
-  /**
-     * Gets a BlockInfo for a given block height
-     *  @param height - Block height
-     * @returns {Observable<BlockInfo>}
-     * @memberof ProximaxProvider
-     */
-  getBlockInfo(height: number = 1): Observable<BlockInfo> {
-    return this.blockHttp.getBlockByHeight(height) //Update-sdk-dragon
-  }
-
-  /**
-   * Method to return blockchain network type
-   *
-   * @p   *
-   * @param {NetworkType} network network type
-   * @retaram {NetworkType} network network type
-   * @returns {BlockchainNetworkType} BlockchainNetworkType
-   */
-  getBlockchainNetworkType(network: NetworkType): BlockchainNetworkType {
-    switch (network) {
-      case NetworkType.MAIN_NET:
-        return BlockchainNetworkType.MAIN_NET
-      case NetworkType.MIJIN:
-        return BlockchainNetworkType.MIJIN
-      case NetworkType.MIJIN_TEST:
-        return BlockchainNetworkType.MIJIN_TEST
-      case NetworkType.TEST_NET:
-        return BlockchainNetworkType.TEST_NET
-    }
-  }
-
-
-  /**
-   *
-   *
-   * @param {string} transactionId
-   * @returns {*}
-   * @memberof ProximaxProvider
-   */
-  getTransaction(transactionId: string): any { //Observable<Transaction> {
-    return this.transactionHttp.getTransaction(transactionId);
-  }
-
-  /**
-   *
-   *
-   * @param {Array} transactionId
-   * @returns {*}
-   * @memberof ProximaxProvider
-   */
-  getTransactions(transactionsId: Array<string>): any { //Observable<Transaction> {
-    return this.transactionHttp.getTransactions(transactionsId);
-  }
-
   /**
    *
    *
@@ -400,7 +334,59 @@ export class ProximaxProvider {
     return this.accountHttp.aggregateBondedTransactions(publicAccount);
   }
 
-  /******************** FIN COW **********************/
+   /**
+   * get
+   *
+   * @param {string} privateKey
+   * @param {*} net
+   * @returns {Account}
+   * @memberof ProximaxProvider
+   */
+  getAccountFromPrivateKey(privateKey: string, net: NetworkType): Account {
+    return Account.createFromPrivateKey(privateKey, net);
+  }
+
+   /**
+   *
+   *
+   * @returns {Observable<UInt64>}
+   * @memberof ProximaxProvider
+   */
+  getBlockchainHeight(): Observable<UInt64> {
+    return this.blockchainHttp.getBlockchainHeight();//Update-sdk-dragon
+  }
+
+
+  /**
+     * Gets a BlockInfo for a given block height
+     *  @param height - Block height
+     * @returns {Observable<BlockInfo>}
+     * @memberof ProximaxProvider
+     */
+  getBlockInfo(height: number = 1): Observable<BlockInfo> {
+    return this.blockHttp.getBlockByHeight(height) //Update-sdk-dragon
+  }
+
+  /**
+   * Method to return blockchain network type
+   *
+   * @p   *
+   * @param {NetworkType} network network type
+   * @retaram {NetworkType} network network type
+   * @returns {BlockchainNetworkType} BlockchainNetworkType
+   */
+  getBlockchainNetworkType(network: NetworkType): BlockchainNetworkType {
+    switch (network) {
+      case NetworkType.MAIN_NET:
+        return BlockchainNetworkType.MAIN_NET
+      case NetworkType.MIJIN:
+        return BlockchainNetworkType.MIJIN
+      case NetworkType.MIJIN_TEST:
+        return BlockchainNetworkType.MIJIN_TEST
+      case NetworkType.TEST_NET:
+        return BlockchainNetworkType.TEST_NET
+    }
+  }
 
 
   /**
@@ -446,18 +432,6 @@ export class ProximaxProvider {
    */
   getPublicAccountFromPrivateKey(privateKey: string, net: NetworkType): PublicAccount {
     return Account.createFromPrivateKey(privateKey, net).publicAccount;
-  }
-
-  /**
-   * get
-   *
-   * @param {string} privateKey
-   * @param {*} net
-   * @returns {Account}
-   * @memberof ProximaxProvider
-   */
-  getAccountFromPrivateKey(privateKey: string, net: NetworkType): Account {
-    return Account.createFromPrivateKey(privateKey, net);
   }
 
 
@@ -525,13 +499,35 @@ export class ProximaxProvider {
   }
 
   /**
+   *
+   *
+   * @param {string} transactionId
+   * @returns {*}
+   * @memberof ProximaxProvider
+   */
+  getTransaction(transactionId: string): any { //Observable<Transaction> {
+    return this.transactionHttp.getTransaction(transactionId);
+  }
+
+  /**
+   *
+   *
+   * @param {Array} transactionId
+   * @returns {*}
+   * @memberof ProximaxProvider
+   */
+  getTransactions(transactionsId: Array<string>): any { //Observable<Transaction> {
+    return this.transactionHttp.getTransactions(transactionsId);
+  }
+
+  /**
    *Gets a transaction status for a transaction hash
    *
    * @param {string} hash
    * @returns {Observable<TransactionStatus>}
    * @memberof ProximaxProvider
    */
-  getTransactionStatusError(hash: string): Observable<TransactionStatus> {
+  getTransactionStatus(hash: string): Observable<TransactionStatus> {
     return this.transactionHttp.getTransactionStatus(hash);
   }
 

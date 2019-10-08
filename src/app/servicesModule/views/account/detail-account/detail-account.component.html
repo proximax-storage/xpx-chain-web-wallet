@@ -164,7 +164,7 @@
           <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md"
             (click)="printAccountInfo()">
             <span class="fs-1-2em color-white">
-              <i class="fa fa-file"></i>&nbsp;Save Paper Wallet
+              Save Paper Wallet
             </span>
           </button>
         </div>
@@ -173,14 +173,12 @@
           <button mdbBtn type="button" rounded="true" [disabled]="!validatingForm.valid || checked === valueInitNis && showPrivateKey === valueInitShow" mdbWavesEffect
             class="f-w-600 background-btn pl-2rem pr-2rem" size="md" (click)="aceptChanges()" *ngIf="showPassword">
             <!-- <span class="fs-1-2em color-white" *ngIf="viewPrivateKey"><i class="fa fa-magic mr-1"></i> HIDE PRIVATE KEY</span> -->
-            <span class="fs-1-2em color-white">
-              <i class="fa fa-eye"></i>&nbsp;Accept</span>
+            <span class="fs-1-2em color-white">Accept</span>
           </button>
 
           <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
             size="md" (click)="hidePrivateKey()" *ngIf="!showPassword">
-            <span class="fs-1-2em color-white">
-              <i class="fa fa-eye-slash"></i>&nbsp;Hide private key</span>
+            <span class="fs-1-2em color-white">Hide private key</span>
             <!-- <span class="fs-1-2em color-white" *ngIf="!viewPrivateKey"><i class="fa fa-magic mr-1"></i> SHOW PRIVATE KEY</span> -->
           </button>
         </div>

@@ -26,7 +26,7 @@
                         (keyup)="limitDuration($event)">
                       <span class="label-i-icon pl-2rem">Duration (number of days)</span>
 
-                     
+
                       <mdb-error
                         *ngIf="validateInput('duration', '').invalid && (validateInput('duration', '').dirty || validateInput('duration', '').touched)">
                         <span>Required field - Only numbers</span>
@@ -75,9 +75,9 @@
                     *ngIf="validateInput('deltaSupply', '').invalid && (validateInput('deltaSupply', '').dirty || validateInput('deltaSupply', '').touched)">
                     <span>Required field</span>
                   </mdb-error>
-                  <mdb-error *ngIf=" invalidSupply">
+                  <!-- <mdb-error *ngIf="invalidSupply">
                     <span>Supply exceeded</span>
-                  </mdb-error>
+                  </mdb-error> -->
                 </div>
               </div>
             </div>
@@ -133,11 +133,11 @@
 
             <!-- <div class="row ml-01rem ">
               <div class="col-12 mx-auto box-grey d-flex justify-content-center">
-               
+
                 <mdb-checkbox formControlName="transferable" [inline]="true" class="fs-08rem">Transferable
                 </mdb-checkbox>
 
-                
+
                 <mdb-checkbox formControlName="supplyMutable" [inline]="true" class="fs-08rem">Supply Mutable
                 </mdb-checkbox>
               </div>
