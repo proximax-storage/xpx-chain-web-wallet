@@ -5,6 +5,8 @@ import { NetworkTypes } from 'nem-library';
 import { NetworkType } from 'tsjs-xpx-chain-sdk';
 import { ModalDirective } from 'ng-uikit-pro-standard';
 import * as CryptoJS from 'crypto-js';
+import { first } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 import { ServicesModuleService, StructureService } from '../../../servicesModule/services/services-module.service';
 import { AppConfig } from '../../../config/app.config';
 import { SharedService } from '../../../shared/services/shared.service';
@@ -13,7 +15,7 @@ import { environment } from '../../../../environments/environment';
 import { NemServiceService } from '../../../shared/services/nem-service.service';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 import { AuthService } from '../../../auth/services/auth.service';
-import { first } from 'rxjs/operators';
+
 
 @Component({
   selector: 'app-home',
@@ -22,17 +24,21 @@ import { first } from 'rxjs/operators';
 })
 export class HomeComponent implements OnInit {
 
+  @ViewChild('basicModal', { static: true }) basicModal: ModalDirective;
+  @ViewChild('file', { static: true }) myInputVariable: ElementRef;
+  @ViewChild('modalAuth', { static: true }) modalAuth: ModalDirective;
+
+  eventNumber: number = 0;
+  objectKeys = Object.keys;
   link = {
     createWallet: AppConfig.routes.createWallet,
     importWallet: AppConfig.routes.importWallet,
     selectTypeCreationWallet: AppConfig.routes.selectTypeCreationWallet
   };
-  @ViewChild('basicModal', { static: true }) basicModal: ModalDirective;
-  @ViewChild('file', { static: true }) myInputVariable: ElementRef;
-  objectKeys = Object.keys;
   servicesList: StructureService[] = [];
   boxCreateWallet: StructureService[] = [];
   password: string = '';
+  subscription: Subscription[] = [];
   walletDecryp: any;
 
   constructor(
@@ -47,6 +53,7 @@ export class HomeComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.receiveEventShowModal();
     this.servicesList = [
       this.services.buildStructureService(
         'Blockchain',
@@ -242,5 +249,26 @@ export class HomeComponent implements OnInit {
 
       myReader.readAsText(files[0]);
     }
+  }
+
+  receiveEventShowModal() {
+    this.subscription.push(this.authService.getEventShowModal().subscribe(
+      next => {
+        if (next !== 0) {
+          this.showModal();
+        }
+      }
+    ));
+  }
+
+
+  /**
+   *
+   *
+   * @memberof SidebarAuthComponent
+   */
+  showModal() {
+    this.eventNumber = this.eventNumber + 1;
+    this.modalAuth.show();
   }
 }
