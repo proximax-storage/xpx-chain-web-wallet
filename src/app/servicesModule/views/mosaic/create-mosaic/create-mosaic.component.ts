@@ -273,6 +273,7 @@ export class CreateMosaicComponent implements OnInit {
       this.walletService.currentAccount.network,
       []
     );
+    // console.log('this.aggregateTransaction', this.aggregateTransaction.size);
     this.fee = this.transactionService.amountFormatterSimple(this.aggregateTransaction.maxFee.compact());
   }
   /**
