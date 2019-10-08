@@ -105,8 +105,10 @@ export class CreateTransferComponent implements OnInit {
     this.subscribeValue();
     this.booksAddress();
     this.getAccountInfo();
-    // this.feeCosignatory = this.amountFormatterSimple(this.feeCosignatory);
-    this.msgLockfungCosignatorie = `Cosignatorie with top balance ${this.amountFormatterSimple(this.feeCosignatory)} XPX will be available to cover the LockFund rate`;
+
+
+    this.msgLockfungCosignatorie = ` Cosignatory has sufficient balance (${this.amountFormatterSimple(this.feeCosignatory)} XPX) to cover lockfund
+                fee`
     this.transactionHttp = new TransactionHttp(environment.protocol + "://" + `${this.nodeService.getNodeSelected()}`); //change
 
     // Mosaic by default
