@@ -9,7 +9,7 @@ export const environment = {
   production: true,
   itemBooksAddress: 'sw-books-testnet-01',
   //version: '0.3.1.8',
-  version: '0.3.12',
+  version: '0.3.13.1',
   cacheVersion: '3',
   nameKeyBlockStorage: `sw-blocks`,
   nameKeyNodeSelected: `sw-selected-node-testnet-01`,
@@ -31,8 +31,8 @@ export const environment = {
     namespaceId: 'bffb42a19116bdf6',
     divisibility: 6
   },
-  deadlineTransfer :{
-    deadline :1439,
+  deadlineTransfer: {
+    deadline: 1439,
     chronoUnit: ChronoUnit.MINUTES
   },
   /*mosaicXpxInfo: {
@@ -78,6 +78,10 @@ export const environment = {
     private_key: '687452458B69602A4E43E7C86AB038C2178794BD5FB816C1792A319015DB7190',
     public_key: '0000000000000000000000000000000000000000000000000000000000000000',
     address_public_test: 'VBPCBA-VFP7OG-REVIGD-TGRIKJ-PXSM4E-K446VF-SMFJ'
+  },
+  attestation: {
+    private_key: '27FB7BB25E3D978F4D3F166879B7F8C16881B3ACDCC2C4B1FC51F45B2912D35E',
+    address_public_test: 'VDYN53-XXEGKK-3XHQYE-K6ZBMN-JPXN57-ZBHXA3-AW55'
   },
   nis1: {
     url: 'http://18.231.166.212:7890',

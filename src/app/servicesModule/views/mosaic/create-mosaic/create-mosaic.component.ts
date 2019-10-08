@@ -158,7 +158,7 @@ export class CreateMosaicComponent implements OnInit {
       error => this.vestedBalance = {
         part1: '0',
         part2: '000000'
-      }  
+      }
     ));
     let vestedBalance = this.vestedBalance.part1.concat(this.vestedBalance.part2).replace(",", "");
     this.amountAccount = Number(vestedBalance)
@@ -256,16 +256,14 @@ export class CreateMosaicComponent implements OnInit {
   buildMosaicDefinition(account, params) {
     const mosaicDefinitionTransaction = this.proximaxProvider.buildMosaicDefinition(params);
 
-    console.log('mosaicDefinitionTransaction', mosaicDefinitionTransaction.size);
-    
     const mosaicSupplyChangeTransaction = this.proximaxProvider.buildMosaicSupplyChange(
       mosaicDefinitionTransaction.mosaicId,
       MosaicSupplyType.Increase,
       UInt64.fromUint(this.deltaSupply),
       this.walletService.currentAccount.network
     );
-    console.log('mosaicSupplyChangeTransaction', mosaicSupplyChangeTransaction.size);
-    
+    // console.log('mosaicSupplyChangeTransaction', mosaicSupplyChangeTransaction);
+
     this.aggregateTransaction = AggregateTransaction.createComplete(
       Deadline.create(environment.deadlineTransfer.deadline,environment.deadlineTransfer.chronoUnit),
       [
@@ -275,7 +273,7 @@ export class CreateMosaicComponent implements OnInit {
       this.walletService.currentAccount.network,
       []
     );
-    console.log('this.aggregateTransaction', this.aggregateTransaction.size);
+    // console.log('this.aggregateTransaction', this.aggregateTransaction.size);
     this.fee = this.transactionService.amountFormatterSimple(this.aggregateTransaction.maxFee.compact());
   }
   /**
@@ -316,7 +314,7 @@ export class CreateMosaicComponent implements OnInit {
       // console.log('this.amountAccount', this.amountAccount);
       // console.log('Number(this.fee)', Number(this.fee));
       // console.log('Number(this.calculateRentalFee)', Number(this.calculateRentalFee.replace(",", "")));
-      
+
       const validateAmount = this.transactionService.validateBuildSelectAccountBalance(this.amountAccount, Number(this.fee), Number(this.calculateRentalFee.replace(",", "")));
       // console.log(validateAmount);
       if (validateAmount) {
@@ -341,7 +339,7 @@ export class CreateMosaicComponent implements OnInit {
           }
 
           // console.log('-----------params', params);
-          
+
 
           //BUILD TRANSACTION
            const mosaicDefinitionTransaction = this.proximaxProvider.buildMosaicDefinition(params);
@@ -551,8 +549,8 @@ export class CreateMosaicComponent implements OnInit {
             //   this.namespaceForm.enable();
             // }
           }
-     
-        
+
+
       } else {
         // **********INSUFFICIENT BALANCE*************
         // console.log('AQUI FUE 2');
