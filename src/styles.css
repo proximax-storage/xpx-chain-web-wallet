@@ -950,7 +950,7 @@ html, body {
 
 .txt-btn-dashboard {
   padding-left: 3px;
-  font-size: .6rem;
+  font-size: .7rem;
   font-weight: 600;
 }
 
@@ -1873,4 +1873,8 @@ ul.stepper.horizontal .step-title {
   font-size: 16px !important;
   text-align: center !important;
   background: #306eb5 !important;
+}
+
+.ls-002rem {
+  letter-spacing: .02rem !important;
 }

@@ -17,7 +17,7 @@
 
             <!-- ADDRESS -->
             <div class="col-12 d-flex align-items-center mt-02rem d-center">
-              <span class="fs-06rem f-s-dashboard-transactions fw-600"
+              <span class="fs-07rem ls-002rem"
                 style="white-space:nowrap;">{{currentAccount.address}} &nbsp; </span>
               <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="icono cursor-p"
                 alt="Copy" width="20" (click)="copyMessage('Address')" ngxClipboard
@@ -29,12 +29,12 @@
             <!-- BALANCE -->
             <div class="col-12 mt-02rem a-center">
               <img class="icono" src="assets/images/img/icon-prx-xpx-blue.svg" width="20">
-              <span class="fs-085rem fw-600 color-black">{{vestedBalance?.part1}}</span>
-              <span class="fs-075rem fw-600 color-black">{{vestedBalance?.part2}}</span>
-              <span class="fs-085rem fw-600 color-black">&nbsp;XPX</span>
+              <span class="fs-08rem color-black">{{vestedBalance?.part1}}</span>
+              <span class="fs-07rem color-black">{{vestedBalance?.part2}}</span>
+              <span class="fs-08rem color-black">&nbsp;XPX</span>
               &nbsp; &nbsp;
               <img class="icono" src="assets/images/img/icon-usd-blue.svg" width="20">
-              <span class="fs-085rem fw-600 color-black">USD 0.00</span>
+              <span class="fs-08rem color-black">USD 0.00</span>
             </div>
           </div>
         </div>
@@ -132,16 +132,16 @@
   <div class="row">
     <div class="col-11 col-lg-10 mx-auto">
       <input [(ngModel)]="searchTransaction" type="text" autocomplete="off" id="searchTransaction"
-        class="md-form form-control" mdbInputDirective [validateSuccess]="false" [validateError]="false"
+        class="md-form form-control mb-0" mdbInputDirective [validateSuccess]="false" [validateError]="false"
         placeholder="Search">
     </div>
   </div>
 
   <!-- Searching and icon reload -->
-  <div class="row mt-2rem">
+  <div class="row mt-2rem" *ngIf="searching">
     <div class="col-11 col-lg-10 mx-auto">
       <!-- Searching -->
-      <ng-container *ngIf="searching">
+      <ng-container>
         <div class="col-12 txt-a-center">
           <mdb-spinner spinnerType="small" spinnerColor="blue"></mdb-spinner>
         </div>
