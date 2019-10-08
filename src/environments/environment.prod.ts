@@ -85,7 +85,7 @@ export const environment = {
   },
   nis1: {
     url: 'https://bctestnetswap.xpxsirius.io:7890',
-    urlExplorer: 'http://bctestnetswap.xpxsirius.io/#/unconfirmedtxlist',
+    urlExplorer: 'http://testnet-explorer.nemtool.com/#/unconfirmedtxlist',
     networkType: NetworkTypes.TEST_NET,
     address: 'TBF4LAZUEJMBIOC6J24D6ZGGXE5W775TX555CTTN',
     nodes: [
