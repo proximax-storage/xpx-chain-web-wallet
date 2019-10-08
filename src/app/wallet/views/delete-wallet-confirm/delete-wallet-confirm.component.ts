@@ -15,7 +15,7 @@ import { environment } from '../../../../environments/environment';
 export class DeleteWalletConfirmComponent implements OnInit {
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Wallet',
-    componentName: 'Confirm delete'
+    componentName: 'Confirm Delete'
   };
 
   routes = {
