@@ -324,7 +324,7 @@ html, body {
 }
 
 .pt-08rem {
-  padding-top: .8rem;
+  padding-top: .8rem !important ;
 }
 
 .pt-09rem {
@@ -394,7 +394,7 @@ html, body {
 }
 
 .pb-08rem {
-  padding-bottom: .8rem;
+  padding-bottom: .8rem !important;
 }
 
 .pb-09rem {
@@ -1158,6 +1158,10 @@ button.navbar-toggler {
   padding: 2px !important;
 }
 
+.md-form .form-control{
+  padding-bottom: .6rem !important;
+}
+
 /** INPUTS VALIDATION **/
 
 input.form-control.validate-error.ng-invalid.ng-touched, input.form-control.validate-error.ng-invalid.ng-dirty, .form-submitted input.form-control.validate-error.ng-invalid, .md-textarea.validate-error.ng-invalid.ng-touched, .md-textarea.validate-error.ng-invalid.ng-dirty, .form-submitted .md-textarea.validate-error.ng-invalid {
@@ -1405,6 +1409,7 @@ button.md-toast-close-button {
   padding: .5rem 1rem .5rem 1rem;
   color: #333333;
   font-size: .9rem !important;
+  margin: .4rem 0rem .4rem 0rem;
 }
 
 .box-drop {
