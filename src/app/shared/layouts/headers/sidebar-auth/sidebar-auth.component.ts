@@ -76,27 +76,9 @@ export class SidebarAuthComponent implements OnInit {
       selected: false
     }
 
-    const paramsWallet: MenuInterface = {
-      type: 'dropdown',
-      name: 'Wallets',
-      class: 'ml-m05rem',
-      icon: '',
-      rol: false,
-      link: ``,
-      view: true,
-      subMenu: {
-        createWallet,
-        importWallet,
-        deleteWallet
-      },
-      selected: false
-    }
-
     this.itemsHeader = {
       home: this.sharedService.buildHeader(paramsHome),
       wallet: this.sharedService.buildHeader(deleteWallet)
-      // auth: this.sharedService.buildHeader(paramsSignIn),
-      // wallet: this.sharedService.buildHeader(paramsWallet),
     }
 
     this.receiveEventShowModal();

@@ -19,11 +19,12 @@
         <div class="col-11 col-md-10 col-lg-8 mx-auto">
           <div class="h-account">
             <ng-container *ngFor="let account of accounts; let i=index">
-              <span [ngClass]="[account.active ? 'nav-link active isActive' : 'nav-link']" class="cursor-p" (click)="changeSender(account.value)">
+              <span [ngClass]="[account.active ? 'nav-link active isActive' : 'nav-link']" class="cursor-p"
+                (click)="changeSender(account.value)">
                 {{account.value.name}}
                 <i *ngIf="account.value.default" class="fa fa-star fs-1rem ml-10px cursor-p" aria-hidden="true" title="Default account"></i>
 
-                <i *ngIf=" account.value.isMultisign &&
+                <i *ngIf="account.value.isMultisign &&
                         account.value.isMultisign.cosignatories &&
                         account.value.isMultisign.cosignatories.length > 0"
                   class="fa fa-users fs-1rem ml-10px cursor-p" aria-hidden="true" title="Multi-signature account"></i>
@@ -40,9 +41,10 @@
       </div>
     </ng-container>
 
+    <!-- MSG ERROR - ACCOUNT NOT ALLOWED -->
     <ng-container *ngIf="disabledAllField">
       <div class="col-11 col-md-10 col-lg-8 mx-auto d-flex justify-content-start">
-        <span class="fs-08rem fw-600 color-error-message">Account not allowed to transfer</span>
+        <span class="fs-08rem fw-600 color-error-message">You need a cosigner to transfer from the multi-signature account.</span>
       </div>
     </ng-container>
 
@@ -50,25 +52,17 @@
     <ng-container *ngIf="listCosignatorie.length > 0">
       <div class="row">
         <div class="col-11 col-md-10 col-lg-8 mx-auto">
-
           <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [searchable]="false" [clearable]="false"
             [validateError]="true" class="selectWrapper" [items]="listCosignatorie" formControlName="cosignatorie"
             bindLabel="label" bindValue="value" placeholder="Cosignatories" (change)="selectCosignatorie($event)">
             <ng-template ng-option-tmp let-item="item" let-index="index">
-              <b>{{item.label}}</b> &nbsp;<b style="color:brown">{{item.info}}</b>
+              <b>{{item.label}}</b>
+              <b class="color-error-red" *ngIf="item.info !== ''"> - {{item.info}}</b>
             </ng-template>
             <ng-template ng-footer-tmp>
-              <span class="fs-08rem">
-
-                Cosignatory has sufficient balance ({{amountFormatterSimple(feeCosignatory)}} XPX) to cover lockfund
-                fee
-
-              </span>
-
+              <span class="fs-08rem color-error-red fw-600">{{msgLockfungCosignatorie}}</span>
             </ng-template>
-
           </ng-select>
-
         </div>
       </div>
     </ng-container>
@@ -77,8 +71,14 @@
     <ng-container *ngIf="showContacts && listContacts.length > 0">
       <div class="row">
         <div class="col-11 col-md-10 col-lg-8 mx-auto">
-          <ng-select mdbInputDirective mdbValidate formControlName="contact" class="selectWrapper" [items]="listContacts"
-            bindLabel="label" bindValue="value" placeholder="Contact" (change)="selectContact($event)">
+          <ng-select mdbInputDirective mdbValidate formControlName="contact" class="selectWrapper"
+            [items]="listContacts" placeholder="Contact"
+            (change)="selectContact($event)">
+            <ng-template ng-option-tmp let-item="item" let-index="index">
+              {{item.label}}
+              <b *ngIf="item.walletContact"> - Owner account</b>
+              <b *ngIf="!item.walletContact"> - Contact</b>
+            </ng-template>
           </ng-select>
         </div>
       </div>
@@ -181,13 +181,9 @@
       <ng-container *ngFor="let otherMosaic of boxOtherMosaics; let i = index">
         <!-- SEPARED -->
         <div class="row">
-          <!-- <div class="col-11 col-md-11 col-lg-9 mx-auto"> -->
           <div class="col-11 col-md-10 col-lg-8 mx-auto">
             <hr>
           </div>
-          <!-- <div class="col-1 d-flex justify-content-start">
-            <span class="cursor-p" title="Delete" (click)="deleteMoreMosaic(i)">x</span>
-          </div> -->
         </div>
 
         <div class="row">
@@ -236,9 +232,28 @@
     </ng-container>
     <!--  FIN MOSAICS -->
 
-    <hr>
+    <!-- Add mosaics -->
+    <div class="row mt-1rem">
+      <div class="col-12 d-flex justify-content-center">
+        <button
+          [disabled]="currentBlock === 0 || disabledBtnAddMosaic || selectOtherMosaics.length === 0 || disabledAllField"
+          mdbBtn type="button" rounded="true" mdbWavesEffect class="background-btn-inverse pl-2rem pr-2rem" size="md"
+          (click)="pushedOtherMosaics()">
+          <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
+            *ngIf="currentBlock === 0 && !disabledBtnAddMosaic"></span>
+          <span class="fs-1-2em text-cl-m fw-700">(+) Add Mosaics </span>
+        </button>
+      </div>
+    </div>
 
+    <!-- SEPARED -->
+    <div class="row">
+      <div class="col-11 col-md-10 col-lg-8 mx-auto">
+        <hr>
+      </div>
+    </div>
 
+<<<<<<< HEAD
     <!-- Add mosaics -->
     <ng-container>
       <div class="row mt-1rem">
@@ -249,24 +264,60 @@
             <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true" *ngIf="currentBlock === 0 && !disabledBtnAddMosaic"></span>
             <span class="fs-1-2em text-cl-m fw-700">(+) Add Mosaics </span>
           </button>
+=======
+    <!-- FEE + LOCKFUND -->
+    <ng-container
+      *ngIf="sender?.isMultisign && sender?.isMultisign.cosignatories && sender?.isMultisign.cosignatories.length > 0; else showOnlyFee">
+      <div class="row">
+        <div class="col-11 col-md-10 col-lg-8 mx-auto">
+          <div class="row">
+            <div class="col-12 col-md-6 mx-auto">
+              <div class="box-grey d-flex justify-content-center pt-09rem pb-09rem">
+                <div class="row">
+                  <div class="col-12 text-center">
+                    <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
+                      width="20" alt="">
+                    <span class="fs-07rem">Fee: {{fee}} XPX <br></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12 col-md-6 mx-auto">
+              <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
+                <div class="row">
+                  <div class="col-12 d-flex align-items-center">
+                    <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
+                      width="20" alt="">
+                    <span class="fs-07rem">LockFund: 10.000000 XPX <br> Fee: 0.044500 XPX</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+>>>>>>> c0386a38e4c9422ecbcff08df7954c711b173f45
         </div>
       </div>
     </ng-container>
 
 
-    <!-- FEE -->
-    <div class="row ml-01rem">
-      <div class="col-11 col-md-10 col-lg-8 mx-auto">
-        <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
-          <div class="row">
-            <div class="col-12">
-              <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" alt="">
-              <span>Fee: {{ fee }} XPX</span>
+    <!-- ONLY FEE -->
+    <ng-template #showOnlyFee>
+      <!-- FEE -->
+      <div class="row">
+        <div class="col-11 col-md-10 col-lg-8 mx-auto">
+          <div class="box-grey d-flex justify-content-center pt-09rem pb-09rem">
+            <div class="row">
+              <div class="col-12 text-center">
+                <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20"
+                  alt="">
+                <span class="fs-07rem">Fee: {{fee}} XPX <br></span>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </ng-template>
 
     <!-- MESSAGE -->
     <div class="row">
@@ -313,10 +364,27 @@
       </div>
 
       <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
+<<<<<<< HEAD
         <button [disabled]="(formTransfer.invalid || errorOtherMosaics || disabledAllField || insufficientBalance) && !reloadBtn"
           mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
           <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true" *ngIf="reloadBtn"></span>
           <span class="fs-1-2em color-white">SEND</span>
+=======
+        <button
+          [disabled]="
+          (formTransfer.invalid ||
+          errorOtherMosaics ||
+          disabledAllField ||
+          insufficientBalance) ||
+          (sender.isMultisign &&
+          sender.isMultisign.cosignatories &&
+          sender.isMultisign.cosignatories.length > 0 &&
+          !cosignatorie) && !reloadBtn"
+          mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
+          <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
+            *ngIf="reloadBtn"></span>
+          <span class="fs-1-2em color-white">Send</span>
+>>>>>>> c0386a38e4c9422ecbcff08df7954c711b173f45
         </button>
       </div>
     </div>
@@ -347,14 +415,14 @@
           <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
             <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
               size="md" (click)="basicModal.hide()">
-              <span class="fs-1-2em color-white">NO</span>
+              <span class="fs-1-2em color-white">N0</span>
             </button>
           </div>
 
           <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
             <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
               (click)="saveContact = true" size="md">
-              <span class="fs-1-2em color-white">YES</span>
+              <span class="fs-1-2em color-white">Yes</span>
             </button>
           </div>
         </div>
@@ -385,9 +453,15 @@
 
             <div class="row mx-auto">
               <div class="col-12 d-flex justify-content-center">
+<<<<<<< HEAD
                 <button mdbBtn type="button" [disabled]="formContact.name === ''" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
                   size="md" (click)="saveContactNew()">
                   <span class="fs-1-2em color-white">SAVE</span>
+=======
+                <button mdbBtn type="button" [disabled]="formContact.name === ''" rounded="true" mdbWavesEffect
+                  class="f-w-600 background-btn pl-2rem pr-2rem" size="md" (click)="saveContactNew()">
+                  <span class="fs-1-2em color-white">Save</span>
+>>>>>>> c0386a38e4c9422ecbcff08df7954c711b173f45
                 </button>
               </div>
             </div>
@@ -397,6 +471,9 @@
     </div>
   </div>
 </div>
+<<<<<<< HEAD
 
 <ngx-ui-loader>
 </ngx-ui-loader>
+=======
+>>>>>>> c0386a38e4c9422ecbcff08df7954c711b173f45
