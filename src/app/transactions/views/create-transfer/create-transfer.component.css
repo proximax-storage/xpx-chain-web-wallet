@@ -55,9 +55,10 @@
 }
 
 .isActive {
-  background: #306eb5 !important;
-  color: white !important;
+  background: #f4f4f4 !important;
+  color: black !important;
   height: 40px;
+  font-weight: 400;
 }
 
 .h-account {
@@ -75,4 +76,9 @@
 .border-separator {
   border-left: .5rem solid #f4f4f4;
   padding-left: .6rem;
+}
+
+.box-accounts-height{
+  overflow-y: auto;
+  max-height: 118px;
 }

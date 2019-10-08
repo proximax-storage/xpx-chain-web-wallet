@@ -360,6 +360,9 @@ html, body {
 }
 
 /** BOTTOM **/
+.pb-0{
+  padding-bottom: 0 !important;
+}
 
 .pb-02rem {
   padding-bottom: .2rem;
@@ -1744,6 +1747,7 @@ ngx-dropzone-label {
 .md-accordion .card .card-header a h5 {
   font-size: .8rem !important;
   font-weight: 600 !important;
+  color: black !important;
 }
 
 .accordion .card .card-header {
@@ -1846,4 +1850,8 @@ ul.stepper.horizontal .step-title {
 
 .ngx-pagination .current{
   background: #306EB5 !important;
+}
+
+.ng-select.custom {
+  padding-bottom: 0 !important;
 }

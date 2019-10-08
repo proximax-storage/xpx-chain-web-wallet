@@ -222,7 +222,7 @@ export class CreateTransferComponent implements OnInit {
             if (x) {
               const nameMosaic = (mosaic.mosaicNames.names.length > 0) ? mosaic.mosaicNames.names[0].name : this.proximaxProvider.getMosaicId(mosaic.idMosaic).toHex();
               mosaicsSelect.push({
-                label: `${nameMosaic}${nameExpired}`,
+                label: `${nameMosaic}${nameExpired} > ${amount}`,
                 value: mosaic.idMosaic,
                 balance: amount,
                 expired: false,
