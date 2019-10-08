@@ -143,8 +143,8 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
    */
   createForm() {
     this.optionsEncryptionMethods = [
-      { value: PrivacyType.PLAIN, name: 'DO NOT ENCRYPT' },
-      { value: PrivacyType.PASSWORD, name: 'PASSWORD' },
+      { value: PrivacyType.PLAIN, name: 'Do Not Encrypt' },
+      { value: PrivacyType.PASSWORD, name: 'Password' },
       /* { value: PrivacyType.NEM_KEYS, name: 'KEY PAIR' }*/
     ];
 
@@ -345,7 +345,7 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
    * @memberof UploadFileComponent
    */
   initialiseStorage() {
-    
+
     const blockChainNetworkType = this.proximaxProvider.getBlockchainNetworkType(this.walletService.currentAccount.network);
     const blockChainHost = environment.blockchainConnection.host;
     const blockChainPort = environment.blockchainConnection.port;

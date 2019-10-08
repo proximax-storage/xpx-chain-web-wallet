@@ -240,6 +240,7 @@ export class CreateNamespaceComponent implements OnInit {
     this.insufficientBalance = false;
     this.insufficientBalanceDuration = false;
     this.calculateRentalFee = '0.000000';
+    this.fee = '0.000000';
     this.namespaceForm.reset({
       name: '',
       namespaceRoot: '1',

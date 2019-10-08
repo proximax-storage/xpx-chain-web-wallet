@@ -13,7 +13,7 @@ export class SelectionWalletCreationTypeComponent implements OnInit {
     createWallet: AppConfig.routes.createWallet,
     importWallet: AppConfig.routes.importWallet
   };
-  title = 'Select wallet creation type'
+  title = 'Select Wallet Creation Type'
   constructor() { }
 
   ngOnInit() {

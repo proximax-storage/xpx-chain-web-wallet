@@ -1,18 +1,21 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { ServicesModuleService, StructureService } from '../../../servicesModule/services/services-module.service';
-import { AppConfig } from '../../../config/app.config';
-import { SharedService } from 'src/app/shared/services/shared.service';
-import { WalletService } from 'src/app/wallet/services/wallet.service';
-import { environment } from 'src/environments/environment';
+import nem from "nem-sdk";
 import { Router } from '@angular/router';
 import { NetworkTypes } from 'nem-library';
 import { NetworkType } from 'tsjs-xpx-chain-sdk';
-import { NemServiceService } from 'src/app/shared/services/nem-service.service';
 import { ModalDirective } from 'ng-uikit-pro-standard';
 import * as CryptoJS from 'crypto-js';
-// import * as nem from 'nem-sdk';
-import nem from "nem-sdk";
-import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
+import { first } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
+import { ServicesModuleService, StructureService } from '../../../servicesModule/services/services-module.service';
+import { AppConfig } from '../../../config/app.config';
+import { SharedService } from '../../../shared/services/shared.service';
+import { WalletService } from '../../../wallet/services/wallet.service';
+import { environment } from '../../../../environments/environment';
+import { NemServiceService } from '../../../shared/services/nem-service.service';
+import { ProximaxProvider } from '../../../shared/services/proximax.provider';
+import { AuthService } from '../../../auth/services/auth.service';
+
 
 @Component({
   selector: 'app-home',
@@ -21,20 +24,25 @@ import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
 })
 export class HomeComponent implements OnInit {
 
+  @ViewChild('basicModal', { static: true }) basicModal: ModalDirective;
+  @ViewChild('file', { static: true }) myInputVariable: ElementRef;
+  @ViewChild('modalAuth', { static: true }) modalAuth: ModalDirective;
+
+  eventNumber: number = 0;
+  objectKeys = Object.keys;
   link = {
     createWallet: AppConfig.routes.createWallet,
     importWallet: AppConfig.routes.importWallet,
     selectTypeCreationWallet: AppConfig.routes.selectTypeCreationWallet
   };
-  @ViewChild('basicModal', { static: true }) basicModal: ModalDirective;
-  @ViewChild('file', { static: true }) myInputVariable: ElementRef;
-  objectKeys = Object.keys;
   servicesList: StructureService[] = [];
   boxCreateWallet: StructureService[] = [];
   password: string = '';
+  subscription: Subscription[] = [];
   walletDecryp: any;
 
   constructor(
+    private authService: AuthService,
     private services: ServicesModuleService,
     private sharedService: SharedService,
     private walletService: WalletService,
@@ -45,6 +53,7 @@ export class HomeComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.receiveEventShowModal();
     this.servicesList = [
       this.services.buildStructureService(
         'Blockchain',
@@ -74,23 +83,23 @@ export class HomeComponent implements OnInit {
 
     this.boxCreateWallet = [
       this.services.buildStructureService(
-        'New',
+        'Sign In',
         true,
         '',
         'icon-add-new-blue.svg',
         `/${this.link.createWallet}`
+      // ), this.services.buildStructureService(
+      //   'From a private key',
+      //   true,
+      //   '',
+      //   'icon-private-key-blue.svg',
+      //   `/${this.link.importWallet}`
       ), this.services.buildStructureService(
-        'From a private key',
-        true,
-        '',
-        'icon-private-key-blue.svg',
-        `/${this.link.importWallet}`
-      ), this.services.buildStructureService(
-        'From a wallet backup',
+        'Create',
         true,
         '',
         'icon-wallet-import-blue.svg',
-        `openBackup`
+        `/${this.link.selectTypeCreationWallet}`
       )
     ]
   }
@@ -169,6 +178,12 @@ export class HomeComponent implements OnInit {
     this.walletDecryp = null
   }
 
+  eventShowModal(){
+    this.authService.getEventShowModal().pipe(first()).subscribe(
+      next => this.authService.eventShowModalSubject.next(next+1)
+    );
+  }
+
   /**
    * Method to take the selected file
    * @param {File} files file array
@@ -234,5 +249,26 @@ export class HomeComponent implements OnInit {
 
       myReader.readAsText(files[0]);
     }
+  }
+
+  receiveEventShowModal() {
+    this.subscription.push(this.authService.getEventShowModal().subscribe(
+      next => {
+        if (next !== 0) {
+          this.showModal();
+        }
+      }
+    ));
+  }
+
+
+  /**
+   *
+   *
+   * @memberof SidebarAuthComponent
+   */
+  showModal() {
+    this.eventNumber = this.eventNumber + 1;
+    this.modalAuth.show();
   }
 }
