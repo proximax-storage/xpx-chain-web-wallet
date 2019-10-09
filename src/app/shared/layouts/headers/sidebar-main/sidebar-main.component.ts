@@ -41,7 +41,7 @@ export class SidebarMainComponent implements OnInit {
   statusNode = false;
   statusNodeName = 'Inactive';
   subscription: Subscription[] = [];
-  vestedBalance: string = '0.000000';
+  vestedBalance: object;
   version = '';
   viewParcial = false;
   walletName = '';
@@ -170,12 +170,12 @@ export class SidebarMainComponent implements OnInit {
 
 
         const amountFormatter = this.transactionService.amountFormatterSimple(amountTotal);
-        this.vestedBalance = `Total balance ${amountFormatter} XPX`;
+        this.vestedBalance = this.transactionService.getDataPart(amountFormatter, 6);
         setTimeout(() => {
           this.searchBalance = false;
         }, 1000);
       } else {
-        this.vestedBalance = `Total balance 0.000000 XPX`;
+        this.vestedBalance = this.transactionService.getDataPart('0.000000', 6);
         setTimeout(() => {
           this.searchBalance = false;
         }, 1000);

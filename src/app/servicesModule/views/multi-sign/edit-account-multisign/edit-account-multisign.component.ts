@@ -718,7 +718,7 @@ export class EditAccountMultisignComponent implements OnInit {
         this.proximaxProvider.getAccountInfo(Address.createFromRawAddress(event.value)).subscribe((res: AccountInfo) => {
           this.searchContact = false;
           if (res.publicKeyHeight.toHex() === '0000000000000000') {
-            this.sharedService.showWarning('', 'you need a public key');
+            this.sharedService.showWarning('', 'Cosignatory does not have a public key');
 
             this.editAccountMultsignForm.get('cosignatory').patchValue('', { emitEvent: false, onlySelf: true });
             this.editAccountMultsignForm.get('contact').patchValue('', { emitEvent: false, onlySelf: true });
@@ -750,7 +750,7 @@ export class EditAccountMultisignComponent implements OnInit {
                 this.editAccountMultsignForm.get('cosignatory').patchValue(account.accountInfo.publicKey, { emitEvent: true })
                 this.editAccountMultsignForm.get('contact').patchValue('', { emitEvent: false, onlySelf: true });
               } else {
-                this.sharedService.showWarning('', 'you need a public key');
+                this.sharedService.showWarning('', 'Cosignatory does not have a public key');
                 this.editAccountMultsignForm.get('contact').patchValue('', { emitEvent: false, onlySelf: true });
               }
 

@@ -13,7 +13,7 @@ export class AuthComponent implements OnInit {
   @Input() eventNumber: number;
   authForm: FormGroup;
   configurationForm: ConfigurationForm = {};
-  title = 'Sign in to your Wallet';
+  title = 'Sign In to your Wallet';
   wallets: Array<any>;
 
   constructor(
