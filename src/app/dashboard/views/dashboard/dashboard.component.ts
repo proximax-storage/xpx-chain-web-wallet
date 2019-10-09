@@ -3,6 +3,8 @@ import { MdbTableDirective, ModalDirective } from 'ng-uikit-pro-standard';
 import * as qrcode from 'qrcode-generator';
 import { first } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
+import { UInt64 } from 'tsjs-xpx-chain-sdk';
+import { PaginationInstance } from 'ngx-pagination';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 import { DashboardService } from '../../services/dashboard.service';
 import { TransactionsInterface, TransactionsService } from '../../../transactions/services/transactions.service';
@@ -10,10 +12,8 @@ import { WalletService, AccountsInterface, CurrentWalletInterface } from '../../
 import { SharedService } from '../../../shared/services/shared.service';
 import { environment } from '../../../../environments/environment';
 import { AppConfig } from '../../../config/app.config';
-import { NamespacesService } from 'src/app/servicesModule/services/namespaces.service';
-import { PaginationInstance } from 'ngx-pagination';
-import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
-import { UInt64 } from 'tsjs-xpx-chain-sdk';
+import { NamespacesService } from '../../../servicesModule/services/namespaces.service';
+import { DataBridgeService } from '../../../shared/services/data-bridge.service';
 
 
 @Component({

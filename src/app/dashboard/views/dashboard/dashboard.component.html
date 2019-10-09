@@ -266,8 +266,7 @@
 
             <!-- TRANSFER -->
             <ng-container *ngIf="dataSelected.data.type === typeTransactions.transfer.id">
-              <app-transfer-type [transferTransaction]="dataSelected">
-              </app-transfer-type>
+              <app-transfer-type [transferTransaction]="dataSelected"></app-transfer-type>
             </ng-container>
 
             <!-- TYPE REGISTER NAMESPACE TRANSACTION -->
@@ -431,7 +430,6 @@
     </div>
   </div>
 </div>
-
 
 <!-- MODAL CERTIFICATE -->
 <div class="d-flex align-items-center">

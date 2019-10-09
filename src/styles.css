@@ -364,8 +364,16 @@ html, body {
   padding-bottom: 0 !important;
 }
 
+.pb-10px {
+  padding-bottom: 10px;
+}
+
 .pb-02rem {
   padding-bottom: .2rem;
+}
+
+.pb-08rem {
+  padding-bottom: .8rem;
 }
 
 .pb-1rem {
@@ -1307,6 +1315,14 @@ button.md-toast-close-button {
 
 /** FIN INPUTS VALIDATION **/
 
+.ng-placeholder {
+  font-size: 1rem !important;
+}
+
+.ng-select .ng-select-container .ng-value-container {
+  padding: 1em 0 !important;
+}
+
 /************* SELECT ************/
 
 .ng-select .ng-select-container {
@@ -1852,6 +1868,13 @@ ul.stepper.horizontal .step-title {
   background: #306EB5 !important;
 }
 
-.ng-select.custom {
-  padding-bottom: 0 !important;
+/*************BUTTONS*****************/
+
+.btn-proximax {
+  min-width: 120px !important;
+  padding: 8px 30px !important;
+  font-weight: bold !important;
+  font-size: 16px !important;
+  text-align: center !important;
+  background: #306eb5 !important;
 }

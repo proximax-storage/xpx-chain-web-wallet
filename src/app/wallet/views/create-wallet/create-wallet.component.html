@@ -15,7 +15,7 @@
     <div class="row mt-1-5rem">
       <div class="col-11 col-sm-10 col-md-8 col-lg-6 mx-auto">
         <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" class="selectWrapper"
-          [items]="typeNetwork" bindLabel="label" bindValue="value" placeholder="Select network"
+          [items]="typeNetwork" bindLabel="label" bindValue="value" placeholder="Select Network"
           formControlName="network">
         </ng-select>
         <mdb-error class="ml-1rem"
@@ -34,7 +34,7 @@
             src="assets/images/img/icon-wallet-name-green-16h-proximax-sirius-wallet.svg" alt="">
           <input mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
             id="name-wallet{{errorWalletExist}}" [minlength]="configurationForm.nameWallet.minLength" [maxlength]="configurationForm.nameWallet.maxLength" class="form-control form-control-sm input-border pl-input"
-            placeholder="Wallet name" formControlName="nameWallet">
+            placeholder="Wallet Name" formControlName="nameWallet">
           <!--
             <span class="label-i fw-600">
               <img src="assets/images/img/icon-wallet-name-green-16h-proximax-sirius-wallet.svg" alt="">
@@ -42,11 +42,11 @@
 
           <mdb-error
             *ngIf="validateInput('nameWallet').invalid && (validateInput('nameWallet').dirty || validateInput('nameWallet').touched)">
-            <span>Name required</span>
+            <span>Name required.</span>
           </mdb-error>
 
           <mdb-error *ngIf="validateInput('nameWallet').valid && validateNameWallet()">
-            <span>Wallet name already exists</span>
+            <span>Wallet name already exists.</span>
           </mdb-error>
           <!-- <mdb-success *ngIf="input.valid && (input.dirty || input.touched)">Input valid</mdb-success> -->
         </div>
@@ -69,7 +69,7 @@
                 <mdb-error *ngIf="
                 validateInput('password', 'passwords').invalid &&
                 (validateInput('password', 'passwords').dirty || validateInput('password', 'passwords').touched)">
-                  <span>Min length {{configurationForm.passwordWallet.minLength}}, max length {{configurationForm.passwordWallet.maxLength}}</span>
+                  <span>Min. length {{configurationForm.passwordWallet.minLength}}, max. length {{configurationForm.passwordWallet.maxLength}}.</span>
                 </mdb-error>
 
                 <!-- <mdb-error *ngIf="validateMatchPassword()">
@@ -83,18 +83,18 @@
                   src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg" alt="">
                 <input formControlName="confirm_password" mdbInputDirective mdbValidate [validateSuccess]="true"
                   [validateError]="true" type="password" id="confirm-password{{errorMatchPassword}}"
-                  class="form-control form-control-sm input-border" placeholder="Confirm password" [maxLength]="configurationForm.passwordWallet.maxLength">
+                  class="form-control form-control-sm input-border" placeholder="Confirm Password" [maxLength]="configurationForm.passwordWallet.maxLength">
 
                 <!-- VALIDATION -->
                 <mdb-error
                   *ngIf="
                   validateInput('confirm_password', 'passwords').invalid &&
                   (validateInput('confirm_password', 'passwords').dirty || validateInput('confirm_password', 'passwords').touched)">
-                  <span>Password doesn't match</span>
+                  <span>Password doesn't match.</span>
                 </mdb-error>
 
                 <mdb-error *ngIf="validateMatchPassword()">
-                  <span>Password doesn't match</span>
+                  <span>Password doesn't match.</span>
                 </mdb-error>
               </div>
             </div>
@@ -107,16 +107,16 @@
 
     <div class="row mt-2rem">
       <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-        <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+        <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax"
           size="md" (click)="clearForm()">
-          <span class="fs-1-2em color-white">Clear</span>
+          <span class="color-white">Clear</span>
         </button>
       </div>
 
       <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-        <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+        <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="btn-proximax"
           size="md">
-          <span class="fs-1-2em color-white">Create</span>
+          <span class="color-white">Create</span>
         </button>
       </div>
     </div>

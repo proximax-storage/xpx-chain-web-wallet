@@ -28,11 +28,9 @@ export class AggregateBondedTypeComponent implements OnInit {
   }
 
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
-    // console.log(this.aggregateBonded);
     this.aggregateBonded.data['innerTransactions'].forEach(element => {
       const nameType = Object.keys(this.typeTransactions).find(x => this.typeTransactions[x].id === element.type);
       element['nameType'] = (nameType) ? this.typeTransactions[nameType].name : element.type.toString(16).toUpperCase();
     });
   }
-
 }

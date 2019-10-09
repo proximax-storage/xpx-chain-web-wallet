@@ -613,33 +613,95 @@ export class TransactionsService {
       );
       let nameType = this.arraTypeTransaction[keyType].name;
       try {
-        if (transaction["message"] && transaction["message"].payload !== "") {
-          const msg = JSON.parse(transaction["message"].payload);
-          if (
-            transaction.signer.address.plain() ===
-            environment.swapAccount.address
-          ) {
-            if (msg && msg["type"] && msg["type"] === "Swap") {
-              nameType = "ProximaX Swap";
-              let walletTransactionsNis = this.walletService
-                .getWalletTransNisStorage()
-                .find(
-                  el => el.name === this.walletService.getCurrentWallet().name
-                );
-              if (
-                walletTransactionsNis !== undefined &&
-                walletTransactionsNis !== null
-              ) {
-                const transactions = walletTransactionsNis.transactions.filter(
-                  el => el.nis1TransactionHast !== msg["nis1Hash"]
-                );
-                walletTransactionsNis.transactions = transactions;
-                this.walletService.setSwapTransactions$(
-                  walletTransactionsNis.transactions
-                );
-                this.walletService.saveAccountWalletTransNisStorage(
-                  walletTransactionsNis
-                );
+        console.log('ME LLEGA ESTA TRANSACCION', transaction);
+        if(transaction.type === this.arraTypeTransaction.aggregateBonded.id) {
+          const transfer = transaction['innerTransactions'].filter(b => b.type === this.arraTypeTransaction.transfer.id);
+          if(transfer && transfer.length > 0) {
+            let newTransaction: Transaction = null;
+            transfer.forEach(element => {
+              if (element["message"] && element["message"].payload !== "") {
+                const msg = JSON.parse(element["message"].payload);
+                console.log('msg', msg);
+                console.log('element.signer.address.plain()', element.signer.address.plain());
+                console.log('environment.swapAccount.address', environment.swapAccount.address);
+                if (
+                  element.signer.address.plain() ===
+                  environment.swapAccount.address
+                ) {
+                  if (msg && msg["type"] && msg["type"] === "Swap") {
+                    console.log('CONVIERTO!');
+                    nameType = "ProximaX Swap";
+                    let walletTransactionsNis = this.walletService
+                      .getWalletTransNisStorage()
+                      .find(
+                        el => el.name === this.walletService.getCurrentWallet().name
+                      );
+                    if (
+                      walletTransactionsNis !== undefined &&
+                      walletTransactionsNis !== null
+                    ) {
+                      const transactions = walletTransactionsNis.transactions.filter(
+                        el => el.nis1TransactionHast !== msg["nis1Hash"]
+                      );
+                      walletTransactionsNis.transactions = transactions;
+                      this.walletService.setSwapTransactions$(
+                        walletTransactionsNis.transactions
+                      );
+                      this.walletService.saveAccountWalletTransNisStorage(
+                        walletTransactionsNis
+                      );
+                    }
+
+                    newTransaction = element;
+                  }
+                }
+              }
+            });
+
+            return {
+              data: newTransaction,
+              nameType: nameType,
+              fee: feeFormatter,
+              feePart: this.getDataPart(feeFormatter, 6),
+              sender: newTransaction.signer,
+              recipientRentalFeeSink: recipientRentalFeeSink,
+              recipient: recipient,
+              recipientAddress: recipientPretty,
+              receive: isReceive,
+              senderAddress: newTransaction["signer"].address.pretty()
+            };
+          }
+
+          console.log('ESTAS SON TODAS LAS TRANSFER --> ', transfer);
+        }else {
+          if (transaction["message"] && transaction["message"].payload !== "") {
+            const msg = JSON.parse(transaction["message"].payload);
+            if (
+              transaction.signer.address.plain() ===
+              environment.swapAccount.address
+            ) {
+              if (msg && msg["type"] && msg["type"] === "Swap") {
+                nameType = "ProximaX Swap";
+                let walletTransactionsNis = this.walletService
+                  .getWalletTransNisStorage()
+                  .find(
+                    el => el.name === this.walletService.getCurrentWallet().name
+                  );
+                if (
+                  walletTransactionsNis !== undefined &&
+                  walletTransactionsNis !== null
+                ) {
+                  const transactions = walletTransactionsNis.transactions.filter(
+                    el => el.nis1TransactionHast !== msg["nis1Hash"]
+                  );
+                  walletTransactionsNis.transactions = transactions;
+                  this.walletService.setSwapTransactions$(
+                    walletTransactionsNis.transactions
+                  );
+                  this.walletService.saveAccountWalletTransNisStorage(
+                    walletTransactionsNis
+                  );
+                }
               }
             }
           }
