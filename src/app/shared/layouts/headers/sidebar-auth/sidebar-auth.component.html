@@ -50,29 +50,3 @@
     </ul>
   </links>
 </mdb-navbar>
-
-
-<div class="d-flex align-items-center">
-  <div mdbModal #modalAuth="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalAuth"
-    aria-hidden="true">
-    <div class="modal-dialog modal-md d-flex align-items-center" role="document">
-      <div class="modal-content form-elegant bord-rad-1-5rem">
-        <div class="row">
-          <div class="col-12">
-            <div class="col-12">
-              <span class="cursor-p d-flex justify-content-end fw-600 fs-1rem pt-04rem" (click)="modalAuth.hide()">x</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="modal-body">
-          <div class="row">
-            <div class="col-12 col-md-10 mx-auto">
-              <app-auth [eventNumber]="eventNumber"></app-auth>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>

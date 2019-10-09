@@ -418,31 +418,36 @@ export class DashboardComponent implements OnInit, OnDestroy {
    * @memberof DashboardComponent
    */
   openModal(transaction: TransactionsInterface) {
-    const height = transaction.data['transactionInfo'].height.compact();
-    if (typeof (height) === 'number') {
-      const existBlock = this.dataBridge.filterBlockStorage(height);
-      if (existBlock) {
-        // console.log('In cache', existBlock);
-        transaction.timestamp = `${this.transactionService.dateFormatUTC(new UInt64([existBlock.timestamp.lower, existBlock.timestamp.higher]))} - UTC`;
-        const calculateEffectiveFee = this.transactionService.amountFormatterSimple(existBlock.feeMultiplier * transaction.data.size)
-        transaction.effectiveFee = this.transactionService.getDataPart(calculateEffectiveFee, 6);
-        // console.log('Effective fee ---> ', transaction.effectiveFee);
-      }else {
-        this.proximaxProvider.getBlockInfo(height).subscribe(
-          next => {
-            // console.log('Http', next);
-            this.dataBridge.validateBlock(next);
-            transaction.timestamp = `${this.transactionService.dateFormatUTC(next.timestamp)} - UTC`;
-            const calculateEffectiveFee = this.transactionService.amountFormatterSimple(next.feeMultiplier * transaction.data.size);
-            transaction.effectiveFee = this.transactionService.getDataPart(calculateEffectiveFee, 6);
-            // console.log('Effective fee ---> ', transaction.effectiveFee);
-          }
-        );
+    console.log(transaction);
+    if(transaction.data['transactionInfo'] && transaction.data['transactionInfo'].height){
+      const height = transaction.data['transactionInfo'].height.compact();
+      if (typeof (height) === 'number') {
+        const existBlock = this.dataBridge.filterBlockStorage(height);
+        if (existBlock) {
+          // console.log('In cache', existBlock);
+          transaction.timestamp = `${this.transactionService.dateFormatUTC(new UInt64([existBlock.timestamp.lower, existBlock.timestamp.higher]))} - UTC`;
+          const calculateEffectiveFee = this.transactionService.amountFormatterSimple(existBlock.feeMultiplier * transaction.data.size)
+          transaction.effectiveFee = this.transactionService.getDataPart(calculateEffectiveFee, 6);
+          // console.log('Effective fee ---> ', transaction.effectiveFee);
+        }else {
+          this.proximaxProvider.getBlockInfo(height).subscribe(
+            next => {
+              // console.log('Http', next);
+              this.dataBridge.validateBlock(next);
+              transaction.timestamp = `${this.transactionService.dateFormatUTC(next.timestamp)} - UTC`;
+              const calculateEffectiveFee = this.transactionService.amountFormatterSimple(next.feeMultiplier * transaction.data.size);
+              transaction.effectiveFee = this.transactionService.getDataPart(calculateEffectiveFee, 6);
+              // console.log('Effective fee ---> ', transaction.effectiveFee);
+            }
+          );
+        }
+      } else {
+        transaction.effectiveFee = this.transactionService.getDataPart('0.00000', 6);
       }
-    } else {
+    }else {
       transaction.effectiveFee = this.transactionService.getDataPart('0.00000', 6);
-      // console.log('Effective fee ---> ', transaction.effectiveFee);
     }
+
 
     this.dataSelected = transaction;
     this.modalDashboard.show();
