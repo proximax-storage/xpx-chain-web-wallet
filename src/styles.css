@@ -479,6 +479,11 @@ body {
     padding-right: .5rem;
 }
 
+.pr-1rem-left-right {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
 
 /************************** BORDER ******************************/
 
@@ -1491,7 +1496,7 @@ button.md-toast-close-button {
 }
 
 .double-nav a {
-    color: #0275d8 !important;
+    color: #306Eb5 !important;
 }
 
 
@@ -1851,6 +1856,18 @@ body.modal-open {
 @media (min-width: 1771px) and (max-width: 1880px) {
     .max-w-table {
         max-width: 1724px !important
+    }
+}
+
+@media only screen and (min-width: 768px) {
+    .option {
+        display: none !important;
+    }
+}
+
+@media only screen and (max-width: 769px) {
+    .option {
+        display: block !important;
     }
 }
 
