@@ -2019,7 +2019,7 @@ ul.stepper.horizontal .step-title {
 }
 
 .dropdown-menu {
-    margin-top: 0px !important;
+    margin-top: -10px !important;
     min-width: 6rem !important;
 }
 
