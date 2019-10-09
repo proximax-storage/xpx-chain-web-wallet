@@ -77,7 +77,7 @@
           <h6 class="fw-600">{{ titlePublickey }} </h6>
           <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em">
             This user has not made transactions with this
-            account
+            account.
           </p>
         </div>
       </div>
@@ -98,7 +98,7 @@
         </div>
       </div>
 
-      <!-- private key -->
+      <!-- Private Key -->
       <ng-container *ngIf="!showPassword">
         <div class="row animated fadeIn">
           <div class="col-12 mx-auto d-flex align-items-center box-grey">
@@ -118,7 +118,7 @@
       <div class="row mt-1rem" *ngIf="privateKey === ''">
         <div class="col-11 col-sm-10 col-lg-9 col-xl-8 mx-auto txt-a-center">
           <mdb-checkbox [(ngModel)]="checked" [checked]="checked"> Check this
-            box if you wish to swap with this private key.
+            box if you wish to swap with this Private key.
           </mdb-checkbox>
         </div>
       </div>
@@ -146,14 +146,14 @@
                 <mdb-error *ngIf="
                           validateInput('password', '').invalid &&
                           (validateInput('password', '').dirty || validateInput('password', '').touched)">
-                  <span>Required to show private key</span>
+                  <span>Required to show Private Key</span>
                 </mdb-error>
               </div>
             </div>
           </div>
         </form>
       </ng-container>
-      
+       
 
 
       <!-- buttons create and clear -->
@@ -177,7 +177,7 @@
           <button mdbBtn type="button" rounded="true" mdbWavesEffect 
           class="btn-proximax"
             size="md" (click)="hidePrivateKey()" *ngIf="!showPassword">
-            <span class="color-white">Hide private key</span>
+            <span class="color-white">Hide Private Key</span>
             <!-- <span class="fs-1-2em color-white" *ngIf="!viewPrivateKey"><i class="fa fa-magic mr-1"></i> SHOW PRIVATE KEY</span> -->
           </button>
         </div>
