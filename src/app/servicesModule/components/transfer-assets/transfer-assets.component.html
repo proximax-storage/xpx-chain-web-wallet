@@ -8,22 +8,22 @@
       <div class="row">
         <div class="col-10 col-sm-12 col-md-12 mx-auto d-flex align-items-center box-grey">
           <div class="row p-1rem">
-            <div class="col-12 col-md-10">
+            <div class="col-12" [ngClass]="[(changeAccount === true) ? 'col-md-9' : '']">
               <div class="row">
                 <span class="color-black fw-bold">{{ accountSelected.nameAccount }}&nbsp;</span>
                 <span class="d-flex color-black fw-bold">NIS1 Address: </span><span>{{ accountSelected.address.pretty()
                   }}</span>
                 <span class="color-black">NIS1 Balance:
-                  <img src="./assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" class="ml-1rem" width="20px"
-                  alt="logo">
-                  <span
-                    class="spinner-border spinner-border-sm text-light mr-sm-2 loading-blue" role="status"
+                  <img src="./assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" class="ml-1rem"
+                    width="20px" alt="logo">
+                  <span class="spinner-border spinner-border-sm text-light mr-sm-2 loading-blue" role="status"
                     aria-hidden="true" *ngIf="searchBalance">
                   </span><span [innerHTML]="getQuantity(quantity)"></span></span>
               </div>
-              <div class="col-12 col-md-2 text-center" *ngIf="changeAccount">
-                <button mdbBtn mdbWavesEffect (click)="goToList()" class="color-white f-w-600 bord-rad-25px font-small background-btn p-05rem">Change</button>
-              </div>
+            </div>
+            <div class="col-12 col-md-3 text-center" *ngIf="changeAccount">
+              <button mdbBtn mdbWavesEffect (click)="goToList()"
+                class="color-white f-w-600 bord-rad-25px font-small background-btn p-05rem">Change</button>
             </div>
           </div>
         </div>
@@ -58,7 +58,7 @@
               <img class="form-control-feedback"
                 src="assets/images/img/icon-amount-green-16h-proximax-sirius-wallet.svg" alt="">
               <input pattern="^[+]?([0-9]*[.])?[0-9]+$" currencyMask [options]="optionsXPX" mdbInputDirective
-                mdbValidate [validateSuccess]="true" [maxlength]="maxAmount"  id="amount{{errorAmount}}"
+                mdbValidate [validateSuccess]="true" [maxlength]="maxAmount" id="amount{{errorAmount}}"
                 [validateError]="true" type="text" class="form-control form-control-sm input-border input-amount"
                 placeholder="Enter Amount" formControlName="amountXpx">
               <span class="label-i fw-600 text-cl-m cursor-p pl-2rem" (click)="selectMaxAmount()">Use Max</span>
@@ -98,7 +98,8 @@
           <div class="row">
             <div class="col-10 col-sm-12 col-md-12 mb-1rem mx-auto box-transparent-border-orange mx-auto">
               <div class="txt-a-center">
-                <img src="assets/images/img/icon-transaction-unconfirmed-white.svg" style="filter: invert(50%)" alt="" width="30">
+                <img src="assets/images/img/icon-transaction-unconfirmed-white.svg" style="filter: invert(50%)" alt=""
+                  width="30">
               </div>
               <h6 class="fw-600">Please note!</h6>
               <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em">
@@ -124,7 +125,8 @@
         <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
           <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
             size="md" (click)="spinnerVisibility = true" [disabled]="blockButton || !formTransfer.valid">
-            <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true" *ngIf="spinnerVisibility"></span>
+            <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
+              *ngIf="spinnerVisibility"></span>
             <span class="fs-1-2em color-white">Yes, Swap</span>
           </button>
         </div>

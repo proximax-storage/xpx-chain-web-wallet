@@ -77,27 +77,27 @@ export class TransactionsService {
     },
     registerNameSpace: {
       id: TransactionType.REGISTER_NAMESPACE,
-      name: "Register namespace"
+      name: "Register Namespace"
     },
     mosaicDefinition: {
       id: TransactionType.MOSAIC_DEFINITION,
-      name: "Mosaic definition"
+      name: "Mosaic Definition"
     },
     mosaicSupplyChange: {
       id: TransactionType.MOSAIC_SUPPLY_CHANGE,
-      name: "Mosaic supply change"
+      name: "Mosaic Supply Change"
     },
     modifyMultisigAccount: {
       id: TransactionType.MODIFY_MULTISIG_ACCOUNT,
-      name: "Modify multisig account"
+      name: "Modify Multisig Account"
     },
     aggregateComplete: {
       id: TransactionType.AGGREGATE_COMPLETE,
-      name: "Aggregate complete"
+      name: "Aggregate Complete"
     },
     aggregateBonded: {
       id: TransactionType.AGGREGATE_BONDED,
-      name: "Aggregate bonded"
+      name: "Aggregate Bonded"
     },
     mosaicAlias: {
       id: TransactionType.MOSAIC_ALIAS,
@@ -109,7 +109,7 @@ export class TransactionsService {
     },
     lock: {
       id: TransactionType.LOCK,
-      name: "Lockfund"
+      name: "LockFund"
     }
     /*secretLock: {
        id: TransactionType.SECRET_LOCK,
