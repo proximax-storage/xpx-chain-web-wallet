@@ -37,15 +37,15 @@
                   <div class="col-12 mt-03rem">
                     <span class="fw-600 fs-095rem color-black">Fee:&nbsp;&nbsp;</span>
                     <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
-                    <span class="fw-600 fs-095rem color-black">{{transferTransaction?.effectiveFee.part1}}</span>
-                    <span class="fw-600 fs-075rem color-black">{{transferTransaction?.effectiveFee.part2}}</span>
-                    <span class="fw-600 fs-095rem color-black"> XPX </span>
+                    <span class="fs-095rem color-black">{{transferTransaction?.effectiveFee.part1}}</span>
+                    <span class="fs-075rem color-black">{{transferTransaction?.effectiveFee.part2}}</span>
+                    <span class="fs-095rem color-black"> XPX </span>
                   </div>
                 </ng-container>
 
                 <!-- HEIGHT -->
                 <ng-container *ngIf="transferTransaction?.data.transactionInfo.height.compact() > 0">
-                  <div class="col-12 mt-03rem">
+                  <div class="col-12 mt-1rem lh-1em">
                     <span class="fw-600 fs-08rem color-black">Height:&nbsp;&nbsp;</span>
                     <span
                       class="fs-07rem fw-400 color-black">{{transferTransaction?.data.transactionInfo.height.compact()}}</span>
@@ -53,18 +53,18 @@
                 </ng-container>
 
                 <!-- TYPE -->
-                <div class="col-12 mt-03rem">
+                <div class="col-12 lh-1em">
                   <span class="fw-600 fs-08rem color-black">Type:&nbsp;&nbsp;</span>
                   <span class="fs-07rem fw-400 color-black">{{typeTransactionHex}}</span>
                 </div>
 
                 <!-- TYPE -->
-                <div class="col-12 mt-03rem">
+                <div class="col-12 lh-1em">
                   <span class="fw-600 fs-08rem color-black">From:&nbsp;&nbsp;</span>
                   <span class="fs-07rem fw-400 color-black">{{transferTransaction?.senderAddress}}</span>
                 </div>
 
-                <div class="col-12 mt-03rem">
+                <div class="col-12 lh-1em">
                   <span class="fw-600 fs-08rem color-black">To:&nbsp;&nbsp;</span>
                   <span class="fs-07rem fw-400 color-black">{{transferTransaction?.recipientAddress}}</span>
                 </div>
@@ -140,40 +140,40 @@
         <div class="col-12 mt-1rem">
           <span class="fw-600 fs-095rem">Amount:&nbsp;&nbsp;</span>
           <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
-          <span class="fw-600 fs-095rem color-black">{{amountTwoPart?.part1}}</span>
-          <span class="fw-600 fs-075rem color-black">{{amountTwoPart?.part2}}</span>
-          <span class="fw-600 fs-095rem color-black"> XPX </span>
+          <span class="fs-095rem color-black">{{amountTwoPart?.part1}}</span>
+          <span class="fs-075rem color-black">{{amountTwoPart?.part2}}</span>
+          <span class="fs-095rem color-black"> XPX </span>
         </div>
 
         <!-- Fee -->
         <div class="col-12 mt-03rem">
           <span class="fw-600 fs-095rem">Fee:&nbsp;&nbsp;</span>
           <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
-          <span class="fw-600 fs-095rem color-black">{{transferTransaction?.effectiveFee?.part1}}</span>
-          <span class="fw-600 fs-075rem color-black">{{transferTransaction?.effectiveFee?.part2}}</span>
-          <span class="fw-600 fs-095rem color-black"> XPX </span>
+          <span class="fs-095rem color-black">{{transferTransaction?.effectiveFee?.part1}}</span>
+          <span class="fs-075rem color-black">{{transferTransaction?.effectiveFee?.part2}}</span>
+          <span class="fs-095rem color-black"> XPX </span>
         </div>
 
         <!-- Message -->
-        <div class="col-12 mt-1-2rem lh-1em">
+        <div class="col-12 mt-1rem lh-1em">
           <span class="fw-600 fs-085rem">Message: <br></span>
           <span class="fs-075rem w-w-b-w "> {{msg}} </span>
         </div>
 
         <!-- Height -->
-        <div class="col-12 mt-1-2rem">
+        <div class="col-12 lh-1em mt-1rem">
           <span class="fw-600 fs-075rem">Height:&nbsp;</span>
           <span class="fs-075rem"> {{transferTransaction.data['transactionInfo'].height.compact()}} </span>
         </div>
 
         <!-- Type -->
-        <div class="col-12 mt-01rem">
+        <div class="col-12 lh-1em">
           <span class="fw-600 fs-075rem">Type:&nbsp;</span>
           <span class="fs-075rem"> {{transferTransaction.data.type}} </span>
         </div>
 
         <!-- TO -->
-        <div class="col-12 mt-01rem">
+        <div class="col-12 lh-1em">
           <span class="fw-600 fs-075rem">To:&nbsp;</span>
           <span class="fs-075rem w-w-b-w "> {{transferTransaction.recipientAddress}} </span>
         </div>

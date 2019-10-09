@@ -4,30 +4,26 @@
     <!-- Name -->
     <div class="row">
       <div class="col-12 mx-auto d-flex align-items-center box-grey">
-        <div class="col-10">
-          <span>Account name:</span>
+        <div class="col-10 lh-1-1em">
+          <span class="fw-600">Account Name:</span>
           <br>
-
           <ng-container *ngIf="!editNameAccount">
             <span class="font-small d-flex">{{accountName}}</span>
           </ng-container>
 
           <ng-container *ngIf="editNameAccount">
-            <input mdbInputDirective mdbValidate type="text" id="newNameAccount"
-              class="form-control form-control-sm input-border" [(ngModel)]="newNameAccount" title="New name account">
+            <input mdbInputDirective mdbValidate type="text" id="newNameAccount" class="form-control form-control-sm input-border"
+              [(ngModel)]="newNameAccount" title="New name account">
           </ng-container>
         </div>
-
-
         <div class="col-2 text-right">
           <ng-container *ngIf="!editNameAccount">
-            <i mdbWavesEffect (click)="editNameAccount = !editNameAccount" class="fa fa-pencil-square-o cursor-p"
-              title="Update name account"></i>
+            <i mdbWavesEffect (click)="editNameAccount = !editNameAccount" class="fa fa-pencil-square-o cursor-p" title="Update name account"></i>
           </ng-container>
 
           <ng-container *ngIf="editNameAccount">
-            <i mdbWavesEffect (click)="changeNameAccount(accountName, newNameAccount)"
-              class="fa fa-check-square-o cursor-p mr-06rem" title="Update name account"></i>
+            <i mdbWavesEffect (click)="changeNameAccount(accountName, newNameAccount)" class="fa fa-check-square-o cursor-p mr-06rem"
+              title="Update name account"></i>
             <i class="fa fa-window-close-o cursor-p" aria-hidden="true" (click)="editNameAccount = !editNameAccount"
               title="I don't want to update"></i>
           </ng-container>
@@ -38,27 +34,24 @@
     <!-- address -->
     <div class="row">
       <div class="col-12 mx-auto d-flex align-items-center box-grey">
-        <div class="col-10">
-          <span>{{ titleAddress }} </span>
+        <div class="col-10 lh-1-1em">
+          <span class="fw-600">{{ titleAddress }} </span>
           <br>
           <span class="font-small d-flex">{{address}}</span>
         </div>
         <div class="col-2 text-right">
-          <!-- <i mdbWavesEffect (click)="copyMessage('Address')" ngxClipboard [cbContent]="address"
-                  class="fa fa-copy cursor-p"></i> -->
           <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="cursor-p" alt="Copy"
             width="20" (click)="copyMessage('Address')" ngxClipboard [cbContent]="address">
         </div>
       </div>
     </div>
 
-
     <!-- public key -->
     <ng-container *ngIf="accountValid">
       <div class="row">
         <div class="col-12 mx-auto d-flex align-items-center box-grey">
-          <div class="col-10">
-            <span>{{ titlePublickey }} </span>
+          <div class="col-10 lh-1-1em">
+            <span class="fw-600 ">{{ titlePublickey }} </span>
             <br>
             <span class="font-small d-flex ">{{ publicKey }}</span>
           </div>
@@ -76,42 +69,47 @@
     <!-- public key -->
     <ng-container *ngIf="!accountValid">
       <div class="row">
-        <div class="col-11 col-sm-12 col-md-11 mx-auto box-transparent-border-orange">
-          <div class="col-12 d-flex flex-column align-items-center">
-            <span class="fw-600">{{ titlePublickey }} </span>
-            <span class="font-small d-flex text-center">This user has not made transactions with this
-              account.</span>
+        <div class="col-12  mx-auto box-transparent-border-orange">
+          <div class="txt-a-center">
+            <img src="assets/images/img/icon-transaction-unconfirmed-white.svg" style="filter: invert(50%)" alt=""
+              width="30">
           </div>
+          <h6 class="fw-600">{{ titlePublickey }} </h6>
+          <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em">
+            This user has not made transactions with this
+            account
+          </p>
         </div>
       </div>
     </ng-container>
-
     <ng-container *ngIf="currenAccount.encrypted !== ''">
       <!-- Information -->
       <div class="row">
-        <div class="col-11 col-sm-12 col-md-11 mx-auto box-transparent-border-orange">
-          <div>
-            <span class="fw-600">{{ descriptionPrivateKey }}</span>
-            <br>
+    
+        <div class="col-12 mx-auto  box-transparent-border-orange">
+          <div class="txt-a-center">
+            <img src="assets/images/img/icon-transaction-unconfirmed-white.svg" style="filter: invert(50%)" alt=""
+              width="30">
           </div>
+         
+          <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em">
+            {{ descriptionPrivateKey }}
+          </p>
         </div>
       </div>
-
 
       <!-- private key -->
       <ng-container *ngIf="!showPassword">
         <div class="row animated fadeIn">
           <div class="col-12 mx-auto d-flex align-items-center box-grey">
-            <div class="col-10">
-              <span> {{ titlePrivateKey }} </span>
+            <div class="col-10 lh-1-1em">
+              <span class="fw-600"> {{ titlePrivateKey }} </span>
               <br>
               <span class="font-small d-flex">{{ privateKey }}</span>
             </div>
             <div class="col-2 text-right">
-              <!-- <i mdbWavesEffect (click)="copyMessage('Private Key')" ngxClipboard [cbContent]="privateKey"
-                    class="fa fa-copy cursor-p"></i> -->
-              <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="cursor-p"
-                alt="Copy" width="20" (click)="copyMessage('Private key')" ngxClipboard [cbContent]="privateKey">
+              <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="cursor-p" alt="Copy"
+                width="20" (click)="copyMessage('Private key')" ngxClipboard [cbContent]="privateKey">
             </div>
           </div>
         </div>
@@ -120,7 +118,7 @@
       <div class="row mt-1rem" *ngIf="privateKey === ''">
         <div class="col-11 col-sm-10 col-lg-9 col-xl-8 mx-auto txt-a-center">
           <mdb-checkbox [(ngModel)]="checked" [checked]="checked"> Check this
-            box if you wish to swap with this private key.<i class="fa fa-info-circle color-gray-strong"></i>
+            box if you wish to swap with this private key.
           </mdb-checkbox>
         </div>
       </div>
@@ -138,12 +136,11 @@
           <div class="row">
             <div class="col-11 col-sm-10 col-md-10 mx-auto">
               <div class="md-form form-sm mt-1rem mb-0rem">
-                <img class="form-control-feedback"
-                  src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg" alt="">
-                <input [maxlength]="configurationForm.passwordWallet.maxLength"
-                  [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" mdbInputDirective
-                  mdbValidate [validateSuccess]="true" [validateError]="true" type="password" id="password"
-                  class="form-control form-control-sm input-border" placeholder="Enter wallet password">
+                <img class="form-control-feedback" src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg"
+                  alt="">
+                <input [maxlength]="configurationForm.passwordWallet.maxLength" [minlength]="configurationForm.passwordWallet.minLength"
+                  formControlName="password" mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
+                  type="password" id="password" class="form-control form-control-sm input-border" placeholder="Enter Wallet Password">
 
                 <!-- VALIDATION -->
                 <mdb-error *ngIf="
@@ -156,29 +153,31 @@
           </div>
         </form>
       </ng-container>
+      
 
 
       <!-- buttons create and clear -->
       <div class="row mt-2rem">
         <div class="col-11 col-sm-6 d-flex justify-content-center justify-content-sm-end mx-auto">
-          <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md"
-            (click)="printAccountInfo()">
-            <span class="fs-1-2em color-white">
+          <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax"
+            size="md" (click)="printAccountInfo()">
+            <span class="color-white">
               Save Paper Wallet
             </span>
           </button>
         </div>
 
         <div class="col-11 col-sm-6 d-flex justify-content-center justify-content-sm-start mx-auto">
-          <button mdbBtn type="button" rounded="true" [disabled]="!validatingForm.valid || checked === valueInitNis && showPrivateKey === valueInitShow" mdbWavesEffect
-            class="f-w-600 background-btn pl-2rem pr-2rem" size="md" (click)="aceptChanges()" *ngIf="showPassword">
+          <button mdbBtn type="button" rounded="true" [disabled]="!validatingForm.valid || checked === valueInitNis && showPrivateKey === valueInitShow"
+            mdbWavesEffect class="btn-proximax" size="md" (click)="aceptChanges()" *ngIf="showPassword">
             <!-- <span class="fs-1-2em color-white" *ngIf="viewPrivateKey"><i class="fa fa-magic mr-1"></i> HIDE PRIVATE KEY</span> -->
-            <span class="fs-1-2em color-white">Accept</span>
+            <span class="color-white">Accept</span>
           </button>
 
-          <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+          <button mdbBtn type="button" rounded="true" mdbWavesEffect 
+          class="btn-proximax"
             size="md" (click)="hidePrivateKey()" *ngIf="!showPassword">
-            <span class="fs-1-2em color-white">Hide private key</span>
+            <span class="color-white">Hide private key</span>
             <!-- <span class="fs-1-2em color-white" *ngIf="!viewPrivateKey"><i class="fa fa-magic mr-1"></i> SHOW PRIVATE KEY</span> -->
           </button>
         </div>
