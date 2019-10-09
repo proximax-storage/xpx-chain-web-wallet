@@ -313,7 +313,7 @@ export class TransactionsService {
       params.network
     );
 
-    console.log(this.generationHash);
+    // console.log(this.generationHash);
     const account = Account.createFromPrivateKey(
       params.common.privateKey,
       params.network
@@ -552,9 +552,9 @@ export class TransactionsService {
    * @memberof TransactionsService
    */
   getStructureDashboard(transaction: Transaction, othersTransactions?: TransactionsInterface[], group?: string): TransactionsInterface {
-    console.log('transaction --->', transaction);
-    console.log('group', group);
-    console.log('\n----------------------------------------------\n');
+    // console.log('transaction --->', transaction);
+    // console.log('group', group);
+    // console.log('\n----------------------------------------------\n');
     if (othersTransactions && othersTransactions.length > 0) {
       const existTransction = othersTransactions.filter(next => next.data.transactionInfo.hash === transaction.transactionInfo.hash);
       if (existTransction && existTransction.length > 0) {
@@ -629,11 +629,11 @@ export class TransactionsService {
           if(transfer && transfer.length > 0) {
             let newTransaction: any = null;
             transfer.forEach(element => {
-              console.log('element', element);
+              // console.log('element', element);
               if (element["message"] && element["message"].payload !== "") {
                 try {
                   const msg = JSON.parse(element["message"].payload);
-                  console.log('msg', msg);
+                  // console.log('msg', msg);
                   if (element.signer.address.plain() === environment.swapAccount.address) {
                     if (msg && msg["type"] && msg["type"] === "Swap") {
                       nameType = "ProximaX Swap";
@@ -646,7 +646,7 @@ export class TransactionsService {
               };
             });
 
-            console.log('newTransaction', newTransaction);
+            // console.log('newTransaction', newTransaction);
             if(newTransaction !== null) {
               transaction = newTransaction;
             }
@@ -664,7 +664,7 @@ export class TransactionsService {
             if (walletTransactionsNis !== undefined && walletTransactionsNis !== null) {
               const transactions = walletTransactionsNis.transactions.filter(el => el.nis1TransactionHast !== msg["nis1Hash"]);
               walletTransactionsNis.transactions = transactions;
-              console.log('swap --->');
+              // console.log('swap --->');
               this.walletService.setSwapTransactions$(walletTransactionsNis.transactions);
               this.walletService.saveAccountWalletTransNisStorage(walletTransactionsNis);
             }
