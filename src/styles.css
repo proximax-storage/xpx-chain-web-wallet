@@ -1828,6 +1828,14 @@ ul.stepper.horizontal .step-title {
   width: 39px;
 }
 
+.form-control-feedback-eye {
+  position: absolute;
+  padding: 10px;
+  width: 39px;
+  right: 0;
+  z-index: 3000000;
+}
+
 .form-control {
   padding-left: 33px!important;
 }

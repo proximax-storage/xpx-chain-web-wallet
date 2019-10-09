@@ -94,6 +94,17 @@ export class SharedService {
     }
   }
 
+  changeInputType(inputType: string) :string {
+    let result: string
+    if (inputType === 'password') {
+      result = 'text';
+    } else if (inputType === 'text') {
+      result = 'password';
+    }
+
+    return result
+  }
+
   /**
    *
    *

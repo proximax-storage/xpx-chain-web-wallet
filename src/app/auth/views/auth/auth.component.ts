@@ -13,6 +13,7 @@ export class AuthComponent implements OnInit {
   @Input() eventNumber: number;
   authForm: FormGroup;
   configurationForm: ConfigurationForm = {};
+  passwordMain = 'password';
   title = 'Sign In to your Wallet';
   wallets: Array<any>;
 
@@ -52,6 +53,11 @@ export class AuthComponent implements OnInit {
       this.authForm.get('wallet').reset();
       this.authForm.get('common').reset();
     }
+  }
+
+  changeInputType(inputType) {
+    let newType = this.sharedService.changeInputType(inputType)
+    this.passwordMain = newType;
   }
 
   /**
