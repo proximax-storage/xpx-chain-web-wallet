@@ -174,7 +174,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
           if (transactionsUnconfirmed && transactionsUnconfirmed.length > 0) {
             //Sets the data structure of the dashboard
             transactionsUnconfirmed.forEach(element => {
-              const builderTransactions = this.transactionService.getStructureDashboard(element, this.transactionsUnconfirmed);
+              const builderTransactions = this.transactionService.getStructureDashboard(element, this.transactionsUnconfirmed, 'unconfirmed');
               if (builderTransactions !== null) {
                 transactionUnconfirmed.push(builderTransactions);
               }
@@ -295,7 +295,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         if (transactions && transactions.length > 0) {
           //Sets the data structure of the dashboard
           transactions.forEach(element => {
-            const builderTransactions = this.transactionService.getStructureDashboard(element, this.transactions);
+            const builderTransactions = this.transactionService.getStructureDashboard(element, this.transactions, 'confirmed');
             (builderTransactions !== null) ? this.transactions.push(builderTransactions) : '';
           });
 
