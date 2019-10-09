@@ -493,6 +493,10 @@ html, body {
   line-height: 1em
 }
 
+.lh-1-1em {
+  line-height: 1.1em
+}
+
 .lh-1-4em {
   line-height: 1.4em
 }

@@ -187,6 +187,10 @@ export class TransferAssetsComponent implements OnInit {
     }
   }
 
+  getQuantity(quantity) {
+    return this.sharedService.amountFormat(quantity);
+  }
+
   suscribe() {
     this.subscription.push(
       this.formTransfer.get('amountXpx').valueChanges.subscribe(

@@ -67,6 +67,11 @@ export class SharedService {
     private toastrService: ToastService
   ) { }
 
+  amountFormat(amount: string): string {
+    const res = amount.split(".");
+    const htmlStr: string = `<span class="fs-085rem color-black" > ${ res[0] }.</span><span  class="fs-07rem">${res[1]}</span >`;
+    return htmlStr
+  }
 
   /**
    *
