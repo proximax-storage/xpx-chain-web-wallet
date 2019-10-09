@@ -70,7 +70,7 @@ export class TransferAssetsComponent implements OnInit {
     if (this.accountSelected) {
       this.initComponent();
     } else {
-      this.router.navigate([AppConfig.routes.auth]);
+      this.router.navigate([AppConfig.routes.home]);
     }
   }
 
@@ -78,6 +78,7 @@ export class TransferAssetsComponent implements OnInit {
     this.createFormTransfer();
     this.formTransfer.get('amountXpx').reset();
     this.booksAddress();
+    this.suscribe();
 
     if (this.accountSelected.consignerAccounts !== undefined) {
       this.changeAccount = this.accountSelected.consignerAccounts.length > 1;
@@ -153,9 +154,7 @@ export class TransferAssetsComponent implements OnInit {
             } else {
               this.formTransfer.get('amountXpx').enable();
               this.formTransfer.get('password').enable();
-              this.suscribe();
               this.blockButton = false;
-
             }
             this.divisivility = this.accountSelected.mosaic.properties.divisibility.toString();
           }
@@ -195,7 +194,7 @@ export class TransferAssetsComponent implements OnInit {
     this.subscription.push(
       this.formTransfer.get('amountXpx').valueChanges.subscribe(
         next => {
-          if (next !== null && next !== undefined) {
+          if (next !== null && next !== undefined) {            
             if (next > parseFloat(this.quantity.split(',').join(''))) {
               this.blockButton = true;
               this.errorAmount = '-invalid';
@@ -384,16 +383,32 @@ export class TransferAssetsComponent implements OnInit {
         error => {
           if (error.error.message) {
             switch (error.error.code) {
-              case 2 || 18:
-                this.sharedService.showError('Error', error.error.message.toString().split('_').join(' '));
+              case 521 || 535 || 542 || 551 || 565 || 582 || 591 || 610 || 622 || 672 || 711:
+                this.sharedService.showError('Error', 'Some data is invalid');
+                break;
+
+              case 501 || 635 || 641 || 685 || 691:
+                this.sharedService.showError('Error', 'Service not available');
+                break;
+
+              case 655 || 666:
+                this.sharedService.showError('Error', 'insufficient XPX Balance');
+                break;
+
+              case 511:
+                this.sharedService.showError('Error', 'Daily limit exceeded (5 swaps)');
+                break;
+
+              case 705:
+                this.sharedService.showError('Error', 'Invalid Url');
                 break;
 
               default:
-                this.sharedService.showError('Error', 'Error! try again later');
+                // this.sharedService.showError('Error', 'Error! try again later');
+                this.sharedService.showError('Error', error.error.message.toString().split('_').join(' '));
                 break;
             }
           } else {
-            console.log('esta es la repuesta2', error);
             this.sharedService.showError('Error', error.toString().split('_').join(' '));
           }
           this.spinnerVisibility = false
@@ -409,7 +424,7 @@ export class TransferAssetsComponent implements OnInit {
     this.walletService.setNis1AccountSelected(null);
     this.walletService.accountWalletCreated = null;
     if (this.router.url === `/${AppConfig.routes.transferXpx}`) {
-      this.router.navigate([AppConfig.routes.auth]);
+      this.router.navigate([AppConfig.routes.home]);
     } else {
       this.router.navigate([route]);
     }

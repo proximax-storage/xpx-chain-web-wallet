@@ -1859,13 +1859,13 @@ body.modal-open {
     }
 }
 
-@media only screen and (min-width: 768px) {
+@media only screen and (min-width: 766px) {
     .option {
         display: none !important;
     }
 }
 
-@media only screen and (max-width: 769px) {
+@media only screen and (max-width: 767px) {
     .option {
         display: block !important;
     }
@@ -2019,7 +2019,7 @@ ul.stepper.horizontal .step-title {
 }
 
 .dropdown-menu {
-    margin-top: 0px !important;
+    margin-top: -10px !important;
     min-width: 6rem !important;
 }
 

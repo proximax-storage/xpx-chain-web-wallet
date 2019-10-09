@@ -313,7 +313,7 @@ export class TransactionsService {
       params.network
     );
 
-    console.log(this.generationHash);
+    // console.log(this.generationHash);
     const account = Account.createFromPrivateKey(
       params.common.privateKey,
       params.network
@@ -552,7 +552,9 @@ export class TransactionsService {
    * @memberof TransactionsService
    */
   getStructureDashboard(transaction: Transaction, othersTransactions?: TransactionsInterface[], group?: string): TransactionsInterface {
-    console.log('transaction --->', transaction);
+    // console.log('transaction --->', transaction);
+    // console.log('group', group);
+    // console.log('\n----------------------------------------------\n');
     if (othersTransactions && othersTransactions.length > 0) {
       const existTransction = othersTransactions.filter(next => next.data.transactionInfo.hash === transaction.transactionInfo.hash);
       if (existTransction && existTransction.length > 0) {
@@ -562,21 +564,21 @@ export class TransactionsService {
 
     const keyType = this.getNameTypeTransaction(transaction.type);
     if (keyType !== undefined) {
-      const responseIsRecipient = this.validateIsRecipient(transaction);
-      const feeFormatter = this.amountFormatterSimple(transaction.maxFee.compact());
-      const rentalFeeSink = this.getRentalFeeSink(transaction);
-      const nameTransaction = this.validateIsSwapTransaction(transaction, keyType);
+      const dataTransaction = this.validateIsSwapTransaction(transaction, keyType, group);
+      const feeFormatter = this.amountFormatterSimple(dataTransaction.transaction.maxFee.compact());
+      const rentalFeeSink = this.getRentalFeeSink(dataTransaction.transaction);
+      const responseIsRecipient = this.validateIsRecipient(dataTransaction.transaction);
       return {
-        data: transaction,
-        nameType: nameTransaction,
+        data: dataTransaction.transaction,
+        nameType: dataTransaction.nameType,
         fee: feeFormatter,
         feePart: this.getDataPart(feeFormatter, 6),
-        sender: transaction.signer,
+        sender: dataTransaction.transaction.signer,
         recipientRentalFeeSink: rentalFeeSink,
         recipient: responseIsRecipient.recipient,
         recipientAddress: responseIsRecipient.recipientPretty,
         receive: responseIsRecipient.isReceive,
-        senderAddress: transaction["signer"].address.pretty()
+        senderAddress: dataTransaction.transaction["signer"].address.pretty()
       };
     }
     return null;
@@ -619,8 +621,39 @@ export class TransactionsService {
    * @returns
    * @memberof TransactionsService
    */
-  validateIsSwapTransaction(transaction: Transaction, keyType: string){
+  validateIsSwapTransaction(transaction: Transaction, keyType: string, group: string){
     let nameType = this.arraTypeTransaction[keyType].name;
+    if (group && (group === 'confirmed' || group === 'unconfirmed')) {
+      if(transaction.type === this.arraTypeTransaction.aggregateBonded.id) {
+          const transfer = transaction['innerTransactions'].filter(b => b.type === this.arraTypeTransaction.transfer.id);
+          if(transfer && transfer.length > 0) {
+            let newTransaction: any = null;
+            transfer.forEach(element => {
+              // console.log('element', element);
+              if (element["message"] && element["message"].payload !== "") {
+                try {
+                  const msg = JSON.parse(element["message"].payload);
+                  // console.log('msg', msg);
+                  if (element.signer.address.plain() === environment.swapAccount.address) {
+                    if (msg && msg["type"] && msg["type"] === "Swap") {
+                      nameType = "ProximaX Swap";
+                      newTransaction = Object.assign({}, element);
+                      newTransaction['transactionInfo'].hash = transaction.transactionInfo.hash;
+                      newTransaction.size = transaction.size;
+                    }
+                  }
+                } catch (error) {}
+              };
+            });
+
+            // console.log('newTransaction', newTransaction);
+            if(newTransaction !== null) {
+              transaction = newTransaction;
+            }
+        }
+      }
+    }
+
     try {
       if (transaction["message"] && transaction["message"].payload !== "") {
         const msg = JSON.parse(transaction["message"].payload);
@@ -631,7 +664,7 @@ export class TransactionsService {
             if (walletTransactionsNis !== undefined && walletTransactionsNis !== null) {
               const transactions = walletTransactionsNis.transactions.filter(el => el.nis1TransactionHast !== msg["nis1Hash"]);
               walletTransactionsNis.transactions = transactions;
-              console.log('swap --->');
+              // console.log('swap --->');
               this.walletService.setSwapTransactions$(walletTransactionsNis.transactions);
               this.walletService.saveAccountWalletTransNisStorage(walletTransactionsNis);
             }
@@ -640,7 +673,10 @@ export class TransactionsService {
       }
     } catch (error) {}
 
-    return nameType;
+    return {
+      transaction: transaction,
+      nameType: nameType
+    };
   }
 
   /**
@@ -904,39 +940,6 @@ export class TransactionsService {
       };
 
     return { infValidate: [{ disabled: false, info: "" }] };
-
-    /*if(transaction.type === this.arraTypeTransaction.aggregateBonded.id) {
-          if(transaction.transactionInfo.height) {
-            const transfer = transaction['innerTransactions'].filter(b => b.type === this.arraTypeTransaction.transfer.id);
-            if(transfer && transfer.length > 0) {
-              let newTransaction: Transaction = null;
-              transfer.forEach(element => {
-                if (element["message"] && element["message"].payload !== "") {
-                  const msg = JSON.parse(element["message"].payload);
-                  if (element.signer.address.plain() === environment.swapAccount.address) {
-                    if (msg && msg["type"] && msg["type"] === "Swap") {
-                      nameType = "ProximaX Swap";
-                      let walletTransactionsNis = this.walletService.getWalletTransNisStorage().find(el => el.name === this.walletService.getCurrentWallet().name);
-                      if (walletTransactionsNis !== undefined && walletTransactionsNis !== null) {
-                        const transactions = walletTransactionsNis.transactions.filter(el => el.nis1TransactionHast !== msg["nis1Hash"]);
-                        walletTransactionsNis.transactions = transactions;
-                        this.walletService.setSwapTransactions$(walletTransactionsNis.transactions);
-                        this.walletService.saveAccountWalletTransNisStorage(walletTransactionsNis);
-                      }
-
-                      newTransaction = element;
-                    }
-                  }
-                }
-              });
-
-              if(newTransaction !== null) {
-                transaction = newTransaction;
-              }
-            }
-          }
-        }else {*/
-
   }
 }
 
