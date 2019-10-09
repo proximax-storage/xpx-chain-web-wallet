@@ -13,14 +13,14 @@
                   <span class="color-black fw-600 fs-1-2rem">{{transferTransaction.nameType}}</span>
 
                   <!-- Income -->
-                  <ng-container *ngIf="transferTransaction?.receive">
+                  <ng-container *ngIf="transferTransaction?.receive === true">
                     <img class="mr-1rem ml-1rem h-1em"
                       src="assets/images/img/arrow-transaction-receive-green-proximax-sirius-explorer.svg" alt="">
                     <span class="color-black  fw-600 fs-1-2rem">Received</span>
                   </ng-container>
 
                   <!-- Outcome -->
-                  <ng-container *ngIf="!transferTransaction?.receive">
+                  <ng-container *ngIf="transferTransaction?.receive === false">
                     <img class="mr-1rem ml-1rem h-1em"
                       src="assets/images/img/arrow-transaction-sender-orange-proximax-sirius-explorer.svg" alt="">
                     <span class="color-black  fw-600 fs-1-2rem" *ngIf="!transferTransaction?.receive">Send</span>
@@ -80,8 +80,7 @@
                     <span class="color-black fw-bold fs-07rem">Message: </span>
                   </div>
                   <div class="col-12 word-break-all">
-                    <span
-                      class="color-black fw-400 fs-08remc">{{transferTransaction?.data['message'].payload}}</span>
+                    <span class="color-black fw-400 fs-08remc">{{transferTransaction?.data['message'].payload}}</span>
                   </div>
                 </div>
               </div>
@@ -117,12 +116,19 @@
           <!-- Name type -->
           <span class="color-black fw-bold fs-1-5rem">{{transferTransaction.nameType}}</span>
 
-          <!-- Arrow -->
-          <img class="mr-1rem ml-1rem h-1-4em"
-            src="assets/images/img/arrow-transaction-receive-green-proximax-sirius-explorer.svg">
-
           <!-- Income -->
-          <span class="color-black fw-bold fs-1-5rem">Received</span>
+          <ng-container *ngIf="transferTransaction?.receive === true">
+            <img class="mr-1rem ml-1rem h-1-4em"
+              src="assets/images/img/arrow-transaction-receive-green-proximax-sirius-explorer.svg">
+            <span class="color-black  fw-600 fs-1-2rem">Received</span>
+          </ng-container>
+
+          <!-- Outcome -->
+          <ng-container *ngIf="transferTransaction?.receive === false">
+            <img class="mr-1rem ml-1rem h-1-4em"
+              src="assets/images/img/arrow-transaction-sender-orange-proximax-sirius-explorer.svg">
+            <span class="color-black  fw-600 fs-1-2rem">Send</span>
+          </ng-container>
         </div>
 
         <!-- Timestamp -->
