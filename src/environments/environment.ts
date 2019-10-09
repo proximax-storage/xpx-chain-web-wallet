@@ -8,7 +8,7 @@ import { ChronoUnit } from 'js-joda';
 export const environment = {
   production: false,
   itemBooksAddress: 'sw-books-testnet-01',
-  version: '0.3.15.1',
+  version: '0.3.15.3',
   cacheVersion: '4',
   nameKeyBlockStorage: `sw-blocks`,
   nameKeyNodeSelected: `sw-selected-node-testnet-01`,
@@ -83,27 +83,27 @@ export const environment = {
     address_public_test: 'VDYN53-XXEGKK-3XHQYE-K6ZBMN-JPXN57-ZBHXA3-AW55'
   },
   nis1: {
-    url: 'https://bctestnetswap.xpxsirius.io:7890',
+   /* url: 'https://bctestnetswap.xpxsirius.io:7890',
     urlExplorer: 'http://testnet-explorer.nemtool.com/#/unconfirmedtxlist',
     networkType: NetworkTypes.TEST_NET,
     address: 'TBF4LAZUEJMBIOC6J24D6ZGGXE5W775TX555CTTN',
     nodes: [
       { protocol: "https", domain: "bctestnetswap.xpxsirius.io", port: 7890 } as ServerConfig
+    ],*/
+    /*url: 'https://bctestnetswap.xpxsirius.io',
+    urlExplorer: 'http://testnet-explorer.nemtool.com/#/unconfirmedtxlist',
+    networkType: NetworkTypes.TEST_NET,
+    address: 'TBF4LAZUEJMBIOC6J24D6ZGGXE5W775TX555CTTN',
+    nodes: [
+      { protocol: "https", domain: "bctestnetswap.xpxsirius.io", port: 443 } as ServerConfig
+    ],*/
+    url: 'http://192.168.2.141:7890',
+    urlExplorer: 'http://testnet-explorer.nemtool.com/#/unconfirmedtxlist',
+    networkType: NetworkTypes.TEST_NET,
+    address: 'TBF4LAZUEJMBIOC6J24D6ZGGXE5W775TX555CTTN',
+    nodes: [
+      { protocol: "http", domain: "192.168.2.141", port: 7890 } as ServerConfig
     ],
-    // url: 'https://bctestnetswap.xpxsirius.io',
-    // urlExplorer: 'http://testnet-explorer.nemtool.com/#/unconfirmedtxlist',
-    // networkType: NetworkTypes.TEST_NET,
-    // address: 'TBF4LAZUEJMBIOC6J24D6ZGGXE5W775TX555CTTN',
-    // nodes: [
-    //   { protocol: "https", domain: "bctestnetswap.xpxsirius.io", port: 443 } as ServerConfig
-    // ],
-    // url: 'http://192.168.2.141:7890',
-    // urlExplorer: 'http://testnet-explorer.nemtool.com/#/unconfirmedtxlist',
-    // networkType: NetworkTypes.TEST_NET,
-    // address: 'TBF4LAZUEJMBIOC6J24D6ZGGXE5W775TX555CTTN',
-    // nodes: [
-    //   { protocol: "http", domain: "192.168.2.141", port: 7890 } as ServerConfig
-    // ],
   },
   swapAccount: {
     address: 'VAWOEOWTABXR7O3ZAK2XNA5GIBNE6PZIXDAFDWBU'
