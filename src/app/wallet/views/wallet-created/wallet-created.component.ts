@@ -26,7 +26,7 @@ export class WalletCreatedComponent implements OnInit {
   titleDescription = 'Your wallet has been successfully created.';
   subtitle = '';
   viewPrivateKey = false;
-  routeAuth = `/${AppConfig.routes.auth}`;
+  routeAuth = `/${AppConfig.routes.home}`;
   walletData: {
     data: any,
     dataAccount: AccountsInterface;

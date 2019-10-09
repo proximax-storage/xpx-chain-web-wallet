@@ -158,7 +158,7 @@ export class WalletNis1AccountsConsignerComponent implements OnInit {
     this.walletService.setAccountInfoNis1(null);
     // this.walletService.setAccountMosaicsNis1(null);
     this.walletService.setNis1AccountSelected(null);
-    this.router.navigate([`/${AppConfig.routes.auth}`]);
+    this.router.navigate([`/${AppConfig.routes.home}`]);
   }
 
 }
