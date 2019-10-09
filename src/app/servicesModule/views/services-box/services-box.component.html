@@ -25,7 +25,7 @@
           <button mdbDropdownToggle mdbBtn color="transparent" class="dropdown-toggle waves-light" type="button"
             mdbWavesEffect style="padding: 0px; box-shadow: 0px 0px transparent"> <span class="color-main-wallet">Options</span> 
           </button>
-          <div class="dropdown-menu row mb-1rem" style="position: absolute; left: 60px">
+          <div class="dropdown-menu row mb-1rem" style="position: absolute; left: 60px; padding: .5rem 0 .5rem 0 !important;">
             <ng-container *ngFor="let itm of objectKeys(servicesList[item]['children'])">
               <div class="col-12 txt-a-center line-h-1em">
                 <a class="dropdown-item fs-075rem" [routerLink]="['/'+servicesList[item].children[itm].route]" [ngClass]="[
