@@ -14,31 +14,35 @@
     <ng-container *ngIf="accounts.length > 1">
       <div class="row mt-1rem mb-2rem">
         <div class="col-11 col-md-10 col-lg-8 mx-auto">
-          <span class="fs-1rem fw-600 line-h-1-2em color-blue-intermedio">Accounts</span>
-        </div>
-        <div class="col-11 col-md-10 col-lg-8 mx-auto">
-          <div class="h-account">
-            <ng-container *ngFor="let account of accounts; let i=index">
-              <span [ngClass]="[account.active ? 'nav-link active isActive' : 'nav-link']" class="cursor-p"
-                (click)="changeSender(account.value)">
-                {{account.value.name}}
-                <i *ngIf="account.value.default" class="fa fa-star fs-1rem ml-10px cursor-p" aria-hidden="true"
-                  title="Default account"></i>
+          <span class="fs-09rem fw-600 line-h-1-2em" style="color: #ababab !important;">Selected Account</span>
+          <mdb-accordion [multiple]="false" aria-multiselectable="true">
+            <mdb-accordion-item [collapsed]="true">
+              <mdb-accordion-item-head class="color-black">
+                {{sender.name}}
+                <span *ngIf="sender.default" class="ml-05rem title-tab-blue pt-03rem"><i>- Current default </i></span>
+                <span *ngIf="sender.isMultisign &&
+                    sender.isMultisign.cosignatories &&
+                    sender.isMultisign.cosignatories.length > 0" class="ml-05rem title-tab-blue pt-03rem"><i>- Multisig
+                  </i></span>
+              </mdb-accordion-item-head>
+              <mdb-accordion-item-body class="box-accounts-height">
+                <ng-container *ngFor="let account of accounts; let i=index">
+                  <span [ngClass]="[account.active ? 'nav-link active isActive' : 'nav-link']" class="cursor-p"
+                    (click)="changeSender(account.value)">
+                    {{account.value.name}}
 
-                <i *ngIf="account.value.isMultisign &&
-                          account.value.isMultisign.cosignatories &&
-                          account.value.isMultisign.cosignatories.length > 0"
-                  class="fa fa-users fs-1rem ml-10px cursor-p" aria-hidden="true" title="Multi-signature account"></i>
-              </span>
-            </ng-container>
-          </div>
+                    <span *ngIf="account.value.default" class="ml-05rem title-tab-blue pt-03rem"><i>- Current default
+                      </i></span>
+                    <span *ngIf="account.value.isMultisign &&
+                    account.value.isMultisign.cosignatories &&
+                    account.value.isMultisign.cosignatories.length > 0" class="ml-05rem title-tab-blue pt-03rem"><i>-
+                        Multisig </i></span>
+                  </span>
+                </ng-container>
+              </mdb-accordion-item-body>
+            </mdb-accordion-item>
+          </mdb-accordion>
         </div>
-
-        <ng-container *ngIf="!searching; else searchTemplate">
-          <div class="col-11 col-md-10 col-lg-8 mx-auto d-none d-sm-block">
-            <span class="fs-07rem" style="color: #404040ad;">{{sender?.address}}</span>
-          </div>
-        </ng-container>
       </div>
     </ng-container>
 
@@ -181,57 +185,46 @@
     <!--  OTHER MOSAICS -->
     <ng-container *ngIf="boxOtherMosaics.length > 0">
       <ng-container *ngFor="let otherMosaic of boxOtherMosaics; let i = index">
-        <!-- SEPARED -->
-        <div class="row">
+        <!-- MOSAIC & AMOUNT -->
+        <div class="row mt-2rem">
           <div class="col-11 col-md-10 col-lg-8 mx-auto">
-            <hr>
-          </div>
-        </div>
-
-        <div class="row">
-          <!-- Select mosaic -->
-          <div class="col-11 col-md-10 col-lg-8 mx-auto">
-            <ng-select mdbInputDirective mdbValidate class="selectWrapper" [items]="otherMosaic.selectOtherMosaics"
-              bindLabel="label" bindValue="value" placeholder="Select mosaic" (change)="otherMosaicsChange($event, i)"
-              [disabled]="disabledAllField">
-            </ng-select>
-          </div>
-
-          <!-- Balance -->
-          <ng-container *ngIf="otherMosaic.balance !== ''">
-            <div class="col-11 col-md-10 col-lg-8 mx-auto txt-a-center">
-              <span class="fw-600">Balance: {{otherMosaic.balance}} </span>
-            </div>
-          </ng-container>
-        </div>
-
-        <ng-container *ngIf="otherMosaic.balance !== ''">
-          <div class="row">
-            <div class="col-11 col-md-10 col-lg-8 mx-auto">
-              <div class="row d-flex align-items-center">
-                <!-- Amount Input -->
+            <div class="border-separator">
+              <!-- MOSAIC XPX -->
+              <div class="row">
                 <div class="col-12 mx-auto">
-                  <div class="md-form form-sm mt-1rem mb-0rem">
-                    <img class="form-control-feedback"
-                      src="assets/images/img/icon-amount-green-16h-proximax-sirius-wallet.svg" alt="">
-                    <input currencyMask [options]="boxOtherMosaics[i].config" mdbInputDirective mdbValidate
-                      [maxlength]="configurationForm.amount.maxLength" type="text"
-                      class="form-control form-control-sm input-border input-amount"
-                      [(ngModel)]="boxOtherMosaics[i].amount" [ngModelOptions]="{standalone: true}"
-                      (ngModelChange)="amountOtherMosaicChanged($event, otherMosaic.id, i)" placeholder="Enter quantity"
-                      [disabled]="disabledAllField">
-                    <span class="label-i fw-600 pl-2rem">SEND</span>
-
-                    <!-- Message Error Insufficient balance-->
-                    <mdb-error *ngIf="otherMosaic.errorBalance">
-                      <span class="fs-08rem fw-600 color-error-message">Insufficient balance</span>
-                    </mdb-error>
-                  </div>
+                  <ng-select class="custom" mdbInputDirective mdbValidate class="selectWrapper"
+                    [items]="otherMosaic.selectOtherMosaics" bindLabel="label" bindValue="value"
+                    placeholder="Select mosaic" (change)="otherMosaicsChange($event, i)" [disabled]="disabledAllField">
+                  </ng-select>
                 </div>
               </div>
+
+              <ng-container *ngIf="otherMosaic.balance !== ''">
+                <div class="row d-flex align-items-center">
+                  <!-- Amount Input -->
+                  <div class="col-12 mx-auto">
+                    <div class="md-form form-sm mt-0 mb-0rem">
+                      <img class="form-control-feedback"
+                        src="assets/images/img/icon-amount-green-16h-proximax-sirius-wallet.svg" alt="">
+                      <input currencyMask [options]="boxOtherMosaics[i].config" mdbInputDirective mdbValidate
+                        [maxlength]="configurationForm.amount.maxLength" type="text"
+                        class="form-control form-control-sm input-border input-amount"
+                        [(ngModel)]="boxOtherMosaics[i].amount" [ngModelOptions]="{standalone: true}"
+                        (ngModelChange)="amountOtherMosaicChanged($event, otherMosaic.id, i)"
+                        placeholder="Enter quantity" [disabled]="disabledAllField">
+                      <span class="label-i fw-600 pl-2rem">SEND</span>
+
+                      <!-- Message Error Insufficient balance-->
+                      <mdb-error *ngIf="otherMosaic.errorBalance">
+                        <span class="fs-08rem fw-600 color-error-message">Insufficient balance</span>
+                      </mdb-error>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
             </div>
           </div>
-        </ng-container>
+        </div>
       </ng-container>
     </ng-container>
     <!--  FIN MOSAICS -->
@@ -302,7 +295,7 @@
               <div class="col-12 text-center">
                 <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20"
                   alt="">
-                <span class="fs-07rem">Fee: {{fee}} XPX <br></span>
+                <span class="fs-08rem">Fee: {{fee}} XPX <br></span>
               </div>
             </div>
           </div>

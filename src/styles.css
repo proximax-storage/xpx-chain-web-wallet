@@ -360,6 +360,9 @@ html, body {
 }
 
 /** BOTTOM **/
+.pb-0{
+  padding-bottom: 0 !important;
+}
 
 .pb-10px {
   padding-bottom: 10px;
@@ -1764,6 +1767,7 @@ ngx-dropzone-label {
 .md-accordion .card .card-header a h5 {
   font-size: .8rem !important;
   font-weight: 600 !important;
+  color: black !important;
 }
 
 .accordion .card .card-header {

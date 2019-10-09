@@ -8,7 +8,7 @@ import { ChronoUnit } from 'js-joda';
 export const environment = {
   production: false,
   itemBooksAddress: 'sw-books-testnet-01',
-  version: '0.3.14',
+  version: '0.3.15.1',
   cacheVersion: '4',
   nameKeyBlockStorage: `sw-blocks`,
   nameKeyNodeSelected: `sw-selected-node-testnet-01`,
@@ -106,7 +106,7 @@ export const environment = {
     // ],
   },
   swapAccount: {
-    address: 'VC3I3FSQ354JT2QNS2XJ2J3OROCOBIRK6JB3BCBH'
+    address: 'VAWOEOWTABXR7O3ZAK2XNA5GIBNE6PZIXDAFDWBU'
   },
   /*typeNetwork: {
     value: NetworkType.MAIN_NET,
