@@ -18,15 +18,15 @@
           <div class="col-12 mt-03rem">
             <span class="fw-600 fs-095rem color-black">Fee:&nbsp;&nbsp;</span>
             <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
-            <span class="fw-600 fs-095rem color-black">{{mosaicSupplyChange?.effectiveFee.part1}}</span>
-            <span class="fw-600 fs-075rem color-black">{{mosaicSupplyChange?.effectiveFee.part2}}</span>
-            <span class="fw-600 fs-095rem color-black"> XPX </span>
+            <span class="fs-095rem color-black">{{mosaicSupplyChange?.effectiveFee.part1}}</span>
+            <span class="fs-075rem color-black">{{mosaicSupplyChange?.effectiveFee.part2}}</span>
+            <span class="fs-095rem color-black"> XPX </span>
           </div>
         </ng-container>
 
         <!-- HEIGHT -->
         <ng-container *ngIf="mosaicSupplyChange?.data.transactionInfo.height.compact() > 0">
-          <div class="col-12 mt-03rem">
+          <div class="col-12 mt-1rem">
             <span class="fw-600 fs-08rem color-black">Height:&nbsp;&nbsp;</span>
             <span
               class="fs-07rem fw-400 color-black">{{mosaicSupplyChange?.data.transactionInfo.height.compact()}}</span>
@@ -34,14 +34,14 @@
         </ng-container>
 
         <!-- TYPE -->
-        <div class="col-12 mt-03rem">
+        <div class="col-12 lh-1em">
           <span class="fw-600 fs-08rem color-black">Type:&nbsp;&nbsp;</span>
           <span class="fs-07rem fw-400 color-black">{{typeTransactionHex}}</span>
         </div>
 
         <!-- Mosaic Id -->
         <ng-container *ngIf="mosaicSupplyChange['mosaicsStorage'] !== null">
-          <div class="col-12 mt-03rem">
+          <div class="col-12 lh-1em">
             <span class="fw-600 fs-08rem color-black">Divisibility:&nbsp;&nbsp;</span>
             <span
               class="fs-07rem fw-400 color-black">{{mosaicSupplyChange['mosaicsStorage'].mosaicInfo.properties.divisibility}}</span>
@@ -50,7 +50,7 @@
 
         <!-- Increase -->
         <ng-container *ngIf="mosaicSupplyChange.data['direction'] === 1 && mosaicSupplyChange['mosaicsStorage'];">
-          <div class="col-12 mt-03rem">
+          <div class="col-12 lh-1em">
             <span class="fw-600 fs-08rem color-black">Increase:&nbsp;&nbsp;</span>
             <span
               class="fs-07rem fw-400 green-c"> + {{transactionService.amountFormatter(mosaicSupplyChange.data.delta.compact(), mosaicSupplyChange['mosaicsStorage']['mosaicInfo'])}}</span>
@@ -59,7 +59,7 @@
 
         <!-- Decrease -->
         <ng-container *ngIf="mosaicSupplyChange.data['direction'] !== 1 && mosaicSupplyChange['mosaicsStorage'];">
-          <div class="col-12 mt-03rem">
+          <div class="col-12 lh-1em">
             <span class="fw-600 fs-08rem color-black">Decrease:&nbsp;&nbsp;</span>
             <span
               class="fs-07rem fw-400 color-red"> - {{transactionService.amountFormatter(mosaicSupplyChange.data.delta.compact(), mosaicSupplyChange['mosaicsStorage']['mosaicInfo'])}}</span>
@@ -68,7 +68,7 @@
 
         <!-- Mosaic Name -->
         <ng-container *ngIf="viewMosaicName">
-          <div class="col-12 mt-03rem">
+          <div class="col-12 lh-1em">
             <span class="fw-600 fs-08rem color-black">Mosaic:&nbsp;&nbsp;</span>
             <span class="fs-07rem fw-400 color-black">
               <!-- Mosaic Name -->

@@ -511,7 +511,7 @@ body {
 }
 
 .lh-1-1em {
-    line-height: 1.1em
+    line-height: 1.1em !important;
 }
 
 .lh-1-4em {
@@ -1985,7 +1985,6 @@ ul.stepper.horizontal .step-title {
   padding: 10px;
   width: 39px;
   right: 0;
-  /* z-index: 3000000; */
 }
 
 .form-control {
