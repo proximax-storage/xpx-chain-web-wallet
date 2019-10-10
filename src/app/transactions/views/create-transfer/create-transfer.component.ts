@@ -108,8 +108,7 @@ export class CreateTransferComponent implements OnInit {
     this.getAccountInfo();
 
 
-    this.msgLockfungCosignatorie = ` Cosignatory has sufficient balance (${this.amountFormatterSimple(this.feeCosignatory)} XPX) to cover lockfund
-                fee`
+    this.msgLockfungCosignatorie = ` Cosignatory has sufficient balance (${this.amountFormatterSimple(this.feeCosignatory)} XPX) to cover lockfund fee`
     this.transactionHttp = new TransactionHttp(environment.protocol + "://" + `${this.nodeService.getNodeSelected()}`); //change
 
     // Mosaic by default
@@ -967,7 +966,6 @@ export class CreateTransferComponent implements OnInit {
               }
 
               realAmount = `${arrAmount[0]}${decimal}`;
-
               if (filtered !== undefined && filtered !== null) {
                 const invalidBalance = filtered.amount.compact() < Number(realAmount);
                 if (invalidBalance && !this.insufficientBalance) {
