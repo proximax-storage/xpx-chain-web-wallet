@@ -103,7 +103,12 @@ export class CreateAccountComponent implements OnInit {
     });
 
     if (param === '1') {
-      this.formCreateAccount.get('privateKey').setValidators([Validators.required]);
+      this.formCreateAccount.get('privateKey').setValidators([
+        Validators.minLength(this.configurationForm.privateKey.minLength),
+        Validators.maxLength(this.configurationForm.privateKey.maxLength),
+        Validators.pattern('^(0x|0X)?[a-fA-F0-9]+$')
+      ]);
+      this.formCreateAccount.controls['privateKey'].updateValueAndValidity({ emitEvent: false, onlySelf: true });
       this.fromPrivateKey = true;
     }
   }

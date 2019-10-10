@@ -75,6 +75,7 @@ export class CreateMosaicComponent implements OnInit {
   subscription: Subscription[] = [];
   vestedBalance: { part1: string; part2: string; };
   passwordMain: string = 'password';
+  invalidSupply: boolean;
 
   constructor(
     private fb: FormBuilder,
@@ -117,6 +118,7 @@ export class CreateMosaicComponent implements OnInit {
           decimal: '.',
           precision: next
         };
+        this.invalidSupply = false;
         this.maxLengthSupply = 13 + parseFloat(next);
         this.errorDivisibility = '';
         this.blockButton = false;
@@ -127,6 +129,13 @@ export class CreateMosaicComponent implements OnInit {
 
     this.mosaicForm.get('deltaSupply').valueChanges.subscribe(next => {
       if (parseFloat(next) <= this.configurationForm.mosaicWallet.maxSupply) {
+        // console.log(next);
+        if(next === 0){
+          this.invalidSupply = true;
+        } else {
+          this.invalidSupply = false;
+        }
+        
         // this.invalidSupply = false;
         this.blockButton = false;
         this.errorSupply = '';
@@ -206,7 +215,7 @@ export class CreateMosaicComponent implements OnInit {
       decimal: '.',
       precision: '0'
     };
-
+    this.invalidSupply = false;
     this.mosaicForm.reset({
       deltaSupply: '',
       password: '',
