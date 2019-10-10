@@ -191,6 +191,7 @@ export class DetailAccountComponent implements OnInit {
         this.privateKey = common['privateKey'].toUpperCase();
         this.validatingForm.get('password').patchValue('')
         this.showPassword = false;
+        this.showPrivateKey = false;
         return;
       }
       this.validatingForm.get('password').patchValue('');
@@ -243,7 +244,7 @@ export class DetailAccountComponent implements OnInit {
         this.sharedService.showSuccess('', 'Nis1 account remove');
       }
       this.currenAccount.nis1Account = null;
-
+      this.valueInitNis = (this.currenAccount.nis1Account !== null);
       const accounts = this.walletService.getCurrentWallet().accounts.filter(el => el.address !== this.currenAccount.address.split('-').join(''));
       accounts.push(this.currenAccount);
       this.walletService.currentWallet.accounts = accounts;
@@ -267,6 +268,8 @@ export class DetailAccountComponent implements OnInit {
             publicKey: nis1Wallet.publicKey
           };
 
+          this.valueInitNis = (this.currenAccount.nis1Account !== null);
+
           const accounts = this.walletService.getCurrentWallet().accounts.filter(el => el.address !== this.address.split('-').join(''));
           accounts.push(this.currenAccount);
           this.walletService.currentWallet.accounts = accounts;
@@ -278,8 +281,8 @@ export class DetailAccountComponent implements OnInit {
           this.validatingForm.reset({
             password: ''
           }, {
-            emitEvent: false
-          });
+              emitEvent: false
+            });
         }
         return;
       } else {
@@ -293,8 +296,8 @@ export class DetailAccountComponent implements OnInit {
     this.validatingForm.reset({
       password: ''
     }, {
-      emitEvent: false
-    });
+        emitEvent: false
+      });
   }
 
   qrConstruntion(url, size = 2, margin = 0) {
