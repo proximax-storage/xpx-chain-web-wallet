@@ -19,8 +19,25 @@
           </div>
         </div>
 
+        <hr class="mb-03rem mt-03rem border-hr">
         <!-- Description -->
-        <ng-container *ngIf="servicesList[item].viewChildren === true">
+        <div class="dropdown  txt-a-center" mdbDropdown *ngIf="servicesList[item].viewChildren === true">
+          <button mdbDropdownToggle mdbBtn color="transparent" class="dropdown-toggle waves-light" type="button"
+            mdbWavesEffect style="padding: 0px; box-shadow: 0px 0px transparent"> <span class="color-main-wallet">Options</span> 
+          </button>
+          <div class="dropdown-menu row mb-1rem" style="position: absolute; left: 60px; padding: .5rem 0 .5rem 0 !important;">
+            <ng-container *ngFor="let itm of objectKeys(servicesList[item]['children'])">
+              <div class="col-12 txt-a-center line-h-1em">
+                <a class="dropdown-item fs-075rem" [routerLink]="['/'+servicesList[item].children[itm].route]" [ngClass]="[
+                servicesList[item].children[itm].show ? 'active-text cursor-p' : 'inactive-text cursor-n-a']">
+                  <span class="fs-08rem">{{servicesList[item].children[itm].title | uppercase }}</span>
+                </a>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+
+         <!-- <ng-container *ngIf="servicesList[item].viewChildren === true">
           <div class="row mb-1rem">
             <ng-container *ngFor="let itm of objectKeys(servicesList[item]['children'])">
               <div class="col-12 txt-a-center line-h-1em">
@@ -32,7 +49,7 @@
               </div>
             </ng-container>
           </div>
-        </ng-container>
+        </ng-container> -->
       </div>
     </ng-container>
   </div>

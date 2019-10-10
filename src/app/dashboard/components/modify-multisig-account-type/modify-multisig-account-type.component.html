@@ -26,7 +26,7 @@
 
 <div class="row mt-05rem">
   <div class="col-12 lh-1em">
-    <span class="fw-600 fs-065rem">Signer Public key: </span>
+    <span class="fw-600 fs-065rem">Signer Public Key: </span>
     <span class="fs-065rem w-w-b-w">{{multisigAccount?.signer.publicKey}}</span>
   </div>
 </div>
@@ -41,7 +41,7 @@
 
 <div class="row mt-05rem">
   <div class="col-12 lh-1em">
-    <span class="fw-600 fs-065rem">Minimum approval delta:
+    <span class="fw-600 fs-065rem">Minimum Approval Delta:
     </span>
     <span class="fs-065rem w-w-b-w">{{multisigAccount?.minApprovalDelta}}</span>
   </div>
@@ -49,7 +49,7 @@
 
 <div class="row mt-05rem">
   <div class="col-12 lh-1em">
-    <span class="fw-600 fs-065rem">Minimum removal delta:
+    <span class="fw-600 fs-065rem">Minimum Removal Delta:
     </span>
     <span class="fs-065rem w-w-b-w">{{multisigAccount?.minRemovalDelta}}</span>
   </div>
@@ -58,7 +58,7 @@
 <ng-container *ngIf="multisigAccount?.modifications.length > 0">
   <div class="row mt-1rem lh-1em">
     <div class="col-12">
-      <span class="fw-600 fs-065rem">Multisig cosignatory modification:</span>
+      <span class="fw-600 fs-065rem">Multisig Cosignatory Modification:</span>
     </div>
 
     <ng-container *ngFor="let modification of multisigAccount?.modifications; let b=index">
@@ -83,7 +83,7 @@
 
         <div class="row lh-1em mt-03rem">
           <div class="col-12">
-            <span class="fw-600 fs-065rem">Public key:</span>
+            <span class="fw-600 fs-065rem">Public Key:</span>
           </div>
 
           <div class="col-12">

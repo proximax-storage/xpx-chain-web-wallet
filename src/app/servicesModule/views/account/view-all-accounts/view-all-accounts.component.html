@@ -15,33 +15,41 @@
                       <div class="row">
                         <div class="col-12 text-center text-sm-left pt-1rem w-b-a d-flex fw-bold">
                           Account: {{account.name}}
-                          <div *ngIf="account.default" class="ml-1rem tag-account color-blue-intermedio fs-065rem">- Current default</div>
-                          <div *ngIf="account.isMultisign !== null && account.isMultisign.cosignatories.length > 1" class="ml-1rem fs-065rem color-blue-intermedio tag-account">- Multisig</div>
-                          <div *ngIf="[undefined, null].includes(account.nis1Account) === false"
-                            class="ml-1rem fs-065rem color-blue-intermedio tag-account">- Swap</div>
+                          <div *ngIf="account.default" class="ml-1rem tag-account color-blue-intermedio fs-065rem">-
+                            Current default</div>
+                          <div *ngIf="account.isMultisign !== null && account.isMultisign.cosignatories.length > 1"
+                            class="ml-1rem fs-065rem color-blue-intermedio tag-account">- Multisig</div>
+                          <div *ngIf="[undefined, null].includes(account.nis1Account) === false" class="ml-1rem fs-065rem color-blue-intermedio tag-account">-
+                            Swap</div>
                         </div>
                         <div class="col-12 text-center text-sm-left pt-04rem w-b-a">
                           {{account.address}}
 
-                          <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="cursor-p" alt="Copy" width="20"
-                            (click)="copyMessage('Address')" ngxClipboard [cbContent]="account.address"
+                          <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="cursor-p"
+                            alt="Copy" width="20" (click)="copyMessage('Address')" ngxClipboard [cbContent]="account.address"
                             title="Copy Address">
                         </div>
                       </div>
 
                       <div class="row">
                         <div class="col-12 col-sm-10 col-md-9 col-lg-10 col-xl-10 text-center text-sm-left pt-02rem w-b-a fw-600">
-                          <img style="padding: 0px !important" class="icono"
-                            src="assets/images/img/icon-prx-xpx-green-16h.svg" width="20" alt="">
-                          <span class="pl-05rem pr-1rem">{{account.balance}} XPX</span>
+                          <img style="padding: 0px !important" class="icono" src="assets/images/img/icon-prx-xpx-green-16h.svg"
+                            width="20" alt="">
 
-                          <img style="padding: 0px !important" *ngIf="account.mosaics > 0" class="icono"
-                            src="assets/images/img/icon-mosaics-green-16h.svg" width="20" alt="">
-                          <span class="pl-05rem pr-1rem" *ngIf="account.mosaics > 0"> Other mosaics: {{account.mosaics}}</span>
+                          <span class="fs-08rem pl-05rem">{{getQuantity(account.balance)?.part1}}</span>
+                          <span class="fs-07rem ">{{getQuantity(account.balance)?.part2}}</span>
+                          <span class="fs-08rem ">&nbsp;XPX</span>
+                          <!-- <span class="pl-05rem pr-1rem">{{account.balance}} XPX</span>
+                          <ng-container [innerHTML]="getQuantity(account.balance)"></ng-container> -->
+
+                          <!-- <span [innerHTML]="getQuantity(account.balance)"></span> -->
+                          <img style="padding: 0px !important" *ngIf="account.mosaics > 0" class="icono" src="assets/images/img/icon-mosaics-green-16h.svg"
+                            width="20" alt="">
+                          <span class="pl-05rem pr-1rem" *ngIf="account.mosaics > 0"> Other mosaics:
+                            {{account.mosaics}}</span>
                         </div>
 
-                        <div
-                          class="col-12 col-sm-2 col-md-3 col-lg-2 col-xl-2 d-flex align-items-center justify-content-center justify-content-sm-end justify-content-md-end justify-content-lg-end justify-content-xl-end pt-04rem">
+                        <div class="col-12 col-sm-2 col-md-3 col-lg-2 col-xl-2 d-flex align-items-center justify-content-center justify-content-sm-end justify-content-md-end justify-content-lg-end justify-content-xl-end pt-04rem">
                           <!-- <img src="assets/images/img/icon-copy-clipboard-white.svg" class="cursor-p" alt="Copy" width="20"
                                                 (click)="copyMessage('Address')" ngxClipboard *ngIf="account.default" [cbContent]="account.address"
                                                 title="Copy Address">
@@ -71,14 +79,14 @@
 
                           <div class="dropdown" mdbDropdown>
 
-                            <button mdbDropdownToggle mdbBtn color="transparent" class="dropdown-toggle waves-light" type="button"
-                              mdbWavesEffect style="padding: 5px; box-shadow: 0px 0px transparent">
+                            <button mdbDropdownToggle mdbBtn color="transparent" class="dropdown-toggle waves-light"
+                              type="button" mdbWavesEffect style="padding: 5px; box-shadow: 0px 0px transparent">
                             </button>
 
                             <div class="dropdown-menu" style="position: absolute; left: -60px">
                               <a class="dropdown-item fs-075rem" [routerLink]="[routes.viewDetails+account.name]">Edit</a>
-                              <a class="dropdown-item fs-075rem" *ngIf="account.default !== true"
-                                (click)="changeAsPrimary(account.name)">Make Default</a>
+                              <a class="dropdown-item fs-075rem" *ngIf="account.default !== true" (click)="changeAsPrimary(account.name)">Make
+                                Default</a>
                               <a class="dropdown-item fs-075rem text-black-50" *ngIf="account.default === true">Make
                                 Default</a>
                               <a class="dropdown-item fs-075rem" *ngIf="account.encrypted !== ''" (click)="exportAccount(account)">Export</a>
