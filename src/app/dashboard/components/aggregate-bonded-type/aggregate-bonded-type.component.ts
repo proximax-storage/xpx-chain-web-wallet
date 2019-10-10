@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
 import { PaginationInstance } from 'ngx-pagination';
 import { TransactionsInterface, TransactionsService } from '../../../transactions/services/transactions.service';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-aggregate-bonded-type',

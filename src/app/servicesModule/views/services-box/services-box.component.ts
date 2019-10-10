@@ -27,7 +27,6 @@ export class ServicesBoxComponent implements OnInit {
       listContact: (contacts !== null && contacts !== undefined && contacts.length > 0) ? true : false
     }
 
-
     this.servicesList = [
       //Account
       this.services.buildStructureService(
@@ -232,6 +231,57 @@ export class ServicesBoxComponent implements OnInit {
         true
       ),
 
+      //Transactions Explorer
+      this.services.buildStructureService(
+        'Transactions Explorer',
+        true,
+        'Explore all transactions',
+        'icon-transaction-explorer-full-color-80h-proximax-sirius-wallet.svg',
+        '',
+        {
+          explorer: this.services.buildStructureService(
+            'EXPLORE',
+            true,
+            '',
+            '',
+            AppConfig.routes.explorer
+          )
+        },
+        true
+      ),
+
+      // Nodes
+      this.services.buildStructureService(
+        'Nodes',
+        true,
+        'Add and edit nodes',
+        'icon-nodes-full-color-80h-proximax-sirius-wallet.svg',
+        '',
+        {
+          blockchain: this.services.buildStructureService(
+            'BLOCKCHAIN',
+            true,
+            '',
+            '',
+            AppConfig.routes.blockchain
+          ), storage: this.services.buildStructureService(
+            'STORAGE',
+            false,
+            '',
+            '',
+            ''
+          ), streaming: this.services.buildStructureService(
+            'STREAMING',
+            false,
+            '',
+            '',
+            ''
+          )
+        },
+        true,
+        // 'disable-module'
+      ),
+
       // Notarization
       this.services.buildStructureService(
         'Attestation',
@@ -288,25 +338,6 @@ export class ServicesBoxComponent implements OnInit {
             '',
             '',
             ''
-          )
-        },
-        true
-      ),
-
-      //Transactions Explorer
-      this.services.buildStructureService(
-        'Transactions Explorer',
-        true,
-        'Explore all transactions',
-        'icon-transaction-explorer-full-color-80h-proximax-sirius-wallet.svg',
-        '',
-        {
-          explorer: this.services.buildStructureService(
-            'EXPLORE',
-            true,
-            '',
-            '',
-            AppConfig.routes.explorer
           )
         },
         true
@@ -397,57 +428,6 @@ export class ServicesBoxComponent implements OnInit {
         true,
         'disable-module'
       ),
-      // Nodes
-      this.services.buildStructureService(
-        'Nodes',
-        true,
-        'Add and edit nodes',
-        'icon-nodes-full-color-80h-proximax-sirius-wallet.svg',
-        '',
-        {
-          blockchain: this.services.buildStructureService(
-            'BLOCKCHAIN',
-            true,
-            '',
-            '',
-            AppConfig.routes.blockchain
-          ), storage: this.services.buildStructureService(
-            'STORAGE',
-            false,
-            '',
-            '',
-            ''
-          ), streaming: this.services.buildStructureService(
-            'STREAMING',
-            false,
-            '',
-            '',
-            ''
-          )
-        },
-        true,
-        // 'disable-module'
-      ),
-
-      // Message
-      this.services.buildStructureService(
-        'Chat',
-        true,
-        'Encrypted live chat',
-        'icon-chat-full-color-80h-proximax-sirius-wallet.svg',
-        '',
-        {
-          send: this.services.buildStructureService(
-            'CHAT',
-            false,
-            '',
-            '',
-            ''
-          )
-        },
-        true,
-        'disable-module'
-      ),
 
       // Invoice
       this.services.buildStructureService(
@@ -459,32 +439,6 @@ export class ServicesBoxComponent implements OnInit {
         {
           create: this.services.buildStructureService(
             'CREATE',
-            false,
-            '',
-            '',
-            ''
-          )
-        },
-        true,
-        'disable-module'
-      ),
-
-      // VIDEO CONFERENCING
-      this.services.buildStructureService(
-        'Video Conferencing',
-        true,
-        'Encrypted live video streaming',
-        'icon-streaming-full-color-80h-proximax-sirius-wallet.svg',
-        '',
-        {
-         start: this.services.buildStructureService(
-            'START',
-            false,
-            '',
-            '',
-            ''
-          ), schedule: this.services.buildStructureService(
-            'SCHEDULE',
             false,
             '',
             '',
@@ -519,7 +473,53 @@ export class ServicesBoxComponent implements OnInit {
         },
         true,
         'disable-module'
-      )
+      ),
+
+      // Message
+      this.services.buildStructureService(
+        'Chat',
+        true,
+        'Encrypted live chat',
+        'icon-chat-full-color-80h-proximax-sirius-wallet.svg',
+        '',
+        {
+          send: this.services.buildStructureService(
+            'CHAT',
+            false,
+            '',
+            '',
+            ''
+          )
+        },
+        true,
+        'disable-module'
+      ),
+
+      // VIDEO CONFERENCING
+      this.services.buildStructureService(
+        'Video Conferencing',
+        true,
+        'Encrypted live video streaming',
+        'icon-streaming-full-color-80h-proximax-sirius-wallet.svg',
+        '',
+        {
+          start: this.services.buildStructureService(
+            'START',
+            false,
+            '',
+            '',
+            ''
+          ), schedule: this.services.buildStructureService(
+            'SCHEDULE',
+            false,
+            '',
+            '',
+            ''
+          )
+        },
+        true,
+        'disable-module'
+      ),
     ];
   }
 }
