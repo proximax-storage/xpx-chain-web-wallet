@@ -48,7 +48,7 @@
                     <input mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
                       id="privateKey" class="form-control form-control-sm input-border"
                       [maxLength]="configurationForm.privateKey.maxLength"
-                      [minlength]="configurationForm.privateKey.minlength" placeholder="Enter private key"
+                      [minlength]="configurationForm.privateKey.minlength" placeholder="Enter Private key"
                       formControlName="privateKey">
                     <mdb-error
                       *ngIf="validateInput('privateKey').invalid && (validateInput('privateKey').dirty || validateInput('privateKey').touched)">
