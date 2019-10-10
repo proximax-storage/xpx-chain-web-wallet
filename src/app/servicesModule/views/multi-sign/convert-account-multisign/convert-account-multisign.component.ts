@@ -403,9 +403,10 @@ export class ConvertAccountMultisignComponent implements OnInit {
         [convertIntoMultisigTransaction.toAggregate(this.currentAccountToConvert.publicAccount)],
         this.currentAccountToConvert.network);
       let feeAgregate = Number(this.transactionService.amountFormatterSimple(this.aggregateTransaction.maxFee.compact()));
-      let feeLockfund = 0.044500;
-      let totalFee = feeAgregate + feeLockfund;
-      this.fee = totalFee.toFixed(6);
+      // let feeLockfund = 0.044500;
+      // let totalFee = feeAgregate + feeLockfund;
+      // this.fee = totalFee.toFixed(6);
+      this.fee = feeAgregate.toFixed(6);
     }
   }
 
