@@ -8,7 +8,7 @@ import { ChronoUnit } from 'js-joda';
 export const environment = {
   production: false,
   itemBooksAddress: 'sw-books-testnet-01',
-  version: '0.3.15.5',
+  version: '0.3.15.6',
   cacheVersion: '4',
   nameKeyBlockStorage: `sw-blocks`,
   nameKeyNodeSelected: `sw-selected-node-testnet-01`,
@@ -97,12 +97,12 @@ export const environment = {
     nodes: [
       { protocol: "https", domain: "bctestnetswap.xpxsirius.io", port: 443 } as ServerConfig
     ],*/
-    url: 'http://192.168.2.141:7890',
+    url: 'http://18.231.166.212:7890',
     urlExplorer: 'http://testnet-explorer.nemtool.com/#/unconfirmedtxlist',
     networkType: NetworkTypes.TEST_NET,
     address: 'TBF4LAZUEJMBIOC6J24D6ZGGXE5W775TX555CTTN',
     nodes: [
-      { protocol: "http", domain: "192.168.2.141", port: 7890 } as ServerConfig
+      { protocol: "http", domain: "18.231.166.212", port: 7890 } as ServerConfig
     ],
   },
   swapAccount: {
