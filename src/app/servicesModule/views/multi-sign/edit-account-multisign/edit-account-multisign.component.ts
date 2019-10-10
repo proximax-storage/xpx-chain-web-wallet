@@ -13,6 +13,7 @@ import { TransactionsService, TransactionsInterface } from 'src/app/transactions
 import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
 import { environment } from 'src/environments/environment';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ThrowStmt } from '@angular/compiler';
 
 @Component({
   selector: 'app-edit-account-multisign',
@@ -65,6 +66,8 @@ export class EditAccountMultisignComponent implements OnInit {
   feeTransaction: number = 0;
   feeLockfund: number = 10000000;
   totalFee: number = 0;
+  aggregateTransaction: AggregateTransaction;
+  fee: number;
 
   constructor(
 
@@ -101,8 +104,7 @@ export class EditAccountMultisignComponent implements OnInit {
     // this.listContact = this.booksAddress();
     // this.validatorsCosignatory()
     this.selectAccount(this.activateRoute.snapshot.paramMap.get('name'));
-
-
+    this.builder();
   }
   /**
  *
@@ -438,6 +440,21 @@ export class EditAccountMultisignComponent implements OnInit {
   }
 
 
+  builder(){
+
+    let convertIntoMultisigTransaction: ModifyMultisigAccountTransaction;
+    convertIntoMultisigTransaction = this.modifyMultisigAccountTransaction();
+    // console.log('convertIntoMultisigTransaction', convertIntoMultisigTransaction);
+
+   this.aggregateTransaction = AggregateTransaction.createBonded(
+      Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
+      [convertIntoMultisigTransaction.toAggregate(this.currentAccountToConvert.publicAccount)],
+      this.currentAccountToConvert.network
+    );
+
+    this.fee = this.aggregateTransaction.maxFee.compact();
+    // console.log('aggregateTransaction', this.aggregateTransaction)
+  }
 
   /**
   *
@@ -451,15 +468,19 @@ export class EditAccountMultisignComponent implements OnInit {
       if (this.walletService.decrypt(common, this.consginerFirmAccount)) {
         this.accountToConvertSign = Account.createFromPrivateKey(common.privateKey, this.consginerFirmAccount.network)
         common = '';
-        let convertIntoMultisigTransaction: ModifyMultisigAccountTransaction;
-        convertIntoMultisigTransaction = this.modifyMultisigAccountTransaction()
-        const aggregateTransaction = AggregateTransaction.createBonded(
-          Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
-          [convertIntoMultisigTransaction.toAggregate(this.currentAccountToConvert.publicAccount)],
-          this.currentAccountToConvert.network
-        );
+        // let convertIntoMultisigTransaction: ModifyMultisigAccountTransaction;
+        // convertIntoMultisigTransaction = this.modifyMultisigAccountTransaction();
+        // console.log('convertIntoMultisigTransaction', convertIntoMultisigTransaction);
+        
+        // const aggregateTransaction = AggregateTransaction.createBonded(
+        //   Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
+        //   [convertIntoMultisigTransaction.toAggregate(this.currentAccountToConvert.publicAccount)],
+        //   this.currentAccountToConvert.network
+        // );
+
+        // console.log('aggregateTransaction', this.aggregateTransaction)
         const generationHash = this.dataBridge.blockInfo.generationHash;
-        const signedTransaction = this.accountToConvertSign.sign(aggregateTransaction, generationHash)
+        const signedTransaction = this.accountToConvertSign.sign(this.aggregateTransaction, generationHash)
         const hashLockTransaction = HashLockTransaction.create(
           Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
           new Mosaic(new MosaicId(environment.mosaicXpxInfo.id), UInt64.fromUint(Number(10000000))),
@@ -545,6 +566,8 @@ export class EditAccountMultisignComponent implements OnInit {
       modifications: this.multisigCosignatoryModification(this.getCosignatoryListFilter(1, 2)),
       networkType: this.currentAccountToConvert.network
     }
+    // console.log('modifyobject', modifyobject);
+    
 
     return ModifyMultisigAccountTransaction.create(
       modifyobject.deadline,
@@ -767,6 +790,7 @@ export class EditAccountMultisignComponent implements OnInit {
 
 
       }
+      this.builder()
     }
   }
 
@@ -834,6 +858,7 @@ export class EditAccountMultisignComponent implements OnInit {
       } else {
         this.sharedService.showError('', 'Cosignatory is already present in modification list');
       }
+      this.builder()
     }
   }
   getColor(type) {
