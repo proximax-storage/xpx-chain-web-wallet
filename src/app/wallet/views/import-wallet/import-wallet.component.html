@@ -135,7 +135,7 @@
 
       <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
         <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="btn-proximax"
-          size="md">
+          size="md" [disabled]="importWalletForm.invalid">
           <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
             *ngIf="spinnerButton"></span>
           <span class="color-white">Create</span>
