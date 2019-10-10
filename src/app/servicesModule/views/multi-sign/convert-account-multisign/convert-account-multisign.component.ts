@@ -266,7 +266,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
       accountFiltered !== undefined && accountFiltered.accountInfo !== null)
 
     if (!disabled)
-      return { disabled: true, info: 'not valid' }
+      return { disabled: true, info: 'Insufficient balance' }
     if (!accountFiltered.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id))
       return { disabled: true, info: 'insufficient balance' }
 
