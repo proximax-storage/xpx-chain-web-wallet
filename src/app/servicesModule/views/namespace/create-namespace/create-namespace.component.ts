@@ -49,7 +49,7 @@ export class CreateNamespaceComponent implements OnInit {
   labelNamespace: string = '';
   lengthNamespace: number;
   paramsHeader: HeaderServicesInterface = {
-    moduleName: 'Namespaces & Sub-Namespaces',
+    moduleName: 'Namespaces',
     componentName: 'Register'
   };
   passwordMain: string = 'password';
