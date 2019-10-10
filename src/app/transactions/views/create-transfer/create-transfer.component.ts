@@ -222,7 +222,7 @@ export class CreateTransferComponent implements OnInit {
             if (x) {
               const nameMosaic = (mosaic.mosaicNames.names.length > 0) ? mosaic.mosaicNames.names[0].name : this.proximaxProvider.getMosaicId(mosaic.idMosaic).toHex();
               mosaicsSelect.push({
-                label: `${nameMosaic}${nameExpired} > ${amount}`,
+                label: `${nameMosaic}${nameExpired} > Balance: ${amount}`,
                 value: mosaic.idMosaic,
                 balance: amount,
                 expired: false,
@@ -435,8 +435,8 @@ export class CreateTransferComponent implements OnInit {
    * @memberof CreateTransferComponent
    */
   clearForm(custom?: string | (string | number)[], formControl?: string | number) {
-    this.cosignatorie = null;
     if (custom !== undefined) {
+      this.cosignatorie = null;
       if (formControl !== undefined) {
         this.formTransfer.controls[formControl].get(custom).reset();
         this.fee = '0.037250'
@@ -506,13 +506,11 @@ export class CreateTransferComponent implements OnInit {
           }
         });
 
-        if (listCosignatorie.length === 1) {
-          this.cosignatorie = listCosignatorie[0].value;
-          return;
-        }
-
         if (listCosignatorie && listCosignatorie.length > 0) {
           this.listCosignatorie = listCosignatorie;
+          if (listCosignatorie.length === 1) {
+            this.cosignatorie = listCosignatorie[0].value;
+          }
         } else {
           this.disabledAllField = true;
           this.formTransfer.disable();
@@ -548,7 +546,6 @@ export class CreateTransferComponent implements OnInit {
     if (!this.subscription['transactionStatus']) {
       this.subscription['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
         statusTransaction => {
-          // console.log('statusTransaction', statusTransaction);
           if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
             for (let element of this.transactionSigned) {
               const match = statusTransaction['hash'] === element.hash;
@@ -807,6 +804,7 @@ export class CreateTransferComponent implements OnInit {
               const hashLockSigned = account.sign(hashLockTransaction, generationHash);
               this.saveContactFn();
               this.clearForm();
+
               this.transactionService.buildTransactionHttp().announce(hashLockSigned).subscribe(async () => {
                 this.getTransactionStatusHashLock(hashLockSigned, aggregateSigned);
               }, err => { });
@@ -840,7 +838,6 @@ export class CreateTransferComponent implements OnInit {
                 }, err => {
                   this.reloadBtn = false;
                   this.blockSendButton = false;
-                  this.clearForm();
                   this.sharedService.showError('', err);
                 }
               );
@@ -866,7 +863,6 @@ export class CreateTransferComponent implements OnInit {
    * @param $event
    */
   selectCosignatorie($event) {
-    // console.log('COSIGNATORIE SELECTED ', $event);
     if ($event) {
       this.cosignatorie = $event.value;
     } else {
