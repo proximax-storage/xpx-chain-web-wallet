@@ -203,11 +203,14 @@ export class NemServiceService {
    * Method to get Account Info Address
    * @param address account address
    * @memberof NemServiceService
-   * @return Observable<AccountInfoWithMetaData>
+   * @return
    */
-  getAccountInfo(address: Address): Observable<AccountInfoWithMetaData> {
-    return this.accountHttp.getFromAddress(address);
+  getAccountInfo(address: Address) {
+    return this.http.get(`${environment.nis1.url}/account/get?address=${address.plain()}`);
   }
+  // getAccountInfo(address: Address): Observable<AccountInfoWithMetaData> {
+  //   return this.accountHttp.getFromAddress(address);
+  // }
 
   /**
    * Method to get Account Info Address
@@ -220,12 +223,13 @@ export class NemServiceService {
         const address = this.createAddressToString(element.nis1Account.address.value);
         this.getAccountInfo(address).pipe(first()).pipe((timeout(15000))).subscribe(
           async next => {
+            // console.log('this is resp-------->', next);
             let consignerOf: boolean = false;
             let consignerAccountsInfo: any = [];
 
-            if (next.cosignatoryOf.length > 0) {
+            if (next['meta']['cosignatoryOf'].length > 0) {
               consignerOf = true;
-              consignerAccountsInfo = next.cosignatoryOf;
+              consignerAccountsInfo = next['meta']['cosignatoryOf'];
             }
             const accountNis1 = {
               nameAccount: element.name,
@@ -268,12 +272,13 @@ export class NemServiceService {
     const address = this.createAddressToString(account.address.value);
     this.getAccountInfo(address).pipe(first()).pipe((timeout(10000))).subscribe(
       next => {
+        // console.log('this is resp-------->', next);
         let consignerOf: boolean = false;
         let consignerAccountsInfo: any = [];
 
-        if (next.cosignatoryOf.length > 0) {
+        if (next['meta']['cosignatoryOf'].length > 0) {
           consignerOf = true;
-          consignerAccountsInfo = next.cosignatoryOf;
+          consignerAccountsInfo = next['meta']['cosignatoryOf'];
         }
 
         this.getOwnedMosaics(address).pipe(first()).pipe((timeout(10000))).subscribe(

@@ -37,6 +37,7 @@ export class Nis1AccountsConsignerComponent implements OnInit {
     this.listConsignerAccounts = this.mainAccount.consignerAccounts;
 
     this.listConsignerAccounts.forEach((element, index) => {
+      element.publicAccount = this.nemProvider.createPublicAccount(element.publicKey);
       element.publicAccount.balance = null;
       element.publicAccount.mosaic = null;
       element.publicAccount.nameAccount = this.mainAccount.nameAccount;
@@ -65,13 +66,16 @@ export class Nis1AccountsConsignerComponent implements OnInit {
                 let relativeAmount = realQuantity;
                 for (const item of transactions) {
                   if (item.type === 257 && item['signer']['address']['value'] === this.mainAccount.address.value) {
-                    for (const mosaic of item['_assets']) {
-                      if (mosaic.assetId.namespaceId === 'prx' && mosaic.assetId.name === 'xpx') {
-                        const quantity = parseFloat(this.nemProvider.amountFormatter(mosaic.quantity, el, el.properties.divisibility));
-                        const quantitywhitoutFormat = parseFloat(relativeAmount.split(',').join(''));
-                        const restQuantity = (quantitywhitoutFormat - quantity).toString().split('.').join('');
-                        const quantityFormat = this.nemProvider.amountFormatter(Number(restQuantity), el, el.properties.divisibility);
-                        relativeAmount = quantityFormat;
+                    // console.log('this a test' ,item['_assets']);
+                    if (item['_assets'] !== undefined) {
+                      for (const mosaic of item['_assets']) {
+                        if (mosaic.assetId.namespaceId === 'prx' && mosaic.assetId.name === 'xpx') {
+                          const quantity = parseFloat(this.nemProvider.amountFormatter(mosaic.quantity, el, el.properties.divisibility));
+                          const quantitywhitoutFormat = parseFloat(relativeAmount.split(',').join(''));
+                          const restQuantity = (quantitywhitoutFormat - quantity).toString().split('.').join('');
+                          const quantityFormat = this.nemProvider.amountFormatter(Number(restQuantity), el, el.properties.divisibility);
+                          relativeAmount = quantityFormat;
+                        }
                       }
                     }
                   }
