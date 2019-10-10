@@ -25,8 +25,10 @@
       <div class="row">
         <div class="col-11 mx-auto">
           <div class="md-form form-sm mt-1rem mb-0rem">
-            <img class="form-control-feedback" src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg" alt="">
-            <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)" src="assets/images/img/icon-show-hide-password.svg" *ngIf="passwordMain === 'password'">
+            <img class="form-control-feedback"
+              src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg" alt="">
+            <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
+              src="assets/images/img/icon-show-hide-password.svg" *ngIf="passwordMain === 'password'">
             <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
               src="assets/images/img/icon-show-hide-password-grey.svg" *ngIf="passwordMain === 'text'">
             <input [maxlength]="configurationForm.passwordWallet.maxLength"
@@ -48,15 +50,14 @@
     <!-- buttons create and clear -->
     <div class="row mt-2rem">
       <div class="col-11 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-        <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax"
-          size="sm" (click)="clearForm()">
+        <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" size="sm" (click)="clearForm()">
           <span class="color-white">Clear</span>
         </button>
       </div>
 
       <div class="col-11 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-        <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="btn-proximax"
-          size="sm" [disabled]="authForm.invalid">
+        <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="btn-proximax" size="sm"
+          [disabled]="authForm.invalid">
           <span class="color-white">Sign In</span>
         </button>
       </div>
