@@ -162,7 +162,8 @@ export class CreateTransferComponent implements OnInit {
 * @param {string} amount
 * @memberof CreateTransferComponent
 */
-  amountFormatterSimple(amount): string {
+  amountFormatterSimple(amount: any): string {
+    this.calculateFee(this.formTransfer.get('message').value);
     return this.transactionService.amountFormatterSimple(amount);
   }
 
