@@ -47,6 +47,7 @@ export class PartialComponent implements OnInit {
   objectKeys = Object.keys;
   onlySigner = false;
   password: string = '';
+  passwordMain: string = 'password'
   subscription: Subscription[] = [];
   typeTransactions: any;
   validateAccount = false;
@@ -86,6 +87,10 @@ export class PartialComponent implements OnInit {
     });
   }
 
+  changeInputType(inputType) {
+    let newType = this.sharedService.changeInputType(inputType)
+    this.passwordMain = newType;
+  }
 
   /**
    *

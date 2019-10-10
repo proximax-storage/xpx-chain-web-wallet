@@ -58,6 +58,7 @@ export class VoteInPollComponent implements OnInit {
   transaction: Transaction;
   showResultProgress: boolean;
   updateFlag = false;
+  passwordMain: string = 'password';
 
   constructor(
     private nodeService: NodeService,
@@ -99,6 +100,12 @@ export class VoteInPollComponent implements OnInit {
       subscription.unsubscribe();
     });
   }
+
+  changeInputType(inputType) {
+    let newType = this.sharedService.changeInputType(inputType)
+    this.passwordMain = newType;
+  }
+
   /**
    *
    *
@@ -540,7 +547,7 @@ export class VoteInPollComponent implements OnInit {
     // Get transaction status
     this.subscribe['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
       statusTransaction => {
-       
+
         this.transactionStatus = true;
         if (statusTransaction !== null && statusTransaction !== undefined && signedTransaction !== null) {
           const match = statusTransaction['hash'] === signedTransaction.hash;
