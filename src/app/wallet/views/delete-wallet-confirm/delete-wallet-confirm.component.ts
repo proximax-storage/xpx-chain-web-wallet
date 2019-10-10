@@ -18,6 +18,8 @@ export class DeleteWalletConfirmComponent implements OnInit {
     componentName: 'Confirm Delete'
   };
 
+  passwordMain: string = 'password';
+
   routes = {
     viewAllWallets: `/${AppConfig.routes.viewAllWallets}`,
   };
@@ -46,6 +48,11 @@ export class DeleteWalletConfirmComponent implements OnInit {
     this.wallet = this.walletService.getWalletStorageName(name)[0];
     if (this.wallet == undefined)
       this.router.navigate([`/${AppConfig.routes.viewAllWallets}`]);
+  }
+
+  changeInputType(inputType) {
+    let newType = this.sharedService.changeInputType(inputType)
+    this.passwordMain = newType;
   }
 
   /**
