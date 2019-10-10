@@ -20,7 +20,7 @@
               bindValue="value" placeholder="Select namespace" (change)="optionSelected($event)"></ng-select>
             <mdb-error class="ml-1rem"
               *ngIf="validateInput('namespaceRoot').invalid && (validateInput('namespaceRoot').dirty || validateInput('namespaceRoot').touched)">
-              <span>Select namespace</span>
+              <span>Select Namespace</span>
             </mdb-error>
           </div>
         </div>
@@ -81,10 +81,14 @@
             <div class="md-form form-sm">
               <img class="form-control-feedback"
                 src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg" alt="">
+              <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
+                src="assets/images/img/icon-show-hide-password.svg" *ngIf="passwordMain === 'password'">
+              <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
+                src="assets/images/img/icon-show-hide-password-grey.svg" *ngIf="passwordMain === 'text'">
               <input [maxlength]="configurationForm.passwordWallet.maxLength"
                 [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" required
-                mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password"
-                id="password" class="form-control form-control-sm input-border" placeholder="Enter wallet password">
+                mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" [type]="passwordMain"
+                id="password" class="form-control form-control-sm input-border" placeholder="Enter Wallet Password">
 
               <!-- VALIDATION -->
               <mdb-error
@@ -125,7 +129,7 @@
                   <img class="form-control-feedback"
                   src="assets/images/img/icon-namespace-mosaic-duration-01.svg" alt="" style="width: 80px;">
               </div>
-     
+
               <div class="col-12 d-flex justify-content-center overflow-ellipsis-nowrap" style="padding-top: 70px;">
                 <span class="description-information">Start block:</span>
               </div>

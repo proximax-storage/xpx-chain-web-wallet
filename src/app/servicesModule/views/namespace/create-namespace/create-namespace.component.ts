@@ -52,6 +52,7 @@ export class CreateNamespaceComponent implements OnInit {
     moduleName: 'Namespaces & Sub-Namespaces',
     componentName: 'Register'
   };
+  passwordMain: string = 'password';
 
   registerRootNamespaceTransaction: any;
   registersubamespaceTransaction: any;
@@ -201,6 +202,11 @@ export class CreateNamespaceComponent implements OnInit {
         this.fee = this.transactionService.amountFormatterSimple(this.registersubamespaceTransaction.maxFee.compact())
       }
     }
+  }
+
+  changeInputType(inputType) {
+    let newType = this.sharedService.changeInputType(inputType)
+    this.passwordMain = newType;
   }
 
   /**
