@@ -9,7 +9,7 @@
       <hr class="mt-05rem mb-06rem">
     </div>
     <div class="col-12 d-flex justify-content-center">
-      <span class="fs-08rem txt-a-center line-h-1-2em">This is the list of attached accounts of the account you have imported</span>
+      <span class="fs-08rem txt-a-center line-h-1-2em">This is the list of attached accounts of the account you have imported.</span>
     </div>
   </div>
   <!-- END TITLE AND DESCRIPTION -->
@@ -25,11 +25,16 @@
           <div class="col-11 col-md-12 mx-auto d-flex align-items-center box-grey">
             <div class="col-8 col-sm-9 col-md-10 word-break-all">
               <span class="d-flex color-black">{{ mainAccount.address.pretty() }}</span>
-              <span class="d-flex color-black fw-bold">Balance: <span
-                  class="spinner-border spinner-border-sm text-light mr-sm-2 loading-blue" role="status"
-                  aria-hidden="true" *ngIf="mainAccount.balance === null"></span> {{ mainAccount.balance }} XPX <img
-                  src="./assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" class="ml-1rem"
-                  width="20px" alt="logo"></span>
+              <span class="d-flex color-black fw-bold">Balance:&nbsp;
+                <img src="./assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20px"
+                alt="logo">&nbsp;
+                <span class="spinner-border spinner-border-sm text-light mr-sm-2 loading-blue" role="status"
+                  aria-hidden="true" *ngIf="mainAccount.balance === null">
+                </span>
+                <span class="fw-400">
+                  <span class="fw-400" [innerHTML]="getQuantity(mainAccount.balance)"></span>&nbsp;XPX
+                </span>
+              </span>
             </div>
             <div class="col-4 col-sm-3 col-md-2 text-center w-e-nowrap">
               <span class="color-blue-intermedio font-small cursor-p" (click)="mainAccountSelected()">Select ></span>
@@ -42,15 +47,18 @@
           <div class="col-11 col-md-12 mx-auto d-flex align-items-center box-grey">
             <div class="col-8 col-sm-9 col-md-10 word-break-all">
               <span class="d-flex color-black">{{ account.publicAccount.address.pretty() }}</span>
-              <span class="d-flex color-black fw-bold">Balance: <span
-                  class="spinner-border spinner-border-sm text-light mr-sm-2 loading-blue" role="status"
-                  aria-hidden="true" *ngIf="account.publicAccount.balance === null"></span>
-                {{ account.publicAccount.balance }} XPX <img
-                  src="./assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" class="ml-1rem"
-                  width="20px" alt="logo"></span>
+              <span class="d-flex color-black fw-bold">Balance:&nbsp;
+                <img src="./assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20px"
+                  alt="logo">&nbsp;
+                <span class="spinner-border spinner-border-sm text-light mr-sm-2 loading-blue" role="status" aria-hidden="true" *ngIf="account.publicAccount.balance === null">
+                </span>
+                <span class="fw-400">
+                  <span class="fw-400" [innerHTML]="getQuantity(account.publicAccount.balance)"></span>&nbsp;XPX
+                  <span class="color-blue-intermedio font-small tag-account">- Multisig</span>
+                </span>
+              </span>
             </div>
             <div class="col-4 col-sm-3 col-md-2 text-center w-e-nowrap">
-              <i class="fa fa-users"></i>&nbsp;
               <span class="color-blue-intermedio font-small cursor-p"
                 (click)="accountSelected(account.publicAccount)">Select ></span>
             </div>
@@ -67,7 +75,7 @@
       <div class="col-12 d-flex justify-content-center pt-2rem pb-1rem">
         <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
           size="md" (click)="goToBack()">
-          <span class="fs-1-2em color-white">Go Back</span>
+          <span class="fs-1-2em color-white">Cancel</span>
         </button>
       </div>
     </div>

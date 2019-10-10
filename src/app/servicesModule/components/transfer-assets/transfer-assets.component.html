@@ -12,17 +12,23 @@
                 <span class="color-black fw-bold">{{ accountSelected.nameAccount }}&nbsp;</span>
                 <span class="d-flex color-black fw-bold">NIS1 Address: </span><span>{{ accountSelected.address.pretty()
                   }}</span>
-                <span class="color-black">NIS1 Balance:
-                  <img src="./assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" class="ml-1rem"
+                <span class="color-black fw-bold">
+                  NIS1 Balance:&nbsp;
+
+                  <img src="./assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
                     width="20px" alt="logo">
+
                   <span class="spinner-border spinner-border-sm text-light mr-sm-2 loading-blue" role="status"
                     aria-hidden="true" *ngIf="searchBalance">
-                  </span><span [innerHTML]="getQuantity(quantity)"></span></span>
+                  </span>
+
+                  <span class="fw-400" [innerHTML]="getQuantity(quantity)"></span> XPX
+                </span>
               </div>
             </div>
-            <div class="col-12 col-md-3 text-center" *ngIf="changeAccount">
-              <button mdbBtn mdbWavesEffect (click)="goToList()"
-                class="color-white f-w-600 bord-rad-25px font-small background-btn p-05rem">Change</button>
+            <div class="col-12 col-md-3 text-center d-flex justify-content-center align-items-center" *ngIf="changeAccount">
+              <button mdbBtn mdbWavesEffect (click)="goToList()" rounded="true"
+                class="color-white btn-proximax">Change</button>
             </div>
           </div>
         </div>
@@ -75,9 +81,13 @@
             <div class="md-form form-sm mt-1rem mb-0rem">
               <img class="form-control-feedback"
                 src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg" alt="">
+              <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
+                src="assets/images/img/icon-show-hide-password.svg" *ngIf="passwordMain === 'password'">
+              <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
+                src="assets/images/img/icon-show-hide-password-grey.svg" *ngIf="passwordMain === 'text'">
               <input [maxlength]="configurationForm.passwordWallet.maxLength"
                 [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" required
-                mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password"
+                mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" [type]="passwordMain"
                 id="password" class="form-control form-control-sm input-border" placeholder="Enter Wallet Password">
 
               <!-- VALIDATION -->
