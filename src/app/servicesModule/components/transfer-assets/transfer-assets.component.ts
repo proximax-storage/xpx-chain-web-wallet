@@ -37,6 +37,7 @@ export class TransferAssetsComponent implements OnInit {
   listContacts: any = [];
   mosaics: any = null;
   maxAmount: number;
+  passwordMain: string = 'password';
   optionsXPX = {
     prefix: '',
     thousands: ',',
@@ -72,6 +73,11 @@ export class TransferAssetsComponent implements OnInit {
     } else {
       this.router.navigate([AppConfig.routes.home]);
     }
+  }
+
+  changeInputType(inputType) {
+    let newType = this.sharedService.changeInputType(inputType)
+    this.passwordMain = newType;
   }
 
   initComponent() {
@@ -194,7 +200,7 @@ export class TransferAssetsComponent implements OnInit {
     this.subscription.push(
       this.formTransfer.get('amountXpx').valueChanges.subscribe(
         next => {
-          if (next !== null && next !== undefined) {            
+          if (next !== null && next !== undefined) {
             if (next > parseFloat(this.quantity.split(',').join(''))) {
               this.blockButton = true;
               this.errorAmount = '-invalid';

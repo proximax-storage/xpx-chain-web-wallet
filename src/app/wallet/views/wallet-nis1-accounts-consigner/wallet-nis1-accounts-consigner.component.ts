@@ -48,6 +48,12 @@ export class WalletNis1AccountsConsignerComponent implements OnInit {
   ngOnInit() {
   }
 
+  getQuantity(quantity) {
+    if (quantity !== null) {
+      return this.sharedService.amountFormat(quantity);
+    }
+  }
+
   searchBalance(account, index = null) {
     this.nemProvider.getOwnedMosaics(account.address).pipe(first()).pipe(timeout(15000)).subscribe(
       async next => {
