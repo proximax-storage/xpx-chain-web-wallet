@@ -335,7 +335,12 @@ body {
 }
 
 .pt-1rem {
-    padding-top: 1rem;
+    padding-top: 1rem !important;
+}
+
+
+.pt-1-3rem {
+  padding-top: 1.3rem !important;
 }
 
 .pt-2rem {
@@ -382,7 +387,11 @@ body {
 }
 
 .pb-1rem {
-    padding-bottom: 1rem;
+    padding-bottom: 1rem !important;
+}
+
+.pb-1-3rem {
+  padding-bottom: 1.3rem !important;
 }
 
 .pb-03rem {
@@ -659,6 +668,10 @@ body {
 
 .h-100px {
     height: 100px;
+}
+
+.h-170px {
+    height: 170px;
 }
 
 
@@ -1012,7 +1025,7 @@ body {
 
 .icono {
     width: 28px;
-    padding-right: 10px;
+    padding-right: 4px;
     display: inline-block;
     line-height: 18px;
 }
@@ -1873,7 +1886,10 @@ body.modal-open {
     .option {
         display: block !important;
     }
+
+
 }
+
 
 .background-pending {
     background: #ffdfa0;

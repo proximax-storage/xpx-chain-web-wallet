@@ -43,7 +43,7 @@ export class ExtendDurationNamespaceComponent implements OnInit {
   namespaceChangeInfo: NamespaceStorageInterface = null;
   namespaceInfo: NamespaceStorageInterface[] = [];
   paramsHeader: HeaderServicesInterface = {
-    moduleName: 'Namespaces & Sub-Namespaces',
+    moduleName: 'Namespaces',
     componentName: 'Extend Duration'
   };
   passwordMain: string = 'password';

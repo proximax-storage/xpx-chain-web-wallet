@@ -36,7 +36,7 @@ export class SwapCertificateComponent implements OnInit {
     this.transactionHash = this.params.details.transactionHash.data;
     this.explorerUrl = `${environment.nis1.urlExplorer}`;
     // console.log('////// EXPLORER', this.params);
-    this.timestamp = `${this.params.transaction.timeWindow.timeStamp._date._year}-${this.params.transaction.timeWindow.timeStamp._date._month}-${this.params.transaction.timeWindow.timeStamp._date._day} ${this.params.transaction.timeWindow.timeStamp._time._hour}:${this.params.transaction.timeWindow.timeStamp._time._minute}:${this.params.transaction.timeWindow.timeStamp._time._second}`;
+    this.timestamp = `${this.params.transaction.timeWindow.timeStamp._date._year}-${this.params.transaction.timeWindow.timeStamp._date._month}-${this.params.transaction.timeWindow.timeStamp._date._day} ${this.params.transaction.timeWindow.timeStamp._time._hour}:${this.params.transaction.timeWindow.timeStamp._time._minute}:${this.params.transaction.timeWindow.timeStamp._time._second} - UTC`;
     // console.log('\n\n\n\nValue route:\n', this.routeToContinue, '\n\n\n\nEnd value\n\n');
     this.qrSrc = this.qrCreate();
     this.address = (this.params.catapultAccount.address) ? this.params.catapultAccount.address.pretty() : this.params.catapultAccount;

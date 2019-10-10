@@ -31,7 +31,7 @@ export class AccountDeleteConfirmComponent implements OnInit {
   validatingForm: FormGroup;
   ban: boolean = false;
   texAlert = 'I have read the warning, understand the consequences, and wish to proceed'
-
+  passwordMain: string = 'password';
   constructor(private activateRoute: ActivatedRoute,
     private serviceModuleService: ServicesModuleService,
     private sharedService: SharedService,
@@ -127,6 +127,10 @@ export class AccountDeleteConfirmComponent implements OnInit {
 
 
 
+  }
+  changeInputType(inputType) {
+    let newType = this.sharedService.changeInputType(inputType)
+    this.passwordMain = newType;
   }
 
 }
