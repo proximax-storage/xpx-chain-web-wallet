@@ -888,11 +888,7 @@ export class TransactionsService {
    * @returns {boolean}
    * @memberof TransactionsService
    */
-  validateBuildSelectAccountBalance(
-    balanceAccount: number,
-    feeTransaction: number,
-    rental: number
-  ): boolean {
+  validateBuildSelectAccountBalance(balanceAccount: number, feeTransaction: number, rental: number): boolean {
     const totalFee = feeTransaction + rental;
     /*console.log(balanceAccount);
     console.log(feeTransaction);
@@ -909,10 +905,7 @@ export class TransactionsService {
    * @param {Number} feeTotal
    * @memberof DashboardService
    */
-  validateBalanceCosignatorie(
-    accountInfo: AccountsInfoInterface,
-    feeTotal: number
-  ): BalanceCosignatorieValidate {
+  validateBalanceCosignatorie(accountInfo: AccountsInfoInterface, feeTotal: number): BalanceCosignatorieValidate {
     let value: BalanceCosignatorieValidate = {
       infValidate: [{ disabled: false, info: "" }]
     };

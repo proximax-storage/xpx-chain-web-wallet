@@ -56,7 +56,7 @@
 
       <div class="col-11 col-sm-6 d-flex justify-content-center justify-content-sm-start">
         <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="btn-proximax"
-          size="sm">
+          size="sm" [disabled]="authForm.invalid">
           <span class="color-white">Sign In</span>
         </button>
       </div>
