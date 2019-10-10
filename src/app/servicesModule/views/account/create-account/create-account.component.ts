@@ -32,6 +32,7 @@ export class CreateAccountComponent implements OnInit {
   othersAccounts = [];
   fromPrivateKey = false;
   formCreateAccount: FormGroup;
+  passwordMain: string = 'password';
   routes = {
     back: `/${AppConfig.routes.selectTypeCreationAccount}`,
     backToService: `/${AppConfig.routes.service}`
@@ -70,6 +71,11 @@ export class CreateAccountComponent implements OnInit {
     this.walletService.setAccountSelectedWalletNis1(null);
     this.createForm(param);
     this.createAccount();
+  }
+
+  changeInputType(inputType) {
+    let newType = this.sharedService.changeInputType(inputType)
+    this.passwordMain = newType;
   }
 
   /**
