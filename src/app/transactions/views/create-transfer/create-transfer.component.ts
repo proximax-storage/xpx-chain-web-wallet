@@ -601,6 +601,17 @@ export class CreateTransferComponent implements OnInit {
     );
   }
 
+  /**
+   *
+   *
+   * @param {*} quantity
+   * @returns
+   * @memberof CreateTransferComponent
+   */
+  getQuantity(quantity: string) {
+    return this.sharedService.amountFormat(quantity);
+  }
+
 
   /**
    *

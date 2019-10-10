@@ -170,7 +170,7 @@
               <div class="col-12 d-flex align-items-center">
                 <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" alt="">
                 <span class="fw-500">{{mosaicXpx.name | uppercase}} > Balance:&nbsp;</span>
-                <span class="">{{balanceXpx}} XPX</span>
+                <span class="" [innerHTML]="getQuantity(balanceXpx)"></span>&nbsp;XPX
               </div>
             </div>
           </div>
@@ -280,24 +280,36 @@
         <div class="col-11 col-md-10 col-lg-8 mx-auto">
           <div class="row">
             <div class="col-12 col-md-6 mx-auto">
-              <div class="box-grey d-flex justify-content-center pt-08rem pb-08rem">
+              <div class="box-grey d-flex justify-content-center pt-1-3rem pb-1-3rem">
                 <div class="row">
                   <div class="col-12 text-center">
                     <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
                       width="20" alt="">
-                    <span class="fs-07rem">Fee: {{fee}} XPX <br></span>
+                    <!-- <span class="fs-07rem">Fee: {{fee}} XPX <br></span> -->
+                    <span class="fs-08rem">
+                      Fee:&nbsp;
+                      <a [innerHTML]="getQuantity(fee)"></a> XPX
+                    </span>
                   </div>
                 </div>
               </div>
             </div>
 
             <div class="col-12 col-md-6 mx-auto">
-              <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
+              <div class="box-grey pt-08rem pb-08rem d-flex justify-content-center">
                 <div class="row">
                   <div class="col-12 d-flex align-items-center">
                     <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
                       width="20" alt="">
-                    <span class="fs-07rem">LockFund: 10.000000 XPX <br> Fee: 0.044500 XPX</span>
+
+                    <span class="fs-08rem">
+                      LockFund:&nbsp;
+                      <a [innerHTML]="getQuantity('10.000000')"></a> XPX <br>
+
+                      Fee:&nbsp;
+                      <a [innerHTML]="getQuantity('0.044500')"></a> XPX
+                    </span>
+                    <!-- <span class="fs-07rem">LockFund: 10.000000 XPX <br> Fee: 0.044500 XPX</span>  -->
                   </div>
                 </div>
               </div>
@@ -318,7 +330,10 @@
               <div class="col-12 text-center">
                 <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20"
                   alt="">
-                <span class="fs-08rem">Fee: {{fee}} XPX <br></span>
+                <span class="fs-08rem">
+                  Fee:&nbsp;
+                  <a [innerHTML]="getQuantity(fee)"></a> XPX
+                </span>
               </div>
             </div>
           </div>
