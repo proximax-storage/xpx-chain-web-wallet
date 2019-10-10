@@ -35,6 +35,7 @@ export class DetailAccountComponent implements OnInit {
   Access to your digital assets cannot be recovered without it.`;
   editNameAccount = false;
   newNameAccount: string = '';
+  passwordMain: string = 'password';
   privateKey = '';
   publicKey = '';
   routes = {
@@ -120,6 +121,11 @@ export class DetailAccountComponent implements OnInit {
    */
   copyMessage(message: string) {
     this.sharedService.showSuccess('', `${message} copied`);
+  }
+
+  changeInputType(inputType) {
+    let newType = this.sharedService.changeInputType(inputType)
+    this.passwordMain = newType;
   }
 
   /**
