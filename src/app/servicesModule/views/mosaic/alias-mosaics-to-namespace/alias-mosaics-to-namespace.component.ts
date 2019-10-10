@@ -73,6 +73,7 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
   amountAccount: number;
   mosaicstoHex: MosaicId;
   viewLinked = false;
+  nameSelect: boolean = true;
 
   constructor(
     private fb: FormBuilder,
@@ -118,6 +119,8 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
   }
 
   captureNamespace(event) {
+    this.nameSelect = false;
+    
     if (this.linkingNamespaceToMosaic.get('typeAction').value === AliasActionType.Unlink) {
       this.linked = this.mosaicSelect.find((x: any) => event.value === x.label);
 
@@ -233,6 +236,7 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
   clearForm() {
     this.linked = null;
     this.viewLinked = false;
+    this.nameSelect = true;
     this.linkingNamespaceToMosaic.reset({
       namespace: '',
       typeAction: AliasActionType.Link,
