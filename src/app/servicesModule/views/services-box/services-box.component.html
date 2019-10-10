@@ -1,7 +1,7 @@
-<div class="container mt-3rem mb-2rem animated fadeIn">
+<div class="container mt-1-5rem mb-2rem animated fadeIn">
   <div class="row">
     <ng-container *ngFor="let item of objectKeys(servicesList)">
-      <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mt-1rem">
+      <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mt-3rem">
         <!-- Icon and Title -->
         <div class="row">
           <div class="col-12 d-flex justify-content-center">
@@ -23,7 +23,7 @@
         <!-- Description -->
         <div class="dropdown  txt-a-center" mdbDropdown *ngIf="servicesList[item].viewChildren === true">
           <button mdbDropdownToggle mdbBtn color="transparent" class="dropdown-toggle waves-light" type="button"
-            mdbWavesEffect style="padding: 0px; box-shadow: 0px 0px transparent"> <span class="color-main-wallet">Options</span> 
+            mdbWavesEffect style="padding: 0px; box-shadow: 0px 0px transparent;"> <span class="color-main-wallet">Options</span>
           </button>
           <div class="dropdown-menu row mb-1rem" style="position: absolute; left: 60px; padding: .5rem 0 .5rem 0 !important;">
             <ng-container *ngFor="let itm of objectKeys(servicesList[item]['children'])">

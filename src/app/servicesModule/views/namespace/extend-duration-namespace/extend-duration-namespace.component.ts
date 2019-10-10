@@ -46,6 +46,7 @@ export class ExtendDurationNamespaceComponent implements OnInit {
     moduleName: 'Namespaces & Sub-Namespaces',
     componentName: 'Extend Duration'
   };
+  passwordMain: string = 'password';
 
   rentalFee = 4576;
   status: boolean = true;
@@ -58,7 +59,7 @@ export class ExtendDurationNamespaceComponent implements OnInit {
   subtractionHeight: any;
   totalBlock: any;
   excedDuration: boolean = false;
-  
+
 
   constructor(
     private router: Router,
@@ -85,7 +86,7 @@ export class ExtendDurationNamespaceComponent implements OnInit {
       this.calculateSubtractionHeight();
     }));
 
-    
+
     this.validateRentalFee(this.rentalFee * this.extendDurationNamespaceForm.get('duration').value);
     this.extendDurationNamespaceForm.get('duration').valueChanges.subscribe(next => {
       if (next <= 365) {
@@ -98,7 +99,7 @@ export class ExtendDurationNamespaceComponent implements OnInit {
           } else {
             this.excedDuration = true;
           }
-          
+
           this.validateRentalFee(this.rentalFee * parseFloat(this.durationByBlock));
           this.builder();
         } else {
@@ -144,6 +145,11 @@ export class ExtendDurationNamespaceComponent implements OnInit {
 
       this.fee = this.transactionService.amountFormatterSimple(this.extendNamespaceRootTransaction.maxFee.compact());
     }
+  }
+
+  changeInputType(inputType) {
+    let newType = this.sharedService.changeInputType(inputType)
+    this.passwordMain = newType;
   }
 
   /**

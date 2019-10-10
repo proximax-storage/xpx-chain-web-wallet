@@ -16,7 +16,6 @@ export class AggregateBondedTypeComponent implements OnInit {
     currentPage: 1
   };
 
-
   headElements = ['Signer', 'Public Key', 'signature'];
   maxSize = 0;
   typeTransactions = this.transactionService.getTypeTransactions();
