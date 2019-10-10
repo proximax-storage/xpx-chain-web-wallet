@@ -1,8 +1,14 @@
 <div class="container mt-3rem mb-2rem animated fadeIn">
 
   <!-- CERTIFICATE -->
-  <div class="row mt-2rem">
+  <div class="row">
     <div class="col-12 col-md-10 col-lg-10 col-xl-10 mx-auto">
+
+      <div class="row">
+        <div class="col-12 col-md-10 col-lg-8 col-xl-8 d-flex justify-content-center mx-auto">
+          <span class="fs-1-2rem">Swap Process Receipt:</span>
+        </div>
+      </div>
       <!-- <div class="row">
         <div class="col-md-9 col-lg-8 col-xl-9 mx-auto"> -->
       <div class="row audit-front d-flex flex-md-row justify-content-start mx-auto flex-sm-column">
@@ -52,12 +58,13 @@
 
   <!-- WARNING -->
   <div class="row mt-2rem">
-    <div class="col-md-10 col-lg-8 col-xl-8 mx-auto">
-      <div class="row box-transparent-border-orange">
-        <div class="col-11 mx-auto">
-          <span class="fs-075rem fw-bold">Save a copy of your certificate. It is needed in the event of an error.</span>
-        </div>
+    <div class="col-md-10 col-lg-8 col-xl-8 mx-auto box-transparent-border-orange">
+      <div class="txt-a-center">
+        <img src="assets/images/img/icon-transaction-unconfirmed-white.svg" style="filter: invert(50%)" alt="" width="30">
       </div>
+      <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em">
+        Save a copy of your certificate. It is needed in the event of an error.
+      </p>
     </div>
   </div>
   <!-- END WARNING -->
@@ -72,16 +79,16 @@
   <!-- BUTTON -->
   <div class="row mt-1rem">
     <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-      <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+      <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax"
         size="md" (click)="printCertificate()">
-        <span class="fs-1-2em color-white">Save</span>
+        <span class="color-white">Save</span>
       </button>
     </div>
 
     <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-      <button mdbBtn rounded="true" mdbWavesEffect (click)="navToRoute()" [disabled]="!checked" class="f-w-600 background-btn pl-2rem pr-2rem"
+      <button mdbBtn rounded="true" mdbWavesEffect (click)="navToRoute()" [disabled]="!checked" class="btn-proximax"
         size="md">
-        <span class="fs-1-2em color-white">Continue</span>
+        <span class="color-white">Continue</span>
       </button>
     </div>
   </div>
