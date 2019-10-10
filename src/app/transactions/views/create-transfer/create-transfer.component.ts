@@ -44,6 +44,7 @@ export class CreateTransferComponent implements OnInit {
   disabledBtnAddMosaic: boolean = false;
   errorOtherMosaics: boolean = false;
   formTransfer: FormGroup;
+  passwordMain: string = 'password';
   saveContact: boolean;
   formContact = {
     name: '',
@@ -242,6 +243,11 @@ export class CreateTransferComponent implements OnInit {
     }
 
     return;
+  }
+
+  changeInputType(inputType) {
+    let newType = this.sharedService.changeInputType(inputType)
+    this.passwordMain = newType;
   }
 
   /**

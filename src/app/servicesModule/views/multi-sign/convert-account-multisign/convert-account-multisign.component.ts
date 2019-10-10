@@ -59,6 +59,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
   cosignatoryList: CosignatoryList[] = [];
   transactionHttp: TransactionHttp
   listContact: ContactsListInterface[] = [];
+  passwordMain: string = 'password'
   showContacts: boolean;
   isMultisig: boolean;
   searchContact: boolean;
@@ -130,6 +131,11 @@ export class ConvertAccountMultisignComponent implements OnInit {
       }
     ));
 
+  }
+
+  changeInputType(inputType) {
+    let newType = this.sharedService.changeInputType(inputType)
+    this.passwordMain = newType;
   }
 
   /**

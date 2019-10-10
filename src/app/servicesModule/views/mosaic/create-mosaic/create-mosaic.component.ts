@@ -74,6 +74,7 @@ export class CreateMosaicComponent implements OnInit {
   notExpire: any;
   subscription: Subscription[] = [];
   vestedBalance: { part1: string; part2: string; };
+  passwordMain: string = 'password';
 
   constructor(
     private fb: FormBuilder,
@@ -163,6 +164,11 @@ export class CreateMosaicComponent implements OnInit {
     let vestedBalance = this.vestedBalance.part1.concat(this.vestedBalance.part2).replace(",", "");
     this.amountAccount = Number(vestedBalance)
     // console.log(this.amountAccount);
+  }
+
+  changeInputType(inputType) {
+    let newType = this.sharedService.changeInputType(inputType)
+    this.passwordMain = newType;
   }
 
   /**

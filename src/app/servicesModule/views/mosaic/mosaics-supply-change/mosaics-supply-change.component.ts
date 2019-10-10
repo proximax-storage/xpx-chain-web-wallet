@@ -51,6 +51,7 @@ export class MosaicsSupplyChangeComponent implements OnInit {
   supply: string = '0';
   blockButton: boolean = false;
   supplyMutable: boolean = false;
+  passwordMain: string = 'password';
   transferable: boolean = false;
   transactionSigned: SignedTransaction[] = [];
   transactionReady: SignedTransaction[] = [];
@@ -104,7 +105,7 @@ export class MosaicsSupplyChangeComponent implements OnInit {
     this.balance();
     // this.amountAccount = this.walletService.getAmountAccount();
     // console.log(this.amountAccount);
-    
+
 
     this.subscribe['block'] = this.dataBridge.getBlock().subscribe(next => this.currentBlock = next);
     const data = await this.mosaicService.filterMosaics();
@@ -180,7 +181,7 @@ export class MosaicsSupplyChangeComponent implements OnInit {
       error => this.vestedBalance = {
         part1: '0',
         part2: '000000'
-      }  
+      }
     ));
     let vestedBalance = this.vestedBalance.part1.concat(this.vestedBalance.part2).replace(",", "");
     this.amountAccount = Number(vestedBalance)
@@ -201,12 +202,12 @@ export class MosaicsSupplyChangeComponent implements OnInit {
         this.errSupply = false;
       }
     } else {
-      
+
       let value = Number(this.supply.replace(",", "")) - val;
       let restante = Number(value.toFixed(6));
-      
+
       if (val > Number(this.supply.replace(",", ""))) {
-        
+
         this.errSupplyMin = true;
         this.totalSupply = '0.000000'
       } else {
@@ -217,7 +218,7 @@ export class MosaicsSupplyChangeComponent implements OnInit {
         this.errSupply = false;
         this.errSupplyMin = false;
       }
-      
+
 
     }
 
@@ -238,6 +239,11 @@ export class MosaicsSupplyChangeComponent implements OnInit {
       );
       this.fee = this.transactionService.amountFormatterSimple(this.mosaicSupplyChangeTransaction.maxFee.compact());
     }
+  }
+
+  changeInputType(inputType) {
+    let newType = this.sharedService.changeInputType(inputType)
+    this.passwordMain = newType;
   }
 
   /**
