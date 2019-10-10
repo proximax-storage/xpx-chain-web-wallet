@@ -143,7 +143,7 @@
                     <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
                       <button [disabled]="apostilleFormOne.get('file').invalid" mdbBtn (click)="stepper.next()"
                         rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="sm">
-                        <span class="fs-1-2em color-white">NEXT</span>
+                        <span class="fs-1-2em color-white">Next</span>
                       </button>
                     </div>
                   </div>
@@ -231,11 +231,15 @@
                   <div class="md-form form-sm">
                     <img class="form-control-feedback"
                       src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg" alt="">
+                    <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
+                      src="assets/images/img/icon-show-hide-password.svg" *ngIf="passwordMain === 'password'">
+                    <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
+                      src="assets/images/img/icon-show-hide-password-grey.svg" *ngIf="passwordMain === 'text'">
                     <input [maxlength]="configurationForm.passwordWallet.maxLength"
                       [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" required
-                      mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password"
+                      mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" [type]="passwordMain"
                       id="password" class="form-control form-control-sm input-border"
-                      placeholder="Enter wallet password">
+                      placeholder="Enter Wallet Password">
                   </div>
                 </div>
               </div>

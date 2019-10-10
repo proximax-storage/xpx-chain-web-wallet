@@ -29,6 +29,7 @@ export class CreatePollComponent implements OnInit {
   validateformDateEnd: boolean;
   form: FormGroup;
   showList: boolean;
+  passwordMain: string = 'password';
   publicAddress: string;
   errorDateStart: string;
   errorDateEnd: string;
@@ -111,6 +112,12 @@ export class CreatePollComponent implements OnInit {
       this.thirdFormGroup.get('address').patchValue(event.value);
     }
   }
+
+  changeInputType(inputType) {
+    let newType = this.sharedService.changeInputType(inputType)
+    this.passwordMain = newType;
+  }
+
   createForms() {
     this.firstFormGroup = new FormGroup({
       title: new FormControl('', [Validators.required]),
@@ -350,12 +357,12 @@ export class CreatePollComponent implements OnInit {
  * @param name - name poll
  * @param desciption - desciption poll
  * @param id - identifier
- * @param type - 0 = withe list , 1 = public, 
+ * @param type - 0 = withe list , 1 = public,
  * @param startDate - poll start date
  * @param endDate - poll end date
  * @param createdDate - poll creation date
  * @param quantityOption - number of voting options
- * 
+ *
 */
 export interface PollInterface {
   name: string;
