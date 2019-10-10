@@ -34,6 +34,8 @@ export class DeleteWalletComponent implements OnInit {
     routerExtraButton: `/${AppConfig.routes.exportWallet}`
   };
 
+  passwordMain: string = 'password';
+
   constructor(
     private walletService: WalletService,
     private sharedService: SharedService,
@@ -54,6 +56,11 @@ export class DeleteWalletComponent implements OnInit {
     this.wallets = this.walletService.getWalletStorage();
     this.configurationForm = this.sharedService.configurationForm;
     this.createForm();
+  }
+
+  changeInputType(inputType) {
+    let newType = this.sharedService.changeInputType(inputType)
+    this.passwordMain = newType;
   }
 
   changeView(view = 0) {

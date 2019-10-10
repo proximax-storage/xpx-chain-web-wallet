@@ -75,9 +75,10 @@
                     *ngIf="validateInput('deltaSupply', '').invalid && (validateInput('deltaSupply', '').dirty || validateInput('deltaSupply', '').touched)">
                     <span>Required field</span>
                   </mdb-error>
-                  <!-- <mdb-error *ngIf="invalidSupply">
-                    <span>Supply exceeded</span>
-                  </mdb-error> -->
+                  <mdb-error *ngIf="invalidSupply">
+                    <span>Supply invalid</span>
+                  </mdb-error>
+                  <br>
                 </div>
               </div>
             </div>
@@ -176,7 +177,7 @@
               </div>
 
               <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-                <button mdbBtn type="submit" rounded="true" [disabled]="!mosaicForm.valid || blockButton" mdbWavesEffect
+                <button mdbBtn type="submit" rounded="true" [disabled]="!mosaicForm.valid || blockButton || invalidSupply" mdbWavesEffect
                   class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
                   <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
                     *ngIf="blockSend"></span>
