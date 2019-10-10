@@ -391,6 +391,8 @@ export class CreateTransferComponent implements OnInit {
       this.fee = this.transactionService.amountFormatterSimple(b.compact())
     } else if (message === 0 && this.mosaicsToSend.length === 0) {
       this.fee = '0.037250'
+    }else {
+      this.fee = this.transactionService.amountFormatterSimple(b.compact())
     }
   }
 
@@ -939,7 +941,8 @@ export class CreateTransferComponent implements OnInit {
     });
 
     this.subscription.push(this.formTransfer.get('message').valueChanges.subscribe(val => {
-      if (val) {
+      console.log('val', val);
+      if (val && val !== '') {
         this.charRest = this.configurationForm.message.maxLength - val.length;
         this.calculateFee(val.length);
       } else {
@@ -1002,6 +1005,8 @@ export class CreateTransferComponent implements OnInit {
           }
         }
       }
+
+      this.calculateFee(this.formTransfer.get('message').value);
     });
   }
 
