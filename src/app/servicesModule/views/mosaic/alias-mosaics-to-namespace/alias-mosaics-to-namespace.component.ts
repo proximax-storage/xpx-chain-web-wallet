@@ -48,6 +48,8 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
     }
   ];
 
+  passwordMain: string = 'password';
+
   typeAction: any = [{
     value: AliasActionType.Link,
     label: 'Link',
@@ -136,6 +138,11 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
     const mosaicId = new MosaicId(this.linkingNamespaceToMosaic.get('mosaic').value);
     this.mosaicId = mosaicId;
     this.builder()
+  }
+
+  changeInputType(inputType) {
+    let newType = this.sharedService.changeInputType(inputType)
+    this.passwordMain = newType;
   }
 
   builder() {

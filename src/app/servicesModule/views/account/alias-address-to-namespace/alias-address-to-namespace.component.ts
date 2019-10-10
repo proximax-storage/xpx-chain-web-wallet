@@ -53,6 +53,7 @@ export class AliasAddressToNamespaceComponent implements OnInit {
   fee: string = '0.000000';
   amountAccount: number;
   mosaicstoHex: any;
+  passwordMain: string = 'password';
 
   constructor(
     private fb: FormBuilder,
@@ -237,7 +238,10 @@ export class AliasAddressToNamespaceComponent implements OnInit {
     this.fee = this.transactionService.amountFormatterSimple(this.addressAliasTransaction.maxFee.compact());
   }
 
-
+  changeInputType(inputType) {
+    let newType = this.sharedService.changeInputType(inputType)
+    this.passwordMain = newType;
+  }
 
   /**
    *

@@ -245,11 +245,7 @@ export class TransactionsService {
    * @returns
    * @memberof TransactionsService
    */
-  amountFormatter(
-    amountParam: UInt64 | number,
-    mosaic: MosaicInfo,
-    manualDivisibility = ""
-  ) {
+  amountFormatter(amountParam: UInt64 | number, mosaic: MosaicInfo, manualDivisibility = "") {
     let amountFormatter = "";
     if (mosaic !== null && mosaic !== undefined) {
       const divisibility =
@@ -334,18 +330,10 @@ export class TransactionsService {
    *
    * @param signedTransaction
    */
-  buildHashLockTransaction(
-    signedTransaction: SignedTransaction
-  ): LockFundsTransaction {
+  buildHashLockTransaction(signedTransaction: SignedTransaction): LockFundsTransaction {
     return HashLockTransaction.create(
-      Deadline.create(
-        environment.deadlineTransfer.deadline,
-        environment.deadlineTransfer.chronoUnit
-      ),
-      new Mosaic(
-        new MosaicId(environment.mosaicXpxInfo.id),
-        UInt64.fromUint(Number(10000000))
-      ),
+      Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
+      new Mosaic(new MosaicId(environment.mosaicXpxInfo.id), UInt64.fromUint(Number(10000000))),
       UInt64.fromUint(480),
       signedTransaction,
       this.walletService.currentAccount.network
@@ -357,10 +345,7 @@ export class TransactionsService {
    * @param sender
    * @param transaction
    */
-  buildAggregateTransaction(
-    sender: PublicAccount,
-    transaction: Transaction
-  ): AggregateTransaction {
+  buildAggregateTransaction(sender: PublicAccount, transaction: Transaction): AggregateTransaction {
     // console.log('sender --->', sender);
     return AggregateTransaction.createBonded(
       Deadline.create(
@@ -375,10 +360,7 @@ export class TransactionsService {
   /**
    *
    */
-  buildTransactionHttp(
-    protocol = environment.protocol,
-    node = this.nodeService.getNodeSelected()
-  ) {
+  buildTransactionHttp(protocol = environment.protocol, node = this.nodeService.getNodeSelected()) {
     return new TransactionHttp(protocol + "://" + `${node}`);
   }
 
@@ -888,11 +870,7 @@ export class TransactionsService {
    * @returns {boolean}
    * @memberof TransactionsService
    */
-  validateBuildSelectAccountBalance(
-    balanceAccount: number,
-    feeTransaction: number,
-    rental: number
-  ): boolean {
+  validateBuildSelectAccountBalance(balanceAccount: number, feeTransaction: number, rental: number): boolean {
     const totalFee = feeTransaction + rental;
     /*console.log(balanceAccount);
     console.log(feeTransaction);
@@ -909,10 +887,7 @@ export class TransactionsService {
    * @param {Number} feeTotal
    * @memberof DashboardService
    */
-  validateBalanceCosignatorie(
-    accountInfo: AccountsInfoInterface,
-    feeTotal: number
-  ): BalanceCosignatorieValidate {
+  validateBalanceCosignatorie(accountInfo: AccountsInfoInterface, feeTotal: number): BalanceCosignatorieValidate {
     let value: BalanceCosignatorieValidate = {
       infValidate: [{ disabled: false, info: "" }]
     };

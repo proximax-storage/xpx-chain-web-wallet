@@ -9,6 +9,7 @@ import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 import { TransactionsInterface, TransactionsService } from '../../services/transactions.service';
 import { SharedService, ConfigurationForm } from '../../../shared/services/shared.service';
 import { DataBridgeService } from '../../../shared/services/data-bridge.service';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-partial',
@@ -47,6 +48,7 @@ export class PartialComponent implements OnInit {
   objectKeys = Object.keys;
   onlySigner = false;
   password: string = '';
+  passwordMain: string = 'password'
   subscription: Subscription[] = [];
   typeTransactions: any;
   validateAccount = false;
@@ -86,6 +88,10 @@ export class PartialComponent implements OnInit {
     });
   }
 
+  changeInputType(inputType) {
+    let newType = this.sharedService.changeInputType(inputType)
+    this.passwordMain = newType;
+  }
 
   /**
    *
@@ -109,27 +115,6 @@ export class PartialComponent implements OnInit {
    * @memberof PartialComponent
    */
   find(transaction: TransactionsInterface) {
-   /* const height = transaction.data['transactionInfo'].height.compact();
-    if (typeof (height) === 'number') {
-      const existBlock = this.dataBridge.filterBlockStorage(height);
-      if (existBlock) {
-        console.log('In cache', existBlock);
-        transaction.timestamp = this.transactionService.dateFormatUTC(new UInt64([existBlock.timestamp.lower, existBlock.timestamp.higher]));
-        transaction.effectiveFee = existBlock.feeMultiplier * transaction.data.size;
-      }else {
-        this.proximaxProvider.getBlockInfo(height).subscribe(
-          next => {
-            console.log('Http', next);
-            this.dataBridge.validateBlock(next);
-            transaction.timestamp = this.transactionService.dateFormatUTC(next.timestamp);
-            transaction.effectiveFee = next.feeMultiplier * transaction.data.size;
-          }
-        );
-      }
-    } else {
-      transaction.effectiveFee = 0;
-    }*/
-
     this.modalPartial.show();
     this.dataSelected = transaction;
     this.arraySelect = this.arraySelect.slice(0);
@@ -191,6 +176,24 @@ export class PartialComponent implements OnInit {
         });
       }
     });
+
+    const innerTransactions = transaction.data['innerTransactions'];
+    if (innerTransactions.length === 1) {
+      if (innerTransactions[0].type === this.typeTransactions.transfer.id) {
+        if (innerTransactions[0]["message"] && innerTransactions[0]["message"].payload !== "") {
+          try {
+            const msg = JSON.parse(innerTransactions[0]["message"].payload);
+            if (innerTransactions[0].signer.address.plain() === environment.swapAccount.address) {
+              if (msg && msg["type"] && msg["type"] === "Swap") {
+                console.log('IS SWAP');
+              }
+            }
+          }catch (error) {
+            console.log('error', error);
+          }
+        }
+      }
+    }
 
     this.onlySigner = false;
     const cantSigned = arraySelect.filter((x: any) => x.signed === true);

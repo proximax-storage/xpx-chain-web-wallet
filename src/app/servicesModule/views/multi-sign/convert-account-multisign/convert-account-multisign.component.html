@@ -291,10 +291,14 @@
         <div class="md-form form-sm">
           <img class="form-control-feedback" src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg"
             alt="">
+          <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
+            src="assets/images/img/icon-show-hide-password.svg" *ngIf="passwordMain === 'password'">
+          <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
+            src="assets/images/img/icon-show-hide-password-grey.svg" *ngIf="passwordMain === 'text'">
           <input [maxlength]="configurationForm.passwordWallet.maxLength"
             [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" required
-            mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password" id="password"
-            class="form-control form-control-sm input-border" placeholder="Enter wallet password">
+            mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" [type]="passwordMain" id="password"
+            class="form-control form-control-sm input-border" placeholder="Enter Wallet Password">
           <mdb-error
             *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
             <span>Required field</span>
