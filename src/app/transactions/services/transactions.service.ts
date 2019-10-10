@@ -897,7 +897,7 @@ export class TransactionsService {
       accountInfo.accountInfo !== null;
     // Validate account info
     if (!disabled)
-      return { infValidate: [{ disabled: true, info: "not valid" }] };
+      return { infValidate: [{ disabled: true, info: "Not Valid" }] };
     // Validate mosaics
     if (
       !accountInfo.accountInfo.mosaics.find(
@@ -905,13 +905,13 @@ export class TransactionsService {
       )
     )
       return {
-        infValidate: [{ disabled: true, info: "Insufficient balance" }]
+        infValidate: [{ disabled: true, info: "Insufficient Balance" }]
       };
     // Validate balance account
     const balanceAccount = accountInfo.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id).amount.compact();
     if (!(balanceAccount >= feeTotal))
       return {
-        infValidate: [{ disabled: true, info: "Insufficient balance" }]
+        infValidate: [{ disabled: true, info: "Insufficient Balance" }]
       };
 
     return { infValidate: [{ disabled: false, info: "" }] };

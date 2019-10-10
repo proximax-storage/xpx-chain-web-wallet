@@ -199,13 +199,26 @@
                   <!-- Action Required -->
                   <div class="col-12 col-md-6">
                     <div class="row">
-                      <div class="col-12 background-orange h-100px d-flex align-items-center justify-content-center txt-a-center">
+                      <ng-container *ngIf="showSwap">
+                        <div class="col-12 background-gray-light pt-1rem">
+                          <div class="row lh-1em mb-06rem">
+                            <div class="col-12 d-flex justify-content-center">
+                              <img class="mr-1rem ml-1rem h-90px"
+                                src="assets/images/img/badge-gold-proximax-sirius-wallet.svg">
+                            </div>
+
+                            <div class="col-12 d-flex justify-content-center pt-1rem">
+                              <span class="fw-bold">ProximaX Swap</span>
+                            </div>
+                          </div>
+                        </div>
+                      </ng-container>
+
+                      <div
+                        class="col-12 background-orange h-50px d-flex align-items-center justify-content-center txt-a-center">
                         <div class="row">
                           <div class="col-12">
-                            <span class="fw-600 color-white">Action</span>
-                          </div>
-                          <div class="col-12">
-                            <span class="fw-600 color-white">Required</span>
+                            <span class="fw-600 color-white">Action Required</span>
                           </div>
                         </div>
                       </div>
@@ -255,11 +268,14 @@
                           <div class="row d-flex justify-content-center">
                             <div class="col-12">
                               <div class="md-form form-sm">
-                                <img class="form-control-feedback" src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg" alt="">
+                                <img class="form-control-feedback"
+                                  src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg" alt="">
                                 <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
-                                  src="assets/images/img/icon-show-hide-password.svg" *ngIf="passwordMain === 'password'">
+                                  src="assets/images/img/icon-show-hide-password.svg"
+                                  *ngIf="passwordMain === 'password'">
                                 <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
-                                  src="assets/images/img/icon-show-hide-password-grey.svg" *ngIf="passwordMain === 'text'">
+                                  src="assets/images/img/icon-show-hide-password-grey.svg"
+                                  *ngIf="passwordMain === 'text'">
                                 <input [maxlength]="configurationForm.passwordWallet.maxLength"
                                   [minlength]="configurationForm.passwordWallet.minLength" [(ngModel)]="password"
                                   required mdbInputDirective [validateSuccess]="false" [validateError]="false"

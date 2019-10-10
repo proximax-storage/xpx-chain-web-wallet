@@ -53,9 +53,9 @@ export class PartialComponent implements OnInit {
   typeTransactions: any;
   validateAccount = false;
   configurationForm: ConfigurationForm;
+  showSwap: boolean = false;
 
   constructor(
-    private dataBridge: DataBridgeService,
     private proximaxProvider: ProximaxProvider,
     private sharedService: SharedService,
     public transactionService: TransactionsService,
@@ -93,6 +93,7 @@ export class PartialComponent implements OnInit {
     this.passwordMain = newType;
   }
 
+
   /**
    *
    *
@@ -115,6 +116,7 @@ export class PartialComponent implements OnInit {
    * @memberof PartialComponent
    */
   find(transaction: TransactionsInterface) {
+    this.showSwap = false;
     this.modalPartial.show();
     this.dataSelected = transaction;
     this.arraySelect = this.arraySelect.slice(0);
@@ -186,6 +188,7 @@ export class PartialComponent implements OnInit {
             if (innerTransactions[0].signer.address.plain() === environment.swapAccount.address) {
               if (msg && msg["type"] && msg["type"] === "Swap") {
                 console.log('IS SWAP');
+                this.showSwap = true;
               }
             }
           }catch (error) {
