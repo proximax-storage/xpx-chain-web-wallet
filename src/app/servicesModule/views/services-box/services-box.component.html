@@ -18,12 +18,11 @@
             <span class="fs-08rem" [ngClass]="servicesList[item].className">{{servicesList[item].description}}</span>
           </div>
         </div>
-
-        <hr class="mb-03rem mt-03rem border-hr">
+        <hr class="mb-05rem mt-01rem border-hr">
         <!-- Description -->
         <div class="dropdown  txt-a-center" mdbDropdown *ngIf="servicesList[item].viewChildren === true">
           <button mdbDropdownToggle mdbBtn color="transparent" class="dropdown-toggle waves-light" type="button"
-            mdbWavesEffect style="padding: 0px; box-shadow: 0px 0px transparent;"> <span class="color-main-wallet">Options</span>
+            mdbWavesEffect style="padding: 0px; box-shadow: 0px 0px transparent;">
           </button>
           <div class="dropdown-menu row mb-1rem" style="position: absolute; left: 60px; padding: .5rem 0 .5rem 0 !important;">
             <ng-container *ngFor="let itm of objectKeys(servicesList[item]['children'])">
