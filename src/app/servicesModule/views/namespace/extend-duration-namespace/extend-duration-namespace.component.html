@@ -17,7 +17,7 @@
           <div class="col-11 mx-auto">
             <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [searchable]="false" [validateError]="true"
               class="selectWrapper" [items]="arrayselect" formControlName="namespaceRoot" bindLabel="label"
-              bindValue="value" placeholder="Select namespace" (change)="optionSelected($event)"></ng-select>
+              bindValue="value" placeholder="Select Namespace" (change)="optionSelected($event)"></ng-select>
             <mdb-error class="ml-1rem"
               *ngIf="validateInput('namespaceRoot').invalid && (validateInput('namespaceRoot').dirty || validateInput('namespaceRoot').touched)">
               <span>Select Namespace</span>
@@ -57,7 +57,10 @@
                 <div class="">
                   <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
                     width="20" alt="">&nbsp;
-                  <span>Fee: {{ fee }} XPX</span>
+                  <span class="fs-08rem">
+                    Fee:&nbsp;
+                    <a [innerHTML]="getQuantity(fee)"></a> XPX
+                  </span>
                 </div>
               </div>
             </div>
@@ -69,7 +72,10 @@
                 <div class="">
                   <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
                     width="20" alt="">&nbsp;
-                  <span>Rental Fee: {{calculateRentalFee}} XPX</span>
+                  <span class="fs-08rem">
+                    Rental Fee:&nbsp;
+                    <a [innerHTML]="getQuantity(calculateRentalFee)"></a> XPX
+                  </span>
                 </div>
               </div>
             </div>

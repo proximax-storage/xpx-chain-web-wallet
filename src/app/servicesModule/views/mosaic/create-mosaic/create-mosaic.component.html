@@ -73,10 +73,10 @@
                   <!-- VALIDATION -->
                   <mdb-error
                     *ngIf="validateInput('deltaSupply', '').invalid && (validateInput('deltaSupply', '').dirty || validateInput('deltaSupply', '').touched)">
-                    <span>Required field</span>
+                    <span>Required Field</span>
                   </mdb-error>
                   <mdb-error *ngIf="invalidSupply">
-                    <span>Supply invalid</span>
+                    <span>Supply Invalid</span>
                   </mdb-error>
                   <br>
                 </div>
@@ -90,9 +90,11 @@
                 <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
                   <div class="row">
                     <div class="col-12">
-                      <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
-                        alt="">
-                      <span>Fee: {{ fee }} XPX</span>
+                      <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
+                      <span class="fs-08rem">
+                        Fee:&nbsp;
+                        <a [innerHTML]="getQuantity(fee)"></a> XPX
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -105,9 +107,11 @@
                 <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
                   <div class="row">
                     <div class="col-12">
-                      <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
-                        alt="">
-                      <span> Rental Fee: {{calculateRentalFee}} XPX</span>
+                      <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
+                      <span class="fs-08rem">
+                        Rental Fee:&nbsp;
+                        <a [innerHTML]="getQuantity(calculateRentalFee)"></a> XPX
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -132,18 +136,6 @@
               </div>
             </div>
 
-            <!-- <div class="row ml-01rem ">
-              <div class="col-12 mx-auto box-grey d-flex justify-content-center">
-
-                <mdb-checkbox formControlName="transferable" [inline]="true" class="fs-08rem">Transferable
-                </mdb-checkbox>
-
-
-                <mdb-checkbox formControlName="supplyMutable" [inline]="true" class="fs-08rem">Supply Mutable
-                </mdb-checkbox>
-              </div>
-            </div> -->
-
             <div class="row">
               <div class="col-12 mx-auto">
                 <div class="md-form form-sm mt-1rem mb-0rem">
@@ -161,7 +153,7 @@
                   <!-- VALIDATION -->
                   <mdb-error
                     *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
-                    <span>Password required</span>
+                    <span>Password Required</span>
                   </mdb-error>
                 </div>
               </div>
