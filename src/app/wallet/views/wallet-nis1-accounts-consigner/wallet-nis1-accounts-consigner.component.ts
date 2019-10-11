@@ -152,9 +152,7 @@ export class WalletNis1AccountsConsignerComponent implements OnInit {
     if (account.balance === null || account.balance === '0.000000') {
       return this.sharedService.showWarning('', 'The selected account has no balance');
     }
-    // console.log('Account Selected --------------->', account);
-
-    // this.walletService.setAccountMosaicsNis1(account.mosaic);
+    account.route = `/${AppConfig.routes.home}`;
     this.walletService.setNis1AccountSelected(account);
     this.router.navigate([`/${AppConfig.routes.transferXpx}`]);
   }

@@ -24,7 +24,6 @@
           class="col-12 col-md-12 col-lg-2 d-flex align-items-center justify-content-center background-dark-green-plus pt-05rem">
           <button mdbBtn type="submit" rounded="true" mdbWavesEffect
             class="btn-proximax" size="md" (click)="searchData()">
-            <i class="fa fa-search color-white" aria-hidden="true"></i> &nbsp;
             <span class="fs-1em color-white">Search</span>
           </button>
         </div>
@@ -54,7 +53,6 @@
     <div class="col-12 d-flex justify-content-end background-dark-green-plus pt-05rem">
       <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="btn-proximax"
         size="md" (click)="clearData()">
-        <i class="fa fa-refresh color-white" aria-hidden="true"></i> &nbsp;
         <span class="fs-1em color-white">Refresh</span>
       </button>
     </div>
@@ -175,7 +173,7 @@
               <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
                 <button mdbBtn type="button" rounded="true" mdbWavesEffect
                   class="btn-proximax" size="md" (click)="clearForm()">
-                  <span class="fs-1-2em color-white">RESET</span>
+                  <span class="fs-1-2em color-white">Reset</span>
                 </button>
               </div>
               <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
@@ -184,7 +182,7 @@
                   [disabled]="dataSelected.encryptionType !== 1001 && dataSelected.encryptionType !== 1004" size="md">
                   <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
                     *ngIf="downloading"></span>
-                  <span class="fs-1-2em color-white">DOWNLOAD</span>
+                  <span class="fs-1-2em color-white">Download</span>
                 </button>
               </div>
             </div>

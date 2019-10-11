@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { PublicAccount, Account, Address } from 'tsjs-xpx-chain-sdk';
 import { environment } from 'src/environments/environment';
-import { WalletService } from 'src/app/wallet/services/wallet.service';
+import { WalletService, AccountsInterface } from 'src/app/wallet/services/wallet.service';
 import { FormBuilder, FormGroup, Validators, AbstractControl, FormControl, } from '@angular/forms';
 import { ConfigurationForm, SharedService } from 'src/app/shared/services/shared.service';
 import { AppConfig } from 'src/app/config/app.config';
@@ -84,20 +84,19 @@ export class CreatePollComponent implements OnInit {
     const today = new Date();
     this.minDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), today.getHours(), today.getMinutes());
     this.invalidMoment = this.minDate.setHours(this.minDate.getHours() + 1)
-    this.booksAddress();
+    this.listContacts = this.validateAccountListContact();
     this.createForms();
   }
 
 
-  booksAddress() {
-    const data = this.listContacts.slice(0);
-    const bookAddress = this.serviceModuleService.getBooksAddress();
-    this.listContacts = [];
+  booksAddress(): ContactsListInterface[] {
+    const data = []
+    const bookAddress: ContactsListInterface[] = this.serviceModuleService.getBooksAddress();
     if (bookAddress !== undefined && bookAddress !== null) {
       for (let x of bookAddress) {
         data.push(x);
       }
-      this.listContacts = data;
+      return data;
     }
   }
 
@@ -187,9 +186,16 @@ export class CreatePollComponent implements OnInit {
     if (type !== null && type !== undefined) {
       if (type.value === 0) {
         this.showList = true;
+        this.thirdFormGroup.get('address').setValidators([Validators.required, Validators.minLength(40), Validators.maxLength(46)])
+        this.thirdFormGroup.get('address').updateValueAndValidity({ emitEvent: false, onlySelf: true });
+        // this.thirdFormGroup.status
+        // aqui
       } else {
+
+        this.thirdFormGroup.get('address').setValidators(null);
+        this.thirdFormGroup.get('address').updateValueAndValidity({ emitEvent: false, onlySelf: true });
         this.showList = false;
-        this.showContacts= false;
+        this.showContacts = false;
         this.cleanThirForm();
         this.listaBlanca = [];
       }
@@ -350,6 +356,44 @@ export class CreatePollComponent implements OnInit {
     return `${datefmt.getFullYear()}-${month}-${day}  ${hours}:${minutes}:${seconds}`;
   }
 
+  /**
+    *
+    */
+  validateAccountListContact(): ContactsListInterface[] {
+    let listContactReturn: ContactsListInterface[] = []
+    const listContactfilter = this.booksAddress()
+    for (let element of listContactfilter) {
+      const account = this.walletService.filterAccountWallet(element.label);
+      let isMultisig: boolean = false;
+      if (account)
+        isMultisig = this.isMultisign(account)
+      listContactReturn.push({
+        label: element.label,
+        value: element.value,
+        walletContact: element.walletContact,
+        isMultisig: isMultisig,
+        disabled: Boolean(isMultisig && element.walletContact)
+      })
+    }
+    return listContactReturn
+
+  }
+
+  /**
+    * Checks if the account is a multisig account.
+    * @returns {boolean}
+    */
+  isMultisign(accounts: AccountsInterface): boolean {
+    return Boolean(accounts.isMultisign !== undefined && accounts.isMultisign !== null && this.isMultisigValidate(accounts.isMultisign.minRemoval, accounts.isMultisign.minApproval));
+  }
+  /**
+     * Checks if the account is a multisig account.
+     * @returns {boolean}
+     */
+  isMultisigValidate(minRemoval: number, minApprova: number) {
+    return minRemoval !== 0 && minApprova !== 0;
+  }
+
 }
 
 /**
@@ -390,4 +434,10 @@ export interface FileInterface {
   type: string;
   extension: string;
 }
-
+interface ContactsListInterface {
+  label: string;
+  value: string;
+  walletContact: boolean;
+  isMultisig: boolean;
+  disabled: boolean;
+}

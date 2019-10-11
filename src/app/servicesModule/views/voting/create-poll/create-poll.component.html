@@ -19,6 +19,8 @@
   </div>
 
   <mdb-stepper #stepper [linear]="true">
+
+    <!-- DETAILS -->
     <mdb-step name="Details" [stepForm]="firstFormGroup">
       <form [formGroup]="firstFormGroup">
         <div class="row mt-1rem">
@@ -30,36 +32,32 @@
               <input formControlName="title" required mdbInputDirective mdbValidate [validateSuccess]="true"
                 [validateError]="true" type="text" id="title" class="form-control form-control-sm input-border"
                 placeholder="Enter title">
-              <mdb-error
-                *ngIf="validateInput('title', '1', '').invalid && (validateInput('title', '1', '').dirty || validateInput('title', '1', '').touched)">
+              <mdb-error *ngIf="validateInput('title', '1', '').invalid && (validateInput('title', '1', '').dirty || validateInput('title', '1', '').touched)">
                 <span>Required field</span>
               </mdb-error>
             </div>
             <!-- IS PRIVATE -->
-            <div  class="form-check form-check-inline">
-              <mdb-checkbox  [default]="true" formControlName="isPrivate">Send to private poll index</mdb-checkbox>
+            <div class="form-check form-check-inline">
+              <mdb-checkbox [default]="true" formControlName="isPrivate">Send to private poll index</mdb-checkbox>
             </div>
             <!-- DESCRIPTION -->
             <div class="md-form">
-              <img class="form-control-feedback"
-                src="assets/images/img/icon-messenger-green-16h-proximax-sirius-wallet.svg" alt=""
-                style="padding: 30px 10px !important">
-              <textarea mdbInputDirective mdbValidate required [validateSuccess]="true" [validateError]="true"
-                type="text" id="message" class="md-textarea form-control" mdbInput
-                placeholder="Write your description here" formControlName="message"
-                [maxlength]="configurationForm.message.maxLength"></textarea>
-              <mdb-error
-                *ngIf="validateInput('message', '1', '').invalid && (validateInput('message','1', '').dirty || validateInput('message', '1', '').touched)">
+              <img class="form-control-feedback" src="assets/images/img/icon-messenger-green-16h-proximax-sirius-wallet.svg"
+                alt="" style="padding: 30px 10px !important">
+              <textarea mdbInputDirective mdbValidate required [validateSuccess]="true" [validateError]="true" type="text"
+                id="message" class="md-textarea form-control" mdbInput placeholder="Write your description here"
+                formControlName="message" [maxlength]="configurationForm.message.maxLength"></textarea>
+              <mdb-error *ngIf="validateInput('message', '1', '').invalid && (validateInput('message','1', '').dirty || validateInput('message', '1', '').touched)">
                 <span>Invalid invalid</span>
               </mdb-error>
             </div>
             <!-- DATE END  -->
             <div class="md-form">
-              <img class="form-control-feedback"
-                src="assets/images/img/icon-duration-green-16h-proximax-sirius-wallet.svg" alt="">
+              <img class="form-control-feedback" src="assets/images/img/icon-duration-green-16h-proximax-sirius-wallet.svg"
+                alt="">
               <input formControlName="PollEndDate" required mdbInputDirective mdbValidate type="text"
-                [owlDateTimeTrigger]="dt" [owlDateTime]="dt" [min]="minDate" [dateTime]="invalidMoment"
-                class="form-control form-control-sm input-border" placeholder="End date">
+                [owlDateTimeTrigger]="dt" [owlDateTime]="dt" [min]="minDate" [dateTime]="invalidMoment" class="form-control form-control-sm input-border"
+                placeholder="End date">
               <owl-date-time [pickerMode]="'dialog'" #dt></owl-date-time>
               <mdb-error *ngIf="validateformDateEnd">
                 <span>{{ errorDateEnd }}</span>
@@ -68,20 +66,19 @@
           </div>
           <div class="col-5 col-md-4 col-xl-5 mb-2rem">
 
-              <!-- FEE -->
-              <div class="row mt-1rem">
-                  <div class="col-12 mx-auto">
-                    <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
-                      <div class="row">
-                        <div class="col-12">
-                          <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
-                            alt="">
-                          <span>Fee: 0.000000  XPX</span>
-                        </div>
-                      </div>
+            <!-- FEE -->
+            <div class="row mt-1rem">
+              <div class="col-12 mx-auto">
+                <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
+                  <div class="row">
+                    <div class="col-12">
+                      <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" alt="">
+                      <span>Fee: 0.000000 XPX</span>
                     </div>
                   </div>
                 </div>
+              </div>
+            </div>
             <!-- FEE  -->
             <!-- <div class="md-form">
               <div style="margin-top: 0;" class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
@@ -93,13 +90,13 @@
           <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
             <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="btn-proximax"
               [disabled]="!firstFormGroup.valid" (click)="stepper.next(); get1()">
-              <span class="fs-1-2em color-white">NEXT</span>
+              <span class="fs-1-2em color-white">Next</span>
             </button>
           </div>
         </div>
       </form>
     </mdb-step>
-
+    <!-- VOTE OPTIONS -->
     <mdb-step name="Vote options" [stepForm]="secondFormGroup">
       <form [formGroup]="secondFormGroup">
         <div class="row mt-1rem">
@@ -125,8 +122,7 @@
                 <div class="row">
                   <ng-container *ngFor="let el of option">
                     <div class="col-4">
-                      <i style="cursor: pointer;" class="fa fa-trash fs-1rem text-right" aria-hidden="true"
-                        (click)="deleteOptions(el)"></i>
+                      <i style="cursor: pointer;" class="fa fa-trash fs-1rem text-right" aria-hidden="true" (click)="deleteOptions(el)"></i>
                       <span class="font-small "> {{el.name}} </span>
                     </div>
                   </ng-container>
@@ -135,13 +131,11 @@
             </div>
             <!-- OPTIONS -->
             <div class="md-form">
-              <img class="form-control-feedback"
-                src="assets/images/img/icon-type-increase-decrease-green-16h-proximax-sirius-wallet.svg" alt="">
-              <input formControlName="option" mdbInputDirective mdbValidate [validateSuccess]="true"
-                [validateError]="true" type="text" id="option" class="form-control form-control-sm input-border"
-                placeholder="Option">
-              <mdb-error
-                *ngIf="validateInput('option', '2', '').invalid && (validateInput('option', '2', '').dirty || validateInput('option', '2', '').touched)">
+              <img class="form-control-feedback" src="assets/images/img/icon-type-increase-decrease-green-16h-proximax-sirius-wallet.svg"
+                alt="">
+              <input formControlName="option" mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
+                type="text" id="option" class="form-control form-control-sm input-border" placeholder="Option">
+              <mdb-error *ngIf="validateInput('option', '2', '').invalid && (validateInput('option', '2', '').dirty || validateInput('option', '2', '').touched)">
                 <span>Required field</span>
               </mdb-error>
             </div>
@@ -153,45 +147,44 @@
             <!-- ADD OPTIONS -->
             <div class="md-form">
               <div class="col-12 d-flex justify-content-center">
-                <button mdbBtn type="button" rounded="true" mdbWavesEffect
-                  class="background-btn-inverse pl-2rem pr-2rem" size="md" (click)="addOptions()">
+                <button mdbBtn type="button" rounded="true" mdbWavesEffect class="background-btn-inverse pl-2rem pr-2rem"
+                  size="md" (click)="addOptions()">
                   <span class="fs-1-2em color-blue-intermedio fw-700">(+) Add Options</span>
                 </button>
               </div>
             </div>
           </div>
           <div class="col-5 col-md-4 col-xl-5 mb-2rem">
-             <!-- FEE -->
-             <div class="row mt-1rem">
-                <div class="col-12 mx-auto">
-                  <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
-                    <div class="row">
-                      <div class="col-12">
-                        <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
-                          alt="">
-                        <span>Fee: 0.000000  XPX</span>
-                      </div>
+            <!-- FEE -->
+            <div class="row mt-1rem">
+              <div class="col-12 mx-auto">
+                <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
+                  <div class="row">
+                    <div class="col-12">
+                      <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" alt="">
+                      <span>Fee: 0.000000 XPX</span>
                     </div>
                   </div>
                 </div>
               </div>
+            </div>
           </div>
           <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
             <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax"
               (click)="stepper.previous()">
-              <span class="fs-1-2em color-white">BACK</span>
+              <span class="fs-1-2em color-white">Back</span>
             </button>
           </div>
           <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
             <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="btn-proximax"
               [disabled]="option.length == 0" (click)="stepper.next(); get2()">
-              <span class="fs-1-2em color-white">NEXT</span>
+              <span class="fs-1-2em color-white">Next</span>
             </button>
           </div>
         </div>
       </form>
     </mdb-step>
-
+    <!-- TYPE-->
     <mdb-step name="Type" [stepForm]="thirdFormGroup">
       <form [formGroup]="thirdFormGroup">
         <div class="row mt-1rem">
@@ -208,25 +201,31 @@
             </div>
             <!-- VOTE TYPE -->
             <div class="">
-              <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
-                [searchable]="false" class="selectWrapper" [items]="voteType" formControlName="voteType"
-                bindLabel="label" bindValue="value" placeholder="Type of vote" (change)="selectType($event)">
+              <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" [searchable]="false"
+                class="selectWrapper" [items]="voteType" formControlName="voteType" bindLabel="label" bindValue="value"
+                placeholder="Type of vote" (change)="selectType($event)">
               </ng-select>
-              <mdb-error class="ml-1rem"
-                *ngIf="validateInput('voteType','3', '').invalid && (validateInput('voteType', '3', '').dirty || validateInput('voteType', '3', '').touched)">
+              <mdb-error class="ml-1rem" *ngIf="validateInput('voteType','3', '').invalid && (validateInput('voteType', '3', '').dirty || validateInput('voteType', '3', '').touched)">
                 <span>Type</span>
               </mdb-error>
             </div>
             <!-- LIST ACCOUNTS -->
-            <div class="md-form" *ngIf='listaBlanca.length > 0 && showList'>
+            <div class="md-form" *ngIf='showList'>
               <div class="col-12 align-items-center box-grey">
                 <span style="color: #306EB5 !important;">Accounts Address:</span>
                 <div class="row">
                   <ng-container *ngFor="let el of listaBlanca">
-                    <div class="col-11">
-                      <i style="cursor: pointer;" class="fa fa-trash fs-1rem text-right" aria-hidden="true"
-                        (click)="deleteAccaunt(el)"></i>
+                    <div class="col-11 d-flex justify-content-center">
+                      <i style="cursor: pointer;" class="fa fa-trash fs-1rem text-right" aria-hidden="true" (click)="deleteAccaunt(el)"></i>
                       <span class="font-small "> {{el.address}} </span>
+                    </div>
+                  </ng-container>
+
+                  <ng-container *ngIf='listaBlanca.length === 0'>
+                    <div class="col-11 d-flex justify-content-center">
+                     
+
+                      <span class="font-small "> nothing to show</span>
                     </div>
                   </ng-container>
                 </div>
@@ -235,9 +234,18 @@
 
             <!-- LIST CONTACS -->
             <div *ngIf="showContacts && listContacts.length > 0">
-              <ng-select mdbInputDirective mdbValidate formControlName="contact" class="selectWrapper"
-                [items]="listContacts" [searchable]="false" bindLabel="label" bindValue="value" placeholder="Contact"
-                (change)="selectContact($event)">
+              <ng-select mdbInputDirective mdbValidate formControlName="contact" class="selectWrapper" [items]="listContacts"
+                [searchable]="false" bindLabel="label" bindValue="value" placeholder="Contact" (change)="selectContact($event)">
+
+                <ng-template ng-option-tmp let-item="item" let-index="index">
+
+                    <ng-container *ngIf="item.disabled">
+                      <b> <i class="fa fa-users"> </i>
+                      </b>&nbsp;
+                    </ng-container>
+      
+                    <b>{{item.label}}</b>
+                  </ng-template>
               </ng-select>
             </div>
             <!-- ACCOUNTS -->
@@ -247,8 +255,7 @@
                   <input formControlName="address" mdbInputDirective mdbValidate [validateSuccess]="true"
                     [validateError]="true" type="text" id="address" class="form-control form-control-sm input-border"
                     placeholder="Account Address">
-                  <mdb-error
-                    *ngIf="validateInput('address','3', '').invalid && (validateInput('address','3', '').dirty || validateInput('address','3', '').touched)">
+                  <mdb-error *ngIf="validateInput('address','3', '').invalid && (validateInput('address','3', '').dirty || validateInput('address','3', '').touched)">
                     <span>Required filed</span>
                   </mdb-error>
                 </div>
@@ -256,10 +263,8 @@
               <!-- SHOW CONTACS -->
               <ng-container>
                 <div class="col-3 col-sm-3 col-md-2 d-flex justify-content-center align-items-center pt-10px">
-                  <div [disabled]="listContacts.length === 0"
-                    class="background-gray-icons p-12px bord-rad-25px cursor-p"
-                    (click)="showContacts = (listContacts.length > 0) ? !showContacts : showContacts"
-                    [title]="(!showContacts) ? 'Show contacts': 'Hide contacts'">
+                  <div [disabled]="listContacts.length === 0" class="background-gray-icons p-12px bord-rad-25px cursor-p"
+                    (click)="showContacts = (listContacts.length > 0) ? !showContacts : showContacts" [title]="(!showContacts) ? 'Show contacts': 'Hide contacts'">
                     <img class=" w-30px" [src]="(!showContacts && listContacts.length === 0) ?
                                           'assets/images/img/icon-address-book-gray-28h-proximax-sirius-wallet.svg' :
                                           'assets/images/img/icon-address-green-book-16h-proximax-sirius-wallet.svg'
@@ -272,28 +277,27 @@
             <!-- ADD ACCOUNTS -->
             <div class="md-form" *ngIf='showList'>
               <div class="col-12 d-flex justify-content-center">
-                <button mdbBtn type="button" rounded="true" mdbWavesEffect
-                  class="background-btn-inverse pl-2rem pr-2rem" size="md" (click)="addAddress()">
+                <button mdbBtn type="button" rounded="true" mdbWavesEffect class="background-btn-inverse pl-2rem pr-2rem"
+                  size="md" (click)="addAddress()">
                   <span class="fs-1-2em color-blue-intermedio fw-700">(+) Add Account</span>
                 </button>
               </div>
             </div>
           </div>
           <div class="col-5 col-md-4 col-xl-5 mt-1rem">
-             <!-- FEE -->
-             <div class="row mt-1rem">
-                <div class="col-12 mx-auto">
-                  <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
-                    <div class="row">
-                      <div class="col-12">
-                        <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
-                          alt="">
-                        <span>Fee: 0.000000  XPX</span>
-                      </div>
+            <!-- FEE -->
+            <div class="row mt-1rem">
+              <div class="col-12 mx-auto">
+                <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
+                  <div class="row">
+                    <div class="col-12">
+                      <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" alt="">
+                      <span>Fee: 0.000000 XPX</span>
                     </div>
                   </div>
                 </div>
               </div>
+            </div>
             <!-- VIEW AND EDIT -->
             <div class="box-grey" *ngIf='option.length > 0'>
               <span class="justify-content-center d-flex">Options List</span>
@@ -312,19 +316,26 @@
           <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
             <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax"
               (click)="stepper.previous()">
-              <span class="fs-1-2em color-white">BACK</span>
+              <span class="fs-1-2em color-white">Back</span>
             </button>
           </div>
           <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-            <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="btn-proximax"
-              (click)="stepper.next(); get3()">
-              <span class="fs-1-2em color-white">NEXT</span>
+            <button mdbBtn *ngIf='!showList' [disabled]="!thirdFormGroup.valid " type="submit" rounded="true"
+              mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" (click)="stepper.next(); get3()">
+              <span class="fs-1-2em color-white">Next</span>
             </button>
+
+            <!-- *ngIf='listaBlanca.length > 0 && showList'  -->
+            <button *ngIf='showList' mdbBtn [disabled]="listaBlanca.length ==0" type="submit" rounded="true"
+              mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" (click)="stepper.next(); get3()">
+              <span class="fs-1-2em color-white">Next</span>
+            </button>
+
           </div>
         </div>
       </form>
     </mdb-step>
-
+    <!-- ACTIVATE -->
     <mdb-step name="Activate" [stepForm]="quarterFormGroup">
       <form [formGroup]="quarterFormGroup">
         <div class="row mt-1rem">
@@ -348,8 +359,8 @@
                   <span class="font-small d-flex">{{ publicAddress }}</span>
                 </div>
                 <div class="col-2 text-right">
-                  <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="cursor-p"
-                    alt="Copy" width="20" (click)="copyMessage('Account')" ngxClipboard [cbContent]="publicAddress">
+                  <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="cursor-p" alt="Copy"
+                    width="20" (click)="copyMessage('Account')" ngxClipboard [cbContent]="publicAddress">
                 </div>
               </div>
             </div>
@@ -379,17 +390,16 @@
             </div>
             <!-- ACCOUNTS -->
             <div class="md-form">
-              <img class="form-control-feedback"
-                src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg" alt="">
-              <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
-                src="assets/images/img/icon-show-hide-password.svg" *ngIf="passwordMain === 'password'">
-              <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
-                src="assets/images/img/icon-show-hide-password-grey.svg" *ngIf="passwordMain === 'text'">
+              <img class="form-control-feedback" src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg"
+                alt="">
+              <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)" src="assets/images/img/icon-show-hide-password.svg"
+                *ngIf="passwordMain === 'password'">
+              <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)" src="assets/images/img/icon-show-hide-password-grey.svg"
+                *ngIf="passwordMain === 'text'">
               <input formControlName="password" required mdbInputDirective mdbValidate [validateSuccess]="true"
                 [validateError]="true" [type]="passwordMain" id="password" class="form-control form-control-sm input-border"
                 placeholder="Enter Wallet Password">
-              <mdb-error
-                *ngIf="validateInput('password','4', '').invalid && (validateInput('password','4', '').dirty || validateInput('password','', '').touched)">
+              <mdb-error *ngIf="validateInput('password','4', '').invalid && (validateInput('password','4', '').dirty || validateInput('password','', '').touched)">
                 <span>Required field</span>
               </mdb-error>
             </div>
@@ -397,18 +407,17 @@
           <div class="col-5 col-md-4 col-xl-5 mb-2rem">
             <!-- FEE -->
             <div class="row mt-1rem">
-                <div class="col-12 mx-auto">
-                  <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
-                    <div class="row">
-                      <div class="col-12">
-                        <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
-                          alt="">
-                        <span>Fee: 0.000000  XPX</span>
-                      </div>
+              <div class="col-12 mx-auto">
+                <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
+                  <div class="row">
+                    <div class="col-12">
+                      <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" alt="">
+                      <span>Fee: 0.000000 XPX</span>
                     </div>
                   </div>
                 </div>
               </div>
+            </div>
             <!-- VIEW AND EDIT -->
             <div class="box-grey" *ngIf='option.length > 0'>
               <span class="justify-content-center d-flex">Options List</span>
@@ -446,8 +455,7 @@
           <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
             <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="btn-proximax"
               (click)="sendPoll()" [disabled]="!quarterFormGroup.valid">
-              <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
-                *ngIf="btnBlock"></span>
+              <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true" *ngIf="btnBlock"></span>
               <span class="fs-1-2em color-white">Create</span>
             </button>
           </div>
