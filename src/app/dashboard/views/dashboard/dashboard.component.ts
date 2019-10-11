@@ -418,7 +418,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
    * @memberof DashboardComponent
    */
   openModal(transaction: TransactionsInterface) {
-    console.log(transaction);
     if(transaction.data['transactionInfo'] && transaction.data['transactionInfo'].height){
       const height = transaction.data['transactionInfo'].height.compact();
       if (typeof (height) === 'number') {

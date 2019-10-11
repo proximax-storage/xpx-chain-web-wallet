@@ -616,7 +616,10 @@ export class TransactionsService {
                 try {
                   const msg = JSON.parse(element["message"].payload);
                   // console.log('msg', msg);
-                  if (element.signer.address.plain() === environment.swapAccount.address) {
+                  const addressAccountMultisig = environment.swapAccount.addressAccountMultisig;
+                  const addressAccountSimple = environment.swapAccount.addressAccountSimple;
+                  const addressSender = element.signer.address.plain();
+                  if ((addressSender === addressAccountMultisig) || (addressSender === addressAccountSimple)) {
                     if (msg && msg["type"] && msg["type"] === "Swap") {
                       nameType = "ProximaX Swap";
                       newTransaction = Object.assign({}, element);
@@ -639,7 +642,11 @@ export class TransactionsService {
     try {
       if (transaction["message"] && transaction["message"].payload !== "") {
         const msg = JSON.parse(transaction["message"].payload);
-        if (transaction.signer.address.plain() === environment.swapAccount.address) {
+
+        const addressAccountMultisig = environment.swapAccount.addressAccountMultisig;
+        const addressAccountSimple = environment.swapAccount.addressAccountSimple;
+        const addressSender = transaction.signer.address.plain();
+        if ((addressSender === addressAccountMultisig) || (addressSender === addressAccountSimple)) {
           if (msg && msg["type"] && msg["type"] === "Swap") {
             nameType = "ProximaX Swap";
             let walletTransactionsNis = this.walletService.getWalletTransNisStorage().find(el => el.name === this.walletService.getCurrentWallet().name);

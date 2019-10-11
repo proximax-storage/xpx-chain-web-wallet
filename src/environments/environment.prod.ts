@@ -106,7 +106,8 @@ export const environment = {
     ],
   },
   swapAccount: {
-    address: 'VC3I3FSQ354JT2QNS2XJ2J3OROCOBIRK6JB3BCBH'
+    addressAccountMultisig: 'VAWOEOWTABXR7O3ZAK2XNA5GIBNE6PZIXDAFDWBU',
+    addressAccountSimple: 'VC3I3FSQ354JT2QNS2XJ2J3OROCOBIRK6JB3BCBH'
   },
   /*typeNetwork: {
     value: NetworkType.MAIN_NET,

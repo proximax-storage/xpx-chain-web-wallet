@@ -49,9 +49,9 @@ export class Nis1AccountsListComponent implements OnInit {
         let consignerOf: boolean = false;
         let consignerAccountsInfo: any = [];
 
-        if (next.cosignatoryOf.length > 0) {
+        if (next['meta']['cosignatoryOf'].length > 0) {
           consignerOf = true;
-          consignerAccountsInfo = next.cosignatoryOf;
+          consignerAccountsInfo = next['meta']['cosignatoryOf'];
         }
         const accountNis1 = {
           nameAccount: account.name,
