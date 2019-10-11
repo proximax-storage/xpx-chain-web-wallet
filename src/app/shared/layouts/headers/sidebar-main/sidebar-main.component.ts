@@ -29,7 +29,7 @@ export class SidebarMainComponent implements OnInit {
   reconnecting = false;
   routePartial = `/${AppConfig.routes.partial}`
   routesExcludedInServices = [
-    AppConfig.routes.account,
+    AppConfig.routes.viewAllAccount,
     AppConfig.routes.auth,
     AppConfig.routes.createTransfer,
     AppConfig.routes.createWallet,
@@ -116,11 +116,11 @@ export class SidebarMainComponent implements OnInit {
 
     const paramsAccount: MenuInterface = {
       type: 'default',
-      name: 'Account',
+      name: 'Accounts',
       class: '',
       icon: '',
       rol: false,
-      link: `/${AppConfig.routes.account}`,
+      link: `/${AppConfig.routes.viewAllAccount}`,
       view: true,
       subMenu: {},
       selected: false

@@ -23,7 +23,7 @@ export class ExtendDurationNamespaceComponent implements OnInit {
 
   arrayselect: Array<object> = [{
     value: '1',
-    label: 'New root Namespace',
+    label: 'New Root Namespace',
     selected: true,
     disabled: false
   }];
@@ -325,6 +325,17 @@ export class ExtendDurationNamespaceComponent implements OnInit {
 
   }
 
+  /**
+   *
+   *
+   * @param {string} quantity
+   * @returns
+   * @memberof ExtendDurationNamespaceComponent
+   */
+  getQuantity(quantity: string) {
+    return this.sharedService.amountFormat(quantity);
+  }
+
   limitDuration(e) {
     if (isNaN(parseInt(e.target.value))) {
       e.target.value = ''
@@ -363,7 +374,7 @@ export class ExtendDurationNamespaceComponent implements OnInit {
       this.extendDurationNamespaceForm.get('duration').patchValue('');
       this.startHeight = 0;
       this.endHeight = 0;
-     
+
     }
   }
 

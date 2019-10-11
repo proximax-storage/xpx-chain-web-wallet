@@ -1,35 +1,51 @@
- <!-- Box signer, signature, hash -->
- <div class="row gray-color-transparent lh-1em mx-auto box-sign-hash">
-   <div class="col-12">
-     <div class="row">
-       <div class="col-12">
-         <span class="fs-08rem fw-bolder w-w-b-w"><b>Signer:</b></span>
-       </div>
-       <div class="col-12">
-         <span class="fs-07rem fw-bolder w-w-b-w">{{dataSelected?.data.signer.publicKey}}</span>
-       </div>
-     </div>
-   </div>
+<!-- Box signer, signature, hash -->
+<div class="row gray-color-transparent lh-1em mx-auto box-sign-hash">
+  <div class="col-12">
+    <div class="row">
+      <div class="col-12">
+        <span class="fs-08rem fw-bolder w-w-b-w"><b>Signer:</b></span>
+      </div>
+      <div class="col-12">
+        <span class="fs-07rem fw-bolder w-w-b-w">{{dataSelected?.data.signer.publicKey}}</span>
+      </div>
+    </div>
+  </div>
 
-   <div class="col-12 mt-3">
-     <div class="row">
-       <div class="col-12">
-         <span class="fs-08rem fw-bolder w-w-b-w"><b>Signature:</b></span>
-       </div>
-       <div class="col-12">
-         <span class="fs-07rem fw-bolder w-w-b-w">{{dataSelected?.data.signature}}</span>
-       </div>
-     </div>
-   </div>
+  <div class="col-12 mt-3">
+    <div class="row">
+      <div class="col-12">
+        <span class="fs-08rem fw-bolder w-w-b-w"><b>Signature:</b></span>
+      </div>
+      <div class="col-12">
+        <span class="fs-07rem fw-bolder w-w-b-w">{{dataSelected?.data.signature}}</span>
+      </div>
+    </div>
+  </div>
 
-   <div class="col-12 mt-3">
-     <div class="row">
-       <div class="col-12">
-         <span class="fs-08rem fw-bolder w-w-b-w"><b>Hash:</b></span>
-       </div>
-       <div class="col-12">
-         <span class="fs-07rem fw-bolder w-w-b-w">{{dataSelected?.data.transactionInfo.hash}}</span>
-       </div>
-     </div>
-   </div>
- </div>
+  <ng-container *ngIf="dataSelected?.data?.cosignatures && dataSelected?.data?.cosignatures.length > 0">
+    <div class="col-12 mt-3">
+      <div class="row">
+        <div class="col-12">
+          <span class="fs-08rem fw-bolder w-w-b-w"><b>Cosigner:</b></span>
+        </div>
+        <ng-container *ngFor="let cosignatures of dataSelected.data.cosignatures">
+          <div class="col-12 mt-03rem">
+            <span class="fs-07rem fw-bolder w-w-b-w">{{cosignatures.signer.publicKey}}</span>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </ng-container>
+
+
+  <div class="col-12 mt-3">
+    <div class="row">
+      <div class="col-12">
+        <span class="fs-08rem fw-bolder w-w-b-w"><b>Hash:</b></span>
+      </div>
+      <div class="col-12">
+        <span class="fs-07rem fw-bolder w-w-b-w">{{dataSelected?.data.transactionInfo.hash}}</span>
+      </div>
+    </div>
+  </div>
+</div>

@@ -38,7 +38,8 @@
         <div class="row">
           <div class="col-11 col-md-10 col-lg-8 mx-auto">
             <ng-select mdbInputDirective mdbValidate class="selectWrapper" [searchable]="false" [items]="listContacts"
-              bindLabel="label" bindValue="value" placeholder="Contact" formControlName="contact" (change)="selectContact($event)">
+              bindLabel="label" bindValue="value" placeholder="Contact" formControlName="contact"
+              (change)="selectContact($event)">
             </ng-select>
           </div>
         </div>
@@ -102,7 +103,10 @@
           <div class="box-grey txt-a-center">
             <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20"
               alt="">&nbsp;
-            <span>Fee: {{ fee }} XPX</span>
+            <span class="fs-08rem">
+              Fee:&nbsp;
+              <a [innerHTML]="getQuantity(fee)"></a> XPX
+            </span>
           </div>
         </div>
       </div>
@@ -142,8 +146,8 @@
 
         <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
           <button mdbBtn type="submit" rounded="true"
-            [disabled]="!LinkToNamespaceForm.valid || namespaceSelect.length === 0 || !isValidBlockchain || !validFormat" mdbWavesEffect
-            class="btn-proximax" size="md">
+            [disabled]="!LinkToNamespaceForm.valid || namespaceSelect.length === 0 || !isValidBlockchain || !validFormat"
+            mdbWavesEffect class="btn-proximax" size="md">
             <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
               *ngIf="blockSend"></span>
             <span class="color-white">Create</span>

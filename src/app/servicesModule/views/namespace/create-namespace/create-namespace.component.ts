@@ -24,7 +24,7 @@ export class CreateNamespaceComponent implements OnInit {
   @BlockUI() blockUI: NgBlockUI;
   arrayselect: Array<object> = [{
     value: '1',
-    label: 'New root Namespace',
+    label: 'New Root Namespace',
     selected: true,
     disabled: false
   }];
@@ -353,7 +353,7 @@ export class CreateNamespaceComponent implements OnInit {
 
           this.arrayselect = [{
             value: '1',
-            label: 'New root Namespace',
+            label: 'New Root Namespace',
             selected: true,
             disabled: false
           }];
@@ -381,6 +381,17 @@ export class CreateNamespaceComponent implements OnInit {
         this.block = response
       }
     );
+  }
+
+  /**
+   *
+   *
+   * @param {string} quantity
+   * @returns
+   * @memberof CreateNamespaceComponent
+   */
+  getQuantity(quantity: string) {
+    return this.sharedService.amountFormat(quantity);
   }
 
   /**
