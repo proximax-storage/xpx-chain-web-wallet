@@ -346,14 +346,14 @@
       <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto">
         <div class="row">
           <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-            <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+            <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax"
               size="md" [disabled]="editAccountMultsignForm.status=='DISABLED'" (click)="clearForm()">
               <span class="fs-1-2em color-white">Clear</span>
             </button>
           </div>
           <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
             <button [disabled]="editAccountMultsignForm.invalid || cosignatoryList.length == 0 || editAccountMultsignForm.status=='DISABLED'"
-              mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
+              mdbBtn type="submit" rounded="true" mdbWavesEffect class="btn-proximax" size="md">
               <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true" *ngIf="blockSend"></span>
               <span class="fs-1-2em color-white">Send</span>
             </button>

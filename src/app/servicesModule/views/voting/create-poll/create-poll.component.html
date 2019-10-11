@@ -88,9 +88,9 @@
             </div> -->
           </div>
           <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-            <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+            <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="btn-proximax"
               [disabled]="!firstFormGroup.valid" (click)="stepper.next(); get1()">
-              <span class="fs-1-2em color-white">NEXT</span>
+              <span class="fs-1-2em color-white">Next</span>
             </button>
           </div>
         </div>
@@ -170,15 +170,15 @@
             </div>
           </div>
           <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-            <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+            <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax"
               (click)="stepper.previous()">
-              <span class="fs-1-2em color-white">BACK</span>
+              <span class="fs-1-2em color-white">Back</span>
             </button>
           </div>
           <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-            <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+            <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="btn-proximax"
               [disabled]="option.length == 0" (click)="stepper.next(); get2()">
-              <span class="fs-1-2em color-white">NEXT</span>
+              <span class="fs-1-2em color-white">Next</span>
             </button>
           </div>
         </div>
@@ -314,21 +314,21 @@
             </div>
           </div>
           <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-            <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+            <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax"
               (click)="stepper.previous()">
-              <span class="fs-1-2em color-white">BACK</span>
+              <span class="fs-1-2em color-white">Back</span>
             </button>
           </div>
           <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
             <button mdbBtn *ngIf='!showList' [disabled]="!thirdFormGroup.valid " type="submit" rounded="true"
               mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" (click)="stepper.next(); get3()">
-              <span class="fs-1-2em color-white">NEXT</span>
+              <span class="fs-1-2em color-white">Next</span>
             </button>
 
             <!-- *ngIf='listaBlanca.length > 0 && showList'  -->
             <button *ngIf='showList' mdbBtn [disabled]="listaBlanca.length ==0" type="submit" rounded="true"
               mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" (click)="stepper.next(); get3()">
-              <span class="fs-1-2em color-white">NEXT</span>
+              <span class="fs-1-2em color-white">Next</span>
             </button>
 
           </div>
@@ -447,13 +447,13 @@
             </div>
           </div>
           <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-            <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+            <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax"
               (click)="stepper.previous()">
               <span class="fs-1-2em color-white">Back</span>
             </button>
           </div>
           <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-            <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+            <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="btn-proximax"
               (click)="sendPoll()" [disabled]="!quarterFormGroup.valid">
               <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true" *ngIf="btnBlock"></span>
               <span class="fs-1-2em color-white">Create</span>

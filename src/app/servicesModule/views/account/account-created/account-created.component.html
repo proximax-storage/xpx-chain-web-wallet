@@ -101,15 +101,15 @@
         <div class="col-11 col-sm-4 d-flex justify-content-center justify-content-sm-end">
           <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax"
             size="md" (click)="viewPrivateKey = !viewPrivateKey">
-            <span class="color-white" *ngIf="viewPrivateKey">HIDE PRIVATE KEY</span>
-            <span class="color-white" *ngIf="!viewPrivateKey">SHOW PRIVATE KEY</span>
+            <span class="color-white" *ngIf="viewPrivateKey">Hide Private Key</span>
+            <span class="color-white" *ngIf="!viewPrivateKey">Show Private Key</span>
           </button>
         </div>
 
         <div class="col-11 col-sm-4 d-flex justify-content-center">
           <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax"
             size="md" (click)="printAccountInfo()">
-            <span class="color-white">SAVE PAPER WALLET</span>
+            <span class="color-white">Save Paper Wallet</span>
           </button>
         </div>
 
@@ -118,7 +118,7 @@
             size="md" (click)="goToRoute()" [disabled]="disabledContinue">
             <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
               *ngIf="disabledContinue"></span>
-            <span class="color-white">CONTINUE</span>
+            <span class="color-white">Continue</span>
           </button>
         </div>
       </div>

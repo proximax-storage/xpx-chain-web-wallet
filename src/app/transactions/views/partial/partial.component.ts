@@ -43,7 +43,7 @@ export class PartialComponent implements OnInit {
   moduleName = 'Transactions';
   multisigInfo: MultisigAccountInfo[] = [];
   elements: any = [];
-  headElements = ['Fee', 'Account linked to the transaction', 'Hash'];
+  headElements = ['Account linked to the transaction', 'Hash'];
   hideSign = false;
   objectKeys = Object.keys;
   onlySigner = false;

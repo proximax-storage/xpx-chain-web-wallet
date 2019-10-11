@@ -68,7 +68,7 @@
               *ngFor="let transaction of aggregateTransactions | stringFilter: filter | paginate: configAdvance">
               <tr class="white-space-pre cursor-p" mdbTableCol [ngClass]="!transaction ? 'background-pending': ''"
                 (click)="find(transaction)">
-                <td class="fs-07rem">{{transaction.fee}}</td>
+                <!-- <td class="fs-07rem">{{transaction.fee}}</td> -->
                 <td class="fs-07rem">{{transaction.senderAddress}}</td>
                 <td class="fs-07rem">{{transaction.data.transactionInfo.hash}}</td>
               </tr>
@@ -288,7 +288,7 @@
                               <button (click)="sendTransaction()" autocomplete="false" [disabled]="validateAccount || password === '' || password.length <
                                   this.configurationForm.passwordWallet.minLength || password.length>
                                   this.configurationForm.passwordWallet.maxLength" mdbBtn type="button" rounded="true"
-                                mdbWavesEffect class="f-w-600 background-btn pt-1rem" size="sm">
+                                mdbWavesEffect class="btn-proximax" size="sm">
                                 <span class="fs-1-2em color-white">Approve to Continue</span>
                               </button>
                             </div>

@@ -38,13 +38,13 @@
       <div class="row">
         <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
           <button (click)="showModal()" mdbBtn type="button" rounded="true" mdbWavesEffect
-            class="btn-proximax" size="md">
+            class="btn-proximax" size="sm">
             <span class="color-white">{{ boxCreateWallet[0].title }}</span>
           </button>
         </div>
         <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
           <button [routerLink]="['/'+boxCreateWallet[1].route]" mdbBtn type="button" rounded="true" mdbWavesEffect
-            class="btn-proximax" size="md">
+            class="btn-proximax" size="sm">
             <span class="color-white">{{ boxCreateWallet[1].title }}</span>
           </button>
         </div>
@@ -83,14 +83,14 @@
           <div class="row mt-2rem">
             <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
               <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax"
-                size="md" (click)="clearForm();basicModal.hide()">
+                size="sm" (click)="clearForm();basicModal.hide()">
                 <span class="color-white">Cancel</span>
               </button>
             </div>
 
             <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
               <button mdbBtn type="submit" (click)="createStructNis()" rounded="true" mdbWavesEffect
-                class="btn-proximax" size="md">
+                class="btn-proximax" size="sm">
                 <span class="color-white">Accept</span>
               </button>
             </div>
