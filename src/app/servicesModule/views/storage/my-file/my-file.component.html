@@ -23,7 +23,7 @@
         <div
           class="col-12 col-md-12 col-lg-2 d-flex align-items-center justify-content-center background-dark-green-plus pt-05rem">
           <button mdbBtn type="submit" rounded="true" mdbWavesEffect
-            class="f-w-600 background-btn overflow-ellipsis-nowrap" size="sm" (click)="searchData()">
+            class="btn-proximax" size="md" (click)="searchData()">
             <i class="fa fa-search color-white" aria-hidden="true"></i> &nbsp;
             <span class="fs-1em color-white">Search</span>
           </button>
@@ -52,8 +52,8 @@
   <div class="row mt-2rem">
 
     <div class="col-12 d-flex justify-content-end background-dark-green-plus pt-05rem">
-      <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn overflow-ellipsis-nowrap"
-        size="sm" (click)="clearData()">
+      <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="btn-proximax"
+        size="md" (click)="clearData()">
         <i class="fa fa-refresh color-white" aria-hidden="true"></i> &nbsp;
         <span class="fs-1em color-white">Refresh</span>
       </button>
@@ -106,7 +106,7 @@
             <tr class="row">
               <td class="col-12 col-sm-6 d-flex">
                 <button mdbBtn type="button" rounded="true" mdbWavesEffect [disabled]="fromTransactionId === undefined"
-                  (click)="getFiles()" class="f-w-600  w-100porcent background-btn pl-2rem pr-2rem" size="sm">
+                  (click)="getFiles()" class="btn-proximax" size="md">
                   <span class="fs-1-2em color-white">Next</span>
                 </button>
               </td>
@@ -174,13 +174,13 @@
             <div class="row mt-2rem">
               <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
                 <button mdbBtn type="button" rounded="true" mdbWavesEffect
-                  class="f-w-600 background-btn pl-2rem pr-2rem" size="md" (click)="clearForm()">
+                  class="btn-proximax" size="md" (click)="clearForm()">
                   <span class="fs-1-2em color-white">RESET</span>
                 </button>
               </div>
               <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
                 <button mdbBtn type="submit" rounded="true" mdbWavesEffect
-                  class="f-w-600 background-btn pl-2rem pr-2rem"
+                  class="btn-proximax"
                   [disabled]="dataSelected.encryptionType !== 1001 && dataSelected.encryptionType !== 1004" size="md">
                   <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
                     *ngIf="downloading"></span>

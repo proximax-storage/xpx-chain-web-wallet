@@ -57,7 +57,7 @@
 
                       <div class="col-12 d-flex justify-content-end background-dark-green-plus pt-05rem">
                         <button mdbBtn type="submit" rounded="true" mdbWavesEffect
-                          class="f-w-600 background-btn overflow-ellipsis-nowrap" size="sm" (click)="initForm(); ">
+                          class="btn-proximax" size="md" (click)="initForm(); ">
                           <i class="fa fa-refresh color-white" aria-hidden="true"></i> &nbsp;
                           <span class="fs-1em color-white">REFRESH</span>
                         </button>
@@ -135,14 +135,14 @@
                   <div class="row">
                     <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
                       <button mdbBtn (click)="fileReader([])" rounded="true" mdbWavesEffect
-                        class="f-w-600 background-btn pl-2rem pr-2rem" size="sm">
+                        class="btn-proximax" size="md">
                         <span class="fs-1-2em color-white">Clear</span>
                       </button>
                     </div>
 
                     <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
                       <button [disabled]="apostilleFormOne.get('file').invalid" mdbBtn (click)="stepper.next()"
-                        rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="sm">
+                        rounded="true" mdbWavesEffect class="btn-proximax" size="md">
                         <span class="fs-1-2em color-white">Next</span>
                       </button>
                     </div>
@@ -248,14 +248,14 @@
               <div class="row mt-1rem">
                 <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
                   <button mdbBtn type="button" rounded="true" mdbWavesEffect
-                    class="f-w-600 background-btn pl-2rem pr-2rem" size="md" (click)="clearForm(2)">
+                    class="btn-proximax" size="md" (click)="clearForm(2)">
                     <span class="fs-1-2em color-white">Clear</span>
                   </button>
                 </div>
 
                 <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
                   <button [disabled]="apostilleFormTwo.invalid || blockBtn" mdbBtn type="submit" rounded="true"
-                    mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
+                    mdbWavesEffect class="btn-proximax" size="md">
                     <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
                       *ngIf="blockBtn"></span>
                     <span class="fs-1-2em color-white">Create</span>
@@ -322,7 +322,7 @@
     <!-- THREE -->
     <div class="row">
       <div class="col-12 col-md-10 col-lg-9 col-xl-8 mx-auto d-flex justify-content-center">
-        <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+        <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax"
           size="md" (click)="initForm();">
           <span class="fs-1-2em color-white">FINISH</span>
         </button>
