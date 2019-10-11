@@ -1,12 +1,52 @@
 <div class="container mt-3rem mb-2rem animated fadeIn">
-  <div class="row">
+  <div class="row mb-1rem">
+    <div class="col-12 col-md-11 col-lg-9 mx-auto">
+      <div class="row">
+        <div class="col-12 col-md-6 col-sm-12 d-flex align-items-end">
+          <span class="fs-1rem txt-a-center line-h-1-2em color-grey">{{paramsHeader.moduleName}}&nbsp;</span>
+          <span class="fs-1rem txt-a-center line-h-1-2em color-grey">></span>
+          <span
+            class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">&nbsp;{{paramsHeader.componentName}}</span>
+        </div>
+
+        <div class="col-12 col-md-6 col-sm-12 d-flex justify-content-start justify-content-md-end">
+          <span class="fs-1rem txt-a-center line-h-1-2em color-grey option">Option >&nbsp;</span>
+          <span class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">
+            <a class="color-blue-intermedio" [routerLink]="[paramsHeader.routerExtraButton]"
+              *ngIf="paramsHeader.extraButton">
+              <span>{{paramsHeader.extraButton}}</span>
+            </a>
+          </span>
+          <span class="pr-1rem-left-right">
+            <div class="line-separator h-100porcent"></div>
+          </span>
+          <span class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">
+            <a class="color-blue-intermedio" [routerLink]="[goBack]">
+              <span>Back to Services</span>
+            </a>
+          </span>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12">
+          <hr class="mt-03rem mb-05rem">
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+  <!-- <div class="row">
     <div class="col-12 d-flex justify-content-center">
       <span class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">Make a Transfer</span>
     </div>
     <div class="col-11 mx-auto">
       <hr class="mt-05rem mb-06rem">
     </div>
-  </div>
+  </div> -->
 
   <form [formGroup]="formTransfer" (ngSubmit)="sendTransfer()">
 
@@ -19,7 +59,8 @@
             <mdb-accordion-item [collapsed]="true">
               <mdb-accordion-item-head class="color-black">
                 {{sender.name}}
-                <span *ngIf="sender.default" class="ml-05rem title-tab-blue pt-03rem"><i>- Current Default </i></span>
+                <span *ngIf="sender.default" class="ml-05rem title-tab-blue pt-03rem"><i>- Current Default
+                  </i></span>
                 <span *ngIf="sender.isMultisign &&
                     sender.isMultisign.cosignatories &&
                     sender.isMultisign.cosignatories.length > 0" class="ml-05rem title-tab-blue pt-03rem">
@@ -86,10 +127,10 @@
             bindLabel="label" bindValue="value" placeholder="Cosignatories" (change)="selectCosignatorie($event)">
             <ng-template ng-option-tmp let-item="item" let-index="index">
               <b>{{item.label}}</b>
-              <b class="color-error-red" *ngIf="item.info !== ''"> - {{item.info}}</b>
+              <b class="color-error-message" *ngIf="item.info !== ''"> - {{item.info}}</b>
             </ng-template>
             <ng-template ng-footer-tmp>
-              <span class="fs-08rem color-error-red fw-600">{{msgLockfungCosignatorie}}</span>
+              <span class="fs-08rem color-error-message fw-600" [innerHtml]="msgLockfungCosignatorie"></span>
             </ng-template>
           </ng-select>
         </div>
@@ -387,8 +428,8 @@
     <!-- BUTTONS -->
     <div class="row">
       <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-        <button [disabled]="disabledAllField" mdbBtn type="button" rounded="true" mdbWavesEffect
-          class="f-w-600 background-btn pl-2rem pr-2rem" size="md" (click)="clearForm()">
+        <button [disabled]="disabledAllField" mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax"
+          size="md" (click)="clearForm()">
           <span class="fs-1-2em color-white">Clear</span>
         </button>
       </div>
@@ -406,7 +447,7 @@
             (listCosignatorie &&
             listCosignatorie.length === 1 &&
             listCosignatorie[0].disabled) && !reloadBtn" mdbBtn type="submit" rounded="true" mdbWavesEffect
-          class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
+          class="btn-proximax" size="md">
           <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
             *ngIf="reloadBtn"></span>
           <span class="fs-1-2em color-white">Send</span>

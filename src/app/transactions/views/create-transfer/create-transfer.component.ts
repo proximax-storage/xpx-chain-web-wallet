@@ -14,11 +14,12 @@ import { WalletService, AccountsInterface, AccountsInfoInterface } from '../../.
 import { SharedService, ConfigurationForm } from '../../../shared/services/shared.service';
 import { TransactionsService, TransferInterface } from '../../services/transactions.service';
 import { environment } from '../../../../environments/environment';
-import { ServicesModuleService } from '../../../servicesModule/services/services-module.service';
+import { ServicesModuleService, HeaderServicesInterface } from '../../../servicesModule/services/services-module.service';
 import { Subscription } from 'rxjs';
 import { ModalDirective } from 'ng-uikit-pro-standard';
 import { NodeService } from 'src/app/servicesModule/services/node.service';
 import * as FeeCalculationStrategy from 'tsjs-xpx-chain-sdk/dist/src/model/transaction/FeeCalculationStrategy';
+import { AppConfig } from 'src/app/config/app.config';
 
 
 @Component({
@@ -61,11 +62,17 @@ export class CreateTransferComponent implements OnInit {
   listCosignatorie: any = [];
   fee: any = '0.037250'
   feeCosignatory: any = 10044500;
+  goBack: string = `/${AppConfig.routes.service}`;
   optionsXPX = {
     prefix: '',
     thousands: ',',
     decimal: '.',
     precision: '6'
+  };
+
+  paramsHeader: HeaderServicesInterface = {
+    moduleName: 'Transfer',
+    componentName: 'Make a Transfer'
   };
 
   searching = true;
@@ -108,7 +115,9 @@ export class CreateTransferComponent implements OnInit {
     this.getAccountInfo();
 
 
-    this.msgLockfungCosignatorie = ` Cosignatory has sufficient balance (${this.amountFormatterSimple(this.feeCosignatory)} XPX) to cover lockfund fee`
+    const amount = this.transactionService.getDataPart(this.amountFormatterSimple(this.feeCosignatory), 6);
+    const formatterAmount = `<span class="fs-085rem">${amount.part1}</span><span class="fs-07rem">${amount.part2}</span>`;
+    this.msgLockfungCosignatorie = `Cosignatory has sufficient balance (${formatterAmount} XPX) to cover LockFund Fee`;
     this.transactionHttp = new TransactionHttp(environment.protocol + "://" + `${this.nodeService.getNodeSelected()}`); //change
 
     // Mosaic by default

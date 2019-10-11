@@ -228,11 +228,11 @@
             formControlName="cosignatorieSign" (change)="selectCosignatorieSign($event)">
 
             <ng-template ng-option-tmp let-item="item" let-index="index">
-              <b>{{item.label}}</b> &nbsp;<b style="color:brown">{{item.info}}</b>
+              <b>{{item.label}}</b> &nbsp;<b class="color-error-message">{{item.info}}</b>
             </ng-template>
             <ng-template ng-footer-tmp>
-              <span class="fs-08rem color-error-red">
-                Cosignatory has sufficient balance ({{amountFormatterSimple(totalFee)}} XPX) to cover lockfund fee
+              <span class="fs-08rem color-error-message">
+                Cosignatory has sufficient balance ({{amountFormatterSimple(totalFee)}} XPX) to cover LockFund Fee
               </span>
 
             </ng-template>

@@ -67,11 +67,11 @@
   display: -webkit-box;
   overflow-y: hidden;
 }
-
+/*
 .btn.disabled, .btn:disabled {
   background-color: #dedede !important;
   border-color: #9a9a9a !important;
-}
+}*/
 
 .border-separator {
   border-left: .5rem solid #f4f4f4;
