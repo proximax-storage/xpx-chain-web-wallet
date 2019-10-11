@@ -17,8 +17,7 @@
 
             <!-- ADDRESS -->
             <div class="col-12 d-flex align-items-center mt-02rem d-center">
-              <span class="fs-07rem ls-002rem"
-                style="white-space:nowrap;">{{currentAccount.address}} &nbsp; </span>
+              <span class="fs-07rem ls-002rem" style="white-space:nowrap;">{{currentAccount.address}} &nbsp; </span>
               <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="icono cursor-p"
                 alt="Copy" width="20" (click)="copyMessage('Address')" ngxClipboard
                 [cbContent]="currentAccount.address">
@@ -457,7 +456,6 @@
     <div class="modal-dialog  align-items-center" role="document">
       <div class="modal-content form-elegant bord-rad-1-5rem">
         <div class="modal-header text-center box-modal-white b-t-r-r-1-5rem b-t-l-r-1-5rem p-1-5rem">
-
           <div class="d-flex w-100">
             <div class="flex-column justify-content-center w-100">
               <div class="modal-title fw-600"><strong class="title-modal-blue-1-7">Accounts</strong></div>
@@ -465,7 +463,6 @@
             </div>
           </div>
 
-          <!-- </span> -->
           <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modalAccounts.hide()">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -524,11 +521,12 @@
     aria-hidden="true">
     <div class="modal-dialog modal-sm   align-items-center" role="document">
       <div class="modal-content form-elegant bord-rad-1-5rem">
-        <div class="modal-header text-center box-modal-white b-t-r-r-1-5rem b-t-l-r-1-5rem p-05rem">
+        <div class="modal-header text-center box-modal-white b-t-r-r-1-5rem b-t-l-r-1-5rem p-1-5rem">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modalQR.hide()">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
+
         <div class="modal-body">
           <!-- TABLE LIST ACCOUNTS -->
           <div class="row mb-1-5rem">
