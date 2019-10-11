@@ -9,6 +9,7 @@ import { AppConfig } from 'src/app/config/app.config';
 import { TransactionsService } from 'src/app/transactions/services/transactions.service';
 import { type } from 'os';
 import { join } from 'path';
+import { HeaderServicesInterface } from 'src/app/servicesModule/services/services-module.service';
 @Component({
   selector: 'app-nis1-accounts-consigner',
   templateUrl: './nis1-accounts-consigner.component.html',
@@ -18,6 +19,10 @@ export class Nis1AccountsConsignerComponent implements OnInit {
 
   listConsignerAccounts: any = null;
   mainAccount: any;
+  paramsHeader: HeaderServicesInterface = {
+    moduleName: 'Mainnet Swap',
+    componentName: 'Transfer Assets'
+  };
 
   constructor(
     private walletService: WalletService,
@@ -146,7 +151,8 @@ export class Nis1AccountsConsignerComponent implements OnInit {
     if (account.balance === null || account.balance === '0.000000') {
       return this.sharedService.showWarning('', 'The selected account has no balance');
     }
-
+    // console.log('this a account---------->', account);
+    account.route = `/${AppConfig.routes.nis1AccountList}`;
     // this.walletService.setAccountMosaicsNis1(account.mosaic);
     this.walletService.setNis1AccountSelected(account);
     this.router.navigate([`/${AppConfig.routes.accountNis1TransferXpx}`]);
