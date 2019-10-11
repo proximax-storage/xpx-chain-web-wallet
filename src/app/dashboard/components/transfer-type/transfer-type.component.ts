@@ -36,7 +36,10 @@ export class TransferTypeComponent implements OnInit {
     if (this.transferTransaction.data['message'].payload !== '') {
       try {
         const simple = false;
-        if (this.transferTransaction.sender.address.plain() === environment.swapAccount.address) {
+        const addressAccountMultisig = environment.swapAccount.addressAccountMultisig;
+        const addressAccountSimple = environment.swapAccount.addressAccountSimple;
+        const addressSender = this.transferTransaction.sender.address.plain();
+        if ((addressSender === addressAccountMultisig) || (addressSender === addressAccountSimple)) {
           const msg = JSON.parse(this.transferTransaction.data['message'].payload);
           if (msg && msg['type'] === 'Swap') {
             this.msg = msg['message'];

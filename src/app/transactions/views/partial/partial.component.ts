@@ -185,7 +185,10 @@ export class PartialComponent implements OnInit {
         if (innerTransactions[0]["message"] && innerTransactions[0]["message"].payload !== "") {
           try {
             const msg = JSON.parse(innerTransactions[0]["message"].payload);
-            if (innerTransactions[0].signer.address.plain() === environment.swapAccount.address) {
+            const addressAccountMultisig = environment.swapAccount.addressAccountMultisig;
+            const addressAccountSimple = environment.swapAccount.addressAccountSimple;
+            const addressSender = innerTransactions[0].signer.address.plain();
+            if ((addressSender === addressAccountMultisig) || (addressSender === addressAccountSimple)) {
               if (msg && msg["type"] && msg["type"] === "Swap") {
                 console.log('IS SWAP');
                 this.showSwap = true;
