@@ -3,110 +3,77 @@
 
   <!-- BOX LIST ACCOUNT -->
   <div class="row">
-    <div class="col-10 mx-auto">
+    <div class="col-11 col-lg-10 mx-auto">
       <div class="row">
         <ng-container *ngIf="currentWallet?.accounts?.length > 0">
           <ng-container *ngFor="let account of currentWallet.accounts" class="d-flex justify-content-start">
-            <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mb-05rem">
-              <div class="row">
-                <!-- height: 171px; -->
-                <div class="col-12 ">
-                  <div class="row p-1rem">
-                    <div class="col-12 box-list-account-gray fs-08rem pb-04rem m-0" [ngClass]="{'isPrimary':account.default}">
-                      <div class="row">
-                        <div class="col-12 text-sm-left pt-1rem w-b-a d-flex">
+            <div class="col-12 col-md-6 mb-05rem">
+              <div class="row p-05rem">
+                <div class="col-12 box-list-account-gray fs-08rem pt-07rem pb-07rem"
+                  [ngClass]="{'isPrimary':account.default}">
+                  <!-- NAME & TAGS -->
+                  <div class="row">
+                    <div class="col-12">
+                      <span class="fw-600 fs-09rem"> {{account.name}} </span>
+                      <span *ngIf="account.default" class="tag-account color-blue-intermedio fs-07rem">- Current
+                        default</span>
+                      <span *ngIf="account.isMultisign !== null && account.isMultisign.cosignatories.length > 0"
+                        class="ml-1rem fs-07rem color-blue-intermedio tag-account">- Multisig</span>
+                      <span *ngIf="[undefined, null].includes(account.nis1Account) === false"
+                        class="ml-1rem fs-07rem color-blue-intermedio tag-account">- Swap</span>
+                    </div>
+                  </div>
 
-                          <span class="fw-600 fs-09rem"> {{account.name}} </span>
-                          <div *ngIf="account.default" class="tag-account color-blue-intermedio fs-065rem">-
-                            Current default</div>
-                          <div *ngIf="account.isMultisign !== null && account.isMultisign.cosignatories.length > 0"
-                            class="ml-1rem fs-065rem color-blue-intermedio tag-account">- Multisig</div>
-                          <div *ngIf="[undefined, null].includes(account.nis1Account) === false" class="ml-1rem fs-065rem color-blue-intermedio tag-account">-
-                            Swap</div>
-                        </div>
-                        <div class="col-12  text-sm-left w-b-a">
-                          {{account.address}}
+                  <!-- ADDRESS & BTN -->
+                  <div class="row d-flex align-items-center">
+                    <div class="col-10 fs-09rem overflow-ellipsis-nowrap responsive-grap">
+                      <span>{{account.address}}</span>
+                    </div>
 
-                          <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="cursor-p"
-                            alt="Copy" width="20" (click)="copyMessage('Address')" ngxClipboard [cbContent]="account.address"
-                            title="Copy Address">
-                        </div>
-                      </div>
+                    <div class="col-2">
+                      <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="cursor-p"
+                        alt="Copy" width="18" (click)="copyMessage('Address')" ngxClipboard
+                        [cbContent]="account.address" title="Copy Address">
+                    </div>
+                  </div>
 
-                      <div class="row">
-                        <div class="col-12 col-sm-10 col-md-10 col-lg-10 col-xl-10  text-sm-left pt-02rem w-b-a">
-                          <div class="row">
-                            <div class="col-12 mt-02rem">
-                              <div class="row">
-                                <div class="col-8 ">
+                  <!-- MOSAICOS -->
+                  <div class="row">
+                    <div class="col-12 col-sm-6 col-md-8 pt-02rem d-flex align-items-center">
+                      <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h.svg" width="18">
+                      <span class="fs-08rem">
+                        <a [innerHTML]="getQuantity(account.balance)"></a> XPX
+                      </span>
+                    </div>
 
-                                  <img style="padding: 0px !important" class="icono" src="assets/images/img/icon-prx-xpx-green-16h.svg"
-                                    width="20" alt="">
-                                  <span class="fs-08rem pl-05rem pr-4rem">{{getQuantity(account.balance)?.part1}}<span
-                                      class="fs-07rem">{{getQuantity(account.balance)?.part2}}</span>
-                                    &nbsp;XPX
-                                  </span>
+                    <div class="col-12 col-sm-4 col-md-2 pt-02rem d-flex align-items-center">
+                      <ng-container *ngIf="account.mosaics > 0">
+                        <img class="icono" src="assets/images/img/icon-mosaics-green-16h.svg" width="18"
+                          title="Others Mosaics: {{account.mosaics}}">
+                        <span class="fs-08rem">{{account.mosaics}}</span>
+                      </ng-container>
+                    </div>
 
-                                </div>
-                                <div class="col-4  fs-08rem" title="Other Mosaics" *ngIf="account.mosaics > 0" >
+                    <div
+                      class="col-12 col-sm-2 col-md-2 d-flex align-items-center justify-content-center justify-content-sm-end pt-02rem">
+                      <div class=" dropdown" mdbDropdown>
+                        <button mdbDropdownToggle mdbBtn color="transparent" class="dropdown-toggle waves-light"
+                          type="button" mdbWavesEffect style="padding: 5px; box-shadow: 0px 0px transparent">
+                        </button>
 
-
-                                    <img style="padding: 0px !important" class="icono" src="assets/images/img/icon-mosaics-green-16h.svg"
-                                    width="20" alt=""> {{account.mosaics}}
-                                  <!-- <span *ngIf="account.mosaics > 0" class="fs-08rem pl-05rem pr-4rem">
-                                  
-                                    <span class="fs-08rem">&nbsp;{{account.mosaics}}</span>
-                                  </span> -->
-
-                                  <!-- <img style="padding: 0px !important" *ngIf="account.mosaics > 0" class="icono" src="assets/images/img/icon-mosaics-green-16h.svg"
-                                    width="20" alt="">
-
-                                  <span *ngIf="account.mosaics > 0" class="pl-05rem pr-1rem "> <span class="other-mosaics-display"> Other mosaics: </span>    <span class="">{{account.mosaics}}</span>
-                                  </span> -->
-                                  <!-- <span class="pl-05rem pr-1rem" *ngIf="account.mosaics > 0"> Other mosaics:
-                                    </span> -->
-                                </div>
-
-                              </div>
-
-                            </div>
-
-                            <!-- <div class="col-lg-12 col-xl-6 col-md-12 col-sm-12 mt-02rem">
-                              <img style="padding: 0px !important" class="icono" src="assets/images/img/icon-prx-xpx-green-16h.svg"
-                                width="20" alt="">
-                              <span class="fs-08rem pl-05rem pr-4rem">{{getQuantity(account.balance)?.part1}}<span class="fs-07rem">{{getQuantity(account.balance)?.part2}}</span>
-                                <span class="fs-08rem ">&nbsp;XPX</span>
-                              </span>
-                            </div> -->
-                            <!-- <div class="col-lg-12 col-xl-6 col-md-12 col-sm-12 mt-02rem">
-                              <img style="padding: 0px !important" *ngIf="account.mosaics > 0" class="icono" src="assets/images/img/icon-mosaics-green-16h.svg"
-                                width="20" alt="">
-                              <span class="pl-05rem pr-1rem" *ngIf="account.mosaics > 0"> Other mosaics:
-                                {{account.mosaics}}</span>
-                            </div> -->
-                          </div>
-                        </div>
-                        <div class="col-12 col-sm-2 col-md-2 col-lg-2 col-xl-2 d-flex align-items-center justify-content-center justify-content-sm-end justify-content-md-end justify-content-lg-end justify-content-xl-end pt-04rem">
-
-                          <div class="dropdown" mdbDropdown>
-
-                            <button mdbDropdownToggle mdbBtn color="transparent" class="dropdown-toggle waves-light"
-                              type="button" mdbWavesEffect style="padding: 5px; box-shadow: 0px 0px transparent">
-                            </button>
-
-                            <div class="dropdown-menu" style="position: absolute; left: -60px">
-                              <a class="dropdown-item fs-075rem" [routerLink]="[routes.viewDetails+account.name]">Edit</a>
-                              <a class="dropdown-item fs-075rem" *ngIf="account.default !== true" (click)="changeAsPrimary(account.name)">Make
-                                Default</a>
-                              <a class="dropdown-item fs-075rem text-black-50" *ngIf="account.default === true">Make
-                                Default</a>
-                              <a class="dropdown-item fs-075rem" *ngIf="account.encrypted !== ''" (click)="exportAccount(account)">Export</a>
-                              <a class="dropdown-item fs-075rem" *ngIf="!account.default && account.encrypted !== ''"
-                                [routerLink]="[routes.deleteAccount+account.name]">Delete</a>
-                              <a class="dropdown-item fs-075rem text-black-50" *ngIf="account.default">Delete</a>
-                              <a class="dropdown-item fs-075rem" [routerLink]="[routes.multisig]">Multisig</a>
-                            </div>
-                          </div>
+                        <div class="dropdown-menu" style="position: absolute; left: -60px">
+                          <a class="dropdown-item fs-075rem" [routerLink]="[routes.viewDetails+account.name]">Edit</a>
+                          <a class="dropdown-item fs-075rem" *ngIf="account.default !== true"
+                            (click)="changeAsPrimary(account.name)">Make
+                            Default</a>
+                          <a class="dropdown-item fs-075rem text-black-50" *ngIf="account.default === true">Make
+                            Default</a>
+                          <a class="dropdown-item fs-075rem" *ngIf="account.encrypted !== ''"
+                            (click)="exportAccount(account)">Export</a>
+                          <a class="dropdown-item fs-075rem" *ngIf="!account.default && account.encrypted !== ''"
+                            [routerLink]="[routes.deleteAccount+account.name]">Delete</a>
+                          <a class="dropdown-item fs-075rem text-black-50" *ngIf="account.default">Delete</a>
+                          <a class="dropdown-item fs-075rem" [routerLink]="[routes.multisig]">Multisig</a>
                         </div>
                       </div>
                     </div>
@@ -115,18 +82,7 @@
               </div>
             </div>
           </ng-container>
-
         </ng-container>
       </div>
     </div>
   </div>
-
-  <!-- <div class="row">
-    <div class="col-11 col-md-10 col-lg-9 col-xl-10 mx-auto mt-1rem d-flex justify-content-center">
-      <button mdbBtn type="button" rounded="true" mdbWavesEffect class="background-btn-inverse pl-2rem pr-2rem"
-        size="md" (click)="exportWallet()">
-        <span class="fs-1-2em text-cl-m fw-700">EXPORT WALLET</span>
-      </button>
-    </div>
-  </div> -->
-</div>

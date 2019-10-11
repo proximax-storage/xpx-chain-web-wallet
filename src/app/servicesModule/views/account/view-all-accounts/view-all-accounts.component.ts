@@ -180,16 +180,14 @@ export class ViewAllAccountsComponent implements OnInit {
 
   /**
      *
-     *  @param {string} quantity 
+     *  @param {string} quantity
      * @memberof ViewAllAccountsComponent
      */
+  /*getQuantity(quantity: string) {
+    return this.transactionService.getDataPart(quantity, 6);
+  }*/
+
   getQuantity(quantity: string) {
-
-
-    return this.transactionService.getDataPart(quantity, 6)
-    // const res = quantity.split(".");
-
-    // const htmlStr: string = ` <p class="fs-08rem">${res[0]}.<span class="fs-07rem">${res[1]}</span> XPX</p>`;
-    // return htmlStr
+    return this.sharedService.amountFormat(quantity);
   }
 }
