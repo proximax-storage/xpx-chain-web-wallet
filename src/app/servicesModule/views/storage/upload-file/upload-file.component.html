@@ -33,7 +33,7 @@
           <img class="form-control-feedback" src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg"
             alt="">
           <input [maxlength]="configurationForm.passwordEncriptionFile.maxLength"
-            [minlength]="configurationForm.passwordEncriptionFile.minLength" formControlName="password" required
+            [minlength]="configurationForm.passwordEncriptionFile.minLength" formControlName="password"
             mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password"
             id="password{{errorMatchPassword}}" class="form-control form-control-sm input-border"
             placeholder="Enter file encryption password" mdbPopover="At least {{configurationForm.passwordEncriptionFile.minLength}} characters, must include UPPER CASE
@@ -52,7 +52,7 @@
         <div class="md-form form-sm mt-1rem mb-0rem">
           <img class="form-control-feedback" src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg" alt="">
           <input [maxlength]="configurationForm.passwordEncriptionFile.maxLength"
-            [minlength]="configurationForm.passwordEncriptionFile.minLength" formControlName="confirm_password" required
+            [minlength]="configurationForm.passwordEncriptionFile.minLength" formControlName="confirm_password"
             mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password"
             id="confirm-password{{errorMatchPassword}}" class="form-control form-control-sm input-border"
             placeholder="Confirm file encryption password" mdbPopover="At least {{configurationForm.passwordEncriptionFile.minLength}} characters, must include UPPER CASE
@@ -114,7 +114,7 @@
 
       <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
         <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="btn-proximax"
-          size="md" [disabled]="!uploadForm.valid">
+          size="md" [disabled]="!uploadForm.valid || files.length === 0 || !noEncripted">
           <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
             *ngIf="blockUpload"></span>
           <span class="fs-1-2em color-white">Upload</span>

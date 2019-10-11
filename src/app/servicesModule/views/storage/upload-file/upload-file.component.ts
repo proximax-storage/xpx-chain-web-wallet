@@ -52,6 +52,7 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
   goBack = `/${AppConfig.routes.service}`;
   errorMatchPassword: string;
   mosaics: any[];
+  noEncripted: boolean = false;
 
   constructor(
     private cdRef: ChangeDetectorRef,
@@ -296,9 +297,9 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
    * @memberof UploadFileComponent
    */
   encryptionMethodSelect(event: { value: any; }) {
-    // console.log(event);
     switch (event.value) {
       case PrivacyType.PASSWORD:
+        this.noEncripted = true;
         this.showEncryptionPassword = true;
         this.showEncryptionKeyPair = false;
 
@@ -316,6 +317,7 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
 
         break;
       case PrivacyType.NEM_KEYS:
+        this.noEncripted = true;
         this.showEncryptionPassword = false;
         this.showEncryptionKeyPair = true;
 
@@ -332,11 +334,17 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
         ]);
         break;
       default:
+        this.uploadForm.controls.encryptionPasswords.get('password').setValidators(null)
+        this.uploadForm.controls.encryptionPasswords.get('confirm_password').setValidators(null);
+        this.uploadForm.controls.encryptionPasswords.get('password').updateValueAndValidity({ emitEvent: false, onlySelf: true });
+        this.uploadForm.controls.encryptionPasswords.get('confirm_password').updateValueAndValidity({ emitEvent: false, onlySelf: true });
+        this.uploadForm.controls.encryptionPasswords.get('password').patchValue('')
+        this.uploadForm.controls.encryptionPasswords.get('confirm_password').patchValue('')
+        this.noEncripted = true;
         this.showEncryptionPassword = false;
         this.showEncryptionKeyPair = false;
     }
     this.privacyType = event.value;
-
   }
 
   /**
