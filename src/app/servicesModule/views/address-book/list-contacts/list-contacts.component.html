@@ -93,24 +93,26 @@
         </div>
         <div class="row mt-1rem mb-1rem">
           <div class="col-11 col-sm-12 col-md-11 mx-auto box-transparent-border-orange">
-            <div class="col-12 d-flex flex-column align-items-center">
-              <span class="font-small d-flex text-center">Are you sure you want to delete {{labelRemove}}
-                contact??</span>
+            <div class="txt-a-center">
+              <img src="assets/images/img/icon-transaction-unconfirmed-white.svg" style="filter: invert(50%)" alt="" width="30">
             </div>
+            <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em">
+              Are you sure you want to delete {{labelRemove}} contact??
+            </p>
           </div>
           <!-- BUTTONS -->
           <div class="row mx-auto">
             <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-              <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+              <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax"
                 size="md" (click)="basicModal.hide()">
-                <span class="fs-1-2em color-white">NO</span>
+                <span class="color-white">No</span>
               </button>
             </div>
 
             <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-              <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+              <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax"
                 (click)="deleteContact()" size="md">
-                <span class="fs-1-2em color-white">YES</span>
+                <span class="color-white">Yes</span>
               </button>
             </div>
           </div>
