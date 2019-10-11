@@ -519,15 +519,19 @@
 <div class="d-flex align-items-center">
   <div mdbModal #modalQR="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalQR"
     aria-hidden="true">
-    <div class="modal-dialog modal-sm   align-items-center" role="document">
+    <div class="modal-dialog modal-sm align-items-center" role="document">
       <div class="modal-content form-elegant bord-rad-1-5rem">
-        <div class="modal-header text-center box-modal-white b-t-r-r-1-5rem b-t-l-r-1-5rem p-1-5rem">
+        <div class="modal-header d-flex justify-content-center p-05rem">
+          <div class="modal-title fw-600">
+            <span class="title-modal-blue-1-7" style="font-size: 1rem !important;">Current Default Address</span>
+          </div>
+
           <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modalQR.hide()">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
 
-        <div class="modal-body">
+        <div class="modal-body" style="padding: 0 5rem;">
           <!-- TABLE LIST ACCOUNTS -->
           <div class="row mb-1-5rem">
             <div class="col-10 d-flex justify-content-center mx-auto">
