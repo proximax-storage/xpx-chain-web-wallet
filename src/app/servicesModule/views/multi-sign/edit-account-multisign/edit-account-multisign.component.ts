@@ -316,7 +316,7 @@ export class EditAccountMultisignComponent implements OnInit {
 
 
     if (this.hasCosigner() && !this.disable) {
-      this.publicAccountToConvert = PublicAccount.createFromPublicKey(this.currentAccountToConvert.publicAccount.publicKey, this.currentAccountToConvert.network)
+        this.publicAccountToConvert = PublicAccount.createFromPublicKey(this.currentAccountToConvert.publicAccount.publicKey, this.currentAccountToConvert.network)
       // this.getCosignerFirm()
       this.mdbBtnAddCosignatory = false;
       this.setValueForm('edit', true, 3);
@@ -403,6 +403,12 @@ export class EditAccountMultisignComponent implements OnInit {
         isCosigner = this.accountInfo.multisigInfo.hasCosigner(publicAccount)
         // break
       }
+      if (this.consginerFirmList.length == 1) {
+
+        isCosigner = (!this.consginerFirmList[0].disabled);
+
+      }
+
       if (this.consginerFirmList.length > 1) {
         this.showConsginerFirmList = true;
         this.editAccountMultsignForm.controls['cosignatorieSign'].setValidators([Validators.required]);
@@ -440,13 +446,13 @@ export class EditAccountMultisignComponent implements OnInit {
   }
 
 
-  builder(){
+  builder() {
 
     let convertIntoMultisigTransaction: ModifyMultisigAccountTransaction;
     convertIntoMultisigTransaction = this.modifyMultisigAccountTransaction();
     // console.log('convertIntoMultisigTransaction', convertIntoMultisigTransaction);
 
-   this.aggregateTransaction = AggregateTransaction.createBonded(
+    this.aggregateTransaction = AggregateTransaction.createBonded(
       Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
       [convertIntoMultisigTransaction.toAggregate(this.currentAccountToConvert.publicAccount)],
       this.currentAccountToConvert.network
@@ -471,7 +477,7 @@ export class EditAccountMultisignComponent implements OnInit {
         // let convertIntoMultisigTransaction: ModifyMultisigAccountTransaction;
         // convertIntoMultisigTransaction = this.modifyMultisigAccountTransaction();
         // console.log('convertIntoMultisigTransaction', convertIntoMultisigTransaction);
-        
+
         // const aggregateTransaction = AggregateTransaction.createBonded(
         //   Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
         //   [convertIntoMultisigTransaction.toAggregate(this.currentAccountToConvert.publicAccount)],
@@ -567,7 +573,7 @@ export class EditAccountMultisignComponent implements OnInit {
       networkType: this.currentAccountToConvert.network
     }
     // console.log('modifyobject', modifyobject);
-    
+
 
     return ModifyMultisigAccountTransaction.create(
       modifyobject.deadline,
