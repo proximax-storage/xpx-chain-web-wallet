@@ -397,13 +397,16 @@ export class AliasAddressToNamespaceComponent implements OnInit {
   }
 
 
-
-  /*selectContact(addressEvent: string) {
-    if (addressEvent !== undefined && addressEvent !== null && addressEvent !== '') {
-      this.LinkToNamespaceForm.get('address').patchValue(addressEvent);
-      this.address = Address.createFromRawAddress(addressEvent);
-    }
-  }*/
+  /**
+   *
+   *
+   * @param {string} quantity
+   * @returns
+   * @memberof AliasAddressToNamespaceComponent
+   */
+  getQuantity(quantity: string) {
+    return this.sharedService.amountFormat(quantity);
+  }
 
   selectContact(event: { label: string, value: string }) {
     if (event !== undefined && event.value !== '') {
