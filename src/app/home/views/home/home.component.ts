@@ -58,7 +58,7 @@ export class HomeComponent implements OnInit {
       this.services.buildStructureService(
         'Blockchain',
         true,
-        'Multisig, aggregated tx, cross chain, metadata.',
+        'Multisig, aggregated tx, cross chain, metadata',
         'icon-blockchain-full-color-80h-proximax-sirius-wallet.svg',
       ),
       this.services.buildStructureService(
