@@ -67,11 +67,11 @@
           <div class="col-11 col-sm-11 col-lg-10 mx-auto mb-2rem">
             <div class="row">
               <div class="col-12 d-flex justify-content-center mx-auto">
-                <button mdbBtn rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+                <button mdbBtn rounded="true" mdbWavesEffect class="btn-proximax"
                   (click)="verifyFiles()" [disabled]="ourFile.length === 0">
                   <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
                     *ngIf="blockButton"></span>
-                  <span class="fs-1-2em color-white">AUDIT</span>
+                  <span class="fs-1-2em color-white">Audit</span>
                 </button>
               </div>
             </div>
@@ -146,9 +146,9 @@
       <div class="col-11 col-sm-11 col-lg-10 mx-auto mb-2rem">
         <div class="row">
           <div class="col-12 d-flex justify-content-center mx-auto">
-            <button mdbBtn rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+            <button mdbBtn rounded="true" mdbWavesEffect class="btn-proximax"
               (click)="currentView = !currentView; ourFile = []; auditResults = []">
-              <span class="fs-1-2em color-white">FINISH</span>
+              <span class="fs-1-2em color-white">Finish</span>
             </button>
           </div>
         </div>

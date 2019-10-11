@@ -106,17 +106,14 @@
     <!-- BUTTONS -->
     <div class="row mt-2rem">
       <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-        <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+        <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax"
           size="md" (click)="clearForm()">
           <span class="fs-1-2em color-white">Clear</span>
         </button>
       </div>
 
       <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-        {{uploadForm.status}}
-        {{files.length === 0 }}
-        {{!noEncripted}}
-        <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+        <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="btn-proximax"
           size="md" [disabled]="!uploadForm.valid || files.length === 0 || !noEncripted">
           <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
             *ngIf="blockUpload"></span>

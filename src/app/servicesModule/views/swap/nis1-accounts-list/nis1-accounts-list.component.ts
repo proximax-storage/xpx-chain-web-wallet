@@ -74,18 +74,18 @@ export class Nis1AccountsListComponent implements OnInit {
         }
       },
       error => {
-        this.searchItem[index] = false;
-        const accountNis1 = {
-          nameAccount: account.name,
-          address: address,
-          publicKey: account.nis1Account.publicKey,
-          consignerOf: false,
-          consignerAccounts: [],
-          multiSign: false,
-          mosaic: null,
-          route: `/${AppConfig.routes.nis1AccountList}`
-        }
-        this.walletService.setAccountInfoNis1(accountNis1);
+        // this.searchItem[index] = false;
+        // const accountNis1 = {
+        //   nameAccount: account.name,
+        //   address: address,
+        //   publicKey: account.nis1Account.publicKey,
+        //   consignerOf: false,
+        //   consignerAccounts: [],
+        //   multiSign: false,
+        //   mosaic: null,
+        //   route: `/${AppConfig.routes.nis1AccountList}`
+        // }
+        this.walletService.setAccountInfoNis1(null);
         // this.walletService.setNis1AccounsWallet(accountNis1);
         this.router.navigate([`/${AppConfig.routes.dashboard}`]);
       }

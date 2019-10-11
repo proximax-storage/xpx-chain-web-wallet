@@ -392,7 +392,7 @@ export class TransferAssetsComponent implements OnInit {
       },
         error => {
           console.log('error--------------->', error);
-          
+
           if (error.error.message) {
             switch (error.error.code) {
               case 521 || 535 || 542 || 551 || 565 || 582 || 591 || 610 || 622 || 672 || 711:
@@ -416,6 +416,8 @@ export class TransferAssetsComponent implements OnInit {
                 break;
 
               default:
+                console.log('entro en default--------------->', error);
+
                 // this.sharedService.showError('Error', 'Error! try again later');
                 this.sharedService.showError('Error', error.error.message.toString().split('_').join(' '));
                 break;
@@ -429,17 +431,21 @@ export class TransferAssetsComponent implements OnInit {
   }
 
   navToRoute() {
-    const route = this.accountSelected.route
+    const route = this.accountSelected.route;
     this.walletService.setAccountSelectedWalletNis1(null);
     this.walletService.setNis1AccounsWallet(null);
     this.walletService.setNis1AccountsWallet$([]);
     this.walletService.setAccountInfoNis1(null);
     this.walletService.setNis1AccountSelected(null);
     this.walletService.accountWalletCreated = null;
-    if (this.router.url === `/${AppConfig.routes.transferXpx}`) {
-      this.router.navigate([AppConfig.routes.home]);
-    } else {
-      this.router.navigate([route]);
+    try {
+      if (this.router.url === `/${AppConfig.routes.transferXpx}`) {
+        this.router.navigate([AppConfig.routes.home]);
+      } else {
+        this.router.navigate([route]);
+      }
+    } catch (error) {
+      this.router.navigate([AppConfig.routes.nis1AccountList]);
     }
   }
 
