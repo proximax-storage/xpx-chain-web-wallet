@@ -90,6 +90,13 @@ export const environment = {
     // nodes: [
     //   { protocol: "http", domain: "95.216.73.245", port: 7890 } as ServerConfig
     // ]
+    url: 'https://bctestnetswap.xpxsirius.io:7890',
+    urlExplorer: 'http://testnet-explorer.nemtool.com/#/unconfirmedtxlist',
+    networkType: NetworkTypes.TEST_NET,
+    address: 'TBF4LAZUEJMBIOC6J24D6ZGGXE5W775TX555CTTN',
+    nodes: [
+      { protocol: "https", domain: "bctestnetswap.xpxsirius.io", port: 7890 } as ServerConfig
+    ],
     /*url: 'https://bctestnetswap.xpxsirius.io',
     urlExplorer: 'http://testnet-explorer.nemtool.com/#/unconfirmedtxlist',
     networkType: NetworkTypes.TEST_NET,
@@ -97,13 +104,13 @@ export const environment = {
     nodes: [
       { protocol: "https", domain: "bctestnetswap.xpxsirius.io", port: 443 } as ServerConfig
     ],*/
-    url: 'http://18.231.166.212:7890',
+    /*url: 'http://18.231.166.212:7890',
     urlExplorer: 'http://testnet-explorer.nemtool.com/#/unconfirmedtxlist',
     networkType: NetworkTypes.TEST_NET,
     address: 'TBF4LAZUEJMBIOC6J24D6ZGGXE5W775TX555CTTN',
     nodes: [
       { protocol: "http", domain: "18.231.166.212", port: 7890 } as ServerConfig
-    ],
+    ],*/
   },
   swapAccount: {
     addressAccountMultisig: 'VAWOEOWTABXR7O3ZAK2XNA5GIBNE6PZIXDAFDWBU',
