@@ -86,14 +86,18 @@
     </div>
   </div> -->
   <!--BUTTONS -->
-  <div class="row  d-flex justify-content-center">
+  <div class="row">
+    <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
     <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" size="md"
       [routerLink]="[routes.viewAllWallets]">
       <span class="color-white">Cancel</span>
     </button>
+    </div>
+    <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
     <button mdbBtn type="button" [disabled]="validatingForm.invalid" rounded="true" mdbWavesEffect
       class="btn-proximax" size="md" (click)="deleteWallet()">
       <span class="color-white">Delete Now</span>
     </button>
+    </div>
   </div>
 </div>

@@ -25,7 +25,7 @@ export class DeleteWalletComponent implements OnInit {
     deleteWalletConfirm: `/${AppConfig.routes.deleteWalletConfirm}/`,
   };
 
-  description = 'Accounts available in this wallet.';
+  description = 'Accounts available in this wallet';
   texAlert = 'Would you like to delete permanently this Sirius Wallet?'
   wallet: WalletAccountInterface;
   nameWallet: string;
