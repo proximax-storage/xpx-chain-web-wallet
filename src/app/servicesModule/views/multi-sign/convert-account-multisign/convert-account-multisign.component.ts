@@ -29,6 +29,7 @@ import { ProximaxProvider } from '../../../../shared/services/proximax.provider'
 import { NodeService } from '../../../../servicesModule/services/node.service';
 import { DataBridgeService } from '../../../../shared/services/data-bridge.service';
 import { TransactionsService, TransactionsInterface } from '../../../../transactions/services/transactions.service';
+import { ActivatedRoute } from '@angular/router';
 
 
 @Component({
@@ -85,7 +86,8 @@ export class ConvertAccountMultisignComponent implements OnInit {
     private proximaxProvider: ProximaxProvider,
     private nodeService: NodeService,
     private transactionService: TransactionsService,
-    private dataBridge: DataBridgeService
+    private dataBridge: DataBridgeService,
+    private activateRoute: ActivatedRoute,
   ) {
     this.currentAccounts = [];
     this.configurationForm = this.sharedService.configurationForm;
@@ -104,6 +106,8 @@ export class ConvertAccountMultisignComponent implements OnInit {
     this.getAccounts();
     // this.listContact = this.booksAddress();
     this.subscribeValueChange();
+
+    this.selectAccount(null, this.activateRoute.snapshot.paramMap.get('name'))
     this.load();
   }
 
@@ -167,6 +171,8 @@ export class ConvertAccountMultisignComponent implements OnInit {
         Validators.maxLength(this.configurationForm.passwordWallet.maxLength)
       ]],
     });
+
+    // this.convertAccountMultsignForm.get('selectAccount').patchValue('ACCOUNT-2');
   }
   /**
  *
@@ -309,19 +315,22 @@ export class ConvertAccountMultisignComponent implements OnInit {
   }
 
 
-  selectAccount($event: Event) {
+  selectAccount($event: Event, accountName?: string) {
+    const event: any = $event;
+    const account: any = (event === null) ? this.walletService.filterAccountWallet(accountName) : event.value;
+    // const account: AccountsInterface = this.walletService.filterAccountWallet(name)
     this.notBalance = false;
     this.minApprovaMaxLength = 1;
     // this.listContact = this.booksAddress();
-    const account: any = $event;
+
     if (account !== null && account !== undefined) {
-      this.currentAccountToConvert = account.value;
+      this.currentAccountToConvert = account;
       this.listContact = this.validateAccountListContact();
       this.setCosignatoryList([])
       this.builder();
       this.subscribeAccount = this.walletService.getAccountsInfo$().subscribe(
         async accountInfo => {
-          this.validateAccount(account.value.name)
+          this.validateAccount(account.name)
         }).unsubscribe();
     }
 
@@ -378,6 +387,8 @@ export class ConvertAccountMultisignComponent implements OnInit {
     } else {
       this.notBalance = false;
     }
+
+
     this.publicAccountToConvert = PublicAccount.createFromPublicKey(this.currentAccountToConvert.publicAccount.publicKey, this.currentAccountToConvert.network)
     this.mdbBtnAddCosignatory = false;
   }
