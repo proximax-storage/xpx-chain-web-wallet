@@ -625,6 +625,14 @@ export class TransactionsService {
                       newTransaction = Object.assign({}, element);
                       newTransaction['transactionInfo'].hash = transaction.transactionInfo.hash;
                       newTransaction.size = transaction.size;
+                      let walletTransactionsNis = this.walletService.getWalletTransNisStorage().find(el => el.name === this.walletService.getCurrentWallet().name);
+                      if (walletTransactionsNis !== undefined && walletTransactionsNis !== null) {
+                        const transactions = walletTransactionsNis.transactions.filter(el => el.nis1TransactionHast !== msg["nis1Hash"]);
+                        walletTransactionsNis.transactions = transactions;
+                        // console.log('swap --->');
+                        this.walletService.setSwapTransactions$(walletTransactionsNis.transactions);
+                        this.walletService.saveAccountWalletTransNisStorage(walletTransactionsNis);
+                      }
                     }
                   }
                 } catch (error) {}
@@ -648,14 +656,14 @@ export class TransactionsService {
         if ((addressSender === addressAccountMultisig) || (addressSender === addressAccountSimple)) {
           if (msg && msg["type"] && msg["type"] === "Swap") {
             nameType = "ProximaX Swap";
-            let walletTransactionsNis = this.walletService.getWalletTransNisStorage().find(el => el.name === this.walletService.getCurrentWallet().name);
-            if (walletTransactionsNis !== undefined && walletTransactionsNis !== null) {
-              const transactions = walletTransactionsNis.transactions.filter(el => el.nis1TransactionHast !== msg["nis1Hash"]);
-              walletTransactionsNis.transactions = transactions;
-              // console.log('swap --->');
-              this.walletService.setSwapTransactions$(walletTransactionsNis.transactions);
-              this.walletService.saveAccountWalletTransNisStorage(walletTransactionsNis);
-            }
+            // let walletTransactionsNis = this.walletService.getWalletTransNisStorage().find(el => el.name === this.walletService.getCurrentWallet().name);
+            // if (walletTransactionsNis !== undefined && walletTransactionsNis !== null) {
+            //   const transactions = walletTransactionsNis.transactions.filter(el => el.nis1TransactionHast !== msg["nis1Hash"]);
+            //   walletTransactionsNis.transactions = transactions;
+            //   // console.log('swap --->');
+            //   this.walletService.setSwapTransactions$(walletTransactionsNis.transactions);
+            //   this.walletService.saveAccountWalletTransNisStorage(walletTransactionsNis);
+            // }
           }
         }
       }
