@@ -1241,7 +1241,12 @@ input.form-control.validate-success.ng-valid.ng-dirty, input.form-control.valida
 }
 
 #toast-container.md-toast-bottom-center>mdb-toast-component, #toast-container.md-toast-top-center>mdb-toast-component {
-  margin: 6px 0 6px !important;
+  /*margin: 6px 0 6px !important;*/
+  background: rgba(0,0,0,0.6 );
+  margin: 25% auto !important;
+  padding: 2rem 0;
+  width:100% !important;
+  text-align: center !important;
 }
 
 .md-toast-top-center {
@@ -1253,55 +1258,56 @@ input.form-control.validate-success.ng-valid.ng-dirty, input.form-control.valida
 
 .toastInfo {
   opacity: 1.0 !important;
-  background-color: white !important;
+  background-color: #306EB5 !important;
   border: 2px solid #306EB5 !important;
 }
 
 .toastSuccess {
   opacity: 1.0 !important;
-  background-color: white !important;
+  background-color: #306EB5 !important;
   border: 2px solid #306EB5 !important;
 }
 
 .toastWarning {
   opacity: 1.0 !important;
-  background-color: white !important;
+  background-color: #f2a91d !important;
   border: 2px solid #f2a91d !important;
 }
 
 .toastError {
   opacity: 1.0 !important;
-  background-color: white !important;
+  background-color: #e06e38 !important;
   border: 2px solid #e06e38 !important;
 }
 
 button.md-toast-close-button {
-  padding-right: .5rem !important;
-  color: #505050 !important;
+  /*padding-right: .5rem !important;
+  color: #FFFFFF !important;*/
+  display: none;
 }
 
 .messageClass {
   font-family: sans-serif !important;
   font-size: .9rem;
-  color: #505050 !important;
+  color: #FFFFFF !important;
   font-weight: 600;
   text-transform: capitalize !important;
 }
 
 .md-toast-success:before {
-  color: #306EB5 !important;
+  color: #FFFFFF !important;
 }
 
 .md-toast-info:before {
-  color: #306EB5 !important;
+  color: #FFFFFF !important;
 }
 
 .md-toast-warning:before {
-  color: #f2a91d !important;
+  color: #FFFFFF !important;
 }
 
 .md-toast-error:before {
-  color: #e06e38 !important;
+  color: #FFFFFF !important;
 }
 
 .md-toast-success:before, .md-toast-info:before, .md-toast-warning:before, .md-toast-error:before, #toast-container>mdb-toast-component {

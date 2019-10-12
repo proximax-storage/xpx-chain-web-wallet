@@ -135,7 +135,7 @@ export class CreateMosaicComponent implements OnInit {
         } else {
           this.invalidSupply = false;
         }
-        
+
         // this.invalidSupply = false;
         this.blockButton = false;
         this.errorSupply = '';
@@ -458,6 +458,17 @@ export class CreateMosaicComponent implements OnInit {
         }
       }
     );
+  }
+
+  /**
+   *
+   *
+   * @param {string} quantity
+   * @returns
+   * @memberof CreateMosaicComponent
+   */
+  getQuantity(quantity: string) {
+    return this.sharedService.amountFormat(quantity);
   }
 
   /**

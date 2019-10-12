@@ -24,7 +24,7 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
 
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Mosaics',
-    componentName: 'Link to namespace',
+    componentName: 'Link to Namespace',
   };
   arrayNamespaceStorage: NamespaceStorageInterface[] = [];
   currentBlock: number = 0;
@@ -35,14 +35,14 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
   linked = null;
   mosaicSelect: Array<object> = [{
     value: '1',
-    label: 'Select mosaic',
+    label: 'Select Mosaic',
     selected: true,
     disabled: true
   }];
   namespaceSelect: Array<object> = [
     {
       value: '1',
-      label: 'Select namespace',
+      label: 'Select Namespace',
       selected: true,
       disabled: true
     }
@@ -120,7 +120,7 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
 
   captureNamespace(event) {
     this.nameSelect = false;
-    
+
     if (this.linkingNamespaceToMosaic.get('typeAction').value === AliasActionType.Unlink) {
       this.linked = this.mosaicSelect.find((x: any) => event.value === x.label);
 
@@ -182,11 +182,11 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
             if (type === 2) {
               isLinked = true;
               disabled = true;
-              label = `${label}- (Linked to address)`;
+              label = `${label}- (Linked to Address)`;
             } else if (type === 1) {
               isLinked = true;
               disabled = (this.linkingNamespaceToMosaic.get('typeAction').value === 0) ? true : false;
-              label = `${label}- (Linked to mosaicId) - ${this.mosaicstoHex.toHex()}`;
+              label = `${label}- (Linked to Mosaic) - ${this.mosaicstoHex.toHex()}`;
             } else {
               disabled = (this.linkingNamespaceToMosaic.get('typeAction').value === 1) ? true : false;
             }
@@ -428,6 +428,17 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
         }
       }
     );
+  }
+
+  /**
+   *
+   *
+   * @param {string} quantity
+   * @returns
+   * @memberof AliasMosaicsToNamespaceComponent
+   */
+  getQuantity(quantity: string) {
+    return this.sharedService.amountFormat(quantity);
   }
 
   /**

@@ -102,12 +102,12 @@ export class TransferAssetsComponent implements OnInit {
           for (const el of next) {
             if (el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx') {
               let realQuantity = null;
-              console.log(el.quantity);
+              // console.log(el.quantity);
 
               realQuantity = this.transactionService.addZeros(el.properties.divisibility, el.quantity);
               realQuantity = this.nemProvider.amountFormatter(realQuantity, el, el.properties.divisibility);
 
-              console.log(realQuantity);
+              // console.log(realQuantity);
 
               this.accountSelected.mosaic = el;
               const transactions = await this.nemProvider.getUnconfirmedTransaction(this.accountSelected.address);
@@ -391,19 +391,32 @@ export class TransferAssetsComponent implements OnInit {
         });
       },
         error => {
-          console.log('error--------------->', error);
-
           if (error.error.message) {
             switch (error.error.code) {
-              case 521 || 535 || 542 || 551 || 565 || 582 || 591 || 610 || 622 || 672 || 711:
+              case 521:
+              case 535:
+              case 542:
+              case 551:
+              case 565:
+              case 582:
+              case 591:
+              case 610:
+              case 622:
+              case 672:
+              case 711:
                 this.sharedService.showError('Error', 'Some data is invalid');
                 break;
 
-              case 501 || 635 || 641 || 685 || 691:
+              case 501:
+              case 635:
+              case 641:
+              case 685:
+              case 691:
                 this.sharedService.showError('Error', 'Service not available');
                 break;
 
-              case 655 || 666:
+              case 655:
+              case 666:
                 this.sharedService.showError('Error', 'insufficient XPX Balance');
                 break;
 
@@ -416,7 +429,7 @@ export class TransferAssetsComponent implements OnInit {
                 break;
 
               default:
-                console.log('entro en default--------------->', error);
+                // console.log('entro en default--------------->', error);
 
                 // this.sharedService.showError('Error', 'Error! try again later');
                 this.sharedService.showError('Error', error.error.message.toString().split('_').join(' '));

@@ -44,8 +44,6 @@ export class SelectionWalletCreationTypeComponent implements OnInit {
         const file = CryptoJS.enc.Base64.parse(myReader.result);
         try {
           const dataDecryp = JSON.parse(file.toString(CryptoJS.enc.Utf8));
-          console.log('This a decryp-------->', dataDecryp);
-
           const existWallet = this.walletService.getWalletStorage().find(
             (element: any) => {
               let walletName = dataDecryp.name;
@@ -78,12 +76,8 @@ export class SelectionWalletCreationTypeComponent implements OnInit {
               accounts: accounts
             }
 
-            console.log('this a wallet created----->', wallet);
-            console.log('this a wallet contacs----->', contacs);
-
             let walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
             walletsStorage.push(wallet);
-
             localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorage));
             this.sharedService.showSuccess('', 'Wallet imported correctly');
             this.router.navigate([`/${AppConfig.routes.auth}`]);

@@ -72,14 +72,14 @@ export class CreateTransferComponent implements OnInit {
 
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Transfer',
-    componentName: 'Make a Transfer'
+    componentName: 'Make a Transaction'
   };
 
   searching = true;
   selectOtherMosaics = [];
   showContacts = false;
   // subscribe = ['accountInfo', 'transactionStatus', 'char', 'block'];
-  title = 'Make a Transfer';
+  title = 'Make a Transaction';
   transactionHttp: TransactionHttp = null;
   transactionStatus: boolean = false;
   transactionSigned: SignedTransaction[] = [];

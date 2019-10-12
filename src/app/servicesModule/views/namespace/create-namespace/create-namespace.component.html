@@ -8,7 +8,7 @@
         <div class="row mt-1rem">
           <ng-container *ngIf="insufficientBalance && !insufficientBalanceDuration">
             <div class="col-11 mx-auto d-flex justify-content-end">
-              <span class="fs-08rem fw-600 color-error-message">Insufficient balance</span>
+              <span class="fs-08rem fw-600 color-error-message">Insufficient Balance</span>
             </div>
           </ng-container>
 
@@ -19,7 +19,7 @@
               <input [maxlength]="lengthNamespace" [minlength]="configurationForm.namespaceName.minLength"
                 formControlName="name" required mdbInputDirective mdbValidate [validateSuccess]="true"
                 [validateError]="true" type="text" id="name" class="form-control form-control-sm input-border"
-                placeholder="Enter name" onkeyup="javascript:this.value=this.value.toLowerCase();">
+                placeholder="Enter Name" onkeyup="javascript:this.value=this.value.toLowerCase();">
 
               <!-- VALIDATION -->
               <mdb-error
@@ -80,7 +80,10 @@
                 <div class="col-12">
                   <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
                     width="20" alt="">&nbsp;
-                  <span>Fee: {{ fee }} XPX</span>
+                  <span class="fs-08rem">
+                    Fee:&nbsp;
+                    <a [innerHTML]="getQuantity(fee)"></a> XPX
+                  </span>
                 </div>
               </div>
             </div>
@@ -92,7 +95,10 @@
                 <div class="col-12">
                   <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
                     width="20" alt="">&nbsp;
-                  <span>Rental Fee: {{calculateRentalFee}} XPX</span>
+                  <span class="fs-08rem">
+                    Rental Fee:&nbsp;
+                    <a [innerHTML]="getQuantity(calculateRentalFee)"></a> XPX
+                  </span>
                 </div>
               </div>
             </div>
