@@ -472,7 +472,10 @@ export class CreateMosaicComponent implements OnInit {
     if (this.accountInfo && this.accountInfo.accountInfo && this.accountInfo.accountInfo.mosaics && this.accountInfo.accountInfo.mosaics.length > 0) {
       const mosaicXPX = this.accountInfo.accountInfo.mosaics.find(x => x.id.toHex() === environment.mosaicXpxInfo.id);
       if (mosaicXPX) {
-        if (mosaicXPX.amount.compact() >= Number(this.rentalFee)) {
+        let amountMosaicXpx = this.transactionService.amountFormatterSimple( mosaicXPX.amount.compact())
+        const rentalFee = this.calculateRentalFee.replace(",","")
+        
+        if (Number(amountMosaicXpx) >= Number(rentalFee) + Number(this.fee)) {
           this.insufficientBalance = false;
           this.mosaicForm.enable();
           return;
