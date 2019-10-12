@@ -20,7 +20,7 @@ import { TransactionsService } from '../../../../transactions/services/transacti
 export class AliasAddressToNamespaceComponent implements OnInit {
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Accounts',
-    componentName: 'Link to namespace'
+    componentName: 'Link to Namespace'
   };
   arrayNamespaceStorage: NamespaceStorageInterface[] = [];
   backToService = `/${AppConfig.routes.service}`;

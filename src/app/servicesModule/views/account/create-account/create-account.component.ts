@@ -59,7 +59,7 @@ export class CreateAccountComponent implements OnInit {
 
   ngOnInit() {
     let param = this.activateRoute.snapshot.paramMap.get('id');
-    this.componentName = (param === '0') ? 'Create account' : 'Import account';
+    this.componentName = (param === '0') ? 'Create Account' : 'Import Account';
     this.buttonSend = (param === '0') ? 'Create' : 'Import';
     this.configurationForm = this.sharedService.configurationForm;
     const walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));

@@ -1281,8 +1281,9 @@ input.form-control.validate-success.ng-valid.ng-dirty, input.form-control.valida
 }
 
 button.md-toast-close-button {
-  padding-right: .5rem !important;
-  color: #FFFFFF !important;
+  /*padding-right: .5rem !important;
+  color: #FFFFFF !important;*/
+  display: none;
 }
 
 .messageClass {
