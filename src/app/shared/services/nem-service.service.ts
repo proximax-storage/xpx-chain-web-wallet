@@ -16,7 +16,6 @@ import {
   PlainMessage,
   AssetId,
   TransactionHttp,
-  AccountInfoWithMetaData,
   MultisigTransaction,
   PublicAccount,
   Transaction
