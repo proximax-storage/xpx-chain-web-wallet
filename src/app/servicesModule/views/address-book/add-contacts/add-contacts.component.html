@@ -10,12 +10,12 @@
             width="43" height="43">
           <input formControlName="user" required mdbInputDirective mdbValidate [validateSuccess]="true"
             [validateError]="true" type="text" id="user" maxlength="30" class="form-control form-control-sm input-border"
-            placeholder="Name">
+            placeholder="Enter Name">
 
           <!-- VALIDATION -->
           <mdb-error
             *ngIf="validateInput('user', '').invalid && (validateInput('address', '').dirty || validateInput('address', '').touched)">
-            <span>Name required</span>
+            <span>Name Required</span>
           </mdb-error>
         </div>
       </div>
@@ -32,7 +32,7 @@
           <!-- VALIDATION -->
           <mdb-error
             *ngIf="validateInput('address', '').invalid && (validateInput('address', '').dirty || validateInput('address', '').touched)">
-            <span>Address required</span>
+            <span>Address Required</span>
           </mdb-error>
           <mdb-error *ngIf="msgErrorUnsupported !== ''">
             <span>{{msgErrorUnsupported}}</span>
