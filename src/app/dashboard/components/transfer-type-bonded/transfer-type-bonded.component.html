@@ -47,14 +47,25 @@
     </div>
   </div>
 
-  <ng-container *ngIf="transactionBuilder.data['message'] && transactionBuilder.data['message'].payload !== ''">
+  <ng-container *ngIf="msg !== ''; else viewPayload">
     <div class="row mt-05rem">
       <div class="col-12 lh-1em">
         <span class="fw-600 fs-065rem">Message:&nbsp;</span>
-        <span class="fs-065rem w-w-b-w">{{transactionBuilder.data['message'].payload}}</span>
+        <span class="fs-065rem w-w-b-w">{{msg}}</span>
       </div>
     </div>
   </ng-container>
+
+  <ng-template #viewPayload>
+    <ng-container *ngIf="transactionBuilder.data['message'] && transactionBuilder.data['message'].payload !== ''">
+      <div class="row mt-05rem">
+        <div class="col-12 lh-1em">
+          <span class="fw-600 fs-065rem">Message:&nbsp;</span>
+          <span class="fs-065rem w-w-b-w">{{transactionBuilder.data['message'].payload}}</span>
+        </div>
+      </div>
+    </ng-container>
+  </ng-template>
 
   <ng-container *ngIf="transactionBuilder.data['transactionInfo']">
     <div class="row mt-05rem">

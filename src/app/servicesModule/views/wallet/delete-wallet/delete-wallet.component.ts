@@ -30,7 +30,7 @@ export class DeleteWalletComponent implements OnInit {
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Wallet',
     componentName: 'Delete Wallet',
-    extraButton: 'Export wallet',
+    extraButton: 'Export Wallet',
     routerExtraButton: `/${AppConfig.routes.exportWallet}`
   };
 
@@ -47,12 +47,12 @@ export class DeleteWalletComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.checkAlert = 'i have read the warning, understand the consequences and wish to proceed';
+    this.checkAlert = 'I have read the warning, understand the consequences and wish to proceed';
     this.currentView = 0;
     this.deleteConfirmed = false;
     this.description = 'Select the wallet you want to delete';
     this.textAlert = 'Would you like to delete permanently this wallet?';
-    this.title = 'Delete wallet';
+    this.title = 'Delete Wallet';
     this.wallets = this.walletService.getWalletStorage();
     this.configurationForm = this.sharedService.configurationForm;
     this.createForm();

@@ -80,7 +80,7 @@ export class SwapCertificateComponent implements OnInit {
     doc.addImage(this.img, 'JPEG', 0, 0, 600, 360);
     doc.setFontSize(24);
     doc.setTextColor('#000000');
-    doc.text('Swap Process Certificate', 30, 50);
+    doc.text('Swap Certificate', 30, 50);
     doc.line(30, 60, 300, 60, 'S');
 
     doc.setFontSize(14);

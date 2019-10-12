@@ -54,6 +54,7 @@ export class PartialComponent implements OnInit {
   validateAccount = false;
   configurationForm: ConfigurationForm;
   showSwap: boolean = false;
+  msg: string = '';
 
   constructor(
     private proximaxProvider: ProximaxProvider,
@@ -116,6 +117,7 @@ export class PartialComponent implements OnInit {
    * @memberof PartialComponent
    */
   find(transaction: TransactionsInterface) {
+    this.msg = '';
     this.showSwap = false;
     this.modalPartial.show();
     this.dataSelected = transaction;
@@ -191,6 +193,7 @@ export class PartialComponent implements OnInit {
             if ((addressSender === addressAccountMultisig) || (addressSender === addressAccountSimple)) {
               if (msg && msg["type"] && msg["type"] === "Swap") {
                 // console.log('IS SWAP');
+                this.msg = msg['message'];
                 this.showSwap = true;
               }
             }

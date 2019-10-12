@@ -401,7 +401,7 @@ export class CreateTransferComponent implements OnInit {
       this.fee = this.transactionService.amountFormatterSimple(b.compact())
     } else if (message === 0 && this.mosaicsToSend.length === 0) {
       this.fee = '0.037250'
-    }else {
+    } else {
       this.fee = this.transactionService.amountFormatterSimple(b.compact())
     }
   }
@@ -494,7 +494,17 @@ export class CreateTransferComponent implements OnInit {
         const address = this.proximaxProvider.createFromRawAddress(element.isMultisign.cosignatories[0].address['address']);
         const cosignatorieAccount: AccountsInterface = this.walletService.filterAccountWallet('', null, address.pretty());
         if (cosignatorieAccount) {
+          const accountFiltered: AccountsInfoInterface = this.walletService.filterAccountInfo(cosignatorieAccount.name);
+          const infValidate = this.transactionService.validateBalanceCosignatorie(accountFiltered, Number(this.feeCosignatory)).infValidate;
           this.cosignatorie = cosignatorieAccount;
+          this.listCosignatorie = [{
+            label: cosignatorieAccount.name,
+            value: cosignatorieAccount,
+            selected: true,
+            disabled: infValidate[0].disabled,
+            info: infValidate[0].info
+          }];
+
         } else {
           this.disabledAllField = true;
           this.formTransfer.disable();
@@ -531,7 +541,6 @@ export class CreateTransferComponent implements OnInit {
         return;
       }
     }
-    // }
   }
 
   /**

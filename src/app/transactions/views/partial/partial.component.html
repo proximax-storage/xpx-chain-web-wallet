@@ -186,7 +186,7 @@
                               </app-modify-multisig-account-type>
 
                               <app-transfer-type-bonded *ngIf="innerTransaction.type === typeTransactions.transfer.id"
-                                [transferTransactionBonded]="innerTransaction">
+                                [transferTransactionBonded]="innerTransaction" [msg]="msg">
                               </app-transfer-type-bonded>
                             </mdb-accordion-item-body>
                           </mdb-accordion-item>
