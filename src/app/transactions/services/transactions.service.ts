@@ -642,7 +642,6 @@ export class TransactionsService {
     try {
       if (transaction["message"] && transaction["message"].payload !== "") {
         const msg = JSON.parse(transaction["message"].payload);
-
         const addressAccountMultisig = environment.swapAccount.addressAccountMultisig;
         const addressAccountSimple = environment.swapAccount.addressAccountSimple;
         const addressSender = transaction.signer.address.plain();
