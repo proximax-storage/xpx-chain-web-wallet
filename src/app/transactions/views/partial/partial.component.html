@@ -14,7 +14,7 @@
   </div>
   <div class="row">
     <div class="col-12">
-      <hr class="mt-03rem mb-03rem">
+      <hr class="mt-05rem mb-03rem">
     </div>
   </div>
 </div>
@@ -122,7 +122,7 @@
 
                       <!-- Fee -->
                       <ng-container *ngIf="dataSelected?.effectiveFee">
-                        <div class="col-12 mt-03rem">
+                        <div class="col-12 mt-05rem">
                           <span class="fw-600 fs-095rem color-black">Fee:&nbsp;&nbsp;</span>
                           <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
                           <span class="fw-600 fs-095rem color-black">{{dataSelected?.effectiveFee.part1}}</span>
@@ -132,29 +132,36 @@
                       </ng-container>
 
                       <!-- Type -->
-                      <div class="col-12 mt-03rem">
+                      <div class="col-12 mt-05rem">
                         <span class="fw-600 fs-08rem">Type:&nbsp;&nbsp;</span>
                         <span class="fs-065rem">{{dataSelected?.data['type'].toString(16).toUpperCase()}}</span>
                       </div>
 
                       <!-- Height -->
                       <ng-container *ngIf="dataSelected?.data.transactionInfo.height.compact() > 0">
-                        <div class="col-12 mt-03rem">
+                        <div class="col-12 mt-05rem">
                           <span class="fw-600 fs-08rem">Height:&nbsp;&nbsp;</span>
                           <span class="fs-065rem">{{dataSelected?.data.transactionInfo.height.compact()}}</span>
                         </div>
                       </ng-container>
 
                       <!-- Signer -->
-                      <div class="col-12 mt-03rem line-h-09em">
+                      <div class="col-12 mt-05rem line-h-09em">
                         <span class="fw-600 fs-08rem">Signer:</span> <br>
                         <span class="fs-065rem w-w-b-w">{{dataSelected?.senderAddress}}</span>
                       </div>
 
                       <!-- Hash -->
-                      <div class="col-12 mt-03rem line-h-09em">
-                        <span class="fw-600 fs-08rem">Hash:</span> <br>
+                      <div class="col-12 mt-05rem line-h-09em">
+                        <span class="fw-600 fs-08rem" *ngIf="!nis1hash">Hash:</span>
+                        <span class="fw-600 fs-08rem" *ngIf="nis1hash">Sirius Hash:</span> <br>
                         <span class="fs-065rem w-w-b-w">{{dataSelected?.data.transactionInfo.hash}}</span>
+                      </div>
+
+                      <!-- HASH NIS1  -->
+                      <div class="col-12 mt-05rem line-h-09em" *ngIf="nis1hash">
+                        <span class="fw-600 fs-08rem">Nis1 Hash:</span> <br>
+                        <span class="fs-065rem w-w-b-w">{{nis1hash}}</span>
                       </div>
 
                       <!-- Transactions -->
@@ -231,7 +238,7 @@
 
                         <ng-container
                           *ngIf="dataSelected?.data['cosignatures'] && dataSelected?.data['cosignatures'].length > 0">
-                          <div class="row lh-1em mt-03rem mb-1rem">
+                          <div class="row lh-1em mt-05rem mb-1rem">
                             <div class="col-12">
                               <span class="fw-600 fs-065rem">Others cosignatories:</span>
                             </div>

@@ -42,6 +42,7 @@ export class PartialComponent implements OnInit {
   maxSize = 0;
   moduleName = 'Transactions';
   multisigInfo: MultisigAccountInfo[] = [];
+  nis1hash = null;
   elements: any = [];
   headElements = ['Account linked to the transaction', 'Hash'];
   hideSign = false;
@@ -119,6 +120,7 @@ export class PartialComponent implements OnInit {
   find(transaction: TransactionsInterface) {
     // console.log(transaction);
     this.msg = '';
+    this.nis1hash = null;
     this.showSwap = false;
     this.modalPartial.show();
     this.dataSelected = transaction;
@@ -190,6 +192,7 @@ export class PartialComponent implements OnInit {
             if ((addressSender === addressAccountMultisig) || (addressSender === addressAccountSimple)) {
               if (msg && msg["type"] && msg["type"] === "Swap") {
                 // console.log('IS SWAP');
+                this.nis1hash = msg['nis1Hash'];
                 this.msg = msg['message'];
                 this.showSwap = true;
               }

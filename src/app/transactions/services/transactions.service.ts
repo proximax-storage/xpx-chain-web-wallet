@@ -604,62 +604,68 @@ export class TransactionsService {
    * @memberof TransactionsService
    */
   validateIsSwapTransaction(transaction: Transaction, keyType: string, group: string){
+    let isVerified = false;
     let nameType = this.arraTypeTransaction[keyType].name;
     if (group && (group === 'confirmed' || group === 'unconfirmed')) {
       if(transaction.type === this.arraTypeTransaction.aggregateBonded.id) {
-          const transfer = transaction['innerTransactions'].filter(b => b.type === this.arraTypeTransaction.transfer.id);
-          if(transfer && transfer.length > 0) {
-            let newTransaction: any = null;
-            transfer.forEach(element => {
-              // console.log('element', element);
-              if (element["message"] && element["message"].payload !== "") {
-                try {
-                  const msg = JSON.parse(element["message"].payload);
-                  // console.log('msg', msg);
-                  const addressAccountMultisig = environment.swapAccount.addressAccountMultisig;
-                  const addressAccountSimple = environment.swapAccount.addressAccountSimple;
-                  const addressSender = element.signer.address.plain();
-                  if ((addressSender === addressAccountMultisig) || (addressSender === addressAccountSimple)) {
-                    if (msg && msg["type"] && msg["type"] === "Swap") {
-                      nameType = "ProximaX Swap";
-                      newTransaction = Object.assign({}, element);
-                      newTransaction['transactionInfo'].hash = transaction.transactionInfo.hash;
-                      newTransaction.size = transaction.size;
+        console.log(transaction['innerTransactions']);
+          if(transaction['innerTransactions'].length === 1){
+            if (transaction['innerTransactions'][0]["message"] && transaction['innerTransactions'][0]["message"].payload !== "") {
+              let newTransaction: any = null;
+              try {
+                const msg = JSON.parse(transaction['innerTransactions'][0]["message"].payload);
+                const addressAccountMultisig = environment.swapAccount.addressAccountMultisig;
+                const addressAccountSimple = environment.swapAccount.addressAccountSimple;
+                const addressSender = transaction['innerTransactions'][0].signer.address.plain();
+                if ((addressSender === addressAccountMultisig) || (addressSender === addressAccountSimple)) {
+                  if (msg && msg["type"] && msg["type"] === "Swap") {
+                    nameType = "ProximaX Swap";
+                    newTransaction = Object.assign({}, transaction['innerTransactions'][0]);
+                    newTransaction['transactionInfo'].hash = transaction.transactionInfo.hash;
+                    newTransaction.size = transaction.size;
+                    newTransaction.cosignatures = transaction['cosignatures'];
+                    let walletTransactionsNis = this.walletService.getWalletTransNisStorage().find(el => el.name === this.walletService.getCurrentWallet().name);
+                    if (walletTransactionsNis !== undefined && walletTransactionsNis !== null) {
+                      const transactions = walletTransactionsNis.transactions.filter(el => el.nis1TransactionHast !== msg["nis1Hash"]);
+                      walletTransactionsNis.transactions = newTransaction;
+                      this.walletService.setSwapTransactions$(walletTransactionsNis.transactions);
+                      this.walletService.saveAccountWalletTransNisStorage(walletTransactionsNis);
                     }
                   }
-                } catch (error) {}
-              };
-            });
+                }
+              } catch (error) {}
 
-            // console.log('newTransaction', newTransaction);
-            if(newTransaction !== null) {
-              transaction = newTransaction;
-            }
-        }
+              if(newTransaction !== null) {
+                isVerified = true;
+                transaction = newTransaction;
+              }
+            };
+          }
       }
     }
 
-    try {
-      if (transaction["message"] && transaction["message"].payload !== "") {
-        const msg = JSON.parse(transaction["message"].payload);
-        const addressAccountMultisig = environment.swapAccount.addressAccountMultisig;
-        const addressAccountSimple = environment.swapAccount.addressAccountSimple;
-        const addressSender = transaction.signer.address.plain();
-        if ((addressSender === addressAccountMultisig) || (addressSender === addressAccountSimple)) {
-          if (msg && msg["type"] && msg["type"] === "Swap") {
-            nameType = "ProximaX Swap";
-            let walletTransactionsNis = this.walletService.getWalletTransNisStorage().find(el => el.name === this.walletService.getCurrentWallet().name);
-            if (walletTransactionsNis !== undefined && walletTransactionsNis !== null) {
-              const transactions = walletTransactionsNis.transactions.filter(el => el.nis1TransactionHast !== msg["nis1Hash"]);
-              walletTransactionsNis.transactions = transactions;
-              // console.log('swap --->');
-              this.walletService.setSwapTransactions$(walletTransactionsNis.transactions);
-              this.walletService.saveAccountWalletTransNisStorage(walletTransactionsNis);
+    if(isVerified) {
+      try {
+        if (transaction["message"] && transaction["message"].payload !== "") {
+          const msg = JSON.parse(transaction["message"].payload);
+          const addressAccountMultisig = environment.swapAccount.addressAccountMultisig;
+          const addressAccountSimple = environment.swapAccount.addressAccountSimple;
+          const addressSender = transaction.signer.address.plain();
+          if ((addressSender === addressAccountMultisig) || (addressSender === addressAccountSimple)) {
+            if (msg && msg["type"] && msg["type"] === "Swap") {
+              nameType = "ProximaX Swap";
+              let walletTransactionsNis = this.walletService.getWalletTransNisStorage().find(el => el.name === this.walletService.getCurrentWallet().name);
+              if (walletTransactionsNis !== undefined && walletTransactionsNis !== null) {
+                const transactions = walletTransactionsNis.transactions.filter(el => el.nis1TransactionHast !== msg["nis1Hash"]);
+                walletTransactionsNis.transactions = transactions;
+                this.walletService.setSwapTransactions$(walletTransactionsNis.transactions);
+                this.walletService.saveAccountWalletTransNisStorage(walletTransactionsNis);
+              }
             }
           }
         }
-      }
-    } catch (error) {}
+      } catch (error) {}
+    }
 
     return {
       transaction: transaction,
