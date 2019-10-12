@@ -469,12 +469,12 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
       if (!(this.files.length - 1 === i)) {
         files += ',';
       }
-      this.builderFee(this.files[i]);
+      this.builderMessage(this.files[i]);
     }
     return files;
   }
 
-  builderFee(files){
+  builderMessage(files){
     let valor = {
       "privacyType":1001,
       "data":{

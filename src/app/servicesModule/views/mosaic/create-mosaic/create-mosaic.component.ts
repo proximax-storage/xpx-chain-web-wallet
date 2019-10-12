@@ -486,7 +486,7 @@ export class CreateMosaicComponent implements OnInit {
         let amountMosaicXpx = this.transactionService.amountFormatterSimple( mosaicXPX.amount.compact())
         const rentalFee = this.calculateRentalFee.replace(",","")
         
-        if (Number(amountMosaicXpx) >= Number(rentalFee) + Number(this.fee)) {
+        if (Number(amountMosaicXpx.replace(",","")) >= Number(rentalFee) + Number(this.fee)) {
           this.insufficientBalance = false;
           this.mosaicForm.enable();
           return;
