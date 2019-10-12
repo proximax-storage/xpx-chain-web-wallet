@@ -102,12 +102,12 @@ export class TransferAssetsComponent implements OnInit {
           for (const el of next) {
             if (el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx') {
               let realQuantity = null;
-              console.log(el.quantity);
+              // console.log(el.quantity);
 
               realQuantity = this.transactionService.addZeros(el.properties.divisibility, el.quantity);
               realQuantity = this.nemProvider.amountFormatter(realQuantity, el, el.properties.divisibility);
 
-              console.log(realQuantity);
+              // console.log(realQuantity);
 
               this.accountSelected.mosaic = el;
               const transactions = await this.nemProvider.getUnconfirmedTransaction(this.accountSelected.address);
@@ -429,7 +429,7 @@ export class TransferAssetsComponent implements OnInit {
                 break;
 
               default:
-                console.log('entro en default--------------->', error);
+                // console.log('entro en default--------------->', error);
 
                 // this.sharedService.showError('Error', 'Error! try again later');
                 this.sharedService.showError('Error', error.error.message.toString().split('_').join(' '));

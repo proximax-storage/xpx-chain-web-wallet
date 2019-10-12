@@ -904,6 +904,19 @@ export class WalletService {
     return true;
   }
 
+
+  /**
+   *
+   *
+   * @param {AccountsInterface} account
+   * @memberof WalletService
+   */
+  validateIsMultisigAccount(account: AccountsInterface) {
+    if (account.isMultisign && account.isMultisign.cosignatories && account.isMultisign.cosignatories.length > 0) {
+
+    }
+  }
+
   /**
    *
    *
