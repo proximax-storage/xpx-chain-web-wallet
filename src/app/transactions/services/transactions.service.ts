@@ -77,27 +77,27 @@ export class TransactionsService {
     },
     registerNameSpace: {
       id: TransactionType.REGISTER_NAMESPACE,
-      name: "Register namespace"
+      name: "Register Namespace"
     },
     mosaicDefinition: {
       id: TransactionType.MOSAIC_DEFINITION,
-      name: "Mosaic definition"
+      name: "Mosaic Definition"
     },
     mosaicSupplyChange: {
       id: TransactionType.MOSAIC_SUPPLY_CHANGE,
-      name: "Mosaic supply change"
+      name: "Mosaic Supply Change"
     },
     modifyMultisigAccount: {
       id: TransactionType.MODIFY_MULTISIG_ACCOUNT,
-      name: "Modify multisig account"
+      name: "Modify Multisig Account"
     },
     aggregateComplete: {
       id: TransactionType.AGGREGATE_COMPLETE,
-      name: "Aggregate complete"
+      name: "Aggregate Complete"
     },
     aggregateBonded: {
       id: TransactionType.AGGREGATE_BONDED,
-      name: "Aggregate bonded"
+      name: "Aggregate Bonded"
     },
     mosaicAlias: {
       id: TransactionType.MOSAIC_ALIAS,
@@ -109,7 +109,7 @@ export class TransactionsService {
     },
     lock: {
       id: TransactionType.LOCK,
-      name: "Lockfund"
+      name: "LockFund"
     }
     /*secretLock: {
        id: TransactionType.SECRET_LOCK,
@@ -245,11 +245,7 @@ export class TransactionsService {
    * @returns
    * @memberof TransactionsService
    */
-  amountFormatter(
-    amountParam: UInt64 | number,
-    mosaic: MosaicInfo,
-    manualDivisibility = ""
-  ) {
+  amountFormatter(amountParam: UInt64 | number, mosaic: MosaicInfo, manualDivisibility = "") {
     let amountFormatter = "";
     if (mosaic !== null && mosaic !== undefined) {
       const divisibility =
@@ -313,7 +309,7 @@ export class TransactionsService {
       params.network
     );
 
-    console.log(this.generationHash);
+    // console.log(this.generationHash);
     const account = Account.createFromPrivateKey(
       params.common.privateKey,
       params.network
@@ -334,18 +330,10 @@ export class TransactionsService {
    *
    * @param signedTransaction
    */
-  buildHashLockTransaction(
-    signedTransaction: SignedTransaction
-  ): LockFundsTransaction {
+  buildHashLockTransaction(signedTransaction: SignedTransaction): LockFundsTransaction {
     return HashLockTransaction.create(
-      Deadline.create(
-        environment.deadlineTransfer.deadline,
-        environment.deadlineTransfer.chronoUnit
-      ),
-      new Mosaic(
-        new MosaicId(environment.mosaicXpxInfo.id),
-        UInt64.fromUint(Number(10000000))
-      ),
+      Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
+      new Mosaic(new MosaicId(environment.mosaicXpxInfo.id), UInt64.fromUint(Number(10000000))),
       UInt64.fromUint(480),
       signedTransaction,
       this.walletService.currentAccount.network
@@ -357,10 +345,7 @@ export class TransactionsService {
    * @param sender
    * @param transaction
    */
-  buildAggregateTransaction(
-    sender: PublicAccount,
-    transaction: Transaction
-  ): AggregateTransaction {
+  buildAggregateTransaction(sender: PublicAccount, transaction: Transaction): AggregateTransaction {
     // console.log('sender --->', sender);
     return AggregateTransaction.createBonded(
       Deadline.create(
@@ -375,10 +360,7 @@ export class TransactionsService {
   /**
    *
    */
-  buildTransactionHttp(
-    protocol = environment.protocol,
-    node = this.nodeService.getNodeSelected()
-  ) {
+  buildTransactionHttp(protocol = environment.protocol, node = this.nodeService.getNodeSelected()) {
     return new TransactionHttp(protocol + "://" + `${node}`);
   }
 
@@ -551,117 +533,160 @@ export class TransactionsService {
    * @returns {ConfirmedTransactions}
    * @memberof TransactionsService
    */
-  getStructureDashboard(
-    transaction: Transaction,
-    othersTransactions?: TransactionsInterface[]
-  ): TransactionsInterface {
+  getStructureDashboard(transaction: Transaction, othersTransactions?: TransactionsInterface[], group?: string): TransactionsInterface {
+    // console.log('transaction --->', transaction);
+    // console.log('group', group);
+    // console.log('\n----------------------------------------------\n');
     if (othersTransactions && othersTransactions.length > 0) {
-      const x = othersTransactions.filter(
-        next =>
-          next.data.transactionInfo.hash === transaction.transactionInfo.hash
-      );
-      if (x && x.length > 0) {
+      const existTransction = othersTransactions.filter(next => next.data.transactionInfo.hash === transaction.transactionInfo.hash);
+      if (existTransction && existTransction.length > 0) {
         return null;
       }
     }
 
     const keyType = this.getNameTypeTransaction(transaction.type);
     if (keyType !== undefined) {
-      let recipientRentalFeeSink = "";
-      if (transaction["mosaics"] === undefined) {
-        if (
-          transaction.type === this.arraTypeTransaction.registerNameSpace.id
-        ) {
-          recipientRentalFeeSink = this.namespaceRentalFeeSink
-            .address_public_test;
-        } else if (
-          transaction.type === this.arraTypeTransaction.mosaicDefinition.id ||
-          transaction.type === this.arraTypeTransaction.mosaicSupplyChange.id
-        ) {
-          recipientRentalFeeSink = this.mosaicRentalFeeSink.address_public_test;
-        } else {
-          recipientRentalFeeSink = "-";
-        }
-      }
-
-      let recipient = null;
-      let recipientPretty = null;
-      let isReceive = false;
-      if (transaction["recipient"] !== undefined) {
-        recipient = transaction["recipient"];
-        recipientPretty = transaction["recipient"].pretty();
-        const currentWallet = Object.assign(
-          {},
-          this.walletService.getCurrentWallet()
-        );
-        if (currentWallet.accounts) {
-          if (
-            currentWallet.accounts.find(
-              element =>
-                this.proximaxProvider
-                  .createFromRawAddress(element.address)
-                  .pretty() === transaction["recipient"].pretty()
-            )
-          ) {
-            isReceive = true;
-          }
-        }
-      }
-
-      const feeFormatter = this.amountFormatterSimple(
-        transaction.maxFee.compact()
-      );
-      let nameType = this.arraTypeTransaction[keyType].name;
-      try {
-        if (transaction["message"] && transaction["message"].payload !== "") {
-          const msg = JSON.parse(transaction["message"].payload);
-          if (
-            transaction.signer.address.plain() ===
-            environment.swapAccount.address
-          ) {
-            if (msg && msg["type"] && msg["type"] === "Swap") {
-              nameType = "ProximaX Swap";
-              let walletTransactionsNis = this.walletService
-                .getWalletTransNisStorage()
-                .find(
-                  el => el.name === this.walletService.getCurrentWallet().name
-                );
-              if (
-                walletTransactionsNis !== undefined &&
-                walletTransactionsNis !== null
-              ) {
-                const transactions = walletTransactionsNis.transactions.filter(
-                  el => el.nis1TransactionHast !== msg["nis1Hash"]
-                );
-                walletTransactionsNis.transactions = transactions;
-                this.walletService.setSwapTransactions$(
-                  walletTransactionsNis.transactions
-                );
-                this.walletService.saveAccountWalletTransNisStorage(
-                  walletTransactionsNis
-                );
-              }
-            }
-          }
-        }
-      } catch (error) {
-        // console.log(error);
-      }
-
+      const dataTransaction = this.validateIsSwapTransaction(transaction, keyType, group);
+      const feeFormatter = this.amountFormatterSimple(dataTransaction.transaction.maxFee.compact());
+      const rentalFeeSink = this.getRentalFeeSink(dataTransaction.transaction);
+      const responseIsRecipient = this.validateIsRecipient(dataTransaction.transaction);
       return {
-        data: transaction,
-        nameType: nameType,
+        data: dataTransaction.transaction,
+        nameType: dataTransaction.nameType,
         fee: feeFormatter,
         feePart: this.getDataPart(feeFormatter, 6),
-        sender: transaction.signer,
-        recipientRentalFeeSink: recipientRentalFeeSink,
-        recipient: recipient,
-        recipientAddress: recipientPretty,
-        receive: isReceive,
-        senderAddress: transaction["signer"].address.pretty()
+        sender: dataTransaction.transaction.signer,
+        recipientRentalFeeSink: rentalFeeSink,
+        recipient: responseIsRecipient.recipient,
+        recipientAddress: responseIsRecipient.recipientPretty,
+        receive: responseIsRecipient.isReceive,
+        senderAddress: dataTransaction.transaction["signer"].address.pretty()
       };
     }
     return null;
+  }
+
+  /**
+   *
+   *
+   * @param {Transaction} transaction
+   * @returns
+   * @memberof TransactionsService
+   */
+  validateIsRecipient(transaction: Transaction){
+    let recipient = null;
+    let recipientPretty = null;
+    let isReceive = false;
+    if (transaction["recipient"] !== undefined) {
+      recipient = transaction["recipient"];
+      recipientPretty = recipient.pretty();
+      const currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
+      if (currentWallet.accounts) {
+        if (currentWallet.accounts.find(element => this.proximaxProvider.createFromRawAddress(element.address).pretty() === recipientPretty)) {
+          isReceive = true;
+        }
+      }
+    }
+
+    return {
+      recipient: recipient,
+      recipientPretty: recipientPretty,
+      isReceive: isReceive
+    }
+  }
+
+  /**
+   *
+   *
+   * @param {Transaction} transaction
+   * @param {string} keyType
+   * @returns
+   * @memberof TransactionsService
+   */
+  validateIsSwapTransaction(transaction: Transaction, keyType: string, group: string){
+    let nameType = this.arraTypeTransaction[keyType].name;
+    if (group && (group === 'confirmed' || group === 'unconfirmed')) {
+      if(transaction.type === this.arraTypeTransaction.aggregateBonded.id) {
+          const transfer = transaction['innerTransactions'].filter(b => b.type === this.arraTypeTransaction.transfer.id);
+          if(transfer && transfer.length > 0) {
+            let newTransaction: any = null;
+            transfer.forEach(element => {
+              // console.log('element', element);
+              if (element["message"] && element["message"].payload !== "") {
+                try {
+                  const msg = JSON.parse(element["message"].payload);
+                  // console.log('msg', msg);
+                  const addressAccountMultisig = environment.swapAccount.addressAccountMultisig;
+                  const addressAccountSimple = environment.swapAccount.addressAccountSimple;
+                  const addressSender = element.signer.address.plain();
+                  if ((addressSender === addressAccountMultisig) || (addressSender === addressAccountSimple)) {
+                    if (msg && msg["type"] && msg["type"] === "Swap") {
+                      nameType = "ProximaX Swap";
+                      newTransaction = Object.assign({}, element);
+                      newTransaction['transactionInfo'].hash = transaction.transactionInfo.hash;
+                      newTransaction.size = transaction.size;
+                    }
+                  }
+                } catch (error) {}
+              };
+            });
+
+            // console.log('newTransaction', newTransaction);
+            if(newTransaction !== null) {
+              transaction = newTransaction;
+            }
+        }
+      }
+    }
+
+    try {
+      if (transaction["message"] && transaction["message"].payload !== "") {
+        const msg = JSON.parse(transaction["message"].payload);
+        const addressAccountMultisig = environment.swapAccount.addressAccountMultisig;
+        const addressAccountSimple = environment.swapAccount.addressAccountSimple;
+        const addressSender = transaction.signer.address.plain();
+        if ((addressSender === addressAccountMultisig) || (addressSender === addressAccountSimple)) {
+          if (msg && msg["type"] && msg["type"] === "Swap") {
+            nameType = "ProximaX Swap";
+            let walletTransactionsNis = this.walletService.getWalletTransNisStorage().find(el => el.name === this.walletService.getCurrentWallet().name);
+            if (walletTransactionsNis !== undefined && walletTransactionsNis !== null) {
+              const transactions = walletTransactionsNis.transactions.filter(el => el.nis1TransactionHast !== msg["nis1Hash"]);
+              walletTransactionsNis.transactions = transactions;
+              // console.log('swap --->');
+              this.walletService.setSwapTransactions$(walletTransactionsNis.transactions);
+              this.walletService.saveAccountWalletTransNisStorage(walletTransactionsNis);
+            }
+          }
+        }
+      }
+    } catch (error) {}
+
+    return {
+      transaction: transaction,
+      nameType: nameType
+    };
+  }
+
+  /**
+   *
+   *
+   * @param {Transaction} transaction
+   * @returns
+   * @memberof TransactionsService
+   */
+  getRentalFeeSink(transaction: Transaction) {
+    if (transaction["mosaics"] === undefined) {
+      if (transaction.type === this.arraTypeTransaction.registerNameSpace.id) {
+        return this.namespaceRentalFeeSink.address_public_test;
+      } else if (
+        transaction.type === this.arraTypeTransaction.mosaicDefinition.id ||
+        transaction.type === this.arraTypeTransaction.mosaicSupplyChange.id
+      ) {
+        return this.mosaicRentalFeeSink.address_public_test;
+      } else {
+        return "-";
+      }
+    }
   }
 
   /**
@@ -696,14 +721,10 @@ export class TransactionsService {
    */
   searchAccountsInfo(accounts: AccountsInterface[]) {
     // console.log('ACCOUNTS INTERFACE ---> ', accounts);
-    this.walletService
-      .searchAccountsInfo(accounts)
-      .then(
-        (data: {
-          mosaicsId: MosaicId[];
-          accountsInfo: AccountsInfoInterface[];
-        }) => {
-          // console.log('=== DATA ===', data);
+    this.walletService.searchAccountsInfo(accounts).then((data: {
+      mosaicsId: MosaicId[];
+      accountsInfo: AccountsInfoInterface[];
+    }) => {
           this.walletService.validateMultisigAccount(accounts);
           const publicsAccounts: PublicAccount[] = [];
           data.accountsInfo.forEach((element: AccountsInfoInterface) => {
@@ -717,7 +738,6 @@ export class TransactionsService {
             }
           });
 
-          // console.log('==== publicsAccounts ====', publicsAccounts);
           // Search all transactions aggregate bonded from array publics accounts
           if (publicsAccounts.length > 0) {
             this.searchAggregateBonded(publicsAccounts);
@@ -728,8 +748,7 @@ export class TransactionsService {
             this.mosaicServices.searchInfoMosaics(data.mosaicsId);
           }
         }
-      )
-      .catch(error => console.log(error));
+      ).catch(error => console.log(error));
   }
 
   /**
@@ -857,11 +876,7 @@ export class TransactionsService {
    * @returns {boolean}
    * @memberof TransactionsService
    */
-  validateBuildSelectAccountBalance(
-    balanceAccount: number,
-    feeTransaction: number,
-    rental: number
-  ): boolean {
+  validateBuildSelectAccountBalance(balanceAccount: number, feeTransaction: number, rental: number): boolean {
     const totalFee = feeTransaction + rental;
     /*console.log(balanceAccount);
     console.log(feeTransaction);
@@ -878,10 +893,7 @@ export class TransactionsService {
    * @param {Number} feeTotal
    * @memberof DashboardService
    */
-  validateBalanceCosignatorie(
-    accountInfo: AccountsInfoInterface,
-    feeTotal: number
-  ): BalanceCosignatorieValidate {
+  validateBalanceCosignatorie(accountInfo: AccountsInfoInterface, feeTotal: number): BalanceCosignatorieValidate {
     let value: BalanceCosignatorieValidate = {
       infValidate: [{ disabled: false, info: "" }]
     };
@@ -891,7 +903,7 @@ export class TransactionsService {
       accountInfo.accountInfo !== null;
     // Validate account info
     if (!disabled)
-      return { infValidate: [{ disabled: true, info: "not valid" }] };
+      return { infValidate: [{ disabled: true, info: "Not Valid" }] };
     // Validate mosaics
     if (
       !accountInfo.accountInfo.mosaics.find(
@@ -899,13 +911,13 @@ export class TransactionsService {
       )
     )
       return {
-        infValidate: [{ disabled: true, info: "Insufficient balance" }]
+        infValidate: [{ disabled: true, info: "Insufficient Balance" }]
       };
     // Validate balance account
     const balanceAccount = accountInfo.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id).amount.compact();
     if (!(balanceAccount >= feeTotal))
       return {
-        infValidate: [{ disabled: true, info: "Insufficient balance" }]
+        infValidate: [{ disabled: true, info: "Insufficient Balance" }]
       };
 
     return { infValidate: [{ disabled: false, info: "" }] };
@@ -940,3 +952,4 @@ export interface TransactionsInterface {
   name?: string;
   hash?: string;
 }
+

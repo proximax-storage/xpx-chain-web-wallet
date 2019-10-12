@@ -35,8 +35,8 @@
                                             justify-content-lg-end
                                             justify-content-xl-end p-1rem">
                   <!-- Delete-->
-                  <img src="assets/images/img/icon-trash-can-gray-16h-proximax-sirius-wallet.svg" class="cursor-p" width="25"
-                    title=" Delete" (click)="confirmAction(wallet)">
+                  <img src="assets/images/img/icon-trash-can-gray-16h-proximax-sirius-wallet.svg" class="cursor-p"
+                    width="25" title=" Delete" (click)="confirmAction(wallet)">
                   <!-- <img src="assets/images/img/icon-wallet-export-blue.svg" class="cursor-p" width="40" title=" Export" -->
                   <!-- (click)="confirmAction(wallet)"> -->
                 </div>
@@ -72,16 +72,19 @@
     </div>
 
     <!--BUTTONS -->
-    <div class="row mt-2rem d-flex justify-content-center">
-      <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
-        size="md" (click)="changeView()">
-        <span class="fs-1-2em color-white"> <i class="fa fa-chevron-circle-left"></i> GO BACK</span>
-      </button>
-
-      <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
-        size="md" (click)="changeView(2)">
-        <span class="fs-1-2em color-white"><i class="fa fa-chevron-circle-right"></i> YES, PROCEED</span>
-      </button>
+    <div class="row mt-1rem d-flex justify-content-center">
+      <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
+        <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" size="md"
+          (click)="changeView()">
+          <span class="fs-1-2em color-white">Go Back</span>
+        </button>
+      </div>
+      <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
+        <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" size="md"
+          (click)="changeView(2)">
+          <span class="fs-1-2em color-white">Proceed</span>
+        </button>
+      </div>
     </div>
   </div>
 </div>
@@ -114,10 +117,14 @@
         <div class="md-form form-sm">
           <img class="form-control-feedback" src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg"
             alt="">
+          <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
+            src="assets/images/img/icon-show-hide-password.svg" *ngIf="passwordMain === 'password'">
+          <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
+            src="assets/images/img/icon-show-hide-password-grey.svg" *ngIf="passwordMain === 'text'">
           <input formControlName="password" [maxlength]="configurationForm.passwordWallet.maxLength"
-            [minlength]="configurationForm.passwordWallet.minLength" mdbInputDirective
-            mdbValidate [validateSuccess]="true" [validateError]="true" type="password" id="password"
-            class="form-control form-control-sm input-border" placeholder="Enter wallet password">
+            [minlength]="configurationForm.passwordWallet.minLength" mdbInputDirective mdbValidate
+            [validateSuccess]="true" [validateError]="true" [type]="passwordMain" id="password"
+            class="form-control form-control-sm input-border" placeholder="Enter Wallet Password">
           <!-- VALIDATION -->
           <mdb-error
             *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
@@ -140,7 +147,8 @@
 
   <!--BUTTONS -->
   <div class="row d-flex justify-content-center">
-    <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md" (click)="changeView()">
+    <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md"
+      (click)="changeView()">
       <span class="fs-1-2em color-white">Cancel</span>
     </button>
     <button mdbBtn type="button" [disabled]="validatingForm.invalid" rounded="true" mdbWavesEffect

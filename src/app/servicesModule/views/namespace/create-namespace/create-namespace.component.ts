@@ -24,7 +24,7 @@ export class CreateNamespaceComponent implements OnInit {
   @BlockUI() blockUI: NgBlockUI;
   arrayselect: Array<object> = [{
     value: '1',
-    label: 'New root Namespace',
+    label: 'New Root Namespace',
     selected: true,
     disabled: false
   }];
@@ -49,9 +49,10 @@ export class CreateNamespaceComponent implements OnInit {
   labelNamespace: string = '';
   lengthNamespace: number;
   paramsHeader: HeaderServicesInterface = {
-    moduleName: 'Namespaces & Sub-Namespaces',
+    moduleName: 'Namespaces',
     componentName: 'Register'
   };
+  passwordMain: string = 'password';
 
   registerRootNamespaceTransaction: any;
   registersubamespaceTransaction: any;
@@ -91,12 +92,11 @@ export class CreateNamespaceComponent implements OnInit {
     this.validateRentalFee(this.rentalFee * parseFloat(this.durationByBlock));
     this.getNamespaces();
     this.subscribeValueChange();
+    // console.log(this.walletService.currentAccount);
   }
 
   ngOnDestroy(): void {
-    // console.log('----ngOnDestroy---');
     this.subscription.forEach(subscription => {
-      // console.log(subscription);
       subscription.unsubscribe();
     });
   }
@@ -206,6 +206,17 @@ export class CreateNamespaceComponent implements OnInit {
   /**
    *
    *
+   * @param {*} inputType
+   * @memberof CreateNamespaceComponent
+   */
+  changeInputType(inputType) {
+    let newType = this.sharedService.changeInputType(inputType)
+    this.passwordMain = newType;
+  }
+
+  /**
+   *
+   *
    * @memberof CreateNamespaceComponent
    */
   createForm() {
@@ -260,10 +271,7 @@ export class CreateNamespaceComponent implements OnInit {
    */
   createNamespace() {
     if (this.namespaceForm.valid && !this.blockBtnSend) {
-      // console.log('this.calculateRentalFee', this.calculateRentalFee);
       const validateAmount = this.transactionService.validateBuildSelectAccountBalance(this.amountAccount, Number(this.fee), Number(this.calculateRentalFee.replace(',', '')));
-      // console.log('validateAmount', validateAmount);
-
       if (validateAmount) {
         this.blockBtnSend = true;
         const common = {
@@ -292,7 +300,7 @@ export class CreateNamespaceComponent implements OnInit {
           this.blockBtnSend = false;
         }
       } else {
-        this.sharedService.showError('', 'Insufficient balance');
+        this.sharedService.showError('', 'Insufficient Balance');
       }
     }
   }
@@ -347,7 +355,7 @@ export class CreateNamespaceComponent implements OnInit {
 
           this.arrayselect = [{
             value: '1',
-            label: 'New root Namespace',
+            label: 'New Root Namespace',
             selected: true,
             disabled: false
           }];
@@ -375,6 +383,17 @@ export class CreateNamespaceComponent implements OnInit {
         this.block = response
       }
     );
+  }
+
+  /**
+   *
+   *
+   * @param {string} quantity
+   * @returns
+   * @memberof CreateNamespaceComponent
+   */
+  getQuantity(quantity: string) {
+    return this.sharedService.amountFormat(quantity);
   }
 
   /**
@@ -409,6 +428,11 @@ export class CreateNamespaceComponent implements OnInit {
     return this.namespaceForm.get(control);
   }
 
+  /**
+   *
+   *
+   * @memberof CreateNamespaceComponent
+   */
   getTransactionStatus() {
     this.transactionStatus = true;
     // Get transaction status
@@ -434,6 +458,12 @@ export class CreateNamespaceComponent implements OnInit {
     ));
   }
 
+  /**
+   *
+   *
+   * @param {*} e
+   * @memberof CreateNamespaceComponent
+   */
   limitDuration(e) {
     // console.log();
     if (isNaN(parseInt(e.target.value))) {

@@ -10,6 +10,7 @@ import { TransactionsService, TransactionsInterface } from '../../../transaction
 export class TransferTypeBondedComponent implements OnInit {
 
   @Input() transferTransactionBonded: TransferTransaction = null;
+  @Input() msg: string = '';
   transactionBuilder: TransactionsInterface = null;
 
   constructor(

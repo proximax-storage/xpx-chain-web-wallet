@@ -20,10 +20,12 @@ export class ImportWalletComponent implements OnInit {
 
   importWalletForm: FormGroup;
   configurationForm: ConfigurationForm = {};
-  description = 'Restore your existing ProximaX Sirius Wallet, import a private key from another service, or create a new wallet right now!';
+  description = 'Restore your existing ProximaX Sirius Wallet, import a private key from another service or create a new wallet right now!';
   errorMatchPassword: string;
   errorWalletExist: string;
   isValid: boolean = false;
+  passwordMain = 'password'
+  passwordConfirm = 'password'
   title = 'Create Wallet';
   typeNetwork = [{
     value: environment.typeNetwork.value,
@@ -52,6 +54,15 @@ export class ImportWalletComponent implements OnInit {
     this.walletService.setAccountInfoNis1(null);
     this.walletService.setNis1AccountSelected(null);
     this.walletService.setAccountSelectedWalletNis1(null);
+  }
+
+  changeInputType(inputType, main = true) {
+    let newType = this.sharedService.changeInputType(inputType)
+    if (main === true) {
+      this.passwordMain = newType;
+    } else if (main === false) {
+      this.passwordConfirm = newType;
+    }
   }
 
   createFormImportWallet() {

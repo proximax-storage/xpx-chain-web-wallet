@@ -10,7 +10,7 @@ import { WalletService } from '../../services/wallet.service';
 })
 export class WalletNis1FoundComponent implements OnInit {
 
-  goSignIn: string = `/${AppConfig.routes.auth}`;
+  goSignIn: string = `/${AppConfig.routes.home}`;
   privateKey: string;
 
   constructor(
@@ -20,6 +20,9 @@ export class WalletNis1FoundComponent implements OnInit {
   }
 
   ngOnInit() {
+    if (this.walletService.getNis1AccounsWallet() === null || this.walletService.getNis1AccounsWallet() === undefined || this.walletService.getNis1AccounsWallet().length === 0 ) {
+      this.router.navigate([`/${AppConfig.routes.home}`]);
+    }
   }
 
   goToRoute() {

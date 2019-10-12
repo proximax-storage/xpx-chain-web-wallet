@@ -54,7 +54,7 @@
                       <button *ngIf="!contact.walletContact" type="button" mdbBtn class="background-btn" title="Edit"
                         rounded="true" size="sm" class="my-0" (click)="navigate(contact.label)"><i
                           class="fa fa-edit"></i></button>
-                      <button *ngIf="!contact.walletContact" type="button" mdbBtn color="danger" rounded="true"
+                      <button *ngIf="!contact.walletContact" type="button" mdbBtn color="blue" rounded="true"
                         title="Delete" size="sm" class="my-0" (click)="remove(contact.label)"><i
                           class="fa fa-trash"></i></button>
                       <span class="contact-not-edit" *ngIf="contact.walletContact">Contact belongs to your wallet</span>
@@ -92,25 +92,24 @@
           </button>
         </div>
         <div class="row mt-1rem mb-1rem">
-          <div class="col-11 col-sm-12 col-md-11 mx-auto box-transparent-border-orange">
-            <div class="col-12 d-flex flex-column align-items-center">
-              <span class="font-small d-flex text-center">Are you sure you want to delete {{labelRemove}}
-                contact??</span>
-            </div>
+          <div class="col-11 col-sm-12 col-md-11 mx-auto">
+            <p class="fs-1-5rem fw-400 txt-a-center mt-05rem mb-1rem lh-1-1em">
+              Are you sure you want to delete {{labelRemove}} contact?
+            </p>
           </div>
           <!-- BUTTONS -->
           <div class="row mx-auto">
             <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-              <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+              <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax"
                 size="md" (click)="basicModal.hide()">
-                <span class="fs-1-2em color-white">NO</span>
+                <span class="color-white">No</span>
               </button>
             </div>
 
             <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-              <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+              <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax"
                 (click)="deleteContact()" size="md">
-                <span class="fs-1-2em color-white">YES</span>
+                <span class="color-white">Yes</span>
               </button>
             </div>
           </div>

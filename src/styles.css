@@ -264,6 +264,10 @@ html, body {
   padding: 0 !important;
 }
 
+.p-05rem {
+  padding: .5rem !important;
+}
+
 .p-1rem {
   padding: 1rem !important;
 }
@@ -271,7 +275,6 @@ html, body {
 .p-1-5rem {
   padding: 1.5rem !important;
 }
-
 
 .p-2rem {
   padding: 2rem !important;
@@ -287,6 +290,10 @@ html, body {
 
 .p-05rem {
   padding: .5rem !important;
+}
+
+.p-08rem {
+  padding: .8rem !important;
 }
 
 .p-1-5rem {
@@ -316,11 +323,11 @@ html, body {
 }
 
 .pt-07rem {
-  padding-top: .7rem;
+  padding-top: .7rem !important;
 }
 
 .pt-08rem {
-  padding-top: .8rem;
+  padding-top: .8rem !important;
 }
 
 .pt-09rem {
@@ -328,7 +335,11 @@ html, body {
 }
 
 .pt-1rem {
-  padding-top: 1rem;
+  padding-top: 1rem !important;
+}
+
+.pt-1-3rem {
+  padding-top: 1.3rem !important;
 }
 
 .pt-2rem {
@@ -357,12 +368,28 @@ html, body {
 
 /** BOTTOM **/
 
+.pb-0 {
+  padding-bottom: 0 !important;
+}
+
+.pb-10px {
+  padding-bottom: 10px;
+}
+
 .pb-02rem {
   padding-bottom: .2rem;
 }
 
+.pb-08rem {
+  padding-bottom: .8rem;
+}
+
 .pb-1rem {
-  padding-bottom: 1rem;
+  padding-bottom: 1rem !important;
+}
+
+.pb-1-3rem {
+  padding-bottom: 1.3rem !important;
 }
 
 .pb-03rem {
@@ -374,7 +401,7 @@ html, body {
 }
 
 .pb-07rem {
-  padding-bottom: .7rem;
+  padding-bottom: .7rem !important;
 }
 
 .pb-2rem {
@@ -382,7 +409,7 @@ html, body {
 }
 
 .pb-08rem {
-  padding-bottom: .8rem;
+  padding-bottom: .8rem !important;
 }
 
 .pb-09rem {
@@ -457,6 +484,15 @@ html, body {
   padding-right: .5rem;
 }
 
+.pr-1rem-left-right {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.pr-4rem {
+  padding-right: 4rem;
+}
+
 /************************** BORDER ******************************/
 
 .bordb-2px-solid-land {
@@ -479,6 +515,10 @@ html, body {
 
 .lh-1em {
   line-height: 1em
+}
+
+.lh-1-1em {
+  line-height: 1.1em !important;
 }
 
 .lh-1-4em {
@@ -623,6 +663,10 @@ html, body {
   height: 100px;
 }
 
+.h-170px {
+  height: 170px;
+}
+
 /********************** WIDTH **********************/
 
 .w-30px {
@@ -653,6 +697,10 @@ html, body {
 
 .fw-400 {
   font-weight: 400;
+}
+
+.fw-500 {
+  font-weight: 500;
 }
 
 .fw-600 {
@@ -801,10 +849,6 @@ html, body {
   color: #e90000 !important;
 }
 
-.color-dark-green {
-  color: #023c42 !important;
-}
-
 .color-light-orange {
   color: #f2a917 !important;
 }
@@ -938,7 +982,7 @@ html, body {
 
 .txt-btn-dashboard {
   padding-left: 3px;
-  font-size: .6rem;
+  font-size: .7rem;
   font-weight: 600;
 }
 
@@ -962,8 +1006,8 @@ html, body {
 /**************************** THEME *****************************/
 
 .icono {
-  width: 28px;
-  padding-right: 10px;
+  width: 25px;
+  padding-right: 4px;
   display: inline-block;
   line-height: 18px;
 }
@@ -1146,6 +1190,10 @@ button.navbar-toggler {
   padding: 2px !important;
 }
 
+.md-form .form-control {
+  padding-bottom: .6rem !important;
+}
+
 /** INPUTS VALIDATION **/
 
 input.form-control.validate-error.ng-invalid.ng-touched, input.form-control.validate-error.ng-invalid.ng-dirty, .form-submitted input.form-control.validate-error.ng-invalid, .md-textarea.validate-error.ng-invalid.ng-touched, .md-textarea.validate-error.ng-invalid.ng-dirty, .form-submitted .md-textarea.validate-error.ng-invalid {
@@ -1176,8 +1224,7 @@ input.form-control.validate-success.ng-valid.ng-dirty, input.form-control.valida
   color: #e06e38 !important;
 }
 
-
-.color-error-red{
+.color-error-red {
   color: brown;
 }
 
@@ -1194,7 +1241,12 @@ input.form-control.validate-success.ng-valid.ng-dirty, input.form-control.valida
 }
 
 #toast-container.md-toast-bottom-center>mdb-toast-component, #toast-container.md-toast-top-center>mdb-toast-component {
-  margin: 6px 0 6px !important;
+  /*margin: 6px 0 6px !important;*/
+  background: rgba(0,0,0,0.6 );
+  margin: 25% auto !important;
+  padding: 2rem 0;
+  width:100% !important;
+  text-align: center !important;
 }
 
 .md-toast-top-center {
@@ -1206,55 +1258,56 @@ input.form-control.validate-success.ng-valid.ng-dirty, input.form-control.valida
 
 .toastInfo {
   opacity: 1.0 !important;
-  background-color: white !important;
+  background-color: #306EB5 !important;
   border: 2px solid #306EB5 !important;
 }
 
 .toastSuccess {
   opacity: 1.0 !important;
-  background-color: white !important;
+  background-color: #306EB5 !important;
   border: 2px solid #306EB5 !important;
 }
 
 .toastWarning {
   opacity: 1.0 !important;
-  background-color: white !important;
+  background-color: #f2a91d !important;
   border: 2px solid #f2a91d !important;
 }
 
 .toastError {
   opacity: 1.0 !important;
-  background-color: white !important;
+  background-color: #e06e38 !important;
   border: 2px solid #e06e38 !important;
 }
 
 button.md-toast-close-button {
-  padding-right: .5rem !important;
-  color: #505050 !important;
+  /*padding-right: .5rem !important;
+  color: #FFFFFF !important;*/
+  display: none;
 }
 
 .messageClass {
   font-family: sans-serif !important;
   font-size: .9rem;
-  color: #505050 !important;
+  color: #FFFFFF !important;
   font-weight: 600;
   text-transform: capitalize !important;
 }
 
 .md-toast-success:before {
-  color: #306EB5 !important;
+  color: #FFFFFF !important;
 }
 
 .md-toast-info:before {
-  color: #306EB5 !important;
+  color: #FFFFFF !important;
 }
 
 .md-toast-warning:before {
-  color: #f2a91d !important;
+  color: #FFFFFF !important;
 }
 
 .md-toast-error:before {
-  color: #e06e38 !important;
+  color: #FFFFFF !important;
 }
 
 .md-toast-success:before, .md-toast-info:before, .md-toast-warning:before, .md-toast-error:before, #toast-container>mdb-toast-component {
@@ -1296,10 +1349,19 @@ button.md-toast-close-button {
 
 /** FIN INPUTS VALIDATION **/
 
+.ng-placeholder {
+  font-size: 1rem !important;
+}
+
+.ng-select .ng-select-container .ng-value-container {
+  padding: 1em 0 !important;
+  padding-bottom: 0rem !important;
+}
+
 /************* SELECT ************/
 
 .ng-select .ng-select-container {
-  min-height: 40.5px !important;
+  min-height: 44px !important;
 }
 
 .ng-dropdown-panel .ng-dropdown-panel-items .ng-option, .ng-select.ng-select-single .ng-select-container .ng-value-container, .ng-select.ng-select-single .ng-select-container .ng-value-container .ng-value {
@@ -1337,7 +1399,7 @@ button.md-toast-close-button {
 }
 
 .double-nav a {
-  color: #0275d8 !important;
+  color: #306Eb5 !important;
 }
 
 /************************* FIN NG SELECT *******************/
@@ -1388,9 +1450,12 @@ button.md-toast-close-button {
 .box-grey {
   border-radius: 1.5rem;
   background: #f4f4f4;
-  padding: 10px 20px;
-  margin: 10px;
+  /* padding: 10px 20px;
+  margin: 10px; */
+  padding: .5rem 1rem .5rem 1rem;
   color: #333333;
+  font-size: .9rem !important;
+  margin: .4rem 0rem .4rem 0rem;
 }
 
 .box-drop {
@@ -1686,6 +1751,18 @@ body.modal-open {
   }
 }
 
+@media only screen and (min-width: 766px) {
+  .option {
+    display: none !important;
+  }
+}
+
+@media only screen and (max-width: 767px) {
+  .option {
+    display: block !important;
+  }
+}
+
 .background-pending {
   background: #ffdfa0;
 }
@@ -1733,6 +1810,7 @@ ngx-dropzone-label {
 .md-accordion .card .card-header a h5 {
   font-size: .8rem !important;
   font-weight: 600 !important;
+  color: black !important;
 }
 
 .accordion .card .card-header {
@@ -1793,6 +1871,13 @@ ul.stepper.horizontal .step-title {
   width: 39px;
 }
 
+.form-control-feedback-eye {
+  position: absolute;
+  padding: 10px;
+  width: 39px;
+  right: 0;
+}
+
 .form-control {
   padding-left: 33px!important;
 }
@@ -1820,19 +1905,34 @@ ul.stepper.horizontal .step-title {
   background-color: rgb(50, 110, 180) !important;
 }
 
-.ng-dropdown-panel .ng-dropdown-panel-items{
+.ng-dropdown-panel .ng-dropdown-panel-items {
   max-height: 170px !important;
 }
 
-.dropdown-menu{
-  margin-top: 0px !important;
+.dropdown-menu {
+  margin-top: -10px !important;
   min-width: 6rem !important;
 }
 
-.dropdown .dropdown-menu, .dropleft .dropdown-menu, .dropright .dropdown-menu, .dropup-material .dropdown-menu{
+.dropdown .dropdown-menu, .dropleft .dropdown-menu, .dropright .dropdown-menu, .dropup-material .dropdown-menu {
   padding: .2rem !important;
 }
 
-.ngx-pagination .current{
+.ngx-pagination .current {
   background: #306EB5 !important;
+}
+
+/*************BUTTONS*****************/
+
+.btn-proximax {
+  min-width: 120px !important;
+  padding: 8px 30px !important;
+  font-weight: bold !important;
+  font-size: 16px !important;
+  text-align: center !important;
+  background: #306eb5 !important;
+}
+
+.ls-002rem {
+  letter-spacing: .02rem !important;
 }

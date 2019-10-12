@@ -37,6 +37,8 @@ export class TransferAssetsComponent implements OnInit {
   listContacts: any = [];
   mosaics: any = null;
   maxAmount: number;
+  passwordMain: string = 'password';
+  processing: boolean = false;
   optionsXPX = {
     prefix: '',
     thousands: ',',
@@ -70,14 +72,20 @@ export class TransferAssetsComponent implements OnInit {
     if (this.accountSelected) {
       this.initComponent();
     } else {
-      this.router.navigate([AppConfig.routes.auth]);
+      this.router.navigate([AppConfig.routes.home]);
     }
+  }
+
+  changeInputType(inputType) {
+    let newType = this.sharedService.changeInputType(inputType)
+    this.passwordMain = newType;
   }
 
   initComponent() {
     this.createFormTransfer();
     this.formTransfer.get('amountXpx').reset();
     this.booksAddress();
+    this.suscribe();
 
     if (this.accountSelected.consignerAccounts !== undefined) {
       this.changeAccount = this.accountSelected.consignerAccounts.length > 1;
@@ -94,18 +102,15 @@ export class TransferAssetsComponent implements OnInit {
           for (const el of next) {
             if (el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx') {
               let realQuantity = null;
-              console.log(el.quantity);
+              // console.log(el.quantity);
 
               realQuantity = this.transactionService.addZeros(el.properties.divisibility, el.quantity);
               realQuantity = this.nemProvider.amountFormatter(realQuantity, el, el.properties.divisibility);
 
-              console.log(realQuantity);
+              // console.log(realQuantity);
 
               this.accountSelected.mosaic = el;
               const transactions = await this.nemProvider.getUnconfirmedTransaction(this.accountSelected.address);
-              // console.log('this.accountSelected', this.accountSelected);
-              // console.log('Estas son las transacciones', transactions);
-              // console.log('this is a wallet', this.walletService.getCurrentWallet());
 
               if (transactions.length > 0) {
                 let relativeAmount = realQuantity;
@@ -153,9 +158,7 @@ export class TransferAssetsComponent implements OnInit {
             } else {
               this.formTransfer.get('amountXpx').enable();
               this.formTransfer.get('password').enable();
-              this.suscribe();
               this.blockButton = false;
-
             }
             this.divisivility = this.accountSelected.mosaic.properties.divisibility.toString();
           }
@@ -185,6 +188,10 @@ export class TransferAssetsComponent implements OnInit {
       this.searchBalance = false;
       this.maxAmount = this.quantity.length;
     }
+  }
+
+  getQuantity(quantity) {
+    return this.sharedService.amountFormat(quantity);
   }
 
   suscribe() {
@@ -305,35 +312,40 @@ export class TransferAssetsComponent implements OnInit {
   }
 
   async createTransaction() {
-    let common = { password: this.formTransfer.get("password").value };
-    const quantity = this.formTransfer.get("amountXpx").value;
-    const currentAccount = this.walletService.getAccountSelectedWalletNis1();
+    if (!this.processing) {
+      this.processing = true;
+      let common = { password: this.formTransfer.get("password").value };
+      const quantity = this.formTransfer.get("amountXpx").value;
+      const currentAccount = this.walletService.getAccountSelectedWalletNis1();
 
-    if (this.walletService.decrypt(common, currentAccount)) {
-      const account = this.nemService.createAccountPrivateKey(common['privateKey']);
+      if (this.walletService.decrypt(common, currentAccount)) {
+        const account = this.nemService.createAccountPrivateKey(common['privateKey']);
 
-      if (this.accountSelected.multiSign) {
-        const recipient = this.formTransfer.get('accountRecipient').value;
-        const dataAccount = this.walletService.currentWallet.accounts.find(el => el.publicAccount.address['address'] === recipient.split('-').join(''));
-        const catapultAccount = this.proximaxService.createPublicAccount(dataAccount.publicAccount.publicKey, dataAccount.network);
-        const transaction = await this.nemService.createTransaction(PlainMessage.create(recipient), this.accountSelected.mosaic.assetId, quantity);
+        if (this.accountSelected.multiSign) {
+          const recipient = this.formTransfer.get('accountRecipient').value;
+          const dataAccount = this.walletService.currentWallet.accounts.find(el => el.publicAccount.address['address'] === recipient.split('-').join(''));
+          const catapultAccount = this.proximaxService.createPublicAccount(dataAccount.publicAccount.publicKey, dataAccount.network);
+          const transaction = await this.nemService.createTransaction(PlainMessage.create(catapultAccount.publicKey), this.accountSelected.mosaic.assetId, quantity);
 
-        this.nemService.createTransactionMultisign(transaction, this.nemService.createPublicAccount(this.accountSelected.publicKey))
-          .then(next => {
-            this.anounceTransaction(next, account, catapultAccount, transaction);
-          })
-          .catch(error => {
-            // console.log('Esrror', error);
-            this.sharedService.showError('Error', error.toString().split('_').join(' '));
-            this.spinnerVisibility = false;
-          });
+          this.nemService.createTransactionMultisign(transaction, this.nemService.createPublicAccount(this.accountSelected.publicKey))
+            .then(next => {
+              this.anounceTransaction(next, account, catapultAccount, transaction);
+            })
+            .catch(error => {
+              // console.log('Esrror', error);
+              this.sharedService.showError('Error', error.toString().split('_').join(' '));
+              this.spinnerVisibility = false;
+              this.processing = false;
+            });
+        } else {
+          const catapultAccount = this.proximaxService.getPublicAccountFromPrivateKey(common['privateKey'], currentAccount.network);
+          const transaction = await this.nemService.createTransaction(PlainMessage.create(catapultAccount.publicKey), this.accountSelected.mosaic.assetId, quantity);
+          this.anounceTransaction(transaction, account, catapultAccount, transaction);
+        }
       } else {
-        const catapultAccount = this.proximaxService.getPublicAccountFromPrivateKey(common['privateKey'], currentAccount.network);
-        const transaction = await this.nemService.createTransaction(PlainMessage.create(catapultAccount.publicKey), this.accountSelected.mosaic.assetId, quantity);
-        this.anounceTransaction(transaction, account, catapultAccount, transaction);
+        this.spinnerVisibility = false;
+        this.processing = false;
       }
-    } else {
-      this.spinnerVisibility = false;
     }
   }
 
@@ -370,6 +382,7 @@ export class TransferAssetsComponent implements OnInit {
         this.walletService.saveAccountWalletTransNisStorage(wallet);
         this.sharedService.showSuccess('Transaction', next['message']);
         this.walletService.accountWalletCreated = null;
+        this.processing = false;
         this.changeView.emit({
           transaction: transaction,
           details: next,
@@ -378,36 +391,71 @@ export class TransferAssetsComponent implements OnInit {
         });
       },
         error => {
-          if (error.error.message) {
-            switch (error.error.code) {
-              case 2 || 18:
-                this.sharedService.showError('Error', error.error.message.toString().split('_').join(' '));
-                break;
+          switch (error.error.code) {
+            case 521:
+            case 535:
+            case 542:
+            case 551:
+            case 565:
+            case 582:
+            case 591:
+            case 610:
+            case 622:
+            case 672:
+            case 711:
+              this.sharedService.showError('Error', 'Some data is invalid');
+              break;
 
-              default:
+            case 501:
+            case 635:
+            case 641:
+            case 685:
+            case 691:
+              this.sharedService.showError('Error', 'Service not available');
+              break;
+
+            case 655:
+            case 666:
+              this.sharedService.showError('Error', 'insufficient XPX Balance');
+              break;
+
+            case 511:
+              this.sharedService.showError('Error', 'Daily limit exceeded (5 swaps)');
+              break;
+
+            case 705:
+              this.sharedService.showError('Error', 'Invalid Url');
+              break;
+
+            default:
+              if (error.error.message) {
+                this.sharedService.showError('Error', error.error.message.toString().split('_').join(' '));
+              } else {
                 this.sharedService.showError('Error', 'Error! try again later');
-                break;
-            }
-          } else {
-            console.log('esta es la repuesta2', error);
-            this.sharedService.showError('Error', error.toString().split('_').join(' '));
+              }
+              break;
           }
           this.spinnerVisibility = false
+          this.processing = false;
         });
   }
 
   navToRoute() {
-    const route = this.accountSelected.route
+    const route = this.accountSelected.route;
     this.walletService.setAccountSelectedWalletNis1(null);
     this.walletService.setNis1AccounsWallet(null);
     this.walletService.setNis1AccountsWallet$([]);
     this.walletService.setAccountInfoNis1(null);
     this.walletService.setNis1AccountSelected(null);
     this.walletService.accountWalletCreated = null;
-    if (this.router.url === `/${AppConfig.routes.transferXpx}`) {
-      this.router.navigate([AppConfig.routes.auth]);
-    } else {
-      this.router.navigate([route]);
+    try {
+      if (this.router.url === `/${AppConfig.routes.transferXpx}`) {
+        this.router.navigate([AppConfig.routes.home]);
+      } else {
+        this.router.navigate([route]);
+      }
+    } catch (error) {
+      this.router.navigate([AppConfig.routes.nis1AccountList]);
     }
   }
 

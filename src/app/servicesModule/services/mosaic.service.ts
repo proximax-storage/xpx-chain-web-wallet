@@ -212,7 +212,7 @@ export class MosaicService {
 
         if (toSearch.length > 0) {
           const mosaicsSearched = await this.searchInfoMosaics(toSearch);
-          if(mosaicsSearched && mosaicsSearched.length > 0) {
+          if (mosaicsSearched && mosaicsSearched.length > 0) {
             mosaicsSearched.forEach(element => {
               dataReturn.push(element);
             });
@@ -238,6 +238,8 @@ export class MosaicService {
 
   /**
    *
+   *
+   * @memberof MosaicService
    */
   async getMosaicXPX() {
     let existMosaic = null;

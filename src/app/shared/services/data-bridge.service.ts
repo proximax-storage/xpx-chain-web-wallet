@@ -494,34 +494,6 @@ export class DataBridgeService {
           "An error has occurred with your transaction"
         );
       }
-
-      /*this.proximaxProvider.getTransactionStatus(hash).subscribe(
-        async next => {
-          console.log('---->', next);
-          if (next) {
-            switch (next.group) {
-              case 'unconfirmed':
-                this.setTransactionStatus({
-                  'type': 'unconfirmed',
-                  'hash': hash
-                });
-
-                break;
-
-              case 'confirmed':
-                this.setTransactionStatus({
-                  'type': 'confirmed',
-                  'hash': hash
-                });
-
-                break;
-            }
-          }
-        }, error => {
-          console.log('error');
-          this.sharedService.showWarning("", "An error has occurred with your transaction");
-        }
-      );*/
     }, 10000);
   }
 

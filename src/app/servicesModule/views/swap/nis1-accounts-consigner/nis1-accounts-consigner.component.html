@@ -1,15 +1,11 @@
 <div class="container mt-3rem mb-2rem animated fadeIn">
+  <app-header [params]="paramsHeader"></app-header>
 
   <!-- TITLE AND DESCRIPTION -->
   <div class="row">
     <div class="col-12 d-flex justify-content-center">
-      <span class="fs-1-7rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">Mainnet Swap</span>
-    </div>
-    <div class="col-11 col-md-10 mx-auto">
-      <hr class="mt-05rem mb-06rem">
-    </div>
-    <div class="col-12 d-flex justify-content-center">
-      <span class="fs-08rem txt-a-center line-h-1-2em">This is the list of attached accounts of the account you have imported</span>
+      <span class="fs-08rem txt-a-center line-h-1-2em">This is the list of attached accounts of the account you have
+        imported</span>
     </div>
   </div>
   <!-- END TITLE AND DESCRIPTION -->
@@ -65,8 +61,7 @@
   <div class="row">
     <div class="col-12 col-md-10 col-lg-9 col-xl-10 mx-auto">
       <div class="col-12 d-flex justify-content-center pt-2rem pb-1rem">
-        <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
-          size="md" (click)="goToBack()">
+        <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" size="md" (click)="goToBack()">
           <span class="fs-1-2em color-white">Go Back</span>
         </button>
       </div>

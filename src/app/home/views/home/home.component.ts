@@ -64,19 +64,19 @@ export class HomeComponent implements OnInit {
       this.services.buildStructureService(
         'Storage',
         true,
-        'P2P decentralised storage for any type of file',
+        'P2P decentralised storage for any type of file.',
         'icon-storage-full-color-80h-proximax-sirius-wallet.svg',
       ),
       this.services.buildStructureService(
         'Streaming',
         true,
-        'P2P decentralised streaming for video and chat',
+        'P2P decentralised streaming for video and chat.',
         'icon-streaming-full-color-80h-proximax-sirius-wallet.svg',
       ),
       this.services.buildStructureService(
         'Supercontracts',
         true,
-        'Easily modifiable digital contracts',
+        'Easily modifiable digital contracts.',
         'icon-supercontracts-full-color-80h-proximax-sirius-wallet.svg',
       )
     ];
@@ -196,7 +196,7 @@ export class HomeComponent implements OnInit {
         const file = CryptoJS.enc.Base64.parse(myReader.result);
         try {
           const dataDecryp = JSON.parse(file.toString(CryptoJS.enc.Utf8));
-          console.log('This a decryp-------->', dataDecryp);
+          // console.log('This a decryp-------->', dataDecryp);
 
           const existWallet = this.walletService.getWalletStorage().find(
             (element: any) => {
@@ -230,8 +230,8 @@ export class HomeComponent implements OnInit {
               accounts: accounts
             }
 
-            console.log('this a wallet created----->', wallet);
-            console.log('this a wallet contacs----->', contacs);
+            // console.log('this a wallet created----->', wallet);
+            // console.log('this a wallet contacs----->', contacs);
 
             let walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
             walletsStorage.push(wallet);

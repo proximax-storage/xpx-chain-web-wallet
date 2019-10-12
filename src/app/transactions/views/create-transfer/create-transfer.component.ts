@@ -14,11 +14,12 @@ import { WalletService, AccountsInterface, AccountsInfoInterface } from '../../.
 import { SharedService, ConfigurationForm } from '../../../shared/services/shared.service';
 import { TransactionsService, TransferInterface } from '../../services/transactions.service';
 import { environment } from '../../../../environments/environment';
-import { ServicesModuleService } from '../../../servicesModule/services/services-module.service';
+import { ServicesModuleService, HeaderServicesInterface } from '../../../servicesModule/services/services-module.service';
 import { Subscription } from 'rxjs';
 import { ModalDirective } from 'ng-uikit-pro-standard';
 import { NodeService } from 'src/app/servicesModule/services/node.service';
 import * as FeeCalculationStrategy from 'tsjs-xpx-chain-sdk/dist/src/model/transaction/FeeCalculationStrategy';
+import { AppConfig } from 'src/app/config/app.config';
 
 
 @Component({
@@ -44,6 +45,7 @@ export class CreateTransferComponent implements OnInit {
   disabledBtnAddMosaic: boolean = false;
   errorOtherMosaics: boolean = false;
   formTransfer: FormGroup;
+  passwordMain: string = 'password';
   saveContact: boolean;
   formContact = {
     name: '',
@@ -60,6 +62,7 @@ export class CreateTransferComponent implements OnInit {
   listCosignatorie: any = [];
   fee: any = '0.037250'
   feeCosignatory: any = 10044500;
+  goBack: string = `/${AppConfig.routes.service}`;
   optionsXPX = {
     prefix: '',
     thousands: ',',
@@ -67,11 +70,16 @@ export class CreateTransferComponent implements OnInit {
     precision: '6'
   };
 
+  paramsHeader: HeaderServicesInterface = {
+    moduleName: 'Transfer',
+    componentName: 'Make a Transaction'
+  };
+
   searching = true;
   selectOtherMosaics = [];
   showContacts = false;
   // subscribe = ['accountInfo', 'transactionStatus', 'char', 'block'];
-  title = 'Make a Transfer';
+  title = 'Make a Transaction';
   transactionHttp: TransactionHttp = null;
   transactionStatus: boolean = false;
   transactionSigned: SignedTransaction[] = [];
@@ -107,8 +115,9 @@ export class CreateTransferComponent implements OnInit {
     this.getAccountInfo();
 
 
-    this.msgLockfungCosignatorie = ` Cosignatory has sufficient balance (${this.amountFormatterSimple(this.feeCosignatory)} XPX) to cover lockfund
-                fee`
+    const amount = this.transactionService.getDataPart(this.amountFormatterSimple(this.feeCosignatory), 6);
+    const formatterAmount = `<span class="fs-085rem">${amount.part1}</span><span class="fs-07rem">${amount.part2}</span>`;
+    this.msgLockfungCosignatorie = `Cosignatory has sufficient balance (${formatterAmount} XPX) to cover LockFund Fee`;
     this.transactionHttp = new TransactionHttp(environment.protocol + "://" + `${this.nodeService.getNodeSelected()}`); //change
 
     // Mosaic by default
@@ -162,7 +171,8 @@ export class CreateTransferComponent implements OnInit {
 * @param {string} amount
 * @memberof CreateTransferComponent
 */
-  amountFormatterSimple(amount): string {
+  amountFormatterSimple(amount: any): string {
+    this.calculateFee(this.formTransfer.get('message').value);
     return this.transactionService.amountFormatterSimple(amount);
   }
 
@@ -222,7 +232,7 @@ export class CreateTransferComponent implements OnInit {
             if (x) {
               const nameMosaic = (mosaic.mosaicNames.names.length > 0) ? mosaic.mosaicNames.names[0].name : this.proximaxProvider.getMosaicId(mosaic.idMosaic).toHex();
               mosaicsSelect.push({
-                label: `${nameMosaic}${nameExpired}`,
+                label: `${nameMosaic}${nameExpired} > Balance: ${amount}`,
                 value: mosaic.idMosaic,
                 balance: amount,
                 expired: false,
@@ -242,6 +252,11 @@ export class CreateTransferComponent implements OnInit {
     }
 
     return;
+  }
+
+  changeInputType(inputType) {
+    let newType = this.sharedService.changeInputType(inputType)
+    this.passwordMain = newType;
   }
 
   /**
@@ -386,6 +401,8 @@ export class CreateTransferComponent implements OnInit {
       this.fee = this.transactionService.amountFormatterSimple(b.compact())
     } else if (message === 0 && this.mosaicsToSend.length === 0) {
       this.fee = '0.037250'
+    } else {
+      this.fee = this.transactionService.amountFormatterSimple(b.compact())
     }
   }
 
@@ -430,8 +447,8 @@ export class CreateTransferComponent implements OnInit {
    * @memberof CreateTransferComponent
    */
   clearForm(custom?: string | (string | number)[], formControl?: string | number) {
-    this.cosignatorie = null;
     if (custom !== undefined) {
+      this.cosignatorie = null;
       if (formControl !== undefined) {
         this.formTransfer.controls[formControl].get(custom).reset();
         this.fee = '0.037250'
@@ -477,7 +494,17 @@ export class CreateTransferComponent implements OnInit {
         const address = this.proximaxProvider.createFromRawAddress(element.isMultisign.cosignatories[0].address['address']);
         const cosignatorieAccount: AccountsInterface = this.walletService.filterAccountWallet('', null, address.pretty());
         if (cosignatorieAccount) {
+          const accountFiltered: AccountsInfoInterface = this.walletService.filterAccountInfo(cosignatorieAccount.name);
+          const infValidate = this.transactionService.validateBalanceCosignatorie(accountFiltered, Number(this.feeCosignatory)).infValidate;
           this.cosignatorie = cosignatorieAccount;
+          this.listCosignatorie = [{
+            label: cosignatorieAccount.name,
+            value: cosignatorieAccount,
+            selected: true,
+            disabled: infValidate[0].disabled,
+            info: infValidate[0].info
+          }];
+
         } else {
           this.disabledAllField = true;
           this.formTransfer.disable();
@@ -501,13 +528,11 @@ export class CreateTransferComponent implements OnInit {
           }
         });
 
-        if (listCosignatorie.length === 1) {
-          this.cosignatorie = listCosignatorie[0].value;
-          return;
-        }
-
         if (listCosignatorie && listCosignatorie.length > 0) {
           this.listCosignatorie = listCosignatorie;
+          if (listCosignatorie.length === 1) {
+            this.cosignatorie = listCosignatorie[0].value;
+          }
         } else {
           this.disabledAllField = true;
           this.formTransfer.disable();
@@ -516,7 +541,6 @@ export class CreateTransferComponent implements OnInit {
         return;
       }
     }
-    // }
   }
 
   /**
@@ -543,7 +567,6 @@ export class CreateTransferComponent implements OnInit {
     if (!this.subscription['transactionStatus']) {
       this.subscription['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
         statusTransaction => {
-          // console.log('statusTransaction', statusTransaction);
           if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
             for (let element of this.transactionSigned) {
               const match = statusTransaction['hash'] === element.hash;
@@ -597,6 +620,17 @@ export class CreateTransferComponent implements OnInit {
         }
       }
     );
+  }
+
+  /**
+   *
+   *
+   * @param {*} quantity
+   * @returns
+   * @memberof CreateTransferComponent
+   */
+  getQuantity(quantity: string) {
+    return this.sharedService.amountFormat(quantity);
   }
 
 
@@ -802,6 +836,7 @@ export class CreateTransferComponent implements OnInit {
               const hashLockSigned = account.sign(hashLockTransaction, generationHash);
               this.saveContactFn();
               this.clearForm();
+
               this.transactionService.buildTransactionHttp().announce(hashLockSigned).subscribe(async () => {
                 this.getTransactionStatusHashLock(hashLockSigned, aggregateSigned);
               }, err => { });
@@ -835,7 +870,6 @@ export class CreateTransferComponent implements OnInit {
                 }, err => {
                   this.reloadBtn = false;
                   this.blockSendButton = false;
-                  this.clearForm();
                   this.sharedService.showError('', err);
                 }
               );
@@ -861,7 +895,6 @@ export class CreateTransferComponent implements OnInit {
    * @param $event
    */
   selectCosignatorie($event) {
-    // console.log('COSIGNATORIE SELECTED ', $event);
     if ($event) {
       this.cosignatorie = $event.value;
     } else {
@@ -927,7 +960,7 @@ export class CreateTransferComponent implements OnInit {
     });
 
     this.subscription.push(this.formTransfer.get('message').valueChanges.subscribe(val => {
-      if (val) {
+      if (val && val !== '') {
         this.charRest = this.configurationForm.message.maxLength - val.length;
         this.calculateFee(val.length);
       } else {
@@ -961,7 +994,6 @@ export class CreateTransferComponent implements OnInit {
               }
 
               realAmount = `${arrAmount[0]}${decimal}`;
-
               if (filtered !== undefined && filtered !== null) {
                 const invalidBalance = filtered.amount.compact() < Number(realAmount);
                 if (invalidBalance && !this.insufficientBalance) {
@@ -991,6 +1023,8 @@ export class CreateTransferComponent implements OnInit {
           }
         }
       }
+
+      this.calculateFee(this.formTransfer.get('message').value);
     });
   }
 

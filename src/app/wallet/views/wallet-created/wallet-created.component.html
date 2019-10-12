@@ -10,7 +10,7 @@
       <hr class="mt-05rem mb-06rem">
     </div>
     <div class="col-11 mx-auto txt-a-center mt-05rem mb-05rem">
-      <span class="fs-1-7rem txt-a-center line-h-1-2em">{{subtitle}}</span>
+      <span class="fs-1-7rem txt-a-center line-h-1-2em fw-400">{{subtitle}}</span>
     </div>
   </div>
   <!-- address -->
@@ -28,11 +28,15 @@
   </div>
 
   <div class="row">
-    <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto box-transparent-border-orange">
-      <div>
-        <span class="fw-600">Make sure you store your private key in a safe place.</span><br>
-        <span class="fw-600">Access to your digital assets cannot be recovered without it.</span>
+    <div class="col-11 col-sm-12 col-md-10 col-lg-8 mb-1rem mx-auto box-transparent-border-orange">
+      <div class="txt-a-center">
+        <img src="assets/images/img/icon-transaction-unconfirmed-white.svg" style="filter: invert(50%)" alt="" width="30">
       </div>
+      <h6 class="fw-600"></h6>
+      <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em">
+        Make sure you store your private key in a safe place.<br>
+        Access to your digital assets cannot be recovered without it.
+      </p>
     </div>
   </div>
   <!-- private key -->
@@ -40,7 +44,7 @@
     <div class="row animated fadeIn">
       <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto d-flex align-items-center box-grey">
         <div class="col-10">
-          <span>Private Key: </span><br>
+          <span class="fw-bold">Private Key: </span><br>
           <span class="font-small d-flex">{{ privateKey }}</span>
         </div>
         <div class="col-2 text-right">
@@ -53,22 +57,22 @@
 
   <!-- buttons create and clear -->
   <div class="row mt-2rem d-flex justify-content-center">
-    <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md"
+    <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" size="md"
       (click)="viewPrivateKey = !viewPrivateKey">
-      <span class="fs-1-2em color-white" *ngIf="viewPrivateKey">Hide private key</span>
-      <span class="fs-1-2em color-white" *ngIf="!viewPrivateKey">Show private key</span>
+      <span class="color-white" *ngIf="viewPrivateKey">Hide Private Key</span>
+      <span class="color-white" *ngIf="!viewPrivateKey">Show Private Key</span>
     </button>
 
-    <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md"
+    <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" size="md"
       (click)="printAccountInfo()">
-      <span class="fs-1-2em color-white">Save paper wallet</span>
+      <span class="color-white">Save Paper Wallet</span>
     </button>
 
     <button mdbBtn type="button" rounded="true" mdbWavesEffect [disabled]="disabledContinue"
-      class="f-w-600 background-btn pl-2rem pr-2rem" size="md" (click)="goToRoute()">
+      class="btn-proximax" size="md" (click)="goToRoute()">
       <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
         *ngIf="disabledContinue"></span>
-      <span class="fs-1-2em color-white">Continue</span>
+      <span class="color-white">Continue</span>
     </button>
   </div>
 </div>

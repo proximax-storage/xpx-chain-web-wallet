@@ -3,6 +3,8 @@ import { MdbTableDirective, ModalDirective } from 'ng-uikit-pro-standard';
 import * as qrcode from 'qrcode-generator';
 import { first } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
+import { UInt64 } from 'tsjs-xpx-chain-sdk';
+import { PaginationInstance } from 'ngx-pagination';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 import { DashboardService } from '../../services/dashboard.service';
 import { TransactionsInterface, TransactionsService } from '../../../transactions/services/transactions.service';
@@ -10,10 +12,8 @@ import { WalletService, AccountsInterface, CurrentWalletInterface } from '../../
 import { SharedService } from '../../../shared/services/shared.service';
 import { environment } from '../../../../environments/environment';
 import { AppConfig } from '../../../config/app.config';
-import { NamespacesService } from 'src/app/servicesModule/services/namespaces.service';
-import { PaginationInstance } from 'ngx-pagination';
-import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
-import { UInt64 } from 'tsjs-xpx-chain-sdk';
+import { NamespacesService } from '../../../servicesModule/services/namespaces.service';
+import { DataBridgeService } from '../../../shared/services/data-bridge.service';
 
 
 @Component({
@@ -174,7 +174,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
           if (transactionsUnconfirmed && transactionsUnconfirmed.length > 0) {
             //Sets the data structure of the dashboard
             transactionsUnconfirmed.forEach(element => {
-              const builderTransactions = this.transactionService.getStructureDashboard(element, this.transactionsUnconfirmed);
+              const builderTransactions = this.transactionService.getStructureDashboard(element, this.transactionsUnconfirmed, 'unconfirmed');
               if (builderTransactions !== null) {
                 transactionUnconfirmed.push(builderTransactions);
               }
@@ -295,7 +295,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         if (transactions && transactions.length > 0) {
           //Sets the data structure of the dashboard
           transactions.forEach(element => {
-            const builderTransactions = this.transactionService.getStructureDashboard(element, this.transactions);
+            const builderTransactions = this.transactionService.getStructureDashboard(element, this.transactions, 'confirmed');
             (builderTransactions !== null) ? this.transactions.push(builderTransactions) : '';
           });
 
@@ -418,31 +418,35 @@ export class DashboardComponent implements OnInit, OnDestroy {
    * @memberof DashboardComponent
    */
   openModal(transaction: TransactionsInterface) {
-    const height = transaction.data['transactionInfo'].height.compact();
-    if (typeof (height) === 'number') {
-      const existBlock = this.dataBridge.filterBlockStorage(height);
-      if (existBlock) {
-        // console.log('In cache', existBlock);
-        transaction.timestamp = `${this.transactionService.dateFormatUTC(new UInt64([existBlock.timestamp.lower, existBlock.timestamp.higher]))} - UTC`;
-        const calculateEffectiveFee = this.transactionService.amountFormatterSimple(existBlock.feeMultiplier * transaction.data.size)
-        transaction.effectiveFee = this.transactionService.getDataPart(calculateEffectiveFee, 6);
-        // console.log('Effective fee ---> ', transaction.effectiveFee);
-      }else {
-        this.proximaxProvider.getBlockInfo(height).subscribe(
-          next => {
-            // console.log('Http', next);
-            this.dataBridge.validateBlock(next);
-            transaction.timestamp = `${this.transactionService.dateFormatUTC(next.timestamp)} - UTC`;
-            const calculateEffectiveFee = this.transactionService.amountFormatterSimple(next.feeMultiplier * transaction.data.size);
-            transaction.effectiveFee = this.transactionService.getDataPart(calculateEffectiveFee, 6);
-            // console.log('Effective fee ---> ', transaction.effectiveFee);
-          }
-        );
+    if(transaction.data['transactionInfo'] && transaction.data['transactionInfo'].height){
+      const height = transaction.data['transactionInfo'].height.compact();
+      if (typeof (height) === 'number') {
+        const existBlock = this.dataBridge.filterBlockStorage(height);
+        if (existBlock) {
+          // console.log('In cache', existBlock);
+          transaction.timestamp = `${this.transactionService.dateFormatUTC(new UInt64([existBlock.timestamp.lower, existBlock.timestamp.higher]))} - UTC`;
+          const calculateEffectiveFee = this.transactionService.amountFormatterSimple(existBlock.feeMultiplier * transaction.data.size)
+          transaction.effectiveFee = this.transactionService.getDataPart(calculateEffectiveFee, 6);
+          // console.log('Effective fee ---> ', transaction.effectiveFee);
+        }else {
+          this.proximaxProvider.getBlockInfo(height).subscribe(
+            next => {
+              // console.log('Http', next);
+              this.dataBridge.validateBlock(next);
+              transaction.timestamp = `${this.transactionService.dateFormatUTC(next.timestamp)} - UTC`;
+              const calculateEffectiveFee = this.transactionService.amountFormatterSimple(next.feeMultiplier * transaction.data.size);
+              transaction.effectiveFee = this.transactionService.getDataPart(calculateEffectiveFee, 6);
+              // console.log('Effective fee ---> ', transaction.effectiveFee);
+            }
+          );
+        }
+      } else {
+        transaction.effectiveFee = this.transactionService.getDataPart('0.00000', 6);
       }
-    } else {
+    }else {
       transaction.effectiveFee = this.transactionService.getDataPart('0.00000', 6);
-      // console.log('Effective fee ---> ', transaction.effectiveFee);
     }
+
 
     this.dataSelected = transaction;
     this.modalDashboard.show();

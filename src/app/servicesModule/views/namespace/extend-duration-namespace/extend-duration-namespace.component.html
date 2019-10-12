@@ -15,12 +15,13 @@
 
         <div class="row">
           <div class="col-11 mx-auto">
-            <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [searchable]="false" [validateError]="true"
-              class="selectWrapper" [items]="arrayselect" formControlName="namespaceRoot" bindLabel="label"
-              bindValue="value" placeholder="Select namespace" (change)="optionSelected($event)"></ng-select>
+            <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [searchable]="false"
+              [validateError]="true" class="selectWrapper" [items]="arrayselect" formControlName="namespaceRoot"
+              bindLabel="label" bindValue="value" placeholder="Select Namespace" (change)="optionSelected($event)">
+            </ng-select>
             <mdb-error class="ml-1rem"
               *ngIf="validateInput('namespaceRoot').invalid && (validateInput('namespaceRoot').dirty || validateInput('namespaceRoot').touched)">
-              <span>Select namespace</span>
+              <span>Select Namespace</span>
             </mdb-error>
           </div>
         </div>
@@ -28,18 +29,19 @@
         <div class="row">
           <div class="col-11 mx-auto">
             <div class="md-form form-sm">
-              <img class="form-control-feedback" src="assets/images/img/icon-duration-green-16h-proximax-sirius-wallet.svg" alt="">
+              <img class="form-control-feedback"
+                src="assets/images/img/icon-duration-green-16h-proximax-sirius-wallet.svg" alt="">
               <input mask="0*" formControlName="duration" required mdbInputDirective mdbValidate autocomplete="off"
                 [validateSuccess]="true" [validateError]="true" type="text" id="duration"
-                class="form-control form-control-sm input-border txt-a-right" placeholder="" (keyup)="limitDuration($event)">
-                <span class="label-i-icon pl-2rem">Duration (number of days)</span>
+                class="form-control form-control-sm input-border txt-a-right" placeholder=""
+                (keyup)="limitDuration($event)">
+              <span class="label-i-icon pl-2rem">Duration (number of days)</span>
               <!-- VALIDATION -->
               <mdb-error
                 *ngIf="validateInput('duration', '').invalid && (validateInput('duration', '').dirty || validateInput('duration', '').touched)">
                 <span>Required field - Only numbers</span>
               </mdb-error>
-              <mdb-error
-                *ngIf="excedDuration">
+              <mdb-error *ngIf="excedDuration">
                 <span>Duration exceeded</span>
               </mdb-error>
 
@@ -50,30 +52,41 @@
           </div>
         </div>
 
-        <div class="row ml-01rem">
-          <div class="col-11 col-sm-11 col-md-6 col-lg-6">
-            <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
-              <div class="row">
-                <div class="">
-                  <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
-                    width="20" alt="">&nbsp;
-                  <span>Fee: {{ fee }} XPX</span>
+        <div class="row">
+          <div class="col-11 mx-auto">
+            <div class="row">
+              <div class="col-11 col-sm-11 col-md-6 col-lg-6">
+                <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
+                  <div class="row">
+                    <div class="">
+                      <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
+                        width="20" alt="">&nbsp;
+                      <span class="fs-08rem">
+                        Fee:&nbsp;
+                        <a [innerHTML]="getQuantity(fee)"></a> XPX
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-11 col-sm-11 col-md-6 col-lg-6">
+                <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
+                  <div class="row">
+                    <div class="">
+                      <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
+                        width="20" alt="">&nbsp;
+                      <span class="fs-08rem">
+                        Rental Fee:&nbsp;
+                        <a [innerHTML]="getQuantity(calculateRentalFee)"></a> XPX
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <div class="col-11 col-sm-11 col-md-6 col-lg-6">
-            <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
-              <div class="row">
-                <div class="">
-                  <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
-                    width="20" alt="">&nbsp;
-                  <span>Rental Fee: {{calculateRentalFee}} XPX</span>
-                </div>
-              </div>
-            </div>
-          </div>
+
         </div>
 
         <div class="row">
@@ -81,15 +94,19 @@
             <div class="md-form form-sm">
               <img class="form-control-feedback"
                 src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg" alt="">
+              <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
+                src="assets/images/img/icon-show-hide-password.svg" *ngIf="passwordMain === 'password'">
+              <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
+                src="assets/images/img/icon-show-hide-password-grey.svg" *ngIf="passwordMain === 'text'">
               <input [maxlength]="configurationForm.passwordWallet.maxLength"
                 [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" required
-                mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password"
-                id="password" class="form-control form-control-sm input-border" placeholder="Enter wallet password">
+                mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" [type]="passwordMain"
+                id="password" class="form-control form-control-sm input-border" placeholder="Enter Wallet Password">
 
               <!-- VALIDATION -->
               <mdb-error
                 *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
-                <span>Password required</span>
+                <span>Password Required</span>
               </mdb-error>
             </div>
           </div>
@@ -99,14 +116,15 @@
         <div class="row">
           <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
             <button [disabled]="insufficientBalance" mdbBtn type="button" rounded="true" mdbWavesEffect
-              class="f-w-600 background-btn pl-2rem pr-2rem" size="md" (click)="clearForm()">
+              class="btn-proximax" size="md" (click)="clearForm()">
               <span class="fs-1-2em color-white">Clear</span>
             </button>
           </div>
 
           <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
             <button mdbBtn type="submit" rounded="true" [disabled]="extendDurationNamespaceForm.invalid || insufficientBalance ||
-            insufficientBalanceDuration || excedDuration" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
+            insufficientBalanceDuration || excedDuration || invalidDuration" mdbWavesEffect class="btn-proximax"
+              size="md">
               <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
                 *ngIf="blockBtnSend"></span>
               <span class="fs-1-2em color-white">Create</span>
@@ -122,10 +140,10 @@
           <div class="col-4">
             <div class="row">
               <div class="col-12 d-flex justify-content-center">
-                  <img class="form-control-feedback"
-                  src="assets/images/img/icon-namespace-mosaic-duration-01.svg" alt="" style="width: 80px;">
+                <img class="form-control-feedback" src="assets/images/img/icon-namespace-mosaic-duration-01.svg" alt=""
+                  style="width: 80px;">
               </div>
-     
+
               <div class="col-12 d-flex justify-content-center overflow-ellipsis-nowrap" style="padding-top: 70px;">
                 <span class="description-information">Start block:</span>
               </div>
@@ -139,8 +157,8 @@
           <div class="col-4">
             <div class="row">
               <div class="col-12 d-flex justify-content-center">
-                  <img class="form-control-feedback"
-                  src="assets/images/img/icon-namespace-mosaic-duration-02.svg" alt="" style="width: 80px">
+                <img class="form-control-feedback" src="assets/images/img/icon-namespace-mosaic-duration-02.svg" alt=""
+                  style="width: 80px">
               </div>
               <div class="col-12 d-flex justify-content-center overflow-ellipsis-nowrap" style="padding-top: 70px;">
                 <span class="description-information">Current block:</span>
@@ -155,8 +173,8 @@
           <div class="col-4">
             <div class="row">
               <div class="col-12 d-flex justify-content-center">
-                  <img class="form-control-feedback"
-                  src="assets/images/img/icon-namespace-mosaic-duration-03.svg" alt="" style="width: 80px">
+                <img class="form-control-feedback" src="assets/images/img/icon-namespace-mosaic-duration-03.svg" alt=""
+                  style="width: 80px">
               </div>
               <div class="col-12 d-flex justify-content-center overflow-ellipsis-nowrap" style="padding-top: 70px;">
                 <span class="description-information">End block:</span>

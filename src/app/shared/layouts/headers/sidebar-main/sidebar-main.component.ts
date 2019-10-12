@@ -29,7 +29,7 @@ export class SidebarMainComponent implements OnInit {
   reconnecting = false;
   routePartial = `/${AppConfig.routes.partial}`
   routesExcludedInServices = [
-    AppConfig.routes.account,
+    AppConfig.routes.viewAllAccount,
     AppConfig.routes.auth,
     AppConfig.routes.createTransfer,
     AppConfig.routes.createWallet,
@@ -41,7 +41,7 @@ export class SidebarMainComponent implements OnInit {
   statusNode = false;
   statusNodeName = 'Inactive';
   subscription: Subscription[] = [];
-  vestedBalance: string = '0.000000';
+  vestedBalance: object;
   version = '';
   viewParcial = false;
   walletName = '';
@@ -116,11 +116,11 @@ export class SidebarMainComponent implements OnInit {
 
     const paramsAccount: MenuInterface = {
       type: 'default',
-      name: 'Account',
+      name: 'Accounts',
       class: '',
       icon: '',
       rol: false,
-      link: `/${AppConfig.routes.account}`,
+      link: `/${AppConfig.routes.viewAllAccount}`,
       view: true,
       subMenu: {},
       selected: false
@@ -170,12 +170,12 @@ export class SidebarMainComponent implements OnInit {
 
 
         const amountFormatter = this.transactionService.amountFormatterSimple(amountTotal);
-        this.vestedBalance = `Total balance ${amountFormatter} XPX`;
+        this.vestedBalance = this.transactionService.getDataPart(amountFormatter, 6);
         setTimeout(() => {
           this.searchBalance = false;
         }, 1000);
       } else {
-        this.vestedBalance = `Total balance 0.000000 XPX`;
+        this.vestedBalance = this.transactionService.getDataPart('0.000000', 6);
         setTimeout(() => {
           this.searchBalance = false;
         }, 1000);

@@ -13,11 +13,8 @@ import { AuthService } from '../../../../auth/services/auth.service';
 })
 export class SidebarAuthComponent implements OnInit {
 
-  @ViewChild('modalAuth', { static: true }) modalAuth: ModalDirective;
-  eventNumber: number = 0;
   itemsHeader: ItemsHeaderInterface;
   keyObject = Object.keys;
-  subscription: Subscription[] = [];
   version = '';
 
   constructor(
@@ -81,28 +78,5 @@ export class SidebarAuthComponent implements OnInit {
       wallet: this.sharedService.buildHeader(deleteWallet)
     }
 
-    this.receiveEventShowModal();
-  }
-
-
-  receiveEventShowModal() {
-    this.subscription.push(this.authService.getEventShowModal().subscribe(
-      next => {
-        if (next !== 0) {
-          this.showModal();
-        }
-      }
-    ));
-  }
-
-
-  /**
-   *
-   *
-   * @memberof SidebarAuthComponent
-   */
-  showModal() {
-    this.eventNumber = this.eventNumber + 1;
-    this.modalAuth.show();
   }
 }

@@ -99,8 +99,8 @@ export class BlockchainComponent implements OnInit {
     this.sharedService.showSuccess('','Update node');
   }
 
-  change() {
-    console.log('change node');
+  changeNode() {
+    // console.log('change node');
 
   }
 }

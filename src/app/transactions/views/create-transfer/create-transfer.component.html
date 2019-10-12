@@ -1,159 +1,218 @@
 <div class="container mt-3rem mb-2rem animated fadeIn">
-    <div class="row">
-      <div class="col-12 d-flex justify-content-center">
-        <span class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">Make a Transfer</span>
+  <div class="row mb-1rem">
+    <div class="col-12 col-md-11 col-lg-9 mx-auto">
+      <div class="row">
+        <div class="col-12 col-md-6 col-sm-12 d-flex align-items-end">
+          <span class="fs-1rem txt-a-center line-h-1-2em color-grey">{{paramsHeader.moduleName}}&nbsp;</span>
+          <span class="fs-1rem txt-a-center line-h-1-2em color-grey">></span>
+          <span
+            class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">&nbsp;{{paramsHeader.componentName}}</span>
+        </div>
+
+        <div class="col-12 col-md-6 col-sm-12 d-flex justify-content-start justify-content-md-end">
+          <span class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">
+            <a class="color-blue-intermedio" [routerLink]="[goBack]">
+              <span>Back to Services</span>
+            </a>
+          </span>
+        </div>
       </div>
-      <div class="col-11 mx-auto">
-        <hr class="mt-05rem mb-06rem">
+
+      <div class="row">
+        <div class="col-12">
+          <hr class="mt-03rem mb-05rem">
+        </div>
       </div>
     </div>
-  
-    <form [formGroup]="formTransfer" (ngSubmit)="sendTransfer()">
-  
-      <!-- Accounts -->
-      <ng-container *ngIf="accounts.length > 1">
-        <div class="row mt-1rem mb-2rem">
-          <div class="col-11 col-md-10 col-lg-8 mx-auto">
-            <span class="fs-1rem fw-600 line-h-1-2em color-blue-intermedio">Accounts</span>
+  </div>
+
+
+
+
+  <!-- <div class="row">
+    <div class="col-12 d-flex justify-content-center">
+      <span class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">Make a Transfer</span>
+    </div>
+    <div class="col-11 mx-auto">
+      <hr class="mt-05rem mb-06rem">
+    </div>
+  </div> -->
+
+  <form [formGroup]="formTransfer" (ngSubmit)="sendTransfer()">
+
+    <!-- Accounts -->
+    <ng-container *ngIf="accounts.length > 1">
+      <div class="row mt-1rem mb-1rem">
+        <div class="col-11 col-md-10 col-lg-8 mx-auto">
+          <span class="fs-09rem fw-600 line-h-1-2em" style="color: #ababab !important;">Selected Account</span>
+          <mdb-accordion [multiple]="false" aria-multiselectable="true">
+            <mdb-accordion-item [collapsed]="true">
+              <mdb-accordion-item-head class="">
+                <div class="color-black">
+                  {{sender.name}}
+                  <span *ngIf="sender.default" class="ml-05rem title-tab-blue pt-03rem">
+                    <i>- Current Default</i>
+                  </span>
+                  <span *ngIf="sender.isMultisign &&
+                    sender.isMultisign.cosignatories &&
+                    sender.isMultisign.cosignatories.length > 0" class="ml-05rem title-tab-blue pt-03rem">
+                    <i>- Multisig </i>
+                  </span>
+                </div>
+                <div class="fw-300">
+                  {{sender.address}}
+                </div>
+              </mdb-accordion-item-head>
+              <mdb-accordion-item-body class="box-accounts-height">
+                <ng-container *ngFor="let account of accounts; let i=index">
+                  <span [ngClass]="[account.active ? 'nav-link active isActive' : 'nav-link']" class="cursor-p"
+                    (click)="changeSender(account.value)">
+                    {{account.value.name}}
+
+                    <span *ngIf="account.value.default" class="ml-05rem title-tab-blue pt-03rem">
+                      <i>- Current Default </i>
+                    </span>
+                    <span *ngIf="account.value.isMultisign &&
+                      account.value.isMultisign.cosignatories &&
+                      account.value.isMultisign.cosignatories.length > 0" class="ml-05rem title-tab-blue pt-03rem">
+                      <i>- Multisig </i>
+                    </span>
+                  </span>
+                </ng-container>
+              </mdb-accordion-item-body>
+            </mdb-accordion-item>
+          </mdb-accordion>
+        </div>
+
+        <!-- COSIGNATORY ACCOUNT -->
+        <ng-container *ngIf="listCosignatorie.length === 1">
+          <div class="col-11 col-md-10 col-lg-8 mx-auto d-flex justify-content-start pt-05rem pb-05rem">
+            <span class="fs-08rem fw-600">Cosignatory Account:&nbsp;</span>
+            <span class="fs-08rem">{{cosignatorie.address}}</span>
           </div>
-          <div class="col-11 col-md-10 col-lg-8 mx-auto">
-            <div class="h-account">
-              <ng-container *ngFor="let account of accounts; let i=index">
-                <span [ngClass]="[account.active ? 'nav-link active isActive' : 'nav-link']" class="cursor-p"
-                  (click)="changeSender(account.value)">
-                  {{account.value.name}}
-                  <i *ngIf="account.value.default" class="fa fa-star fs-1rem ml-10px cursor-p" aria-hidden="true"
-                    title="Default account"></i>
-  
-                  <i *ngIf="account.value.isMultisign &&
-                          account.value.isMultisign.cosignatories &&
-                          account.value.isMultisign.cosignatories.length > 0"
-                    class="fa fa-users fs-1rem ml-10px cursor-p" aria-hidden="true" title="Multi-signature account"></i>
-                </span>
-              </ng-container>
-            </div>
-          </div>
-  
-          <ng-container *ngIf="!searching; else searchTemplate">
-            <div class="col-11 col-md-10 col-lg-8 mx-auto d-none d-sm-block">
-              <span class="fs-07rem" style="color: #404040ad;">{{sender?.address}}</span>
+
+          <!-- INSUFFICIENT BALANCE -->
+          <ng-container *ngIf="listCosignatorie[0].disabled">
+            <div class="col-11 col-md-10 col-lg-8 mx-auto d-flex justify-content-start pt-05rem pb-05rem">
+              <span class="fs-08rem fw-600 color-error-message">
+                Cosignatory {{listCosignatorie[0].info}}
+              </span>
             </div>
           </ng-container>
-        </div>
-      </ng-container>
-  
-      <!-- MSG ERROR - ACCOUNT NOT ALLOWED -->
-      <ng-container *ngIf="disabledAllField">
-        <div class="col-11 col-md-10 col-lg-8 mx-auto d-flex justify-content-start">
-          <span class="fs-08rem fw-600 color-error-message">You need a cosigner to transfer from the multi-signature account.</span>
-        </div>
-      </ng-container>
-  
-      <!-- COSIGNATORIES -->
-      <ng-container *ngIf="listCosignatorie.length > 0">
-        <div class="row">
-          <div class="col-11 col-md-10 col-lg-8 mx-auto">
-            <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [searchable]="false" [clearable]="false"
-              [validateError]="true" class="selectWrapper" [items]="listCosignatorie" formControlName="cosignatorie"
-              bindLabel="label" bindValue="value" placeholder="Cosignatories" (change)="selectCosignatorie($event)">
-              <ng-template ng-option-tmp let-item="item" let-index="index">
-                <b>{{item.label}}</b>
-                <b class="color-error-red" *ngIf="item.info !== ''"> - {{item.info}}</b>
-              </ng-template>
-              <ng-template ng-footer-tmp>
-                <span class="fs-08rem color-error-red fw-600">{{msgLockfungCosignatorie}}</span>
-              </ng-template>
-            </ng-select>
-          </div>
-        </div>
-      </ng-container>
-  
-      <!-- Contacts -->
-      <ng-container *ngIf="showContacts && listContacts.length > 0">
-        <div class="row">
-          <div class="col-11 col-md-10 col-lg-8 mx-auto">
-            <ng-select mdbInputDirective mdbValidate formControlName="contact" class="selectWrapper"
-              [items]="listContacts" placeholder="Contact"
-              (change)="selectContact($event)">
-              <ng-template ng-option-tmp let-item="item" let-index="index">
-                {{item.label}}
-                <b *ngIf="item.walletContact"> - Owner account</b>
-                <b *ngIf="!item.walletContact"> - Contact</b>
-              </ng-template>
-            </ng-select>
-          </div>
-        </div>
-      </ng-container>
-  
-      <!-- RECIPIENT -->
+        </ng-container>
+      </div>
+    </ng-container>
+
+    <!-- MSG ERROR - ACCOUNT NOT ALLOWED -->
+    <ng-container *ngIf="disabledAllField">
       <div class="row">
+        <div class="col-11 col-md-10 col-lg-8 mx-auto d-flex justify-content-start pt-05rem pb-05rem">
+          <span class="fs-08rem fw-600 color-error-message">
+            You need a cosigner to transfer from the multi-signature account.
+          </span>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- COSIGNATORIES -->
+    <ng-container *ngIf="listCosignatorie.length > 1">
+      <div class="row mt-1rem">
         <div class="col-11 col-md-10 col-lg-8 mx-auto">
-          <div class="row">
-            <div class="col-8 col-sm-9 col-md-10">
-              <div class="md-form form-sm mt-1rem mb-0rem">
-                <img class="form-control-feedback"
-                  src="assets/images/img/icon-address-green-book-16h-proximax-sirius-wallet.svg" alt="" width="43"
-                  height="43">
-                <input mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
-                  class="form-control form-control-sm input-border" style="border: 2px solid #306EB5;"
-                  placeholder="Recipient" formControlName="accountRecipient" id="recipient-invalid-{{invalidRecipient}}"
-                  [maxlength]="configurationForm.address.maxLength" [minlength]="configurationForm.address.minLength">
-                <mdb-error
-                  *ngIf="validateInput('accountRecipient').invalid && (validateInput('accountRecipient').dirty || validateInput('accountRecipient').touched)">
-                  <span class="fs-08rem fw-600 color-error-message">Invalid Recipient</span>
-                </mdb-error>
-  
-                <mdb-error *ngIf="msgErrorUnsupported !== ''">
-                  <span class="fs-08rem fw-600 color-error-message">{{msgErrorUnsupported}}</span>
-                </mdb-error>
-              </div>
+          <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [searchable]="false" [clearable]="false"
+            [validateError]="true" class="selectWrapper" [items]="listCosignatorie" formControlName="cosignatorie"
+            bindLabel="label" bindValue="value" placeholder="Cosignatories" (change)="selectCosignatorie($event)">
+            <ng-template ng-option-tmp let-item="item" let-index="index">
+              <b>{{item.label}}</b>
+              <b class="color-error-message" *ngIf="item.info !== ''"> - {{item.info}}</b>
+            </ng-template>
+            <ng-template ng-footer-tmp>
+              <span class="fs-08rem color-error-message fw-600" [innerHtml]="msgLockfungCosignatorie"></span>
+            </ng-template>
+          </ng-select>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- Contacts -->
+    <ng-container *ngIf="showContacts && listContacts.length > 0">
+      <div class="row mt-1rem">
+        <div class="col-11 col-md-10 col-lg-8 mx-auto">
+          <ng-select mdbInputDirective mdbValidate formControlName="contact" class="selectWrapper"
+            [items]="listContacts" placeholder="Contact" (change)="selectContact($event)">
+            <ng-template ng-option-tmp let-item="item" let-index="index">
+              {{item.label}}
+              <b *ngIf="item.walletContact"> - Owner account</b>
+              <b *ngIf="!item.walletContact"> - Contact</b>
+            </ng-template>
+          </ng-select>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- RECIPIENT -->
+    <div class="row">
+      <div class="col-11 col-md-10 col-lg-8 mx-auto">
+        <div class="row">
+          <div class="col-8 col-sm-9 col-md-10">
+            <div class="md-form form-sm mt-1rem mb-0rem">
+              <img class="form-control-feedback"
+                src="assets/images/img/icon-address-green-book-16h-proximax-sirius-wallet.svg" alt="" width="43"
+                height="43">
+              <input mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
+                class="form-control form-control-sm input-border" style="border: 2px solid #306EB5;"
+                placeholder="Recipient" formControlName="accountRecipient" id="recipient-invalid-{{invalidRecipient}}"
+                [maxlength]="configurationForm.address.maxLength" [minlength]="configurationForm.address.minLength">
+              <mdb-error
+                *ngIf="validateInput('accountRecipient').invalid && (validateInput('accountRecipient').dirty || validateInput('accountRecipient').touched)">
+                <span class="fs-08rem fw-600 color-error-message">Invalid Recipient</span>
+              </mdb-error>
+
+              <mdb-error *ngIf="msgErrorUnsupported !== ''">
+                <span class="fs-08rem fw-600 color-error-message">{{msgErrorUnsupported}}</span>
+              </mdb-error>
             </div>
-  
-            <!-- Show Contacts -->
-            <ng-container>
-              <div class="col-4 col-sm-3 col-md-2 d-flex justify-content-center align-items-center pt-10px">
-                <div class="background-gray-icons p-12px bord-rad-25px cursor-p"
-                  (click)="showContacts = (listContacts.length > 0) ? !showContacts : showContacts"
-                  [title]="(!showContacts) ? 'Show contacts': 'Hide contacts'">
-                  <img class="w-30px" [src]="(!showContacts && listContacts.length === 0) ?
+          </div>
+
+          <!-- Show Contacts -->
+          <ng-container>
+            <div class="col-4 col-sm-3 col-md-2 d-flex justify-content-center align-items-center pt-10px">
+              <div class="background-gray-icons p-12px bord-rad-25px cursor-p"
+                (click)="showContacts = (listContacts.length > 0) ? !showContacts : showContacts"
+                [title]="(!showContacts) ? 'Show contacts': 'Hide contacts'">
+                <img class="w-30px" [src]="(!showContacts && listContacts.length === 0) ?
                   'assets/images/img/icon-address-book-gray-28h-proximax-sirius-wallet.svg' :
                   'assets/images/img/icon-address-green-book-16h-proximax-sirius-wallet.svg'
                   ">
-                </div>
               </div>
-            </ng-container>
-          </div>
+            </div>
+          </ng-container>
         </div>
       </div>
-  
-      <!-- SEPARED -->
-      <div class="row">
-        <div class="col-12 col-md-11 col-lg-9 mx-auto">
-          <hr>
-        </div>
+    </div>
+
+    <!-- SEPARED -->
+    <div class="row">
+      <div class="col-12 col-md-11 col-lg-9 mx-auto">
+        <hr>
       </div>
-  
-      <!-- MOSAIC XPX -->
-      <div class="row">
-        <div class="col-11 col-md-10 col-lg-8 mx-auto">
-          <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
+    </div>
+
+    <!-- MOSAIC & AMOUNT -->
+    <div class="row">
+      <div class="col-11 col-md-10 col-lg-8 mx-auto">
+        <div class="border-separator">
+          <!-- MOSAIC XPX -->
+          <div class="box-grey m-0">
             <div class="row">
-              <div class="col-12">
+              <div class="col-12 d-flex align-items-center">
                 <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" alt="">
-                <span>{{mosaicXpx.name | uppercase}}</span>
+                <span class="fw-500">{{mosaicXpx.name | uppercase}} > Balance:&nbsp;</span>
+                <span class="" [innerHTML]="getQuantity(balanceXpx)"></span>&nbsp;XPX
               </div>
             </div>
           </div>
-        </div>
-  
-        <div class="col-11 col-md-10 col-lg-8 mx-auto txt-a-center">
-          <span class="fw-600">Balance: {{balanceXpx}} XPX</span>
-        </div>
-      </div>
-  
-      <!-- AMOUNT & TO BE SENT -->
-      <div class="row">
-        <div class="col-11 col-md-10 col-lg-8 mx-auto">
+
+          <!-- AMOUNT & TO BE SENT -->
           <div class="row d-flex align-items-center">
             <!-- Amount Input -->
             <div class="col-12 mx-auto">
@@ -163,14 +222,14 @@
                 <input pattern="^[+]?([0-9]*[.])?[0-9]+$" currencyMask [options]="optionsXPX" mdbInputDirective
                   mdbValidate [validateSuccess]="true" [maxlength]="configurationForm.amount.maxLength"
                   [validateError]="true" type="text" class="form-control form-control-sm input-border input-amount"
-                  placeholder="Enter amount" formControlName="amountXpx">
+                  placeholder="Enter Amount" formControlName="amountXpx">
                 <span class="label-i fw-600 pl-2rem">SEND</span>
-  
+
                 <mdb-error
                   *ngIf="validateInput('amountXpx').invalid && (validateInput('amountXpx').dirty || validateInput('amountXpx').touched)">
                   <span class="fs-08rem fw-600 color-error-message">Invalid amount</span>
                 </mdb-error>
-  
+
                 <!-- Message Error Insufficient balance-->
                 <mdb-error *ngIf="insufficientBalance">
                   <span class="fs-08rem fw-600 color-error-message">Insufficient balance</span>
@@ -180,191 +239,199 @@
           </div>
         </div>
       </div>
-      <!-- FIN XPX -->
-  
-      <!--  OTHER MOSAICS -->
-      <ng-container *ngIf="boxOtherMosaics.length > 0">
-        <ng-container *ngFor="let otherMosaic of boxOtherMosaics; let i = index">
-          <!-- SEPARED -->
-          <div class="row">
-            <div class="col-11 col-md-10 col-lg-8 mx-auto">
-              <hr>
-            </div>
-          </div>
-  
-          <div class="row">
-            <!-- Select mosaic -->
-            <div class="col-11 col-md-10 col-lg-8 mx-auto">
-              <ng-select mdbInputDirective mdbValidate class="selectWrapper" [items]="otherMosaic.selectOtherMosaics"
-                bindLabel="label" bindValue="value" placeholder="Select mosaic" (change)="otherMosaicsChange($event, i)"
-                [disabled]="disabledAllField">
-              </ng-select>
-            </div>
-  
-            <!-- Balance -->
-            <ng-container *ngIf="otherMosaic.balance !== ''">
-              <div class="col-11 col-md-10 col-lg-8 mx-auto txt-a-center">
-                <span class="fw-600">Balance: {{otherMosaic.balance}} </span>
+    </div>
+    <!-- FIN XPX -->
+
+    <!--  OTHER MOSAICS -->
+    <ng-container *ngIf="boxOtherMosaics.length > 0">
+      <ng-container *ngFor="let otherMosaic of boxOtherMosaics; let i = index">
+        <!-- MOSAIC & AMOUNT -->
+        <div class="row mt-2rem">
+          <div class="col-11 col-md-10 col-lg-8 mx-auto">
+            <div class="border-separator">
+              <!-- MOSAIC XPX -->
+              <div class="row">
+                <div class="col-12 mx-auto">
+                  <ng-select class="custom" mdbInputDirective mdbValidate class="selectWrapper"
+                    [items]="otherMosaic.selectOtherMosaics" bindLabel="label" bindValue="value"
+                    placeholder="Select Mosaic" (change)="otherMosaicsChange($event, i)" [disabled]="disabledAllField">
+                  </ng-select>
+                </div>
               </div>
-            </ng-container>
-          </div>
-  
-          <ng-container *ngIf="otherMosaic.balance !== ''">
-            <div class="row">
-              <div class="col-11 col-md-10 col-lg-8 mx-auto">
+
+              <ng-container *ngIf="otherMosaic.balance !== ''">
                 <div class="row d-flex align-items-center">
                   <!-- Amount Input -->
                   <div class="col-12 mx-auto">
-                    <div class="md-form form-sm mt-1rem mb-0rem">
+                    <div class="md-form form-sm mt-0 mb-0rem">
                       <img class="form-control-feedback"
                         src="assets/images/img/icon-amount-green-16h-proximax-sirius-wallet.svg" alt="">
                       <input currencyMask [options]="boxOtherMosaics[i].config" mdbInputDirective mdbValidate
                         [maxlength]="configurationForm.amount.maxLength" type="text"
                         class="form-control form-control-sm input-border input-amount"
                         [(ngModel)]="boxOtherMosaics[i].amount" [ngModelOptions]="{standalone: true}"
-                        (ngModelChange)="amountOtherMosaicChanged($event, otherMosaic.id, i)" placeholder="Enter quantity"
-                        [disabled]="disabledAllField">
-                      <span class="label-i fw-600 pl-2rem">SEND</span>
-  
+                        (ngModelChange)="amountOtherMosaicChanged($event, otherMosaic.id, i)"
+                        placeholder="Enter quantity" [disabled]="disabledAllField">
+                      <span class="label-i fw-600 pl-2rem">Send</span>
+
                       <!-- Message Error Insufficient balance-->
                       <mdb-error *ngIf="otherMosaic.errorBalance">
-                        <span class="fs-08rem fw-600 color-error-message">Insufficient balance</span>
+                        <span class="fs-08rem fw-600 color-error-message">Insufficient Balance</span>
                       </mdb-error>
                     </div>
                   </div>
                 </div>
-              </div>
+              </ng-container>
             </div>
-          </ng-container>
-        </ng-container>
-      </ng-container>
-      <!--  FIN MOSAICS -->
-  
-      <!-- Add mosaics -->
-      <div class="row mt-1rem">
-        <div class="col-12 d-flex justify-content-center">
-          <button
-            [disabled]="currentBlock === 0 || disabledBtnAddMosaic || selectOtherMosaics.length === 0 || disabledAllField"
-            mdbBtn type="button" rounded="true" mdbWavesEffect class="background-btn-inverse pl-2rem pr-2rem" size="md"
-            (click)="pushedOtherMosaics()">
-            <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
-              *ngIf="currentBlock === 0 && !disabledBtnAddMosaic"></span>
-            <span class="fs-1-2em text-cl-m fw-700">(+) Add Mosaics </span>
-          </button>
+          </div>
         </div>
+      </ng-container>
+    </ng-container>
+    <!--  FIN MOSAICS -->
+
+    <!-- Add mosaics -->
+    <div class="row mt-1rem">
+      <div class="col-12 d-flex justify-content-center">
+        <button
+          [disabled]="currentBlock === 0 || disabledBtnAddMosaic || selectOtherMosaics.length === 0 || disabledAllField"
+          mdbBtn type="button" rounded="true" mdbWavesEffect class="background-btn-inverse pl-2rem pr-2rem" size="md"
+          (click)="pushedOtherMosaics()">
+          <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
+            *ngIf="currentBlock === 0 && !disabledBtnAddMosaic"></span>
+          <span class="fs-1-2em text-cl-m fw-700">(+) Add Mosaics </span>
+        </button>
       </div>
-  
-      <!-- SEPARED -->
+    </div>
+
+    <!-- SEPARED -->
+    <div class="row">
+      <div class="col-11 col-md-10 col-lg-8 mx-auto">
+        <hr>
+      </div>
+    </div>
+
+    <!-- FEE + LOCKFUND -->
+    <ng-container
+      *ngIf="sender?.isMultisign && sender?.isMultisign.cosignatories && sender?.isMultisign.cosignatories.length > 0; else showOnlyFee">
       <div class="row">
         <div class="col-11 col-md-10 col-lg-8 mx-auto">
-          <hr>
+          <div class="row">
+            <div class="col-12 col-md-6 mx-auto">
+              <div class="box-grey d-flex justify-content-center pt-1-3rem pb-1-3rem">
+                <div class="row">
+                  <div class="col-12 text-center">
+                    <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
+                      width="20" alt="">
+                    <!-- <span class="fs-07rem">Fee: {{fee}} XPX <br></span> -->
+                    <span class="fs-08rem">
+                      Fee:&nbsp;
+                      <a [innerHTML]="getQuantity(fee)"></a> XPX
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12 col-md-6 mx-auto">
+              <div class="box-grey pt-08rem pb-08rem d-flex justify-content-center">
+                <div class="row">
+                  <div class="col-12 d-flex align-items-center">
+                    <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
+                      width="20" alt="">
+
+                    <span class="fs-08rem">
+                      LockFund:&nbsp;
+                      <a [innerHTML]="getQuantity('10.000000')"></a> XPX <br>
+
+                      Fee:&nbsp;
+                      <a [innerHTML]="getQuantity('0.044500')"></a> XPX
+                    </span>
+                    <!-- <span class="fs-07rem">LockFund: 10.000000 XPX <br> Fee: 0.044500 XPX</span>  -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-  
-      <!-- FEE + LOCKFUND -->
-      <ng-container
-        *ngIf="sender?.isMultisign && sender?.isMultisign.cosignatories && sender?.isMultisign.cosignatories.length > 0; else showOnlyFee">
-        <div class="row">
-          <div class="col-11 col-md-10 col-lg-8 mx-auto">
+    </ng-container>
+
+
+    <!-- ONLY FEE -->
+    <ng-template #showOnlyFee>
+      <!-- FEE -->
+      <div class="row">
+        <div class="col-11 col-md-10 col-lg-8 mx-auto">
+          <div class="box-grey d-flex justify-content-center pt-09rem pb-09rem">
             <div class="row">
-              <div class="col-12 col-md-6 mx-auto">
-                <div class="box-grey d-flex justify-content-center pt-09rem pb-09rem">
-                  <div class="row">
-                    <div class="col-12 text-center">
-                      <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
-                        width="20" alt="">
-                      <span class="fs-07rem">Fee: {{fee}} XPX <br></span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-  
-              <div class="col-12 col-md-6 mx-auto">
-                <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
-                  <div class="row">
-                    <div class="col-12 d-flex align-items-center">
-                      <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
-                        width="20" alt="">
-                      <span class="fs-07rem">LockFund: 10.000000 XPX <br> Fee: 0.044500 XPX</span>
-                    </div>
-                  </div>
-                </div>
+              <div class="col-12 text-center">
+                <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20"
+                  alt="">
+                <span class="fs-08rem">
+                  Fee:&nbsp;
+                  <a [innerHTML]="getQuantity(fee)"></a> XPX
+                </span>
               </div>
             </div>
           </div>
         </div>
-      </ng-container>
-  
-  
-      <!-- ONLY FEE -->
-      <ng-template #showOnlyFee>
-        <!-- FEE -->
-        <div class="row">
-          <div class="col-11 col-md-10 col-lg-8 mx-auto">
-            <div class="box-grey d-flex justify-content-center pt-09rem pb-09rem">
-              <div class="row">
-                <div class="col-12 text-center">
-                  <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20"
-                    alt="">
-                  <span class="fs-07rem">Fee: {{fee}} XPX <br></span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </ng-template>
-  
-      <!-- MESSAGE -->
-      <div class="row">
-        <div class="col-11 col-md-10 col-lg-8 mx-auto">
-          <div class="md-form form-sm mt-1rem mb-0rem">
-            <img class="form-control-feedback" src="assets/images/img/icon-messenger-green-16h-proximax-sirius-wallet.svg"
-              alt="" style="padding: 30px 10px !important">
-            <textarea mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
-              id="message" class="md-textarea form-control" mdbInput placeholder="Message" formControlName="message"
-              [maxlength]="configurationForm.message.maxLength"></textarea>
-            <span class="fs-08rem text-cl-m d-flex justify-content-end">{{ charRest }}</span>
-            <mdb-error
-              *ngIf="validateInput('message').invalid && (validateInput('message').dirty || validateInput('message').touched)">
-              <span>Invalid Recipient</span>
-            </mdb-error>
-          </div>
+      </div>
+    </ng-template>
+
+    <!-- MESSAGE -->
+    <div class="row">
+      <div class="col-11 col-md-10 col-lg-8 mx-auto">
+        <div class="md-form form-sm mt-1rem mb-0rem">
+          <img class="form-control-feedback" src="assets/images/img/icon-messenger-green-16h-proximax-sirius-wallet.svg"
+            alt="" style="padding: 30px 10px !important">
+          <textarea mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
+            id="message" class="md-textarea form-control" mdbInput placeholder="Message" formControlName="message"
+            [maxlength]="configurationForm.message.maxLength"></textarea>
+          <span class="fs-08rem text-cl-m d-flex justify-content-end">{{ charRest }}</span>
+          <mdb-error
+            *ngIf="validateInput('message').invalid && (validateInput('message').dirty || validateInput('message').touched)">
+            <span>Invalid Recipient</span>
+          </mdb-error>
         </div>
       </div>
-  
-      <!-- password -->
-      <div class="row">
-        <div class="col-11 col-md-10 col-lg-8 mx-auto">
-          <div class="md-form form-sm">
-            <img class="form-control-feedback" src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg"
-              alt="">
-            <input [maxlength]="configurationForm.passwordWallet.maxLength"
-              [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" required
-              mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password" id="password"
-              class="form-control form-control-sm input-border" placeholder="Enter wallet password">
-  
-            <!-- VALIDATION -->
-            <mdb-error
-              *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
-              <span>Password required</span>
-            </mdb-error>
-          </div>
+    </div>
+
+    <!-- password -->
+    <div class="row">
+      <div class="col-11 col-md-10 col-lg-8 mx-auto">
+        <div class="md-form form-sm">
+          <img class="form-control-feedback" src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg"
+            alt="">
+          <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
+            src="assets/images/img/icon-show-hide-password.svg" *ngIf="passwordMain === 'password'">
+          <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
+            src="assets/images/img/icon-show-hide-password-grey.svg" *ngIf="passwordMain === 'text'">
+          <input [maxlength]="configurationForm.passwordWallet.maxLength"
+            [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" required
+            mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" [type]="passwordMain"
+            id="password" class="form-control form-control-sm input-border" placeholder="Enter Wallet Password">
+
+          <!-- VALIDATION -->
+          <mdb-error
+            *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
+            <span>Password Required</span>
+          </mdb-error>
         </div>
       </div>
-  
-  
-      <!-- BUTTONS -->
-      <div class="row">
-        <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-          <button [disabled]="disabledAllField" mdbBtn type="button" rounded="true" mdbWavesEffect
-            class="f-w-600 background-btn pl-2rem pr-2rem" size="md" (click)="clearForm()">
-            <span class="fs-1-2em color-white">Clear</span>
-          </button>
-        </div>
-  
-        <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-          <button
-            [disabled]="
+    </div>
+
+
+    <!-- BUTTONS -->
+    <div class="row">
+      <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
+        <button [disabled]="disabledAllField" mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax"
+          size="md" (click)="clearForm()">
+          <span class="fs-1-2em color-white">Clear</span>
+        </button>
+      </div>
+
+      <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
+        <button [disabled]="
             (formTransfer.invalid ||
             errorOtherMosaics ||
             disabledAllField ||
@@ -372,89 +439,91 @@
             (sender.isMultisign &&
             sender.isMultisign.cosignatories &&
             sender.isMultisign.cosignatories.length > 0 &&
-            !cosignatorie) && !reloadBtn"
-            mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
-            <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
-              *ngIf="reloadBtn"></span>
-            <span class="fs-1-2em color-white">Send</span>
-          </button>
+            !cosignatorie) ||
+            (listCosignatorie &&
+            listCosignatorie.length === 1 &&
+            listCosignatorie[0].disabled) && !reloadBtn" mdbBtn type="submit" rounded="true" mdbWavesEffect
+          class="btn-proximax" size="md">
+          <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
+            *ngIf="reloadBtn"></span>
+          <span class="fs-1-2em color-white">Send</span>
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<!-- Modal -->
+<div mdbModal #basicModal="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myBasicModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content form-elegant b-r-08rem">
+      <div class="modal-header text-center box-modal-grey b-t-r-r-08rem b-t-l-r-08rem">
+        <h6 class="modal-title w-100 dark-grey-text" id="myModalLabel">
+          <strong class="title-modal-grey">Add contact</strong>
+        </h6>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="basicModal.hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="row mt-1rem mb-1rem" *ngIf="!saveContact">
+        <div class="col-11 col-sm-12 col-md-11 mx-auto box-transparent-border-orange">
+          <div class="col-12 d-flex flex-column align-items-center">
+            <span class="font-small d-flex text-center">Do you want to save the entered address?</span>
+          </div>
+        </div>
+        <!-- BUTTONS -->
+        <div class="row mx-auto">
+          <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
+            <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" size="md"
+              (click)="basicModal.hide()">
+              <span class="fs-1-2em color-white">No</span>
+            </button>
+          </div>
+
+          <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
+            <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" (click)="saveContact = true"
+              size="md">
+              <span class="fs-1-2em color-white">Yes</span>
+            </button>
+          </div>
         </div>
       </div>
-    </form>
-  </div>
-  
-  <!-- Modal -->
-  <div mdbModal #basicModal="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myBasicModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content form-elegant b-r-08rem">
-        <div class="modal-header text-center box-modal-grey b-t-r-r-08rem b-t-l-r-08rem">
-          <h6 class="modal-title w-100 dark-grey-text" id="myModalLabel">
-            <strong class="title-modal-grey">Add contact</strong>
-          </h6>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="basicModal.hide()">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="row mt-1rem mb-1rem" *ngIf="!saveContact">
-          <div class="col-11 col-sm-12 col-md-11 mx-auto box-transparent-border-orange">
-            <div class="col-12 d-flex flex-column align-items-center">
-              <span class="font-small d-flex text-center">Do you want to save the entered address?</span>
+      <div *ngIf="saveContact">
+        <form>
+          <div class="modal-body mx-4">
+
+            <div class="row">
+              <div class="col-11 col-sm-10 col-lg-8 mx-auto">
+                <div class="md-form form-sm">
+                  <input required mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
+                    type="text" id="user" [(ngModel)]="formContact.name" [ngModelOptions]="{standalone: true}"
+                    class="form-control form-control-sm input-border" placeholder="Name">
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-11 col-sm-10 col-lg-8 mx-auto">
+                <div class="md-form form-sm">
+                  <input required mdbInputDirective readonly mdbValidate [validateSuccess]="true" [validateError]="true"
+                    type="text" [(ngModel)]="formContact.address" [ngModelOptions]="{standalone: true}" id="address"
+                    class="form-control form-control-sm input-border" placeholder="address">
+                </div>
+              </div>
+            </div>
+
+            <div class="row mx-auto">
+              <div class="col-12 d-flex justify-content-center">
+                <button mdbBtn type="button" [disabled]="formContact.name === ''" rounded="true" mdbWavesEffect
+                  class="f-w-600 background-btn pl-2rem pr-2rem" size="md" (click)="saveContactNew()">
+                  <span class="fs-1-2em color-white">Save</span>
+                </button>
+              </div>
             </div>
           </div>
-          <!-- BUTTONS -->
-          <div class="row mx-auto">
-            <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-              <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
-                size="md" (click)="basicModal.hide()">
-                <span class="fs-1-2em color-white">N0</span>
-              </button>
-            </div>
-  
-            <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-              <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
-                (click)="saveContact = true" size="md">
-                <span class="fs-1-2em color-white">Yes</span>
-              </button>
-            </div>
-          </div>
-        </div>
-        <div *ngIf="saveContact">
-          <form>
-            <div class="modal-body mx-4">
-  
-              <div class="row">
-                <div class="col-11 col-sm-10 col-lg-8 mx-auto">
-                  <div class="md-form form-sm">
-                    <input required mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
-                      type="text" id="user" [(ngModel)]="formContact.name" [ngModelOptions]="{standalone: true}"
-                      class="form-control form-control-sm input-border" placeholder="Name">
-                  </div>
-                </div>
-              </div>
-  
-              <div class="row">
-                <div class="col-11 col-sm-10 col-lg-8 mx-auto">
-                  <div class="md-form form-sm">
-                    <input required mdbInputDirective readonly mdbValidate [validateSuccess]="true" [validateError]="true"
-                      type="text" [(ngModel)]="formContact.address" [ngModelOptions]="{standalone: true}" id="address"
-                      class="form-control form-control-sm input-border" placeholder="address">
-                  </div>
-                </div>
-              </div>
-  
-              <div class="row mx-auto">
-                <div class="col-12 d-flex justify-content-center">
-                  <button mdbBtn type="button" [disabled]="formContact.name === ''" rounded="true" mdbWavesEffect
-                    class="f-w-600 background-btn pl-2rem pr-2rem" size="md" (click)="saveContactNew()">
-                    <span class="fs-1-2em color-white">Save</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </form>
-        </div>
+        </form>
       </div>
     </div>
   </div>
-  
+</div>

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
 import { TransactionsInterface } from 'src/app/transactions/services/transactions.service';
 
 @Component({

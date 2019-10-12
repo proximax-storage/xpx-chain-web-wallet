@@ -99,7 +99,6 @@ export class AuthService {
     this.dataBridgeService.connectnWs();
 
     let wallet = this.walletService.getWalletTransNisStorage().find(el => el.name === this.walletService.getCurrentWallet().name);
-
     if (wallet !== undefined && wallet !== null) {
       this.walletService.setSwapTransactions$(wallet.transactions);
     } else {

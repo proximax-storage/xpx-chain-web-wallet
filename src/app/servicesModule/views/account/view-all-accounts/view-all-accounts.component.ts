@@ -31,6 +31,7 @@ export class ViewAllAccountsComponent implements OnInit {
     createNewAccount: `/${AppConfig.routes.selectTypeCreationAccount}`,
     viewDetails: `/${AppConfig.routes.account}/`,
     deleteAccount: `/${AppConfig.routes.deleteAccount}/`,
+    multisig: `/${AppConfig.routes.convertToAccountMultisign}/`
   };
   subscription: Subscription[] = [];
 
@@ -175,5 +176,18 @@ export class ViewAllAccountsComponent implements OnInit {
         this.buildBalance();
       }
     ));
+  }
+
+  /**
+     *
+     *  @param {string} quantity
+     * @memberof ViewAllAccountsComponent
+     */
+  /*getQuantity(quantity: string) {
+    return this.transactionService.getDataPart(quantity, 6);
+  }*/
+
+  getQuantity(quantity: string) {
+    return this.sharedService.amountFormat(quantity);
   }
 }

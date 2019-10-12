@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AppConfig } from 'src/app/config/app.config';
 import { WalletService } from 'src/app/wallet/services/wallet.service';
+import { HeaderServicesInterface } from 'src/app/servicesModule/services/services-module.service';
 
 @Component({
   selector: 'app-account-nis1-transfer-xpx',
@@ -11,6 +12,10 @@ export class AccountNis1TransferXpxComponent implements OnInit {
 
   showCertificate: boolean = false;
   transactionSuccess: any;
+  paramsHeader: HeaderServicesInterface = {
+    moduleName: 'Mainnet Swap',
+    componentName: 'Swap Process'
+  };
   routeCertificate: string;
   title: string = 'Swap Process';
   subtitle: string = null;

@@ -35,17 +35,19 @@
           </div>
 
           <!-- EXAMPLE -->
-          <div class="col-9 d-flex justify-content-center mx-auto mb-1rem mt-1rem p-0">
-            <div class="box-transparent-border-orange m-0">
-              <span class="fs-075rem w-b-a txt-a-center">
-                  Files must be in the attestation format to be audited.
-              </span>
-              <p class="mb-0">
-                <span class="font-title fw-700 fs-09rem">FOR EXAMPLE</span>
-              </p>
-              <span class="fs-075rem w-b-a txt-a-center">Filename --Apostille TX
-                2c8b443e97b2636a4b9cce8de65aef6ad12cd360f54b7bac31c52cb04cddc753 --Date YYYY-MM-DD.pdf</span>
+          <div class="col-8 mb-1rem mx-auto box-transparent-border-orange">
+            <div class="txt-a-center">
+              <img src="assets/images/img/icon-transaction-unconfirmed-white.svg" style="filter: invert(50%)" alt=""
+                width="30">
             </div>
+            <h6 class="fw-600">Files must be in the attestation format to be audited.</h6>
+          </div>
+          <div class="col-8 mb-1rem mx-auto box-transparent-border-orange">
+            <h6 class="fw-600">Example:</h6>
+            <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em">
+              Filename --Apostille TX
+              2c8b443e97b2636a4b9cce8de65aef6ad12cd360f54b7bac31c52cb04cddc753 --Date YYYY-MM-DD.pdf
+            </p>
           </div>
         </div>
 
@@ -67,11 +69,11 @@
           <div class="col-11 col-sm-11 col-lg-10 mx-auto mb-2rem">
             <div class="row">
               <div class="col-12 d-flex justify-content-center mx-auto">
-                <button mdbBtn rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
-                  (click)="verifyFiles()" [disabled]="ourFile.length === 0">
+                <button mdbBtn rounded="true" mdbWavesEffect class="btn-proximax" (click)="verifyFiles()"
+                  [disabled]="ourFile.length === 0">
                   <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
                     *ngIf="blockButton"></span>
-                  <span class="fs-1-2em color-white">AUDIT</span>
+                  <span class="fs-1-2em color-white">Audit</span>
                 </button>
               </div>
             </div>
@@ -146,9 +148,9 @@
       <div class="col-11 col-sm-11 col-lg-10 mx-auto mb-2rem">
         <div class="row">
           <div class="col-12 d-flex justify-content-center mx-auto">
-            <button mdbBtn rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+            <button mdbBtn rounded="true" mdbWavesEffect class="btn-proximax"
               (click)="currentView = !currentView; ourFile = []; auditResults = []">
-              <span class="fs-1-2em color-white">FINISH</span>
+              <span class="fs-1-2em color-white">Finish</span>
             </button>
           </div>
         </div>

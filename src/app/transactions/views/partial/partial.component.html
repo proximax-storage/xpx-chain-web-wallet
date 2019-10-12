@@ -30,7 +30,7 @@
           <div class="row d-flex justify-content-center">
             <div class="col-12 col-sm-8 d-flex justify-content-md-end justify-content-center">
               <input mdbInputDirective [validateSuccess]="false" [validateError]="false"
-                class="w-100porcent form-control" type="text" placeholder="Enter search text" autocomplete="off"
+                class="w-100porcent form-control" type="text" placeholder="Enter Search Text" autocomplete="off"
                 [(ngModel)]="filter">
             </div>
           </div>
@@ -68,7 +68,7 @@
               *ngFor="let transaction of aggregateTransactions | stringFilter: filter | paginate: configAdvance">
               <tr class="white-space-pre cursor-p" mdbTableCol [ngClass]="!transaction ? 'background-pending': ''"
                 (click)="find(transaction)">
-                <td class="fs-07rem">{{transaction.fee}}</td>
+                <!-- <td class="fs-07rem">{{transaction.fee}}</td> -->
                 <td class="fs-07rem">{{transaction.senderAddress}}</td>
                 <td class="fs-07rem">{{transaction.data.transactionInfo.hash}}</td>
               </tr>
@@ -76,7 +76,7 @@
 
             <ng-container *ngIf="aggregateTransactions.length === 0">
               <tr>
-                <td colspan="5" class="txt-a-center">nothing to show</td>
+                <td colspan="5" class="txt-a-center">Nothing to Show</td>
               </tr>
             </ng-container>
           </tbody>
@@ -99,7 +99,7 @@
       <div class="modal-content form-elegant bord-rad-1-5rem">
         <div class="modal-header text-center box-modal-white b-t-r-r-1-5rem b-t-l-r-1-5rem p-03rem">
           <span class="modal-title w-100" id="myModalLabel">
-            <strong class="title-modal-blue">Partial Transaction - Information</strong>
+            <strong class="title-modal-blue">Transaction Information</strong>
           </span>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"
             (click)="modalPartialTransaction.hide()">
@@ -117,22 +117,22 @@
                     <div class="row">
                       <!-- Partial -->
                       <div class="col-12">
-                        <span class="fw-600 fs-1-2rem">Bonded</span>
+                        <span class="fw-600 fs-1-2rem">Aggregate Bonded</span>
                       </div>
 
                       <!-- Timestamp
                       <div class="col-12" *ngIf="dataSelected?.timestamp">
-                        <span class="color-dark-green fs-07rem fw-500 w-w-b-w">{{dataSelected?.timestamp}}</span>
+                        <span class="color-black fs-07rem fw-500 w-w-b-w">{{dataSelected?.timestamp}}</span>
                       </div>-->
 
                       <!-- Fee -->
                       <ng-container *ngIf="dataSelected?.effectiveFee">
                         <div class="col-12 mt-03rem">
-                          <span class="fw-600 fs-095rem color-dark-green">Fee:&nbsp;&nbsp;</span>
+                          <span class="fw-600 fs-095rem color-black">Fee:&nbsp;&nbsp;</span>
                           <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
-                          <span class="fw-600 fs-095rem color-blue-light">{{dataSelected?.effectiveFee.part1}}</span>
-                          <span class="fw-600 fs-075rem color-blue-light">{{dataSelected?.effectiveFee.part2}}</span>
-                          <span class="fw-600 fs-095rem color-blue-light"> XPX </span>
+                          <span class="fw-600 fs-095rem color-black">{{dataSelected?.effectiveFee.part1}}</span>
+                          <span class="fw-600 fs-075rem color-black">{{dataSelected?.effectiveFee.part2}}</span>
+                          <span class="fw-600 fs-095rem color-black"> XPX </span>
                         </div>
                       </ng-container>
 
@@ -186,7 +186,7 @@
                               </app-modify-multisig-account-type>
 
                               <app-transfer-type-bonded *ngIf="innerTransaction.type === typeTransactions.transfer.id"
-                                [transferTransactionBonded]="innerTransaction">
+                                [transferTransactionBonded]="innerTransaction" [msg]="msg">
                               </app-transfer-type-bonded>
                             </mdb-accordion-item-body>
                           </mdb-accordion-item>
@@ -199,14 +199,26 @@
                   <!-- Action Required -->
                   <div class="col-12 col-md-6">
                     <div class="row">
+                      <ng-container *ngIf="showSwap">
+                        <div class="col-12 background-gray-light pt-1rem">
+                          <div class="row lh-1em mb-06rem">
+                            <div class="col-12 d-flex justify-content-center">
+                              <img class="mr-1rem ml-1rem h-90px"
+                                src="assets/images/img/badge-gold-proximax-sirius-wallet.svg">
+                            </div>
+
+                            <div class="col-12 d-flex justify-content-center pt-1rem">
+                              <span class="fw-bold">ProximaX Swap</span>
+                            </div>
+                          </div>
+                        </div>
+                      </ng-container>
+
                       <div
-                        class="col-12 background-orange h-100px d-flex align-items-center justify-content-center txt-a-center">
+                        class="col-12 background-orange h-50px d-flex align-items-center justify-content-center txt-a-center">
                         <div class="row">
                           <div class="col-12">
-                            <span class="fw-600 color-white">Action</span>
-                          </div>
-                          <div class="col-12">
-                            <span class="fw-600 color-white">Required</span>
+                            <span class="fw-600 color-white">Action Required</span>
                           </div>
                         </div>
                       </div>
@@ -215,7 +227,7 @@
                       <div class="col-12 pt-1rem background-gray-light">
                         <div class="row lh-1em mb-03rem">
                           <div class="col-12">
-                            <span class="fw-600 fs-065rem">Signer cosignatory account: </span>
+                            <span class="fw-600 fs-065rem">Signer Cosignatory Account: </span>
                           </div>
                           <div class="col-12">
                             <span class="fs-065rem">{{dataSelected?.senderAddress}}</span>
@@ -256,11 +268,19 @@
                           <div class="row d-flex justify-content-center">
                             <div class="col-12">
                               <div class="md-form form-sm">
+                                <img class="form-control-feedback"
+                                  src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg" alt="">
+                                <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
+                                  src="assets/images/img/icon-show-hide-password.svg"
+                                  *ngIf="passwordMain === 'password'">
+                                <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
+                                  src="assets/images/img/icon-show-hide-password-grey.svg"
+                                  *ngIf="passwordMain === 'text'">
                                 <input [maxlength]="configurationForm.passwordWallet.maxLength"
                                   [minlength]="configurationForm.passwordWallet.minLength" [(ngModel)]="password"
                                   required mdbInputDirective [validateSuccess]="false" [validateError]="false"
-                                  type="password" id="password" class="form-control form-control-sm input-border"
-                                  placeholder="Enter password">
+                                  [type]="passwordMain" id="password" class="form-control form-control-sm input-border"
+                                  placeholder="Enter Wallet Password">
                               </div>
                             </div>
 
@@ -268,7 +288,7 @@
                               <button (click)="sendTransaction()" autocomplete="false" [disabled]="validateAccount || password === '' || password.length <
                                   this.configurationForm.passwordWallet.minLength || password.length>
                                   this.configurationForm.passwordWallet.maxLength" mdbBtn type="button" rounded="true"
-                                mdbWavesEffect class="f-w-600 background-btn pt-1rem" size="sm">
+                                mdbWavesEffect class="btn-proximax" size="sm">
                                 <span class="fs-1-2em color-white">Approve to Continue</span>
                               </button>
                             </div>

@@ -8,9 +8,8 @@ import { ChronoUnit } from 'js-joda';
 export const environment = {
   production: true,
   itemBooksAddress: 'sw-books-testnet-01',
-  //version: '0.3.1.8',
-  version: '0.3.14',
-  cacheVersion: '3',
+  version: '0.3.15',
+  cacheVersion: '5',
   nameKeyBlockStorage: `sw-blocks`,
   nameKeyNodeSelected: `sw-selected-node-testnet-01`,
   nameKeyWalletStorage: `sw-testnet-01`,
@@ -84,30 +83,31 @@ export const environment = {
     address_public_test: 'VDYN53-XXEGKK-3XHQYE-K6ZBMN-JPXN57-ZBHXA3-AW55'
   },
   nis1: {
-    url: 'https://bctestnetswap.xpxsirius.io:7890',
-    urlExplorer: 'https://bctestnetswap.xpxsirius.io/#/unconfirmedtxlist',
+    /* url: 'https://bctestnetswap.xpxsirius.io:7890',
+      urlExplorer: 'http://testnet-explorer.nemtool.com/#/unconfirmedtxlist',
+      networkType: NetworkTypes.TEST_NET,
+      address: 'TBF4LAZUEJMBIOC6J24D6ZGGXE5W775TX555CTTN',
+      nodes: [
+        { protocol: "https", domain: "bctestnetswap.xpxsirius.io", port: 7890 } as ServerConfig
+      ],*/
+    /*url: 'https://bctestnetswap.xpxsirius.io',
+    urlExplorer: 'http://testnet-explorer.nemtool.com/#/unconfirmedtxlist',
     networkType: NetworkTypes.TEST_NET,
     address: 'TBF4LAZUEJMBIOC6J24D6ZGGXE5W775TX555CTTN',
     nodes: [
-      { protocol: "https", domain: "bctestnetswap.xpxsirius.io", port: 7890 } as ServerConfig
+      { protocol: "https", domain: "bctestnetswap.xpxsirius.io", port: 443 } as ServerConfig
+    ],*/
+    url: 'http://18.231.166.212:7890',
+    urlExplorer: 'http://testnet-explorer.nemtool.com/#/unconfirmedtxlist',
+    networkType: NetworkTypes.TEST_NET,
+    address: 'TBF4LAZUEJMBIOC6J24D6ZGGXE5W775TX555CTTN',
+    nodes: [
+      { protocol: "http", domain: "18.231.166.212", port: 7890 } as ServerConfig
     ],
-    // url: 'https://bctestnetswap.xpxsirius.io',
-    // urlExplorer: 'http://testnet-explorer.nemtool.com/#/unconfirmedtxlist',
-    // networkType: NetworkTypes.TEST_NET,
-    // address: 'TBF4LAZUEJMBIOC6J24D6ZGGXE5W775TX555CTTN',
-    // nodes: [
-    //   { protocol: "https", domain: "bctestnetswap.xpxsirius.io", port: 443 } as ServerConfig
-    // ],
-    // url: 'http://192.168.2.141:7890',
-    // urlExplorer: 'http://testnet-explorer.nemtool.com/#/unconfirmedtxlist',
-    // networkType: NetworkTypes.TEST_NET,
-    // address: 'TBF4LAZUEJMBIOC6J24D6ZGGXE5W775TX555CTTN',
-    // nodes: [
-    //   { protocol: "http", domain: "192.168.2.141", port: 7890 } as ServerConfig
-    // ],
   },
   swapAccount: {
-    address: 'VC3I3FSQ354JT2QNS2XJ2J3OROCOBIRK6JB3BCBH'
+    addressAccountMultisig: 'VAWOEOWTABXR7O3ZAK2XNA5GIBNE6PZIXDAFDWBU',
+    addressAccountSimple: 'VC3I3FSQ354JT2QNS2XJ2J3OROCOBIRK6JB3BCBH'
   },
   /*typeNetwork: {
     value: NetworkType.MAIN_NET,

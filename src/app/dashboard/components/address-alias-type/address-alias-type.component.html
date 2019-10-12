@@ -9,62 +9,62 @@
 
       <!-- Timestamp -->
       <div class="col-12" *ngIf="addressAlias?.timestamp">
-        <span class="color-dark-green fs-07rem fw-500 w-w-b-w">{{addressAlias?.timestamp}}</span>
+        <span class="color-black fs-07rem fw-500 w-w-b-w">{{addressAlias?.timestamp}}</span>
       </div>
 
       <!-- Fee -->
       <ng-container *ngIf="addressAlias?.effectiveFee">
         <div class="col-12 mt-03rem">
-          <span class="fw-600 fs-095rem color-dark-green">Fee:&nbsp;&nbsp;</span>
+          <span class="fw-600 fs-095rem color-black">Fee:&nbsp;&nbsp;</span>
           <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
-          <span class="fw-600 fs-095rem color-blue-light">{{addressAlias?.effectiveFee.part1}}</span>
-          <span class="fw-600 fs-075rem color-blue-light">{{addressAlias?.effectiveFee.part2}}</span>
-          <span class="fw-600 fs-095rem color-blue-light"> XPX </span>
+          <span class="fs-095rem color-black">{{addressAlias?.effectiveFee.part1}}</span>
+          <span class="fs-075rem color-black">{{addressAlias?.effectiveFee.part2}}</span>
+          <span class="fs-095rem color-black"> XPX </span>
         </div>
       </ng-container>
 
       <!-- Height -->
       <ng-container *ngIf="addressAlias?.data.transactionInfo.height">
-        <div class="col-12 mt-04rem">
+        <div class="col-12 lh-1em mt-1rem">
           <span class="fw-600 fs-08rem">Height:&nbsp;&nbsp;</span>
           <span class="fs-07rem">{{addressAlias?.data.transactionInfo.height.compact()}}</span>
         </div>
       </ng-container>
 
       <!-- Type -->
-      <div class="col-12 mt-04rem">
+      <div class="col-12 lh-1em">
         <span class="fw-600 fs-08rem">Type:&nbsp;&nbsp;</span>
         <span class="fs-07rem">{{addressAlias?.data['type'].toString(16).toUpperCase()}}</span>
       </div>
 
       <!-- Action -->
-      <div class="col-12 mt-04rem">
+      <div class="col-12 lh-1em">
         <span class="fw-600 fs-08rem">Action:&nbsp;&nbsp;</span>
-        <ng-container *ngIf="addressAlias?.data['actionType'] === undefined">
-          <span class="fs-07rem green-c">Link</span>
-        </ng-container>
+        <ng-container *ngIf="addressAlias?.data['actionType'] === 1; else showUnlink">
+            <span class="fs-07rem green-c">Link</span>
+          </ng-container>
 
-        <ng-container *ngIf="addressAlias?.data['actionType'] !== undefined">
-          <span class="fs-07rem color-red">Unlink</span>
-        </ng-container>
+          <ng-template #showUnlink>
+            <span class="fs-07rem color-red">Unlink</span>
+          </ng-template>
       </div>
 
       <!-- Address -->
-      <div class="col-12 mt-04rem">
+      <div class="col-12 lh-1em">
         <span class="fw-600 fs-08rem">Address:&nbsp;&nbsp;</span>
         <span class="fs-07rem">{{addressAlias?.data['address'].pretty()}}</span>
       </div>
 
       <!-- Namespace Id -->
-      <div class="col-12 mt-04rem">
-        <span class="fw-600 fs-08rem">Namespace Id:&nbsp;&nbsp;</span>
+      <div class="col-12 lh-1em">
+        <span class="fw-600 fs-08rem">Namespace ID:&nbsp;&nbsp;</span>
         <span class="fs-07rem">{{namespaceId}}</span>
       </div>
 
       <!-- Namespace Id -->
       <ng-container *ngIf="namespaceName !== ''">
-        <div class="col-12 mt-04rem">
-          <span class="fw-600 fs-08rem">Namespace name:&nbsp;&nbsp;</span>
+        <div class="col-12 lh-1em">
+          <span class="fw-600 fs-08rem">Namespace Name:&nbsp;&nbsp;</span>
           <span class="fs-07rem">{{namespaceName}}</span>
         </div>
       </ng-container>

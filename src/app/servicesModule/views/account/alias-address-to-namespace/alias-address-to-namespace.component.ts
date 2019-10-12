@@ -20,7 +20,7 @@ import { TransactionsService } from '../../../../transactions/services/transacti
 export class AliasAddressToNamespaceComponent implements OnInit {
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Accounts',
-    componentName: 'Link to namespace'
+    componentName: 'Link to Namespace'
   };
   arrayNamespaceStorage: NamespaceStorageInterface[] = [];
   backToService = `/${AppConfig.routes.service}`;
@@ -53,6 +53,7 @@ export class AliasAddressToNamespaceComponent implements OnInit {
   fee: string = '0.000000';
   amountAccount: number;
   mosaicstoHex: any;
+  passwordMain: string = 'password';
 
   constructor(
     private fb: FormBuilder,
@@ -164,12 +165,12 @@ export class AliasAddressToNamespaceComponent implements OnInit {
             if (type === 2) {
               isLinked = true;
               disabled = (this.LinkToNamespaceForm.get('typeAction').value === 0) ? true : false;
-              label = `${label} - (Linked to address)`;
+              label = `${label} - (Linked to Address)`;
               address = this.proximaxProvider.createAddressFromEncode(namespaceStorage.namespaceInfo.alias.address).plain();
             } else if (type === 1) {
               isLinked = true;
               disabled = true;
-              label = `${label} - (Linked to mosaic) - ${this.mosaicstoHex.toHex()}`;
+              label = `${label} - (Linked to Mosaic) - ${this.mosaicstoHex.toHex()}`;
             } else {
               disabled = (this.LinkToNamespaceForm.get('typeAction').value === 1) ? true : false;
             }
@@ -237,7 +238,10 @@ export class AliasAddressToNamespaceComponent implements OnInit {
     this.fee = this.transactionService.amountFormatterSimple(this.addressAliasTransaction.maxFee.compact());
   }
 
-
+  changeInputType(inputType) {
+    let newType = this.sharedService.changeInputType(inputType)
+    this.passwordMain = newType;
+  }
 
   /**
    *
@@ -393,13 +397,16 @@ export class AliasAddressToNamespaceComponent implements OnInit {
   }
 
 
-
-  /*selectContact(addressEvent: string) {
-    if (addressEvent !== undefined && addressEvent !== null && addressEvent !== '') {
-      this.LinkToNamespaceForm.get('address').patchValue(addressEvent);
-      this.address = Address.createFromRawAddress(addressEvent);
-    }
-  }*/
+  /**
+   *
+   *
+   * @param {string} quantity
+   * @returns
+   * @memberof AliasAddressToNamespaceComponent
+   */
+  getQuantity(quantity: string) {
+    return this.sharedService.amountFormat(quantity);
+  }
 
   selectContact(event: { label: string, value: string }) {
     if (event !== undefined && event.value !== '') {

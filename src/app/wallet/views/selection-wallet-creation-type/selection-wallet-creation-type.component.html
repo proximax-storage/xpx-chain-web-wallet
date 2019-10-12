@@ -17,17 +17,56 @@
   <div class="row mt-3rem pb-2rem">
     <div class="col-12 col-md-10 col-lg-8 mx-auto">
       <div class="row">
-        <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-          <button [routerLink]="['/'+link.createWallet]" mdbBtn type="button" rounded="true" mdbWavesEffect
-            class="f-w-600  w-100porcent background-btn pl-2rem pr-2rem" size="md">
-            <span class="fs-1-2em color-white">New</span>
-          </button>
+        <div class="col-12 col-sm-4 d-flex justify-content-center justify-content-sm-end">
+          <div class="row">
+            <div class="col-12 txt-a-center">
+              <div>
+                <img class="h-50px pb-10px" src="assets/images/img/icon-add-new-blue.svg" alt="">
+              </div>
+              <div class="txt-a-center">
+                <span>New Wallet</span>
+              </div>
+              <button [routerLink]="['/'+link.createWallet]" mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax"
+                size="md">
+                <span class="color-white">Create</span>
+              </button>
+            </div>
+          </div>
         </div>
-        <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-          <button [routerLink]="['/'+link.importWallet]" mdbBtn type="button" rounded="true" mdbWavesEffect
-            class="f-w-600  w-100porcent background-btn pl-2rem pr-2rem" size="md">
-            <span class="fs-1-2em color-white">From a Private Key</span>
-          </button>
+
+        <div class="col-12 col-sm-4 d-flex justify-content-center">
+          <div class="row">
+            <div class="col-12 txt-a-center">
+              <div>
+                <img class="h-50px pb-10px" src="assets/images/img/icon-private-key-blue.svg" alt="">
+              </div>
+              <div>
+                <span>From a Private Key</span>
+              </div>
+              <button [routerLink]="['/'+link.importWallet]" mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax"
+                size="md">
+                <span class="color-white">Create</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-4 d-flex justify-content-center justify-content-sm-start">
+          <div class="row">
+            <div class="col-12 txt-a-center">
+              <div>
+                <img class="h-50px pb-10px" src="assets/images/img/icon-wallet-import-blue.svg" alt="">
+              </div>
+              <div>
+                <span>From a Wallet Backup</span>
+              </div>
+              <button (click)="file.click()" mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" size="md">
+                <span class="color-white">Import</span>
+              </button>
+              <input #file [hidden]="true" style="display: none" type="file" (change)="fileChange($event.target.files,$event)"
+                id="inputFile">
+            </div>
+          </div>
         </div>
       </div>
     </div>

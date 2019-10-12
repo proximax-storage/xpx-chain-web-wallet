@@ -47,6 +47,7 @@ export class CreateApostilleComponent implements OnInit {
     extraButton: 'Audit',
     routerExtraButton: `/${AppConfig.routes.audiApostille}`
   };
+  passwordMain: string = 'password';
   processComplete = false;
   rawFileContent: any;
   storeInDfms = false;
@@ -90,6 +91,10 @@ export class CreateApostilleComponent implements OnInit {
     });
   }
 
+  changeInputType(inputType) {
+    let newType = this.sharedService.changeInputType(inputType)
+    this.passwordMain = newType;
+  }
 
   /**
    *

@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
 import { PaginationInstance } from 'ngx-pagination';
 import { TransactionsInterface, TransactionsService } from '../../../transactions/services/transactions.service';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-aggregate-bonded-type',
@@ -16,7 +17,6 @@ export class AggregateBondedTypeComponent implements OnInit {
     currentPage: 1
   };
 
-
   headElements = ['Signer', 'Public Key', 'signature'];
   maxSize = 0;
   typeTransactions = this.transactionService.getTypeTransactions();
@@ -28,11 +28,9 @@ export class AggregateBondedTypeComponent implements OnInit {
   }
 
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
-    // console.log(this.aggregateBonded);
     this.aggregateBonded.data['innerTransactions'].forEach(element => {
       const nameType = Object.keys(this.typeTransactions).find(x => this.typeTransactions[x].id === element.type);
       element['nameType'] = (nameType) ? this.typeTransactions[nameType].name : element.type.toString(16).toUpperCase();
     });
   }
-
 }

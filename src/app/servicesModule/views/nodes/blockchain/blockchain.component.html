@@ -6,15 +6,14 @@
       <div class="row">
         <div class="col-12 col-md-8 justify-content-center mx-auto">
 
-          <form [formGroup]="nodeForm" (ngSubmit)="change()">
+          <form [formGroup]="nodeForm" (ngSubmit)="changeNode()">
 
             <div class="row">
               <div class="col-12 mx-auto">
                 <div class="md-form form-sm mt-1rem mb-0rem">
-                  <img class="form-control-feedback" src="assets/images/img/icon-block-height-blue-30h.svg"
-                    alt="">
-                  <input mdbInputDirective mdbValidate formControlName="blockHeigh" readonly type="text" class="form-control form-control-sm input-border txt-a-right"
-                    placeholder="">
+                  <img class="form-control-feedback" src="assets/images/img/icon-block-height-blue-30h.svg" alt="">
+                  <input mdbInputDirective mdbValidate formControlName="blockHeigh" readonly type="text"
+                    class="form-control form-control-sm input-border txt-a-right" placeholder="">
                   <span class="label-i-icon pl-2rem">Block height</span>
                 </div>
               </div>
@@ -22,7 +21,8 @@
               <div class="col-12 mx-auto">
                 <div class="md-form form-sm mt-1rem mb-0rem">
                   <img class="form-control-feedback" src="assets/images/img/icon-nodes-blue-60h.svg" alt="">
-                  <input mdbInputDirective mdbValidate formControlName="nodeSelect" readonly type="text" class="form-control form-control-sm input-border txt-a-right">
+                  <input mdbInputDirective mdbValidate formControlName="nodeSelect" readonly type="text"
+                    class="form-control form-control-sm input-border txt-a-right">
                   <span class="label-i-icon pl-2rem">Current node</span>
 
                 </div>
@@ -36,9 +36,10 @@
 
 
 
-                  <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [searchable]="false" [clearable]="false"
-                    [validateError]="true" class="selectWrapper" [items]="arrayNodes" formControlName="nodeSelect"
-                    bindLabel="label" bindValue="value" placeholder="Node list" (change)="nodeSelect($event)">
+                  <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [searchable]="false"
+                    [clearable]="false" [validateError]="true" class="selectWrapper" [items]="arrayNodes"
+                    formControlName="nodeSelect" bindLabel="label" bindValue="value" placeholder="Node list"
+                    (change)="nodeSelect($event)">
 
                     <ng-template ng-option-tmp let-item="item" let-index="index">
 
@@ -49,24 +50,28 @@
 
                     </ng-template>
                   </ng-select>
-                  <!-- <mdb-error class="ml-1rem"
-                                            *ngIf="validateInput('namespaceRoot').invalid && (validateInput('namespaceRoot').dirty || validateInput('namespaceRoot').touched)">
-                                            <span>Select namespace</span>
-                                          </mdb-error> -->
-
                 </div>
               </div>
 
 
-              <div class="col-12 mx-auto">
+              <!-- <div class="col-12 mx-auto">
                 <div class="md-form form-sm mt-1rem mb-0rem">
                   <img class="form-control-feedback" src="assets/images/img/icon-nodes-blue-60h.svg" alt="">
-                  <input [disabled]="true" mdbInputDirective mdbValidate formControlName="customNode" [validateSuccess]="true"
-                    [validateError]="true" placeholder="Custom node" type="text" class="form-control form-control-sm input-border ">
+                  <input [disabled]="true" mdbInputDirective mdbValidate formControlName="customNode"
+                    [validateSuccess]="true" [validateError]="true" placeholder="Custom node" type="text"
+                    class="form-control form-control-sm input-border ">
 
                 </div>
-              </div>
+              </div> -->
 
+              <!-- BUTTONS -->
+              <!-- <div
+                class="col-12 col-md-12 col-lg-2 d-flex align-items-center justify-content-center background-dark-green-plus pt-05rem">
+                <button mdbBtn type="submit" rounded="true" mdbWavesEffect
+                  class="f-w-600 background-btn overflow-ellipsis-nowrap" size="md">
+                  <span class="fs-1em color-white">Add Node</span>
+                </button>
+              </div> -->
 
             </div>
 

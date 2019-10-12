@@ -59,6 +59,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
   cosignatoryList: CosignatoryList[] = [];
   transactionHttp: TransactionHttp
   listContact: ContactsListInterface[] = [];
+  passwordMain: string = 'password'
   showContacts: boolean;
   isMultisig: boolean;
   searchContact: boolean;
@@ -70,7 +71,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
   blockBtnSend: boolean = false;
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Accounts > Multisign',
-    componentName: 'Convert to multisig account'
+    componentName: 'Convert to Multisig Account'
   };
   subscribeContact: Subscription[] = [];
   convertIntoMultisig: ModifyMultisigAccountTransaction;
@@ -130,6 +131,11 @@ export class ConvertAccountMultisignComponent implements OnInit {
       }
     ));
 
+  }
+
+  changeInputType(inputType) {
+    let newType = this.sharedService.changeInputType(inputType)
+    this.passwordMain = newType;
   }
 
   /**
@@ -260,7 +266,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
       accountFiltered !== undefined && accountFiltered.accountInfo !== null)
 
     if (!disabled)
-      return { disabled: true, info: 'not valid' }
+      return { disabled: true, info: 'Insufficient balance' }
     if (!accountFiltered.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id))
       return { disabled: true, info: 'insufficient balance' }
 
@@ -310,8 +316,8 @@ export class ConvertAccountMultisignComponent implements OnInit {
     const account: any = $event;
     if (account !== null && account !== undefined) {
       this.currentAccountToConvert = account.value;
-      // this.listContact = this.validateAccountListContact();
-      this.listContact = this.filterListContact('add');
+      this.listContact = this.validateAccountListContact();
+      this.setCosignatoryList([])
       this.builder();
       this.subscribeAccount = this.walletService.getAccountsInfo$().subscribe(
         async accountInfo => {
@@ -321,35 +327,15 @@ export class ConvertAccountMultisignComponent implements OnInit {
 
   }
   /**
-      *
-      * @memberof ConvertAccountMultisignComponent
-      */
-  filterListContact(filter: string, conList?: ContactsListInterface[]): ContactsListInterface[] {
-    // this.listContact = []
-    const listContactfilter = (conList) ? conList : this.validateAccountListContact();
-    let listContactReturn: ContactsListInterface[] = []
-    if (this.cosignatoryList.length > 0) {
-      if (filter == 'add')
-        this.cosignatoryList.forEach(element => {
-          listContactReturn = listContactfilter.filter(x => x.value !== element.publicAccount.address.plain());
-        });
-      if (filter == 'delete')
-        this.cosignatoryList.forEach(element => {
-          listContactReturn = this.validateAccountListContact().filter(x => x.value !== element.publicAccount.address.plain());
-        });
-
-    } else {
-      listContactReturn = this.validateAccountListContact();
-    }
-    return listContactReturn
-  }
-  /**
     *
     * @memberof ConvertAccountMultisignComponent
     */
   validateAccountListContact(): ContactsListInterface[] {
+
     let listContactReturn: ContactsListInterface[] = []
+
     const listContactfilter = this.booksAddress().filter(item => item.label !== this.currentAccountToConvert.name);
+
     for (let element of listContactfilter) {
       const account = this.walletService.filterAccountWallet(element.label);
       let isMultisig: boolean = false;
@@ -364,6 +350,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
       })
     }
     return listContactReturn
+
   }
 
   validateAccount(name: string) {
@@ -416,9 +403,10 @@ export class ConvertAccountMultisignComponent implements OnInit {
         [convertIntoMultisigTransaction.toAggregate(this.currentAccountToConvert.publicAccount)],
         this.currentAccountToConvert.network);
       let feeAgregate = Number(this.transactionService.amountFormatterSimple(this.aggregateTransaction.maxFee.compact()));
-      let feeLockfund = 0.044500;
-      let totalFee = feeAgregate + feeLockfund;
-      this.fee = totalFee.toFixed(6);
+      // let feeLockfund = 0.044500;
+      // let totalFee = feeAgregate + feeLockfund;
+      // this.fee = totalFee.toFixed(6);
+      this.fee = feeAgregate.toFixed(6);
     }
   }
 
@@ -617,7 +605,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
           this.unsubscribe(this.subscribeContact);
           this.searchContact = false;
           if (res.publicKeyHeight.toHex() === '0000000000000000') {
-            this.sharedService.showWarning('', 'you need a public key');
+            this.sharedService.showWarning('', 'Cosignatory does not have a public key');
             this.convertAccountMultsignForm.get('cosignatory').patchValue('', { emitEvent: false, onlySelf: true });
             this.convertAccountMultsignForm.get('contact').patchValue('', { emitEvent: false, onlySelf: true });
           } else {
@@ -646,7 +634,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
                 this.convertAccountMultsignForm.get('cosignatory').patchValue(account.accountInfo.publicKey, { emitEvent: true })
                 this.convertAccountMultsignForm.get('contact').patchValue('', { emitEvent: false, onlySelf: true });
               } else {
-                this.sharedService.showWarning('', 'you need a public key');
+                this.sharedService.showWarning('', 'Cosignatory does not have a public key');
                 this.convertAccountMultsignForm.get('contact').patchValue('', { emitEvent: false, onlySelf: true });
               }
 
@@ -692,7 +680,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
         this.convertAccountMultsignForm.get('cosignatory').value,
         this.walletService.currentAccount.network
       );
-      //new validate 
+
       let isMultisig: MultisigAccountInfo = null;
       let valueIsMultisig: boolean = false;
       try {
@@ -716,7 +704,6 @@ export class ConvertAccountMultisignComponent implements OnInit {
       if (!Boolean(this.cosignatoryList.find(item => { return item.publicAccount.address.plain() === cosignatory.address.plain() }))) {
         this.cosignatoryList.push({ publicAccount: cosignatory, action: 'Add', type: 1, disableItem: false, id: cosignatory.address });
         this.setCosignatoryList(this.cosignatoryList);
-        this.listContact = this.filterListContact('add', this.listContact);
         this.convertAccountMultsignForm.get('cosignatory').patchValue('');
         this.builder();
       } else {
@@ -730,10 +717,8 @@ export class ConvertAccountMultisignComponent implements OnInit {
   * @param id  - Address in cosignatory.
   */
   deleteCosignatory(id: Address, disableItem: boolean, type: number) {
-    const cosignatoryList = this.cosignatoryList.filter(item => item.id.plain() !== id.plain());
-
+    const cosignatoryList = this.cosignatoryList.filter(item => item.id.plain() !== id.plain())
     this.setCosignatoryList(cosignatoryList);
-    this.listContact = this.filterListContact('delete', this.listContact);
     this.builder();
   }
 

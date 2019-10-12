@@ -23,7 +23,7 @@ export class ExtendDurationNamespaceComponent implements OnInit {
 
   arrayselect: Array<object> = [{
     value: '1',
-    label: 'New root Namespace',
+    label: 'New Root Namespace',
     selected: true,
     disabled: false
   }];
@@ -43,9 +43,10 @@ export class ExtendDurationNamespaceComponent implements OnInit {
   namespaceChangeInfo: NamespaceStorageInterface = null;
   namespaceInfo: NamespaceStorageInterface[] = [];
   paramsHeader: HeaderServicesInterface = {
-    moduleName: 'Namespaces & Sub-Namespaces',
+    moduleName: 'Namespaces',
     componentName: 'Extend Duration'
   };
+  passwordMain: string = 'password';
 
   rentalFee = 4576;
   status: boolean = true;
@@ -58,7 +59,8 @@ export class ExtendDurationNamespaceComponent implements OnInit {
   subtractionHeight: any;
   totalBlock: any;
   excedDuration: boolean = false;
-  
+  invalidDuration: boolean = true;
+
 
   constructor(
     private router: Router,
@@ -85,7 +87,7 @@ export class ExtendDurationNamespaceComponent implements OnInit {
       this.calculateSubtractionHeight();
     }));
 
-    
+
     this.validateRentalFee(this.rentalFee * this.extendDurationNamespaceForm.get('duration').value);
     this.extendDurationNamespaceForm.get('duration').valueChanges.subscribe(next => {
       if (next <= 365) {
@@ -98,7 +100,7 @@ export class ExtendDurationNamespaceComponent implements OnInit {
           } else {
             this.excedDuration = true;
           }
-          
+
           this.validateRentalFee(this.rentalFee * parseFloat(this.durationByBlock));
           this.builder();
         } else {
@@ -146,6 +148,11 @@ export class ExtendDurationNamespaceComponent implements OnInit {
     }
   }
 
+  changeInputType(inputType) {
+    let newType = this.sharedService.changeInputType(inputType)
+    this.passwordMain = newType;
+  }
+
   /**
    *
    *
@@ -179,9 +186,9 @@ export class ExtendDurationNamespaceComponent implements OnInit {
     );
 
 
-    if (this.extendDurationNamespaceForm.disabled) {
-      this.extendDurationNamespaceForm.enable();
-    }
+    // if (this.extendDurationNamespaceForm.disabled) {
+    //   this.extendDurationNamespaceForm.enable();
+    // }
 
     this.startHeight = 0;
     this.endHeight = 0;
@@ -318,6 +325,17 @@ export class ExtendDurationNamespaceComponent implements OnInit {
 
   }
 
+  /**
+   *
+   *
+   * @param {string} quantity
+   * @returns
+   * @memberof ExtendDurationNamespaceComponent
+   */
+  getQuantity(quantity: string) {
+    return this.sharedService.amountFormat(quantity);
+  }
+
   limitDuration(e) {
     if (isNaN(parseInt(e.target.value))) {
       e.target.value = ''
@@ -350,11 +368,13 @@ export class ExtendDurationNamespaceComponent implements OnInit {
         this.calculateSubtractionHeight();
       }
       this.builder();
+      this.invalidDuration = false
     } else {
       this.extendDurationNamespaceForm.get('duration').disable();
       this.extendDurationNamespaceForm.get('duration').patchValue('');
       this.startHeight = 0;
       this.endHeight = 0;
+
     }
   }
 
@@ -442,24 +462,24 @@ export class ExtendDurationNamespaceComponent implements OnInit {
             this.insufficientBalanceDuration = false;
           }
         } else {
-          if (this.extendDurationNamespaceForm.enabled) {
-            this.extendDurationNamespaceForm.disable();
-          }
+          // if (this.extendDurationNamespaceForm.enabled) {
+          //   this.extendDurationNamespaceForm.disable();
+          // }
           this.insufficientBalanceDuration = false;
           this.insufficientBalance = true;
         }
       } else {
-        if (this.extendDurationNamespaceForm.enabled) {
-          this.extendDurationNamespaceForm.disable();
-        }
+        // if (this.extendDurationNamespaceForm.enabled) {
+        //   this.extendDurationNamespaceForm.disable();
+        // }
         this.insufficientBalanceDuration = false;
         this.insufficientBalance = true;
         this.extendDurationNamespaceForm.controls['password'].disable();
       }
     } else {
-      if (this.extendDurationNamespaceForm.enabled) {
-        this.extendDurationNamespaceForm.disable();
-      }
+      // if (this.extendDurationNamespaceForm.enabled) {
+      //   this.extendDurationNamespaceForm.disable();
+      // }
       this.insufficientBalanceDuration = false;
       this.insufficientBalance = true;
     }
