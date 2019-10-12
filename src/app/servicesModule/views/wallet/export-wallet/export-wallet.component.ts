@@ -30,7 +30,7 @@ export class ExportWalletComponent implements OnInit {
     this.title = 'Export Wallet';
     this.description = 'Select the wallet you want to export';
     this.wallets = this.walletService.getWalletStorage();
-    console.log(this.wallets);
+    // console.log(this.wallets);
 
   }
 

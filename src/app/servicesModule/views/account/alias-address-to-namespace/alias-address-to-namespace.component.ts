@@ -165,12 +165,12 @@ export class AliasAddressToNamespaceComponent implements OnInit {
             if (type === 2) {
               isLinked = true;
               disabled = (this.LinkToNamespaceForm.get('typeAction').value === 0) ? true : false;
-              label = `${label} - (Linked to address)`;
+              label = `${label} - (Linked to Address)`;
               address = this.proximaxProvider.createAddressFromEncode(namespaceStorage.namespaceInfo.alias.address).plain();
             } else if (type === 1) {
               isLinked = true;
               disabled = true;
-              label = `${label} - (Linked to mosaic) - ${this.mosaicstoHex.toHex()}`;
+              label = `${label} - (Linked to Mosaic) - ${this.mosaicstoHex.toHex()}`;
             } else {
               disabled = (this.LinkToNamespaceForm.get('typeAction').value === 1) ? true : false;
             }

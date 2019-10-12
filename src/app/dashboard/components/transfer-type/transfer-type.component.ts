@@ -28,7 +28,7 @@ export class TransferTypeComponent implements OnInit {
   }
 
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
-    console.log(this.transferTransaction);
+    // console.log(this.transferTransaction);
     this.searching = true;
     this.typeTransactionHex = `${this.transferTransaction.data['type'].toString(16).toUpperCase()}`;
     const height = this.transferTransaction.data.transactionInfo.height.compact();

@@ -47,7 +47,7 @@ export class MosaicsSupplyChangeComponent implements OnInit {
   }];
   mosaicsInfo: any[];
   divisibility: number = 0;
-  duration: string = '() 0 days';
+  duration: string = '0 days';
   supply: string = '0';
   blockButton: boolean = false;
   supplyMutable: boolean = false;
@@ -412,6 +412,17 @@ export class MosaicsSupplyChangeComponent implements OnInit {
   /**
    *
    *
+   * @param {string} quantity
+   * @returns
+   * @memberof MosaicsSupplyChangeComponent
+   */
+  getQuantity(quantity: string) {
+    return this.sharedService.amountFormat(quantity);
+  }
+
+  /**
+   *
+   *
    * @memberof MosaicsSupplyChangeComponent
    */
   send() {
@@ -455,7 +466,7 @@ export class MosaicsSupplyChangeComponent implements OnInit {
           this.blockButton = false;
         }
       } else {
-        this.sharedService.showError('', 'insufficient balance');
+        this.sharedService.showError('', 'insufficient Balance');
       }
     }
   }
@@ -479,14 +490,6 @@ export class MosaicsSupplyChangeComponent implements OnInit {
     }, 5000);
   }
 
-
-  // suscribe(){
-  //   this.formMosaicSupplyChange.get('deltaSupply').valueChanges.subscribe(
-  //     deltaSupply => {
-  //       this.deltaSupply = deltaSupply;
-
-  //     });
-  // }
 
   /**
    *

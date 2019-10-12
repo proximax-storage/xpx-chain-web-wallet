@@ -84,15 +84,15 @@
             <span class="fs-08rem fw-600">Cosignatory Account:&nbsp;</span>
             <span class="fs-08rem">{{cosignatorie.address}}</span>
           </div>
-        </ng-container>
 
-        <!-- INSUFFICIENT BALANCE -->
-        <ng-container *ngIf="listCosignatorie && listCosignatorie.length === 1 && listCosignatorie[0].disabled">
-          <div class="col-11 col-md-10 col-lg-8 mx-auto d-flex justify-content-start pt-05rem pb-05rem">
-            <span class="fs-08rem fw-600 color-error-message">
-              Cosignatory {{listCosignatorie[0].info}}
-            </span>
-          </div>
+          <!-- INSUFFICIENT BALANCE -->
+          <ng-container *ngIf="listCosignatorie[0].disabled">
+            <div class="col-11 col-md-10 col-lg-8 mx-auto d-flex justify-content-start pt-05rem pb-05rem">
+              <span class="fs-08rem fw-600 color-error-message">
+                Cosignatory {{listCosignatorie[0].info}}
+              </span>
+            </div>
+          </ng-container>
         </ng-container>
       </div>
     </ng-container>
@@ -266,11 +266,11 @@
                         [(ngModel)]="boxOtherMosaics[i].amount" [ngModelOptions]="{standalone: true}"
                         (ngModelChange)="amountOtherMosaicChanged($event, otherMosaic.id, i)"
                         placeholder="Enter quantity" [disabled]="disabledAllField">
-                      <span class="label-i fw-600 pl-2rem">SEND</span>
+                      <span class="label-i fw-600 pl-2rem">Send</span>
 
                       <!-- Message Error Insufficient balance-->
                       <mdb-error *ngIf="otherMosaic.errorBalance">
-                        <span class="fs-08rem fw-600 color-error-message">Insufficient balance</span>
+                        <span class="fs-08rem fw-600 color-error-message">Insufficient Balance</span>
                       </mdb-error>
                     </div>
                   </div>
@@ -469,15 +469,15 @@
         <!-- BUTTONS -->
         <div class="row mx-auto">
           <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-            <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax"
-              size="md" (click)="basicModal.hide()">
+            <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" size="md"
+              (click)="basicModal.hide()">
               <span class="fs-1-2em color-white">No</span>
             </button>
           </div>
 
           <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-            <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax"
-              (click)="saveContact = true" size="md">
+            <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" (click)="saveContact = true"
+              size="md">
               <span class="fs-1-2em color-white">Yes</span>
             </button>
           </div>

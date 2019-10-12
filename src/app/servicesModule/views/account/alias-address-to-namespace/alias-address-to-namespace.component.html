@@ -16,7 +16,7 @@
             placeholder="Select Action" (change)="buildSelectNamespace($event);"></ng-select>
           <mdb-error class="ml-1rem"
             *ngIf="validateInput('typeAction').invalid && (validateInput('typeAction').dirty || validateInput('typeAction').touched)">
-            <span class="fs-08rem fw-600 color-error-message">Action is required</span>
+            <span class="fs-08rem fw-600 color-error-message">Action is Required</span>
           </mdb-error>
         </div>
       </div>
@@ -28,7 +28,7 @@
             bindValue="value" placeholder="Select Namespace"></ng-select>
           <mdb-error class="ml-1rem"
             *ngIf="validateInput('namespace').invalid && (validateInput('namespace').dirty || validateInput('namespace').touched)">
-            <span class="fs-08rem fw-600 color-error-message">Namespace is required</span>
+            <span class="fs-08rem fw-600 color-error-message">Namespace is Required</span>
           </mdb-error>
         </div>
       </div>

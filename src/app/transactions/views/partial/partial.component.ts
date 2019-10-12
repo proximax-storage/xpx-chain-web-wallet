@@ -190,12 +190,12 @@ export class PartialComponent implements OnInit {
             const addressSender = innerTransactions[0].signer.address.plain();
             if ((addressSender === addressAccountMultisig) || (addressSender === addressAccountSimple)) {
               if (msg && msg["type"] && msg["type"] === "Swap") {
-                console.log('IS SWAP');
+                // console.log('IS SWAP');
                 this.showSwap = true;
               }
             }
           }catch (error) {
-            console.log('error', error);
+            // console.log('error', error);
           }
         }
       }

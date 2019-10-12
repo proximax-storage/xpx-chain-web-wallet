@@ -7,12 +7,13 @@
         <!-- Parent Mosaic -->
         <div class="row">
           <div class="col-11 mx-auto">
-            <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" [searchable]="false"
-              class="selectWrapper" [items]="parentMosaic" formControlName="parentMosaic" bindLabel="label"
-              bindValue="value" placeholder="Select or write mosaic" (change)="optionSelected($event)"></ng-select>
+            <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
+              [searchable]="false" class="selectWrapper" [items]="parentMosaic" formControlName="parentMosaic"
+              bindLabel="label" bindValue="value" placeholder="Select Mosaic" (change)="optionSelected($event)">
+            </ng-select>
             <mdb-error class="ml-1rem"
               *ngIf="validateInput('parentMosaic').invalid && (validateInput('parentMosaic').dirty || validateInput('parentMosaic').touched)">
-              <span>Select mosaicId</span>
+              <span>Select Mosaic</span>
             </mdb-error>
           </div>
         </div>
@@ -20,12 +21,13 @@
         <!-- mosaicSupplyType -->
         <div class="row mt-05rem">
           <div class="col-11 mx-auto">
-            <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" [searchable]="false"
-              class="selectWrapper" [items]="mosaicSupplyType" formControlName="mosaicSupplyType" bindLabel="label"
-              bindValue="value" placeholder="Increase or decrease" (change)="type($event)"></ng-select>
+            <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
+              [searchable]="false" class="selectWrapper" [items]="mosaicSupplyType" formControlName="mosaicSupplyType"
+              bindLabel="label" bindValue="value" placeholder="Increase or Decrease" (change)="type($event)">
+            </ng-select>
             <mdb-error class="ml-1rem"
               *ngIf="validateInput('mosaicSupplyType').invalid && (validateInput('mosaicSupplyType').dirty || validateInput('mosaicSupplyType').touched)">
-              <span>Increase or decrease</span>
+              <span>Increase or Decrease</span>
             </mdb-error>
           </div>
         </div>
@@ -34,11 +36,12 @@
         <div class="row mt-05rem">
           <div class="col-11 mx-auto">
             <div class="md-form form-sm mt-1rem mb-0rem">
-              <img class="form-control-feedback" src="assets/images/img/icon-amount-green-16h-proximax-sirius-wallet.svg" alt="">
+              <img class="form-control-feedback"
+                src="assets/images/img/icon-amount-green-16h-proximax-sirius-wallet.svg" alt="">
               <input formControlName="deltaSupply" currencyMask [options]="optionsSupply" mdbInputDirective mdbValidate
                 [validateSuccess]="true" [validateError]="true" type="text" id="supply{{errorSupply}}"
                 [maxlength]="maxLengthSupply" class="form-control form-control-sm input-border input-amount"
-                placeholder="Quantity of increase/decrease" >
+                placeholder="Quantity of Increase/Decrease">
 
               <mdb-error
                 *ngIf="validateInput('deltaSupply', '').invalid && (validateInput('deltaSupply', '').dirty || validateInput('deltaSupply', '').touched) || invalidSupply">
@@ -48,8 +51,8 @@
                 <span>Supply maximum increase 9,000,000,000</span>
               </mdb-error>
               <mdb-error *ngIf="errSupplyMin">
-                  <span> Supply maximum decrease {{supply}}</span>
-                </mdb-error>
+                <span> Supply maximum decrease {{supply}}</span>
+              </mdb-error>
               <br>
             </div>
           </div>
@@ -58,19 +61,22 @@
 
 
 
-    <!-- CALCULATE SUPPLY -->
-    <div class="row ml-01rem" *ngIf='showTotal'>
-        <div class="col-11 mx-auto">
-          <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
-            <div class="row">
-              <div class="col-12">
-                <img class="icono" src="assets/images/img/icon-amount-green-16h-proximax-sirius-wallet.svg" alt="">
-                <span>Total Supply: {{ totalSupply }}</span>
+        <!-- CALCULATE SUPPLY -->
+        <div class="row ml-01rem" *ngIf='showTotal'>
+          <div class="col-11 mx-auto">
+            <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
+              <div class="row">
+                <div class="col-12">
+                  <img class="icono" src="assets/images/img/icon-amount-green-16h-proximax-sirius-wallet.svg" alt="">
+                  <span class="fs-08rem">
+                    Total Supply:&nbsp;
+                    <a [innerHTML]="getQuantity(totalSupply)"></a>
+                  </span>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
         <!-- FEE -->
         <div class="row ml-01rem">
@@ -79,26 +85,15 @@
               <div class="row">
                 <div class="col-12">
                   <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" alt="">
-                  <span>Fee: {{ fee }} XPX</span>
+                  <span class="fs-08rem">
+                    Fee:&nbsp;
+                    <a [innerHTML]="getQuantity(fee)"></a> XPX
+                  </span>
                 </div>
               </div>
             </div>
           </div>
         </div>
-
-        <!-- RENTAL FEE
-        <div class="row ml-01rem">
-          <div class="col-11 mx-auto">
-            <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
-              <div class="row">
-                <div class="col-12">
-                  <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" alt="">
-                  <span> Rental Fee: 0.000000 XPX</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>-->
 
         <!-- Password -->
         <div class="row">
@@ -117,7 +112,7 @@
 
               <mdb-error
                 *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
-                <span>Password required</span>
+                <span>Password Required</span>
               </mdb-error>
             </div>
           </div>
@@ -126,15 +121,16 @@
         <!-- Buttons -->
         <div class="row mt-1rem mb-0rem ">
           <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-            <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax"
-              size="md" (click)="clearForm()">
+            <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" size="md"
+              (click)="clearForm()">
               <span class="color-white">Clear</span>
             </button>
           </div>
 
           <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-            <button mdbBtn type="submit" rounded="true" [disabled]="!formMosaicSupplyChange.valid || blockBtn || deltaSupply === 0"
-              mdbWavesEffect class="btn-proximax" size="md">
+            <button mdbBtn type="submit" rounded="true"
+              [disabled]="!formMosaicSupplyChange.valid || blockBtn || deltaSupply === 0" mdbWavesEffect
+              class="btn-proximax" size="md">
               <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
                 *ngIf="blockButton"></span>
               <span class="color-white">Create</span>
@@ -156,7 +152,7 @@
                 <span class="description-information">Supply: </span>
               </div>
               <div class="col-6 col-sm-8 col-md-6 col-lg-5 col-xl-8">
-                <span class="description-information color-black">{{supply}}</span>
+                <span class="description-information color-black"><a [innerHTML]="getQuantity(supply)"></a></span>
               </div>
             </div>
           </div>
