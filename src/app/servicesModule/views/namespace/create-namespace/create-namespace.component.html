@@ -73,35 +73,41 @@
           </div>
         </div>
 
-        <div class="row ml-01rem">
-          <div class="col-11 col-sm-11 col-md-11 col-lg-6">
-            <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
-              <div class="row">
-                <div class="col-12">
-                  <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
-                    width="20" alt="">&nbsp;
-                  <span class="fs-08rem">
-                    Fee:&nbsp;
-                    <a [innerHTML]="getQuantity(fee)"></a> XPX
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
+        <div class="row">
+          <div class="col-11 mx-auto">
 
-          <div class="col-11 col-sm-11 col-md-11 col-lg-6">
-            <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
-              <div class="row">
-                <div class="col-12">
-                  <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
-                    width="20" alt="">&nbsp;
-                  <span class="fs-08rem">
-                    Rental Fee:&nbsp;
-                    <a [innerHTML]="getQuantity(calculateRentalFee)"></a> XPX
-                  </span>
+            <div class="row">
+              <div class="col-sm-12 col-md-6">
+                <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
+                  <div class="row">
+                    <div class="col-12">
+                      <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
+                        width="20" alt="">&nbsp;
+                      <span class="fs-08rem">
+                        Fee:&nbsp;
+                        <a [innerHTML]="getQuantity(fee)"></a> XPX
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-sm-12 col-md-6">
+                <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
+                  <div class="row">
+                    <div class="col-12">
+                      <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
+                        width="20" alt="">&nbsp;
+                      <span class="fs-08rem">
+                        Rental Fee:&nbsp;
+                        <a [innerHTML]="getQuantity(calculateRentalFee)"></a> XPX
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
+
           </div>
         </div>
 
@@ -156,7 +162,7 @@
             maximium length of 64 alphanumerical characters.
           </p>
           <p>
-            A namespace may consist of three parts, each separated by a full stop (i.e test1.test2.test3).
+              Three layers can be created.  A namespace can have a subnamespace, and a subnamespace can have its own subnamespace (e.g., test1.test2.test3).
           </p>
           <p>
             Certain phrases are already reserved.

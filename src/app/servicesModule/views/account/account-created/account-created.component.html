@@ -32,7 +32,7 @@
         <div class="col-12 col-md-10 col-lg-9 col-xl-10 mx-auto box-list-account-gray fs-08rem pb-1rem mb-1rem">
           <div class="row">
             <div class="col-12 col-sm-10 col-md-9 col-lg-10 col-xl-10 pt-1rem w-b-a">
-              Name: <br>
+              <strong>Name:</strong> <br>
               {{name}}
             </div>
             <!-- <div
@@ -43,10 +43,10 @@
         </div>
 
         <!-- Address -->
-        <div class="col-12 col-md-10 col-lg-9 col-xl-10 mx-auto box-list-account-gray fs-08rem pb-1rem">
+        <div class="col-12 col-md-10 col-lg-9 col-xl-10 mx-auto box-list-account-gray fs-08rem pb-1rem mb-1rem mt-1rem">
           <div class="row">
             <div class="col-12 col-sm-10 col-md-9 col-lg-10 col-xl-10 pt-1rem w-b-a">
-              Address: <br>
+              <strong>Address:</strong> <br>
               {{address}}
             </div>
             <div
@@ -59,10 +59,10 @@
 
         <!-- Public key  -->
         <ng-container *ngIf="viewPublicKey">
-          <div class="col-12 col-md-10 col-lg-9 col-xl-10 mx-auto box-list-account-gray fs-08rem pb-1rem">
+            <div class="col-12 col-md-10 col-lg-9 col-xl-10 mx-auto box-list-account-gray fs-08rem pb-1rem mb-1rem">
             <div class="row">
               <div class="col-12 col-sm-10 col-md-9 col-lg-10 col-xl-10 pt-1rem w-b-a">
-                Public key: <br>
+                <strong>Public key:</strong> <br>
                 {{publicKey}}
               </div>
               <div
@@ -76,10 +76,10 @@
 
         <!-- privateKey key  -->
         <ng-container *ngIf="viewPrivateKey">
-          <div class="col-12 col-md-10 col-lg-9 col-xl-10 mx-auto box-list-account-gray fs-08rem pb-1rem">
+            <div class="col-12 col-md-10 col-lg-9 col-xl-10 mx-auto box-list-account-gray fs-08rem pb-1rem mb-1rem">
             <div class="row">
               <div class="col-12 col-sm-10 col-md-9 col-lg-10 col-xl-10 pt-1rem w-b-a">
-                Private key: <br>
+                <strong>Private key:</strong> <br>
                 {{privateKey}}
               </div>
               <div
@@ -91,9 +91,16 @@
           </div>
         </ng-container>
 
-        <div class="col-12 col-md-10 col-lg-9 col-xl-10 mx-auto fs-07rem mt-05rem pb-1rem txt-a-center">
-          <span class="fw-600 fs-07rem">{{information}}</span>
+
+    <div class="col-12 col-md-10 col-lg-9 col-xl-10 mb-1rem mx-auto box-transparent-border-orange">
+        <div class="txt-a-center">
+          <img src="assets/images/img/icon-transaction-unconfirmed-white.svg" style="filter: invert(50%)" alt="" width="30">
         </div>
+        <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em">
+          {{information}}
+        </p>
+      </div>
+
       </div>
 
       <!-- buttons create and clear -->
