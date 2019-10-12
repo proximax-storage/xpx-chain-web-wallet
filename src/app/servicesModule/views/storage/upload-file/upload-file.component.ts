@@ -55,7 +55,7 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
   errorMatchPassword: string;
   mosaics: any[];
   noEncripted: boolean = false;
-  fee: any;
+  fee: any = '0.000000';
 
   constructor(
     private cdRef: ChangeDetectorRef,
@@ -110,31 +110,20 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
           switch (encryptionMethod) {
             case PrivacyType.PLAIN:
               uploadParams.withPlainPrivacy();
-              console.log('------1', uploadParams.withPlainPrivacy());
-              
               break;
             case PrivacyType.PASSWORD:
               const encryptionPassword = this.uploadForm.controls.encryptionPasswords.get('password').value;
               uploadParams.withPasswordPrivacy(encryptionPassword);
-              console.log('------2', uploadParams.withPasswordPrivacy(encryptionPassword));
               break;
             case PrivacyType.NEM_KEYS:
               const publicKey = this.uploadForm.get('recipientPublicKey').value;
               const privateKey = this.uploadForm.get('recipientPrivateKey').value;
               uploadParams.withNemKeysPrivacy(privateKey, publicKey);
               uploadParams.withRecipientPublicKey(publicKey);
-              console.log('------3', uploadParams.withNemKeysPrivacy(privateKey, publicKey));
-              console.log('------4', uploadParams.withRecipientPublicKey(publicKey));
               break;
           }
           uploadParams.withTransactionMosaics(this.mosaics);
-          console.log('------5', uploadParams.withTransactionMosaics(this.mosaics));
-          console.log('uploadParams.build()', uploadParams.build());
           const result = await this.uploader.upload(uploadParams.build());
-          
-          console.log('resultresultresult', result);
-          
-          
           
           this.clearForm();
           this.sharedService.showSuccessTimeout('Upload', 'Upload successful.', 8000);
@@ -161,12 +150,10 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
     if (message > 0) {
       this.fee = this.transactionService.amountFormatterSimple(b.compact())
     } else if (message === 0 && mosaicsToSend.length === 0) {
-      this.fee = '0.037250'
+      this.fee = '0.000000'
     }else {
       this.fee = this.transactionService.amountFormatterSimple(b.compact())
     }
-    console.log(this.fee);
-    
   }
 
   /**
@@ -482,14 +469,23 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
       if (!(this.files.length - 1 === i)) {
         files += ',';
       }
-      console.log('this.files[i].name', this.files[i].name);
-      console.log('this.files[i]', this.files[i]);
+      this.builderFee(this.files[i]);
     }
-   
-    
-    let valor = '{"privacyType":1001,"data":{"contentType":"application/vnd.oasis.opendocument.text","dataHash":"Qmf9vKuR6MnTEGYXhzwpMib5EFGoXPWCJh3mXTvasb3Cas","description":"","name":"prueba2prueba2.odt","timestamp":1570821048492},"version":"1.0"}';
-    this.calculateFee(valor)
     return files;
+  }
+
+  builderFee(files){
+    let valor = {
+      "privacyType":1001,
+      "data":{
+        "contentType":files.type,
+        "dataHash":"Qmf9vKuR6MnTEGYXhzwpMib5EFGoXPWCJh3mXTvasb3Cas",
+        "description":"",
+        "name":files.name,
+        "timestamp":files.lastModifiedDate},
+        "version":"1.0"
+    }
+    this.calculateFee(JSON.stringify(valor))
   }
 
   /**
