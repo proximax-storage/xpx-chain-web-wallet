@@ -186,7 +186,7 @@ export class CreatePollComponent implements OnInit {
     if (type !== null && type !== undefined) {
       if (type.value === 0) {
         this.showList = true;
-        this.thirdFormGroup.get('address').setValidators([Validators.required, Validators.minLength(40), Validators.maxLength(46)])
+        this.thirdFormGroup.get('address').setValidators([Validators.minLength(40), Validators.maxLength(46)])
         this.thirdFormGroup.get('address').updateValueAndValidity({ emitEvent: false, onlySelf: true });
         // this.thirdFormGroup.status
         // aqui
