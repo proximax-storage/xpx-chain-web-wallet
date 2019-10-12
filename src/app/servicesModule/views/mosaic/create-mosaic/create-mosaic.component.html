@@ -12,34 +12,6 @@
                   <span class="fs-08rem fw-600 color-error-message">Insufficient balance</span>
                 </div>
               </ng-container>
-
-
-              <!-- <div class="col-12">
-                <div class="row d-flex align-items-center">
-                  <div class="col-6 col-md-7 col-lg-8 mx-auto pt-07rem">
-                    <div class="md-form form-sm mt-0 mb-0rem">
-                      <img class="form-control-feedback"
-                        src="assets/images/img/icon-duration-green-16h-proximax-sirius-wallet.svg" alt="">
-                      <input formControlName="duration" mdbInputDirective mdbValidate [validateSuccess]="true"
-                        [validateError]="true" type="text" id="duration" min="1" max="365"
-                        class="form-control form-control-sm input-border txt-a-right" placeholder=""
-                        (keyup)="limitDuration($event)">
-                      <span class="label-i-icon pl-2rem">Duration (number of days)</span>
-
-
-                      <mdb-error
-                        *ngIf="validateInput('duration', '').invalid && (validateInput('duration', '').dirty || validateInput('duration', '').touched)">
-                        <span>Required field - Only numbers</span>
-                      </mdb-error>
-                    </div>
-                  </div>
-
-                  <div class="col-6 col-md-5 col-lg-4 mx-auto notExpireBox">
-                    <mdb-checkbox formControlName="notExpire" [inline]="true" class="fs-08rem"
-                      (change)="changeNotExpire($event)">Not expire</mdb-checkbox>
-                  </div>
-                </div>
-              </div> -->
             </div>
 
             <div class="row">
@@ -82,7 +54,6 @@
                 </div>
               </div>
             </div>
-
 
             <!-- FEE -->
             <div class="row ml-01rem">

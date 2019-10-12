@@ -117,26 +117,23 @@ export class PartialComponent implements OnInit {
    * @memberof PartialComponent
    */
   find(transaction: TransactionsInterface) {
+    // console.log(transaction);
     this.msg = '';
     this.showSwap = false;
     this.modalPartial.show();
     this.dataSelected = transaction;
     this.arraySelect = this.arraySelect.slice(0);
-    this.arraySelect = [];
+    // this.arraySelect = [];
     this.account = null;
     this.password = '';
     const arraySelect = [];
     const accountMultisig = this.walletService.filterAccountInfo(transaction.data['innerTransactions'][0].signer.address.pretty(), true);
-    // console.log('=== ACCOUNT MULTISIG ===', accountMultisig);
     if (accountMultisig && accountMultisig.multisigInfo && accountMultisig.multisigInfo.cosignatories && accountMultisig.multisigInfo.cosignatories.length > 0) {
       accountMultisig.multisigInfo.cosignatories.forEach(element => {
         const cosignatorie: AccountsInterface = this.walletService.filterAccountWallet('', null, element.address.pretty());
-        // console.log('\n\n === EXIST COSIGNATORIE? ===', cosignatorie);
         if (cosignatorie) {
           const publicAccount = this.proximaxProvider.createPublicAccount(cosignatorie.publicAccount.publicKey, cosignatorie.publicAccount.address.networkType);
           const signedByAccount = transaction.data.signedByAccount(publicAccount);
-          // console.log('\n\n === TRANSACTION SIGNED? ===', signedByAccount);
-          // this.validateAccount = true;
           arraySelect.push({
             label: (signedByAccount) ? `${cosignatorie.name} - Signed` : cosignatorie.name,
             value: cosignatorie,
@@ -207,15 +204,18 @@ export class PartialComponent implements OnInit {
     this.onlySigner = false;
     const cantSigned = arraySelect.filter((x: any) => x.signed === true);
     this.hideSign = (cantSigned.length === arraySelect.length) ? true: false;
+    console.log('hideSign --> ', this.hideSign);
     if (!this.hideSign){
       if(arraySelect.length === 1) {
         this.onlySigner = true;
+        // this.account = arraySelect[0];
         this.selectAccount(arraySelect[0]);
       }else {
         this.arraySelect = arraySelect;
       }
     }else {
       this.arraySelect = arraySelect;
+      console.log('this.arraySelect --> ', this.arraySelect);
     }
    }
 
@@ -263,7 +263,8 @@ export class PartialComponent implements OnInit {
       this.password.length <= this.configurationForm.passwordWallet.maxLength
     ) {
       let common: any = { password: this.password };
-      if (this.walletService.decrypt(common, this.account)) {
+      console.log(this.password);
+     /* if (this.walletService.decrypt(common, this.account)) {
         const transaction: any = this.dataSelected.data;
         const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
         this.password = '';
@@ -272,7 +273,7 @@ export class PartialComponent implements OnInit {
           next => {
           }
         );
-      }
+      }*/
     }
   }
 

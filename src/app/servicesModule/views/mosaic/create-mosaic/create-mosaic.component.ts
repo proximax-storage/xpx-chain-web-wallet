@@ -70,7 +70,6 @@ export class CreateMosaicComponent implements OnInit {
   aggregateTransaction: AggregateTransaction;
   fee: any = '0.000000';
   amountAccount: number;
-  insufficientBalanceDuration: boolean;
   notExpire: any;
   subscription: Subscription[] = [];
   vestedBalance: { part1: string; part2: string; };
@@ -105,7 +104,6 @@ export class CreateMosaicComponent implements OnInit {
       this.validateRentalFee(this.rentalFee * parseFloat(this.durationByBlock));
     });
     this.mosaicForm.get('divisibility').valueChanges.subscribe(next => {
-      // console.log('next', next)
       if (next > 6) {
         this.maxLengthSupply = 13;
         this.errorDivisibility = '-invalid';
@@ -130,7 +128,7 @@ export class CreateMosaicComponent implements OnInit {
     this.mosaicForm.get('deltaSupply').valueChanges.subscribe(next => {
       if (parseFloat(next) <= this.configurationForm.mosaicWallet.maxSupply) {
         // console.log(next);
-        if(next === 0){
+        if (next === 0) {
           this.invalidSupply = true;
         } else {
           this.invalidSupply = false;
@@ -162,6 +160,48 @@ export class CreateMosaicComponent implements OnInit {
   }
 
 
+  /**
+   *
+   *
+   * @param {number} amount
+   * @returns
+   * @memberof CreateMosaicComponent
+   */
+  async validateRentalFee(amount: number) {
+    const accountInfo = this.walletService.filterAccountInfo();
+    if (accountInfo && accountInfo.accountInfo && accountInfo.accountInfo.mosaics && accountInfo.accountInfo.mosaics.length > 0) {
+      const xpxInBalance = accountInfo.accountInfo.mosaics.find(element => {
+        return element.id.toHex() === new MosaicId(environment.mosaicXpxInfo.id).toHex();
+      });
+
+      if (xpxInBalance) {
+        const invalidBalance = xpxInBalance.amount.compact() < amount;
+        const mosaic = await this.mosaicServices.filterMosaics([xpxInBalance.id]);
+        if (mosaic && mosaic[0].mosaicInfo) {
+          this.calculateRentalFee = this.transactionService.amountFormatterSimple(amount);
+        } else {
+          this.insufficientBalance = true;
+        }
+
+        if (invalidBalance) {
+          this.insufficientBalance = false;
+        } else if (!invalidBalance) {
+          this.insufficientBalance = false;
+        }
+
+        return;
+      }
+    }
+
+    this.insufficientBalance = true;
+  }
+
+
+  /**
+   *
+   *
+   * @memberof CreateMosaicComponent
+   */
   balance() {
     this.subscription.push(this.transactionService.getBalance$().subscribe(
       next => this.vestedBalance = this.transactionService.getDataPart(next, 6),
@@ -175,6 +215,12 @@ export class CreateMosaicComponent implements OnInit {
     // console.log(this.amountAccount);
   }
 
+  /**
+   *
+   *
+   * @param {*} inputType
+   * @memberof CreateMosaicComponent
+   */
   changeInputType(inputType) {
     let newType = this.sharedService.changeInputType(inputType)
     this.passwordMain = newType;
@@ -208,6 +254,7 @@ export class CreateMosaicComponent implements OnInit {
         emitEvent: false
       });
     }
+
     this.calculateRentalFee = '10,000.000000';
     this.optionsSuply = {
       prefix: '',
@@ -224,17 +271,29 @@ export class CreateMosaicComponent implements OnInit {
       transferable: false,
       supplyMutable: false,
       notExpire: true,
-    },
-      {
-        emitEvent: false
-      });
+    },{
+      emitEvent: false
+    });
   }
 
+  /**
+   *
+   *
+   * @memberof CreateMosaicComponent
+   */
+  cleanCheck() {
+    this.divisibility = '';
+    this.transferable = false;
+    this.supplyMutable = false;
+  }
 
+  /**
+   *
+   *
+   * @memberof CreateMosaicComponent
+   */
   subscribeValue() {
     const account = this.walletService.currentAccount;
-    // const nonce = this.proximaxProvider.createNonceRandom();
-    // console.log('nonce', nonce);
     const duration = (this.mosaicForm.get('duration').enabled) ? parseInt(this.durationByBlock) : undefined;
     let params = {
       nonce: null,
@@ -268,19 +327,24 @@ export class CreateMosaicComponent implements OnInit {
       });
   }
 
+  /**
+   *
+   *
+   * @param {*} account
+   * @param {*} params
+   * @memberof CreateMosaicComponent
+   */
   buildMosaicDefinition(account, params) {
     const mosaicDefinitionTransaction = this.proximaxProvider.buildMosaicDefinition(params);
-
     const mosaicSupplyChangeTransaction = this.proximaxProvider.buildMosaicSupplyChange(
       mosaicDefinitionTransaction.mosaicId,
       MosaicSupplyType.Increase,
       UInt64.fromUint(this.deltaSupply),
       this.walletService.currentAccount.network
     );
-    // console.log('mosaicSupplyChangeTransaction', mosaicSupplyChangeTransaction);
 
     this.aggregateTransaction = AggregateTransaction.createComplete(
-      Deadline.create(environment.deadlineTransfer.deadline,environment.deadlineTransfer.chronoUnit),
+      Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
       [
         mosaicDefinitionTransaction.toAggregate(account.publicAccount),
         mosaicSupplyChangeTransaction.toAggregate(account.publicAccount)
@@ -288,7 +352,6 @@ export class CreateMosaicComponent implements OnInit {
       this.walletService.currentAccount.network,
       []
     );
-    // console.log('this.aggregateTransaction', this.aggregateTransaction.size);
     this.fee = this.transactionService.amountFormatterSimple(this.aggregateTransaction.maxFee.compact());
   }
   /**
@@ -326,12 +389,7 @@ export class CreateMosaicComponent implements OnInit {
    */
   send() {
     if (this.mosaicForm.valid && !this.blockSend) {
-      // console.log('this.amountAccount', this.amountAccount);
-      // console.log('Number(this.fee)', Number(this.fee));
-      // console.log('Number(this.calculateRentalFee)', Number(this.calculateRentalFee.replace(",", "")));
-
       const validateAmount = this.transactionService.validateBuildSelectAccountBalance(this.amountAccount, Number(this.fee), Number(this.calculateRentalFee.replace(",", "")));
-      // console.log(validateAmount);
       if (validateAmount) {
         const common = {
           password: this.mosaicForm.get('password').value,
@@ -342,7 +400,7 @@ export class CreateMosaicComponent implements OnInit {
           this.blockSend = true;
           const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
           const nonce = this.proximaxProvider.createNonceRandom();
-          const duration =  undefined;
+          const duration = undefined;
           const params = {
             nonce: nonce,
             account: account,
@@ -353,13 +411,7 @@ export class CreateMosaicComponent implements OnInit {
             network: this.walletService.currentAccount.network
           }
 
-          // console.log('-----------params', params);
-
-
-          //BUILD TRANSACTION
-           const mosaicDefinitionTransaction = this.proximaxProvider.buildMosaicDefinition(params);
-          //  console.log('-------- mosaicDefinitionTransaction sed', mosaicDefinitionTransaction);
-          //  console.log('-------- mosaicDefinitionTransaction sed', mosaicDefinitionTransaction.maxFee.compact());
+          const mosaicDefinitionTransaction = this.proximaxProvider.buildMosaicDefinition(params);
           const mosaicSupplyChangeTransaction = this.proximaxProvider.buildMosaicSupplyChange(
             mosaicDefinitionTransaction.mosaicId,
             MosaicSupplyType.Increase,
@@ -378,15 +430,12 @@ export class CreateMosaicComponent implements OnInit {
           );
 
 
-          // this.dataBridge.setTransactionStatus(null);
           // I SIGN THE TRANSACTION
           const generationHash = this.dataBridge.blockInfo.generationHash
           const signedTransaction = account.sign(aggregateTransaction, generationHash);  //Update-sdk-dragon
           this.transactionSigned.push(signedTransaction);
-          //ANNOUNCEMENT THE TRANSACTION-
           this.proximaxProvider.announce(signedTransaction).subscribe(
             async x => {
-
               if (this.subscribe['transactionStatus'] === undefined || this.subscribe['transactionStatus'] === null) {
                 this.getTransactionStatus();
               }
@@ -400,16 +449,11 @@ export class CreateMosaicComponent implements OnInit {
           this.blockSend = false;
         }
       } else {
-        this.sharedService.showError('', 'insufficient balance');
+        this.sharedService.showError('', 'Insufficient Balance');
       }
     }
   }
 
-  cleanCheck() {
-    this.divisibility = '';
-    this.transferable = false;
-    this.supplyMutable = false;
-  }
   /**
    *
    *
@@ -424,7 +468,6 @@ export class CreateMosaicComponent implements OnInit {
           exist = true;
         }
       }
-
       (exist) ? '' : this.sharedService.showWarning('', 'Error connecting to the node');
     }, 5000);
   }
@@ -483,10 +526,9 @@ export class CreateMosaicComponent implements OnInit {
     if (this.accountInfo && this.accountInfo.accountInfo && this.accountInfo.accountInfo.mosaics && this.accountInfo.accountInfo.mosaics.length > 0) {
       const mosaicXPX = this.accountInfo.accountInfo.mosaics.find(x => x.id.toHex() === environment.mosaicXpxInfo.id);
       if (mosaicXPX) {
-        let amountMosaicXpx = this.transactionService.amountFormatterSimple( mosaicXPX.amount.compact())
-        const rentalFee = this.calculateRentalFee.replace(",","")
-        
-        if (Number(amountMosaicXpx) >= Number(rentalFee) + Number(this.fee)) {
+        const amountMosaicXpx = this.transactionService.amountFormatterSimple(mosaicXPX.amount.compact()).replace(",", "");
+        const rentalFee = this.calculateRentalFee.replace(",", "");
+        if (Number(amountMosaicXpx) >= (Number(rentalFee) + Number(this.fee))) {
           this.insufficientBalance = false;
           this.mosaicForm.enable();
           return;
@@ -519,6 +561,12 @@ export class CreateMosaicComponent implements OnInit {
     return validation;
   }
 
+  /**
+   *
+   *
+   * @param {*} e
+   * @memberof CreateMosaicComponent
+   */
   limitDuration(e) {
     // console.log();
     if (isNaN(parseInt(e.target.value))) {
@@ -532,6 +580,12 @@ export class CreateMosaicComponent implements OnInit {
     }
   }
 
+  /**
+   *
+   *
+   * @param {*} e
+   * @memberof CreateMosaicComponent
+   */
   limitLength(e) {
     if (isNaN(parseInt(e.target.value))) {
       e.target.value = ''
@@ -544,86 +598,25 @@ export class CreateMosaicComponent implements OnInit {
     }
   }
 
-  async validateRentalFee(amount: number) {
-
+  /**
+   *
+   *
+   * @memberof CreateMosaicComponent
+   */
+  noExpite() {
     const accountInfo = this.walletService.filterAccountInfo();
     if (accountInfo && accountInfo.accountInfo && accountInfo.accountInfo.mosaics && accountInfo.accountInfo.mosaics.length > 0) {
       const xpxInBalance = accountInfo.accountInfo.mosaics.find(element => {
         return element.id.toHex() === new MosaicId(environment.mosaicXpxInfo.id).toHex();
       });
 
-      if (xpxInBalance) {
-
-          const invalidBalance = xpxInBalance.amount.compact() < amount;
-          const mosaic = await this.mosaicServices.filterMosaics([xpxInBalance.id]);
-          if (mosaic && mosaic[0].mosaicInfo) {
-            this.calculateRentalFee = this.transactionService.amountFormatterSimple(amount);
-          } else {
-            // **********INSUFFICIENT BALANCE*************
-            // console.log('AQUI FUE');
-            this.insufficientBalance = true;
-            // if (this.namespaceForm.enabled) {
-            //   this.namespaceForm.disable();
-            // }
-          }
-
-          if (invalidBalance) {
-            // **********DURATION INSUFFICIENT BALANCE*************
-            this.insufficientBalance = false;
-            this.insufficientBalanceDuration = true;
-          } else if (!invalidBalance) {
-            this.insufficientBalance = false;
-            this.insufficientBalanceDuration = false;
-            // if (this.namespaceForm.disabled) {
-            //   this.namespaceForm.enable();
-            // }
-          }
-
-
-      } else {
-        // **********INSUFFICIENT BALANCE*************
-        // console.log('AQUI FUE 2');
+      const invalidBalance = xpxInBalance.amount.compact() < 10000000;
+      if (invalidBalance) {
         this.insufficientBalance = true;
-        // if (this.namespaceForm.enabled) {
-        //   this.namespaceForm.disable();
-        // }
+      } else {
+        this.calculateRentalFee = '10.000000';
+        this.insufficientBalance = false;
       }
-
-
-
-    } else {
-      // **********INSUFFICIENT BALANCE*************
-      // console.log('AQUI FUE 3');
-      this.insufficientBalance = true;
-      // if (this.namespaceForm.enabled) {
-      //   this.namespaceForm.disable();
-      // }
     }
   }
-
-
-  noExpite(){
-    const accountInfo = this.walletService.filterAccountInfo();
-    if (accountInfo && accountInfo.accountInfo && accountInfo.accountInfo.mosaics && accountInfo.accountInfo.mosaics.length > 0) {
-      const xpxInBalance = accountInfo.accountInfo.mosaics.find(element => {
-        return element.id.toHex() === new MosaicId(environment.mosaicXpxInfo.id).toHex();
-      });
-
-    const invalidBalance = xpxInBalance.amount.compact() < 10000000;
-    if (invalidBalance) {
-      // **********DURATION INSUFFICIENT BALANCE*************
-      // console.log('AQUI FUE 1');
-      this.insufficientBalance = true;
-      this.insufficientBalanceDuration = false;
-    } else {
-      this.calculateRentalFee = '10.000000';
-      this.insufficientBalance = false;
-      this.insufficientBalanceDuration = false;
-      // if (this.namespaceForm.disabled) {
-      //   this.namespaceForm.enable();
-      // }
-    }
-  }
-}
-
 }
