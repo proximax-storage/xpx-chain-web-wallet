@@ -365,7 +365,7 @@ export class ServicesBoxComponent implements OnInit {
             AppConfig.routes.uploadFile
           ), shareFile: this.services.buildStructureService(
             'Send / Share',
-            true,
+            false,
             '',
             '',
             ''

@@ -15,7 +15,7 @@ import { TransactionsService } from 'src/app/transactions/services/transactions.
 export class AccountDeleteConfirmComponent implements OnInit {
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Accounts',
-    componentName: 'Confirm delete',
+    componentName: 'Confirm Delete',
     extraButton: 'View All Accounts',
     routerExtraButton: `/${AppConfig.routes.viewAllAccount}`
 
@@ -25,7 +25,7 @@ export class AccountDeleteConfirmComponent implements OnInit {
   };
   tittle = 'will be deleted from your device.';
   currenAccount: AccountsInterface = null;
-  Information = `Warning! This action will delete this account. It cannot be undone.  If you have not
+  Information = `This action will delete this account. It cannot be undone.  If you have not
    saved your private keys, access to the account and contained will be permanently lost.`
   configurationForm: ConfigurationForm;
   validatingForm: FormGroup;

@@ -31,14 +31,14 @@
                 height="43">
               <input formControlName="title" required mdbInputDirective mdbValidate [validateSuccess]="true"
                 [validateError]="true" type="text" id="title" class="form-control form-control-sm input-border"
-                placeholder="Enter title">
+                placeholder="Enter Title">
               <mdb-error *ngIf="validateInput('title', '1', '').invalid && (validateInput('title', '1', '').dirty || validateInput('title', '1', '').touched)">
                 <span>Required field</span>
               </mdb-error>
             </div>
             <!-- IS PRIVATE -->
             <div class="form-check form-check-inline">
-              <mdb-checkbox [default]="true" formControlName="isPrivate">Send to private poll index</mdb-checkbox>
+              <mdb-checkbox [default]="true" formControlName="isPrivate">Send to Private Poll Index</mdb-checkbox>
             </div>
             <!-- DESCRIPTION -->
             <div class="md-form">
@@ -57,7 +57,7 @@
                 alt="">
               <input formControlName="PollEndDate" required mdbInputDirective mdbValidate type="text"
                 [owlDateTimeTrigger]="dt" [owlDateTime]="dt" [min]="minDate" [dateTime]="invalidMoment" class="form-control form-control-sm input-border"
-                placeholder="End date">
+                placeholder="End Date">
               <owl-date-time [pickerMode]="'dialog'" #dt></owl-date-time>
               <mdb-error *ngIf="validateformDateEnd">
                 <span>{{ errorDateEnd }}</span>
@@ -203,7 +203,7 @@
             <div class="">
               <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" [searchable]="false"
                 class="selectWrapper" [items]="voteType" formControlName="voteType" bindLabel="label" bindValue="value"
-                placeholder="Type of vote" (change)="selectType($event)">
+                placeholder="Type of Vote" (change)="selectType($event)">
               </ng-select>
               <mdb-error class="ml-1rem" *ngIf="validateInput('voteType','3', '').invalid && (validateInput('voteType', '3', '').dirty || validateInput('voteType', '3', '').touched)">
                 <span>Type</span>
@@ -354,7 +354,7 @@
             <div class="md-form">
               <div class="col-12  d-flex align-items-center box-grey">
                 <div class="col-10">
-                  <span>poll index address:</span>
+                  <span>Poll Index Address:</span>
                   <br>
                   <span class="font-small d-flex">{{ publicAddress }}</span>
                 </div>

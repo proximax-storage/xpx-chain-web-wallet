@@ -6,7 +6,7 @@
         <!-- UPLOAD APOSTILLE -->
         <mdb-stepper #stepper [linear]="true">
           <!-- FIRST FORM -->
-          <mdb-step name="File for processing" [stepForm]="apostilleFormOne" class="step1" [completed]="false">
+          <mdb-step name="File for Processing" [stepForm]="apostilleFormOne" class="step1" [completed]="false">
             <form [formGroup]="apostilleFormOne">
               <!-- UPLOAD FILE -->
               <div class="row">
@@ -35,7 +35,7 @@
                       <ngx-dropzone-label>
                         <img class="mr-1rem h2em"
                           src="assets/images/img/icon-upload-gray-28h-proximax-sirius-wallet.svg" width="25">
-                        <span class="fs-1-2em fw-700 color-gray-strong">Upload file</span>
+                        <span class="fs-1-2em fw-700 color-gray-strong">Upload File</span>
                       </ngx-dropzone-label>
                       <ngx-dropzone-preview *ngFor="let f of files" class="h-100porcent" [removable]="true" (removed)="onRemove(f)">
                         <ngx-dropzone-label class="w-100porcent">{{ f.name }} <br> ({{ f.type }})</ngx-dropzone-label>
@@ -113,7 +113,7 @@
                       <div class="form-check form-check-inline">
                         <input formControlName="typeFile" checked [value]="true" type="radio" class="form-check-input"
                           id="myComputer" name="typeFile" mdbInput>
-                        <label class="form-check-label" for="myComputer">My computer</label>
+                        <label class="form-check-label" for="myComputer">My Computer</label>
                       </div>
                     </div>
 
@@ -181,7 +181,7 @@
                 <div class="col-12">
                   <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
                     class="selectWrapper" [items]="typeEncrypted" formControlName="typeEncrypted" bindLabel="label"
-                    bindValue="value" placeholder="Select hashing algorithm">
+                    bindValue="value" placeholder="Select Hashing Algorithm">
                   </ng-select>
                 </div>
               </div>

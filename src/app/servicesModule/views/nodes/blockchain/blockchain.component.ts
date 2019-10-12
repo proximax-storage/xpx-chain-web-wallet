@@ -100,7 +100,7 @@ export class BlockchainComponent implements OnInit {
   }
 
   changeNode() {
-    console.log('change node');
+    // console.log('change node');
 
   }
 }

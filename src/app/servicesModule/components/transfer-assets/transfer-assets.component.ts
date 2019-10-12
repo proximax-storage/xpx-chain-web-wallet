@@ -102,12 +102,12 @@ export class TransferAssetsComponent implements OnInit {
           for (const el of next) {
             if (el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx') {
               let realQuantity = null;
-              console.log(el.quantity);
+              // console.log(el.quantity);
 
               realQuantity = this.transactionService.addZeros(el.properties.divisibility, el.quantity);
               realQuantity = this.nemProvider.amountFormatter(realQuantity, el, el.properties.divisibility);
 
-              console.log(realQuantity);
+              // console.log(realQuantity);
 
               this.accountSelected.mosaic = el;
               const transactions = await this.nemProvider.getUnconfirmedTransaction(this.accountSelected.address);
@@ -325,7 +325,7 @@ export class TransferAssetsComponent implements OnInit {
           const recipient = this.formTransfer.get('accountRecipient').value;
           const dataAccount = this.walletService.currentWallet.accounts.find(el => el.publicAccount.address['address'] === recipient.split('-').join(''));
           const catapultAccount = this.proximaxService.createPublicAccount(dataAccount.publicAccount.publicKey, dataAccount.network);
-          const transaction = await this.nemService.createTransaction(PlainMessage.create(recipient), this.accountSelected.mosaic.assetId, quantity);
+          const transaction = await this.nemService.createTransaction(PlainMessage.create(catapultAccount.publicKey), this.accountSelected.mosaic.assetId, quantity);
 
           this.nemService.createTransactionMultisign(transaction, this.nemService.createPublicAccount(this.accountSelected.publicKey))
             .then(next => {
@@ -391,52 +391,49 @@ export class TransferAssetsComponent implements OnInit {
         });
       },
         error => {
-          if (error.error.message) {
-            switch (error.error.code) {
-              case 521:
-              case 535:
-              case 542:
-              case 551:
-              case 565:
-              case 582:
-              case 591:
-              case 610:
-              case 622:
-              case 672:
-              case 711:
-                this.sharedService.showError('Error', 'Some data is invalid');
-                break;
+          switch (error.error.code) {
+            case 521:
+            case 535:
+            case 542:
+            case 551:
+            case 565:
+            case 582:
+            case 591:
+            case 610:
+            case 622:
+            case 672:
+            case 711:
+              this.sharedService.showError('Error', 'Some data is invalid');
+              break;
 
-              case 501:
-              case 635:
-              case 641:
-              case 685:
-              case 691:
-                this.sharedService.showError('Error', 'Service not available');
-                break;
+            case 501:
+            case 635:
+            case 641:
+            case 685:
+            case 691:
+              this.sharedService.showError('Error', 'Service not available');
+              break;
 
-              case 655:
-              case 666:
-                this.sharedService.showError('Error', 'insufficient XPX Balance');
-                break;
+            case 655:
+            case 666:
+              this.sharedService.showError('Error', 'insufficient XPX Balance');
+              break;
 
-              case 511:
-                this.sharedService.showError('Error', 'Daily limit exceeded (5 swaps)');
-                break;
+            case 511:
+              this.sharedService.showError('Error', 'Daily limit exceeded (5 swaps)');
+              break;
 
-              case 705:
-                this.sharedService.showError('Error', 'Invalid Url');
-                break;
+            case 705:
+              this.sharedService.showError('Error', 'Invalid Url');
+              break;
 
-              default:
-                console.log('entro en default--------------->', error);
-
-                // this.sharedService.showError('Error', 'Error! try again later');
+            default:
+              if (error.error.message) {
                 this.sharedService.showError('Error', error.error.message.toString().split('_').join(' '));
-                break;
-            }
-          } else {
-            this.sharedService.showError('Error', error.toString().split('_').join(' '));
+              } else {
+                this.sharedService.showError('Error', 'Error! try again later');
+              }
+              break;
           }
           this.spinnerVisibility = false
           this.processing = false;

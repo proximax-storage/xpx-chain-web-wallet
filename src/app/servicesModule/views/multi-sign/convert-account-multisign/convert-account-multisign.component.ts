@@ -72,7 +72,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
   blockBtnSend: boolean = false;
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Accounts > Multisign',
-    componentName: 'Convert to multisig account'
+    componentName: 'Convert to Multisig Account'
   };
   subscribeContact: Subscription[] = [];
   convertIntoMultisig: ModifyMultisigAccountTransaction;
