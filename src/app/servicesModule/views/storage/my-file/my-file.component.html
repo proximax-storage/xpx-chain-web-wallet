@@ -10,14 +10,14 @@
         <!-- SELECT -->
         <div class="col-12 col-sm-6 col-md-6 col-lg-3 mx-auto mt-1rem mb-1rem">
           <ng-select mdbInputDirective mdbValidate [(ngModel)]="typeSearch" [searchable]="false" class="selectWrapper"
-            [items]="optionTypeSearch" bindLabel="label" bindValue="value" placeholder="Select type search">
+            [items]="optionTypeSearch" bindLabel="label" bindValue="value" placeholder="Select Type Search">
           </ng-select>
         </div>
 
         <!-- Keyword or number -->
         <div class="col-12 col-sm-6 col-md-6 col-lg-5 mx-auto d-flex align-items-center pt-05rem">
           <input [(ngModel)]="paramSearch" type="text" autocomplete="off" id="searchTransaction" class="form-control"
-            mdbInputDirective [validateSuccess]="false" [validateError]="false" placeholder="File name or data hash" />
+            mdbInputDirective [validateSuccess]="false" [validateError]="false" placeholder="File Name or Data Hash" />
         </div>
 
         <div
@@ -50,7 +50,7 @@
 <div class="container">
   <div class="row mt-2rem">
 
-    <div class="col-12 d-flex justify-content-end background-dark-green-plus pt-05rem">
+    <div class="col-12 d-flex justify-content-center background-dark-green-plus pt-05rem">
       <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="btn-proximax"
         size="md" (click)="clearData()">
         <span class="fs-1em color-white">Refresh</span>
@@ -102,7 +102,7 @@
           </tbody>
           <tfoot class="lighten-5 w-100">
             <tr class="row">
-              <td class="col-12 col-sm-6 d-flex">
+              <td class="col-12 col-sm-6 d-flex justify-content-center">
                 <button mdbBtn type="button" rounded="true" mdbWavesEffect [disabled]="fromTransactionId === undefined"
                   (click)="getFiles()" class="btn-proximax" size="md">
                   <span class="fs-1-2em color-white">Next</span>
