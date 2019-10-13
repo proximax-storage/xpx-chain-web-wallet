@@ -53,19 +53,43 @@
   <div class="col-11 col-lg-10 mx-auto">
     <!-- name -->
     <div class="row">
-      <div class="col-12 mx-auto box-grey">
-        <div class="col-12">
-          <span> Name: <b class="font-small fw-bold">{{selectedWallet.name}}</b></span>
+      <div class="col-12 mx-auto txt-a-center mb-2rem">
+        <div class="row">
+          <div class="col-12">
+            <span class="fs-1-2rem">Wallet to delete:</span>
+            <h1 class="fs-2rem">Joshua</h1>
+          </div>
         </div>
 
-        <div class="col-10">
-          <span> Accounts: <b class="font-small fw-bold">{{selectedWallet.accounts.length}}</b></span>
+        <div class="row">
+          <div class="col-12 mt-1rem">
+            <span class="fs-1-2rem">Accounts available in this wallet:</span>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-11 col-md-10 col-lg-9 col-xl-8 d-flex justify-content-center mx-auto">
+            <div class="table-responsive" style="max-height: 200px; overflow: auto; ">
+              <table mdbTable hover="true" striped="true" class="z-depth-0 result">
+                <tbody #tableResult>
+                  <tr mdbTableCol *ngFor="let account of selectedWallet.accounts; let i = index">
+                    <td>
+                      <span class="fw-bold fs-1-2rem line-h-1-2em fw-600 mb-06rem">{{account.name}}</span>
+                      <br>
+                      <span class="fs-08rem line-h-1-2em  mb-06rem">{{
+                                        createFromRawAddress(account.address)}}</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- TEXT ALERT -->
-    <div class="row mt-2-5rem">
+    <div class="row mt-1rem">
       <div class="col-11 col-md-10 col-lg-9 col-xl-8 d-flex justify-content-center mb-1rem mx-auto">
         <span class="fs-1-5rem txt-a-center line-h-1-2em  mb-06rem">{{textAlert}}</span>
       </div>
