@@ -561,23 +561,6 @@ export class CreateMosaicComponent implements OnInit {
     return validation;
   }
 
-  /**
-   *
-   *
-   * @param {*} e
-   * @memberof CreateMosaicComponent
-   */
-  limitDuration(e) {
-    if (isNaN(parseInt(e.target.value))) {
-      e.target.value = ''
-    } else {
-      if (parseInt(e.target.value) > 365000) {
-        e.target.value = ''
-      } else if (parseInt(e.target.value) < 1) {
-        e.target.value = ''
-      }
-    }
-  }
 
   /**
    *
