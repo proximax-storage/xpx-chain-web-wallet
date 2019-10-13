@@ -201,12 +201,15 @@
         </div>
 
         <!-- Others cosignatories -->
-        <ng-container *ngIf="transferTransaction.data['cosignatures'] && transferTransaction.data['cosignatures'].length > 0">
+        <ng-container
+          *ngIf="transferTransaction.data['cosignatures'] && transferTransaction.data['cosignatures'].length > 0">
           <div class="col-12 mt-05rem lh-1em">
             <span class="fw-600 fs-075rem">Others cosignatories: <br></span>
             <ng-container *ngFor="let dataSigner of transferTransaction.data['cosignatures']">
+              <div>
                 <span class="fs-075rem w-w-b-w"
-                [title]="'Public key: '+dataSigner.signer.publicKey">{{dataSigner.signer.address.pretty()}}</span>
+                  [title]="'Public key: '+dataSigner.signer.publicKey">{{dataSigner.signer.address.pretty()}}</span>
+              </div>
             </ng-container>
           </div>
         </ng-container>

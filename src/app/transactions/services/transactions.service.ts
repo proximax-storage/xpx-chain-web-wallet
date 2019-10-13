@@ -608,7 +608,6 @@ export class TransactionsService {
     let nameType = this.arraTypeTransaction[keyType].name;
     if (group && (group === 'confirmed' || group === 'unconfirmed')) {
       if(transaction.type === this.arraTypeTransaction.aggregateBonded.id) {
-        console.log(transaction['innerTransactions']);
           if(transaction['innerTransactions'].length === 1){
             if (transaction['innerTransactions'][0]["message"] && transaction['innerTransactions'][0]["message"].payload !== "") {
               let newTransaction: any = null;
@@ -624,7 +623,6 @@ export class TransactionsService {
                     newTransaction['transactionInfo'].hash = transaction.transactionInfo.hash;
                     newTransaction.size = transaction.size;
                     newTransaction.cosignatures = transaction['cosignatures'];
-                    console.log(newTransaction);
                     let walletTransactionsNis = this.walletService.getWalletTransNisStorage().find(el => el.name === this.walletService.getCurrentWallet().name);
                     if (walletTransactionsNis !== undefined && walletTransactionsNis !== null) {
                       const transactions = walletTransactionsNis.transactions.filter(el => el.nis1TransactionHast !== msg["nis1Hash"]);
@@ -655,13 +653,6 @@ export class TransactionsService {
           if ((addressSender === addressAccountMultisig) || (addressSender === addressAccountSimple)) {
             if (msg && msg["type"] && msg["type"] === "Swap") {
               nameType = "ProximaX Swap";
-             /* let walletTransactionsNis = this.walletService.getWalletTransNisStorage().find(el => el.name === this.walletService.getCurrentWallet().name);
-              if (walletTransactionsNis !== undefined && walletTransactionsNis !== null) {
-                const transactions = walletTransactionsNis.transactions.filter(el => el.nis1TransactionHast !== msg["nis1Hash"]);
-                walletTransactionsNis.transactions = transactions;
-                this.walletService.setSwapTransactions$(walletTransactionsNis.transactions);
-                this.walletService.saveAccountWalletTransNisStorage(walletTransactionsNis);
-              }*/
             }
           }
         }
