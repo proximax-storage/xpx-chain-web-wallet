@@ -176,7 +176,11 @@ export class MosaicsSupplyChangeComponent implements OnInit {
     }
   }
 
-
+  /**
+   *
+   *
+   * @memberof MosaicsSupplyChangeComponent
+   */
   balance() {
     this.subscription.push(this.transactionService.getBalance$().subscribe(
       next => this.vestedBalance = this.transactionService.getDataPart(next, 6),
@@ -185,46 +189,10 @@ export class MosaicsSupplyChangeComponent implements OnInit {
         part2: '000000'
       }
     ));
-    let vestedBalance = this.vestedBalance.part1.concat(this.vestedBalance.part2).replace(",", "");
+    let vestedBalance = this.vestedBalance.part1.concat(this.vestedBalance.part2).replace(/,/g,'');
     this.amountAccount = Number(vestedBalance)
   }
 
-  calculate(val?) {
-
-
-    if (this.increase) {
-      let value = Number(this.supply.replace(",", "")) + val;
-      this.totalSupply = this.transactionService.amountFormatter(
-        parseFloat(this.transactionService.addZeros(this.divisibility, value)),
-        this.mosaicsInfoSelected[0].mosaicInfo
-      );
-      if (Number(this.supply) + val > 9000000000) {
-        this.errSupply = true;
-      } else {
-        this.errSupply = false;
-      }
-    } else {
-
-      let value = Number(this.supply.replace(",", "")) - val;
-      let restante = Number(value.toFixed(6));
-
-      if (val > Number(this.supply.replace(",", ""))) {
-
-        this.errSupplyMin = true;
-        this.totalSupply = '0.000000'
-      } else {
-        this.totalSupply = this.transactionService.amountFormatter(
-          parseFloat(this.transactionService.addZeros(this.divisibility, restante)),
-          this.mosaicsInfoSelected[0].mosaicInfo
-        );
-        this.errSupply = false;
-        this.errSupplyMin = false;
-      }
-
-
-    }
-
-  }
   /**
    * Create form namespace
    *
@@ -243,6 +211,53 @@ export class MosaicsSupplyChangeComponent implements OnInit {
     }
   }
 
+  /**
+   *
+   *
+   * @param {*} [val]
+   * @memberof MosaicsSupplyChangeComponent
+   */
+  calculate(val?) {
+    if (this.increase) {
+      let value = Number(this.supply.replace(/,/g,'')) + val;
+      this.totalSupply = this.transactionService.amountFormatter(
+        parseFloat(this.transactionService.addZeros(this.divisibility, value)),
+        this.mosaicsInfoSelected[0].mosaicInfo
+      );
+      if (Number(this.supply) + val > 9000000000) {
+        this.errSupply = true;
+      } else {
+        this.errSupply = false;
+      }
+    } else {
+
+      let value = Number(this.supply.replace(/,/g,'')) - val;
+      let restante = Number(value.toFixed(6));
+
+      if (val > Number(this.supply.replace(/,/g,''))) {
+
+        this.errSupplyMin = true;
+        this.totalSupply = '0.000000'
+      } else {
+        this.totalSupply = this.transactionService.amountFormatter(
+          parseFloat(this.transactionService.addZeros(this.divisibility, restante)),
+          this.mosaicsInfoSelected[0].mosaicInfo
+        );
+        this.errSupply = false;
+        this.errSupplyMin = false;
+      }
+
+
+    }
+
+  }
+
+  /**
+   *
+   *
+   * @param {*} inputType
+   * @memberof MosaicsSupplyChangeComponent
+   */
   changeInputType(inputType) {
     let newType = this.sharedService.changeInputType(inputType)
     this.passwordMain = newType;

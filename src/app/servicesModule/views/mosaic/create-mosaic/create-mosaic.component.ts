@@ -209,7 +209,7 @@ export class CreateMosaicComponent implements OnInit {
         part2: '000000'
       }
     ));
-    let vestedBalance = this.vestedBalance.part1.concat(this.vestedBalance.part2).replace(",", "");
+    let vestedBalance = this.vestedBalance.part1.concat(this.vestedBalance.part2).replace(/,/g,'');
     this.amountAccount = Number(vestedBalance)
   }
 
@@ -386,7 +386,7 @@ export class CreateMosaicComponent implements OnInit {
    */
   send() {
     if (this.mosaicForm.valid && !this.blockSend) {
-      const validateAmount = this.transactionService.validateBuildSelectAccountBalance(this.amountAccount, Number(this.fee), Number(this.calculateRentalFee.replace(",", "")));
+      const validateAmount = this.transactionService.validateBuildSelectAccountBalance(this.amountAccount, Number(this.fee), Number(this.calculateRentalFee.replace(/,/g,'')));
       if (validateAmount) {
         const common = {
           password: this.mosaicForm.get('password').value,
@@ -523,8 +523,11 @@ export class CreateMosaicComponent implements OnInit {
     if (this.accountInfo && this.accountInfo.accountInfo && this.accountInfo.accountInfo.mosaics && this.accountInfo.accountInfo.mosaics.length > 0) {
       const mosaicXPX = this.accountInfo.accountInfo.mosaics.find(x => x.id.toHex() === environment.mosaicXpxInfo.id);
       if (mosaicXPX) {
-        const amountMosaicXpx = this.transactionService.amountFormatterSimple(mosaicXPX.amount.compact()).replace(",", "");
-        const rentalFee = this.calculateRentalFee.replace(",", "");
+        console.log(mosaicXPX);
+
+
+        const amountMosaicXpx = this.transactionService.amountFormatterSimple(mosaicXPX.amount.compact()).replace(/,/g, '');
+        const rentalFee = this.calculateRentalFee.replace(/,/g,'');
         if (Number(amountMosaicXpx) >= (Number(rentalFee) + Number(this.fee))) {
           this.insufficientBalance = false;
           this.mosaicForm.enable();
