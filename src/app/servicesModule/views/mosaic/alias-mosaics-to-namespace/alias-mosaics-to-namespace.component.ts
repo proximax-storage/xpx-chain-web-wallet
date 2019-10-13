@@ -74,6 +74,7 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
   mosaicstoHex: MosaicId;
   viewLinked = false;
   nameSelect: boolean = true;
+  noNamespace: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -257,8 +258,10 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
     this.subscription.push(this.namespaceService.getNamespaceChanged().subscribe(
       async (arrayNamespaceStorage: NamespaceStorageInterface[]) => {
         this.arrayNamespaceStorage = arrayNamespaceStorage;
-        // console.log('llega al event');
-        // console.log('llega ', this.linkingNamespaceToMosaic.get('typeAction').value);
+        if(arrayNamespaceStorage === null || arrayNamespaceStorage.length === 0){
+          this.noNamespace = true;
+          this.linkingNamespaceToMosaic.disable()
+        }
         this.buildSelectNamespace(this.linkingNamespaceToMosaic.get('typeAction').value);
       }
     ));
@@ -271,7 +274,7 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
    */
   getNameNamespace() {
     this.subscription.push(this.namespaceService.getNamespaceChanged().subscribe(
-      async namespaceInfo => {
+      async namespaceInfo => {      
         const namespaceSelect = this.namespaceSelect.slice(0);
         if (namespaceInfo !== undefined && namespaceInfo.length > 0) {
           // console.log(namespaceInfo);

@@ -127,7 +127,6 @@ export class CreateMosaicComponent implements OnInit {
 
     this.mosaicForm.get('deltaSupply').valueChanges.subscribe(next => {
       if (parseFloat(next) <= this.configurationForm.mosaicWallet.maxSupply) {
-        // console.log(next);
         if (next === 0) {
           this.invalidSupply = true;
         } else {
@@ -212,7 +211,6 @@ export class CreateMosaicComponent implements OnInit {
     ));
     let vestedBalance = this.vestedBalance.part1.concat(this.vestedBalance.part2).replace(",", "");
     this.amountAccount = Number(vestedBalance)
-    // console.log(this.amountAccount);
   }
 
   /**
@@ -361,7 +359,6 @@ export class CreateMosaicComponent implements OnInit {
    * @memberof CreateMosaicComponent
    */
   changeNotExpire($event) {
-    // console.log($event);
     if (!$event.checked) {
       this.calculateRentalFee = '0.000000'
       if (this.mosaicForm.get('duration').disabled) {
@@ -568,7 +565,6 @@ export class CreateMosaicComponent implements OnInit {
    * @memberof CreateMosaicComponent
    */
   limitDuration(e) {
-    // console.log();
     if (isNaN(parseInt(e.target.value))) {
       e.target.value = ''
     } else {

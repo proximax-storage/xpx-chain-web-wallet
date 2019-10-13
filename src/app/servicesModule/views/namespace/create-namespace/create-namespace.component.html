@@ -6,11 +6,20 @@
       <div class="col-12 col-sm-7 col-md-8 mb-2rem">
 
         <div class="row mt-1rem">
-          <ng-container *ngIf="insufficientBalance && !insufficientBalanceDuration">
+            <div class="col-12 mb-1rem mx-auto box-transparent-border-orange"*ngIf="insufficientBalance && !insufficientBalanceDuration">
+                <div class="txt-a-center">
+                  <img src="assets/images/img/icon-transaction-unconfirmed-white.svg" style="filter: invert(50%)" alt="" width="30">
+                </div>
+                <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em">
+                    Insufficient balance.
+                </p>
+              </div>
+  
+          <!-- <ng-container *ngIf="insufficientBalance && !insufficientBalanceDuration">
             <div class="col-11 mx-auto d-flex justify-content-end">
               <span class="fs-08rem fw-600 color-error-message">Insufficient Balance</span>
             </div>
-          </ng-container>
+          </ng-container> -->
 
           <div class="col-11 mx-auto">
             <div class="md-form form-sm mt-0">

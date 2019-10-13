@@ -4,15 +4,24 @@
   <div class="row">
     <div class="col-11 col-lg-9 mx-auto">
       <div class="row">
+          <div class="col-11 mb-1rem mx-auto box-transparent-border-orange"*ngIf="insufficientBalance">
+              <div class="txt-a-center">
+                <img src="assets/images/img/icon-transaction-unconfirmed-white.svg" style="filter: invert(50%)" alt="" width="30">
+              </div>
+              <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em">
+                  Insufficient balance.
+              </p>
+            </div>
         <div class="col-12 col-md-8 justify-content-center">
           <form [formGroup]="mosaicForm" (ngSubmit)="send()">
-            <div class="row mt-1rem">
+
+            <!-- <div class="row mt-1rem">
               <ng-container *ngIf="insufficientBalance">
                 <div class="col-12 d-flex justify-content-end">
                   <span class="fs-08rem fw-600 color-error-message">Insufficient balance</span>
                 </div>
               </ng-container>
-            </div>
+            </div> -->
 
             <div class="row">
               <div class="col-12 mx-auto">
