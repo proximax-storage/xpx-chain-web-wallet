@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { UploadInput, humanizeBytes, UploadOutput, UploadFile } from 'ng-uikit-pro-standard';
-import { Mosaic, MosaicId, UInt64 } from 'tsjs-xpx-chain-sdk';
+import { Mosaic, MosaicId, UInt64, PlainMessage, TransferTransaction } from 'tsjs-xpx-chain-sdk';
 import {
   Uploader,
   PrivacyType,
@@ -20,6 +20,8 @@ import { ProximaxProvider } from '../../../../shared/services/proximax.provider'
 import { WalletService } from '../../../../wallet/services/wallet.service';
 import { environment } from '../../../../../environments/environment';
 import { HeaderServicesInterface } from '../../../services/services-module.service';
+import * as FeeCalculationStrategy from 'tsjs-xpx-chain-sdk/dist/src/model/transaction/FeeCalculationStrategy';
+import { TransactionsService } from 'src/app/transactions/services/transactions.service';
 
 @Component({
   selector: 'app-upload-file',
@@ -53,13 +55,15 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
   errorMatchPassword: string;
   mosaics: any[];
   noEncripted: boolean = false;
+  fee: any = '0.000000';
 
   constructor(
     private cdRef: ChangeDetectorRef,
     private fb: FormBuilder,
     private walletService: WalletService,
     private proximaxProvider: ProximaxProvider,
-    private sharedService: SharedService
+    private sharedService: SharedService,
+    private transactionService: TransactionsService,
   ) {
     this.files = [];
     this.uploadInput = new EventEmitter<UploadInput>();
@@ -120,6 +124,7 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
           }
           uploadParams.withTransactionMosaics(this.mosaics);
           const result = await this.uploader.upload(uploadParams.build());
+          
           this.clearForm();
           this.sharedService.showSuccessTimeout('Upload', 'Upload successful.', 8000);
           this.blockUpload = false;
@@ -134,6 +139,20 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
     } else {
       //show error here
 
+    }
+  }
+
+
+  calculateFee(message?) {
+    const mosaicsToSend = [];
+    const x = TransferTransaction.calculateSize(PlainMessage.create(message).size(), mosaicsToSend.length);
+    const b = FeeCalculationStrategy.calculateFee(x);
+    if (message > 0) {
+      this.fee = this.transactionService.amountFormatterSimple(b.compact())
+    } else if (message === 0 && mosaicsToSend.length === 0) {
+      this.fee = '0.000000'
+    }else {
+      this.fee = this.transactionService.amountFormatterSimple(b.compact())
     }
   }
 
@@ -450,8 +469,23 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
       if (!(this.files.length - 1 === i)) {
         files += ',';
       }
+      this.builderMessage(this.files[i]);
     }
     return files;
+  }
+
+  builderMessage(files){
+    let valor = {
+      "privacyType":1001,
+      "data":{
+        "contentType":files.type,
+        "dataHash":"Qmf9vKuR6MnTEGYXhzwpMib5EFGoXPWCJh3mXTvasb3Cas",
+        "description":"",
+        "name":files.name,
+        "timestamp":files.lastModifiedDate},
+        "version":"1.0"
+    }
+    this.calculateFee(JSON.stringify(valor))
   }
 
   /**

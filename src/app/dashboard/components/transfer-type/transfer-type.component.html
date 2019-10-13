@@ -200,6 +200,20 @@
           <span class="fs-075rem w-w-b-w "> {{transferTransaction.data.signature}} </span>
         </div>
 
+        <!-- Others cosignatories -->
+        <ng-container
+          *ngIf="transferTransaction.data['cosignatures'] && transferTransaction.data['cosignatures'].length > 0">
+          <div class="col-12 mt-05rem lh-1em">
+            <span class="fw-600 fs-075rem">Others cosignatories: <br></span>
+            <ng-container *ngFor="let dataSigner of transferTransaction.data['cosignatures']">
+              <div>
+                <span class="fs-075rem w-w-b-w"
+                  [title]="'Address: '+dataSigner.signer.address.pretty()">{{dataSigner.signer.publicKey}}</span>
+              </div>
+            </ng-container>
+          </div>
+        </ng-container>
+
         <!-- Hash -->
         <div class="col-12 mt-05rem lh-1em">
           <span class="fw-600 fs-075rem">Hash: <br></span>
@@ -209,7 +223,7 @@
         <!-- NIS1 HASH -->
         <div class="col-12 mt-05rem lh-1em box-modal-grey-dark p-1rem color-white">
           <span class="fw-600 fs-075rem">NIS1 Hash: <br></span>
-          <span class="fs-075rem w-w-b-w "> {{nis1hash}} </span>
+          <span class="fs-075rem w-w-b-w "> {{nis1hash | uppercase}} </span>
         </div>
       </div>
     </div>

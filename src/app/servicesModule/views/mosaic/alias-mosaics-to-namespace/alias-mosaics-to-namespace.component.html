@@ -2,6 +2,16 @@
   <app-header [params]="paramsHeader"></app-header>
 
   <form [formGroup]="linkingNamespaceToMosaic" (ngSubmit)="sendTransaction()">
+      <div class="col-11 mb-1rem mx-auto box-transparent-border-red" *ngIf="noNamespace">
+          <div class="txt-a-center">
+            <img src="assets/images/img/icon-restriction-white.svg" style="filter: invert(50%)" alt="" width="30">
+          </div>
+          <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em">
+              This account doesn't have namespaces created.
+          </p>
+          
+        </div>
+        <br>
 
     <div class="row mt-1-5rem">
       <div class="col-11 col-sm-10 col-lg-8 mx-auto">

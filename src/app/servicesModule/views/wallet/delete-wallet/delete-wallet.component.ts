@@ -1,3 +1,4 @@
+import { Address } from 'tsjs-xpx-chain-sdk';
 import { Component, OnInit } from '@angular/core';
 import { WalletService } from '../../../../wallet/services/wallet.service';
 import { SharedService, ConfigurationForm } from '../../../../../app/shared/services/shared.service';
@@ -100,6 +101,10 @@ export class DeleteWalletComponent implements OnInit {
       ]],
       checked: [false, [Validators.requiredTrue]]
     });
+  }
+
+  createFromRawAddress(address: string): string {
+    return Address.createFromRawAddress(address).pretty();
   }
 
   deleteWallet() {

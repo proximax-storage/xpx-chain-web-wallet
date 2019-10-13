@@ -80,6 +80,7 @@ export class MosaicsSupplyChangeComponent implements OnInit {
   errSupplyMin: boolean = false;
   subscription: Subscription[] = [];
   vestedBalance: { part1: string; part2: string; };
+  noMosaics: boolean = false;
 
   /**
    * Initialize dependencies and properties
@@ -103,9 +104,6 @@ export class MosaicsSupplyChangeComponent implements OnInit {
     this.formMosaicSupplyChange.get('deltaSupply').disable();
     this.formMosaicSupplyChange.get('mosaicSupplyType').disable();
     this.balance();
-    // this.amountAccount = this.walletService.getAmountAccount();
-    // console.log(this.amountAccount);
-
 
     this.subscribe['block'] = this.dataBridge.getBlock().subscribe(next => this.currentBlock = next);
     const data = await this.mosaicService.filterMosaics();
@@ -170,8 +168,12 @@ export class MosaicsSupplyChangeComponent implements OnInit {
       this.builder();
     });
 
-
     this.parentMosaic = mosaicsSelect;
+    if (this.parentMosaic.length === 1) {
+      this.noMosaics = true;
+      this.formMosaicSupplyChange.get('parentMosaic').disable();
+      this.formMosaicSupplyChange.get('password').disable();
+    }
   }
 
 
@@ -353,8 +355,6 @@ export class MosaicsSupplyChangeComponent implements OnInit {
     } else {
       this.increase = false;
     }
-    // console.log('----------', event);
-
   }
 
   /**

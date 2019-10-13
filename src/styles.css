@@ -1475,6 +1475,14 @@ button.md-toast-close-button {
   text-align: center;
 }
 
+.box-transparent-border-red {
+  border-radius: 1.5rem;
+  border: solid #9e0000;
+  padding: 10px 20px;
+  margin: 10px;
+  text-align: center;
+}
+
 .topnav label.icon {
   cursor: pointer !important;
 }
