@@ -91,11 +91,12 @@ export class ExtendDurationNamespaceComponent implements OnInit {
 
     this.validateRentalFee(this.rentalFee * this.extendDurationNamespaceForm.get('duration').value);
     this.extendDurationNamespaceForm.get('duration').valueChanges.subscribe(next => {
-      if (next <= 1825) {
+      if (next <= 365) {
         if (next !== null && next !== undefined && String(next) !== '0') {
           this.durationByBlock = this.transactionService.calculateDurationforDay(next).toString();
           this.totalBlock = this.subtractionHeight + Number(this.durationByBlock);
-          if( this.totalBlock <= 10512000 ){
+          if( this.totalBlock <= 2102400 ){
+            // 5 years = 10512000
             this.totalBlock;
             this.exceededDuration = false;
           } else {
@@ -110,7 +111,7 @@ export class ExtendDurationNamespaceComponent implements OnInit {
           this.extendDurationNamespaceForm.get('duration').patchValue('');
         }
       } else {
-        this.durationByBlock = this.transactionService.calculateDurationforDay(1825).toString();
+        this.durationByBlock = this.transactionService.calculateDurationforDay(365).toString();
         this.validateRentalFee(this.rentalFee * parseFloat(this.durationByBlock));
         this.builder();
       }
@@ -223,7 +224,7 @@ export class ExtendDurationNamespaceComponent implements OnInit {
    */
   extendDuration() {
     if (this.extendDurationNamespaceForm.valid && !this.blockBtnSend) {
-      const validateAmount = this.transactionService.validateBuildSelectAccountBalance(this.amountAccount, Number(this.fee), Number(this.calculateRentalFee.replace(/,/g,'')));
+      const validateAmount = this.transactionService.validateBuildSelectAccountBalance(this.amountAccount, Number(this.fee), Number(this.calculateRentalFee.replace(',', '')));
       if (validateAmount) {
         this.blockBtnSend = true;
         const common = {
@@ -351,7 +352,7 @@ export class ExtendDurationNamespaceComponent implements OnInit {
       e.target.value = '';
       this.extendDurationNamespaceForm.get('duration').setValue('');
     } else {
-      if (parseInt(e.target.value) > 1825) {
+      if (parseInt(e.target.value) > 365) {
         this.exceededDuration = true;
       } else if (parseInt(e.target.value) < 1) {
         e.target.value = ''

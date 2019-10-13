@@ -469,8 +469,8 @@ export class CreateNamespaceComponent implements OnInit {
       e.target.value = '';
       this.namespaceForm.get('duration').setValue('');
     } else {
-      if (parseInt(e.target.value) >  1825) {
-        e.target.value = '1825'
+      if (parseInt(e.target.value) >  365) {
+        e.target.value = '365'
       } else if (parseInt(e.target.value) < 1) {
         e.target.value = '';
         this.namespaceForm.get('duration').setValue('');
@@ -506,7 +506,7 @@ export class CreateNamespaceComponent implements OnInit {
     // Duration ValueChange
     this.namespaceForm.get('duration').valueChanges.subscribe(
       next => {
-        if (next <= 1825) {
+        if (next <= 365) {
           if (next !== null && next !== undefined && String(next) !== '0' && next !== '') {
             if (this.showDuration) {
               this.durationByBlock = this.transactionService.calculateDurationforDay(next).toString();
@@ -517,7 +517,7 @@ export class CreateNamespaceComponent implements OnInit {
             this.calculateRentalFee = '0.000000';
           }
         } else {
-          this.durationByBlock = this.transactionService.calculateDurationforDay(1825).toString();
+          this.durationByBlock = this.transactionService.calculateDurationforDay(365).toString();
           this.validateRentalFee(this.rentalFee * parseFloat(this.durationByBlock));
         }
 
