@@ -172,6 +172,7 @@ export class MosaicsSupplyChangeComponent implements OnInit {
     if (this.parentMosaic.length === 1) {
       this.noMosaics = true;
       this.formMosaicSupplyChange.get('parentMosaic').disable();
+      this.formMosaicSupplyChange.get('password').disable();
     }
   }
 
