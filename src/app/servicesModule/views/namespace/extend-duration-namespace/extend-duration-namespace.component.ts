@@ -60,6 +60,7 @@ export class ExtendDurationNamespaceComponent implements OnInit {
   totalBlock: any;
   excedDuration: boolean = false;
   invalidDuration: boolean = true;
+  noNamespace: boolean = false;
 
 
   constructor(
@@ -316,6 +317,9 @@ export class ExtendDurationNamespaceComponent implements OnInit {
           }
 
           this.arrayselect = arrayselect;
+        } else {
+          this.noNamespace = true;
+          this.extendDurationNamespaceForm.disable();
         }
       }, error => {
         this.router.navigate([AppConfig.routes.home]);
@@ -462,24 +466,24 @@ export class ExtendDurationNamespaceComponent implements OnInit {
             this.insufficientBalanceDuration = false;
           }
         } else {
-          // if (this.extendDurationNamespaceForm.enabled) {
-          //   this.extendDurationNamespaceForm.disable();
-          // }
+          if (this.extendDurationNamespaceForm.enabled) {
+            this.extendDurationNamespaceForm.disable();
+          }
           this.insufficientBalanceDuration = false;
           this.insufficientBalance = true;
         }
       } else {
-        // if (this.extendDurationNamespaceForm.enabled) {
-        //   this.extendDurationNamespaceForm.disable();
-        // }
+        if (this.extendDurationNamespaceForm.enabled) {
+          this.extendDurationNamespaceForm.disable();
+        }
         this.insufficientBalanceDuration = false;
         this.insufficientBalance = true;
         this.extendDurationNamespaceForm.controls['password'].disable();
       }
     } else {
-      // if (this.extendDurationNamespaceForm.enabled) {
-      //   this.extendDurationNamespaceForm.disable();
-      // }
+      if (this.extendDurationNamespaceForm.enabled) {
+        this.extendDurationNamespaceForm.disable();
+      }
       this.insufficientBalanceDuration = false;
       this.insufficientBalance = true;
     }
