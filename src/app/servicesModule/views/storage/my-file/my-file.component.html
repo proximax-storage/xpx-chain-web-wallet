@@ -170,13 +170,13 @@
               </div>
             </div>
             <div class="row mt-2rem">
-              <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
+              <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end mx-auto"  *ngIf="dataSelected.encryptionType === 1004">
                 <button mdbBtn type="button" rounded="true" mdbWavesEffect
                   class="btn-proximax" size="md" (click)="clearForm()">
                   <span class="fs-1-2em color-white">Reset</span>
                 </button>
               </div>
-              <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
+              <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start mx-auto">
                 <button mdbBtn type="submit" rounded="true" mdbWavesEffect
                   class="btn-proximax"
                   [disabled]="dataSelected.encryptionType !== 1001 && dataSelected.encryptionType !== 1004" size="md">

@@ -223,7 +223,7 @@
 
                   <ng-container *ngIf='listaBlanca.length === 0'>
                     <div class="col-11 d-flex justify-content-center">
-                     
+
 
                       <span class="font-small "> nothing to show</span>
                     </div>
@@ -243,7 +243,7 @@
                       <b> <i class="fa fa-users"> </i>
                       </b>&nbsp;
                     </ng-container>
-      
+
                     <b>{{item.label}}</b>
                   </ng-template>
               </ng-select>
@@ -307,9 +307,8 @@
                     View All |</span>
                 </button>
                 <button class="transparent">
-                  <span (click)="stepper.previous()"> Edit</span>
+                  <span (click)="stepper.previous()">Edit</span>
                 </button>
-
               </div>
             </div>
           </div>
@@ -427,7 +426,7 @@
                     View All |</span>
                 </button>
                 <button class="transparent">
-                  <span (click)="stepper.previous(); stepper.previous()"> Edit</span>
+                  <span (click)="stepper.previous(); stepper.previous()">Edit</span>
                 </button>
               </div>
             </div>

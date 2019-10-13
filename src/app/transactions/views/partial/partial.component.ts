@@ -210,7 +210,7 @@ export class PartialComponent implements OnInit {
     if (!this.hideSign) {
       if (arraySelect.length === 1) {
         this.onlySigner = true;
-        this.account = arraySelect[0];
+        this.account = arraySelect[0].value;
         this.selectAccount(arraySelect[0]);
       } else {
         this.arraySelect = arraySelect;
