@@ -224,7 +224,7 @@ export class ExtendDurationNamespaceComponent implements OnInit {
    */
   extendDuration() {
     if (this.extendDurationNamespaceForm.valid && !this.blockBtnSend) {
-      const validateAmount = this.transactionService.validateBuildSelectAccountBalance(this.amountAccount, Number(this.fee), Number(this.calculateRentalFee.replace(',', '')));
+      const validateAmount = this.transactionService.validateBuildSelectAccountBalance(this.amountAccount, Number(this.fee), Number(this.calculateRentalFee.replace(/,/g,'')));
       if (validateAmount) {
         this.blockBtnSend = true;
         const common = {
