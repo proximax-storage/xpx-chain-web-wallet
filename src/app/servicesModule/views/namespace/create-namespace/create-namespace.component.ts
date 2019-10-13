@@ -467,12 +467,14 @@ export class CreateNamespaceComponent implements OnInit {
   limitDuration(e) {
     // console.log();
     if (isNaN(parseInt(e.target.value))) {
-      e.target.value = ''
+      e.target.value = '';
+      this.namespaceForm.get('duration').setValue('');
     } else {
       if (parseInt(e.target.value) > 365) {
         e.target.value = '365'
       } else if (parseInt(e.target.value) < 1) {
-        e.target.value = ''
+        e.target.value = '';
+        this.namespaceForm.get('duration').setValue('');
       }
     }
   }
