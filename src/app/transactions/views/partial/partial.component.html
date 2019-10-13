@@ -66,9 +66,8 @@
           <tbody class="background-white">
             <ng-container
               *ngFor="let transaction of aggregateTransactions | stringFilter: filter | paginate: configAdvance">
-              <tr class="white-space-pre cursor-p" mdbTableCol [ngClass]="!transaction ? 'background-pending': ''"
-                (click)="find(transaction)">
-                <!-- <td class="fs-07rem">{{transaction.fee}}</td> -->
+              <tr class="white-space-pre cursor-p text-center" mdbTableCol
+                [ngClass]="!transaction ? 'background-pending': ''" (click)="find(transaction)">
                 <td class="fs-07rem">{{transaction.senderAddress}}</td>
                 <td class="fs-07rem">{{transaction.data.transactionInfo.hash}}</td>
               </tr>
@@ -161,7 +160,7 @@
                       <!-- HASH NIS1  -->
                       <div class="col-12 mt-05rem line-h-09em" *ngIf="nis1hash">
                         <span class="fw-600 fs-08rem">NIS1 Hash:</span> <br>
-                        <span class="fs-065rem w-w-b-w">{{nis1hash}}</span>
+                        <span class="fs-065rem w-w-b-w">{{nis1hash | uppercase}}</span>
                       </div>
 
                       <!-- Transactions -->
