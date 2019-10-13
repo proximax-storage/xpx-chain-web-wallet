@@ -148,10 +148,11 @@ export class ViewAllAccountsComponent implements OnInit {
     let file = CryptoJS.enc.Base64.stringify(wordArray);
     // Word array to base64
 
-    const date = new Date(Date.now());
+    const date = new Date();
     const year = date.getFullYear();
     const month = ((date.getMonth() + 1) < 10) ? `0${(date.getMonth() + 1)}` : date.getMonth() + 1;
     const day = (date.getDate() < 10) ? `0${date.getDate()}` : date.getDate();
+    console.log(date)
 
     const blob = new Blob([file], { type: '' });
     const url = window.URL.createObjectURL(blob);
