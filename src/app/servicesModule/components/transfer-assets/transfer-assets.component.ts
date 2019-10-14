@@ -26,6 +26,7 @@ export class TransferAssetsComponent implements OnInit {
   accountCreated: any;
   accountListVisible: boolean = false;
   accountSelected: any = null;
+  amountZero: boolean = false;
   availableContinue = false;
   blockButton: boolean;
   changeAccount: boolean = false;
@@ -202,12 +203,17 @@ export class TransferAssetsComponent implements OnInit {
             if (next > parseFloat(this.quantity.split(',').join(''))) {
               this.blockButton = true;
               this.errorAmount = '-invalid';
+              this.amountZero = false;
               this.insufficientBalance = true;
             } else if (next === 0) {
               this.blockButton = true;
+              this.insufficientBalance = false;
+              this.errorAmount = '-invalid';
+              this.amountZero = true;
             } else {
               this.blockButton = false;
               this.insufficientBalance = false;
+              this.amountZero = false;
               this.errorAmount = '';
             }
           }

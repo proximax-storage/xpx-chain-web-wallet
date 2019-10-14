@@ -309,7 +309,8 @@ export class DataBridgeService {
 
       const confirmedSubject = await this.transactionsService.getConfirmedTransactions$().pipe(first()).toPromise();
       const transactionPushed = confirmedSubject.slice(0);
-      const transactionFormatter = this.transactionsService.getStructureDashboard(confirmedTransaction, transactionPushed);
+      const transactionFormatter = this.transactionsService.getStructureDashboard(confirmedTransaction, transactionPushed, 'confirmed');
+      console.log('transactionFormatter ---> ', transactionFormatter);
       if (transactionFormatter !== null) {
         audio.play();
         this.sharedService.showInfo('', 'Transaction confirmed');
@@ -366,7 +367,7 @@ export class DataBridgeService {
 
       const unconfirmedSubject = await this.transactionsService.getUnconfirmedTransactions$().pipe(first()).toPromise();
       const transactionPushed = unconfirmedSubject.slice(0);
-      const transactionFormatter = this.transactionsService.getStructureDashboard(unconfirmedAdded, transactionPushed);
+      const transactionFormatter = this.transactionsService.getStructureDashboard(unconfirmedAdded, transactionPushed, 'unconfirmed');
       if (transactionFormatter !== null) {
         audio.play();
         this.sharedService.showInfo('', 'Transaction unconfirmed');

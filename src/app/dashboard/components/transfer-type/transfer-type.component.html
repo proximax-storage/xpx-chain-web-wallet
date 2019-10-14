@@ -191,7 +191,8 @@
         <!-- Signer -->
         <div class="col-12 lh-1em">
           <span class="fw-600 fs-075rem">Signer: <br></span>
-          <span class="fs-075rem w-w-b-w "> {{transferTransaction.data.signer.publicKey}} </span>
+          <span class="fs-075rem w-w-b-w"
+                  [title]="'Public Key: '+transferTransaction.data.signer.publicKey">{{transferTransaction.data.signer.address.pretty()}}</span>
         </div>
 
         <!-- Signature -->
@@ -205,10 +206,10 @@
           *ngIf="transferTransaction.data['cosignatures'] && transferTransaction.data['cosignatures'].length > 0">
           <div class="col-12 mt-05rem lh-1em">
             <span class="fw-600 fs-075rem">Others cosignatories: <br></span>
-            <ng-container *ngFor="let dataSigner of transferTransaction.data['cosignatures']">
+            <ng-container *ngFor="let dataSigner of transferTransaction.data['cosignatures'];  let i=index">
               <div>
                 <span class="fs-075rem w-w-b-w"
-                  [title]="'Address: '+dataSigner.signer.address.pretty()">{{dataSigner.signer.publicKey}}</span>
+                  [title]="'Public Key: '+dataSigner.signer.publicKey"><b>{{i+1}}</b> - {{dataSigner.signer.address.pretty()}}</span>
               </div>
             </ng-container>
           </div>

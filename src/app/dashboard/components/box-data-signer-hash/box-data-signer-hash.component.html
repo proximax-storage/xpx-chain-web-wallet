@@ -6,7 +6,8 @@
         <span class="fs-08rem fw-bolder w-w-b-w"><b>Signer:</b></span>
       </div>
       <div class="col-12">
-        <span class="fs-07rem fw-bolder w-w-b-w">{{dataSelected?.data.signer.publicKey}}</span>
+        <span class="fs-075rem fw-bolder w-w-b-w"
+          [title]="'Public Key: '+dataSelected.data.signer.publicKey">{{dataSelected.data.signer.address.pretty()}}</span>
       </div>
     </div>
   </div>
@@ -28,9 +29,11 @@
         <div class="col-12">
           <span class="fs-08rem fw-bolder w-w-b-w"><b>Others cosignatories:</b></span>
         </div>
-        <ng-container *ngFor="let cosignatures of dataSelected.data.cosignatures">
+        <ng-container *ngFor="let cosignatures of dataSelected.data.cosignatures; let i=index">
           <div class="col-12 mt-03rem">
-            <span class="fs-07rem fw-bolder w-w-b-w">{{cosignatures.signer.publicKey}}</span>
+            <span class="fs-075rem fw-bolder w-w-b-w"
+              [title]="'Public Key: '+cosignatures.signer.publicKey"><b>{{i+1}}</b> -
+              {{cosignatures.signer.address.pretty()}}</span>
           </div>
         </ng-container>
       </div>

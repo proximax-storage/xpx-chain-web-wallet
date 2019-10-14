@@ -73,6 +73,11 @@
                 <span class="fs-08rem color-error-message">Insufficient balance</span>
               </div>
             </mdb-error>
+            <mdb-error *ngIf="amountZero">
+              <div class="errorText">
+                <span class="fs-08rem color-error-message">Cannot enter amount zero</span>
+              </div>
+            </mdb-error>
           </div>
 
 
