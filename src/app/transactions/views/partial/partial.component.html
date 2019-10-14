@@ -19,29 +19,36 @@
   </div>
 </div>
 
-<div class="container-fluid background-header-grey pb-1rem pt-1rem">
-  <div class="row d-flex justify-content-center">
+<div class="container-fluid">
+  <!-- FIELD SEARCH -->
+  <div class="row">
+    <div class="col-11 col-lg-10 mx-auto">
+        <input mdbInputDirective [validateSuccess]="false" [validateError]="false" class="w-100porcent form-control"
+        type="text" placeholder="Search" autocomplete="off" [(ngModel)]="filter">
+    </div>
+  </div>
+  <!-- <div class="row d-flex justify-content-center"> -->
 
     <!-- <div class="col-2 col-md-1 d-flex justify-content-center">
           <i class="fa fa-angle-right fs-2rem color-gray-strong" aria-hidden="true"></i>
         </div> -->
-    <div class="col-11 col-sm-8 col-md-10 mx-auto">
+    <!-- <div class="col-11 col-sm-8 col-md-10 mx-auto">
       <div class="row d-flex justify-content-center">
         <div class="col-12 col-sm-8 d-flex justify-content-md-end justify-content-center">
           <input mdbInputDirective [validateSuccess]="false" [validateError]="false" class="w-100porcent form-control"
-            type="text" placeholder="Enter Search Text" autocomplete="off" [(ngModel)]="filter">
+            type="text" placeholder="Search" autocomplete="off" [(ngModel)]="filter">
         </div>
       </div>
-    </div>
+    </div> -->
     <!-- <div class="col-2 col-md-1 d-flex justify-content-center">
           <i class="fa fa-angle-left fs-2rem color-gray-strong" aria-hidden="true"></i>
         </div> -->
-  </div>
+  <!-- </div> -->
 </div>
 
 <div class="container">
   <div class="row mt-2rem">
-    <div class="col-11 mx-auto">
+    <div class="col-11 col-lg-10 mx-auto">
       <span class="fw-600 d-flex justify-content-center">{{aggregateTransactions.length}} Results Found</span>
     </div>
   </div>
@@ -118,7 +125,7 @@
                       <!-- Fee -->
                       <ng-container *ngIf="dataSelected?.effectiveFee">
                         <div class="col-12 mt-05rem">
-                          <span class="fw-600 fs-095rem color-black">Fee:&nbsp;&nbsp;</span>
+                          <span class="fw-600 fs-095rem color-black">Unconfirmed/recommended fee:&nbsp;&nbsp;</span>
                           <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
                           <span class="fw-600 fs-095rem color-black">{{dataSelected?.effectiveFee.part1}}</span>
                           <span class="fw-600 fs-075rem color-black">{{dataSelected?.effectiveFee.part2}}</span>

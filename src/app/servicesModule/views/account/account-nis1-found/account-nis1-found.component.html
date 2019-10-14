@@ -15,10 +15,15 @@
         blockchain to Sirius blockchain? </span>
     </div>
     <div class="col-11 col-md-10 col-lg-9 col-xl-8 mx-auto mx-auto box-transparent-border-orange mt-2rem">
-      <span class="fs-075rem fw-500 txt-a-center line-h-1-2em color-black">
-        Please note! Swap process may take several hours to complete. If you wish to proceed, you will receive a
+      <div class="txt-a-center">
+        <img src="assets/images/img/icon-transaction-unconfirmed-white.svg" style="filter: invert(50%)" alt=""
+          width="30">
+      </div>
+      <h6 class="fw-600">Warning!</h6>
+      <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em">
+        Swap process may take several hours to complete. If you wish to proceed, you will receive a
         certificate containing your transaction hash for you records.
-      </span>
+      </p>
     </div>
   </div>
 
@@ -26,15 +31,13 @@
   <!-- BUTTON -->
   <div class="row mt-2rem">
     <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-      <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax"
-        (click)="goToBack()" size="md">
+      <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" (click)="goToBack()" size="md">
         <span class="color-white">Not Interested</span>
       </button>
     </div>
 
     <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-      <button mdbBtn rounded="true" mdbWavesEffect class="btn-proximax" size="md"
-        (click)="goToRoute()">
+      <button mdbBtn rounded="true" mdbWavesEffect class="btn-proximax" size="md" (click)="goToRoute()">
         <span class="color-white">Yes, Please</span>
       </button>
     </div>

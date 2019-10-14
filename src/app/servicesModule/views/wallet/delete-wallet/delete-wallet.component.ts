@@ -52,7 +52,7 @@ export class DeleteWalletComponent implements OnInit {
     this.currentView = 0;
     this.deleteConfirmed = false;
     this.description = 'Select the wallet you want to delete';
-    this.textAlert = 'Would you like to delete permanently this wallet?';
+    this.textAlert = 'Would you like to permanently delete this wallet?';
     this.title = 'Delete Wallet';
     this.wallets = this.walletService.getWalletStorage();
     this.configurationForm = this.sharedService.configurationForm;
@@ -67,7 +67,7 @@ export class DeleteWalletComponent implements OnInit {
   changeView(view = 0) {
     if (view === 0) {
       this.description = 'Select the wallet you want to delete';
-      this.textAlert = 'Would you like to delete permanently this wallet?';
+      this.textAlert = 'Would you like to permanently delete this wallet?';
     } else if (view === 2) {
       this.description = 'will be deleted from your device.';
       this.textAlert = 'Warning! This action will delete this wallet .It cannot be undone.If you have not saved your private keys, access to the wallet and contained will be permanently lost.';

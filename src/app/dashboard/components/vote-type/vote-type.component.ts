@@ -58,7 +58,7 @@ export class VoteTypeComponent implements OnInit {
 
     doc.text(this.transactionInfo.timestamp, 115, 75)
 
-    doc.text('Fee:', 12, 85);
+    doc.text('Unconfirmed/recommended fee:', 12, 85);
     doc.text(this.transactionInfo.fee.concat(' XPX'), 55, 85 );
 
     doc.text('Title:', 12, 100);
