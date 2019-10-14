@@ -572,7 +572,7 @@ export class EditAccountMultisignComponent implements OnInit {
       modifications: this.multisigCosignatoryModification(this.getCosignatoryListFilter(1, 2)),
       networkType: this.currentAccountToConvert.network
     }
-    // console.log('modifyobject', modifyobject);
+    //  console.log('modifyobject', modifyobject);
 
 
     return ModifyMultisigAccountTransaction.create(
@@ -819,6 +819,7 @@ export class EditAccountMultisignComponent implements OnInit {
 
       this.setCosignatoryList(this.cosignatoryList, true)
     }
+    this.builder();
     this.validatorsCosignatory()
     // this.btnblckfun()
   }

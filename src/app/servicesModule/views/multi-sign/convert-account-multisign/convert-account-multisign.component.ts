@@ -277,9 +277,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
     }
   }
   validateBuildSelectAccountBalance(balanceAccount: number): boolean {
-    console.log("Balance:", balanceAccount)
     const totalFee = Number(this.transactionService.amountFormatterSimple(this.feeLockfund)) + this.fee;
-    console.log("totalFee :", this.totalFee)
     return (balanceAccount >= this.totalFee)
   }
   validateBuildSelectAccount(accountFiltered: AccountsInfoInterface): { disabled: boolean, info: string } {
@@ -292,10 +290,14 @@ export class ConvertAccountMultisignComponent implements OnInit {
       return { disabled: true, info: 'Insufficient balance' }
     if (!accountFiltered.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id))
       return { disabled: true, info: 'Insufficient balance' }
-    console.log('cuenta:', accountFiltered.name)
     const mosaicXPX = accountFiltered.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id).amount.compact();
     if (!this.validateBuildSelectAccountBalance(mosaicXPX))
       return { disabled: true, info: 'Insufficient balance' }
+
+    if (accountFiltered.multisigInfo !== null) {
+      if (accountFiltered.multisigInfo.multisigAccounts)
+        return { disabled: true, info: 'Has cosigner' }
+    }
 
 
     return { disabled: false, info: '' }
