@@ -69,7 +69,7 @@
                             [routerLink]="[routes.deleteAccount+account.name]">Delete</a>
                           <a class="dropdown-item fs-075rem text-black-50" *ngIf="account.default">Delete</a>
                           <a class="dropdown-item fs-075rem" *ngIf="account.isMultisign !== null && account.isMultisign.cosignatories.length > 0" [routerLink]="[routes.multisig+account.name]">Multisig</a>
-                          <a class="dropdown-item fs-075rem" *ngIf="account.isMultisign === null || account.isMultisign !== null && account.isMultisign.cosignatories.length === 0" [routerLink]="[routes.multisigConvert]">Multisig</a>
+                          <a class="dropdown-item fs-075rem" *ngIf="account.isMultisign === null || account.isMultisign !== null && account.isMultisign.cosignatories.length === 0" [routerLink]="[routes.multisigConvert+account.name]">Multisig</a>
                         </div>
                       </div>
                     </div>

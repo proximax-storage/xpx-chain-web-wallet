@@ -319,7 +319,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
 
     if (accountFiltered.multisigInfo !== null) {
       if (accountFiltered.multisigInfo.multisigAccounts)
-        return { disabledPartial: false, disabledItem: true, info: 'Has cosigner', subInfo: 'Cannot convert a consignatary to multisig' }
+        return { disabledPartial: false, disabledItem: true, info: 'Has cosigner', subInfo: 'Cannot convert a consignatary to multisig (feature not available)' }
     }
 
 

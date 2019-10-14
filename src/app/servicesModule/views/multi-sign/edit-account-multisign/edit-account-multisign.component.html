@@ -19,14 +19,18 @@
         </div>
       </div>
     </div>
-    <div class="row" *ngIf="disable">
-      <div class="col-11 col-md-10 col-lg-8 mx-auto d-flex justify-content-start pt-05rem pb-05rem">
 
-        <span class="fs-08rem">
 
-            You cannot edit an account that has a partial transaction pending (<i title="partially" style="padding-right: 0px;" class="fa fa-bell color-light-orange"></i>).
-        </span>
 
+    <div class="row " *ngIf="disable">
+      <div class="col-8 mx-auto mb-1rem  box-transparent-border-red">
+        <div class="txt-a-center">
+          <img src="assets/images/img/icon-restriction-white.svg" style="filter: invert(50%)" alt="" width="30">
+        </div>
+        <h6 class="fw-600">Partial</h6>
+        <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em">
+          You cannot edit an account that has a partial transaction pending (<i title="partially" style="padding-right: 0px;" class="fa fa-bell color-light-orange"></i>).
+        </p>
       </div>
     </div>
     <div class="row">
