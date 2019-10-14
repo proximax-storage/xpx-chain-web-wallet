@@ -252,7 +252,7 @@
                       <ng-container *ngIf="arraySelect.length > 0 && !hideSign || onlySigner">
                         <div class="col-12 mt-1rem">
                           <!-- SELECT ACCOUNT -->
-                          <div class="row" *ngIf="!onlySigner">
+                          <div class="row" *ngIf="!onlySigner; else showCosignerToSign">
                             <div class="col-12">
                               <ng-select class="selectWrapper" [(ngModel)]="account" [items]="arraySelect"
                                 bindLabel="label" bindValue="value" placeholder="Select account"
@@ -260,6 +260,16 @@
                               </ng-select>
                             </div>
                           </div>
+
+                          <ng-template #showCosignerToSign>
+                            <div class="row">
+                              <div class="col-12">
+                                <span class="fs-075rem fw-600">Cosignatory Account to Sign: <br></span>
+                                <span class="fs-075rem">{{account.address}}</span>
+                              </div>
+                            </div>
+                          </ng-template>
+
 
                           <!-- PASSWORD -->
                           <div class="row d-flex justify-content-center">
