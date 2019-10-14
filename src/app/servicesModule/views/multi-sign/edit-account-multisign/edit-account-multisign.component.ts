@@ -61,7 +61,7 @@ export class EditAccountMultisignComponent implements OnInit {
   subscribeAggregateBonded: Subscription[] = [];
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Accounts > Multisign',
-    componentName: 'Edit account Multisig'
+    componentName: 'Edit Account Multisig'
   };
   feeTransaction: number = 44500;
   feeLockfund: number = 10000000;
