@@ -116,6 +116,7 @@ export class ViewAllAccountsComponent implements OnInit {
    * @returns temp
    */
   clone(obj) {
+    console.log(obj);
     if (obj === null || typeof obj !== 'object') {
       return obj;
     }
@@ -132,7 +133,7 @@ export class ViewAllAccountsComponent implements OnInit {
    * @memberof ViewAllAccountsComponent
    */
   exportAccount(account: any) {
-    let acc = this.clone(account);
+    let acc = Object.assign({}, account);
     const accounts = [];
     accounts.push(acc);
     const wallet = {
@@ -147,8 +148,8 @@ export class ViewAllAccountsComponent implements OnInit {
     let wordArray = CryptoJS.enc.Utf8.parse(JSON.stringify(wallet));
     let file = CryptoJS.enc.Base64.stringify(wordArray);
     // Word array to base64
-
-    const date = new Date();
+    const now = Date.now()
+    const date = new Date(now);
     const year = date.getFullYear();
     const month = ((date.getMonth() + 1) < 10) ? `0${(date.getMonth() + 1)}` : date.getMonth() + 1;
     const day = (date.getDate() < 10) ? `0${date.getDate()}` : date.getDate();
