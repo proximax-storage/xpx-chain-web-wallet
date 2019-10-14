@@ -9,13 +9,24 @@
       <div class="col-11 col-md-10 col-lg-9 col-xl-8 mx-auto">
         <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [searchable]="false" [clearable]="false"
           [validateError]="true" class="selectWrapper" [items]="currentAccounts" formControlName="selectAccount"
-          bindLabel="label" bindValue="value" placeholder="Select an Account" (change)="selectAccount($event)">
+          bindLabel="label"  placeholder="Select an Account" (change)="selectAccount($event)">
 
           <ng-template ng-option-tmp let-item="item" let-index="index">
             <b> <i [ngStyle]="{
-              'color': item.disabled && !item.info? '#0056b3' : 'rgba(0,0,0,0.38)'
+              'color': item.disabled && !item.info? '#f2a917' : 'rgba(0,0,0,0.38)'
             }" class="fa fa-bell"> </i> </b>&nbsp;
             <b>{{item.label}}</b> &nbsp;<b style="color:brown">{{item.info}}</b>
+          </ng-template>
+          <ng-template ng-footer-tmp>
+            <span class="fs-08rem color-error-message">
+              Cosignatory has sufficient balance ({{amountFormatterSimple(totalFee)}} XPX) to cover LockFund Fee
+            </span>
+            <br>
+
+            <span class="fs-08rem color-error-message">
+              You cannot edit an account that is partially modified.(<i title="partially"  style="padding-right: 0px;" class="fa fa-bell color-light-orange"></i>)
+            </span>
+
           </ng-template>
         </ng-select>
         <!-- VALIDATION -->
