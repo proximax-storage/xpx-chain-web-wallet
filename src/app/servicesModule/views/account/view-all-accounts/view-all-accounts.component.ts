@@ -133,7 +133,7 @@ export class ViewAllAccountsComponent implements OnInit {
    * @memberof ViewAllAccountsComponent
    */
   exportAccount(account: any) {
-    let acc = this.clone(account);
+    let acc = Object.assign({}, account);
     const accounts = [];
     accounts.push(acc);
     const wallet = {
