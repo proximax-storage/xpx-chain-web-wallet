@@ -511,6 +511,11 @@ html, body {
   border-radius: 0 !important;
 }
 
+
+.br-1rem {
+  border-radius: 1rem !important;
+}
+
 /************************* LINE HEIGHT *****************/
 
 .lh-1em {
