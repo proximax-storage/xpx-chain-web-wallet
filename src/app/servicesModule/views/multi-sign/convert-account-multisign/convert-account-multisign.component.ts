@@ -69,6 +69,9 @@ export class ConvertAccountMultisignComponent implements OnInit {
   disable: boolean;
   fee: any = '0.000000'
   feeLockfund: number = 10000000;
+
+  feeTransaction: number = 44500;
+  totalFee: number = 0;
   blockBtnSend: boolean = false;
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Accounts > Multisign',
@@ -89,6 +92,7 @@ export class ConvertAccountMultisignComponent implements OnInit {
     private dataBridge: DataBridgeService,
     private activateRoute: ActivatedRoute,
   ) {
+    this.totalFee = this.feeTransaction + this.feeLockfund;
     this.currentAccounts = [];
     this.configurationForm = this.sharedService.configurationForm;
     this.accountValid = false;
@@ -106,8 +110,6 @@ export class ConvertAccountMultisignComponent implements OnInit {
     this.getAccounts();
     // this.listContact = this.booksAddress();
     this.subscribeValueChange();
-
-    this.selectAccount(null, this.activateRoute.snapshot.paramMap.get('name'))
     this.load();
   }
 
@@ -235,8 +237,19 @@ export class ConvertAccountMultisignComponent implements OnInit {
             this.buildSelectAccount(element, this.disable)
           }
         } else {
+
+
           for (let element of currentWallet.accounts) {
             this.buildSelectAccount(element)
+          }
+        }
+        if (this.activateRoute.snapshot.paramMap.get('name') !== null) {
+          if (this.currentAccounts.length > 0) {
+            const valueSelect = this.currentAccounts.filter(x => x.label === this.activateRoute.snapshot.paramMap.get('name'));
+            if (valueSelect) {
+              // this.convertAccountMultsignForm.controls['selectAccount'].patchValue(valueSelect[0]);
+              this.selectAccount(null, this.activateRoute.snapshot.paramMap.get('name'))
+            }
           }
         }
       }))
@@ -257,13 +270,17 @@ export class ConvertAccountMultisignComponent implements OnInit {
           value: param,
           disabled: disable,
           info: info
-        })
+        });
+        // if (this.activateRoute.snapshot.paramMap.get('name') !== null)
+
       }
     }
   }
   validateBuildSelectAccountBalance(balanceAccount: number): boolean {
+    console.log("Balance:", balanceAccount)
     const totalFee = Number(this.transactionService.amountFormatterSimple(this.feeLockfund)) + this.fee;
-    return (balanceAccount >= totalFee)
+    console.log("totalFee :", this.totalFee)
+    return (balanceAccount >= this.totalFee)
   }
   validateBuildSelectAccount(accountFiltered: AccountsInfoInterface): { disabled: boolean, info: string } {
     let value = { disabled: false, info: '' }
@@ -274,11 +291,11 @@ export class ConvertAccountMultisignComponent implements OnInit {
     if (!disabled)
       return { disabled: true, info: 'Insufficient balance' }
     if (!accountFiltered.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id))
-      return { disabled: true, info: 'insufficient balance' }
-
+      return { disabled: true, info: 'Insufficient balance' }
+    console.log('cuenta:', accountFiltered.name)
     const mosaicXPX = accountFiltered.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id).amount.compact();
     if (!this.validateBuildSelectAccountBalance(mosaicXPX))
-      return { disabled: true, info: 'insufficient balance' }
+      return { disabled: true, info: 'Insufficient balance' }
 
 
     return { disabled: false, info: '' }
@@ -391,6 +408,14 @@ export class ConvertAccountMultisignComponent implements OnInit {
 
     this.publicAccountToConvert = PublicAccount.createFromPublicKey(this.currentAccountToConvert.publicAccount.publicKey, this.currentAccountToConvert.network)
     this.mdbBtnAddCosignatory = false;
+    if (this.activateRoute.snapshot.paramMap.get('name') !== null) {
+      if (this.currentAccounts.length > 0) {
+        const valueSelect = this.currentAccounts.filter(x => x.label === this.activateRoute.snapshot.paramMap.get('name'));
+        if (valueSelect) {
+          this.convertAccountMultsignForm.controls['selectAccount'].patchValue(valueSelect[0]);
+        }
+      }
+    }
   }
 
 

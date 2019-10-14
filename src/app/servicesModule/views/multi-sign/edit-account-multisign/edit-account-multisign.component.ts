@@ -63,7 +63,7 @@ export class EditAccountMultisignComponent implements OnInit {
     moduleName: 'Accounts > Multisign',
     componentName: 'Edit account Multisig'
   };
-  feeTransaction: number = 0;
+  feeTransaction: number = 44500;
   feeLockfund: number = 10000000;
   totalFee: number = 0;
   aggregateTransaction: AggregateTransaction;
@@ -352,7 +352,7 @@ export class EditAccountMultisignComponent implements OnInit {
    */
   validateBuildSelectAccountBalance(balanceAccount: number): boolean {
     const totalFee = this.feeLockfund + this.feeTransaction;
-    return (balanceAccount >= totalFee)
+    return (balanceAccount >= this.totalFee)
 
   }
   // TransactionType.MODIFY_MULTISIG_ACCOUNT
