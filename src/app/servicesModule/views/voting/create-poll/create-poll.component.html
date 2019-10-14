@@ -34,7 +34,7 @@
                 placeholder="Enter Title">
               <mdb-error
                 *ngIf="validateInput('title', '1', '').invalid && (validateInput('title', '1', '').dirty || validateInput('title', '1', '').touched)">
-                <span>Required field</span>
+                <span>Title Required</span>
               </mdb-error>
             </div>
             <!-- IS PRIVATE -->
@@ -52,7 +52,7 @@
                 [maxlength]="configurationForm.message.maxLength"></textarea>
               <mdb-error
                 *ngIf="validateInput('message', '1', '').invalid && (validateInput('message','1', '').dirty || validateInput('message', '1', '').touched)">
-                <span>Invalid invalid</span>
+                <span>Invalid Message</span>
               </mdb-error>
             </div>
             <!-- DATE END  -->
@@ -102,7 +102,7 @@
       </form>
     </mdb-step>
     <!-- VOTE OPTIONS -->
-    <mdb-step name="Vote options" [stepForm]="secondFormGroup">
+    <mdb-step name="Vote Options" [stepForm]="secondFormGroup">
       <form [formGroup]="secondFormGroup">
         <div class="row mt-1rem">
           <div class="col-7 col-md-8 col-xl-7 mb-2rem">
@@ -118,7 +118,7 @@
             </div>
             <!-- IS multiple -->
             <div class="md-form">
-              <mdb-checkbox formControlName="isMultiple" [inline]="true">Allow multiple response</mdb-checkbox>
+              <mdb-checkbox formControlName="isMultiple" [inline]="true">Allow Multiple Response</mdb-checkbox>
             </div>
             <!-- LIST OPTIONS -->
             <div class="md-form" *ngIf='option.length > 0'>
@@ -144,7 +144,7 @@
                 placeholder="Option">
               <mdb-error
                 *ngIf="validateInput('option', '2', '').invalid && (validateInput('option', '2', '').dirty || validateInput('option', '2', '').touched)">
-                <span>Required field</span>
+                <span>Required Field</span>
               </mdb-error>
             </div>
             <!-- OPTIONS VALIDATE -->
@@ -417,7 +417,7 @@
                 class="form-control form-control-sm input-border" placeholder="Enter Wallet Password">
               <mdb-error
                 *ngIf="validateInput('password','4', '').invalid && (validateInput('password','4', '').dirty || validateInput('password','', '').touched)">
-                <span>Required field</span>
+                <span>Required Field</span>
               </mdb-error>
             </div>
           </div>

@@ -2,7 +2,7 @@
   <app-header [params]="paramsHeader"></app-header>
 
   <!-- HEADER SEARCH -->
-  <div class="container-fluid background-header-grey pb-1rem pt-1rem">
+  <div class="container-fluid pb-1rem pt-1rem">
     <div class="row">
       <div class="col-11 mx-auto">
         <div class="row">
@@ -10,7 +10,7 @@
           <div class="col-12 col-sm-6 col-md-6 col-lg-5 mx-auto pt-07rem">
             <div class="md-form mt-1rem mb-1rem caja-gris">
               <!-- <img class="icono" src="assets/images/img/icon-address-green-book-16h-proximax-sirius-wallet.svg" alt=""> -->
-              <mdb-select placeholder="Select search type" [(ngModel)]="typeSearch" [options]="optionTypeSearch"
+              <mdb-select placeholder="Select Search Type" [(ngModel)]="typeSearch" [options]="optionTypeSearch"
                 required class="colorful-select dropdown-default" mdbInputDirective [validateSuccess]="false"
                 [validateError]="false">
               </mdb-select>
@@ -20,7 +20,7 @@
           <!-- Keyword or number -->
           <div class="col-12 col-sm-6 col-md-6 col-lg-5 mx-auto d-flex align-items-center pt-05rem">
             <input [(ngModel)]="paramSearch" type="text" autocomplete="off" id="searchTransaction" class="form-control"
-              mdbInputDirective [validateSuccess]="false" [validateError]="false" placeholder="Enter keyword">
+              mdbInputDirective [validateSuccess]="false" [validateError]="false" placeholder="Search">
           </div>
 
           <div
