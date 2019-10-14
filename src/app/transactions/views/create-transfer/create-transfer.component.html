@@ -26,25 +26,12 @@
     </div>
   </div>
 
-
-
-
-  <!-- <div class="row">
-    <div class="col-12 d-flex justify-content-center">
-      <span class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">Make a Transfer</span>
-    </div>
-    <div class="col-11 mx-auto">
-      <hr class="mt-05rem mb-06rem">
-    </div>
-  </div> -->
-
   <form [formGroup]="formTransfer" (ngSubmit)="sendTransfer()">
-
     <!-- Accounts -->
     <ng-container *ngIf="accounts.length > 1">
       <div class="row mt-1rem mb-1rem">
         <div class="col-11 col-md-10 col-lg-8 mx-auto">
-          <span class="fs-09rem fw-600 line-h-1-2em" style="color: #ababab !important;">Selected Account</span>
+          <span class="fs-08rem fw-600 line-h-1-2em" style="color: #ababab !important;">Selected Account</span>
           <mdb-accordion [multiple]="false" aria-multiselectable="true">
             <mdb-accordion-item [collapsed]="true">
               <mdb-accordion-item-head class="">
@@ -59,14 +46,14 @@
                     <i>- Multisig </i>
                   </span>
                 </div>
-                <div class="fw-300">
+                <div class="fw-300 fs-07rem">
                   {{sender.address}}
                 </div>
               </mdb-accordion-item-head>
               <mdb-accordion-item-body class="box-accounts-height">
                 <ng-container *ngFor="let account of accounts; let i=index">
                   <span [ngClass]="[account.active ? 'nav-link active isActive' : 'nav-link']" class="cursor-p"
-                    (click)="changeSender(account.value)">
+                    style="border-top: 1px solid rgba(240, 240, 240, 240);" (click)="changeSender(account.value)" [title]="'Address: '+account.value.address">
                     {{account.value.name}}
 
                     <span *ngIf="account.value.default" class="ml-05rem title-tab-blue pt-03rem">
@@ -86,18 +73,25 @@
 
         <!-- COSIGNATORY ACCOUNT -->
         <ng-container *ngIf="listCosignatorie.length === 1">
-          <div class="col-11 col-md-10 col-lg-8 mx-auto d-flex justify-content-start pt-05rem pb-05rem">
-            <span class="fs-08rem fw-600">Cosignatory Account:&nbsp;</span>
-            <span class="fs-08rem">{{cosignatorie.address}}</span>
+          <div class="col-11 col-md-10 col-lg-8 mx-auto d-flex justify-content-start pt-1-5rem pb-05rem lh-1em cursor-p"
+            [title]="'Address: '+cosignatorie.address">
+            <span class="fs-08rem fw-400">Cosignatory: &nbsp;</span>
+            <span class="fs-08rem">{{cosignatorie.name}}</span>
           </div>
 
           <!-- INSUFFICIENT BALANCE -->
           <ng-container *ngIf="listCosignatorie[0].disabled">
-            <div class="col-11 col-md-10 col-lg-8 mx-auto d-flex justify-content-start pt-05rem pb-05rem">
+            <div class="col-11 col-md-10 col-lg-8 mx-auto d-flex justify-content-start pt-1-5rem pb-05rem lh-1em cursor-p"
+              [title]="'Address: '+cosignatorie.address">
+              <span class="fs-08rem fw-400 color-error-message">Cosignatory: &nbsp;</span>
+              <span class="fs-08rem color-error-message">{{listCosignatorie[0].info}}</span>
+            </div>
+
+            <!-- <div class="col-11 col-md-10 col-lg-8 mx-auto d-flex justify-content-start pt-05rem pb-05rem">
               <span class="fs-08rem fw-600 color-error-message">
                 Cosignatory {{listCosignatorie[0].info}}
               </span>
-            </div>
+            </div> -->
           </ng-container>
         </ng-container>
       </div>
@@ -207,7 +201,7 @@
               <div class="col-12 d-flex align-items-center">
                 <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" alt="">
                 <span class="fw-500">{{mosaicXpx.name | uppercase}} > Balance:&nbsp;</span>
-                <span class="" [innerHTML]="getQuantity(balanceXpx)"></span>&nbsp;XPX
+                <span class="" [innerHTML]="getQuantity(balanceXpx)"></span>
               </div>
             </div>
           </div>
