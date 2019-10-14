@@ -25,8 +25,7 @@ export class AccountDeleteConfirmComponent implements OnInit {
   };
   tittle = 'will be deleted from your device.';
   currenAccount: AccountsInterface = null;
-  Information = `This action will delete this account. It cannot be undone.  If you have not
-   saved your private keys, access to the account and contained will be permanently lost.`
+  Information = `This action will delete this Account. It cannot be undone. If you have not saved your Private Key, access will be permanently lost.`
   configurationForm: ConfigurationForm;
   validatingForm: FormGroup;
   ban: boolean = false;
@@ -112,7 +111,7 @@ export class AccountDeleteConfirmComponent implements OnInit {
         this.walletService.removeAccountWallet(this.currenAccount.name, revalidateMultisig);
         this.transactionsService.updateBalance();
         this.clearForm();
-        this.sharedService.showInfo('', 'Your account has be deleted');
+        this.sharedService.showInfo('', 'Your Account has been deleted');
         this.router.navigate([`/${AppConfig.routes.viewAllAccount}`]);
 
         // Delete contact of current account

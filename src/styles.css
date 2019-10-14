@@ -1930,6 +1930,9 @@ ul.stepper.horizontal .step-title {
   background: #306EB5 !important;
 }
 
+.dropdown-default .dropdown-content li a, .dropdown-default .dropdown-content li span:hover, .dropdown-default .dropdown-content li.active{
+  background-color: #306eb5c9!important;
+}
 /*************BUTTONS*****************/
 
 .btn-proximax {

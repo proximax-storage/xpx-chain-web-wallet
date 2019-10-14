@@ -12,14 +12,23 @@
               <img class="w-30px" src="assets/images/img/icon-account-green-16h-proximax-sirius-wallet.svg">
               <span class="fw-600"> {{currentAccountToConvert.name}}</span>
               <span *ngIf="disable">
-                &nbsp; <i title="On partial" style="color:#0056b3" class="fa fa-bell"></i>
+                &nbsp; <i title="On partial" style="color:#f2a917" class="fa fa-bell"></i>
               </span>
             </div>
           </div>
         </div>
       </div>
     </div>
+    <div class="row" *ngIf="disable">
+      <div class="col-11 col-md-10 col-lg-8 mx-auto d-flex justify-content-start pt-05rem pb-05rem">
 
+        <span class="fs-08rem">
+
+          You cannot edit an account that is partially modified.(<i title="partially" style="padding-right: 0px;" class="fa fa-bell color-light-orange"></i>)
+        </span>
+
+      </div>
+    </div>
     <div class="row">
       <!-- COSIGNATORY ACCOUNT -->
       <ng-container *ngIf="consginerFirmList.length === 1">
@@ -104,7 +113,7 @@
                 placeholder="Cosignatory Account public key " onkeyup="javascript:this.value=this.value.toLowerCase();">
               <!-- VALIDATION -->
               <mdb-error *ngIf="validateInput('cosignatory', '').invalid && (validateInput('cosignatory', '').dirty || validateInput('cosignatory', '').touched)">
-                <span>Required field</span>
+                <span>Required Field</span>
               </mdb-error>
             </div>
           </div>
@@ -250,7 +259,7 @@
             <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
               <div class="row">
                 <div class="col-12 text-center">
-                  <span>Fee: <br></span>
+                  <span>Unconfirmed/Recommended Fee: <br></span>
                   <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" alt="">
                   <span class="fs-09rem">{{amountFormatterSimple(feeTransaction)}} XPX </span>
                 </div>
@@ -281,7 +290,7 @@
                 <div class="col-12 text-center">
                   <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20"
                     alt="">
-                  <span class="fs-07rem">Fee: {{amountFormatterSimple(fee)}} XPX <br></span>
+                  <span class="fs-07rem">Unconfirmed/Recommended Fee: {{amountFormatterSimple(fee)}} XPX <br></span>
                 </div>
               </div>
             </div>
@@ -293,7 +302,7 @@
                 <div class="col-12 d-flex align-items-center">
                   <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20"
                     alt="">
-                  <span class="fs-07rem">LockFund: 10.000000 XPX <br> Fee: 0.044500 XPX</span>
+                  <span class="fs-07rem">LockFund: 10.000000 XPX <br> Unconfirmed/Recommended Fee: 0.044500 XPX</span>
                 </div>
               </div>
             </div>
@@ -346,8 +355,8 @@
       <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto">
         <div class="row">
           <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-            <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax"
-              size="md" [disabled]="editAccountMultsignForm.status=='DISABLED'" (click)="clearForm()">
+            <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" size="md" [disabled]="editAccountMultsignForm.status=='DISABLED'"
+              (click)="clearForm()">
               <span class="fs-1-2em color-white">Clear</span>
             </button>
           </div>

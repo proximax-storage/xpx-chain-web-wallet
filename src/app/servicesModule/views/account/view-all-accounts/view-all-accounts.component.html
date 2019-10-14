@@ -9,18 +9,17 @@
           <ng-container *ngFor="let account of currentWallet.accounts" class="d-flex justify-content-start">
             <div class="col-12 col-md-6 mb-05rem">
               <div class="row p-05rem">
-                <div class="col-12 box-list-account-gray fs-08rem pt-07rem pb-07rem"
-                  [ngClass]="{'isPrimary':account.default}">
+                <div class="col-12 box-list-account-gray fs-08rem pt-07rem pb-07rem" [ngClass]="{'isPrimary':account.default}">
                   <!-- NAME & TAGS -->
                   <div class="row">
                     <div class="col-12">
                       <span class="fw-600 fs-09rem"> {{account.name}} </span>
                       <span *ngIf="account.default" class="tag-account color-blue-intermedio fs-07rem">- Current
                         default</span>
-                      <span *ngIf="account.isMultisign !== null && account.isMultisign.cosignatories.length > 0"
-                        class="ml-1rem fs-07rem color-blue-intermedio tag-account">- Multisig</span>
-                      <span *ngIf="[undefined, null].includes(account.nis1Account) === false"
-                        class="ml-1rem fs-07rem color-blue-intermedio tag-account">- Swap</span>
+                      <span *ngIf="account.isMultisign !== null && account.isMultisign.cosignatories.length > 0" class="ml-1rem fs-07rem color-blue-intermedio tag-account">-
+                        Multisig</span>
+                      <span *ngIf="[undefined, null].includes(account.nis1Account) === false" class="ml-1rem fs-07rem color-blue-intermedio tag-account">-
+                        Swap</span>
                     </div>
                   </div>
 
@@ -32,8 +31,8 @@
 
                     <div class="col-2">
                       <img src="assets/images/img/icon-copy-clipboard-gray-proximax-sirius-wallet.svg" class="cursor-p"
-                        alt="Copy" width="18" (click)="copyMessage('Address')" ngxClipboard
-                        [cbContent]="account.address" title="Copy Address">
+                        alt="Copy" width="18" (click)="copyMessage('Address')" ngxClipboard [cbContent]="account.address"
+                        title="Copy Address">
                     </div>
                   </div>
 
@@ -48,28 +47,24 @@
 
                     <div class="col-12 col-sm-4 col-md-2 pt-02rem d-flex align-items-center">
                       <ng-container *ngIf="account.mosaics > 0">
-                        <img class="icono" src="assets/images/img/icon-mosaics-green-16h.svg" width="18"
-                          title="Others Mosaics: {{account.mosaics}}">
+                        <img class="icono" src="assets/images/img/icon-mosaics-green-16h.svg" width="18" title="Others Mosaics: {{account.mosaics}}">
                         <span class="fs-08rem">{{account.mosaics}}</span>
                       </ng-container>
                     </div>
 
-                    <div
-                      class="col-12 col-sm-2 col-md-2 d-flex align-items-center justify-content-center justify-content-sm-end pt-02rem">
+                    <div class="col-12 col-sm-2 col-md-2 d-flex align-items-center justify-content-center justify-content-sm-end pt-02rem">
                       <div class=" dropdown" mdbDropdown>
-                        <button mdbDropdownToggle mdbBtn color="transparent" class="dropdown-toggle waves-light"
-                          type="button" mdbWavesEffect style="padding: 5px; box-shadow: 0px 0px transparent">
+                        <button mdbDropdownToggle mdbBtn color="transparent" class="dropdown-toggle waves-light" type="button"
+                          mdbWavesEffect style="padding: 5px; box-shadow: 0px 0px transparent">
                         </button>
 
                         <div class="dropdown-menu" style="position: absolute; left: -60px">
                           <a class="dropdown-item fs-075rem" [routerLink]="[routes.viewDetails+account.name]">Edit</a>
-                          <a class="dropdown-item fs-075rem" *ngIf="account.default !== true"
-                            (click)="changeAsPrimary(account.name)">Make
+                          <a class="dropdown-item fs-075rem" *ngIf="account.default !== true" (click)="changeAsPrimary(account.name)">Make
                             Default</a>
                           <a class="dropdown-item fs-075rem text-black-50" *ngIf="account.default === true">Make
                             Default</a>
-                          <a class="dropdown-item fs-075rem" *ngIf="account.encrypted !== ''"
-                            (click)="exportAccount(account)">Export</a>
+                          <a class="dropdown-item fs-075rem" *ngIf="account.encrypted !== ''" (click)="exportAccount(account)">Export</a>
                           <a class="dropdown-item fs-075rem" *ngIf="!account.default && account.encrypted !== ''"
                             [routerLink]="[routes.deleteAccount+account.name]">Delete</a>
                           <a class="dropdown-item fs-075rem text-black-50" *ngIf="account.default">Delete</a>

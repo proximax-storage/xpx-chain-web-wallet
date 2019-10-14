@@ -254,6 +254,13 @@ export class CreateTransferComponent implements OnInit {
     return;
   }
 
+
+  /**
+   *
+   *
+   * @param {*} inputType
+   * @memberof CreateTransferComponent
+   */
   changeInputType(inputType) {
     let newType = this.sharedService.changeInputType(inputType)
     this.passwordMain = newType;
@@ -587,7 +594,7 @@ export class CreateTransferComponent implements OnInit {
               } else if (statusTransaction['type'] === 'cosignatureSignedTransaction' && match) {
                 this.reloadBtn = false;
                 this.blockSendButton = false;
-              } else if (statusTransaction['type'] === 'error' && match) {
+              } else if (statusTransaction['type'] === 'status' && match) {
                 this.reloadBtn = false;
                 this.blockSendButton = false;
                 this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['hash']);
@@ -614,7 +621,10 @@ export class CreateTransferComponent implements OnInit {
             this.announceAggregateBonded(signedTransactionBonded)
             signedTransactionHashLock = null;
           } else if (statusTransaction['type'] === 'unconfirmed' && match) {
-          } else if (match) {
+          } else if (statusTransaction['type'] === 'status' && match) {
+            this.reloadBtn = false;
+            this.blockSendButton = false;
+            this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['hash']);
             signedTransactionHashLock = null;
           }
         }
@@ -790,7 +800,7 @@ export class CreateTransferComponent implements OnInit {
     if (this.formTransfer.valid && (!this.blockSendButton || !this.errorOtherMosaics)) {
       this.reloadBtn = true;
       this.blockSendButton = true;
-      if (this.transactionService.validateBuildSelectAccountBalance(Number(this.balanceXpx.split(',').join('')), this.fee, 0)) {
+      if (this.transactionService.validateBuildSelectAccountBalance(Number(this.balanceXpx.split(',').join('')), Number(this.fee), Number(this.formTransfer.get("amountXpx").value))) {
         const common = { password: this.formTransfer.get("password").value };
         const mosaicsToSend = this.validateMosaicsToSend();
         const type = (this.cosignatorie) ? true : false;
@@ -883,7 +893,7 @@ export class CreateTransferComponent implements OnInit {
       } else {
         this.reloadBtn = false;
         this.blockSendButton = false;
-        this.sharedService.showError('', 'Insufficient balance');
+        this.sharedService.showError('', 'Insufficient Balance');
       }
     }
   }

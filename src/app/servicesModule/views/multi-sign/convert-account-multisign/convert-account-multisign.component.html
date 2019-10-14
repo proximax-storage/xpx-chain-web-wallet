@@ -9,13 +9,24 @@
       <div class="col-11 col-md-10 col-lg-9 col-xl-8 mx-auto">
         <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [searchable]="false" [clearable]="false"
           [validateError]="true" class="selectWrapper" [items]="currentAccounts" formControlName="selectAccount"
-          bindLabel="label" bindValue="value" placeholder="Select an Account" (change)="selectAccount($event)">
+          bindLabel="label"  placeholder="Select an Account" (change)="selectAccount($event)">
 
           <ng-template ng-option-tmp let-item="item" let-index="index">
             <b> <i [ngStyle]="{
-              'color': item.disabled && !item.info? '#0056b3' : 'rgba(0,0,0,0.38)'
+              'color': item.disabled && !item.info? '#f2a917' : 'rgba(0,0,0,0.38)'
             }" class="fa fa-bell"> </i> </b>&nbsp;
             <b>{{item.label}}</b> &nbsp;<b style="color:brown">{{item.info}}</b>
+          </ng-template>
+          <ng-template ng-footer-tmp>
+            <span class="fs-08rem color-error-message">
+              Cosignatory has sufficient balance ({{amountFormatterSimple(totalFee)}} XPX) to cover LockFund Fee
+            </span>
+            <br>
+
+            <span class="fs-08rem color-error-message">
+              You cannot edit an account that is partially modified.(<i title="partially"  style="padding-right: 0px;" class="fa fa-bell color-light-orange"></i>)
+            </span>
+
           </ng-template>
         </ng-select>
         <!-- VALIDATION -->
@@ -104,7 +115,7 @@
               <!-- VALIDATION -->
               <mdb-error
                 *ngIf="validateInput('cosignatory', '').invalid && (validateInput('cosignatory', '').dirty || validateInput('cosignatory', '').touched)">
-                <span>Required field</span>
+                <span>Required Field</span>
               </mdb-error>
             </div>
           </div>
@@ -242,7 +253,7 @@
             <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
               <div class="row">
                 <div class="col-12 text-center">
-                  <span>Fee: <br></span>
+                  <span>Unconfirmed/Recommended Fee: <br></span>
                   <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" alt="">
                   <span class="fs-09rem">{{ fee }} XPX</span>
                 </div>
@@ -273,7 +284,7 @@
                 <div class="col-12 text-center">
                   <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
                     width="20" alt="">
-                  <span class="fs-07rem">Fee: {{fee}} XPX <br></span>
+                  <span class="fs-07rem">Unconfirmed/Recommended Fee: {{fee}} XPX <br></span>
                 </div>
               </div>
             </div>
@@ -285,7 +296,7 @@
                 <div class="col-12 d-flex align-items-center">
                   <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
                     width="20" alt="">
-                  <span class="fs-07rem">LockFund: 10.000000 XPX <br> Fee: 0.044500 XPX</span>
+                  <span class="fs-07rem">LockFund: 10.000000 XPX <br> Unconfirmed/Recommended Fee: 0.044500 XPX</span>
                 </div>
               </div>
             </div>

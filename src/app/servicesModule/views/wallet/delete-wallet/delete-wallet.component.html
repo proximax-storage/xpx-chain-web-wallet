@@ -57,7 +57,7 @@
         <div class="row">
           <div class="col-12">
             <span class="fs-1-2rem">Wallet to delete:</span>
-            <h1 class="fs-2rem">Joshua</h1>
+            <h1 class="fs-2rem">{{ selectedWallet.name }}</h1>
           </div>
         </div>
 
@@ -125,9 +125,21 @@
       <span class="fs-1-7rem txt-a-center line-h-1-2em  mb-06rem ">{{ description }}</span>
     </div>
 
-    <!-- Information -->
+    <!-- Information
     <div class="col-8 d-flex justify-content-center mb-1rem mx-auto box-transparent-border-orange">
       <span class="fs-08rem txt-a-center line-h-1-2em  mb-06rem fw-600">{{ textAlert }}</span>
+    </div> -->
+    
+    <!-- Information -->
+    <div class="col-8 mb-1rem mx-auto box-transparent-border-orange">
+      <div class="txt-a-center">
+        <img src="assets/images/img/icon-transaction-unconfirmed-white.svg" style="filter: invert(50%)" alt=""
+          width="30">
+      </div>
+      <h6 class="fw-600">Warning!</h6>
+      <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em">
+          {{ textAlert }}
+      </p>
     </div>
 
   </div>

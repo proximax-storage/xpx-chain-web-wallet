@@ -271,7 +271,7 @@ export class CreateNamespaceComponent implements OnInit {
    */
   createNamespace() {
     if (this.namespaceForm.valid && !this.blockBtnSend) {
-      const validateAmount = this.transactionService.validateBuildSelectAccountBalance(this.amountAccount, Number(this.fee), Number(this.calculateRentalFee.replace(',', '')));
+      const validateAmount = this.transactionService.validateBuildSelectAccountBalance(this.amountAccount, Number(this.fee), Number(this.calculateRentalFee.replace(/,/g,'')));
       if (validateAmount) {
         this.blockBtnSend = true;
         const common = {
@@ -465,12 +465,11 @@ export class CreateNamespaceComponent implements OnInit {
    * @memberof CreateNamespaceComponent
    */
   limitDuration(e) {
-    // console.log();
     if (isNaN(parseInt(e.target.value))) {
       e.target.value = '';
       this.namespaceForm.get('duration').setValue('');
     } else {
-      if (parseInt(e.target.value) > 365) {
+      if (parseInt(e.target.value) >  365) {
         e.target.value = '365'
       } else if (parseInt(e.target.value) < 1) {
         e.target.value = '';

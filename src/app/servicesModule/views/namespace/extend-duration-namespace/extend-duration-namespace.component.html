@@ -21,10 +21,10 @@
                 <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em">
                     This account doesn't have namespaces created.
                 </p>
-                
+
               </div>
               <br>
-            
+
         <!-- <ng-container *ngIf="insufficientBalance">
           <div class="row">
             <div class="col-11 mx-auto d-flex justify-content-end">
@@ -66,7 +66,7 @@
                 *ngIf="validateInput('duration', '').invalid && (validateInput('duration', '').dirty || validateInput('duration', '').touched)">
                 <span>Required field - Only numbers</span>
               </mdb-error>
-              <mdb-error *ngIf="excedDuration">
+              <mdb-error *ngIf="exceededDuration">
                 <span>Duration exceeded</span>
               </mdb-error>
 
@@ -87,7 +87,7 @@
                       <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
                         width="20" alt="">&nbsp;
                       <span class="fs-08rem">
-                        Fee:&nbsp;
+                        Unconfirmed/Recommended Fee:&nbsp;
                         <a [innerHTML]="getQuantity(fee)"></a> XPX
                       </span>
                     </div>
@@ -148,7 +148,7 @@
 
           <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
             <button mdbBtn type="submit" rounded="true" [disabled]="extendDurationNamespaceForm.invalid || insufficientBalance ||
-            insufficientBalanceDuration || excedDuration || invalidDuration" mdbWavesEffect class="btn-proximax"
+            insufficientBalanceDuration || exceededDuration || invalidDuration" mdbWavesEffect class="btn-proximax"
               size="md">
               <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
                 *ngIf="blockBtnSend"></span>

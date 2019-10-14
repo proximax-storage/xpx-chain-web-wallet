@@ -4,14 +4,7 @@
   <div class="row">
     <div class="col-11 col-lg-9 mx-auto">
       <div class="row">
-          <div class="col-11 mb-1rem mx-auto box-transparent-border-red"*ngIf="insufficientBalance">
-              <div class="txt-a-center">
-                <img src="assets/images/img/icon-restriction-white.svg" style="filter: invert(50%)" alt="" width="30">
-              </div>
-              <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em">
-                  Insufficient balance.
-              </p>
-            </div>
+
         <div class="col-12 col-md-8 justify-content-center">
           <form [formGroup]="mosaicForm" (ngSubmit)="send()">
 
@@ -22,6 +15,16 @@
                 </div>
               </ng-container>
             </div> -->
+            <div class="row">
+              <div class="col-11 mb-1rem mx-auto box-transparent-border-red" *ngIf="insufficientBalance">
+                <div class="txt-a-center">
+                  <img src="assets/images/img/icon-restriction-white.svg" style="filter: invert(50%)" alt="" width="30">
+                </div>
+                <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em">
+                  Insufficient balance.
+                </p>
+              </div>
+            </div>
 
             <div class="row">
               <div class="col-12 mx-auto">
@@ -72,7 +75,7 @@
                     <div class="col-12">
                       <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
                       <span class="fs-08rem">
-                        Fee:&nbsp;
+                        Unconfirmed/Recommended Fee:&nbsp;
                         <a [innerHTML]="getQuantity(fee)"></a> XPX
                       </span>
                     </div>
@@ -149,8 +152,9 @@
               </div>
 
               <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-                <button mdbBtn type="submit" rounded="true" [disabled]="!mosaicForm.valid || blockButton || invalidSupply" mdbWavesEffect
-                  class="btn-proximax" size="md">
+                <button mdbBtn type="submit" rounded="true"
+                  [disabled]="!mosaicForm.valid || blockButton || invalidSupply" mdbWavesEffect class="btn-proximax"
+                  size="md">
                   <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
                     *ngIf="blockSend"></span>
                   <span class="fs-1-2em color-white">Create</span>

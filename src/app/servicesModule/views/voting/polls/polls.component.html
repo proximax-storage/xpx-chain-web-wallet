@@ -24,19 +24,18 @@
 
 </div>
 
-<div class="container-fluid background-header-grey pb-1rem pt-1rem">
+<div class="container-fluid pb-1rem pt-1rem">
   <div class="row d-flex justify-content-center">
     <div class="col-12">
       <div class="row d-flex align-items-center">
-        <div class="col-2 col-md-1 d-flex justify-content-center"> > </div>
-        <div class="col-8 col-md-10">
+        <div class="col-11 col-md-10 mx-auto">
           <div class="row d-flex justify-content-center">
             <div class="col-12 col-sm-3">
               <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [searchable]="false" [validateError]="true" [items]="filterObjectSelect"
-                bindLabel="label" bindValue="value" placeholder="Select search type"
+                bindLabel="label" bindValue="value" placeholder="Search"
                 (change)="filterSelected($event)"  [(ngModel)]="selectedSearch"></ng-select>
             </div>
-            <div class="col-12 col-sm-5 d-flex justify-content-md-end justify-content-center">
+            <div class="col-12 col-sm-7 d-flex justify-content-md-end justify-content-center">
               <input mdbInputDirective [validateSuccess]="false" [validateError]="false" class="w-100porcent form-control"
                 type="text" [placeholder]="placeholderText" autocomplete="off" (ngModelChange)="filterChange($event)"  [(ngModel)]="filter">
             </div>
@@ -57,7 +56,6 @@
 
           </div>
         </div>
-        <div class="col-2 col-md-1 d-flex justify-content-center"> > </div>
       </div>
     </div>
   </div>

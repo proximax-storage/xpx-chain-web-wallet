@@ -223,16 +223,16 @@
                   mdbValidate [validateSuccess]="true" [maxlength]="configurationForm.amount.maxLength"
                   [validateError]="true" type="text" class="form-control form-control-sm input-border input-amount"
                   placeholder="Enter Amount" formControlName="amountXpx">
-                <span class="label-i fw-600 pl-2rem">SEND</span>
+                <span class="label-i fw-600 pl-2rem">Send</span>
 
                 <mdb-error
                   *ngIf="validateInput('amountXpx').invalid && (validateInput('amountXpx').dirty || validateInput('amountXpx').touched)">
-                  <span class="fs-08rem fw-600 color-error-message">Invalid amount</span>
+                  <span class="fs-08rem fw-600 color-error-message">Invalid Amount</span>
                 </mdb-error>
 
                 <!-- Message Error Insufficient balance-->
                 <mdb-error *ngIf="insufficientBalance">
-                  <span class="fs-08rem fw-600 color-error-message">Insufficient balance</span>
+                  <span class="fs-08rem fw-600 color-error-message">Insufficient Balance</span>
                 </mdb-error>
               </div>
             </div>
@@ -322,9 +322,9 @@
                   <div class="col-12 text-center">
                     <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
                       width="20" alt="">
-                    <!-- <span class="fs-07rem">Fee: {{fee}} XPX <br></span> -->
+                    <!-- <span class="fs-07rem">Unconfirmed/Recommended Fee: {{fee}} XPX <br></span> -->
                     <span class="fs-08rem">
-                      Fee:&nbsp;
+                      Unconfirmed/Recommended Fee:&nbsp;
                       <a [innerHTML]="getQuantity(fee)"></a> XPX
                     </span>
                   </div>
@@ -343,10 +343,10 @@
                       LockFund:&nbsp;
                       <a [innerHTML]="getQuantity('10.000000')"></a> XPX <br>
 
-                      Fee:&nbsp;
+                      Unconfirmed/Recommended Fee:&nbsp;
                       <a [innerHTML]="getQuantity('0.044500')"></a> XPX
                     </span>
-                    <!-- <span class="fs-07rem">LockFund: 10.000000 XPX <br> Fee: 0.044500 XPX</span>  -->
+                    <!-- <span class="fs-07rem">LockFund: 10.000000 XPX <br> Unconfirmed/Recommended Fee: 0.044500 XPX</span>  -->
                   </div>
                 </div>
               </div>
@@ -368,7 +368,7 @@
                 <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20"
                   alt="">
                 <span class="fs-08rem">
-                  Fee:&nbsp;
+                  Unconfirmed/Recommended Fee:&nbsp;
                   <a [innerHTML]="getQuantity(fee)"></a> XPX
                 </span>
               </div>

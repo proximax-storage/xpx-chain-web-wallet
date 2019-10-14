@@ -89,7 +89,7 @@ const routes: Routes = [
         override: true,
       },
     }
-  },{
+  }, {
     path: `${AppConfig.routes.deleteAccountConfirm}/:name`,
     component: AccountDeleteConfirmComponent,
     data: {
@@ -224,7 +224,7 @@ const routes: Routes = [
       }
     }
   }
-  ,{
+  , {
     path: AppConfig.routes.addressBook,
     component: ListContactsComponent,
     data: {
@@ -285,7 +285,7 @@ const routes: Routes = [
         override: true,
       }
     }
-  }, 
+  },
   {
     path: AppConfig.routes.blockchain,
     component: BlockchainComponent,
@@ -299,6 +299,17 @@ const routes: Routes = [
   },
   {
     path: AppConfig.routes.convertToAccountMultisign,
+    component: ConvertAccountMultisignComponent,
+    data: {
+      meta: {
+        title: 'convertToAccountMultisign.title',
+        description: 'convertToAccountMultisign.text',
+        override: true,
+      }
+    }
+  },
+  {
+    path: `${AppConfig.routes.convertToAccountMultisign}/:name`,
     component: ConvertAccountMultisignComponent,
     data: {
       meta: {
