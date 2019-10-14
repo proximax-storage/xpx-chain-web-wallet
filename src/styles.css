@@ -342,6 +342,10 @@ html, body {
   padding-top: 1.3rem !important;
 }
 
+.pt-1-5rem {
+  padding-top: 1.5rem !important;
+}
+
 .pt-2rem {
   padding-top: 2rem;
 }
@@ -509,6 +513,11 @@ html, body {
 
 .br-0 {
   border-radius: 0 !important;
+}
+
+
+.br-1rem {
+  border-radius: 1rem !important;
 }
 
 /************************* LINE HEIGHT *****************/

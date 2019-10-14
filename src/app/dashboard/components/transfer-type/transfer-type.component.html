@@ -190,8 +190,9 @@
 
         <!-- Signer -->
         <div class="col-12 lh-1em">
-          <span class="fw-600 fs-075rem">Signer: <br></span>
-          <span class="fs-075rem w-w-b-w "> {{transferTransaction.data.signer.publicKey}} </span>
+          <span class="fw-600 fs-075rem cursor-p">Signer: <br></span>
+          <span class="fs-075rem w-w-b-w"
+            [title]="'Public Key: '+transferTransaction.data.signer.publicKey">{{transferTransaction.data.signer.address.pretty()}}</span>
         </div>
 
         <!-- Signature -->
@@ -204,13 +205,22 @@
         <ng-container
           *ngIf="transferTransaction.data['cosignatures'] && transferTransaction.data['cosignatures'].length > 0">
           <div class="col-12 mt-05rem lh-1em">
-            <span class="fw-600 fs-075rem">Others cosignatories: <br></span>
-            <ng-container *ngFor="let dataSigner of transferTransaction.data['cosignatures']">
-              <div>
-                <span class="fs-075rem w-w-b-w"
-                  [title]="'Address: '+dataSigner.signer.address.pretty()">{{dataSigner.signer.publicKey}}</span>
-              </div>
-            </ng-container>
+            <mdb-accordion [multiple]="false" aria-multiselectable="true">
+              <mdb-accordion-item [collapsed]="true">
+                <mdb-accordion-item-head class="box-modal-grey">
+                  <span class="fw-600 fs-075rem">Others cosignatories:</span>
+                </mdb-accordion-item-head>
+                <mdb-accordion-item-body class="box-accounts-height box-modal-grey">
+                  <ng-container *ngFor="let dataSigner of transferTransaction.data['cosignatures'];  let i=index">
+                    <div class="">
+                      <span class="fs-06rem w-w-b-w cursor-p fw-600" [title]="'Public Key: '+dataSigner.signer.publicKey">
+                        {{dataSigner.signer.address.pretty()}}
+                      </span>
+                    </div>
+                  </ng-container>
+                </mdb-accordion-item-body>
+              </mdb-accordion-item>
+            </mdb-accordion>
           </div>
         </ng-container>
 

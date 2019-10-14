@@ -80,7 +80,12 @@ export class ConvertAccountMultisignComponent implements OnInit {
   subscribeContact: Subscription[] = [];
   convertIntoMultisig: ModifyMultisigAccountTransaction;
   aggregateTransaction: AggregateTransaction;
-
+  valueValidateAccount: validateBuildAccount = {
+    disabledItem: false,
+    disabledPartial: false,
+    info: '',
+    subInfo: ''
+  }
   constructor(
     private fb: FormBuilder,
     private sharedService: SharedService,
@@ -256,20 +261,32 @@ export class ConvertAccountMultisignComponent implements OnInit {
     }
   }
 
-  buildSelectAccount(param: AccountsInterface, disable: boolean = false) {
+  buildSelectAccount(param: AccountsInterface, disabled: boolean = false) {
     const accountFiltered = this.walletService.filterAccountInfo(param.name);
-    let info = ''
-    if (!disable) {
-      info = this.validateBuildSelectAccount(accountFiltered).info
-      disable = this.validateBuildSelectAccount(accountFiltered).disabled;
+
+    // disabledItem: boolean,
+    // disabledPartial: boolean,
+    // info: string,
+    // subInfo: string
+    let validateBuildAccount: validateBuildAccount = {
+      disabledItem: disabled,
+      disabledPartial: disabled,
+      info: 'Partial',
+      subInfo: `You cannot edit an account that has a partial transaction pending (<i title="partially" style="padding-right: 0px;"
+      class="fa fa-bell color-light-orange"></i>).`
+    }
+    if (!disabled) {
+      validateBuildAccount = this.validateBuildSelectAccount(accountFiltered)
     }
     if (accountFiltered) {
       if (!this.isMultisign(param)) {
         this.currentAccounts.push({
           label: param.name,
           value: param,
-          disabled: disable,
-          info: info
+          disabledItem: validateBuildAccount.disabledItem,
+          disabledPartial: validateBuildAccount.disabledPartial,
+          info: validateBuildAccount.info,
+          subInfo: validateBuildAccount.subInfo
         });
         // if (this.activateRoute.snapshot.paramMap.get('name') !== null)
 
@@ -280,27 +297,33 @@ export class ConvertAccountMultisignComponent implements OnInit {
     const totalFee = Number(this.transactionService.amountFormatterSimple(this.feeLockfund)) + this.fee;
     return (balanceAccount >= this.totalFee)
   }
-  validateBuildSelectAccount(accountFiltered: AccountsInfoInterface): { disabled: boolean, info: string } {
+
+
+  // disabledItem: boolean,
+  // disabledPartial: boolean,
+  // info: string,
+  // subInfo: string
+  validateBuildSelectAccount(accountFiltered: AccountsInfoInterface): validateBuildAccount {
     let value = { disabled: false, info: '' }
     const disabled: boolean = (
       accountFiltered !== null &&
       accountFiltered !== undefined && accountFiltered.accountInfo !== null)
-
+    const InsufficientBalanceSub = `Cosignatory has sufficient balance (${this.amountFormatterSimple(this.totalFee)} XPX) to cover LockFund Fee`;
     if (!disabled)
-      return { disabled: true, info: 'Insufficient balance' }
+      return { disabledPartial: false, disabledItem: true, info: 'Insufficient balance', subInfo: InsufficientBalanceSub }
     if (!accountFiltered.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id))
-      return { disabled: true, info: 'Insufficient balance' }
+      return { disabledPartial: false, disabledItem: true, info: 'Insufficient balance', subInfo: InsufficientBalanceSub }
     const mosaicXPX = accountFiltered.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id).amount.compact();
     if (!this.validateBuildSelectAccountBalance(mosaicXPX))
-      return { disabled: true, info: 'Insufficient balance' }
+      return { disabledPartial: false, disabledItem: true, info: 'Insufficient balance', subInfo: InsufficientBalanceSub }
 
     if (accountFiltered.multisigInfo !== null) {
       if (accountFiltered.multisigInfo.multisigAccounts)
-        return { disabled: true, info: 'Has cosigner' }
+        return { disabledPartial: false, disabledItem: true, info: 'Has cosigner', subInfo: 'Cannot convert a consignatary to multisig (feature not available)' }
     }
 
 
-    return { disabled: false, info: '' }
+    return { disabledPartial: false, disabledItem: false, info: '', subInfo: '' }
   }
   /**
      * Checks if the account is a multisig account.
@@ -336,7 +359,30 @@ export class ConvertAccountMultisignComponent implements OnInit {
 
   selectAccount($event: Event, accountName?: string) {
     const event: any = $event;
+    this.convertAccountMultsignForm.enable({ emitEvent: false, onlySelf: true });
     const account: any = (event === null) ? this.walletService.filterAccountWallet(accountName) : event.value;
+    if (event !== null) {
+      this.valueValidateAccount = {
+        disabledItem: event.disabledItem,
+        disabledPartial: event.disabledPartial,
+        info: event.info,
+        subInfo: event.subInfo
+      }
+    } else {
+      if (this.currentAccounts.length > 0) {
+      const valueSelect = this.currentAccounts.filter(x => x.label === this.activateRoute.snapshot.paramMap.get('name'))[0];
+      this.valueValidateAccount = {
+        disabledItem: valueSelect.disabledItem,
+        disabledPartial: valueSelect.disabledPartial,
+        info: valueSelect.info,
+        subInfo: valueSelect.subInfo
+      }
+
+      this.convertAccountMultsignForm.controls['selectAccount'].patchValue(valueSelect)
+    }
+    }
+
+
     // const account: AccountsInterface = this.walletService.filterAccountWallet(name)
     this.notBalance = false;
     this.minApprovaMaxLength = 1;
@@ -384,6 +430,11 @@ export class ConvertAccountMultisignComponent implements OnInit {
   validateAccount(name: string) {
     this.mdbBtnAddCosignatory = true;
     this.accountInfo = this.walletService.filterAccountInfo(name);
+
+    if (this.valueValidateAccount.disabledItem) {
+      this.disabledForm('selectAccount', true);
+      return
+    }
     this.accountValid = (
       this.accountInfo !== null &&
       this.accountInfo !== undefined && this.accountInfo.accountInfo !== null);
@@ -408,16 +459,16 @@ export class ConvertAccountMultisignComponent implements OnInit {
     }
 
 
-    this.publicAccountToConvert = PublicAccount.createFromPublicKey(this.currentAccountToConvert.publicAccount.publicKey, this.currentAccountToConvert.network)
-    this.mdbBtnAddCosignatory = false;
-    if (this.activateRoute.snapshot.paramMap.get('name') !== null) {
-      if (this.currentAccounts.length > 0) {
-        const valueSelect = this.currentAccounts.filter(x => x.label === this.activateRoute.snapshot.paramMap.get('name'));
-        if (valueSelect) {
-          this.convertAccountMultsignForm.controls['selectAccount'].patchValue(valueSelect[0]);
-        }
-      }
-    }
+     this.publicAccountToConvert = PublicAccount.createFromPublicKey(this.currentAccountToConvert.publicAccount.publicKey, this.currentAccountToConvert.network)
+     this.mdbBtnAddCosignatory = false;
+    // if (this.activateRoute.snapshot.paramMap.get('name') !== null) {
+    //   if (this.currentAccounts.length > 0) {
+    //     const valueSelect = this.currentAccounts.filter(x => x.label === this.activateRoute.snapshot.paramMap.get('name'));
+    //     if (valueSelect) {
+    //       this.convertAccountMultsignForm.controls['selectAccount'].patchValue(valueSelect[0]);
+    //     }
+    //   }
+    // }
   }
 
 
@@ -689,6 +740,21 @@ export class ConvertAccountMultisignComponent implements OnInit {
   }
 
   /**
+ * @memberof CreateMultiSignatureComponent
+ */
+  disabledForm(noIncluye: string, accion: boolean) {
+    for (let x in this.convertAccountMultsignForm.value) {
+      if (x !== noIncluye) {
+        if (accion) {
+          this.convertAccountMultsignForm.get(x).disable()
+        } else {
+          this.convertAccountMultsignForm.get(x).enable()
+        }
+
+      }
+    }
+  }
+  /**
   * @memberof CreateMultiSignatureComponent
   */
   clearForm() {
@@ -913,4 +979,12 @@ interface ContactsListInterface {
   walletContact: boolean;
   isMultisig: boolean;
   disabled: boolean;
+}
+
+interface validateBuildAccount {
+  disabledItem: boolean,
+  disabledPartial: boolean,
+  info: string,
+  subInfo: string
+
 }
