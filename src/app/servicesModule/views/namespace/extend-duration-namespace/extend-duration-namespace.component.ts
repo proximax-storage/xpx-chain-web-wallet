@@ -58,8 +58,9 @@ export class ExtendDurationNamespaceComponent implements OnInit {
   transactionStatus: boolean = false;
   subtractionHeight: any;
   totalBlock: any;
-  excedDuration: boolean = false;
+  exceededDuration: boolean = false;
   invalidDuration: boolean = true;
+  noNamespace: boolean = false;
 
 
   constructor(
@@ -95,10 +96,11 @@ export class ExtendDurationNamespaceComponent implements OnInit {
           this.durationByBlock = this.transactionService.calculateDurationforDay(next).toString();
           this.totalBlock = this.subtractionHeight + Number(this.durationByBlock);
           if( this.totalBlock <= 2102400 ){
+            // 5 years = 10512000
             this.totalBlock;
-            this.excedDuration = false;
+            this.exceededDuration = false;
           } else {
-            this.excedDuration = true;
+            this.exceededDuration = true;
           }
 
           this.validateRentalFee(this.rentalFee * parseFloat(this.durationByBlock));
@@ -177,7 +179,7 @@ export class ExtendDurationNamespaceComponent implements OnInit {
    * @memberof ExtendDurationNamespaceComponent
    */
   clearForm() {
-    this.excedDuration = false;
+    this.exceededDuration = false;
     this.extendDurationNamespaceForm.reset({
       namespaceRoot: '',
       duration: '',
@@ -222,7 +224,7 @@ export class ExtendDurationNamespaceComponent implements OnInit {
    */
   extendDuration() {
     if (this.extendDurationNamespaceForm.valid && !this.blockBtnSend) {
-      const validateAmount = this.transactionService.validateBuildSelectAccountBalance(this.amountAccount, Number(this.fee), Number(this.calculateRentalFee.replace(',', '')));
+      const validateAmount = this.transactionService.validateBuildSelectAccountBalance(this.amountAccount, Number(this.fee), Number(this.calculateRentalFee.replace(/,/g,'')));
       if (validateAmount) {
         this.blockBtnSend = true;
         const common = {
@@ -316,6 +318,9 @@ export class ExtendDurationNamespaceComponent implements OnInit {
           }
 
           this.arrayselect = arrayselect;
+        } else {
+          this.noNamespace = true;
+          this.extendDurationNamespaceForm.disable();
         }
       }, error => {
         this.router.navigate([AppConfig.routes.home]);
@@ -336,15 +341,22 @@ export class ExtendDurationNamespaceComponent implements OnInit {
     return this.sharedService.amountFormat(quantity);
   }
 
+  /**
+   *
+   *
+   * @param {*} e
+   * @memberof ExtendDurationNamespaceComponent
+   */
   limitDuration(e) {
     if (isNaN(parseInt(e.target.value))) {
-      e.target.value = ''
+      e.target.value = '';
+      this.extendDurationNamespaceForm.get('duration').setValue('');
     } else {
       if (parseInt(e.target.value) > 365) {
-        // e.target.value = '365'
-        this.excedDuration = true;
+        this.exceededDuration = true;
       } else if (parseInt(e.target.value) < 1) {
         e.target.value = ''
+        this.extendDurationNamespaceForm.get('duration').setValue('');
       }
     }
   }
@@ -462,24 +474,24 @@ export class ExtendDurationNamespaceComponent implements OnInit {
             this.insufficientBalanceDuration = false;
           }
         } else {
-          // if (this.extendDurationNamespaceForm.enabled) {
-          //   this.extendDurationNamespaceForm.disable();
-          // }
+          if (this.extendDurationNamespaceForm.enabled) {
+            this.extendDurationNamespaceForm.disable();
+          }
           this.insufficientBalanceDuration = false;
           this.insufficientBalance = true;
         }
       } else {
-        // if (this.extendDurationNamespaceForm.enabled) {
-        //   this.extendDurationNamespaceForm.disable();
-        // }
+        if (this.extendDurationNamespaceForm.enabled) {
+          this.extendDurationNamespaceForm.disable();
+        }
         this.insufficientBalanceDuration = false;
         this.insufficientBalance = true;
         this.extendDurationNamespaceForm.controls['password'].disable();
       }
     } else {
-      // if (this.extendDurationNamespaceForm.enabled) {
-      //   this.extendDurationNamespaceForm.disable();
-      // }
+      if (this.extendDurationNamespaceForm.enabled) {
+        this.extendDurationNamespaceForm.disable();
+      }
       this.insufficientBalanceDuration = false;
       this.insufficientBalance = true;
     }

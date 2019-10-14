@@ -1475,6 +1475,14 @@ button.md-toast-close-button {
   text-align: center;
 }
 
+.box-transparent-border-red {
+  border-radius: 1.5rem;
+  border: solid #9e0000;
+  padding: 10px 20px;
+  margin: 10px;
+  text-align: center;
+}
+
 .topnav label.icon {
   cursor: pointer !important;
 }
@@ -1922,6 +1930,9 @@ ul.stepper.horizontal .step-title {
   background: #306EB5 !important;
 }
 
+.dropdown-default .dropdown-content li a, .dropdown-default .dropdown-content li span:hover, .dropdown-default .dropdown-content li.active{
+  background-color: #306eb5c9!important;
+}
 /*************BUTTONS*****************/
 
 .btn-proximax {

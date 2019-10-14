@@ -15,7 +15,7 @@
       <!-- Fee -->
       <ng-container *ngIf="mosaicAlias?.effectiveFee">
         <div class="col-12 mt-03rem">
-          <span class="fw-600 fs-095rem color-black">Fee:&nbsp;&nbsp;</span>
+          <span class="fw-600 fs-095rem color-black">Effective Fee:&nbsp;&nbsp;</span>
           <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
           <span class="fs-095rem color-black">{{mosaicAlias?.effectiveFee.part1}}</span>
           <span class="fs-075rem color-black">{{mosaicAlias?.effectiveFee.part2}}</span>
@@ -40,7 +40,7 @@
       <!-- Action -->
       <div class="col-12 lh-1em">
         <span class="fw-600 fs-08rem">Action:&nbsp;&nbsp;</span>
-        <ng-container *ngIf="mosaicAlias?.data['actionType'] === 1; else showUnlink">
+        <ng-container *ngIf="mosaicAlias?.data['actionType'] === 0; else showUnlink">
           <span class="fs-07rem green-c">Link</span>
         </ng-container>
 

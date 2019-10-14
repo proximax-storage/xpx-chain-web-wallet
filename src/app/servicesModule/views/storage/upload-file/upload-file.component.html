@@ -12,7 +12,7 @@
           <div class="file-path-wrapper mt-2">
             <img class="form-control-feedback" src="assets/images/img/icon-storage-green-16h-proximax-sirius-wallet.svg" alt="">
             <input class="form-control form-control-sm input-border" [validateSuccess]="false" id="filePath" type="text"
-              placeholder="Upload your file" [value]="showFiles()" mdbInputDirective>
+              placeholder="Upload your file" [value]="showFiles()"  readonly mdbInputDirective>
           </div>
         </div>
       </div>
@@ -78,7 +78,7 @@
           <div class="row">
             <div class="col-12">
               <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" alt="">
-              <span>Fee: 0.000000 XPX</span>
+              <span>Unconfirmed/Recommended Fee: {{fee}} XPX</span>
             </div>
           </div>
         </div>

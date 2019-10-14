@@ -26,7 +26,7 @@ export class DeleteWalletComponent implements OnInit {
   };
 
   description = 'Accounts available in this wallet';
-  texAlert = 'Would you like to delete permanently this Sirius Wallet?'
+  texAlert = 'Would you like to permanently delete this Sirius Wallet?'
   wallet: WalletAccountInterface;
   nameWallet: string;
   constructor (

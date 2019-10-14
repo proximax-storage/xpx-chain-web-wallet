@@ -52,7 +52,7 @@
                       formControlName="privateKey">
                     <mdb-error
                       *ngIf="validateInput('privateKey').invalid && (validateInput('privateKey').dirty || validateInput('privateKey').touched)">
-                      <span>Required field</span>
+                      <span>Required Private Key</span>
                     </mdb-error>
                   </div>
                 </div>
@@ -78,7 +78,7 @@
                     [minlength]="configurationForm.nameWallet.minLength">
                   <mdb-error
                     *ngIf="validateInput('nameWallet').invalid && (validateInput('nameWallet').dirty || validateInput('nameWallet').touched)">
-                    <span>Required field</span>
+                    <span>Account name required</span>
                   </mdb-error>
 
                   <mdb-error *ngIf="validateInput('nameWallet').valid && validateNameAccount()">
@@ -107,7 +107,7 @@
                   <!-- VALIDATION -->
                   <mdb-error
                     *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
-                    <span>Required field</span>
+                    <span>Required Password</span>
                   </mdb-error>
                 </div>
               </div>

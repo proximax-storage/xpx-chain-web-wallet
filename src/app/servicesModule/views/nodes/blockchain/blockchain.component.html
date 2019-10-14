@@ -14,7 +14,7 @@
                   <img class="form-control-feedback" src="assets/images/img/icon-block-height-blue-30h.svg" alt="">
                   <input mdbInputDirective mdbValidate formControlName="blockHeigh" readonly type="text"
                     class="form-control form-control-sm input-border txt-a-right" placeholder="">
-                  <span class="label-i-icon pl-2rem">Block height</span>
+                  <span class="label-i-icon pl-2rem">Block Height</span>
                 </div>
               </div>
 
@@ -23,7 +23,7 @@
                   <img class="form-control-feedback" src="assets/images/img/icon-nodes-blue-60h.svg" alt="">
                   <input mdbInputDirective mdbValidate formControlName="nodeSelect" readonly type="text"
                     class="form-control form-control-sm input-border txt-a-right">
-                  <span class="label-i-icon pl-2rem">Current node</span>
+                  <span class="label-i-icon pl-2rem">Current Node</span>
 
                 </div>
               </div>
@@ -38,7 +38,7 @@
 
                   <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [searchable]="false"
                     [clearable]="false" [validateError]="true" class="selectWrapper" [items]="arrayNodes"
-                    formControlName="nodeSelect" bindLabel="label" bindValue="value" placeholder="Node list"
+                    formControlName="nodeSelect" bindLabel="label" bindValue="value" placeholder="Node List"
                     (change)="nodeSelect($event)">
 
                     <ng-template ng-option-tmp let-item="item" let-index="index">

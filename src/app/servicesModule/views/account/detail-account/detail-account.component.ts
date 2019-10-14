@@ -241,7 +241,7 @@ export class DetailAccountComponent implements OnInit {
   aceptChanges() {
     if (!this.checked && this.valueInitNis !== this.checked) {
       if (this.currenAccount.nis1Account !== null) {
-        this.sharedService.showSuccess('', 'Nis1 account remove');
+        this.sharedService.showSuccess('', 'NIS1 account remove');
       }
       this.currenAccount.nis1Account = null;
       this.valueInitNis = (this.currenAccount.nis1Account !== null);
@@ -259,7 +259,7 @@ export class DetailAccountComponent implements OnInit {
         if (this.walletService.decrypt(common, this.currenAccount)) {
 
           if (this.currenAccount.nis1Account === null) {
-            this.sharedService.showSuccess('', 'Nis1 account added');
+            this.sharedService.showSuccess('', 'NIS1 account added');
           }
           const nis1Wallet = this.nemProvider.createAccountPrivateKey(common['privateKey'].toUpperCase());
 

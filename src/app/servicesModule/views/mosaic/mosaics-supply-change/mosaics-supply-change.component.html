@@ -4,6 +4,17 @@
   <form [formGroup]="formMosaicSupplyChange" (ngSubmit)="send()">
     <div class="row mt-1rem">
       <div class="col-12 col-md-8 col-xl-7 mb-2rem">
+        <div class="row">
+          <div class="col-11 mb-1rem mx-auto box-transparent-border-red" *ngIf="noMosaics">
+            <div class="txt-a-center">
+              <img src="assets/images/img/icon-restriction-white.svg" style="filter: invert(50%)" alt="" width="30">
+            </div>
+            <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em">
+              This account doesn't have mosaics created.
+            </p>
+
+          </div>
+        </div>
         <!-- Parent Mosaic -->
         <div class="row">
           <div class="col-11 mx-auto">
@@ -42,6 +53,7 @@
                 [validateSuccess]="true" [validateError]="true" type="text" id="supply{{errorSupply}}"
                 [maxlength]="maxLengthSupply" class="form-control form-control-sm input-border input-amount"
                 placeholder="Quantity of Increase/Decrease">
+              <span class="label-i-icon pl-2rem">Quantity of Increase/Decrease</span>
 
               <mdb-error
                 *ngIf="validateInput('deltaSupply', '').invalid && (validateInput('deltaSupply', '').dirty || validateInput('deltaSupply', '').touched) || invalidSupply">
@@ -86,7 +98,7 @@
                 <div class="col-12">
                   <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" alt="">
                   <span class="fs-08rem">
-                    Fee:&nbsp;
+                    Unconfirmed/Recommended Fee:&nbsp;
                     <a [innerHTML]="getQuantity(fee)"></a> XPX
                   </span>
                 </div>
@@ -129,8 +141,8 @@
 
           <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
             <button mdbBtn type="submit" rounded="true"
-              [disabled]="!formMosaicSupplyChange.valid || blockBtn || deltaSupply === 0" mdbWavesEffect
-              class="btn-proximax" size="md">
+              [disabled]="!formMosaicSupplyChange.valid || blockBtn || deltaSupply === 0 || errSupply || errSupplyMin"
+              mdbWavesEffect class="btn-proximax" size="md">
               <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
                 *ngIf="blockButton"></span>
               <span class="color-white">Create</span>

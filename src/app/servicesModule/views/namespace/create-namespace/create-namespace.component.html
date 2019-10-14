@@ -6,11 +6,23 @@
       <div class="col-12 col-sm-7 col-md-8 mb-2rem">
 
         <div class="row mt-1rem">
-          <ng-container *ngIf="insufficientBalance && !insufficientBalanceDuration">
+          <div class="col-11 mx-auto" *ngIf="insufficientBalance && !insufficientBalanceDuration">
+            <div class="box-transparent-border-red m-0">
+              <div class="txt-a-center">
+                <img src="assets/images/img/icon-restriction-white.svg" style="filter: invert(50%)" alt="" width="30">
+              </div>
+              <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em">
+                Insufficient balance.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-1rem">
+          <!-- <ng-container *ngIf="insufficientBalance && !insufficientBalanceDuration">
             <div class="col-11 mx-auto d-flex justify-content-end">
               <span class="fs-08rem fw-600 color-error-message">Insufficient Balance</span>
             </div>
-          </ng-container>
+          </ng-container> -->
 
           <div class="col-11 mx-auto">
             <div class="md-form form-sm mt-0">
@@ -73,35 +85,40 @@
           </div>
         </div>
 
-        <div class="row ml-01rem">
-          <div class="col-11 col-sm-11 col-md-11 col-lg-6">
-            <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
-              <div class="row">
-                <div class="col-12">
-                  <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
-                    width="20" alt="">&nbsp;
-                  <span class="fs-08rem">
-                    Fee:&nbsp;
-                    <a [innerHTML]="getQuantity(fee)"></a> XPX
-                  </span>
+        <div class="row">
+          <div class="col-11 mx-auto">
+            <div class="row">
+              <div class="col-12">
+                <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
+                  <div class="row">
+                    <div class="col-12">
+                      <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
+                        width="20" alt="">&nbsp;
+                      <span class="fs-08rem">
+                        Unconfirmed/Recommended Fee:&nbsp;
+                        <a [innerHTML]="getQuantity(fee)"></a> XPX
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
 
-          <div class="col-11 col-sm-11 col-md-11 col-lg-6">
-            <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
-              <div class="row">
-                <div class="col-12">
-                  <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
-                    width="20" alt="">&nbsp;
-                  <span class="fs-08rem">
-                    Rental Fee:&nbsp;
-                    <a [innerHTML]="getQuantity(calculateRentalFee)"></a> XPX
-                  </span>
+              <div class="col-12">
+                <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
+                  <div class="row">
+                    <div class="col-12">
+                      <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
+                        width="20" alt="">&nbsp;
+                      <span class="fs-08rem">
+                        Rental Fee:&nbsp;
+                        <a [innerHTML]="getQuantity(calculateRentalFee)"></a> XPX
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
+
           </div>
         </div>
 
@@ -151,16 +168,12 @@
 
       <div class="col-11 col-sm-5 col-md-4 description-p-module mt-1-5rem mb-2rem">
         <span>
-          <p>
-            A namespace can have a maximium length of 16 alphanumerical characters while sub-namespaces can have a
-            maximium length of 64 alphanumerical characters.
-          </p>
-          <p>
-            A namespace may consist of three parts, each separated by a full stop (i.e test1.test2.test3).
-          </p>
-          <p>
-            Certain phrases are already reserved.
-          </p>
+          <p>A namespace can have a maximium length of 16 alphanumerical characters while sub-namespaces can have a
+            maximium length of 64 alphanumerical characters.</p>
+          <p>Three layers can be created. A namespace can have a subnamespace, and a subnamespace can have its own
+            subnamespace (e.g., test1.test2.test3).</p>
+          <p>Certain phrases are already reserved.</p>
+          <p class="fw-600">Maximum rental duration is 1 year. (365 days)</p>
         </span>
       </div>
     </div>
