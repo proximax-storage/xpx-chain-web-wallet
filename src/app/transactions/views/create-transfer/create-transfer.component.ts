@@ -254,6 +254,13 @@ export class CreateTransferComponent implements OnInit {
     return;
   }
 
+
+  /**
+   *
+   *
+   * @param {*} inputType
+   * @memberof CreateTransferComponent
+   */
   changeInputType(inputType) {
     let newType = this.sharedService.changeInputType(inputType)
     this.passwordMain = newType;
@@ -587,7 +594,7 @@ export class CreateTransferComponent implements OnInit {
               } else if (statusTransaction['type'] === 'cosignatureSignedTransaction' && match) {
                 this.reloadBtn = false;
                 this.blockSendButton = false;
-              } else if (statusTransaction['type'] === 'error' && match) {
+              } else if (statusTransaction['type'] === 'status' && match) {
                 this.reloadBtn = false;
                 this.blockSendButton = false;
                 this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['hash']);
@@ -614,7 +621,10 @@ export class CreateTransferComponent implements OnInit {
             this.announceAggregateBonded(signedTransactionBonded)
             signedTransactionHashLock = null;
           } else if (statusTransaction['type'] === 'unconfirmed' && match) {
-          } else if (match) {
+          } else if (statusTransaction['type'] === 'status' && match) {
+            this.reloadBtn = false;
+            this.blockSendButton = false;
+            this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['hash']);
             signedTransactionHashLock = null;
           }
         }
