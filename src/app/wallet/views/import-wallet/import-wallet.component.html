@@ -84,7 +84,7 @@
                   [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" mdbInputDirective
                   mdbValidate [validateSuccess]="true" [validateError]="true" [type]="passwordMain"
                   id="password{{errorMatchPassword}}" class="form-control form-control-sm input-border"
-                  placeholder="Password">
+                  placeholder="Enter a New Password">
 
                 <!-- VALIDATION -->
                 <mdb-error *ngIf="
@@ -105,7 +105,7 @@
                   [minlength]="configurationForm.passwordWallet.minLength" formControlName="confirm_password"
                   mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" [type]="passwordConfirm"
                   id="confirm-password{{errorMatchPassword}}" class="form-control form-control-sm input-border"
-                  placeholder="Confirm Password">
+                  placeholder="Confirm New Password">
 
                 <!-- VALIDATION -->
                 <mdb-error

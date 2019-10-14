@@ -1172,7 +1172,7 @@ export class CreateTransferComponent implements OnInit {
       this.formContact = { name: '', address: '' };
       this.booksAddress();
       this.basicModal.hide();
-      this.sharedService.showSuccess('', `Successfully saved contact`);
+      this.sharedService.showSuccess('', `Contact Successfully Saved`);
       return;
     }
 
@@ -1183,7 +1183,7 @@ export class CreateTransferComponent implements OnInit {
       this.formContact = { name: '', address: '' };
       this.booksAddress();
       this.basicModal.hide();
-      this.sharedService.showSuccess('', `Successfully saved contact`);
+      this.sharedService.showSuccess('', `Contact Successfully Saved`);
       return;
     }
 

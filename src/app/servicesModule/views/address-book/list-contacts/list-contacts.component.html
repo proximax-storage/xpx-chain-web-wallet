@@ -57,7 +57,7 @@
                       <button *ngIf="!contact.walletContact" type="button" mdbBtn color="blue" rounded="true"
                         title="Delete" size="sm" class="my-0" (click)="remove(contact.label)"><i
                           class="fa fa-trash"></i></button>
-                      <span class="contact-not-edit" *ngIf="contact.walletContact">Contact belongs to your wallet</span>
+                      <span class="contact-not-edit" *ngIf="contact.walletContact">N/A (Internal Contact)</span>
                     </span>
                   </td>
                 </tr>

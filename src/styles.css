@@ -1242,10 +1242,12 @@ input.form-control.validate-success.ng-valid.ng-dirty, input.form-control.valida
 
 #toast-container.md-toast-bottom-center>mdb-toast-component, #toast-container.md-toast-top-center>mdb-toast-component {
   /*margin: 6px 0 6px !important;*/
+  /*margin: 110px 0 110px !important;*/
   background: rgba(0,0,0,0.6 );
   margin: 25% auto !important;
-  padding: 2rem 0;
-  width:100% !important;
+  padding: 1.5rem 0;
+  width:50% !important;
+  border-radius: 100px;
   text-align: center !important;
 }
 
@@ -1257,25 +1259,25 @@ input.form-control.validate-success.ng-valid.ng-dirty, input.form-control.valida
 /*************TOASTR**************/
 
 .toastInfo {
-  opacity: 1.0 !important;
+  opacity: 0.9 !important;
   background-color: #306EB5 !important;
   border: 2px solid #306EB5 !important;
 }
 
 .toastSuccess {
-  opacity: 1.0 !important;
+  opacity: 0.9 !important;
   background-color: #306EB5 !important;
   border: 2px solid #306EB5 !important;
 }
 
 .toastWarning {
-  opacity: 1.0 !important;
+  opacity: 0.9 !important;
   background-color: #f2a91d !important;
   border: 2px solid #f2a91d !important;
 }
 
 .toastError {
-  opacity: 1.0 !important;
+  opacity: 0.9 !important;
   background-color: #e06e38 !important;
   border: 2px solid #e06e38 !important;
 }
