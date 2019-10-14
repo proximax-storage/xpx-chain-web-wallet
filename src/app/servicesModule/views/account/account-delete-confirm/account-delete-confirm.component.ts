@@ -113,7 +113,6 @@ export class AccountDeleteConfirmComponent implements OnInit {
         if (this.currenAccount.firstAccount === true) {
           let defaultAccount = this.walletService.getAccountDefault();
           defaultAccount.firstAccount = true;
-          console.log(defaultAccount);
         }
 
         this.walletService.removeAccountWallet(this.currenAccount.name, revalidateMultisig);
