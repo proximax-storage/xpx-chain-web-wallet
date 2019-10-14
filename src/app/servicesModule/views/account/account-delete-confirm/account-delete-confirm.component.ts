@@ -104,10 +104,18 @@ export class AccountDeleteConfirmComponent implements OnInit {
   deleteAccount() {
     if (this.validatingForm.valid && !this.ban) {
       this.ban = true;
-      const accountDecrypt = this.currenAccount
+      const accountDecrypt = this.currenAccount;
       let common: any = { password: this.validatingForm.get("password").value };
+
       if (this.walletService.decrypt(common, accountDecrypt)) {
         const revalidateMultisig = true;
+
+        if (this.currenAccount.firstAccount === true) {
+          let defaultAccount = this.walletService.getAccountDefault();
+          defaultAccount.firstAccount = true;
+          console.log(defaultAccount);
+        }
+
         this.walletService.removeAccountWallet(this.currenAccount.name, revalidateMultisig);
         this.transactionsService.updateBalance();
         this.clearForm();
