@@ -40,7 +40,7 @@
       <!-- Action -->
       <div class="col-12 lh-1em">
         <span class="fw-600 fs-08rem">Action:&nbsp;&nbsp;</span>
-        <ng-container *ngIf="mosaicAlias?.data['actionType'] === 1; else showUnlink">
+        <ng-container *ngIf="mosaicAlias?.data['actionType'] === 0; else showUnlink">
           <span class="fs-07rem green-c">Link</span>
         </ng-container>
 
