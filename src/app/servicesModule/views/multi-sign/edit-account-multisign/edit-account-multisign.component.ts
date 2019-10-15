@@ -311,7 +311,7 @@ export class EditAccountMultisignComponent implements OnInit {
     this.validateInfoisMultisig(this.isMultisig)
     //Validate Balance
     if (!this.accountInfo.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id))
-      return this.sharedService.showError('', 'Insufficient balance');
+      return this.sharedService.showError('', 'Insufficient Balance');
 
 
 
@@ -338,7 +338,7 @@ export class EditAccountMultisignComponent implements OnInit {
    */
   validateInfoisMultisig(isMultisig: boolean) {
     if (!isMultisig) {
-      this.sharedService.showError('', 'not is Multisig');
+      this.sharedService.showError('', 'Not is multisig');
       this.router.navigate([`/${AppConfig.routes.MultiSign}`]);
     }
   }
