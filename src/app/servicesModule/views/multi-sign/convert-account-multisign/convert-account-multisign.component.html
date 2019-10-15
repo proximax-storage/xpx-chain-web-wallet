@@ -16,7 +16,7 @@
               'color': item.disabledItem && item.disabledPartial? '#f2a917' : 'rgba(0,0,0,0.38)'
             }"
                 class="fa fa-bell"> </i> </b>&nbsp;
-            <b>{{item.label}}</b> &nbsp;<b style="color:brown">{{item.info}}</b>
+            <b>{{item.label}}</b> 
           </ng-template>
           <!-- <ng-template ng-footer-tmp>
             <span class="fs-08rem color-error-message">
@@ -44,7 +44,7 @@
         <div class="txt-a-center">
           <img src="assets/images/img/icon-restriction-white.svg" style="filter: invert(50%)" alt="" width="30">
         </div>
-        <h6 class="fw-600">{{valueValidateAccount.info}}</h6>
+        <h6  *ngIf="valueValidateAccount.info !==''" class="fw-600">{{valueValidateAccount.info}}</h6>
         <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em" [innerHtml]="valueValidateAccount.subInfo">
 
         </p>
@@ -172,7 +172,7 @@
       </div>
       <h6 class="fw-600">Warning!</h6>
       <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em">
-        If you are not on the Cosignatories list, you will lose control of the account.
+        If you are not on the cosignatories list, you will lose control of the account.
       </p>
     </div>
     <!--<div class="row mt-1-5rem">
