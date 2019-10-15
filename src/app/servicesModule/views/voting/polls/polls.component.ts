@@ -121,7 +121,7 @@ export class PollsComponent implements OnInit {
   }
 
   filterSelected(event) {
-    this.placeholderText = 'Enter search text'
+    this.placeholderText = 'Search'
     this.showSearch = false;
     this.keyObjectValue = (event) ? event.value : 'All';
     this.filterChange(this.filter)
@@ -139,7 +139,7 @@ export class PollsComponent implements OnInit {
       }
     } else if (key === 'address') {
       this.showSearch = true;
-      this.placeholderText = 'Enter address private poll'
+      this.placeholderText = 'Enter Address Private Poll'
       this.searchAddress(event)
 
     }
@@ -158,7 +158,7 @@ export class PollsComponent implements OnInit {
     if (!this.proximaxProvider.verifyNetworkAddressEqualsNetwork(
       this.proximaxProvider.createFromRawAddress(currentAccount.address).plain(), address)
     )
-      return this.sharedService.showError('', 'Invalid  address');
+      return this.sharedService.showError('', 'Invalid Address');
     this.showBarProgressone = true;
     // return this.proximaxProvider.getAccountInfo(this.proximaxProvider.createFromRawAddress(address)).subscribe(
     //   accountInfo => {
@@ -280,7 +280,7 @@ export class PollsComponent implements OnInit {
   filterType(type: number) {
     switch (type) {
       case 0:
-        return 'witheList';
+        return 'Whitelist';
       case 1:
         return 'Open';
     }
