@@ -652,6 +652,7 @@ export class CreateTransferComponent implements OnInit {
    * @memberof CreateTransferComponent
    */
   otherMosaicsChange(mosaicSelected: any, position: number) {
+    console.log('\n\n mosaicSelected ---> ', mosaicSelected);
     if (mosaicSelected !== undefined) {
       this.boxOtherMosaics[position].amount = '';
       this.boxOtherMosaics[position].balance = mosaicSelected.balance;
@@ -659,30 +660,33 @@ export class CreateTransferComponent implements OnInit {
       this.boxOtherMosaics[position].errorBalance = false;
       this.boxOtherMosaics[position].id = mosaicSelected.value;
 
+      console.log(this.boxOtherMosaics);
       this.boxOtherMosaics.forEach(element => {
-        const newMosaic = [];
-        let otherMosaic = element.selectOtherMosaics.filter(elm => elm.label !== mosaicSelected.label);
-        let currentMosaic = element.selectOtherMosaics.filter(elm => elm.label === mosaicSelected.label);
-        currentMosaic.forEach(current => {
+        //let otherMosaic = element.selectOtherMosaics.filter(elm => elm.label !== mosaicSelected.label);
+        let currentMosaic = element.selectOtherMosaics.find(elm => elm.label === mosaicSelected.label);
+        currentMosaic.disabled = true;
+        console.log('\n\n\n currentMosaic', currentMosaic);
+        const otherMosaics = element.selectOtherMosaics.filter(elm => elm.label !== mosaicSelected.label);
+        otherMosaics.push(currentMosaic);
+        /*currentMosaic.forEach(current => {
           current.disabled = true;
           newMosaic.push(current);
-        });
+        });*/
 
-        otherMosaic.forEach(others => {
-          newMosaic.push(others);
-        });
-
-        newMosaic.forEach(element => {
-          if (this.boxOtherMosaics[position].beforeValue !== '' && element.label === this.boxOtherMosaics[position].beforeValue) {
-            element.disabled = false;
+        otherMosaics.forEach(elm => {
+          console.log('\n\n ----------------------------------------------\n elm', elm);
+          console.log('beforeValue', this.boxOtherMosaics[position]);
+          if (this.boxOtherMosaics[position].beforeValue !== '' && elm.label === this.boxOtherMosaics[position].beforeValue) {
+            console.log('AQUI ES EL FUCKING PEO');
+            elm.disabled = false;
           }
         });
 
-        element.selectOtherMosaics = newMosaic;
+        console.log('\n\n--------------- \n--otherMosaics--', otherMosaics);
+        element.selectOtherMosaics = otherMosaics;
       });
 
       this.boxOtherMosaics[position].beforeValue = mosaicSelected.label;
-
     } else {
       this.boxOtherMosaics[position].id = '';
       this.boxOtherMosaics[position].balance = '';
@@ -700,6 +704,8 @@ export class CreateTransferComponent implements OnInit {
   pushedOtherMosaics() {
     if (this.selectOtherMosaics.length > 0) {
       if (this.boxOtherMosaics.length === 0) {
+        // console.log('VALIDA 1');
+        // console.log('SELECT boxOtherMosaics ---> ', this.boxOtherMosaics);
         this.boxOtherMosaics.push({
           id: '',
           balance: '',
@@ -713,17 +719,23 @@ export class CreateTransferComponent implements OnInit {
         });
       } else {
         let x = false;
+        // console.log('SELECT boxOtherMosaics ---> ', this.boxOtherMosaics);
         this.boxOtherMosaics.forEach(element => {
           if (element.id === '') {
+            // console.log('VALIDA 2');
             this.sharedService.showWarning('', 'You must select a mosaic and place the quantity');
             x = true;
           } else if (element.amount === '' || Number(element.amount) === 0) {
-            this.sharedService.showWarning('', 'The quantity of mosaics is missing');
+            // console.log('VALIDA 3');
+            this.sharedService.showWarning('', 'The quantity of the selected mosaic must be greater than zero');
             x = true;
           }
         });
 
         if (!x) {
+          // console.log('VALIDA 4');
+          // console.log('this.selectOtherMosaics ---> ', this.selectOtherMosaics);
+          // console.log('this.boxOtherMosaics ---> ', this.boxOtherMosaics);
           this.boxOtherMosaics.push({
             id: '',
             balance: '',
@@ -1172,7 +1184,7 @@ export class CreateTransferComponent implements OnInit {
       this.formContact = { name: '', address: '' };
       this.booksAddress();
       this.basicModal.hide();
-      this.sharedService.showSuccess('', `Successfully saved contact`);
+      this.sharedService.showSuccess('', `Contact Successfully Saved`);
       return;
     }
 
@@ -1183,7 +1195,7 @@ export class CreateTransferComponent implements OnInit {
       this.formContact = { name: '', address: '' };
       this.booksAddress();
       this.basicModal.hide();
-      this.sharedService.showSuccess('', `Successfully saved contact`);
+      this.sharedService.showSuccess('', `Contact Successfully Saved`);
       return;
     }
 

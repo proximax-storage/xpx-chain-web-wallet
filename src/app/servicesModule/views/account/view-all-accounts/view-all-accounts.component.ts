@@ -31,7 +31,8 @@ export class ViewAllAccountsComponent implements OnInit {
     createNewAccount: `/${AppConfig.routes.selectTypeCreationAccount}`,
     viewDetails: `/${AppConfig.routes.account}/`,
     deleteAccount: `/${AppConfig.routes.deleteAccount}/`,
-    multisig: `/${AppConfig.routes.convertToAccountMultisign}/`
+    multisig: `/${AppConfig.routes.editAccountMultisign}/`,
+    multisigConvert: `/${AppConfig.routes.convertToAccountMultisign}/`
   };
   subscription: Subscription[] = [];
 

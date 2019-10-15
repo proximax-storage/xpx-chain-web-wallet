@@ -64,7 +64,7 @@
                 <!-- Required field -->
                 <mdb-error
                   *ngIf="validateInput('address', '').invalid && (validateInput('address', '').dirty || validateInput('address', '').touched)">
-                  <span class="fs-08rem fw-600 color-error-message mb-05rem">Required field</span>
+                  <span class="fs-08rem fw-600 color-error-message mb-05rem">Address Required</span>
                 </mdb-error>
 
                 <!-- VALIDATION -->
@@ -111,7 +111,7 @@
         </div>
       </div>
 
-      <!-- Enter password -->
+      <!-- Enter Wallet password -->
       <div class="row">
         <div class="col-11 col-sm-10 col-lg-8 mx-auto">
           <div class="md-form form-sm">
@@ -124,12 +124,12 @@
             <input [maxlength]="configurationForm.passwordWallet.maxLength"
               [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" required
               mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" [type]="passwordMain"
-              id="password" class="form-control form-control-sm input-border" placeholder="Enter Password">
+              id="password" class="form-control form-control-sm input-border" placeholder="Enter Wallet Password">
 
             <!-- VALIDATION -->
             <mdb-error
               *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
-              <span class="fs-08rem fw-600 color-error-message">Required field</span>
+              <span class="fs-08rem fw-600 color-error-message">Password Required</span>
             </mdb-error>
           </div>
         </div>

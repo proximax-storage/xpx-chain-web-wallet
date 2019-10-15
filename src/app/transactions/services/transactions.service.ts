@@ -534,13 +534,19 @@ export class TransactionsService {
    * @memberof TransactionsService
    */
   getStructureDashboard(transaction: Transaction, othersTransactions?: TransactionsInterface[], group?: string): TransactionsInterface {
-    // console.log('transaction --->', transaction);
+    /*console.log('transaction --->', transaction);
+    console.log('othersTransactions --->', othersTransactions);*/
     // console.log('group', group);
     // console.log('\n----------------------------------------------\n');
     if (othersTransactions && othersTransactions.length > 0) {
-      const existTransction = othersTransactions.filter(next => next.data.transactionInfo.hash === transaction.transactionInfo.hash);
-      if (existTransction && existTransction.length > 0) {
-        return null;
+      try {
+        const existTransction = othersTransactions.filter(next => next.data.transactionInfo.hash === transaction.transactionInfo.hash);
+        if (existTransction && existTransction.length > 0) {
+          return null;
+        }
+      } catch (error) {
+       // console.log(error);
+       return null;
       }
     }
 
@@ -620,7 +626,8 @@ export class TransactionsService {
                   if (msg && msg["type"] && msg["type"] === "Swap") {
                     nameType = "ProximaX Swap";
                     newTransaction = Object.assign({}, transaction['innerTransactions'][0]);
-                    newTransaction['transactionInfo'].hash = transaction.transactionInfo.hash;
+                    newTransaction['transactionInfo'] = transaction.transactionInfo;
+                    // newTransaction['transactionInfo'].hash = transaction.transactionInfo.hash;
                     newTransaction.size = transaction.size;
                     newTransaction.cosignatures = transaction['cosignatures'];
                     let walletTransactionsNis = this.walletService.getWalletTransNisStorage().find(el => el.name === this.walletService.getCurrentWallet().name);

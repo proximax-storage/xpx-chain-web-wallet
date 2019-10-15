@@ -20,7 +20,7 @@ export class AccountCreatedComponent implements OnInit {
   algo: any;
   componentName = 'New Account Created';
   imgBackground = '';
-  information = 'Make sure you store your Private Key in a safe place. Access to your digital assets cannot be recovered without it.';
+  information = 'Make sure you store your private key in a safe place. Access to your digital assets cannot be recovered without it.';
   moduleName = 'Accounts';
   routes = {
     accountNis1Found: `/${AppConfig.routes.accountNis1Found}`,

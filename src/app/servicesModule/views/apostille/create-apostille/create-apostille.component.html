@@ -243,6 +243,12 @@
                 </div>
               </div>
 
+              <!-- VALIDATION -->
+              <mdb-error
+                *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
+                <span class="fs-08rem fw-600 color-error-message">Password Required</span>
+              </mdb-error>
+
               <!-- BUTTONS -->
               <div class="row mt-1rem">
                 <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">

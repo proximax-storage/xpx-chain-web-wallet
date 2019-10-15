@@ -31,7 +31,7 @@ export class DetailAccountComponent implements OnInit {
   configurationForm: ConfigurationForm;
   currenAccount: AccountsInterface = null;
   checked: boolean;
-  descriptionPrivateKey = `Make sure you store your Private Key in a safe place.
+  descriptionPrivateKey = `Make sure you store your private key in a safe place.
   Access to your digital assets cannot be recovered without it.`;
   editNameAccount = false;
   newNameAccount: string = '';
