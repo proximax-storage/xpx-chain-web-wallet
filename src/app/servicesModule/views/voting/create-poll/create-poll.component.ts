@@ -60,7 +60,7 @@ export class CreatePollComponent implements OnInit {
     },
     {
       value: 0,
-      label: 'White list',
+      label: 'Whitelist',
       selected: false,
     }
   ];

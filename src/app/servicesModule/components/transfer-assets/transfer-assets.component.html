@@ -49,7 +49,7 @@
         <!-- ACCOUNT TO SWAP -->
         <div class="col-10 col-sm-12 col-md-12 mx-auto" *ngIf="accountSelected.multiSign">
           <ng-select mdbInputDirective mdbValidate class="selectWrapper" [items]="listContacts" bindLabel="label"
-            bindValue="value" placeholder="Select an account to transfer this assets" (change)="selectContact($event)">
+            bindValue="value" placeholder="Select account that will receive swap transfer" (change)="selectContact($event)">
           </ng-select>
         </div>
 
@@ -121,7 +121,7 @@
             </div>
             <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em">
               Swap process may take several hours to complete. If you wish to proceed, you will receive a
-              certificate containing your transaction hash for your records
+              certificate containing your transaction hash for your records.
             </p>
           </div>
         </div>

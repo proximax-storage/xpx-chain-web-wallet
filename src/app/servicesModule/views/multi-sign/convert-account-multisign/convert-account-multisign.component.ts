@@ -308,18 +308,18 @@ export class ConvertAccountMultisignComponent implements OnInit {
     const disabled: boolean = (
       accountFiltered !== null &&
       accountFiltered !== undefined && accountFiltered.accountInfo !== null)
-    const InsufficientBalanceSub = `Cosignatory has sufficient balance (${this.amountFormatterSimple(this.totalFee)} XPX) to cover LockFund Fee`;
+    const InsufficientBalanceSub = `${this.amountFormatterSimple(this.totalFee)} XPX required to cover LockFund.`;
     if (!disabled)
-      return { disabledPartial: false, disabledItem: true, info: 'Insufficient balance', subInfo: InsufficientBalanceSub }
+      return { disabledPartial: false, disabledItem: true, info: 'Insufficient Balance', subInfo: InsufficientBalanceSub }
     if (!accountFiltered.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id))
-      return { disabledPartial: false, disabledItem: true, info: 'Insufficient balance', subInfo: InsufficientBalanceSub }
+      return { disabledPartial: false, disabledItem: true, info: 'Insufficient Balance', subInfo: InsufficientBalanceSub }
     const mosaicXPX = accountFiltered.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id).amount.compact();
     if (!this.validateBuildSelectAccountBalance(mosaicXPX))
-      return { disabledPartial: false, disabledItem: true, info: 'Insufficient balance', subInfo: InsufficientBalanceSub }
+      return { disabledPartial: false, disabledItem: true, info: 'Insufficient Balance', subInfo: InsufficientBalanceSub }
 
     if (accountFiltered.multisigInfo !== null) {
       if (accountFiltered.multisigInfo.multisigAccounts)
-        return { disabledPartial: false, disabledItem: true, info: 'Has cosigner', subInfo: 'Cannot convert a consignatary to multisig (feature not available)' }
+        return { disabledPartial: false, disabledItem: true, info: '', subInfo: 'Cannot convert cosignatory to multisig.' }
     }
 
 

@@ -70,7 +70,7 @@ export class DeleteWalletComponent implements OnInit {
       this.textAlert = 'Would you like to permanently delete this wallet?';
     } else if (view === 2) {
       this.description = 'will be deleted from your device.';
-      this.textAlert = 'This action will delete this Wallet.  It cannot be undone.  If you have not saved your Private Keys, access to the Accounts contained in this Wallet will be permanently lost.';
+      this.textAlert = 'This action will delete this wallet.  It cannot be undone.  If you have not saved your private keys, access to the accounts contained in this wallet will be permanently lost.';
     }
 
     this.currentView = view;
