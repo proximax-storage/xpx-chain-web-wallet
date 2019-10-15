@@ -674,7 +674,7 @@ export class CreateTransferComponent implements OnInit {
         });*/
 
         otherMosaics.forEach(elm => {
-          console.log('elm', elm);
+          console.log('\n\n ----------------------------------------------\n elm', elm);
           console.log('beforeValue', this.boxOtherMosaics[position]);
           if (this.boxOtherMosaics[position].beforeValue !== '' && elm.label === this.boxOtherMosaics[position].beforeValue) {
             console.log('AQUI ES EL FUCKING PEO');
@@ -682,7 +682,7 @@ export class CreateTransferComponent implements OnInit {
           }
         });
 
-        console.log('--otherMosaics--', otherMosaics);
+        console.log('\n\n--------------- \n--otherMosaics--', otherMosaics);
         element.selectOtherMosaics = otherMosaics;
       });
 
