@@ -69,7 +69,7 @@ export class ApostilleService {
 
     // Add Original File to zip
 
-    const nameFile = `${title} --Apostille TX ${ntyData.txHash} --Date ${dateFull.toString()} ${ntyData.extensionFile}`;
+    const nameFile = `${title} --Apostille TX ${ntyData.txHash} --Date ${dateFull.toString()}${ntyData.extensionFile}`;
     zip.file(`${nameFile}`, (crypto.enc.Base64.stringify(rawFileContent)), { base64: true, comment: ntyData.typeFile });
     return {
       zipFile: zip,
