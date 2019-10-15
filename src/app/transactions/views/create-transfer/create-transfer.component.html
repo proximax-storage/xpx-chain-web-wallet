@@ -248,7 +248,7 @@
                 <div class="col-12 mx-auto">
                   <ng-select class="custom" mdbInputDirective mdbValidate class="selectWrapper"
                     [items]="otherMosaic.selectOtherMosaics" bindLabel="label" bindValue="value"
-                    placeholder="Select Mosaic" (change)="otherMosaicsChange($event, i)" [disabled]="disabledAllField">
+                    placeholder="Select Mosaic" (change)="otherMosaicsChange($event, i)" clearAllText="Clean" [disabled]="disabledAllField">
                   </ng-select>
                 </div>
               </div>
