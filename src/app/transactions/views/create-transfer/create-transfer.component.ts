@@ -652,6 +652,8 @@ export class CreateTransferComponent implements OnInit {
    * @memberof CreateTransferComponent
    */
   otherMosaicsChange(mosaicSelected: any, position: number) {
+    // console.log('\n\n mosaicSelected ---> ', mosaicSelected);
+    // console.log('\n\n this.boxOtherMosaics[position] ---> ', this.boxOtherMosaics[position]);
     if (mosaicSelected !== undefined) {
       if (this.boxOtherMosaics[position].beforeValue === '' || !this.boxOtherMosaics[position].beforeValue) {
         this.otherMosaicsBuild(mosaicSelected, position);
