@@ -64,10 +64,10 @@
               <!-- VALIDATION -->
               <mdb-error
                 *ngIf="validateInput('duration', '').invalid && (validateInput('duration', '').dirty || validateInput('duration', '').touched)">
-                <span>Required field - Only numbers</span>
+                <span>Required Field</span>
               </mdb-error>
               <mdb-error *ngIf="exceededDuration">
-                <span>Duration exceeded</span>
+                <span>Duration Exceeded</span>
               </mdb-error>
 
               <mdb-error *ngIf="validateInput('duration', '').valid && insufficientBalanceDuration">

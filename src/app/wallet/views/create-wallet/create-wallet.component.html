@@ -67,7 +67,7 @@
                   src="assets/images/img/icon-show-hide-password-grey.svg" *ngIf="passwordMain === 'text'">
                 <input formControlName="password" mdbInputDirective mdbValidate [validateSuccess]="true"
                   [validateError]="true" [type]="passwordMain" id="password{{errorMatchPassword}}"
-                  class="form-control form-control-sm input-border" placeholder="Password" [maxLength]="configurationForm.passwordWallet.maxLength">
+                  class="form-control form-control-sm input-border" placeholder="Enter a New Password" [maxLength]="configurationForm.passwordWallet.maxLength">
 
                 <!-- VALIDATION -->
                 <mdb-error *ngIf="
@@ -91,7 +91,7 @@
                   src="assets/images/img/icon-show-hide-password-grey.svg" *ngIf="passwordConfirm === 'text'">
                 <input formControlName="confirm_password" mdbInputDirective mdbValidate [validateSuccess]="true"
                   [validateError]="true" [type]="passwordConfirm" id="confirm-password{{errorMatchPassword}}"
-                  class="form-control form-control-sm input-border" placeholder="Confirm Password" [maxLength]="configurationForm.passwordWallet.maxLength">
+                  class="form-control form-control-sm input-border" placeholder="Confirm New Password" [maxLength]="configurationForm.passwordWallet.maxLength">
 
                 <!-- VALIDATION -->
                 <mdb-error

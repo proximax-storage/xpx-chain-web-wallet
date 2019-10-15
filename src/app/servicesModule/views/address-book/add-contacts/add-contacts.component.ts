@@ -105,7 +105,7 @@ export class AddContactsComponent implements OnInit {
         const saved = this.serviceModuleService.saveContacts(paramsStorage);
         if (saved) {
           this.contactForm.reset();
-          this.sharedService.showSuccess('', `Successfully saved contact`);
+          this.sharedService.showSuccess('', `Contact Successfully Saved`);
           this.router.navigate([`/${AppConfig.routes.addressBook}`]);
           return;
         }

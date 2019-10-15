@@ -154,7 +154,7 @@ export class SharedService {
    * @memberof SharedService
    */
   showSuccess(title: string, bodyMessage: string) {
-    const options = { closeButton: true, tapToDismiss: false, toastClass: 'toastSuccess', timeOut: 4000, messageClass: 'messageClass', positionClass: 'md-toast-top-center' };
+    const options = { closeButton: true, tapToDismiss: false, toastClass: 'toastSuccess', timeOut: 2500, messageClass: 'messageClass', positionClass: 'md-toast-top-center' };
     this.toastrService.success(bodyMessage, '', options);
   }
 
@@ -167,7 +167,7 @@ export class SharedService {
    * @memberof SharedService
    */
   showSuccessTimeout(title: string, bodyMessage: string, timeout: number) {
-    const options = { closeButton: true, tapToDismiss: false, toastClass: 'toastSuccess', timeOut: 4000, messageClass: 'messageClass', positionClass: 'md-toast-top-center' };
+    const options = { closeButton: true, tapToDismiss: false, toastClass: 'toastSuccess', timeOut: 2500, messageClass: 'messageClass', positionClass: 'md-toast-top-center' };
     this.toastrService.success(bodyMessage, '', options);
   }
 
@@ -179,7 +179,7 @@ export class SharedService {
    * @memberof SharedService
    */
   showError(title: string, bodyMessage: string) {
-    const options = { closeButton: true, tapToDismiss: false, toastClass: 'toastError', timeOut: 4000, messageClass: 'messageClass', positionClass: 'md-toast-top-center' };
+    const options = { closeButton: true, tapToDismiss: false, toastClass: 'toastError', timeOut: 2500, messageClass: 'messageClass', positionClass: 'md-toast-top-center' };
     this.toastrService.error(bodyMessage, '', options);
   }
 
@@ -191,7 +191,7 @@ export class SharedService {
    * @memberof SharedService
    */
   showWarning(title: string, bodyMessage: string) {
-    const options = { closeButton: true, tapToDismiss: false, toastClass: 'toastWarning', timeOut: 4000, messageClass: 'messageClass', positionClass: 'md-toast-top-center' };
+    const options = { closeButton: true, tapToDismiss: false, toastClass: 'toastWarning', timeOut: 2500, messageClass: 'messageClass', positionClass: 'md-toast-top-center' };
     this.toastrService.warning(bodyMessage, '', options);
   }
 
@@ -203,7 +203,7 @@ export class SharedService {
    * @memberof SharedService
    */
   showInfo(title: string, bodyMessage: string) {
-    const options = { closeButton: true, tapToDismiss: false, toastClass: 'toastInfo', timeOut: 4000, messageClass: 'messageClass', positionClass: 'md-toast-top-center' };
+    const options = { closeButton: true, tapToDismiss: false, toastClass: 'toastInfo', timeOut: 2500, messageClass: 'messageClass', positionClass: 'md-toast-top-center' };
     this.toastrService.info(bodyMessage, '', options);
   }
 
