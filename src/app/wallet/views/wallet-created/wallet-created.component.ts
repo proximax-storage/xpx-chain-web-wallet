@@ -101,7 +101,7 @@ export class WalletCreatedComponent implements OnInit {
    */
   goToRoute() {
     let nis1Info = [];
-    console.log('---- ACCOUNT WALLET CREATED ----', this.walletService.accountWalletCreated);
+    // console.log('---- ACCOUNT WALLET CREATED ----', this.walletService.accountWalletCreated);
     if (this.walletService.accountWalletCreated && this.walletService.accountWalletCreated.dataAccount && this.walletService.accountWalletCreated.dataAccount.nis1Account) {
       nis1Info = this.walletService.getNis1AccounsWallet();
     }
