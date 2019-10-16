@@ -22,6 +22,7 @@ import { environment } from '../../../../../environments/environment';
 import { HeaderServicesInterface } from '../../../services/services-module.service';
 import * as FeeCalculationStrategy from 'tsjs-xpx-chain-sdk/dist/src/model/transaction/FeeCalculationStrategy';
 import { TransactionsService } from 'src/app/transactions/services/transactions.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-upload-file',
@@ -56,6 +57,10 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
   mosaics: any[];
   noEncripted: boolean = false;
   fee: any = '0.000000';
+  subscription: Subscription[] = [];
+  vestedBalance: { part1: string; part2: string; };
+  amountAccount: number;
+  insufficientBalance: boolean;
 
   constructor(
     private cdRef: ChangeDetectorRef,
@@ -75,10 +80,29 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
     this.configurationForm = this.sharedService.configurationForm;
     this.createForm();
     this.initialiseStorage();
+    this.balance()
   }
 
   ngAfterViewInit() {
     this.cdRef.detectChanges();
+  }
+
+  balance() {
+    this.subscription.push(this.transactionService.getBalance$().subscribe(
+      next => this.vestedBalance = this.transactionService.getDataPart(next, 6),
+      error => this.vestedBalance = {
+        part1: '0',
+        part2: '000000'
+      }
+    ));
+    let vestedBalance = this.vestedBalance.part1.concat(this.vestedBalance.part2).replace(/,/g, '');
+    this.amountAccount = Number(vestedBalance);
+
+    if (this.amountAccount === 0) {
+      this.uploadForm.disable();
+      this.insufficientBalance = true;
+    }
+
   }
 
   /**
@@ -87,58 +111,63 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
    * @memberof UploadFileComponent
    */
   async upload() {
-    this.doValidate();
-    if (this.uploadForm.valid && !this.blockUpload) {
-      const common = {
-        password: this.uploadForm.get('walletPassword').value,
-        privateKey: ''
-      }
-
-      if (this.walletService.decrypt(common)) {
-        this.blockUpload = true;
-        const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
-        try {
-          const uploadedFile = this.files[0].nativeFile;
-          const uploadedFileType = uploadedFile.type;
-          const uploadedFileContent = await this.readFile(uploadedFile);
-          const fileName = this.uploadForm.get('filePath').value;
-          const optionalFileName = uploadedFile.name;
-          const metaParams = Uint8ArrayParameterData.create(uploadedFileContent, optionalFileName, '', uploadedFileType);
-          const uploadParams = UploadParameter.createForUint8ArrayUpload(metaParams, account.privateKey);
-          const encryptionMethod = this.uploadForm.get('encryptionMethod').value;
-
-          switch (encryptionMethod) {
-            case PrivacyType.PLAIN:
-              uploadParams.withPlainPrivacy();
-              break;
-            case PrivacyType.PASSWORD:
-              const encryptionPassword = this.uploadForm.controls.encryptionPasswords.get('password').value;
-              uploadParams.withPasswordPrivacy(encryptionPassword);
-              break;
-            case PrivacyType.NEM_KEYS:
-              const publicKey = this.uploadForm.get('recipientPublicKey').value;
-              const privateKey = this.uploadForm.get('recipientPrivateKey').value;
-              uploadParams.withNemKeysPrivacy(privateKey, publicKey);
-              uploadParams.withRecipientPublicKey(publicKey);
-              break;
-          }
-          uploadParams.withTransactionMosaics(this.mosaics);
-          const result = await this.uploader.upload(uploadParams.build());
-          
-          this.clearForm();
-          this.sharedService.showSuccessTimeout('Upload', 'Upload successful.', 8000);
-          this.blockUpload = false;
-        } catch (error) {
-          this.blockUpload = false;
-          this.sharedService.showError('Error', error);
+    const validateAmount = this.transactionService.validateBuildSelectAccountBalance(this.amountAccount, Number(this.fee), 0);
+    if (validateAmount) {
+      this.doValidate();
+      if (this.uploadForm.valid && !this.blockUpload) {
+        const common = {
+          password: this.uploadForm.get('walletPassword').value,
+          privateKey: ''
         }
-      }
-      else {
-        this.blockUpload = false;
+
+        if (this.walletService.decrypt(common)) {
+          this.blockUpload = true;
+          const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
+          try {
+            const uploadedFile = this.files[0].nativeFile;
+            const uploadedFileType = uploadedFile.type;
+            const uploadedFileContent = await this.readFile(uploadedFile);
+            const fileName = this.uploadForm.get('filePath').value;
+            const optionalFileName = uploadedFile.name;
+            const metaParams = Uint8ArrayParameterData.create(uploadedFileContent, optionalFileName, '', uploadedFileType);
+            const uploadParams = UploadParameter.createForUint8ArrayUpload(metaParams, account.privateKey);
+            const encryptionMethod = this.uploadForm.get('encryptionMethod').value;
+
+            switch (encryptionMethod) {
+              case PrivacyType.PLAIN:
+                uploadParams.withPlainPrivacy();
+                break;
+              case PrivacyType.PASSWORD:
+                const encryptionPassword = this.uploadForm.controls.encryptionPasswords.get('password').value;
+                uploadParams.withPasswordPrivacy(encryptionPassword);
+                break;
+              case PrivacyType.NEM_KEYS:
+                const publicKey = this.uploadForm.get('recipientPublicKey').value;
+                const privateKey = this.uploadForm.get('recipientPrivateKey').value;
+                uploadParams.withNemKeysPrivacy(privateKey, publicKey);
+                uploadParams.withRecipientPublicKey(publicKey);
+                break;
+            }
+            uploadParams.withTransactionMosaics(this.mosaics);
+            const result = await this.uploader.upload(uploadParams.build());
+
+            this.clearForm();
+            this.sharedService.showSuccessTimeout('Upload', 'Upload successful.', 8000);
+            this.blockUpload = false;
+          } catch (error) {
+            this.blockUpload = false;
+            this.sharedService.showError('Error', error);
+          }
+        }
+        else {
+          this.blockUpload = false;
+        }
+      } else {
+        //show error here
+
       }
     } else {
-      //show error here
-
+      this.sharedService.showError('', 'Insufficient Balance');
     }
   }
 
@@ -151,7 +180,7 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
       this.fee = this.transactionService.amountFormatterSimple(b.compact())
     } else if (message === 0 && mosaicsToSend.length === 0) {
       this.fee = '0.000000'
-    }else {
+    } else {
       this.fee = this.transactionService.amountFormatterSimple(b.compact())
     }
   }
@@ -474,16 +503,17 @@ export class UploadFileComponent implements OnInit, AfterViewInit {
     return files;
   }
 
-  builderMessage(files){
+  builderMessage(files) {
     let valor = {
-      "privacyType":1001,
-      "data":{
-        "contentType":files.type,
-        "dataHash":"Qmf9vKuR6MnTEGYXhzwpMib5EFGoXPWCJh3mXTvasb3Cas",
-        "description":"",
-        "name":files.name,
-        "timestamp":files.lastModifiedDate},
-        "version":"1.0"
+      "privacyType": 1001,
+      "data": {
+        "contentType": files.type,
+        "dataHash": "Qmf9vKuR6MnTEGYXhzwpMib5EFGoXPWCJh3mXTvasb3Cas",
+        "description": "",
+        "name": files.name,
+        "timestamp": files.lastModifiedDate
+      },
+      "version": "1.0"
     }
     this.calculateFee(JSON.stringify(valor))
   }
