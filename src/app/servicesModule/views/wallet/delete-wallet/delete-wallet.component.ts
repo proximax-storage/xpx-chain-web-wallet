@@ -116,7 +116,7 @@ export class DeleteWalletComponent implements OnInit {
           let value = this.walletService.removeWallet(this.selectedWallet.name);
           this.wallets = this.walletService.getWalletStorage();
           this.servicesModuleService.removeItemStorage(environment.itemBooksAddress, this.selectedWallet.name)
-          this.sharedService.showSuccess('', 'Wallet removed');
+          this.sharedService.showSuccess('', 'Wallet Removed');
           this.changeView();
           this.clearForm();
           this.logOut();
@@ -124,7 +124,7 @@ export class DeleteWalletComponent implements OnInit {
           let value = this.walletService.removeWallet(this.selectedWallet.name);
           this.wallets = this.walletService.getWalletStorage();
           this.servicesModuleService.removeItemStorage(environment.itemBooksAddress, this.selectedWallet.name)
-          this.sharedService.showSuccess('', 'Wallet removed');
+          this.sharedService.showSuccess('', 'Wallet Removed');
           this.changeView();
           this.clearForm();
         }

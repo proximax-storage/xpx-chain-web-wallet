@@ -120,7 +120,7 @@ export class DeleteWalletConfirmComponent implements OnInit {
         const value = this.walletService.removeWallet(this.wallet.name);
         if (value) {
           this.servicesModuleService.removeItemStorage(environment.itemBooksAddress, this.wallet.name)
-          this.sharedService.showSuccess('', 'Wallet removed');
+          this.sharedService.showSuccess('', 'Wallet Removed');
           this.clearForm();
           this.router.navigate([`/${AppConfig.routes.viewAllWallets}`]);
         }

@@ -1251,9 +1251,9 @@ input.form-control.validate-success.ng-valid.ng-dirty, input.form-control.valida
 
 #toast-container.md-toast-bottom-center>mdb-toast-component, #toast-container.md-toast-top-center>mdb-toast-component {
   /*margin: 6px 0 6px !important;*/
-  /*margin: 110px 0 110px !important;*/
+  /*margin: 25% auto !important;*/
+  margin: 140px 0 !important;
   background: rgba(0,0,0,0.6 );
-  margin: 25% auto !important;
   padding: 1.5rem 0;
   width:50% !important;
   border-radius: 100px;
@@ -1292,9 +1292,9 @@ input.form-control.validate-success.ng-valid.ng-dirty, input.form-control.valida
 }
 
 button.md-toast-close-button {
-  /*padding-right: .5rem !important;
-  color: #FFFFFF !important;*/
-  display: none;
+  padding-right: 2rem !important;
+  color: #FFFFFF !important;
+  /*display: none;*/
 }
 
 .messageClass {
@@ -1302,7 +1302,7 @@ button.md-toast-close-button {
   font-size: .9rem;
   color: #FFFFFF !important;
   font-weight: 600;
-  text-transform: capitalize !important;
+  /*text-transform: capitalize !important;*/
 }
 
 .md-toast-success:before {

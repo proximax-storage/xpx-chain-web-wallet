@@ -165,7 +165,7 @@ export class HomeComponent implements OnInit {
       walletsStorage.push(walletStorage);
       localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorage));
 
-      this.sharedService.showSuccess('', 'Wallet imported correctly');
+      this.sharedService.showSuccess('', 'Wallet Imported Correctly');
       this.router.navigate([`/${AppConfig.routes.auth}`]);
     } else {
       this.sharedService.showError('', 'Password Invalid');
@@ -237,7 +237,7 @@ export class HomeComponent implements OnInit {
             walletsStorage.push(wallet);
 
             localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorage));
-            this.sharedService.showSuccess('', 'Wallet imported correctly');
+            this.sharedService.showSuccess('', 'Wallet Imported Correctly');
             this.router.navigate([`/${AppConfig.routes.auth}`]);
           } else {
             this.sharedService.showWarning('', 'The wallet already exists');

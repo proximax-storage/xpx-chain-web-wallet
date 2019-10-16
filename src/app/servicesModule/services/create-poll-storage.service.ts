@@ -118,7 +118,7 @@ export class CreatePollStorageService {
       });
 
       this.blockUI.stop();
-      this.sharedService.showSuccess('Success', 'Record saved succesfully');
+      this.sharedService.showSuccess('Success', 'Record Saved Succesfully');
       resolve(this.transactionResults);
     });
     return await promise;

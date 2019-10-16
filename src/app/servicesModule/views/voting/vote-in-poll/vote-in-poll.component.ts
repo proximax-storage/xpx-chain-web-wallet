@@ -197,7 +197,7 @@ export class VoteInPollComponent implements OnInit {
       this.dataTransaction;
       this.certificationModal.show();
     } else {
-      this.sharedService.showInfo('', 'Transaction unconfirmed');
+      this.sharedService.showInfo('', 'Transaction Unconfirmed');
     }
 
   }
@@ -386,7 +386,7 @@ export class VoteInPollComponent implements OnInit {
             this.votingInPoll.enable();
           } else if (this.statusPoll(this.pollSelected.endDate, this.pollSelected.startDate) === 'Ended') {
             this.searching = false;
-            this.sharedService.showInfo('', `Finished poll`);
+            this.sharedService.showInfo('', `Finished Poll`);
             this.viewCertificate('', this.pollSelected.name, 'Ended', this.transaction)
 
           }
