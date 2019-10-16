@@ -107,8 +107,6 @@ export class CreatePollComponent implements OnInit {
     ));
     let vestedBalance = this.vestedBalance.part1.concat(this.vestedBalance.part2).replace(/,/g,'');
     this.amountAccount = Number(vestedBalance);
-    console.log('this.amountAccount', this.amountAccount);
-
     if(this.amountAccount < 0.098250){
       this.firstFormGroup.disable();
       this.insufficientBalance = true;
