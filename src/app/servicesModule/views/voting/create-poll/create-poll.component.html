@@ -23,6 +23,16 @@
     <!-- DETAILS -->
     <mdb-step name="Details" [stepForm]="firstFormGroup">
       <form [formGroup]="firstFormGroup">
+          <div class="row">
+              <div class="col-11 mb-1rem mx-auto box-transparent-border-red" *ngIf="insufficientBalance">
+                <div class="txt-a-center">
+                  <img src="assets/images/img/icon-restriction-white.svg" style="filter: invert(50%)" alt="" width="30">
+                </div>
+                <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em">
+                  Insufficient Balance.
+                </p>
+              </div>
+            </div>
         <div class="row mt-1rem">
           <div class="col-7 col-md-8 col-xl-7 mb-2rem">
             <!-- TITLE -->
