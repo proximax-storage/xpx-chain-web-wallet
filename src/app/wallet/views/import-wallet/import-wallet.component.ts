@@ -56,6 +56,52 @@ export class ImportWalletComponent implements OnInit {
     this.walletService.setAccountSelectedWalletNis1(null);
   }
 
+  /**
+ *
+ *
+ * @memberof ImportWalletComponent
+ */
+  async importSimpleWallet() {
+    if (this.importWalletForm.valid && this.isValid) {
+      // Check if name wallet exist
+      let walletName = this.importWalletForm.get('nameWallet').value;
+      walletName = (walletName.includes(' ') === true) ? walletName.split(' ').join('_') : walletName;
+      const existWallet = this.walletService.getWalletStorage().find((element: any) => element.name === walletName);
+      if (existWallet === undefined) {
+        const nameWallet = walletName;
+        const network = this.importWalletForm.get('network').value;
+        const privateKey = this.importWalletForm.get('privateKey').value;
+        const password = this.proximaxProvider.createPassword(this.importWalletForm.controls.passwords.get('password').value);
+        const wallet = this.proximaxProvider.createAccountFromPrivateKey(nameWallet, password, privateKey, network);
+        if (this.saveNis1) {
+          this.walletService.clearNis1AccounsWallet();
+          this.spinnerButton = true;
+          const nis1Wallet = this.nemProvider.createAccountPrivateKey(this.importWalletForm.get('privateKey').value);
+          this.nis1Account = {
+            address: nis1Wallet.address,
+            publicKey: nis1Wallet.publicKey
+          };
+          // const accountInfo = await this.nemProvider.getAccountInfo(nis1Wallet.address).toPromise();
+          // console.log('this is a nis1 wallet ---------->', nis1Wallet);
+          this.saveAccount(wallet, nameWallet, password);
+          this.nemProvider.getAccountsInfoAccountNew(nis1Wallet, nameWallet);
+        } else {
+          this.saveAccount(wallet, nameWallet, password);
+        }
+      } else {
+        this.clearForm('nameWallet');
+        this.sharedService.showError('', 'This name is already in use, try another name');
+      }
+    }
+  }
+
+  /**
+   *
+   *
+   * @param {*} inputType
+   * @param {boolean} [main=true]
+   * @memberof ImportWalletComponent
+   */
   changeInputType(inputType, main = true) {
     let newType = this.sharedService.changeInputType(inputType)
     if (main === true) {
@@ -65,6 +111,11 @@ export class ImportWalletComponent implements OnInit {
     }
   }
 
+  /**
+   *
+   *
+   * @memberof ImportWalletComponent
+   */
   createFormImportWallet() {
     this.importWalletForm = this.fb.group({
       nameWallet: ['', [
@@ -104,6 +155,14 @@ export class ImportWalletComponent implements OnInit {
     });
   }
 
+  /**
+   *
+   *
+   * @param {string} [nameInput='']
+   * @param {string} [nameControl='']
+   * @returns
+   * @memberof ImportWalletComponent
+   */
   clearForm(nameInput: string = '', nameControl: string = '') {
     if (nameInput !== '') {
       if (nameControl !== '') {
@@ -120,52 +179,14 @@ export class ImportWalletComponent implements OnInit {
     return;
   }
 
-  async importSimpleWallet() {
-    if (this.importWalletForm.valid && this.isValid) {
-      //verify if name wallet isset
-      const existWallet = this.walletService.getWalletStorage().find(
-        (element: any) => {
-          let walletName = this.importWalletForm.get('nameWallet').value
-          walletName = (walletName.includes(' ') === true) ? walletName.split(' ').join('_') : walletName
-          return element.name === walletName;
-        }
-      );
-
-      //Wallet does not exist
-      if (existWallet === undefined) {
-        let walletName = this.importWalletForm.get('nameWallet').value
-        walletName = (walletName.includes(' ') === true) ? walletName.split(' ').join('_') : walletName
-        const nameWallet = walletName;
-        const network = this.importWalletForm.get('network').value;
-        const privateKey = this.importWalletForm.get('privateKey').value;
-        const password = this.proximaxProvider.createPassword(this.importWalletForm.controls.passwords.get('password').value);
-        const wallet = this.proximaxProvider.createAccountFromPrivateKey(nameWallet, password, privateKey, network);
-        // const nis1Wallet = this.nemProvider.createPrivateKeyWallet(nameWallet, this.importWalletForm.controls.passwords.get('password').value, privateKey);
-
-        if (this.saveNis1) {
-          this.walletService.clearNis1AccounsWallet();
-          this.spinnerButton = true;
-          const nis1Wallet = this.nemProvider.createAccountPrivateKey(this.importWalletForm.get('privateKey').value);
-          this.nis1Account = {
-            address: nis1Wallet.address,
-            publicKey: nis1Wallet.publicKey
-          };
-          // const accountInfo = await this.nemProvider.getAccountInfo(nis1Wallet.address).toPromise();
-          // console.log('this is a nis1 wallet ---------->', nis1Wallet);
-          this.saveAccount(wallet, nameWallet, password);
-          this.nemProvider.getAccountsInfoAccountNew(nis1Wallet, nameWallet);
-        } else {
-          this.saveAccount(wallet, nameWallet, password);
-        }
-      } else {
-        //Error of repeated Wallet
-        this.clearForm('nameWallet');
-        this.sharedService.showError('', 'This name is already in use, try another name');
-      }
-    }
-  }
-
-
+  /**
+   *
+   *
+   * @param {*} wallet
+   * @param {string} nameWallet
+   * @param {*} password
+   * @memberof ImportWalletComponent
+   */
   saveAccount(wallet: any, nameWallet: string, password: any) {
     const accountBuilded = this.walletService.buildAccount({
       address: wallet.address['address'],
@@ -177,8 +198,7 @@ export class ImportWalletComponent implements OnInit {
       nameAccount: 'Primary',
       publicAccount: this.proximaxProvider.getPublicAccountFromPrivateKey(this.proximaxProvider.decryptPrivateKey(
         password,
-        wallet.
-          encryptedPrivateKey.encryptedKey,
+        wallet.encryptedPrivateKey.encryptedKey,
         wallet.encryptedPrivateKey.iv
       ).toUpperCase(), wallet.network),
       isMultisign: null,
@@ -204,11 +224,24 @@ export class ImportWalletComponent implements OnInit {
     this.router.navigate([`/${AppConfig.routes.walletCreated}`]);
   }
 
+  /**
+   *
+   *
+   * @memberof ImportWalletComponent
+   */
   switchSaveNis1() {
     this.saveNis1 = !this.saveNis1
-    // console.log(this.saveNis1);
   }
 
+  /**
+   *
+   *
+   * @param {string} [nameInput='']
+   * @param {string} [nameControl='']
+   * @param {string} [nameValidation='']
+   * @returns
+   * @memberof ImportWalletComponent
+   */
   validateInput(nameInput: string = '', nameControl: string = '', nameValidation: string = '') {
     let validation: AbstractControl = null;
     if (nameInput !== '' && nameControl !== '') {
@@ -221,7 +254,12 @@ export class ImportWalletComponent implements OnInit {
     return validation;
   }
 
-
+  /**
+   *
+   *
+   * @returns
+   * @memberof ImportWalletComponent
+   */
   validateMatchPassword() {
     if (this.validateInput('password', 'passwords').valid &&
       this.validateInput('confirm_password', 'passwords').valid &&
@@ -236,7 +274,12 @@ export class ImportWalletComponent implements OnInit {
     return false;
   }
 
-
+  /**
+   *
+   *
+   * @returns
+   * @memberof ImportWalletComponent
+   */
   validateNameWallet() {
     if (this.importWalletForm.get('nameWallet').valid) {
       const existWallet = this.walletService.getWalletStorage().find(

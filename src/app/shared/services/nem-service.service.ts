@@ -269,98 +269,100 @@ export class NemServiceService {
    */
   getAccountsInfoAccountNew(account: any, name: string) {
     const address = this.createAddressToString(account.address.value);
-    this.getAccountInfo(address).pipe(first()).pipe((timeout(10000))).subscribe(
-      next => {
-        // console.log('this is resp-------->', next);
-        let consignerOf: boolean = false;
-        let consignerAccountsInfo: any = [];
+    this.getAccountInfo(address).pipe(first()).pipe((timeout(10000))).subscribe(next => {
+      //console.log('GET ACCOUNT INFO NIS1 --->', next);
+      let consignerOf: boolean = false;
+      let consignerAccountsInfo: any = [];
 
-        if (next['meta']['cosignatoryOf'].length > 0) {
-          consignerOf = true;
-          consignerAccountsInfo = next['meta']['cosignatoryOf'];
-        }
+      if (next['meta']['cosignatoryOf'].length > 0) {
+        consignerOf = true;
+        consignerAccountsInfo = next['meta']['cosignatoryOf'];
+      }
 
-        this.getOwnedMosaics(address).pipe(first()).pipe((timeout(10000))).subscribe(
-          async next => {
-            for (const el of next) {
-              if (el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx') {
-                let realQuantity = null;
-                realQuantity = this.transactionService.addZeros(el.properties.divisibility, el.quantity);
-                realQuantity = this.amountFormatter(realQuantity, el, el.properties.divisibility);
-                const transactions = await this.getUnconfirmedTransaction(account.address);
-                let balance = 0;
-                if (transactions.length > 0) {
-                  let relativeAmount = realQuantity;
-                  for (const item of transactions) {
-                    if (item.type === 257 && item['signer']['address']['value'] === address['value']) {
-                      for (const mosaic of item['_assets']) {
-                        if (mosaic.assetId.namespaceId === 'prx' && mosaic.assetId.name === 'xpx') {
-                          const quantity = parseFloat(this.amountFormatter(mosaic.quantity, el, el.properties.divisibility));
-                          const quantitywhitoutFormat = relativeAmount.split(',').join('');
-                          const quantityFormat = this.amountFormatter(parseInt((quantitywhitoutFormat - quantity).toString().split('.').join('')), el, el.properties.divisibility);
-                          relativeAmount = quantityFormat;
-                        }
-                      }
-                    }
+      this.getOwnedMosaics(address).pipe(first()).pipe((timeout(10000))).subscribe(async next => {
+        //console.log('GET OWNED MOSAIC NIS1 --->', next);
+        const xpxFound = next.find(el => el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx');
+        //console.log('XPX IS FOUND?? ---> ', xpxFound);
+        if (xpxFound) {
+          const quantityFillZeros = this.transactionService.addZeros(xpxFound.properties.divisibility, xpxFound.quantity);
+          const realQuantity: any = this.amountFormatter(quantityFillZeros, xpxFound, xpxFound.properties.divisibility);
+          const transactions = await this.getUnconfirmedTransaction(account.address);
+          let balance = 0;
+          if (transactions.length > 0) {
+            let relativeAmount = realQuantity;
+            for (const item of transactions) {
+              if (item.type === 257 && item['signer']['address']['value'] === address['value']) {
+                for (const mosaic of item['_assets']) {
+                  if (mosaic.assetId.namespaceId === 'prx' && mosaic.assetId.name === 'xpx') {
+                    const quantity = parseFloat(this.amountFormatter(mosaic.quantity, xpxFound, xpxFound.properties.divisibility));
+                    const quantitywhitoutFormat = relativeAmount.split(',').join('');
+                    const quantityFormat = this.amountFormatter(parseInt((quantitywhitoutFormat - quantity).toString().split('.').join('')), xpxFound, xpxFound.properties.divisibility);
+                    relativeAmount = quantityFormat;
                   }
-                  balance = relativeAmount;
-                } else {
-                  balance = realQuantity;
                 }
-                const accountNis1 = {
-                  nameAccount: name,
-                  address: account.address,
-                  publicKey: account.publicKey,
-                  consignerOf: consignerOf,
-                  consignerAccounts: consignerAccountsInfo,
-                  mosaic: el,
-                  multiSign: false,
-                  balance: balance,
-                  route: `/${AppConfig.routes.viewAllAccount}`
-                }
-                const accounts = this.walletService.getNis1AccounsWallet();
-                accounts.push(accountNis1);
-                this.walletService.setNis1AccountsWallet$(accounts);
-                this.walletService.setNis1AccounsWallet(accountNis1);
               }
             }
-          },
-          async error => {
-            const accountNis1 = {
-              nameAccount: name,
-              address: account.address,
-              publicKey: account.publicKey,
-              consignerOf: consignerOf,
-              consignerAccounts: consignerAccountsInfo,
-              mosaic: null,
-              multiSign: false,
-              balance: '0.000000',
-              route: `/${AppConfig.routes.viewAllAccount}`
-            };
-            const accounts = this.walletService.getNis1AccounsWallet();
-            accounts.push(accountNis1);
-            this.walletService.setNis1AccountsWallet$(accounts);
-            this.walletService.setNis1AccounsWallet(accountNis1);
+
+            balance = relativeAmount;
+          } else {
+            balance = realQuantity;
           }
-        )
-      },
-      async error => {
+
+          const accountNis1 = {
+            nameAccount: name,
+            address: account.address,
+            publicKey: account.publicKey,
+            consignerOf: consignerOf,
+            consignerAccounts: consignerAccountsInfo,
+            mosaic: xpxFound,
+            multiSign: false,
+            balance: balance,
+            route: `/${AppConfig.routes.viewAllAccount}`
+          }
+
+          const accounts = this.walletService.getNis1AccounsWallet();
+          accounts.push(accountNis1);
+          this.walletService.setNis1AccountsWallet$(accounts);
+          this.walletService.setNis1AccounsWallet(accountNis1);
+        } else {
+          this.walletService.setNis1AccountsWallet$(null);
+        }
+      }, async error => {
         const accountNis1 = {
           nameAccount: name,
           address: account.address,
           publicKey: account.publicKey,
-          consignerOf: false,
-          consignerAccounts: [],
+          consignerOf: consignerOf,
+          consignerAccounts: consignerAccountsInfo,
           mosaic: null,
           multiSign: false,
           balance: '0.000000',
           route: `/${AppConfig.routes.viewAllAccount}`
-        }
+        };
+
         const accounts = this.walletService.getNis1AccounsWallet();
         accounts.push(accountNis1);
         this.walletService.setNis1AccountsWallet$(accounts);
         this.walletService.setNis1AccounsWallet(accountNis1);
+      });
+    }, async error => {
+      const accountNis1 = {
+        nameAccount: name,
+        address: account.address,
+        publicKey: account.publicKey,
+        consignerOf: false,
+        consignerAccounts: [],
+        mosaic: null,
+        multiSign: false,
+        balance: '0.000000',
+        route: `/${AppConfig.routes.viewAllAccount}`
       }
+
+      const accounts = this.walletService.getNis1AccounsWallet();
+      accounts.push(accountNis1);
+      this.walletService.setNis1AccountsWallet$(accounts);
+      this.walletService.setNis1AccounsWallet(accountNis1);
+    }
     )
   }
 

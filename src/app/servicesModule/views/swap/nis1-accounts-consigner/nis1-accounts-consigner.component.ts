@@ -1,15 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { WalletService } from 'src/app/wallet/services/wallet.service';
-import { PublicAccount } from 'nem-library';
-import { SharedService } from 'src/app/shared/services/shared.service';
 import { timeout, first } from 'rxjs/operators';
-import { NemServiceService } from 'src/app/shared/services/nem-service.service';
 import { Router } from '@angular/router';
-import { AppConfig } from 'src/app/config/app.config';
-import { TransactionsService } from 'src/app/transactions/services/transactions.service';
-import { type } from 'os';
-import { join } from 'path';
-import { HeaderServicesInterface } from 'src/app/servicesModule/services/services-module.service';
+import { WalletService } from '../../../../wallet/services/wallet.service';
+import { SharedService } from '../../../../shared/services/shared.service';
+import { NemServiceService } from '../../../../shared/services/nem-service.service';
+import { AppConfig } from '../../../../config/app.config';
+import { TransactionsService } from '../../../../transactions/services/transactions.service';
+import { HeaderServicesInterface } from '../../../../servicesModule/services/services-module.service';
 @Component({
   selector: 'app-nis1-accounts-consigner',
   templateUrl: './nis1-accounts-consigner.component.html',
