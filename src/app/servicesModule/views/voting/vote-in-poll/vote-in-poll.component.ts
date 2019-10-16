@@ -59,6 +59,7 @@ export class VoteInPollComponent implements OnInit {
   showResultProgress: boolean;
   updateFlag = false;
   passwordMain: string = 'password';
+  signedTransaction: SignedTransaction;
 
   constructor(
     private nodeService: NodeService,
@@ -90,7 +91,7 @@ export class VoteInPollComponent implements OnInit {
   @ViewChild('modalInfo', { static: true }) modalInfo: ModalDirective;
   @ViewChild('certificationModal', { static: true }) certificationModal: ModalDirective;
   ngOnInit() {
-
+    // this.getConfirmedTransactions();
 
   }
 
@@ -234,7 +235,7 @@ export class VoteInPollComponent implements OnInit {
 
             let lengthVote = 0
             if (next.length > 0) {
-              next = next.filter(element => element.type === 16705 )
+              next = next.filter(element => element.type === 16705)
               for (var index = 0; index < this.filterTransactions(next).length; index++) {
                 const transaction = this.filterTransactions(next)[index];
                 // if (this.walletService.currentAccount.publicAccount.publicKey === transaction.signer.publicKey) {
@@ -333,7 +334,7 @@ export class VoteInPollComponent implements OnInit {
 
                 //La cuenta del PollOption tiene transacciones
                 if (next.length > 0) {
-                  next = next.filter(element => element.type === 16705 )
+                  next = next.filter(element => element.type === 16705)
                   for (var index = 0; index < next.length; index++) {
 
                     const transactionnext = next[index];
@@ -499,15 +500,15 @@ export class VoteInPollComponent implements OnInit {
       name: this.pollSelected.name
     }
     const aggregateTransaction = AggregateTransaction.createComplete(
-      Deadline.create(environment.deadlineTransfer.deadline,environment.deadlineTransfer.chronoUnit),
+      Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
       this.transactionToAggregate(publicAccount, message),
       publicAccount.address.networkType,
       []);
 
     const generationHash = this.dataBridge.blockInfo.generationHash;
-    const signedTransaction = accountsign.sign(aggregateTransaction,generationHash); //Update-sdk-dragon
+    this.signedTransaction = accountsign.sign(aggregateTransaction, generationHash); //Update-sdk-dragon
 
-    this.announceTransaction(signedTransaction);
+    this.announceTransaction(this.signedTransaction);
 
   }
 
@@ -538,6 +539,21 @@ export class VoteInPollComponent implements OnInit {
       });
   }
 
+  getConfirmedTransactions() {
+    this.transactionService.getConfirmedTransactions$().subscribe(x => {
+      const transactionData = x.filter(next => next.data.transactionInfo.hash === this.signedTransaction.hash)[0];
+      if (transactionData) {
+        let transaction =  this.transactionService.getStructureDashboard(transactionData['data']['innerTransactions'][0]);
+        const poll = JSON.parse(transactionData['data']['innerTransactions'][0].message.payload);
+        transaction.name = poll.name;
+        transaction.hash = transactionData['data'].transactionInfo.hash;
+        transaction.description = poll.desciption;
+        this.dataTransaction = transaction;
+        this.activate = true;
+      }
+    })
+  }
+
   /**
    *
    *
@@ -547,24 +563,18 @@ export class VoteInPollComponent implements OnInit {
     // Get transaction status
     this.subscribe['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
       statusTransaction => {
-
         this.transactionStatus = true;
         if (statusTransaction !== null && statusTransaction !== undefined && signedTransaction !== null) {
           const match = statusTransaction['hash'] === signedTransaction.hash;
           if (statusTransaction['type'] === 'confirmed' && match) {
-            let transaction = this.transactionService.getStructureDashboard(statusTransaction['data']['innerTransactions'][0]);
-            const poll = JSON.parse(statusTransaction['data']['innerTransactions'][0].message.payload);
-            transaction.name = poll.name;
-            transaction.hash = statusTransaction['data'].transactionInfo.hash;
-            // transaction.description = poll.desciption;
-            this.dataTransaction = transaction;
-            this.activate = true;
+            this.getConfirmedTransactions();
             signedTransaction = null;
           } else if (statusTransaction['type'] === 'unconfirmed' && match) {
             this.blockSend = false;
             this.viewCertificate(signedTransaction.hash, this.pollSelected.name, 'newVoting')
             this.walletService.countTimeVote();
             // signedTransaction = null;
+            
           } else if (match) {
             this.btnBlock = true;
             this.blockSend = false;
