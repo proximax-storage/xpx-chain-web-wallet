@@ -39,6 +39,7 @@ export class AuthComponent implements OnInit {
       this.clearForm();
     }
     this.wallets = this.authService.walletsOption(JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage)));
+    this.walletsSort();
   }
 
   /**
@@ -122,5 +123,26 @@ export class AuthComponent implements OnInit {
       validation = this.authForm.get(nameInput);
     }
     return validation;
+  }
+
+  walletsSort() {
+    let tmpSort = this.wallets.sort(function (a, b) {
+      let res = 0
+      if (a.label > b.label) {
+        res = 1;
+      }
+
+      if (a.label < b.label) {
+        res = -1;
+      }
+
+      if (a.label === b.label) {
+        res = 0;
+      }
+      // a must be equal to b
+      return res;
+    })
+
+    this.wallets = tmpSort
   }
 }
