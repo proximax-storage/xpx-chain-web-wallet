@@ -48,16 +48,16 @@ export class WalletCreatedComponent implements OnInit {
     if (this.walletData !== null) {
       this.subtitle = this.walletData.data.name;
       this.address = this.walletData.wallet.address.pretty();
-      this.privateKey = this.proximaxProvider.decryptPrivateKey(
-        this.walletData.data.algo, this.walletData.dataAccount.encrypted, this.walletData.dataAccount.iv
-      ).toUpperCase();
+      this.privateKey = this.proximaxProvider.decryptPrivateKey(this.walletData.data.algo, this.walletData.dataAccount.encrypted, this.walletData.dataAccount.iv).toUpperCase();
       this.publicKey = this.proximaxProvider.getPublicAccountFromPrivateKey(this.privateKey, this.walletData.data.network).publicKey;
       if (this.walletData.dataAccount.nis1Account !== null) {
-        this.subscription.push(this.walletService.getNis1AccountsWallet$().pipe(timeout(10000)).subscribe(
+        this.subscription.push(this.walletService.getNis1AccountsWallet$().subscribe(
           next => {
+           // console.log('NEXT -->', next);
             this.disabledContinue = false;
           },
           error => {
+           // console.log('ERROR ---> ', error);
             this.disabledContinue = false;
           }
         ));
@@ -101,10 +101,11 @@ export class WalletCreatedComponent implements OnInit {
    */
   goToRoute() {
     let nis1Info = [];
-    // [routerLink]="[routes.backToService]"
-    if (this.walletService.accountWalletCreated.dataAccount.nis1Account !== null) {
+    // console.log('---- ACCOUNT WALLET CREATED ----', this.walletService.accountWalletCreated);
+    if (this.walletService.accountWalletCreated && this.walletService.accountWalletCreated.dataAccount && this.walletService.accountWalletCreated.dataAccount.nis1Account) {
       nis1Info = this.walletService.getNis1AccounsWallet();
     }
+
     try {
       if (nis1Info.length > 0) {
         // console.log('nis1Info.lengh ------>', nis1Info.length);
@@ -125,13 +126,11 @@ export class WalletCreatedComponent implements OnInit {
     }
   }
 
-  qrConstruntion(url, size = 2, margin = 0) {
-    let qr = qrcode(10, 'H');
-    qr.addData(url);
-    qr.make();
-    return qr.createDataURL(size, margin);
-  }
-
+  /**
+   *
+   *
+   * @memberof WalletCreatedComponent
+   */
   printAccountInfo() {
     // console.log(this.privateKey);
     // console.log(this.address);
@@ -150,5 +149,21 @@ export class WalletCreatedComponent implements OnInit {
     doc.text(this.address, 146, 164, { maxWidth: 132 });
 
     doc.save('Your_Paper_Wallet');
+  }
+
+  /**
+   *
+   *
+   * @param {*} url
+   * @param {number} [size=2]
+   * @param {number} [margin=0]
+   * @returns
+   * @memberof WalletCreatedComponent
+   */
+  qrConstruntion(url, size = 2, margin = 0) {
+    let qr = qrcode(10, 'H');
+    qr.addData(url);
+    qr.make();
+    return qr.createDataURL(size, margin);
   }
 }

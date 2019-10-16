@@ -10,6 +10,8 @@ import { stringify } from '@angular/compiler/src/util';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { MdbStepperComponent } from 'ng-uikit-pro-standard';
 import { ServicesModuleService } from '../../../services/services-module.service';
+import { Subscription } from 'rxjs';
+import { TransactionsService } from 'src/app/transactions/services/transactions.service';
 
 @Component({
   selector: 'app-create-poll',
@@ -47,6 +49,7 @@ export class CreatePollComponent implements OnInit {
   listaBlanca: any[] = [];
   listContacts: any = [];
   showContacts = false;
+  subscription: Subscription[] = [];
 
   routes = {
     backToService: `/${AppConfig.routes.service}`
@@ -60,11 +63,14 @@ export class CreatePollComponent implements OnInit {
     },
     {
       value: 0,
-      label: 'White list',
+      label: 'Whitelist',
       selected: false,
     }
   ];
   privateKeyAccount: string;
+  vestedBalance: { part1: string; part2: string; };
+  amountAccount: number;
+  insufficientBalance: boolean;
 
   constructor(
     private fb: FormBuilder,
@@ -73,6 +79,7 @@ export class CreatePollComponent implements OnInit {
     private createPollStorageService: CreatePollStorageService,
     private proximaxProvider: ProximaxProvider,
     private serviceModuleService: ServicesModuleService,
+    private transactionService: TransactionsService,
   ) {
     this.configurationForm = this.sharedService.configurationForm;
     this.btnBlock = false;
@@ -86,6 +93,25 @@ export class CreatePollComponent implements OnInit {
     this.invalidMoment = this.minDate.setHours(this.minDate.getHours() + 1)
     this.listContacts = this.validateAccountListContact();
     this.createForms();
+    this.balance();
+  }
+
+
+  balance() {
+    this.subscription.push(this.transactionService.getBalance$().subscribe(
+      next => this.vestedBalance = this.transactionService.getDataPart(next, 6),
+      error => this.vestedBalance = {
+        part1: '0',
+        part2: '000000'
+      }
+    ));
+    let vestedBalance = this.vestedBalance.part1.concat(this.vestedBalance.part2).replace(/,/g,'');
+    this.amountAccount = Number(vestedBalance);
+    if(this.amountAccount < 0.098250){
+      this.firstFormGroup.disable();
+      this.insufficientBalance = true;
+    }
+    
   }
 
 
@@ -100,6 +126,7 @@ export class CreatePollComponent implements OnInit {
     }
   }
 
+  
   /**
  *
  *

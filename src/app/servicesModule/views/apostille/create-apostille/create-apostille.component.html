@@ -8,6 +8,17 @@
           <!-- FIRST FORM -->
           <mdb-step name="File for Processing" [stepForm]="apostilleFormOne" class="step1" [completed]="false">
             <form [formGroup]="apostilleFormOne">
+              <div class="row">
+                <div class="col-11 mb-1rem mx-auto box-transparent-border-red" *ngIf="insufficientBalance">
+                  <div class="txt-a-center">
+                    <img src="assets/images/img/icon-restriction-white.svg" style="filter: invert(50%)" alt=""
+                      width="30">
+                  </div>
+                  <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em">
+                    Insufficient Balance.
+                  </p>
+                </div>
+              </div>
               <!-- UPLOAD FILE -->
               <div class="row">
                 <ng-container *ngIf="apostilleFormOne.get('typeFile').value">
@@ -31,13 +42,14 @@
                     </div>
                   </div> -->
                   <div class="col-12 box-grey" mdbBtn mdbWavesEffect>
-                    <ngx-dropzone (change)="onSelect($event)" [multiple]="false">
+                    <ngx-dropzone (change)="onSelect($event)" [multiple]="false" [disabled]="insufficientBalance">
                       <ngx-dropzone-label>
                         <img class="mr-1rem h2em"
                           src="assets/images/img/icon-upload-gray-28h-proximax-sirius-wallet.svg" width="25">
                         <span class="fs-1-2em fw-700 color-gray-strong">Upload File</span>
                       </ngx-dropzone-label>
-                      <ngx-dropzone-preview *ngFor="let f of files" class="h-100porcent" [removable]="true" (removed)="onRemove(f)">
+                      <ngx-dropzone-preview *ngFor="let f of files" class="h-100porcent" [removable]="true"
+                        (removed)="onRemove(f)">
                         <ngx-dropzone-label class="w-100porcent">{{ f.name }} <br> ({{ f.type }})</ngx-dropzone-label>
                       </ngx-dropzone-preview>
                     </ngx-dropzone>
@@ -56,8 +68,8 @@
                       </ng-container>
 
                       <div class="col-12 d-flex justify-content-end background-dark-green-plus pt-05rem">
-                        <button mdbBtn type="submit" rounded="true" mdbWavesEffect
-                          class="btn-proximax" size="md" (click)="initForm(); ">
+                        <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="btn-proximax" size="md"
+                          (click)="initForm(); ">
                           <span class="fs-1em color-white">Refresh</span>
                         </button>
                       </div>
@@ -105,6 +117,21 @@
                 <!-- <input id="fileInput" [hidden]="true" type="file" (change)="fileReader($event.target.files)"> -->
               </div>
 
+              <!-- FEE -->
+              <div class="row mt-05rem">
+                <div class="col-12 mx-auto">
+                  <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
+                    <div class="row">
+                      <div class="col-12">
+                        <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
+                          alt="">
+                        <span>Unconfirmed/Recommended Fee: {{fee}} XPX</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <!-- PRIVATE & PUBLIC -->
               <div class="row mt-05rem">
                 <div class="col-12 box-grey">
@@ -133,15 +160,15 @@
                 <div class="col-10 mx-auto">
                   <div class="row">
                     <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-                      <button mdbBtn (click)="fileReader([])" rounded="true" mdbWavesEffect
-                        class="btn-proximax" size="md">
+                      <button mdbBtn (click)="fileReader([])" rounded="true" mdbWavesEffect class="btn-proximax"
+                        size="md">
                         <span class="fs-1-2em color-white">Clear</span>
                       </button>
                     </div>
 
                     <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-                      <button [disabled]="apostilleFormOne.get('file').invalid" mdbBtn (click)="stepper.next()"
-                        rounded="true" mdbWavesEffect class="btn-proximax" size="md">
+                      <button [disabled]="apostilleFormOne.get('file').invalid || insufficientBalance" mdbBtn
+                        (click)="stepper.next()" rounded="true" mdbWavesEffect class="btn-proximax" size="md">
                         <span class="fs-1-2em color-white">Next</span>
                       </button>
                     </div>
@@ -193,7 +220,7 @@
                     <div class="col-6 fw-600 d-flex justify-content-start">
                       <div class="form-check form-check-inline">
                         <input formControlName="typePrivatePublic" checked [value]="true" type="radio"
-                          class="form-check-input" id="public" name="typePrivatePublic" mdbInput>
+                          class="form-check-input" id="public" name="typePrivatePublic" mdbInput (click)="isPublic()">
                         <label class="form-check-label" for="public">Public</label>
                       </div>
                     </div>
@@ -201,7 +228,7 @@
                     <div class="col-6 fw-600 d-flex justify-content-end">
                       <div class="form-check form-check-inline">
                         <input formControlName="typePrivatePublic" [value]="false" type="radio" class="form-check-input"
-                          id="private" name="typePrivatePublic" mdbInput>
+                          id="private" name="typePrivatePublic" mdbInput (click)="isPrivate()">
                         <label class="form-check-label" for="private">Private</label>
                       </div>
                     </div>
@@ -223,6 +250,20 @@
                 </div>
               </div>
 
+              <!-- FEE -->
+              <div class="row mt-05rem">
+                <div class="col-12 mx-auto">
+                  <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
+                    <div class="row">
+                      <div class="col-12">
+                        <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
+                          alt="">
+                        <span>Unconfirmed/Recommended Fee: {{fee}} XPX</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
               <!-- TYPE ENCRIPTED -->
               <div class="row mt-1rem">
@@ -236,24 +277,27 @@
                       src="assets/images/img/icon-show-hide-password-grey.svg" *ngIf="passwordMain === 'text'">
                     <input [maxlength]="configurationForm.passwordWallet.maxLength"
                       [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" required
-                      mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" [type]="passwordMain"
-                      id="password" class="form-control form-control-sm input-border"
+                      mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
+                      [type]="passwordMain" id="password" class="form-control form-control-sm input-border"
                       placeholder="Enter Wallet Password">
+
+
+                    <!-- VALIDATION -->
+                    <mdb-error
+                      *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
+                      <span>Password Required</span>
+                    </mdb-error>
+
+
                   </div>
                 </div>
               </div>
 
-              <!-- VALIDATION -->
-              <mdb-error
-                *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
-                <span class="fs-08rem fw-600 color-error-message">Password Required</span>
-              </mdb-error>
-
               <!-- BUTTONS -->
               <div class="row mt-1rem">
                 <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-                  <button mdbBtn type="button" rounded="true" mdbWavesEffect
-                    class="btn-proximax" size="md" (click)="clearForm(2)">
+                  <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" size="md"
+                    (click)="clearForm(2)">
                     <span class="fs-1-2em color-white">Clear</span>
                   </button>
                 </div>
@@ -327,8 +371,7 @@
     <!-- THREE -->
     <div class="row">
       <div class="col-12 col-md-10 col-lg-9 col-xl-8 mx-auto d-flex justify-content-center">
-        <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax"
-          size="md" (click)="initForm();">
+        <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" size="md" (click)="initForm();">
           <span class="fs-1-2em color-white">Finish</span>
         </button>
       </div>

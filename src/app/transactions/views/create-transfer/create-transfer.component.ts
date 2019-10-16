@@ -652,48 +652,62 @@ export class CreateTransferComponent implements OnInit {
    * @memberof CreateTransferComponent
    */
   otherMosaicsChange(mosaicSelected: any, position: number) {
-    console.log('\n\n mosaicSelected ---> ', mosaicSelected);
+    // console.log('\n\n mosaicSelected ---> ', mosaicSelected);
+    // console.log('\n\n this.boxOtherMosaics[position] ---> ', this.boxOtherMosaics[position]);
     if (mosaicSelected !== undefined) {
-      this.boxOtherMosaics[position].amount = '';
-      this.boxOtherMosaics[position].balance = mosaicSelected.balance;
-      this.boxOtherMosaics[position].config = mosaicSelected.config;
-      this.boxOtherMosaics[position].errorBalance = false;
-      this.boxOtherMosaics[position].id = mosaicSelected.value;
-
-      console.log(this.boxOtherMosaics);
-      this.boxOtherMosaics.forEach(element => {
-        //let otherMosaic = element.selectOtherMosaics.filter(elm => elm.label !== mosaicSelected.label);
-        let currentMosaic = element.selectOtherMosaics.find(elm => elm.label === mosaicSelected.label);
-        currentMosaic.disabled = true;
-        console.log('\n\n\n currentMosaic', currentMosaic);
-        const otherMosaics = element.selectOtherMosaics.filter(elm => elm.label !== mosaicSelected.label);
-        otherMosaics.push(currentMosaic);
-        /*currentMosaic.forEach(current => {
-          current.disabled = true;
-          newMosaic.push(current);
-        });*/
-
-        otherMosaics.forEach(elm => {
-          console.log('\n\n ----------------------------------------------\n elm', elm);
-          console.log('beforeValue', this.boxOtherMosaics[position]);
-          if (this.boxOtherMosaics[position].beforeValue !== '' && elm.label === this.boxOtherMosaics[position].beforeValue) {
-            console.log('AQUI ES EL FUCKING PEO');
-            elm.disabled = false;
+      if (this.boxOtherMosaics[position].beforeValue === '' || !this.boxOtherMosaics[position].beforeValue) {
+        this.otherMosaicsBuild(mosaicSelected, position);
+      } else {
+        if (this.boxOtherMosaics[position].beforeValue !== '' && this.boxOtherMosaics[position].beforeValue === mosaicSelected.label) {
+          const currentMosaic = this.boxOtherMosaics[position].selectOtherMosaics.find(elm => elm.label === mosaicSelected.label);
+          const otherMosaics = this.boxOtherMosaics[position].selectOtherMosaics.filter(elm => elm.label !== mosaicSelected.label);
+          currentMosaic.disabled = false;
+          otherMosaics.push(currentMosaic);
+          const i = this.boxOtherMosaics.indexOf(this.boxOtherMosaics[position]);
+          if (i !== -1) {
+            this.boxOtherMosaics.map(element => {
+              return element.selectOtherMosaics = otherMosaics;
+            });
+            this.boxOtherMosaics.splice(i, 1);
           }
-        });
-
-        console.log('\n\n--------------- \n--otherMosaics--', otherMosaics);
-        element.selectOtherMosaics = otherMosaics;
-      });
-
-      this.boxOtherMosaics[position].beforeValue = mosaicSelected.label;
+        } else {
+          const currentMosaic = this.boxOtherMosaics[position].selectOtherMosaics.find(elm => elm.label === this.boxOtherMosaics[position].beforeValue);
+          const otherMosaics = this.boxOtherMosaics[position].selectOtherMosaics.filter(elm => elm.label !== this.boxOtherMosaics[position].beforeValue);
+          currentMosaic.disabled = false;
+          otherMosaics.push(currentMosaic);
+          this.boxOtherMosaics[position].selectOtherMosaics = otherMosaics;
+          this.otherMosaicsBuild(mosaicSelected, position);
+        }
+      }
     } else {
-      this.boxOtherMosaics[position].id = '';
-      this.boxOtherMosaics[position].balance = '';
-      this.boxOtherMosaics[position].amount = '';
-      this.boxOtherMosaics[position].errorBalance = false;
-      this.boxOtherMosaics[position].amountToBeSent = 0;
+      const i = this.boxOtherMosaics.indexOf(this.boxOtherMosaics[position]);
+      if (i !== -1) {
+        this.boxOtherMosaics.splice(i, 1);
+      }
     }
+  }
+
+  /**
+   *
+   *
+   * @param {*} mosaicSelected
+   * @param {number} position
+   * @memberof CreateTransferComponent
+   */
+  otherMosaicsBuild(mosaicSelected: any, position: number){
+    this.boxOtherMosaics[position].amount = '';
+    this.boxOtherMosaics[position].balance = mosaicSelected.balance;
+    this.boxOtherMosaics[position].config = mosaicSelected.config;
+    this.boxOtherMosaics[position].errorBalance = false;
+    this.boxOtherMosaics[position].id = mosaicSelected.value;
+    this.boxOtherMosaics[position].beforeValue = mosaicSelected.label;
+    const currentMosaic = this.boxOtherMosaics[position].selectOtherMosaics.find(elm => elm.label === mosaicSelected.label);
+    const otherMosaics = this.boxOtherMosaics[position].selectOtherMosaics.filter(elm => elm.label !== mosaicSelected.label);
+    currentMosaic.disabled = true;
+    otherMosaics.push(currentMosaic);
+    this.boxOtherMosaics.map(element => {
+      return element.selectOtherMosaics = otherMosaics;
+    });
   }
 
   /**

@@ -34,6 +34,9 @@ export class WalletService {
   nis1AccountsWallet: Subject<any> = new Subject<any>();
   nis1AccountsWallet$: Observable<any> = this.nis1AccountsWallet.asObservable();
 
+  /*nis1ResponseLoadedSubject: Subject<boolean> = new Subject<boolean>();
+  nis1ResponseLoaded$: Observable<boolean> = this.nis1AccountsWallet.asObservable();*/
+
   swapTransactions: Subject<any> = new Subject<any>();
   swapTransactions$: Observable<any> = this.swapTransactions.asObservable();
 
