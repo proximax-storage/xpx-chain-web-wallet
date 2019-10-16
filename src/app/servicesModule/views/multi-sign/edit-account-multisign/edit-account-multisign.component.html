@@ -11,7 +11,7 @@
             <div class="col-12">
               <img class="w-30px" src="assets/images/img/icon-account-green-16h-proximax-sirius-wallet.svg">
               <span class="fw-600"> {{currentAccountToConvert.name}}</span>
-              <span *ngIf="disable">
+              <span *ngIf="valueValidateAccount.disabledItem  && valueValidateAccount.disabledPartial">
                 &nbsp; <i title="On partial" style="color:#f2a917" class="fa fa-bell"></i>
               </span>
             </div>
@@ -22,17 +22,19 @@
 
 
 
-    <div class="row " *ngIf="disable">
+
+    <div class="row " *ngIf="valueValidateAccount.disabledItem">
       <div class="col-8 mx-auto mb-1rem  box-transparent-border-red">
         <div class="txt-a-center">
           <img src="assets/images/img/icon-restriction-white.svg" style="filter: invert(50%)" alt="" width="30">
         </div>
-        <h6 class="fw-600">Partial</h6>
-        <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em">
-          You cannot edit an account that has a partial transaction pending (<i title="partially" style="padding-right: 0px;" class="fa fa-bell color-light-orange"></i>).
+        <h6 *ngIf="valueValidateAccount.info !==''" class="fw-600">{{valueValidateAccount.info}}</h6>
+        <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em" [innerHtml]="valueValidateAccount.subInfo">
+
         </p>
       </div>
     </div>
+
     <div class="row">
       <!-- COSIGNATORY ACCOUNT -->
       <ng-container *ngIf="consginerFirmList.length === 1">
