@@ -3,41 +3,29 @@
 
   <form [formGroup]="extendDurationNamespaceForm" (ngSubmit)="extendDuration()">
     <div class="row ">
-      <div class="col-11 col-sm-11 col-md-11 col-lg-8 mb-2rem mt-1rem">
-
-          <div class="col-11 mb-1rem mx-auto box-transparent-border-red" *ngIf="insufficientBalance">
-              <div class="txt-a-center">
-                <img src="assets/images/img/icon-restriction-white.svg" style="filter: invert(50%)" alt="" width="30">
-              </div>
-              <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em">
-                  Insufficient balance.
-              </p>
-            </div>
-
-            <div class="col-11 mb-1rem mx-auto box-transparent-border-red" *ngIf="noNamespace && !insufficientBalance">
-                <div class="txt-a-center">
-                  <img src="assets/images/img/icon-restriction-white.svg" style="filter: invert(50%)" alt="" width="30">
-                </div>
-                <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em">
-                    This account doesn't have namespaces created.
-                </p>
-
-              </div>
-              <br>
-
-        <!-- <ng-container *ngIf="insufficientBalance">
-          <div class="row">
-            <div class="col-11 mx-auto d-flex justify-content-end">
-              <span class="fs-08rem fw-600 color-error-message">Insufficient balance</span>
-            </div>
+      <div class="col-11 col-lg-8 mb-2rem mt-1rem">
+        <!-- MSG ERROR INSUFFICIENT BALANCE -->
+        <div class="col-11 mb-1rem mx-auto box-transparent-border-red" *ngIf="insufficientBalance">
+          <div class="txt-a-center">
+            <img src="assets/images/img/icon-restriction-white.svg" style="filter: invert(50%)" alt="" width="30">
           </div>
-        </ng-container> -->
-        <!-- <ng-container *ngIf="noNamespace">
-            <div class="col-11 mx-auto d-flex justify-content-end">
-              <span class="fs-08rem fw-600 color-error-message">This account doesn't have namespaces created</span>
-            </div>
-          </ng-container> -->
+          <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em">
+            Insufficient balance.
+          </p>
+        </div>
 
+        <!-- MSG ERROR NOT HAVE NAMESPACE -->
+        <div class="col-11 mb-1rem mx-auto box-transparent-border-red mb-1rem"
+          *ngIf="noNamespace && !insufficientBalance">
+          <div class="txt-a-center">
+            <img src="assets/images/img/icon-restriction-white.svg" style="filter: invert(50%)" alt="" width="30">
+          </div>
+          <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em">
+            This account doesn't have namespaces created.
+          </p>
+        </div>
+
+        <!-- SELECT  NAMESPACE-->
         <div class="row">
           <div class="col-11 mx-auto">
             <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [searchable]="false"
@@ -51,6 +39,7 @@
           </div>
         </div>
 
+        <!-- DURATION -->
         <div class="row">
           <div class="col-11 mx-auto">
             <div class="md-form form-sm">
@@ -77,43 +66,32 @@
           </div>
         </div>
 
+        <!-- FEE & RENTAL FEE -->
         <div class="row">
           <div class="col-11 mx-auto">
-            <div class="row">
-              <div class="col-11 col-sm-11 col-md-6 col-lg-6">
-                <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
-                  <div class="row">
-                    <div class="">
-                      <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
-                        width="20" alt="">&nbsp;
-                      <span class="fs-08rem">
-                        Unconfirmed/Recommended Fee:&nbsp;
-                        <a [innerHTML]="getQuantity(fee)"></a> XPX
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-11 col-sm-11 col-md-6 col-lg-6">
-                <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
-                  <div class="row">
-                    <div class="">
-                      <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
-                        width="20" alt="">&nbsp;
-                      <span class="fs-08rem">
-                        Rental Fee:&nbsp;
-                        <a [innerHTML]="getQuantity(calculateRentalFee)"></a> XPX
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
+              <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20"
+                alt="">&nbsp;
+              <span class="fs-08rem">
+                Unconfirmed/Recommended Fee:&nbsp;
+                <a [innerHTML]="getQuantity(fee)"></a> XPX
+              </span>
             </div>
           </div>
 
-
+          <div class="col-11 mx-auto">
+            <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
+              <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20"
+                alt="">&nbsp;
+              <span class="fs-08rem">
+                Rental Fee:&nbsp;
+                <a [innerHTML]="getQuantity(calculateRentalFee)"></a> XPX
+              </span>
+            </div>
+          </div>
         </div>
 
+        <!-- PASSWORD -->
         <div class="row">
           <div class="col-11 mx-auto">
             <div class="md-form form-sm">
@@ -158,9 +136,8 @@
         </div>
       </div>
 
-      <div class="col-11 col-sm-11 col-md-11 col-lg-4 description-p-module mt-1-5rem mb-2rem">
+      <div class="col-11 col-lg-4 description-p-module mt-1-5rem mb-2rem">
         <div class="row">
-
           <!-- Start block  -->
           <div class="col-4">
             <div class="row">
@@ -172,6 +149,7 @@
               <div class="col-12 d-flex justify-content-center overflow-ellipsis-nowrap" style="padding-top: 70px;">
                 <span class="description-information">Start block:</span>
               </div>
+
               <div class="col-12 d-flex justify-content-center">
                 <span class="description-information">{{startHeight}}</span>
               </div>

@@ -68,7 +68,12 @@ export class EditAccountMultisignComponent implements OnInit {
   totalFee: number = 0;
   aggregateTransaction: AggregateTransaction;
   fee: number;
-
+  valueValidateAccount: validateBuildAccount = {
+    disabledItem: false,
+    disabledPartial: false,
+    info: '',
+    subInfo: ''
+  }
   constructor(
 
     private activateRoute: ActivatedRoute,
@@ -100,9 +105,7 @@ export class EditAccountMultisignComponent implements OnInit {
     this.createForm()
     this.booksAddress();
     this.subscribeValueChange();
-    this.changeformStatus()
-    // this.listContact = this.booksAddress();
-    // this.validatorsCosignatory()
+    this.changeformStatus();
     this.selectAccount(this.activateRoute.snapshot.paramMap.get('name'));
     this.builder();
   }
@@ -112,8 +115,6 @@ export class EditAccountMultisignComponent implements OnInit {
  * @memberof CreateTransferComponent
  */
   ngOnDestroy(): void {
-    // this.subscribeAccount.unsubscribe();
-
     this.unsubscribe(this.subscribeAggregateBonded);
     this.unsubscribe(this.subscribeAccount);
   }
@@ -143,8 +144,6 @@ export class EditAccountMultisignComponent implements OnInit {
       ]
       ],
     });
-    // this.changeformStatus()
-    // this.validatorsCosignatory()
   }
 
   /**
@@ -225,9 +224,7 @@ export class EditAccountMultisignComponent implements OnInit {
     this.booksAddress().filter(item => item.label !== this.currentAccountToConvert.name)
     this.subscribeAccount.push(this.walletService.getAccountsInfo$().subscribe(
       async accountInfo => {
-
-        this.getAggregateBondedTransactionsValidate()
-        // this.accountInfo = this.walletService.filterAccountInfo(name);
+        this.getAggregateBondedTransactionsValidate();
 
       }));
     // this.clearData();
@@ -287,17 +284,14 @@ export class EditAccountMultisignComponent implements OnInit {
    *
    * @param name
    */
-  validateAccount(name: string, disable: boolean) {
+  validateAccount(name: string, validateBuildAccount: validateBuildAccount) {
     this.isMultisig = false;
     this.mdbBtnAddCosignatory = true;
     this.accountInfo = this.walletService.filterAccountInfo(name);
-    // console.log('this.accountInfo.multisigInfo', this.accountInfo.multisigInfo)
     this.accountValid = (
       this.accountInfo !== null &&
       this.accountInfo !== undefined && this.accountInfo.accountInfo !== null);
-    // if (this.subscribeAccount) {
-    //   this.subscribeAccount.unsubscribe();
-    // }
+  
     this.unsubscribe(this.subscribeAccount);
     //Validate Account
     if (!this.accountValid) {
@@ -315,9 +309,8 @@ export class EditAccountMultisignComponent implements OnInit {
 
 
 
-    if (this.hasCosigner() && !this.disable) {
-        this.publicAccountToConvert = PublicAccount.createFromPublicKey(this.currentAccountToConvert.publicAccount.publicKey, this.currentAccountToConvert.network)
-      // this.getCosignerFirm()
+    if (this.hasCosigner() && !validateBuildAccount.disabledItem) {
+      this.publicAccountToConvert = PublicAccount.createFromPublicKey(this.currentAccountToConvert.publicAccount.publicKey, this.currentAccountToConvert.network)
       this.mdbBtnAddCosignatory = false;
       this.setValueForm('edit', true, 3);
       this.editAccountMultsignForm.enable();
@@ -360,19 +353,35 @@ export class EditAccountMultisignComponent implements OnInit {
   getAggregateBondedTransactionsValidate() {
 
     this.subscribeAggregateBonded.push(this.transactionService.getAggregateBondedTransactions$().subscribe((transactions: TransactionsInterface[]) => {
-      this.disable = false;
+      let value = false;
+      this.valueValidateAccount = {
+        disabledItem: false,
+        disabledPartial: false,
+        info: null,
+        subInfo: null
+      }
       for (let index = 0; index < transactions.length; index++) {
         for (let i = 0; i < transactions[index].data['innerTransactions'].length; i++) {
-          this.disable = (transactions[index].data['innerTransactions'][i].signer.publicKey === this.currentAccountToConvert.publicAccount.publicKey);
+          value = (transactions[index].data['innerTransactions'][i].signer.publicKey === this.currentAccountToConvert.publicAccount.publicKey);
 
-          if (this.disable)
+          if (value) {
+
+            this.valueValidateAccount = {
+              disabledItem: value,
+              disabledPartial: value,
+              info: 'Partial',
+              subInfo: `You cannot edit an account that has a partial transaction pending (<i title="partially" style="padding-right: 0px;"
+              class="fa fa-bell color-light-orange"></i>).`
+            }
             break
+          }
+
         }
-        if (this.disable)
+        if (value)
           break
       }
       // }
-      this.validateAccount(this.activateRoute.snapshot.paramMap.get('name'), this.disable)
+      this.validateAccount(this.activateRoute.snapshot.paramMap.get('name'), this.valueValidateAccount)
     }));
 
   }
@@ -418,6 +427,14 @@ export class EditAccountMultisignComponent implements OnInit {
       }
       this.editAccountMultsignForm.controls['cosignatorieSign'].updateValueAndValidity({ emitEvent: false, onlySelf: true });
     }
+    if (!isCosigner) {
+      this.valueValidateAccount = {
+        disabledItem: true,
+        disabledPartial: false,
+        info: '',
+        subInfo: `Requires a valid cosigner to edit this account.`
+      }
+    }
     return isCosigner;
   }
 
@@ -450,7 +467,6 @@ export class EditAccountMultisignComponent implements OnInit {
 
     let convertIntoMultisigTransaction: ModifyMultisigAccountTransaction;
     convertIntoMultisigTransaction = this.modifyMultisigAccountTransaction();
-    // console.log('convertIntoMultisigTransaction', convertIntoMultisigTransaction);
 
     this.aggregateTransaction = AggregateTransaction.createBonded(
       Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
@@ -459,7 +475,6 @@ export class EditAccountMultisignComponent implements OnInit {
     );
 
     this.fee = this.aggregateTransaction.maxFee.compact();
-    // console.log('aggregateTransaction', this.aggregateTransaction)
   }
 
   /**
@@ -484,7 +499,6 @@ export class EditAccountMultisignComponent implements OnInit {
         //   this.currentAccountToConvert.network
         // );
 
-        // console.log('aggregateTransaction', this.aggregateTransaction)
         const generationHash = this.dataBridge.blockInfo.generationHash;
         const signedTransaction = this.accountToConvertSign.sign(this.aggregateTransaction, generationHash)
         const hashLockTransaction = HashLockTransaction.create(
@@ -557,6 +571,8 @@ export class EditAccountMultisignComponent implements OnInit {
     );
   }
 
+
+
   modifyMultisigAccountTransaction(): ModifyMultisigAccountTransaction {
     let modifyobject: Modifyobject;
     const valor = this.multiSignService.calcMinDelta(
@@ -572,8 +588,7 @@ export class EditAccountMultisignComponent implements OnInit {
       modifications: this.multisigCosignatoryModification(this.getCosignatoryListFilter(1, 2)),
       networkType: this.currentAccountToConvert.network
     }
-    //  console.log('modifyobject', modifyobject);
-
+    // console.log('modifyobject', modifyobject);
 
     return ModifyMultisigAccountTransaction.create(
       modifyobject.deadline,
@@ -715,6 +730,16 @@ export class EditAccountMultisignComponent implements OnInit {
 
         }
         this.validatorsCosignatory()
+      }
+    );
+    this.editAccountMultsignForm.get('minApprovalDelta').valueChanges.subscribe(
+      next => {
+        this.builder();
+      }
+    );
+    this.editAccountMultsignForm.get('minRemovalDelta').valueChanges.subscribe(
+      next => {
+        this.builder();
       }
     );
   }
@@ -999,4 +1024,13 @@ interface ContactsListInterface {
   walletContact: boolean;
   isMultisig: boolean;
   disabled: boolean;
+}
+
+
+interface validateBuildAccount {
+  disabledItem: boolean,
+  disabledPartial: boolean
+  info: string,
+  subInfo: string
+
 }

@@ -23,19 +23,19 @@
       <!-- Type -->
       <div class="col-12 mt-03rem">
         <span class="fw-600 fs-08rem">Type:&nbsp;&nbsp;</span>
-        <span class="fs-07rem">{{transactionLock?.data['type'].toString(16).toUpperCase()}}</span>
+        <span class="fs-07rem w-w-b-w">{{transactionLock?.data['type'].toString(16).toUpperCase()}}</span>
       </div>
 
       <!-- duration -->
       <div class="col-12 mt-03rem">
         <span class="fw-600 fs-08rem">Duration:&nbsp;&nbsp;</span>
-        <span class="fs-07rem">{{transactionLock?.data['duration'].compact()}} blocks</span>
+        <span class="fs-07rem w-w-b-w">{{transactionLock?.data['duration'].compact()}} blocks</span>
       </div>
 
       <!-- Hash lock transaction -->
       <div class="col-12 mt-05rem line-h-1em">
         <span class="fw-600 fs-08rem">Hash Lock Transaction: <br></span>
-        <span class="fs-07rem">{{transactionLock?.data['hash']}}</span>
+        <span class="fs-07rem w-w-b-w">{{transactionLock?.data['hash']}}</span>
       </div>
 
       <!-- MOSAICS INFO-->

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators, FormGroup } from '@angular/forms';
+import { FormBuilder, Validators, FormGroup, AbstractControl } from '@angular/forms';
 import * as crypto from 'crypto-js'
 import { Account, UInt64, TransferTransaction } from 'tsjs-xpx-chain-sdk';
 import { KeyPair, convert } from 'js-xpx-chain-library';
@@ -434,6 +434,27 @@ export class CreateApostilleComponent implements OnInit {
     );
   }
 
+   /**
+   *
+   *
+   * @param {string} [nameInput='']
+   * @param {string} [nameControl='']
+   * @param {string} [nameValidation='']
+   * @returns
+   * @memberof CreateMosaicComponent
+   */
+  validateInput(nameInput: string = '', nameControl: string = '', nameValidation: string = '') {
+    let validation: AbstractControl = null;
+    if (nameInput !== '' && nameControl !== '') {
+      validation = this.apostilleFormTwo.controls[nameControl].get(nameInput);
+    } else if (nameInput === '' && nameControl !== '' && nameValidation !== '') {
+      validation = this.apostilleFormTwo.controls[nameControl].getError(nameValidation);
+    } else if (nameInput !== '') {
+      validation = this.apostilleFormTwo.get(nameInput);
+    }
+    return validation;
+  }
+
   /**
    *
    *
@@ -521,4 +542,6 @@ export class CreateApostilleComponent implements OnInit {
       })
     );
   }
+
+ 
 }
