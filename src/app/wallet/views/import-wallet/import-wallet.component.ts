@@ -81,13 +81,11 @@ export class ImportWalletComponent implements OnInit {
             address: nis1Wallet.address,
             publicKey: nis1Wallet.publicKey
           };
-          // const accountInfo = await this.nemProvider.getAccountInfo(nis1Wallet.address).toPromise();
-          // console.log('this is a nis1 wallet ---------->', nis1Wallet);
-          this.saveAccount(wallet, nameWallet, password);
-          this.nemProvider.getAccountsInfoAccountNew(nis1Wallet, nameWallet);
-        } else {
-          this.saveAccount(wallet, nameWallet, password);
+
+          this.nemProvider.getAccountInfoNis1(nis1Wallet, nameWallet);
         }
+
+        this.saveAccount(wallet, nameWallet, password);
       } else {
         this.clearForm('nameWallet');
         this.sharedService.showError('', 'This name is already in use, try another name');

@@ -13,6 +13,14 @@ import { first } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class WalletService {
+
+
+
+  nis1AccountsFound: Subject<any> = new Subject<any>(); // RJ
+  nis1AccountsFound$: Observable<any> = this.nis1AccountsFound.asObservable(); // RJ
+  // -------------------------------------------------------------------------------
+
+
   canVote = true;
   subscribeLogged = undefined;
   accountWalletCreated: {
@@ -27,9 +35,13 @@ export class WalletService {
 
   accountInfoNis1: any = null;
   accountSelectedWalletNis1: any = null;
+
   nis1AccountSeleted: any = null;
   nis1AccounsWallet: any = [];
   unconfirmedTransactions: any = [];
+
+
+
 
   nis1AccountsWallet: Subject<any> = new Subject<any>();
   nis1AccountsWallet$: Observable<any> = this.nis1AccountsWallet.asObservable();
@@ -595,7 +607,7 @@ export class WalletService {
    * @returns
    * @memberof WalletService
    */
-  getNis1AccounsWallet() {
+  getNis1AccountsWallet() {
     return this.nis1AccounsWallet;
   }
 
@@ -853,6 +865,16 @@ export class WalletService {
  */
   setSwapTransactions$(transactions: TransactionsNis1Interface[]) {
     this.swapTransactions.next(transactions);
+  }
+
+  /**
+   * RJ
+   *
+   * @param {*} accounts
+   * @memberof WalletService
+   */
+  setNis1AccountsFound$(accounts: any){
+    this.nis1AccountsFound.next(accounts);
   }
 
   /**

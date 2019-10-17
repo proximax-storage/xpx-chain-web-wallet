@@ -50,7 +50,7 @@ export class WalletCreatedComponent implements OnInit {
       this.address = this.walletData.wallet.address.pretty();
       this.privateKey = this.proximaxProvider.decryptPrivateKey(this.walletData.data.algo, this.walletData.dataAccount.encrypted, this.walletData.dataAccount.iv).toUpperCase();
       this.publicKey = this.proximaxProvider.getPublicAccountFromPrivateKey(this.privateKey, this.walletData.data.network).publicKey;
-      if (this.walletData.dataAccount.nis1Account !== null) {
+     /* if (this.walletData.dataAccount.nis1Account !== null) {
         this.subscription.push(this.walletService.getNis1AccountsWallet$().subscribe(
           next => {
            // console.log('NEXT -->', next);
@@ -63,7 +63,7 @@ export class WalletCreatedComponent implements OnInit {
         ));
       } else {
         this.disabledContinue = false;
-      }
+      }*/
       this.walletData = null;
     } else {
       this.router.navigate([`/${AppConfig.routes.home}`]);
@@ -103,7 +103,7 @@ export class WalletCreatedComponent implements OnInit {
     let nis1Info = [];
     // console.log('---- ACCOUNT WALLET CREATED ----', this.walletService.accountWalletCreated);
     if (this.walletService.accountWalletCreated && this.walletService.accountWalletCreated.dataAccount && this.walletService.accountWalletCreated.dataAccount.nis1Account) {
-      nis1Info = this.walletService.getNis1AccounsWallet();
+      nis1Info = this.walletService.getNis1AccountsWallet();
     }
 
     try {
