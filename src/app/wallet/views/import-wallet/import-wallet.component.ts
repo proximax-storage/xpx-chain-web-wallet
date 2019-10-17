@@ -48,6 +48,7 @@ export class ImportWalletComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.walletService.accountWalletCreated = null;
     this.configurationForm = this.sharedService.configurationForm;
     this.createFormImportWallet();
     this.walletService.setNis1AccounsWallet(null);

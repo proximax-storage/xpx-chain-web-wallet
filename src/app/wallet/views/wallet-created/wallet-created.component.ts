@@ -48,7 +48,7 @@ export class WalletCreatedComponent implements OnInit {
   ngOnInit() {
     this.getImageBackground();
     this.walletData = this.walletService.accountWalletCreated;
-    this.walletService.accountWalletCreated = null;
+    // this.walletService.accountWalletCreated = null;
     this.checkDataWallet();
   }
 
@@ -74,13 +74,12 @@ export class WalletCreatedComponent implements OnInit {
       this.publicKey = this.proximaxProvider.getPublicAccountFromPrivateKey(this.privateKey, this.walletData.data.network).publicKey;
       if (this.walletData.dataAccount.nis1Account !== null) {
         this.subscription.push(this.walletService.getNis1AccountsFound$().subscribe(next => {
-          console.log('getNis1AccountsFound -->', next);
           if (next) {
+            this.walletService.setSelectedNis1Account(next);
             if (next.cosignerAccounts.length > 0) {
-              this.walletService.setSelectedNis1Account(next);
               this.routeContinue = `/${AppConfig.routes.swapListCosignerNis1}`;
-            }else {
-              this.routeContinue = `/${AppConfig.routes.walletNis1Found}`;
+            } else {
+              this.routeContinue = `/${AppConfig.routes.swapTransferAssets}/${next.address.pretty()}/1`;
             }
           } else {
             this.routeContinue = `/${AppConfig.routes.home}`;

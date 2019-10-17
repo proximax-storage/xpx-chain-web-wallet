@@ -1,0 +1,320 @@
+<ng-container *ngIf="accountToSwap">
+  <div class="container mt-3rem mb-2rem animated fadeIn">
+    <!-- TITLE AND DESCRIPTION -->
+    <div class="row">
+      <div class="col-12 d-flex justify-content-center pt-2rem">
+        <span class="fs-1-5rem fw-500 txt-a-center line-h-1-2em color-black">NIS1 Account Selected</span>
+      </div>
+      <!-- SEPARATOR -->
+      <div class="col-12 col-md-8 mx-auto">
+        <hr class="mt-05rem mb-06rem">
+      </div>
+    </div>
+
+    <!-- ACCOUNT SELECTED -->
+    <div class="row mt-1rem">
+      <div class="col-11 col-sm-10 col-md-9 col-lg-8 col-xl-7 mx-auto">
+        <div class="row">
+          <div class="col-12 mx-auto box-grey">
+            <div>
+              <span class="color-black fw-bold" *ngIf="type === '1'">Account Name:&nbsp;</span>
+              <span class="color-black fw-bold" *ngIf="type === '2'">Multisig Of:&nbsp;</span>
+              <span>{{accountToSwap.nameAccount}}</span>
+            </div>
+            <div>
+              <span class="color-black fw-bold">NIS1 Address:&nbsp;</span>
+              <span>{{accountToSwap.address.pretty()}}</span>
+            </div>
+            <div>
+              <span class="color-black fw-bold">NIS1 Balance:&nbsp;</span>
+              <img src="./assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20px" alt="logo">
+              <span [innerHTML]="getQuantity(accountToSwap.balance)">{{accountToSwap.address}}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mt-1rem" *ngIf="type === '2'">
+          <div class="col-12">
+            <div>
+              <span class="fw-bold">Account that will receive swap transfer:&nbsp;</span>
+            </div>
+            <div>
+              <span class="fs-08rem">{{accountToSwap.accountCosignatory}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-1rem">
+      <div class="col-11 col-sm-10 col-md-9 col-lg-8 col-xl-7 mx-auto">
+        <form [formGroup]="formTransfer" (ngSubmit)="createTransaction()" class="mx-auto">
+          <div class="row">
+            <div class="col-12 d-flex justify-content-center pt-1rem">
+              <span class="fs-1-2rem fw-500 txt-a-center line-h-1-2em color-black">Swap Amount</span>
+            </div>
+          </div>
+
+          <div class="row">
+            <!-- ACCOUNT TO SWAP -->
+            <!-- <div class="col-10 col-sm-12 col-md-12 mx-auto" *ngIf="accountSelected.multiSign">
+                <ng-select mdbInputDirective mdbValidate class="selectWrapper" [items]="listContacts" bindLabel="label"
+                  bindValue="value" placeholder="Select account that will receive swap transfer"
+                  (change)="selectContact($event)">
+                </ng-select>
+              </div>
+
+              <div class="col-10 col-sm-12 col-md-12 mx-auto" *ngIf="accountSelected.multiSign">
+                <div class="md-form form-sm mt-1rem mb-0rem d-flex align-items-center">
+                  <input mdbInputDirective mdbValidate [validateSuccess]="true" readonly [validateError]="true"
+                    type="text" class="form-control form-control-sm input-border" style="border: 2px solid #306EB5;"
+                    placeholder="Account Selected" formControlName="accountRecipient">
+                </div>
+              </div> -->
+
+            <!-- INPUT AMOUNT TO SWAP -->
+            <div class="col-10 col-sm-12 col-md-12 mx-auto">
+              <div class="md-form form-sm mt-1rem mb-0rem">
+                <img class="form-control-feedback"
+                  src="assets/images/img/icon-amount-green-16h-proximax-sirius-wallet.svg" alt="">
+                <input pattern="^[+]?([0-9]*[.])?[0-9]+$" currencyMask [options]="optionsXPX" mdbInputDirective
+                  mdbValidate [validateSuccess]="true" [maxlength]="maxAmount" id="amount{{errorAmount}}"
+                  [validateError]="true" type="text" class="form-control form-control-sm input-border input-amount"
+                  placeholder="Enter Amount" formControlName="amountXpx">
+                <span class="label-i fw-600 text-cl-m cursor-p pl-2rem" (click)="selectMaxAmount()">Use Max</span>
+              </div>
+              <mdb-error *ngIf="insufficientBalance">
+                <div class="errorText">
+                  <span class="fs-08rem color-error-message">Insufficient balance</span>
+                </div>
+              </mdb-error>
+              <mdb-error *ngIf="amountZero">
+                <div class="errorText">
+                  <span class="fs-08rem color-error-message">Cannot enter amount zero</span>
+                </div>
+              </mdb-error>
+            </div>
+
+
+            <!-- WALLET PASSWORD -->
+            <div class="col-10 col-sm-12 col-md-12 mx-auto mb-2rem">
+              <div class="md-form form-sm mt-1rem mb-0rem">
+                <img class="form-control-feedback"
+                  src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg" alt="">
+                <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
+                  src="assets/images/img/icon-show-hide-password.svg" *ngIf="passwordMain === 'password'">
+                <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
+                  src="assets/images/img/icon-show-hide-password-grey.svg" *ngIf="passwordMain === 'text'">
+                <input [maxlength]="configurationForm.passwordWallet.maxLength"
+                  [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" required
+                  mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" [type]="passwordMain"
+                  id="password" class="form-control form-control-sm input-border" placeholder="Enter Wallet Password">
+
+                <!-- VALIDATION -->
+                <mdb-error
+                  *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
+                  <span>Password Required</span>
+                </mdb-error>
+              </div>
+            </div>
+
+          </div>
+          <!-- END ACCOUNT LIST -->
+
+          <div class="row">
+            <div class="col-sm-12 col-md-10 col-lg-8 col-xl-8 mx-auto">
+              <div class="row">
+                <div class="col-10 col-sm-12 col-md-12 mb-1rem mx-auto box-transparent-border-orange mx-auto">
+                  <div class="txt-a-center">
+                    <img src="assets/images/img/icon-transaction-unconfirmed-white.svg" style="filter: invert(50%)"
+                      alt="" width="30">
+                  </div>
+                  <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em">
+                    Swap process may take several hours to complete. If you wish to proceed, you will receive a
+                    certificate containing your transaction hash for your records.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+
+          <!-- BUTTON -->
+          <div class="row">
+            <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
+              <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" size="md"
+                (click)="navToRoute()">
+                <span class="color-white">Maybe Later</span>
+              </button>
+            </div>
+
+            <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
+              <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="btn-proximax" size="md"
+                (click)="spinnerVisibility = true" [disabled]="blockButton || !formTransfer.valid">
+                <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
+                  *ngIf="spinnerVisibility"></span>
+                <span class="color-white">Yes, Swap</span>
+              </button>
+            </div>
+          </div>
+          <!-- END BUTTON -->
+        </form>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<!-- ACCOUNTS LIST -->
+<div class="row mt-5rem" *ngIf="show">
+  <div class="col-sm-12 col-md-10 col-lg-8 col-xl-8 mx-auto">
+
+    <div class="row">
+      <div class="col-11 mx-auto d-flex align-items-center box-grey">
+        <div class="row p-1rem">
+          <div class="col-12" [ngClass]="[(changeAccount === true) ? 'col-md-9' : '']">
+            <div class="row">
+              <span class="color-black fw-bold">Account
+                Name:&nbsp;</span><span>{{ accountSelected.nameAccount }}</span>
+            </div>
+            <div class="row">
+              <span class="d-flex color-black fw-bold">NIS1 Address:&nbsp;</span><span>{{ accountSelected.address.pretty()
+                    }}</span>
+            </div>
+            <div class="row">
+              <span class="color-black fw-bold">
+                NIS1 Balance:&nbsp;
+
+                <img src="./assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20px"
+                  alt="logo">
+
+                <span class="spinner-border spinner-border-sm text-light mr-sm-2 loading-blue" role="status"
+                  aria-hidden="true" *ngIf="searchBalance">
+                </span>
+
+                <span class="fw-400" [innerHTML]="getQuantity(quantity)"></span> XPX
+              </span>
+            </div>
+          </div>
+          <div class="col-12 col-md-3 text-center d-flex justify-content-center align-items-center"
+            *ngIf="changeAccount">
+            <button mdbBtn mdbWavesEffect (click)="goToList()" rounded="true"
+              class="color-white btn-proximax">Change</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <form [formGroup]="formTransfer" (ngSubmit)="createTransaction()" class="mx-auto">
+    <div class="col-sm-12 col-md-10 col-lg-8 col-xl-8 mx-auto">
+      <div class="col-12 d-flex justify-content-center pt-1rem">
+        <span class="fs-1-2rem fw-500 txt-a-center line-h-1-2em color-black">Swap Amount</span>
+      </div>
+      <div class="row">
+        <!-- ACCOUNT TO SWAP -->
+        <div class="col-10 col-sm-12 col-md-12 mx-auto" *ngIf="accountSelected.multiSign">
+          <ng-select mdbInputDirective mdbValidate class="selectWrapper" [items]="listContacts" bindLabel="label"
+            bindValue="value" placeholder="Select account that will receive swap transfer"
+            (change)="selectContact($event)">
+          </ng-select>
+        </div>
+
+        <div class="col-10 col-sm-12 col-md-12 mx-auto" *ngIf="accountSelected.multiSign">
+          <div class="md-form form-sm mt-1rem mb-0rem d-flex align-items-center">
+            <input mdbInputDirective mdbValidate [validateSuccess]="true" readonly [validateError]="true" type="text"
+              class="form-control form-control-sm input-border" style="border: 2px solid #306EB5;"
+              placeholder="Account Selected" formControlName="accountRecipient">
+          </div>
+        </div>
+
+        <!-- INPUT AMOUNT TO SWAP -->
+        <div class="col-10 col-sm-12 col-md-12 mx-auto">
+          <div class="md-form form-sm mt-1rem mb-0rem">
+            <img class="form-control-feedback" src="assets/images/img/icon-amount-green-16h-proximax-sirius-wallet.svg"
+              alt="">
+            <input pattern="^[+]?([0-9]*[.])?[0-9]+$" currencyMask [options]="optionsXPX" mdbInputDirective mdbValidate
+              [validateSuccess]="true" [maxlength]="maxAmount" id="amount{{errorAmount}}" [validateError]="true"
+              type="text" class="form-control form-control-sm input-border input-amount" placeholder="Enter Amount"
+              formControlName="amountXpx">
+            <span class="label-i fw-600 text-cl-m cursor-p pl-2rem" (click)="selectMaxAmount()">Use Max</span>
+          </div>
+          <mdb-error *ngIf="insufficientBalance">
+            <div class="errorText">
+              <span class="fs-08rem color-error-message">Insufficient balance</span>
+            </div>
+          </mdb-error>
+          <mdb-error *ngIf="amountZero">
+            <div class="errorText">
+              <span class="fs-08rem color-error-message">Cannot enter amount zero</span>
+            </div>
+          </mdb-error>
+        </div>
+
+
+        <!-- WALLET PASSWORD -->
+        <div class="col-10 col-sm-12 col-md-12 mx-auto mb-2rem">
+          <div class="md-form form-sm mt-1rem mb-0rem">
+            <img class="form-control-feedback"
+              src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg" alt="">
+            <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
+              src="assets/images/img/icon-show-hide-password.svg" *ngIf="passwordMain === 'password'">
+            <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
+              src="assets/images/img/icon-show-hide-password-grey.svg" *ngIf="passwordMain === 'text'">
+            <input [maxlength]="configurationForm.passwordWallet.maxLength"
+              [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" required
+              mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" [type]="passwordMain"
+              id="password" class="form-control form-control-sm input-border" placeholder="Enter Wallet Password">
+
+            <!-- VALIDATION -->
+            <mdb-error
+              *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
+              <span>Password Required</span>
+            </mdb-error>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <!-- END ACCOUNT LIST -->
+
+    <div class="row">
+      <div class="col-sm-12 col-md-10 col-lg-8 col-xl-8 mx-auto">
+        <div class="row">
+          <div class="col-10 col-sm-12 col-md-12 mb-1rem mx-auto box-transparent-border-orange mx-auto">
+            <div class="txt-a-center">
+              <img src="assets/images/img/icon-transaction-unconfirmed-white.svg" style="filter: invert(50%)" alt=""
+                width="30">
+            </div>
+            <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em">
+              Swap process may take several hours to complete. If you wish to proceed, you will receive a
+              certificate containing your transaction hash for your records.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+    <!-- BUTTON -->
+    <div class="row">
+      <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
+        <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" size="md"
+          (click)="navToRoute()">
+          <span class="color-white">Maybe Later</span>
+        </button>
+      </div>
+
+      <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
+        <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="btn-proximax" size="md"
+          (click)="spinnerVisibility = true" [disabled]="blockButton || !formTransfer.valid">
+          <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
+            *ngIf="spinnerVisibility"></span>
+          <span class="color-white">Yes, Swap</span>
+        </button>
+      </div>
+    </div>
+    <!-- END BUTTON -->
+  </form>
+</div>

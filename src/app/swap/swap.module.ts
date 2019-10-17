@@ -6,15 +6,17 @@ import { CoreModule } from '../core/core.module';
 
 // COMPONENTS
 import { Nis1CosignerAccountsComponent } from './views/nis1-cosigner-accounts/nis1-cosigner-accounts.component';
-import { WalletNis1FoundComponent } from './views/wallet-nis1-found/wallet-nis1-found.component';
 import { Nis1AccountsListComponent } from './views/nis1-accounts-list/nis1-accounts-list.component';
+import { Nis1TransferAssetsComponent } from './views/nis1-transfer-assets/nis1-transfer-assets.component';
+import { Nis1AccountFoundComponent } from './views/nis1-account-found/nis1-account-found.component';
 
 
 @NgModule({
   declarations: [
     Nis1CosignerAccountsComponent,
-    WalletNis1FoundComponent,
-    Nis1AccountsListComponent
+    Nis1AccountsListComponent,
+    Nis1TransferAssetsComponent,
+    Nis1AccountFoundComponent
   ],
   imports: [
     CoreModule,

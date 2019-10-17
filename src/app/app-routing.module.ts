@@ -19,13 +19,13 @@ const routes: Routes = [
     canActivate: [NotLoggedGuard],
     children: [{
       path: '',
-      loadChildren: './swap/swap.module#SwapModule'
-    },{
-      path: '',
       loadChildren: './home/home.module#HomeModule'
     }, {
       path: '',
       loadChildren: './wallet/wallet.module#WalletModule'
+    },{
+      path: '',
+      loadChildren: './swap/swap.module#SwapModule'
     }]
   }, {
     path: ``,

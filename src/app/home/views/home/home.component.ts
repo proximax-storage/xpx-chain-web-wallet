@@ -53,6 +53,7 @@ export class HomeComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.walletService.accountWalletCreated = null;
     this.receiveEventShowModal();
     this.servicesList = [
       this.services.buildStructureService(

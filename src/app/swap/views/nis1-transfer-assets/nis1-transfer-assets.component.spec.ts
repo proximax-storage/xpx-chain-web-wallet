@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { WalletNis1FoundComponent } from './wallet-nis1-found.component';
+import { Nis1TransferAssetsComponent } from './nis1-transfer-assets.component';
 
-describe('WalletNis1FoundComponent', () => {
-  let component: WalletNis1FoundComponent;
-  let fixture: ComponentFixture<WalletNis1FoundComponent>;
+describe('Nis1TransferAssetsComponent', () => {
+  let component: Nis1TransferAssetsComponent;
+  let fixture: ComponentFixture<Nis1TransferAssetsComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ WalletNis1FoundComponent ]
+      declarations: [ Nis1TransferAssetsComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(WalletNis1FoundComponent);
+    fixture = TestBed.createComponent(Nis1TransferAssetsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

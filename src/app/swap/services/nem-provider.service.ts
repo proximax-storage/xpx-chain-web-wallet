@@ -28,6 +28,7 @@ import { WalletService, AccountsInfoNis1Interface, CosignatoryOf } from '../../w
 import { TransactionsService } from '../../transactions/services/transactions.service';
 import { AppConfig } from '../../config/app.config';
 import { environment } from '../../../environments/environment';
+import { SharedService } from '../../shared/services/shared.service';
 
 
 @Injectable({
@@ -42,6 +43,7 @@ export class NemProviderService {
 
   constructor(
     private http: HttpClient,
+    private sharedService: SharedService,
     private transactionService: TransactionsService,
     private walletService: WalletService
   ) {
@@ -68,12 +70,10 @@ export class NemProviderService {
       // INFO ACCOUNTS MULTISIG
       if (accountInfoOwnedSwap['meta']['cosignatoryOf'].length > 0) {
         cosignatoryOf = accountInfoOwnedSwap['meta']['cosignatoryOf'];
-        // console.log('--------cosignerAccountsInfo-----------', cosignatoryOf)
         for (let multisig of cosignatoryOf) {
           try {
             const addressMultisig = this.createAddressToString(multisig.address);
             const ownedMosaic = await this.getOwnedMosaics(addressMultisig).pipe(first()).pipe((timeout(10000))).toPromise();
-            // console.log('-----------ownedMosaic multisig-----------', ownedMosaic);
             const xpxFound = ownedMosaic.find(el => el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx');
             if (xpxFound) {
               multisig.balance = await this.validateBalanceAccounts(xpxFound, addressMultisig);
@@ -88,7 +88,6 @@ export class NemProviderService {
 
       // SEARCH INFO OWNED SWAP
       try {
-        // console.log('accountsMultisigInfo --->', accountsMultisigInfo);
         const ownedMosaic = await this.getOwnedMosaics(addressOwnedSwap).pipe(first()).pipe((timeout(10000))).toPromise();
         const xpxFound = ownedMosaic.find(el => el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx');
         if (xpxFound) {
@@ -149,6 +148,38 @@ export class NemProviderService {
     } else {
       return realQuantity;
     }
+  }
+
+  /**
+   *
+   *
+   * @param {PlainMessage} message
+   * @param {AssetId} assetId
+   * @param {number} quantity
+   * @returns
+   * @memberof NemProviderService
+   */
+  async createTransaction(message: PlainMessage, assetId: AssetId, quantity: number) {
+    const resultAssets = await this.assetHttp.getAssetTransferableWithRelativeAmount(assetId, quantity).toPromise();
+    return TransferTransaction.createWithAssets(
+      this.createWithDeadline(),
+      new Address(environment.nis1.address),
+      [resultAssets],
+      message
+    );
+  }
+
+  /**
+   *
+   *
+   * @param {(TransferTransaction | MultisigTransaction)} transaction
+   * @param {Account} cosignerAccount
+   * @returns
+   * @memberof NemProviderService
+   */
+  anounceTransaction(transaction: TransferTransaction | MultisigTransaction, cosignerAccount: Account) {
+    const signedTransaction = cosignerAccount.signTransaction(transaction);
+    return this.http.post(`${environment.nis1.url}/transaction/announce`, signedTransaction);
   }
 
   /**
@@ -230,6 +261,26 @@ export class NemProviderService {
   /**
    *
    *
+   * @param {number} [deadline=2]
+   * @param {*} [chronoUnit=js_joda_1.ChronoUnit.HOURS]
+   * @returns {TimeWindow}
+   * @memberof NemProviderService
+   */
+  createWithDeadline(deadline: number = 2, chronoUnit: any = js_joda_1.ChronoUnit.HOURS): TimeWindow {
+    const currentTimeStamp = (new Date()).getTime() - 600000;
+    const timeStampDateTime = js_joda_1.LocalDateTime.ofInstant(js_joda_1.Instant.ofEpochMilli(currentTimeStamp), js_joda_1.ZoneId.SYSTEM);
+    const deadlineDateTime = timeStampDateTime.plus(deadline, chronoUnit);
+    if (deadline <= 0) {
+      throw new Error("deadline should be greater than 0");
+    } else if (timeStampDateTime.plus(24, js_joda_1.ChronoUnit.HOURS).compareTo(deadlineDateTime) != 1) {
+      throw new Error("deadline should be less than 24 hours");
+    }
+    return new TimeWindow(timeStampDateTime, deadlineDateTime);
+  }
+
+  /**
+   *
+   *
    * @param {Address} address
    * @returns
    * @memberof NemProviderService
@@ -261,6 +312,58 @@ export class NemProviderService {
     return this.accountHttp.unconfirmedTransactions(address).toPromise();
   }
 
+  /**
+   *
+   *
+   * @param {number} errorCode
+   * @memberof NemProviderService
+   */
+  showMessageError(errorCode: number) {
+    switch (errorCode) {
+      case 521:
+      case 535:
+      case 542:
+      case 551:
+      case 565:
+      case 582:
+      case 591:
+      case 610:
+      case 622:
+      case 672:
+      case 711:
+        this.sharedService.showError('Error', 'Some data is invalid');
+        break;
+
+      case 501:
+      case 635:
+      case 641:
+      case 685:
+      case 691:
+        this.sharedService.showError('Error', 'Service not available');
+        break;
+
+      case 655:
+      case 666:
+        this.sharedService.showError('Error', 'insufficient XPX Balance');
+        break;
+
+      case 511:
+        this.sharedService.showError('Error', 'Daily limit exceeded (5 swaps)');
+        break;
+
+      case 705:
+        this.sharedService.showError('Error', 'Invalid Url');
+        break;
+
+      default:
+        if (error.error.message) {
+          this.sharedService.showError('Error', error.error.message.toString().split('_').join(' '));
+        } else {
+          this.sharedService.showError('Error', 'Error! try again later');
+        }
+        break;
+    }
+  }
 }
 
 

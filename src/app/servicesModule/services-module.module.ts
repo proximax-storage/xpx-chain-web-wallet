@@ -40,7 +40,7 @@ import { AccountDeleteConfirmComponent } from './views/account/account-delete-co
 import { ExportWalletComponent } from './views/wallet/export-wallet/export-wallet.component';
 import { BlockchainComponent } from './views/nodes/blockchain/blockchain.component';
 import { DeleteWalletComponent } from './views/wallet/delete-wallet/delete-wallet.component';
-
+import { Nis1AccountsConsignerComponent } from './views/swap/nis1-accounts-consigner/nis1-accounts-consigner.component';
 
 @NgModule({
   declarations: [
@@ -83,7 +83,8 @@ import { DeleteWalletComponent } from './views/wallet/delete-wallet/delete-walle
     ExportWalletComponent,
     BlockchainComponent,
     ExportWalletComponent,
-    DeleteWalletComponent
+    DeleteWalletComponent,
+    Nis1AccountsConsignerComponent,
   ],
   schemas: [ NO_ERRORS_SCHEMA ],
   imports: [

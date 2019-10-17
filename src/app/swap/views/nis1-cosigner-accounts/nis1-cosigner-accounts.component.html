@@ -21,7 +21,7 @@
 
     <!-- BOX -->
     <div class="row mt-1rem">
-      <div class="col-11 col-sm-10 col-md-9 col-lg-8 col-xl-7 mx-auto">
+      <div class="col-11 col-md-10 col-lg-9 col-xl-8 mx-auto">
         <div class="row">
           <!-- MAIN ACCOUNT -->
           <div class="col-12 mx-auto box-grey">
@@ -39,10 +39,13 @@
                 </div>
               </div>
 
-              <div class="col-4 col-sm-3 col-md-2 text-center w-e-nowrap d-flex align-items-center"
-                *ngIf="mainAccount.balance">
-                <span class="color-blue-intermedio font-small cursor-p" (click)="mainAccountSelected()">Select ></span>
-              </div>
+              <ng-container *ngIf="mainAccount.balance">
+                <div class="col-4 col-sm-3 col-md-2 text-center w-e-nowrap d-flex align-items-center justify-content-center">
+                  <span class="color-blue-intermedio font-small cursor-p" (click)="selectAccount(mainAccount.address.pretty(), '1')">
+                    Select >
+                  </span>
+                </div>
+              </ng-container>
             </div>
           </div>
 
@@ -52,7 +55,7 @@
               <div class="row">
                 <div class="col-8 col-sm-9 col-md-10 word-break-all">
                   <div>
-                    <span class="color-black">{{ multisigAccounts.address }}&nbsp;&nbsp;</span>
+                    <span class="color-black">{{ formatAddress(multisigAccounts.address) }}&nbsp;&nbsp;</span>
                     <span class="title-tab-blue">
                       <i>-Multisig </i>
                     </span>
@@ -67,7 +70,8 @@
                 </div>
 
                 <div class="col-4 col-sm-3 col-md-2 text-center w-e-nowrap d-flex align-items-center">
-                  <span class="color-blue-intermedio font-small cursor-p" (click)="mainAccountSelected()">
+                  <span class="color-blue-intermedio font-small cursor-p"
+                    (click)="selectAccount(multisigAccounts.address, '2')">
                     Select >
                   </span>
                 </div>
