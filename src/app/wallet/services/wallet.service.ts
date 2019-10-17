@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { SimpleWallet, PublicAccount, AccountInfo, MultisigAccountInfo, NamespaceId, MosaicId, Address } from 'tsjs-xpx-chain-sdk';
-import { crypto } from 'js-xpx-chain-library';
+import { crypto, address } from 'js-xpx-chain-library';
 import { AbstractControl } from '@angular/forms';
 import { BehaviorSubject, Observable, timer, Subject } from 'rxjs';
 
@@ -304,6 +304,16 @@ export class WalletService {
             });
 
             newAccount.push(accountBuilded);
+            const paramsStorage = {
+              name: `MULTISIG-${multisigAccount.address.plain().slice(36, 40)}`,
+              address: multisigAccount.address.plain().toUpperCase(),
+              walletContact: true,
+              nameItem: '',
+              update: false,
+              dataComparate: null
+            }
+            const saved = this.saveContacts(paramsStorage);
+
             this.saveAccountWalletStorage(accountBuilded);
             /*this.proximaxProvider.getAccountInfo(multisigAccount.address).pipe(first()).subscribe(async (accountInfo: AccountInfo) => {
               const mosaicsIds: (NamespaceId | MosaicId)[] = [];
@@ -358,6 +368,16 @@ export class WalletService {
 
     localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(othersWallet));
     return newAccount;
+  }
+
+  deleteContact(address = null) {
+    let currentWallet = `${environment.itemBooksAddress}-${this.getCurrentWallet().name}`;
+    let currentAddressBook = JSON.parse(localStorage.getItem(currentWallet));
+    if (currentAddressBook !== null) {
+      let newAddressBook = currentAddressBook.filter(el => el.value !== address)
+      let updatedAddressBook = JSON.stringify(newAddressBook)
+      localStorage.setItem(currentWallet, updatedAddressBook)
+    }
   }
 
   /**
@@ -686,6 +706,48 @@ export class WalletService {
     return str.match('^(0x|0X)?[a-fA-F0-9]+$') !== null;
   }
 
+  verifyRelatedMultisig(accountToDelete) {
+    if (
+      accountToDelete &&
+      accountToDelete.isMultisign &&
+      accountToDelete.isMultisign.cosignatories &&
+      accountToDelete.isMultisign.cosignatories.length === 0 &&
+      accountToDelete.isMultisign.multisigAccounts &&
+      accountToDelete.isMultisign.multisigAccounts.length > 0
+    ) {
+
+      let filteredMultisigAccounts = this.currentWallet.accounts.filter(el => el.isMultisign !== null && el.isMultisign.cosignatories.length > 0)
+
+      filteredMultisigAccounts.forEach(account => {
+        account.isMultisign.cosignatories.forEach(el => {
+          if (el.address.pretty().split('-').join('') === accountToDelete.address) {
+            let deleteAccount = []
+            account.isMultisign.cosignatories.forEach((cosig, index) => {
+              if (cosig.address.pretty().split('-').join('') !== accountToDelete.address) {
+                console.log(`Cosig ${index}`, [undefined, null].includes(this.filterAccountWallet('', null, cosig.address.pretty())));
+                if ([undefined, null].includes(this.filterAccountWallet('', null, cosig.address.pretty()))) {
+                  deleteAccount.push(true)
+                } else {
+                  deleteAccount.push(false)
+                }
+              } else {
+                deleteAccount.push(true)
+              }
+
+              if (index + 1 === account.isMultisign.cosignatories.length) {
+                console.log(deleteAccount);
+                let deleteResult = deleteAccount.find(el => el === false)
+                if ([undefined, null].includes(deleteResult)) {
+                  this.deleteContact(account.address)
+                }
+              }
+            })
+          }
+        })
+      })
+    }
+  }
+
   /**
    *
    *
@@ -695,6 +757,10 @@ export class WalletService {
   removeAccountWallet(name: string, moduleRemove: boolean = false) {
     const myAccounts: AccountsInterface[] = Object.assign(this.currentWallet.accounts);
     // console.log('=== myAccounts ===', myAccounts);
+
+    const accountToDelete = myAccounts.find(x => x.name === name);
+    this.verifyRelatedMultisig(accountToDelete);
+
     const othersAccount = myAccounts.filter(x => x.name !== name);
     // console.log('==== othersAccount ====', othersAccount);
     this.currentWallet.accounts = othersAccount;
@@ -762,6 +828,39 @@ export class WalletService {
     }
   }
 
+  /**
+   *
+   *
+   * @param {object} params
+   * @memberof ServicesModuleService
+   */
+  saveContacts(params) {
+    let currentWallet = `${environment.itemBooksAddress}-${this.getCurrentWallet().name}`;
+    let currentAddressBook = JSON.parse(localStorage.getItem(currentWallet));
+    console.log(currentWallet, currentAddressBook, params);
+
+    if (currentAddressBook !== null) {
+      let { name, address, walletContact } = params
+
+      address = address.split('-').join('')
+      let nameExist = (currentAddressBook.find(el => el.label === name))
+      let addressExist = (currentAddressBook.find(el => el.value === address))
+
+      console.log(nameExist, addressExist);
+
+      if (nameExist === undefined && addressExist === undefined) {
+        let newContact = {
+          label: name,
+          value: address,
+          walletContact: walletContact
+        }
+
+        currentAddressBook.push(newContact)
+        let updatedAddressBook = JSON.stringify(currentAddressBook)
+        localStorage.setItem(currentWallet, updatedAddressBook)
+      }
+    }
+  }
 
   /**
    *
