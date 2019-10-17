@@ -19,6 +19,9 @@ const routes: Routes = [
     canActivate: [NotLoggedGuard],
     children: [{
       path: '',
+      loadChildren: './swap/swap.module#SwapModule'
+    },{
+      path: '',
       loadChildren: './home/home.module#HomeModule'
     }, {
       path: '',
@@ -34,12 +37,10 @@ const routes: Routes = [
     }, {
       path: '',
       loadChildren: './transactions/transactions.module#TransactionsModule'
-    },
-    {
+    }, {
       path: '',
       loadChildren: './servicesModule/services-module.module#ServicesModule'
-    },
-    ]
+    }]
   }, {
     path: '**',
     redirectTo: `/${AppConfig.routes.home}`

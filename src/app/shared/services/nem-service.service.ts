@@ -51,7 +51,7 @@ export class NemServiceService {
     private transactionService: TransactionsService,
     private http: HttpClient
   ) {
-    NEMLibrary.bootstrap(environment.nis1.networkType);
+    //NEMLibrary.bootstrap(environment.nis1.networkType);
     this.nodes = environment.nis1.nodes;
     this.accountHttp = new AccountHttp(this.nodes);
     this.transactionHttp = new TransactionHttp(this.nodes);
@@ -59,8 +59,14 @@ export class NemServiceService {
   }
 
 
+  /**
+   *
+   *
+   * @param {Account} account
+   * @param {string} name
+   * @memberof NemServiceService
+   */
   async getAccountInfoNis1(account: Account, name: string) {
-    console.log('ACCOUNT ---> ', account);
     try {
       let cosignerOf: boolean = false;
       let cosignatoryOf: CosignatoryOf[] = [];
@@ -82,7 +88,6 @@ export class NemServiceService {
               // Valida balance de las transacciones multifirma
               multisig.balance = await this.validateBalanceAccounts(xpxFound, addressMultisig);
               nis1AccountsMultisigInfo.push(multisig);
-              console.log('Balance Multisig --->', nis1AccountsMultisigInfo);
             }
           } catch (error) {
             console.log('ACCOUNT INFO MULTISIG ERROR 01---> ', error);
@@ -92,6 +97,7 @@ export class NemServiceService {
 
       // SEARCH INFO OWNED SWAP
       try {
+        console.log('nis1AccountsMultisigInfo --->', nis1AccountsMultisigInfo);
         const ownedMosaic = await this.getOwnedMosaics(addressOwnedSwap).pipe(first()).pipe((timeout(10000))).toPromise();
         const xpxFound = ownedMosaic.find(el => el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx');
         if (xpxFound) {
@@ -101,13 +107,12 @@ export class NemServiceService {
             nameAccount: name,
             address: account.address,
             publicKey: account.publicKey,
-            consignerOf: cosignerOf,
-            consignerAccounts: cosignatoryOf,
+            cosignerOf: cosignerOf,
+            cosignerAccounts: cosignatoryOf,
             multisigAccountsInfo: nis1AccountsMultisigInfo,
             mosaic: xpxFound,
-            multiSign: false,
-            balance: balance,
-            route: `/${AppConfig.routes.viewAllAccount}`
+            isMultiSig: false,
+            balance: balance
           });
         }else {
           this.walletService.setNis1AccountsFound$(null);
@@ -297,57 +302,6 @@ export class NemServiceService {
    * @param address account address
    * @memberof NemServiceService
    */
-  /*getAccountsInfo(accounts: any) {
-    for (const element of accounts) {
-      if (element.nis1Account !== null) {
-        const address = this.createAddressToString(element.nis1Account.address.value);
-        this.getAccountInfo(address).pipe(first()).pipe((timeout(15000))).subscribe(
-          async next => {
-            // console.log('this is resp-------->', next);
-            let consignerOf: boolean = false;
-            let consignerAccountsInfo: any = [];
-
-            if (next['meta']['cosignatoryOf'].length > 0) {
-              consignerOf = true;
-              consignerAccountsInfo = next['meta']['cosignatoryOf'];
-            }
-            const accountNis1 = {
-              nameAccount: element.name,
-              address: address,
-              publicKey: element.nis1Account.publicKey,
-              consignerOf: consignerOf,
-              consignerAccounts: consignerAccountsInfo
-            }
-
-            const accounts = this.walletService.getNis1AccountsWallet();
-            accounts.push(accountNis1);
-            this.walletService.setNis1AccountsWallet$(accounts);
-            this.walletService.setNis1AccounsWallet(accountNis1);
-          },
-          async error => {
-            const accountNis1 = {
-              nameAccount: element.name,
-              address: address,
-              publicKey: element.nis1Account.publicKey,
-              consignerOf: false,
-              consignerAccounts: []
-            }
-
-            const accounts = this.walletService.getNis1AccountsWallet();
-            accounts.push(accountNis1);
-            this.walletService.setNis1AccountsWallet$(accounts);
-            this.walletService.setNis1AccounsWallet(accountNis1);
-          }
-        );
-      }
-    }
-  }*/
-
-  /**
-   * Method to get Account Info Address
-   * @param address account address
-   * @memberof NemServiceService
-   */
   async getAccountsInfoAccountNew(account: any, name: string) {
     const address = this.createAddressToString(account.address.value);
     try {
@@ -367,7 +321,7 @@ export class NemServiceService {
             console.log('ownedMosaic multisig ----> ', ownedMosaic);
             const xpxFound = ownedMosaic.find(el => el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx');
             if (xpxFound) {
-              const balance = await this.validateBalanceAndTransactions(xpxFound, addressMultisig);
+              const balance = await this.validateBalanceAccounts(xpxFound, addressMultisig);
               console.log('Balance Multisig --->', balance);
             } else {
               // this.walletService.setNis1AccountsWallet$(null);
@@ -384,7 +338,7 @@ export class NemServiceService {
       console.log('ownedMosaic multisig ----> ', ownedMosaic);
       const xpxFound = ownedMosaic.find(el => el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx');
       if (xpxFound) {
-        const balance = await this.validateBalanceAndTransactions(xpxFound, address);
+        const balance = await this.validateBalanceAccounts(xpxFound, address);
         console.log('Balance Multisig --->', balance);
         const accountNis1 = {
           nameAccount: name,

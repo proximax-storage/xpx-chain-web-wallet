@@ -91,17 +91,6 @@ const routes: Routes = [
     }
   },
   {
-    path: AppConfig.routes.walletNis1Found,
-    component: WalletNis1FoundComponent,
-    data: {
-      meta: {
-        title: 'walletNis1Found.title',
-        description: 'walletNis1Found.text',
-        override: true,
-      },
-    }
-  },
-  {
     path: AppConfig.routes.transferXpx,
     component: TransferXpxComponent,
     data: {

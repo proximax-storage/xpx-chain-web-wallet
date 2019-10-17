@@ -9,6 +9,7 @@ import { AppConfig } from '../../../config/app.config';
 import { ServicesModuleService } from '../../../servicesModule/services/services-module.service';
 import { NemServiceService } from '../../../shared/services/nem-service.service';
 import { environment } from '../../../../environments/environment';
+import { NemProviderService } from 'src/app/swap/services/nem-provider.service';
 
 
 @Component({
@@ -43,7 +44,7 @@ export class ImportWalletComponent implements OnInit {
     private proximaxProvider: ProximaxProvider,
     private router: Router,
     private serviceModuleService: ServicesModuleService,
-    private nemProvider: NemServiceService
+    private nemProviderService: NemProviderService
   ) { }
 
   ngOnInit() {
@@ -68,24 +69,25 @@ export class ImportWalletComponent implements OnInit {
       walletName = (walletName.includes(' ') === true) ? walletName.split(' ').join('_') : walletName;
       const existWallet = this.walletService.getWalletStorage().find((element: any) => element.name === walletName);
       if (existWallet === undefined) {
-        const nameWallet = walletName;
         const network = this.importWalletForm.get('network').value;
         const privateKey = this.importWalletForm.get('privateKey').value;
         const password = this.proximaxProvider.createPassword(this.importWalletForm.controls.passwords.get('password').value);
-        const wallet = this.proximaxProvider.createAccountFromPrivateKey(nameWallet, password, privateKey, network);
+        const wallet = this.proximaxProvider.createAccountFromPrivateKey(walletName, password, privateKey, network);
         if (this.saveNis1) {
           this.walletService.clearNis1AccounsWallet();
           this.spinnerButton = true;
-          const nis1Wallet = this.nemProvider.createAccountPrivateKey(this.importWalletForm.get('privateKey').value);
+          const nis1Wallet = this.nemProviderService.createAccountPrivateKey(this.importWalletForm.get('privateKey').value);
           this.nis1Account = {
             address: nis1Wallet.address,
             publicKey: nis1Wallet.publicKey
           };
 
-          this.nemProvider.getAccountInfoNis1(nis1Wallet, nameWallet);
+          this.saveAccount(wallet, walletName, password);
+          this.nemProviderService.getAccountInfoNis1(nis1Wallet, walletName);
+          return;
         }
 
-        this.saveAccount(wallet, nameWallet, password);
+        this.saveAccount(wallet, walletName, password);
       } else {
         this.clearForm('nameWallet');
         this.sharedService.showError('', 'This name is already in use, try another name');

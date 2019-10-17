@@ -46,6 +46,10 @@ export const AppConfig: Config = {
     renewNamespace: 'renew-namespace',
     renovateNamespace: 'renovate-namespace',
     swapTransactions: 'swap-transactions',
+    swapListCosignerNis1: 'swap-list-cosigner-nis1',
+    swapListAccountsNis1: 'swap-list-accounts-nis1',
+    swapWalletNis1Found: 'swap-wallet-nis1-found',
+    swapAccountListNis1: 'swap-account-list-nis1',
     selectNode: 'select-node',
     selectTypeCreationWallet: 'select-type-creation-wallet',
     selectTypeCreationAccount: 'select-type-creation-account',
@@ -113,6 +117,10 @@ export interface Config {
     renewNamespace: string;
     renovateNamespace: string;
     swapTransactions: string;
+    swapListCosignerNis1: string;
+    swapListAccountsNis1: string;
+    swapWalletNis1Found: string;
+    swapAccountListNis1: string;
     selectNode: string;
     selectTypeCreationWallet: string;
     selectTypeCreationAccount: string;

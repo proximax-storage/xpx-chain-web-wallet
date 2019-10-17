@@ -24,6 +24,7 @@ import { ConvertAccountMultisignComponent } from './views/multi-sign/convert-acc
 import { EditAccountMultisignComponent } from './views/multi-sign/edit-account-multisign/edit-account-multisign.component';
 import { Nis1AccountsListComponent } from './views/swap/nis1-accounts-list/nis1-accounts-list.component';
 import { AccountsListComponent } from './views/swap/accounts-list/accounts-list.component';
+import { Nis1AccountsConsignerComponent } from './views/swap/nis1-accounts-consigner/nis1-accounts-consigner.component';
 import { CreatePollComponent } from './views/voting/create-poll/create-poll.component';
 import { CreateApostilleComponent } from './views/apostille/create-apostille/create-apostille.component';
 import { AuditApostilleComponent } from './views/apostille/audit-apostille/audit-apostille.component';
@@ -31,7 +32,6 @@ import { PollsComponent } from './views/voting/polls/polls.component';
 import { VoteInPollComponent } from './views/voting/vote-in-poll/vote-in-poll.component';
 import { AccountNis1FoundComponent } from './views/account/account-nis1-found/account-nis1-found.component';
 import { AccountNis1TransferXpxComponent } from './views/account/account-nis1-transfer-xpx/account-nis1-transfer-xpx.component';
-import { Nis1AccountsConsignerComponent } from './views/swap/nis1-accounts-consigner/nis1-accounts-consigner.component';
 import { AccountDeleteComponent } from './views/account/account-delete/account-delete/account-delete.component';
 import { AccountDeleteConfirmComponent } from './views/account/account-delete-confirm/account-delete-confirm.component';
 import { ExportWalletComponent } from "./views/wallet/export-wallet/export-wallet.component";

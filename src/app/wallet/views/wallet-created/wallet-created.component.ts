@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { SimpleWallet } from 'tsjs-xpx-chain-sdk';
 import { Router } from '@angular/router';
+import * as qrcode from 'qrcode-generator';
+import * as jsPDF from 'jspdf';
+import { Subscription } from 'rxjs';
 import { WalletService, AccountsInterface } from '../../services/wallet.service';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 import { AppConfig } from '../../../config/app.config';
 import { SharedService } from '../../../shared/services/shared.service';
-import * as qrcode from 'qrcode-generator';
-import * as jsPDF from 'jspdf';
-import { Subscription } from 'rxjs';
-import { timeout } from 'rxjs/operators';
+import { NemProviderService } from '../../../swap/services/nem-provider.service';
 
 @Component({
   selector: 'app-wallet-created',
@@ -19,56 +19,39 @@ export class WalletCreatedComponent implements OnInit {
 
   address = '';
   description = 'Warning! Before proceeding, make sure store your private key in a safe place. Access to your digital assets cannot be recovered without it.';
+  disabledContinue: boolean = true;
   imgBackground = '';
   publicKey = '';
   privateKey = '';
+  routeAuth = `/${AppConfig.routes.home}`;
+  routeContinue = `/${AppConfig.routes.home}`;
+  subTitle = '';
+  subscription: Subscription[] = [];
   title = 'Congratulations!';
   titleDescription = 'Your wallet has been successfully created.';
-  subtitle = '';
   viewPrivateKey = false;
-  routeAuth = `/${AppConfig.routes.home}`;
   walletData: {
     data: any,
     dataAccount: AccountsInterface;
     wallet: SimpleWallet
   } = null;
-  disabledContinue: boolean = true;
-  subscription: Subscription[] = [];
+
 
   constructor(
-    private walletService: WalletService,
     private proximaxProvider: ProximaxProvider,
+    private router: Router,
     private sharedService: SharedService,
-    private router: Router
+    private walletService: WalletService
   ) { }
+
 
   ngOnInit() {
     this.getImageBackground();
     this.walletData = this.walletService.accountWalletCreated;
-    if (this.walletData !== null) {
-      this.subtitle = this.walletData.data.name;
-      this.address = this.walletData.wallet.address.pretty();
-      this.privateKey = this.proximaxProvider.decryptPrivateKey(this.walletData.data.algo, this.walletData.dataAccount.encrypted, this.walletData.dataAccount.iv).toUpperCase();
-      this.publicKey = this.proximaxProvider.getPublicAccountFromPrivateKey(this.privateKey, this.walletData.data.network).publicKey;
-     /* if (this.walletData.dataAccount.nis1Account !== null) {
-        this.subscription.push(this.walletService.getNis1AccountsWallet$().subscribe(
-          next => {
-           // console.log('NEXT -->', next);
-            this.disabledContinue = false;
-          },
-          error => {
-           // console.log('ERROR ---> ', error);
-            this.disabledContinue = false;
-          }
-        ));
-      } else {
-        this.disabledContinue = false;
-      }*/
-      this.walletData = null;
-    } else {
-      this.router.navigate([`/${AppConfig.routes.home}`]);
-    }
+    this.walletService.accountWalletCreated = null;
+    this.checkDataWallet();
   }
+
 
   ngOnDestroy(): void {
     this.walletData = null;
@@ -76,6 +59,46 @@ export class WalletCreatedComponent implements OnInit {
       subscription.unsubscribe();
     });
   }
+
+
+  /**
+   *
+   *
+   * @memberof WalletCreatedComponent
+   */
+  checkDataWallet() {
+    if (this.walletData !== null) {
+      this.subTitle = this.walletData.data.name;
+      this.address = this.walletData.wallet.address.pretty();
+      this.privateKey = this.proximaxProvider.decryptPrivateKey(this.walletData.data.algo, this.walletData.dataAccount.encrypted, this.walletData.dataAccount.iv).toUpperCase();
+      this.publicKey = this.proximaxProvider.getPublicAccountFromPrivateKey(this.privateKey, this.walletData.data.network).publicKey;
+      if (this.walletData.dataAccount.nis1Account !== null) {
+        this.subscription.push(this.walletService.getNis1AccountsFound$().subscribe(next => {
+          console.log('getNis1AccountsFound -->', next);
+          if (next) {
+            if (next.cosignerAccounts.length > 0) {
+              this.walletService.setSelectedNis1Account(next);
+              this.routeContinue = `/${AppConfig.routes.swapListCosignerNis1}`;
+            }else {
+              this.routeContinue = `/${AppConfig.routes.walletNis1Found}`;
+            }
+          } else {
+            this.routeContinue = `/${AppConfig.routes.home}`;
+          }
+          this.disabledContinue = false;
+        }, error => {
+          this.disabledContinue = false
+          this.routeContinue = `/${AppConfig.routes.home}`;
+        }));
+      } else {
+        this.disabledContinue = false;
+        this.routeContinue = `/${AppConfig.routes.home}`;
+      }
+    } else {
+      this.router.navigate([`/${AppConfig.routes.home}`]);
+    }
+  }
+
 
   /**
    *
@@ -95,6 +118,7 @@ export class WalletCreatedComponent implements OnInit {
   getImageBackground() {
     this.imgBackground = this.sharedService.walletCreatedCertified();
   }
+
 
   /**
    *

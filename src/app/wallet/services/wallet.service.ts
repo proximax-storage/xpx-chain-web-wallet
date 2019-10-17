@@ -8,6 +8,7 @@ import { environment } from '../../../environments/environment';
 import { SharedService } from '../../shared/services/shared.service';
 import { ProximaxProvider } from '../../shared/services/proximax.provider';
 import { first } from 'rxjs/operators';
+import { AssetTransferable, Address as AddressNEM } from 'nem-library';
 
 @Injectable({
   providedIn: 'root'
@@ -15,9 +16,9 @@ import { first } from 'rxjs/operators';
 export class WalletService {
 
 
-
-  nis1AccountsFound: Subject<any> = new Subject<any>(); // RJ
-  nis1AccountsFound$: Observable<any> = this.nis1AccountsFound.asObservable(); // RJ
+  nis1AccountSelected: AccountsInfoNis1Interface = null;
+  nis1AccountsFoundSubject: Subject<AccountsInfoNis1Interface> = new Subject<AccountsInfoNis1Interface>(); // RJ
+  nis1AccountsFound$: Observable<AccountsInfoNis1Interface> = this.nis1AccountsFoundSubject.asObservable(); // RJ
   // -------------------------------------------------------------------------------
 
 
@@ -533,9 +534,12 @@ export class WalletService {
     return this.accountsInfo$;
   }
 
+
   /**
    *
-   * @param data
+   *
+   * @returns
+   * @memberof WalletService
    */
   getAccountInfoNis1() {
     return this.accountInfoNis1;
@@ -591,6 +595,8 @@ export class WalletService {
     return this.swapTransactions$;
   }
 
+
+
   /**
    *
    *
@@ -620,8 +626,6 @@ export class WalletService {
   getAccountsPushedSubject() {
     return this.accountsPushedSubject$;
   }
-
-
 
 
   /**
@@ -688,7 +692,7 @@ export class WalletService {
 
   /**
    * Verify if a string is hexadecimal
-   * by: roimerj_vzla
+   * by: RJ
    *
    * @param {any} str
    * @returns
@@ -810,13 +814,7 @@ export class WalletService {
   }
 
 
-  /**
-    *
-    * @param data
-    */
-  setNis1AccountSelected(account: any) {
-    this.nis1AccountSeleted = account;
-  }
+
 
 
   /**
@@ -867,15 +865,7 @@ export class WalletService {
     this.swapTransactions.next(transactions);
   }
 
-  /**
-   * RJ
-   *
-   * @param {*} accounts
-   * @memberof WalletService
-   */
-  setNis1AccountsFound$(accounts: any){
-    this.nis1AccountsFound.next(accounts);
-  }
+
 
   /**
    *
@@ -1034,6 +1024,7 @@ export class WalletService {
     return walletsStorage;
   }
 
+
   /**
    *
    *
@@ -1049,6 +1040,66 @@ export class WalletService {
     // console.log('=== othersWallet === ', othersWallet);
     localStorage.setItem(environment.nameKeyWalletTransactionsNis, JSON.stringify(othersWallet));
   }
+
+  /**
+   *
+   *
+   * @param {*} account
+   * @memberof WalletService
+   */
+  setNis1AccountSelected(account: any) {
+    this.nis1AccountSeleted = account;
+  }
+
+
+  // ----------------------------------------------------------------------------
+
+
+
+  /**
+   * RJ
+   *
+   * @param {AccountsInfoNis1Interface} account
+   * @memberof WalletService
+   */
+  setSelectedNis1Account(account: AccountsInfoNis1Interface) {
+    this.nis1AccountSelected = account;
+  }
+
+
+  /**
+   * RJ
+   *
+   * @param {*} accounts
+   * @memberof WalletService
+   */
+  setNis1AccountsFound$(accounts: AccountsInfoNis1Interface) {
+    this.nis1AccountsFoundSubject.next(accounts);
+  }
+
+
+  /**
+   * RJ
+   *
+   * @param {*} accounts
+   * @memberof WalletService
+   */
+  getNis1AccountsFound$(): Observable<AccountsInfoNis1Interface> {
+    return this.nis1AccountsFound$;
+  }
+
+  /**
+   * RJ
+   *
+   * @returns
+   * @memberof WalletService
+   */
+  getSelectedNis1Account(): AccountsInfoNis1Interface {
+    return this.nis1AccountSelected;
+  }
+
+
+
 }
 
 export interface CurrentWalletInterface {
@@ -1092,4 +1143,31 @@ export interface AccountsInfoInterface {
 export interface WalletAccountInterface {
   name: string,
   accounts: AccountsInterface[];
+}
+
+
+export interface CosignatoryOf {
+  address: string;
+  balance: number;
+  harvestedBlocks: number;
+  importance: number;
+  label: any;
+  multisigInfo: {
+    cosignatoriesCount: number;
+    minCosignatories: number;
+  },
+  publicKey: string;
+  vestedBalance: number;
+}
+
+export interface AccountsInfoNis1Interface {
+  nameAccount: string;
+  address: AddressNEM;
+  publicKey: string;
+  cosignerOf: boolean;
+  cosignerAccounts: CosignatoryOf[];
+  multisigAccountsInfo: any[];
+  mosaic: AssetTransferable;
+  isMultiSig: boolean;
+  balance: any;
 }
