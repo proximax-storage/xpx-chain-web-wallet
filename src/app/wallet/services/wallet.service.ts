@@ -400,27 +400,32 @@ export class WalletService {
    * @memberof WalletService
    */
   decrypt(common: any, account: AccountsInterface = null) {
-    const acct = (account) ? account : this.currentAccount;
-    const net = (account) ? account.network : this.currentAccount.network;
-    const alg = (account) ? account.algo : this.currentAccount.algo;
-    /*console.log(common);
-    console.log(acct);
-    console.log(alg);*/
-    if (!crypto.passwordToPrivatekey(common, acct, alg)) {
-      this.sharedService.showError('', 'Invalid password');
-      return false;
-    }
+    if (account && common) {
+      const acct = (account) ? account : this.currentAccount;
+      const net = (account) ? account.network : this.currentAccount.network;
+      const alg = (account) ? account.algo : this.currentAccount.algo;
+      /*console.log(common);
+      console.log(acct);
+      console.log(alg);*/
+      if (!crypto.passwordToPrivatekey(common, acct, alg)) {
+        this.sharedService.showError('', 'Invalid password');
+        return false;
+      }
 
-    if (common.isHW) {
+      if (common.isHW) {
+        return true;
+      }
+
+      if (!this.isPrivateKeyValid(common.privateKey) || !this.proximaxProvider.checkAddress(common.privateKey, net, acct.address)) {
+        this.sharedService.showError('', 'Invalid password');
+        return false;
+      }
+
       return true;
-    }
-
-    if (!this.isPrivateKeyValid(common.privateKey) || !this.proximaxProvider.checkAddress(common.privateKey, net, acct.address)) {
-      this.sharedService.showError('', 'Invalid password');
+    } else {
+      this.sharedService.showError('', 'You do not have a valid account selected');
       return false;
     }
-
-    return true;
   }
 
   /**
@@ -724,7 +729,6 @@ export class WalletService {
             let deleteAccount = []
             account.isMultisign.cosignatories.forEach((cosig, index) => {
               if (cosig.address.pretty().split('-').join('') !== accountToDelete.address) {
-                console.log(`Cosig ${index}`, [undefined, null].includes(this.filterAccountWallet('', null, cosig.address.pretty())));
                 if ([undefined, null].includes(this.filterAccountWallet('', null, cosig.address.pretty()))) {
                   deleteAccount.push(true)
                 } else {
@@ -735,7 +739,6 @@ export class WalletService {
               }
 
               if (index + 1 === account.isMultisign.cosignatories.length) {
-                console.log(deleteAccount);
                 let deleteResult = deleteAccount.find(el => el === false)
                 if ([undefined, null].includes(deleteResult)) {
                   this.deleteContact(account.address)
@@ -837,17 +840,11 @@ export class WalletService {
   saveContacts(params) {
     let currentWallet = `${environment.itemBooksAddress}-${this.getCurrentWallet().name}`;
     let currentAddressBook = JSON.parse(localStorage.getItem(currentWallet));
-    console.log(currentWallet, currentAddressBook, params);
-
     if (currentAddressBook !== null) {
       let { name, address, walletContact } = params
-
       address = address.split('-').join('')
       let nameExist = (currentAddressBook.find(el => el.label === name))
       let addressExist = (currentAddressBook.find(el => el.value === address))
-
-      console.log(nameExist, addressExist);
-
       if (nameExist === undefined && addressExist === undefined) {
         let newContact = {
           label: name,
