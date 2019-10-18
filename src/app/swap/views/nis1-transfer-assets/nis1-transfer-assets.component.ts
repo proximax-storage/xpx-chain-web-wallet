@@ -65,11 +65,11 @@ export class Nis1TransferAssetsComponent implements OnInit {
     });
   }
 
-   /**
-   *
-   *
-   * @memberof Nis1TransferAssetsComponent
-   */
+  /**
+  *
+  *
+  * @memberof Nis1TransferAssetsComponent
+  */
   async createTransaction() {
     if (!this.processing) {
       this.processing = true;
@@ -218,7 +218,7 @@ export class Nis1TransferAssetsComponent implements OnInit {
    *
    * @memberof Nis1TransferAssetsComponent
    */
-  initComponent(){
+  initComponent() {
     const accountSelected = this.walletService.getSelectedNis1Account();
     if (accountSelected) {
       const account = this.activateRoute.snapshot.paramMap.get('account');
@@ -229,6 +229,7 @@ export class Nis1TransferAssetsComponent implements OnInit {
         if (this.type === '1' && accountSelected.address.plain() === account.replace(/-/g, '')) {
           // SIMPLE ACCOUNT
           this.accountToSwap = accountSelected;
+          console.log('ACCOUNT TO SWAP--->', this.accountToSwap);
           this.createFormTransfer();
           this.subscribeAmount();
         } else if (accountSelected.multisigAccountsInfo.length > 0) {
@@ -240,6 +241,7 @@ export class Nis1TransferAssetsComponent implements OnInit {
             accountFiltered.accountCosignatory = accountSelected.address.pretty();
             accountFiltered.address = this.nemProvider.createAddressToString(accountFiltered.address);
             this.accountToSwap = accountFiltered;
+            console.log('ACCOUNT TO SWAP--->', this.accountToSwap);
             this.createFormTransfer();
             this.subscribeAmount();
           }
@@ -247,7 +249,7 @@ export class Nis1TransferAssetsComponent implements OnInit {
       }
     }
 
-    if(!this.accountToSwap) {
+    if (!this.accountToSwap) {
       this.router.navigate([`/${AppConfig.routes.home}`]);
     }
   }

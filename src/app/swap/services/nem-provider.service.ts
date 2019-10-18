@@ -127,7 +127,6 @@ export class NemProviderService {
     const quantityFillZeros = this.transactionService.addZeros(xpxFound.properties.divisibility, xpxFound.quantity);
     const realQuantity: any = this.amountFormatter(quantityFillZeros, xpxFound, xpxFound.properties.divisibility);
     const transactions = await this.getUnconfirmedTransaction(addressMultisig);
-    console.log('transactions multisig ----> ', transactions);
     if (transactions.length > 0) {
       let relativeAmount = realQuantity;
       for (const item of transactions) {
