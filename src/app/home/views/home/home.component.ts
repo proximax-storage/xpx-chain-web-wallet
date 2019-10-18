@@ -117,7 +117,7 @@ export class HomeComponent implements OnInit {
       let walletName = this.walletDecryp.name;
       walletName = (walletName.includes(' ') === true) ? walletName.split(' ').join('_') : walletName;
       const nameWallet = walletName;
-      const network = (this.walletDecryp.accounts[0].network === NetworkTypes.MAIN_NET) ? NetworkType.MAIN_NET : NetworkType.TEST_NET;
+      const network = environment.typeNetwork.value;
       const password = this.proximaxProvider.createPassword(this.password);
       const algo = this.walletDecryp.accounts[0].algo;
       const accounts = [];

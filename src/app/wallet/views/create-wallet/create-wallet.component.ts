@@ -206,7 +206,7 @@ export class CreateWalletComponent implements OnInit {
     }
 
     this.createWalletForm.reset();
-    this.createWalletForm.get('network').setValue(NetworkType.TEST_NET);
+    this.createWalletForm.get('network').setValue(environment.typeNetwork.value);
     return;
   }
 

@@ -175,7 +175,7 @@ export class ImportWalletComponent implements OnInit {
     }
 
     this.importWalletForm.reset();
-    this.importWalletForm.get('network').setValue(NetworkType.TEST_NET);
+    this.importWalletForm.get('network').setValue(environment.typeNetwork.value);
     return;
   }
 
