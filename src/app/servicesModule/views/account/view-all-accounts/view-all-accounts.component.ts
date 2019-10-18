@@ -45,6 +45,7 @@ export class ViewAllAccountsComponent implements OnInit {
 
   ngOnInit() {
     this.subscribeAccountInfoToBuildBalance();
+    this.validateUniqueAccount();
   }
 
   ngOnDestroy(): void {
@@ -128,6 +129,25 @@ export class ViewAllAccountsComponent implements OnInit {
     return temp;
   }
 
+  deleteVerification(account) {
+    let erasable = false;
+
+    if (account.default || account.encrypted === '') {
+      erasable = false;
+    } else {
+      if (this.currentWallet.accounts.length === 2) {
+        let noPrivateKey = this.currentWallet.accounts.filter(account => account.encrypted === "")
+        if (noPrivateKey.length > 0) {
+          erasable = false
+        }
+      } else {
+        erasable = true
+      }
+    }
+
+    return erasable
+  }
+
   /**
    * Method to export account
    * @param {any} account
@@ -178,6 +198,13 @@ export class ViewAllAccountsComponent implements OnInit {
         this.buildBalance();
       }
     ));
+  }
+
+  validateUniqueAccount() {
+    if (this.currentWallet.accounts.length === 1) {
+      this.currentWallet.accounts[0].firstAccount = true;
+      this.currentWallet.accounts[0].default = true;
+    }
   }
 
   /**
