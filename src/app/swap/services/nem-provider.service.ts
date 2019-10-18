@@ -317,7 +317,7 @@ export class NemProviderService {
    * @param {number} errorCode
    * @memberof NemProviderService
    */
-  validateCodeMsgError(errorCode: number) {
+  validateCodeMsgError(errorCode: number, errorMessage: string) {
     switch (errorCode) {
       case 521:
       case 535:
@@ -330,7 +330,7 @@ export class NemProviderService {
       case 622:
       case 672:
       case 711:
-        this.sharedService.showError('Error', 'Some data is invalid');
+        this.sharedService.showError('', 'Some data is invalid');
         break;
 
       case 501:
@@ -338,27 +338,27 @@ export class NemProviderService {
       case 641:
       case 685:
       case 691:
-        this.sharedService.showError('Error', 'Service not available');
+        this.sharedService.showError('', 'Service not available');
         break;
 
       case 655:
       case 666:
-        this.sharedService.showError('Error', 'insufficient XPX Balance');
+        this.sharedService.showError('', 'insufficient XPX Balance');
         break;
 
       case 511:
-        this.sharedService.showError('Error', 'Daily limit exceeded (5 swaps)');
+        this.sharedService.showError('', 'Daily limit exceeded (5 swaps)');
         break;
 
       case 705:
-        this.sharedService.showError('Error', 'Invalid Url');
+        this.sharedService.showError('', 'Invalid Url');
         break;
 
       default:
-        if (error.error.message) {
-          this.sharedService.showError('Error', error.error.message.toString().split('_').join(' '));
+        if (errorMessage) {
+          this.sharedService.showError('', errorMessage.toString().split('_').join(' '));
         } else {
-          this.sharedService.showError('Error', 'Error! try again later');
+          this.sharedService.showError('', 'Error! try again later');
         }
         break;
     }

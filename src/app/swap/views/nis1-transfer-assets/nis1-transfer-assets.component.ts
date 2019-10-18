@@ -178,7 +178,7 @@ export class Nis1TransferAssetsComponent implements OnInit {
       this.sharedService.showSuccess('Transaction', next['message']);
       this.walletService.accountWalletCreated = null;
     }, error => {
-      this.nemProvider.validateCodeMsgError(error.error.code);
+      this.nemProvider.validateCodeMsgError(error.error.code, error.error.message);
       this.spinnerVisibility = false
       this.processing = false;
     });
