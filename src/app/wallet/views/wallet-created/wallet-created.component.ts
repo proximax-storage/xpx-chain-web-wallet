@@ -76,11 +76,12 @@ export class WalletCreatedComponent implements OnInit {
         this.subscription.push(this.walletService.getNis1AccountsFound$().subscribe(next => {
           if (next) {
             this.walletService.setSelectedNis1Account(next);
-            if (next.cosignerAccounts.length > 0) {
+            this.routeContinue = `/${AppConfig.routes.swapAccountNis1Found}`;
+           /* if (next.cosignerAccounts.length > 0) {
               this.routeContinue = `/${AppConfig.routes.swapListCosignerNis1}`;
             } else {
               this.routeContinue = `/${AppConfig.routes.swapTransferAssets}/${next.address.pretty()}/1`;
-            }
+            }*/
           } else {
             this.routeContinue = `/${AppConfig.routes.home}`;
           }

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { AppConfig } from 'src/app/config/app.config';
+import { AppConfig } from '../../../config/app.config';
+import { WalletService } from '../../../wallet/services/wallet.service';
 
 @Component({
   selector: 'app-nis1-account-found',
@@ -9,12 +10,20 @@ import { AppConfig } from 'src/app/config/app.config';
 export class Nis1AccountFoundComponent implements OnInit {
 
   routeGoBack = `/${AppConfig.routes.home}`;
-  routeGoNext = ``;
+  routeContinue = ``;
   //swapAccountNis1Found
 
-  constructor() { }
+  constructor(
+    private walletService: WalletService
+  ) { }
 
   ngOnInit() {
+    const data = this.walletService.getSelectedNis1Account();
+    if (data.cosignerAccounts.length > 0) {
+      this.routeContinue = `/${AppConfig.routes.swapListCosignerNis1}`;
+    } else {
+      this.routeContinue = `/${AppConfig.routes.swapTransferAssets}/${data.address.pretty()}/1`;
+    }
   }
 
 }

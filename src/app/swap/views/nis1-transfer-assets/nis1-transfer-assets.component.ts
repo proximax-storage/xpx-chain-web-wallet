@@ -36,6 +36,7 @@ export class Nis1TransferAssetsComponent implements OnInit {
   passwordMain: string = 'password';
   processing: boolean = false;
   quantity: string = '0.000000';
+  routeGoHome = `/${AppConfig.routes.home}`;
   spinnerVisibility = false;
   show = false;
   subscription: Subscription[] = [];
@@ -53,38 +54,9 @@ export class Nis1TransferAssetsComponent implements OnInit {
 
   ngOnInit() {
     console.log(this.walletService.accountWalletCreated);
+    this.accountToSwap = null;
     this.configurationForm = this.sharedService.configurationForm;
-    const accountSelected = this.walletService.getSelectedNis1Account();
-    if (accountSelected) {
-      const account = this.activateRoute.snapshot.paramMap.get('account');
-      const type = this.activateRoute.snapshot.paramMap.get('type');
-      this.ownedAccountSwap = accountSelected;
-      if (account && type) {
-        this.type = (type === '1') ? '1' : '2';
-        if (this.type === '1' && accountSelected.address.plain() === account.replace(/-/g, '')) {
-          // SIMPLE ACCOUNT
-          this.accountToSwap = accountSelected;
-          this.createFormTransfer();
-        } else if (accountSelected.multisigAccountsInfo.length > 0) {
-          // MULTISIG ACCOUNT
-          const multisigAccounts = accountSelected.multisigAccountsInfo;
-          const accountFiltered = multisigAccounts.find(ac => ac.address === account.replace(/-/g, ''));
-          if (accountFiltered) {
-            accountFiltered.nameAccount = accountSelected.nameAccount;
-            accountFiltered.accountCosignatory = accountSelected.address.pretty();
-            accountFiltered.address = this.nemProvider.createAddressToString(accountFiltered.address);
-            this.accountToSwap = accountFiltered;
-            this.createFormTransfer();
-          } else {
-            this.router.navigate([`/${AppConfig.routes.home}`]);
-          }
-        }
-      }else {
-        this.router.navigate([`/${AppConfig.routes.home}`]);
-      }
-    } else {
-      this.router.navigate([`/${AppConfig.routes.home}`]);
-    }
+    this.initComponent();
   }
 
   ngOnDestroy(): void {
@@ -246,7 +218,55 @@ export class Nis1TransferAssetsComponent implements OnInit {
    *
    * @memberof Nis1TransferAssetsComponent
    */
-  suscribe() {
+  initComponent(){
+    const accountSelected = this.walletService.getSelectedNis1Account();
+    if (accountSelected) {
+      const account = this.activateRoute.snapshot.paramMap.get('account');
+      const type = this.activateRoute.snapshot.paramMap.get('type');
+      this.ownedAccountSwap = accountSelected;
+      if (account && type) {
+        this.type = (type === '1') ? '1' : '2';
+        if (this.type === '1' && accountSelected.address.plain() === account.replace(/-/g, '')) {
+          // SIMPLE ACCOUNT
+          this.accountToSwap = accountSelected;
+          this.createFormTransfer();
+          this.subscribeAmount();
+        } else if (accountSelected.multisigAccountsInfo.length > 0) {
+          // MULTISIG ACCOUNT
+          const multisigAccounts = accountSelected.multisigAccountsInfo;
+          const accountFiltered = multisigAccounts.find(ac => ac.address === account.replace(/-/g, ''));
+          if (accountFiltered) {
+            accountFiltered.nameAccount = accountSelected.nameAccount;
+            accountFiltered.accountCosignatory = accountSelected.address.pretty();
+            accountFiltered.address = this.nemProvider.createAddressToString(accountFiltered.address);
+            this.accountToSwap = accountFiltered;
+            this.createFormTransfer();
+            this.subscribeAmount();
+          }
+        }
+      }
+    }
+
+    if(!this.accountToSwap) {
+      this.router.navigate([`/${AppConfig.routes.home}`]);
+    }
+  }
+
+  /**
+   *
+   *
+   * @memberof Nis1TransferAssetsComponent
+   */
+  selectMaxAmount() {
+    this.formTransfer.get('amountXpx').setValue(this.quantity.split(',').join(''));
+  }
+
+  /**
+   *
+   *
+   * @memberof Nis1TransferAssetsComponent
+   */
+  subscribeAmount() {
     this.subscription.push(
       this.formTransfer.get('amountXpx').valueChanges.subscribe(
         next => {
