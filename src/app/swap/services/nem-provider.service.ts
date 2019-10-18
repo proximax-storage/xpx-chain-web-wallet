@@ -90,6 +90,7 @@ export class NemProviderService {
       let accountsMultisigInfo = [];
       const addressOwnedSwap = this.createAddressToString(account.address['value']);
       const accountInfoOwnedSwap = await this.getAccountInfo(addressOwnedSwap).pipe(first()).pipe((timeout(10000))).toPromise();
+      console.log('ACCOUNT INFO OWNED SWAP ---->', accountInfoOwnedSwap);
       // INFO ACCOUNTS MULTISIG
       if (accountInfoOwnedSwap['meta']['cosignatoryOf'].length > 0) {
         cosignatoryOf = accountInfoOwnedSwap['meta']['cosignatoryOf'];

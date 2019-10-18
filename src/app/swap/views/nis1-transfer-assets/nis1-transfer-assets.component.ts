@@ -49,7 +49,6 @@ export class Nis1TransferAssetsComponent implements OnInit {
     private fb: FormBuilder,
     private router: Router,
     private nemProvider: NemProviderService,
-    private proximaxProvider: ProximaxProvider,
     private sharedService: SharedService,
     private walletService: WalletService
   ) { }
