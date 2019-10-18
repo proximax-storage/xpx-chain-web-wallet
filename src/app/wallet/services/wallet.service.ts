@@ -400,10 +400,10 @@ export class WalletService {
    * @memberof WalletService
    */
   decrypt(common: any, account: AccountsInterface = null) {
-    if (account && common) {
-      const acct = (account) ? account : this.currentAccount;
-      const net = (account) ? account.network : this.currentAccount.network;
-      const alg = (account) ? account.algo : this.currentAccount.algo;
+    const acct = (account) ? account : this.currentAccount;
+    const net = (account) ? account.network : this.currentAccount.network;
+    const alg = (account) ? account.algo : this.currentAccount.algo;
+    if (acct && common) {
       /*console.log(common);
       console.log(acct);
       console.log(alg);*/
