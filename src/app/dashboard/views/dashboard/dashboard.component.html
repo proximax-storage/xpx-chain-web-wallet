@@ -168,7 +168,7 @@
         <table mdbTable mdbTableScroll scrollX="true" striped="true">
           <thead>
             <tr class="header-backg">
-              <th *ngFor="let head of headElements" scope="col" class="fs-075rem txt-a-center ">{{head}}
+              <th *ngFor="let head of headElements" scope="col" class="fs-075rem txt-a-left ">{{head}}
               </th>
             </tr>
           </thead>
@@ -180,14 +180,14 @@
                   <ng-container *ngIf="el.nameType === 'ProximaX Swap'; else elseSwap">
                     <span style="color: #e6b219;"><i class="fa fa-star" aria-hidden="true"></i></span>
                   </ng-container>
-                  <ng-template #elseSwap>
+                  <!-- <ng-template #elseSwap>
                     &nbsp; &nbsp;
-                  </ng-template>
+                  </ng-template> -->
                   {{el.nameType}}
                 </td>
 
                 <!-- address -->
-                <td class="text-center th-md description-dark-green fs-07rem">
+                <td class="text-a-center th-md description-dark-green fs-07rem">
                   <img src="assets/images/img/arrow-transaction-receive-green-proximax-sirius-explorer.svg" alt=""
                     width="25" *ngIf="el.receive">
                   <img src="assets/images/img/arrow-transaction-sender-orange-proximax-sirius-explorer.svg" alt=""

@@ -114,7 +114,6 @@
                                     <span class="fw-600"> {{ titlePrivateKey }} </span>
                                     <br>
                                     <span class="font-small" *ngIf="showPassword && !actionBtnShowPrivateKey">************</span>
-                                    <br>
                                     <span class="font-small d-flex" *ngIf="!showPassword">{{ privateKey }}</span>
                                 </div>
                                 <div class="col-2 text-right">
@@ -255,7 +254,7 @@
                                                         *ngIf="
                                                                   validateInput('password', '').invalid &&
                                                                   (validateInput('password', '').dirty || validateInput('password', '').touched)">
-                                                        <span>Required to show Private Key</span>
+                                                        <span>Required to change your setting</span>
                                                     </mdb-error>
                                                 </div>
                                             </div>
@@ -354,7 +353,7 @@
                                                         *ngIf="
                                                                   validateInput('password', '').invalid &&
                                                                   (validateInput('password', '').dirty || validateInput('password', '').touched)">
-                                                        <span>Required to show Private Key</span>
+                                                        <span>Required to download your paper wallet</span>
                                                     </mdb-error>
                                                 </div>
                                             </div>

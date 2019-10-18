@@ -7,7 +7,7 @@
       <div class="col-11 mx-auto">
         <div class="row">
           <!-- SELECT -->
-          <div class="col-12 col-sm-6 col-md-6 col-lg-5 mx-auto pt-07rem">
+          <div class="col-12 col-sm-6 col-md-6 col-lg-3 mx-auto pt-07rem">
             <div class="md-form mt-1rem mb-1rem caja-gris">
               <!-- <img class="icono" src="assets/images/img/icon-address-green-book-16h-proximax-sirius-wallet.svg" alt=""> -->
               <mdb-select placeholder="Select Search Type" [(ngModel)]="typeSearch" [options]="optionTypeSearch"
@@ -18,7 +18,7 @@
           </div>
 
           <!-- Keyword or number -->
-          <div class="col-12 col-sm-6 col-md-6 col-lg-5 mx-auto d-flex align-items-center pt-05rem">
+          <div class="col-12 col-sm-6 col-md-6 col-lg-7 mx-auto d-flex align-items-center pt-05rem">
             <input [(ngModel)]="paramSearch" type="text" autocomplete="off" id="searchTransaction" class="form-control"
               mdbInputDirective [validateSuccess]="false" [validateError]="false" placeholder="Search">
           </div>
@@ -49,7 +49,7 @@
         <table mdbTable mdbTableScroll scrollX="true" striped="true">
           <thead>
             <tr class="header-backg">
-              <th *ngFor="let head of headElements" scope="col" class="fs-075rem txt-a-center ">{{head}}
+              <th *ngFor="let head of headElements" scope="col" class="fs-075rem txt-a-eft">{{head}}
               </th>
             </tr>
           </thead>
@@ -61,9 +61,6 @@
                   <ng-container *ngIf="el.nameType === 'ProximaX Swap'; else elseSwap">
                     <span style="color: #e6b219;"><i class="fa fa-star" aria-hidden="true"></i></span>
                   </ng-container>
-                  <ng-template #elseSwap>
-                    &nbsp; &nbsp;
-                  </ng-template>
                   {{el.nameType}}
                 </td>
 

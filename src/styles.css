@@ -2,6 +2,7 @@
 
 @import "~@ng-select/ng-select/themes/material.theme.css";
 @import "~ng-pick-datetime/assets/style/picker.min.css";
+@import url('https://fonts.googleapis.com/css?family=Lato:400,400i,700,700i&display=swap&subset=latin-ext');
 html, body {
   margin: 0;
   display: table;
@@ -1800,13 +1801,13 @@ body.modal-open {
 }
 
 .card-body ul.stepper.horizontal .step.wrong .step-title:before {
-  font-family: FontAwesome !important;
+  font-family: 'FontAwesome' !important;
   content: '\f071' !important;
 }
 
 .card-body ul.stepper.horizontal .step.done .step-title:before {
-  font-family: FontAwesome !important;
-  content: '\f058' !important;
+  font-family: 'FontAwesome' !important;
+  content: '\f00C' !important;
 }
 
 ul.stepper .step-new-content .row {
