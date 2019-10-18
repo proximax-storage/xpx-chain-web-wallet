@@ -24,11 +24,7 @@ export class WalletService {
 
   canVote = true;
   subscribeLogged = undefined;
-  accountWalletCreated: {
-    data: any;
-    dataAccount: AccountsInterface;
-    wallet: SimpleWallet
-  } = null;
+  accountWalletCreated: AccountCreatedInterface = null;
 
   accountsInfo: AccountsInfoInterface[] = [];
   currentAccount: AccountsInterface = null;
@@ -1146,6 +1142,7 @@ export interface WalletAccountInterface {
 
 export interface CosignatoryOf {
   address: string;
+  mosaic: AssetTransferable;
   balance: number;
   harvestedBlocks: number;
   importance: number;
@@ -1160,6 +1157,7 @@ export interface CosignatoryOf {
 
 export interface AccountsInfoNis1Interface {
   nameAccount: string;
+  accountCosignatory?: PublicAccount;
   address: AddressNEM;
   publicKey: string;
   cosignerOf: boolean;
@@ -1168,4 +1166,10 @@ export interface AccountsInfoNis1Interface {
   mosaic: AssetTransferable;
   isMultiSig: boolean;
   balance: any;
+}
+
+export interface AccountCreatedInterface {
+  data: any;
+  dataAccount: AccountsInterface;
+  wallet: SimpleWallet
 }

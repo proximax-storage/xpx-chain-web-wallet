@@ -15,7 +15,7 @@
     <div class="row mt-1rem">
       <div class="col-11 col-sm-10 col-md-9 col-lg-8 col-xl-7 mx-auto">
         <div class="row">
-          <div class="col-12 mx-auto box-grey">
+          <div class="col-12 mx-auto box-grey p-1rem">
             <div>
               <span class="color-black fw-bold" *ngIf="!isMultisig">Account Name:&nbsp;</span>
               <span class="color-black fw-bold" *ngIf="isMultisig">Multisig Of:&nbsp;</span>
@@ -39,7 +39,7 @@
               <span class="fw-bold">Account that will receive swap transfer:&nbsp;</span>
             </div>
             <div>
-              <span class="fs-08rem">{{accountToSwap.accountCosignatory}}</span>
+              <span class="fs-08rem">{{accountToSwap.accountCosignatory.address.pretty()}}</span>
             </div>
           </div>
         </div>

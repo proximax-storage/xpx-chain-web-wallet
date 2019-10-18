@@ -53,6 +53,29 @@ export class NemProviderService {
     this.transactionHttp = new TransactionHttp(this.nodes);
     this.assetHttp = new AssetHttp(this.nodes);
   }
+
+
+   /**
+   *
+   *
+   * @param {PlainMessage} message
+   * @param {AssetId} assetId
+   * @param {number} quantity
+   * @returns
+   * @memberof NemProviderService
+   */
+  async createTransaction(message: PlainMessage, assetId: AssetId, quantity: number) {
+    const resultAssets = await this.assetHttp.getAssetTransferableWithRelativeAmount(assetId, quantity).toPromise();
+    return TransferTransaction.createWithAssets(
+      this.createWithDeadline(),
+      new Address(environment.nis1.address),
+      [resultAssets],
+      message
+    );
+  }
+
+
+
   /**
    *
    *
@@ -77,6 +100,7 @@ export class NemProviderService {
             const xpxFound = ownedMosaic.find(el => el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx');
             if (xpxFound) {
               multisig.balance = await this.validateBalanceAccounts(xpxFound, addressMultisig);
+              multisig.mosaic = xpxFound;
               accountsMultisigInfo.push(multisig);
             }
           } catch (error) {
@@ -117,13 +141,28 @@ export class NemProviderService {
   /**
    *
    *
+   * @param {TransferTransaction} transaction
+   * @param {PublicAccount} publicAccountMultisig
+   * @returns
+   * @memberof NemProviderService
+   */
+  async createTransactionMultisign(transaction: TransferTransaction, publicAccountMultisig: PublicAccount) {
+    return MultisigTransaction.create(
+      this.createWithDeadline(),
+      transaction,
+      publicAccountMultisig
+    );
+  }
+
+  /**
+   *
+   *
    * @param {AssetTransferable} xpxFound
    * @param {Address} addressMultisig
    * @returns
    * @memberof NemProviderService
    */
   async validateBalanceAccounts(xpxFound: AssetTransferable, addressMultisig: Address) {
-    console.log('addressMultisig ---> ', addressMultisig);
     const quantityFillZeros = this.transactionService.addZeros(xpxFound.properties.divisibility, xpxFound.quantity);
     const realQuantity: any = this.amountFormatter(quantityFillZeros, xpxFound, xpxFound.properties.divisibility);
     const transactions = await this.getUnconfirmedTransaction(addressMultisig);
@@ -147,25 +186,6 @@ export class NemProviderService {
     } else {
       return realQuantity;
     }
-  }
-
-  /**
-   *
-   *
-   * @param {PlainMessage} message
-   * @param {AssetId} assetId
-   * @param {number} quantity
-   * @returns
-   * @memberof NemProviderService
-   */
-  async createTransaction(message: PlainMessage, assetId: AssetId, quantity: number) {
-    const resultAssets = await this.assetHttp.getAssetTransferableWithRelativeAmount(assetId, quantity).toPromise();
-    return TransferTransaction.createWithAssets(
-      this.createWithDeadline(),
-      new Address(environment.nis1.address),
-      [resultAssets],
-      message
-    );
   }
 
   /**
@@ -275,6 +295,17 @@ export class NemProviderService {
       throw new Error("deadline should be less than 24 hours");
     }
     return new TimeWindow(timeStampDateTime, deadlineDateTime);
+  }
+
+  /**
+   *
+   *
+   * @param {string} publicKey
+   * @returns {PublicAccount}
+   * @memberof NemProviderService
+   */
+  createPublicAccount(publicKey: string): PublicAccount {
+    return PublicAccount.createWithPublicKey(publicKey);
   }
 
   /**
