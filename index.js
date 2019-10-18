@@ -34,7 +34,6 @@ function createWindow() {
       win.show()
    })
    win.setMenuBarVisibility(false)
-    win.setIcon('dist/proximax-sirius-wallet/assets/images/ProximaX-Favicon.png');
     
 }
 
