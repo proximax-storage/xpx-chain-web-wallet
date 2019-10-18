@@ -317,7 +317,7 @@ export class NemProviderService {
    * @param {number} errorCode
    * @memberof NemProviderService
    */
-  showMessageError(errorCode: number) {
+  validateCodeMsgError(errorCode: number) {
     switch (errorCode) {
       case 521:
       case 535:
