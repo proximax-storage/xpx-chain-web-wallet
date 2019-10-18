@@ -53,6 +53,12 @@ export class DetailAccountComponent implements OnInit {
   showPrivateKey: boolean = false;
   saveNis1Account: any;
   imgBackground: string = '';
+  blockBtnAction: boolean = false;
+  toggleBtnShowPrivateKey: boolean = false;
+  actionBtnShowPrivateKey: boolean = false;
+  toggleBtnSwapThisAccount: boolean = false;
+  actionBtnSwapThisAccount: boolean = false;
+  actionBtnSavePaperWallet: boolean = false;
 
 
   constructor(
@@ -123,6 +129,13 @@ export class DetailAccountComponent implements OnInit {
     this.sharedService.showSuccess('', `${message} copied`);
   }
 
+
+  /**
+   *
+   *
+   * @param {*} inputType
+   * @memberof DetailAccountComponent
+   */
   changeInputType(inputType) {
     let newType = this.sharedService.changeInputType(inputType)
     this.passwordMain = newType;
@@ -281,8 +294,8 @@ export class DetailAccountComponent implements OnInit {
           this.validatingForm.reset({
             password: ''
           }, {
-              emitEvent: false
-            });
+            emitEvent: false
+          });
         }
         return;
       } else {
@@ -296,8 +309,8 @@ export class DetailAccountComponent implements OnInit {
     this.validatingForm.reset({
       password: ''
     }, {
-        emitEvent: false
-      });
+      emitEvent: false
+    });
   }
 
   qrConstruntion(url, size = 2, margin = 0) {
@@ -327,4 +340,49 @@ export class DetailAccountComponent implements OnInit {
 
     doc.save('Your_Paper_Wallet');
   }
+
+
+  btnShowPrivateKey() {
+    if (this.actionBtnShowPrivateKey === false) {
+      if (this.toggleBtnShowPrivateKey === false) {
+        this.toggleBtnShowPrivateKey = true;
+        this.actionBtnShowPrivateKey = true;
+        this.blockBtnAction = true;
+      } else {
+        this.toggleBtnShowPrivateKey = false;
+        this.actionBtnShowPrivateKey = false;
+        /* -- ENCRYPT ACTION HERE -- */
+        /* -- ENCRYPT ACTION HERE -- */
+      }
+    } else {
+      this.toggleBtnShowPrivateKey = true;
+      this.actionBtnShowPrivateKey = false;
+      this.blockBtnAction = false;
+      /* -- DECRYPT ACTION HERE -- */
+      /* -- DECRYPT ACTION HERE -- */
+    }
+  }
+
+
+  btnSwapThisAccount() {
+    if (this.actionBtnSwapThisAccount === false) {
+      this.toggleBtnSwapThisAccount = !this.toggleBtnSwapThisAccount;
+    }
+    this.actionBtnSwapThisAccount = !this.actionBtnSwapThisAccount;
+    this.blockBtnAction = !this.blockBtnAction;
+  }
+
+
+  btnSavePaperWallet() {
+    if (this.actionBtnSavePaperWallet === true) {
+      /* -- DECRYPT ACTION HERE -- */
+      /* -- DECRYPT ACTION HERE -- */
+    }
+    this.actionBtnSavePaperWallet = !this.actionBtnSavePaperWallet;
+    this.blockBtnAction = !this.blockBtnAction;
+  }
+
+
+
+
 }
