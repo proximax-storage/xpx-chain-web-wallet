@@ -331,7 +331,11 @@ export class TransferAssetsComponent implements OnInit {
           const recipient = this.formTransfer.get('accountRecipient').value;
           const dataAccount = this.walletService.currentWallet.accounts.find(el => el.publicAccount.address['address'] === recipient.split('-').join(''));
           const catapultAccount = this.proximaxService.createPublicAccount(dataAccount.publicAccount.publicKey, dataAccount.network);
-          const transaction = await this.nemService.createTransaction(PlainMessage.create(catapultAccount.publicKey), this.accountSelected.mosaic.assetId, quantity);
+          const transaction = await this.nemService.createTransaction(
+            PlainMessage.create(catapultAccount.publicKey),
+            this.accountSelected.mosaic.assetId,
+            quantity
+          );
 
           this.nemService.createTransactionMultisign(transaction, this.nemService.createPublicAccount(this.accountSelected.publicKey))
             .then(next => {

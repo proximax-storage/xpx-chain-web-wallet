@@ -17,8 +17,8 @@
         <div class="row">
           <div class="col-12 mx-auto box-grey">
             <div>
-              <span class="color-black fw-bold" *ngIf="type === '1'">Account Name:&nbsp;</span>
-              <span class="color-black fw-bold" *ngIf="type === '2'">Multisig Of:&nbsp;</span>
+              <span class="color-black fw-bold" *ngIf="!isMultisig">Account Name:&nbsp;</span>
+              <span class="color-black fw-bold" *ngIf="isMultisig">Multisig Of:&nbsp;</span>
               <span>{{accountToSwap.nameAccount}}</span>
             </div>
             <div>
@@ -33,7 +33,7 @@
           </div>
         </div>
 
-        <div class="row mt-1rem" *ngIf="type === '2'">
+        <div class="row mt-1rem" *ngIf="isMultisig">
           <div class="col-12">
             <div>
               <span class="fw-bold">Account that will receive swap transfer:&nbsp;</span>
