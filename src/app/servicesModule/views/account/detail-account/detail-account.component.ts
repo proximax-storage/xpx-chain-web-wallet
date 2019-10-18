@@ -74,6 +74,8 @@ export class DetailAccountComponent implements OnInit {
     let param = this.activateRoute.snapshot.paramMap.get('name');
     this.currenAccount = (param) ? this.walletService.filterAccountWallet(param) : this.walletService.filterAccountWallet('', true);
     this.checked = (this.currenAccount.nis1Account !== null);
+    console.log('this.checked', this.checked);
+    
     this.valueInitNis = (this.currenAccount.nis1Account !== null);
   }
 
@@ -197,20 +199,34 @@ export class DetailAccountComponent implements OnInit {
    * @returns
    * @memberof DetailAccountComponent
    */
-  decryptWallet() {
+  decryptWallet(value) {
+    console.log('password decriop');
+    console.log(this.validatingForm.get('password').value);
     if (this.validatingForm.get('password').value !== '') {
       const common = { password: this.validatingForm.get('password').value };
       if (this.walletService.decrypt(common, this.currenAccount)) {
-        this.privateKey = common['privateKey'].toUpperCase();
+        if (value === 'privateKey') {
+          this.privateKey = common['privateKey'].toUpperCase();
+          this.showPassword = false;
+          this.showPrivateKey = false;
+        } else if (value === 'save') {
+          this.printAccountInfo();
+        } else if (value === 'nis1'){
+          console.log('nis1 ahora');
+          this.aceptChanges();
+        }
+
         this.validatingForm.get('password').patchValue('')
-        this.showPassword = false;
-        this.showPrivateKey = false;
+
         return;
       }
       this.validatingForm.get('password').patchValue('');
       this.privateKey = '';
       return;
     } else {
+      this.toggleBtnShowPrivateKey = false;
+      this.actionBtnShowPrivateKey = false
+      this.checked = ! this.checked;
       this.sharedService.showError('', 'Please, enter a password');
     }
   }
@@ -303,9 +319,9 @@ export class DetailAccountComponent implements OnInit {
       }
     }
 
-    if (this.showPrivateKey) {
-      this.decryptWallet();
-    }
+    // if (this.showPrivateKey) {
+    //   this.decryptWallet('nis1');
+    // }
     this.validatingForm.reset({
       password: ''
     }, {
@@ -348,35 +364,47 @@ export class DetailAccountComponent implements OnInit {
         this.toggleBtnShowPrivateKey = true;
         this.actionBtnShowPrivateKey = true;
         this.blockBtnAction = true;
-      } else {
+      }
+      else {
         this.toggleBtnShowPrivateKey = false;
         this.actionBtnShowPrivateKey = false;
-        /* -- ENCRYPT ACTION HERE -- */
-        /* -- ENCRYPT ACTION HERE -- */
+        this.showPassword = true;
       }
     } else {
       this.toggleBtnShowPrivateKey = true;
       this.actionBtnShowPrivateKey = false;
       this.blockBtnAction = false;
-      /* -- DECRYPT ACTION HERE -- */
-      /* -- DECRYPT ACTION HERE -- */
+      this.decryptWallet('privateKey');
     }
   }
 
 
-  btnSwapThisAccount() {
+  btnSwapThisAccount(val) {
+    this.toggleBtnShowPrivateKey = false;
+    this.actionBtnShowPrivateKey = false
+    this.showPassword = true;
     if (this.actionBtnSwapThisAccount === false) {
       this.toggleBtnSwapThisAccount = !this.toggleBtnSwapThisAccount;
+      if(val){
+        this.checked = val;
+      } else if(!val){
+        this.checked = val;
+      } 
     }
     this.actionBtnSwapThisAccount = !this.actionBtnSwapThisAccount;
     this.blockBtnAction = !this.blockBtnAction;
+    if(val === 'acep'){
+      this.decryptWallet('nis1');
+    }
   }
 
 
   btnSavePaperWallet() {
+    this.toggleBtnShowPrivateKey = false;
+    this.actionBtnShowPrivateKey = false
+    this.showPassword = true;
     if (this.actionBtnSavePaperWallet === true) {
-      /* -- DECRYPT ACTION HERE -- */
-      /* -- DECRYPT ACTION HERE -- */
+      this.decryptWallet('save');
     }
     this.actionBtnSavePaperWallet = !this.actionBtnSavePaperWallet;
     this.blockBtnAction = !this.blockBtnAction;
