@@ -109,7 +109,7 @@ export class DeleteWalletComponent implements OnInit {
 
   deleteWallet() {
     if (this.validatingForm.valid) {
-      let decryptAccount = this.selectedWallet.accounts[0];
+      let decryptAccount = this.selectedWallet.accounts.find(x => x.firstAccount === true);;
       let common: any = { password: this.validatingForm.get("password").value };
       if (this.walletService.decrypt(common, decryptAccount)) {
         if (this.selectedWallet.name === this.walletService.currentWallet.name) {
