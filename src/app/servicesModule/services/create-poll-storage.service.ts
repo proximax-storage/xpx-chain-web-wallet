@@ -59,7 +59,7 @@ export class CreatePollStorageService {
 
 
 
-  async sendFileStorage(fileObject: FileInterface, description: any, account: Account, privateKey: string) {
+  async sendFileStorage(fileObject: FileInterface, description: any, account: PublicAccount, privateKey: string) {
     // console.log('account',account)
     const promise = new Promise(async (resolve, reject) => {
       const fileContents = Buffer.from(JSON.stringify(fileObject.content));
@@ -77,16 +77,16 @@ export class CreatePollStorageService {
         privateKey
       );
 
-      const recipientPublicKey = account.publicAccount.publicKey;
+      const recipientPublicKey = account.publicKey;
       if (recipientPublicKey.length > 0) {
         param.withRecipientPublicKey(recipientPublicKey);
       }
 
       const mosaic: any = [];
       param.withTransactionMosaics(mosaic); //Update-sdk-dragon
-      let recipientAddress = account.publicAccount.address.plain();
+      let recipientAddress = account.address.plain();
       if (recipientPublicKey.length > 0) {
-        recipientAddress = Address.createFromPublicKey(recipientPublicKey, account.publicAccount.address.networkType).plain();
+        recipientAddress = Address.createFromPublicKey(recipientPublicKey, account.address.networkType).plain();
       }
 
       if (recipientAddress) {
