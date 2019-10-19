@@ -109,14 +109,14 @@ export class DeleteWalletComponent implements OnInit {
 
   deleteWallet() {
     if (this.validatingForm.valid) {
-      let decryptAccount = this.selectedWallet.accounts[0];
+      let decryptAccount = this.selectedWallet.accounts.find(x => x.firstAccount === true);;
       let common: any = { password: this.validatingForm.get("password").value };
       if (this.walletService.decrypt(common, decryptAccount)) {
         if (this.selectedWallet.name === this.walletService.currentWallet.name) {
           let value = this.walletService.removeWallet(this.selectedWallet.name);
           this.wallets = this.walletService.getWalletStorage();
           this.servicesModuleService.removeItemStorage(environment.itemBooksAddress, this.selectedWallet.name)
-          this.sharedService.showSuccess('', 'Wallet removed');
+          this.sharedService.showSuccess('', 'Wallet Removed');
           this.changeView();
           this.clearForm();
           this.logOut();
@@ -124,7 +124,7 @@ export class DeleteWalletComponent implements OnInit {
           let value = this.walletService.removeWallet(this.selectedWallet.name);
           this.wallets = this.walletService.getWalletStorage();
           this.servicesModuleService.removeItemStorage(environment.itemBooksAddress, this.selectedWallet.name)
-          this.sharedService.showSuccess('', 'Wallet removed');
+          this.sharedService.showSuccess('', 'Wallet Removed');
           this.changeView();
           this.clearForm();
         }

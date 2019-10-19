@@ -45,7 +45,7 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
   searchText: string = '';
   elements: any = [];
   dataSelected: TransactionsInterface = null;
-  headElements = ['Type', '', 'Sender', 'Recipient'];
+  headElements = ['Type', 'In/Out', 'Sender', 'Recipient'];
   optionTypeSearch = [
     {
       'value': 'address',

@@ -42,7 +42,7 @@ export class CreatePollComponent implements OnInit {
   thirdFormGroup: FormGroup;
   quarterFormGroup: FormGroup;
   configurationForm: ConfigurationForm = {};
-  account: Account;
+  account: PublicAccount;
   btnBlock: boolean;
   Poll: PollInterface;
   option: optionsPoll[] = [];
@@ -111,7 +111,7 @@ export class CreatePollComponent implements OnInit {
       this.firstFormGroup.disable();
       this.insufficientBalance = true;
     }
-    
+
   }
 
 
@@ -126,7 +126,7 @@ export class CreatePollComponent implements OnInit {
     }
   }
 
-  
+
   /**
  *
  *
@@ -173,13 +173,24 @@ export class CreatePollComponent implements OnInit {
   }
 
   get1() {
-    this.name = this.firstFormGroup.get('title').value
-    this.desciption = this.firstFormGroup.get('message').value
-    this.isPrivate = this.firstFormGroup.get('isPrivate').value
-    this.endDate = new Date(this.firstFormGroup.get('PollEndDate').value)
-    this.account = (this.isPrivate) ? Account.generateNewAccount(this.walletService.currentAccount.network) :
-      Account.createFromPrivateKey(environment.pollsContent.private_key, this.walletService.currentAccount.network);
-    this.publicAddress = this.account.address.pretty();
+    this.name = this.firstFormGroup.get('title').value;
+    this.desciption = this.firstFormGroup.get('message').value;
+    this.isPrivate = this.firstFormGroup.get('isPrivate').value;
+    this.endDate = new Date(this.firstFormGroup.get('PollEndDate').value);
+    if (this.isPrivate){
+      this.account = PublicAccount.createFromPublicKey(environment.pollsContent.public_key, this.walletService.currentAccount.network);
+    }else {
+      this.account = Account.generateNewAccount(this.walletService.currentAccount.network).publicAccount;
+    }
+
+    this.publicAddress = this.account.address.pretty()
+
+
+
+
+    /*this.account = (this.isPrivate) ? Account.generateNewAccount(this.walletService.currentAccount.network) :
+      PublicAccount.createFromPublicKey(environment.pollsContent.public_key, this.walletService.currentAccount.network);
+    this.publicAddress = this.account.address.pretty();*/
     // this.privateKeyAccount = this.isPrivate?this.account.privateKey.toString():''
   }
 

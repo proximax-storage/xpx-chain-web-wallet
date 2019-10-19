@@ -128,15 +128,15 @@ export class AuthComponent implements OnInit {
   walletsSort() {
     let tmpSort = this.wallets.sort(function (a, b) {
       let res = 0
-      if (a.label > b.label) {
+      if (a.label.toLowerCase() > b.label.toLowerCase()) {
         res = 1;
       }
 
-      if (a.label < b.label) {
+      if (a.label.toLowerCase() < b.label.toLowerCase()) {
         res = -1;
       }
 
-      if (a.label === b.label) {
+      if (a.label.toLowerCase() === b.label.toLowerCase()) {
         res = 0;
       }
       // a must be equal to b

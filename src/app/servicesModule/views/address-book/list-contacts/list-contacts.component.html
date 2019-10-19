@@ -2,12 +2,12 @@
   <app-header [params]="paramsHeader"></app-header>
 
   <!-- HEADER SEARCH -->
-  <div class="container-fluid background-header-grey pb-1rem pt-1rem">
+  <div class="container-fluid pb-1rem pt-1rem">
     <div class="row">
-      <div class="col-10 mx-auto">
+      <div class="col-12 mx-auto">
         <div class="row">
           <!-- Keyword or number -->
-          <div class="col-12 col-lg-10 mx-auto d-flex align-items-center pt-05rem">
+          <div class="col-12 mx-auto d-flex align-items-center">
             <input [(ngModel)]="searchContact" type="text" autocomplete="off" id="searchTransaction"
               class="form-control" mdbInputDirective [validateSuccess]="false" [validateError]="false"
               placeholder="Search">

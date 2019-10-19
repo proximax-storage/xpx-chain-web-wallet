@@ -50,7 +50,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     currentPage: 1
   };
   dataSelected: TransactionsInterface = null;
-  headElements = ['Type', '', 'Sender', 'Recipient'];
+  headElements = ['Type', 'In/Out', 'Sender', 'Recipient'];
   iconReloadDashboard = false;
   objectKeys = Object.keys;
   partialTransactions = 0;

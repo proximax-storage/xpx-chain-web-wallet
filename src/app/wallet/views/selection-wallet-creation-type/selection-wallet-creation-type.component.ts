@@ -79,13 +79,13 @@ export class SelectionWalletCreationTypeComponent implements OnInit {
             let walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
             walletsStorage.push(wallet);
             localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorage));
-            this.sharedService.showSuccess('', 'Wallet imported correctly');
+            this.sharedService.showSuccess('', 'Wallet Imported Correctly');
             this.router.navigate([`/${AppConfig.routes.auth}`]);
           } else {
-            this.sharedService.showWarning('', 'The wallet already exists');
+            this.sharedService.showWarning('', 'The Wallet Already Exists');
           }
         } catch (error) {
-          this.sharedService.showError('', 'Invalid document format');
+          this.sharedService.showError('', 'Invalid Document Format');
         }
       };
 

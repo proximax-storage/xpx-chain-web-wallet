@@ -114,13 +114,13 @@ export class DeleteWalletConfirmComponent implements OnInit {
   deleteWallet() {
     if (this.validatingForm.valid && !this.ban) {
       this.ban = true;
-      const accountDecrypt = this.wallet.accounts[0]
+      const accountDecrypt = this.wallet.accounts.find(x => x.firstAccount === true);
       let common: any = { password: this.validatingForm.get("password").value };
       if (this.walletService.decrypt(common, accountDecrypt)) {
         const value = this.walletService.removeWallet(this.wallet.name);
         if (value) {
           this.servicesModuleService.removeItemStorage(environment.itemBooksAddress, this.wallet.name)
-          this.sharedService.showSuccess('', 'Wallet removed');
+          this.sharedService.showSuccess('', 'Wallet Removed');
           this.clearForm();
           this.router.navigate([`/${AppConfig.routes.viewAllWallets}`]);
         }

@@ -203,7 +203,7 @@ export class DataBridgeService {
       if (transactionFormatter !== null) {
         audio.play();
         this.transactionsService.setTransactionReady(aggregateBondedAdded.transactionInfo.hash);
-        this.sharedService.showInfo('', 'Transaction aggregate bonded added');
+        this.sharedService.showInfo('', 'Transaction Aggregate Bonded Added');
         transactionPushed.unshift(transactionFormatter);
         this.transactionsService.setTransactionsAggregateBonded$(transactionPushed);
       }
@@ -264,7 +264,7 @@ export class DataBridgeService {
             const exist = currentTransaction.data.cosignatures.find(d => d.signature === cosignatureAdded.signature);
             if (!exist) {
               audio.play();
-              this.sharedService.showInfo('', 'Cosignature added');
+              this.sharedService.showInfo('', 'Cosignature Added');
               currentTransaction.data.cosignatures.push(
                 new AggregateTransactionCosignature(
                   cosignatureAdded.signature,
@@ -274,7 +274,7 @@ export class DataBridgeService {
             }
           } else {
             audio.play();
-            this.sharedService.showInfo('', 'Cosignature added');
+            this.sharedService.showInfo('', 'Cosignature Added');
             currentTransaction.data.cosignatures.push(
               new AggregateTransactionCosignature(
                 cosignatureAdded.signature,
@@ -285,7 +285,7 @@ export class DataBridgeService {
         }
       } else {
         audio.play();
-        this.sharedService.showInfo('', 'Cosignature added');
+        this.sharedService.showInfo('', 'Cosignature Added');
       }
     });
   }
@@ -313,7 +313,7 @@ export class DataBridgeService {
       console.log('transactionFormatter ---> ', transactionFormatter);
       if (transactionFormatter !== null) {
         audio.play();
-        this.sharedService.showInfo('', 'Transaction confirmed');
+        this.sharedService.showInfo('', 'Transaction Confirmed');
         transactionPushed.unshift(transactionFormatter);
         this.transactionsService.setTransactionReady(confirmedTransaction.transactionInfo.hash);
         this.transactionsService.setTransactionsConfirmed$(transactionPushed);
@@ -370,7 +370,7 @@ export class DataBridgeService {
       const transactionFormatter = this.transactionsService.getStructureDashboard(unconfirmedAdded, transactionPushed, 'unconfirmed');
       if (transactionFormatter !== null) {
         audio.play();
-        this.sharedService.showInfo('', 'Transaction unconfirmed');
+        this.sharedService.showInfo('', 'Transaction Unconfirmed');
         transactionPushed.unshift(transactionFormatter);
         this.transactionsService.setTransactionReady(unconfirmedAdded.transactionInfo.hash);
         this.transactionsService.setTransactionsUnConfirmed$(transactionPushed);

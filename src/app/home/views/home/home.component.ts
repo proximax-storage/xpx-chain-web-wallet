@@ -117,7 +117,7 @@ export class HomeComponent implements OnInit {
       let walletName = this.walletDecryp.name;
       walletName = (walletName.includes(' ') === true) ? walletName.split(' ').join('_') : walletName;
       const nameWallet = walletName;
-      const network = (this.walletDecryp.accounts[0].network === NetworkTypes.MAIN_NET) ? NetworkType.MAIN_NET : NetworkType.TEST_NET;
+      const network = environment.typeNetwork.value;
       const password = this.proximaxProvider.createPassword(this.password);
       const algo = this.walletDecryp.accounts[0].algo;
       const accounts = [];
@@ -165,7 +165,7 @@ export class HomeComponent implements OnInit {
       walletsStorage.push(walletStorage);
       localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorage));
 
-      this.sharedService.showSuccess('', 'Wallet imported correctly');
+      this.sharedService.showSuccess('', 'Wallet Imported Correctly');
       this.router.navigate([`/${AppConfig.routes.auth}`]);
     } else {
       this.sharedService.showError('', 'Password Invalid');
@@ -247,7 +247,7 @@ export class HomeComponent implements OnInit {
             walletsStorage.push(wallet);
 
             localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorage));
-            this.sharedService.showSuccess('', 'Wallet imported correctly');
+            this.sharedService.showSuccess('', 'Wallet Imported Correctly');
             this.router.navigate([`/${AppConfig.routes.auth}`]);
           } else {
             this.sharedService.showWarning('', 'The wallet already exists');

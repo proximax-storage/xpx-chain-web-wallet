@@ -129,7 +129,7 @@ export class CreateAccountComponent implements OnInit {
         let common = { password: this.formCreateAccount.get('password').value };
         const currentAccount: AccountsInterface = allAccounts.find(next => next.firstAccount);
         if (this.walletService.decrypt(common, currentAccount)) {
-          const network = NetworkType.TEST_NET;
+          const network = environment.typeNetwork.value;
           let newAccount: SimpleWallet = null;
           if (this.fromPrivateKey) {
             newAccount = this.proximaxProvider.createAccountFromPrivateKey(nameAccount, password, this.formCreateAccount.get('privateKey').value, network);

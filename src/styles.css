@@ -2,6 +2,7 @@
 
 @import "~@ng-select/ng-select/themes/material.theme.css";
 @import "~ng-pick-datetime/assets/style/picker.min.css";
+@import url('https://fonts.googleapis.com/css?family=Lato:400,400i,700,700i&display=swap&subset=latin-ext');
 html, body {
   margin: 0;
   display: table;
@@ -1251,9 +1252,9 @@ input.form-control.validate-success.ng-valid.ng-dirty, input.form-control.valida
 
 #toast-container.md-toast-bottom-center>mdb-toast-component, #toast-container.md-toast-top-center>mdb-toast-component {
   /*margin: 6px 0 6px !important;*/
-  /*margin: 110px 0 110px !important;*/
+  /*margin: 25% auto !important;*/
+  margin: 140px 0 !important;
   background: rgba(0,0,0,0.6 );
-  margin: 25% auto !important;
   padding: 1.5rem 0;
   width:50% !important;
   border-radius: 100px;
@@ -1292,9 +1293,9 @@ input.form-control.validate-success.ng-valid.ng-dirty, input.form-control.valida
 }
 
 button.md-toast-close-button {
-  /*padding-right: .5rem !important;
-  color: #FFFFFF !important;*/
-  display: none;
+  padding-right: 2rem !important;
+  color: #FFFFFF !important;
+  /*display: none;*/
 }
 
 .messageClass {
@@ -1302,7 +1303,7 @@ button.md-toast-close-button {
   font-size: .9rem;
   color: #FFFFFF !important;
   font-weight: 600;
-  text-transform: capitalize !important;
+  /*text-transform: capitalize !important;*/
 }
 
 .md-toast-success:before {
@@ -1800,13 +1801,13 @@ body.modal-open {
 }
 
 .card-body ul.stepper.horizontal .step.wrong .step-title:before {
-  font-family: FontAwesome !important;
+  font-family: 'FontAwesome' !important;
   content: '\f071' !important;
 }
 
 .card-body ul.stepper.horizontal .step.done .step-title:before {
-  font-family: FontAwesome !important;
-  content: '\f058' !important;
+  font-family: 'FontAwesome' !important;
+  content: '\f00C' !important;
 }
 
 ul.stepper .step-new-content .row {
