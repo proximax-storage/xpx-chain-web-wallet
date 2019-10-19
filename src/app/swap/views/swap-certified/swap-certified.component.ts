@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import * as qrcode from 'qrcode-generator';
 import * as jsPDF from 'jspdf';
 import { environment } from '../../../../environments/environment';
 
@@ -20,10 +21,12 @@ export class SwapCertifiedComponent implements OnInit {
   timestamp: any;
   publicKey: any;
   transactionHash: any;
+  qrSrc: string;
 
   constructor() { }
 
   ngOnInit() {
+    this.qrSrc = this.qrCreate();
   }
 
 
@@ -40,6 +43,11 @@ export class SwapCertifiedComponent implements OnInit {
 
   }
 
+  /**
+   *
+   *
+   * @memberof SwapCertifiedComponent
+   */
   printCertificate() {
     let doc = new jsPDF({
       orientation: 'landscape',
@@ -81,6 +89,21 @@ export class SwapCertifiedComponent implements OnInit {
     doc.text('Note: the swap process may take a several hours to complete.', 30, 330);
 
     doc.save('Swap_Certificate.pdf');
+  }
+
+  /**
+   *
+   *
+   * @returns
+   * @memberof SwapCertifiedComponent
+   */
+  qrCreate() {
+    let qr = qrcode(10, 'H')
+    let url = this.explorerUrl;
+    qr.addData(url);
+    qr.make();
+
+    return qr.createDataURL();
   }
 
 }
