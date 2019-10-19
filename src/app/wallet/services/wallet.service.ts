@@ -114,7 +114,6 @@ export class WalletService {
             accountsInfo.push(accountInfoBuilded);
             const newAccounts = this.changeIsMultiSign(element.name, isMultisig);
             if (newAccounts.length > 0) {
-              // console.log('=== NEW ACCOUNTS TO SEARCH ===', newAccounts);
               // Issue changes to new accounts
               this.setAccountsPushedSubject(newAccounts);
               // Delete the change of the new accounts
@@ -382,9 +381,6 @@ export class WalletService {
     const net = (account) ? account.network : this.currentAccount.network;
     const alg = (account) ? account.algo : this.currentAccount.algo;
     if (acct && common) {
-      /*console.log(common);
-      console.log(acct);
-      console.log(alg);*/
       if (!crypto.passwordToPrivatekey(common, acct, alg)) {
         this.sharedService.showError('', 'Invalid password');
         return false;
@@ -630,7 +626,6 @@ export class WalletService {
       localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify([]));
       walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
     }
-    // console.log(walletsStorage)
     return walletsStorage.filter(
       (element: any) => {
         return element.name === name;
@@ -746,15 +741,12 @@ export class WalletService {
    */
   removeAccountWallet(name: string, moduleRemove: boolean = false) {
     const myAccounts: AccountsInterface[] = Object.assign(this.currentWallet.accounts);
-    // console.log('=== myAccounts ===', myAccounts);
     const accountToDelete = myAccounts.find(x => x.name === name);
     this.verifyRelatedMultisig(accountToDelete);
 
-    const othersAccount = myAccounts.filter(x => x.name !== name);
-    // console.log('==== othersAccount ====', othersAccount);
-    this.currentWallet.accounts = othersAccount;
-    // console.log('==== currentWallet ====', this.currentWallet);
     const accountsInfo = [];
+    const othersAccount = myAccounts.filter(x => x.name !== name);
+    this.currentWallet.accounts = othersAccount;
     this.accountsInfo.filter(x => x.name !== name);
     this.setAccountsInfo(accountsInfo);
     this.saveAccountWalletStorage(null, this.currentWallet);
@@ -812,7 +804,6 @@ export class WalletService {
       localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(othersWallet));
     } else if (replaceWallet) {
       othersWallet.push(replaceWallet);
-      // console.log('=== othersWallet === ', othersWallet);
       localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(othersWallet));
     }
   }
@@ -886,7 +877,6 @@ export class WalletService {
    * @memberof WalletService
    */
   saveWallet(walletsStorage: WalletAccountInterface[]){
-    console.log('WALLET TO SAVE --> ', walletsStorage);
     localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorage));
   }
 
@@ -1058,19 +1048,14 @@ export class WalletService {
    * @memberof WalletService
    */
   validateMultisigAccount(accounts: AccountsInterface[]) {
-    // console.log('----LA DATA QUE RECIBO-----> ', accounts);
     const dataExist = accounts.filter(x => x.encrypted === '');
     if (dataExist) {
       dataExist.forEach(account => {
         let remove = true;
-        // console.log('====account====', account);
-        // console.log('PROCESO DE VERIFICACION');
         if (account.isMultisign !== null) {
           if (account.isMultisign.cosignatories.length > 0) {
             account.isMultisign.cosignatories.forEach(cosignatorie => {
-              // console.log('==== COSIGNATARIOS ====', cosignatorie);
               const exist = this.filterAccountWallet('', null, cosignatorie.address.pretty());
-              // console.log('==== EXISTE? ====', exist);
               if (exist) {
                 remove = false;
               }
@@ -1079,7 +1064,6 @@ export class WalletService {
         }
 
         if (remove) {
-          // console.log('==== REMOVER ====', account);
           this.removeAccountWallet(account.name);
         }
       });
@@ -1114,7 +1098,6 @@ export class WalletService {
     });
 
     othersWallet.push(account);
-    // console.log('=== othersWallet === ', othersWallet);
     localStorage.setItem(environment.nameKeyWalletTransactionsNis, JSON.stringify(othersWallet));
   }
 

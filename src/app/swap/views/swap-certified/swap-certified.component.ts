@@ -1,9 +1,11 @@
 import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
 import * as qrcode from 'qrcode-generator';
 import * as jsPDF from 'jspdf';
+import { Router } from '@angular/router';
 import { environment } from '../../../../environments/environment';
 import { SharedService } from '../../../shared/services/shared.service';
 import { TransactionsNis1Interface } from '../../services/nem-provider.service';
+import { AppConfig } from '../../../config/app.config';
 
 @Component({
   selector: 'app-swap-certified',
@@ -20,15 +22,22 @@ export class SwapCertifiedComponent implements OnInit {
   img: string;
   qrSrc: string;
 
-  constructor(private sharedService: SharedService) { }
+  constructor(
+    private router: Router,
+    private sharedService: SharedService
+  ) { }
 
   ngOnInit() {
-    this.qrSrc = this.qrCreate();
-    this.img = this.sharedService.walletCertifiedSwap();
+    if(this.transactionNis1) {
+      this.qrSrc = this.qrCreate();
+      this.img = this.sharedService.walletCertifiedSwap();
+    }else {
+      this.router.navigate([`/${AppConfig.routes.home}`]);
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(this.transactionNis1);
+    // console.log(this.transactionNis1);
   }
 
 

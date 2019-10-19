@@ -121,8 +121,8 @@ export class Nis1TransferAssetsComponent implements OnInit {
   anounceTransaction(transaction: TransferTransaction | MultisigTransaction, account: Account, catapultAccount: any) {
     this.nemProvider.anounceTransaction(transaction, account).pipe(first()).pipe((timeout(15000))).subscribe(next => {
       if (next && next['message'] && next['message'].toLowerCase() === 'success') {
-        console.log('RESPONSE ANNOUNCE --->', next);
-        console.log('ACCOUNT WALLET CREATED --->', this.walletService.accountWalletCreated);
+        //console.log('RESPONSE ANNOUNCE --->', next);
+        //console.log('ACCOUNT WALLET CREATED --->', this.walletService.accountWalletCreated);
         const year = transaction.timeWindow.timeStamp['_date']['_year'];
         const month = transaction.timeWindow.timeStamp['_date']['_month'];
         const day = transaction.timeWindow.timeStamp['_date']['_day'];
@@ -138,7 +138,7 @@ export class Nis1TransferAssetsComponent implements OnInit {
         };
 
         const transactionWalletNis1: WalletTransactionsNis1Interface = {
-          name: name,
+          name: this.walletService.accountWalletCreated.wallet.name,
           transactions: [this.transactionNis1]
         };
 
@@ -154,48 +154,7 @@ export class Nis1TransferAssetsComponent implements OnInit {
         this.spinnerVisibility = false
         this.processing = false;
       }
-
-      /*let wallet;
-      if (this.walletService.getCurrentWallet()) {
-        wallet = this.walletService.getWalletTransNisStorage().find(el => el.name === this.walletService.getCurrentWallet().name);
-      } else {
-        wallet = this.walletService.getWalletTransNisStorage().find(el => el.name === this.walletService.accountWalletCreated.wallet.name);
-      }
-
-      if (wallet !== undefined && wallet !== null) {
-        wallet.transactions.push({
-          siriusAddres: catapultAccount.address.pretty(),
-          nis1Timestamp: `${transaction.timeWindow.timeStamp['_date']['_year']}-${transaction.timeWindow.timeStamp['_date']['_month']}-${transaction.timeWindow.timeStamp['_date']['_day']} ${transaction.timeWindow.timeStamp['_time']['_hour']}:${transaction.timeWindow.timeStamp['_time']['_minute']}:${transaction.timeWindow.timeStamp['_time']['_second']}`,
-          nis1PublicKey: transaction.signer.publicKey,
-          nis1TransactionHash: next['transactionHash'].data
-        });
-      } else {
-        wallet = {
-          name: (this.walletService.getCurrentWallet()) ? this.walletService.currentWallet.name : this.walletService.accountWalletCreated.wallet.name,
-          transactions: [{
-            siriusAddres: catapultAccount.address.pretty(),
-            nis1Timestamp: `${transaction.timeWindow.timeStamp['_date']['_year']}-${transaction.timeWindow.timeStamp['_date']['_month']}-${transaction.timeWindow.timeStamp['_date']['_day']} ${transaction.timeWindow.timeStamp['_time']['_hour']}:${transaction.timeWindow.timeStamp['_time']['_minute']}:${transaction.timeWindow.timeStamp['_time']['_second']}`,
-            nis1PublicKey: transaction.signer.publicKey,
-            nis1TransactionHash: next['transactionHash'].data
-          }]
-        };
-      }
-      // console.log('\n\n\n\nValue resp:\n', wallet, '\n\n\n\nEnd value\n\n');
-      this.walletService.setSwapTransactions$(wallet.transactions);
-      this.walletService.saveAccountWalletTransNisStorage(wallet);
-      this.sharedService.showSuccess('Transaction', next['message']);
-      this.walletService.accountWalletCreated = null;
-      this.processing = false;*/
-      /*this.changeView.emit({
-        transaction: transaction,
-        details: next,
-        catapultAccount: catapultAccount,
-        route: this.routeEvent
-      });*/
-
-
     }, error => {
-      console.log(error);
       this.nemProvider.validateCodeMsgError(error.error.code, error.error.message);
       this.spinnerVisibility = false
       this.processing = false;
@@ -213,8 +172,6 @@ export class Nis1TransferAssetsComponent implements OnInit {
          Validators.required,
          Validators.minLength(this.configurationForm.address.minLength),
          Validators.maxLength(this.configurationForm.address.maxLength)]] : ['', []],*/
-
-
       amountXpx: ['', [
         Validators.required,
         Validators.maxLength(this.configurationForm.amount.maxLength)
@@ -297,8 +254,8 @@ export class Nis1TransferAssetsComponent implements OnInit {
       }
     }
 
-    console.log('accountToSwap ----> ', this.accountToSwap);
-    console.log('currentAccountCreated ----> ', this.currentAccountCreated);
+    // console.log('accountToSwap ----> ', this.accountToSwap);
+    // console.log('currentAccountCreated ----> ', this.currentAccountCreated);
 
     if (!this.accountToSwap) {
       this.router.navigate([`/${AppConfig.routes.home}`]);
