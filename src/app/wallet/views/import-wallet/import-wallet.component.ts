@@ -211,7 +211,7 @@ export class ImportWalletComponent implements OnInit {
       name: nameWallet,
       algo: password,
       network: wallet.network
-    }, accountBuilded, wallet);
+    }, accountBuilded, wallet );
 
     this.serviceModuleService.saveContacts({
       name: accountBuilded.name,

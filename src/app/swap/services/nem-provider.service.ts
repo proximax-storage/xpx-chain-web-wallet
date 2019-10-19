@@ -97,47 +97,52 @@ export class NemProviderService {
       const accountInfoOwnedSwap = await this.getAccountInfo(addressOwnedSwap).pipe(first()).pipe((timeout(10000))).toPromise();
       console.log('ACCOUNT INFO OWNED SWAP ---->', accountInfoOwnedSwap);
       // INFO ACCOUNTS MULTISIG
-      if (accountInfoOwnedSwap['meta']['cosignatoryOf'].length > 0) {
-        cosignatoryOf = accountInfoOwnedSwap['meta']['cosignatoryOf'];
-        for (let multisig of cosignatoryOf) {
-          try {
-            const addressMultisig = this.createAddressToString(multisig.address);
-            const ownedMosaic = await this.getOwnedMosaics(addressMultisig).pipe(first()).pipe((timeout(10000))).toPromise();
-            const xpxFound = ownedMosaic.find(el => el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx');
-            if (xpxFound) {
-              multisig.balance = await this.validateBalanceAccounts(xpxFound, addressMultisig);
-              multisig.mosaic = xpxFound;
-              accountsMultisigInfo.push(multisig);
+      if (accountInfoOwnedSwap['meta']['cosignatories'].length === 0) {
+        if (accountInfoOwnedSwap['meta']['cosignatoryOf'].length > 0) {
+          cosignatoryOf = accountInfoOwnedSwap['meta']['cosignatoryOf'];
+          for (let multisig of cosignatoryOf) {
+            try {
+              const addressMultisig = this.createAddressToString(multisig.address);
+              const ownedMosaic = await this.getOwnedMosaics(addressMultisig).pipe(first()).pipe((timeout(10000))).toPromise();
+              const xpxFound = ownedMosaic.find(el => el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx');
+              if (xpxFound) {
+                multisig.balance = await this.validateBalanceAccounts(xpxFound, addressMultisig);
+                multisig.mosaic = xpxFound;
+                accountsMultisigInfo.push(multisig);
+              }
+            } catch (error) {
+              cosignatoryOf = [];
+              accountsMultisigInfo = [];
             }
-          } catch (error) {
-            cosignatoryOf = [];
-            accountsMultisigInfo = [];
           }
         }
-      }
 
-      // SEARCH INFO OWNED SWAP
-      try {
-        const ownedMosaic = await this.getOwnedMosaics(addressOwnedSwap).pipe(first()).pipe((timeout(10000))).toPromise();
-        const xpxFound = ownedMosaic.find(el => el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx');
-        if (xpxFound) {
-          const balance = await this.validateBalanceAccounts(xpxFound, addressOwnedSwap);
-          nis1AccountsInfo = this.buildAccountInfoNIS1(account, accountsMultisigInfo, balance, cosignatoryOf, false, name, xpxFound);
-          this.setNis1AccountsFound$(nis1AccountsInfo);
-        } else if (cosignatoryOf.length > 0) {
-          nis1AccountsInfo = this.buildAccountInfoNIS1(account, accountsMultisigInfo, null, cosignatoryOf, false, name, null);
-          this.setNis1AccountsFound$(nis1AccountsInfo);
-        } else {
-          this.setNis1AccountsFound$(null);
+        // SEARCH INFO OWNED SWAP
+        try {
+          const ownedMosaic = await this.getOwnedMosaics(addressOwnedSwap).pipe(first()).pipe((timeout(10000))).toPromise();
+          const xpxFound = ownedMosaic.find(el => el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx');
+          if (xpxFound) {
+            const balance = await this.validateBalanceAccounts(xpxFound, addressOwnedSwap);
+            nis1AccountsInfo = this.buildAccountInfoNIS1(account, accountsMultisigInfo, balance, cosignatoryOf, false, name, xpxFound);
+            this.setNis1AccountsFound$(nis1AccountsInfo);
+          } else if (cosignatoryOf.length > 0) {
+            nis1AccountsInfo = this.buildAccountInfoNIS1(account, accountsMultisigInfo, null, cosignatoryOf, false, name, null);
+            this.setNis1AccountsFound$(nis1AccountsInfo);
+          } else {
+            this.setNis1AccountsFound$(null);
+          }
+        } catch (error) {
+          // Valida si es cosignatario
+          if (cosignatoryOf.length > 0) {
+            nis1AccountsInfo = this.buildAccountInfoNIS1(account, accountsMultisigInfo, null, cosignatoryOf, false, name, null);
+            this.setNis1AccountsFound$(nis1AccountsInfo);
+          } else {
+            this.setNis1AccountsFound$(null);
+          }
         }
-      } catch (error) {
-        // Valida si es cosignatario
-        if (cosignatoryOf.length > 0) {
-          nis1AccountsInfo = this.buildAccountInfoNIS1(account, accountsMultisigInfo, null, cosignatoryOf, false, name, null);
-          this.setNis1AccountsFound$(nis1AccountsInfo);
-        } else {
-          this.setNis1AccountsFound$(null);
-        }
+      }else {
+        this.sharedService.showWarning('', 'Swap does not support this account type');
+        this.setNis1AccountsFound$(null);
       }
     } catch (error) {
       this.setNis1AccountsFound$(null);
@@ -363,12 +368,12 @@ export class NemProviderService {
     return walletsStorage;
   }
 
-   /**
-   * RJ
-   *
-   * @param {*} accounts
-   * @memberof WalletService
-   */
+  /**
+  * RJ
+  *
+  * @param {*} accounts
+  * @memberof WalletService
+  */
   getNis1AccountsFound$(): Observable<AccountsInfoNis1Interface> {
     return this.nis1AccountsFound$;
   }
@@ -401,12 +406,12 @@ export class NemProviderService {
     localStorage.setItem(environment.nameKeyWalletTransactionsNis, JSON.stringify(othersWallet));
   }
 
-   /**
-   * RJ
-   *
-   * @param {AccountsInfoNis1Interface} account
-   * @memberof WalletService
-   */
+  /**
+  * RJ
+  *
+  * @param {AccountsInfoNis1Interface} account
+  * @memberof WalletService
+  */
   setSelectedNis1Account(account: AccountsInfoNis1Interface) {
     this.nis1AccountSelected = account;
   }
@@ -463,6 +468,11 @@ export class NemProviderService {
 
       case 705:
         this.sharedService.showError('', 'Invalid Url');
+        break;
+
+      case 722:
+      case 822:
+        this.sharedService.showError('', 'Account not allowed');
         break;
 
       default:

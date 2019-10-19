@@ -112,7 +112,6 @@ export class WalletService {
             };
 
             accountsInfo.push(accountInfoBuilded);
-
             const newAccounts = this.changeIsMultiSign(element.name, isMultisig);
             if (newAccounts.length > 0) {
               // console.log('=== NEW ACCOUNTS TO SEARCH ===', newAccounts);
@@ -311,33 +310,6 @@ export class WalletService {
 
             newAccount.push(accountBuilded);
             this.saveAccountWalletStorage(accountBuilded);
-            /*this.proximaxProvider.getAccountInfo(multisigAccount.address).pipe(first()).subscribe(async (accountInfo: AccountInfo) => {
-              const mosaicsIds: (NamespaceId | MosaicId)[] = [];
-              if (accountInfo) {
-                accountInfo.mosaics.map(n => n.id).forEach(id => {
-                  const pushea = mosaicsIds.find(next => next.id.toHex() === id.toHex());
-                  if (!pushea) {
-                    mosaicsIds.push(id);
-                  }
-                });
-              }
-
-              try {
-                accountBuilded.isMultisign = await this.proximaxProvider.getMultisigAccountInfo(multisigAccount.address).toPromise();
-              } catch (error) {
-                accountBuilded.isMultisign = null
-              }
-
-              const accountInfoBuilded = {
-                name: accountBuilded.name,
-                accountInfo: accountInfo,
-                multisigInfo: accountBuilded.isMultisign
-              };
-
-            // console.log('\n\n---ACOUNT BUILDED---', accountInfoBuilded);
-              this.setAccountsInfo([accountInfoBuilded], true);
-              this.saveAccountWalletStorage(accountBuilded);
-            });*/
           }
         });
       }

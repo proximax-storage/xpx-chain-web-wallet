@@ -6,7 +6,7 @@ import { PlainMessage, TransferTransaction, MultisigTransaction, Account } from 
 import { PublicAccount } from 'tsjs-xpx-chain-sdk';
 import { Subscription } from 'rxjs';
 
-import { WalletService, AccountCreatedInterface } from '../../../wallet/services/wallet.service';
+import { WalletService, AccountCreatedInterface, TransactionsNis1Interface } from '../../../wallet/services/wallet.service';
 import { AppConfig } from '../../../config/app.config';
 import { SharedService, ConfigurationForm } from '../../../shared/services/shared.service';
 import { NemProviderService, AccountsInfoNis1Interface, WalletTransactionsNis1Interface } from '../../services/nem-provider.service';
@@ -43,6 +43,8 @@ export class Nis1TransferAssetsComponent implements OnInit {
   showCertifiedSwap = false;
   subscription: Subscription[] = [];
   isMultisig = null;
+  transactionNis1: TransactionsNis1Interface;
+  routeContinue: string;
 
   constructor(
     private activateRoute: ActivatedRoute,
@@ -127,22 +129,25 @@ export class Nis1TransferAssetsComponent implements OnInit {
         const hour = transaction.timeWindow.timeStamp['_time']['_hour'];
         const minutes = transaction.timeWindow.timeStamp['_time']['_minute'];
         const seconds = transaction.timeWindow.timeStamp['_time']['_second'];
-        const transactionWalletNis1: WalletTransactionsNis1Interface = {
-          name: this.walletService.accountWalletCreated.wallet.name,
-          transactions: [{
+        this.routeContinue = `/${AppConfig.routes.home}`;
+        this.transactionNis1 = {
             siriusAddres: catapultAccount.address.pretty(),
             nis1Timestamp: `${year}-${month}-${day} ${hour}:${minutes}:${seconds}`,
             nis1PublicKey: transaction.signer.publicKey,
             nis1TransactionHash: next['transactionHash'].data
-          }]
+        };
+
+        const transactionWalletNis1: WalletTransactionsNis1Interface = {
+          name: name,
+          transactions: [this.transactionNis1]
         };
 
         this.nemProvider.saveAccountWalletTransNisStorage(transactionWalletNis1);
-        this.showCertifiedSwap = true;
         this.processing = false;
         this.spinnerVisibility = false;
-        this.sharedService.showSuccess('', next['message']);
+        this.showCertifiedSwap = true;
         this.walletService.accountWalletCreated = null;
+        this.sharedService.showSuccess('', next['message']);
       } else {
         this.showCertifiedSwap = false;
         this.nemProvider.validateCodeMsgError(next['code'], next['message']);

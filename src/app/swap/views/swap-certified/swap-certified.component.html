@@ -26,21 +26,18 @@
               <span class="w-b-w fs-08rem">
                 <b class="fw-bold">Sirius Account: </b>
               </span>
-              <!-- <span class="fs-09rem">{{ address }}</span> -->
-              <span class="fs-09rem">VBPOKZ-OVHIIM-OPG46V-OPDNA7-LOWTEE-MURL3E-VZIG</span>
+              <span class="fs-09rem">{{ transactionNis1.siriusAddres }}</span>
             </div>
             <div class="col-12 mb-1rem">
-              <!-- <span class="word-break-all fs-08rem"><b class="fw-bold">NIS1 Timestamp: </b>{{ timestamp }}</span> -->
               <span class="word-break-all fs-08rem">
-                <b class="fw-bold">NIS1 Timestamp: </b> 2019-10-18 23:50:54 - UTC
+                <b class="fw-bold">NIS1 Timestamp: </b> {{ transactionNis1.nis1Timestamp }}
               </span>
             </div>
             <div class="col-12 mb-1rem w-w-b-w word-break-all">
               <span class="w-b-w fs-08rem">
                 <b class="fw-bold">NIS1 Public Key: </b>
               </span> <br>
-              <!-- <span class="fs-09rem">{{ publicKey }}</span> -->
-              <span class="fs-09rem">9a15da5adb2ccacd69e7412b32161dac26701eac103cc6b7600f344d2f69bebf</span>
+              <span class="fs-09rem">{{ transactionNis1.nis1PublicKey }}</span>
             </div>
             <div class="row">
               <div class="col-12 col-md-4 txt-a-center">
@@ -50,10 +47,7 @@
                 <span class="w-b-w fs-08rem">
                   <b class="fw-bold">NIS1 Transation Hash: </b>
                 </span>
-                <!-- <span class="text-cl-m cursor-p fs-09rem" (click)="goToNemExplorer()">{{ transactionHash }}</span> -->
-                <span class="text-cl-m cursor-p fs-09rem" (click)="goToNemExplorer()">
-                    410191296a7729b4b2c68db68194abce8144e97fd3afec6ed7951274b993a042
-                </span>
+                <span class="text-cl-m cursor-p fs-09rem" (click)="goToNemExplorer()">{{ transactionNis1.nis1TransactionHash }}</span>
               </div>
             </div>
             <div class="col-12 w-b-w fs-08rem">
@@ -103,7 +97,7 @@
     </div>
 
     <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-      <button mdbBtn rounded="true" mdbWavesEffect (click)="goToRoute()" [disabled]="!checked" class="btn-proximax"
+      <button mdbBtn rounded="true" mdbWavesEffect [routerLink]="[routeContinue]" [disabled]="!checked" class="btn-proximax"
         size="md">
         <span class="color-white">Continue</span>
       </button>
