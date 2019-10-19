@@ -692,6 +692,12 @@ export class WalletService {
     return str.match('^(0x|0X)?[a-fA-F0-9]+$') !== null;
   }
 
+  /**
+   *
+   *
+   * @param {*} accountToDelete
+   * @memberof WalletService
+   */
   verifyRelatedMultisig(accountToDelete) {
     if (
       accountToDelete &&
@@ -741,7 +747,6 @@ export class WalletService {
   removeAccountWallet(name: string, moduleRemove: boolean = false) {
     const myAccounts: AccountsInterface[] = Object.assign(this.currentWallet.accounts);
     // console.log('=== myAccounts ===', myAccounts);
-
     const accountToDelete = myAccounts.find(x => x.name === name);
     this.verifyRelatedMultisig(accountToDelete);
 
@@ -871,6 +876,17 @@ export class WalletService {
       book: contacts
     });
 
+    this.saveWallet(walletsStorage);
+  }
+
+  /**
+   *
+   *
+   * @param {WalletAccountInterface[]} walletsStorage
+   * @memberof WalletService
+   */
+  saveWallet(walletsStorage: WalletAccountInterface[]){
+    console.log('WALLET TO SAVE --> ', walletsStorage);
     localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorage));
   }
 

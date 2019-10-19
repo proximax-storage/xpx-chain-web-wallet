@@ -141,6 +141,7 @@ export class NemProviderService {
           }
         }
       }else {
+        this.removeParamNis1WalletCreated(name);
         this.sharedService.showWarning('', 'Swap does not support this account type');
         this.setNis1AccountsFound$(null);
       }
@@ -386,6 +387,21 @@ export class NemProviderService {
    */
   getSelectedNis1Account(): AccountsInfoNis1Interface {
     return this.nis1AccountSelected;
+  }
+
+  /**
+   *
+   *
+   * @param {string} nameWallet
+   * @memberof NemProviderService
+   */
+  removeParamNis1WalletCreated(nameWallet: string){
+    const wallet = this.walletService.getWalletStorage();
+    const otherWallets = wallet.filter(wallet => wallet.name !== nameWallet);
+    let currentWallet = wallet.find(wallet => wallet.name === nameWallet);
+    currentWallet.accounts[0].nis1Account = false;
+    otherWallets.push(currentWallet);
+    this.walletService.saveWallet(otherWallets);
   }
 
   /**
