@@ -374,7 +374,7 @@ export class TransferAssetsComponent implements OnInit {
             siriusAddres: catapultAccount.address.pretty(),
             nis1Timestamp: `${transaction.timeWindow.timeStamp['_date']['_year']}-${transaction.timeWindow.timeStamp['_date']['_month']}-${transaction.timeWindow.timeStamp['_date']['_day']} ${transaction.timeWindow.timeStamp['_time']['_hour']}:${transaction.timeWindow.timeStamp['_time']['_minute']}:${transaction.timeWindow.timeStamp['_time']['_second']}`,
             nis1PublicKey: transaction.signer.publicKey,
-            nis1TransactionHast: next['transactionHash'].data
+            nis1TransactionHash: next['transactionHash'].data
           });
         } else {
           wallet = {
@@ -383,7 +383,7 @@ export class TransferAssetsComponent implements OnInit {
               siriusAddres: catapultAccount.address.pretty(),
               nis1Timestamp: `${transaction.timeWindow.timeStamp['_date']['_year']}-${transaction.timeWindow.timeStamp['_date']['_month']}-${transaction.timeWindow.timeStamp['_date']['_day']} ${transaction.timeWindow.timeStamp['_time']['_hour']}:${transaction.timeWindow.timeStamp['_time']['_minute']}:${transaction.timeWindow.timeStamp['_time']['_second']}`,
               nis1PublicKey: transaction.signer.publicKey,
-              nis1TransactionHast: next['transactionHash'].data
+              nis1TransactionHash: next['transactionHash'].data
             }]
           };
         }

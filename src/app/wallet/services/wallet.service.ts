@@ -16,9 +16,6 @@ import { AssetTransferable, Address as AddressNEM } from 'nem-library';
 export class WalletService {
 
 
-  nis1AccountSelected: AccountsInfoNis1Interface = null;
-  nis1AccountsFoundSubject: Subject<AccountsInfoNis1Interface> = new Subject<AccountsInfoNis1Interface>(); // RJ
-  nis1AccountsFound$: Observable<AccountsInfoNis1Interface> = this.nis1AccountsFoundSubject.asObservable(); // RJ
   // -------------------------------------------------------------------------------
 
 
@@ -1006,7 +1003,7 @@ export class WalletService {
   }
 
   /**
-   *
+   * FOR DELETE RJ
    *
    * @returns
    * @memberof WalletService
@@ -1022,7 +1019,7 @@ export class WalletService {
 
 
   /**
-   *
+   * FOR DELETE RJ
    *
    * @memberof WalletService
    */
@@ -1046,54 +1043,6 @@ export class WalletService {
   setNis1AccountSelected(account: any) {
     this.nis1AccountSeleted = account;
   }
-
-
-  // ----------------------------------------------------------------------------
-
-  /**
-   * RJ
-   *
-   * @param {AccountsInfoNis1Interface} account
-   * @memberof WalletService
-   */
-  setSelectedNis1Account(account: AccountsInfoNis1Interface) {
-    this.nis1AccountSelected = account;
-  }
-
-
-  /**
-   * RJ
-   *
-   * @param {*} accounts
-   * @memberof WalletService
-   */
-  setNis1AccountsFound$(accounts: AccountsInfoNis1Interface) {
-    this.nis1AccountsFoundSubject.next(accounts);
-  }
-
-
-  /**
-   * RJ
-   *
-   * @param {*} accounts
-   * @memberof WalletService
-   */
-  getNis1AccountsFound$(): Observable<AccountsInfoNis1Interface> {
-    return this.nis1AccountsFound$;
-  }
-
-  /**
-   * RJ
-   *
-   * @returns
-   * @memberof WalletService
-   */
-  getSelectedNis1Account(): AccountsInfoNis1Interface {
-    return this.nis1AccountSelected;
-  }
-
-
-
 }
 
 export interface CurrentWalletInterface {
@@ -1110,7 +1059,7 @@ export interface TransactionsNis1Interface {
   siriusAddres: string;
   nis1Timestamp: string;
   nis1PublicKey: string;
-  nis1TransactionHast: string;
+  nis1TransactionHash: string;
 }
 
 export interface AccountsInterface {
@@ -1139,36 +1088,7 @@ export interface WalletAccountInterface {
   accounts: AccountsInterface[];
 }
 
-
-export interface CosignatoryOf {
-  address: string;
-  mosaic: AssetTransferable;
-  balance: number;
-  harvestedBlocks: number;
-  importance: number;
-  label: any;
-  multisigInfo: {
-    cosignatoriesCount: number;
-    minCosignatories: number;
-  },
-  publicKey: string;
-  vestedBalance: number;
-}
-
-export interface AccountsInfoNis1Interface {
-  nameAccount: string;
-  accountCosignatory?: PublicAccount;
-  address: AddressNEM;
-  publicKey: string;
-  cosignerOf: boolean;
-  cosignerAccounts: CosignatoryOf[];
-  multisigAccountsInfo: any[];
-  mosaic: AssetTransferable;
-  isMultiSig: boolean;
-  balance: any;
-}
-
-export interface AccountCreatedInterface {
+export interface AccountCreatedInterface { // FOR DELETE RJ
   data: any;
   dataAccount: AccountsInterface;
   wallet: SimpleWallet

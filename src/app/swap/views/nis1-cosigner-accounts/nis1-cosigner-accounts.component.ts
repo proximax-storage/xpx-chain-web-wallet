@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { WalletService, AccountsInfoNis1Interface } from '../../../wallet/services/wallet.service';
 import { AppConfig } from '../../../config/app.config';
 import { SharedService } from '../../../shared/services/shared.service';
-import { NemProviderService } from '../../services/nem-provider.service';
+import { NemProviderService, AccountsInfoNis1Interface } from '../../services/nem-provider.service';
 
 @Component({
   selector: 'app-nis1-cosigner-accounts',
@@ -19,12 +18,11 @@ export class Nis1CosignerAccountsComponent implements OnInit {
   constructor(
     private router: Router,
     private nemProvider: NemProviderService,
-    private sharedService: SharedService,
-    private walletService: WalletService
+    private sharedService: SharedService
   ) { }
 
   ngOnInit() {
-    this.mainAccount = this.walletService.getSelectedNis1Account();
+    this.mainAccount = this.nemProvider.getSelectedNis1Account();
     this.routeGoBack = `/${AppConfig.routes.home}`;
     console.log('mainAccount --> ', this.mainAccount);
     if (!this.mainAccount) {

@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from '@angular/common/http';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
 import * as js_joda_1 from 'js-joda';
 import { timeout, first } from 'rxjs/operators';
 import {
@@ -17,14 +17,15 @@ import {
   TransferTransaction,
   TimeWindow,
   PlainMessage,
+  PublicAccount,
   AssetId,
   TransactionHttp,
   MultisigTransaction,
-  PublicAccount,
   Transaction
 } from "nem-library";
+import { PublicAccount as PublicAccountTsjs } from 'tsjs-xpx-chain-sdk';
 
-import { WalletService, AccountsInfoNis1Interface, CosignatoryOf } from '../../wallet/services/wallet.service';
+import { WalletService } from '../../wallet/services/wallet.service';
 import { TransactionsService } from '../../transactions/services/transactions.service';
 import { AppConfig } from '../../config/app.config';
 import { environment } from '../../../environments/environment';
@@ -36,8 +37,12 @@ import { SharedService } from '../../shared/services/shared.service';
 })
 export class NemProviderService {
 
+
   accountHttp: AccountHttp;
   assetHttp: AssetHttp;
+  nis1AccountSelected: AccountsInfoNis1Interface = null;
+  nis1AccountsFoundSubject: Subject<AccountsInfoNis1Interface> = new Subject<AccountsInfoNis1Interface>(); // RJ
+  nis1AccountsFound$: Observable<AccountsInfoNis1Interface> = this.nis1AccountsFoundSubject.asObservable(); // RJ
   nodes: ServerConfig[];
   transactionHttp: TransactionHttp;
 
@@ -55,15 +60,15 @@ export class NemProviderService {
   }
 
 
-   /**
-   *
-   *
-   * @param {PlainMessage} message
-   * @param {AssetId} assetId
-   * @param {number} quantity
-   * @returns
-   * @memberof NemProviderService
-   */
+  /**
+  *
+  *
+  * @param {PlainMessage} message
+  * @param {AssetId} assetId
+  * @param {number} quantity
+  * @returns
+  * @memberof NemProviderService
+  */
   async createTransaction(message: PlainMessage, assetId: AssetId, quantity: number) {
     const resultAssets = await this.assetHttp.getAssetTransferableWithRelativeAmount(assetId, quantity).toPromise();
     return TransferTransaction.createWithAssets(
@@ -118,24 +123,24 @@ export class NemProviderService {
         if (xpxFound) {
           const balance = await this.validateBalanceAccounts(xpxFound, addressOwnedSwap);
           nis1AccountsInfo = this.buildAccountInfoNIS1(account, accountsMultisigInfo, balance, cosignatoryOf, false, name, xpxFound);
-          this.walletService.setNis1AccountsFound$(nis1AccountsInfo);
+          this.setNis1AccountsFound$(nis1AccountsInfo);
         } else if (cosignatoryOf.length > 0) {
           nis1AccountsInfo = this.buildAccountInfoNIS1(account, accountsMultisigInfo, null, cosignatoryOf, false, name, null);
-          this.walletService.setNis1AccountsFound$(nis1AccountsInfo);
+          this.setNis1AccountsFound$(nis1AccountsInfo);
         } else {
-          this.walletService.setNis1AccountsFound$(null);
+          this.setNis1AccountsFound$(null);
         }
       } catch (error) {
         // Valida si es cosignatario
         if (cosignatoryOf.length > 0) {
           nis1AccountsInfo = this.buildAccountInfoNIS1(account, accountsMultisigInfo, null, cosignatoryOf, false, name, null);
-          this.walletService.setNis1AccountsFound$(nis1AccountsInfo);
+          this.setNis1AccountsFound$(nis1AccountsInfo);
         } else {
-          this.walletService.setNis1AccountsFound$(null);
+          this.setNis1AccountsFound$(null);
         }
       }
     } catch (error) {
-      this.walletService.setNis1AccountsFound$(null);
+      this.setNis1AccountsFound$(null);
     }
   }
 
@@ -346,6 +351,80 @@ export class NemProviderService {
   /**
    *
    *
+   * @returns {CurrentWalletTransNis[]}
+   * @memberof NemProviderService
+   */
+  getWalletTransNisStorage(): WalletTransactionsNis1Interface[] {
+    let walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletTransactionsNis));
+    if (walletsStorage === undefined || walletsStorage === null) {
+      localStorage.setItem(environment.nameKeyWalletTransactionsNis, JSON.stringify([]));
+      walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletTransactionsNis));
+    }
+    return walletsStorage;
+  }
+
+   /**
+   * RJ
+   *
+   * @param {*} accounts
+   * @memberof WalletService
+   */
+  getNis1AccountsFound$(): Observable<AccountsInfoNis1Interface> {
+    return this.nis1AccountsFound$;
+  }
+
+  /**
+   * RJ
+   *
+   * @returns
+   * @memberof WalletService
+   */
+  getSelectedNis1Account(): AccountsInfoNis1Interface {
+    return this.nis1AccountSelected;
+  }
+
+  /**
+   *
+   *
+   * @param {*} account
+   * @memberof NemProviderService
+   */
+  saveAccountWalletTransNisStorage(transactionNis1: WalletTransactionsNis1Interface) {
+    const othersWallet = this.getWalletTransNisStorage().filter((element: WalletTransactionsNis1Interface) => {
+      const currentWallet = this.walletService.getCurrentWallet();
+      const walletName = (currentWallet) ? currentWallet.name : this.walletService.accountWalletCreated.wallet.name
+      return element.name !== walletName;
+    });
+
+    othersWallet.push(transactionNis1);
+    // console.log('=== othersWallet === ', othersWallet);
+    localStorage.setItem(environment.nameKeyWalletTransactionsNis, JSON.stringify(othersWallet));
+  }
+
+   /**
+   * RJ
+   *
+   * @param {AccountsInfoNis1Interface} account
+   * @memberof WalletService
+   */
+  setSelectedNis1Account(account: AccountsInfoNis1Interface) {
+    this.nis1AccountSelected = account;
+  }
+
+
+  /**
+   * RJ
+   *
+   * @param {*} accounts
+   * @memberof WalletService
+   */
+  setNis1AccountsFound$(accounts: AccountsInfoNis1Interface) {
+    this.nis1AccountsFoundSubject.next(accounts);
+  }
+
+  /**
+   *
+   *
    * @param {number} errorCode
    * @memberof NemProviderService
    */
@@ -375,7 +454,7 @@ export class NemProviderService {
 
       case 655:
       case 666:
-        this.sharedService.showError('', 'insufficient XPX Balance');
+        this.sharedService.showError('', 'Insufficient XPX Balance');
         break;
 
       case 511:
@@ -398,3 +477,42 @@ export class NemProviderService {
 }
 
 
+export interface AccountsInfoNis1Interface {
+  nameAccount: string;
+  accountCosignatory?: PublicAccountTsjs;
+  address: Address;
+  publicKey: string;
+  cosignerOf: boolean;
+  cosignerAccounts: CosignatoryOf[];
+  multisigAccountsInfo: any[];
+  mosaic: AssetTransferable;
+  isMultiSig: boolean;
+  balance: any;
+}
+
+export interface CosignatoryOf {
+  address: string;
+  mosaic: AssetTransferable;
+  balance: number;
+  harvestedBlocks: number;
+  importance: number;
+  label: any;
+  multisigInfo: {
+    cosignatoriesCount: number;
+    minCosignatories: number;
+  },
+  publicKey: string;
+  vestedBalance: number;
+}
+
+export interface TransactionsNis1Interface {
+  siriusAddres: string;
+  nis1Timestamp: string;
+  nis1PublicKey: string;
+  nis1TransactionHash: string;
+}
+
+export interface WalletTransactionsNis1Interface {
+  name: string;
+  transactions: TransactionsNis1Interface[],
+}

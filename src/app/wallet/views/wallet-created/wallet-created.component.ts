@@ -38,6 +38,7 @@ export class WalletCreatedComponent implements OnInit {
 
 
   constructor(
+    private nemProvider: NemProviderService,
     private proximaxProvider: ProximaxProvider,
     private router: Router,
     private sharedService: SharedService,
@@ -73,9 +74,9 @@ export class WalletCreatedComponent implements OnInit {
       this.privateKey = this.proximaxProvider.decryptPrivateKey(this.walletData.data.algo, this.walletData.dataAccount.encrypted, this.walletData.dataAccount.iv).toUpperCase();
       this.publicKey = this.proximaxProvider.getPublicAccountFromPrivateKey(this.privateKey, this.walletData.data.network).publicKey;
       if (this.walletData.dataAccount.nis1Account !== null) {
-        this.subscription.push(this.walletService.getNis1AccountsFound$().subscribe(next => {
+        this.subscription.push(this.nemProvider.getNis1AccountsFound$().subscribe(next => {
           if (next) {
-            this.walletService.setSelectedNis1Account(next);
+            this.nemProvider.setSelectedNis1Account(next);
             this.routeContinue = `/${AppConfig.routes.swapAccountNis1Found}`;
            /* if (next.cosignerAccounts.length > 0) {
               this.routeContinue = `/${AppConfig.routes.swapListCosignerNis1}`;

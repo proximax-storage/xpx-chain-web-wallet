@@ -66,7 +66,7 @@ export class NemServiceService {
    * @param {string} name
    * @memberof NemServiceService
    */
-  async getAccountInfoNis1(account: Account, name: string) {
+  /*async getAccountInfoNis1(account: Account, name: string) {
     try {
       let cosignerOf: boolean = false;
       let cosignatoryOf: CosignatoryOf[] = [];
@@ -125,7 +125,7 @@ export class NemServiceService {
       console.log('----- OCURRIÓ UN ERROR 02-----', error);
       this.walletService.setNis1AccountsFound$(null);
     }
-  }
+  }*/
 
   /**
    * Method to search mosaics of address

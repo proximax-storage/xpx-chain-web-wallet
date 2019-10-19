@@ -1,4 +1,4 @@
-<ng-container *ngIf="accountToSwap && showFormSwap">
+<ng-container *ngIf="accountToSwap && !showCertifiedSwap; else viewCertifiedSwap">
   <div class="container mt-3rem mb-2rem animated fadeIn">
     <!-- TITLE AND DESCRIPTION -->
     <div class="row">
@@ -135,7 +135,7 @@
               <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="btn-proximax" size="md"
                 (click)="spinnerVisibility = true" [disabled]="blockButton || !formTransfer.valid">
                 <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
-                  *ngIf="spinnerVisibility"></span>
+                  *ngIf="processing"></span>
                 <span class="color-white">Yes, Swap</span>
               </button>
             </div>
@@ -146,3 +146,7 @@
     </div>
   </div>
 </ng-container>
+
+<ng-template #viewCertifiedSwap>
+Show certified!
+</ng-template>

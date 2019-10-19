@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AppConfig } from '../../../config/app.config';
-import { WalletService } from '../../../wallet/services/wallet.service';
+import { NemProviderService } from '../../services/nem-provider.service';
 
 @Component({
   selector: 'app-nis1-account-found',
@@ -14,11 +14,11 @@ export class Nis1AccountFoundComponent implements OnInit {
   //swapAccountNis1Found
 
   constructor(
-    private walletService: WalletService
+    private nemProvider: NemProviderService
   ) { }
 
   ngOnInit() {
-    const data = this.walletService.getSelectedNis1Account();
+    const data = this.nemProvider.getSelectedNis1Account();
     if (data.cosignerAccounts.length > 0) {
       this.routeContinue = `/${AppConfig.routes.swapListCosignerNis1}`;
     } else {
