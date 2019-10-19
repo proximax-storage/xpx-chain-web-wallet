@@ -44,7 +44,7 @@ export class DeleteWalletConfirmComponent implements OnInit {
 
   ngOnInit() {
     let name = this.activateRoute.snapshot.paramMap.get('name');
-    this.wallet = this.walletService.getWalletStorageName(name)[0];
+    this.wallet = this.walletService.getWalletStorageByName(name)[0];
     if (this.wallet == undefined)
       this.router.navigate([`/${AppConfig.routes.viewAllWallets}`]);
   }

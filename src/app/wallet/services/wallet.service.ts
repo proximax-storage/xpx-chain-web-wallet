@@ -599,7 +599,7 @@ export class WalletService {
      * @returns
      * @memberof WalletService
      */
-  getWalletStorageName(name: string): WalletAccountInterface[] {
+  getWalletStorageByName(name: string): WalletAccountInterface[] {
     let walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
     if (walletsStorage === undefined || walletsStorage === null) {
       localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify([]));
