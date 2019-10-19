@@ -1,0 +1,102 @@
+<div class="container mb-2rem animated fadeIn">
+  <!-- CERTIFICATE -->
+  <div class="row">
+    <div class="col-11 col-md-10 col-lg-9 col-xl-8 mx-auto mt-3rem">
+      <div class="row">
+        <div class="col-12 txt-a-center">
+          <span class="fs-1-7rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">Congratulations!</span> <br>
+          <span>The Swap Process has already started.</span>
+        </div>
+
+        <div class="col-11 col-md-10 mx-auto">
+          <hr class="mt-05rem mb-06rem">
+        </div>
+      </div>
+
+      <div class="row mt-1rem">
+        <div class="col-12 d-flex justify-content-center mx-auto">
+          <span class="fs-1-2rem">Swap Certificate:</span>
+        </div>
+      </div>
+
+      <div class="row audit-front mt-05rem mx-auto">
+        <div class="col-12 col-lg-8 background-white">
+          <div class="row p-1rem">
+            <div class="col-12 mb-1rem d-flex flex-column">
+              <span class="w-b-w fs-08rem"><b class="fw-bold">Sirius Account: </b></span>
+              <!-- <span class="fs-09rem">{{ address }}</span> -->
+            </div>
+            <div class="col-12 mb-1rem">
+              <!-- <span class="word-break-all fs-08rem"><b class="fw-bold">NIS1 Timestamp: </b>{{ timestamp }}</span> -->
+            </div>
+            <div class="col-12 mb-1rem w-w-b-w word-break-all">
+              <span class="w-b-w fs-08rem"><b class="fw-bold">NIS1 Public Key: </b></span>
+              <!-- <span class="fs-09rem">{{ publicKey }}</span> -->
+            </div>
+            <div class="row">
+              <div class="col-12 col-md-4 txt-a-center">
+                <img [src]="qrSrc" alt="qrCode">
+              </div>
+              <div class="col-12 col-md-8 w-w-b-w word-break-all d-flex flex-column">
+                <span class="w-b-w fs-08rem">
+                  <b class="fw-bold">NIS1 Transation Hash: </b>
+                </span>
+                <!-- <span class="text-cl-m cursor-p fs-09rem" (click)="goToNemExplorer()">{{ transactionHash }}</span> -->
+              </div>
+            </div>
+            <div class="col-12 w-b-w fs-08rem">
+              <b class="fw-bold">Note:</b>
+              <span class="fs-09rem"> The Swap Process may take a few hours to complete.</span>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-lg-4 d-flex justify-content-center align-items-center background-blue-gradient">
+          <figure class="p-05rem row mar-1rem">
+            <img src="assets/images/img/badge-silver-proximax-sirius-wallet.svg" alt="Medal" width="150">
+          </figure>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- END CERTIFICATE -->
+
+  <!-- WARNING -->
+  <div class="row mt-2rem">
+    <div class="col-md-10 col-lg-8 col-xl-8 mx-auto box-transparent-border-orange">
+      <div class="txt-a-center">
+        <img src="assets/images/img/icon-transaction-unconfirmed-white.svg" style="filter: invert(50%)" alt=""
+          width="30">
+      </div>
+      <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em">
+        Save a copy of your certificate. It is needed in the event of an error.
+      </p>
+    </div>
+  </div>
+  <!-- END WARNING -->
+
+  <div class="row mt-1rem">
+    <div class="col-11 col-sm-10 col-lg-9 col-xl-8 mx-auto txt-a-center">
+      <mdb-checkbox [(ngModel)]="checked" [checked]="checked"> I confirm that I have saved a copy of my certificate.
+      </mdb-checkbox>
+    </div>
+  </div>
+
+  <!-- BUTTON -->
+  <div class="row mt-1rem">
+    <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
+      <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" size="md"
+        (click)="printCertificate()">
+        <span class="color-white">Save</span>
+      </button>
+    </div>
+
+    <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
+      <button mdbBtn rounded="true" mdbWavesEffect (click)="goToRoute()" [disabled]="!checked" class="btn-proximax"
+        size="md">
+        <span class="color-white">Continue</span>
+      </button>
+    </div>
+  </div>
+  <!-- END BUTTON -->
+
+</div>

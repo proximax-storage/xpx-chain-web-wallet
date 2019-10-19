@@ -9,6 +9,7 @@ import { Nis1CosignerAccountsComponent } from './views/nis1-cosigner-accounts/ni
 import { Nis1AccountsListComponent } from './views/nis1-accounts-list/nis1-accounts-list.component';
 import { Nis1TransferAssetsComponent } from './views/nis1-transfer-assets/nis1-transfer-assets.component';
 import { Nis1AccountFoundComponent } from './views/nis1-account-found/nis1-account-found.component';
+import { SwapCertifiedComponent } from './views/swap-certified/swap-certified.component';
 
 
 @NgModule({
@@ -16,7 +17,8 @@ import { Nis1AccountFoundComponent } from './views/nis1-account-found/nis1-accou
     Nis1CosignerAccountsComponent,
     Nis1AccountsListComponent,
     Nis1TransferAssetsComponent,
-    Nis1AccountFoundComponent
+    Nis1AccountFoundComponent,
+    SwapCertifiedComponent
   ],
   imports: [
     CoreModule,
