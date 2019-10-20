@@ -8,8 +8,8 @@ import { ChronoUnit } from 'js-joda';
 export const environment = {
   production: false,
   itemBooksAddress: 'sw-books-mainnet',
-  version: '0.3.26 (MainNet - Demo)',
-  cacheVersion: '8-MAINNET',
+  version: '0.3.27 (MainNet - Demo)',
+  cacheVersion: '9-MAINNET',
   nameKeyBlockStorage: `sw-blocks`,
   nameKeyNodeSelected: `sw-selected-node-mainnet`,
   nameKeyWalletStorage: `sw-mainnet`,
