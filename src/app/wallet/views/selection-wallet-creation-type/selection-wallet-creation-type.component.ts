@@ -6,7 +6,7 @@ import { ModalDirective } from 'ng-uikit-pro-standard';
 import { NetworkType } from 'tsjs-xpx-chain-sdk';
 import nem from "nem-sdk";
 import { NetworkTypes } from 'nem-library';
-import { NemServiceService } from '../../../shared/services/nem-service.service';
+import { NemProviderService } from '../../../swap/services/nem-provider.service';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 import { Router } from '@angular/router';
 import { ServicesModuleService, StructureService } from '../../../servicesModule/services/services-module.service';
@@ -40,7 +40,7 @@ export class SelectionWalletCreationTypeComponent implements OnInit {
     private sharedService: SharedService,
     private walletService: WalletService,
     private proximaxProvider: ProximaxProvider,
-    private nemProvider: NemServiceService,
+    private nemProvider: NemProviderService,
   ) { }
 
   ngOnInit() {
