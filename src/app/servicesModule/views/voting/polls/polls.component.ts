@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { CreatePollStorageService } from 'src/app/servicesModule/services/create-poll-storage.service';
-import { environment } from 'src/environments/environment';
 import { PublicAccount, Account } from 'tsjs-xpx-chain-sdk';
-import { WalletService } from 'src/app/wallet/services/wallet.service';
-import { AppConfig } from 'src/app/config/app.config';
-import { PaginationInstance } from 'ngx-pagination';
 import { Router } from '@angular/router';
-import { SharedService } from 'src/app/shared/services/shared.service';
+import { PaginationInstance } from 'ngx-pagination';
 import { Subscription } from 'rxjs';
-import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
+import { CreatePollStorageService } from '../../../../servicesModule/services/create-poll-storage.service';
+import { environment } from '../../../../../environments/environment';
+import { WalletService } from '../../../../wallet/services/wallet.service';
+import { AppConfig } from '../../../../config/app.config';
+import { SharedService } from '../../../../shared/services/shared.service';
+import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 @Component({
   selector: 'app-polls',
   templateUrl: './polls.component.html',

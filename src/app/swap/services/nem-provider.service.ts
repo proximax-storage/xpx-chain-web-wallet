@@ -94,7 +94,7 @@ export class NemProviderService {
       let cosignatoryOf: CosignatoryOf[] = [];
       let accountsMultisigInfo = [];
       const addressOwnedSwap = this.createAddressToString(account.address['value']);
-      const accountInfoOwnedSwap = await this.getAccountInfo(addressOwnedSwap).pipe(first()).pipe((timeout(10000))).toPromise();
+      const accountInfoOwnedSwap = await this.getAccountInfo(addressOwnedSwap).pipe(first()).pipe((timeout(environment.timeOutTransactionNis1))).toPromise();
       // console.log('ACCOUNT INFO OWNED SWAP ---->', accountInfoOwnedSwap);
       // INFO ACCOUNTS MULTISIG
       if (accountInfoOwnedSwap['meta']['cosignatories'].length === 0) {
@@ -103,7 +103,7 @@ export class NemProviderService {
           for (let multisig of cosignatoryOf) {
             try {
               const addressMultisig = this.createAddressToString(multisig.address);
-              const ownedMosaic = await this.getOwnedMosaics(addressMultisig).pipe(first()).pipe((timeout(10000))).toPromise();
+              const ownedMosaic = await this.getOwnedMosaics(addressMultisig).pipe(first()).pipe((timeout(environment.timeOutTransactionNis1))).toPromise();
               const xpxFound = ownedMosaic.find(el => el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx');
               if (xpxFound) {
                 multisig.balance = await this.validateBalanceAccounts(xpxFound, addressMultisig);
@@ -119,7 +119,7 @@ export class NemProviderService {
 
         // SEARCH INFO OWNED SWAP
         try {
-          const ownedMosaic = await this.getOwnedMosaics(addressOwnedSwap).pipe(first()).pipe((timeout(10000))).toPromise();
+          const ownedMosaic = await this.getOwnedMosaics(addressOwnedSwap).pipe(first()).pipe((timeout(environment.timeOutTransactionNis1))).toPromise();
           const xpxFound = ownedMosaic.find(el => el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx');
           if (xpxFound) {
             const balance = await this.validateBalanceAccounts(xpxFound, addressOwnedSwap);

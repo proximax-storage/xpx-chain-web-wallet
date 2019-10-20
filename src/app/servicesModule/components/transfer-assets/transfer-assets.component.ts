@@ -2,16 +2,16 @@ import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { WalletService } from 'src/app/wallet/services/wallet.service';
 import { NemServiceService } from 'src/app/shared/services/nem-service.service';
 import { FormGroup, Validators, FormBuilder, AbstractControl } from '@angular/forms';
-import { ConfigurationForm, SharedService } from 'src/app/shared/services/shared.service';
+import { first, timeout } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 import { PlainMessage } from 'nem-library';
 import { Router } from '@angular/router';
-import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
-import { AppConfig } from 'src/app/config/app.config';
-import { first, timeout } from 'rxjs/operators';
-import { TransactionsService } from 'src/app/transactions/services/transactions.service';
+import { ProximaxProvider } from '../../../shared/services/proximax.provider';
+import { AppConfig } from '../../../config/app.config';
+import { TransactionsService } from '../../../transactions/services/transactions.service';
 import { ServicesModuleService } from '../../services/services-module.service';
-import { environment } from 'src/environments/environment';
-import { Subscription } from 'rxjs';
+import { environment } from '../../../../environments/environment';
+import { ConfigurationForm, SharedService } from '../../../shared/services/shared.service';
 
 @Component({
   selector: 'app-transfer-assets',
@@ -98,7 +98,7 @@ export class TransferAssetsComponent implements OnInit {
 
     if (this.accountSelected.mosaic === null) {
       this.routeEvent = `/${AppConfig.routes.nis1AccountList}`;
-      this.nemService.getOwnedMosaics(this.accountSelected.address).pipe(first()).pipe((timeout(10000))).subscribe(
+      this.nemService.getOwnedMosaics(this.accountSelected.address).pipe(first()).pipe((timeout(environment.timeOutTransactionNis1))).subscribe(
         async next => {
           for (const el of next) {
             if (el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx') {
@@ -360,7 +360,7 @@ export class TransferAssetsComponent implements OnInit {
   }
 
   anounceTransaction(signed, account, catapultAccount, transaction) {
-    this.nemService.anounceTransaction(signed, account).pipe(first()).pipe((timeout(15000)))
+    this.nemService.anounceTransaction(signed, account).pipe(first()).pipe((timeout(environment.timeOutTransactionNis1)))
       .subscribe(next => {
         let wallet;
         if (this.walletService.getCurrentWallet()) {

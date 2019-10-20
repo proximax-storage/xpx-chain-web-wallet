@@ -1,15 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, Validators, FormControl, AbstractControl } from '@angular/forms';
+import * as qrcode from 'qrcode-generator';
+import * as jsPDF from 'jspdf';
+import { ActivatedRoute } from '@angular/router';
+
 import { WalletService, AccountsInterface, AccountsInfoInterface } from "../../../../wallet/services/wallet.service";
 import { SharedService, ConfigurationForm } from "../../../../shared/services/shared.service"
 import { AppConfig } from '../../../../config/app.config';
-import { ActivatedRoute } from '@angular/router';
-import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
+import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { ServicesModuleService, ContactsStorageInterface, HeaderServicesInterface } from '../../../services/services-module.service';
-import { NemServiceService } from 'src/app/shared/services/nem-service.service';
-import { environment } from 'src/environments/environment';
-import * as qrcode from 'qrcode-generator';
-import * as jsPDF from 'jspdf';
+import { NemServiceService } from '../../../../shared/services/nem-service.service';
+import { environment } from '../../../../../environments/environment';
+
 
 @Component({
   selector: 'app-detail-account',
@@ -75,7 +77,7 @@ export class DetailAccountComponent implements OnInit {
     this.currenAccount = (param) ? this.walletService.filterAccountWallet(param) : this.walletService.filterAccountWallet('', true);
     this.checked = (this.currenAccount.nis1Account !== null);
     console.log('this.checked', this.checked);
-    
+
     this.valueInitNis = (this.currenAccount.nis1Account !== null);
   }
 
@@ -389,7 +391,7 @@ export class DetailAccountComponent implements OnInit {
         this.checked = val;
       } else if(!val){
         this.checked = val;
-      } 
+      }
     }
     this.actionBtnSwapThisAccount = !this.actionBtnSwapThisAccount;
     this.blockBtnAction = !this.blockBtnAction;

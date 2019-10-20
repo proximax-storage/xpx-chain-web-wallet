@@ -3,6 +3,9 @@ import { FormBuilder, Validators, FormGroup, AbstractControl } from '@angular/fo
 import * as crypto from 'crypto-js'
 import { Account, UInt64, TransferTransaction, PlainMessage } from 'tsjs-xpx-chain-sdk';
 import { KeyPair, convert } from 'js-xpx-chain-library';
+import { PaginationInstance } from 'ngx-pagination';
+import { Subscription } from 'rxjs';
+import * as FeeCalculationStrategy from 'tsjs-xpx-chain-sdk/dist/src/model/transaction/FeeCalculationStrategy';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { ConfigurationForm, SharedService } from '../../../../shared/services/shared.service';
 import { ApostilleService, NtyDataInterface } from '../services/apostille.service';
@@ -10,13 +13,9 @@ import { WalletService } from '../../../../wallet/services/wallet.service';
 import { HeaderServicesInterface } from '../../../services/services-module.service';
 import { AppConfig } from '../../../../config/app.config';
 import { StorageService, SearchResultInterface } from '../../storage/services/storage.service';
-import { SearchResult } from 'tsjs-chain-xipfs-sdk';
-import { PaginationInstance } from 'ngx-pagination';
-import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
-import { environment } from 'src/environments/environment';
-import { Subscription } from 'rxjs';
-import * as FeeCalculationStrategy from 'tsjs-xpx-chain-sdk/dist/src/model/transaction/FeeCalculationStrategy';
-import { TransactionsService } from 'src/app/transactions/services/transactions.service';
+import { DataBridgeService } from '../../../../shared/services/data-bridge.service';
+import { environment } from '../../../../../environments/environment';
+import { TransactionsService } from '../../../../transactions/services/transactions.service';
 
 declare const Buffer: any;
 
@@ -114,9 +113,9 @@ export class CreateApostilleComponent implements OnInit {
       this.apostilleFormOne.disable();
       this.insufficientBalance = true;
     }
-    
+
   }
-  
+
   changeInputType(inputType) {
     let newType = this.sharedService.changeInputType(inputType)
     this.passwordMain = newType;
@@ -155,7 +154,7 @@ export class CreateApostilleComponent implements OnInit {
       this.fee = this.transactionService.amountFormatterSimple(b.compact())
     }
   }
-  
+
   builderMessage(hash){
     this.calculateFee(JSON.stringify(hash))
   }
@@ -608,5 +607,5 @@ export class CreateApostilleComponent implements OnInit {
     );
   }
 
- 
+
 }

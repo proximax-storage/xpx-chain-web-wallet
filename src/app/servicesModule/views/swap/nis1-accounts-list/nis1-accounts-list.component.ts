@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { AppConfig } from '../../../../config/app.config';
-import { WalletService, AccountsInterface } from 'src/app/wallet/services/wallet.service';
-import { HeaderServicesInterface } from 'src/app/servicesModule/services/services-module.service';
-import { Router } from '@angular/router';
-import { NemServiceService } from 'src/app/shared/services/nem-service.service';
 import { first, timeout } from 'rxjs/operators';
-import { SharedService } from 'src/app/shared/services/shared.service';
+import { Router } from '@angular/router';
+
+import { AppConfig } from '../../../../config/app.config';
+import { WalletService, AccountsInterface } from '../../../../wallet/services/wallet.service';
+import { HeaderServicesInterface } from '../../../../servicesModule/services/services-module.service';
+import { NemServiceService } from '../../../../shared/services/nem-service.service';
+import { SharedService } from '../../../../shared/services/shared.service';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-nis1-accounts-list',
@@ -45,7 +47,7 @@ export class Nis1AccountsListComponent implements OnInit {
     this.walletService.setAccountSelectedWalletNis1(account);
     this.searchItem[index] = true;
     const address = this.nemProvider.createAddressToString(account.nis1Account.address.value);
-    this.nemProvider.getAccountInfo(address).pipe(first()).pipe((timeout(15000))).subscribe(
+    this.nemProvider.getAccountInfo(address).pipe(first()).pipe((timeout(environment.timeOutTransactionNis1))).subscribe(
       next => {
         this.searchItem[index] = false;
         let consignerOf: boolean = false;

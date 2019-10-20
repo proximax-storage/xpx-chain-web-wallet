@@ -8,7 +8,7 @@ import { ChronoUnit } from 'js-joda';
 export const environment = {
   production: false,
   itemBooksAddress: 'sw-books-testnet',
-  version: '0.3.22',
+  version: 'v0.3.22',
   cacheVersion: '21',
   nameKeyBlockStorage: `sw-blocks`,
   nameKeyNodeSelected: `sw-selected-node-testnet`,
@@ -34,6 +34,7 @@ export const environment = {
     deadline: 1439,
     chronoUnit: ChronoUnit.MINUTES
   },
+  timeOutTransactionNis1: 10000,
   /*mosaicXpxInfo: {
     name: 'prx.xpx',
     coin: 'XPX',
