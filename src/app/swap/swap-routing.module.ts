@@ -29,7 +29,7 @@ const routes: Routes = [
       },
     }
   }, {
-    path: `${AppConfig.routes.swapTransferAssets}/:account/:type`,
+    path: `${AppConfig.routes.swapTransferAssets}/:account/:type/:moreAccounts`,
     component: Nis1TransferAssetsComponent,
     data: {
       meta: {

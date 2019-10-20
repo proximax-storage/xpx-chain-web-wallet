@@ -12,8 +12,8 @@ import { NemProviderService, AccountsInfoNis1Interface } from '../../services/ne
 export class Nis1CosignerAccountsComponent implements OnInit {
 
   mainAccount: AccountsInfoNis1Interface;
+  objectKeys = Object.keys;
   routeGoBack = '';
-
 
   constructor(
     private router: Router,
@@ -22,11 +22,23 @@ export class Nis1CosignerAccountsComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.mainAccount = this.nemProvider.getSelectedNis1Account();
+    this.mainAccount = Object.assign({}, this.nemProvider.getSelectedNis1Account());
     this.routeGoBack = `/${AppConfig.routes.home}`;
     console.log('mainAccount --> ', this.mainAccount);
-    if (!this.mainAccount) {
+    if (!this.mainAccount || Object.keys(this.mainAccount).length === 0) {
       this.router.navigate([this.routeGoBack]);
+    } else if (this.mainAccount.multisigAccountsInfo.length > 0) {
+      this.mainAccount.multisigAccountsInfo.forEach(element => {
+        console.log('-----element-----', element.address);
+        console.log('-----typeof (element.address)-----', typeof (element.address));
+        if (typeof (element.address) === 'string') {
+          element.address = this.nemProvider.createAddressToString(element.address).pretty()
+        }else if(element.address && element.address['value']) {
+          element.address = this.nemProvider.createAddressToString(element.address['value']).pretty();
+        }else{
+          this.router.navigate([this.routeGoBack]);
+        }
+      });
     }
   }
 
@@ -37,7 +49,8 @@ export class Nis1CosignerAccountsComponent implements OnInit {
    * @returns
    * @memberof Nis1CosignerAccountsComponent
    */
-  formatAddress(address: string){
+  formatAddress(address: string) {
+    console.log('formatAddress ---> ', address);
     return this.nemProvider.createAddressToString(address).pretty();
   }
 
@@ -59,7 +72,7 @@ export class Nis1CosignerAccountsComponent implements OnInit {
    * @param {string} address
    * @memberof Nis1CosignerAccountsComponent
    */
-  selectAccount(address: string, type: string){
-    this.router.navigate([`/${AppConfig.routes.swapTransferAssets}/${address}/${type}`]);
+  selectAccount(address: string, type: string) {
+    this.router.navigate([`/${AppConfig.routes.swapTransferAssets}/${address}/${type}/1`]);
   }
 }

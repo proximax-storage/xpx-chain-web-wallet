@@ -1,19 +1,46 @@
-<ng-container *ngIf="accountToSwap && !showCertifiedSwap; else viewCertifiedSwap">
+<ng-container *ngIf="accountToSwap && !showCertifiedSwap;">
   <div class="container mt-3rem mb-2rem animated fadeIn">
+
+    <!-- HEADER -->
+    <div class="row">
+      <div class="col-12 col-md-11 col-lg-10 mx-auto">
+        <div class="row">
+          <div class="col-12 col-md-6 d-flex align-items-end">
+            <span class="fs-1rem txt-a-center line-h-1-2em color-grey">Mainnet Swap&nbsp;</span>
+            <span class="fs-1rem txt-a-center line-h-1-2em color-grey">></span>
+            <span class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">&nbsp;Swap Process</span>
+          </div>
+
+          <!-- Go Back -->
+          <ng-container *ngIf="moreAccounts === '1'">
+            <div class="col-12 col-md-6 d-flex justify-content-start justify-content-md-end">
+              <span class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">
+                <a class="color-blue-intermedio" [routerLink]="[changeAccount]">
+                  <span>Back</span>
+                </a>
+              </span>
+            </div>
+          </ng-container>
+        </div>
+
+        <div class="row">
+          <div class="col-12">
+            <hr class="mt-03rem mb-05rem">
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- TITLE AND DESCRIPTION -->
     <div class="row">
-      <div class="col-12 d-flex justify-content-center pt-2rem">
-        <span class="fs-1-5rem fw-500 txt-a-center line-h-1-2em color-black">NIS1 Account Selected</span>
-      </div>
-      <!-- SEPARATOR -->
-      <div class="col-12 col-md-8 mx-auto">
-        <hr class="mt-05rem mb-06rem">
+      <div class="col-11 d-flex justify-content-center pt-2rem">
+        <span class="fs-1-2rem fw-500 txt-a-center line-h-1-2em color-black">NIS1 Account Selected</span>
       </div>
     </div>
 
     <!-- ACCOUNT SELECTED -->
-    <div class="row mt-1rem">
-      <div class="col-11 col-sm-10 col-md-9 col-lg-8 col-xl-7 mx-auto">
+    <div class="row">
+      <div class="col-11 col-md-10 col-lg-9 mx-auto">
         <div class="row">
           <div class="col-12 mx-auto box-grey p-1rem">
             <div>
@@ -34,7 +61,7 @@
         </div>
 
         <div class="row mt-1rem" *ngIf="isMultisig">
-          <div class="col-12">
+          <div class="col-12 lh-1em">
             <div>
               <span class="fw-bold">Account that will receive swap transfer:&nbsp;</span>
             </div>
@@ -47,7 +74,7 @@
     </div>
 
     <div class="row mt-1rem">
-      <div class="col-11 col-sm-10 col-md-9 col-lg-8 col-xl-7 mx-auto">
+      <div class="col-11 col-md-10 col-lg-9 mx-auto">
         <form [formGroup]="formTransfer" (ngSubmit)="createTransaction()" class="mx-auto">
           <div class="row">
             <div class="col-12 d-flex justify-content-center pt-1rem">
@@ -57,7 +84,7 @@
 
           <div class="row">
             <!-- INPUT AMOUNT TO SWAP -->
-            <div class="col-10 col-sm-12 col-md-12 mx-auto">
+            <div class="col-12 mx-auto">
               <div class="md-form form-sm mt-1rem mb-0rem">
                 <img class="form-control-feedback"
                   src="assets/images/img/icon-amount-green-16h-proximax-sirius-wallet.svg" alt="">
@@ -81,7 +108,7 @@
 
 
             <!-- WALLET PASSWORD -->
-            <div class="col-10 col-sm-12 col-md-12 mx-auto mb-2rem">
+            <div class="col-12 mx-auto mb-2rem">
               <div class="md-form form-sm mt-1rem mb-0rem">
                 <img class="form-control-feedback"
                   src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg" alt="">
@@ -101,14 +128,13 @@
                 </mdb-error>
               </div>
             </div>
-
           </div>
           <!-- END ACCOUNT LIST -->
 
           <div class="row">
-            <div class="col-sm-12 col-md-10 col-lg-8 col-xl-8 mx-auto">
+            <div class="col-12 mx-auto">
               <div class="row">
-                <div class="col-10 col-sm-12 col-md-12 mb-1rem mx-auto box-transparent-border-orange mx-auto">
+                <div class="col-12 mb-1rem mx-auto box-transparent-border-orange mx-auto">
                   <div class="txt-a-center">
                     <img src="assets/images/img/icon-transaction-unconfirmed-white.svg" style="filter: invert(50%)"
                       alt="" width="30">
@@ -147,6 +173,6 @@
   </div>
 </ng-container>
 
-<ng-template #viewCertifiedSwap>
+<ng-container *ngIf="showCertifiedSwap">
   <app-swap-certified [transactionNis1]="transactionNis1" [routeContinue]="routeContinue"></app-swap-certified>
-</ng-template>
+</ng-container>

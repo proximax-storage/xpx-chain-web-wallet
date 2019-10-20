@@ -140,7 +140,7 @@ export class NemProviderService {
             this.setNis1AccountsFound$(null);
           }
         }
-      }else {
+      } else {
         this.removeParamNis1WalletCreated(name);
         this.sharedService.showWarning('', 'Swap does not support this account type');
         this.setNis1AccountsFound$(null);
@@ -395,7 +395,7 @@ export class NemProviderService {
    * @param {string} nameWallet
    * @memberof NemProviderService
    */
-  removeParamNis1WalletCreated(nameWallet: string){
+  removeParamNis1WalletCreated(nameWallet: string) {
     const wallet = this.walletService.getWalletStorage();
     const otherWallets = wallet.filter(wallet => wallet.name !== nameWallet);
     let currentWallet = wallet.find(wallet => wallet.name === nameWallet);
@@ -487,6 +487,10 @@ export class NemProviderService {
 
       case 722:
       case 822:
+        this.sharedService.showError('', 'Account not allowed');
+        break;
+
+      case 541:
         this.sharedService.showError('', 'Account not allowed');
         break;
 

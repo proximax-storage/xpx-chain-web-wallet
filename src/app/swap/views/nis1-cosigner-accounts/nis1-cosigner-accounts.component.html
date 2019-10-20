@@ -1,20 +1,43 @@
-<ng-container *ngIf="mainAccount">
+<ng-container *ngIf="mainAccount && objectKeys(mainAccount).length > 0">
   <div class="container mt-3rem mb-2rem animated fadeIn">
+    <!-- HEADER -->
+    <div class="row">
+      <div class="col-12 col-md-11 col-lg-10 mx-auto">
+        <div class="row">
+          <div class="col-12 col-md-6 d-flex align-items-end">
+            <span class="fs-1rem txt-a-center line-h-1-2em color-grey">Mainnet Swap&nbsp;</span>
+            <span class="fs-1rem txt-a-center line-h-1-2em color-grey">></span>
+            <span class="fs-1rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">&nbsp;Swap Process</span>
+          </div>
+
+          <!-- Go Back -->
+          <div class="col-12 col-md-6 d-flex justify-content-start justify-content-md-end">
+            <span class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">
+              <a class="color-blue-intermedio" [routerLink]="[routeContinue]">
+                <span>Home</span>
+              </a>
+            </span>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-12">
+            <hr class="mt-03rem mb-05rem">
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- TITLE AND DESCRIPTION -->
     <div class="row">
-      <div class="col-12 d-flex justify-content-center pt-2rem">
-        <span class="fs-1-5rem fw-500 txt-a-center line-h-1-2em color-black">Please select a NIS1 account</span>
+      <div class="col-11 col-md-10 col-lg-9 mx-auto pt-2rem txt-a-center">
+        <span class="fs-1-5rem fw-500 line-h-1-2em color-black">Please select a NIS1 account</span>
       </div>
 
-      <div class="col-12 d-flex justify-content-center mt-04rem">
-        <span class="fs-08rem txt-a-center line-h-1-2em">
+      <div class="col-11 col-md-10 col-lg-9 mx-auto mt-04rem txt-a-center">
+        <span class="fs-08rem line-h-1-2em">
           This is the list of attached accounts of the account you have imported
         </span>
-      </div>
-
-      <div class="col-12 col-md-8 mx-auto">
-        <hr class="mt-05rem mb-06rem">
       </div>
     </div>
     <!-- END TITLE AND DESCRIPTION -->
@@ -32,16 +55,26 @@
                 </div>
                 <div>
                   <span class="color-black fw-bold">Balance:&nbsp;</span>
-                  <span class="color-black fw-bold" *ngIf="mainAccount.balance"> {{ mainAccount.balance }} XPX</span>
-                  <span class="color-black fw-bold" [innerHTML]="getQuantity('0.000000')"></span>
+                  <!-- <span class="color-black fw-bold" *ngIf="mainAccount.balance"> {{ mainAccount.balance }} XPX</span> -->
+                  <ng-container *ngIf="mainAccount.balance; else amountZero">
+                    <span class="color-black fw-bold" [innerHTML]="getQuantity(mainAccount.balance)"></span>
+                  </ng-container>
+
+                  <ng-template #amountZero>
+                    <span class="color-black fw-bold" [innerHTML]="getQuantity('0.000000')"></span>
+                  </ng-template>
+
+                  <span class="color-black fw-bold">&nbsp;XPX</span>
                   <img src="./assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" class="ml-1rem"
                     width="20px" alt="logo">
                 </div>
               </div>
 
               <ng-container *ngIf="mainAccount.balance">
-                <div class="col-4 col-sm-3 col-md-2 text-center w-e-nowrap d-flex align-items-center justify-content-center">
-                  <span class="color-blue-intermedio font-small cursor-p" (click)="selectAccount(mainAccount.address.pretty(), '1')">
+                <div
+                  class="col-4 col-sm-3 col-md-2 text-center w-e-nowrap d-flex align-items-center justify-content-end">
+                  <span class="color-blue-intermedio font-small cursor-p"
+                    (click)="selectAccount(mainAccount.address.pretty(), '1')">
                     Select >
                   </span>
                 </div>
@@ -55,21 +88,21 @@
               <div class="row">
                 <div class="col-8 col-sm-9 col-md-10 word-break-all">
                   <div>
-                    <span class="color-black">{{ formatAddress(multisigAccounts.address) }}&nbsp;&nbsp;</span>
+                    <span class="color-black">{{ multisigAccounts.address }}&nbsp;&nbsp;</span>
                     <span class="title-tab-blue">
                       <i>-Multisig </i>
                     </span>
                   </div>
                   <div>
                     <span class="color-black fw-bold">Balance:&nbsp;</span>
-                    <span class="color-black fw-bold" *ngIf="mainAccount.balance"> {{ mainAccount.balance }} XPX</span>
                     <span class="color-black fw-bold" [innerHTML]="getQuantity(multisigAccounts.balance)"></span>
+                    <span class="color-black fw-bold">&nbsp;XPX</span>
                     <img src="./assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" class="ml-1rem"
                       width="20px" alt="logo">
                   </div>
                 </div>
 
-                <div class="col-4 col-sm-3 col-md-2 text-center w-e-nowrap d-flex align-items-center">
+                <div class="col-4 col-sm-3 col-md-2 text-center w-e-nowrap d-flex align-items-center justify-content-end">
                   <span class="color-blue-intermedio font-small cursor-p"
                     (click)="selectAccount(multisigAccounts.address, '2')">
                     Select >
@@ -84,10 +117,10 @@
 
     <!-- BUTTON -->
     <div class="row">
-      <div class="col-11 col-xl-10 mx-auto d-flex justify-content-center pt-2rem pb-1rem">
+      <div class="col-11 col-md-10 col-lg-9 mx-auto d-flex justify-content-center pt-2rem pb-1rem">
         <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" size="md"
           [routerLink]="[routeContinue]">
-          <span class="fs-1-2em color-white">Go Home</span>
+          <span class="fs-1-2em color-white">Home</span>
         </button>
       </div>
     </div>

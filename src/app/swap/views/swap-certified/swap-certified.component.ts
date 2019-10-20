@@ -18,7 +18,7 @@ export class SwapCertifiedComponent implements OnInit {
   @Input() routeContinue: string;
 
   checked: boolean = false;
-  explorerUrl = `${environment.nis1.urlExplorer}`;
+  explorerUrl: string;
   img: string;
   qrSrc: string;
 
@@ -28,10 +28,11 @@ export class SwapCertifiedComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    if(this.transactionNis1) {
+    if (this.transactionNis1) {
+      this.explorerUrl = `${environment.nis1.urlExplorer}${this.transactionNis1.nis1TransactionHash}`;
       this.qrSrc = this.qrCreate();
       this.img = this.sharedService.walletCertifiedSwap();
-    }else {
+    } else {
       this.router.navigate([`/${AppConfig.routes.home}`]);
     }
   }

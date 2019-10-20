@@ -43,8 +43,8 @@ export class SwapTransactionsComponent implements OnInit {
     return qr.createDataURL();
   }
 
-  goToNemExplorer() {
-    window.open(`${environment.nis1.urlExplorer}`);
+  goToNemExplorer(hash: string) {
+    window.open(`${environment.nis1.urlExplorer}${hash}`);
   }
 
   printCertificate(transaction) {

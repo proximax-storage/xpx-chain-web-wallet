@@ -18,11 +18,11 @@ export class Nis1AccountFoundComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    const data = this.nemProvider.getSelectedNis1Account();
+    const data = Object.assign({}, this.nemProvider.getSelectedNis1Account());
     if (data.cosignerAccounts.length > 0) {
       this.routeContinue = `/${AppConfig.routes.swapListCosignerNis1}`;
     } else {
-      this.routeContinue = `/${AppConfig.routes.swapTransferAssets}/${data.address.pretty()}/1`;
+      this.routeContinue = `/${AppConfig.routes.swapTransferAssets}/${data.address.pretty()}/1/0`;
     }
   }
 

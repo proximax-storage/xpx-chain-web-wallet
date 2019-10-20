@@ -78,11 +78,6 @@ export class WalletCreatedComponent implements OnInit {
           if (next) {
             this.nemProvider.setSelectedNis1Account(next);
             this.routeContinue = `/${AppConfig.routes.swapAccountNis1Found}`;
-           /* if (next.cosignerAccounts.length > 0) {
-              this.routeContinue = `/${AppConfig.routes.swapListCosignerNis1}`;
-            } else {
-              this.routeContinue = `/${AppConfig.routes.swapTransferAssets}/${next.address.pretty()}/1`;
-            }*/
           } else {
             this.routeContinue = `/${AppConfig.routes.home}`;
           }
