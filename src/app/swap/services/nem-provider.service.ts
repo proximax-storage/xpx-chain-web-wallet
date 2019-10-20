@@ -25,7 +25,7 @@ import {
 } from "nem-library";
 import { PublicAccount as PublicAccountTsjs } from 'tsjs-xpx-chain-sdk';
 
-import { WalletService } from '../../wallet/services/wallet.service';
+import { WalletService, AccountsInterface } from '../../wallet/services/wallet.service';
 import { TransactionsService } from '../../transactions/services/transactions.service';
 import { AppConfig } from '../../config/app.config';
 import { environment } from '../../../environments/environment';
@@ -419,6 +419,26 @@ export class NemProviderService {
 
     othersWallet.push(transactionNis1);
     localStorage.setItem(environment.nameKeyWalletTransactionsNis, JSON.stringify(othersWallet));
+  }
+
+
+  /**
+   *
+   *
+   * @param {AccountsInterface[]} accounts
+   * @param {*} common
+   * @memberof NemProviderService
+   */
+  searchUnconfirmedSwap(accounts: AccountsInterface[], common: any){
+    accounts.forEach(element => {
+      console.log('common --->', common);
+      console.log('element --->', element);
+      const d = Object.assign({}, common);
+      const isDecrypt = this.walletService.decrypt(d, element);
+      console.log('isDecrypt --->', isDecrypt);
+      console.log('d --->', d);
+      // this.getUnconfirmedTransaction(element.);
+    });
   }
 
   /**
