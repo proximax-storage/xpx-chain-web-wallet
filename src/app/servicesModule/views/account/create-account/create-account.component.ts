@@ -33,6 +33,7 @@ export class CreateAccountComponent implements OnInit {
   fromPrivateKey = false;
   formCreateAccount: FormGroup;
   passwordMain: string = 'password';
+  pvkMain: string = 'password';
   routes = {
     back: `/${AppConfig.routes.selectTypeCreationAccount}`,
     backToService: `/${AppConfig.routes.service}`
@@ -73,9 +74,20 @@ export class CreateAccountComponent implements OnInit {
     this.createAccount();
   }
 
-  changeInputType(inputType) {
-    let newType = this.sharedService.changeInputType(inputType)
-    this.passwordMain = newType;
+  /**
+   *
+   *
+   * @param {string} inputType
+   * @param {boolean} isPvk
+   * @memberof CreateAccountComponent
+   */
+  changeInputType(inputType: string, isPvk: boolean) {
+    let newType = this.sharedService.changeInputType(inputType);
+    if (isPvk) {
+      this.pvkMain = newType;
+    }else {
+      this.passwordMain = newType;
+    }
   }
 
   /**
