@@ -1,5 +1,4 @@
 import { Injectable } from "@angular/core";
-import { environment } from 'src/environments/environment';
 import {
   NEMLibrary,
   AccountHttp,
@@ -22,11 +21,13 @@ import {
 } from "nem-library";
 import { Observable, Subscription } from 'rxjs';
 import { timeout, first } from 'rxjs/operators';
-import { WalletService } from 'src/app/wallet/services/wallet.service';
-import { TransactionsService } from 'src/app/transactions/services/transactions.service';
-import { AppConfig } from 'src/app/config/app.config';
 import { HttpClient } from '@angular/common/http';
 import * as js_joda_1 from 'js-joda';
+import { WalletService } from '../../wallet/services/wallet.service';
+import { TransactionsService } from '../../transactions/services/transactions.service';
+import { AppConfig } from '../../config/app.config';
+import { environment } from '../../../environments/environment';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -237,7 +238,7 @@ export class NemServiceService {
     const address = this.createAddressToString(account.address.value);
     try {
       const infoMultisig = [];
-      const accountInfo = await this.getAccountInfo(address).pipe(first()).pipe((timeout(10000))).toPromise();
+      const accountInfo = await this.getAccountInfo(address).pipe(first()).pipe((timeout(environment.timeOutTransactionNis1))).toPromise();
       console.log('GET ACCOUNT INFO NIS1 --->', accountInfo);
       let cosignerOf: boolean = false;
       let cosignerAccountsInfo: CosignatoryOf[] = [];
@@ -247,8 +248,8 @@ export class NemServiceService {
         try {
           for (let multisig of cosignerAccountsInfo) {
             const addressMultisig = this.createAddressToString(multisig.address);
-            //const accountInfoMultisig = await this.getAccountInfo(addressMultisig).pipe(first()).pipe((timeout(10000))).toPromise();
-            const ownedMosaic = await this.getOwnedMosaics(addressMultisig).pipe(first()).pipe((timeout(10000))).toPromise();
+            //const accountInfoMultisig = await this.getAccountInfo(addressMultisig).pipe(first()).pipe((timeout(environment.timeOutTransactionNis1))).toPromise();
+            const ownedMosaic = await this.getOwnedMosaics(addressMultisig).pipe(first()).pipe((timeout(environment.timeOutTransactionNis1))).toPromise();
             console.log('ownedMosaic multisig ----> ', ownedMosaic);
             const xpxFound = ownedMosaic.find(el => el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx');
             if (xpxFound) {
@@ -265,7 +266,7 @@ export class NemServiceService {
         }
       }
 
-      const ownedMosaic = await this.getOwnedMosaics(address).pipe(first()).pipe((timeout(10000))).toPromise();
+      const ownedMosaic = await this.getOwnedMosaics(address).pipe(first()).pipe((timeout(environment.timeOutTransactionNis1))).toPromise();
       console.log('ownedMosaic multisig ----> ', ownedMosaic);
       const xpxFound = ownedMosaic.find(el => el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx');
       if (xpxFound) {
@@ -351,12 +352,12 @@ export class NemServiceService {
 
 
   dos(address, account) {
-    this.getAccountInfo(address).pipe(first()).pipe((timeout(10000))).subscribe(async next => {
+    this.getAccountInfo(address).pipe(first()).pipe((timeout(environment.timeOutTransactionNis1))).subscribe(async next => {
       console.log('GET ACCOUNT INFO NIS1 --->', next);
       let consignerOf: boolean = false;
       let consignerAccountsInfo: any = [];
 
-      this.getOwnedMosaics(address).pipe(first()).pipe((timeout(10000))).subscribe(async next => {
+      this.getOwnedMosaics(address).pipe(first()).pipe((timeout(environment.timeOutTransactionNis1))).subscribe(async next => {
         console.log('GET OWNED MOSAIC NIS1 --->', next);
         const xpxFound = next.find(el => el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx');
         console.log('XPX IS FOUND?? ---> ', xpxFound);
@@ -426,7 +427,7 @@ export class NemServiceService {
     })
 
     /* console.log('SIGUIÓ DIRECTO!');
-     this.getOwnedMosaics(address).pipe(first()).pipe((timeout(10000))).subscribe(async next => {
+     this.getOwnedMosaics(address).pipe(first()).pipe((timeout(environment.timeOutTransactionNis1))).subscribe(async next => {
        console.log('GET OWNED MOSAIC NIS1 --->', next);
        const xpxFound = next.find(el => el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx');
        console.log('XPX IS FOUND?? ---> ', xpxFound);
@@ -533,7 +534,7 @@ export class NemServiceService {
    */
   getAccountInfoMultisig(account) {
     const address = this.createAddressToString(account.address.value);
-    this.getAccountInfo(address).pipe(first()).pipe((timeout(10000))).subscribe(next => {
+    this.getAccountInfo(address).pipe(first()).pipe((timeout(environment.timeOutTransactionNis1))).subscribe(next => {
 
     });
   }

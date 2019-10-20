@@ -34,6 +34,7 @@ export const environment = {
     deadline: 1439,
     chronoUnit: ChronoUnit.MINUTES
   },
+  timeOutTransactionNis1: 10000,
   /*mosaicXpxInfo: {
     name: 'prx.xpx',
     coin: 'XPX',

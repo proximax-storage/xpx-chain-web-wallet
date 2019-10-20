@@ -6,10 +6,10 @@ import {
   NamespaceId
 } from "tsjs-xpx-chain-sdk";
 import { MosaicNames } from "tsjs-xpx-chain-sdk/dist/src/model/mosaic/MosaicNames";
+import { Observable, BehaviorSubject } from 'rxjs';
 import { ProximaxProvider } from "../../shared/services/proximax.provider";
 import { WalletService } from '../../wallet/services/wallet.service';
-import { environment } from 'src/environments/environment';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export interface NamespaceLinkedMosaic {
   mosaicId: MosaicId,

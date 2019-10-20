@@ -1,9 +1,8 @@
 import { PrivacyType, Uint8ArrayParameterData, UploadParameter, Protocol, ConnectionConfig, BlockchainNetworkConnection, IpfsConnection, Uploader, UploadResult, Searcher, SearchParameter, DirectDownloadParameter, Downloader, StreamHelper, SearchResult } from 'tsjs-chain-xipfs-sdk';
 import { Injectable } from '@angular/core';
-import { saveAs } from 'file-saver';
-import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
-import { WalletService } from 'src/app/wallet/services/wallet.service';
-import { environment } from 'src/environments/environment';
+import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
+import { WalletService } from '../../../../wallet/services/wallet.service';
+import { environment } from '../../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'

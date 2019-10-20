@@ -1,19 +1,19 @@
 import { Component, OnInit } from '@angular/core';
-import { AppConfig } from 'src/app/config/app.config';
 import { PublicAccount, TransactionHttp, Address, AccountInfo, Deadline, MultisigCosignatoryModification, NetworkType, UInt64, Account, AggregateTransaction, HashLockTransaction, Mosaic, MosaicId, ModifyMultisigAccountTransaction, MultisigCosignatoryModificationType, SignedTransaction, MultisigAccountInfo } from 'tsjs-xpx-chain-sdk';
-import { ConfigurationForm, SharedService } from 'src/app/shared/services/shared.service';
 import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { AccountsInterface, AccountsInfoInterface, WalletService } from 'src/app/wallet/services/wallet.service';
-import { MultiSignService } from 'src/app/servicesModule/services/multi-sign.service';
-import { ServicesModuleService, HeaderServicesInterface } from 'src/app/servicesModule/services/services-module.service';
-import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
-import { NodeService } from 'src/app/servicesModule/services/node.service';
-import { TransactionsService, TransactionsInterface } from 'src/app/transactions/services/transactions.service';
-import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
-import { environment } from 'src/environments/environment';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ThrowStmt } from '@angular/compiler';
+import { AccountsInterface, AccountsInfoInterface, WalletService } from '../../../../wallet/services/wallet.service';
+import { MultiSignService } from '../../../../servicesModule/services/multi-sign.service';
+import { ServicesModuleService, HeaderServicesInterface } from '../../../../servicesModule/services/services-module.service';
+import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
+import { NodeService } from '../../../../servicesModule/services/node.service';
+import { TransactionsService, TransactionsInterface } from '../../../../transactions/services/transactions.service';
+import { DataBridgeService } from '../../../../shared/services/data-bridge.service';
+import { environment } from '../../../../../environments/environment';
+import { AppConfig } from '../../../../config/app.config';
+import { ConfigurationForm, SharedService } from '../../../../shared/services/shared.service';
+
 
 @Component({
   selector: 'app-edit-account-multisign',
@@ -291,7 +291,7 @@ export class EditAccountMultisignComponent implements OnInit {
     this.accountValid = (
       this.accountInfo !== null &&
       this.accountInfo !== undefined && this.accountInfo.accountInfo !== null);
-  
+
     this.unsubscribe(this.subscribeAccount);
     //Validate Account
     if (!this.accountValid) {

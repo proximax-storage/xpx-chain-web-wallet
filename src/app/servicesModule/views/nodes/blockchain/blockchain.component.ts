@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { HeaderServicesInterface } from 'src/app/servicesModule/services/services-module.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { NodeService } from 'src/app/servicesModule/services/node.service';
-import { environment } from 'src/environments/environment';
-import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
-import { SharedService } from 'src/app/shared/services/shared.service';
+
+import { HeaderServicesInterface } from '../../../../servicesModule/services/services-module.service';
+import { NodeService } from '../../../../servicesModule/services/node.service';
+import { environment } from '../../../../../environments/environment';
+import { DataBridgeService } from '../../../../shared/services/data-bridge.service';
+import { SharedService } from '../../../../shared/services/shared.service';
 
 @Component({
   selector: 'app-blockchain',

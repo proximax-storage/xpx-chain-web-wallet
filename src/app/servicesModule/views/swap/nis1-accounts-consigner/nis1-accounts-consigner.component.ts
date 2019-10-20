@@ -7,6 +7,7 @@ import { NemServiceService } from '../../../../shared/services/nem-service.servi
 import { AppConfig } from '../../../../config/app.config';
 import { TransactionsService } from '../../../../transactions/services/transactions.service';
 import { HeaderServicesInterface } from '../../../services/services-module.service';
+import { environment } from '../../../../../environments/environment';
 @Component({
   selector: 'app-nis1-accounts-consigner',
   templateUrl: './nis1-accounts-consigner.component.html',
@@ -50,7 +51,7 @@ export class Nis1AccountsConsignerComponent implements OnInit {
   ngOnInit() { }
 
   searchBalance(account, index = null) {
-    this.nemProvider.getOwnedMosaics(account.address).pipe(first()).pipe(timeout(15000)).subscribe(
+    this.nemProvider.getOwnedMosaics(account.address).pipe(first()).pipe(timeout(environment.timeOutTransactionNis1)).subscribe(
       async next => {
         let foundXpx: boolean = false;
         for (const el of next) {
