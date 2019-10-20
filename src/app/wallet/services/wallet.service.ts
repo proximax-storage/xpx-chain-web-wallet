@@ -382,7 +382,7 @@ export class WalletService {
     const alg = (account) ? account.algo : this.currentAccount.algo;
     // console.log(acct, net, alg);
     try {
-      if (acct && common) {
+      if (acct && common && acct.encrypted !== '') {
         if (!crypto.passwordToPrivatekey(common, acct, alg)) {
           this.sharedService.showError('', 'Invalid password');
           return false;

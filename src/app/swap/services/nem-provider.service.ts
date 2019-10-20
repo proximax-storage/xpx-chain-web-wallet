@@ -430,7 +430,8 @@ export class NemProviderService {
    * @memberof NemProviderService
    */
   searchUnconfirmedSwap(accounts: AccountsInterface[], common: any){
-    accounts.forEach(element => {
+    const nis1Accounts = accounts.filter(account => account.nis1Account !== null && account.encrypted !== '');
+    nis1Accounts.forEach(element => {
       console.log('common --->', common);
       console.log('element --->', element);
       const d = Object.assign({}, common);
