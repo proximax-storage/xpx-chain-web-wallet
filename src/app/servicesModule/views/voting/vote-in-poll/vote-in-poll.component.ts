@@ -1,21 +1,20 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { CreatePollStorageService, PollInterface } from 'src/app/servicesModule/services/create-poll-storage.service';
 import { ActivatedRoute } from '@angular/router';
-import { AppConfig } from 'src/app/config/app.config';
-import { WalletService } from 'src/app/wallet/services/wallet.service';
-import { SharedService, ConfigurationForm } from 'src/app/shared/services/shared.service';
 import { PublicAccount, Address, InnerTransaction, UInt64, Account, AggregateTransaction, Deadline, TransactionHttp, SignedTransaction, Transaction } from 'tsjs-xpx-chain-sdk';
-import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
-import { environment } from 'src/environments/environment';
-import { NodeService } from 'src/app/servicesModule/services/node.service';
-import { Subscription } from 'rxjs';
-import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
 import * as qrcode from 'qrcode-generator';
-import { element } from 'protractor';
+import { Subscription } from 'rxjs';
 import { ModalDirective } from 'ng-uikit-pro-standard';
-import { TransactionsService, TransactionsInterface } from '../../../../transactions/services/transactions.service';
 import * as Highcharts from 'highcharts';
+import { CreatePollStorageService, PollInterface } from '../../../../servicesModule/services/create-poll-storage.service';
+import { AppConfig } from '../../../../config/app.config';
+import { WalletService } from '../../../../wallet/services/wallet.service';
+import { SharedService, ConfigurationForm } from '../../../../shared/services/shared.service';
+import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
+import { environment } from '../../../../../environments/environment';
+import { NodeService } from '../../../../servicesModule/services/node.service';
+import { DataBridgeService } from '../../../../shared/services/data-bridge.service';
+import { TransactionsService, TransactionsInterface } from '../../../../transactions/services/transactions.service';
 
 @Component({
   selector: 'app-vote-in-poll',
@@ -574,7 +573,7 @@ export class VoteInPollComponent implements OnInit {
             this.viewCertificate(signedTransaction.hash, this.pollSelected.name, 'newVoting')
             this.walletService.countTimeVote();
             // signedTransaction = null;
-            
+
           } else if (match) {
             this.btnBlock = true;
             this.blockSend = false;

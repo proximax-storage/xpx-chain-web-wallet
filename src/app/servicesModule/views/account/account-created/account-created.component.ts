@@ -2,12 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import * as qrcode from 'qrcode-generator';
 import * as jsPDF from 'jspdf';
+import { Subscription } from 'rxjs';
+import { timeout } from 'rxjs/operators';
 import { AppConfig } from '../../../../config/app.config';
 import { WalletService } from '../../../../wallet/services/wallet.service';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { SharedService } from '../../../../shared/services/shared.service';
-import { Subscription } from 'rxjs';
-import { timeout } from 'rxjs/operators';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-account-created',
@@ -54,7 +55,7 @@ export class AccountCreatedComponent implements OnInit {
       this.privateKey = this.proximaxProvider.decryptPrivateKey(this.algo.data.algo, this.algo.dataAccount.encrypted, this.algo.dataAccount.iv).toUpperCase();
       this.publicKey = this.proximaxProvider.getPublicAccountFromPrivateKey(this.privateKey, this.algo.data.network).publicKey;
       if (this.algo.dataAccount.nis1Account !== null) {
-        this.subscription.push(this.walletService.getNis1AccountsWallet$().pipe(timeout(10000)).subscribe(
+        this.subscription.push(this.walletService.getNis1AccountsWallet$().pipe(timeout(environment.timeOutTransactionNis1)).subscribe(
           next => {
             this.disabledContinue = false;
           },

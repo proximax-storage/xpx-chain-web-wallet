@@ -2,9 +2,9 @@ import { Component, OnInit, Input } from '@angular/core';
 import * as qrcode from 'qrcode-generator';
 import * as jsPDF from 'jspdf';
 import { Router } from '@angular/router';
-import { WalletService } from 'src/app/wallet/services/wallet.service';
-import { AppConfig } from 'src/app/config/app.config';
-import { environment } from 'src/environments/environment';
+import { WalletService } from '../../../wallet/services/wallet.service';
+import { AppConfig } from '../../../config/app.config';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-swap-certificate',

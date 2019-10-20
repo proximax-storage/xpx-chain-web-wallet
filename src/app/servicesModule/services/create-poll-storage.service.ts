@@ -6,13 +6,13 @@ import {
   UploadParameter, ReadableStreamParameterData, StreamHelper,
   PrivacyType, SearchParameter, Searcher, Downloader, TransactionFilter, Protocol
 } from 'tsjs-chain-xipfs-sdk';
-import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
-import { DirectDownloadParameter } from 'tsjs-chain-xipfs-sdk/build/main/src/lib/download/direct-download-parameter';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { environment } from 'src/environments/environment';
-import { WalletService } from 'src/app/wallet/services/wallet.service';
-import { PublicAccount, Address, Mosaic, MosaicId, UInt64, Account, NamespaceId } from 'tsjs-xpx-chain-sdk';
-import { SharedService } from 'src/app/shared/services/shared.service';
+import { PublicAccount, Address } from 'tsjs-xpx-chain-sdk';
+import { DirectDownloadParameter } from 'tsjs-chain-xipfs-sdk/build/main/src/lib/download/direct-download-parameter';
+import { ProximaxProvider } from '../../shared/services/proximax.provider';
+import { environment } from '../../../environments/environment';
+import { WalletService } from '../../wallet/services/wallet.service';
+import { SharedService } from '../../shared/services/shared.service';
 @Injectable({
   providedIn: 'root'
 })

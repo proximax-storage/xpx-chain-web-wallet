@@ -1,7 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { AuthService } from "src/app/auth/services/auth.service";
-import { environment } from "src/environments/environment";
-import { AppConfig } from "src/app/config/app.config";
+import { AppConfig } from "../../../config/app.config";
 import { WalletService } from "../../services/wallet.service";
 
 @Component({

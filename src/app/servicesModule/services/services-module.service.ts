@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Address, NamespaceId, PublicAccount } from 'tsjs-xpx-chain-sdk';
 import { WalletService } from '../../wallet/services/wallet.service';
-import { environment } from 'src/environments/environment';
+import { environment } from '../../../environments/environment';
 import { TransactionsInterface } from '../../transactions/services/transactions.service';
 
 @Injectable({

@@ -10,6 +10,7 @@ import { WalletService, AccountCreatedInterface, TransactionsNis1Interface } fro
 import { AppConfig } from '../../../config/app.config';
 import { SharedService, ConfigurationForm } from '../../../shared/services/shared.service';
 import { NemProviderService, AccountsInfoNis1Interface, WalletTransactionsNis1Interface } from '../../services/nem-provider.service';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-nis1-transfer-assets',
@@ -121,7 +122,7 @@ export class Nis1TransferAssetsComponent implements OnInit {
    * @memberof Nis1TransferAssetsComponent
    */
   anounceTransaction(transaction: TransferTransaction | MultisigTransaction, account: Account, catapultAccount: any) {
-    this.nemProvider.anounceTransaction(transaction, account).pipe(first()).pipe((timeout(15000))).subscribe(next => {
+    this.nemProvider.anounceTransaction(transaction, account).pipe(first()).pipe((timeout(environment.timeOutTransactionNis1))).subscribe(next => {
       if (next && next['message'] && next['message'].toLowerCase() === 'success') {
         //console.log('RESPONSE ANNOUNCE --->', next);
         //console.log('ACCOUNT WALLET CREATED --->', this.walletService.accountWalletCreated);

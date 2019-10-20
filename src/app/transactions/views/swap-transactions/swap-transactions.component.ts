@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import * as qrcode from 'qrcode-generator';
 import * as jsPDF from 'jspdf';
-import { AppConfig } from 'src/app/config/app.config';
-import { WalletService } from 'src/app/wallet/services/wallet.service';
 import { PaginationInstance } from 'ngx-pagination';
-import { environment } from 'src/environments/environment';
+
+import { AppConfig } from '../../../config/app.config';
+import { WalletService } from '../../../wallet/services/wallet.service';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-swap-transactions',

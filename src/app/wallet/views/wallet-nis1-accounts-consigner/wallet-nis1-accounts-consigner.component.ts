@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { WalletService } from '../../services/wallet.service';
-import { SharedService } from 'src/app/shared/services/shared.service';
-import { NemServiceService } from 'src/app/shared/services/nem-service.service';
-import { TransactionsService } from 'src/app/transactions/services/transactions.service';
-import { Router } from '@angular/router';
-import { AppConfig } from 'src/app/config/app.config';
 import { first, timeout } from 'rxjs/operators';
+import { Router } from '@angular/router';
+
+import { WalletService } from '../../services/wallet.service';
+import { SharedService } from '../../../shared/services/shared.service';
+import { NemServiceService } from '../../../shared/services/nem-service.service';
+import { TransactionsService } from '../../../transactions/services/transactions.service';
+import { AppConfig } from '../../../config/app.config';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-wallet-nis1-accounts-consigner',
@@ -42,7 +44,6 @@ export class WalletNis1AccountsConsignerComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log('aquiiiiiiiii esssssss');
   }
 
   getQuantity(quantity) {
@@ -52,7 +53,7 @@ export class WalletNis1AccountsConsignerComponent implements OnInit {
   }
 
   searchBalance(account, index = null) {
-    this.nemProvider.getOwnedMosaics(account.address).pipe(first()).pipe(timeout(15000)).subscribe(
+    this.nemProvider.getOwnedMosaics(account.address).pipe(first()).pipe(timeout(environment.timeOutTransactionNis1)).subscribe(
       async next => {
         // console.log('response search ----->', next);
         let foundXpx: boolean = false;

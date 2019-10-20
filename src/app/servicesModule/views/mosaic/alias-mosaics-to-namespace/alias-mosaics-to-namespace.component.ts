@@ -11,8 +11,7 @@ import { DataBridgeService } from '../../../../shared/services/data-bridge.servi
 import { SharedService, ConfigurationForm } from '../../../../shared/services/shared.service';
 import { WalletService } from '../../../../wallet/services/wallet.service';
 import { HeaderServicesInterface } from '../../../services/services-module.service';
-import { TransactionsService } from 'src/app/transactions/services/transactions.service';
-import { environment } from 'src/environments/environment';
+import { TransactionsService } from '../../../../transactions/services/transactions.service';
 
 
 @Component({
@@ -274,7 +273,7 @@ export class AliasMosaicsToNamespaceComponent implements OnInit {
    */
   getNameNamespace() {
     this.subscription.push(this.namespaceService.getNamespaceChanged().subscribe(
-      async namespaceInfo => {      
+      async namespaceInfo => {
         const namespaceSelect = this.namespaceSelect.slice(0);
         if (namespaceInfo !== undefined && namespaceInfo.length > 0) {
           // console.log(namespaceInfo);
