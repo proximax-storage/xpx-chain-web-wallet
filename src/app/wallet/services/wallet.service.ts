@@ -380,24 +380,29 @@ export class WalletService {
     const acct = (account) ? account : this.currentAccount;
     const net = (account) ? account.network : this.currentAccount.network;
     const alg = (account) ? account.algo : this.currentAccount.algo;
-    if (acct && common) {
-      if (!crypto.passwordToPrivatekey(common, acct, alg)) {
-        this.sharedService.showError('', 'Invalid password');
-        return false;
-      }
+    // console.log(acct, net, alg);
+    try {
+      if (acct && common && acct.encrypted !== '') {
+        if (!crypto.passwordToPrivatekey(common, acct, alg)) {
+          this.sharedService.showError('', 'Invalid password');
+          return false;
+        }
 
-      if (common.isHW) {
+        if (common.isHW) {
+          return true;
+        }
+
+        if (!this.isPrivateKeyValid(common.privateKey) || !this.proximaxProvider.checkAddress(common.privateKey, net, acct.address)) {
+          this.sharedService.showError('', 'Invalid password');
+          return false;
+        }
+
         return true;
-      }
-
-      if (!this.isPrivateKeyValid(common.privateKey) || !this.proximaxProvider.checkAddress(common.privateKey, net, acct.address)) {
-        this.sharedService.showError('', 'Invalid password');
+      } else {
+        this.sharedService.showError('', 'You do not have a valid account selected');
         return false;
       }
-
-      return true;
-    } else {
-      this.sharedService.showError('', 'You do not have a valid account selected');
+    } catch (error) {
       return false;
     }
   }

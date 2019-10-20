@@ -421,12 +421,24 @@ export class NemProviderService {
     localStorage.setItem(environment.nameKeyWalletTransactionsNis, JSON.stringify(othersWallet));
   }
 
-  async searchSwapUnconfirmed(accounts: AccountsInterface[], common: any) {
-    accounts.forEach(async element => {
-      const decrypted = this.walletService.decrypt(common, element);
-      console.log('decrypted', decrypted);
-      //const transactions = await this.getUnconfirmedTransaction(element.);
-     // console.log('----UNCONFIRMED----', transactions);
+
+  /**
+   *
+   *
+   * @param {AccountsInterface[]} accounts
+   * @param {*} common
+   * @memberof NemProviderService
+   */
+  searchUnconfirmedSwap(accounts: AccountsInterface[], common: any){
+    const nis1Accounts = accounts.filter(account => account.nis1Account !== null && account.encrypted !== '');
+    nis1Accounts.forEach(element => {
+      console.log('common --->', common);
+      console.log('element --->', element);
+      const d = Object.assign({}, common);
+      const isDecrypt = this.walletService.decrypt(d, element);
+      console.log('isDecrypt --->', isDecrypt);
+      console.log('d --->', d);
+      // this.getUnconfirmedTransaction(element.);
     });
   }
 

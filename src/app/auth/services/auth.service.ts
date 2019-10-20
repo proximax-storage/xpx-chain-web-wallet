@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Address } from 'tsjs-xpx-chain-sdk';
+import { NetworkType, UInt64, Address, BlockInfo } from 'tsjs-xpx-chain-sdk';
 
 import { AppConfig } from '../../config/app.config';
 import { WalletService, CurrentWalletInterface } from '../../wallet/services/wallet.service';
@@ -68,7 +68,7 @@ export class AuthService {
   async login(common: any, currentWallet: CurrentWalletInterface) {
     this.walletService.destroyDataWalletAccount();
     // console.log('This current Wallet------------------------->', currentWallet);
-
+    const commonCopy = Object.assign({}, common);
     const currentAccount = Object.assign({}, currentWallet.accounts.find(elm => elm.firstAccount === true));
     let isValid = false;
     if (currentAccount) {
@@ -120,7 +120,7 @@ export class AuthService {
     this.namespaces.searchNamespacesFromAccounts(address);
     this.transactionService.searchAccountsInfo(this.walletService.currentWallet.accounts);
     this.dataBridgeService.searchBlockInfo();
-    this.nemProvider.searchSwapUnconfirmed(this.walletService.currentWallet.accounts, common);
+    this.nemProvider.searchUnconfirmedSwap(this.walletService.currentWallet.accounts, commonCopy);
     return true;
   }
 
