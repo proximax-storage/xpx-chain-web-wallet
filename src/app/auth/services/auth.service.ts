@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { NetworkType, UInt64, Address, BlockInfo } from 'tsjs-xpx-chain-sdk';
+import { Address } from 'tsjs-xpx-chain-sdk';
 
 import { AppConfig } from '../../config/app.config';
 import { WalletService, CurrentWalletInterface } from '../../wallet/services/wallet.service';
@@ -13,6 +13,7 @@ import { ServicesModuleService } from '../../servicesModule/services/services-mo
 import { SharedService } from '../../shared/services/shared.service';
 import { ProximaxProvider } from '../../shared/services/proximax.provider';
 import { MosaicService } from '../../servicesModule/services/mosaic.service';
+import { NemProviderService } from '../../swap/services/nem-provider.service';
 
 @Injectable({
   providedIn: 'root'
@@ -33,6 +34,7 @@ export class AuthService {
     private route: Router,
     private dataBridgeService: DataBridgeService,
     private nodeService: NodeService,
+    private nemProvider: NemProviderService,
     private namespaces: NamespacesService,
     private transactionService: TransactionsService,
     private serviceModuleService: ServicesModuleService,
@@ -118,6 +120,7 @@ export class AuthService {
     this.namespaces.searchNamespacesFromAccounts(address);
     this.transactionService.searchAccountsInfo(this.walletService.currentWallet.accounts);
     this.dataBridgeService.searchBlockInfo();
+    this.nemProvider.searchSwapUnconfirmed(this.walletService.currentWallet.accounts, common);
     return true;
   }
 
