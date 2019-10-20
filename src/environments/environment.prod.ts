@@ -9,7 +9,7 @@ export const environment = {
   production: true,
   itemBooksAddress: 'sw-books-testnet',
   version: '0.3.22',
-  cacheVersion: '21',
+  cacheVersion: '01',
   nameKeyBlockStorage: `sw-blocks`,
   nameKeyNodeSelected: `sw-selected-node-testnet`,
   nameKeyWalletStorage: `sw-testnet`,
@@ -99,7 +99,7 @@ export const environment = {
     url: 'http://18.231.166.212:7890',
     urlExplorer: 'http://testnet-explorer.nemtool.com/#/unconfirmedtxlist',
     networkType: NetworkTypes.TEST_NET,
-    address: 'TBF4LAZUEJMBIOC6J24D6ZGGXE5W775TX555CTTN',
+    burnAddress: 'TBF4LAZUEJMBIOC6J24D6ZGGXE5W775TX555CTTN',
     nodes: [
       { protocol: "http", domain: "18.231.166.212", port: 7890 } as ServerConfig
     ],

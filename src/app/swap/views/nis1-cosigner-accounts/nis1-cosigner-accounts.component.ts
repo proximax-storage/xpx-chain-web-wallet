@@ -24,13 +24,13 @@ export class Nis1CosignerAccountsComponent implements OnInit {
   ngOnInit() {
     this.mainAccount = Object.assign({}, this.nemProvider.getSelectedNis1Account());
     this.routeGoBack = `/${AppConfig.routes.home}`;
-    console.log('mainAccount --> ', this.mainAccount);
+    // console.log('mainAccount --> ', this.mainAccount);
     if (!this.mainAccount || Object.keys(this.mainAccount).length === 0) {
       this.router.navigate([this.routeGoBack]);
     } else if (this.mainAccount.multisigAccountsInfo.length > 0) {
       this.mainAccount.multisigAccountsInfo.forEach(element => {
-        console.log('-----element-----', element.address);
-        console.log('-----typeof (element.address)-----', typeof (element.address));
+        // console.log('-----element-----', element.address);
+        // console.log('-----typeof (element.address)-----', typeof (element.address));
         if (typeof (element.address) === 'string') {
           element.address = this.nemProvider.createAddressToString(element.address).pretty()
         }else if(element.address && element.address['value']) {
@@ -50,7 +50,7 @@ export class Nis1CosignerAccountsComponent implements OnInit {
    * @memberof Nis1CosignerAccountsComponent
    */
   formatAddress(address: string) {
-    console.log('formatAddress ---> ', address);
+    // console.log('formatAddress ---> ', address);
     return this.nemProvider.createAddressToString(address).pretty();
   }
 

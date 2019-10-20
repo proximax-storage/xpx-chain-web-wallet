@@ -76,7 +76,7 @@ export class DetailAccountComponent implements OnInit {
     let param = this.activateRoute.snapshot.paramMap.get('name');
     this.currenAccount = (param) ? this.walletService.filterAccountWallet(param) : this.walletService.filterAccountWallet('', true);
     this.checked = (this.currenAccount.nis1Account !== null);
-    console.log('this.checked', this.checked);
+    // console.log('this.checked', this.checked);
 
     this.valueInitNis = (this.currenAccount.nis1Account !== null);
   }
@@ -202,8 +202,8 @@ export class DetailAccountComponent implements OnInit {
    * @memberof DetailAccountComponent
    */
   decryptWallet(value) {
-    console.log('password decriop');
-    console.log(this.validatingForm.get('password').value);
+    // console.log('password decriop');
+    // console.log(this.validatingForm.get('password').value);
     if (this.validatingForm.get('password').value !== '') {
       const common = { password: this.validatingForm.get('password').value };
       if (this.walletService.decrypt(common, this.currenAccount)) {
@@ -214,7 +214,7 @@ export class DetailAccountComponent implements OnInit {
         } else if (value === 'save') {
           this.printAccountInfo();
         } else if (value === 'nis1'){
-          console.log('nis1 ahora');
+          // console.log('nis1 ahora');
           this.aceptChanges();
         }
 
