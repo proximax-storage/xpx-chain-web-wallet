@@ -20,7 +20,7 @@ export class AccountCreatedComponent implements OnInit {
   algo: any;
   componentName = 'New Account Created';
   imgBackground = '';
-  information = 'Make sure store your private key in a safe place. Access to your digital assets cannot be recovered without it.';
+  information = 'Make sure you store your private key in a safe place. Access to your digital assets cannot be recovered without it.';
   moduleName = 'Accounts';
   routes = {
     accountNis1Found: `/${AppConfig.routes.accountNis1Found}`,
@@ -45,7 +45,7 @@ export class AccountCreatedComponent implements OnInit {
   ngOnInit() {
     this.setImgBackground();
     this.algo = this.walletService.accountWalletCreated;
-    
+
     if (this.algo !== null) {
       // console.log('---------------------------------------account created ------
 
@@ -95,7 +95,7 @@ export class AccountCreatedComponent implements OnInit {
     let nis1Info = [];
     // [routerLink]="[routes.backToService]"
     if (this.walletService.accountWalletCreated.dataAccount.nis1Account !== null) {
-      nis1Info = this.walletService.getNis1AccounsWallet();
+      nis1Info = this.walletService.getNis1AccountsWallet();
       this.walletService.accountWalletCreated = null;
     }
 

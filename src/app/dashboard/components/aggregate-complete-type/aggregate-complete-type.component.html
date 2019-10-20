@@ -8,29 +8,29 @@
 
       <!-- Timestamp -->
       <div class="col-12" *ngIf="aggregateComplete?.timestamp">
-        <span class="color-dark-green fs-07rem fw-500 w-w-b-w">{{aggregateComplete?.timestamp}}</span>
+        <span class="color-black fs-07rem fw-500 w-w-b-w">{{aggregateComplete?.timestamp}}</span>
       </div>
 
       <!-- Fee -->
       <ng-container *ngIf="aggregateComplete?.effectiveFee">
         <div class="col-12 mt-03rem">
-          <span class="fw-600 fs-095rem color-dark-green">Fee:&nbsp;&nbsp;</span>
+          <span class="fw-600 fs-095rem color-black">Effective Fee:&nbsp;&nbsp;</span>
           <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
-          <span class="fw-600 fs-095rem color-blue-light">{{aggregateComplete?.effectiveFee.part1}}</span>
-          <span class="fw-600 fs-075rem color-blue-light">{{aggregateComplete?.effectiveFee.part2}}</span>
-          <span class="fw-600 fs-095rem color-blue-light"> XPX </span>
+          <span class="fs-095rem color-black">{{aggregateComplete?.effectiveFee.part1}}</span>
+          <span class="fs-075rem color-black">{{aggregateComplete?.effectiveFee.part2}}</span>
+          <span class="fs-095rem color-black"> XPX </span>
         </div>
       </ng-container>
 
       <!-- Type -->
-      <div class="col-12 mt-03rem">
+      <div class="col-12 lh-1em mt-1rem">
         <span class="fw-600 fs-08rem">Type:&nbsp;&nbsp;</span>
         <span class="fs-07rem">{{aggregateComplete?.data['type'].toString(16).toUpperCase()}}</span>
       </div>
 
       <!-- Height -->
       <ng-container *ngIf="aggregateComplete?.data.transactionInfo.height.compact() > 0">
-        <div class="col-12 mt-03rem">
+        <div class="col-12 lh-1em">
           <span class="fw-600 fs-08rem">Height:&nbsp;&nbsp;</span>
           <span class="fs-07rem">{{aggregateComplete?.data.transactionInfo.height.compact()}}</span>
         </div>
@@ -40,7 +40,7 @@
       <div class="col-12 mt-1rem">
         <div class="row d-flex align-items-center">
           <div class="col-12">
-            <span class="fw-600 fs-095rem">Transactions</span>
+            <span class="fw-600 fs-095rem">Transactions ({{aggregateComplete?.data.innerTransactions.length}})</span>
           </div>
         </div>
         <hr class="mt-0">

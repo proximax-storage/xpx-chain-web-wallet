@@ -2,15 +2,15 @@
   <app-header [params]="paramsHeader"></app-header>
 
   <!-- HEADER SEARCH -->
-  <div class="container-fluid background-header-grey pb-1rem pt-1rem">
+  <div class="container-fluid pb-1rem pt-1rem">
     <div class="row">
       <div class="col-11 mx-auto">
         <div class="row">
           <!-- SELECT -->
-          <div class="col-12 col-sm-6 col-md-6 col-lg-5 mx-auto pt-07rem">
+          <div class="col-12 col-sm-6 col-md-6 col-lg-3 mx-auto pt-07rem">
             <div class="md-form mt-1rem mb-1rem caja-gris">
               <!-- <img class="icono" src="assets/images/img/icon-address-green-book-16h-proximax-sirius-wallet.svg" alt=""> -->
-              <mdb-select placeholder="Select search type" [(ngModel)]="typeSearch" [options]="optionTypeSearch"
+              <mdb-select placeholder="Select Search Type" [(ngModel)]="typeSearch" [options]="optionTypeSearch"
                 required class="colorful-select dropdown-default" mdbInputDirective [validateSuccess]="false"
                 [validateError]="false">
               </mdb-select>
@@ -18,16 +18,16 @@
           </div>
 
           <!-- Keyword or number -->
-          <div class="col-12 col-sm-6 col-md-6 col-lg-5 mx-auto d-flex align-items-center pt-05rem">
+          <div class="col-12 col-sm-6 col-md-6 col-lg-7 mx-auto d-flex align-items-center pt-05rem">
             <input [(ngModel)]="paramSearch" type="text" autocomplete="off" id="searchTransaction" class="form-control"
-              mdbInputDirective [validateSuccess]="false" [validateError]="false" placeholder="Keyword or number">
+              mdbInputDirective [validateSuccess]="false" [validateError]="false" placeholder="Search">
           </div>
 
           <div
             class="col-12 col-md-12 col-lg-2 d-flex align-items-center justify-content-center background-dark-green-plus pt-05rem">
             <button mdbBtn type="submit" rounded="true" mdbWavesEffect
-              class="f-w-600 background-btn overflow-ellipsis-nowrap" size="md" (click)="searchData()">
-              <span class="fs-1em color-white">SEARCH</span>
+              class="btn-proximax" size="md" (click)="searchData()">
+              <span class="fs-1em color-white">Search</span>
             </button>
           </div>
         </div>
@@ -49,7 +49,7 @@
         <table mdbTable mdbTableScroll scrollX="true" striped="true">
           <thead>
             <tr class="header-backg">
-              <th *ngFor="let head of headElements" scope="col" class="fs-075rem txt-a-center ">{{head}}
+              <th *ngFor="let head of headElements" scope="col" class="fs-075rem txt-a-eft">{{head}}
               </th>
             </tr>
           </thead>
@@ -61,9 +61,6 @@
                   <ng-container *ngIf="el.nameType === 'ProximaX Swap'; else elseSwap">
                     <span style="color: #e6b219;"><i class="fa fa-star" aria-hidden="true"></i></span>
                   </ng-container>
-                  <ng-template #elseSwap>
-                    &nbsp; &nbsp;
-                  </ng-template>
                   {{el.nameType}}
                 </td>
 

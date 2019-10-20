@@ -1,12 +1,14 @@
 <div class="container mt-3rem mb-2rem animated fadeIn">
-  <div class="row">
+  <app-header [params]="paramsHeader"></app-header>
+
+  <!-- <div class="row">
     <div class="col-12 d-flex justify-content-center">
       <span class="fs-1-7rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio">{{title}}</span>
     </div>
     <div class="col-11 col-md-10 mx-auto">
       <hr class="mt-05rem mb-06rem">
     </div>
-  </div>
+  </div> -->
 
   <!-- <div class="row pt-3rem">
     <div class="col-12 d-flex justify-content-center">
@@ -19,18 +21,14 @@
       <div class="row">
         <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
           <button [routerLink]="['/'+link.createAccount]" mdbBtn type="button" rounded="true" mdbWavesEffect
-            class="f-w-600  w-100porcent background-btn pl-2rem pr-2rem" size="md">
-            <img class="mr-1rem h-2em pr-05rem"
-              src="assets/images/img/icon-wallet-create-white-proximax-sirius-wallet.svg" alt="">
-            <span class="fs-1-2em color-white">NEW</span>
+            class="btn-proximax" size="md">
+            <span class="color-white">New</span>
           </button>
         </div>
         <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
           <button [routerLink]="['/'+link.importAccount]" mdbBtn type="button" rounded="true" mdbWavesEffect
-            class="f-w-600  w-100porcent background-btn pl-2rem pr-2rem" size="md">
-            <img class="mr-1rem h-2em pr-05rem"
-              src="assets/images/img/icon-wallet-import-white-proximax-sirius-wallet.svg" alt="">
-            <span class="fs-1-2em color-white">FROM PRIVATE KEY</span>
+            class="btn-proximax" size="md">
+            <span class="color-white">From a Private Key</span>
           </button>
         </div>
       </div>

@@ -35,8 +35,8 @@
                                             justify-content-lg-end
                                             justify-content-xl-end p-1rem">
                   <!-- Delete-->
-                  <img src="assets/images/img/icon-trash-can-gray-16h-proximax-sirius-wallet.svg" class="cursor-p" width="25"
-                    title=" Delete" (click)="confirmAction(wallet)">
+                  <img src="assets/images/img/icon-trash-can-gray-16h-proximax-sirius-wallet.svg" class="cursor-p"
+                    width="25" title=" Delete" (click)="confirmAction(wallet)">
                   <!-- <img src="assets/images/img/icon-wallet-export-blue.svg" class="cursor-p" width="40" title=" Export" -->
                   <!-- (click)="confirmAction(wallet)"> -->
                 </div>
@@ -53,35 +53,62 @@
   <div class="col-11 col-lg-10 mx-auto">
     <!-- name -->
     <div class="row">
-      <div class="col-12 mx-auto box-grey">
-        <div class="col-12">
-          <span> Name: <b class="font-small fw-bold">{{selectedWallet.name}}</b></span>
+      <div class="col-12 mx-auto txt-a-center mb-2rem">
+        <div class="row">
+          <div class="col-12">
+            <span class="fs-1-2rem">Wallet to delete:</span>
+            <h1 class="fs-2rem">{{ selectedWallet.name }}</h1>
+          </div>
         </div>
 
-        <div class="col-10">
-          <span> Accounts: <b class="font-small fw-bold">{{selectedWallet.accounts.length}}</b></span>
+        <div class="row">
+          <div class="col-12 mt-1rem">
+            <span class="fs-1-2rem">Accounts available in this wallet:</span>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-11 col-md-10 col-lg-9 col-xl-8 d-flex justify-content-center mx-auto">
+            <div class="table-responsive" style="max-height: 200px; overflow: auto; ">
+              <table mdbTable hover="true" striped="true" class="z-depth-0 result">
+                <tbody #tableResult>
+                  <tr mdbTableCol *ngFor="let account of selectedWallet.accounts; let i = index">
+                    <td>
+                      <span class="fw-bold fs-1-2rem line-h-1-2em fw-600 mb-06rem">{{account.name}}</span>
+                      <br>
+                      <span class="fs-08rem line-h-1-2em  mb-06rem">{{
+                                        createFromRawAddress(account.address)}}</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- TEXT ALERT -->
-    <div class="row mt-2-5rem">
+    <div class="row mt-1rem">
       <div class="col-11 col-md-10 col-lg-9 col-xl-8 d-flex justify-content-center mb-1rem mx-auto">
         <span class="fs-1-5rem txt-a-center line-h-1-2em  mb-06rem">{{textAlert}}</span>
       </div>
     </div>
 
     <!--BUTTONS -->
-    <div class="row mt-2rem d-flex justify-content-center">
-      <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
-        size="md" (click)="changeView()">
-        <span class="fs-1-2em color-white"> <i class="fa fa-chevron-circle-left"></i> GO BACK</span>
-      </button>
-
-      <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
-        size="md" (click)="changeView(2)">
-        <span class="fs-1-2em color-white"><i class="fa fa-chevron-circle-right"></i> YES, PROCEED</span>
-      </button>
+    <div class="row mt-1rem d-flex justify-content-center">
+      <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
+        <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" size="md"
+          (click)="changeView()">
+          <span class="fs-1-2em color-white">Go Back</span>
+        </button>
+      </div>
+      <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
+        <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" size="md"
+          (click)="changeView(2)">
+          <span class="fs-1-2em color-white">Proceed</span>
+        </button>
+      </div>
     </div>
   </div>
 </div>
@@ -98,9 +125,21 @@
       <span class="fs-1-7rem txt-a-center line-h-1-2em  mb-06rem ">{{ description }}</span>
     </div>
 
-    <!-- Information -->
+    <!-- Information
     <div class="col-8 d-flex justify-content-center mb-1rem mx-auto box-transparent-border-orange">
       <span class="fs-08rem txt-a-center line-h-1-2em  mb-06rem fw-600">{{ textAlert }}</span>
+    </div> -->
+    
+    <!-- Information -->
+    <div class="col-8 mb-1rem mx-auto box-transparent-border-orange">
+      <div class="txt-a-center">
+        <img src="assets/images/img/icon-transaction-unconfirmed-white.svg" style="filter: invert(50%)" alt=""
+          width="30">
+      </div>
+      <h6 class="fw-600">Warning!</h6>
+      <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em">
+          {{ textAlert }}
+      </p>
     </div>
 
   </div>
@@ -114,10 +153,14 @@
         <div class="md-form form-sm">
           <img class="form-control-feedback" src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg"
             alt="">
+          <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
+            src="assets/images/img/icon-show-hide-password.svg" *ngIf="passwordMain === 'password'">
+          <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
+            src="assets/images/img/icon-show-hide-password-grey.svg" *ngIf="passwordMain === 'text'">
           <input formControlName="password" [maxlength]="configurationForm.passwordWallet.maxLength"
-            [minlength]="configurationForm.passwordWallet.minLength" mdbInputDirective
-            mdbValidate [validateSuccess]="true" [validateError]="true" type="password" id="password"
-            class="form-control form-control-sm input-border" placeholder="Enter wallet password">
+            [minlength]="configurationForm.passwordWallet.minLength" mdbInputDirective mdbValidate
+            [validateSuccess]="true" [validateError]="true" [type]="passwordMain" id="password"
+            class="form-control form-control-sm input-border" placeholder="Enter Wallet Password">
           <!-- VALIDATION -->
           <mdb-error
             *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
@@ -140,7 +183,8 @@
 
   <!--BUTTONS -->
   <div class="row d-flex justify-content-center">
-    <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md" (click)="changeView()">
+    <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md"
+      (click)="changeView()">
       <span class="fs-1-2em color-white">Cancel</span>
     </button>
     <button mdbBtn type="button" [disabled]="validatingForm.invalid" rounded="true" mdbWavesEffect

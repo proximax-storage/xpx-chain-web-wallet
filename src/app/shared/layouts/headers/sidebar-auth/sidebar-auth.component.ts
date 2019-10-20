@@ -1,8 +1,10 @@
-  import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { ModalDirective } from 'ng-uikit-pro-standard';
 import { ItemsHeaderInterface, SharedService, MenuInterface } from '../../../services/shared.service';
 import { AppConfig } from '../../../../config/app.config';
 import { environment } from '../../../../../environments/environment';
-import { ModalDirective } from 'ng-uikit-pro-standard';
+import { AuthService } from '../../../../auth/services/auth.service';
 
 @Component({
   selector: 'app-sidebar-auth',
@@ -11,13 +13,12 @@ import { ModalDirective } from 'ng-uikit-pro-standard';
 })
 export class SidebarAuthComponent implements OnInit {
 
-  @ViewChild('modalAuth', { static: true }) modalAuth: ModalDirective;
   itemsHeader: ItemsHeaderInterface;
   keyObject = Object.keys;
   version = '';
-  eventNumber: number = 0;
 
   constructor(
+    private authService: AuthService,
     private sharedService: SharedService
   ) {
     this.version = environment.version;
@@ -72,37 +73,10 @@ export class SidebarAuthComponent implements OnInit {
       selected: false
     }
 
-    const paramsWallet: MenuInterface = {
-      type: 'dropdown',
-      name: 'Wallets',
-      class: 'ml-m05rem',
-      icon: '',
-      rol: false,
-      link: ``,
-      view: true,
-      subMenu: {
-        createWallet,
-        importWallet,
-        deleteWallet
-      },
-      selected: false
-    }
-
     this.itemsHeader = {
       home: this.sharedService.buildHeader(paramsHome),
       wallet: this.sharedService.buildHeader(deleteWallet)
-      // auth: this.sharedService.buildHeader(paramsSignIn),
-      // wallet: this.sharedService.buildHeader(paramsWallet),
     }
-  }
 
-  /**
-   *
-   *
-   * @memberof SidebarAuthComponent
-   */
-  showModal() {
-    this.eventNumber = this.eventNumber+1;
-    this.modalAuth.show();
   }
 }

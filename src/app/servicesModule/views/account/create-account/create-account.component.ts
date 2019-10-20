@@ -32,6 +32,7 @@ export class CreateAccountComponent implements OnInit {
   othersAccounts = [];
   fromPrivateKey = false;
   formCreateAccount: FormGroup;
+  passwordMain: string = 'password';
   routes = {
     back: `/${AppConfig.routes.selectTypeCreationAccount}`,
     backToService: `/${AppConfig.routes.service}`
@@ -58,7 +59,7 @@ export class CreateAccountComponent implements OnInit {
 
   ngOnInit() {
     let param = this.activateRoute.snapshot.paramMap.get('id');
-    this.componentName = (param === '0') ? 'Create account' : 'Import account';
+    this.componentName = (param === '0') ? 'Create Account' : 'Import Account';
     this.buttonSend = (param === '0') ? 'Create' : 'Import';
     this.configurationForm = this.sharedService.configurationForm;
     const walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
@@ -70,6 +71,11 @@ export class CreateAccountComponent implements OnInit {
     this.walletService.setAccountSelectedWalletNis1(null);
     this.createForm(param);
     this.createAccount();
+  }
+
+  changeInputType(inputType) {
+    let newType = this.sharedService.changeInputType(inputType)
+    this.passwordMain = newType;
   }
 
   /**
@@ -97,7 +103,12 @@ export class CreateAccountComponent implements OnInit {
     });
 
     if (param === '1') {
-      this.formCreateAccount.get('privateKey').setValidators([Validators.required]);
+      this.formCreateAccount.get('privateKey').setValidators([
+        Validators.minLength(this.configurationForm.privateKey.minLength),
+        Validators.maxLength(this.configurationForm.privateKey.maxLength),
+        Validators.pattern('^(0x|0X)?[a-fA-F0-9]+$')
+      ]);
+      this.formCreateAccount.controls['privateKey'].updateValueAndValidity({ emitEvent: false, onlySelf: true });
       this.fromPrivateKey = true;
     }
   }
@@ -118,7 +129,7 @@ export class CreateAccountComponent implements OnInit {
         let common = { password: this.formCreateAccount.get('password').value };
         const currentAccount: AccountsInterface = allAccounts.find(next => next.firstAccount);
         if (this.walletService.decrypt(common, currentAccount)) {
-          const network = NetworkType.TEST_NET;
+          const network = environment.typeNetwork.value;
           let newAccount: SimpleWallet = null;
           if (this.fromPrivateKey) {
             newAccount = this.proximaxProvider.createAccountFromPrivateKey(nameAccount, password, this.formCreateAccount.get('privateKey').value, network);

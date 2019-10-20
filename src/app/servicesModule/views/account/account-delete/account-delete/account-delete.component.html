@@ -5,7 +5,7 @@
     <div class="row">
       <div class="col-12 mx-auto d-flex align-items-center box-grey">
         <div class="col-12">
-          <span> Name: </span>
+          <span class="fw-bold"> Name: </span>
           <br>
           <span class="font-small d-flex">{{accountName}}</span>
         </div>
@@ -16,7 +16,7 @@
     <div class="row">
       <div class="col-12 mx-auto d-flex align-items-center box-grey">
         <div class="col-10">
-          <span> Address: </span>
+          <span class="fw-bold"> Address: </span>
           <br>
           <span class="font-small d-flex">{{address}}</span>
         </div>
@@ -32,7 +32,7 @@
       <div class="row">
         <div class="col-12 mx-auto d-flex align-items-center box-grey">
           <div class="col-10">
-            <span> Public key: </span>
+            <span class="fw-bold"> Public key: </span>
             <br>
             <span class="font-small d-flex ">{{ publicKey }}</span>
           </div>
@@ -43,23 +43,26 @@
         </div>
       </div>
     </ng-container>
-      <!-- TEXT ALERT -->
-      <div class="row mt-2-5rem">
-        <div class="col-11 col-md-10 col-lg-9 col-xl-8 d-flex justify-content-center mb-1rem mx-auto">
-          <span class="fs-1-5rem txt-a-center line-h-1-2em  mb-06rem">{{texAlert}}</span>
-        </div>
+    <!-- TEXT ALERT -->
+    <div class="row mt-2-5rem">
+      <div class="col-11 col-md-10 col-lg-9 col-xl-8 d-flex justify-content-center mx-auto">
+        <span class="fs-1-5rem txt-a-center line-h-1-2em fw-400 mb-06rem">{{texAlert}}</span>
       </div>
+    </div>
 
-      <!--BUTTONS -->
-      <div class="row mt-2rem d-flex justify-content-center">
-        <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md"
+    <!--BUTTONS -->
+    <div class="row d-flex justify-content-center">
+      <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
+        <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" size="md"
           [routerLink]="[routes.viewAllAccount]">
-          <span class="fs-1-2em color-white"> <i class="fa fa-chevron-circle-left"></i> GO BACK</span>
-        </button>
-
-        <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md"
-          [routerLink]="[routes.deleteAccountConfirm+accountName]">
-          <span class="fs-1-2em color-white"><i class="fa fa-chevron-circle-right"></i> YES, PROCEED</span>
+          <span class="color-white">Go Back</span>
         </button>
       </div>
+      <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
+        <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" size="md"
+          [routerLink]="[routes.deleteAccountConfirm+accountName]">
+          <span class="color-white">Proceed</span>
+        </button>
+      </div>
+    </div>
   </div>

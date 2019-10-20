@@ -5,17 +5,17 @@
 
     <div class="row">
       <div class="col-11 col-sm-10 col-lg-8 mx-auto">
-        <div class="md-form form-sm">
+        <div class="md-form form-sm mt-1rem mb-0rem">
           <img class="form-control-feedback" src="assets/images/img/icon-address-green-book-16h-proximax-sirius-wallet.svg" alt=""
             width="43" height="43">
           <input formControlName="user" required mdbInputDirective mdbValidate [validateSuccess]="true"
             [validateError]="true" type="text" id="user" maxlength="30" class="form-control form-control-sm input-border"
-            placeholder="Name">
+            placeholder="Enter Name">
 
           <!-- VALIDATION -->
           <mdb-error
             *ngIf="validateInput('user', '').invalid && (validateInput('address', '').dirty || validateInput('address', '').touched)">
-            <span>Name required</span>
+            <span>Name Required</span>
           </mdb-error>
         </div>
       </div>
@@ -23,16 +23,16 @@
 
     <div class="row">
       <div class="col-11 col-sm-10 col-lg-8 mx-auto">
-        <div class="md-form form-sm">
+        <div class="md-form form-sm mt-1rem mb-0rem">
           <img class="form-control-feedback" src="assets/images/img/icon-wallet-name-green-16h-proximax-sirius-wallet.svg" alt="">
           <input formControlName="address" required mdbInputDirective mdbValidate [validateSuccess]="true"
             [validateError]="true" type="text" id="address" maxlength="46" class="form-control form-control-sm input-border"
-            placeholder="address">
+            placeholder="Address">
 
           <!-- VALIDATION -->
           <mdb-error
             *ngIf="validateInput('address', '').invalid && (validateInput('address', '').dirty || validateInput('address', '').touched)">
-            <span>Address required</span>
+            <span>Address Required</span>
           </mdb-error>
           <mdb-error *ngIf="msgErrorUnsupported !== ''">
             <span>{{msgErrorUnsupported}}</span>
@@ -41,18 +41,18 @@
       </div>
     </div>
     <!-- BUTTONS -->
-    <div class="row">
+    <div class="row mt-2rem">
       <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-        <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+        <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax"
           size="md" (click)="clearForm()">
-          <span class="fs-1-2em color-white">Clear</span>
+          <span class="color-white">Clear</span>
         </button>
       </div>
 
       <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
         <button mdbBtn type="submit" rounded="true" mdbWavesEffect [disabled]="blockSendButton || !contactForm.valid"
-          class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
-          <span class="fs-1-2em color-white">SAVE</span>
+          class="btn-proximax" size="md">
+          <span class="color-white">Save</span>
         </button>
       </div>
     </div>

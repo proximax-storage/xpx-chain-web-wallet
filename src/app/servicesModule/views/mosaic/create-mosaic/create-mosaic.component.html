@@ -4,42 +4,26 @@
   <div class="row">
     <div class="col-11 col-lg-9 mx-auto">
       <div class="row">
+
         <div class="col-12 col-md-8 justify-content-center">
           <form [formGroup]="mosaicForm" (ngSubmit)="send()">
-            <div class="row mt-1rem">
+
+            <!-- <div class="row mt-1rem">
               <ng-container *ngIf="insufficientBalance">
                 <div class="col-12 d-flex justify-content-end">
                   <span class="fs-08rem fw-600 color-error-message">Insufficient balance</span>
                 </div>
               </ng-container>
-
-
-              <!-- <div class="col-12">
-                <div class="row d-flex align-items-center">
-                  <div class="col-6 col-md-7 col-lg-8 mx-auto pt-07rem">
-                    <div class="md-form form-sm mt-0 mb-0rem">
-                      <img class="form-control-feedback"
-                        src="assets/images/img/icon-duration-green-16h-proximax-sirius-wallet.svg" alt="">
-                      <input formControlName="duration" mdbInputDirective mdbValidate [validateSuccess]="true"
-                        [validateError]="true" type="text" id="duration" min="1" max="365"
-                        class="form-control form-control-sm input-border txt-a-right" placeholder=""
-                        (keyup)="limitDuration($event)">
-                      <span class="label-i-icon pl-2rem">Duration (number of days)</span>
-
-                     
-                      <mdb-error
-                        *ngIf="validateInput('duration', '').invalid && (validateInput('duration', '').dirty || validateInput('duration', '').touched)">
-                        <span>Required field - Only numbers</span>
-                      </mdb-error>
-                    </div>
-                  </div>
-
-                  <div class="col-6 col-md-5 col-lg-4 mx-auto notExpireBox">
-                    <mdb-checkbox formControlName="notExpire" [inline]="true" class="fs-08rem"
-                      (change)="changeNotExpire($event)">Not expire</mdb-checkbox>
-                  </div>
+            </div> -->
+            <div class="row">
+              <div class="col-11 mb-1rem mx-auto box-transparent-border-red" *ngIf="insufficientBalance">
+                <div class="txt-a-center">
+                  <img src="assets/images/img/icon-restriction-white.svg" style="filter: invert(50%)" alt="" width="30">
                 </div>
-              </div> -->
+                <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em">
+                  Insufficient Balance.
+                </p>
+              </div>
             </div>
 
             <div class="row">
@@ -56,7 +40,7 @@
                   <!-- VALIDATION -->
                   <mdb-error
                     *ngIf="validateInput('divisibility', '').invalid && (validateInput('divisibility', '').dirty || validateInput('divisibility', '').touched) || invalidDivisibility">
-                    <span>Required field - Only numbers (0 - 6)</span>
+                    <span>Required Field - Only Numbers (0 - 6)</span>
                   </mdb-error>
                 </div>
               </div>
@@ -73,25 +57,27 @@
                   <!-- VALIDATION -->
                   <mdb-error
                     *ngIf="validateInput('deltaSupply', '').invalid && (validateInput('deltaSupply', '').dirty || validateInput('deltaSupply', '').touched)">
-                    <span>Required field</span>
+                    <span>Required Field</span>
                   </mdb-error>
-                  <mdb-error *ngIf=" invalidSupply">
-                    <span>Supply exceeded</span>
+                  <mdb-error *ngIf="invalidSupply">
+                    <span>Supply Invalid</span>
                   </mdb-error>
+                  <br>
                 </div>
               </div>
             </div>
 
-
             <!-- FEE -->
-            <div class="row ml-01rem">
+            <div class="row">
               <div class="col-12 mx-auto">
                 <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
                   <div class="row">
                     <div class="col-12">
-                      <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
-                        alt="">
-                      <span>Fee: {{ fee }} XPX</span>
+                      <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
+                      <span class="fs-08rem">
+                        Unconfirmed/Recommended Fee:&nbsp;
+                        <a [innerHTML]="getQuantity(fee)"></a> XPX
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -99,21 +85,23 @@
             </div>
 
             <!-- RENTAL FEE -->
-            <div class="row ml-01rem">
+            <div class="row">
               <div class="col-12 mx-auto">
                 <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
                   <div class="row">
                     <div class="col-12">
-                      <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg"
-                        alt="">
-                      <span> Rental Fee: {{calculateRentalFee}} XPX</span>
+                      <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
+                      <span class="fs-08rem">
+                        Rental Fee:&nbsp;
+                        <a [innerHTML]="getQuantity(calculateRentalFee)"></a> XPX
+                      </span>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div class="row ml-01rem">
+            <div class="row">
               <div class="col-12 mx-auto">
                 <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
                   <div class="row">
@@ -131,49 +119,42 @@
               </div>
             </div>
 
-            <!-- <div class="row ml-01rem ">
-              <div class="col-12 mx-auto box-grey d-flex justify-content-center">
-               
-                <mdb-checkbox formControlName="transferable" [inline]="true" class="fs-08rem">Transferable
-                </mdb-checkbox>
-
-                
-                <mdb-checkbox formControlName="supplyMutable" [inline]="true" class="fs-08rem">Supply Mutable
-                </mdb-checkbox>
-              </div>
-            </div> -->
-
             <div class="row">
               <div class="col-12 mx-auto">
                 <div class="md-form form-sm mt-1rem mb-0rem">
                   <img class="form-control-feedback"
                     src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg" alt="">
+                  <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
+                    src="assets/images/img/icon-show-hide-password.svg" *ngIf="passwordMain === 'password'">
+                  <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
+                    src="assets/images/img/icon-show-hide-password-grey.svg" *ngIf="passwordMain === 'text'">
                   <input [maxlength]="configurationForm.passwordWallet.maxLength"
                     [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" required
-                    mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password"
-                    id="password" class="form-control form-control-sm input-border" placeholder="Enter wallet password">
+                    mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" [type]="passwordMain"
+                    id="password" class="form-control form-control-sm input-border" placeholder="Enter Wallet Password">
 
                   <!-- VALIDATION -->
                   <mdb-error
                     *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
-                    <span>Password required</span>
+                    <span>Password Required</span>
                   </mdb-error>
                 </div>
               </div>
             </div>
 
             <!-- BUTTONS -->
-            <div class="row">
+            <div class="row pt-1rem">
               <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
                 <button [disabled]="insufficientBalance" mdbBtn type="button" rounded="true" mdbWavesEffect
-                  class="f-w-600 background-btn pl-2rem pr-2rem" size="md" (click)="clearForm()">
+                  class="btn-proximax" size="md" (click)="clearForm()">
                   <span class="fs-1-2em color-white">Clear</span>
                 </button>
               </div>
 
               <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-                <button mdbBtn type="submit" rounded="true" [disabled]="!mosaicForm.valid || blockButton" mdbWavesEffect
-                  class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
+                <button mdbBtn type="submit" rounded="true"
+                  [disabled]="!mosaicForm.valid || blockButton || invalidSupply" mdbWavesEffect class="btn-proximax"
+                  size="md">
                   <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
                     *ngIf="blockSend"></span>
                   <span class="fs-1-2em color-white">Create</span>
@@ -185,12 +166,12 @@
 
         <div class="col-11 col-md-4 description-p-module mt-1-5rem mb-2rem">
           <div>
-            <span class="fs-08rem">Maximum divisibility is 6, <br></span>
-            <span class="fw-600 fs-08rem">Example: 6</span>
+            <span class="fs-08rem">Maximum divisibility is 6.<br></span>
+            <span class="fw-600 fs-08rem">Example: 0.000000</span>
           </div>
 
           <div class="mt-08rem">
-            <span class="fs-08rem"> You supply is 9B, <br></span>
+            <span class="fs-08rem"> Maximum supply is 9B.<br></span>
             <span class="fw-600 fs-08rem">Example: 9,000,000,000</span>
           </div>
 

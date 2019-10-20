@@ -10,6 +10,7 @@ import { TransactionsService, TransactionsInterface } from '../../../transaction
 export class TransferTypeBondedComponent implements OnInit {
 
   @Input() transferTransactionBonded: TransferTransaction = null;
+  @Input() msg: string = '';
   transactionBuilder: TransactionsInterface = null;
 
   constructor(
@@ -20,9 +21,9 @@ export class TransferTypeBondedComponent implements OnInit {
   }
 
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
-    // console.log(this.transferTransactionBonded);
+    console.log(this.transferTransactionBonded);
     this.transactionBuilder = this.transactionService.getStructureDashboard(this.transferTransactionBonded);
-    // console.log('----build---', this.transactionBuilder);
+    console.log('----build---', this.transactionBuilder);
   }
 
 }

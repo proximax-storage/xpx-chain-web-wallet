@@ -9,6 +9,7 @@ import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 import { TransactionsInterface, TransactionsService } from '../../services/transactions.service';
 import { SharedService, ConfigurationForm } from '../../../shared/services/shared.service';
 import { DataBridgeService } from '../../../shared/services/data-bridge.service';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-partial',
@@ -41,19 +42,22 @@ export class PartialComponent implements OnInit {
   maxSize = 0;
   moduleName = 'Transactions';
   multisigInfo: MultisigAccountInfo[] = [];
+  nis1hash = null;
   elements: any = [];
-  headElements = ['Fee', 'Account linked to the transaction', 'Hash'];
+  headElements = ['Account linked to the transaction', 'Hash'];
   hideSign = false;
   objectKeys = Object.keys;
   onlySigner = false;
   password: string = '';
+  passwordMain: string = 'password'
   subscription: Subscription[] = [];
   typeTransactions: any;
   validateAccount = false;
   configurationForm: ConfigurationForm;
+  showSwap: boolean = false;
+  msg: string = '';
 
   constructor(
-    private dataBridge: DataBridgeService,
     private proximaxProvider: ProximaxProvider,
     private sharedService: SharedService,
     public transactionService: TransactionsService,
@@ -86,6 +90,11 @@ export class PartialComponent implements OnInit {
     });
   }
 
+  changeInputType(inputType) {
+    let newType = this.sharedService.changeInputType(inputType)
+    this.passwordMain = newType;
+  }
+
 
   /**
    *
@@ -109,45 +118,24 @@ export class PartialComponent implements OnInit {
    * @memberof PartialComponent
    */
   find(transaction: TransactionsInterface) {
-   /* const height = transaction.data['transactionInfo'].height.compact();
-    if (typeof (height) === 'number') {
-      const existBlock = this.dataBridge.filterBlockStorage(height);
-      if (existBlock) {
-        console.log('In cache', existBlock);
-        transaction.timestamp = this.transactionService.dateFormatUTC(new UInt64([existBlock.timestamp.lower, existBlock.timestamp.higher]));
-        transaction.effectiveFee = existBlock.feeMultiplier * transaction.data.size;
-      }else {
-        this.proximaxProvider.getBlockInfo(height).subscribe(
-          next => {
-            console.log('Http', next);
-            this.dataBridge.validateBlock(next);
-            transaction.timestamp = this.transactionService.dateFormatUTC(next.timestamp);
-            transaction.effectiveFee = next.feeMultiplier * transaction.data.size;
-          }
-        );
-      }
-    } else {
-      transaction.effectiveFee = 0;
-    }*/
-
+    // console.log(transaction);
+    this.msg = '';
+    this.nis1hash = null;
+    this.showSwap = false;
     this.modalPartial.show();
     this.dataSelected = transaction;
     this.arraySelect = this.arraySelect.slice(0);
-    this.arraySelect = [];
+    // this.arraySelect = [];
     this.account = null;
     this.password = '';
     const arraySelect = [];
     const accountMultisig = this.walletService.filterAccountInfo(transaction.data['innerTransactions'][0].signer.address.pretty(), true);
-    // console.log('=== ACCOUNT MULTISIG ===', accountMultisig);
     if (accountMultisig && accountMultisig.multisigInfo && accountMultisig.multisigInfo.cosignatories && accountMultisig.multisigInfo.cosignatories.length > 0) {
       accountMultisig.multisigInfo.cosignatories.forEach(element => {
         const cosignatorie: AccountsInterface = this.walletService.filterAccountWallet('', null, element.address.pretty());
-        // console.log('\n\n === EXIST COSIGNATORIE? ===', cosignatorie);
         if (cosignatorie) {
           const publicAccount = this.proximaxProvider.createPublicAccount(cosignatorie.publicAccount.publicKey, cosignatorie.publicAccount.address.networkType);
           const signedByAccount = transaction.data.signedByAccount(publicAccount);
-          // console.log('\n\n === TRANSACTION SIGNED? ===', signedByAccount);
-          // this.validateAccount = true;
           arraySelect.push({
             label: (signedByAccount) ? `${cosignatorie.name} - Signed` : cosignatorie.name,
             value: cosignatorie,
@@ -192,20 +180,45 @@ export class PartialComponent implements OnInit {
       }
     });
 
+    const innerTransactions = transaction.data['innerTransactions'];
+    if (innerTransactions.length === 1) {
+      if (innerTransactions[0].type === this.typeTransactions.transfer.id) {
+        if (innerTransactions[0]["message"] && innerTransactions[0]["message"].payload !== "") {
+          try {
+            const msg = JSON.parse(innerTransactions[0]["message"].payload);
+            const addressAccountMultisig = environment.swapAccount.addressAccountMultisig;
+            const addressAccountSimple = environment.swapAccount.addressAccountSimple;
+            const addressSender = innerTransactions[0].signer.address.plain();
+            if ((addressSender === addressAccountMultisig) || (addressSender === addressAccountSimple)) {
+              if (msg && msg["type"] && msg["type"] === "Swap") {
+                // console.log('IS SWAP');
+                this.nis1hash = msg['nis1Hash'];
+                this.msg = msg['message'];
+                this.showSwap = true;
+              }
+            }
+          } catch (error) {
+            // console.log('error', error);
+          }
+        }
+      }
+    }
+
     this.onlySigner = false;
     const cantSigned = arraySelect.filter((x: any) => x.signed === true);
-    this.hideSign = (cantSigned.length === arraySelect.length) ? true: false;
-    if (!this.hideSign){
-      if(arraySelect.length === 1) {
+    this.hideSign = (cantSigned.length === arraySelect.length) ? true : false;
+    if (!this.hideSign) {
+      if (arraySelect.length === 1) {
         this.onlySigner = true;
+        this.account = arraySelect[0].value;
         this.selectAccount(arraySelect[0]);
-      }else {
+      } else {
         this.arraySelect = arraySelect;
       }
-    }else {
+    } else {
       this.arraySelect = arraySelect;
     }
-   }
+  }
 
 
   /**
@@ -251,6 +264,7 @@ export class PartialComponent implements OnInit {
       this.password.length <= this.configurationForm.passwordWallet.maxLength
     ) {
       let common: any = { password: this.password };
+      // console.log(this.account);
       if (this.walletService.decrypt(common, this.account)) {
         const transaction: any = this.dataSelected.data;
         const account = this.proximaxProvider.getAccountFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);

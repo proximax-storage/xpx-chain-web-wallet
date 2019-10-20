@@ -2,15 +2,25 @@
   <app-header [params]="paramsHeader"></app-header>
 
   <form [formGroup]="linkingNamespaceToMosaic" (ngSubmit)="sendTransaction()">
+      <div class="col-11 mb-1rem mx-auto box-transparent-border-red" *ngIf="noNamespace">
+          <div class="txt-a-center">
+            <img src="assets/images/img/icon-restriction-white.svg" style="filter: invert(50%)" alt="" width="30">
+          </div>
+          <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em">
+              This account doesn't have namespaces created.
+          </p>
+          
+        </div>
+        <br>
 
     <div class="row mt-1-5rem">
       <div class="col-11 col-sm-10 col-lg-8 mx-auto">
         <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" [searchable]="false"
           class="selectWrapper" [items]="typeAction" formControlName="typeAction" bindLabel="label" bindValue="value"
-          placeholder="Select action" (change)="buildSelectNamespace($event); captureAction()"></ng-select>
+          placeholder="Select Action" (change)="buildSelectNamespace($event); captureAction()"></ng-select>
         <mdb-error class="ml-1rem"
           *ngIf="validateInput('typeAction').invalid && (validateInput('typeAction').dirty || validateInput('typeAction').touched)">
-          <span class="fs-08rem fw-600 color-error-message">Select action</span>
+          <span class="fs-08rem fw-600 color-error-message">Select Action</span>
         </mdb-error>
       </div>
     </div>
@@ -19,10 +29,10 @@
       <div class="col-11 col-sm-10 col-lg-8 mx-auto">
         <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" [searchable]="false"
           class="selectWrapper" [items]="namespaceSelect" formControlName="namespace" bindLabel="label"
-          bindValue="value" placeholder="Select namespace" (change)="captureNamespace($event)"></ng-select>
+          bindValue="value" placeholder="Select Namespace" (change)="captureNamespace($event)"></ng-select>
         <mdb-error class="ml-1rem"
           *ngIf="validateInput('namespace').invalid && (validateInput('namespace').dirty || validateInput('namespace').touched)">
-          <span class="fs-08rem fw-600 color-error-message">Select namespace</span>
+          <span class="fs-08rem fw-600 color-error-message">Select Namespace</span>
         </mdb-error>
       </div>
     </div>
@@ -32,10 +42,10 @@
         <div class="col-11 col-sm-10 col-lg-8 mx-auto">
           <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" [searchable]="false"
             class="selectWrapper" [items]="mosaicSelect" formControlName="mosaic" bindLabel="label" bindValue="value"
-            placeholder="Select mosaic" (change)="captureMmosaic()"></ng-select>
+            placeholder="Select Mosaic" (change)="captureMmosaic()"></ng-select>
           <mdb-error class="ml-1rem"
             *ngIf="validateInput('mosaic').invalid && (validateInput('mosaic').dirty || validateInput('mosaic').touched)">
-            <span class="fs-08rem fw-600 color-error-message">Select mosaic</span>
+            <span class="fs-08rem fw-600 color-error-message">Select Mosaic</span>
           </mdb-error>
         </div>
       </div>
@@ -45,7 +55,7 @@
       <ng-container *ngIf="linked !== null">
         <div class="row pt-1rem">
           <div class="col-11 col-sm-10 col-lg-8 mx-auto">
-            Linked to: {{linked.label}}
+            Linked to Namespace: {{linked.label}}
           </div>
         </div>
       </ng-container>
@@ -58,7 +68,10 @@
         <div class="box-grey txt-a-center">
           <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20"
             alt="">&nbsp;
-          <span>Fee: {{ fee }} XPX</span>
+          <span class="fs-08rem">
+              Unconfirmed/Recommended Fee:&nbsp;
+              <a [innerHTML]="getQuantity(fee)"></a> XPX
+            </span>
         </div>
       </div>
     </div>
@@ -68,15 +81,19 @@
         <div class="md-form form-sm">
           <img class="form-control-feedback" src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg"
             alt="">
+          <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
+            src="assets/images/img/icon-show-hide-password.svg" *ngIf="passwordMain === 'password'">
+          <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
+            src="assets/images/img/icon-show-hide-password-grey.svg" *ngIf="passwordMain === 'text'">
           <input [maxlength]="configurationForm.passwordWallet.maxLength"
             [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" required
-            mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password" id="password"
-            class="form-control form-control-sm input-border" placeholder="Enter password">
+            mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" [type]="passwordMain" id="password"
+            class="form-control form-control-sm input-border" placeholder="Enter Wallet Password">
 
           <!-- VALIDATION -->
           <mdb-error
             *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
-            <span class="fs-08rem fw-600 color-error-message">Required field</span>
+            <span class="fs-08rem fw-600 color-error-message">Password Required</span>
           </mdb-error>
         </div>
       </div>
@@ -85,15 +102,15 @@
     <!-- BUTTONS -->
     <div class="row mt-2rem">
       <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-        <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
+        <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax"
           size="md" (click)="clearForm()">
           <span class="fs-1-2em color-white">Clear</span>
         </button>
       </div>
 
       <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-        <button mdbBtn type="submit" rounded="true" [disabled]="!linkingNamespaceToMosaic.valid" mdbWavesEffect
-          class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
+        <button mdbBtn type="submit" rounded="true" [disabled]="!linkingNamespaceToMosaic.valid || nameSelect" mdbWavesEffect
+          class="btn-proximax" size="md">
           <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
             *ngIf="blockSend"></span>
           <span class="fs-1-2em color-white">Create</span>

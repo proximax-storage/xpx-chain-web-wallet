@@ -23,11 +23,14 @@ export class CreateWalletComponent implements OnInit {
   errorWalletExist: string;
   isValid: boolean = false;
   newName: string = '';
-  title = 'Create wallet';
+  passwordMain = 'password'
+  passwordConfirm = 'password'
+  title = 'Create Wallet';
   typeNetwork = [{
     value: environment.typeNetwork.value,
     label: environment.typeNetwork.label
   }];
+
 
   constructor(
     private fb: FormBuilder,
@@ -47,6 +50,15 @@ export class CreateWalletComponent implements OnInit {
     this.walletService.setAccountInfoNis1(null);
     this.walletService.setNis1AccountSelected(null);
     this.walletService.setAccountSelectedWalletNis1(null);
+  }
+
+  changeInputType(inputType, main = true) {
+    let newType = this.sharedService.changeInputType(inputType)
+    if (main === true) {
+      this.passwordMain = newType;
+    } else if (main === false) {
+      this.passwordConfirm = newType;
+    }
   }
 
   /**
@@ -194,7 +206,7 @@ export class CreateWalletComponent implements OnInit {
     }
 
     this.createWalletForm.reset();
-    this.createWalletForm.get('network').setValue(NetworkType.TEST_NET);
+    this.createWalletForm.get('network').setValue(environment.typeNetwork.value);
     return;
   }
 

@@ -7,6 +7,7 @@ import { HeaderServicesInterface } from '../../../servicesModule/services/servic
 import { WalletService, WalletAccountInterface } from '../../services/wallet.service';
 
 
+
 @Component({
   selector: 'app-delete-wallet',
   templateUrl: './delete-wallet.component.html',
@@ -24,11 +25,11 @@ export class DeleteWalletComponent implements OnInit {
     deleteWalletConfirm: `/${AppConfig.routes.deleteWalletConfirm}/`,
   };
 
-  description = 'Accounts that are associated with this device.';
-  texAlert = 'Would you like to delete permanently this Sirius Wallet?'
+  description = 'Accounts available in this wallet';
+  texAlert = 'Would you like to permanently delete this Sirius Wallet?'
   wallet: WalletAccountInterface;
   nameWallet: string;
-  constructor(
+  constructor (
     private activateRoute: ActivatedRoute,
     private authService: AuthService,
     private walletService: WalletService) { }
@@ -37,10 +38,9 @@ export class DeleteWalletComponent implements OnInit {
 
   ) {
     let name = this.activateRoute.snapshot.paramMap.get('name');
-    this.wallet = this.walletService.getWalletStorageName(name)[0];
+    this.wallet = this.walletService.getWalletStorageByName(name)[0];
     // console.log(this.wallet.name)
   }
-
 
   createFromRawAddress(address: string): string {
     return Address.createFromRawAddress(address).pretty();

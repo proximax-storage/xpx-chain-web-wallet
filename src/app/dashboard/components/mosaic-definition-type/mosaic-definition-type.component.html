@@ -4,10 +4,10 @@
     <div class="col-12">
       <div class="row">
         <div class="col-12 col-sm-4 col-md-3 overflow-ellipsis-nowrap">
-          <span class="color-dark-green fw-bold fs-08rem">Type: </span>
+          <span class="color-black fw-bold fs-08rem">Type: </span>
         </div>
         <div class="col-12 col-sm-8 col-md-9 overflow-ellipsis-nowrap">
-          <span class="color-dark-green fw-400 fs-08rem">{{ typeTransactionHex }}</span>
+          <span class="color-black fw-400 fs-08rem">{{ typeTransactionHex }}</span>
         </div>
       </div>
     </div>
@@ -16,10 +16,10 @@
     <div class="col-12">
       <div class="row">
         <div class="col-12 col-sm-4 col-md-3 overflow-ellipsis-nowrap">
-          <span class="color-dark-green fw-bold fs-08rem">Mosaic Id: </span>
+          <span class="color-black fw-bold fs-08rem">Mosaic ID: </span>
         </div>
         <div class="col-12 col-sm-8 col-md-9 overflow-ellipsis-nowrap">
-          <span class="color-dark-green fw-400 fs-08rem">{{ mosaicId }}</span>
+          <span class="color-black fw-400 fs-08rem">{{ mosaicId }}</span>
         </div>
       </div>
     </div>
@@ -32,10 +32,10 @@
       <div class="col-12">
         <div class="row">
           <div class="col-12 col-sm-4 col-md-3 overflow-ellipsis-nowrap">
-            <span class="color-dark-green fw-bold fs-08rem">Mosaic: </span>
+            <span class="color-black fw-bold fs-08rem">Mosaic: </span>
           </div>
           <div class="col-12 col-sm-8 col-md-9 overflow-ellipsis-nowrap">
-            <span class="color-dark-green fw-400 fs-08rem">
+            <span class="color-black fw-400 fs-08rem">
               {{ mosaicDefinition.mosaicsStorage['mosaicNames']['names'][0] }}
             </span>
           </div>
@@ -48,10 +48,10 @@
       <div class="col-12">
         <div class="row">
           <div class="col-12 col-sm-4 col-md-3 overflow-ellipsis-nowrap">
-            <span class="color-dark-green fw-bold fs-08rem">Nonce: </span>
+            <span class="color-black fw-bold fs-08rem">Nonce: </span>
           </div>
           <div class="col-12 col-sm-8 col-md-9 overflow-ellipsis-nowrap">
-            <span class="color-dark-green fw-400 fs-08rem"> {{ mosaicDefinition['nonce'] }}</span>
+            <span class="color-black fw-400 fs-08rem"> {{ mosaicDefinition['nonce'] }}</span>
           </div>
         </div>
       </div>
@@ -60,10 +60,10 @@
     <div class="col-12">
       <div class="row">
         <div class="col-12 col-sm-4 col-md-3 overflow-ellipsis-nowrap">
-          <span class="color-dark-green fw-bold fs-08rem">Divisibility: </span>
+          <span class="color-black fw-bold fs-08rem">Divisibility: </span>
         </div>
         <div class="col-12 col-sm-8 col-md-9 overflow-ellipsis-nowrap">
-          <span class="color-dark-green fw-400 fs-08rem">{{mosaicDefinition['mosaicProperties'].divisibility}}</span>
+          <span class="color-black fw-400 fs-08rem">{{mosaicDefinition['mosaicProperties'].divisibility}}</span>
         </div>
       </div>
     </div>
@@ -71,10 +71,10 @@
     <div class="col-12">
       <div class="row">
         <div class="col-12 col-sm-4 col-md-3 overflow-ellipsis-nowrap">
-          <span class="color-dark-green fw-bold fs-08rem">Version: </span>
+          <span class="color-black fw-bold fs-08rem">Version: </span>
         </div>
         <div class="col-12 col-sm-8 col-md-9 overflow-ellipsis-nowrap">
-          <span class="color-dark-green fw-400 fs-08rem">{{mosaicDefinition['version']}}</span>
+          <span class="color-black fw-400 fs-08rem">{{mosaicDefinition['version']}}</span>
         </div>
       </div>
     </div>
@@ -84,11 +84,11 @@
     <div class="col-12">
       <div class="row">
         <div class="col-12 col-sm-4 col-md-3 overflow-ellipsis-nowrap">
-          <span class="color-dark-green fw-bold fs-08rem">Duration: </span>
+          <span class="color-black fw-bold fs-08rem">Duration: </span>
         </div>
         <div class="col-12 col-sm-8 col-md-9">
           <ng-container *ngIf="mosaicDefinition['mosaicProperties'].duration; else durationUndefined">
-            <span class="color-dark-green fw-400 fs-08rem">
+            <span class="color-black fw-400 fs-08rem">
               <strong>
                 (Blocks: {{mosaicDefinition['mosaicProperties'].duration.compact()}})
               </strong> -
@@ -96,7 +96,7 @@
             </span>
           </ng-container>
           <ng-template #durationUndefined>
-            <span class="color-dark-green fw-400 fs-08rem">
+            <span class="color-black fw-400 fs-08rem">
               <strong>Does not expire</strong>
             </span>
           </ng-template>
@@ -108,7 +108,7 @@
     <div class="col-12">
       <div class="row">
         <div class="col-12 col-sm-4 col-md-3 overflow-ellipsis-nowrap">
-          <span class="color-dark-green fw-bold fs-08rem">Supply Mutable: </span>
+          <span class="color-black fw-bold fs-08rem">Supply Mutable: </span>
         </div>
         <div class="col-12 col-sm-8 col-md-9">
           <span *ngIf="mosaicDefinition['mosaicProperties'].supplyMutable === true"><i
@@ -124,7 +124,7 @@
     <div class="col-12">
       <div class="row">
         <div class="col-12 col-sm-4 col-md-3 overflow-ellipsis-nowrap">
-          <span class="color-dark-green fw-bold fs-08rem">Transferable: </span>
+          <span class="color-black fw-bold fs-08rem">Transferable: </span>
         </div>
         <div class="col-12 col-sm-8 col-md-9">
           <span *ngIf="mosaicDefinition['mosaicProperties'].transferable === true"><i class="fa fa-check-circle green-c"

@@ -8,14 +8,14 @@
       </ng-container>
       <!-- SEND -->
       <ng-container *ngIf="!transactionBuilder.receive">
-        <span class="fw-600 fs-065rem color-orange">Transaction Send&nbsp;</span>
+        <span class="fw-600 fs-065rem color-orange">Transaction Sent&nbsp;</span>
         <img src="assets/images/img/arrow-transaction-sender-orange-proximax-sirius-explorer.svg" alt="" width="15">
       </ng-container>
     </div>
   </div>
 
   <div class="col-12 mt-05rem" *ngIf="mosaicAlias?.timestamp">
-    <span class="color-dark-green fs-065rem fw-500 w-w-b-w">{{mosaicAlias?.timestamp}}</span>
+    <span class="color-black fs-065rem fw-500 w-w-b-w">{{mosaicAlias?.timestamp}}</span>
   </div>
 
   <div class="row mt-05rem">
@@ -47,19 +47,30 @@
     </div>
   </div>
 
-  <ng-container *ngIf="transactionBuilder.data['message'] && transactionBuilder.data['message'].payload !== ''">
+  <ng-container *ngIf="msg !== ''; else viewPayload">
     <div class="row mt-05rem">
       <div class="col-12 lh-1em">
         <span class="fw-600 fs-065rem">Message:&nbsp;</span>
-        <span class="fs-065rem w-w-b-w">{{transactionBuilder.data['message'].payload}}</span>
+        <span class="fs-065rem w-w-b-w">{{msg}}</span>
       </div>
     </div>
   </ng-container>
 
+  <ng-template #viewPayload>
+    <ng-container *ngIf="transactionBuilder.data['message'] && transactionBuilder.data['message'].payload !== ''">
+      <div class="row mt-05rem">
+        <div class="col-12 lh-1em">
+          <span class="fw-600 fs-065rem">Message:&nbsp;</span>
+          <span class="fs-065rem w-w-b-w">{{transactionBuilder.data['message'].payload}}</span>
+        </div>
+      </div>
+    </ng-container>
+  </ng-template>
+
   <ng-container *ngIf="transactionBuilder.data['transactionInfo']">
     <div class="row mt-05rem">
       <div class="col-12 lh-1em">
-        <span class="fw-600 fs-065rem">Aggregate id:&nbsp;</span>
+        <span class="fw-600 fs-065rem">Aggregate Id:&nbsp;</span>
         <span class="fs-065rem w-w-b-w">{{transactionBuilder.data['transactionInfo']['aggregateId']}}</span>
       </div>
     </div>
@@ -74,7 +85,7 @@
 
   <div class="row mt-05rem">
     <div class="col-12 lh-1em">
-      <span class="fw-600 fs-065rem">Signer Public key: <br></span>
+      <span class="fw-600 fs-065rem">Signer Public Key: <br></span>
       <span class="fs-065rem w-w-b-w">{{transactionBuilder.data?.signer.publicKey}}</span>
     </div>
   </div>

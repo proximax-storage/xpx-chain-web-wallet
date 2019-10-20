@@ -96,11 +96,11 @@ export class BlockchainComponent implements OnInit {
     // this.getBlock();
     this.getAllNodes();
     this.dataBridgeService.reconnect();
-    this.sharedService.showSuccess('','Update node');
+    this.sharedService.showSuccess('','Node Updated');
   }
 
-  change() {
-    console.log('change node');
+  changeNode() {
+    // console.log('change node');
 
   }
 }

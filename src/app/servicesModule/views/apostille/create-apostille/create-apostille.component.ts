@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators, FormGroup } from '@angular/forms';
+import { FormBuilder, Validators, FormGroup, AbstractControl } from '@angular/forms';
 import * as crypto from 'crypto-js'
-import { Account, UInt64, TransferTransaction } from 'tsjs-xpx-chain-sdk';
+import { Account, UInt64, TransferTransaction, PlainMessage } from 'tsjs-xpx-chain-sdk';
 import { KeyPair, convert } from 'js-xpx-chain-library';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { ConfigurationForm, SharedService } from '../../../../shared/services/shared.service';
@@ -13,6 +13,10 @@ import { StorageService, SearchResultInterface } from '../../storage/services/st
 import { SearchResult } from 'tsjs-chain-xipfs-sdk';
 import { PaginationInstance } from 'ngx-pagination';
 import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
+import { environment } from 'src/environments/environment';
+import { Subscription } from 'rxjs';
+import * as FeeCalculationStrategy from 'tsjs-xpx-chain-sdk/dist/src/model/transaction/FeeCalculationStrategy';
+import { TransactionsService } from 'src/app/transactions/services/transactions.service';
 
 declare const Buffer: any;
 
@@ -45,10 +49,12 @@ export class CreateApostilleComponent implements OnInit {
     extraButton: 'Audit',
     routerExtraButton: `/${AppConfig.routes.audiApostille}`
   };
+  passwordMain: string = 'password';
   processComplete = false;
   rawFileContent: any;
   storeInDfms = false;
   searching: boolean = false;
+  subscription: Subscription[] = [];
   typeEncrypted: Array<object> = [
     { value: '1', label: 'MD5', disabled: true },
     { value: '2', label: 'SHA1', disabled: true, },
@@ -60,6 +66,10 @@ export class CreateApostilleComponent implements OnInit {
   typeFile: string;
   files: File[] = [];
   maxFileSize = 5;
+  fee: string = '0.000000';
+  vestedBalance: { part1: string; part2: string; };
+  amountAccount: number;
+  insufficientBalance: boolean = false;
 
   constructor(
     private apostilleService: ApostilleService,
@@ -68,19 +78,49 @@ export class CreateApostilleComponent implements OnInit {
     private proximaxProvider: ProximaxProvider,
     private sharedService: SharedService,
     private walletService: WalletService,
-    private dataBridgeService: DataBridgeService
+    private dataBridgeService: DataBridgeService,
+    private transactionService: TransactionsService,
   ) {
   }
 
   ngOnInit() {
     this.configurationForm = this.sharedService.configurationForm;
     this.createForm();
+    this.balance();
     // this.filesStorage = await this.storageService.getFiles();
     this.initForm();
     // this.convertToFile(this.filesStorage[0]);
     this.apostilleService.getTransactionStatus();
   }
 
+  ngOnDestroy(): void {
+    this.subscription.forEach(subscription => {
+      subscription.unsubscribe();
+    });
+  }
+
+  balance() {
+    this.subscription.push(this.transactionService.getBalance$().subscribe(
+      next => this.vestedBalance = this.transactionService.getDataPart(next, 6),
+      error => this.vestedBalance = {
+        part1: '0',
+        part2: '000000'
+      }
+    ));
+    let vestedBalance = this.vestedBalance.part1.concat(this.vestedBalance.part2).replace(/,/g,'');
+    this.amountAccount = Number(vestedBalance);
+
+    if(this.amountAccount < 0.056750){
+      this.apostilleFormOne.disable();
+      this.insufficientBalance = true;
+    }
+    
+  }
+  
+  changeInputType(inputType) {
+    let newType = this.sharedService.changeInputType(inputType)
+    this.passwordMain = newType;
+  }
 
   /**
    *
@@ -103,6 +143,22 @@ export class CreateApostilleComponent implements OnInit {
     this.fileReader([file]);
   }
 
+  calculateFee(message?) {
+    const mosaicsToSend = [];
+    const x = TransferTransaction.calculateSize(PlainMessage.create(message).size(), mosaicsToSend.length);
+    const b = FeeCalculationStrategy.calculateFee(x);
+    if (message > 0) {
+      this.fee = this.transactionService.amountFormatterSimple(b.compact())
+    } else if (message === 0 && mosaicsToSend.length === 0) {
+      this.fee = '0.000000'
+    }else {
+      this.fee = this.transactionService.amountFormatterSimple(b.compact())
+    }
+  }
+  
+  builderMessage(hash){
+    this.calculateFee(JSON.stringify(hash))
+  }
   /**
    *
    *
@@ -177,6 +233,7 @@ export class CreateApostilleComponent implements OnInit {
       this.apostilleFormOne.get('typeFile').setValue(true);
     } else {
       this.apostilleFormTwo.reset();
+      this.fee = '0.056750'
       this.apostilleFormTwo.get('typePrivatePublic').setValue(true);
       this.apostilleFormTwo.get('typeEncrypted').setValue('3');
     }
@@ -219,6 +276,7 @@ export class CreateApostilleComponent implements OnInit {
         // Transform base64 into bytes
         this.rawFileContent = crypto.enc.Base64.parse((this.file.toString()).split(/,(.+)?/)[1]);
       };
+      this.isPublic();
     } else {
       // console.log(this.filesStorage);
       if (this.filesStorage !== undefined && this.filesStorage !== null) {
@@ -233,7 +291,23 @@ export class CreateApostilleComponent implements OnInit {
       this.nameFile = 'No file selected yet...';
       this.file = '';
       this.rawFileContent = '';
+      this.fee = '0.000000'
     }
+  }
+
+  isPrivate(){
+    this.fee = '0.072750'
+
+  }
+
+  isPublic(){
+    const apostilleHashPrefix = 'fe4e545903'; //checkSum
+    //create an encrypted hash (contenido del archivo)
+    const hash = this.apostilleService.encryptData(this.file.toString());
+    //concatenates the hash prefix and the result gives the apostilleHash
+    const apostilleHash = apostilleHashPrefix + hash.toString();
+    this.builderMessage(apostilleHash);
+
   }
 
   /**
@@ -242,6 +316,8 @@ export class CreateApostilleComponent implements OnInit {
    * @memberof ApostilleCreateComponent
    */
   sendTransaction() {
+    const validateAmount = this.transactionService.validateBuildSelectAccountBalance(this.amountAccount, Number(this.fee), 0);
+    if (validateAmount) {
     this.blockBtn = true;
     if (this.apostilleFormOne.valid && this.apostilleFormTwo.valid) {
       const pw: any = { password: this.apostilleFormTwo.get('password').value }
@@ -249,10 +325,8 @@ export class CreateApostilleComponent implements OnInit {
         this.apostilleService.loadFileStorage(this.originalFile, pw.privateKey);
         if (this.apostilleFormTwo.get('typePrivatePublic').value === true) {
           this.preparePublicApostille(pw);
-          this.createForm();
         } else {
           this.preparePrivateApostille(pw);
-          this.createForm();
         }
       } else {
         this.blockBtn = false;
@@ -260,6 +334,9 @@ export class CreateApostilleComponent implements OnInit {
     } else {
       this.blockBtn = false;
     }
+  } else {
+    this.sharedService.showError('', 'Insufficient Balance');
+  }
   }
 
 
@@ -393,34 +470,54 @@ export class CreateApostilleComponent implements OnInit {
     });
 
 
-    this.proximaxProvider.announce(signedTransaction).subscribe(
+    this.subscription.push(this.proximaxProvider.announce(signedTransaction).subscribe(
       x => {
-        this.dataBridgeService.getTransactionStatus().subscribe(
-          next => {
-            // console.log('this is response status---------->', next);
+        this.subscription.push(
+          this.dataBridgeService.getTransactionStatus().subscribe(
+            next => {
+              if (next !== null && this.ntyData.txHash.toUpperCase() === next.hash) {
+                this.blockBtn = false;
 
-            // if (statusTransaction['type'] === 'confirmed' && match) {
-            //   this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['hash']);
-            // } else if (statusTransaction['type'] === 'unconfirmed' && match) {
-            // } else if (statusTransaction['type'] === 'aggregateBondedAdded' && match) {
-            // } else if (statusTransaction['type'] === 'cosignatureSignedTransaction' && match) {
-            // } else if (statusTransaction['type'] === 'error' && match) {
-            //   this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['hash']);
-            // }
-          },
-          error => {
-            // console.log('this is response error---------->', error);
-          }
-        )
-        // If everything went OK, build and build the certificate
-        // this.blockBtn = false;
-        // this.processComplete = true;
+                switch (next['type']) {
+                  case 'unconfirmed' || 'confirmed':
+                    this.clearForm(2);
+                    this.processComplete = true;
+                    break;
+
+                  default:
+                    break;
+                }
+              }
+            }
+          )
+        );
       },
       err => {
-        // console.error('This is an error', err);
-        // console.error(err)
-        // this.downloadSignedFiles();
-      });
+        this.blockBtn = false;
+        this.clearForm(2);
+      })
+    );
+  }
+
+   /**
+   *
+   *
+   * @param {string} [nameInput='']
+   * @param {string} [nameControl='']
+   * @param {string} [nameValidation='']
+   * @returns
+   * @memberof CreateMosaicComponent
+   */
+  validateInput(nameInput: string = '', nameControl: string = '', nameValidation: string = '') {
+    let validation: AbstractControl = null;
+    if (nameInput !== '' && nameControl !== '') {
+      validation = this.apostilleFormTwo.controls[nameControl].get(nameInput);
+    } else if (nameInput === '' && nameControl !== '' && nameValidation !== '') {
+      validation = this.apostilleFormTwo.controls[nameControl].getError(nameValidation);
+    } else if (nameInput !== '') {
+      validation = this.apostilleFormTwo.get(nameInput);
+    }
+    return validation;
   }
 
   /**
@@ -438,9 +535,7 @@ export class CreateApostilleComponent implements OnInit {
     //concatenates the hash prefix and the result gives the apostilleHash
     const apostilleHash = apostilleHashPrefix + hash.toString();
     //Generate an account to send the transaction with the apostilleHash
-    const sinkAddress = this.proximaxProvider.createFromRawAddress(
-      this.proximaxProvider.generateNewAccount(this.walletService.currentAccount.network).address.plain()
-    );
+    const sinkAddress = this.proximaxProvider.createFromRawAddress(environment.attestation.address_public_test);
     //Create an account from my private key
     const myAccount = Account.createFromPrivateKey(common.privateKey, this.walletService.currentAccount.network);
     //Arm the transaction type transfer
@@ -483,33 +578,35 @@ export class CreateApostilleComponent implements OnInit {
       nty: this.ntyData
     });
 
-    this.proximaxProvider.announce(signedTransaction).subscribe(
+    this.subscription.push(this.proximaxProvider.announce(signedTransaction).subscribe(
       x => {
-        // console.log('this is a repsonse', x);
-        this.dataBridgeService.getTransactionStatus().subscribe(
-          next => {
-            // console.log('this is response status---------->', next);
+        this.subscription.push(
+          // console.log('this is a repsonse', x);
+          this.dataBridgeService.getTransactionStatus().subscribe(
+            next => {
+              if (next !== null && this.ntyData.txHash.toUpperCase() === next.hash) {
+                this.blockBtn = false;
 
-            // if (statusTransaction['type'] === 'confirmed' && match) {
-            //   this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['hash']);
-            // } else if (statusTransaction['type'] === 'unconfirmed' && match) {
-            // } else if (statusTransaction['type'] === 'aggregateBondedAdded' && match) {
-            // } else if (statusTransaction['type'] === 'cosignatureSignedTransaction' && match) {
-            // } else if (statusTransaction['type'] === 'error' && match) {
-            //   this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['hash']);
-            // }
-          },
-          error => {
-            // console.log('this is response error---------->', error);
-          }
-        )
+                switch (next['type']) {
+                  case 'unconfirmed' || 'confirmed':
+                    this.clearForm(2);
+                    this.processComplete = true;
+                    break;
 
-        // this.blockBtn = false;
-        // this.processComplete = true;
+                  default:
+                    break;
+                }
+              }
+            }
+          )
+        );
       },
       err => {
-        // console.error('This is an error', err);
-        // this.downloadSignedFiles();
-      });
+        this.blockBtn = false;
+        this.clearForm(2);
+      })
+    );
   }
+
+ 
 }

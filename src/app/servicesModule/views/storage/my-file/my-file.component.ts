@@ -215,7 +215,7 @@ export class MyFileComponent implements OnInit, AfterViewInit {
       this.elements = [];
       this.fromTransactionId = undefined;
       if (this.typeSearch === '') {
-        this.sharedService.showError('', 'Please, select a type search');
+        this.sharedService.showError('', 'Please select a search type');
         return;
       } else if (this.paramSearch === '') {
         var tp = '';

@@ -9,8 +9,8 @@
 
     <div class="col-12 col-md-4 d-flex justify-content-start justify-content-md-end">
       <a class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio" [routerLink]="[routes.createpoll]">
-        <span>New |</span>
-      </a>
+        <span>New</span>
+      </a>&nbsp;|&nbsp;
       <a class="fs-09rem fw-600 txt-a-center line-h-1-2em color-blue-intermedio" [routerLink]="[routes.backToService]">
         <span> Back to Services</span>
       </a>
@@ -24,19 +24,18 @@
 
 </div>
 
-<div class="container-fluid background-header-grey pb-1rem pt-1rem">
+<div class="container-fluid pb-1rem pt-1rem">
   <div class="row d-flex justify-content-center">
     <div class="col-12">
       <div class="row d-flex align-items-center">
-        <div class="col-2 col-md-1 d-flex justify-content-center"> > </div>
-        <div class="col-8 col-md-10">
+        <div class="col-11 col-md-10 mx-auto">
           <div class="row d-flex justify-content-center">
             <div class="col-12 col-sm-3">
               <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [searchable]="false" [validateError]="true" [items]="filterObjectSelect"
-                bindLabel="label" bindValue="value" placeholder="Select search type"
+                bindLabel="label" bindValue="value" placeholder="Search"
                 (change)="filterSelected($event)"  [(ngModel)]="selectedSearch"></ng-select>
             </div>
-            <div class="col-12 col-sm-5 d-flex justify-content-md-end justify-content-center">
+            <div class="col-12 col-sm-7 d-flex justify-content-md-end justify-content-center">
               <input mdbInputDirective [validateSuccess]="false" [validateError]="false" class="w-100porcent form-control"
                 type="text" [placeholder]="placeholderText" autocomplete="off" (ngModelChange)="filterChange($event)"  [(ngModel)]="filter">
             </div>
@@ -49,15 +48,14 @@
             </div> -->
 
             <div class="col-12 col-sm-2">
-              <button (click)="refreshData($event)" mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn"
+              <button (click)="refreshData($event)" mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax"
                 size="sm">
-                <span class="fs-1-2em color-white">REFRESH</span>
+                <span class="fs-1-2em color-white">Refresh</span>
               </button>
             </div>
 
           </div>
         </div>
-        <div class="col-2 col-md-1 d-flex justify-content-center"> > </div>
       </div>
     </div>
   </div>

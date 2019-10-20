@@ -55,9 +55,10 @@
 }
 
 .isActive {
-  background: #306eb5 !important;
-  color: white !important;
+  background: #f4f4f4 !important;
+  color: black !important;
   height: 40px;
+  font-weight: 400;
 }
 
 .h-account {
@@ -66,27 +67,18 @@
   display: -webkit-box;
   overflow-y: hidden;
 }
-
+/*
 .btn.disabled, .btn:disabled {
   background-color: #dedede !important;
   border-color: #9a9a9a !important;
+}*/
+
+.border-separator {
+  border-left: .5rem solid #f4f4f4;
+  padding-left: .6rem;
 }
 
-/* Scrollbar styles */
-/*
-::-webkit-scrollbar {
-  width: 12px;
-  height: 12px;
+.box-accounts-height{
+  overflow-y: auto;
+  max-height: 118px;
 }
-
-::-webkit-scrollbar-track {
-  box-shadow: inset 0 0 10px olivedrab;
-  border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb {
-  border-radius: 10px;
-  background: yellowgreen;
-  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
-}
-*/

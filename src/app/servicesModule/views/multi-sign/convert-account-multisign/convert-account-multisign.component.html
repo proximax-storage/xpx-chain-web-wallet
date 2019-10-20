@@ -9,26 +9,47 @@
       <div class="col-11 col-md-10 col-lg-9 col-xl-8 mx-auto">
         <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [searchable]="false" [clearable]="false"
           [validateError]="true" class="selectWrapper" [items]="currentAccounts" formControlName="selectAccount"
-          bindLabel="label" bindValue="value" placeholder="Select an account" (change)="selectAccount($event)">
+          bindLabel="label" placeholder="Select an Account" (change)="selectAccount($event)">
 
           <ng-template ng-option-tmp let-item="item" let-index="index">
             <b> <i [ngStyle]="{
-              'color': item.disabled && !item.info? '#0056b3' : 'rgba(0,0,0,0.38)'
+              'color': item.disabledItem && item.disabledPartial? '#f2a917' : 'rgba(0,0,0,0.38)'
             }"
                 class="fa fa-bell"> </i> </b>&nbsp;
-            <b>{{item.label}}</b> &nbsp;<b style="color:brown">{{item.info}}</b>
+            <b>{{item.label}}</b> 
           </ng-template>
+          <!-- <ng-template ng-footer-tmp>
+            <span class="fs-08rem color-error-message">
+              Cosignatory has sufficient balance ({{amountFormatterSimple(totalFee)}} XPX) to cover LockFund Fee
+            </span>
+            <br>
+
+            <span class="fs-08rem color-error-message">
+              You cannot edit an account that has a partial transaction pending (<i title="partially" style="padding-right: 0px;"
+                class="fa fa-bell color-light-orange"></i>).
+            </span>
+
+          </ng-template> -->
         </ng-select>
         <!-- VALIDATION -->
         <mdb-error class="ml-1rem">
           <span *ngIf="validateInput('selectAccount').invalid && (validateInput('selectAccount').dirty || validateInput('selectAccount').touched)"
-            class="fs-08rem fw-600 color-error-message">Select an account</span>
+            class="fs-08rem fw-600 color-error-message">Select an Account</span>
         </mdb-error>
       </div>
     </div>
 
+    <div class="row " *ngIf="valueValidateAccount.disabledItem">
+      <div class="col-8 mx-auto mb-1rem  box-transparent-border-red">
+        <div class="txt-a-center">
+          <img src="assets/images/img/icon-restriction-white.svg" style="filter: invert(50%)" alt="" width="30">
+        </div>
+        <h6  *ngIf="valueValidateAccount.info !==''" class="fw-600">{{valueValidateAccount.info}}</h6>
+        <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em" [innerHtml]="valueValidateAccount.subInfo">
 
-
+        </p>
+      </div>
+    </div>
     <!-- COSIGNATORY LIST  -->
     <div class="row gray-color-transparent pt-1rem pb-1rem">
       <div class="col-11 col-md-10 col-lg-8 mx-auto">
@@ -96,10 +117,10 @@
               <input [maxlength]="configurationForm.privateKey.maxLength" [minlength]="configurationForm.privateKey.minLength"
                 formControlName="cosignatory" required mdbInputDirective mdbValidate [validateSuccess]="true"
                 [validateError]="true" type="text" id="cosignatory" class="form-control form-control-sm input-border"
-                placeholder="Cosignatory Account public key " onkeyup="javascript:this.value=this.value.toLowerCase();">
+                placeholder="Cosignatory Account Public Key " onkeyup="javascript:this.value=this.value.toLowerCase();">
               <!-- VALIDATION -->
               <mdb-error *ngIf="validateInput('cosignatory', '').invalid && (validateInput('cosignatory', '').dirty || validateInput('cosignatory', '').touched)">
-                <span>Required field</span>
+                <span>Required Field</span>
               </mdb-error>
             </div>
           </div>
@@ -145,14 +166,23 @@
 
 
     <!-- Msg information -->
-    <div class="row mt-1-5rem">
+    <div class="col-8 mb-1rem mx-auto box-transparent-border-orange">
+      <div class="txt-a-center">
+        <img src="assets/images/img/icon-transaction-unconfirmed-white.svg" style="filter: invert(50%)" alt="" width="30">
+      </div>
+      <h6 class="fw-600">Warning!</h6>
+      <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em">
+        If you are not on the cosignatories list, you will lose control of the account.
+      </p>
+    </div>
+    <!--<div class="row mt-1-5rem">
       <div class="col-11 col-md-10 col-lg-9 col-xl-8 mx-auto">
         <div class="box-transparent-border-orange m-0">
           <span class="fs-075rem w-b-a txt-a-center">Warning! If you are not on the Cosignatories list, you will lose
             control of the account.</span>
         </div>
       </div>
-    </div>
+    </div>-->
     <!-- MIN APPROVA  AND  MIN REMOVE -->
     <div class="row mt-1-5rem">
       <div class="col-11 col-md-10 col-lg-9 col-xl-8 mx-auto">
@@ -175,7 +205,7 @@
           <!-- MIN APROVE -->
           <div class="col-6 col-md-4 mb-1-5rem d-flex align-items-end justify-content-center">
             <div class="row">
-              <div class="col-12 text-center">Approve transaction</div>
+              <div class="col-12 text-center">Approve Transaction</div>
               <div class="col-12">
                 <div class="md-form form-sm mt-03rem mb-0rem">
                   <input (keypress)="preventNumbers($event)" max="{{minApprovaMaxLength}}" min="{{minApprovaMinLength}}"
@@ -194,7 +224,7 @@
           <!-- MIN REMOVE-->
           <div class="col-6 col-md-4 mb-1-5rem d-flex align-items-end justify-content-center">
             <div class="row margin-rem0">
-              <div class="col-12 text-center">Delete users</div>
+              <div class="col-12 text-center">Delete Users</div>
               <div class="col-12">
                 <div class="md-form form-sm mt-03rem mb-0rem">
                   <input (keypress)="preventNumbers($event)" max="{{minApprovaMaxLength}}" min="{{minApprovaMinLength}}"
@@ -215,14 +245,14 @@
 
 
     <!-- FEE -->
-    <div class="row mt-1-5rem">
+    <!-- <div class="row mt-1-5rem">
       <div class="col-11 col-md-10 col-lg-9 col-xl-8 mx-auto">
         <div class="row">
           <div class="col-12 col-sm-6">
             <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
               <div class="row">
                 <div class="col-12 text-center">
-                  <span>Fee: <br></span>
+                  <span>Unconfirmed/Recommended Fee: <br></span>
                   <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" alt="">
                   <span class="fs-09rem">{{ fee }} XPX</span>
                 </div>
@@ -243,6 +273,35 @@
           </div>
         </div>
       </div>
+    </div> -->
+    <div class="row mt-1-5rem">
+      <div class="col-11 col-md-10 col-lg-8 mx-auto">
+        <div class="row">
+          <div class="col-12 col-md-6 mx-auto">
+            <div class="box-grey d-flex justify-content-center pt-08rem pb-08rem">
+              <div class="row">
+                <div class="col-12 text-center">
+                  <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20"
+                    alt="">
+                  <span class="fs-07rem">Unconfirmed/Recommended Fee: {{fee}} XPX <br></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12 col-md-6 mx-auto">
+            <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
+              <div class="row">
+                <div class="col-12 d-flex align-items-center">
+                  <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20"
+                    alt="">
+                  <span class="fs-07rem">LockFund: 10.000000 XPX <br> Unconfirmed/Recommended Fee: 0.044500 XPX</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Passowrd -->
@@ -251,9 +310,13 @@
         <div class="md-form form-sm">
           <img class="form-control-feedback" src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg"
             alt="">
+          <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)" src="assets/images/img/icon-show-hide-password.svg"
+            *ngIf="passwordMain === 'password'">
+          <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)" src="assets/images/img/icon-show-hide-password-grey.svg"
+            *ngIf="passwordMain === 'text'">
           <input [maxlength]="configurationForm.passwordWallet.maxLength" [minlength]="configurationForm.passwordWallet.minLength"
             formControlName="password" required mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
-            type="password" id="password" class="form-control form-control-sm input-border" placeholder="Enter wallet password">
+            [type]="passwordMain" id="password" class="form-control form-control-sm input-border" placeholder="Enter Wallet Password">
           <mdb-error *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
             <span>Required field</span>
           </mdb-error>
@@ -266,14 +329,13 @@
       <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto">
         <div class="row">
           <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-            <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
-              size="md" (click)="clearForm()">
+            <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" size="md" (click)="clearForm()">
               <span class="fs-1-2em color-white">Clear</span>
             </button>
           </div>
           <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
             <button [disabled]="convertAccountMultsignForm.invalid || cosignatoryList.length == 0" mdbBtn type="submit"
-              rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
+              rounded="true" mdbWavesEffect class="btn-proximax" size="md">
               <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true" *ngIf="blockSend"></span>
               <span class="fs-1-2em color-white">Send</span>
             </button>

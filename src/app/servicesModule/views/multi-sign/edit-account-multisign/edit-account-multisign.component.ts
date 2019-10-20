@@ -13,6 +13,7 @@ import { TransactionsService, TransactionsInterface } from 'src/app/transactions
 import { DataBridgeService } from 'src/app/shared/services/data-bridge.service';
 import { environment } from 'src/environments/environment';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ThrowStmt } from '@angular/compiler';
 
 @Component({
   selector: 'app-edit-account-multisign',
@@ -60,12 +61,19 @@ export class EditAccountMultisignComponent implements OnInit {
   subscribeAggregateBonded: Subscription[] = [];
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Accounts > Multisign',
-    componentName: 'Edit account Multisig'
+    componentName: 'Edit Account Multisig'
   };
-  feeTransaction: number = 0;
+  feeTransaction: number = 44500;
   feeLockfund: number = 10000000;
   totalFee: number = 0;
-
+  aggregateTransaction: AggregateTransaction;
+  fee: number;
+  valueValidateAccount: validateBuildAccount = {
+    disabledItem: false,
+    disabledPartial: false,
+    info: '',
+    subInfo: ''
+  }
   constructor(
 
     private activateRoute: ActivatedRoute,
@@ -97,12 +105,9 @@ export class EditAccountMultisignComponent implements OnInit {
     this.createForm()
     this.booksAddress();
     this.subscribeValueChange();
-    this.changeformStatus()
-    // this.listContact = this.booksAddress();
-    // this.validatorsCosignatory()
+    this.changeformStatus();
     this.selectAccount(this.activateRoute.snapshot.paramMap.get('name'));
-
-
+    this.builder();
   }
   /**
  *
@@ -110,8 +115,6 @@ export class EditAccountMultisignComponent implements OnInit {
  * @memberof CreateTransferComponent
  */
   ngOnDestroy(): void {
-    // this.subscribeAccount.unsubscribe();
-
     this.unsubscribe(this.subscribeAggregateBonded);
     this.unsubscribe(this.subscribeAccount);
   }
@@ -141,8 +144,6 @@ export class EditAccountMultisignComponent implements OnInit {
       ]
       ],
     });
-    // this.changeformStatus()
-    // this.validatorsCosignatory()
   }
 
   /**
@@ -223,9 +224,7 @@ export class EditAccountMultisignComponent implements OnInit {
     this.booksAddress().filter(item => item.label !== this.currentAccountToConvert.name)
     this.subscribeAccount.push(this.walletService.getAccountsInfo$().subscribe(
       async accountInfo => {
-
-        this.getAggregateBondedTransactionsValidate()
-        // this.accountInfo = this.walletService.filterAccountInfo(name);
+        this.getAggregateBondedTransactionsValidate();
 
       }));
     // this.clearData();
@@ -285,17 +284,14 @@ export class EditAccountMultisignComponent implements OnInit {
    *
    * @param name
    */
-  validateAccount(name: string, disable: boolean) {
+  validateAccount(name: string, validateBuildAccount: validateBuildAccount) {
     this.isMultisig = false;
     this.mdbBtnAddCosignatory = true;
     this.accountInfo = this.walletService.filterAccountInfo(name);
-    // console.log('this.accountInfo.multisigInfo', this.accountInfo.multisigInfo)
     this.accountValid = (
       this.accountInfo !== null &&
       this.accountInfo !== undefined && this.accountInfo.accountInfo !== null);
-    // if (this.subscribeAccount) {
-    //   this.subscribeAccount.unsubscribe();
-    // }
+  
     this.unsubscribe(this.subscribeAccount);
     //Validate Account
     if (!this.accountValid) {
@@ -309,13 +305,12 @@ export class EditAccountMultisignComponent implements OnInit {
     this.validateInfoisMultisig(this.isMultisig)
     //Validate Balance
     if (!this.accountInfo.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id))
-      return this.sharedService.showError('', 'Insufficient balance');
+      return this.sharedService.showError('', 'Insufficient Balance');
 
 
 
-    if (this.hasCosigner() && !this.disable) {
+    if (this.hasCosigner() && !validateBuildAccount.disabledItem) {
       this.publicAccountToConvert = PublicAccount.createFromPublicKey(this.currentAccountToConvert.publicAccount.publicKey, this.currentAccountToConvert.network)
-      // this.getCosignerFirm()
       this.mdbBtnAddCosignatory = false;
       this.setValueForm('edit', true, 3);
       this.editAccountMultsignForm.enable();
@@ -336,7 +331,7 @@ export class EditAccountMultisignComponent implements OnInit {
    */
   validateInfoisMultisig(isMultisig: boolean) {
     if (!isMultisig) {
-      this.sharedService.showError('', 'not is Multisig');
+      this.sharedService.showError('', 'Not is multisig');
       this.router.navigate([`/${AppConfig.routes.MultiSign}`]);
     }
   }
@@ -350,7 +345,7 @@ export class EditAccountMultisignComponent implements OnInit {
    */
   validateBuildSelectAccountBalance(balanceAccount: number): boolean {
     const totalFee = this.feeLockfund + this.feeTransaction;
-    return (balanceAccount >= totalFee)
+    return (balanceAccount >= this.totalFee)
 
   }
   // TransactionType.MODIFY_MULTISIG_ACCOUNT
@@ -358,19 +353,35 @@ export class EditAccountMultisignComponent implements OnInit {
   getAggregateBondedTransactionsValidate() {
 
     this.subscribeAggregateBonded.push(this.transactionService.getAggregateBondedTransactions$().subscribe((transactions: TransactionsInterface[]) => {
-      this.disable = false;
+      let value = false;
+      this.valueValidateAccount = {
+        disabledItem: false,
+        disabledPartial: false,
+        info: null,
+        subInfo: null
+      }
       for (let index = 0; index < transactions.length; index++) {
         for (let i = 0; i < transactions[index].data['innerTransactions'].length; i++) {
-          this.disable = (transactions[index].data['innerTransactions'][i].signer.publicKey === this.currentAccountToConvert.publicAccount.publicKey);
+          value = (transactions[index].data['innerTransactions'][i].signer.publicKey === this.currentAccountToConvert.publicAccount.publicKey);
 
-          if (this.disable)
+          if (value) {
+
+            this.valueValidateAccount = {
+              disabledItem: value,
+              disabledPartial: value,
+              info: 'Partial',
+              subInfo: `You cannot edit an account that has a partial transaction pending (<i title="partially" style="padding-right: 0px;"
+              class="fa fa-bell color-light-orange"></i>).`
+            }
             break
+          }
+
         }
-        if (this.disable)
+        if (value)
           break
       }
       // }
-      this.validateAccount(this.activateRoute.snapshot.paramMap.get('name'), this.disable)
+      this.validateAccount(this.activateRoute.snapshot.paramMap.get('name'), this.valueValidateAccount)
     }));
 
   }
@@ -401,6 +412,12 @@ export class EditAccountMultisignComponent implements OnInit {
         isCosigner = this.accountInfo.multisigInfo.hasCosigner(publicAccount)
         // break
       }
+      if (this.consginerFirmList.length == 1) {
+
+        isCosigner = (!this.consginerFirmList[0].disabled);
+
+      }
+
       if (this.consginerFirmList.length > 1) {
         this.showConsginerFirmList = true;
         this.editAccountMultsignForm.controls['cosignatorieSign'].setValidators([Validators.required]);
@@ -409,6 +426,14 @@ export class EditAccountMultisignComponent implements OnInit {
         this.editAccountMultsignForm.controls['cosignatorieSign'].setValidators(null);
       }
       this.editAccountMultsignForm.controls['cosignatorieSign'].updateValueAndValidity({ emitEvent: false, onlySelf: true });
+    }
+    if (!isCosigner) {
+      this.valueValidateAccount = {
+        disabledItem: true,
+        disabledPartial: false,
+        info: '',
+        subInfo: `Requires a valid cosigner to edit this account.`
+      }
     }
     return isCosigner;
   }
@@ -438,6 +463,19 @@ export class EditAccountMultisignComponent implements OnInit {
   }
 
 
+  builder() {
+
+    let convertIntoMultisigTransaction: ModifyMultisigAccountTransaction;
+    convertIntoMultisigTransaction = this.modifyMultisigAccountTransaction();
+
+    this.aggregateTransaction = AggregateTransaction.createBonded(
+      Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
+      [convertIntoMultisigTransaction.toAggregate(this.currentAccountToConvert.publicAccount)],
+      this.currentAccountToConvert.network
+    );
+
+    this.fee = this.aggregateTransaction.maxFee.compact();
+  }
 
   /**
   *
@@ -451,15 +489,18 @@ export class EditAccountMultisignComponent implements OnInit {
       if (this.walletService.decrypt(common, this.consginerFirmAccount)) {
         this.accountToConvertSign = Account.createFromPrivateKey(common.privateKey, this.consginerFirmAccount.network)
         common = '';
-        let convertIntoMultisigTransaction: ModifyMultisigAccountTransaction;
-        convertIntoMultisigTransaction = this.modifyMultisigAccountTransaction()
-        const aggregateTransaction = AggregateTransaction.createBonded(
-          Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
-          [convertIntoMultisigTransaction.toAggregate(this.currentAccountToConvert.publicAccount)],
-          this.currentAccountToConvert.network
-        );
+        // let convertIntoMultisigTransaction: ModifyMultisigAccountTransaction;
+        // convertIntoMultisigTransaction = this.modifyMultisigAccountTransaction();
+        // console.log('convertIntoMultisigTransaction', convertIntoMultisigTransaction);
+
+        // const aggregateTransaction = AggregateTransaction.createBonded(
+        //   Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
+        //   [convertIntoMultisigTransaction.toAggregate(this.currentAccountToConvert.publicAccount)],
+        //   this.currentAccountToConvert.network
+        // );
+
         const generationHash = this.dataBridge.blockInfo.generationHash;
-        const signedTransaction = this.accountToConvertSign.sign(aggregateTransaction, generationHash)
+        const signedTransaction = this.accountToConvertSign.sign(this.aggregateTransaction, generationHash)
         const hashLockTransaction = HashLockTransaction.create(
           Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
           new Mosaic(new MosaicId(environment.mosaicXpxInfo.id), UInt64.fromUint(Number(10000000))),
@@ -530,6 +571,8 @@ export class EditAccountMultisignComponent implements OnInit {
     );
   }
 
+
+
   modifyMultisigAccountTransaction(): ModifyMultisigAccountTransaction {
     let modifyobject: Modifyobject;
     const valor = this.multiSignService.calcMinDelta(
@@ -545,6 +588,7 @@ export class EditAccountMultisignComponent implements OnInit {
       modifications: this.multisigCosignatoryModification(this.getCosignatoryListFilter(1, 2)),
       networkType: this.currentAccountToConvert.network
     }
+    // console.log('modifyobject', modifyobject);
 
     return ModifyMultisigAccountTransaction.create(
       modifyobject.deadline,
@@ -688,6 +732,16 @@ export class EditAccountMultisignComponent implements OnInit {
         this.validatorsCosignatory()
       }
     );
+    this.editAccountMultsignForm.get('minApprovalDelta').valueChanges.subscribe(
+      next => {
+        this.builder();
+      }
+    );
+    this.editAccountMultsignForm.get('minRemovalDelta').valueChanges.subscribe(
+      next => {
+        this.builder();
+      }
+    );
   }
   changeformStatus() {
     this.editAccountMultsignForm.statusChanges.subscribe(res => {
@@ -718,7 +772,7 @@ export class EditAccountMultisignComponent implements OnInit {
         this.proximaxProvider.getAccountInfo(Address.createFromRawAddress(event.value)).subscribe((res: AccountInfo) => {
           this.searchContact = false;
           if (res.publicKeyHeight.toHex() === '0000000000000000') {
-            this.sharedService.showWarning('', 'you need a public key');
+            this.sharedService.showWarning('', 'Cosignatory does not have a public key');
 
             this.editAccountMultsignForm.get('cosignatory').patchValue('', { emitEvent: false, onlySelf: true });
             this.editAccountMultsignForm.get('contact').patchValue('', { emitEvent: false, onlySelf: true });
@@ -750,7 +804,7 @@ export class EditAccountMultisignComponent implements OnInit {
                 this.editAccountMultsignForm.get('cosignatory').patchValue(account.accountInfo.publicKey, { emitEvent: true })
                 this.editAccountMultsignForm.get('contact').patchValue('', { emitEvent: false, onlySelf: true });
               } else {
-                this.sharedService.showWarning('', 'you need a public key');
+                this.sharedService.showWarning('', 'Cosignatory does not have a public key');
                 this.editAccountMultsignForm.get('contact').patchValue('', { emitEvent: false, onlySelf: true });
               }
 
@@ -767,6 +821,7 @@ export class EditAccountMultisignComponent implements OnInit {
 
 
       }
+      this.builder()
     }
   }
 
@@ -789,6 +844,7 @@ export class EditAccountMultisignComponent implements OnInit {
 
       this.setCosignatoryList(this.cosignatoryList, true)
     }
+    this.builder();
     this.validatorsCosignatory()
     // this.btnblckfun()
   }
@@ -834,6 +890,7 @@ export class EditAccountMultisignComponent implements OnInit {
       } else {
         this.sharedService.showError('', 'Cosignatory is already present in modification list');
       }
+      this.builder()
     }
   }
   getColor(type) {
@@ -967,4 +1024,13 @@ interface ContactsListInterface {
   walletContact: boolean;
   isMultisig: boolean;
   disabled: boolean;
+}
+
+
+interface validateBuildAccount {
+  disabledItem: boolean,
+  disabledPartial: boolean
+  info: string,
+  subInfo: string
+
 }

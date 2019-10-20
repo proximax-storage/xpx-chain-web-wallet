@@ -19,6 +19,8 @@ import { MosaicService } from '../../servicesModule/services/mosaic.service';
 })
 export class AuthService {
 
+  eventShowModalSubject: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+  eventShowModal$: Observable<number> = this.eventShowModalSubject.asObservable();
   isLogged = false;
   subscription = {};
   logged = false;
@@ -64,7 +66,7 @@ export class AuthService {
   async login(common: any, currentWallet: CurrentWalletInterface) {
     this.walletService.destroyDataWalletAccount();
     // console.log('This current Wallet------------------------->', currentWallet);
-    
+
     const currentAccount = Object.assign({}, currentWallet.accounts.find(elm => elm.firstAccount === true));
     let isValid = false;
     if (currentAccount) {
@@ -97,7 +99,6 @@ export class AuthService {
     this.dataBridgeService.connectnWs();
 
     let wallet = this.walletService.getWalletTransNisStorage().find(el => el.name === this.walletService.getCurrentWallet().name);
-
     if (wallet !== undefined && wallet !== null) {
       this.walletService.setSwapTransactions$(wallet.transactions);
     } else {
@@ -127,13 +128,16 @@ export class AuthService {
    * @memberof LoginService
    **/
   setLogged(params: any) {
+    this.eventShowModalSubject.next(0);
     this.logged = params;
     this.isLogged = params;
     this.isLoggedSubject.next(this.logged);
     this.transactionService.setBalance$('0.000000');
   }
 
-  /**************************************************/
+  setEventShowModal(num: number){
+    this.eventShowModalSubject.next(num);
+  }
 
 
   /**
@@ -151,6 +155,9 @@ export class AuthService {
   }
 
 
+  getEventShowModal(): Observable<number> {
+    return this.eventShowModal$;
+  }
 
 
   /**

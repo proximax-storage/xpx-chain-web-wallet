@@ -7,20 +7,19 @@ import { ChronoUnit } from 'js-joda';
 
 export const environment = {
   production: true,
-  itemBooksAddress: 'sw-books-testnet-01',
-  //version: '0.3.1.8',
-  version: '0.3.12',
-  cacheVersion: '3',
+  itemBooksAddress: 'sw-books-testnet',
+  version: '0.3.22',
+  cacheVersion: '21',
   nameKeyBlockStorage: `sw-blocks`,
-  nameKeyNodeSelected: `sw-selected-node-testnet-01`,
-  nameKeyWalletStorage: `sw-testnet-01`,
-  nameKeyNodeStorage: `sw-nodes-testnet-01`,
-  nameKeyNamespaces: `sw-namespaces-testnet-01`,
-  nameKeyMosaicStorage: `sw-mosaics-testnet-01`,
-  nameKeyVersion: 'sw-version-testnet-01',
-  nameKeyWalletTransactionsNis: 'sw-transactions-nis-01',
-  protocol: `http`,
-  protocolWs: `ws`,
+  nameKeyNodeSelected: `sw-selected-node-testnet`,
+  nameKeyWalletStorage: `sw-testnet`,
+  nameKeyNodeStorage: `sw-nodes-testnet`,
+  nameKeyNamespaces: `sw-namespaces-testnet`,
+  nameKeyMosaicStorage: `sw-mosaics-testnet`,
+  nameKeyVersion: 'sw-version-testnet',
+  nameKeyWalletTransactionsNis: 'sw-transactions-nis',
+  protocol: `https`,
+  protocolWs: `wss`,
   nodeExplorer: 'https://bctestnetexplorer.xpxsirius.io/#/result/hash',
   mosaicXpxInfo: {
     name: 'prx.xpx',
@@ -31,8 +30,8 @@ export const environment = {
     namespaceId: 'bffb42a19116bdf6',
     divisibility: 6
   },
-  deadlineTransfer :{
-    deadline :1439,
+  deadlineTransfer: {
+    deadline: 1439,
     chronoUnit: ChronoUnit.MINUTES
   },
   /*mosaicXpxInfo: {
@@ -75,11 +74,27 @@ export const environment = {
     address_public_test: 'VD6AXC-3QBCFT-SLKHT6-2UPGTN-V5Z63I-YZKJI3-YGMD'
   },
   pollsContent: {
-    private_key: '687452458B69602A4E43E7C86AB038C2178794BD5FB816C1792A319015DB7190',
-    public_key: '0000000000000000000000000000000000000000000000000000000000000000',
+    public_key: '945215E9D664D60E5A4FD54982C09B1F79D421EA0436FA307112A0DF74C89622',
     address_public_test: 'VBPCBA-VFP7OG-REVIGD-TGRIKJ-PXSM4E-K446VF-SMFJ'
   },
+  attestation: {
+    address_public_test: 'VDYN53-XXEGKK-3XHQYE-K6ZBMN-JPXN57-ZBHXA3-AW55'
+  },
   nis1: {
+    /* url: 'https://bctestnetswap.xpxsirius.io:7890',
+      urlExplorer: 'http://testnet-explorer.nemtool.com/#/unconfirmedtxlist',
+      networkType: NetworkTypes.TEST_NET,
+      address: 'TBF4LAZUEJMBIOC6J24D6ZGGXE5W775TX555CTTN',
+      nodes: [
+        { protocol: "https", domain: "bctestnetswap.xpxsirius.io", port: 7890 } as ServerConfig
+      ],*/
+    /*url: 'https://bctestnetswap.xpxsirius.io',
+    urlExplorer: 'http://testnet-explorer.nemtool.com/#/unconfirmedtxlist',
+    networkType: NetworkTypes.TEST_NET,
+    address: 'TBF4LAZUEJMBIOC6J24D6ZGGXE5W775TX555CTTN',
+    nodes: [
+      { protocol: "https", domain: "bctestnetswap.xpxsirius.io", port: 443 } as ServerConfig
+    ],*/
     url: 'http://18.231.166.212:7890',
     urlExplorer: 'http://testnet-explorer.nemtool.com/#/unconfirmedtxlist',
     networkType: NetworkTypes.TEST_NET,
@@ -87,23 +102,10 @@ export const environment = {
     nodes: [
       { protocol: "http", domain: "18.231.166.212", port: 7890 } as ServerConfig
     ],
-    // url: 'https://bctestnetswap.xpxsirius.io',
-    // urlExplorer: 'http://testnet-explorer.nemtool.com/#/unconfirmedtxlist',
-    // networkType: NetworkTypes.TEST_NET,
-    // address: 'TBF4LAZUEJMBIOC6J24D6ZGGXE5W775TX555CTTN',
-    // nodes: [
-    //   { protocol: "https", domain: "bctestnetswap.xpxsirius.io", port: 443 } as ServerConfig
-    // ],
-    // url: 'http://192.168.2.141:7890',
-    // urlExplorer: 'http://testnet-explorer.nemtool.com/#/unconfirmedtxlist',
-    // networkType: NetworkTypes.TEST_NET,
-    // address: 'TBF4LAZUEJMBIOC6J24D6ZGGXE5W775TX555CTTN',
-    // nodes: [
-    //   { protocol: "http", domain: "192.168.2.141", port: 7890 } as ServerConfig
-    // ],
   },
   swapAccount: {
-    address: 'VC3I3FSQ354JT2QNS2XJ2J3OROCOBIRK6JB3BCBH'
+    addressAccountMultisig: 'VAWOEOWTABXR7O3ZAK2XNA5GIBNE6PZIXDAFDWBU',
+    addressAccountSimple: 'VC3I3FSQ354JT2QNS2XJ2J3OROCOBIRK6JB3BCBH'
   },
   /*typeNetwork: {
     value: NetworkType.MAIN_NET,

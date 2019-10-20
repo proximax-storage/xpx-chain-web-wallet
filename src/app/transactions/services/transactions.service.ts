@@ -26,9 +26,12 @@ import { NodeService } from "../../servicesModule/services/node.service";
 import { environment } from "../../../environments/environment";
 import { MosaicService } from "../../servicesModule/services/mosaic.service";
 import { NamespacesService } from "../../servicesModule/services/namespaces.service";
-import { WalletService, AccountsInfoInterface, AccountsInterface } from '../../wallet/services/wallet.service';
-
-
+import {
+  WalletService,
+  AccountsInfoInterface,
+  AccountsInterface
+} from "../../wallet/services/wallet.service";
+import { SharedService } from "../../shared/services/shared.service";
 
 export interface TransferInterface {
   common: { password?: any; privateKey?: any };
@@ -38,25 +41,34 @@ export interface TransferInterface {
   mosaic: any;
 }
 
-
-
 @Injectable({
   providedIn: "root"
 })
 export class TransactionsService {
-
   private balance: BehaviorSubject<any> = new BehaviorSubject<any>("0.000000");
   private balance$: Observable<any> = this.balance.asObservable();
 
   //Confirmed
-  private _confirmedTransactionsSubject = new BehaviorSubject<TransactionsInterface[]>([]);
-  private _confirmedTransactions$: Observable<TransactionsInterface[]> = this._confirmedTransactionsSubject.asObservable();
+  private _confirmedTransactionsSubject = new BehaviorSubject<
+    TransactionsInterface[]
+  >([]);
+  private _confirmedTransactions$: Observable<
+    TransactionsInterface[]
+  > = this._confirmedTransactionsSubject.asObservable();
   //Unconfirmed
-  private unconfirmedTransactionsSubject = new BehaviorSubject<TransactionsInterface[]>([]);
-  private unconfirmedTransactions$: Observable<TransactionsInterface[]> = this.unconfirmedTransactionsSubject.asObservable();
+  private unconfirmedTransactionsSubject = new BehaviorSubject<
+    TransactionsInterface[]
+  >([]);
+  private unconfirmedTransactions$: Observable<
+    TransactionsInterface[]
+  > = this.unconfirmedTransactionsSubject.asObservable();
   //Aggregate Transactions
-  private _aggregateTransactionsSubject: BehaviorSubject<TransactionsInterface[]> = new BehaviorSubject<TransactionsInterface[]>([]);
-  private _aggregateTransactions$: Observable<TransactionsInterface[]> = this._aggregateTransactionsSubject.asObservable();
+  private _aggregateTransactionsSubject: BehaviorSubject<
+    TransactionsInterface[]
+  > = new BehaviorSubject<TransactionsInterface[]>([]);
+  private _aggregateTransactions$: Observable<
+    TransactionsInterface[]
+  > = this._aggregateTransactionsSubject.asObservable();
 
   arraTypeTransaction = {
     transfer: {
@@ -65,27 +77,27 @@ export class TransactionsService {
     },
     registerNameSpace: {
       id: TransactionType.REGISTER_NAMESPACE,
-      name: "Register namespace"
+      name: "Register Namespace"
     },
     mosaicDefinition: {
       id: TransactionType.MOSAIC_DEFINITION,
-      name: "Mosaic definition"
+      name: "Mosaic Definition"
     },
     mosaicSupplyChange: {
       id: TransactionType.MOSAIC_SUPPLY_CHANGE,
-      name: "Mosaic supply change"
+      name: "Mosaic Supply Change"
     },
     modifyMultisigAccount: {
       id: TransactionType.MODIFY_MULTISIG_ACCOUNT,
-      name: "Modify multisig account"
+      name: "Modify Multisig Account"
     },
     aggregateComplete: {
       id: TransactionType.AGGREGATE_COMPLETE,
-      name: "Aggregate complete"
+      name: "Aggregate Complete"
     },
     aggregateBonded: {
       id: TransactionType.AGGREGATE_BONDED,
-      name: "Aggregate bonded"
+      name: "Aggregate Bonded"
     },
     mosaicAlias: {
       id: TransactionType.MOSAIC_ALIAS,
@@ -97,8 +109,8 @@ export class TransactionsService {
     },
     lock: {
       id: TransactionType.LOCK,
-      name: "Lockfund"
-    },
+      name: "LockFund"
+    }
     /*secretLock: {
        id: TransactionType.SECRET_LOCK,
        name: "Secret lock"
@@ -111,20 +123,19 @@ export class TransactionsService {
 
   namespaceRentalFeeSink = environment.namespaceRentalFeeSink;
   mosaicRentalFeeSink = environment.mosaicRentalFeeSink;
-  generationHash: string = '';
-
-
+  generationHash: string = "";
+  transactionsReady = [];
 
   constructor(
     private proximaxProvider: ProximaxProvider,
     public nodeService: NodeService,
     private walletService: WalletService,
     private mosaicServices: MosaicService,
-    private namespaceService: NamespacesService
+    private namespaceService: NamespacesService,
+    private sharedService: SharedService
   ) {
     this.monitorNewAccounts();
   }
-
 
   /**
    * Method to add leading zeros
@@ -137,16 +148,19 @@ export class TransactionsService {
     let realAmount;
     if (amount === 0) {
       decimal = this.addDecimals(cant);
-      realAmount = `0${decimal}`
+      realAmount = `0${decimal}`;
     } else {
-      let arrAmount = amount.toString().replace(/,/g, "").split('.');
+      let arrAmount = amount
+        .toString()
+        .replace(/,/g, "")
+        .split(".");
       if (arrAmount.length < 2) {
         decimal = this.addDecimals(cant);
       } else {
-        let arrDecimals = arrAmount[1].split('');
+        let arrDecimals = arrAmount[1].split("");
         decimal = this.addDecimals(cant - arrDecimals.length, arrAmount[1]);
       }
-      realAmount = `${arrAmount[0]}${decimal}`
+      realAmount = `${arrAmount[0]}${decimal}`;
     }
     return realAmount;
   }
@@ -157,9 +171,9 @@ export class TransactionsService {
    * @param cant Quantity of zeros to add
    * @param amount Amount to add zeros
    */
-  addDecimals(cant, amount = '0') {
-    let x = '0';
-    if (amount === '0') {
+  addDecimals(cant, amount = "0") {
+    let x = "0";
+    if (amount === "0") {
       for (let index = 0; index < cant - 1; index++) {
         amount += x;
       }
@@ -172,19 +186,23 @@ export class TransactionsService {
   }
 
   /**
-  *
-  *
-  * @param {Address} [address=null]
-  * @returns
-  * @memberof TransactionsService
-  */
+   *
+   *
+   * @param {Address} [address=null]
+   * @returns
+   * @memberof TransactionsService
+   */
   async getAccountInfo(address: Address): Promise<AccountInfo> {
     try {
-      const accountInfo = await this.proximaxProvider.getAccountInfo(address).toPromise();
+      const accountInfo = await this.proximaxProvider
+        .getAccountInfo(address)
+        .toPromise();
       // console.log(accountInfo);
       if (accountInfo !== null && accountInfo !== undefined) {
         //Search mosaics
-        this.mosaicServices.searchInfoMosaics(accountInfo.mosaics.map(next => next.id));
+        this.mosaicServices.searchInfoMosaics(
+          accountInfo.mosaics.map(next => next.id)
+        );
       }
       return accountInfo;
     } catch (error) {
@@ -192,18 +210,21 @@ export class TransactionsService {
     }
   }
 
-
   /**
-  *
-  * @param publicsAccounts
-  */
+   *
+   * @param publicsAccounts
+   */
   async searchAggregateBonded(publicsAccounts: PublicAccount[]) {
     // console.log('\n=== SEARCH AGGREGATE BONDED ===', publicsAccounts, '\n');
     const aggregateTransactions = [];
     for (let publicAccount of publicsAccounts) {
-      const aggregateTransaction = await this.proximaxProvider.getAggregateBondedTransactions(publicAccount).toPromise();
+      const aggregateTransaction = await this.proximaxProvider
+        .getAggregateBondedTransactions(publicAccount)
+        .toPromise();
       aggregateTransaction.forEach((a: AggregateTransaction) => {
-        const existTransction = aggregateTransactions.find(x => x.data.transactionInfo.hash === a.transactionInfo.hash);
+        const existTransction = aggregateTransactions.find(
+          x => x.data.transactionInfo.hash === a.transactionInfo.hash
+        );
         if (!existTransction) {
           const data = this.getStructureDashboard(a);
           aggregateTransactions.push(data);
@@ -215,7 +236,6 @@ export class TransactionsService {
     this.setTransactionsAggregateBonded$(aggregateTransactions);
   }
 
-
   /**
    * Formatter Amount
    *
@@ -225,14 +245,16 @@ export class TransactionsService {
    * @returns
    * @memberof TransactionsService
    */
-  amountFormatter(amountParam: UInt64 | number, mosaic: MosaicInfo, manualDivisibility = '') {
-    let amountFormatter = '';
+  amountFormatter(amountParam: UInt64 | number, mosaic: MosaicInfo, manualDivisibility = "") {
+    let amountFormatter = "";
     if (mosaic !== null && mosaic !== undefined) {
-      const divisibility = (manualDivisibility === '') ? mosaic['properties'].divisibility : manualDivisibility;
-      const amount = (typeof (amountParam) === 'number') ? amountParam : amountParam.compact();
-      const amountDivisibility = Number(
-        amount / Math.pow(10, divisibility)
-      );
+      const divisibility =
+        manualDivisibility === ""
+          ? mosaic["properties"].divisibility
+          : manualDivisibility;
+      const amount =
+        typeof amountParam === "number" ? amountParam : amountParam.compact();
+      const amountDivisibility = Number(amount / Math.pow(10, divisibility));
 
       amountFormatter = amountDivisibility.toLocaleString("en-us", {
         minimumFractionDigits: divisibility
@@ -252,7 +274,9 @@ export class TransactionsService {
    */
   amountFormatterSimple(amount: Number) {
     const amountDivisibility = Number(amount) / Math.pow(10, 6);
-    return amountDivisibility.toLocaleString("en-us", { minimumFractionDigits: 6 });
+    return amountDivisibility.toLocaleString("en-us", {
+      minimumFractionDigits: 6
+    });
   }
 
   /**
@@ -260,27 +284,40 @@ export class TransactionsService {
    * @param params
    */
   buildTransferTransaction(params: TransferInterface) {
-    const recipientAddress = this.proximaxProvider.createFromRawAddress(params.recipient);
+    const recipientAddress = this.proximaxProvider.createFromRawAddress(
+      params.recipient
+    );
     const mosaics = params.mosaic;
     const allMosaics = [];
     mosaics.forEach(element => {
-      allMosaics.push(new Mosaic(
-        new MosaicId(element.id),
-        UInt64.fromUint(Number(element.amount))
-      ));
+      allMosaics.push(
+        new Mosaic(
+          new MosaicId(element.id),
+          UInt64.fromUint(Number(element.amount))
+        )
+      );
     });
 
     const transferTransaction = TransferTransaction.create(
-      Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
+      Deadline.create(
+        environment.deadlineTransfer.deadline,
+        environment.deadlineTransfer.chronoUnit
+      ),
       recipientAddress,
       allMosaics,
       PlainMessage.create(params.message),
       params.network
     );
 
-    console.log(this.generationHash);
-    const account = Account.createFromPrivateKey(params.common.privateKey, params.network);
-    const signedTransaction = account.sign(transferTransaction, this.generationHash);
+    // console.log(this.generationHash);
+    const account = Account.createFromPrivateKey(
+      params.common.privateKey,
+      params.network
+    );
+    const signedTransaction = account.sign(
+      transferTransaction,
+      this.generationHash
+    );
     const transactionHttp = this.buildTransactionHttp();
     return {
       signedTransaction: signedTransaction,
@@ -303,7 +340,6 @@ export class TransactionsService {
     );
   }
 
-
   /**
    *
    * @param sender
@@ -312,29 +348,29 @@ export class TransactionsService {
   buildAggregateTransaction(sender: PublicAccount, transaction: Transaction): AggregateTransaction {
     // console.log('sender --->', sender);
     return AggregateTransaction.createBonded(
-      Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
+      Deadline.create(
+        environment.deadlineTransfer.deadline,
+        environment.deadlineTransfer.chronoUnit
+      ),
       [transaction.toAggregate(sender)],
       this.walletService.currentAccount.network
     );
   }
 
-
   /**
    *
    */
   buildTransactionHttp(protocol = environment.protocol, node = this.nodeService.getNodeSelected()) {
-    return new TransactionHttp(
-      protocol + "://" + `${node}`
-    );
+    return new TransactionHttp(protocol + "://" + `${node}`);
   }
 
   /**
-     * Calculate duration based in blocks
-     *
-     * @param {UInt64} duration
-     * @returns
-     * @memberof TransactionsService
-     */
+   * Calculate duration based in blocks
+   *
+   * @param {UInt64} duration
+   * @returns
+   * @memberof TransactionsService
+   */
   calculateDuration(duration: UInt64) {
     const durationCompact = duration.compact();
     let seconds = durationCompact * 15;
@@ -344,7 +380,15 @@ export class TransactionsService {
     seconds -= hrs * 3600;
     let mnts = Math.floor(seconds / 60);
     seconds -= mnts * 60;
-    const response = days + " days, " + hrs + " Hrs, " + mnts + " Minutes, " + seconds + " Seconds";
+    const response =
+      days +
+      " days, " +
+      hrs +
+      " Hrs, " +
+      mnts +
+      " Minutes, " +
+      seconds +
+      " Seconds";
     return response;
   }
 
@@ -449,17 +493,15 @@ export class TransactionsService {
     return {
       part1: data.slice(0, data.length - cantPart),
       part2: data.slice(-cantPart)
-    }
+    };
   }
 
-
-
   /**
-  *
-  *
-  * @returns {Observable<TransactionsInterface[]>}
-  * @memberof DashboardService
-  */
+   *
+   *
+   * @returns {Observable<TransactionsInterface[]>}
+   * @memberof DashboardService
+   */
   getConfirmedTransactions$(): Observable<TransactionsInterface[]> {
     return this._confirmedTransactions$;
   }
@@ -473,7 +515,6 @@ export class TransactionsService {
   getUnconfirmedTransactions$(): Observable<TransactionsInterface[]> {
     return this.unconfirmedTransactions$;
   }
-
 
   /**
    *
@@ -492,80 +533,165 @@ export class TransactionsService {
    * @returns {ConfirmedTransactions}
    * @memberof TransactionsService
    */
-  getStructureDashboard(transaction: Transaction, othersTransactions?: TransactionsInterface[]): TransactionsInterface {
+  getStructureDashboard(transaction: Transaction, othersTransactions?: TransactionsInterface[], group?: string): TransactionsInterface {
+    /*console.log('transaction --->', transaction);
+    console.log('othersTransactions --->', othersTransactions);*/
+    // console.log('group', group);
+    // console.log('\n----------------------------------------------\n');
     if (othersTransactions && othersTransactions.length > 0) {
-      const x = othersTransactions.filter(next => next.data.transactionInfo.hash === transaction.transactionInfo.hash);
-      if (x && x.length > 0) {
-        return null;
+      try {
+        const existTransction = othersTransactions.filter(next => next.data.transactionInfo.hash === transaction.transactionInfo.hash);
+        if (existTransction && existTransction.length > 0) {
+          return null;
+        }
+      } catch (error) {
+       // console.log(error);
+       return null;
       }
     }
 
     const keyType = this.getNameTypeTransaction(transaction.type);
     if (keyType !== undefined) {
-      let recipientRentalFeeSink = '';
-      if (transaction["mosaics"] === undefined) {
-        if (transaction.type === this.arraTypeTransaction.registerNameSpace.id) {
-          recipientRentalFeeSink = this.namespaceRentalFeeSink.address_public_test;
-        } else if (
-          transaction.type === this.arraTypeTransaction.mosaicDefinition.id ||
-          transaction.type === this.arraTypeTransaction.mosaicSupplyChange.id
-        ) {
-          recipientRentalFeeSink = this.mosaicRentalFeeSink.address_public_test;
-        } else {
-          recipientRentalFeeSink = "-";
+      const dataTransaction = this.validateIsSwapTransaction(transaction, keyType, group);
+      const feeFormatter = this.amountFormatterSimple(dataTransaction.transaction.maxFee.compact());
+      const rentalFeeSink = this.getRentalFeeSink(dataTransaction.transaction);
+      const responseIsRecipient = this.validateIsRecipient(dataTransaction.transaction);
+      return {
+        data: dataTransaction.transaction,
+        nameType: dataTransaction.nameType,
+        fee: feeFormatter,
+        feePart: this.getDataPart(feeFormatter, 6),
+        sender: dataTransaction.transaction.signer,
+        recipientRentalFeeSink: rentalFeeSink,
+        recipient: responseIsRecipient.recipient,
+        recipientAddress: responseIsRecipient.recipientPretty,
+        receive: responseIsRecipient.isReceive,
+        senderAddress: dataTransaction.transaction["signer"].address.pretty()
+      };
+    }
+    return null;
+  }
+
+  /**
+   *
+   *
+   * @param {Transaction} transaction
+   * @returns
+   * @memberof TransactionsService
+   */
+  validateIsRecipient(transaction: Transaction){
+    let recipient = null;
+    let recipientPretty = null;
+    let isReceive = false;
+    if (transaction["recipient"] !== undefined) {
+      recipient = transaction["recipient"];
+      recipientPretty = recipient.pretty();
+      const currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
+      if (currentWallet.accounts) {
+        if (currentWallet.accounts.find(element => this.proximaxProvider.createFromRawAddress(element.address).pretty() === recipientPretty)) {
+          isReceive = true;
         }
       }
+    }
 
-      let recipient = null;
-      let recipientPretty = null;
-      let isReceive = false;
-      if (transaction['recipient'] !== undefined) {
-        recipient = transaction['recipient'];
-        recipientPretty = transaction['recipient'].pretty();
-        const currentWallet = Object.assign({}, this.walletService.getCurrentWallet());
-        if (currentWallet.accounts) {
-          if (currentWallet.accounts.find(element => this.proximaxProvider.createFromRawAddress(element.address).pretty() === transaction["recipient"].pretty())) {
-            isReceive = true;
-          }
-        }
-      }
+    return {
+      recipient: recipient,
+      recipientPretty: recipientPretty,
+      isReceive: isReceive
+    }
+  }
 
-      const feeFormatter = this.amountFormatterSimple(transaction.maxFee.compact());
-      let nameType = this.arraTypeTransaction[keyType].name;
-      try {
-        if (transaction['message'] && transaction['message'].payload !== '') {
-          const msg = JSON.parse(transaction['message'].payload);
-          if (transaction.signer.address.plain() === environment.swapAccount.address) {
-            if (msg && msg['type'] && msg['type'] === 'Swap') {
-              nameType = 'ProximaX Swap';
-              let walletTransactionsNis = this.walletService.getWalletTransNisStorage().find(el => el.name === this.walletService.getCurrentWallet().name);
-              if (walletTransactionsNis !== undefined && walletTransactionsNis !== null) {
-                const transactions = walletTransactionsNis.transactions.filter(el => el.nis1TransactionHast !== msg['nis1Hash']);
-                walletTransactionsNis.transactions = transactions;
-                this.walletService.setSwapTransactions$(walletTransactionsNis.transactions);
-                this.walletService.saveAccountWalletTransNisStorage(walletTransactionsNis);
+  /**
+   *
+   *
+   * @param {Transaction} transaction
+   * @param {string} keyType
+   * @returns
+   * @memberof TransactionsService
+   */
+  validateIsSwapTransaction(transaction: Transaction, keyType: string, group: string){
+    let isVerified = false;
+    let nameType = this.arraTypeTransaction[keyType].name;
+    if (group && (group === 'confirmed' || group === 'unconfirmed')) {
+      if(transaction.type === this.arraTypeTransaction.aggregateBonded.id) {
+          if(transaction['innerTransactions'].length === 1){
+            if (transaction['innerTransactions'][0]["message"] && transaction['innerTransactions'][0]["message"].payload !== "") {
+              let newTransaction: any = null;
+              try {
+                const msg = JSON.parse(transaction['innerTransactions'][0]["message"].payload);
+                const addressAccountMultisig = environment.swapAccount.addressAccountMultisig;
+                const addressAccountSimple = environment.swapAccount.addressAccountSimple;
+                const addressSender = transaction['innerTransactions'][0].signer.address.plain();
+                if ((addressSender === addressAccountMultisig) || (addressSender === addressAccountSimple)) {
+                  if (msg && msg["type"] && msg["type"] === "Swap") {
+                    nameType = "ProximaX Swap";
+                    newTransaction = Object.assign({}, transaction['innerTransactions'][0]);
+                    newTransaction['transactionInfo'] = transaction.transactionInfo;
+                    // newTransaction['transactionInfo'].hash = transaction.transactionInfo.hash;
+                    newTransaction.size = transaction.size;
+                    newTransaction.cosignatures = transaction['cosignatures'];
+                    let walletTransactionsNis = this.walletService.getWalletTransNisStorage().find(el => el.name === this.walletService.getCurrentWallet().name);
+                    if (walletTransactionsNis !== undefined && walletTransactionsNis !== null) {
+                      const transactions = walletTransactionsNis.transactions.filter(el => el.nis1TransactionHash !== msg["nis1Hash"]);
+                      walletTransactionsNis.transactions = transactions;
+                      this.walletService.setSwapTransactions$(walletTransactionsNis.transactions);
+                      this.walletService.saveAccountWalletTransNisStorage(walletTransactionsNis);
+                    }
+                  }
+                }
+              } catch (error) {}
+
+              if(newTransaction !== null) {
+                isVerified = true;
+                transaction = newTransaction;
               }
+            };
+          }
+      }
+    }
+
+    if(isVerified) {
+      try {
+        if (transaction["message"] && transaction["message"].payload !== "") {
+          const msg = JSON.parse(transaction["message"].payload);
+          const addressAccountMultisig = environment.swapAccount.addressAccountMultisig;
+          const addressAccountSimple = environment.swapAccount.addressAccountSimple;
+          const addressSender = transaction.signer.address.plain();
+          if ((addressSender === addressAccountMultisig) || (addressSender === addressAccountSimple)) {
+            if (msg && msg["type"] && msg["type"] === "Swap") {
+              nameType = "ProximaX Swap";
             }
           }
         }
-      } catch (error) {
-        // console.log(error);
-      }
+      } catch (error) {}
+    }
 
-      return {
-        data: transaction,
-        nameType: nameType,
-        fee: feeFormatter,
-        feePart: this.getDataPart(feeFormatter, 6),
-        sender: transaction.signer,
-        recipientRentalFeeSink: recipientRentalFeeSink,
-        recipient: recipient,
-        recipientAddress: recipientPretty,
-        receive: isReceive,
-        senderAddress: transaction['signer'].address.pretty()
+    return {
+      transaction: transaction,
+      nameType: nameType
+    };
+  }
+
+  /**
+   *
+   *
+   * @param {Transaction} transaction
+   * @returns
+   * @memberof TransactionsService
+   */
+  getRentalFeeSink(transaction: Transaction) {
+    if (transaction["mosaics"] === undefined) {
+      if (transaction.type === this.arraTypeTransaction.registerNameSpace.id) {
+        return this.namespaceRentalFeeSink.address_public_test;
+      } else if (
+        transaction.type === this.arraTypeTransaction.mosaicDefinition.id ||
+        transaction.type === this.arraTypeTransaction.mosaicSupplyChange.id
+      ) {
+        return this.mosaicRentalFeeSink.address_public_test;
+      } else {
+        return "-";
       }
     }
-    return null;
   }
 
   /**
@@ -576,7 +702,9 @@ export class TransactionsService {
    * @memberof TransactionsService
    */
   getNameTypeTransaction(type: any) {
-    return Object.keys(this.arraTypeTransaction).find(elm => this.arraTypeTransaction[elm].id === type);
+    return Object.keys(this.arraTypeTransaction).find(
+      elm => this.arraTypeTransaction[elm].id === type
+    );
   }
 
   /**
@@ -584,14 +712,12 @@ export class TransactionsService {
    * @memberof TransactionsService
    */
   monitorNewAccounts() {
-    this.walletService.getAccountsPushedSubject().subscribe(
-      next => {
-        if (next && next.length > 0) {
-          // console.log('=== YOU HAVE NEW ACCOUNT ===', next);
-          this.searchAccountsInfo(next);
-        }
+    this.walletService.getAccountsPushedSubject().subscribe(next => {
+      if (next && next.length > 0) {
+        // console.log('=== YOU HAVE NEW ACCOUNT ===', next);
+        this.searchAccountsInfo(next);
       }
-    );
+    });
   }
 
   /**
@@ -600,35 +726,41 @@ export class TransactionsService {
    */
   searchAccountsInfo(accounts: AccountsInterface[]) {
     // console.log('ACCOUNTS INTERFACE ---> ', accounts);
-    this.walletService.searchAccountsInfo(accounts).then(
-      (data: { mosaicsId: MosaicId[], accountsInfo: AccountsInfoInterface[] }) => {
-        // console.log('=== DATA ===', data);
-        this.walletService.validateMultisigAccount(accounts);
-        const publicsAccounts: PublicAccount[] = [];
-        data.accountsInfo.forEach((element: AccountsInfoInterface) => {
-          if (element.accountInfo) {
-            publicsAccounts.push(this.proximaxProvider.createPublicAccount(
-              element.accountInfo.publicKey,
-              element.accountInfo.publicAccount.address.networkType
-            ));
+    this.walletService.searchAccountsInfo(accounts).then((data: {mosaicsId: MosaicId[]; accountsInfo: AccountsInfoInterface[]; }) => {
+      this.walletService.validateMultisigAccount(accounts);
+      const publicsAccounts: PublicAccount[] = [];
+      data.accountsInfo.forEach((element: AccountsInfoInterface) => {
+        if (element.accountInfo) {
+          const exist = accounts.find(account => element.accountInfo.address.plain() === account.address);
+          if(exist) {
+            publicsAccounts.push(
+              this.proximaxProvider.createPublicAccount(
+                exist.publicAccount.publicKey,
+                exist.publicAccount.address.networkType
+              )
+            );
+          }else {
+            publicsAccounts.push(
+              this.proximaxProvider.createPublicAccount(
+                element.accountInfo.publicKey,
+                element.accountInfo.publicAccount.address.networkType
+              )
+            );
           }
-        });
-
-        // console.log('==== publicsAccounts ====', publicsAccounts);
-        // Search all transactions aggregate bonded from array publics accounts
-        if (publicsAccounts.length > 0) {
-          this.searchAggregateBonded(publicsAccounts);
         }
+      });
 
-        this.updateBalance();
-        if (data.mosaicsId && data.mosaicsId.length > 0) {
-          this.mosaicServices.searchInfoMosaics(data.mosaicsId)
-        }
-
+      // Search all transactions aggregate bonded from array publics accounts
+      if (publicsAccounts.length > 0) {
+        this.searchAggregateBonded(publicsAccounts);
       }
-    ).catch(error => console.log(error));
-  }
 
+      this.updateBalance();
+      if (data.mosaicsId && data.mosaicsId.length > 0) {
+        this.mosaicServices.searchInfoMosaics(data.mosaicsId);
+      }
+    }).catch(error => console.log(error));
+  }
 
   /**
    *
@@ -667,7 +799,22 @@ export class TransactionsService {
    * @memberof DashboardService
    */
   setTransactionsUnConfirmed$(transactions: TransactionsInterface[]) {
+    if (transactions.length > 0) {
+    }
+    transactions;
     this.unconfirmedTransactionsSubject.next(transactions);
+  }
+
+  /**
+   *
+   *
+   * @param {string} hash
+   * @memberof TransactionsService
+   */
+  setTransactionReady(hash: string) {
+    if (!this.transactionsReady.find(x => x === hash)) {
+      this.transactionsReady.push(hash);
+    }
   }
 
   /**
@@ -675,13 +822,12 @@ export class TransactionsService {
    * @param str
    */
   toHex(str: any) {
-    var result = '';
+    var result = "";
     for (var i = 0; i < str.length; i++) {
       result += str.charCodeAt(i).toString(16);
     }
     return result;
   }
-
 
   /**
    *
@@ -690,12 +836,18 @@ export class TransactionsService {
    */
   updateBalance() {
     const accountsInfo = this.walletService.getAccountsInfo().slice(0);
-    const currentAccount = Object.assign({}, this.walletService.getCurrentAccount());
-    const dataBalance = accountsInfo.find(next => next.name === currentAccount.name);
-    let balance = 0.000000;
+    const currentAccount = Object.assign(
+      {},
+      this.walletService.getCurrentAccount()
+    );
+    const dataBalance = accountsInfo.find(
+      next => next.name === currentAccount.name
+    );
+    let balance = 0.0;
     if (dataBalance && dataBalance.accountInfo) {
-      // console.log('----dataBalance----', dataBalance);
-      const x = dataBalance.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id);
+      const x = dataBalance.accountInfo.mosaics.find(
+        next => next.id.toHex() === environment.mosaicXpxInfo.id
+      );
       if (x) {
         balance = x.amount.compact();
       }
@@ -726,14 +878,21 @@ export class TransactionsService {
     // this.updateBalance2();
   }
 
+  /**
+   *
+   *
+   * @param {number} balanceAccount
+   * @param {number} feeTransaction
+   * @param {number} rental
+   * @returns {boolean}
+   * @memberof TransactionsService
+   */
   validateBuildSelectAccountBalance(balanceAccount: number, feeTransaction: number, rental: number): boolean {
     const totalFee = feeTransaction + rental;
-    /*console.log(balanceAccount);
-    console.log(feeTransaction);
-    console.log(rental);
-    console.log(totalFee);*/
-    return (balanceAccount >= totalFee);
-
+    // console.log('totalFee', totalFee);
+    // console.log('balanceAccount', balanceAccount);
+    // console.log('balanceAccount >= totalFee', balanceAccount >= totalFee);
+    return balanceAccount >= totalFee;
   }
 
   /**
@@ -745,26 +904,38 @@ export class TransactionsService {
    * @memberof DashboardService
    */
   validateBalanceCosignatorie(accountInfo: AccountsInfoInterface, feeTotal: number): BalanceCosignatorieValidate {
-    let value: BalanceCosignatorieValidate = { infValidate: [{ disabled: false, info: '' }] }
-    const disabled: boolean = (
+    let value: BalanceCosignatorieValidate = {
+      infValidate: [{ disabled: false, info: "" }]
+    };
+    const disabled: boolean =
       accountInfo !== null &&
-      accountInfo !== undefined && accountInfo.accountInfo !== null)
+      accountInfo !== undefined &&
+      accountInfo.accountInfo !== null;
     // Validate account info
     if (!disabled)
-      return { infValidate: [{ disabled: true, info: 'not valid' }] }
+      return { infValidate: [{ disabled: true, info: "Not Valid" }] };
     // Validate mosaics
-    if (!accountInfo.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id))
-      return { infValidate: [{ disabled: true, info: 'insufficient balance' }] }
+    if (
+      !accountInfo.accountInfo.mosaics.find(
+        next => next.id.toHex() === environment.mosaicXpxInfo.id
+      )
+    )
+      return {
+        infValidate: [{ disabled: true, info: "Insufficient Balance" }]
+      };
     // Validate balance account
     const balanceAccount = accountInfo.accountInfo.mosaics.find(next => next.id.toHex() === environment.mosaicXpxInfo.id).amount.compact();
     if (!(balanceAccount >= feeTotal))
-      return { infValidate: [{ disabled: true, info: 'insufficient balance' }] }
+      return {
+        infValidate: [{ disabled: true, info: "Insufficient Balance" }]
+      };
 
-    return { infValidate: [{ disabled: false, info: '' }] }
+    return { infValidate: [{ disabled: false, info: "" }] };
   }
 }
+
 export interface BalanceCosignatorieValidate {
-  infValidate: [{ disabled: boolean, info: string }]
+  infValidate: [{ disabled: boolean; info: string }];
 }
 
 export interface TransactionsInterface {
@@ -779,7 +950,7 @@ export interface TransactionsInterface {
   feePart: {
     part1: string;
     part2: string;
-  }
+  };
   sender: PublicAccount;
   recipientRentalFeeSink: string;
   recipient: Address;
@@ -791,3 +962,4 @@ export interface TransactionsInterface {
   name?: string;
   hash?: string;
 }
+

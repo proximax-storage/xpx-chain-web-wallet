@@ -1,18 +1,21 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { ServicesModuleService, StructureService } from '../../../servicesModule/services/services-module.service';
-import { AppConfig } from '../../../config/app.config';
-import { SharedService } from 'src/app/shared/services/shared.service';
-import { WalletService } from 'src/app/wallet/services/wallet.service';
-import { environment } from 'src/environments/environment';
+import nem from "nem-sdk";
 import { Router } from '@angular/router';
 import { NetworkTypes } from 'nem-library';
 import { NetworkType } from 'tsjs-xpx-chain-sdk';
-import { NemServiceService } from 'src/app/shared/services/nem-service.service';
 import { ModalDirective } from 'ng-uikit-pro-standard';
 import * as CryptoJS from 'crypto-js';
-// import * as nem from 'nem-sdk';
-import nem from "nem-sdk";
-import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
+import { first } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
+import { ServicesModuleService, StructureService } from '../../../servicesModule/services/services-module.service';
+import { AppConfig } from '../../../config/app.config';
+import { SharedService } from '../../../shared/services/shared.service';
+import { WalletService } from '../../../wallet/services/wallet.service';
+import { environment } from '../../../../environments/environment';
+import { ProximaxProvider } from '../../../shared/services/proximax.provider';
+import { AuthService } from '../../../auth/services/auth.service';
+import { NemProviderService } from '../../../swap/services/nem-provider.service';
+
 
 @Component({
   selector: 'app-home',
@@ -21,80 +24,86 @@ import { ProximaxProvider } from 'src/app/shared/services/proximax.provider';
 })
 export class HomeComponent implements OnInit {
 
+  @ViewChild('basicModal', { static: true }) basicModal: ModalDirective;
+  @ViewChild('file', { static: true }) myInputVariable: ElementRef;
+  @ViewChild('modalAuth', { static: true }) modalAuth: ModalDirective;
+
+  eventNumber: number = 0;
+  objectKeys = Object.keys;
   link = {
     createWallet: AppConfig.routes.createWallet,
     importWallet: AppConfig.routes.importWallet,
     selectTypeCreationWallet: AppConfig.routes.selectTypeCreationWallet
   };
-  @ViewChild('basicModal', { static: true }) basicModal: ModalDirective;
-  @ViewChild('file', { static: true }) myInputVariable: ElementRef;
-  objectKeys = Object.keys;
   servicesList: StructureService[] = [];
   boxCreateWallet: StructureService[] = [];
   password: string = '';
+  subscription: Subscription[] = [];
   walletDecryp: any;
 
   constructor(
+    private authService: AuthService,
     private services: ServicesModuleService,
     private sharedService: SharedService,
     private walletService: WalletService,
     private proximaxProvider: ProximaxProvider,
     private router: Router,
-    private nemProvider: NemServiceService,
+    private nemProvider: NemProviderService,
     private serviceModuleService: ServicesModuleService
   ) { }
 
   ngOnInit() {
+    this.walletService.accountWalletCreated = null;
+    this.receiveEventShowModal();
     this.servicesList = [
       this.services.buildStructureService(
         'Blockchain',
         true,
-        'Multisig, aggregated tx, cross chain, metadata',
+        'Multisig, aggregated tx, cross chain, metadata.',
         'icon-blockchain-full-color-80h-proximax-sirius-wallet.svg',
       ),
       this.services.buildStructureService(
         'Storage',
         true,
-        'P2P decentralised storage for any type of file',
+        'P2P decentralised storage for any type of file.',
         'icon-storage-full-color-80h-proximax-sirius-wallet.svg',
       ),
       this.services.buildStructureService(
         'Streaming',
         true,
-        'P2P decentralised streaming for video and chat',
+        'P2P decentralised streaming for video and chat.',
         'icon-streaming-full-color-80h-proximax-sirius-wallet.svg',
       ),
       this.services.buildStructureService(
         'Supercontracts',
         true,
-        'Easily modifiable digital contracts',
+        'Easily modifiable digital contracts.',
         'icon-supercontracts-full-color-80h-proximax-sirius-wallet.svg',
       )
     ];
 
     this.boxCreateWallet = [
       this.services.buildStructureService(
-        'New',
+        'Sign In',
         true,
         '',
         'icon-add-new-blue.svg',
         `/${this.link.createWallet}`
       ), this.services.buildStructureService(
-        'From a private key',
-        true,
-        '',
-        'icon-private-key-blue.svg',
-        `/${this.link.importWallet}`
-      ), this.services.buildStructureService(
-        'From a wallet backup',
+        'Create',
         true,
         '',
         'icon-wallet-import-blue.svg',
-        `openBackup`
+        `/${this.link.selectTypeCreationWallet}`
       )
     ]
   }
 
+  /**
+   *
+   *
+   * @memberof HomeComponent
+   */
   createStructNis() {
     const common = nem.model.objects.create("common")(this.password);
     // Get the wallet account to decrypt
@@ -108,7 +117,7 @@ export class HomeComponent implements OnInit {
       let walletName = this.walletDecryp.name;
       walletName = (walletName.includes(' ') === true) ? walletName.split(' ').join('_') : walletName;
       const nameWallet = walletName;
-      const network = (this.walletDecryp.accounts[0].network === NetworkTypes.MAIN_NET) ? NetworkType.MAIN_NET : NetworkType.TEST_NET;
+      const network = environment.typeNetwork.value;
       const password = this.proximaxProvider.createPassword(this.password);
       const algo = this.walletDecryp.accounts[0].algo;
       const accounts = [];
@@ -156,13 +165,18 @@ export class HomeComponent implements OnInit {
       walletsStorage.push(walletStorage);
       localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorage));
 
-      this.sharedService.showSuccess('', 'Wallet imported correctly');
+      this.sharedService.showSuccess('', 'Wallet Imported Correctly');
       this.router.navigate([`/${AppConfig.routes.auth}`]);
     } else {
       this.sharedService.showError('', 'Password Invalid');
     }
   }
 
+  /**
+   *
+   *
+   * @memberof HomeComponent
+   */
   clearForm() {
     this.myInputVariable.nativeElement.value = "";
     this.password = '';
@@ -170,18 +184,29 @@ export class HomeComponent implements OnInit {
   }
 
   /**
+   *
+   *
+   * @memberof HomeComponent
+   */
+  eventShowModal(){
+    this.authService.getEventShowModal().pipe(first()).subscribe(
+      next => this.authService.eventShowModalSubject.next(next+1)
+    );
+  }
+
+  /**
    * Method to take the selected file
    * @param {File} files file array
    * @param {Event} $event get the html element
    */
-  fileChange(files: File[], $event) {
+  fileChange(files: File[], $event: Event) {
     if (files.length > 0) {
       const myReader: FileReader = new FileReader();
       myReader.onloadend = (e) => {
         const file = CryptoJS.enc.Base64.parse(myReader.result);
         try {
           const dataDecryp = JSON.parse(file.toString(CryptoJS.enc.Utf8));
-          console.log('This a decryp-------->', dataDecryp);
+          // console.log('This a decryp-------->', dataDecryp);
 
           const existWallet = this.walletService.getWalletStorage().find(
             (element: any) => {
@@ -215,14 +240,14 @@ export class HomeComponent implements OnInit {
               accounts: accounts
             }
 
-            console.log('this a wallet created----->', wallet);
-            console.log('this a wallet contacs----->', contacs);
+            // console.log('this a wallet created----->', wallet);
+            // console.log('this a wallet contacs----->', contacs);
 
             let walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
             walletsStorage.push(wallet);
 
             localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorage));
-            this.sharedService.showSuccess('', 'Wallet imported correctly');
+            this.sharedService.showSuccess('', 'Wallet Imported Correctly');
             this.router.navigate([`/${AppConfig.routes.auth}`]);
           } else {
             this.sharedService.showWarning('', 'The wallet already exists');
@@ -234,5 +259,31 @@ export class HomeComponent implements OnInit {
 
       myReader.readAsText(files[0]);
     }
+  }
+
+  /**
+   *
+   *
+   * @memberof HomeComponent
+   */
+  receiveEventShowModal() {
+    this.subscription.push(this.authService.getEventShowModal().subscribe(
+      next => {
+        if (next !== 0) {
+          this.showModal();
+        }
+      }
+    ));
+  }
+
+
+  /**
+   *
+   *
+   * @memberof SidebarAuthComponent
+   */
+  showModal() {
+    this.eventNumber = this.eventNumber + 1;
+    this.modalAuth.show();
   }
 }

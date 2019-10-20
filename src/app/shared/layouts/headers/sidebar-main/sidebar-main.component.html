@@ -4,7 +4,7 @@
         <mdb-navbar SideClass="navbar navbar-expand-sm navbar-dark background-header-inverse z-depth-0"
           [containerInside]="false">
           <mdb-navbar-brand class="d-flex align-items-end">
-            <a class="navbar-brand mr-05rem">
+            <a class="navbar-brand mr-05rem" href="#/dashboard">
               <img src="assets/images/img/logo-proximax-sirius-wallet-beta.svg" height="33" class="d-inline-block align-top">
             </a>
             <span class="fs-08rem" style="color: #616161;">v{{version}}</span> <br>
@@ -27,9 +27,9 @@
                 <img *ngIf="colorStatus === 'green-color'" src="assets/images/img/icon-nodes-green-30h.svg" alt="" width="25px">
                 <img *ngIf="colorStatus === 'color-light-orange'" src="assets/images/img/icon-nodes-yellow-30h.svg" alt="" width="25px">
                 <img *ngIf="colorStatus === 'color-red'" src="assets/images/img/icon-nodes-red-30h.svg" alt="" width="25px">
-                <h1 class="d-none d-sm-block d-md-block d-lg-block d-xl-block pl-05rem fs-08rem fw-700 m-0" *ngIf="netType === 184">Mainnet</h1>
-                <h1 class="d-none d-sm-block d-md-block d-lg-block d-xl-block pl-05rem fs-08rem fw-700 m-0" *ngIf="netType === 168">Testnet</h1>
-                <h1 class="d-none d-sm-block d-md-block d-lg-block d-xl-block pl-05rem fs-08rem fw-700 m-0" *ngIf="netType === 200">Private</h1>
+                <h1 class="d-none d-sm-none d-md-block d-lg-block d-xl-block pl-05rem fs-08rem fw-700 m-0" *ngIf="netType === 184">Mainnet</h1>
+                <h1 class="d-none d-sm-none d-md-block d-lg-block d-xl-block pl-05rem fs-08rem fw-700 m-0" *ngIf="netType === 168">Testnet</h1>
+                <h1 class="d-none d-sm-none d-md-block d-lg-block d-xl-block pl-05rem fs-08rem fw-700 m-0" *ngIf="netType === 200">Private</h1>
               </div>
             </ng-container>
 
@@ -42,16 +42,14 @@
                 <!-- <i class="fa fa-circle ml-05rem cursor-p {{colorStatus}}" aria-hidden="true"
                   title="{{statusNodeName}} node"></i> -->
               </span><br>
-              <span class="fs-07rem">{{ vestedBalance }}</span>
+              <span class="fs-08rem"><span class="fw-500 d-sm-none d-md-inline-block d-flex">Total Balance:</span> {{ vestedBalance['part1'] }}<span class="fs-07rem">{{ vestedBalance['part2'] }}</span> XPX</span>
             </div>
 
             <!-- LOGOUT -->
             <div class="d-flex align-items-center justify-content-end">
               <div class="nav-link waves-light p-0 cursor-p" mdbWavesEffect (click)="logOut()">
-                <i class="fa fa-sign-out color-main-wallet fs-1-2rem d-block d-sm-none" aria-hidden="true" title="Sign out"></i>
-                <span class="ml-1rem fs-08rem cursor-p font-header mr-02rem color-main-wallet d-none d-sm-block d-md-block d-lg-block d-xl-block" title="Sign out">
-                  Sign out &nbsp; <i class="fa fa-sign-out color-main-wallet fs-09rem" aria-hidden="true"></i>
-                </span>
+                <i class="fa fa-sign-out color-main-wallet fs-1-2rem d-block d-sm-none" aria-hidden="true" title="Sign Out"></i>
+                <span class="ml-1rem fs-08rem cursor-p font-header mr-02rem color-main-wallet d-none d-sm-block d-md-block d-lg-block d-xl-block" title="Sign out">Sign Out</span>
               </div>
             </div>
 

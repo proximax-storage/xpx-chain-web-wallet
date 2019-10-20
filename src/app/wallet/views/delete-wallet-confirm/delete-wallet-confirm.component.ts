@@ -15,16 +15,17 @@ import { environment } from '../../../../environments/environment';
 export class DeleteWalletConfirmComponent implements OnInit {
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Wallet',
-    componentName: 'Confirm delete'
+    componentName: 'Confirm Delete'
   };
+
+  passwordMain: string = 'password';
 
   routes = {
     viewAllWallets: `/${AppConfig.routes.viewAllWallets}`,
   };
   wallet: WalletAccountInterface;
   tittle = 'will be deleted from your device.';
-  Information = `Warning! This action will delete this wallet. It cannot be undone. If you have not saved your
-  private keys, access to the accounts contained is this wallet will be permanently lost.`
+  Information = `This action will delete this wallet.  It cannot be undone.  If you have not saved your private keys, access to the accounts contained in this wallet will be permanently lost.`
   configurationForm: ConfigurationForm;
   validatingForm: FormGroup;
   ban: boolean = false;
@@ -43,9 +44,14 @@ export class DeleteWalletConfirmComponent implements OnInit {
 
   ngOnInit() {
     let name = this.activateRoute.snapshot.paramMap.get('name');
-    this.wallet = this.walletService.getWalletStorageName(name)[0];
+    this.wallet = this.walletService.getWalletStorageByName(name)[0];
     if (this.wallet == undefined)
       this.router.navigate([`/${AppConfig.routes.viewAllWallets}`]);
+  }
+
+  changeInputType(inputType) {
+    let newType = this.sharedService.changeInputType(inputType)
+    this.passwordMain = newType;
   }
 
   /**
@@ -108,13 +114,13 @@ export class DeleteWalletConfirmComponent implements OnInit {
   deleteWallet() {
     if (this.validatingForm.valid && !this.ban) {
       this.ban = true;
-      const accountDecrypt = this.wallet.accounts[0]
+      const accountDecrypt = this.wallet.accounts.find(x => x.firstAccount === true);
       let common: any = { password: this.validatingForm.get("password").value };
       if (this.walletService.decrypt(common, accountDecrypt)) {
         const value = this.walletService.removeWallet(this.wallet.name);
         if (value) {
           this.servicesModuleService.removeItemStorage(environment.itemBooksAddress, this.wallet.name)
-          this.sharedService.showSuccess('', 'Wallet removed');
+          this.sharedService.showSuccess('', 'Wallet Removed');
           this.clearForm();
           this.router.navigate([`/${AppConfig.routes.viewAllWallets}`]);
         }

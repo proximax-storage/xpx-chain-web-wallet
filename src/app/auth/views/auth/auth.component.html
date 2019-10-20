@@ -11,11 +11,11 @@
       <div class="col-11 mx-auto">
         <ng-select mdbInputDirective mdbValidate [validateSuccess]="true" [searchable]="false" [validateError]="true"
           class="selectWrapper" [items]="wallets" formControlName="wallet" bindLabel="label" bindValue="value"
-          placeholder="Select a wallet">
+          placeholder="Select a Wallet">
         </ng-select>
         <mdb-error class="mt-03rem ml-1rem"
           *ngIf="validateInput('wallet').invalid && (validateInput('wallet').dirty || validateInput('wallet').touched)">
-          <span class="fw-600">Select a wallet</span>
+          <span class="fw-600">Select a Wallet</span>
         </mdb-error>
       </div>
     </div>
@@ -27,16 +27,20 @@
           <div class="md-form form-sm mt-1rem mb-0rem">
             <img class="form-control-feedback"
               src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg" alt="">
+            <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
+              src="assets/images/img/icon-show-hide-password.svg" *ngIf="passwordMain === 'password'">
+            <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
+              src="assets/images/img/icon-show-hide-password-grey.svg" *ngIf="passwordMain === 'text'">
             <input [maxlength]="configurationForm.passwordWallet.maxLength"
               [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" mdbInputDirective
-              mdbValidate [validateSuccess]="true" [validateError]="true" type="password" id="passwordAuth"
-              class="form-control form-control-sm input-border" placeholder="Enter password">
+              mdbValidate [validateSuccess]="true" [validateError]="true" [type]="passwordMain" id="passwordAuth"
+              class="form-control form-control-sm input-border" placeholder="Enter Wallet Password">
 
             <!-- VALIDATION -->
             <mdb-error *ngIf="
                   validateInput('password', 'common').invalid &&
                   (validateInput('password', 'common').dirty || validateInput('password', 'common').touched)">
-              <span class="fw-600">Required field</span>
+              <span class="fw-600">Password Required</span>
             </mdb-error>
           </div>
         </div>
@@ -46,16 +50,15 @@
     <!-- buttons create and clear -->
     <div class="row mt-2rem">
       <div class="col-11 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-        <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
-          size="sm" (click)="clearForm()">
-          <span class="fs-1-2em color-white">Clear</span>
+        <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" size="sm" (click)="clearForm()">
+          <span class="color-white">Clear</span>
         </button>
       </div>
 
       <div class="col-11 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-        <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
-          size="sm">
-          <span class="fs-1-2em color-white">Sign in</span>
+        <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="btn-proximax" size="sm"
+          [disabled]="authForm.invalid">
+          <span class="color-white">Sign In</span>
         </button>
       </div>
     </div>

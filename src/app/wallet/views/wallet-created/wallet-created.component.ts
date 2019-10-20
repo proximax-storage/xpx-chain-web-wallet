@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { SimpleWallet } from 'tsjs-xpx-chain-sdk';
 import { Router } from '@angular/router';
+import * as qrcode from 'qrcode-generator';
+import * as jsPDF from 'jspdf';
+import { Subscription } from 'rxjs';
 import { WalletService, AccountsInterface } from '../../services/wallet.service';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 import { AppConfig } from '../../../config/app.config';
 import { SharedService } from '../../../shared/services/shared.service';
-import * as qrcode from 'qrcode-generator';
-import * as jsPDF from 'jspdf';
-import { Subscription } from 'rxjs';
-import { timeout } from 'rxjs/operators';
+import { NemProviderService } from '../../../swap/services/nem-provider.service';
 
 @Component({
   selector: 'app-wallet-created',
@@ -19,56 +19,40 @@ export class WalletCreatedComponent implements OnInit {
 
   address = '';
   description = 'Warning! Before proceeding, make sure store your private key in a safe place. Access to your digital assets cannot be recovered without it.';
+  disabledContinue: boolean = true;
   imgBackground = '';
   publicKey = '';
   privateKey = '';
-  title = 'Congratulations';
+  routeAuth = `/${AppConfig.routes.home}`;
+  routeContinue = `/${AppConfig.routes.home}`;
+  subTitle = '';
+  subscription: Subscription[] = [];
+  title = 'Congratulations!';
   titleDescription = 'Your wallet has been successfully created.';
-  subtitle = '';
   viewPrivateKey = false;
-  routeAuth = `/${AppConfig.routes.auth}`;
   walletData: {
     data: any,
     dataAccount: AccountsInterface;
     wallet: SimpleWallet
   } = null;
-  disabledContinue: boolean = true;
-  subscription: Subscription[] = [];
+
 
   constructor(
-    private walletService: WalletService,
+    private nemProvider: NemProviderService,
     private proximaxProvider: ProximaxProvider,
+    private router: Router,
     private sharedService: SharedService,
-    private router: Router
+    private walletService: WalletService
   ) { }
+
 
   ngOnInit() {
     this.getImageBackground();
     this.walletData = this.walletService.accountWalletCreated;
-    if (this.walletData !== null) {
-      this.subtitle = this.walletData.data.name;
-      this.address = this.walletData.wallet.address.pretty();
-      this.privateKey = this.proximaxProvider.decryptPrivateKey(
-        this.walletData.data.algo, this.walletData.dataAccount.encrypted, this.walletData.dataAccount.iv
-      ).toUpperCase();
-      this.publicKey = this.proximaxProvider.getPublicAccountFromPrivateKey(this.privateKey, this.walletData.data.network).publicKey;
-      if (this.walletData.dataAccount.nis1Account !== null) {
-        this.subscription.push(this.walletService.getNis1AccountsWallet$().pipe(timeout(10000)).subscribe(
-          next => {
-            this.disabledContinue = false;
-          },
-          error => {
-            this.disabledContinue = false;
-          }
-        ));
-      } else {
-        this.disabledContinue = false;
-      }
-      this.walletData = null;
-    } else {
-      this.router.navigate([`/${AppConfig.routes.home}`]);
-    }
+    // this.walletService.accountWalletCreated = null;
+    this.checkDataWallet();
   }
+
 
   ngOnDestroy(): void {
     this.walletData = null;
@@ -76,6 +60,41 @@ export class WalletCreatedComponent implements OnInit {
       subscription.unsubscribe();
     });
   }
+
+
+  /**
+   *
+   *
+   * @memberof WalletCreatedComponent
+   */
+  checkDataWallet() {
+    if (this.walletData !== null) {
+      this.subTitle = this.walletData.data.name;
+      this.address = this.walletData.wallet.address.pretty();
+      this.privateKey = this.proximaxProvider.decryptPrivateKey(this.walletData.data.algo, this.walletData.dataAccount.encrypted, this.walletData.dataAccount.iv).toUpperCase();
+      this.publicKey = this.proximaxProvider.getPublicAccountFromPrivateKey(this.privateKey, this.walletData.data.network).publicKey;
+      if (this.walletData.dataAccount.nis1Account !== null) {
+        this.subscription.push(this.nemProvider.getNis1AccountsFound$().subscribe(next => {
+          if (next) {
+            this.nemProvider.setSelectedNis1Account(next);
+            this.routeContinue = `/${AppConfig.routes.swapAccountNis1Found}`;
+          } else {
+            this.routeContinue = `/${AppConfig.routes.home}`;
+          }
+          this.disabledContinue = false;
+        }, error => {
+          this.disabledContinue = false
+          this.routeContinue = `/${AppConfig.routes.home}`;
+        }));
+      } else {
+        this.disabledContinue = false;
+        this.routeContinue = `/${AppConfig.routes.home}`;
+      }
+    } else {
+      this.router.navigate([`/${AppConfig.routes.home}`]);
+    }
+  }
+
 
   /**
    *
@@ -96,15 +115,17 @@ export class WalletCreatedComponent implements OnInit {
     this.imgBackground = this.sharedService.walletCreatedCertified();
   }
 
+
   /**
    *
    */
   goToRoute() {
     let nis1Info = [];
-    // [routerLink]="[routes.backToService]"
-    if (this.walletService.accountWalletCreated.dataAccount.nis1Account !== null) {
-      nis1Info = this.walletService.getNis1AccounsWallet();
+    // console.log('---- ACCOUNT WALLET CREATED ----', this.walletService.accountWalletCreated);
+    if (this.walletService.accountWalletCreated && this.walletService.accountWalletCreated.dataAccount && this.walletService.accountWalletCreated.dataAccount.nis1Account) {
+      nis1Info = this.walletService.getNis1AccountsWallet();
     }
+
     try {
       if (nis1Info.length > 0) {
         // console.log('nis1Info.lengh ------>', nis1Info.length);
@@ -125,13 +146,11 @@ export class WalletCreatedComponent implements OnInit {
     }
   }
 
-  qrConstruntion(url, size = 2, margin = 0) {
-    let qr = qrcode(10, 'H');
-    qr.addData(url);
-    qr.make();
-    return qr.createDataURL(size, margin);
-  }
-
+  /**
+   *
+   *
+   * @memberof WalletCreatedComponent
+   */
   printAccountInfo() {
     // console.log(this.privateKey);
     // console.log(this.address);
@@ -150,5 +169,21 @@ export class WalletCreatedComponent implements OnInit {
     doc.text(this.address, 146, 164, { maxWidth: 132 });
 
     doc.save('Your_Paper_Wallet');
+  }
+
+  /**
+   *
+   *
+   * @param {*} url
+   * @param {number} [size=2]
+   * @param {number} [margin=0]
+   * @returns
+   * @memberof WalletCreatedComponent
+   */
+  qrConstruntion(url, size = 2, margin = 0) {
+    let qr = qrcode(10, 'H');
+    qr.addData(url);
+    qr.make();
+    return qr.createDataURL(size, margin);
   }
 }

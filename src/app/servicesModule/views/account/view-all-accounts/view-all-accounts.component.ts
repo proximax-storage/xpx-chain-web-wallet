@@ -31,6 +31,8 @@ export class ViewAllAccountsComponent implements OnInit {
     createNewAccount: `/${AppConfig.routes.selectTypeCreationAccount}`,
     viewDetails: `/${AppConfig.routes.account}/`,
     deleteAccount: `/${AppConfig.routes.deleteAccount}/`,
+    multisig: `/${AppConfig.routes.editAccountMultisign}/`,
+    multisigConvert: `/${AppConfig.routes.convertToAccountMultisign}/`
   };
   subscription: Subscription[] = [];
 
@@ -43,6 +45,7 @@ export class ViewAllAccountsComponent implements OnInit {
 
   ngOnInit() {
     this.subscribeAccountInfoToBuildBalance();
+    this.validateUniqueAccount();
   }
 
   ngOnDestroy(): void {
@@ -115,6 +118,7 @@ export class ViewAllAccountsComponent implements OnInit {
    * @returns temp
    */
   clone(obj) {
+    console.log(obj);
     if (obj === null || typeof obj !== 'object') {
       return obj;
     }
@@ -125,13 +129,32 @@ export class ViewAllAccountsComponent implements OnInit {
     return temp;
   }
 
+  deleteVerification(account) {
+    let erasable = false;
+
+    if (account.default || account.encrypted === '') {
+      erasable = false;
+    } else {
+      if (this.currentWallet.accounts.length === 2) {
+        let noPrivateKey = this.currentWallet.accounts.filter(account => account.encrypted === "")
+        if (noPrivateKey.length > 0) {
+          erasable = false
+        }
+      } else {
+        erasable = true
+      }
+    }
+
+    return erasable
+  }
+
   /**
    * Method to export account
    * @param {any} account
    * @memberof ViewAllAccountsComponent
    */
   exportAccount(account: any) {
-    let acc = this.clone(account);
+    let acc = Object.assign({}, account);
     const accounts = [];
     accounts.push(acc);
     const wallet = {
@@ -146,8 +169,8 @@ export class ViewAllAccountsComponent implements OnInit {
     let wordArray = CryptoJS.enc.Utf8.parse(JSON.stringify(wallet));
     let file = CryptoJS.enc.Base64.stringify(wordArray);
     // Word array to base64
-
-    const date = new Date(Date.now());
+    const now = Date.now()
+    const date = new Date(now);
     const year = date.getFullYear();
     const month = ((date.getMonth() + 1) < 10) ? `0${(date.getMonth() + 1)}` : date.getMonth() + 1;
     const day = (date.getDate() < 10) ? `0${date.getDate()}` : date.getDate();
@@ -175,5 +198,25 @@ export class ViewAllAccountsComponent implements OnInit {
         this.buildBalance();
       }
     ));
+  }
+
+  validateUniqueAccount() {
+    if (this.currentWallet.accounts.length === 1) {
+      this.currentWallet.accounts[0].firstAccount = true;
+      this.currentWallet.accounts[0].default = true;
+    }
+  }
+
+  /**
+     *
+     *  @param {string} quantity
+     * @memberof ViewAllAccountsComponent
+     */
+  /*getQuantity(quantity: string) {
+    return this.transactionService.getDataPart(quantity, 6);
+  }*/
+
+  getQuantity(quantity: string) {
+    return this.sharedService.amountFormat(quantity);
   }
 }

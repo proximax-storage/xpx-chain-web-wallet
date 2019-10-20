@@ -11,13 +11,47 @@
             <div class="col-12">
               <img class="w-30px" src="assets/images/img/icon-account-green-16h-proximax-sirius-wallet.svg">
               <span class="fw-600"> {{currentAccountToConvert.name}}</span>
-              <span *ngIf="disable">
-                &nbsp; <i title="On partial" style="color:#0056b3" class="fa fa-bell"></i>
+              <span *ngIf="valueValidateAccount.disabledItem  && valueValidateAccount.disabledPartial">
+                &nbsp; <i title="On partial" style="color:#f2a917" class="fa fa-bell"></i>
               </span>
             </div>
           </div>
         </div>
       </div>
+    </div>
+
+
+
+
+    <div class="row " *ngIf="valueValidateAccount.disabledItem">
+      <div class="col-8 mx-auto mb-1rem  box-transparent-border-red">
+        <div class="txt-a-center">
+          <img src="assets/images/img/icon-restriction-white.svg" style="filter: invert(50%)" alt="" width="30">
+        </div>
+        <h6 *ngIf="valueValidateAccount.info !==''" class="fw-600">{{valueValidateAccount.info}}</h6>
+        <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em" [innerHtml]="valueValidateAccount.subInfo">
+
+        </p>
+      </div>
+    </div>
+
+    <div class="row">
+      <!-- COSIGNATORY ACCOUNT -->
+      <ng-container *ngIf="consginerFirmList.length === 1">
+        <div class="col-11 col-md-10 col-lg-8 mx-auto d-flex justify-content-start pt-05rem pb-05rem">
+          <span class="fs-08rem fw-600">Cosignatory Account:&nbsp;</span>
+          <span class="fs-08rem">{{consginerFirmAccount.address}}</span>
+        </div>
+      </ng-container>
+
+      <!-- INSUFFICIENT BALANCE -->
+      <ng-container *ngIf="consginerFirmList && consginerFirmList.length === 1 && consginerFirmList[0].disabled">
+        <div class="col-11 col-md-10 col-lg-8 mx-auto d-flex justify-content-start pt-05rem pb-05rem">
+          <span class="fs-08rem fw-600 color-error-message">
+            Cosignatory {{consginerFirmList[0].info}}
+          </span>
+        </div>
+      </ng-container>
     </div>
 
 
@@ -37,12 +71,6 @@
                   style="cursor: pointer;" class="fa fa-trash fs-1rem" aria-hidden="true"></i>
                 {{cosign.publicAccount.address.plain()}}
               </span>
-
-              <!-- <span class="fs-07rem fw-600 txt-a-center "> <i
-                  (click)="deleteCosignatory(cosign.id ,cosign.disableItem, cosign.type)" style="cursor: pointer;"
-                  class="fa fa-trash fs-1rem" aria-hidden="true"></i>
-                {{cosign.publicAccount.address.plain()}}
-              </span> -->
             </div>
           </ng-container>
           <ng-container *ngIf="cosignatoryList.length === 0">
@@ -88,10 +116,10 @@
               <input [maxlength]="configurationForm.privateKey.maxLength" [minlength]="configurationForm.privateKey.minLength"
                 formControlName="cosignatory" required mdbInputDirective mdbValidate [validateSuccess]="true"
                 [validateError]="true" type="text" id="cosignatory" class="form-control form-control-sm input-border"
-                placeholder="Cosignatory Account public key " onkeyup="javascript:this.value=this.value.toLowerCase();">
+                placeholder="Cosignatory Account Public Key " onkeyup="javascript:this.value=this.value.toLowerCase();">
               <!-- VALIDATION -->
               <mdb-error *ngIf="validateInput('cosignatory', '').invalid && (validateInput('cosignatory', '').dirty || validateInput('cosignatory', '').touched)">
-                <span>Required field</span>
+                <span>Required Field</span>
               </mdb-error>
             </div>
           </div>
@@ -120,6 +148,7 @@
         </button>
       </div>
     </div>
+
     <!-- Progress -->
     <div class="row mt-1-5rem">
       <div class="col-11 col-md-10 col-lg-9 col-xl-8 mx-auto">
@@ -131,6 +160,7 @@
         </ng-container>
       </div>
     </div>
+
     <!-- MIN APPROVA  AND  MIN REMOVE -->
     <div class="row mt-3rem">
       <div class="col-11 col-md-10 col-lg-9 col-xl-8 mx-auto">
@@ -152,13 +182,13 @@
           <!-- MIN APROVE -->
           <div class="col-6 col-md-4 mb-1-5rem d-flex align-items-end justify-content-center">
             <div class="row">
-              <div class="col-12 text-center">Approve transaction</div>
+              <div class="col-12 text-center">Approve Transaction</div>
               <div class="col-12">
                 <div class="md-form form-sm mt-03rem mb-0rem">
                   <input (keypress)="preventNumbers($event)" max="{{minApprovaMaxLength}}" min="{{minApprovaMinLength}}"
                     formControlName="minApprovalDelta" required mdbInputDirective mdbValidate [validateSuccess]="true"
                     [validateError]="true" type="number" id="minApprovalDelta" class="form-control form-control-sm input-border text-center"
-                    placeholder="Min approval" onkeyup="javascript:this.value=this.value.toLowerCase();">
+                    placeholder="Min Approval" onkeyup="javascript:this.value=this.value.toLowerCase();">
 
                   <!-- <ng-container *ngIf="isMultisig">
                       <span class="fs-06rem fw-600 pl-1rem">Min Approv: &nbsp;</span>
@@ -167,7 +197,7 @@
 
                   <!-- VALIDATION -->
                   <mdb-error *ngIf="validateInput('minApprovalDelta', '').invalid && (validateInput('minApprovalDelta', '').dirty || validateInput('minApprovalDelta', '').touched)">
-                    <span>Invalid value</span>
+                    <span>Invalid Value</span>
                   </mdb-error>
                 </div>
               </div>
@@ -177,20 +207,20 @@
           <!-- MIN REMOVE-->
           <div class="col-6 col-md-4 mb-1-5rem d-flex align-items-end justify-content-center">
             <div class="row margin-rem0">
-              <div class="col-12 text-center">Delete users</div>
+              <div class="col-12 text-center">Delete Users</div>
               <div class="col-12">
                 <div class="md-form form-sm mt-03rem mb-0rem">
                   <input (keypress)="preventNumbers($event)" max="{{minApprovaMaxLength}}" min="{{minApprovaMinLength}}"
                     formControlName="minRemovalDelta" required mdbInputDirective mdbValidate [validateSuccess]="true"
                     [validateError]="true" type="number" id="minRemovalDelta" class="form-control form-control-sm input-border text-center"
-                    placeholder="Min removal" onkeyup="javascript:this.value=this.value.toLowerCase();">
+                    placeholder="Min Removal" onkeyup="javascript:this.value=this.value.toLowerCase();">
                   <!-- <ng-container *ngIf="isMultisig">
                       <span class="fs-06rem fw-600 pl-1rem">Min Removal: &nbsp;</span>
                       <span class="fs-06rem">{{accountInfo.multisigInfo.minRemoval}}</span>
                     </ng-container> -->
                   <!-- VALIDATION -->
                   <mdb-error *ngIf="validateInput('minRemovalDelta', '').invalid && (validateInput('minRemovalDelta', '').dirty || validateInput('minRemovalDelta', '').touched)">
-                    <span>Invalid value</span>
+                    <span>Invalid Value</span>
                   </mdb-error>
                 </div>
               </div>
@@ -199,6 +229,8 @@
         </div>
       </div>
     </div>
+
+
 
 
 
@@ -211,13 +243,11 @@
             formControlName="cosignatorieSign" (change)="selectCosignatorieSign($event)">
 
             <ng-template ng-option-tmp let-item="item" let-index="index">
-              <b>{{item.label}}</b> &nbsp;<b style="color:brown">{{item.info}}</b>
+              <b>{{item.label}}</b> &nbsp;<b class="color-error-message">{{item.info}}</b>
             </ng-template>
             <ng-template ng-footer-tmp>
-              <span class="fs-08rem">
-                Cosignatorie with top balance {{amountFormatterSimple(totalFee)}} XPX will be
-                available to cover the Lockfund rate
-
+              <span class="fs-08rem color-error-message">
+                Cosignatory has sufficient balance ({{amountFormatterSimple(totalFee)}} XPX) to cover LockFund Fee
               </span>
 
             </ng-template>
@@ -228,14 +258,14 @@
     </ng-container>
 
     <!-- FEE -->
-    <div class="row mt-1-5rem">
+    <!-- <div class="row mt-1-5rem">
       <div class="col-11 col-md-10 col-lg-9 col-xl-8 mx-auto">
         <div class="row">
           <div class="col-12 col-sm-6">
             <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
               <div class="row">
                 <div class="col-12 text-center">
-                  <span>Fee: <br></span>
+                  <span>Unconfirmed/Recommended Fee: <br></span>
                   <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" alt="">
                   <span class="fs-09rem">{{amountFormatterSimple(feeTransaction)}} XPX </span>
                 </div>
@@ -256,7 +286,37 @@
           </div>
         </div>
       </div>
+    </div> -->
+    <div class="row mt-1-5rem">
+      <div class="col-11 col-md-10 col-lg-8 mx-auto">
+        <div class="row">
+          <div class="col-12 col-md-6 mx-auto">
+            <div class="box-grey d-flex justify-content-center pt-08rem pb-08rem">
+              <div class="row">
+                <div class="col-12 text-center">
+                  <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20"
+                    alt="">
+                  <span class="fs-07rem">Unconfirmed/Recommended Fee: {{amountFormatterSimple(fee)}} XPX <br></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12 col-md-6 mx-auto">
+            <div class="box-grey pt-1rem pb-1rem d-flex justify-content-center">
+              <div class="row">
+                <div class="col-12 d-flex align-items-center">
+                  <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20"
+                    alt="">
+                  <span class="fs-07rem">LockFund: 10.000000 XPX <br> Unconfirmed/Recommended Fee: 0.044500 XPX</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+
 
     <!-- PASSWORD -->
     <div class="row mt-1-5rem">
@@ -266,9 +326,9 @@
             alt="">
           <input [maxlength]="configurationForm.passwordWallet.maxLength" [minlength]="configurationForm.passwordWallet.minLength"
             formControlName="password" required mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
-            type="password" id="password" class="form-control form-control-sm input-border" placeholder="Enter wallet password">
+            type="password" id="password" class="form-control form-control-sm input-border" placeholder="Enter Wallet Password">
           <mdb-error *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
-            <span>Required field</span>
+            <span>Password Required</span>
           </mdb-error>
         </div>
       </div>
@@ -301,14 +361,14 @@
       <div class="col-11 col-sm-12 col-md-10 col-lg-8 mx-auto">
         <div class="row">
           <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-            <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
-              size="md" [disabled]="editAccountMultsignForm.status=='DISABLED'" (click)="clearForm()">
+            <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" size="md" [disabled]="editAccountMultsignForm.status=='DISABLED'"
+              (click)="clearForm()">
               <span class="fs-1-2em color-white">Clear</span>
             </button>
           </div>
           <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
             <button [disabled]="editAccountMultsignForm.invalid || cosignatoryList.length == 0 || editAccountMultsignForm.status=='DISABLED'"
-              mdbBtn type="submit" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md">
+              mdbBtn type="submit" rounded="true" mdbWavesEffect class="btn-proximax" size="md">
               <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true" *ngIf="blockSend"></span>
               <span class="fs-1-2em color-white">Send</span>
             </button>

@@ -26,15 +26,11 @@ export class WalletNis1AccountsConsignerComponent implements OnInit {
   ) {
     this.mainAccount = this.walletService.getAccountInfoNis1();
     // console.log('Esta es la info de la this.mainAccount ------------>', this.mainAccount);
-
     this.mainAccount.balance = null;
     this.mainAccount.mosaic = null;
     // this.mainAccount.nameAccount = this.mainAccount.nameAccount;
-
     this.searchBalance(this.mainAccount);
-
     this.listConsignerAccounts = this.mainAccount.consignerAccounts;
-
     this.listConsignerAccounts.forEach((element, index) => {
       element.publicAccount.balance = null;
       element.publicAccount.mosaic = null;
@@ -46,6 +42,13 @@ export class WalletNis1AccountsConsignerComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log('aquiiiiiiiii esssssss');
+  }
+
+  getQuantity(quantity) {
+    if (quantity !== null) {
+      return this.sharedService.amountFormat(quantity);
+    }
   }
 
   searchBalance(account, index = null) {
@@ -146,9 +149,7 @@ export class WalletNis1AccountsConsignerComponent implements OnInit {
     if (account.balance === null || account.balance === '0.000000') {
       return this.sharedService.showWarning('', 'The selected account has no balance');
     }
-    // console.log('Account Selected --------------->', account);
-
-    // this.walletService.setAccountMosaicsNis1(account.mosaic);
+    account.route = `/${AppConfig.routes.home}`;
     this.walletService.setNis1AccountSelected(account);
     this.router.navigate([`/${AppConfig.routes.transferXpx}`]);
   }
@@ -158,7 +159,7 @@ export class WalletNis1AccountsConsignerComponent implements OnInit {
     this.walletService.setAccountInfoNis1(null);
     // this.walletService.setAccountMosaicsNis1(null);
     this.walletService.setNis1AccountSelected(null);
-    this.router.navigate([`/${AppConfig.routes.auth}`]);
+    this.router.navigate([`/${AppConfig.routes.home}`]);
   }
 
 }

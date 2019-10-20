@@ -59,7 +59,7 @@ export class CreatePollStorageService {
 
 
 
-  async sendFileStorage(fileObject: FileInterface, description: any, account: Account, privateKey: string) {
+  async sendFileStorage(fileObject: FileInterface, description: any, account: PublicAccount, privateKey: string) {
     // console.log('account',account)
     const promise = new Promise(async (resolve, reject) => {
       const fileContents = Buffer.from(JSON.stringify(fileObject.content));
@@ -77,16 +77,16 @@ export class CreatePollStorageService {
         privateKey
       );
 
-      const recipientPublicKey = account.publicAccount.publicKey;
+      const recipientPublicKey = account.publicKey;
       if (recipientPublicKey.length > 0) {
         param.withRecipientPublicKey(recipientPublicKey);
       }
 
       const mosaic: any = [];
       param.withTransactionMosaics(mosaic); //Update-sdk-dragon
-      let recipientAddress = account.publicAccount.address.plain();
+      let recipientAddress = account.address.plain();
       if (recipientPublicKey.length > 0) {
-        recipientAddress = Address.createFromPublicKey(recipientPublicKey, account.publicAccount.address.networkType).plain();
+        recipientAddress = Address.createFromPublicKey(recipientPublicKey, account.address.networkType).plain();
       }
 
       if (recipientAddress) {
@@ -118,7 +118,7 @@ export class CreatePollStorageService {
       });
 
       this.blockUI.stop();
-      this.sharedService.showSuccess('Success', 'Record saved succesfully');
+      this.sharedService.showSuccess('Success', 'Record Saved Succesfully');
       resolve(this.transactionResults);
     });
     return await promise;
@@ -132,10 +132,10 @@ export class CreatePollStorageService {
       let searchParam: any
       if (this.searcher) {
         if (publicAccount) {
-           console.log("search by public Acount")
+          //  console.log("search by public Acount")
           searchParam = SearchParameter.createForPublicKey(publicAccount.publicKey);
         } else if (address) {
-           console.log("search by address")
+          //  console.log("search by address")
           searchParam = SearchParameter.createForAddress(address)
         }
         searchParam.withTransactionFilter(TransactionFilter.INCOMING);

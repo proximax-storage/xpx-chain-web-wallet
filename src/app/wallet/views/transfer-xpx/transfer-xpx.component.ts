@@ -10,7 +10,7 @@ export class TransferXpxComponent implements OnInit {
 
   showCertificate: boolean = false;
   transactionSuccess: any;
-  routeCertificate: string = `/${AppConfig.routes.auth}`;
+  routeCertificate: string = `/${AppConfig.routes.home}`;
   title: string = 'Mainnet Swap';
   subtitle: string = null;
   constructor() { }

@@ -47,10 +47,11 @@ export class MosaicsSupplyChangeComponent implements OnInit {
   }];
   mosaicsInfo: any[];
   divisibility: number = 0;
-  duration: string = '() 0 days';
+  duration: string = '0 days';
   supply: string = '0';
   blockButton: boolean = false;
   supplyMutable: boolean = false;
+  passwordMain: string = 'password';
   transferable: boolean = false;
   transactionSigned: SignedTransaction[] = [];
   transactionReady: SignedTransaction[] = [];
@@ -70,7 +71,7 @@ export class MosaicsSupplyChangeComponent implements OnInit {
   blockBtn: boolean = false;
   maxLengthSupply: number = 13;
   mosaicSupplyChangeTransaction: any;
-  fee: string = ' 0.034750';
+  fee: string = ' 0.000000';
   amountAccount: number;
   showTotal: boolean = false;
   errSupply: boolean = false;
@@ -79,6 +80,7 @@ export class MosaicsSupplyChangeComponent implements OnInit {
   errSupplyMin: boolean = false;
   subscription: Subscription[] = [];
   vestedBalance: { part1: string; part2: string; };
+  noMosaics: boolean = false;
 
   /**
    * Initialize dependencies and properties
@@ -102,9 +104,6 @@ export class MosaicsSupplyChangeComponent implements OnInit {
     this.formMosaicSupplyChange.get('deltaSupply').disable();
     this.formMosaicSupplyChange.get('mosaicSupplyType').disable();
     this.balance();
-    // this.amountAccount = this.walletService.getAmountAccount();
-    // console.log(this.amountAccount);
-    
 
     this.subscribe['block'] = this.dataBridge.getBlock().subscribe(next => this.currentBlock = next);
     const data = await this.mosaicService.filterMosaics();
@@ -169,59 +168,31 @@ export class MosaicsSupplyChangeComponent implements OnInit {
       this.builder();
     });
 
-
     this.parentMosaic = mosaicsSelect;
+    if (this.parentMosaic.length === 1) {
+      this.noMosaics = true;
+      this.formMosaicSupplyChange.get('parentMosaic').disable();
+      this.formMosaicSupplyChange.get('password').disable();
+    }
   }
 
-
+  /**
+   *
+   *
+   * @memberof MosaicsSupplyChangeComponent
+   */
   balance() {
     this.subscription.push(this.transactionService.getBalance$().subscribe(
       next => this.vestedBalance = this.transactionService.getDataPart(next, 6),
       error => this.vestedBalance = {
         part1: '0',
         part2: '000000'
-      }  
+      }
     ));
-    let vestedBalance = this.vestedBalance.part1.concat(this.vestedBalance.part2).replace(",", "");
+    let vestedBalance = this.vestedBalance.part1.concat(this.vestedBalance.part2).replace(/,/g,'');
     this.amountAccount = Number(vestedBalance)
   }
 
-  calculate(val?) {
-
-
-    if (this.increase) {
-      let value = Number(this.supply.replace(",", "")) + val;
-      this.totalSupply = this.transactionService.amountFormatter(
-        parseFloat(this.transactionService.addZeros(this.divisibility, value)),
-        this.mosaicsInfoSelected[0].mosaicInfo
-      );
-      if (Number(this.supply) + val > 9000000000) {
-        this.errSupply = true;
-      } else {
-        this.errSupply = false;
-      }
-    } else {
-      
-      let value = Number(this.supply.replace(",", "")) - val;
-      let restante = Number(value.toFixed(6));
-      
-      if (val > Number(this.supply.replace(",", ""))) {
-        
-        this.errSupplyMin = true;
-        this.totalSupply = '0.000000'
-      } else {
-        this.totalSupply = this.transactionService.amountFormatter(
-          parseFloat(this.transactionService.addZeros(this.divisibility, restante)),
-          this.mosaicsInfoSelected[0].mosaicInfo
-        );
-        this.errSupply = false;
-        this.errSupplyMin = false;
-      }
-      
-
-    }
-
-  }
   /**
    * Create form namespace
    *
@@ -238,6 +209,58 @@ export class MosaicsSupplyChangeComponent implements OnInit {
       );
       this.fee = this.transactionService.amountFormatterSimple(this.mosaicSupplyChangeTransaction.maxFee.compact());
     }
+  }
+
+  /**
+   *
+   *
+   * @param {*} [val]
+   * @memberof MosaicsSupplyChangeComponent
+   */
+  calculate(val?) {
+    if (this.increase) {
+      let value = Number(this.supply.replace(/,/g,'')) + val;
+      this.totalSupply = this.transactionService.amountFormatter(
+        parseFloat(this.transactionService.addZeros(this.divisibility, value)),
+        this.mosaicsInfoSelected[0].mosaicInfo
+      );
+      if (Number(this.supply) + val > 9000000000) {
+        this.errSupply = true;
+      } else {
+        this.errSupply = false;
+      }
+    } else {
+
+      let value = Number(this.supply.replace(/,/g,'')) - val;
+      let restante = Number(value.toFixed(6));
+
+      if (val > Number(this.supply.replace(/,/g,''))) {
+
+        this.errSupplyMin = true;
+        this.totalSupply = '0.000000'
+      } else {
+        this.totalSupply = this.transactionService.amountFormatter(
+          parseFloat(this.transactionService.addZeros(this.divisibility, restante)),
+          this.mosaicsInfoSelected[0].mosaicInfo
+        );
+        this.errSupply = false;
+        this.errSupplyMin = false;
+      }
+
+
+    }
+
+  }
+
+  /**
+   *
+   *
+   * @param {*} inputType
+   * @memberof MosaicsSupplyChangeComponent
+   */
+  changeInputType(inputType) {
+    let newType = this.sharedService.changeInputType(inputType)
+    this.passwordMain = newType;
   }
 
   /**
@@ -260,9 +283,11 @@ export class MosaicsSupplyChangeComponent implements OnInit {
    * @memberof MosaicSupplyChange
    */
   clearForm() {
-    // this.fee = '0.000000';
+    this.fee = '0.000000';
+    this.formMosaicSupplyChange.get('mosaicSupplyType').disable();
     this.showTotal = false;
     this.errSupply = false;
+    this.errSupplyMin = false;
     this.formMosaicSupplyChange.reset({
       parentMosaic: '',
       mosaicSupplyType: MosaicSupplyType.Increase,
@@ -283,6 +308,8 @@ export class MosaicsSupplyChangeComponent implements OnInit {
    * @memberof MosaicsSupplyChangeComponent
    */
   async optionSelected(mosaic: any) {
+    this.errSupplyMin = false;
+    this.errSupply = false;
     if (mosaic !== undefined) {
       this.showTotal = true;
       this.formMosaicSupplyChange.get('deltaSupply').enable();
@@ -301,10 +328,10 @@ export class MosaicsSupplyChangeComponent implements OnInit {
           ]), mosaicsInfoSelected[0].mosaicInfo
         );
         this.calculate();
-        const durationBlock = new UInt64([
-          mosaicsInfoSelected[0].mosaicInfo['properties']['duration']['lower'],
-          mosaicsInfoSelected[0].mosaicInfo['properties']['duration']['higher']
-        ]);
+        // const durationBlock = new UInt64([
+        //   mosaicsInfoSelected[0].mosaicInfo['properties']['duration']['lower'],
+        //   mosaicsInfoSelected[0].mosaicInfo['properties']['duration']['higher']
+        // ]);
 
         this.formMosaicSupplyChange.get('deltaSupply').setValue(0);
         this.maxLengthSupply = 13 + this.divisibility;
@@ -315,8 +342,9 @@ export class MosaicsSupplyChangeComponent implements OnInit {
           precision: this.divisibility.toString()
         };
 
-        const durationDays = this.transactionService.calculateDuration(durationBlock);
-        this.duration = `(${durationBlock.compact()}) ${durationDays}`;
+        // const durationDays = this.transactionService.calculateDuration(durationBlock);
+        // this.duration = `(${durationBlock.compact()}) ${durationDays}`;
+        this.duration = 'Does not expire';
         return;
       }
     }
@@ -330,13 +358,18 @@ export class MosaicsSupplyChangeComponent implements OnInit {
   }
 
   type(event) {
+    this.formMosaicSupplyChange.get('deltaSupply').setValue(0);
+    this.optionsSupply = {
+      prefix: '',
+      thousands: ',',
+      decimal: '.',
+      precision: this.divisibility.toString()
+    };
     if (event.value === 1) {
       this.increase = true;
     } else {
       this.increase = false;
     }
-    // console.log('----------', event);
-
   }
 
   /**
@@ -394,6 +427,17 @@ export class MosaicsSupplyChangeComponent implements OnInit {
   /**
    *
    *
+   * @param {string} quantity
+   * @returns
+   * @memberof MosaicsSupplyChangeComponent
+   */
+  getQuantity(quantity: string) {
+    return this.sharedService.amountFormat(quantity);
+  }
+
+  /**
+   *
+   *
    * @memberof MosaicsSupplyChangeComponent
    */
   send() {
@@ -437,7 +481,7 @@ export class MosaicsSupplyChangeComponent implements OnInit {
           this.blockButton = false;
         }
       } else {
-        this.sharedService.showError('', 'insufficient balance');
+        this.sharedService.showError('', 'insufficient Balance');
       }
     }
   }
@@ -461,14 +505,6 @@ export class MosaicsSupplyChangeComponent implements OnInit {
     }, 5000);
   }
 
-
-  // suscribe(){
-  //   this.formMosaicSupplyChange.get('deltaSupply').valueChanges.subscribe(
-  //     deltaSupply => {
-  //       this.deltaSupply = deltaSupply;
-
-  //     });
-  // }
 
   /**
    *

@@ -30,7 +30,7 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
     currentPage: 1
   };
   paramsHeader: HeaderServicesInterface = {
-    moduleName: 'Transaction explorer',
+    moduleName: 'Transaction Explorer',
     componentName: 'Explore'
   };
   searching = false;
@@ -45,7 +45,7 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
   searchText: string = '';
   elements: any = [];
   dataSelected: TransactionsInterface = null;
-  headElements = ['Type', '', 'Sender', 'Recipient'];
+  headElements = ['Type', 'In/Out', 'Sender', 'Recipient'];
   optionTypeSearch = [
     {
       'value': 'address',
@@ -83,7 +83,7 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
     if (!this.searching) {
       this.elements = [];
       if (this.typeSearch === '') {
-        this.sharedService.showError('', 'Please, select a type search');
+        this.sharedService.showError('', 'Please select a search type');
         return;
       } else if (this.paramSearch === '') {
         var tp = '';

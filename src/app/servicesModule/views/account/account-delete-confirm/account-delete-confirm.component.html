@@ -3,7 +3,7 @@
     <!--TITLLES -->
     <div class="row mt-1-5rem">
         <div *ngIf="currenAccount" class="col-8 d-flex justify-content-center mt-05rem mb-05rem mx-auto">
-            <span class="fs-1-7rem fw-600 txt-a-center line-h-1-2em">
+            <span class="fs-1-7rem fw-400 txt-a-center line-h-1-2em">
                 {{currenAccount.name}}
             </span>
         </div>
@@ -17,8 +17,15 @@
             <span class="fs-08rem txt-a-center line-h-1-2em  mb-06rem">{{tittle3}}</span>
           </div> -->
         <!-- Information -->
-        <div class="col-8 d-flex justify-content-center mb-1rem mx-auto box-transparent-border-orange">
-            <span class="fs-08rem txt-a-center line-h-1-2em  mb-06rem fw-600">{{Information}}</span>
+        <div class="col-8 mb-1rem mx-auto box-transparent-border-orange">
+            <div class="txt-a-center">
+                <img src="assets/images/img/icon-transaction-unconfirmed-white.svg" style="filter: invert(50%)" alt=""
+                    width="30">
+            </div>
+            <h6 class="fw-600">Warning!</h6>
+            <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em">
+                {{Information}}
+            </p>
         </div>
 
     </div>
@@ -31,14 +38,21 @@
         <div class="row">
             <div class="col-8  mx-auto">
                 <div class="md-form form-sm">
-                    <img class="form-control-feedback" src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg"
-                        alt="">
-                    <input [maxlength]="configurationForm.passwordWallet.maxLength" [minlength]="configurationForm.passwordWallet.minLength"
-                        formControlName="password" mdbInputDirective mdbValidate [validateSuccess]="true"
-                        [validateError]="true" type="password" id="password" class="form-control form-control-sm input-border"
-                        placeholder="Enter wallet password">
+                    <img class="form-control-feedback"
+                        src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg" alt="">
+
+                    <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
+                        src="assets/images/img/icon-show-hide-password.svg" *ngIf="passwordMain === 'password'">
+                    <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
+                        src="assets/images/img/icon-show-hide-password-grey.svg" *ngIf="passwordMain === 'text'">
+                    <input [maxlength]="configurationForm.passwordWallet.maxLength"
+                        [minlength]="configurationForm.passwordWallet.minLength" formControlName="password"
+                        mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="password"
+                        [type]="passwordMain" id="password" class="form-control form-control-sm input-border"
+                        placeholder="Enter Wallet Password">
                     <!-- VALIDATION -->
-                    <mdb-error *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
+                    <mdb-error
+                        *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
                         <span>Required to enable options</span>
                     </mdb-error>
                 </div>
@@ -67,14 +81,18 @@
           </div>
         </div> -->
     <!--BUTTONS -->
-    <div class="row  d-flex justify-content-center">
-        <button mdbBtn type="button" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem" size="md"
-            [routerLink]="[routes.viewAllAccount]">
-            <span class="fs-1-2em color-white">Cancel</span>
-        </button>
-        <button mdbBtn type="button" [disabled]="validatingForm.invalid" rounded="true" mdbWavesEffect class="f-w-600 background-btn pl-2rem pr-2rem"
-            size="md" (click)="deleteAccount()">
-            <span class="fs-1-2em color-white">Delete now</span>
-        </button>
+    <div class="row d-flex justify-content-center">
+        <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
+            <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" size="md"
+                [routerLink]="[routes.viewAllAccount]">
+                <span class="color-white">Cancel</span>
+            </button>
+        </div>
+        <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
+            <button mdbBtn type="button" [disabled]="validatingForm.invalid" rounded="true" mdbWavesEffect
+                class="btn-proximax" size="md" (click)="deleteAccount()">
+                <span class="color-white">Delete Now</span>
+            </button>
+        </div>
     </div>
 </div>

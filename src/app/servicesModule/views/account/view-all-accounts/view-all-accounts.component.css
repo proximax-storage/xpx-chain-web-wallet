@@ -1,0 +1,25 @@
+/* @media only screen and (min-width: 1025px) {
+    .other-mosaics-display {
+        display: block !important;
+    }
+}
+
+@media only screen and (max-width: 1024px) {
+    .other-mosaics-display {
+        display: none !important;
+    }
+} */
+
+
+/*
+.other-mosaics-display {
+    display: block !important;
+} */
+
+@media (max-width: 576px) {
+  .responsive-grap {
+    white-space: normal !important;
+    word-break: break-all;
+    font-size: .8rem;
+  }
+}

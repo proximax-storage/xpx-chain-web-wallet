@@ -3,70 +3,70 @@
     <div class="col-11 mx-auto">
       <div class="row">
         <!-- TYPE TRANSFER TRANSACTION -->
-        <div class="col-12 col-md-7">
+        <div class="col-12 col-md-6 col-lg-7">
           <div class="row mt-04rem mr-1rem ml-1rem">
             <!-- Data -->
             <div class="col-12">
               <div class="row">
                 <!-- Type transfer -->
                 <div class="col-12 d-flex align-items-center">
-                  <span class="color-dark-green fw-600 fs-1-2rem">{{transferTransaction.nameType}}</span>
+                  <span class="color-black fw-600 fs-1-2rem">{{transferTransaction.nameType}}</span>
 
                   <!-- Income -->
-                  <ng-container *ngIf="transferTransaction?.receive">
+                  <ng-container *ngIf="transferTransaction?.receive === true">
                     <img class="mr-1rem ml-1rem h-1em"
                       src="assets/images/img/arrow-transaction-receive-green-proximax-sirius-explorer.svg" alt="">
-                    <span class="color-dark-green  fw-600 fs-1-2rem">Received</span>
+                    <span class="color-black  fw-600 fs-1-2rem">Received</span>
                   </ng-container>
 
                   <!-- Outcome -->
-                  <ng-container *ngIf="!transferTransaction?.receive">
+                  <ng-container *ngIf="transferTransaction?.receive === false">
                     <img class="mr-1rem ml-1rem h-1em"
                       src="assets/images/img/arrow-transaction-sender-orange-proximax-sirius-explorer.svg" alt="">
-                    <span class="color-dark-green  fw-600 fs-1-2rem" *ngIf="!transferTransaction?.receive">Send</span>
+                    <span class="color-black  fw-600 fs-1-2rem" *ngIf="!transferTransaction?.receive">Sent</span>
                   </ng-container>
                 </div>
 
                 <!-- Timestamp -->
                 <div class="col-12" *ngIf="transferTransaction?.timestamp">
-                  <span class="color-dark-green fs-07rem fw-500 w-w-b-w">{{transferTransaction?.timestamp}}</span>
+                  <span class="color-black fs-07rem fw-500 w-w-b-w">{{transferTransaction?.timestamp}}</span>
                 </div>
 
                 <!-- Fee -->
                 <ng-container *ngIf="transferTransaction?.effectiveFee">
                   <div class="col-12 mt-03rem">
-                    <span class="fw-600 fs-095rem color-dark-green">Fee:&nbsp;&nbsp;</span>
+                    <span class="fw-600 fs-095rem color-black">Effective Fee:&nbsp;&nbsp;</span>
                     <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
-                    <span class="fw-600 fs-095rem color-blue-light">{{transferTransaction?.effectiveFee.part1}}</span>
-                    <span class="fw-600 fs-075rem color-blue-light">{{transferTransaction?.effectiveFee.part2}}</span>
-                    <span class="fw-600 fs-095rem color-blue-light"> XPX </span>
+                    <span class="fs-095rem color-black">{{transferTransaction?.effectiveFee.part1}}</span>
+                    <span class="fs-075rem color-black">{{transferTransaction?.effectiveFee.part2}}</span>
+                    <span class="fs-095rem color-black"> XPX </span>
                   </div>
                 </ng-container>
 
                 <!-- HEIGHT -->
                 <ng-container *ngIf="transferTransaction?.data.transactionInfo.height.compact() > 0">
-                  <div class="col-12 mt-03rem">
-                    <span class="fw-600 fs-08rem color-dark-green">Height:&nbsp;&nbsp;</span>
+                  <div class="col-12 mt-1rem lh-1em">
+                    <span class="fw-600 fs-08rem color-black">Height:&nbsp;&nbsp;</span>
                     <span
-                      class="fs-07rem fw-400 color-dark-green">{{transferTransaction?.data.transactionInfo.height.compact()}}</span>
+                      class="fs-07rem fw-400 color-black">{{transferTransaction?.data.transactionInfo.height.compact()}}</span>
                   </div>
                 </ng-container>
 
                 <!-- TYPE -->
-                <div class="col-12 mt-03rem">
-                  <span class="fw-600 fs-08rem color-dark-green">Type:&nbsp;&nbsp;</span>
-                  <span class="fs-07rem fw-400 color-dark-green">{{typeTransactionHex}}</span>
+                <div class="col-12 lh-1em">
+                  <span class="fw-600 fs-08rem color-black">Type:&nbsp;&nbsp;</span>
+                  <span class="fs-07rem fw-400 color-black">{{typeTransactionHex}}</span>
                 </div>
 
                 <!-- TYPE -->
-                <div class="col-12 mt-03rem">
-                  <span class="fw-600 fs-08rem color-dark-green">From:&nbsp;&nbsp;</span>
-                  <span class="fs-07rem fw-400 color-dark-green">{{transferTransaction?.senderAddress}}</span>
+                <div class="col-12 lh-1em">
+                  <span class="fw-600 fs-08rem color-black">From:&nbsp;&nbsp;</span>
+                  <span class="fs-07rem fw-400 color-black">{{transferTransaction?.senderAddress}}</span>
                 </div>
 
-                <div class="col-12 mt-03rem">
-                  <span class="fw-600 fs-08rem color-dark-green">To:&nbsp;&nbsp;</span>
-                  <span class="fs-07rem fw-400 color-dark-green">{{transferTransaction?.recipientAddress}}</span>
+                <div class="col-12 lh-1em">
+                  <span class="fw-600 fs-08rem color-black">To:&nbsp;&nbsp;</span>
+                  <span class="fs-07rem fw-400 color-black">{{transferTransaction?.recipientAddress}}</span>
                 </div>
               </div>
             </div>
@@ -77,11 +77,10 @@
               <div class="col-12 mt-1rem">
                 <div class="row">
                   <div class="col-12">
-                    <span class="color-dark-green fw-bold fs-07rem">Message: </span>
+                    <span class="color-black fw-bold fs-07rem">Message: </span>
                   </div>
                   <div class="col-12 word-break-all">
-                    <span
-                      class="color-dark-green fw-400 fs-08remc">{{transferTransaction?.data['message'].payload}}</span>
+                    <span class="color-black fw-400 fs-08remc">{{transferTransaction?.data['message'].payload}}</span>
                   </div>
                 </div>
               </div>
@@ -97,7 +96,7 @@
         </div>
 
         <!-- BOX DATA SIGNER HASH -->
-        <div class="col-12 col-md-5">
+        <div class="col-12 col-md-6 col-lg-5 box-modal-grey pt-01rem">
           <app-box-data-signer-hash [dataSelected]="transferTransaction">
           </app-box-data-signer-hash>
         </div>
@@ -115,61 +114,66 @@
       <div class="row">
         <div class="col-12">
           <!-- Name type -->
-          <span class="color-dark-green fw-bold fs-1-5rem">{{transferTransaction.nameType}}</span>
-
-          <!-- Arrow -->
-          <img class="mr-1rem ml-1rem h-1-4em"
-            src="assets/images/img/arrow-transaction-receive-green-proximax-sirius-explorer.svg">
+          <span class="color-black fw-bold fs-1-5rem">{{transferTransaction.nameType}}</span>
 
           <!-- Income -->
-          <span class="color-dark-green fw-bold fs-1-5rem">Received</span>
+          <ng-container *ngIf="transferTransaction?.receive === true">
+            <img class="mr-1rem ml-1rem h-1-4em"
+              src="assets/images/img/arrow-transaction-receive-green-proximax-sirius-explorer.svg">
+            <span class="color-black  fw-600 fs-1-2rem">Received</span>
+          </ng-container>
+
+          <!-- Outcome -->
+          <ng-container *ngIf="transferTransaction?.receive === false">
+            <img class="mr-1rem ml-1rem h-1-4em"
+              src="assets/images/img/arrow-transaction-sender-orange-proximax-sirius-explorer.svg">
+            <span class="color-black  fw-600 fs-1-2rem">Sent</span>
+          </ng-container>
         </div>
 
         <!-- Timestamp -->
         <div class="col-12 mt-01rem">
-          <span class="color-dark-green fs-08rem fw-500 w-w-b-w">{{transferTransaction?.timestamp}}</span>
+          <span class="color-black fs-08rem fw-500 w-w-b-w">{{transferTransaction?.timestamp}}</span>
         </div>
 
         <!-- Amount -->
         <div class="col-12 mt-1rem">
           <span class="fw-600 fs-095rem">Amount:&nbsp;&nbsp;</span>
           <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
-          <span class="fw-600 fs-095rem color-blue-light">{{amountTwoPart?.part1}}</span>
-          <span class="fw-600 fs-075rem color-blue-light">{{amountTwoPart?.part2}}</span>
-          <span class="fw-600 fs-095rem color-blue-light"> XPX </span>
-
+          <span class="fs-095rem color-black">{{amountTwoPart?.part1}}</span>
+          <span class="fs-075rem color-black">{{amountTwoPart?.part2}}</span>
+          <span class="fs-095rem color-black"> XPX </span>
         </div>
 
         <!-- Fee -->
         <div class="col-12 mt-03rem">
-          <span class="fw-600 fs-095rem">Fee:&nbsp;&nbsp;</span>
+          <span class="fw-600 fs-095rem">Effective Fee:&nbsp;&nbsp;</span>
           <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg">
-          <span class="fw-600 fs-095rem color-blue-light">{{transferTransaction?.effectiveFee.part1}}</span>
-          <span class="fw-600 fs-075rem color-blue-light">{{transferTransaction?.effectiveFee.part2}}</span>
-          <!-- <span class="fw-600 fs-095rem color-blue-light">{{transferTransaction?.feePart.part1}}</span> -->
-          <span class="fw-600 fs-095rem color-blue-light"> XPX </span>
+          <span class="fs-095rem color-black">{{transferTransaction?.effectiveFee?.part1}}</span>
+          <span class="fs-075rem color-black">{{transferTransaction?.effectiveFee?.part2}}</span>
+          <span class="fs-095rem color-black"> XPX </span>
         </div>
 
         <!-- Message -->
-        <div class="col-12 mt-1-2rem lh-1em">
+        <div class="col-12 mt-1rem lh-1em">
           <span class="fw-600 fs-085rem">Message: <br></span>
           <span class="fs-075rem w-w-b-w "> {{msg}} </span>
         </div>
 
         <!-- Height -->
-        <div class="col-12 mt-1-2rem">
+        <div class="col-12 lh-1em mt-1rem">
           <span class="fw-600 fs-075rem">Height:&nbsp;</span>
           <span class="fs-075rem"> {{transferTransaction.data['transactionInfo'].height.compact()}} </span>
         </div>
 
         <!-- Type -->
-        <div class="col-12 mt-01rem">
+        <div class="col-12 lh-1em">
           <span class="fw-600 fs-075rem">Type:&nbsp;</span>
           <span class="fs-075rem"> {{transferTransaction.data.type}} </span>
         </div>
 
         <!-- TO -->
-        <div class="col-12 mt-01rem">
+        <div class="col-12 lh-1em">
           <span class="fw-600 fs-075rem">To:&nbsp;</span>
           <span class="fs-075rem w-w-b-w "> {{transferTransaction.recipientAddress}} </span>
         </div>
@@ -186,8 +190,9 @@
 
         <!-- Signer -->
         <div class="col-12 lh-1em">
-          <span class="fw-600 fs-075rem">Signer: <br></span>
-          <span class="fs-075rem w-w-b-w "> {{transferTransaction.data.signer.publicKey}} </span>
+          <span class="fw-600 fs-075rem cursor-p">Signer: <br></span>
+          <span class="fs-075rem w-w-b-w"
+            [title]="'Public Key: '+transferTransaction.data.signer.publicKey">{{transferTransaction.data.signer.address.pretty()}}</span>
         </div>
 
         <!-- Signature -->
@@ -195,6 +200,29 @@
           <span class="fw-600 fs-075rem">Signature: <br></span>
           <span class="fs-075rem w-w-b-w "> {{transferTransaction.data.signature}} </span>
         </div>
+
+        <!-- Others cosignatories -->
+        <ng-container
+          *ngIf="transferTransaction.data['cosignatures'] && transferTransaction.data['cosignatures'].length > 0">
+          <div class="col-12 mt-05rem lh-1em">
+            <mdb-accordion [multiple]="false" aria-multiselectable="true">
+              <mdb-accordion-item [collapsed]="true">
+                <mdb-accordion-item-head class="box-modal-grey">
+                  <span class="fw-600 fs-075rem">Others cosignatories:</span>
+                </mdb-accordion-item-head>
+                <mdb-accordion-item-body class="box-accounts-height box-modal-grey">
+                  <ng-container *ngFor="let dataSigner of transferTransaction.data['cosignatures'];  let i=index">
+                    <div class="">
+                      <span class="fs-06rem w-w-b-w cursor-p fw-600" [title]="'Public Key: '+dataSigner.signer.publicKey">
+                        {{dataSigner.signer.address.pretty()}}
+                      </span>
+                    </div>
+                  </ng-container>
+                </mdb-accordion-item-body>
+              </mdb-accordion-item>
+            </mdb-accordion>
+          </div>
+        </ng-container>
 
         <!-- Hash -->
         <div class="col-12 mt-05rem lh-1em">
@@ -204,8 +232,8 @@
 
         <!-- NIS1 HASH -->
         <div class="col-12 mt-05rem lh-1em box-modal-grey-dark p-1rem color-white">
-          <span class="fw-600 fs-075rem">NIS1 HASH: <br></span>
-          <span class="fs-075rem w-w-b-w "> {{nis1hash}} </span>
+          <span class="fw-600 fs-075rem">NIS1 Hash: <br></span>
+          <span class="fs-075rem w-w-b-w "> {{nis1hash | uppercase}} </span>
         </div>
       </div>
     </div>

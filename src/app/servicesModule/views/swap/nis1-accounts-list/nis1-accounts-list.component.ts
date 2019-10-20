@@ -5,6 +5,7 @@ import { HeaderServicesInterface } from 'src/app/servicesModule/services/service
 import { Router } from '@angular/router';
 import { NemServiceService } from 'src/app/shared/services/nem-service.service';
 import { first, timeout } from 'rxjs/operators';
+import { SharedService } from 'src/app/shared/services/shared.service';
 
 @Component({
   selector: 'app-nis1-accounts-list',
@@ -25,7 +26,8 @@ export class Nis1AccountsListComponent implements OnInit {
   constructor(
     private walletService: WalletService,
     private router: Router,
-    private nemProvider: NemServiceService
+    private nemProvider: NemServiceService,
+    private sharedService: SharedService
   ) {
     this.walletService.setAccountInfoNis1(null);
     this.accountsNis1 = this.walletService.currentWallet.accounts;
@@ -49,9 +51,9 @@ export class Nis1AccountsListComponent implements OnInit {
         let consignerOf: boolean = false;
         let consignerAccountsInfo: any = [];
 
-        if (next.cosignatoryOf.length > 0) {
+        if (next['meta']['cosignatoryOf'].length > 0) {
           consignerOf = true;
-          consignerAccountsInfo = next.cosignatoryOf;
+          consignerAccountsInfo = next['meta']['cosignatoryOf'];
         }
         const accountNis1 = {
           nameAccount: account.name,
@@ -74,19 +76,8 @@ export class Nis1AccountsListComponent implements OnInit {
         }
       },
       error => {
-        this.searchItem[index] = false;
-        const accountNis1 = {
-          nameAccount: account.name,
-          address: address,
-          publicKey: account.nis1Account.publicKey,
-          consignerOf: false,
-          consignerAccounts: [],
-          multiSign: false,
-          mosaic: null,
-          route: `/${AppConfig.routes.nis1AccountList}`
-        }
-        this.walletService.setAccountInfoNis1(accountNis1);
-        // this.walletService.setNis1AccounsWallet(accountNis1);
+        this.sharedService.showError('', 'Service not available');
+        this.walletService.setAccountInfoNis1(null);
         this.router.navigate([`/${AppConfig.routes.dashboard}`]);
       }
     );

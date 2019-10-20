@@ -1,3 +1,4 @@
+import { Address } from 'tsjs-xpx-chain-sdk';
 import { Component, OnInit } from '@angular/core';
 import { WalletService } from '../../../../wallet/services/wallet.service';
 import { SharedService, ConfigurationForm } from '../../../../../app/shared/services/shared.service';
@@ -30,9 +31,11 @@ export class DeleteWalletComponent implements OnInit {
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Wallet',
     componentName: 'Delete Wallet',
-    extraButton: 'Export wallet',
+    extraButton: 'Export Wallet',
     routerExtraButton: `/${AppConfig.routes.exportWallet}`
   };
+
+  passwordMain: string = 'password';
 
   constructor(
     private walletService: WalletService,
@@ -45,24 +48,29 @@ export class DeleteWalletComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.checkAlert = 'i have read the warning, understand the consequences and wish to proceed';
+    this.checkAlert = 'I have read the warning, understand the consequences and wish to proceed';
     this.currentView = 0;
     this.deleteConfirmed = false;
     this.description = 'Select the wallet you want to delete';
-    this.textAlert = 'Would you like to delete permanently this wallet?';
-    this.title = 'Delete wallet';
+    this.textAlert = 'Would you like to permanently delete this wallet?';
+    this.title = 'Delete Wallet';
     this.wallets = this.walletService.getWalletStorage();
     this.configurationForm = this.sharedService.configurationForm;
     this.createForm();
   }
 
+  changeInputType(inputType) {
+    let newType = this.sharedService.changeInputType(inputType)
+    this.passwordMain = newType;
+  }
+
   changeView(view = 0) {
     if (view === 0) {
       this.description = 'Select the wallet you want to delete';
-      this.textAlert = 'Would you like to delete permanently this wallet?';
+      this.textAlert = 'Would you like to permanently delete this wallet?';
     } else if (view === 2) {
       this.description = 'will be deleted from your device.';
-      this.textAlert = 'Warning! This action will delete this wallet .It cannot be undone.If you have not saved your private keys, access to the wallet and contained will be permanently lost.';
+      this.textAlert = 'This action will delete this wallet.  It cannot be undone.  If you have not saved your private keys, access to the accounts contained in this wallet will be permanently lost.';
     }
 
     this.currentView = view;
@@ -95,16 +103,20 @@ export class DeleteWalletComponent implements OnInit {
     });
   }
 
+  createFromRawAddress(address: string): string {
+    return Address.createFromRawAddress(address).pretty();
+  }
+
   deleteWallet() {
     if (this.validatingForm.valid) {
-      let decryptAccount = this.selectedWallet.accounts[0];
+      let decryptAccount = this.selectedWallet.accounts.find(x => x.firstAccount === true);;
       let common: any = { password: this.validatingForm.get("password").value };
       if (this.walletService.decrypt(common, decryptAccount)) {
         if (this.selectedWallet.name === this.walletService.currentWallet.name) {
           let value = this.walletService.removeWallet(this.selectedWallet.name);
           this.wallets = this.walletService.getWalletStorage();
           this.servicesModuleService.removeItemStorage(environment.itemBooksAddress, this.selectedWallet.name)
-          this.sharedService.showSuccess('', 'Wallet removed');
+          this.sharedService.showSuccess('', 'Wallet Removed');
           this.changeView();
           this.clearForm();
           this.logOut();
@@ -112,7 +124,7 @@ export class DeleteWalletComponent implements OnInit {
           let value = this.walletService.removeWallet(this.selectedWallet.name);
           this.wallets = this.walletService.getWalletStorage();
           this.servicesModuleService.removeItemStorage(environment.itemBooksAddress, this.selectedWallet.name)
-          this.sharedService.showSuccess('', 'Wallet removed');
+          this.sharedService.showSuccess('', 'Wallet Removed');
           this.changeView();
           this.clearForm();
         }

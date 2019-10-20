@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { PublicAccount, Account, Address } from 'tsjs-xpx-chain-sdk';
 import { environment } from 'src/environments/environment';
-import { WalletService } from 'src/app/wallet/services/wallet.service';
+import { WalletService, AccountsInterface } from 'src/app/wallet/services/wallet.service';
 import { FormBuilder, FormGroup, Validators, AbstractControl, FormControl, } from '@angular/forms';
 import { ConfigurationForm, SharedService } from 'src/app/shared/services/shared.service';
 import { AppConfig } from 'src/app/config/app.config';
@@ -10,6 +10,8 @@ import { stringify } from '@angular/compiler/src/util';
 import { ProximaxProvider } from '../../../../shared/services/proximax.provider';
 import { MdbStepperComponent } from 'ng-uikit-pro-standard';
 import { ServicesModuleService } from '../../../services/services-module.service';
+import { Subscription } from 'rxjs';
+import { TransactionsService } from 'src/app/transactions/services/transactions.service';
 
 @Component({
   selector: 'app-create-poll',
@@ -29,6 +31,7 @@ export class CreatePollComponent implements OnInit {
   validateformDateEnd: boolean;
   form: FormGroup;
   showList: boolean;
+  passwordMain: string = 'password';
   publicAddress: string;
   errorDateStart: string;
   errorDateEnd: string;
@@ -39,13 +42,14 @@ export class CreatePollComponent implements OnInit {
   thirdFormGroup: FormGroup;
   quarterFormGroup: FormGroup;
   configurationForm: ConfigurationForm = {};
-  account: Account;
+  account: PublicAccount;
   btnBlock: boolean;
   Poll: PollInterface;
   option: optionsPoll[] = [];
   listaBlanca: any[] = [];
   listContacts: any = [];
   showContacts = false;
+  subscription: Subscription[] = [];
 
   routes = {
     backToService: `/${AppConfig.routes.service}`
@@ -59,11 +63,14 @@ export class CreatePollComponent implements OnInit {
     },
     {
       value: 0,
-      label: 'White list',
+      label: 'Whitelist',
       selected: false,
     }
   ];
   privateKeyAccount: string;
+  vestedBalance: { part1: string; part2: string; };
+  amountAccount: number;
+  insufficientBalance: boolean;
 
   constructor(
     private fb: FormBuilder,
@@ -72,6 +79,7 @@ export class CreatePollComponent implements OnInit {
     private createPollStorageService: CreatePollStorageService,
     private proximaxProvider: ProximaxProvider,
     private serviceModuleService: ServicesModuleService,
+    private transactionService: TransactionsService,
   ) {
     this.configurationForm = this.sharedService.configurationForm;
     this.btnBlock = false;
@@ -83,22 +91,41 @@ export class CreatePollComponent implements OnInit {
     const today = new Date();
     this.minDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), today.getHours(), today.getMinutes());
     this.invalidMoment = this.minDate.setHours(this.minDate.getHours() + 1)
-    this.booksAddress();
+    this.listContacts = this.validateAccountListContact();
     this.createForms();
+    this.balance();
   }
 
 
-  booksAddress() {
-    const data = this.listContacts.slice(0);
-    const bookAddress = this.serviceModuleService.getBooksAddress();
-    this.listContacts = [];
+  balance() {
+    this.subscription.push(this.transactionService.getBalance$().subscribe(
+      next => this.vestedBalance = this.transactionService.getDataPart(next, 6),
+      error => this.vestedBalance = {
+        part1: '0',
+        part2: '000000'
+      }
+    ));
+    let vestedBalance = this.vestedBalance.part1.concat(this.vestedBalance.part2).replace(/,/g,'');
+    this.amountAccount = Number(vestedBalance);
+    if(this.amountAccount < 0.098250){
+      this.firstFormGroup.disable();
+      this.insufficientBalance = true;
+    }
+
+  }
+
+
+  booksAddress(): ContactsListInterface[] {
+    const data = []
+    const bookAddress: ContactsListInterface[] = this.serviceModuleService.getBooksAddress();
     if (bookAddress !== undefined && bookAddress !== null) {
       for (let x of bookAddress) {
         data.push(x);
       }
-      this.listContacts = data;
+      return data;
     }
   }
+
 
   /**
  *
@@ -111,6 +138,12 @@ export class CreatePollComponent implements OnInit {
       this.thirdFormGroup.get('address').patchValue(event.value);
     }
   }
+
+  changeInputType(inputType) {
+    let newType = this.sharedService.changeInputType(inputType)
+    this.passwordMain = newType;
+  }
+
   createForms() {
     this.firstFormGroup = new FormGroup({
       title: new FormControl('', [Validators.required]),
@@ -140,13 +173,24 @@ export class CreatePollComponent implements OnInit {
   }
 
   get1() {
-    this.name = this.firstFormGroup.get('title').value
-    this.desciption = this.firstFormGroup.get('message').value
-    this.isPrivate = this.firstFormGroup.get('isPrivate').value
-    this.endDate = new Date(this.firstFormGroup.get('PollEndDate').value)
-    this.account = (this.isPrivate) ? Account.generateNewAccount(this.walletService.currentAccount.network) :
-      Account.createFromPrivateKey(environment.pollsContent.private_key, this.walletService.currentAccount.network);
-    this.publicAddress = this.account.address.pretty();
+    this.name = this.firstFormGroup.get('title').value;
+    this.desciption = this.firstFormGroup.get('message').value;
+    this.isPrivate = this.firstFormGroup.get('isPrivate').value;
+    this.endDate = new Date(this.firstFormGroup.get('PollEndDate').value);
+    if (this.isPrivate){
+      this.account = PublicAccount.createFromPublicKey(environment.pollsContent.public_key, this.walletService.currentAccount.network);
+    }else {
+      this.account = Account.generateNewAccount(this.walletService.currentAccount.network).publicAccount;
+    }
+
+    this.publicAddress = this.account.address.pretty()
+
+
+
+
+    /*this.account = (this.isPrivate) ? Account.generateNewAccount(this.walletService.currentAccount.network) :
+      PublicAccount.createFromPublicKey(environment.pollsContent.public_key, this.walletService.currentAccount.network);
+    this.publicAddress = this.account.address.pretty();*/
     // this.privateKeyAccount = this.isPrivate?this.account.privateKey.toString():''
   }
 
@@ -180,9 +224,16 @@ export class CreatePollComponent implements OnInit {
     if (type !== null && type !== undefined) {
       if (type.value === 0) {
         this.showList = true;
+        this.thirdFormGroup.get('address').setValidators([Validators.minLength(40), Validators.maxLength(46)])
+        this.thirdFormGroup.get('address').updateValueAndValidity({ emitEvent: false, onlySelf: true });
+        // this.thirdFormGroup.status
+        // aqui
       } else {
+
+        this.thirdFormGroup.get('address').setValidators(null);
+        this.thirdFormGroup.get('address').updateValueAndValidity({ emitEvent: false, onlySelf: true });
         this.showList = false;
-        this.showContacts= false;
+        this.showContacts = false;
         this.cleanThirForm();
         this.listaBlanca = [];
       }
@@ -343,6 +394,44 @@ export class CreatePollComponent implements OnInit {
     return `${datefmt.getFullYear()}-${month}-${day}  ${hours}:${minutes}:${seconds}`;
   }
 
+  /**
+    *
+    */
+  validateAccountListContact(): ContactsListInterface[] {
+    let listContactReturn: ContactsListInterface[] = []
+    const listContactfilter = this.booksAddress()
+    for (let element of listContactfilter) {
+      const account = this.walletService.filterAccountWallet(element.label);
+      let isMultisig: boolean = false;
+      if (account)
+        isMultisig = this.isMultisign(account)
+      listContactReturn.push({
+        label: element.label,
+        value: element.value,
+        walletContact: element.walletContact,
+        isMultisig: isMultisig,
+        disabled: Boolean(isMultisig && element.walletContact)
+      })
+    }
+    return listContactReturn
+
+  }
+
+  /**
+    * Checks if the account is a multisig account.
+    * @returns {boolean}
+    */
+  isMultisign(accounts: AccountsInterface): boolean {
+    return Boolean(accounts.isMultisign !== undefined && accounts.isMultisign !== null && this.isMultisigValidate(accounts.isMultisign.minRemoval, accounts.isMultisign.minApproval));
+  }
+  /**
+     * Checks if the account is a multisig account.
+     * @returns {boolean}
+     */
+  isMultisigValidate(minRemoval: number, minApprova: number) {
+    return minRemoval !== 0 && minApprova !== 0;
+  }
+
 }
 
 /**
@@ -350,12 +439,12 @@ export class CreatePollComponent implements OnInit {
  * @param name - name poll
  * @param desciption - desciption poll
  * @param id - identifier
- * @param type - 0 = withe list , 1 = public, 
+ * @param type - 0 = withe list , 1 = public,
  * @param startDate - poll start date
  * @param endDate - poll end date
  * @param createdDate - poll creation date
  * @param quantityOption - number of voting options
- * 
+ *
 */
 export interface PollInterface {
   name: string;
@@ -383,4 +472,10 @@ export interface FileInterface {
   type: string;
   extension: string;
 }
-
+interface ContactsListInterface {
+  label: string;
+  value: string;
+  walletContact: boolean;
+  isMultisig: boolean;
+  disabled: boolean;
+}

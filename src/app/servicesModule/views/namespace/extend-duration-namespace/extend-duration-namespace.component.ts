@@ -23,7 +23,7 @@ export class ExtendDurationNamespaceComponent implements OnInit {
 
   arrayselect: Array<object> = [{
     value: '1',
-    label: 'New root Namespace',
+    label: 'New Root Namespace',
     selected: true,
     disabled: false
   }];
@@ -43,9 +43,10 @@ export class ExtendDurationNamespaceComponent implements OnInit {
   namespaceChangeInfo: NamespaceStorageInterface = null;
   namespaceInfo: NamespaceStorageInterface[] = [];
   paramsHeader: HeaderServicesInterface = {
-    moduleName: 'Namespaces & Sub-Namespaces',
+    moduleName: 'Namespaces',
     componentName: 'Extend Duration'
   };
+  passwordMain: string = 'password';
 
   rentalFee = 4576;
   status: boolean = true;
@@ -57,8 +58,10 @@ export class ExtendDurationNamespaceComponent implements OnInit {
   transactionStatus: boolean = false;
   subtractionHeight: any;
   totalBlock: any;
-  excedDuration: boolean = false;
-  
+  exceededDuration: boolean = false;
+  invalidDuration: boolean = true;
+  noNamespace: boolean = false;
+
 
   constructor(
     private router: Router,
@@ -85,7 +88,7 @@ export class ExtendDurationNamespaceComponent implements OnInit {
       this.calculateSubtractionHeight();
     }));
 
-    
+
     this.validateRentalFee(this.rentalFee * this.extendDurationNamespaceForm.get('duration').value);
     this.extendDurationNamespaceForm.get('duration').valueChanges.subscribe(next => {
       if (next <= 365) {
@@ -93,12 +96,13 @@ export class ExtendDurationNamespaceComponent implements OnInit {
           this.durationByBlock = this.transactionService.calculateDurationforDay(next).toString();
           this.totalBlock = this.subtractionHeight + Number(this.durationByBlock);
           if( this.totalBlock <= 2102400 ){
+            // 5 years = 10512000
             this.totalBlock;
-            this.excedDuration = false;
+            this.exceededDuration = false;
           } else {
-            this.excedDuration = true;
+            this.exceededDuration = true;
           }
-          
+
           this.validateRentalFee(this.rentalFee * parseFloat(this.durationByBlock));
           this.builder();
         } else {
@@ -146,6 +150,11 @@ export class ExtendDurationNamespaceComponent implements OnInit {
     }
   }
 
+  changeInputType(inputType) {
+    let newType = this.sharedService.changeInputType(inputType)
+    this.passwordMain = newType;
+  }
+
   /**
    *
    *
@@ -170,6 +179,7 @@ export class ExtendDurationNamespaceComponent implements OnInit {
    * @memberof ExtendDurationNamespaceComponent
    */
   clearForm() {
+    this.exceededDuration = false;
     this.extendDurationNamespaceForm.reset({
       namespaceRoot: '',
       duration: '',
@@ -178,9 +188,9 @@ export class ExtendDurationNamespaceComponent implements OnInit {
     );
 
 
-    if (this.extendDurationNamespaceForm.disabled) {
-      this.extendDurationNamespaceForm.enable();
-    }
+    // if (this.extendDurationNamespaceForm.disabled) {
+    //   this.extendDurationNamespaceForm.enable();
+    // }
 
     this.startHeight = 0;
     this.endHeight = 0;
@@ -214,7 +224,7 @@ export class ExtendDurationNamespaceComponent implements OnInit {
    */
   extendDuration() {
     if (this.extendDurationNamespaceForm.valid && !this.blockBtnSend) {
-      const validateAmount = this.transactionService.validateBuildSelectAccountBalance(this.amountAccount, Number(this.fee), Number(this.calculateRentalFee.replace(',', '')));
+      const validateAmount = this.transactionService.validateBuildSelectAccountBalance(this.amountAccount, Number(this.fee), Number(this.calculateRentalFee.replace(/,/g,'')));
       if (validateAmount) {
         this.blockBtnSend = true;
         const common = {
@@ -308,6 +318,9 @@ export class ExtendDurationNamespaceComponent implements OnInit {
           }
 
           this.arrayselect = arrayselect;
+        } else {
+          this.noNamespace = true;
+          this.extendDurationNamespaceForm.disable();
         }
       }, error => {
         this.router.navigate([AppConfig.routes.home]);
@@ -317,15 +330,33 @@ export class ExtendDurationNamespaceComponent implements OnInit {
 
   }
 
+  /**
+   *
+   *
+   * @param {string} quantity
+   * @returns
+   * @memberof ExtendDurationNamespaceComponent
+   */
+  getQuantity(quantity: string) {
+    return this.sharedService.amountFormat(quantity);
+  }
+
+  /**
+   *
+   *
+   * @param {*} e
+   * @memberof ExtendDurationNamespaceComponent
+   */
   limitDuration(e) {
     if (isNaN(parseInt(e.target.value))) {
-      e.target.value = ''
+      e.target.value = '';
+      this.extendDurationNamespaceForm.get('duration').setValue('');
     } else {
       if (parseInt(e.target.value) > 365) {
-        // e.target.value = '365'
-        this.excedDuration = true;
+        this.exceededDuration = true;
       } else if (parseInt(e.target.value) < 1) {
         e.target.value = ''
+        this.extendDurationNamespaceForm.get('duration').setValue('');
       }
     }
   }
@@ -349,11 +380,13 @@ export class ExtendDurationNamespaceComponent implements OnInit {
         this.calculateSubtractionHeight();
       }
       this.builder();
+      this.invalidDuration = false
     } else {
       this.extendDurationNamespaceForm.get('duration').disable();
       this.extendDurationNamespaceForm.get('duration').patchValue('');
       this.startHeight = 0;
       this.endHeight = 0;
+
     }
   }
 

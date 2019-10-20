@@ -14,11 +14,12 @@ import { WalletService, AccountsInterface, AccountsInfoInterface } from '../../.
 import { SharedService, ConfigurationForm } from '../../../shared/services/shared.service';
 import { TransactionsService, TransferInterface } from '../../services/transactions.service';
 import { environment } from '../../../../environments/environment';
-import { ServicesModuleService } from '../../../servicesModule/services/services-module.service';
+import { ServicesModuleService, HeaderServicesInterface } from '../../../servicesModule/services/services-module.service';
 import { Subscription } from 'rxjs';
 import { ModalDirective } from 'ng-uikit-pro-standard';
 import { NodeService } from 'src/app/servicesModule/services/node.service';
 import * as FeeCalculationStrategy from 'tsjs-xpx-chain-sdk/dist/src/model/transaction/FeeCalculationStrategy';
+import { AppConfig } from 'src/app/config/app.config';
 
 
 @Component({
@@ -36,7 +37,7 @@ export class CreateTransferComponent implements OnInit {
   balanceXpx = '0.000000';
   boxOtherMosaics = [];
   blockSendButton = false;
-  blockButton: boolean = false;
+  reloadBtn: boolean = false;
   charRest: number;
   cosignatorie: any = null;
   configurationForm: ConfigurationForm;
@@ -44,6 +45,7 @@ export class CreateTransferComponent implements OnInit {
   disabledBtnAddMosaic: boolean = false;
   errorOtherMosaics: boolean = false;
   formTransfer: FormGroup;
+  passwordMain: string = 'password';
   saveContact: boolean;
   formContact = {
     name: '',
@@ -52,6 +54,7 @@ export class CreateTransferComponent implements OnInit {
   incrementMosaics = 0;
   invalidRecipient = false;
   insufficientBalance = false;
+  msgLockfungCosignatorie = '';
   msgErrorUnsupported = '';
   msgErrorUnsupportedContact = '';
   mosaicXpx: { id: string, name: string; divisibility: number } = null;
@@ -59,6 +62,7 @@ export class CreateTransferComponent implements OnInit {
   listCosignatorie: any = [];
   fee: any = '0.037250'
   feeCosignatory: any = 10044500;
+  goBack: string = `/${AppConfig.routes.service}`;
   optionsXPX = {
     prefix: '',
     thousands: ',',
@@ -66,11 +70,16 @@ export class CreateTransferComponent implements OnInit {
     precision: '6'
   };
 
+  paramsHeader: HeaderServicesInterface = {
+    moduleName: 'Transfer',
+    componentName: 'Make a Transaction'
+  };
+
   searching = true;
   selectOtherMosaics = [];
   showContacts = false;
   // subscribe = ['accountInfo', 'transactionStatus', 'char', 'block'];
-  title = 'Make a Transfer';
+  title = 'Make a Transaction';
   transactionHttp: TransactionHttp = null;
   transactionStatus: boolean = false;
   transactionSigned: SignedTransaction[] = [];
@@ -104,7 +113,11 @@ export class CreateTransferComponent implements OnInit {
     this.subscribeValue();
     this.booksAddress();
     this.getAccountInfo();
-    //this.getTransactionStatus();
+
+
+    const amount = this.transactionService.getDataPart(this.amountFormatterSimple(this.feeCosignatory), 6);
+    const formatterAmount = `<span class="fs-085rem">${amount.part1}</span><span class="fs-07rem">${amount.part2}</span>`;
+    this.msgLockfungCosignatorie = `Cosignatory has sufficient balance (${formatterAmount} XPX) to cover LockFund Fee`;
     this.transactionHttp = new TransactionHttp(environment.protocol + "://" + `${this.nodeService.getNodeSelected()}`); //change
 
     // Mosaic by default
@@ -152,14 +165,15 @@ export class CreateTransferComponent implements OnInit {
     }
   }
 
-    /**
-  *
-  *
-  * @param {string} amount
-  * @memberof CreateTransferComponent
-  */
-  amountFormatterSimple(amount): string {
-    return this.transactionService.amountFormatterSimple(amount)
+  /**
+*
+*
+* @param {string} amount
+* @memberof CreateTransferComponent
+*/
+  amountFormatterSimple(amount: any): string {
+    this.calculateFee(this.formTransfer.get('message').value);
+    return this.transactionService.amountFormatterSimple(amount);
   }
 
   /**
@@ -218,7 +232,7 @@ export class CreateTransferComponent implements OnInit {
             if (x) {
               const nameMosaic = (mosaic.mosaicNames.names.length > 0) ? mosaic.mosaicNames.names[0].name : this.proximaxProvider.getMosaicId(mosaic.idMosaic).toHex();
               mosaicsSelect.push({
-                label: `${nameMosaic}${nameExpired}`,
+                label: `${nameMosaic}${nameExpired} > Balance: ${amount}`,
                 value: mosaic.idMosaic,
                 balance: amount,
                 expired: false,
@@ -238,6 +252,18 @@ export class CreateTransferComponent implements OnInit {
     }
 
     return;
+  }
+
+
+  /**
+   *
+   *
+   * @param {*} inputType
+   * @memberof CreateTransferComponent
+   */
+  changeInputType(inputType) {
+    let newType = this.sharedService.changeInputType(inputType)
+    this.passwordMain = newType;
   }
 
   /**
@@ -357,14 +383,33 @@ export class CreateTransferComponent implements OnInit {
    * @memberof CreateTransferComponent
    */
   booksAddress() {
+    this.listContacts = [];
     const data = this.listContacts.slice(0);
     const bookAddress = this.serviceModuleService.getBooksAddress();
-    this.listContacts = [];
     if (bookAddress !== undefined && bookAddress !== null) {
       for (let x of bookAddress) {
         data.push(x);
       }
       this.listContacts = data;
+    }
+  }
+
+  /**
+   *
+   *
+   * @param {number} message
+   * @memberof CreateTransferComponent
+   */
+  calculateFee(message: number) {
+    this.mosaicsToSend = this.validateMosaicsToSend();
+    const x = TransferTransaction.calculateSize(PlainMessage.create(this.formTransfer.get("message").value).size(), this.mosaicsToSend.length);
+    const b = FeeCalculationStrategy.calculateFee(x);
+    if (message > 0) {
+      this.fee = this.transactionService.amountFormatterSimple(b.compact())
+    } else if (message === 0 && this.mosaicsToSend.length === 0) {
+      this.fee = '0.037250'
+    } else {
+      this.fee = this.transactionService.amountFormatterSimple(b.compact())
     }
   }
 
@@ -410,6 +455,7 @@ export class CreateTransferComponent implements OnInit {
    */
   clearForm(custom?: string | (string | number)[], formControl?: string | number) {
     if (custom !== undefined) {
+      this.cosignatorie = null;
       if (formControl !== undefined) {
         this.formTransfer.controls[formControl].get(custom).reset();
         this.fee = '0.037250'
@@ -455,7 +501,17 @@ export class CreateTransferComponent implements OnInit {
         const address = this.proximaxProvider.createFromRawAddress(element.isMultisign.cosignatories[0].address['address']);
         const cosignatorieAccount: AccountsInterface = this.walletService.filterAccountWallet('', null, address.pretty());
         if (cosignatorieAccount) {
+          const accountFiltered: AccountsInfoInterface = this.walletService.filterAccountInfo(cosignatorieAccount.name);
+          const infValidate = this.transactionService.validateBalanceCosignatorie(accountFiltered, Number(this.feeCosignatory)).infValidate;
           this.cosignatorie = cosignatorieAccount;
+          this.listCosignatorie = [{
+            label: cosignatorieAccount.name,
+            value: cosignatorieAccount,
+            selected: true,
+            disabled: infValidate[0].disabled,
+            info: infValidate[0].info
+          }];
+
         } else {
           this.disabledAllField = true;
           this.formTransfer.disable();
@@ -479,13 +535,11 @@ export class CreateTransferComponent implements OnInit {
           }
         });
 
-        if (listCosignatorie.length === 1) {
-          this.cosignatorie = listCosignatorie[0].value;
-          return;
-        }
-
         if (listCosignatorie && listCosignatorie.length > 0) {
           this.listCosignatorie = listCosignatorie;
+          if (listCosignatorie.length === 1) {
+            this.cosignatorie = listCosignatorie[0].value;
+          }
         } else {
           this.disabledAllField = true;
           this.formTransfer.disable();
@@ -494,7 +548,6 @@ export class CreateTransferComponent implements OnInit {
         return;
       }
     }
-    // }
   }
 
   /**
@@ -503,14 +556,10 @@ export class CreateTransferComponent implements OnInit {
    * @memberof CreateTransferComponent
    */
   getAccountInfo() {
-    //this.subscribe['accountsInfo'] =
     this.subscription.push(this.walletService.getAccountsInfo$().subscribe(
       next => {
-        // console.log(next);
-        // if (next && next.length > 0) {
         this.searching = false;
         this.changeSender(this.walletService.currentAccount);
-        // }
       }
     ));
   }
@@ -525,7 +574,6 @@ export class CreateTransferComponent implements OnInit {
     if (!this.subscription['transactionStatus']) {
       this.subscription['transactionStatus'] = this.dataBridge.getTransactionStatus().subscribe(
         statusTransaction => {
-          // console.log('statusTransaction', statusTransaction);
           if (statusTransaction !== null && statusTransaction !== undefined && this.transactionSigned !== null) {
             for (let element of this.transactionSigned) {
               const match = statusTransaction['hash'] === element.hash;
@@ -534,11 +582,21 @@ export class CreateTransferComponent implements OnInit {
               }
 
               if (statusTransaction['type'] === 'confirmed' && match) {
+                this.reloadBtn = false;
+                this.blockSendButton = false;
                 this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['hash']);
               } else if (statusTransaction['type'] === 'unconfirmed' && match) {
+                this.reloadBtn = false;
+                this.blockSendButton = false;
               } else if (statusTransaction['type'] === 'aggregateBondedAdded' && match) {
+                this.reloadBtn = false;
+                this.blockSendButton = false;
               } else if (statusTransaction['type'] === 'cosignatureSignedTransaction' && match) {
-              } else if (statusTransaction['type'] === 'error' && match) {
+                this.reloadBtn = false;
+                this.blockSendButton = false;
+              } else if (statusTransaction['type'] === 'status' && match) {
+                this.reloadBtn = false;
+                this.blockSendButton = false;
                 this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['hash']);
               }
             }
@@ -563,12 +621,26 @@ export class CreateTransferComponent implements OnInit {
             this.announceAggregateBonded(signedTransactionBonded)
             signedTransactionHashLock = null;
           } else if (statusTransaction['type'] === 'unconfirmed' && match) {
-          } else if (match) {
+          } else if (statusTransaction['type'] === 'status' && match) {
+            this.reloadBtn = false;
+            this.blockSendButton = false;
+            this.transactionSigned = this.transactionSigned.filter(el => el.hash !== statusTransaction['hash']);
             signedTransactionHashLock = null;
           }
         }
       }
     );
+  }
+
+  /**
+   *
+   *
+   * @param {*} quantity
+   * @returns
+   * @memberof CreateTransferComponent
+   */
+  getQuantity(quantity: string) {
+    return this.sharedService.amountFormat(quantity);
   }
 
 
@@ -580,44 +652,62 @@ export class CreateTransferComponent implements OnInit {
    * @memberof CreateTransferComponent
    */
   otherMosaicsChange(mosaicSelected: any, position: number) {
+    // console.log('\n\n mosaicSelected ---> ', mosaicSelected);
+    // console.log('\n\n this.boxOtherMosaics[position] ---> ', this.boxOtherMosaics[position]);
     if (mosaicSelected !== undefined) {
-      this.boxOtherMosaics[position].amount = '';
-      this.boxOtherMosaics[position].balance = mosaicSelected.balance;
-      this.boxOtherMosaics[position].config = mosaicSelected.config;
-      this.boxOtherMosaics[position].errorBalance = false;
-      this.boxOtherMosaics[position].id = mosaicSelected.value;
-
-      this.boxOtherMosaics.forEach(element => {
-        const newMosaic = [];
-        let otherMosaic = element.selectOtherMosaics.filter(elm => elm.label !== mosaicSelected.label);
-        let currentMosaic = element.selectOtherMosaics.filter(elm => elm.label === mosaicSelected.label);
-        currentMosaic.forEach(current => {
-          current.disabled = true;
-          newMosaic.push(current);
-        });
-
-        otherMosaic.forEach(others => {
-          newMosaic.push(others);
-        });
-
-        newMosaic.forEach(element => {
-          if (this.boxOtherMosaics[position].beforeValue !== '' && element.label === this.boxOtherMosaics[position].beforeValue) {
-            element.disabled = false;
+      if (this.boxOtherMosaics[position].beforeValue === '' || !this.boxOtherMosaics[position].beforeValue) {
+        this.otherMosaicsBuild(mosaicSelected, position);
+      } else {
+        if (this.boxOtherMosaics[position].beforeValue !== '' && this.boxOtherMosaics[position].beforeValue === mosaicSelected.label) {
+          const currentMosaic = this.boxOtherMosaics[position].selectOtherMosaics.find(elm => elm.label === mosaicSelected.label);
+          const otherMosaics = this.boxOtherMosaics[position].selectOtherMosaics.filter(elm => elm.label !== mosaicSelected.label);
+          currentMosaic.disabled = false;
+          otherMosaics.push(currentMosaic);
+          const i = this.boxOtherMosaics.indexOf(this.boxOtherMosaics[position]);
+          if (i !== -1) {
+            this.boxOtherMosaics.map(element => {
+              return element.selectOtherMosaics = otherMosaics;
+            });
+            this.boxOtherMosaics.splice(i, 1);
           }
-        });
-
-        element.selectOtherMosaics = newMosaic;
-      });
-
-      this.boxOtherMosaics[position].beforeValue = mosaicSelected.label;
-
+        } else {
+          const currentMosaic = this.boxOtherMosaics[position].selectOtherMosaics.find(elm => elm.label === this.boxOtherMosaics[position].beforeValue);
+          const otherMosaics = this.boxOtherMosaics[position].selectOtherMosaics.filter(elm => elm.label !== this.boxOtherMosaics[position].beforeValue);
+          currentMosaic.disabled = false;
+          otherMosaics.push(currentMosaic);
+          this.boxOtherMosaics[position].selectOtherMosaics = otherMosaics;
+          this.otherMosaicsBuild(mosaicSelected, position);
+        }
+      }
     } else {
-      this.boxOtherMosaics[position].id = '';
-      this.boxOtherMosaics[position].balance = '';
-      this.boxOtherMosaics[position].amount = '';
-      this.boxOtherMosaics[position].errorBalance = false;
-      this.boxOtherMosaics[position].amountToBeSent = 0;
+      const i = this.boxOtherMosaics.indexOf(this.boxOtherMosaics[position]);
+      if (i !== -1) {
+        this.boxOtherMosaics.splice(i, 1);
+      }
     }
+  }
+
+  /**
+   *
+   *
+   * @param {*} mosaicSelected
+   * @param {number} position
+   * @memberof CreateTransferComponent
+   */
+  otherMosaicsBuild(mosaicSelected: any, position: number){
+    this.boxOtherMosaics[position].amount = '';
+    this.boxOtherMosaics[position].balance = mosaicSelected.balance;
+    this.boxOtherMosaics[position].config = mosaicSelected.config;
+    this.boxOtherMosaics[position].errorBalance = false;
+    this.boxOtherMosaics[position].id = mosaicSelected.value;
+    this.boxOtherMosaics[position].beforeValue = mosaicSelected.label;
+    const currentMosaic = this.boxOtherMosaics[position].selectOtherMosaics.find(elm => elm.label === mosaicSelected.label);
+    const otherMosaics = this.boxOtherMosaics[position].selectOtherMosaics.filter(elm => elm.label !== mosaicSelected.label);
+    currentMosaic.disabled = true;
+    otherMosaics.push(currentMosaic);
+    this.boxOtherMosaics.map(element => {
+      return element.selectOtherMosaics = otherMosaics;
+    });
   }
 
   /**
@@ -628,6 +718,8 @@ export class CreateTransferComponent implements OnInit {
   pushedOtherMosaics() {
     if (this.selectOtherMosaics.length > 0) {
       if (this.boxOtherMosaics.length === 0) {
+        // console.log('VALIDA 1');
+        // console.log('SELECT boxOtherMosaics ---> ', this.boxOtherMosaics);
         this.boxOtherMosaics.push({
           id: '',
           balance: '',
@@ -641,17 +733,23 @@ export class CreateTransferComponent implements OnInit {
         });
       } else {
         let x = false;
+        // console.log('SELECT boxOtherMosaics ---> ', this.boxOtherMosaics);
         this.boxOtherMosaics.forEach(element => {
           if (element.id === '') {
+            // console.log('VALIDA 2');
             this.sharedService.showWarning('', 'You must select a mosaic and place the quantity');
             x = true;
           } else if (element.amount === '' || Number(element.amount) === 0) {
-            this.sharedService.showWarning('', 'The quantity of mosaics is missing');
+            // console.log('VALIDA 3');
+            this.sharedService.showWarning('', 'The quantity of the selected mosaic must be greater than zero');
             x = true;
           }
         });
 
         if (!x) {
+          // console.log('VALIDA 4');
+          // console.log('this.selectOtherMosaics ---> ', this.selectOtherMosaics);
+          // console.log('this.boxOtherMosaics ---> ', this.boxOtherMosaics);
           this.boxOtherMosaics.push({
             id: '',
             balance: '',
@@ -678,7 +776,7 @@ export class CreateTransferComponent implements OnInit {
     this.balanceXpx = '0.000000';
     this.boxOtherMosaics = [];
     this.blockSendButton = false;
-    this.blockButton = false;
+    this.reloadBtn = false;
     this.charRest = this.configurationForm.message.maxLength;
     this.disabledBtnAddMosaic = false;
     this.errorOtherMosaics = false;
@@ -701,23 +799,23 @@ export class CreateTransferComponent implements OnInit {
 
 
   /**
-   *
-   *
-   * @param {string} hash
-   * @memberof CreateTransferComponent
-   */
-  /* setTimeOutValidate(hash: string) {
-     setTimeout(() => {
-       let exist = false;
-       for (let element of this.transactionReady) {
-         if (hash === element.hash) {
-           exist = true;
-         }
-       }
-
-       (exist) ? '' : this.sharedService.showWarning('', 'An error has occurred');
-     }, 5000);
-   }*/
+  *
+  */
+  saveContactFn() {
+    this.getBooksAddress = this.serviceModuleService.getBooksAddress();
+    if (this.getBooksAddress) {
+      const contact = this.getBooksAddress.find(el => el.value === this.formTransfer.get("accountRecipient").value.split('-').join(''));
+      if (!contact) {
+        this.formContact.address = this.formTransfer.get("accountRecipient").value.split('-').join('');
+        this.saveContact = false;
+        this.basicModal.show();
+      }
+    } else {
+      this.formContact.address = this.formTransfer.get("accountRecipient").value.split('-').join('');
+      this.saveContact = false;
+      this.basicModal.show();
+    }
+  }
 
   /**
    *
@@ -726,9 +824,9 @@ export class CreateTransferComponent implements OnInit {
    */
   sendTransfer() {
     if (this.formTransfer.valid && (!this.blockSendButton || !this.errorOtherMosaics)) {
-      this.blockButton = true;
+      this.reloadBtn = true;
       this.blockSendButton = true;
-      if (this.transactionService.validateBuildSelectAccountBalance(Number(this.balanceXpx.split(',').join('')), this.fee, 0)) {
+      if (this.transactionService.validateBuildSelectAccountBalance(Number(this.balanceXpx.split(',').join('')), Number(this.fee), Number(this.formTransfer.get("amountXpx").value))) {
         const common = { password: this.formTransfer.get("password").value };
         const mosaicsToSend = this.validateMosaicsToSend();
         const type = (this.cosignatorie) ? true : false;
@@ -747,22 +845,17 @@ export class CreateTransferComponent implements OnInit {
                 mosaic: mosaicsToSend
               };
 
-              // Create account from private key
               const account = Account.createFromPrivateKey(params.common.privateKey, params.network);
-              // Build transfer transaction
-              // const transferBuilder = this.transactionService.buildTransferTransaction(params);
-              //-----------------------------------------------------------------------
               const recipientAddress = this.proximaxProvider.createFromRawAddress(params.recipient);
               const mosaics = params.mosaic;
               const allMosaics = [];
-              mosaics.forEach(element => {
+              mosaics.forEach((element: any) => {
                 allMosaics.push(new Mosaic(
                   new MosaicId(element.id),
                   UInt64.fromUint(Number(element.amount))
                 )
                 );
               });
-              // console.log("mosaicos", allMosaics)
 
               const transferBuilder = TransferTransaction.create(
                 Deadline.create(environment.deadlineTransfer.deadline, environment.deadlineTransfer.chronoUnit),
@@ -773,27 +866,20 @@ export class CreateTransferComponent implements OnInit {
               );
 
               //-----------------------------------------------------------------------
-              // Build aggregate transaction
               const aggregateTransaction = this.transactionService.buildAggregateTransaction(this.sender.publicAccount, transferBuilder);
-              // console.log('=== Build aggregate transaction ===', aggregateTransaction);
-              // Sign transaction
               const aggregateSigned = account.sign(aggregateTransaction, generationHash);
-              // Build hash lock transaction
               const hashLockTransaction: LockFundsTransaction = this.transactionService.buildHashLockTransaction(aggregateSigned);
-              // console.log('=== Build hash lock transaction === ', hashLockTransaction);
-              // Hash lock signed
               const hashLockSigned = account.sign(hashLockTransaction, generationHash);
               this.saveContactFn();
               this.clearForm();
+
               this.transactionService.buildTransactionHttp().announce(hashLockSigned).subscribe(async () => {
                 this.getTransactionStatusHashLock(hashLockSigned, aggregateSigned);
-              }, err => {
-                // console.log('ERROR ----> ', err);
-              });
+              }, err => { });
             } else {
               this.formTransfer.get('password').setValue('');
               this.blockSendButton = false;
-              this.blockButton = false;
+              this.reloadBtn = false;
             }
 
             break;
@@ -813,56 +899,38 @@ export class CreateTransferComponent implements OnInit {
               this.clearForm();
               this.transactionService.buildTransactionHttp().announce(transferBuilder.signedTransaction).subscribe(
                 async () => {
-                  this.blockButton = false;
-                  this.blockSendButton = false;
-                  // this.getTransactionStatus();
+                  /*this.reloadBtn = false;
+                  this.blockSendButton = false;*/
+                  this.getTransactionStatus();
+                  this.dataBridge.setTimeOutValidateTransaction(transferBuilder.signedTransaction.hash);
                 }, err => {
-                  this.blockButton = false;
+                  this.reloadBtn = false;
                   this.blockSendButton = false;
-                  this.clearForm();
                   this.sharedService.showError('', err);
                 }
               );
             } else {
               this.formTransfer.get('password').setValue('');
               this.blockSendButton = false;
-              this.blockButton = false;
+              this.reloadBtn = false;
             }
             break;
         }
       } else {
-        this.blockButton = false;
+        this.reloadBtn = false;
         this.blockSendButton = false;
-        this.sharedService.showError('', 'Insufficient balance');
+        this.sharedService.showError('', 'Insufficient Balance');
       }
     }
   }
 
-  /**
-   *
-   */
-  saveContactFn() {
-    this.getBooksAddress = this.serviceModuleService.getBooksAddress();
-    if (this.getBooksAddress) {
-      const contact = this.getBooksAddress.find(el => el.value === this.formTransfer.get("accountRecipient").value.split('-').join(''));
-      if (!contact) {
-        this.formContact.address = this.formTransfer.get("accountRecipient").value.split('-').join('');
-        this.saveContact = false;
-        this.basicModal.show();
-      }
-    } else {
-      this.formContact.address = this.formTransfer.get("accountRecipient").value.split('-').join('');
-      this.saveContact = false;
-      this.basicModal.show();
-    }
-  }
+
 
   /**
    *
    * @param $event
    */
   selectCosignatorie($event) {
-    // console.log('COSIGNATORIE SELECTED ', $event);
     if ($event) {
       this.cosignatorie = $event.value;
     } else {
@@ -888,95 +956,88 @@ export class CreateTransferComponent implements OnInit {
    * @memberof CreateTransferComponent
    */
   subscribeValue() {
-    // Account recipient
-    this.formTransfer.get('accountRecipient').valueChanges.subscribe(
-      value => {
-        let valueWithoutSpaces = '';
-        if (value) {
-          valueWithoutSpaces = value.trim();
-        }
-        const accountRecipient = (valueWithoutSpaces !== undefined && valueWithoutSpaces !== null && valueWithoutSpaces !== '') ? valueWithoutSpaces.split('-').join('') : '';
-        const accountSelected = (this.formTransfer.get('contact').value) ? this.formTransfer.get('contact').value.split('-').join('') : '';
-        if ((accountSelected !== '') && (accountSelected !== accountRecipient)) {
-          this.formTransfer.get('contact').patchValue('');
-        }
+    this.formTransfer.get('accountRecipient').valueChanges.subscribe(value => {
+      let valueWithoutSpaces = '';
+      if (value) {
+        valueWithoutSpaces = value.trim();
+      }
 
-        if (accountRecipient !== null && accountRecipient !== undefined && accountRecipient.length === 40) {
-          const currentAccount = Object.assign({}, this.walletService.getCurrentAccount());
-          if (!this.proximaxProvider.verifyNetworkAddressEqualsNetwork(
-            this.proximaxProvider.createFromRawAddress(currentAccount.address).plain(), accountRecipient)
-          ) {
-            if (valueWithoutSpaces !== value) {
-              this.formTransfer.get('accountRecipient').setValue(valueWithoutSpaces);
-            }
-            this.blockSendButton = true;
-            this.msgErrorUnsupported = 'Recipient Address Network unsupported';
-          } else {
-            this.blockSendButton = false;
-            this.msgErrorUnsupported = '';
-          }
-        } else if (!this.formTransfer.get('accountRecipient').getError("required") && this.formTransfer.get('accountRecipient').valid) {
-          this.blockSendButton = true;
-          this.msgErrorUnsupported = 'Recipient Address Network unsupported';
-        } else {
+      const accountRecipient = (valueWithoutSpaces !== undefined && valueWithoutSpaces !== null && valueWithoutSpaces !== '') ? valueWithoutSpaces.split('-').join('') : '';
+      //  const accountSelected = (value) ? value.split('-').join('') : '';
+      const contact = this.formTransfer.get('contact').value;
+      const accountSelected = (contact !== undefined && contact !== null && contact !== '') ? contact.value.split('-').join('') : '';
+      if ((accountSelected !== '') && (accountSelected !== accountRecipient)) {
+        this.formTransfer.get('contact').patchValue('');
+      }
+      if (accountRecipient !== null && accountRecipient !== undefined && accountRecipient.length === 40) {
+        const currentAccount = Object.assign({}, this.walletService.getCurrentAccount());
+        if (!this.proximaxProvider.verifyNetworkAddressEqualsNetwork(
+          this.proximaxProvider.createFromRawAddress(currentAccount.address).plain(), accountRecipient)
+        ) {
           if (valueWithoutSpaces !== value) {
             this.formTransfer.get('accountRecipient').setValue(valueWithoutSpaces);
           }
+          this.blockSendButton = true;
+          this.msgErrorUnsupported = 'Recipient Address Network unsupported';
+        } else {
           this.blockSendButton = false;
           this.msgErrorUnsupported = '';
         }
+      } else if (!this.formTransfer.get('accountRecipient').getError("required") && this.formTransfer.get('accountRecipient').valid) {
+        this.blockSendButton = true;
+        this.msgErrorUnsupported = 'Recipient Address Network unsupported';
+      } else {
+        if (valueWithoutSpaces !== value) {
+          this.formTransfer.get('accountRecipient').setValue(valueWithoutSpaces);
+        }
+        this.blockSendButton = false;
+        this.msgErrorUnsupported = '';
       }
-    );
+    });
 
     this.subscription.push(this.formTransfer.get('message').valueChanges.subscribe(val => {
-      if (val) {
+      if (val && val !== '') {
         this.charRest = this.configurationForm.message.maxLength - val.length;
-
         this.calculateFee(val.length);
       } else {
+        this.charRest = this.configurationForm.message.maxLength;
         this.calculateFee(0);
       }
     }));
 
-    //Amount XPX
-    this.formTransfer.get('amountXpx').valueChanges.subscribe(
-      value => {
-        if (value !== null && value !== undefined) {
-          const a = Number(value);
-          let validateAmount = false;
-          if (this.sender) {
-            let accountInfo = this.walletService.filterAccountInfo(this.sender.name);
-            // console.log('Account INfo- ---->', accountInfo);
-            if (accountInfo !== undefined && accountInfo !== null && Object.keys(accountInfo).length > 0) {
-              if (accountInfo.accountInfo.mosaics.length > 0) {
-                const filtered = accountInfo.accountInfo.mosaics.find(element => {
-                  return element.id.toHex() === new MosaicId(environment.mosaicXpxInfo.id).toHex();
-                });
+    this.formTransfer.get('amountXpx').valueChanges.subscribe(value => {
+      if (value !== null && value !== undefined) {
+        const a = Number(value);
+        let validateAmount = false;
+        if (this.sender) {
+          let accountInfo = this.walletService.filterAccountInfo(this.sender.name);
+          // console.log('Account INfo- ---->', accountInfo);
+          if (accountInfo !== undefined && accountInfo !== null && Object.keys(accountInfo).length > 0) {
+            if (accountInfo.accountInfo.mosaics.length > 0) {
+              const filtered = accountInfo.accountInfo.mosaics.find(element => {
+                return element.id.toHex() === new MosaicId(environment.mosaicXpxInfo.id).toHex();
+              });
 
-                let arrAmount = value.toString().replace(/,/g, "").split('.');
-                let decimal;
-                let realAmount;
+              let arrAmount = value.toString().replace(/,/g, "").split('.');
+              let decimal;
+              let realAmount;
 
-                if (arrAmount.length < 2) {
-                  decimal = this.addZeros(environment.mosaicXpxInfo.divisibility);
-                } else {
-                  let arrDecimals = arrAmount[1].split('');
-                  decimal = this.addZeros(environment.mosaicXpxInfo.divisibility - arrDecimals.length, arrAmount[1]);
-                }
+              if (arrAmount.length < 2) {
+                decimal = this.addZeros(environment.mosaicXpxInfo.divisibility);
+              } else {
+                let arrDecimals = arrAmount[1].split('');
+                decimal = this.addZeros(environment.mosaicXpxInfo.divisibility - arrDecimals.length, arrAmount[1]);
+              }
 
-                realAmount = `${arrAmount[0]}${decimal}`;
-
-                if (filtered !== undefined && filtered !== null) {
-                  const invalidBalance = filtered.amount.compact() < Number(realAmount);
-                  if (invalidBalance && !this.insufficientBalance) {
-                    this.insufficientBalance = true;
-                    this.blockSendButton = true;
-                  } else if (!invalidBalance && this.insufficientBalance) {
-                    this.insufficientBalance = false;
-                    this.blockSendButton = false;
-                  }
-                } else {
-                  validateAmount = true;
+              realAmount = `${arrAmount[0]}${decimal}`;
+              if (filtered !== undefined && filtered !== null) {
+                const invalidBalance = filtered.amount.compact() < Number(realAmount);
+                if (invalidBalance && !this.insufficientBalance) {
+                  this.insufficientBalance = true;
+                  this.blockSendButton = true;
+                } else if (!invalidBalance && this.insufficientBalance) {
+                  this.insufficientBalance = false;
+                  this.blockSendButton = false;
                 }
               } else {
                 validateAmount = true;
@@ -984,32 +1045,23 @@ export class CreateTransferComponent implements OnInit {
             } else {
               validateAmount = true;
             }
+          } else {
+            validateAmount = true;
           }
+        }
 
-          if (validateAmount) {
-            if (Number(value) > 0) {
-              this.insufficientBalance = true;
-              this.blockSendButton = true;
-            } else if ((Number(value) === 0 || value === '') && this.insufficientBalance) {
-              this.insufficientBalance = false;
-            }
+        if (validateAmount) {
+          if (Number(value) > 0) {
+            this.insufficientBalance = true;
+            this.blockSendButton = true;
+          } else if ((Number(value) === 0 || value === '') && this.insufficientBalance) {
+            this.insufficientBalance = false;
           }
         }
       }
-    );
-  }
 
-
-  calculateFee(message: number) {
-    this.mosaicsToSend = this.validateMosaicsToSend();
-    // console.log("this.mosaicsToSend", this.mosaicsToSend)
-    const x = TransferTransaction.calculateSize(PlainMessage.create(this.formTransfer.get("message").value).size(), this.mosaicsToSend.length);
-    const b = FeeCalculationStrategy.calculateFee(x);
-    if (message > 0) {
-      this.fee = this.transactionService.amountFormatterSimple(b.compact())
-    } else if (message === 0 && this.mosaicsToSend.length === 0) {
-      this.fee = '0.037250'
-    }
+      this.calculateFee(this.formTransfer.get('message').value);
+    });
   }
 
   /**
@@ -1146,7 +1198,7 @@ export class CreateTransferComponent implements OnInit {
       this.formContact = { name: '', address: '' };
       this.booksAddress();
       this.basicModal.hide();
-      this.sharedService.showSuccess('', `Successfully saved contact`);
+      this.sharedService.showSuccess('', `Contact Successfully Saved`);
       return;
     }
 
@@ -1157,7 +1209,7 @@ export class CreateTransferComponent implements OnInit {
       this.formContact = { name: '', address: '' };
       this.booksAddress();
       this.basicModal.hide();
-      this.sharedService.showSuccess('', `Successfully saved contact`);
+      this.sharedService.showSuccess('', `Contact Successfully Saved`);
       return;
     }
 

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { SimpleWallet, PublicAccount, AccountInfo, MultisigAccountInfo, NamespaceId, MosaicId, Address } from 'tsjs-xpx-chain-sdk';
-import { crypto } from 'js-xpx-chain-library';
+import { crypto, address } from 'js-xpx-chain-library';
 import { AbstractControl } from '@angular/forms';
 import { BehaviorSubject, Observable, timer, Subject } from 'rxjs';
 
@@ -8,18 +8,20 @@ import { environment } from '../../../environments/environment';
 import { SharedService } from '../../shared/services/shared.service';
 import { ProximaxProvider } from '../../shared/services/proximax.provider';
 import { first } from 'rxjs/operators';
+import { AssetTransferable, Address as AddressNEM } from 'nem-library';
 
 @Injectable({
   providedIn: 'root'
 })
 export class WalletService {
+
+
+  // -------------------------------------------------------------------------------
+
+
   canVote = true;
   subscribeLogged = undefined;
-  accountWalletCreated: {
-    data: any;
-    dataAccount: AccountsInterface;
-    wallet: SimpleWallet
-  } = null;
+  accountWalletCreated: AccountCreatedInterface = null;
 
   accountsInfo: AccountsInfoInterface[] = [];
   currentAccount: AccountsInterface = null;
@@ -27,12 +29,19 @@ export class WalletService {
 
   accountInfoNis1: any = null;
   accountSelectedWalletNis1: any = null;
+
   nis1AccountSeleted: any = null;
   nis1AccounsWallet: any = [];
   unconfirmedTransactions: any = [];
 
+
+
+
   nis1AccountsWallet: Subject<any> = new Subject<any>();
   nis1AccountsWallet$: Observable<any> = this.nis1AccountsWallet.asObservable();
+
+  /*nis1ResponseLoadedSubject: Subject<boolean> = new Subject<boolean>();
+  nis1ResponseLoaded$: Observable<boolean> = this.nis1AccountsWallet.asObservable();*/
 
   swapTransactions: Subject<any> = new Subject<any>();
   swapTransactions$: Observable<any> = this.swapTransactions.asObservable();
@@ -103,10 +112,8 @@ export class WalletService {
             };
 
             accountsInfo.push(accountInfoBuilded);
-
             const newAccounts = this.changeIsMultiSign(element.name, isMultisig);
             if (newAccounts.length > 0) {
-              // console.log('=== NEW ACCOUNTS TO SEARCH ===', newAccounts);
               // Issue changes to new accounts
               this.setAccountsPushedSubject(newAccounts);
               // Delete the change of the new accounts
@@ -301,34 +308,17 @@ export class WalletService {
             });
 
             newAccount.push(accountBuilded);
+            const paramsStorage = {
+              name: `MULTISIG-${multisigAccount.address.plain().slice(36, 40)}`,
+              address: multisigAccount.address.plain().toUpperCase(),
+              walletContact: true,
+              nameItem: '',
+              update: false,
+              dataComparate: null
+            }
+            const saved = this.saveContacts(paramsStorage);
+
             this.saveAccountWalletStorage(accountBuilded);
-            /*this.proximaxProvider.getAccountInfo(multisigAccount.address).pipe(first()).subscribe(async (accountInfo: AccountInfo) => {
-              const mosaicsIds: (NamespaceId | MosaicId)[] = [];
-              if (accountInfo) {
-                accountInfo.mosaics.map(n => n.id).forEach(id => {
-                  const pushea = mosaicsIds.find(next => next.id.toHex() === id.toHex());
-                  if (!pushea) {
-                    mosaicsIds.push(id);
-                  }
-                });
-              }
-
-              try {
-                accountBuilded.isMultisign = await this.proximaxProvider.getMultisigAccountInfo(multisigAccount.address).toPromise();
-              } catch (error) {
-                accountBuilded.isMultisign = null
-              }
-
-              const accountInfoBuilded = {
-                name: accountBuilded.name,
-                accountInfo: accountInfo,
-                multisigInfo: accountBuilded.isMultisign
-              };
-
-            // console.log('\n\n---ACOUNT BUILDED---', accountInfoBuilded);
-              this.setAccountsInfo([accountInfoBuilded], true);
-              this.saveAccountWalletStorage(accountBuilded);
-            });*/
           }
         });
       }
@@ -357,6 +347,16 @@ export class WalletService {
     return newAccount;
   }
 
+  deleteContact(address = null) {
+    let currentWallet = `${environment.itemBooksAddress}-${this.getCurrentWallet().name}`;
+    let currentAddressBook = JSON.parse(localStorage.getItem(currentWallet));
+    if (currentAddressBook !== null) {
+      let newAddressBook = currentAddressBook.filter(el => el.value !== address)
+      let updatedAddressBook = JSON.stringify(newAddressBook)
+      localStorage.setItem(currentWallet, updatedAddressBook)
+    }
+  }
+
   /**
    *
    *
@@ -380,21 +380,26 @@ export class WalletService {
     const acct = (account) ? account : this.currentAccount;
     const net = (account) ? account.network : this.currentAccount.network;
     const alg = (account) ? account.algo : this.currentAccount.algo;
-    if (!crypto.passwordToPrivatekey(common, acct, alg)) {
-      this.sharedService.showError('', 'Invalid password');
-      return false;
-    }
+    if (acct && common) {
+      if (!crypto.passwordToPrivatekey(common, acct, alg)) {
+        this.sharedService.showError('', 'Invalid password');
+        return false;
+      }
 
-    if (common.isHW) {
+      if (common.isHW) {
+        return true;
+      }
+
+      if (!this.isPrivateKeyValid(common.privateKey) || !this.proximaxProvider.checkAddress(common.privateKey, net, acct.address)) {
+        this.sharedService.showError('', 'Invalid password');
+        return false;
+      }
+
       return true;
-    }
-
-    if (!this.isPrivateKeyValid(common.privateKey) || !this.proximaxProvider.checkAddress(common.privateKey, net, acct.address)) {
-      this.sharedService.showError('', 'Invalid password');
+    } else {
+      this.sharedService.showError('', 'You do not have a valid account selected');
       return false;
     }
-
-    return true;
   }
 
   /**
@@ -515,9 +520,12 @@ export class WalletService {
     return this.accountsInfo$;
   }
 
+
   /**
    *
-   * @param data
+   *
+   * @returns
+   * @memberof WalletService
    */
   getAccountInfoNis1() {
     return this.accountInfoNis1;
@@ -573,6 +581,8 @@ export class WalletService {
     return this.swapTransactions$;
   }
 
+
+
   /**
    *
    *
@@ -589,7 +599,7 @@ export class WalletService {
    * @returns
    * @memberof WalletService
    */
-  getNis1AccounsWallet() {
+  getNis1AccountsWallet() {
     return this.nis1AccounsWallet;
   }
 
@@ -604,21 +614,18 @@ export class WalletService {
   }
 
 
-
-
   /**
      *
      *@param {string} name
      * @returns
      * @memberof WalletService
      */
-  getWalletStorageName(name: string): WalletAccountInterface[] {
+  getWalletStorageByName(name: string): WalletAccountInterface[] {
     let walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
     if (walletsStorage === undefined || walletsStorage === null) {
       localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify([]));
       walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
     }
-    // console.log(walletsStorage)
     return walletsStorage.filter(
       (element: any) => {
         return element.name === name;
@@ -670,7 +677,7 @@ export class WalletService {
 
   /**
    * Verify if a string is hexadecimal
-   * by: roimerj_vzla
+   * by: RJ
    *
    * @param {any} str
    * @returns
@@ -683,17 +690,63 @@ export class WalletService {
   /**
    *
    *
+   * @param {*} accountToDelete
+   * @memberof WalletService
+   */
+  verifyRelatedMultisig(accountToDelete) {
+    if (
+      accountToDelete &&
+      accountToDelete.isMultisign &&
+      accountToDelete.isMultisign.cosignatories &&
+      accountToDelete.isMultisign.cosignatories.length === 0 &&
+      accountToDelete.isMultisign.multisigAccounts &&
+      accountToDelete.isMultisign.multisigAccounts.length > 0
+    ) {
+
+      let filteredMultisigAccounts = this.currentWallet.accounts.filter(el => el.isMultisign !== null && el.isMultisign.cosignatories.length > 0)
+
+      filteredMultisigAccounts.forEach(account => {
+        account.isMultisign.cosignatories.forEach(el => {
+          if (el.address.pretty().split('-').join('') === accountToDelete.address) {
+            let deleteAccount = []
+            account.isMultisign.cosignatories.forEach((cosig, index) => {
+              if (cosig.address.pretty().split('-').join('') !== accountToDelete.address) {
+                if ([undefined, null].includes(this.filterAccountWallet('', null, cosig.address.pretty()))) {
+                  deleteAccount.push(true)
+                } else {
+                  deleteAccount.push(false)
+                }
+              } else {
+                deleteAccount.push(true)
+              }
+
+              if (index + 1 === account.isMultisign.cosignatories.length) {
+                let deleteResult = deleteAccount.find(el => el === false)
+                if ([undefined, null].includes(deleteResult)) {
+                  this.deleteContact(account.address)
+                }
+              }
+            })
+          }
+        })
+      })
+    }
+  }
+
+  /**
+   *
+   *
    * @param {string} account
    * @memberof WalletService
    */
   removeAccountWallet(name: string, moduleRemove: boolean = false) {
     const myAccounts: AccountsInterface[] = Object.assign(this.currentWallet.accounts);
-    // console.log('=== myAccounts ===', myAccounts);
-    const othersAccount = myAccounts.filter(x => x.name !== name);
-    // console.log('==== othersAccount ====', othersAccount);
-    this.currentWallet.accounts = othersAccount;
-    // console.log('==== currentWallet ====', this.currentWallet);
+    const accountToDelete = myAccounts.find(x => x.name === name);
+    this.verifyRelatedMultisig(accountToDelete);
+
     const accountsInfo = [];
+    const othersAccount = myAccounts.filter(x => x.name !== name);
+    this.currentWallet.accounts = othersAccount;
     this.accountsInfo.filter(x => x.name !== name);
     this.setAccountsInfo(accountsInfo);
     this.saveAccountWalletStorage(null, this.currentWallet);
@@ -751,11 +804,37 @@ export class WalletService {
       localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(othersWallet));
     } else if (replaceWallet) {
       othersWallet.push(replaceWallet);
-      // console.log('=== othersWallet === ', othersWallet);
       localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(othersWallet));
     }
   }
 
+  /**
+   *
+   *
+   * @param {object} params
+   * @memberof ServicesModuleService
+   */
+  saveContacts(params) {
+    let currentWallet = `${environment.itemBooksAddress}-${this.getCurrentWallet().name}`;
+    let currentAddressBook = JSON.parse(localStorage.getItem(currentWallet));
+    if (currentAddressBook !== null) {
+      let { name, address, walletContact } = params
+      address = address.split('-').join('')
+      let nameExist = (currentAddressBook.find(el => el.label === name))
+      let addressExist = (currentAddressBook.find(el => el.value === address))
+      if (nameExist === undefined && addressExist === undefined) {
+        let newContact = {
+          label: name,
+          value: address,
+          walletContact: walletContact
+        }
+
+        currentAddressBook.push(newContact)
+        let updatedAddressBook = JSON.stringify(currentAddressBook)
+        localStorage.setItem(currentWallet, updatedAddressBook)
+      }
+    }
+  }
 
   /**
    *
@@ -788,17 +867,21 @@ export class WalletService {
       book: contacts
     });
 
+    this.saveWallet(walletsStorage);
+  }
+
+  /**
+   *
+   *
+   * @param {WalletAccountInterface[]} walletsStorage
+   * @memberof WalletService
+   */
+  saveWallet(walletsStorage: WalletAccountInterface[]){
     localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorage));
   }
 
 
-  /**
-    *
-    * @param data
-    */
-  setNis1AccountSelected(account: any) {
-    this.nis1AccountSeleted = account;
-  }
+
 
 
   /**
@@ -848,6 +931,8 @@ export class WalletService {
   setSwapTransactions$(transactions: TransactionsNis1Interface[]) {
     this.swapTransactions.next(transactions);
   }
+
+
 
   /**
    *
@@ -904,6 +989,19 @@ export class WalletService {
     return true;
   }
 
+
+  /**
+   *
+   *
+   * @param {AccountsInterface} account
+   * @memberof WalletService
+   */
+  validateIsMultisigAccount(account: AccountsInterface) {
+    if (account.isMultisign && account.isMultisign.cosignatories && account.isMultisign.cosignatories.length > 0) {
+
+    }
+  }
+
   /**
    *
    *
@@ -950,19 +1048,14 @@ export class WalletService {
    * @memberof WalletService
    */
   validateMultisigAccount(accounts: AccountsInterface[]) {
-    // console.log('----LA DATA QUE RECIBO-----> ', accounts);
     const dataExist = accounts.filter(x => x.encrypted === '');
     if (dataExist) {
       dataExist.forEach(account => {
         let remove = true;
-        // console.log('====account====', account);
-        // console.log('PROCESO DE VERIFICACION');
         if (account.isMultisign !== null) {
           if (account.isMultisign.cosignatories.length > 0) {
             account.isMultisign.cosignatories.forEach(cosignatorie => {
-              // console.log('==== COSIGNATARIOS ====', cosignatorie);
               const exist = this.filterAccountWallet('', null, cosignatorie.address.pretty());
-              // console.log('==== EXISTE? ====', exist);
               if (exist) {
                 remove = false;
               }
@@ -971,7 +1064,6 @@ export class WalletService {
         }
 
         if (remove) {
-          // console.log('==== REMOVER ====', account);
           this.removeAccountWallet(account.name);
         }
       });
@@ -979,7 +1071,7 @@ export class WalletService {
   }
 
   /**
-   *
+   * FOR DELETE RJ
    *
    * @returns
    * @memberof WalletService
@@ -993,8 +1085,9 @@ export class WalletService {
     return walletsStorage;
   }
 
+
   /**
-   *
+   * FOR DELETE RJ
    *
    * @memberof WalletService
    */
@@ -1005,8 +1098,17 @@ export class WalletService {
     });
 
     othersWallet.push(account);
-    // console.log('=== othersWallet === ', othersWallet);
     localStorage.setItem(environment.nameKeyWalletTransactionsNis, JSON.stringify(othersWallet));
+  }
+
+  /**
+   *
+   *
+   * @param {*} account
+   * @memberof WalletService
+   */
+  setNis1AccountSelected(account: any) {
+    this.nis1AccountSeleted = account;
   }
 }
 
@@ -1024,7 +1126,7 @@ export interface TransactionsNis1Interface {
   siriusAddres: string;
   nis1Timestamp: string;
   nis1PublicKey: string;
-  nis1TransactionHast: string;
+  nis1TransactionHash: string;
 }
 
 export interface AccountsInterface {
@@ -1051,4 +1153,10 @@ export interface AccountsInfoInterface {
 export interface WalletAccountInterface {
   name: string,
   accounts: AccountsInterface[];
+}
+
+export interface AccountCreatedInterface { // FOR DELETE RJ
+  data: any;
+  dataAccount: AccountsInterface;
+  wallet: SimpleWallet
 }
