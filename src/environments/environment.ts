@@ -7,17 +7,17 @@ import { ChronoUnit } from 'js-joda';
 
 export const environment = {
   production: false,
-  itemBooksAddress: 'sw-books-testnet-01',
-  version: '0.3.21',
-  cacheVersion: '5',
+  itemBooksAddress: 'sw-books-testnet',
+  version: '0.3.21 - (REFACTOR SWAP)',
+  cacheVersion: '25',
   nameKeyBlockStorage: `sw-blocks`,
-  nameKeyNodeSelected: `sw-selected-node-testnet-01`,
-  nameKeyWalletStorage: `sw-testnet-01`,
-  nameKeyNodeStorage: `sw-nodes-testnet-01`,
-  nameKeyNamespaces: `sw-namespaces-testnet-01`,
-  nameKeyMosaicStorage: `sw-mosaics-testnet-01`,
-  nameKeyVersion: 'sw-version-testnet-01',
-  nameKeyWalletTransactionsNis: 'sw-transactions-nis-01',
+  nameKeyNodeSelected: `sw-selected-node-testnet`,
+  nameKeyWalletStorage: `sw-testnet`,
+  nameKeyNodeStorage: `sw-nodes-testnet`,
+  nameKeyNamespaces: `sw-namespaces-testnet`,
+  nameKeyMosaicStorage: `sw-mosaics-testnet`,
+  nameKeyVersion: 'sw-version-testnet',
+  nameKeyWalletTransactionsNis: 'sw-transactions-nis',
   protocol: `https`,
   protocolWs: `wss`,
   nodeExplorer: 'https://bctestnetexplorer.xpxsirius.io/#/result/hash',
@@ -96,7 +96,7 @@ export const environment = {
       { protocol: "https", domain: "bctestnetswap.xpxsirius.io", port: 443 } as ServerConfig
     ],*/
     url: 'http://18.231.166.212:7890',
-    urlExplorer: 'http://testnet-explorer.nemtool.com/#/unconfirmedtxlist',
+    urlExplorer: 'http://testnet-explorer.nemtool.com/#/s_tx?hash=',
     networkType: NetworkTypes.TEST_NET,
     address: 'TBF4LAZUEJMBIOC6J24D6ZGGXE5W775TX555CTTN',
     nodes: [

@@ -27,8 +27,8 @@ export class AccountNis1FoundComponent implements OnInit {
   }
 
   goToRoute() {
-    const nis1Info = this.walletService.getNis1AccounsWallet();
-    
+    const nis1Info = this.walletService.getNis1AccountsWallet();
+
     if (nis1Info[0].consignerOf) {
       this.walletService.setAccountInfoNis1(nis1Info[0]);
       this.router.navigate([`/${AppConfig.routes.nis1AccountsConsigner}`]);

@@ -3,6 +3,7 @@ import { NodeService } from './servicesModule/services/node.service';
 import { environment } from '../environments/environment';
 import { MosaicService } from './servicesModule/services/mosaic.service';
 import { NamespacesService } from './servicesModule/services/namespaces.service';
+import { SharedService } from './shared/services/shared.service';
 
 @Component({
   selector: 'app-root',
@@ -12,7 +13,12 @@ import { NamespacesService } from './servicesModule/services/namespaces.service'
 export class AppComponent {
   title = 'Sirius Wallet';
 
-  constructor(private nodeService: NodeService, private mosaicsService: MosaicService, private namespaceService: NamespacesService) {
+  constructor(
+    private nodeService: NodeService,
+    private mosaicsService: MosaicService,
+    private namespaceService: NamespacesService,
+    private sharedService: SharedService
+  ) {
     const version = localStorage.getItem(environment.nameKeyVersion);
     if (version) {
       if (version !== environment.cacheVersion) {
@@ -23,6 +29,8 @@ export class AppComponent {
     } else {
       this.restart();
     }
+
+    const img = this.sharedService.walletCreatedCertified();
   }
 
   /**

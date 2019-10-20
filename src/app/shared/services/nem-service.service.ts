@@ -51,12 +51,31 @@ export class NemServiceService {
     private transactionService: TransactionsService,
     private http: HttpClient
   ) {
-    NEMLibrary.bootstrap(environment.nis1.networkType);
+    //NEMLibrary.bootstrap(environment.nis1.networkType);
     this.nodes = environment.nis1.nodes;
     this.accountHttp = new AccountHttp(this.nodes);
     this.transactionHttp = new TransactionHttp(this.nodes);
     this.assetHttp = new AssetHttp(this.nodes);
   }
+
+  /**
+   * Method to search mosaics of address
+   * @param {Address} address address of the mosaics sought
+   * @memberof NemServiceService
+   * @returns Observable<AssetTransferable[]>
+   */
+  getOwnedMosaics(address: Address): Observable<AssetTransferable[]> {
+    const accountOwnedMosaics = new AccountOwnedAssetService(this.accountHttp, this.assetHttp);
+    return accountOwnedMosaics.fromAddress(address);
+  }
+
+
+
+
+
+
+
+
 
   unsuscribe() {
     this.subscription.forEach(subscription => {
@@ -207,82 +226,140 @@ export class NemServiceService {
   getAccountInfo(address: Address) {
     return this.http.get(`${environment.nis1.url}/account/get?address=${address.plain()}`);
   }
-  // getAccountInfo(address: Address): Observable<AccountInfoWithMetaData> {
-  //   return this.accountHttp.getFromAddress(address);
-  // }
+
 
   /**
    * Method to get Account Info Address
    * @param address account address
    * @memberof NemServiceService
    */
-  getAccountsInfo(accounts: any) {
-    for (const element of accounts) {
-      if (element.nis1Account !== null) {
-        const address = this.createAddressToString(element.nis1Account.address.value);
-        this.getAccountInfo(address).pipe(first()).pipe((timeout(15000))).subscribe(
-          async next => {
-            // console.log('this is resp-------->', next);
-            let consignerOf: boolean = false;
-            let consignerAccountsInfo: any = [];
-
-            if (next['meta']['cosignatoryOf'].length > 0) {
-              consignerOf = true;
-              consignerAccountsInfo = next['meta']['cosignatoryOf'];
+  async getAccountsInfoAccountNew(account: any, name: string) {
+    const address = this.createAddressToString(account.address.value);
+    try {
+      const infoMultisig = [];
+      const accountInfo = await this.getAccountInfo(address).pipe(first()).pipe((timeout(10000))).toPromise();
+      console.log('GET ACCOUNT INFO NIS1 --->', accountInfo);
+      let cosignerOf: boolean = false;
+      let cosignerAccountsInfo: CosignatoryOf[] = [];
+      if (accountInfo['meta']['cosignatoryOf'].length > 0) {
+        cosignerOf = true;
+        cosignerAccountsInfo = accountInfo['meta']['cosignatoryOf'];
+        try {
+          for (let multisig of cosignerAccountsInfo) {
+            const addressMultisig = this.createAddressToString(multisig.address);
+            //const accountInfoMultisig = await this.getAccountInfo(addressMultisig).pipe(first()).pipe((timeout(10000))).toPromise();
+            const ownedMosaic = await this.getOwnedMosaics(addressMultisig).pipe(first()).pipe((timeout(10000))).toPromise();
+            console.log('ownedMosaic multisig ----> ', ownedMosaic);
+            const xpxFound = ownedMosaic.find(el => el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx');
+            if (xpxFound) {
+              const balance = await this.validateBalanceAccounts(xpxFound, addressMultisig);
+              console.log('Balance Multisig --->', balance);
+            } else {
+              // this.walletService.setNis1AccountsWallet$(null);
             }
-            const accountNis1 = {
-              nameAccount: element.name,
-              address: address,
-              publicKey: element.nis1Account.publicKey,
-              consignerOf: consignerOf,
-              consignerAccounts: consignerAccountsInfo
-            }
-
-            const accounts = this.walletService.getNis1AccounsWallet();
-            accounts.push(accountNis1);
-            this.walletService.setNis1AccountsWallet$(accounts);
-            this.walletService.setNis1AccounsWallet(accountNis1);
-          },
-          async error => {
-            const accountNis1 = {
-              nameAccount: element.name,
-              address: address,
-              publicKey: element.nis1Account.publicKey,
-              consignerOf: false,
-              consignerAccounts: []
-            }
-
-            const accounts = this.walletService.getNis1AccounsWallet();
-            accounts.push(accountNis1);
-            this.walletService.setNis1AccountsWallet$(accounts);
-            this.walletService.setNis1AccounsWallet(accountNis1);
           }
-        );
+
+          console.log('ACCOUNT INFO MULTISIG ---> ', infoMultisig);
+        } catch (error) {
+          console.log('ACCOUNT INFO MULTISIG ERROR---> ', error);
+        }
       }
+
+      const ownedMosaic = await this.getOwnedMosaics(address).pipe(first()).pipe((timeout(10000))).toPromise();
+      console.log('ownedMosaic multisig ----> ', ownedMosaic);
+      const xpxFound = ownedMosaic.find(el => el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx');
+      if (xpxFound) {
+        const balance = await this.validateBalanceAccounts(xpxFound, address);
+        console.log('Balance Multisig --->', balance);
+        const accountNis1 = {
+          nameAccount: name,
+          address: account.address,
+          publicKey: account.publicKey,
+          consignerOf: cosignerOf,
+          consignerAccounts: cosignerAccountsInfo,
+          mosaic: xpxFound,
+          multiSign: false,
+          balance: balance,
+          route: `/${AppConfig.routes.viewAllAccount}`
+        }
+
+        const accounts = this.walletService.getNis1AccountsWallet();
+        console.log('accounts ----------->', accounts);
+        console.log('accountNis1 ----------->', accountNis1);
+        accounts.push(accountNis1);
+        this.walletService.setNis1AccountsWallet$(accounts);
+        this.walletService.setNis1AccounsWallet(accountNis1);
+      } else {
+        this.walletService.setNis1AccountsWallet$(null);
+      }
+    } catch (error) {
+      console.log('----- OCURRIÓ UN ERROR 01-----', error);
+      const accountNis1 = {
+        nameAccount: name,
+        address: account.address,
+        publicKey: account.publicKey,
+        consignerOf: false,
+        consignerAccounts: [],
+        mosaic: null,
+        multiSign: false,
+        balance: '0.000000',
+        route: `/${AppConfig.routes.viewAllAccount}`
+      }
+
+      const accounts = this.walletService.getNis1AccountsWallet();
+      accounts.push(accountNis1);
+      this.walletService.setNis1AccountsWallet$(accounts);
+      this.walletService.setNis1AccounsWallet(accountNis1);
     }
   }
 
   /**
-   * Method to get Account Info Address
-   * @param address account address
+   *
+   *
+   * @param {AssetTransferable} xpxFound
+   * @param {Address} addressMultisig
+   * @returns
    * @memberof NemServiceService
    */
-  getAccountsInfoAccountNew(account: any, name: string) {
-    const address = this.createAddressToString(account.address.value);
-    this.getAccountInfo(address).pipe(first()).pipe((timeout(10000))).subscribe(next => {
-      //console.log('GET ACCOUNT INFO NIS1 --->', next);
+  async validateBalanceAccounts(xpxFound: AssetTransferable, addressMultisig: Address) {
+    console.log('addressMultisig ---> ', addressMultisig);
+    const quantityFillZeros = this.transactionService.addZeros(xpxFound.properties.divisibility, xpxFound.quantity);
+    const realQuantity: any = this.amountFormatter(quantityFillZeros, xpxFound, xpxFound.properties.divisibility);
+    const transactions = await this.getUnconfirmedTransaction(addressMultisig);
+    console.log('transactions multisig ----> ', transactions);
+    if (transactions.length > 0) {
+      let relativeAmount = realQuantity;
+      for (const item of transactions) {
+        if (item.type === 257 && item['signer']['address']['value'] === addressMultisig['value']) {
+          if (item['_assets'].length > 0) {
+            const existMosaic = item['_assets'].find(mosaic => mosaic.assetId.namespaceId === 'prx' && mosaic.assetId.name === 'xpx');
+            if (existMosaic) {
+              const quantity = parseFloat(this.amountFormatter(existMosaic.quantity, xpxFound, xpxFound.properties.divisibility));
+              const quantitywhitoutFormat = relativeAmount.split(',').join('');
+              const quantityFormat = this.amountFormatter(parseInt((quantitywhitoutFormat - quantity).toString().split('.').join('')), xpxFound, xpxFound.properties.divisibility);
+              relativeAmount = quantityFormat;
+            }
+          }
+        }
+      }
+
+      return relativeAmount;
+    } else {
+      return realQuantity;
+    }
+  }
+
+
+  dos(address, account) {
+    this.getAccountInfo(address).pipe(first()).pipe((timeout(10000))).subscribe(async next => {
+      console.log('GET ACCOUNT INFO NIS1 --->', next);
       let consignerOf: boolean = false;
       let consignerAccountsInfo: any = [];
 
-      if (next['meta']['cosignatoryOf'].length > 0) {
-        consignerOf = true;
-        consignerAccountsInfo = next['meta']['cosignatoryOf'];
-      }
-
       this.getOwnedMosaics(address).pipe(first()).pipe((timeout(10000))).subscribe(async next => {
-        //console.log('GET OWNED MOSAIC NIS1 --->', next);
+        console.log('GET OWNED MOSAIC NIS1 --->', next);
         const xpxFound = next.find(el => el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx');
-        //console.log('XPX IS FOUND?? ---> ', xpxFound);
+        console.log('XPX IS FOUND?? ---> ', xpxFound);
         if (xpxFound) {
           const quantityFillZeros = this.transactionService.addZeros(xpxFound.properties.divisibility, xpxFound.quantity);
           const realQuantity: any = this.amountFormatter(quantityFillZeros, xpxFound, xpxFound.properties.divisibility);
@@ -320,12 +397,13 @@ export class NemServiceService {
             route: `/${AppConfig.routes.viewAllAccount}`
           }
 
-          const accounts = this.walletService.getNis1AccounsWallet();
+          const accounts = this.walletService.getNis1AccountsWallet();
           accounts.push(accountNis1);
           this.walletService.setNis1AccountsWallet$(accounts);
           this.walletService.setNis1AccounsWallet(accountNis1);
         } else {
-          this.walletService.setNis1AccountsWallet$(null);
+          // DOES NOT HAVE XPX
+          // this.walletService.setNis1AccountsWallet$(null);
         }
       }, async error => {
         const accountNis1 = {
@@ -340,42 +418,102 @@ export class NemServiceService {
           route: `/${AppConfig.routes.viewAllAccount}`
         };
 
-        const accounts = this.walletService.getNis1AccounsWallet();
+        const accounts = this.walletService.getNis1AccountsWallet();
         accounts.push(accountNis1);
         this.walletService.setNis1AccountsWallet$(accounts);
         this.walletService.setNis1AccounsWallet(accountNis1);
       });
-    }, async error => {
-      const accountNis1 = {
-        nameAccount: name,
-        address: account.address,
-        publicKey: account.publicKey,
-        consignerOf: false,
-        consignerAccounts: [],
-        mosaic: null,
-        multiSign: false,
-        balance: '0.000000',
-        route: `/${AppConfig.routes.viewAllAccount}`
-      }
+    })
 
-      const accounts = this.walletService.getNis1AccounsWallet();
-      accounts.push(accountNis1);
-      this.walletService.setNis1AccountsWallet$(accounts);
-      this.walletService.setNis1AccounsWallet(accountNis1);
-    }
-    )
+    /* console.log('SIGUIÓ DIRECTO!');
+     this.getOwnedMosaics(address).pipe(first()).pipe((timeout(10000))).subscribe(async next => {
+       console.log('GET OWNED MOSAIC NIS1 --->', next);
+       const xpxFound = next.find(el => el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx');
+       console.log('XPX IS FOUND?? ---> ', xpxFound);
+       if (xpxFound) {
+         const quantityFillZeros = this.transactionService.addZeros(xpxFound.properties.divisibility, xpxFound.quantity);
+         const realQuantity: any = this.amountFormatter(quantityFillZeros, xpxFound, xpxFound.properties.divisibility);
+         const transactions = await this.getUnconfirmedTransaction(account.address);
+         let balance = 0;
+         if (transactions.length > 0) {
+           let relativeAmount = realQuantity;
+           for (const item of transactions) {
+             if (item.type === 257 && item['signer']['address']['value'] === address['value']) {
+               for (const mosaic of item['_assets']) {
+                 if (mosaic.assetId.namespaceId === 'prx' && mosaic.assetId.name === 'xpx') {
+                   const quantity = parseFloat(this.amountFormatter(mosaic.quantity, xpxFound, xpxFound.properties.divisibility));
+                   const quantitywhitoutFormat = relativeAmount.split(',').join('');
+                   const quantityFormat = this.amountFormatter(parseInt((quantitywhitoutFormat - quantity).toString().split('.').join('')), xpxFound, xpxFound.properties.divisibility);
+                   relativeAmount = quantityFormat;
+                 }
+               }
+             }
+           }
+
+           balance = relativeAmount;
+         } else {
+           balance = realQuantity;
+         }
+
+         const accountNis1 = {
+           nameAccount: name,
+           address: account.address,
+           publicKey: account.publicKey,
+           consignerOf: consignerOf,
+           consignerAccounts: consignerAccountsInfo,
+           mosaic: xpxFound,
+           multiSign: false,
+           balance: balance,
+           route: `/${AppConfig.routes.viewAllAccount}`
+         }
+
+         const accounts = this.walletService.getNis1AccountsWallet();
+         accounts.push(accountNis1);
+         this.walletService.setNis1AccountsWallet$(accounts);
+         this.walletService.setNis1AccounsWallet(accountNis1);
+       } else {
+         // DOES NOT HAVE XPX
+         this.walletService.setNis1AccountsWallet$(null);
+       }
+     }, async error => {
+       const accountNis1 = {
+         nameAccount: name,
+         address: account.address,
+         publicKey: account.publicKey,
+         consignerOf: consignerOf,
+         consignerAccounts: consignerAccountsInfo,
+         mosaic: null,
+         multiSign: false,
+         balance: '0.000000',
+         route: `/${AppConfig.routes.viewAllAccount}`
+       };
+
+       const accounts = this.walletService.getNis1AccountsWallet();
+       accounts.push(accountNis1);
+       this.walletService.setNis1AccountsWallet$(accounts);
+       this.walletService.setNis1AccounsWallet(accountNis1);
+     });
+   }, async error => {
+     const accountNis1 = {
+       nameAccount: name,
+       address: account.address,
+       publicKey: account.publicKey,
+       consignerOf: false,
+       consignerAccounts: [],
+       mosaic: null,
+       multiSign: false,
+       balance: '0.000000',
+       route: `/${AppConfig.routes.viewAllAccount}`
+     }
+
+     const accounts = this.walletService.getNis1AccountsWallet();
+     accounts.push(accountNis1);
+     this.walletService.setNis1AccountsWallet$(accounts);
+     this.walletService.setNis1AccounsWallet(accountNis1);
+   })*/
   }
 
-  /**
-   * Method to search mosaics of address
-   * @param {Address} address address of the mosaics sought
-   * @memberof NemServiceService
-   * @returns Observable<AssetTransferable[]>
-   */
-  getOwnedMosaics(address: Address): Observable<AssetTransferable[]> {
-    let accountOwnedMosaics = new AccountOwnedAssetService(this.accountHttp, this.assetHttp);
-    return accountOwnedMosaics.fromAddress(address);
-  }
+
 
   /**
    * Method to get Unconfirmed transactions of an account
@@ -386,4 +524,32 @@ export class NemServiceService {
   getUnconfirmedTransaction(address: Address): Promise<Transaction[]> {
     return this.accountHttp.unconfirmedTransactions(address).toPromise();
   }
+
+  /**
+   *
+   *
+   * @param {*} account
+   * @memberof NemServiceService
+   */
+  getAccountInfoMultisig(account) {
+    const address = this.createAddressToString(account.address.value);
+    this.getAccountInfo(address).pipe(first()).pipe((timeout(10000))).subscribe(next => {
+
+    });
+  }
+}
+
+
+export interface CosignatoryOf {
+  address: string;
+  balance: number;
+  harvestedBlocks: number;
+  importance: number;
+  label: any;
+  multisigInfo: {
+    cosignatoriesCount: number;
+    minCosignatories: number;
+  },
+  publicKey: string;
+  vestedBalance: number;
 }

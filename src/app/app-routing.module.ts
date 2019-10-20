@@ -23,6 +23,9 @@ const routes: Routes = [
     }, {
       path: '',
       loadChildren: './wallet/wallet.module#WalletModule'
+    },{
+      path: '',
+      loadChildren: './swap/swap.module#SwapModule'
     }]
   }, {
     path: ``,
@@ -34,12 +37,10 @@ const routes: Routes = [
     }, {
       path: '',
       loadChildren: './transactions/transactions.module#TransactionsModule'
-    },
-    {
+    }, {
       path: '',
       loadChildren: './servicesModule/services-module.module#ServicesModule'
-    },
-    ]
+    }]
   }, {
     path: '**',
     redirectTo: `/${AppConfig.routes.home}`

@@ -20,13 +20,23 @@ export class WalletNis1FoundComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (this.walletService.getNis1AccounsWallet() === null || this.walletService.getNis1AccounsWallet() === undefined || this.walletService.getNis1AccounsWallet().length === 0 ) {
+    if (
+      this.walletService.getNis1AccountsWallet() === null ||
+      this.walletService.getNis1AccountsWallet() === undefined ||
+      this.walletService.getNis1AccountsWallet().length === 0
+    ) {
       this.router.navigate([`/${AppConfig.routes.home}`]);
     }
   }
 
+  /**
+   *
+   *
+   * @memberof WalletNis1FoundComponent
+   */
   goToRoute() {
-    const nis1Info = this.walletService.getNis1AccounsWallet();
+    const nis1Info = this.walletService.getNis1AccountsWallet();
+    console.log('-----nis1Info----', nis1Info);
     if (nis1Info[0].consignerOf) {
       this.walletService.setAccountInfoNis1(nis1Info[0]);
       this.router.navigate([`/${AppConfig.routes.walletNis1AccountConsigner}`]);
@@ -36,6 +46,11 @@ export class WalletNis1FoundComponent implements OnInit {
     }
   }
 
+  /**
+   *
+   *
+   * @memberof WalletNis1FoundComponent
+   */
   goToBack() {
     this.walletService.setAccountInfoNis1(null);
     this.walletService.setAccountSelectedWalletNis1(null);

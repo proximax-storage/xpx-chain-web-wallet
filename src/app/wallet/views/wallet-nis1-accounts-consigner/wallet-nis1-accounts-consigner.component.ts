@@ -26,15 +26,11 @@ export class WalletNis1AccountsConsignerComponent implements OnInit {
   ) {
     this.mainAccount = this.walletService.getAccountInfoNis1();
     // console.log('Esta es la info de la this.mainAccount ------------>', this.mainAccount);
-
     this.mainAccount.balance = null;
     this.mainAccount.mosaic = null;
     // this.mainAccount.nameAccount = this.mainAccount.nameAccount;
-
     this.searchBalance(this.mainAccount);
-
     this.listConsignerAccounts = this.mainAccount.consignerAccounts;
-
     this.listConsignerAccounts.forEach((element, index) => {
       element.publicAccount.balance = null;
       element.publicAccount.mosaic = null;
@@ -46,6 +42,7 @@ export class WalletNis1AccountsConsignerComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log('aquiiiiiiiii esssssss');
   }
 
   getQuantity(quantity) {
