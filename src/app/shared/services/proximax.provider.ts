@@ -165,6 +165,13 @@ export class ProximaxProvider {
     return mosaicDefinitionTransaction;
   }
 
+  /**
+   *
+   *
+   * @param {*} address
+   * @returns
+   * @memberof ProximaxProvider
+   */
   createAddressFromEncode(address: any) {
     return Address.createFromRawAddress(RawAddress.addressToString(Convert.hexToUint8(address)));
   }

@@ -13,8 +13,21 @@ import { DeleteWalletComponent } from './views/delete-wallet/delete-wallet.compo
 import { ViewAllWalletsComponent } from './views/view-all-wallets/view-all-wallets.component';
 import { DeleteWalletConfirmComponent } from './views/delete-wallet-confirm/delete-wallet-confirm.component';
 
+
+
 @NgModule({
-  declarations: [CreateWalletComponent, ImportWalletComponent, WalletCreatedComponent, SelectionWalletCreationTypeComponent, WalletNis1FoundComponent, TransferXpxComponent, WalletNis1AccountsConsignerComponent, DeleteWalletComponent, ViewAllWalletsComponent, DeleteWalletConfirmComponent],
+  declarations: [
+    CreateWalletComponent,
+    ImportWalletComponent,
+    WalletCreatedComponent,
+    SelectionWalletCreationTypeComponent,
+    WalletNis1FoundComponent,
+    TransferXpxComponent,
+    WalletNis1AccountsConsignerComponent,
+    DeleteWalletComponent,
+    ViewAllWalletsComponent,
+    DeleteWalletConfirmComponent
+  ],
   imports: [
     CoreModule,
     WalletRoutingModule

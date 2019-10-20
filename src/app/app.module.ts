@@ -2,13 +2,13 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { ToastModule } from 'ng-uikit-pro-standard';
+import { HttpClientModule } from '@angular/common/http';
 
 
 import { routing, appRoutingProviders } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CoreModule } from './core/core.module';
 import { SharedModule } from './shared/shared.module';
-import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [

@@ -632,7 +632,7 @@ export class TransactionsService {
                     newTransaction.cosignatures = transaction['cosignatures'];
                     let walletTransactionsNis = this.walletService.getWalletTransNisStorage().find(el => el.name === this.walletService.getCurrentWallet().name);
                     if (walletTransactionsNis !== undefined && walletTransactionsNis !== null) {
-                      const transactions = walletTransactionsNis.transactions.filter(el => el.nis1TransactionHast !== msg["nis1Hash"]);
+                      const transactions = walletTransactionsNis.transactions.filter(el => el.nis1TransactionHash !== msg["nis1Hash"]);
                       walletTransactionsNis.transactions = transactions;
                       this.walletService.setSwapTransactions$(walletTransactionsNis.transactions);
                       this.walletService.saveAccountWalletTransNisStorage(walletTransactionsNis);
@@ -726,34 +726,40 @@ export class TransactionsService {
    */
   searchAccountsInfo(accounts: AccountsInterface[]) {
     // console.log('ACCOUNTS INTERFACE ---> ', accounts);
-    this.walletService.searchAccountsInfo(accounts).then((data: {
-      mosaicsId: MosaicId[];
-      accountsInfo: AccountsInfoInterface[];
-    }) => {
-          this.walletService.validateMultisigAccount(accounts);
-          const publicsAccounts: PublicAccount[] = [];
-          data.accountsInfo.forEach((element: AccountsInfoInterface) => {
-            if (element.accountInfo) {
-              publicsAccounts.push(
-                this.proximaxProvider.createPublicAccount(
-                  element.accountInfo.publicKey,
-                  element.accountInfo.publicAccount.address.networkType
-                )
-              );
-            }
-          });
-
-          // Search all transactions aggregate bonded from array publics accounts
-          if (publicsAccounts.length > 0) {
-            this.searchAggregateBonded(publicsAccounts);
-          }
-
-          this.updateBalance();
-          if (data.mosaicsId && data.mosaicsId.length > 0) {
-            this.mosaicServices.searchInfoMosaics(data.mosaicsId);
+    this.walletService.searchAccountsInfo(accounts).then((data: {mosaicsId: MosaicId[]; accountsInfo: AccountsInfoInterface[]; }) => {
+      this.walletService.validateMultisigAccount(accounts);
+      const publicsAccounts: PublicAccount[] = [];
+      data.accountsInfo.forEach((element: AccountsInfoInterface) => {
+        if (element.accountInfo) {
+          const exist = accounts.find(account => element.accountInfo.address.plain() === account.address);
+          if(exist) {
+            publicsAccounts.push(
+              this.proximaxProvider.createPublicAccount(
+                exist.publicAccount.publicKey,
+                exist.publicAccount.address.networkType
+              )
+            );
+          }else {
+            publicsAccounts.push(
+              this.proximaxProvider.createPublicAccount(
+                element.accountInfo.publicKey,
+                element.accountInfo.publicAccount.address.networkType
+              )
+            );
           }
         }
-      ).catch(error => console.log(error));
+      });
+
+      // Search all transactions aggregate bonded from array publics accounts
+      if (publicsAccounts.length > 0) {
+        this.searchAggregateBonded(publicsAccounts);
+      }
+
+      this.updateBalance();
+      if (data.mosaicsId && data.mosaicsId.length > 0) {
+        this.mosaicServices.searchInfoMosaics(data.mosaicsId);
+      }
+    }).catch(error => console.log(error));
   }
 
   /**

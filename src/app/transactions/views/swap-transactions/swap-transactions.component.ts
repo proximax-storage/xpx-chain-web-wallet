@@ -43,8 +43,8 @@ export class SwapTransactionsComponent implements OnInit {
     return qr.createDataURL();
   }
 
-  goToNemExplorer() {
-    window.open(`${environment.nis1.urlExplorer}`);
+  goToNemExplorer(hash: string) {
+    window.open(`${environment.nis1.urlExplorer}${hash}`);
   }
 
   printCertificate(transaction) {
@@ -78,12 +78,12 @@ export class SwapTransactionsComponent implements OnInit {
     doc.setFontType('normal');
     doc.text(transaction.nis1PublicKey, 30, 170, { maxWidth: 370 });
 
-    doc.addImage(this.qrCreate(transaction.nis1TransactionHast), 'jpg', 30, 210, 100, 100);
+    doc.addImage(this.qrCreate(transaction.nis1TransactionHash), 'jpg', 30, 210, 100, 100);
 
     doc.setFontType('bold');
     doc.text('NIS1 Transaction Hash:', 140, 230);
     doc.setFontType('normal');
-    doc.text(transaction.nis1TransactionHast, 140, 245, { maxWidth: 280 });
+    doc.text(transaction.nis1TransactionHash, 140, 245, { maxWidth: 280 });
 
     doc.text('Note: the swap process may take a few hours to complete.', 30, 330);
 

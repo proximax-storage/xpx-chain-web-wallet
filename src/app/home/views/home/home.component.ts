@@ -12,9 +12,9 @@ import { AppConfig } from '../../../config/app.config';
 import { SharedService } from '../../../shared/services/shared.service';
 import { WalletService } from '../../../wallet/services/wallet.service';
 import { environment } from '../../../../environments/environment';
-import { NemServiceService } from '../../../shared/services/nem-service.service';
 import { ProximaxProvider } from '../../../shared/services/proximax.provider';
 import { AuthService } from '../../../auth/services/auth.service';
+import { NemProviderService } from '../../../swap/services/nem-provider.service';
 
 
 @Component({
@@ -48,11 +48,12 @@ export class HomeComponent implements OnInit {
     private walletService: WalletService,
     private proximaxProvider: ProximaxProvider,
     private router: Router,
-    private nemProvider: NemServiceService,
+    private nemProvider: NemProviderService,
     private serviceModuleService: ServicesModuleService
   ) { }
 
   ngOnInit() {
+    this.walletService.accountWalletCreated = null;
     this.receiveEventShowModal();
     this.servicesList = [
       this.services.buildStructureService(
@@ -88,12 +89,6 @@ export class HomeComponent implements OnInit {
         '',
         'icon-add-new-blue.svg',
         `/${this.link.createWallet}`
-      // ), this.services.buildStructureService(
-      //   'From a private key',
-      //   true,
-      //   '',
-      //   'icon-private-key-blue.svg',
-      //   `/${this.link.importWallet}`
       ), this.services.buildStructureService(
         'Create',
         true,
@@ -104,6 +99,11 @@ export class HomeComponent implements OnInit {
     ]
   }
 
+  /**
+   *
+   *
+   * @memberof HomeComponent
+   */
   createStructNis() {
     const common = nem.model.objects.create("common")(this.password);
     // Get the wallet account to decrypt
@@ -117,7 +117,7 @@ export class HomeComponent implements OnInit {
       let walletName = this.walletDecryp.name;
       walletName = (walletName.includes(' ') === true) ? walletName.split(' ').join('_') : walletName;
       const nameWallet = walletName;
-      const network = (this.walletDecryp.accounts[0].network === NetworkTypes.MAIN_NET) ? NetworkType.MAIN_NET : NetworkType.TEST_NET;
+      const network = environment.typeNetwork.value;
       const password = this.proximaxProvider.createPassword(this.password);
       const algo = this.walletDecryp.accounts[0].algo;
       const accounts = [];
@@ -172,12 +172,22 @@ export class HomeComponent implements OnInit {
     }
   }
 
+  /**
+   *
+   *
+   * @memberof HomeComponent
+   */
   clearForm() {
     this.myInputVariable.nativeElement.value = "";
     this.password = '';
     this.walletDecryp = null
   }
 
+  /**
+   *
+   *
+   * @memberof HomeComponent
+   */
   eventShowModal(){
     this.authService.getEventShowModal().pipe(first()).subscribe(
       next => this.authService.eventShowModalSubject.next(next+1)
@@ -189,7 +199,7 @@ export class HomeComponent implements OnInit {
    * @param {File} files file array
    * @param {Event} $event get the html element
    */
-  fileChange(files: File[], $event) {
+  fileChange(files: File[], $event: Event) {
     if (files.length > 0) {
       const myReader: FileReader = new FileReader();
       myReader.onloadend = (e) => {
@@ -251,6 +261,11 @@ export class HomeComponent implements OnInit {
     }
   }
 
+  /**
+   *
+   *
+   * @memberof HomeComponent
+   */
   receiveEventShowModal() {
     this.subscription.push(this.authService.getEventShowModal().subscribe(
       next => {

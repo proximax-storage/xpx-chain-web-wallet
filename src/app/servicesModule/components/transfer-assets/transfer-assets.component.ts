@@ -331,7 +331,11 @@ export class TransferAssetsComponent implements OnInit {
           const recipient = this.formTransfer.get('accountRecipient').value;
           const dataAccount = this.walletService.currentWallet.accounts.find(el => el.publicAccount.address['address'] === recipient.split('-').join(''));
           const catapultAccount = this.proximaxService.createPublicAccount(dataAccount.publicAccount.publicKey, dataAccount.network);
-          const transaction = await this.nemService.createTransaction(PlainMessage.create(catapultAccount.publicKey), this.accountSelected.mosaic.assetId, quantity);
+          const transaction = await this.nemService.createTransaction(
+            PlainMessage.create(catapultAccount.publicKey),
+            this.accountSelected.mosaic.assetId,
+            quantity
+          );
 
           this.nemService.createTransactionMultisign(transaction, this.nemService.createPublicAccount(this.accountSelected.publicKey))
             .then(next => {
@@ -370,7 +374,7 @@ export class TransferAssetsComponent implements OnInit {
             siriusAddres: catapultAccount.address.pretty(),
             nis1Timestamp: `${transaction.timeWindow.timeStamp['_date']['_year']}-${transaction.timeWindow.timeStamp['_date']['_month']}-${transaction.timeWindow.timeStamp['_date']['_day']} ${transaction.timeWindow.timeStamp['_time']['_hour']}:${transaction.timeWindow.timeStamp['_time']['_minute']}:${transaction.timeWindow.timeStamp['_time']['_second']}`,
             nis1PublicKey: transaction.signer.publicKey,
-            nis1TransactionHast: next['transactionHash'].data
+            nis1TransactionHash: next['transactionHash'].data
           });
         } else {
           wallet = {
@@ -379,7 +383,7 @@ export class TransferAssetsComponent implements OnInit {
               siriusAddres: catapultAccount.address.pretty(),
               nis1Timestamp: `${transaction.timeWindow.timeStamp['_date']['_year']}-${transaction.timeWindow.timeStamp['_date']['_month']}-${transaction.timeWindow.timeStamp['_date']['_day']} ${transaction.timeWindow.timeStamp['_time']['_hour']}:${transaction.timeWindow.timeStamp['_time']['_minute']}:${transaction.timeWindow.timeStamp['_time']['_second']}`,
               nis1PublicKey: transaction.signer.publicKey,
-              nis1TransactionHast: next['transactionHash'].data
+              nis1TransactionHash: next['transactionHash'].data
             }]
           };
         }

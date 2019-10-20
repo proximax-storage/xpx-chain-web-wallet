@@ -1,8 +1,8 @@
 <div class="container-fluid mt-3rem pb-3rem animated fadeIn">
   <app-header [params]="paramsHeader"></app-header>
   <ng-container *ngIf="!processComplete; else processCompleteTemplate">
-    <div class="row mb-2rem">
-      <div class="col-12 col-md-10 col-lg-9 col-xl-8 mb-2rem mx-auto">
+    <div class="row">
+      <div class="col-12 col-md-10 col-lg-9 col-xl-8 mx-auto">
         <!-- UPLOAD APOSTILLE -->
         <mdb-stepper #stepper [linear]="true">
           <!-- FIRST FORM -->
@@ -185,10 +185,11 @@
 
               <!-- FILE NAME  -->
               <div class="row mt-1rem">
-                <div class="col-12 d-flex box-grey flex-column w-b-w w-b-a">
-                  <span class="fw-600 d-flex">File:&nbsp;</span>
-                  <span class="fs-1rem d-flex">{{nameFile }}{{extensionFile}}</span>
-
+                <div class="col-12">
+                  <div class="box-grey pl-2rem pr-2rem">
+                    <span class="fw-600 d-flex">File:</span>
+                    <span class="fs-1rem d-flex">{{nameFile }}{{extensionFile}}</span>
+                  </div>
                 </div>
               </div>
               <!-- TAGS -->
@@ -215,7 +216,7 @@
 
               <div class="row mt-1rem mx-auto">
                 <!-- PRIVATE & PUBLIC -->
-                <div class="col-11 col-md-6 box-grey d-flex justify-content-center">
+                <div class="col-11 col-md-5 box-grey d-flex justify-content-center">
                   <div class="row">
                     <div class="col-6 fw-600 d-flex justify-content-start">
                       <div class="form-check form-check-inline">
@@ -234,6 +235,8 @@
                     </div>
                   </div>
                 </div>
+
+                <div class="col-11 col-md-2">&nbsp;</div>
 
                 <!-- SAFE DFMS -->
                 <div class="col-11 col-md-5 box-grey d-flex justify-content-center">

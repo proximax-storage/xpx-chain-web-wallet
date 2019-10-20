@@ -6,7 +6,7 @@ import { SharedService } from '../../../../shared/services/shared.service';
 import { NemServiceService } from '../../../../shared/services/nem-service.service';
 import { AppConfig } from '../../../../config/app.config';
 import { TransactionsService } from '../../../../transactions/services/transactions.service';
-import { HeaderServicesInterface } from '../../../../servicesModule/services/services-module.service';
+import { HeaderServicesInterface } from '../../../services/services-module.service';
 @Component({
   selector: 'app-nis1-accounts-consigner',
   templateUrl: './nis1-accounts-consigner.component.html',

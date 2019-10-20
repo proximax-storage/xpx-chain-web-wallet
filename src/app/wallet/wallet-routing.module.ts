@@ -5,7 +5,6 @@ import { CreateWalletComponent } from './views/create-wallet/create-wallet.compo
 import { ImportWalletComponent } from './views/import-wallet/import-wallet.component';
 import { WalletCreatedComponent } from './views/wallet-created/wallet-created.component';
 import { SelectionWalletCreationTypeComponent } from './views/selection-wallet-creation-type/selection-wallet-creation-type.component';
-import { WalletNis1FoundComponent } from './views/wallet-nis1-found/wallet-nis1-found.component';
 import { TransferXpxComponent } from './views/transfer-xpx/transfer-xpx.component';
 import { WalletNis1AccountsConsignerComponent } from './views/wallet-nis1-accounts-consigner/wallet-nis1-accounts-consigner.component';
 import { DeleteWalletComponent } from './views/delete-wallet/delete-wallet.component';
@@ -86,17 +85,6 @@ const routes: Routes = [
       meta: {
         title: 'selectTypeCreationWallet.title',
         description: 'selectTypeCreationWallet.text',
-        override: true,
-      },
-    }
-  },
-  {
-    path: AppConfig.routes.walletNis1Found,
-    component: WalletNis1FoundComponent,
-    data: {
-      meta: {
-        title: 'walletNis1Found.title',
-        description: 'walletNis1Found.text',
         override: true,
       },
     }
