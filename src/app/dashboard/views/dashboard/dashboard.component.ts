@@ -14,6 +14,7 @@ import { environment } from '../../../../environments/environment';
 import { AppConfig } from '../../../config/app.config';
 import { NamespacesService } from '../../../servicesModule/services/namespaces.service';
 import { DataBridgeService } from '../../../shared/services/data-bridge.service';
+import { NemProviderService } from '../../../swap/services/nem-provider.service';
 
 
 @Component({
@@ -79,14 +80,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
   };
 
   constructor(
-    private dataBridge: DataBridgeService,
     private cdRef: ChangeDetectorRef,
+    private dataBridge: DataBridgeService,
     private dashboardService: DashboardService,
-    private walletService: WalletService,
+    private nemProvider: NemProviderService,
+    private namespacesService: NamespacesService,
     private transactionService: TransactionsService,
     private sharedService: SharedService,
     private proximaxProvider: ProximaxProvider,
-    private namespacesService: NamespacesService
+    private walletService: WalletService
   ) { }
 
 
@@ -111,7 +113,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.subscribeTransactionsConfirmedUnconfirmed();
     this.getRecentTransactions();
 
-    const walletNis1 = this.walletService.getWalletTransNisStorage().find(el => el.name === this.walletService.getCurrentWallet().name);
+    const walletNis1 = this.nemProvider.getWalletTransNisStorage().find(el => el.name === this.walletService.getCurrentWallet().name);
     if (walletNis1 !== undefined && walletNis1 !== null) {
       this.swapTransactions = walletNis1.transactions.length;
     }
