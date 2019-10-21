@@ -520,6 +520,26 @@ export class ServicesBoxComponent implements OnInit {
         true,
         'disable-module'
       ),
+
+      // VIDEO CONFERENCING
+      this.services.buildStructureService(
+        'Gift Sirius',
+        true,
+        'Share XPX is to easy',
+        'icon-gift-sirius-full-color-80h-proximax-sirius-wallet.svg',
+        '',
+        {
+          create: this.services.buildStructureService(
+            'Create',
+            false,
+            '',
+            '',
+            ''
+          )
+        },
+        true,
+        'disable-module'
+      ),
     ];
   }
 }
