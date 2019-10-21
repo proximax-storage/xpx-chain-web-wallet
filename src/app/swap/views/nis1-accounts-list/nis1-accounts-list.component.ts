@@ -29,7 +29,7 @@ export class Nis1AccountsListComponent implements OnInit {
     const accountsNis1 = allAccounts.filter(x => x.nis1Account !== null && x.nis1Account !== undefined);
     this.accountsNis1 = accountsNis1.map(x => x.nis1Account.address = this.nemProvider.createAddressToString(x.nis1Account.address.value));
     this.searchItem.push(false);
-    console.log('----this.accountsNis1---', this.accountsNis1);
+    // console.log('----this.accountsNis1---', this.accountsNis1);
   }
 
 

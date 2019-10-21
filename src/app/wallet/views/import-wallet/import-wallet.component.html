@@ -29,8 +29,13 @@
     <div class="row">
       <div class="col-11 col-sm-10 col-md-8 col-lg-6 mx-auto">
         <div class="md-form form-sm mt-1rem mb-0rem">
-          <img class="form-control-feedback" src="assets/images/img/icon-private-key-green-16h-proximax-sirius-wallet.svg" alt="">
-          <input mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
+          <img class="form-control-feedback"
+            src="assets/images/img/icon-private-key-green-16h-proximax-sirius-wallet.svg" alt="">
+          <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(pvkMain, true)"
+            src="assets/images/img/icon-show-hide-password.svg" *ngIf="pvkMain === 'password'">
+          <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(pvkMain, true)"
+            src="assets/images/img/icon-show-hide-password-grey.svg" *ngIf="pvkMain === 'text'">
+          <input [type]="pvkMain" mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
             [minlength]="configurationForm.privateKey.minLength" [maxlength]="configurationForm.privateKey.maxLength"
             id="privateKey" class="form-control form-control-sm input-border" placeholder="Private Key"
             formControlName="privateKey">
@@ -44,20 +49,24 @@
 
     <div class="row mt-1rem">
       <div class="col-11 col-sm-10 col-md-8 mx-auto txt-a-center">
-        <mdb-checkbox (click)="switchSaveNis1()"> Check this box if you wish to swap with this private key.</mdb-checkbox>
+        <mdb-checkbox (click)="switchSaveNis1()"> Check this box if you wish to swap with this private key.
+        </mdb-checkbox>
       </div>
     </div>
 
     <div class="row">
       <div class="col-11 col-sm-10 col-md-8 col-lg-6 mx-auto">
         <div class="md-form form-sm mt-1rem mb-0rem">
-          <img class="form-control-feedback" src="assets/images/img/icon-wallet-name-green-16h-proximax-sirius-wallet.svg" alt="">
+          <img class="form-control-feedback"
+            src="assets/images/img/icon-wallet-name-green-16h-proximax-sirius-wallet.svg" alt="">
           <input mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" type="text"
             id="name-wallet{{errorWalletExist}}" class="form-control form-control-sm input-border"
-            placeholder="Wallet Name" formControlName="nameWallet" [minlength]="configurationForm.nameWallet.minLength" [maxlength]="configurationForm.nameWallet.maxLength">
+            placeholder="Wallet Name" formControlName="nameWallet" [minlength]="configurationForm.nameWallet.minLength"
+            [maxlength]="configurationForm.nameWallet.maxLength">
           <mdb-error
             *ngIf="validateInput('nameWallet').invalid && (validateInput('nameWallet').dirty || validateInput('nameWallet').touched)">
-            <span>Min. length {{configurationForm.nameWallet.minLength}}, max. length {{configurationForm.nameWallet.maxLength}}.</span>
+            <span>Min. length {{configurationForm.nameWallet.minLength}}, max. length
+              {{configurationForm.nameWallet.maxLength}}.</span>
           </mdb-error>
 
           <mdb-error *ngIf="validateInput('nameWallet').valid && validateNameWallet()">
@@ -90,20 +99,22 @@
                 <mdb-error *ngIf="
                 validateInput('password', 'passwords').invalid &&
                 (validateInput('password', 'passwords').dirty || validateInput('password', 'passwords').touched)">
-                  <span>Min. length {{configurationForm.passwordWallet.minLength}}, max. length {{configurationForm.passwordWallet.maxLength}}.</span>
+                  <span>Min. length {{configurationForm.passwordWallet.minLength}}, max. length
+                    {{configurationForm.passwordWallet.maxLength}}.</span>
                 </mdb-error>
               </div>
             </div>
             <div class="col-12 col-md-6 col-lg-6 mx-auto">
               <div class="md-form form-sm mt-1rem mb-0rem">
-                <img class="form-control-feedback" src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg" alt="">
-                <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordConfirm, false)"
-                  src="assets/images/img/icon-show-hide-password.svg" *ngIf="passwordConfirm === 'password'">
-                <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordConfirm, false)"
-                  src="assets/images/img/icon-show-hide-password-grey.svg" *ngIf="passwordConfirm === 'text'">
+                <img class="form-control-feedback"
+                  src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg" alt="">
+                <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain, false)"
+                  src="assets/images/img/icon-show-hide-password.svg" *ngIf="passwordMain === 'password'">
+                <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain, false)"
+                  src="assets/images/img/icon-show-hide-password-grey.svg" *ngIf="passwordMain === 'text'">
                 <input [maxlength]="configurationForm.passwordWallet.maxLength"
                   [minlength]="configurationForm.passwordWallet.minLength" formControlName="confirm_password"
-                  mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" [type]="passwordConfirm"
+                  mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" [type]="passwordMain"
                   id="confirm-password{{errorMatchPassword}}" class="form-control form-control-sm input-border"
                   placeholder="Confirm New Password">
 
@@ -127,15 +138,14 @@
 
     <div class="row mt-2rem">
       <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-        <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax"
-          size="md" (click)="clearForm()">
+        <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" size="md" (click)="clearForm()">
           <span class="color-white">Clear</span>
         </button>
       </div>
 
       <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-        <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="btn-proximax"
-          size="md" [disabled]="importWalletForm.invalid">
+        <button mdbBtn type="submit" rounded="true" mdbWavesEffect class="btn-proximax" size="md"
+          [disabled]="importWalletForm.invalid">
           <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
             *ngIf="spinnerButton"></span>
           <span class="color-white">Create</span>

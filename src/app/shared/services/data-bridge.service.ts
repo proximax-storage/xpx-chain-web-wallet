@@ -310,7 +310,7 @@ export class DataBridgeService {
       const confirmedSubject = await this.transactionsService.getConfirmedTransactions$().pipe(first()).toPromise();
       const transactionPushed = confirmedSubject.slice(0);
       const transactionFormatter = this.transactionsService.getStructureDashboard(confirmedTransaction, transactionPushed, 'confirmed');
-      console.log('transactionFormatter ---> ', transactionFormatter);
+      // console.log('transactionFormatter ---> ', transactionFormatter);
       if (transactionFormatter !== null) {
         audio.play();
         this.sharedService.showInfo('', 'Transaction Confirmed');
@@ -488,7 +488,7 @@ export class DataBridgeService {
   setTimeOutValidateTransaction(hash: string): void {
     setTimeout(async () => {
       const exist = (this.transactionsService.transactionsReady.find(x => x === hash)) ? true: false;
-      console.log(exist);
+      // console.log(exist);
       if (!exist) {
         this.sharedService.showWarning(
           "",

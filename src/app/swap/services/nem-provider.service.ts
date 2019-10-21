@@ -23,9 +23,9 @@ import {
   MultisigTransaction,
   Transaction
 } from "nem-library";
-import { PublicAccount as PublicAccountTsjs } from 'tsjs-xpx-chain-sdk';
+import { PublicAccount as PublicAccountTsjs, Message } from 'tsjs-xpx-chain-sdk';
 
-import { WalletService } from '../../wallet/services/wallet.service';
+import { WalletService, AccountsInterface } from '../../wallet/services/wallet.service';
 import { TransactionsService } from '../../transactions/services/transactions.service';
 import { AppConfig } from '../../config/app.config';
 import { environment } from '../../../environments/environment';
@@ -73,7 +73,7 @@ export class NemProviderService {
     const resultAssets = await this.assetHttp.getAssetTransferableWithRelativeAmount(assetId, quantity).toPromise();
     return TransferTransaction.createWithAssets(
       this.createWithDeadline(),
-      new Address(environment.nis1.address),
+      new Address(environment.nis1.burnAddress),
       [resultAssets],
       message
     );
@@ -210,7 +210,7 @@ export class NemProviderService {
    */
   anounceTransaction(transaction: TransferTransaction | MultisigTransaction, cosignerAccount: Account) {
     const signedTransaction = cosignerAccount.signTransaction(transaction);
-    return this.http.post(`${environment.nis1.url}/transaction/announce`, signedTransaction);
+    return this.http.post(`${environment.nis1.url}/transaction/announce`, signedTransaction).pipe(first()).pipe((timeout(environment.timeOutTransactionNis1)));
   }
 
   /**
@@ -389,6 +389,40 @@ export class NemProviderService {
     return this.nis1AccountSelected;
   }
 
+
+  /**
+   *
+   *
+   * @param {Transaction} transaction
+   * @returns
+   * @memberof NemProviderService
+   */
+  getTimeStampTimeWindow(transaction: Transaction) {
+    const year = transaction.timeWindow.timeStamp['_date']['_year'];
+    const month = transaction.timeWindow.timeStamp['_date']['_month'];
+    const day = transaction.timeWindow.timeStamp['_date']['_day'];
+    const hour = transaction.timeWindow.timeStamp['_time']['_hour'];
+    const minutes = transaction.timeWindow.timeStamp['_time']['_minute'];
+    const seconds = transaction.timeWindow.timeStamp['_time']['_second'];
+    return `${year}-${month}-${day} ${hour}:${minutes}:${seconds}`;
+  }
+
+  /**
+   *
+   *
+   * @param {*} str1
+   * @returns
+   * @memberof NemProviderService
+   */
+  hexToAscii(str1: string) {
+    var hex = str1.toString();
+    var str = '';
+    for (var n = 0; n < hex.length; n += 2) {
+      str += String.fromCharCode(parseInt(hex.substr(n, 2), 16));
+    }
+    return str;
+  }
+
   /**
    *
    *
@@ -420,6 +454,76 @@ export class NemProviderService {
     othersWallet.push(transactionNis1);
     localStorage.setItem(environment.nameKeyWalletTransactionsNis, JSON.stringify(othersWallet));
   }
+
+
+  /**
+   *
+   *
+   * @param {AccountsInterface[]} accounts
+   * @param {*} common
+   * @memberof NemProviderService
+   */
+  /*searchUnconfirmedSwap(accounts: AccountsInterface[], common: any) {
+    const nis1Accounts = accounts.filter(account => account.nis1Account !== null && account.encrypted !== '');
+    nis1Accounts.forEach(element => {
+      console.log('common --->', common);
+      console.log('Account SIRIUS --->', element);
+      const decrypt = Object.assign({}, common);
+      const isDecrypted = this.walletService.decrypt(decrypt, element);
+      if (isDecrypted) {
+        console.log('decrypt --->', decrypt);
+        const accountNis1 = this.createAccountPrivateKey(decrypt.privateKey);
+        console.log(accountNis1);
+        this.getUnconfirmedTransaction(accountNis1.address).then((transactions: Transaction[]) => {
+          console.log('UNCONFIRMED TRANSACTION ----> ', transactions);
+          console.log(transactions[0].toDTO());
+
+          console.log(transactions[0].getTransactionInfo());
+          /*const swapTransaction = [];
+          transactions.forEach(transaction => {
+            const isSigner = transaction.signer.address.plain() === accountNis1.address.plain();
+            if (isSigner &&
+              transaction.type === 4100 &&
+              transaction['otherTransaction'].type === 257 &&
+              transaction['otherTransaction'].recipient.value === environment.nis1.burnAddress &&
+              transaction['otherTransaction'].message.payload !== '' &&
+              transaction['otherTransaction']['_assets'][0].assetId.name === 'xpx' &&
+              transaction['otherTransaction']['_assets'][0].assetId.namespaceId === 'prx' &&
+              transaction['otherTransaction']['_xem']['quantity'] === 1000000
+            ) {
+              console.log('SI, YO FIRME ESA TRANSACCIÓN MULTIFIRMA');
+              console.log(transaction);
+              swapTransaction.push({
+                nis1PublicKey: transaction['otherTransaction'].signer.publicKey,
+                nis1Timestamp: this.getTimeStampTimeWindow(transaction),
+                nis1TransactionHash: transaction['hashData'].data,
+                siriusAddres: this.hexToAscii(transaction['otherTransaction'].message.payload)
+              });
+            } else if (
+              isSigner &&
+              transaction.type === 257 &&
+              transaction['recipient'].value === environment.nis1.burnAddress &&
+              transaction['message'].payload !== '' &&
+              transaction['_assets'][0].assetId.name === 'xpx' &&
+              transaction['_assets'][0].assetId.namespaceId === 'prx'
+            ) {
+              //['signer']['address']['value']
+              console.log('SI, YO FIRME ESA TRANSACCIÓN SIMPLE');
+              console.log(transaction);
+              swapTransaction.push({
+                nis1PublicKey: transaction.signer.publicKey,
+                nis1Timestamp: this.getTimeStampTimeWindow(transaction),
+                nis1TransactionHash: transaction['hashData'].data,
+                siriusAddres: this.hexToAscii(transaction['message'].payload)
+              });
+            }
+          });
+
+          console.log('swapTransaction', swapTransaction);*
+        });
+      }
+    });
+  }*/
 
   /**
   * RJ
@@ -501,6 +605,36 @@ export class NemProviderService {
           this.sharedService.showError('', 'Error! try again later');
         }
         break;
+    }
+  }
+
+  /**
+   *
+   *
+   * @memberof NemProviderService
+   */
+  validaTransactionsSwap() {
+    const walletNis1 = this.getWalletTransNisStorage().find(el => el.name === this.walletService.getCurrentWallet().name);
+    // console.log(walletNis1);
+    if (walletNis1 !== undefined && walletNis1 !== null) {
+      if (walletNis1.transactions.length > 0) {
+        const newWalletTransactions = walletNis1.transactions.filter((element, i) => {
+          const dateSwap = new Date(element.nis1Timestamp);
+          const milliseconds = 1000 * 60 * 60 * 24 * 3;
+          const finalDate = new Date(dateSwap.getTime() + milliseconds);
+          if (new Date() < finalDate) {
+            return element;
+          }
+        });
+
+        // console.log('=======> ', newWalletTransactions);
+        const transactionWalletNis1: WalletTransactionsNis1Interface = {
+          name: this.walletService.getCurrentWallet().name,
+          transactions: newWalletTransactions
+        };
+
+        this.saveAccountWalletTransNisStorage(transactionWalletNis1);
+      }
     }
   }
 }

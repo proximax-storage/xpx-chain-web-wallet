@@ -26,6 +26,7 @@ export class ImportWalletComponent implements OnInit {
   errorWalletExist: string;
   isValid: boolean = false;
   passwordMain = 'password'
+  pvkMain = 'password';
   passwordConfirm = 'password'
   title = 'Create Wallet';
   typeNetwork = [{
@@ -99,16 +100,16 @@ export class ImportWalletComponent implements OnInit {
   /**
    *
    *
-   * @param {*} inputType
-   * @param {boolean} [main=true]
+   * @param {string} inputType
+   * @param {boolean} isPvk
    * @memberof ImportWalletComponent
    */
-  changeInputType(inputType, main = true) {
-    let newType = this.sharedService.changeInputType(inputType)
-    if (main === true) {
+  changeInputType(inputType: string, isPvk: boolean) {
+    let newType = this.sharedService.changeInputType(inputType);
+    if (isPvk) {
+      this.pvkMain = newType;
+    }else {
       this.passwordMain = newType;
-    } else if (main === false) {
-      this.passwordConfirm = newType;
     }
   }
 

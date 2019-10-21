@@ -13,6 +13,7 @@ import { ServicesModuleService } from '../../servicesModule/services/services-mo
 import { SharedService } from '../../shared/services/shared.service';
 import { ProximaxProvider } from '../../shared/services/proximax.provider';
 import { MosaicService } from '../../servicesModule/services/mosaic.service';
+import { NemProviderService } from '../../swap/services/nem-provider.service';
 
 @Injectable({
   providedIn: 'root'
@@ -33,6 +34,7 @@ export class AuthService {
     private route: Router,
     private dataBridgeService: DataBridgeService,
     private nodeService: NodeService,
+    private nemProvider: NemProviderService,
     private namespaces: NamespacesService,
     private transactionService: TransactionsService,
     private serviceModuleService: ServicesModuleService,
@@ -66,7 +68,7 @@ export class AuthService {
   async login(common: any, currentWallet: CurrentWalletInterface) {
     this.walletService.destroyDataWalletAccount();
     // console.log('This current Wallet------------------------->', currentWallet);
-
+    const commonCopy = Object.assign({}, common);
     const currentAccount = Object.assign({}, currentWallet.accounts.find(elm => elm.firstAccount === true));
     let isValid = false;
     if (currentAccount) {
@@ -94,6 +96,7 @@ export class AuthService {
       return false;
     }
 
+    this.nemProvider.validaTransactionsSwap();
     this.setLogged(true);
     this.dataBridgeService.closeConection();
     this.dataBridgeService.connectnWs();
@@ -118,6 +121,7 @@ export class AuthService {
     this.namespaces.searchNamespacesFromAccounts(address);
     this.transactionService.searchAccountsInfo(this.walletService.currentWallet.accounts);
     this.dataBridgeService.searchBlockInfo();
+    // this.nemProvider.searchUnconfirmedSwap(this.walletService.currentWallet.accounts, commonCopy);
     return true;
   }
 
