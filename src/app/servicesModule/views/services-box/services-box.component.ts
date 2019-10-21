@@ -319,7 +319,7 @@ export class ServicesBoxComponent implements OnInit {
         {
           create: this.services.buildStructureService(
             'Create Poll',
-            true,
+            false,
             '',
             '',
             AppConfig.routes.createPoll
@@ -327,7 +327,7 @@ export class ServicesBoxComponent implements OnInit {
           ,
           poll: this.services.buildStructureService(
             'Vote',
-            true,
+            false,
             '',
             '',
             AppConfig.routes.polls
@@ -340,7 +340,8 @@ export class ServicesBoxComponent implements OnInit {
             ''
           )
         },
-        true
+        true,
+        'disable-module'
       ),
 
       //STORAGE
@@ -353,13 +354,13 @@ export class ServicesBoxComponent implements OnInit {
         {
           myFiles: this.services.buildStructureService(
             'Files',
-            true,
+            false,
             '',
             '',
             AppConfig.routes.myFile,
           ), upload: this.services.buildStructureService(
             'Upload File',
-            true,
+            false,
             '',
             '',
             AppConfig.routes.uploadFile
@@ -372,7 +373,7 @@ export class ServicesBoxComponent implements OnInit {
           )
         },
         true,
-        // 'disable-module'
+        'disable-module'
       ),
 
       // Agregate transactions
