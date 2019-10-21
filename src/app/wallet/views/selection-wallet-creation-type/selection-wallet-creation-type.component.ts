@@ -29,6 +29,7 @@ export class SelectionWalletCreationTypeComponent implements OnInit {
   title = 'Select Wallet Creation Type'
 
   password: string = '';
+  passwordMain = 'password';
   walletDecryp: any
 
   @ViewChild('basicModal', { static: true }) basicModal: ModalDirective;
@@ -44,6 +45,11 @@ export class SelectionWalletCreationTypeComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+  }
+
+  changeInputType(inputType) {
+    let newType = this.sharedService.changeInputType(inputType)
+    this.passwordMain = newType;
   }
 
   createStructNis() {

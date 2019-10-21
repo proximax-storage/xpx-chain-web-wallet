@@ -197,10 +197,13 @@ export class ExplorerComponent implements OnInit, AfterViewInit {
 
   openModal(transaction: TransactionsInterface) {
     const height = transaction.data['transactionInfo'].height.compact();
+    //console.log('height -->', height);
     if (typeof (height) === 'number') {
       const existBlock = this.dataBridge.filterBlockStorage(height);
       if (existBlock) {
         transaction.timestamp = `${this.transactionService.dateFormatUTC(new UInt64([existBlock.timestamp.lower, existBlock.timestamp.higher]))} - UTC`;
+        //console.log('feeMultiplier ----> ', existBlock.feeMultiplier);
+        //console.log('Transaction data size ----> ', transaction.data.size);
         const calculateEffectiveFee = this.transactionService.amountFormatterSimple(existBlock.feeMultiplier * transaction.data.size)
         transaction.effectiveFee = this.transactionService.getDataPart(calculateEffectiveFee, 6);
       }else {
