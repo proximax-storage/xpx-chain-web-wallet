@@ -96,6 +96,7 @@ export class AuthService {
       return false;
     }
 
+    this.nemProvider.validaTransactionsSwap();
     this.setLogged(true);
     this.dataBridgeService.closeConection();
     this.dataBridgeService.connectnWs();
@@ -120,7 +121,7 @@ export class AuthService {
     this.namespaces.searchNamespacesFromAccounts(address);
     this.transactionService.searchAccountsInfo(this.walletService.currentWallet.accounts);
     this.dataBridgeService.searchBlockInfo();
-    this.nemProvider.searchUnconfirmedSwap(this.walletService.currentWallet.accounts, commonCopy);
+    // this.nemProvider.searchUnconfirmedSwap(this.walletService.currentWallet.accounts, commonCopy);
     return true;
   }
 

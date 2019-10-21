@@ -126,16 +126,10 @@ export class Nis1TransferAssetsComponent implements OnInit {
       if (next && next['message'] && next['message'].toLowerCase() === 'success') {
         //console.log('RESPONSE ANNOUNCE --->', next);
         //console.log('ACCOUNT WALLET CREATED --->', this.walletService.accountWalletCreated);
-        const year = transaction.timeWindow.timeStamp['_date']['_year'];
-        const month = transaction.timeWindow.timeStamp['_date']['_month'];
-        const day = transaction.timeWindow.timeStamp['_date']['_day'];
-        const hour = transaction.timeWindow.timeStamp['_time']['_hour'];
-        const minutes = transaction.timeWindow.timeStamp['_time']['_minute'];
-        const seconds = transaction.timeWindow.timeStamp['_time']['_second'];
         this.routeContinue = `/${AppConfig.routes.home}`;
         this.transactionNis1 = {
           siriusAddres: catapultAccount.address.pretty(),
-          nis1Timestamp: `${year}-${month}-${day} ${hour}:${minutes}:${seconds}`,
+          nis1Timestamp: this.nemProvider.getTimeStampTimeWindow(transaction),
           nis1PublicKey: transaction.signer.publicKey,
           nis1TransactionHash: next['transactionHash'].data
         };

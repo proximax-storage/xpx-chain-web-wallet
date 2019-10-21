@@ -118,7 +118,7 @@ export class ViewAllAccountsComponent implements OnInit {
    * @returns temp
    */
   clone(obj) {
-    console.log(obj);
+    // console.log(obj);
     if (obj === null || typeof obj !== 'object') {
       return obj;
     }

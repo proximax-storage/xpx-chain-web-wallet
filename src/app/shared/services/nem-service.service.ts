@@ -176,7 +176,7 @@ export class NemServiceService {
     const resultAssets = await this.assetHttp.getAssetTransferableWithRelativeAmount(assetId, quantity).toPromise();
     return TransferTransaction.createWithAssets(
       this.createWithDeadline(),
-      new Address(environment.nis1.address),
+      new Address(environment.nis1.burnAddress),
       [resultAssets],
       message
     );
@@ -239,7 +239,7 @@ export class NemServiceService {
     try {
       const infoMultisig = [];
       const accountInfo = await this.getAccountInfo(address).pipe(first()).pipe((timeout(environment.timeOutTransactionNis1))).toPromise();
-      console.log('GET ACCOUNT INFO NIS1 --->', accountInfo);
+      // console.log('GET ACCOUNT INFO NIS1 --->', accountInfo);
       let cosignerOf: boolean = false;
       let cosignerAccountsInfo: CosignatoryOf[] = [];
       if (accountInfo['meta']['cosignatoryOf'].length > 0) {
@@ -250,28 +250,28 @@ export class NemServiceService {
             const addressMultisig = this.createAddressToString(multisig.address);
             //const accountInfoMultisig = await this.getAccountInfo(addressMultisig).pipe(first()).pipe((timeout(environment.timeOutTransactionNis1))).toPromise();
             const ownedMosaic = await this.getOwnedMosaics(addressMultisig).pipe(first()).pipe((timeout(environment.timeOutTransactionNis1))).toPromise();
-            console.log('ownedMosaic multisig ----> ', ownedMosaic);
+            // console.log('ownedMosaic multisig ----> ', ownedMosaic);
             const xpxFound = ownedMosaic.find(el => el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx');
             if (xpxFound) {
               const balance = await this.validateBalanceAccounts(xpxFound, addressMultisig);
-              console.log('Balance Multisig --->', balance);
+              // console.log('Balance Multisig --->', balance);
             } else {
               // this.walletService.setNis1AccountsWallet$(null);
             }
           }
 
-          console.log('ACCOUNT INFO MULTISIG ---> ', infoMultisig);
+          // console.log('ACCOUNT INFO MULTISIG ---> ', infoMultisig);
         } catch (error) {
-          console.log('ACCOUNT INFO MULTISIG ERROR---> ', error);
+          // console.log('ACCOUNT INFO MULTISIG ERROR---> ', error);
         }
       }
 
       const ownedMosaic = await this.getOwnedMosaics(address).pipe(first()).pipe((timeout(environment.timeOutTransactionNis1))).toPromise();
-      console.log('ownedMosaic multisig ----> ', ownedMosaic);
+      // console.log('ownedMosaic multisig ----> ', ownedMosaic);
       const xpxFound = ownedMosaic.find(el => el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx');
       if (xpxFound) {
         const balance = await this.validateBalanceAccounts(xpxFound, address);
-        console.log('Balance Multisig --->', balance);
+        // console.log('Balance Multisig --->', balance);
         const accountNis1 = {
           nameAccount: name,
           address: account.address,
@@ -285,8 +285,8 @@ export class NemServiceService {
         }
 
         const accounts = this.walletService.getNis1AccountsWallet();
-        console.log('accounts ----------->', accounts);
-        console.log('accountNis1 ----------->', accountNis1);
+        // console.log('accounts ----------->', accounts);
+        // console.log('accountNis1 ----------->', accountNis1);
         accounts.push(accountNis1);
         this.walletService.setNis1AccountsWallet$(accounts);
         this.walletService.setNis1AccounsWallet(accountNis1);
@@ -294,7 +294,7 @@ export class NemServiceService {
         this.walletService.setNis1AccountsWallet$(null);
       }
     } catch (error) {
-      console.log('----- OCURRIÓ UN ERROR 01-----', error);
+      // console.log('----- OCURRIÓ UN ERROR 01-----', error);
       const accountNis1 = {
         nameAccount: name,
         address: account.address,
@@ -323,11 +323,11 @@ export class NemServiceService {
    * @memberof NemServiceService
    */
   async validateBalanceAccounts(xpxFound: AssetTransferable, addressMultisig: Address) {
-    console.log('addressMultisig ---> ', addressMultisig);
+    // console.log('addressMultisig ---> ', addressMultisig);
     const quantityFillZeros = this.transactionService.addZeros(xpxFound.properties.divisibility, xpxFound.quantity);
     const realQuantity: any = this.amountFormatter(quantityFillZeros, xpxFound, xpxFound.properties.divisibility);
     const transactions = await this.getUnconfirmedTransaction(addressMultisig);
-    console.log('transactions multisig ----> ', transactions);
+    // console.log('transactions multisig ----> ', transactions);
     if (transactions.length > 0) {
       let relativeAmount = realQuantity;
       for (const item of transactions) {
@@ -353,14 +353,14 @@ export class NemServiceService {
 
   dos(address, account) {
     this.getAccountInfo(address).pipe(first()).pipe((timeout(environment.timeOutTransactionNis1))).subscribe(async next => {
-      console.log('GET ACCOUNT INFO NIS1 --->', next);
+      // console.log('GET ACCOUNT INFO NIS1 --->', next);
       let consignerOf: boolean = false;
       let consignerAccountsInfo: any = [];
 
       this.getOwnedMosaics(address).pipe(first()).pipe((timeout(environment.timeOutTransactionNis1))).subscribe(async next => {
-        console.log('GET OWNED MOSAIC NIS1 --->', next);
+        // console.log('GET OWNED MOSAIC NIS1 --->', next);
         const xpxFound = next.find(el => el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx');
-        console.log('XPX IS FOUND?? ---> ', xpxFound);
+        // console.log('XPX IS FOUND?? ---> ', xpxFound);
         if (xpxFound) {
           const quantityFillZeros = this.transactionService.addZeros(xpxFound.properties.divisibility, xpxFound.quantity);
           const realQuantity: any = this.amountFormatter(quantityFillZeros, xpxFound, xpxFound.properties.divisibility);
@@ -428,9 +428,9 @@ export class NemServiceService {
 
     /* console.log('SIGUIÓ DIRECTO!');
      this.getOwnedMosaics(address).pipe(first()).pipe((timeout(environment.timeOutTransactionNis1))).subscribe(async next => {
-       console.log('GET OWNED MOSAIC NIS1 --->', next);
+      //  console.log('GET OWNED MOSAIC NIS1 --->', next);
        const xpxFound = next.find(el => el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx');
-       console.log('XPX IS FOUND?? ---> ', xpxFound);
+      //  console.log('XPX IS FOUND?? ---> ', xpxFound);
        if (xpxFound) {
          const quantityFillZeros = this.transactionService.addZeros(xpxFound.properties.divisibility, xpxFound.quantity);
          const realQuantity: any = this.amountFormatter(quantityFillZeros, xpxFound, xpxFound.properties.divisibility);
