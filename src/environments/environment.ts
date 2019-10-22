@@ -64,12 +64,12 @@ export const environment = {
     address_public_test: 'XCGWQ72PDEWCPXMSZOSL4KIOWFRLJU6YGYTOK632'
   },
   nis1: {
-    url: 'http://swap.brimstone.xpxsirius.io:7890',
+    url: 'https://swap.brimstone.xpxsirius.io:7890',
     urlExplorer: 'http://explorer.nemtool.com/#/unconfirmedtxlist',
     networkType: NetworkTypes.MAIN_NET,
     burnAddress : 'ND7WVWPWNTJR75CYC3D73LSVP7WIL7BL77QNT7NZ',
     nodes: [{
-      protocol: "http",
+      protocol: "https",
       domain: "swap.brimstone.xpxsirius.io",
       port: 7890
     } as ServerConfig],

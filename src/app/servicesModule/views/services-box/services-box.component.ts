@@ -319,7 +319,7 @@ export class ServicesBoxComponent implements OnInit {
         {
           create: this.services.buildStructureService(
             'Create Poll',
-            false,
+            true,
             '',
             '',
             AppConfig.routes.createPoll
@@ -327,7 +327,7 @@ export class ServicesBoxComponent implements OnInit {
           ,
           poll: this.services.buildStructureService(
             'Vote',
-            false,
+            true,
             '',
             '',
             AppConfig.routes.polls
@@ -340,8 +340,7 @@ export class ServicesBoxComponent implements OnInit {
             ''
           )
         },
-        true,
-        'disable-module'
+        true
       ),
 
       //STORAGE
@@ -354,13 +353,13 @@ export class ServicesBoxComponent implements OnInit {
         {
           myFiles: this.services.buildStructureService(
             'Files',
-            false,
+            true,
             '',
             '',
             AppConfig.routes.myFile,
           ), upload: this.services.buildStructureService(
             'Upload File',
-            false,
+            true,
             '',
             '',
             AppConfig.routes.uploadFile
@@ -373,7 +372,7 @@ export class ServicesBoxComponent implements OnInit {
           )
         },
         true,
-        'disable-module'
+        // 'disable-module'
       ),
 
       // Agregate transactions
@@ -512,6 +511,26 @@ export class ServicesBoxComponent implements OnInit {
             ''
           ), schedule: this.services.buildStructureService(
             'Schedule',
+            false,
+            '',
+            '',
+            ''
+          )
+        },
+        true,
+        'disable-module'
+      ),
+
+      // VIDEO CONFERENCING
+      this.services.buildStructureService(
+        'Gift Sirius',
+        true,
+        'Share XPX is to easy',
+        'icon-gift-sirius-full-color-80h-proximax-sirius-wallet.svg',
+        '',
+        {
+          create: this.services.buildStructureService(
+            'Create',
             false,
             '',
             '',
