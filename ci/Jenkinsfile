@@ -120,12 +120,53 @@ pipeline {
           cfInvalidate distribution: 'ENNTQPS404UV3', paths: ['/*']
         }
       }
-
+    
       post {
         success {
           slackSend channel: '#devops',
             color: 'good',
             message: "Branch *${env.GIT_BRANCH}* build of *${currentBuild.fullDisplayName}* completed successfully :100:\nDeployed to http://bctestnetwallet.xpxsirius.io"
+        }
+        failure {
+          slackSend channel: '#devops',
+            color: 'bad',
+            message: "Branch *${env.GIT_BRANCH}* of *${currentBuild.fullDisplayName}* FAILED :scream:"
+        }
+      }
+    }
+
+    stage('Deploy Mainnet Tag') {
+      when {
+        tag 'release-mainnet*' // Deploy only if tagged with release-testnet*
+      }
+
+      steps {
+        echo 'Deploying'
+
+        echo 'Managing S3'
+
+        // AWS Plugin cannot sync. It must clear the bucket then reupload
+        withAWS(credentials: 'jenkins-ecr', region: 'ap-southeast-2') {
+          echo 'Deleting old files'
+          s3Delete bucket: 'bcmainnetwallet.xpxsirius.io', path: './'
+
+          echo 'Uploading new files'
+          s3Upload bucket: 'bcmainnetwallet.xpxsirius.io', acl: 'PublicRead', file: 'dist/proximax-sirius-wallet/', sseAlgorithm: 'AES256'
+        }
+
+        echo 'Managing CloudFront'
+
+        withAWS(credentials: 'jenkins-ecr') {
+          echo 'Invalidating CloudFront'
+          cfInvalidate distribution: 'EB05IZSH5L7L5', paths: ['/*']
+        }
+      }
+    
+      post {
+        success {
+          slackSend channel: '#devops',
+            color: 'good',
+            message: "Branch *${env.GIT_BRANCH}* build of *${currentBuild.fullDisplayName}* completed successfully :100:\nDeployed to https://wallet.xpxsirius.io"
         }
         failure {
           slackSend channel: '#devops',
