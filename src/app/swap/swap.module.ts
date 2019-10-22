@@ -10,6 +10,7 @@ import { Nis1AccountsListComponent } from './views/nis1-accounts-list/nis1-accou
 import { Nis1TransferAssetsComponent } from './views/nis1-transfer-assets/nis1-transfer-assets.component';
 import { Nis1AccountFoundComponent } from './views/nis1-account-found/nis1-account-found.component';
 import { SwapCertifiedComponent } from './views/swap-certified/swap-certified.component';
+import { RouterModule } from '@angular/router';
 
 
 @NgModule({
@@ -21,8 +22,8 @@ import { SwapCertifiedComponent } from './views/swap-certified/swap-certified.co
     SwapCertifiedComponent
   ],
   imports: [
-    CoreModule,
-    SwapRoutingModule
+    RouterModule,
+    CoreModule
   ],
   schemas: [ NO_ERRORS_SCHEMA ]
 })

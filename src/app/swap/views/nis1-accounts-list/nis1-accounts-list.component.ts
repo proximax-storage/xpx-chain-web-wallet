@@ -26,10 +26,12 @@ export class Nis1AccountsListComponent implements OnInit {
   ngOnInit() {
     this.walletService.setAccountInfoNis1(null);
     const allAccounts = this.walletService.currentWallet.accounts;
+    console.log('allAccounts --> ', allAccounts);
     const accountsNis1 = allAccounts.filter(x => x.nis1Account !== null && x.nis1Account !== undefined);
+    console.log('accountsNis1 --> ', accountsNis1);
     this.accountsNis1 = accountsNis1.map(x => x.nis1Account.address = this.nemProvider.createAddressToString(x.nis1Account.address.value));
+    console.log('this.accountsNis1 --> ', this.accountsNis1);
     this.searchItem.push(false);
-    // console.log('----this.accountsNis1---', this.accountsNis1);
   }
 
 

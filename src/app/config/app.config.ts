@@ -51,6 +51,9 @@ export const AppConfig: Config = {
     swapListAccountsNis1: 'swap-ist-accounts-nis1',
     swapTransferAssets: 'swap-transfer-assets',
     swapAccountListNis1: 'swap-account-list-nis1',
+    swapAccountList: 'swap-account-list',
+
+
     selectNode: 'select-node',
     selectTypeCreationWallet: 'select-type-creation-wallet',
     selectTypeCreationAccount: 'select-type-creation-account',
@@ -123,6 +126,9 @@ export interface Config {
     swapListAccountsNis1: string;
     swapTransferAssets: string;
     swapAccountListNis1: string;
+    swapAccountList: string;
+
+
     selectNode: string;
     selectTypeCreationWallet: string;
     selectTypeCreationAccount: string;
