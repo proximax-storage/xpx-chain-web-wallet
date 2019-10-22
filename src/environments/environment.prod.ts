@@ -8,8 +8,8 @@ import { ChronoUnit } from 'js-joda';
 export const environment = {
   production: true,
   itemBooksAddress: 'sw-books-mainnet',
-  version: '0.3.28 (MainNet - Demo)',
-  cacheVersion: '1-MAINNET',
+  version: '0.3.29 (MainNet - Demo)',
+  cacheVersion: '2-MAINNET',
   nameKeyBlockStorage: `sw-blocks`,
   nameKeyNodeSelected: `sw-selected-node-mainnet`,
   nameKeyWalletStorage: `sw-mainnet`,
@@ -35,24 +35,6 @@ export const environment = {
     chronoUnit: ChronoUnit.MINUTES
   },
   timeOutTransactionNis1: 10000,
-  /*mosaicXpxInfo: {
-    name: 'prx.xpx',
-    coin: 'XPX',
-    id: '3c0f3de5298ced2d',
-    mosaicIdUint64: [697101613, 1007631845],
-    namespaceIdUint64: [2434186742, 3220914849],
-    namespaceId: 'bffb42a19116bdf6',
-    divisibility: 6
-  },*/
-  /*mosaicXpxInfo: {
-    name: 'prx.xpx',
-    coin: 'XPX',
-    id: '1a804316c87d5cda',
-    mosaicIdUint64: [3363658970, 444613398],
-    namespaceIdUint64: [2434186742, 3220914849],
-    namespaceId: 'bffb42a19116bdf6',
-    divisibility: 6
-  },*/
   blockchainConnection: {
     host: 'bctestnet1.brimstone.xpxsirius.io',
     port: 443,
@@ -82,38 +64,22 @@ export const environment = {
     address_public_test: 'XCGWQ72PDEWCPXMSZOSL4KIOWFRLJU6YGYTOK632'
   },
   nis1: {
-    // url: 'http://95.216.73.245:7890',
-    // urlExplorer: 'http://testnet-explorer.nemtool.com/#/unconfirmedtxlist',
-    // networkType: NetworkTypes.TEST_NET,
-    // address: 'TBF4LAZUEJMBIOC6J24D6ZGGXE5W775TX555CTTN',
-    // nodes: [
-    //   { protocol: "http", domain: "95.216.73.245", port: 7890 } as ServerConfig
-    // ]
-    /*url: 'https://bctestnetswap.xpxsirius.io',
-    urlExplorer: 'http://testnet-explorer.nemtool.com/#/unconfirmedtxlist',
-    networkType: NetworkTypes.TEST_NET,
-    address: 'TBF4LAZUEJMBIOC6J24D6ZGGXE5W775TX555CTTN',
-    nodes: [
-      { protocol: "https", domain: "bctestnetswap.xpxsirius.io", port: 443 } as ServerConfig
-    ],*/
-    url: 'http://18.231.166.212:7890',
-    urlExplorer: 'http://testnet-explorer.nemtool.com/#/unconfirmedtxlist',
-    networkType: NetworkTypes.TEST_NET,
-    burnAddress: 'TBF4LAZUEJMBIOC6J24D6ZGGXE5W775TX555CTTN',
-    nodes: [
-      { protocol: "http", domain: "18.231.166.212", port: 7890 } as ServerConfig
-    ],
+    url: 'http://swap.brimstone.xpxsirius.io:7890',
+    urlExplorer: 'http://explorer.nemtool.com/#/unconfirmedtxlist',
+    networkType: NetworkTypes.MAIN_NET,
+    burnAddress : 'ND7WVWPWNTJR75CYC3D73LSVP7WIL7BL77QNT7NZ',
+    nodes: [{
+      protocol: "http",
+      domain: "swap.brimstone.xpxsirius.io",
+      port: 7890
+    } as ServerConfig],
   },
   swapAccount: {
-    addressAccountMultisig: 'VAWOEOWTABXR7O3ZAK2XNA5GIBNE6PZIXDAFDWBU',
-    addressAccountSimple: 'VC3I3FSQ354JT2QNS2XJ2J3OROCOBIRK6JB3BCBH'
+    addressAccountMultisig: 'XDKK47EMX4Q2NVU6TIN4RS22SZZ47UEFJ454L4NV',
+    addressAccountSimple: 'XDHQTCJLDDSNOVXPGRE25YNHXV27EAKAEUGJKRLK'
   },
   typeNetwork: {
     value: NetworkType.MAIN_NET,
     label: 'MAIN NET'
   }
-  /*typeNetwork: {
-    value: NetworkType.TEST_NET,
-    label: 'PUBLIC TEST'
-  }*/
 };
