@@ -7,25 +7,25 @@ import { ChronoUnit } from 'js-joda';
 
 export const environment = {
   production: true,
-  itemBooksAddress: 'sw-books-testnet',
-  version: '0.3.22',
-  cacheVersion: '01',
+  itemBooksAddress: 'sw-books-mainnet',
+  version: '0.3.29 (MainNet - Demo)',
+  cacheVersion: '2-MAINNET',
   nameKeyBlockStorage: `sw-blocks`,
-  nameKeyNodeSelected: `sw-selected-node-testnet`,
-  nameKeyWalletStorage: `sw-testnet`,
-  nameKeyNodeStorage: `sw-nodes-testnet`,
-  nameKeyNamespaces: `sw-namespaces-testnet`,
-  nameKeyMosaicStorage: `sw-mosaics-testnet`,
-  nameKeyVersion: 'sw-version-testnet',
-  nameKeyWalletTransactionsNis: 'sw-transactions-nis',
+  nameKeyNodeSelected: `sw-selected-node-mainnet`,
+  nameKeyWalletStorage: `sw-mainnet`,
+  nameKeyNodeStorage: `sw-nodes-mainnet`,
+  nameKeyNamespaces: `sw-namespaces-mainnet`,
+  nameKeyMosaicStorage: `sw-mosaics-mainnet`,
+  nameKeyVersion: 'sw-version-mainnet',
+  nameKeyWalletTransactionsNis: 'sw-transactions-nis-mainnet',
   protocol: `https`,
   protocolWs: `wss`,
-  nodeExplorer: 'https://bctestnetexplorer.xpxsirius.io/#/result/hash',
+  nodeExplorer: 'https://explorer.xpxsirius.io/#/result/hash',
   mosaicXpxInfo: {
     name: 'prx.xpx',
     coin: 'XPX',
-    id: '13bfc518e40549d7',
-    mosaicIdUint64: [3825551831, 331334936],
+    id: '402b2f579faebc59',
+    mosaicIdUint64: [2679028825, 1076571991],
     namespaceIdUint64: [2434186742, 3220914849],
     namespaceId: 'bffb42a19116bdf6',
     divisibility: 6
@@ -35,24 +35,6 @@ export const environment = {
     chronoUnit: ChronoUnit.MINUTES
   },
   timeOutTransactionNis1: 10000,
-  /*mosaicXpxInfo: {
-    name: 'prx.xpx',
-    coin: 'XPX',
-    id: '3c0f3de5298ced2d',
-    mosaicIdUint64: [697101613, 1007631845],
-    namespaceIdUint64: [2434186742, 3220914849],
-    namespaceId: 'bffb42a19116bdf6',
-    divisibility: 6
-  },*/
-  /*mosaicXpxInfo: {
-    name: 'prx.xpx',
-    coin: 'XPX',
-    id: '1a804316c87d5cda',
-    mosaicIdUint64: [3363658970, 444613398],
-    namespaceIdUint64: [2434186742, 3220914849],
-    namespaceId: 'bffb42a19116bdf6',
-    divisibility: 6
-  },*/
   blockchainConnection: {
     host: 'bctestnet1.brimstone.xpxsirius.io',
     port: 443,
@@ -67,46 +49,37 @@ export const environment = {
     }
   },
   namespaceRentalFeeSink: {
-    public_key: 'F3B8194C36CC55500DCB8CD3734DFA07FE8B649219BE315C8DFAE1DAC59F3595',
-    address_public_test: 'VBH4NR-KUNINP-7HW6ZB-OECMIN-X3BCB4-ZDXKDM-KIWG'
+    public_key: '9FF38184F03950C09FFFF4A90C171E4C3C566985EEACA486A59CC8B607C10BF6',
+    address_public_test: 'XA7KWF-N5CMLV-G7W3OH-Z5CV3G-3VYH3N-5EQQTK-OVJH'
   },
   mosaicRentalFeeSink: {
-    public_key: '640A0DA89F6F57E43C526520AD05C59E185D19ADC95788D8611EBAEC94DEBBA1',
-    address_public_test: 'VD6AXC-3QBCFT-SLKHT6-2UPGTN-V5Z63I-YZKJI3-YGMD'
+    public_key: '9FF38184F03950C09FFFF4A90C171E4C3C566985EEACA486A59CC8B607C10BF6',
+    address_public_test: 'XA7KWF-N5CMLV-G7W3OH-Z5CV3G-3VYH3N-5EQQTK-OVJH'
   },
   pollsContent: {
-    public_key: '945215E9D664D60E5A4FD54982C09B1F79D421EA0436FA307112A0DF74C89622',
-    address_public_test: 'VBPCBA-VFP7OG-REVIGD-TGRIKJ-PXSM4E-K446VF-SMFJ'
+    public_key: '36C25BCB8E6DCCF4B885BAD8963A30C4DBC6A1D70CE342D3656B23A610E60BB0',
+    address_public_test: 'XBO3L3-K5AQTX-DXO6Z6-W6KAPO-RI4XHN-65J5VG-HOQU'
   },
   attestation: {
-    address_public_test: 'VDYN53-XXEGKK-3XHQYE-K6ZBMN-JPXN57-ZBHXA3-AW55'
+    address_public_test: 'XCGWQ72PDEWCPXMSZOSL4KIOWFRLJU6YGYTOK632'
   },
   nis1: {
-    url: 'http://18.231.166.212:7890',
-    urlExplorer: 'http://testnet-explorer.nemtool.com/#/s_tx?hash=',
-    networkType: NetworkTypes.TEST_NET,
-    burnAddress : 'TBF4LAZUEJMBIOC6J24D6ZGGXE5W775TX555CTTN',
-    nodes: [
-      { protocol: "http", domain: "18.231.166.212", port: 7890 } as ServerConfig
-    ],
+    url: 'https://swap.brimstone.xpxsirius.io:7890',
+    urlExplorer: 'http://explorer.nemtool.com/#/unconfirmedtxlist',
+    networkType: NetworkTypes.MAIN_NET,
+    burnAddress : 'ND7WVWPWNTJR75CYC3D73LSVP7WIL7BL77QNT7NZ',
+    nodes: [{
+      protocol: "https",
+      domain: "swap.brimstone.xpxsirius.io",
+      port: 7890
+    } as ServerConfig],
   },
   swapAccount: {
-    addressAccountMultisig: 'VAWOEOWTABXR7O3ZAK2XNA5GIBNE6PZIXDAFDWBU',
-    addressAccountSimple: 'VC3I3FSQ354JT2QNS2XJ2J3OROCOBIRK6JB3BCBH'
+    addressAccountMultisig: 'XDKK47EMX4Q2NVU6TIN4RS22SZZ47UEFJ454L4NV',
+    addressAccountSimple: 'XDHQTCJLDDSNOVXPGRE25YNHXV27EAKAEUGJKRLK'
   },
-  /*typeNetwork: {
+  typeNetwork: {
     value: NetworkType.MAIN_NET,
     label: 'MAIN NET'
-  }*/
-  typeNetwork: {
-    value: NetworkType.TEST_NET,
-    label: 'PUBLIC TEST'
   }
 };
-/*
- * In development mode, to ignore zone related error stack frames such as
- * `zone.run`, `zoneDelegate.invokeTask` for easier debugging, you can
- * import the following file, but please comment it out in production mode
- * because it will have performance impact when throw error
- */
-// import 'zone.js/dist/zone-error';  // Included with Angular CLI.
