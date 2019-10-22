@@ -2,8 +2,8 @@
   <app-header [params]="paramsHeader"></app-header>
 
   <!-- BOX LIST ACCOUNT -->
-  <div class="row">
-    <div class="col-11 col-lg-10 mx-auto">
+  <div class="container">
+    <div class="col-12 mx-auto">
       <div class="row">
         <ng-container *ngIf="currentWallet?.accounts?.length > 0">
           <ng-container *ngFor="let account of currentWallet.accounts" class="d-flex justify-content-start">

@@ -309,8 +309,8 @@ export class ServicesBoxComponent implements OnInit {
         ''
       ),
 
-      // Voting
-      this.services.buildStructureService(
+       // Voting
+       this.services.buildStructureService(
         'Voting',
         true,
         'Create, vote, and view results',
