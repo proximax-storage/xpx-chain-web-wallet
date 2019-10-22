@@ -14,6 +14,7 @@ import { SharedService } from '../../shared/services/shared.service';
 import { ProximaxProvider } from '../../shared/services/proximax.provider';
 import { MosaicService } from '../../servicesModule/services/mosaic.service';
 import { NemProviderService } from '../../swap/services/nem-provider.service';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
