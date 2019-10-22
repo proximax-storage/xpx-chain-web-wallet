@@ -342,6 +342,37 @@ export class NemProviderService {
     return accountOwnedMosaics.fromAddress(address);
   }
 
+  getNetworkType(network) {
+    let networkData = null;
+    if (typeof network === 'string') {
+      switch (network) {
+        case 'MAIN_NET':
+          networkData = 104;
+          break;
+        case 'TEST_NET':
+          networkData = -104;
+          break;
+        case 'MIJIN':
+          networkData = 96;
+          break;
+      }
+    } else if (typeof network === 'number') {
+      switch (network) {
+        case 104:
+          networkData = 'MAIN_NET';
+          break;
+        case -104:
+          networkData = 'TEST_NET';
+          break;
+        case 96:
+          networkData = 'MIJIN';
+          break;
+      }
+    }
+
+    return networkData;
+  }
+
   /**
    *
    *
