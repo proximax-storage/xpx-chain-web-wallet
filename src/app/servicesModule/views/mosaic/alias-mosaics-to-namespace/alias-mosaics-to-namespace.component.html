@@ -2,16 +2,16 @@
   <app-header [params]="paramsHeader"></app-header>
 
   <form [formGroup]="linkingNamespaceToMosaic" (ngSubmit)="sendTransaction()">
-      <div class="col-11 mb-1rem mx-auto box-transparent-border-red" *ngIf="noNamespace">
-          <div class="txt-a-center">
-            <img src="assets/images/img/icon-restriction-white.svg" style="filter: invert(50%)" alt="" width="30">
-          </div>
-          <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em">
-              This account doesn't have namespaces created.
-          </p>
-          
-        </div>
-        <br>
+    <div class="col-11 mb-1rem mx-auto box-transparent-border-red" *ngIf="noNamespace">
+      <div class="txt-a-center">
+        <img src="assets/images/img/icon-restriction-white.svg" style="filter: invert(50%)" alt="" width="30">
+      </div>
+      <p class="fs-08rem txt-a-center mt-05rem mb-0 lh-1-1em">
+        This account has not created any namespaces.
+      </p>
+
+    </div>
+    <br>
 
     <div class="row mt-1-5rem">
       <div class="col-11 col-sm-10 col-lg-8 mx-auto">
@@ -69,9 +69,9 @@
           <img class="icono" src="assets/images/img/icon-prx-xpx-green-16h-proximax-sirius-wallet.svg" width="20"
             alt="">&nbsp;
           <span class="fs-08rem">
-              Unconfirmed/Recommended Fee:&nbsp;
-              <a [innerHTML]="getQuantity(fee)"></a> XPX
-            </span>
+            Unconfirmed/Recommended Fee:&nbsp;
+            <a [innerHTML]="getQuantity(fee)"></a> XPX
+          </span>
         </div>
       </div>
     </div>
@@ -87,8 +87,8 @@
             src="assets/images/img/icon-show-hide-password-grey.svg" *ngIf="passwordMain === 'text'">
           <input [maxlength]="configurationForm.passwordWallet.maxLength"
             [minlength]="configurationForm.passwordWallet.minLength" formControlName="password" required
-            mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" [type]="passwordMain" id="password"
-            class="form-control form-control-sm input-border" placeholder="Enter Wallet Password">
+            mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true" [type]="passwordMain"
+            id="password" class="form-control form-control-sm input-border" placeholder="Enter Wallet Password">
 
           <!-- VALIDATION -->
           <mdb-error
@@ -102,15 +102,14 @@
     <!-- BUTTONS -->
     <div class="row mt-2rem">
       <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-end">
-        <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax"
-          size="md" (click)="clearForm()">
+        <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" size="md" (click)="clearForm()">
           <span class="fs-1-2em color-white">Clear</span>
         </button>
       </div>
 
       <div class="col-12 col-sm-6 d-flex justify-content-center justify-content-sm-start">
-        <button mdbBtn type="submit" rounded="true" [disabled]="!linkingNamespaceToMosaic.valid || nameSelect" mdbWavesEffect
-          class="btn-proximax" size="md">
+        <button mdbBtn type="submit" rounded="true" [disabled]="!linkingNamespaceToMosaic.valid || nameSelect"
+          mdbWavesEffect class="btn-proximax" size="md">
           <span class="spinner-border spinner-border-sm text-light mr-sm-2" role="status" aria-hidden="true"
             *ngIf="blockSend"></span>
           <span class="fs-1-2em color-white">Create</span>
