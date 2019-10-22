@@ -68,33 +68,42 @@ export class AuthService {
   async login(common: any, currentWallet: CurrentWalletInterface) {
     this.walletService.destroyDataWalletAccount();
     // console.log('This current Wallet------------------------->', currentWallet);
-    const commonCopy = Object.assign({}, common);
+    // const commonCopy = Object.assign({}, common);
     const currentAccount = Object.assign({}, currentWallet.accounts.find(elm => elm.firstAccount === true));
-    let isValid = false;
+    // let isValid = false;
     if (currentAccount) {
       if (!currentWallet) {
         this.sharedService.showError('', 'Dear user, the wallet is missing');
-        isValid = false;
+        return false;
       } else if (!this.nodeService.getNodeSelected()) {
         this.sharedService.showError('', 'Please, select a node.');
         this.route.navigate([`/${AppConfig.routes.selectNode}`]);
-        isValid = false;
-      } else if (!this.walletService.decrypt(common, currentAccount)) {
-        // Decrypt / generate and check primary
-        isValid = false;
-      } /*else if (currentAccount.network === NetworkType.MAIN_NET && currentAccount.algo === 'pass:6k' && common.password.length < 40) {
-        this.sharedService.showError('', 'Dear user, the wallet is missing');
-      } */else {
-        isValid = true;
-        this.walletService.use(currentWallet);
+        return false;
+      }
+
+      const decrypted = this.walletService.decrypt(common, currentAccount);
+      if (!decrypted) {
+        return false;
+      } else {
+        let isValid = true;
+        currentWallet.accounts.forEach(element => {
+          if (element.network !== environment.typeNetwork.value) {
+            isValid = false;
+          }
+        });
+
+        if (isValid) {
+          this.walletService.use(currentWallet);
+        } else {
+          this.sharedService.showError('', 'Account not allowed for this network');
+          return false;
+        }
       }
     } else {
       this.sharedService.showError('', 'Dear user, the main account is missing');
-    }
-
-    if (!isValid) {
       return false;
     }
+
 
     this.nemProvider.validaTransactionsSwap();
     this.setLogged(true);
@@ -139,7 +148,7 @@ export class AuthService {
     this.transactionService.setBalance$('0.000000');
   }
 
-  setEventShowModal(num: number){
+  setEventShowModal(num: number) {
     this.eventShowModalSubject.next(num);
   }
 
