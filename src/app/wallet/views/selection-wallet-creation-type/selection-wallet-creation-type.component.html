@@ -93,8 +93,12 @@
               <div class="md-form form-sm mt-1rem mb-0rem">
                 <img class="form-control-feedback"
                   src="assets/images/img/icon-password-green-16h-proximax-sirius-wallet.svg" alt="">
+                <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
+                  src="assets/images/img/icon-show-hide-password.svg" *ngIf="passwordMain === 'password'">
+                <img class="form-control-feedback-eye cursor-p" (click)="changeInputType(passwordMain)"
+                  src="assets/images/img/icon-show-hide-password-grey.svg" *ngIf="passwordMain === 'text'">
                 <input maxlength="30" minlength="8" mdbInputDirective mdbValidate [validateSuccess]="true"
-                  [(ngModel)]="password" [validateError]="true" type="password" id="password"
+                  [(ngModel)]="password" [validateError]="true" [type]="passwordMain" id="password"
                   class="form-control form-control-sm input-border" placeholder="Enter Wallet Password">
               </div>
             </div>
