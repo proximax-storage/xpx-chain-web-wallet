@@ -8,7 +8,7 @@ import { ChronoUnit } from 'js-joda';
 export const environment = {
   production: true,
   itemBooksAddress: 'sw-books-mainnet',
-  version: '0.3.29 (MainNet - Demo)',
+  version: '0.4.0',
   cacheVersion: '2-MAINNET',
   nameKeyBlockStorage: `sw-blocks`,
   nameKeyNodeSelected: `sw-selected-node-mainnet`,
@@ -36,7 +36,7 @@ export const environment = {
   },
   timeOutTransactionNis1: 10000,
   blockchainConnection: {
-    host: 'bctestnet1.brimstone.xpxsirius.io',
+    host: 'arcturus.xpxsirius.io',
     port: 443,
     protocol: 'https',
     useSecureMessage: false
@@ -53,8 +53,8 @@ export const environment = {
     address_public_test: 'XA7KWF-N5CMLV-G7W3OH-Z5CV3G-3VYH3N-5EQQTK-OVJH'
   },
   mosaicRentalFeeSink: {
-    public_key: '9FF38184F03950C09FFFF4A90C171E4C3C566985EEACA486A59CC8B607C10BF6',
-    address_public_test: 'XA7KWF-N5CMLV-G7W3OH-Z5CV3G-3VYH3N-5EQQTK-OVJH'
+    public_key: '94A9BB9660037E622C8F626E061DB1557CBBED0338402E82E796168E80EF9765',
+    address_public_test: 'XC5ZZN-SYLOXO-EQIAAF-N6B5S6-QAQSFF-5TEVC4-XLTV'
   },
   pollsContent: {
     public_key: '36C25BCB8E6DCCF4B885BAD8963A30C4DBC6A1D70CE342D3656B23A610E60BB0',
