@@ -1,5 +1,5 @@
-<div class="container mt-3rem mb-2rem animated fadeIn">
-  <!-- <app-header [params]="paramsHeader"></app-header> -->
+<div class="container mt-3rem mb-2rem">
+  <app-header [params]="paramsHeader"></app-header>
 
   <!-- TITLE AND DESCRIPTION -->
   <div class="row">
@@ -20,26 +20,26 @@
         </div>
       </div>
 
-      <ng-container *ngFor="let account of accountsNis1; let i = index">
-        <ng-container *ngIf="account.nis1Account !== null && account.nis1Account !== undefined">
+      <ng-container *ngFor="let account of accountsNis1">
+        <div class="col-12 mx-auto box-grey">
           <div class="row">
-            <div class="col-11 col-md-12 mx-auto d-flex align-items-center box-grey">
-              <div class="row">
-                <div class="col-9 col-sm-10 word-break-all">
-                  <span class="color-black"><b>{{ account.name }}</b></span>
-                  <span class="font-small d-flex color-black">{{ account.nis1Account.address.pretty() }}</span>
-                </div>
+            <div class="col-8 col-sm-9 col-md-10 word-break-all">
+              <div>
+                <span class="color-black fw-600">{{ account.name }}&nbsp;&nbsp;</span>
               </div>
-              <div class="row">
-                <div class="col-3 col-sm-2 text-center w-e-nowrap">
-                  <span class="color-blue-intermedio font-small cursor-p" (click)="accountSelected(account, i)"><span
-                      class="spinner-border spinner-border-sm text-light mr-sm-2 loading-blue" role="status"
-                      aria-hidden="true" *ngIf="searchItem[i]"></span>Select ></span>
-                </div>
+              <div>
+                <span class="color-black fs-08rem">{{ account.nis1Account.address }}&nbsp;&nbsp;</span>
               </div>
             </div>
+
+            <div class="col-4 col-sm-3 col-md-2 text-center w-e-nowrap d-flex align-items-center justify-content-end">
+              <span class="color-blue-intermedio font-small cursor-p"
+                (click)="selectAccount(account.nis1Account.address, '1')">
+                Select >
+              </span>
+            </div>
           </div>
-        </ng-container>
+        </div>
       </ng-container>
     </div>
   </div>

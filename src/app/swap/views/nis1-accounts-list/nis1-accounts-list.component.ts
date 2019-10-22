@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { SharedService } from '../../../shared/services/shared.service';
-import { WalletService } from '../../../wallet/services/wallet.service';
+import { WalletService, AccountsInterface } from '../../../wallet/services/wallet.service';
 import { AppConfig } from '../../../config/app.config';
 import { NemProviderService } from '../../services/nem-provider.service';
+import { HeaderServicesInterface } from '../../../servicesModule/services/services-module.service';
 
 @Component({
   selector: 'app-nis1-accounts-list',
@@ -12,9 +13,12 @@ import { NemProviderService } from '../../services/nem-provider.service';
 })
 export class Nis1AccountsListComponent implements OnInit {
 
-  accountsNis1: any;
+  accountsNis1: AccountsInterface[];
   searchItem = [];
-
+  paramsHeader: HeaderServicesInterface = {
+    moduleName: 'Mainnet Swap',
+    componentName: 'Accounts List'
+  };
 
   constructor(
     private nemProvider: NemProviderService,
@@ -23,15 +27,14 @@ export class Nis1AccountsListComponent implements OnInit {
     private walletService: WalletService
   ) { }
 
+
   ngOnInit() {
     this.walletService.setAccountInfoNis1(null);
-    const allAccounts = this.walletService.currentWallet.accounts;
-    console.log('allAccounts --> ', allAccounts);
-    const accountsNis1 = allAccounts.filter(x => x.nis1Account !== null && x.nis1Account !== undefined);
-    console.log('accountsNis1 --> ', accountsNis1);
-    this.accountsNis1 = accountsNis1.map(x => x.nis1Account.address = this.nemProvider.createAddressToString(x.nis1Account.address.value));
-    console.log('this.accountsNis1 --> ', this.accountsNis1);
-    this.searchItem.push(false);
+    const allAccounts = this.walletService.currentWallet.accounts.slice(0);
+    this.accountsNis1 = allAccounts.filter(x => x.nis1Account !== null && x.nis1Account !== undefined);
+    this.accountsNis1.forEach(element => {
+      element.nis1Account.address = this.nemProvider.createAddressToString(element.nis1Account.address.value).pretty();
+    });
   }
 
 
@@ -50,6 +53,31 @@ export class Nis1AccountsListComponent implements OnInit {
     account.route = `/${AppConfig.routes.nis1AccountList}`;
     this.walletService.setNis1AccountSelected(account);
     this.router.navigate([`/${AppConfig.routes.accountNis1TransferXpx}`]);
+  }
+
+
+  /**
+   *
+   *
+   * @param {string} quantity
+   * @returns
+   * @memberof Nis1AccountsListComponent
+   */
+  getQuantity(quantity: string) {
+    return this.sharedService.amountFormat(quantity);
+  }
+
+  /**
+   *
+   *
+   * @param {string} address
+   * @param {string} type
+   * @memberof Nis1AccountsListComponent
+   */
+  selectAccount(address: string, type: string) {
+    console.log('Address ---> ', address);
+    console.log('type ---> ', type);
+    // this.router.navigate([`/${AppConfig.routes.swapTransferAssets}/${address}/${type}/1`]);
   }
 
 }

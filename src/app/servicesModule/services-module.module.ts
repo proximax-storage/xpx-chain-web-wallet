@@ -24,7 +24,6 @@ import { ConvertAccountMultisignComponent } from './views/multi-sign/convert-acc
 import { EditAccountMultisignComponent } from './views/multi-sign/edit-account-multisign/edit-account-multisign.component';
 import { AccountsListComponent } from './views/swap/accounts-list/accounts-list.component';
 import { Nis1AccountsListComponent } from './views/swap/nis1-accounts-list/nis1-accounts-list.component';
-import { HeaderComponent } from './components/header/header.component';
 import { CreatePollComponent } from './views/voting/create-poll/create-poll.component';
 import { PollsComponent } from './views/voting/polls/polls.component';
 import { ResultPollComponent } from './views/voting/result-poll/result-poll.component';
@@ -67,7 +66,6 @@ import { Nis1AccountsConsignerComponent } from './views/swap/nis1-accounts-consi
     EditAccountMultisignComponent,
     AccountsListComponent,
     Nis1AccountsListComponent,
-    HeaderComponent,
     CreatePollComponent,
     PollsComponent,
     ResultPollComponent,
