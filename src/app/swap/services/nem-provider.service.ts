@@ -37,7 +37,6 @@ import { SharedService } from '../../shared/services/shared.service';
 })
 export class NemProviderService {
 
-
   accountHttp: AccountHttp;
   assetHttp: AssetHttp;
   nis1AccountSelected: AccountsInfoNis1Interface = null;
@@ -90,7 +89,6 @@ export class NemProviderService {
    */
   async getAccountInfoNis1(account: Account, name: string) {
     try {
-      let nis1AccountsInfo: AccountsInfoNis1Interface;
       let cosignatoryOf: CosignatoryOf[] = [];
       let accountsMultisigInfo = [];
       const addressOwnedSwap = this.createAddressToString(account.address['value']);
@@ -98,6 +96,7 @@ export class NemProviderService {
       // console.log('ACCOUNT INFO OWNED SWAP ---->', accountInfoOwnedSwap);
       // INFO ACCOUNTS MULTISIG
       if (accountInfoOwnedSwap['meta']['cosignatories'].length === 0) {
+        let nis1AccountsInfo: AccountsInfoNis1Interface;
         if (accountInfoOwnedSwap['meta']['cosignatoryOf'].length > 0) {
           cosignatoryOf = accountInfoOwnedSwap['meta']['cosignatoryOf'];
           for (let multisig of cosignatoryOf) {

@@ -14,11 +14,12 @@ import { HeaderServicesInterface } from '../../../servicesModule/services/servic
 export class Nis1AccountsListComponent implements OnInit {
 
   accountsNis1: AccountsInterface[];
-  searchItem = [];
+  indexSelected = 0;
   paramsHeader: HeaderServicesInterface = {
     moduleName: 'Mainnet Swap',
     componentName: 'Accounts List'
   };
+  searchItem = [];
 
   constructor(
     private nemProvider: NemProviderService,
@@ -30,10 +31,14 @@ export class Nis1AccountsListComponent implements OnInit {
 
   ngOnInit() {
     this.walletService.setAccountInfoNis1(null);
-    const allAccounts = this.walletService.currentWallet.accounts.slice(0);
+    const allAccounts = this.walletService.currentWallet.accounts;
     this.accountsNis1 = allAccounts.filter(x => x.nis1Account !== null && x.nis1Account !== undefined);
     this.accountsNis1.forEach(element => {
-      element.nis1Account.address = this.nemProvider.createAddressToString(element.nis1Account.address.value).pretty();
+      if (typeof (element.address) === 'string') {
+        element.nis1Account.address = this.nemProvider.createAddressToString(element.nis1Account.address.value).pretty();
+      }else{
+        element.nis1Account.address = this.nemProvider.createAddressToString(element.nis1Account.address['value']).pretty();
+      }
     });
   }
 
