@@ -523,9 +523,9 @@ export class ServicesBoxComponent implements OnInit {
 
       // VIDEO CONFERENCING
       this.services.buildStructureService(
-        'Gift Sirius',
+        'Sirius Gift',
         true,
-        'Share XPX is to easy',
+        'Create a redeemable gift',
         'icon-gift-sirius-full-color-80h-proximax-sirius-wallet.svg',
         '',
         {

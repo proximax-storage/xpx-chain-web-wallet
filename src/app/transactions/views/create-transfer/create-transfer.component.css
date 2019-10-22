@@ -55,11 +55,18 @@
 }
 
 .isActive {
-  background: #f4f4f4 !important;
+  background: #f9f9f9 !important;
   color: black !important;
   height: 40px;
-  font-weight: 400;
+  font-weight: 700;
+  padding-left: 2rem !important;
 }
+
+.check-default-account:before {
+  font-family: 'FontAwesome' !important;
+  content: '\f00c' !important;
+}
+
 
 .h-account {
   height: 60px;
