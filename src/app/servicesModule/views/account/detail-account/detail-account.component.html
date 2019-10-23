@@ -297,16 +297,16 @@
                                 <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax"
                                     size="md" (click)="btnSwapThisAccount(false)" [disabled]="blockBtnAction"
                                     *ngIf="checked">
-                                    <span class="color-white">Disabled</span>
+                                    <span class="color-white">Disable</span>
                                 </button>
                                 <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax"
                                     size="md" (click)="btnSwapThisAccount(true)" [disabled]="blockBtnAction"
                                     *ngIf="!checked">
-                                    <span class="color-white" >Enabled</span>
+                                    <span class="color-white" >Enable</span>
                                 </button>
                             </div>
                             <button mdbBtn type="button" rounded="true" mdbWavesEffect class="btn-proximax" size="md"
-                                (click)="btnSwapThisAccount('acep')" *ngIf="actionBtnSwapThisAccount ">
+                                (click)="btnSwapThisAccount()" *ngIf="actionBtnSwapThisAccount ">
                                 <span class="color-white">Accept</span>
                             </button>
                         </div>
