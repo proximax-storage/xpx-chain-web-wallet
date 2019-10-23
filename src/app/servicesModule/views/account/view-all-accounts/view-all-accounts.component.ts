@@ -181,7 +181,9 @@ export class ViewAllAccountsComponent implements OnInit {
     a.style.display = 'none';
     a.href = url;
     // the filename you want
-    a.download = `${wallet.name}_${year}-${month}-${day}.wlt`;
+    let networkTypeName = environment.typeNetwork.label
+    networkTypeName = (networkTypeName.includes(' ')) ? networkTypeName.split(' ').join('') : networkTypeName;
+    a.download = `${wallet.name}_${networkTypeName}_${year}-${month}-${day}.wlt`;
     document.body.appendChild(a);
     a.click();
     window.URL.revokeObjectURL(url);
