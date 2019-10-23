@@ -120,7 +120,7 @@
                 placeholder="Cosignatory Account Public Key " onkeyup="javascript:this.value=this.value.toLowerCase();">
               <!-- VALIDATION -->
               <mdb-error *ngIf="validateInput('cosignatory', '').invalid && (validateInput('cosignatory', '').dirty || validateInput('cosignatory', '').touched)">
-                <span>Required Field</span>
+                <span>Invalid Key</span>
               </mdb-error>
             </div>
           </div>
@@ -318,7 +318,7 @@
             formControlName="password" required mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
             [type]="passwordMain" id="password" class="form-control form-control-sm input-border" placeholder="Enter Wallet Password">
           <mdb-error *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
-            <span>Password Required</span>
+            <span>Password Required </span>
           </mdb-error>
         </div>
       </div>

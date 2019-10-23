@@ -119,7 +119,7 @@
                 placeholder="Cosignatory Account Public Key " onkeyup="javascript:this.value=this.value.toLowerCase();">
               <!-- VALIDATION -->
               <mdb-error *ngIf="validateInput('cosignatory', '').invalid && (validateInput('cosignatory', '').dirty || validateInput('cosignatory', '').touched)">
-                <span>Required Field</span>
+                <span>Invalid Key</span>
               </mdb-error>
             </div>
           </div>
