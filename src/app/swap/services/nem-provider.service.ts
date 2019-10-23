@@ -87,11 +87,11 @@ export class NemProviderService {
    * @param {string} name
    * @memberof NemProviderService
    */
-  async getAccountInfoNis1(account: Account, name: string) {
+  async getAccountInfoNis1(publicAccount: PublicAccount, name: string) {
     try {
       let cosignatoryOf: CosignatoryOf[] = [];
       let accountsMultisigInfo = [];
-      const addressOwnedSwap = this.createAddressToString(account.address['value']);
+      const addressOwnedSwap = this.createAddressToString(publicAccount.address.pretty());
       const accountInfoOwnedSwap = await this.getAccountInfo(addressOwnedSwap).pipe(first()).pipe((timeout(environment.timeOutTransactionNis1))).toPromise();
       // console.log('ACCOUNT INFO OWNED SWAP ---->', accountInfoOwnedSwap);
       // INFO ACCOUNTS MULTISIG
@@ -122,10 +122,10 @@ export class NemProviderService {
           const xpxFound = ownedMosaic.find(el => el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx');
           if (xpxFound) {
             const balance = await this.validateBalanceAccounts(xpxFound, addressOwnedSwap);
-            nis1AccountsInfo = this.buildAccountInfoNIS1(account, accountsMultisigInfo, balance, cosignatoryOf, false, name, xpxFound);
+            nis1AccountsInfo = this.buildAccountInfoNIS1(publicAccount, accountsMultisigInfo, balance, cosignatoryOf, false, name, xpxFound);
             this.setNis1AccountsFound$(nis1AccountsInfo);
           } else if (cosignatoryOf.length > 0) {
-            nis1AccountsInfo = this.buildAccountInfoNIS1(account, accountsMultisigInfo, null, cosignatoryOf, false, name, null);
+            nis1AccountsInfo = this.buildAccountInfoNIS1(publicAccount, accountsMultisigInfo, null, cosignatoryOf, false, name, null);
             this.setNis1AccountsFound$(nis1AccountsInfo);
           } else {
             this.setNis1AccountsFound$(null);
@@ -133,7 +133,7 @@ export class NemProviderService {
         } catch (error) {
           // Valida si es cosignatario
           if (cosignatoryOf.length > 0) {
-            nis1AccountsInfo = this.buildAccountInfoNIS1(account, accountsMultisigInfo, null, cosignatoryOf, false, name, null);
+            nis1AccountsInfo = this.buildAccountInfoNIS1(publicAccount, accountsMultisigInfo, null, cosignatoryOf, false, name, null);
             this.setNis1AccountsFound$(nis1AccountsInfo);
           } else {
             this.setNis1AccountsFound$(null);
@@ -245,7 +245,7 @@ export class NemProviderService {
    * @memberof NemProviderService
    */
   buildAccountInfoNIS1(
-    account: Account,
+    publicAccount: PublicAccount,
     accountsMultisigInfo: any[],
     balance: any,
     cosignersAccounts: CosignatoryOf[],
@@ -255,8 +255,8 @@ export class NemProviderService {
   ) {
     return {
       nameAccount: name,
-      address: account.address,
-      publicKey: account.publicKey,
+      address: publicAccount.address,
+      publicKey: publicAccount.publicKey,
       cosignerOf: (cosignersAccounts.length > 0) ? true : false,
       cosignerAccounts: cosignersAccounts,
       multisigAccountsInfo: accountsMultisigInfo,

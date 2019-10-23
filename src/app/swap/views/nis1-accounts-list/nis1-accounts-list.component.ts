@@ -34,10 +34,12 @@ export class Nis1AccountsListComponent implements OnInit {
     const allAccounts = this.walletService.currentWallet.accounts;
     this.accountsNis1 = allAccounts.filter(x => x.nis1Account !== null && x.nis1Account !== undefined);
     this.accountsNis1.forEach(element => {
-      if (typeof (element.address) === 'string') {
-        element.nis1Account.address = this.nemProvider.createAddressToString(element.nis1Account.address.value).pretty();
+      if (typeof (element.nis1Account.address) === 'string') {
+        const account = this.nemProvider.createAddressToString(element.nis1Account.address);
+        element.nis1Account.address = account.pretty();
       }else{
-        element.nis1Account.address = this.nemProvider.createAddressToString(element.nis1Account.address['value']).pretty();
+        const account = this.nemProvider.createAddressToString(element.nis1Account.address['value']);
+        element.nis1Account.address = account.pretty();
       }
     });
   }
@@ -79,9 +81,11 @@ export class Nis1AccountsListComponent implements OnInit {
    * @param {string} type
    * @memberof Nis1AccountsListComponent
    */
-  selectAccount(address: string, type: string) {
-    console.log('Address ---> ', address);
-    console.log('type ---> ', type);
+  selectAccount(publicKey: string, nameAccount: string) {
+    console.log('publicKey ---> ', publicKey);
+    console.log('nameAccount ---> ', nameAccount);
+    const publicAccount = this.nemProvider.createPublicAccount(publicKey);
+    this.nemProvider.getAccountInfoNis1(publicAccount, nameAccount);
     // this.router.navigate([`/${AppConfig.routes.swapTransferAssets}/${address}/${type}/1`]);
   }
 
