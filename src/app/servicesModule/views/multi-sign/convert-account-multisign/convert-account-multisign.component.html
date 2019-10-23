@@ -208,7 +208,7 @@
               <div class="col-12 text-center">Approve Transaction</div>
               <div class="col-12">
                 <div class="md-form form-sm mt-03rem mb-0rem">
-                  <input (keypress)="preventNumbers($event)" max="{{minApprovaMaxLength}}" min="{{minApprovaMinLength}}"
+                  <input (keypress)="preventNumbers($event)" onkeydown="return false" max="{{minApprovaMaxLength}}" min="{{minApprovaMinLength}}"
                     formControlName="minApprovalDelta" required mdbInputDirective mdbValidate [validateSuccess]="true"
                     [validateError]="true" type="number" id="minApprovalDelta" class="form-control form-control-sm input-border text-center"
                     placeholder="Min approval" onkeyup="javascript:this.value=this.value.toLowerCase();">
@@ -227,7 +227,7 @@
               <div class="col-12 text-center">Delete Users</div>
               <div class="col-12">
                 <div class="md-form form-sm mt-03rem mb-0rem">
-                  <input (keypress)="preventNumbers($event)" max="{{minApprovaMaxLength}}" min="{{minApprovaMinLength}}"
+                  <input (keypress)="preventNumbers($event)"  onkeydown="return false" max="{{minApprovaMaxLength}}" min="{{minApprovaMinLength}}"
                     formControlName="minRemovalDelta" required mdbInputDirective mdbValidate [validateSuccess]="true"
                     [validateError]="true" type="number" id="minRemovalDelta" class="form-control form-control-sm input-border text-center"
                     placeholder="Min removal" onkeyup="javascript:this.value=this.value.toLowerCase();">
@@ -318,7 +318,7 @@
             formControlName="password" required mdbInputDirective mdbValidate [validateSuccess]="true" [validateError]="true"
             [type]="passwordMain" id="password" class="form-control form-control-sm input-border" placeholder="Enter Wallet Password">
           <mdb-error *ngIf="validateInput('password', '').invalid && (validateInput('password', '').dirty || validateInput('password', '').touched)">
-            <span>Required field</span>
+            <span>Password Required</span>
           </mdb-error>
         </div>
       </div>
