@@ -33,7 +33,6 @@ export class Nis1TransferAssetsComponent implements OnInit {
   insufficientBalance = false;
   maxAmount: number = 0;
   mainAccount = false;
-  logged: boolean = false;
   optionsXPX = {
     prefix: '',
     thousands: ',',
@@ -159,9 +158,11 @@ export class Nis1TransferAssetsComponent implements OnInit {
         };
 
         const transactionWalletNis1: WalletTransactionsNis1Interface = {
-          name: (this.walletService.currentWallet) ? this.accountSelected.nameAccount : this.walletService.accountWalletCreated.wallet.name,
+          name: (this.walletService.currentWallet) ? this.walletService.currentWallet.name : this.walletService.accountWalletCreated.wallet.name,
           transactions: [this.transactionNis1]
         };
+
+        console.log(transactionWalletNis1);
 
         this.nemProvider.saveAccountWalletTransNisStorage(transactionWalletNis1);
         this.processing = false;
@@ -240,7 +241,7 @@ export class Nis1TransferAssetsComponent implements OnInit {
     const moreAccounts = this.activateRoute.snapshot.paramMap.get('moreAccounts');
     if (this.walletService.currentWallet) {
       this.goToBack = (moreAccounts === '0') ? '2' : moreAccounts;
-      this.goToBackRoute = (moreAccounts === '0') ? `/${AppConfig.routes.swapAccountList}` :  `/${AppConfig.routes.swapListCosignerNis1}`;
+      this.goToBackRoute = (moreAccounts === '0') ? `/${AppConfig.routes.swapAccountList}` : `/${AppConfig.routes.swapListCosignerNis1}`;
       this.ownedAccountSwap = this.walletService.filterAccountWallet(this.accountSelected.nameAccount);
     } else {
       this.goToBack = this.activateRoute.snapshot.paramMap.get('moreAccounts');
