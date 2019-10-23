@@ -347,6 +347,12 @@ export class WalletService {
     return newAccount;
   }
 
+  /**
+   *
+   *
+   * @param {*} [address=null]
+   * @memberof WalletService
+   */
   deleteContact(address = null) {
     let currentWallet = `${environment.itemBooksAddress}-${this.getCurrentWallet().name}`;
     let currentAddressBook = JSON.parse(localStorage.getItem(currentWallet));

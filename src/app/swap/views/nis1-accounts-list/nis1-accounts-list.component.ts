@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { first } from 'rxjs/operators';
+
 import { SharedService } from '../../../shared/services/shared.service';
 import { WalletService, AccountsInterface } from '../../../wallet/services/wallet.service';
 import { AppConfig } from '../../../config/app.config';
@@ -20,6 +23,7 @@ export class Nis1AccountsListComponent implements OnInit {
     componentName: 'Accounts List'
   };
   searchItem = [];
+  subscription: Subscription[] = [];
 
   constructor(
     private nemProvider: NemProviderService,
@@ -84,9 +88,34 @@ export class Nis1AccountsListComponent implements OnInit {
   selectAccount(publicKey: string, nameAccount: string) {
     console.log('publicKey ---> ', publicKey);
     console.log('nameAccount ---> ', nameAccount);
+    this.subscribeAccountFound();
     const publicAccount = this.nemProvider.createPublicAccount(publicKey);
     this.nemProvider.getAccountInfoNis1(publicAccount, nameAccount);
     // this.router.navigate([`/${AppConfig.routes.swapTransferAssets}/${address}/${type}/1`]);
   }
 
+  /**
+   *
+   *
+   * @memberof Nis1AccountsListComponent
+   */
+  subscribeAccountFound(){
+    this.subscription.push(this.nemProvider.getNis1AccountsFound$().pipe(first()).subscribe(accountFound => {
+      console.log(accountFound);
+      if (accountFound) {
+        if (accountFound.cosignerAccounts.length > 0) {
+          console.log('REDIRECCIONA A LISTAR LAS CUENTA DE COSIGNATARIOS');
+          this.indexSelected = 0;
+          //this.routeContinue = `/${AppConfig.routes.swapListCosignerNis1}`;
+        } else {
+          console.log('PROCEDE A TRANSFERIR DE UNA VEZ');
+          this.indexSelected = 0;
+          this.nemProvider.setSelectedNis1Account(accountFound);
+          this.router.navigate([`/${AppConfig.routes.swapTransferAssetsLogged}/${accountFound.address.pretty()}/1/0`]);
+        }
+      }else {
+        this.indexSelected = 0;
+      }
+    }));
+  }
 }

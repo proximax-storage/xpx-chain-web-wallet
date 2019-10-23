@@ -45,13 +45,16 @@ export const AppConfig: Config = {
     polls: 'polls',
     renewNamespace: 'renew-namespace',
     renovateNamespace: 'renovate-namespace',
+
     swapAccountNis1Found: 'swap-account-nis1-found',
     swapTransactions: 'swap-transactions',
     swapListCosignerNis1: 'swap-list-cosigner-nis1',
-    swapListAccountsNis1: 'swap-ist-accounts-nis1',
     swapTransferAssets: 'swap-transfer-assets',
+    swapTransferAssetsLogged: 'swap-transfer-assets-nis1',
     swapAccountListNis1: 'swap-account-list-nis1',
     swapAccountList: 'swap-account-list',
+    swapListAccountsNis1: 'swap-list-accounts-nis1',
+
 
 
     selectNode: 'select-node',
@@ -120,11 +123,13 @@ export interface Config {
     polls: string;
     renewNamespace: string;
     renovateNamespace: string;
+
     swapAccountNis1Found: string;
     swapTransactions: string;
     swapListCosignerNis1: string;
     swapListAccountsNis1: string;
     swapTransferAssets: string;
+    swapTransferAssetsLogged: string;
     swapAccountListNis1: string;
     swapAccountList: string;
 

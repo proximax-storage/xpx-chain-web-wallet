@@ -93,10 +93,10 @@ export class NemProviderService {
       let accountsMultisigInfo = [];
       const addressOwnedSwap = this.createAddressToString(publicAccount.address.pretty());
       const accountInfoOwnedSwap = await this.getAccountInfo(addressOwnedSwap).pipe(first()).pipe((timeout(environment.timeOutTransactionNis1))).toPromise();
-      // console.log('ACCOUNT INFO OWNED SWAP ---->', accountInfoOwnedSwap);
-      // INFO ACCOUNTS MULTISIG
+      console.log(accountInfoOwnedSwap);
       if (accountInfoOwnedSwap['meta']['cosignatories'].length === 0) {
         let nis1AccountsInfo: AccountsInfoNis1Interface;
+        // INFO ACCOUNTS MULTISIG
         if (accountInfoOwnedSwap['meta']['cosignatoryOf'].length > 0) {
           cosignatoryOf = accountInfoOwnedSwap['meta']['cosignatoryOf'];
           for (let multisig of cosignatoryOf) {
@@ -116,8 +116,8 @@ export class NemProviderService {
           }
         }
 
-        // SEARCH INFO OWNED SWAP
         try {
+          // SEARCH INFO OWNED SWAP
           const ownedMosaic = await this.getOwnedMosaics(addressOwnedSwap).pipe(first()).pipe((timeout(environment.timeOutTransactionNis1))).toPromise();
           const xpxFound = ownedMosaic.find(el => el.assetId.namespaceId === 'prx' && el.assetId.name === 'xpx');
           if (xpxFound) {
@@ -140,11 +140,15 @@ export class NemProviderService {
           }
         }
       } else {
-        this.removeParamNis1WalletCreated(name);
+        console.log('show error....');
         this.sharedService.showWarning('', 'Swap does not support this account type');
         this.setNis1AccountsFound$(null);
+        if (!this.walletService.currentWallet) {
+          this.removeParamNis1WalletCreated(name);
+        }
       }
     } catch (error) {
+      this.sharedService.showWarning('', 'Swap does not support this account type');
       this.setNis1AccountsFound$(null);
     }
   }
@@ -463,7 +467,7 @@ export class NemProviderService {
     const wallet = this.walletService.getWalletStorage();
     const otherWallets = wallet.filter(wallet => wallet.name !== nameWallet);
     let currentWallet = wallet.find(wallet => wallet.name === nameWallet);
-    currentWallet.accounts[0].nis1Account = false;
+    currentWallet.accounts[0].nis1Account = null;
     otherWallets.push(currentWallet);
     this.walletService.saveWallet(otherWallets);
   }
@@ -556,7 +560,7 @@ export class NemProviderService {
   }*/
 
   /**
-  * RJ
+  *
   *
   * @param {AccountsInfoNis1Interface} account
   * @memberof WalletService
@@ -567,7 +571,7 @@ export class NemProviderService {
 
 
   /**
-   * RJ
+   *
    *
    * @param {*} accounts
    * @memberof WalletService
