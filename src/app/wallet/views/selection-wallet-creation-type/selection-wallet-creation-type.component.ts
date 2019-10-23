@@ -61,62 +61,71 @@ export class SelectionWalletCreationTypeComponent implements OnInit {
     // The common object now has a private key
     // console.log(common)
 
-    if (common.privateKey !== '') {
-      let walletName = this.walletDecryp.name;
-      walletName = (walletName.includes(' ') === true) ? walletName.split(' ').join('_') : walletName;
-      const nameWallet = walletName;
-      const network = (this.walletDecryp.accounts[0].network === NetworkTypes.MAIN_NET) ? NetworkType.MAIN_NET : NetworkType.TEST_NET;
-      const password = this.proximaxProvider.createPassword(this.password);
-      const algo = this.walletDecryp.accounts[0].algo;
-      const accounts = [];
-      const contacts = [];
-      for (let index = 0; index < Object.keys(this.walletDecryp.accounts).length; index++) {
-        const walletAccount = this.walletDecryp.accounts[index];
-        nem.crypto.helpers.passwordToPrivatekey(common, walletAccount, algo);
-        const privateKey = common.privateKey;
-        const wallet = this.proximaxProvider.createAccountFromPrivateKey(nameWallet, password, privateKey, network);
-        const nis1Wallet = this.nemProvider.createAccountPrivateKey(privateKey);
-        const nisPublicAccount = {
-          address: nis1Wallet.address,
-          publicKey: nis1Wallet.publicKey
-        };
-        accounts.push({
-          address: wallet.address.plain(),
-          algo: "pass:bip32",
-          brain: true,
-          default: (index === 0),
-          encrypted: wallet.encryptedPrivateKey.encryptedKey,
-          firstAccount: (index === 0),
-          iv: wallet.encryptedPrivateKey.iv,
-          name: this.walletDecryp.accounts[index].label,
-          network: network,
-          publicAccount: this.proximaxProvider.getPublicAccountFromPrivateKey(this.proximaxProvider.decryptPrivateKey(
-            password,
-            wallet.encryptedPrivateKey.encryptedKey,
-            wallet.encryptedPrivateKey.iv
-          ).toUpperCase(), wallet.network),
-          isMultisign: null,
-          nis1Account: nisPublicAccount
-        });
-        contacts.push({ label: this.walletDecryp.accounts[index].label, value: wallet.address.plain(), walletContact: true });
+    let proximaxNetwork = environment.typeNetwork.value;
+    let nemNetwork = (proximaxNetwork === NetworkType.MAIN_NET) ? this.nemProvider.getNetworkType('MAIN_NET') : this.nemProvider.getNetworkType('TEST_NET');
+    // console.log(common, proximaxNetwork, nemNetwork);
+    if (this.walletDecryp.accounts[0].network === nemNetwork) {
+      if (common.privateKey !== '') {
+        let walletName = this.walletDecryp.name;
+        walletName = (walletName.includes(' ') === true) ? walletName.split(' ').join('_') : walletName;
+        const nameWallet = walletName;
+        const network = proximaxNetwork;
+        // const network = (this.walletDecryp.accounts[0].network === NetworkTypes.MAIN_NET) ? NetworkType.MAIN_NET : NetworkType.TEST_NET;
+        // console.log(this.walletDecryp.accounts[0].network, NetworkType.MAIN_NET, NetworkType.TEST_NET)
+        const password = this.proximaxProvider.createPassword(this.password);
+        const algo = this.walletDecryp.accounts[0].algo;
+        const accounts = [];
+        const contacts = [];
+        for (let index = 0; index < Object.keys(this.walletDecryp.accounts).length; index++) {
+          const walletAccount = this.walletDecryp.accounts[index];
+          nem.crypto.helpers.passwordToPrivatekey(common, walletAccount, algo);
+          const privateKey = common.privateKey;
+          const wallet = this.proximaxProvider.createAccountFromPrivateKey(nameWallet, password, privateKey, network);
+          const nis1Wallet = this.nemProvider.createAccountPrivateKey(privateKey);
+          const nisPublicAccount = {
+            address: nis1Wallet.address,
+            publicKey: nis1Wallet.publicKey
+          };
+          accounts.push({
+            address: wallet.address.plain(),
+            algo: "pass:bip32",
+            brain: true,
+            default: (index === 0),
+            encrypted: wallet.encryptedPrivateKey.encryptedKey,
+            firstAccount: (index === 0),
+            iv: wallet.encryptedPrivateKey.iv,
+            name: this.walletDecryp.accounts[index].label,
+            network: network,
+            publicAccount: this.proximaxProvider.getPublicAccountFromPrivateKey(this.proximaxProvider.decryptPrivateKey(
+              password,
+              wallet.encryptedPrivateKey.encryptedKey,
+              wallet.encryptedPrivateKey.iv
+            ).toUpperCase(), wallet.network),
+            isMultisign: null,
+            nis1Account: nisPublicAccount
+          });
+          contacts.push({ label: this.walletDecryp.accounts[index].label, value: wallet.address.plain(), walletContact: true });
+        }
+        this.serviceModuleService.setBookAddress(contacts, nameWallet);
+        const walletStorage = {
+          name: nameWallet,
+          accounts: accounts,
+          book: []
+        }
+
+        // console.log('this a wallet created----->', walletStorage);
+
+        let walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
+        walletsStorage.push(walletStorage);
+        localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorage));
+
+        this.sharedService.showSuccess('', 'Wallet Imported Correctly');
+        this.router.navigate([`/${AppConfig.routes.auth}`]);
+      } else {
+        this.sharedService.showError('', 'Password Invalid');
       }
-      this.serviceModuleService.setBookAddress(contacts, nameWallet);
-      const walletStorage = {
-        name: nameWallet,
-        accounts: accounts,
-        book: []
-      }
-
-      // console.log('this a wallet created----->', walletStorage);
-
-      let walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
-      walletsStorage.push(walletStorage);
-      localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorage));
-
-      this.sharedService.showSuccess('', 'Wallet Imported Correctly');
-      this.router.navigate([`/${AppConfig.routes.auth}`]);
     } else {
-      this.sharedService.showError('', 'Password Invalid');
+      this.sharedService.showError('', 'Invalid network type');
     }
   }
 
@@ -130,44 +139,52 @@ export class SelectionWalletCreationTypeComponent implements OnInit {
           const existWallet = this.walletService.getWalletStorage().find(
             (element: any) => {
               let walletName = dataDecryp.name;
-              walletName = (walletName.includes('_') === true) ? walletName.split('_').join(' ') : walletName
+              walletName = (walletName.includes(' ') === true) ? walletName.split(' ').join('_') : walletName
               return element.name === walletName;
             }
           );
           //Wallet does not exist
+          console.log(dataDecryp, existWallet, environment.typeNetwork.value);
+
           if (existWallet === undefined) {
-            let walletName = dataDecryp.name;
-            walletName = (walletName.includes(' ') === true) ? walletName.split(' ').join('_') : walletName
-            const accounts = [];
-            const contacs = [];
-            if (dataDecryp.accounts.length !== undefined) {
-              for (const element of dataDecryp.accounts) {
-                accounts.push(element);
-                // console.log('Esta es una pruebaaaa------------->', element);
-                contacs.push({ label: element.name, value: element.address.split('-').join(''), walletContact: true });
+            if (dataDecryp.accounts[0].network === environment.typeNetwork.value) {
+              let walletName = dataDecryp.name;
+              walletName = (walletName.includes(' ') === true) ? walletName.split(' ').join('_') : walletName
+              const accounts = [];
+              const contacs = [];
+              if (dataDecryp.accounts.length !== undefined) {
+                for (const element of dataDecryp.accounts) {
+                  accounts.push(element);
+                  // console.log('Esta es una pruebaaaa------------->', element);
+                  contacs.push({ label: element.name, value: element.address.split('-').join(''), walletContact: true });
+                }
+                this.serviceModuleService.setBookAddress(contacs, walletName);
+              } else {
+                this.walletDecryp = dataDecryp;
+                this.password = '';
+                this.basicModal.show();
+                return;
               }
-              this.serviceModuleService.setBookAddress(contacs, walletName);
+
+              const wallet = {
+                name: walletName,
+                accounts: accounts
+              }
+
+              let walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
+              walletsStorage.push(wallet);
+              localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorage));
+              this.sharedService.showSuccess('', 'Wallet Imported Correctly');
+              this.router.navigate([`/${AppConfig.routes.auth}`]);
             } else {
-              this.walletDecryp = dataDecryp;
-              this.password = '';
-              this.basicModal.show();
-              return;
+              this.sharedService.showError('', 'Invalid network type');
             }
-
-            const wallet = {
-              name: walletName,
-              accounts: accounts
-            }
-
-            let walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
-            walletsStorage.push(wallet);
-            localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorage));
-            this.sharedService.showSuccess('', 'Wallet Imported Correctly');
-            this.router.navigate([`/${AppConfig.routes.auth}`]);
           } else {
             this.sharedService.showWarning('', 'The Wallet Already Exists');
           }
         } catch (error) {
+          console.log(error);
+
           this.sharedService.showError('', 'Invalid Document Format');
         }
       };
