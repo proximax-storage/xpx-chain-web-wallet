@@ -23,7 +23,7 @@
   <!-- FIELD SEARCH -->
   <div class="row">
     <div class="col-11 col-lg-10 mx-auto">
-        <input mdbInputDirective [validateSuccess]="false" [validateError]="false" class="w-100porcent form-control"
+      <input mdbInputDirective [validateSuccess]="false" [validateError]="false" class="w-100porcent form-control"
         type="text" placeholder="Search" autocomplete="off" [(ngModel)]="filter">
     </div>
   </div>
@@ -115,16 +115,20 @@
                           <span class="fw-600 fs-095rem color-black"> XPX </span>
                         </div>
                       </ng-container>
-
+                      <!-- Deadline -->
+                      <div class="col-12 mt-05rem line-h-09em">
+                        <span class="fw-600 fs-08rem">Deadline:&nbsp;&nbsp;</span>
+                        <span class="fs-065rem"> {{deadline}}</span>
+                      </div>
                       <!-- Type -->
-                      <div class="col-12 mt-05rem">
+                      <div class="col-12 mt-05rem line-h-09em">
                         <span class="fw-600 fs-08rem">Type:&nbsp;&nbsp;</span>
                         <span class="fs-065rem">{{dataSelected?.data['type'].toString(16).toUpperCase()}}</span>
                       </div>
 
                       <!-- Height -->
                       <ng-container *ngIf="dataSelected?.data.transactionInfo.height.compact() > 0">
-                        <div class="col-12 mt-05rem">
+                        <div class="col-12 mt-05rem line-h-09em">
                           <span class="fw-600 fs-08rem">Height:&nbsp;&nbsp;</span>
                           <span class="fs-065rem">{{dataSelected?.data.transactionInfo.height.compact()}}</span>
                         </div>
@@ -147,7 +151,8 @@
                       <div class="col-12 mt-05rem line-h-09em" *ngIf="nis1hash">
                         <span class="fw-600 fs-08rem">NIS1 Hash:</span> <br>
                         <span class="fs-065rem w-w-b-w">
-                          <a [href]="routeNis1Hash+nis1hash" class="color-gray-dark cursor-p" target="_blank">{{nis1hash | uppercase}}</a>
+                          <a [href]="routeNis1Hash+nis1hash" class="color-gray-dark cursor-p"
+                            target="_blank">{{nis1hash | uppercase}}</a>
                         </span>
                       </div>
 

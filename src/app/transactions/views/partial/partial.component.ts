@@ -51,6 +51,7 @@ export class PartialComponent implements OnInit {
   showSwap: boolean = false;
   msg: string = '';
   routeNis1Hash = environment.nis1.urlExplorer;
+  deadline: string;
 
 
   constructor(
@@ -121,6 +122,7 @@ export class PartialComponent implements OnInit {
     this.showSwap = false;
     this.modalPartial.show();
     this.dataSelected = transaction;
+    this.deadline = this.transactionService.dateFormat(this.dataSelected.data['deadline'])
     this.arraySelect = this.arraySelect.slice(0);
     // this.arraySelect = [];
     this.account = null;
