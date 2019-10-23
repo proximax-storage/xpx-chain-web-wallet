@@ -139,44 +139,52 @@ export class SelectionWalletCreationTypeComponent implements OnInit {
           const existWallet = this.walletService.getWalletStorage().find(
             (element: any) => {
               let walletName = dataDecryp.name;
-              walletName = (walletName.includes('_') === true) ? walletName.split('_').join(' ') : walletName
+              walletName = (walletName.includes(' ') === true) ? walletName.split(' ').join('_') : walletName
               return element.name === walletName;
             }
           );
           //Wallet does not exist
+          console.log(dataDecryp, existWallet, environment.typeNetwork.value);
+
           if (existWallet === undefined) {
-            let walletName = dataDecryp.name;
-            walletName = (walletName.includes(' ') === true) ? walletName.split(' ').join('_') : walletName
-            const accounts = [];
-            const contacs = [];
-            if (dataDecryp.accounts.length !== undefined) {
-              for (const element of dataDecryp.accounts) {
-                accounts.push(element);
-                // console.log('Esta es una pruebaaaa------------->', element);
-                contacs.push({ label: element.name, value: element.address.split('-').join(''), walletContact: true });
+            if (dataDecryp.accounts[0].network === environment.typeNetwork.value) {
+              let walletName = dataDecryp.name;
+              walletName = (walletName.includes(' ') === true) ? walletName.split(' ').join('_') : walletName
+              const accounts = [];
+              const contacs = [];
+              if (dataDecryp.accounts.length !== undefined) {
+                for (const element of dataDecryp.accounts) {
+                  accounts.push(element);
+                  // console.log('Esta es una pruebaaaa------------->', element);
+                  contacs.push({ label: element.name, value: element.address.split('-').join(''), walletContact: true });
+                }
+                this.serviceModuleService.setBookAddress(contacs, walletName);
+              } else {
+                this.walletDecryp = dataDecryp;
+                this.password = '';
+                this.basicModal.show();
+                return;
               }
-              this.serviceModuleService.setBookAddress(contacs, walletName);
+
+              const wallet = {
+                name: walletName,
+                accounts: accounts
+              }
+
+              let walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
+              walletsStorage.push(wallet);
+              localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorage));
+              this.sharedService.showSuccess('', 'Wallet Imported Correctly');
+              this.router.navigate([`/${AppConfig.routes.auth}`]);
             } else {
-              this.walletDecryp = dataDecryp;
-              this.password = '';
-              this.basicModal.show();
-              return;
+              this.sharedService.showError('', 'Invalid network type');
             }
-
-            const wallet = {
-              name: walletName,
-              accounts: accounts
-            }
-
-            let walletsStorage = JSON.parse(localStorage.getItem(environment.nameKeyWalletStorage));
-            walletsStorage.push(wallet);
-            localStorage.setItem(environment.nameKeyWalletStorage, JSON.stringify(walletsStorage));
-            this.sharedService.showSuccess('', 'Wallet Imported Correctly');
-            this.router.navigate([`/${AppConfig.routes.auth}`]);
           } else {
             this.sharedService.showWarning('', 'The Wallet Already Exists');
           }
         } catch (error) {
+          console.log(error);
+
           this.sharedService.showError('', 'Invalid Document Format');
         }
       };
